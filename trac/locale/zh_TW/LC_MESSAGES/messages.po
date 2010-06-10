@@ -22,6 +22,8 @@ msgid ""
 "You appear to be using the PHP CGI binary. Trac requires the CLI version "
 "for syntax highlighting."
 msgstr ""
+"您似乎使用 PHP CGI 版本的二進位執行檔。Trac 需要 CLI 版本的"
+" PHP 二進位執行檔進行 syntax highlight"
 
 #: tracopt/ticket/deleter.py:69 tracopt/ticket/deleter.py:82
 #: trac/ticket/templates/report_list.html:35
@@ -147,11 +149,13 @@ msgid ""
 "Cannot reparent attachment \"%(att)s\" as it already exists in "
 "%(realm)s:%(id)s"
 msgstr ""
+"無法為附件 \"%(att)s\" 重新指定頁面，"
+"因為該附件已經在 %(realm)s:%(id)s 之中"
 
 #: trac/attachment.py:229
 #, python-format
 msgid "Could not reparent attachment %(name)s"
-msgstr ""
+msgstr "無法重新為附件 %(name)s 指定頁面"
 
 #: trac/attachment.py:346
 #, python-format
@@ -175,7 +179,7 @@ msgstr "附件 %(attachment)s 加入至 %(resource)s"
 #: trac/attachment.py:587
 #, python-format
 msgid "Unparented attachment %(id)s"
-msgstr ""
+msgstr "不存在任何頁面中的附件 %(id)s"
 
 #: trac/attachment.py:595
 #, python-format
@@ -329,7 +333,7 @@ msgstr "資料庫比 Trac 版本還新"
 #: trac/env.py:599
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
-msgstr ""
+msgstr "版本 %(num)i 沒有升級模組 (%(version)s.py)"
 
 #: trac/env.py:645
 msgid ""
@@ -525,7 +529,7 @@ msgstr "無法開啟環境: %(err)s"
 #: trac/admin/console.py:234
 #, python-format
 msgid "Completion error: %(err)s"
-msgstr ""
+msgstr "自動完成發生錯誤: %(err)s"
 
 #: trac/admin/console.py:287
 #, python-format
@@ -1223,11 +1227,11 @@ msgstr "新增版本:"
 
 #: trac/admin/templates/admin_versions.html:59
 msgid "Released:"
-msgstr ""
+msgstr "發布:"
 
 #: trac/admin/templates/admin_versions.html:77
 msgid "Released"
-msgstr ""
+msgstr "發布"
 
 #: trac/db/api.py:132
 #, python-format
@@ -1239,7 +1243,7 @@ msgstr "不支援的資料庫類型 \"%(scheme)s\""
 msgid ""
 "Unknown scheme \"%(scheme)s\"; database connection string must start with"
 " {scheme}:/"
-msgstr ""
+msgstr "未知的 scheme \"%(scheme)s\"; 資料庫連接字串必須以 {scheme}:/ 開頭"
 
 #: trac/db/mysql_backend.py:80
 msgid "Cannot load Python bindings for MySQL"
@@ -1285,7 +1289,7 @@ msgstr ""
 #: trac/mimeview/api.py:675 trac/mimeview/api.py:686
 #, python-format
 msgid "No available MIME conversions from %(old)s to %(new)s"
-msgstr ""
+msgstr "沒有可用從 %(old)s 轉換到 %(new)s 的 MIME 轉換器"
 
 #: trac/mimeview/api.py:801
 #, python-format
@@ -1295,7 +1299,7 @@ msgstr "使用 %(renderer)s 作 HTML 預覽失敗 (%(err)s)"
 #: trac/mimeview/api.py:831
 #, python-format
 msgid "Can't use %(annotator)s annotator: %(error)s"
-msgstr ""
+msgstr "不能夠使用 %(annotator)s 批註器: %(error)s"
 
 #: trac/mimeview/api.py:1080 trac/templates/error.html:148
 msgid "Line"
@@ -1308,12 +1312,12 @@ msgstr "行號"
 #: trac/mimeview/patch.py:172
 #, python-format
 msgid "new file %(new)s"
-msgstr ""
+msgstr "新增檔案 %(new)s"
 
 #: trac/mimeview/patch.py:176
 #, python-format
 msgid "deleted file %(deleted)s"
-msgstr ""
+msgstr "刪除檔案 %(deleted)s"
 
 #: trac/mimeview/patch.py:248
 msgid "this hunk was shorter than expected"
@@ -1414,26 +1418,26 @@ msgid ""
 "Configuring your time zone will result in all\n"
 "      dates and times displayed on this site to use your time zone\n"
 "      instead of that of the server."
-msgstr ""
+msgstr "設定您的顯示時間日期時區，而不是系統內定的時區。"
 
 #: trac/prefs/templates/prefs_datetime.html:31
 #, python-format
 msgid "Example: The current time is [1:%(time)s] (UTC)."
-msgstr "範例: 現在時間是 [1:%(time)s] (UTC)"
+msgstr "例如: 現在時間是 [1:%(time)s] (UTC)"
 
 #: trac/prefs/templates/prefs_datetime.html:34
 #, python-format
 msgid ""
 "In your time zone %(tz)s, this would be displayed as\n"
 "            [1:%(formatted)s]."
-msgstr ""
+msgstr "在您的時區 %(tz)s，此時間會顯示為 [1:%(formatted)s]"
 
 #: trac/prefs/templates/prefs_datetime.html:40
 #, python-format
 msgid ""
 "In the default time zone, this would be displayed as\n"
 "            [1:%(formatted)s]."
-msgstr ""
+msgstr "在系統預設時區中，此時間會顯示為 [1:%(formatted)s]"
 
 #: trac/prefs/templates/prefs_datetime.html:47
 msgid ""
@@ -1442,6 +1446,8 @@ msgid ""
 "        A positive offset is used to indicate a timezone at the east of "
 "Greenwich, i.e. ahead of Universal Time."
 msgstr ""
+"注意: 通用協調時間(UTC)，也就是格林威治時間(GMT) [1:]\n"
+"        正值表示為該時區為於格林威治以東，也就是比標準時間還早"
 
 #: trac/prefs/templates/prefs_general.html:15
 msgid "Full name:"
@@ -1455,7 +1461,7 @@ msgstr "Email:"
 msgid ""
 "This information is used to automatically populate some forms\n"
 "        on this site with your contact details."
-msgstr ""
+msgstr "此聯絡資訊會自動套用到此網站的一些表單中"
 
 #: trac/prefs/templates/prefs_general.html:30
 msgid ""
@@ -1463,10 +1469,12 @@ msgid ""
 "        email address and full name, which is used for email\n"
 "        notification and RSS feeds, for example."
 msgstr ""
+"此資訊會將您的帳號關聯到 Email 和全名，\n"
+"        如用於 Email通知 和 RSS"
 
 #: trac/prefs/templates/prefs_keybindings.html:18
 msgid "Enable access keys"
-msgstr ""
+msgstr "啟用快捷鍵"
 
 #: trac/prefs/templates/prefs_keybindings.html:21
 msgid ""
@@ -1478,6 +1486,9 @@ msgid ""
 "      [1:TracAccessibility]\n"
 "      for more information on access keys."
 msgstr ""
+"此站台提供鍵盤快捷鍵以利快速使用此站台的特定功能。\n"
+"然而這些快捷鍵可能與您的桌面系統或瀏覽器衝突，\n"
+"因此預設關閉快捷鍵的功能。您可瀏覽 [1:TracAccessibility] 取得更多資訊。"
 
 #: trac/prefs/templates/prefs_language.html:14
 msgid "Language:"
@@ -1492,13 +1503,15 @@ msgid ""
 "Configuring your language will result in all text\n"
 "      displayed on this site to use your language instead of that of the\n"
 "      server."
-msgstr ""
+msgstr "設定您要的語言而不是使用系統內定語言"
 
 #: trac/prefs/templates/prefs_language.html:25
 msgid ""
 "The 'default language' option uses the browser's\n"
 "        language negotiation feature to select the appropriate language."
 msgstr ""
+"'預設語言' 選項會根據您的瀏覽器語言設定\n"
+"        選擇適合的語言"
 
 #: trac/prefs/templates/prefs_pygments.html:36
 msgid ""
@@ -1528,7 +1541,7 @@ msgstr "瀏覽檔案庫路徑 %(path)s"
 #: trac/search/web_ui.py:193
 #, python-format
 msgid "Search query too short. Query must be at least %(num)s characters long."
-msgstr ""
+msgstr "搜尋字串太短，最少需要 %(num)s 字元"
 
 #: trac/search/web_ui.py:232 trac/ticket/query.py:763 trac/ticket/report.py:397
 msgid "Next Page"
@@ -1547,26 +1560,26 @@ msgstr "結果"
 #: trac/search/templates/search.html:48
 #, python-format
 msgid "Quickjump to %(name)s"
-msgstr ""
+msgstr "快速跳到 %(name)s"
 
 #: trac/search/templates/search.html:56
 #, python-format
 msgid "By %(author)s"
-msgstr ""
+msgstr "由 %(author)s 編輯"
 
 #: trac/search/templates/search.html:65
 #: trac/ticket/templates/report_view.html:87
 #: trac/ticket/templates/report_view.html:193
 msgid "No matches found."
-msgstr ""
+msgstr "找不到任何資料"
 
 #: trac/search/templates/search.html:69
 msgid ""
 "[1:Note:] See [2:TracSearch]\n"
 "        for help on searching."
 msgstr ""
-"[1:注意:] 可瀏覽 [2:TracSearch] \n"
-"來幫助您搜尋"
+"[1:注意:] 瀏覽 [2:TracSearch] \n"
+"        來幫助您使用搜尋功能"
 
 #: trac/templates/about.html:26
 msgid "Trac: Integrated SCM & Project Management"
@@ -1581,6 +1594,9 @@ msgid ""
 "\n"
 "        and changes within a project."
 msgstr ""
+"Trac 是基於網頁的軟體專案管理與臭蟲問題追蹤系統，\n"
+"強調使用方便而不是其外在形式。提供了整合式 Wiki、\n"
+"版本控制系統介面、與許多追蹤專案事件與變更的方便功能。"
 
 #: trac/templates/about.html:36
 msgid ""
@@ -1589,22 +1605,29 @@ msgid ""
 "        [2:online]\n"
 "        as well as in the [3:COPYING] file included in the distribution."
 msgstr ""
+"Trac 發布於 modified BSD 授權。[1:]\n"
+"        授權的完整文件可以 [2:線上查看]，\n"
+"        也可以在 [3:COPYING] 檔案中找到"
 
 #: trac/templates/about.html:41
 msgid "python powered"
-msgstr ""
+msgstr "python powered"
 
 #: trac/templates/about.html:44
 msgid ""
 "Please visit the Trac open source project:\n"
 "        [1:http://trac.edgewall.org/]"
 msgstr ""
+"請瀏覽 Trac 開放原始碼專案網站：\n"
+"        [1:http://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
 msgid ""
 "Copyright &copy; 2003-2010\n"
 "        [1:Edgewall Software]"
 msgstr ""
+"版權所有 &copy; 2003-2010\n"
+"        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
 msgid "System Information"
@@ -1621,7 +1644,7 @@ msgstr ""
 
 #: trac/templates/about.html:83
 msgid "Section"
-msgstr ""
+msgstr "區段"
 
 #: trac/templates/about.html:85 trac/templates/error.html:160
 msgid "Value"
@@ -1642,7 +1665,7 @@ msgstr "–附件列表"
 #: trac/templates/attachment.html:14
 #, python-format
 msgid "%(filename)s on %(parent)s – Attachment"
-msgstr ""
+msgstr "在 %(parent)s 中的 %(filename)s – 附件"
 
 #: trac/templates/attachment.html:29
 #, python-format
@@ -1733,11 +1756,11 @@ msgstr "檢視差異"
 
 #: trac/templates/diff_options.html:13
 msgid "inline"
-msgstr ""
+msgstr "內嵌"
 
 #: trac/templates/diff_options.html:15
 msgid "side by side"
-msgstr ""
+msgstr "並排"
 
 #: trac/templates/diff_options.html:18
 msgid ""
@@ -1746,10 +1769,14 @@ msgid ""
 "      [3:[4:]\n"
 "             lines around each change]"
 msgstr ""
+"[1:[2:]\n"
+"             顯示每一個更動的前後]\n"
+"      [3:[4:]\n"
+"			  行]"
 
 #: trac/templates/diff_options.html:28
 msgid "Show the changes in full context"
-msgstr ""
+msgstr "顯示完整檔案中的更動"
 
 #: trac/templates/diff_options.html:32
 msgid "Ignore:"
@@ -1785,6 +1812,9 @@ msgid ""
 "          [2:Version %(new)s] of\n"
 "          [3:%(name)s]"
 msgstr ""
+"[3:%(name)s]\n"
+"          從 [1:版本 %(old)s]\n"
+"          到 [2:版本 %(new)s] 的差異"
 
 #: trac/templates/diff_view.html:23
 #, python-format
@@ -1794,6 +1824,9 @@ msgid ""
 "          [2:Version %(new)s] of\n"
 "          [3:%(name)s]"
 msgstr ""
+"[3:%(name)s]\n"
+"          從 [1:初始版本]\n"
+"          到 [2:版本 %(new)s] 的差異"
 
 #: trac/templates/diff_view.html:28
 #, python-format
@@ -1802,6 +1835,8 @@ msgid ""
 "          [1:Version %(new)s] of\n"
 "          [2:%(name)s]"
 msgstr ""
+"[2:%(name)s]\n"
+"從 [1:版本 %(new)s] 之後的差異"
 
 #: trac/templates/diff_view.html:43
 #: trac/versioncontrol/templates/changeset.html:136
@@ -1811,7 +1846,7 @@ msgstr "時間撮記:"
 #: trac/templates/diff_view.html:45 trac/templates/diff_view.html:53
 #: trac/templates/diff_view.html:59
 msgid "(multiple changes)"
-msgstr ""
+msgstr "(多筆更動)"
 
 #: trac/templates/diff_view.html:47
 #, python-format
@@ -1832,7 +1867,7 @@ msgstr "註解:"
 #: trac/versioncontrol/templates/changeset.html:198
 #: trac/versioncontrol/templates/revisionlog.html:73
 msgid "Legend:"
-msgstr ""
+msgstr "圖例:"
 
 #: trac/templates/diff_view.html:67
 #: trac/versioncontrol/templates/changeset.html:200
@@ -1868,7 +1903,7 @@ msgstr "建立"
 
 #: trac/templates/error.html:80
 msgid "Oops…"
-msgstr ""
+msgstr "糟糕…"
 
 #: trac/templates/error.html:82
 msgid "Trac detected an internal error:"
@@ -1973,23 +2008,26 @@ msgid ""
 "                        line [2:%(line)s], in]\n"
 "                        [3:%(function)s]"
 msgstr ""
+"[1: 檔案 \"%(file)s\",\n"
+"                        行 [2:%(line)s],\n"
+"                        於 [3:%(function)s]"
 
 #: trac/templates/error.html:146
 msgid "Code fragment:"
-msgstr ""
+msgstr "部分程式碼:"
 
 #: trac/templates/error.html:158
 msgid "Local variables:"
-msgstr ""
+msgstr "區域變數:"
 
 #: trac/templates/error.html:172
 #, python-format
 msgid "File \"%(file)s\", line %(line)s, in %(function)s"
-msgstr "檔案 \"%(file)s\", 行 %(line)s, 位於 %(function)s"
+msgstr "檔案 \"%(file)s\", 行 %(line)s, 於 %(function)s"
 
 #: trac/templates/error.html:175
 msgid "Switch to plain text view"
-msgstr ""
+msgstr "切換到純文字顯示"
 
 #: trac/templates/error.html:178
 msgid "System Information:"
@@ -2001,16 +2039,16 @@ msgstr "已啟用的模組:"
 
 #: trac/templates/error.html:202
 msgid "TracGuide"
-msgstr ""
+msgstr "TracGuide"
 
 #: trac/templates/error.html:202
 msgid "— The Trac User and Administration Guide"
-msgstr ""
+msgstr "— Trac 使用者與管理者指南"
 
 #: trac/templates/history_view.html:16
 #, python-format
 msgid "Change History for [1:%(name)s]"
-msgstr ""
+msgstr "[1:%(name)s] 的更動歷史紀錄"
 
 #: trac/templates/history_view.html:22 trac/templates/history_view.html:55
 #: trac/versioncontrol/templates/diff_form.html:58
@@ -2066,6 +2104,10 @@ msgid ""
 "       ([4:%(size)s]) -\n"
 "      added by [5:%(author)s] %(date)s ago."
 msgstr ""
+"[1:%(file)s]\n"
+"      [2:[3:]]\n"
+"       ([4:%(size)s]) -\n"
+"      由 [5:%(author)s] 新增於 %(date)s 之前"
 
 #: trac/templates/list_of_attachments.html:29
 #: trac/templates/list_of_attachments.html:40
@@ -2075,11 +2117,11 @@ msgstr "附加檔案"
 
 #: trac/templates/macros.html:37 trac/templates/macros.html:38
 msgid "Previous"
-msgstr ""
+msgstr "上一個"
 
 #: trac/templates/macros.html:47 trac/templates/macros.html:48
 msgid "Next"
-msgstr ""
+msgstr "下一個"
 
 #: trac/templates/preview_file.html:15
 msgid "(The file is empty)"
@@ -2116,6 +2158,8 @@ msgid ""
 "[1:[2:%(title)s:]]\n"
 "          [3:[4:%(count)s]]"
 msgstr ""
+"[1:[2:%(title)s:]]\n"
+"          [3:[4:%(count)s]]"
 
 #: trac/templates/progress_bar.html:47
 #, python-format
@@ -2123,6 +2167,8 @@ msgid ""
 "[1:[2:Total:]]\n"
 "      [3:[4:%(count)s]]"
 msgstr ""
+"[1:[2:總共:]]\n"
+"      [3:[4:%(count)s]]"
 
 #: trac/templates/theme.html:27
 msgid "Search:"
@@ -2181,11 +2227,11 @@ msgstr "里程碑"
 
 #: trac/ticket/admin.py:270 trac/ticket/roadmap.py:663
 msgid "Completion date may not be in the future"
-msgstr ""
+msgstr "完成時間不可以是未來時間"
 
 #: trac/ticket/admin.py:272
 msgid "Invalid Completion Date"
-msgstr ""
+msgstr "無效的完成日期"
 
 #: trac/ticket/admin.py:299
 #, python-format
@@ -2248,7 +2294,7 @@ msgstr "無效的 %(type)s 值"
 #: trac/ticket/admin.py:635
 #, python-format
 msgid "%(type)s value \"%(name)s\" already exists"
-msgstr ""
+msgstr "%(type)s 值 \"%(name)s\" 已經存在"
 
 #: trac/ticket/admin.py:642
 #, python-format
@@ -2258,13 +2304,15 @@ msgstr "沒有選擇任何的 %s"
 #: trac/ticket/admin.py:650
 #, python-format
 msgid "The selected %(field)s values have been removed."
-msgstr ""
+msgstr "已移除所選 %(field)s 的值"
 
 #: trac/ticket/admin.py:672
 msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "The default value has not been saved."
 msgstr ""
+"寫入 trac.ini 時發生錯誤，請確認網頁伺服器有權限寫入該檔案。"
+"沒有儲存預設值。"
 
 #: trac/ticket/admin.py:684
 msgid "Order numbers must be unique"
@@ -2272,7 +2320,7 @@ msgstr ""
 
 #: trac/ticket/admin.py:746
 msgid "Possible Values"
-msgstr ""
+msgstr "可能的值"
 
 #: trac/ticket/admin.py:768
 #, python-format
@@ -2289,19 +2337,19 @@ msgstr "優先順序"
 
 #: trac/ticket/admin.py:795 trac/ticket/api.py:299
 msgid "Resolution"
-msgstr ""
+msgstr "處理結果"
 
 #: trac/ticket/admin.py:795
 msgid "Resolutions"
-msgstr ""
+msgstr "處理結果"
 
 #: trac/ticket/admin.py:801 trac/ticket/api.py:298
 msgid "Severity"
-msgstr ""
+msgstr "嚴重程度"
 
 #: trac/ticket/admin.py:801
 msgid "Severities"
-msgstr ""
+msgstr "嚴重程度"
 
 #: trac/ticket/admin.py:807
 msgid "Ticket Type"
@@ -2361,7 +2409,7 @@ msgstr "待辦事項 #%(shortname)s"
 
 #: trac/ticket/default_workflow.py:233
 msgid "Current state no longer exists"
-msgstr ""
+msgstr "目前狀態已經不存在"
 
 #: trac/ticket/default_workflow.py:235
 msgid "The ticket will be disowned"
@@ -2406,15 +2454,15 @@ msgstr ""
 #: trac/ticket/default_workflow.py:300
 #, python-format
 msgid "The resolution will be set to %(name)s"
-msgstr ""
+msgstr "處理結果將設為 %(name)s"
 
 #: trac/ticket/default_workflow.py:311
 msgid "The resolution will be set"
-msgstr ""
+msgstr "將設定處理結果"
 
 #: trac/ticket/default_workflow.py:313
 msgid "The resolution will be deleted"
-msgstr ""
+msgstr "將刪除處理結果"
 
 #: trac/ticket/default_workflow.py:316
 #, python-format
@@ -2437,7 +2485,7 @@ msgstr "無效的待辦事項編號"
 
 #: trac/ticket/model.py:143
 msgid "Multi-values fields not supported yet"
-msgstr ""
+msgstr "尚未支援多個值的欄位"
 
 #: trac/ticket/model.py:657
 #, python-format
@@ -2465,15 +2513,15 @@ msgstr "無效的里程碑名稱"
 
 #: trac/ticket/model.py:1065
 msgid "Open (by due date)"
-msgstr ""
+msgstr "開啟(有期限)"
 
 #: trac/ticket/model.py:1066
 msgid "Open (no due date)"
-msgstr ""
+msgstr "開啟(無期限)"
 
 #: trac/ticket/model.py:1069
 msgid "Closed"
-msgstr ""
+msgstr "關閉"
 
 #: trac/ticket/model.py:1086
 #, python-format
@@ -2482,35 +2530,35 @@ msgstr "版本 %(name)s 不存在"
 
 #: trac/ticket/query.py:54
 msgid "Invalid query constraint value"
-msgstr ""
+msgstr "無效的查詢限制條件"
 
 #: trac/ticket/query.py:88
 #, python-format
 msgid "Query page %(page)s is invalid."
-msgstr ""
+msgstr "無效的查詢頁面 %(page)s"
 
 #: trac/ticket/query.py:103
 #, python-format
 msgid "Query max %(max)s is invalid."
-msgstr ""
+msgstr "Query max %(max)s 無效"
 
 #: trac/ticket/query.py:159
 msgid "Query filter requires field and constraints separated by a \"=\""
-msgstr ""
+msgstr "查詢過濾器的欄位與條件限制需要以 \"=\" 分隔"
 
 #: trac/ticket/query.py:172
 msgid "Query filter requires field name"
-msgstr ""
+msgstr "查詢過濾器需要欄位名稱"
 
 #: trac/ticket/query.py:305
 #, python-format
 msgid "Page %(page)s is beyond the number of pages in the query"
-msgstr ""
+msgstr "頁面 %(page)s 超出查詢結果的頁面數"
 
 #: trac/ticket/query.py:562
 #, python-format
 msgid "Invalid ticket id list: %(value)s"
-msgstr ""
+msgstr "無效的待辦事項 ID 列表: %(value)s"
 
 #: trac/ticket/query.py:662 trac/ticket/query.py:670
 msgid "contains"
@@ -2575,7 +2623,7 @@ msgstr "自訂查詢"
 #: trac/ticket/templates/report_list.html:10
 #: trac/ticket/templates/report_list.html:15
 msgid "Available Reports"
-msgstr "可用報告"
+msgstr "可用報表"
 
 #: trac/ticket/query.py:1151
 #, python-format
@@ -2589,61 +2637,61 @@ msgstr "沒有結果"
 #: trac/ticket/query.py:1303
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
-msgstr ""
+msgstr "%(groupvalue)s %(groupname)s tickets 符合 %(query)s"
 
 #: trac/ticket/query.py:1326
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
-msgstr ""
+msgstr "%(groupvalue)s %(groupname)s 待辦事項:"
 
 #: trac/ticket/report.py:159
 msgid "The report has been created."
-msgstr ""
+msgstr "已建立報表"
 
 #: trac/ticket/report.py:172
 #, python-format
 msgid "The report {%(id)d} has been deleted."
-msgstr ""
+msgstr "已刪除報表 {%(id)d}"
 
 #: trac/ticket/report.py:199
 #, python-format
 msgid "Delete Report {%(num)s} %(title)s"
-msgstr ""
+msgstr "刪除報表 {%(num)s} %(title)s"
 
 #: trac/ticket/report.py:204 trac/ticket/report.py:217
 #: trac/ticket/report.py:296
 #, python-format
 msgid "Report {%(num)s} does not exist."
-msgstr ""
+msgstr "報表 {%(num)s} 不存在"
 
 #: trac/ticket/report.py:205 trac/ticket/report.py:218
 #: trac/ticket/report.py:297
 msgid "Invalid Report Number"
-msgstr ""
+msgstr "無效的報表編號"
 
 #: trac/ticket/report.py:230
 msgid "Create New Report"
-msgstr ""
+msgstr "建立新報表"
 
 #: trac/ticket/report.py:234
 #, python-format
 msgid "Edit Report {%(num)d} %(title)s"
-msgstr ""
+msgstr "編輯報表 {%(num)d} %(title)s"
 
 #: trac/ticket/report.py:302
 #, python-format
 msgid "Report failed: %(error)s"
-msgstr ""
+msgstr "報表發生錯誤: %(error)s"
 
 #: trac/ticket/report.py:317
 #, python-format
 msgid "When specified, the report number should be \"%(num)s\"."
-msgstr ""
+msgstr "當指定後，報表編號應該是 \"%(num)s\""
 
 #: trac/ticket/report.py:388
 #, python-format
 msgid "Report execution failed: %(error)s"
-msgstr ""
+msgstr "執行報表失敗: %(error)s"
 
 #: trac/ticket/report.py:574
 msgid "SQL Query"
@@ -2652,17 +2700,17 @@ msgstr "SQL 查詢"
 #: trac/ticket/report.py:598
 #, python-format
 msgid "The following arguments are missing: %(args)s"
-msgstr ""
+msgstr "遺失以下參數: %(args)s"
 
 #: trac/ticket/report.py:612
 #, python-format
 msgid "Report {%(num)s} has no SQL query."
-msgstr ""
+msgstr "報表 {%(num)s} 沒有 SQL 查詢"
 
 #: trac/ticket/report.py:642
 #, python-format
 msgid "Query parameter \"sort=%(sort_col)s\"  is invalid"
-msgstr ""
+msgstr "無效的查詢參數 \"sort=%(sort_col)s\""
 
 #: trac/ticket/roadmap.py:205
 msgid "ticket status"
@@ -2694,7 +2742,7 @@ msgstr "開發藍圖"
 
 #: trac/ticket/roadmap.py:364
 msgid "iCalendar"
-msgstr ""
+msgstr "iCalendar"
 
 #: trac/ticket/roadmap.py:445 trac/ticket/roadmap.py:845
 #, python-format
@@ -2780,19 +2828,19 @@ msgstr[0] ""
 #: trac/ticket/web_ui.py:345
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) %(verb)s"
-msgstr ""
+msgstr "待辦事項 %(ticketref)s (%(summary)s) %(verb)s"
 
 #: trac/ticket/web_ui.py:500
 #, python-format
 msgid "The action \"%(name)s\" is not available."
-msgstr ""
+msgstr "操作 \"%(name)s\" 無效"
 
 #: trac/ticket/web_ui.py:526
 #, python-format
 msgid ""
 "Please review your configuration, probably starting with %(section)s in "
 "your %(tracini)s."
-msgstr ""
+msgstr "請檢查您的設定，也許可以從您的 %(tracini)s 裡面的 %(section)s 開始"
 
 #: trac/ticket/web_ui.py:580 trac/ticket/web_ui.py:797
 #, python-format
@@ -2823,7 +2871,7 @@ msgstr "回到待辦事項 #%(num)s"
 
 #: trac/ticket/web_ui.py:760
 msgid "No differences to show"
-msgstr ""
+msgstr "沒有差異"
 
 #: trac/ticket/web_ui.py:803 trac/ticket/web_ui.py:860
 #: trac/ticket/web_ui.py:868 trac/ticket/web_ui.py:939
@@ -2839,12 +2887,12 @@ msgstr "初始版本"
 
 #: trac/ticket/web_ui.py:806 trac/ticket/web_ui.py:942
 msgid "initial"
-msgstr ""
+msgstr "初始"
 
 #: trac/ticket/web_ui.py:825
 #, python-format
 msgid "Property %(label)s %(rendered)s"
-msgstr ""
+msgstr "屬性 %(label)s %(rendered)s"
 
 #: trac/ticket/web_ui.py:870 trac/ticket/web_ui.py:993
 #: trac/versioncontrol/web_ui/changeset.py:370 trac/wiki/web_ui.py:450
@@ -2858,7 +2906,7 @@ msgstr "下一個變動"
 
 #: trac/ticket/web_ui.py:876
 msgid "Ticket Diff"
-msgstr ""
+msgstr "待辦事項差異"
 
 #: trac/ticket/web_ui.py:897
 msgid "''Initial version''"
@@ -2878,23 +2926,23 @@ msgstr "待辦事項 #%(num)s，評語 %(cnum)d"
 #: trac/ticket/web_ui.py:959
 #, python-format
 msgid "No version %(version)d for comment %(cnum)d on ticket #%(ticket)s"
-msgstr ""
+msgstr "待辦事項 #%(ticket)s 評語 %(cnum)d 沒有版本 %(version)d"
 
 #: trac/ticket/web_ui.py:999
 msgid "Ticket Comment Diff"
-msgstr ""
+msgstr "待辦事項評語差異"
 
 #: trac/ticket/web_ui.py:1070
 #, python-format
 msgid "%(labels)s set"
 msgid_plural "%(labels)s set"
-msgstr[0] ""
+msgstr[0] "設定 %(labels)s"
 
 #: trac/ticket/web_ui.py:1074
 #, python-format
 msgid "%(labels)s deleted"
 msgid_plural "%(labels)s deleted"
-msgstr[0] ""
+msgstr[0] "刪除 %(labels)s"
 
 #: trac/ticket/web_ui.py:1075 trac/ticket/web_ui.py:1626
 msgid "; "
@@ -2921,6 +2969,8 @@ msgid ""
 "Sorry, can not save your changes. This ticket has been modified by "
 "someone else since you started"
 msgstr ""
+"抱歉，無法儲存您的變更。從您開始修改待辦事項後，"
+"有人已經修改此待辦事項"
 
 #: trac/ticket/web_ui.py:1129
 msgid "Tickets must contain a summary."
@@ -2955,26 +3005,26 @@ msgstr "無效的待辦事項欄位 '%(field)s': %(message)s"
 msgid ""
 "The ticket has been created, but an error occurred while sending "
 "notifications: %(message)s"
-msgstr ""
+msgstr "已建立待辦事項，但是發送通知發生錯誤: %(message)s"
 
 #: trac/ticket/web_ui.py:1211
 #, python-format
 msgid ""
 "Your ticket %(ticketref)s has been created, but you don't have permission"
 " to view it."
-msgstr ""
+msgstr "您的待辦事項 %(ticketref)s 已經建立，但您沒有權限檢視它"
 
 #. TRANSLATOR: The 'change' has been saved... (link)
 #: trac/ticket/web_ui.py:1242
 msgid "change"
-msgstr ""
+msgstr "變動"
 
 #: trac/ticket/web_ui.py:1248
 #, python-format
 msgid ""
 "The %(change)s has been saved, but an error occurred while sending "
 "notifications: %(message)s"
-msgstr ""
+msgstr "已儲存 %(change)s，但是發送通知發生錯誤: %(message)s"
 
 #: trac/ticket/web_ui.py:1382
 msgid "Add to Cc"
@@ -3075,8 +3125,8 @@ msgid ""
 "      [2:TracRoadmap] for help on using\n"
 "      the roadmap."
 msgstr ""
-"[1:注意:] 可瀏覽 [2:TracRoadmap] \n"
-"          來幫助您使用 開發藍圖"
+"[1:注意:] 瀏覽 [2:TracRoadmap] \n"
+"          來幫助您使用開發藍圖功能"
 
 #: trac/ticket/templates/milestone_edit.html:11
 #: trac/ticket/templates/milestone_edit.html:36
@@ -3120,6 +3170,8 @@ msgid ""
 "        [2:TracRoadmap] for help on using\n"
 "        the roadmap."
 msgstr ""
+"[1:注意:] 瀏覽 [2:TracRoadmap]\n"
+"        來幫助您使用開發藍圖功能。"
 
 #: trac/ticket/templates/milestone_view.html:11
 msgid "Edit this milestone"
@@ -3129,24 +3181,24 @@ msgstr "編輯里程碑"
 #: trac/ticket/templates/roadmap.html:42
 #, python-format
 msgid "Completed %(duration)s ago (%(date)s)"
-msgstr ""
+msgstr "完成於 %(duration)s 之前(%(date)s)"
 
 #: trac/ticket/templates/milestone_view.html:32
 #: trac/ticket/templates/roadmap.html:47
 #, python-format
 msgid "[1:%(duration)s late] (%(date)s)"
-msgstr ""
+msgstr "[1:延遲 %(duration)s] (%(date)s) "
 
 #: trac/ticket/templates/milestone_view.html:37
 #: trac/ticket/templates/roadmap.html:52
 #, python-format
 msgid "Due in %(duration)s (%(date)s)"
-msgstr ""
+msgstr "截止於 %(duration)s (%(date)s)"
 
 #: trac/ticket/templates/milestone_view.html:41
 #: trac/ticket/templates/roadmap.html:56
 msgid "No date set"
-msgstr ""
+msgstr "沒有設定日期"
 
 #: trac/ticket/templates/milestone_view.html:51
 #, python-format
@@ -3172,11 +3224,11 @@ msgstr[0] "%(num)s 筆符合"
 
 #: trac/ticket/templates/query.html:38
 msgid "Filters"
-msgstr ""
+msgstr "過濾器"
 
 #: trac/ticket/templates/query.html:39
 msgid "Query filters"
-msgstr ""
+msgstr "查詢過濾器"
 
 #: trac/ticket/templates/query.html:45 trac/ticket/templates/query.html:143
 msgid "Or"
@@ -3193,6 +3245,10 @@ msgid ""
 "                            [3:and]\n"
 "                            [4:]"
 msgstr ""
+"[1:介於]\n"
+"                            [2:]\n"
+"                            [3:且]\n"
+"                            [4:]"
 
 #: trac/ticket/templates/query.html:129
 msgid "And"
@@ -3222,7 +3278,7 @@ msgstr "每頁最大筆數"
 #: trac/ticket/templates/query.html:245
 #, python-format
 msgid "Edit report {%(id)s} corresponding to this query"
-msgstr ""
+msgstr "編輯根據此查詢的報表 {%(id)s}"
 
 #: trac/ticket/templates/query.html:245
 msgid "Edit query"
@@ -3235,16 +3291,16 @@ msgstr "儲存查詢"
 #: trac/ticket/templates/query.html:254
 #, python-format
 msgid "Save updated query in report {%(id)s}"
-msgstr ""
+msgstr "儲存更新的查詢到報表 {%(id)s}"
 
 #: trac/ticket/templates/query.html:254
 msgid "Create new report from current query"
-msgstr ""
+msgstr "從目前查詢建立新報表"
 
 #: trac/ticket/templates/query.html:262
 #, python-format
 msgid "Delete report {%(id)s} corresponding to this query"
-msgstr ""
+msgstr "刪除根據此查詢的報表 {%(id)s}"
 
 #: trac/ticket/templates/query.html:262
 msgid "Delete query"
@@ -3255,6 +3311,8 @@ msgid ""
 "[1:Note:] See [2:TracQuery]\n"
 "        for help on using queries."
 msgstr ""
+"[1:注意:] 瀏覽 [2:TracQuery]\n"
+"        來幫助您使用查詢功能"
 
 #: trac/ticket/templates/query_results.html:35
 msgid "(ascending)"
@@ -3303,13 +3361,13 @@ msgstr ""
 
 #: trac/ticket/templates/report_delete.html:17
 msgid "Are you sure you want to delete this report?"
-msgstr "您確定要刪除此報告?"
+msgstr "您確定要刪除此報表?"
 
 #: trac/ticket/templates/report_delete.html:22
 #: trac/ticket/templates/report_list.html:34
 #: trac/ticket/templates/report_view.html:75
 msgid "Delete report"
-msgstr "刪除報告"
+msgstr "刪除報表"
 
 #: trac/ticket/templates/report_delete.html:26
 #: trac/ticket/templates/report_edit.html:49
@@ -3319,14 +3377,16 @@ msgid ""
 "[1:Note:]\n"
 "        See [2:TracReports] for help on using and creating reports."
 msgstr ""
+"[1:注意:]\n"
+"        瀏覽 [2:TracReports] 來幫助您使用與建立報表"
 
 #: trac/ticket/templates/report_edit.html:16
 msgid "New Report"
-msgstr "新增報告"
+msgstr "新增報表"
 
 #: trac/ticket/templates/report_edit.html:21
 msgid "Report Title:"
-msgstr "報告標題:"
+msgstr "報表標題:"
 
 #: trac/ticket/templates/report_edit.html:25
 msgid "Description: (you may use [1:WikiFormatting] here)"
@@ -3344,7 +3404,7 @@ msgstr "儲存"
 
 #: trac/ticket/templates/report_list.html:23
 msgid "Report"
-msgstr "報告"
+msgstr "報表"
 
 #: trac/ticket/templates/report_list.html:24 trac/wiki/admin.py:200
 msgid "Title"
@@ -3359,12 +3419,12 @@ msgstr "操作"
 #: trac/ticket/templates/report_list.html:31
 #: trac/ticket/templates/report_view.html:121
 msgid "View report"
-msgstr "檢視報告"
+msgstr "檢視報表"
 
 #: trac/ticket/templates/report_list.html:32
 #: trac/ticket/templates/report_view.html:63
 msgid "Edit report"
-msgstr "編輯報告"
+msgstr "編輯報表"
 
 #: trac/ticket/templates/report_list.html:33
 #: trac/ticket/templates/ticket.html:148 trac/wiki/templates/wiki_edit.html:124
@@ -3373,11 +3433,11 @@ msgstr "編輯"
 
 #: trac/ticket/templates/report_list.html:38
 msgid "No reports available."
-msgstr "沒有可用的報告"
+msgstr "沒有可用的報表"
 
 #: trac/ticket/templates/report_list.html:47
 msgid "Create new report"
-msgstr "建立新報告"
+msgstr "建立新報表"
 
 #: trac/ticket/templates/report_view.html:32
 msgid "Arguments"
@@ -3385,11 +3445,11 @@ msgstr "參數"
 
 #: trac/ticket/templates/report_view.html:33
 msgid "Report arguments"
-msgstr "報告參數"
+msgstr "報表參數"
 
 #: trac/ticket/templates/report_view.html:69
 msgid "Copy report"
-msgstr "複製報告"
+msgstr "複製報表"
 
 #: trac/ticket/templates/report_view.html:128
 #: trac/ticket/templates/report_view.html:136
@@ -3495,7 +3555,7 @@ msgstr "下一筆"
 
 #: trac/ticket/templates/ticket.html:196
 msgid "View ticket fields and description"
-msgstr ""
+msgstr "檢視待辦事項欄位與描述"
 
 #: trac/ticket/templates/ticket.html:196
 msgid "View"
@@ -3594,11 +3654,13 @@ msgid ""
 "        [2:TracTickets] for help on using\n"
 "        tickets."
 msgstr ""
+"[1:注意:] 瀏覽 [2:TracTickets]\n"
+"        來幫助您使用待辦事項功能"
 
 #: trac/ticket/templates/ticket_box.html:19
 #, python-format
 msgid "Opened %(created)s ago"
-msgstr ""
+msgstr "%(created)s 前建立"
 
 #: trac/ticket/templates/ticket_box.html:20
 #, python-format
@@ -3633,16 +3695,19 @@ msgid ""
 "          [3:[4:]]\n"
 "          added"
 msgstr ""
+"[1:[2:%(name)s]]\n"
+"          [3:[4:]]\n"
+"          新增"
 
 #: trac/ticket/templates/ticket_change.html:26
 #, python-format
 msgid "changed from [1:%(old)s] to [2:%(new)s]"
-msgstr ""
+msgstr "從 [1:%(old)s] 變更為 [2:%(new)s]"
 
 #: trac/ticket/templates/ticket_change.html:29
 #, python-format
 msgid "set to [1:%(value)s]"
-msgstr ""
+msgstr "設為 [1:%(value)s]"
 
 #: trac/ticket/templates/ticket_change.html:32
 #, python-format
@@ -3652,31 +3717,31 @@ msgstr "已刪除 [1:%(value)s]"
 #: trac/ticket/templates/ticket_change.html:45
 #, python-format
 msgid "Preview changes to comment %(cnum)s"
-msgstr ""
+msgstr "預覽評語 %(cnum)s 的更動"
 
 #: trac/ticket/templates/ticket_change.html:47
 #, python-format
 msgid "Submit changes to comment %(cnum)s"
-msgstr ""
+msgstr "儲存評語 %(cnum)s 的更動"
 
 #: trac/ticket/templates/ticket_change.html:49
 msgid "Cancel comment edit"
-msgstr ""
+msgstr "取消編輯評語"
 
 #: trac/ticket/templates/ticket_notify_email.txt:9
 #, python-format
 msgid "Changes (by %(author)s):"
-msgstr ""
+msgstr "更動 (由 %(author)s):"
 
 #: trac/ticket/templates/ticket_notify_email.txt:15
 #, python-format
 msgid "Description changed by %(author)s:"
-msgstr ""
+msgstr "由 %(author)s 變更描述:"
 
 #: trac/ticket/templates/ticket_notify_email.txt:21
 #, python-format
 msgid "Comment (by %(author)s):"
-msgstr ""
+msgstr "評語 (由 %(author)s):"
 
 #: trac/ticket/templates/ticket_notify_email.txt:29
 #, python-format
@@ -3690,16 +3755,16 @@ msgstr "時間軸"
 
 #: trac/timeline/web_ui.py:233 trac/timeline/web_ui.py:241
 msgid "Previous Period"
-msgstr ""
+msgstr "前一時段"
 
 #: trac/timeline/web_ui.py:240 trac/timeline/web_ui.py:241
 msgid "Next Period"
-msgstr ""
+msgstr "後一時段"
 
 #: trac/timeline/web_ui.py:301
 #, python-format
 msgid "%(date)s in Timeline"
-msgstr ""
+msgstr "時間軸中的 %(date)s"
 
 #. TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
 #: trac/timeline/web_ui.py:348
@@ -3740,12 +3805,16 @@ msgid ""
 "[1:%(time)s] %(title)s\n"
 "                  by [2:%(author)s]"
 msgstr ""
+"[1:%(time)s] %(title)s\n"
+"                  由 [2:%(author)s]"
 
 #: trac/timeline/templates/timeline.html:58
 msgid ""
 "[1:Note:] See [2:TracTimeline]\n"
 "        for information about the timeline view."
 msgstr ""
+"[1:注意:] 瀏覽 [2:TracTimeline]\n"
+"        來取得時間軸功能的更多資訊"
 
 #: trac/util/datefmt.py:79
 #, python-format
@@ -3871,12 +3940,12 @@ msgstr "檔案庫"
 #: trac/versioncontrol/admin.py:203 trac/versioncontrol/admin.py:242
 #, python-format
 msgid "You should now run %(resync)s to synchronize Trac with the repository."
-msgstr ""
+msgstr "您應該執行 %(resync)s 讓 Trac 保持與檔案庫的同步"
 
 #: trac/versioncontrol/admin.py:208
 #, python-format
 msgid "You may have to run %(resync)s to synchronize Trac with the repository."
-msgstr ""
+msgstr "您可能需要執行 %(resync)s 讓 Trac 保持與檔案庫的同步"
 
 #: trac/versioncontrol/admin.py:216
 #, python-format
@@ -3888,7 +3957,7 @@ msgstr ""
 #: trac/versioncontrol/admin.py:238
 #, python-format
 msgid "The repository \"%(name)s\" has been added."
-msgstr ""
+msgstr "已加入檔案庫 \"%(name)s\""
 
 #: trac/versioncontrol/admin.py:248
 #, python-format
@@ -3932,7 +4001,7 @@ msgstr "(預設)"
 #: trac/versioncontrol/api.py:183
 #, python-format
 msgid "Invalid key \"%(key)s\""
-msgstr ""
+msgstr "無效的鍵值 \"%(key)s\""
 
 #: trac/versioncontrol/api.py:190
 #, python-format
@@ -4030,12 +4099,12 @@ msgstr "沒有這樣的更動"
 #: trac/versioncontrol/api.py:705
 #, python-format
 msgid "No node %(path)s at revision %(rev)s"
-msgstr "更動版次 %(rev)s 沒有節點 %(path)s"
+msgstr "修訂 %(rev)s 沒有節點 %(path)s"
 
 #: trac/versioncontrol/api.py:707
 #, python-format
 msgid "%(msg)s: No node %(path)s at revision %(rev)s"
-msgstr "%(msg)s: 更動版次 %(rev)s 沒有節點 %(path)s"
+msgstr "%(msg)s: 修訂 %(rev)s 沒有節點 %(path)s"
 
 #: trac/versioncontrol/api.py:709
 msgid "No such node"
@@ -4110,7 +4179,7 @@ msgstr ""
 
 #: trac/versioncontrol/svn_prop.py:245
 msgid "No revisions"
-msgstr ""
+msgstr "沒有修訂"
 
 #: trac/versioncontrol/svn_prop.py:281
 msgid "merged: "
@@ -4194,7 +4263,7 @@ msgstr "新增別名:"
 
 #: trac/versioncontrol/templates/admin_repositories.html:125
 msgid "Revision"
-msgstr "版本"
+msgstr "修訂"
 
 #: trac/versioncontrol/templates/admin_repositories.html:137
 #, python-format
@@ -4216,11 +4285,11 @@ msgstr "預設檔案庫"
 
 #: trac/versioncontrol/templates/browser.html:61
 msgid "Hint: clear the field to view latest revision"
-msgstr "提示: 清除欄位以檢視最新版本"
+msgstr "提示: 清除欄位以檢視最新修訂"
 
 #: trac/versioncontrol/templates/browser.html:61
 msgid "View revision:"
-msgstr "檢視版本:"
+msgstr "檢視修訂:"
 
 #: trac/versioncontrol/templates/browser.html:71
 msgid "Visit:"
@@ -4228,7 +4297,7 @@ msgstr "瀏覽:"
 
 #: trac/versioncontrol/templates/browser.html:79
 msgid "Go!"
-msgstr ""
+msgstr "衝!"
 
 #: trac/versioncontrol/templates/browser.html:79
 msgid "Jump to the chosen preselected path"
@@ -4245,7 +4314,7 @@ msgstr "找不到檔案"
 #: trac/versioncontrol/templates/browser.html:106
 #: trac/wiki/templates/wiki_edit.html:112 trac/wiki/templates/wiki_view.html:32
 msgid "Revision info"
-msgstr "版本資訊"
+msgstr "修訂資訊"
 
 #: trac/versioncontrol/templates/browser.html:108
 #, python-format
@@ -4255,6 +4324,10 @@ msgid ""
 "            checked in by %(author)s, %(date)s ago\n"
 "            ([3:diff])"
 msgstr ""
+"修訂 [1:%(rev)s],\n"
+"            [2:%(size)s]\n"
+"            由 %(author)s 提交於 %(date)s 之前\n"
+"            ([3:差異])"
 
 #: trac/versioncontrol/templates/browser.html:140
 #, python-format
@@ -4270,7 +4343,7 @@ msgid ""
 "[1:Note:] See [2:TracBrowser]\n"
 "        for help on using the repository browser."
 msgstr ""
-"[1:注意:] 可瀏覽 [2:TracBrowser]\n"
+"[1:注意:] 瀏覽 [2:TracBrowser]\n"
 "          來幫助您使用檔案庫瀏覽器"
 
 #: trac/versioncontrol/templates/browser.html:176
@@ -4312,7 +4385,7 @@ msgstr ""
 #: trac/versioncontrol/templates/changeset.html:41
 #: trac/versioncontrol/templates/changeset.html:63
 msgid "Show revision log"
-msgstr "顯示更動紀錄"
+msgstr "顯示修訂紀錄"
 
 #: trac/versioncontrol/templates/changeset.html:39
 #, python-format
@@ -4393,7 +4466,7 @@ msgstr "顯示差異"
 
 #: trac/versioncontrol/templates/changeset.html:119
 msgid "view diffs"
-msgstr ""
+msgstr "檢視差異"
 
 #: trac/versioncontrol/templates/changeset.html:122
 #, python-format
@@ -4409,7 +4482,7 @@ msgstr[0] "%(num)d 屬性更動"
 
 #: trac/versioncontrol/templates/changeset.html:129
 msgid "Show previous version in browser"
-msgstr ""
+msgstr "顯示前一個版本"
 
 #: trac/versioncontrol/templates/changeset.html:139
 msgid "(less than one hour ago)"
@@ -4492,7 +4565,7 @@ msgid ""
 "[1:Note:] See [2:TracChangeset]\n"
 "          for help on using the changeset viewer."
 msgstr ""
-"[1:注意:] 可瀏覽 [2:TracChangeset]\n"
+"[1:注意:] 瀏覽 [2:TracChangeset]\n"
 "          來幫助您使用更動檢視器"
 
 #: trac/versioncontrol/templates/diff_form.html:10
@@ -4506,16 +4579,16 @@ msgstr ""
 
 #: trac/versioncontrol/templates/diff_form.html:30
 msgid "From:"
-msgstr ""
+msgstr "從:"
 
 #: trac/versioncontrol/templates/diff_form.html:34
 #: trac/versioncontrol/templates/diff_form.html:44
 msgid "at revision:"
-msgstr ""
+msgstr "於修訂版次:"
 
 #: trac/versioncontrol/templates/diff_form.html:40
 msgid "To:"
-msgstr ""
+msgstr "到:"
 
 #: trac/versioncontrol/templates/diff_form.html:50
 msgid ""
@@ -4532,6 +4605,8 @@ msgid ""
 "        [2:TracChangeset]\n"
 "        for help on using the diff feature."
 msgstr ""
+"[1:注意:] 瀏覽 [2:TracChangeset]\n"
+"        可幫助您使用比對功能"
 
 #: trac/versioncontrol/templates/dir_entries.html:11
 msgid "View Directory"
@@ -4544,18 +4619,18 @@ msgstr "檢視檔案"
 #: trac/versioncontrol/templates/dir_entries.html:19
 #: trac/versioncontrol/templates/repository_index.html:23
 msgid "View Revision Log"
-msgstr ""
+msgstr "檢視修訂紀錄"
 
 #: trac/versioncontrol/templates/dir_entries.html:20
 #: trac/versioncontrol/templates/repository_index.html:24
 msgid "View Changeset"
-msgstr ""
+msgstr "檢視更動"
 
 #: trac/versioncontrol/templates/dirlist_thead.html:9
 #: trac/versioncontrol/templates/revisionlog.html:96
 #: trac/versioncontrol/web_ui/browser.py:766
 msgid "Rev"
-msgstr "版本"
+msgstr "修訂"
 
 #: trac/versioncontrol/templates/dirlist_thead.html:12
 #: trac/versioncontrol/web_ui/browser.py:450
@@ -4568,7 +4643,7 @@ msgstr "至檔案庫根目錄"
 
 #: trac/versioncontrol/templates/path_links.html:16
 msgid "Go to repository index"
-msgstr ""
+msgstr "至檔案庫索引"
 
 #: trac/versioncontrol/templates/path_links.html:26
 #, python-format
@@ -4590,15 +4665,15 @@ msgstr "(紀錄)"
 
 #: trac/versioncontrol/templates/revisionlog.html:23
 msgid "Revision Log Mode:"
-msgstr ""
+msgstr "修定紀錄模式:"
 
 #: trac/versioncontrol/templates/revisionlog.html:27
 msgid "Stop on copy"
-msgstr ""
+msgstr "碰到複製就停止"
 
 #: trac/versioncontrol/templates/revisionlog.html:33
 msgid "Follow copies"
-msgstr ""
+msgstr "跟隨複製"
 
 #: trac/versioncontrol/templates/revisionlog.html:39
 msgid "Show only adds and deletes"
@@ -4615,6 +4690,14 @@ msgid ""
 "              [4:]\n"
 "            ]"
 msgstr ""
+"[1:\n"
+"              檢視從\n"
+"              [2:]\n"
+"            ]\n"
+"            [3: \n"
+"              回溯到\n"
+"              [4:]\n"
+"            ] 的歷史紀錄"
 
 #: trac/versioncontrol/templates/revisionlog.html:54
 msgid ""
@@ -4624,6 +4707,11 @@ msgid ""
 "              revisions per page.\n"
 "            ]"
 msgstr ""
+"[1:\n"
+"              每頁一次顯示最多"
+"              [2:]\n"
+"              修訂\n"
+"            ]"
 
 #: trac/versioncontrol/templates/revisionlog.html:62
 msgid "Show full log messages"
@@ -4636,15 +4724,15 @@ msgstr "複製或更名"
 #: trac/versioncontrol/templates/revisionlog.html:88
 #: trac/versioncontrol/templates/revisionlog.html:182
 msgid "Diff from Old Revision to New Revision (as selected in the Diff column)"
-msgstr ""
+msgstr "比較新舊版之間的差異(在 差異 欄位中選擇新舊版)"
 
 #: trac/versioncontrol/templates/revisionlog.html:94
 msgid "Old / New"
-msgstr ""
+msgstr "舊版 / 新版"
 
 #: trac/versioncontrol/templates/revisionlog.html:94
 msgid "Diff"
-msgstr ""
+msgstr "差異"
 
 #: trac/versioncontrol/templates/revisionlog.html:97
 msgid "Age"
@@ -4656,7 +4744,7 @@ msgstr "更動紀錄訊息"
 
 #: trac/versioncontrol/templates/revisionlog.html:106
 msgid "No revisions found"
-msgstr "找不到更動紀錄"
+msgstr "找不到任何修訂"
 
 #: trac/versioncontrol/templates/revisionlog.html:120
 #, python-format
@@ -4675,12 +4763,12 @@ msgstr "到 [%(rev)s]"
 
 #: trac/versioncontrol/templates/revisionlog.html:135
 msgid "View log starting at this revision"
-msgstr ""
+msgstr "檢視此修訂之後的更動紀錄"
 
 #: trac/versioncontrol/templates/revisionlog.html:142
 #, python-format
 msgid "Browse at revision %(rev)s"
-msgstr "瀏覽更動 %(rev)s"
+msgstr "瀏覽修訂 %(rev)s"
 
 #: trac/versioncontrol/templates/revisionlog.html:146
 #, python-format
@@ -4690,18 +4778,20 @@ msgstr ""
 #: trac/versioncontrol/templates/revisionlog.html:148
 #, python-format
 msgid "View changeset [%(rev)s] restricted to %(path)s"
-msgstr ""
+msgstr "檢視 %(path)s 更動 [%(rev)s]"
 
 #: trac/versioncontrol/templates/revisionlog.html:187
 msgid ""
 "[1:Note:] See [2:TracRevisionLog]\n"
 "        for help on using the revision log."
 msgstr ""
+"[1:注意:] 瀏覽 [2:TracRevisionLog]\n"
+"        來幫助您使用修訂紀錄功能"
 
 #: trac/versioncontrol/templates/revisionlog.txt:2
 #, python-format
 msgid "ChangeLog for %(path)s%(in_repo)s"
-msgstr ""
+msgstr "%(path)s%(in_repo)s 的更動紀錄"
 
 #: trac/versioncontrol/templates/revisionlog.txt:4
 #, python-format
@@ -4720,19 +4810,19 @@ msgstr "無效的更動編號"
 #: trac/versioncontrol/web_ui/browser.py:443
 #, python-format
 msgid "Revision %(num)s"
-msgstr "版本 %(num)s"
+msgstr "修訂 %(num)s"
 
 #: trac/versioncontrol/web_ui/browser.py:444
 msgid "Previous Revision"
-msgstr "上一版"
+msgstr "前一修訂"
 
 #: trac/versioncontrol/web_ui/browser.py:444
 msgid "Next Revision"
-msgstr "下一版"
+msgstr "後一修訂"
 
 #: trac/versioncontrol/web_ui/browser.py:445
 msgid "Latest Revision"
-msgstr "最新版本"
+msgstr "最新修訂"
 
 #: trac/versioncontrol/web_ui/browser.py:449
 #: trac/versioncontrol/web_ui/log.py:300
@@ -4756,11 +4846,11 @@ msgid ""
 "Annotate each line with the last changed revision (this can be time "
 "consuming...)"
 msgstr ""
-"附註每一行最後更動版本(這可能會花些時間...)"
+"附註每一行最後修訂版本(這可能會花些時間...)"
 
 #: trac/versioncontrol/web_ui/browser.py:469
 msgid "Revision Log"
-msgstr "版本更動紀錄"
+msgstr "修訂紀錄"
 
 #: trac/versioncontrol/web_ui/browser.py:475
 msgid "Repository URL"
@@ -4807,7 +4897,7 @@ msgstr "後一個更動"
 
 #: trac/versioncontrol/web_ui/changeset.py:376
 msgid "Reverse Diff"
-msgstr ""
+msgstr "反向比對"
 
 #: trac/versioncontrol/web_ui/changeset.py:414
 #, python-format
@@ -4824,17 +4914,17 @@ msgstr "更動 %(id)s"
 #: trac/versioncontrol/web_ui/changeset.py:492
 #, python-format
 msgid "Show revision %(rev)s of this file in browser"
-msgstr ""
+msgstr "顯示此檔案的修訂版次 %(rev)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:638
 #, python-format
 msgid "Show the changeset %(id)s restricted to %(path)s"
-msgstr ""
+msgstr "顯示 %(path)s 的更動 %(id)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:650
 #, python-format
 msgid "Show the %(range)s differences restricted to %(path)s"
-msgstr ""
+msgstr "顯示 %(path)s %(range)s 之間的差異"
 
 #. TRANSLATOR: 'latest' (revision)
 #: trac/versioncontrol/web_ui/changeset.py:790
@@ -4890,6 +4980,7 @@ msgid ""
 "The file or directory '%(path)s' doesn't exist at revision %(rev)s or at "
 "any previous revision."
 msgstr ""
+"檔案或目錄 '%(path)s' 不存在於修訂 %(rev)s 或較前版次之中"
 
 #: trac/versioncontrol/web_ui/log.py:199
 msgid "Nonexistent path"
@@ -4898,7 +4989,7 @@ msgstr "路徑不存在"
 #: trac/versioncontrol/web_ui/log.py:227
 #, python-format
 msgid "Revision Log (restarting at %(path)s, rev. %(rev)s)"
-msgstr ""
+msgstr "修訂紀錄 (從路徑 %(path)s 修訂 %(rev)s 開始)"
 
 #: trac/versioncontrol/web_ui/log.py:308
 msgid "ChangeLog"
@@ -4906,11 +4997,11 @@ msgstr "更動紀錄"
 
 #: trac/versioncontrol/web_ui/log.py:310
 msgid "View Latest Revision"
-msgstr "檢視最新版本"
+msgstr "檢視最新修訂"
 
 #: trac/versioncontrol/web_ui/log.py:314
 msgid "Older Revisions"
-msgstr ""
+msgstr "較舊的修訂"
 
 #: trac/versioncontrol/web_ui/log.py:393
 msgid "No permission to view change log"
@@ -4927,6 +5018,7 @@ msgid ""
 "You can %(search)s in the repository history to see if that path existed "
 "but was later removed"
 msgstr ""
+"您可以在檔案庫歷史紀錄中 %(search)s 是否有路徑曾經存在而後移除"
 
 #: trac/web/api.py:236
 #, python-format
@@ -5081,7 +5173,7 @@ msgstr "Session 已存在。無法新增重複的 Session"
 
 #: trac/web/session.py:325
 msgid "Unable to set session attribute on a non-existent SID"
-msgstr ""
+msgstr "無法在不存在的 SID 中設定 session 屬性"
 
 #: trac/web/session.py:438
 #, python-format
@@ -5096,7 +5188,7 @@ msgstr "'%(name)s' 不是檔案"
 #: trac/wiki/admin.py:168 trac/wiki/admin.py:265
 #, python-format
 msgid "  %(page)s imported from %(filename)s"
-msgstr ""
+msgstr " 由 %(filename)s 匯入 %(page)s"
 
 #: trac/wiki/admin.py:200
 msgid "Edits"
@@ -5113,7 +5205,7 @@ msgstr "頁面 %(name)s 已存在"
 
 #: trac/wiki/admin.py:224
 msgid "Deleted pages"
-msgstr ""
+msgstr "已刪除的頁面"
 
 #: trac/wiki/admin.py:243
 #, python-format
@@ -5131,37 +5223,37 @@ msgstr "HTML 剖析錯誤: %(message)s"
 
 #: trac/wiki/formatter.py:178
 msgid "Error: Forbidden character sequence \"--\" in htmlcomment wiki code block"
-msgstr ""
+msgstr "錯誤: 禁止在 htmlcomment wiki 程式碼區塊使用的字串 \"--\""
 
 #: trac/wiki/formatter.py:252
 #, python-format
 msgid "!#%(name)s must contain at most one table"
-msgstr ""
+msgstr "!#%(name)s 頂多只能有一個表格"
 
 #: trac/wiki/formatter.py:256
 #, python-format
 msgid "!#%(name)s must contain at least one table cell (and table cells only)"
-msgstr ""
+msgstr "!#%(name)s 必須指少有一個表格 cell(而且也只能有表格 cell)"
 
 #: trac/wiki/formatter.py:627 trac/wiki/interwiki.py:88
 #, python-format
 msgid "%(target)s in %(name)s"
-msgstr ""
+msgstr "%(name)s 中的 %(target)s"
 
 #: trac/wiki/intertrac.py:55
 #, python-format
 msgid "Can't view %(link)s:"
-msgstr ""
+msgstr "無法檢視 %(link)s:"
 
 #: trac/wiki/macros.py:519
 #, python-format
 msgid "No image \"%(id)s\" attached to %(parent)s"
-msgstr ""
+msgstr "沒有圖片 \"%(id)s\" 附加到 %(parent)s"
 
 #: trac/wiki/macros.py:562
 #, python-format
 msgid "Error: Can't get description for macro %(name)s"
-msgstr ""
+msgstr "錯誤：無法取得巨集 %(name)s 的描述"
 
 #: trac/wiki/macros.py:580
 msgid "Aliases:"
@@ -5177,7 +5269,7 @@ msgstr "MIME 類型"
 
 #: trac/wiki/macros.py:706
 msgid "Table of Contents"
-msgstr ""
+msgstr "內容索引"
 
 #: trac/wiki/model.py:123
 msgid "Page not modified"
@@ -5219,7 +5311,7 @@ msgstr "無效的 Wiki 頁面: %(message)s"
 #. TRANSLATOR: wiki page
 #: trac/wiki/web_ui.py:231
 msgid "currently edited"
-msgstr ""
+msgstr "正在編輯"
 
 #: trac/wiki/web_ui.py:265
 #, python-format
@@ -5248,16 +5340,16 @@ msgstr "瀏覽 [wiki:\"%(name)s\"]"
 #: trac/wiki/web_ui.py:333
 #, python-format
 msgid "Your changes have been saved in version %(version)s."
-msgstr ""
+msgstr "您的更動將儲存於版本 %(version)s"
 
 #: trac/wiki/web_ui.py:338
 msgid "Page not modified, showing latest version."
-msgstr ""
+msgstr "沒有修改頁面，顯示最新版本。"
 
 #: trac/wiki/web_ui.py:381
 #, python-format
 msgid "Version %(num)s of page \"%(name)s\" does not exist"
-msgstr ""
+msgstr "頁面 \"%(name)s\" 版本 %(num)s 不存在"
 
 #: trac/wiki/web_ui.py:433
 msgid "Page history"
@@ -5325,12 +5417,12 @@ msgstr "Wiki 更動"
 #: trac/wiki/web_ui.py:712
 #, python-format
 msgid "%(page)s edited"
-msgstr ""
+msgstr "編輯 %(page)s"
 
 #: trac/wiki/web_ui.py:714
 #, python-format
 msgid "%(page)s created"
-msgstr ""
+msgstr "建立 %(page)s"
 
 #: trac/wiki/templates/wiki_delete.html:19
 #, python-format
@@ -5456,6 +5548,8 @@ msgid ""
 "Sorry, this page has been modified by somebody else since you started\n"
 "            editing. Your changes cannot be saved."
 msgstr ""
+"抱歉，自您開始編輯此頁後，有人修改此頁。\n"
+"            將不會儲存您的更動。"
 
 #: trac/wiki/templates/wiki_edit_form.html:16
 msgid "Adjust edit area height:"
@@ -5467,13 +5561,15 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_edit_form.html:24
 msgid "Edit side-by-side"
-msgstr ""
+msgstr "並排編輯"
 
 #: trac/wiki/templates/wiki_edit_form.html:32
 msgid ""
 "[1:Note:] See [2:WikiFormatting] and\n"
 "        [3:TracWiki] for help on editing wiki content."
 msgstr ""
+"[1:注意:] 瀏覽 [2:WikiFormatting] \n"
+"        和 [3:TracWiki] 來幫助您編輯 wiki 內容"
 
 #: trac/wiki/templates/wiki_edit_form.html:38
 msgid "See the start of the diffs"
@@ -5523,11 +5619,11 @@ msgstr "修改名稱 [1:%(name)s]"
 
 #: trac/wiki/templates/wiki_rename.html:19
 msgid "Renaming the page will rename all existing versions of the page in place."
-msgstr ""
+msgstr "重新命名此頁會重新立刻重新命名此頁所有的版本"
 
 #: trac/wiki/templates/wiki_rename.html:19
 msgid "The complete history of the page will be moved to the new location."
-msgstr ""
+msgstr "此頁面的完整歷史紀錄將會移至新位置"
 
 #: trac/wiki/templates/wiki_rename.html:23
 msgid "New name:"
