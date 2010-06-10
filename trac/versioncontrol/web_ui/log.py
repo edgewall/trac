@@ -25,6 +25,7 @@ from trac.config import IntOption
 from trac.core import *
 from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
+from trac.resource import ResourceNotFound
 from trac.util import Ranges
 from trac.util.compat import any
 from trac.util.text import wrap
