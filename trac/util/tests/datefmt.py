@@ -72,8 +72,12 @@ class DateFormatTestCase(unittest.TestCase):
         self.assertEqual(datefmt.to_datetime(2345678912.0), expected)
 
     def test_to_datetime_microsecond_negative_timestamps(self):
-        expected = datetime.datetime.fromtimestamp(-2345.678912,
-                                                   datefmt.localtz)
+        # Work around issue1646728 in Python 2.4
+        expected = datetime.datetime.fromtimestamp(-2345, datefmt.localtz) \
+                   - datetime.timedelta(seconds=.678912)
+
+        self.assertEqual(datefmt.to_datetime(-2345678912).microsecond,
+                         321088) # 1000000 - 678912
         self.assertEqual(datefmt.to_datetime(-2345678912), expected)
         self.assertEqual(datefmt.to_datetime(-2345678912L), expected)
         self.assertEqual(datefmt.to_datetime(-2345678912.0), expected)

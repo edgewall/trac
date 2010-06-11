@@ -18,6 +18,7 @@
 #         Matthew Good <trac@matt-good.net>
 
 import locale
+import math
 import re
 import sys
 import time
@@ -51,7 +52,13 @@ def to_datetime(t, tzinfo=None):
     elif isinstance(t, (int, long, float)):
         if not (_min_ts <= t <= _max_ts):
             # Handle microsecond timestamps for 0.11 compatibility
-            t = t * 0.000001
+            t *= 0.000001
+        if t < 0 and isinstance(t, float):
+            # Work around negative fractional times bug in Python 2.4
+            # http://bugs.python.org/issue1646728
+            frac, integer = math.modf(t)
+            return datetime.fromtimestamp(integer - 1, tzinfo or localtz) \
+                   + timedelta(seconds=frac + 1)
         return datetime.fromtimestamp(t, tzinfo or localtz)
     raise TypeError('expecting datetime, int, long, float, or None; got %s' %
                     type(t))
