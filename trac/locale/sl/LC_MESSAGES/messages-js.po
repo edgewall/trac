@@ -1,0 +1,148 @@
+# Slovenian translations for Trac.
+# Copyright (C) 2010 Edgewall Software
+# This file is distributed under the same license as the Trac project.
+# Venčeslav Vezjak <vezjakv@gmail.com>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Trac 0.12\n"
+"Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
+"POT-Creation-Date: 2010-05-24 23:55+0200\n"
+"PO-Revision-Date: 2010-06-11 13:25+0200\n"
+"Last-Translator: Venčeslav Vezjak <vezjakv@gmail.com>\n"
+"Language-Team: sl_SI <trac-dev@googlegroups.com>\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 "
+"|| n%100==4 ? 2 : 3)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.5\n"
+
+#: trac/htdocs/js/blame.js:84
+msgid "(no changeset information)"
+msgstr "(ni informacij o naboru popravkov)"
+
+#: trac/htdocs/js/blame.js:87
+msgid "Close"
+msgstr "Zapri"
+
+#: trac/htdocs/js/diff.js:119
+msgid "Tabular"
+msgstr "Tabelarično"
+
+#: trac/htdocs/js/diff.js:125
+msgid "Unified"
+msgstr "Poenoteno"
+
+#: trac/htdocs/js/expand_dir.js:42
+msgid "Expand sub-directory in place"
+msgstr "Na mestu razširi podmapo"
+
+#: trac/htdocs/js/expand_dir.js:71
+msgid "Re-expand directory"
+msgstr "Ponovno razširi mapo"
+
+#: trac/htdocs/js/expand_dir.js:115
+#, python-format
+msgid "Loading %(entry)s..."
+msgstr "Nalaganje %(entry)s..."
+
+#: trac/htdocs/js/expand_dir.js:143
+msgid "(empty)"
+msgstr "(prazno)"
+
+#: trac/htdocs/js/expand_dir.js:151
+msgid "(error)"
+msgstr "(napaka)"
+
+#: trac/htdocs/js/expand_dir.js:158
+msgid "Fold directory"
+msgstr "Skrči mapo"
+
+#: trac/htdocs/js/folding.js:59
+#, python-format
+msgid "Show %(title)s"
+msgstr "Prikaži %(title)s"
+
+#: trac/htdocs/js/folding.js:74
+#, python-format
+msgid "%(title)s (click to hide column)"
+msgstr "%(title)s (klikni za izklop stolpca)"
+
+#: trac/htdocs/js/query.js:119
+msgid "A filter already exists for that property"
+msgstr "Filter že obstaja za to lastnost"
+
+#: trac/htdocs/js/query.js:146
+msgid "or"
+msgstr "ali"
+
+#: trac/htdocs/js/query.js:165
+msgid "yes"
+msgstr "da"
+
+#: trac/htdocs/js/query.js:168
+msgid "no"
+msgstr "ne"
+
+#: trac/htdocs/js/query.js:171
+msgid "between"
+msgstr "med"
+
+#: trac/htdocs/js/query.js:173
+msgid "and"
+msgstr "in"
+
+#: trac/htdocs/js/trac.js:7
+msgid "Link here"
+msgstr "Povezava tukaj"
+
+#: trac/htdocs/js/wikitoolbar.js:56
+msgid "Bold text: '''Example'''"
+msgstr "Krepko besedilo: '''Primer'''"
+
+#: trac/htdocs/js/wikitoolbar.js:59
+msgid "Italic text: ''Example''"
+msgstr "Poševno besedilo: ''Primer''"
+
+#: trac/htdocs/js/wikitoolbar.js:62
+msgid "Heading: == Example =="
+msgstr "Naslov: == Primer =="
+
+#: trac/htdocs/js/wikitoolbar.js:65
+msgid "Link: [http://www.example.com/ Example]"
+msgstr "Povezava: [http://www.primer.com/ Primer]"
+
+#: trac/htdocs/js/wikitoolbar.js:68
+msgid "Code block: {{{ example }}}"
+msgstr "Blok kode: {{{ primer }}}"
+
+#: trac/htdocs/js/wikitoolbar.js:71
+msgid "Horizontal rule: ----"
+msgstr "Vodoravna črta: ----"
+
+#: trac/htdocs/js/wikitoolbar.js:74
+msgid "New paragraph"
+msgstr "Nov odstavek"
+
+#: trac/htdocs/js/wikitoolbar.js:77
+msgid "Line break: [[BR]]"
+msgstr "Prelom vrstice: [[BR]]"
+
+#: trac/htdocs/js/wikitoolbar.js:80
+msgid "Image: [[Image()]]"
+msgstr "Slika: [[Image()]]"
+
+#: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
+msgid "Link to this section"
+msgstr "Povezava na ta odsek"
+
+#: trac/versioncontrol/templates/changeset.html:7
+msgid "Link to this diff"
+msgstr "Povezava na to razliko"
+
+#: trac/wiki/templates/wiki_view.html:5
+#, python-format
+msgid "Link to #%(id)s"
+msgstr "Povezava do #%(id)s"
+
