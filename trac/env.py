@@ -403,6 +403,7 @@ class Environment(Component, ComponentManager):
         self.config.save()
         # Full reload to get 'inherit' working
         self.config.parse_if_needed(force=True)
+        del self._rules
 
         # Create the database
         DatabaseManager(self).init_db()
