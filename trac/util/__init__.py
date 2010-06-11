@@ -349,6 +349,7 @@ def arity(f):
     """
     return f.func_code.co_argcount - bool(getattr(f, 'im_self', False))
 
+
 def get_last_traceback():
     import traceback
     from StringIO import StringIO
@@ -356,38 +357,62 @@ def get_last_traceback():
     traceback.print_exc(file=tb)
     return to_unicode(tb.getvalue())
 
-def get_lines_from_file(filename, lineno, context=0):
+
+_egg_path_re = re.compile(r'build/bdist\.[^/]+/egg/(.*)')
+
+def get_lines_from_file(filename, lineno, context=0, globals=None):
     """Return `content` number of lines before and after the specified
-    `lineno` from the file identified by `filename`.
+    `lineno` from the (source code) file identified by `filename`.
     
     Returns a `(lines_before, line, lines_after)` tuple.
     """
-    if os.path.isfile(filename):
-        fileobj = open(filename, 'U')
-        try:
-            lines = fileobj.readlines()
-            lbound = max(0, lineno - context)
-            ubound = lineno + 1 + context
-
-
-            charset = None
-            rep = re.compile('coding[=:]\s*([-\w.]+)')
-            for linestr in lines[0], lines[1]:
-                match = rep.search(linestr)
-                if match:
-                    charset = match.group(1)
+    # The linecache module can load source code from eggs since Python 2.6.
+    # Prior versions return lines from the wrong file, so we try locating
+    # the file in eggs manually first.
+    lines = []
+    match = _egg_path_re.match(filename)
+    if match:
+        import zipfile
+        for path in sys.path:
+            try:
+                zip = zipfile.ZipFile(path, 'r')
+                try:
+                    lines = zip.read(match.group(1)).splitlines()
                     break
+                finally:
+                    zip.close()
+            except Exception:
+                pass
 
-            before = [to_unicode(l.rstrip('\n'), charset)
-                         for l in lines[lbound:lineno]]
-            line = to_unicode(lines[lineno].rstrip('\n'), charset)
-            after = [to_unicode(l.rstrip('\n'), charset) \
-                         for l in lines[lineno + 1:ubound]]
+    if not lines:
+        import linecache
+        linecache.checkcache(filename)
+        if arity(linecache.getlines) >= 2:
+            lines = linecache.getlines(filename, globals)
+        else:   # Python 2.4
+            lines = linecache.getlines(filename)
 
-            return before, line, after
-        finally:
-            fileobj.close()
-    return (), None, ()
+    if not 0 <= lineno < len(lines):
+        return (), None, ()
+    lbound = max(0, lineno - context)
+    ubound = lineno + 1 + context
+
+    charset = None
+    rep = re.compile('coding[=:]\s*([-\w.]+)')
+    for linestr in lines[:2]:
+        match = rep.search(linestr)
+        if match:
+            charset = match.group(1)
+            break
+
+    before = [to_unicode(l.rstrip('\n'), charset)
+                 for l in lines[lbound:lineno]]
+    line = to_unicode(lines[lineno].rstrip('\n'), charset)
+    after = [to_unicode(l.rstrip('\n'), charset) \
+                 for l in lines[lineno + 1:ubound]]
+
+    return before, line, after
+
 
 def get_frame_info(tb):
     """Return frame information for a traceback."""
@@ -401,7 +426,8 @@ def get_frame_info(tb):
             filename = tb.tb_frame.f_code.co_filename
             filename = filename.replace('\\', '/')
             lineno = tb.tb_lineno - 1
-            before, line, after = get_lines_from_file(filename, lineno, 5)
+            before, line, after = get_lines_from_file(filename, lineno, 5,
+                                                      tb.tb_frame.f_globals)
             frames.append({'traceback': tb, 'filename': filename,
                            'lineno': lineno, 'line': line,
                            'lines_before': before, 'lines_after': after,
@@ -409,6 +435,7 @@ def get_frame_info(tb):
                            'vars': tb.tb_frame.f_locals})
         tb = tb.tb_next
     return frames
+
 
 def safe__import__(module_name):
     """
@@ -427,6 +454,7 @@ def safe__import__(module_name):
             if not already_imported.has_key(modname):
                 del(sys.modules[modname])
         raise e
+
 
 def get_doc(obj):
     """Return the docstring of an object as a tuple `(summary, description)`,
