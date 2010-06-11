@@ -4062,10 +4062,10 @@ msgstr "路徑"
 msgid " in %(repo)s"
 msgstr " 在檔案庫 %(repo)s"
 
-#. TRANSLATOR: file /trunk/setup.py at version 13 in trac
+#. TRANSLATOR: file /path/to/file.py at version 13 in reponame
 #: trac/versioncontrol/api.py:378
 #, python-format
-msgid "%(kind)s %(id)%(at_version)s%(in_repo)s"
+msgid "%(kind)s %(id)s%(at_version)s%(in_repo)s"
 msgstr ""
 
 #: trac/versioncontrol/api.py:381

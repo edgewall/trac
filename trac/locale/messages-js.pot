@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-05-24 23:55+0200\n"
+"POT-Creation-Date: 2010-06-11 16:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -68,27 +68,27 @@ msgstr ""
 msgid "%(title)s (click to hide column)"
 msgstr ""
 
-#: trac/htdocs/js/query.js:119
+#: trac/htdocs/js/query.js:118
 msgid "A filter already exists for that property"
 msgstr ""
 
-#: trac/htdocs/js/query.js:146
+#: trac/htdocs/js/query.js:145
 msgid "or"
 msgstr ""
 
-#: trac/htdocs/js/query.js:165
+#: trac/htdocs/js/query.js:164
 msgid "yes"
 msgstr ""
 
-#: trac/htdocs/js/query.js:168
+#: trac/htdocs/js/query.js:167
 msgid "no"
 msgstr ""
 
-#: trac/htdocs/js/query.js:171
+#: trac/htdocs/js/query.js:170
 msgid "between"
 msgstr ""
 
-#: trac/htdocs/js/query.js:173
+#: trac/htdocs/js/query.js:172
 msgid "and"
 msgstr ""
 

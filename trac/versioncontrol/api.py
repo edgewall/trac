@@ -374,8 +374,8 @@ class RepositoryManager(Component):
                 if resource.version:
                     version = '@%s' % resource.version
             in_repo = reponame and _(" in %(repo)s", repo=reponame) or ''
-            # TRANSLATOR: file /trunk/setup.py at version 13 in trac
-            return _('%(kind)s %(id)%(at_version)s%(in_repo)s',
+            # TRANSLATOR: file /path/to/file.py at version 13 in reponame
+            return _('%(kind)s %(id)s%(at_version)s%(in_repo)s',
                      kind=kind, id=id, at_version=version, in_repo=in_repo)
         elif resource.realm == 'repository':
             return _("Repository %(repo)s", repo=resource.id)
