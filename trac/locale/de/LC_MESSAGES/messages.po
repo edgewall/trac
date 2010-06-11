@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-05-23 17:45+0200\n"
-"PO-Revision-Date: 2010-05-25 00:46+0200\n"
+"PO-Revision-Date: 2010-06-11 10:37+0200\n"
 "Last-Translator: Daniel Musketa <daniel@musketa.de>\n"
 "Language-Team: de_DE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -938,7 +938,7 @@ msgstr "Änderungen übernehmen"
 
 #: trac/admin/templates/admin_components.html:10 trac/ticket/admin.py:76
 msgid "Components"
-msgstr "Komponenten:"
+msgstr "Komponenten"
 
 #: trac/admin/templates/admin_components.html:14
 msgid "Manage Components"

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-05-24 23:55+0200\n"
-"PO-Revision-Date: 2010-05-25 01:28+0200\n"
+"PO-Revision-Date: 2010-06-11 10:37+0200\n"
 "Last-Translator: Daniel Musketa <daniel@musketa.de>\n"
 "Language-Team: de <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -34,7 +34,6 @@ msgid "Unified"
 msgstr "Vereinheitlicht"
 
 #: trac/htdocs/js/expand_dir.js:42
-#, fuzzy
 msgid "Expand sub-directory in place"
 msgstr "Unterverzeichnis ausklappen"
 
@@ -94,7 +93,6 @@ msgid "and"
 msgstr "und"
 
 #: trac/htdocs/js/trac.js:7
-#, fuzzy
 msgid "Link here"
 msgstr "Link hierher"
 
