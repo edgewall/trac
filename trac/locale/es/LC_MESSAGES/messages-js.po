@@ -1,7 +1,7 @@
 # Spanish translations for Trac.
 # Copyright (C) 2010 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+# Roberto Aragón <robarago@gmail.com>, 2010.
 #
 msgid ""
 msgstr ""
@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-05-24 23:55+0200\n"
 "PO-Revision-Date: 2010-06-10 23:31+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Last-Translator: Roberto Aragón <robarago@gmail.com>\n"
 "Language-Team: es <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
@@ -19,129 +19,129 @@ msgstr ""
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
-msgstr ""
+msgstr "(sin información de cambios)"
 
 #: trac/htdocs/js/blame.js:87
 msgid "Close"
-msgstr ""
+msgstr "Cerrar"
 
 #: trac/htdocs/js/diff.js:119
 msgid "Tabular"
-msgstr ""
+msgstr "Tabla"
 
 #: trac/htdocs/js/diff.js:125
 msgid "Unified"
-msgstr ""
+msgstr "Unificado"
 
 #: trac/htdocs/js/expand_dir.js:42
 msgid "Expand sub-directory in place"
-msgstr ""
+msgstr "Desplegar subdirectorio aquí"
 
 #: trac/htdocs/js/expand_dir.js:71
 msgid "Re-expand directory"
-msgstr ""
+msgstr "Expandir directorio de nuevo"
 
 #: trac/htdocs/js/expand_dir.js:115
 #, python-format
 msgid "Loading %(entry)s..."
-msgstr ""
+msgstr "Cargando %(entry)s..."
 
 #: trac/htdocs/js/expand_dir.js:143
 msgid "(empty)"
-msgstr ""
+msgstr "(vacío)"
 
 #: trac/htdocs/js/expand_dir.js:151
 msgid "(error)"
-msgstr ""
+msgstr "(error)"
 
 #: trac/htdocs/js/expand_dir.js:158
 msgid "Fold directory"
-msgstr ""
+msgstr "Plegar directorio"
 
 #: trac/htdocs/js/folding.js:59
 #, python-format
 msgid "Show %(title)s"
-msgstr ""
+msgstr "Mostrar %(title)s"
 
 #: trac/htdocs/js/folding.js:74
 #, python-format
 msgid "%(title)s (click to hide column)"
-msgstr ""
+msgstr "%(title)s (clic para ocultar la columna)"
 
 #: trac/htdocs/js/query.js:119
 msgid "A filter already exists for that property"
-msgstr ""
+msgstr "Ya existe un filtro para esa propiedad"
 
 #: trac/htdocs/js/query.js:146
 msgid "or"
-msgstr ""
+msgstr "o"
 
 #: trac/htdocs/js/query.js:165
 msgid "yes"
-msgstr ""
+msgstr "sí"
 
 #: trac/htdocs/js/query.js:168
 msgid "no"
-msgstr ""
+msgstr "no"
 
 #: trac/htdocs/js/query.js:171
 msgid "between"
-msgstr ""
+msgstr "entre"
 
 #: trac/htdocs/js/query.js:173
 msgid "and"
-msgstr ""
+msgstr "y"
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
-msgstr ""
+msgstr "Enlazar aquí"
 
 #: trac/htdocs/js/wikitoolbar.js:56
 msgid "Bold text: '''Example'''"
-msgstr ""
+msgstr "Texto en negrita: '''Ejemplo'''"
 
 #: trac/htdocs/js/wikitoolbar.js:59
 msgid "Italic text: ''Example''"
-msgstr ""
+msgstr "Texto en itálica: ''Ejemplo''"
 
 #: trac/htdocs/js/wikitoolbar.js:62
 msgid "Heading: == Example =="
-msgstr ""
+msgstr "Encabezado: == Ejemplo =="
 
 #: trac/htdocs/js/wikitoolbar.js:65
 msgid "Link: [http://www.example.com/ Example]"
-msgstr ""
+msgstr "Enlace: [http://www.ejemplo.com/ Ejemplo]"
 
 #: trac/htdocs/js/wikitoolbar.js:68
 msgid "Code block: {{{ example }}}"
-msgstr ""
+msgstr "Bloque de código: {{{ ejemplo }}}"
 
 #: trac/htdocs/js/wikitoolbar.js:71
 msgid "Horizontal rule: ----"
-msgstr ""
+msgstr "Separador: ----"
 
 #: trac/htdocs/js/wikitoolbar.js:74
 msgid "New paragraph"
-msgstr ""
+msgstr "Párrafo nuevo"
 
 #: trac/htdocs/js/wikitoolbar.js:77
 msgid "Line break: [[BR]]"
-msgstr ""
+msgstr "Salto de línea: [[BR]]"
 
 #: trac/htdocs/js/wikitoolbar.js:80
 msgid "Image: [[Image()]]"
-msgstr ""
+msgstr "Imagen: [[Image()]]"
 
 #: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
 msgid "Link to this section"
-msgstr ""
+msgstr "Enlazar a esta sección"
 
 #: trac/versioncontrol/templates/changeset.html:7
 msgid "Link to this diff"
-msgstr ""
+msgstr "Enlazar a esta diferencia"
 
 #: trac/wiki/templates/wiki_view.html:5
 #, python-format
 msgid "Link to #%(id)s"
-msgstr ""
+msgstr "Enlazar a #%(id)s"
 
