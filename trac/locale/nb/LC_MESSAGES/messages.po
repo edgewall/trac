@@ -23,7 +23,7 @@ msgid ""
 "for syntax highlighting."
 msgstr ""
 "Det virker som om du benytter PHP CGI binærfil. Trac behøver CLI "
-"versjonen for syntaks markering."
+"versjonen for syntaksmarkering."
 
 #: tracopt/ticket/deleter.py:69 tracopt/ticket/deleter.py:82
 #: tracopt/ticket/templates/ticket_delete.html:19
@@ -57,7 +57,7 @@ msgstr "Kommentaren %(num)s ikke funnet"
 
 #: tracopt/ticket/templates/ticket_delete.html:11
 msgid "Delete Ticket #"
-msgstr "Slett Sak #"
+msgstr "Slett sak #"
 
 #: tracopt/ticket/templates/ticket_delete.html:12
 #: tracopt/ticket/templates/ticket_delete.html:45
@@ -95,7 +95,7 @@ msgstr ""
 #: tracopt/ticket/templates/ticket_delete.html:64
 #: trac/templates/attachment.html:70 trac/wiki/templates/wiki_delete.html:46
 msgid "This is an irreversible operation."
-msgstr "Denne handlingen kan ikke reverseres."
+msgstr "Denne handlingen kan ikke gjøres om."
 
 #: tracopt/ticket/templates/ticket_delete.html:38
 #: tracopt/ticket/templates/ticket_delete.html:68
@@ -138,7 +138,7 @@ msgstr "Om Trac"
 #: trac/attachment.py:151
 #, python-format
 msgid "Attachment '%(title)s' does not exist."
-msgstr "Vedlegg '%(title)s' eksisterer ikke."
+msgstr "Vedlegget '%(title)s' finnes ikke."
 
 #: trac/attachment.py:152
 msgid "Invalid Attachment"
@@ -146,7 +146,7 @@ msgstr "Ugyldig Vedlegg"
 
 #: trac/attachment.py:192
 msgid "Could not delete attachment"
-msgstr "Kunne ikke slette vedlegg"
+msgstr "Kunne ikke slette vedlegget"
 
 #: trac/attachment.py:208
 #, python-format
@@ -154,22 +154,22 @@ msgid ""
 "Cannot reparent attachment \"%(att)s\" as it already exists in "
 "%(realm)s:%(id)s"
 msgstr ""
-"Kan ikke flytte vedlegg \"%(att)s\" da det allerede eksisterer på "
+"Kan ikke flytte vedlegget \"%(att)s\" da det allerede finnes på "
 "%(realm)s:%(id)s"
 
 #: trac/attachment.py:227
 #, python-format
 msgid "Could not reparent attachment %(name)s"
-msgstr "Kunne ikke flytte vedlegg %(name)s"
+msgstr "Kunne ikke flytte vedlegget %(name)s"
 
 #: trac/attachment.py:344
 #, python-format
 msgid "Attachment '%(filename)s' not found"
-msgstr "Vedlegg '%(filename)s' ikke funnet"
+msgstr "Vedlegget '%(filename)s' finnes ikke"
 
 #: trac/attachment.py:418
 msgid "Bad request"
-msgstr "Feil i forespørsel"
+msgstr "Feil i forespørselen"
 
 #: trac/attachment.py:435
 #, python-format
@@ -203,7 +203,7 @@ msgstr "Ingen fil lastet opp"
 
 #: trac/attachment.py:617
 msgid "Can't upload empty file"
-msgstr "Kan ikke laste opp tom fil"
+msgstr "Kan ikke laste opp en tom fil"
 
 #: trac/attachment.py:622
 #, python-format
@@ -217,7 +217,7 @@ msgstr "Opplasting feilet"
 #: trac/attachment.py:644
 #, python-format
 msgid "Attachment field %(field)s is invalid: %(message)s"
-msgstr "Vedleggsfelt %(field)s er ikke gyldig: %(message)s"
+msgstr "Vedleggsfeltet %(field)s er ikke gyldig: %(message)s"
 
 #: trac/attachment.py:648
 #, python-format
@@ -231,7 +231,7 @@ msgid ""
 "only replace your own attachments. Replacing other's attachments requires"
 " ATTACHMENT_DELETE permission."
 msgstr ""
-"Du mangler rettigheter til å erstatte vedlegg %(name)s. Du kan "
+"Du har ikke rettigheter til å erstatte vedlegget %(name)s. Du kan "
 "bare erstatte dine egne vedlegg. Erstatting av andres vedlegg krever"
 " ATTACHMENT_DELETE rettighet."
 
@@ -243,11 +243,11 @@ msgstr "%(attachment)s (slett)"
 #: trac/attachment.py:752 trac/versioncontrol/web_ui/browser.py:633
 #: trac/wiki/web_ui.py:68
 msgid "Plain Text"
-msgstr "Ren Tekst"
+msgstr "Ren tekst"
 
 #: trac/attachment.py:758 trac/versioncontrol/web_ui/browser.py:639
 msgid "Original Format"
-msgstr "Orginalt Format"
+msgstr "Orginalt format"
 
 #: trac/attachment.py:800 trac/attachment.py:806
 #: trac/ticket/templates/ticket_change.html:21
@@ -258,7 +258,7 @@ msgstr "Last ned"
 #: trac/attachment.py:900
 #, python-format
 msgid "Invalid resource identifier '%(id)s'"
-msgstr "Ugyldig ressurs identifikator '%(id)s'"
+msgstr "Ugyldig ressurs-identifikator '%(id)s'"
 
 #: trac/attachment.py:936 trac/admin/templates/admin_components.html:80
 #: trac/admin/templates/admin_enums.html:48
@@ -294,12 +294,12 @@ msgstr "Beskrivelse"
 #: trac/attachment.py:962 trac/wiki/admin.py:104
 #, python-format
 msgid "File '%(name)s' exists"
-msgstr "Filen '%(name)s' eksisterer"
+msgstr "Filen '%(name)s' finnes"
 
 #: trac/config.py:403
 #, python-format
 msgid "[%(section)s] %(entry)s: expected integer, got %(value)s"
-msgstr "[%(section)s] %(entry)s: forventet integer, fant %(value)s"
+msgstr "[%(section)s] %(entry)s: forventet heltall, fant %(value)s"
 
 #: trac/config.py:421
 #, python-format
@@ -313,7 +313,7 @@ msgstr "[%(section)s] %(entry)s: forventet en av (%(choices)s), fant %(value)s"
 
 #: trac/env.py:587
 msgid "Database newer than Trac version"
-msgstr "Database er nyere enn Trac versjon"
+msgstr "Databasen er nyere enn Trac-versjonen"
 
 #: trac/env.py:601
 #, python-format
@@ -325,8 +325,8 @@ msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
 msgstr ""
-"Manglende miljøvariabel \"TRAC_ENV\". Trac behøver denne\"\n"
-"\" variabelen som må peke til et gyldig Trac prosjekt."
+"Manglende miljøvariabel \"TRAC_ENV\". Trac avhenger av denne\"\n"
+"\" variabelen og den må peke til et gyldig Trac-prosjekt."
 
 #: trac/env.py:678
 #, python-format
@@ -335,7 +335,7 @@ msgid ""
 "\n"
 "Run \"trac-admin %(path)s upgrade\""
 msgstr ""
-"Trac prosjektet må oppgraderes.\n"
+"Trac-prosjektet må oppgraderes.\n"
 "\n"
 "Kjør \"trac-admin %(path)s upgrade\""
 
@@ -350,7 +350,7 @@ msgstr "Oppretter scripts."
 #: trac/env.py:743
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
-msgstr "hotcopy kan ikke overskrive ekisterende '%(dest)s'"
+msgstr "Sikkerhetskopi kan ikke overskrive ekisterende '%(dest)s'"
 
 #: trac/env.py:753
 #, python-format
@@ -371,7 +371,7 @@ msgstr "Ugyldige argumenter"
 
 #: trac/env.py:787
 msgid "Database is up to date, no upgrade necessary."
-msgstr "Databasen er oppdatert, ingen oppgradering nødvendig."
+msgstr "Databasen er allerede oppdatert, ingen oppgradering nødvendig."
 
 #: trac/env.py:795
 #, python-format
@@ -398,12 +398,12 @@ msgid ""
 "Trac doesn't load plugins from wiki-macros anymore. Please remove it by "
 "hand."
 msgstr ""
-"Feil ved fjerning av wiki-macros: %(err)s\n"
+"Feil ved fjerning av wiki-makroer: %(err)s\n"
 "Trac laster ikke lenger plugins derfra. Vennligst fjern manuelt."
 
 #: trac/env.py:822
 msgid "Upgrade done."
-msgstr "Oppgradering ferdig."
+msgstr "Oppgradering utført."
 
 #: trac/notification.py:155
 msgid "TLS enabled but server does not support TLS"
@@ -412,11 +412,11 @@ msgstr "TLS er aktivert, men serveren støtter ikke TLS"
 #: trac/notification.py:303
 #, python-format
 msgid "Invalid email encoding setting: %s"
-msgstr "Ugyldig innstilling for email tegnsett: %s"
+msgstr "Ugyldig tegnsettvalg for e-post: %s"
 
 #: trac/notification.py:329
 msgid "Header length is too short"
-msgstr "Lengden på Header er for kort"
+msgstr "Lengden på header er for kort"
 
 #: trac/perm.py:48
 #, python-format
@@ -428,7 +428,7 @@ msgstr ""
 #: trac/perm.py:50
 #, python-format
 msgid "%(perm)s privileges are required to perform this operation"
-msgstr "%(perm)s rettigheter er nødvendig for å utføre denne operasjonen"
+msgstr "%(perm)s rettigheter er nødvendige for å utføre denne operasjonen"
 
 #: trac/perm.py:55
 msgid "Insufficient privileges to perform this operation."
@@ -454,7 +454,7 @@ msgstr "Tilgjengelige rettigheter:"
 
 #: trac/perm.py:657
 msgid "Group names must be in lower case and actions in upper case"
-msgstr "Gruppenavn må være små bokstaver og rettigheter store bokstaver"
+msgstr "Gruppenavn må kun bestå av små bokstaver og rettigheter kun store bokstaver"
 
 #: trac/resource.py:326
 #, python-format
@@ -494,7 +494,7 @@ msgstr "Feil ved åpning av prosjektet: %(err)s"
 #: trac/admin/console.py:234
 #, python-format
 msgid "Completion error: %(err)s"
-msgstr "Fullførelsesfeil: %(err)s"
+msgstr "Feil ved fullføring: %(err)s"
 
 #: trac/admin/console.py:287
 #, python-format
@@ -517,7 +517,7 @@ msgstr "Kjøring av trac-admin uten kommando starter interaktivt modus.\n"
 #: trac/admin/console.py:336
 #, python-format
 msgid "Creating a new Trac environment at %(envname)s"
-msgstr "Oppretter nytt Trac prosjektområde %(envname)s"
+msgstr "Oppretter nytt Trac-prosjektområde %(envname)s"
 
 #: trac/admin/console.py:338
 msgid ""
@@ -553,7 +553,7 @@ msgstr ""
 " Vennligst angi tilkoblingsstrengen til databasen.\n"
 " Standardvalget er å opprette en lokal SQLite database i\n"
 " prosjektområdet. Det er også mulig å benytte en eksisterende\n"
-" PostgreSQL database (se Trac dokumentasjonen for korrekt\n"
+" PostgreSQL database (se Trac-dokumentasjonen for korrekt\n"
 " form på tilkoblingsstrengen).\n"
 
 #: trac/admin/console.py:356
@@ -572,7 +572,7 @@ msgstr "Eksisterer prosjektet allerede?"
 
 #: trac/admin/console.py:370
 msgid "Directory exists and is not empty."
-msgstr "Mappen eksisterer og har innhold."
+msgstr "Mappen finnes og har innhold."
 
 #: trac/admin/console.py:398
 msgid "Creating and Initializing Project"
@@ -584,7 +584,7 @@ msgstr "Feil ved opprettelse av prosjekt."
 
 #: trac/admin/console.py:421
 msgid " Installing default wiki pages"
-msgstr " Installerer standard wiki sider"
+msgstr " Installerer standard wiki-sider"
 
 #: trac/admin/console.py:430
 msgid " Indexing default repository"
@@ -636,8 +636,8 @@ msgstr ""
 
 #: trac/admin/console.py:536
 #, python-format
-msgid "non-ascii environment path '%(path)s' not supported."
-msgstr "kun ren ascii støttes for stien til prosjektet ('%(path)s')."
+msgid "non-ASCII environment path '%(path)s' not supported."
+msgstr "kun ren ASCII støttes for stien til prosjektet ('%(path)s')."
 
 #: trac/admin/web_ui.py:64
 msgid "Admin"
@@ -718,11 +718,11 @@ msgstr "Ugyldig loggtype"
 #: trac/admin/web_ui.py:275
 #, python-format
 msgid "Unknown log level %(level)s"
-msgstr "Ukjent logg nivå %(level)s"
+msgstr "Ukjent loggnivå %(level)s"
 
 #: trac/admin/web_ui.py:276
 msgid "Invalid log level"
-msgstr "Ugyldig logg nivå"
+msgstr "Ugyldig loggnivå"
 
 #: trac/admin/web_ui.py:289
 msgid "You must specify a log file"
@@ -738,7 +738,7 @@ msgstr "Rettigheter"
 
 #: trac/admin/web_ui.py:333
 msgid "All upper-cased tokens are reserved for permission names"
-msgstr "Kun store bokstaver er reservert navn på rettigheter"
+msgstr "Store bokstaver er reservert for navn på rettigheter"
 
 #: trac/admin/web_ui.py:340
 msgid "Unknown action"
@@ -799,7 +799,7 @@ msgstr "Administrasjon:"
 
 #: trac/admin/templates/admin_basics.html:9
 msgid "Basics"
-msgstr "Grunninstillinger"
+msgstr "Grunninnstillinger"
 
 #: trac/admin/templates/admin_basics.html:17
 msgid "Project"
@@ -1059,9 +1059,7 @@ msgid ""
 "Grant permission for an action to a subject, which can be either a user\n"
 "          or a group."
 msgstr ""
-"Tildel rettighet for en rolle til et subject, som kan være enten en "
-"bruker\n"
-"          eller en gruppe."
+"Tildel rettighet for en rolle til en bruker eller en gruppe."
 
 #: trac/admin/templates/admin_perms.html:45
 msgid "Add Subject to Group:"
@@ -1097,8 +1095,8 @@ msgid ""
 "names can't be all upper-case,\n"
 "      as that is reserved for permission names."
 msgstr ""
-"navn kan ikke være bare store bokstaver,\n"
-"      da det er reservert navn på rettigheter."
+"navn kan ikke bestå av kun store bokstaver,\n"
+"      da dette er reservert for navn på rettigheter."
 
 #: trac/admin/templates/admin_plugins.html:41
 msgid "Manage Plugins"
@@ -1120,8 +1118,8 @@ msgid ""
 "The web server does not have sufficient permissions to store files in\n"
 "            the environment plugins directory."
 msgstr ""
-"Web serveren har ikke nødvendige rettigheter til å lagre filer i\n"
-"            prosjektets plugin mappe."
+"Web-serveren har ikke nødvendige rettigheter til å lagre filer i\n"
+"            prosjektets plugin-mappe."
 
 #: trac/admin/templates/admin_plugins.html:56
 msgid "Upload a plugin packaged as Python egg."
@@ -1163,11 +1161,11 @@ msgstr "Aktivert"
 
 #: trac/admin/templates/admin_plugins.html:126
 msgid "Toggle the module description"
-msgstr "Skru av/på module beskrivelse"
+msgstr "Skru av/på modul-beskrivelse"
 
 #: trac/admin/templates/admin_plugins.html:142
 msgid "Toggle the component description"
-msgstr "Vis/skjul komponent beskrivelse"
+msgstr "Vis/skjul komponent-beskrivelse"
 
 #: trac/admin/templates/admin_versions.html:10 trac/ticket/admin.py:440
 msgid "Versions"
@@ -1175,7 +1173,7 @@ msgstr "Versjoner"
 
 #: trac/admin/templates/admin_versions.html:14
 msgid "Manage Versions"
-msgstr "Administrere Versjoner"
+msgstr "Administrere versjoner"
 
 #: trac/admin/templates/admin_versions.html:19
 msgid "Modify Version:"
@@ -1187,7 +1185,7 @@ msgstr "Dato:"
 
 #: trac/admin/templates/admin_versions.html:54
 msgid "Add Version:"
-msgstr "Legg til Versjon"
+msgstr "Legg til versjon"
 
 #: trac/admin/templates/admin_versions.html:59
 msgid "Released:"
@@ -1213,7 +1211,7 @@ msgstr ""
 
 #: trac/db/mysql_backend.py:80
 msgid "Cannot load Python bindings for MySQL"
-msgstr "Kan ikke laste Python bindinger for MySQL"
+msgstr "Kan ikke laste Python-bindinger for MySQL"
 
 #: trac/db/pool.py:118
 #, python-format
@@ -1222,11 +1220,11 @@ msgstr "Fikk ikke forbindelse med databasen innen %(time)d sekunder"
 
 #: trac/db/postgres_backend.py:81
 msgid "Cannot load Python bindings for PostgreSQL"
-msgstr "Kan ikke laste Python bindinger for PostgreSQL"
+msgstr "Kan ikke laste Python-bindinger for PostgreSQL"
 
 #: trac/db/sqlite_backend.py:153
 msgid "Cannot load Python bindings for SQLite"
-msgstr "Kan ikke laste Python bindinger for SQLite"
+msgstr "Kan ikke laste Python-bindinger for SQLite"
 
 #: trac/db/sqlite_backend.py:157
 msgid "Need at least PySqlite 2.0.7 or higher"
@@ -1235,7 +1233,7 @@ msgstr "Behøver minst PySqlite 2.0.7 eller høyere"
 #: trac/db/sqlite_backend.py:181
 #, python-format
 msgid "Database already exists at %(path)s"
-msgstr "Database eksisterer allere i %(path)s"
+msgstr "Databasen finnes allerede i %(path)s"
 
 #: trac/db/sqlite_backend.py:241
 #, python-format
@@ -1254,12 +1252,12 @@ msgstr ""
 #: trac/mimeview/api.py:674 trac/mimeview/api.py:685
 #, python-format
 msgid "No available MIME conversions from %(old)s to %(new)s"
-msgstr "Ingen MIME oversettelse fra %(old)s til %(new)s tilgjengelig"
+msgstr "Ingen MIME-oversettelse fra %(old)s til %(new)s tilgjengelig"
 
 #: trac/mimeview/api.py:793
 #, python-format
 msgid "HTML preview using %(renderer)s failed (%(err)s)"
-msgstr "HTML forhåndsvisning via %(renderer)s feilet (%(err)s)"
+msgstr "HTML-forhåndsvisning via %(renderer)s feilet (%(err)s)"
 
 #: trac/mimeview/api.py:825
 #, python-format
@@ -1300,7 +1298,7 @@ msgstr "Instillinger"
 
 #: trac/prefs/web_ui.py:75
 msgid "Unknown preference panel"
-msgstr "Ukjent instillingspanel"
+msgstr "Ukjent innstillingspanel"
 
 #: trac/prefs/web_ui.py:87 trac/prefs/templates/prefs_datetime.html:10
 msgid "Date & Time"
@@ -1332,7 +1330,7 @@ msgid ""
 "      restored on subsequent visits."
 msgstr ""
 "Denne siden lar deg endre personlige innstillinger for prosjektet.\n"
-"      Disse instillingene lagres på serveren, identifisert via en "
+"      Disse innstillingene lagres på serveren, identifisert via en "
 "sesjonsnøkkel\n"
 "      lagret i en informasjonskapsel. Denne gjør at dine innstillinger "
 "kan\n"
@@ -1355,9 +1353,9 @@ msgid ""
 "      in a different web browser."
 msgstr ""
 "Sesjonsnøkkelen benyttes for å identifisere lagrede\n"
-"      instillinger og sesjonsinformasjon på serveren. Selv om den er\n"
+"      innstillinger og sesjonsinformasjon på serveren. Selv om den er\n"
 "      automatisk generert kan du endre den til noe\n"
-"      som er lettere å huske om du ønsker å laste instillingene\n"
+"      som er lettere å huske om du ønsker å laste innstillingene\n"
 "      i en annen nettleser."
 
 #: trac/prefs/templates/prefs_advanced.html:26
@@ -1376,7 +1374,7 @@ msgid ""
 "      multiple computers and web browsers."
 msgstr ""
 "Du kan laste en tidligere lagret sesjon ved å legge inn\n"
-"      sesjonsnøkkelen nedenfor. Dette lar det dele instillinger mellom\n"
+"      sesjonsnøkkelen nedenfor. Dette lar det dele innstillinger mellom\n"
 "      flere datamaskiner og nettlesere."
 
 #: trac/prefs/templates/prefs_datetime.html:16
@@ -1436,7 +1434,7 @@ msgid ""
 "A positive offset is used to indicate a timezone at the east of "
 "Greenwich, i.e. ahead of Universal Time."
 msgstr ""
-"Positivt offset benyttes for å indikere en tidssone øst for Greenwich, "
+"Positivt avvik benyttes for å indikere en tidssone øst for Greenwich, "
 "altså foran Universal Time."
 
 #: trac/prefs/templates/prefs_general.html:15
@@ -1445,7 +1443,7 @@ msgstr "Fullt navn:"
 
 #: trac/prefs/templates/prefs_general.html:20
 msgid "Email address:"
-msgstr "Email adresse:"
+msgstr "E-postadresse:"
 
 #: trac/prefs/templates/prefs_general.html:26
 msgid ""
@@ -1453,7 +1451,7 @@ msgid ""
 "        on this site with your contact details."
 msgstr ""
 "Denne informasjonen benyttes i prosjektet til automatisk å fylle\\"
-"        inn noen skjema med dine kontakt detaljer."
+"        inn noen skjema med dine kontaktdetaljer."
 
 #: trac/prefs/templates/prefs_general.html:30
 msgid ""
@@ -1463,7 +1461,7 @@ msgid ""
 msgstr ""
 "Denne informasjonen benytes til å knytte sammen ditt login navn med din\\"
 "        email adresse og fulle navn, og benyttes for eksempel til\n"
-"        email varsling og RSS strømmer."
+"        email varsling og RSS-strømmer."
 
 #: trac/prefs/templates/prefs_keybindings.html:18
 msgid "Enable access keys"
@@ -1624,7 +1622,7 @@ msgstr "Systeminformasjon"
 
 #: trac/templates/about.html:64
 msgid "Installed Plugins"
-msgstr "Installerte Plugins:"
+msgstr "Installerte plugins:"
 
 #: trac/templates/about.html:72 trac/templates/error.html:83
 #: trac/templates/error.html:217
@@ -1761,7 +1759,7 @@ msgstr "Ignorer:"
 
 #: trac/templates/diff_options.html:33
 msgid "Blank lines"
-msgstr "Blanke linjer"
+msgstr "Tomme linjer"
 
 #: trac/templates/diff_options.html:38
 msgid "Case changes"
@@ -1769,7 +1767,7 @@ msgstr "Endringer store/små bokstaver"
 
 #: trac/templates/diff_options.html:43
 msgid "White space changes"
-msgstr "Endringer mellomrom"
+msgstr "Endringer av mellomrom"
 
 #: trac/templates/diff_options.html:47
 #: trac/ticket/templates/milestone_view.html:57
@@ -1981,7 +1979,7 @@ msgid ""
 "If you think this should work and you can reproduce the problem,\n"
 "              you should consider creating a bug report."
 msgstr ""
-"Hvis du mener dette skulle virket og kan gjenskape feilen,\n"
+"Hvis du mener dette burde ha virket og kan gjenskape feilen,\n"
 "              så burde du opprette en feilrapport."
 
 #: trac/templates/error.html:138
@@ -2192,7 +2190,7 @@ msgstr "Forsøk å"
 
 #: trac/templates/preview_file.html:29
 msgid "downloading"
-msgstr "laste ned"
+msgstr "laster ned"
 
 #: trac/templates/preview_file.html:29
 msgid "the file instead."
@@ -2258,7 +2256,7 @@ msgstr "Ugyldig komponentnavn."
 #: trac/ticket/admin.py:118
 #, python-format
 msgid "Component %(name)s already exists."
-msgstr "Komponenten %(name)s eksisterer allerede."
+msgstr "Komponenten %(name)s finnes allerede."
 
 #: trac/ticket/admin.py:125
 msgid "No component selected"
@@ -2294,7 +2292,7 @@ msgstr "Ugyldig navn for milepæl"
 #: trac/ticket/admin.py:305
 #, python-format
 msgid "Milestone %(name)s already exists."
-msgstr "Milepæl %(name)s eksisterer allerede."
+msgstr "Milepæl %(name)s finnes allerede."
 
 #: trac/ticket/admin.py:313
 msgid "No milestone selected"
@@ -2316,7 +2314,7 @@ msgstr "Ugyldig versjonsnavn."
 #: trac/ticket/admin.py:486
 #, python-format
 msgid "Version %(name)s already exists."
-msgstr "Versjon %(name)s eksisterer allerede."
+msgstr "Versjon %(name)s finnes allerede."
 
 #: trac/ticket/admin.py:493
 msgid "No version selected"
@@ -2343,7 +2341,7 @@ msgstr "Ugyldig%(type)s verdi."
 #: trac/ticket/admin.py:635
 #, python-format
 msgid "%(type)s value \"%(name)s\" already exists"
-msgstr "%(type)s verdi \"%(name)s\" eksisterer allerede"
+msgstr "%(type)s verdi \"%(name)s\" finnes allerede"
 
 #: trac/ticket/admin.py:642
 #, python-format
@@ -2365,7 +2363,7 @@ msgstr ""
 
 #: trac/ticket/admin.py:684
 msgid "Order numbers must be unique"
-msgstr "Nummer for rekkefølge må være unike"
+msgstr "Nummer for rekkefølge må være unikt"
 
 #: trac/ticket/admin.py:746
 msgid "Possible Values"
@@ -2386,19 +2384,19 @@ msgstr "Prioriteter"
 
 #: trac/ticket/admin.py:795 trac/ticket/api.py:299
 msgid "Resolution"
-msgstr ""
+msgstr "Løsning"
 
 #: trac/ticket/admin.py:795
 msgid "Resolutions"
-msgstr ""
+msgstr "Løsninger"
 
 #: trac/ticket/admin.py:801 trac/ticket/api.py:298
 msgid "Severity"
-msgstr ""
+msgstr "Alvorlighetsgrad"
 
 #: trac/ticket/admin.py:801
 msgid "Severities"
-msgstr ""
+msgstr "Alvorlighetsgrader"
 
 #: trac/ticket/admin.py:807
 msgid "Ticket Type"
@@ -2458,7 +2456,7 @@ msgstr "Sak #%(shortname)s"
 
 #: trac/ticket/default_workflow.py:225
 msgid "Current state no longer exists"
-msgstr "Nåværende status eksisterer ikke lenger"
+msgstr "Nåværende status finnes ikke lenger"
 
 #: trac/ticket/default_workflow.py:227
 msgid "The ticket will be disowned"
@@ -2528,7 +2526,7 @@ msgstr "Neste status vil være '%(name)s'"
 #: trac/ticket/model.py:105
 #, python-format
 msgid "Ticket %(id)s does not exist."
-msgstr "Saken %(id)s eksisterer ikke."
+msgstr "Saken %(id)s finnes ikke."
 
 #: trac/ticket/model.py:106
 msgid "Invalid ticket number"
@@ -2541,7 +2539,7 @@ msgstr "Felt for flere verdier er ikke støttet"
 #: trac/ticket/model.py:658
 #, python-format
 msgid "%(type)s %(name)s does not exist."
-msgstr "%(type)s %(name)s eksisterer ikke."
+msgstr "%(type)s %(name)s finnes ikke."
 
 #: trac/ticket/model.py:702 trac/ticket/model.py:729
 #, python-format
@@ -2551,12 +2549,12 @@ msgstr "Ugyldig %(type)s navn."
 #: trac/ticket/model.py:808
 #, python-format
 msgid "Component %(name)s does not exist."
-msgstr "Komponenten %(name)s eksisterer ikke."
+msgstr "Komponenten %(name)s finnes ikke."
 
 #: trac/ticket/model.py:925
 #, python-format
 msgid "Milestone %(name)s does not exist."
-msgstr "Milepæl %(name)s eksisterer ikke."
+msgstr "Milepæl %(name)s finnes ikke."
 
 #: trac/ticket/model.py:926
 msgid "Invalid milestone name"
@@ -2577,11 +2575,11 @@ msgstr "Lukket"
 #: trac/ticket/model.py:1081
 #, python-format
 msgid "Version %(name)s does not exist."
-msgstr "Versjon %(name)s eksisterer ikke."
+msgstr "Versjon %(name)s finnes ikke."
 
 #: trac/ticket/query.py:54
 msgid "Invalid query constraint value"
-msgstr "Ugyldig verdi for å begrense spørring"
+msgstr "Ugyldig verdi for å avgrense spørring"
 
 #: trac/ticket/query.py:88
 #, python-format
@@ -2604,7 +2602,7 @@ msgstr "Filter for spørring krever feltnavn"
 #: trac/ticket/query.py:305
 #, python-format
 msgid "Page %(page)s is beyond the number of pages in the query"
-msgstr "Siden %(page)s eksisterer ikke for denne spørringen"
+msgstr "Siden %(page)s finnes ikke for denne spørringen"
 
 #: trac/ticket/query.py:562
 #, python-format
@@ -2648,7 +2646,7 @@ msgstr "Side %(num)d"
 #: trac/ticket/web_ui.py:130 trac/timeline/web_ui.py:216
 #: trac/versioncontrol/web_ui/log.py:303
 msgid "RSS Feed"
-msgstr "RSS strøm"
+msgstr "RSS-strøm"
 
 #: trac/ticket/query.py:827 trac/ticket/report.py:275 trac/ticket/report.py:568
 #: trac/ticket/web_ui.py:126
@@ -2658,7 +2656,7 @@ msgstr "Komma-separert Tekst"
 #: trac/ticket/query.py:829 trac/ticket/report.py:277 trac/ticket/report.py:570
 #: trac/ticket/web_ui.py:128
 msgid "Tab-delimited Text"
-msgstr "Tab-separert Tekst"
+msgstr "Tabulator-delt tekst"
 
 #: trac/ticket/query.py:851 trac/ticket/report.py:72
 msgid "View Tickets"
@@ -2713,7 +2711,7 @@ msgstr "Slett rapport {%(num)s} %(title)s"
 #: trac/ticket/report.py:296
 #, python-format
 msgid "Report {%(num)s} does not exist."
-msgstr "Rapport {%(num)s} eksisterer ikke."
+msgstr "Rapport {%(num)s} finnes ikke."
 
 #: trac/ticket/report.py:205 trac/ticket/report.py:218
 #: trac/ticket/report.py:297
@@ -2737,7 +2735,7 @@ msgstr "Rapport feilet: %(error)s"
 #: trac/ticket/report.py:317
 #, python-format
 msgid "When specified, the report number should be \"%(num)s\"."
-msgstr "Ved spesifisering skal rapportnummeret være \"%(num)s\"."
+msgstr "Når spesifisert skal rapportnummeret være \"%(num)s\"."
 
 #: trac/ticket/report.py:388
 #, python-format
@@ -2761,7 +2759,7 @@ msgstr "Rapport {%(num)s} mangler SQL spørring."
 #: trac/ticket/report.py:642
 #, python-format
 msgid "Query parameter \"sort=%(sort_col)s\"  is invalid"
-msgstr "Spørring parameter \"sort=%(sort_col)s\" er ikke gyldig"
+msgstr "Spørre-parameter \"sort=%(sort_col)s\" er ikke gyldig"
 
 #: trac/ticket/roadmap.py:205
 msgid "ticket status"
@@ -2826,7 +2824,7 @@ msgstr "Milepælen \"%(name)s\" har blitt slettet."
 #: trac/ticket/roadmap.py:652
 #, python-format
 msgid "Milestone \"%(name)s\" already exists, please choose another name."
-msgstr "Milepælen \"%(name)s\" eksisterer allerede, velg et annet navn"
+msgstr "Milepælen \"%(name)s\" finnes allerede, velg et annet navn"
 
 #: trac/ticket/roadmap.py:655
 msgid "You must provide a name for the milestone."
@@ -2834,7 +2832,7 @@ msgstr "Du må angi et navn for milepælen."
 
 #: trac/ticket/web_ui.py:152 trac/ticket/templates/ticket.html:14
 msgid "New Ticket"
-msgstr "Ny Sak"
+msgstr "Ny sak"
 
 #: trac/ticket/web_ui.py:168
 msgid "id can't be set for a new ticket request."
@@ -2846,7 +2844,7 @@ msgstr "Åpne og lukkede saker"
 
 #: trac/ticket/web_ui.py:233
 msgid "Ticket updates"
-msgstr "Oppdateringer Saker"
+msgstr "Saks-oppdateringer"
 
 #: trac/ticket/web_ui.py:239
 msgid "created"
@@ -2892,11 +2890,11 @@ msgstr ""
 
 #: trac/ticket/web_ui.py:629
 msgid "Previous Ticket"
-msgstr "Forrige Sak"
+msgstr "Forrige sak"
 
 #: trac/ticket/web_ui.py:629
 msgid "Next Ticket"
-msgstr "Neste Sak"
+msgstr "Neste sak"
 
 #: trac/ticket/web_ui.py:630
 msgid "Back to Query"
@@ -2936,12 +2934,12 @@ msgstr "første"
 #: trac/ticket/web_ui.py:867 trac/ticket/web_ui.py:990
 #: trac/versioncontrol/web_ui/changeset.py:369 trac/wiki/web_ui.py:450
 msgid "Previous Change"
-msgstr "Forrige Endring"
+msgstr "Forrige endring"
 
 #: trac/ticket/web_ui.py:867 trac/ticket/web_ui.py:990
 #: trac/versioncontrol/web_ui/changeset.py:369 trac/wiki/web_ui.py:450
 msgid "Next Change"
-msgstr "Neste Endring"
+msgstr "Neste endring"
 
 #: trac/ticket/web_ui.py:873
 msgid "Ticket Diff"
@@ -2981,7 +2979,7 @@ msgstr "Ikke rettighet til å endre felter for saken."
 
 #: trac/ticket/web_ui.py:1102
 msgid "No permissions to add a comment."
-msgstr "Ikke rettigheter til å legge inn kommentar"
+msgstr "Ingen rettigheter til å legge inn kommentar"
 
 #: trac/ticket/web_ui.py:1108
 msgid ""
@@ -3168,7 +3166,7 @@ msgstr "[1:%(duration)s for sen] (%(date)s)"
 #: trac/ticket/templates/roadmap.html:52
 #, python-format
 msgid "Due in %(duration)s (%(date)s)"
-msgstr "Forventet klar om %(duration)s (%(date)s)"
+msgstr "Forventet ferdig om %(duration)s (%(date)s)"
 
 #: trac/ticket/templates/milestone_view.html:41
 #: trac/ticket/templates/roadmap.html:56
@@ -3227,7 +3225,7 @@ msgstr "Kolonner"
 
 #: trac/ticket/templates/query.html:174
 msgid "Group results by"
-msgstr "Gruppér resultat etter"
+msgstr "Grupper resultat etter"
 
 #: trac/ticket/templates/query.html:185
 msgid "descending"
@@ -3589,12 +3587,12 @@ msgstr "Med denne sjekkboksen kan du legge til eller fjerne deg fra CC listen."
 
 #: trac/ticket/templates/ticket.html:318
 msgid "Space or comma delimited email addresses and usernames are accepted."
-msgstr "Mellomrom eller komma-separert, e-mail eller brukernavn tillat."
+msgstr "Mellomrom eller komma-separert, e-post eller brukernavn tillat."
 
 #: trac/ticket/templates/ticket.html:373
 #: trac/wiki/templates/wiki_edit_form.html:49
 msgid "E-mail address and user name can be saved in the"
-msgstr "E-mail adresse og bruker kan lagres i"
+msgstr "E-postadresse og bruker kan lagres i"
 
 #: trac/ticket/templates/ticket.html:382
 msgid "I have files to attach to this ticket"
@@ -3927,7 +3925,7 @@ msgstr "Repositorier"
 #: trac/versioncontrol/admin.py:180
 #, python-format
 msgid "Repository %(name)s does not exist."
-msgstr "Repository %(name)s eksisterer ikke."
+msgstr "Repository %(name)s finnes ikke."
 
 #: trac/versioncontrol/admin.py:199 trac/versioncontrol/admin.py:235
 #, python-format
@@ -4542,7 +4540,7 @@ msgstr ""
 #: trac/versioncontrol/templates/diff_form.html:10
 #: trac/versioncontrol/templates/diff_form.html:21
 msgid "Prepare Diff"
-msgstr "Vis Diff"
+msgstr "Vis diff"
 
 #: trac/versioncontrol/templates/diff_form.html:27
 msgid "Select the base and the target for the diff:"
@@ -4570,7 +4568,7 @@ msgid ""
 "              up/down cursor keys and hitting tab."
 msgstr ""
 "For begge filområder kan du begynne å skrive stien og så vil du få\n"
-"              presentert en liste over eksistererende filer og mapper å "
+"              presentert en liste over finnesende filer og mapper å "
 "velge\n"
 "              fra. Foreta valg i listen ved å klikke, eller bruk\n"
 "              opp/ned piler og tabulator på tastaturet."
@@ -4587,11 +4585,11 @@ msgstr ""
 
 #: trac/versioncontrol/templates/dir_entries.html:11
 msgid "View Directory"
-msgstr "Vis Mappe"
+msgstr "Vis mappe"
 
 #: trac/versioncontrol/templates/dir_entries.html:11
 msgid "View File"
-msgstr "Vis Filen"
+msgstr "Vis filen"
 
 #: trac/versioncontrol/templates/dir_entries.html:19
 #: trac/versioncontrol/templates/repository_index.html:23
@@ -4601,7 +4599,7 @@ msgstr "Se revisjonslogg"
 #: trac/versioncontrol/templates/dir_entries.html:20
 #: trac/versioncontrol/templates/repository_index.html:24
 msgid "View Changeset"
-msgstr "Vis Endringssett"
+msgstr "Vis endringssett"
 
 #: trac/versioncontrol/templates/dirlist_thead.html:9
 #: trac/versioncontrol/templates/revisionlog.html:94
@@ -4789,15 +4787,15 @@ msgstr "Revisjon %(num)s"
 
 #: trac/versioncontrol/web_ui/browser.py:435
 msgid "Previous Revision"
-msgstr "Forrige Revisjon"
+msgstr "Forrige revisjon"
 
 #: trac/versioncontrol/web_ui/browser.py:435
 msgid "Next Revision"
-msgstr "Neste Revisjon"
+msgstr "Neste revisjon"
 
 #: trac/versioncontrol/web_ui/browser.py:436
 msgid "Latest Revision"
-msgstr "Siste Revisjon"
+msgstr "Siste revisjon"
 
 #: trac/versioncontrol/web_ui/browser.py:440
 #: trac/versioncontrol/web_ui/log.py:299
@@ -4830,12 +4828,12 @@ msgstr "Revisjonslogg"
 
 #: trac/versioncontrol/web_ui/browser.py:466
 msgid "Repository URL"
-msgstr "Repository URL"
+msgstr "URL til repository"
 
 #: trac/versioncontrol/web_ui/browser.py:580
 #: trac/versioncontrol/web_ui/changeset.py:362
 msgid "Zip Archive"
-msgstr "Zip arkiv"
+msgstr "Zip-arkiv"
 
 #: trac/versioncontrol/web_ui/browser.py:753
 msgid "Revision in which the line changed"
@@ -4866,19 +4864,19 @@ msgstr "Ikke gyldig endringsnummer"
 
 #: trac/versioncontrol/web_ui/changeset.py:360
 msgid "Unified Diff"
-msgstr "Unified Diff"
+msgstr "Enhetlig diff"
 
 #: trac/versioncontrol/web_ui/changeset.py:371
 msgid "Previous Changeset"
-msgstr "Forrige Endringssett"
+msgstr "Forrige endringssett"
 
 #: trac/versioncontrol/web_ui/changeset.py:371
 msgid "Next Changeset"
-msgstr "Neste Endringssett"
+msgstr "Neste endringssett"
 
 #: trac/versioncontrol/web_ui/changeset.py:375
 msgid "Reverse Diff"
-msgstr "Reversert Diff"
+msgstr "Reversert diff"
 
 #: trac/versioncontrol/web_ui/changeset.py:410
 #, python-format
@@ -4959,12 +4957,12 @@ msgid ""
 "The file or directory '%(path)s' doesn't exist at revision %(rev)s or at "
 "any previous revision."
 msgstr ""
-"Filen eller mappen '%(path)s' eksisterer ikke i revisjon %(rev)s eller i "
+"Filen eller mappen '%(path)s' finnes ikke i revisjon %(rev)s eller i "
 "noen tidligere revisjon."
 
 #: trac/versioncontrol/web_ui/log.py:198
 msgid "Nonexistent path"
-msgstr "Stien eksisterer ikke"
+msgstr "Stien finnes ikke"
 
 #: trac/versioncontrol/web_ui/log.py:225
 #, python-format
@@ -5003,7 +5001,7 @@ msgstr ""
 #: trac/web/api.py:236
 #, python-format
 msgid "Invalid URL encoding (was %(path_info)r)"
-msgstr "Ugyldig URL koding (var %(path_info)r)"
+msgstr "Ugyldig URL-koding (var %(path_info)r)"
 
 #: trac/web/api.py:474
 #, python-format
@@ -5092,7 +5090,7 @@ msgid ""
 "Session '%(id)s' already exists.<br />Please choose a different session "
 "ID."
 msgstr ""
-"Sesjon '%(id)s' eksisterer allerede.<br />Vennligst velg en annen ID for "
+"Sesjon '%(id)s' finnes allerede.<br />Vennligst velg en annen ID for "
 "sesjonen."
 
 #: trac/web/session.py:205
@@ -5113,7 +5111,7 @@ msgstr "E-mail"
 
 #: trac/web/session.py:318
 msgid "Session already exists. Unable to add a duplicate session."
-msgstr "Sesjonen eksisterer allerede. Kan ikke opprette duplikat."
+msgstr "Sesjonen finnes allerede. Kan ikke opprette duplikat."
 
 #: trac/web/session.py:325
 msgid "Unable to set session attribute on a non-existent SID"
@@ -5145,7 +5143,7 @@ msgstr "Nytt navn er påkrevd for omdøping."
 #: trac/wiki/admin.py:210 trac/wiki/web_ui.py:299
 #, python-format
 msgid "The page %(name)s already exists."
-msgstr "Siden %(name)s eksisterer allerede."
+msgstr "Siden %(name)s finnes allerede."
 
 #: trac/wiki/admin.py:224
 msgid "Deleted pages"
@@ -5209,7 +5207,7 @@ msgstr "Beklager, ingen dokumentasjon funnet"
 
 #: trac/wiki/macros.py:623
 msgid "MIME Types"
-msgstr "MIME Typer"
+msgstr "MIME-typer"
 
 #: trac/wiki/macros.py:681
 msgid "Table of Contents"
@@ -5250,7 +5248,7 @@ msgstr "Wiki side feltet '%(field)s' er ugyldig: %(message)s"
 #: trac/wiki/web_ui.py:204
 #, python-format
 msgid "Invalid Wiki page: %(message)s"
-msgstr "Ugyldig Wiki side: %(message)s"
+msgstr "Ugyldig Wiki-side: %(message)s"
 
 #. TRANSLATOR: wiki page
 #: trac/wiki/web_ui.py:231
@@ -5293,20 +5291,20 @@ msgstr "Siden ikke endret, viser siste versjon."
 #: trac/wiki/web_ui.py:381
 #, python-format
 msgid "Version %(num)s of page \"%(name)s\" does not exist"
-msgstr "Versjon %(num)s for siden \"%(name)s\" eksisterer ikke"
+msgstr "Versjon %(num)s for siden \"%(name)s\" finnes ikke"
 
 #: trac/wiki/web_ui.py:433
 msgid "Page history"
-msgstr "Side historikk"
+msgstr "Side-historikk"
 
 #: trac/wiki/web_ui.py:451
 msgid "Wiki History"
-msgstr "Wiki historikk"
+msgstr "Wiki-historikk"
 
 #: trac/wiki/web_ui.py:537
 #, python-format
 msgid "Page %(name)s does not exist"
-msgstr "Siden %(name)s eksisterer ikke"
+msgstr "Siden %(name)s finnes ikke"
 
 #: trac/wiki/web_ui.py:551
 #, python-format
@@ -5356,7 +5354,7 @@ msgstr "Historikk"
 
 #: trac/wiki/web_ui.py:683
 msgid "Wiki changes"
-msgstr "Wiki endringer"
+msgstr "Wiki-endringer"
 
 #. TRANSLATOR: wiki page
 #: trac/wiki/web_ui.py:712
@@ -5576,7 +5574,7 @@ msgstr "Omdøp [1:%(name)s]"
 
 #: trac/wiki/templates/wiki_rename.html:19
 msgid "Renaming the page will rename all existing versions of the page in place."
-msgstr 
+msgstr
 "Omdøping av siden vil gi nytt navn til alle eksisterende versjoner av "
 "siden."
 
@@ -5590,7 +5588,7 @@ msgstr "Nytt navn:"
 
 #: trac/wiki/templates/wiki_rename.html:27
 msgid "Leave a redirection page at the old location"
-msgstr "Opprett side på gammel lokasjon som viser til ny"
+msgstr "Opprett en side på forrige plassering som viser til den nye"
 
 #: trac/wiki/templates/wiki_rename.html:33
 #: trac/wiki/templates/wiki_view.html:108
@@ -5631,7 +5629,7 @@ msgstr "Siden"
 
 #: trac/wiki/templates/wiki_view.html:61
 msgid "does not exist. You can create it here."
-msgstr "eksisterer ikke. Du kan opprette den her."
+msgstr "finnes ikke. Du kan opprette den her."
 
 #: trac/wiki/templates/wiki_view.html:63
 msgid "You could also create the same page higher in the hierarchy:"

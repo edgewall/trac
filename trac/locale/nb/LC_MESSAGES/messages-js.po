@@ -66,11 +66,11 @@ msgstr "Vis %(title)s"
 #: trac/htdocs/js/folding.js:74
 #, python-format
 msgid "%(title)s (click to hide column)"
-msgstr "%(title)s (klikk for å skule kolonne)"
+msgstr "%(title)s (klikk for å skjule kolonnen)"
 
 #: trac/htdocs/js/query.js:119
 msgid "A filter already exists for that property"
-msgstr "Et filter eksisterer allerede for denne egenskap"
+msgstr "Et filter eksisterer allerede for denne egenskapen"
 
 #: trac/htdocs/js/query.js:146
 msgid "or"
@@ -94,7 +94,7 @@ msgstr "og"
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
-msgstr "Link her"
+msgstr "Lenk hit"
 
 #: trac/htdocs/js/wikitoolbar.js:56
 msgid "Bold text: '''Example'''"
@@ -110,11 +110,11 @@ msgstr "Overskrift: == Eksempel =="
 
 #: trac/htdocs/js/wikitoolbar.js:65
 msgid "Link: [http://www.example.com/ Example]"
-msgstr "Link: [http://www.example.com/ Eksempel]"
+msgstr "Lenke: [http://www.example.com/ Eksempel]"
 
 #: trac/htdocs/js/wikitoolbar.js:68
 msgid "Code block: {{{ example }}}"
-msgstr "Kode blokk: {{{ eksempel }}}"
+msgstr "Kodeblokk: {{{ eksempel }}}"
 
 #: trac/htdocs/js/wikitoolbar.js:71
 msgid "Horizontal rule: ----"
@@ -126,7 +126,7 @@ msgstr "Nytt avsnitt"
 
 #: trac/htdocs/js/wikitoolbar.js:77
 msgid "Line break: [[BR]]"
-msgstr "Linjeskrift: [[BR]]"
+msgstr "Linjeskift: [[BR]]"
 
 #: trac/htdocs/js/wikitoolbar.js:80
 msgid "Image: [[Image()]]"
@@ -134,13 +134,13 @@ msgstr "Bilde: [[Image()]]"
 
 #: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
 msgid "Link to this section"
-msgstr "Link til denne seksjon"
+msgstr "Lenke til denne seksjonen"
 
 #: trac/versioncontrol/templates/changeset.html:7
 msgid "Link to this diff"
-msgstr "Link til denne endring"
+msgstr "Lenke til denne endringen"
 
 #: trac/wiki/templates/wiki_view.html:5
 #, python-format
 msgid "Link to #%(id)s"
-msgstr "Línk to #%(id)s"
+msgstr "Lenke til #%(id)s"
