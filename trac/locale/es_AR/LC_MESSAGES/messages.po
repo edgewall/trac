@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2008-01-30 09:20+0100\n"
-"PO-Revision-Date: 2010-06-11 15:31-0300\n"
+"PO-Revision-Date: 2010-06-11 22:56-0300\n"
 "Last-Translator: Ramiro Morales <cramm0@gmail.com>\n"
 "Language-Team: es_AR <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -2437,7 +2437,7 @@ msgstr "Valor arriba/abajo no válido: %(value)s"
 
 #: trac/ticket/admin.py:789 trac/ticket/api.py:294
 msgid "Priority"
-msgstr "Propiedad"
+msgstr "Prioridad"
 
 #: trac/ticket/admin.py:789
 msgid "Priorities"
