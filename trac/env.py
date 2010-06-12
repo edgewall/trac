@@ -178,7 +178,7 @@ class Environment(Component, ComponentManager):
         Trac[$(module)s] $(levelname)s: $(message)s
 
         In addition to regular key names supported by the Python logger library
-        library (see http://docs.python.org/lib/node422.html), one could use:
+        (see http://docs.python.org/library/logging.html), one could use:
          - $(path)s     the path for the current environment
          - $(basename)s the last path component of the current environment
          - $(project)s  the project name
