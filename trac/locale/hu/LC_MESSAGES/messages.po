@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2008-01-30 09:20+0100\n"
-"PO-Revision-Date: 2010-05-26 11:54+0200\n"
+"PO-Revision-Date: 2010-06-12 22:37+0200\n"
 "Last-Translator: Nagy Zoltán <nzoltan@freemail.hu>\n"
 "Language-Team: hu_HU <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n!=1)\n"
@@ -196,8 +196,8 @@ msgstr "A %(parent)s mellékletei"
 msgid "%(parent)s doesn't exist, can't create attachment"
 msgstr "a(z) %(parent)s oldal nem létezik, a melléklet nem csatolható"
 
-#: trac/attachment.py:622 trac/attachment.py:645 trac/admin/web_ui.py:425
-#: trac/admin/web_ui.py:428 trac/admin/web_ui.py:432
+#: trac/attachment.py:622 trac/attachment.py:645 trac/admin/web_ui.py:426
+#: trac/admin/web_ui.py:429 trac/admin/web_ui.py:433
 msgid "No file uploaded"
 msgstr "Nincs feltöltve fájl"
 
@@ -327,7 +327,7 @@ msgstr ""
 msgid "Trac Error"
 msgstr "Trac hiba"
 
-#: trac/env.py:153
+#: trac/env.py:152
 msgid ""
 "Visit the Trac open source project at<br /><a "
 "href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
@@ -501,7 +501,7 @@ msgstr "Művelet"
 msgid "Available actions:"
 msgstr "Elérhető műveletek:"
 
-#: trac/perm.py:656 trac/admin/web_ui.py:333
+#: trac/perm.py:656 trac/admin/web_ui.py:334
 msgid "All upper-cased tokens are reserved for permission names"
 msgstr "Minden nagybetűs kifejezés foglalt a jogosultság neveknek"
 
@@ -726,30 +726,30 @@ msgstr ""
 msgid "Non-ascii environment path '%(path)s' not supported."
 msgstr "A környzet útvonala kizárólag ASCII karaktereket tartalmazhat: '%(path)s"
 
-#: trac/admin/web_ui.py:64
+#: trac/admin/web_ui.py:65
 msgid "Admin"
 msgstr "Rendszergazda"
 
-#: trac/admin/web_ui.py:65 trac/admin/templates/admin.html:16
+#: trac/admin/web_ui.py:66 trac/admin/templates/admin.html:16
 msgid "Administration"
 msgstr "Adminisztráció"
 
-#: trac/admin/web_ui.py:81
+#: trac/admin/web_ui.py:82
 msgid "No administration panels available"
 msgstr "Nem áll rendelkezésre adminisztrációs panel"
 
-#: trac/admin/web_ui.py:107 trac/admin/web_ui.py:111
+#: trac/admin/web_ui.py:108 trac/admin/web_ui.py:112
 msgid "Unknown administration panel"
 msgstr "Ismeretlen adminisztrációs panel"
 
-#: trac/admin/web_ui.py:185 trac/ticket/admin.py:65 trac/ticket/admin.py:90
+#: trac/admin/web_ui.py:186 trac/ticket/admin.py:65 trac/ticket/admin.py:90
 #: trac/ticket/admin.py:275 trac/ticket/admin.py:457 trac/ticket/admin.py:609
 #: trac/ticket/admin.py:695 trac/ticket/report.py:189
 #: trac/ticket/roadmap.py:687 trac/versioncontrol/admin.py:198
 msgid "Your changes have been saved."
 msgstr "A változások elmentve."
 
-#: trac/admin/web_ui.py:190 trac/ticket/admin.py:68
+#: trac/admin/web_ui.py:191 trac/ticket/admin.py:68
 msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "Your changes have not been saved."
@@ -757,120 +757,120 @@ msgstr ""
 "Hiba történt a trac.ini írása közben, ellenőrizze, hogy a fájl írható a "
 "webkiszolgáló számára. A módosítások nem lettek mentve."
 
-#: trac/admin/web_ui.py:203 trac/admin/web_ui.py:231 trac/admin/web_ui.py:319
-#: trac/admin/web_ui.py:401 trac/prefs/web_ui.py:86
+#: trac/admin/web_ui.py:204 trac/admin/web_ui.py:232 trac/admin/web_ui.py:320
+#: trac/admin/web_ui.py:402 trac/prefs/web_ui.py:86
 #: trac/prefs/templates/prefs_general.html:9
 msgid "General"
 msgstr "Általános"
 
-#: trac/admin/web_ui.py:203 trac/admin/templates/admin_basics.html:13
+#: trac/admin/web_ui.py:204 trac/admin/templates/admin_basics.html:13
 msgid "Basic Settings"
 msgstr "Alap bállítások"
 
-#: trac/admin/web_ui.py:231 trac/admin/templates/admin_logging.html:10
+#: trac/admin/web_ui.py:232 trac/admin/templates/admin_logging.html:10
 #: trac/admin/templates/admin_logging.html:22
 msgid "Logging"
 msgstr "Naplózás"
 
-#: trac/admin/web_ui.py:240 trac/ticket/templates/milestone_delete.html:31
+#: trac/admin/web_ui.py:241 trac/ticket/templates/milestone_delete.html:31
 #: trac/ticket/templates/milestone_edit.html:73
 msgid "None"
 msgstr "Nincs"
 
-#: trac/admin/web_ui.py:241
+#: trac/admin/web_ui.py:242
 msgid "Console"
 msgstr "Konzol"
 
-#: trac/admin/web_ui.py:243 trac/templates/attachment.html:32
+#: trac/admin/web_ui.py:244 trac/templates/attachment.html:32
 msgid "File"
 msgstr "Fájl"
 
-#: trac/admin/web_ui.py:245
+#: trac/admin/web_ui.py:246
 msgid "Syslog"
 msgstr "Rendszernapló"
 
-#: trac/admin/web_ui.py:247
+#: trac/admin/web_ui.py:248
 msgid "Windows event log"
 msgstr "Windows eseménynapló"
 
-#: trac/admin/web_ui.py:260
+#: trac/admin/web_ui.py:261
 #, python-format
 msgid "Unknown log type %(type)s"
 msgstr "Ismeretlen napló típus %(type)s"
 
-#: trac/admin/web_ui.py:261
+#: trac/admin/web_ui.py:262
 msgid "Invalid log type"
 msgstr "érvénytelen napló típus"
 
-#: trac/admin/web_ui.py:275
+#: trac/admin/web_ui.py:276
 #, python-format
 msgid "Unknown log level %(level)s"
 msgstr "Ismeretlen naplószint %(level)s"
 
-#: trac/admin/web_ui.py:276
+#: trac/admin/web_ui.py:277
 msgid "Invalid log level"
 msgstr "Érvénytelen naplózási szint"
 
-#: trac/admin/web_ui.py:289
+#: trac/admin/web_ui.py:290
 msgid "You must specify a log file"
 msgstr "Meg kell adnia egy naplófájlt"
 
-#: trac/admin/web_ui.py:290
+#: trac/admin/web_ui.py:291
 msgid "Missing field"
 msgstr "Hiányzó mező"
 
-#: trac/admin/web_ui.py:319 trac/admin/templates/admin_perms.html:10
+#: trac/admin/web_ui.py:320 trac/admin/templates/admin_perms.html:10
 msgid "Permissions"
 msgstr "Jogosultságok"
 
-#: trac/admin/web_ui.py:340
+#: trac/admin/web_ui.py:341
 msgid "Unknown action"
 msgstr "Ismeretlen művelet"
 
-#: trac/admin/web_ui.py:344
+#: trac/admin/web_ui.py:345
 #, python-format
 msgid "The subject %(subject)s has been granted the permission %(action)s."
 msgstr "A(z) %(subject)s részére az %(action)s művelet engedélyezve."
 
-#: trac/admin/web_ui.py:349
+#: trac/admin/web_ui.py:350
 #, python-format
 msgid "The permission %(action)s was already granted to %(subject)s."
 msgstr "A(z) %(subject)s részére az %(action)s művelet már engedélyezve van."
 
-#: trac/admin/web_ui.py:365
+#: trac/admin/web_ui.py:366
 #, python-format
 msgid "The subject %(subject)s has been added to the group %(group)s."
 msgstr "A(z) %(subject)s hozzáadásra került a %(group)s csoporthoz."
 
-#: trac/admin/web_ui.py:370
+#: trac/admin/web_ui.py:371
 #, python-format
 msgid "The subject %(subject)s was already added to the group %(group)s."
 msgstr "A(z) %(subject)s már tagja a %(group)s csoportnak."
 
-#: trac/admin/web_ui.py:383
+#: trac/admin/web_ui.py:384
 msgid "The selected permissions have been revoked."
 msgstr "A kiválasztott engedélyek visszavonásra kerültek."
 
-#: trac/admin/web_ui.py:401 trac/admin/templates/admin_plugins.html:10
+#: trac/admin/web_ui.py:402 trac/admin/templates/admin_plugins.html:10
 msgid "Plugins"
 msgstr "Bővítmények"
 
-#: trac/admin/web_ui.py:435
+#: trac/admin/web_ui.py:436
 msgid "Uploaded file is not a Python source file or egg"
 msgstr "A feltöltött fájl nem Python forráskód vagy egg"
 
-#: trac/admin/web_ui.py:440
+#: trac/admin/web_ui.py:441
 #, python-format
 msgid "Plugin %(name)s already installed"
 msgstr "A %(name)s bővítmény már telepítve van"
 
-#: trac/admin/web_ui.py:513
+#: trac/admin/web_ui.py:514
 msgid "The following component has been disabled:"
 msgid_plural "The following components have been disabled:"
 msgstr[0] "A következő komponens nincsenek engedélyezve:"
 msgstr[1] "A következő komponensek nincsenek engedélyezve:"
 
-#: trac/admin/web_ui.py:518
+#: trac/admin/web_ui.py:519
 msgid "The following component has been enabled:"
 msgid_plural "The following components have been enabled:"
 msgstr[0] "A következő komponens engedélyezve vannak:"
@@ -1265,12 +1265,12 @@ msgstr "Kiadva:"
 msgid "Released"
 msgstr "Kiadva"
 
-#: trac/db/api.py:132
+#: trac/db/api.py:191
 #, python-format
 msgid "Unsupported database type \"%(scheme)s\""
 msgstr "Nem támogatott típusú adatbázis \"%(scheme)s\""
 
-#: trac/db/api.py:162
+#: trac/db/api.py:227
 #, python-format
 msgid ""
 "Unknown scheme \"%(scheme)s\"; database connection string must start with"
@@ -2010,7 +2010,7 @@ msgid ""
 "If you think this should work and you can reproduce the problem,\n"
 "              you should consider creating a bug report."
 msgstr ""
-"Ha Ön úgy gondlja, hogy ennek működnie kellene, és a probléma\n"
+"Ha Ön úgy gondlja, hogy ennek működnie kellene és a probléma\n"
 "              reprodukálható, akkor létrehozhat egy hibajelentést."
 
 #: trac/templates/error.html:113
@@ -2667,8 +2667,8 @@ msgid "Page %(num)d"
 msgstr "A %(num)d. oldal"
 
 #: trac/ticket/query.py:825 trac/ticket/report.py:273 trac/ticket/report.py:566
-#: trac/ticket/web_ui.py:130 trac/timeline/web_ui.py:220
-#: trac/versioncontrol/web_ui/log.py:304
+#: trac/ticket/web_ui.py:130 trac/timeline/web_ui.py:221
+#: trac/versioncontrol/web_ui/log.py:305
 msgid "RSS Feed"
 msgstr "RSS szolgáltatás"
 
@@ -3841,30 +3841,30 @@ msgstr "Jegy URL: <%(link)s>"
 msgid "Timeline"
 msgstr "Idővonal"
 
-#: trac/timeline/web_ui.py:233 trac/timeline/web_ui.py:241
+#: trac/timeline/web_ui.py:234 trac/timeline/web_ui.py:242
 msgid "Previous Period"
 msgstr "Előző időszak"
 
-#: trac/timeline/web_ui.py:240 trac/timeline/web_ui.py:241
+#: trac/timeline/web_ui.py:241 trac/timeline/web_ui.py:242
 msgid "Next Period"
 msgstr "Következő időszak"
 
-#: trac/timeline/web_ui.py:301
+#: trac/timeline/web_ui.py:302
 #, python-format
 msgid "%(date)s in Timeline"
 msgstr "%(date)s az idővonalban"
 
 #. TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
-#: trac/timeline/web_ui.py:348
+#: trac/timeline/web_ui.py:349
 msgid "other kinds of events"
 msgstr "másfajta események"
 
-#: trac/timeline/web_ui.py:353
+#: trac/timeline/web_ui.py:354
 #, python-format
 msgid "Event provider %(name)s failed for filters %(kinds)s: "
 msgstr "Az %(name)s esemény szolgáltató hibát jelzett a %(kinds)s szűrőköz: "
 
-#: trac/timeline/web_ui.py:356
+#: trac/timeline/web_ui.py:357
 #, python-format
 msgid ""
 "You may want to see the %(other_events)s from the Timeline or notify your"
@@ -3908,56 +3908,56 @@ msgid ""
 "        for information about the timeline view."
 msgstr "[1:Megjegyés:] Segítséget [2:TracTimeline] oldalon talál."
 
-#: trac/util/datefmt.py:79
+#: trac/util/datefmt.py:82
 #, python-format
 msgid "%(num)d year"
 msgid_plural "%(num)d years"
 msgstr[0] "%(num)d éve"
 msgstr[1] "%(num)d éve"
 
-#: trac/util/datefmt.py:80
+#: trac/util/datefmt.py:83
 #, python-format
 msgid "%(num)d month"
 msgid_plural "%(num)d months"
 msgstr[0] "%(num)d hónapja"
 msgstr[1] "%(num)d hónapja"
 
-#: trac/util/datefmt.py:81
+#: trac/util/datefmt.py:84
 #, python-format
 msgid "%(num)d week"
 msgid_plural "%(num)d weeks"
 msgstr[0] "%(num)d hete"
 msgstr[1] "%(num)d hete"
 
-#: trac/util/datefmt.py:82
+#: trac/util/datefmt.py:85
 #, python-format
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
 msgstr[0] "%(num)d napja"
 msgstr[1] "%(num)d napja"
 
-#: trac/util/datefmt.py:83
+#: trac/util/datefmt.py:86
 #, python-format
 msgid "%(num)d hour"
 msgid_plural "%(num)d hours"
 msgstr[0] "%(num)d órája"
 msgstr[1] "%(num)d órája"
 
-#: trac/util/datefmt.py:84
+#: trac/util/datefmt.py:87
 #, python-format
 msgid "%(num)d minute"
 msgid_plural "%(num)d minutes"
 msgstr[0] "%(num)d perce"
 msgstr[1] "%(num)d perce"
 
-#: trac/util/datefmt.py:103
+#: trac/util/datefmt.py:106
 #, python-format
 msgid "%(num)i second"
 msgid_plural "%(num)i seconds"
 msgstr[0] "%(num)i másodperce"
 msgstr[1] "%(num)i másodperce"
 
-#: trac/util/datefmt.py:247
+#: trac/util/datefmt.py:250
 #, python-format
 msgid ""
 "\"%(date)s\" is an invalid date, or the date format is not known. Try "
@@ -3966,23 +3966,23 @@ msgstr ""
 "\"%(date)s\" egy érvénytelen dátum vagy ismeretlen formátum. Probálja ezt"
 " \"%(hint)s\" inkább."
 
-#: trac/util/datefmt.py:249 trac/util/datefmt.py:257
+#: trac/util/datefmt.py:252 trac/util/datefmt.py:260
 msgid "Invalid Date"
 msgstr "Érvénytelen dátum"
 
-#: trac/util/datefmt.py:255
+#: trac/util/datefmt.py:258
 #, python-format
 msgid ""
 "The date \"%(date)s\" is outside valid range. Try a date closer to "
 "present time."
 msgstr "A \"%(date)s\" dátum érvénytelen. Próbáljon egy közelebbi dátumot."
 
-#: trac/util/presentation.py:254
+#: trac/util/presentation.py:255
 #, python-format
 msgid "%(last)d of %(total)d"
 msgstr "%(last)d of %(total)d"
 
-#: trac/util/presentation.py:256
+#: trac/util/presentation.py:257
 #, python-format
 msgid "%(start)d - %(stop)d of %(total)d"
 msgstr "%(start)d - %(stop)d a %(total)d-ból"
@@ -4004,7 +4004,7 @@ msgstr "Nem lehetséges egy revízió szinkronizálása több tárolóban"
 #: trac/versioncontrol/web_ui/browser.py:352
 #: trac/versioncontrol/web_ui/changeset.py:247
 #: trac/versioncontrol/web_ui/changeset.py:1090
-#: trac/versioncontrol/web_ui/log.py:87 trac/versioncontrol/web_ui/log.py:395
+#: trac/versioncontrol/web_ui/log.py:88 trac/versioncontrol/web_ui/log.py:396
 #, python-format
 msgid "Repository '%(repo)s' not found"
 msgstr "A(z) '%(repo)s' tároló nem található"
@@ -4180,12 +4180,12 @@ msgstr "%(kind)s %(id)s%(at_version)s%(in_repo)s"
 msgid "Repository %(repo)s"
 msgstr "A %(repo)s tároló"
 
-#: trac/versioncontrol/api.py:686
+#: trac/versioncontrol/api.py:687
 #, python-format
 msgid "Unsupported version control system \"%(name)s\": %(error)s"
 msgstr "A \"%(name)s\" verziókövető rendszer nem támogatott: %(error)s"
 
-#: trac/versioncontrol/api.py:689
+#: trac/versioncontrol/api.py:690
 #, python-format
 msgid ""
 "Unsupported version control system \"%(name)s\": Can't find an "
@@ -4194,26 +4194,26 @@ msgstr ""
 "A \"%(name)s\" verziókövető rendszer nem támogatott: A szükséges "
 "komponens nem található, talán a megfelelő bővítmény nincs engedélyezve? "
 
-#: trac/versioncontrol/api.py:697
+#: trac/versioncontrol/api.py:698
 #, python-format
 msgid "No changeset %(rev)s in the repository"
 msgstr "Nincs %(rev)s. változtatás a tárolóban"
 
-#: trac/versioncontrol/api.py:699
+#: trac/versioncontrol/api.py:700
 msgid "No such changeset"
 msgstr "Nincs ilyen változtatás"
 
-#: trac/versioncontrol/api.py:705
+#: trac/versioncontrol/api.py:706
 #, python-format
 msgid "No node %(path)s at revision %(rev)s"
 msgstr "Nincs %(path)s a %(rev)s. változatban"
 
-#: trac/versioncontrol/api.py:707
+#: trac/versioncontrol/api.py:708
 #, python-format
 msgid "%(msg)s: No node %(path)s at revision %(rev)s"
 msgstr "%(msg)s: Nincs node %(path)s a %(rev)s változatban"
 
-#: trac/versioncontrol/api.py:709
+#: trac/versioncontrol/api.py:710
 msgid "No such node"
 msgstr "Nincs ilyen node"
 
@@ -4944,7 +4944,7 @@ msgstr "Érvénytelen változat azonosító"
 #: trac/versioncontrol/web_ui/browser.py:443
 #, python-format
 msgid "Revision %(num)s"
-msgstr "Változat %(num)s"
+msgstr "%(num)s. változat"
 
 #: trac/versioncontrol/web_ui/browser.py:444
 msgid "Previous Revision"
@@ -4959,7 +4959,7 @@ msgid "Latest Revision"
 msgstr "Legutolsó változat"
 
 #: trac/versioncontrol/web_ui/browser.py:449
-#: trac/versioncontrol/web_ui/log.py:300
+#: trac/versioncontrol/web_ui/log.py:301
 msgid "Parent directory"
 msgstr "Szülő könyvtár"
 
@@ -5107,7 +5107,7 @@ msgstr ""
 " tárolóban"
 
 #: trac/versioncontrol/web_ui/changeset.py:1092
-#: trac/versioncontrol/web_ui/log.py:397
+#: trac/versioncontrol/web_ui/log.py:398
 msgid "No default repository defined"
 msgstr "Nincs megadva alapértelmezett tároló"
 
@@ -5115,7 +5115,7 @@ msgstr "Nincs megadva alapértelmezett tároló"
 msgid "Changesets"
 msgstr "Változtatások"
 
-#: trac/versioncontrol/web_ui/log.py:199
+#: trac/versioncontrol/web_ui/log.py:200
 #, python-format
 msgid ""
 "The file or directory '%(path)s' doesn't exist at revision %(rev)s or at "
@@ -5124,28 +5124,28 @@ msgstr ""
 "A '%(path)s' fájl vagy könyvtár nem létezik a %(rev)s változatban vagy "
 "bármelyik korábbi változatban."
 
-#: trac/versioncontrol/web_ui/log.py:199
+#: trac/versioncontrol/web_ui/log.py:200
 msgid "Nonexistent path"
 msgstr "Nem létező útvonal"
 
-#: trac/versioncontrol/web_ui/log.py:227
+#: trac/versioncontrol/web_ui/log.py:228
 #, python-format
 msgid "Revision Log (restarting at %(path)s, rev. %(rev)s)"
 msgstr "Változásnapló (útvonal %(path)s, változat %(rev)s)"
 
-#: trac/versioncontrol/web_ui/log.py:308
+#: trac/versioncontrol/web_ui/log.py:309
 msgid "ChangeLog"
 msgstr "Változásnapló"
 
-#: trac/versioncontrol/web_ui/log.py:310
+#: trac/versioncontrol/web_ui/log.py:311
 msgid "View Latest Revision"
 msgstr "Legfrissebb változat megtekintése"
 
-#: trac/versioncontrol/web_ui/log.py:314
+#: trac/versioncontrol/web_ui/log.py:315
 msgid "Older Revisions"
 msgstr "Korábbi változatok"
 
-#: trac/versioncontrol/web_ui/log.py:393
+#: trac/versioncontrol/web_ui/log.py:394
 msgid "No permission to view change log"
 msgstr "nincs engedélye megtekinteni a változásnaplót"
 
