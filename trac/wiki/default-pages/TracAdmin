@@ -7,15 +7,35 @@ Some of those operations can also be performed via the ''Admin'' web interface, 
 
 == Usage ==
 
-You can get a comprehensive list of the available options, commands and sub-commands by invoking `trac-admin` with the `help` command:.
-{{{
-trac-admin help
-}}}
-
-Unless you're executing the `help`, `about` or `version` sub-commands, you'll need to specify the path to the TracEnvironment that you want to administer as the first argument, for example:
+For nearly every `trac-admin` command, you'll need to specify the path to the TracEnvironment that you want to administer as the first argument, for example:
 {{{
 trac-admin /path/to/projenv wiki list
 }}}
+
+The only exception is for the `help` command, but even in this case if you omit the environment, you'll only get a very succinct list of commands (`help` and `initenv`), the same list you'd get when invoking `trac-admin` alone.
+Also, `trac-admin --version` will tell you about the Trac version (e.g. 0.12) corresponding to the program.
+
+If you want to get a comprehensive list of the available commands and sub-commands, you need to specify an existing environment:
+{{{
+trac-admin /path/to/projenv help
+}}}
+
+Some commands have a more detailed help, which you can access by specifying the command's name as a subcommand for `help`:
+
+{{{
+trac-admin /path/to/projenv help <command>
+}}}
+
+=== `trac-admin <targetdir> initenv` === #initenv
+
+This subcommand is very important as it's the one used to create a TracEnvironment in the specified `<targetdir>`. That directory must not exists prior to the call.
+
+[[TracAdminHelp(initenv)]]
+
+It supports an extra `--inherit` option, which can be used to specify a global configuration file which can be used share settings between several environments. You can also inherit from a shared configuration afterwards, by setting the `[inherit] file` option in the `conf/trac.ini` file in your newly created environment, but the advantage of specifying the inherited configuration file at environment creation time is that only the options ''not'' already specified in the global configuration file will be written in the created environment's `conf/trac.ini` file.
+See TracIni#GlobalConfiguration.
+
+Note that in version 0.11 of Trac, `initenv` lost an extra last argument `<templatepath>`, which was used in previous versions to point to the `templates` folder. If you are using the one-liner '`trac-admin /path/to/trac/ initenv <projectname> <db> <repostype> <repospath>`' in the above and getting an error that reads ''''`Wrong number of arguments to initenv: 4`'''', then this is because you're using a `trac-admin` script from an '''older''' version of Trac.
 
 == Interactive Mode ==
 
@@ -37,15 +57,9 @@ To get help on all the Wiki-related commands, run:
 
 == Full Command Reference ==
 
+You'll find below the detailed help for all the commands available by default in `trac-admin`. Note that this may not match the list given by `trac-admin <yourenv> help`, as the commands  pertaining to components disabled in that environment won't be available and conversely some plugins activated in the environment can add their own commands.
+
 [[TracAdminHelp()]]
-
-
-=== Notes ===
-
-The `initenv` also supports an extra `--inherit` option, which can be used to specify the `[inherit] file` option at environment creation time so that only the options ''not'' already specified in the global configuration file will be written in the conf/trac.ini file of the newly created environment.
-See TracIni#GlobalConfiguration.
-
-Note that in version 0.11 of Trac, `initenv` lost an extra last argument `<templatepath>`, which was used in previous versions to point to the `templates` folder. If you are using the one-liner '`trac-admin /path/to/trac/ initenv <projectname> <db> <repostype> <repospath>`' in the above and getting an error that reads ''''`Wrong number of arguments to initenv: 4`'''', then this is because you're using a `trac-admin` script from an '''older''' version of Trac.
 
 ----
 See also: TracGuide, TracBackup, TracPermissions, TracEnvironment, TracIni, [trac:TracMigrate TracMigrate]

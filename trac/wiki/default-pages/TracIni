@@ -12,11 +12,13 @@ In versions prior to 0.11, the global configuration was by default located in `$
 Global options will be merged with the environment-specific options, where local options override global options. The options file is specified as follows:
 {{{
 [inherit]
-file = /usr/share/trac/conf/trac.ini
+file = /path/to/global/trac.ini
 }}}
+Multiple files can be specified using a comma-separated list.
 
-Note that you can also specify a global option file when creating a new project,  by adding the option `--inherit=/path/to/global/options` to [TracAdmin trac-admin]'s `initenv` command.  If do not do this but nevertheless intend to use a global option file with your new environment, you will have to go through the newly generated conf/trac.ini file and delete the entries that will otherwise override those set in the global file.
+Note that you can also specify a global option file when creating a new project,  by adding the option `--inherit=/path/to/global/trac.ini` to [TracAdmin#initenv trac-admin]'s `initenv` command.  If you do not do this but nevertheless intend to use a global option file with your new environment, you will have to go through the newly generated `conf/trac.ini` file and delete the entries that will otherwise override those set in the global file.
 
+There are two more entries in the [[#inherit-section| [inherit] ]] section, `templates_dir` for sharing global templates and `plugins_dir`, for sharing plugins. Those entries can themselves be specified in the shared configuration file, and in fact, configuration files can even be chained if you specify another `[inherit] file` there.
 
 == Reference for settings
 

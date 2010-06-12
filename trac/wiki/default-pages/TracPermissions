@@ -74,6 +74,7 @@ Attention: the "view tickets" button appears with the `REPORT_VIEW` permission.
 || `WIKI_VIEW` || View existing [wiki:TracWiki wiki] pages ||
 || `WIKI_CREATE` || Create new [wiki:TracWiki wiki] pages ||
 || `WIKI_MODIFY` || Change [wiki:TracWiki wiki] pages ||
+|| `WIKI_RENAME` || Rename [wiki:TracWiki wiki] pages ||
 || `WIKI_DELETE` || Delete [wiki:TracWiki wiki] pages and attachments ||
 || `WIKI_ADMIN` || All `WIKI_*` permissions, plus the management of ''readonly'' pages. ||
 

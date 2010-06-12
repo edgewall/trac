@@ -70,6 +70,8 @@ trac-admin /path/to/env deploy /deploy/path
 }}}
 this will extract static resources and CGI scripts (trac.wsgi, etc) from new Trac version and its plugins into `/deploy/path`.
 
+Some web browsers cache the CSS and Javascript file in a strong way, so you'll perhaps need to refresh the cache of the browsers by a force reload (and tell your users to do so!).
+
 === 6. Steps specific to a given Trac version  ===
 ==== Upgrading from Trac 0.11 to Trac 0.12 ====
 ===== Python 2.3 no longer supported =====

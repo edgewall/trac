@@ -4,22 +4,27 @@ Trac uses a directory structure and a database for storing project data. The dir
 
 == Creating an Environment ==
 
-A new Trac environment is created using  [wiki:TracAdmin trac-admin]:
+A new Trac environment is created using  [TracAdmin#initenv trac-admin's initenv]:
 {{{
 $ trac-admin /path/to/myproject initenv
 }}}
 
-[wiki:TracAdmin trac-admin] will ask you for the name of the project and the
+`trac-admin` will ask you for the name of the project and the
 database connection string (explained below).
 
-''Note: The user under which the web server runs will require file system write permission to 
-the environment directory and all the files inside. Please remember to set
-the appropriate permissions. The same applies to the source code repository, 
-although the user under which Trac runs will only require write access to a Subversion repository created with the BDB file system
-; for other repository types, check the corresponding plugin's documentation. 
-Also, it seems that project names with spaces can be problematic for authentication (see [trac:#7163]).''
+=== Some Useful Tips
+ - The user under which the web server runs will require file system write permission to 
+ the environment directory and all the files inside. Please remember to set
+ the appropriate permissions. The same applies to the source code repository, 
+ although the user under which Trac runs will only require write access to a Subversion repository created with the BDB file system; for other repository types, check the corresponding plugin's documentation. 
+ 
+ - `initenv` when using svn repository does not imply that trac-admin will perform `svnadmin create` for the specified repository path. You need to perform the `svnadmin create` prior to `trac-admin initenv` if you're creating a new svn repository altogether with a new trac environment, otherwise you will see a message "Warning: couldn't index the repository" when initializing the environment.
 
-''Note: "initenv" when using svn repository does not imply that trac-admin will perform "svnadmin create" for the specified repository path. You need to perform the "svnadmin create" prior to trac-admin initenv if you're creating a new svn repository altogether with a new trac environment, otherwise you will see a message "Warning: couldn't index the repository" when initializing the environment.''
+ - Non-ascii environment paths are not supported
+ 
+ - Also, it seems that project names with spaces can be problematic for authentication (see [trac:#7163]).
+
+ - TracPlugins located in a [TracIni#inherit-section shared plugins folder] that is defined in an [TracIni#GlobalConfiguration inherited configuration] are currently not loaded during creation, and hence, if they need to create extra tables for example, you'll need to [TracUpgrade#UpgradetheTracEnvironment upgrade the environment] before being able to use it.
 
 == Database Connection Strings ==
 
