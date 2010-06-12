@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-04-25 01:49+0200\n"
-"PO-Revision-Date: 2010-06-06 19:25+0300\n"
+"PO-Revision-Date: 2010-06-12 20:52+0300\n"
 "Last-Translator: Alexandr Prudnikov <al.prudnikov@gmail.com>\n"
 "Language-Team: ru_RU <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
@@ -197,8 +197,8 @@ msgstr "Вложения %(parent)s"
 msgid "%(parent)s doesn't exist, can't create attachment"
 msgstr "%(parent)s не существует, невозможно создать вложение"
 
-#: trac/attachment.py:622 trac/attachment.py:645 trac/admin/web_ui.py:425
-#: trac/admin/web_ui.py:428 trac/admin/web_ui.py:432
+#: trac/attachment.py:622 trac/attachment.py:645 trac/admin/web_ui.py:426
+#: trac/admin/web_ui.py:429 trac/admin/web_ui.py:433
 msgid "No file uploaded"
 msgstr "Нет загружаемого файла"
 
@@ -326,7 +326,7 @@ msgstr ""
 msgid "Trac Error"
 msgstr "Ошибка Trac-а"
 
-#: trac/env.py:153
+#: trac/env.py:152
 msgid ""
 "Visit the Trac open source project at<br /><a "
 "href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
@@ -501,7 +501,7 @@ msgstr "Действие"
 msgid "Available actions:"
 msgstr "Доступные действия:"
 
-#: trac/perm.py:656 trac/admin/web_ui.py:333
+#: trac/perm.py:656 trac/admin/web_ui.py:334
 msgid "All upper-cased tokens are reserved for permission names"
 msgstr "Все слова в верхнем регистре зарезервированы под названия прав"
 
@@ -723,30 +723,30 @@ msgstr ""
 msgid "Non-ascii environment path '%(path)s' not supported."
 msgstr "Не-ascii путь к окружению '%(path)s' не поддерживается."
 
-#: trac/admin/web_ui.py:64
+#: trac/admin/web_ui.py:65
 msgid "Admin"
 msgstr "Админка"
 
-#: trac/admin/web_ui.py:65 trac/admin/templates/admin.html:16
+#: trac/admin/web_ui.py:66 trac/admin/templates/admin.html:16
 msgid "Administration"
 msgstr "Администрирование"
 
-#: trac/admin/web_ui.py:81
+#: trac/admin/web_ui.py:82
 msgid "No administration panels available"
 msgstr "Панели администрирования недоступны"
 
-#: trac/admin/web_ui.py:107 trac/admin/web_ui.py:111
+#: trac/admin/web_ui.py:108 trac/admin/web_ui.py:112
 msgid "Unknown administration panel"
 msgstr "Неизвестная панель администрирования"
 
-#: trac/admin/web_ui.py:185 trac/ticket/admin.py:65 trac/ticket/admin.py:90
+#: trac/admin/web_ui.py:186 trac/ticket/admin.py:65 trac/ticket/admin.py:90
 #: trac/ticket/admin.py:275 trac/ticket/admin.py:457 trac/ticket/admin.py:609
 #: trac/ticket/admin.py:695 trac/ticket/report.py:189
 #: trac/ticket/roadmap.py:687 trac/versioncontrol/admin.py:198
 msgid "Your changes have been saved."
 msgstr "Ваши изменения сохранены."
 
-#: trac/admin/web_ui.py:190 trac/ticket/admin.py:68
+#: trac/admin/web_ui.py:191 trac/ticket/admin.py:68
 msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "Your changes have not been saved."
@@ -754,121 +754,121 @@ msgstr ""
 "Ошибка записи в trac.ini: убедитесь, что он доступен веб-серверу для "
 "записи. Ваши изменения не были сохранены."
 
-#: trac/admin/web_ui.py:203 trac/admin/web_ui.py:231 trac/admin/web_ui.py:319
-#: trac/admin/web_ui.py:401 trac/prefs/web_ui.py:86
+#: trac/admin/web_ui.py:204 trac/admin/web_ui.py:232 trac/admin/web_ui.py:320
+#: trac/admin/web_ui.py:402 trac/prefs/web_ui.py:86
 #: trac/prefs/templates/prefs_general.html:9
 msgid "General"
 msgstr "Общие"
 
-#: trac/admin/web_ui.py:203 trac/admin/templates/admin_basics.html:13
+#: trac/admin/web_ui.py:204 trac/admin/templates/admin_basics.html:13
 msgid "Basic Settings"
 msgstr "Основные настройки"
 
-#: trac/admin/web_ui.py:231 trac/admin/templates/admin_logging.html:10
+#: trac/admin/web_ui.py:232 trac/admin/templates/admin_logging.html:10
 #: trac/admin/templates/admin_logging.html:22
 msgid "Logging"
 msgstr "Ведение журнала"
 
-#: trac/admin/web_ui.py:240 trac/ticket/templates/milestone_delete.html:31
+#: trac/admin/web_ui.py:241 trac/ticket/templates/milestone_delete.html:31
 #: trac/ticket/templates/milestone_edit.html:73
 msgid "None"
 msgstr "Нет"
 
-#: trac/admin/web_ui.py:241
+#: trac/admin/web_ui.py:242
 msgid "Console"
 msgstr "Консоль"
 
-#: trac/admin/web_ui.py:243 trac/templates/attachment.html:32
+#: trac/admin/web_ui.py:244 trac/templates/attachment.html:32
 msgid "File"
 msgstr "Файл"
 
-#: trac/admin/web_ui.py:245
+#: trac/admin/web_ui.py:246
 msgid "Syslog"
 msgstr "Системный журнал"
 
-#: trac/admin/web_ui.py:247
+#: trac/admin/web_ui.py:248
 msgid "Windows event log"
 msgstr "Журнал событий Windows"
 
-#: trac/admin/web_ui.py:260
+#: trac/admin/web_ui.py:261
 #, python-format
 msgid "Unknown log type %(type)s"
 msgstr "Неизвестный тип журнала %(type)s"
 
-#: trac/admin/web_ui.py:261
+#: trac/admin/web_ui.py:262
 msgid "Invalid log type"
 msgstr "Недопустимый тип журнала"
 
-#: trac/admin/web_ui.py:275
+#: trac/admin/web_ui.py:276
 #, python-format
 msgid "Unknown log level %(level)s"
 msgstr "Неизвестный уровень сообщения %(level)s"
 
-#: trac/admin/web_ui.py:276
+#: trac/admin/web_ui.py:277
 msgid "Invalid log level"
 msgstr "Недопустимый уровень журнала"
 
-#: trac/admin/web_ui.py:289
+#: trac/admin/web_ui.py:290
 msgid "You must specify a log file"
 msgstr "Вы должны указать файл журнала"
 
-#: trac/admin/web_ui.py:290
+#: trac/admin/web_ui.py:291
 msgid "Missing field"
 msgstr "Отсутствующее поле"
 
-#: trac/admin/web_ui.py:319 trac/admin/templates/admin_perms.html:10
+#: trac/admin/web_ui.py:320 trac/admin/templates/admin_perms.html:10
 msgid "Permissions"
 msgstr "Права"
 
-#: trac/admin/web_ui.py:340
+#: trac/admin/web_ui.py:341
 msgid "Unknown action"
 msgstr "Неизвестное действие"
 
-#: trac/admin/web_ui.py:344
+#: trac/admin/web_ui.py:345
 #, python-format
 msgid "The subject %(subject)s has been granted the permission %(action)s."
 msgstr "Субъект %(subject)s наделён правом %(action)s."
 
-#: trac/admin/web_ui.py:349
+#: trac/admin/web_ui.py:350
 #, python-format
 msgid "The permission %(action)s was already granted to %(subject)s."
 msgstr "%(subject)s уже наделён правом %(action)s."
 
-#: trac/admin/web_ui.py:365
+#: trac/admin/web_ui.py:366
 #, python-format
 msgid "The subject %(subject)s has been added to the group %(group)s."
 msgstr "Субъект %(subject)s добавлен в группу %(group)s."
 
-#: trac/admin/web_ui.py:370
+#: trac/admin/web_ui.py:371
 #, python-format
 msgid "The subject %(subject)s was already added to the group %(group)s."
 msgstr "Субъект %(subject)s уже добавлен в группу %(group)s."
 
-#: trac/admin/web_ui.py:383
+#: trac/admin/web_ui.py:384
 msgid "The selected permissions have been revoked."
 msgstr "Выбранные права отозваны."
 
-#: trac/admin/web_ui.py:401 trac/admin/templates/admin_plugins.html:10
+#: trac/admin/web_ui.py:402 trac/admin/templates/admin_plugins.html:10
 msgid "Plugins"
 msgstr "Плагины"
 
-#: trac/admin/web_ui.py:435
+#: trac/admin/web_ui.py:436
 msgid "Uploaded file is not a Python source file or egg"
 msgstr "Закачанный файл не является исходным кодом или яйцом Питона"
 
-#: trac/admin/web_ui.py:440
+#: trac/admin/web_ui.py:441
 #, python-format
 msgid "Plugin %(name)s already installed"
 msgstr "Плагин %(name)s уже установлен"
 
-#: trac/admin/web_ui.py:513
+#: trac/admin/web_ui.py:514
 msgid "The following component has been disabled:"
 msgid_plural "The following components have been disabled:"
 msgstr[0] "Следующий компонент отключен:"
 msgstr[1] "Следующие компоненты отключены:"
 msgstr[2] "Следующие компоненты отключены:"
 
-#: trac/admin/web_ui.py:518
+#: trac/admin/web_ui.py:519
 msgid "The following component has been enabled:"
 msgid_plural "The following components have been enabled:"
 msgstr[0] "Следующий компонент включен:"
@@ -1269,12 +1269,12 @@ msgstr "Выпущена:"
 msgid "Released"
 msgstr "Выпущена"
 
-#: trac/db/api.py:132
+#: trac/db/api.py:191
 #, python-format
 msgid "Unsupported database type \"%(scheme)s\""
 msgstr "Неподдерживаемый тип базы данных \"%(scheme)s\""
 
-#: trac/db/api.py:162
+#: trac/db/api.py:227
 #, python-format
 msgid ""
 "Unknown scheme \"%(scheme)s\"; database connection string must start with"
@@ -2689,8 +2689,8 @@ msgid "Page %(num)d"
 msgstr "Страница %(num)d"
 
 #: trac/ticket/query.py:825 trac/ticket/report.py:273 trac/ticket/report.py:566
-#: trac/ticket/web_ui.py:130 trac/timeline/web_ui.py:220
-#: trac/versioncontrol/web_ui/log.py:304
+#: trac/ticket/web_ui.py:130 trac/timeline/web_ui.py:221
+#: trac/versioncontrol/web_ui/log.py:305
 msgid "RSS Feed"
 msgstr "RSS-лента"
 
@@ -3891,30 +3891,30 @@ msgstr "URL карточки: <%(link)s>"
 msgid "Timeline"
 msgstr "Хронология"
 
-#: trac/timeline/web_ui.py:233 trac/timeline/web_ui.py:241
+#: trac/timeline/web_ui.py:234 trac/timeline/web_ui.py:242
 msgid "Previous Period"
 msgstr "Предыдущий период"
 
-#: trac/timeline/web_ui.py:240 trac/timeline/web_ui.py:241
+#: trac/timeline/web_ui.py:241 trac/timeline/web_ui.py:242
 msgid "Next Period"
 msgstr "Следующий период"
 
-#: trac/timeline/web_ui.py:301
+#: trac/timeline/web_ui.py:302
 #, python-format
 msgid "%(date)s in Timeline"
 msgstr "%(date)s в хронологии"
 
 #. TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
-#: trac/timeline/web_ui.py:348
+#: trac/timeline/web_ui.py:349
 msgid "other kinds of events"
 msgstr "другие виды событий"
 
-#: trac/timeline/web_ui.py:353
+#: trac/timeline/web_ui.py:354
 #, python-format
 msgid "Event provider %(name)s failed for filters %(kinds)s: "
 msgstr "Сбой поставщика событий %(name)s на фильтрах %(kinds)s: "
 
-#: trac/timeline/web_ui.py:356
+#: trac/timeline/web_ui.py:357
 #, python-format
 msgid ""
 "You may want to see the %(other_events)s from the Timeline or notify your"
@@ -3960,7 +3960,7 @@ msgstr ""
 "[1:Примечание:] Смотрите описание просмотра хронологии\n"
 "        в [2:TracTimeline]."
 
-#: trac/util/datefmt.py:79
+#: trac/util/datefmt.py:82
 #, python-format
 msgid "%(num)d year"
 msgid_plural "%(num)d years"
@@ -3968,7 +3968,7 @@ msgstr[0] "%(num)d год"
 msgstr[1] "%(num)d года"
 msgstr[2] "%(num)d лет"
 
-#: trac/util/datefmt.py:80
+#: trac/util/datefmt.py:83
 #, python-format
 msgid "%(num)d month"
 msgid_plural "%(num)d months"
@@ -3976,7 +3976,7 @@ msgstr[0] "%(num)d месяц"
 msgstr[1] "%(num)d месяца"
 msgstr[2] "%(num)d месяцев"
 
-#: trac/util/datefmt.py:81
+#: trac/util/datefmt.py:84
 #, python-format
 msgid "%(num)d week"
 msgid_plural "%(num)d weeks"
@@ -3984,7 +3984,7 @@ msgstr[0] "%(num)d неделя"
 msgstr[1] "%(num)d недели"
 msgstr[2] "%(num)d недель"
 
-#: trac/util/datefmt.py:82
+#: trac/util/datefmt.py:85
 #, python-format
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
@@ -3992,7 +3992,7 @@ msgstr[0] "%(num)d день"
 msgstr[1] "%(num)d дня"
 msgstr[2] "%(num)d дней"
 
-#: trac/util/datefmt.py:83
+#: trac/util/datefmt.py:86
 #, python-format
 msgid "%(num)d hour"
 msgid_plural "%(num)d hours"
@@ -4000,7 +4000,7 @@ msgstr[0] "%(num)d час"
 msgstr[1] "%(num)d часа"
 msgstr[2] "%(num)d часов"
 
-#: trac/util/datefmt.py:84
+#: trac/util/datefmt.py:87
 #, python-format
 msgid "%(num)d minute"
 msgid_plural "%(num)d minutes"
@@ -4008,7 +4008,7 @@ msgstr[0] "%(num)d минута"
 msgstr[1] "%(num)d минуты"
 msgstr[2] "%(num)d минут"
 
-#: trac/util/datefmt.py:103
+#: trac/util/datefmt.py:106
 #, python-format
 msgid "%(num)i second"
 msgid_plural "%(num)i seconds"
@@ -4016,7 +4016,7 @@ msgstr[0] "%(num)i секунда"
 msgstr[1] "%(num)i секунды"
 msgstr[2] "%(num)i секунд"
 
-#: trac/util/datefmt.py:247
+#: trac/util/datefmt.py:250
 #, python-format
 msgid ""
 "\"%(date)s\" is an invalid date, or the date format is not known. Try "
@@ -4025,11 +4025,11 @@ msgstr ""
 "\"%(date)s\" — неправильная дата, или ее формат неизвестен. Попробуйте "
 "вместо этого \"%(hint)s\"."
 
-#: trac/util/datefmt.py:249 trac/util/datefmt.py:257
+#: trac/util/datefmt.py:252 trac/util/datefmt.py:260
 msgid "Invalid Date"
 msgstr "Неправильная дата"
 
-#: trac/util/datefmt.py:255
+#: trac/util/datefmt.py:258
 #, python-format
 msgid ""
 "The date \"%(date)s\" is outside valid range. Try a date closer to "
@@ -4038,12 +4038,12 @@ msgstr ""
 "Дата \"%(date)s\" находится за пределами допустимого диапазона. "
 "Попробуйте дату более близкую к настоящему времени."
 
-#: trac/util/presentation.py:254
+#: trac/util/presentation.py:255
 #, python-format
 msgid "%(last)d of %(total)d"
 msgstr "%(last)d из %(total)d"
 
-#: trac/util/presentation.py:256
+#: trac/util/presentation.py:257
 #, python-format
 msgid "%(start)d - %(stop)d of %(total)d"
 msgstr "%(start)d - %(stop)d из %(total)d"
@@ -4065,7 +4065,7 @@ msgstr "Не удалось синхронизировать одну ревиз
 #: trac/versioncontrol/web_ui/browser.py:352
 #: trac/versioncontrol/web_ui/changeset.py:247
 #: trac/versioncontrol/web_ui/changeset.py:1090
-#: trac/versioncontrol/web_ui/log.py:87 trac/versioncontrol/web_ui/log.py:395
+#: trac/versioncontrol/web_ui/log.py:88 trac/versioncontrol/web_ui/log.py:396
 #, python-format
 msgid "Repository '%(repo)s' not found"
 msgstr "Не найден репозиторий '%(repo)s'"
@@ -4246,12 +4246,12 @@ msgstr "%(kind)s %(id)s%(at_version)s%(in_repo)s"
 msgid "Repository %(repo)s"
 msgstr "Репозиторий %(repo)s"
 
-#: trac/versioncontrol/api.py:686
+#: trac/versioncontrol/api.py:687
 #, python-format
 msgid "Unsupported version control system \"%(name)s\": %(error)s"
 msgstr "Система контроля версий \"%(name)s\" не поддерживается: %(error)s"
 
-#: trac/versioncontrol/api.py:689
+#: trac/versioncontrol/api.py:690
 #, python-format
 msgid ""
 "Unsupported version control system \"%(name)s\": Can't find an "
@@ -4261,26 +4261,26 @@ msgstr ""
 "соответствующий компонент, возможно соответствующий плагин не был "
 "включен? "
 
-#: trac/versioncontrol/api.py:697
+#: trac/versioncontrol/api.py:698
 #, python-format
 msgid "No changeset %(rev)s in the repository"
 msgstr "Набор изменений %(rev)s отсутствует в репозиотории"
 
-#: trac/versioncontrol/api.py:699
+#: trac/versioncontrol/api.py:700
 msgid "No such changeset"
 msgstr "Нет такого набора изменений"
 
-#: trac/versioncontrol/api.py:705
+#: trac/versioncontrol/api.py:706
 #, python-format
 msgid "No node %(path)s at revision %(rev)s"
 msgstr "Нет узла %(path)s в ревизии %(rev)s"
 
-#: trac/versioncontrol/api.py:707
+#: trac/versioncontrol/api.py:708
 #, python-format
 msgid "%(msg)s: No node %(path)s at revision %(rev)s"
 msgstr "%(msg)s: Нет узла %(path)s в ревизии %(rev)s"
 
-#: trac/versioncontrol/api.py:709
+#: trac/versioncontrol/api.py:710
 msgid "No such node"
 msgstr "Нет такого узла"
 
@@ -5044,7 +5044,7 @@ msgid "Latest Revision"
 msgstr "Последняя ревизия"
 
 #: trac/versioncontrol/web_ui/browser.py:449
-#: trac/versioncontrol/web_ui/log.py:300
+#: trac/versioncontrol/web_ui/log.py:301
 msgid "Parent directory"
 msgstr "Родительский каталог"
 
@@ -5190,7 +5190,7 @@ msgid "No permission to view changeset %(rev)s on %(repos)s"
 msgstr "Нет разрешения на просмотр набора изменений %(rev)s в %(repos)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:1092
-#: trac/versioncontrol/web_ui/log.py:397
+#: trac/versioncontrol/web_ui/log.py:398
 msgid "No default repository defined"
 msgstr "Репозиторий по умолчанию не определен"
 
@@ -5198,7 +5198,7 @@ msgstr "Репозиторий по умолчанию не определен"
 msgid "Changesets"
 msgstr "Наборы изменений"
 
-#: trac/versioncontrol/web_ui/log.py:199
+#: trac/versioncontrol/web_ui/log.py:200
 #, python-format
 msgid ""
 "The file or directory '%(path)s' doesn't exist at revision %(rev)s or at "
@@ -5207,28 +5207,28 @@ msgstr ""
 "Файл или директория '%(path)s' не существуют в ревизии %(rev)s и в "
 "предшествующий ей."
 
-#: trac/versioncontrol/web_ui/log.py:199
+#: trac/versioncontrol/web_ui/log.py:200
 msgid "Nonexistent path"
 msgstr "Несуществующий путь"
 
-#: trac/versioncontrol/web_ui/log.py:227
+#: trac/versioncontrol/web_ui/log.py:228
 #, python-format
 msgid "Revision Log (restarting at %(path)s, rev. %(rev)s)"
 msgstr "Журнал изменений (начиная с %(path)s, рев. %(rev)s)"
 
-#: trac/versioncontrol/web_ui/log.py:308
+#: trac/versioncontrol/web_ui/log.py:309
 msgid "ChangeLog"
 msgstr "История изменений"
 
-#: trac/versioncontrol/web_ui/log.py:310
+#: trac/versioncontrol/web_ui/log.py:311
 msgid "View Latest Revision"
 msgstr "Посмотреть последнюю ревизию"
 
-#: trac/versioncontrol/web_ui/log.py:314
+#: trac/versioncontrol/web_ui/log.py:315
 msgid "Older Revisions"
 msgstr "Более старые ревизии"
 
-#: trac/versioncontrol/web_ui/log.py:393
+#: trac/versioncontrol/web_ui/log.py:394
 msgid "No permission to view change log"
 msgstr "Не разрешен просмотр истории изменений"
 

@@ -1,16 +1,16 @@
 # Russian (Russia) translations for Trac.
 # Copyright (C) 2010 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+# Alexandr Prudnikov <al.prudnikov@gmail.com>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-05-24 23:55+0200\n"
-"PO-Revision-Date: 2010-05-27 23:25+0300\n"
+"PO-Revision-Date: 2010-06-12 20:53+0300\n"
 "Last-Translator: Alexandr Prudnikov <al.prudnikov@gmail.com>\n"
-"Language-Team: ru_RU <LL@li.org>\n"
+"Language-Team: ru_RU <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 "MIME-Version: 1.0\n"
@@ -69,27 +69,27 @@ msgstr "Показать %(title)s"
 msgid "%(title)s (click to hide column)"
 msgstr "%(title)s (Щелкните чтобы скрыть колонку)"
 
-#: trac/htdocs/js/query.js:119
+#: trac/htdocs/js/query.js:118
 msgid "A filter already exists for that property"
 msgstr "Фильтр по этому свойству уже существует"
 
-#: trac/htdocs/js/query.js:146
+#: trac/htdocs/js/query.js:145
 msgid "or"
 msgstr "или"
 
-#: trac/htdocs/js/query.js:165
+#: trac/htdocs/js/query.js:164
 msgid "yes"
 msgstr "да"
 
-#: trac/htdocs/js/query.js:168
+#: trac/htdocs/js/query.js:167
 msgid "no"
 msgstr "нет"
 
-#: trac/htdocs/js/query.js:171
+#: trac/htdocs/js/query.js:170
 msgid "between"
 msgstr "между"
 
-#: trac/htdocs/js/query.js:173
+#: trac/htdocs/js/query.js:172
 msgid "and"
 msgstr "и"
 
