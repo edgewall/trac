@@ -93,7 +93,7 @@ class Environment(Component, ComponentManager):
     setup_participants = ExtensionPoint(IEnvironmentSetupParticipant)
 
     shared_plugins_dir = PathOption('inherit', 'plugins_dir', '',
-        """Path of the directory containing additional plugins.
+        """Path to the //shared plugins directory//.
         
         Plugins in that directory are loaded in addition to those in the
         directory of the environment `plugins`, with this one taking 

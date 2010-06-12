@@ -257,7 +257,7 @@ class Chrome(Component):
     stream_filters = ExtensionPoint(ITemplateStreamFilter)
 
     shared_templates_dir = PathOption('inherit', 'templates_dir', '',
-        """Path to the shared templates directory.
+        """Path to the //shared templates directory//.
         
         Templates in that directory are loaded in addition to those in the
         environments `templates` directory, but the latter take precedence.
