@@ -1,5 +1,5 @@
-Trac 0.12rc1 'Babel' (June 03, 2010)
-http://svn.edgewall.org/repos/trac/tags/trac-0.12rc1
+Trac 0.12 'Babel' (June 13, 2010)
+http://svn.edgewall.org/repos/trac/tags/trac-0.12
 
 Trac 0.12 is a major release introducing i18n and multiple repository support as the most visible changes.
 
@@ -18,6 +18,11 @@ The following list contains only a few highlights:
    a.k.a. OR queries)
  - Timeline filtering by user
  - ... and numerous smaller features added and bugs fixed since 0.11!
+
+Trac 0.12rc1 'Babel' (June 03, 2010)
+http://svn.edgewall.org/repos/trac/tags/trac-0.12rc1
+
+  See 0.12.
 
 Trac 0.11.7 (March 10, 2010)
 http://svn.edgewall.org/repos/trac/tags/trac-0.11.7
