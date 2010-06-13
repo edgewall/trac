@@ -5,7 +5,7 @@ Trac is written in the Python programming language and needs a database, [http:/
 
 Since version 0.12, Trac can also be localized, and there's probably a translation available for your language. If you want to be able to use the Trac interface in other languages, then make sure you have installed the optional package [#OtherPythonPackages Babel]. Pay attention to the extra steps for localization support in the [#InstallingTrac Installing Trac] section below. Lacking Babel, you will only get the default english version, as usual.
 
-If you're interested in contributing new translations for other languages or enhance the existing translations, then please have a look at ["TracL10N"].
+If you're interested in contributing new translations for other languages or enhance the existing translations, then please have a look at [[trac:TracL10N]].
 
 What follows are generic instructions for installing and setting up Trac and its requirements. While you may find instructions for installing Trac on specific systems at TracInstallPlatforms on the main Trac site, please be sure to '''first read through these general instructions''' to get a good understanding of the tasks involved.
 
@@ -120,12 +120,12 @@ With setuptools you can install Trac from the subversion repository;
 
 A few examples:
 
- - install Trac 0.12 rc1::
+ - install Trac 0.12:
    {{{
-   easy_install Trac==0.12rc1
+   easy_install Trac==0.12
    }}}
 
- - install latest development version 0.12dev
+ - install latest development version 0.12dev:
    {{{
    easy_install Trac==dev
    }}}
@@ -161,7 +161,7 @@ Additionally, you can install several trac plugins (listed [http://pypi.python.o
 === From source
 Of course, using the python-typical setup at the top of the source directory also works.
 
-You can obtain the source for a .tar.gz or .zip file corresponding to a release (e.g. Trac-0.12rc1.tar.gz), or you can get the source directly from the repository (see Trac:SubversionRepository for details).
+You can obtain the source for a .tar.gz or .zip file corresponding to a release (e.g. Trac-0.12.tar.gz), or you can get the source directly from the repository (see Trac:SubversionRepository for details).
 
 {{{
 $ python ./setup.py install
