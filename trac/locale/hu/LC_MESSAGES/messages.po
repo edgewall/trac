@@ -3268,7 +3268,7 @@ msgstr "Mérföldkő szerkesztése"
 #: trac/ticket/templates/roadmap.html:42
 #, python-format
 msgid "Completed %(duration)s ago (%(date)s)"
-msgstr "Elkészült %(duration)s (%(date)s)"
+msgstr "elkészült %(duration)s (%(date)s)"
 
 #: trac/ticket/templates/milestone_view.html:32
 #: trac/ticket/templates/roadmap.html:47
@@ -3280,12 +3280,12 @@ msgstr "[1:késik %(duration)s] (%(date)s)"
 #: trac/ticket/templates/roadmap.html:52
 #, python-format
 msgid "Due in %(duration)s (%(date)s)"
-msgstr "Esedékes %(duration)s (%(date)s)"
+msgstr "esedékes %(duration)s (%(date)s)"
 
 #: trac/ticket/templates/milestone_view.html:41
 #: trac/ticket/templates/roadmap.html:56
 msgid "No date set"
-msgstr "Nincs dátum megadva"
+msgstr "nincs dátum megadva"
 
 #: trac/ticket/templates/milestone_view.html:51
 #, python-format
