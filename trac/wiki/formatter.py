@@ -1152,7 +1152,11 @@ class Formatter(object):
         if replacement:
             return _markup_to_unicode(replacement)
 
+    _normalize_re = re.compile(r'[\v\f]', re.UNICODE)
+
     def reset(self, source, out=None):
+        if isinstance(source, basestring):
+            source = re.sub(self._normalize_re, ' ', source)
         self.source = source
         class NullOut(object):
             def write(self, data):
@@ -1172,10 +1176,11 @@ class Formatter(object):
         self.continue_table_row = 0
         self.in_table_cell = ''
         self.paragraph_open = 0
+        return source
         
 
     def format(self, text, out=None, escape_newlines=False):
-        self.reset(text, out)
+        text = self.reset(text, out)
         if isinstance(text, basestring):
             text = text.splitlines()
             
@@ -1302,7 +1307,7 @@ class OneLinerFormatter(Formatter):
     def format(self, text, out, shorten=False):
         if not text:
             return
-        self.reset(text, out)
+        text = self.reset(text, out)
 
         # Simplify code blocks
         in_code_block = 0
@@ -1416,7 +1421,7 @@ class LinkFormatter(OutlineFormatter):
 
     def match(self, wikitext):
         """Return the Wiki match found at the beginning of the `wikitext`"""
-        self.reset(wikitext)        
+        wikitext = self.reset(wikitext)        
         match = re.match(self.wikiparser.rules, wikitext)
         if match:
             return self.handle_match(match)
