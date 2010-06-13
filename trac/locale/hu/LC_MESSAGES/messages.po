@@ -1872,7 +1872,7 @@ msgid ""
 "          [3:%(name)s]"
 msgstr ""
 "[3:%(name)s] változásai \n"
-"          [1:Változat %(old)s] és a\n"
+"          [1:%(old)s. változat] és a(z)\n"
 "          [2:%(new)s. változat] között"
 
 #: trac/templates/diff_view.html:23
@@ -3980,12 +3980,12 @@ msgstr "A \"%(date)s\" dátum érvénytelen. Próbáljon egy közelebbi dátumot
 #: trac/util/presentation.py:255
 #, python-format
 msgid "%(last)d of %(total)d"
-msgstr "%(last)d of %(total)d"
+msgstr "%(last)d (összes: %(total)d)"
 
 #: trac/util/presentation.py:257
 #, python-format
 msgid "%(start)d - %(stop)d of %(total)d"
-msgstr "%(start)d - %(stop)d a %(total)d-ból"
+msgstr "%(start)d - %(stop)d (összes: %(total)d)"
 
 #: trac/versioncontrol/admin.py:110
 msgid "Alias"
