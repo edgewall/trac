@@ -18,7 +18,7 @@ A few other wiki pages present the advanced features of the Trac wiki markup in 
  - WikiProcessors and WikiHtml details how parts of the wiki text can be processed in special ways
 
 
-== Cheatsheet ==
+== Cheat sheet ==
 
 ||= '''Category''' =||= '''Wiki Markup''' =||= '''Display''' =||
 |-----------------------------------------------------------
@@ -683,7 +683,7 @@ An anchor, or more correctly speaking, an [http://www.w3.org/TR/REC-html40/struc
 [=#point1]
 }}}
 
-This sytax was chosen to match the format for explicitly naming the header id [#Headings documented above]. For example:
+This syntax was chosen to match the format for explicitly naming the header id [#Headings documented above]. For example:
 {{{
 == Long title == #title
 }}}
