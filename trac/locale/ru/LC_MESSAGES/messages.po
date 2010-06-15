@@ -117,7 +117,7 @@ msgstr "комментарий:"
 #: trac/ticket/templates/ticket.html:142
 #, python-format
 msgid "Changed %(date)s ago by %(author)s"
-msgstr "Изменён %(date)s назад пользователем %(author)s"
+msgstr "Изменен %(date)s назад пользователем %(author)s"
 
 #: tracopt/ticket/templates/ticket_delete.html:68
 msgid "Are you sure you want to delete this ticket comment?"
@@ -2922,7 +2922,7 @@ msgstr "обновлена"
 #, python-format
 msgid "%(labels)s changed"
 msgid_plural "%(labels)s changed"
-msgstr[0] "%(labels)s изменена"
+msgstr[0] "Поле %(labels)s изменено"
 msgstr[1] "%(labels)s изменены"
 msgstr[2] "%(labels)s изменены"
 
@@ -3216,7 +3216,7 @@ msgstr "установлено в %(value)s"
 #: trac/ticket/web_ui.py:1638
 #, python-format
 msgid "changed from %(old)s to %(new)s"
-msgstr "изменён с %(old)s на %(new)s"
+msgstr "изменен с %(old)s на %(new)s"
 
 #: trac/ticket/templates/milestone_delete.html:10
 #: trac/ticket/templates/milestone_delete.html:22
@@ -3712,7 +3712,7 @@ msgstr ""
 #: trac/ticket/templates/ticket.html:220
 #, python-format
 msgid "Changed by %(author)s"
-msgstr "Изменён пользователем %(author)s"
+msgstr "Изменен пользователем %(author)s"
 
 #: trac/ticket/templates/ticket.html:227
 msgid "Modify Ticket"
@@ -3850,7 +3850,7 @@ msgstr "установлен в [1:%(value)s]"
 #: trac/ticket/templates/ticket_change.html:32
 #, python-format
 msgid "[1:%(value)s] deleted"
-msgstr "[1:%(value)s] удалено"
+msgstr "[1:%(value)s] удален"
 
 #: trac/ticket/templates/ticket_change.html:45
 #, python-format
