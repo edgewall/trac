@@ -38,7 +38,7 @@ except ImportError, e:
 
 setup(
     name = 'Trac',
-    version = '0.12',
+    version = '0.12.1',
     description = 'Integrated SCM, wiki, issue tracker and project environment',
     long_description = """
 Trac is a minimalistic web-based software project management and bug/issue
