@@ -1,0 +1,19 @@
+syntax: glob
+.svn
+.git
+build
+dist
+Trac.egg-info
+*.pyc
+testenv
+testing.log
+functional-testing.log
+html
+htmlcov
+figleaf
+.*.sw[op]
+.coverage
+.figleaf*
+*.figleaf
+Makefile.cfg
+

@@ -279,10 +279,12 @@ functional-test-coverage:
 	    trac/tests/functional/testcases.py -v
 
 show-coverage: htmlcov/index.html
-	coverage report
+	#coverage report
 
 htmlcov/index.html:
-	coverage html
+	coverage html \
+            --omit=trac/templates \
+            $(foreach t,$(wildcard trac/*/templates), --omit=$(t))
 
 # ----------------------------------------------------------------------------
 #
