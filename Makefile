@@ -283,8 +283,7 @@ show-coverage: htmlcov/index.html
 
 htmlcov/index.html:
 	coverage html \
-            --omit=trac/templates \
-            $(foreach t,$(wildcard trac/*/templates), --omit=$(t))
+	    --omit=$(subst $(space),$(comma),$(wildcard trac/*/templates)),trac/templates
 
 # ----------------------------------------------------------------------------
 #
@@ -377,4 +376,8 @@ ifdef python-bin
 endif
 export PYTHONPATH := .$(SEP)$(PYTHONPATH)
 export TRAC_TEST_DB_URI = $($(db).uri)
+
+# Misc.
+space = $(empty) $(empty)
+comma = ,
 # ----------------------------------------------------------------------------
