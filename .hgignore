@@ -1,4 +1,6 @@
 syntax: glob
+*~
+.*.sw[op]
 .svn
 .git
 build
@@ -11,9 +13,10 @@ functional-testing.log
 html
 htmlcov
 figleaf
-.*.sw[op]
 .coverage
 .figleaf*
 *.figleaf
 Makefile.cfg
-
+doc/.build
+*.mo
+trac/htdocs/js/messages/*.js
