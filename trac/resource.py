@@ -71,6 +71,16 @@ class IResourceManager(Interface):
         default mode) will be used.
         """
 
+    def resource_exists(resource):
+        """Check whether the given `resource` exists physically.
+
+        :rtype: bool
+
+        Attempting to retrieve the model object for a non-existing
+        resource should raise a `ResourceNotFound` exception.
+        (since 0.12)
+        """
+
 
 class Resource(object):
     """Resource identifier.
@@ -432,3 +442,24 @@ def render_resource_link(env, context, resource, format='default'):
     if not isinstance(link, Element):
         link = tag.a(link, href=get_resource_url(env, resource, context.href))
     return link
+
+def resource_exists(env, resource):
+    """Checks for resource existence without actually instantiating a model.
+
+        :return: `True` if the resource exists, `False` if it doesn't
+        and `None` in case no conclusion could be made (i.e. when
+        `IResourceManager.resource_exists` is not implemented).
+
+        >>> from trac.test import EnvironmentStub
+        >>> env = EnvironmentStub()
+
+        >>> resource_exists(env, Resource('dummy-realm', 'dummy-id')) is None
+        True
+        >>> resource_exists(env, Resource('dummy-realm'))
+        False
+    """
+    manager = ResourceSystem(env).get_resource_manager(resource.realm)
+    if manager and hasattr(manager, 'resource_exists'):
+        return manager.resource_exists(resource)
+    elif resource.id is None:
+        return False

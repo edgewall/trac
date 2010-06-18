@@ -349,3 +349,27 @@ class WikiSystem(Component):
         'Wiki Start'
         """
         return self.format_page_name(resource.id)
+
+    def resource_exists(self, resource):
+        """
+        >>> from trac.test import EnvironmentStub
+        >>> from trac.resource import Resource, resource_exists
+        >>> env = EnvironmentStub()
+
+        >>> resource_exists(env, Resource('wiki', 'WikiStart'))
+        False
+
+        >>> from trac.wiki.model import WikiPage
+        >>> main = WikiPage(env, 'WikiStart')
+        >>> main.text = 'some content'
+        >>> main.save('author', 'no comment', '::1')
+        >>> resource_exists(env, main.resource)
+        True
+        """
+        if resource.version is None:
+            return resource.id in self.get_pages()
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.execute("SELECT name FROM wiki WHERE name=%s AND version=%s",
+                       (resource.id, resource.version))
+        return bool(cursor.fetchall())

@@ -546,10 +546,15 @@ class AttachmentModule(Component):
 
     def _do_save(self, req, attachment):
         req.perm(attachment.resource).require('ATTACHMENT_CREATE')
+        parent_resource = attachment.resource.parent
+        if resource_exists(self.env, parent_resource) is False:
+            raise ResourceNotFound(
+                _("%(parent)s doesn't exist, can't create attachment",
+                  parent=get_resource_name(self.env, parent_resource)))
+        # `None` is OK on 0.11.x, for backward compatibility; not so with 0.12x
 
         if 'cancel' in req.args:
-            req.redirect(get_resource_url(self.env, attachment.resource.parent,
-                                          req.href))
+            req.redirect(get_resource_url(self.env, parent_resource, req.href))
 
         upload = req.args['attachment']
         if not hasattr(upload, 'filename') or not upload.filename:
