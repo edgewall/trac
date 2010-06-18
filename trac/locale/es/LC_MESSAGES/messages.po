@@ -1266,7 +1266,7 @@ msgstr "Fecha:"
 
 #: trac/admin/templates/admin_versions.html:54
 msgid "Add Version:"
-msgstr "Añadir Versión:"
+msgstr "Añadir versión:"
 
 #: trac/admin/templates/admin_versions.html:59
 msgid "Released:"
@@ -1858,7 +1858,7 @@ msgstr ""
 "[1:[2:]\n"
 "             Mostrar]\n"
 "      [3:[4:]\n"
-"             línea alrededor de cada cambio]"
+"             líneas alrededor de cada cambio]"
 
 #: trac/templates/diff_options.html:28
 msgid "Show the changes in full context"
@@ -1930,7 +1930,7 @@ msgstr ""
 #: trac/templates/diff_view.html:43
 #: trac/versioncontrol/templates/changeset.html:136
 msgid "Timestamp:"
-msgstr "Marca de tiempo:"
+msgstr "Fecha y hora:"
 
 #: trac/templates/diff_view.html:45 trac/templates/diff_view.html:53
 #: trac/templates/diff_view.html:59
@@ -4151,8 +4151,8 @@ msgstr "Resincronizando el histórico del repositorio para %(reponame)s..."
 #, python-format
 msgid "%(num)s revision cached."
 msgid_plural "%(num)s revisions cached."
-msgstr[0] "%(num)s versión prealmacenada."
-msgstr[1] "%(num)s versiones prealmacenadas."
+msgstr[0] "%(num)s revisión prealmacenada."
+msgstr[1] "%(num)s revisiones prealmacenadas."
 
 #
 #: trac/versioncontrol/admin.py:144
@@ -4343,12 +4343,12 @@ msgstr "No existe ese conjunto de cambios"
 #: trac/versioncontrol/api.py:705
 #, python-format
 msgid "No node %(path)s at revision %(rev)s"
-msgstr "No existe el nodo %(path)s en la versión %(rev)s"
+msgstr "No existe el nodo %(path)s en la revisión %(rev)s"
 
 #: trac/versioncontrol/api.py:707
 #, python-format
 msgid "%(msg)s: No node %(path)s at revision %(rev)s"
-msgstr "%(msg)s: No hay un nodo %(path)s en la versión %(rev)s"
+msgstr "%(msg)s: No hay un nodo %(path)s en la revisión %(rev)s"
 
 #: trac/versioncontrol/api.py:709
 msgid "No such node"
@@ -4397,8 +4397,8 @@ msgid ""
 "and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
 msgstr ""
 "Inconsistencia en diferencias: 'base' es un %(oldnode)s (%(oldpath)s en la "
-"versión %(oldrev)s) y 'destino' es un %(newnode)s (%(newpath)s en la "
-"versión  %(newrev)s)."
+"revisión %(oldrev)s) y 'destino' es un %(newnode)s (%(newpath)s en la "
+"revisión  %(newrev)s)."
 
 #: trac/versioncontrol/svn_fs.py:766
 #, python-format
@@ -4434,7 +4434,7 @@ msgstr "Ver fuente mezclado"
 #
 #: trac/versioncontrol/svn_prop.py:245
 msgid "No revisions"
-msgstr "Sin versiones"
+msgstr "Sin revisiones"
 
 #
 #: trac/versioncontrol/svn_prop.py:281
@@ -4549,11 +4549,11 @@ msgstr "Repositorio predeterminado"
 
 #: trac/versioncontrol/templates/browser.html:61
 msgid "Hint: clear the field to view latest revision"
-msgstr "Consejo: limpie el campo para ver la última versión"
+msgstr "Consejo: limpie el campo para ver la última revisión"
 
 #: trac/versioncontrol/templates/browser.html:61
 msgid "View revision:"
-msgstr "Ver versión:"
+msgstr "Ver revisión:"
 
 #: trac/versioncontrol/templates/browser.html:71
 msgid "Visit:"
@@ -4653,7 +4653,7 @@ msgstr ""
 #: trac/versioncontrol/templates/changeset.html:41
 #: trac/versioncontrol/templates/changeset.html:63
 msgid "Show revision log"
-msgstr "Ver registro de versiones"
+msgstr "Ver registro de revisiones"
 
 #: trac/versioncontrol/templates/changeset.html:39
 #, python-format
@@ -4725,7 +4725,7 @@ msgstr "Conjunto de cambios [1:%(new_rev)s]"
 #: trac/versioncontrol/templates/changeset.html:101
 #, python-format
 msgid "Show what was removed (content at revision %(old_rev)s)"
-msgstr "Mostrar qué fue eliminado (contenido en la versión %(old_rev)s"
+msgstr "Mostrar qué fue eliminado (contenido en la revisión %(old_rev)s"
 
 #: trac/versioncontrol/templates/changeset.html:106
 msgid "(root)"
@@ -4734,7 +4734,7 @@ msgstr "(raíz)"
 #: trac/versioncontrol/templates/changeset.html:112
 #, python-format
 msgid "Show original file (revision %(old_rev)s)"
-msgstr "Mostrar fichero original (versión %(old_rev)s)"
+msgstr "Mostrar fichero original (revisión %(old_rev)s)"
 
 #: trac/versioncontrol/templates/changeset.html:111
 #, python-format
@@ -4880,7 +4880,7 @@ msgstr "De:"
 #: trac/versioncontrol/templates/diff_form.html:34
 #: trac/versioncontrol/templates/diff_form.html:44
 msgid "at revision:"
-msgstr "en la versión:"
+msgstr "en la revisión:"
 
 #: trac/versioncontrol/templates/diff_form.html:40
 msgid "To:"
@@ -4893,11 +4893,10 @@ msgid ""
 "              from. Select an entry by clicking on it, or by using the\n"
 "              up/down cursor keys and hitting tab."
 msgstr ""
-"Para cada ruta, puede empezar tecleando la ruta y entonces será\n"
-"              presentada una lista de directorios y ficheros existentes "
-"para\n"
-"              Seleccione una entrada haciendo clic, o use las teclas del\n"
-"              cursor y después pulse tab."
+"Por cada ruta, puede empezar tecleando la ruta y entonces será\n"
+"              presentada una lista de directorios y ficheros existentes para\n"
+"              seleccionar. Seleccione una entrada haciendo clic, o use las\n"
+"              teclas de cursor y después pulse tabulador."
 
 #: trac/versioncontrol/templates/diff_form.html:62
 msgid ""
@@ -5015,7 +5014,7 @@ msgstr ""
 "[1:\n"
 "              Ver como máximo\n"
 "              [2:]\n"
-"              versiones por página.\n"
+"              revisiones por página.\n"
 "            ]"
 
 #: trac/versioncontrol/templates/revisionlog.html:62
@@ -5054,7 +5053,7 @@ msgstr "Mensaje de registro"
 #
 #: trac/versioncontrol/templates/revisionlog.html:106
 msgid "No revisions found"
-msgstr "No hay versiones"
+msgstr "No hay revisiones"
 
 #: trac/versioncontrol/templates/revisionlog.html:120
 #, python-format
@@ -5073,12 +5072,12 @@ msgstr "A [%(rev)s]"
 
 #: trac/versioncontrol/templates/revisionlog.html:135
 msgid "View log starting at this revision"
-msgstr "Ver registro empezando en esta versión"
+msgstr "Ver registro empezando en esta revisión"
 
 #: trac/versioncontrol/templates/revisionlog.html:142
 #, python-format
 msgid "Browse at revision %(rev)s"
-msgstr "Hojear en versión %(rev)s"
+msgstr "Hojear en revisión %(rev)s"
 
 #: trac/versioncontrol/templates/revisionlog.html:146
 #, python-format
@@ -5160,7 +5159,7 @@ msgid ""
 "Annotate each line with the last changed revision (this can be time "
 "consuming...)"
 msgstr ""
-"Anotar cada línea con la última versión cambiada (esto puede tardar un "
+"Anotar cada línea con la última revisión cambiada (esto puede tardar un "
 "poco...)"
 
 #: trac/versioncontrol/web_ui/browser.py:469
@@ -5232,7 +5231,7 @@ msgstr "Conjunto de cambios %(id)s"
 #: trac/versioncontrol/web_ui/changeset.py:492
 #, python-format
 msgid "Show revision %(rev)s of this file in browser"
-msgstr "Mostrar versión %(rev)s de este fichero en el navegador"
+msgstr "Mostrar revisión %(rev)s de este fichero en el navegador"
 
 #: trac/versioncontrol/web_ui/changeset.py:638
 #, python-format
@@ -5303,8 +5302,8 @@ msgid ""
 "The file or directory '%(path)s' doesn't exist at revision %(rev)s or at any "
 "previous revision."
 msgstr ""
-"El fichero o directorio '%(path)s' no existe en la versión %(rev)s o en otra "
-"versión anterior."
+"El fichero o directorio '%(path)s' no existe en la revisión %(rev)s o en otra "
+"revisión anterior."
 
 #: trac/versioncontrol/web_ui/log.py:199
 msgid "Nonexistent path"
