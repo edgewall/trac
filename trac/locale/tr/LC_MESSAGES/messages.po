@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-05-11 01:45+0200\n"
-"PO-Revision-Date: 2010-05-17 02:26+0200\n"
+"PO-Revision-Date: 2010-06-12 18:57+0200\n"
 "Last-Translator: Aranel Surion <aranel@aranelsurion.org>\n"
 "Language-Team: tr_TR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
@@ -501,7 +501,7 @@ msgstr "Hata:"
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
-"Copyright (c) 2003-2010 Edgewall Software\n"
+"Copyright (c) 2003-2009 Edgewall Software\n"
 "\n"
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
@@ -2828,7 +2828,7 @@ msgstr ""
 #: trac/ticket/templates/roadmap.html:10
 #: trac/ticket/templates/roadmap.html:15
 msgid "Roadmap"
-msgstr "Yol haritası"
+msgstr "Yol Haritası"
 
 #: trac/ticket/roadmap.py:364
 msgid "iCalendar"
@@ -4120,10 +4120,10 @@ msgstr "yol"
 msgid " in %(repo)s"
 msgstr "%(repo)s içinde"
 
-#. TRANSLATOR: file /path/to/file.py at version 13 in reponame
+#. TRANSLATOR: file /trunk/setup.py at version 13 in trac
 #: trac/versioncontrol/api.py:371
 #, python-format
-msgid "%(kind)s %(id)s%(at_version)s%(in_repo)s"
+msgid "%(kind)s %(id)%(at_version)s%(in_repo)s"
 msgstr ""
 
 #: trac/versioncontrol/api.py:374
@@ -4539,7 +4539,7 @@ msgstr "Önceki sürümü tarayıcıda göster"
 
 #: trac/versioncontrol/templates/changeset.html:139
 msgid "(less than one hour ago)"
-msgstr "(bi saatten kısa süre önce)"
+msgstr "(bir saatten kısa süre önce)"
 
 #: trac/versioncontrol/templates/changeset.html:140
 #, python-format
@@ -5234,7 +5234,7 @@ msgstr ""
 
 #: trac/wiki/formatter.py:178
 msgid "Error: Forbidden character sequence \"--\" in htmlcomment wiki code block"
-msgstr ""
+msgstr "Hata: Yasaklanmış karakter dizilimi \"--\"  htmlcomment wiki kod bloğunda"
 
 #: trac/wiki/formatter.py:252
 #, python-format
