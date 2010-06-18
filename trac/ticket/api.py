@@ -451,3 +451,34 @@ class TicketSystem(Component):
             return "%s (%s)" % (summary, status)
         else:
             return summary
+
+    def resource_exists(self, resource):
+        """
+        >>> from trac.test import EnvironmentStub
+        >>> from trac.resource import Resource, resource_exists
+        >>> env = EnvironmentStub()
+
+        >>> resource_exists(env, Resource('ticket', 123456))
+        False
+
+        >>> from trac.ticket.model import Ticket
+        >>> t = Ticket(env)
+        >>> t['summary'] = 'Test resource_exists...'
+        >>> t.insert()
+        1
+        >>> resource_exists(env, t.resource)
+        True
+        """
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.execute("SELECT id FROM ticket WHERE id=%s", (resource.id,))
+        latest_exists = bool(cursor.fetchall())
+        if latest_exists:
+            if resource.version is None:
+                return True
+            cursor.execute("""
+                SELECT count(distinct time) FROM ticket_change WHERE ticket=%s
+                """, (resource.id,))
+            return cursor.fetchone()[0] >= resource.version
+        else:
+            return False

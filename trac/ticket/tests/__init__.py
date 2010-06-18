@@ -16,6 +16,7 @@ def suite():
     suite.addTest(conversion.suite())
     suite.addTest(report.suite())
     suite.addTest(roadmap.suite())
+    suite.addTest(doctest.DocTestSuite(trac.ticket.api))
     suite.addTest(doctest.DocTestSuite(trac.ticket.report))
     return suite
 
