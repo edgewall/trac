@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-06-11 16:41+0200\n"
-"PO-Revision-Date: 2010-06-17 16:45+0200\n"
+"PO-Revision-Date: 2010-06-19 00:06+0200\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <ca@dodds.net>\n"
 "MIME-Version: 1.0\n"
@@ -149,7 +149,7 @@ msgstr "No s'ha pogut suprimir l'adjunt"
 msgid ""
 "Cannot reparent attachment \"%(att)s\" as it already exists in %(realm)s:%"
 "(id)s"
-msgstr ""
+msgstr "No es pot assignar un pare a l'adjunt «%(att)s perquè ja existeix a %(realm)s:%(id)s"
 
 #: trac/attachment.py:229
 #, python-format
@@ -405,6 +405,8 @@ msgid ""
 "Trac\n"
 "doesn't load plugins from there anymore. Please remove it by hand."
 msgstr ""
+"Avís: el directori wiki-macros a l'entorn no és buit, però el Trac\n"
+"ja no carrega connectors des d'eixa ubicació. Suprimiu-lo a mà."
 
 #: trac/env.py:819
 #, python-format
@@ -412,6 +414,8 @@ msgid ""
 "Error while removing wiki-macros: %(err)s\n"
 "Trac doesn't load plugins from wiki-macros anymore. Please remove it by hand."
 msgstr ""
+"S'ha produït un error en suprimir wiki-macros: %(err)s\n"
+"El trac ja no carrega connectors des de wiki-macros. Suprimiu-lo a mà."
 
 #: trac/env.py:821
 #, python-format
@@ -444,11 +448,11 @@ msgstr "No es pot enviar correu electrònic degut a una crisi d'identitat."
 #: trac/notification.py:321
 #, python-format
 msgid "Neither %(from_)s nor %(reply_to)s are specified in the configuration."
-msgstr ""
+msgstr "No s'ha especificat %(from_)s o %(reply_to)s a la configuració."
 
 #: trac/notification.py:322
 msgid "SMTP Notification Error"
-msgstr ""
+msgstr "Error de notificació SMTP"
 
 #: trac/notification.py:331
 msgid "Header length is too short"
@@ -491,7 +495,7 @@ msgstr "Accions disponibles:"
 
 #: trac/perm.py:656 trac/admin/web_ui.py:334
 msgid "All upper-cased tokens are reserved for permission names"
-msgstr ""
+msgstr "Els testimonis en majúscules són reservats per a noms de permisos"
 
 #: trac/resource.py:336
 #, python-format
@@ -568,7 +572,7 @@ msgid ""
 " This name will be used in page titles and descriptions.\n"
 msgstr ""
 "\n"
-"Trac us farà algunes preguntes sobre el vostre entorn per\n"
+"El Trac us farà algunes preguntes sobre el vostre entorn per\n"
 "a inicialitzar i preparar la base de dades del projecte.\n"
 "\n"
 " Introduïu el nom del projecte.\n"
@@ -643,6 +647,17 @@ msgid ""
 "you'll need to check again your trac.ini file and the [trac] \n"
 "repository_type and repository_path settings.\n"
 msgstr ""
+"\n"
+"---------------------------------------------------------------------\n"
+"Avís: no s'ha pogut indexar el dipòsit per defecte.\n"
+"\n"
+"Això pot passar per diverses raons: tipus de dipòsit erroni,\n"
+"manca de una biblioteca de tercers per a aquest tipus de\n"
+"dipòsit, manca del dipòsit al camí del dipòsit especificat...\n"
+"\n"
+"Podeu, malgrat això, començar a usar l'entorn del Trac, però\n"
+"haureu de comprovar de nou el fitxer trac.ini i els paràmetres\n"
+"repository_type i repository_path de la secció [trac].\n"
 
 #: trac/admin/console.py:476
 #, python-format
@@ -976,6 +991,8 @@ msgid ""
 "You can remove all items from this list to completely hide this\n"
 "              field from the user interface."
 msgstr ""
+"Podeu suprimir tots els elements d'aquesta llista per a amagar\n"
+"              completament aquest camp de la interfície d'usuari."
 
 #: trac/admin/templates/admin_components.html:107
 #: trac/admin/templates/admin_enums.html:78
@@ -985,21 +1002,23 @@ msgid ""
 "As long as you don't add any items to the list, this field\n"
 "            will remain completely hidden from the user interface."
 msgstr ""
+"Mentre no afegiu cap element a la llista, aquest camp romandrà\n"
+"            amagat completament de la interfície d'usuari."
 
 #: trac/admin/templates/admin_enums.html:14
 #, python-format
 msgid "Manage %(label_plural)s"
-msgstr ""
+msgstr "Gestiona %(label_plural)s"
 
 #: trac/admin/templates/admin_enums.html:19
 #, python-format
 msgid "Modify %(label_singular)s"
-msgstr ""
+msgstr "Gestiona %(label_singular)s"
 
 #: trac/admin/templates/admin_enums.html:33
 #, python-format
 msgid "Add %(label_singular)s"
-msgstr ""
+msgstr "Afegeix %(label_singular)s"
 
 #: trac/admin/templates/admin_enums.html:48
 msgid "Order"
@@ -1028,6 +1047,9 @@ msgid ""
 "If you specify a relative path, the log file will be stored inside the\n"
 "            [1:log] directory of the project environment ([2:%(dir)s])."
 msgstr ""
+"Si especifiqueu un camí relatiu, el fitxer de registre s'emmagatzemarà\n"
+"            dins del directori de [1:registres] de l'entorn del projecte\n"
+"            ([2:%(dir)s])."
 
 #: trac/admin/templates/admin_milestones.html:10 trac/ticket/admin.py:241
 #: trac/ticket/roadmap.py:875
@@ -1160,10 +1182,12 @@ msgid ""
 "The web server does not have sufficient permissions to store files in\n"
 "            the environment plugins directory."
 msgstr ""
+"El servidor web no té permisos suficients per a emmagatzemar fitxers\n"
+"            al directori de connectors de l'entorn."
 
 #: trac/admin/templates/admin_plugins.html:57
 msgid "Upload a plugin packaged as Python egg."
-msgstr "Puja un conncetor empaquetat com a ou de Python."
+msgstr "Puja un connector empaquetat com a ou de Python."
 
 #: trac/admin/templates/admin_plugins.html:62
 msgid "Install"
@@ -1245,7 +1269,7 @@ msgstr "El tipus de base de dades «%(scheme)s no és implementat"
 msgid ""
 "Unknown scheme \"%(scheme)s\"; database connection string must start with "
 "{scheme}:/"
-msgstr ""
+msgstr "L'esquema «%(scheme)s» és desconegut. La cadena de connexió a la base de dades ha de començar amb {scheme}:/"
 
 #: trac/db/mysql_backend.py:80
 msgid "Cannot load Python bindings for MySQL"
@@ -1254,7 +1278,7 @@ msgstr "No s'han pogut carregar les vinculacions de Python per a MySQL"
 #: trac/db/pool.py:118
 #, python-format
 msgid "Unable to get database connection within %(time)d seconds"
-msgstr ""
+msgstr "No s'ha pogut obtenir la connexió a la base de dades en %(time)d segons"
 
 #: trac/db/postgres_backend.py:81
 msgid "Cannot load Python bindings for PostgreSQL"
@@ -1284,22 +1308,22 @@ msgstr "No s'ha trobat la base de dades «%(path)s»."
 msgid ""
 "The user %(user)s requires read _and_ write permissions to the database file "
 "%(path)s and the directory it is located in."
-msgstr ""
+msgstr "L'usuari %(user)s requereix permisos de lectura _i_ escriptura al fitxer de la base de dades %(path)s i al directori on està ubicat."
 
 #: trac/mimeview/api.py:675 trac/mimeview/api.py:686
 #, python-format
 msgid "No available MIME conversions from %(old)s to %(new)s"
-msgstr ""
+msgstr "No hi ha cap conversió MIME disponible de %(old)s a %(new)s"
 
 #: trac/mimeview/api.py:801
 #, python-format
 msgid "HTML preview using %(renderer)s failed (%(err)s)"
-msgstr ""
+msgstr "Ha fallat la previsualització HTML emprant %(renderer)s (%(err)s)"
 
 #: trac/mimeview/api.py:831
 #, python-format
 msgid "Can't use %(annotator)s annotator: %(error)s"
-msgstr ""
+msgstr "No es pot emprar l'anotador %(annotator)s: %(error)s"
 
 #: trac/mimeview/api.py:1080 trac/templates/error.html:148
 msgid "Line"
@@ -1321,7 +1345,7 @@ msgstr "s'ha suprimit el fitxer %(deleted)s"
 
 #: trac/mimeview/patch.py:248
 msgid "this hunk was shorter than expected"
-msgstr ""
+msgstr "aquesta estrofa és més curta del que s'esperava"
 
 #: trac/mimeview/pygments.py:126 trac/prefs/templates/prefs_pygments.html:9
 msgid "Syntax Highlighting"
@@ -1390,6 +1414,12 @@ msgid ""
 "      easier to remember at any time if you wish to load your settings\n"
 "      in a different web browser."
 msgstr ""
+"La clau de sessió s'utilitza per a identificar els\n"
+"      paràmetres personals i dades de la sessió emmagatzemats\n"
+"      al servidor. Tot i que per defecte es genera automàticament,\n"
+"      podeu canviar-ho a una cosa més fàcil de recordar en quasevol\n"
+"      moment per si voleu carregar les vostres preferències a un\n"
+"      altre navegador."
 
 #: trac/prefs/templates/prefs_advanced.html:26
 msgid "Restore session:"
@@ -1405,6 +1435,9 @@ msgid ""
 "      corresponding session key below. This lets you share settings between\n"
 "      multiple computers and web browsers."
 msgstr ""
+"Podeu carregar una sessió creada anteriorment introduint la clau de la\n"
+"      sessió corresponent a continuació. Això us permet compartir les\n"
+"      preferències entre múltiples ordinadors i navegadors web."
 
 #: trac/prefs/templates/prefs_datetime.html:16
 msgid "Time zone:"
@@ -1454,6 +1487,8 @@ msgid ""
 "        A positive offset is used to indicate a timezone at the east of "
 "Greenwich, i.e. ahead of Universal Time."
 msgstr ""
+"Nota: L'Hora Universal Coordinada (UTC) també és coneguda com a Greenwich Mean Time (GMT).[1:]\n"
+"        Un òfset positiu indica un fus horari a l'est de Greenwich, és a dir, per davant de l'Hora Universal."
 
 #: trac/prefs/templates/prefs_general.html:15
 msgid "Full name:"
@@ -1477,6 +1512,9 @@ msgid ""
 "        email address and full name, which is used for email\n"
 "        notification and RSS feeds, for example."
 msgstr ""
+"Aquesta informació s'empra per a associar el vostre nom d'usuari amb\n"
+"        la vostra adreça de correu i nom complet, que s'utilitzen a\n"
+"        les notificacions i canals RSS, per exemple."
 
 #: trac/prefs/templates/prefs_keybindings.html:18
 msgid "Enable access keys"
@@ -1492,6 +1530,13 @@ msgid ""
 "      [1:TracAccessibility]\n"
 "      for more information on access keys."
 msgstr ""
+"Aquest lloc proveeix dreceres de teclat per a\n"
+"      accedir més ràpidament a certes funcions del lloc. Com aquestes\n"
+"      dreceres poden causar conflictes amb les dreceres proveïdes pel\n"
+"      sistema d'escriptori o navegador web, són inhabilitades per\n"
+"      defecte. Vegeu\n"
+"      [1:TracAccessibility]\n"
+"      per a obtenir més informació sobre les tecles d'accés."
 
 #: trac/prefs/templates/prefs_language.html:14
 msgid "Language:"
@@ -1507,12 +1552,18 @@ msgid ""
 "      displayed on this site to use your language instead of that of the\n"
 "      server."
 msgstr ""
+"Configurar la llengua farà que tot el text\n"
+"      d'aquest lloc es mostre en la vostra llengua en lloc de la del\n"
+"      servidor."
 
 #: trac/prefs/templates/prefs_language.html:25
 msgid ""
 "The 'default language' option uses the browser's\n"
 "        language negotiation feature to select the appropriate language."
 msgstr ""
+"L'opció «Llengua per defecte» empra la funcionalitat\n"
+"        de negociació de llengua del navegador per a seleccionar la\n"
+"        llengua apropiada."
 
 #: trac/prefs/templates/prefs_pygments.html:36
 msgid ""
@@ -1544,7 +1595,7 @@ msgstr "Navega pel camí %(path)s del dipòsit"
 #: trac/search/web_ui.py:193
 #, python-format
 msgid "Search query too short. Query must be at least %(num)s characters long."
-msgstr ""
+msgstr "La consulta de cerca és massa curta. La consulta ha de tenir almenys %(num)s caràcters."
 
 #: trac/search/web_ui.py:232 trac/ticket/query.py:763
 #: trac/ticket/report.py:397
@@ -1584,6 +1635,8 @@ msgid ""
 "[1:Note:] See [2:TracSearch]\n"
 "        for help on searching."
 msgstr ""
+"[1:Nota:] Vegeu [2:TracSearch]\n"
+"        per a obtenir ajuda sobre les cerques."
 
 #: trac/templates/about.html:26
 msgid "Trac: Integrated SCM & Project Management"
@@ -1597,6 +1650,11 @@ msgid ""
 "        systems, and a number of convenient ways to stay on top of events\n"
 "        and changes within a project."
 msgstr ""
+"El Trac és un gestor de projectes de programari i gestor d'errors/problemes\n"
+"        basat en web, que enfatitza la facilitat d'ús i la simplicitat.\n"
+"        Proveeix un Wiki integrat, una interfície per a sistemes de control\n"
+"        de versions i un nombre de maneres convenients d'estar informat dels\n"
+"        esdeveniments i canvis que tenen lloc a un projecte."
 
 #: trac/templates/about.html:36
 msgid ""
@@ -1605,6 +1663,10 @@ msgid ""
 "        [2:online]\n"
 "        as well as in the [3:COPYING] file included in the distribution."
 msgstr ""
+"El Trac es distribueix sota la Llicència BSD modificada.[1:]\n"
+"        Es pot trobar el text complet de la llicència\n"
+"        [2:en línia]\n"
+"        així com al fitxer [3:COPYING] inclòs a la distribució."
 
 #: trac/templates/about.html:41
 msgid "python powered"
@@ -1662,7 +1724,7 @@ msgstr "– Adjunts"
 #: trac/templates/attachment.html:14
 #, python-format
 msgid "%(filename)s on %(parent)s – Attachment"
-msgstr ""
+msgstr "%(filename)s a %(parent)s – Adjunt"
 
 #: trac/templates/attachment.html:29
 #, python-format
@@ -1713,7 +1775,7 @@ msgstr "Adjunta un altre fitxer"
 #: trac/versioncontrol/templates/dir_entries.html:16
 #, python-format
 msgid "%(size)s bytes"
-msgstr ""
+msgstr "%(size)s octets"
 
 #: trac/templates/attachment.html:96
 #, python-format
@@ -1732,11 +1794,13 @@ msgid ""
 "Property %(name)s\n"
 "                  changed from %(old)s to %(new)s"
 msgstr ""
+"S'ha canviat la propietat %(name)s\n"
+"                  de %(old)s a %(new)s"
 
 #: trac/templates/diff_div.html:76
 #, python-format
 msgid "Property %(name)s set to %(value)s"
-msgstr ""
+msgstr "S'ha establert la propietat %(name)s a %(value)s"
 
 #: trac/templates/diff_div.html:79
 #, python-format
@@ -1766,10 +1830,14 @@ msgid ""
 "      [3:[4:]\n"
 "             lines around each change]"
 msgstr ""
+"[1:[2:]\n"
+"             Mostra]\n"
+"      [3:[4:]\n"
+"             línies al voltant de cada canvi]"
 
 #: trac/templates/diff_options.html:28
 msgid "Show the changes in full context"
-msgstr ""
+msgstr "Mostra els canvis en el context complet"
 
 #: trac/templates/diff_options.html:32
 msgid "Ignore:"
@@ -1805,6 +1873,10 @@ msgid ""
 "          [2:Version %(new)s] of\n"
 "          [3:%(name)s]"
 msgstr ""
+"Canvis entre la\n"
+"          [1:versió %(old)s] i la\n"
+"          [2:versió %(new)s] de\n"
+"          [3:%(name)s]"
 
 #: trac/templates/diff_view.html:23
 #, python-format
@@ -1814,6 +1886,10 @@ msgid ""
 "          [2:Version %(new)s] of\n"
 "          [3:%(name)s]"
 msgstr ""
+"Canvis entre la\n"
+"          [1:versió inicial] i la\n"
+"          [2:versió %(new)s] de\n"
+"          [3:%(name)s]"
 
 #: trac/templates/diff_view.html:28
 #, python-format
@@ -1822,6 +1898,9 @@ msgid ""
 "          [1:Version %(new)s] of\n"
 "          [2:%(name)s]"
 msgstr ""
+"Canvis des de la\n"
+"          [1:versió %(new)s] de\n"
+"          [2:%(name)s]"
 
 #: trac/templates/diff_view.html:43
 #: trac/versioncontrol/templates/changeset.html:136
@@ -1841,7 +1920,7 @@ msgstr "%(date)s (fa %(duration)s)"
 #: trac/templates/diff_view.html:55
 #, python-format
 msgid "(IP: %(ipnr)s)"
-msgstr ""
+msgstr "(IP: %(ipnr)s)"
 
 #: trac/templates/diff_view.html:57
 #: trac/ticket/templates/ticket_notify_email.txt:21
@@ -1882,9 +1961,10 @@ msgstr "Modificat"
 msgid "Error"
 msgstr "Error"
 
+# Això és part d'una frase "podeu crear un informe d'error..." jm
 #: trac/templates/error.html:65
 msgid "Create"
-msgstr "Crea"
+msgstr "crear"
 
 #: trac/templates/error.html:80
 msgid "Oops…"
@@ -1892,7 +1972,7 @@ msgstr "Oops…"
 
 #: trac/templates/error.html:82
 msgid "Trac detected an internal error:"
-msgstr "Trac ha detectat un error intern:"
+msgstr "El Trac ha detectat un error intern:"
 
 #: trac/templates/error.html:87
 msgid ""
@@ -1902,6 +1982,11 @@ msgid ""
 "                    Trac administrator] with the information needed to\n"
 "                reproduce the issue."
 msgstr ""
+"S'ha produït un error intern al Trac.\n"
+"                És recomanable que informeu\n"
+"                l'[1:\n"
+"                    administrador del Trac] amb la informació necessària per\n"
+"                a reproduir el problema."
 
 #: trac/templates/error.html:95
 #, python-format
@@ -1934,19 +2019,21 @@ msgid ""
 "If you think this should work and you can reproduce the problem,\n"
 "              you should consider creating a bug report."
 msgstr ""
+"Si penseu que això hauria de funcionar i podeu reproduir el problema,\n"
+"              hauríeu de crear un informe d'error."
 
 #: trac/templates/error.html:113
 #, python-format
 msgid "Note that the %(name)s plugin seems to be involved."
-msgstr ""
+msgstr "Teniu en compte que sembla que el connector %(name)s està involucrat."
 
 #: trac/templates/error.html:116
 msgid "Note that the following plugins seem to be involved:"
-msgstr ""
+msgstr "Teniu en compte que els connectors següents semblen estar involucrats:"
 
 #: trac/templates/error.html:120
 msgid "Please report this issue to the plugin maintainer."
-msgstr ""
+msgstr "Informeu d'aquest problema al mantenidor del connector."
 
 #: trac/templates/error.html:122
 msgid ""
@@ -1959,6 +2046,13 @@ msgid ""
 "                [3:mailing list]\n"
 "                instead of creating a ticket."
 msgstr ""
+"Abans de fer-ho, però, proveu de\n"
+"                [1:2:cercar]\n"
+"                casos similars], ja que és probable que aquest problema\n"
+"                ja haja estat reportat abans. Si teniu preguntes sobre\n"
+"                la instaŀlació i configuració del Trac o els seus\n"
+"                connectors, proveu amb la [3:llista de correu]\n"
+"                en lloc de crear un tiquet."
 
 #: trac/templates/error.html:131
 #, python-format
@@ -1966,6 +2060,8 @@ msgid ""
 "Otherwise, please %(create)s a new bug report\n"
 "                describing the problem and explain how to reproduce it."
 msgstr ""
+"D'altra forma, %(create)s un informe d'error nou\n"
+"                descrivint el problema i expliqueu com reproduir-ho."
 
 #: trac/templates/error.html:135
 msgid "Python Traceback"
@@ -1982,6 +2078,9 @@ msgid ""
 "                        line [2:%(line)s], in]\n"
 "                        [3:%(function)s]"
 msgstr ""
+"[1:Fitxer \"%(file)s\",\n"
+"                        línia [2:%(line)s], en]\n"
+"                        [3:%(function)s]"
 
 #: trac/templates/error.html:146
 msgid "Code fragment:"
@@ -1994,7 +2093,7 @@ msgstr "Variables locals:"
 #: trac/templates/error.html:172
 #, python-format
 msgid "File \"%(file)s\", line %(line)s, in %(function)s"
-msgstr ""
+msgstr "Fitxer \"%(file)s\", línia %(line)s, en %(function)s"
 
 #: trac/templates/error.html:175
 msgid "Switch to plain text view"
@@ -2048,7 +2147,7 @@ msgstr "Mostra aquesta versió"
 #: trac/templates/history_view.html:46
 #, python-format
 msgid "IP-Address: %(ipnr)s"
-msgstr ""
+msgstr "Adreça-IP: %(ipnr)s"
 
 #: trac/templates/index.html:8 trac/templates/index.html:12
 msgid "Available Projects"
@@ -2102,7 +2201,7 @@ msgstr "(El fitxer és buit)"
 #, python-format
 msgid ""
 "[1:HTML preview not available], since the file size exceeds %(size)s bytes."
-msgstr ""
+msgstr "[1:La previsualització HTML no és disponible], ja que el fitxer excedeix els %(size)s octets."
 
 #: trac/templates/preview_file.html:22
 msgid ""
@@ -2182,15 +2281,15 @@ msgstr "El nom del component és invàlid."
 #: trac/ticket/admin.py:118
 #, python-format
 msgid "Component %(name)s already exists."
-msgstr ""
+msgstr "El component %(name)s ja existeix."
 
 #: trac/ticket/admin.py:125
 msgid "No component selected"
-msgstr ""
+msgstr "No s'ha seleccionat cap component"
 
 #: trac/ticket/admin.py:133
 msgid "The selected components have been removed."
-msgstr ""
+msgstr "S'han suprimit els components seleccionats."
 
 #: trac/ticket/admin.py:241 trac/ticket/api.py:295
 #: trac/ticket/templates/milestone_view.html:10
@@ -2200,7 +2299,7 @@ msgstr "Fita"
 
 #: trac/ticket/admin.py:270 trac/ticket/roadmap.py:663
 msgid "Completion date may not be in the future"
-msgstr ""
+msgstr "La data de compleció no pot estar en el futur"
 
 #: trac/ticket/admin.py:272
 msgid "Invalid Completion Date"
@@ -2209,11 +2308,11 @@ msgstr "La data de compleció és invàlida"
 #: trac/ticket/admin.py:299
 #, python-format
 msgid "The milestone \"%(name)s\" has been added."
-msgstr ""
+msgstr "S'ha afegit la fita «%(name)s."
 
 #: trac/ticket/admin.py:304 trac/ticket/model.py:978 trac/ticket/model.py:1002
 msgid "Invalid milestone name."
-msgstr ""
+msgstr "El nom de la fita és invàlid."
 
 #: trac/ticket/admin.py:305
 #, python-format
@@ -2226,30 +2325,30 @@ msgstr "No s'ha seleccionat cap fita"
 
 #: trac/ticket/admin.py:321
 msgid "The selected milestones have been removed."
-msgstr ""
+msgstr "S'han suprimit les fites seleccionades."
 
 #: trac/ticket/admin.py:480
 #, python-format
 msgid "The version \"%(name)s\" has been added."
-msgstr ""
+msgstr "S'ha afegit la versió «%(name)s."
 
 #: trac/ticket/admin.py:485 trac/ticket/model.py:1121
 #: trac/ticket/model.py:1141
 msgid "Invalid version name."
-msgstr ""
+msgstr "El nom de la versió és invàlid."
 
 #: trac/ticket/admin.py:486
 #, python-format
 msgid "Version %(name)s already exists."
-msgstr ""
+msgstr "La versió %(name)s ja existeix."
 
 #: trac/ticket/admin.py:493
 msgid "No version selected"
-msgstr ""
+msgstr "No s'ha seleccionat cap versió"
 
 #: trac/ticket/admin.py:501
 msgid "The selected versions have been removed."
-msgstr ""
+msgstr "S'han suprimit les versions seleccionades."
 
 #: trac/ticket/admin.py:559
 msgid "Time"
@@ -2285,20 +2384,21 @@ msgstr "S'han suprimit els valors de %(field)s seleccionats."
 msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. The "
 "default value has not been saved."
-msgstr ""
+msgstr "S'ha produït un error en escriure al trac.ini. Assegureu-vos que el servidor web ho pot escriure. No s'ha desat el valor per defecte."
 
 #: trac/ticket/admin.py:684
 msgid "Order numbers must be unique"
-msgstr ""
+msgstr "Els números d'ordre han de ser únics"
 
 #: trac/ticket/admin.py:746
 msgid "Possible Values"
 msgstr "Valors possibles"
 
+# FIXME: comprovar. jm
 #: trac/ticket/admin.py:768
 #, python-format
 msgid "Invalid up/down value: %(value)s"
-msgstr ""
+msgstr "El valor amunt/avall és invàlid: %(value)s"
 
 #: trac/ticket/admin.py:789 trac/ticket/api.py:294
 msgid "Priority"
@@ -2339,7 +2439,7 @@ msgstr "<número> ha de ser un nombre"
 #: trac/ticket/admin.py:840
 #, python-format
 msgid "Ticket #%(num)s and all associated data removed."
-msgstr ""
+msgstr "S'ha suprimit el tiquet #%(num)s i totes les dades associades."
 
 #: trac/ticket/api.py:277
 msgid "Summary"
@@ -2373,7 +2473,7 @@ msgstr "Creat"
 #: trac/ticket/api.py:483
 #, python-format
 msgid "Comment %(cnum)s for Ticket #%(id)s"
-msgstr ""
+msgstr "Comentari %(cnum)s per al tiquet #%(id)s"
 
 #: trac/ticket/api.py:504
 #, python-format
@@ -2382,11 +2482,11 @@ msgstr "Tiquet #%(shortname)s"
 
 #: trac/ticket/default_workflow.py:233
 msgid "Current state no longer exists"
-msgstr ""
+msgstr "L'estat actual ja no existeix"
 
 #: trac/ticket/default_workflow.py:235
 msgid "The ticket will be disowned"
-msgstr ""
+msgstr "S'eliminarà el propietari del tiquet"
 
 #: trac/ticket/default_workflow.py:253 trac/ticket/default_workflow.py:272
 #, python-format
@@ -2417,7 +2517,7 @@ msgstr "El propietari canviarà de %(current_owner)s to %(authname)s"
 msgid ""
 "Your workflow attempts to set a resolution but none is defined "
 "(configuration issue, please contact your Trac admin)."
-msgstr ""
+msgstr "El vostre fluxe de treball intenta establir una resolució però no s'ha definit cap (això és un problema de configuració, contacteu amb l'administrador del Trac)."
 
 #: trac/ticket/default_workflow.py:298 trac/ticket/default_workflow.py:308
 #, python-format
@@ -2427,25 +2527,25 @@ msgstr "com %(resolution)s"
 #: trac/ticket/default_workflow.py:300
 #, python-format
 msgid "The resolution will be set to %(name)s"
-msgstr ""
+msgstr "S'establirà la resolució a %(name)s"
 
 #: trac/ticket/default_workflow.py:311
 msgid "The resolution will be set"
-msgstr ""
+msgstr "S'establirà la resolució"
 
 #: trac/ticket/default_workflow.py:313
 msgid "The resolution will be deleted"
-msgstr ""
+msgstr "Se suprimirà la resolució"
 
 #: trac/ticket/default_workflow.py:316
 #, python-format
 msgid "as %(status)s "
-msgstr ""
+msgstr "com %(status)s"
 
 #: trac/ticket/default_workflow.py:320
 #, python-format
 msgid "Next status will be '%(name)s'"
-msgstr ""
+msgstr "L'estat següent serà «%(name)s»"
 
 #: trac/ticket/model.py:105
 #, python-format
@@ -2454,7 +2554,7 @@ msgstr "El tiquet %(id)s no existeix."
 
 #: trac/ticket/model.py:106
 msgid "Invalid ticket number"
-msgstr ""
+msgstr "El número de tiquet és invàlid"
 
 #: trac/ticket/model.py:143
 msgid "Multi-values fields not supported yet"
@@ -2468,7 +2568,7 @@ msgstr "El %(type)s %(name)s no existeix."
 #: trac/ticket/model.py:701 trac/ticket/model.py:728
 #, python-format
 msgid "Invalid %(type)s name."
-msgstr ""
+msgstr "El nom de %(type)s és invàlid."
 
 #: trac/ticket/model.py:806
 #, python-format
@@ -2482,7 +2582,7 @@ msgstr "La fita %(name)s no existeix."
 
 #: trac/ticket/model.py:923
 msgid "Invalid milestone name"
-msgstr ""
+msgstr "El nom de la fita és invàlid"
 
 #: trac/ticket/model.py:1065
 msgid "Open (by due date)"
@@ -2490,11 +2590,11 @@ msgstr "Oberts (per data de venciment)"
 
 #: trac/ticket/model.py:1066
 msgid "Open (no due date)"
-msgstr "Open (sense data de venciment)"
+msgstr "Oberts (sense data de venciment)"
 
 #: trac/ticket/model.py:1069
 msgid "Closed"
-msgstr "Tancat"
+msgstr "Tancats"
 
 #: trac/ticket/model.py:1086
 #, python-format
@@ -2503,35 +2603,35 @@ msgstr "La versió %(name)s no existeix."
 
 #: trac/ticket/query.py:54
 msgid "Invalid query constraint value"
-msgstr ""
+msgstr "El valor de la restricció de la consulta és invàlid"
 
 #: trac/ticket/query.py:88
 #, python-format
 msgid "Query page %(page)s is invalid."
-msgstr ""
+msgstr "La pàgina de consulta %(page)s és invàlida."
 
 #: trac/ticket/query.py:103
 #, python-format
 msgid "Query max %(max)s is invalid."
-msgstr ""
+msgstr "El màxim de consulta %(max)s és invàlid."
 
 #: trac/ticket/query.py:159
 msgid "Query filter requires field and constraints separated by a \"=\""
-msgstr ""
+msgstr "El filtre de consulta requereix que els camps i restriccions siguen separats per un «=»"
 
 #: trac/ticket/query.py:172
 msgid "Query filter requires field name"
-msgstr ""
+msgstr "El filtre de consulta requereix un nom de camp."
 
 #: trac/ticket/query.py:305
 #, python-format
 msgid "Page %(page)s is beyond the number of pages in the query"
-msgstr ""
+msgstr "La pàgina %(page)s és més enllà del nombre de pàgines a la consulta"
 
 #: trac/ticket/query.py:562
 #, python-format
 msgid "Invalid ticket id list: %(value)s"
-msgstr ""
+msgstr "La llista d'id de tiquets és invàlida: %(value)s"
 
 #: trac/ticket/query.py:662 trac/ticket/query.py:670
 msgid "contains"
@@ -2601,7 +2701,7 @@ msgstr "Informes disponibles"
 #: trac/ticket/query.py:1151
 #, python-format
 msgid "[Error: %(error)s]"
-msgstr ""
+msgstr "[Error: %(error)s]"
 
 #: trac/ticket/query.py:1285
 msgid "No results"
@@ -2624,7 +2724,7 @@ msgstr "S'ha creat l'informe."
 #: trac/ticket/report.py:172
 #, python-format
 msgid "The report {%(id)d} has been deleted."
-msgstr ""
+msgstr "S'ha suprimit l'informe {%(id)d}."
 
 #: trac/ticket/report.py:199
 #, python-format
@@ -2673,7 +2773,7 @@ msgstr "Consulta SQL"
 #: trac/ticket/report.py:598
 #, python-format
 msgid "The following arguments are missing: %(args)s"
-msgstr ""
+msgstr "Manquen els arguments següents: %(args)s"
 
 #: trac/ticket/report.py:612
 #, python-format
@@ -2683,7 +2783,7 @@ msgstr "L'informe {%(num)s} no té consulta SQL."
 #: trac/ticket/report.py:642
 #, python-format
 msgid "Query parameter \"sort=%(sort_col)s\"  is invalid"
-msgstr ""
+msgstr "El paràmetre de la consulta «sort=%(sort_col)s» és invàlid"
 
 #: trac/ticket/roadmap.py:205
 msgid "ticket status"
@@ -2725,7 +2825,7 @@ msgstr "Fita %(name)s"
 #: trac/ticket/roadmap.py:464
 #, python-format
 msgid "Ticket #%(num)s: %(summary)s"
-msgstr ""
+msgstr "Tiquet #%(num)s: %(summary)s"
 
 #: trac/ticket/roadmap.py:525
 msgid "Milestones reached"
@@ -2739,12 +2839,12 @@ msgstr "S'ha completat la fita %(name)s"
 #: trac/ticket/roadmap.py:613
 #, python-format
 msgid "The milestone \"%(name)s\" has been deleted."
-msgstr ""
+msgstr "S'ha suprimit la fita «%(name)s»."
 
 #: trac/ticket/roadmap.py:652
 #, python-format
 msgid "Milestone \"%(name)s\" already exists, please choose another name."
-msgstr ""
+msgstr "La fita «%(name)s ja existeix, trieu un altre nom."
 
 #: trac/ticket/roadmap.py:655
 msgid "You must provide a name for the milestone."
@@ -2760,7 +2860,7 @@ msgstr "Tiquet nou"
 
 #: trac/ticket/web_ui.py:168
 msgid "id can't be set for a new ticket request."
-msgstr ""
+msgstr "no es pot establir l'id per a una petició de tiquet nou."
 
 #: trac/ticket/web_ui.py:217 trac/ticket/web_ui.py:268
 #: trac/versioncontrol/web_ui/changeset.py:1026
@@ -2796,13 +2896,13 @@ msgstr "actualitzat"
 #, python-format
 msgid "%(labels)s changed"
 msgid_plural "%(labels)s changed"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(labels)s canviat"
+msgstr[1] "%(labels)s canviats"
 
 #: trac/ticket/web_ui.py:345
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) %(verb)s"
-msgstr ""
+msgstr "Tiquet %(ticketref)s (%(summary)s) %(verb)s"
 
 #: trac/ticket/web_ui.py:500
 #, python-format
@@ -2814,7 +2914,7 @@ msgstr "L'acció «%(name)s» no és disponible."
 msgid ""
 "Please review your configuration, probably starting with %(section)s in your "
 "%(tracini)s."
-msgstr ""
+msgstr "Comproveu la configuració, començant per la secció %(section)s al %(tracini)s."
 
 #: trac/ticket/web_ui.py:580 trac/ticket/web_ui.py:797
 #, python-format
@@ -2866,7 +2966,7 @@ msgstr "inicial"
 #: trac/ticket/web_ui.py:825
 #, python-format
 msgid "Property %(label)s %(rendered)s"
-msgstr ""
+msgstr "Propietat %(label)s %(rendered)s"
 
 #: trac/ticket/web_ui.py:870 trac/ticket/web_ui.py:993
 #: trac/versioncontrol/web_ui/changeset.py:370 trac/wiki/web_ui.py:450
@@ -2895,12 +2995,12 @@ msgstr "Historial de comentaris del tiquet"
 #: trac/ticket/web_ui.py:1001
 #, python-format
 msgid "Ticket #%(num)s, comment %(cnum)d"
-msgstr ""
+msgstr "Tiquet #%(num)s, comentari %(cnum)d"
 
 #: trac/ticket/web_ui.py:959
 #, python-format
 msgid "No version %(version)d for comment %(cnum)d on ticket #%(ticket)s"
-msgstr ""
+msgstr "No hi ha una versió %(version)d per al comentari %(cnum)d al tiquet #%(ticket)s"
 
 #: trac/ticket/web_ui.py:999
 msgid "Ticket Comment Diff"
@@ -2910,8 +3010,8 @@ msgstr "Diff dels comentaris del tiquet"
 #, python-format
 msgid "%(labels)s set"
 msgid_plural "%(labels)s set"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(labels)s establida"
+msgstr[1] "%(labels)s establides"
 
 #: trac/ticket/web_ui.py:1074
 #, python-format
@@ -2922,7 +3022,7 @@ msgstr[1] "%(labels)s suprimides"
 
 #: trac/ticket/web_ui.py:1075 trac/ticket/web_ui.py:1626
 msgid "; "
-msgstr ""
+msgstr "; "
 
 #: trac/ticket/web_ui.py:1096
 msgid "No permission to edit the ticket description."
@@ -2973,26 +3073,26 @@ msgstr ""
 
 #: trac/ticket/web_ui.py:1175
 msgid "Invalid comment threading identifier"
-msgstr ""
+msgstr "L'identificador de fils dels comentaris és invàlid"
 
 #: trac/ticket/web_ui.py:1182
 #, python-format
 msgid "The ticket field '%(field)s' is invalid: %(message)s"
-msgstr ""
+msgstr "The ticket field '%(field)s' is invalid: %(message)s"
 
 #: trac/ticket/web_ui.py:1201
 #, python-format
 msgid ""
 "The ticket has been created, but an error occurred while sending "
 "notifications: %(message)s"
-msgstr ""
+msgstr "S'ha creat el tiquet, però s'ha produït un error en enviar les notificacions: %(message)s"
 
 #: trac/ticket/web_ui.py:1211
 #, python-format
 msgid ""
 "Your ticket %(ticketref)s has been created, but you don't have permission to "
 "view it."
-msgstr ""
+msgstr "S'ha creat el vostre tiquet %(ticketref)s, però no teniu permís per a mostrar-ho."
 
 #. TRANSLATOR: The 'change' has been saved... (link)
 #: trac/ticket/web_ui.py:1242
@@ -3096,7 +3196,7 @@ msgstr "Esteu segur que voleu suprimir aquesta fita?"
 
 #: trac/ticket/templates/milestone_delete.html:29
 msgid "Retarget associated tickets to milestone"
-msgstr ""
+msgstr "Assigna els tiquets associats a la fita"
 
 #: trac/ticket/templates/milestone_delete.html:41
 #: trac/ticket/templates/milestone_view.html:107
@@ -3109,6 +3209,9 @@ msgid ""
 "      [2:TracRoadmap] for help on using\n"
 "      the roadmap."
 msgstr ""
+"[1:Nota:] Vegeu\n"
+"      [2:TracRoadmap] per a obtenir ajuda sobre\n"
+"      l'ús de la planifiació."
 
 #: trac/ticket/templates/milestone_edit.html:11
 #: trac/ticket/templates/milestone_edit.html:36
@@ -3130,7 +3233,7 @@ msgstr ""
 
 #: trac/ticket/templates/milestone_edit.html:71
 msgid "Retarget associated open tickets to milestone:"
-msgstr ""
+msgstr "Assigna els tiquets oberts associats a la fita:"
 
 #: trac/ticket/templates/milestone_edit.html:92
 #: trac/ticket/templates/ticket.html:398
@@ -3152,6 +3255,9 @@ msgid ""
 "        [2:TracRoadmap] for help on using\n"
 "        the roadmap."
 msgstr ""
+"[1:Nota:] Vegeu\n"
+"        [2:TracRoadmap] per a obtenir ajuda sobre l'ús\n"
+"        de la planificació."
 
 #: trac/ticket/templates/milestone_view.html:11
 msgid "Edit this milestone"
@@ -3183,7 +3289,7 @@ msgstr "No s'ha establert cap data"
 #: trac/ticket/templates/milestone_view.html:51
 #, python-format
 msgid "%(stat_title)s by"
-msgstr ""
+msgstr "%(stat_title)s per"
 
 #: trac/ticket/templates/milestone_view.html:65
 msgid "(none)"
@@ -3200,16 +3306,16 @@ msgstr "Edita la fita"
 #, python-format
 msgid "%(num)s match"
 msgid_plural "%(num)s matches"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)s coincidència"
+msgstr[1] "%(num)s coincidències"
 
 #: trac/ticket/templates/query.html:38
 msgid "Filters"
-msgstr ""
+msgstr "Filtres"
 
 #: trac/ticket/templates/query.html:39
 msgid "Query filters"
-msgstr ""
+msgstr "Filtres de consultes"
 
 #: trac/ticket/templates/query.html:45 trac/ticket/templates/query.html:143
 msgid "Or"
@@ -3226,6 +3332,10 @@ msgid ""
 "                            [3:and]\n"
 "                            [4:]"
 msgstr ""
+"[1:entre]\n"
+"                            [2:]\n"
+"                            [3:i]\n"
+"                            [4:]"
 
 #: trac/ticket/templates/query.html:129
 msgid "And"
@@ -3255,7 +3365,7 @@ msgstr "Màxim d'elements per pàgina"
 #: trac/ticket/templates/query.html:245
 #, python-format
 msgid "Edit report {%(id)s} corresponding to this query"
-msgstr ""
+msgstr "Edita l'informe {%(id)s} que correspon a aquesta consulta"
 
 #: trac/ticket/templates/query.html:245
 msgid "Edit query"
@@ -3303,7 +3413,7 @@ msgstr "(descendent)"
 #: trac/versioncontrol/templates/sortable_th.html:18
 #, python-format
 msgid "Sort by %(col)s %(direction)s"
-msgstr ""
+msgstr "Ordena per %(col)s %(direction)s"
 
 #: trac/ticket/templates/query_results.html:45
 msgid "No tickets found"
@@ -3383,7 +3493,7 @@ msgstr "Desa l'informe"
 
 #: trac/ticket/templates/report_list.html:23
 msgid "Report"
-msgstr "Notifica"
+msgstr "Informe"
 
 #: trac/ticket/templates/report_list.html:24 trac/wiki/admin.py:200
 msgid "Title"
@@ -3691,27 +3801,27 @@ msgstr ""
 #: trac/ticket/templates/ticket_change.html:26
 #, python-format
 msgid "changed from [1:%(old)s] to [2:%(new)s]"
-msgstr ""
+msgstr "canviat de [1:%(old)s] a [2:%(new)s]"
 
 #: trac/ticket/templates/ticket_change.html:29
 #, python-format
 msgid "set to [1:%(value)s]"
-msgstr ""
+msgstr "establert a [1:%(value)s]"
 
 #: trac/ticket/templates/ticket_change.html:32
 #, python-format
 msgid "[1:%(value)s] deleted"
-msgstr ""
+msgstr "[1:%(value)s] suprimit"
 
 #: trac/ticket/templates/ticket_change.html:45
 #, python-format
 msgid "Preview changes to comment %(cnum)s"
-msgstr ""
+msgstr "Previsualitza els canvis al comentari %(cnum)s"
 
 #: trac/ticket/templates/ticket_change.html:47
 #, python-format
 msgid "Submit changes to comment %(cnum)s"
-msgstr ""
+msgstr "Envia els canvis al comentari %(cnum)s"
 
 #: trac/ticket/templates/ticket_change.html:49
 msgid "Cancel comment edit"
@@ -3939,19 +4049,20 @@ msgstr "Dipòsits"
 #: trac/versioncontrol/admin.py:203 trac/versioncontrol/admin.py:242
 #, python-format
 msgid "You should now run %(resync)s to synchronize Trac with the repository."
-msgstr ""
+msgstr "Ara haurieu d'executar %(resync)s per a sincronitzar el Trac amb el dipòsit."
 
 #: trac/versioncontrol/admin.py:208
 #, python-format
 msgid "You may have to run %(resync)s to synchronize Trac with the repository."
-msgstr ""
+msgstr "És possible que hagueu d'executar %(resync)s per a sincronitzar el Trac amb el dipòsit."
 
+# Ni gallet ni post-commit... jm
 #: trac/versioncontrol/admin.py:216
 #, python-format
 msgid ""
 "You will need to update your post-commit hook to call %(cset_added)s with "
 "the new repository name."
-msgstr ""
+msgstr "Haureu d'actualitzar el vostre gallet post-commit per a cridar a %(cset_added)s amb el nom de dipòsit nou."
 
 #: trac/versioncontrol/admin.py:238
 #, python-format
@@ -3967,7 +4078,7 @@ msgstr ""
 
 #: trac/versioncontrol/admin.py:254
 msgid "Missing arguments to add a repository."
-msgstr ""
+msgstr "Manquen arguments per a afegir un dipòsit."
 
 #: trac/versioncontrol/admin.py:263
 #, python-format
@@ -3976,7 +4087,7 @@ msgstr "S'ha afegit l'àlies «%(name)s»."
 
 #: trac/versioncontrol/admin.py:266
 msgid "Missing arguments to add an alias."
-msgstr ""
+msgstr "Manquen arguments per a afegir un àlies."
 
 #: trac/versioncontrol/admin.py:279
 msgid "The selected repositories have been removed."
@@ -4026,7 +4137,7 @@ msgstr ""
 msgid ""
 "Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the Trac "
 "log for more information."
-msgstr ""
+msgstr "No es pot sincronitzar amb el dipòsit «%(name)s» (%(error)s). Vegeu el registre del Trac per a obtenir més informació."
 
 #: trac/versioncontrol/api.py:357
 #, python-format
@@ -4064,7 +4175,7 @@ msgstr "al dipòsit %(repo)s"
 #: trac/versioncontrol/api.py:378
 #, python-format
 msgid "%(kind)s %(id)s%(at_version)s%(in_repo)s"
-msgstr ""
+msgstr "%(kind)s %(id)s%(at_version)s%(in_repo)s"
 
 #: trac/versioncontrol/api.py:381
 #, python-format
@@ -4128,17 +4239,17 @@ msgstr ""
 #: trac/versioncontrol/svn_fs.py:275
 #, python-format
 msgid "Subversion >= 1.0 required, found %(version)s"
-msgstr ""
+msgstr "Es requereix el Subversion >= 1.0, s'ha trobat %(version)s"
 
 #: trac/versioncontrol/svn_fs.py:330
 #, python-format
 msgid "%(path)s does not appear to be a Subversion repository."
-msgstr ""
+msgstr "%(path)s no sembla ser un dipòsit de Subversion."
 
 #: trac/versioncontrol/svn_fs.py:337
 #, python-format
 msgid "Couldn't open Subversion repository %(path)s: %(svn_error)s"
-msgstr ""
+msgstr "No s'ha pogut obrir el dipòsit de Subversion %(path)s: %(svn_error)s"
 
 #: trac/versioncontrol/svn_fs.py:617
 #, python-format
@@ -4150,11 +4261,11 @@ msgstr ""
 #: trac/versioncontrol/svn_fs.py:766
 #, python-format
 msgid "svn blame failed on %(path)s: %(error)s"
-msgstr ""
+msgstr "ha fallat «svn blame» a %(path)s: %(error)s"
 
 #: trac/versioncontrol/svn_prop.py:111
 msgid "No svn:externals configured in trac.ini"
-msgstr ""
+msgstr "No hi ha «svn:externals» configurats al trac.ini"
 
 #: trac/versioncontrol/svn_prop.py:148
 msgid "merged"
@@ -4166,7 +4277,7 @@ msgstr "blocat"
 
 #: trac/versioncontrol/svn_prop.py:192
 msgid "eligible"
-msgstr ""
+msgstr "apte"
 
 #: trac/versioncontrol/svn_prop.py:206
 msgid "(toggle deleted branches)"
@@ -4211,7 +4322,7 @@ msgstr " (sense cap efecte a la fusió)"
 #: trac/versioncontrol/svn_prop.py:325
 #, python-format
 msgid "Property %(prop)s changed"
-msgstr ""
+msgstr "Ha canviat la propietat %(prop)s"
 
 #: trac/versioncontrol/templates/admin_repositories.html:14
 msgid "Manage Repositories"
@@ -4239,6 +4350,9 @@ msgid ""
 "            This repository is defined in [2:[3:trac.ini]]\n"
 "            and cannot be edited on this page."
 msgstr ""
+"[1:Nota:]\n"
+"            Aquest dipòsit està definit al [2:[3:trac.ini]]\n"
+"            i no es pot editar des d'aquesta pàgina."
 
 #: trac/versioncontrol/templates/admin_repositories.html:59
 #: trac/versioncontrol/templates/admin_repositories.html:99
@@ -4247,7 +4361,7 @@ msgstr "Directori:"
 
 #: trac/versioncontrol/templates/admin_repositories.html:67
 msgid "Hide from repository index"
-msgstr ""
+msgstr "Amaga de l'índex de dipòsits"
 
 #: trac/versioncontrol/templates/admin_repositories.html:93
 msgid "Add Repository:"
@@ -4255,7 +4369,7 @@ msgstr "Afegeix un dipòsit:"
 
 #: trac/versioncontrol/templates/admin_repositories.html:110
 msgid "Add Alias:"
-msgstr ""
+msgstr "Afegeix un àlies:"
 
 #: trac/versioncontrol/templates/admin_repositories.html:125
 msgid "Revision"
@@ -4268,20 +4382,20 @@ msgstr "Àlies de %(repo)s"
 
 #: trac/versioncontrol/templates/admin_repositories.html:144
 msgid "Refresh"
-msgstr ""
+msgstr "Refresca"
 
 #: trac/versioncontrol/templates/browser.html:13
 #, python-format
 msgid "%(basename)s in %(dirname)s"
-msgstr ""
+msgstr "%(basename)s a %(dirname)s"
 
 #: trac/versioncontrol/templates/browser.html:54
 msgid "Default Repository"
-msgstr ""
+msgstr "Dipòsit per defecte"
 
 #: trac/versioncontrol/templates/browser.html:61
 msgid "Hint: clear the field to view latest revision"
-msgstr ""
+msgstr "Pista: netegeu el camp per a veure la darrera revisió"
 
 #: trac/versioncontrol/templates/browser.html:61
 msgid "View revision:"
@@ -4297,7 +4411,7 @@ msgstr "Vés"
 
 #: trac/versioncontrol/templates/browser.html:79
 msgid "Jump to the chosen preselected path"
-msgstr ""
+msgstr "Vés al camí preseleccionat triat"
 
 #: trac/versioncontrol/templates/browser.html:92
 msgid "Parent Directory"
@@ -4329,7 +4443,7 @@ msgstr ""
 #: trac/versioncontrol/templates/browser.html:140
 #, python-format
 msgid "Property [1:%(name)s] set to %(value)s"
-msgstr ""
+msgstr "Propietat [1:%(name)s] establerta a %(value)s"
 
 #: trac/versioncontrol/templates/browser.html:154
 msgid "Repository Index"
@@ -4378,6 +4492,8 @@ msgid ""
 "Changeset [1:%(new_rev)s] in %(reponame)s\n"
 "              for [2:%(new_path)s]"
 msgstr ""
+"Conjunt de canvis [1:%(new_rev)s] a %(reponame)s\n"
+"              per a [2:%(new_path)s]"
 
 #: trac/versioncontrol/templates/changeset.html:41
 #: trac/versioncontrol/templates/changeset.html:63
@@ -4390,6 +4506,8 @@ msgid ""
 "Changes in [1:%(new_path)s]\n"
 "              [2:\\[%(old_rev)s:%(new_rev)s\\]] in %(reponame)s"
 msgstr ""
+"Canvis per a [1:%(new_path)s]\n"
+"              [2:\\[%(old_rev)s:%(new_rev)s\\]] a %(reponame)s"
 
 #: trac/versioncontrol/templates/changeset.html:43
 #, python-format
@@ -4400,6 +4518,11 @@ msgid ""
 "              to [3:%(new_path)s]\n"
 "              at [4:r%(new_rev)s]"
 msgstr ""
+"Canvis a %(reponame)s\n"
+"              de [1:%(old_path)s]\n"
+"              en [2:r%(old_rev)s]\n"
+"              a [3:%(new_path)s]\n"
+"              en [4:r%(new_rev)s]"
 
 #: trac/versioncontrol/templates/changeset.html:50
 #, python-format
@@ -4421,6 +4544,8 @@ msgid ""
 "Changes in [1:%(new_path)s]\n"
 "              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
 msgstr ""
+"Canvis en [1:%(new_path)s]\n"
+"              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
 
 #: trac/versioncontrol/templates/changeset.html:65
 #, python-format
@@ -4431,6 +4556,11 @@ msgid ""
 "              to [3:%(new_path)s]\n"
 "              at [4:r%(new_rev)s]"
 msgstr ""
+"Canvis\n"
+"              de [1:%(old_path)s]\n"
+"              en [2:r%(old_rev)s]\n"
+"              a [3:%(new_path)s]\n"
+"              en [4:r%(new_rev)s]"
 
 #: trac/versioncontrol/templates/changeset.html:72
 #, python-format
@@ -4616,6 +4746,9 @@ msgid ""
 "        [2:TracChangeset]\n"
 "        for help on using the diff feature."
 msgstr ""
+"[1:Nota:] Vegeu\n"
+"        [2:TracChangeset]\n"
+"        per a obtenir ajuda sobre l'ús de la funcionalitat diff."
 
 #: trac/versioncontrol/templates/dir_entries.html:11
 msgid "View Directory"
@@ -4674,7 +4807,7 @@ msgstr "(registre)"
 
 #: trac/versioncontrol/templates/revisionlog.html:23
 msgid "Revision Log Mode:"
-msgstr ""
+msgstr "Mode de registre de revisions:"
 
 #: trac/versioncontrol/templates/revisionlog.html:27
 msgid "Stop on copy"
@@ -4708,6 +4841,11 @@ msgid ""
 "              revisions per page.\n"
 "            ]"
 msgstr ""
+"[1:\n"
+"              Mostra com a molt\n"
+"              [2:]\n"
+"              revisions per pàgina.\n"
+"            ]"
 
 #: trac/versioncontrol/templates/revisionlog.html:62
 msgid "Show full log messages"
@@ -4720,11 +4858,11 @@ msgstr "Copiat o reanomenat"
 #: trac/versioncontrol/templates/revisionlog.html:88
 #: trac/versioncontrol/templates/revisionlog.html:182
 msgid "Diff from Old Revision to New Revision (as selected in the Diff column)"
-msgstr "Diff de la revisió vella a revisió nova (seleccionades a la columna Diff)"
+msgstr "Diff de la revisió antiga a revisió nova (seleccionades a la columna Diff)"
 
 #: trac/versioncontrol/templates/revisionlog.html:94
 msgid "Old / New"
-msgstr "Vella / Nou"
+msgstr "Antiga / Nou"
 
 #: trac/versioncontrol/templates/revisionlog.html:94
 msgid "Diff"
@@ -4781,6 +4919,8 @@ msgid ""
 "[1:Note:] See [2:TracRevisionLog]\n"
 "        for help on using the revision log."
 msgstr ""
+"[1:Nota:] Vegeu [2:TracRevisionLog]\n"
+"        per a obtenir ajuda sobre l'ús del registre de revisions."
 
 #: trac/versioncontrol/templates/revisionlog.txt:2
 #, python-format
@@ -4862,7 +5002,7 @@ msgstr "Revisió en què va canviar la línia"
 #: trac/versioncontrol/web_ui/browser.py:824
 #, python-format
 msgid "View repository %(repo)s"
-msgstr ""
+msgstr "Mostra el dipòsit %(repo)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:240
 #, python-format
@@ -4928,12 +5068,12 @@ msgstr "darrera"
 #: trac/versioncontrol/web_ui/changeset.py:793
 #, python-format
 msgid "Diff [%(old_rev)s:%(new_rev)s] for %(path)s"
-msgstr ""
+msgstr "Diff [%(old_rev)s:%(new_rev)s] per a %(path)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:799
 #, python-format
 msgid "Diff from %(old_path)s@%(old_rev)s to %(new_path)s@%(new_rev)s"
-msgstr ""
+msgstr "Diff de %(old_path)s@%(old_rev)s a %(new_path)s@%(new_rev)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:871
 msgid "Changesets in all repositories"
@@ -4964,7 +5104,7 @@ msgstr "No teniu permís per a veure el conjunt de canvis %(rev)s a %(repos)s"
 #: trac/versioncontrol/web_ui/changeset.py:1092
 #: trac/versioncontrol/web_ui/log.py:398
 msgid "No default repository defined"
-msgstr ""
+msgstr "No s'ha definit un dipòsit per defecte"
 
 #: trac/versioncontrol/web_ui/changeset.py:1131
 msgid "Changesets"
@@ -5060,11 +5200,11 @@ msgstr "Ja esteu identificat com a %(user)s."
 #: trac/web/chrome.py:567
 #, python-format
 msgid "Error with navigation contributor \"%(name)s\""
-msgstr ""
+msgstr "S'ha produït un error amb el contribuïdor de navegació «%(name)s»"
 
 #: trac/web/chrome.py:857
 msgid "(unknown template location)"
-msgstr ""
+msgstr "(la ubicació de la plantilla és desconeguda)"
 
 #: trac/web/chrome.py:858
 #, python-format
@@ -5079,11 +5219,11 @@ msgstr "anònim"
 
 #: trac/web/main.py:227
 msgid "Secure cookies are enabled, you must use https to submit forms."
-msgstr ""
+msgstr "Les galetes segures són habilitades, heu d'usar https per a enviar formularis."
 
 #: trac/web/main.py:230
 msgid "Do you have cookies enabled?"
-msgstr ""
+msgstr "Teniu les galetes habilitades?"
 
 #: trac/web/main.py:231
 #, python-format
@@ -5138,16 +5278,36 @@ msgid ""
 "{{{\n"
 "%(traceback)s}}}"
 msgstr ""
+"==== Com reproduir-ho ====\n"
+"\n"
+"Mentre feia una operació %(method)s en `%(path_info)s, el Trac ha emès un error intern.\n"
+"\n"
+"''(afegiu detalls addicionals aquí)''\n"
+"\n"
+"Paràmetres de la petició:\n"
+"{{{\n"
+"%(req_args)s\n"
+"}}}\n"
+"\n"
+"User agent: `#USER_AGENT#`\n"
+"\n"
+"==== Informació del sistema ====\n"
+"%(sys_info)s\n"
+"==== Connectors habilitats ====\n"
+"%(enabled_plugins)s\n"
+"==== Traça del Python ====\n"
+"{{{\n"
+"%(traceback)s}}}"
 
 #: trac/web/session.py:203
 #, python-format
 msgid ""
 "Session '%(id)s' already exists.<br />Please choose a different session ID."
-msgstr ""
+msgstr "La sessió «%(id)s» ja existeix.<br />Seleccioneu un ID de sessió diferent."
 
 #: trac/web/session.py:205
 msgid "Error renaming session"
-msgstr ""
+msgstr "S'ha produït un error en canviar el nom de la sessió"
 
 #: trac/web/session.py:312
 msgid "No SID found"
@@ -5190,7 +5350,7 @@ msgstr "Edicions"
 
 #: trac/wiki/admin.py:206 trac/wiki/web_ui.py:295
 msgid "A new name is mandatory for a rename."
-msgstr ""
+msgstr "Els canvis de nom requereixen un nom nou."
 
 #: trac/wiki/admin.py:210 trac/wiki/web_ui.py:299
 #, python-format
@@ -5225,12 +5385,12 @@ msgstr ""
 #: trac/wiki/formatter.py:252
 #, python-format
 msgid "!#%(name)s must contain at most one table"
-msgstr ""
+msgstr "!#%(name)s ha de contenir, com a molt, una taula"
 
 #: trac/wiki/formatter.py:256
 #, python-format
 msgid "!#%(name)s must contain at least one table cell (and table cells only)"
-msgstr ""
+msgstr "!#%(name)s ha de contenir, com a mínim una ceŀla de taula (i només ceŀles de taula)"
 
 #: trac/wiki/formatter.py:627 trac/wiki/interwiki.py:88
 #, python-format
@@ -5275,7 +5435,7 @@ msgstr "Pàgina no modificada"
 #: trac/wiki/model.py:174
 #, python-format
 msgid "Can't rename to existing %(name)s page."
-msgstr ""
+msgstr "No es pot canviar el nom a la pàgina %(name)s ja existent."
 
 #: trac/wiki/web_ui.py:87 trac/wiki/web_ui.py:729
 msgid "Wiki"
@@ -5325,7 +5485,7 @@ msgstr ""
 #: trac/wiki/web_ui.py:274
 #, python-format
 msgid "The version %(version)d of the page %(name)s has been deleted."
-msgstr ""
+msgstr "S'ha suprimit la versió %(version)d de la pàgina %(name)s."
 
 #: trac/wiki/web_ui.py:297
 msgid "The new name must be different from the old name."
@@ -5334,7 +5494,7 @@ msgstr ""
 #: trac/wiki/web_ui.py:309
 #, python-format
 msgid "See [wiki:\"%(name)s\"]."
-msgstr ""
+msgstr "Vegeu [wiki:\"%(name)s\"]."
 
 #: trac/wiki/web_ui.py:333
 #, python-format
@@ -5343,12 +5503,12 @@ msgstr "S'han desat els canvis a la versió %(version)s."
 
 #: trac/wiki/web_ui.py:338
 msgid "Page not modified, showing latest version."
-msgstr ""
+msgstr "No s'ha modificat la pàgina, es mostra la darrera versió."
 
 #: trac/wiki/web_ui.py:381
 #, python-format
 msgid "Version %(num)s of page \"%(name)s\" does not exist"
-msgstr ""
+msgstr "La versió %(num)s de la pàgina «%(name)s no existeix"
 
 #: trac/wiki/web_ui.py:433
 msgid "Page history"
@@ -5426,7 +5586,7 @@ msgstr "%(page)s creat"
 #: trac/wiki/templates/wiki_delete.html:19
 #, python-format
 msgid "Delete versions %(from)s to %(to)s of [1:%(name)s]"
-msgstr ""
+msgstr "Suprimeix les versions de la %(from)s a la %(to)s de [1:%(name)s]"
 
 #: trac/wiki/templates/wiki_delete.html:22
 #, python-format
@@ -5638,7 +5798,7 @@ msgstr "Nom nou:"
 
 #: trac/wiki/templates/wiki_rename.html:27
 msgid "Leave a redirection page at the old location"
-msgstr ""
+msgstr "Deixa una pàgina de redirecció a la ubicació antiga"
 
 #: trac/wiki/templates/wiki_rename.html:33
 #: trac/wiki/templates/wiki_view.html:108
