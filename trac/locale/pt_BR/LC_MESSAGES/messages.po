@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-06-05 01:19-0300\n"
-"PO-Revision-Date: 2010-06-05 01:03-0300\n"
+"POT-Creation-Date: 2010-06-18 23:02-0300\n"
+"PO-Revision-Date: 2010-06-18 23:02-0300\n"
 "Last-Translator: Leslie Harlley Watter <leslie@watter.org>\n"
 "Language-Team: pt_BR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -333,16 +333,16 @@ msgstr ""
 "Visite o projeto open source Trac em<br /><a "
 "href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
 
-#: trac/env.py:581
+#: trac/env.py:582
 msgid "Database newer than Trac version"
 msgstr "Banco de Dados mais novo que a versão do Trac"
 
-#: trac/env.py:598
+#: trac/env.py:599
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
 msgstr "Nenhum módulo de atualização para a versão %(num)i (%(version)s.py)"
 
-#: trac/env.py:644
+#: trac/env.py:645
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
@@ -351,7 +351,7 @@ msgstr ""
 "desta variável\n"
 "para indicar um ambiente Trac válido."
 
-#: trac/env.py:676
+#: trac/env.py:677
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
@@ -362,41 +362,41 @@ msgstr ""
 "\n"
 "Execute o comando \\\"trac-admin %(path)s upgrade\\\""
 
-#: trac/env.py:710
+#: trac/env.py:711
 msgid "Copying resources from:"
 msgstr "Copiando recursos de:"
 
-#: trac/env.py:726
+#: trac/env.py:727
 msgid "Creating scripts."
 msgstr "Criando scripts."
 
-#: trac/env.py:741
+#: trac/env.py:742
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr "a operação hotcopy não pode sobrescrever o destino existente: '%(dest)s'"
 
-#: trac/env.py:751
+#: trac/env.py:752
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr "Executando hotcopy de %(src)s para %(dst)s ..."
 
-#: trac/env.py:766
+#: trac/env.py:767
 msgid "The following errors happened while copying the environment:"
 msgstr "Os seguintes erros ocorreram durante a cópia do ambiente:"
 
-#: trac/env.py:777
+#: trac/env.py:778
 msgid "Hotcopy done."
 msgstr "Cópia terminada."
 
-#: trac/env.py:782 trac/admin/api.py:130
+#: trac/env.py:783 trac/admin/api.py:130
 msgid "Invalid arguments"
 msgstr "Argumento inválido"
 
-#: trac/env.py:785
+#: trac/env.py:786
 msgid "Database is up to date, no upgrade necessary."
 msgstr "O banco de dados está na última versão, não há necessidade de atualização"
 
-#: trac/env.py:793
+#: trac/env.py:794
 #, python-format
 msgid ""
 "Backup failed with '%(msg)s'.\n"
@@ -405,7 +405,7 @@ msgstr ""
 "Backup falhou com as mensagens '%(msg)s'.\n"
 "Use a opção '--no-backup' para atualizar sem fazer um backup."
 
-#: trac/env.py:807
+#: trac/env.py:808
 msgid ""
 "Warning: the wiki-macros directory in the environment is non-empty, but "
 "Trac\n"
@@ -415,7 +415,7 @@ msgstr ""
 "carrega mais os plugins a partir deste diretório. Por favor remova-o "
 "manualmente."
 
-#: trac/env.py:818
+#: trac/env.py:819
 #, python-format
 msgid ""
 "Error while removing wiki-macros: %(err)s\n"
@@ -426,7 +426,7 @@ msgstr ""
 "O Trac não carrega mais os plugins a partir do diretório wiki-macros. Por"
 " favor remova o diretório manualmente."
 
-#: trac/env.py:820
+#: trac/env.py:821
 #, python-format
 msgid ""
 "Upgrade done.\n"
@@ -2716,7 +2716,7 @@ msgstr "Página %(num)d"
 
 #: trac/ticket/query.py:825 trac/ticket/report.py:273 trac/ticket/report.py:566
 #: trac/ticket/web_ui.py:130 trac/timeline/web_ui.py:221
-#: trac/versioncontrol/web_ui/log.py:304
+#: trac/versioncontrol/web_ui/log.py:305
 msgid "RSS Feed"
 msgstr "RSS Feed"
 
@@ -3984,56 +3984,56 @@ msgstr ""
 "[1:Note:] Veja [2:TracTimeline]\n"
 "        para informações a respeito da visualização da linha do tempo."
 
-#: trac/util/datefmt.py:82
+#: trac/util/datefmt.py:89
 #, python-format
 msgid "%(num)d year"
 msgid_plural "%(num)d years"
 msgstr[0] "%(num)d ano"
 msgstr[1] "%(num)d anos"
 
-#: trac/util/datefmt.py:83
+#: trac/util/datefmt.py:90
 #, python-format
 msgid "%(num)d month"
 msgid_plural "%(num)d months"
 msgstr[0] "%(num)d mês"
 msgstr[1] "%(num)d meses"
 
-#: trac/util/datefmt.py:84
+#: trac/util/datefmt.py:91
 #, python-format
 msgid "%(num)d week"
 msgid_plural "%(num)d weeks"
 msgstr[0] "%(num)d semana"
 msgstr[1] "%(num)d semanas"
 
-#: trac/util/datefmt.py:85
+#: trac/util/datefmt.py:92
 #, python-format
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
 msgstr[0] "%(num)d dia"
 msgstr[1] "%(num)d dias"
 
-#: trac/util/datefmt.py:86
+#: trac/util/datefmt.py:93
 #, python-format
 msgid "%(num)d hour"
 msgid_plural "%(num)d hours"
 msgstr[0] "%(num)d hora"
 msgstr[1] "%(num)d horas"
 
-#: trac/util/datefmt.py:87
+#: trac/util/datefmt.py:94
 #, python-format
 msgid "%(num)d minute"
 msgid_plural "%(num)d minutes"
 msgstr[0] "%(num)d minuto"
 msgstr[1] "%(num)d minutos"
 
-#: trac/util/datefmt.py:106
+#: trac/util/datefmt.py:113
 #, python-format
 msgid "%(num)i second"
 msgid_plural "%(num)i seconds"
 msgstr[0] "%(num)i segundo"
 msgstr[1] "%(num)i segundos"
 
-#: trac/util/datefmt.py:250
+#: trac/util/datefmt.py:257
 #, python-format
 msgid ""
 "\"%(date)s\" is an invalid date, or the date format is not known. Try "
@@ -4042,11 +4042,11 @@ msgstr ""
 "\"%(date)s\" é uma data inválida, ou o formato de data não é conhecido. "
 "Tente ao invés \"%(hint)s\"."
 
-#: trac/util/datefmt.py:252 trac/util/datefmt.py:260
+#: trac/util/datefmt.py:259 trac/util/datefmt.py:267
 msgid "Invalid Date"
 msgstr "Data Inválida"
 
-#: trac/util/datefmt.py:258
+#: trac/util/datefmt.py:265
 #, python-format
 msgid ""
 "The date \"%(date)s\" is outside valid range. Try a date closer to "
@@ -4082,7 +4082,7 @@ msgstr "Não é possível sincronizar uma única revisão em vários repositóri
 #: trac/versioncontrol/web_ui/browser.py:352
 #: trac/versioncontrol/web_ui/changeset.py:247
 #: trac/versioncontrol/web_ui/changeset.py:1090
-#: trac/versioncontrol/web_ui/log.py:87 trac/versioncontrol/web_ui/log.py:395
+#: trac/versioncontrol/web_ui/log.py:88 trac/versioncontrol/web_ui/log.py:396
 #, python-format
 msgid "Repository '%(repo)s' not found"
 msgstr "Repositório %(repo)s não encontrado"
@@ -5060,7 +5060,7 @@ msgid "Latest Revision"
 msgstr "Última Revisão"
 
 #: trac/versioncontrol/web_ui/browser.py:449
-#: trac/versioncontrol/web_ui/log.py:300
+#: trac/versioncontrol/web_ui/log.py:301
 msgid "Parent directory"
 msgstr "Diretório pai"
 
@@ -5204,7 +5204,7 @@ msgid "No permission to view changeset %(rev)s on %(repos)s"
 msgstr "Sem permissão para visualizar o conjunto de mudanças %(rev)s no %(repos)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:1092
-#: trac/versioncontrol/web_ui/log.py:397
+#: trac/versioncontrol/web_ui/log.py:398
 msgid "No default repository defined"
 msgstr "Nenhum repositório padrão definido"
 
@@ -5212,7 +5212,7 @@ msgstr "Nenhum repositório padrão definido"
 msgid "Changesets"
 msgstr "Conjuntos de Mudanças"
 
-#: trac/versioncontrol/web_ui/log.py:199
+#: trac/versioncontrol/web_ui/log.py:200
 #, python-format
 msgid ""
 "The file or directory '%(path)s' doesn't exist at revision %(rev)s or at "
@@ -5221,28 +5221,28 @@ msgstr ""
 "O arquivo ou diretório '%(path)s' não existe na revisão %(rev)s ou em \n"
 "qualquer revisão anterior."
 
-#: trac/versioncontrol/web_ui/log.py:199
+#: trac/versioncontrol/web_ui/log.py:200
 msgid "Nonexistent path"
 msgstr "Caminho não existente"
 
-#: trac/versioncontrol/web_ui/log.py:227
+#: trac/versioncontrol/web_ui/log.py:228
 #, python-format
 msgid "Revision Log (restarting at %(path)s, rev. %(rev)s)"
 msgstr "Log de Revisão (reiniciado em %(path)s, rev. %(rev)s)"
 
-#: trac/versioncontrol/web_ui/log.py:308
+#: trac/versioncontrol/web_ui/log.py:309
 msgid "ChangeLog"
 msgstr "ChangeLog"
 
-#: trac/versioncontrol/web_ui/log.py:310
+#: trac/versioncontrol/web_ui/log.py:311
 msgid "View Latest Revision"
 msgstr "Visualizar a Última Revisão"
 
-#: trac/versioncontrol/web_ui/log.py:314
+#: trac/versioncontrol/web_ui/log.py:315
 msgid "Older Revisions"
 msgstr "Revisões Anteriores"
 
-#: trac/versioncontrol/web_ui/log.py:393
+#: trac/versioncontrol/web_ui/log.py:394
 msgid "No permission to view change log"
 msgstr "Sem permissão para visualizar o registro de mudanças"
 
