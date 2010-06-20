@@ -120,6 +120,29 @@ class RepositoryManager(Component):
                     version = '@%s' % resource.version
             return '%s %s%s' % (kind, resource.id, version)
 
+    def get_resource_url(self, resource, href, **kwargs):
+        if resource.realm == 'changeset':
+            return href.changeset(resource.id)
+        elif resource.realm == 'source':
+            return href.source(resource.id)
+
+    def resource_exists(self, resource):
+        repos = self.env.get_repository() # no perm.username!
+        if not repos:
+            return False
+        if resource.realm == 'changeset':
+            try:
+                repos.get_changeset(resource.id)
+                return True
+            except NoSuchChangeset:
+                return False
+        elif resource.realm == 'source':
+            try:
+                repos.get_node(resource.id, resource.version)
+                return True
+            except NoSuchNode:
+                return False
+
     # Public API methods
 
     def get_repository(self, authname):

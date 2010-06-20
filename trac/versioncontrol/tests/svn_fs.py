@@ -31,14 +31,16 @@ except:
     has_svn = False
 
 from trac.log import logger_factory
-from trac.test import TestSetup
+from trac.test import EnvironmentStub, TestSetup
 from trac.core import TracError
+from trac.resource import Resource, resource_exists
 from trac.util.datefmt import utc
 from trac.versioncontrol import Changeset, Node, NoSuchChangeset
 from trac.versioncontrol.svn_fs import SubversionRepository
 from trac.versioncontrol import svn_fs
 
 REPOS_PATH = os.path.join(tempfile.gettempdir(), 'trac-svnrepos')
+REPOS_NAME = 'repo'
 
 HEAD = 21
 
@@ -86,12 +88,23 @@ class SubversionRepositoryTestSetup(TestSetup):
 class SubversionRepositoryTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.repos = SubversionRepository(REPOS_PATH, None,
-                                          logger_factory('test'))
+        self.env = EnvironmentStub()
+        self.env.config.set('trac', 'repository_type', 'direct-svnfs')
+        self.env.config.set('trac', 'repository_dir', REPOS_PATH)
+        self.repos = self.env.get_repository()
 
     def tearDown(self):
-        self.repos = None
+        self.repos.close()
+        self.env.shutdown()
 
+    def test_resource_exists(self):
+        node = Resource('source', u'tête')
+        self.assertEqual(True, resource_exists(self.env, node))
+        self.assertEqual(False, resource_exists(self.env, node(id='xxx')))
+        cset = Resource('changeset', HEAD)
+        self.assertEqual(True, resource_exists(self.env, cset))
+        self.assertEqual(False, resource_exists(self.env, cset(id=123456)))
+                         
     def test_repos_normalize_path(self):
         self.assertEqual('/', self.repos.normalize_path('/'))
         self.assertEqual('/', self.repos.normalize_path(''))
