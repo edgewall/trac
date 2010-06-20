@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from StringIO import StringIO
 import os
 import shutil
 import tempfile
@@ -11,6 +12,7 @@ from trac.attachment import Attachment, AttachmentModule, \
 from trac.core import Component, implements
 from trac.log import logger_factory
 from trac.perm import IPermissionPolicy, PermissionCache
+from trac.resource import Resource, resource_exists
 from trac.test import EnvironmentStub, Mock
 from trac.wiki.formatter import Formatter
 
@@ -131,6 +133,15 @@ class AttachmentTestCase(unittest.TestCase):
         against the ticket's resource."""
         attachment = Attachment(self.env, 'ticket', 42)
         self.assert_('ATTACHMENT_VIEW' in self.perm(attachment.resource))
+
+    def test_resource_doesnt_exist(self):
+        r = Resource('wiki', 'WikiStart').child('attachment', 'file.txt')
+        self.assertEqual(False, AttachmentModule(self.env).resource_exists(r))
+
+    def test_resource_exists(self):
+        att = Attachment(self.env, 'wiki', 'WikiStart')
+        att.insert('file.txt', StringIO(''), 1)
+        self.assertTrue(resource_exists(self.env, att.resource))
 
 
 def suite():

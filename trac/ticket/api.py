@@ -464,7 +464,7 @@ class TicketSystem(Component):
         >>> from trac.ticket.model import Ticket
         >>> t = Ticket(env)
         >>> t['summary'] = 'Test resource_exists...'
-        >>> t.insert()
+        >>> int(t.insert())
         1
         >>> resource_exists(env, t.resource)
         True
