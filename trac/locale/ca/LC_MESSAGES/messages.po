@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-06-11 16:41+0200\n"
-"PO-Revision-Date: 2010-06-19 00:06+0200\n"
+"PO-Revision-Date: 2010-06-20 15:26+0200\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <ca@dodds.net>\n"
 "MIME-Version: 1.0\n"
@@ -653,7 +653,7 @@ msgstr ""
 "\n"
 "Això pot passar per diverses raons: tipus de dipòsit erroni,\n"
 "manca de una biblioteca de tercers per a aquest tipus de\n"
-"dipòsit, manca del dipòsit al camí del dipòsit especificat...\n"
+"dipòsit, manca del dipòsit al camí del dipòsit especificat…\n"
 "\n"
 "Podeu, malgrat això, començar a usar l'entorn del Trac, però\n"
 "haureu de comprovar de nou el fitxer trac.ini i els paràmetres\n"
@@ -1961,7 +1961,7 @@ msgstr "Modificat"
 msgid "Error"
 msgstr "Error"
 
-# Això és part d'una frase "podeu crear un informe d'error..." jm
+# Això és part d'una frase "podeu crear un informe d'error…" jm
 #: trac/templates/error.html:65
 msgid "Create"
 msgstr "crear"
@@ -2067,9 +2067,10 @@ msgstr ""
 msgid "Python Traceback"
 msgstr "Traça del Python"
 
+# < ol> the most recent function call is shown last in the backtrace
 #: trac/templates/error.html:136
 msgid "Most recent call last:"
-msgstr ""
+msgstr "La crida més recent al final:"
 
 #: trac/templates/error.html:140
 #, python-format
@@ -2710,12 +2711,12 @@ msgstr "Cap resultat"
 #: trac/ticket/query.py:1303
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
-msgstr ""
+msgstr "Tiquets de %(groupvalue)s %(groupname)s que coincideixen amb %(query)s"
 
 #: trac/ticket/query.py:1326
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
-msgstr ""
+msgstr "Tiquets de %(groupvalue)s %(groupname)s:"
 
 #: trac/ticket/report.py:159
 msgid "The report has been created."
@@ -2798,14 +2799,14 @@ msgstr "tiquets"
 msgid ""
 "'%(group1)s' and '%(group2)s' milestone groups both are declared to be "
 "\"catch-all\" groups. Please check your configuration."
-msgstr ""
+msgstr "Els grups de fites «%(group1)s i «%(group2)s» estan declarats com grups de tipus «catch-all». Reviseu la configuració."
 
 #: trac/ticket/roadmap.py:231
 #, python-format
 msgid ""
 "'%(groupname)s' milestone group reused status '%(status)s' already taken by "
 "other groups. Please check your configuration."
-msgstr ""
+msgstr "L'estat %(status)s del grup de fites «%(groupname)s» ja s'està emprant en altres grups. Reviseu la configuració."
 
 #: trac/ticket/roadmap.py:314 trac/ticket/roadmap.py:436
 #: trac/ticket/roadmap.py:571 trac/ticket/templates/roadmap.html:10
@@ -3229,7 +3230,7 @@ msgstr "Nom de la fita nova:"
 
 #: trac/ticket/templates/milestone_edit.html:49
 msgid "Schedule"
-msgstr ""
+msgstr "Programa"
 
 #: trac/ticket/templates/milestone_edit.html:71
 msgid "Retarget associated open tickets to milestone:"
@@ -3387,7 +3388,7 @@ msgstr "Crea un informe nou a partir de la consulta actual"
 #: trac/ticket/templates/query.html:262
 #, python-format
 msgid "Delete report {%(id)s} corresponding to this query"
-msgstr ""
+msgstr "Suprimeix l'informe {%(id)s} corresponent a aquesta consulta"
 
 #: trac/ticket/templates/query.html:262
 msgid "Delete query"
@@ -3672,6 +3673,8 @@ msgid ""
 "Warnings are shown at the [1:top of the page]. The ticket validation\n"
 "            may have failed."
 msgstr ""
+"Es mostren els avisos a la [1:part superior de la pàgina]. La validació\n"
+"            del tiquet pot haver fallat."
 
 #: trac/ticket/templates/ticket.html:220
 #, python-format
@@ -3714,11 +3717,11 @@ msgstr "%(field)s:"
 
 #: trac/ticket/templates/ticket.html:313
 msgid "This checkbox allows you to add or remove yourself from the CC list."
-msgstr ""
+msgstr "Aquesta casella de selecció us permet afegir-vos o treure-vos de la llista de CC."
 
 #: trac/ticket/templates/ticket.html:319
 msgid "Space or comma delimited email addresses and usernames are accepted."
-msgstr ""
+msgstr "S'accepten adreces de correu electrònic separades per espais o comes."
 
 #: trac/ticket/templates/ticket.html:375
 #: trac/wiki/templates/wiki_edit_form.html:50
@@ -3882,7 +3885,7 @@ msgid ""
 "You may want to see the %(other_events)s from the Timeline or notify your "
 "Trac administrator about the error (detailed information was written to the "
 "log)."
-msgstr ""
+msgstr "Podeu veure els %(other_events)s des de l'Historial o notificar l'Administrador del Trac sobre l'error (s'ha escrit informació detallada al fitxer de registre)."
 
 #: trac/timeline/templates/timeline.html:19
 msgid ""
@@ -3916,6 +3919,8 @@ msgid ""
 "[1:Note:] See [2:TracTimeline]\n"
 "        for information about the timeline view."
 msgstr ""
+"[1:Nota:] Vegeu [2:TracTimeline]\n"
+"        per a obtenir informació sobre la visualització de l'historial."
 
 #: trac/util/datefmt.py:82
 #, python-format
@@ -3971,7 +3976,7 @@ msgstr[1] "%(num)i segons"
 msgid ""
 "\"%(date)s\" is an invalid date, or the date format is not known. Try \"%"
 "(hint)s\" instead."
-msgstr ""
+msgstr "«%(date)s» és una data invàlida, o el format de la data no és conegut. Proveu amb «%(hint)s»."
 
 #: trac/util/datefmt.py:252 trac/util/datefmt.py:260
 msgid "Invalid Date"
@@ -3982,7 +3987,7 @@ msgstr "La data és invàlida"
 msgid ""
 "The date \"%(date)s\" is outside valid range. Try a date closer to present "
 "time."
-msgstr ""
+msgstr "La data «%(date)s» és fora de l'abast vàlid. Proveu amb una data més propera al present."
 
 #: trac/util/presentation.py:255
 #, python-format
@@ -3996,7 +4001,7 @@ msgstr "%(start)d - %(stop)d de %(total)d"
 
 #: trac/versioncontrol/admin.py:110
 msgid "Alias"
-msgstr ""
+msgstr "Àlies"
 
 #: trac/versioncontrol/admin.py:110
 #: trac/versioncontrol/templates/admin_repositories.html:125
@@ -4005,7 +4010,7 @@ msgstr "Directori"
 
 #: trac/versioncontrol/admin.py:116
 msgid "Cannot synchronize a single revision on multiple repositories"
-msgstr ""
+msgstr "No es pot sincronitzar una única revisió a múltiples dipòsits"
 
 #: trac/versioncontrol/admin.py:124 trac/versioncontrol/admin.py:182
 #: trac/versioncontrol/web_ui/browser.py:352
@@ -4056,25 +4061,26 @@ msgstr "Ara haurieu d'executar %(resync)s per a sincronitzar el Trac amb el dip�
 msgid "You may have to run %(resync)s to synchronize Trac with the repository."
 msgstr "És possible que hagueu d'executar %(resync)s per a sincronitzar el Trac amb el dipòsit."
 
-# Ni gallet ni post-commit... jm
+# Ni gallet ni post-commit… jm
 #: trac/versioncontrol/admin.py:216
 #, python-format
 msgid ""
 "You will need to update your post-commit hook to call %(cset_added)s with "
 "the new repository name."
-msgstr "Haureu d'actualitzar el vostre gallet post-commit per a cridar a %(cset_added)s amb el nom de dipòsit nou."
+msgstr "Haureu d'actualitzar el vostre gallet «post-commit» per a fer una crida a %(cset_added)s amb el nom de dipòsit nou."
 
 #: trac/versioncontrol/admin.py:238
 #, python-format
 msgid "The repository \"%(name)s\" has been added."
 msgstr "S'ha afegit el dipòsit «%(name)s»."
 
+# Commit = validar? Hook = gallet? jm
 #: trac/versioncontrol/admin.py:248
 #, python-format
 msgid ""
 "You should also set up a post-commit hook on the repository to call %"
 "(cset_added)s for each committed changeset."
-msgstr ""
+msgstr "Haurieu de configurar un gallet «post-commit» al dipòsit per a fer una crida a «%(cset_added)s per a cada conjunt de canvis validat."
 
 #: trac/versioncontrol/admin.py:254
 msgid "Missing arguments to add a repository."
@@ -4116,21 +4122,21 @@ msgstr "La clau «%(key)s» és invàlida"
 #: trac/versioncontrol/api.py:190
 #, python-format
 msgid "You should now run \"repository resync %(name)s\"."
-msgstr ""
+msgstr "Ara hauríeu d'executar «repository resync %(name)s)»."
 
 #: trac/versioncontrol/api.py:193
 #, python-format
 msgid "You may have to run \"repository resync %(name)s\"."
-msgstr ""
+msgstr "És possible que hàgueu d'executar «repository resync %(name)s)»."
 
 #: trac/versioncontrol/api.py:201 trac/versioncontrol/api.py:264
 msgid "The repository directory must be absolute"
-msgstr ""
+msgstr "El directori del dipòsit ha de ser absolut"
 
 #: trac/versioncontrol/api.py:206
 #, python-format
 msgid "The repository type '%(type)s' is not supported"
-msgstr ""
+msgstr "El tipus de dipòsit «%(type)s» no és suportat"
 
 #: trac/versioncontrol/api.py:338
 #, python-format
@@ -4209,12 +4215,12 @@ msgstr "El conjunt de canvis no existeix"
 #: trac/versioncontrol/api.py:706
 #, python-format
 msgid "No node %(path)s at revision %(rev)s"
-msgstr ""
+msgstr "No hi ha cap node %(path)s a la revisió %(rev)s"
 
 #: trac/versioncontrol/api.py:708
 #, python-format
 msgid "%(msg)s: No node %(path)s at revision %(rev)s"
-msgstr ""
+msgstr "%(msg)s: No hi ha cap node %(path)s a la revisió %(rev)s"
 
 #: trac/versioncontrol/api.py:710
 msgid "No such node"
@@ -4229,12 +4235,12 @@ msgstr "Ha canviat el «repository_dir», es requereix una operació «trac-admi
 #: trac/versioncontrol/svn_authz.py:73
 #, python-format
 msgid "Line %(lineno)d: Entry before first section header"
-msgstr ""
+msgstr "Línia %(lineno)d: Entrada abans de la capçalera de la primera secció"
 
 #: trac/versioncontrol/svn_authz.py:77
 #, python-format
 msgid "Line %(lineno)d: Invalid entry"
-msgstr ""
+msgstr "Línia %(lineno)d: Entrada invàlida"
 
 #: trac/versioncontrol/svn_fs.py:275
 #, python-format
@@ -4256,7 +4262,7 @@ msgstr "No s'ha pogut obrir el dipòsit de Subversion %(path)s: %(svn_error)s"
 msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s) "
 "and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
-msgstr ""
+msgstr "Inconsistència al diff: La base és un %(oldnode)s (%(oldpath)s a la revisió %(oldrev)s) i la destinació és %(newnode)s (%(newpath)s a la revisió %(newrev)s)."
 
 #: trac/versioncontrol/svn_fs.py:766
 #, python-format
@@ -4717,7 +4723,7 @@ msgstr "Prepara el Diff"
 
 #: trac/versioncontrol/templates/diff_form.html:27
 msgid "Select the base and the target for the diff:"
-msgstr "Seleccioneu la base i objectiu per al diff:"
+msgstr "Seleccioneu la base i destinació per al diff:"
 
 #: trac/versioncontrol/templates/diff_form.html:30
 msgid "From:"
@@ -4739,6 +4745,11 @@ msgid ""
 "              from. Select an entry by clicking on it, or by using the\n"
 "              up/down cursor keys and hitting tab."
 msgstr ""
+"Per a cada camí, podeu començar a escriure el camí i se us presentarà\n"
+"              una llista de directoris i fitxers existents que podreu\n"
+"              seleccionar. Seleccioneu una entrada fent clic en ella,\n"
+"              o emprant les tecles de cursor amunt/avall i prement la\n"
+"              tecla de tabulació."
 
 #: trac/versioncontrol/templates/diff_form.html:62
 msgid ""
@@ -4832,6 +4843,14 @@ msgid ""
 "              [4:]\n"
 "            ]"
 msgstr ""
+"[1:\n"
+"              Mostra el registre començant per\n"
+"              [2:]\n"
+"            ]\n"
+"            [3:\n"
+"              i anant enrere fins a\n"
+"              [4:]\n"
+"            ]"
 
 #: trac/versioncontrol/templates/revisionlog.html:54
 msgid ""
@@ -5007,11 +5026,11 @@ msgstr "Mostra el dipòsit %(repo)s"
 #: trac/versioncontrol/web_ui/changeset.py:240
 #, python-format
 msgid "Can't compare across different repositories: %(old)s vs. %(new)s"
-msgstr ""
+msgstr "No es pot comparar a través de dipòsits diferents: %(old)s vs. %(new)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:249
 msgid "No repository specified and no default repository configured."
-msgstr ""
+msgstr "No s'ha especificat cap dipòsit i no hi ha un dipòsit per defecte configurat."
 
 #: trac/versioncontrol/web_ui/changeset.py:261
 msgid "Invalid Changeset Number"
@@ -5115,7 +5134,7 @@ msgstr "Conjunts de canvis"
 msgid ""
 "The file or directory '%(path)s' doesn't exist at revision %(rev)s or at any "
 "previous revision."
-msgstr ""
+msgstr "El fitxer o directori «%(path)s no existeix a la revisió %(rev)s o cap altra revisió anterior."
 
 #: trac/versioncontrol/web_ui/log.py:200
 msgid "Nonexistent path"
@@ -5124,7 +5143,7 @@ msgstr "El camí no existeix"
 #: trac/versioncontrol/web_ui/log.py:228
 #, python-format
 msgid "Revision Log (restarting at %(path)s, rev. %(rev)s)"
-msgstr ""
+msgstr "Registre de revisions (reiniciat a %(path)s, rev. %(rev)s)"
 
 #: trac/versioncontrol/web_ui/log.py:309
 msgid "ChangeLog"
@@ -5228,7 +5247,7 @@ msgstr "Teniu les galetes habilitades?"
 #: trac/web/main.py:231
 #, python-format
 msgid "Missing or invalid form token. %(msg)s"
-msgstr ""
+msgstr "El testimoni del formulari manca o és invàlid. %(msg)s"
 
 #: trac/web/main.py:531
 #, python-format
@@ -5327,7 +5346,7 @@ msgstr "La sessió ja existeix. No es pot afegir una sessió duplicada."
 
 #: trac/web/session.py:325
 msgid "Unable to set session attribute on a non-existent SID"
-msgstr ""
+msgstr "No s'ha pogut establir l'atribut de sessió a un SID no existent"
 
 #: trac/web/session.py:438
 #, python-format
@@ -5480,7 +5499,7 @@ msgstr "S'ha suprimit la pàgina %(name)s."
 #, python-format
 msgid ""
 "The versions %(from_)d to %(to)d of the page %(name)s have been deleted."
-msgstr ""
+msgstr "S'han suprimit les versions des de la %(from_)d a la %(to)d de la pàgina %(name)s."
 
 #: trac/wiki/web_ui.py:274
 #, python-format
@@ -5489,7 +5508,7 @@ msgstr "S'ha suprimit la versió %(version)d de la pàgina %(name)s."
 
 #: trac/wiki/web_ui.py:297
 msgid "The new name must be different from the old name."
-msgstr ""
+msgstr "El nom nou ha de ser diferent al nom vell."
 
 #: trac/wiki/web_ui.py:309
 #, python-format
@@ -5586,7 +5605,7 @@ msgstr "%(page)s creat"
 #: trac/wiki/templates/wiki_delete.html:19
 #, python-format
 msgid "Delete versions %(from)s to %(to)s of [1:%(name)s]"
-msgstr "Suprimeix les versions de la %(from)s a la %(to)s de [1:%(name)s]"
+msgstr "Suprimeix les versions des de la %(from)s a la %(to)s de [1:%(name)s]"
 
 #: trac/wiki/templates/wiki_delete.html:22
 #, python-format
@@ -5685,6 +5704,10 @@ msgid ""
 "page\n"
 "        again."
 msgstr ""
+"Reviseu aquests canvis i fusioneu-los manualment amb els vostres. [1:]\n"
+"        Si no n'esteu segur del que esteu fent, premeu [2:canceŀla]\n"
+"        (perdent els vostres canvis) i torneu a editar la darrera\n"
+"        versió de la pàgina."
 
 #: trac/wiki/templates/wiki_edit.html:114
 #, python-format
@@ -5786,11 +5809,11 @@ msgstr "Canvia el nom de [1:%(name)s]"
 #: trac/wiki/templates/wiki_rename.html:19
 msgid ""
 "Renaming the page will rename all existing versions of the page in place."
-msgstr ""
+msgstr "Si canvieu el nom de la pàgina, també es canviarà el nom de totes les versions existents de la pàgina al mateix temps."
 
 #: trac/wiki/templates/wiki_rename.html:19
 msgid "The complete history of the page will be moved to the new location."
-msgstr ""
+msgstr "L'historial complet de la pàgina es mourà a la nova ubicació."
 
 #: trac/wiki/templates/wiki_rename.html:23
 msgid "New name:"
@@ -5821,7 +5844,7 @@ msgstr ""
 #: trac/wiki/templates/wiki_view.html:47
 #, python-format
 msgid "Version %(version)s by %(author)s: %(comment)s"
-msgstr ""
+msgstr "Versió %(version)s per %(author)s: %(comment)s"
 
 #: trac/wiki/templates/wiki_view.html:47
 #, python-format

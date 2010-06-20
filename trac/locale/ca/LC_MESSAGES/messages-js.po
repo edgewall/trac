@@ -43,7 +43,7 @@ msgstr "Torna a desplegar el directori"
 #: trac/htdocs/js/expand_dir.js:115
 #, python-format
 msgid "Loading %(entry)s..."
-msgstr "S'està carregant %(entry)s..."
+msgstr "S'està carregant %(entry)s…"
 
 #: trac/htdocs/js/expand_dir.js:143
 msgid "(empty)"
