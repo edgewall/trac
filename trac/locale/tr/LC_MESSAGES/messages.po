@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-06-11 16:41+0200\n"
-"PO-Revision-Date: 2010-06-23 01:48+0200\n"
+"PO-Revision-Date: 2010-06-23 14:11+0200\n"
 "Last-Translator: Aranel Surion <aranel@aranelsurion.org>\n"
 "Language-Team: tr_TR <trac-dev@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -170,9 +170,9 @@ msgid "Back to %(parent)s"
 msgstr "%(parent)s geri dön."
 
 #: trac/attachment.py:530
-#, fuzzy, python-format
+#, python-format
 msgid "%(attachment)s attached to %(resource)s"
-msgstr "%(attachment)s (sil)"
+msgstr "%(attachment)s eklendi %(resource)s"
 
 #: trac/attachment.py:587
 #, python-format
@@ -190,9 +190,9 @@ msgid "Attachments of %(parent)s"
 msgstr "%(parent)s ek dosyaları"
 
 #: trac/attachment.py:615
-#, fuzzy, python-format
+#, python-format
 msgid "%(parent)s doesn't exist, can't create attachment"
-msgstr "Bu sayfa %(name)s mevcut değil. Burada oluşturabilirsiniz."
+msgstr "%(parent)s mevcut değil, ek oluşturulamıyor"
 
 #: trac/attachment.py:622
 #: trac/attachment.py:645
@@ -5565,11 +5565,12 @@ msgid "Someone else has modified that page since you started your edits."
 msgstr "Biri siz sayfayı değiştirken sizden önce sayfayı değiştirdi."
 
 #: trac/wiki/templates/wiki_edit.html:76
-#, fuzzy
 msgid ""
 "[1:If you save right away, you risk to revert those changes]\n"
 "        (highlighted below as deletions)."
-msgstr "Kayıt ettiğiniz anda eski hali kaybolur"
+msgstr ""
+"[1:Şimdi kaydederseniz, bu değişiklikler eski haline dönebilir]\n"
+"        (silinecek olanlar belirtilmiştir)."
 
 #: trac/wiki/templates/wiki_edit.html:78
 msgid ""
@@ -5581,9 +5582,9 @@ msgid ""
 msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:114
-#, fuzzy, python-format
+#, python-format
 msgid "Change information for future version %(version)s (modified by %(author)s):"
-msgstr "Sonraki sürümlerin bilgisini değiştir"
+msgstr "Gelecek sürüm %(version)s için değişim bilgisi (%(author)s tarafından değiştirildi):"
 
 #: trac/wiki/templates/wiki_edit.html:124
 msgid "Go to the editor"
@@ -5627,9 +5628,8 @@ msgstr ""
 "          [3:TracWiki] dökümanlarına bakın."
 
 #: trac/wiki/templates/wiki_edit_form.html:38
-#, fuzzy
 msgid "See the start of the diffs"
-msgstr "diff için kaynak ve hedefi belirleyin:"
+msgstr "Difflerin başlangıcını gör"
 
 #: trac/wiki/templates/wiki_edit_form.html:39
 msgid "See the start of the preview"
