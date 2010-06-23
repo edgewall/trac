@@ -1,0 +1,14 @@
+syntax: glob
+*~
+.*.sw[op]
+.svn
+.git
+build
+dist
+Trac.egg-info
+*.pyc
+testenv
+testing.log
+functional-testing.log
+html
+figleaf
