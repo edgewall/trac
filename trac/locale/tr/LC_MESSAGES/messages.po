@@ -7,30 +7,28 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-05-11 01:45+0200\n"
-"PO-Revision-Date: 2010-06-18 10:41+0200\n"
+"POT-Creation-Date: 2010-06-11 16:41+0200\n"
+"PO-Revision-Date: 2010-06-23 01:48+0200\n"
 "Last-Translator: Aranel Surion <aranel@aranelsurion.org>\n"
 "Language-Team: tr_TR <trac-dev@googlegroups.com>\n"
-"Plural-Forms: nplurals=1; plural=0\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 "Generated-By: Babel 0.9.5\n"
 
 #: tracopt/mimeview/php.py:97
-msgid ""
-"You appear to be using the PHP CGI binary. Trac requires the CLI version "
-"for syntax highlighting."
-msgstr ""
-" PHP CGI binary kullınıyosunuz . Kod Renklendirme için Trac  CLI sürümüne"
-" gerek duyar. "
+msgid "You appear to be using the PHP CGI binary. Trac requires the CLI version for syntax highlighting."
+msgstr " PHP CGI binary kullınıyosunuz . Kod Renklendirme için Trac  CLI sürümüne gerek duyar. "
 
-#: tracopt/ticket/deleter.py:69 tracopt/ticket/deleter.py:82
+#: tracopt/ticket/deleter.py:69
+#: tracopt/ticket/deleter.py:82
 #: trac/ticket/templates/report_list.html:35
 msgid "Delete"
 msgstr "Sil"
 
-#: tracopt/ticket/deleter.py:70 tracopt/ticket/templates/ticket_delete.html:43
+#: tracopt/ticket/deleter.py:70
+#: tracopt/ticket/templates/ticket_delete.html:43
 msgid "Delete ticket"
 msgstr "Bileti sil"
 
@@ -85,7 +83,8 @@ msgstr ""
 
 #: tracopt/ticket/templates/ticket_delete.html:37
 #: tracopt/ticket/templates/ticket_delete.html:68
-#: trac/templates/attachment.html:70 trac/wiki/templates/wiki_delete.html:46
+#: trac/templates/attachment.html:70
+#: trac/wiki/templates/wiki_delete.html:46
 msgid "This is an irreversible operation."
 msgstr "Bu işlem geri alınamaz."
 
@@ -95,7 +94,8 @@ msgstr "Bu işlem geri alınamaz."
 #: trac/admin/templates/admin_enums.html:24
 #: trac/admin/templates/admin_milestones.html:68
 #: trac/admin/templates/admin_versions.html:45
-#: trac/templates/attachment.html:63 trac/templates/attachment.html:76
+#: trac/templates/attachment.html:63
+#: trac/templates/attachment.html:76
 #: trac/ticket/templates/milestone_delete.html:40
 #: trac/ticket/templates/milestone_edit.html:94
 #: trac/ticket/templates/report_delete.html:21
@@ -126,7 +126,9 @@ msgstr "Bu bilet yorumunu silmek istediğinize emin misiniz?"
 msgid "Delete comment"
 msgstr "Yorumu sil"
 
-#: trac/about.py:47 trac/templates/about.html:10 trac/templates/about.html:29
+#: trac/about.py:47
+#: trac/templates/about.html:10
+#: trac/templates/about.html:29
 msgid "About Trac"
 msgstr "Trac Hakkında"
 
@@ -145,9 +147,7 @@ msgstr "Ek dosya silinemiyor."
 
 #: trac/attachment.py:210
 #, python-format
-msgid ""
-"Cannot reparent attachment \"%(att)s\" as it already exists in "
-"%(realm)s:%(id)s"
+msgid "Cannot reparent attachment \"%(att)s\" as it already exists in %(realm)s:%(id)s"
 msgstr ""
 
 #: trac/attachment.py:229
@@ -194,8 +194,11 @@ msgstr "%(parent)s ek dosyaları"
 msgid "%(parent)s doesn't exist, can't create attachment"
 msgstr "Bu sayfa %(name)s mevcut değil. Burada oluşturabilirsiniz."
 
-#: trac/attachment.py:622 trac/attachment.py:645 trac/admin/web_ui.py:426
-#: trac/admin/web_ui.py:429 trac/admin/web_ui.py:433
+#: trac/attachment.py:622
+#: trac/attachment.py:645
+#: trac/admin/web_ui.py:426
+#: trac/admin/web_ui.py:429
+#: trac/admin/web_ui.py:433
 msgid "No file uploaded"
 msgstr "Yüklenmiş dosya yok"
 
@@ -224,30 +227,27 @@ msgstr "Geçersiz ek dosya:%(message)s"
 
 #: trac/attachment.py:672
 #, python-format
-msgid ""
-"You don't have permission to replace the attachment %(name)s. You can "
-"only replace your own attachments. Replacing other's attachments requires"
-" ATTACHMENT_DELETE permission."
-msgstr ""
-"%(name)s ekini değiştirme yetkiniz yoktur. Sadece kendi eklerinizi "
-"değiştirebilirsiniz. Diğer ekleri değiştirmek ATTACHMENT_DELETE izni "
-"gerektirir."
+msgid "You don't have permission to replace the attachment %(name)s. You can only replace your own attachments. Replacing other's attachments requires ATTACHMENT_DELETE permission."
+msgstr "%(name)s ekini değiştirme yetkiniz yoktur. Sadece kendi eklerinizi değiştirebilirsiniz. Diğer ekleri değiştirmek ATTACHMENT_DELETE izni gerektirir."
 
 #: trac/attachment.py:704
 #, python-format
 msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (sil)"
 
-#: trac/attachment.py:765 trac/versioncontrol/web_ui/browser.py:646
+#: trac/attachment.py:765
+#: trac/versioncontrol/web_ui/browser.py:646
 #: trac/wiki/web_ui.py:68
 msgid "Plain Text"
 msgstr "Düz yazı"
 
-#: trac/attachment.py:771 trac/versioncontrol/web_ui/browser.py:652
+#: trac/attachment.py:771
+#: trac/versioncontrol/web_ui/browser.py:652
 msgid "Original Format"
 msgstr "Orjinal format"
 
-#: trac/attachment.py:813 trac/attachment.py:819
+#: trac/attachment.py:813
+#: trac/attachment.py:819
 #: trac/templates/list_of_attachments.html:20
 #: trac/templates/list_of_attachments.html:21
 #: trac/ticket/templates/ticket_change.html:21
@@ -260,12 +260,16 @@ msgstr "İndir"
 msgid "Invalid resource identifier '%(id)s'"
 msgstr "Geçersiz kaynak '%(id)s'"
 
-#: trac/attachment.py:950 trac/admin/templates/admin_components.html:80
+#: trac/attachment.py:950
+#: trac/admin/templates/admin_components.html:80
 #: trac/admin/templates/admin_enums.html:48
 #: trac/admin/templates/admin_milestones.html:104
-#: trac/admin/templates/admin_versions.html:77 trac/templates/about.html:84
-#: trac/templates/error.html:160 trac/ticket/admin.py:209
-#: trac/ticket/admin.py:400 trac/ticket/admin.py:559
+#: trac/admin/templates/admin_versions.html:77
+#: trac/templates/about.html:84
+#: trac/templates/error.html:160
+#: trac/ticket/admin.py:209
+#: trac/ticket/admin.py:400
+#: trac/ticket/admin.py:559
 #: trac/versioncontrol/admin.py:110
 #: trac/versioncontrol/templates/admin_repositories.html:125
 #: trac/web/session.py:314
@@ -276,22 +280,27 @@ msgstr "İsim"
 msgid "Size"
 msgstr "Boyut"
 
-#: trac/attachment.py:950 trac/templates/history_view.html:30
+#: trac/attachment.py:950
+#: trac/templates/history_view.html:30
 #: trac/ticket/templates/ticket.html:361
 #: trac/versioncontrol/templates/revisionlog.html:98
 msgid "Author"
 msgstr "Yazar"
 
-#: trac/attachment.py:950 trac/templates/history_view.html:29
+#: trac/attachment.py:950
+#: trac/templates/history_view.html:29
 msgid "Date"
 msgstr "Tarih"
 
-#: trac/attachment.py:951 trac/templates/attachment.html:93
-#: trac/ticket/api.py:289 trac/ticket/templates/ticket_box.html:60
+#: trac/attachment.py:951
+#: trac/templates/attachment.html:93
+#: trac/ticket/api.py:289
+#: trac/ticket/templates/ticket_box.html:60
 msgid "Description"
 msgstr "Tanım"
 
-#: trac/attachment.py:976 trac/wiki/admin.py:104
+#: trac/attachment.py:976
+#: trac/wiki/admin.py:104
 #, python-format
 msgid "File '%(name)s' exists"
 msgstr "%(name)s' dosyası mevcut."
@@ -320,9 +329,7 @@ msgid "Trac Error"
 msgstr "Trac Hatası"
 
 #: trac/env.py:152
-msgid ""
-"Visit the Trac open source project at<br /><a "
-"href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
+msgid "Visit the Trac open source project at<br /><a href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
 msgstr ""
 
 #: trac/env.py:582
@@ -335,9 +342,7 @@ msgid "No upgrade module for version %(num)i (%(version)s.py)"
 msgstr "%(num)i (%(version)s.py) için yükseltme modülü bulunamadı."
 
 #: trac/env.py:645
-msgid ""
-"Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
-" point to a valid Trac environment."
+msgid "Missing environment variable \"TRAC_ENV\". Trac requires this variable to point to a valid Trac environment."
 msgstr ""
 "Tanımsız \"TRAC_ENV\" ortam değişkeni. Geçerli bir\"\n"
 "\" Trac ortamının Trac tarafından bilinmesi için gereklidir."
@@ -378,7 +383,8 @@ msgstr ""
 msgid "Hotcopy done."
 msgstr ""
 
-#: trac/env.py:783 trac/admin/api.py:130
+#: trac/env.py:783
+#: trac/admin/api.py:130
 msgid "Invalid arguments"
 msgstr "Hatalı parametreler"
 
@@ -395,8 +401,7 @@ msgstr ""
 
 #: trac/env.py:808
 msgid ""
-"Warning: the wiki-macros directory in the environment is non-empty, but "
-"Trac\n"
+"Warning: the wiki-macros directory in the environment is non-empty, but Trac\n"
 "doesn't load plugins from there anymore. Please remove it by hand."
 msgstr ""
 
@@ -404,8 +409,7 @@ msgstr ""
 #, python-format
 msgid ""
 "Error while removing wiki-macros: %(err)s\n"
-"Trac doesn't load plugins from wiki-macros anymore. Please remove it by "
-"hand."
+"Trac doesn't load plugins from wiki-macros anymore. Please remove it by hand."
 msgstr ""
 
 #: trac/env.py:821
@@ -425,7 +429,7 @@ msgstr "TLS etkin ancak sunucu TLS desteklemiyor"
 #: trac/notification.py:303
 #, python-format
 msgid "Invalid email encoding setting: %(pref)s"
-msgstr ""
+msgstr "Geçersiz eposta kodlama ayarı: %(pref)s"
 
 #: trac/notification.py:317
 msgid "Unable to send email due to identity crisis."
@@ -442,14 +446,12 @@ msgstr "SMTP Bildirim Hatası"
 
 #: trac/notification.py:331
 msgid "Header length is too short"
-msgstr ""
+msgstr "Başlık uzunluğu çok kısa"
 
 #: trac/perm.py:48
 #, python-format
 msgid "%(perm)s privileges are required to perform this operation on %(resource)s"
-msgstr ""
-" %(resource)s kaynağına bu işlemi yapabilmek için %(perm)s  yetkiniz "
-"olmalı"
+msgstr " %(resource)s kaynağına bu işlemi yapabilmek için %(perm)s  yetkiniz olmalı"
 
 #: trac/perm.py:50
 #, python-format
@@ -469,7 +471,8 @@ msgstr "%(name)s geçerli bir eylem değil."
 msgid "User"
 msgstr "Kullanıcı"
 
-#: trac/perm.py:643 trac/admin/templates/admin_perms.html:70
+#: trac/perm.py:643
+#: trac/admin/templates/admin_perms.html:70
 #: trac/ticket/templates/ticket.html:339
 msgid "Action"
 msgstr "Eylem"
@@ -478,22 +481,23 @@ msgstr "Eylem"
 msgid "Available actions:"
 msgstr "Mevcut eylemler:"
 
-#: trac/perm.py:656 trac/admin/web_ui.py:334
+#: trac/perm.py:656
+#: trac/admin/web_ui.py:334
 msgid "All upper-cased tokens are reserved for permission names"
-msgstr ""
-"Büyük hafle başlayan tüm özel kelimeler yalnıca yetki adı olarak "
-"kullanılabilir"
+msgstr "Büyük hafle başlayan tüm özel kelimeler yalnıca yetki adı olarak kullanılabilir"
 
 #: trac/resource.py:336
 #, python-format
 msgid "%(name)s at version %(version)s"
 msgstr "%(name)s %(version)s sürümde"
 
-#: trac/admin/api.py:134 trac/admin/console.py:254
+#: trac/admin/api.py:134
+#: trac/admin/console.py:254
 msgid "Command not found"
 msgstr "Komut bulunamadı"
 
-#: trac/admin/console.py:111 trac/ticket/templates/report_edit.html:34
+#: trac/admin/console.py:111
+#: trac/ticket/templates/report_edit.html:34
 msgid "Error:"
 msgstr "Hata:"
 
@@ -530,9 +534,7 @@ msgstr "trac-admin - Trac Yönetim Konsolu %(version)s"
 
 #: trac/admin/console.py:293
 msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
-msgstr ""
-"Kullanım:  trac-admin </projeye/giden/yol> [komut [altkomut] [opsiyon "
-"...]]\n"
+msgstr "Kullanım:  trac-admin </projeye/giden/yol> [komut [altkomut] [opsiyon ...]]\n"
 
 #: trac/admin/console.py:296
 msgid "Invoking trac-admin without command starts interactive mode.\n"
@@ -655,7 +657,8 @@ msgstr ""
 msgid "Admin"
 msgstr "Yönetim"
 
-#: trac/admin/web_ui.py:66 trac/admin/templates/admin.html:16
+#: trac/admin/web_ui.py:66
+#: trac/admin/templates/admin.html:16
 msgid "Administration"
 msgstr "Yönetim"
 
@@ -663,39 +666,51 @@ msgstr "Yönetim"
 msgid "No administration panels available"
 msgstr "Hiç bir yönetim paneli bulunmuyor"
 
-#: trac/admin/web_ui.py:108 trac/admin/web_ui.py:112
+#: trac/admin/web_ui.py:108
+#: trac/admin/web_ui.py:112
 msgid "Unknown administration panel"
 msgstr "Bilinmeyen yönetim paneli"
 
-#: trac/admin/web_ui.py:186 trac/ticket/admin.py:65 trac/ticket/admin.py:90
-#: trac/ticket/admin.py:275 trac/ticket/admin.py:457 trac/ticket/admin.py:609
-#: trac/ticket/admin.py:695 trac/ticket/report.py:189
-#: trac/ticket/roadmap.py:687 trac/versioncontrol/admin.py:198
+#: trac/admin/web_ui.py:186
+#: trac/ticket/admin.py:65
+#: trac/ticket/admin.py:90
+#: trac/ticket/admin.py:275
+#: trac/ticket/admin.py:457
+#: trac/ticket/admin.py:609
+#: trac/ticket/admin.py:695
+#: trac/ticket/report.py:189
+#: trac/ticket/roadmap.py:687
+#: trac/versioncontrol/admin.py:198
 msgid "Your changes have been saved."
 msgstr "Değişiklikleriniz kaydedildi."
 
-#: trac/admin/web_ui.py:191 trac/ticket/admin.py:68
-msgid ""
-"Error writing to trac.ini, make sure it is writable by the web server. "
-"Your changes have not been saved."
-msgstr ""
+#: trac/admin/web_ui.py:191
+#: trac/ticket/admin.py:68
+msgid "Error writing to trac.ini, make sure it is writable by the web server. Your changes have not been saved."
+msgstr "trac.ini yazılırken hata oluştu, web sunucusu tarafından yazılabildiğine emin olun. Değişiklikleriniz kaydedilmedi."
 
-#: trac/admin/web_ui.py:204 trac/admin/web_ui.py:232 trac/admin/web_ui.py:320
-#: trac/admin/web_ui.py:402 trac/prefs/web_ui.py:86
+#: trac/admin/web_ui.py:204
+#: trac/admin/web_ui.py:232
+#: trac/admin/web_ui.py:320
+#: trac/admin/web_ui.py:402
+#: trac/prefs/web_ui.py:86
 #: trac/prefs/templates/prefs_general.html:9
 msgid "General"
 msgstr "Genel"
 
-#: trac/admin/web_ui.py:204 trac/admin/templates/admin_basics.html:13
+#: trac/admin/web_ui.py:204
+#: trac/admin/templates/admin_basics.html:13
 msgid "Basic Settings"
 msgstr "Temel ayarlar"
 
-#: trac/admin/web_ui.py:232 trac/admin/templates/admin_logging.html:10
+#: trac/admin/web_ui.py:232
+#: trac/admin/templates/admin_logging.html:10
 #: trac/admin/templates/admin_logging.html:22
 msgid "Logging"
 msgstr "Loglama"
 
-#: trac/admin/web_ui.py:241 trac/ticket/templates/milestone_delete.html:31
+#: trac/admin/web_ui.py:241
+#: trac/ticket/templates/milestone_delete.html:31
 #: trac/ticket/templates/milestone_edit.html:73
 msgid "None"
 msgstr "Hiçbiri"
@@ -704,7 +719,8 @@ msgstr "Hiçbiri"
 msgid "Console"
 msgstr "Konsol"
 
-#: trac/admin/web_ui.py:244 trac/templates/attachment.html:32
+#: trac/admin/web_ui.py:244
+#: trac/templates/attachment.html:32
 msgid "File"
 msgstr "Dosya"
 
@@ -742,7 +758,8 @@ msgstr "Log dosyasını belirtmelisiniz"
 msgid "Missing field"
 msgstr "Eksik alan"
 
-#: trac/admin/web_ui.py:320 trac/admin/templates/admin_perms.html:10
+#: trac/admin/web_ui.py:320
+#: trac/admin/templates/admin_perms.html:10
 msgid "Permissions"
 msgstr "Yetkiler"
 
@@ -774,7 +791,8 @@ msgstr "\"%(subject)s\"   \"%(group)s\" gurubuna daha önceden eklenmiş"
 msgid "The selected permissions have been revoked."
 msgstr ""
 
-#: trac/admin/web_ui.py:402 trac/admin/templates/admin_plugins.html:10
+#: trac/admin/web_ui.py:402
+#: trac/admin/templates/admin_plugins.html:10
 msgid "Plugins"
 msgstr "Eklentiler"
 
@@ -844,7 +862,8 @@ msgstr "Açıklama"
 msgid "Apply changes"
 msgstr "Değişiklikleri uygula"
 
-#: trac/admin/templates/admin_components.html:10 trac/ticket/admin.py:76
+#: trac/admin/templates/admin_components.html:10
+#: trac/ticket/admin.py:76
 msgid "Components"
 msgstr "Bileşenler"
 
@@ -893,8 +912,10 @@ msgstr "Bileşen Ekle:"
 msgid "Add"
 msgstr "Ekle"
 
-#: trac/admin/templates/admin_components.html:80 trac/ticket/admin.py:209
-#: trac/ticket/api.py:283 trac/ticket/web_ui.py:1352
+#: trac/admin/templates/admin_components.html:80
+#: trac/ticket/admin.py:209
+#: trac/ticket/api.py:283
+#: trac/ticket/web_ui.py:1352
 msgid "Owner"
 msgstr "Sahibi"
 
@@ -955,7 +976,8 @@ msgstr "Ekle %(label_singular)s"
 msgid "Order"
 msgstr "Sıra"
 
-#: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:79
+#: trac/admin/templates/admin_logging.html:26
+#: trac/templates/about.html:79
 msgid "Configuration"
 msgstr "Ayarlar"
 
@@ -979,7 +1001,8 @@ msgid ""
 "            [1:log] directory of the project environment ([2:%(dir)s])."
 msgstr ""
 
-#: trac/admin/templates/admin_milestones.html:10 trac/ticket/admin.py:241
+#: trac/admin/templates/admin_milestones.html:10
+#: trac/ticket/admin.py:241
 #: trac/ticket/roadmap.py:875
 msgid "Milestones"
 msgstr "Aşamalar"
@@ -1032,15 +1055,18 @@ msgstr "Tanım (Burada [1:WikiFormatting] kullanabilirsiniz):"
 msgid "Add Milestone:"
 msgstr "Aşama Ekle:"
 
-#: trac/admin/templates/admin_milestones.html:104 trac/ticket/admin.py:400
+#: trac/admin/templates/admin_milestones.html:104
+#: trac/ticket/admin.py:400
 msgid "Due"
 msgstr "Son Tarih"
 
-#: trac/admin/templates/admin_milestones.html:104 trac/ticket/admin.py:400
+#: trac/admin/templates/admin_milestones.html:104
+#: trac/ticket/admin.py:400
 msgid "Completed"
 msgstr "Tamamlandı"
 
-#: trac/admin/templates/admin_milestones.html:104 trac/ticket/web_ui.py:184
+#: trac/admin/templates/admin_milestones.html:104
+#: trac/ticket/web_ui.py:184
 msgid "Tickets"
 msgstr "Biletler"
 
@@ -1119,7 +1145,8 @@ msgstr "Python egg dosyasının eklenti olarak yükle"
 msgid "Install"
 msgstr "Kur"
 
-#: trac/admin/templates/admin_plugins.html:85 trac/templates/diff_view.html:51
+#: trac/admin/templates/admin_plugins.html:85
+#: trac/templates/diff_view.html:51
 #: trac/versioncontrol/templates/changeset.html:142
 msgid "Author:"
 msgstr "Yazar:"
@@ -1140,7 +1167,8 @@ msgstr "Tüm açıklamaları göster"
 msgid "Hide all descriptions"
 msgstr "Tüm açıklamaları gizle"
 
-#: trac/admin/templates/admin_plugins.html:115 trac/ticket/admin.py:76
+#: trac/admin/templates/admin_plugins.html:115
+#: trac/ticket/admin.py:76
 #: trac/ticket/api.py:296
 msgid "Component"
 msgstr "Bileşen"
@@ -1157,7 +1185,8 @@ msgstr ""
 msgid "Toggle the component description"
 msgstr ""
 
-#: trac/admin/templates/admin_versions.html:10 trac/ticket/admin.py:440
+#: trac/admin/templates/admin_versions.html:10
+#: trac/ticket/admin.py:440
 msgid "Versions"
 msgstr "Sürümler"
 
@@ -1191,11 +1220,9 @@ msgid "Unsupported database type \"%(scheme)s\""
 msgstr "Desteklenmeyen veritabanı tipi \"%(scheme)s\""
 
 #: trac/db/api.py:227
-#, fuzzy, python-format
-msgid ""
-"Unknown scheme \"%(scheme)s\"; database connection string must start with"
-" {scheme}:/"
-msgstr "Veritabanı bağlantı değeri scheme:/  ile başlamalı"
+#, python-format
+msgid "Unknown scheme \"%(scheme)s\"; database connection string must start with {scheme}:/"
+msgstr "Bilinmeyen şema \"%(scheme)s\"; veritabanı bağlantı satırı mutlaka {scheme}:/ ile başlamalı"
 
 #: trac/db/mysql_backend.py:80
 msgid "Cannot load Python bindings for MySQL"
@@ -1214,10 +1241,11 @@ msgstr "PostgreSQL için Python bağlantıları yüklenemiyor"
 msgid "Cannot load Python bindings for SQLite"
 msgstr "SQLite için Python bağlantıları yüklenemiyor"
 
-#: trac/db/sqlite_backend.py:157 trac/db/sqlite_backend.py:161
-#, fuzzy, python-format
+#: trac/db/sqlite_backend.py:157
+#: trac/db/sqlite_backend.py:161
+#, python-format
 msgid "Need at least PySqlite %(version)s or higher"
-msgstr "En az PySqlite 2.0.7 veya üzeri gerekir"
+msgstr "En az PySqlite %(version)s veya üzeri gerekir"
 
 #: trac/db/sqlite_backend.py:186
 #, python-format
@@ -1231,14 +1259,11 @@ msgstr "Veri tabanı \"%(path)s\"  bulunamadı"
 
 #: trac/db/sqlite_backend.py:255
 #, fuzzy, python-format
-msgid ""
-"The user %(user)s requires read _and_ write permissions to the database "
-"file %(path)s and the directory it is located in."
-msgstr ""
-" %(user)s kullanıcısı  burdaki \"%(path)s\" veritabanı dosyasına okuma "
-"yazma hakkı olmalı."
+msgid "The user %(user)s requires read _and_ write permissions to the database file %(path)s and the directory it is located in."
+msgstr " %(user)s kullanıcısı  burdaki \"%(path)s\" veritabanı dosyasına okuma yazma hakkı olmalı."
 
-#: trac/mimeview/api.py:675 trac/mimeview/api.py:686
+#: trac/mimeview/api.py:675
+#: trac/mimeview/api.py:686
 #, python-format
 msgid "No available MIME conversions from %(old)s to %(new)s"
 msgstr "%(old)s ve  %(new)s arasında MIME dönüşümü yapılamıyor."
@@ -1253,7 +1278,8 @@ msgstr ""
 msgid "Can't use %(annotator)s annotator: %(error)s"
 msgstr ""
 
-#: trac/mimeview/api.py:1080 trac/templates/error.html:148
+#: trac/mimeview/api.py:1080
+#: trac/templates/error.html:148
 msgid "Line"
 msgstr "Satır"
 
@@ -1275,15 +1301,18 @@ msgstr "%(deleted)s dosyasını sil"
 msgid "this hunk was shorter than expected"
 msgstr ""
 
-#: trac/mimeview/pygments.py:126 trac/prefs/templates/prefs_pygments.html:9
+#: trac/mimeview/pygments.py:126
+#: trac/prefs/templates/prefs_pygments.html:9
 msgid "Syntax Highlighting"
 msgstr "Kod Renklendirme"
 
-#: trac/mimeview/pygments.py:135 trac/prefs/web_ui.py:143
+#: trac/mimeview/pygments.py:135
+#: trac/prefs/web_ui.py:143
 msgid "Your preferences have been saved."
 msgstr "Seçenekleriniz kaydedildi."
 
-#: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
+#: trac/prefs/web_ui.py:52
+#: trac/prefs/templates/prefs.html:16
 msgid "Preferences"
 msgstr "Tercihler"
 
@@ -1291,19 +1320,23 @@ msgstr "Tercihler"
 msgid "Unknown preference panel"
 msgstr "Bilinmeyen tercih paneli"
 
-#: trac/prefs/web_ui.py:87 trac/prefs/templates/prefs_datetime.html:10
+#: trac/prefs/web_ui.py:87
+#: trac/prefs/templates/prefs_datetime.html:10
 msgid "Date & Time"
 msgstr "Tarih & Zaman"
 
-#: trac/prefs/web_ui.py:88 trac/prefs/templates/prefs_keybindings.html:10
+#: trac/prefs/web_ui.py:88
+#: trac/prefs/templates/prefs_keybindings.html:10
 msgid "Keyboard Shortcuts"
 msgstr "Klavye kısayollları"
 
-#: trac/prefs/web_ui.py:90 trac/prefs/templates/prefs_language.html:9
+#: trac/prefs/web_ui.py:90
+#: trac/prefs/templates/prefs_language.html:9
 msgid "Language"
 msgstr "Dil"
 
-#: trac/prefs/web_ui.py:92 trac/prefs/templates/prefs_advanced.html:9
+#: trac/prefs/web_ui.py:92
+#: trac/prefs/templates/prefs_advanced.html:9
 msgid "Advanced"
 msgstr "Gelişmiş"
 
@@ -1314,15 +1347,12 @@ msgstr "Tercihler:"
 #: trac/prefs/templates/prefs.html:17
 msgid ""
 "This page lets you customize your personal settings for this site.\n"
-"      These settings are stored on the server and are identified by a "
-"session\n"
-"      key stored in a browser cookie. That cookie allows your settings to"
-" be\n"
+"      These settings are stored on the server and are identified by a session\n"
+"      key stored in a browser cookie. That cookie allows your settings to be\n"
 "      restored on subsequent visits."
 msgstr ""
 "Bu sayfa bu site için kişisel ayarlar yapabilmeniz içindir.\n"
-"      Buradaki ayarlar sunucuda saklanır ve oturumunuzdaki çerezler "
-"sayesinde sonraki ziyaretlerinizde de aynı ayarlara sahip olursunuz."
+"      Buradaki ayarlar sunucuda saklanır ve oturumunuzdaki çerezler sayesinde sonraki ziyaretlerinizde de aynı ayarlara sahip olursunuz."
 
 #: trac/prefs/templates/prefs.html:33
 msgid "Save changes"
@@ -1342,10 +1372,8 @@ msgid ""
 msgstr ""
 "Bu oturum anahratı ayarlarınızın serverda \n"
 "      saklana bilmesi için gereklidir. Normalde\n"
-"      otomatik olarak oluştursa da, başka bir internet tarayıcında "
-"kullandığınzda\n"
-"      ayarlarınınızı kullanmak için kolay hatırlacak bir değer "
-"verebilirsiniz."
+"      otomatik olarak oluştursa da, başka bir internet tarayıcında kullandığınzda\n"
+"      ayarlarınınızı kullanmak için kolay hatırlacak bir değer verebilirsiniz."
 
 #: trac/prefs/templates/prefs_advanced.html:26
 msgid "Restore session:"
@@ -1358,13 +1386,11 @@ msgstr "Yükle"
 #: trac/prefs/templates/prefs_advanced.html:30
 msgid ""
 "You may load a previously created session by entering the\n"
-"      corresponding session key below. This lets you share settings "
-"between\n"
+"      corresponding session key below. This lets you share settings between\n"
 "      multiple computers and web browsers."
 msgstr ""
 "Burdan daha önce oluşturdunuz ayarları oturun anahtarının girere\n"
-"      yükleyebilirsiniz. Böylece farklı bilgisayardan yada tarayıcan "
-"girdiğinizde  \n"
+"      yükleyebilirsiniz. Böylece farklı bilgisayardan yada tarayıcan girdiğinizde  \n"
 "      bu ayarlarlara ulaşabilirsiniz."
 
 #: trac/prefs/templates/prefs_datetime.html:16
@@ -1409,15 +1435,11 @@ msgstr ""
 
 #: trac/prefs/templates/prefs_datetime.html:47
 msgid ""
-"Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean "
-"Time (GMT).[1:]\n"
-"        A positive offset is used to indicate a timezone at the east of "
-"Greenwich, i.e. ahead of Universal Time."
+"Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean Time (GMT).[1:]\n"
+"        A positive offset is used to indicate a timezone at the east of Greenwich, i.e. ahead of Universal Time."
 msgstr ""
-"Not: Universal Co-ordinated Time (UTC) aynı zamanda Greenwich Mean Time "
-"olarak da bilinir (GMT).[1:]\n"
-"        Greenwich'in doğusunu ifade etmek için pozitif sayılar "
-"kullanılır. Bu, UTC'den farklı olduğunu gösterir."
+"Not: Universal Co-ordinated Time (UTC) aynı zamanda Greenwich Mean Time olarak da bilinir (GMT).[1:]\n"
+"        Greenwich'in doğusunu ifade etmek için pozitif sayılar kullanılır. Bu, UTC'den farklı olduğunu gösterir."
 
 #: trac/prefs/templates/prefs_general.html:15
 msgid "Full name:"
@@ -1452,8 +1474,7 @@ msgstr "Kısayol tuşlarını etkinleştir"
 #: trac/prefs/templates/prefs_keybindings.html:21
 msgid ""
 "This site provides keyboard shortcuts for\n"
-"      faster access to certain functions of this site. As these shortcuts"
-" can\n"
+"      faster access to certain functions of this site. As these shortcuts can\n"
 "      cause conflicts with shortcuts provided by the desktop system or\n"
 "      web browser, they are disabled by default. See\n"
 "      [1:TracAccessibility]\n"
@@ -1507,8 +1528,10 @@ msgstr "Stil:"
 msgid "Preview:"
 msgstr "Ön İzleme:"
 
-#: trac/search/web_ui.py:63 trac/search/templates/search.html:10
-#: trac/search/templates/search.html:23 trac/search/templates/search.html:28
+#: trac/search/web_ui.py:63
+#: trac/search/templates/search.html:10
+#: trac/search/templates/search.html:23
+#: trac/search/templates/search.html:28
 #: trac/templates/theme.html:29
 msgid "Search"
 msgstr "Ara"
@@ -1523,15 +1546,20 @@ msgstr "Depodaki %(path)s klasorüne göz at."
 msgid "Search query too short. Query must be at least %(num)s characters long."
 msgstr "Sorgu değeri çok kısa. En az %(num)s karakter olmalı."
 
-#: trac/search/web_ui.py:232 trac/ticket/query.py:763 trac/ticket/report.py:397
+#: trac/search/web_ui.py:232
+#: trac/ticket/query.py:763
+#: trac/ticket/report.py:397
 msgid "Next Page"
 msgstr "Sonraki Sayfa"
 
-#: trac/search/web_ui.py:238 trac/ticket/query.py:768 trac/ticket/report.py:400
+#: trac/search/web_ui.py:238
+#: trac/ticket/query.py:768
+#: trac/ticket/report.py:400
 msgid "Previous Page"
 msgstr "Önceki Sayfa"
 
-#: trac/search/templates/search.html:10 trac/search/templates/search.html:40
+#: trac/search/templates/search.html:10
+#: trac/search/templates/search.html:40
 #: trac/ticket/templates/query_results.html:20
 #: trac/ticket/templates/report_view.html:79
 msgid "Results"
@@ -1570,8 +1598,7 @@ msgid ""
 "Trac is a web-based software project management and bug/issue\n"
 "        tracking system emphasizing ease of use and low ceremony.\n"
 "        It provides an integrated Wiki, an interface to version control\n"
-"        systems, and a number of convenient ways to stay on top of events"
-"\n"
+"        systems, and a number of convenient ways to stay on top of events\n"
 "        and changes within a project."
 msgstr ""
 "Trac web tabanlı kolay kullanımı amaçlıyan proje yönetimi \n"
@@ -1620,7 +1647,8 @@ msgstr "Sistem Bilgisi"
 msgid "Installed Plugins"
 msgstr "Kurulu Eklentiler"
 
-#: trac/templates/about.html:72 trac/templates/error.html:192
+#: trac/templates/about.html:72
+#: trac/templates/error.html:192
 #: trac/web/main.py:604
 msgid "N/A"
 msgstr "N/A"
@@ -1629,7 +1657,8 @@ msgstr "N/A"
 msgid "Section"
 msgstr "Bölüm"
 
-#: trac/templates/about.html:85 trac/templates/error.html:160
+#: trac/templates/about.html:85
+#: trac/templates/error.html:160
 msgid "Value"
 msgstr "Değer"
 
@@ -1664,7 +1693,8 @@ msgstr "(boyut limiti %(value)s)"
 msgid "Attachment Info"
 msgstr "Dosya bilgisi"
 
-#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:366
+#: trac/templates/attachment.html:40
+#: trac/ticket/templates/ticket.html:366
 #: trac/wiki/templates/wiki_edit_form.html:46
 msgid "Your email or username:"
 msgstr "E-posta adresiniz ya da kullanıcı adınız:"
@@ -1685,7 +1715,8 @@ msgstr "Dosya Ekle"
 msgid "Are you sure you want to delete this attachment?"
 msgstr "Bu ek dosyayı silmek istermisiniz."
 
-#: trac/templates/attachment.html:77 trac/templates/attachment.html:119
+#: trac/templates/attachment.html:77
+#: trac/templates/attachment.html:119
 msgid "Delete attachment"
 msgstr "Dosyayı sil"
 
@@ -1693,8 +1724,10 @@ msgstr "Dosyayı sil"
 msgid "Attach another file"
 msgstr "Başka bir dosya daha ekle"
 
-#: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:22
-#: trac/templates/macros.html:19 trac/util/text.py:277
+#: trac/templates/attachment.html:98
+#: trac/templates/list_of_attachments.html:22
+#: trac/templates/macros.html:19
+#: trac/util/text.py:277
 #: trac/versioncontrol/templates/browser.html:110
 #: trac/versioncontrol/templates/dir_entries.html:16
 #, python-format
@@ -1831,7 +1864,8 @@ msgstr ""
 msgid "Timestamp:"
 msgstr "Zaman:"
 
-#: trac/templates/diff_view.html:45 trac/templates/diff_view.html:53
+#: trac/templates/diff_view.html:45
+#: trac/templates/diff_view.html:53
 #: trac/templates/diff_view.html:59
 msgid "(multiple changes)"
 msgstr "(çoklu değişiklikler)"
@@ -1874,13 +1908,16 @@ msgstr "Eklendi"
 msgid "Removed"
 msgstr "Çıkarıldı"
 
-#: trac/templates/diff_view.html:70 trac/ticket/api.py:325
+#: trac/templates/diff_view.html:70
+#: trac/ticket/api.py:325
 #: trac/versioncontrol/templates/changeset.html:204
-#: trac/versioncontrol/templates/revisionlog.html:79 trac/wiki/admin.py:200
+#: trac/versioncontrol/templates/revisionlog.html:79
+#: trac/wiki/admin.py:200
 msgid "Modified"
 msgstr "Değiştirildi"
 
-#: trac/templates/error.html:10 trac/templates/index.html:18
+#: trac/templates/error.html:10
+#: trac/templates/index.html:18
 #: trac/web/main.py:526
 msgid "Error"
 msgstr "Hata"
@@ -1939,8 +1976,7 @@ msgid ""
 "If you think this should work and you can reproduce the problem,\n"
 "              you should consider creating a bug report."
 msgstr ""
-"Eğer bunun düzgün çalışması gerektiğini düşünüyorsanız ve hatayı tekrar "
-"ettirebiliyorsanız,\n"
+"Eğer bunun düzgün çalışması gerektiğini düşünüyorsanız ve hatayı tekrar ettirebiliyorsanız,\n"
 "              bir hata raporu oluşturmayı düşünmelisiniz."
 
 #: trac/templates/error.html:113
@@ -1960,10 +1996,8 @@ msgstr "Lütfen bu sorunu eklenti bakıcısına bildirin."
 msgid ""
 "Before you do that, though, please first try\n"
 "                [1:[2:searching]\n"
-"                for similar issues], as it is quite likely that this "
-"problem\n"
-"                has been reported before. For questions about "
-"installation\n"
+"                for similar issues], as it is quite likely that this problem\n"
+"                has been reported before. For questions about installation\n"
 "                and configuration of Trac or its plugins, please try the\n"
 "                [3:mailing list]\n"
 "                instead of creating a ticket."
@@ -1971,8 +2005,7 @@ msgstr ""
 "Bunu yapmadan önce, lütfen\n"
 "                [1:[2:arama yapın]\n"
 "                ve benzer sorunları bulun], çünkü bu sorunun zaten \n"
-"                raporlanmış olma ihtimali yüksektir. Kurulum sorularınız "
-"ve\n"
+"                raporlanmış olma ihtimali yüksektir. Kurulum sorularınız ve\n"
 "                Trac ve eklenti konfigürasyonları hakkında yardım için\n"
 "                [3:mail listesini]\n"
 "                deneyin, bilet oluşturmayın."
@@ -2040,7 +2073,8 @@ msgstr "Trac Kullanıcı ve Yönetici klavuzu"
 msgid "Change History for [1:%(name)s]"
 msgstr "[1:%(name)s] için Değişim Geçmişi"
 
-#: trac/templates/history_view.html:22 trac/templates/history_view.html:55
+#: trac/templates/history_view.html:22
+#: trac/templates/history_view.html:55
 #: trac/versioncontrol/templates/diff_form.html:58
 #: trac/versioncontrol/templates/revisionlog.html:88
 #: trac/versioncontrol/templates/revisionlog.html:182
@@ -2051,7 +2085,8 @@ msgstr "Değişiklikleri görüntüle"
 msgid "Change history"
 msgstr "Değişiklik geçmişi"
 
-#: trac/templates/history_view.html:28 trac/ticket/admin.py:440
+#: trac/templates/history_view.html:28
+#: trac/ticket/admin.py:440
 #: trac/ticket/api.py:297
 msgid "Version"
 msgstr "Sürüm"
@@ -2069,7 +2104,8 @@ msgstr "Bu sürümü görüntüle"
 msgid "IP-Address: %(ipnr)s"
 msgstr "IP-Adresi: %(ipnr)s"
 
-#: trac/templates/index.html:8 trac/templates/index.html:12
+#: trac/templates/index.html:8
+#: trac/templates/index.html:12
 msgid "Available Projects"
 msgstr "Varolan Porjeler"
 
@@ -2101,11 +2137,13 @@ msgstr ""
 msgid "Attachments"
 msgstr "Ek Dosyalar"
 
-#: trac/templates/macros.html:37 trac/templates/macros.html:38
+#: trac/templates/macros.html:37
+#: trac/templates/macros.html:38
 msgid "Previous"
 msgstr "İleri"
 
-#: trac/templates/macros.html:47 trac/templates/macros.html:48
+#: trac/templates/macros.html:47
+#: trac/templates/macros.html:48
 msgid "Next"
 msgstr "Geri"
 
@@ -2115,15 +2153,12 @@ msgstr "(Dosya boş)"
 
 #: trac/templates/preview_file.html:19
 #, python-format
-msgid ""
-"[1:HTML preview not available], since the file size exceeds %(size)s "
-"bytes."
+msgid "[1:HTML preview not available], since the file size exceeds %(size)s bytes."
 msgstr ""
 
 #: trac/templates/preview_file.html:22
-#, fuzzy
 msgid "[1:HTML preview not available], since no preview renderer could handle it."
-msgstr "Bir görünüm olmadığından "
+msgstr "[1:HTML önizlemesi mümkün değil], çünkü bu işi yapabilecek bir önizleme derleyicisi yok."
 
 #: trac/templates/preview_file.html:26
 msgid "Try [1:downloading] the file instead."
@@ -2189,7 +2224,9 @@ msgstr "Bilet Sistemi"
 msgid "The component \"%(name)s\" has been added."
 msgstr "\"%(name)s\" bileşeni eklendi."
 
-#: trac/ticket/admin.py:117 trac/ticket/model.py:841 trac/ticket/model.py:862
+#: trac/ticket/admin.py:117
+#: trac/ticket/model.py:841
+#: trac/ticket/model.py:862
 msgid "Invalid component name."
 msgstr "Geçersiz bileşen adı."
 
@@ -2206,13 +2243,15 @@ msgstr "Modül seçilmedi"
 msgid "The selected components have been removed."
 msgstr "Seçilen bileşenler kaldırıldı."
 
-#: trac/ticket/admin.py:241 trac/ticket/api.py:295
+#: trac/ticket/admin.py:241
+#: trac/ticket/api.py:295
 #: trac/ticket/templates/milestone_view.html:10
 #: trac/ticket/templates/milestone_view.html:23
 msgid "Milestone"
 msgstr "Aşama"
 
-#: trac/ticket/admin.py:270 trac/ticket/roadmap.py:663
+#: trac/ticket/admin.py:270
+#: trac/ticket/roadmap.py:663
 msgid "Completion date may not be in the future"
 msgstr "Bitiş tarihi gelcekte olamaz"
 
@@ -2225,7 +2264,9 @@ msgstr "Geçersiz Bitiş Tarihi"
 msgid "The milestone \"%(name)s\" has been added."
 msgstr "Aşama \"%(name)s\" eklendi."
 
-#: trac/ticket/admin.py:304 trac/ticket/model.py:978 trac/ticket/model.py:1002
+#: trac/ticket/admin.py:304
+#: trac/ticket/model.py:978
+#: trac/ticket/model.py:1002
 msgid "Invalid milestone name."
 msgstr "Geçersiz miltaşı adı."
 
@@ -2247,7 +2288,9 @@ msgstr "Seçilen aşamalar kaldırıldı."
 msgid "The version \"%(name)s\" has been added."
 msgstr "Sürüm \"%(name)s\" eklendi."
 
-#: trac/ticket/admin.py:485 trac/ticket/model.py:1121 trac/ticket/model.py:1141
+#: trac/ticket/admin.py:485
+#: trac/ticket/model.py:1121
+#: trac/ticket/model.py:1141
 msgid "Invalid version name."
 msgstr "Geçersiz sürüm adı."
 
@@ -2279,9 +2322,9 @@ msgid "Invalid %(type)s value."
 msgstr "Geçersiz %(type)s değeri."
 
 #: trac/ticket/admin.py:635
-#, fuzzy, python-format
+#, python-format
 msgid "%(type)s value \"%(name)s\" already exists"
-msgstr "%(type)s %(name)s zaten tanımlı"
+msgstr "%(type)s değer \"%(name)s\" zaten mevcut"
 
 #: trac/ticket/admin.py:642
 #, python-format
@@ -2294,12 +2337,8 @@ msgid "The selected %(field)s values have been removed."
 msgstr ""
 
 #: trac/ticket/admin.py:672
-msgid ""
-"Error writing to trac.ini, make sure it is writable by the web server. "
-"The default value has not been saved."
-msgstr ""
-"trac.ini'ye yazarken hata oluştu, lütfen web sunucunun yazma yetkilerini "
-"kontrol edin. Varsayılan değer kaydedilmedi."
+msgid "Error writing to trac.ini, make sure it is writable by the web server. The default value has not been saved."
+msgstr "trac.ini'ye yazarken hata oluştu, lütfen web sunucunun yazma yetkilerini kontrol edin. Varsayılan değer kaydedilmedi."
 
 #: trac/ticket/admin.py:684
 msgid "Order numbers must be unique"
@@ -2314,7 +2353,8 @@ msgstr "Mümkün Değerler"
 msgid "Invalid up/down value: %(value)s"
 msgstr "Geçersiz yukarı/aşağı değeri: %(value)s"
 
-#: trac/ticket/admin.py:789 trac/ticket/api.py:294
+#: trac/ticket/admin.py:789
+#: trac/ticket/api.py:294
 msgid "Priority"
 msgstr "Öncelik"
 
@@ -2322,7 +2362,8 @@ msgstr "Öncelik"
 msgid "Priorities"
 msgstr "Öncelikler"
 
-#: trac/ticket/admin.py:795 trac/ticket/api.py:299
+#: trac/ticket/admin.py:795
+#: trac/ticket/api.py:299
 msgid "Resolution"
 msgstr "Çözüm"
 
@@ -2330,7 +2371,8 @@ msgstr "Çözüm"
 msgid "Resolutions"
 msgstr "Çözümler"
 
-#: trac/ticket/admin.py:801 trac/ticket/api.py:298
+#: trac/ticket/admin.py:801
+#: trac/ticket/api.py:298
 msgid "Severity"
 msgstr "Önem"
 
@@ -2359,11 +2401,13 @@ msgstr "Bilet #%(num)s ve tüm ilgili veri silindi."
 msgid "Summary"
 msgstr "Özet"
 
-#: trac/ticket/api.py:279 trac/ticket/templates/ticket.html:362
+#: trac/ticket/api.py:279
+#: trac/ticket/templates/ticket.html:362
 msgid "Reporter"
 msgstr "Bildiren"
 
-#: trac/ticket/api.py:292 trac/versioncontrol/admin.py:110
+#: trac/ticket/api.py:292
+#: trac/versioncontrol/admin.py:110
 #: trac/versioncontrol/templates/admin_repositories.html:125
 msgid "Type"
 msgstr "Tür"
@@ -2402,12 +2446,14 @@ msgstr "Mevcut durum korunamayacak"
 msgid "The ticket will be disowned"
 msgstr "Bilet sahipsiz kalacak"
 
-#: trac/ticket/default_workflow.py:253 trac/ticket/default_workflow.py:272
+#: trac/ticket/default_workflow.py:253
+#: trac/ticket/default_workflow.py:272
 #, python-format
 msgid "to %(owner)s"
 msgstr "kime %(owner)s"
 
-#: trac/ticket/default_workflow.py:255 trac/ticket/default_workflow.py:275
+#: trac/ticket/default_workflow.py:255
+#: trac/ticket/default_workflow.py:275
 #, python-format
 msgid "The owner will be changed from %(current_owner)s"
 msgstr ""
@@ -2428,15 +2474,14 @@ msgid "The owner will be changed from %(current_owner)s to %(authname)s"
 msgstr ""
 
 #: trac/ticket/default_workflow.py:290
-msgid ""
-"Your workflow attempts to set a resolution but none is defined "
-"(configuration issue, please contact your Trac admin)."
+msgid "Your workflow attempts to set a resolution but none is defined (configuration issue, please contact your Trac admin)."
 msgstr ""
 
-#: trac/ticket/default_workflow.py:298 trac/ticket/default_workflow.py:308
+#: trac/ticket/default_workflow.py:298
+#: trac/ticket/default_workflow.py:308
 #, python-format
 msgid "as %(resolution)s"
-msgstr ""
+msgstr "%(resolution)s olarak"
 
 #: trac/ticket/default_workflow.py:300
 #, python-format
@@ -2454,7 +2499,7 @@ msgstr "Çözüm silinecek"
 #: trac/ticket/default_workflow.py:316
 #, python-format
 msgid "as %(status)s "
-msgstr ""
+msgstr "%(status)s olarak"
 
 #: trac/ticket/default_workflow.py:320
 #, python-format
@@ -2479,7 +2524,8 @@ msgstr "Birden çok değerli alanlar henüz desteklenmiyor."
 msgid "%(type)s %(name)s does not exist."
 msgstr "%(type)s %(name)s bulunamadı."
 
-#: trac/ticket/model.py:701 trac/ticket/model.py:728
+#: trac/ticket/model.py:701
+#: trac/ticket/model.py:728
 #, python-format
 msgid "Invalid %(type)s name."
 msgstr "Geçersiz %(type)s adı."
@@ -2547,11 +2593,13 @@ msgstr ""
 msgid "Invalid ticket id list: %(value)s"
 msgstr "Geçersiz bilet id listesi: %(value)s"
 
-#: trac/ticket/query.py:662 trac/ticket/query.py:670
+#: trac/ticket/query.py:662
+#: trac/ticket/query.py:670
 msgid "contains"
 msgstr "içeren"
 
-#: trac/ticket/query.py:663 trac/ticket/query.py:671
+#: trac/ticket/query.py:663
+#: trac/ticket/query.py:671
 msgid "doesn't contain"
 msgstr "içermeyen"
 
@@ -2563,50 +2611,67 @@ msgstr "başlayan"
 msgid "ends with"
 msgstr "biten"
 
-#: trac/ticket/query.py:666 trac/ticket/query.py:674 trac/ticket/query.py:678
+#: trac/ticket/query.py:666
+#: trac/ticket/query.py:674
+#: trac/ticket/query.py:678
 msgid "is"
 msgstr "öyle"
 
-#: trac/ticket/query.py:667 trac/ticket/query.py:675 trac/ticket/query.py:679
+#: trac/ticket/query.py:667
+#: trac/ticket/query.py:675
+#: trac/ticket/query.py:679
 msgid "is not"
 msgstr "öyle değil"
 
-#: trac/ticket/query.py:709 trac/ticket/query.py:715
+#: trac/ticket/query.py:709
+#: trac/ticket/query.py:715
 msgid "Ticket"
 msgstr "Bilet"
 
-#: trac/ticket/query.py:776 trac/ticket/report.py:406
+#: trac/ticket/query.py:776
+#: trac/ticket/report.py:406
 #, python-format
 msgid "Page %(num)d"
 msgstr "Sayfa %(num)d"
 
-#: trac/ticket/query.py:825 trac/ticket/report.py:273 trac/ticket/report.py:566
-#: trac/ticket/web_ui.py:130 trac/timeline/web_ui.py:221
+#: trac/ticket/query.py:825
+#: trac/ticket/report.py:273
+#: trac/ticket/report.py:566
+#: trac/ticket/web_ui.py:130
+#: trac/timeline/web_ui.py:221
 #: trac/versioncontrol/web_ui/log.py:305
 msgid "RSS Feed"
 msgstr "RSS Yayını"
 
-#: trac/ticket/query.py:827 trac/ticket/report.py:275 trac/ticket/report.py:568
+#: trac/ticket/query.py:827
+#: trac/ticket/report.py:275
+#: trac/ticket/report.py:568
 #: trac/ticket/web_ui.py:126
 msgid "Comma-delimited Text"
 msgstr "Virgülle ayrılan metin"
 
-#: trac/ticket/query.py:829 trac/ticket/report.py:277 trac/ticket/report.py:570
+#: trac/ticket/query.py:829
+#: trac/ticket/report.py:277
+#: trac/ticket/report.py:570
 #: trac/ticket/web_ui.py:128
 msgid "Tab-delimited Text"
 msgstr "Tabla ayrılan metin"
 
-#: trac/ticket/query.py:851 trac/ticket/report.py:72
+#: trac/ticket/query.py:851
+#: trac/ticket/report.py:72
 msgid "View Tickets"
 msgstr "Biletleri Görüntüle"
 
-#: trac/ticket/query.py:1058 trac/ticket/query.py:1069
+#: trac/ticket/query.py:1058
+#: trac/ticket/query.py:1069
 #: trac/ticket/report.py:133
 msgid "Custom Query"
 msgstr "Özel Sorgu"
 
-#: trac/ticket/query.py:1068 trac/ticket/report.py:123
-#: trac/ticket/report.py:124 trac/ticket/report.py:126
+#: trac/ticket/query.py:1068
+#: trac/ticket/report.py:123
+#: trac/ticket/report.py:124
+#: trac/ticket/report.py:126
 #: trac/ticket/templates/report_list.html:10
 #: trac/ticket/templates/report_list.html:15
 msgid "Available Reports"
@@ -2645,13 +2710,15 @@ msgstr "Rapor {%(id)d} silindi."
 msgid "Delete Report {%(num)s} %(title)s"
 msgstr "{%(num)s} %(title)s Raporunu Sil"
 
-#: trac/ticket/report.py:204 trac/ticket/report.py:217
+#: trac/ticket/report.py:204
+#: trac/ticket/report.py:217
 #: trac/ticket/report.py:296
 #, python-format
 msgid "Report {%(num)s} does not exist."
 msgstr "Rapor {%(num)s} mevcut değil."
 
-#: trac/ticket/report.py:205 trac/ticket/report.py:218
+#: trac/ticket/report.py:205
+#: trac/ticket/report.py:218
 #: trac/ticket/report.py:297
 msgid "Invalid Report Number"
 msgstr "Hatalı Rapor Numarası"
@@ -2709,20 +2776,18 @@ msgstr "biletler"
 
 #: trac/ticket/roadmap.py:215
 #, python-format
-msgid ""
-"'%(group1)s' and '%(group2)s' milestone groups both are declared to be "
-"\"catch-all\" groups. Please check your configuration."
+msgid "'%(group1)s' and '%(group2)s' milestone groups both are declared to be \"catch-all\" groups. Please check your configuration."
 msgstr ""
 
 #: trac/ticket/roadmap.py:231
 #, python-format
-msgid ""
-"'%(groupname)s' milestone group reused status '%(status)s' already taken "
-"by other groups. Please check your configuration."
+msgid "'%(groupname)s' milestone group reused status '%(status)s' already taken by other groups. Please check your configuration."
 msgstr ""
 
-#: trac/ticket/roadmap.py:314 trac/ticket/roadmap.py:436
-#: trac/ticket/roadmap.py:571 trac/ticket/templates/roadmap.html:10
+#: trac/ticket/roadmap.py:314
+#: trac/ticket/roadmap.py:436
+#: trac/ticket/roadmap.py:571
+#: trac/ticket/templates/roadmap.html:10
 #: trac/ticket/templates/roadmap.html:15
 msgid "Roadmap"
 msgstr "Yol Haritası"
@@ -2731,7 +2796,8 @@ msgstr "Yol Haritası"
 msgid "iCalendar"
 msgstr "Takvim"
 
-#: trac/ticket/roadmap.py:445 trac/ticket/roadmap.py:845
+#: trac/ticket/roadmap.py:445
+#: trac/ticket/roadmap.py:845
 #, python-format
 msgid "Milestone %(name)s"
 msgstr "Aşama %(name)s"
@@ -2768,7 +2834,8 @@ msgstr "Aşamaya bir isim vermelisiniz"
 msgid "Invalid Ticket"
 msgstr "Geçersiz Bilet"
 
-#: trac/ticket/web_ui.py:152 trac/ticket/templates/ticket.html:14
+#: trac/ticket/web_ui.py:152
+#: trac/ticket/templates/ticket.html:14
 msgid "New Ticket"
 msgstr "Yeni Bilet"
 
@@ -2776,7 +2843,8 @@ msgstr "Yeni Bilet"
 msgid "id can't be set for a new ticket request."
 msgstr "yeni bilet oluşturuken bilet numarası değişmez."
 
-#: trac/ticket/web_ui.py:217 trac/ticket/web_ui.py:268
+#: trac/ticket/web_ui.py:217
+#: trac/ticket/web_ui.py:268
 #: trac/versioncontrol/web_ui/changeset.py:1026
 #, python-format
 msgid "%(title)s: %(message)s"
@@ -2806,7 +2874,8 @@ msgstr "kapandı"
 msgid "updated"
 msgstr "güncelendi"
 
-#: trac/ticket/web_ui.py:262 trac/ticket/web_ui.py:1066
+#: trac/ticket/web_ui.py:262
+#: trac/ticket/web_ui.py:1066
 #, python-format
 msgid "%(labels)s changed"
 msgid_plural "%(labels)s changed"
@@ -2824,15 +2893,14 @@ msgstr "Eylem  \"%(name)s\"  mevcut değil."
 
 #: trac/ticket/web_ui.py:526
 #, python-format
-msgid ""
-"Please review your configuration, probably starting with %(section)s in "
-"your %(tracini)s."
+msgid "Please review your configuration, probably starting with %(section)s in your %(tracini)s."
 msgstr ""
 
-#: trac/ticket/web_ui.py:580 trac/ticket/web_ui.py:797
-#, fuzzy, python-format
+#: trac/ticket/web_ui.py:580
+#: trac/ticket/web_ui.py:797
+#, python-format
 msgid "Ticket #%(id)s"
-msgstr "Bileti Sil #%(id)s"
+msgstr "Bilet #%(id)s"
 
 #: trac/ticket/web_ui.py:631
 msgid "Previous Ticket"
@@ -2846,12 +2914,14 @@ msgstr "Sonraki Bilet"
 msgid "Back to Query"
 msgstr "Sorguya dön"
 
-#: trac/ticket/web_ui.py:714 trac/ticket/web_ui.py:863
+#: trac/ticket/web_ui.py:714
+#: trac/ticket/web_ui.py:863
 #: trac/ticket/web_ui.py:871
 msgid "Ticket History"
 msgstr "Bilet geçmişi"
 
-#: trac/ticket/web_ui.py:718 trac/ticket/web_ui.py:918
+#: trac/ticket/web_ui.py:718
+#: trac/ticket/web_ui.py:918
 #, python-format
 msgid "Back to Ticket #%(num)s"
 msgstr "Bilet #%(num)s Geri Dön"
@@ -2860,34 +2930,46 @@ msgstr "Bilet #%(num)s Geri Dön"
 msgid "No differences to show"
 msgstr "Gösterecek fark yok"
 
-#: trac/ticket/web_ui.py:803 trac/ticket/web_ui.py:860
-#: trac/ticket/web_ui.py:868 trac/ticket/web_ui.py:939
-#: trac/ticket/web_ui.py:984 trac/ticket/web_ui.py:991 trac/wiki/web_ui.py:431
-#: trac/wiki/web_ui.py:437 trac/wiki/web_ui.py:626 trac/wiki/web_ui.py:640
+#: trac/ticket/web_ui.py:803
+#: trac/ticket/web_ui.py:860
+#: trac/ticket/web_ui.py:868
+#: trac/ticket/web_ui.py:939
+#: trac/ticket/web_ui.py:984
+#: trac/ticket/web_ui.py:991
+#: trac/wiki/web_ui.py:431
+#: trac/wiki/web_ui.py:437
+#: trac/wiki/web_ui.py:626
+#: trac/wiki/web_ui.py:640
 #, python-format
 msgid "Version %(num)s"
 msgstr "Sürüm %(num)s"
 
-#: trac/ticket/web_ui.py:806 trac/ticket/web_ui.py:942
+#: trac/ticket/web_ui.py:806
+#: trac/ticket/web_ui.py:942
 msgid "Initial Version"
 msgstr "Başlangıç sürümü"
 
-#: trac/ticket/web_ui.py:806 trac/ticket/web_ui.py:942
+#: trac/ticket/web_ui.py:806
+#: trac/ticket/web_ui.py:942
 msgid "initial"
 msgstr "başlangıç"
 
 #: trac/ticket/web_ui.py:825
-#, fuzzy, python-format
+#, python-format
 msgid "Property %(label)s %(rendered)s"
-msgstr "Özellik %(name)s silindi"
+msgstr "Nitelik %(label)s %(rendered)s"
 
-#: trac/ticket/web_ui.py:870 trac/ticket/web_ui.py:993
-#: trac/versioncontrol/web_ui/changeset.py:370 trac/wiki/web_ui.py:450
+#: trac/ticket/web_ui.py:870
+#: trac/ticket/web_ui.py:993
+#: trac/versioncontrol/web_ui/changeset.py:370
+#: trac/wiki/web_ui.py:450
 msgid "Previous Change"
 msgstr "Önceki Değişiklik"
 
-#: trac/ticket/web_ui.py:870 trac/ticket/web_ui.py:993
-#: trac/versioncontrol/web_ui/changeset.py:370 trac/wiki/web_ui.py:450
+#: trac/ticket/web_ui.py:870
+#: trac/ticket/web_ui.py:993
+#: trac/versioncontrol/web_ui/changeset.py:370
+#: trac/wiki/web_ui.py:450
 msgid "Next Change"
 msgstr "Sonraki Değişiklik"
 
@@ -2896,16 +2978,17 @@ msgid "Ticket Diff"
 msgstr "Bilet Farkı"
 
 #: trac/ticket/web_ui.py:897
-#, fuzzy
 msgid "''Initial version''"
-msgstr "Başlangıç sürümü"
+msgstr "''Başlangıç sürümü''"
 
-#: trac/ticket/web_ui.py:910 trac/ticket/web_ui.py:987
+#: trac/ticket/web_ui.py:910
+#: trac/ticket/web_ui.py:987
 #: trac/ticket/web_ui.py:994
 msgid "Ticket Comment History"
 msgstr "Bilet Yorum Geçmişi"
 
-#: trac/ticket/web_ui.py:912 trac/ticket/web_ui.py:936
+#: trac/ticket/web_ui.py:912
+#: trac/ticket/web_ui.py:936
 #: trac/ticket/web_ui.py:1001
 #, python-format
 msgid "Ticket #%(num)s, comment %(cnum)d"
@@ -2921,18 +3004,19 @@ msgid "Ticket Comment Diff"
 msgstr "Bilet Yorum Farkı"
 
 #: trac/ticket/web_ui.py:1070
-#, fuzzy, python-format
+#, python-format
 msgid "%(labels)s set"
 msgid_plural "%(labels)s set"
-msgstr[0] "%(labels)s değiştirildi"
+msgstr[0] "%(labels)s ayarlandı"
 
 #: trac/ticket/web_ui.py:1074
-#, fuzzy, python-format
+#, python-format
 msgid "%(labels)s deleted"
 msgid_plural "%(labels)s deleted"
-msgstr[0] "%(value)s silindi"
+msgstr[0] "%(labels)s silindi"
 
-#: trac/ticket/web_ui.py:1075 trac/ticket/web_ui.py:1626
+#: trac/ticket/web_ui.py:1075
+#: trac/ticket/web_ui.py:1626
 msgid "; "
 msgstr ""
 
@@ -2953,21 +3037,17 @@ msgid "No permissions to add a comment."
 msgstr "Yorum eklemeye yetkiniz yok"
 
 #: trac/ticket/web_ui.py:1122
-msgid ""
-"Sorry, can not save your changes. This ticket has been modified by "
-"someone else since you started"
-msgstr ""
-"Üzgünüz, değişiklikleriniz kaydedilemiyor. Bilet siz başladıktan sonra "
-"başkası tarafından değiştirilmiş"
+msgid "Sorry, can not save your changes. This ticket has been modified by someone else since you started"
+msgstr "Üzgünüz, değişiklikleriniz kaydedilemiyor. Bilet siz başladıktan sonra başkası tarafından değiştirilmiş"
 
 #: trac/ticket/web_ui.py:1129
 msgid "Tickets must contain a summary."
 msgstr "Biletin bir özeti olmalıdır."
 
 #: trac/ticket/web_ui.py:1147
-#, fuzzy, python-format
+#, python-format
 msgid "field %(name)s must be set"
-msgstr "%(name)s sayfası mevcut değil."
+msgstr "%(name)s alanı mutlaka ayarlanmalı"
 
 #: trac/ticket/web_ui.py:1153
 #, python-format
@@ -2990,18 +3070,12 @@ msgstr " Hatalı bilet alanı '%(field)s' : %(message)s"
 
 #: trac/ticket/web_ui.py:1201
 #, python-format
-msgid ""
-"The ticket has been created, but an error occurred while sending "
-"notifications: %(message)s"
-msgstr ""
-"Bilet oluşturuldu, ancak bilgilendirmeler gönderilirken bir hata oluştu: "
-"%(message)s"
+msgid "The ticket has been created, but an error occurred while sending notifications: %(message)s"
+msgstr "Bilet oluşturuldu, ancak bilgilendirmeler gönderilirken bir hata oluştu: %(message)s"
 
 #: trac/ticket/web_ui.py:1211
 #, python-format
-msgid ""
-"Your ticket %(ticketref)s has been created, but you don't have permission"
-" to view it."
+msgid "Your ticket %(ticketref)s has been created, but you don't have permission to view it."
 msgstr "Biletiniz %(ticketref)s oluşturuldu, ancak sizin görüntüleme yetkiniz yok."
 
 #. TRANSLATOR: The 'change' has been saved... (link)
@@ -3011,9 +3085,7 @@ msgstr "değişiklik"
 
 #: trac/ticket/web_ui.py:1248
 #, python-format
-msgid ""
-"The %(change)s has been saved, but an error occurred while sending "
-"notifications: %(message)s"
+msgid "The %(change)s has been saved, but an error occurred while sending notifications: %(message)s"
 msgstr ""
 
 #: trac/ticket/web_ui.py:1382
@@ -3032,11 +3104,13 @@ msgstr "Cc den ekle/çıkar"
 msgid "<Author field>"
 msgstr "<yazan alanı>"
 
-#: trac/ticket/web_ui.py:1406 trac/ticket/templates/query.html:102
+#: trac/ticket/web_ui.py:1406
+#: trac/ticket/templates/query.html:102
 msgid "yes"
 msgstr "evet"
 
-#: trac/ticket/web_ui.py:1406 trac/ticket/templates/query.html:105
+#: trac/ticket/web_ui.py:1406
+#: trac/ticket/templates/query.html:105
 msgid "no"
 msgstr "hayır"
 
@@ -3048,14 +3122,17 @@ msgstr "ayarlandı"
 msgid "unset"
 msgstr "ayarlanmadı"
 
-#: trac/ticket/web_ui.py:1595 trac/versioncontrol/templates/changeset.html:189
+#: trac/ticket/web_ui.py:1595
+#: trac/versioncontrol/templates/changeset.html:189
 #: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "modified"
 msgstr "değişmiş"
 
 #. TRANSLATOR: modified ('diff') (link)
-#: trac/ticket/web_ui.py:1600 trac/ticket/templates/ticket.html:180
-#: trac/ticket/templates/ticket_box.html:64 trac/wiki/web_ui.py:722
+#: trac/ticket/web_ui.py:1600
+#: trac/ticket/templates/ticket.html:180
+#: trac/ticket/templates/ticket_box.html:64
+#: trac/wiki/web_ui.py:722
 msgid "diff"
 msgstr "fark"
 
@@ -3222,7 +3299,8 @@ msgstr "Filitreler"
 msgid "Query filters"
 msgstr "Sorgu filitreleri"
 
-#: trac/ticket/templates/query.html:45 trac/ticket/templates/query.html:143
+#: trac/ticket/templates/query.html:45
+#: trac/ticket/templates/query.html:143
 msgid "Or"
 msgstr "Yada"
 
@@ -3396,12 +3474,14 @@ msgstr "Raporu kaydet"
 msgid "Report"
 msgstr "Rapor"
 
-#: trac/ticket/templates/report_list.html:24 trac/wiki/admin.py:200
+#: trac/ticket/templates/report_list.html:24
+#: trac/wiki/admin.py:200
 msgid "Title"
 msgstr "Başlık"
 
 #: trac/ticket/templates/report_list.html:25
-#: trac/wiki/templates/wiki_edit.html:68 trac/wiki/templates/wiki_edit.html:141
+#: trac/wiki/templates/wiki_edit.html:68
+#: trac/wiki/templates/wiki_edit.html:141
 msgid "Actions"
 msgstr "Eylemler"
 
@@ -3417,7 +3497,8 @@ msgid "Edit report"
 msgstr "Raporu düzenle"
 
 #: trac/ticket/templates/report_list.html:33
-#: trac/ticket/templates/ticket.html:148 trac/wiki/templates/wiki_edit.html:124
+#: trac/ticket/templates/ticket.html:148
+#: trac/wiki/templates/wiki_edit.html:124
 msgid "Edit"
 msgstr "Düzenle"
 
@@ -3492,7 +3573,8 @@ msgstr "Yeni bilet oluştur"
 msgid "Change History"
 msgstr "Değişim Geçmişi"
 
-#: trac/ticket/templates/ticket.html:128 trac/ticket/templates/ticket.html:217
+#: trac/ticket/templates/ticket.html:128
+#: trac/ticket/templates/ticket.html:217
 msgid "in reply to:"
 msgstr "cevap olarak:"
 
@@ -3632,7 +3714,8 @@ msgstr "Ek listesine git"
 
 #: trac/ticket/templates/ticket.html:397
 #: trac/ticket/templates/ticket_change.html:45
-#: trac/wiki/templates/wiki_edit.html:70 trac/wiki/templates/wiki_edit.html:128
+#: trac/wiki/templates/wiki_edit.html:70
+#: trac/wiki/templates/wiki_edit.html:128
 #: trac/wiki/templates/wiki_edit_form.html:39
 #: trac/wiki/templates/wiki_edit_form.html:68
 msgid "Preview"
@@ -3740,23 +3823,26 @@ msgstr "Yorum (%(author)s tarafından):"
 msgid "Ticket URL: <%(link)s>"
 msgstr "Bilet URL: <%(link)s>"
 
-#: trac/timeline/web_ui.py:76 trac/timeline/templates/timeline.html:10
+#: trac/timeline/web_ui.py:76
+#: trac/timeline/templates/timeline.html:10
 #: trac/timeline/templates/timeline.html:16
 msgid "Timeline"
 msgstr "Zaman Çizelgesi"
 
-#: trac/timeline/web_ui.py:234 trac/timeline/web_ui.py:242
+#: trac/timeline/web_ui.py:234
+#: trac/timeline/web_ui.py:242
 msgid "Previous Period"
 msgstr "Önceki periyot"
 
-#: trac/timeline/web_ui.py:241 trac/timeline/web_ui.py:242
+#: trac/timeline/web_ui.py:241
+#: trac/timeline/web_ui.py:242
 msgid "Next Period"
 msgstr "Sonraki periyot"
 
 #: trac/timeline/web_ui.py:302
 #, python-format
 msgid "%(date)s in Timeline"
-msgstr ""
+msgstr "Zaman çizelgesinde %(date)s"
 
 #. TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
 #: trac/timeline/web_ui.py:349
@@ -3770,10 +3856,7 @@ msgstr ""
 
 #: trac/timeline/web_ui.py:357
 #, python-format
-msgid ""
-"You may want to see the %(other_events)s from the Timeline or notify your"
-" Trac administrator about the error (detailed information was written to "
-"the log)."
+msgid "You may want to see the %(other_events)s from the Timeline or notify your Trac administrator about the error (detailed information was written to the log)."
 msgstr ""
 
 #: trac/timeline/templates/timeline.html:19
@@ -3853,20 +3936,17 @@ msgstr[0] "%(num)d saniye"
 
 #: trac/util/datefmt.py:250
 #, python-format
-msgid ""
-"\"%(date)s\" is an invalid date, or the date format is not known. Try "
-"\"%(hint)s\" instead."
+msgid "\"%(date)s\" is an invalid date, or the date format is not known. Try \"%(hint)s\" instead."
 msgstr ""
 
-#: trac/util/datefmt.py:252 trac/util/datefmt.py:260
+#: trac/util/datefmt.py:252
+#: trac/util/datefmt.py:260
 msgid "Invalid Date"
 msgstr "Geçersiz Tarih"
 
 #: trac/util/datefmt.py:258
 #, python-format
-msgid ""
-"The date \"%(date)s\" is outside valid range. Try a date closer to "
-"present time."
+msgid "The date \"%(date)s\" is outside valid range. Try a date closer to present time."
 msgstr ""
 
 #: trac/util/presentation.py:255
@@ -3892,11 +3972,13 @@ msgstr "Dizin"
 msgid "Cannot synchronize a single revision on multiple repositories"
 msgstr ""
 
-#: trac/versioncontrol/admin.py:124 trac/versioncontrol/admin.py:182
+#: trac/versioncontrol/admin.py:124
+#: trac/versioncontrol/admin.py:182
 #: trac/versioncontrol/web_ui/browser.py:352
 #: trac/versioncontrol/web_ui/changeset.py:247
 #: trac/versioncontrol/web_ui/changeset.py:1090
-#: trac/versioncontrol/web_ui/log.py:88 trac/versioncontrol/web_ui/log.py:396
+#: trac/versioncontrol/web_ui/log.py:88
+#: trac/versioncontrol/web_ui/log.py:396
 #, python-format
 msgid "Repository '%(repo)s' not found"
 msgstr "Depo '%(repo)s' bulunamadı"
@@ -3904,12 +3986,12 @@ msgstr "Depo '%(repo)s' bulunamadı"
 #: trac/versioncontrol/admin.py:128
 #, python-format
 msgid "%(rev)s resynced on %(reponame)s."
-msgstr ""
+msgstr "%(rev)s senkronize edildi %(reponame)s deposunda."
 
 #: trac/versioncontrol/admin.py:135
 #, python-format
 msgid "Resyncing repository history for %(reponame)s... "
-msgstr ""
+msgstr "Depo geçmişi senkronize ediliyor %(reponame)s için... "
 
 #: trac/versioncontrol/admin.py:142
 #, python-format
@@ -3930,10 +4012,11 @@ msgstr "Sürüm Kontrolü"
 msgid "Repositories"
 msgstr "Depolar"
 
-#: trac/versioncontrol/admin.py:203 trac/versioncontrol/admin.py:242
+#: trac/versioncontrol/admin.py:203
+#: trac/versioncontrol/admin.py:242
 #, python-format
 msgid "You should now run %(resync)s to synchronize Trac with the repository."
-msgstr ""
+msgstr "Şimdi %(resync)s çalıştırarak Trac ile deponuzu senkronize etmelisiniz."
 
 #: trac/versioncontrol/admin.py:208
 #, python-format
@@ -3942,9 +4025,7 @@ msgstr ""
 
 #: trac/versioncontrol/admin.py:216
 #, python-format
-msgid ""
-"You will need to update your post-commit hook to call %(cset_added)s with"
-" the new repository name."
+msgid "You will need to update your post-commit hook to call %(cset_added)s with the new repository name."
 msgstr ""
 
 #: trac/versioncontrol/admin.py:238
@@ -3954,9 +4035,7 @@ msgstr "Depo \"%(name)s\" eklendi."
 
 #: trac/versioncontrol/admin.py:248
 #, python-format
-msgid ""
-"You should also set up a post-commit hook on the repository to call "
-"%(cset_added)s for each committed changeset."
+msgid "You should also set up a post-commit hook on the repository to call %(cset_added)s for each committed changeset."
 msgstr ""
 
 #: trac/versioncontrol/admin.py:254
@@ -4006,7 +4085,8 @@ msgstr "Şimdi \"repository resync %(name)s\" yapmalısınız."
 msgid "You may have to run \"repository resync %(name)s\"."
 msgstr "Şimdi \"repository resync %(name)s\" yapmanız gerekebilir.."
 
-#: trac/versioncontrol/api.py:201 trac/versioncontrol/api.py:264
+#: trac/versioncontrol/api.py:201
+#: trac/versioncontrol/api.py:264
 msgid "The repository directory must be absolute"
 msgstr ""
 
@@ -4017,12 +4097,8 @@ msgstr "Depo türü '%(type)s' desteklenmiyor"
 
 #: trac/versioncontrol/api.py:338
 #, python-format
-msgid ""
-"Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the "
-"Trac log for more information."
-msgstr ""
-"Depoyla senkronize olunamıyor \"%(name)s\" (%(error)s). Daha fazla bilgi "
-"için Trac kayıtlarına bakın."
+msgid "Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the Trac log for more information."
+msgstr "Depoyla senkronize olunamıyor \"%(name)s\" (%(error)s). Daha fazla bilgi için Trac kayıtlarına bakın."
 
 #: trac/versioncontrol/api.py:357
 #, python-format
@@ -4074,10 +4150,8 @@ msgstr ""
 
 #: trac/versioncontrol/api.py:690
 #, python-format
-msgid ""
-"Unsupported version control system \"%(name)s\": Can't find an "
-"appropriate component, maybe the corresponding plugin was not enabled? "
-msgstr ""
+msgid "Unsupported version control system \"%(name)s\": Can't find an appropriate component, maybe the corresponding plugin was not enabled? "
+msgstr "Desteklenmeyen sürüm kontrol sistemi \"%(name)s\": Uygun bileşen bulunamıyor, belki de gerekli eklenti aktif değildir?"
 
 #: trac/versioncontrol/api.py:698
 #, python-format
@@ -4103,10 +4177,8 @@ msgid "No such node"
 msgstr "Böyle bir düğüm yok."
 
 #: trac/versioncontrol/cache.py:149
-msgid ""
-"The 'repository_dir' has changed, a 'trac-admin $ENV repository resync' "
-"operation is needed."
-msgstr ""
+msgid "The 'repository_dir' has changed, a 'trac-admin $ENV repository resync' operation is needed."
+msgstr "'repository_dir' değiştirildi, 'trac-admin $ENV repository resync' işlemi gerekiyor."
 
 #: trac/versioncontrol/svn_authz.py:73
 #, python-format
@@ -4135,9 +4207,7 @@ msgstr "Subversion deposu %(path)s açılamıyor: %(svn_error)s"
 
 #: trac/versioncontrol/svn_fs.py:617
 #, python-format
-msgid ""
-"Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
-" and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
+msgid "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s) and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
 msgstr ""
 
 #: trac/versioncontrol/svn_fs.py:766
@@ -4159,7 +4229,7 @@ msgstr "engellendi"
 
 #: trac/versioncontrol/svn_prop.py:192
 msgid "eligible"
-msgstr ""
+msgstr "uygun"
 
 #: trac/versioncontrol/svn_prop.py:206
 msgid "(toggle deleted branches)"
@@ -4243,7 +4313,7 @@ msgstr "Dizin:"
 
 #: trac/versioncontrol/templates/admin_repositories.html:67
 msgid "Hide from repository index"
-msgstr ""
+msgstr "Depo indeksinden sakla"
 
 #: trac/versioncontrol/templates/admin_repositories.html:93
 msgid "Add Repository:"
@@ -4304,7 +4374,8 @@ msgid "No files found"
 msgstr "Hiç dosya bulunamadı"
 
 #: trac/versioncontrol/templates/browser.html:106
-#: trac/wiki/templates/wiki_edit.html:112 trac/wiki/templates/wiki_view.html:32
+#: trac/wiki/templates/wiki_edit.html:112
+#: trac/wiki/templates/wiki_view.html:32
 msgid "Revision info"
 msgstr "Revizyon bilgisi"
 
@@ -4587,8 +4658,7 @@ msgstr "Hedef:"
 #: trac/versioncontrol/templates/diff_form.html:50
 msgid ""
 "For either path, you can start typing the path and will be\n"
-"              presented a list of existing directories and files to "
-"select\n"
+"              presented a list of existing directories and files to select\n"
 "              from. Select an entry by clicking on it, or by using the\n"
 "              up/down cursor keys and hitting tab."
 msgstr ""
@@ -4837,9 +4907,7 @@ msgid "Annotate"
 msgstr "Not düş"
 
 #: trac/versioncontrol/web_ui/browser.py:462
-msgid ""
-"Annotate each line with the last changed revision (this can be time "
-"consuming...)"
+msgid "Annotate each line with the last changed revision (this can be time consuming...)"
 msgstr "Her satıra son revizyondan not düş. (bu zaman alabilir...) "
 
 #: trac/versioncontrol/web_ui/browser.py:469
@@ -4962,7 +5030,7 @@ msgstr "%(repos)s üzerinde %(rev)s gösterme yetkisi yok"
 #: trac/versioncontrol/web_ui/changeset.py:1092
 #: trac/versioncontrol/web_ui/log.py:398
 msgid "No default repository defined"
-msgstr ""
+msgstr "Varsayılan depo tanımlanmamış"
 
 #: trac/versioncontrol/web_ui/changeset.py:1131
 msgid "Changesets"
@@ -4970,12 +5038,8 @@ msgstr "Toplu Değişiklikler"
 
 #: trac/versioncontrol/web_ui/log.py:200
 #, python-format
-msgid ""
-"The file or directory '%(path)s' doesn't exist at revision %(rev)s or at "
-"any previous revision."
-msgstr ""
-"Bu dosya veya dizin '%(path)s'  %(rev)s ve  önceki revizyonların içinde "
-"bulunmuyor. ."
+msgid "The file or directory '%(path)s' doesn't exist at revision %(rev)s or at any previous revision."
+msgstr "Bu dosya veya dizin '%(path)s'  %(rev)s ve  önceki revizyonların içinde bulunmuyor. ."
 
 #: trac/versioncontrol/web_ui/log.py:200
 msgid "Nonexistent path"
@@ -5009,9 +5073,7 @@ msgstr "ara"
 
 #: trac/versioncontrol/web_ui/util.py:69
 #, python-format
-msgid ""
-"You can %(search)s in the repository history to see if that path existed "
-"but was later removed"
+msgid "You can %(search)s in the repository history to see if that path existed but was later removed"
 msgstr ""
 
 #: trac/web/api.py:236
@@ -5048,9 +5110,7 @@ msgstr "Kimlik Doğrulama Ayarlaması"
 
 #: trac/web/auth.py:142
 #, python-format
-msgid ""
-"Authentication information not available. Please refer to the "
-"%(inst_doc)s."
+msgid "Authentication information not available. Please refer to the %(inst_doc)s."
 msgstr ""
 
 #: trac/web/auth.py:150
@@ -5072,9 +5132,10 @@ msgstr "(bilinmeyen şablon konumu)"
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr ""
 
-#: trac/web/chrome.py:894 trac/web/chrome.py:902
+#: trac/web/chrome.py:894
+#: trac/web/chrome.py:902
 msgid "anonymous"
-msgstr ""
+msgstr "anonim"
 
 #: trac/web/main.py:227
 msgid "Secure cookies are enabled, you must use https to submit forms."
@@ -5087,7 +5148,7 @@ msgstr "Çerezleriniz aktif mi?"
 #: trac/web/main.py:231
 #, python-format
 msgid "Missing or invalid form token. %(msg)s"
-msgstr ""
+msgstr "Kayıp veya geçersiz form işareti. %(msg)s"
 
 #: trac/web/main.py:531
 #, python-format
@@ -5102,25 +5163,22 @@ msgstr "öyle yap"
 #: trac/web/main.py:549
 #, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
-msgstr ""
+msgstr "Giriş yapmamışsınız. Belki  %(do_so)s istersiniz."
 
 #: trac/web/main.py:607
-#, fuzzy
 msgid "''System information not available''\n"
-msgstr "Hiç bir yönetim paneli bulunmuyor"
+msgstr "''Sistem bilgisi mevcut değil''\n"
 
 #: trac/web/main.py:608
-#, fuzzy
 msgid "''Plugin information not available''\n"
-msgstr "Hiç bir yönetim paneli bulunmuyor"
+msgstr "''Eklenti bilgisi mevcut değil''\n"
 
 #: trac/web/main.py:632
 #, python-format
 msgid ""
 "==== How to Reproduce ====\n"
 "\n"
-"While doing a %(method)s operation on `%(path_info)s`, Trac issued an "
-"internal error.\n"
+"While doing a %(method)s operation on `%(path_info)s`, Trac issued an internal error.\n"
 "\n"
 "''(please provide additional details here)''\n"
 "\n"
@@ -5142,9 +5200,7 @@ msgstr ""
 
 #: trac/web/session.py:203
 #, python-format
-msgid ""
-"Session '%(id)s' already exists.<br />Please choose a different session "
-"ID."
+msgid "Session '%(id)s' already exists.<br />Please choose a different session ID."
 msgstr "Oturum '%(id)s' zaten mevcut.<br />Lütfen farklı bir oturum ID seçin."
 
 #: trac/web/session.py:205
@@ -5179,9 +5235,10 @@ msgstr "Oturum idsi %(sid)s bulunamadı"
 #: trac/wiki/admin.py:116
 #, python-format
 msgid "'%(name)s' is not a file"
-msgstr ""
+msgstr "'%(name)s' bir dosya değil"
 
-#: trac/wiki/admin.py:168 trac/wiki/admin.py:265
+#: trac/wiki/admin.py:168
+#: trac/wiki/admin.py:265
 #, python-format
 msgid "  %(page)s imported from %(filename)s"
 msgstr ""
@@ -5190,11 +5247,13 @@ msgstr ""
 msgid "Edits"
 msgstr "Düzenlemeler"
 
-#: trac/wiki/admin.py:206 trac/wiki/web_ui.py:295
+#: trac/wiki/admin.py:206
+#: trac/wiki/web_ui.py:295
 msgid "A new name is mandatory for a rename."
 msgstr "Adlandırmak için yeni bir isim gereklidir."
 
-#: trac/wiki/admin.py:210 trac/wiki/web_ui.py:299
+#: trac/wiki/admin.py:210
+#: trac/wiki/web_ui.py:299
 #, python-format
 msgid "The page %(name)s already exists."
 msgstr "Bu sayfa %(name)s zaten mevcut."
@@ -5215,7 +5274,7 @@ msgstr "bu wiki sayfasını görüntüleme yetkiniz yok"
 #: trac/wiki/formatter.py:174
 #, python-format
 msgid "HTML parsing error: %(message)s"
-msgstr ""
+msgstr "HTML ayrıştırma hatası: %(message)s"
 
 #: trac/wiki/formatter.py:178
 msgid "Error: Forbidden character sequence \"--\" in htmlcomment wiki code block"
@@ -5231,10 +5290,11 @@ msgstr ""
 msgid "!#%(name)s must contain at least one table cell (and table cells only)"
 msgstr ""
 
-#: trac/wiki/formatter.py:627 trac/wiki/interwiki.py:88
+#: trac/wiki/formatter.py:627
+#: trac/wiki/interwiki.py:88
 #, python-format
 msgid "%(target)s in %(name)s"
-msgstr ""
+msgstr "%(name)s içinde %(target)s"
 
 #: trac/wiki/intertrac.py:55
 #, python-format
@@ -5274,9 +5334,10 @@ msgstr "Sayfa değişmedi"
 #: trac/wiki/model.py:174
 #, python-format
 msgid "Can't rename to existing %(name)s page."
-msgstr ""
+msgstr "Varolan %(name)s sayfasına adlandırılamıyor."
 
-#: trac/wiki/web_ui.py:87 trac/wiki/web_ui.py:729
+#: trac/wiki/web_ui.py:87
+#: trac/wiki/web_ui.py:729
 msgid "Wiki"
 msgstr "Wiki"
 
@@ -5292,7 +5353,7 @@ msgstr ""
 #: trac/wiki/web_ui.py:190
 #, python-format
 msgid "The wiki page is too long (must be less than %(num)s characters)"
-msgstr ""
+msgstr "Wiki sayfası çok uzun (%(num)s karakterden kısa olmalıdır)"
 
 #: trac/wiki/web_ui.py:200
 #, python-format
@@ -5438,9 +5499,7 @@ msgstr "Sil [1:%(name)s]"
 #: trac/wiki/templates/wiki_delete.html:33
 #, python-format
 msgid "Are you sure you want to delete versions %(from)s to %(to)s of this page?"
-msgstr ""
-"Bu sayfanın %(from)s ile %(to)s arasındaki sürümlerini silmek "
-"istediğinize emin misiniz?"
+msgstr "Bu sayfanın %(from)s ile %(to)s arasındaki sürümlerini silmek istediğinize emin misiniz?"
 
 #: trac/wiki/templates/wiki_delete.html:36
 #, python-format
@@ -5479,9 +5538,10 @@ msgstr "Bu sürümden  (%(old_version)d) bu sürüme (%(version)d) sil"
 msgid "Delete version %(version)d"
 msgstr "Sürümü sil (%(version)d)"
 
-#: trac/wiki/templates/wiki_edit.html:67 trac/wiki/templates/wiki_edit.html:140
+#: trac/wiki/templates/wiki_edit.html:67
+#: trac/wiki/templates/wiki_edit.html:140
 msgid "Go to Save, Preview, Review or Cancel buttons"
-msgstr ""
+msgstr "Kaydet,Önizle,İncele veya İptal butonlarına git"
 
 #: trac/wiki/templates/wiki_edit.html:69
 msgid "See the diffs"
@@ -5515,18 +5575,14 @@ msgstr "Kayıt ettiğiniz anda eski hali kaybolur"
 msgid ""
 "Please review all those changes and manually merge them with your\n"
 "        own changes. [1:]\n"
-"        If you're unsure about what you're doing, please press [2:Cancel]"
-"\n"
-"        (losing your changes) and start editing the latest version of the"
-" page\n"
+"        If you're unsure about what you're doing, please press [2:Cancel]\n"
+"        (losing your changes) and start editing the latest version of the page\n"
 "        again."
 msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:114
 #, fuzzy, python-format
-msgid ""
-"Change information for future version %(version)s (modified by "
-"%(author)s):"
+msgid "Change information for future version %(version)s (modified by %(author)s):"
 msgstr "Sonraki sürümlerin bilgisini değiştir"
 
 #: trac/wiki/templates/wiki_edit.html:124
@@ -5547,8 +5603,7 @@ msgid ""
 "Sorry, this page has been modified by somebody else since you started\n"
 "            editing. Your changes cannot be saved."
 msgstr ""
-"Bu sayfa siz değiştirmeye başladıktan sonra başkası tarafından "
-"değiştirildi.\n"
+"Bu sayfa siz değiştirmeye başladıktan sonra başkası tarafından değiştirildi.\n"
 "            Değişiklikleriniz kaydedilemiyor."
 
 #: trac/wiki/templates/wiki_edit_form.html:16
@@ -5639,7 +5694,8 @@ msgstr "Önceki konumda yönlendirme sayfası bırak"
 msgid "Rename page"
 msgstr "Sayfayı adlandır"
 
-#: trac/wiki/templates/wiki_view.html:14 trac/wiki/templates/wiki_view.html:84
+#: trac/wiki/templates/wiki_view.html:14
+#: trac/wiki/templates/wiki_view.html:84
 msgid "Edit this page"
 msgstr "Bu sayfayı düzenle"
 
@@ -5692,54 +5748,34 @@ msgstr "(boş sayfa)"
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr "Bu sayfalar, mevcut sayfaya benzer isimler taşıyor, ilgili olabilir:"
 
-#~ msgid ""
-#~ "Welcome to trac-admin %(version)s\n"
-#~ "Interactive Trac administration console.\n"
-#~ "Copyright (c) 2003-2009 Edgewall Software\n"
-#~ "\n"
-#~ "Type:  '?' or 'help' for help on commands.\n"
-#~ "        "
-#~ msgstr ""
-
 #~ msgid "Invalid unified diff content"
 #~ msgstr "Geçersiz birleşik fark içeriği"
-
 #~ msgid "==== How to Reproduce ===="
 #~ msgstr "==== Nasıl Yeniden Oluşturulur ===="
-
 #~ msgid ""
-#~ "While doing a %(request)s operation on"
-#~ " `%(path)s`, Trac issued an internal "
-#~ "error.\n"
+#~ "While doing a %(request)s operation on `%(path)s`, Trac issued an "
+#~ "internal error.\n"
 #~ "\n"
 #~ "''(please provide additional details here)''"
 #~ msgstr ""
-#~ "`%(path)s` üzerinde %(request)s işlemi "
-#~ "yapılırken, Trac bir iç hatayla "
+#~ "`%(path)s` üzerinde %(request)s işlemi yapılırken, Trac bir iç hatayla "
 #~ "karşılaştı.\n"
 #~ "\n"
 #~ "''(lütfen burada detayları belirtin)''"
-
 #~ msgid ""
 #~ "Request parameters:\n"
 #~ "{{{"
 #~ msgstr ""
 #~ "İstek parametreleri:\n"
 #~ "{{{"
-
 #~ msgid "==== System Information ===="
 #~ msgstr "==== Sistem Bilgisi ===="
-
 #~ msgid "==== Enabled Plugins ===="
 #~ msgstr "==== Aktif Eklentiler ===="
-
 #~ msgid ""
 #~ "==== Python Traceback ====\n"
 #~ "{{{"
 #~ msgstr ""
 #~ "==== Python Geribildirimi  ====\n"
 #~ "{{{"
-
-#~ msgid "%(kind)s %(id)%(at_version)s%(in_repo)s"
-#~ msgstr ""
 
