@@ -12,7 +12,7 @@ define HELP
 
  Please use `make <target>' where <target> is one of: 
 
-  clean               delete all compiled python files 
+  clean               delete all compiled files 
   status              show which Python is used and other infos
 
   [python=...]        variable for selecting Python version
@@ -76,7 +76,7 @@ export HELP
 #
 # Main targets
 
-.PHONY: all help status clean clean-bytecode
+.PHONY: all help status clean clean-bytecode clean-mo
 
 ifdef test
 all: status
@@ -231,6 +231,10 @@ diff: $(addprefix diff-,$(locales))
 diff-%:
 	@svn diff trac/locale/$(*) \
 	    | grep -Ev '^([-+]#:|[@ ])' | grep -E '^[-+@]' || true
+
+clean-mo:
+	find trac/locale -name \*.mo -exec rm {} \;
+	find trac/htdocs/js/messages -name \*.js -exec rm {} \;
 
 
 # ----------------------------------------------------------------------------
