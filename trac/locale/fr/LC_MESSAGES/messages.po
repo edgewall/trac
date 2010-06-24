@@ -1086,7 +1086,7 @@ msgid ""
 "            [1:log] directory of the project environment ([2:%(dir)s])."
 msgstr ""
 "Si le chemin est relatif, le fichier du journal sera créé dans le\n"
-" [1:log] sous-répertoire du projet ([2:%(dir)s])."
+"            sous-répertoire [1:log] du projet ([2:%(dir)s])."
 
 #: trac/admin/templates/admin_milestones.html:10 trac/ticket/admin.py:241
 #: trac/ticket/roadmap.py:875
