@@ -2,6 +2,7 @@
 # Copyright (C) 2008 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>, 2008.
+# Chi-Chung Lin <zclin.csie92g@gmail.com>, 2010
 #
 msgid ""
 msgstr ""
@@ -974,6 +975,7 @@ msgid ""
 "You can remove all items from this list to completely hide this\n"
 "              field from the user interface."
 msgstr ""
+"您可以移除此列表中的所有項目，移除後此欄位會隱藏起來"
 
 #: trac/admin/templates/admin_components.html:107
 #: trac/admin/templates/admin_enums.html:78
@@ -983,6 +985,7 @@ msgid ""
 "As long as you don't add any items to the list, this field\n"
 "            will remain completely hidden from the user interface."
 msgstr ""
+"只要您不加入任何項目，此欄位會完全隱藏起來"
 
 #: trac/admin/templates/admin_enums.html:14
 #, python-format
@@ -1161,7 +1164,7 @@ msgstr "網頁伺服器沒有權限儲存檔案在 plugins 目錄中"
 
 #: trac/admin/templates/admin_plugins.html:57
 msgid "Upload a plugin packaged as Python egg."
-msgstr ""
+msgstr "上傳模組，格式為 Python egg 格式"
 
 #: trac/admin/templates/admin_plugins.html:62
 msgid "Install"
@@ -1178,7 +1181,7 @@ msgstr "首頁:"
 
 #: trac/admin/templates/admin_plugins.html:101
 msgid "License:"
-msgstr "版權:"
+msgstr "許可證:"
 
 #: trac/admin/templates/admin_plugins.html:111
 msgid "Show all descriptions"
@@ -1369,7 +1372,7 @@ msgid ""
 "      restored on subsequent visits."
 msgstr ""
 "此頁面讓您儲存您的個人設定，這些設定會儲存在伺服器上，\n"
-"並以瀏覽器 Cookie 來當 Session ID。Cookie 可以讓您的設定\n"
+"並以瀏覽器 Cookie 辨識 Session ID。Cookie 可以讓您的設定\n"
 "套用到接下來所有的瀏覽動作。"
 
 #: trac/prefs/templates/prefs.html:33
@@ -1388,6 +1391,8 @@ msgid ""
 "      easier to remember at any time if you wish to load your settings\n"
 "      in a different web browser."
 msgstr ""
+"Session key 用來辨識儲存在伺服器的自訂設定與 session 資料。\n"
+"雖然它是自動產生的，您仍可以在任何十候藉由修改它載入其他瀏覽器的設定"
 
 #: trac/prefs/templates/prefs_advanced.html:26
 msgid "Restore session:"
@@ -1605,8 +1610,8 @@ msgid ""
 "        [2:online]\n"
 "        as well as in the [3:COPYING] file included in the distribution."
 msgstr ""
-"Trac 發布於 modified BSD 授權。[1:]\n"
-"        授權的完整文件可以 [2:線上查看]，\n"
+"Trac 以 modified BSD 許可證發布。[1:]\n"
+"        許可證內文可以 [2:線上查看]，\n"
 "        也可以在 [3:COPYING] 檔案中找到"
 
 #: trac/templates/about.html:41
@@ -2150,7 +2155,7 @@ msgstr "%(count)s/%(total)s %(title)s"
 #: trac/templates/progress_bar.html:36
 #, python-format
 msgid "Number of %(unit)s:"
-msgstr ""
+msgstr "%(unit)s 數量:"
 
 #: trac/templates/progress_bar.html:40
 #, python-format
@@ -2284,7 +2289,7 @@ msgstr "時間"
 #: trac/ticket/admin.py:627
 #, python-format
 msgid "The %(field)s value \"%(name)s\" has been added."
-msgstr ""
+msgstr "已加入 %(field)s 欄位值 \"%(name)s\""
 
 #: trac/ticket/admin.py:633
 #, python-format
@@ -2316,7 +2321,7 @@ msgstr ""
 
 #: trac/ticket/admin.py:684
 msgid "Order numbers must be unique"
-msgstr ""
+msgstr "順序數字必須是唯一，不可重複"
 
 #: trac/ticket/admin.py:746
 msgid "Possible Values"
@@ -2726,6 +2731,8 @@ msgid ""
 "'%(group1)s' and '%(group2)s' milestone groups both are declared to be "
 "\"catch-all\" groups. Please check your configuration."
 msgstr ""
+"里程碑群組 '%(group1)s' 和 '%(group2)s' 都被設定為\"預設\"群組。"
+"請檢查您的設定"
 
 #: trac/ticket/roadmap.py:231
 #, python-format
@@ -2733,6 +2740,8 @@ msgid ""
 "'%(groupname)s' milestone group reused status '%(status)s' already taken "
 "by other groups. Please check your configuration."
 msgstr ""
+"里程碑群組 '%(groupname)s' 使用其他群組已經使用的狀態 '%(status)s'。"
+"請檢查您的設定"
 
 #: trac/ticket/roadmap.py:314 trac/ticket/roadmap.py:436
 #: trac/ticket/roadmap.py:571 trac/ticket/templates/roadmap.html:10
@@ -2787,7 +2796,7 @@ msgstr "新增待辦事項"
 
 #: trac/ticket/web_ui.py:168
 msgid "id can't be set for a new ticket request."
-msgstr ""
+msgstr "新的待辦事項請求不能設定 id 值"
 
 #: trac/ticket/web_ui.py:217 trac/ticket/web_ui.py:268
 #: trac/versioncontrol/web_ui/changeset.py:1026
@@ -2805,25 +2814,25 @@ msgstr "待辦事項更新"
 
 #: trac/ticket/web_ui.py:239
 msgid "created"
-msgstr ""
+msgstr "新建立"
 
 #: trac/ticket/web_ui.py:240
 msgid "reopened"
-msgstr ""
+msgstr "重新開啟"
 
 #: trac/ticket/web_ui.py:241
 msgid "closed"
-msgstr ""
+msgstr "已結束"
 
 #: trac/ticket/web_ui.py:242
 msgid "updated"
-msgstr ""
+msgstr "更新"
 
 #: trac/ticket/web_ui.py:262 trac/ticket/web_ui.py:1066
 #, python-format
 msgid "%(labels)s changed"
 msgid_plural "%(labels)s changed"
-msgstr[0] ""
+msgstr[0] "%(labels)s 項目變動"
 
 #: trac/ticket/web_ui.py:345
 #, python-format
@@ -3112,7 +3121,7 @@ msgstr "您確定要刪除這個里程碑?"
 
 #: trac/ticket/templates/milestone_delete.html:29
 msgid "Retarget associated tickets to milestone"
-msgstr ""
+msgstr "重新指定相關待辦事項到此里程碑"
 
 #: trac/ticket/templates/milestone_delete.html:41
 #: trac/ticket/templates/milestone_view.html:107
@@ -3148,7 +3157,7 @@ msgstr "時程"
 
 #: trac/ticket/templates/milestone_edit.html:71
 msgid "Retarget associated open tickets to milestone:"
-msgstr ""
+msgstr "重新指定相關已開啟待辦事項到此里程碑:"
 
 #: trac/ticket/templates/milestone_edit.html:92
 #: trac/ticket/templates/ticket.html:398
@@ -3268,7 +3277,7 @@ msgstr "遞減"
 
 #: trac/ticket/templates/query.html:191
 msgid "Show under each result:"
-msgstr ""
+msgstr "在每筆結果底下顯示:"
 
 #: trac/ticket/templates/query.html:201
 #: trac/ticket/templates/report_view.html:27
@@ -3357,7 +3366,7 @@ msgstr "(此待辦事項)"
 
 #: trac/ticket/templates/query_results.html:101
 msgid "(more results for this group on next page)"
-msgstr ""
+msgstr "(下一頁顯示更多結果)"
 
 #: trac/ticket/templates/report_delete.html:17
 msgid "Are you sure you want to delete this report?"
@@ -3397,6 +3406,8 @@ msgid ""
 "Query for Report: (can be either SQL or, if starting with [1:query:],\n"
 "              a [2:TracQuery] expression)"
 msgstr ""
+"報表的查詢指令：(可以是 SQL\n"
+"              或者是 [2:TracQuery] 表示法(以 [1:query:] 開始))"
 
 #: trac/ticket/templates/report_edit.html:43
 msgid "Save report"
@@ -3673,20 +3684,20 @@ msgstr "(尚未建立待辦事項)"
 
 #: trac/ticket/templates/ticket_box.html:29
 msgid "Reported by:"
-msgstr ""
+msgstr "回報者:"
 
 #: trac/ticket/templates/ticket_box.html:33
 msgid "Owned by:"
-msgstr ""
+msgstr "負責人:"
 
 #: trac/ticket/templates/ticket_box.html:63
 #, python-format
 msgid "(last modified by %(author)s)"
-msgstr ""
+msgstr "(由 %(author)s 作最後更新)"
 
 #: trac/ticket/templates/ticket_box.html:73
 msgid "Reply, quoting this description"
-msgstr ""
+msgstr "回覆，引用此描述"
 
 #: trac/ticket/templates/ticket_change.html:19
 #, python-format
@@ -5340,11 +5351,11 @@ msgstr "瀏覽 [wiki:\"%(name)s\"]"
 #: trac/wiki/web_ui.py:333
 #, python-format
 msgid "Your changes have been saved in version %(version)s."
-msgstr "您的更動將儲存於版本 %(version)s"
+msgstr "已儲存您的修改，版次為 %(version)s"
 
 #: trac/wiki/web_ui.py:338
 msgid "Page not modified, showing latest version."
-msgstr "沒有修改頁面，顯示最新版本。"
+msgstr "頁面未更動，顯示最新版本。"
 
 #: trac/wiki/web_ui.py:381
 #, python-format
