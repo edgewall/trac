@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-06-11 16:41+0200\n"
-"PO-Revision-Date: 2010-06-23 14:11+0200\n"
+"PO-Revision-Date: 2010-06-24 08:01+0200\n"
 "Last-Translator: Aranel Surion <aranel@aranelsurion.org>\n"
 "Language-Team: tr_TR <trac-dev@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -151,9 +151,9 @@ msgid "Cannot reparent attachment \"%(att)s\" as it already exists in %(realm)s:
 msgstr ""
 
 #: trac/attachment.py:229
-#, fuzzy, python-format
+#, python-format
 msgid "Could not reparent attachment %(name)s"
-msgstr "Ek dosya silinemiyor."
+msgstr "Ek %(name)s sahibi değiştirilemiyor"
 
 #: trac/attachment.py:346
 #, python-format
@@ -330,7 +330,7 @@ msgstr "Trac Hatası"
 
 #: trac/env.py:152
 msgid "Visit the Trac open source project at<br /><a href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
-msgstr ""
+msgstr "Açık kaynak Trac projesini ziyaret edin<br /><a href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
 
 #: trac/env.py:582
 msgid "Database newer than Trac version"
@@ -647,6 +647,30 @@ msgid ""
 "\n"
 "Congratulations!\n"
 msgstr ""
+"\n"
+"---------------------------------------------------------------------\n"
+"Proje ortamı '%(project_name)s' oluşturuldu.\n"
+"\n"
+"Şimdi bu dosyayı kullanarak ortamı düzenleyebilirsiniz:\n"
+"\n"
+"  %(config_path)s\n"
+"\n"
+"Eğer proje ortamını test sürüşüne çıkarmak istiyorsanız,\n"
+"Trac standalone web sunucusunu `tracd` kullanmayı deneyin :\n"
+"\n"
+"  tracd --port 8000 %(project_path)s\n"
+"\n"
+"Ardından tarayıcınızı buraya yönlendirin: http://localhost:8000/%(project_dir)s.\n"
+"Burada kurulu Trac sürümünüz için dökümantasyonu da\n"
+"bulabilirsiniz, daha gelişmiş kurulum aşamaları da dahildir (mesela\n"
+"Trac'ı gerçek bir web sunucusuna kurmak gibi).\n"
+"\n"
+"En son dökümantasyon her zaman proje websitesinde\n"
+"bulunabilir:\n"
+"\n"
+"  http://trac.edgewall.org/\n"
+"\n"
+"Tebrikler!\n"
 
 #: trac/admin/console.py:536
 #, python-format
@@ -773,19 +797,19 @@ msgid "The subject %(subject)s has been granted the permission %(action)s."
 msgstr ""
 
 #: trac/admin/web_ui.py:350
-#, fuzzy, python-format
+#, python-format
 msgid "The permission %(action)s was already granted to %(subject)s."
-msgstr "\"%(action)s\" yetkisi   \"%(subject)s\"   daha önceden verilmiş."
+msgstr "%(action)s izni zaten %(subject)s kullanıcısına verilmiş."
 
 #: trac/admin/web_ui.py:366
-#, fuzzy, python-format
+#, python-format
 msgid "The subject %(subject)s has been added to the group %(group)s."
-msgstr "\"%(subject)s\"   \"%(group)s\" gurubuna daha önceden eklenmiş"
+msgstr "%(subject)s öznesi,  %(group)s grubuna eklendi."
 
 #: trac/admin/web_ui.py:371
-#, fuzzy, python-format
+#, python-format
 msgid "The subject %(subject)s was already added to the group %(group)s."
-msgstr "\"%(subject)s\"   \"%(group)s\" gurubuna daha önceden eklenmiş"
+msgstr "%(subject)s öznesi,  %(group)s grubuna zaten ekliydi."
 
 #: trac/admin/web_ui.py:384
 msgid "The selected permissions have been revoked."
@@ -1258,9 +1282,9 @@ msgid "Database \"%(path)s\" not found."
 msgstr "Veri tabanı \"%(path)s\"  bulunamadı"
 
 #: trac/db/sqlite_backend.py:255
-#, fuzzy, python-format
+#, python-format
 msgid "The user %(user)s requires read _and_ write permissions to the database file %(path)s and the directory it is located in."
-msgstr " %(user)s kullanıcısı  burdaki \"%(path)s\" veritabanı dosyasına okuma yazma hakkı olmalı."
+msgstr "Kullanıcı %(user)s %(path)s veritabanı dosyasına ve onun bulunduğu klasöre okuma_ve_yazma erişimine ihtiyaç duyuyor."
 
 #: trac/mimeview/api.py:675
 #: trac/mimeview/api.py:686
@@ -1512,13 +1536,12 @@ msgstr ""
 "        kullanarak uygun dili seçer."
 
 #: trac/prefs/templates/prefs_pygments.html:36
-#, fuzzy
 msgid ""
 "The Pygments syntax highlighter can be used with\n"
 "      different coloring styles."
 msgstr ""
-"Pigment kod renklerdirci farklı renk\n"
-"      temaları kullanabilir."
+"Pygments kod renklendirici farklı\n"
+"      renk stilleriyle kullanılabilir."
 
 #: trac/prefs/templates/prefs_pygments.html:38
 msgid "Style:"
@@ -2848,7 +2871,7 @@ msgstr "yeni bilet oluşturuken bilet numarası değişmez."
 #: trac/versioncontrol/web_ui/changeset.py:1026
 #, python-format
 msgid "%(title)s: %(message)s"
-msgstr ""
+msgstr "%(title)s: %(message)s"
 
 #: trac/ticket/web_ui.py:231
 msgid "Opened and closed tickets"
@@ -2894,7 +2917,7 @@ msgstr "Eylem  \"%(name)s\"  mevcut değil."
 #: trac/ticket/web_ui.py:526
 #, python-format
 msgid "Please review your configuration, probably starting with %(section)s in your %(tracini)s."
-msgstr ""
+msgstr "Lütfen ayarlarınızı kontrol edin, muhtemelen %(tracini)s içinde %(section)s ile başlayarak."
 
 #: trac/ticket/web_ui.py:580
 #: trac/ticket/web_ui.py:797
@@ -3315,6 +3338,10 @@ msgid ""
 "                            [3:and]\n"
 "                            [4:]"
 msgstr ""
+"[1:arasında]\n"
+"                            [2:]\n"
+"                            [3:ve]\n"
+"                            [4:]"
 
 #: trac/ticket/templates/query.html:129
 msgid "And"
@@ -3344,7 +3371,7 @@ msgstr "Her sayfadaki kayıt sayısı"
 #: trac/ticket/templates/query.html:245
 #, python-format
 msgid "Edit report {%(id)s} corresponding to this query"
-msgstr ""
+msgstr "Bu sorguya göre {%(id)s} raporunu düzenle"
 
 #: trac/ticket/templates/query.html:245
 msgid "Edit query"
@@ -3366,7 +3393,7 @@ msgstr "Bu sorgudan yeni rapor oluştur."
 #: trac/ticket/templates/query.html:262
 #, python-format
 msgid "Delete report {%(id)s} corresponding to this query"
-msgstr ""
+msgstr "Bu sorguya göre {%(id)s} raporunu sil"
 
 #: trac/ticket/templates/query.html:262
 msgid "Delete query"
@@ -3392,7 +3419,7 @@ msgstr "(azalan)"
 #: trac/versioncontrol/templates/sortable_th.html:18
 #, python-format
 msgid "Sort by %(col)s %(direction)s"
-msgstr ""
+msgstr "Sırala %(col)s %(direction)s"
 
 #: trac/ticket/templates/query_results.html:45
 msgid "No tickets found"
@@ -3581,7 +3608,7 @@ msgstr "cevap olarak:"
 #: trac/ticket/templates/ticket.html:133
 msgid "follow-up:"
 msgid_plural "follow-ups:"
-msgstr[0] ""
+msgstr[0] "takip:"
 
 #: trac/ticket/templates/ticket.html:148
 #, python-format
@@ -3604,6 +3631,8 @@ msgid ""
 "Version %(version)s, edited %(date)s ago\n"
 "                      by %(author)s"
 msgstr ""
+"Sürüm %(version)s, düzenlendi %(date)s önce\n"
+"                      %(author)s tarafından"
 
 #: trac/ticket/templates/ticket.html:166
 #, python-format
@@ -3625,7 +3654,7 @@ msgstr "sonraki"
 
 #: trac/ticket/templates/ticket.html:196
 msgid "View ticket fields and description"
-msgstr ""
+msgstr "Bilet alanları ve açıklamasını göster"
 
 #: trac/ticket/templates/ticket.html:196
 msgid "View"
@@ -3650,6 +3679,8 @@ msgid ""
 "Warnings are shown at the [1:top of the page]. The ticket validation\n"
 "            may have failed."
 msgstr ""
+"Uyarılar [1:sayfanın üzerinde] gösterildi. Bilet kontrolü\n"
+"            başarısız olmuş olabilir."
 
 #: trac/ticket/templates/ticket.html:220
 #, python-format
@@ -3689,7 +3720,7 @@ msgstr ""
 #: trac/ticket/templates/ticket_box.html:43
 #, python-format
 msgid "%(field)s:"
-msgstr ""
+msgstr "%(field)s:"
 
 #: trac/ticket/templates/ticket.html:313
 msgid "This checkbox allows you to add or remove yourself from the CC list."
@@ -3702,7 +3733,7 @@ msgstr "Boşuk yada virgüle girilen eposta adreside girebilirsiniz."
 #: trac/ticket/templates/ticket.html:375
 #: trac/wiki/templates/wiki_edit_form.html:50
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
-msgstr ""
+msgstr "E-posta adresi ve kullanıcı adı [1:Tercihler] ile kaydedilebilir."
 
 #: trac/ticket/templates/ticket.html:383
 msgid "I have files to attach to this ticket"
@@ -3947,7 +3978,7 @@ msgstr "Geçersiz Tarih"
 #: trac/util/datefmt.py:258
 #, python-format
 msgid "The date \"%(date)s\" is outside valid range. Try a date closer to present time."
-msgstr ""
+msgstr "\"%(date)s\" tarihi geçerli dizinin dışında. Şimdiki zamana daha yakın bir tarih deneyin."
 
 #: trac/util/presentation.py:255
 #, python-format
@@ -4108,7 +4139,7 @@ msgstr "Değişimset %(rev)s, %(repo)s içinde"
 #: trac/versioncontrol/api.py:359
 #, python-format
 msgid "Changeset %(rev)s"
-msgstr "Toplu değişiklik %(rev)s"
+msgstr "Değişimset %(rev)s"
 
 #: trac/versioncontrol/api.py:367
 msgid "directory"
@@ -4146,7 +4177,7 @@ msgstr "Depo %(repo)s"
 #: trac/versioncontrol/api.py:687
 #, python-format
 msgid "Unsupported version control system \"%(name)s\": %(error)s"
-msgstr ""
+msgstr "Desteklenmeyen sürüm kontrol sistemi \"%(name)s\": %(error)s"
 
 #: trac/versioncontrol/api.py:690
 #, python-format
@@ -4160,7 +4191,7 @@ msgstr "Depoda değişimset %(rev)s bulunmuyor"
 
 #: trac/versioncontrol/api.py:700
 msgid "No such changeset"
-msgstr "Böyle bir toplu değişiklik yok."
+msgstr "Böyle bir değişimset yok."
 
 #: trac/versioncontrol/api.py:706
 #, python-format
@@ -4253,7 +4284,7 @@ msgstr "engellendi:"
 
 #: trac/versioncontrol/svn_prop.py:282
 msgid "reverse-merged: "
-msgstr ""
+msgstr "ters-birleştirildi:"
 
 #: trac/versioncontrol/svn_prop.py:282
 msgid "un-blocked: "
@@ -4444,6 +4475,8 @@ msgid ""
 "Changeset [1:%(new_rev)s] in %(reponame)s\n"
 "              for [2:%(new_path)s]"
 msgstr ""
+"Değişimset [1:%(new_rev)s] %(reponame)s içinde\n"
+"               [2:%(new_path)s] için"
 
 #: trac/versioncontrol/templates/changeset.html:41
 #: trac/versioncontrol/templates/changeset.html:63
@@ -4836,9 +4869,9 @@ msgid "Browse at revision %(rev)s"
 msgstr "Revizyon %(rev)s üzerinde gözat"
 
 #: trac/versioncontrol/templates/revisionlog.html:146
-#, fuzzy, python-format
+#, python-format
 msgid "View removal changeset [%(rev)s]"
-msgstr "Toplu değişiklik %(rev)s"
+msgstr "Silinmiş değişimset %(rev)s göster"
 
 #: trac/versioncontrol/templates/revisionlog.html:148
 #, python-format
@@ -4943,7 +4976,7 @@ msgstr "Hiç depo seçilmedi ve varsayılan depo ayarı yok."
 
 #: trac/versioncontrol/web_ui/changeset.py:261
 msgid "Invalid Changeset Number"
-msgstr "Hatalı toplu değişiklik numarası"
+msgstr "Geçersiz Değişimset Numarası"
 
 #: trac/versioncontrol/web_ui/changeset.py:361
 msgid "Unified Diff"
@@ -4971,7 +5004,7 @@ msgstr "%(path)s için %(id)s değişimseti"
 #: trac/versioncontrol/web_ui/changeset.py:465
 #, python-format
 msgid "Changeset %(id)s"
-msgstr "Toplu değişiklik %(id)s"
+msgstr "Değişimset %(id)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:492
 #, python-format
@@ -4981,7 +5014,7 @@ msgstr "Bu dosyanın %(rev)s revizyonunu tarayıcada göster."
 #: trac/versioncontrol/web_ui/changeset.py:638
 #, python-format
 msgid "Show the changeset %(id)s restricted to %(path)s"
-msgstr "%(path)s dizindeki %(id)s toplu değişikliğini göster"
+msgstr "%(path)s içinde %(id)s değişimsetini göster"
 
 #: trac/versioncontrol/web_ui/changeset.py:650
 #, python-format
@@ -5034,7 +5067,7 @@ msgstr "Varsayılan depo tanımlanmamış"
 
 #: trac/versioncontrol/web_ui/changeset.py:1131
 msgid "Changesets"
-msgstr "Toplu Değişiklikler"
+msgstr "Değişimsetler"
 
 #: trac/versioncontrol/web_ui/log.py:200
 #, python-format
@@ -5111,7 +5144,7 @@ msgstr "Kimlik Doğrulama Ayarlaması"
 #: trac/web/auth.py:142
 #, python-format
 msgid "Authentication information not available. Please refer to the %(inst_doc)s."
-msgstr ""
+msgstr "Doğrulama bilgisi mevcut değil. Lütfen %(inst_doc)s danışın."
 
 #: trac/web/auth.py:150
 #, python-format
@@ -5130,7 +5163,7 @@ msgstr "(bilinmeyen şablon konumu)"
 #: trac/web/chrome.py:858
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
-msgstr ""
+msgstr "Genshi %(error)s hatası, %(location)s şablonu derlenirken "
 
 #: trac/web/chrome.py:894
 #: trac/web/chrome.py:902
@@ -5348,7 +5381,7 @@ msgstr "Yardım/Kılavuz"
 #: trac/wiki/web_ui.py:125
 #, python-format
 msgid "No version \"%(num)s\" for Wiki page \"%(name)s\""
-msgstr ""
+msgstr "\"%(name)s\" Wiki sayfası için \"%(num)s\" sürümü yok"
 
 #: trac/wiki/web_ui.py:190
 #, python-format
@@ -5387,7 +5420,7 @@ msgstr ""
 
 #: trac/wiki/web_ui.py:297
 msgid "The new name must be different from the old name."
-msgstr ""
+msgstr "Yeni isim eski isimden farklı olmalıdır."
 
 #: trac/wiki/web_ui.py:309
 #, python-format
