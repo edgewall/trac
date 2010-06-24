@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-06-11 16:41+0200\n"
-"PO-Revision-Date: 2010-06-24 08:01+0200\n"
+"PO-Revision-Date: 2010-06-24 08:31+0200\n"
 "Last-Translator: Aranel Surion <aranel@aranelsurion.org>\n"
 "Language-Team: tr_TR <trac-dev@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: tracopt/mimeview/php.py:97
 msgid "You appear to be using the PHP CGI binary. Trac requires the CLI version for syntax highlighting."
-msgstr " PHP CGI binary kullınıyosunuz . Kod Renklendirme için Trac  CLI sürümüne gerek duyar. "
+msgstr " PHP CGI binary kullanıyorsunuz. Kod Renklendirme için Trac CLI sürümüne ihtiyaç duyar."
 
 #: tracopt/ticket/deleter.py:69
 #: tracopt/ticket/deleter.py:82
@@ -373,15 +373,15 @@ msgstr ""
 #: trac/env.py:752
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
-msgstr ""
+msgstr "Sıcak kopyalanıyor %(src)s konumundan %(dst)s konumuna ..."
 
 #: trac/env.py:767
 msgid "The following errors happened while copying the environment:"
-msgstr ""
+msgstr "Ortam kopyalanırken şu hatalar oluştu:"
 
 #: trac/env.py:778
 msgid "Hotcopy done."
-msgstr ""
+msgstr "Sıcakkopya tamamlandı."
 
 #: trac/env.py:783
 #: trac/admin/api.py:130
@@ -398,6 +398,8 @@ msgid ""
 "Backup failed with '%(msg)s'.\n"
 "Use '--no-backup' to upgrade without doing a backup."
 msgstr ""
+"Yedek '%(msg)s' ile başarısız oldu.\n"
+"Yedeksiz bir güncelleme için '--no-backup' kullanın."
 
 #: trac/env.py:808
 msgid ""
@@ -421,6 +423,11 @@ msgid ""
 "\n"
 "  trac-admin %(path)s wiki upgrade"
 msgstr ""
+"Güncelleme tamamlandı.\n"
+"\n"
+"Trac dökümantasyonunu güncellemek isteyebilirsiniz:\n"
+"\n"
+"  trac-admin %(path)s wiki upgrade"
 
 #: trac/notification.py:155
 msgid "TLS enabled but server does not support TLS"
@@ -538,7 +545,7 @@ msgstr "Kullanım:  trac-admin </projeye/giden/yol> [komut [altkomut] [opsiyon .
 
 #: trac/admin/console.py:296
 msgid "Invoking trac-admin without command starts interactive mode.\n"
-msgstr ""
+msgstr "Komut vermeden trac-admin başlatmak interaktif modu açar.\n"
 
 #: trac/admin/console.py:336
 #, python-format
@@ -3065,7 +3072,7 @@ msgstr "Üzgünüz, değişiklikleriniz kaydedilemiyor. Bilet siz başladıktan 
 
 #: trac/ticket/web_ui.py:1129
 msgid "Tickets must contain a summary."
-msgstr "Biletin bir özeti olmalıdır."
+msgstr "Biletler mutlaka bir özet içermelidir."
 
 #: trac/ticket/web_ui.py:1147
 #, python-format
@@ -3089,7 +3096,7 @@ msgstr ""
 #: trac/ticket/web_ui.py:1182
 #, python-format
 msgid "The ticket field '%(field)s' is invalid: %(message)s"
-msgstr " Hatalı bilet alanı '%(field)s' : %(message)s"
+msgstr "Bilet alanı '%(field)s' geçersiz : %(message)s"
 
 #: trac/ticket/web_ui.py:1201
 #, python-format
@@ -3125,7 +3132,7 @@ msgstr "Cc den ekle/çıkar"
 
 #: trac/ticket/web_ui.py:1385
 msgid "<Author field>"
-msgstr "<yazan alanı>"
+msgstr "<Yazar alanı>"
 
 #: trac/ticket/web_ui.py:1406
 #: trac/ticket/templates/query.html:102
@@ -3198,11 +3205,11 @@ msgstr "Aşamayı Sil"
 
 #: trac/ticket/templates/milestone_delete.html:27
 msgid "Are you sure you want to delete this milestone?"
-msgstr "Bu aşamayı silmek istediğinizden eminmisiniz?"
+msgstr "Bu aşamayı silmek istediğinizden emin misiniz?"
 
 #: trac/ticket/templates/milestone_delete.html:29
 msgid "Retarget associated tickets to milestone"
-msgstr "İlgili biletleri aşamaya ilişkilendir."
+msgstr "İlgili biletleri aşamaya yeniden konumla"
 
 #: trac/ticket/templates/milestone_delete.html:41
 #: trac/ticket/templates/milestone_view.html:107
@@ -3454,7 +3461,7 @@ msgstr "(bu grup için sonraki sayfadaki sonuçlar)"
 
 #: trac/ticket/templates/report_delete.html:17
 msgid "Are you sure you want to delete this report?"
-msgstr "Bu raporu silmek istediğinize eminmisiniz?"
+msgstr "Bu raporu silmek istediğinize emin misiniz?"
 
 #: trac/ticket/templates/report_delete.html:22
 #: trac/ticket/templates/report_list.html:34
@@ -4196,7 +4203,7 @@ msgstr "Böyle bir değişimset yok."
 #: trac/versioncontrol/api.py:706
 #, python-format
 msgid "No node %(path)s at revision %(rev)s"
-msgstr ""
+msgstr "Düğüm %(path)s yok, %(rev)s revizyonunda"
 
 #: trac/versioncontrol/api.py:708
 #, python-format
@@ -4437,7 +4444,7 @@ msgid ""
 "[1:Note:] See [2:TracBrowser]\n"
 "        for help on using the repository browser."
 msgstr ""
-"[1:Note:] Kaynak tarayıcı hakkında bilgi için \n"
+"[1:Not:] Kaynak tarayıcı hakkında bilgi için \n"
 "        [2:TracBrowser]."
 
 #: trac/versioncontrol/templates/browser.html:176
@@ -4702,7 +4709,7 @@ msgid ""
 "        [2:TracChangeset]\n"
 "        for help on using the diff feature."
 msgstr ""
-"[1:Note:] Fark özelliği hakkında\n"
+"[1:Not:] Fark özelliği hakkında\n"
 "        bilgi için\n"
 "        [2:TracChangeset]."
 
@@ -4883,7 +4890,7 @@ msgid ""
 "[1:Note:] See [2:TracRevisionLog]\n"
 "        for help on using the revision log."
 msgstr ""
-"[1:Note:] Revizyon günlüğü hakkında bilgi için\n"
+"[1:Not:] Revizyon günlüğü hakkında bilgi için\n"
 "        [2:TracRevisionLog]"
 
 #: trac/versioncontrol/templates/revisionlog.txt:2
@@ -4941,7 +4948,7 @@ msgstr "Not düş"
 
 #: trac/versioncontrol/web_ui/browser.py:462
 msgid "Annotate each line with the last changed revision (this can be time consuming...)"
-msgstr "Her satıra son revizyondan not düş. (bu zaman alabilir...) "
+msgstr "Her satıra son değiştirilmiş revizyondan not düş (bu zaman alabilir...) "
 
 #: trac/versioncontrol/web_ui/browser.py:469
 msgid "Revision Log"
@@ -5085,7 +5092,7 @@ msgstr "Revizyon Günlüğü ( %(path)s dizinden başladı, revizyon  %(rev)s)"
 
 #: trac/versioncontrol/web_ui/log.py:309
 msgid "ChangeLog"
-msgstr "DeğişmeGünlüğü"
+msgstr "DeğişimGünlüğü"
 
 #: trac/versioncontrol/web_ui/log.py:311
 msgid "View Latest Revision"
@@ -5191,7 +5198,7 @@ msgstr "Hata: %(message)s"
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
 #: trac/web/main.py:547
 msgid "do so"
-msgstr "öyle yap"
+msgstr "öyle yapmak"
 
 #: trac/web/main.py:549
 #, python-format
