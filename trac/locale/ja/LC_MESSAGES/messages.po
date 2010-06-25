@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-04-26 09:50+0200\n"
-"PO-Revision-Date: 2010-05-25 17:15+0900\n"
+"PO-Revision-Date: 2010-06-24 08:01+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
@@ -1424,7 +1424,7 @@ msgstr "タイムゾーン:"
 
 #: trac/prefs/templates/prefs_datetime.html:18
 msgid "Default time zone"
-msgstr "規定のタイムゾーン"
+msgstr "デフォルトタイムゾーン"
 
 #: trac/prefs/templates/prefs_datetime.html:25
 msgid ""
@@ -4282,7 +4282,7 @@ msgstr "%(dirname)s の %(basename)s"
 
 #: trac/versioncontrol/templates/browser.html:54
 msgid "Default Repository"
-msgstr "規定のリポジトリ"
+msgstr "デフォルトリポジトリ"
 
 #: trac/versioncontrol/templates/browser.html:61
 msgid "Hint: clear the field to view latest revision"
@@ -4868,7 +4868,7 @@ msgstr "別のリポジトリとの間で比較を行うことはできません
 
 #: trac/versioncontrol/web_ui/changeset.py:249
 msgid "No repository specified and no default repository configured."
-msgstr "規定のリポジトリが設定されていません。"
+msgstr "デフォルトのリポジトリが設定されていません。"
 
 #: trac/versioncontrol/web_ui/changeset.py:261
 msgid "Invalid Changeset Number"
@@ -4959,7 +4959,7 @@ msgstr "%(repos)s の チェンジセット %(rev)s にアクセスする権限�
 #: trac/versioncontrol/web_ui/changeset.py:1092
 #: trac/versioncontrol/web_ui/log.py:397
 msgid "No default repository defined"
-msgstr "規定のリポジトリが定義されていません"
+msgstr "デフォルトのリポジトリが定義されていません"
 
 #: trac/versioncontrol/web_ui/changeset.py:1131
 msgid "Changesets"
