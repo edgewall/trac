@@ -532,7 +532,7 @@ class PluginAdminPanel(Component):
                             if k == 'home_page' or k == 'url':
                                 k = 'home_page'
                                 v = v.replace('$', '').replace('URL: ', '') 
-                            if k == 'author':
+                            else:
                                 v = to_unicode(v)
                             info[k] = v
                 else:
@@ -542,7 +542,7 @@ class PluginAdminPanel(Component):
                     for k in info:
                         if info[k] == 'UNKNOWN':
                             info[k] = None
-                        elif k == 'author':
+                        else:
                             # Must be encoded as unicode as otherwise Genshi 
                             # may raise a "UnicodeDecodeError".
                             info[k] = to_unicode(info[k])
