@@ -49,6 +49,10 @@ bar = rw
 [module:/trunk]
 foo = rw
 &baz = r
+
+; Unicode module names
+[module:/c/résumé]
+bar = rw
 """)
         self.assertEqual({
             '': {
@@ -68,6 +72,9 @@ foo = rw
                 '/trunk': {
                     'foo': True,
                     u'CN=Hàröld Hacker,OU=Enginéers,DC=red-bean,DC=com': True,
+                },
+                u'/c/résumé': {
+                    'bar': True,
                 },
             },
         }, authz)
