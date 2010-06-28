@@ -731,7 +731,7 @@ class EnvironmentAdmin(Component):
             template = Chrome(self.env).load_template('deploy_trac.' + script,
                                                       'text')
             stream = template.generate(**data)
-            out = os.fdopen(os.open(dest, os.O_CREAT | os.O_WRONLY), 'w')
+            out = file(dest, 'w')
             try:
                 stream.render('text', out=out)
             finally:
