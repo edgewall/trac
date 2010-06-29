@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-04-26 09:50+0200\n"
-"PO-Revision-Date: 2010-06-24 08:01+0900\n"
+"PO-Revision-Date: 2010-06-29 12:18+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
@@ -960,7 +960,7 @@ msgstr "担当者"
 #: trac/admin/templates/admin_milestones.html:104
 #: trac/admin/templates/admin_versions.html:77
 msgid "Default"
-msgstr "規定値"
+msgstr "デフォルト"
 
 #: trac/admin/templates/admin_components.html:98
 #: trac/admin/templates/admin_enums.html:69
@@ -2323,7 +2323,7 @@ msgstr "選択した%(field)sを削除しました。"
 msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "The default value has not been saved."
-msgstr "trac.ini の書き込みエラー。ウェブサーバによる書き込みができるか確認してください。規定値は保存されませんでした。"
+msgstr "trac.ini の書き込みエラー。ウェブサーバによる書き込みができるか確認してください。デフォルト値は保存されませんでした。"
 
 #: trac/ticket/admin.py:684
 msgid "Order numbers must be unique"
@@ -4222,7 +4222,7 @@ msgstr "リポジトリの管理"
 
 #: trac/versioncontrol/templates/admin_repositories.html:24
 msgid "Default:"
-msgstr "規定値:"
+msgstr "デフォルト:"
 
 #: trac/versioncontrol/templates/admin_repositories.html:30
 msgid "Repository:"
