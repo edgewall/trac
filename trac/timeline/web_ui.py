@@ -193,15 +193,8 @@ class TimelineModule(Component):
 
         data['events'] = events
         
-
         if format == 'rss':
-            # Get the email addresses of all known users
-            email_map = {}
-            if Chrome(self.env).show_email_addresses:
-                for username, name, email in self.env.get_known_users():
-                    if email:
-                        email_map[username] = email
-            data['email_map'] = email_map
+            data['email_map'] = Chrome(self.env).get_email_map()
             rss_context = Context.from_request(req, absurls=True)
             rss_context.set_hints(wiki_flavor='html', shorten_lines=False)
             data['context'] = rss_context

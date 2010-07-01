@@ -887,6 +887,15 @@ class Chrome(Component):
                                   email_map and '@' not in author and
                                   email_map.get(author) or author)
 
+    def get_email_map(self):
+        """Get the email addresses of all known users."""
+        email_map = {}
+        if self.show_email_addresses:
+            for username, name, email in self.env.get_known_users():
+                if email:
+                    email_map[username] = email
+        return email_map
+        
     _long_author_re = re.compile(r'.*<([^@]+)@[^@]+>\s*|([^@]+)@[^@]+')
     
     def authorinfo_short(self, author):

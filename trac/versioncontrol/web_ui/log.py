@@ -232,15 +232,8 @@ class LogModule(Component):
         revisions = [i['rev'] for i in info]
         changes = get_changes(repos, revisions)
         extra_changes = {}
-        email_map = {}
         
-        if format == 'rss':
-            # Get the email addresses of all known users
-            if Chrome(self.env).show_email_addresses:
-                for username, name, email in self.env.get_known_users():
-                    if email:
-                        email_map[username] = email
-        elif format == 'changelog':
+        if format == 'changelog':
             for rev in revisions:
                 changeset = changes[rev]
                 cs = {}
@@ -263,15 +256,15 @@ class LogModule(Component):
             'path': path, 'rev': rev, 'stop_rev': stop_rev,
             'display_rev': display_rev, 'revranges': revranges,
             'mode': mode, 'verbose': verbose, 'limit' : limit,
-            'items': info, 'changes': changes,
-            'email_map': email_map, 'extra_changes': extra_changes,
+            'items': info, 'changes': changes, 'extra_changes': extra_changes,
             'wiki_format_messages':
             self.config['changeset'].getbool('wiki_format_messages')
         }
 
-        if req.args.get('format') == 'changelog':
+        if format == 'changelog':
             return 'revisionlog.txt', data, 'text/plain'
-        elif req.args.get('format') == 'rss':
+        elif format == 'rss':
+            data['email_map'] = Chrome(self.env).get_email_map()
             data['context'] = Context.from_request(req, 'source', 
                                                    path, parent=repos.resource,
                                                    absurls=True)

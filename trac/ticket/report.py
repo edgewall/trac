@@ -533,20 +533,14 @@ class ReportModule(Component):
                 row_groups = [(None, row_group)]
             row_group.append(row)
 
-        # Get the email addresses of all known users
-        email_map = {}
-        if Chrome(self.env).show_email_addresses:
-            for username, name, email in self.env.get_known_users():
-                if email:
-                    email_map[username] = email
 
         data.update({'header_groups': header_groups,
                      'row_groups': row_groups,
                      'numrows': numrows,
-                     'sorting_enabled': len(row_groups)==1,
-                     'email_map': email_map})
+                     'sorting_enabled': len(row_groups) == 1})
 
         if format == 'rss':
+            data['email_map'] = Chrome(self.env).get_email_map()
             data['context'] = Context.from_request(req, report_resource,
                                                    absurls=True)
             return 'report.rss', data, 'application/rss+xml'
