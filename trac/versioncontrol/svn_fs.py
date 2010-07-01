@@ -238,6 +238,7 @@ class SvnCachedRepository(CachedRepository):
     def rev_db(self, rev):
         return int(rev or 0)
 
+
 class SubversionConnector(Component):
 
     implements(ISystemInfoProvider, IRepositoryConnector)
