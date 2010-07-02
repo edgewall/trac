@@ -231,7 +231,7 @@ def i18n_format_datetime(t=None, format='medium', tzinfo=None, locale=None):
 
 def i18n_format_date(t=None, format='medium', tzinfo=None, locale=None):
     if babel is None or locale is None:
-        if format in ('full', 'long', 'medium', 'short'):
+        if format in _babel_formats:
             format = '%x'
         return format_date(t, format, tzinfo)
 
@@ -246,7 +246,7 @@ def i18n_format_date(t=None, format='medium', tzinfo=None, locale=None):
 
 def i18n_format_time(t=None, format='medium', tzinfo=None, locale=None):
     if babel is None or locale is None:
-        if format in ('full', 'long', 'medium', 'short'):
+        if format in _babel_formats:
             format = '%X'
         return format_time(t, format, tzinfo)
 
