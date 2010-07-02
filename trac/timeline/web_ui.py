@@ -30,7 +30,8 @@ from trac.perm import IPermissionRequestor
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import as_int
 from trac.util.datefmt import format_date, format_datetime, parse_date, \
-                              to_utimestamp, utc, pretty_timedelta, i18n_parse_date
+                              to_utimestamp, utc, pretty_timedelta, \
+                              i18n_format_date, i18n_parse_date
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.web import IRequestHandler, IRequestFilter
@@ -131,9 +132,11 @@ class TimelineModule(Component):
 
         data = {'fromdate': fromdate, 'daysback': daysback,
                 'authors': authors,
-                'today': format_date(today, tzinfo=req.tz),
-                'yesterday': format_date(today - timedelta(days=1),
-                                         tzinfo=req.tz),
+                'today': i18n_format_date(today, tzinfo=req.tz,
+                                          locale=req.locale),
+                'yesterday': i18n_format_date(today - timedelta(days=1),
+                                              tzinfo=req.tz,
+                                              locale=req.locale),
                 'precisedate': precisedate, 'precision': precision,
                 'events': [], 'filters': [],
                 'abbreviated_messages': self.abbreviated_messages}

@@ -712,7 +712,8 @@ class Chrome(Component):
 
         def dateinfo(date):
             return tag.span(pretty_timedelta(date),
-                            title=format_datetime(date))
+                            title=i18n_format_datetime(date, tzinfo=tzinfo,
+                                                       locale=locale))
 
         def get_rel_url(resource, **kwargs):
             return get_resource_url(self.env, resource, href, **kwargs)
@@ -744,10 +745,12 @@ class Chrome(Component):
 
             # Date/time formatting
             'dateinfo': dateinfo,
-            'format_datetime': partial(i18n_format_datetime, tz=tzinfo,
+            'format_datetime': partial(i18n_format_datetime, tzinfo=tzinfo,
                                        locale=locale),
-            'format_date': partial(i18n_format_date, tz=tzinfo, locale=locale),
-            'format_time': partial(i18n_format_time, tz=tzinfo, locale=locale),
+            'format_date': partial(i18n_format_date, tzinfo=tzinfo,
+                                   locale=locale),
+            'format_time': partial(i18n_format_time, tzinfo=tzinfo,
+                                   locale=locale),
             'fromtimestamp': partial(datetime.datetime.fromtimestamp,
                                      tz=tzinfo),
             'from_utimestamp': from_utimestamp,

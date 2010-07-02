@@ -1122,7 +1122,8 @@ class QueryModule(Component):
                         value = Chrome(self.env).format_emails(context(ticket),
                                                                value)
                     elif col in query.time_fields:
-                        value = format_datetime(value, tzinfo=req.tz)
+                        value = format_datetime(value, '%Y-%m-%d %H:%M:%S',
+                                                tzinfo=req.tz)
                     values.append(unicode(value).encode('utf-8'))
                 writer.writerow(values)
         return (content.getvalue(), '%s;charset=utf-8' % mimetype)
