@@ -24,9 +24,19 @@ import sys
 import time
 from datetime import tzinfo, timedelta, datetime, date
 
+try:
+    import babel
+    from babel.dates import format_datetime as babel_format_datetime, \
+                            format_date as babel_format_date, \
+                            format_time as babel_format_time, \
+                            get_datetime_format, get_date_format, \
+                            get_time_format, get_month_names, get_period_names
+except ImportError:
+    babel = None
+
 from trac.core import TracError
 from trac.util.text import to_unicode
-from trac.util.translation import _, ngettext
+from trac.util.translation import _, ngettext, get_available_locales
 
 # Date/time utilities
 
@@ -62,6 +72,16 @@ def to_datetime(t, tzinfo=None):
         return datetime.fromtimestamp(t, tzinfo or localtz)
     raise TypeError('expecting datetime, int, long, float, or None; got %s' %
                     type(t))
+
+def to_datetime_tz(t, tzinfo=None):
+    t = to_datetime(t, tzinfo)
+    if t.tzinfo is None:
+        t = t.replace(tzinfo=utc)
+    if tzinfo is not None:
+        t = t.astimezone(tzinfo)
+        if hasattr(tzinfo, 'normalize'): # pytz
+            t = tzinfo.normalize(t)
+    return t
 
 def to_timestamp(dt):
     """Return the corresponding POSIX timestamp"""
@@ -118,7 +138,7 @@ def pretty_timedelta(time1, time2=None, resolution=None):
             return format_units(r)
     return ''
 
-    
+
 def format_datetime(t=None, format='%x %X', tzinfo=None):
     """Format the `datetime` object `t` into an `unicode` string
 
@@ -193,6 +213,69 @@ def get_datetime_format_hint():
                .replace('23', 'hh', 1).replace('11', 'hh', 1) \
                .replace('59', 'mm', 1).replace('58', 'ss', 1)
 
+_babel_formats = ('short', 'medium', 'long', 'full')
+
+def i18n_format_datetime(t=None, format='medium', tzinfo=None, locale=None):
+    if babel is None or locale is None:
+        if format in _babel_formats:
+            format = '%x %X'
+        return format_datetime(t, format, tzinfo)
+
+    if format:
+        if format == '%x %X':
+            format = 'medium'
+        elif format not in _babel_formats:
+            return format_datetime(t, format, tzinfo)
+
+    return babel_format_datetime(t, format, tzinfo, locale)
+
+def i18n_format_date(t=None, format='medium', tzinfo=None, locale=None):
+    if babel is None or locale is None:
+        if format in ('full', 'long', 'medium', 'short'):
+            format = '%x'
+        return format_date(t, format, tzinfo)
+
+    if format:
+        if format == '%x':
+            format = 'medium'
+        elif format not in _babel_formats:
+            return format_date(t, format, tzinfo)
+
+    t = to_datetime_tz(t, tzinfo)
+    return babel_format_date(t, format, locale)
+
+def i18n_format_time(t=None, format='medium', tzinfo=None, locale=None):
+    if babel is None or locale is None:
+        if format in ('full', 'long', 'medium', 'short'):
+            format = '%X'
+        return format_time(t, format, tzinfo)
+
+    if format:
+        if format == '%x':
+            format = 'medium'
+        elif format not in _babel_formats:
+            return format_time(t, format, tzinfo)
+
+    t = to_datetime_tz(t, tzinfo)
+    return babel_format_time(t, format, None, locale)
+
+def i18n_get_date_format_hint(locale=None):
+    if babel is None or locale is None:
+        return get_date_format_hint()
+
+    format = get_date_format('medium', locale=locale)
+    return format.pattern
+
+def i18n_get_datetime_format_hint(locale=None):
+    if babel is None or locale is None:
+        return get_datetime_format_hint()
+
+    date_pattern = get_date_format('medium', locale=locale).pattern
+    time_pattern = get_time_format('medium', locale=locale).pattern
+    format = get_datetime_format('medium', locale=locale)
+    return format.replace('{0}', time_pattern) \
+                 .replace('{1}', date_pattern)
+
 def http_date(t=None):
     """Format `datetime` object `t` as a rfc822 timestamp"""
     t = to_datetime(t).astimezone(utc)
@@ -212,11 +295,7 @@ _ISO_8601_RE = re.compile(r'''
     (Z?(?:([-+])?(\d\d):?(\d\d)?)?)?$       # timezone
     ''', re.VERBOSE)
 
-def parse_date(text, tzinfo=None):
-    tzinfo = tzinfo or localtz
-    dt = None
-    text = text.strip()
-    # normalize ISO time
+def _parse_date_iso8601(text, tzinfo):
     match = _ISO_8601_RE.match(text)
     if match:
         try:
@@ -238,9 +317,16 @@ def parse_date(text, tzinfo=None):
             tm = time.strptime('%s ' * 6 % (years, months, days,
                                             hours, minutes, seconds),
                                '%Y %m %d %H %M %S ')
-            dt = tzinfo.localize(datetime(*tm[0:6]))
+            return tzinfo.localize(datetime(*tm[0:6]))
         except ValueError:
             pass
+
+    return None
+
+def parse_date(text, tzinfo=None):
+    tzinfo = tzinfo or localtz
+    text = text.strip()
+    dt = _parse_date_iso8601(text, tzinfo)
     if dt is None:
         for format in ['%x %X', '%x, %X', '%X %x', '%X, %x', '%x', '%c',
                        '%b %d, %Y']:
@@ -266,6 +352,160 @@ def parse_date(text, tzinfo=None):
                           'Try a date closer to present time.', date=text),
                           _('Invalid Date'))
     return dt
+
+def _i18n_parse_date_patterns():
+    if babel is None:
+        return None
+
+    format_keys = {
+        'y': ('y', 'Y'),
+        'M': ('M',),
+        'd': ('d',),
+        'h': ('h', 'H'),
+        'm': ('m',),
+        's': ('s',),
+    }
+    patterns = {}
+
+    for locale in get_available_locales():
+        regexp = [r'[0-9]+']
+
+        date_format = get_date_format('medium', locale=locale)
+        time_format = get_time_format('medium', locale=locale)
+        datetime_format = get_datetime_format('medium', locale=locale)
+
+        formats = (
+            datetime_format.replace('{0}', time_format.format) \
+                           .replace('{1}', date_format.format),
+            date_format.format)
+
+        orders = []
+        for format in formats:
+            order = []
+            for key, chars in format_keys.iteritems():
+                for char in chars:
+                    idx = format.find('%(' + char)
+                    if idx != -1:
+                        order.append((idx, key))
+                        break
+            order.sort()
+            order = dict((key, idx) for idx, (_, key) in enumerate(order))
+            orders.append(order)
+
+        month_names = {
+            'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4, 'may': 5, 'jun': 6,
+            'jul': 7, 'aug': 8, 'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12,
+        }
+        if formats[0].find('%(MMM)s') != -1:
+            for width in ('wide', 'abbreviated'):
+                names = get_month_names(width, locale=locale)
+                for num, name in names.iteritems():
+                    name = name.lower()
+                    month_names[name] = num
+        regexp.extend(month_names.iterkeys())
+
+        period_names = {'am': 'am', 'pm': 'pm'}
+        if formats[0].find('%(a)s') != -1:
+            names = get_period_names(locale=locale)
+            for period, name in names.iteritems():
+                name = name.lower()
+                period_names[name] = period
+        regexp.extend(period_names.iterkeys())
+
+        patterns[locale] = {
+            'orders': orders,
+            'regexp': re.compile('(%s)' % '|'.join(regexp),
+                                 re.IGNORECASE | re.UNICODE),
+            'month_names': month_names,
+            'period_names': period_names,
+        }
+
+    return patterns
+
+_I18N_PARSE_DATE_PATTERNS = _i18n_parse_date_patterns()
+
+def i18n_parse_date(text, tzinfo=None, locale=None):
+    text = text.strip()
+
+    if babel is None or locale is None:
+        return parse_date(text, tzinfo=tzinfo)
+
+    pattern = _I18N_PARSE_DATE_PATTERNS.get(str(locale))
+    if not pattern:
+        return parse_date(text, tzinfo=tzinfo)
+
+    dt = _parse_date_iso8601(text, tzinfo)
+    if dt is None:
+        for order in pattern['orders']:
+            try:
+                dt = _i18n_parse_date(text, order, pattern, tzinfo)
+                break
+            except ValueError:
+                pass
+    if dt is None:
+        dt = _parse_relative_time(text, tzinfo)
+
+    if dt is None:
+        hint = i18n_get_date_format_hint(locale=locale)
+        raise TracError(_('"%(date)s" is an invalid date, or the date format '
+                          'is not known. Try "%(hint)s" instead.', 
+                          date=text, hint=hint), _('Invalid Date'))
+
+    try:
+        to_datetime(to_timestamp(dt), tzinfo)
+    except ValueError:
+        raise TracError(_('The date "%(date)s" is outside valid range. '
+                          'Try a date closer to present time.', date=text),
+                          _('Invalid Date'))
+    return dt
+
+def _i18n_parse_date(text, order, pattern, tzinfo):
+    matches = pattern['regexp'].findall(text.lower())
+
+    period_names = pattern['period_names']
+    period = None
+    for idx, match in enumerate(matches):
+        period = period_names.get(match)
+        if period is not None:
+            del matches[idx]
+            break
+
+    if len(matches) == 5:
+        matches.insert(order['s'], 0)
+
+    values = {}
+    for key, idx in order.iteritems():
+        if idx < len(matches):
+            value = matches[idx]
+            if key == 'y':
+                if len(value) == 2 and value.isdigit():
+                    value = '20' + value
+            values[key] = value
+
+    if 'y' not in values or 'M' not in values or 'd' not in values:
+        raise ValueError
+
+    month_names = pattern['month_names']
+    for key in ('y', 'M', 'd'):
+        value = values[key].lower()
+        value = month_names.get(value)
+        if value is not None:
+            if key == 'M':
+                values[key] = value
+            else:
+                values[key], values['M'] = values['M'], value
+            break
+
+    values = dict((key, int(value)) for key, value in values.iteritems())
+    values.setdefault('h', 0)
+    values.setdefault('m', 0)
+    values.setdefault('s', 0)
+
+    if values['h'] < 12 and period == 'pm':
+        values['h'] += 12
+
+    return tzinfo.localize(datetime(values['y'], values['M'], values['d'],
+                                    values['h'], values['m'], values['s']))
 
 
 _REL_TIME_RE = re.compile(

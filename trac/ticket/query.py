@@ -32,7 +32,7 @@ from trac.resource import Resource
 from trac.ticket.api import TicketSystem
 from trac.util import Ranges, as_bool
 from trac.util.datefmt import format_datetime, from_utimestamp, parse_date, \
-                              to_timestamp, to_utimestamp, utc
+                              to_timestamp, to_utimestamp, utc, i18n_parse_date
 from trac.util.presentation import Paginator
 from trac.util.text import empty, shorten_line, unicode_unquote
 from trac.util.translation import _, tag_
@@ -423,6 +423,11 @@ class Query(object):
         """Return a (sql, params) tuple for the query."""
         self.get_columns()
         db = self.env.get_db_cnx()
+        tz = None
+        locale = None
+        if req:
+            tz = req.tz
+            locale = req.locale
 
         enum_columns = ('resolution', 'priority', 'severity')
         # Build the list of actual columns to query
@@ -470,7 +475,8 @@ class Query(object):
         def get_timestamp(date):
             if date:
                 try:
-                    return to_utimestamp(parse_date(date, req.tz))
+                    return to_utimestamp(i18n_parse_date(date, tzinfo=tz,
+                                                         locale=locale))
                 except TracError, e:
                     errors.append(unicode(e))
             return None

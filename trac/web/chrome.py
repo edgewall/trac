@@ -46,7 +46,9 @@ from trac.util.text import pretty_size, obfuscate_email_address, \
                            shorten_line, unicode_quote_plus, to_unicode, \
                            javascript_quote, exception_to_unicode
 from trac.util.datefmt import pretty_timedelta, format_datetime, format_date, \
-                              format_time, from_utimestamp, http_date, utc
+                              format_time, from_utimestamp, http_date, utc, \
+                              i18n_format_datetime, i18n_format_date, \
+                              i18n_format_time
 from trac.util.translation import _
 from trac.web.api import IRequestHandler, ITemplateStreamFilter, HTTPNotFound
 from trac.web.href import Href
@@ -703,8 +705,10 @@ class Chrome(Component):
                            exception_to_unicode(e))
             show_email_addresses = False
         tzinfo = None
+        locale = None
         if req:
             tzinfo = req.tz
+            locale = req.locale
 
         def dateinfo(date):
             return tag.span(pretty_timedelta(date),
@@ -729,7 +733,7 @@ class Chrome(Component):
             'href': href,
             'perm': req and req.perm,
             'authname': req and req.authname or '<trac>',
-            'locale': req and req.locale,
+            'locale': locale,
             'show_email_addresses': show_email_addresses,
             'show_ip_addresses': self.show_ip_addresses,
             'authorinfo': partial(self.authorinfo, req),
@@ -740,9 +744,10 @@ class Chrome(Component):
 
             # Date/time formatting
             'dateinfo': dateinfo,
-            'format_datetime': partial(format_datetime, tzinfo=tzinfo),
-            'format_date': partial(format_date, tzinfo=tzinfo),
-            'format_time': partial(format_time, tzinfo=tzinfo),
+            'format_datetime': partial(i18n_format_datetime, tz=tzinfo,
+                                       locale=locale),
+            'format_date': partial(i18n_format_date, tz=tzinfo, locale=locale),
+            'format_time': partial(i18n_format_time, tz=tzinfo, locale=locale),
             'fromtimestamp': partial(datetime.datetime.fromtimestamp,
                                      tz=tzinfo),
             'from_utimestamp': from_utimestamp,
