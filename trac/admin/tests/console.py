@@ -70,8 +70,8 @@ class InMemoryEnvironment(Environment):
             self._db = InMemoryDatabase()
         return self._db
 
-    def create(self, db_str=None):
-        pass
+    def create(self, options=[]):
+        self.setup_config()
 
     def verify(self):
         return True
@@ -84,8 +84,9 @@ class InMemoryEnvironment(Environment):
         return cls.__module__.startswith('trac.') and \
                cls.__module__.find('.tests.') == -1
 
-    def setup_config(self, load_defaults=None):
+    def setup_config(self):
         self.config = InMemoryConfiguration(None)
+        self.setup_log()
 
 
 class TracadminTestCase(unittest.TestCase):

@@ -286,6 +286,21 @@ class Configuration(object):
            and os.access(self.filename, os.W_OK):
             os.utime(self.filename, None)
 
+    def set_defaults(self, compmgr=None):
+        """Retrieve all default values and store them explicitly in the
+        configuration, so that they can be saved to file.
+        
+        Values already set in the configuration are not overridden.
+        """
+        for section, default_options in self.defaults(compmgr).items():
+            for name, value in default_options.items():
+                if not self.parser.has_option(_to_utf8(section),
+                                              _to_utf8(name)):
+                    if any(parent[section].contains(name, defaults=False)
+                           for parent in self.parents):
+                        value = None
+                    self.set(section, name, value)
+
 
 class Section(object):
     """Proxy for a specific configuration section.

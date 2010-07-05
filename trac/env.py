@@ -204,23 +204,14 @@ class Environment(Component, ComponentManager):
         ComponentManager.__init__(self)
 
         self.path = path
-        self.setup_config(load_defaults=create)
-        self.setup_log()
-
         self.systeminfo = []
-        from trac import core, __version__ as VERSION
-        self.log.info('-' * 32 + ' environment startup [Trac %s] ' + '-' * 32,
-                      get_pkginfo(core).get('version', VERSION))
         self._href = self._abs_href = None
-
-        from trac.loader import load_components
-        plugins_dir = self.shared_plugins_dir
-        load_components(self, plugins_dir and (plugins_dir,))
 
         if create:
             self.create(options)
         else:
             self.verify()
+            self.setup_config()
 
         if create:
             for setup_participant in self.setup_participants:
@@ -393,17 +384,16 @@ class Environment(Component, ComponentManager):
 
         # Setup the default configuration
         os.mkdir(os.path.join(self.path, 'conf'))
-        create_file(os.path.join(self.path, 'conf', 'trac.ini'))
         create_file(os.path.join(self.path, 'conf', 'trac.ini.sample'))
-        skip_defaults = any((section, option) == ('inherit', 'file')
-                            for section, option, value in options)
-        self.setup_config(load_defaults=not skip_defaults)
+        config = Configuration(os.path.join(self.path, 'conf', 'trac.ini'))
         for section, name, value in options:
-            self.config.set(section, name, value)
-        self.config.save()
-        # Full reload to get 'inherit' working
-        self.config.parse_if_needed(force=True)
-        del self._rules
+            config.set(section, name, value)
+        config.save()
+        self.setup_config()
+        if not any((section, option) == ('inherit', 'file')
+                   for section, option, value in options):
+            self.config.set_defaults(self)
+            self.config.save()
 
         # Create the database
         DatabaseManager(self).init_db()
@@ -427,17 +417,14 @@ class Environment(Component, ComponentManager):
         row = cursor.fetchone()
         return row and int(row[0])
 
-    def setup_config(self, load_defaults=False):
+    def setup_config(self):
         """Load the configuration file."""
         self.config = Configuration(os.path.join(self.path, 'conf',
                                                  'trac.ini'))
-        if load_defaults:
-            for section, default_options in self.config.defaults(self).items():
-                for name, value in default_options.items():
-                    if any(parent[section].contains(name, defaults=False)
-                           for parent in self.config.parents):
-                        value = None
-                    self.config.set(section, name, value)
+        self.setup_log()
+        from trac.loader import load_components
+        plugins_dir = self.shared_plugins_dir
+        load_components(self, plugins_dir and (plugins_dir,))
 
     def get_templates_dir(self):
         """Return absolute path to the templates directory."""
@@ -466,6 +453,9 @@ class Environment(Component, ComponentManager):
                      .replace('%(project)s', self.project_name)
         self.log, self._log_handler = logger_handler_factory(
             logtype, logfile, self.log_level, self.path, format=format)
+        from trac import core, __version__ as VERSION
+        self.log.info('-' * 32 + ' environment startup [Trac %s] ' + '-' * 32,
+                      get_pkginfo(core).get('version', VERSION))
 
     def get_known_users(self, cnx=None):
         """Generator that yields information about all known users, i.e. users
