@@ -641,7 +641,7 @@ class ReportModule(Component):
             asc_str = asc == '1' and 'ASC' or 'DESC'
             order_by = ''
             if len(order_cols) != 0:
-                order = ', '.join(order_cols)
+                order = ', '.join(db.quote(col) for col in order_cols)
                 order_by = " ".join([' ORDER BY', order, asc_str])
             sql = " ".join(['SELECT * FROM (', sql, ') AS tab', order_by])
             sql = " ".join([sql, 'LIMIT', str(limit), 'OFFSET', str(offset)])
