@@ -504,12 +504,14 @@ class WikiModule(Component):
                 editrows = prefs['editrows']
 
         data = self._page_data(req, page, action)
+        context = Context.from_request(req, page.resource)
         data.update({
             'author': author,
             'comment': comment,
             'edit_rows': editrows, 'sidebyside': sidebyside,
             'scroll_bar_pos': req.args.get('scroll_bar_pos', ''),
             'diff': None,
+            'attachments': AttachmentModule(self.env).attachment_data(context),
         })
         if action in ('diff', 'merge'):
             old_text = original_text and original_text.splitlines() or []
@@ -525,6 +527,7 @@ class WikiModule(Component):
         self._wiki_ctxtnav(req, page)
         Chrome(self.env).add_wiki_toolbars(req)
         Chrome(self.env).add_auto_preview(req)
+        add_script(req, 'common/js/folding.js')
         return 'wiki_edit.html', data, None
 
     def _render_history(self, req, page):
