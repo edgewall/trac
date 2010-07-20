@@ -30,8 +30,7 @@ from trac.web.chrome import Chrome, add_notice, add_warning
 class VersionControlAdmin(Component):
     """trac-admin command provider for version control administration."""
 
-    implements(IAdminCommandProvider, IPermissionRequestor,
-               IAdminPanelProvider)
+    implements(IAdminCommandProvider, IPermissionRequestor)
 
     # IAdminCommandProvider methods
     
@@ -158,6 +157,12 @@ class VersionControlAdmin(Component):
     def get_permission_actions(self):
         return [('VERSIONCONTROL_ADMIN', ['BROWSER_VIEW', 'CHANGESET_VIEW',
                                           'FILE_VIEW', 'LOG_VIEW'])]
+
+
+class RepositoryAdminPanel(Component):
+    """Web admin panel for repository administration."""
+
+    implements(IAdminPanelProvider)
 
     # IAdminPanelProvider methods
 
