@@ -1201,15 +1201,17 @@ class TicketModule(Component):
                                "%(message)s", message=to_unicode(e)))
 
         # Redirect the user to the newly created ticket or add attachment
+        ticketref=tag.a('#', ticket.id, href=req.href.ticket(ticket.id))
         if 'attachment' in req.args:
+            add_notice(req, tag_("The ticket %(ticketref)s has been created. "
+                                 "You can now attach the desired files.",
+                                 ticketref=ticketref))
             req.redirect(req.href.attachment('ticket', ticket.id,
                                              action='new'))
         if 'TICKET_VIEW' not in req.perm('ticket', ticket.id):
-            ticket_href = req.href.ticket(ticket.id)
-            add_notice(req, tag_("Your ticket %(ticketref)s has been created, "
+            add_notice(req, tag_("The ticket %(ticketref)s has been created, "
                                  "but you don't have permission to view it.",
-                                 ticketref=tag.a('#', ticket.id,
-                                                 href=ticket_href)))
+                                 ticketref=ticketref))
             req.redirect(req.href.newticket())
         req.redirect(req.href.ticket(ticket.id))
 
