@@ -1272,9 +1272,6 @@ class OneLinerFormatter(Formatter):
     """
     flavor = 'oneliner'
 
-    def __init__(self, env, context):
-        Formatter.__init__(self, env, context)
-
     # Override a few formatters to disable some wiki syntax in "oneliner"-mode
     def _list_formatter(self, match, fullmatch):
         return match
@@ -1352,9 +1349,6 @@ class OutlineFormatter(Formatter):
     """Special formatter that generates an outline of all the headings."""
     flavor = 'outline'
     
-    def __init__(self, env, context):
-        Formatter.__init__(self, env, context)
-
     # Avoid the possible side-effects of rendering WikiProcessors
 
     def _macro_formatter(self, match, fullmatch, macro=None):
@@ -1367,7 +1361,8 @@ class OutlineFormatter(Formatter):
         elif line.strip() == WikiParser.ENDBLOCK:
             self.in_code_block -= 1
 
-    def format(self, text, out, max_depth=6, min_depth=1):
+    def format(self, text, out, max_depth=6, min_depth=1, shorten=True):
+        self.shorten = shorten
         whitespace_indent = '  '
         self.outline = []
         Formatter.format(self, text)
@@ -1404,7 +1399,8 @@ class OutlineFormatter(Formatter):
                       whitespace_indent * (2*i) + '</ol>\n')
 
     def _heading_formatter(self, match, fullmatch):
-        depth, heading, anchor = self._parse_heading(match, fullmatch, True)
+        depth, heading, anchor = self._parse_heading(match, fullmatch,
+                                                     self.shorten)
         heading = re.sub(r'</?a(?: .*?)?>', '', heading) # Strip out link tags
         self.outline.append((depth, anchor, heading))
 
@@ -1413,9 +1409,6 @@ class LinkFormatter(OutlineFormatter):
     """Special formatter that focuses on TracLinks."""
     flavor = 'link'
     
-    def __init__(self, env, context):
-        OutlineFormatter.__init__(self, env, context)
-
     def _heading_formatter(self, match, fullmatch):
         return ''
 

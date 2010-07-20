@@ -198,7 +198,8 @@ class MySQLConnector(Component):
         args.extend(['-r', dest_file, db_name])
         
         environ = os.environ.copy()
-        environ['MYSQL_PWD'] = str(db_prop['password'])
+        if 'password' in db_prop:
+            environ['MYSQL_PWD'] = str(db_prop['password'])
         p = Popen(args, env=environ, stderr=PIPE, close_fds=close_fds)
         errmsg = p.communicate()[1]
         if p.returncode != 0:

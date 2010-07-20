@@ -38,8 +38,9 @@ from trac.util.text import empty, shorten_line, unicode_unquote
 from trac.util.translation import _, tag_
 from trac.web import arg_list_to_args, parse_arg_list, IRequestHandler
 from trac.web.href import Href
-from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
-                            add_warning, INavigationContributor, Chrome
+from trac.web.chrome import add_ctxtnav, add_link, add_script, \
+                            add_script_data, add_stylesheet, add_warning, \
+                            INavigationContributor, Chrome
 
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.macros import WikiMacroBase # TODO: should be moved in .api
@@ -781,6 +782,13 @@ class Query(object):
                                 'string': str(results.page + 1),
                                 'title':None}
 
+        properties = dict((name, dict((key, field[key])
+                                      for key in ('type', 'label', 'options')
+                                      if key in field))
+                          for name, field in fields.iteritems())
+        add_script_data(req, {'properties': properties,
+                              'modes': self.get_modes()})
+        
         return {'query': self,
                 'context': context,
                 'col': cols,

@@ -102,7 +102,7 @@
       for (var i = 0; i < options.length; i++) {
         var opt = options[i], v = opt, t = opt;
         if (typeof opt == "object") 
-          v = opt.value, t = opt.text;
+          v = opt.value, t = opt.name;
         $($.htmlFormat('<option value="$1">$2</option>', v, t)).appendTo(e);
       }
       return e;

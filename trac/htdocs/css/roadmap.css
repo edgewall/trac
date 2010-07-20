@@ -30,8 +30,8 @@ p.percent {
 }
 
 /* Styles for the roadmap view */
-ul.milestones { margin: 2em 0 0; padding: 0 }
-li.milestone { list-style: none; margin-bottom: 4em }
+.milestones { margin: 2em 0 0; padding: 0 }
+.milestone { margin-bottom: 4em }
 .milestone .info { white-space: nowrap }
 .milestone .info h2 {
  background: #f7f7f7;

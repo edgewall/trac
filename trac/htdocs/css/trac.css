@@ -1,5 +1,5 @@
 body { background: #fff; color: #000; margin: 10px; padding: 0; }
-body, th, td {
+body, th, tr {
  font: normal 13px Verdana,Arial,'Bitstream Vera Sans',Helvetica,sans-serif;
 }
 h1, h2, h3, h4 {

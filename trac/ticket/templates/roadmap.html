@@ -30,8 +30,8 @@
         </div>
       </form>
 
-      <ul class="milestones">
-        <li py:for="idx, milestone in enumerate(milestones)" class="milestone">
+      <div class="milestones">
+        <div py:for="idx, milestone in enumerate(milestones)" class="milestone">
 
           <div class="info" py:with="mstats = milestone_stats[idx]">
             <h2><a href="${href.milestone(milestone.name)}">
@@ -66,8 +66,8 @@
             ${wiki_to_html(context(milestone.resource), milestone.description)}
           </div>
 
-        </li>
-      </ul>
+        </div>
+      </div>
 
       <div py:if="'MILESTONE_CREATE' in perm" class="buttons">
        <form method="get" action="${href.milestone()}"><div>
