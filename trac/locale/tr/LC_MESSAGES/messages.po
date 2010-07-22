@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-06-11 16:41+0200\n"
-"PO-Revision-Date: 2010-07-12 10:59+0200\n"
+"PO-Revision-Date: 2010-07-23 00:06+0200\n"
 "Last-Translator: Aranel Surion <aranel@aranelsurion.org>\n"
 "Language-Team: tr_TR <trac-dev@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -4244,7 +4244,7 @@ msgstr "Düğüm %(path)s yok, %(rev)s revizyonunda"
 #: trac/versioncontrol/api.py:708
 #, python-format
 msgid "%(msg)s: No node %(path)s at revision %(rev)s"
-msgstr ""
+msgstr "%(msg)s: Düğüm %(path)s yok, %(rev)s revizyonunda"
 
 #: trac/versioncontrol/api.py:710
 msgid "No such node"
@@ -4282,7 +4282,7 @@ msgstr "Subversion deposu %(path)s açılamıyor: %(svn_error)s"
 #: trac/versioncontrol/svn_fs.py:617
 #, python-format
 msgid "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s) and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
-msgstr ""
+msgstr "Diff uyumsuz: Taban bir %(oldnode)s (%(oldpath)s , %(oldrev)s) revizyonunda ve Hedef bir %(newnode)s (%(newpath)s , %(newrev)s) revizyonunda."
 
 #: trac/versioncontrol/svn_fs.py:766
 #, python-format
@@ -4343,7 +4343,7 @@ msgstr "çıkarıldı"
 
 #: trac/versioncontrol/svn_prop.py:324
 msgid " (with no actual effect on merging)"
-msgstr ""
+msgstr " (birleştirmede bir etkisi olmadan)"
 
 #: trac/versioncontrol/svn_prop.py:325
 #, python-format
@@ -4565,6 +4565,8 @@ msgid ""
 "Changes in [1:%(new_path)s]\n"
 "              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
 msgstr ""
+"[1:%(new_path)s] değişiklikleri\n"
+"              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
 
 #: trac/versioncontrol/templates/changeset.html:65
 #, python-format
@@ -5275,6 +5277,26 @@ msgid ""
 "{{{\n"
 "%(traceback)s}}}"
 msgstr ""
+"==== Nasıl Tekrar Oluşturulur ====\n"
+"\n"
+"Bir %(method)s işlemi `%(path_info)s` üzerinde yapılırken, Trac bir iç hatayla karşılaştı.\n"
+"\n"
+"''(lütfen burada ekstra detayları belirtin)''\n"
+"\n"
+"İstek parametreleri:\n"
+"{{{\n"
+"%(req_args)s\n"
+"}}}\n"
+"\n"
+"Kullanıcı kimliği: `#USER_AGENT#`\n"
+"\n"
+"==== Sistem Bilgisi ====\n"
+"%(sys_info)s\n"
+"==== Aktif Eklentiler ====\n"
+"%(enabled_plugins)s\n"
+"==== Python Geribildirimi ====\n"
+"{{{\n"
+"%(traceback)s}}}"
 
 #: trac/web/session.py:203
 #, python-format
@@ -5319,7 +5341,7 @@ msgstr "'%(name)s' bir dosya değil"
 #: trac/wiki/admin.py:265
 #, python-format
 msgid "  %(page)s imported from %(filename)s"
-msgstr ""
+msgstr "%(page)s alındı %(filename)s"
 
 #: trac/wiki/admin.py:200
 msgid "Edits"
@@ -5456,7 +5478,7 @@ msgstr "Bu sayfa %(name)s silindi."
 #: trac/wiki/web_ui.py:270
 #, python-format
 msgid "The versions %(from_)d to %(to)d of the page %(name)s have been deleted."
-msgstr ""
+msgstr "%(name)s sayfasının %(from_)d ile %(to)d arasındaki sürümleri silindi."
 
 #: trac/wiki/web_ui.py:274
 #, python-format
@@ -5658,6 +5680,11 @@ msgid ""
 "        (losing your changes) and start editing the latest version of the page\n"
 "        again."
 msgstr ""
+"Lütfen tüm bu değişiklikleri inceleyin ve kendi değişikliklerinizle\n"
+"        elle birleştirin. [1:]\n"
+"        Ne yaptığınıza emin değilseniz, lütfen  [2:Vazgeç] seçin\n"
+"        (tüm değişiklikleriniz kaybedilir) ve sayfanın son sürümünü tekrar\n"
+"        düzenleyin."
 
 #: trac/wiki/templates/wiki_edit.html:114
 #, python-format
