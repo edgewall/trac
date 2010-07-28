@@ -16,16 +16,15 @@
       <link>${abs_href.timeline()}</link>
     </image>
 
-    <item py:for="event in events">
+    <item py:for="event in events"
+          py:with="abs_url = event.render('url', context)">
       <title>${
         plaintext(event.render('summary', context) or 
                   event.render('title', context), keeplinebreaks=False)
       }</title>
       <xi:include href="author_or_creator.rss" py:with="author = event.author"/>
-      <py:with vars="abs_url = event.render('url', context)">
-        <pubDate>${http_date(event.date)}</pubDate>
-        <link>${abs_url}</link>
-      </py:with>
+      <pubDate>${http_date(event.date)}</pubDate>
+      <link>${abs_url}</link>
       <guid isPermaLink="false">${abs_url}/${event.dateuid}</guid>
       <description>${
         unicode(event.render('description', context))
