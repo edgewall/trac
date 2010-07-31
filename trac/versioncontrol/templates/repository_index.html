@@ -39,7 +39,7 @@
           </td>
         </tr>
         <tr class="${idx % 2 and 'even' or 'odd'}" py:if="repoinfo.description">
-          <td class="description" colspan="5">${wiki_to_html(context('source', '/', parent=repos.resource), repoinfo.description)}</td>
+          <td class="description" colspan="6">${wiki_to_html(context('source', '/', parent=repos.resource), repoinfo.description)}</td>
         </tr>
       </py:for>
     </tbody>

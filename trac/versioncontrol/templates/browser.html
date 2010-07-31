@@ -88,14 +88,14 @@
           <tbody>
             <py:if test="'up' in chrome.links">
               <tr class="even">
-                <td class="name" colspan="5">
+                <td class="name" colspan="6">
                   <a class="parent" title="Parent Directory" href="${chrome.links.up[0].href}">../</a>
                 </td>
               </tr>
             </py:if>
             <xi:include href="dir_entries.html" />
             <tr py:if="'up' not in chrome.links and not dir.entries" class="even">
-              <td class="name" colspan="5">
+              <td class="name" colspan="6">
                 No files found
               </td>
             </tr>
