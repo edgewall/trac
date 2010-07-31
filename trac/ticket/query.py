@@ -782,13 +782,6 @@ class Query(object):
                                 'string': str(results.page + 1),
                                 'title':None}
 
-        properties = dict((name, dict((key, field[key])
-                                      for key in ('type', 'label', 'options')
-                                      if key in field))
-                          for name, field in fields.iteritems())
-        add_script_data(req, {'properties': properties,
-                              'modes': self.get_modes()})
-        
         return {'query': self,
                 'context': context,
                 'col': cols,
@@ -1092,6 +1085,13 @@ class QueryModule(Component):
         # Don't allow the user to remove the id column        
         data['all_columns'].remove('id')
         data['all_textareas'] = query.get_all_textareas()
+
+        properties = dict((name, dict((key, field[key])
+                                      for key in ('type', 'label', 'options')
+                                      if key in field))
+                          for name, field in data['fields'].iteritems())
+        add_script_data(req, {'properties': properties,
+                              'modes': data['modes']})
 
         add_stylesheet(req, 'common/css/report.css')
         add_script(req, 'common/js/query.js')
