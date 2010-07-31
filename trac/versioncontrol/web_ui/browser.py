@@ -398,7 +398,7 @@ class BrowserModule(Component):
 
         data = {
             'context': context, 'reponame': reponame, 'repos': repos,
-            'repoinfo': all_repositories.get(reponame),
+            'repoinfo': all_repositories.get(reponame or ''),
             'path': path, 'rev': node and node.rev, 'stickyrev': rev,
             'display_rev': display_rev,
             'created_path': node and node.created_path,
