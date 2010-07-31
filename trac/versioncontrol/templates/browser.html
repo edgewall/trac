@@ -145,7 +145,7 @@
         </tr>
       </table>
 
-      <div py:if="dir and path == '/' and repoinfo" class="description">
+      <div py:if="dir and path == '/'" class="description">
         ${wiki_to_html(context('source', '/', parent=repos.resource), repoinfo.description)}
       </div>
       
