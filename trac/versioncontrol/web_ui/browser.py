@@ -337,13 +337,11 @@ class BrowserModule(Component):
         xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
         
         rm = RepositoryManager(self.env)
+        all_repositories = rm.get_all_repositories()
         reponame, repos, path = rm.get_repository_by_path(path)
 
         # Repository index
-        all_repositories, repoinfo = None, None
         if not reponame and path == '/':
-            all_repositories = rm.get_all_repositories()
-            repoinfo = all_repositories.get(reponame)
             if repos and (all_repositories[''].get('hidden') in _TRUE_VALUES
                           or not repos.can_view(req.perm)):
                 repos = None
@@ -383,7 +381,7 @@ class BrowserModule(Component):
                                     order, desc)
 
         repo_data = dir_data = file_data = None
-        if all_repositories:
+        if not reponame and path == '/':
             repo_data = self._render_repository_index(
                     context, all_repositories, order, desc)
         if node:
@@ -400,7 +398,7 @@ class BrowserModule(Component):
 
         data = {
             'context': context, 'reponame': reponame, 'repos': repos,
-            'repoinfo': repoinfo,
+            'repoinfo': all_repositories.get(reponame),
             'path': path, 'rev': node and node.rev, 'stickyrev': rev,
             'display_rev': display_rev,
             'created_path': node and node.created_path,
