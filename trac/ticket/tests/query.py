@@ -5,11 +5,6 @@ from trac.util.datefmt import utc
 from trac.web.href import Href
 from trac.wiki.formatter import LinkFormatter
 
-try:
-    from babel import Locale
-except ImportError:
-    Locale = None
-
 import unittest
 import difflib
 
@@ -38,8 +33,7 @@ class QueryTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
         self.db = self.env.get_db_cnx()
-        self.req = Mock(href=self.env.href, authname='anonymous', tz=utc,
-                        locale=Locale and Locale.parse('en_US') or None)
+        self.req = Mock(href=self.env.href, authname='anonymous', tz=utc)
         
     def tearDown(self):
         self.env.reset_db()

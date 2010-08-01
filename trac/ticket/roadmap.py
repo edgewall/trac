@@ -30,9 +30,8 @@ from trac.perm import IPermissionRequestor
 from trac.resource import *
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.util.datefmt import parse_date, utc, to_utimestamp, \
-                              format_date, format_datetime, from_utimestamp, \
-                              i18n_get_datetime_format_hint, \
-                              i18n_get_date_format_hint, i18n_parse_date
+                              get_date_format_hint, get_datetime_format_hint, \
+                              format_date, format_datetime, from_utimestamp
 from trac.util.text import CRLF
 from trac.util.translation import _, tag_
 from trac.ticket import Milestone, Ticket, TicketSystem, group_milestones
@@ -627,11 +626,7 @@ class MilestoneModule(Component):
         milestone.description = req.args.get('description', '')
 
         due = req.args.get('duedate', '')
-        if due:
-            milestone.due = i18n_parse_date(due, tzinfo=req.tz,
-                                            locale=req.locale)
-        else:
-            milestone.due = None
+        milestone.due = due and parse_date(due, tzinfo=req.tz) or None
 
         completed = req.args.get('completeddate', '')
         retarget_to = req.args.get('target')
@@ -663,11 +658,7 @@ class MilestoneModule(Component):
 
         # -- check completed date
         if 'completed' in req.args:
-            if completed:
-                completed = i18n_parse_date(completed, tzinfo=req.tz,
-                                            locale=req.locale)
-            else:
-                completed = None
+            completed = completed and parse_date(completed, req.tz) or None
             if completed and completed > datetime.now(utc):
                 warn(_('Completion date may not be in the future'))
         else:
@@ -712,8 +703,8 @@ class MilestoneModule(Component):
     def _render_editor(self, req, db, milestone):
         data = {
             'milestone': milestone,
-            'date_hint': i18n_get_date_format_hint(locale=req.locale),
-            'datetime_hint': i18n_get_datetime_format_hint(locale=req.locale),
+            'date_hint': get_date_format_hint(),
+            'datetime_hint': get_datetime_format_hint(),
             'milestone_groups': [],
         }
 

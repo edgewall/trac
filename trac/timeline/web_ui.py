@@ -30,7 +30,7 @@ from trac.perm import IPermissionRequestor
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import as_int
 from trac.util.datefmt import format_date, format_datetime, parse_date, \
-                              to_utimestamp, utc, pretty_timedelta, i18n_parse_date
+                              to_utimestamp, utc, pretty_timedelta
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.web import IRequestHandler, IRequestFilter
@@ -99,8 +99,7 @@ class TimelineModule(Component):
             # Acquire from date only from non-blank input
             reqfromdate = req.args['from'].strip()
             if reqfromdate:
-                precisedate = i18n_parse_date(reqfromdate, tzinfo=req.tz,
-                                              locale=req.locale)
+                precisedate = parse_date(reqfromdate, req.tz)
                 fromdate = precisedate
             precision = req.args.get('precision', '')
             if precision.startswith('second'):

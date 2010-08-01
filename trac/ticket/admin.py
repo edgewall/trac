@@ -19,9 +19,9 @@ from trac.perm import PermissionSystem
 from trac.resource import ResourceNotFound
 from trac.ticket import model
 from trac.util import getuser
-from trac.util.datefmt import utc, parse_date, format_date, format_datetime, \
-                              i18n_get_datetime_format_hint, \
-                              i18n_get_date_format_hint, i18n_parse_date
+from trac.util.datefmt import utc, parse_date, get_date_format_hint, \
+                              get_datetime_format_hint, format_date, \
+                              format_datetime
 from trac.util.text import print_table, printout, exception_to_unicode
 from trac.util.translation import _, N_, gettext
 from trac.web.chrome import Chrome, add_notice, add_warning
@@ -262,13 +262,10 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     mil.due = mil.completed = None
                     due = req.args.get('duedate', '')
                     if due:
-                        mil.due = i18n_parse_date(due, tzinfo=req.tz,
-                                                  locale=req.locale)
+                        mil.due = parse_date(due, req.tz)
                     if req.args.get('completed', False):
                         completed = req.args.get('completeddate', '')
-                        mil.completed = i18n_parse_date(completed,
-                                                        tzinfo=req.tz,
-                                                        locale=req.locale)
+                        mil.completed = parse_date(completed, req.tz)
                         if mil.completed > datetime.now(utc):
                             raise TracError(_('Completion date may not be in '
                                               'the future'),
@@ -296,9 +293,8 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         mil = model.Milestone(self.env)
                         mil.name = name
                         if req.args.get('duedate'):
-                            mil.due = i18n_parse_date(req.args.get('duedate'),
-                                                      tzinfo=req.tz,
-                                                      locale=req.locale)
+                            mil.due = parse_date(req.args.get('duedate'),
+                                                 req.tz)
                         mil.insert()
                         add_notice(req, _('The milestone "%(name)s" has been '
                                           'added.', name=name))
@@ -349,8 +345,8 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     'default': default}
 
         data.update({
-            'date_hint': i18n_get_date_format_hint(locale=req.locale),
-            'datetime_hint': i18n_get_datetime_format_hint(locale=req.locale),
+            'date_hint': get_date_format_hint(),
+            'datetime_hint': get_datetime_format_hint()
         })
         return 'admin_milestones.html', data
 
@@ -453,9 +449,7 @@ class VersionAdminPanel(TicketAdminPanel):
                 if req.args.get('save'):
                     ver.name = req.args.get('name')
                     if req.args.get('time'):
-                        ver.time = i18n_parse_date(req.args.get('time'),
-                                                   tzinfo=req.tz,
-                                                   locale=req.locale)
+                        ver.time = parse_date(req.args.get('time'), req.tz)
                     else:
                         ver.time = None # unset
                     ver.description = req.args.get('description')
@@ -480,9 +474,8 @@ class VersionAdminPanel(TicketAdminPanel):
                         ver = model.Version(self.env)
                         ver.name = name
                         if req.args.get('time'):
-                            ver.time = i18n_parse_date(req.args.get('time'),
-                                                       tzinfo=req.tz,
-                                                       locale=req.locale)
+                            ver.time = parse_date(req.args.get('time'),
+                                                  req.tz)
                         ver.insert()
                         add_notice(req, _('The version "%(name)s" has been '
                                           'added.', name=name))
@@ -523,7 +516,7 @@ class VersionAdminPanel(TicketAdminPanel):
                     'default': default}
 
         data.update({
-            'datetime_hint': i18n_get_datetime_format_hint(locale=req.locale),
+            'datetime_hint': get_datetime_format_hint()
         })
         return 'admin_versions.html', data
 
