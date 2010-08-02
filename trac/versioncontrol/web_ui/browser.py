@@ -324,9 +324,9 @@ class BrowserModule(Component):
             return True
 
     def process_request(self, req):
-        go_to_preselected = req.args.get('preselected')
-        if go_to_preselected:
-            req.redirect(go_to_preselected)
+        presel = req.args.get('preselected')
+        if presel and (presel + '/').startswith(req.href.browser() + '/'):
+            req.redirect(presel)
 
         path = req.args.get('path', '/')
         rev = req.args.get('rev', '')
