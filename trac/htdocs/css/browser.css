@@ -63,53 +63,57 @@ table.dirlist td.size {
  vertical-align: middle;
  font-size: 70%;
 }
+table.dirlist td.size a.trac-rawlink, table.dirlist td.size a.trac-ziplink {
+ margin-left: .3em;
+}
 table.dirlist td.age {
  border-width: 0 2px 0 0;
  border-style: solid;
  font-size: 85%;
 }
-table.dirlist td.name { width: 100% }
-table.dirlist td.name a, table.dirlist td.name span {
- background-position: 0% 50%;
- background-repeat: no-repeat;
- padding-left: 20px;
+table.dirlist td.name { width: 100%; white-space: nowrap }
+table.dirlist td.name a.parent {
+  background: url(../parent.png) 0 50% no-repeat;
+  padding-left: 20px;
 }
-table.dirlist td.name a.parent { background-image: url(../parent.png) }
-table.dirlist td.name div { white-space: pre }
 table.dirlist tr span.expander { 
-  background-image: url(../expander_normal.png); 
+  background: url(../expander_normal.png) 0 50% no-repeat; 
   cursor: pointer; 
   padding-left: 8px; 
   margin-left: 4px; 
 }
 table.dirlist tr span.expander:hover { 
-  background-image: url(../expander_normal_hover.png); 
+  background: url(../expander_normal_hover.png) 0 50% no-repeat;
 }
 table.dirlist tr.expanded span.expander { 
-  background-image: url(../expander_open.png); 
+  background: url(../expander_open.png) 0 50% no-repeat; 
   padding-left: 12px; 
   margin-left: 0; 
 }
 table.dirlist tr.expanded span.expander:hover { 
-  background-image: url(../expander_open_hover.png); 
+  background: url(../expander_open_hover.png) 0 50% no-repeat; 
 }
-table.dirlist td.name a.dir { background-image: url(../folder.png) }
-table.dirlist td.name a.file { background-image: url(../file.png); display: block }
+table.dirlist td.name a.dir {
+  background: url(../folder.png) 0 50% no-repeat;
+  padding-left: 20px;
+}
+table.dirlist td.name a.file {
+  background: url(../file.png) 0 50% no-repeat;
+  padding-left: 20px;
+}
 table.dirlist td.name a, table.dirlist td.rev a { border-bottom: none }
 table.dirlist td.author, table.dirlist td.change { font-size: 85% }
 table.dirlist td.rev a.chgset { 
-  background-repeat: no-repeat;
-  background-image: url(../changeset.png); 
-  background-position: 100% 50%;
+  background: url(../changeset.png) 100% 50% no-repeat;
   padding: 0 0 0 5px; 
   margin: 0 5px 0 0; 
 }
 table.dirlist td.description { padding-left: 2em }
 table.dirlist td.description > :first-child { margin-top: 0 }
 table.dirlist td.description > :last-child { margin-bottom: 0 }
-
 table.dirlist td span.loading { 
-  background-image: url(../loading.gif); 
+  background: url(../loading.gif) 0 50% no-repeat;
+  padding-left: 20px;
   font-style: italic 
 }
 

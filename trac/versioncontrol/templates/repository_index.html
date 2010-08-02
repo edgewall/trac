@@ -5,7 +5,7 @@
   <table class="listing dirlist" id="${repoindex or None}">
     <xi:include href="dirlist_thead.html" />
     <tbody>
-      <py:for each="idx, (reponame, repoinfo, repos, change, err) in enumerate(repo.repositories)"
+      <py:for each="idx, (reponame, repoinfo, repos, change, err, raw_href) in enumerate(repo.repositories)"
               py:with="chgset_context = change and context('changeset', change.rev, parent=repos.resource);
                        chgset_view = change and change.can_view(perm)">
         <tr class="${idx % 2 and 'even' or 'odd'}">
@@ -13,11 +13,13 @@
             <em py:strip="not err">
               <b py:strip="repoinfo.alias != ''">
                 <a class="dir" title="View Root Directory"
-                  href="${href.browser(repos.reponame, order=(order != 'name' and order or None), desc=desc)}">$reponame</a>
+                   href="${href.browser(repos.reponame, order=(order != 'name' and order or None), desc=desc)}">$reponame</a>
               </b>
             </em>
           </td>
-          <td class="size" />
+          <td class="size">
+            <a py:if="raw_href" class="trac-ziplink" href="$raw_href" title="Download as Zip archive">&#8203;</a>
+          </td>
           <td class="rev">
             <py:if test="not err">
               <a title="View Revision Log" href="${href.log(repos.reponame)}">${repos.display_rev(change.rev)}</a>
