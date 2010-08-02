@@ -33,7 +33,7 @@ h1 :link, h1 :visited ,h2 :link, h2 :visited, h3 :link, h3 :visited,
 h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
  color: inherit;
 }
-.trac-rawlink { border-bottom: none }
+.trac-rawlink, .trac-ziplink { border-bottom: none }
 
 /* Heading anchors */
 .anchor:link, .anchor:visited {
@@ -59,6 +59,10 @@ span:hover .anchor {
  a.mail-link .icon {
   background: url(../envelope.png) center center no-repeat;
   padding-left: 14px;
+ }
+ a.trac-rawlink, a.trac-ziplink {
+  background: url(../download.png) center center no-repeat;
+  padding-left: 21px;
  }
 }
 
@@ -616,7 +620,7 @@ div.system-message p.system-message-title { font-weight: bold; }
 @media print {
  #header, #altlinks, #footer, #help { display: none }
  .nav, form, .buttons form, form .buttons, form .inlinebuttons,
- .noprint, .trac-rawlink, .trac-nav, .trac-topnav {
+ .noprint, .trac-nav, .trac-topnav {
    display: none;
  }
  form.printableform { display: block }

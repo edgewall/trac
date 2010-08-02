@@ -41,7 +41,7 @@
         var expander = $('<span class="expander">&nbsp;</span>')
           .attr("title", _("Expand sub-directory in place"))
           .click(function() { toggleDir($(this), qargs); })
-        a.wrap('<div></div>').before(expander);
+        a.before(expander);
         if (autoexpand && a.text() == autoexpand[0])
           autoexpand_expander = expander;
       }
