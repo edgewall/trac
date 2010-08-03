@@ -203,7 +203,8 @@ class CachedRepository(Repository):
                     # Ugly hack needed because doing that everytime in 
                     # oldest_rev suffers from horrendeous performance (#5213)
                     if hasattr(self.repos, 'scope'):
-                        if self.repos.scope != '/':
+                        if self.repos.scope != '/' and not \
+                                self.repos.has_node('/', next_youngest):
                             next_youngest = self.repos.next_rev(next_youngest,
                                     find_initial_rev=True)
                     next_youngest = self.repos.normalize_rev(next_youngest)
