@@ -17,18 +17,12 @@ from trac.core import *
 from trac.config import Option, ListOption
 from trac.perm import IPermissionRequestor
 from trac.ticket import TicketSystem, Ticket
-from trac.ticket.query import QueryModule
-from trac.web.api import ITemplateStreamFilter
-from trac.web.chrome import ITemplateProvider, Chrome, \
-                            add_script, add_stylesheet
-from trac.web.main import IRequestFilter
 from trac.util.datefmt import to_datetime, to_utimestamp
-from genshi.filters.transform import Transformer
 import re
 
 class BatchModule(object):
     
-    implements(IRequestHandler)
+    implements(IRequestHandler, IPermissionRequestor)
     
     fields_as_list = ListOption("batchmod", "fields_as_list", 
                 default="keywords", 
@@ -39,6 +33,11 @@ class BatchModule(object):
     list_connector_string = Option("batchmod", "list_connector_string",
                 default=',',
                 doc="connecter string for 'list' fields")
+
+    # IPermissionRequestor methods
+
+    def get_permission_actions(self):
+        return 'TICKET_BATCH_MODIFY'
     
     # IRequestHandler methods
 
@@ -50,8 +49,7 @@ class BatchModule(object):
 
         tickets = req.session['query_tickets'].split(' ')
         comment = req.args.get('batchmod_value_comment', '')
-        modify_changetime = bool(req.args.get(
-                                              'batchmod_modify_changetime',
+        modify_changetime = bool(req.args.get('batchmod_modify_changetime',
                                               False))
         
         values = self._get_new_ticket_values(req) 
@@ -59,8 +57,8 @@ class BatchModule(object):
         self._remove_resolution_if_not_closed(values)
 
         selectedTickets = req.args.get('selectedTickets')
-        selectedTickets = isinstance(selectedTickets, list) \
-                          and selectedTickets or selectedTickets.split(',')
+        selectedTickets = isinstance(selectedTickets, list) and \
+                            selectedTickets or selectedTickets.split(',')
         if not selectedTickets:
             raise TracError('No tickets selected')
         
