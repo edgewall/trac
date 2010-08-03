@@ -19,7 +19,7 @@ from trac.perm import IPermissionRequestor
 from trac.ticket import TicketSystem, Ticket
 import re
 
-class BatchModule(object):
+class BatchModifyModule(Component):
     
     implements(IRequestHandler, IPermissionRequestor)
     
