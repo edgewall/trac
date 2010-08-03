@@ -17,7 +17,6 @@ from trac.core import *
 from trac.config import Option, ListOption
 from trac.perm import IPermissionRequestor
 from trac.ticket import TicketSystem, Ticket
-from trac.util.datefmt import to_datetime, to_utimestamp
 import re
 
 class BatchModule(object):
@@ -49,8 +48,6 @@ class BatchModule(object):
 
         tickets = req.session['query_tickets'].split(' ')
         comment = req.args.get('batchmod_value_comment', '')
-        modify_changetime = bool(req.args.get('batchmod_modify_changetime',
-                                              False))
         
         values = self._get_new_ticket_values(req) 
         self._check_for_resolution(values)
@@ -66,22 +63,14 @@ class BatchModule(object):
             if id in tickets:
                 t = Ticket(env, int(id))
                 
-                log_msg = ""
-                if not modify_changetime:
-                    original_changetime = to_utimestamp(t.time_changed)
-                
                 _values = values.copy()
                 for field in [f for f in values.keys() \
                               if f in self._fields_as_list]:
                     _values[field] = self._merge_keywords(t.values[field], 
-                                                          values[field],
-                                                          log)
+                                                          values[field])
                 
                 t.populate(_values)
                 t.save_changes(req.authname, comment)
-
-                if not modify_changetime:
-                    self._rest_changetime(original_changetime, t)
 
     def _get_new_ticket_values(self, req):
         """Pull all of the new values out of the post data."""
@@ -128,9 +117,3 @@ class BatchModule(object):
                     combined_keywords.append(keyword)
         
         return self._list_connector_string.join(combined_keywords)
-    
-    def _reset_changetime(self, original_changetime, ticket):
-        db = self.env.get_db_cnx()
-        db.cursor().execute("UPDATE ticket set changetime=%s where id=%s" 
-                            % (original_changetime, ticket.id))
-        db.commit()
