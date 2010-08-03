@@ -654,6 +654,14 @@ class ScopedTests(object):
 
     # Revision Log / node history 
 
+    def test_get_history_scope(self): 
+        """Regression test for #9504"""
+        node = self.repos.get_node('/')
+        history = list(node.get_history())
+        self.assertEqual(('/', 1, 'add'), history[-1])
+        initial_cset = self.repos.get_changeset(history[-1][1])
+        self.assertEqual(1, initial_cset.rev)
+
     def test_get_node_history(self):
         node = self.repos.get_node('/README3.txt')
         history = node.get_history()
