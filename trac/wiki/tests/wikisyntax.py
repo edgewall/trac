@@ -64,9 +64,13 @@ and so should <a class="missing wiki" href="/wiki/%C3%9Cberfl%C3%BCssigkeitsTheo
 ------------------------------
 ============================== More WikiPageNames conformance
 CamelCase,CamelCase.CamelCase: CamelCase
+But not CamelCase2
+nor CamelCase_
 ------------------------------
 <p>
 <a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>,<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>.<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>: <a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>
+But not CamelCase2
+nor CamelCase_
 </p>
 ------------------------------
 ============================== Escaping WikiPageNames
