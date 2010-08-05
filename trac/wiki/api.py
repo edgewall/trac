@@ -276,7 +276,7 @@ class WikiSystem(Component):
             r"(?:[%(upper)s](?:[%(lower)s])+/?){2,}" # wiki words
             r"(?:@\d+)?"                             # optional version
             r"(?:#%(xml)s)?"                         # optional fragment id
-            r"(?=:(?:\Z|\s)|[^:%(upper)s%(lower)s]|\s|\Z)"
+            r"(?=:(?:\Z|\s)|[^:\w%(upper)s%(lower)s]|\s|\Z)"
             # what should follow it
             % {'upper': self.Lu, 'lower': self.Ll, 'xml': self.XML_NAME})
         
