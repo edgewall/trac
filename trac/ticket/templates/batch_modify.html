@@ -45,15 +45,6 @@
         <input type="submit" id="batchmod_submit" name="batchmod_submit" value="Change tickets" />
     </div>
     
-    <py:for each="idx, constraints in enumerate(clauses)">
-      <py:for each="constraint_name, constraint in constraints.items()">
-        <py:for each="constraint_value in constraint['values']">
-          <input type="hidden" name="${idx}_${constraint_name}" value="${constraint_value}" />
-          <input py:if="constraint['mode']" type="hidden" name="${idx}_${constraint_name}_mode" value="${constraint['mode']}" />
-        </py:for>
-      </py:for>
-    </py:for>
-    
     <input py:if="req.args['group']" type="hidden" name="group" value="${req.args['group']}" />
     <input py:if="req.args['groupdesc']" type="hidden" name="groupdesc" value="${req.args['groupdesc']}" />
 
