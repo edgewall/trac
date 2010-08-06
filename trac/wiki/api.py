@@ -286,8 +286,10 @@ class WikiSystem(Component):
                                      self.format_page_name(match),
                                      self.ignore_missing_pages, match)
         
-        yield (r"!?(?<!/)\b" + # start at a word boundary but not after '/'
-               wiki_page_name, wikipagename_link)
+        # Start after any non-word char except '/', with optional relative or
+        # absolute prefix
+        yield (r"!?(?<![\w/])(?:\.?\.?/)*"
+               + wiki_page_name, wikipagename_link)
 
         # [WikiPageNames with label]
         def wikipagename_with_label_link(formatter, match, fullmatch):

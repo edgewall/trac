@@ -148,14 +148,14 @@ BillOfMaterials#get_bill_of_materials_from_room_xml(fpxml=nil)
 </p>
 ------------------------------
 ============================== WikiPageNames counter examples (paths)
-/absolute/path/is/NotWiki and relative/path/is/NotWiki
-/ThisIsNotWikiEither and /ThisIs/NotWikiEither but ThisIs/SubWiki
-and now This/Also.
+/absolute/path/is/NotWiki and relative/path/is/NotWiki and ../higher/is/NotWiki
+but ThisIs/SubWiki and now This/Also
+and ../Relative/Camel or /Absolute/Camel as well
 ------------------------------
 <p>
-/absolute/path/is/NotWiki and relative/path/is/NotWiki
-/ThisIsNotWikiEither and /ThisIs/NotWikiEither but <a class="missing wiki" href="/wiki/ThisIs/SubWiki" rel="nofollow">ThisIs/SubWiki?</a>
-and now <a class="missing wiki" href="/wiki/This/Also" rel="nofollow">This/Also?</a>.
+/absolute/path/is/NotWiki and relative/path/is/NotWiki and ../higher/is/NotWiki
+but <a class="missing wiki" href="/wiki/ThisIs/SubWiki" rel="nofollow">ThisIs/SubWiki?</a> and now <a class="missing wiki" href="/wiki/This/Also" rel="nofollow">This/Also?</a>
+and <a class="missing wiki" href="/wiki/Relative/Camel" rel="nofollow">../Relative/Camel?</a> or <a class="missing wiki" href="/wiki/Absolute/Camel" rel="nofollow">/Absolute/Camel?</a> as well
 </p>
 ------------------------------
 ============================== WikiPageNames counter examples (numbers)
@@ -418,6 +418,21 @@ RELATIVE_LINKS_TESTS = u"""
 <a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">Other?</a>
 <a class="missing wiki" href="/wiki/Main/Other?param=1#fragment" rel="nofollow">Other?</a>
 <a class="missing wiki" href="/wiki/Other" rel="nofollow">Other?</a>
+</p>
+------------------------------
+============================== Relative to the current page, as CamelCase
+OnePage/SubPage
+./SubPage
+../SiblingPage
+.././../HigherPage
+/TopPage
+------------------------------
+<p>
+<a class="missing wiki" href="/wiki/Main/OnePage/SubPage" rel="nofollow">OnePage/SubPage?</a>
+<a class="missing wiki" href="/wiki/Main/Sub/SubPage" rel="nofollow">./SubPage?</a>
+<a class="missing wiki" href="/wiki/Main/SiblingPage" rel="nofollow">../SiblingPage?</a>
+<a class="missing wiki" href="/wiki/HigherPage" rel="nofollow">.././../HigherPage?</a>
+<a class="missing wiki" href="/wiki/TopPage" rel="nofollow">/TopPage?</a>
 </p>
 ------------------------------
 ============================== Relative to the current page with query strings and fragments
