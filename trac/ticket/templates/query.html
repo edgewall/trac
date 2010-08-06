@@ -213,6 +213,7 @@
       </form>
 
       <xi:include href="query_results.html" />
+	  <xi:include py:if="batch_modify" href="batch_modify.html" />
 
       <div class="buttons"
            py:with="edit = report_resource and 'REPORT_MODIFY' in perm(report_resource);

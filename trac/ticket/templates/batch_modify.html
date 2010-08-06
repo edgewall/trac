@@ -1,0 +1,65 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://genshi.edgewall.org/"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+<body>
+    
+<form id="batchmod_form" method="post">
+    
+<fieldset id="batchmod_fieldset">
+    <legend class="foldable">Batch Modify</legend>
+    <table summary="Batch modification fields">
+        <tr id="batchmod_comment">
+            <th colspan="2">
+                <label for="batchmod_value_comment">Comment:</label>
+            </th>
+            <td class="fullrow"><textarea
+                id="batchmod_value_comment" name="batchmod_value_comment" value="" cols="70" rows="5"/>
+            </td>
+        </tr>
+        
+        <tr>
+            <td colspan="3">
+                <label class="batchmod_label" for="add_batchmod_field">Add Field:</label>
+                <select id="add_batchmod_field">
+                    <option></option>
+                    <option py:for="field in fields" 
+							py:if="field.name not in ('time', 'changetime', 'summary', 'reporter', 'description')" 
+							value="${field.name}">${field.label}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <label class="batchmod_label" for="batchmod_modify_changetime">Modify Ticket Changetime</label>
+                <input type="checkbox" id="batchmod_modify_changetime" name="batchmod_modify_changetime" value="true" checked="checked" />
+            </td>
+        </tr>
+    </table>
+    
+    <div>
+        <input type="hidden" name="selectedTickets" value=""/>
+        <input type="hidden" name="query_href" value="${query_href}"/>
+        <input type="submit" id="batchmod_submit" name="batchmod_submit" value="Change tickets" />
+    </div>
+    
+    <py:for each="idx, constraints in enumerate(clauses)">
+      <py:for each="constraint_name, constraint in constraints.items()">
+        <py:for each="constraint_value in constraint['values']">
+          <input type="hidden" name="${idx}_${constraint_name}" value="${constraint_value}" />
+          <input py:if="constraint['mode']" type="hidden" name="${idx}_${constraint_name}_mode" value="${constraint['mode']}" />
+        </py:for>
+      </py:for>
+    </py:for>
+    
+    <input py:if="req.args['group']" type="hidden" name="group" value="${req.args['group']}" />
+    <input py:if="req.args['groupdesc']" type="hidden" name="groupdesc" value="${req.args['groupdesc']}" />
+
+</fieldset>
+
+</form>
+</body>
+
+</html>

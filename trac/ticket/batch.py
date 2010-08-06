@@ -17,6 +17,7 @@ from trac.core import *
 from trac.config import Option, ListOption
 from trac.perm import IPermissionRequestor
 from trac.ticket import TicketSystem, Ticket
+from trac.web import IRequestHandler
 import re
 
 class BatchModifyModule(Component):

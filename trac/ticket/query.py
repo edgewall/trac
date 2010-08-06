@@ -1077,6 +1077,13 @@ class QueryModule(Component):
                     data['description'] = description
         else:
             data['report_href'] = None
+
+        # Only interact with the batch modify module it it is enabled
+        from trac.ticket.batch import BatchModifyModule
+        if 'TICKET_BATCH_MODIFY' in req.perm and \
+                self.env.is_component_enabled(BatchModifyModule):
+            self._add_batch_modify_data(req, data)
+            
         data.setdefault('report', None)
         data.setdefault('description', None)
         data['title'] = title
@@ -1158,6 +1165,12 @@ class QueryModule(Component):
             except QuerySyntaxError, e:
                 return tag.em(_('[Error: %(error)s]', error=unicode(e)), 
                               class_='error')
+    
+    def _add_batch_modify_data(self, req, data):
+        data['batch_modify'] = True
+        data['query_href']= req.session['query_href'] or req.href.query()
+        add_script(req, 'batchmod/js/batchmod.js')
+        add_stylesheet(req, 'batchmod/css/batchmod.css')
 
 
 class TicketQueryMacro(WikiMacroBase):
