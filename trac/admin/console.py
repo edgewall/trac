@@ -108,7 +108,7 @@ class TracAdmin(cmd.Cmd):
         except SystemExit:
             raise
         except AdminCommandError, e:
-            printerr(_("Error:"), to_unicode(e))
+            printerr(_("Error: %(msg)s", msg=to_unicode(e)))
             if e.show_usage:
                 print
                 self.do_help(e.cmd or self.arg_tokenize(line)[0])

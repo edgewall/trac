@@ -226,7 +226,7 @@ class SQLiteConnector(Component):
         db_name = os.path.join(self.env.path, db_str[7:])
         shutil.copy(db_name, dest_file)
         if not os.path.exists(dest_file):
-            raise TracError("Backup attempt failed")
+            raise TracError(_("No destination file created"))
         return dest_file
 
 
