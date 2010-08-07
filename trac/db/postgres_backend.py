@@ -24,7 +24,7 @@ from trac.db.api import IDatabaseConnector, _parse_db_str
 from trac.db.util import ConnectionWrapper, IterableCursor
 from trac.util import get_pkginfo
 from trac.util.compat import close_fds
-from trac.util.text import to_unicode, empty
+from trac.util.text import empty, exception_to_unicode, to_unicode
 from trac.util.translation import _
 
 has_psycopg = False
@@ -150,8 +150,8 @@ class PostgreSQLConnector(Component):
         try:
             from subprocess import Popen, PIPE
         except ImportError:
-            raise TracError('Python >= 2.4 or the subprocess module '
-                            'is required for pre-upgrade backup support')
+            raise TracError(_('Python >= 2.4 or the subprocess module '
+                              'is required for backup support'))
         db_url = self.env.config.get('trac', 'database')
         scheme, db_prop = _parse_db_str(db_url)
         db_params = db_prop.setdefault('params', {})
@@ -178,12 +178,18 @@ class PostgreSQLConnector(Component):
         environ = os.environ.copy()
         if 'password' in db_prop:
             environ['PGPASSWORD'] = str(db_prop['password'])
-        p = Popen(args, env=environ, stderr=PIPE, close_fds=close_fds)
+        try:
+            p = Popen(args, env=environ, stderr=PIPE, close_fds=close_fds)
+        except OSError, e:
+            raise TracError(_("Unable to run %(path)s: %(msg)s",
+                              path=self.pg_dump_path,
+                              msg=exception_to_unicode(e)))
         errmsg = p.communicate()[1]
         if p.returncode != 0:
-            raise TracError("Backup attempt failed (%s)" % to_unicode(errmsg))
+            raise TracError(_("pg_dump failed: %(msg)s",
+                              msg=to_unicode(errmsg.strip())))
         if not os.path.exists(dest_file):
-            raise TracError("Backup attempt failed")
+            raise TracError(_("No destination file created"))
         return dest_file
 
 
