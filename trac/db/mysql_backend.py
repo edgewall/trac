@@ -24,7 +24,7 @@ from trac.db.api import IDatabaseConnector, _parse_db_str
 from trac.db.util import ConnectionWrapper, IterableCursor
 from trac.util import get_pkginfo
 from trac.util.compat import close_fds
-from trac.util.text import to_unicode
+from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _
 
 _like_escape_re = re.compile(r'([/_%])')
