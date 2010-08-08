@@ -15,6 +15,7 @@
 
 from trac.core import *
 from trac.config import Option, ListOption
+from trac.db.api import with_transaction
 from trac.perm import IPermissionRequestor
 from trac.ticket import TicketSystem, Ticket
 from trac.web import IRequestHandler
@@ -50,28 +51,18 @@ class BatchModifyModule(Component):
         tickets = req.session['query_tickets'].split(' ')
         comment = req.args.get('batchmod_value_comment', '')
         
-        values = self._get_new_ticket_values(req) 
-        self._check_for_resolution(values)
-        self._remove_resolution_if_not_closed(values)
+        new_values = self._get_new_ticket_values(req) 
+        self._check_for_resolution(new_values)
+        self._remove_resolution_if_not_closed(new_values)
 
-        selectedTickets = req.args.get('selectedTickets')
-        selectedTickets = isinstance(selectedTickets, list) and \
-                            selectedTickets or selectedTickets.split(',')
-        if not selectedTickets:
+        selected_tickets = req.args.get('selected_tickets')
+        selected_tickets = isinstance(selected_tickets, list) and \
+                            selected_tickets or selected_tickets.split(',')
+        if not selected_tickets:
             raise TracError('No tickets selected')
-        
-        for id in selectedTickets:
-            if id in tickets:
-                t = Ticket(self.env, int(id))
-                
-                _values = values.copy()
-                for field in [f for f in values.keys() \
-                              if f in self.fields_as_list]:
-                    _values[field] = self._merge_keywords(t.values[field], 
-                                                          values[field])
-                
-                t.populate(_values)
-                t.save_changes(req.authname, comment)
+
+        self._save_ticket_changes(req, selected_tickets, tickets, 
+                                  new_values, comment)        
                 
         #Always redirect back to the query page we came from.
         req.redirect(req.session['query_href'])
@@ -99,6 +90,24 @@ class BatchModifyModule(Component):
         if values.has_key('status') and values['status'] is not 'closed':
             values['resolution'] = ''
 
+    def _save_ticket_changes(self, req, selected_tickets, tickets, 
+                             new_values, comment):
+        """Save all of the changes to tickets."""
+        @with_transaction(self.env)
+        def _implementation(db):
+            for id in selected_tickets:
+                if id in tickets:
+                    t = Ticket(self.env, int(id))
+                    
+                    _values = new_values.copy()
+                    for field in [f for f in new_values.keys() \
+                                  if f in self.fields_as_list]:
+                        _values[field] = self._merge_keywords(t.values[field], 
+                                                              new_values[field])
+                    
+                    t.populate(_values)
+                    t.save_changes(req.authname, comment)
+
     def _merge_keywords(self, original_keywords, new_keywords):
         """
         Prevent duplicate keywords by merging the two lists.
@@ -121,3 +130,4 @@ class BatchModifyModule(Component):
                     combined_keywords.append(keyword)
         
         return self.list_connector_string.join(combined_keywords)
+    

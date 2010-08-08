@@ -89,7 +89,7 @@ jQuery(document).ready(function($){
     //Selecting a ticket marks it for inclusion in the batch. 
     $("table.listing tr td.id").each(function() {
         tId=$(this).text().substring(1); 
-        $(this).before('<td><input type="checkbox" name="selectedTicket" class="batchmod_selector" value="'+tId+'"/></td>');
+        $(this).before('<td><input type="checkbox" name="selected_ticket" class="batchmod_selector" value="'+tId+'"/></td>');
     });
 
     //Add a checkbox at the top of the column to select ever ticket in the group.
@@ -109,8 +109,8 @@ jQuery(document).ready(function($){
         
         var valid = true;
         var selectedTix=[];    
-        $("input[name=selectedTicket]:checked").each( function(){ selectedTix.push(this.value);} ); 
-        $("input[name=selectedTickets]").val(selectedTix);
+        $("input[name=selected_ticket]:checked").each( function(){ selectedTix.push(this.value);} ); 
+        $("input[name=selected_tickets]").val(selectedTix);
         
         //At least one ticket must be selected.
         if(selectedTix.length === 0){
