@@ -62,16 +62,19 @@ class BatchModifyModule(Component):
         
         for id in selectedTickets:
             if id in tickets:
-                t = Ticket(env, int(id))
+                t = Ticket(self.env, int(id))
                 
                 _values = values.copy()
                 for field in [f for f in values.keys() \
-                              if f in self._fields_as_list]:
+                              if f in self.fields_as_list]:
                     _values[field] = self._merge_keywords(t.values[field], 
                                                           values[field])
                 
                 t.populate(_values)
                 t.save_changes(req.authname, comment)
+                
+        #Always redirect back to the query page we came from.
+        req.redirect(req.session['query_href'])
 
     def _get_new_ticket_values(self, req):
         """Pull all of the new values out of the post data."""
@@ -102,7 +105,7 @@ class BatchModifyModule(Component):
         Any keywords prefixed with '-' will be removed.
         """
         
-        regexp = re.compile(self._list_separator_regex)
+        regexp = re.compile(self.list_separator_regex)
         
         new_keywords = [k.strip() for k in regexp.split(new_keywords) if k]
         combined_keywords = [k.strip() for k 
@@ -117,4 +120,4 @@ class BatchModifyModule(Component):
                 if keyword not in combined_keywords:
                     combined_keywords.append(keyword)
         
-        return self._list_connector_string.join(combined_keywords)
+        return self.list_connector_string.join(combined_keywords)
