@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-04-25 01:49+0200\n"
-"PO-Revision-Date: 2010-06-12 20:52+0300\n"
+"PO-Revision-Date: 2010-08-10 00:03+0300\n"
 "Last-Translator: Alexandr Prudnikov <al.prudnikov@gmail.com>\n"
 "Language-Team: ru_RU <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
@@ -23,7 +23,7 @@ msgid ""
 "You appear to be using the PHP CGI binary. Trac requires the CLI version "
 "for syntax highlighting."
 msgstr ""
-"Похоже вы используете CGI-версию PHP. Trac-у для подсветки синтаксиса "
+"Похоже, вы используете CGI-версию PHP. Trac для подсветки синтаксиса "
 "требуется CLI-версия."
 
 #: tracopt/ticket/deleter.py:69 tracopt/ticket/deleter.py:82
@@ -117,7 +117,7 @@ msgstr "комментарий:"
 #: trac/ticket/templates/ticket.html:142
 #, python-format
 msgid "Changed %(date)s ago by %(author)s"
-msgstr "Изменен %(date)s назад пользователем %(author)s"
+msgstr "Изменён %(date)s назад пользователем %(author)s"
 
 #: tracopt/ticket/templates/ticket_delete.html:68
 msgid "Are you sure you want to delete this ticket comment?"
@@ -134,7 +134,7 @@ msgstr "О Trac"
 #: trac/attachment.py:152
 #, python-format
 msgid "Attachment '%(title)s' does not exist."
-msgstr "Вложение '%(title)s' не существует."
+msgstr "Вложение \"%(title)s\" не существует."
 
 #: trac/attachment.py:154
 msgid "Invalid Attachment"
@@ -150,18 +150,18 @@ msgid ""
 "Cannot reparent attachment \"%(att)s\" as it already exists in "
 "%(realm)s:%(id)s"
 msgstr ""
-"Невозможно изменить родителя вложения \"%(att)s\" так как оно уже "
+"Невозможно изменить принадлежность вложения \"%(att)s\" так как оно уже "
 "существует в %(realm)s:%(id)s"
 
 #: trac/attachment.py:229
 #, python-format
 msgid "Could not reparent attachment %(name)s"
-msgstr "Не удалось изменить родителя вложения %(name)s"
+msgstr "Не удалось изменить принадлежность вложения %(name)s"
 
 #: trac/attachment.py:346
 #, python-format
 msgid "Attachment '%(filename)s' not found"
-msgstr "Вложение '%(filename)s' не найдено"
+msgstr "Вложение \"%(filename)s\" не найдено"
 
 #: trac/attachment.py:420
 msgid "Bad request"
@@ -185,7 +185,7 @@ msgstr "Вложение без родителя %(id)s"
 #: trac/attachment.py:595
 #, python-format
 msgid "Attachment '%(id)s' in %(parent)s"
-msgstr "Вложение '%(id)s' в %(parent)s"
+msgstr "Вложение \"%(id)s\" в %(parent)s"
 
 #: trac/attachment.py:598
 #, python-format
@@ -261,7 +261,7 @@ msgstr "Скачать"
 #: trac/attachment.py:914
 #, python-format
 msgid "Invalid resource identifier '%(id)s'"
-msgstr "Недопустимый идентификатор ресурса '%(id)s'"
+msgstr "Недопустимый идентификатор ресурса \"%(id)s\""
 
 #: trac/attachment.py:950 trac/admin/templates/admin_components.html:80
 #: trac/admin/templates/admin_enums.html:48
@@ -297,7 +297,7 @@ msgstr "Описание"
 #: trac/attachment.py:976 trac/wiki/admin.py:104
 #, python-format
 msgid "File '%(name)s' exists"
-msgstr "Файл '%(name)s' существует"
+msgstr "Файл \"%(name)s\" существует"
 
 #: trac/config.py:39
 msgid "Configuration Error"
@@ -324,7 +324,7 @@ msgstr ""
 
 #: trac/core.py:33
 msgid "Trac Error"
-msgstr "Ошибка Trac-а"
+msgstr "Ошибка Trac"
 
 #: trac/env.py:152
 msgid ""
@@ -348,7 +348,7 @@ msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
 msgstr ""
-"Отсутствует переменная окружения \"TRAC_ENV\". Trac-у требуется, чтобы "
+"Отсутствует переменная окружения \"TRAC_ENV\". Trac требуется, чтобы "
 "данная переменная указывала на путь к окружению Trac."
 
 #: trac/env.py:677
@@ -373,7 +373,7 @@ msgstr "Создание скриптов."
 #: trac/env.py:742
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
-msgstr "hotcopy не может перезаписать существующий '%(dest)s'"
+msgstr "hotcopy не может перезаписать существующий \"%(dest)s\""
 
 #: trac/env.py:752
 #, python-format
@@ -402,8 +402,8 @@ msgid ""
 "Backup failed with '%(msg)s'.\n"
 "Use '--no-backup' to upgrade without doing a backup."
 msgstr ""
-"Ошибка при создании резервной копии '%(msg)s'.\n"
-"Используйте ключ '--no-backup' для обновления без создания резервной "
+"Ошибка при создании резервной копии \"%(msg)s\".\n"
+"Используйте ключ \"--no-backup\" для обновления без создания резервной "
 "копии."
 
 #: trac/env.py:808
@@ -423,7 +423,7 @@ msgid ""
 "hand."
 msgstr ""
 "Ошибка при удалении wiki-macros: %(err)s\n"
-"Trac больше не загружает плагины из wiki-macros. Пожалуйста удалите его "
+"Trac больше не загружает плагины из wiki-macros. Пожалуйста, удалите его "
 "вручную."
 
 #: trac/env.py:821
@@ -437,7 +437,7 @@ msgid ""
 msgstr ""
 "Обновление завершено.\n"
 "\n"
-"Вы можете обновить документацию Trac-а выполнив команду:\n"
+"Вы можете обновить документацию Trac выполнив команду:\n"
 "\n"
 "  trac-admin %(path)s wiki upgrade"
 
@@ -457,7 +457,7 @@ msgstr "Не удается отправить сообщение из-за ош
 #: trac/notification.py:321
 #, python-format
 msgid "Neither %(from_)s nor %(reply_to)s are specified in the configuration."
-msgstr "Ни %(from_)s ни %(reply_to)s не указаны в конфигурации."
+msgstr "Ни %(from_)s, ни %(reply_to)s не указаны в конфигурации."
 
 #: trac/notification.py:322
 msgid "SMTP Notification Error"
@@ -477,7 +477,7 @@ msgstr ""
 #: trac/perm.py:50
 #, python-format
 msgid "%(perm)s privileges are required to perform this operation"
-msgstr "Для данного действия требуются полномочия %(perm)s"
+msgstr "Для данного операции требуются полномочия %(perm)s"
 
 #: trac/perm.py:55
 msgid "Insufficient privileges to perform this operation."
@@ -532,7 +532,7 @@ msgstr ""
 "Интерактивная консоль администрирования Trac.\n"
 "Авторские права (c) 2003-2010 Edgewall Software\n"
 "\n"
-"Введите:  '?' или 'help' для получения справки по командам.\n"
+"Введите:  \"?\" или \"help\" для получения справки по командам.\n"
 "        "
 
 #: trac/admin/console.py:164
@@ -548,12 +548,12 @@ msgstr "Ошибка завершения: %(err)s"
 #: trac/admin/console.py:287
 #, python-format
 msgid "No documentation found for '%(cmd)s'"
-msgstr "Документация для '%(cmd)s' не найдена"
+msgstr "Документация по \"%(cmd)s\" не найдена"
 
 #: trac/admin/console.py:289
 #, python-format
 msgid "trac-admin - The Trac Administration Console %(version)s"
-msgstr "trac-admin - Консоль администрирования Trac %(version)s"
+msgstr "trac-admin - консоль администрирования Trac %(version)s"
 
 #: trac/admin/console.py:293
 msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
@@ -580,7 +580,7 @@ msgid ""
 " This name will be used in page titles and descriptions.\n"
 msgstr ""
 "\n"
-"Сначала Trac задаст несколько вопросов для того \n"
+"Сначала Trac задаст несколько вопросов, для того \n"
 "чтобы инициализировать и подготовить базу данных проекта.\n"
 "\n"
 " Пожалуйста, введите имя вашего проекта.\n"
@@ -604,7 +604,7 @@ msgstr ""
 " Укажите строку подключения к используемой базе данных.\n"
 " По умолчанию в каталоге окружения создается локальная база SQLite.\n"
 " Также возможно использование существующей базы PostgreSQL\n"
-" (смотрите в документации Trac точный синтаксис строки подключения.\n"
+" (смотрите в документации Trac точный синтаксис строки подключения).\n"
 
 #: trac/admin/console.py:356
 #, python-format
@@ -614,7 +614,7 @@ msgstr "Строка подключения к базе данных [%(default)
 #: trac/admin/console.py:363
 #, python-format
 msgid "Initenv for '%(env)s' failed."
-msgstr "Не удалось инициализировать окружение в '%(env)s'."
+msgstr "Не удалось инициализировать окружение в \"%(env)s\"."
 
 #: trac/admin/console.py:366
 msgid "Does an environment already exist?"
@@ -662,7 +662,7 @@ msgstr ""
 "отсутствие сторонней библиотеки для репозитория этого типа,\n"
 "отсутствие репозитория по указанному пути...\n"
 "\n"
-"Тем не менее вы можете начать работу с Trac-ом, но вам необходимо \n"
+"Тем не менее вы можете начать работу с Trac, но вам необходимо \n"
 "еще раз проверить в файле trac.ini в секции [trac] \n"
 "настройки repository_type и repository_path.\n"
 
@@ -696,21 +696,21 @@ msgid ""
 msgstr ""
 "\n"
 "---------------------------------------------------------------------\n"
-"Окружение для проекта '%(project_name)s' создано.\n"
+"Окружение для проекта \"%(project_name)s\" создано.\n"
 "\n"
-"Сейчас вы можете настроить окружение отредактировав файл:\n"
+"Сейчас вы можете настроить окружение, отредактировав файл:\n"
 "\n"
 "  %(config_path)s\n"
 "\n"
 "Если хотите воспользоваться новым окружением в тестовом режиме,\n"
-"попробуйте запустить автономный веб-сервер Trac-а `tracd`:\n"
+"попробуйте запустить автономный веб-сервер Trac `tracd`:\n"
 "\n"
 "  tracd --port 8000 %(project_path)s\n"
 "\n"
 "Откройте в браузере адрес http://localhost:8000/%(project_dir)s.\n"
 "Там вы также сможете просмотреть документацию по установленной\n"
-"версии Trac-а, включая информацию о дальнейшей настройке (такой как\n"
-"развертывание Trac-а на настоящем веб-сервере).\n"
+"версии Trac, включая информацию о дальнейшей настройке (такой как\n"
+"развертывание Trac на настоящем веб-сервере).\n"
 "\n"
 "Последнюю документацию всегда можно найти на сайте проекта:\n"
 "\n"
@@ -721,7 +721,7 @@ msgstr ""
 #: trac/admin/console.py:536
 #, python-format
 msgid "Non-ascii environment path '%(path)s' not supported."
-msgstr "Не-ascii путь к окружению '%(path)s' не поддерживается."
+msgstr "Не-ascii путь к окружению \"%(path)s\" не поддерживается."
 
 #: trac/admin/web_ui.py:65
 msgid "Admin"
@@ -729,7 +729,7 @@ msgstr "Админка"
 
 #: trac/admin/web_ui.py:66 trac/admin/templates/admin.html:16
 msgid "Administration"
-msgstr "Администрирование"
+msgstr "Админка"
 
 #: trac/admin/web_ui.py:82
 msgid "No administration panels available"
@@ -802,11 +802,11 @@ msgstr "Недопустимый тип журнала"
 #: trac/admin/web_ui.py:276
 #, python-format
 msgid "Unknown log level %(level)s"
-msgstr "Неизвестный уровень сообщения %(level)s"
+msgstr "Неизвестный уровень сообщений %(level)s"
 
 #: trac/admin/web_ui.py:277
 msgid "Invalid log level"
-msgstr "Недопустимый уровень журнала"
+msgstr "Недопустимый уровень сообщений"
 
 #: trac/admin/web_ui.py:290
 msgid "You must specify a log file"
@@ -1011,9 +1011,9 @@ msgid ""
 "As long as you don't add any items to the list, this field\n"
 "            will remain completely hidden from the user interface."
 msgstr ""
-"До тех пор, пока Вы не добавите хотя бы один элемент в этот список, "
+"До тех пор, пока вы не добавите хотя бы один элемент в этот список, "
 "данное поле\n"
-"            останется полностью скрытым от интерфейса пользователя."
+"            останется полностью скрытым в интерфейсе пользователя."
 
 #: trac/admin/templates/admin_enums.html:14
 #, python-format
@@ -1057,8 +1057,8 @@ msgid ""
 "If you specify a relative path, the log file will be stored inside the\n"
 "            [1:log] directory of the project environment ([2:%(dir)s])."
 msgstr ""
-"Если Вы укажете относительный путь, файл журнала будет сохранён внутри\n"
-"            директории [1:log] окружения проекта ([2:%(dir)s])."
+"Если вы укажете относительный путь, файл журнала будет сохранён внутри\n"
+"            каталога [1:log] окружения проекта ([2:%(dir)s])."
 
 #: trac/admin/templates/admin_milestones.html:10 trac/ticket/admin.py:241
 #: trac/ticket/roadmap.py:875
@@ -1067,7 +1067,7 @@ msgstr "Этапы разработки"
 
 #: trac/admin/templates/admin_milestones.html:14
 msgid "Manage Milestones"
-msgstr "Управление этапами"
+msgstr "Управление этапами разработки"
 
 #: trac/admin/templates/admin_milestones.html:20
 msgid "Modify Milestone:"
@@ -1160,7 +1160,7 @@ msgstr "Группа:"
 
 #: trac/admin/templates/admin_perms.html:57
 msgid "Add a user or group to an existing permission group."
-msgstr "Добавить пользователя или группу к существующей группе прав."
+msgstr "Добавить пользователя или группу к существующей группе."
 
 #: trac/admin/templates/admin_perms.html:70
 msgid "Subject"
@@ -1177,7 +1177,7 @@ msgstr ""
 
 #: trac/admin/templates/admin_plugins.html:42
 msgid "Manage Plugins"
-msgstr "Управлять плагинами"
+msgstr "Управление плагинами"
 
 #: trac/admin/templates/admin_plugins.html:46
 msgid "Install Plugin:"
@@ -1193,11 +1193,11 @@ msgid ""
 "            the environment plugins directory."
 msgstr ""
 "Веб-сервер не имеет достаточных прав для сохранения файлов в\n"
-"            каталоге проекта."
+"            каталоге plugins окружения."
 
 #: trac/admin/templates/admin_plugins.html:57
 msgid "Upload a plugin packaged as Python egg."
-msgstr "Загрузить плагин в формате Python .egg"
+msgstr "Загрузить плагин в формате Python egg."
 
 #: trac/admin/templates/admin_plugins.html:62
 msgid "Install"
@@ -1210,7 +1210,7 @@ msgstr "Автор:"
 
 #: trac/admin/templates/admin_plugins.html:94
 msgid "Home page:"
-msgstr "Домашняя страница:"
+msgstr "Сайт:"
 
 #: trac/admin/templates/admin_plugins.html:101
 msgid "License:"
@@ -1239,7 +1239,7 @@ msgstr "Переключить описание модуля"
 
 #: trac/admin/templates/admin_plugins.html:143
 msgid "Toggle the component description"
-msgstr "Переключить описание компонента"
+msgstr "Показать/скрыть описание компонента"
 
 #: trac/admin/templates/admin_versions.html:10 trac/ticket/admin.py:440
 msgid "Versions"
@@ -1247,7 +1247,7 @@ msgstr "Версии"
 
 #: trac/admin/templates/admin_versions.html:14
 msgid "Manage Versions"
-msgstr "Управлять версиями"
+msgstr "Управление версиями"
 
 #: trac/admin/templates/admin_versions.html:19
 msgid "Modify Version:"
@@ -1308,7 +1308,7 @@ msgstr "Необходим PySqlite %(version)s или старше"
 #: trac/db/sqlite_backend.py:186
 #, python-format
 msgid "Database already exists at %(path)s"
-msgstr "База данных по пути %(path)s уже существует"
+msgstr "База данных в %(path)s уже существует"
 
 #: trac/db/sqlite_backend.py:246
 #, python-format
@@ -1321,9 +1321,9 @@ msgid ""
 "The user %(user)s requires read _and_ write permissions to the database "
 "file %(path)s and the directory it is located in."
 msgstr ""
-"Пользователю %(user)s трубуются права на чтение _и_ на запись к файлу "
-"базы данных \"\n"
-"\"%(path)s и директории, в которой она находится."
+"Пользователю %(user)s трубуются права на чтение _и_ запись файла базы "
+"данных \n"
+"\"%(path)s\" и каталога, в котором он находится."
 
 #: trac/mimeview/api.py:675 trac/mimeview/api.py:686
 #, python-format
@@ -1356,7 +1356,7 @@ msgstr "новый файл %(new)s"
 #: trac/mimeview/patch.py:176
 #, python-format
 msgid "deleted file %(deleted)s"
-msgstr "удаленный файл %(deleted)s"
+msgstr "удалённый файл %(deleted)s"
 
 #: trac/mimeview/patch.py:248
 msgid "this hunk was shorter than expected"
@@ -1368,7 +1368,7 @@ msgstr "Подсветка синтаксиса"
 
 #: trac/mimeview/pygments.py:135 trac/prefs/web_ui.py:143
 msgid "Your preferences have been saved."
-msgstr "Ваши предпочтения сохранены"
+msgstr "Ваши предпочтения сохранены."
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -1407,10 +1407,9 @@ msgid ""
 " be\n"
 "      restored on subsequent visits."
 msgstr ""
-"Эта страница позволяет вам изменить личные настройки для этого сайта.\n"
-"      Эти настройки сохраняются на сервере и распознаются по ключу "
-"сеанса,\n"
-"      сохранённом в cookie браузера. Этот cookie позволяет восстановить \n"
+"На этой странице можно изменить личные настройки для этого сайта.\n"
+"      Настройки сохраняются на сервере и распознаются по ключу сеанса,\n"
+"      сохранённому в cookie браузера, что позволяет восстановить \n"
 "      ваши настройки при последующих посещениях."
 
 #: trac/prefs/templates/prefs.html:33
@@ -1504,8 +1503,8 @@ msgid ""
 "        A positive offset is used to indicate a timezone at the east of "
 "Greenwich, i.e. ahead of Universal Time."
 msgstr ""
-"Примечание: всемирное координированное время (UTC) также известно "
-"каксреднее время по Гринвичу (GMT).[1:]\n"
+"Примечание: всемирное координированное время (UTC) также известно как "
+"среднее время по Гринвичу (GMT).[1:]\n"
 "Положительное смещение указывает на то, что часовой пояс расположен "
 "восточнее Гринвича, т.е. больше всемирного времени."
 
@@ -1531,7 +1530,7 @@ msgid ""
 "        email address and full name, which is used for email\n"
 "        notification and RSS feeds, for example."
 msgstr ""
-"Эта информация используется чтобы привязать к вашему имени пользователя "
+"Эта информация используется, чтобы привязать к вашему имени пользователя "
 "адрес электронной почты и полное имя, которые нужны, например, для "
 "уведомлений по почте и RSS каналов."
 
@@ -1569,7 +1568,7 @@ msgid ""
 "      server."
 msgstr ""
 "Указание вашего языка приведёт к тому, что весь текст\n"
-"      на этом сайте, будет отображён на вашем языке вместо языка\n"
+"      на этом сайте будет отображён на вашем языке вместо языка\n"
 "      сервера."
 
 #: trac/prefs/templates/prefs_language.html:25
@@ -1577,8 +1576,8 @@ msgid ""
 "The 'default language' option uses the browser's\n"
 "        language negotiation feature to select the appropriate language."
 msgstr ""
-"Пункт 'язык по умолчанию' использует возможность\n"
-"        браузера по согласованию языка для выбора подходящего языка."
+"Пункт \"язык по умолчанию\" использует возможности\n"
+"        браузера для выбора подходящего языка."
 
 #: trac/prefs/templates/prefs_pygments.html:36
 msgid ""
@@ -1681,7 +1680,7 @@ msgid ""
 msgstr ""
 "Trac распространяется по модифицированной лицензии BSD.[1:]\n"
 "        Полный текст лицензии можно найти \n"
-"        [2:онлайн]\n"
+"        [2:онлайн],\n"
 "        а также в файле [3:COPYING], включенном в дистрибутив."
 
 #: trac/templates/about.html:41
@@ -1767,7 +1766,7 @@ msgstr "Описание файла (не обязательно):"
 
 #: trac/templates/attachment.html:52
 msgid "Replace existing attachment of the same name"
-msgstr "Заменить существующее вложение с таким именем"
+msgstr "Заменить существующее вложение с таким же именем"
 
 #: trac/templates/attachment.html:62
 msgid "Add attachment"
@@ -1997,12 +1996,12 @@ msgid ""
 "                    Trac administrator] with the information needed to\n"
 "                reproduce the issue."
 msgstr ""
-"Произошла внутренняя ошибка Trac-а.\n"
+"Произошла внутренняя ошибка Trac.\n"
 "                Рекомендуется оповестить локального \n"
 "                [1:\n"
-"                    администратора Trac-а] и сообщить ему информацию, "
+"                    администратора Trac] и сообщить ему информацию, "
 "необходимую\n"
-"                для ее воспроизведения."
+"                для её воспроизведения."
 
 #: trac/templates/error.html:95
 #, python-format
@@ -2023,21 +2022,21 @@ msgid ""
 "You should %(create)s a ticket at the admin Trac to report\n"
 "                    the issue."
 msgstr ""
-"Вы можете %(create)s карточку администратору Trac-а, чтобы сообщить\n"
+"Вы можете %(create)s карточку администратору Trac, чтобы сообщить\n"
 "                    о проблеме."
 
 #: trac/templates/error.html:109
 msgid "Found a bug in Trac?"
-msgstr "Нашёл баг в Trac?"
+msgstr "Нашли баг в Trac?"
 
 #: trac/templates/error.html:110
 msgid ""
 "If you think this should work and you can reproduce the problem,\n"
 "              you should consider creating a bug report."
 msgstr ""
-"Если Вы считаете, что это должно работать, и Вы можете воспроизвести "
+"Если вы считаете, что это должно работать, и вы можете воспроизвести "
 "проблему,\n"
-"              Вам следует рассмотреть возможность создания отчёта о баге."
+"              вам следует рассмотреть возможность создания отчёта о баге."
 
 #: trac/templates/error.html:113
 #, python-format
@@ -2069,7 +2068,7 @@ msgstr ""
 "                похожие проблемы], так как возможно, что об этой проблеме"
 "\n"
 "                уже сообщили раньше. По вопросами  установки\n"
-"                и настройки Trac-а или его плагинов, обращайтесь в\n"
+"                и настройки Trac или его плагинов, обращайтесь в\n"
 "                [3:список рассылки],\n"
 "                а не создавайте карточку."
 
@@ -2079,8 +2078,8 @@ msgid ""
 "Otherwise, please %(create)s a new bug report\n"
 "                describing the problem and explain how to reproduce it."
 msgstr ""
-"Иначе %(create)s новое сообщение об ошибке,\n"
-"                опишите проблему и объясните, как ее можно воспроизвести."
+"В противном случае, %(create)s новое сообщение об ошибке,\n"
+"                опишите проблему и объясните, как её можно воспроизвести."
 
 #: trac/templates/error.html:135
 msgid "Python Traceback"
@@ -2409,7 +2408,7 @@ msgstr ""
 
 #: trac/ticket/admin.py:684
 msgid "Order numbers must be unique"
-msgstr "Числа порядка должны быть уникальными"
+msgstr "Порядковые номера должны быть уникальными"
 
 #: trac/ticket/admin.py:746
 msgid "Possible Values"
@@ -2476,7 +2475,7 @@ msgstr "Тип"
 
 #: trac/ticket/api.py:293
 msgid "Status"
-msgstr "Статус"
+msgstr "Состояние"
 
 #: trac/ticket/api.py:318
 msgid "Keywords"
@@ -2516,7 +2515,7 @@ msgstr "пользователю %(owner)s"
 #: trac/ticket/default_workflow.py:255 trac/ticket/default_workflow.py:275
 #, python-format
 msgid "The owner will be changed from %(current_owner)s"
-msgstr "Владелец будет изменен с %(current_owner)s"
+msgstr "Владелец будет изменён с %(current_owner)s"
 
 #: trac/ticket/default_workflow.py:263
 #, python-format
@@ -2526,20 +2525,20 @@ msgstr "на %(owner)s "
 #: trac/ticket/default_workflow.py:265
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(selected_owner)s"
-msgstr "Владелец будет изменен с %(current_owner)s на %(selected_owner)s"
+msgstr "Владелец будет изменён с %(current_owner)s на %(selected_owner)s"
 
 #: trac/ticket/default_workflow.py:280
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(authname)s"
-msgstr "Владелец будет изменен с %(current_owner)s на %(authname)s"
+msgstr "Владелец будет изменён с %(current_owner)s на %(authname)s"
 
 #: trac/ticket/default_workflow.py:290
 msgid ""
 "Your workflow attempts to set a resolution but none is defined "
 "(configuration issue, please contact your Trac admin)."
 msgstr ""
-"Рабочий поток пытается задать решение, но они не определены (ошибка "
-"конфигурации, сообщите администратору Trac-а)."
+"Рабочий процесс предусматривает задание решений, но они не определены "
+"(ошибка конфигурации, сообщите администратору Trac)."
 
 #: trac/ticket/default_workflow.py:298 trac/ticket/default_workflow.py:308
 #, python-format
@@ -2567,7 +2566,7 @@ msgstr "как %(status)s "
 #: trac/ticket/default_workflow.py:320
 #, python-format
 msgid "Next status will be '%(name)s'"
-msgstr "Следующим статусом будет '%(name)s'"
+msgstr "Следующим состоянием будет \"%(name)s\""
 
 #: trac/ticket/model.py:105
 #, python-format
@@ -2648,7 +2647,7 @@ msgstr "Для фильтра запроса необходимо имя пол�
 #: trac/ticket/query.py:305
 #, python-format
 msgid "Page %(page)s is beyond the number of pages in the query"
-msgstr "Страница %(page)s больше количества страниц в запросе"
+msgstr "Номер страницы %(page)s больше количества страниц в запросе"
 
 #: trac/ticket/query.py:562
 #, python-format
@@ -2821,8 +2820,8 @@ msgid ""
 "'%(group1)s' and '%(group2)s' milestone groups both are declared to be "
 "\"catch-all\" groups. Please check your configuration."
 msgstr ""
-"Группы этапов '%(group1)s' и '%(group2)s' определены как \"catch-all\" "
-"группы. Проверьте конфигурацию."
+"Группы этапов \"%(group1)s\" и \"%(group2)s\" определены как \"catch-"
+"all\" группы. Проверьте конфигурацию."
 
 #: trac/ticket/roadmap.py:231
 #, python-format
@@ -2830,8 +2829,8 @@ msgid ""
 "'%(groupname)s' milestone group reused status '%(status)s' already taken "
 "by other groups. Please check your configuration."
 msgstr ""
-"Группа этапа '%(groupname)s' повторно использует статус '%(status)s', уже"
-" занятый другой группой. Проверьте конфигурацию."
+"Группа этапа \"%(groupname)s\" повторно использует состояние "
+"\"%(status)s\", уже занятый другой группой. Проверьте конфигурацию."
 
 #: trac/ticket/roadmap.py:314 trac/ticket/roadmap.py:436
 #: trac/ticket/roadmap.py:571 trac/ticket/templates/roadmap.html:10
@@ -2860,12 +2859,12 @@ msgstr "Достигнутые этапы"
 #: trac/ticket/roadmap.py:553
 #, python-format
 msgid "Milestone %(name)s completed"
-msgstr "Этап %(name)s завершен"
+msgstr "Этап %(name)s завершён"
 
 #: trac/ticket/roadmap.py:613
 #, python-format
 msgid "The milestone \"%(name)s\" has been deleted."
-msgstr "Этап разработки \"%(name)s\" удален."
+msgstr "Этап разработки \"%(name)s\" удалён."
 
 #: trac/ticket/roadmap.py:652
 #, python-format
@@ -2942,8 +2941,8 @@ msgid ""
 "Please review your configuration, probably starting with %(section)s in "
 "your %(tracini)s."
 msgstr ""
-"Пожалуйста, проверьте конфигурацию, возможно следует начать с %(section)s"
-" в %(tracini)s."
+"Пожалуйста, проверьте конфигурацию, возможно, следует начать с "
+"%(section)s в %(tracini)s."
 
 #: trac/ticket/web_ui.py:580 trac/ticket/web_ui.py:797
 #, python-format
@@ -3049,7 +3048,7 @@ msgstr[2] "%(labels)s установлены"
 #, python-format
 msgid "%(labels)s deleted"
 msgid_plural "%(labels)s deleted"
-msgstr[0] "%(labels)s удален"
+msgstr[0] "%(labels)s удалён"
 msgstr[1] "%(labels)s удалены"
 msgstr[2] "%(labels)s удалены"
 
@@ -3071,7 +3070,7 @@ msgstr "Нет права менять поля карточки."
 
 #: trac/ticket/web_ui.py:1116
 msgid "No permissions to add a comment."
-msgstr "Недостаточно прав для добавления комментария."
+msgstr "Нет права для добавления комментария."
 
 #: trac/ticket/web_ui.py:1122
 msgid ""
@@ -3109,7 +3108,7 @@ msgstr "Неверный идентификатор ветви коммента�
 #: trac/ticket/web_ui.py:1182
 #, python-format
 msgid "The ticket field '%(field)s' is invalid: %(message)s"
-msgstr "Поле '%(field)s' карточки недопустимо: %(message)s"
+msgstr "Поле \"%(field)s\" карточки недопустимо: %(message)s"
 
 #: trac/ticket/web_ui.py:1201
 #, python-format
@@ -3199,14 +3198,14 @@ msgstr[2] "%(items)s добавлены"
 #, python-format
 msgid "%(items)s removed"
 msgid_plural "%(items)s removed"
-msgstr[0] "%(items)s перемещен"
+msgstr[0] "%(items)s перемещён"
 msgstr[1] "%(items)s перемещены"
 msgstr[2] "%(items)s перемещены"
 
 #: trac/ticket/web_ui.py:1633
 #, python-format
 msgid "%(value)s deleted"
-msgstr "%(value)s удален"
+msgstr "%(value)s удалён"
 
 #: trac/ticket/web_ui.py:1635
 #, python-format
@@ -3216,7 +3215,7 @@ msgstr "установлено в %(value)s"
 #: trac/ticket/web_ui.py:1638
 #, python-format
 msgid "changed from %(old)s to %(new)s"
-msgstr "изменен с %(old)s на %(new)s"
+msgstr "изменён с %(old)s на %(new)s"
 
 #: trac/ticket/templates/milestone_delete.html:10
 #: trac/ticket/templates/milestone_delete.html:22
@@ -3229,7 +3228,7 @@ msgstr "Вы уверены, что хотите удалить этот эта�
 
 #: trac/ticket/templates/milestone_delete.html:29
 msgid "Retarget associated tickets to milestone"
-msgstr "Перенаправить привязанные карточки в этап"
+msgstr "Перенаправить связанные карточки в этап"
 
 #: trac/ticket/templates/milestone_delete.html:41
 #: trac/ticket/templates/milestone_view.html:107
@@ -3300,7 +3299,7 @@ msgstr "Редактировать этап"
 #: trac/ticket/templates/roadmap.html:42
 #, python-format
 msgid "Completed %(duration)s ago (%(date)s)"
-msgstr "Завершен %(duration)s назад (%(date)s)"
+msgstr "Завершён %(duration)s назад (%(date)s)"
 
 #: trac/ticket/templates/milestone_view.html:32
 #: trac/ticket/templates/roadmap.html:47
@@ -3399,7 +3398,7 @@ msgstr "Макс. кол-во элементов на страницу"
 #: trac/ticket/templates/query.html:245
 #, python-format
 msgid "Edit report {%(id)s} corresponding to this query"
-msgstr "Изменить отчет {%(id)s} соответствующий этому запросу"
+msgstr "Изменить отчет {%(id)s}, соответствующий этому запросу"
 
 #: trac/ticket/templates/query.html:245
 msgid "Edit query"
@@ -3421,7 +3420,7 @@ msgstr "Создать новый отчет из текущего запрос�
 #: trac/ticket/templates/query.html:262
 #, python-format
 msgid "Delete report {%(id)s} corresponding to this query"
-msgstr "Удалить отчет {%(id)s} соответствующий этому запросу"
+msgstr "Удалить отчет {%(id)s}, соответствующий этому запросу"
 
 #: trac/ticket/templates/query.html:262
 msgid "Delete query"
@@ -3557,7 +3556,7 @@ msgstr "Редактировать"
 
 #: trac/ticket/templates/report_list.html:38
 msgid "No reports available."
-msgstr "Просмотр в формате HTML невозможен"
+msgstr "Нет доступных отчётов."
 
 #: trac/ticket/templates/report_list.html:47
 msgid "Create new report"
@@ -3583,11 +3582,11 @@ msgstr "Открыть %(realm)s"
 
 #: trac/ticket/templates/roadmap.html:21
 msgid "Show completed milestones"
-msgstr "Показывать завершенные этапы"
+msgstr "Показывать завершённые этапы"
 
 #: trac/ticket/templates/roadmap.html:26
 msgid "Hide milestones with no due date"
-msgstr "Скрыть бессрочные этапы"
+msgstr "Скрыть этапы без срока"
 
 #: trac/ticket/templates/roadmap.html:37
 msgid "Milestone:"
@@ -3712,7 +3711,7 @@ msgstr ""
 #: trac/ticket/templates/ticket.html:220
 #, python-format
 msgid "Changed by %(author)s"
-msgstr "Изменен пользователем %(author)s"
+msgstr "Изменён пользователем %(author)s"
 
 #: trac/ticket/templates/ticket.html:227
 msgid "Modify Ticket"
@@ -3750,7 +3749,7 @@ msgstr "%(field)s:"
 
 #: trac/ticket/templates/ticket.html:313
 msgid "This checkbox allows you to add or remove yourself from the CC list."
-msgstr "Этот флажок позволяет вам добавить или удалить себя из списска рассылки."
+msgstr "Этот флажок позволяет вам добавить или удалить себя из списка рассылки."
 
 #: trac/ticket/templates/ticket.html:319
 msgid "Space or comma delimited email addresses and usernames are accepted."
@@ -3840,7 +3839,7 @@ msgstr ""
 #: trac/ticket/templates/ticket_change.html:26
 #, python-format
 msgid "changed from [1:%(old)s] to [2:%(new)s]"
-msgstr "изменен с [1:%(old)s] на [2:%(new)s]"
+msgstr "изменён с [1:%(old)s] на [2:%(new)s]"
 
 #: trac/ticket/templates/ticket_change.html:29
 #, python-format
@@ -3850,7 +3849,7 @@ msgstr "установлен в [1:%(value)s]"
 #: trac/ticket/templates/ticket_change.html:32
 #, python-format
 msgid "[1:%(value)s] deleted"
-msgstr "[1:%(value)s] удален"
+msgstr "[1:%(value)s] удалён"
 
 #: trac/ticket/templates/ticket_change.html:45
 #, python-format
@@ -3922,7 +3921,7 @@ msgid ""
 "the log)."
 msgstr ""
 "Вы можете просмотреть %(other_events)s Хронологии или сообщить "
-"администратору Trac-а о этой ошибке (подробная информация записана в "
+"администратору Trac об этой ошибке (подробная информация записана в "
 "журнал)."
 
 #: trac/timeline/templates/timeline.html:19
@@ -4022,7 +4021,7 @@ msgid ""
 "\"%(date)s\" is an invalid date, or the date format is not known. Try "
 "\"%(hint)s\" instead."
 msgstr ""
-"\"%(date)s\" — неправильная дата, или ее формат неизвестен. Попробуйте "
+"\"%(date)s\" — неправильная дата, или её формат неизвестен. Попробуйте "
 "вместо этого \"%(hint)s\"."
 
 #: trac/util/datefmt.py:252 trac/util/datefmt.py:260
@@ -4068,7 +4067,7 @@ msgstr "Не удалось синхронизировать одну ревиз
 #: trac/versioncontrol/web_ui/log.py:88 trac/versioncontrol/web_ui/log.py:396
 #, python-format
 msgid "Repository '%(repo)s' not found"
-msgstr "Не найден репозиторий '%(repo)s'"
+msgstr "Не найден репозиторий \"%(repo)s\""
 
 #: trac/versioncontrol/admin.py:128
 #, python-format
@@ -4140,7 +4139,7 @@ msgstr ""
 
 #: trac/versioncontrol/admin.py:254
 msgid "Missing arguments to add a repository."
-msgstr "Отсутствуют аргументы добавления репозитория"
+msgstr "Отсутствуют аргументы добавления репозитория."
 
 #: trac/versioncontrol/admin.py:263
 #, python-format
@@ -4149,15 +4148,15 @@ msgstr "Псевдоним \"%(name)s\" добавлен."
 
 #: trac/versioncontrol/admin.py:266
 msgid "Missing arguments to add an alias."
-msgstr "Отсутствуют аргументы добавления псевдонимов"
+msgstr "Отсутствуют аргументы добавления псевдонима."
 
 #: trac/versioncontrol/admin.py:279
 msgid "The selected repositories have been removed."
-msgstr "Выбранные репозитории были удалены"
+msgstr "Выбранные репозитории были удалены."
 
 #: trac/versioncontrol/admin.py:282
 msgid "No repositories were selected."
-msgstr "Репозитории не выбраны"
+msgstr "Репозитории не выбраны."
 
 #: trac/versioncontrol/api.py:32
 #: trac/versioncontrol/templates/admin_repositories.html:20
@@ -4187,12 +4186,12 @@ msgstr "Возможно, вам придется выполнить \"repositor
 
 #: trac/versioncontrol/api.py:201 trac/versioncontrol/api.py:264
 msgid "The repository directory must be absolute"
-msgstr "Каталог репозитория должен указываться абсолютным"
+msgstr "Для каталога репозитория нужно указывать абсолютный путь"
 
 #: trac/versioncontrol/api.py:206
 #, python-format
 msgid "The repository type '%(type)s' is not supported"
-msgstr "Репозитории типа '%(type)s' не поддерживаются"
+msgstr "Репозитории типа \"%(type)s\" не поддерживаются"
 
 #: trac/versioncontrol/api.py:338
 #, python-format
@@ -4201,7 +4200,7 @@ msgid ""
 "Trac log for more information."
 msgstr ""
 "Не удалось синхронизироваться с хранилищем \"%(name)s\" (%(error)s). "
-"Дополнительную информацию ищите в журнале Trac-а."
+"Дополнительную информацию смотрите в журнале Trac."
 
 #: trac/versioncontrol/api.py:357
 #, python-format
@@ -4289,13 +4288,13 @@ msgid ""
 "The 'repository_dir' has changed, a 'trac-admin $ENV repository resync' "
 "operation is needed."
 msgstr ""
-"'repository_dir' изменен, необходимо выполнить операцию 'trac-admin $ENV "
-"repository resync'."
+"\"repository_dir\" изменён, необходимо выполнить операцию \"trac-admin "
+"$ENV repository resync\"."
 
 #: trac/versioncontrol/svn_authz.py:73
 #, python-format
 msgid "Line %(lineno)d: Entry before first section header"
-msgstr "Строка %(lineno)d: Вход перед первым заголовком секции"
+msgstr "Строка %(lineno)d: запись перед первым заголовком секции"
 
 #: trac/versioncontrol/svn_authz.py:77
 #, python-format
@@ -4323,8 +4322,8 @@ msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
 " and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
 msgstr ""
-"Несоответствие Diff-а: База %(oldnode)s (%(oldpath)s ревизии %(oldrev)s) "
-"и Цель %(newnode)s (%(newpath)s ревизии %(newrev)s)."
+"Несоответствие Diff для базы %(oldnode)s (%(oldpath)s ревизия %(oldrev)s)"
+" и цели %(newnode)s (%(newpath)s ревизия %(newrev)s)."
 
 #: trac/versioncontrol/svn_fs.py:766
 #, python-format
@@ -4349,7 +4348,7 @@ msgstr "годный"
 
 #: trac/versioncontrol/svn_prop.py:206
 msgid "(toggle deleted branches)"
-msgstr "(показать/скрыть удаленные ветви)"
+msgstr "(показать/скрыть удалённые ветви)"
 
 #: trac/versioncontrol/svn_prop.py:234
 msgid "View merge source"
@@ -4381,7 +4380,7 @@ msgstr "(добавлен)"
 
 #: trac/versioncontrol/svn_prop.py:321
 msgid "removed"
-msgstr "удален"
+msgstr "удалён"
 
 #: trac/versioncontrol/svn_prop.py:324
 msgid " (with no actual effect on merging)"
@@ -4419,8 +4418,8 @@ msgid ""
 "            and cannot be edited on this page."
 msgstr ""
 "[1:Примечание:]\n"
-"            Этот репозиторий определен в [2:[3:trac.ini]]\n"
-"            и не может быть изменен на этой странице."
+"            Этот репозиторий определён в [2:[3:trac.ini]]\n"
+"            и не может быть изменён на этой странице."
 
 #: trac/versioncontrol/templates/admin_repositories.html:59
 #: trac/versioncontrol/templates/admin_repositories.html:99
@@ -4446,7 +4445,7 @@ msgstr "Ревизия"
 #: trac/versioncontrol/templates/admin_repositories.html:137
 #, python-format
 msgid "Alias of %(repo)s"
-msgstr "Псевдоним %(repo)s"
+msgstr "Псевдоним для %(repo)s"
 
 #: trac/versioncontrol/templates/admin_repositories.html:144
 msgid "Refresh"
@@ -4463,7 +4462,7 @@ msgstr "Репозиторий по умолчанию"
 
 #: trac/versioncontrol/templates/browser.html:61
 msgid "Hint: clear the field to view latest revision"
-msgstr "Совет: очистите поле чтобы просмотреть последнюю ревизию"
+msgstr "Совет: очистите поле, чтобы просмотреть последнюю ревизию"
 
 #: trac/versioncontrol/templates/browser.html:61
 msgid "View revision:"
@@ -4483,7 +4482,7 @@ msgstr "Перейти на выбранный заранее путь"
 
 #: trac/versioncontrol/templates/browser.html:92
 msgid "Parent Directory"
-msgstr "Родительская директория"
+msgstr "Родительский каталог"
 
 #: trac/versioncontrol/templates/browser.html:98
 msgid "No files found"
@@ -4637,7 +4636,7 @@ msgstr "Набор изменений [1:%(new_rev)s]"
 #: trac/versioncontrol/templates/changeset.html:101
 #, python-format
 msgid "Show what was removed (content at revision %(old_rev)s)"
-msgstr "Показать удаленное (содержимое в ревизии %(old_rev)s)"
+msgstr "Показать удалённое (содержимое в ревизии %(old_rev)s)"
 
 #: trac/versioncontrol/templates/changeset.html:106
 msgid "(root)"
@@ -4726,7 +4725,7 @@ msgstr[2] "%(num)d добавлены"
 #, python-format
 msgid "%(num)d deleted"
 msgid_plural "%(num)d deleted"
-msgstr[0] "%(num)d удален"
+msgstr[0] "%(num)d удалён"
 msgstr[1] "%(num)d удалены"
 msgstr[2] "%(num)d удалены"
 
@@ -4734,7 +4733,7 @@ msgstr[2] "%(num)d удалены"
 #, python-format
 msgid "%(num)d edited"
 msgid_plural "%(num)d edited"
-msgstr[0] "%(num)d изменен"
+msgstr[0] "%(num)d изменён"
 msgstr[1] "%(num)d изменены"
 msgstr[2] "%(num)d изменены"
 
@@ -4750,7 +4749,7 @@ msgstr[2] "%(num)d скопированы"
 #, python-format
 msgid "%(num)d moved"
 msgid_plural "%(num)d moved"
-msgstr[0] "%(num)d перемещен"
+msgstr[0] "%(num)d перемещён"
 msgstr[1] "%(num)d перемещены"
 msgstr[2] "%(num)d перемещены"
 
@@ -4772,7 +4771,7 @@ msgstr "скопирован"
 #: trac/versioncontrol/templates/changeset.html:188
 #: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "moved"
-msgstr "перемещен"
+msgstr "перемещён"
 
 #: trac/versioncontrol/templates/changeset.html:211
 msgid ""
@@ -4963,7 +4962,7 @@ msgstr "Сообщение журнала"
 
 #: trac/versioncontrol/templates/revisionlog.html:106
 msgid "No revisions found"
-msgstr "Показать журнал изменений"
+msgstr "Ревизии не найдены"
 
 #: trac/versioncontrol/templates/revisionlog.html:120
 #, python-format
@@ -4982,7 +4981,7 @@ msgstr "По [%(rev)s]"
 
 #: trac/versioncontrol/templates/revisionlog.html:135
 msgid "View log starting at this revision"
-msgstr "Смотреть журнал начиная с этой ревизии"
+msgstr "Смотреть журнал, начиная с этой ревизии"
 
 #: trac/versioncontrol/templates/revisionlog.html:142
 #, python-format
@@ -4997,7 +4996,7 @@ msgstr "Просмотр удаления набора изменений [%(rev
 #: trac/versioncontrol/templates/revisionlog.html:148
 #, python-format
 msgid "View changeset [%(rev)s] restricted to %(path)s"
-msgstr "Просмотр набора изменений [%(rev)s] ограничен %(path)s"
+msgstr "Просмотр набора изменений [%(rev)s] только для %(path)s"
 
 #: trac/versioncontrol/templates/revisionlog.html:187
 msgid ""
@@ -5033,7 +5032,7 @@ msgstr "Ревизия %(num)s"
 
 #: trac/versioncontrol/web_ui/browser.py:444
 msgid "Previous Revision"
-msgstr "Предыдущий период"
+msgstr "Предыдущая ревизия"
 
 #: trac/versioncontrol/web_ui/browser.py:444
 msgid "Next Revision"
@@ -5070,7 +5069,7 @@ msgstr ""
 
 #: trac/versioncontrol/web_ui/browser.py:469
 msgid "Revision Log"
-msgstr "Журнал изменений"
+msgstr "Журнал ревизий"
 
 #: trac/versioncontrol/web_ui/browser.py:475
 msgid "Repository URL"
@@ -5083,7 +5082,7 @@ msgstr "Архив Zip"
 
 #: trac/versioncontrol/web_ui/browser.py:766
 msgid "Revision in which the line changed"
-msgstr "Ревизия, в которй строка была изменена"
+msgstr "Ревизия, в которой строка была изменена"
 
 #: trac/versioncontrol/web_ui/browser.py:824
 #, python-format
@@ -5139,12 +5138,12 @@ msgstr "Показать в браузере ревизию %(rev)s этого �
 #: trac/versioncontrol/web_ui/changeset.py:638
 #, python-format
 msgid "Show the changeset %(id)s restricted to %(path)s"
-msgstr "Показать набор изменений %(id)s в рамках пути %(path)s"
+msgstr "Показать набор изменений %(id)s только для %(path)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:650
 #, python-format
 msgid "Show the %(range)s differences restricted to %(path)s"
-msgstr "Показать %(range)s изменений в рамках пути %(path)s"
+msgstr "Показать %(range)s изменений только для %(path)s"
 
 #. TRANSLATOR: 'latest' (revision)
 #: trac/versioncontrol/web_ui/changeset.py:790
@@ -5174,15 +5173,15 @@ msgstr "Наборы изменений репозитория"
 msgid "Changeset in %(repo)s "
 msgid_plural "Changesets in %(repo)s "
 msgstr[0] "Набор изменений в %(repo)s "
-msgstr[1] "Набора изменений в %(repo)s "
-msgstr[2] "Наборов изменений в %(repo)s "
+msgstr[1] "Наборы изменений в %(repo)s "
+msgstr[2] "Наборы изменений в %(repo)s "
 
 #: trac/versioncontrol/web_ui/changeset.py:1015
 msgid "Changeset "
 msgid_plural "Changesets "
 msgstr[0] "Набор изменений "
-msgstr[1] "Набора изменений "
-msgstr[2] "Наборов изменений "
+msgstr[1] "Наборы изменений "
+msgstr[2] "Наборы изменений "
 
 #: trac/versioncontrol/web_ui/changeset.py:1086
 #, python-format
@@ -5192,7 +5191,7 @@ msgstr "Нет разрешения на просмотр набора изме�
 #: trac/versioncontrol/web_ui/changeset.py:1092
 #: trac/versioncontrol/web_ui/log.py:398
 msgid "No default repository defined"
-msgstr "Репозиторий по умолчанию не определен"
+msgstr "Репозиторий по умолчанию не определён"
 
 #: trac/versioncontrol/web_ui/changeset.py:1131
 msgid "Changesets"
@@ -5204,8 +5203,8 @@ msgid ""
 "The file or directory '%(path)s' doesn't exist at revision %(rev)s or at "
 "any previous revision."
 msgstr ""
-"Файл или директория '%(path)s' не существуют в ревизии %(rev)s и в "
-"предшествующий ей."
+"Файл или каталог \"%(path)s\" не существует в ревизии %(rev)s и в "
+"предшествующих ей."
 
 #: trac/versioncontrol/web_ui/log.py:200
 msgid "Nonexistent path"
@@ -5214,7 +5213,7 @@ msgstr "Несуществующий путь"
 #: trac/versioncontrol/web_ui/log.py:228
 #, python-format
 msgid "Revision Log (restarting at %(path)s, rev. %(rev)s)"
-msgstr "Журнал изменений (начиная с %(path)s, рев. %(rev)s)"
+msgstr "Журнал ревизий (начиная с %(path)s, рев. %(rev)s)"
 
 #: trac/versioncontrol/web_ui/log.py:309
 msgid "ChangeLog"
@@ -5243,8 +5242,8 @@ msgid ""
 "You can %(search)s in the repository history to see if that path existed "
 "but was later removed"
 msgstr ""
-"Вы можете провести %(search)s по истории репозитория, чтобы узнать "
-"существовал ли этот путь раньше, но позже был удален"
+"Вы можете провести %(search)s по истории репозитория, чтобы узнать не "
+"существовал ли этот путь раньше, а позже был удалён"
 
 #: trac/web/api.py:236
 #, python-format
@@ -5283,7 +5282,7 @@ msgstr "Настройка аутентификации"
 msgid ""
 "Authentication information not available. Please refer to the "
 "%(inst_doc)s."
-msgstr "Информация о аутентификации не доступна. Обратитесь к %(inst_doc)s."
+msgstr "Информация об аутентификации не доступна. Обратитесь к %(inst_doc)s."
 
 #: trac/web/auth.py:150
 #, python-format
@@ -5293,7 +5292,7 @@ msgstr "Вы уже вошли как %(user)s."
 #: trac/web/chrome.py:567
 #, python-format
 msgid "Error with navigation contributor \"%(name)s\""
-msgstr "Ошибка с навигацией участника \"%(name)s\""
+msgstr "Ошибка в элементе навигации \"%(name)s\""
 
 #: trac/web/chrome.py:857
 msgid "(unknown template location)"
@@ -5336,7 +5335,7 @@ msgstr "сделать это"
 #: trac/web/main.py:549
 #, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
-msgstr "На данный момент вы не вошли в систему. Вы можете хотеть %(do_so)s сейчас."
+msgstr "На данный момент вы не вошли в систему. Вы можете %(do_so)s сейчас."
 
 #: trac/web/main.py:607
 msgid "''System information not available''\n"
@@ -5398,7 +5397,9 @@ msgstr ""
 msgid ""
 "Session '%(id)s' already exists.<br />Please choose a different session "
 "ID."
-msgstr "Сеанс '%(id)s' уже существует.<br />Выберите другой идентификатор сенаса. "
+msgstr ""
+"Сеанс \"%(id)s\" уже существует.<br />Выберите другой идентификатор "
+"сеанса."
 
 #: trac/web/session.py:205
 msgid "Error renaming session"
@@ -5432,7 +5433,7 @@ msgstr "Идентификатор сеанса %(sid)s не найден"
 #: trac/wiki/admin.py:116
 #, python-format
 msgid "'%(name)s' is not a file"
-msgstr "'%(name)s' не является файлом"
+msgstr "\"%(name)s\" не является файлом"
 
 #: trac/wiki/admin.py:168 trac/wiki/admin.py:265
 #, python-format
@@ -5454,12 +5455,12 @@ msgstr "Страница %(name)s уже существует."
 
 #: trac/wiki/admin.py:224
 msgid "Deleted pages"
-msgstr "Удаленные страницы"
+msgstr "Удалённые страницы"
 
 #: trac/wiki/admin.py:243
 #, python-format
 msgid "'%(name)s' is not a directory"
-msgstr "'%(name)s' не является каталогом"
+msgstr "\"%(name)s\" не является каталогом"
 
 #: trac/wiki/api.py:361
 msgid "no permission to view this wiki page"
@@ -5554,7 +5555,7 @@ msgstr "Слишком большая вики-страница (должна б
 #: trac/wiki/web_ui.py:200
 #, python-format
 msgid "The Wiki page field '%(field)s' is invalid: %(message)s"
-msgstr "Поле '%(field)s' страницы Вики недопустимо: %(message)s"
+msgstr "Поле \"%(field)s\" страницы Вики недопустимо: %(message)s"
 
 #: trac/wiki/web_ui.py:204
 #, python-format
@@ -5633,7 +5634,7 @@ msgstr "Просмотр последней версии"
 
 #: trac/wiki/web_ui.py:635
 msgid "View parent page"
-msgstr "Просмотреть изменения"
+msgstr "Страница уровнем выше"
 
 #: trac/wiki/web_ui.py:644
 msgid "Previous Version"
@@ -5749,7 +5750,7 @@ msgstr "Проверка"
 
 #: trac/wiki/templates/wiki_edit.html:70
 msgid "See the preview"
-msgstr "Просмотреть предварительный просмотр"
+msgstr "Перейти к предварительному просмотру"
 
 #: trac/wiki/templates/wiki_edit.html:73
 msgid "Editing"
@@ -5758,7 +5759,7 @@ msgstr "Редактирование"
 #: trac/wiki/templates/wiki_edit.html:75
 msgid "Someone else has modified that page since you started your edits."
 msgstr ""
-"С того момета, как Вы начали вносить правки, кто-то другой изменил эту "
+"С того момета, как вы начали вносить правки, кто-то другой изменил эту "
 "страницу."
 
 #: trac/wiki/templates/wiki_edit.html:76
@@ -5766,8 +5767,8 @@ msgid ""
 "[1:If you save right away, you risk to revert those changes]\n"
 "        (highlighted below as deletions)."
 msgstr ""
-"[1:Если вы сейчас сохраните, вы рискуете отменить те изменения]\n"
-"        (выделены ниже как удаленные)."
+"[1:Если вы сейчас сохраните, вы рискуете отменить эти изменения]\n"
+"        (выделены ниже как удалённые)."
 
 #: trac/wiki/templates/wiki_edit.html:78
 msgid ""
@@ -5779,7 +5780,7 @@ msgid ""
 " page\n"
 "        again."
 msgstr ""
-"Пожалуйста просмотрите все эти изменения и вручную объедините их со \n"
+"Пожалуйста, просмотрите все эти изменения и вручную объедините их со \n"
 "        своими. [1:]\n"
 "        Если вы не уверены в своих действиях, нажмите [2:Отмена]\n"
 "        и (потеряв изменения) начните правку последней версии страницы \n"
@@ -5813,7 +5814,7 @@ msgid ""
 "            editing. Your changes cannot be saved."
 msgstr ""
 "Извините, но пока вы редактировали страницу, её изменил кто-то другой. "
-"Невозможно сохранить Ваши изменения."
+"Невозможно сохранить ваши изменения."
 
 #: trac/wiki/templates/wiki_edit_form.html:16
 msgid "Adjust edit area height:"
@@ -5822,12 +5823,12 @@ msgstr "Настроить высоту области редактирован�
 #: trac/wiki/templates/wiki_edit_form.html:24
 msgid "Selecting and pressing 'Preview' enters a two-column [edit|preview] mode"
 msgstr ""
-"Выбор и нажатие 'Предварительный просмотр' вводит двух-колоночный режим "
-"[редактирование|предварительный просмотр]"
+"Выбор и нажатие \"Предварительный просмотр\" вводит двух-колоночный режим"
+" [редактирование|предварительный просмотр]"
 
 #: trac/wiki/templates/wiki_edit_form.html:24
 msgid "Edit side-by-side"
-msgstr "Редактировать бок-о-бок"
+msgstr "Редактировать бок о бок"
 
 #: trac/wiki/templates/wiki_edit_form.html:32
 msgid ""
