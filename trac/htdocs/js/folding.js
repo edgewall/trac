@@ -23,7 +23,7 @@
       if (autofold && (count != fragId))
         trigger.parents().eq(1).addClass("collapsed");
       count++;
-    }).css("cursor", "pointer");
+    });
   }
 
   /** Enable columns of a table to be hidden by clicking on the column header.
