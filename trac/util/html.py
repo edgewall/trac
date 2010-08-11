@@ -18,7 +18,7 @@ from genshi.core import stripentities, striptags, START, END
 from genshi.builder import Element, ElementFactory, Fragment
 from genshi.filters.html import HTMLSanitizer
 
-from trac.util.compat import set
+from trac.util.compat import frozenset, set
 
 __all__ = ['escape', 'unescape', 'html', 'plaintext', 'TracHTMLSanitizer']
 
@@ -27,9 +27,11 @@ class TracHTMLSanitizer(HTMLSanitizer):
 
     UNSAFE_CSS = ['position']
 
-    def __init__(self):
-        safe_attrs = HTMLSanitizer.SAFE_ATTRS | set(['style'])
-        super(TracHTMLSanitizer, self).__init__(safe_attrs=safe_attrs)
+    def __init__(self, safe_schemes=HTMLSanitizer.SAFE_SCHEMES):
+        safe_attrs = HTMLSanitizer.SAFE_ATTRS | frozenset(['style'])
+        safe_schemes = frozenset(safe_schemes)
+        super(TracHTMLSanitizer, self).__init__(safe_attrs=safe_attrs,
+                                                safe_schemes=safe_schemes)
 
     def sanitize_css(self, text):
         decls = []
