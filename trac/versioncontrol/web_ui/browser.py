@@ -29,7 +29,7 @@ from trac.perm import IPermissionRequestor
 from trac.resource import ResourceNotFound
 from trac.util import embedded_numbers
 from trac.util.compat import any
-from trac.util.datefmt import http_date, utc
+from trac.util.datefmt import http_date, to_datetime, utc
 from trac.util.html import escape, Markup
 from trac.util.text import exception_to_unicode, shorten_line
 from trac.util.translation import _
@@ -493,7 +493,10 @@ class BrowserModule(Component):
                 if repos:
                     if not repos.can_view(context.perm):
                         continue
-                    youngest = repos.get_changeset(repos.youngest_rev)
+                    try:
+                        youngest = repos.get_changeset(repos.youngest_rev)
+                    except NoSuchChangeset:
+                        youngest = None
                     if self.color_scale and youngest:
                         if not timerange:
                             timerange = TimeRange(youngest.date)
@@ -504,7 +507,7 @@ class BrowserModule(Component):
                     entry = (reponame, repoinfo, repos, youngest, None,
                              raw_href)
                 else:
-                    entry = (reponame, repoinfo, None, None, "XXX", None)
+                    entry = (reponame, repoinfo, None, None, u"\u2013", None)
             except TracError, err:
                 entry = (reponame, repoinfo, None, None,
                          exception_to_unicode(err), None)
@@ -513,7 +516,12 @@ class BrowserModule(Component):
         # Ordering of repositories
         if order == 'date':
             def repo_order((reponame, repoinfo, repos, youngest, err, href)):
-                return youngest and youngest.date
+                return (youngest and youngest.date or to_datetime(0),
+                        embedded_numbers(reponame.lower()))
+        elif order == 'author':
+            def repo_order((reponame, repoinfo, repos, youngest, err, href)):
+                return (youngest and youngest.author.lower() or '',
+                        embedded_numbers(reponame.lower()))
         else:
             def repo_order((reponame, repoinfo, repos, youngest, err, href)):
                 return embedded_numbers(reponame.lower())
@@ -561,14 +569,16 @@ class BrowserModule(Component):
         # Ordering of entries
         if order == 'date':
             def file_order(a):
-                return changes[a.rev].date
+                return (changes[a.rev].date,
+                        embedded_numbers(a.name.lower()))
         elif order == 'size':
             def file_order(a):
                 return (a.content_length,
                         embedded_numbers(a.name.lower()))
         elif order == 'author':
             def file_order(a):
-                return changes[a.rev].author.lower()
+                return (changes[a.rev].author.lower(),
+                        embedded_numbers(a.name.lower()))
         else:
             def file_order(a):
                 return embedded_numbers(a.name.lower())

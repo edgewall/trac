@@ -21,7 +21,7 @@
             <a py:if="raw_href" class="trac-ziplink" href="$raw_href" title="Download as Zip archive">&#8203;</a>
           </td>
           <td class="rev">
-            <py:if test="not err">
+            <py:if test="change and not err">
               <a title="View Revision Log" href="${href.log(repos.reponame)}">${repos.display_rev(change.rev)}</a>
               <a title="View Changeset" class="chgset" href="${href.changeset(change.rev, repos.reponame)}">&nbsp;</a>
             </py:if>
