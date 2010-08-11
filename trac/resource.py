@@ -78,7 +78,7 @@ class IResourceManager(Interface):
 
         Attempting to retrieve the model object for a non-existing
         resource should raise a `ResourceNotFound` exception.
-        (since 0.11.7.1)
+        (''since 0.11.8'')
         """
 
 
