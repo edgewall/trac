@@ -21,7 +21,7 @@ import re
 from genshi.builder import tag
 
 from trac.cache import cached
-from trac.config import BoolOption
+from trac.config import BoolOption, ListOption
 from trac.core import *
 from trac.resource import IResourceManager
 from trac.util.translation import _
@@ -213,6 +213,12 @@ class WikiSystem(Component):
 
         For public sites where anonymous users can edit the wiki it is
         recommended to leave this option disabled (which is the default).""")
+
+    safe_schemes = ListOption('wiki', 'safe_schemes',
+        'cvs,file,ftp,git,irc,http,https,news,sftp,smb,ssh,svn,svn+ssh',
+        doc="""List of URI schemes considered "safe", that will be rendered as
+        external links even if `[wiki] render_unsafe_content` is `false`.
+        (''since 0.11.8'')""")
 
     @cached
     def pages(self, db):
