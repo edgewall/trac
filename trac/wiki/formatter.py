@@ -122,7 +122,7 @@ class WikiProcessor(object):
                               'table': self._table_processor,
                               }
 
-        self._sanitizer = TracHTMLSanitizer()
+        self._sanitizer = TracHTMLSanitizer(formatter.wiki.safe_schemes)
         
         self.processor = builtin_processors.get(name)
         if not self.processor:
@@ -362,6 +362,10 @@ class Formatter(object):
         self.wikiparser = WikiParser(self.env)
         self._anchors = {}
         self._open_tags = []
+        self._safe_schemes = None
+        if not self.wiki.render_unsafe_content:
+            self._safe_schemes = set(self.wiki.safe_schemes)
+            
 
     def split_link(self, target):
         return split_url_into_path_query_fragment(target)
@@ -586,8 +590,6 @@ class Formatter(object):
                                 fullmatch)
             else:
                 return resolver(self, ns, target, escape(label, False))
-        elif target.startswith('//'):
-            return self._make_ext_link(ns+':'+target, label)
         elif ns == "mailto":
             from trac.web.chrome import Chrome
             chrome = Chrome(self.env)
@@ -600,6 +602,11 @@ class Formatter(object):
                 return self._make_mail_link('mailto:'+target, label)
             else:
                 return olabel or otarget
+        elif target.startswith('//'):
+            if self._safe_schemes is None or ns in self._safe_schemes:
+                return self._make_ext_link(ns + ':' + target, label)
+            else:
+                return escape(match)
         else:
             return self._make_intertrac_link(ns, target, label) or \
                    self._make_interwiki_link(ns, target, label) or \
