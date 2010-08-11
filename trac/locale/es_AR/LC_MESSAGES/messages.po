@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2008-01-30 09:20+0100\n"
-"PO-Revision-Date: 2010-06-17 15:27-0300\n"
+"PO-Revision-Date: 2010-08-11 00:37-0300\n"
 "Last-Translator: Ramiro Morales <cramm0@gmail.com>\n"
 "Language-Team: es_AR <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -3237,7 +3237,7 @@ msgstr "cambio de valor a %(value)s"
 #: trac/ticket/web_ui.py:1638
 #, python-format
 msgid "changed from %(old)s to %(new)s"
-msgstr "Cmabiado de %(old)s a %(new)s"
+msgstr "cambiado de %(old)s a %(new)s"
 
 #: trac/ticket/templates/milestone_delete.html:10
 #: trac/ticket/templates/milestone_delete.html:22
@@ -4093,7 +4093,7 @@ msgstr "Resincronizando historia de repositorio de %(reponame)s... "
 #, python-format
 msgid "%(num)s revision cached."
 msgid_plural "%(num)s revisions cached."
-msgstr[0] "%(num)s revisión caheada."
+msgstr[0] "%(num)s revisión cacheada."
 msgstr[1] "%(num)s revisiones cacheadas."
 
 #: trac/versioncontrol/admin.py:144
@@ -4127,7 +4127,7 @@ msgid ""
 "You will need to update your post-commit hook to call %(cset_added)s with"
 " the new repository name."
 msgstr ""
-"En necesario que actalice su hook post-commit para llamar a "
+"Es necesario que actualice su hook post-commit para llamar a "
 "%(cset_added)s con el nuevo nombre de repositorio."
 
 #: trac/versioncontrol/admin.py:238
