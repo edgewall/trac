@@ -15,15 +15,42 @@
 #
 # Author: Matthew Good <trac@matt-good.net>
 
+import os
 import pkg_resources
+import urllib
 
 from trac import __version__ as VERSION
 from trac.web.main import dispatch_request
 
-import _fcgi
+use_flup = os.environ.get('TRAC_USE_FLUP', False)
+if use_flup in ('0', 'no', 'off'):
+    use_flup = False
+
+
+class FlupMiddleware(object):
+    """Flup doesn't URL unquote the PATH_INFO, so we need to do it."""
+    def __init__(self, application):
+        self.application = application
+
+    def __call__(self, environ, start_response):
+        environ['PATH_INFO'] = urllib.unquote(environ.get('PATH_INFO', ''))
+        return self.application(environ, start_response)
+
+params = {}
+
+if use_flup:
+    try:
+        from flup.server.fcgi import WSGIServer
+        params['maxThreads'] = 15
+        dispatch_request = FlupMiddleware(dispatch_request)
+    except ImportError:
+        use_flup = False
+
+if not use_flup:
+    from _fcgi import WSGIServer
 
 def run():
-    _fcgi.WSGIServer(dispatch_request).run()
+    WSGIServer(dispatch_request, **params).run()
 
 if __name__ == '__main__':
     pkg_resources.require('Trac==%s' % VERSION)
