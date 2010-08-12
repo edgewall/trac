@@ -80,6 +80,7 @@ class ConnectionPoolBackend(object):
         key = unicode(kwargs)
         start = time.time()
         tid = threading._get_ident()
+        # Get a Connection, either directly or a deferred one
         self._available.acquire()
         try:
             # First choice: Return the same cnx already used by the thread
@@ -97,19 +98,49 @@ class ConnectionPoolBackend(object):
                 num = 1
             if cnx:
                 self._active[(tid, key)] = (cnx, num)
-                return PooledConnection(self, cnx, key, tid, log)
-            else:
-                # if we didn't get a cnx after wait() something's fishy...
-                timeout = time.time() - start
-                raise TimeoutError(_('Unable to get database '
-                                     'connection within %(time)d '
-                                     'seconds', time=timeout))
         finally:
             self._available.release()
 
+        deferred = num == 1 and isinstance(cnx, tuple)
+        if deferred:
+            # Potentially lenghty operations must be done without lock held
+            op, cnx = cnx
+            if op == 'ping':
+                try:
+                    cnx.ping()
+                except:
+                    cnx = None
+            elif op == 'close':
+                cnx.close()
+            if op in ('close', 'create'):
+                cnx = connector.get_connection(**kwargs)
+
+        if cnx:
+            if deferred:
+                # replace placeholder with real Connection
+                self._available.acquire()
+                try:
+                    self._active[(tid, key)] = (cnx, num)
+                finally:
+                    self._available.release()
+            return PooledConnection(self, cnx, key, tid, log)
+
+        if deferred and op == 'ping':
+            # cnx couldn't be reused, clear placeholder and retry
+            self._available.acquire()
+            try:
+                del self._active[(tid, key)]
+            finally:
+                self._available.release()
+            return self.get_cnx(connector, kwargs)
+
+        # if we didn't get a cnx after wait(), something's fishy...
+        timeout = time.time() - start
+        raise TimeoutError(_("Unable to get database connection within "
+                             "%(time)d seconds", time=timeout))
+
     def _take_cnx(self, connector, kwargs, key, tid):
         """Note: _available lock must be held when calling this method."""
-        create = False
         # Second best option: Reuse a live pooled connection
         if key in self._pool_key:
             idx = self._pool_key.index(key)
@@ -119,40 +150,45 @@ class ConnectionPoolBackend(object):
             # If possible, verify that the pooled connection is
             # still available and working.
             if hasattr(cnx, 'ping'):
-                try:
-                    cnx.ping()
-                except:
-                    cnx = self._take_cnx(key, tid)
+                return ('ping', cnx)
             return cnx
         # Third best option: Create a new connection
         elif len(self._active) + len(self._pool) < self._maxsize:
-            create = True
+            return ('create', None)
         # Forth best option: Replace a pooled connection with a new one
         elif len(self._active) < self._maxsize:
             # Remove the LRU connection in the pool
-            self._pool.pop(0).close()
+            self._pool.pop(0)
             self._pool_key.pop(0)
             self._pool_time.pop(0)
-            create = True
-        if create:
-            return connector.get_connection(**kwargs)
+            return ('close', None)
 
     def _return_cnx(self, cnx, key, tid):
+        # Decrement active refcount, clear slot if 1
         self._available.acquire()
         try:
             assert (tid, key) in self._active
             cnx, num = self._active[(tid, key)]
             if num == 1:
                 del self._active[(tid, key)]
-                self._available.notify() 
-                if cnx.poolable and try_rollback(cnx):
-                    self._pool.append(cnx)
-                    self._pool_key.append(key)
-                    self._pool_time.append(time.time())
             else:
                 self._active[(tid, key)] = (cnx, num - 1)
         finally:
             self._available.release()
+        if num == 1:
+            # Reset connection outside of critical section
+            if not try_rollback(cnx): # TODO inline this in 0.13
+                cnx = None
+            # Connection available, from reuse or from creation of a new one
+            self._available.acquire()
+            try:
+                if cnx and cnx.poolable:
+                    self._pool.append(cnx)
+                    self._pool_key.append(key)
+                    self._pool_time.append(time.time())
+                self._available.notify() 
+            finally:
+                self._available.release()
 
     def shutdown(self, tid=None):
         """Close pooled connections not used in a while"""
