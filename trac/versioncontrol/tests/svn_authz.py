@@ -148,6 +148,12 @@ user = r
 [/wildcard]
 * = r
 
+# Special tokens
+[/special/anonymous]
+$anonymous = r
+[/special/authenticated]
+$authenticated = r
+
 # Groups
 [/groups_a]
 @group1 = r
@@ -194,13 +200,14 @@ user =
         """
         resource = Resource('source', path,
                             parent=Resource('repository', reponame))
-        check = self.policy.check_permission('FILE_VIEW', user, resource, None)
-        self.assertEqual(result, check)
+        for perm in ('BROWSER_VIEW', 'FILE_VIEW', 'LOG_VIEW'):
+            check = self.policy.check_permission(perm, user, resource, None)
+            self.assertEqual(result, check)
         
     def test_default_permission(self):
-        # By default, no permission is granted
-        self.assertPermission(False, 'joe', '', '/not_defined')
-        self.assertPermission(False, 'jane', 'repo', '/not/defined/either')
+        # By default, permissions are undecided
+        self.assertPermission(None, 'joe', '', '/not_defined')
+        self.assertPermission(None, 'jane', 'repo', '/not/defined/either')
 
     def test_read_write(self):
         # Allow 'r' and 'rw' entries, deny 'w' and empty entries
@@ -225,7 +232,7 @@ user =
     def test_module_usage(self):
         # If a module name is specified, the rules are specific to the module
         self.assertPermission(True, 'user', 'module', '/module_a')
-        self.assertPermission(False, 'user', 'module', '/module_b')
+        self.assertPermission(None, 'user', 'module', '/module_b')
         # If a module is specified, but the configuration contains a non-module
         # path, the non-module path can still apply
         self.assertPermission(True, 'user', 'module', '/module_c')
@@ -233,9 +240,19 @@ user =
         self.assertPermission(False, 'user', 'module', '/module_d')
 
     def test_wildcard(self):
-        # The * wildcard matches all users
+        # The * wildcard matches all users, including anonymous
+        self.assertPermission(True, 'anonymous', '', '/wildcard')
         self.assertPermission(True, 'joe', '', '/wildcard')
         self.assertPermission(True, 'jane', '', '/wildcard')
+
+    def test_special_tokens(self):
+        # The $anonymous token matches only anonymous users
+        self.assertPermission(True, 'anonymous', '', '/special/anonymous')
+        self.assertPermission(None, 'user', '', '/special/anonymous')
+        # The $authenticated token matches all authenticated users
+        self.assertPermission(None, 'anonymous', '', '/special/authenticated')
+        self.assertPermission(True, 'joe', '', '/special/authenticated')
+        self.assertPermission(True, 'jane', '', '/special/authenticated')
 
     def test_groups(self):
         # Groups are specified in a separate section and used with an @ prefix
