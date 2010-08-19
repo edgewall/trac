@@ -1169,7 +1169,7 @@ class QueryModule(Component):
     def _add_batch_modify_data(self, req, data):
         data['batch_modify'] = True
         data['query_href'] = req.session['query_href'] or req.href.query()
-        add_script(req, 'common/js/batch_modify.js')
+        add_script_data(req, {'batch_modify': True})
         add_stylesheet(req, 'common/css/batch_modify.css')
 
 

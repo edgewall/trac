@@ -12,6 +12,9 @@
     <script type="text/javascript">/*<![CDATA[*/
       jQuery(document).ready(function($) {
         initializeFilters();
+				if(batch_modify){
+					initializeBatch();
+				}
         $("#group").change(function() {
           $("#groupdesc").enable(this.selectedIndex != 0)
         }).change();
