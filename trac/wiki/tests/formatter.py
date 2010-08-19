@@ -138,6 +138,10 @@ class WikiTestCase(unittest.TestCase):
         self.env.config.set('intertrac', 'th.url',
                             "http://trac-hacks.org")
         self.env.config.set('intertrac', 'th.compat', 'false')
+        # -- safe schemes
+        self.env.config.set('wiki', 'safe_schemes',
+                            'file,ftp,http,https,svn,svn+ssh,'
+                            'rfc-2396.compatible')
 
         # TODO: remove the following lines in order to discover
         #       all the places were we should use the req.href

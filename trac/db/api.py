@@ -166,7 +166,7 @@ class DatabaseManager(Component):
         connector, args = self.get_connector()
         if not dest:
             backup_dir = self.backup_dir
-            if backup_dir[0] != "/":
+            if not os.path.isabs(backup_dir):
                 backup_dir = os.path.join(self.env.path, backup_dir)
             db_str = self.config.get('trac', 'database')
             db_name, db_path = db_str.split(":", 1)

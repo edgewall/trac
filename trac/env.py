@@ -779,13 +779,9 @@ class EnvironmentAdmin(Component):
         try:
             self.env.upgrade(backup=no_backup is None)
         except TracError, e:
-            msg = unicode(e)
-            if 'backup' in msg.lower():
-                raise TracError(_("Backup failed with '%(msg)s'.\nUse "
-                                  "'--no-backup' to upgrade without doing a "
-                                  "backup.", msg=msg))
-            else:
-                raise
+            raise TracError(_("Backup failed: %(msg)s.\nUse '--no-backup' to "
+                              "upgrade without doing a backup.",
+                              msg=unicode(e)))
 
         # Remove wiki-macros if it is empty and warn if it isn't
         wiki_macros = os.path.join(self.env.path, 'wiki-macros')

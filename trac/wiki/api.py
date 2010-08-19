@@ -21,7 +21,7 @@ import re
 from genshi.builder import tag
 
 from trac.cache import cached
-from trac.config import BoolOption
+from trac.config import BoolOption, ListOption
 from trac.core import *
 from trac.resource import IResourceManager
 from trac.util.translation import _
@@ -214,6 +214,12 @@ class WikiSystem(Component):
         For public sites where anonymous users can edit the wiki it is
         recommended to leave this option disabled (which is the default).""")
 
+    safe_schemes = ListOption('wiki', 'safe_schemes',
+        'cvs,file,ftp,git,irc,http,https,news,sftp,smb,ssh,svn,svn+ssh',
+        doc="""List of URI schemes considered "safe", that will be rendered as
+        external links even if `[wiki] render_unsafe_content` is `false`.
+        (''since 0.11.8'')""")
+
     @cached
     def pages(self, db):
         """Return the names of all existing wiki pages."""
@@ -276,7 +282,7 @@ class WikiSystem(Component):
             r"(?:[%(upper)s](?:[%(lower)s])+/?){2,}" # wiki words
             r"(?:@\d+)?"                             # optional version
             r"(?:#%(xml)s)?"                         # optional fragment id
-            r"(?=:(?:\Z|\s)|[^:%(upper)s%(lower)s]|\s|\Z)"
+            r"(?=:(?:\Z|\s)|[^:\w%(upper)s%(lower)s]|\s|\Z)"
             # what should follow it
             % {'upper': self.Lu, 'lower': self.Ll, 'xml': self.XML_NAME})
         
@@ -286,8 +292,10 @@ class WikiSystem(Component):
                                      self.format_page_name(match),
                                      self.ignore_missing_pages, match)
         
-        yield (r"!?(?<!/)\b" + # start at a word boundary but not after '/'
-               wiki_page_name, wikipagename_link)
+        # Start after any non-word char except '/', with optional relative or
+        # absolute prefix
+        yield (r"!?(?<![\w/])(?:\.?\.?/)*"
+               + wiki_page_name, wikipagename_link)
 
         # [WikiPageNames with label]
         def wikipagename_with_label_link(formatter, match, fullmatch):
