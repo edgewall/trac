@@ -76,8 +76,8 @@
     var a = expander.next("a");
     if ( !autoexpand )
       window.location.hash = a.attr("href")
-        .substr(window.location.pathname.length+1)
-        .replace(/([^?]*)(\?.*)?$/, '$1');    
+        .substr(window.location.pathname.replace(/\/+$/, '').length + 1)
+        .replace(/([^?]*)(\?.*)?$/, '$1');
 
     // update sort links in column headers
     tr.parents("table:first").find("thead tr:first").find("a").each(function(){
