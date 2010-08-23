@@ -71,12 +71,12 @@ changeset:1#file0
 ============================== changeset shorthand syntax
 [1], r1
 [12], r12, rABC
-[1/README.txt]
+[1/README.txt], r1/trunk, rABC/trunk
 ------------------------------
 <p>
 <a class="changeset" href="/changeset/1" title="start">[1]</a>, <a class="changeset" href="/changeset/1" title="start">r1</a>
 <a class="missing changeset" title="No changeset 12 in the repository">[12]</a>, <a class="missing changeset" title="No changeset 12 in the repository">r12</a>, rABC
-<a class="changeset" href="/changeset/1/README.txt" title="start">[1/README.txt]</a>
+<a class="changeset" href="/changeset/1/README.txt" title="start">[1/README.txt]</a>, <a class="changeset" href="/changeset/1/trunk" title="start">r1/trunk</a>, rABC/trunk
 </p>
 ------------------------------
 ============================== changeset shorthand syntax + query and fragment
@@ -143,13 +143,13 @@ T:r2081
 LOG_TEST_CASES = u"""
 ============================== Log range TracLinks
 [1:2], r1:2, [12:23], r12:23
-[1:2/trunk]
-[2:1/trunk] reversed
+[1:2/trunk], r1:2/trunk
+[2:1/trunk] reversed, r2:1/trunk reversed
 ------------------------------
 <p>
 <a class="source" href="/log/?revs=1-2">[1:2]</a>, <a class="source" href="/log/?revs=1-2">r1:2</a>, <a class="source" href="/log/?revs=12-23">[12:23]</a>, <a class="source" href="/log/?revs=12-23">r12:23</a>
-<a class="source" href="/log/trunk?revs=1-2">[1:2/trunk]</a>
-<a class="source" href="/log/trunk?revs=1-2">[2:1/trunk]</a> reversed
+<a class="source" href="/log/trunk?revs=1-2">[1:2/trunk]</a>, <a class="source" href="/log/trunk?revs=1-2">r1:2/trunk</a>
+<a class="source" href="/log/trunk?revs=1-2">[2:1/trunk]</a> reversed, <a class="source" href="/log/trunk?revs=1-2">r2:1/trunk</a> reversed
 </p>
 ------------------------------
 ============================== Escaping Log range TracLinks

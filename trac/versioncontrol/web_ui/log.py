@@ -324,8 +324,8 @@ class LogModule(Component):
             r"(?P<log_revs>%s)(?P<log_path>[/?][^\]]*)?\]" % self.REV_RANGE,
             lambda x, y, z: self._format_link(x, 'log1', y[1:-1], y, z))
         yield (
-            # r<from>:<to> form (no intertrac and no path restriction)
-            r"(?:\b|!)r%s\b" % Ranges.RE_STR,
+            # r<from>:<to> form + optional path restriction (no intertrac)
+            r"(?:\b|!)r%s\b(?:/[a-zA-Z0-9_/+-]+)?" % Ranges.RE_STR,
             lambda x, y, z: self._format_link(x, 'log2', '@' + y[1:], y))
 
     def get_link_resolvers(self):
@@ -350,6 +350,7 @@ class LogModule(Component):
                 match, query, fragment = formatter.split_link(match)
             else:
                 query = fragment = ''
+                match = ''.join(reversed(match.split('/', 1)))
             path = match
             revs = ''
             if self.LOG_LINK_RE.match(match):

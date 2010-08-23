@@ -1037,7 +1037,7 @@ class ChangesetModule(Component):
             # + optional query and fragment
             r"%s(?:/[^\]]*)?(?:\?[^\]]*)?(?:#[^\]]*)?\]|" % self.CHANGESET_ID +
             # r... form: allow r1 but not r1:2 (handled by the log syntax)
-            r"(?:\b|!)r\d+\b(?!:\d)",
+            r"(?:\b|!)r\d+\b(?!:\d)(?:/[a-zA-Z0-9_/+-]+)?",
             lambda x, y, z:
             self._format_changeset_link(x, 'changeset',
                                         y[0] == 'r' and y[1:] or y[1:-1],
