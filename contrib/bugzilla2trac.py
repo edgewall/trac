@@ -939,7 +939,7 @@ def log(msg):
 
 def datetime2epoch(dt) :
     import time
-    return time.mktime(dt.timetuple())
+    return time.mktime(dt.timetuple()) * 1000000
 
 def usage():
     print """bugzilla2trac - Imports a bug database from Bugzilla into Trac.
