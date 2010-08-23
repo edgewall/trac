@@ -62,7 +62,7 @@ span:hover .anchor {
  }
  a.trac-rawlink, a.trac-ziplink {
   background: url(../download.png) center center no-repeat;
-  padding-left: 21px;
+  padding-left: 17px;
  }
 }
 
