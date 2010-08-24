@@ -26,7 +26,7 @@ from trac.core import *
 from trac.mimeview.api import Mimeview, is_binary, \
                               IHTMLPreviewAnnotator, Context
 from trac.perm import IPermissionRequestor
-from trac.resource import ResourceNotFound
+from trac.resource import Resource, ResourceNotFound
 from trac.util import embedded_numbers
 from trac.util.compat import any
 from trac.util.datefmt import http_date, to_datetime, utc
@@ -511,6 +511,10 @@ class BrowserModule(Component):
             except TracError, err:
                 entry = (reponame, repoinfo, None, None,
                          exception_to_unicode(err), None)
+            if entry[-1] is not None:   # Check permission in case of error
+                root = Resource('repository', reponame).child('source', '/')
+                if 'BROWSER_VIEW' not in context.perm(root):
+                    continue
             repositories.append(entry)
 
         # Ordering of repositories

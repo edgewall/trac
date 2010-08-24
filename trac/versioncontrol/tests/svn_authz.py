@@ -16,8 +16,9 @@ import tempfile
 import unittest
 
 from trac.resource import Resource
-from trac.test import EnvironmentStub
+from trac.test import EnvironmentStub, Mock
 from trac.util import create_file
+from trac.versioncontrol.api import RepositoryManager
 from trac.versioncontrol.svn_authz import AuthzSourcePolicy, ParseError, \
                                           parse
 
@@ -148,6 +149,12 @@ user = r
 [/wildcard]
 * = r
 
+# Special tokens
+[/special/anonymous]
+$anonymous = r
+[/special/authenticated]
+$authenticated = r
+
 # Groups
 [/groups_a]
 @group1 = r
@@ -179,89 +186,192 @@ user =
 &jekyll = r
 [/aliases_b]
 @alias2 = r
+
+# Scoped repository
+[scoped:/scope/dir1]
+joe = r
+[scoped:/scope/dir2]
+jane = r
 """)
         self.env = EnvironmentStub(enable=[AuthzSourcePolicy])
         self.env.config.set('trac', 'authz_file', self.authz)
         self.policy = AuthzSourcePolicy(self.env)
+        
+        # Monkey-subclass RepositoryManager to serve mock repositories
+        rm = RepositoryManager(self.env)
+        
+        class TestRepositoryManager(rm.__class__):
+            def get_repository(self, reponame):
+                if reponame == 'scoped':
+                    def get_changeset(rev):
+                        if rev == 123:
+                            def get_changes():
+                                yield ('/dir1/file',)
+                        elif rev == 456:
+                            def get_changes():
+                                yield ('/dir2/file',)
+                        else:
+                            def get_changes():
+                                return iter([])
+                        return Mock(get_changes=get_changes)
+                    return Mock(scope='/scope',
+                                get_changeset=get_changeset)
+                return Mock()
+        
+        rm.__class__ = TestRepositoryManager
 
     def tearDown(self):
         self.env.reset_db()
         os.remove(self.authz)
 
-    def assertPermission(self, result, user, reponame, path):
+    def assertPathPerm(self, result, user, reponame=None, path=None):
         """Assert that `user` is granted access `result` to `path` within
         the repository `reponame`.
         """
-        resource = Resource('source', path,
-                            parent=Resource('repository', reponame))
-        check = self.policy.check_permission('FILE_VIEW', user, resource, None)
+        resource = None
+        if reponame is not None:
+            resource = Resource('source', path,
+                                parent=Resource('repository', reponame))
+        for perm in ('BROWSER_VIEW', 'FILE_VIEW', 'LOG_VIEW'):
+            check = self.policy.check_permission(perm, user, resource, None)
+            self.assertEqual(result, check)
+        
+    def assertRevPerm(self, result, user, reponame=None, rev=None):
+        """Assert that `user` is granted access `result` to `rev` within
+        the repository `reponame`.
+        """
+        resource = None
+        if reponame is not None:
+            resource = Resource('changeset', rev,
+                                parent=Resource('repository', reponame))
+        check = self.policy.check_permission('CHANGESET_VIEW', user, resource,
+                                             None)
         self.assertEqual(result, check)
         
+    def test_coarse_permissions(self):
+        # Granted to all due to wildcard
+        self.assertPathPerm(True, 'unknown')
+        self.assertPathPerm(True, 'joe')
+        self.assertRevPerm(True, 'unknown')
+        self.assertRevPerm(True, 'joe')
+        # Granted if at least one fine permission is granted
+        self.policy._mtime = 0
+        create_file(self.authz, """\
+[/somepath]
+joe = r
+denied =
+[/otherpath]
+jane = r
+$anonymous = r
+""")
+        self.assertPathPerm(None, 'unknown')
+        self.assertRevPerm(None, 'unknown')
+        self.assertPathPerm(None, 'denied')
+        self.assertRevPerm(None, 'denied')
+        self.assertPathPerm(True, 'joe')
+        self.assertRevPerm(True, 'joe')
+        self.assertPathPerm(True, 'jane')
+        self.assertRevPerm(True, 'jane')
+        self.assertPathPerm(True, 'anonymous')
+        self.assertRevPerm(True, 'anonymous')
+
     def test_default_permission(self):
-        # By default, no permission is granted
-        self.assertPermission(False, 'joe', '', '/not_defined')
-        self.assertPermission(False, 'jane', 'repo', '/not/defined/either')
+        # By default, permissions are undecided
+        self.assertPathPerm(None, 'joe', '', '/not_defined')
+        self.assertPathPerm(None, 'jane', 'repo', '/not/defined/either')
 
     def test_read_write(self):
         # Allow 'r' and 'rw' entries, deny 'w' and empty entries
-        self.assertPermission(True, 'user', '', '/readonly')
-        self.assertPermission(True, 'user', '', '/readwrite')
-        self.assertPermission(False, 'user', '', '/writeonly')
-        self.assertPermission(False, 'user', '', '/empty')
+        self.assertPathPerm(True, 'user', '', '/readonly')
+        self.assertPathPerm(True, 'user', '', '/readwrite')
+        self.assertPathPerm(False, 'user', '', '/writeonly')
+        self.assertPathPerm(False, 'user', '', '/empty')
 
     def test_trailing_slashes(self):
         # Combinations of trailing slashes in the file and in the path
-        self.assertPermission(True, 'user', '', '/trailing_a')
-        self.assertPermission(True, 'user', '', '/trailing_a/')
-        self.assertPermission(True, 'user', '', '/trailing_b')
-        self.assertPermission(True, 'user', '', '/trailing_b/')
+        self.assertPathPerm(True, 'user', '', '/trailing_a')
+        self.assertPathPerm(True, 'user', '', '/trailing_a/')
+        self.assertPathPerm(True, 'user', '', '/trailing_b')
+        self.assertPathPerm(True, 'user', '', '/trailing_b/')
 
     def test_sub_path(self):
         # Permissions are inherited from containing directories
-        self.assertPermission(True, 'user', '', '/sub/path')
-        self.assertPermission(True, 'user', '', '/sub/path/test')
-        self.assertPermission(True, 'user', '', '/sub/path/other/sub')
+        self.assertPathPerm(True, 'user', '', '/sub/path')
+        self.assertPathPerm(True, 'user', '', '/sub/path/test')
+        self.assertPathPerm(True, 'user', '', '/sub/path/other/sub')
         
     def test_module_usage(self):
         # If a module name is specified, the rules are specific to the module
-        self.assertPermission(True, 'user', 'module', '/module_a')
-        self.assertPermission(False, 'user', 'module', '/module_b')
+        self.assertPathPerm(True, 'user', 'module', '/module_a')
+        self.assertPathPerm(None, 'user', 'module', '/module_b')
         # If a module is specified, but the configuration contains a non-module
         # path, the non-module path can still apply
-        self.assertPermission(True, 'user', 'module', '/module_c')
+        self.assertPathPerm(True, 'user', 'module', '/module_c')
         # The module-specific rule takes precedence
-        self.assertPermission(False, 'user', 'module', '/module_d')
+        self.assertPathPerm(False, 'user', 'module', '/module_d')
 
     def test_wildcard(self):
-        # The * wildcard matches all users
-        self.assertPermission(True, 'joe', '', '/wildcard')
-        self.assertPermission(True, 'jane', '', '/wildcard')
+        # The * wildcard matches all users, including anonymous
+        self.assertPathPerm(True, 'anonymous', '', '/wildcard')
+        self.assertPathPerm(True, 'joe', '', '/wildcard')
+        self.assertPathPerm(True, 'jane', '', '/wildcard')
+
+    def test_special_tokens(self):
+        # The $anonymous token matches only anonymous users
+        self.assertPathPerm(True, 'anonymous', '', '/special/anonymous')
+        self.assertPathPerm(None, 'user', '', '/special/anonymous')
+        # The $authenticated token matches all authenticated users
+        self.assertPathPerm(None, 'anonymous', '', '/special/authenticated')
+        self.assertPathPerm(True, 'joe', '', '/special/authenticated')
+        self.assertPathPerm(True, 'jane', '', '/special/authenticated')
 
     def test_groups(self):
         # Groups are specified in a separate section and used with an @ prefix
-        self.assertPermission(True, 'user', '', '/groups_a')
+        self.assertPathPerm(True, 'user', '', '/groups_a')
         # Groups can also be members of other groups
-        self.assertPermission(True, 'user', '', '/groups_b')
+        self.assertPathPerm(True, 'user', '', '/groups_b')
         # Groups should not be defined cyclically, but they are still handled
         # correctly to avoid infinite loops
-        self.assertPermission(True, 'user', '', '/cyclic')
+        self.assertPathPerm(True, 'user', '', '/cyclic')
 
     def test_precedence(self):
         # Module-specific sections take precedence over non-module sections
-        self.assertPermission(False, 'user', 'module', '/precedence_a')
+        self.assertPathPerm(False, 'user', 'module', '/precedence_a')
         # The most specific section applies
-        self.assertPermission(True, 'user', '', '/precedence_b/sub/test')
-        self.assertPermission(False, 'user', '', '/precedence_b/sub')
-        self.assertPermission(True, 'user', '', '/precedence_b')
+        self.assertPathPerm(True, 'user', '', '/precedence_b/sub/test')
+        self.assertPathPerm(False, 'user', '', '/precedence_b/sub')
+        self.assertPathPerm(True, 'user', '', '/precedence_b')
         # Within a section, the first matching rule applies
-        self.assertPermission(False, 'user', '', '/precedence_c')
-        self.assertPermission(True, 'user', '', '/precedence_d')
+        self.assertPathPerm(False, 'user', '', '/precedence_c')
+        self.assertPathPerm(True, 'user', '', '/precedence_d')
 
     def test_aliases(self):
         # Aliases are specified in a separate section and used with an & prefix
-        self.assertPermission(True, 'Mr Hyde', '', '/aliases_a')
+        self.assertPathPerm(True, 'Mr Hyde', '', '/aliases_a')
         # Aliases can also be used in groups
-        self.assertPermission(True, 'Mr Hyde', '', '/aliases_b')
+        self.assertPathPerm(True, 'Mr Hyde', '', '/aliases_b')
+
+    def test_scoped_repository(self):
+        # Take repository scope into account
+        self.assertPathPerm(True, 'joe', 'scoped', '/dir1')
+        self.assertPathPerm(None, 'joe', 'scoped', '/dir2')
+        self.assertPathPerm(True, 'joe', 'scoped', '/')
+        self.assertPathPerm(None, 'jane', 'scoped', '/dir1')
+        self.assertPathPerm(True, 'jane', 'scoped', '/dir2')
+        self.assertPathPerm(True, 'jane', 'scoped', '/')
+    
+    def test_changesets(self):
+        # Changesets are allowed if at least one changed path is allowed, or
+        # if the changeset is empty
+        self.assertRevPerm(True, 'joe', 'scoped', 123)
+        self.assertRevPerm(None, 'joe', 'scoped', 456)
+        self.assertRevPerm(True, 'joe', 'scoped', 789)
+        self.assertRevPerm(None, 'jane', 'scoped', 123)
+        self.assertRevPerm(True, 'jane', 'scoped', 456)
+        self.assertRevPerm(True, 'jane', 'scoped', 789)
+        self.assertRevPerm(None, 'user', 'scoped', 123)
+        self.assertRevPerm(None, 'user', 'scoped', 456)
+        self.assertRevPerm(True, 'user', 'scoped', 789)
 
 
 def suite():

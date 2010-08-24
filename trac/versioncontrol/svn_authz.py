@@ -30,12 +30,6 @@ from trac.versioncontrol.api import RepositoryManager
 
 
 def parent_iter(path):
-    path = path.strip('/')
-    if path:
-        path = '/' + path + '/'
-    else:
-        path = '/'
-
     while 1:
         yield path
         if path == '/':
@@ -44,6 +38,11 @@ def parent_iter(path):
         yield path
         idx = path.rfind('/')
         path = path[:idx + 1]
+
+
+def join(*args):
+    args = (arg.strip('/') for arg in args)
+    return '/'.join(arg for arg in args if arg)
 
 
 class ParseError(Exception):
@@ -131,52 +130,76 @@ class AuthzSourcePolicy(Component):
 
     authz_module_name = Option('trac', 'authz_module_name', '',
         """The module prefix used in the `authz_file` for the default
-        repository. If left empty, the global sections will be used.
+        repository. If left empty, the global section is used.
         """)
 
     _mtime = 0
     _authz = {}
     _users = set()
     
+    _handled_perms = frozenset([(None, 'BROWSER_VIEW'),
+                                (None, 'CHANGESET_VIEW'),
+                                (None, 'FILE_VIEW'),
+                                (None, 'LOG_VIEW'),
+                                ('source', 'BROWSER_VIEW'),
+                                ('source', 'FILE_VIEW'),
+                                ('source', 'LOG_VIEW'),
+                                ('changeset', 'CHANGESET_VIEW')])
+
     # IPermissionPolicy methods
 
     def check_permission(self, action, username, resource, perm):
-        if action == 'FILE_VIEW' or action == 'BROWSER_VIEW':
+        realm = resource and resource.realm or None
+        if (realm, action) in self._handled_perms:
             authz, users = self._get_authz_info()
             if authz is None:
                 return False
+            
+            if username == 'anonymous':
+                usernames = ('$anonymous', '*')
+            else:
+                usernames = (username, '$authenticated', '*')
             if resource is None:
-                return users is True or username in users
-            if resource.realm == 'source':
-                modules = [resource.parent.id or self.authz_module_name]
-                if modules[0]:
-                    modules.append('')
-                for p in parent_iter(resource.id):
+                return users & set(usernames) and True or None
+
+            rm = RepositoryManager(self.env)
+            repos = rm.get_repository(resource.parent.id)
+            scope = getattr(repos, 'scope', '')
+            modules = [resource.parent.id or self.authz_module_name]
+            if modules[0]:
+                modules.append('')
+
+            def check_path(path):
+                path = '/' + join(scope, path)
+                if path != '/':
+                    path += '/'
+                
+                # Walk from resource up parent directories
+                for spath in parent_iter(path):
                     for module in modules:
-                        section = authz.get(module, {}).get(p, {})
-                        result = section.get(username)
-                        if result is not None:
-                            return result
-                        result = section.get('*')
-                        if result is not None:
-                            return result
-                return False
-        elif action == 'CHANGESET_VIEW':
-            authz, users = self._get_authz_info()
-            if authz is None:
-                return False
-            if resource is None:
-                return users is True or username in users
-            if resource.realm == 'changeset':
-                rm = RepositoryManager(self.env)
-                repos = rm.get_repository(resource.parent.id)
-                changes = list(repos.get_changeset(resource.id).get_changes())
-                if not changes:
+                        section = authz.get(module, {}).get(spath)
+                        if section:
+                            for user in usernames:
+                                result = section.get(user)
+                                if result is not None:
+                                    return result
+                
+                # Allow access to parent directories of allowed resources
+                if any(section.get(user) is True
+                       for module in modules
+                       for spath, section in authz.get(module, {}).iteritems()
+                       if spath.startswith(path)
+                       for user in usernames):
                     return True
-                source = Resource('source', version=resource.id,
-                                  parent=resource.parent)
-                return any('FILE_VIEW' in perm(source(id=change[0]))
-                           for change in changes)
+            
+            if realm == 'source':
+                return check_path(resource.id)
+
+            elif realm == 'changeset':
+                changes = list(repos.get_changeset(resource.id).get_changes())
+                if not changes or any(check_path(change[0])
+                                      for change in changes):
+                    return True
 
     def _get_authz_info(self):
         try:
@@ -193,10 +216,10 @@ class AuthzSourcePolicy(Component):
             self.log.info('Parsing authz file: %s' % self.authz_file)
             try:
                 self._authz = parse(read_file(self.authz_file))
-                users = set(user for module in self._authz.itervalues()
-                            for path in module.itervalues()
-                            for user, result in path.iteritems() if result)
-                self._users = '*' in users or users
+                self._users = set(user for module in self._authz.itervalues()
+                                  for path in module.itervalues()
+                                  for user, result in path.iteritems()
+                                  if result)
             except Exception, e:
                 self._authz = None
                 self._users = set()
