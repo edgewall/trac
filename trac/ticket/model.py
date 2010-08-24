@@ -33,6 +33,15 @@ __all__ = ['Ticket', 'Type', 'Status', 'Resolution', 'Priority', 'Severity',
            'Component', 'Milestone', 'Version', 'group_milestones']
 
 
+def _fixup_cc_list(cc_value):
+    """Fix up cc list separators and remove duplicates."""
+    cclist = []
+    for cc in re.split(r'[;,\s]+', cc_value):
+        if cc and cc not in cclist:
+            cclist.append(cc)
+    return ', '.join(cclist)
+
+
 class Ticket(object):
 
     # Fields that must not be modified directly by the user
@@ -178,6 +187,9 @@ class Ticket(object):
         """
         assert not self.exists, 'Cannot insert an existing ticket'
 
+        if 'cc' in self.values:
+            self['cc'] = _fixup_cc_list(self.values['cc'])
+
         # Add a timestamp
         if when is None:
             when = datetime.now(utc)
@@ -245,6 +257,9 @@ class Ticket(object):
         """
         assert self.exists, 'Cannot update a new ticket'
 
+        if 'cc' in self.values:
+            self['cc'] = _fixup_cc_list(self.values['cc'])
+
         if not self._old and not comment:
             return False # Not modified
 
@@ -270,14 +285,6 @@ class Ticket(object):
                     # If the old component has been removed from the database
                     # we just leave the owner as is.
                     pass
-
-        # Fix up cc list separators and remove duplicates
-        if 'cc' in self.values:
-            cclist = []
-            for cc in re.split(r'[;,\s]+', self.values['cc']):
-                if cc not in cclist:
-                    cclist.append(cc)
-            self.values['cc'] = ', '.join(cclist)
 
         @self.env.with_transaction(db)
         def do_save(db):
