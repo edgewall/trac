@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-05-24 23:55+0200\n"
-"PO-Revision-Date: 2010-06-07 10:15+0800\n"
+"PO-Revision-Date: 2010-08-08 02:48+0800\n"
 "Last-Translator: Chi-Chung Lin <zclin.csie92g@gmail.com>\n"
 "Language-Team: zh_TW <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
@@ -68,27 +68,27 @@ msgstr "顯示 %(title)s"
 msgid "%(title)s (click to hide column)"
 msgstr "%(title)s (點此隱藏)"
 
-#: trac/htdocs/js/query.js:119
+#: trac/htdocs/js/query.js:118
 msgid "A filter already exists for that property"
 msgstr ""
 
-#: trac/htdocs/js/query.js:146
+#: trac/htdocs/js/query.js:145
 msgid "or"
 msgstr "或"
 
-#: trac/htdocs/js/query.js:165
+#: trac/htdocs/js/query.js:164
 msgid "yes"
 msgstr "是"
 
-#: trac/htdocs/js/query.js:168
+#: trac/htdocs/js/query.js:167
 msgid "no"
 msgstr "否"
 
-#: trac/htdocs/js/query.js:171
+#: trac/htdocs/js/query.js:170
 msgid "between"
-msgstr ""
+msgstr "介於"
 
-#: trac/htdocs/js/query.js:173
+#: trac/htdocs/js/query.js:172
 msgid "and"
 msgstr "且"
 
@@ -118,7 +118,7 @@ msgstr "程式碼區塊: {{{ 範例 }}}"
 
 #: trac/htdocs/js/wikitoolbar.js:71
 msgid "Horizontal rule: ----"
-msgstr ""
+msgstr "水平線: ---"
 
 #: trac/htdocs/js/wikitoolbar.js:74
 msgid "New paragraph"

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-06-11 16:41+0200\n"
-"PO-Revision-Date: 2010-06-24 08:31+0200\n"
+"PO-Revision-Date: 2010-07-23 00:06+0200\n"
 "Last-Translator: Aranel Surion <aranel@aranelsurion.org>\n"
 "Language-Team: tr_TR <trac-dev@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -148,7 +148,7 @@ msgstr "Ek dosya silinemiyor."
 #: trac/attachment.py:210
 #, python-format
 msgid "Cannot reparent attachment \"%(att)s\" as it already exists in %(realm)s:%(id)s"
-msgstr ""
+msgstr "Ek sahibi değiştirilemiyor \"%(att)s\" , zaten %(realm)s:%(id)s üzerinde mevcut."
 
 #: trac/attachment.py:229
 #, python-format
@@ -312,17 +312,17 @@ msgstr "Konfigurasyon Hatası"
 #: trac/config.py:403
 #, python-format
 msgid "[%(section)s] %(entry)s: expected integer, got %(value)s"
-msgstr ""
+msgstr "[%(section)s] %(entry)s: tamsayı beklendi, alınan %(value)s"
 
 #: trac/config.py:421
 #, python-format
 msgid "[%(section)s] %(entry)s: expected float, got %(value)s"
-msgstr ""
+msgstr "[%(section)s] %(entry)s: float beklendi, alınan %(value)s"
 
 #: trac/config.py:605
 #, python-format
 msgid "[%(section)s] %(entry)s: expected one of (%(choices)s), got %(value)s"
-msgstr ""
+msgstr "[%(section)s] %(entry)s: (%(choices)s) biri beklendi, alınan %(value)s"
 
 #: trac/core.py:33
 msgid "Trac Error"
@@ -368,7 +368,7 @@ msgstr "Betikler oluşturuluyor."
 #: trac/env.py:742
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
-msgstr ""
+msgstr "sıcakkopya üzerine yazamıyor '%(dest)s'"
 
 #: trac/env.py:752
 #, python-format
@@ -406,6 +406,8 @@ msgid ""
 "Warning: the wiki-macros directory in the environment is non-empty, but Trac\n"
 "doesn't load plugins from there anymore. Please remove it by hand."
 msgstr ""
+"Uyarı: Ortamdaki wiki-macros dizini boş değil, ancak Trac\n"
+"artık buradan eklenti yüklemiyor. Lütfen elle kaldırın."
 
 #: trac/env.py:819
 #, python-format
@@ -413,6 +415,8 @@ msgid ""
 "Error while removing wiki-macros: %(err)s\n"
 "Trac doesn't load plugins from wiki-macros anymore. Please remove it by hand."
 msgstr ""
+"wiki-macros kaldırılırken hata: %(err)s\n"
+"Trac artık wiki-macros üzerinden eklenti yüklemiyor. Lütfen elle kaldırın."
 
 #: trac/env.py:821
 #, python-format
@@ -445,7 +449,7 @@ msgstr "Kimlik krizinden dolayı eposta gönderilemiyor."
 #: trac/notification.py:321
 #, python-format
 msgid "Neither %(from_)s nor %(reply_to)s are specified in the configuration."
-msgstr ""
+msgstr "Ne %(from_)s ne de %(reply_to)s konfigürasyonda belirtilmemiş."
 
 #: trac/notification.py:322
 msgid "SMTP Notification Error"
@@ -518,6 +522,12 @@ msgid ""
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
 msgstr ""
+"Hoşgeldiniz, trac-admin %(version)s\n"
+"İnteraktif Trac yönetim konsolu.\n"
+"Copyright (c) 2003-2010 Edgewall Software\n"
+"\n"
+"Yazın:  '?' veya 'help' ile komutlar hakkında yardım için.\n"
+"        "
 
 #: trac/admin/console.py:164
 #, python-format
@@ -561,6 +571,12 @@ msgid ""
 " Please enter the name of your project.\n"
 " This name will be used in page titles and descriptions.\n"
 msgstr ""
+"\n"
+"Trac ortamınız hakkında bazı sorular soracak \n"
+"ve bu sayede proje veritabanı hazırlanacak.\n"
+"\n"
+" Lütfen projenizin adını giriniz.\n"
+" Bu isim sayfa başlıkları ve açıklamalarda kullanılacak.\n"
 
 #: trac/admin/console.py:346
 #, python-format
@@ -576,6 +592,12 @@ msgid ""
 " PostgreSQL database (check the Trac documentation for the exact\n"
 " connection string syntax).\n"
 msgstr ""
+" \n"
+" Lütfen veritabanının kullanacağı bağlantıyı belirleyin.\n"
+" Varsayılan olarak, ortam klasöründe yerel bir SQLite veritabanı\n"
+" oluşturuldu. Aynı zamanda isterseniz zaten mevcut olan bir\n"
+" PostgreSQL veritabanını kullanabilirsiniz (Trac dökümanını kullanarak\n"
+" tam bağlantı sentaksını alabilirsiniz).\n"
 
 #: trac/admin/console.py:356
 #, python-format
@@ -682,7 +704,7 @@ msgstr ""
 #: trac/admin/console.py:536
 #, python-format
 msgid "Non-ascii environment path '%(path)s' not supported."
-msgstr ""
+msgstr "Ascii-olmayan ortam konumu '%(path)s' desteklenmiyor."
 
 #: trac/admin/web_ui.py:65
 msgid "Admin"
@@ -801,7 +823,7 @@ msgstr "Bilinmeyen aksiyon"
 #: trac/admin/web_ui.py:345
 #, python-format
 msgid "The subject %(subject)s has been granted the permission %(action)s."
-msgstr ""
+msgstr "%(subject)s artık %(action)s için izin sahibi oldu."
 
 #: trac/admin/web_ui.py:350
 #, python-format
@@ -820,7 +842,7 @@ msgstr "%(subject)s öznesi,  %(group)s grubuna zaten ekliydi."
 
 #: trac/admin/web_ui.py:384
 msgid "The selected permissions have been revoked."
-msgstr ""
+msgstr "Seçili izinler kaldırıldı."
 
 #: trac/admin/web_ui.py:402
 #: trac/admin/templates/admin_plugins.html:10
@@ -1210,11 +1232,11 @@ msgstr "Aktif"
 
 #: trac/admin/templates/admin_plugins.html:127
 msgid "Toggle the module description"
-msgstr ""
+msgstr "Modül açıklamasını aç/kapat"
 
 #: trac/admin/templates/admin_plugins.html:143
 msgid "Toggle the component description"
-msgstr ""
+msgstr "Bileşen açıklamasını aç/kapat"
 
 #: trac/admin/templates/admin_versions.html:10
 #: trac/ticket/admin.py:440
@@ -1302,7 +1324,7 @@ msgstr "%(old)s ve  %(new)s arasında MIME dönüşümü yapılamıyor."
 #: trac/mimeview/api.py:801
 #, python-format
 msgid "HTML preview using %(renderer)s failed (%(err)s)"
-msgstr ""
+msgstr "%(renderer)s kullanılarak HTML önizlemesi başarısız (%(err)s)"
 
 #: trac/mimeview/api.py:831
 #, python-format
@@ -2012,11 +2034,11 @@ msgstr ""
 #: trac/templates/error.html:113
 #, python-format
 msgid "Note that the %(name)s plugin seems to be involved."
-msgstr ""
+msgstr "%(name)s eklentisi ilgili görünüyor."
 
 #: trac/templates/error.html:116
 msgid "Note that the following plugins seem to be involved:"
-msgstr ""
+msgstr "Bu eklentiler ilgili görünüyor:"
 
 #: trac/templates/error.html:120
 msgid "Please report this issue to the plugin maintainer."
@@ -2064,6 +2086,9 @@ msgid ""
 "                        line [2:%(line)s], in]\n"
 "                        [3:%(function)s]"
 msgstr ""
+"[1:Dosya \"%(file)s\",\n"
+"                        satır [2:%(line)s], in]\n"
+"                        [3:%(function)s]"
 
 #: trac/templates/error.html:146
 msgid "Code fragment:"
@@ -2160,6 +2185,10 @@ msgid ""
 "       ([4:%(size)s]) -\n"
 "      added by [5:%(author)s] %(date)s ago."
 msgstr ""
+"[1:%(file)s]\n"
+"      [2:[3:]]\n"
+"       ([4:%(size)s]) -\n"
+"      eklendi [5:%(author)s] tarafından %(date)s önce."
 
 #: trac/templates/list_of_attachments.html:29
 #: trac/templates/list_of_attachments.html:40
@@ -2197,7 +2226,7 @@ msgstr "Dosyayı [1:indirmeyi] deneyin."
 #: trac/templates/progress_bar.html:26
 #, python-format
 msgid "%(count)s/%(total)s %(title)s"
-msgstr ""
+msgstr "%(count)s/%(total)s %(title)s"
 
 #: trac/templates/progress_bar.html:36
 #, python-format
@@ -2210,6 +2239,8 @@ msgid ""
 "[1:[2:%(title)s:]]\n"
 "          [3:[4:%(count)s]]"
 msgstr ""
+"[1:[2:%(title)s:]]\n"
+"          [3:[4:%(count)s]]"
 
 #: trac/templates/progress_bar.html:47
 #, python-format
@@ -2344,7 +2375,7 @@ msgstr "Zaman"
 #: trac/ticket/admin.py:627
 #, python-format
 msgid "The %(field)s value \"%(name)s\" has been added."
-msgstr ""
+msgstr "%(field)s değeri \"%(name)s\" eklendi."
 
 #: trac/ticket/admin.py:633
 #, python-format
@@ -2364,7 +2395,7 @@ msgstr "%s seçildi"
 #: trac/ticket/admin.py:650
 #, python-format
 msgid "The selected %(field)s values have been removed."
-msgstr ""
+msgstr "Seçili %(field)s değerleri silindi."
 
 #: trac/ticket/admin.py:672
 msgid "Error writing to trac.ini, make sure it is writable by the web server. The default value has not been saved."
@@ -2486,7 +2517,7 @@ msgstr "kime %(owner)s"
 #: trac/ticket/default_workflow.py:275
 #, python-format
 msgid "The owner will be changed from %(current_owner)s"
-msgstr ""
+msgstr "Sahibi %(current_owner)s yerine değiştirilecek"
 
 #: trac/ticket/default_workflow.py:263
 #, python-format
@@ -2496,16 +2527,16 @@ msgstr "kime %(owner)s "
 #: trac/ticket/default_workflow.py:265
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(selected_owner)s"
-msgstr ""
+msgstr "Sahibi %(current_owner)s yerine %(selected_owner)s olarak değiştirilecek"
 
 #: trac/ticket/default_workflow.py:280
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(authname)s"
-msgstr ""
+msgstr "Sahibi %(current_owner)s yerine %(authname)s olarak değiştirilecek"
 
 #: trac/ticket/default_workflow.py:290
 msgid "Your workflow attempts to set a resolution but none is defined (configuration issue, please contact your Trac admin)."
-msgstr ""
+msgstr "İş akışınız bir çözüm belirlemeye çalışıyor ancak hiç çözüm atanmamış (konfigürasyon problemi, lütfen Trac yöneticinize ulaşın)."
 
 #: trac/ticket/default_workflow.py:298
 #: trac/ticket/default_workflow.py:308
@@ -2593,7 +2624,7 @@ msgstr "Sürüm %(name)s mevcut değil."
 
 #: trac/ticket/query.py:54
 msgid "Invalid query constraint value"
-msgstr ""
+msgstr "Geçersiz sorgu kısıtlama değeri"
 
 #: trac/ticket/query.py:88
 #, python-format
@@ -2616,7 +2647,7 @@ msgstr "Sorgu filitresi için isim gerekiyor"
 #: trac/ticket/query.py:305
 #, python-format
 msgid "Page %(page)s is beyond the number of pages in the query"
-msgstr ""
+msgstr "Sayfa %(page)s sorgudaki sayfa sayısından fazla"
 
 #: trac/ticket/query.py:562
 #, python-format
@@ -2719,7 +2750,7 @@ msgstr "Sonuç yok"
 #: trac/ticket/query.py:1303
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
-msgstr ""
+msgstr "%(groupvalue)s %(groupname)s bilet eşleşiyor %(query)s"
 
 #: trac/ticket/query.py:1326
 #, python-format
@@ -3027,7 +3058,7 @@ msgstr "Bilet #%(num)s, yorum %(cnum)d"
 #: trac/ticket/web_ui.py:959
 #, python-format
 msgid "No version %(version)d for comment %(cnum)d on ticket #%(ticket)s"
-msgstr ""
+msgstr "yorum %(cnum)d için %(version)d sürümü yok, bilet #%(ticket)s"
 
 #: trac/ticket/web_ui.py:999
 msgid "Ticket Comment Diff"
@@ -3048,7 +3079,7 @@ msgstr[0] "%(labels)s silindi"
 #: trac/ticket/web_ui.py:1075
 #: trac/ticket/web_ui.py:1626
 msgid "; "
-msgstr ""
+msgstr "; "
 
 #: trac/ticket/web_ui.py:1096
 msgid "No permission to edit the ticket description."
@@ -3116,7 +3147,7 @@ msgstr "değişiklik"
 #: trac/ticket/web_ui.py:1248
 #, python-format
 msgid "The %(change)s has been saved, but an error occurred while sending notifications: %(message)s"
-msgstr ""
+msgstr "%(change)s kaydedildi, fakat bilgilendirmeler gönderilirken hata oluştu: %(message)s"
 
 #: trac/ticket/web_ui.py:1382
 msgid "Add to Cc"
@@ -3811,6 +3842,9 @@ msgid ""
 "          [3:[4:]]\n"
 "          added"
 msgstr ""
+"[1:[2:%(name)s]]\n"
+"          [3:[4:]]\n"
+"          eklendi"
 
 #: trac/ticket/templates/ticket_change.html:26
 #, python-format
@@ -3830,12 +3864,12 @@ msgstr "[1:%(value)s] silindi"
 #: trac/ticket/templates/ticket_change.html:45
 #, python-format
 msgid "Preview changes to comment %(cnum)s"
-msgstr ""
+msgstr " Değişiklikleri %(cnum)s yorumuna önizle"
 
 #: trac/ticket/templates/ticket_change.html:47
 #, python-format
 msgid "Submit changes to comment %(cnum)s"
-msgstr ""
+msgstr "Değişiklikleri %(cnum)s yorumuna gönder"
 
 #: trac/ticket/templates/ticket_change.html:49
 msgid "Cancel comment edit"
@@ -3890,7 +3924,7 @@ msgstr "diğer tür olaylar"
 #: trac/timeline/web_ui.py:354
 #, python-format
 msgid "Event provider %(name)s failed for filters %(kinds)s: "
-msgstr ""
+msgstr "Olay sağlayıcı %(name)s başarısız, %(kinds)s filtreleri için: "
 
 #: trac/timeline/web_ui.py:357
 #, python-format
@@ -3921,6 +3955,8 @@ msgid ""
 "[1:%(time)s] %(title)s\n"
 "                  by [2:%(author)s]"
 msgstr ""
+"[1:%(time)s] %(title)s\n"
+"                  [2:%(author)s] tarafından"
 
 #: trac/timeline/templates/timeline.html:58
 msgid ""
@@ -3975,7 +4011,7 @@ msgstr[0] "%(num)d saniye"
 #: trac/util/datefmt.py:250
 #, python-format
 msgid "\"%(date)s\" is an invalid date, or the date format is not known. Try \"%(hint)s\" instead."
-msgstr ""
+msgstr "\"%(date)s\" geçersiz bir tarih, veya tarih biçimi bilinmiyor. Bunun yerine \"%(hint)s\" deneyin."
 
 #: trac/util/datefmt.py:252
 #: trac/util/datefmt.py:260
@@ -3999,7 +4035,7 @@ msgstr "Toplam %(total)d  %(start)d - %(stop)d "
 
 #: trac/versioncontrol/admin.py:110
 msgid "Alias"
-msgstr ""
+msgstr "Lakap"
 
 #: trac/versioncontrol/admin.py:110
 #: trac/versioncontrol/templates/admin_repositories.html:125
@@ -4008,7 +4044,7 @@ msgstr "Dizin"
 
 #: trac/versioncontrol/admin.py:116
 msgid "Cannot synchronize a single revision on multiple repositories"
-msgstr ""
+msgstr "Bir revizyon birden çoklu depolarda senkronize edilemiyor"
 
 #: trac/versioncontrol/admin.py:124
 #: trac/versioncontrol/admin.py:182
@@ -4059,7 +4095,7 @@ msgstr "Şimdi %(resync)s çalıştırarak Trac ile deponuzu senkronize etmelisi
 #: trac/versioncontrol/admin.py:208
 #, python-format
 msgid "You may have to run %(resync)s to synchronize Trac with the repository."
-msgstr ""
+msgstr "Trac ile depoyu senkronize etmeniz için %(resync)s çalıştırmanız gerekebilir."
 
 #: trac/versioncontrol/admin.py:216
 #, python-format
@@ -4083,11 +4119,11 @@ msgstr "Depo eklemek için argümanlar eksik"
 #: trac/versioncontrol/admin.py:263
 #, python-format
 msgid "The alias \"%(name)s\" has been added."
-msgstr ""
+msgstr "\"%(name)s\" lakabı eklendi."
 
 #: trac/versioncontrol/admin.py:266
 msgid "Missing arguments to add an alias."
-msgstr ""
+msgstr "Lakap eklemek için argüman eksik."
 
 #: trac/versioncontrol/admin.py:279
 msgid "The selected repositories have been removed."
@@ -4126,7 +4162,7 @@ msgstr "Şimdi \"repository resync %(name)s\" yapmanız gerekebilir.."
 #: trac/versioncontrol/api.py:201
 #: trac/versioncontrol/api.py:264
 msgid "The repository directory must be absolute"
-msgstr ""
+msgstr "Depo dizini kesin olmalıdır"
 
 #: trac/versioncontrol/api.py:206
 #, python-format
@@ -4141,12 +4177,12 @@ msgstr "Depoyla senkronize olunamıyor \"%(name)s\" (%(error)s). Daha fazla bilg
 #: trac/versioncontrol/api.py:357
 #, python-format
 msgid "Changeset %(rev)s in %(repo)s"
-msgstr "Değişimset %(rev)s, %(repo)s içinde"
+msgstr "Değişiklik %(rev)s, %(repo)s içinde"
 
 #: trac/versioncontrol/api.py:359
 #, python-format
 msgid "Changeset %(rev)s"
-msgstr "Değişimset %(rev)s"
+msgstr "Değişiklik %(rev)s"
 
 #: trac/versioncontrol/api.py:367
 msgid "directory"
@@ -4174,7 +4210,7 @@ msgstr "%(repo)s içinde"
 #: trac/versioncontrol/api.py:378
 #, python-format
 msgid "%(kind)s %(id)s%(at_version)s%(in_repo)s"
-msgstr ""
+msgstr "%(kind)s %(id)s%(at_version)s%(in_repo)s"
 
 #: trac/versioncontrol/api.py:381
 #, python-format
@@ -4194,11 +4230,11 @@ msgstr "Desteklenmeyen sürüm kontrol sistemi \"%(name)s\": Uygun bileşen bulu
 #: trac/versioncontrol/api.py:698
 #, python-format
 msgid "No changeset %(rev)s in the repository"
-msgstr "Depoda değişimset %(rev)s bulunmuyor"
+msgstr "Depoda değişiklik %(rev)s bulunmuyor"
 
 #: trac/versioncontrol/api.py:700
 msgid "No such changeset"
-msgstr "Böyle bir değişimset yok."
+msgstr "Böyle bir değişiklik yok."
 
 #: trac/versioncontrol/api.py:706
 #, python-format
@@ -4208,7 +4244,7 @@ msgstr "Düğüm %(path)s yok, %(rev)s revizyonunda"
 #: trac/versioncontrol/api.py:708
 #, python-format
 msgid "%(msg)s: No node %(path)s at revision %(rev)s"
-msgstr ""
+msgstr "%(msg)s: Düğüm %(path)s yok, %(rev)s revizyonunda"
 
 #: trac/versioncontrol/api.py:710
 msgid "No such node"
@@ -4246,12 +4282,12 @@ msgstr "Subversion deposu %(path)s açılamıyor: %(svn_error)s"
 #: trac/versioncontrol/svn_fs.py:617
 #, python-format
 msgid "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s) and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
-msgstr ""
+msgstr "Diff uyumsuz: Taban bir %(oldnode)s (%(oldpath)s , %(oldrev)s) revizyonunda ve Hedef bir %(newnode)s (%(newpath)s , %(newrev)s) revizyonunda."
 
 #: trac/versioncontrol/svn_fs.py:766
 #, python-format
 msgid "svn blame failed on %(path)s: %(error)s"
-msgstr ""
+msgstr "%(path)s üzerinde svn blame başarısız: %(error)s"
 
 #: trac/versioncontrol/svn_prop.py:111
 msgid "No svn:externals configured in trac.ini"
@@ -4307,7 +4343,7 @@ msgstr "çıkarıldı"
 
 #: trac/versioncontrol/svn_prop.py:324
 msgid " (with no actual effect on merging)"
-msgstr ""
+msgstr " (birleştirmede bir etkisi olmadan)"
 
 #: trac/versioncontrol/svn_prop.py:325
 #, python-format
@@ -4462,7 +4498,7 @@ msgstr "Diff için dizin ve revizyonları seçin"
 #: trac/versioncontrol/templates/changeset.html:68
 #: trac/versioncontrol/templates/changeset.html:70
 msgid "Show full changeset"
-msgstr "Tam değişimseti göster"
+msgstr "Tam değişikliği göster"
 
 #: trac/versioncontrol/templates/changeset.html:37
 #: trac/versioncontrol/templates/changeset.html:40
@@ -4482,7 +4518,7 @@ msgid ""
 "Changeset [1:%(new_rev)s] in %(reponame)s\n"
 "              for [2:%(new_path)s]"
 msgstr ""
-"Değişimset [1:%(new_rev)s] %(reponame)s içinde\n"
+"Değişiklik [1:%(new_rev)s] %(reponame)s içinde\n"
 "               [2:%(new_path)s] için"
 
 #: trac/versioncontrol/templates/changeset.html:41
@@ -4496,6 +4532,8 @@ msgid ""
 "Changes in [1:%(new_path)s]\n"
 "              [2:\\[%(old_rev)s:%(new_rev)s\\]] in %(reponame)s"
 msgstr ""
+"[1:%(new_path)s] değişiklikleri\n"
+"              [2:\\[%(old_rev)s:%(new_rev)s\\]] , %(reponame)s deposunda "
 
 #: trac/versioncontrol/templates/changeset.html:43
 #, python-format
@@ -4510,7 +4548,7 @@ msgstr ""
 #: trac/versioncontrol/templates/changeset.html:50
 #, python-format
 msgid "Changeset [1:%(new_rev)s] in %(reponame)s"
-msgstr "Değişimset [1:%(new_rev)s] %(reponame)s deposunda"
+msgstr "Değişiklik [1:%(new_rev)s] %(reponame)s deposunda"
 
 #: trac/versioncontrol/templates/changeset.html:57
 #, python-format
@@ -4518,7 +4556,7 @@ msgid ""
 "Changeset [1:%(new_rev)s]\n"
 "              for [2:%(new_path)s]"
 msgstr ""
-"Değişimset [1:%(new_rev)s]\n"
+"Değişiklik [1:%(new_rev)s]\n"
 "              [2:%(new_path)s] için"
 
 #: trac/versioncontrol/templates/changeset.html:61
@@ -4527,6 +4565,8 @@ msgid ""
 "Changes in [1:%(new_path)s]\n"
 "              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
 msgstr ""
+"[1:%(new_path)s] değişiklikleri\n"
+"              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
 
 #: trac/versioncontrol/templates/changeset.html:65
 #, python-format
@@ -4541,7 +4581,7 @@ msgstr ""
 #: trac/versioncontrol/templates/changeset.html:72
 #, python-format
 msgid "Changeset [1:%(new_rev)s]"
-msgstr "Değişimset [1:%(new_rev)s]"
+msgstr "Değişiklik [1:%(new_rev)s]"
 
 #: trac/versioncontrol/templates/changeset.html:101
 #, python-format
@@ -4670,7 +4710,7 @@ msgid ""
 "[1:Note:] See [2:TracChangeset]\n"
 "          for help on using the changeset viewer."
 msgstr ""
-"[1:Not:] Değişimset izleyicisini kullanmak hakkında yardım için \n"
+"[1:Not:] Değişiklik izleyicisini kullanmak hakkında yardım için \n"
 "          [2:TracChangeset]."
 
 #: trac/versioncontrol/templates/diff_form.html:10
@@ -4729,7 +4769,7 @@ msgstr "Rivizyon günlüğünü görüntüle"
 #: trac/versioncontrol/templates/dir_entries.html:20
 #: trac/versioncontrol/templates/repository_index.html:24
 msgid "View Changeset"
-msgstr "Değişimseti Göster"
+msgstr "Değişikliği Göster"
 
 #: trac/versioncontrol/templates/dirlist_thead.html:9
 #: trac/versioncontrol/templates/revisionlog.html:96
@@ -4758,7 +4798,7 @@ msgstr "Göster %(name)s"
 #: trac/versioncontrol/templates/path_links.html:32
 #, python-format
 msgid "View changeset %(rev)s"
-msgstr "Değişimset %(rev)s Göster"
+msgstr "Değişiklik %(rev)s Göster"
 
 #: trac/versioncontrol/templates/repository_index.html:15
 msgid "View Root Directory"
@@ -4859,7 +4899,7 @@ msgstr "[1:%(path)s] konumundan kopyalandı:"
 #: trac/versioncontrol/templates/revisionlog.html:126
 #, python-format
 msgid "From [%(rev)s]"
-msgstr ""
+msgstr "Tarafından [%(rev)s]"
 
 #: trac/versioncontrol/templates/revisionlog.html:129
 #, python-format
@@ -4878,12 +4918,12 @@ msgstr "Revizyon %(rev)s üzerinde gözat"
 #: trac/versioncontrol/templates/revisionlog.html:146
 #, python-format
 msgid "View removal changeset [%(rev)s]"
-msgstr "Silinmiş değişimset %(rev)s göster"
+msgstr "Silinmiş değişiklik %(rev)s göster"
 
 #: trac/versioncontrol/templates/revisionlog.html:148
 #, python-format
 msgid "View changeset [%(rev)s] restricted to %(path)s"
-msgstr "%(path)s kısıtlanmış [%(rev)s] değişimsetini göster"
+msgstr "%(path)s kısıtlanmış [%(rev)s] değişikliği göster"
 
 #: trac/versioncontrol/templates/revisionlog.html:187
 msgid ""
@@ -4909,7 +4949,7 @@ msgstr "Kaynak Tarayıcı"
 
 #: trac/versioncontrol/web_ui/browser.py:375
 msgid "Invalid changeset number"
-msgstr "Geçersiz değişimset numarası"
+msgstr "Geçersiz değişiklik numarası"
 
 #: trac/versioncontrol/web_ui/browser.py:433
 #: trac/versioncontrol/web_ui/browser.py:443
@@ -4983,7 +5023,7 @@ msgstr "Hiç depo seçilmedi ve varsayılan depo ayarı yok."
 
 #: trac/versioncontrol/web_ui/changeset.py:261
 msgid "Invalid Changeset Number"
-msgstr "Geçersiz Değişimset Numarası"
+msgstr "Geçersiz Değişiklik Numarası"
 
 #: trac/versioncontrol/web_ui/changeset.py:361
 msgid "Unified Diff"
@@ -4991,11 +5031,11 @@ msgstr "Birleşik Diff"
 
 #: trac/versioncontrol/web_ui/changeset.py:372
 msgid "Previous Changeset"
-msgstr "Önceki Değişimset"
+msgstr "Önceki Değişiklik"
 
 #: trac/versioncontrol/web_ui/changeset.py:372
 msgid "Next Changeset"
-msgstr "Sonraki Değişimset"
+msgstr "Sonraki Değişiklik"
 
 #: trac/versioncontrol/web_ui/changeset.py:376
 msgid "Reverse Diff"
@@ -5004,14 +5044,14 @@ msgstr "Ters Diff"
 #: trac/versioncontrol/web_ui/changeset.py:414
 #, python-format
 msgid "Changeset %(id)s for %(path)s"
-msgstr "%(path)s için %(id)s değişimseti"
+msgstr "%(path)s için %(id)s değişikliği"
 
 #: trac/versioncontrol/web_ui/changeset.py:417
 #: trac/versioncontrol/web_ui/changeset.py:443
 #: trac/versioncontrol/web_ui/changeset.py:465
 #, python-format
 msgid "Changeset %(id)s"
-msgstr "Değişimset %(id)s"
+msgstr "Değişiklik %(id)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:492
 #, python-format
@@ -5021,7 +5061,7 @@ msgstr "Bu dosyanın %(rev)s revizyonunu tarayıcada göster."
 #: trac/versioncontrol/web_ui/changeset.py:638
 #, python-format
 msgid "Show the changeset %(id)s restricted to %(path)s"
-msgstr "%(path)s içinde %(id)s değişimsetini göster"
+msgstr "%(path)s içinde %(id)s değişikliğini göster"
 
 #: trac/versioncontrol/web_ui/changeset.py:650
 #, python-format
@@ -5045,22 +5085,22 @@ msgstr ""
 
 #: trac/versioncontrol/web_ui/changeset.py:871
 msgid "Changesets in all repositories"
-msgstr "Tüm depolardaki değişimsetler"
+msgstr "Tüm depolardaki değişiklikler"
 
 #: trac/versioncontrol/web_ui/changeset.py:873
 msgid "Repository changesets"
-msgstr "Depo değişimsetleri"
+msgstr "Depo değişiklikleri"
 
 #: trac/versioncontrol/web_ui/changeset.py:1013
 #, python-format
 msgid "Changeset in %(repo)s "
 msgid_plural "Changesets in %(repo)s "
-msgstr[0] " %(repo)s içinde değişimset"
+msgstr[0] " %(repo)s içinde değişiklik"
 
 #: trac/versioncontrol/web_ui/changeset.py:1015
 msgid "Changeset "
 msgid_plural "Changesets "
-msgstr[0] "Değişimset"
+msgstr[0] "Değişiklik"
 
 #: trac/versioncontrol/web_ui/changeset.py:1086
 #, python-format
@@ -5074,7 +5114,7 @@ msgstr "Varsayılan depo tanımlanmamış"
 
 #: trac/versioncontrol/web_ui/changeset.py:1131
 msgid "Changesets"
-msgstr "Değişimsetler"
+msgstr "Değişiklikler"
 
 #: trac/versioncontrol/web_ui/log.py:200
 #, python-format
@@ -5237,6 +5277,26 @@ msgid ""
 "{{{\n"
 "%(traceback)s}}}"
 msgstr ""
+"==== Nasıl Tekrar Oluşturulur ====\n"
+"\n"
+"Bir %(method)s işlemi `%(path_info)s` üzerinde yapılırken, Trac bir iç hatayla karşılaştı.\n"
+"\n"
+"''(lütfen burada ekstra detayları belirtin)''\n"
+"\n"
+"İstek parametreleri:\n"
+"{{{\n"
+"%(req_args)s\n"
+"}}}\n"
+"\n"
+"Kullanıcı kimliği: `#USER_AGENT#`\n"
+"\n"
+"==== Sistem Bilgisi ====\n"
+"%(sys_info)s\n"
+"==== Aktif Eklentiler ====\n"
+"%(enabled_plugins)s\n"
+"==== Python Geribildirimi ====\n"
+"{{{\n"
+"%(traceback)s}}}"
 
 #: trac/web/session.py:203
 #, python-format
@@ -5253,7 +5313,7 @@ msgstr "SID bulunamadı"
 
 #: trac/web/session.py:314
 msgid "SID"
-msgstr ""
+msgstr "SID"
 
 #: trac/web/session.py:314
 msgid "Email"
@@ -5265,7 +5325,7 @@ msgstr "Oturum zaten mevcut. Aynı oturum eklenemiyor."
 
 #: trac/web/session.py:325
 msgid "Unable to set session attribute on a non-existent SID"
-msgstr ""
+msgstr "Varolmayan SID üzerinde oturum niteliği ayarlanamıyor"
 
 #: trac/web/session.py:438
 #, python-format
@@ -5281,7 +5341,7 @@ msgstr "'%(name)s' bir dosya değil"
 #: trac/wiki/admin.py:265
 #, python-format
 msgid "  %(page)s imported from %(filename)s"
-msgstr ""
+msgstr "%(page)s alındı %(filename)s"
 
 #: trac/wiki/admin.py:200
 msgid "Edits"
@@ -5323,12 +5383,12 @@ msgstr "Hata: Yasaklanmış karakter dizilimi \"--\"  htmlcomment wiki kod bloğ
 #: trac/wiki/formatter.py:252
 #, python-format
 msgid "!#%(name)s must contain at most one table"
-msgstr ""
+msgstr "!#%(name)s en az bir tablo içermelidir"
 
 #: trac/wiki/formatter.py:256
 #, python-format
 msgid "!#%(name)s must contain at least one table cell (and table cells only)"
-msgstr ""
+msgstr "!#%(name)s en az bir tablo hücresi içermelidir (ve sadece tablo hücreleri)"
 
 #: trac/wiki/formatter.py:627
 #: trac/wiki/interwiki.py:88
@@ -5344,7 +5404,7 @@ msgstr "%(link)s görüntülenemiyor:"
 #: trac/wiki/macros.py:519
 #, python-format
 msgid "No image \"%(id)s\" attached to %(parent)s"
-msgstr ""
+msgstr "%(parent)s ekli  \"%(id)s\" resim yok."
 
 #: trac/wiki/macros.py:562
 #, python-format
@@ -5418,12 +5478,12 @@ msgstr "Bu sayfa %(name)s silindi."
 #: trac/wiki/web_ui.py:270
 #, python-format
 msgid "The versions %(from_)d to %(to)d of the page %(name)s have been deleted."
-msgstr ""
+msgstr "%(name)s sayfasının %(from_)d ile %(to)d arasındaki sürümleri silindi."
 
 #: trac/wiki/web_ui.py:274
 #, python-format
 msgid "The version %(version)d of the page %(name)s has been deleted."
-msgstr ""
+msgstr "%(name)s sayfasının %(version)d sürümü silindi."
 
 #: trac/wiki/web_ui.py:297
 msgid "The new name must be different from the old name."
@@ -5524,7 +5584,7 @@ msgstr "%(page)s oluşturuldu"
 #: trac/wiki/templates/wiki_delete.html:19
 #, python-format
 msgid "Delete versions %(from)s to %(to)s of [1:%(name)s]"
-msgstr ""
+msgstr " [1:%(name)s] için %(from)s sürümünden %(to)s sürümüne kadar sil "
 
 #: trac/wiki/templates/wiki_delete.html:22
 #, python-format
@@ -5620,6 +5680,11 @@ msgid ""
 "        (losing your changes) and start editing the latest version of the page\n"
 "        again."
 msgstr ""
+"Lütfen tüm bu değişiklikleri inceleyin ve kendi değişikliklerinizle\n"
+"        elle birleştirin. [1:]\n"
+"        Ne yaptığınıza emin değilseniz, lütfen  [2:Vazgeç] seçin\n"
+"        (tüm değişiklikleriniz kaybedilir) ve sayfanın son sürümünü tekrar\n"
+"        düzenleyin."
 
 #: trac/wiki/templates/wiki_edit.html:114
 #, python-format
@@ -5673,7 +5738,7 @@ msgstr "Difflerin başlangıcını gör"
 
 #: trac/wiki/templates/wiki_edit_form.html:39
 msgid "See the start of the preview"
-msgstr ""
+msgstr "Önizlemenin başlangıcını gör"
 
 #: trac/wiki/templates/wiki_edit_form.html:43
 msgid "Change information"
