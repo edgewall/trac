@@ -291,9 +291,7 @@ class BrowserModule(Component):
 
     def get_navigation_items(self, req):
         rm = RepositoryManager(self.env)
-        if any(repos and repos.params.get('hidden') not in _TRUE_VALUES
-               and repos.can_view(req.perm)
-               for repos in rm.get_real_repositories()):
+        if 'BROWSER_VIEW' in req.perm and rm.get_real_repositories():
             yield ('mainnav', 'browser',
                    tag.a(_('Browse Source'), href=req.href.browser()))
 
