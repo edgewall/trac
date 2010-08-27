@@ -11,15 +11,8 @@
     <script type="text/javascript" src="${chrome.htdocs_location}js/folding.js"></script>
     <script type="text/javascript">
       jQuery(document).ready(function($){
-        $(".foldable").enableFolding(true, true);
-        $("tbody .trac-toggler a").each(function() {
-          $(this).attr("href", "").click(function() {
-            var a = $(this);
-            a.closest("td").toggleClass("collapsed");
-            a.text(a.text() == "+"? "&ndash;": "+");
-            return false;
-          });
-        });
+        $("h3.foldable").enableFolding(true, true);
+        $("p.foldable").enableFolding(true, false);
         $("thead .trac-toggler a").each(function() {
           $(this).attr("href", "").click(function() {
             var td = $(this).closest("table").find("tbody td");
@@ -107,13 +100,13 @@
           <thead>
             <tr>
               <th>
+                Component
                 <span class="trac-toggler">
                   [<a title="Show all descriptions" href="${href.admin('general', 'plugin', show=plugin.name)
                                                             + '#trac-plugin-' + plugin.name}">+</a>]
                   [<a title="Hide all descriptions" href="${href.admin('general', 'plugin')
                                                             + '#trac-plugin-' + plugin.name}">&ndash;</a>]
                 </span>
-                Component
               </th>
               <th class="sel">Enabled</th>
             </tr>
@@ -122,13 +115,13 @@
             <tr>
               <td py:with="show_doc = show == plugin.name or show == module_name" id="trac-mod-${module_name}"
                   class="trac-module${not show_doc and ' collapsed' or None}">
-                <p class="trac-heading">
-                  <span py:if="module.description" class="trac-toggler">
-                    [<a title="Toggle the module description"
-                        href="${href.admin('general', 'plugin', show=not show_doc and module_name or None)
-                                + '#trac-mod-' + module_name}">${show_doc and '&ndash;' or '+'}</a>]
-                  </span>
-                  <span class="trac-name">${module_name}.*</span>
+                <p class="trac-heading${module.description and ' foldable' or None}">
+                  <py:choose>
+                    <a py:when="module.description" class="trac-name"
+                       href="${href.admin('general', 'plugin', show=not show_doc and module_name or None)                                                     
+                               + '#trac-mod-' + module_name}">${module_name}.*</a>
+                    <span py:otherwise="" class="trac-name">${module_name}.*</span>
+                  </py:choose>
                   <span py:if="module.summary" class="trac-summary"> &mdash; ${module.summary}</span>
                 </p>
                 <div py:if="module.description" xml:space="preserve">${safe_wiki_to_html(context, module.description)}</div>
@@ -138,13 +131,13 @@
             <tr py:for="component_name, component in sorted(module.components.iteritems())">
               <td py:with="show_doc = show == plugin.name or show == component.full_name" id="trac-comp-${component.full_name}"
                   class="trac-component${not show_doc and ' collapsed' or None}">
-                <p class="trac-heading">
-                  <span py:if="component.description" class="trac-toggler">
-                    [<a title="Toggle the component description"
-                        href="${href.admin('general', 'plugin', show=not show_doc and component.full_name or None)
-                                + '#trac-comp-' + component.full_name}">${show_doc and '&ndash;' or '+'}</a>]
-                  </span>
-                  <span class="trac-name">${component_name}</span>
+                <p class="trac-heading${component.description and ' foldable' or None}">
+                  <py:choose>
+                    <a py:when="component.description" class="trac-name"
+                       href="${href.admin('general', 'plugin', show=not show_doc and component.full_name or None)                                             
+                               + '#trac-comp-' + component.full_name}">${component_name}</a>
+                    <span py:otherwise="" class="trac-name">${component_name}</span>
+                  </py:choose>
                   <span py:if="component.summary" class="trac-summary"> &mdash; ${component.summary}</span>
                 </p>
                 <div py:if="component.description" xml:space="preserve">${safe_wiki_to_html(context, component.description)}</div>
