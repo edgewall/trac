@@ -865,9 +865,12 @@ class Chrome(Component):
 
     def cc_list(self, cc_field):
         """Split a CC: value in a list of addresses."""
-        if not cc_field:
-            return []
-        return [cc.strip() for cc in cc_field.split(',') if cc]
+        ccs = []
+        for cc in re.split(r'[;,]', cc_field):
+            cc = cc.strip()
+            if cc:
+                ccs.append(cc)
+        return ccs
 
     def format_emails(self, context, value, sep=', '):
         """Normalize a list of e-mails and obfuscate them if needed.
