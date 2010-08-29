@@ -18,7 +18,7 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 
 import re
-from datetime import date, datetime
+from datetime import datetime
 
 from trac.attachment import Attachment
 from trac.core import TracError
@@ -932,8 +932,8 @@ class Milestone(object):
 
     exists = property(fget=lambda self: self._old['name'] is not None)
     is_completed = property(fget=lambda self: self.completed is not None)
-    is_late = property(fget=lambda self: self.due and \
-                                         self.due.date() < date.today())
+    is_late = property(fget=lambda self: self.due and
+                                         self.due < datetime.now(utc))
 
     def _from_database(self, row):
         name, due, completed, description = row

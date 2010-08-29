@@ -23,10 +23,10 @@
           </div>
           <div class="field">
             <label>Due:<br />
-              <input type="text" id="duedate" name="duedate" size="${len(date_hint)}"
-                     value="${milestone.due and format_date(milestone.due)}" readonly="${readonly}"
-                     title="${_('Format: %(datehint)s', datehint=date_hint)}"/>
-              <em i18n:msg="datehint">Format: $date_hint</em>
+              <input type="text" id="duedate" name="duedate" size="${len(datetime_hint)}"
+                     value="${milestone.due and format_datetime(milestone.due)}" readonly="${readonly}"
+                     title="${_('Format: %(datehint)s', datehint=datetime_hint)}"/>
+              <em i18n:msg="datehint">Format: $datetime_hint</em>
             </label>
           </div>
           <div class="field">
@@ -72,21 +72,18 @@ ${milestone.description}</textarea>
       </form>
 
       <py:otherwise>
-
         <form class="addnew" id="addmilestone" method="post" action="" py:if="'MILESTONE_CREATE' in req.perm">
           <fieldset>
             <legend>Add Milestone:</legend>
             <div class="field">
-              <label>Name:<br />
-                <input type="text" name="name" id="name" size="20" />
-              </label>
+              <label>Name:<br /><input type="text" name="name" id="name" size="22" /></label>
             </div>
             <div class="field">
               <label>
                 Due:<br />
-                <input type="text" name="duedate" size="${len(date_hint)}"
-                       title="${_('Format: %(datehint)s', datehint=date_hint)}" />
-                <em i18n:msg="datehint">Format: $date_hint</em>
+                <input type="text" id="duedate" name="duedate" size="${len(datetime_hint)}"
+                       title="${_('Format: %(datehint)s', datehint=datetime_hint)}" /><br/>
+                <em i18n:msg="datetimehint">Format: $datetime_hint</em>
               </label>
             </div>
             <div class="buttons">
@@ -112,7 +109,7 @@ ${milestone.description}</textarea>
                   <a href="${panel_href(milestone.name)}">${milestone.name}</a>
                 </td>
                 <td><py:if test="milestone.due">
-                  ${format_date(milestone.due)}
+                  ${format_datetime(milestone.due)}
                 </py:if></td>
                 <td><py:if test="milestone.completed">
                   ${format_datetime(milestone.completed)}

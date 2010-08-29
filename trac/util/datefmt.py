@@ -212,7 +212,7 @@ _ISO_8601_RE = re.compile(r'''
     (Z?(?:([-+])?(\d\d):?(\d\d)?)?)?$       # timezone
     ''', re.VERBOSE)
 
-def parse_date(text, tzinfo=None):
+def parse_date(text, tzinfo=None, hint='date'):
     tzinfo = tzinfo or localtz
     dt = None
     text = text.strip()
@@ -253,7 +253,8 @@ def parse_date(text, tzinfo=None):
     if dt is None:
         dt = _parse_relative_time(text, tzinfo)
     if dt is None:
-        hint = get_date_format_hint()        
+        hint = {'datetime': get_datetime_format_hint,
+                'date': get_date_format_hint}.get(hint, lambda: hint)()
         raise TracError(_('"%(date)s" is an invalid date, or the date format '
                           'is not known. Try "%(hint)s" instead.', 
                           date=text, hint=hint), _('Invalid Date'))

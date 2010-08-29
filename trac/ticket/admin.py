@@ -19,9 +19,8 @@ from trac.perm import PermissionSystem
 from trac.resource import ResourceNotFound
 from trac.ticket import model
 from trac.util import getuser
-from trac.util.datefmt import utc, parse_date, get_date_format_hint, \
-                              get_datetime_format_hint, format_date, \
-                              format_datetime
+from trac.util.datefmt import utc, parse_date, get_datetime_format_hint, \
+                              format_date, format_datetime
 from trac.util.text import print_table, printout, exception_to_unicode
 from trac.util.translation import _, N_, gettext
 from trac.web.chrome import Chrome, add_notice, add_warning
@@ -262,10 +261,11 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     mil.due = mil.completed = None
                     due = req.args.get('duedate', '')
                     if due:
-                        mil.due = parse_date(due, req.tz)
+                        mil.due = parse_date(due, req.tz, 'datetime')
                     if req.args.get('completed', False):
                         completed = req.args.get('completeddate', '')
-                        mil.completed = parse_date(completed, req.tz)
+                        mil.completed = parse_date(completed, req.tz,
+                                                   'datetime')
                         if mil.completed > datetime.now(utc):
                             raise TracError(_('Completion date may not be in '
                                               'the future'),
@@ -294,7 +294,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         mil.name = name
                         if req.args.get('duedate'):
                             mil.due = parse_date(req.args.get('duedate'),
-                                                 req.tz)
+                                                 req.tz, 'datetime')
                         mil.insert()
                         add_notice(req, _('The milestone "%(name)s" has been '
                                           'added.', name=name))
@@ -345,7 +345,6 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     'default': default}
 
         data.update({
-            'date_hint': get_date_format_hint(),
             'datetime_hint': get_datetime_format_hint()
         })
         return 'admin_milestones.html', data
@@ -403,7 +402,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
         milestone = model.Milestone(self.env)
         milestone.name = name
         if due is not None:
-            milestone.due = parse_date(due)
+            milestone.due = parse_date(due, hint='datetime')
         milestone.insert()
     
     def _do_rename(self, name, newname):
@@ -417,14 +416,15 @@ class MilestoneAdminPanel(TicketAdminPanel):
         @self.env.with_transaction()
         def do_due(db):
             milestone = model.Milestone(self.env, name, db=db)
-            milestone.due = due and parse_date(due)
+            milestone.due = due and parse_date(due, hint='datetime')
             milestone.update()
     
     def _do_completed(self, name, completed):
         @self.env.with_transaction()
         def do_completed(db):
             milestone = model.Milestone(self.env, name, db=db)
-            milestone.completed = completed and parse_date(completed)
+            milestone.completed = completed and parse_date(completed,
+                                                           hint='datetime')
             milestone.update()
     
     def _do_remove(self, name):
@@ -449,7 +449,8 @@ class VersionAdminPanel(TicketAdminPanel):
                 if req.args.get('save'):
                     ver.name = req.args.get('name')
                     if req.args.get('time'):
-                        ver.time = parse_date(req.args.get('time'), req.tz)
+                        ver.time = parse_date(req.args.get('time'), req.tz,
+                                              'datetime')
                     else:
                         ver.time = None # unset
                     ver.description = req.args.get('description')
@@ -475,7 +476,7 @@ class VersionAdminPanel(TicketAdminPanel):
                         ver.name = name
                         if req.args.get('time'):
                             ver.time = parse_date(req.args.get('time'),
-                                                  req.tz)
+                                                  req.tz, 'datetime')
                         ver.insert()
                         add_notice(req, _('The version "%(name)s" has been '
                                           'added.', name=name))
@@ -562,7 +563,7 @@ class VersionAdminPanel(TicketAdminPanel):
         version = model.Version(self.env)
         version.name = name
         if time is not None:
-            version.time = time and parse_date(time)
+            version.time = time and parse_date(time, hint='datetime')
         version.insert()
     
     def _do_rename(self, name, newname):
@@ -576,7 +577,7 @@ class VersionAdminPanel(TicketAdminPanel):
         @self.env.with_transaction()
         def do_time(db):
             version = model.Version(self.env, name, db=db)
-            version.time = time and parse_date(time)
+            version.time = time and parse_date(time, hint='datetime')
             version.update()
     
     def _do_remove(self, name):
