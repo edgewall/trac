@@ -38,7 +38,7 @@ class BatchModifyModule(Component):
     # IPermissionRequestor methods
 
     def get_permission_actions(self):
-        return 'TICKET_BATCH_MODIFY'
+        return ['TICKET_BATCH_MODIFY']
     
     # IRequestHandler methods
 
