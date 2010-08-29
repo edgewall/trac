@@ -30,12 +30,12 @@
           </p>
           <p py:when="milestone.is_late" class="date">
             <i18n:msg params="duration, date">
-              <strong>${dateinfo(milestone.due)} late</strong> (${format_date(milestone.due)})
+              <strong>${dateinfo(milestone.due)} late</strong> (${format_datetime(milestone.due)})
             </i18n:msg>
           </p>
           <p py:when="milestone.due" class="date">
             <i18n:msg params="duration, date">
-              Due in ${dateinfo(milestone.due)} (${format_date(milestone.due)})
+              Due in ${dateinfo(milestone.due)} (${format_datetime(milestone.due)})
             </i18n:msg>
           </p>
           <p py:otherwise="" class="date">

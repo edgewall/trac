@@ -47,12 +47,14 @@
         </div>
         <fieldset>
           <legend>Schedule</legend>
-          <label>Due:<br />
-            <input type="text" id="duedate" name="duedate" size="${len(date_hint)}"
-                   value="${milestone.due and format_date(milestone.due)}" 
-                   title="${_('Format: %(datehint)s', datehint=date_hint)}" />
-            <em i18n:msg="datehint">Format: ${date_hint}</em>
-          </label>
+          <div class="field">
+            <label>Due:<br />
+              <input type="text" id="duedate" name="duedate" size="${len(datetime_hint)}"
+                     value="${milestone.due and format_datetime(milestone.due)}" 
+                     title="${_('Format: %(datehint)s', datehint=datetime_hint)}" />
+              <em i18n:msg="datehint">Format: ${datetime_hint}</em>        
+            </label>
+          </div>          
           <div class="field">
             <label>
               <input type="checkbox" id="completed" name="completed"

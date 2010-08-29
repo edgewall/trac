@@ -85,7 +85,7 @@ p.percent {
 #edit fieldset { margin: 1em 0 }
 #edit em { color: #888; font-size: smaller }
 #edit .disabled em { color: #d7d7d7 }
-#edit .field { margin-top: 1.3em }
+#edit .field { margin: 0.5em 0 }
 #edit label { padding-left: .2em }
 #edit fieldset.iefix { margin-left: 1px; margin-right: 1px }
 #edit textarea#description { margin-left: -1px; margin-right: -1px; padding: 0; width: 100% }

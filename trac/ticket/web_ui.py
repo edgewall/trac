@@ -1313,7 +1313,7 @@ class TicketModule(Component):
         args[name] = value
         return tag.a(text or value, href=req.href.query(args))
 
-    def _query_link_words(self, req, name, value):
+    def _query_link_words(self, context, name, value):
         """Splits a list of words and makes a query link to each separately"""
         if not isinstance(value, basestring): # None or other non-splitable
             return value
@@ -1321,13 +1321,19 @@ class TicketModule(Component):
                         self.ticketlink_query[1:] or self.ticketlink_query
         args = arg_list_to_args(parse_arg_list(default_query))
         items = []
-        for (i, word) in enumerate(re.split(r'(\s*(?:\s|[,;])\s*)', value)):
+        for i, word in enumerate(re.split(r'([;,\s]+)', value)):
             if i % 2:
                 items.append(word)
             elif word:
-                word_args = args.copy()
-                word_args[name] = '~' + word
-                items.append(tag.a(word, href=req.href.query(word_args)))
+                rendered = name != 'cc' and word \
+                           or Chrome(self.env).format_emails(context, word)
+                if rendered == word:
+                    word_args = args.copy()
+                    word_args[name] = '~' + word
+                    items.append(tag.a(word,
+                                       href=context.href.query(word_args)))
+                else:
+                    items.append(rendered)
         return tag(items)
 
     def _prepare_fields(self, req, ticket):
@@ -1370,12 +1376,11 @@ class TicketModule(Component):
                 field['rendered'] = render_resource_link(self.env, context,
                                                          milestone, 'compact')
             elif name == 'keywords':
-                field['rendered'] = self._query_link_words(
-                                                req, name, ticket[name])
+                field['rendered'] = self._query_link_words(context, name,
+                                                           ticket[name])
             elif name == 'cc':
-                emails = Chrome(self.env).format_emails(context, ticket[name])
-                field['rendered'] = emails == ticket[name] and \
-                        self._query_link_words(req, name, emails) or emails
+                field['rendered'] = self._query_link_words(context, name,
+                                                           ticket[name])
                 if ticket.exists and \
                         'TICKET_EDIT_CC' not in req.perm(ticket.resource):
                     cc = ticket._old.get('cc', ticket['cc'])
