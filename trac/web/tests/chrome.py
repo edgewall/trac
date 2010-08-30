@@ -60,11 +60,15 @@ class ChromeTestCase(unittest.TestCase):
         req = Request(base_path='/trac.cgi', href=Href('/trac.cgi'))
         add_script(req, 'common/js/trac.js')
         add_script(req, 'common/js/trac.js')
+        add_script(req, 'http://example.com/trac.js')
         scripts = req.chrome['scripts']
-        self.assertEqual(1, len(scripts))
+        self.assertEqual(2, len(scripts))
         self.assertEqual('text/javascript', scripts[0]['type'])
         self.assertEqual('/trac.cgi/chrome/common/js/trac.js',
                          scripts[0]['href'])
+        self.assertEqual('text/javascript', scripts[1]['type'])
+        self.assertEqual('http://example.com/trac.js',
+                         scripts[1]['href'])
 
     def test_add_script_data(self):
         req = Request(href=Href('/trac.cgi'))
@@ -77,11 +81,15 @@ class ChromeTestCase(unittest.TestCase):
         req = Request(base_path='/trac.cgi', href=Href('/trac.cgi'))
         add_stylesheet(req, 'common/css/trac.css')
         add_stylesheet(req, 'common/css/trac.css')
+        add_stylesheet(req, 'https://example.com/trac.css')
         links = req.chrome['links']['stylesheet']
-        self.assertEqual(1, len(links))
+        self.assertEqual(2, len(links))
         self.assertEqual('text/css', links[0]['type'])
         self.assertEqual('/trac.cgi/chrome/common/css/trac.css',
                          links[0]['href'])
+        self.assertEqual('text/css', links[1]['type'])
+        self.assertEqual('https://example.com/trac.css',
+                         links[1]['href'])
 
     def test_add_stylesheet_media(self):
         req = Request(base_path='/trac.cgi', href=Href('/trac.cgi'))

@@ -84,14 +84,16 @@ def add_stylesheet(req, filename, mimetype='text/css', media=None):
     will be based off the application root path. If it is relative, the link
     will be based off the `/chrome/` path.
     """
-    if filename.startswith('common/') and 'htdocs_location' in req.chrome:
-        href = Href(req.chrome['htdocs_location'])
-        filename = filename[7:]
+    if filename.startswith('http://') or filename.startswith('https://'):
+        href = filename
+    elif filename.startswith('common/') and 'htdocs_location' in req.chrome:
+        href = Href(req.chrome['htdocs_location'])(filename[7:])
     else:
         href = req.href
         if not filename.startswith('/'):
             href = href.chrome
-    add_link(req, 'stylesheet', href(filename), mimetype=mimetype, media=media)
+        href = href(filename)
+    add_link(req, 'stylesheet', href, mimetype=mimetype, media=media)
 
 def add_script(req, filename, mimetype='text/javascript'):
     """Add a reference to an external javascript file to the template.
@@ -104,15 +106,16 @@ def add_script(req, filename, mimetype='text/javascript'):
     if filename in scriptset:
         return False # Already added that script
 
-    if filename.startswith('common/') and 'htdocs_location' in req.chrome:
-        href = Href(req.chrome['htdocs_location'])
-        path = filename[7:]
+    if filename.startswith('http://') or filename.startswith('https://'):
+        href = filename
+    elif filename.startswith('common/') and 'htdocs_location' in req.chrome:
+        href = Href(req.chrome['htdocs_location'])(filename[7:])
     else:
         href = req.href
         if not filename.startswith('/'):
             href = href.chrome
-        path = filename
-    script = {'href': href(path), 'type': mimetype}
+        href = href(filename)
+    script = {'href': href, 'type': mimetype}
 
     req.chrome.setdefault('scripts', []).append(script)
     scriptset.add(filename)
