@@ -111,8 +111,7 @@ class TitleIndexMacro(WikiMacroBase):
         format = kw.get('format', '')
 
         def parse_list(name):
-            return [inc.strip()
-                    for inc in kw.get(name, '').split(':')
+            return [inc.strip() for inc in kw.get(name, '').split(':')
                     if inc.strip()]
 
         includes = parse_list('include') or ['*']
