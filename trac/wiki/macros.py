@@ -14,6 +14,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from fnmatch import fnmatchcase
 from itertools import groupby
 import inspect
 import os
@@ -89,6 +90,13 @@ class TitleIndexMacro(WikiMacroBase):
        only toplevel pages will be shown, if set to 1, only immediate
        children pages will be shown, etc. If not set, or set to -1,
        all pages in the hierarchy will be shown.
+     - `include=page1:page*2`: include only pages that match an item in the
+        colon-separated list of pages. If the list is empty, or if no `include`
+        argument is given, include all pages.
+     - `exclude=page1:page*2`: exclude pages that match an item in the colon-
+        separated list of pages.
+    
+    The `include` and `exclude` lists accept shell-style patterns.
     """
 
     SPLIT_RE = re.compile(r"([/ 0-9.]+)")
@@ -102,6 +110,14 @@ class TitleIndexMacro(WikiMacroBase):
         start = prefix and prefix.count('/') or 0
         format = kw.get('format', '')
 
+        def parse_list(name):
+            return [inc.strip()
+                    for inc in kw.get(name, '').split(':')
+                    if inc.strip()]
+
+        includes = parse_list('include') or ['*']
+        excludes = parse_list('exclude')
+
         if hideprefix:
             omitprefix = lambda page: page[len(prefix):]
         else:
@@ -109,9 +125,11 @@ class TitleIndexMacro(WikiMacroBase):
 
         wiki = formatter.wiki
 
-        pages = sorted(page for page in wiki.get_pages(prefix) \
+        pages = sorted(page for page in wiki.get_pages(prefix)
                        if (depth < 0 or depth >= page.count('/') - start)
-                       and 'WIKI_VIEW' in formatter.perm('wiki', page))
+                       and 'WIKI_VIEW' in formatter.perm('wiki', page)
+                       and any(fnmatchcase(page, inc) for inc in includes)
+                       and not any(fnmatchcase(page, exc) for exc in excludes))
 
         if format == 'compact':
             return tag(
