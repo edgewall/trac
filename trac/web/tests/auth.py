@@ -1,6 +1,10 @@
+# -*- coding: utf-8 -*-
+
+import os
+
 from trac.core import TracError
 from trac.test import EnvironmentStub, Mock
-from trac.web.auth import LoginModule
+from trac.web.auth import BasicAuthentication, LoginModule
 from trac.web.href import Href
 
 from Cookie import SimpleCookie as Cookie
@@ -168,8 +172,32 @@ class LoginModuleTestCase(unittest.TestCase):
         self.module._do_logout(req) # this shouldn't raise an error
 
 
+class BasicAuthenticationTestCase(unittest.TestCase):
+    def setUp(self):
+        filename = os.path.join(os.path.split(__file__)[0], 'htpasswd.txt')
+        self.auth = BasicAuthentication(filename, 'realm')
+
+    def tearDown(self):
+        self.auth = None
+
+    def test_crypt(self):
+        self.assert_(self.auth.test('crypt', 'crypt'))
+        self.assert_(not self.auth.test('crypt', 'other'))
+
+    def test_md5(self):
+        self.assert_(self.auth.test('md5', 'md5'))
+        self.assert_(not self.auth.test('md5', 'other'))
+
+    def test_sha(self):
+        self.assert_(self.auth.test('sha', 'sha'))
+        self.assert_(not self.auth.test('sha', 'other'))
+
+
 def suite():
-    return unittest.makeSuite(LoginModuleTestCase, 'test')
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(LoginModuleTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(BasicAuthenticationTestCase, 'test'))
+    return suite
 
 if __name__ == '__main__':
     unittest.main()
