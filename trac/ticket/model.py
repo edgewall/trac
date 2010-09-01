@@ -315,10 +315,12 @@ class Ticket(object):
                            "FROM ticket_change WHERE ticket=%s AND time=%s "
                            "UNION "
                            "SELECT time,author,'attachment',null,filename,0 "
-                           "FROM attachment WHERE id=%s AND time=%s "
+                           "FROM attachment WHERE type='ticket' AND id=%s "
+                           "AND time=%s "
                            "UNION "
                            "SELECT time,author,'comment',null,description,0 "
-                           "FROM attachment WHERE id=%s AND time=%s "
+                           "FROM attachment WHERE type='ticket' AND id=%s "
+                           "AND time=%s "
                            "ORDER BY time",
                            (self.id, when_ts, str(self.id), when_ts, 
                            str(self.id), when_ts))
@@ -327,10 +329,10 @@ class Ticket(object):
                            "FROM ticket_change WHERE ticket=%s "
                            "UNION "
                            "SELECT time,author,'attachment',null,filename,0 "
-                           "FROM attachment WHERE id=%s "
+                           "FROM attachment WHERE type='ticket' AND id=%s "
                            "UNION "
                            "SELECT time,author,'comment',null,description,0 "
-                           "FROM attachment WHERE id=%s "
+                           "FROM attachment WHERE type='ticket' AND id=%s "
                            "ORDER BY time", (self.id,  str(self.id), 
                            str(self.id)))
         log = []
