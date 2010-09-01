@@ -378,10 +378,10 @@ class Ticket(object):
                 FROM ticket_change WHERE ticket=%s AND time=%s 
                   UNION 
                 SELECT time,author,'attachment',null,filename, 0 AS permanent
-                FROM attachment WHERE id=%s AND time=%s 
+                FROM attachment WHERE type='ticket' AND id=%s AND time=%s 
                   UNION 
                 SELECT time,author,'comment',null,description, 0 AS permanent
-                FROM attachment WHERE id=%s AND time=%s
+                FROM attachment WHERE type='ticket' AND id=%s AND time=%s
                 ORDER BY time,permanent,author
                 """, (self.id, when_ts, sid, when_ts, sid, when_ts))
         else:
@@ -390,10 +390,10 @@ class Ticket(object):
                 FROM ticket_change WHERE ticket=%s
                   UNION 
                 SELECT time,author,'attachment',null,filename, 0 AS permanent
-                FROM attachment WHERE id=%s 
+                FROM attachment WHERE type='ticket' AND id=%s 
                   UNION 
                 SELECT time,author,'comment',null,description, 0 AS permanent
-                FROM attachment WHERE id=%s 
+                FROM attachment WHERE type='ticket' AND id=%s 
                 ORDER BY time,permanent,author
                 """, (self.id, sid, sid))
         log = []
