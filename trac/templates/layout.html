@@ -32,11 +32,11 @@
     ${Markup('&lt;!--[if lt IE 7]&gt;')}
     <script type="text/javascript" src="${chrome.htdocs_location}js/ie_pre7_hacks.js"></script>
     ${Markup('&lt;![endif]--&gt;')}
-    ${select("*[local-name() != 'title']")}
+    ${select("*[local-name() != 'title']|text()|comment()")}
   </head></py:match>
 
   <py:match path="body" once="true" buffer="false"><body>
-    ${select('*|text()')}
+    ${select('*|text()|comment()')}
 
     <script type="text/javascript" py:if="chrome.late_links">
       <py:for each="link in chrome.late_links.get('stylesheet')">
