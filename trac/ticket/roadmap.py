@@ -16,7 +16,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from StringIO import StringIO
-from datetime import datetime
+from datetime import datetime, timedelta
 import re
 
 from genshi.builder import tag
@@ -625,8 +625,11 @@ class MilestoneModule(Component):
         
         milestone.description = req.args.get('description', '')
 
-        due = req.args.get('duedate', '')
-        milestone.due = due and parse_date(due, req.tz, 'datetime') or None
+        if 'due' in req.args:
+            due = req.args.get('duedate', '')
+            milestone.due = due and parse_date(due, req.tz, 'datetime') or None
+        else:
+            milestone.due = None
 
         completed = req.args.get('completeddate', '')
         retarget_to = req.args.get('target')
@@ -702,9 +705,16 @@ class MilestoneModule(Component):
         return 'milestone_delete.html', data, None
 
     def _render_editor(self, req, db, milestone):
+        # Suggest a default due time of 18:00 in the user's timezone
+        default_due = datetime.now(req.tz).replace(hour=18, minute=0, second=0,
+                                                   microsecond=0)
+        if default_due <= datetime.now(utc):
+            default_due += timedelta(days=1)
+        
         data = {
             'milestone': milestone,
             'datetime_hint': get_datetime_format_hint(),
+            'default_due': default_due,
             'milestone_groups': [],
         }
 
