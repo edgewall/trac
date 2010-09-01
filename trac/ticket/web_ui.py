@@ -228,7 +228,7 @@ class TicketModule(Component):
 
     def get_timeline_filters(self, req):
         if 'TICKET_VIEW' in req.perm:
-            yield ('ticket', _("Opened and closed tickets"))
+            yield ('ticket', _("Tickets opened and closed"))
             if self.timeline_details:
                 yield ('ticket_details', _("Ticket updates"), False)
 
