@@ -158,10 +158,10 @@ class ConnectionPoolBackend(object):
         # Forth best option: Replace a pooled connection with a new one
         elif len(self._active) < self._maxsize:
             # Remove the LRU connection in the pool
-            self._pool.pop(0)
+            cnx = self._pool.pop(0)
             self._pool_key.pop(0)
             self._pool_time.pop(0)
-            return ('close', None)
+            return ('close', cnx)
 
     def _return_cnx(self, cnx, key, tid):
         # Decrement active refcount, clear slot if 1

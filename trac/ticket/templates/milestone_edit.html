@@ -15,6 +15,11 @@
           href="${chrome.htdocs_location}css/roadmap.css" />
     <script type="text/javascript">/*<![CDATA[*/
       jQuery(document).ready(function($) {
+        function updateDueDate() {
+          $("#duedate").enable($("#due").checked());
+        }        
+        $("#due").click(updateDueDate);        
+        updateDueDate();
         function updateCompletedDate() {
           var checked = $("#completed").checked();
           $("#completeddate").enable(checked);
@@ -24,7 +29,9 @@
         }
         $("#completed").click(updateCompletedDate);
         updateCompletedDate();
-        $("#retarget").click(function(){ $("#target").enable(this.checked) });
+        $("#retarget").click(function(){
+          $("#target").enable(this.checked);
+        });
         $("#name").get(0).focus()
       });
     /*]]>*/</script>
@@ -48,17 +55,20 @@
         <fieldset>
           <legend>Schedule</legend>
           <div class="field">
-            <label>Due:<br />
+            <label>
+              <input type="checkbox" id="due" name="due" checked="${milestone.due or None}" />
+              Due:<br />
+            </label>
+            <label>
               <input type="text" id="duedate" name="duedate" size="${len(datetime_hint)}"
-                     value="${milestone.due and format_datetime(milestone.due)}" 
+                     value="${format_datetime(milestone.due or default_due)}" 
                      title="${_('Format: %(datehint)s', datehint=datetime_hint)}" />
               <em i18n:msg="datehint">Format: ${datetime_hint}</em>        
             </label>
           </div>          
           <div class="field">
             <label>
-              <input type="checkbox" id="completed" name="completed"
-                     checked="${milestone.completed or None}" />
+              <input type="checkbox" id="completed" name="completed" checked="${milestone.completed or None}" />
               Completed:<br />
             </label>
             <label>

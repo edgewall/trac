@@ -322,6 +322,8 @@ class BrowserModule(Component):
             return True
 
     def process_request(self, req):
+        req.perm.require('BROWSER_VIEW')
+
         presel = req.args.get('preselected')
         if presel and (presel + '/').startswith(req.href.browser() + '/'):
             req.redirect(presel)
@@ -380,13 +382,15 @@ class BrowserModule(Component):
 
         repo_data = dir_data = file_data = None
         if not reponame and path == '/':
-            repo_data = self._render_repository_index(
-                    context, all_repositories, order, desc)
+            repo_data = self._render_repository_index(context, order, desc)
         if node:
             if node.isdir:
                 dir_data = self._render_dir(req, repos, node, rev, order, desc)
             elif node.isfile:
                 file_data = self._render_file(req, context, repos, node, rev)
+
+        if not repos and not (repo_data and repo_data['repositories']):
+            raise ResourceNotFound(_("No node %(path)s", path=path))
 
         quickjump_data = properties_data = None
         if node and not xhr:
@@ -475,7 +479,7 @@ class BrowserModule(Component):
 
     # Internal methods
 
-    def _render_repository_index(self, context, all_repositories, order, desc):
+    def _render_repository_index(self, context, order, desc):
         # Color scale for the age column
         timerange = custom_colorizer = None
         if self.color_scale:
@@ -483,7 +487,7 @@ class BrowserModule(Component):
 
         rm = RepositoryManager(self.env)
         repositories = []
-        for reponame, repoinfo in all_repositories.items():
+        for reponame, repoinfo in rm.get_all_repositories().items():
             if not reponame or repoinfo.get('hidden') in _TRUE_VALUES:
                 continue
             try:

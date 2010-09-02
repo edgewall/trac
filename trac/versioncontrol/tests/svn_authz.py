@@ -54,7 +54,11 @@ foo = rw
 ; Unicode module names
 [module:/c/résumé]
 bar = rw
-""")
+
+; Unused module, not parsed
+[unused:/some/path]
+foo = r
+""", set(['', 'module']))
         self.assertEqual({
             '': {
                 '/': {
@@ -86,11 +90,11 @@ user = r
 
 [module:/trunk]
 user = r
-""")
+""", set(['', 'module']))
         self.assertRaises(ParseError, parse, """\
 [module:/trunk]
 user
-""")
+""", set(['', 'module']))
 
 
 class AuthzSourcePolicyTestCase(unittest.TestCase):
@@ -201,6 +205,11 @@ jane = r
         rm = RepositoryManager(self.env)
         
         class TestRepositoryManager(rm.__class__):
+            def get_real_repositories(self):
+                return set([Mock(reponame='module'),
+                            Mock(reponame='other'),
+                            Mock(reponame='scoped')])
+
             def get_repository(self, reponame):
                 if reponame == 'scoped':
                     def get_changeset(rev):
@@ -260,9 +269,11 @@ jane = r
 [/somepath]
 joe = r
 denied =
-[/otherpath]
+[module:/otherpath]
 jane = r
 $anonymous = r
+[inactive:/not-in-this-instance]
+unknown = r
 """)
         self.assertPathPerm(None, 'unknown')
         self.assertRevPerm(None, 'unknown')

@@ -49,11 +49,12 @@ class ParseError(Exception):
     """Exception thrown for parse errors in authz files"""
 
 
-def parse(authz):
+def parse(authz, modules):
     """Parse a Subversion authorization file.
     
     Return a dict of modules, each containing a dict of paths, each containing
-    a dict mapping users to permissions.
+    a dict mapping users to permissions. Only modules contained in `modules`
+    are retained.
     """
     groups = {}
     aliases = {}
@@ -83,7 +84,10 @@ def parse(authz):
         elif section == 'aliases':
             aliases[name] = value.strip()
         else:
-            sections.setdefault(section, []).append((name.strip(), value))
+            parts = section.split(':', 1)
+            module, path = len(parts) > 1 and parts[0] or '', parts[-1]
+            if module in modules:
+                sections.setdefault((module, path), []).append((name, value))
 
     def resolve(subject, done):
         if subject.startswith('@'):
@@ -97,10 +101,8 @@ def parse(authz):
             yield subject
     
     authz = {}
-    for name, items in sections.iteritems():
-        parts = name.split(':', 1)
-        module = authz.setdefault(len(parts) > 1 and parts[0] or '', {})
-        section = module.setdefault(parts[-1], {})
+    for (module, path), items in sections.iteritems():
+        section = authz.setdefault(module, {}).setdefault(path, {})
         for subject, perms in items:
             for user in resolve(subject, set()):
                 section.setdefault(user, 'r' in perms)  # The first match wins
@@ -213,11 +215,17 @@ class AuthzSourcePolicy(Component):
             self._users = set()
         if mtime > self._mtime:
             self._mtime = mtime
+            rm = RepositoryManager(self.env)
+            modules = set(repos.reponame
+                          for repos in rm.get_real_repositories())
+            if '' in modules and self.authz_module_name:
+                modules.add(self.authz_module_name)
+            modules.add('')
             self.log.info('Parsing authz file: %s' % self.authz_file)
             try:
-                self._authz = parse(read_file(self.authz_file))
-                self._users = set(user for module in self._authz.itervalues()
-                                  for path in module.itervalues()
+                self._authz = parse(read_file(self.authz_file), modules)
+                self._users = set(user for paths in self._authz.itervalues()
+                                  for path in paths.itervalues()
                                   for user, result in path.iteritems()
                                   if result)
             except Exception, e:
