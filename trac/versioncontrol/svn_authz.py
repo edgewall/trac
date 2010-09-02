@@ -216,8 +216,14 @@ class AuthzSourcePolicy(Component):
             self.log.info('Parsing authz file: %s' % self.authz_file)
             try:
                 self._authz = parse(read_file(self.authz_file))
-                self._users = set(user for module in self._authz.itervalues()
-                                  for path in module.itervalues()
+                rm = RepositoryManager(self.env)
+                modules = set(repos.reponame
+                              for repos in rm.get_real_repositories())
+                modules.add('')
+                self._users = set(user
+                                  for module, paths in self._authz.iteritems()
+                                  if module in modules
+                                  for path in paths.itervalues()
                                   for user, result in path.iteritems()
                                   if result)
             except Exception, e:

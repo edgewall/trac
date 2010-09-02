@@ -201,6 +201,9 @@ jane = r
         rm = RepositoryManager(self.env)
         
         class TestRepositoryManager(rm.__class__):
+            def get_real_repositories(self):
+                return set([Mock(reponame='module')])
+
             def get_repository(self, reponame):
                 if reponame == 'scoped':
                     def get_changeset(rev):
@@ -260,9 +263,11 @@ jane = r
 [/somepath]
 joe = r
 denied =
-[/otherpath]
+[module:/otherpath]
 jane = r
 $anonymous = r
+[inactive:/not-in-this-instance]
+unknown = r
 """)
         self.assertPathPerm(None, 'unknown')
         self.assertRevPerm(None, 'unknown')
