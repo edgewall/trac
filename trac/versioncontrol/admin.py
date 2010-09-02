@@ -11,14 +11,16 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
+import os.path
 import sys
 
 from genshi.builder import tag
 
 from trac.admin import IAdminCommandProvider, IAdminPanelProvider
-from trac.config import _TRUE_VALUES
+from trac.config import _TRUE_VALUES, ListOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
+from trac.util import is_path_below
 from trac.util.text import breakable_path, normalize_whitespace, print_table, \
                            printout
 from trac.util.translation import _, ngettext, tag_
@@ -164,6 +166,13 @@ class RepositoryAdminPanel(Component):
 
     implements(IAdminPanelProvider)
 
+    allowed_repository_dir_prefixes = ListOption('versioncontrol',
+        'allowed_repository_dir_prefixes', '',
+        doc="""Comma-separated list of allowed prefixes for repository
+        directories when adding and editing repositories in the repository
+        admin panel. If the list is empty, all repository directories are
+        allowed. (''since 0.12.1'')""")
+
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
@@ -198,6 +207,9 @@ class RepositoryAdminPanel(Component):
                         if (value is not None or field == 'hidden') \
                                 and value != info.get(field):
                             changes[field] = value
+                    if 'dir' in changes \
+                            and not self._check_dir(req, changes['dir']):
+                        changes = {}
                     if changes:
                         db_provider.modify_repository(reponame, changes)
                         add_notice(req, _('Your changes have been saved.'))
@@ -222,7 +234,8 @@ class RepositoryAdminPanel(Component):
                                    'hook to call %(cset_added)s with the new '
                                    'repository name.', cset_added=cset_added)
                         add_notice(req, msg)
-                    req.redirect(req.href.admin(category, page))
+                    if changes:
+                        req.redirect(req.href.admin(category, page))
             
             Chrome(self.env).add_wiki_toolbars(req)
             data = {'view': 'detail', 'reponame': reponame}
@@ -234,10 +247,12 @@ class RepositoryAdminPanel(Component):
                 if db_provider and req.args.get('add_repos'):
                     name = req.args.get('name')
                     type_ = req.args.get('type')
-                    dir = req.args.get('dir')
-                    if name is not None and type_ is not None and dir:
-                        # Avoid errors when copy/pasting paths
-                        dir = normalize_whitespace(dir)
+                    # Avoid errors when copy/pasting paths
+                    dir = normalize_whitespace(req.args.get('dir', ''))
+                    if name is None or type_ is None or not dir:
+                        add_warning(req, _('Missing arguments to add a '
+                                           'repository.'))
+                    elif self._check_dir(req, dir):
                         db_provider.add_repository(name, dir, type_)
                         name = name or '(default)'
                         add_notice(req, _('The repository "%(name)s" has been '
@@ -256,8 +271,6 @@ class RepositoryAdminPanel(Component):
                                    cset_added=cset_added)
                         add_notice(req, msg)
                         req.redirect(req.href.admin(category, page))
-                    add_warning(req, _('Missing arguments to add a '
-                                       'repository.'))
                 
                 # Add a repository alias
                 elif db_provider and req.args.get('add_alias'):
@@ -319,3 +332,21 @@ class RepositoryAdminPanel(Component):
             except Exception:
                 pass
         return info
+
+    def _check_dir(self, req, dir):
+        """Check that a repository directory is valid, and add a warning
+        message if not.
+        """
+        if not os.path.isabs(dir):
+            add_warning(req, _('The repository directory must be an absolute '
+                               'path.'))
+            return False
+        prefixes = [os.path.join(self.env.path, prefix)
+                    for prefix in self.allowed_repository_dir_prefixes]
+        if prefixes and not any(is_path_below(dir, prefix)
+                                for prefix in prefixes):
+            add_warning(req, _('The repository directory must be located '
+                               'below one of the following directories: '
+                               '%(dirs)s', dirs=', '.join(prefixes)))
+            return False
+        return True
