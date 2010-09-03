@@ -598,7 +598,8 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
 
     def _render_admin_panel(self, req, cat, page, path_info):
         label = [gettext(each) for each in self._label]
-        data = {'label_singular': label[0], 'label_plural': label[1]}
+        data = {'label_singular': label[0], 'label_plural': label[1],
+                'type': self._type}
 
         # Detail view?
         if path_info:
