@@ -61,8 +61,14 @@ class Ticket(object):
             tkt_id = int(tkt_id)
         self.resource = Resource('ticket', tkt_id, version)
         self.fields = TicketSystem(self.env).get_ticket_fields()
-        self.time_fields = [f['name'] for f in self.fields
-                            if f['type'] == 'time']
+        self.std_fields, self.custom_fields, self.time_fields = [], [], []
+        for f in self.fields: 
+            if f.get('custom'): 
+                self.custom_fields.append(f['name']) 
+            else: 
+                self.std_fields.append(f['name']) 
+            if f['type'] == 'time': 
+                self.time_fields.append(f['name'])
         self.values = {}
         if tkt_id is not None:
             self._fetch_ticket(tkt_id, db)
@@ -104,18 +110,16 @@ class Ticket(object):
             db = self._get_db(db)
 
             # Fetch the standard ticket fields
-            std_fields = [f['name'] for f in self.fields
-                          if not f.get('custom')]
             cursor = db.cursor()
             cursor.execute("SELECT %s FROM ticket WHERE id=%%s"
-                           % ','.join(std_fields), (tkt_id,))
+                           % ','.join(self.std_fields), (tkt_id,))
             row = cursor.fetchone()
         if not row:
             raise ResourceNotFound(_('Ticket %(id)s does not exist.', 
                                      id=tkt_id), _('Invalid ticket number'))
 
         self.id = tkt_id
-        for i, field in enumerate(std_fields):
+        for i, field in enumerate(self.std_fields):
             value = row[i]
             if field in self.time_fields:
                 self.values[field] = from_utimestamp(value)
@@ -125,11 +129,10 @@ class Ticket(object):
                 self.values[field] = value
 
         # Fetch custom fields if available
-        custom_fields = [f['name'] for f in self.fields if f.get('custom')]
         cursor.execute("SELECT name,value FROM ticket_custom WHERE ticket=%s",
                        (tkt_id,))
         for name, value in cursor:
-            if name in custom_fields:
+            if name in self.custom_fields:
                 if value is None:
                     self.values[name] = empty
                 else:
@@ -221,7 +224,6 @@ class Ticket(object):
                     custom_fields.append(fname)
                 else:
                     std_fields.append(fname)
-
         tkt_id = [None]
         @self.env.with_transaction(db)
         def do_insert(db):
@@ -313,10 +315,8 @@ class Ticket(object):
                 comment_num = str(num + 1)
 
             # store fields
-            custom_fields = [f['name'] for f in self.fields if f.get('custom')]
-
             for name in self._old.keys():
-                if name in custom_fields:
+                if name in self.custom_fields:
                     cursor.execute("""
                         SELECT * FROM ticket_custom 
                         WHERE ticket=%s and name=%s
@@ -448,9 +448,6 @@ class Ticket(object):
                 return
             ts = row[0]
             
-            custom_fields = set(f['name'] for f in self.fields
-                                if f.get('custom'))
-
             # Find modified fields and their previous value
             cursor.execute("""
                 SELECT field, oldvalue, newvalue FROM ticket_change
@@ -476,7 +473,7 @@ class Ticket(object):
                     break
                 else:
                     # No next change, edit ticket field
-                    if field in custom_fields:
+                    if field in self.custom_fields:
                         cursor.execute("""
                             UPDATE ticket_custom SET value=%s
                             WHERE ticket=%s AND name=%s

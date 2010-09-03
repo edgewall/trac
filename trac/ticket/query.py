@@ -438,7 +438,7 @@ class Query(object):
         add_cols('status', 'priority', 'time', 'changetime', self.order)
         cols.extend([c for c in self.constraint_cols if not c in cols])
 
-        custom_fields = [f['name'] for f in self.fields if 'custom' in f]
+        custom_fields = [f['name'] for f in self.fields if f.get('custom')]
 
         sql = []
         sql.append("SELECT " + ",".join(['t.%s AS %s' % (c, c) for c in cols
