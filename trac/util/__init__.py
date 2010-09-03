@@ -341,6 +341,15 @@ def copytree(src, dst, symlinks=False, skip=[], overwrite=False):
     copytree_rec(str_path(src), str_path(dst))
 
 
+def is_path_below(path, parent):
+    """Return True iff `path` is equal to parent or is located below `parent`
+    at any level.
+    """
+    path = os.path.abspath(path)
+    parent = os.path.abspath(parent)
+    return path == parent or path.startswith(parent + os.sep)
+
+
 # -- sys utils
 
 def arity(f):

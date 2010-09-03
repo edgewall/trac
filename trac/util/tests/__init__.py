@@ -80,6 +80,30 @@ class AtomicFileTestCase(unittest.TestCase):
         self.assertEqual('test content', util.read_file(self.path))
 
 
+class PathTestCase(unittest.TestCase):
+    
+    def assert_below(self, path, parent):
+        self.assert_(util.is_path_below(path.replace('/', os.sep),
+                                        parent.replace('/', os.sep)))
+
+    def assert_not_below(self, path, parent):
+        self.assert_(not util.is_path_below(path.replace('/', os.sep),
+                                            parent.replace('/', os.sep)))
+
+    def test_is_path_below(self):
+        self.assert_below('/svn/project1', '/svn/project1')
+        self.assert_below('/svn/project1/repos', '/svn/project1')
+        self.assert_below('/svn/project1/sub/repos', '/svn/project1')
+        self.assert_below('/svn/project1/sub/../repos', '/svn/project1')
+        self.assert_not_below('/svn/project2/repos', '/svn/project1')
+        self.assert_not_below('/svn/project2/sub/repos', '/svn/project1')
+        self.assert_not_below('/svn/project1/../project2/repos',
+                              '/svn/project1')
+        self.assert_(util.is_path_below('repos', os.path.join(os.getcwd())))
+        self.assert_(not util.is_path_below('../sub/repos',
+                                            os.path.join(os.getcwd())))
+
+
 class ContentDispositionTestCase(unittest.TestCase):
 
     def test_filename(self):
@@ -96,6 +120,7 @@ class ContentDispositionTestCase(unittest.TestCase):
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AtomicFileTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(PathTestCase, 'test'))
     suite.addTest(unittest.makeSuite(ContentDispositionTestCase, 'test'))
     suite.addTest(concurrency.suite())
     suite.addTest(datefmt.suite())

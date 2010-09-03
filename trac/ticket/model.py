@@ -54,7 +54,7 @@ class Ticket(object):
     # 0.11 compatibility
     time_created = property(lambda self: self.values.get('time'))
     time_changed = property(lambda self: self.values.get('changetime'))
-    
+
     def __init__(self, env, tkt_id=None, db=None, version=None):
         self.env = env
         if tkt_id is not None:
@@ -170,7 +170,7 @@ class Ticket(object):
                 return field[0].get('value', '')
         except KeyError:
             pass
-        
+
     def populate(self, values):
         """Populate the ticket with 'suitable' values from a dictionary"""
         field_names = [f['name'] for f in self.fields]
@@ -185,7 +185,7 @@ class Ticket(object):
 
     def insert(self, when=None, db=None):
         """Add ticket to database.
-        
+
         The `db` argument is deprecated in favor of `with_transaction()`.
         """
         assert not self.exists, 'Cannot insert an existing ticket'
@@ -213,7 +213,7 @@ class Ticket(object):
         for field in self.time_fields:
             if field in values:
                 values[field] = to_utimestamp(values[field])
-        
+
         # Insert ticket record
         std_fields = []
         custom_fields = []
@@ -254,7 +254,7 @@ class Ticket(object):
         Store ticket changes in the database. The ticket must already exist in
         the database.  Returns False if there were no changes to save, True
         otherwise.
-        
+
         The `db` argument is deprecated in favor of `with_transaction()`.
         """
         assert self.exists, 'Cannot update a new ticket'
@@ -340,7 +340,7 @@ class Ticket(object):
                     VALUES (%s, %s, %s, %s, %s, %s)
                     """, (self.id, when_ts, author, name, self._old[name],
                           self[name]))
-            
+
             # always save comment, even if empty 
             # (numbering support for timeline)
             cursor.execute("""
@@ -348,7 +348,7 @@ class Ticket(object):
                     (ticket,time,author,field,oldvalue,newvalue)
                 VALUES (%s,%s,%s,'comment',%s,%s)
                 """, (self.id, when_ts, author, comment_num, comment))
-    
+
             cursor.execute("UPDATE ticket SET changetime=%s WHERE id=%s",
                            (when_ts, self.id))
 
@@ -387,7 +387,7 @@ class Ticket(object):
         else:
             cursor.execute("""
                 SELECT time,author,field,oldvalue,newvalue, 1 AS permanent
-                FROM ticket_change WHERE ticket=%s
+                FROM ticket_change WHERE ticket=%s 
                   UNION 
                 SELECT time,author,'attachment',null,filename, 0 AS permanent
                 FROM attachment WHERE type='ticket' AND id=%s 
@@ -404,7 +404,7 @@ class Ticket(object):
 
     def delete(self, db=None):
         """Delete the ticket.
-        
+
         The `db` argument is deprecated in favor of `with_transaction()`.
         """
         @self.env.with_transaction(db)
@@ -447,7 +447,7 @@ class Ticket(object):
             if not row:
                 return
             ts = row[0]
-            
+
             # Find modified fields and their previous value
             cursor.execute("""
                 SELECT field, oldvalue, newvalue FROM ticket_change
@@ -482,12 +482,12 @@ class Ticket(object):
                         cursor.execute("""
                             UPDATE ticket SET %s=%%s WHERE id=%%s
                             """ % field, (oldvalue, self.id))
-            
+
             # Delete the change
             cursor.execute("""
                 DELETE FROM ticket_change WHERE ticket=%s AND time=%s
                 """, (self.id, ts))
-            
+
             # Fix the last modification time
             cursor.execute("""
                 UPDATE ticket SET changetime=(
@@ -495,7 +495,7 @@ class Ticket(object):
                     ORDER BY time DESC LIMIT 1)
                 WHERE id=%s
                 """, (self.id, self.id))
-        
+
         self._fetch_ticket(self.id)
 
     def modify_comment(self, cdate, author, comment, when=None):
@@ -520,7 +520,7 @@ class Ticket(object):
                 break
             if comment == (old_comment or ''):
                 return
-        
+
             # Comment history is stored in fields named "_comment%d"
             # Find the next edit number
             cursor.execute("""
@@ -597,7 +597,7 @@ class Ticket(object):
                               '%' + db.like_escape('.' + scnum)))
         for row in cursor:
             return row
-        
+
         # Fallback when comment number is not available in oldvalue
         num = 0
         cursor.execute("""
@@ -622,7 +622,7 @@ class Ticket(object):
                 break
         else:
             return
-        
+
         # Find author if NULL
         if author is None:
             cursor.execute("""
@@ -633,7 +633,6 @@ class Ticket(object):
             for author, in cursor:
                 break
         return (ts, author, comment)
-
 
 def simplify_whitespace(name):
     """Strip spaces and remove duplicate spaces within names"""
@@ -670,7 +669,7 @@ class AbstractEnum(object):
 
     def delete(self, db=None):
         """Delete the enum value.
-        
+
         The `db` argument is deprecated in favor of `with_transaction()`.
         """
         assert self.exists, 'Cannot delete non-existent %s' % self.type
@@ -696,7 +695,7 @@ class AbstractEnum(object):
 
     def insert(self, db=None):
         """Add a new enum value.
-        
+
         The `db` argument is deprecated in favor of `with_transaction()`.
         """
         assert not self.exists, 'Cannot insert existing %s' % self.type
@@ -723,7 +722,7 @@ class AbstractEnum(object):
 
     def update(self, db=None):
         """Update the enum value.
-        
+
         The `db` argument is deprecated in favor of `with_transaction()`.
         """
         assert self.exists, 'Cannot update non-existent %s' % self.type
@@ -795,7 +794,6 @@ class Severity(AbstractEnum):
 
 
 class Component(object):
-
     def __init__(self, env, name=None, db=None):
         self.env = env
         if name:
@@ -821,7 +819,7 @@ class Component(object):
 
     def delete(self, db=None):
         """Delete the component.
-        
+
         The `db` argument is deprecated in favor of `with_transaction()`.
         """
         assert self.exists, 'Cannot delete non-existent component'
@@ -836,7 +834,7 @@ class Component(object):
 
     def insert(self, db=None):
         """Insert a new component.
-        
+
         The `db` argument is deprecated in favor of `with_transaction()`.
         """
         assert not self.exists, 'Cannot insert existing component'
@@ -857,7 +855,7 @@ class Component(object):
 
     def update(self, db=None):
         """Update the component.
-        
+
         The `db` argument is deprecated in favor of `with_transaction()`.
         """
         assert self.exists, 'Cannot update non-existent component'
@@ -898,7 +896,6 @@ class Component(object):
 
 
 class Milestone(object):
-
     def __init__(self, env, name=None, db=None):
         self.env = env
         if name:
@@ -947,7 +944,7 @@ class Milestone(object):
 
     def delete(self, retarget_to=None, author=None, db=None):
         """Delete the milestone.
-        
+
         The `db` argument is deprecated in favor of `with_transaction()`.
         """
         @self.env.with_transaction(db)
@@ -974,7 +971,7 @@ class Milestone(object):
 
     def insert(self, db=None):
         """Insert a new milestone.
-        
+
         The `db` argument is deprecated in favor of `with_transaction()`.
         """
         self.name = simplify_whitespace(self.name)
@@ -998,7 +995,7 @@ class Milestone(object):
 
     def update(self, db=None):
         """Update the milestone.
-        
+
         The `db` argument is deprecated in favor of `with_transaction()`.
         """
         self.name = simplify_whitespace(self.name)
@@ -1075,7 +1072,6 @@ def group_milestones(milestones, include_completed):
 
 
 class Version(object):
-
     def __init__(self, env, name=None, db=None):
         self.env = env
         if name:
@@ -1101,7 +1097,7 @@ class Version(object):
 
     def delete(self, db=None):
         """Delete the version.
-        
+
         The `db` argument is deprecated in favor of `with_transaction()`.
         """
         assert self.exists, 'Cannot delete non-existent version'
@@ -1116,7 +1112,7 @@ class Version(object):
 
     def insert(self, db=None):
         """Insert a new version.
-        
+
         The `db` argument is deprecated in favor of `with_transaction()`.
         """
         assert not self.exists, 'Cannot insert existing version'
@@ -1136,7 +1132,7 @@ class Version(object):
 
     def update(self, db=None):
         """Update the version.
-        
+
         The `db` argument is deprecated in favor of `with_transaction()`.
         """
         assert self.exists, 'Cannot update non-existent version'

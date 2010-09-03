@@ -130,11 +130,11 @@ class WikiAdmin(Component):
                            (title,))
             old = list(cursor)
             if old and title in create_only:
-                printout('  %s already exists.' % title)
+                printout(_('  %(title)s already exists', title=title))
                 result[0] = False
                 return
             if old and data == old[0][0]:
-                printout('  %s already up to date.' % title)
+                printout(_('  %(title)s is already up to date', title=title))
                 result[0] = False
                 return
         
