@@ -33,7 +33,7 @@ class BatchModifyModule(Component):
                 doc="separator regex used for 'list' fields")
     list_connector_string = Option("batchmod", "list_connector_string",
                 default=',',
-                doc="connecter string for 'list' fields")
+                doc="connector string for 'list' fields")
 
     # IPermissionRequestor methods
 
@@ -48,7 +48,6 @@ class BatchModifyModule(Component):
     def process_request(self, req):
         req.perm.assert_permission('TICKET_BATCH_MODIFY')
 
-        tickets = req.session['query_tickets'].split(' ')
         comment = req.args.get('batchmod_value_comment', '')
         
         new_values = self._get_new_ticket_values(req) 
@@ -61,7 +60,7 @@ class BatchModifyModule(Component):
         if not selected_tickets:
             raise TracError('No tickets selected')
 
-        self._save_ticket_changes(req, selected_tickets, tickets, 
+        self._save_ticket_changes(req, selected_tickets, 
                                   new_values, comment)        
                 
         #Always redirect back to the query page we came from.
@@ -90,30 +89,27 @@ class BatchModifyModule(Component):
         if values.has_key('status') and values['status'] is not 'closed':
             values['resolution'] = ''
 
-    def _save_ticket_changes(self, req, selected_tickets, tickets, 
+    def _save_ticket_changes(self, req, selected_tickets, 
                              new_values, comment):
         """Save all of the changes to tickets."""
         @with_transaction(self.env)
         def _implementation(db):
             for id in selected_tickets:
-                if id in tickets:
-                    t = Ticket(self.env, int(id))
-                    
-                    _values = new_values.copy()
-                    for field in [f for f in new_values.keys() \
-                                  if f in self.fields_as_list]:
+                t = Ticket(self.env, int(id))
+                _values = new_values.copy()
+                for field in [f for f in new_values.keys() \
+                              if f in self.fields_as_list]:
+                    if field in t.values:
                         _values[field] = self._merge_keywords(t.values[field], 
-                                                              new_values[field])
-                    
-                    t.populate(_values)
-                    t.save_changes(req.authname, comment)
+                                                          new_values[field])
+                t.populate(_values)
+                t.save_changes(req.authname, comment)
 
     def _merge_keywords(self, original_keywords, new_keywords):
         """
         Prevent duplicate keywords by merging the two lists.
         Any keywords prefixed with '-' will be removed.
         """
-        
         regexp = re.compile(self.list_separator_regex)
         
         new_keywords = [k.strip() for k in regexp.split(new_keywords) if k]
