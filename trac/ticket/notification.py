@@ -93,7 +93,7 @@ class TicketNotifyEmail(NotifyEmail):
         if not self.newticket and modtime:  # Ticket change
             from trac.ticket.web_ui import TicketModule
             for change in TicketModule(self.env).grouped_changelog_entries(
-                ticket, self.db, when=modtime):
+                                                ticket, self.db, when=modtime):
                 if not change['permanent']: # attachment with same time...
                     continue
                 change_data.update({
@@ -109,12 +109,12 @@ class TicketNotifyEmail(NotifyEmail):
                     if field == 'description':
                         new_descr = wrap(new, self.COLS, ' ', ' ', CRLF)
                         old_descr = wrap(old, self.COLS, '> ', '> ', CRLF)
-                        old_descr = old_descr.replace(2*CRLF, CRLF + '>' + \
+                        old_descr = old_descr.replace(2 * CRLF, CRLF + '>' + \
                                                       CRLF)
                         cdescr = CRLF
-                        cdescr += 'Old description:' + 2*CRLF + old_descr + \
-                                  2*CRLF
-                        cdescr += 'New description:' + 2*CRLF + new_descr + \
+                        cdescr += 'Old description:' + 2 * CRLF + old_descr + \
+                                  2 * CRLF
+                        cdescr += 'New description:' + 2 * CRLF + new_descr + \
                                   CRLF
                         changes_descr = cdescr
                     elif field == 'summary':
@@ -138,10 +138,20 @@ class TicketNotifyEmail(NotifyEmail):
                             old = obfuscate_email_address(old)
                             new = obfuscate_email_address(new)
                         newv = new
-                        l = 7 + len(field)
-                        chg = wrap('%s => %s' % (old, new), self.COLS - l, '',
-                                   l * ' ', CRLF)
-                        changes_body += '  * %s:  %s%s' % (field, chg, CRLF)
+                        length = 7 + len(field)
+                        spacer_old, spacer_new = ' ', ' '
+                        if len(old + new) + length > self.COLS:
+                            length = 5
+                            if len(old) + length > self.COLS:
+                                spacer_old = CRLF
+                            if len(new) + length > self.COLS:
+                                spacer_new = CRLF
+                        chg = '* %s: %s%s%s=>%s%s' % (field, spacer_old, old,
+                                                      spacer_old, spacer_new,
+                                                      new)
+                        chg = chg.replace(CRLF, CRLF + length * ' ')
+                        chg = wrap(chg, self.COLS, '', length * ' ', CRLF)
+                        changes_body += ' %s%s' % (chg, CRLF)
                     if newv:
                         change_data[field] = {'oldvalue': old, 'newvalue': new}
         
