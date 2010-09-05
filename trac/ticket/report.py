@@ -372,7 +372,7 @@ class ReportModule(Component):
                 'title': title, 'description': description,
                 'max': limit, 'args': args, 'show_args_form': False,
                 'message': None, 'paginator': None,
-                'report_href': report_href
+                'report_href': report_href, 
                 }
 
         try:
@@ -427,7 +427,7 @@ class ReportModule(Component):
                 'col': col,
                 'title': title,
                 'hidden': False,
-                'asc': False
+                'asc': None,
             }
 
             if col == sort_col:
