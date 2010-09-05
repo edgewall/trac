@@ -225,7 +225,7 @@ jane = r
                         return Mock(get_changes=get_changes)
                     return Mock(scope='/scope',
                                 get_changeset=get_changeset)
-                return Mock()
+                return Mock(scope='/')
         
         rm.__class__ = TestRepositoryManager
 

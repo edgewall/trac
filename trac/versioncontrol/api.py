@@ -713,6 +713,8 @@ class NoSuchNode(ResourceNotFound):
 class Repository(object):
     """Base class for a repository provided by a version control system."""
 
+    scope = '/'
+    
     def __init__(self, name, params, log):
         """Initialize a repository.
         

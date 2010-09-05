@@ -166,13 +166,12 @@ class AuthzSourcePolicy(Component):
 
             rm = RepositoryManager(self.env)
             repos = rm.get_repository(resource.parent.id)
-            scope = getattr(repos, 'scope', '')
             modules = [resource.parent.id or self.authz_module_name]
             if modules[0]:
                 modules.append('')
 
             def check_path(path):
-                path = '/' + join(scope, path)
+                path = '/' + join(repos.scope, path)
                 if path != '/':
                     path += '/'
                 
