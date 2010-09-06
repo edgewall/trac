@@ -19,6 +19,7 @@ Currently available documentation:
      * TracReports — Writing and using reports.
      * TracQuery — Executing custom ticket queries.
      * TracRoadmap — The roadmap helps tracking project progress.
+     * TracBatchModify - Modifying a batch of tickets in one request.
  * '''Administrator Guide'''
    * TracInstall — How to install and run Trac.
    * TracUpgrade — How to upgrade existing installations.

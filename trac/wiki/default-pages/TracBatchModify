@@ -1,0 +1,33 @@
+= Trac Ticket Batch Modification =
+[[TracGuideToc]]
+
+From [wiki:TracQuery custom query] results Trac provides support for modifying a batch of tickets in one request.
+
+To perform a batch modification select the tickets you wish to modify and set the new field values using the section underneath the query results. 
+
+== Configuration ==
+
+You can configure how text fields are treated. with the following options. These are also the default values.
+
+{{{
+[batchmod]
+
+# Which text fields are treated as lists. This means that new values will
+# be merged into or removed from the field appropriately. For example,
+# given a keywords field with the values 'report', adding the value
+# 'component' will result in 'report,component'. You can also remove
+# values by prepending them with '-'. In the example above using '-report'
+# would have removed 'report' from the list.
+fields_as_list = keywords
+
+# The separator for values passed to the list. By default the separator is
+# a comma or any whitespace character.
+list_separator_regex = [,\s]+
+
+# The string used to connect list values after they are merged together.  
+list_connector_string = ,
+}}}
+
+== Limitations ==
+
+Ticket modifications made through this component currently do not get added to the timeline or send out notifications.
