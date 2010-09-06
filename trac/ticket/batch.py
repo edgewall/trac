@@ -22,6 +22,36 @@ from trac.web import IRequestHandler
 import re
 
 class BatchModifyModule(Component):
+    """Ticket batch modification module.
+    
+    This component allows multiple tickets to be modified in one request from
+    the custom query page. For users with the TICKET_BATCH_MODIFY permission
+    it will add a batch modify section underneath custom query results. Users
+    can choose which tickets and fields they wish to modify.
+    
+    '''Limitations:''' Ticket modifications made through this component 
+    currently do not get added to the timeline or send out notifications.
+    
+    Example configuration (which is also the default):
+    {{{
+    [batchmod]
+    
+    # Which text fields are treated as lists. This means that new values will
+    # be merged into or removed from the field appropriately. For example,
+    # given a keywords field with the values 'report', adding the value
+    # 'component' will result in 'report,component'. You can also remove
+    # values by prepending them with '-'. In the example above using '-report'
+    # would have removed 'report' from the list.
+    fields_as_list = keywords
+    
+    # The separator for values passed to the list. By default the separator is
+    # a comma or any whitespace character.
+    list_separator_regex = [,\s]+
+    
+    # The string used to connect list values after they are merged together.  
+    list_connector_string = ,
+    }}}  
+    """
     
     implements(IRequestHandler, IPermissionRequestor)
     
