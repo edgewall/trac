@@ -3111,7 +3111,7 @@ msgstr[1] "Propriétés %(labels)s supprimées"
 
 #: trac/ticket/web_ui.py:1075 trac/ticket/web_ui.py:1626
 msgid "; "
-msgstr " ;"
+msgstr " ; "
 
 #: trac/ticket/web_ui.py:1096
 msgid "No permission to edit the ticket description."
