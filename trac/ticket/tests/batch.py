@@ -1,4 +1,4 @@
-from trac.test import Mock, EnvironmentStub, MockPerm
+from trac.test import Mock, EnvironmentStub
 from trac.ticket.batch import BatchModifyModule
 from trac.ticket.model import Ticket
 from trac.util.datefmt import utc
@@ -77,6 +77,18 @@ class BatchModifyTestCase(unittest.TestCase):
         values = { 'status' : 'reopened'}
         batch._remove_resolution_if_not_closed(values)
         self.assertEqual(values['resolution'], '')
+        
+    def test_get_selected_tickets_returns_list_of_tickets(self):
+        self.req.args = { 'selected_tickets' : '1,2,3' }        
+        batch = BatchModifyModule(self.env)
+        selected_tickets = batch._get_selected_tickets(self.req)
+        self.assertEqual(selected_tickets, ['1', '2', '3'])
+        
+    def test_get_selected_tickets_returns_empty_list_when_nothing_selected(self):
+        self.req.args = { 'selected_tickets' : '' }        
+        batch = BatchModifyModule(self.env)
+        selected_tickets = batch._get_selected_tickets(self.req)
+        self.assertEqual(selected_tickets, [])
         
     def test_merge_keywords_adds_new_keywords_to_empty_list(self):
         combined = self._merge_keywords_test_helper('', 'foo, bar')

@@ -53,15 +53,10 @@ class BatchModifyModule(Component):
         new_values = self._get_new_ticket_values(req) 
         self._check_for_resolution(new_values)
         self._remove_resolution_if_not_closed(new_values)
+        selected_tickets = self._get_selected_tickets(req)
 
-        selected_tickets = req.args.get('selected_tickets')
-        selected_tickets = isinstance(selected_tickets, list) and \
-                            selected_tickets or selected_tickets.split(',')
-        if not selected_tickets:
-            raise TracError('No tickets selected')
-
-        self._save_ticket_changes(req, selected_tickets, 
-                                  new_values, comment)        
+        self._save_ticket_changes(req, selected_tickets,
+                                  new_values, comment) 
                 
         #Always redirect back to the query page we came from.
         req.redirect(req.session['query_href'])
@@ -88,6 +83,15 @@ class BatchModifyModule(Component):
         resolution should be removed."""
         if values.has_key('status') and values['status'] is not 'closed':
             values['resolution'] = ''
+
+    def _get_selected_tickets(self, req):
+        """The selected tickets will be a comma separated list
+        in the request arguments."""
+        selected_tickets = req.args.get('selected_tickets')
+        if selected_tickets == '':
+            return []
+        else:
+            return selected_tickets.split(',')
 
     def _save_ticket_changes(self, req, selected_tickets, 
                              new_values, comment):
