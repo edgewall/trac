@@ -91,7 +91,7 @@
           <thead>
             <tr py:for="header_group in header_groups">
               <th py:for="header in header_group" py:if="not header.hidden" py:with="fullrow = header is header_group[-1]"
-                colspan="${fullrow and '100' or None}">
+                colspan="${fullrow and '100' or None}" class="${header.asc is not None and ('desc', 'asc')[header.asc] or None}">
                 <a py:strip="not sorting_enabled"
                   href="${report_href(sort=header.col, asc=not header.asc)}">
                   $header.title

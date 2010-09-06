@@ -202,11 +202,10 @@ class CachedRepository(Repository):
                     next_youngest = self.repos.oldest_rev
                     # Ugly hack needed because doing that everytime in 
                     # oldest_rev suffers from horrendeous performance (#5213)
-                    if hasattr(self.repos, 'scope'):
-                        if self.repos.scope != '/' and not \
-                                self.repos.has_node('/', next_youngest):
-                            next_youngest = self.repos.next_rev(next_youngest,
-                                    find_initial_rev=True)
+                    if self.repos.scope != '/' and not \
+                            self.repos.has_node('/', next_youngest):
+                        next_youngest = self.repos.next_rev(next_youngest,
+                                find_initial_rev=True)
                     next_youngest = self.repos.normalize_rev(next_youngest)
                 except TracError:
                     # can't normalize oldest_rev: repository was empty
@@ -434,7 +433,6 @@ class CachedChangeset(Changeset):
                                date)
         else:
             raise NoSuchChangeset(rev)
-        self.scope = getattr(repos.repos, 'scope', '')
 
     def get_changes(self):
         db = self.env.get_db_cnx()

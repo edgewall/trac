@@ -474,8 +474,8 @@ table.listing thead th :link:hover, table.listing thead th :visited:hover {
  background-color: transparent;
 }
 table.listing thead th a { border: none; padding-right: 12px }
-table.listing th.asc a, table.listing th.desc a { font-weight: bold }
 table.listing th.asc a, table.listing th.desc a {
+ font-weight: bold;
  background-position: 100% 50%;
  background-repeat: no-repeat;
 }

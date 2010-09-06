@@ -30,7 +30,7 @@ from trac.util import translation
 from trac.util.html import html
 from trac.util.text import console_print, exception_to_unicode, printout, \
                            printerr, raw_input, to_unicode
-from trac.util.translation import _
+from trac.util.translation import _, get_negotiated_locale, has_babel
 from trac.versioncontrol.api import RepositoryManager
 from trac.wiki.admin import WikiAdmin
 from trac.wiki.macros import WikiMacroBase
@@ -148,7 +148,7 @@ Type:  '?' or 'help' for help on commands.
     def env_check(self):
         if not self.__env:
             try:
-                self.__env = Environment(self.envname)
+                self._init_env()
             except:
                 return False
         return True
@@ -157,13 +157,21 @@ Type:  '?' or 'help' for help on commands.
     def env(self):
         try:
             if not self.__env:
-                self.__env = Environment(self.envname)
+                self._init_env()
             return self.__env
         except Exception, e:
             printerr(_("Failed to open environment: %(err)s",
                        err=exception_to_unicode(e, traceback=True)))
             sys.exit(1)
 
+    def _init_env(self):
+        self.__env = env = Environment(self.envname)
+        # fixup language according to env settings
+        if has_babel:
+            preferred = env.config.get('trac', 'default_language', '')
+            if preferred:
+                translation.activate(get_negotiated_locale([preferred]))
+        
     ##
     ## Utility methods
     ##
@@ -513,15 +521,13 @@ def run(args=None):
     if args is None:
         args = sys.argv[1:]
     locale = None
-    try:
+    if has_babel:
         import babel
         try:
             locale = babel.Locale.default()
         except babel.UnknownLocaleError:
             pass
-    except ImportError:
-        pass
-    translation.activate(locale)
+        translation.activate(locale)
     admin = TracAdmin()
     if len(args) > 0:
         if args[0] in ('-h', '--help', 'help'):

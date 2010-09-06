@@ -93,7 +93,7 @@ class TicketNotifyEmail(NotifyEmail):
         if not self.newticket and modtime:  # Ticket change
             from trac.ticket.web_ui import TicketModule
             for change in TicketModule(self.env).grouped_changelog_entries(
-                ticket, self.db, when=modtime):
+                                                ticket, self.db, when=modtime):
                 if not change['permanent']: # attachment with same time...
                     continue
                 change_data.update({
@@ -109,12 +109,12 @@ class TicketNotifyEmail(NotifyEmail):
                     if field == 'description':
                         new_descr = wrap(new, self.COLS, ' ', ' ', CRLF)
                         old_descr = wrap(old, self.COLS, '> ', '> ', CRLF)
-                        old_descr = old_descr.replace(2*CRLF, CRLF + '>' + \
+                        old_descr = old_descr.replace(2 * CRLF, CRLF + '>' + \
                                                       CRLF)
                         cdescr = CRLF
-                        cdescr += 'Old description:' + 2*CRLF + old_descr + \
-                                  2*CRLF
-                        cdescr += 'New description:' + 2*CRLF + new_descr + \
+                        cdescr += 'Old description:' + 2 * CRLF + old_descr + \
+                                  2 * CRLF
+                        cdescr += 'New description:' + 2 * CRLF + new_descr + \
                                   CRLF
                         changes_descr = cdescr
                     elif field == 'summary':
@@ -138,10 +138,20 @@ class TicketNotifyEmail(NotifyEmail):
                             old = obfuscate_email_address(old)
                             new = obfuscate_email_address(new)
                         newv = new
-                        l = 7 + len(field)
-                        chg = wrap('%s => %s' % (old, new), self.COLS - l, '',
-                                   l * ' ', CRLF)
-                        changes_body += '  * %s:  %s%s' % (field, chg, CRLF)
+                        length = 7 + len(field)
+                        spacer_old, spacer_new = ' ', ' '
+                        if len(old + new) + length > self.COLS:
+                            length = 5
+                            if len(old) + length > self.COLS:
+                                spacer_old = CRLF
+                            if len(new) + length > self.COLS:
+                                spacer_new = CRLF
+                        chg = '* %s: %s%s%s=>%s%s' % (field, spacer_old, old,
+                                                      spacer_old, spacer_new,
+                                                      new)
+                        chg = chg.replace(CRLF, CRLF + length * ' ')
+                        chg = wrap(chg, self.COLS, '', length * ' ', CRLF)
+                        changes_body += ' %s%s' % (chg, CRLF)
                     if newv:
                         change_data[field] = {'oldvalue': old, 'newvalue': new}
         
@@ -183,18 +193,29 @@ class TicketNotifyEmail(NotifyEmail):
             if fval.find('\n') != -1:
                 continue
             idx = 2 * (i % 2)
-            if len(f['label']) > width[idx]:
-                width[idx] = len(f['label'])
-            if len(fval) > width[idx + 1]:
-                width[idx + 1] = len(fval)
+            width[idx] = max(len(f['label']), width[idx])
+            width[idx + 1] = max(len(fval), width[idx + 1])
             i += 1
-        format = (u'%%%is:  %%-%is  |  ' % (width[0], width[1]),
-                  u' %%%is:  %%-%is%s' % (width[2], width[3], CRLF))
-        l = (width[0] + width[1] + 5)
-        sep = l * '-' + '+' + (self.COLS - l) * '-'
+        width_l = width[0] + width[1] + 5
+        width_r = width[2] + width[3] + 5
+        half_cols = (self.COLS - 1) / 2
+        if width_l + width_r + 1 > self.COLS:
+            if ((width_l > half_cols and width_r > half_cols) or 
+                    (width[0] > half_cols / 2 or width[2] > half_cols / 2)):
+                width_l = half_cols
+                width_r = half_cols
+            elif width_l > width_r:
+                width_l = min((self.COLS - 1) * 2 / 3, width_l)
+                width_r = self.COLS - width_l - 1
+            else:
+                width_r = min((self.COLS - 1) * 2 / 3, width_r)         
+                width_l = self.COLS - width_r - 1
+        sep = width_l * '-' + '+' + width_r * '-'
         txt = sep + CRLF
+        cell_tmp = [u'', u'']
         big = []
         i = 0
+        width_lr = [width_l, width_r]
         for f in [f for f in fields if f['name'] != 'description']:
             fname = f['name']
             if not tkt.values.has_key(fname):
@@ -207,10 +228,23 @@ class TicketNotifyEmail(NotifyEmail):
             else:
                 # Note: f['label'] is a Babel's LazyObject, make sure its
                 # __str__ method won't be called.
-                txt += format[i % 2] % (f['label'], unicode(fval))
+                str_tmp = u'%s:  %s' % (f['label'], unicode(fval))
+                idx = i % 2
+                cell_tmp[idx] += wrap(str_tmp, width_lr[idx] - 2 + 2 * idx,
+                                      (width[2 * idx] - len(f['label'])
+                                       + 2 * idx) * ' ',
+                                      2 * ' ', CRLF)
+                cell_tmp[idx] += CRLF
                 i += 1
-        if i % 2:
-            txt += CRLF
+        cell_l = cell_tmp[0].splitlines()
+        cell_r = cell_tmp[1].splitlines()
+        format = u'%%-%is|%%s%%s' % width_l
+        for i in range(max(len(cell_l), len(cell_r))):
+            if i >= len(cell_l):
+                cell_l.append(width_l * ' ')
+            elif i >= len(cell_r):
+                cell_r.append('')
+            txt += format % (cell_l[i], cell_r[i], CRLF)
         if big:
             txt += sep
             for name, value in big:
