@@ -189,7 +189,7 @@ class FunctionalTestEnvironment(object):
                 call(["taskkill", "/f", "/pid", str(self.pid)],
                      stdin=PIPE, stdout=PIPE, stderr=PIPE)
             else:
-                os.kill(self.pid, signal.SIGINT)
+                os.kill(self.pid, signal.SIGTERM)
                 try:
                     os.waitpid(self.pid, 0)
                 except OSError, e:
