@@ -156,6 +156,9 @@ class SQLiteConnector(Component):
                 sqlite.version_info < (2, 0, 7):
             self.error = _("Need at least PySqlite %(version)s or higher",
                            version='2.0.7')
+        elif (2, 5, 2) <= sqlite.version_info < (2, 5, 5):
+            self.error = _("PySqlite 2.5.2 - 2.5.4 break Trac, please use "
+                           "2.5.5 or higher")
         yield ('sqlite', self.error and -1 or 1)
 
     def get_connection(self, path, log=None, params={}):
