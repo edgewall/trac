@@ -3289,7 +3289,7 @@ msgstr "Voulez-vous vraiment supprimer ce jalon ?"
 
 #: trac/ticket/templates/milestone_delete.html:29
 msgid "Retarget associated tickets to milestone"
-msgstr "Déplacer les tickets associés au jalon :"
+msgstr "Déplacer les tickets associés vers le jalon :"
 
 #: trac/ticket/templates/milestone_delete.html:41
 #: trac/ticket/templates/milestone_view.html:107
