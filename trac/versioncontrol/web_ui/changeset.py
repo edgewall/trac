@@ -1014,15 +1014,17 @@ class ChangesetModule(Component):
             drev_b = cset.repos.display_rev(rev_b)
             title = tag(title, tag.em('[%s-%s]' % (drev_a, drev_b)))
         if field == 'title':
-            branch_markup = []
+            labels = []
             for name, head in cset.get_branches():
                 if not head and name in ('default', 'master'):
                     continue
                 class_ = 'branch'
                 if head:
                     class_ += ' head'
-                branch_markup.append(tag.span(name, class_=class_))
-            return tag(title, branch_markup)
+                labels.append(tag.span(name, class_=class_))
+            for name in cset.get_tags():
+                labels.append(tag.span(name, class_='tag'))
+            return title if not labels else tag(title, labels)
         elif field == 'summary':
             return _("%(title)s: %(message)s",
                      title=title, message=shorten_line(message))

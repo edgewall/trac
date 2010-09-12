@@ -75,7 +75,7 @@ dd.changeset .changes .delete  { background: #f88 }
 dd.changeset .changes .edit    { background: #fd8 }
 dd.changeset .changes .copy    { background: #88f }
 dd.changeset .changes .move    { background: #ccc }
-dt.changeset .branch {
+dt.changeset .branch, dt.changeset .tag {
  color: #777;
  font-size: 80%;
  background: #f6f6f6;
@@ -86,4 +86,8 @@ dt.changeset .branch {
 dt.changeset .head {
  background: #d0ffd0;
  border: 1px solid #9d9;
+}
+dt.changeset .tag {
+ background: #ffa;
+ border: 1px solid #fe0;
 }

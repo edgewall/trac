@@ -1108,6 +1108,10 @@ class Changeset(object):
         """
         return []
 
+    def get_tags(self):
+        """Yield tags associated with this changeset."""
+        return []
+
     def can_view(self, perm):
         """Return True if view permission is granted on the changeset."""
         return 'CHANGESET_VIEW' in perm(self.resource)
