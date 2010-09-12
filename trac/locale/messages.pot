@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.13\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-09-12 10:25+0200\n"
+"POT-Creation-Date: 2010-09-12 21:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 
 #: tracopt/ticket/deleter.py:69 tracopt/ticket/deleter.py:82
-#: trac/ticket/templates/report_list.html:35
+#: trac/ticket/templates/report_list.html:82
 msgid "Delete"
 msgstr ""
 
@@ -652,7 +652,7 @@ msgstr ""
 
 #: trac/admin/web_ui.py:186 trac/ticket/admin.py:64 trac/ticket/admin.py:89
 #: trac/ticket/admin.py:275 trac/ticket/admin.py:458 trac/ticket/admin.py:611
-#: trac/ticket/admin.py:697 trac/ticket/report.py:189
+#: trac/ticket/admin.py:697 trac/ticket/report.py:195
 #: trac/ticket/roadmap.py:691 trac/versioncontrol/admin.py:215
 msgid "Your changes have been saved."
 msgstr ""
@@ -1485,11 +1485,11 @@ msgstr ""
 msgid "Search query too short. Query must be at least %(num)s characters long."
 msgstr ""
 
-#: trac/search/web_ui.py:232 trac/ticket/query.py:764 trac/ticket/report.py:397
+#: trac/search/web_ui.py:232 trac/ticket/query.py:764 trac/ticket/report.py:404
 msgid "Next Page"
 msgstr ""
 
-#: trac/search/web_ui.py:238 trac/ticket/query.py:769 trac/ticket/report.py:400
+#: trac/search/web_ui.py:238 trac/ticket/query.py:769 trac/ticket/report.py:407
 msgid "Previous Page"
 msgstr ""
 
@@ -2477,23 +2477,23 @@ msgstr ""
 msgid "Ticket"
 msgstr ""
 
-#: trac/ticket/query.py:777 trac/ticket/report.py:406
+#: trac/ticket/query.py:777 trac/ticket/report.py:413
 #, python-format
 msgid "Page %(num)d"
 msgstr ""
 
-#: trac/ticket/query.py:826 trac/ticket/report.py:273 trac/ticket/report.py:560
+#: trac/ticket/query.py:826 trac/ticket/report.py:279 trac/ticket/report.py:567
 #: trac/ticket/web_ui.py:130 trac/timeline/web_ui.py:214
 #: trac/versioncontrol/web_ui/log.py:298
 msgid "RSS Feed"
 msgstr ""
 
-#: trac/ticket/query.py:828 trac/ticket/report.py:275 trac/ticket/report.py:562
+#: trac/ticket/query.py:828 trac/ticket/report.py:281 trac/ticket/report.py:569
 #: trac/ticket/web_ui.py:126
 msgid "Comma-delimited Text"
 msgstr ""
 
-#: trac/ticket/query.py:830 trac/ticket/report.py:277 trac/ticket/report.py:564
+#: trac/ticket/query.py:830 trac/ticket/report.py:283 trac/ticket/report.py:571
 #: trac/ticket/web_ui.py:128
 msgid "Tab-delimited Text"
 msgstr ""
@@ -2503,14 +2503,14 @@ msgid "View Tickets"
 msgstr ""
 
 #: trac/ticket/query.py:1059 trac/ticket/query.py:1070
-#: trac/ticket/report.py:133
+#: trac/ticket/report.py:138 trac/ticket/templates/report_list.html:56
 msgid "Custom Query"
 msgstr ""
 
-#: trac/ticket/query.py:1069 trac/ticket/report.py:123
-#: trac/ticket/report.py:124 trac/ticket/report.py:126
+#: trac/ticket/query.py:1069 trac/ticket/report.py:128
+#: trac/ticket/report.py:129 trac/ticket/report.py:131
 #: trac/ticket/templates/report_list.html:10
-#: trac/ticket/templates/report_list.html:15
+#: trac/ticket/templates/report_list.html:28
 msgid "Available Reports"
 msgstr ""
 
@@ -2533,70 +2533,70 @@ msgstr ""
 msgid "%(groupvalue)s %(groupname)s tickets:"
 msgstr ""
 
-#: trac/ticket/report.py:159
+#: trac/ticket/report.py:165
 msgid "The report has been created."
 msgstr ""
 
-#: trac/ticket/report.py:172
+#: trac/ticket/report.py:178
 #, python-format
 msgid "The report {%(id)d} has been deleted."
 msgstr ""
 
-#: trac/ticket/report.py:199
+#: trac/ticket/report.py:205
 #, python-format
 msgid "Delete Report {%(num)s} %(title)s"
 msgstr ""
 
-#: trac/ticket/report.py:204 trac/ticket/report.py:217
-#: trac/ticket/report.py:296
+#: trac/ticket/report.py:210 trac/ticket/report.py:223
+#: trac/ticket/report.py:303
 #, python-format
 msgid "Report {%(num)s} does not exist."
 msgstr ""
 
-#: trac/ticket/report.py:205 trac/ticket/report.py:218
-#: trac/ticket/report.py:297
+#: trac/ticket/report.py:211 trac/ticket/report.py:224
+#: trac/ticket/report.py:304
 msgid "Invalid Report Number"
 msgstr ""
 
-#: trac/ticket/report.py:230
+#: trac/ticket/report.py:236
 msgid "Create New Report"
 msgstr ""
 
-#: trac/ticket/report.py:234
+#: trac/ticket/report.py:240
 #, python-format
 msgid "Edit Report {%(num)d} %(title)s"
 msgstr ""
 
-#: trac/ticket/report.py:302
+#: trac/ticket/report.py:309
 #, python-format
 msgid "Report failed: %(error)s"
 msgstr ""
 
-#: trac/ticket/report.py:317
+#: trac/ticket/report.py:324
 #, python-format
 msgid "When specified, the report number should be \"%(num)s\"."
 msgstr ""
 
-#: trac/ticket/report.py:388
+#: trac/ticket/report.py:395
 #, python-format
 msgid "Report execution failed: %(error)s"
 msgstr ""
 
-#: trac/ticket/report.py:568
+#: trac/ticket/report.py:575
 msgid "SQL Query"
 msgstr ""
 
-#: trac/ticket/report.py:592
+#: trac/ticket/report.py:599
 #, python-format
 msgid "The following arguments are missing: %(args)s"
 msgstr ""
 
-#: trac/ticket/report.py:606
+#: trac/ticket/report.py:613
 #, python-format
 msgid "Report {%(num)s} has no SQL query."
 msgstr ""
 
-#: trac/ticket/report.py:636
+#: trac/ticket/report.py:643
 #, python-format
 msgid "Query parameter \"sort=%(sort_col)s\"  is invalid"
 msgstr ""
@@ -3256,14 +3256,14 @@ msgid "Are you sure you want to delete this report?"
 msgstr ""
 
 #: trac/ticket/templates/report_delete.html:22
-#: trac/ticket/templates/report_list.html:34
+#: trac/ticket/templates/report_list.html:82
 #: trac/ticket/templates/report_view.html:75
 msgid "Delete report"
 msgstr ""
 
 #: trac/ticket/templates/report_delete.html:26
 #: trac/ticket/templates/report_edit.html:49
-#: trac/ticket/templates/report_list.html:52
+#: trac/ticket/templates/report_list.html:112
 #: trac/ticket/templates/report_view.html:195
 msgid ""
 "[1:Note:]\n"
@@ -3296,40 +3296,68 @@ msgstr ""
 msgid "Save report"
 msgstr ""
 
-#: trac/ticket/templates/report_list.html:23
-msgid "Report"
+#: trac/ticket/templates/report_list.html:31
+msgid "Show Descriptions"
 msgstr ""
 
-#: trac/ticket/templates/report_list.html:24 trac/wiki/admin.py:200
+#: trac/ticket/templates/report_list.html:43
+msgid "Forget last query"
+msgstr ""
+
+#: trac/ticket/templates/report_list.html:43
+msgid "Clear"
+msgstr ""
+
+#: trac/ticket/templates/report_list.html:46
+msgid "Return to Last Query"
+msgstr ""
+
+#: trac/ticket/templates/report_list.html:50
+msgid ""
+"Continue browsing through the current list of results,\n"
+"              from the last selected report or custom query."
+msgstr ""
+
+#: trac/ticket/templates/report_list.html:59
+msgid "Compose a new ticket query by selecting filters and columns to display."
+msgstr ""
+
+#: trac/ticket/templates/report_list.html:64
+msgid "SQL reports and saved custom queries"
+msgstr ""
+
+#: trac/ticket/templates/report_list.html:66
+msgid "Sort by:"
+msgstr ""
+
+#: trac/ticket/templates/report_list.html:69
+msgid "Identifier"
+msgstr ""
+
+#: trac/ticket/templates/report_list.html:72 trac/wiki/admin.py:200
 msgid "Title"
 msgstr ""
 
-#: trac/ticket/templates/report_list.html:25
-#: trac/wiki/templates/wiki_edit.html:69 trac/wiki/templates/wiki_edit.html:142
-msgid "Actions"
-msgstr ""
-
-#: trac/ticket/templates/report_list.html:30
-#: trac/ticket/templates/report_list.html:31
-#: trac/ticket/templates/report_view.html:121
-msgid "View report"
-msgstr ""
-
-#: trac/ticket/templates/report_list.html:32
+#: trac/ticket/templates/report_list.html:88
 #: trac/ticket/templates/report_view.html:63
 msgid "Edit report"
 msgstr ""
 
-#: trac/ticket/templates/report_list.html:33
+#: trac/ticket/templates/report_list.html:88
 #: trac/ticket/templates/ticket.html:148 trac/wiki/templates/wiki_edit.html:125
 msgid "Edit"
 msgstr ""
 
-#: trac/ticket/templates/report_list.html:38
+#: trac/ticket/templates/report_list.html:91
+#: trac/ticket/templates/report_view.html:121
+msgid "View report"
+msgstr ""
+
+#: trac/ticket/templates/report_list.html:99
 msgid "No reports available."
 msgstr ""
 
-#: trac/ticket/templates/report_list.html:47
+#: trac/ticket/templates/report_list.html:107
 msgid "Create new report"
 msgstr ""
 
@@ -5380,6 +5408,10 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:68 trac/wiki/templates/wiki_edit.html:141
 msgid "Go to Save, Preview, Review or Cancel buttons"
+msgstr ""
+
+#: trac/wiki/templates/wiki_edit.html:69 trac/wiki/templates/wiki_edit.html:142
+msgid "Actions"
 msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:70
