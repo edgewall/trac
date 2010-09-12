@@ -1076,6 +1076,19 @@ msgstr ""
 "              dans les résultats des requêtes personnalisées"
 "               et des rapports."
 
+#: trac/admin/templates/admin_enums.html:77
+msgid "Note:"
+msgstr "Note :"
+
+#: trac/admin/templates/admin_enums.html:77
+msgid ""
+"The order of priorities determines the coloring of entries\n"
+"              in the ticket queries and reports."
+msgstr ""
+"L'ordre des priorités détermine la couleur des lignes\n"
+"              dans les résultats des requêtes personnalisées"
+"               et des rapports."
+
 #: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:79
 msgid "Configuration"
 msgstr "Configuration"
@@ -3619,6 +3632,10 @@ msgstr "Description : (l'utilisation du [1:WikiFormatting] est possible ici)"
 msgid "Error:"
 msgstr "Erreur :"
 
+#: trac/ticket/templates/report_edit.html:34
+msgid "Error:"
+msgstr "Erreur :"
+
 #: trac/ticket/templates/report_edit.html:36
 msgid ""
 "Query for Report: (can be either SQL or, if starting with [1:query:],\n"
@@ -5555,6 +5572,16 @@ msgstr "Identificateur de session %(sid)s introuvable"
 #, python-format
 msgid "'%(name)s' is not a file"
 msgstr "%(name)s n'est pas un fichier"
+
+#: trac/wiki/admin.py:133
+#, python-format
+msgid "  %(title)s already exists"
+msgstr " %(title)s existe déjà"
+
+#: trac/wiki/admin.py:137
+#, python-format
+msgid "  %(title)s is already up to date"
+msgstr " %(title)s est déjà à jour."
 
 #: trac/wiki/admin.py:133
 #, python-format
