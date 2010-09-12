@@ -64,7 +64,7 @@
           <h3>SQL reports and saved custom queries
             <span id="trac-sort-order" py:with="report_asc = asc if sort == 'report' else None;
                                                 title_asc = asc if sort == 'title' else None">
-              Sorted by:
+              Sort by:
               <a href="${href.report(sort='report', asc=report_asc and '0' or '1')}"
                  class="${('desc', 'asc')[report_asc] if report_asc is not None else None}">
                 Identifier</a>
