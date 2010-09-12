@@ -947,12 +947,6 @@ class ChangesetModule(Component):
                                         stop_rev=rev_a)
             
         elif field == 'description':
-            branch_markup = []
-            for name, head in cset.get_branches():
-                class_ = 'branch'
-                if head:
-                    class_ += ' head'
-                branch_markup.append(tag.span(name, class_=class_))
             if self.wiki_format_messages:
                 markup = ''
                 if self.timeline_long_messages: # override default flavor
@@ -1002,7 +996,7 @@ class ChangesetModule(Component):
             if message:
                 markup += format_to(self.env, None, context(cset_resource),
                                     message)
-            return tag(branch_markup, markup)
+            return markup
 
         single = rev_a == rev_b
         if not repos_for_uid[0]:
@@ -1020,11 +1014,19 @@ class ChangesetModule(Component):
             drev_b = cset.repos.display_rev(rev_b)
             title = tag(title, tag.em('[%s-%s]' % (drev_a, drev_b)))
         if field == 'title':
-            return title
+            branch_markup = []
+            for name, head in cset.get_branches():
+                if not head and name in ('default', 'master'):
+                    continue
+                class_ = 'branch'
+                if head:
+                    class_ += ' head'
+                branch_markup.append(tag.span(name, class_=class_))
+            return tag(title, branch_markup)
         elif field == 'summary':
             return _("%(title)s: %(message)s",
                      title=title, message=shorten_line(message))
-        
+
     # IWikiSyntaxProvider methods
 
     CHANGESET_ID = r"(?:\d+|[a-fA-F\d]{8,})" # only "long enough" hexa ids
