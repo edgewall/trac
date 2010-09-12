@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2010-09-12 21:27+0200\n"
+"PO-Revision-Date: 2010-09-12 21:36+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -3660,8 +3660,8 @@ msgstr ""
 #: trac/ticket/templates/report_list.html:59
 msgid "Compose a new ticket query by selecting filters and columns to display."
 msgstr ""
-"Composer une nouvelle requête personnalisée en sélectionnant les \"\n"
-"\"filtres et les colonnes"
+"Composer une nouvelle requête personnalisée en sélectionnant les\n"
+"filtres et les colonnes"
 
 #: trac/ticket/templates/report_list.html:64
 msgid "SQL reports and saved custom queries"
@@ -3669,7 +3669,7 @@ msgstr "Rapports SQL et requêtes sauvegardées"
 
 #: trac/ticket/templates/report_list.html:66
 msgid "Sort by:"
-msgstr "Trié par :"
+msgstr "Trier par :"
 
 #: trac/ticket/templates/report_list.html:69
 msgid "Identifier"
