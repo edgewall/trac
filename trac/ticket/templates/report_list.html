@@ -19,10 +19,18 @@
 
       <div py:choose="" class="reports">
         <div py:if="saved_query_href">
-          <h2><a href="$saved_query_href"><em>Return to last query</em></a></h2>
+          <h2>
+            <a href="$saved_query_href"><em>Return to Last Query</em></a>
+            <form method="get" action="${href.report()}">
+              <div class="inlinebuttons">
+                <input type="hidden" name="action" value="clear" />
+                <input type="submit" class="inlinebutton" title="Forget last query" value="${_('Clear')}" />
+              </div>
+            </form>
+          </h2>
           <div class="description">
             <p>Continue browsing through the current list of results,
-              from the selected report or custom query.</p>
+              from the last selected report or custom query.</p>
           </div>
         </div>
 

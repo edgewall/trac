@@ -114,6 +114,11 @@ class ReportModule(Component):
             template, data, content_type = self._render_list(req)
             if content_type: # i.e. alternate format
                 return template, data, content_type
+            if action == 'clear':
+                if 'query_href' in req.session:
+                    del req.session['query_href']
+                if 'query_tickets' in req.session:
+                    del req.session['query_tickets']
         else:
             template, data, content_type = self._render_view(req, id)
             if content_type: # i.e. alternate format
@@ -132,7 +137,7 @@ class ReportModule(Component):
                 self.env.is_component_enabled(QueryModule):
             add_ctxtnav(req, _('Custom Query'), href=req.href.query())
             data['query_href'] = req.href.query()
-            data['saved_query_href'] = req.session['query_href']
+            data['saved_query_href'] = req.session.get('query_href')
         else:
             data['query_href'] = None
 
