@@ -39,7 +39,6 @@ worry about basic issues such as if the ticket was successfully created.
 
 Requirements:
  - Twill (http://twill.idyll.org/)
- - subprocess (py2.4)
  - lxml for XHTML validation (optional)
 """
 
@@ -55,14 +54,11 @@ import exceptions
 import trac
 from trac.tests.functional.compat import close_fds, rmtree
 
-# Handle missing twill and/or subprocess so we can print a useful 'SKIP'
+# Handle missing twill so we can print a useful 'SKIP'
 # message.  We import subprocess first to allow customizing it on Windows
 # to select pywin32 in favor of _subprocess for low-level calls.  If Twill
 # is allowed to load first, its (unmodified) copy will always be loaded.
-try:
-    import subprocess
-except ImportError:
-    subprocess = None
+import subprocess
 
 from better_twill import twill, b, tc, ConnectError
 
@@ -88,7 +84,7 @@ trac_source_tree = os.path.normpath(os.path.join(trac.__file__, '..', '..'))
 # testing.log gets any unused output from subprocesses
 logfile = open(os.path.join(trac_source_tree, 'testing.log'), 'w')
 
-if twill and subprocess:
+if twill:
     # functional-testing.log gets the twill output
     twill.set_output(open(os.path.join(trac_source_tree,
                                        'functional-testing.log'), 'w'))
@@ -155,15 +151,13 @@ def regex_owned_by(username):
 
 
 def suite():
-    if twill and subprocess:
+    if twill:
         from trac.tests.functional.testcases import suite
         suite = suite()
     else:
         diagnostic = "SKIP: functional tests"
         if not twill:
             diagnostic += " (no twill installed)"
-        if not subprocess:
-            diagnostic += " (no subprocess installed)"
         print diagnostic
         # No tests to run, provide an empty suite.
         suite = unittest.TestSuite()

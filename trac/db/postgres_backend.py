@@ -147,11 +147,7 @@ class PostgreSQLConnector(Component):
                           for each in alterations))
 
     def backup(self, dest_file):
-        try:
-            from subprocess import Popen, PIPE
-        except ImportError:
-            raise TracError(_('Python >= 2.4 or the subprocess module '
-                              'is required for backup support'))
+        from subprocess import Popen, PIPE
         db_url = self.env.config.get('trac', 'database')
         scheme, db_prop = _parse_db_str(db_url)
         db_params = db_prop.setdefault('params', {})
