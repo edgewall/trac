@@ -248,7 +248,7 @@ class ReportModule(Component):
         
         db = self.env.get_db_cnx()
         cursor = db.cursor()
-        cursor.execute("SELECT id, title FROM report ORDER BY %s%s"
+        cursor.execute("SELECT id, title, description FROM report ORDER BY %s%s"
                        % (sort == 'title' and 'title' or 'id',
                           not asc and ' DESC' or ''))
         rows = list(cursor)
@@ -276,9 +276,10 @@ class ReportModule(Component):
         add_link(req, 'alternate', report_href(format='tab'),
                  _('Tab-delimited Text'), 'text/plain')
         
-        reports = [(id, title, 'REPORT_MODIFY' in req.perm('report', id),
+        reports = [(id, title, description, 
+                    'REPORT_MODIFY' in req.perm('report', id),
                     'REPORT_DELETE' in req.perm('report', id))
-                   for id, title in rows]
+                   for id, title, description in rows]
         data = {'reports': reports, 'sort': sort, 'asc': asc}
 
         return 'report_list.html', data, None

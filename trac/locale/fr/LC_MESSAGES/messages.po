@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2010-09-12 10:26+0200\n"
+"PO-Revision-Date: 2010-09-12 10:20+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -3433,6 +3433,7 @@ msgid "Edit milestone"
 msgstr "Modifier le jalon"
 
 #: trac/ticket/templates/query.html:30
+#: trac/ticket/templates/query_results.html:28
 #: trac/ticket/templates/report_view.html:21
 #: trac/ticket/templates/report_view.html:87
 #, python-format
@@ -3533,40 +3534,35 @@ msgstr ""
 "[1:Note :] consultez [2:TracQuery] pour obtenir de l'aide sur "
 "l'utilisation des requêtes."
 
-#: trac/ticket/templates/query_results.html:25
-#, python-format
-msgid "%(grouplabel)s: %(groupname)s [1:(%(count)s)]"
-msgstr "%(grouplabel)s : %(groupname)s [1:(%(count)s)]"
-
-#: trac/ticket/templates/query_results.html:37
+#: trac/ticket/templates/query_results.html:35
 msgid "(ascending)"
 msgstr "(croissant)"
 
-#: trac/ticket/templates/query_results.html:37
+#: trac/ticket/templates/query_results.html:35
 msgid "(descending)"
 msgstr "(décroissant)"
 
-#: trac/ticket/templates/query_results.html:38
+#: trac/ticket/templates/query_results.html:36
 #: trac/versioncontrol/templates/sortable_th.html:18
 #, python-format
 msgid "Sort by %(col)s %(direction)s"
 msgstr "Trier selon %(col)s %(direction)s"
 
-#: trac/ticket/templates/query_results.html:47
+#: trac/ticket/templates/query_results.html:45
 msgid "No tickets found"
 msgstr "Aucun ticket trouvé"
 
-#: trac/ticket/templates/query_results.html:61
-#: trac/ticket/templates/query_results.html:64
+#: trac/ticket/templates/query_results.html:59
+#: trac/ticket/templates/query_results.html:62
 msgid "View ticket"
 msgstr "Voir le ticket"
 
-#: trac/ticket/templates/query_results.html:69
+#: trac/ticket/templates/query_results.html:67
 #: trac/ticket/templates/report_view.html:170
 msgid "View milestone"
 msgstr "Voir le jalon"
 
-#: trac/ticket/templates/query_results.html:80
+#: trac/ticket/templates/query_results.html:78
 #, python-format
 msgid ""
 "Reported by [1:%(author)s],\n"
@@ -3575,11 +3571,11 @@ msgstr ""
 "Rapporté par [1:%(author)s],\n"
 "               il y a %(date)s."
 
-#: trac/ticket/templates/query_results.html:87
+#: trac/ticket/templates/query_results.html:85
 msgid "(this ticket)"
 msgstr "(ce ticket)"
 
-#: trac/ticket/templates/query_results.html:103
+#: trac/ticket/templates/query_results.html:101
 msgid "(more results for this group on next page)"
 msgstr "(suite des résultats pour ce groupe page suivante)"
 

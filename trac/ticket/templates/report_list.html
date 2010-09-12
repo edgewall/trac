@@ -12,34 +12,49 @@
 
   <body>
     <div id="content" class="report">
-      <h1>Available Reports</h1>
 
-      <div id="description" xml:space="preserve" />
+      <h1>Available Reports
+      <span id="trac-sort-order" py:with="report_asc = asc if sort == 'report' else None;
+                                          title_asc = asc if sort == 'title' else None">
+        Sorted by:
+        <a href="${href.report(sort='report', asc=report_asc and '0' or '1')}"
+           class="${('desc', 'asc')[report_asc] if report_asc is not None else None}">
+          Identifier</a>
+        <a href="${href.report(sort='title', asc=title_asc and '0' or '1')}"
+           class="${('desc', 'asc')[title_asc] if title_asc is not None else None}">
+          Title</a>
+        </span>
+      </h1>
 
-      <table class="listing reports"
-             py:with="any_edit = any(can_edit for id, title, can_edit, can_delete in reports);
-                      any_delete = any(can_delete for id, title, can_edit, can_delete in reports)">
-        <thead><tr>
-          <th><a href="${href.report(sort='report', asc=(sort == 'report' and asc) and '0' or '1')}">Report</a></th>
-          <th><a href="${href.report(sort='title', asc=(sort == 'title' and asc) and '0' or '1')}">Title</a></th>
-          <th py:if="any_edit or any_delete" colspan="${any_edit and any_delete and '2' or None}">Actions</th>
-        </tr></thead>
+      <div id="description" />
 
-        <tbody py:choose="">
-          <tr py:when="reports" py:for="id, title, can_edit, can_delete in reports">
-            <td class="report"><a title="View report" href="${href.report(id)}">{$id}</a></td>
-            <td class="title"><a title="View report" href="${href.report(id)}">$title</a></td>
-            <td py:if="any_edit"><a py:if="can_edit" href="${href.report(id, action='edit')}"
-                                    title="Edit report">Edit</a></td>
-            <td py:if="any_delete"><a py:if="can_delete" href="${href.report(id, action='delete')}"
-                                      title="Delete report">Delete</a></td>
-          </tr>
-          <tr py:otherwise="">
-            <td colspan="${2 + any_edit + any_delete}">No reports available.</td>
-          </tr>
-        </tbody>
-      </table>
-      
+      <div py:choose="" class="reports">
+        <py:when test="reports">
+          <div py:for="id, title, description, can_edit, can_delete in reports">
+            <h2>
+              <a title="View report" href="${href.report(id)}">{$id} <em>$title</em></a>
+              <form py:if="can_delete" method="get" action="${href.report(id)}">
+                <div class="inlinebuttons">
+                  <input type="hidden" name="action" value="delete" />
+                  <input type="submit" class="inlinebutton" title="Delete report" value="${_('Delete')}" />
+                </div>
+              </form>
+              <form py:if="can_edit" method="get" action="${href.report(id)}">
+                <div class="inlinebuttons">
+                  <input type="hidden" name="action" value="edit" />
+                  <input type="submit" class="inlinebutton" title="Edit report" value="${_('Edit')}" />
+                </div>
+              </form>
+            </h2>
+            <div py:if="description" class="description" xml:space="preserve">
+              ${wiki_to_html(context, description)}
+            </div>
+          </div>
+        </py:when>
+        <p py:otherwise="">No reports available.</p>
+      </div>
+
+
       <div py:if="'REPORT_CREATE' in perm" class="buttons">
         <form action="" method="get" id="create_report">
           <div>

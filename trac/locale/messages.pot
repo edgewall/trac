@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.13\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-09-12 10:25+0200\n"
+"POT-Creation-Date: 2010-09-12 10:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3109,6 +3109,7 @@ msgid "Edit milestone"
 msgstr ""
 
 #: trac/ticket/templates/query.html:30
+#: trac/ticket/templates/query_results.html:28
 #: trac/ticket/templates/report_view.html:21
 #: trac/ticket/templates/report_view.html:87
 #, python-format
@@ -3203,51 +3204,46 @@ msgid ""
 "        for help on using queries."
 msgstr ""
 
-#: trac/ticket/templates/query_results.html:25
-#, python-format
-msgid "%(grouplabel)s: %(groupname)s [1:(%(count)s)]"
-msgstr ""
-
-#: trac/ticket/templates/query_results.html:37
+#: trac/ticket/templates/query_results.html:35
 msgid "(ascending)"
 msgstr ""
 
-#: trac/ticket/templates/query_results.html:37
+#: trac/ticket/templates/query_results.html:35
 msgid "(descending)"
 msgstr ""
 
-#: trac/ticket/templates/query_results.html:38
+#: trac/ticket/templates/query_results.html:36
 #: trac/versioncontrol/templates/sortable_th.html:18
 #, python-format
 msgid "Sort by %(col)s %(direction)s"
 msgstr ""
 
-#: trac/ticket/templates/query_results.html:47
+#: trac/ticket/templates/query_results.html:45
 msgid "No tickets found"
 msgstr ""
 
-#: trac/ticket/templates/query_results.html:61
-#: trac/ticket/templates/query_results.html:64
+#: trac/ticket/templates/query_results.html:59
+#: trac/ticket/templates/query_results.html:62
 msgid "View ticket"
 msgstr ""
 
-#: trac/ticket/templates/query_results.html:69
+#: trac/ticket/templates/query_results.html:67
 #: trac/ticket/templates/report_view.html:170
 msgid "View milestone"
 msgstr ""
 
-#: trac/ticket/templates/query_results.html:80
+#: trac/ticket/templates/query_results.html:78
 #, python-format
 msgid ""
 "Reported by [1:%(author)s],\n"
 "                      %(date)s ago."
 msgstr ""
 
-#: trac/ticket/templates/query_results.html:87
+#: trac/ticket/templates/query_results.html:85
 msgid "(this ticket)"
 msgstr ""
 
-#: trac/ticket/templates/query_results.html:103
+#: trac/ticket/templates/query_results.html:101
 msgid "(more results for this group on next page)"
 msgstr ""
 
