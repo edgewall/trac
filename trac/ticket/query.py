@@ -1067,7 +1067,7 @@ class QueryModule(Component):
                self.env.is_component_enabled(ReportModule):
             data['report_href'] = req.href.report()
             add_ctxtnav(req, _('Available Reports'), req.href.report())
-            add_ctxtnav(req, _('Custom Query'))
+            add_ctxtnav(req, _('Custom Query'), req.href.query())
             if query.id:
                 cursor = db.cursor()
                 cursor.execute("SELECT title,description FROM report "

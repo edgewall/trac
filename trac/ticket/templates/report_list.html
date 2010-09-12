@@ -13,23 +13,40 @@
   <body>
     <div id="content" class="report">
 
-      <h1>Available Reports
-      <span id="trac-sort-order" py:with="report_asc = asc if sort == 'report' else None;
-                                          title_asc = asc if sort == 'title' else None">
-        Sorted by:
-        <a href="${href.report(sort='report', asc=report_asc and '0' or '1')}"
-           class="${('desc', 'asc')[report_asc] if report_asc is not None else None}">
-          Identifier</a>
-        <a href="${href.report(sort='title', asc=title_asc and '0' or '1')}"
-           class="${('desc', 'asc')[title_asc] if title_asc is not None else None}">
-          Title</a>
-        </span>
-      </h1>
+      <h1>Available Reports</h1>
 
       <div id="description" />
 
       <div py:choose="" class="reports">
+        <div py:if="saved_query_href">
+          <h2><a href="$saved_query_href"><em>Return to last query</em></a></h2>
+          <div class="description">
+            <p>Continue browsing through the current list of results,
+              from the selected report or custom query.</p>
+          </div>
+        </div>
+
+        <div py:if="query_href">
+          <h2><a href="$query_href"><em>Custom Query</em></a></h2>
+          <div class="description">
+            <p>Compose a new ticket query by selecting filters and columns to display.</p>
+          </div>
+        </div>
+
         <py:when test="reports">
+          <h3>&nbsp;
+            <span id="trac-sort-order" py:with="report_asc = asc if sort == 'report' else None;
+                                                title_asc = asc if sort == 'title' else None">
+              All reports sorted by:
+              <a href="${href.report(sort='report', asc=report_asc and '0' or '1')}"
+                 class="${('desc', 'asc')[report_asc] if report_asc is not None else None}">
+                Identifier</a>
+              <a href="${href.report(sort='title', asc=title_asc and '0' or '1')}"
+                 class="${('desc', 'asc')[title_asc] if title_asc is not None else None}">
+                Title</a>
+            </span>
+          </h3>
+
           <div py:for="id, title, description, can_edit, can_delete in reports">
             <h2>
               <a title="View report" href="${href.report(id)}">{$id} <em>$title</em></a>

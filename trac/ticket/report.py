@@ -132,6 +132,7 @@ class ReportModule(Component):
                 self.env.is_component_enabled(QueryModule):
             add_ctxtnav(req, _('Custom Query'), href=req.href.query())
             data['query_href'] = req.href.query()
+            data['saved_query_href'] = req.session['query_href']
         else:
             data['query_href'] = None
 
