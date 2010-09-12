@@ -1,11 +1,12 @@
 @import url(code.css);
 
 /* Report listing */
-.report #trac-sort-order { 
+.report #trac-sort-order, .report #trac-toggle-description-form { 
  float: right;
- font-size: 12px;
- margin: .5em 0;
+ font-size: 11px;
+ font-weight: normal;
 }
+.report #trac-toggle-description-form { margin: 1em -1em 0 0 }
 
 .report #trac-sort-order a { 
  background-position: 100% 50%;
@@ -36,10 +37,11 @@
 
 .report form div.inlinebuttons {
  float: right;
- margin-top: 2px;
+ margin-top: -2px;
  margin-left: 0.2em;
 }
 
+.report span.foldable { display: none }
 .report div.description {
  font-size: 90%;
  margin: 1em .5em .5em; 
