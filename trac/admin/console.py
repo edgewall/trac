@@ -37,7 +37,7 @@ from trac.wiki.macros import WikiMacroBase
 
 TRAC_VERSION = pkg_resources.get_distribution('Trac').version
 rl_completion_suppress_append = None
-
+LANG = os.environ.get('LANG')
 
 def find_readline_lib():
     """Return the name (and possibly the full path) of the readline library
@@ -168,9 +168,10 @@ Type:  '?' or 'help' for help on commands.
         self.__env = env = Environment(self.envname)
         # fixup language according to env settings
         if has_babel:
-            preferred = env.config.get('trac', 'default_language', '')
-            if preferred:
-                translation.activate(get_negotiated_locale([preferred]))
+            default = env.config.get('trac', 'default_language', '')
+            negotiated = get_negotiated_locale([LANG, default])
+            if negotiated:
+                translation.activate(negotiated)
         
     ##
     ## Utility methods
@@ -524,7 +525,7 @@ def run(args=None):
     if has_babel:
         import babel
         try:
-            locale = babel.Locale.default()
+            locale = get_negotiated_locale([LANG]) or babel.Locale.default()
         except babel.UnknownLocaleError:
             pass
         translation.activate(locale)

@@ -273,6 +273,7 @@ class EnvironmentStub(Environment):
         # -- database
         self.dburi = get_dburi()
         if self.dburi.startswith('sqlite'):
+            self.config.set('trac', 'database', 'sqlite::memory:')
             self.db = InMemoryDatabase()
 
         if default_data:

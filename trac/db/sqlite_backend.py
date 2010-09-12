@@ -152,14 +152,13 @@ class SQLiteConnector(Component):
     def get_supported_schemes(self):
         if not have_pysqlite:
             self.error = _("Cannot load Python bindings for SQLite")
-        elif sqlite_version >= (3, 3, 3):
-            if sqlite.version_info < (1, 1, 7):
-                self.error = _("Need at least PySqlite %(version)s or higher",
-                               version='1.1.7')
-            elif sqlite.version_info[0] == 2 and \
-                    sqlite.version_info < (2, 0, 7):
-                self.error = _("Need at least PySqlite %(version)s or higher",
-                               version='2.0.7')
+        elif sqlite_version >= (3, 3, 3) and sqlite.version_info[0] == 2 and \
+                sqlite.version_info < (2, 0, 7):
+            self.error = _("Need at least PySqlite %(version)s or higher",
+                           version='2.0.7')
+        elif (2, 5, 2) <= sqlite.version_info < (2, 5, 5):
+            self.error = _("PySqlite 2.5.2 - 2.5.4 break Trac, please use "
+                           "2.5.5 or higher")
         yield ('sqlite', self.error and -1 or 1)
 
     def get_connection(self, path, log=None, params={}):
