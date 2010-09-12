@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-05-21 02:09+0200\n"
-"PO-Revision-Date: 2010-05-25 08:51+0200\n"
+"PO-Revision-Date: 2010-09-12 09:41+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -58,37 +58,37 @@ msgstr "(erreur)"
 msgid "Fold directory"
 msgstr "Fermer le répertoire"
 
-#: trac/htdocs/js/folding.js:59
+#: trac/htdocs/js/folding.js:62
 #, python-format
 msgid "Show %(title)s"
 msgstr "Voir %(title)s"
 
-#: trac/htdocs/js/folding.js:74
+#: trac/htdocs/js/folding.js:77
 #, python-format
 msgid "%(title)s (click to hide column)"
 msgstr "%(title)s (cliquer pour cacher la colonne)"
 
-#: trac/htdocs/js/query.js:119
+#: trac/htdocs/js/query.js:118
 msgid "A filter already exists for that property"
 msgstr "Un filtre existe déjà pour cette propriété"
 
-#: trac/htdocs/js/query.js:146
+#: trac/htdocs/js/query.js:145
 msgid "or"
 msgstr "ou"
 
-#: trac/htdocs/js/query.js:165
+#: trac/htdocs/js/query.js:164
 msgid "yes"
 msgstr "oui"
 
-#: trac/htdocs/js/query.js:168
+#: trac/htdocs/js/query.js:167
 msgid "no"
 msgstr "non"
 
-#: trac/htdocs/js/query.js:171
+#: trac/htdocs/js/query.js:170
 msgid "between"
 msgstr "entre"
 
-#: trac/htdocs/js/query.js:173
+#: trac/htdocs/js/query.js:172
 msgid "and"
 msgstr "et"
 
