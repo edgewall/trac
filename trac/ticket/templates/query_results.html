@@ -22,10 +22,12 @@
   </h2>
   <xi:include py:if="paginator.show_index" href="page_index.html" />
   <py:for each="group_index, (groupname, results) in enumerate(groups)">
-    <h2 class="report-result" py:if="groupname">
-      ${fields[query.group].label}:
-      ${query.group in ['owner', 'reporter'] and authorinfo(groupname) or groupname}
-      <span class="numrows">(${ngettext('%(num)s match', '%(num)s matches', len(results))})</span>
+    <h2 class="report-result" py:if="groupname"
+        i18n:msg="grouplabel, groupname, count"
+        py:with="grouplabel = fields[query.group].label;
+                 groupname = authorinfo(groupname) if query.group in ('owner', 'reporter') else groupname;
+                 count = ngettext('%(num)s match', '%(num)s matches', len(results))">
+      ${grouplabel}: ${groupname} <span class="numrows">(${count})</span>
     </h2>
     <table class="listing tickets">
       <thead>
@@ -33,7 +35,7 @@
           <th py:for="header in headers"
             class="$header.name${query.order == header.name and (query.desc and ' desc' or ' asc') or ''}">
             <?python asc = _('(ascending)'); desc = _('(descending)') ?>
-            <a title="${_('Sort by %(col)s %(direction)s', col=header.label, 
+            <a title="${_('Sort by %(col)s %(direction)s', col=header.label,
                           direction=(query.order == header.name and not query.desc and desc or asc))}"
                href="$header.href">${header.label}</a>
           </th>
@@ -56,7 +58,7 @@
                 'removed' in result and ' removed' or ''}">
                 <py:for each="idx, header in enumerate(headers)" py:choose="">
                   <py:with vars="name = header.name; value = result[name]">
-                    <td py:when="name == 'id'" class="id"><a href="$result.href" title="View ticket" 
+                    <td py:when="name == 'id'" class="id"><a href="$result.href" title="View ticket"
                         class="${classes(closed=result.status == 'closed')}">#$result.id</a></td>
                     <td py:otherwise="" class="$name" py:choose="">
                       <a py:when="name == 'summary'" href="$result.href" title="View ticket">$value</a>
