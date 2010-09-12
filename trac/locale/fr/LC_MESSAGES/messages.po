@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2010-09-12 09:41+0200\n"
+"PO-Revision-Date: 2010-09-12 09:59+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -1328,21 +1328,17 @@ msgstr ""
 msgid "Cannot load Python bindings for MySQL"
 msgstr "Impossible de charger les bindings Python pour MySQL"
 
-#: trac/db/mysql_backend.py:185 trac/db/postgres_backend.py:153
-msgid "Python >= 2.4 or the subprocess module is required for backup support"
-msgstr "FIXME"
-
-#: trac/db/mysql_backend.py:208 trac/db/postgres_backend.py:186
+#: trac/db/mysql_backend.py:204 trac/db/postgres_backend.py:182
 #, python-format
 msgid "Unable to run %(path)s: %(msg)s"
 msgstr "Échec de la commande « %(path)s » : %(msg)s"
 
-#: trac/db/mysql_backend.py:212
+#: trac/db/mysql_backend.py:208
 #, python-format
 msgid "mysqldump failed: %(msg)s"
 msgstr "La commande « mysqldump » à échoué : %(msg)s"
 
-#: trac/db/mysql_backend.py:214 trac/db/postgres_backend.py:192
+#: trac/db/mysql_backend.py:210 trac/db/postgres_backend.py:188
 #: trac/db/sqlite_backend.py:228
 msgid "No destination file created"
 msgstr "Le fichier destination n'a pas été créé"
@@ -1358,7 +1354,7 @@ msgstr ""
 msgid "Cannot load Python bindings for PostgreSQL"
 msgstr "Impossible de charger les bindings Python pour PostgreSQL"
 
-#: trac/db/postgres_backend.py:190
+#: trac/db/postgres_backend.py:186
 #, python-format
 msgid "pg_dump failed: %(msg)s"
 msgstr "La commande « pg_dump » à échoué : %(msg)s"

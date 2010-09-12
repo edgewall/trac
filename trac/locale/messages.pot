@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-09-12 09:20+0200\n"
+"POT-Creation-Date: 2010-09-12 09:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1182,21 +1182,17 @@ msgstr ""
 msgid "Cannot load Python bindings for MySQL"
 msgstr ""
 
-#: trac/db/mysql_backend.py:185 trac/db/postgres_backend.py:153
-msgid "Python >= 2.4 or the subprocess module is required for backup support"
-msgstr ""
-
-#: trac/db/mysql_backend.py:208 trac/db/postgres_backend.py:186
+#: trac/db/mysql_backend.py:204 trac/db/postgres_backend.py:182
 #, python-format
 msgid "Unable to run %(path)s: %(msg)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:212
+#: trac/db/mysql_backend.py:208
 #, python-format
 msgid "mysqldump failed: %(msg)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:214 trac/db/postgres_backend.py:192
+#: trac/db/mysql_backend.py:210 trac/db/postgres_backend.py:188
 #: trac/db/sqlite_backend.py:228
 msgid "No destination file created"
 msgstr ""
@@ -1210,7 +1206,7 @@ msgstr ""
 msgid "Cannot load Python bindings for PostgreSQL"
 msgstr ""
 
-#: trac/db/postgres_backend.py:190
+#: trac/db/postgres_backend.py:186
 #, python-format
 msgid "pg_dump failed: %(msg)s"
 msgstr ""
