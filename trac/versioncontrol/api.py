@@ -111,9 +111,9 @@ class DbRepositoryProvider(Component):
         """Retrieve repositories specified in the repository DB table."""
         db = self.env.get_db_cnx()
         cursor = db.cursor()
-        cursor.execute("SELECT id,name,value FROM repository "
-                       "WHERE name IN (%s)" % ",".join(
-                           "'%s'" % each for each in self.repository_attrs))
+        cursor.execute("""
+            SELECT id, name, value FROM repository WHERE name IN (%s)
+            """ % ",".join("'%s'" % each for each in self.repository_attrs))
         repos = {}
         for id, name, value in cursor:
             if value is not None:
@@ -209,10 +209,10 @@ class DbRepositoryProvider(Component):
         def do_add(db):
             id = rm.get_repository_id(reponame)
             cursor = db.cursor()
-            cursor.executemany("INSERT INTO repository (id, name, value) "
-                               "VALUES (%s, %s, %s)",
-                               [(id, 'dir', dir),
-                                (id, 'type', type_ or '')])
+            cursor.executemany("""
+                INSERT INTO repository (id, name, value) VALUES (%s, %s, %s)
+                """, [(id, 'dir', dir),
+                      (id, 'type', type_ or '')])
         rm.reload_repositories()
     
     def add_alias(self, reponame, target):
@@ -226,10 +226,10 @@ class DbRepositoryProvider(Component):
         def do_add(db):
             id = rm.get_repository_id(reponame)
             cursor = db.cursor()
-            cursor.executemany("INSERT INTO repository (id, name, value) "
-                               "VALUES (%s, %s, %s)",
-                               [(id, 'dir', None),
-                                (id, 'alias', target)])
+            cursor.executemany("""
+                INSERT INTO repository (id, name, value) VALUES (%s, %s, %s)
+                """, [(id, 'dir', None),
+                      (id, 'alias', target)])
         rm.reload_repositories()
     
     def remove_repository(self, reponame):
@@ -263,13 +263,17 @@ class DbRepositoryProvider(Component):
                 if k == 'dir' and not os.path.isabs(v):
                     raise TracError(_("The repository directory must be "
                                       "absolute"))
-                cursor.execute("UPDATE repository SET value=%s "
-                               "WHERE id=%s AND name=%s", (v, id, k))
-                cursor.execute("SELECT value FROM repository "
-                               "WHERE id=%s AND name=%s", (id, k))
+                cursor.execute("""
+                    UPDATE repository SET value=%s WHERE id=%s AND name=%s
+                    """, (v, id, k))
+                cursor.execute("""
+                    SELECT value FROM repository WHERE id=%s AND name=%s
+                    """, (id, k))
                 if not cursor.fetchone():
-                    cursor.execute("INSERT INTO repository (id, name, value) "
-                                   "VALUES (%s, %s, %s)", (id, k, v))
+                    cursor.execute("""
+                        INSERT INTO repository (id, name, value)
+                        VALUES (%s, %s, %s)
+                        """, (id, k, v))
         rm.reload_repositories()
 
 
@@ -478,15 +482,17 @@ class RepositoryManager(Component):
         @self.env.with_transaction()
         def do_get(db):
             cursor = db.cursor()
-            cursor.execute("SELECT id FROM repository "
-                           "WHERE name='name' AND value=%s", (reponame,))
+            cursor.execute("""
+                SELECT id FROM repository WHERE name='name' AND value=%s
+                """, (reponame,))
             for id, in cursor:
                 repo_id[0] = id
                 return
-            cursor.execute("SELECT COALESCE(MAX(id),0) FROM repository")
+            cursor.execute("SELECT COALESCE(MAX(id), 0) FROM repository")
             id = cursor.fetchone()[0] + 1
-            cursor.execute("INSERT INTO repository (id, name, value) "
-                           "VALUES (%s,%s,%s)", (id, 'name', reponame))
+            cursor.execute("""
+                INSERT INTO repository (id, name, value) VALUES (%s, %s, %s)
+                """, (id, 'name', reponame))
             repo_id[0] = id
         return repo_id[0]
     
