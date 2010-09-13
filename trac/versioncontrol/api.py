@@ -849,18 +849,29 @@ class Repository(object):
     youngest_rev = property(lambda x: x.get_youngest_rev())
 
     def previous_rev(self, rev, path=''):
-        """Return the revision immediately preceding the specified revision."""
+        """Return the revision immediately preceding the specified revision.
+
+        If `path` is given, filter out ancestor revisions having no changes
+        below `path`.
+
+        In presence of multiple parents, this follows the first parent.
+        """
         raise NotImplementedError
 
     def next_rev(self, rev, path=''):
-        """Return the revision immediately following the specified revision."""
+        """Return the revision immediately following the specified revision.
+
+        If `path` is given, filter out descendant revisions having no changes
+        below `path`.
+
+        In presence of multiple children, this follows the first child.
+        """
         raise NotImplementedError
 
     def rev_older_than(self, rev1, rev2):
         """Provides a total order over revisions.
         
-        Return `True` if `rev1` is older than `rev2`, i.e. if `rev1`
-        comes before `rev2` in the revision sequence.
+        Return `True` if `rev1` is an ancestor of `rev2`.
         """
         raise NotImplementedError
 
