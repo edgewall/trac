@@ -25,26 +25,26 @@
   <body>
     <div id="content" class="report">
 
-      <h1>Available Reports
-        <form id="trac-toggle-description-form">
+      <h1>Available Reports</h1>
+
+      <form id="prefs" method="get" action="">
+        <div>
           <input id="trac-toggle-description" type="checkbox" />
           <label for="trac-toggle-description">Show Descriptions</label>
-        </form>
-      </h1>
+        </div>
+      </form>
 
       <div id="description" />
 
       <div py:choose="" class="reports">
         <div py:if="saved_query_href">
-          <h2>
-            <form method="get" action="${href.report()}">
-              <div class="inlinebuttons">
-                <input type="hidden" name="action" value="clear" />
-                <input type="submit" class="inlinebutton" title="Forget last query" value="${_('Clear')}" />
-              </div>
-            </form>
-            <a href="$saved_query_href"><em>Return to Last Query</em></a>
-          </h2>
+          <form method="get" action="${href.report()}">
+            <div class="inlinebuttons">
+              <input type="hidden" name="action" value="clear" />
+              <input type="submit" class="inlinebutton" title="Forget last query" value="${_('Clear')}" />
+            </div>
+          </form>
+          <h2><a href="$saved_query_href"><em>Return to Last Query</em></a></h2>
           <span class="foldable" />
           <div class="description">
             <p>Continue browsing through the current list of results,
@@ -75,21 +75,19 @@
           </h3>
 
           <div py:for="id, title, description, can_edit, can_delete in reports">
-            <h2>
-              <form py:if="can_delete" method="get" action="${href.report(id)}">
-                <div class="inlinebuttons">
-                  <input type="hidden" name="action" value="delete" />
-                  <input type="submit" class="inlinebutton" title="Delete report" value="${_('Delete')}" />
-                </div>
-              </form>
-              <form py:if="can_edit" method="get" action="${href.report(id)}">
-                <div class="inlinebuttons">
-                  <input type="hidden" name="action" value="edit" />
-                  <input type="submit" class="inlinebutton" title="Edit report" value="${_('Edit')}" />
-                </div>
-              </form>
-              <a title="View report" href="${href.report(id)}">{$id} <em>$title</em></a>
-            </h2>
+            <form py:if="can_delete" method="get" action="${href.report(id)}">
+              <div class="inlinebuttons">
+                <input type="hidden" name="action" value="delete" />
+                <input type="submit" class="inlinebutton" title="Delete report" value="${_('Delete')}" />
+              </div>
+            </form>
+            <form py:if="can_edit" method="get" action="${href.report(id)}">
+              <div class="inlinebuttons">
+                <input type="hidden" name="action" value="edit" />
+                <input type="submit" class="inlinebutton" title="Edit report" value="${_('Edit')}" />
+              </div>
+            </form>
+            <h2><a title="View report" href="${href.report(id)}">{$id} <em>$title</em></a></h2>
             <span class="foldable" />
             <div py:if="description" class="description" xml:space="preserve">
               ${wiki_to_html(context, description)}

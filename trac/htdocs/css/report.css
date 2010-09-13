@@ -1,12 +1,11 @@
 @import url(code.css);
 
 /* Report listing */
-.report #trac-sort-order, .report #trac-toggle-description-form { 
+.report #trac-sort-order { 
  float: right;
  font-size: 11px;
  font-weight: normal;
 }
-.report #trac-toggle-description-form { margin: 1em -1em 0 0 }
 
 .report #trac-sort-order a { 
  background-position: 100% 50%;
