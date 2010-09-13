@@ -546,19 +546,6 @@ class SubversionRepository(Repository):
     def rev_older_than(self, rev1, rev2):
         return self.normalize_rev(rev1) < self.normalize_rev(rev2)
 
-    def get_youngest_rev_in_cache(self, db):
-        """Get the latest stored revision by sorting the revision strings
-        numerically
-
-        (deprecated, only used for transparent migration to the new caching
-        scheme).
-        """
-        cursor = db.cursor()
-        cursor.execute("SELECT rev FROM revision "
-                       "ORDER BY -LENGTH(rev), rev DESC LIMIT 1")
-        row = cursor.fetchone()
-        return row and row[0] or None
-
     def get_path_history(self, path, rev=None, limit=None):
         path = self.normalize_path(path)
         rev = self.normalize_rev(rev)

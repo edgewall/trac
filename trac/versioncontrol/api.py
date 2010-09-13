@@ -875,20 +875,6 @@ class Repository(object):
         """
         raise NotImplementedError
 
-    def get_youngest_rev_in_cache(self, db):
-        """Return the youngest revision currently cached.
-        
-        The way revisions are sequenced is version control specific.
-        By default, one assumes that the revisions are sequenced in time
-        (... which is ''not'' correct for most VCS, including Subversion).
-
-        (Deprecated, will not be used anymore in Trac 0.12)
-        """
-        cursor = db.cursor()
-        cursor.execute("SELECT rev FROM revision ORDER BY time DESC LIMIT 1")
-        row = cursor.fetchone()
-        return row and row[0] or None
-
     def get_path_history(self, path, rev=None, limit=None):
         """Retrieve all the revisions containing this path.
 
