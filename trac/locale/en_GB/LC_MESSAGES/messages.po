@@ -1031,7 +1031,7 @@ msgid ""
 "The order of priorities determines the coloring of entries\n"
 "              in the ticket queries and reports."
 msgstr ""
-"The order of priorities determines the coloring of entries\n"
+"The order of priorities determines the colouring of entries\n"
 "              in the ticket queries and reports."
 
 #: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:79
@@ -1594,7 +1594,7 @@ msgid ""
 "The Pygments syntax highlighter can be used with\n"
 "      different coloring styles."
 msgstr ""
-"The Pygments syntax highlighter can be used with different coloring "
+"The Pygments syntax highlighter can be used with different colouring "
 "styles."
 
 #: trac/prefs/templates/prefs_pygments.html:38
