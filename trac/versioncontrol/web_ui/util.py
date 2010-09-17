@@ -19,14 +19,13 @@
 from genshi.builder import tag
 
 from trac.resource import ResourceNotFound 
-from trac.util.datefmt import pretty_timedelta
-from trac.util.text import shorten_line
+from trac.util.datefmt import datetime, utc
 from trac.util.translation import tag_, _
-from trac.versioncontrol.api import NoSuchNode, NoSuchChangeset
+from trac.versioncontrol.api import Changeset, NoSuchNode, NoSuchChangeset
 
 __all__ = ['get_changes', 'get_path_links', 'get_existing_node']
 
-def get_changes(repos, revs):
+def get_changes(repos, revs, log=None):
     changes = {}
     for rev in revs:
         if rev in changes:
@@ -34,7 +33,10 @@ def get_changes(repos, revs):
         try:
             changeset = repos.get_changeset(rev)
         except NoSuchChangeset:
-            changeset = {}
+            changeset = Changeset(repos, rev, '', '',
+                                  datetime(1970, 1, 1, tzinfo=utc))
+            if log is not None:
+                log.warning("Unable to get changeset [%s]", rev)
         changes[rev] = changeset
     return changes
 

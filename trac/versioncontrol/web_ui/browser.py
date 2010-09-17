@@ -546,7 +546,7 @@ class BrowserModule(Component):
                 
         entries = [entry(n) for n in node.get_entries()
                    if n.can_view(req.perm)]
-        changes = get_changes(repos, [i.rev for i in entries])
+        changes = get_changes(repos, [i.rev for i in entries], self.log)
 
         if rev:
             newest = repos.get_changeset(rev).date

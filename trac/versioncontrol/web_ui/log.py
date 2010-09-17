@@ -230,7 +230,7 @@ class LogModule(Component):
             info[-1]['change'] = None
         
         revisions = [i['rev'] for i in info]
-        changes = get_changes(repos, revisions)
+        changes = get_changes(repos, revisions, self.log)
         extra_changes = {}
         
         if format == 'changelog':
