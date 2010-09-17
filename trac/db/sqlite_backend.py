@@ -314,3 +314,8 @@ class SQLiteConnection(ConnectionWrapper):
 
     def get_last_id(self, cursor, table, column='id'):
         return cursor.lastrowid
+    
+    def update_sequence(self, cursor, table, column='id'):
+        # SQLite handles sequence updates automagically
+        # http://www.sqlite.org/autoinc.html
+        pass
