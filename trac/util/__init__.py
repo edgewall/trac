@@ -555,8 +555,10 @@ def get_pkginfo(dist):
 
 # -- crypto utils
 
+_entropy = random.Random()
+
 def hex_entropy(bytes=32):
-    return sha1(str(random.random())).hexdigest()[:bytes]
+    return sha1(str(_entropy.random())).hexdigest()[:bytes]
 
 
 # Original license for md5crypt:
