@@ -465,6 +465,7 @@ table.listing thead th {
  font-weight: bold;
  padding: 2px .5em;
  vertical-align: bottom;
+ white-space: nowrap;
 }
 table.listing thead th :link:hover, table.listing thead th :visited:hover {
  background-color: transparent;
