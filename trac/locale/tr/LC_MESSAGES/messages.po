@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-06-11 16:41+0200\n"
-"PO-Revision-Date: 2010-09-23 18:46+0200\n"
+"PO-Revision-Date: 2010-09-23 18:56+0200\n"
 "Last-Translator: Aranel Surion <aranel@aranelsurion.org>\n"
 "Language-Team: tr_TR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
@@ -4504,7 +4504,7 @@ msgstr "Git!"
 
 #: trac/versioncontrol/templates/browser.html:79
 msgid "Jump to the chosen preselected path"
-msgstr "Öncende seçilen yere zıpla"
+msgstr "Önceden seçilen yere zıpla"
 
 #: trac/versioncontrol/templates/browser.html:92
 msgid "Parent Directory"
@@ -4540,7 +4540,7 @@ msgstr "Özellik [1:%(name)s], %(value)s olarak ayarlandı"
 
 #: trac/versioncontrol/templates/browser.html:154
 msgid "Repository Index"
-msgstr "Depo Index"
+msgstr "Depo Indeksi"
 
 #: trac/versioncontrol/templates/browser.html:164
 msgid ""
@@ -4556,7 +4556,7 @@ msgstr "Değişiklikleri görüntüle..."
 
 #: trac/versioncontrol/templates/browser.html:176
 msgid "Select paths and revs for Diff"
-msgstr "Diff için dizin ve revizyonları seçin"
+msgstr "Diff için yol ve revizyonları seçin"
 
 #: trac/versioncontrol/templates/changeset.html:36
 #: trac/versioncontrol/templates/changeset.html:46
@@ -4795,7 +4795,7 @@ msgstr ""
 #: trac/versioncontrol/templates/diff_form.html:10
 #: trac/versioncontrol/templates/diff_form.html:21
 msgid "Prepare Diff"
-msgstr "Diff hazırla"
+msgstr "Diff Hazırla"
 
 #: trac/versioncontrol/templates/diff_form.html:27
 msgid "Select the base and the target for the diff:"
@@ -5224,7 +5224,7 @@ msgstr "DeğişimGünlüğü"
 
 #: trac/versioncontrol/web_ui/log.py:304
 msgid "View Latest Revision"
-msgstr "Son revizyonları görüntüle"
+msgstr "Son Revizyonları Görüntüle"
 
 #: trac/versioncontrol/web_ui/log.py:308
 msgid "Older Revisions"
@@ -5458,7 +5458,7 @@ msgstr "Bu sayfa %(name)s zaten mevcut."
 
 #: trac/wiki/admin.py:224
 msgid "Deleted pages"
-msgstr "Silinen Sayfalar"
+msgstr "Silinmiş sayfalar"
 
 #: trac/wiki/admin.py:243
 #, python-format
@@ -5612,7 +5612,7 @@ msgstr "Sayfa geçmişi"
 
 #: trac/wiki/web_ui.py:451
 msgid "Wiki History"
-msgstr "Wiki geçmişi"
+msgstr "Wiki Geçmişi"
 
 #: trac/wiki/web_ui.py:537
 #, python-format
