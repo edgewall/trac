@@ -19,6 +19,7 @@ import os.path
 from trac.admin import IAdminCommandProvider
 from trac.core import *
 from trac.util import AtomicFile
+from trac.util.compat import any
 from trac.util.text import printout, to_unicode, CRLF
 from trac.util.translation import _, N_
 
