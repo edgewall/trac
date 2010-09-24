@@ -320,6 +320,19 @@ class ConnectionTestCase(unittest.TestCase):
         id2 = self.db.get_last_id(c, 'report')
         self.assertEqual(id1 + 1, id2)
 
+    def test_update_sequence(self):
+        cursor = self.db.cursor()
+        cursor.execute("""
+            INSERT INTO report (id, author) VALUES (42, 'anonymous')
+            """)
+        self.db.commit()
+        self.db.update_sequence(cursor, 'report', 'id')
+        self.db.commit()
+        cursor.execute("INSERT INTO report (author) VALUES ('next-id')")
+        self.db.commit()
+        cursor.execute("SELECT id FROM report WHERE author='next-id'")
+        self.assertEqual(43, cursor.fetchall()[0][0])
+
 
 def suite():
     suite = unittest.TestSuite()

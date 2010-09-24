@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-05-24 23:55+0200\n"
-"PO-Revision-Date: 2010-05-25 00:29+0200\n"
+"PO-Revision-Date: 2010-09-14 08:23+0200\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: sv_SE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -58,37 +58,37 @@ msgstr "(fel)"
 msgid "Fold directory"
 msgstr "Fäll ihop katalog"
 
-#: trac/htdocs/js/folding.js:59
+#: trac/htdocs/js/folding.js:62
 #, python-format
 msgid "Show %(title)s"
 msgstr "Visa %(title)s"
 
-#: trac/htdocs/js/folding.js:74
+#: trac/htdocs/js/folding.js:77
 #, python-format
 msgid "%(title)s (click to hide column)"
 msgstr "%(title)s (klicka för att dölja kolumn)"
 
-#: trac/htdocs/js/query.js:119
+#: trac/htdocs/js/query.js:118
 msgid "A filter already exists for that property"
 msgstr "Ett filter finns redan för denna egenskap"
 
-#: trac/htdocs/js/query.js:146
+#: trac/htdocs/js/query.js:145
 msgid "or"
 msgstr "eller"
 
-#: trac/htdocs/js/query.js:165
+#: trac/htdocs/js/query.js:164
 msgid "yes"
 msgstr "ja"
 
-#: trac/htdocs/js/query.js:168
+#: trac/htdocs/js/query.js:167
 msgid "no"
 msgstr "nej"
 
-#: trac/htdocs/js/query.js:171
+#: trac/htdocs/js/query.js:170
 msgid "between"
 msgstr "mellan"
 
-#: trac/htdocs/js/query.js:173
+#: trac/htdocs/js/query.js:172
 msgid "and"
 msgstr "och"
 

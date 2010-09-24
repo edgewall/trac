@@ -237,6 +237,11 @@ class PostgreSQLConnection(ConnectionWrapper):
         cursor.execute("SELECT CURRVAL('%s_%s_seq')" % (table, column))
         return cursor.fetchone()[0]
 
+    def update_sequence(self, cursor, table, column='id'):
+        cursor.execute("""
+            SELECT setval('%s_%s_seq', (SELECT MAX(id) FROM %s))
+            """ % (table, column, table))
+
     def cursor(self):
         return IterableCursor(self.cnx.cursor(), self.log)
 

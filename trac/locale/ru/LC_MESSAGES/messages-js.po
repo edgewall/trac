@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-05-24 23:55+0200\n"
-"PO-Revision-Date: 2010-06-12 20:53+0300\n"
+"PO-Revision-Date: 2010-09-14 22:22+0300\n"
 "Last-Translator: Alexandr Prudnikov <al.prudnikov@gmail.com>\n"
 "Language-Team: ru_RU <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
@@ -59,12 +59,12 @@ msgstr "(ошибка)"
 msgid "Fold directory"
 msgstr "Свернуть каталог"
 
-#: trac/htdocs/js/folding.js:59
+#: trac/htdocs/js/folding.js:62
 #, python-format
 msgid "Show %(title)s"
 msgstr "Показать %(title)s"
 
-#: trac/htdocs/js/folding.js:74
+#: trac/htdocs/js/folding.js:77
 #, python-format
 msgid "%(title)s (click to hide column)"
 msgstr "%(title)s (Щелкните чтобы скрыть колонку)"

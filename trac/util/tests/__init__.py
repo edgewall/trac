@@ -13,6 +13,7 @@
 
 import doctest
 import os.path
+import random
 import tempfile
 import unittest
 
@@ -104,6 +105,22 @@ class PathTestCase(unittest.TestCase):
                                             os.path.join(os.getcwd())))
 
 
+class RandomTestCase(unittest.TestCase):
+    
+    def setUp(self):
+        self.state = random.getstate()
+
+    def tearDown(self):
+        random.setstate(self.state)
+
+    def test_hex_entropy(self):
+        """hex_entropy() not affected by global random generator state"""
+        random.seed(0)
+        data = util.hex_entropy(64)
+        random.seed(0)
+        self.assertNotEqual(data, util.hex_entropy(64))
+
+
 class ContentDispositionTestCase(unittest.TestCase):
 
     def test_filename(self):
@@ -121,6 +138,7 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AtomicFileTestCase, 'test'))
     suite.addTest(unittest.makeSuite(PathTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(RandomTestCase, 'test'))
     suite.addTest(unittest.makeSuite(ContentDispositionTestCase, 'test'))
     suite.addTest(concurrency.suite())
     suite.addTest(datefmt.suite())

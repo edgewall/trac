@@ -256,6 +256,10 @@ class MySQLConnection(ConnectionWrapper):
     def get_last_id(self, cursor, table, column='id'):
         return cursor.lastrowid
 
+    def update_sequence(self, cursor, table, column='id'):
+        # MySQL handles sequence updates automagically
+        pass
+
     def rollback(self):
         self.cnx.ping()
         try:

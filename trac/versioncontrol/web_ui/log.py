@@ -230,7 +230,7 @@ class LogModule(Component):
             info[-1]['change'] = None
         
         revisions = [i['rev'] for i in info]
-        changes = get_changes(repos, revisions)
+        changes = get_changes(repos, revisions, self.log)
         extra_changes = {}
         
         if format == 'changelog':
@@ -359,11 +359,11 @@ class LogModule(Component):
                 path, revs = match[:idx], match[idx+1:]
         
         rm = RepositoryManager(self.env)
-        reponame = rm.get_default_repository(formatter.context)
-        if reponame is not None:
-            repos = rm.get_repository(reponame)
-        else:
-            reponame, repos, path = rm.get_repository_by_path(path)
+        reponame, repos, path = rm.get_repository_by_path(path)
+        if not reponame:
+            reponame = rm.get_default_repository(formatter.context)
+            if reponame is not None:
+                repos = rm.get_repository(reponame)
 
         if repos:
             revranges = None

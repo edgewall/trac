@@ -38,7 +38,7 @@ from trac.util import get_reporter_id
 from trac.util.compat import any
 from trac.util.datefmt import format_datetime, from_utimestamp, \
                               to_utimestamp, utc
-from trac.util.text import exception_to_unicode, obfuscate_email_address,  \
+from trac.util.text import exception_to_unicode, obfuscate_email_address, \
                            shorten_line, to_unicode
 from trac.util.presentation import separated
 from trac.util.translation import _, tag_, tagn_, N_, gettext, ngettext
@@ -1271,7 +1271,7 @@ class TicketModule(Component):
                                     'label': field_labels.get(field, field)}
         # Start with user changes
         for field, value in ticket._old.iteritems():
-            store_change(field, value, ticket[field], 'user')
+            store_change(field, value or '', ticket[field], 'user')
             
         # Apply controller changes corresponding to the selected action
         problems = []
