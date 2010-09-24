@@ -1062,11 +1062,11 @@ class ChangesetModule(Component):
             rev, path = chgset[:sep], chgset[sep:]
         else:
             rev, path = chgset, '/'
-        reponame = rm.get_default_repository(formatter.context)
-        if reponame is not None:
-            repos = rm.get_repository(reponame)
-        else:
-            reponame, repos, path = rm.get_repository_by_path(path)
+        reponame, repos, path = rm.get_repository_by_path(path)
+        if not reponame:
+            reponame = rm.get_default_repository(formatter.context)
+            if reponame is not None:
+                repos = rm.get_repository(reponame)
         if path == '/':
             path = None
 
