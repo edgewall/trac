@@ -130,10 +130,7 @@ def functionalSuite(suite=None):
         suite.addTest(TestRepoCreation())
         suite.addTest(TestRepoBrowse())
         suite.addTest(TestNewFileLog())
-        if sys.version_info[:2] < (2, 4):
-            print "SKIP: RegressionTestTicket5819 (python 2.3 issue)"
-        else:
-            suite.addTest(RegressionTestTicket5819())
+        suite.addTest(RegressionTestTicket5819())
         suite.addTest(RegressionTestRev5877())
     else:
         print "SKIP: versioncontrol/tests/functional.py (no svn bindings)"

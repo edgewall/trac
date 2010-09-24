@@ -396,10 +396,7 @@ def get_lines_from_file(filename, lineno, context=0, globals=None):
     if not lines:
         import linecache
         linecache.checkcache(filename)
-        if arity(linecache.getlines) >= 2:
-            lines = linecache.getlines(filename, globals)
-        else:   # Python 2.4
-            lines = linecache.getlines(filename)
+        lines = linecache.getlines(filename, globals)
 
     if not 0 <= lineno < len(lines):
         return (), None, ()

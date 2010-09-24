@@ -68,7 +68,7 @@ class InterTracDispatcher(Component):
     def expand_macro(self, formatter, name, content):
         intertracs = {}
         for key, value in self.config.options('intertrac'):
-            idx = key.rfind('.') # rsplit only in 2.4
+            idx = key.rfind('.')
             if idx > 0: # 0 itself doesn't help much: .xxx = ...
                 prefix, attribute = key[:idx], key[idx+1:]
                 intertrac = intertracs.setdefault(prefix, {})
