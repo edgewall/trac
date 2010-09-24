@@ -72,14 +72,15 @@ def _import_svn():
     Pool.apr_pool_clear = staticmethod(core.apr_pool_clear)
     Pool.apr_pool_destroy = staticmethod(core.apr_pool_destroy)
 
-def _to_svn(*args):
-    """Expect a list of `unicode` path components.
+def _to_svn(pool, *args):
+    """Expect a pool and a list of `unicode` path components.
     
     Returns an UTF-8 encoded string suitable for the Subversion python 
     bindings (the returned path never starts with a leading "/")
     """
-    return '/'.join([p for p in [p.strip('/') for p in args] if p]) \
-           .encode('utf-8')
+    return core.svn_path_canonicalize('/'.join(args).lstrip('/')
+                                                    .encode('utf-8'),
+                                      pool)
 
 def _from_svn(path):
     """Expect an UTF-8 encoded string and transform it to an `unicode` object
@@ -372,7 +373,8 @@ class SubversionRepository(Repository):
             pool = self.pool
         rev = self.normalize_rev(rev)
         rev_root = fs.revision_root(self.fs_ptr, rev, pool())
-        node_type = fs.check_path(rev_root, _to_svn(self.scope, path), pool())
+        node_type = fs.check_path(rev_root, _to_svn(pool(), self.scope, path),
+                                  pool())
         return node_type in _kindmap
 
     def normalize_path(self, path):
@@ -471,7 +473,7 @@ class SubversionRepository(Repository):
         object.
         Must start with `(path, created rev)`.
         """
-        path_utf8 = _to_svn(self.scope, path)
+        path_utf8 = _to_svn(pool(), self.scope, path)
         if start < end:
             start, end = end, start
         if (start, end) == (1, 0): # only happens for empty repos
@@ -633,9 +635,9 @@ class SubversionRepository(Repository):
             text_deltas = 0 # as this is anyway re-done in Diff.py...
             entry_props = 0 # "... typically used only for working copy updates"
             repos.svn_repos_dir_delta(old_root,
-                                      _to_svn(self.scope + old_path), '',
-                                      new_root,
-                                      _to_svn(self.scope + new_path),
+                                      _to_svn(subpool(), self.scope, old_path),
+                                      '', new_root,
+                                      _to_svn(subpool(), self.scope, new_path),
                                       e_ptr, e_baton, authz_cb,
                                       text_deltas,
                                       1, # directory
@@ -653,15 +655,18 @@ class SubversionRepository(Repository):
                                              new_rev)
                 else:
                     kind = _kindmap[fs.check_path(old_root,
-                                                  _to_svn(self.scope,
+                                                  _to_svn(subpool(),
+                                                          self.scope,
                                                           old_node.path),
                                                   subpool())]
                 yield  (old_node, new_node, kind, change)
         else:
             old_root = fs.revision_root(self.fs_ptr, old_rev, subpool())
             new_root = fs.revision_root(self.fs_ptr, new_rev, subpool())
-            if fs.contents_changed(old_root, _to_svn(self.scope, old_path),
-                                   new_root, _to_svn(self.scope, new_path),
+            if fs.contents_changed(old_root,
+                                   _to_svn(subpool(), self.scope, old_path),
+                                   new_root,
+                                   _to_svn(subpool(), self.scope, new_path),
                                    subpool()):
                 yield (old_node, new_node, Node.FILE, Changeset.EDIT)
 
@@ -671,15 +676,15 @@ class SubversionNode(Node):
     def __init__(self, path, rev, repos, pool=None, parent_root=None):
         self.fs_ptr = repos.fs_ptr
         self.scope = repos.scope
-        self._scoped_path_utf8 = _to_svn(self.scope, path)
         self.pool = Pool(pool)
-        self._requested_rev = rev
         pool = self.pool()
+        self._scoped_path_utf8 = _to_svn(pool, self.scope, path)
+        self._requested_rev = rev
 
         if parent_root:
             self.root = parent_root
         else:
-            self.root = fs.revision_root(self.fs_ptr, rev, self.pool())
+            self.root = fs.revision_root(self.fs_ptr, rev, pool)
         node_type = fs.check_path(self.root, self._scoped_path_utf8, pool)
         if not node_type in _kindmap:
             raise NoSuchNode(path, rev)
