@@ -19,6 +19,7 @@ from Cookie import CookieError, BaseCookie, SimpleCookie
 import cgi
 from datetime import datetime
 import errno
+from hashlib import md5
 import new
 import mimetypes
 import os
@@ -28,7 +29,7 @@ import sys
 import urlparse
 
 from trac.core import Interface, TracError
-from trac.util import get_last_traceback, md5, unquote
+from trac.util import get_last_traceback, unquote
 from trac.util.datefmt import http_date, localtz
 from trac.util.text import empty, to_unicode
 from trac.util.translation import _

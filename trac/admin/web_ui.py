@@ -14,6 +14,7 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from functools import partial
 import os
 import pkg_resources
 import re
@@ -26,7 +27,6 @@ from trac.admin.api import IAdminPanelProvider
 from trac.core import *
 from trac.loader import get_plugin_info, get_plugins_dir
 from trac.perm import PermissionSystem, IPermissionRequestor
-from trac.util.compat import partial
 from trac.util.text import exception_to_unicode
 from trac.util.translation import _, ngettext
 from trac.web import HTTPNotFound, IRequestHandler

@@ -19,6 +19,7 @@ try:
 except ImportError:
     from base64 import decodestring as b64decode
     from base64 import encodestring as b64encode
+from hashlib import md5, sha1
 import os
 import re
 import sys
@@ -31,7 +32,7 @@ from trac.config import BoolOption, IntOption, Option
 from trac.core import *
 from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
-from trac.util import hex_entropy, md5, md5crypt, sha1
+from trac.util import hex_entropy, md5crypt
 from trac.util.concurrency import threading
 from trac.util.translation import _, tag_
 

@@ -34,7 +34,6 @@ from trac.resource import get_relative_resource, get_resource_url
 from trac.wiki.api import WikiSystem, parse_args
 from trac.wiki.parser import WikiParser
 from trac.util import arity
-from trac.util.compat import all
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode, \
                            unicode_quote, unicode_quote_plus
 from trac.util.html import TracHTMLSanitizer

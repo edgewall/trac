@@ -46,7 +46,6 @@ from trac.perm import PermissionCache
 from trac.resource import Resource
 from trac.ticket import Ticket
 from trac.ticket.notification import TicketNotifyEmail
-from trac.util.compat import any
 from trac.util.datefmt import utc
 from trac.util.text import exception_to_unicode
 from trac.versioncontrol import IRepositoryChangeListener, RepositoryManager

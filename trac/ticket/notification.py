@@ -16,11 +16,12 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 #
 
+from hashlib import md5
+
 from trac.core import *
 from trac.config import *
 from trac.notification import NotifyEmail
 from trac.ticket.api import TicketSystem
-from trac.util import md5
 from trac.util.datefmt import to_utimestamp
 from trac.util.text import CRLF, wrap, obfuscate_email_address
 from trac.util.translation import deactivate, reactivate

@@ -21,9 +21,7 @@ import os.path
 from trac.config import Option, PathOption
 from trac.core import *
 from trac.perm import IPermissionPolicy
-from trac.resource import Resource
 from trac.util import read_file
-from trac.util.compat import any
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _
 from trac.versioncontrol.api import RepositoryManager

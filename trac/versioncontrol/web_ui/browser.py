@@ -28,7 +28,6 @@ from trac.mimeview.api import Mimeview, is_binary, \
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
 from trac.util import embedded_numbers
-from trac.util.compat import any
 from trac.util.datefmt import http_date, to_datetime, utc
 from trac.util.html import escape, Markup
 from trac.util.text import exception_to_unicode, shorten_line

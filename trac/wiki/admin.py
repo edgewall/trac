@@ -21,7 +21,6 @@ from trac.core import *
 from trac.wiki import model
 from trac.wiki.api import WikiSystem
 from trac.util import read_file
-from trac.util.compat import any
 from trac.util.datefmt import format_datetime, from_utimestamp, \
                               to_utimestamp, utc
 from trac.util.text import to_unicode, unicode_quote, unicode_unquote, \

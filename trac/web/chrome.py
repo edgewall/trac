@@ -15,6 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import datetime
+from functools import partial
 import itertools
 import os.path
 import pkg_resources
@@ -40,7 +41,6 @@ from trac.mimeview import get_mimetype, Context
 from trac.resource import *
 from trac.util import compat, get_reporter_id, presentation, get_pkginfo, \
                       pathjoin, translation
-from trac.util.compat import any, partial
 from trac.util.html import escape, plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
                            shorten_line, unicode_quote_plus, to_unicode, \
@@ -337,8 +337,8 @@ class Chrome(Component):
     # A dictionary of default context data for templates
     _default_context_data = {
         '_': translation.gettext,
-        'all': compat.all,
-        'any': compat.any,
+        'all': all,
+        'any': any,
         'classes': presentation.classes,
         'date': datetime.date,
         'datetime': datetime.datetime,

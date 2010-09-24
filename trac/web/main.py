@@ -19,6 +19,7 @@
 import cgi
 import dircache
 import fnmatch
+from functools import partial
 import gc
 import locale
 import os
@@ -40,7 +41,6 @@ from trac.perm import PermissionCache, PermissionError
 from trac.resource import ResourceNotFound
 from trac.util import arity, get_frame_info, get_last_traceback, hex_entropy, \
                       read_file, translation
-from trac.util.compat import any, partial
 from trac.util.concurrency import threading
 from trac.util.datefmt import format_datetime, http_date, localtz, timezone
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode

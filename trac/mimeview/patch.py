@@ -21,7 +21,6 @@ import os.path
 from trac.core import *
 from trac.mimeview.api import content_to_unicode, IHTMLPreviewRenderer, \
                               Mimeview
-from trac.util.compat import any
 from trac.util.html import escape, Markup
 from trac.util.text import expandtabs
 from trac.util.translation import _
