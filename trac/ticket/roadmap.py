@@ -773,19 +773,24 @@ class MilestoneModule(Component):
             groups = []
             for field in ticket_fields:
                 if field['name'] == by:
-                    if field.has_key('options'):
+                    if 'options' in field:
                         groups = field['options']
+                        if field.get('optional'):
+                            groups.insert(0, '')
                     else:
                         cursor = db.cursor()
-                        cursor.execute("SELECT DISTINCT %s FROM ticket "
-                                       "ORDER BY %s" % (by, by))
+                        cursor.execute("""
+                            SELECT DISTINCT COALESCE(%s,'') FROM ticket
+                            ORDER BY COALESCE(%s,'')
+                            """ % (by, by))
                         groups = [row[0] for row in cursor]
 
             max_count = 0
             group_stats = []
 
             for group in groups:
-                group_tickets = [t for t in tickets if t[by] == group]
+                values = group and (group,) or (None, group)
+                group_tickets = [t for t in tickets if t[by] in values]
                 if not group_tickets:
                     continue
 

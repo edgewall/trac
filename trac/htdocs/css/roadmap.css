@@ -23,10 +23,8 @@ table.progress td.new { background: #f5f5b5 }
 table.progress td.closed { background: #bae0ba }
 table.progress td :hover { background: none }
 p.percent { 
- font-size: 10px; 
- line-height: 2.4em; 
- margin: 0.9em 0 .1em 1.2em; 
- float: left; 
+ line-height: 1.2em;
+ margin: 0;
 }
 
 /* Styles for the roadmap view */
@@ -51,13 +49,13 @@ p.percent {
  color: #888;
  font-size: 11px;
  font-style: italic;
- margin: 0;
+ margin: 0 0 1em 0;
 }
-.milestone .info .progress { margin: 1em 0 0 1em; width: 40em; max-width: 70% }
+.milestone .info .progress { margin: 0 1em; width: 40em; max-width: 70% }
 .milestone .info dl {
  font-size: 10px;
  font-style: italic;
- margin: 0 1em 2em;
+ margin: 1em 1em 2em;
  white-space: nowrap;
  clear: left;
 }
@@ -77,9 +75,9 @@ p.percent {
 #stats th { text-align: right; }
 #stats th :link, #stats th :visited { border: none }
 #stats td { padding-left: 0.5em; width: 100% }
-#stats td table.progress { margin: 3px 4px 3px 0 }
+#stats td table.progress { margin: 3px 1em 3px 0 }
 #stats td table.progress td { padding: 0 }
-#stats td p.percent { line-height: 1.2em; margin-top: 3px }
+#stats td p.percent { margin-top: 3px }
 
 /* Styles for the milestone edit form */
 #edit fieldset { margin: 1em 0 }
