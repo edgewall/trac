@@ -61,7 +61,7 @@
         </div>
 
         <py:when test="reports">
-          <h3>SQL reports and saved custom queries
+          <h2>SQL reports and saved custom queries
             <span id="trac-sort-order" py:with="report_asc = asc if sort == 'report' else None;
                                                 title_asc = asc if sort == 'title' else None">
               Sort by:
@@ -72,7 +72,7 @@
                  class="${('desc', 'asc')[title_asc] if title_asc is not None else None}">
                 Title</a>
             </span>
-          </h3>
+          </h2>
 
           <div py:for="id, title, description, can_edit, can_delete in reports">
             <form py:if="can_delete" method="get" action="${href.report(id)}">
