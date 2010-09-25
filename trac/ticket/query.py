@@ -323,15 +323,11 @@ class Query(object):
             result = {}
             for i in column_indices:
                 name, field, val = columns[i], fields[i], row[i]
-                if name == self.group:
-                    val = val or 'None'
-                elif name == 'reporter':
+                if name == 'reporter':
                     val = val or 'anonymous'
                 elif name == 'id':
                     val = int(val)
                     result['href'] = req.href.ticket(val)
-                elif val is None:
-                    val = '--'
                 elif name in self.time_fields:
                     val = from_utimestamp(val)
                 elif field and field['type'] == 'checkbox':
@@ -339,6 +335,8 @@ class Query(object):
                         val = bool(int(val))
                     except (TypeError, ValueError):
                         val = False
+                elif val is None:
+                    val = ''
                 result[name] = val
             results.append(result)
         cursor.close()

@@ -162,7 +162,9 @@ class Environment(Component, ComponentManager):
         Should be one of (`none`, `file`, `stderr`, `syslog`, `winlog`).""")
 
     log_file = Option('logging', 'log_file', 'trac.log',
-        """If `log_type` is `file`, this should be a path to the log-file.""")
+        """If `log_type` is `file`, this should be a path to the log-file.
+        Relative paths are resolved relative to the `log` directory of the
+        environment.""")
 
     log_level = Option('logging', 'log_level', 'DEBUG',
         """Level of verbosity in log.

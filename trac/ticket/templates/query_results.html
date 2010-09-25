@@ -22,10 +22,10 @@
   </h2>
   <xi:include py:if="paginator.show_index" href="page_index.html" />
   <py:for each="group_index, (groupname, results) in enumerate(groups)">
-    <h2 class="report-result" py:if="groupname"
+    <h2 class="report-result" py:if="groupname is not None"
         i18n:msg="grouplabel, groupname, count"
         py:with="grouplabel = fields[query.group].label;
-                 groupname = authorinfo(groupname) if query.group in ('owner', 'reporter') else groupname;
+                 groupname = authorinfo(groupname) if query.group in ['owner', 'reporter'] else (groupname or _('None'));
                  count = ngettext('%(num)s match', '%(num)s matches', len(results))">
       ${grouplabel}: ${groupname} <span class="numrows">(${count})</span>
     </h2>
@@ -66,7 +66,7 @@
                       <py:when test="name == 'reporter'">${authorinfo(value)}</py:when>
                       <py:when test="name == 'cc'">${format_emails(ticket_context, value)}</py:when>
                       <py:when test="name == 'owner' and value">${authorinfo(value)}</py:when>
-                      <py:when test="name == 'milestone'"><a title="View milestone" href="${href.milestone(value)}">${value}</a></py:when>
+                      <py:when test="name == 'milestone'"><a py:if="value" title="View milestone" href="${href.milestone(value)}">${value}</a></py:when>
                       <py:when test="header.wikify">${wiki_to_oneliner(ticket_context, value)}</py:when>
                       <py:otherwise>$value</py:otherwise>
                     </td>

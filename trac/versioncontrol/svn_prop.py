@@ -168,6 +168,8 @@ class SubversionMergePropertyRenderer(Component):
             if spath is None:
                 continue
             revs = revs.strip()
+            inheritable, non_inheritable = _partition_inheritable(revs)
+            revs = ','.join(inheritable)
             deleted = False
             try:
                 node = repos.get_node(spath, target_rev)
@@ -175,6 +177,12 @@ class SubversionMergePropertyRenderer(Component):
                 if 'LOG_VIEW' in context.perm(resource):
                     row = [_get_source_link(spath, context),
                            _get_revs_link(revs_label, context, spath, revs)]
+                    if non_inheritable:
+                        non_inheritable = ','.join(non_inheritable)
+                        row.append(_get_revs_link(_('non-inheritable'), context,
+                                                  spath, non_inheritable,
+                                                  _('merged on the directory '
+                                                    'itself but not below')))
                     if has_eligible:
                         first_rev = branch_starts.get(spath)
                         if not first_rev:
@@ -211,6 +219,16 @@ class SubversionMergePropertyRenderer(Component):
                         for deleted, spath, row in rows]), class_='props'))
 
 
+def _partition_inheritable(revs):
+    """Non-inheritable revision ranges are marked with a trailing '*'."""
+    inheritable, non_inheritable = [], []           
+    for r in revs.split(','):
+        if r and r[-1] == '*':
+            non_inheritable.append(r[:-1])
+        else:
+            inheritable.append(r)
+    return inheritable, non_inheritable
+
 def _get_blocked_revs(props, name, path):
     """Return the revisions blocked from merging for the given property
     name and path.
@@ -235,7 +253,7 @@ def _get_source_link(spath, context):
                  href=context.href.browser(reponame or None, spath,
                                            rev=context.resource.version))
 
-def _get_revs_link(label, context, spath, revs):
+def _get_revs_link(label, context, spath, revs, title=None):
     """Return a link to the revision log when more than one revision is
     given, to the revision itself for a single revision, or a `<span>`
     with "no revision" for none.
@@ -247,7 +265,12 @@ def _get_revs_link(label, context, spath, revs):
         revs_href = context.href.log(reponame or None, spath, revs=revs)
     else:
         revs_href = context.href.changeset(revs, reponame or None, spath)
-    return tag.a(label, title=revs.replace(',', ', '), href=revs_href)
+    revs = revs.replace(',', ', ')
+    if title:
+        title = _("%(title)s: %(revs)s", title=title, revs=revs)
+    else:
+        title = revs
+    return tag.a(label, title=title, href=revs_href)
 
 
 class SubversionMergePropertyDiffRenderer(Component):
@@ -261,9 +284,9 @@ class SubversionMergePropertyDiffRenderer(Component):
 
     def render_property_diff(self, name, old_context, old_props,
                              new_context, new_props, options):
-        # Build 3 columns table showing modifications on merge sources
-        # || source || added revs || removed revs ||
-        # || source || removed                    ||
+        # Build 5 columns table showing modifications on merge sources
+        # || source || added || removed || added (ni) || removed (ni) ||
+        # || source || removed                                        ||
         rm = RepositoryManager(self.env)
         repos = rm.get_repository(old_context.resource.parent.id)
         def parse_sources(props):
@@ -272,33 +295,42 @@ class SubversionMergePropertyDiffRenderer(Component):
                 path, revs = line.split(':', 1)
                 spath = _path_within_scope(repos.scope, path)
                 if spath is not None:
-                    sources[spath] = set(Ranges(revs.strip()))
+                    inheritable, non_inheritable = _partition_inheritable(revs)
+                    sources[spath] = (set(Ranges(inheritable)),
+                                      set(Ranges(non_inheritable)))
             return sources
         old_sources = parse_sources(old_props)
         new_sources = parse_sources(new_props)
         # Go through new sources, detect modified ones or added ones
         blocked = name.endswith('blocked')
-        added_label = [_('merged: '), _('blocked: ')][blocked]
-        removed_label = [_('reverse-merged: '), _('un-blocked: ')][blocked]
+        added_label = [_("merged: "), _("blocked: ")][blocked]
+        removed_label = [_("reverse-merged: "), _("un-blocked: ")][blocked]
+        added_ni_label = _("marked as non-inheritable: ")
+        removed_ni_label = _("unmarked as non-inheritable: ")
         def revs_link(revs, context):
             if revs:
                 revs = to_ranges(revs)
                 return _get_revs_link(revs.replace(',', u',\u200b'),
                                       context, spath, revs)
         modified_sources = []
-        for spath, new_revs in new_sources.iteritems():
+        for spath, (new_revs, new_revs_ni) in new_sources.iteritems():
             if spath in old_sources:
-                old_revs, status = old_sources.pop(spath), None
+                (old_revs, old_revs_ni), status = old_sources.pop(spath), None
             else:
-                old_revs, status = set(), _(' (added)')
+                old_revs = old_revs_ni = set()
+                status = _(' (added)')
             added = new_revs - old_revs
             removed = old_revs - new_revs
+            added_ni = new_revs_ni - old_revs_ni
+            removed_ni = old_revs_ni - new_revs_ni
             try:
                 all_revs = set(repos._get_node_revs(spath))
                 # TODO: also pass first_rev here, for getting smaller a set
                 #       (this is an optmization fix, result is already correct)
                 added &= all_revs
                 removed &= all_revs
+                added_ni &= all_revs
+                removed_ni &= all_revs
             except NoSuchNode:
                 pass
             if added or removed:
@@ -306,7 +338,12 @@ class SubversionMergePropertyDiffRenderer(Component):
                     spath, [_get_source_link(spath, new_context), status],
                     added and tag(added_label, revs_link(added, new_context)),
                     removed and tag(removed_label,
-                                    revs_link(removed, old_context))))
+                                    revs_link(removed, old_context)),
+                    added_ni and tag(added_ni_label, 
+                                     revs_link(added_ni, new_context)),
+                    removed_ni and tag(removed_ni_label,
+                                       revs_link(removed_ni, old_context))
+                    ))
         # Go through remaining old sources, those were deleted
         removed_sources = []
         for spath, old_revs in old_sources.iteritems():
@@ -316,9 +353,9 @@ class SubversionMergePropertyDiffRenderer(Component):
             modified_sources.sort()
             removed_sources.sort()
             changes = tag.table(tag.tbody(
-                [tag.tr(tag.td(src), tag.td(added), tag.td(removed))
-                 for spath, src, added, removed in modified_sources],
-                [tag.tr(tag.td(src), tag.td(_('removed'), colspan=2))
+                [tag.tr(tag.td(c) for c in cols[1:]) 
+                 for cols in modified_sources],
+                [tag.tr(tag.td(src), tag.td(_('removed'), colspan=4))
                  for spath, src in removed_sources]), class_='props')
         else:
             changes = tag.em(_(' (with no actual effect on merging)'))
