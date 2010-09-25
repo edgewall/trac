@@ -168,6 +168,13 @@ class SubversionMergePropertyRenderer(Component):
             if spath is None:
                 continue
             revs = revs.strip()
+            inheritable, non_inheritable = [], []
+            for r in revs.split(','):
+                if r and r[-1] == '*':
+                    non_inheritable.append(r[:-1])
+                else:
+                    inheritable.append(r)
+            revs = ','.join(inheritable)
             deleted = False
             try:
                 node = repos.get_node(spath, target_rev)
@@ -175,6 +182,12 @@ class SubversionMergePropertyRenderer(Component):
                 if 'LOG_VIEW' in context.perm(resource):
                     row = [_get_source_link(spath, context),
                            _get_revs_link(revs_label, context, spath, revs)]
+                    if non_inheritable:
+                        non_inheritable = ','.join(non_inheritable)
+                        row.append(_get_revs_link(_('non-inheritable'), context,
+                                                  spath, non_inheritable,
+                                                  _('merged on the directory '
+                                                    'itself but not below')))
                     if has_eligible:
                         first_rev = branch_starts.get(spath)
                         if not first_rev:
@@ -235,7 +248,7 @@ def _get_source_link(spath, context):
                  href=context.href.browser(reponame or None, spath,
                                            rev=context.resource.version))
 
-def _get_revs_link(label, context, spath, revs):
+def _get_revs_link(label, context, spath, revs, title=None):
     """Return a link to the revision log when more than one revision is
     given, to the revision itself for a single revision, or a `<span>`
     with "no revision" for none.
@@ -247,7 +260,12 @@ def _get_revs_link(label, context, spath, revs):
         revs_href = context.href.log(reponame or None, spath, revs=revs)
     else:
         revs_href = context.href.changeset(revs, reponame or None, spath)
-    return tag.a(label, title=revs.replace(',', ', '), href=revs_href)
+    revs = revs.replace(',', ', ')
+    if title:
+        title = _("%(title)s: %(revs)s", title=title, revs=revs)
+    else:
+        title = revs
+    return tag.a(label, title=title, href=revs_href)
 
 
 class SubversionMergePropertyDiffRenderer(Component):
