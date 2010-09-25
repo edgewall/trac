@@ -143,6 +143,8 @@ try:
                 locale_dir = pkg_resources.resource_filename('trac', 'locale')
             except pkg_resources.ExtractionError:
                 return # delay extraction
+            except KeyError:
+                return # No locale data in egg
             t = Translations.load(locale_dir, locale or 'en_US')
             if not t or t.__class__ is NullTranslations:
                 t = self._null_translations
