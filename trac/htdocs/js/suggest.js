@@ -108,7 +108,7 @@
               " class='iefix' src='javascript:false;' frameborder='0'" +
               " scrolling='no'></iframe>").insertAfter(results);
             setTimeout(function() {
-              var offset = getOffset(results);
+              var offset = $(results).offset();
               iframe.css({
                 top: offset.top + "px",
                 right: (offset.left + results.get(0).offsetWidth) + "px",
