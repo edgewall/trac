@@ -709,11 +709,18 @@ class Ranges(object):
         self.appendrange(r)
 
     def appendrange(self, r):
-        """Add a range (from a string or None) to the current one"""
+        """Add ranges to the current one. 
+
+        A range is specified as a string of the form "low-high", and 
+        `r` can be a list of such strings, a string containing comma-separated
+        ranges, or `None`.
+        """
         if not r:
             return
         p = self.pairs
-        for x in r.split(","):
+        if isinstance(r, basestring):
+            r = r.split(',')
+        for x in r:
             try:
                 a, b = map(int, x.split('-', 1))
             except ValueError:
