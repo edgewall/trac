@@ -10,7 +10,16 @@ h2 {
  font-size: 105%;
  margin: 2em 0 .5em;
 }
-dl { line-height: 1.3em; margin-left: 1em }
+dl {
+ line-height: 1.3em;
+ margin-left: 1em;
+}
+dl.unread { 
+ margin-left: 0.38em;
+ border-left: 0.31em solid #c0f0c0;
+ padding-left: 0.31em;
+}
+
 dt { background: 3px 4px no-repeat; padding: 0 }
 dt :link, dt :visited {
  background: 3px 3px no-repeat;
@@ -34,7 +43,7 @@ dt .author { color: #666; }
 dt.highlight { background-color: #ffa; } 
 dd { 
  font-size: 80%;
- margin: 0 0 .75em 5.5em;
+ margin: 0 0 .75em 5.8em;
  padding: 0;
  color: #776;
 }

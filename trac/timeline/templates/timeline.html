@@ -34,10 +34,11 @@
 
       <py:for each="day, events in groupby(events, key=lambda e: format_date(e.date))">
         <h2>${day}: ${day == today and _("Today") or day == yesterday and _("Yesterday") or None}</h2>
-        <dl>
+        <dl py:for="unread, events in groupby(events, key=lambda e: lastvisit and lastvisit &lt; e.dateuid)"
+            class="${unread and 'unread' or None}">
           <py:for each="event in events"
             py:with="highlight = precision and precisedate and timedelta(0) &lt;= (event.date - precisedate) &lt; precision">
-            <dt class="${classes(event.kind, highlight=highlight)}">
+            <dt class="${classes(event.kind, highlight=highlight, unread=unread)}">
               <a href="${event.render('url', context)}" py:choose="">
                 <py:when test="event.author"><i18n:msg params="time, title, author">
                   <span class="time">${format_time(event.date, str('%H:%M'))}</span> ${event.render('title', context)}

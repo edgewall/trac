@@ -90,6 +90,14 @@ class TimelineModule(Component):
 
         format = req.args.get('format')
         maxrows = int(req.args.get('max', format == 'rss' and 50 or 0))
+        lastvisit = int(req.session.get('timeline.lastvisit', '0'))
+
+        # indication of new events is unchanged when form is updated by user
+        revisit = any([a in req.args for a in ['update', 'from', 'daysback',
+                                               'author']])
+        if revisit:
+            lastvisit = int(req.session.get('timeline.nextlastvisit',
+                                            lastvisit))
 
         # Parse the from date and adjust the timestamp to the last second of
         # the day
@@ -135,7 +143,8 @@ class TimelineModule(Component):
                                          tzinfo=req.tz),
                 'precisedate': precisedate, 'precision': precision,
                 'events': [], 'filters': [],
-                'abbreviated_messages': self.abbreviated_messages}
+                'abbreviated_messages': self.abbreviated_messages,
+                'lastvisit': lastvisit}
 
         available_filters = []
         for event_provider in self.event_providers:
@@ -202,6 +211,11 @@ class TimelineModule(Component):
         else:
             req.session['timeline.daysback'] = daysback
             req.session['timeline.authors'] = authors
+            # store lastvisit
+            if events and not revisit:
+                lastviewed = to_utimestamp(events[0]['date'])
+                req.session['timeline.lastvisit'] = max(lastvisit, lastviewed)
+                req.session['timeline.nextlastvisit'] = lastvisit
             html_context = Context.from_request(req)
             html_context.set_hints(wiki_flavor='oneliner', 
                                    shorten_lines=self.abbreviated_messages)
