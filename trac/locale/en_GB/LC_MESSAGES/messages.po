@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2008-06-28 15:16+0200\n"
-"PO-Revision-Date: 2010-09-14 08:28+0200\n"
+"PO-Revision-Date: 2010-09-27 22:07+0200\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: en_GB <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -298,21 +298,21 @@ msgstr "Description"
 msgid "File '%(name)s' exists"
 msgstr "File '%(name)s' exists"
 
-#: trac/config.py:39
+#: trac/config.py:40
 msgid "Configuration Error"
 msgstr "Configuration error"
 
-#: trac/config.py:418
+#: trac/config.py:419
 #, python-format
 msgid "[%(section)s] %(entry)s: expected integer, got %(value)s"
 msgstr "[%(section)s] %(entry)s: expected integer, got %(value)s"
 
-#: trac/config.py:436
+#: trac/config.py:437
 #, python-format
 msgid "[%(section)s] %(entry)s: expected float, got %(value)s"
 msgstr "[%(section)s] %(entry)s: expected float, got %(value)s"
 
-#: trac/config.py:620
+#: trac/config.py:621
 #, python-format
 msgid "[%(section)s] %(entry)s: expected one of (%(choices)s), got %(value)s"
 msgstr "[%(section)s] %(entry)s: expected one of (%(choices)s), got %(value)s"
@@ -329,16 +329,16 @@ msgstr ""
 "Visit the Trac open source project at<br /><a "
 "href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
 
-#: trac/env.py:572
+#: trac/env.py:574
 msgid "Database newer than Trac version"
 msgstr "Database newer than Trac version"
 
-#: trac/env.py:589
+#: trac/env.py:591
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
 msgstr "No upgrade module for version %(num)i (%(version)s.py)"
 
-#: trac/env.py:635
+#: trac/env.py:637
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
@@ -346,7 +346,7 @@ msgstr ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
 
-#: trac/env.py:667
+#: trac/env.py:669
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
@@ -357,41 +357,41 @@ msgstr ""
 "\n"
 "Run \"trac-admin %(path)s upgrade\""
 
-#: trac/env.py:701
+#: trac/env.py:703
 msgid "Copying resources from:"
 msgstr "Copying resources from:"
 
-#: trac/env.py:717
+#: trac/env.py:719
 msgid "Creating scripts."
 msgstr "Creating scripts."
 
-#: trac/env.py:732
+#: trac/env.py:734
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr "hotcopy can't overwrite existing '%(dest)s'"
 
-#: trac/env.py:742
+#: trac/env.py:744
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr "Hotcopying %(src)s to %(dst)s ..."
 
-#: trac/env.py:757
+#: trac/env.py:759
 msgid "The following errors happened while copying the environment:"
 msgstr "The following errors happened while copying the environment:"
 
-#: trac/env.py:768
+#: trac/env.py:770
 msgid "Hotcopy done."
 msgstr "Hotcopy done."
 
-#: trac/env.py:773 trac/admin/api.py:130
+#: trac/env.py:775 trac/admin/api.py:130
 msgid "Invalid arguments"
 msgstr "Invalid arguments"
 
-#: trac/env.py:776
+#: trac/env.py:778
 msgid "Database is up to date, no upgrade necessary."
 msgstr "Database is up to date, no upgrade necessary."
 
-#: trac/env.py:784
+#: trac/env.py:786
 #, python-format
 msgid ""
 "Backup failed: %(msg)s.\n"
@@ -400,7 +400,7 @@ msgstr ""
 "Backup failed: %(msg)s.\n"
 "Use '--no-backup' to upgrade without doing a backup."
 
-#: trac/env.py:794
+#: trac/env.py:796
 msgid ""
 "Warning: the wiki-macros directory in the environment is non-empty, but "
 "Trac\n"
@@ -409,19 +409,19 @@ msgstr ""
 "Warning: the wiki-macros directory in the environment is non-empty, but "
 "Trac\n"
 "doesn't load plugins from there anymore. Please remove it by hand."
-
-#: trac/env.py:805
-#, python-format
-msgid ""
-"Error while removing wiki-macros: %(err)s\n"
-"Trac doesn't load plugins from wiki-macros anymore. Please remove it by "
-"hand."
-msgstr ""
-"Error while removing wiki-macros: %(err)s\n"
-"Trac doesn't load plugins from wiki-macros anymore. Please remove it by "
-"hand."
 
 #: trac/env.py:807
+#, python-format
+msgid ""
+"Error while removing wiki-macros: %(err)s\n"
+"Trac doesn't load plugins from wiki-macros anymore. Please remove it by "
+"hand."
+msgstr ""
+"Error while removing wiki-macros: %(err)s\n"
+"Trac doesn't load plugins from wiki-macros anymore. Please remove it by "
+"hand."
+
+#: trac/env.py:809
 #, python-format
 msgid ""
 "Upgrade done.\n"
@@ -765,6 +765,7 @@ msgstr "Logging"
 
 #: trac/admin/web_ui.py:241 trac/ticket/templates/milestone_delete.html:31
 #: trac/ticket/templates/milestone_edit.html:85
+#: trac/ticket/templates/query_results.html:27
 msgid "None"
 msgstr "None"
 
@@ -1061,7 +1062,7 @@ msgstr ""
 "[1:log] directory of the project environment ([2:%(dir)s])."
 
 #: trac/admin/templates/admin_milestones.html:10 trac/ticket/admin.py:240
-#: trac/ticket/roadmap.py:885
+#: trac/ticket/roadmap.py:890
 msgid "Milestones"
 msgstr "Milestones"
 
@@ -1621,11 +1622,11 @@ msgstr "Browse repository path %(path)s"
 msgid "Search query too short. Query must be at least %(num)s characters long."
 msgstr "Search query too short. Query must be at least %(num)s characters long."
 
-#: trac/search/web_ui.py:232 trac/ticket/query.py:764 trac/ticket/report.py:397
+#: trac/search/web_ui.py:232 trac/ticket/query.py:762 trac/ticket/report.py:397
 msgid "Next Page"
 msgstr "Next page"
 
-#: trac/search/web_ui.py:238 trac/ticket/query.py:769 trac/ticket/report.py:400
+#: trac/search/web_ui.py:238 trac/ticket/query.py:767 trac/ticket/report.py:400
 msgid "Previous Page"
 msgstr "Previous page"
 
@@ -2626,91 +2627,91 @@ msgstr "Query filter requires field name"
 msgid "Page %(page)s is beyond the number of pages in the query"
 msgstr "Page %(page)s is beyond the number of pages in the query"
 
-#: trac/ticket/query.py:563
+#: trac/ticket/query.py:561
 #, python-format
 msgid "Invalid ticket id list: %(value)s"
 msgstr "Invalid ticket id list: %(value)s"
 
-#: trac/ticket/query.py:663 trac/ticket/query.py:671
+#: trac/ticket/query.py:661 trac/ticket/query.py:669
 msgid "contains"
 msgstr "contains"
 
-#: trac/ticket/query.py:664 trac/ticket/query.py:672
+#: trac/ticket/query.py:662 trac/ticket/query.py:670
 msgid "doesn't contain"
 msgstr "doesn't contain"
 
-#: trac/ticket/query.py:665
+#: trac/ticket/query.py:663
 msgid "begins with"
 msgstr "begins with"
 
-#: trac/ticket/query.py:666
+#: trac/ticket/query.py:664
 msgid "ends with"
 msgstr "ends with"
 
-#: trac/ticket/query.py:667 trac/ticket/query.py:675 trac/ticket/query.py:679
+#: trac/ticket/query.py:665 trac/ticket/query.py:673 trac/ticket/query.py:677
 msgid "is"
 msgstr "is"
 
-#: trac/ticket/query.py:668 trac/ticket/query.py:676 trac/ticket/query.py:680
+#: trac/ticket/query.py:666 trac/ticket/query.py:674 trac/ticket/query.py:678
 msgid "is not"
 msgstr "is not"
 
-#: trac/ticket/query.py:710 trac/ticket/query.py:716
+#: trac/ticket/query.py:708 trac/ticket/query.py:714
 msgid "Ticket"
 msgstr "Ticket"
 
-#: trac/ticket/query.py:777 trac/ticket/report.py:406
+#: trac/ticket/query.py:775 trac/ticket/report.py:406
 #, python-format
 msgid "Page %(num)d"
 msgstr "Page %(num)d"
 
-#: trac/ticket/query.py:826 trac/ticket/report.py:273 trac/ticket/report.py:560
+#: trac/ticket/query.py:824 trac/ticket/report.py:273 trac/ticket/report.py:560
 #: trac/ticket/web_ui.py:130 trac/timeline/web_ui.py:214
 #: trac/versioncontrol/web_ui/log.py:298
 msgid "RSS Feed"
 msgstr "RSS feed"
 
-#: trac/ticket/query.py:828 trac/ticket/report.py:275 trac/ticket/report.py:562
+#: trac/ticket/query.py:826 trac/ticket/report.py:275 trac/ticket/report.py:562
 #: trac/ticket/web_ui.py:126
 msgid "Comma-delimited Text"
 msgstr "Comma-delimited text"
 
-#: trac/ticket/query.py:830 trac/ticket/report.py:277 trac/ticket/report.py:564
+#: trac/ticket/query.py:828 trac/ticket/report.py:277 trac/ticket/report.py:564
 #: trac/ticket/web_ui.py:128
 msgid "Tab-delimited Text"
 msgstr "Tab-delimited text"
 
-#: trac/ticket/query.py:852 trac/ticket/report.py:72
+#: trac/ticket/query.py:850 trac/ticket/report.py:72
 msgid "View Tickets"
 msgstr "View tickets"
 
-#: trac/ticket/query.py:1059 trac/ticket/query.py:1070
+#: trac/ticket/query.py:1057 trac/ticket/query.py:1068
 #: trac/ticket/report.py:133
 msgid "Custom Query"
 msgstr "Custom query"
 
-#: trac/ticket/query.py:1069 trac/ticket/report.py:123
+#: trac/ticket/query.py:1067 trac/ticket/report.py:123
 #: trac/ticket/report.py:124 trac/ticket/report.py:126
 #: trac/ticket/templates/report_list.html:10
 #: trac/ticket/templates/report_list.html:15
 msgid "Available Reports"
 msgstr "Available reports"
 
-#: trac/ticket/query.py:1159
+#: trac/ticket/query.py:1157
 #, python-format
 msgid "[Error: %(error)s]"
 msgstr "[Error: %(error)s]"
 
-#: trac/ticket/query.py:1293
+#: trac/ticket/query.py:1291
 msgid "No results"
 msgstr "No results"
 
-#: trac/ticket/query.py:1311
+#: trac/ticket/query.py:1309
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
 msgstr "%(groupvalue)s %(groupname)s tickets matching %(query)s"
 
-#: trac/ticket/query.py:1334
+#: trac/ticket/query.py:1332
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
 msgstr "%(groupvalue)s %(groupname)s tickets:"
@@ -2819,7 +2820,7 @@ msgstr "Roadmap"
 msgid "iCalendar"
 msgstr "iCalendar"
 
-#: trac/ticket/roadmap.py:445 trac/ticket/roadmap.py:855
+#: trac/ticket/roadmap.py:445 trac/ticket/roadmap.py:860
 #, python-format
 msgid "Milestone %(name)s"
 msgstr "Milestone %(name)s"
@@ -4247,22 +4248,22 @@ msgstr "Line %(lineno)d: Entry before first section header"
 msgid "Line %(lineno)d: Invalid entry"
 msgstr "Line %(lineno)d: Invalid entry"
 
-#: trac/versioncontrol/svn_fs.py:276
+#: trac/versioncontrol/svn_fs.py:277
 #, python-format
 msgid "Subversion >= 1.0 required, found %(version)s"
 msgstr "Subversion >= 1.0 required, found %(version)s"
 
-#: trac/versioncontrol/svn_fs.py:331
+#: trac/versioncontrol/svn_fs.py:332
 #, python-format
 msgid "%(path)s does not appear to be a Subversion repository."
 msgstr "%(path)s does not appear to be a Subversion repository."
 
-#: trac/versioncontrol/svn_fs.py:338
+#: trac/versioncontrol/svn_fs.py:339
 #, python-format
 msgid "Couldn't open Subversion repository %(path)s: %(svn_error)s"
 msgstr "Couldn't open Subversion repository %(path)s: %(svn_error)s"
 
-#: trac/versioncontrol/svn_fs.py:618
+#: trac/versioncontrol/svn_fs.py:620
 #, python-format
 msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
@@ -4271,7 +4272,7 @@ msgstr ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
 " and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
 
-#: trac/versioncontrol/svn_fs.py:767
+#: trac/versioncontrol/svn_fs.py:772
 #, python-format
 msgid "svn blame failed on %(path)s: %(error)s"
 msgstr "svn blame failed on %(path)s: %(error)s"
@@ -4288,51 +4289,72 @@ msgstr "merged"
 msgid "blocked"
 msgstr "blocked"
 
-#: trac/versioncontrol/svn_prop.py:192
+#: trac/versioncontrol/svn_prop.py:182
+msgid "non-inheritable"
+msgstr "non-inheritable"
+
+#: trac/versioncontrol/svn_prop.py:184
+msgid "merged on the directory itself but not below"
+msgstr "merged on the directory itself but not below"
+
+#: trac/versioncontrol/svn_prop.py:200
 msgid "eligible"
 msgstr "eligible"
 
-#: trac/versioncontrol/svn_prop.py:206
+#: trac/versioncontrol/svn_prop.py:214
 msgid "(toggle deleted branches)"
 msgstr "(toggle deleted branches)"
 
-#: trac/versioncontrol/svn_prop.py:234
+#: trac/versioncontrol/svn_prop.py:252
 msgid "View merge source"
 msgstr "View merge source"
 
-#: trac/versioncontrol/svn_prop.py:245
+#: trac/versioncontrol/svn_prop.py:263
 msgid "No revisions"
 msgstr "No revisions"
 
-#: trac/versioncontrol/svn_prop.py:281
+#: trac/versioncontrol/svn_prop.py:270
+#, python-format
+msgid "%(title)s: %(revs)s"
+msgstr "%(title)s: %(revs)s"
+
+#: trac/versioncontrol/svn_prop.py:306
 msgid "merged: "
 msgstr "merged: "
 
-#: trac/versioncontrol/svn_prop.py:281
+#: trac/versioncontrol/svn_prop.py:306
 msgid "blocked: "
 msgstr "blocked: "
 
-#: trac/versioncontrol/svn_prop.py:282
+#: trac/versioncontrol/svn_prop.py:307
 msgid "reverse-merged: "
 msgstr "reverse-merged: "
 
-#: trac/versioncontrol/svn_prop.py:282
+#: trac/versioncontrol/svn_prop.py:307
 msgid "un-blocked: "
 msgstr "un-blocked: "
 
-#: trac/versioncontrol/svn_prop.py:293
+#: trac/versioncontrol/svn_prop.py:308
+msgid "marked as non-inheritable: "
+msgstr "marked as non-inheritable: "
+
+#: trac/versioncontrol/svn_prop.py:309
+msgid "unmarked as non-inheritable: "
+msgstr "unmarked as non-inheritable: "
+
+#: trac/versioncontrol/svn_prop.py:321
 msgid " (added)"
 msgstr " (added)"
 
-#: trac/versioncontrol/svn_prop.py:321
+#: trac/versioncontrol/svn_prop.py:358
 msgid "removed"
 msgstr "removed"
 
-#: trac/versioncontrol/svn_prop.py:324
+#: trac/versioncontrol/svn_prop.py:361
 msgid " (with no actual effect on merging)"
 msgstr " (with no actual effect on merging)"
 
-#: trac/versioncontrol/svn_prop.py:325
+#: trac/versioncontrol/svn_prop.py:362
 #, python-format
 msgid "Property %(prop)s changed"
 msgstr "Property %(prop)s changed"
@@ -5146,11 +5168,11 @@ msgid "No permission to view change log"
 msgstr "No permission to view change log"
 
 #. TRANSLATOR: You can 'search' in the repository history... (link)
-#: trac/versioncontrol/web_ui/util.py:65
+#: trac/versioncontrol/web_ui/util.py:67
 msgid "search"
 msgstr "search"
 
-#: trac/versioncontrol/web_ui/util.py:69
+#: trac/versioncontrol/web_ui/util.py:71
 #, python-format
 msgid ""
 "You can %(search)s in the repository history to see if that path existed "
