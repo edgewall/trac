@@ -1,4 +1,4 @@
-# Translations template for Trac.
+# Hebrew translations for Trac.
 # Copyright (C) 2010 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # Itamar Ostricher <itamarost@gmail.com>, 2010.
@@ -8,16 +8,14 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-05-24 23:55+0200\n"
-"PO-Revision-Date: 2010-05-30 00:31+0200\n"
+"PO-Revision-Date: 2010-09-29 18:44+0200\n"
 "Last-Translator: Itamar Ostricher <itamarost<at>gmail<dot>com>\n"
 "Language-Team: ItamarO <itamarost <at> gmail <dot> com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.5\n"
-"X-Poedit-Language: Hebrew\n"
-"X-Poedit-Country: ISRAEL\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -60,37 +58,37 @@ msgstr "(שגיאה)"
 msgid "Fold directory"
 msgstr "צמצם תיקייה"
 
-#: trac/htdocs/js/folding.js:59
+#: trac/htdocs/js/folding.js:62
 #, python-format
 msgid "Show %(title)s"
 msgstr "הצג %(title)s"
 
-#: trac/htdocs/js/folding.js:74
+#: trac/htdocs/js/folding.js:77
 #, python-format
 msgid "%(title)s (click to hide column)"
 msgstr "%(title)s (לחץ כדי להסתיר עמודה)"
 
-#: trac/htdocs/js/query.js:119
+#: trac/htdocs/js/query.js:118
 msgid "A filter already exists for that property"
 msgstr "כבר קיים פילטר עבור מאפיין זה"
 
-#: trac/htdocs/js/query.js:146
+#: trac/htdocs/js/query.js:145
 msgid "or"
 msgstr "או"
 
-#: trac/htdocs/js/query.js:165
+#: trac/htdocs/js/query.js:164
 msgid "yes"
 msgstr "כן"
 
-#: trac/htdocs/js/query.js:168
+#: trac/htdocs/js/query.js:167
 msgid "no"
 msgstr "לא"
 
-#: trac/htdocs/js/query.js:171
+#: trac/htdocs/js/query.js:170
 msgid "between"
 msgstr "בין"
 
-#: trac/htdocs/js/query.js:173
+#: trac/htdocs/js/query.js:172
 msgid "and"
 msgstr "ו"
 
@@ -134,8 +132,7 @@ msgstr "מעבר שורה: [[BR]]"
 msgid "Image: [[Image()]]"
 msgstr "תמונה: [[Image()]]"
 
-#: trac/ticket/templates/ticket.html:3
-#: trac/wiki/templates/wiki_view.html:3
+#: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
 msgid "Link to this section"
 msgstr "קשר לסעיף זה"
 
