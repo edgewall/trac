@@ -444,8 +444,7 @@ class RoadmapModule(Component):
                 write_date('DTSTART', milestone.due)
                 write_prop('SUMMARY', _('Milestone %(name)s',
                                         name=milestone.name))
-                write_prop('URL', req.base_url + '/milestone/' +
-                           milestone.name)
+                write_prop('URL', req.abs_href.milestone(milestone.name))
                 if milestone.description:
                     write_prop('DESCRIPTION', milestone.description)
                 write_prop('END', 'VEVENT')
