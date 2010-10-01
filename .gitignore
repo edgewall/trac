@@ -19,3 +19,6 @@ Makefile.cfg
 doc/.build
 *.mo
 trac/htdocs/js/messages/*.js
+.project
+.pydevproject
+.settings
