@@ -211,14 +211,14 @@ class INavigationContributor(Interface):
         """
 
     def get_navigation_items(req):
-        """Should return an iterable object over the list of navigation items to
-        add, each being a tuple in the form (category, name, text).
+        """Should return an iterable object over the list of navigation items
+        to add, each being a tuple in the form (category, name, text).
         """
 
 
 class ITemplateProvider(Interface):
     """Extension point interface for components that provide their own
-    ClearSilver templates and accompanying static resources.
+    Genshi templates and accompanying static resources.
     """
 
     def get_htdocs_dirs():
