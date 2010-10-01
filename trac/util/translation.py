@@ -141,10 +141,8 @@ try:
         def activate(self, locale, env_path=None):
             try:
                 locale_dir = pkg_resources.resource_filename('trac', 'locale')
-            except pkg_resources.ExtractionError:
-                return # delay extraction
-            except KeyError:
-                return # No locale data in egg
+            except Exception:
+                return
             t = Translations.load(locale_dir, locale or 'en_US')
             if not t or t.__class__ is NullTranslations:
                 t = self._null_translations
@@ -329,9 +327,12 @@ try:
         """Return a list of locale identifiers of the locales for which
         translations are available.
         """
-        return [dirname for dirname
-                in pkg_resources.resource_listdir('trac', 'locale')
-                if '.' not in dirname]
+        try:
+            return [dirname for dirname
+                    in pkg_resources.resource_listdir('trac', 'locale')
+                    if '.' not in dirname]
+        except Exception:
+            return []
 
     def get_negotiated_locale(preferred_locales):
         def normalize(locale_ids):
