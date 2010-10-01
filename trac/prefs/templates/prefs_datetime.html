@@ -15,7 +15,7 @@
                                 selected_tz = timezone(session_tzname) or utc">
       <label>Time zone:
       <select name="tz">
-        <option>Default time zone</option>
+        <option value="">Default time zone</option>
         <option py:for="tzname in timezones" value="$tzname"
                 selected="${session_tzname != None and
                             session_tzname.startswith('Etc/') and
@@ -33,13 +33,13 @@
         <py:when test="session_tzname">
           <i18n:msg params="tz, formatted">
             In your time zone ${selected_tz.tzname(datetime.now())}, this would be displayed as
-            <strong>${format_time(now, 'iso8601', tzinfo=selected_tz)}</strong>.
+            <strong>${format_time(now, 'iso8601', tzinfo=req.tz)}</strong>.
           </i18n:msg>
         </py:when>
         <py:otherwise>
           <i18n:msg params="formatted">
             In the default time zone, this would be displayed as
-            <strong>${format_time(now, 'iso8601', tzinfo=localtz)}</strong>.
+            <strong>${format_time(now, 'iso8601', tzinfo=req.tz)}</strong>.
           </i18n:msg>
         </py:otherwise>
       </p>
