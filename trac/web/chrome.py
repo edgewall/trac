@@ -47,7 +47,7 @@ from trac.util.text import pretty_size, obfuscate_email_address, \
                            javascript_quote, exception_to_unicode
 from trac.util.datefmt import pretty_timedelta, format_datetime, format_date, \
                               format_time, from_utimestamp, http_date, utc
-from trac.util.translation import _
+from trac.util.translation import _, get_available_locales
 from trac.web.api import IRequestHandler, ITemplateStreamFilter, HTTPNotFound
 from trac.web.href import Href
 from trac.wiki import IWikiSyntaxProvider
@@ -382,7 +382,11 @@ class Chrome(Component):
         except ImportError:
             babel = None
         if babel is not None:
-            yield 'Babel', get_pkginfo(babel).get('version')
+            info = get_pkginfo(babel).get('version')
+            if not get_available_locales():
+                info += " (translations unavailable)" # No i18n on purpose
+                self.log.warning("Locale data is missing")
+            yield 'Babel', info
 
     # IEnvironmentSetupParticipant methods
 

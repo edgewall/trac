@@ -21,6 +21,7 @@ from trac.config import _TRUE_VALUES, ListOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util import is_path_below
+from trac.util.compat import any
 from trac.util.text import breakable_path, normalize_whitespace, print_table, \
                            printout
 from trac.util.translation import _, ngettext, tag_
