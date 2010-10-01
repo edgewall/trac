@@ -382,6 +382,7 @@ class Chrome(Component):
             info = get_pkginfo(babel).get('version')
             if not get_available_locales():
                 info += " (translations unavailable)" # No i18n on purpose
+                self.log.warning("Locale data is missing")
             yield 'Babel', info
 
     # IEnvironmentSetupParticipant methods
