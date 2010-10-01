@@ -42,10 +42,10 @@
                    py:with="clause_pre = '%d_' % clause_num">
               <tr style="${clause_num == 0 and 'display: none' or None}">
                 <td>
-		  <div class="trac-clause-lsep">&nbsp;<hr /></div>
-		  <div class="trac-clause-msep">Or</div>
-		  <div class="trac-clause-rsep">&nbsp;<hr /></div>
-		</td>
+                  <div class="trac-clause-lsep">&nbsp;<hr /></div>
+                  <div class="trac-clause-msep">Or</div>
+                  <div class="trac-clause-rsep">&nbsp;<hr /></div>
+                </td>
               </tr>
               <tr><td class="trac-clause">
                 <table class="trac-clause">
@@ -82,8 +82,15 @@
                           <select name="${n_field_name}">
                             <option></option>
                             <option py:for="option in field.options"
-                              selected="${option == constraint_value and 'selected' or None}"
-                              value="$option" py:content="option"></option>
+                                    selected="${option == constraint_value or None}"
+                                    value="$option" py:content="option"></option>
+                            <optgroup py:for="optgroup in field.optgroups"
+                                      py:if="optgroup.options"
+                                      label="${optgroup.label}">
+                              <option py:for="option in optgroup.options"
+                                      selected="${option == constraint_value or None}"
+                                      value="$option" py:content="option"></option>
+                            </optgroup>
                           </select>
                         </py:when>
 

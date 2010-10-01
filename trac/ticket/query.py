@@ -30,6 +30,7 @@ from trac.db import get_column_names
 from trac.mimeview.api import Mimeview, IContentConverter, Context
 from trac.resource import Resource
 from trac.ticket.api import TicketSystem
+from trac.ticket.model import Milestone, group_milestones
 from trac.util import Ranges, as_bool
 from trac.util.datefmt import format_datetime, from_utimestamp, parse_date, \
                               to_timestamp, to_utimestamp, utc
@@ -718,6 +719,16 @@ class Query(object):
                 # Make $USER work when restrict_owner = true
                 field = field.copy()
                 field['options'].insert(0, '$USER')
+            if name == 'milestone':
+                milestones = [Milestone(self.env, opt)
+                              for opt in field['options']]
+                milestones = [m for m in milestones
+                              if 'MILESTONE_VIEW' in req.perm(m.resource)]
+                groups = group_milestones(milestones, True)
+                field['options'] = []
+                field['optgroups'] = [
+                    {'label': label, 'options': [m.name for m in milestones]}
+                    for (label, milestones) in groups]
             fields[name] = field
 
         groups = {}
@@ -1085,7 +1096,8 @@ class QueryModule(Component):
         data['all_textareas'] = query.get_all_textareas()
 
         properties = dict((name, dict((key, field[key])
-                                      for key in ('type', 'label', 'options')
+                                      for key in ('type', 'label', 'options',
+                                                  'optgroups')
                                       if key in field))
                           for name, field in data['fields'].iteritems())
         add_script_data(req, {'properties': properties,
