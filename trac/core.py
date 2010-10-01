@@ -167,7 +167,7 @@ class Component(object):
 
     @staticmethod
     def implements(*interfaces):
-        """Can be used in the class definiton of `Component` subclasses to
+        """Can be used in the class definition of `Component` subclasses to
         declare the extension points that are extended.
         """
         import sys
