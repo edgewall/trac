@@ -266,6 +266,17 @@ class Chrome(Component):
         environments `templates` directory, but the latter take precedence.
         
         (''since 0.11'')""")
+ 
+    shared_htdocs_dir = PathOption('inherit', 'htdocs_dir', '',
+        """Path to the //shared htdocs directory//.
+        
+        Static resources in that directory are mapped to /chrome/shared
+        under the environment URL, in addition to common and site locations.
+        
+        This can be useful in site.html for common interface customization
+        of multiple Trac environments.
+        
+        (''since 0.13'')""")
 
     auto_reload = BoolOption('trac', 'auto_reload', False,
         """Automatically reload template files after modification.""")
@@ -458,6 +469,7 @@ class Chrome(Component):
 
     def get_htdocs_dirs(self):
         return [('common', pkg_resources.resource_filename('trac', 'htdocs')),
+                ('shared', self.shared_htdocs_dir), 
                 ('site', self.env.get_htdocs_dir())]
 
     def get_templates_dirs(self):
