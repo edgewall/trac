@@ -787,6 +787,7 @@ class Chrome(Component):
             self.templates = TemplateLoader(
                 self.get_all_templates_dirs(), auto_reload=self.auto_reload,
                 max_cache_size=self.genshi_cache_size,
+                default_encoding="utf-8",
                 variable_lookup='lenient', callback=lambda template:
                 Translator(translation.get_translations()).setup(template))
 
@@ -860,7 +861,7 @@ class Chrome(Component):
 
         try:
             buffer = StringIO()
-            stream.render(method, doctype=doctype, out=buffer)
+            stream.render(method, doctype=doctype, out=buffer, encoding="utf-8")
             return buffer.getvalue().translate(_translate_nop,
                                                _invalid_control_chars)
         except Exception, e:
