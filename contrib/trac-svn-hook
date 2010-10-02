@@ -5,7 +5,7 @@
 #  Purpose:: this script is meant to be called from the Subversion hooks 
 #            for notifying Trac when changesets are added or modified.
 #
-#  Scope:: The http://trac.edgewall.org/wiki/0.12/TracRepositoryAdmin page
+#  Scope:: The http://trac.edgewall.org/wiki/TracRepositoryAdmin page
 #          describes how to directly call the relevant trac-admin commands
 #          from the Subversion hooks. In most cases this should be enough,
 #          however this script should make troubleshooting easier and 

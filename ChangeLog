@@ -1,3 +1,17 @@
+Trac 0.12.1 (October 9, 2010)
+http://svn.edgewall.org/repos/trac/tags/trac-0.12.1rc1
+
+Trac 0.12.1rc1 contains a few important performance improvements,
+some minor fixes and a few minor features.
+
+This list contains only a few highlights:
+ - db: improve concurrency behavior (#9111)
+ - fcgi: add an environment variable `TRAC_USE_FLUP` to control the usage of flup vs. bundled _fcgi.py (defaults to 0, i.e. use bundled as before)
+ - svn authz: improve compatibility with svn 1.5 format (#8289)
+ - milestone: allow to set the time for the due date (#6369, #9582)
+ - ticket: fixes for the CC: property (#8597, #9522)
+ - several fixes for upgrade (#9400, #9416, #9483, #9556)
+ 
 Trac 0.12 'Babel' (June 13, 2010)
 http://svn.edgewall.org/repos/trac/tags/trac-0.12
 
