@@ -202,7 +202,7 @@ class Session(DetachedSession):
                 raise TracError(Markup(
                     _("Session '%(id)s' already exists.<br />"
                       "Please choose a different session ID.",
-                      id=new_sid), _("Error renaming session")))
+                      id=new_sid)), _("Error renaming session"))
             self.env.log.debug('Changing session ID %s to %s', self.sid,
                                new_sid)
             cursor.execute("""
