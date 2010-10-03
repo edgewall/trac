@@ -290,6 +290,9 @@ class TicketModule(Component):
                 """ % (ts_start, ts_stop))
             data = None
             for id,t,author,type,summary,field,oldvalue,newvalue in cursor:
+                if not (oldvalue or newvalue):
+                    # ignore empty change from custom field created or deleted
+                    continue 
                 if not data or (id, t) != data[:2]:
                     if data:
                         ev = produce_event(data, status, fields, comment, cid)
