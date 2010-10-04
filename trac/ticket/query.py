@@ -722,8 +722,9 @@ class Query(object):
             if name == 'milestone':
                 milestones = [Milestone(self.env, opt)
                               for opt in field['options']]
-                milestones = [m for m in milestones
-                              if 'MILESTONE_VIEW' in req.perm(m.resource)]
+                if req:
+                    milestones = [m for m in milestones
+                                  if 'MILESTONE_VIEW' in req.perm(m.resource)]
                 groups = group_milestones(milestones, True)
                 field['options'] = []
                 field['optgroups'] = [
