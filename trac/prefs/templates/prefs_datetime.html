@@ -27,19 +27,21 @@
       instead of that of the server.</p>
 
       <!-- This currently crashes Genshi's extractor if you add i18n:msg -->
-      <p class="hint" py:with="now = datetime.now(utc)" py:choose="">
-        <i18n:msg params="time">Example: The current time is <strong>${format_time(now, 'iso8601', tzinfo=utc)}</strong> (UTC).</i18n:msg>
+      <p class="hint" py:with="now = datetime.now(utc);
+                               formatted = format_time(now, 'iso8601', tzinfo=req.tz)" py:choose="">
+        <i18n:msg params="time">
+          Example: The current time is <strong>${format_time(now, 'iso8601', tzinfo=utc)}</strong> (UTC).
+        </i18n:msg>
         <br />
         <py:when test="session_tzname">
           <i18n:msg params="tz, formatted">
             In your time zone ${selected_tz.tzname(datetime.now())}, this would be displayed as
-            <strong>${format_time(now, 'iso8601', tzinfo=req.tz)}</strong>.
+            <strong>$formatted</strong>.
           </i18n:msg>
         </py:when>
         <py:otherwise>
           <i18n:msg params="formatted">
-            In the default time zone, this would be displayed as
-            <strong>${format_time(now, 'iso8601', tzinfo=req.tz)}</strong>.
+            In the default time zone, this would be displayed as <strong>$formatted</strong>.
           </i18n:msg>
         </py:otherwise>
       </p>

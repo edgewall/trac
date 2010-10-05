@@ -20,6 +20,11 @@ import pkg_resources
 import re
 import shutil
 
+try:
+    from babel.core import Locale
+except ImportError:
+    Locale = None
+
 from genshi import HTML
 from genshi.builder import tag
 
@@ -27,8 +32,9 @@ from trac.admin.api import IAdminPanelProvider
 from trac.core import *
 from trac.loader import get_plugin_info, get_plugins_dir
 from trac.perm import PermissionSystem, IPermissionRequestor
+from trac.util.datefmt import all_timezones
 from trac.util.text import exception_to_unicode
-from trac.util.translation import _, ngettext
+from trac.util.translation import _, get_available_locales, ngettext
 from trac.web import HTTPNotFound, IRequestHandler
 from trac.web.chrome import add_notice, add_stylesheet, \
                             add_warning, Chrome, INavigationContributor, \
@@ -206,19 +212,42 @@ class BasicsAdminPanel(Component):
     def render_admin_panel(self, req, cat, page, path_info):
         req.perm.require('TRAC_ADMIN')
 
+        if Locale:
+            locales = [Locale.parse(locale)
+                       for locale in  get_available_locales()]
+            languages = sorted((str(locale), locale.display_name)
+                               for locale in locales)
+        else:
+            locales, languages = [], []
+
         if req.method == 'POST':
             for option in ('name', 'url', 'descr'):
                 self.config.set('project', option, req.args.get(option))
+
+            default_timezone = req.args.get('default_timezone')
+            if default_timezone not in all_timezones:
+                default_timezone = ''
+            self.config.set('trac', 'default_timezone', default_timezone)
+
+            default_language = req.args.get('default_language')
+            if default_language not in locales:
+                default_language = ''
+            self.config.set('trac', 'default_language', default_language)
+
             _save_config(self.config, req, self.log)
             req.redirect(req.href.admin(cat, page))
 
+        default_timezone = self.config.get('trac', 'default_timezone')
+        default_language = self.config.get('trac', 'default_language')
+
         data = {
-            'name': self.env.project_name,
-            'description': self.env.project_description,
-            'url': self.env.project_url
+            'default_timezone': default_timezone,
+            'timezones': all_timezones,
+            'default_language': default_language.replace('-', '_'),
+            'languages': languages,
         }
         Chrome(self.env).add_textarea_grips(req)
-        return 'admin_basics.html', {'project': data}
+        return 'admin_basics.html', data
 
 
 class LoggingAdminPanel(Component):

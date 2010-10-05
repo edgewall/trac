@@ -28,7 +28,25 @@
         <div class="field">
           <label>Description:<br />
             <textarea name="descr" class="trac-resizable" rows="3" cols="50">
-${project.description}</textarea>
+${project.descr}</textarea>
+          </label>
+        </div>
+        <div class="field">
+          <label>Default timezone:<br />
+            <select name="default_timezone">
+              <option value="">Server's local time zone</option>
+              <option py:for="tzname in timezones" value="${tzname}"
+                      selected="${tzname == default_timezone or None}">${tzname}</option>
+            </select>
+          </label>
+        </div>
+        <div class="field">
+          <label>Default language:<br />
+            <select name="default_language">
+              <option value="">Browser's language</option>
+              <option py:for="locale, language in languages" value="${locale}"
+                      selected="${locale == default_language or None}">${language}</option>
+            </select>
           </label>
         </div>
       </fieldset>

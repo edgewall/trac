@@ -10,10 +10,10 @@
   </head>
   <body>
 
-    <div class="field" py:with="session_language = settings.session.get('language')">
+    <div class="field" py:with="session_language = settings.session.get('language', '').replace('-', '_')">
       <label>Language:
       <select name="language">
-        <option value="">default language</option>
+        <option value="">Default language</option>
         <option py:for="locale, language in languages"
                 selected="${session_language == locale or None}"
                 value="$locale">$language</option>

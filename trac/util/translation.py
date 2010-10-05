@@ -336,9 +336,9 @@ try:
 
     def get_negotiated_locale(preferred_locales):
         def normalize(locale_ids):
-            return [id.replace('_', '-') for id in locale_ids if id]
+            return [id.replace('-', '_') for id in locale_ids if id]
         return Locale.negotiate(normalize(preferred_locales),
-                                normalize(get_available_locales()), sep='-')
+                                normalize(get_available_locales()))
         
     has_babel = True
 
