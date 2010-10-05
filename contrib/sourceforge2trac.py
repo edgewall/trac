@@ -2,9 +2,11 @@
 Import a Sourceforge project's tracker items into a Trac database.
 
 Requires:
-   Trac 0.11 from http://trac.edgewall.org/
+   Trac 0.13 from http://trac.edgewall.org/
    Python 2.5 from http://www.python.org/
-           
+
+0.13 clean-up by cboos **untested**, use at your own risks and send patches
+
 The Sourceforge tracker items can be exported from the 'Backup' page
 of the project admin section. Substitute XXXXX with project id:
 https://sourceforge.net/export/xml_export2.php?group_id=XXXXX
@@ -305,7 +307,8 @@ class ExportedProjectData(object):
         
         root = ElementTree().parse(f)   
         
-        self.users = dict([(FlatXML(u).userid, FlatXML(u).username) for u in root.find('referenced_users')])
+        self.users = dict([(FlatXML(u).userid, FlatXML(u).username) 
+                          for u in root.find('referenced_users')])
 
         for tracker in root.find('trackers'):
             tr = Tracker(tracker)
@@ -337,11 +340,13 @@ class ExportedProjectData(object):
                 if res_id is not None and res_id not in self.used_resolutions:
                     for idx, name in self.resolutions:
                         if idx == res_id: break
-                    self.used_resolutions[res_id] = dict(self.resolutions)[res_id]
+                    self.used_resolutions[res_id] = \
+                            dict(self.resolutions)[res_id]
                 # used categories
                 categories = dict(self.get_categories(tr, noowner=True))
                 if tck.category_id not in self.used_categories:
-                    self.used_categories[tck.category_id] = categories[tck.category_id]
+                    self.used_categories[tck.category_id] = \
+                            categories[tck.category_id]
 
         # sorting everything
         self.trackers.sort(key=lambda x:x.name)
@@ -376,18 +381,9 @@ class ExportedProjectData(object):
 class TracDatabase(object):
     def __init__(self, path):
         self.env = trac.env.Environment(path)
-        self._db = self.env.get_db_cnx()
-        self._db.autocommit = False
-        self._db.cnx.ping()
-    
-    def db(self):
-        return self._db
     
     def hasTickets(self):
-        c = self.db().cursor()
-        #c.execute("""DELETE FROM ticket""")
-        c.execute('''SELECT count(*) FROM ticket''')
-        return int(c.fetchall()[0][0]) > 0
+        return int(self.env.db_query("SELECT count(*) FROM ticket")[0][0]) > 0
 
     def dbCheck(self):
         if self.hasTickets():
@@ -396,64 +392,56 @@ class TracDatabase(object):
     def setTypeList(self, s):
         """Remove all types, set them to `s`"""
         self.dbCheck()
-        c = self.db().cursor()
-        c.execute("""DELETE FROM enum WHERE type='ticket_type'""")
-        for i, value in enumerate(s):
-            c.execute("""INSERT INTO enum (type, name, value) VALUES (%s, %s, %s)""",
-                      ("ticket_type", value, i))
-        self.db().commit()
+        with self.env.db_transaction as db:
+            db("DELETE FROM enum WHERE type='ticket_type'")
+            for i, value in enumerate(s):
+                db("INSERT INTO enum (type, name, value) VALUES (%s, %s, %s)",
+                   ("ticket_type", value, i))
     
     def setPriorityList(self, s):
         """Remove all priorities, set them to `s`"""
         self.dbCheck()
-        c = self.db().cursor()
-        c.execute("""DELETE FROM enum WHERE type='priority'""")
-        for i, value in enumerate(s):
-            c.execute("""INSERT INTO enum (type, name, value) VALUES (%s, %s, %s)""",
-                      ("priority", value, i))
-        self.db().commit()
+        with self.env.db_transaction as db:
+            db("DELETE FROM enum WHERE type='priority'")
+            for i, value in enumerate(s):
+                db("INSERT INTO enum (type, name, value) VALUES (%s, %s, %s)",
+                   ("priority", value, i))
 
     def setResolutionList(self, t):
         """Remove all resolutions, set them to `t` (index, name)"""
         self.dbCheck()
-        c = self.db().cursor()
-        c.execute("""DELETE FROM enum WHERE type='resolution'""")
-        for value, name in t:
-            c.execute("""INSERT INTO enum (type, name, value) VALUES (%s, %s, %s)""",
-                      ("resolution", name, value))
-        self.db().commit()
+        with self.env.db_transaction as db:
+            db("DELETE FROM enum WHERE type='resolution'")
+            for value, name in t:
+                db("INSERT INTO enum (type, name, value) VALUES (%s, %s, %s)",
+                   ("resolution", name, value))
     
     def setComponentList(self, t):
         """Remove all components, set them to `t` (name, owner)"""
         self.dbCheck()
-        c = self.db().cursor()
-        c.execute("""DELETE FROM component""")
-        for name, owner in t:
-            c.execute("""INSERT INTO component (name, owner) VALUES (%s, %s)""",
-                      (name, owner))
-        self.db().commit()
+        with self.env.db_transaction as db:
+            db("DELETE FROM component")
+            for name, owner in t:
+                db("INSERT INTO component (name, owner) VALUES (%s, %s)",
+                   (name, owner))
     
     def setVersionList(self, v):
         """Remove all versions, set them to `v`"""
         self.dbCheck()
-        c = self.db().cursor()
-        c.execute("""DELETE FROM version""")
-        for value in v:
-            # time and description are also available
-            c.execute("""INSERT INTO version (name) VALUES (%s)""",
-                      value)
-        self.db().commit()
+        with self.env.db_transaction as db:
+            db("DELETE FROM version")
+            for value in v:
+                # time and description are also available
+                db("INSERT INTO version (name) VALUES (%s)", value)
         
     def setMilestoneList(self, m):
         """Remove all milestones, set them to `m` ("""
         self.dbCheck()
-        c = self.db().cursor()
-        c.execute("""DELETE FROM milestone""")
-        for value in m:
-            # due, completed, description are also available
-            c.execute("""INSERT INTO milestone (name) VALUES (%s)""",
-                      value)
-        self.db().commit()
+        with self.env.db_transaction as db:
+            db("DELETE FROM milestone")
+            for value in m:
+                # due, completed, description are also available
+                db("INSERT INTO milestone (name) VALUES (%s)", value)
     
     def addTicket(self, type, time, changetime, component,
                   priority, owner, reporter, cc,
@@ -479,49 +467,47 @@ class TracDatabase(object):
         description     text,           -- problem description (long)
         keywords        text
         """
-        db = self.db()
-        c = db.cursor()
         if status.lower() == 'open':
             if owner != '':
                 status = 'assigned'
             else:
                 status = 'new'
 
-        c.execute("""INSERT INTO ticket (type, time, changetime, component,
-                                         priority, owner, reporter, cc,
-                                         version, milestone, status, resolution,
-                                         summary, description, keywords)
-                                 VALUES (%s, %s, %s,
-                                         %s, %s, %s, %s, %s,
-                                         %s, %s, %s, %s,
-                                         %s, %s, %s)""",
-                  (type, time, changetime, component,
-                  priority, owner, reporter, cc,
-                  version, milestone, status.lower(), resolution,
-                  summary, '%s' % description, keywords))
-        db.commit()
-        return db.get_last_id(c, 'ticket')
+        with self.env.db_transaction as db:
+            c = db.cursor()
+            c.execute("""
+                INSERT INTO ticket (type, time, changetime, component,
+                                    priority, owner, reporter, cc, version, 
+                                    milestone, status, resolution, summary,
+                                    description, keywords)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                        %s, %s)
+                """, (type, time, changetime, component, priority, owner,
+                      reporter, cc, version, milestone, status.lower(),
+                      resolution, summary, '%s' % description, keywords))
+            return db.get_last_id(c, 'ticket')
     
     def addTicketComment(self, ticket, time, author, value):
-        c = self.db().cursor()
-        c.execute("""INSERT INTO ticket_change (ticket, time, author, field, oldvalue, newvalue)
-                                 VALUES        (%s, %s, %s, %s, %s, %s)""",
-                  (ticket, time, author, 'comment', '', '%s' % value))
-        self.db().commit()
+        with self.env.db_transaction as db:
+            db("""
+                INSERT INTO ticket_change (ticket, time, author, field,
+                                           oldvalue, newvalue)
+                VALUES (%s, %s, %s, %s, %s, %s)
+                """, (ticket, time, author, 'comment', '', '%s' % value))
 
     def addTicketChange(self, ticket, time, author, field, oldvalue, newvalue):
-        c = self.db().cursor()
-        c.execute("""INSERT INTO ticket_change (ticket, time, author, field, oldvalue, newvalue)
-                                 VALUES        (%s, %s, %s, %s, %s, %s)""",
-                  (ticket, time, author, field, oldvalue, newvalue))
-        self.db().commit()
+        with self.env.db_transaction as db:
+            db("""INSERT INTO ticket_change (ticket, time, author, field,
+                                             oldvalue, newvalue)
+                  VALUES (%s, %s, %s, %s, %s, %s)
+                  """, (ticket, time, author, field, oldvalue, newvalue))
 
 
 def importData(f, env, opt):
     project = ExportedProjectData(f)
     trackers = project.trackers
     
-    db = TracDatabase(env)
+    trac = TracDatabase(env)
 
     # Data conversion
     typeList = [x.name for x in trackers]
@@ -545,7 +531,8 @@ def importData(f, env, opt):
         % (len(project.groups), project.groups)
     print "%d resolutions found :\n  %s" \
         % (len(project.resolutions), project.resolutions)
-    resolutions = [(k,project.used_resolutions[k]) for k in project.used_resolutions]
+    resolutions = [(k,project.used_resolutions[k]) 
+                   for k in project.used_resolutions]
     resolutions.sort(key=lambda x:int(x[0]))
     print ".. only %d used will be imported:\n  %s" \
         % (len(resolutions), resolutions)
@@ -554,33 +541,41 @@ def importData(f, env, opt):
         sys.exit()
 
     # Data save
-    db.setTypeList(typeList)
-    db.setComponentList(components)
-    db.setPriorityList(range(min(project.priorities), max(project.priorities)))
-    db.setVersionList(set([x[1] for x in project.groups]))
-    db.setResolutionList(resolutions)
-    db.setMilestoneList([])
+    trac.setTypeList(typeList)
+    trac.setComponentList(components)
+    trac.setPriorityList(range(min(project.priorities), 
+                               max(project.priorities)))
+    trac.setVersionList(set([x[1] for x in project.groups]))
+    trac.setResolutionList(resolutions)
+    trac.setMilestoneList([])
     
     for tracker in project.trackers:
       # id 100 means no component selected
-      component_lookup = dict(project.get_categories(noowner=True)+[("100", None)])
+      component_lookup = dict(project.get_categories(noowner=True) +
+                              [("100", None)])
       for t in tracker.tracker_items:
-        i = db.addTicket(type=tracker.name,
-                         time=int(t.submit_date),
-                         changetime=int(t.submit_date),
-                         component=component_lookup[t.category_id],
-                         priority=t.priority,
-                         owner=t.assignee if t.assignee not in user_map else user_map[t.assignee],
-                         reporter=t.submitter if t.submitter not in user_map else user_map[t.submitter],
-                         cc=None,
-                         # 100 means no group selected
-                         version=dict(project.groups+[("100", None)])[t.group_id],
-                         milestone=None,
-                         status=dict(project.statuses)[t.status_id],
-                         resolution=dict(resolutions)[t.resolution_id] if hasattr(t, "resolution_id") else None,
-                         summary=t.summary,
-                         description=t.details,
-                         keywords='sf'+t.id)
+        i = trac.addTicket(type=tracker.name,
+                           time=int(t.submit_date),
+                           changetime=int(t.submit_date),
+                           component=component_lookup[t.category_id],
+                           priority=t.priority,
+                           owner=t.assignee \
+                                   if t.assignee not in user_map \
+                                   else user_map[t.assignee],
+                           reporter=t.submitter \
+                                   if t.submitter not in user_map \
+                                   else user_map[t.submitter],
+                           cc=None,
+                           # 100 means no group selected
+                           version=dict(project.groups + 
+                                        [("100", None)])[t.group_id],
+                           milestone=None,
+                           status=dict(project.statuses)[t.status_id],
+                           resolution=dict(resolutions)[t.resolution_id] \
+                                   if hasattr(t, "resolution_id") else None,
+                           summary=t.summary,
+                           description=t.details,
+                           keywords='sf' + t.id)
 
         print 'Imported %s as #%d' % (t.id, i)
 
@@ -590,12 +585,16 @@ def importData(f, env, opt):
                 attmsg = attmsg + " * [%s %s] (%s) - added by '%s' %s [[BR]] "\
                          % (a.url+t.id, a.filename, a.filesize+" bytes",
                             user_map.get(a.submitter, a.submitter),
-                            time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(a.date))))
-                attmsg = attmsg + "''%s ''\n" % (a.description or '') # empty description is as empty list
-            db.addTicketComment(ticket=i,
-                                time=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(t.submit_date))),
-                                author=None, value=attmsg)
-            print '    added information about %d attachments for #%d' % (len(t.attachments), i) 
+                            time.strftime("%Y-%m-%d %H:%M:%S", 
+                                          time.localtime(int(a.date))))
+                attmsg = attmsg + "''%s ''\n" % (a.description or '') 
+                # empty description is as empty list
+            trac.addTicketComment(ticket=i,
+                                  time=time.strftime("%Y-%m-%d %H:%M:%S",
+                                          time.localtime(int(t.submit_date))),
+                                  author=None, value=attmsg)
+            print '    added information about %d attachments for #%d' % \
+                    (len(t.attachments), i) 
 
         for msg in t.followups:
             """
@@ -606,10 +605,10 @@ def importData(f, env, opt):
             <details>done</details>
             </followup>
             """
-            db.addTicketComment(ticket=i,
-                                time=msg.date,
-                                author=msg.submitter,
-                                value=msg.details)
+            trac.addTicketComment(ticket=i,
+                                  time=msg.date,
+                                  author=msg.submitter,
+                                  value=msg.details)
         if t.followups:
             print '    imported %d messages for #%d' % (len(t.followups), i)
         
@@ -670,22 +669,24 @@ def importData(f, env, opt):
                 
             if f:
                 changes += 1
-                db.addTicketChange(ticket=i,
-                                   time=h.date,
-                                   author=h.updator,
-                                   field=f,
-                                   oldvalue=oldvalue,
-                                   newvalue=newvalue)
+                trac.addTicketChange(ticket=i,
+                                     time=h.date,
+                                     author=h.updator,
+                                     field=f,
+                                     oldvalue=oldvalue,
+                                     newvalue=newvalue)
     
             if h.field_name != 'assigned_to':
                 revision[h.field_name] = h.old_value
         if changes:
-            print '    processed %d out of %d history items for #%d' % (changes, len(t.history_entries), i)
+            print '    processed %d out of %d history items for #%d' % \
+                    (changes, len(t.history_entries), i)
   
 
 def main():
     import optparse
-    p = optparse.OptionParser('usage: %prog xml_export.xml /path/to/trac/environment')
+    p = optparse.OptionParser(
+            "Usage: %prog xml_export.xml /path/to/trac/environment")
     opt, args = p.parse_args()
     if len(args) != 2:
         p.error("Incorrect number of arguments")
