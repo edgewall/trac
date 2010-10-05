@@ -71,7 +71,6 @@ if have_pysqlite == 2:
     class EagerCursor(PyFormatCursor):
         def __init__(self, con):
             PyFormatCursor.__init__(self, con)
-            self.debug_con = con
             self.rows = []
             self.pos = 0
 

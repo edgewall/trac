@@ -34,7 +34,7 @@ from trac.ticket.api import TicketSystem
 from trac.util import as_int
 from trac.util.datefmt import format_datetime, format_time, from_utimestamp
 from trac.util.presentation import Paginator
-from trac.util.text import to_unicode
+from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _
 from trac.web.api import IRequestHandler, RequestDone
 from trac.web.chrome import add_ctxtnav, add_link, add_notice, add_script, \
@@ -370,18 +370,18 @@ class ReportModule(Component):
                 'report_href': report_href, 
                 }
 
-        try:
-            cols, results, num_items, missing_args = \
-                self.execute_paginated_report(req, db, id, sql, args, limit,
-                                              offset)
-            results = [list(row) for row in results]
-            numrows = len(results)
+        with self.env.db_query as db:
+            try:
+                cols, results, num_items, missing_args = \
+                    self.execute_paginated_report(req, db, id, sql, args, limit,
+                                                  offset)
+                results = [list(row) for row in results]
+                numrows = len(results)
 
-        except Exception, e:
-            db.rollback()
-            data['message'] = _('Report execution failed: %(error)s',
-                                error=to_unicode(e))
-            return 'report_view.html', data, None
+            except Exception, e:
+                data['message'] = _('Report execution failed: %(error)s',
+                        error=exception_to_unicode(e, traceback=True))
+                return 'report_view.html', data, None
 
         paginator = None
         if limit > 0:
@@ -641,9 +641,6 @@ class ReportModule(Component):
         cursor.execute(sql, args)
         info = cursor.fetchall() or []
         cols = get_column_names(cursor)
-
-        db.rollback()
-
         return cols, info, num_items, missing_args
 
     def get_var_args(self, req):
