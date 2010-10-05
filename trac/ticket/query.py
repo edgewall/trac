@@ -262,86 +262,79 @@ class Query(object):
         return cols
 
     def count(self, req, db=None, cached_ids=None):
+        """Get the number of matching tickets for the present query.
+
+        :since 0.13: the `db` parameter is no longer needed and will be removed
+        in version 0.14
+        """
         sql, args = self.get_sql(req, cached_ids)
         return self._count(sql, args)
 
-    def _count(self, sql, args, db=None):
-        if not db:
-            db = self.env.get_db_cnx()
-        cursor = db.cursor()
-
-        count_sql = 'SELECT COUNT(*) FROM (' + sql + ') AS foo'
-        # self.env.log.debug("Count results in Query SQL: " + count_sql % 
-        #                    tuple([repr(a) for a in args]))
-
-        cnt = 0
-        try:
-            cursor.execute(count_sql, args)
-        except:
-            db.rollback()
-            raise
-        for cnt, in cursor:
-            break
-        self.env.log.debug("Count results in Query: %d" % cnt)
+    def _count(self, sql, args):
+        cnt = self.env.db_query("SELECT COUNT(*) FROM (%s) AS x" 
+                                % sql, args)[0][0]
+        # "AS x" is needed for MySQL ("Subqueries in the FROM Clause")
+        self.env.log.debug("Count results in Query: %d", cnt)
         return cnt
 
     def execute(self, req, db=None, cached_ids=None):
-        if not db:
-            db = self.env.get_db_cnx()
-        cursor = db.cursor()
+        """Retrieve the list of matching tickets.
 
-        self.num_items = 0
-        sql, args = self.get_sql(req, cached_ids)
-        self.num_items = self._count(sql, args, db)
+        :since 0.13: the `db` parameter is no longer needed and will be removed
+        in version 0.14
+        """
+        with self.env.db_query as db:
+            cursor = db.cursor()
 
-        if self.num_items <= self.max:
-            self.has_more_pages = False
+            self.num_items = 0
+            sql, args = self.get_sql(req, cached_ids)
+            self.num_items = self._count(sql, args)
 
-        if self.has_more_pages:
-            max = self.max
-            if self.group:
-                max += 1
-            sql = sql + " LIMIT %d OFFSET %d" % (max, self.offset)
-            if (self.page > int(ceil(float(self.num_items) / self.max)) and
-                self.num_items != 0):
-                raise TracError(_('Page %(page)s is beyond the number of '
-                                  'pages in the query', page=self.page))
+            if self.num_items <= self.max:
+                self.has_more_pages = False
 
-        self.env.log.debug("Query SQL: " + sql % tuple([repr(a) for a in args]))     
-        try:
+            if self.has_more_pages:
+                max = self.max
+                if self.group:
+                    max += 1
+                sql = sql + " LIMIT %d OFFSET %d" % (max, self.offset)
+                if (self.page > int(ceil(float(self.num_items) / self.max)) and
+                    self.num_items != 0):
+                    raise TracError(_("Page %(page)s is beyond the number of "
+                                      "pages in the query", page=self.page))
+
+            # self.env.log.debug("SQL: " + sql % tuple([repr(a) for a in args]))
             cursor.execute(sql, args)
-        except:
-            db.rollback()
-            raise
-        columns = get_column_names(cursor)
-        fields = []
-        for column in columns:
-            fields += [f for f in self.fields if f['name'] == column] or [None]
-        results = []
+            columns = get_column_names(cursor)
+            fields = []
+            for column in columns:
+                fields += [f for f in self.fields if f['name'] == column] or \
+                          [None]
+            results = []
 
-        column_indices = range(len(columns))
-        for row in cursor:
-            result = {}
-            for i in column_indices:
-                name, field, val = columns[i], fields[i], row[i]
-                if name == 'reporter':
-                    val = val or 'anonymous'
-                elif name == 'id':
-                    val = int(val)
-                    result['href'] = req.href.ticket(val)
-                elif name in self.time_fields:
-                    val = from_utimestamp(val)
-                elif field and field['type'] == 'checkbox':
-                    try:
-                        val = bool(int(val))
-                    except (TypeError, ValueError):
-                        val = False
-                elif val is None:
-                    val = ''
-                result[name] = val
-            results.append(result)
-        cursor.close()
-        return results
+            column_indices = range(len(columns))
+            for row in cursor:
+                result = {}
+                for i in column_indices:
+                    name, field, val = columns[i], fields[i], row[i]
+                    if name == 'reporter':
+                        val = val or 'anonymous'
+                    elif name == 'id':
+                        val = int(val)
+                        result['href'] = req.href.ticket(val)
+                    elif name in self.time_fields:
+                        val = from_utimestamp(val)
+                    elif field and field['type'] == 'checkbox':
+                        try:
+                            val = bool(int(val))
+                        except (TypeError, ValueError):
+                            val = False
+                    elif val is None:
+                        val = ''
+                    result[name] = val
+                results.append(result)
+            cursor.close()
+            return results
 
     def get_href(self, href, id=None, order=None, desc=None, format=None,
                  max=None, page=None):
@@ -421,7 +414,7 @@ class Query(object):
     def get_sql(self, req=None, cached_ids=None):
         """Return a (sql, params) tuple for the query."""
         self.get_columns()
-        db = self.env.get_db_cnx()
+        db = self.env.get_read_db()
 
         enum_columns = ('resolution', 'priority', 'severity')
         # Build the list of actual columns to query
@@ -539,7 +532,7 @@ class Query(object):
                     (value, ))
 
         def get_clause_sql(constraints):
-            db = self.env.get_db_cnx()
+            db = self.env.get_read_db()
             clauses = []
             for k, v in constraints.iteritems():
                 if req:
@@ -634,7 +627,6 @@ class Query(object):
                 sql.append("COALESCE(%s,'')=''%s," % (col, desc))
             if name in enum_columns:
                 # These values must be compared as ints, not as strings
-                db = self.env.get_db_cnx()
                 sql.append(db.cast(col, 'int') + desc)
             elif name == 'milestone':
                 sql.append("COALESCE(milestone.completed,0)=0%s,"
@@ -1030,8 +1022,6 @@ class QueryModule(Component):
         return clauses
 
     def display_html(self, req, query):
-        db = self.env.get_db_cnx()
-
         # The most recent query is stored in the user session;
         orig_list = None
         orig_time = datetime.now(utc)
@@ -1041,7 +1031,7 @@ class QueryModule(Component):
         try:
             if query_constraints != req.session.get('query_constraints') \
                     or query_time < orig_time - timedelta(hours=1):
-                tickets = query.execute(req, db)
+                tickets = query.execute(req)
                 # New or outdated query, (re-)initialize session vars
                 req.session['query_constraints'] = query_constraints
                 req.session['query_tickets'] = ' '.join([str(t['id'])
@@ -1049,7 +1039,7 @@ class QueryModule(Component):
             else:
                 orig_list = [int(id) for id
                              in req.session.get('query_tickets', '').split()]
-                tickets = query.execute(req, db, orig_list)
+                tickets = query.execute(req, cached_ids=orig_list)
                 orig_time = query_time
         except QueryValueError, e:
             tickets = []
@@ -1079,10 +1069,9 @@ class QueryModule(Component):
             add_ctxtnav(req, _('Available Reports'), req.href.report())
             add_ctxtnav(req, _('Custom Query'), req.href.query())
             if query.id:
-                cursor = db.cursor()
-                cursor.execute("SELECT title,description FROM report "
-                               "WHERE id=%s", (query.id,))
-                for title, description in cursor:
+                for title, description in self.env.db_query("""
+                        SELECT title, description FROM report WHERE id=%s
+                        """, (query.id,)):
                     data['report_resource'] = Resource('report', query.id)
                     data['description'] = description
         else:
@@ -1116,7 +1105,7 @@ class QueryModule(Component):
         writer.writerow([unicode(c).encode('utf-8') for c in cols])
 
         context = Context.from_request(req)
-        results = query.execute(req, self.env.get_db_cnx())
+        results = query.execute(req)
         for result in results:
             ticket = Resource('ticket', result['id'])
             if 'TICKET_VIEW' in req.perm(ticket):
@@ -1137,8 +1126,7 @@ class QueryModule(Component):
         query_href = query.get_href(context.href)
         if 'description' not in query.rows:
             query.rows.append('description')
-        db = self.env.get_db_cnx()
-        results = query.execute(req, db)
+        results = query.execute(req)
         data = {
             'context': context,
             'results': results,

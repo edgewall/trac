@@ -43,7 +43,7 @@ class ReportTestCase(unittest.TestCase):
     def test_sub_var_quotes(self):
         sql, values, missing_args = self.report_module.sql_sub_vars(
             "'$VAR'", {'VAR': 'value'})
-        self.assertEqual(self.env.get_db_cnx().concat("''", '%s', "''"), sql)
+        self.assertEqual(self.env.get_read_db().concat("''", '%s', "''"), sql)
         self.assertEqual(['value'], values)
         self.assertEqual([], missing_args)
 

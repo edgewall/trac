@@ -186,37 +186,38 @@ class TicketModule(Component):
         if not 'ticket' in filters:
             return
         ticket_realm = Resource('ticket')
-        db = self.env.get_db_cnx()
-        sql, args = search_to_sql(db, ['summary', 'keywords', 'description',
-                                         'reporter', 'cc', 
-                                         db.cast('id', 'text')], terms)
-        sql2, args2 = search_to_sql(db, ['newvalue'], terms)
-        sql3, args3 = search_to_sql(db, ['value'], terms)
-        cursor = db.cursor()
-        cursor.execute("""
-            SELECT summary,description,reporter,type,id,time,status,resolution 
-            FROM ticket
-            WHERE id IN (
-                SELECT id FROM ticket WHERE %s
-              UNION
-                SELECT ticket FROM ticket_change
-                WHERE field='comment' AND %s
-              UNION
-                SELECT ticket FROM ticket_custom WHERE %s
-            )
-            """ % (sql, sql2, sql3), args + args2 + args3)
-        ticketsystem = TicketSystem(self.env)
-        for summary, desc, author, type, tid, ts, status, resolution in cursor:
-            t = ticket_realm(id=tid)
-            if 'TICKET_VIEW' in req.perm(t):
-                yield (req.href.ticket(tid),
-                       tag_("%(title)s: %(message)s",
-                            title=tag.span(get_resource_shortname(self.env, t),
-                                           class_=status),
-                            message=ticketsystem.format_summary(
-                                summary, status, resolution, type)),
-                       from_utimestamp(ts), author,
-                       shorten_result(desc, terms))
+        with self.env.db_query as db:
+            sql, args = search_to_sql(db, ['summary', 'keywords',
+                                           'description', 'reporter', 'cc', 
+                                           db.cast('id', 'text')], terms)
+            sql2, args2 = search_to_sql(db, ['newvalue'], terms)
+            sql3, args3 = search_to_sql(db, ['value'], terms)
+            ticketsystem = TicketSystem(self.env)
+            for summary, desc, author, type, tid, ts, status, resolution in \
+                    db("""SELECT summary, description, reporter, type, id,
+                                 time, status, resolution 
+                          FROM ticket
+                          WHERE id IN (
+                              SELECT id FROM ticket WHERE %s
+                            UNION
+                              SELECT ticket FROM ticket_change
+                              WHERE field='comment' AND %s
+                            UNION
+                              SELECT ticket FROM ticket_custom WHERE %s
+                          )
+                          """ % (sql, sql2, sql3),
+                          args + args2 + args3):
+                t = ticket_realm(id=tid)
+                if 'TICKET_VIEW' in req.perm(t):
+                    yield (req.href.ticket(tid),
+                           tag_("%(title)s: %(message)s",
+                                title=tag.span(
+                                    get_resource_shortname(self.env, t),
+                                    class_=status),
+                                message=ticketsystem.format_summary(
+                                    summary, status, resolution, type)),
+                           from_utimestamp(ts), author,
+                           shorten_result(desc, terms))
         
         # Attachments
         for result in AttachmentModule(self.env).get_search_results(
@@ -276,54 +277,53 @@ class TicketModule(Component):
                      description, comment, cid))
 
         # Ticket changes
-        db = self.env.get_db_cnx()
-        if 'ticket' in filters or 'ticket_details' in filters:
-            cursor = db.cursor()
-
-            cursor.execute("""
-                SELECT t.id,tc.time,tc.author,t.type,t.summary, 
-                       tc.field,tc.oldvalue,tc.newvalue 
-                FROM ticket_change tc 
-                    INNER JOIN ticket t ON t.id = tc.ticket 
-                        AND tc.time>=%s AND tc.time<=%s 
-                ORDER BY tc.time
-                """ % (ts_start, ts_stop))
-            data = None
-            for id,t,author,type,summary,field,oldvalue,newvalue in cursor:
+        with self.env.db_query as db:
+            if 'ticket' in filters or 'ticket_details' in filters:
+                data = None
+                for id,t,author,type,summary,field,oldvalue,newvalue in db("""
+                        SELECT t.id, tc.time, tc.author, t.type, t.summary, 
+                               tc.field, tc.oldvalue, tc.newvalue 
+                        FROM ticket_change tc 
+                            INNER JOIN ticket t ON t.id = tc.ticket 
+                                AND tc.time>=%s AND tc.time<=%s 
+                        ORDER BY tc.time
+                        """ % (ts_start, ts_stop)):
                 if not (oldvalue or newvalue):
                     # ignore empty change from custom field created or deleted
                     continue 
-                if not data or (id, t) != data[:2]:
-                    if data:
-                        ev = produce_event(data, status, fields, comment, cid)
-                        if ev:
-                            yield ev
-                    status, fields, comment, cid = 'edit', {}, '', None
-                    data = (id, t, author, type, summary, None)
-                if field == 'comment':
-                    comment = newvalue
-                    cid = oldvalue and oldvalue.split('.')[-1]
-                    # Always use the author from the comment field
-                    data = data[:2] + (author,) + data[3:]
-                elif field == 'status' and newvalue in ('reopened', 'closed'):
-                    status = newvalue
-                elif field[0] != '_': # properties like _comment{n} are hidden
-                    fields[field] = newvalue
-            if data:
-                ev = produce_event(data, status, fields, comment, cid)
-                if ev:
-                    yield ev
-
-            # New tickets
-            if 'ticket' in filters:
-                cursor.execute("""
-                    SELECT id,time,reporter,type,summary,description
-                    FROM ticket WHERE time>=%s AND time<=%s
-                    """, (ts_start, ts_stop))
-                for row in cursor:
-                    ev = produce_event(row, 'new', {}, None, None)
+                    if not data or (id, t) != data[:2]:
+                        if data:
+                            ev = produce_event(data, status, fields, comment,
+                                               cid)
+                            if ev:
+                                yield ev
+                        status, fields, comment, cid = 'edit', {}, '', None
+                        data = (id, t, author, type, summary, None)
+                    if field == 'comment':
+                        comment = newvalue
+                        cid = oldvalue and oldvalue.split('.')[-1]
+                        # Always use the author from the comment field
+                        data = data[:2] + (author,) + data[3:]
+                    elif field == 'status' and \
+                            newvalue in ('reopened', 'closed'):
+                        status = newvalue
+                    elif field[0] != '_':
+                        # properties like _comment{n} are hidden
+                        fields[field] = newvalue
+                if data:
+                    ev = produce_event(data, status, fields, comment, cid)
                     if ev:
                         yield ev
+
+                # New tickets
+                if 'ticket' in filters:
+                    for row in db("""SELECT id, time, reporter, type, summary,
+                                            description
+                                     FROM ticket WHERE time>=%s AND time<=%s
+                                     """, (ts_start, ts_stop)):
+                        ev = produce_event(row, 'new', {}, None, None)
+                        if ev:
+                            yield ev
 
             # Attachments
             if 'ticket_details' in filters:
@@ -597,25 +597,24 @@ class TicketModule(Component):
                 add_link(req, 'up', req.session['query_href'])
                 global_sequence = False
         if global_sequence:
-            db = self.env.get_db_cnx()
-            cursor = db.cursor()
-            cursor.execute("SELECT min(id), max(id) FROM ticket")
-            for (min_id, max_id) in cursor:
-                min_id = int(min_id)
-                max_id = int(max_id)
-                if min_id < ticket.id:
-                    add_ticket_link('first', min_id)
-                    cursor.execute("SELECT max(id) FROM ticket WHERE id < %s",
-                                   (ticket.id,))
-                    for (prev_id,) in cursor:
-                        add_ticket_link('prev', int(prev_id))
-                if ticket.id < max_id:
-                    add_ticket_link('last', max_id)
-                    cursor.execute("SELECT min(id) FROM ticket WHERE %s < id",
-                                   (ticket.id,))
-                    for (next_id,) in cursor:
-                        add_ticket_link('next', int(next_id))
-                break
+            with self.env.db_query as db:
+                for min_id, max_id in db(
+                        "SELECT min(id), max(id) FROM ticket"):
+                    min_id = int(min_id)
+                    max_id = int(max_id)
+                    if min_id < ticket.id:
+                        add_ticket_link('first', min_id)
+                        for prev_id, in db(
+                                "SELECT max(id) FROM ticket WHERE id < %s",
+                                (ticket.id,)):
+                            add_ticket_link('prev', int(prev_id))
+                    if ticket.id < max_id:
+                        add_ticket_link('last', max_id)
+                        for next_id, in db(
+                                "SELECT min(id) FROM ticket WHERE %s < id",
+                                (ticket.id,)):
+                            add_ticket_link('next', int(next_id))
+                    break
 
         add_stylesheet(req, 'common/css/ticket.css')
         add_script(req, 'common/js/folding.js')
@@ -1567,7 +1566,7 @@ class TicketModule(Component):
         in a `dict` object.
         """
         attachment_realm = ticket.resource.child('attachment')
-        for group in self.grouped_changelog_entries(ticket, None, when):
+        for group in self.grouped_changelog_entries(ticket, when=when):
             t = ticket.resource(version=group.get('cnum', None))
             if 'TICKET_VIEW' in req.perm(t):
                 self._render_property_changes(req, ticket, group['fields'], t)
@@ -1647,12 +1646,15 @@ class TicketModule(Component):
                                 old=tag.em(old), new=tag.em(new))
         return rendered
 
-    def grouped_changelog_entries(self, ticket, db, when=None):
+    def grouped_changelog_entries(self, ticket, db=None, when=None):
         """Iterate on changelog entries, consolidating related changes
         in a `dict` object.
+
+        :since 0.13: the `db` parameter is no longer needed and will be removed
+        in version 0.14
         """
         field_labels = TicketSystem(self.env).get_ticket_field_labels()
-        changelog = ticket.get_changelog(when=when, db=db)
+        changelog = ticket.get_changelog(when=when)
         autonum = 0 # used for "root" numbers
         last_uid = current = None
         for date, author, field, old, new, permanent in changelog:

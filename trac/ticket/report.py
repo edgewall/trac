@@ -156,13 +156,13 @@ class ReportModule(Component):
         query = req.args.get('query', '')
         description = req.args.get('description', '')
         report_id = [ None ]
-        @self.env.with_transaction()
-        def do_create(db):
+        with self.env.db_transaction as db:
             cursor = db.cursor()
-            cursor.execute("INSERT INTO report (title,query,description) "
-                           "VALUES (%s,%s,%s)", (title, query, description))
+            cursor.execute("""
+                INSERT INTO report (title,query,description) VALUES (%s,%s,%s)
+                """, (title, query, description))
             report_id[0] = db.get_last_id(cursor, 'report')
-        add_notice(req, _('The report has been created.'))
+        add_notice(req, _("The report has been created."))
         req.redirect(req.href.report(report_id[0]))
 
     def _do_delete(self, req, id):
@@ -171,11 +171,8 @@ class ReportModule(Component):
         if 'cancel' in req.args:
             req.redirect(req.href.report(id))
 
-        @self.env.with_transaction()
-        def do_delete(db):
-            cursor = db.cursor()
-            cursor.execute("DELETE FROM report WHERE id=%s", (id,))
-        add_notice(req, _('The report {%(id)d} has been deleted.', id=id))
+        self.env.db_transaction("DELETE FROM report WHERE id=%s", (id,))
+        add_notice(req, _("The report {%(id)d} has been deleted.", id=id))
         req.redirect(req.href.report())
 
     def _do_save(self, req, id):
@@ -186,42 +183,37 @@ class ReportModule(Component):
             title = req.args.get('title', '')
             query = req.args.get('query', '')
             description = req.args.get('description', '')
-            @self.env.with_transaction()
-            def do_save(db):
-                cursor = db.cursor()
-                cursor.execute("UPDATE report "
-                               "SET title=%s,query=%s,description=%s "
-                               "WHERE id=%s", (title, query, description, id))
-            add_notice(req, _('Your changes have been saved.'))
+            self.env.db_transaction("""
+                UPDATE report SET title=%s, query=%s, description=%s
+                WHERE id=%s
+                """, (title, query, description, id))
+            add_notice(req, _("Your changes have been saved."))
         req.redirect(req.href.report(id))
 
     def _render_confirm_delete(self, req, id):
         req.perm.require('REPORT_DELETE')
 
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        cursor.execute("SELECT title FROM report WHERE id=%s", (id,))
-        for title, in cursor:
-            return {'title': _('Delete Report {%(num)s} %(title)s', num=id,
+        for title, in self.env.db_query("""
+                SELECT title FROM report WHERE id=%s
+                """, (id,)):
+            return {'title': _("Delete Report {%(num)s} %(title)s", num=id,
                                title=title),
                     'action': 'delete',
                     'report': {'id': id, 'title': title}}
         else:
-            raise TracError(_('Report {%(num)s} does not exist.', num=id),
-                            _('Invalid Report Number'))
+            raise TracError(_("Report {%(num)s} does not exist.", num=id),
+                            _("Invalid Report Number"))
 
     def _render_editor(self, req, id, copy):
         if id != -1:
             req.perm.require('REPORT_MODIFY')
-            db = self.env.get_db_cnx()
-            cursor = db.cursor()
-            cursor.execute("SELECT title,description,query FROM report "
-                           "WHERE id=%s", (id,))
-            for title, description, query in cursor:
+            for title, description, query in self.env.db_query(
+                    "SELECT title, description, query FROM report WHERE id=%s",
+                    (id,)):
                 break
             else:
-                raise TracError(_('Report {%(num)s} does not exist.', num=id),
-                                _('Invalid Report Number'))
+                raise TracError(_("Report {%(num)s} does not exist.", num=id),
+                                _("Invalid Report Number"))
         else:
             req.perm.require('REPORT_CREATE')
             title = description = query = ''
@@ -252,13 +244,11 @@ class ReportModule(Component):
         asc = bool(int(req.args.get('asc', 1)))
         format = req.args.get('format')
         
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        cursor.execute("SELECT id, title, description FROM report ORDER BY %s%s"
-                       % (sort == 'title' and 'title' or 'id',
-                          not asc and ' DESC' or ''))
-        rows = list(cursor)
-        
+        rows = self.env.db_query("""
+                SELECT id, title, description FROM report ORDER BY %s %s
+                """ % ('title' if sort == 'title' else 'id',
+                       '' if asc else 'DESC'))
+            
         if format == 'rss':
             data = {'rows': rows}
             return 'report_list.rss', data, 'application/rss+xml'
@@ -292,23 +282,19 @@ class ReportModule(Component):
 
     def _render_view(self, req, id):
         """Retrieve the report results and pre-process them for rendering."""
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        cursor.execute("SELECT title,query,description from report "
-                       "WHERE id=%s", (id,))
-        for title, sql, description in cursor:
+        for title, sql, description in self.env.db_query("""
+                SELECT title, query, description from report WHERE id=%s
+                """, (id,)):
             break
         else:
-            raise ResourceNotFound(
-                _('Report {%(num)s} does not exist.', num=id),
-                _('Invalid Report Number'))
-
+            raise ResourceNotFound(_("Report {%(num)s} does not exist.",
+                                     num=id), _("Invalid Report Number"))
         try:
             args = self.get_var_args(req)
         except ValueError, e:
-            raise TracError(_('Report failed: %(error)s', error=e))
+            raise TracError(_("Report failed: %(error)s", error=e))
 
-        # If this is a saved custom query. redirect to the query module
+        # If this is a saved custom query, redirect to the query module
         #
         # A saved query is either an URL query (?... or query:?...),
         # or a query language expression (query:...).
@@ -443,17 +429,14 @@ class ReportModule(Component):
                     # this dict will have enum values for sorting
                     # and will be used in sortkey(), if non-empty:
                     sort_values = {}
-                    if sort_col in ['status', 'resolution', 'priority', 
-                                    'severity']:
+                    if sort_col in ('status', 'resolution', 'priority', 
+                                    'severity'):
                         # must fetch sort values for that columns
                         # instead of comparing them as strings
-                        if not db:
-                            db = self.env.get_db_cnx()
-                        cursor = db.cursor()
-                        cursor.execute("SELECT name," + 
-                                       db.cast('value', 'int') + 
-                                       " FROM enum WHERE type=%s", (sort_col,))
-                        for name, value in cursor:
+                        for name, value in self.env.db_query(
+                                "SELECT name, %s FROM enum WHERE type=%%s"
+                                % db.cast('value', 'int'),
+                                (sort_col,)):
                             sort_values[name] = value
 
                     def sortkey(row):
@@ -654,7 +637,6 @@ class ReportModule(Component):
             sql = " ".join([sql, 'LIMIT', str(limit), 'OFFSET', str(offset)])
             self.log.debug("Query SQL: " + sql)
         cursor.execute(sql, args)
-        # FIXME: fetchall should probably not be used.
         info = cursor.fetchall() or []
         cols = get_column_names(cursor)
 
@@ -677,8 +659,11 @@ class ReportModule(Component):
         return report_args
 
     def sql_sub_vars(self, sql, args, db=None):
-        if db is None:
-            db = self.env.get_db_cnx()
+        """Extract $XYZ-style variables from the `sql` query.
+
+        :since 0.13: the `db` parameter is no longer needed and will be removed
+        in version 0.14
+        """
         names = set()
         values = []
         missing_args = []
@@ -708,7 +693,7 @@ class ReportModule(Component):
             parts[1::2] = ['%s'] * len(params)
             for param in params:
                 add_value(param)
-            return db.concat(*parts)
+            return self.env.get_read_db().concat(*parts)
 
         sql_io = StringIO()
 

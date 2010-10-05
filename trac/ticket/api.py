@@ -444,22 +444,25 @@ class TicketSystem(Component):
                 from trac.ticket.model import Ticket
                 if Ticket.id_is_valid(num) and \
                         'TICKET_VIEW' in formatter.perm(ticket):
-                    # TODO: watch #6436 and when done, attempt to retrieve 
-                    #       ticket directly (try: Ticket(self.env, num) ...)
-                    cursor = formatter.db.cursor() 
-                    cursor.execute("SELECT type,summary,status,resolution "
-                                   "FROM ticket WHERE id=%s", (str(num),)) 
-                    for type, summary, status, resolution in cursor:
+                    # TODO: attempt to retrieve ticket view directly,
+                    #       something like: t = Ticket.view(num)
+                    for type, summary, status, resolution in \
+                            self.env.db_query("""
+                            SELECT type, summary, status, resolution
+                            FROM ticket WHERE id=%s
+                            """, (str(num),)):
                         title = self.format_summary(summary, status,
                                                     resolution, type)
                         href = formatter.href.ticket(num) + params + fragment
-                        return tag.a(label, class_='%s ticket' % status, 
-                                     title=title, href=href)
+                        return tag.a(label, title=title, href=href,
+                                     class_=_("%(status)s ticket", 
+                                              status=status))
             else:
                 ranges = str(r)
                 if params:
                     params = '&' + params[1:]
-                return tag.a(label, title='Tickets '+ranges,
+                return tag.a(label, 
+                             title=_("Tickets %(ranges)s", ranges=ranges),
                              href=formatter.href.query(id=ranges) + params)
         except ValueError:
             pass
@@ -530,16 +533,13 @@ class TicketSystem(Component):
         >>> resource_exists(env, t.resource)
         True
         """
-        db = self.env.get_read_db()
-        cursor = db.cursor()
-        cursor.execute("SELECT id FROM ticket WHERE id=%s", (resource.id,))
-        latest_exists = bool(cursor.fetchall())
-        if latest_exists:
+        if self.env.db_query("SELECT id FROM ticket WHERE id=%s",
+                             (resource.id,)):
             if resource.version is None:
                 return True
-            cursor.execute("""
-                SELECT count(distinct time) FROM ticket_change WHERE ticket=%s
+            revcount = self.env.db_query("""
+                SELECT count(DISTINCT time) FROM ticket_change WHERE ticket=%s
                 """, (resource.id,))
-            return cursor.fetchone()[0] >= resource.version
+            return revcount[0][0] >= resource.version
         else:
             return False
