@@ -399,7 +399,7 @@ class NotifyEmail(Notify):
         # don't translate the e-mail stream
         t = deactivate()
         try:
-            body = stream.render('text')
+            body = stream.render('text', encoding='utf-8')
         finally:
             reactivate(t)
         projname = self.env.project_name

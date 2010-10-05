@@ -35,14 +35,14 @@ class PatchRendererTestCase(unittest.TestCase):
         self.patch = Mimeview(env).renderers[0]
         patch_html = open(os.path.join(os.path.split(__file__)[0],
                                        'patch.html'))
-        self.patch_html = Stream(list(HTMLParser(patch_html)))
+        self.patch_html = Stream(list(HTMLParser(patch_html, encoding='utf-8')))
 
     def _expected(self, expected_id):
         return self.patch_html.select('//div[@id="%s"]/div' % expected_id)
 
     def _test(self, expected_id, result):
-        expected = str(self._expected(expected_id))
-        result = str(XML(result))
+        expected = self._expected(expected_id).render(encoding='utf-8')
+        result = XML(result.render(encoding='utf-8')).render(encoding='utf-8')
         expected, result = expected.splitlines(), result.splitlines()
         for exp, res in zip(expected, result):
             self.assertEquals(exp, res)

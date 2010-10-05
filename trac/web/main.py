@@ -696,10 +696,10 @@ def send_project_index(environ, start_response, parent_dir=None,
             req.hdf['projects'] = projects
             req.display(template)
 
-        loader = TemplateLoader(loadpaths, variable_lookup='lenient')
+        loader = TemplateLoader(loadpaths, variable_lookup='lenient', encoding='utf-8')
         tmpl = loader.load(template)
         stream = tmpl.generate(**data)
-        output = stream.render('xhtml', doctype=DocType.XHTML_STRICT)
+        output = stream.render('xhtml', doctype=DocType.XHTML_STRICT, encoding='utf-8')
         req.send(output, 'text/html')
 
     except RequestDone:

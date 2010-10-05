@@ -42,7 +42,7 @@ class PygmentsRendererTestCase(unittest.TestCase):
         self.context = Context.from_request(self.req)
         pygments_html = open(os.path.join(os.path.split(__file__)[0],
                                        'pygments.html'))
-        self.pygments_html = Stream(list(HTMLParser(pygments_html)))
+        self.pygments_html = Stream(list(HTMLParser(pygments_html, encoding='utf-8')))
 
     def _expected(self, expected_id):
         return self.pygments_html.select(
