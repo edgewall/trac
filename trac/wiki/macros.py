@@ -248,25 +248,20 @@ class RecentChangesMacro(WikiMacroBase):
                 if len(argv) > 1:
                     limit = int(argv[1])
 
-        cursor = formatter.db.cursor()
-
-        sql = 'SELECT name, ' \
-              '  max(version) AS max_version, ' \
-              '  max(time) AS max_time ' \
-              'FROM wiki'
+        sql = """SELECT name, max(version) AS max_version, 
+                        max(time) AS max_time FROM wiki"""
         args = []
         if prefix:
-            sql += ' WHERE name LIKE %s'
+            sql += " WHERE name LIKE %s"
             args.append(prefix + '%')
-        sql += ' GROUP BY name ORDER BY max_time DESC'
+        sql += " GROUP BY name ORDER BY max_time DESC"
         if limit:
-            sql += ' LIMIT %s'
+            sql += " LIMIT %s"
             args.append(limit)
-        cursor.execute(sql, args)
 
         entries_per_date = []
         prevdate = None
-        for name, version, ts in cursor:
+        for name, version, ts in self.env.db_query(sql, args):
             if not 'WIKI_VIEW' in formatter.perm('wiki', name, version):
                 continue
             date = format_date(from_utimestamp(ts))

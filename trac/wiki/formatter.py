@@ -356,7 +356,6 @@ class Formatter(object):
         self.href = context.href
         self.resource = context.resource
         self.perm = context.perm
-        self.db = self.env.get_db_cnx() # FIXME: remove
         self.wiki = WikiSystem(self.env)
         self.wikiparser = WikiParser(self.env)
         self._anchors = {}

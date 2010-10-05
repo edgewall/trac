@@ -221,11 +221,10 @@ class WikiSystem(Component):
         (''since 0.11.8'')""")
 
     @cached
-    def pages(self, db):
+    def pages(self):
         """Return the names of all existing wiki pages."""
-        cursor = db.cursor()
-        cursor.execute("SELECT DISTINCT name FROM wiki")
-        return set(row[0] for row in cursor)
+        return set(name for name, in
+                   self.env.db_query("SELECT DISTINCT name FROM wiki"))
 
     # Public API
 
@@ -448,8 +447,6 @@ class WikiSystem(Component):
         """
         if resource.version is None:
             return resource.id in self.pages
-        db = self.env.get_read_db()
-        cursor = db.cursor()
-        cursor.execute("SELECT name FROM wiki WHERE name=%s AND version=%s",
-                       (resource.id, resource.version))
-        return bool(cursor.fetchall())
+        return bool(self.env.db_query(
+            "SELECT name FROM wiki WHERE name=%s AND version=%s",
+            (resource.id, resource.version)))

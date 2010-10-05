@@ -251,8 +251,7 @@ class WikiModule(Component):
         version = int(req.args.get('version', 0)) or None
         old_version = int(req.args.get('old_version', 0)) or version
 
-        @self.env.with_transaction()
-        def do_delete(db):
+        with self.env.db_transaction as db:
             if version and old_version and version > old_version:
                 # delete from `old_version` exclusive to `version` inclusive:
                 for v in range(old_version, version):
@@ -262,7 +261,7 @@ class WikiModule(Component):
                 page.delete(version, db)
 
         if not page.exists:
-            add_notice(req, _('The page %(name)s has been deleted.',
+            add_notice(req, _("The page %(name)s has been deleted.",
                               name=page.name))
             req.redirect(req.href.wiki())
         else:
@@ -292,17 +291,16 @@ class WikiModule(Component):
         # verify input parameters
         warn = None
         if not new_name:
-            warn = _('A new name is mandatory for a rename.')
+            warn = _("A new name is mandatory for a rename.")
         elif new_name == old_name:
-            warn = _('The new name must be different from the old name.')
+            warn = _("The new name must be different from the old name.")
         elif WikiPage(self.env, new_name).exists:
-            warn = _('The page %(name)s already exists.', name=new_name)
+            warn = _("The page %(name)s already exists.", name=new_name)
         if warn:
             add_warning(req, warn)
             return self._render_confirm_rename(req, page, new_name)
 
-        @self.env.with_transaction()
-        def do_rename(db):
+        with self.env.db_transaction as db:
             page.rename(new_name)
             if redirect:
                 redirection = WikiPage(self.env, old_name, db=db)
@@ -330,8 +328,8 @@ class WikiModule(Component):
         try:
             page.save(get_reporter_id(req, 'author'), req.args.get('comment'),
                       req.remote_addr)
-            add_notice(req, _('Your changes have been saved in version '
-                              '%(version)s.', version=page.version))
+            add_notice(req, _("Your changes have been saved in version "
+                              "%(version)s.", version=page.version))
             req.redirect(get_resource_url(self.env, page.resource, req.href,
                                           version=None))
         except TracError:
@@ -686,14 +684,12 @@ class WikiModule(Component):
             yield ('wiki', _('Wiki changes'))
 
     def get_timeline_events(self, req, start, stop, filters):
-        db = self.env.get_db_cnx()
         if 'wiki' in filters:
             wiki_realm = Resource('wiki')
-            cursor = db.cursor()
-            cursor.execute("SELECT time,name,comment,author,version "
-                           "FROM wiki WHERE time>=%s AND time<=%s",
-                           (to_utimestamp(start), to_utimestamp(stop)))
-            for ts, name, comment, author, version in cursor:
+            for ts, name, comment, author, version in self.env.db_query("""
+                    SELECT time, name, comment, author, version FROM wiki
+                    WHERE time>=%s AND time<=%s
+                    """, (to_utimestamp(start), to_utimestamp(stop))):
                 wiki_page = wiki_realm(id=name, version=version)
                 if 'WIKI_VIEW' not in req.perm(wiki_page):
                     continue
@@ -734,25 +730,22 @@ class WikiModule(Component):
     def get_search_results(self, req, terms, filters):
         if not 'wiki' in filters:
             return
-        db = self.env.get_db_cnx()
-        sql_query, args = search_to_sql(db, ['w1.name', 'w1.author', 'w1.text'],
-                                        terms)
-        cursor = db.cursor()
-        cursor.execute("SELECT w1.name,w1.time,w1.author,w1.text "
-                       "FROM wiki w1,"
-                       "(SELECT name,max(version) AS ver "
-                       "FROM wiki GROUP BY name) w2 "
-                       "WHERE w1.version = w2.ver AND w1.name = w2.name "
-                       "AND " + sql_query, args)
-
-        wiki_realm = Resource('wiki')
-        for name, ts, author, text in cursor:
-            page = wiki_realm(id=name)
-            if 'WIKI_VIEW' in req.perm(page):
-                yield (get_resource_url(self.env, page, req.href),
-                       '%s: %s' % (name, shorten_line(text)),
-                       from_utimestamp(ts), author,
-                       shorten_result(text, terms))
+        with self.env.db_query as db:
+            sql_query, args = search_to_sql(db, ['w1.name', 'w1.author',
+                                                 'w1.text'], terms)
+            wiki_realm = Resource('wiki')
+            for name, ts, author, text in db("""
+                    SELECT w1.name, w1.time, w1.author, w1.text
+                    FROM wiki w1,(SELECT name, max(version) AS ver 
+                                  FROM wiki GROUP BY name) w2
+                    WHERE w1.version = w2.ver AND w1.name = w2.name
+                    AND """ + sql_query, args):
+                page = wiki_realm(id=name)
+                if 'WIKI_VIEW' in req.perm(page):
+                    yield (get_resource_url(self.env, page, req.href),
+                           '%s: %s' % (name, shorten_line(text)),
+                           from_utimestamp(ts), author,
+                           shorten_result(text, terms))
         
         # Attachments
         for result in AttachmentModule(self.env).get_search_results(
