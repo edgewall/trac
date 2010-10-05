@@ -280,7 +280,8 @@ class TicketModule(Component):
         with self.env.db_query as db:
             if 'ticket' in filters or 'ticket_details' in filters:
                 data = None
-                for id,t,author,type,summary,field,oldvalue,newvalue in db("""
+                for id, t, author, type, summary, field, oldvalue, newvalue \
+                        in db("""
                         SELECT t.id, tc.time, tc.author, t.type, t.summary, 
                                tc.field, tc.oldvalue, tc.newvalue 
                         FROM ticket_change tc 
@@ -288,9 +289,10 @@ class TicketModule(Component):
                                 AND tc.time>=%s AND tc.time<=%s 
                         ORDER BY tc.time
                         """ % (ts_start, ts_stop)):
-                if not (oldvalue or newvalue):
-                    # ignore empty change from custom field created or deleted
-                    continue 
+                    if not (oldvalue or newvalue):
+                        # ignore empty change corresponding to custom field 
+                        # created (None -> '') or deleted ('' -> None)
+                        continue 
                     if not data or (id, t) != data[:2]:
                         if data:
                             ev = produce_event(data, status, fields, comment,
