@@ -16,6 +16,8 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
+from __future__ import with_statement
+
 from datetime import datetime
 
 from trac.core import *

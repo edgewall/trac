@@ -22,6 +22,8 @@ Jeff Moreland <hou5e@hotmail.com>
 $Id$
 """
 
+from __future__ import with_statement
+
 import re
 
 ###

@@ -1,3 +1,5 @@
+from __future__ import with_statement
+
 from trac import db_default
 from trac.env import Environment
 

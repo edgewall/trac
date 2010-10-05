@@ -1,3 +1,5 @@
+from __future__ import with_statement
+
 from datetime import datetime, timedelta
 import os.path
 from StringIO import StringIO

@@ -11,6 +11,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
+from __future__ import with_statement
+
 from datetime import datetime
 
 from trac.admin import *

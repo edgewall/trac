@@ -15,6 +15,8 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from __future__ import with_statement
+
 from StringIO import StringIO
 from datetime import datetime, timedelta
 import re

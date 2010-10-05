@@ -18,6 +18,8 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 #         Christian Boos <cboos@neuf.fr>
 
+from __future__ import with_statement
+
 from itertools import groupby
 import os
 import posixpath

@@ -1,3 +1,5 @@
+from __future__ import with_statement
+
 from Cookie import SimpleCookie as Cookie
 import time
 from datetime import datetime

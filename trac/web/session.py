@@ -18,6 +18,8 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
+from __future__ import with_statement
+
 import time
 from datetime import date
 

@@ -14,6 +14,8 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from __future__ import with_statement
+
 from datetime import datetime
 
 from trac.test import EnvironmentStub, Mock

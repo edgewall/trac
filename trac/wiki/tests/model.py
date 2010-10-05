@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
 from datetime import datetime
 import os.path
 import shutil
