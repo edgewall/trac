@@ -91,12 +91,41 @@ class ConnectionWrapper(object):
     
     :since 0.12: This wrapper no longer makes cursors produced by the
     connection iterable using `IterableCursor`.
-    """
-    __slots__ = ('cnx', 'log')
 
-    def __init__(self, cnx, log=None):
+    :since 0.13: added a 'readonly' flag preventing the forwarding of
+                 `commit` and `rollback`
+    """
+    __slots__ = ('cnx', 'log', 'readonly')
+
+    def __init__(self, cnx, log=None, readonly=False):
         self.cnx = cnx
         self.log = log
+        self.readonly = readonly
 
     def __getattr__(self, name):
+        if self.readonly and name in ('commit', 'rollback'):
+            raise AttributeError
         return getattr(self.cnx, name)
+
+    def __call__(self, query, params=None):
+        """Execute an SQL `query`.
+
+        The optional `params` are either a tuple containing the parameter
+        values expected by the query, or a sequence of such tuples. In the 
+        latter case, an "executemany" will be performed.
+
+        If the query is a SELECT, return all the rows ("fetchall").
+        When more control is needed, use `cursor()`.
+        """
+        dql = query.lstrip().startswith('SELECT')
+        if self.readonly and not dql:
+            raise ValueError("a 'readonly' connection can only do a SELECT")
+        cursor = self.cnx.cursor()
+        if params and isinstance(params[0], tuple):
+            cursor.executemany(query, params)
+        else:
+            cursor.execute(query, params)
+        rows = cursor.fetchall() if dql else None
+        cursor.close()
+        return rows
+

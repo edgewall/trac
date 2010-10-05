@@ -71,6 +71,7 @@ if have_pysqlite == 2:
     class EagerCursor(PyFormatCursor):
         def __init__(self, con):
             PyFormatCursor.__init__(self, con)
+            self.debug_con = con
             self.rows = []
             self.pos = 0
 
@@ -144,6 +145,8 @@ class SQLiteConnector(Component):
         doc="""Paths to sqlite extensions, relative to Trac environment's
         directory or absolute. (''since 0.12'')""")
 
+    memory_cnx = None
+
     def __init__(self):
         self._version = None
         self.error = None
@@ -176,18 +179,30 @@ class SQLiteConnector(Component):
                     extpath = os.path.join(self.env.path, extpath)
                 self._extensions.append(extpath)
         params['extensions'] = self._extensions
-        return SQLiteConnection(path, log, params)
+        if path == ':memory:':
+            if not self.memory_cnx:
+                self.memory_cnx = SQLiteConnection(path, log, params)
+            return self.memory_cnx
+        else:
+            return SQLiteConnection(path, log, params)
 
     def init_db(self, path, log=None, params={}):
         if path != ':memory:':
             # make the directory to hold the database
             if os.path.exists(path):
-                raise TracError(_('Database already exists at %(path)s',
+                raise TracError(_("Database already exists at %(path)s",
                                   path=path))
-            os.makedirs(os.path.split(path)[0])
-        if isinstance(path, unicode): # needed with 2.4.0
-            path = path.encode('utf-8')
-        cnx = sqlite.connect(path, timeout=int(params.get('timeout', 10000)))
+            else:
+                dbdir = os.path.split(path)[0]
+                if not os.path.exists(dbdir):
+                    os.makedirs(dbdir)
+                if isinstance(path, unicode): # needed with 2.4.0
+                    path = path.encode('utf-8')
+            # this direct connect will create the database if needed
+            cnx = sqlite.connect(path,
+                                 timeout=int(params.get('timeout', 10000)))
+        else:
+            cnx = self.get_connection(path, log, params)
         cursor = cnx.cursor()
         from trac.db_default import schema
         for table in schema:

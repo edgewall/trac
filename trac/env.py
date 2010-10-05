@@ -25,7 +25,8 @@ from trac.cache import CacheManager
 from trac.config import *
 from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
-from trac.db.api import DatabaseManager, get_read_db, with_transaction
+from trac.db.api import (DatabaseManager, QueryContextManager, 
+                         TransactionContextManager, with_transaction)
 from trac.util import copytree, create_file, get_pkginfo, makedirs
 from trac.util.concurrency import threading
 from trac.util.text import exception_to_unicode, printerr, printout
@@ -285,10 +286,10 @@ class Environment(Component, ComponentManager):
         # compatibility that the new integration administration
         # interface tries to provide for old WebAdmin extensions
         if component_name.startswith('webadmin.'):
-            self.log.info('The legacy TracWebAdmin plugin has been '
-                          'automatically disabled, and the integrated '
-                          'administration interface will be used '
-                          'instead.')
+            self.log.info("The legacy TracWebAdmin plugin has been "
+                          "automatically disabled, and the integrated "
+                          "administration interface will be used "
+                          "instead.")
             return False
         
         rules = self._component_rules
@@ -319,24 +320,104 @@ class Environment(Component, ComponentManager):
             fd.close()
 
     def get_db_cnx(self):
-        """Return a database connection from the connection pool (deprecated)
+        """Return a database connection from the connection pool 
 
-        Use `with_transaction` for obtaining a writable database connection
-        and `get_read_db` for anything else.
+        :deprecated:
+
+        Use: 
+        
+           with env.db_transaction as db:
+               ...
+
+           for obtaining the `db` database connection which can be
+           used for performing any query (SELECT/INSERT/UPDATE/DELETE),
+           or:
+
+           with env.db_query as db:
+               ...
+
+           for obtaining a `db` database connection which can be used
+           for performing SELECT queries only.
+           
         """
-        return get_read_db(self)
+        return DatabaseManager(self).get_connection()
 
     def with_transaction(self, db=None):
-        """Decorator for transaction functions.
-
-        See `trac.db.api.with_transaction` for detailed documentation."""
+        """Decorator for transaction functions :deprecated:"""
         return with_transaction(self, db)
 
     def get_read_db(self):
-        """Return a database connection for read purposes.
+        """Return a database connection for read purposes :deprecated:
 
         See `trac.db.api.get_read_db` for detailed documentation."""
-        return get_read_db(self)
+        return DatabaseManager(self).get_connection(readonly=True)
+
+    @property
+    def db_query(self):
+        """Return a context manager which can be used to obtain a read-only
+        database connection.
+
+        Example::
+
+            with env.db_query as db:
+                cursor = db.cursor()
+                cursor.execute("SELECT ...")
+                for row in cursor.fetchall():
+                    ...
+
+        Note that a connection retrieved this way can be "called" directly 
+        in order to execute a query::
+
+            with env.db_query as db:
+                for row in db("SELECT ..."):
+                    ...
+        
+        If you don't need to manipulate the connection itself, this can even
+        be simplified to::
+
+            for row in env.db_query("SELECT ..."):
+                ...
+
+        :warning: after a `with env.db_query as db` block, though the
+        `db` variable is still available, you shouldn't use it as it might
+        have been closed when exiting the context, if this context was the
+        outermost context (db_query or db_connection).
+        """
+        return QueryContextManager(self)
+
+    @property
+    def db_transaction(self):
+        """Return a context manager which can be used to obtain a writable
+        database connection.
+        
+        Example::
+
+            with env.db_transaction as db:
+                cursor = db.cursor()
+                cursor.execute("UPDATE ...")
+
+        Upon successful exit of the context, the context manager will commit 
+        the transaction. In case of nested contexts, only the outermost context
+        performs a commit. However, should an exception happen, any context
+        manager will perform a rollback (?).
+
+        Like for its read-only counterpart, you can directly execute a DML 
+        query on the `db`::
+
+            with env.db_transaction as db:
+                db("UPDATE ...")
+
+        If you don't need to manipulate the connection itself, this can also
+        be simplified to::
+
+            env.db_transaction("UPDATE ...")
+
+        :warning: after a `with env.db_transaction` as db` block, though the
+        `db` variable is still available, you shouldn't use it as it might
+        have been closed when exiting the context, if this context was the
+        outermost context (db_query or db_connection).
+        """
+        return TransactionContextManager(self)
 
     def shutdown(self, tid=None):
         """Close the environment."""
@@ -408,15 +489,14 @@ class Environment(Component, ComponentManager):
         which is "older" than any db version number.
 
         :since 0.11:
+
+        :since 0.13: deprecation warning: the `db` parameter is no longer used
+        and will be removed in version 0.14
         """
-        if not db:
-            db = self.get_db_cnx()
-        cursor = db.cursor()
-        cursor.execute("SELECT value FROM system "
-                       "WHERE name='%sdatabase_version'" %
-                       (initial and 'initial_' or ''))
-        row = cursor.fetchone()
-        return row and int(row[0])
+        rows = self.db_query("""
+                SELECT value FROM system WHERE name='%sdatabase_version'
+                """ % (initial and 'initial_' or ''))
+        return rows and int(rows[0][0])
 
     def setup_config(self):
         """Load the configuration file."""
@@ -468,18 +548,19 @@ class Environment(Component, ComponentManager):
 
         @param cnx: the database connection; if ommitted, a new connection is
                     retrieved
+
+        :since 0.13: deprecation warning: the `cnx` parameter is no longer used
+        and will be removed in version 0.14
         """
-        if not cnx:
-            cnx = self.get_db_cnx()
-        cursor = cnx.cursor()
-        cursor.execute("SELECT DISTINCT s.sid, n.value, e.value "
-                       "FROM session AS s "
-                       " LEFT JOIN session_attribute AS n ON (n.sid=s.sid "
-                       "  and n.authenticated=1 AND n.name = 'name') "
-                       " LEFT JOIN session_attribute AS e ON (e.sid=s.sid "
-                       "  AND e.authenticated=1 AND e.name = 'email') "
-                       "WHERE s.authenticated=1 ORDER BY s.sid")
-        for username, name, email in cursor:
+        for username, name, email in self.db_query("""
+                SELECT DISTINCT s.sid, n.value, e.value
+                FROM session AS s
+                 LEFT JOIN session_attribute AS n ON (n.sid=s.sid
+                  and n.authenticated=1 AND n.name = 'name')
+                 LEFT JOIN session_attribute AS e ON (e.sid=s.sid
+                  AND e.authenticated=1 AND e.name = 'email')
+                WHERE s.authenticated=1 ORDER BY s.sid
+                """):
             yield username, name, email
 
     def backup(self, dest=None):
@@ -492,13 +573,13 @@ class Environment(Component, ComponentManager):
 
     def needs_upgrade(self):
         """Return whether the environment needs to be upgraded."""
-        db = self.get_db_cnx()
-        for participant in self.setup_participants:
-            if participant.environment_needs_upgrade(db):
-                self.log.warning('Component %s requires environment upgrade',
-                                 participant)
-                return True
-        return False
+        with self.db_query as db:
+            for participant in self.setup_participants:
+                if participant.environment_needs_upgrade(db):
+                    self.log.warn("Component %s requires environment upgrade",
+                                  participant)
+                    return True
+            return False
 
     def upgrade(self, backup=False, backup_dest=None):
         """Upgrade database.
@@ -508,10 +589,10 @@ class Environment(Component, ComponentManager):
         @return: whether the upgrade was performed
         """
         upgraders = []
-        db = self.get_read_db()
-        for participant in self.setup_participants:
-            if participant.environment_needs_upgrade(db):
-                upgraders.append(participant)
+        with self.db_query as db:
+            for participant in self.setup_participants:
+                if participant.environment_needs_upgrade(db):
+                    upgraders.append(participant)
         if not upgraders:
             return
 
@@ -521,7 +602,8 @@ class Environment(Component, ComponentManager):
         for participant in upgraders:
             self.log.info("%s.%s upgrading...", participant.__module__,
                           participant.__class__.__name__)
-            with_transaction(self)(participant.upgrade_environment)
+            with self.db_transaction as db:
+                participant.upgrade_environment(db)
             # Database schema may have changed, so close all connections
             DatabaseManager(self).shutdown()
         return True
@@ -535,8 +617,8 @@ class Environment(Component, ComponentManager):
     def _get_abs_href(self):
         if not self._abs_href:
             if not self.base_url:
-                self.log.warn('base_url option not set in configuration, '
-                              'generated links may be incorrect')
+                self.log.warn("base_url option not set in configuration, "
+                              "generated links may be incorrect")
                 self._abs_href = Href('')
             else:
                 self._abs_href = Href(self.base_url)
@@ -555,14 +637,11 @@ class EnvironmentSetup(Component):
 
     def environment_created(self):
         """Insert default data into the database."""
-        @self.env.with_transaction()
-        def do_db_populate(db):
-            cursor = db.cursor()
+        with self.env.db_transaction as db:
             for table, cols, vals in db_default.get_data(db):
-                cursor.executemany("INSERT INTO %s (%s) VALUES (%s)"
-                                   % (table, ','.join(cols),
-                                      ','.join(['%s' for c in cols])),
-                                   vals)
+                db("INSERT INTO %s (%s) VALUES (%s)"
+                   % (table, ','.join(cols), ','.join(['%s' for c in cols])),
+                   vals)
         self._update_sample_config()
 
     def environment_needs_upgrade(self, db):
@@ -587,13 +666,13 @@ class EnvironmentSetup(Component):
                 upgrades = __import__('upgrades', globals(), locals(), [name])
                 script = getattr(upgrades, name)
             except AttributeError:
-                raise TracError(_('No upgrade module for version %(num)i '
-                                  '(%(version)s.py)', num=i, version=name))
+                raise TracError(_("No upgrade module for version %(num)i "
+                                  "(%(version)s.py)", num=i, version=name))
             script.do_upgrade(self.env, i, cursor)
             cursor.execute("""
                 UPDATE system SET value=%s WHERE name='database_version'
                 """, (i,))
-            self.log.info('Upgraded database version from %d to %d', i - 1, i)
+            self.log.info("Upgraded database version from %d to %d", i - 1, i)
             db.commit()
         self._update_sample_config()
 
@@ -609,11 +688,11 @@ class EnvironmentSetup(Component):
                 config.set(section, name, value)
         try:
             config.save()
-            self.log.info('Wrote sample configuration file with the new '
-                          'settings and their default values: %s',
+            self.log.info("Wrote sample configuration file with the new "
+                          "settings and their default values: %s",
                           filename)
         except IOError, e:
-            self.log.warn('Couldn\'t write sample configuration file (%s)', e,
+            self.log.warn("Couldn't write sample configuration file (%s)", e,
                           exc_info=True)
 
 
@@ -735,12 +814,10 @@ class EnvironmentAdmin(Component):
         import shutil
 
         # Bogus statement to lock the database while copying files
-        cnx = self.env.get_db_cnx()
-        cursor = cnx.cursor()
-        cursor.execute("UPDATE system SET name=NULL WHERE name IS NULL")
+        with self.db_transaction as db:
+            db("UPDATE system SET name=NULL WHERE name IS NULL")
 
-        try:
-            printout(_('Hotcopying %(src)s to %(dst)s ...', 
+            printout(_("Hotcopying %(src)s to %(dst)s ...", 
                        src=self.env.path, dst=dest))
             db_str = self.env.config.get('trac', 'database')
             prefix, db_path = db_str.split(':', 1)
@@ -755,16 +832,13 @@ class EnvironmentAdmin(Component):
                 retval = 0
             except shutil.Error, e:
                 retval = 1
-                printerr(_('The following errors happened while copying '
-                           'the environment:'))
+                printerr(_("The following errors happened while copying "
+                           "the environment:"))
                 for (src, dst, err) in e.args[0]:
                     if src in err:
                         printerr('  %s' % err)
                     else:
                         printerr("  %s: '%s'" % (err, src))
-        finally:
-            # Unlock database
-            cnx.rollback()
 
         printout(_("Hotcopy done."))
         return retval

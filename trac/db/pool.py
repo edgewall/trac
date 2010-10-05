@@ -40,26 +40,14 @@ class PooledConnection(ConnectionWrapper):
 
     def close(self):
         if self.cnx:
-            self._pool._return_cnx(self.cnx, self._key, self._tid)
+            cnx = self.cnx
             self.cnx = None
             self.log = None
+            self._pool._return_cnx(cnx, self._key, self._tid)
 
     def __del__(self):
         self.close()
 
-
-def try_rollback(cnx):
-    """Resets the Connection in a safe way, returning True when it succeeds.
-    
-    The rollback we do for safety on a Connection can fail at
-    critical times because of a timeout on the Connection.
-    """
-    try:
-        cnx.rollback() # resets the connection
-        return True
-    except Exception:
-        cnx.close()
-        return False
 
 
 class ConnectionPoolBackend(object):
@@ -81,8 +69,7 @@ class ConnectionPoolBackend(object):
         start = time.time()
         tid = threading._get_ident()
         # Get a Connection, either directly or a deferred one
-        self._available.acquire()
-        try:
+        with self._available:
             # First choice: Return the same cnx already used by the thread
             if (tid, key) in self._active:
                 cnx, num = self._active[(tid, key)]
@@ -98,8 +85,6 @@ class ConnectionPoolBackend(object):
                 num = 1
             if cnx:
                 self._active[(tid, key)] = (cnx, num)
-        finally:
-            self._available.release()
 
         deferred = num == 1 and isinstance(cnx, tuple)
         err = None
@@ -120,20 +105,14 @@ class ConnectionPoolBackend(object):
         if cnx:
             if deferred:
                 # replace placeholder with real Connection
-                self._available.acquire()
-                try:
+                with self._available:
                     self._active[(tid, key)] = (cnx, num)
-                finally:
-                    self._available.release()
             return PooledConnection(self, cnx, key, tid, log)
 
         if deferred:
             # cnx couldn't be reused, clear placeholder
-            self._available.acquire()
-            try:
+            with self._available:
                 del self._active[(tid, key)]
-            finally:
-                self._available.release()
             if op == 'ping': # retry
                 return self.get_cnx(connector, kwargs)
 
@@ -171,30 +150,27 @@ class ConnectionPoolBackend(object):
 
     def _return_cnx(self, cnx, key, tid):
         # Decrement active refcount, clear slot if 1
-        self._available.acquire()
-        try:
+        with self._available:
             assert (tid, key) in self._active
             cnx, num = self._active[(tid, key)]
             if num == 1:
                 del self._active[(tid, key)]
             else:
                 self._active[(tid, key)] = (cnx, num - 1)
-        finally:
-            self._available.release()
         if num == 1:
             # Reset connection outside of critical section
-            if not try_rollback(cnx): # TODO inline this in 0.13
+            try:
+                cnx.rollback() # resets the connection
+            except Exception:
+                cnx.close()
                 cnx = None
             # Connection available, from reuse or from creation of a new one
-            self._available.acquire()
-            try:
+            with self._available:
                 if cnx and cnx.poolable:
                     self._pool.append(cnx)
                     self._pool_key.append(key)
                     self._pool_time.append(time.time())
                 self._available.notify() 
-            finally:
-                self._available.release()
 
     def shutdown(self, tid=None):
         """Close pooled connections not used in a while"""
@@ -202,14 +178,16 @@ class ConnectionPoolBackend(object):
         if tid is None:
             delay = 0
         when = time.time() - delay
-        self._available.acquire()
-        try:
+        with self._available:
+            if tid is None: # global shutdown, also close active connections
+                for db, num in self._active.values():
+                    db.close()
+                self._active = {}
             while self._pool_time and self._pool_time[0] <= when:
-                self._pool.pop(0)
+                db = self._pool.pop(0)
+                db.close()
                 self._pool_key.pop(0)
                 self._pool_time.pop(0)
-        finally:
-            self._available.release()
 
 
 _pool_size = int(os.environ.get('TRAC_DB_POOL_SIZE', 10))
