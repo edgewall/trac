@@ -51,30 +51,26 @@ class DetachedSession(dict):
         dict.__setitem__(self, key, unicode(value))
 
     def get_session(self, sid, authenticated=False):
-        self.env.log.debug('Retrieving session for ID %r', sid)
+        self.env.log.debug("Retrieving session for ID %r", sid)
 
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
+        with self.env.db_query as db:
+            self.sid = sid
+            self.authenticated = authenticated
 
-        self.sid = sid
-        self.authenticated = authenticated
+            for last_visit, in db("""
+                    SELECT last_visit FROM session
+                    WHERE sid=%s AND authenticated=%s
+                    """, (sid, int(authenticated))):
+                self._new = False
+                self.last_visit = int(last_visit or 0)
 
-        cursor.execute("""
-            SELECT last_visit FROM session WHERE sid=%s AND authenticated=%s
-            """, (sid, int(authenticated)))
-        row = cursor.fetchone()
-        if not row:
-            return
-        self._new = False
-        self.last_visit = int(row[0] or 0)
-
-        cursor.execute("""
-            SELECT name,value FROM session_attribute
-            WHERE sid=%s and authenticated=%s
-            """, (sid, int(authenticated)))
-        for name, value in cursor:
-            self[name] = value
-        self._old.update(self)
+                for name, value in db("""
+                        SELECT name, value FROM session_attribute
+                        WHERE sid=%s and authenticated=%s
+                        """, (sid, int(authenticated))):
+                    self[name] = value
+                self._old.update(self)
+                break
 
     def save(self):
         if not self._old and not self.items():
@@ -85,19 +81,16 @@ class DetachedSession(dict):
         authenticated = int(self.authenticated)
         now = int(time.time())
 
-        @self.env.with_transaction()
-        def delete_session_cookie(db):
-            cursor = db.cursor()
+        with self.env.db_transaction as db:
             if self._new:
                 self.last_visit = now
                 self._new = False
                 # The session might already exist even if _new is True since
                 # it could have been created by a concurrent request (#3563).
                 try:
-                    cursor.execute("""
-                        INSERT INTO session (sid,last_visit,authenticated)
-                        VALUES (%s,%s,%s)
-                        """, (self.sid, self.last_visit, authenticated))
+                    db("""INSERT INTO session (sid, last_visit, authenticated)
+                          VALUES (%s,%s,%s)
+                          """, (self.sid, self.last_visit, authenticated))
                 except Exception:
                     self.env.log.warning('Session %s already exists', self.sid)
                     db.rollback()
@@ -105,46 +98,39 @@ class DetachedSession(dict):
             if self._old != self:
                 attrs = [(self.sid, authenticated, k, v) 
                          for k, v in self.items()]
-                cursor.execute("""
-                    DELETE FROM session_attribute WHERE sid=%s
-                    """, (self.sid,))
+                db("DELETE FROM session_attribute WHERE sid=%s", (self.sid,))
                 self._old = dict(self.items())
                 if attrs:
-                    cursor.executemany("""
-                       INSERT INTO session_attribute
-                         (sid,authenticated,name,value)
-                       VALUES (%s,%s,%s,%s)
-                       """, attrs)
+                    db("""INSERT INTO session_attribute
+                             (sid, authenticated, name, value)
+                          VALUES (%s, %s, %s, %s)
+                          """, attrs)
                 elif not authenticated:
                     # No need to keep around empty unauthenticated sessions
-                    cursor.execute("""
-                        DELETE FROM session WHERE sid=%s AND authenticated=0
-                        """, (self.sid,))
+                    db("DELETE FROM session WHERE sid=%s AND authenticated=0",
+                       (self.sid,))
                     return
             # Update the session last visit time if it is over an hour old,
             # so that session doesn't get purged
             if now - self.last_visit > UPDATE_INTERVAL:
                 self.last_visit = now
                 self.env.log.info("Refreshing session %s", self.sid)
-                cursor.execute("""
-                    UPDATE session SET last_visit=%s
-                    WHERE sid=%s AND authenticated=%s
-                    """, (self.last_visit, self.sid, authenticated))
+                db("""UPDATE session SET last_visit=%s
+                      WHERE sid=%s AND authenticated=%s
+                      """, (self.last_visit, self.sid, authenticated))
                 # Purge expired sessions. We do this only when the session was
                 # changed as to minimize the purging.
                 mintime = now - PURGE_AGE
                 self.env.log.debug('Purging old, expired, sessions.')
-                cursor.execute("""
-                    DELETE FROM session_attribute
-                    WHERE authenticated=0 AND sid IN (
-                      SELECT sid FROM session 
+                db("""DELETE FROM session_attribute
+                      WHERE authenticated=0 AND sid IN (
+                          SELECT sid FROM session 
+                          WHERE authenticated=0 AND last_visit < %s
+                      )
+                      """, (mintime,))
+                db("""DELETE FROM session
                       WHERE authenticated=0 AND last_visit < %s
-                    )
-                    """, (mintime,))
-                cursor.execute("""
-                    DELETE FROM session
-                    WHERE authenticated=0 AND last_visit < %s
-                    """, (mintime,))
+                      """, (mintime,))
 
 
 class Session(DetachedSession):
@@ -194,24 +180,19 @@ class Session(DetachedSession):
         assert new_sid, 'Session ID cannot be empty'
         if new_sid == self.sid:
             return
-        @self.env.with_transaction()
-        def update_session_id(db):
-            cursor = db.cursor()
-            cursor.execute("SELECT sid FROM session WHERE sid=%s", (new_sid,))
-            if cursor.fetchone():
+        with self.env.db_transaction as db:
+            if db("SELECT sid FROM session WHERE sid=%s", (new_sid,)):
                 raise TracError(Markup(
                     _("Session '%(id)s' already exists.<br />"
                       "Please choose a different session ID.",
                       id=new_sid)), _("Error renaming session"))
-            self.env.log.debug('Changing session ID %s to %s', self.sid,
+            self.env.log.debug("Changing session ID %s to %s", self.sid,
                                new_sid)
-            cursor.execute("""
-                UPDATE session SET sid=%s WHERE sid=%s AND authenticated=0
+            db("UPDATE session SET sid=%s WHERE sid=%s AND authenticated=0",
+               (new_sid, self.sid))
+            db("""UPDATE session_attribute SET sid=%s 
+                  WHERE sid=%s and authenticated=0
                   """, (new_sid, self.sid))
-            cursor.execute("""
-                UPDATE session_attribute SET sid=%s 
-                WHERE sid=%s and authenticated=0
-                """, (new_sid, self.sid))
         self.sid = new_sid
         self.bake_cookie()
 
@@ -220,47 +201,39 @@ class Session(DetachedSession):
         is no preexisting session data for that user name.
         """
         assert self.req.authname != 'anonymous', \
-               'Cannot promote session of anonymous user'
+               "Cannot promote session of anonymous user"
 
-        @self.env.with_transaction()
-        def update_session_id(db):
-            cursor = db.cursor()
-            cursor.execute("""
-                SELECT authenticated FROM session WHERE sid=%s OR sid=%s
-                """, (sid, self.req.authname))
-            authenticated_flags = [row[0] for row in cursor.fetchall()]
+        with self.env.db_transaction as db:
+            authenticated_flags = [authenticated for authenticated, in db(
+                "SELECT authenticated FROM session WHERE sid=%s OR sid=%s",
+                (sid, self.req.authname))]
             
             if len(authenticated_flags) == 2:
                 # There's already an authenticated session for the user,
                 # we simply delete the anonymous session
-                cursor.execute("""
-                    DELETE FROM session WHERE sid=%s AND authenticated=0
-                    """, (sid,))
-                cursor.execute("""
-                    DELETE FROM session_attribute
-                    WHERE sid=%s AND authenticated=0
-                    """, (sid,))
+                db("DELETE FROM session WHERE sid=%s AND authenticated=0",
+                   (sid,))
+                db("""DELETE FROM session_attribute
+                      WHERE sid=%s AND authenticated=0
+                      """, (sid,))
             elif len(authenticated_flags) == 1:
                 if not authenticated_flags[0]:
                     # Update the anomymous session records so the session ID
                     # becomes the user name, and set the authenticated flag.
-                    self.env.log.debug('Promoting anonymous session %s to '
-                                       'authenticated session for user %s',
+                    self.env.log.debug("Promoting anonymous session %s to "
+                                       "authenticated session for user %s",
                                        sid, self.req.authname)
-                    cursor.execute("""
-                        UPDATE session SET sid=%s,authenticated=1
-                        WHERE sid=%s AND authenticated=0
-                        """, (self.req.authname, sid))
-                    cursor.execute("""
-                        UPDATE session_attribute SET sid=%s,authenticated=1
-                        WHERE sid=%s
-                        """, (self.req.authname, sid))
+                    db("""UPDATE session SET sid=%s, authenticated=1
+                          WHERE sid=%s AND authenticated=0
+                          """, (self.req.authname, sid))
+                    db("""UPDATE session_attribute SET sid=%s, authenticated=1
+                          WHERE sid=%s
+                          """, (self.req.authname, sid))
             else:
                 # we didn't have an anonymous session for this sid
-                cursor.execute("""
-                    INSERT INTO session (sid,last_visit,authenticated)
-                    VALUES (%s,%s,1)
-                    """, (self.req.authname, int(time.time())))
+                db("""INSERT INTO session (sid, last_visit, authenticated)
+                      VALUES (%s, %s, 1)
+                      """, (self.req.authname, int(time.time())))
         self._new = False
 
         self.sid = sid
@@ -349,8 +322,6 @@ class SessionAdmin(Component):
     def _get_list(self, *sids):
         if not sids:
             return
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
         check_auth = True
         check_sid = False
         if sids[0].lower() == 'anonymous':
@@ -364,17 +335,20 @@ class SessionAdmin(Component):
             check_sid = True
 
         if check_auth:
-            cursor.execute("""
+            sql = """
                 SELECT DISTINCT s.sid, n.value, e.value 
                 FROM session AS s 
                   LEFT JOIN session_attribute AS n
-                    ON (n.sid=s.sid AND n.authenticated=%s AND n.name='name')
+                    ON (n.sid=s.sid AND n.authenticated=%s 
+                        AND n.name='name')
                   LEFT JOIN session_attribute AS e
-                    ON (e.sid=s.sid AND e.authenticated=%s AND e.name='email')
+                    ON (e.sid=s.sid AND e.authenticated=%s
+                        AND e.name='email')
                 WHERE s.authenticated=%s ORDER BY s.sid
-                """, (authenticated,) * 3)
+                """
+            args = (authenticated,) * 3
         elif check_sid:
-            cursor.execute("""
+            sql = """
                 SELECT DISTINCT s.sid, n.value, e.value 
                 FROM session AS s 
                   LEFT JOIN session_attribute AS n
@@ -382,117 +356,83 @@ class SessionAdmin(Component):
                   LEFT JOIN session_attribute AS e
                     ON (e.sid=s.sid AND e.name='email') 
                 WHERE s.sid IN (%s)
-                """ % ','.join("%s" for i in range(len(sids))), sids)
+                """ % ','.join("%s" for i in range(len(sids)))
+            args = sids
         else:
-            cursor.execute("""
+            sql = """
                 SELECT DISTINCT s.sid, n.value, e.value 
                 FROM session AS s 
                   LEFT JOIN session_attribute AS n
                     ON (n.sid=s.sid AND n.name='name') 
                   LEFT JOIN session_attribute AS e
                     ON (e.sid=s.sid  AND e.name='email') ORDER BY s.sid
-                """)
-
-        for sid, name, email in cursor:
+                """
+            args = ()
+        for sid, name, email in self.env.db_query(sql, args):
             yield (sid, name, email)
 
     def _add_session(self, sid, name=None, email=None):
-        @self.env.with_transaction()
-        def add_session(db):
-            cursor = db.cursor()
-            cursor.execute("INSERT INTO session VALUES (%s, 1, %s)",
-                           (sid, time.time()))
+        with self.env.db_transaction as db:
+            db("INSERT INTO session VALUES (%s, 1, %s)", (sid, time.time()))
             if name is not None:
-                cursor.execute("""
-                    INSERT INTO session_attribute VALUES (%s, 1, 'name', %s)
-                    """, (sid, name))
+                db("INSERT INTO session_attribute VALUES (%s, 1, 'name', %s)",
+                   (sid, name))
             if email is not None:
-                cursor.execute("""
-                    INSERT INTO session_attribute VALUES (%s, 1, 'email', %s)
-                    """, (sid, email))
+                db("INSERT INTO session_attribute VALUES (%s, 1, 'email', %s)",
+                   (sid, email))
 
     def _set_attr(self, sid, attr, val):
-        @self.env.with_transaction()
-        def set_attr(db):
-            cursor = db.cursor()
-            cursor.execute("""
-                SELECT authenticated FROM session WHERE sid = %s
-                """, (sid,))
-            for authenticated, in cursor:
-                cursor.execute("""
-                    SELECT name, value FROM session_attribute
-                    WHERE sid = %s AND authenticated = %s AND name = %s
-                    """, (sid, authenticated, attr))
-                for row in cursor:
-                    cursor.execute("""
+        with self.env.db_transaction as db:
+            for authenticated, in db(
+                    "SELECT authenticated FROM session WHERE sid = %s",
+                    (sid,)):
+                # FIXME upsert
+                if db("""SELECT name, value FROM session_attribute
+                         WHERE sid = %s AND authenticated = %s AND name = %s
+                         """, (sid, authenticated, attr)):
+                    db("""
                         UPDATE session_attribute SET value = %s
                         WHERE sid = %s AND authenticated = %s AND name = %s
                         """, (val, sid, authenticated, attr))
-                    break
                 else:
-                    cursor.execute("""
-                        INSERT INTO session_attribute VALUES (%s, %s, %s, %s)
-                        """, (sid, authenticated, attr, val))
+                    db("INSERT INTO session_attribute VALUES (%s, %s, %s, %s)",
+                       (sid, authenticated, attr, val))
                 break
             else:
                 raise TracError(_("Session id %(sid)s not found", sid=sid))
 
     def _delete_session(self, sid):
-        @self.env.with_transaction()
-        def delete_session(db):
-            cursor = db.cursor()
+        with self.env.db_transaction as db:
             if sid.lower() == 'anonymous':
-                cursor.execute("""
-                    DELETE FROM session_attribute WHERE authenticated = 0
-                    """)
-                cursor.execute("""
-                    DELETE FROM session WHERE authenticated = 0
-                    """)
+                db("DELETE FROM session_attribute WHERE authenticated = 0")
+                db("DELETE FROM session WHERE authenticated = 0")
             elif sid == '*':
-                cursor.execute("""
-                    DELETE FROM session_attribute WHERE name <> 'password'
-                    """)
-                cursor.execute("""
-                    DELETE FROM session
-                    """)
+                db("DELETE FROM session_attribute WHERE name <> 'password'")
+                db("DELETE FROM session")
             else:
-                cursor.execute("""
-                    DELETE FROM session_attribute WHERE sid = %s
-                    """, (sid,))
-                cursor.execute("""
-                    DELETE FROM session WHERE sid = %s
-                    """, (sid,))
+                db("DELETE FROM session_attribute WHERE sid = %s", (sid,))
+                db("DELETE FROM session WHERE sid = %s", (sid,))
 
     def _purge_sessions(self, age=None):
         """Purge anonymous sessions older than [age].
 
         If `age` is None, then purge all anonymous sessions.
         """
-        @self.env.with_transaction()
-        def purge_session(db):
-            cursor = db.cursor()
+        with self.env.db_transaction as db:
             if age:
                 ts = to_timestamp(age)
-                cursor.execute("""
-                    DELETE FROM session_attribute
-                    WHERE authenticated=0
-                      AND sid IN (SELECT sid FROM session
-                                  WHERE authenticated=0 AND last_visit < %s)
-                    """, (ts,))
-                cursor.execute("""
-                    DELETE FROM session
-                    WHERE authenticated=0 AND last_visit < %s
-                    """, (ts,))
+                db("""DELETE FROM session_attribute
+                      WHERE authenticated=0
+                       AND sid IN (SELECT sid FROM session
+                                   WHERE authenticated=0 AND last_visit < %s)
+                      """, (ts,))
+                db("""DELETE FROM session
+                      WHERE authenticated=0 AND last_visit < %s
+                      """, (ts,))
             else:
-                cursor.execute("""
-                    DELETE FROM session_attribute WHERE authenticated=0
-                    """)
-                cursor.execute("""
-                    DELETE FROM session WHERE authenticated=0
-                    """)
+                db("DELETE FROM session_attribute WHERE authenticated=0")
+                db("DELETE FROM session WHERE authenticated=0")
 
     def _get_authenticated_sids(self):
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        cursor.execute("SELECT sid FROM session WHERE authenticated = 1")
-        return [r[0] for r in cursor]
+        return [sid for sid, in self.env.db_query(
+                "SELECT sid FROM session WHERE authenticated = 1")]

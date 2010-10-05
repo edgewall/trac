@@ -152,13 +152,10 @@ class LoginModule(Component):
                _('Already logged in as %(user)s.', user=req.authname)
 
         cookie = hex_entropy()
-        @self.env.with_transaction()
-        def store_session_cookie(db):
-            cursor = db.cursor()
-            cursor.execute("INSERT INTO auth_cookie (cookie,name,ipnr,time) "
-                           "VALUES (%s, %s, %s, %s)",
-                           (cookie, remote_user, req.remote_addr,
-                            int(time.time())))
+        self.env.db_transaction("""
+            INSERT INTO auth_cookie (cookie, name, ipnr, time) 
+            VALUES (%s, %s, %s, %s)
+            """, (cookie, remote_user, req.remote_addr, int(time.time())))
         req.authname = remote_user
         req.outcookie['trac_auth'] = cookie
         req.outcookie['trac_auth']['path'] = self.auth_cookie_path \
@@ -179,12 +176,9 @@ class LoginModule(Component):
 
         # While deleting this cookie we also take the opportunity to delete
         # cookies older than 10 days
-        @self.env.with_transaction()
-        def delete_session_cookie(db):
-            cursor = db.cursor()
-            cursor.execute("DELETE FROM auth_cookie "
-                           "WHERE name=%s OR time < %s",
-                           (req.authname, int(time.time()) - 86400 * 10))
+        self.env.db_transaction(
+            "DELETE FROM auth_cookie WHERE name=%s OR time < %s",
+            (req.authname, int(time.time()) - 86400 * 10))
         self._expire_cookie(req)
         custom_redirect = self.config['metanav'].get('logout.redirect')
         if custom_redirect:
@@ -204,23 +198,17 @@ class LoginModule(Component):
             req.outcookie['trac_auth']['secure'] = True
 
     def _get_name_for_cookie(self, req, cookie):
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
         if self.check_ip:
-            cursor.execute("SELECT name FROM auth_cookie "
-                           "WHERE cookie=%s AND ipnr=%s",
-                           (cookie.value, req.remote_addr))
+            sql = "SELECT name FROM auth_cookie WHERE cookie=%s AND ipnr=%s"
+            args = (cookie.value, req.remote_addr)
         else:
-            cursor.execute("SELECT name FROM auth_cookie WHERE cookie=%s",
-                           (cookie.value,))
-        row = cursor.fetchone()
-        if not row:
-            # The cookie is invalid (or has been purged from the database), so
-            # tell the user agent to drop it as it is invalid
-            self._expire_cookie(req)
-            return None
-
-        return row[0]
+            sql = "SELECT name FROM auth_cookie WHERE cookie=%s"
+            args = (cookie.value,)
+        for name, in self.env.db_query(sql, args):
+            return name
+        # The cookie is invalid (or has been purged from the database),
+        # so tell the user agent to drop it as it is invalid
+        self._expire_cookie(req)
 
     def _redirect_back(self, req):
         """Redirect the user back to the URL she came from."""
