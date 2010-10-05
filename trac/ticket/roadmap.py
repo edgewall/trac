@@ -398,7 +398,8 @@ class RoadmapModule(Component):
             elif status == 'closed':
                 if ticket['resolution'] == 'fixed':
                     return 'COMPLETED'
-                else: return 'CANCELLED'
+                else:
+                    return 'CANCELLED'
             else: return ''
 
         def escape_value(text): 
@@ -412,7 +413,8 @@ class RoadmapModule(Component):
             while text:
                 if not firstline:
                     text = ' ' + text
-                else: firstline = 0
+                else:
+                    firstline = 0
                 buf.write(text[:75] + CRLF)
                 text = text[75:]
 
@@ -434,6 +436,9 @@ class RoadmapModule(Component):
         write_prop('METHOD', 'PUBLISH')
         write_prop('X-WR-CALNAME',
                    self.env.project_name + ' - ' + _('Roadmap'))
+        write_prop('X-WR-CALDESC', self.env.project_description)
+        write_prop('X-WR-TIMEZONE', str(req.tz))
+
         for milestone in milestones:
             uid = '<%s/milestone/%s@%s>' % (req.base_path, milestone.name,
                                             host)
