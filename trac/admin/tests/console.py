@@ -20,10 +20,33 @@ import sys
 import unittest
 from StringIO import StringIO
 
-from trac.config import Configuration
-from trac.env import Environment
+# IAdminCommandProvider implementations
+import trac.admin.api
+import trac.attachment
+import trac.perm
+import trac.ticket.admin
+import trac.versioncontrol.admin
+import trac.versioncontrol.api
+import trac.versioncontrol.web_ui
+import trac.wiki.admin
+
+# IPermissionRequestor implementations (for 'permission' related tests)
+import trac.about
+import trac.admin.web_ui
+import trac.config
+import trac.ticket.api
+import trac.ticket.report
+import trac.ticket.roadmap
+import trac.ticket.web_ui
+import trac.search.web_ui
+import trac.timeline.web_ui
+import trac.wiki.web_ui
+
+
 from trac.admin import console
-from trac.test import InMemoryDatabase
+from trac.config import Configuration
+from trac.db import DatabaseManager
+from trac.test import EnvironmentStub
 from trac.util.datefmt import get_date_format_hint
 from trac.web.tests.session import _prep_session_table
 
@@ -51,44 +74,6 @@ def load_expected_results(file, pattern):
     return expected
 
 
-class InMemoryConfiguration(Configuration):
-    """A subclass of Configuration that doesn't save to disk."""
-    def save(self):
-        pass
-
-
-class InMemoryEnvironment(Environment):
-    """
-    A subclass of Environment that keeps its DB in memory.
-    """
-
-    def get_read_db(self):
-        return self.get_db_cnx()
-
-    def get_db_cnx(self):
-        if not hasattr(self, '_db'):
-            self._db = InMemoryDatabase()
-        return self._db
-
-    def create(self, options=[]):
-        self.setup_config()
-
-    def verify(self):
-        return True
-
-    def setup_log(self):
-        from trac.log import logger_factory
-        self.log = logger_factory('null')
-
-    def is_component_enabled(self, cls):
-        return cls.__module__.startswith('trac.') and \
-               cls.__module__.find('.tests.') == -1
-
-    def setup_config(self):
-        self.config = InMemoryConfiguration(None)
-        self.setup_log()
-
-
 class TracadminTestCase(unittest.TestCase):
     """
     Tests the output of trac-admin and is meant to be used with
@@ -100,9 +85,8 @@ class TracadminTestCase(unittest.TestCase):
             '===== (test_[^ ]+) =====')
 
     def setUp(self):
-        self.env = InMemoryEnvironment('', create=True)
-        self.db = self.env.get_db_cnx()
-
+        self.env = EnvironmentStub(default_data=True, enable=('trac.*',),
+                                   disable=('trac.tests.*',))
         self._admin = console.TracAdmin()
         self._admin.env_set('', self.env)
 
@@ -144,13 +128,18 @@ class TracadminTestCase(unittest.TestCase):
         # Create a useful delta between the output and the expected output
         output_lines = ['%s\n' % x for x in output.split('\n')]
         expected_lines = ['%s\n' % x for x in expected_results.split('\n')]
-        output_diff = ''.join(list(
-            difflib.unified_diff(expected_lines, output_lines,
-                                 'expected', 'actual')
-        ))
-        unittest.TestCase.assertEqual(self, expected_results, output, 
-                                      "%r != %r\n%s" %
-                                      (expected_results, output, output_diff))
+        diff = ''.join(difflib.unified_diff(expected_lines, output_lines, 
+                                            'expected', 'actual'))
+        if '[...]' in expected_results:
+            m = re.match('%s$' % expected_results.replace('[...]', '.*'),
+                         output)
+            unittest.TestCase.assertTrue(self, m, 
+                                         "%r != %r\n%s" % (expected_results,
+                                                           output, diff))
+        else:
+            unittest.TestCase.assertEqual(self, expected_results, output, 
+                                          "%r != %r\n%s" % (expected_results,
+                                                            output, diff))
     # Help test
 
     def test_help_ok(self):
@@ -1050,21 +1039,21 @@ class TracadminTestCase(unittest.TestCase):
 
     def test_session_list_authenticated(self):
         test_name = sys._getframe().f_code.co_name
-        _prep_session_table(self.env.get_db_cnx())
+        _prep_session_table(self.env)
         rv, output = self._execute('session list authenticated')
         self.assertEqual(0, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
     def test_session_list_anonymous(self):
         test_name = sys._getframe().f_code.co_name
-        _prep_session_table(self.env.get_db_cnx())
+        _prep_session_table(self.env)
         rv, output = self._execute('session list anonymous')
         self.assertEqual(0, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
     def test_session_list_all(self):
         test_name = sys._getframe().f_code.co_name
-        _prep_session_table(self.env.get_db_cnx())
+        _prep_session_table(self.env)
         if self._admin.interactive:
             rv, output = self._execute("session list *")
         else:
@@ -1074,21 +1063,21 @@ class TracadminTestCase(unittest.TestCase):
 
     def test_session_list_authenticated_sid(self):
         test_name = sys._getframe().f_code.co_name
-        _prep_session_table(self.env.get_db_cnx())
+        _prep_session_table(self.env)
         rv, output = self._execute('session list name00')
         self.assertEqual(0, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
     def test_session_list_anonymous_sid(self):
         test_name = sys._getframe().f_code.co_name
-        _prep_session_table(self.env.get_db_cnx())
+        _prep_session_table(self.env)
         rv, output = self._execute('session list name10')
         self.assertEqual(0, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
     def test_session_list_missing_sid(self):
         test_name = sys._getframe().f_code.co_name
-        _prep_session_table(self.env.get_db_cnx())
+        _prep_session_table(self.env)
         rv, output = self._execute('session list thisdoesntexist')
         self.assertEqual(0, rv)
         self.assertEqual(self.expected_results[test_name], output)
@@ -1101,7 +1090,7 @@ class TracadminTestCase(unittest.TestCase):
 
     def  test_session_add_duplicate_sid(self):
         test_name = sys._getframe().f_code.co_name
-        _prep_session_table(self.env.get_db_cnx())
+        _prep_session_table(self.env)
         rv, output = self._execute('session add name00')
         self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
@@ -1169,7 +1158,7 @@ class TracadminTestCase(unittest.TestCase):
 
     def  test_session_delete_sid(self):
         test_name = sys._getframe().f_code.co_name
-        _prep_session_table(self.env.get_db_cnx())
+        _prep_session_table(self.env)
         rv, output = self._execute('session delete name00')
         self.assertEqual(0, rv)
         rv, output = self._execute('session list nam00')
@@ -1183,7 +1172,7 @@ class TracadminTestCase(unittest.TestCase):
 
     def  test_session_delete_anonymous(self):
         test_name = sys._getframe().f_code.co_name
-        _prep_session_table(self.env.get_db_cnx())
+        _prep_session_table(self.env)
         rv, output = self._execute('session delete anonymous')
         self.assertEqual(0, rv)
         rv, output = self._execute('session list *')
@@ -1191,7 +1180,7 @@ class TracadminTestCase(unittest.TestCase):
 
     def test_session_delete_multiple_sids(self):
         test_name = sys._getframe().f_code.co_name
-        _prep_session_table(self.env.get_db_cnx())
+        _prep_session_table(self.env)
         rv, output = self._execute('session delete name00 name01 name02 '
                                    'name03')
         self.assertEqual(0, rv)
@@ -1200,7 +1189,7 @@ class TracadminTestCase(unittest.TestCase):
 
     def  test_session_delete_all(self):
         test_name = sys._getframe().f_code.co_name
-        _prep_session_table(self.env.get_db_cnx())
+        _prep_session_table(self.env)
         if self._admin.interactive:
             rv, output = self._execute("session delete *")
         else:
@@ -1211,7 +1200,7 @@ class TracadminTestCase(unittest.TestCase):
 
     def  test_session_purge_age(self):
         test_name = sys._getframe().f_code.co_name
-        _prep_session_table(self.env.get_db_cnx(), spread_visits=True)
+        _prep_session_table(self.env, spread_visits=True)
         rv, output = self._execute('session purge 20100112')
         self.assertEqual(0, rv)
         rv, output = self._execute('session list *')

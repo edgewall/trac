@@ -110,7 +110,7 @@ if twill:
             'testenv'; but if a port is specified, use that port and
             subdirectory 'testenv<portnum>'.
             """
-            if port == None:
+            if port is None:
                 port = 8000 + os.getpid() % 1000
                 dirname = "testenv"
             else:

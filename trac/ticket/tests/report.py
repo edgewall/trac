@@ -47,16 +47,6 @@ class ReportTestCase(unittest.TestCase):
         self.assertEqual(['value'], values)
         self.assertEqual([], missing_args)
 
-    # Probably not needed anymore
-    def test_sub_var_mysql(self):
-        env = EnvironmentStub()
-        env.db = MockMySQLConnection() # ditto
-        sql, values, missing_args = ReportModule(env).sql_sub_vars(
-            "'$VAR'", {'VAR': 'value'})
-        self.assertEqual("concat('', %s, '')", sql)
-        self.assertEqual(['value'], values)
-        self.assertEqual([], missing_args)
-
     def test_sub_var_missing_args(self):
         sql, values, missing_args = self.report_module.sql_sub_vars(
             "$VAR, $PARAM, $MISSING", {'VAR': 'value'})

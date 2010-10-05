@@ -28,8 +28,8 @@ from trac.util.compat import close_fds
 #       lighty+fastcgi, lighty+cgi, cherrypy+wsgi
 #
 #     Backends::
-#       sqlite2+pysqlite, sqlite3+pysqlite2, postgres python bindings #1,
-#       postgres python bindings #2, mysql with server v4, mysql with server v5
+#       sqlite3+pysqlite2, postgres+psycopg2 python bindings,
+#       mysql+mysqldb with server v4, mysql+mysqldb with server v5
 #       (those need to test search escaping, among many other things like long
 #       paths in browser and unicode chars being allowed/translating...)
 
@@ -59,11 +59,19 @@ class FunctionalTestEnvironment(object):
         locale.setlocale(locale.LC_ALL, '')
 
     trac_src = '.'
-    dburi = property(lambda x: get_dburi())
+
+    @property
+    def dburi(self):
+        dburi = get_dburi()
+        if dburi == 'sqlite::memory:':
+            # functional tests obviously can't work with the in-memory database
+            dburi = 'sqlite:db/trac.db'
+        return dburi
 
     def destroy(self):
         """Remove all of the test environment data."""
-        env = EnvironmentStub()
+        print self.dirname, self.tracdir
+        env = EnvironmentStub(path=self.tracdir, destroying=True)
         env.destroy_db()
         env.shutdown()
 
@@ -112,8 +120,7 @@ class FunctionalTestEnvironment(object):
             raise Exception('unable to create test environment')
         self.create_repo()
 
-        self._tracadmin('initenv', 'testenv%s' % self.port,
-                        self.dburi, self.repotype,
+        self._tracadmin('initenv', self.tracdir, self.dburi, self.repotype,
                         self.repo_path_for_initenv())
         if call([sys.executable,
                  os.path.join(self.trac_src, 'contrib', 'htpasswd.py'), "-c",
