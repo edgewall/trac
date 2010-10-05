@@ -1139,24 +1139,25 @@ class ChangesetModule(Component):
         rm = RepositoryManager(self.env)
         repositories = dict((repos.params['id'], repos)
                             for repos in rm.get_real_repositories())
-        db = self.env.get_db_cnx()
-        sql, args = search_to_sql(db, ['rev', 'message', 'author'], terms)
-        cursor = db.cursor()
-        cursor.execute("SELECT repos,rev,time,author,message "
-                       "FROM revision WHERE " + sql, args)
-        for id, rev, ts, author, log in cursor:
-            try:
-                rev = int(rev)
-            except ValueError:
-                pass
-            repos = repositories.get(id)
-            if not repos:
-                continue # revisions for a no longer active repository
-            cset = repos.resource.child('changeset', rev)
-            if 'CHANGESET_VIEW' in req.perm(cset):
-                yield (req.href.changeset(rev, repos.reponame or None),
-                       '[%s]: %s' % (rev, shorten_line(log)),
-                       from_utimestamp(ts), author, shorten_result(log, terms))
+        with self.env.db_query as db:
+            sql, args = search_to_sql(db, ['rev', 'message', 'author'], terms)
+            for id, rev, ts, author, log in db("""
+                    SELECT repos, rev, time, author, message 
+                    FROM revision WHERE """ + sql,
+                    args):
+                try:
+                    rev = int(rev)
+                except ValueError:
+                    pass
+                repos = repositories.get(id)
+                if not repos:
+                    continue # revisions for a no longer active repository
+                cset = repos.resource.child('changeset', rev)
+                if 'CHANGESET_VIEW' in req.perm(cset):
+                    yield (req.href.changeset(rev, repos.reponame or None),
+                           '[%s]: %s' % (rev, shorten_line(log)),
+                           from_utimestamp(ts), author,
+                           shorten_result(log, terms))
 
 
 class AnyDiffModule(Component):

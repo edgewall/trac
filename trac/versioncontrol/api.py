@@ -109,13 +109,10 @@ class DbRepositoryProvider(Component):
 
     def get_repositories(self):
         """Retrieve repositories specified in the repository DB table."""
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        cursor.execute("""
-            SELECT id, name, value FROM repository WHERE name IN (%s)
-            """ % ",".join("'%s'" % each for each in self.repository_attrs))
         repos = {}
-        for id, name, value in cursor:
+        for id, name, value in self.env.db_query( 
+                "SELECT id, name, value FROM repository WHERE name IN (%s)"
+                % ",".join("'%s'" % each for each in self.repository_attrs)):
             if value is not None:
                 repos.setdefault(id, {})[name] = value
         reponames = {}
@@ -129,13 +126,13 @@ class DbRepositoryProvider(Component):
     
     def get_admin_commands(self):
         yield ('repository add', '<repos> <dir> [type]',
-               'Add a source repository',
+               "Add a source repository",
                self._complete_add, self._do_add)
         yield ('repository alias', '<name> <target>',
-               'Create an alias for a repository',
+               "Create an alias for a repository",
                self._complete_alias, self._do_alias)
         yield ('repository remove', '<repos>',
-               'Remove a source repository',
+               "Remove a source repository",
                self._complete_repos, self._do_remove)
         yield ('repository set', '<repos> <key> <value>',
                """Set an attribute of a repository
@@ -205,14 +202,11 @@ class DbRepositoryProvider(Component):
         if type_ and type_ not in rm.get_supported_types():
             raise TracError(_("The repository type '%(type)s' is not "
                               "supported", type=type_))
-        @self.env.with_transaction()
-        def do_add(db):
+        with self.env.db_transaction as db:
             id = rm.get_repository_id(reponame)
-            cursor = db.cursor()
-            cursor.executemany("""
-                INSERT INTO repository (id, name, value) VALUES (%s, %s, %s)
-                """, [(id, 'dir', dir),
-                      (id, 'type', type_ or '')])
+            db("INSERT INTO repository (id, name, value) VALUES (%s, %s, %s)",
+               [(id, 'dir', dir),
+                (id, 'type', type_ or '')])
         rm.reload_repositories()
     
     def add_alias(self, reponame, target):
@@ -222,14 +216,11 @@ class DbRepositoryProvider(Component):
         if is_default(target):
             target = ''
         rm = RepositoryManager(self.env)
-        @self.env.with_transaction()
-        def do_add(db):
+        with self.env.db_transaction as db:
             id = rm.get_repository_id(reponame)
-            cursor = db.cursor()
-            cursor.executemany("""
-                INSERT INTO repository (id, name, value) VALUES (%s, %s, %s)
-                """, [(id, 'dir', None),
-                      (id, 'alias', target)])
+            db("INSERT INTO repository (id, name, value) VALUES (%s, %s, %s)",
+               [(id, 'dir', None),
+                (id, 'alias', target)])
         rm.reload_repositories()
     
     def remove_repository(self, reponame):
@@ -237,13 +228,11 @@ class DbRepositoryProvider(Component):
         if is_default(reponame):
             reponame = ''
         rm = RepositoryManager(self.env)
-        @self.env.with_transaction()
-        def do_remove(db):
+        with self.env.db_transaction as db:
             id = rm.get_repository_id(reponame)
-            cursor = db.cursor()
-            cursor.execute("DELETE FROM repository WHERE id=%s", (id,))
-            cursor.execute("DELETE FROM revision WHERE repos=%s", (id,))
-            cursor.execute("DELETE FROM node_change WHERE repos=%s", (id,))
+            db("DELETE FROM repository WHERE id=%s", (id,))
+            db("DELETE FROM revision WHERE repos=%s", (id,))
+            db("DELETE FROM node_change WHERE repos=%s", (id,))
         rm.reload_repositories()
     
     def modify_repository(self, reponame, changes):
@@ -251,9 +240,7 @@ class DbRepositoryProvider(Component):
         if is_default(reponame):
             reponame = ''
         rm = RepositoryManager(self.env)
-        @self.env.with_transaction()
-        def do_modify(db):
-            cursor = db.cursor()
+        with self.env.db_transaction as db:
             id = rm.get_repository_id(reponame)
             for (k, v) in changes.iteritems():
                 if k not in self.repository_attrs:
@@ -263,17 +250,14 @@ class DbRepositoryProvider(Component):
                 if k == 'dir' and not os.path.isabs(v):
                     raise TracError(_("The repository directory must be "
                                       "absolute"))
-                cursor.execute("""
-                    UPDATE repository SET value=%s WHERE id=%s AND name=%s
-                    """, (v, id, k))
-                cursor.execute("""
-                    SELECT value FROM repository WHERE id=%s AND name=%s
-                    """, (id, k))
-                if not cursor.fetchone():
-                    cursor.execute("""
-                        INSERT INTO repository (id, name, value)
-                        VALUES (%s, %s, %s)
-                        """, (id, k, v))
+                db("UPDATE repository SET value=%s WHERE id=%s AND name=%s",
+                   (v, id, k))
+                if not db(
+                        "SELECT value FROM repository WHERE id=%s AND name=%s",
+                        (id, k)):
+                    db("""INSERT INTO repository (id, name, value)
+                          VALUES (%s, %s, %s)
+                          """, (id, k, v))
         rm.reload_repositories()
 
 
@@ -477,24 +461,20 @@ class RepositoryManager(Component):
         return repositories
 
     def get_repository_id(self, reponame):
-        """Return a unique id for the given repository name."""
-        repo_id = [None]
-        @self.env.with_transaction()
-        def do_get(db):
-            cursor = db.cursor()
-            cursor.execute("""
-                SELECT id FROM repository WHERE name='name' AND value=%s
-                """, (reponame,))
-            for id, in cursor:
-                repo_id[0] = id
-                return
-            cursor.execute("SELECT COALESCE(MAX(id), 0) FROM repository")
-            id = cursor.fetchone()[0] + 1
-            cursor.execute("""
-                INSERT INTO repository (id, name, value) VALUES (%s, %s, %s)
-                """, (id, 'name', reponame))
-            repo_id[0] = id
-        return repo_id[0]
+        """Return a unique id for the given repository name.
+        
+        This will create and save a new id if none is found. FIXME rename
+        """
+        with self.env.db_transaction as db:
+            for id, in db(
+                    "SELECT id FROM repository WHERE name='name' AND value=%s",
+                    (reponame,)):
+                return id
+
+            id = db("SELECT COALESCE(MAX(id), 0) FROM repository")[0][0] + 1
+            db("INSERT INTO repository (id, name, value) VALUES (%s, %s, %s)",
+               (id, 'name', reponame))
+            return id
     
     def get_repository(self, reponame):
         """Retrieve the appropriate Repository for the given name.
@@ -516,24 +496,22 @@ class RepositoryManager(Component):
         rtype = repoinfo.get('type') or self.repository_type
 
         # get a Repository for the reponame (use a thread-level cache)
-        db = self.env.get_db_cnx() # prevent possible deadlock, see #4465
-        try:
-            self._lock.acquire()
-            tid = threading._get_ident()
-            if tid in self._cache:
-                repositories = self._cache[tid]
-            else:
-                repositories = self._cache[tid] = {}
-            repos = repositories.get(reponame)
-            if not repos:
-                if not os.path.isabs(rdir):
-                    rdir = os.path.join(self.env.path, rdir)
-                connector = self._get_connector(rtype)
-                repos = connector.get_repository(rtype, rdir, repoinfo.copy())
-                repositories[reponame] = repos
-            return repos
-        finally:
-            self._lock.release()
+        with self.env.db_transaction: # prevent possible deadlock, see #4465
+            with self._lock:
+                tid = threading._get_ident()
+                if tid in self._cache:
+                    repositories = self._cache[tid]
+                else:
+                    repositories = self._cache[tid] = {}
+                repos = repositories.get(reponame)
+                if not repos:
+                    if not os.path.isabs(rdir):
+                        rdir = os.path.join(self.env.path, rdir)
+                    connector = self._get_connector(rtype)
+                    repos = connector.get_repository(rtype, rdir,
+                                                     repoinfo.copy())
+                    repositories[reponame] = repos
+                return repos
 
     def get_repository_by_path(self, path):
         """Retrieve a matching Repository for the given path.

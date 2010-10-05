@@ -28,13 +28,11 @@ class CacheTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        self.db = self.env.get_db_cnx()
         self.log = self.env.log
-        cursor = self.db.cursor()
-        cursor.executemany("""
-            INSERT INTO repository (id,name,value) VALUES (%s,%s,%s)
-            """, [(1, 'name', 'test-repos'),
-                  (1, 'youngest_rev', '')])
+        self.env.db_transaction(
+            "INSERT INTO repository (id, name, value) VALUES (%s, %s, %s)",
+            [(1, 'name', 'test-repos'),
+             (1, 'youngest_rev', '')])
 
     def tearDown(self):
         self.env.reset_db()
@@ -57,21 +55,20 @@ class CacheTestCase(unittest.TestCase):
 
     def preset_cache(self, *args):
         """Each arg is a (rev tuple, changes list of tuples) pair."""
-        cursor = self.db.cursor()
-        for rev, changes in args:
-            cursor.execute("""
-                INSERT INTO revision (repos,rev,time,author,message)
-                VALUES (1,%s,%s,%s,%s)
-                """, rev)
-            if changes:
-                cursor.executemany("""
-                    INSERT INTO node_change
-                    (repos,rev,path,node_type,change_type,base_path,base_rev)
-                    VALUES (1,%s,%s,%s,%s,%s,%s)
-                    """, [(rev[0],) + change for change in changes])
-        cursor.execute("""
-            UPDATE repository SET value=%s WHERE id=1 AND name='youngest_rev'
-            """, (args[-1][0][0],))
+        with self.env.db_transaction as db:
+            for rev, changes in args:
+                db("""INSERT INTO revision (repos, rev, time, author, message)
+                      VALUES (1,%s,%s,%s,%s)
+                      """, rev)
+                if changes:
+                    db("""INSERT INTO node_change (repos, rev, path, node_type,
+                                                   change_type, base_path, 
+                                                   base_rev)
+                          VALUES (1, %s, %s, %s, %s, %s, %s)
+                          """, [(rev[0],) + change for change in changes])
+            db("""UPDATE repository SET value=%s
+                  WHERE id=1 AND name='youngest_rev'
+                  """, (args[-1][0][0],))
 
     # Tests
 
@@ -80,11 +77,10 @@ class CacheTestCase(unittest.TestCase):
         cache = CachedRepository(self.env, repos, self.log)
         cache.sync()
 
-        cursor = self.db.cursor()
-        cursor.execute("SELECT rev,time,author,message FROM revision")
-        self.assertEquals(None, cursor.fetchone())
-        cursor.execute("SELECT COUNT(*) FROM node_change")
-        self.assertEquals(0, cursor.fetchone()[0])
+        with self.env.db_query as db:
+            self.assertEquals([], db(
+                "SELECT rev, time, author, message FROM revision"))
+            self.assertEquals(0, db("SELECT COUNT(*) FROM node_change")[0][0])
 
     def test_initial_sync(self):
         t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
@@ -100,22 +96,19 @@ class CacheTestCase(unittest.TestCase):
         cache = CachedRepository(self.env, repos, self.log)
         cache.sync()
 
-        cursor = self.db.cursor()
-        cursor.execute("SELECT rev,time,author,message FROM revision")
-        self.assertEquals(('0', to_utimestamp(t1), '', ''),
-                          cursor.fetchone())
-        self.assertEquals(('1', to_utimestamp(t2), 'joe', 'Import'),
-                          cursor.fetchone())
-        self.assertEquals(None, cursor.fetchone())
-        cursor.execute("""
-            SELECT rev,path,node_type,change_type,base_path,base_rev
-            FROM node_change
-            """)
-        self.assertEquals(('1', 'trunk', 'D', 'A', None, None),
-                          cursor.fetchone())
-        self.assertEquals(('1', 'trunk/README', 'F', 'A', None, None),
-                          cursor.fetchone())
-        self.assertEquals(None, cursor.fetchone())
+        with self.env.db_query as db:
+            rows = db("SELECT rev, time, author, message FROM revision")
+            self.assertEquals(len(rows), 2)
+            self.assertEquals(('0', to_utimestamp(t1), '', ''), rows[0])
+            self.assertEquals(('1', to_utimestamp(t2), 'joe', 'Import'),
+                              rows[1])
+            rows = db("""
+                SELECT rev, path, node_type, change_type, base_path, base_rev
+                FROM node_change""")
+            self.assertEquals(len(rows), 2)
+            self.assertEquals(('1', 'trunk', 'D', 'A', None, None), rows[0])
+            self.assertEquals(('1', 'trunk/README', 'F', 'A', None, None),
+                              rows[1])
 
     def test_update_sync(self):
         t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
@@ -140,20 +133,14 @@ class CacheTestCase(unittest.TestCase):
         cache = CachedRepository(self.env, repos, self.log)
         cache.sync()
 
-        cursor = self.db.cursor()
-        cursor.execute("""
-            SELECT time,author,message FROM revision WHERE rev='2'
-            """)
-        self.assertEquals((to_utimestamp(t3), 'joe', 'Update'),
-                          cursor.fetchone())
-        self.assertEquals(None, cursor.fetchone())
-        cursor.execute("""
-            SELECT path,node_type,change_type,base_path,base_rev
-            FROM node_change WHERE rev='2'
-            """)
-        self.assertEquals(('trunk/README', 'F', 'E', 'trunk/README', '1'),
-                          cursor.fetchone())
-        self.assertEquals(None, cursor.fetchone())
+        with self.env.db_query as db:
+            self.assertEquals([(to_utimestamp(t3), 'joe', 'Update')],
+                db("SELECT time, author, message FROM revision WHERE rev='2'"))
+            self.assertEquals([('trunk/README', 'F', 'E', 'trunk/README',
+                                '1')],
+                    db("""SELECT path, node_type, change_type, base_path, 
+                                 base_rev
+                          FROM node_change WHERE rev='2'"""))
 
     def test_clean_sync(self):
         t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
@@ -182,27 +169,21 @@ class CacheTestCase(unittest.TestCase):
         cache = CachedRepository(self.env, repos, self.log)
         cache.sync(clean=True)
 
-        cursor = self.db.cursor()
-        cursor.execute("SELECT time,author,message FROM revision")
-        self.assertEquals((to_utimestamp(t1), 'joe', '**empty**'),
-                          cursor.fetchone())
+        rows = self.env.db_query("SELECT time, author, message FROM revision")
+        self.assertEquals(3, len(rows))
+        self.assertEquals((to_utimestamp(t1), 'joe', '**empty**'), rows[0])
         self.assertEquals((to_utimestamp(t2), 'joe', 'Initial Import'),
-                          cursor.fetchone())
-        self.assertEquals((to_utimestamp(t3), 'joe', 'Update'),
-                          cursor.fetchone())
-        self.assertEquals(None, cursor.fetchone())
-        cursor.execute("""
-            SELECT rev,path,node_type,change_type,base_path,base_rev
-            FROM node_change ORDER BY rev
-            """)
-        self.assertEquals(('1', 'trunk', 'D', 'A', None, None),
-                          cursor.fetchone())
-        self.assertEquals(('1', 'trunk/README', 'F', 'A', None, None),
-                          cursor.fetchone())
-        self.assertEquals(('2', 'trunk/README', 'F', 'E',
-                           'trunk/README', '1'),
-                          cursor.fetchone())
-        self.assertEquals(None, cursor.fetchone())
+                          rows[1])
+        self.assertEquals((to_utimestamp(t3), 'joe', 'Update'), rows[2])
+                          
+        rows = self.env.db_query("""
+            SELECT rev, path, node_type, change_type, base_path, base_rev
+            FROM node_change ORDER BY rev""")
+        self.assertEquals(3, len(rows))
+        self.assertEquals(('1', 'trunk', 'D', 'A', None, None), rows[0])
+        self.assertEquals(('1', 'trunk/README', 'F', 'A', None, None), rows[1])
+        self.assertEquals(('2', 'trunk/README', 'F', 'E', 'trunk/README', '1'),
+                          rows[2])
 
     def test_sync_changeset(self):
         t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
@@ -226,13 +207,12 @@ class CacheTestCase(unittest.TestCase):
         cache = CachedRepository(self.env, repos, self.log)
         cache.sync_changeset(0)
 
-        cursor = self.db.cursor()
-        cursor.execute("SELECT time,author,message FROM revision ORDER BY rev")
-        self.assertEquals((to_utimestamp(t1), 'joe', '**empty**'),
-                          cursor.fetchone())
-        self.assertEquals((to_utimestamp(t2), 'joe', 'Import'),
-                          cursor.fetchone())
-        self.assertEquals(None, cursor.fetchone())
+        
+        rows = self.env.db_query(
+                "SELECT time, author, message FROM revision ORDER BY rev")
+        self.assertEquals(2, len(rows))
+        self.assertEquals((to_utimestamp(t1), 'joe', '**empty**'), rows[0])
+        self.assertEquals((to_utimestamp(t2), 'joe', 'Import'), rows[1])
 
     def test_get_changes(self):
         t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
