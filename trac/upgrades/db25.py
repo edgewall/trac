@@ -16,7 +16,6 @@ def do_upgrade(env, ver, cursor):
     ]
     
     db_connector, _ = DatabaseManager(env).get_connector()
-    db = env.get_db_cnx()
     for table, columns in tables:
         # Alter column types
         for sql in db_connector.alter_column_types(table, columns):
@@ -28,7 +27,8 @@ def do_upgrade(env, ver, cursor):
                                   for column in columns)))
     
     # Convert comment edit timestamps to microseconds
-    cursor.execute("UPDATE ticket_change SET newvalue=%s*1000000 "
-                   "WHERE field %s" % (db.cast('newvalue', 'int64'),
-                                       db.like()),
-                   ('_comment%',))
+    db = env.get_read_db()
+    cursor.execute("""
+        UPDATE ticket_change SET newvalue=%s*1000000
+        WHERE field %s""" % (db.cast('newvalue', 'int64'), db.like()),
+        ('_comment%',))

@@ -210,8 +210,7 @@ In [%s]:
             try:
                 self.log.debug("Updating ticket #%d", tkt_id)
                 ticket = [None]
-                @self.env.with_transaction()
-                def do_update(db):
+                with self.env.db_transaction as db:
                     ticket[0] = Ticket(self.env, tkt_id, db)
                     for cmd in cmds:
                         cmd(ticket[0], changeset, perm(ticket[0].resource))

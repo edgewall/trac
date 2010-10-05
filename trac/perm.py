@@ -172,11 +172,8 @@ class DefaultPermissionStore(Component):
         for provider in self.group_providers:
             subjects.update(provider.get_permission_groups(username) or [])
 
-        actions = set([])
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        cursor.execute("SELECT username,action FROM permission")
-        rows = cursor.fetchall()
+        actions = set()
+        rows = self.env.db_query("SELECT username, action FROM permission")
         while True:
             num_users = len(subjects)
             num_actions = len(actions)
@@ -185,8 +182,8 @@ class DefaultPermissionStore(Component):
                     if action.isupper() and action not in actions:
                         actions.add(action)
                     if not action.isupper() and action not in subjects:
-                        # action is actually the name of the permission group
-                        # here
+                        # action is actually the name of the permission 
+                        # group here
                         subjects.add(action)
             if num_users == len(subjects) and num_actions == len(actions):
                 break
@@ -214,29 +211,21 @@ class DefaultPermissionStore(Component):
 
         The permissions are returned as a list of (subject, action)
         formatted tuples."""
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        cursor.execute("SELECT username,action FROM permission")
-        return [(row[0], row[1]) for row in cursor]
+        return [(username, action) for username, action in 
+                self.env.db_query("SELECT username, action FROM permission")]
 
     def grant_permission(self, username, action):
         """Grants a user the permission to perform the specified action."""
-        @self.env.with_transaction()
-        def do_grant(db):
-            cursor = db.cursor()
-            cursor.execute("INSERT INTO permission VALUES (%s, %s)",
-                           (username, action))
-        self.log.info('Granted permission for %s to %s' % (action, username))
+        self.env.db_transaction("INSERT INTO permission VALUES (%s, %s)",
+                                (username, action))
+        self.log.info("Granted permission for %s to %s", action, username)
 
     def revoke_permission(self, username, action):
         """Revokes a users' permission to perform the specified action."""
-        @self.env.with_transaction()
-        def do_revoke(db):
-            cursor = db.cursor()
-            cursor.execute("DELETE FROM permission WHERE username=%s "
-                           "AND action=%s",
-                           (username, action))
-        self.log.info('Revoked permission for %s to %s' % (action, username))
+        self.env.db_transaction(
+                "DELETE FROM permission WHERE username=%s AND action=%s",
+                (username, action))
+        self.log.info("Revoked permission for %s to %s", action, username)
 
 
 class DefaultPermissionGroupProvider(Component):
@@ -454,12 +443,12 @@ class PermissionSystem(Component):
                                                perm)
             if decision is not None:
                 if not decision:
-                    self.log.debug("%s denies %s performing %s on %r" %
-                                   (policy.__class__.__name__, username,
-                                    action, resource))
+                    self.log.debug("%s denies %s performing %s on %r",
+                                   policy.__class__.__name__, username,
+                                   action, resource)
                 return decision
-        self.log.debug("No policy allowed %s performing %s on %r" %
-                       (username, action, resource))
+        self.log.debug("No policy allowed %s performing %s on %r",
+                       username, action, resource)
         return False
 
     # IPermissionRequestor methods
@@ -578,8 +567,8 @@ class PermissionCache(object):
 
     def permissions(self):
         """Deprecated (but still used by the HDF compatibility layer)"""
-        self.env.log.warning('perm.permissions() is deprecated and '
-                             'is only present for HDF compatibility')
+        self.env.log.warning("perm.permissions() is deprecated and "
+                             "is only present for HDF compatibility")
         perm = PermissionSystem(self.env)
         actions = perm.get_user_permissions(self.username)
         return [action for action in actions if action in self]

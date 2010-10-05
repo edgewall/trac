@@ -1,8 +1,7 @@
 
 def do_upgrade(env, ver, cursor):
     """Upgrade the reports to better handle the new workflow capabilities"""
-    db = env.get_db_cnx()
-    owner = db.concat('owner', "' *'")
+    owner = env.get_read_db().concat('owner', "' *'")
     cursor.execute('SELECT id, query, description FROM report')
     reports = cursor.fetchall()
     for report, query, description in reports:
@@ -18,5 +17,6 @@ def do_upgrade(env, ver, cursor):
             d = d.replace(" * If a ticket has been accepted, a '*' is"
                           " appended after the owner's name\n", '')
         if q != query or d != description:
-            cursor.execute("UPDATE report SET query=%s, description=%s "
-                           "WHERE id=%s", (q, d, report))
+            cursor.execute("""
+                UPDATE report SET query=%s, description=%s WHERE id=%s
+                """, (q, d, report))
