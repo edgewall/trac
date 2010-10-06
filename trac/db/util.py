@@ -47,7 +47,7 @@ class IterableCursor(object):
 
     def execute(self, sql, args=None):
         if self.log:
-            self.log.debug('SQL: %r', sql)
+            self.log.debug('SQL: %s', sql)
             try:
                 if args:
                     self.log.debug('args: %r', args)
