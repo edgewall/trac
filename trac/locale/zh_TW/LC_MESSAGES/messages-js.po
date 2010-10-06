@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-05-24 23:55+0200\n"
-"PO-Revision-Date: 2010-08-08 02:48+0800\n"
+"PO-Revision-Date: 2010-10-03 14:13+0800\n"
 "Last-Translator: Chi-Chung Lin <zclin.csie92g@gmail.com>\n"
 "Language-Team: zh_TW <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
@@ -27,15 +27,15 @@ msgstr "關閉"
 
 #: trac/htdocs/js/diff.js:119
 msgid "Tabular"
-msgstr ""
+msgstr "表格式"
 
 #: trac/htdocs/js/diff.js:125
 msgid "Unified"
-msgstr ""
+msgstr "統一格式"
 
 #: trac/htdocs/js/expand_dir.js:42
 msgid "Expand sub-directory in place"
-msgstr ""
+msgstr "展開子目錄"
 
 #: trac/htdocs/js/expand_dir.js:71
 msgid "Re-expand directory"
@@ -58,19 +58,19 @@ msgstr "(錯誤)"
 msgid "Fold directory"
 msgstr "摺疊目錄"
 
-#: trac/htdocs/js/folding.js:59
+#: trac/htdocs/js/folding.js:62
 #, python-format
 msgid "Show %(title)s"
 msgstr "顯示 %(title)s"
 
-#: trac/htdocs/js/folding.js:74
+#: trac/htdocs/js/folding.js:77
 #, python-format
 msgid "%(title)s (click to hide column)"
 msgstr "%(title)s (點此隱藏)"
 
 #: trac/htdocs/js/query.js:118
 msgid "A filter already exists for that property"
-msgstr ""
+msgstr "此屬性已存在一過濾器"
 
 #: trac/htdocs/js/query.js:145
 msgid "or"
@@ -94,7 +94,7 @@ msgstr "且"
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
-msgstr ""
+msgstr "連結到此"
 
 #: trac/htdocs/js/wikitoolbar.js:56
 msgid "Bold text: '''Example'''"
@@ -106,7 +106,7 @@ msgstr "斜體: ''範例''"
 
 #: trac/htdocs/js/wikitoolbar.js:62
 msgid "Heading: == Example =="
-msgstr ""
+msgstr "標題: == 範例 =="
 
 #: trac/htdocs/js/wikitoolbar.js:65
 msgid "Link: [http://www.example.com/ Example]"
@@ -134,14 +134,14 @@ msgstr "圖片: [[Image()]]"
 
 #: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
 msgid "Link to this section"
-msgstr ""
+msgstr "連結到這節"
 
 #: trac/versioncontrol/templates/changeset.html:7
 msgid "Link to this diff"
-msgstr ""
+msgstr "連結到此 diff"
 
 #: trac/wiki/templates/wiki_view.html:5
 #, python-format
 msgid "Link to #%(id)s"
-msgstr ""
+msgstr "連結到 #%(id)s"
 
