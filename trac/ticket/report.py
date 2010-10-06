@@ -595,29 +595,20 @@ class ReportModule(Component):
                                  limit=0, offset=0):
         sql, args, missing_args = self.sql_sub_vars(sql, args, db)
         if not sql:
-            raise TracError(_('Report {%(num)s} has no SQL query.', num=id))
-        self.log.debug('Executing report with SQL "%s"' % sql)
-        self.log.debug('Request args: %r' % req.args)
+            raise TracError(_("Report {%(num)s} has no SQL query.", num=id))
+
         cursor = db.cursor()
 
         num_items = 0
         if id != -1 and limit > 0:
-            # The number of tickets is obtained.
-            count_sql = 'SELECT COUNT(*) FROM (' + sql + ') AS tab'
-            cursor.execute(count_sql, args)
-            self.log.debug("Query SQL(Get num items): " + count_sql)
-            for row in cursor:
-                pass
-            num_items = row[0]
+            cursor.execute("SELECT COUNT(*) FROM (%s) AS tab" % sql, args)
+            num_items = cursor.fetchone()[0]
     
-            # The column name is obtained.
-            get_col_name_sql = 'SELECT * FROM ( ' + sql + ' ) AS tab LIMIT 1'
-            cursor.execute(get_col_name_sql, args)
-            self.env.log.debug("Query SQL(Get col names): " + get_col_name_sql)
+            # get the column names
+            cursor.execute("SELECT * FROM (%s) AS tab LIMIT 1" % sql, args)
             cols = get_column_names(cursor)
 
             sort_col = req.args.get('sort', '')
-            self.log.debug("Columns %r, Sort column %s" % (cols, sort_col))
             order_cols = []
             if sort_col:
                 if '__group__' in cols:
@@ -628,20 +619,20 @@ class ReportModule(Component):
                     raise TracError(_('Query parameter "sort=%(sort_col)s" '
                                       ' is invalid', sort_col=sort_col))
 
-            # The report-query results is obtained
-            asc = req.args.get('asc', '1')
-            asc_str = asc == '1' and 'ASC' or 'DESC'
+            # get the (partial) report results
             order_by = ''
-            if len(order_cols) != 0:
-                order = ', '.join(db.quote(col) for col in order_cols)
-                order_by = " ".join([' ORDER BY', order, asc_str])
-            sql = " ".join(['SELECT * FROM (', sql, ') AS tab', order_by])
-            sql = " ".join([sql, 'LIMIT', str(limit), 'OFFSET', str(offset)])
+            if order_cols:
+                asc = req.args.get('asc', '1')
+                order_by = " ORDER BY %s %s" % (
+                       ', '.join(db.quote(col) for col in order_cols),
+                        'ASC' if asc == '1' else 'DESC')
+            sql = "SELECT * FROM (%s) AS tab %s LIMIT %s OFFSET %s" % \
+                    (sql, order_by, str(limit), str(offset))
             self.log.debug("Query SQL: " + sql)
         cursor.execute(sql, args)
-        info = cursor.fetchall() or []
+        rows = cursor.fetchall() or []
         cols = get_column_names(cursor)
-        return cols, info, num_items, missing_args
+        return cols, rows, num_items, missing_args
 
     def get_var_args(self, req):
         # FIXME unicode: req.args keys are likely not unicode but str (UTF-8?)
