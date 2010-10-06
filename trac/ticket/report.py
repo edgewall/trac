@@ -635,12 +635,12 @@ class ReportModule(Component):
         return cols, rows, num_items, missing_args
 
     def get_var_args(self, req):
-        # FIXME unicode: req.args keys are likely not unicode but str (UTF-8?)
+        # reuse somehow for #9574 (wiki vars)
         report_args = {}
         for arg in req.args.keys():
             if not arg.isupper():
                 continue
-            report_args[arg] = req.args.get(arg)
+            report_args[arg] = to_unicode(req.args.get(arg))
 
         # Set some default dynamic variables
         if 'USER' not in report_args:
