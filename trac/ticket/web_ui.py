@@ -923,7 +923,7 @@ class TicketModule(Component):
 
     def _render_comment_diff(self, req, ticket, data, cnum):
         """Show differences between two versions of a ticket comment."""
-        req.perm(ticket).require('TICKET_VIEW')
+        req.perm(ticket.resource).require('TICKET_VIEW')
         new_version = int(req.args.get('version', 1))
         old_version = int(req.args.get('old_version', new_version))
         if old_version > new_version:
