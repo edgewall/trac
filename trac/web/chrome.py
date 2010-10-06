@@ -95,7 +95,7 @@ def add_stylesheet(req, filename, mimetype='text/css', media=None):
         href = href(filename)
     add_link(req, 'stylesheet', href, mimetype=mimetype, media=media)
 
-def add_script(req, filename, mimetype='text/javascript'):
+def add_script(req, filename, mimetype='text/javascript', charset='utf-8'):
     """Add a reference to an external javascript file to the template.
     
     If the filename is absolute (i.e. starts with a slash), the generated link
@@ -115,7 +115,7 @@ def add_script(req, filename, mimetype='text/javascript'):
         if not filename.startswith('/'):
             href = href.chrome
         href = href(filename)
-    script = {'href': href, 'type': mimetype}
+    script = {'href': href, 'type': mimetype, 'charset': charset}
 
     req.chrome.setdefault('scripts', []).append(script)
     scriptset.add(filename)

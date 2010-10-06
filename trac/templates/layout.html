@@ -27,10 +27,11 @@
       var ${key}=${to_json(value)};
       </py:for>
     </script>
-    <script py:for="script in chrome.scripts"
-            type="${script.type}" src="${script.href}"></script>
+    <py:for each="script in chrome.scripts">
+      <script type="${script.type}" charset="${script.charset}" src="${script.href}" />
+    </py:for>
     ${Markup('&lt;!--[if lt IE 7]&gt;')}
-    <script type="text/javascript" src="${chrome.htdocs_location}js/ie_pre7_hacks.js"></script>
+    <script type="text/javascript" src="${chrome.htdocs_location}js/ie_pre7_hacks.js" />
     ${Markup('&lt;![endif]--&gt;')}
     ${select("*[local-name() != 'title']|text()|comment()")}
   </head></py:match>
