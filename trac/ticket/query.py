@@ -716,9 +716,8 @@ class Query(object):
             if name == 'milestone':
                 milestones = [Milestone(self.env, opt)
                               for opt in field['options']]
-                if req:
-                    milestones = [m for m in milestones
-                                  if 'MILESTONE_VIEW' in req.perm(m.resource)]
+                milestones = [m for m in milestones
+                              if 'MILESTONE_VIEW' in context.perm(m.resource)]
                 groups = group_milestones(milestones, True)
                 field['options'] = []
                 field['optgroups'] = [
