@@ -917,7 +917,7 @@ def as_bool(s):
     try:
         return bool(int(s))
     except (TypeError, ValueError):
-        return s.lower() in ('true', 'yes', 'on')
+        return bool(s and s.lower() in ('true', 'yes', 'on'))
 
 def pathjoin(*args):
     """Strip `/` from the arguments and join them with a single `/`."""
