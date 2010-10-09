@@ -273,4 +273,4 @@ Tracd supports serving projects with different base urls than /<project>. The pa
 }}}
 
 ----
-See also: TracInstall, TracCgi, TracModPython, TracGuide, [trac:TracOnWindowsStandalone?version=13#RunningTracdasservice Running tracd.exe as a Windows service], 
+See also: TracInstall, TracCgi, TracModPython, TracGuide, [trac:TracOnWindowsStandalone#RunningTracdasservice Running tracd.exe as a Windows service]

@@ -15,7 +15,7 @@ If you already have a 0.11 version of Trac installed via `easy_install`, it migh
 # easy_install --upgrade Trac==0.12
 }}}
 
-If you do a manual (not operating system-specific) upgrade, you should also stop any running Trac servers before the installation. Doing "hot" upgrades is not advised, especially on Windows ([trac:ticket:7625 #7265]).
+If you do a manual (not operating system-specific) upgrade, you should also stop any running Trac servers before the installation. Doing "hot" upgrades is not advised, especially on Windows ([trac:#7265]).
 
 You may also want to remove the pre-existing Trac code by deleting the `trac` directory from the Python `lib/site-packages` directory, or remove Trac `.egg` files from former versions.
 The location of the site-packages directory depends on the operating system and the location in which Python was installed. However, the following locations are typical:
@@ -104,7 +104,7 @@ The templating engine has changed in 0.11 to Genshi, please look at TracInterfac
 If you are using custom CSS styles or modified templates in the `templates` directory of the TracEnvironment, you will need to convert them to the Genshi way of doing things. To continue to use your style sheet, follow the instructions at TracInterfaceCustomization#SiteAppearance.
 
 ===== Trac Macros, Plugins =====
-The Trac macros will need to be adapted, as the old-style wiki-macros are not supported anymore (due to the drop of [trac:ClearSilver ClearSilver] and the HDF); they need to be converted to the new-style macros, see WikiMacros. When they are converted to the new style, they need to be placed into the plugins directory instead and not wiki-macros, which is no longer scanned for macros or plugins.
+The Trac macros will need to be adapted, as the old-style wiki-macros are not supported anymore (due to the drop of [trac:ClearSilver] and the HDF); they need to be converted to the new-style macros, see WikiMacros. When they are converted to the new style, they need to be placed into the plugins directory instead and not wiki-macros, which is no longer scanned for macros or plugins.
 
 ===== For FCGI/WSGI/CGI users =====
 For those who run Trac under the CGI environment, run this command in order to obtain the trac.*gi file:
@@ -131,7 +131,7 @@ If you use a trac parent env configuration and one of the plugins in one child d
 
 === Trac database upgrade ===
 
-A known issue in some versions of PySqlite (2.5.2-2.5.4) prevents the trac-admin upgrade script from successfully upgrading the database format. It is advised to use either a newer or older version of the sqlite python bindings to avoid this error. For more details see ticket #9434.
+A known issue in some versions of PySqlite (2.5.2-2.5.4) prevents the trac-admin upgrade script from successfully upgrading the database format. It is advised to use either a newer or older version of the sqlite python bindings to avoid this error. For more details see ticket [trac:#9434].
 
 == Upgrading Python ==
 

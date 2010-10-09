@@ -43,13 +43,13 @@ To install SQLite, your system may require the development headers. Without thes
 $ apt-get install libsqlite3-dev
 }}}
 
-SQLite 2.x is no longer supported, and neither is PySqlite 1.1.x.
+SQLite 2.x is no longer supported, and neither is !PySqlite 1.1.x.
 
-A known bug PySqlite versions 2.5.2-4 prohibits upgrade of trac databases
+A known bug !PySqlite versions 2.5.2-4 prohibits upgrade of trac databases
 from 0.11.x to 0.12. Please use versions 2.5.5 and newer or 2.5.1 and
-older. See #9434 for more detail.
+older. See [trac:#9434] for more detail.
 
-See additional information in [trac:PySqlite PySqlite].
+See additional information in [trac:PySqlite].
 
 ==== For the PostgreSQL database #ForPostgreSQL
 
@@ -67,7 +67,7 @@ Trac can now work quite well with MySQL, provided you follow the guidelines.
  * [http://mysql.com/ MySQL], version 5.0 or later
  * [http://sf.net/projects/mysql-python MySQLdb], version 1.2.2 or later
 
-It is '''very''' important to read carefully the  [trac:MySqlDb MySqlDb] page before creating the database.
+It is '''very''' important to read carefully the  [trac:MySqlDb] page before creating the database.
 
 === Optional Dependencies
 
@@ -86,7 +86,7 @@ Note that Trac '''doesn't''' use [http://pysvn.tigris.org/ PySVN], neither does 
 
 ===== Others =====
 
-Support for other version control systems is provided via third-parties. See [trac:PluginList PluginList] and [trac:VersioningSystemBackend VersioningSystemBackend].
+Support for other version control systems is provided via third-parties. See [trac:PluginList] and [trac:VersioningSystemBackend].
 
 ==== Web Server ====
 A web server is optional because Trac is shipped with a server included, see the [#RunningtheStandaloneServer Running the Standalone Server ] section below.
@@ -98,7 +98,7 @@ Alternatively you configure Trac to run in any of the following environments.
    - [http://modpython.org/ mod_python 3.3.1], deprecated: see TracModPython)
  * a [http://www.fastcgi.com/ FastCGI]-capable web server (see TracFastCgi)
  * an [http://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html AJP]-capable web
-   server (see [trac:TracOnWindowsIisAjp TracOnWindowsIisAjp])
+   server (see [trac:TracOnWindowsIisAjp])
  * a CGI-capable web server (see TracCgi), '''but usage of Trac as a cgi script 
    is highly discouraged''', better use one of the previous options. 
    
@@ -119,7 +119,7 @@ Alternatively you configure Trac to run in any of the following environments.
    otherwise Trac will fall back on a shorter list from 
    an internal time zone implementation.
 
-'''Attention''': The various available versions of these dependencies are not necessarily interchangable, so please pay attention to the version numbers above. If you are having trouble getting Trac to work please double-check all the dependencies before asking for help on the [trac:MailingList MailingList] or [trac:IrcChannel IrcChannel].
+'''Attention''': The various available versions of these dependencies are not necessarily interchangable, so please pay attention to the version numbers above. If you are having trouble getting Trac to work please double-check all the dependencies before asking for help on the [trac:MailingList] or [trac:IrcChannel].
 
 Please refer to the documentation of these packages to find out how they are best installed. In addition, most of the [trac:TracInstallPlatforms platform-specific instructions] also describe the installation of the dependencies. Keep in mind however that the information there ''probably concern older versions of Trac than the one you're installing'' (there are even some pages that are still talking about Trac 0.8!).
 
@@ -172,7 +172,7 @@ Additionally, you can install several trac plugins (listed [http://pypi.python.o
 === From source
 Of course, using the python-typical setup at the top of the source directory also works.
 
-You can obtain the source for a .tar.gz or .zip file corresponding to a release (e.g. Trac-0.12.tar.gz), or you can get the source directly from the repository (see Trac:SubversionRepository for details).
+You can obtain the source for a .tar.gz or .zip file corresponding to a release (e.g. Trac-0.12.tar.gz), or you can get the source directly from the repository (see [trac:SubversionRepository] for details).
 
 {{{
 $ python ./setup.py install
