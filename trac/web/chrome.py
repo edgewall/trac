@@ -275,7 +275,13 @@ class Chrome(Component):
         memory.""")
 
     htdocs_location = Option('trac', 'htdocs_location', '',
-        """Base URL of the core static resources.""")
+        """Base URL for serving the core static resources below 
+        `/chrome/common/`.
+
+        Use this together with [TracAdmin trac-admin ... deploy] to allow
+        serving the static resources for Trac directly from the web server.
+        If left empty, Trac will serve those resources itself (slower).
+        """)
 
     metanav_order = ListOption('trac', 'metanav',
                                'login,logout,prefs,help,about', doc=
@@ -289,10 +295,18 @@ class Chrome(Component):
            listed by IDs. See also TracNavigation.""")
 
     logo_link = Option('header_logo', 'link', '',
-        """URL to link to from header logo.""")
+        """URL to link to, from the header logo.""")
 
     logo_src = Option('header_logo', 'src', 'site/your_project_logo.png',
-        """URL of the image to use as header logo.""")
+        """URL of the image to use as header logo.
+        It can be absolute, server relative or relative.
+
+        If relative, it is relative to one of the `/chrome` locations:
+        `site/your-logo.png` if `your-logo.png` is located in the `htdocs`
+        folder within your TracEnvironment;
+        `common/your-logo.png` if `your-logo.png` is located in the
+        folder mapped to the [#trac-section htdocs_location] URL. 
+        Only specifying `your-logo.png` is equivalent to the latter.""")
 
     logo_alt = Option('header_logo', 'alt', 
         "(please configure the [header_logo] section in trac.ini)",
