@@ -16,7 +16,7 @@
 
 import re
 
-from genshi.builder import Element, tag
+from genshi.builder import Element, Fragment, tag
 
 from trac.core import *
 from trac.mimeview import Context
@@ -48,9 +48,22 @@ class InterTracDispatcher(Component):
             resolver, target = parts
             if target and (target[0] not in '\'"' or target[0] != target[-1]):
                 link = '%s:"%s"' % (resolver, target)
-        link_elt = extract_link(self.env, Context.from_request(req), link)
-        if isinstance(link_elt, Element):
-            href = link_elt.attrib.get('href')
+        link_frag = extract_link(self.env, Context.from_request(req), link)
+
+        def get_first_href(item):
+            """Depth-first search for the first `href` attribute."""
+            if isinstance(item, Element):
+                href = item.attrib.get('href')
+                if href is not None:
+                    return href
+            if isinstance(item, Fragment):
+                for each in item.children:
+                    href = get_first_href(each)
+                    if href is not None:
+                        return href
+
+        if isinstance(link_frag, (Element, Fragment)):
+            href = get_first_href(link_frag)
             if href is None: # most probably no permissions to view
                 raise PermissionError(_("Can't view %(link)s:", link=link))
         else:
