@@ -67,11 +67,19 @@ There are two primary URL paths for static resources - `/chrome/common` and `/ch
 
 Add the following snippet to Apache configuration '''before''' the `ScriptAlias` for the CGI script, changing paths to match your deployment:
 {{{
-Alias /trac/chrome/common /path/to/trac/htdocs
+Alias /trac/chrome/common /path/to/trac/htdocs/common
+Alias /trac/chrome/site /path/to/trac/htdocs/site
 <Directory "/path/to/www/trac/htdocs">
   Order allow,deny
   Allow from all
 </Directory>
+}}}
+
+If using mod_python, you might want to add this too (otherwise, the alias will be ignored):
+{{{
+<Location "/trac/chrome/common/">
+  SetHandler None
+</Location>
 }}}
 
 Note that we mapped `/trac` part of the URL to the `trac.cgi` script, and the path `/chrome/common` is the path you have to append to that location to intercept requests to the static resources. 

@@ -171,6 +171,11 @@ The following is the basic template used by Trac to display a list of links to t
 
 Once you've created your custom template you will need to configure the webserver to tell Trac where the template is located (pls verify ... not yet changed to 0.11):
 
+For [wiki:TracModWSGI mod_wsgi]:
+{{{
+os.environ['TRAC_ENV_INDEX_TEMPLATE'] = '/path/to/template'
+}}}
+
 For [wiki:TracFastCgi FastCGI]:
 {{{
 FastCgiConfig -initial-env TRAC_ENV_PARENT_DIR=/parent/dir/of/projects \

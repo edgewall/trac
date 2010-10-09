@@ -160,9 +160,16 @@ You can also recursively use a wiki Formatter (`from trac.wiki import Formatter`
 
 {{{
 #!python
-    text = "whatever wiki markup you want, even containing other macros"
-    # Convert Wiki markup to HTML, new style
-    out = StringIO()
-    Formatter(self.env, formatter.context).format(text, out)
-    return Markup(out.getvalue())
+from genshi.core import Markup
+from trac.wiki.macros import WikiMacroBase
+from trac.wiki import Formatter
+import StringIO
+
+class HelloWorldMacro(WikiMacroBase):
+	def expand_macro(self, formatter, name, text, args):
+		text = "whatever '''wiki''' markup you want, even containing other macros"
+		# Convert Wiki markup to HTML, new style
+		out = StringIO.StringIO()
+		Formatter(self.env, formatter.context).format(text, out)
+		return Markup(out.getvalue())
 }}}

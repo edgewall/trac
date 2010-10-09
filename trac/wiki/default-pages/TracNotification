@@ -38,10 +38,10 @@ These are the available options for the `[notification]` section in trac.ini.
  * '''`always_notify_updater`''': (''since 0.10'') Always send a notification to the updater of a ticket (default: true).
  * '''`use_public_cc`''': (''since 0.10'') Addresses in To: (owner, reporter) and Cc: lists are visible by all recipients (default is ''Bcc:'' - hidden copy).
  * '''`use_short_addr`''': (''since 0.10'') Enable delivery of notifications to addresses that do not contain a domain (i.e. do not end with ''@<domain.com>'').This option is useful for intranets, where the SMTP server can handle local addresses and map the username/login to a local mailbox. See also `smtp_default_domain`. Do not use this option with a public SMTP server. 
- * '''`mime_encoding`''': (''since 0.10'') E-mail notifications are always sent in 7-bit mode. This option allows to select the MIME encoding scheme. Supported values:
-   * `base64`: default value, works with any kind of content. May cause some issues with touchy anti-spam/anti-virus engines.
-   * `qp` or `quoted-printable`: best for european languages (more compact than base64), not recommended for non-ASCII text (less compact than base64)
-   * `none`: no encoding. Use with plain english only (ASCII). E-mails with non-ASCII chars won't be delivered. 
+ * '''`mime_encoding`''': (''since 0.10'') This option allows selecting the MIME encoding scheme. Supported values:
+   * `none`: default value, uses 7bit encoding if the text is plain ASCII, or 8bit otherwise. 
+   * `base64`: works with any kind of content. May cause some issues with touchy anti-spam/anti-virus engines.
+   * `qp` or `quoted-printable`: best for european languages (more compact than base64) if 8bit encoding cannot be used.
  * '''`ticket_subject_template`''': (''since 0.11'') A [http://genshi.edgewall.org/wiki/Documentation/text-templates.html Genshi text template] snippet used to get the notification subject.
  * '''`email_sender`''': (''since 0.12'') Name of the component implementing `IEmailSender`. This component is used by the notification system to send emails. Trac currently provides the following components:
    * `SmtpEmailSender`: connects to an SMTP server (default).

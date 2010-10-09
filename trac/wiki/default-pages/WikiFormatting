@@ -28,7 +28,7 @@ A few other wiki pages present the advanced features of the Trac wiki markup in 
 || `'''bold'''`, `''italic''`, `'''''Wikipedia style'''''` || \
 || '''bold''', ''italic'', '''''Wikipedia style''''' ||
 || {{{`monospaced and ''nowiki''`}}} || \
-|| `monospaced and nowiki` ||
+|| `monospaced and ''nowiki''` ||
 || `**bold**`, `//italic//`, `**//!WikiCreole style//**` || \
 || **bold**, //italic//, **//!WikiCreole style//** ||
 |-----------------------------------------------------------
@@ -293,7 +293,8 @@ Notes:
 You can create heading by starting a line with one up to six ''equal'' characters ("=")
 followed by a single space and the headline text. 
 
-[=#hn] The headline text can be followed by the same number of "=" characters, but this is no longer mandatory.
+[=#hn]
+The headline text can be followed by the same number of "=" characters, but this is no longer mandatory.
 
 Finally, the heading might optionally be followed by an explicit id. If not, an implicit but nevertheless readable id will be generated.
 
@@ -745,7 +746,7 @@ You now have to use the ![[Image]] macro. The simplest way to include an image i
 In addition to the current page, it is possible to refer to other resources:
  * `[[Image(wiki:WikiFormatting:picture.gif)]]` (referring to attachment on another page)
  * `[[Image(ticket:1:picture.gif)]]` (file attached to a ticket)
- * `[[Image(htdocs:picture.gif)]]` (referring to a file inside project htdocs)
+ * `[[Image(htdocs:picture.gif)]]` (referring to a file inside the [TracEnvironment environment] `htdocs` directory)
  * `[[Image(source:/trunk/trac/htdocs/trac_logo_mini.png)]]` (a file in repository)
 
 ||= Wiki Markup =||= Display =||
@@ -758,7 +759,7 @@ In addition to the current page, it is possible to refer to other resources:
 [[Image(htdocs:../common/trac_logo_mini.png)]]
 }}}
 
-See WikiMacros for further documentation on the `[[Image()]]` macro.
+See WikiMacros for further documentation on the `[[Image()]]` macro, which has several useful options (`title=`, `link=`, etc.)
 
 
 == Macros ==
@@ -989,3 +990,4 @@ See?
 {{{#!td
 !WikiCreole style \\ line\\break
 }}}
+

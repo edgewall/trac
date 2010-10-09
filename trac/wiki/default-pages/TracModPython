@@ -5,6 +5,10 @@ Trac supports [http://www.modpython.org/ mod_python], which speeds up Trac's res
 
 These instructions are for Apache 2; if you are still using Apache 1.3, you may have some luck with [trac:wiki:TracModPython2.7 TracModPython2.7].
 
+== A Word of Warning ==
+
+As of 16^th^ June 2010, the mod_python project is officially dead.  If you are considering using mod_python for a new installation, '''please don't'''!  There are known issues which will not be fixed and there are now better alternatives.  Check out the main TracInstall pages for your target version for more information.
+
 == Simple configuration ==
 
 If you just installed mod_python, you may have to add a line to load the module in the Apache configuration:
@@ -20,7 +24,7 @@ apt-get install libapache2-mod-python libapache2-mod-python-doc
 }}}
 (Still on Debian) after you have installed mod_python, you must enable the modules in apache2 (equivalent of the above Load Module directive):
 {{{
-a2enmod mod_python
+a2enmod python
 }}}
 On Fedora use, using yum:
 {{{

@@ -10,7 +10,7 @@ Logging is configured in the `[logging]` section in [wiki:TracIni#logging-sectio
 The log method is set using the `log_type` option in [wiki:TracIni#logging-section trac.ini], which takes any of the following values:
 
  '''none'':: Suppress all log messages.
- '''file''':: Log messages to a file, specified with the `log_file` option in [wiki:TracIni#logging-section trac.ini]. 
+ '''file''':: Log messages to a file, specified with the `log_file` option in [wiki:TracIni#logging-section trac.ini]. Relative paths in `log_file` are resolved relative to the `log` directory of the environment.
  '''stderr''':: Output all log entries to console ([wiki:TracStandalone tracd] only).
  '''syslog''':: (UNIX) Send all log messages to the local syslogd via named pipe `/dev/log`. By default, syslog will write them to the file /var/log/messages.
  '''eventlog''':: (Windows) Use the system's NT Event Log for Trac logging.

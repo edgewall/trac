@@ -3,9 +3,9 @@
 
 Trac is written in the Python programming language and needs a database, [http://sqlite.org/ SQLite], [http://www.postgresql.org/ PostgreSQL], or [http://mysql.com/ MySQL]. For HTML rendering, Trac uses the [http://genshi.edgewall.org Genshi] templating system.
 
-Since version 0.12, Trac can also be localized, and there's probably a translation available for your language. If you want to be able to use the Trac interface in other languages, then make sure you have installed the optional package [#OtherPythonPackages Babel]. Pay attention to the extra steps for localization support in the [#InstallingTrac Installing Trac] section below. Lacking Babel, you will only get the default english version, as usual.
+Since version 0.12, Trac can also be localized, and there's probably a translation available for your language. If you want to be able to use the Trac interface in other languages, then make sure you **first** have installed the optional package [#OtherPythonPackages Babel]. Lacking Babel, you will only get the default english version, as usual. If you install Babel later on, you will need to re-install Trac.
 
-If you're interested in contributing new translations for other languages or enhance the existing translations, then please have a look at [[trac:TracL10N]].
+If you're interested in contributing new translations for other languages or enhance the existing translations, then please have a look at [trac:wiki:TracL10N TracL10N].
 
 What follows are generic instructions for installing and setting up Trac and its requirements. While you may find instructions for installing Trac on specific systems at TracInstallPlatforms on the main Trac site, please be sure to '''first read through these general instructions''' to get a good understanding of the tasks involved.
 
@@ -28,8 +28,7 @@ The database can be either SQLite, PostgreSQL or MySQL.
 If you're using Python 2.5 or 2.6, you already have everything you need.
 
 If you're using Python 2.4 and need pysqlite, you can download from 
-[http://code.google.com/p/pysqlite/downloads/list google code] the Windows
-installers or the tar.gz archive for building from source: 
+[http://code.google.com/p/pysqlite/downloads/list google code] the Windows installers or the tar.gz archive for building from source: 
 {{{
 $ tar xvfz <version>.tar.gz 
 $ cd <version> 
@@ -38,8 +37,17 @@ $ python setup.py build_static install
  
 This will extract the SQLite code and build the bindings. 
 
-SQLite 2.x is no longer supported. For SQLite 3.x, the pysqlite 1.1.x
-bindings are also no longer supported, use pysqlite 2.x.
+To install SQLite, your system may require the development headers. Without these you will get various GCC related errors when attempting to build:
+
+{{{
+$ apt-get install libsqlite3-dev
+}}}
+
+SQLite 2.x is no longer supported, and neither is PySqlite 1.1.x.
+
+A known bug PySqlite versions 2.5.2-4 prohibits upgrade of trac databases
+from 0.11.x to 0.12. Please use versions 2.5.5 and newer or 2.5.1 and
+older. See #9434 for more detail.
 
 See additional information in [trac:PySqlite PySqlite].
 
@@ -68,7 +76,9 @@ It is '''very''' important to read carefully the  [trac:MySqlDb MySqlDb] page be
 ===== Subversion =====
  * [http://subversion.apache.org/ Subversion], 1.5.x or 1.6.x and the '''''corresponding''''' Python bindings. Older versions starting from 1.0, like 1.2.4, 1.3.2 or 1.4.2, etc. should still work. For troubleshooting information, check the [trac:TracSubversion#Troubleshooting TracSubversion] page.
 
-There are [http://subversion.apache.org/packages.html pre-compiled SWIG bindings] available for various platforms. Note that Trac '''doesn't''' use [http://pysvn.tigris.org/ PySVN], neither does it work yet with the newer `ctype`-style bindings
+There are [http://subversion.apache.org/packages.html pre-compiled SWIG bindings] available for various platforms. (Good luck finding precompiled SWIG bindings for any Windows package at that listing. TracSubversion points you to [http://alagazam.net Algazam], which works for me under Python 2.6.)
+
+Note that Trac '''doesn't''' use [http://pysvn.tigris.org/ PySVN], neither does it work yet with the newer `ctype`-style bindings. [Is there a ticket for implementing ctype bindings?]
 
 
 '''Please note:''' if using Subversion, Trac must be installed on the '''same machine'''. Remote repositories are currently [trac:ticket:493 not supported].
@@ -85,7 +95,7 @@ Alternatively you configure Trac to run in any of the following environments.
  * [http://httpd.apache.org/ Apache] with 
    - [http://code.google.com/p/modwsgi/ mod_wsgi], see [wiki:TracModWSGI] and 
      http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac
-   - [http://modpython.org/ mod_python 3.3.1], see TracModPython)
+   - [http://modpython.org/ mod_python 3.3.1], deprecated: see TracModPython)
  * a [http://www.fastcgi.com/ FastCGI]-capable web server (see TracFastCgi)
  * an [http://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html AJP]-capable web
    server (see [trac:TracOnWindowsIisAjp TracOnWindowsIisAjp])
@@ -96,7 +106,8 @@ Alternatively you configure Trac to run in any of the following environments.
 ==== Other Python Packages ====
 
  * [http://babel.edgewall.org Babel], version >= 0.9.5, 
-   needed for localization support
+   needed for localization support[[BR]]
+   ''Note: '' If you want to be able to use the Trac interface in other languages, then make sure you first have installed the optional package Babel. Lacking Babel, you will only get the default english version, as usual. If you install Babel later on, you will need to re-install Trac. 
  * [http://docutils.sourceforge.net/ docutils], version >= 0.3.9 
    for WikiRestructuredText.
  * [http://pygments.pocoo.org Pygments] for 
@@ -115,7 +126,7 @@ Please refer to the documentation of these packages to find out how they are bes
 
 == Installing Trac ==
 === Using `easy_install`
-One way to install Trac is using `setuptools`.
+One way to install Trac is using [http://pypi.python.org/pypi/setuptools setuptools].
 With setuptools you can install Trac from the subversion repository; 
 
 A few examples:
