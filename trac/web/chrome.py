@@ -278,10 +278,16 @@ class Chrome(Component):
         """Base URL for serving the core static resources below 
         `/chrome/common/`.
 
-        Use this together with [TracAdmin trac-admin ... deploy] to allow
-        serving the static resources for Trac directly from the web server.
-        If left empty, Trac will serve those resources itself (slower).
-        """)
+        It can be left empty, and Trac will simply serve those resources
+        itself.
+
+        Advanced users can use this together with
+        [TracAdmin trac-admin ... deploy <deploydir>] to allow serving the
+        static resources for Trac directly from the web server.
+        Note however that this only applies to the `<deploydir>/htdocs/common`
+        directory, the other deployed resources (i.e. those from plugins) 
+        will not be made available this way and additional rewrite 
+        rules will be needed in the web server.""")
 
     metanav_order = ListOption('trac', 'metanav',
                                'login,logout,prefs,help,about', doc=
