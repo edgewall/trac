@@ -435,11 +435,12 @@ class ReportModule(Component):
                                     'severity'):
                         # must fetch sort values for that columns
                         # instead of comparing them as strings
-                        for name, value in self.env.db_query(
-                                "SELECT name, %s FROM enum WHERE type=%%s"
-                                % db.cast('value', 'int'),
-                                (sort_col,)):
-                            sort_values[name] = value
+                        with self.env.db_query as db:
+                            for name, value in db(
+                                    "SELECT name, %s FROM enum WHERE type=%%s"
+                                    % db.cast('value', 'int'),
+                                    (sort_col,)):
+                                sort_values[name] = value
 
                     def sortkey(row):
                         val = row[idx]
