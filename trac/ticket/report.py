@@ -255,11 +255,12 @@ class ReportModule(Component):
             data = {'rows': rows}
             return 'report_list.rss', data, 'application/rss+xml'
         elif format == 'csv':
-            self._send_csv(req, ['report', 'title'], rows, mimetype='text/csv',
+            self._send_csv(req, ['report', 'title', 'description'],
+                           rows, mimetype='text/csv',
                            filename='reports.csv')
         elif format == 'tab':
-            self._send_csv(req, ['report', 'title'], rows, '\t',
-                           mimetype='text/tab-separated-values',
+            self._send_csv(req, ['report', 'title', 'description'],
+                           rows, '\t', mimetype='text/tab-separated-values',
                            filename='reports.tsv')
 
         def report_href(**kwargs):
