@@ -94,6 +94,7 @@ div.trac-modifiedby {
 div.trac-modifiedby :link, div.trac-modifiedby :visited { color: inherit }
 
 /* TracIni default value */
+div.tracini td.default { font-size: 90% }
 div.tracini td.nodefault {
  color: #777;
  font-size: 85%;

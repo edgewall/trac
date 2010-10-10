@@ -621,18 +621,19 @@ class TracIniMacro(WikiMacroBase):
 
         return tag.div(class_='tracini')(
             (tag.h3(tag.code('[%s]' % section), id='%s-section' % section),
-             tag.table(class_='wiki')(
-                 tag.tbody(tag.tr(tag.td(tag.tt(option.name)),
-                                  tag.td(format_to_oneliner(
-                                      self.env, formatter.context,
-                                      to_unicode(option.__doc__))),
-                                  tag.td(tag.code(option.default)) if
-                                      option.default else
-                                      tag.td(class_='nodefault')
-                                      (_("(no default)")))
-                           for option in sorted(sections[section].itervalues(),
-                                                key=lambda o: o.name)
-                           if option.name.startswith(key_filter))))
+             tag.table(class_='wiki')(tag.tbody(
+                 tag.tr(tag.td(tag.tt(option.name)),
+                        tag.td(format_to_oneliner(self.env, formatter.context,
+                                                  to_unicode(option.__doc__))),
+                        tag.td(tag.code(option.default or 'false')
+                                   if option.default or option.default is False
+                                   else _("(no default)"),
+                               class_='default' if option.default or 
+                                                   option.default is False 
+                                                else 'nodefault'))
+                 for option in sorted(sections[section].itervalues(),
+                                      key=lambda o: o.name)
+                 if option.name.startswith(key_filter))))
             for section in sorted(sections))
 
 
