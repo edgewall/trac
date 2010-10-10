@@ -13,7 +13,8 @@
             <em py:strip="not err">
               <b py:strip="repoinfo.alias != ''">
                 <a class="dir" title="View Root Directory"
-                   href="${href.browser(repos.reponame, order=(order != 'name' and order or None), desc=desc)}">$reponame</a>
+                   href="${href.browser(repos.reponame if repos else reponame,
+                                        order=(order != 'name' and order or None), desc=desc)}">$reponame</a>
               </b>
             </em>
           </td>

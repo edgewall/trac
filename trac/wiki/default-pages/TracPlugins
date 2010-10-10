@@ -1,12 +1,14 @@
 = Trac Plugins =
 [[TracGuideToc]]
 
-Since version 0.9, Trac supports [trac:PluginList plugins] that extend the built-in functionality. The plugin functionality is based on the [trac:TracDev/ComponentArchitecture component architecture].
+Trac is extensible with [trac:PluginList plugins] since version 0.9. The plugin functionality is based on the [trac:TracDev/ComponentArchitecture component architecture] with peculiarities described at [TracDev/PluginDevelopment plugin development] page.
 
-Plugins can be either installed globally, in a shared plugins directory  (see [TracIni#GlobalConfiguration Global Configuration]) or locally for specific TracEnvironment, in its `plugins` directory.
+== Plugin discovery ==
+
+From the user point of view a Plugin is either standalone .py file or an .egg package. Trac looks for Plugins in a global shared plugins directory (see [TracIni#GlobalConfiguration Global Configuration]), or in a local TracEnvironment, in its `plugins` directory.
 Except for the later case, the components defined in a plugin should be explicitly enabled in the [[TracIni#components-section| [components] ]] section of the trac.ini file.
 
-== Requirements ==
+== Requirements for Trac eggs  ==
 
 To use egg based plugins in Trac, you need to have [http://peak.telecommunity.com/DevCenter/setuptools setuptools] (version 0.6) installed.
 
@@ -59,7 +61,7 @@ If `easy_install` is not on your system see the Requirements section above to in
 
 If Trac reports permission errors after installing a zipped egg and you would rather not bother providing a egg cache directory writable by the web server, you can get around it by simply unzipping the egg. Just pass `--always-unzip` to `easy_install`:
 {{{
-easy_install --always-unzip TracSpamFilter-0.2.1dev_r5943-py2.4.egg
+easy_install --always-unzip TracSpamFilter-0.4.1_r10106-py2.6.egg
 }}}
 You should end up with a directory having the same name as the zipped egg (complete with `.egg` extension) and containing its uncompressed contents.
 
@@ -69,7 +71,7 @@ Trac also searches for plugins installed in the shared plugins directory ''(sinc
 
 `easy_install` makes installing from source a snap. Just give it the URL to either a Subversion repository or a tarball/zip of the source:
 {{{
-easy_install http://svn.edgewall.com/repos/trac/plugins/0.11/spam-filter
+easy_install http://svn.edgewall.com/repos/trac/plugins/0.12/spam-filter-captcha
 }}}
 
 ==== Enabling the plugin ====

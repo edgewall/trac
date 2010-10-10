@@ -73,6 +73,48 @@ For troubleshooting tips, see the [TracModPython#Troubleshooting mod_python trou
 
 ''Note: using mod_wsgi 2.5 and Python 2.6.1 gave an Internal Server Error on my system (Apache 2.2.11 and Trac 0.11.2.1). Upgrading to Python 2.6.2 (as suggested [http://www.mail-archive.com/modwsgi@googlegroups.com/msg01917.html here]) solved this for me[[BR]]-- Graham Shanks''
 
+== Apache Basic Authentication for Trac thru mod_wsgi ==
+
+Per the mod_wsgi documentation linked to above, here is an example Apache configuration that a) serves the trac from a virtualhost subdomain and b) uses Apache basic authentication for Trac authentication.
+
+
+If you want your trac to be served from e.g. !http://trac.my-proj.my-site.org, then from the folder e.g. {{{/home/trac-for-my-proj}}}, if you used the command {{{trac-admin the-env initenv}}} to create a folder {{{the-env}}}, and you used {{{trac-admin the-env deploy the-deploy}}} to create a folder {{{the-deploy}}}, then:
+
+create the htpasswd file:
+{{{
+cd /home/trac-for-my-proj/the-env
+htpasswd -c htpasswd firstuser
+### and add more users to it as needed:
+htpasswd htpasswd seconduser
+}}}
+(for security keep the file above your document root)
+
+create this file e.g. (ubuntu) {{{/etc/apache2/sites-enabled/trac.my-proj.my-site.org.conf}}} with these contents:
+
+{{{
+<Directory /home/trac-for-my-proj/the-deploy/cgi-bin/trac.wsgi>
+  WSGIApplicationGroup %{GLOBAL}
+  Order deny,allow
+  Allow from all
+</Directory>
+
+<VirtualHost *:80>
+  ServerName trac.my-proj.my-site.org
+  DocumentRoot /home/trac-for-my-proj/the-env/htdocs/
+  WSGIScriptAlias / /home/trac-for-my-proj/the-deploy/cgi-bin/trac.wsgi
+  <Location '/'>
+    AuthType Basic
+    AuthName "Trac"
+    AuthUserFile /home/trac-for-my-proj/the-env/htpasswd
+    Require valid-user
+  </Location>
+</VirtualHost>
+
+}}}
+
+
+(for subdomains to work you would probably also need to alter /etc/hosts and add A-Records to your host's DNS.)
+
 == Trac with PostgreSQL ==
 
 When using the mod_wsgi adapter with multiple Trac instances and PostgreSQL (or MySQL?) as a database back-end the server can get a lot of open database connections. (and thus PostgreSQL processes)

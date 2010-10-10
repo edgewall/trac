@@ -2,16 +2,32 @@
 
 Before Trac 0.11, it was only possible to define fine-grained permissions checks on the repository browser sub-system.
 
-Since 0.11, there's a general mechanism in place that allows custom permission policy plugins to grant or deny any action on any kind of Trac resources, even at the level of specific versions of such resources.
+Since 0.11, there's a general mechanism in place that allows custom **permission policy plugins** to grant or deny any action on any kind of Trac resources, even at the level of specific versions of such resources.
 
-Note that for Trac 0.12, `authz_policy` has been integrated in trunk branch as `tracopt.perm.authz_policy.*`
+Note that for Trac 0.12, `authz_policy` has been integrated as an optional module (in `tracopt.perm.authz_policy.*`), so it's installed by default and can simply be activated via the //Plugins// panel in the Trac administration module.
+
 
 == Permission Policies ==
 
-=== !AuthzPolicy ===
+A great diversity of permission policies can be implemented, and Trac comes with a few examples. 
 
-An example policy based on an Authz-style system has been added. See
-[trac:source:branches/0.11-stable/sample-plugins/permissions/authz_policy.py authz_policy.py] for details (current version requires >= Python 2.4). (See also [trac:source:branches/0.11-stable/sample-plugins/permissions sample-plugins/permissions] for more samples.)
+Which policies are currently active is determined by a configuration setting in TracIni:
+e.g.
+{{{
+[trac]
+permission_policies = AuthzSourcePolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy
+}}}
+This lists the [#AuthzSourcePolicy] described below as the first policy, followed by the !DefaultPermissionPolicy which checks for the traditional coarse grained style permissions described in TracPermissions, and the !LegacyAttachmentPolicy which knows how to use the coarse grained permissions for checking the permissions available on attachments.
+
+Among the possible optional choices, there is [#AuthzPolicy], a very generic permission policy, based on an Authz-style system. See
+[trac:source:branches/0.12-stable/tracopt/perm/authz_policy.py authz_policy.py] for details. 
+
+Another popular permission policy [#AuthzSourcePolicy], re-implements the pre-0.12 support for checking fine-grained permissions limited to Subversion repositories in terms of the new system.
+
+See also [trac:source:branches/0.12-stable/sample-plugins/permissions sample-plugins/permissions] for more examples.
+
+
+=== !AuthzPolicy === 
 
  - Install [http://www.voidspace.org.uk/python/configobj.html ConfigObj] (required).
  - Copy authz_policy.py into your plugins directory.
@@ -32,7 +48,10 @@ authz_file = /some/trac/env/conf/authzpolicy.conf
 {{{
 [components]
 ...
-authz_policy.* = enabled
+# Trac 0.12
+tracopt.perm.authz_policy.* = enabled
+# for Trac 0.11 use this
+#authz_policy.* = enabled 
 }}}
 
 Note that the order in which permission policies are specified is quite critical, 
@@ -65,9 +84,9 @@ Then:
  - other pages will be viewable only by john and jack
 
 
-=== mod_authz_svn-like permission policy ===
+=== !AuthzSourcePolicy  (mod_authz_svn-like permission policy) === #AuthzSourcePolicy
 
-At the time of this writing, the old fine grained permissions system from Trac 0.10 and before used for restricting access to the repository has not yet been converted to a permission policy component, but from the user point of view, this makes little if no difference.
+At the time of this writing, the old fine grained permissions system from Trac 0.11 and before used for restricting access to the repository has  been converted to a permission policy component, but from the user point of view, this makes little if no difference.
 
 That kind of fine-grained permission control needs a definition file, which is the one used by Subversion's mod_authz_svn. 
 More information about this file format and about its usage in Subversion is available in the  [http://svnbook.red-bean.com/en/1.5/svn.serverconfig.pathbasedauthz.html Path-Based Authorization] section in the Server Configuration chapter of the svn book.
@@ -118,6 +137,13 @@ where the svn access file, {{{/path/to/svnaccessfile}}}, contains entries such a
 
 '''Note:''' Usernames inside the Authz file __must__ be the same as those used inside trac. 
 
+As of version 0.12, make sure you have ''!AuthzSourcePolicy'' included in the permission_policies list in trac.ini, otherwise the authz permissions file will be ignored.
+
+{{{ 
+[trac]
+permission_policies = AuthzSourcePolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy
+}}}
+
 ==== Subversion Configuration ====
 
 The same access file is typically applied to the corresponding Subversion repository using an Apache directive like this:
@@ -133,9 +159,22 @@ The same access file is typically applied to the corresponding Subversion reposi
 
 For information about how to restrict access to entire projects in a multiple project environment see [trac:wiki:TracMultipleProjectsSVNAccess]
 
-== Getting TracFineGrainedPermissions to work ==
+== Debugging permissions
+In trac.ini set:
+{{{
+[logging]
+log_file = trac.log
+log_level = DEBUG
+log_type = file
+}}}
 
-Don't forget to restart Trac engine to apply new configuration if you are running tracd standalone server.
+And watch:
+{{{
+tail -n 0 -f log/trac.log | egrep '\[perm\]|\[authz_policy\]'
+}}}
+
+to understand what checks are being performed. See the sourced documentation of the plugin for more info.
+
 
 ----
 See also: TracPermissions,

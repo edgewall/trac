@@ -93,4 +93,15 @@ Since trac uses a SQL database to store the data, you can import from other syst
 
 === Using a comma delimited file - CSV ===
 See [http://trac.edgewall.org/attachment/wiki/TracSynchronize/csv2trac.2.py] for details.  This approach is particularly useful if one needs to enter a large number of tickets by hand. (note that the ticket type type field, (task etc...) is also needed for this script to work with more recent Trac releases)
+Comments on script: The script has an error on line 168, ('Ticket' needs to be 'ticket').  Also, the listed values for severity and priority are swapped. 
+
+=== Using an Excel (.xls) or comma delimited file (.csv) ===
+This plugin http://trac-hacks.org/wiki/TicketImportPlugin lets you import into Trac a series of tickets from a CSV file or (if the xlrd library is installed) from an Excel file.
+
+You can also use it to modify tickets in batch, by saving a report as CSV, editing the CSV file, and re-importing the tickets.
+
+This plugin is very useful when starting a new project: you can import a list of requirements that may have come from meeting notes, list of features, other ticketing systems... It's also great to review the tickets off-line, or to do massive changes to tickets.
+
+Based on the ticket id (or, if no id exists, on the summary) in the imported file, tickets are either created or updated. 
+
 

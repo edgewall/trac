@@ -163,7 +163,10 @@ class AuthzSourcePolicy(Component):
                 return users & set(usernames) and True or None
 
             rm = RepositoryManager(self.env)
-            repos = rm.get_repository(resource.parent.id)
+            try:
+                repos = rm.get_repository(resource.parent.id)
+            except TracError:
+                return True # Allow error to be displayed in the repo index
             modules = [resource.parent.id or self.authz_module_name]
             if modules[0]:
                 modules.append('')

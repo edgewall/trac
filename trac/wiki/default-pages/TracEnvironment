@@ -18,7 +18,7 @@ database connection string (explained below).
  the appropriate permissions. The same applies to the source code repository, 
  although the user under which Trac runs will only require write access to a Subversion repository created with the BDB file system; for other repository types, check the corresponding plugin's documentation. 
  
- - `initenv` when using svn repository does not imply that trac-admin will perform `svnadmin create` for the specified repository path. You need to perform the `svnadmin create` prior to `trac-admin initenv` if you're creating a new svn repository altogether with a new trac environment, otherwise you will see a message "Warning: couldn't index the repository" when initializing the environment.
+ - `initenv`, when using an svn repository, does not imply that trac-admin will perform `svnadmin create` for the specified repository path. You need to perform the `svnadmin create` prior to `trac-admin initenv` if you're creating a new svn repository altogether with a new trac environment, otherwise you will see a message "Warning: couldn't index the repository" when initializing the environment.
 
  - Non-ascii environment paths are not supported
  
@@ -140,10 +140,10 @@ An environment directory will usually consist of the following files and directo
    * `trac.ini` - Main configuration file. See TracIni.
  * `db`
    * `trac.db` - The SQLite database (if you're using SQLite).
- * `htdocs` - directory containing web resources, which can be referenced in Genshi templates. '''''(since 0.11)'''''
+ * `htdocs` - directory containing web resources, which can be referenced in Genshi templates using `/htdocs/site/...` URLs. ''(since 0.11)''
  * `log` - default directory for log files, if logging is turned on and a relative path is given.
  * `plugins` - Environment-specific [wiki:TracPlugins plugins] (Python eggs or single file plugins, since [trac:milestone:0.10 0.10])
- * `templates` - Custom Genshi environment-specific templates. '''''(since 0.11)'''''
+ * `templates` - Custom Genshi environment-specific templates. ''(since 0.11)''
    * `site.html` - method to customize header, footer, and style, described in TracInterfaceCustomization#SiteAppearance
 
 '''Caveat:''' ''don't confuse a Trac environment directory with the source code repository directory.'' 
@@ -154,4 +154,3 @@ structure, but those are two disjoint entities and they are not and ''must not''
 
 ----
 See also: TracAdmin, TracBackup, TracIni, TracGuide
-

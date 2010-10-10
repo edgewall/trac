@@ -285,7 +285,7 @@ class RepositoryManager(Component):
         (''since 0.11'').
         
         This option is deprecated, and repositories should be defined in the
-        [[TracIni#repositories-section repositories]] section, or using the
+        [TracIni#repositories-section repositories] section, or using the
         "Repositories" admin panel. (''since 0.12'')""")
 
     repository_sync_per_request = ListOption('trac',

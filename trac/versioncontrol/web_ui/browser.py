@@ -17,6 +17,7 @@
 
 from datetime import datetime, timedelta
 from fnmatch import fnmatchcase
+import inspect
 import re
 
 from genshi.builder import tag
@@ -27,7 +28,7 @@ from trac.mimeview.api import Mimeview, is_binary, \
                               IHTMLPreviewAnnotator, Context
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
-from trac.util import embedded_numbers
+from trac.util import as_bool, embedded_numbers
 from trac.util.datefmt import http_date, to_datetime, utc
 from trac.util.html import escape, Markup
 from trac.util.text import exception_to_unicode, shorten_line
@@ -381,7 +382,8 @@ class BrowserModule(Component):
 
         repo_data = dir_data = file_data = None
         if not reponame and path == '/':
-            repo_data = self._render_repository_index(context, order, desc)
+            repo_data = self._render_repository_index(
+                                        context, all_repositories, order, desc)
         if node:
             if node.isdir:
                 dir_data = self._render_dir(req, repos, node, rev, order, desc)
@@ -478,7 +480,7 @@ class BrowserModule(Component):
 
     # Internal methods
 
-    def _render_repository_index(self, context, order, desc):
+    def _render_repository_index(self, context, all_repositories, order, desc):
         # Color scale for the age column
         timerange = custom_colorizer = None
         if self.color_scale:
@@ -486,7 +488,7 @@ class BrowserModule(Component):
 
         rm = RepositoryManager(self.env)
         repositories = []
-        for reponame, repoinfo in rm.get_all_repositories().items():
+        for reponame, repoinfo in all_repositories.iteritems():
             if not reponame or repoinfo.get('hidden') in _TRUE_VALUES:
                 continue
             try:
@@ -829,29 +831,35 @@ class BrowserModule(Component):
         yield "RepositoryIndex"
 
     def get_macro_description(self, name):
-        return """
+        return inspect.cleandoc("""
         Display the list of available repositories.
 
-        Can be given a ''format'' argument (defaults to ''compact'')
-         - ''compact'' will produce a comma-separated list of
-           repository prefix names 
-         - ''list'' will produce a description list of
-           repository prefix names 
-         - ''table'' will produce a table view, similar to the 
-           one visible in the ''Browse View'' page
+        Can be given the following named arguments:
         
-        Can be given a ''glob'' argument, which will do a glob-style
-        filtering on the repository names (defaults to '*')
+          ''format''::
+            Select the rendering format:
+            - ''compact'' produces a comma-separated list of repository prefix
+              names (default)
+            - ''list'' produces a description list of repository prefix names 
+            - ''table'' produces a table view, similar to the one visible in
+              the ''Browse View'' page
+          ''glob''::
+            Do a glob-style filtering on the repository names (defaults to '*')
+          ''order''::
+            Order repositories by the given column (one of "name", "date" or
+            "author")
+          ''desc''::
+            When set to 1, order by descending order
 
-        (since 0.12)
-        """
+        (''since 0.12'')
+        """)
 
     def expand_macro(self, formatter, name, content):
         args, kwargs = parse_args(content)
         format = kwargs.get('format', 'compact')
         glob = kwargs.get('glob', '*')
         order = kwargs.get('order')
-        desc = kwargs.get('desc', 0)
+        desc = as_bool(kwargs.get('desc', 0))
 
         rm = RepositoryManager(self.env)
         all_repos = dict(rdata for rdata in rm.get_all_repositories().items()
@@ -862,25 +870,35 @@ class BrowserModule(Component):
                                                  order, desc)
 
             add_stylesheet(formatter.req, 'common/css/browser.css')
-            data = {'repo': repo, 'desc': desc and 1 or None,
-                    'reponame': None, 'path': '/', 'stickyrev': None}
+            wiki_format_messages = self.config['changeset'] \
+                                       .getbool('wiki_format_messages')
+            data = {'repo': repo, 'order': order, 'desc': desc and 1 or None,
+                    'reponame': None, 'path': '/', 'stickyrev': None,
+                    'wiki_format_messages': wiki_format_messages}
             from trac.web.chrome import Chrome
             return Chrome(self.env).render_template(
                     formatter.req, 'repository_index.html', data, None,
                     fragment=True)
+
+        def get_repository(reponame):
+            try:
+                return rm.get_repository(reponame)
+            except TracError:
+                return
+
+        all_repos = [(reponame, get_repository(reponame))
+                     for reponame in all_repos]
+        all_repos = sorted(((reponame, repos) for reponame, repos in all_repos
+                            if repos
+                            and repos.params.get('hidden') not in _TRUE_VALUES
+                            and repos.can_view(formatter.perm)),
+                           reverse=desc)
 
         def repolink(reponame, repos):
             label = reponame or _('(default)')
             return Markup(tag.a(label, 
                           title=_('View repository %(repo)s', repo=label),
                           href=formatter.href.browser(repos.reponame or None)))
-
-        all_repos = dict((reponame, rm.get_repository(reponame))
-                         for reponame in all_repos)
-        all_repos = sorted((reponame, repos) for reponame, repos in all_repos
-                           if repos
-                           and repos.params.get('hidden') not in _TRUE_VALUE
-                           and repos.can_view(formatter.perm))
 
         if format == 'list':
             return tag.dl([

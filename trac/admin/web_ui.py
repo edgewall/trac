@@ -354,9 +354,9 @@ class PermissionAdminPanel(Component):
         all_actions = perm.get_actions()
 
         if req.method == 'POST':
-            subject = req.args.get('subject', '')
+            subject = req.args.get('subject', '').strip()
             action = req.args.get('action')
-            group = req.args.get('group', '')
+            group = req.args.get('group', '').strip()
 
             if subject and subject.isupper() or \
                    group and group.isupper():

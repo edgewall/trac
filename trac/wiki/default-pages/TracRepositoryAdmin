@@ -84,6 +84,9 @@ Prior to 0.12, Trac synchronized its cache with the repository on every HTTP req
 
 There is also new functionality in the form of a repository listener extension point ''(IRepositoryChangeListener)'' that is triggered by the post-commit hook when a changeset is added or modified, and can be used by plugins to perform actions on commit.
 
+=== Mercurial Repositories ===
+Please note that at the time of writing, no initial resynchronization or any hooks are necessary for Mercurial repositories - see [trac:#9485] for more information. 
+
 === Explicit synchronization === #ExplicitSync
 This is the preferred method of repository synchronization. It requires setting the `[trac]  repository_sync_per_request` option in [wiki:TracIni#trac-section trac.ini] to an empty value, and adding a call to `trac-admin` in the post-commit hook of each repository. Additionally, if a repository allows changing revision metadata, a call to `trac-admin` must be added to the post-revprop-change hook as well.
 
@@ -95,29 +98,31 @@ This is the preferred method of repository synchronization. It requires setting 
 
 The `<repos>` argument can be either a repository name (use "`(default)`" for the default repository) or the path to the repository.
 
+Note that you may have to set the environment variable PYTHON_EGG_CACHE to the same value as was used for the web server configuration before calling trac-admin, if you changed it from its default location. See [wiki:TracPlugins Trac Plugins] for more information.
+
 The following examples are complete post-commit and post-revprop-change scripts for Subversion. They should be edited for the specific environment, marked executable (where applicable) and placed in the `hooks` directory of each repository. On Unix (`post-commit`):
-{{{
-#!sh
+{{{#!sh
 #!/bin/sh
+export PYTHON_EGG_CACHE="/path/to/dir"
 /usr/bin/trac-admin /path/to/env changeset added "$1" "$2"
 }}}
 On Windows (`post-commit.cmd`):
-{{{
-#!application/x-dos-batch
+{{{#!application/x-dos-batch
 @C:\Python26\Scripts\trac-admin.exe C:\path\to\env changeset added "%1" "%2"
 }}}
 
 The post-revprop-change hook for Subversion is very similar. On Unix (`post-revprop-change`):
-{{{
-#!sh
+{{{#!sh
 #!/bin/sh
+export PYTHON_EGG_CACHE="/path/to/dir"
 /usr/bin/trac-admin /path/to/env changeset modified "$1" "$2"
 }}}
 On Windows (`post-revprop-change.cmd`):
-{{{
-#!application/x-dos-batch
+{{{#!application/x-dos-batch
 @C:\Python26\Scripts\trac-admin.exe C:\path\to\env changeset modified "%1" "%2"
 }}}
+
+The Unix variants above assume that the user running the Subversion commit has write access to the Trac environment, which is the case in the standard configuration where both the repository and Trac are served by the web server. If you access the repository through another means, for example `svn+ssh://`, you may have to run `trac-admin` with different privileges, for example by using `sudo`.
 
 Note that calling `trac-admin` in your Subversion hooks can slow down the commit and log editing operations on the client side. You might want to use the [trac:source:trunk/contrib/trac-svn-hook contrib/trac-svn-hook] script which starts `trac-admin` in an asynchronous way. The script also comes with a number of safety checks and usage advices which should make it easier to set up and test your hooks. There's no equivalent `trac-svn-hook.bat` for Windows yet, but the script can be run by Cygwin's bash.
 
@@ -129,8 +134,8 @@ If the post-commit hooks are not available, the environment can be set up for pe
 Note that in this case, the changeset listener extension point is not called, and therefore plugins using it will not work correctly.
 
 
-== Migration from a single-repository setup == #Migration
-The following procedure illustrates a typical migration from a single-repository setup to multiple repositories.
+== Migration from a single-repository setup (Subversion) == #Migration
+The following procedure illustrates a typical migration from a Subversion single-repository setup to multiple repositories.
 
  1. Remove the default repository specification from the `[trac] repository_dir` option.
  1. Add the "main" repository as a named repository.
@@ -138,6 +143,15 @@ The following procedure illustrates a typical migration from a single-repository
  1. Set up post-commit and post-revprop-change hooks on the main repository, and set `[trac] repository_sync_per_request` to an empty value.
  1. Add a hidden alias to the main repository as the default repository. This ensures that all links predating the migration still resolve to the main repository.
  1. Repeat steps 2, 3 and 4 to add other (named) repositories as needed.
+
+== Migration from a single-repository setup (Mercurial) == #MigrationMercurial
+The following procedure illustrates a typical migration from a Mercurial single-repository setup to multiple repositories. Please note that at the time of writing, no initial resynchronization or any hooks are necessary for Mercurial repositories - see #9485 for more information.
+
+ 1. Upgrade to the latest version of the TracMercurial plugin.
+ 1. Remove the default repository specification from the `[trac] repository_dir` option.
+ 1. Add the "main" repository as a named repository.
+ 1. Add a hidden alias to the main repository as the default repository. This ensures that all links predating the migration still resolve to the main repository.
+ 1. Repeat step 3 to add other (named) repositories as needed.
 
 == Troubleshooting ==
 

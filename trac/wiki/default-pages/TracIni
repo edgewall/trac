@@ -1,4 +1,5 @@
 = The Trac Configuration File =
+
 [[TracGuideToc]]
 
 Trac configuration is done by editing the '''`trac.ini`''' config file, located in `<projectenv>/conf/trac.ini`.  Changes to the configuration are usually reflected immediately, though changes to the `[components]` or `[logging]` sections will require restarting the web server. You may also need to restart the web server after creating a global configuration file when none was previously present.
@@ -23,6 +24,8 @@ There are two more entries in the [[#inherit-section| [inherit] ]] section, `tem
 == Reference for settings
 
 This is a brief reference of available configuration options.
+
+ ''Note that the [bitten], [spam-filter] and [vote] sections below are added by plugins enabled on this Trac, and therefore won't be part of a default installation.''
 
 [[TracIni]]
 
@@ -132,7 +135,6 @@ The workflow for tickets is controlled by plugins.
 By default, there's only a `ConfigurableTicketWorkflow` component in charge. 
 That component allows the workflow to be configured via this section in the trac.ini file.
 See TracWorkflow for more details.
-
 
 ----
 See also: TracGuide, TracAdmin, TracEnvironment
