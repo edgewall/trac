@@ -244,7 +244,7 @@ class SubversionConnector(Component):
 
     implements(ISystemInfoProvider, IRepositoryConnector)
 
-    branches = ListOption('svn', 'branches', 'trunk,branches/*', doc=
+    branches = ListOption('svn', 'branches', 'trunk, branches/*', doc=
         """Comma separated list of paths categorized as branches.
         If a path ends with '*', then all the directory entries found below 
         that path will be included. 

@@ -304,13 +304,13 @@ class Chrome(Component):
         rules will be needed in the web server.""")
 
     metanav_order = ListOption('trac', 'metanav',
-                               'login,logout,prefs,help,about', doc=
+                               'login, logout, prefs, help, about', doc=
         """Order of the items to display in the `metanav` navigation bar,
            listed by IDs. See also TracNavigation.""")
 
     mainnav_order = ListOption('trac', 'mainnav',
-                               'wiki,timeline,roadmap,browser,tickets,'
-                               'newticket,search', doc=
+                               'wiki, timeline, roadmap, browser, tickets, '
+                               'newticket, search', doc=
         """Order of the items to display in the `mainnav` navigation bar, 
            listed by IDs. See also TracNavigation.""")
 

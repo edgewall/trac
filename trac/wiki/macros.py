@@ -625,7 +625,11 @@ class TracIniMacro(WikiMacroBase):
                  tag.tbody(tag.tr(tag.td(tag.tt(option.name)),
                                   tag.td(format_to_oneliner(
                                       self.env, formatter.context,
-                                      to_unicode(option.__doc__))))
+                                      to_unicode(option.__doc__))),
+                                  tag.td(tag.code(option.default)) if
+                                      option.default else
+                                      tag.td(class_='nodefault')
+                                      (_("(no default)")))
                            for option in sorted(sections[section].itervalues(),
                                                 key=lambda o: o.name)
                            if option.name.startswith(key_filter))))

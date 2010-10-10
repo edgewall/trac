@@ -23,7 +23,7 @@ There are two more entries in the [[#inherit-section| [inherit] ]] section, `tem
 
 == Reference for settings
 
-This is a brief reference of available configuration options.
+This is a brief reference of available configuration options, and their default values.
 
  ''Note that the [bitten], [spam-filter] and [vote] sections below are added by plugins enabled on this Trac, and therefore won't be part of a default installation.''
 

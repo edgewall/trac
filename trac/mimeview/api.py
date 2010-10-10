@@ -618,14 +618,14 @@ class Mimeview(Component):
         """Maximum file size for HTML preview. (''since 0.9'')""")
 
     mime_map = ListOption('mimeviewer', 'mime_map',
-        'text/x-dylan:dylan,text/x-idl:ice,text/x-ada:ads:adb',
+        'text/x-dylan:dylan, text/x-idl:ice, text/x-ada:ads:adb',
         doc="""List of additional MIME types and keyword mappings.
         Mappings are comma-separated, and for each MIME type,
         there's a colon (":") separated list of associated keywords
         or file extensions. (''since 0.10'')""")
 
     treat_as_binary = ListOption('mimeviewer', 'treat_as_binary',
-        'application/octet-stream,application/pdf,application/postscript,'
+        'application/octet-stream, application/pdf, application/postscript, '
         'application/rtf',
         doc="""Comma-separated list of MIME types that should be treated as
         binary data. (''since 0.11.5'')""")
