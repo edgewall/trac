@@ -295,7 +295,7 @@ class CachedRepository(Repository):
                       AND change_type IN ('A', 'C', 'M')
                     ORDER BY rev DESC LIMIT 1
                     """, (self.id, slast, path))
-                first = first[0][0] if first else 0
+                first = int(first[0][0]) if first else 0
             sfirst = self.db_rev(first)
             return [int(rev) for rev, in db("""
                     SELECT DISTINCT rev FROM node_change
