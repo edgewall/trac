@@ -139,16 +139,15 @@ class TestSetup(unittest.TestSuite):
         self.tearDown()
         return result
 
-    def _wrapped_run(self, result):
+    def _wrapped_run(self, *args, **kwargs):
         "Python 2.7 / unittest2 compatibility - there must be a better way..."
         self.setUp()
         if hasattr(self, 'fixture'):
             for test in self._tests:
                 if hasattr(test, 'setFixture'):
                     test.setFixture(self.fixture)
-        unittest.TestSuite._wrapped_run(self, result)
+        unittest.TestSuite._wrapped_run(self, *args, **kwargs)
         self.tearDown()
-        return result
 
 class TestCaseSetup(unittest.TestCase):
     def setFixture(self, fixture):
