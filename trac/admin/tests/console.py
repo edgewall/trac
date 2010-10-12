@@ -132,8 +132,8 @@ class TracadminTestCase(unittest.TestCase):
             return ''.join(difflib.unified_diff(expected_lines, output_lines, 
                                                 'expected', 'actual'))
         if '[...]' in expected_results:
-            m = re.match('%s' % expected_results.replace('[...]', '.*'),
-                         output, re.MULTILINE)
+            m = re.match(expected_results.replace('[...]', '.*'), output,
+                         re.MULTILINE)
             unittest.TestCase.assertTrue(self, m, 
                                          "%r != %r\n%s" % (expected_results,
                                                            output, diff()))
