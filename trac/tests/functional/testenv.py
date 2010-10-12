@@ -55,6 +55,7 @@ class FunctionalTestEnvironment(object):
         self.pid = None
         self.init()
         self.destroy()
+        time.sleep(0.1) # Avoid race condition on Windows
         self.create()
         locale.setlocale(locale.LC_ALL, '')
 
