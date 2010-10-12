@@ -357,7 +357,7 @@ class SessionAdmin(Component):
                     ON (n.sid=s.sid AND n.name='name') 
                   LEFT JOIN session_attribute AS e
                     ON (e.sid=s.sid AND e.name='email') 
-                WHERE s.sid IN (%s)
+                WHERE s.sid IN (%s) ORDER BY s.sid
                 """ % ','.join("%s" for i in range(len(sids)))
             args = sids
         else:
