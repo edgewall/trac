@@ -125,21 +125,22 @@ class TracadminTestCase(unittest.TestCase):
         if not (isinstance(expected_results, basestring) and \
                 isinstance(output, basestring)):
             return unittest.TestCase.assertEqual(self, expected_results, output)
-        # Create a useful delta between the output and the expected output
-        output_lines = ['%s\n' % x for x in output.split('\n')]
-        expected_lines = ['%s\n' % x for x in expected_results.split('\n')]
-        diff = ''.join(difflib.unified_diff(expected_lines, output_lines, 
-                                            'expected', 'actual'))
+        def diff():
+            # Create a useful delta between the output and the expected output
+            output_lines = ['%s\n' % x for x in output.split('\n')]
+            expected_lines = ['%s\n' % x for x in expected_results.split('\n')]
+            return ''.join(difflib.unified_diff(expected_lines, output_lines, 
+                                                'expected', 'actual'))
         if '[...]' in expected_results:
             m = re.match('%s' % expected_results.replace('[...]', '.*'),
                          output, re.MULTILINE)
             unittest.TestCase.assertTrue(self, m, 
                                          "%r != %r\n%s" % (expected_results,
-                                                           output, diff))
+                                                           output, diff()))
         else:
             unittest.TestCase.assertEqual(self, expected_results, output, 
                                           "%r != %r\n%s" % (expected_results,
-                                                            output, diff))
+                                                            output, diff()))
     # Help test
 
     def test_help_ok(self):
