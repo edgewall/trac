@@ -723,6 +723,7 @@ class ReportModule(Component):
                       for c in cols]
 
         out = StringIO()
+        out.write('\xef\xbb\xbf')       # BOM
         writer = csv.writer(out, delimiter=sep)
         writer.writerow([unicode(c).encode('utf-8') for c in cols])
         for row in rows:

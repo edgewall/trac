@@ -487,7 +487,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         content, mimetype = QueryModule(self.env).export_csv(
                                 Mock(href=self.env.href, perm=MockPerm()),
                                 query)
-        self.assertEqual('col1\r\n"value, needs escaped"\r\n',
+        self.assertEqual('\xef\xbb\xbfcol1\r\n"value, needs escaped"\r\n',
                          content)
 
 

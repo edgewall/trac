@@ -56,7 +56,8 @@ class TicketConversionTestCase(unittest.TestCase):
         ticket = self._create_a_ticket()
         csv = self.mimeview.convert_content(self.req, 'trac.ticket.Ticket',
                                             ticket, 'csv')
-        self.assertEqual((u'id,summary,reporter,owner,description,status,'
+        self.assertEqual(('\xef\xbb\xbf'
+                          'id,summary,reporter,owner,description,status,'
                           'keywords,cc\r\n1,Foo,santa,,Bar,,,\r\n',
                           'text/csv;charset=utf-8', 'csv'), csv)
 
@@ -65,7 +66,8 @@ class TicketConversionTestCase(unittest.TestCase):
         ticket = self._create_a_ticket()
         csv = self.mimeview.convert_content(self.req, 'trac.ticket.Ticket',
                                             ticket, 'tab')
-        self.assertEqual((u'id\tsummary\treporter\towner\tdescription\tstatus\t'
+        self.assertEqual(('\xef\xbb\xbf'
+                          'id\tsummary\treporter\towner\tdescription\tstatus\t'
                           'keywords\tcc\r\n1\tFoo\tsanta\t\tBar\t\t\t\r\n',
                           'text/tab-separated-values;charset=utf-8', 'tsv'),
                          csv)

@@ -66,7 +66,7 @@ class ReportTestCase(unittest.TestCase):
             self.report_module._send_csv(req, cols, rows)
         except RequestDone:
             pass
-        self.assertEqual('TEST_COL,TEST_ZERO\r\n"value, needs escaped",0\r\n',
+        self.assertEqual('\xef\xbb\xbfTEST_COL,TEST_ZERO\r\n"value, needs escaped",0\r\n',
                          buf.getvalue())
 
 
