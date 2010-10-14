@@ -72,7 +72,7 @@ class TestTicketCSVFormat(FunctionalTestCaseSetup):
         self._tester.go_to_ticket(ticketid)
         tc.follow('Comma-delimited Text')
         csv = b.get_html()
-        if not csv.startswith('id,summary,'):
+        if not csv.startswith('\xef\xbb\xbfid,summary,'): # BOM
             raise AssertionError('Bad CSV format')
 
 
@@ -84,7 +84,7 @@ class TestTicketTabFormat(FunctionalTestCaseSetup):
         self._tester.go_to_ticket(ticketid)
         tc.follow('Tab-delimited Text')
         tab = b.get_html()
-        if not tab.startswith('id\tsummary\t'):
+        if not tab.startswith('\xef\xbb\xbfid\tsummary\t'): # BOM
             raise AssertionError('Bad tab delimitted format')
 
 
