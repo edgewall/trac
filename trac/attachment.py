@@ -326,18 +326,18 @@ class Attachment(object):
     @classmethod
     def reparent_all(cls, env, parent_realm, parent_id, new_realm, new_id):
         """Reparent all attachments of a given resource to another resource."""
-        attachment_dir = [None]
+        attachment_dir = None
         with env.db_transaction as db:
             for attachment in list(cls.select(env, parent_realm, parent_id,
                                               db)):
                 attachment_dir = os.path.dirname(attachment.path)
                 attachment.reparent(new_realm, new_id)
-        if attachment_dir[0]:
+        if attachment_dir:
             try:
-                os.rmdir(attachment_dir[0])
+                os.rmdir(attachment_dir)
             except OSError, e:
                 env.log.error("Can't delete attachment directory %s: %s",
-                    attachment_dir[0], exception_to_unicode(e, traceback=True))
+                    attachment_dir, exception_to_unicode(e, traceback=True))
             
     def open(self):
         self.env.log.debug('Trying to open attachment at %s', self.path)

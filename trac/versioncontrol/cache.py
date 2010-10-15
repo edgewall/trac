@@ -111,9 +111,9 @@ class CachedRepository(Repository):
             self.log.info("Cleaning cache")
             with self.env.db_transaction as db:
                 db("DELETE FROM revision WHERE repos=%s",
-                               (self.id,))
+                   (self.id,))
                 db("DELETE FROM node_change WHERE repos=%s",
-                               (self.id,))
+                   (self.id,))
                 db("DELETE FROM repository WHERE id=%s AND name=%s",
                    [(self.id, k) for k in CACHE_METADATA_KEYS])
                 db("""INSERT INTO repository (id, name, value) 

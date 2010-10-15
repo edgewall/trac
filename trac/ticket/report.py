@@ -157,15 +157,14 @@ class ReportModule(Component):
         title = req.args.get('title', '')
         query = req.args.get('query', '')
         description = req.args.get('description', '')
-        report_id = [ None ]
         with self.env.db_transaction as db:
             cursor = db.cursor()
             cursor.execute("""
                 INSERT INTO report (title,query,description) VALUES (%s,%s,%s)
                 """, (title, query, description))
-            report_id[0] = db.get_last_id(cursor, 'report')
+            report_id = db.get_last_id(cursor, 'report')
         add_notice(req, _("The report has been created."))
-        req.redirect(req.href.report(report_id[0]))
+        req.redirect(req.href.report(report_id))
 
     def _do_delete(self, req, id):
         req.perm.require('REPORT_DELETE')

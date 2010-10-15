@@ -225,23 +225,22 @@ class Ticket(object):
                     custom_fields.append(fname)
                 else:
                     std_fields.append(fname)
-        tkt_id = [None]
         with self.env.db_transaction as db:
             cursor = db.cursor()
             cursor.execute("INSERT INTO ticket (%s) VALUES (%s)"
                            % (','.join(std_fields),
                               ','.join(['%s'] * len(std_fields))),
                            [values[name] for name in std_fields])
-            tkt_id[0] = db.get_last_id(cursor, 'ticket')
+            tkt_id = db.get_last_id(cursor, 'ticket')
 
             # Insert custom fields
             if custom_fields:
                 db("""INSERT INTO ticket_custom (ticket, name, value)
                       VALUES (%s, %s, %s)
-                      """, [(tkt_id[0], c, self[c]) for c in custom_fields])
+                      """, [(tkt_id, c, self[c]) for c in custom_fields])
 
-        self.id = tkt_id[0]
-        self.resource = self.resource(id=tkt_id[0])
+        self.id = tkt_id
+        self.resource = self.resource(id=tkt_id)
         self._old = {}
 
         for listener in TicketSystem(self.env).change_listeners:

@@ -211,13 +211,12 @@ In [%s]:
         for tkt_id, cmds in tickets.iteritems():
             try:
                 self.log.debug("Updating ticket #%d", tkt_id)
-                ticket = [None]
                 with self.env.db_transaction as db:
-                    ticket[0] = Ticket(self.env, tkt_id, db)
+                    ticket = Ticket(self.env, tkt_id, db)
                     for cmd in cmds:
-                        cmd(ticket[0], changeset, perm(ticket[0].resource))
-                    ticket[0].save_changes(changeset.author, comment, date, db)
-                self._notify(ticket[0], date)
+                        cmd(ticket, changeset, perm(ticket.resource))
+                    ticket.save_changes(changeset.author, comment, date, db)
+                self._notify(ticket, date)
             except Exception, e:
                 self.log.error("Unexpected error while processing ticket "
                                "#%s: %s", tkt_id, exception_to_unicode(e))
