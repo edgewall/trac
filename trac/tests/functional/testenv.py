@@ -109,8 +109,7 @@ class FunctionalTestEnvironment(object):
         This sets up Trac, calls :meth:`create_repo` and sets up
         authentication.
         """
-        if os.mkdir(self.dirname):
-            raise Exception('unable to create test environment')
+        os.mkdir(self.dirname)
         self.create_repo()
 
         self._tracadmin('initenv', 'testenv%s' % self.port,
