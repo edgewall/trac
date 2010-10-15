@@ -19,13 +19,11 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 
 import time
-from datetime import date
 
 from trac.core import TracError, Component, implements
 from trac.util import hex_entropy
 from trac.util.text import print_table, printout
 from trac.util.translation import _
-from trac.util.html import Markup
 from trac.util.datefmt import parse_date, to_timestamp
 from trac.admin.api import IAdminCommandProvider, AdminCommandError
 
@@ -106,8 +104,9 @@ class DetachedSession(dict):
                 attrs = [(self.sid, authenticated, k, v) 
                          for k, v in self.items()]
                 cursor.execute("""
-                    DELETE FROM session_attribute WHERE sid=%s
-                    """, (self.sid,))
+                    DELETE FROM session_attribute
+                    WHERE sid=%s AND authenticated=%s
+                    """, (self.sid, authenticated))
                 self._old = dict(self.items())
                 if attrs:
                     cursor.executemany("""
@@ -199,10 +198,10 @@ class Session(DetachedSession):
             cursor = db.cursor()
             cursor.execute("SELECT sid FROM session WHERE sid=%s", (new_sid,))
             if cursor.fetchone():
-                raise TracError(Markup(
-                    _("Session '%(id)s' already exists.<br />"
-                      "Please choose a different session ID.",
-                      id=new_sid)), _("Error renaming session"))
+                raise TracError(_("Session '%(id)s' already exists. "
+                                  "Please choose a different session ID.",
+                                  id=new_sid),
+                                _("Error renaming session"))
             self.env.log.debug('Changing session ID %s to %s', self.sid,
                                new_sid)
             cursor.execute("""

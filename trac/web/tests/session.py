@@ -302,6 +302,40 @@ class SessionTestCase(unittest.TestCase):
                        "WHERE sid='john' AND name='foo'") 
         self.assertEqual('baz', cursor.fetchone()[0])
 
+    def test_authenticated_session_independence_var(self):
+        """
+        Verify that an anonymous session with the same name as an authenticated
+        session doesn't interfere with the latter.
+        """
+        cursor = self.db.cursor()
+        cursor.execute("INSERT INTO session VALUES ('john', 1, 0)")
+        cursor.execute("INSERT INTO session_attribute VALUES "
+                       "('john', 1, 'foo', 'bar')")
+
+        cursor.execute("SELECT value FROM session_attribute "
+                       "WHERE sid='john' AND authenticated=1 AND name='foo'")
+        self.assertEqual('bar', cursor.fetchone()[0])
+
+        incookie = Cookie()
+        incookie['trac_session'] = 'john'
+        req = Mock(authname='anonymous', base_path='/', incookie=incookie,
+                   outcookie=Cookie())
+        session = Session(self.env, req)
+        self.assert_('foo' not in session)
+        session['foo'] = 'baz'
+        session.save()
+
+        cursor.execute("SELECT value FROM session_attribute "
+                       "WHERE sid='john' AND authenticated=1 AND name='foo'")
+        rows = cursor.fetchall()
+        self.assertEqual(1, len(rows))
+        self.assertEqual('bar', rows[0][0])
+        cursor.execute("SELECT value FROM session_attribute "
+                       "WHERE sid='john' AND authenticated=0 AND name='foo'")
+        rows = cursor.fetchall()
+        self.assertEqual(1, len(rows))
+        self.assertEqual('baz', rows[0][0])
+
     def test_delete_authenticated_session_var(self):
         """
         Verify that modifying a variable updates the 'session' table accordingly
@@ -350,7 +384,7 @@ class SessionTestCase(unittest.TestCase):
 
     def test_modify_detached_session(self):
         """
-        Verify that a modifying a variable in a session not associated with a
+        Verify that modifying a variable in a session not associated with a
         request updates the database accordingly.
         """
         cursor = self.db.cursor()
