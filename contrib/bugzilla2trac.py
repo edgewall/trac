@@ -270,7 +270,7 @@ class TracDatabase(object):
             print "  inserting severity '%s' - '%s'" % (value, i)
             c.execute("""INSERT INTO enum (type, name, value)
                                    VALUES (%s, %s, %s)""",
-                      ("severity", value.encode('utf-8'), i))
+                      ("severity", value, i))
         self.db().commit()
 
     def setPriorityList(self, s):
@@ -283,7 +283,7 @@ class TracDatabase(object):
             print "  inserting priority '%s' - '%s'" % (value, i)
             c.execute("""INSERT INTO enum (type, name, value)
                                    VALUES (%s, %s, %s)""",
-                      ("priority", value.encode('utf-8'), i))
+                      ("priority", value, i))
         self.db().commit()
 
 
@@ -297,8 +297,7 @@ class TracDatabase(object):
             print "  inserting component '%s', owner '%s'" % \
                             (comp[key], comp['owner'])
             c.execute("INSERT INTO component (name, owner) VALUES (%s, %s)",
-                      (comp[key].encode('utf-8'),
-                       comp['owner'].encode('utf-8')))
+                      (comp[key], comp['owner']))
         self.db().commit()
 
     def setVersionList(self, v, key):
@@ -310,7 +309,7 @@ class TracDatabase(object):
         for vers in v:
             print "  inserting version '%s'" % (vers[key])
             c.execute("INSERT INTO version (name) VALUES (%s)",
-                      (vers[key].encode('utf-8'),))
+                      (vers[key],))
         self.db().commit()
 
     def setMilestoneList(self, m, key):
@@ -323,7 +322,7 @@ class TracDatabase(object):
             milestone = ms[key]
             print "  inserting milestone '%s'" % (milestone)
             c.execute("INSERT INTO milestone (name) VALUES (%s)",
-                      (milestone.encode('utf-8'),))
+                      (milestone,))
         self.db().commit()
 
     def addTicket(self, id, time, changetime, component, severity, priority,
@@ -331,7 +330,7 @@ class TracDatabase(object):
                   summary, description, keywords, customfields):
         c = self.db().cursor()
 
-        desc = description.encode('utf-8')
+        desc = description
         type = "defect"
 
         if SEVERITIES:
@@ -363,11 +362,11 @@ class TracDatabase(object):
                                          keywords)
                                  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s,
                                          %s, %s, %s, %s, %s, %s, %s, %s)""",
-                  (id, type.encode('utf-8'), datetime2epoch(time),
-                   datetime2epoch(changetime), component.encode('utf-8'),
-                   severity.encode('utf-8'), priority.encode('utf-8'), owner,
-                   reporter, cc, version, milestone.encode('utf-8'),
-                   status.lower(), resolution, summary.encode('utf-8'), desc,
+                  (id, type, datetime2epoch(time),
+                   datetime2epoch(changetime), component,
+                   severity, priority, owner,
+                   reporter, cc, version, milestone,
+                   status.lower(), resolution, summary, desc,
                    keywords))
 
         self.db().commit()
@@ -390,12 +389,12 @@ class TracDatabase(object):
 
         c.execute("""INSERT INTO ticket_custom (ticket, name, value)
                                  VALUES (%s, %s, %s)""",
-                  (ticket_id, field_name.encode('utf-8'), field_value.encode('utf-8')))
+                  (ticket_id, field_name, field_value))
 
         self.db().commit()
 
     def addTicketComment(self, ticket, time, author, value):
-        comment = value.encode('utf-8')
+        comment = value
 
         if PREFORMAT_COMMENTS:
           comment = '{{{\n%s\n}}}' % comment
@@ -434,14 +433,14 @@ class TracDatabase(object):
                                                 oldvalue, newvalue)
                                         VALUES (%s, %s, %s, %s, %s, %s)""",
                   (ticket, datetime2epoch(time), author, field,
-                   oldvalue.encode('utf-8'), newvalue.encode('utf-8')))
+                   oldvalue, newvalue))
         self.db().commit()
 
     def addAttachment(self, author, a):
         if a['filename'] != '':
-            description = a['description'].encode('utf-8')
+            description = a['description']
             id = a['bug_id']
-            filename = a['filename'].encode('utf-8')
+            filename = a['filename']
             filedata = StringIO.StringIO(a['thedata'])
             filesize = len(filedata.getvalue())
             time = a['creation_ts']
@@ -519,7 +518,8 @@ def convert(_db, _host, _user, _password, _env, _force):
             (_db, _host, _user, ("*" * len(_password)))
     mysql_con = MySQLdb.connect(host=_host,
                 user=_user, passwd=_password, db=_db, compress=1,
-                cursorclass=MySQLdb.cursors.DictCursor)
+                cursorclass=MySQLdb.cursors.DictCursor,
+                charset='utf8')
     mysql_cur = mysql_con.cursor()
 
     # init Trac environment
