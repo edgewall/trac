@@ -17,7 +17,6 @@
 
 from datetime import datetime, timedelta
 from fnmatch import fnmatchcase
-import inspect
 import re
 
 from genshi.builder import tag
@@ -29,7 +28,7 @@ from trac.mimeview.api import Mimeview, is_binary, \
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
 from trac.util import as_bool, embedded_numbers
-from trac.util.compat import any
+from trac.util.compat import any, cleandoc
 from trac.util.datefmt import http_date, to_datetime, utc
 from trac.util.html import escape, Markup
 from trac.util.text import exception_to_unicode, shorten_line
@@ -794,7 +793,7 @@ class BrowserModule(Component):
         yield "RepositoryIndex"
 
     def get_macro_description(self, name):
-        return inspect.cleandoc("""
+        return cleandoc("""
         Display the list of available repositories.
 
         Can be given the following named arguments:

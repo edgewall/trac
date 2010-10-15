@@ -104,3 +104,39 @@ close_fds = True
 if os.name == 'nt':
     close_fds = False
 
+# inspect.cleandoc() was introduced in 2.6
+try:
+    from inspect import cleandoc
+except ImportError:
+    import sys
+
+    # Taken from Python 2.6
+    def cleandoc(doc):
+        """De-indent a multi-line text.
+    
+        Any whitespace that can be uniformly removed from the second line
+        onwards is removed."""
+        try:
+            lines = doc.expandtabs().split('\n')
+        except UnicodeError:
+            return None
+        else:
+            # Find minimum indentation of any non-blank lines after first line
+            margin = sys.maxint
+            for line in lines[1:]:
+                content = len(line.lstrip())
+                if content:
+                    indent = len(line) - content
+                    margin = min(margin, indent)
+            # Remove indentation
+            if lines:
+                lines[0] = lines[0].lstrip()
+            if margin < sys.maxint:
+                for i in range(1, len(lines)):
+                    lines[i] = lines[i][margin:]
+            # Remove any trailing or leading blank lines
+            while lines and not lines[-1]:
+                lines.pop()
+            while lines and not lines[0]:
+                lines.pop(0)
+            return '\n'.join(lines)
