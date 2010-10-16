@@ -374,14 +374,14 @@ class BrowserModule(Component):
                 add_ctxtnav(req, _('Normal'), 
                             title=_('View file without annotations'), 
                             href=req.href.browser(node.created_path, 
-                                                  rev=node.rev))
+                                                  rev=rev))
             else:
                 add_ctxtnav(req, _('Annotate'), 
                             title=_('Annotate each line with the last '
                                     'changed revision '
                                     '(this can be time consuming...)'), 
                             href=req.href.browser(node.created_path, 
-                                                  rev=node.rev,
+                                                  rev=rev,
                                                   annotate='blame'))
         add_ctxtnav(req, _('Revision Log'), 
                     href=req.href.log(path, rev=rev))
