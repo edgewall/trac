@@ -55,6 +55,7 @@ class FunctionalTestEnvironment(object):
         self.pid = None
         self.init()
         self.destroy()
+        time.sleep(0.1) # Avoid race condition on Windows
         self.create()
         locale.setlocale(locale.LC_ALL, '')
 
@@ -115,8 +116,7 @@ class FunctionalTestEnvironment(object):
         This sets up Trac, calls :meth:`create_repo` and sets up
         authentication.
         """
-        if os.mkdir(self.dirname):
-            raise Exception('unable to create test environment')
+        os.mkdir(self.dirname)
         self.create_repo()
 
         self._tracadmin('initenv', self.tracdir, self.dburi, self.repotype,

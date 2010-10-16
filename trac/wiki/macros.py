@@ -592,7 +592,8 @@ class MacroListMacro(WikiMacroBase):
                                       [tag.code(' [[', alias, ']]')
                                        for alias in names[1:]]) or None,
              description or tag.em(_("Sorry, no documentation found")))
-            for description, names in list(get_macro_descr()))
+            for description, names in sorted(get_macro_descr(),
+                                             key=lambda item: item[1][0]))
 
 
 class TracIniMacro(WikiMacroBase):

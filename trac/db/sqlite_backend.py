@@ -191,12 +191,11 @@ class SQLiteConnector(Component):
             if os.path.exists(path):
                 raise TracError(_("Database already exists at %(path)s",
                                   path=path))
-            else:
-                dbdir = os.path.split(path)[0]
-                if not os.path.exists(dbdir):
-                    os.makedirs(dbdir)
-                if isinstance(path, unicode): # needed with 2.4.0
-                    path = path.encode('utf-8')
+            dir = os.path.dirname(path)
+            if not os.path.exists(dir):
+                os.makedirs(dir)
+            if isinstance(path, unicode): # needed with 2.4.0
+                path = path.encode('utf-8')
             # this direct connect will create the database if needed
             cnx = sqlite.connect(path,
                                  timeout=int(params.get('timeout', 10000)))

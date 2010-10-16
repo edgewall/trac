@@ -134,7 +134,7 @@ h2.report-result {
 .reports td.title { width: 100%; white-space: normal; }
 .tickets { border-bottom: none }
 .tickets thead th, .reports thead th { text-transform: capitalize; white-space: nowrap; }
-.tickets tbody td, .reports tbody td { padding: .1em .5em !important; white-space: nowrap; }
+.tickets tbody td, .reports tbody td { padding: .1em .5em !important; }
 .tickets tbody td a, .reports tbody td a { border-bottom: none }
 .tickets tbody td.id :link, .tickets tbody td.id :visited {
  font-weight: bold;

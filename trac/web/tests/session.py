@@ -289,7 +289,7 @@ class SessionTestCase(unittest.TestCase):
         """
         with self.env.db_transaction as db:
             db("INSERT INTO session VALUES ('john', 1, 0)")
-            db("INSERT INTO session_attribute VALUES ('john', 1, 'foo', 'bar')")
+            db("INSERT INTO session_attribute VALUES ('john',1,'foo','bar')")
 
             req = Mock(authname='john', base_path='/', incookie=Cookie())
             session = Session(self.env, req)
@@ -300,6 +300,42 @@ class SessionTestCase(unittest.TestCase):
         self.assertEqual('baz', self.env.db_query("""
             SELECT value FROM session_attribute WHERE sid='john' AND name='foo'
             """)[0][0])
+
+    def test_authenticated_session_independence_var(self):
+        """
+        Verify that an anonymous session with the same name as an authenticated
+        session doesn't interfere with the latter.
+        """
+        with self.env.db_transaction as db:
+            db("INSERT INTO session VALUES ('john', 1, 0)")
+            db("INSERT INTO session_attribute VALUES ('john',1,'foo','bar')")
+
+        self.assertEqual('bar', self.env.db_query("""
+            SELECT value FROM session_attribute
+            WHERE sid='john' AND authenticated=1 AND name='foo'
+            """)[0][0])
+
+        incookie = Cookie()
+        incookie['trac_session'] = 'john'
+        req = Mock(authname='anonymous', base_path='/', incookie=incookie,
+                   outcookie=Cookie())
+        session = Session(self.env, req)
+        self.assert_('foo' not in session)
+        session['foo'] = 'baz'
+        session.save()
+
+        rows = self.env.db_query("""
+            SELECT value FROM session_attribute
+            WHERE sid='john' AND authenticated=1 AND name='foo'
+            """)
+        self.assertEqual(1, len(rows))
+        self.assertEqual('bar', rows[0][0])
+        rows = self.env.db_query("""
+            SELECT value FROM session_attribute
+            WHERE sid='john' AND authenticated=0 AND name='foo'
+            """)
+        self.assertEqual(1, len(rows))
+        self.assertEqual('baz', rows[0][0])
 
     def test_delete_authenticated_session_var(self):
         """
@@ -353,7 +389,7 @@ class SessionTestCase(unittest.TestCase):
 
     def test_modify_detached_session(self):
         """
-        Verify that a modifying a variable in a session not associated with a
+        Verify that modifying a variable in a session not associated with a
         request updates the database accordingly.
         """
         with self.env.db_transaction as db:
