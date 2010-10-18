@@ -359,7 +359,7 @@ class SessionAdmin(Component):
         with self.env.db_transaction as db:
             try:
                 db("INSERT INTO session VALUES (%s, %s, %s)",
-                   (sid, authenticated, time.time()))
+                   (sid, authenticated, int(time.time())))
             except Exception:
                 raise AdminCommandError(_("Session '%(sid)s' already exists",
                                           sid=sid))
