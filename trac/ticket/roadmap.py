@@ -387,7 +387,8 @@ class RoadmapModule(Component):
         def get_priority(ticket):
             value = priorities.get(ticket['priority'])
             if value:
-                return int(value * 9 / len(priorities))
+                return int((len(priorities) + 8 * value - 9) /
+                       (len(priorities) - 1))
 
         def get_status(ticket):
             status = ticket['status']
