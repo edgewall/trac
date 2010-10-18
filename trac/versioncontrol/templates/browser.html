@@ -106,11 +106,29 @@
 
       <table py:if="properties or file" id="info" summary="Revision info">
         <tr py:if="file">
-          <th scope="col" i18n:msg="rev, size, author, date">
-            Revision <a href="${href.changeset(rev, reponame)}">${display_rev(rev)}</a>,
-            <span title="${_('%(size)s bytes', size=file.size)}">${pretty_size(file.size)}</span>
-            checked in by ${authorinfo(file.changeset.author)}, ${dateinfo(file.changeset.date)} ago
-            (<a href="${href.changeset(rev, reponame, created_path)}">diff</a>)
+          <th py:with="cset = href.changeset(rev, reponame);
+                       rcset = href.changeset(rev, reponame, created_path);
+                       drev = display_rev(rev);
+                       author = authorinfo(file.changeset.author);
+                       age = dateinfo(file.changeset.date)">
+            <py:choose>
+              <py:when test="stickyrev">
+                <i18n:msg params="stickyrev, rev, author, age">
+                  <a href="$rcset" title="View differences">Last change</a>
+                  on this file since ${display_rev(stickyrev)} was
+                  <a href="$cset" title="${_('View changeset %(rev)s', rev=drev)}">$drev</a>,
+                  checked in by $author, $age ago
+                </i18n:msg>
+              </py:when>
+              <py:otherwise>
+                <i18n:msg params="rev, author, age">
+                  <a href="$rcset" title="View differences">Last change</a>
+                  on this file was
+                  <a href="$cset" title="${_('View changeset %(rev)s', rev=drev)}">$drev</a>,
+                  checked in by $author, $age ago
+                </i18n:msg>
+              </py:otherwise>
+            </py:choose>
           </th>
         </tr>
         <tr py:if="file">
@@ -142,6 +160,12 @@
                 </py:otherwise>
               </li>
             </ul>
+          </td>
+        </tr>
+        <tr py:if="file" i18n:msg="size">
+          <td colspan="2">
+            <strong>File size:</strong>
+            <span title="${_('%(size)s bytes', size=file.size)}">${pretty_size(file.size)}</span>
           </td>
         </tr>
       </table>

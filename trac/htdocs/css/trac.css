@@ -329,7 +329,7 @@ fieldset > legend.foldable :link, fieldset > legend.foldable :visited {
  width: 100%;
 }
 #info th, #info td { font-size: 85%; padding: 2px .5em; vertical-align: top }
-#info th { font-weight: bold; text-align: left; white-space: nowrap }
+#info th { font-weight: bold; text-align: left }
 #info td.message { width: 100% }
 #info .message ul { padding: 0; margin: 0 2em }
 #info .message p { margin: 0; padding: 0 }
