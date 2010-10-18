@@ -51,7 +51,7 @@ resolution order     Move a resolution value up or down in the list
 resolution remove    Remove a resolution value
 session add          Create a session for the given sid
 session delete       Delete the session of the specified sid
-session list         List the name and email for the sids specified
+session list         List the name and email for the given sids
 session purge        Purge all anonymous sessions older than the given age
 session set          Set the name or email attribute of the given sid
 severity add         Add a severity value option
@@ -644,181 +644,198 @@ Name  Time
 1.0       
 
 ===== test_session_list_no_sessions =====
-No SID found
+
+SID  Auth  Last Visit  Name  Email
+----------------------------------
+
 ===== test_session_list_authenticated =====
 
-SID     Name   Email
---------------------
-name00  val00  val00
-name01  val01  val01
-name02  val02  val02
-name03  val03  val03
-name04  val04  val04
-name05  val05  val05
-name06  val06  val06
-name07  val07  val07
-name08  val08  val08
-name09  val09  val09
+SID     Auth  Last Visit  Name   Email
+--------------------------------------
+name00  1     2010-01-01  val00  val00
+name01  1     2010-01-01  val01  val01
+name02  1     2010-01-01  val02  val02
+name03  1     2010-01-01  val03  val03
+name04  1     2010-01-01  val04  val04
+name05  1     2010-01-01  val05  val05
+name06  1     2010-01-01  val06  val06
+name07  1     2010-01-01  val07  val07
+name08  1     2010-01-01  val08  val08
+name09  1     2010-01-01  val09  val09
 
 ===== test_session_list_anonymous =====
 
-SID     Name   Email
---------------------
-name10  val10  val10
-name11  val11  val11
-name12  val12  val12
-name13  val13  val13
-name14  val14  val14
-name15  val15  val15
-name16  val16  val16
-name17  val17  val17
-name18  val18  val18
-name19  val19  val19
+SID     Auth  Last Visit  Name   Email
+--------------------------------------
+name10  0     2010-01-01  val10  val10
+name11  0     2010-01-01  val11  val11
+name12  0     2010-01-01  val12  val12
+name13  0     2010-01-01  val13  val13
+name14  0     2010-01-01  val14  val14
+name15  0     2010-01-01  val15  val15
+name16  0     2010-01-01  val16  val16
+name17  0     2010-01-01  val17  val17
+name18  0     2010-01-01  val18  val18
+name19  0     2010-01-01  val19  val19
 
 ===== test_session_list_all =====
 
-SID     Name   Email
---------------------
-name00  val00  val00
-name01  val01  val01
-name02  val02  val02
-name03  val03  val03
-name04  val04  val04
-name05  val05  val05
-name06  val06  val06
-name07  val07  val07
-name08  val08  val08
-name09  val09  val09
-name10  val10  val10
-name11  val11  val11
-name12  val12  val12
-name13  val13  val13
-name14  val14  val14
-name15  val15  val15
-name16  val16  val16
-name17  val17  val17
-name18  val18  val18
-name19  val19  val19
+SID     Auth  Last Visit  Name   Email
+--------------------------------------
+name00  1     2010-01-01  val00  val00
+name01  1     2010-01-01  val01  val01
+name02  1     2010-01-01  val02  val02
+name03  1     2010-01-01  val03  val03
+name04  1     2010-01-01  val04  val04
+name05  1     2010-01-01  val05  val05
+name06  1     2010-01-01  val06  val06
+name07  1     2010-01-01  val07  val07
+name08  1     2010-01-01  val08  val08
+name09  1     2010-01-01  val09  val09
+name10  0     2010-01-01  val10  val10
+name11  0     2010-01-01  val11  val11
+name12  0     2010-01-01  val12  val12
+name13  0     2010-01-01  val13  val13
+name14  0     2010-01-01  val14  val14
+name15  0     2010-01-01  val15  val15
+name16  0     2010-01-01  val16  val16
+name17  0     2010-01-01  val17  val17
+name18  0     2010-01-01  val18  val18
+name19  0     2010-01-01  val19  val19
 
 ===== test_session_list_authenticated_sid =====
 
-SID     Name   Email
---------------------
-name00  val00  val00
+SID     Auth  Last Visit  Name   Email
+--------------------------------------
+name00  1     2010-01-01  val00  val00
 
 ===== test_session_list_anonymous_sid =====
 
-SID     Name   Email
---------------------
-name10  val10  val10
+SID     Auth  Last Visit  Name   Email
+--------------------------------------
+name10  0     2010-01-01  val10  val10
 
 ===== test_session_list_missing_sid =====
-No SID found
+
+SID  Auth  Last Visit  Name  Email
+----------------------------------
+
 ===== test_session_add_missing_sid =====
 Error: Invalid arguments
 
-session add <sid> [name] [email]
+session add <sid[:0|1]> [name] [email]
 
     Create a session for the given sid
 
-    Populates the name and email attributes and sets the session as
-    authenticated.
+    Populates the name and email attributes for the given session. Adding a
+    suffix ':0' to the sid makes the session unauthenticated, and a suffix ':1'
+    makes it authenticated (the default if no suffix is specified).
 
 ===== test_session_add_duplicate_sid =====
-Error: Session already exists. Unable to add a duplicate session.
+Error: Session 'name00' already exists
 ===== test_session_add_sid_all =====
 
-SID   Name  Email
-----------------------------
-john  John  john@example.org
+SID   Auth  Last Visit  Name  Email
+----------------------------------------------
+john  1     %(today)s  John  john@example.org
 
 ===== test_session_add_sid =====
 
-SID   Name  Email
------------------
-john
+SID   Auth  Last Visit  Name  Email
+-----------------------------------
+john  1     %(today)s
 
 ===== test_session_add_sid_name =====
 
-SID   Name  Email
------------------
-john  John
+SID   Auth  Last Visit  Name  Email
+-----------------------------------
+john  1     %(today)s  John
 
 ===== test_session_set_attr_name =====
 
-SID   Name  Email
-----------------------------
-john  JOHN  john@example.org
+SID     Auth  Last Visit  Name  Email
+-------------------------------------
+name00  1     2010-01-01  JOHN  val00
 
 ===== test_session_set_attr_email =====
 
-SID   Name  Email
-----------------------------
-john  John  JOHN@EXAMPLE.ORG
+SID     Auth  Last Visit  Name   Email
+-------------------------------------------------
+name00  1     2010-01-01  val00  JOHN@EXAMPLE.ORG
 
 ===== test_session_set_attr_missing_attr =====
 Error: Invalid arguments
 
-session set <name|email> <sid> <value>
+session set <name|email> <sid[:0|1]> <value>
 
     Set the name or email attribute of the given sid
+    
+    An sid suffix ':0' operates on an unauthenticated session with the given
+    sid, and a suffix ':1' on an authenticated session (the default).
 
 ===== test_session_set_attr_missing_value =====
 Error: Invalid arguments
 
-session set <name|email> <sid> <value>
+session set <name|email> <sid[:0|1]> <value>
 
     Set the name or email attribute of the given sid
+    
+    An sid suffix ':0' operates on an unauthenticated session with the given
+    sid, and a suffix ':1' on an authenticated session (the default).
 
 ===== test_session_set_attr_missing_sid =====
 Error: Invalid arguments
 
-session set <name|email> <sid> <value>
+session set <name|email> <sid[:0|1]> <value>
 
     Set the name or email attribute of the given sid
+    
+    An sid suffix ':0' operates on an unauthenticated session with the given
+    sid, and a suffix ':1' on an authenticated session (the default).
 
 ===== test_session_set_attr_nonexistent_sid =====
-Error: Unable to set session attribute on a non-existent SID
+Error: Session 'john' not found
 ===== test_session_delete_sid =====
-No SID found
+
+SID  Auth  Last Visit  Name  Email
+----------------------------------
+
 ===== test_session_delete_missing_params =====
 ===== test_session_delete_anonymous =====
 
-SID     Name   Email
---------------------
-name00  val00  val00
-name01  val01  val01
-name02  val02  val02
-name03  val03  val03
-name04  val04  val04
-name05  val05  val05
-name06  val06  val06
-name07  val07  val07
-name08  val08  val08
-name09  val09  val09
+SID     Auth  Last Visit  Name   Email
+--------------------------------------
+name00  1     2010-01-01  val00  val00
+name01  1     2010-01-01  val01  val01
+name02  1     2010-01-01  val02  val02
+name03  1     2010-01-01  val03  val03
+name04  1     2010-01-01  val04  val04
+name05  1     2010-01-01  val05  val05
+name06  1     2010-01-01  val06  val06
+name07  1     2010-01-01  val07  val07
+name08  1     2010-01-01  val08  val08
+name09  1     2010-01-01  val09  val09
 
-===== test_session_delete_all =====
-No SID found
 ===== test_session_delete_multiple_sids =====
 
-SID     Name   Email
---------------------
-name04  val04  val04
-name05  val05  val05
-name06  val06  val06
-name07  val07  val07
-name08  val08  val08
-name09  val09  val09
-name10  val10  val10
-name11  val11  val11
-name12  val12  val12
-name13  val13  val13
-name14  val14  val14
-name15  val15  val15
-name16  val16  val16
-name17  val17  val17
-name18  val18  val18
-name19  val19  val19
+SID     Auth  Last Visit  Name   Email
+--------------------------------------
+name04  1     2010-01-01  val04  val04
+name05  1     2010-01-01  val05  val05
+name06  1     2010-01-01  val06  val06
+name07  1     2010-01-01  val07  val07
+name08  1     2010-01-01  val08  val08
+name09  1     2010-01-01  val09  val09
+name10  0     2010-01-01  val10  val10
+name11  0     2010-01-01  val11  val11
+name12  0     2010-01-01  val12  val12
+name13  0     2010-01-01  val13  val13
+name14  0     2010-01-01  val14  val14
+name15  0     2010-01-01  val15  val15
+name16  0     2010-01-01  val16  val16
+name17  0     2010-01-01  val17  val17
+name18  0     2010-01-01  val18  val18
+name19  0     2010-01-01  val19  val19
 
 ===== test_session_purge_all =====
 
@@ -837,25 +854,25 @@ name09  val09  val09
 
 ===== test_session_purge_age =====
 
-SID     Name   Email
---------------------
-name00  val00  val00
-name01  val01  val01
-name02  val02  val02
-name03  val03  val03
-name04  val04  val04
-name05  val05  val05
-name06  val06  val06
-name07  val07  val07
-name08  val08  val08
-name09  val09  val09
-name11  val11  val11
-name12  val12  val12
-name13  val13  val13
-name14  val14  val14
-name15  val15  val15
-name16  val16  val16
-name17  val17  val17
-name18  val18  val18
-name19  val19  val19
+SID     Auth  Last Visit  Name   Email
+--------------------------------------
+name00  1     2010-01-01  val00  val00
+name01  1     2010-01-02  val01  val01
+name02  1     2010-01-03  val02  val02
+name03  1     2010-01-04  val03  val03
+name04  1     2010-01-05  val04  val04
+name05  1     2010-01-06  val05  val05
+name06  1     2010-01-07  val06  val06
+name07  1     2010-01-08  val07  val07
+name08  1     2010-01-09  val08  val08
+name09  1     2010-01-10  val09  val09
+name11  0     2010-01-12  val11  val11
+name12  0     2010-01-13  val12  val12
+name13  0     2010-01-14  val13  val13
+name14  0     2010-01-15  val14  val14
+name15  0     2010-01-16  val15  val15
+name16  0     2010-01-17  val16  val16
+name17  0     2010-01-18  val17  val17
+name18  0     2010-01-19  val18  val18
+name19  0     2010-01-20  val19  val19
 

@@ -196,7 +196,9 @@ def print_table(data, headers=None, sep='  ', out=None):
             if cidx + 1 == num_cols:
                 sp = '' # No separator after last column
 
-            line = (u'%%-%ds%s' % (col_width[cidx], sp)) % (cell or '')
+            if cell is None:
+                cell = ''
+            line = (u'%%-%ds%s' % (col_width[cidx], sp)) % cell
             if isinstance(line, unicode):
                 line = line.encode(charset, 'replace')
             out.write(line)
