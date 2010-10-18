@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2009 Edgewall Software
+# Copyright (C) 2003-2010 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2005-2007 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
@@ -23,8 +23,8 @@ from genshi.builder import tag
 
 from trac.config import ListOption, BoolOption, Option, _TRUE_VALUES
 from trac.core import *
-from trac.mimeview.api import Mimeview, is_binary, \
-                              IHTMLPreviewAnnotator, Context
+from trac.mimeview.api import (
+    Mimeview, is_binary, IHTMLPreviewAnnotator, Context)
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
 from trac.util import as_bool, embedded_numbers
@@ -34,12 +34,14 @@ from trac.util.html import escape, Markup
 from trac.util.text import exception_to_unicode, shorten_line
 from trac.util.translation import _
 from trac.web import IRequestHandler, RequestDone
-from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
-                            prevnext_nav, INavigationContributor
+from trac.web.chrome import (
+    INavigationContributor, add_ctxtnav, add_link, add_script, add_stylesheet,
+    prevnext_nav)
 from trac.wiki.api import IWikiSyntaxProvider, IWikiMacroProvider, parse_args
 from trac.wiki.formatter import format_to_html, format_to_oneliner
-from trac.versioncontrol.api import NoSuchChangeset, RepositoryManager
-from trac.versioncontrol.web_ui.util import *
+
+from ..api import NoSuchChangeset, RepositoryManager
+from .util import *
 
 
 CHUNK_SIZE = 4096
