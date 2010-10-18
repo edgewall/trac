@@ -12,24 +12,24 @@
   -       * rev, the optional revision information to show
   -       * reponame, the optional repository name
   -->
+<py:if test="path_links">
 <!--! <realm>: -->
 <a class="pathentry first" href="${path_links[0].href}"
-   title="${(_('Go to repository root'), _('Go to repository index'))[bool(reponame)]}">${path_links[0].name}</a>
+   title="${_('Go to repository index') if reponame else _('Go to repository root')}">${path_links[0].name}</a>
 <!--! the/path/.../...
   -
-  -   Note: in the <py:for>...</py:for> below, we take great care of 
+  -   Note: in the <py:for>...</py:for> below, we take great care of
   -         not introducing any space character, so that one can easily
   -         copy the path to the clipboard.
   -->
-<py:for each="idx, part in enumerate(path_links[1:])"
-  ><py:with vars="last = idx == len(path_links) - 2"
-    ><a class="pathentry" href="$part.href"
-        title="${_('View %(name)s', name=part.name)}"
-      >$part.name</a><py:if test="not last"
-        ><span class="pathentry sep">/</span></py:if></py:with></py:for>
-<!--! @ revision        (FIXME check the data, this can sometimes be wrong) -->
-<py:if test="rev" py:with="drev = display_rev(rev)"><span class="pathentry sep">@</span>
-  <a class="pathentry" href="${href.changeset(rev, reponame)}" 
+<py:for each="idx, part in enumerate(path_links[1:])"><py:with
+  vars="last = idx == len(path_links) - 2"><a
+    class="pathentry" href="$part.href"
+    title="${_('View %(name)s', name=part.name)}">$part.name</a><py:if
+      test="not last"><span class="pathentry sep">/</span></py:if></py:with></py:for>
+</py:if>
+<py:if test="stickyrev" py:with="drev = display_rev(stickyrev)"><span class="pathentry sep">@</span>
+  <a class="pathentry" href="${href.changeset(stickyrev, reponame)}"
      title="${_('View changeset %(rev)s', rev=drev)}">$drev</a>
 </py:if>
 <br style="clear: both" />

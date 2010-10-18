@@ -13,11 +13,11 @@
 
 /* Browser */
 h1 { margin: 0; padding: 0 0 .5em }
-h1 :link, h1 :visited, h1 .filename { border: none; padding: 0 .2em }
+h1 :link, h1 :visited { border: none; }
 h1 :link, h1 :visited { color: #b00 }
 h1 .first:link, h1 .first:visited { color: #998 }
 h1 .sep { color: #666; padding: 0 .1em }
-h1 .pathentry { float: left }
+h1 .pathentry { float: left; padding: 0 .1em }
 
 #jumprev, #jumploc { float: right; font-size: 10px; margin: 0 0 0.6em }
 #jumprev form, #jumploc form { margin: 0 }

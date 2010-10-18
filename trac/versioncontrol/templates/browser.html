@@ -50,11 +50,12 @@
     <div id="content" class="browser">
 
       <py:if test="dir or file">
-        <py:choose>
-          <h1 py:when="repo and repo.repositories">Default Repository</h1>
-          <h1 py:otherwise=""><xi:include href="path_links.html" /></h1>
-        </py:choose>
-  
+        <h1 py:with="repo_index=repo and repo.repositories;
+                     path_links=None if repo_index else path_links">
+          <span py:if="repo_index" class="pathentry">Default Repository</span>
+          <xi:include href="path_links.html" />
+        </h1>
+
         <div id="jumprev">
           <form action="" method="get">
             <div>
@@ -64,7 +65,7 @@
             </div>
           </form>
         </div>
-  
+
         <div py:if="quickjump_entries" id="jumploc">
           <form action="" method="get">
             <div class="buttons">
@@ -148,7 +149,7 @@
       <div py:if="dir and path == '/'" class="description">
         ${wiki_to_html(context('source', '/', parent=repos.resource), repoinfo.description)}
       </div>
-      
+
       <py:if test="repo and repo.repositories">
         <hr py:if="dir"/>
         <h1>Repository Index</h1>
