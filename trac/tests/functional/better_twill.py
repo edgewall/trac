@@ -27,9 +27,9 @@ except ImportError:
 
 # When twill tries to connect to a site before the site is up, it raises an
 # exception.  In 0.9b1, it's urlib2.URLError, but in -latest, it's
-# _mechanize_dist._mechanize.BrowserStateError.
+# twill.browser.BrowserStateError.
 try:
-    from _mechanize_dist._mechanize import BrowserStateError as ConnectError
+    from twill.browser import BrowserStateError as ConnectError
 except ImportError:
     from urllib2 import URLError as ConnectError
 
