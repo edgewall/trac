@@ -43,11 +43,11 @@ import trac.timeline.web_ui
 import trac.wiki.web_ui
 
 
-from trac.admin import console
+from trac.admin import console, console_date_format
 from trac.config import Configuration
 from trac.db import DatabaseManager
 from trac.test import EnvironmentStub
-from trac.util.datefmt import get_date_format_hint
+from trac.util.datefmt import format_date, get_date_format_hint
 from trac.web.tests.session import _prep_session_table
 
 STRIP_TRAILING_SPACE = re.compile(r'( +)$', re.MULTILINE)
@@ -1072,7 +1072,7 @@ class TracadminTestCase(unittest.TestCase):
     def test_session_list_anonymous_sid(self):
         test_name = sys._getframe().f_code.co_name
         _prep_session_table(self.env)
-        rv, output = self._execute('session list name10')
+        rv, output = self._execute('session list name10:0')
         self.assertEqual(0, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
@@ -1101,36 +1101,42 @@ class TracadminTestCase(unittest.TestCase):
         rv, output = self._execute('session add john John john@example.org')
         self.assertEqual(0, rv)
         rv, output = self._execute('session list john')
-        self.assertEqual(self.expected_results[test_name], output)
+        self.assertEqual(self.expected_results[test_name]
+                         % {'today': format_date(None, console_date_format)},
+                         output)
 
     def  test_session_add_sid(self):
         test_name = sys._getframe().f_code.co_name
         rv, output = self._execute('session add john')
         self.assertEqual(0, rv)
         rv, output = self._execute('session list john')
-        self.assertEqual(self.expected_results[test_name], output)
+        self.assertEqual(self.expected_results[test_name]
+                         % {'today': format_date(None, console_date_format)},
+                         output)
 
     def  test_session_add_sid_name(self):
         test_name = sys._getframe().f_code.co_name
         rv, output = self._execute('session add john John')
         self.assertEqual(0, rv)
         rv, output = self._execute('session list john')
-        self.assertEqual(self.expected_results[test_name], output)
+        self.assertEqual(self.expected_results[test_name]
+                         % {'today': format_date(None, console_date_format)},
+                         output)
 
     def  test_session_set_attr_name(self):
         test_name = sys._getframe().f_code.co_name
-        self._execute('session add john John john@example.org')
-        rv, output = self._execute('session set name john JOHN')
+        _prep_session_table(self.env)
+        rv, output = self._execute('session set name name00 JOHN')
         self.assertEqual(0, rv)
-        rv, output = self._execute('session list john')
+        rv, output = self._execute('session list name00')
         self.assertEqual(self.expected_results[test_name], output)
 
     def  test_session_set_attr_email(self):
         test_name = sys._getframe().f_code.co_name
-        self._execute('session add john John john@example.org')
-        rv, output = self._execute('session set email john JOHN@EXAMPLE.ORG')
+        _prep_session_table(self.env)
+        rv, output = self._execute('session set email name00 JOHN@EXAMPLE.ORG')
         self.assertEqual(0, rv)
-        rv, output = self._execute('session list john')
+        rv, output = self._execute('session list name00')
         self.assertEqual(self.expected_results[test_name], output)
 
     def  test_session_set_attr_missing_attr(self):
@@ -1184,17 +1190,6 @@ class TracadminTestCase(unittest.TestCase):
         _prep_session_table(self.env)
         rv, output = self._execute('session delete name00 name01 name02 '
                                    'name03')
-        self.assertEqual(0, rv)
-        rv, output = self._execute('session list *')
-        self.assertEqual(self.expected_results[test_name], output)
-
-    def  test_session_delete_all(self):
-        test_name = sys._getframe().f_code.co_name
-        _prep_session_table(self.env)
-        if self._admin.interactive:
-            rv, output = self._execute("session delete *")
-        else:
-            rv, output = self._execute("session delete '*'")
         self.assertEqual(0, rv)
         rv, output = self._execute('session list *')
         self.assertEqual(self.expected_results[test_name], output)
