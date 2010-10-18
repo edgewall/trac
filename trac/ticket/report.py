@@ -283,6 +283,9 @@ class ReportModule(Component):
 
         return 'report_list.html', data, None
 
+    _html_cols = set(['__style__', '__color__', '__fgcolor__',
+                         '__bgcolor__', '__grouplink__'])
+
     def _render_view(self, req, id):
         """Retrieve the report results and pre-process them for rendering."""
         db = self.env.get_db_cnx()
@@ -478,7 +481,7 @@ class ReportModule(Component):
         #  - group rows according to __group__ value, if defined
         #  - group cells the same way headers are grouped
         row_groups = []
-        authorized_results = [] 
+        authorized_results = []
         prev_group_value = None
         for row_idx, result in enumerate(results):
             col_idx = 0
@@ -501,9 +504,7 @@ class ReportModule(Component):
                             (Chrome(self.env).format_author(req, value), []) )
                     # Other row properties
                     row['__idx__'] = row_idx
-                    if col in ('__style__', '__color__',
-                               '__fgcolor__', '__bgcolor__',
-                               '__grouplink__'):
+                    if col in self._html_cols:
                         row[col] = value
                     if col in ('report', 'ticket', 'id', '_id'):
                         row['id'] = value
@@ -532,7 +533,6 @@ class ReportModule(Component):
                 row_group = []
                 row_groups = [(None, row_group)]
             row_group.append(row)
-
 
         data.update({'header_groups': header_groups,
                      'row_groups': row_groups,
@@ -740,12 +740,12 @@ class ReportModule(Component):
 
         out = StringIO()
         writer = csv.writer(out, delimiter=sep)
-        writer.writerow([unicode(c).encode('utf-8') for c in cols])
+        writer.writerow([unicode(c).encode('utf-8') for c in cols
+                         if c not in self._html_cols])
         for row in rows:
-            row = list(row)
-            for i in xrange(len(row)):
-                row[i] = converters[i](row[i]).encode('utf-8')
-            writer.writerow(row)
+            writer.writerow([converters[i](cell).encode('utf-8')
+                             for i, cell in enumerate(row)
+                             if cols[i] not in self._html_cols])
         data = out.getvalue()
 
         req.send_response(200)
