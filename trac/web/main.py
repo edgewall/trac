@@ -517,7 +517,8 @@ def _dispatch_request(req, env, env_error):
         # This part is a bit more complex than it should be.
         # See trac/web/api.py for the definition of HTTPException subclasses.
         if env:
-            env.log.warn(exception_to_unicode(e))
+            env.log.warn('[%s] %s' % (req.remote_addr,
+                                      exception_to_unicode(e)))
         try:
             # We try to get localized error messages here, 
             # but we should ignore secondary errors
