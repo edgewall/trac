@@ -11,7 +11,7 @@
     ${select("*[local-name() != 'title']")}
   </head></py:match>
 
-  <py:match path="body" once="true" buffer="false"><body>
+  <py:match path="body" once="true" buffer="true"><body>
     <div id="content" class="prefs">
       <h1>Preferences</h1>
       <p>This page lets you customize your personal settings for this site.
@@ -25,10 +25,10 @@
           <a py:strip="name == active_panel" href="${href.prefs(name)}">${label}</a>
         </li>
       </ul>
-      <div id="tabcontent">
-        <form id="userprefs" action="" method="post">
+      <div id="tabcontent" py:with="has_forms = list(select('.//form'))">
+        <form id="userprefs" action="" method="post" py:strip="has_forms">
           ${select("*|text()")}
-          <div class="buttons">
+          <div class="buttons" py:if="not has_forms">
             <input type="hidden" name="action" value="save" />
             <input type="submit" value="${_('Save changes')}" />
           </div >
