@@ -816,7 +816,7 @@ class EnvironmentAdmin(Component):
         import shutil
 
         # Bogus statement to lock the database while copying files
-        with self.db_transaction as db:
+        with self.env.db_transaction as db:
             db("UPDATE system SET name=NULL WHERE name IS NULL")
 
             printout(_("Hotcopying %(src)s to %(dst)s ...", 
