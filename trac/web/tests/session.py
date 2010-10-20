@@ -9,7 +9,6 @@ from trac.test import EnvironmentStub, Mock
 from trac.web.session import DetachedSession, Session, PURGE_AGE, \
                              UPDATE_INTERVAL, SessionAdmin
 from trac.core import TracError
-from trac.util.datefmt import to_datetime, to_timestamp
 
 
 def _prep_session_table(env, spread_visits=False):
@@ -264,6 +263,42 @@ class SessionTestCase(unittest.TestCase):
             SELECT COUNT(*) FROM session WHERE sid='123456' AND authenticated=0
             """)[0][0])
 
+    def test_change_anonymous_session(self):
+        """
+        Verify that changing from one anonymous session to an inexisting
+        anonymous session creates the new session and doesn't carry over
+        variables from the previous session.
+        """
+
+        with self.env.db_transaction as db:
+            db("INSERT INTO session VALUES ('123456', 0, 0)")
+            db("""
+                INSERT INTO session_attribute
+                VALUES ('123456', 0, 'foo', 'bar')
+                """)
+
+        incookie = Cookie()
+        incookie['trac_session'] = '123456'
+        req = Mock(authname='anonymous', base_path='/', incookie=incookie,
+                   outcookie=Cookie())
+        session = Session(self.env, req)
+        self.assertEqual({'foo': 'bar'}, session)
+        
+        session.get_session('7890')
+        session['baz'] = 'moo'
+        session.save()
+        self.assertEqual({'baz': 'moo'}, session)
+
+        with self.env.db_query as db:
+            self.assertEqual(1, db("""
+                SELECT COUNT(*) FROM session
+                WHERE sid='7890' AND authenticated=0
+                """)[0][0])
+            self.assertEqual([('baz', 'moo')], db("""
+                SELECT name, value FROM session_attribute
+                WHERE sid='7890' AND authenticated=0
+                """))
+
     def test_add_authenticated_session_var(self):
         """
         Verify that new variables are inserted into the 'session' table in the
@@ -335,7 +370,7 @@ class SessionTestCase(unittest.TestCase):
 
     def test_delete_authenticated_session_var(self):
         """
-        Verify that modifying a variable updates the 'session' table accordingly
+        Verify that deleting a variable updates the 'session' table accordingly
         for an authenticated session.
         """
         with self.env.db_transaction as db:

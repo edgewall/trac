@@ -146,4 +146,6 @@ class PreferencesModule(Component):
     def _do_load(self, req):
         if req.authname == 'anonymous':
             oldsid = req.args.get('loadsid')
-            req.session.get_session(oldsid)
+            if oldsid:
+                req.session.get_session(oldsid)
+                add_notice(req, _('The session has been loaded.'))
