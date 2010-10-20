@@ -39,13 +39,13 @@ class DetachedSession(dict):
         dict.__init__(self)
         self.env = env
         self.sid = None
-        self.last_visit = 0
-        self._new = True
-        self._old = {}
         if sid:
             self.get_session(sid, authenticated=True)
         else:
             self.authenticated = False
+            self.last_visit = 0
+            self._new = True
+            self._old = {}
 
     def __setitem__(self, key, value):
         dict.__setitem__(self, key, unicode(value))
@@ -58,12 +58,16 @@ class DetachedSession(dict):
 
         self.sid = sid
         self.authenticated = authenticated
+        self.clear()
 
         cursor.execute("""
             SELECT last_visit FROM session WHERE sid=%s AND authenticated=%s
             """, (sid, int(authenticated)))
         row = cursor.fetchone()
         if not row:
+            self.last_visit = 0
+            self._new = True
+            self._old = {}
             return
         self._new = False
         self.last_visit = int(row[0] or 0)
@@ -72,9 +76,8 @@ class DetachedSession(dict):
             SELECT name,value FROM session_attribute
             WHERE sid=%s and authenticated=%s
             """, (sid, int(authenticated)))
-        for name, value in cursor:
-            self[name] = value
-        self._old.update(self)
+        self.update(cursor)
+        self._old = self.copy()
 
     def save(self):
         if not self._old and not self.items():
@@ -86,7 +89,7 @@ class DetachedSession(dict):
         now = int(time.time())
 
         @self.env.with_transaction()
-        def delete_session_cookie(db):
+        def save_session(db):
             cursor = db.cursor()
             if self._new:
                 self.last_visit = now
