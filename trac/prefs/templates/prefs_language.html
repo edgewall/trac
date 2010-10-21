@@ -24,11 +24,11 @@
       displayed on this site to use your language instead of that of the
       server.</p>
 
-      <p class="hint">The 'default language' option uses the browser's
+      <p class="hint" i18n:msg="">The 'Default language' option uses the browser's
         language negotiation feature to select the appropriate language.</p>
 
       <p py:if="not languages" class="hint" xml:lang="en">
-        <strong>Note:</strong> ${"Translations are currently unavailable."}
+        <strong>Note:</strong> Translations are currently unavailable.
         <py:choose>
           <py:when test="'TRAC_ADMIN' in req.perm">
             Trac has been localized to more than a dozen of languages but in order
