@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.13\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-10-19 23:08+0200\n"
+"POT-Creation-Date: 2010-10-21 09:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -950,7 +950,6 @@ msgid "Order"
 msgstr ""
 
 #: trac/admin/templates/admin_enums.html:77
-#: trac/prefs/templates/prefs_language.html:31
 msgid "Note:"
 msgstr ""
 
@@ -1583,7 +1582,7 @@ msgid "Installed Plugins"
 msgstr ""
 
 #: trac/templates/about.html:72 trac/templates/error.html:192
-#: trac/web/main.py:602
+#: trac/web/main.py:603
 msgid "N/A"
 msgstr ""
 
@@ -1825,7 +1824,7 @@ msgid "Modified"
 msgstr ""
 
 #: trac/templates/error.html:10 trac/templates/index.html:18
-#: trac/web/main.py:524
+#: trac/web/main.py:525
 msgid "Error"
 msgstr ""
 
@@ -5078,30 +5077,30 @@ msgstr ""
 msgid "Missing or invalid form token. %(msg)s"
 msgstr ""
 
-#: trac/web/main.py:529
+#: trac/web/main.py:530
 #, python-format
 msgid "Error: %(message)s"
 msgstr ""
 
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
-#: trac/web/main.py:545
+#: trac/web/main.py:546
 msgid "do so"
 msgstr ""
 
-#: trac/web/main.py:547
+#: trac/web/main.py:548
 #, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr ""
 
-#: trac/web/main.py:605
+#: trac/web/main.py:606
 msgid "''System information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:606
+#: trac/web/main.py:607
 msgid "''Plugin information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:630
+#: trac/web/main.py:631
 #, python-format
 msgid ""
 "==== How to Reproduce ====\n"

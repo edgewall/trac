@@ -27,19 +27,19 @@
       <p class="hint">The 'default language' option uses the browser's
         language negotiation feature to select the appropriate language.</p>
 
-      <p py:if="not languages" class="hint">
+      <p py:if="not languages" class="hint" xml:lang="en">
         <strong>Note:</strong> ${"Translations are currently unavailable."}
         <py:choose>
           <py:when test="'TRAC_ADMIN' in req.perm">
-            ${"Trac has been localized to more than a dozen of languages but in order \
-            to be able to use them, the"} <a href="http://babel.edgewall.org">${'Babel'}</a>
-            ${"package needs to be present when installing Trac. See"}
-            <a href="${href.wiki('TracInstall')}">${'TracInstall'}</a> ${"for details."}
+            Trac has been localized to more than a dozen of languages but in order
+            to be able to use them, the <a href="http://babel.edgewall.org">Babel</a>
+            package needs to be present when installing Trac. See
+            <a href="${href.wiki('TracInstall')}">TracInstall</a> for details.
           </py:when>
           <py:otherwise>
-            ${"Please contact your"}
-            <a py:strip="not project.admin" href="mailto:${project.admin}">${"Trac administrator"}</a>
-            ${"to enable existing translations."}
+            Please contact your
+            <a py:strip="not project.admin" href="mailto:${project.admin}">Trac administrator</a>
+            to enable existing translations.
           </py:otherwise>
         </py:choose>
       </p>
