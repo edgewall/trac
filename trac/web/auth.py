@@ -153,6 +153,9 @@ class LoginModule(Component):
         @self.env.with_transaction()
         def store_session_cookie(db):
             cursor = db.cursor()
+            # Delete cookies older than 10 days
+            cursor.execute("DELETE FROM auth_cookie WHERE time < %s",
+                           (int(time.time()) - 86400 * 10,))
             cursor.execute("INSERT INTO auth_cookie (cookie,name,ipnr,time) "
                            "VALUES (%s, %s, %s, %s)",
                            (cookie, remote_user, req.remote_addr,
@@ -175,14 +178,15 @@ class LoginModule(Component):
             # Not logged in
             return
 
-        # While deleting this cookie we also take the opportunity to delete
-        # cookies older than 10 days
         @self.env.with_transaction()
         def delete_session_cookie(db):
             cursor = db.cursor()
-            cursor.execute("DELETE FROM auth_cookie "
-                           "WHERE name=%s OR time < %s",
-                           (req.authname, int(time.time()) - 86400 * 10))
+            if 'trac_auth' in req.incookie:
+                cursor.execute("DELETE FROM auth_cookie WHERE cookie=%s",
+                               (req.incookie['trac_auth'].value,))
+            else:
+                cursor.execute("DELETE FROM auth_cookie WHERE name=%s",
+                               (req.authname,))
         self._expire_cookie(req)
         custom_redirect = self.config['metanav'].get('logout.redirect')
         if custom_redirect:
