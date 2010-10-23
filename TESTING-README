@@ -1,18 +1,19 @@
- = Testing Readme =
+= Testing Readme =
 
 So, you want to see what's broken?  Eeeexcellent.
 
 If you are running python < 2.4.4, please see the troubleshooting section.
 
- == Quick Start ==
-First thing to do is run the tests.
-If you have genshi and twill installed on your system, you should be able to run the tests like this:
-{{{
-PYTHONPATH=. ./trac/test.py
-}}}
+== Quick Start ==
 
- == Slow Start ==
-If you want to test against specific versions of genshi, twill, pygments, etc., you can set those up like this:
+First thing to do is run the tests.  If you have genshi and twill
+installed on your system, you should be able to run the tests like
+this: {{{ PYTHONPATH=. ./trac/test.py }}}
+
+== Slow Start ==
+
+If you want to test against specific versions of genshi, twill,
+pygments, etc., you can set those up like this:
 {{{
 myworktree/trac
           /pygments-0.8
@@ -20,13 +21,14 @@ myworktree/trac
           /genshi-0.4.4
 }}}
 
-Run `python setup egg_info` in those subdirectories as needed.
-Then you can run:
+Run `python setup egg_info` in those subdirectories as needed.  Then
+you can run:
 {{{
 PYTHONPATH=.:../twill-0.9:../genshi-0.4.4:../pygments-0.8 ./trac/test.py
 }}}
 
-If you want to run just the functional tests, you can do that by running
+If you want to run just the functional tests, you can do that by
+running
 {{{
 PYTHONPATH=.:../twill-0.9:../genshi-0.4.4:../pygments-0.8 ./trac/tests/functional/testcases.py
 }}}
@@ -37,34 +39,47 @@ PYTHONPATH=. ./trac/test.py --skip-functional-tests
 }}}
 
 
-NOTE: Unlike most unittests, the functional tests share a test fixture across tests.  This means that you can't(*) run just one of the tests by itself.
-But you can run a sub-set of the functional tests:
+NOTE: Unlike most unittests, the functional tests share a test fixture
+across tests.  This means that you can't(*) run just one of the tests
+by itself.  But you can run a sub-set of the functional tests:
 {{{
 PYTHONPATH=.:../twill-0.9:../genshi-0.4.4:../pygments-0.8 ./trac/tests/functional/__init__.py
 PYTHONPATH=.:../twill-0.9:../genshi-0.4.4:../pygments-0.8 ./trac/ticket/tests/functional.py
 PYTHONPATH=.:../twill-0.9:../genshi-0.4.4:../pygments-0.8 ./trac/versioncontrol/tests/functional.py
 }}}
-Note that that there is a set of functional tests that are run regardless of what subset you choose; these tests setup the shared fixture.
+
+Note that that there is a set of functional tests that are run
+regardless of what subset you choose; these tests setup the shared
+fixture.
 
 
-(*) Unless you modify the code to comment out the other functional tests.  The test fixture is setup and torn down by `FunctionalTestSuite`, and it runs the tests added to it with `_tester` and `_testenv` set in the testcase objects.
+(*) Unless you modify the code to comment out the other functional
+tests.  The test fixture is setup and torn down by
+`FunctionalTestSuite`, and it runs the tests added to it with
+`_tester` and `_testenv` set in the testcase objects.
 
-The functional tests require subversion, and use a random local port 8000-8999 for the test web server.
+The functional tests require subversion, and use a random local port
+8000-8999 for the test web server.
 
- == Testing output and byproducts ==
+== Testing output and byproducts ==
+
 There is some logging done:
- - testing.log
+ testing.log ::
     output from trac environment creation, tracd, and some svn commands
- - functional-testing.log
+ functional-testing.log ::
     output from twill
 
-The test fixture is left behind in 'testenv' so you can inspect it when debugging a problem.
+The test fixture is left behind in 'testenv' so you can inspect it
+when debugging a problem.
 {{{
 testenv/htpasswd   -- the password/authentication for the test fixture.  password = username
        /repo       -- the Subversion repository
        /trac       -- the Trac environment
 }}}
-(Note that running the tests again will automatically delete this test environment and create a new one.  If you want to save a test environment, you will need to rename this directory before running the tests again.)
+(Note that running the tests again will automatically delete this test
+environment and create a new one.  If you want to save a test
+environment, you will need to rename this directory before running the
+tests again.)
 
 The command to serve the test environment is:
 {{{
@@ -72,14 +87,19 @@ PYTHONPATH=.:../twill-0.9:../genshi-0.4.4:../pygments-0.8 \
 ./trac/web/standalone.py --basic-auth=trac,testenv/htpasswd, -s \
     --port=8888 testenv/trac
 }}}
-This is particularly useful when a test fails and you want to explore the environment to debug the problem.
+This is particularly useful when a test fails and you want to explore
+the environment to debug the problem.
 
- == Test Coverage ==
-You can now determine statement coverage of unittests and functional tests.  But you'll have to run them separately for now.
+== Test Coverage ==
 
-`figleaf` will need to be on your `PATH`.  Set the `FIGLEAF` environment variable to the figleaf command.
+You can now determine statement coverage of unittests and functional
+tests.  But you'll have to run them separately for now.
 
-Create a figleaf-exclude file with filename patterns to exclude.  For example:
+`figleaf` will need to be on your `PATH`.  Set the `FIGLEAF`
+environment variable to the figleaf command.
+
+Create a figleaf-exclude file with filename patterns to exclude.  For
+example:
 {{{
 /usr/lib/python.*/.*.py
 .*.html
@@ -98,29 +118,19 @@ Also, this is very slow; on a decent machine, 10 minutes for the functional test
 
 To run without figleaf, be sure to unset `FIGLEAF`.
 
---------------------------------------------------------------------------------
-== TROUBLESHOOTING: ==
+-----------------------------------------------------------------------------
+
+== Troubleshooting ==
 
  1. trac-admin is failing on initenv with this exception:
     {{{
     raise Exception('Failed with exitcode %s running trac-admin with %r' % (retval, args))
 Exception: Failed with exitcode 1 running trac-admin with ('initenv', 'testenv', 'sqlite:db/trac.db', 'svn', '..../testenv/repo')
     }}}
-    This can be caused by not having run `python setup.py egg_info` in the genshi tree.
+    This can be caused by not having run `python setup.py egg_info` in
+    the genshi tree.
 
- 2. Windows needs an implementation of crypt or fcrypt.  Carey Evans' pure
-    python version works, but prints warnings on Python 2.3 (they can be
-    ignored).  See http://carey.geek.nz/code/python-fcrypt/
-
- 3. Python versions compatibility notes
-   * If using Python >=2.4.0, <2.4.4, you need to backport `unittest` from
-     2.4.4.  If you do not do this, you will get an `AttributeError` regarding
-     `_fixture` being unset on every test.
-   * If using Python >=2.3.0, <2.3.5, you need to backport a few modules for
-     `setuptools` to work properly (`httplib2`, `cookielib`, `_*CookieJar`) and
-     remove the tuple imports to replace with explicit line continuations.
-   * If using Python >=2.3.0, <2.4.0, you need `subprocess`, `unittest`, and
-     `traceback` from 2.4.4.  On Windows you also need to modify `subprocess.py`
-     to use `pywin32` instead of `_subprocess`.  Twill includes a `subprocess`
-     module that will not work in this situation because it is not modified.
+ 2. Windows needs an implementation of crypt or fcrypt.  Carey Evans'
+    pure python version works, but prints warnings on Python 2.3 (they
+    can be ignored).  See http://carey.geek.nz/code/python-fcrypt/
 

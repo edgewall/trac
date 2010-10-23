@@ -1,40 +1,37 @@
-Release Notes for Trac 0.12 Babel Release
-=========================================
-June 13, 2010
+Release Notes for Trac 0.13 Cell Release
+========================================
+Month xx, 201x
 
 Highlights
 ----------
- * Translation of Trac in your language using Babel (http://babel.edgewall.org)
- * Multiple Repository Support per environment
- * Improved Wiki, more powerful syntax and nicer user interface with 
-   automatic preview in side-by-side editing mode
- * Improved Ticket user interface, with editable comments and 
-   automatic preview
+ * ...
+
 
 Detailed User Visible Changes
 -----------------------------
 
-A detailed view of the API changes since 0.11.x can be found in 
-TracDev/ReleaseNotes/0.12.
+A detailed view of the API changes since 0.12.x can be found in
+http://trac.edgewall.org/wiki/TracDev/ReleaseNotes/0.13.
 
 Developer-visible changes
 -------------------------
 
-A detailed view of the API changes since 0.11.x can be found in 
-TracDev/ApiChanges/0.12.
+A detailed view of the API changes since 0.12.x can be found in 
+http://trac.edgewall.org/wiki/TracDev/ApiChanges/0.13.
 
 Acknowledgements
 ----------------
-Many thanks to the growing number of people who have, and continue to,
-support the project. Also our thanks to all people providing feedback and
-bug reports that helps us making Trac better, easier to use and more
-effective. Starting with the 0.12 release, special thanks go to our
-many translators.
-Without your invaluable help, Trac would not evolve. Thank you all.
 
-Finally, we offer hope that Trac will prove itself useful to like-minded
-programmers around the world, and that this release will prove an
-improvement over the last version.
+Many thanks to the growing number of people who have, and continue to,
+support the project. Also our thanks to all people providing feedback
+and bug reports that helps us making Trac better, easier to use and
+more effective. Starting with the 0.12 release, special thanks go to
+our many translators.  Without your invaluable help, Trac would not
+evolve. Thank you all.
+
+Finally, we offer hope that Trac will prove itself useful to
+like-minded programmers around the world, and that this release will
+prove an improvement over the last version.
 
 Please let us know. :-)
 

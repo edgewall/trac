@@ -1,37 +1,38 @@
 Trac Installation Guide
 =======================
+
 Trac is a lightweight project management tool that is implemented as a
-web-based application. Trac is written in the Python programming language and
-can use SQLite, PostgreSQL or MySQL as database. For HTML rendering, Trac uses 
-the Genshi templating system.
+web-based application. Trac is written in the Python programming
+language and can use SQLite, PostgreSQL or MySQL as database. For HTML
+rendering, Trac uses the Genshi templating system.
 
-
-Note that you should also read the trac/wiki/default-pages/TracInstall 
-documentation file present in the source distribution.
-If you're upgrading an already installed environment, please also read
-trac/wiki/default-pages/TracUpgrade.
-
+Note that you should also read the
+**trac/wiki/default-pages/TracInstall** documentation file present in
+the source distribution.  If you're upgrading an already installed
+environment, please also read trac/wiki/default-pages/TracUpgrade.
 
 
 Requirements
 ------------
+
 To install Trac, the following software packages must be installed:
 
- * Python, version >= 2.4.
+ * Python, version >= 2.5.
  * setuptools, version >= 0.6
  * Genshi, version >= 0.6
- * Optionally, Subversion, version >= 1.1.x and the Subversion SWIG Python 
-   bindings (not PySVN, that's something different).
+ * Optionally, Subversion, version >= 1.1.x and the Subversion SWIG
+   Python bindings (not PySVN, that's something different).
  * One of the following Python bindings, depending on the database used:
-    * pysqlite version 2.x for SQLite 3.x (is part of the standard library 
-      starting with Python 2.5)
+    * pysqlite version 2.x for SQLite 3.x
     * psycopg2 version 2.0.x for the PostgreSQL database
     * MySQLdb, version 1.2.2 for the MySQL database
- * A web server capable of executing CGI/FastCGI scripts, or Apache HTTPD with
-   mod_python or mod_wsgi. (Trac also comes with a standalone server, tracd)
+ * A web server capable of executing CGI/FastCGI scripts, or Apache
+   HTTPD with mod_python or mod_wsgi. (Trac also comes with a
+   standalone server, tracd)
 
-Any of the above python library can usually be installed using easy_install,
-which itself can be installed using the following bootstrap script:
+Any of the above python library can usually be installed using
+easy_install, which itself can be installed using the following
+bootstrap script::
 
   $ wget http://peak.telecommunity.com/dist/ez_setup.py
 
@@ -39,9 +40,10 @@ which itself can be installed using the following bootstrap script:
 
 After that, you can do for example: easy_install Genshi
 
-If you're using Python 2.4 and need pysqlite, you can download from
-http://code.google.com/p/pysqlite/downloads/list the Windows installers or the
-tar.gz archive for building from source:
+Your version of Python comes with its own version of pysqlite, however
+if want to use the latest pysqlite package, you can download from
+http://code.google.com/p/pysqlite/downloads/list the Windows
+installers or the tar.gz archive for building from source::
 
   $ tar xvfz <version>.tar.gz
 
@@ -55,82 +57,93 @@ bindings.
 
 Installing Trac
 ---------------
-The command:
+
+The command::
 
   $ python ./setup.py install
 
 will byte-compile the python source code and install it in the
-site-packages directory of your python installation. The directories cgi-bin,
-templates, htdocs and wiki-default are all copied to ``$prefix/share/trac/``.
+site-packages directory of your python installation. The directories
+cgi-bin, templates, htdocs and wiki-default are all copied to
+``$prefix/share/trac/``.
 
-The script will also install the trac-admin command-line tool, used to create
-and maintain project environments. Trac-admin is the command center of Trac.
+The script will also install the trac-admin command-line tool, used to
+create and maintain project environments. Trac-admin is the command
+center of Trac.
 
 Note: you'll need root permissions or equivalent for this step.
 
-To install Trac in a different location, or use other advanced installation
-options, run:
+To install Trac in a different location, or use other advanced
+installation options, run::
 
   $ python ./setup.py --help
 
 
 Installing Trac on Windows
 --------------------------
-If you downloaded the Trac installer (the .exe file), installing is simply a
-matter of running the installer.  After running the installer, configuration
-and installation is the same as for other platforms.
+
+If you downloaded the Trac installer (the .exe file), installing is
+simply a matter of running the installer.  After running the
+installer, configuration and installation is the same as for other
+platforms.
 
 
 Creating a Project Environment
 ------------------------------
-A Trac environment is the backend storage format where Trac stores information
-like wiki pages, tickets, reports, settings, etc. A Trac environment consists
-of the environment configuration file (trac.ini), custom templates, log files,
-and more.
 
-A new Trac environment is created with trac-admin:
+A Trac environment is the backend storage format where Trac stores
+information like wiki pages, tickets, reports, settings, etc. A Trac
+environment consists of the environment configuration file (trac.ini),
+custom templates, log files, and more.
+
+A new Trac environment is created with trac-admin::
 
   $ trac-admin /path/to/projectenv initenv
 
-Note: The user account under which the web server is run needs write permission
-to the environment directory and all the files inside.
+Note: The user account under which the web server is run needs write
+permission to the environment directory and all the files inside.
 
-trac-admin will prompt you for the name of the project, where your subversion
-repository is located, what database you want to use, etc.
+trac-admin will prompt you for the name of the project, where your
+subversion repository is located, what database you want to use, etc.
 
 
 Running the Standalone Server
 -----------------------------
-After having created a Trac environment, you can easily try the web interface
-by running the standalone server tracd:
+
+After having created a Trac environment, you can easily try the web
+interface by running the standalone server ``tracd``::
 
   $ tracd --port 8000 /path/to/projectenv
 
-Then, fire up a browser and visit http://localhost:8000/. You should get a
-simple listing of all environments that tracd knows about. Follow the link
-to the environment you just created, and you should see Trac in action.
+Then, fire up a browser and visit http://localhost:8000/. You should
+get a simple listing of all environments that tracd knows
+about. Follow the link to the environment you just created, and you
+should see Trac in action.
 
 
 Running Trac on a Web Server
 ----------------------------
-Trac provides three options for connecting to a "real" web server: CGI, FastCGI
-and mod_python. For decent performance, it is recommended that you use either
-FastCGI or mod_python.
 
-Please refer to the TracInstall page for details on these setups. You can find
-it either in the wiki of the Trac project you just created, or on the main Trac
-site.
+Trac provides three options for connecting to a "real" web server:
+CGI, FastCGI and mod_python. For decent performance, it is recommended
+that you use either FastCGI or mod_python.
+
+Please refer to the TracInstall page for details on these setups. You
+can find it either in the wiki of the Trac project you just created,
+or on the main Trac site.
 
 
 Using Trac
 ----------
-Once you have your Trac site up and running, you should be able to browse your
-subversion repository, create tickets, view the timeline, etc.
 
-Keep in mind that anonymous (not logged in) users can by default access most
-but not all of the features. You will need to configure authentication and
-grant additional permissions to authenticated users to see the full set of
-features.
+Once you have your Trac site up and running, you should be able to
+browse your subversion repository, create tickets, view the timeline,
+etc.
+
+Keep in mind that anonymous (not logged in) users can by default
+access most but not all of the features. You will need to configure
+authentication and grant additional permissions to authenticated users
+to see the full set of features.
 
 For further documentation, see the TracGuide wiki page.
 
