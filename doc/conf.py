@@ -23,7 +23,9 @@ import sys, os
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc']
+extensions = [
+ 'sphinx.ext.autodoc',
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['.templates']
@@ -44,7 +46,7 @@ copyright = '2010, Edgewall Software'
 # The short X.Y version.
 version = '0.13'
 # The full version, including alpha/beta/rc tags.
-release = '0.13-dev'
+release = '0.13dev'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -53,11 +55,16 @@ release = '0.13-dev'
 today_fmt = '%B %d, %Y'
 
 # List of documents that shouldn't be included in the build.
-#unused_docs = []
+unused_docs = []
 
 # List of directories, relative to source directories, that shouldn't be searched
 # for source files.
-#exclude_dirs = []
+exclude_patterns = [
+    'contents.rst',
+    'install',
+    'guide',
+    'admin',
+]
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 #add_function_parentheses = True
@@ -80,7 +87,15 @@ pygments_style = 'sphinx'
 # The style sheet to use for HTML and HTML Help pages. A file of that name
 # must exist either in Sphinx' static/ path, or in one of the custom paths
 # given in html_static_path.
-html_style = 'default.css'
+#html_style = 'default.css'
+
+html_theme = 'sphinxdoc'
+
+html_theme_options = {
+#    'linkcolor': '#B00',
+#    'visitedlinkcolor': '#B00',
+}
+
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -111,7 +126,7 @@ html_last_updated_fmt = '%b %d, %Y'
 #html_additional_pages = {}
 
 # If false, no module index is generated.
-#html_use_modindex = True
+html_use_modindex = True
 
 # If true, the reST sources are included in the HTML build as _sources/<name>.
 #html_copy_source = True

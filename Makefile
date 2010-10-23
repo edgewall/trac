@@ -3,10 +3,14 @@
 #          Some i18n tasks are also supported, see HELP below.
 # ----------------------------------------------------------------------------
 #
-# Note that this is a GNU Makefile.
-# nmake and other abominations are not supported.
+# Copy Makefile.cfg.sample to Makefile.cfg and adapt to your local
+# environment, no customizations to the present Makefile should be
+# necessary.
 #
-# ----------------------------------------------------------------------------
+# Note that this is a GNU Makefile, nmake and other abominations are
+# not supported.
+#
+# ============================================================================
 
 define HELP
 
@@ -67,6 +71,15 @@ define HELP
 
   [locale=...]        variable for selecting a set of locales
 
+ ---------------- Documentation tasks
+
+  apidoc              generate the API documentation using Sphinx into
+                      build/doc/<sphinxformat>
+
+  [sphinxformat=...]  format of the generated documentation (defaults to html)
+  [sphinxopts=...]    variable containing extra options for sphinx
+  [sphinxopts-html=...] variable containing extra options used for html format
+                         
 endef
 export HELP
 
@@ -79,9 +92,13 @@ define HELP_CFG
 endef
 export HELP_CFG
 
+# ============================================================================
+
 # ----------------------------------------------------------------------------
 #
 # Main targets
+#
+# ----------------------------------------------------------------------------
 
 .PHONY: all help status clean clean-bytecode clean-mo
 
@@ -113,7 +130,7 @@ status:
 Trac.egg-info: status
 	python setup.py egg_info
 
-clean: clean-bytecode clean-figleaf clean-coverage
+clean: clean-bytecode clean-figleaf clean-coverage clean-doc
 
 clean-bytecode:
 	find -name \*.py[co] -exec rm {} \;
@@ -121,10 +138,6 @@ clean-bytecode:
 Makefile: ;
 
 # ----------------------------------------------------------------------------
-#
-# Copy Makefile.cfg.sample to Makefile.cfg and adapt to your local environment,
-# no customizations to the present Makefile should be necessary.
-#
 #
 -include Makefile.cfg
 #
@@ -134,6 +147,8 @@ Makefile: ;
 # ----------------------------------------------------------------------------
 #
 # L10N related tasks
+#
+# ----------------------------------------------------------------------------
 
 ifdef locale
     locales = $(locale)
@@ -251,6 +266,8 @@ clean-mo:
 # ----------------------------------------------------------------------------
 #
 # Testing related tasks
+#
+# ----------------------------------------------------------------------------
 
 .PHONY: test unit-test functional-test test-wiki
 
@@ -270,6 +287,8 @@ test-wiki:
 # Coverage related tasks
 #
 # (see http://nedbatchelder.com/code/coverage/)
+#
+# ----------------------------------------------------------------------------
 
 .PHONY: coverage clean-coverage show-coverage
 
@@ -309,6 +328,8 @@ htmlcov/index.html:
 # ** NOTE: there are still several issues with this **
 #  - as soon as a DocTestSuite is run, figleaf gets confused
 #  - functional-test-figleaf is broken (no .figleaf generated)
+#
+# ----------------------------------------------------------------------------
 
 .PHONY: figleaf clean-figleaf show-figleaf
 
@@ -350,6 +371,8 @@ unit-test.figleaf: Trac.egg-info
 # ----------------------------------------------------------------------------
 #
 # Tracd related tasks
+#
+# ----------------------------------------------------------------------------
 
 port ?= 8000
 tracdopts ?= -r
@@ -361,6 +384,8 @@ define server-options
  $(if $(wildcard $(env)/VERSION),$(env),-e $(env))
 endef
 
+.PHONY: server
+
 server: Trac.egg-info
 ifdef env
 	python trac/web/standalone.py $(server-options)
@@ -368,7 +393,34 @@ else
 	@echo "\`env' variable was not specified. See \`make help'."
 endif
 
+
 # ----------------------------------------------------------------------------
+#
+# Documentation related tasks
+#
+# ----------------------------------------------------------------------------
+
+.PHONY: apidoc clean-doc
+
+sphinxformat ?= html
+
+# We also try to honor the "conventional" environment variables used by Sphinx
+sphinxopts ?= $(SPHINXOPTS)
+SPHINXBUILD ?= sphinx-build
+BUILDDIR ?= build/doc/$(sphinxformat)
+PAPER ?= a4
+sphinxopts-latex ?= -D latex_paper_size=$(PAPER)
+
+apidoc:
+	@$(SPHINXBUILD) -b $(sphinxformat) \
+	    $(sphinxopts) $(sphinxopts-$(sphinxformat)) \
+	    -d build/doc/doctree \
+	    doc $(BUILDDIR)
+
+clean-doc:
+	@rm -fr build/doc
+
+# ============================================================================
 #
 # Setup environment variables
 

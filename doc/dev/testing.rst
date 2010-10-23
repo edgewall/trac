@@ -1,16 +1,16 @@
 Testing in Trac
 ===============
 
-So, you'd like to make sure Trac works in your configuration.  Excellent.
-Here's what you need to know.
+So, you'd like to make sure Trac works in your configuration.
+Excellent.  Here's what you need to know.
 
 .. toctree::
    :maxdepth: 2
 
-   testing-plugins.rst
-   testing-core.rst
-   testing-environment.rst
-   testing-database.rst
+   testing-core
+   testing-environment
+   testing-database
+   testing-plugins
 
 .. TODO how can I incude this document's tree in here as well?
 

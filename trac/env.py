@@ -14,6 +14,8 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+"""Trac Environment model and related APIs."""
+
 from __future__ import with_statement
 
 import os.path
