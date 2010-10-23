@@ -38,10 +38,11 @@ class FunctionalTestEnvironment(object):
     environment on Trac.  Subclass this and override some methods if you are
     using a different :term:`VCS`.
     
-    :class:`FunctionalTestEnvironment` requires a `dirname` in which the test
-    repository and Trac environment will be created, `port` for the
-    :command:`tracd` webserver to run on, and the `url` which can
-    access this (usually ``localhost``)."""
+    :class:`FunctionalTestEnvironment` requires a `dirname` in which
+    the test repository and Trac environment will be created, `port`
+    for the :command:`tracd` webserver to run on, and the `url` which
+    can access this (usually ``localhost``).
+    """
 
     def __init__(self, dirname, port, url):
         """Create a :class:`FunctionalTestEnvironment`, see the class itself
@@ -233,5 +234,3 @@ class FunctionalTestEnvironment(object):
 
         logfile.write(data)
         return data
-
-

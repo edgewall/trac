@@ -12,3 +12,4 @@ Functional Tester
 
 .. automodule :: trac.tests.functional.tester
    :members:
+

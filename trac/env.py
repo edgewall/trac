@@ -82,13 +82,15 @@ class IEnvironmentSetupParticipant(Interface):
 class Environment(Component, ComponentManager):
     """Trac environment manager.
 
-    Trac stores project information in a Trac environment. It consists of a
-    directory structure containing among other things:
-     * a configuration file
-     * an SQLite database (stores tickets, wiki pages...)
-     * project-specific templates and plugins
-     * wiki and ticket attachments
+    Trac stores project information in a Trac environment. It consists
+    of a directory structure containing among other things:  
+        * a configuration file, 
+        * project-specific templates and plugins,
+        * the wiki and ticket attachments files,
+        * the SQLite database file (stores tickets, wiki pages...)
+          in case the database backend is sqlite
     """
+
     implements(ISystemInfoProvider)
 
     required = True
@@ -200,11 +202,11 @@ class Environment(Component, ComponentManager):
     def __init__(self, path, create=False, options=[]):
         """Initialize the Trac environment.
         
-        @param path:   the absolute path to the Trac environment
-        @param create: if `True`, the environment is created and populated with
+        :param path:   the absolute path to the Trac environment
+        :param create: if `True`, the environment is created and populated with
                        default data; otherwise, the environment is expected to
                        already exist.
-        @param options: A list of `(section, name, value)` tuples that define
+        :param options: A list of `(section, name, value)` tuples that define
                         configuration options
         """
         ComponentManager.__init__(self)
@@ -326,23 +328,21 @@ class Environment(Component, ComponentManager):
     def get_db_cnx(self):
         """Return a database connection from the connection pool 
 
-        :deprecated:
+        :deprecated: Use :meth:`db_transaction` or :meth:`db_query` instead
 
-        Use: 
+        `db_transaction` for obtaining the `db` database connection
+        which can be used for performing any query 
+        (SELECT/INSERT/UPDATE/DELETE)::
         
            with env.db_transaction as db:
                ...
 
-           for obtaining the `db` database connection which can be
-           used for performing any query (SELECT/INSERT/UPDATE/DELETE),
-           or:
+           
+        `db_query` for obtaining a `db` database connection which can
+        be used for performing SELECT queries only::
 
            with env.db_query as db:
                ...
-
-           for obtaining a `db` database connection which can be used
-           for performing SELECT queries only.
-           
         """
         return DatabaseManager(self).get_connection()
 
@@ -383,9 +383,10 @@ class Environment(Component, ComponentManager):
                 ...
 
         :warning: after a `with env.db_query as db` block, though the
-        `db` variable is still available, you shouldn't use it as it might
-        have been closed when exiting the context, if this context was the
-        outermost context (db_query or db_connection).
+          `db` variable is still available, you shouldn't use it as it
+          might have been closed when exiting the context, if this
+          context was the outermost context (`db_query` or
+          `db_transaction`).
         """
         return QueryContextManager(self)
 
@@ -417,9 +418,9 @@ class Environment(Component, ComponentManager):
             env.db_transaction("UPDATE ...")
 
         :warning: after a `with env.db_transaction` as db` block, though the
-        `db` variable is still available, you shouldn't use it as it might
-        have been closed when exiting the context, if this context was the
-        outermost context (db_query or db_connection).
+          `db` variable is still available, you shouldn't use it as it might
+          have been closed when exiting the context, if this context was the
+          outermost context (`db_query` or `db_transaction`).
         """
         return TransactionContextManager(self)
 
@@ -441,8 +442,8 @@ class Environment(Component, ComponentManager):
         of `RepositoryManager`. This method is retained here for backward
         compatibility.
         
-        @param reponame: the name of the repository
-        @param authname: the user name for authorization (not used anymore,
+        :param reponame: the name of the repository
+        :param authname: the user name for authorization (not used anymore,
                          left here for compatibility with 0.11)
         """
         return RepositoryManager(self).get_repository(reponame)
@@ -492,10 +493,10 @@ class Environment(Component, ComponentManager):
         In practice, for database created before 0.11, this will return `False`
         which is "older" than any db version number.
 
-        :since 0.11:
+        :since: 0.11
 
         :since 0.13: deprecation warning: the `db` parameter is no longer used
-        and will be removed in version 0.14
+                     and will be removed in version 0.14
         """
         rows = self.db_query("""
                 SELECT value FROM system WHERE name='%sdatabase_version'
@@ -550,11 +551,11 @@ class Environment(Component, ComponentManager):
         This function generates one tuple for every user, of the form
         (username, name, email) ordered alpha-numerically by username.
 
-        @param cnx: the database connection; if ommitted, a new connection is
+        :param cnx: the database connection; if ommitted, a new connection is
                     retrieved
 
         :since 0.13: deprecation warning: the `cnx` parameter is no longer used
-        and will be removed in version 0.14
+                     and will be removed in version 0.14
         """
         for username, name, email in self.db_query("""
                 SELECT DISTINCT s.sid, n.value, e.value
@@ -570,7 +571,7 @@ class Environment(Component, ComponentManager):
     def backup(self, dest=None):
         """Simple SQLite-specific backup of the database.
 
-        @param dest: Destination file; if not specified, the backup is stored in
+        :param dest: Destination file; if not specified, the backup is stored in
                      a file called db_name.trac_version.bak
         """
         return DatabaseManager(self).backup(dest)
@@ -588,9 +589,9 @@ class Environment(Component, ComponentManager):
     def upgrade(self, backup=False, backup_dest=None):
         """Upgrade database.
         
-        @param backup: whether or not to backup before upgrading
-        @param backup_dest: name of the backup file
-        @return: whether the upgrade was performed
+        :param backup: whether or not to backup before upgrading
+        :param backup_dest: name of the backup file
+        :return: whether the upgrade was performed
         """
         upgraders = []
         with self.db_query as db:
@@ -707,11 +708,11 @@ def open_environment(env_path=None, use_cache=False):
     """Open an existing environment object, and verify that the database is up
     to date.
 
-    @param env_path: absolute path to the environment directory; if ommitted,
+    :param env_path: absolute path to the environment directory; if ommitted,
                      the value of the `TRAC_ENV` environment variable is used
-    @param use_cache: whether the environment should be cached for subsequent
+    :param use_cache: whether the environment should be cached for subsequent
                       invocations of this function
-    @return: the `Environment` object
+    :return: the `Environment` object
     """
     if not env_path:
         env_path = os.getenv('TRAC_ENV')

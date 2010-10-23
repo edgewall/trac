@@ -13,6 +13,11 @@ Welcome to Trac's documentation!
    api/index
    dev/testing
 
+.. toctree::
+   :hidden:
+
+   glossary
+
 
 Indices and tables
 ==================
@@ -20,4 +25,5 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+* :doc:`glossary`
 
