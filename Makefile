@@ -73,12 +73,16 @@ define HELP
 
  ---------------- Documentation tasks
 
-  apidoc              generate the API documentation using Sphinx into
+  apidoc|sphinx       generate the API documentation using Sphinx into
                       build/doc/<sphinxformat>
 
+  apiref|epydoc       generate the full API reference using Epydoc
+
   [sphinxformat=...]  format of the generated documentation (defaults to html)
-  [sphinxopts=...]    variable containing extra options for sphinx
+  [sphinxopts=...]    variable containing extra options for Sphinx
   [sphinxopts-html=...] variable containing extra options used for html format
+  [epydocopts=...]    variable containing extra options for Epydoc
+  [dotpath=/.../dot]  path to Graphviz' dot program
                          
 endef
 export HELP
@@ -400,7 +404,7 @@ endif
 #
 # ----------------------------------------------------------------------------
 
-.PHONY: apidoc clean-doc
+.PHONY: apidoc sphinx apiref epydoc clean-doc
 
 sphinxformat ?= html
 
@@ -411,14 +415,29 @@ BUILDDIR ?= build/doc/$(sphinxformat)
 PAPER ?= a4
 sphinxopts-latex ?= -D latex_paper_size=$(PAPER)
 
+sphinx: apidoc
 apidoc:
 	@$(SPHINXBUILD) -b $(sphinxformat) \
 	    $(sphinxopts) $(sphinxopts-$(sphinxformat)) \
 	    -d build/doc/doctree \
 	    doc $(BUILDDIR)
 
+
+epydoc: apiref
+apiref: doc-images
+	@python doc/runepydoc.py --config=doc/epydoc.conf \
+	    $(epydocopts) $(if $(dotpath),--dotpath=$(dotpath))
+
+doc-images: $(addprefix build/,$(wildcard doc/images/*.png))
+build/doc/images/%: doc/images/% | build/doc/images
+	@cp $(<) $(@) 
+build/doc/images:
+	@mkdir -p $(@)
+
 clean-doc:
-	@rm -fr build/doc
+	rm -fr build/doc
+
+
 
 # ============================================================================
 #

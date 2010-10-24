@@ -37,6 +37,11 @@ env = ~/tracenvs
 auth = *,~/tracenvs/htdigest.realm,realm
 
 # ----------------------------------------------------------------------------
+# Settings for the documentation
+
+dotpath = /usr/local/bin/dot
+
+# ----------------------------------------------------------------------------
 # Custom rules 
 
 .PHONY: bigtest
