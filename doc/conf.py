@@ -13,6 +13,27 @@
 
 import sys, os
 
+
+# General substitutions.
+project = 'Trac'
+copyright = '2010, Edgewall Software'
+
+# The default replacements for |version| and |release|, also used in various
+# other places throughout the built documents.
+#
+# The short X.Y version.
+version = '0.13'
+# The full version, including alpha/beta/rc tags.
+release = '0.13'
+# Devel or Release mode for the documentation (if devel, include TODOs,
+# can also be used in conditionals: .. ifconfig :: devel)
+devel = True
+
+if devel:
+    release += 'dev'
+
+
+
 # If your extensions are in another directory, add it here. If the directory
 # is relative to the documentation root, use os.path.abspath to make it
 # absolute, like shown here.
@@ -25,6 +46,8 @@ import sys, os
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
  'sphinx.ext.autodoc',
+ 'sphinx.ext.ifconfig',
+ 'sphinx.ext.todo',
 ]
 
 # PDF support via rst2pdf (http://code.google.com/p/rst2pdf/)
@@ -37,6 +60,9 @@ except ImportError:
 autoclass_content = 'both'
 autodoc_member_order = 'bysource'
 
+todo_include_todos = devel
+
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['.templates']
 
@@ -46,17 +72,6 @@ source_suffix = '.rst'
 # The master toctree document.
 master_doc = 'index'
 
-# General substitutions.
-project = 'Trac'
-copyright = '2010, Edgewall Software'
-
-# The default replacements for |version| and |release|, also used in various
-# other places throughout the built documents.
-#
-# The short X.Y version.
-version = '0.13'
-# The full version, including alpha/beta/rc tags.
-release = '0.13dev'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -292,3 +307,6 @@ pdf_use_numbered_links = False
 
 # Background images fitting mode
 pdf_fit_background_mode = 'scale'
+
+def setup(app):
+    app.add_config_value('devel', '', True)

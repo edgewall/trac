@@ -18,6 +18,13 @@ Welcome to Trac's documentation!
 
    glossary
 
+.. ifconfig:: devel
+
+   .. toctree::
+      :hidden:
+
+      todo
+
 
 Indices and tables
 ==================
@@ -27,3 +34,6 @@ Indices and tables
 * :ref:`search`
 * :doc:`glossary`
 
+.. ifconfig:: devel
+
+   * :doc:`todo`

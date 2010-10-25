@@ -12,7 +12,7 @@ Excellent.  Here's what you need to know.
    testing-database
    testing-plugins
 
-.. TODO how can I incude this document's tree in here as well?
+.. todo :: how can I include this document's tree in here as well?
 
 
 .. index::
@@ -134,5 +134,5 @@ Prerequisites on Windows
 .. _pywin32: http://sourceforge.net/projects/pywin32/
 .. _fcrypt: http://carey.geek.nz/code/python-fcrypt/
 
-.. TODO write more, with testing-specific steps.
+.. todo :: write more, with testing-specific steps.
 
