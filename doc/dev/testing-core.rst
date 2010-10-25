@@ -11,6 +11,8 @@ which you can add to.  The environment is brought up as few times as
 possible, for speed, and your test order is guaranteed to be run in
 the order it's added to the suite, at the end of the file.
 
+.. _using-twill:
+
 Using Twill
 -----------
 
