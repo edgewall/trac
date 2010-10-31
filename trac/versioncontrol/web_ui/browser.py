@@ -343,7 +343,8 @@ class BrowserModule(Component):
         reponame, repos, path = rm.get_repository_by_path(path)
 
         # Repository index
-        if not reponame and path == '/':
+        show_index = not reponame and path == '/'
+        if show_index:
             if repos and (all_repositories[''].get('hidden') in _TRUE_VALUES
                           or not repos.can_view(req.perm)):
                 repos = None
@@ -383,7 +384,7 @@ class BrowserModule(Component):
                                     order, desc)
 
         repo_data = dir_data = file_data = None
-        if not reponame and path == '/':
+        if show_index:
             repo_data = self._render_repository_index(
                                         context, all_repositories, order, desc)
         if node:

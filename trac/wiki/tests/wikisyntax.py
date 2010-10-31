@@ -304,6 +304,13 @@ and <a class="ext-link" href="http://www.usemod.com/cgi-bin/mb.pl?InterMapTxt&am
 complex link <a class="ext-link" href="http://server/a/page/test?format=txt&amp;go#there" title="resource test in a"><span class="icon">\xa0</span>complex:a:test?go#there</a> with positional arguments
 </p>
 ------------------------------
+============================== Regression for #9712
+This is not a link: x,://localhost
+------------------------------
+<p>
+This is not a link: x,:<em>localhost
+</em></p>
+------------------------------
 """ #" Emacs likes it that way better
 
 
@@ -612,6 +619,7 @@ MissingFirstLevel/MissingPage
 
 
 def wiki_setup(tc):
+    tc.env.config.set('wiki', 'render_unsafe_content', True) # for #9712
     now = datetime.now(utc)
     wiki0 = WikiPage(tc.env)
     wiki0.name = 'Main/Sub'
