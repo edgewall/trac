@@ -98,31 +98,6 @@ class ComponentMeta(type):
             # Don't put the Component base class in the registry
             return new_class
 
-        # Only override __init__ for Components not inheriting ComponentManager
-        if True not in [issubclass(x, ComponentManager) for x in bases]:
-            # Allow components to have a no-argument initializer so that
-            # they don't need to worry about accepting the component manager
-            # as argument and invoking the super-class initializer
-            init = d.get('__init__')
-            if not init:
-                # Because we're replacing the initializer, we need to make sure
-                # that any inherited initializers are also called.
-                for init in [b.__init__._original for b in new_class.mro()
-                             if issubclass(b, Component)
-                             and '__init__' in b.__dict__]:
-                    break
-            def maybe_init(self, compmgr, init=init, cls=new_class):
-                if cls not in compmgr.components:
-                    compmgr.components[cls] = self
-                    if init:
-                        try:
-                            init(self)
-                        except:
-                            del compmgr.components[cls]
-                            raise
-            maybe_init._original = init
-            new_class.__init__ = maybe_init
-
         if d.get('abstract'):
             # Don't put abstract component classes in the registry
             return new_class
@@ -137,6 +112,28 @@ class ComponentMeta(type):
 
         return new_class
 
+    def __call__(cls, *args, **kwargs):
+        """Return an existing instance of the component if it has already been
+        activated, otherwise create a new instance.
+        """
+        # If this component is also the component manager, just invoke that
+        if issubclass(cls, ComponentManager):
+            self = super(Component, cls).__new__(cls)
+            self.compmgr = self
+            self.__init__(*args, **kwargs)
+            return self
+
+        # The normal case where the component is not also the component manager
+        compmgr = args[0]
+        self = compmgr.components.get(cls)
+        if self is None:
+            self = cls.__new__(cls)
+            self.compmgr = compmgr
+            compmgr.component_activated(self)
+            self.__init__(*list(args)[1:], **kwargs)
+            compmgr.components[cls] = self
+        return self
+
 
 class Component(object):
     """Base class for components.
@@ -145,25 +142,6 @@ class Component(object):
     what extension points of other components it extends.
     """
     __metaclass__ = ComponentMeta
-
-    def __new__(cls, *args, **kwargs):
-        """Return an existing instance of the component if it has already been
-        activated, otherwise create a new instance.
-        """
-        # If this component is also the component manager, just invoke that
-        if issubclass(cls, ComponentManager):
-            self = super(Component, cls).__new__(cls)
-            self.compmgr = self
-            return self
-
-        # The normal case where the component is not also the component manager
-        compmgr = args[0]
-        self = compmgr.components.get(cls)
-        if self is None:
-            self = super(Component, cls).__new__(cls)
-            self.compmgr = compmgr
-            compmgr.component_activated(self)
-        return self
 
     @staticmethod
     def implements(*interfaces):
