@@ -113,9 +113,13 @@ class ComponentMeta(type):
                     break
             def maybe_init(self, compmgr, init=init, cls=new_class):
                 if cls not in compmgr.components:
-                    if init:
-                        init(self)
                     compmgr.components[cls] = self
+                    if init:
+                        try:
+                            init(self)
+                        except:
+                            del compmgr.components[cls]
+                            raise
             maybe_init._original = init
             new_class.__init__ = maybe_init
 
