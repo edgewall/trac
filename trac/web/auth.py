@@ -14,6 +14,8 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from __future__ import with_statement
+
 try:
     from base64 import b64decode, b64encode
 except ImportError:

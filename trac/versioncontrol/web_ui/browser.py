@@ -41,7 +41,7 @@ from trac.wiki.api import IWikiSyntaxProvider, IWikiMacroProvider, parse_args
 from trac.wiki.formatter import format_to_html, format_to_oneliner
 
 from ..api import NoSuchChangeset, RepositoryManager
-from .util import *
+from trac.versioncontrol.web_ui.util import * # `from .util import *` FIXME 2.6
 
 
 CHUNK_SIZE = 4096
