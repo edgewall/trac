@@ -295,7 +295,7 @@ msgid "File '%(name)s' exists"
 msgstr "Tiedosto '%(name)s' on jo olemassa"
 
 #: trac/config.py:40
-#, 
+#,
 msgid "Configuration Error"
 msgstr "Konfiguraatiovirhe"
 
@@ -316,7 +316,7 @@ msgid "[%(section)s] %(entry)s: expected one of (%(choices)s), got %(value)s"
 msgstr ""
 
 #: trac/core.py:33
-#, 
+#,
 msgid "Trac Error"
 msgstr "Virhe Trac-järjestelmässä"
 
@@ -1129,7 +1129,7 @@ msgid "Install Plugin:"
 msgstr "Asenna liitännäinen:"
 
 #: trac/admin/templates/admin_plugins.html:41
-#, 
+#,
 msgid "File: [1:]"
 msgstr "Tiedosto: [1:]"
 
@@ -2357,11 +2357,11 @@ msgstr "Päätökset"
 
 #: trac/ticket/admin.py:803 trac/ticket/api.py:298
 msgid "Severity"
-msgstr "Vakavuus"
+msgstr "Vaikutus"
 
 #: trac/ticket/admin.py:803
 msgid "Severities"
-msgstr "Vakavuudet"
+msgstr "Vaikutukset"
 
 #: trac/ticket/admin.py:809
 msgid "Ticket Type"
@@ -2430,27 +2430,27 @@ msgstr "Lipun omistajuus tullaan menettämään"
 #: trac/ticket/default_workflow.py:253 trac/ticket/default_workflow.py:272
 #, python-format
 msgid "to %(owner)s"
-msgstr ""
+msgstr ": %(owner)s"
 
 #: trac/ticket/default_workflow.py:255 trac/ticket/default_workflow.py:275
 #, python-format
 msgid "The owner will be changed from %(current_owner)s"
-msgstr ""
+msgstr "Entinen omistaja on %(current_owner)s"
 
 #: trac/ticket/default_workflow.py:263
 #, python-format
 msgid "to %(owner)s "
-msgstr ""
+msgstr "omistajalle %(owner)s "
 
 #: trac/ticket/default_workflow.py:265
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(selected_owner)s"
-msgstr ""
+msgstr "Vanha omistaja %(current_owner)s vaihdetaan uudeksi omistajaksi %(selected_owner)s"
 
 #: trac/ticket/default_workflow.py:280
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(authname)s"
-msgstr ""
+msgstr "Vanha omistaja %(current_owner)s vaihdetaan uudeksi omistajaksi %(authname)s"
 
 #: trac/ticket/default_workflow.py:290
 msgid ""
@@ -2461,7 +2461,7 @@ msgstr ""
 #: trac/ticket/default_workflow.py:298 trac/ticket/default_workflow.py:308
 #, python-format
 msgid "as %(resolution)s"
-msgstr ""
+msgstr "päätöksellä %(resolution)s"
 
 #: trac/ticket/default_workflow.py:300
 #, python-format
@@ -2479,7 +2479,7 @@ msgstr "Päätös poistetaan"
 #: trac/ticket/default_workflow.py:316
 #, python-format
 msgid "as %(status)s "
-msgstr ""
+msgstr " (tila on edelleen '%(status)s') "
 
 #: trac/ticket/default_workflow.py:320
 #, python-format
@@ -2791,7 +2791,7 @@ msgid "You must provide a name for the milestone."
 msgstr "Tavoitteella täytyy olla nimi."
 
 #: trac/ticket/web_ui.py:55
-#, 
+#,
 msgid "Invalid Ticket"
 msgstr "Viallinen lippu"
 
@@ -2923,7 +2923,7 @@ msgid "Ticket Diff"
 msgstr "Lipun eroavaisuudet"
 
 #: trac/ticket/web_ui.py:900
-#, 
+#,
 msgid "''Initial version''"
 msgstr "Alkuperäinen versio"
 
