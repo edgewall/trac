@@ -135,7 +135,7 @@ class ComponentMeta(type):
             self = cls.__new__(cls)
             self.compmgr = compmgr
             compmgr.component_activated(self)
-            self.__init__(*args[1:], **kwargs)
+            self.__init__()
             # Only register the instance once it is fully initialized (#9418)
             compmgr.components[cls] = self
         return self

@@ -94,8 +94,41 @@ In practice, there's only one kind of `ComponentManager` in the Trac
 application itself, the `trac.env.Environment`.
 
 
+More on components
+------------------
+
+We have seen above that one way to retrieve a `Component` instance is
+to call the constructor on a `ComponentManager` instance `mgr`::
+
+  a1 = ComponentA(mgr)
+
+This will eventually trigger the creation of a new `ComponentA`
+instance if there wasn't already one created for `mgr` [*]_. At this
+unique occasion, the constructor of the component subclass will be
+called *without arguments*, so if you define a constructor it must
+have the following signature::
+
+  def __init__(self):
+      self.all_colors = set()
+
+You should try to do as little as possible in a `Component`
+constructor.  The most complex operation could be for example the
+allocation of a lock to control the concurrent access to some data
+members and guarantee thread-safe initialization of more costly
+resources on first use. Never do such costly initializations in the
+constructor itself.
+
+
 Miscellaneous
 -------------
 
 .. autoclass :: trac.core.TracError
    :members:
+
+
+.. [*] Ok, it *might* happen that more than one component instance get
+   created due to a race condition. This is usually harmless, see
+   #9418.
+
+.. todo:: would be nice to have a `:teo:` role for linking to 
+   http://trac.edgewall.org/intertrac/.
