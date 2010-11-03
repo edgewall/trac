@@ -118,7 +118,7 @@ class ComponentMeta(type):
         """
         # If this component is also the component manager, just invoke that
         if issubclass(cls, ComponentManager):
-            self = super(Component, cls).__new__(cls)
+            self = cls.__new__(cls)
             self.compmgr = self
             self.__init__(*args, **kwargs)
             return self
@@ -126,11 +126,16 @@ class ComponentMeta(type):
         # The normal case where the component is not also the component manager
         compmgr = args[0]
         self = compmgr.components.get(cls)
+        # Note that this check is racy, we intentionally don't use a
+        # lock in order to keep things simple and avoid the risk of
+        # deadlocks, as the impact of having temporarily two (or more)
+        # instances for a given `cls` is negligible.
         if self is None:
             self = cls.__new__(cls)
             self.compmgr = compmgr
             compmgr.component_activated(self)
-            self.__init__(*list(args)[1:], **kwargs)
+            self.__init__(*args[1:], **kwargs)
+            # Only register the instance once it is fully initialized (#9418)
             compmgr.components[cls] = self
         return self
 
