@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2009 Edgewall Software
+# Copyright (C) 2003-2010 Edgewall Software
 # Copyright (C) 2003-2004 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2004-2005 Christopher Lenz <cmlenz@gmx.de>
 # All rights reserved.
@@ -62,20 +62,21 @@ class ExtensionPoint(property):
     def __init__(self, interface):
         """Create the extension point.
         
-        @param interface: the `Interface` subclass that defines the protocol
+        :param interface: the `Interface` subclass that defines the protocol
             for the extension point
         """
         property.__init__(self, self.extensions)
         self.interface = interface
-        self.__doc__ = 'List of components that implement `%s`' % \
-                       self.interface.__name__
+        self.__doc__ = ("List of components that implement `%s`" %
+                        self.interface.__name__)
 
     def extensions(self, component):
         """Return a list of components that declare to implement the extension
         point interface.
         """
-        extensions = ComponentMeta._registry.get(self.interface, ())
-        return filter(None, [component.compmgr[cls] for cls in extensions])
+        classes = ComponentMeta._registry.get(self.interface, ())
+        components = [component.compmgr[cls] for cls in classes]
+        return [c for c in components if c]
 
     def __repr__(self):
         """Return a textual representation of the extension point."""
@@ -208,7 +209,7 @@ class ComponentManager(object):
     def disable_component(self, component):
         """Force a component to be disabled.
         
-        The argument `component` can be a class or an instance.
+        :param component: can be a class or an instance.
         """
         if not isinstance(component, type):
             component = component.__class__
