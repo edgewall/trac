@@ -2751,7 +2751,7 @@ msgstr ""
 #: trac/ticket/roadmap.py:571 trac/ticket/templates/roadmap.html:10
 #: trac/ticket/templates/roadmap.html:15
 msgid "Roadmap"
-msgstr "Tiekartta"
+msgstr "Tavoitteet"
 
 #: trac/ticket/roadmap.py:364
 msgid "iCalendar"
