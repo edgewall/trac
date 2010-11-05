@@ -265,7 +265,7 @@ ${ticket.description}</textarea>
                     </td>
                   </tr>
                 </py:if>
-                <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea' and f.name != 'owner')"
+                <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
                     py:if="can_modify or can_create"
                     py:with="fullrow = len(row) == 1">
                   <py:for each="idx, field in enumerate(row)"

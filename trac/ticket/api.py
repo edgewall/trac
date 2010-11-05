@@ -376,7 +376,8 @@ class TicketSystem(Component):
                 field['height'] = config.getint(name + '.rows')
             fields.append(field)
 
-        fields.sort(lambda x, y: cmp(x['order'], y['order']))
+        fields.sort(lambda x, y: cmp((x['order'], x['name']),
+                                     (y['order'], y['name'])))
         return fields
 
     def get_field_synonyms(self):
