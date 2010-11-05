@@ -561,8 +561,7 @@ msgstr "trac-admin - Trac ylläpitokonsoli %(version)s"
 #: trac/admin/console.py:302
 msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
 msgstr ""
-"Käyttö: trac-admin </polku/ympäristöön> [komento [alikomennon] [vaihtoehto "
-"...]]"
+"Käyttö: trac-admin </polku/ympäristöön> [komento [alikomennon] [optio ...]]\n"
 
 #: trac/admin/console.py:305
 msgid "Invoking trac-admin without command starts interactive mode.\n"
