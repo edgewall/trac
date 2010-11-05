@@ -23,7 +23,7 @@ from genshi.builder import tag
 
 from trac import __version__
 from trac.attachment import AttachmentModule
-from trac.config import ExtensionOption
+from trac.config import ExtensionOption, _TRUE_VALUES
 from trac.core import *
 from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
@@ -251,7 +251,7 @@ class DefaultTicketGroupStatsProvider(Component):
             stat.add_interval(group.get('label', group['name']), 
                               group_cnt, query_args,
                               group.get('css_class', group['name']),
-                              bool(group.get('overall_completion')))
+                              group.get('overall_completion') in _TRUE_VALUES)
         stat.refresh_calcs()
         return stat
 
