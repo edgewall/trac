@@ -22,7 +22,7 @@ Arguments:
     <tr>
       <td py:for="idx, interval in enumerate(stats.intervals)"
           class="$interval.css_class"
-          style="${interval.percent and 'width: %d%%' % interval.percent or 'display: none'}">
+          style="${interval.percent > 0 and 'width: %d%%' % interval.percent or 'display: none'}">
         <a href="${interval_hrefs and interval_hrefs[idx] or None}"
            title="${_('%(count)s/%(total)s %(title)s',
                       count=interval.count, total=stats.count, title=interval.title)}"></a>

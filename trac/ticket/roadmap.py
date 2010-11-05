@@ -112,13 +112,16 @@ class TicketGroupStats(object):
                 self.done_percent += interval['percent']
                 self.done_count += interval['count']
 
-        # We want the percentages to add up to 100%.  To do that, we fudge the
-        # first interval that counts as "completed".  That interval is adjusted
-        # by enough to make the intervals sum to 100%.
+        # We want the percentages to add up to 100%. To do that, we fudge one
+        # of the intervals. If we're <100%, we add to the smallest non-zero
+        # interval. If we're >100%, we subtract from the largest interval.
+        # The interval is adjusted by enough to make the intervals sum to 100%.
         if self.done_count and total_percent != 100:
-            fudge_int = [i for i in self.intervals
-                         if i['overall_completion']][0]
             fudge_amt = 100 - total_percent
+            fudge_int = [i for i in sorted(self.intervals,
+                                           key=lambda k: k['percent'],
+                                           reverse=(fudge_amt < 0))
+                         if i['percent']][0]
             fudge_int['percent'] += fudge_amt
             self.done_percent += fudge_amt
 
