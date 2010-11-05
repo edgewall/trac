@@ -21,7 +21,7 @@ import re
 
 from genshi.builder import tag
 
-from trac.config import ListOption, BoolOption, Option, _TRUE_VALUES
+from trac.config import ListOption, BoolOption, Option
 from trac.core import *
 from trac.mimeview.api import Mimeview, is_binary, \
                               IHTMLPreviewAnnotator, Context
@@ -343,7 +343,7 @@ class BrowserModule(Component):
         # Repository index
         show_index = not reponame and path == '/'
         if show_index:
-            if repos and (all_repositories[''].get('hidden') in _TRUE_VALUES
+            if repos and (as_bool(all_repositories[''].get('hidden'))
                           or not repos.can_view(req.perm)):
                 repos = None
 
@@ -490,7 +490,7 @@ class BrowserModule(Component):
         rm = RepositoryManager(self.env)
         repositories = []
         for reponame, repoinfo in all_repositories.iteritems():
-            if not reponame or repoinfo.get('hidden') in _TRUE_VALUES:
+            if not reponame or as_bool(repoinfo.get('hidden')):
                 continue
             try:
                 repos = rm.get_repository(reponame)
@@ -853,7 +853,7 @@ class BrowserModule(Component):
                      for reponame in all_repos]
         all_repos = sorted(((reponame, repos) for reponame, repos in all_repos
                             if repos
-                            and repos.params.get('hidden') not in _TRUE_VALUES
+                            and as_bool(repos.params.get('hidden'))
                             and repos.can_view(formatter.perm)),
                            reverse=desc)
 

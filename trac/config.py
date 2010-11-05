@@ -18,7 +18,7 @@ import os.path
 
 from trac.admin import IAdminCommandProvider
 from trac.core import *
-from trac.util import AtomicFile
+from trac.util import AtomicFile, as_bool
 from trac.util.compat import any
 from trac.util.text import printout, to_unicode, CRLF
 from trac.util.translation import _, N_
@@ -27,6 +27,7 @@ __all__ = ['Configuration', 'Option', 'BoolOption', 'IntOption', 'FloatOption',
            'ListOption', 'ChoiceOption', 'PathOption', 'ExtensionOption',
            'OrderedExtensionsOption', 'ConfigurationError']
 
+# Retained for backward-compatibility, use as_bool() instead
 _TRUE_VALUES = ('yes', 'true', 'enabled', 'on', 'aye', '1', 1, True)
 
 _use_default = object()
@@ -391,14 +392,12 @@ class Section(object):
         """Return the value of the specified option as boolean.
         
         This method returns `True` if the option value is one of "yes", "true",
-        "enabled", "on", or "1", ignoring case. Otherwise `False` is returned.
+        "enabled", "on", or non-zero numbers, ignoring case. Otherwise `False`
+        is returned.
 
         Valid default input is a string or a bool. Returns a bool.
         """
-        value = self.get(key, default)
-        if isinstance(value, basestring):
-            value = value.lower() in _TRUE_VALUES
-        return bool(value)
+        return as_bool(self.get(key, default))
 
     def getint(self, key, default=''):
         """Return the value of the specified option as integer.

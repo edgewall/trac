@@ -912,12 +912,22 @@ def as_int(s, default, min=None, max=None):
         value = max
     return value
 
-def as_bool(s):
-    """Convert s to a `bool`."""
+def as_bool(value):
+    """Convert the given value to a `bool`.
+    
+    If `value` is a string, return `True` for any of "yes", "true", "enabled",
+    "on" or non-zero numbers, ignoring case. For non-string arguments, return
+    the argument converted to a `bool`, or `False` if the conversion fails.
+    """
+    if isinstance(value, basestring):
+        try:
+            return bool(float(value))
+        except ValueError:
+            return value.strip().lower() in ('yes', 'true', 'enabled', 'on')
     try:
-        return bool(int(s))
+        return bool(value)
     except (TypeError, ValueError):
-        return bool(s and s.lower() in ('true', 'yes', 'on'))
+        return False
 
 def pathjoin(*args):
     """Strip `/` from the arguments and join them with a single `/`."""

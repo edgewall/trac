@@ -122,13 +122,25 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEquals('y', config.get('b', u'öption2', 'y'))
 
     def test_read_and_getbool(self):
-        self._write(['[a]', 'option = yes'])
+        self._write(['[a]', 'option = yes', 'option2 = true',
+                     'option3 = eNaBlEd', 'option4 = on',
+                     'option5 = 1', 'option6 = 123', 'option7 = 123.456',
+                     'option8 = disabled', 'option9 = 0', 'option10 = 0.0'])
         config = self._read()
         self.assertEquals(True, config.getbool('a', 'option'))
         self.assertEquals(True, config.getbool('a', 'option', False))
-        self.assertEquals(False, config.getbool('b', 'option2'))
-        self.assertEquals(False, config.getbool('b', 'option2', False))
-        self.assertEquals(False, config.getbool('b', 'option2', 'disabled'))
+        self.assertEquals(True, config.getbool('a', 'option2'))
+        self.assertEquals(True, config.getbool('a', 'option3'))
+        self.assertEquals(True, config.getbool('a', 'option4'))
+        self.assertEquals(True, config.getbool('a', 'option5'))
+        self.assertEquals(True, config.getbool('a', 'option6'))
+        self.assertEquals(True, config.getbool('a', 'option7'))
+        self.assertEquals(False, config.getbool('a', 'option8'))
+        self.assertEquals(False, config.getbool('a', 'option9'))
+        self.assertEquals(False, config.getbool('a', 'option10'))
+        self.assertEquals(False, config.getbool('b', 'option_b'))
+        self.assertEquals(False, config.getbool('b', 'option_b', False))
+        self.assertEquals(False, config.getbool('b', 'option_b', 'disabled'))
 
     def test_read_and_getint(self):
         self._write(['[a]', 'option = 42'])

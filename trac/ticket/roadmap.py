@@ -23,12 +23,13 @@ from genshi.builder import tag
 
 from trac import __version__
 from trac.attachment import AttachmentModule
-from trac.config import ExtensionOption, _TRUE_VALUES
+from trac.config import ExtensionOption
 from trac.core import *
 from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.resource import *
 from trac.search import ISearchSource, search_to_sql, shorten_result
+from trac.util import as_bool
 from trac.util.datefmt import parse_date, utc, to_utimestamp, \
                               get_datetime_format_hint, format_date, \
                               format_datetime, from_utimestamp
@@ -251,7 +252,7 @@ class DefaultTicketGroupStatsProvider(Component):
             stat.add_interval(group.get('label', group['name']), 
                               group_cnt, query_args,
                               group.get('css_class', group['name']),
-                              group.get('overall_completion') in _TRUE_VALUES)
+                              as_bool(group.get('overall_completion')))
         stat.refresh_calcs()
         return stat
 
