@@ -182,6 +182,7 @@ check-%:
 	@echo -n "$(@): "
 	@msgfmt --check $(messages.po) && msgfmt --check $(messages-js.po) \
 	 && echo OK
+	@rm -f messages.mo
 
 stats: pre-stats $(addprefix stats-,$(locales))
 
