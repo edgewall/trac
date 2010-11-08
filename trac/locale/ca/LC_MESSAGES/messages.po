@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: trac 0.12.2-dev\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-10-19 22:28+0200\n"
-"PO-Revision-Date: 2010-10-21 14:04+0200\n"
+"PO-Revision-Date: 2010-11-08 14:23+0100\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <ca@dodds.net>\n"
 "Language: ca\n"
@@ -378,7 +378,7 @@ msgstr "La còpia en calent no pot sobreescriure «%(dest)s»"
 #: trac/env.py:744
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
-msgstr "Fent una còpia en calent de %(src)s a %(dst)s…"
+msgstr "S'està fent una còpia en calent de %(src)s a %(dst)s…"
 
 #: trac/env.py:759
 msgid "The following errors happened while copying the environment:"
@@ -386,7 +386,7 @@ msgstr "S'han produït els errors següents mentre es copiava l'entorn:"
 
 #: trac/env.py:770
 msgid "Hotcopy done."
-msgstr "Còpia en calent feta."
+msgstr "S'ha fet una còpia en calent."
 
 #: trac/env.py:775 trac/admin/api.py:130
 msgid "Invalid arguments"
