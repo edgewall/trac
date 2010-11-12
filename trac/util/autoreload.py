@@ -13,17 +13,20 @@
 
 import os
 import sys
-import thread
+import threading
 import time
+import traceback
 
 _SLEEP_TIME = 1
 
-def _reloader_thread(modification_callback):
+def _reloader_thread(modification_callback, loop_callback):
     """When this function is run from the main thread, it will force other
     threads to exit when any modules currently loaded change.
     
     @param modification_callback: a function taking a single argument, the
         modified file, which is called every time a modification is detected
+    @param loop_callback: a function taking no arguments, which is called
+        after every modification check
     """
     mtimes = {}
     while True:
@@ -50,6 +53,7 @@ def _reloader_thread(modification_callback):
             if mtime > mtimes[filename]:
                 modification_callback(filename)
                 sys.exit(3)
+        loop_callback()
         time.sleep(_SLEEP_TIME)
 
 def _restart_with_reloader():
@@ -70,11 +74,26 @@ def _restart_with_reloader():
 def main(func, modification_callback, *args, **kwargs):
     """Run the given function and restart any time modules are changed."""
     if os.environ.get('RUN_MAIN'):
+        exit_code = []
+        def main_thread():
+            try:
+                func(*args, **kwargs)
+                exit_code.append(None)
+            except SystemExit, e:
+                exit_code.append(e.code)
+            except:
+                traceback.print_exception(*sys.exc_info())
+                exit_code.append(1)
+        def check_exit():
+            if exit_code:
+                sys.exit(exit_code[0])
         # Lanch the actual program as a child thread
-        thread.start_new_thread(func, args, kwargs)
+        thread = threading.Thread(target=main_thread, name='Main thread')
+        thread.setDaemon(True)
+        thread.start()
         try:
             # Now wait for a file modification and quit
-            _reloader_thread(modification_callback)
+            _reloader_thread(modification_callback, check_exit)
         except KeyboardInterrupt:
             pass
     else:

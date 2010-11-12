@@ -21,6 +21,7 @@
 
 import pkg_resources
 import os
+import socket
 import sys
 from SocketServer import ThreadingMixIn
 
@@ -241,17 +242,24 @@ def main():
 
     if options.protocol == 'http':
         def serve():
-            httpd = TracHTTPServer(server_address, wsgi_app,
-                                   options.env_parent_dir, args,
-                                   use_http_11=options.http11)
-
-            print 'Server starting in PID %i.' % os.getpid()
             addr, port = server_address
             if not addr or addr == '0.0.0.0':
-                print 'Serving on 0.0.0.0:%s view at http://127.0.0.1:%s/%s' \
+                loc = '0.0.0.0:%s view at http://127.0.0.1:%s/%s' \
                        % (port, port, base_path)
             else:
-                print 'Serving on http://%s:%s/%s' % (addr, port, base_path)
+                loc = 'http://%s:%s/%s' % (addr, port, base_path)
+
+            try:
+                httpd = TracHTTPServer(server_address, wsgi_app,
+                                       options.env_parent_dir, args,
+                                       use_http_11=options.http11)
+            except socket.error, e:
+                print 'Error starting Trac server on %s' % loc
+                print e.strerror
+                sys.exit(1)
+
+            print 'Server starting in PID %i.' % os.getpid()
+            print 'Serving on %s' % loc
             if options.http11:
                 print 'Using HTTP/1.1 protocol version'
             httpd.serve_forever()
