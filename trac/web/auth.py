@@ -221,8 +221,12 @@ class LoginModule(Component):
         """Redirect the user back to the URL she came from."""
         referer = self._referer(req)
         if referer and not (referer == req.base_url or \
-                referer.startswith(req.base_url.rstrip('/')+'/')):
+                referer.startswith(req.base_url.rstrip('/') + '/')):
             # only redirect to referer if it is from the same site
+            referer = None
+        if referer and referer.rstrip('/') == req.base_url.rstrip('/') \
+                                              + req.path_info.rstrip('/'):
+            # Avoid redirect loops
             referer = None
         req.redirect(referer or req.abs_href())
 

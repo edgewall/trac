@@ -17,10 +17,10 @@ import sys
 from genshi.builder import tag
 
 from trac.admin import IAdminCommandProvider, IAdminPanelProvider
-from trac.config import _TRUE_VALUES, ListOption
+from trac.config import ListOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
-from trac.util import is_path_below
+from trac.util import as_bool, is_path_below
 from trac.util.compat import any
 from trac.util.text import breakable_path, normalize_whitespace, print_table, \
                            printout
@@ -320,7 +320,7 @@ class RepositoryAdminPanel(Component):
         info['name'] = reponame
         if info.get('dir') is not None:
             info['prettydir'] = breakable_path(info['dir']) or ''
-        info['hidden'] = info.get('hidden') in _TRUE_VALUES
+        info['hidden'] = as_bool(info.get('hidden'))
         info['editable'] = editable
         if not info.get('alias'):
             try:

@@ -28,14 +28,14 @@ from StringIO import StringIO
 
 from genshi.builder import tag
 
-from trac.config import Option, BoolOption, IntOption, _TRUE_VALUES
+from trac.config import Option, BoolOption, IntOption
 from trac.core import *
 from trac.mimeview import Context, Mimeview
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.timeline.api import ITimelineEventProvider
-from trac.util import content_disposition, embedded_numbers, pathjoin
+from trac.util import as_bool, content_disposition, embedded_numbers, pathjoin
 from trac.util.datefmt import from_utimestamp, pretty_timedelta
 from trac.util.text import exception_to_unicode, to_unicode, \
                            unicode_urlencode, shorten_line, CRLF
@@ -865,7 +865,7 @@ class ChangesetModule(Component):
                     ('repo-' + repos.reponame,
                      u"\xa0\xa0-\xa0" + (repos.reponame or _('(default)')))
                     for repos in repositories
-                    if repos.params.get('hidden') not in _TRUE_VALUES
+                    if as_bool(repos.params.get('hidden'))
                     and repos.can_view(req.perm)]
                 filters.sort()
                 add_script(req, 'common/js/timeline_multirepos.js')

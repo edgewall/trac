@@ -26,7 +26,7 @@ from genshi.core import Markup
 from genshi.builder import tag
 
 from trac.attachment import AttachmentModule
-from trac.config import BoolOption, Option, IntOption, _TRUE_VALUES
+from trac.config import BoolOption, Option, IntOption
 from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter, Context
 from trac.resource import Resource, ResourceNotFound, get_resource_url, \
@@ -36,7 +36,7 @@ from trac.ticket.api import TicketSystem, ITicketManipulator
 from trac.ticket.model import Milestone, Ticket, group_milestones
 from trac.ticket.notification import TicketNotifyEmail
 from trac.timeline.api import ITimelineEventProvider
-from trac.util import get_reporter_id
+from trac.util import as_bool, get_reporter_id
 from trac.util.datefmt import format_datetime, from_utimestamp, \
                               to_utimestamp, utc
 from trac.util.text import exception_to_unicode, obfuscate_email_address, \
@@ -118,7 +118,7 @@ class TicketModule(Component):
         preserve_newlines = self.preserve_newlines
         if preserve_newlines == 'default':
             preserve_newlines = self.env.get_version(initial=True) >= 21 # 0.11
-        return preserve_newlines in _TRUE_VALUES
+        return as_bool(preserve_newlines)
     must_preserve_newlines = property(_must_preserve_newlines)
 
     # IContentConverter methods

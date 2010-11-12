@@ -15,7 +15,7 @@ from genshi.builder import tag
 from genshi.filters import Transformer
 from genshi.filters.transform import StreamBuffer
 
-from trac.core import Component, implements
+from trac.core import Component, TracError, implements
 from trac.ticket.model import Ticket
 from trac.ticket.web_ui import TicketModule
 from trac.util import get_reporter_id
