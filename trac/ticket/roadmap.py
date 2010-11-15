@@ -41,8 +41,9 @@ from trac.ticket import Milestone, Ticket, TicketSystem, group_milestones
 from trac.ticket.query import QueryModule
 from trac.timeline.api import ITimelineEventProvider
 from trac.web import IRequestHandler, RequestDone
-from trac.web.chrome import add_link, add_notice, add_script, add_stylesheet, \
-                            add_warning, Chrome, INavigationContributor
+from trac.web.chrome import add_link, add_notice, add_script, \
+                            add_stylesheet, add_warning, prevnext_nav, \
+                            Chrome, INavigationContributor
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to
 
@@ -818,6 +819,26 @@ class MilestoneModule(Component):
 
         add_stylesheet(req, 'common/css/roadmap.css')
         add_script(req, 'common/js/folding.js')
+
+        def add_milestone_link(rel, milestone):
+            href = req.href.milestone(milestone.name, by=req.args.get('by'))
+            add_link(req, rel, href, _('Milestone "%(name)s"',
+                                       name=milestone.name))
+
+        milestones = [m for m in Milestone.select(self.env)
+                      if 'MILESTONE_VIEW' in req.perm(m.resource)]
+        idx = [i for i, m in enumerate(milestones) if m.name == milestone.name]
+        if idx:
+            idx = idx[0]
+            if idx > 0:
+                add_milestone_link('first', milestones[0])
+                add_milestone_link('prev', milestones[idx - 1])
+            if idx < len(milestones) - 1:
+                add_milestone_link('next', milestones[idx + 1])
+                add_milestone_link('last', milestones[-1])
+        prevnext_nav(req, _('Previous Milestone'), _('Next Milestone'),
+                     _('Back to Roadmap'))
+
         return 'milestone_view.html', data, None
 
     # IWikiSyntaxProvider methods
