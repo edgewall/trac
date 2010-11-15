@@ -43,12 +43,14 @@ class PermissionError(StandardError):
         if self.action:
             if self.resource:
                 return _('%(perm)s privileges are required to perform '
-                         'this operation on %(resource)s',
+                         'this operation on %(resource)s. You don\'t have the '
+                         'required permissions.',
                          perm=self.action, 
                          resource=get_resource_name(self.env, self.resource))
             else:
-                return _('%(perm)s privileges are required to perform '
-                         'this operation', perm=self.action)
+                return _('%(perm)s privileges are required to perform this '
+                         'operation. You don\'t have the required '
+                         'permissions.', perm=self.action)
         elif self.msg:
             return self.msg
         else:
