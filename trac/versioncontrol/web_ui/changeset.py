@@ -581,8 +581,8 @@ class ChangesetModule(Component):
         if self.max_diff_bytes or self.max_diff_files:
             for old_node, new_node, kind, change in get_changes():
                 if change in Changeset.DIFF_CHANGES and kind == Node.FILE \
-                        and old_node.can_view(req.perm) \
-                        and new_node.can_view(req.perm):
+                        and old_node.is_viewable(req.perm) \
+                        and new_node.is_viewable(req.perm):
                     diff_files += 1
                     diff_bytes += _estimate_changes(old_node, new_node)
         show_diffs = (not self.max_diff_files or \
@@ -605,8 +605,8 @@ class ChangesetModule(Component):
         for old_node, new_node, kind, change in get_changes():
             props = []
             diffs = []
-            show_old = old_node and old_node.can_view(req.perm)
-            show_new = new_node and new_node.can_view(req.perm)
+            show_old = old_node and old_node.is_viewable(req.perm)
+            show_new = new_node and new_node.is_viewable(req.perm)
             show_entry = change != Changeset.EDIT
             show_diff = show_diffs or (new_node and new_node.path == annotated)
 
@@ -698,7 +698,7 @@ class ChangesetModule(Component):
             new_node_info = old_node_info = ('','')
 
             if old_node:
-                if not old_node.can_view(req.perm):
+                if not old_node.is_viewable(req.perm):
                     continue
                 if mimeview.is_binary(old_node.content_type, old_node.path):
                     continue
@@ -709,7 +709,7 @@ class ChangesetModule(Component):
                 old_content = mimeview.to_unicode(old_content,
                                                   old_node.content_type)
             if new_node:
-                if not new_node.can_view(req.perm):
+                if not new_node.is_viewable(req.perm):
                     continue
                 if mimeview.is_binary(new_node.content_type, new_node.path):
                     continue
@@ -768,7 +768,7 @@ class ChangesetModule(Component):
             new_path=data['new_path'], new_rev=data['new_rev'],
             old_path=data['old_path'], old_rev=data['old_rev']):
             if kind == Node.FILE and change != Changeset.DELETE \
-                    and new_node.can_view(req.perm):
+                    and new_node.is_viewable(req.perm):
                 zipinfo = ZipInfo()
                 zipinfo.filename = new_node.path.strip('/').encode('utf-8')
                 # Note: unicode filenames are not supported by zipfile.
@@ -866,7 +866,7 @@ class ChangesetModule(Component):
                      u"\xa0\xa0-\xa0" + (repos.reponame or _('(default)')))
                     for repos in repositories
                     if as_bool(repos.params.get('hidden'))
-                    and repos.can_view(req.perm)]
+                    and repos.is_viewable(req.perm)]
                 filters.sort()
                 add_script(req, 'common/js/timeline_multirepos.js')
                 changeset_label = _('Changesets in all repositories')
@@ -903,7 +903,7 @@ class ChangesetModule(Component):
                     for cset in changesets:
                         cset_resource = Resource('changeset', cset.rev,
                                                  parent=repos.resource)
-                        if cset.can_view(req.perm):
+                        if cset.is_viewable(req.perm):
                             repos_for_uid = [repos.reponame]
                             uid = repos.get_changeset_uid(cset.rev)
                             if uid:
@@ -1079,7 +1079,7 @@ class ChangesetModule(Component):
         if repos:
             try:
                 changeset = repos.get_changeset(rev)
-                if changeset.can_view(formatter.perm):
+                if changeset.is_viewable(formatter.perm):
                     href = formatter.href.changeset(rev,
                                                     repos.reponame or None,
                                                     path)
@@ -1187,11 +1187,11 @@ class AnyDiffModule(Component):
                 entries.extend((e.isdir, e.name, 
                                 '/' + pathjoin(repos.reponame, e.path))
                                for e in repos.get_node(path).get_entries()
-                               if e.can_view(req.perm))
+                               if e.is_viewable(req.perm))
             if not reponame:
                 entries.extend((True, repos.reponame, '/' + repos.reponame)
                                for repos in rm.get_real_repositories()
-                               if repos.can_view(req.perm))
+                               if repos.is_viewable(req.perm))
 
             elem = tag.ul(
                 [tag.li(isdir and tag.b(path) or path)

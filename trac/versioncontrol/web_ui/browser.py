@@ -346,7 +346,7 @@ class BrowserModule(Component):
         show_index = not reponame and path == '/'
         if show_index:
             if repos and (as_bool(all_repositories[''].get('hidden'))
-                          or not repos.can_view(req.perm)):
+                          or not repos.is_viewable(req.perm)):
                 repos = None
 
         if not repos and reponame:
@@ -497,7 +497,7 @@ class BrowserModule(Component):
             try:
                 repos = rm.get_repository(reponame)
                 if repos:
-                    if not repos.can_view(context.perm):
+                    if not repos.is_viewable(context.perm):
                         continue
                     try:
                         youngest = repos.get_changeset(repos.youngest_rev)
@@ -555,7 +555,7 @@ class BrowserModule(Component):
                 self.raw_href = download_href(req.href, repos, node, rev)
                 
         entries = [entry(n) for n in node.get_entries()
-                   if n.can_view(req.perm)]
+                   if n.is_viewable(req.perm)]
         changes = get_changes(repos, [i.rev for i in entries], self.log)
 
         if rev:
@@ -894,7 +894,7 @@ class BrowserModule(Component):
         all_repos = sorted(((reponame, repos) for reponame, repos in all_repos
                             if repos
                             and as_bool(repos.params.get('hidden'))
-                            and repos.can_view(formatter.perm)),
+                            and repos.is_viewable(formatter.perm)),
                            reverse=desc)
 
         def repolink(reponame, repos):

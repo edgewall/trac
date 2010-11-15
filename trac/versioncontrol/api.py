@@ -912,9 +912,11 @@ class Repository(object):
         """
         raise NotImplementedError
 
-    def can_view(self, perm):
+    def is_viewable(self, perm):
         """Return True if view permission is granted on the repository."""
         return 'BROWSER_VIEW' in perm(self.resource.child('source', '/'))
+
+    can_view = is_viewable  # 0.12 compatibility
 
 
 class Node(object):
@@ -1028,10 +1030,12 @@ class Node(object):
     isdir = property(lambda x: x.kind == Node.DIRECTORY)
     isfile = property(lambda x: x.kind == Node.FILE)
 
-    def can_view(self, perm):
+    def is_viewable(self, perm):
         """Return True if view permission is granted on the node."""
         return (self.isdir and 'BROWSER_VIEW' or 'FILE_VIEW') \
                in perm(self.resource)
+
+    can_view = is_viewable  # 0.12 compatibility
         
 
 class Changeset(object):
@@ -1095,9 +1099,11 @@ class Changeset(object):
         """Yield tags associated with this changeset."""
         return []
 
-    def can_view(self, perm):
+    def is_viewable(self, perm):
         """Return True if view permission is granted on the changeset."""
         return 'CHANGESET_VIEW' in perm(self.resource)
+
+    can_view = is_viewable  # 0.12 compatibility
 
 
 # Note: Since Trac 0.12, Exception PermissionDenied class is gone,

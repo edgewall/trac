@@ -7,7 +7,7 @@
     <tbody>
       <py:for each="idx, (reponame, repoinfo, repos, change, err, raw_href) in enumerate(repo.repositories)"
               py:with="chgset_context = change and context('changeset', change.rev, parent=repos.resource);
-                       chgset_view = change and change.can_view(perm)">
+                       chgset_view = change and change.is_viewable(perm)">
         <tr class="${idx % 2 and 'even' or 'odd'}">
           <td class="name">
             <em py:strip="not err">

@@ -11,7 +11,7 @@ from trac.wiki.tests import formatter
 
 def _get_changeset(rev):
     if rev == '1':
-        return Mock(message="start", can_view=lambda perm: True)
+        return Mock(message="start", is_viewable=lambda perm: True)
     else:
         raise NoSuchChangeset(rev)
 
@@ -27,12 +27,12 @@ def _normalize_rev(rev):
 def _get_node(path, rev=None):
     if path == 'foo':
         return Mock(path=path, rev=rev, isfile=False,
-                    can_view=lambda resource: True)
+                    is_viewable=lambda resource: True)
     elif path == 'missing/file':
         raise NoSuchNode(path, rev)
     else:
         return Mock(path=path, rev=rev, isfile=True,
-                    can_view=lambda resource: True)
+                    is_viewable=lambda resource: True)
 
 def _get_repository(reponame):
     return Mock(reponame=reponame, youngest_rev='200',

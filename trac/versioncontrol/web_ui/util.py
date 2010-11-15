@@ -79,5 +79,5 @@ def get_allowed_node(repos, path, rev, perm):
             node = repos.get_node(path, rev)
         except (NoSuchNode, NoSuchChangeset):
             return None
-        if node.can_view(perm):
+        if node.is_viewable(perm):
             return node
