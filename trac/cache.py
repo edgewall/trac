@@ -133,7 +133,7 @@ class CacheManager(Component):
         except KeyError:
             pass
         
-        with self.env.db_transaction as db:
+        with self.env.db_query as db:
             with self._lock:
                 # Get data from the process cache
                 try:
@@ -180,11 +180,11 @@ class CacheManager(Component):
                 if not db("SELECT generation FROM cache WHERE id=%s", (id,)):
                     db("INSERT INTO cache VALUES (%s, %s)", (id, 0))
             
-            # Invalidate in this process
-            self._cache.pop(id, None)
-            
-            # Invalidate in this thread
-            try:
-                del self._local.cache[id]
-            except (KeyError, TypeError):
-                pass
+                # Invalidate in this process
+                self._cache.pop(id, None)
+                
+                # Invalidate in this thread
+                try:
+                    del self._local.cache[id]
+                except (KeyError, TypeError):
+                    pass
