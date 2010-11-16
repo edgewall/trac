@@ -129,6 +129,12 @@ class InterWikiMap(Component):
                         map[prefix.upper()] = (prefix, url, title)
             elif line.startswith('----'):
                 in_map = True
+        for prefix, value in self.config['interwiki'].options():
+            value = value.split(None, 1)
+            if value:
+                url = value[0].strip()
+                title = value[1].strip() if len(value) > 1 else prefix
+                map[prefix.upper()] = (prefix, url, title)
         return map
 
     # IWikiMacroProvider methods
