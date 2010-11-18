@@ -699,6 +699,8 @@ class NoSuchNode(ResourceNotFound):
 class Repository(object):
     """Base class for a repository provided by a version control system."""
 
+    has_linear_changesets = False
+
     scope = '/'
     
     def __init__(self, name, params, log):
@@ -853,6 +855,11 @@ class Repository(object):
         In presence of multiple children, this follows the first child.
         """
         raise NotImplementedError
+
+    def parent_revs(self, rev):
+        """Return a list of parents of the specified revision."""
+        parent = self.previous_rev(rev)
+        return [parent] if parent is not None else []
 
     def rev_older_than(self, rev1, rev2):
         """Provides a total order over revisions.

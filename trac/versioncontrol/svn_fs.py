@@ -233,6 +233,8 @@ class SvnCachedRepository(CachedRepository):
     """Subversion-specific cached repository, zero-pads revision numbers
     in the cache tables.
     """
+    has_linear_changesets = True
+
     def db_rev(self, rev):
         return '%010d' % rev
 
@@ -301,17 +303,16 @@ class SubversionConnector(Component):
         'direct-svnfs'.
         """
         params.update(tags=self.tags, branches=self.branches)
-        fs_repos = SubversionRepository(dir, params, self.log)
-        if type == 'direct-svnfs':
-            repos = fs_repos
-        else:
-            repos = SvnCachedRepository(self.env, fs_repos, self.log)
-            repos.has_linear_changesets = True
+        repos = SubversionRepository(dir, params, self.log)
+        if type != 'direct-svnfs':
+            repos = SvnCachedRepository(self.env, repos, self.log)
         return repos
 
 
 class SubversionRepository(Repository):
     """Repository implementation based on the svn.fs API."""
+
+    has_linear_changesets = True
 
     def __init__(self, path, params, log):
         self.log = log

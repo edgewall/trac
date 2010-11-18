@@ -130,6 +130,10 @@ table.dirlist td span.loading {
 
 /* Log */
 tr.diff input { padding: 0 1em; margin: 0 }
+table.trac-graph tbody tr { height: 2em; }
+table.trac-graph tbody tr td.trac-graph { padding: 0; background-color: #fcfcfc; }
+table.trac-graph th.trac-graph, table.trac-graph td.trac-graph { display: none; }
+table.trac-graph td.summary { white-space: nowrap; }
 
 @media print { 
  th.diff, td.diff { display: none }
@@ -143,9 +147,9 @@ table.chglist { margin-top: 0 }
  vertical-align: middle;
 }
 .chglist td.author { color: #888 }
-.chglist td.change span { 
+.chglist td.change span.edit { 
  border: 1px solid #999;
- display: block;
+ float: left;
  margin: .2em .5em 0 0;
  width: .8em; height: .8em;
 }

@@ -8,6 +8,24 @@
   <xi:include href="layout.html" />
   <head>
     <title>${'/'.join(part.name for part in path_links[1:]) or '/'} (log)</title>
+    <py:if test="graph">
+      ${Markup('&lt;!--[if IE]&gt;')}
+      <script type="text/javascript" src="${chrome.htdocs_location}js/excanvas.js"></script>
+      ${Markup('&lt;![endif]--&gt;')}
+      <script py:if="graph" type="text/javascript">//<![CDATA[
+        jQuery(document).ready(function($) {
+          $('th.trac-graph, td.trac-graph').show();
+          var canvas = $('<canvas>').css({width: '${graph.columns * 2}em',
+                                          height: '${len(items) * 2}em'})
+                                    .appendTo('td.trac-graph')[0];
+          canvas.width = $(canvas).width();
+          canvas.height = $(canvas).height();
+          if (typeof(G_vmlCanvasManager) != 'undefined')
+            canvas = G_vmlCanvasManager.initElement(canvas);
+          $.paintLogGraph(graph, canvas);
+        });
+      //]]></script>
+    </py:if>
   </head>
 
   <body>
@@ -88,9 +106,10 @@
           <input type="submit" value="${_('View changes')}"
             title="Diff from Old Revision to New Revision (as selected in the Diff column)" />
         </div>
-        <table class="listing chglist">
+        <table class="listing chglist${graph and ' trac-graph' or None}">
           <thead>
             <tr>
+              <th py:if="graph" class="trac-graph">Graph</th>
               <th class="diff" title="Old / New">Diff</th>
               <th class="change"></th>
               <th class="rev">Rev</th>
@@ -101,6 +120,7 @@
           </thead>
           <tbody>
             <tr py:if="not items" class="even">
+              <td py:if="graph" class="trac-graph"/>
               <td />
               <td />
               <td class="copyfrom_path" colspan="6">
@@ -122,6 +142,7 @@
                 </tr>
 
                 <tr class="${classes(odd_even,verbose=verbose)}" py:choose="">
+                  <td py:if="graph and idx == 0" class="trac-graph" rowspan="${len(items)}"/>
                   <td class="diff">
                     <input type="radio" name="old" value="${item.rev}@${item.path}"
                            checked="${idx == (len(items) - 1) or None}" 
@@ -152,7 +173,9 @@
                     </td>
                     <td class="age" py:content="dateinfo(change.date)" />
                     <td class="author" py:content="authorinfo_short(change.author)" />
-                    <td class="summary" py:choose="">
+                    <td class="summary" py:choose=""
+                        style="${graph and ('border-left: 2px solid '
+                                            + graph.colors[graph.vertices[idx][1] % len(graph.colors)]) or None}">
                       <py:when test="verbose"></py:when>
                       <py:when test="wiki_format_messages">
                         ${wiki_to_oneliner(chgset_context, change.message, shorten=True)}

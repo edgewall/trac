@@ -21,7 +21,7 @@ import re
 from genshi.core import Markup
 from genshi.builder import tag
 
-from trac.config import IntOption
+from trac.config import IntOption, ListOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.resource import ResourceNotFound
@@ -34,8 +34,10 @@ from trac.versioncontrol.web_ui.changeset import ChangesetModule
 from trac.versioncontrol.web_ui.util import *
 from trac.web import IRequestHandler
 from trac.web.chrome import (Chrome, INavigationContributor, add_ctxtnav,
-                             add_link, add_stylesheet, web_context)
+                             add_link, add_script, add_script_data,
+                             add_stylesheet, web_context)
 from trac.wiki import IWikiSyntaxProvider, WikiParser 
+
 
 class LogModule(Component):
 
@@ -43,8 +45,13 @@ class LogModule(Component):
                IWikiSyntaxProvider)
 
     default_log_limit = IntOption('revisionlog', 'default_log_limit', 100,
-        """Default value for the limit argument in the TracRevisionLog
-        (''since 0.11'').""")
+        """Default value for the limit argument in the TracRevisionLog.
+        (''since 0.11'')""")
+
+    graph_colors = ListOption('revisionlog', 'graph_colors',
+        ['#cc0', '#0c0', '#0cc', '#00c', '#c0c', '#c00'],
+        doc="""Comma-separated list of colors to use for the TracRevisionLog
+        graph display. (''since 0.13'')""")
 
     # INavigationContributor methods
 
@@ -112,6 +119,7 @@ class LogModule(Component):
         #  * for ''show only add, delete'' we're using
         #   `Repository.get_path_history()` 
         cset_resource = repos.resource.child('changeset')
+        show_graph = False
         if mode == 'path_history':
             def history():
                 for h in repos.get_path_history(path, rev):
@@ -147,6 +155,8 @@ class LogModule(Component):
                 if expected_next_item:
                     yield (expected_next_item[0], expected_next_item[1], None)
         else:
+            show_graph = path == '/' and not verbose \
+                         and not repos.has_linear_changesets
             def history():
                 node = get_existing_node(req, repos, path, rev)
                 for h in node.get_history():
@@ -197,6 +207,17 @@ class LogModule(Component):
                     "exist at revision %(rev)s or at any previous revision.", 
                     path=path, rev=display_rev(rev)), _('Nonexistent path'))
 
+        # Generate graph data
+        graph = {}
+        if show_graph:
+            threads, vertices, columns = \
+                make_log_graph(repos, (item['rev'] for item in info))
+            graph.update(threads=threads, vertices=vertices, columns=columns,
+                         colors=self.graph_colors,
+                         line_width=0.04, dot_radius=0.1)
+            add_script(req, 'common/js/log_graph.js')
+            add_script_data(req, {'graph': graph})
+        
         def make_log_href(path, **args):
             link_rev = rev
             if rev == str(repos.youngest_rev):
@@ -254,6 +275,7 @@ class LogModule(Component):
             'display_rev': display_rev, 'revranges': revranges,
             'mode': mode, 'verbose': verbose, 'limit' : limit,
             'items': info, 'changes': changes, 'extra_changes': extra_changes,
+            'graph': graph,
             'wiki_format_messages':
             self.config['changeset'].getbool('wiki_format_messages')
         }
