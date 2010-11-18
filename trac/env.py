@@ -484,7 +484,7 @@ class Environment(Component, ComponentManager):
             yield username, name, email
 
     def backup(self, dest=None):
-        """Simple SQLite-specific backup of the database.
+        """Create a backup of the database.
 
         @param dest: Destination file; if not specified, the backup is stored in
                      a file called db_name.trac_version.bak
