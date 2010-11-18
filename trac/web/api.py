@@ -36,6 +36,101 @@ from trac.util.translation import _
 from trac.web.href import Href
 from trac.web.wsgi import _FileWrapper
 
+class IAuthenticator(Interface):
+    """Extension point interface for components that can provide the name
+    of the remote user."""
+
+    def authenticate(req):
+        """Return the name of the remote user, or `None` if the identity of the
+        user is unknown."""
+
+
+class IRequestHandler(Interface):
+    """Extension point interface for request handlers."""
+
+    def match_request(req):
+        """Return whether the handler wants to process the given request."""
+
+    def process_request(req):
+        """Process the request.
+
+        For ClearSilver, return a `(template_name, content_type)` tuple,
+        where `template` is the ClearSilver template to use (either a
+        `neo_cs.CS` object, or the file name of the template), and
+        `content_type` is the MIME type of the content.
+
+        For Genshi, return a `(template_name, data, content_type)` tuple,
+        where `data` is a dictionary of substitutions for the template.
+
+        For either templating systems, "text/html" is assumed if `content_type`
+        is `None`.
+
+        Note that if template processing should not occur, this method can
+        simply send the response itself and not return anything.
+        """
+
+
+class IRequestFilter(Interface):
+    """Extension point interface for components that want to filter HTTP
+    requests, before and/or after they are processed by the main handler."""
+
+    def pre_process_request(req, handler):
+        """Called after initial handler selection, and can be used to change
+        the selected handler or redirect request.
+        
+        Always returns the request handler, even if unchanged.
+        """
+
+    # for ClearSilver templates
+    def post_process_request(req, template, content_type):
+        """Do any post-processing the request might need; typically adding
+        values to req.hdf, or changing template or mime type.
+        
+        Always returns a tuple of (template, content_type), even if
+        unchanged.
+
+        Note that `template`, `content_type` will be `None` if:
+         - called when processing an error page
+         - the default request handler did not return any result
+
+        (for 0.10 compatibility; only used together with ClearSilver templates)
+        """
+
+    # for Genshi templates
+    def post_process_request(req, template, data, content_type):
+        """Do any post-processing the request might need; typically adding
+        values to the template `data` dictionary, or changing template or
+        mime type.
+        
+        `data` may be update in place.
+
+        Always returns a tuple of (template, data, content_type), even if
+        unchanged.
+
+        Note that `template`, `data`, `content_type` will be `None` if:
+         - called when processing an error page
+         - the default request handler did not return any result
+
+        (Since 0.11)
+        """
+
+
+class ITemplateStreamFilter(Interface):
+    """Filter a Genshi event stream prior to rendering."""
+
+    def filter_stream(req, method, filename, stream, data):
+        """Return a filtered Genshi event stream, or the original unfiltered
+        stream if no match.
+
+        `req` is the current request object, `method` is the Genshi render
+        method (xml, xhtml or text), `filename` is the filename of the template
+        to be rendered, `stream` is the event stream and `data` is the data for
+        the current template.
+
+        See the Genshi documentation for more information.
+        """
+
+
 HTTP_STATUS = dict([(code, reason.title()) for code, (reason, description)
                     in BaseHTTPRequestHandler.responses.items()])
 
@@ -176,9 +271,9 @@ class Request(object):
     def __init__(self, environ, start_response):
         """Create the request wrapper.
         
-        @param environ: The WSGI environment dict
-        @param start_response: The WSGI callback for starting the response
-        @param callbacks: A dictionary of functions that are used to lazily
+        :param environ: The WSGI environment dict
+        :param start_response: The WSGI callback for starting the response
+        :param callbacks: A dictionary of functions that are used to lazily
             evaluate attribute lookups
         """
         self.environ = environ
@@ -632,98 +727,3 @@ class Request(object):
         cookies = to_unicode(self.outcookie.output(header='')).encode('utf-8')
         for cookie in cookies.splitlines():
             self._outheaders.append(('Set-Cookie', cookie.strip()))
-
-
-class IAuthenticator(Interface):
-    """Extension point interface for components that can provide the name
-    of the remote user."""
-
-    def authenticate(req):
-        """Return the name of the remote user, or `None` if the identity of the
-        user is unknown."""
-
-
-class IRequestHandler(Interface):
-    """Extension point interface for request handlers."""
-
-    def match_request(req):
-        """Return whether the handler wants to process the given request."""
-
-    def process_request(req):
-        """Process the request.
-
-        For ClearSilver, return a `(template_name, content_type)` tuple,
-        where `template` is the ClearSilver template to use (either a
-        `neo_cs.CS` object, or the file name of the template), and
-        `content_type` is the MIME type of the content.
-
-        For Genshi, return a `(template_name, data, content_type)` tuple,
-        where `data` is a dictionary of substitutions for the template.
-
-        For either templating systems, "text/html" is assumed if `content_type`
-        is `None`.
-
-        Note that if template processing should not occur, this method can
-        simply send the response itself and not return anything.
-        """
-
-
-class IRequestFilter(Interface):
-    """Extension point interface for components that want to filter HTTP
-    requests, before and/or after they are processed by the main handler."""
-
-    def pre_process_request(req, handler):
-        """Called after initial handler selection, and can be used to change
-        the selected handler or redirect request.
-        
-        Always returns the request handler, even if unchanged.
-        """
-
-    # for ClearSilver templates
-    def post_process_request(req, template, content_type):
-        """Do any post-processing the request might need; typically adding
-        values to req.hdf, or changing template or mime type.
-        
-        Always returns a tuple of (template, content_type), even if
-        unchanged.
-
-        Note that `template`, `content_type` will be `None` if:
-         - called when processing an error page
-         - the default request handler did not return any result
-
-        (for 0.10 compatibility; only used together with ClearSilver templates)
-        """
-
-    # for Genshi templates
-    def post_process_request(req, template, data, content_type):
-        """Do any post-processing the request might need; typically adding
-        values to the template `data` dictionary, or changing template or
-        mime type.
-        
-        `data` may be update in place.
-
-        Always returns a tuple of (template, data, content_type), even if
-        unchanged.
-
-        Note that `template`, `data`, `content_type` will be `None` if:
-         - called when processing an error page
-         - the default request handler did not return any result
-
-        (Since 0.11)
-        """
-
-
-class ITemplateStreamFilter(Interface):
-    """Filter a Genshi event stream prior to rendering."""
-
-    def filter_stream(req, method, filename, stream, data):
-        """Return a filtered Genshi event stream, or the original unfiltered
-        stream if no match.
-
-        `req` is the current request object, `method` is the Genshi render
-        method (xml, xhtml or text), `filename` is the filename of the template
-        to be rendered, `stream` is the event stream and `data` is the data for
-        the current template.
-
-        See the Genshi documentation for more information.
-        """

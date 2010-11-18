@@ -61,6 +61,48 @@ from trac.wiki import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to, format_to_html, format_to_oneliner
 
 
+class INavigationContributor(Interface):
+    """Extension point interface for components that contribute items to the
+    navigation.
+    """
+
+    def get_active_navigation_item(req):
+        """This method is only called for the `IRequestHandler` processing the
+        request.
+        
+        It should return the name of the navigation item that should be
+        highlighted as active/current.
+        """
+
+    def get_navigation_items(req):
+        """Should return an iterable object over the list of navigation items
+        to add, each being a tuple in the form (category, name, text).
+        """
+
+
+class ITemplateProvider(Interface):
+    """Extension point interface for components that provide their own
+    Genshi templates and accompanying static resources.
+    """
+
+    def get_htdocs_dirs():
+        """Return a list of directories with static resources (such as style
+        sheets, images, etc.)
+
+        Each item in the list must be a `(prefix, abspath)` tuple. The
+        `prefix` part defines the path in the URL that requests to these
+        resources are prefixed with.
+        
+        The `abspath` is the absolute path to the directory containing the
+        resources on the local file system.
+        """
+
+    def get_templates_dirs():
+        """Return a list of directories containing the provided template
+        files.
+        """
+
+
 def add_meta(req, content, http_equiv=None, name=None, scheme=None, lang=None):
     """Add a `<meta>` tag into the `<head>` of the generated HTML."""
     meta = {'content': content, 'http-equiv': http_equiv, 'name': name,
@@ -239,48 +281,6 @@ def _save_messages(req, url, permanent):
     for type_ in ['warnings', 'notices']:
         for (i, message) in enumerate(req.chrome[type_]):
             req.session['chrome.%s.%d' % (type_, i)] = escape(message)
-
-
-class INavigationContributor(Interface):
-    """Extension point interface for components that contribute items to the
-    navigation.
-    """
-
-    def get_active_navigation_item(req):
-        """This method is only called for the `IRequestHandler` processing the
-        request.
-        
-        It should return the name of the navigation item that should be
-        highlighted as active/current.
-        """
-
-    def get_navigation_items(req):
-        """Should return an iterable object over the list of navigation items
-        to add, each being a tuple in the form (category, name, text).
-        """
-
-
-class ITemplateProvider(Interface):
-    """Extension point interface for components that provide their own
-    Genshi templates and accompanying static resources.
-    """
-
-    def get_htdocs_dirs():
-        """Return a list of directories with static resources (such as style
-        sheets, images, etc.)
-
-        Each item in the list must be a `(prefix, abspath)` tuple. The
-        `prefix` part defines the path in the URL that requests to these
-        resources are prefixed with.
-        
-        The `abspath` is the absolute path to the directory containing the
-        resources on the local file system.
-        """
-
-    def get_templates_dirs():
-        """Return a list of directories containing the provided template
-        files.
-        """
 
 
 # Mappings for removal of control characters
