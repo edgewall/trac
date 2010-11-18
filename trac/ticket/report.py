@@ -27,7 +27,7 @@ from genshi.builder import tag
 from trac.config import IntOption
 from trac.core import *
 from trac.db import get_column_names
-from trac.mimeview import Context
+from trac.mimeview import RenderingContext
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
 from trac.ticket.api import TicketSystem
@@ -37,9 +37,9 @@ from trac.util.presentation import Paginator
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _
 from trac.web.api import IRequestHandler, RequestDone
-from trac.web.chrome import add_ctxtnav, add_link, add_notice, add_script, \
-                            add_stylesheet, add_warning, \
-                            INavigationContributor, Chrome
+from trac.web.chrome import (INavigationContributor, Chrome, 
+                             add_ctxtnav, add_link, add_notice, add_script,
+                             add_stylesheet, add_warning, web_context)
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 
@@ -337,7 +337,7 @@ class ReportModule(Component):
 
         report_resource = Resource('report', id)
         req.perm.require('REPORT_VIEW', report_resource)
-        context = Context.from_request(req, report_resource)
+        context = web_context(req, report_resource)
 
         page = int(req.args.get('page', '1'))
         default_max = {'rss': self.items_per_page_rss,
@@ -516,8 +516,8 @@ class ReportModule(Component):
             authorized_results.append(result)
             if email_cells:
                 for cell in email_cells:
-                    emails = Chrome(self.env).format_emails(context(resource),
-                                                            cell['value'])
+                    emails = Chrome(self.env).format_emails(
+                                context.child(resource), cell['value'])
                     result[cell['index']] = cell['value'] = emails
             row['resource'] = resource
             if row_groups:
@@ -534,7 +534,7 @@ class ReportModule(Component):
 
         if format == 'rss':
             data['email_map'] = Chrome(self.env).get_email_map()
-            data['context'] = Context.from_request(req, report_resource,
+            data['context'] = web_context(req, report_resource,
                                                    absurls=True)
             return 'report.rss', data, 'application/rss+xml'
         elif format == 'csv':

@@ -116,7 +116,7 @@
                 Change information for future version ${page.version+1} (modified by $author):
               </th></tr>
               <tr><td class="message" xml:space="preserve">
-                ${wiki_to_html(context(page.resource(version=None)), comment)}
+                ${wiki_to_html(context.child(page.resource(version=None)), comment)}
               </td></tr>
             </tbody>
           </table>
@@ -134,7 +134,7 @@
                 <xi:include href="diff_div.html" py:with="no_id=True" />
               </div>
               <div py:otherwise="" class="wikipage" xml:space="preserve">
-                ${wiki_to_html(context(page.resource), page.text)}
+                ${wiki_to_html(context.child(page.resource), page.text)}
               </div>
             </div>
             <div py:if="not sidebyside and page.text" class="trac-nav">

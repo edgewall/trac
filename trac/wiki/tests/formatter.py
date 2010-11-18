@@ -5,11 +5,11 @@ import unittest
 from datetime import datetime
 
 from trac.core import *
-from trac.mimeview import Context
 from trac.test import Mock, MockPerm, EnvironmentStub
 from trac.util.datefmt import utc
 from trac.util.html import html
 from trac.util.text import to_unicode
+from trac.web.chrome import web_context
 from trac.web.href import Href
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import HtmlFormatter, InlineHtmlFormatter
@@ -117,9 +117,9 @@ class WikiTestCase(unittest.TestCase):
                    authname='anonymous', perm=MockPerm(), args={})
         if context:
             if isinstance(context, tuple):
-                context = Context.from_request(req, *context)
+                context = web_context(req, *context)
         else:
-            context = Context.from_request(req, 'wiki', 'WikiStart')
+            context = web_context(req, 'wiki', 'WikiStart')
         self.context = context
 
         all_test_components = [

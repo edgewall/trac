@@ -30,7 +30,7 @@
       <h1>$title <span class="numrows">(${ngettext('%(num)s match', '%(num)s matches', query.num_items)})</span></h1>
 
       <div py:if="description" id="description" xml:space="preserve">
-        ${wiki_to_html(context(report_resource), description)}
+        ${wiki_to_html(context.child(report_resource), description)}
       </div>
 
       <form id="query" method="post" action="${href.query()}"

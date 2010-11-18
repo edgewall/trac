@@ -62,7 +62,7 @@ class ITimelineEventProvider(Interface):
     def render_timeline_event(context, field, event):
         """Display the title of the event in the given context.
 
-        :param context: the rendering `Context` object that can be used for
+        :param context: the `RenderingContext` object that can be used for
                         rendering
         :param field: what specific part information from the event should
                       be rendered: can be the 'title', the 'description' or

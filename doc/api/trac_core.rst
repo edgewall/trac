@@ -111,7 +111,7 @@ have the following signature::
   def __init__(self):
       self.all_colors = set()
 
-You should try to do as little as possible in a `Component`
+Note that one should try to do as little as possible in a `Component`
 constructor.  The most complex operation could be for example the
 allocation of a lock to control the concurrent access to some data
 members and guarantee thread-safe initialization of more costly

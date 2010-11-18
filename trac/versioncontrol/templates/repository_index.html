@@ -6,7 +6,7 @@
     <xi:include href="dirlist_thead.html" />
     <tbody>
       <py:for each="idx, (reponame, repoinfo, repos, change, err, raw_href) in enumerate(repo.repositories)"
-              py:with="chgset_context = change and context('changeset', change.rev, parent=repos.resource);
+              py:with="chgset_context = change and context.child('changeset', change.rev, parent=repos.resource);
                        chgset_view = change and change.is_viewable(perm)">
         <tr class="${idx % 2 and 'even' or 'odd'}">
           <td class="name">
@@ -42,7 +42,7 @@
           </td>
         </tr>
         <tr class="${idx % 2 and 'even' or 'odd'}" py:if="repoinfo.description">
-          <td class="description" colspan="6">${wiki_to_html(context('source', '/', parent=repos.resource), repoinfo.description)}</td>
+          <td class="description" colspan="6">${wiki_to_html(context.child('source', '/', parent=repos.resource), repoinfo.description)}</td>
         </tr>
       </py:for>
     </tbody>

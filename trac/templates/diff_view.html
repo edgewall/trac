@@ -57,7 +57,7 @@
         <dt class="property message">Comment:</dt>
         <dd class="message" py:choose="" xml:space="preserve">
           <em py:when="multi" class="multi">(multiple changes)</em>
-          <py:otherwise>${wiki_to_html(context(resource), change.comment)}</py:otherwise>
+          <py:otherwise>${wiki_to_html(context.child(resource), change.comment)}</py:otherwise>
         </dd>
       </dl>
       <div class="diff">

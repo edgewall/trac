@@ -4,7 +4,7 @@ import tempfile
 import unittest
 
 from trac.attachment import Attachment
-from trac.mimeview.api import Context
+from trac.mimeview.api import RenderingContext
 from trac.resource import Resource
 from trac.search.web_ui import SearchModule
 from trac.test import MockPerm
@@ -143,9 +143,9 @@ def email_default_context():
             return action != 'EMAIL_VIEW'
         __contains__ = has_permission
 
-    context = Context(Resource('wiki', 'WikiStart'), href=Href('/'), 
-                      perm=NoEmailViewPerm())
-    context.req = None # 0.12 FIXME .req shouldn't be required by formatter
+    context = RenderingContext(Resource('wiki', 'WikiStart'), href=Href('/'), 
+                               perm=NoEmailViewPerm())
+    context.req = None # 0.13 FIXME .req shouldn't be required by formatter
     return context
 
 

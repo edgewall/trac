@@ -23,11 +23,11 @@ try:
 except ImportError:
     have_pygments = False
 
-from trac.mimeview.api import Mimeview, Context
+from trac.mimeview.api import Mimeview, RenderingContext
 if have_pygments:
     from trac.mimeview.pygments import PygmentsRenderer
 from trac.test import EnvironmentStub, Mock
-from trac.web.chrome import Chrome
+from trac.web.chrome import Chrome, web_context
 from trac.web.href import Href
 
 
@@ -39,7 +39,7 @@ class PygmentsRendererTestCase(unittest.TestCase):
         self.req = Mock(base_path='', chrome={}, args={},
                         abs_href=Href('/'), href=Href('/'),
                         session={}, perm=None, authname=None, tz=None)
-        self.context = Context.from_request(self.req)
+        self.context = web_context(self.req)
         pygments_html = open(os.path.join(os.path.split(__file__)[0],
                                        'pygments.html'))
         self.pygments_html = Stream(list(HTMLParser(pygments_html, encoding='utf-8')))

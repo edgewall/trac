@@ -31,13 +31,13 @@ from genshi.util import plaintext
 from trac.core import *
 from trac.mimeview import *
 from trac.resource import get_relative_resource, get_resource_url
-from trac.wiki.api import WikiSystem, parse_args
-from trac.wiki.parser import WikiParser
 from trac.util import arity
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode, \
                            unicode_quote, unicode_quote_plus
 from trac.util.html import TracHTMLSanitizer
 from trac.util.translation import _
+from trac.wiki.api import WikiSystem, parse_args
+from trac.wiki.parser import WikiParser
 
 __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline',
            'Formatter', 'format_to', 'format_to_html', 'format_to_oneliner',
@@ -350,7 +350,7 @@ class Formatter(object):
     def __init__(self, env, context):
         """Note: `req` is still temporarily used."""
         self.env = env
-        self.context = context()
+        self.context = context.child()
         self.context.set_hints(disable_warnings=True)
         self.req = context.req
         self.href = context.href
@@ -1515,29 +1515,32 @@ def wiki_to_html(wikitext, env, req, db=None,
     if not wikitext:
         return Markup()
     abs_ref, href = (req or env).abs_href, (req or env).href
-    context = Context.from_request(req, absurls=absurls)
+    from trac.web.chrome import web_context
+    context = web_context(req, absurls=absurls)
     out = StringIO()
     Formatter(env, context).format(wikitext, out, escape_newlines)
     return Markup(out.getvalue())
 
 def wiki_to_oneliner(wikitext, env, db=None, shorten=False, absurls=False,
                      req=None):
-    """deprecated in favor of format_to_oneliner (will be removed in 0.13)"""
+    """:deprecated: in favor of format_to_oneliner (will be removed in 0.13)"""
     if not wikitext:
         return Markup()
     abs_ref, href = (req or env).abs_href, (req or env).href
-    context = Context.from_request(req, absurls=absurls)
+    from trac.web.chrome import web_context
+    context = web_context(req, absurls=absurls)
     out = StringIO()
     OneLinerFormatter(env, context).format(wikitext, out, shorten)
     return Markup(out.getvalue())
 
 def wiki_to_outline(wikitext, env, db=None,
                     absurls=False, max_depth=None, min_depth=None, req=None):
-    """deprecated (will be removed in 0.13 and replaced by something else)"""
+    """:deprecated: will be removed in 0.13 and replaced by something else"""
     if not wikitext:
         return Markup()
     abs_ref, href = (req or env).abs_href, (req or env).href
-    context = Context.from_request(req, absurls=absurls)
+    from trac.web.chrome import web_context
+    context = web_context(req, absurls=absurls)
     out = StringIO()
     OutlineFormatter(env, context).format(wikitext, out, max_depth, min_depth)
     return Markup(out.getvalue())

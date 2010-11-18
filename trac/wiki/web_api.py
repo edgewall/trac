@@ -12,9 +12,9 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 from trac.core import *
-from trac.mimeview.api import Context
 from trac.resource import Resource
 from trac.web.api import IRequestHandler
+from trac.web.chrome import web_context
 from trac.wiki.formatter import format_to
  
 
@@ -52,6 +52,6 @@ class WikiRenderer(Component):
             options['shorten'] = bool(int(req.args['shorten'] or 0))
         
         resource = Resource(realm, id=id, version=version)
-        context = Context.from_request(req, resource)
+        context = web_context(req, resource)
         rendered = format_to(self.env, flavor, context, text, **options)
         req.send(rendered.encode('utf-8'))

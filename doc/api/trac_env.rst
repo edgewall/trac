@@ -15,8 +15,8 @@ Interfaces
 Components
 ----------
 
-The :class:`Environment` is special in the sense it is not only a
-:class:`Component`, but also a :class:`ComponentManager`.
+The `Environment` is special in the sense it is not only a
+`Component`, but also a `trac.core.ComponentManager`.
 
 .. autoclass :: trac.env.Environment
    :members:

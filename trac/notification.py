@@ -215,7 +215,7 @@ class Notify(object):
         from trac.web.chrome import Chrome
         self.template = Chrome(self.env).load_template(self.template_name,
                                                        method='text')
-        # FIXME: actually, we would need a Context with a different
+        # FIXME: actually, we would need a different
         #        PermissionCache for each recipient
         self.data = Chrome(self.env).populate_data(None, {'CRLF': CRLF})
 

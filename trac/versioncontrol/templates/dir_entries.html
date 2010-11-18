@@ -4,7 +4,7 @@
       xmlns:xi="http://www.w3.org/2001/XInclude" py:strip="">
   <py:for each="idx, entry in enumerate(dir.entries)"
           py:with="change = dir.changes[entry.rev];
-                   chgset_context = change and context('changeset', change.rev, parent=repos.resource);
+                   chgset_context = change and context.child('changeset', change.rev, parent=repos.resource);
                    chgset_view = change and change.is_viewable(perm);
                    isdir = entry.kind == 'dir'">
     <tr class="${idx % 2 and 'even' or 'odd'}">

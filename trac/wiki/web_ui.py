@@ -26,7 +26,7 @@ from genshi.builder import tag
 from trac.attachment import AttachmentModule
 from trac.config import IntOption
 from trac.core import *
-from trac.mimeview.api import Mimeview, IContentConverter, Context
+from trac.mimeview.api import IContentConverter, Mimeview 
 from trac.perm import IPermissionRequestor
 from trac.resource import *
 from trac.search import ISearchSource, search_to_sql, shorten_result
@@ -36,10 +36,11 @@ from trac.util.datefmt import from_utimestamp, to_utimestamp
 from trac.util.text import shorten_line
 from trac.util.translation import _, tag_
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
-from trac.web.chrome import add_ctxtnav, add_link, add_notice, add_script, \
-                            add_stylesheet, add_warning, prevnext_nav, \
-                            Chrome, INavigationContributor, ITemplateProvider
 from trac.web.api import IRequestHandler
+from trac.web.chrome import (Chrome, INavigationContributor, ITemplateProvider,
+                             add_ctxtnav, add_link, add_notice, add_script,
+                             add_stylesheet, add_warning, prevnext_nav, 
+                             web_context)
 from trac.wiki.api import IWikiPageManipulator, WikiSystem
 from trac.wiki.formatter import format_to, OneLinerFormatter
 from trac.wiki.model import WikiPage
@@ -504,7 +505,7 @@ class WikiModule(Component):
                 editrows = prefs['editrows']
 
         data = self._page_data(req, page, action)
-        context = Context.from_request(req, page.resource)
+        context = web_context(req, page.resource)
         data.update({
             'author': author,
             'comment': comment,
@@ -575,7 +576,7 @@ class WikiModule(Component):
             data['title'] = ''
 
         ws = WikiSystem(self.env)
-        context = Context.from_request(req, page.resource)
+        context = web_context(req, page.resource)
         higher, related = [], []
         if not page.exists:
             if 'WIKI_CREATE' not in req.perm(page.resource):
@@ -714,8 +715,8 @@ class WikiModule(Component):
             else:
                 return tag_('%(page)s created', page=name)
         elif field == 'description':
-            markup = format_to(self.env, None, context(resource=wiki_page),
-                               comment)
+            markup = format_to(self.env, None, 
+                               context.child(resource=wiki_page), comment)
             if wiki_page.version > 1:
                 diff_href = context.href.wiki(
                     wiki_page.id, version=wiki_page.version, action='diff')

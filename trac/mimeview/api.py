@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2004-2009 Edgewall Software
+# Copyright (C) 2004-2010 Edgewall Software
 # Copyright (C) 2004 Daniel Lundin <daniel@edgewall.com>
 # Copyright (C) 2005-2006 Christopher Lenz <cmlenz@gmx.de>
 # Copyright (C) 2006-2007 Christian Boos <cboos@neuf.fr>
@@ -18,41 +18,45 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 #         Christian Boos <cboos@neuf.fr>
 
-"""File metadata management.
+"""
+File metadata management
+------------------------
 
 The `trac.mimeview` package centralizes the intelligence related to
-file metadata, principally concerning the `type` (MIME type) of the content
-and, if relevant, concerning the text encoding (charset) used by the content.
+file metadata, principally concerning the `type` (MIME type) of the
+content and, if relevant, concerning the text encoding (charset) used
+by the content.
 
-There are primarily two approaches for getting the MIME type of a given file:
- * taking advantage of existing conventions for the file name
- * examining the file content and applying various heuristics
+There are primarily two approaches for getting the MIME type of a
+given file, either taking advantage of existing conventions for the
+file name, or examining the file content and applying various
+heuristics.
 
-The module also knows how to convert the file content from one type
-to another type.
+The module also knows how to convert the file content from one type to
+another type.
 
-In some cases, only the `url` pointing to the file's content is actually
-needed, that's why we avoid to read the file's content when it's not needed.
+In some cases, only the `url` pointing to the file's content is
+actually needed, that's why we avoid to read the file's content when
+it's not needed.
 
-The actual `content` to be converted might be a `unicode` object,
-but it can also be the raw byte string (`str`) object, or simply
-an object that can be `read()`.
+The actual `content` to be converted might be a `unicode` object, but
+it can also be the raw byte string (`str`) object, or simply an object
+that can be `read()`.
 
-----
-NOTE: for plugin developers
+.. note:: (for plugin developers)
 
-  The Mimeview API is quite complex and many things there are currently
-  a bit difficult to work with (e.g. what an actual `content` might be,
-  see the last paragraph of this description).
+  The Mimeview API is quite complex and many things there are
+  currently a bit difficult to work with (e.g. what an actual
+  `content` might be, see the last paragraph of this description).
 
   So this area is mainly in a ''work in progress'' state, which will
-  be improved upon in the near future (see [trac:ticket:3332 #3332]).
+  be improved along the lines described in #3332.
 
   In particular, if you are interested in writing `IContentConverter`
   and `IHTMLPreviewRenderer` components, note that those interfaces
-  will be merged into a new style `IContentConverter`.
-  Feel free to contribute remarks and suggestions for improvements
-  to the corresponding ticket ([trac:ticket:3332 #3332]).
+  will be merged into a new style `IContentConverter`.  Feel free to
+  contribute remarks and suggestions for improvements to the
+  corresponding ticket (#3332 as well).
 """
 
 import re
@@ -71,13 +75,13 @@ from trac.util.text import exception_to_unicode, to_utf8, to_unicode
 from trac.util.translation import _, tag_
 
 
-__all__ = ['get_mimetype', 'is_binary', 'detect_unicode', 'Mimeview',
-           'content_to_unicode', 'ct_mimetype', 'Context']
+__all__ = ['Context', 'Mimeview', 'RenderingContext', 'get_mimetype',
+           'is_binary', 'detect_unicode', 'content_to_unicode', 'ct_mimetype']
 
-class Context(object):
-    """Rendering context.
-
+class RenderingContext(object):
+    """
     A rendering context specifies ''how'' the content should be rendered.
+
     It holds together all the needed contextual information that will be
     needed by individual renderer components.
 
@@ -92,9 +96,9 @@ class Context(object):
     or for retrieving relative content and can be used to retrieve related
     metadata.
 
-    Contexts can be nested, and a new context can be created from an existing
-    context using the call syntax. The previous context can be retrieved using
-    the `.parent` attribute.
+    Rendering contexts can be nested, and a new context can be created from 
+    an existing context using the call syntax. The previous context can be
+    retrieved using the `.parent` attribute.
     
     For example, when rendering a wiki text of a wiki page, the context will
     be associated to a resource identifying that wiki page.
@@ -107,7 +111,7 @@ class Context(object):
     """
 
     def __init__(self, resource, href=None, perm=None):
-        """Directly create a `Context`.
+        """Directly create a `RenderingContext`.
 
         :param resource: the associated resource
         :type resource: `Resource`
@@ -126,41 +130,10 @@ class Context(object):
         self._hints = None
 
     @classmethod
-    def from_request(cls, req, resource=None, id=False, version=False,
-                     parent=False, absurls=False):
-        """Create a rendering context from a request.
-
-        The `perm` and `href` properties of the context will be initialized
-        from the corresponding properties of the request object.
-
-        >>> from trac.test import Mock, MockPerm
-        >>> req = Mock(href=Mock(), perm=MockPerm())
-        >>> context = Context.from_request(req)
-        >>> context.href is req.href
-        True
-        >>> context.perm is req.perm
-        True
-
-        :param req: the HTTP request object
-        :param resource: the `Resource` object or realm
-        :param id: the resource identifier
-        :param version: the resource version
-        :param absurls: whether URLs generated by the ``href`` object should
-                        be absolute (including the protocol scheme and host
-                        name)
-        :return: a new rendering context
-        :rtype: `Context`
-        """
-        if req:
-            href = absurls and req.abs_href or req.href
-            perm = req.perm
-        else:
-            href = None
-            perm = None
-        self = cls(Resource(resource, id=id, version=version, parent=parent),
-                   href=href, perm=perm)
-        self.req = req
-        return self
+    def from_request(*args, **kwargs):
+        """:deprecated: since 0.13, use `web_context` instead."""
+        from trac.web.chrome import web_context
+        return web_context(*args, **kwargs)
 
     def __repr__(self):
         path = []
@@ -171,7 +144,7 @@ class Context(object):
             context = context.parent
         return '<%s %s>' % (type(self).__name__, ' - '.join(reversed(path)))
 
-    def __call__(self, resource=None, id=False, version=False, parent=False):
+    def child(self, resource=None, id=False, version=False, parent=False):
         """Create a nested rendering context.
 
         `self` will be the parent for the new nested context.
@@ -183,15 +156,15 @@ class Context(object):
         :param id: the identifier part of the resource specification
         :param version: the version of the resource specification
         :return: the new context object
-        :rtype: `Context`
+        :rtype: `RenderingContext`
 
-        >>> context = Context('wiki', 'WikiStart')
+        >>> context = RenderingContext('wiki', 'WikiStart')
         >>> ticket1 = Resource('ticket', 1)
-        >>> context('ticket', 1).resource == ticket1
+        >>> context.child('ticket', 1).resource == ticket1
         True
-        >>> context(ticket1).resource is ticket1
+        >>> context.child(ticket1).resource is ticket1
         True
-        >>> context(ticket1)().resource is ticket1
+        >>> context.child(ticket1)().resource is ticket1
         True
         """
         if resource:
@@ -199,7 +172,7 @@ class Context(object):
                                 parent=parent)
         else:
             resource = self.resource
-        context = Context(resource, href=self.href, perm=self.perm)
+        context = RenderingContext(resource, href=self.href, perm=self.perm)
         context.parent = self
 
         # hack for context instances created by from_request()
@@ -210,6 +183,8 @@ class Context(object):
             context.req = self.req
 
         return context
+
+    __call__ = child
 
     def __contains__(self, resource):
         """Check whether a resource is in the rendering path.
@@ -241,7 +216,7 @@ class Context(object):
     def set_hints(self, **keyvalues):
         """Set rendering hints for this rendering context.
 
-        >>> ctx = Context('timeline')
+        >>> ctx = RenderingContext('timeline')
         >>> ctx.set_hints(wiki_flavor='oneliner', shorten_lines=True)
         >>> t_ctx = ctx('ticket', 1)
         >>> t_ctx.set_hints(wiki_flavor='html', preserve_newlines=True)
@@ -262,7 +237,7 @@ class Context(object):
     def get_hint(self, hint, default=None):
         """Retrieve a rendering hint from this context or an ancestor context.
 
-        >>> ctx = Context('timeline')
+        >>> ctx = RenderingContext('timeline')
         >>> ctx.set_hints(wiki_flavor='oneliner')
         >>> t_ctx = ctx('ticket', 1)
         >>> t_ctx.get_hint('wiki_flavor')
@@ -281,7 +256,7 @@ class Context(object):
         """Test whether a rendering hint is defined in this context or in some
         ancestor context.
 
-        >>> ctx = Context('timeline')
+        >>> ctx = RenderingContext('timeline')
         >>> ctx.set_hints(wiki_flavor='oneliner')
         >>> t_ctx = ctx('ticket', 1)
         >>> t_ctx.has_hint('wiki_flavor')
@@ -301,6 +276,10 @@ class Context(object):
         while p and p._hints is None:
             p = p.parent
         return p and p._hints
+
+
+class Context(RenderingContext):
+    """:deprecated: old name kept for compatibility, use `RenderingContext`."""
 
 
 # Some common MIME types and their associated keywords and/or file extensions
@@ -461,26 +440,27 @@ class IHTMLPreviewRenderer(Interface):
     """Extension point interface for components that add HTML renderers of
     specific content types to the `Mimeview` component.
 
-    ----
-    This interface will be merged with IContentConverter, as conversion
-    to text/html will be simply a particular type of content conversion.
+    .. note::
 
-    However, note that the IHTMLPreviewRenderer will still be supported
-    for a while through an adapter, whereas the IContentConverter interface
-    itself will be changed.
+      This interface will be merged with IContentConverter, as
+      conversion to text/html will simply be a particular content
+      conversion.
 
-    So if all you want to do is convert to HTML and don't feel like
-    following the API changes, rather you should rather implement this
-    interface for the time being.
-    ---
+      Note however that the IHTMLPreviewRenderer will still be
+      supported for a while through an adapter, whereas the
+      IContentConverter interface itself will be changed.
+
+      So if all you want to do is convert to HTML and don't feel like
+      following the API changes, you should rather implement this
+      interface for the time being.
     """
 
-    # implementing classes should set this property to True if they
-    # support text content where Trac should expand tabs into spaces
+    #: implementing classes should set this property to True if they
+    #: support text content where Trac should expand tabs into spaces
     expand_tabs = False
 
-    # indicate whether the output of this renderer is source code that can
-    # be decorated with annotations
+    #: indicate whether the output of this renderer is source code that can
+    #: be decorated with annotations
     returns_source = False
 
     def get_quality_ratio(mimetype):
@@ -490,7 +470,7 @@ class IHTMLPreviewRenderer(Interface):
         """
 
     def render(context, mimetype, content, filename=None, url=None):
-        """Render an XHTML preview of the raw `content` within a Context.
+        """Render an XHTML preview of the raw `content` in a RenderingContext.
 
         The `content` might be:
          * a `str` object
@@ -546,24 +526,8 @@ class IContentConverter(Interface):
     """An extension point interface for generic MIME based content
     conversion.
 
-    ----
-    NOTE: This api will likely change in the future, e.g.:
+    .. note:: This api will likely change in the future (see #3332)
 
-    def get_supported_conversions(input): 
-        '''Tells whether this converter can handle this `input` type.
-
-        Return an iterable of `Conversion` objects, each describing
-        how the conversion should be done and what will be the output type.
-        '''
-
-    def convert_content(context, conversion, content): 
-        '''Convert the given `AbstractContent` as specified by `Conversion`.
-
-        The conversion takes place in the given rendering context.
-        
-        Return the converted content, which ''must'' be a `MimeContent` object.
-        '''
-    ----
     """
 
     def get_supported_conversions():
@@ -711,10 +675,8 @@ class Mimeview(Component):
         """
         if not content:
             return ''
-        if not isinstance(context, Context):
-            # backwards compatibility: the first argument used to be the
-            # request prior to 0.11
-            context = Context.from_request(context)
+        if not isinstance(context, RenderingContext):
+            raise TypeError("RenderingContext expected (since 0.11)")
 
         # Ensure we have a MIME type for this content
         full_mimetype = mimetype
@@ -858,7 +820,7 @@ class Mimeview(Component):
         )
 
     def get_max_preview_size(self):
-        """Deprecated: use `max_preview_size` attribute directly."""
+        """:deprecated: use `max_preview_size` attribute directly."""
         return self.max_preview_size
 
     def get_charset(self, content='', mimetype=None):
@@ -926,7 +888,7 @@ class Mimeview(Component):
     def to_utf8(self, content, mimetype=None):
         """Convert an encoded `content` to utf-8.
 
-        ''Deprecated in 0.10. You should use `unicode` strings only.''
+        :deprecated: since 0.10, you should use `unicode` strings only.
         """
         return to_utf8(content, self.get_charset(content, mimetype))
 

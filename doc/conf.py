@@ -105,6 +105,8 @@ exclude_patterns = [
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'trac'
 
+# The default role is a reference to some Python object
+default_role = 'py:obj'
 
 
 # Options for HTML output

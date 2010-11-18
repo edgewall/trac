@@ -38,6 +38,18 @@ except ImportError:
 # Well, LR mode doesn't really look better...
 # the ASCII-art version seems better in most cases.
 
-# run epydoc
+
+# Workaround "visiting unknown node type" error due to `.. note ::` 
+# This was due to the lack of Admonitions transforms. Add it.
+
+from epydoc.markup.restructuredtext import _DocumentPseudoWriter
+from docutils.transforms import writer_aux
+
+orig_get_transforms = _DocumentPseudoWriter.get_transforms
+def pseudo_get_transforms(self):
+    return orig_get_transforms(self) + [writer_aux.Admonitions]
+_DocumentPseudoWriter.get_transforms = pseudo_get_transforms
+
+# Run epydoc
 cli()
 

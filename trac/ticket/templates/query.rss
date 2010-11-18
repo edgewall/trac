@@ -21,7 +21,7 @@
         <title>#$result.id: ${result.summary}</title>
         <pubDate py:if="result.time">${http_date(result.time)}</pubDate>
         <xi:include href="author_or_creator.rss" py:with="author = result.reporter"/>
-        <description>${unicode(wiki_to_html(context('ticket', result.id), result.description))}</description>
+        <description>${unicode(wiki_to_html(context.child('ticket', result.id), result.description))}</description>
         <category>Results</category>
         <comments>$href#changelog</comments>
       </py:if>

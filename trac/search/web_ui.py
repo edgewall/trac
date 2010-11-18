@@ -21,15 +21,16 @@ from genshi.builder import tag, Element
 
 from trac.config import IntOption, ListOption
 from trac.core import *
-from trac.mimeview import Context
+from trac.mimeview import RenderingContext
 from trac.perm import IPermissionRequestor
 from trac.search.api import ISearchSource
 from trac.util.datefmt import format_datetime
 from trac.util.presentation import Paginator
 from trac.util.translation import _
 from trac.web import IRequestHandler
-from trac.web.chrome import add_link, add_stylesheet, add_warning, \
-                            INavigationContributor, ITemplateProvider
+from trac.web.chrome import (INavigationContributor, ITemplateProvider,
+                             add_link, add_stylesheet, add_warning,
+                             web_context)
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import extract_link
 
@@ -152,8 +153,7 @@ class SearchModule(Component):
             name = kwd
             description = _('Browse repository path %(path)s', path=kwd)
         else:
-            link = extract_link(self.env, Context.from_request(req, 'search'),
-                                kwd)
+            link = extract_link(self.env, web_context(req, 'search'), kwd)
             if isinstance(link, Element):
                 quickjump_href = link.attrib.get('href')
                 name = link.children

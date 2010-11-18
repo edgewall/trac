@@ -111,7 +111,7 @@
             <py:for each="idx, item in enumerate(items)">
               <py:with vars="change = changes[item.rev];
                              is_separator = item.change is None;
-                             chgset_context = context('changeset', change.rev, parent=repos.resource);
+                             chgset_context = context.child('changeset', change.rev, parent=repos.resource);
                              odd_even = idx % 2 and 'odd' or 'even'">
                 <!--! highlight copy or rename operations -->
                 <tr py:if="not is_separator and item.get('copyfrom_path')" class="$odd_even">

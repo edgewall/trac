@@ -25,7 +25,6 @@ from genshi.builder import tag
 
 from trac.config import IntOption, BoolOption
 from trac.core import *
-from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import as_int
@@ -34,9 +33,9 @@ from trac.util.datefmt import format_date, format_datetime, parse_date, \
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.web import IRequestHandler, IRequestFilter
-from trac.web.chrome import add_link, add_stylesheet, prevnext_nav, Chrome, \
-                            INavigationContributor, ITemplateProvider
-                            
+from trac.web.chrome import (Chrome, INavigationContributor, ITemplateProvider,
+                             add_link, add_stylesheet, prevnext_nav, 
+                             web_context)
 from trac.wiki.api import IWikiSyntaxProvider
 
 
@@ -204,7 +203,7 @@ class TimelineModule(Component):
         
         if format == 'rss':
             data['email_map'] = Chrome(self.env).get_email_map()
-            rss_context = Context.from_request(req, absurls=True)
+            rss_context = web_context(req, absurls=True)
             rss_context.set_hints(wiki_flavor='html', shorten_lines=False)
             data['context'] = rss_context
             return 'timeline.rss', data, 'application/rss+xml'
@@ -216,7 +215,7 @@ class TimelineModule(Component):
                 lastviewed = to_utimestamp(events[0]['date'])
                 req.session['timeline.lastvisit'] = max(lastvisit, lastviewed)
                 req.session['timeline.nextlastvisit'] = lastvisit
-            html_context = Context.from_request(req)
+            html_context = web_context(req)
             html_context.set_hints(wiki_flavor='oneliner', 
                                    shorten_lines=self.abbreviated_messages)
             data['context'] = html_context

@@ -30,7 +30,7 @@ from genshi.builder import tag
 
 from trac.config import Option, BoolOption, IntOption
 from trac.core import *
-from trac.mimeview import Context, Mimeview
+from trac.mimeview.api import Mimeview
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
 from trac.search import ISearchSource, search_to_sql, shorten_result
@@ -46,9 +46,9 @@ from trac.versioncontrol.diff import get_diff_options, diff_blocks, \
                                      unified_diff
 from trac.versioncontrol.web_ui.browser import BrowserModule
 from trac.web import IRequestHandler, RequestDone
-from trac.web.chrome import Chrome, INavigationContributor, \
-                            add_ctxtnav, add_link, add_script, \
-                            add_stylesheet, prevnext_nav
+from trac.web.chrome import (Chrome, INavigationContributor, add_ctxtnav, 
+                             add_link, add_script, add_stylesheet, 
+                             prevnext_nav, web_context)
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 from trac.wiki.formatter import format_to
 
@@ -421,8 +421,8 @@ class ChangesetModule(Component):
             title = _changeset_title(rev)
 
             # Support for revision properties (#2545)
-            context = Context.from_request(req, 'changeset', chgset.rev,
-                                           parent=repos.resource)
+            context = web_context(req, 'changeset', chgset.rev,
+                                  parent=repos.resource)
             data['context'] = context
             revprops = chgset.get_properties()
             data['properties'] = browser.render_properties('revprop', context,
@@ -504,8 +504,8 @@ class ChangesetModule(Component):
         def _prop_changes(old_node, new_node):
             old_props = old_node.get_properties()
             new_props = new_node.get_properties()
-            old_ctx = Context.from_request(req, old_node.resource)
-            new_ctx = Context.from_request(req, new_node.resource)
+            old_ctx = web_context(req, old_node.resource)
+            new_ctx = web_context(req, new_node.resource)
             changed_properties = []
             if old_props != new_props:
                 for k, v in sorted(old_props.items()):
@@ -951,7 +951,7 @@ class ChangesetModule(Component):
             if self.wiki_format_messages:
                 markup = ''
                 if self.timeline_long_messages: # override default flavor
-                    context = context()
+                    context = context.child()
                     context.set_hints(wiki_flavor='html', 
                                       preserve_newlines=True)
             else:
@@ -995,8 +995,8 @@ class ChangesetModule(Component):
                         files = files[:show_files] + [tag.li(u'\u2026')]
                     markup = tag(tag.ul(files, class_="changes"), markup)
             if message:
-                markup += format_to(self.env, None, context(cset_resource),
-                                    message)
+                markup += format_to(self.env, None,
+                                    context.child(cset_resource), message)
             return markup
 
         single = rev_a == rev_b

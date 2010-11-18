@@ -160,7 +160,7 @@
 
                         <py:when test="col == 'description'">
                           <td class="$col" py:attrs="td_attrs" xml:space="preserve">
-                            ${wiki_to_html(context(row.resource), cell.value)}
+                            ${wiki_to_html(context.child(row.resource), cell.value)}
                             <hr py:if="fullrow"/>
                           </td>
                         </py:when>

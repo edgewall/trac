@@ -82,7 +82,7 @@
 
       <py:when test="'list'">
         <h1><a href="${url_of(parent)}">${name_of(parent)}</a></h1>
-        <py:with vars="context = context(parent)">
+        <py:with vars="context = context.child(parent)">
           <?python add_button_title = _('Attach another file') ?>
           <xi:include href="list_of_attachments.html" py:with="alist = attachments"/>
         </py:with>
@@ -101,7 +101,7 @@
             </tr>
             <tr>
               <td class="message searchable" xml:space="preserve">
-                ${wiki_to_html(context(parent), attachment.description)}
+                ${wiki_to_html(context.child(parent), attachment.description)}
               </td>
             </tr>
           </tbody>

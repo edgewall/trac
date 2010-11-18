@@ -23,8 +23,7 @@ from genshi.builder import tag
 
 from trac.config import ListOption, BoolOption, Option
 from trac.core import *
-from trac.mimeview.api import (
-    Mimeview, is_binary, IHTMLPreviewAnnotator, Context)
+from trac.mimeview.api import IHTMLPreviewAnnotator, Mimeview, is_binary
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
 from trac.util import as_bool, embedded_numbers
@@ -34,9 +33,9 @@ from trac.util.html import escape, Markup
 from trac.util.text import exception_to_unicode, shorten_line
 from trac.util.translation import _
 from trac.web import IRequestHandler, RequestDone
-from trac.web.chrome import (
-    INavigationContributor, add_ctxtnav, add_link, add_script, add_stylesheet,
-    prevnext_nav)
+from trac.web.chrome import (INavigationContributor, add_ctxtnav, add_link,
+                             add_script, add_stylesheet, prevnext_nav, 
+                             web_context)
 from trac.wiki.api import IWikiSyntaxProvider, IWikiMacroProvider, parse_args
 from trac.wiki.formatter import format_to_html, format_to_oneliner
 
@@ -360,7 +359,7 @@ class BrowserModule(Component):
         reponame = repos and repos.reponame or None
         
         # Find node for the requested path/rev
-        context = Context.from_request(req)
+        context = web_context(req)
         node = None
         display_rev = lambda rev: rev
         if repos:
@@ -375,7 +374,7 @@ class BrowserModule(Component):
                 raise ResourceNotFound(e.message,
                                        _('Invalid changeset number'))
 
-            context = context(repos.resource.child('source', path,
+            context = context.child(repos.resource.child('source', path,
                                                    version=rev_or_latest))
             display_rev = repos.display_rev
 

@@ -134,7 +134,7 @@
         <tr py:if="file">
           <td class="message searchable" py:choose="">
             <py:when test="wiki_format_messages" xml:space="preserve">
-              ${wiki_to_html(context('changeset', file.changeset.rev, parent=repos.resource),
+              ${wiki_to_html(context.child('changeset', file.changeset.rev, parent=repos.resource),
                              file.changeset.message, escape_newlines=True)}
             </py:when>
             <py:otherwise>${file.changeset.message}</py:otherwise>
@@ -171,7 +171,7 @@
       </table>
 
       <div py:if="dir and path == '/'" class="description">
-        ${wiki_to_html(context('source', '/', parent=repos.resource), repoinfo.description)}
+        ${wiki_to_html(context.child('source', '/', parent=repos.resource), repoinfo.description)}
       </div>
 
       <py:if test="repo and repo.repositories">

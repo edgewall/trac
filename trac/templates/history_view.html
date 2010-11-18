@@ -46,7 +46,7 @@
               <td class="author"
                   title="${show_ip_addresses and item.ipnr 
                            and _('IP-Address: %(ipnr)s', ipnr=item.ipnr) or None}">${authorinfo(item.author)}</td>
-              <td class="comment">${wiki_to_oneliner(context(resource), item.comment, shorten=True)}</td>
+              <td class="comment">${wiki_to_oneliner(context.child(resource), item.comment, shorten=True)}</td>
             </tr>
           </tbody>
         </table>

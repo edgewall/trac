@@ -19,10 +19,9 @@ import re
 from genshi.builder import Element, Fragment, tag
 
 from trac.core import *
-from trac.mimeview import Context
 from trac.perm import PermissionError
 from trac.util.translation import _
-from trac.web import IRequestHandler
+from trac.web.api import IRequestHandler
 from trac.wiki.api import IWikiMacroProvider
 from trac.wiki.formatter import extract_link
 
@@ -48,7 +47,8 @@ class InterTracDispatcher(Component):
             resolver, target = parts
             if target and (target[0] not in '\'"' or target[0] != target[-1]):
                 link = '%s:"%s"' % (resolver, target)
-        link_frag = extract_link(self.env, Context.from_request(req), link)
+        from trac.web.chrome import web_context
+        link_frag = extract_link(self.env, web_context(req), link)
 
         def get_first_href(item):
             """Depth-first search for the first `href` attribute."""

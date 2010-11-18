@@ -28,7 +28,7 @@ from genshi.builder import tag
 from trac.attachment import AttachmentModule
 from trac.config import BoolOption, Option, IntOption
 from trac.core import *
-from trac.mimeview.api import Mimeview, IContentConverter, Context
+from trac.mimeview.api import Mimeview, IContentConverter
 from trac.resource import Resource, ResourceNotFound, get_resource_url, \
                          render_resource_link, get_resource_shortname
 from trac.search import ISearchSource, search_to_sql, shorten_result
@@ -45,9 +45,10 @@ from trac.util.presentation import separated
 from trac.util.translation import _, tag_, tagn_, N_, gettext, ngettext
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web import arg_list_to_args, parse_arg_list, IRequestHandler
-from trac.web.chrome import add_link, add_notice, add_script, add_stylesheet, \
-                            add_warning, add_ctxtnav, prevnext_nav, Chrome, \
-                            INavigationContributor, ITemplateProvider
+from trac.web.chrome import (Chrome, INavigationContributor, ITemplateProvider,
+                             add_ctxtnav, add_link, add_notice, add_script,
+                             add_stylesheet, add_warning, prevnext_nav,
+                             web_context)
 from trac.wiki.formatter import format_to, format_to_html, format_to_oneliner
 
 
@@ -356,7 +357,7 @@ class TicketModule(Component):
             else:
                 descr = info
                 message = comment
-            t_context = context(resource=ticket)
+            t_context = context.child(resource=ticket)
             t_context.set_hints(preserve_newlines=self.must_preserve_newlines)
             if status == 'new' and \
                     context.get_hint('wiki_flavor') == 'oneliner': 
@@ -640,7 +641,7 @@ class TicketModule(Component):
 
     def _prepare_data(self, req, ticket, absurls=False):
         return {'ticket': ticket,
-                'context': Context.from_request(req, ticket.resource,
+                'context': web_context(req, ticket.resource,
                                                 absurls=absurls),
                 'preserve_newlines': self.must_preserve_newlines}
 
@@ -1032,7 +1033,7 @@ class TicketModule(Component):
         writer = csv.writer(content, delimiter=sep, quoting=csv.QUOTE_MINIMAL)
         writer.writerow(['id'] + [unicode(f['name']) for f in fields])
 
-        context = Context.from_request(req, ticket.resource)
+        context = web_context(req, ticket.resource)
         cols = [unicode(ticket.id)]
         for f in fields:
             name = f['name']
@@ -1343,7 +1344,7 @@ class TicketModule(Component):
         return tag(items)
 
     def _prepare_fields(self, req, ticket):
-        context = Context.from_request(req, ticket.resource)
+        context = web_context(req, ticket.resource)
         fields = []
         owner_field = None
         for field in ticket.fields:
@@ -1548,7 +1549,7 @@ class TicketModule(Component):
         if ticket.resource.version is not None: ### FIXME
             ticket.values.update(values)
 
-        context = Context.from_request(req, ticket.resource)
+        context = web_context(req, ticket.resource)
 
         # Display the owner and reporter links when not obfuscated
         chrome = Chrome(self.env)

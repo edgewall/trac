@@ -43,8 +43,8 @@ from trac.util.text import exception_to_unicode, pretty_size, print_table, \
                            unicode_quote, unicode_unquote
 from trac.util.translation import _, tag_
 from trac.web import HTTPBadRequest, IRequestHandler
-from trac.web.chrome import add_link, add_stylesheet, add_ctxtnav, \
-                            INavigationContributor
+from trac.web.chrome import (INavigationContributor, add_ctxtnav, add_link,
+                             add_stylesheet, web_context)
 from trac.web.href import Href
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to
@@ -528,7 +528,8 @@ class AttachmentModule(Component):
                         attachment=tag.em(os.path.basename(attachment.id)),
                         resource=tag.em(name, title=title))
         elif field == 'description':
-            return format_to(self.env, None, context(attachment.parent), descr)
+            return format_to(self.env, None, context.child(attachment.parent),
+                             descr)
    
     def get_search_results(self, req, resource_realm, terms):
         """Return a search result generator suitable for ISearchSource.
@@ -710,8 +711,7 @@ class AttachmentModule(Component):
         data = {
             'mode': 'list',
             'attachment': None, # no specific attachment
-            'attachments': self.attachment_data(Context.from_request(req,
-                                                                     parent))
+            'attachments': self.attachment_data(web_context(req, parent))
         }
 
         return 'attachment.html', data, None
@@ -771,7 +771,7 @@ class AttachmentModule(Component):
                            % (attachment.filename, mime_type))
 
             data['preview'] = mimeview.preview_data(
-                Context.from_request(req, attachment.resource), fd,
+                web_context(req, attachment.resource), fd,
                 os.fstat(fd.fileno()).st_size, mime_type,
                 attachment.filename, raw_href, annotations=['lineno'])
             return data

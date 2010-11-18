@@ -27,7 +27,6 @@ from trac import __version__
 from trac.attachment import AttachmentModule
 from trac.config import ExtensionOption
 from trac.core import *
-from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.resource import *
 from trac.search import ISearchSource, search_to_sql, shorten_result
@@ -41,9 +40,9 @@ from trac.ticket import Milestone, Ticket, TicketSystem, group_milestones
 from trac.ticket.query import QueryModule
 from trac.timeline.api import ITimelineEventProvider
 from trac.web import IRequestHandler, RequestDone
-from trac.web.chrome import add_link, add_notice, add_script, \
-                            add_stylesheet, add_warning, prevnext_nav, \
-                            Chrome, INavigationContributor
+from trac.web.chrome import (Chrome, INavigationContributor,
+                             add_link, add_notice, add_script, add_stylesheet,
+                             add_warning, prevnext_nav, web_context)
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to
 
@@ -562,7 +561,7 @@ class MilestoneModule(Component):
             return tag_('Milestone %(name)s completed',
                         name=tag.em(milestone.id))
         elif field == 'description':
-            return format_to(self.env, None, context(resource=milestone),
+            return format_to(self.env, None, context.child(resource=milestone),
                              description)
 
     # IRequestHandler methods
@@ -766,7 +765,7 @@ class MilestoneModule(Component):
         tickets = apply_ticket_permissions(self.env, req, tickets)
         stat = get_ticket_stats(self.stats_provider, tickets)
 
-        context = Context.from_request(req, milestone.resource)
+        context = web_context(req, milestone.resource)
         data = {
             'context': context,
             'milestone': milestone,

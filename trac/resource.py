@@ -53,7 +53,7 @@ class IResourceManager(Interface):
                        `'default'`, `'compact'` or `'summary'`.
         :param context: an optional rendering context to allow rendering rich
                         output (like markup containing links)
-        :type context: `Context`
+        :type context: `ResourceContext`
 
         Additional keyword arguments can be given as extra information for
         some formats. 

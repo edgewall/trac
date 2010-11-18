@@ -29,7 +29,7 @@ from genshi.builder import tag
 from trac.config import Option, IntOption 
 from trac.core import *
 from trac.db import get_column_names
-from trac.mimeview.api import Mimeview, IContentConverter, Context
+from trac.mimeview.api import IContentConverter, Mimeview, RenderingContext
 from trac.resource import Resource
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Milestone, group_milestones
@@ -41,10 +41,10 @@ from trac.util.text import empty, shorten_line, unicode_unquote
 from trac.util.translation import _, tag_
 from trac.web import arg_list_to_args, parse_arg_list, IRequestHandler
 from trac.web.href import Href
-from trac.web.chrome import add_ctxtnav, add_link, add_script, \
-                            add_script_data, add_stylesheet, add_warning, \
-                            INavigationContributor, Chrome
-
+from trac.web.chrome import (INavigationContributor, Chrome,
+                             add_ctxtnav, add_link, add_script,
+                             add_script_data, add_stylesheet, add_warning,
+                             web_context)
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.macros import WikiMacroBase # TODO: should be moved in .api
 
@@ -1047,7 +1047,7 @@ class QueryModule(Component):
             for error in e.errors:
                 add_warning(req, error)
 
-        context = Context.from_request(req, 'query')
+        context = web_context(req, 'query')
         owner_field = [f for f in query.fields if f['name'] == 'owner']
         if owner_field:
             TicketSystem(self.env).eventually_restrict_owner(owner_field[0])
@@ -1106,7 +1106,7 @@ class QueryModule(Component):
         writer = csv.writer(content, delimiter=sep, quoting=csv.QUOTE_MINIMAL)
         writer.writerow([unicode(c).encode('utf-8') for c in cols])
 
-        context = Context.from_request(req)
+        context = web_context(req)
         results = query.execute(req)
         for result in results:
             ticket = Resource('ticket', result['id'])
@@ -1115,8 +1115,8 @@ class QueryModule(Component):
                 for col in cols:
                     value = result[col]
                     if col in ('cc', 'reporter'):
-                        value = Chrome(self.env).format_emails(context(ticket),
-                                                               value)
+                        value = Chrome(self.env).format_emails(
+                                    context.child(ticket), value)
                     elif col in query.time_fields:
                         value = format_datetime(value, tzinfo=req.tz)
                     values.append(unicode(value).encode('utf-8'))
@@ -1124,7 +1124,7 @@ class QueryModule(Component):
         return (content.getvalue(), '%s;charset=utf-8' % mimetype)
 
     def export_rss(self, req, query):
-        context = Context.from_request(req, 'query', absurls=True)
+        context = web_context(req, 'query', absurls=True)
         query_href = query.get_href(context.href)
         if 'description' not in query.rows:
             query.rows.append('description')

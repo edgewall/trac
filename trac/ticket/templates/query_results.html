@@ -49,7 +49,7 @@
           </td>
         </tr>
         <py:for each="idx, result in enumerate(results)">
-          <py:with vars="ticket_context = context('ticket', result.id)">
+          <py:with vars="ticket_context = context.child('ticket', result.id)">
             <py:if test="'TICKET_VIEW' in perm(ticket_context.resource)">
 
               <tr class="${idx % 2 and 'odd' or 'even'} prio${result.priority_value}${

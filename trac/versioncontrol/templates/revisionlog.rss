@@ -16,7 +16,7 @@
 
     <item py:for="item in items" 
           py:with="change = changes[item.rev]; 
-                   item_context = context('changeset', change.rev, parent=repos.resource)">
+                   item_context = context.child('changeset', change.rev, parent=repos.resource)">
       <xi:include href="author_or_creator.rss" py:with="author = change.author"/>
       <pubDate>${http_date(change.date)}</pubDate>
       <title>Revision ${display_rev(item.rev)}: ${shorten_line(change.message)}</title>

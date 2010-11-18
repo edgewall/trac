@@ -23,19 +23,18 @@ from genshi.builder import tag
 
 from trac.config import IntOption
 from trac.core import *
-from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.resource import ResourceNotFound
 from trac.util import Ranges
 from trac.util.text import wrap
 from trac.util.translation import _
-from trac.versioncontrol.api import RepositoryManager, Changeset, \
-                                    NoSuchChangeset
+from trac.versioncontrol.api import (RepositoryManager, Changeset,
+                                     NoSuchChangeset)
 from trac.versioncontrol.web_ui.changeset import ChangesetModule
 from trac.versioncontrol.web_ui.util import *
 from trac.web import IRequestHandler
-from trac.web.chrome import add_ctxtnav, add_link, add_stylesheet, \
-                            INavigationContributor, Chrome
+from trac.web.chrome import (Chrome, INavigationContributor, add_ctxtnav,
+                             add_link, add_stylesheet, web_context)
 from trac.wiki import IWikiSyntaxProvider, WikiParser 
 
 class LogModule(Component):
@@ -249,8 +248,7 @@ class LogModule(Component):
                 extra_changes[rev] = cs
 
         data = {
-            'context': Context.from_request(req, 'source', path,
-                                            parent=repos.resource),
+            'context': web_context(req, 'source', path, parent=repos.resource),
             'reponame': repos.reponame or None, 'repos': repos,
             'path': path, 'rev': rev, 'stop_rev': stop_rev,
             'display_rev': display_rev, 'revranges': revranges,
@@ -264,9 +262,9 @@ class LogModule(Component):
             return 'revisionlog.txt', data, 'text/plain'
         elif format == 'rss':
             data['email_map'] = Chrome(self.env).get_email_map()
-            data['context'] = Context.from_request(req, 'source', 
-                                                   path, parent=repos.resource,
-                                                   absurls=True)
+            data['context'] = web_context(req, 'source', 
+                                          path, parent=repos.resource,
+                                          absurls=True)
             return 'revisionlog.rss', data, 'application/rss+xml'
 
         item_ranges = []

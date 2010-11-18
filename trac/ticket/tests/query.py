@@ -1,7 +1,7 @@
-from trac.mimeview import Context
 from trac.test import Mock, EnvironmentStub, MockPerm
 from trac.ticket.query import Query, QueryModule, TicketQueryMacro
 from trac.util.datefmt import utc
+from trac.web.chrome import web_context
 from trac.web.href import Href
 from trac.wiki.formatter import LinkFormatter
 
@@ -497,7 +497,7 @@ class QueryLinksTestCase(unittest.TestCase):
         self.env = EnvironmentStub(default_data=True)
         self.query_module = QueryModule(self.env)
         req = Mock(perm=MockPerm(), args={}, href=Href('/'))
-        self.formatter = LinkFormatter(self.env, Context.from_request(req))
+        self.formatter = LinkFormatter(self.env, web_context(req))
 
     def tearDown(self):
         self.env.reset_db()
