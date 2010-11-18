@@ -56,6 +56,20 @@
           <xi:include href="path_links.html" />
         </h1>
 
+        <div id="diffrev">
+          <form action="${href.changeset()}" method="get">
+            <div>
+              <label title="Show the diff against a specific revision"
+                     py:with="full_path = '/'.join(p.strip('/') for p in (reponame, path) if p)">
+                View diff against: <input type="text" name="old" size="6"/>
+                <input type="hidden" name="old_path" value="$full_path"/>
+                <input type="hidden" name="new" value="$stickyrev"/>
+                <input type="hidden" name="new_path" value="$full_path"/>
+              </label>
+            </div>
+          </form>
+        </div>
+
         <div id="jumprev">
           <form action="" method="get">
             <div>

@@ -19,14 +19,13 @@ h1 .first:link, h1 .first:visited { color: #998 }
 h1 .sep { color: #666; padding: 0 .1em }
 h1 .pathentry { float: left; padding: 0 .1em }
 
-#jumprev, #jumploc { float: right; font-size: 10px; margin: 0 0 0.6em }
-#jumprev form, #jumploc form { margin: 0 }
-#jumprev input, #jumploc select, #jumploc input { 
+#diffrev, #jumprev, #jumploc { float: right; font-size: 10px; margin: 0 0 0.6em 2em; }
+#diffrev form, #jumprev form, #jumploc form { margin: 0 }
+#diffrev input, #jumprev input, #jumploc select, #jumploc input { 
   font-size: 10px; 
   margin: 0; 
 }
-#jumploc div.buttons { margin: 0;}
-#jumploc { margin-right: 2em;}
+#jumploc div.buttons { margin: 0; }
 
 /* Browser file annotations */
 table.code th.blame { width: 5em; }
