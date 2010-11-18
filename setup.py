@@ -103,7 +103,6 @@ facilities.
         trac.mimeview.patch = trac.mimeview.patch
         trac.mimeview.pygments = trac.mimeview.pygments[Pygments]
         trac.mimeview.rst = trac.mimeview.rst[reST]
-        trac.mimeview.silvercity = trac.mimeview.silvercity[SilverCity]
         trac.mimeview.txtl = trac.mimeview.txtl[Textile]
         trac.prefs = trac.prefs.web_ui
         trac.search = trac.search.web_ui
@@ -127,6 +126,7 @@ facilities.
         trac.wiki.web_api = trac.wiki.web_api
         tracopt.mimeview.enscript = tracopt.mimeview.enscript
         tracopt.mimeview.php = tracopt.mimeview.php
+        tracopt.mimeview.silvercity = tracopt.mimeview.silvercity[SilverCity]
         tracopt.perm.authz_policy = tracopt.perm.authz_policy
         tracopt.perm.config_perm_provider = tracopt.perm.config_perm_provider
         tracopt.ticket.commit_updater = tracopt.ticket.commit_updater
