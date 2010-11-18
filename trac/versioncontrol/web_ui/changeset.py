@@ -865,7 +865,7 @@ class ChangesetModule(Component):
                     ('repo-' + repos.reponame,
                      u"\xa0\xa0-\xa0" + (repos.reponame or _('(default)')))
                     for repos in repositories
-                    if as_bool(repos.params.get('hidden'))
+                    if not as_bool(repos.params.get('hidden'))
                     and repos.is_viewable(req.perm)]
                 filters.sort()
                 add_script(req, 'common/js/timeline_multirepos.js')

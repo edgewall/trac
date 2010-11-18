@@ -893,7 +893,7 @@ class BrowserModule(Component):
                      for reponame in all_repos]
         all_repos = sorted(((reponame, repos) for reponame, repos in all_repos
                             if repos
-                            and as_bool(repos.params.get('hidden'))
+                            and not as_bool(repos.params.get('hidden'))
                             and repos.is_viewable(formatter.perm)),
                            reverse=desc)
 
