@@ -1,11 +1,12 @@
-#          Makefile for testing Trac (see doc/dev/testing.rst)
+# == Makefile for Trac related tasks (beyond those supported by setuptools) ==
 #
-#          Some i18n tasks are also supported, see HELP below.
+# Automating testing, i18n tasks, documentation generation, ... see HELP below
 # ----------------------------------------------------------------------------
 #
-# Copy Makefile.cfg.sample to Makefile.cfg and adapt to your local
-# environment, no customizations to the present Makefile should be
-# necessary.
+# Note about customization:
+#   No changes to the present Makefile should be necessary,
+#   rather copy Makefile.cfg.sample to Makefile.cfg and adapt it
+#   to match your local environment.
 #
 # Note that this is a GNU Makefile, nmake and other abominations are
 # not supported.
@@ -73,16 +74,17 @@ define HELP
 
  ---------------- Documentation tasks
 
-  apidoc|sphinx       generate the API documentation using Sphinx into
-                      build/doc/<sphinxformat>
+  apidoc|sphinx       generate the Sphinx documentation (all specified formats)
+  apidoc-html         generate the Sphinx documentation in HTML format
+  apidoc-pdf          generate the Sphinx documentation in PDF format
 
   apiref|epydoc       generate the full API reference using Epydoc
 
-  [sphinxformat=...]  format of the generated documentation (defaults to html)
+  [sphinxformat=...]  list of formats for generated documentation
   [sphinxopts=...]    variable containing extra options for Sphinx
   [sphinxopts-html=...] variable containing extra options used for html format
   [epydocopts=...]    variable containing extra options for Epydoc
-  [dotpath=/.../dot]  path to Graphviz' dot program
+  [dotpath=/.../dot]  path to Graphviz' dot program (not used yet)
                          
 endef
 export HELP
@@ -407,21 +409,22 @@ endif
 
 .PHONY: apidoc sphinx apiref epydoc clean-doc
 
-sphinxformat ?= html
-
 # We also try to honor the "conventional" environment variables used by Sphinx
 sphinxopts ?= $(SPHINXOPTS)
 SPHINXBUILD ?= sphinx-build
-BUILDDIR ?= build/doc/$(sphinxformat)
+BUILDDIR ?= build/doc
 PAPER ?= a4
 sphinxopts-latex ?= -D latex_paper_size=$(PAPER)
+sphinxformat = html
 
 sphinx: apidoc
-apidoc:
-	@$(SPHINXBUILD) -b $(sphinxformat) \
-	    $(sphinxopts) $(sphinxopts-$(sphinxformat)) \
+apidoc: $(addprefix apidoc-,$(sphinxformat))
+
+apidoc-%:
+	@$(SPHINXBUILD) -b $(*) \
+	    $(sphinxopts) $(sphinxopts-$(*)) \
 	    -d build/doc/doctree \
-	    doc $(BUILDDIR)
+	    doc $(BUILDDIR)/$(*)
 
 
 epydoc: apiref
