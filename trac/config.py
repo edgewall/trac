@@ -22,9 +22,10 @@ from trac.util import AtomicFile, as_bool
 from trac.util.text import printout, to_unicode, CRLF
 from trac.util.translation import _, N_
 
-__all__ = ['Configuration', 'Option', 'BoolOption', 'IntOption', 'FloatOption',
-           'ListOption', 'ChoiceOption', 'PathOption', 'ExtensionOption',
-           'OrderedExtensionsOption', 'ConfigurationError']
+__all__ = ['Configuration', 'ConfigSection', 'Option', 'BoolOption',
+           'IntOption', 'FloatOption', 'ListOption', 'ChoiceOption',
+           'PathOption', 'ExtensionOption', 'OrderedExtensionsOption',
+           'ConfigurationError']
 
 # Retained for backward-compatibility, use as_bool() instead
 _TRUE_VALUES = ('yes', 'true', 'enabled', 'on', 'aye', '1', 1, True)
@@ -353,7 +354,7 @@ class Section(object):
     __iter__ = iterate
     
     def __repr__(self):
-        return '<Section [%s]>' % (self.name)
+        return '<%s [%s]>' % (self.__class__.__name__, self.name)
 
     def get(self, key, default=''):
         """Return the value of the specified option.
@@ -506,8 +507,61 @@ class Section(object):
             self.config.parser.remove_option(_to_utf8(self.name), _to_utf8(key))
 
 
+def _get_registry(cls, compmgr=None):
+    """Return the descriptor registry.
+    
+    If `compmgr` is specified, only return descriptors for components that
+    are enabled in the given `ComponentManager`.
+    """
+    if compmgr is None:
+        return cls.registry
+
+    from trac.core import ComponentMeta
+    components = {}
+    for comp in ComponentMeta._components:
+        for attr in comp.__dict__.itervalues():
+            if isinstance(attr, cls):
+                components[attr] = comp
+
+    return dict(each for each in cls.registry.iteritems()
+                if each[1] not in components
+                   or compmgr.is_enabled(components[each[1]]))
+
+
+class ConfigSection(object):
+    """Descriptor for configuration sections."""
+    
+    registry = {}
+    
+    @staticmethod
+    def get_registry(compmgr=None):
+        """Return the section registry, as a `dict` mapping section names to
+        `ConfigSection` objects.
+        
+        If `compmgr` is specified, only return sections for components that are
+        enabled in the given `ComponentManager`.
+        """
+        return _get_registry(ConfigSection, compmgr)
+
+    def __init__(self, name, doc):
+        """Create the configuration section."""
+        self.name = name
+        self.registry[self.name] = self
+        self.__doc__ = doc
+
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+        config = getattr(instance, 'config', None)
+        if config and isinstance(config, Configuration):
+            return config[self.name]
+
+    def __repr__(self):
+        return '<%s [%s]>' % (self.__class__.__name__, self.name)
+
+
 class Option(object):
-    """Descriptor for configuration options on `Configurable` subclasses."""
+    """Descriptor for configuration options."""
 
     registry = {}
     accessor = Section.get
@@ -520,20 +574,8 @@ class Option(object):
         If `compmgr` is specified, only return options for components that are
         enabled in the given `ComponentManager`.
         """
-        if compmgr is None:
-            return Option.registry
-        
-        from trac.core import ComponentMeta
-        components = {}
-        for cls in ComponentMeta._components:
-            for attr in cls.__dict__.itervalues():
-                if isinstance(attr, Option):
-                    components[attr] = cls
-        
-        return dict(each for each in Option.registry.items()
-                    if each[1] not in components
-                       or compmgr.is_enabled(components[each[1]]))
-    
+        return _get_registry(Option, compmgr)
+
     def __init__(self, section, name, default=None, doc=''):
         """Create the configuration option.
         
@@ -557,7 +599,6 @@ class Option(object):
             section = config[self.section]
             value = self.accessor(section, self.name, self.default)
             return value
-        return None
 
     def __set__(self, instance, value):
         raise AttributeError, 'can\'t set attribute'

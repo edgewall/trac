@@ -25,7 +25,7 @@ from genshi.builder import tag
 
 from trac import __version__
 from trac.attachment import AttachmentModule
-from trac.config import ExtensionOption
+from trac.config import ConfigSection, ExtensionOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.resource import *
@@ -166,6 +166,47 @@ class DefaultTicketGroupStatsProvider(Component):
 
     implements(ITicketGroupStatsProvider)
 
+    milestone_groups_section = ConfigSection('milestone-groups',
+        """As the workflow for tickets is now configurable, there can be many
+        ticket states, and simply displaying closed tickets vs. all the others
+        is maybe not appropriate in all cases. This section enables one to
+        easily create ''groups'' of states that will be shown in different
+        colors in the milestone progress bar.
+        
+        Example configuration (the default only has closed and active):
+        {{{
+        closed = closed
+        # sequence number in the progress bar
+        closed.order = 0
+        # optional extra param for the query (two additional columns: created and modified and sort on created)
+        closed.query_args = group=resolution,order=time,col=id,col=summary,col=owner,col=type,col=priority,col=component,col=severity,col=time,col=changetime
+        # indicates groups that count for overall completion percentage
+        closed.overall_completion = true
+        
+        new = new
+        new.order = 1
+        new.css_class = new
+        new.label = new
+        
+        # one catch-all group is allowed
+        active = *
+        active.order = 2
+        # CSS class for this interval
+        active.css_class = open
+        # Displayed label for this group
+        active.label = in progress
+        }}}
+        
+        The definition consists in a comma-separated list of accepted status.
+        Also, '*' means any status and could be used to associate all remaining
+        states to one catch-all group.
+        
+        The CSS class can be one of: new (yellow), open (no color) or closed
+        (green). New styles can easily be added using the following selector:
+        `table.progress td.<class>`
+        
+        (''since 0.11'')""")
+
     default_milestone_groups =  [
         {'name': 'closed', 'status': 'closed',
          'query_args': 'group=resolution', 'overall_completion': 'true'},
@@ -179,7 +220,7 @@ class DefaultTicketGroupStatsProvider(Component):
         if 'milestone-groups' in self.config:
             groups = {}
             order = 0
-            for groupname, value in self.config.options('milestone-groups'):
+            for groupname, value in self.milestone_groups_section.options():
                 qualifier = 'status'
                 if '.' in groupname:
                     groupname, qualifier = groupname.split('.', 1)

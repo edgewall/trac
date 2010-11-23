@@ -98,6 +98,37 @@ class Environment(Component, ComponentManager):
     system_info_providers = ExtensionPoint(ISystemInfoProvider)
     setup_participants = ExtensionPoint(IEnvironmentSetupParticipant)
 
+    components_section = ConfigSection('components',
+        """This section is used to enable or disable components provided by
+        plugins, as well as by Trac itself. The component to enable/disable is
+        specified via the name of the option. Whether its enabled is determined
+        by the option value; setting the value to `enabled` or `on` will enable
+        the component, any other value (typically `disabled` or `off`) will
+        disable the component.
+
+        The option name is either the fully qualified name of the components or
+        the module/package prefix of the component. The former enables/disables
+        a specific component, while the latter enables/disables any component
+        in the specified package/module.
+
+        Consider the following configuration snippet:
+        {{{
+        [components]
+        trac.ticket.report.ReportModule = disabled
+        webadmin.* = enabled
+        }}}
+        
+        The first option tells Trac to disable the
+        [wiki:TracReports report module]. The second option instructs Trac to
+        enable all components in the `webadmin` package. Note that the trailing
+        wildcard is required for module/package matching.
+        
+        See the ''Plugins'' page on ''About Trac'' to get the list of active
+        components (requires `CONFIG_VIEW` [wiki:TracPermissions permissions]).
+        
+        See also: TracPlugins
+        """)
+
     shared_plugins_dir = PathOption('inherit', 'plugins_dir', '',
         """Path to the //shared plugins directory//.
         
@@ -268,7 +299,7 @@ class Environment(Component, ComponentManager):
             return self._rules
         except AttributeError:
             self._rules = {}
-            for name, value in self.config.options('components'):
+            for name, value in self.components_section.options():
                 if name.endswith('.*'):
                     name = name[:-2]
                 self._rules[name.lower()] = value.lower() in ('enabled', 'on')

@@ -20,6 +20,7 @@ import posixpath
 
 from genshi.builder import tag
 
+from trac.config import ConfigSection
 from trac.core import *
 from trac.versioncontrol.api import NoSuchNode, RepositoryManager
 from trac.versioncontrol.svn_fs import _path_within_scope
@@ -30,7 +31,45 @@ from trac.util.translation import _, tag_
 
 
 class SubversionPropertyRenderer(Component):
+
     implements(IPropertyRenderer)
+
+    svn_externals_section = ConfigSection('svn:externals',
+        """The TracBrowser for Subversion can interpret the `svn:externals`
+        property of folders. By default, it only turns the URLs into links as
+        Trac can't browse remote repositories.
+
+        However, if you have another Trac instance (or an other repository
+        browser like [http://www.viewvc.org/ ViewVC]) configured to browse the
+        target repository, then you can instruct Trac which other repository
+        browser to use for which external URL. This mapping is done in the
+        `[svn:externals]` section of the TracIni.
+        
+        Example:
+        {{{
+        [svn:externals]
+        1 = svn://server/repos1                       http://trac/proj1/browser/$path?rev=$rev
+        2 = svn://server/repos2                       http://trac/proj2/browser/$path?rev=$rev
+        3 = http://theirserver.org/svn/eng-soft       http://ourserver/viewvc/svn/$path/?pathrev=25914
+        4 = svn://anotherserver.com/tools_repository  http://ourserver/tracs/tools/browser/$path?rev=$rev
+        }}}
+        With the above, the
+        `svn://anotherserver.com/tools_repository/tags/1.1/tools` external will
+        be mapped to `http://ourserver/tracs/tools/browser/tags/1.1/tools?rev=`
+        (and `rev` will be set to the appropriate revision number if the
+        external additionally specifies a revision, see the
+        [http://svnbook.red-bean.com/en/1.4/svn.advanced.externals.html SVN Book on externals]
+        for more details).
+        
+        Note that the number used as a key in the above section is purely used
+        as a place holder, as the URLs themselves can't be used as a key due to
+        various limitations in the configuration file parser.
+        
+        Finally, the relative URLs introduced in
+        [http://subversion.apache.org/docs/release-notes/1.5.html#externals Subversion 1.5]
+        are not yet supported.
+
+        (''since 0.11'')""")
 
     def __init__(self):
         self._externals_map = {}
@@ -53,7 +92,7 @@ class SubversionPropertyRenderer(Component):
 
     def _render_externals(self, prop):
         if not self._externals_map:
-            for dummykey, value in self.config.options('svn:externals'):
+            for dummykey, value in self.svn_externals_section.options():
                 value = value.split()
                 if len(value) != 2:
                     self.log.warn("svn:externals entry %s doesn't contain "

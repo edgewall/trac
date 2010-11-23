@@ -20,7 +20,7 @@ import os.path
 import time
 
 from trac.admin import AdminCommandError, IAdminCommandProvider
-from trac.config import ListOption, Option
+from trac.config import ConfigSection, ListOption, Option
 from trac.core import *
 from trac.resource import IResourceManager, Resource, ResourceNotFound
 from trac.util.concurrency import threading
@@ -272,6 +272,20 @@ class RepositoryManager(Component):
     providers = ExtensionPoint(IRepositoryProvider)
     change_listeners = ExtensionPoint(IRepositoryChangeListener)
 
+    repositories_section = ConfigSection('repositories',
+        """One of the alternatives for registering new repositories is to
+        populate the `[repositories]` section of the `trac.ini`.
+
+        This is especially suited for setting up convenience aliases,
+        short-lived repositories, or during the initial phases of an
+        installation.
+
+        See [TracRepositoryAdmin#Intrac.ini TracRepositoryAdmin] for details
+        about the format adopted for this section and the rest of that page for
+        the other alternatives.
+        
+        (''since 0.12'')""")
+
     repository_type = Option('trac', 'repository_type', 'svn',
         """Default repository connector type. (''since 0.10'')
         
@@ -409,7 +423,7 @@ class RepositoryManager(Component):
         The `[repositories]` section can be used to specify a list
         of repositories.
         """
-        repositories = self.config['repositories']
+        repositories = self.repositories_section
         reponames = {}
         # eventually add pre-0.12 default repository
         if self.repository_dir:

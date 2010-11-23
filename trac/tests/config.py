@@ -295,9 +295,14 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEquals(['a', 'b'], config.sections())
         
         class Foo(object):
+            section_c = ConfigSection('c', 'Doc for c')
             option_c = Option('c', 'option', 'value')
         
         self.assertEquals(['a', 'b', 'c'], config.sections())
+        foo = Foo()
+        foo.config = config
+        self.assert_(foo.section_c is config['c'])
+        self.assertEquals('value', foo.section_c.get('option'))
 
     def test_sections_unicode(self):
         self._write([u'[aä]', u'öption = x', '[b]', 'option = y'])

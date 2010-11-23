@@ -27,6 +27,7 @@ from genshi.core import Markup
 from trac.core import *
 from trac.resource import Resource, ResourceNotFound, get_resource_name, \
                           get_resource_summary, get_resource_url
+from trac.util.compat import cleandoc
 from trac.util.datefmt import format_date, from_utimestamp
 from trac.util.html import escape
 from trac.util.presentation import separated
@@ -606,7 +607,7 @@ class TracIniMacro(WikiMacroBase):
     """
 
     def expand_macro(self, formatter, name, args):
-        from trac.config import Option
+        from trac.config import ConfigSection, Option
         section_filter = key_filter = ''
         args, kw = parse_args(args)
         if args:
@@ -614,14 +615,21 @@ class TracIniMacro(WikiMacroBase):
         if args:
             key_filter = args.pop(0).strip()
 
+        registry = ConfigSection.get_registry(self.compmgr)
+        sections = dict((name, cleandoc(to_unicode(section.__doc__)))
+                        for name, section in registry.iteritems()
+                        if name.startswith(section_filter))
+
         registry = Option.get_registry(self.compmgr)
-        sections = {}
+        options = {}
         for (section, key), option in registry.iteritems():
             if section.startswith(section_filter):
-                sections.setdefault(section, {})[key] = option
+                options.setdefault(section, {})[key] = option
+                sections.setdefault(section, '')
 
         return tag.div(class_='tracini')(
             (tag.h3(tag.code('[%s]' % section), id='%s-section' % section),
+             format_to_html(self.env, formatter.context, section_doc),
              tag.table(class_='wiki')(tag.tbody(
                  tag.tr(tag.td(tag.tt(option.name)),
                         tag.td(format_to_oneliner(self.env, formatter.context,
@@ -632,10 +640,10 @@ class TracIniMacro(WikiMacroBase):
                                class_='default' if option.default or 
                                                    option.default is False 
                                                 else 'nodefault'))
-                 for option in sorted(sections[section].itervalues(),
+                 for option in sorted(options.get(section, {}).itervalues(),
                                       key=lambda o: o.name)
                  if option.name.startswith(key_filter))))
-            for section in sorted(sections))
+            for section, section_doc in sorted(sections.iteritems()))
 
 
 

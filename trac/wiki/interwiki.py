@@ -19,6 +19,7 @@ import re
 from genshi.builder import tag
 
 from trac.cache import cached
+from trac.config import ConfigSection
 from trac.core import *
 from trac.util.translation import _
 from trac.wiki.api import IWikiChangeListener, IWikiMacroProvider
@@ -30,6 +31,21 @@ class InterWikiMap(Component):
     """InterWiki map manager."""
 
     implements(IWikiChangeListener, IWikiMacroProvider)
+
+    interwiki_section = ConfigSection('interwiki',
+        """Every option in the `[interwiki]` section defines one InterWiki
+        prefix. The option name defines the prefix. The option value defines
+        the URL, optionally followed by a description separated from the URL
+        by whitespace. Parametric URLs are supported as well.
+
+        '''Example:'''
+        {{{
+        [interwiki]
+        MeatBall = http://www.usemod.com/cgi-bin/mb.pl?
+        PEP = http://www.python.org/peps/pep-$1.html Python Enhancement Proposal $1
+        tsvn = tsvn: Interact with TortoiseSvn
+        }}}
+        """)
 
     _page_name = 'InterMapTxt'
     _interwiki_re = re.compile(r"(%s)[ \t]+([^ \t]+)(?:[ \t]+#(.*))?" %
@@ -129,7 +145,7 @@ class InterWikiMap(Component):
                         map[prefix.upper()] = (prefix, url, title)
             elif line.startswith('----'):
                 in_map = True
-        for prefix, value in self.config['interwiki'].options():
+        for prefix, value in self.interwiki_section.options():
             value = value.split(None, 1)
             if value:
                 url = value[0].strip()

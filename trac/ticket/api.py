@@ -163,6 +163,10 @@ class TicketSystem(Component):
     change_listeners = ExtensionPoint(ITicketChangeListener)
     milestone_change_listeners = ExtensionPoint(IMilestoneChangeListener)
     
+    ticket_custom_section = ConfigSection('ticket-custom',
+        """In this section, you can define additional fields for tickets. See
+        TracTicketsCustomFields for more details.""")
+
     action_controllers = OrderedExtensionsOption('ticket', 'workflow',
         ITicketActionController, default='ConfigurableTicketWorkflow',
         include_missing=False,
@@ -353,7 +357,7 @@ class TicketSystem(Component):
     def custom_fields(self, db):
         """Return the list of custom ticket fields available for tickets."""
         fields = []
-        config = self.config['ticket-custom']
+        config = self.ticket_custom_section
         for name in [option for option, value in config.options()
                      if '.' not in option]:
             field = {
