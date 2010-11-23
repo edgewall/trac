@@ -456,8 +456,7 @@ class TicketSystem(Component):
                                                     resolution, type)
                         href = formatter.href.ticket(num) + params + fragment
                         return tag.a(label, title=title, href=href,
-                                     class_=_("%(status)s ticket", 
-                                              status=status))
+                                     class_='%s ticket' % status)
             else:
                 ranges = str(r)
                 if params:
