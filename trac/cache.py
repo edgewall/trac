@@ -22,8 +22,9 @@ class CachedProperty(object):
     
     def __init__(self, retriever, id_attr=None):
         self.retriever = retriever
-        self.id_attr = id_attr
         self.__doc__ = retriever.__doc__
+        self.id_attr = id_attr
+        self.id = None
         
     def __get__(self, instance, owner):
         if instance is None:
@@ -31,19 +32,27 @@ class CachedProperty(object):
         if self.id_attr is not None:
             id = getattr(instance, self.id_attr)
         else:
-            id = "%s.%s.%s" % (owner.__module__,
-                               owner.__name__,
-                               self.retriever.__name__)
+            id = self.id
+            if id is None:
+                id = self.id = self.make_id(owner)
         return CacheManager(instance.env).get(id, self.retriever, instance)
         
     def __delete__(self, instance):
         if self.id_attr is not None:
             id = getattr(instance, self.id_attr)
         else:
-            id = '%s.%s.%s' % (instance.__class__.__module__,
-                               instance.__class__.__name__,
-                               self.retriever.__name__)
+            id = self.id
+            if id is None:
+                id = self.id = self.make_id(instance.__class__)
         CacheManager(instance.env).invalidate(id)
+
+    def make_id(self, cls):
+        for base in cls.mro():
+            if self in base.__dict__.itervalues():
+                cls = base
+                break
+        return '%s.%s.%s' % (cls.__module__, cls.__name__,
+                             self.retriever.__name__)
 
 
 def cached(fn_or_id=None):
