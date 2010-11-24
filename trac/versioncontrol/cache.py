@@ -45,8 +45,8 @@ class CachedRepository(Repository):
     def __init__(self, env, repos, log):
         self.env = env
         self.repos = repos
-        self._metadata_id = (self.__class__.__module__ + '.'
-                             + self.__class__.__name__ + '.metadata:'
+        self._metadata_id = (CachedRepository.__module__ + '.'
+                             + CachedRepository.__name__ + '.metadata:'
                              + str(self.repos.id))
         Repository.__init__(self, repos.name, repos.params, log)
 
