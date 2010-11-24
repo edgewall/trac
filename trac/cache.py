@@ -47,12 +47,12 @@ class CachedProperty(object):
         CacheManager(instance.env).invalidate(id)
 
     def make_id(self, cls):
+        attr = self.retriever.__name__
         for base in cls.mro():
-            if self in base.__dict__.itervalues():
+            if base.__dict__.get(attr) is self:
                 cls = base
                 break
-        return '%s.%s.%s' % (cls.__module__, cls.__name__,
-                             self.retriever.__name__)
+        return '%s.%s.%s' % (cls.__module__, cls.__name__, attr)
 
 
 def cached(fn_or_id=None):
