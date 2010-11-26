@@ -150,7 +150,6 @@ class SMTPServerEngine:
                         return
                 except socket.error:
                     return
-        return
             
     def do_command(self, data):
         """Process a single SMTP Command"""
@@ -260,6 +259,7 @@ class SMTPServer:
             self._socket.close()
             self._socket = None
 
+
 class SMTPServerStore(SMTPServerInterface):
     """
     Simple store for SMTP data
@@ -340,6 +340,7 @@ class SMTPThreadedServer(threading.Thread):
     def cleanup(self):
         self.store.reset(None)
 
+
 def smtp_address(fulladdr):
     mo = email_re.search(fulladdr)
     if mo:
@@ -347,6 +348,7 @@ def smtp_address(fulladdr):
     if start >= 0:
         return fulladdr[start+1:-1]
     return fulladdr
+
 
 def decode_header(header):
     """ Decode a MIME-encoded header value """
@@ -368,6 +370,7 @@ def decode_header(header):
     except Exception, e:
         raise AssertionError, e
     return header
+
 
 def parse_smtp_message(msg):
     """ Split a SMTP message into its headers and body.

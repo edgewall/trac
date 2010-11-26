@@ -301,14 +301,17 @@ class NotificationTestCase(unittest.TestCase):
 
     def test_email_map(self):
         """Login-to-email mapping"""
-        self.env.config.set('notification', 'always_notify_owner', 'false')
+        self.env.config.set('notification', 'always_notify_owner', 'true')
         self.env.config.set('notification', 'always_notify_reporter', 'true')
         self.env.config.set('notification', 'smtp_always_cc',
                             'joe@example.com')
         self.env.known_users = [('joeuser', 'Joe User',
-                                'user-joe@example.com')]
+                                 'user-joe@example.com'),
+                                ('jim@domain', 'Jim User',
+                                 'user-jim@example.com')]
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joeuser'
+        ticket['owner'] = 'jim@domain'
         ticket['summary'] = 'This is a summary'
         ticket.insert()
         tn = TicketNotifyEmail(self.env)
@@ -320,7 +323,9 @@ class NotificationTestCase(unittest.TestCase):
         tolist = [addr.strip() for addr in headers['To'].split(',')]
         # 'To' list should have been resolved to the real email address
         self.failIf('user-joe@example.com' not in tolist)
+        self.failIf('user-jim@example.com' not in tolist)
         self.failIf('joeuser' in tolist)
+        self.failIf('jim@domain' in tolist)
         
     def test_ignore_domains(self):
         """Non-SMTP domain exclusion"""

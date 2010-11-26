@@ -354,20 +354,19 @@ class NotifyEmail(Notify):
                 return False
             return True
 
-        if not is_email(address):
-            if address == 'anonymous':
+        if address == 'anonymous':
+            return None
+        if address in self.email_map:
+            address = self.email_map[address]
+        elif not is_email(address) and NotifyEmail.nodomaddr_re.match(address):
+            if self.config.getbool('notification', 'use_short_addr'):
+                return address
+            domain = self.config.get('notification', 'smtp_default_domain')
+            if domain:
+                address = "%s@%s" % (address, domain)
+            else:
+                self.env.log.info("Email address w/o domain: %s" % address)
                 return None
-            if self.email_map.has_key(address):
-                address = self.email_map[address]
-            elif NotifyEmail.nodomaddr_re.match(address):
-                if self.config.getbool('notification', 'use_short_addr'):
-                    return address
-                domain = self.config.get('notification', 'smtp_default_domain')
-                if domain:
-                    address = "%s@%s" % (address, domain)
-                else:
-                    self.env.log.info("Email address w/o domain: %s" % address)
-                    return None
 
         mo = self.shortaddr_re.search(address)
         if mo:
@@ -381,11 +380,6 @@ class NotifyEmail(Notify):
     def encode_header(self, key, value):
         if isinstance(value, tuple):
             return self.format_header(key, value[0], value[1])
-        if isinstance(value, list):
-            items = []
-            for v in value:
-                items.append(self.encode_header(v))
-            return ',\n\t'.join(items)
         mo = self.longaddr_re.match(value)
         if mo:
             return self.format_header(key, mo.group(1), mo.group(2))
