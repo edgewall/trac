@@ -84,7 +84,8 @@ class LoginModule(Component):
         if req.remote_user:
             authname = req.remote_user
         elif req.incookie.has_key('trac_auth'):
-            authname = self._get_name_for_cookie(req, req.incookie['trac_auth'])
+            authname = self._get_name_for_cookie(req,
+                                                 req.incookie['trac_auth'])
 
         if not authname:
             return None
@@ -153,15 +154,23 @@ class LoginModule(Component):
         assert req.authname in ('anonymous', remote_user), \
                _('Already logged in as %(user)s.', user=req.authname)
 
-        cookie = hex_entropy()
         with self.env.db_transaction as db:
             # Delete cookies older than 10 days
             db("DELETE FROM auth_cookie WHERE time < %s",
                (int(time.time()) - 86400 * 10,))
-            db("""
-                INSERT INTO auth_cookie (cookie, name, ipnr, time)
-                     VALUES (%s, %s, %s, %s)
-               """, (cookie, remote_user, req.remote_addr, int(time.time())))
+            # Insert a new cookie if we haven't already got one
+            cookie = None
+            trac_auth = req.incookie.get('trac_auth')
+            if trac_auth is not None:
+                name = self._cookie_to_name(req, trac_auth)
+                cookie = trac_auth.value if name == remote_user else None
+            if cookie is None:
+                cookie = hex_entropy()
+                db("""
+                    INSERT INTO auth_cookie (cookie, name, ipnr, time)
+                         VALUES (%s, %s, %s, %s)
+                   """, (cookie, remote_user, req.remote_addr,
+                         int(time.time())))
         req.authname = remote_user
         req.outcookie['trac_auth'] = cookie
         req.outcookie['trac_auth']['path'] = self.auth_cookie_path \
@@ -204,7 +213,9 @@ class LoginModule(Component):
         if self.env.secure_cookies:
             req.outcookie['trac_auth']['secure'] = True
 
-    def _get_name_for_cookie(self, req, cookie):
+    def _cookie_to_name(self, req, cookie):
+        # This is separated from _get_name_for_cookie(), because the latter is
+        # overridden in AccountManager.
         if self.check_ip:
             sql = "SELECT name FROM auth_cookie WHERE cookie=%s AND ipnr=%s"
             args = (cookie.value, req.remote_addr)
@@ -213,15 +224,21 @@ class LoginModule(Component):
             args = (cookie.value,)
         for name, in self.env.db_query(sql, args):
             return name
-        # The cookie is invalid (or has been purged from the database),
-        # so tell the user agent to drop it as it is invalid
-        self._expire_cookie(req)
+
+    def _get_name_for_cookie(self, req, cookie):
+        name = self._cookie_to_name(req, cookie)
+        if name is None:
+            # The cookie is invalid (or has been purged from the database),
+            # so tell the user agent to drop it as it is invalid
+            self._expire_cookie(req)
+        return name
 
     def _redirect_back(self, req):
         """Redirect the user back to the URL she came from."""
         referer = self._referer(req)
-        if referer and not (referer == req.base_url or \
-                referer.startswith(req.base_url.rstrip('/') + '/')):
+        if referer and referer.startswith(('http://', 'https://')) \
+                and not (referer == req.base_url or \
+                         referer.startswith(req.base_url.rstrip('/') + '/')):
             # only redirect to referer if it is from the same site
             referer = None
         if referer and referer.rstrip('/') == req.base_url.rstrip('/') \
