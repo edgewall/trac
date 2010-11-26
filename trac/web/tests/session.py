@@ -26,7 +26,7 @@ def _prep_session_table(env, spread_visits=False):
     with env.db_transaction as db:
         for x in xrange(20):
             sid = 'name%02d' % x
-            authenticated = x < 10
+            authenticated = int(x < 10)
             last_visit = last_visit_base + (visit_delta * x)
             val = 'val%02d' % x
             data = (sid, authenticated, last_visit, val, val)
