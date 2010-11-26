@@ -67,6 +67,7 @@ class WikiModule(Component):
     DEFAULT_PAGE_TEMPLATE = 'DefaultPage'
 
     # IContentConverter methods
+
     def get_supported_conversions(self):
         yield ('txt', _('Plain Text'), 'txt', 'text/x-trac-wiki', 'text/plain',
                9)
