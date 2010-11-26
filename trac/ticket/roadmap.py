@@ -42,7 +42,7 @@ from trac.timeline.api import ITimelineEventProvider
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import (Chrome, INavigationContributor,
                              add_link, add_notice, add_script, add_stylesheet,
-                             add_warning, prevnext_nav, web_context)
+                             add_warning, auth_link, prevnext_nav, web_context)
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to
 
@@ -409,8 +409,8 @@ class RoadmapModule(Component):
         if req.authname and req.authname != 'anonymous':
             username = req.authname
         icshref = req.href.roadmap(show=show, user=username, format='ics')
-        add_link(req, 'alternate', icshref, _('iCalendar'), 'text/calendar',
-                 'ics')
+        add_link(req, 'alternate', auth_link(req, icshref), _('iCalendar'),
+                 'text/calendar', 'ics')
 
         data = {
             'milestones': milestones,

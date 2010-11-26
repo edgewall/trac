@@ -275,6 +275,18 @@ def web_context(req, resource=None, id=False, version=False, parent=False,
     return self
 
 
+def auth_link(req, link):
+    """Return an "authenticated" link to `link` for authenticated users.
+    
+    If the user is anonymous, returns `link` unchanged. For authenticated
+    users, returns a link to `/login` that redirects to `link` after
+    authentication.
+    """
+    if req.authname != 'anonymous':
+        return req.href.login(referer=link)
+    return link
+
+
 def _save_messages(req, url, permanent):
     """Save warnings and notices in case of redirect, so that they can
     be displayed after the redirect."""

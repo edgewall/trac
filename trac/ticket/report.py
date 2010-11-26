@@ -39,7 +39,8 @@ from trac.util.translation import _
 from trac.web.api import IRequestHandler, RequestDone
 from trac.web.chrome import (INavigationContributor, Chrome, 
                              add_ctxtnav, add_link, add_notice, add_script,
-                             add_stylesheet, add_warning, web_context)
+                             add_stylesheet, add_warning, auth_link,
+                             web_context)
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 
@@ -266,8 +267,8 @@ class ReportModule(Component):
             return req.href.report(sort=req.args.get('sort'),
                                    asc=asc and '1' or '0', **kwargs)
 
-        add_link(req, 'alternate', 
-                 report_href(format='rss'),
+        add_link(req, 'alternate',
+                 auth_link(req, report_href(format='rss')),
                  _('RSS Feed'), 'application/rss+xml', 'rss')
         add_link(req, 'alternate', report_href(format='csv'),
                  _('Comma-delimited Text'), 'text/plain')
@@ -548,8 +549,8 @@ class ReportModule(Component):
                            filename=filename)
         else:
             p = max is not None and page or None
-            add_link(req, 'alternate', 
-                     report_href(format='rss', page=None),
+            add_link(req, 'alternate',
+                     auth_link(req, report_href(format='rss', page=None)),
                      _('RSS Feed'), 'application/rss+xml', 'rss')
             add_link(req, 'alternate', report_href(format='csv', page=p),
                      _('Comma-delimited Text'), 'text/plain')

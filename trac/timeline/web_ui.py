@@ -34,7 +34,7 @@ from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.web import IRequestHandler, IRequestFilter
 from trac.web.chrome import (Chrome, INavigationContributor, ITemplateProvider,
-                             add_link, add_stylesheet, prevnext_nav, 
+                             add_link, add_stylesheet, auth_link, prevnext_nav,
                              web_context)
 from trac.wiki.api import IWikiSyntaxProvider
 
@@ -224,7 +224,7 @@ class TimelineModule(Component):
         rss_href = req.href.timeline([(f, 'on') for f in filters],
                                      daysback=90, max=50, authors=authors,
                                      format='rss')
-        add_link(req, 'alternate', rss_href, _('RSS Feed'),
+        add_link(req, 'alternate', auth_link(req, rss_href), _('RSS Feed'),
                  'application/rss+xml', 'rss')
 
         for filter_ in available_filters:

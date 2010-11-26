@@ -47,8 +47,8 @@ from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web import arg_list_to_args, parse_arg_list, IRequestHandler
 from trac.web.chrome import (Chrome, INavigationContributor, ITemplateProvider,
                              add_ctxtnav, add_link, add_notice, add_script,
-                             add_stylesheet, add_warning, prevnext_nav,
-                             web_context)
+                             add_stylesheet, add_warning, auth_link,
+                             prevnext_nav, web_context)
 from trac.wiki.formatter import format_to, format_to_html, format_to_oneliner
 
 
@@ -631,6 +631,8 @@ class TicketModule(Component):
             format = conversion[0]
             conversion_href = get_resource_url(self.env, ticket.resource,
                                                req.href, format=format)
+            if format == 'rss':
+                conversion_href = auth_link(req, conversion_href)
             add_link(req, 'alternate', conversion_href, conversion[1],
                      conversion[4], format)
                      

@@ -35,7 +35,7 @@ from trac.versioncontrol.web_ui.util import *
 from trac.web import IRequestHandler
 from trac.web.chrome import (Chrome, INavigationContributor, add_ctxtnav,
                              add_link, add_script, add_script_data,
-                             add_stylesheet, web_context)
+                             add_stylesheet, auth_link, web_context)
 from trac.wiki import IWikiSyntaxProvider, WikiParser 
 
 
@@ -314,7 +314,7 @@ class LogModule(Component):
 
         rss_href = make_log_href(path, format='rss', revs=revs,
                                  stop_rev=stop_rev)
-        add_link(req, 'alternate', rss_href, _('RSS Feed'),
+        add_link(req, 'alternate', auth_link(req, rss_href), _('RSS Feed'),
                  'application/rss+xml', 'rss')
         changelog_href = make_log_href(path, format='changelog', revs=revs,
                                        stop_rev=stop_rev)
