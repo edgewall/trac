@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-04-26 09:50+0200\n"
-"PO-Revision-Date: 2010-10-24 22:41+0900\n"
+"PO-Revision-Date: 2010-11-27 04:45+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
@@ -290,7 +290,7 @@ msgstr "更新日時"
 #: trac/attachment.py:951 trac/templates/attachment.html:93
 #: trac/ticket/api.py:289 trac/ticket/templates/ticket_box.html:60
 msgid "Description"
-msgstr "説明"
+msgstr "詳細"
 
 #: trac/attachment.py:976 trac/wiki/admin.py:104
 #, python-format
@@ -1743,7 +1743,7 @@ msgstr "メールアドレスまたはユーザ名:"
 
 #: trac/templates/attachment.html:46
 msgid "Description of the file (optional):"
-msgstr "ファイルの説明(省略可)"
+msgstr "ファイルの詳細(省略可):"
 
 #: trac/templates/attachment.html:52
 msgid "Replace existing attachment of the same name"
@@ -2998,7 +2998,7 @@ msgstr "、"
 
 #: trac/ticket/web_ui.py:1099
 msgid "No permission to edit the ticket description."
-msgstr "説明を編集する権限がありません。"
+msgstr "チケットの詳細を編集する権限がありません。"
 
 #: trac/ticket/web_ui.py:1105
 msgid "No permission to change the ticket reporter."
