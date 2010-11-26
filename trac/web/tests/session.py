@@ -22,7 +22,7 @@ def _prep_session_table(db, spread_visits=False):
     auth_list, anon_list = [], []
     for x in xrange(20):
         sid = 'name%02d' % x
-        authenticated = x < 10
+        authenticated = int(x < 10)
         last_visit = last_visit_base + (visit_delta * x)
         val = 'val%02d' % x
         data = (sid, authenticated, last_visit, val, val)
