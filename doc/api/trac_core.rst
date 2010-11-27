@@ -128,7 +128,4 @@ Miscellaneous
 
 .. [*] Ok, it *might* happen that more than one component instance get
    created due to a race condition. This is usually harmless, see
-   #9418.
-
-.. todo:: would be nice to have a `:teo:` role for linking to 
-   http://trac.edgewall.org/intertrac/.
+   :teo:`#9418`.

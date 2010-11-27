@@ -13,10 +13,10 @@
 
 import sys, os
 
-
 # General substitutions.
 project = 'Trac'
 copyright = '2010, Edgewall Software'
+url = 'http://trac.edgewall.org'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
@@ -42,25 +42,38 @@ if devel:
 # General configuration
 # ---------------------
 
-# Add any Sphinx extension module names here, as strings. They can be extensions
-# coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = [
- 'sphinx.ext.autodoc',
- 'sphinx.ext.ifconfig',
- 'sphinx.ext.todo',
-]
+# Add any Sphinx extension module names here, as strings. 
+# They can be extensions coming with Sphinx (named 'sphinx.ext.*') 
+# or your custom ones.
 
-# PDF support via rst2pdf (http://code.google.com/p/rst2pdf/)
+extensions = []
+
+# -- Autodoc
+
+extensions.append('sphinx.ext.autodoc')
+
+autoclass_content = 'both'
+autodoc_member_order = 'bysource'
+
+# -- Conditional content (see setup() below)
+extensions.append('sphinx.ext.ifconfig')
+
+# -- Link to other Sphinx documentations
+extensions.append('sphinx.ext.intersphinx')
+
+intersphinx_mapping = {'python': ('http://docs.python.org/2.7', None)}
+
+# -- Keep track of :todo: items
+extensions.append('sphinx.ext.todo')
+
+todo_include_todos = devel
+
+# -- PDF support via http://code.google.com/p/rst2pdf/
 try:
     import rst2pdf
     extensions.append('rst2pdf.pdfbuilder')
 except ImportError:
     pass
-
-autoclass_content = 'both'
-autodoc_member_order = 'bysource'
-
-todo_include_todos = devel
 
 
 # Add any paths that contain templates here, relative to this directory.
@@ -311,4 +324,16 @@ pdf_use_numbered_links = False
 pdf_fit_background_mode = 'scale'
 
 def setup(app):
+    # adding role for linking to InterTrac targets on t.e.o
+    from urllib import quote
+    from docutils import nodes
+    from docutils.parsers.rst import roles
+    def teo_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
+        ref = url + '/intertrac/' + quote(text)
+        roles.set_classes(options)
+        node = nodes.reference(rawtext, text, refuri=ref, **options)
+        return [node], []
+    roles.register_canonical_role('teo', teo_role)
+
+    # ifconfig variables
     app.add_config_value('devel', '', True)
