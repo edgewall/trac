@@ -450,6 +450,7 @@ try:
                          if tz.zone != 'UTC'])
 
     def timezone(tzname):
+        """Fetch timezone instance by name or raise `KeyError`"""
         tz = get_timezone(tzname)
         if not tz:
             raise KeyError(tzname)
