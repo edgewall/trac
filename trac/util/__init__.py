@@ -573,7 +573,7 @@ _entropy = random.Random()
 
 def hex_entropy(digits=32):
     """Generate `digits` number of hex digits of entropy (at most 40)."""
-    return sha1(str(_entropy.random())).hexdigest()[:bytes]
+    return sha1(str(_entropy.random())).hexdigest()[:digits]
 
 
 # Original license for md5crypt:
