@@ -12,39 +12,87 @@
 
   <body>
     <div id="content" class="wiki"
-      py:with="current_href = href.wiki(page.name);
-               what = (new_version and old_version and new_version - old_version &gt; 1) and 'multiple'
-                      or new_version and 'single' or 'page'">
+      py:with="current_href = href.wiki(page.name)">
       <h1 py:choose="what">
-        <py:when test="'multiple'"><i18n:msg params="from, to, name">
-          Delete versions ${old_version + 1} to $new_version of <a href="$current_href">$page.name</a>
-        </i18n:msg></py:when>
-        <py:when test="'single'"><i18n:msg params="version, name">
-          Delete version $new_version of <a href="$current_href">$page.name</a>
-        </i18n:msg></py:when>
-        <py:otherwise><i18n:msg params="name">
-          Delete <a href="$current_href">$page.name</a>
-        </i18n:msg></py:otherwise>
+        <py:when test="'multiple'">
+          <i18n:msg params="from, to, name">
+            Delete versions ${old_version + 1} to $new_version of <a href="$current_href">$page.name</a>
+          </i18n:msg>
+        </py:when>
+        <py:when test="'single'">
+          <i18n:msg params="version, name">
+            Delete version $new_version of <a href="$current_href">$page.name</a>
+          </i18n:msg>
+        </py:when>
+        <py:otherwise>
+          <i18n:msg params="name">
+            Delete <a href="$current_href">$page.name</a>
+          </i18n:msg>
+        </py:otherwise>
       </h1>
       <form action="$current_href" method="post">
         <p>
           <input type="hidden" name="action" value="delete" />
-          <strong py:choose="what">
-            <py:when test="'multiple'"><i18n:msg params="from, to">
-              Are you sure you want to delete versions ${old_version + 1} to $new_version of this page?
-            </i18n:msg></py:when>
-            <py:when test="'single'"><i18n:msg params="version">
-              Are you sure you want to delete version $new_version of this page?
-            </i18n:msg></py:when>
-            <py:otherwise>Are you sure you want to completely delete this page?</py:otherwise>
-          </strong>
-          <br />
-          <py:if test="num_versions == 1">
-            This is the only version the page, so the page will be removed completely!
-          </py:if>
+          <py:choose test="what">
+            <py:when test="'multiple'">
+              <i18n:msg params="from, to, versions, first_modified, last_modified">
+                <strong>
+                  Are you sure you want to delete versions ${old_version + 1} to $new_version of this page?
+                </strong>
+                <br />
+                  Removing <a href="${href.wiki(page.name, action='history', version=page.version)}">
+                    $num_versions versions</a> of the page, 
+                  which was first modified ${dateinfo(old_date)} ago and last modified ${dateinfo(new_date)} ago.
+              </i18n:msg>
+            </py:when>
+            <py:when test="'single'">
+              <strong>
+              <i18n:msg params="version">
+                Are you sure you want to delete version $new_version of this page?
+              </i18n:msg>
+              </strong>
+              <br />
+              <py:choose test="num_versions">
+                <py:when test="1">
+                  <i18n:msg params="created">
+                    This is the only <a href="${href.wiki(page.name, action='history', version=page.version)}">
+                      version</a> of the page,
+                    created ${dateinfo(new_date)} ago, so the page will be removed completely!
+                  </i18n:msg>
+                </py:when>
+                <py:otherwise>
+                  <i18n:msg params="modified">
+                    Modified ${dateinfo(new_date)} ago.
+                  </i18n:msg>
+                </py:otherwise>
+              </py:choose>
+            </py:when>
+            <py:otherwise>
+              <strong>
+                Are you sure you want to completely delete this page?
+              </strong>
+              <br />
+              <py:choose test="num_versions">
+                <py:when test="1">
+                  <i18n:msg params="created">
+                      Removing the one and only <a href="${href.wiki(page.name, action='history', version=page.version)}">
+                        version</a> of the page, which was created ${dateinfo(new_date)} ago.
+                  </i18n:msg>
+                </py:when>
+                <py:otherwise>
+                  <i18n:msg params="versions, created, modified">
+                      Removing all <a href="${href.wiki(page.name, action='history', version=page.version)}">
+                        $num_versions versions</a> of the page, 
+                      which was created ${dateinfo(old_date)} ago and last modified ${dateinfo(new_date)} ago.
+                  </i18n:msg>
+                </py:otherwise>
+              </py:choose>
+            </py:otherwise>
+          </py:choose>
           <input py:if="new_version" type="hidden" name="version" value="$new_version" />
           <input py:if="old_version" type="hidden" name="old_version" value="$old_version" />
-          This is an irreversible operation.
+          <br />
+          <strong>This is an irreversible operation.</strong>
         </p>
         <div class="buttons">
           <input type="submit" name="cancel" value="${_('Cancel')}" />

@@ -159,7 +159,7 @@ class WikiModule(Component):
                                            version=version,
                                            contextall=contextall or None))
         elif action == 'delete':
-            return self._render_confirm_delete(req, versioned_page)
+            return self._render_confirm_delete(req, page)
         elif action == 'rename':
             return self._render_confirm_rename(req, page)
         elif action == 'edit':
@@ -351,17 +351,27 @@ class WikiModule(Component):
             version = int(req.args.get('version', 0))
         old_version = int(req.args.get('old_version') or 0) or version
 
+        what = ((version and old_version and version - old_version > 1) and
+               'multiple') or version and 'single' or 'page'
+
+        num_versions = 0
+        new_date = None
+        old_date = None
+        for v, t, author, comment, ipnr in page.get_history():
+            if (v <= version or what == 'page') and new_date is None:
+                new_date = t
+            if (v <= old_version and what == 'multiple' or 
+                num_versions > 1 and what == 'single'):
+                break
+            num_versions += 1
+            old_date = t
+
         data = self._page_data(req, page, 'delete')
-        data.update({'new_version': None, 'old_version': None,
-                     'num_versions': 0})
+        data.update({'what': what, 'new_version': None, 'old_version': None,
+                     'num_versions': num_versions, 'new_date': new_date,
+                     'old_date': old_date})
         if version is not None:
-            num_versions = 0
-            for v, t, author, comment, ipnr in page.get_history():
-                num_versions += 1
-                if num_versions > 1:
-                    break
-            data.update({'new_version': version, 'old_version': old_version,
-                         'num_versions': num_versions})
+            data.update({'new_version': version, 'old_version': old_version})
         self._wiki_ctxtnav(req, page)
         return 'wiki_delete.html', data, None
 
