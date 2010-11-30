@@ -522,7 +522,7 @@ table.listing tbody tr.focus { background: #ddf !important }
 .suggestions li { background: #fff; cursor: pointer; padding: 2px 5px }
 .suggestions li.selected { background: #b9b9b9 }
 
-/* Styles for the error page (and rst errors) */
+/* Styles for the error page */
 #content.error .message, div.system-message {
  background: #fdc;
  border: 2px solid #d00;
@@ -538,12 +538,23 @@ table.listing tbody tr.focus { background: #ddf !important }
 div.system-message p { margin: 0; }
 div.system-message p.system-message-title { font-weight: bold; }
 
+/* rst errors are less emphasized */
+span.system-message {
+ float: left;
+ background: #fdc;
+ padding: 0.2em;
+ margin: 1px;
+ border-radius: 0.25em;
+}
+
+/* whole-page admonitions in theme.html */
 #warning.system-message, .warning.system-message { background: #ffb; border: 1px solid #000; }
 #warning.system-message li { list-style-type: square; }
 
 #notice.system-message, .notice.system-message { background: #dfd; border: 1px solid #000; }
 #notice.system-message li { list-style-type: square; }
 
+/* error.html page */
 #content.error form.newticket { display: inline; }
 #content.error form.newticket textarea { display: none; }
 

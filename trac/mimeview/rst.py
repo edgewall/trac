@@ -34,6 +34,8 @@ try:
 except ImportError:
     has_docutils = False
 
+from genshi.core import escape
+
 from trac.core import *
 from trac.env import ISystemInfoProvider
 from trac.mimeview.api import IHTMLPreviewRenderer, content_to_unicode
@@ -88,7 +90,7 @@ class ReStructuredTextRenderer(Component):
 
     def render(self, context, mimetype, content, filename=None, rev=None):
         def trac_get_reference(rawtext, target, text):
-            fulltext = text and target+' '+text or target
+            fulltext = target + ' ' + text if text else target
             link = extract_link(self.env, context, fulltext)
             uri = None
             missing = False
@@ -172,7 +174,7 @@ class ReStructuredTextRenderer(Component):
         rst.directives.register_directive('trac', trac)
         rst.roles.register_local_role('trac', trac_role)
 
-        # The code_block could is taken from the leo plugin rst2
+        # The code_block code is taken from the leo plugin rst2
         def code_formatter(language, text):
             processor = WikiProcessor(Formatter(self.env, context), language)
             html = processor.process(text)
@@ -223,11 +225,34 @@ class ReStructuredTextRenderer(Component):
         rst.directives.register_directive('code-block', code_block)
         rst.roles.register_local_role('code-block', code_role)
 
+        # Minimize visual impact of errors
+        from docutils.writers import html4css1
+        class TracHTMLTranslator(html4css1.HTMLTranslator):
+            """Specialized translator with unobtrusive error reporting"""
+            def visit_system_message(self, node):
+                paragraph = node.children.pop(0)
+                message = escape(paragraph.astext()) if paragraph else ''
+                backrefs = node['backrefs']
+                if backrefs:
+                    span = ('<span class="system-message">%s</span>' %
+                            (''.join('<a href="#%s" title="%s">?</a>' %
+                                     (backref, message)
+                                     for backref in backrefs)))
+                else:
+                    span = ('<span class="system-message" title="%s">?</span>' %
+                            message)
+                self.body.append(span)
+            def depart_system_message(self, node):
+                pass
+        writer = html4css1.Writer()
+        writer.translator_class = TracHTMLTranslator
+
         _inliner = rst.states.Inliner()
         _parser = rst.Parser(inliner=_inliner)
         content = content_to_unicode(self.env, content, mimetype)
-        parts = publish_parts(content, writer_name='html', parser=_parser,
+        parts = publish_parts(content, writer=writer, parser=_parser,
                               settings_overrides={'halt_level': 6, 
+                                                  'warning_stream': False,
                                                   'file_insertion_enabled': 0, 
                                                   'raw_enabled': 0})
         return parts['html_body']
