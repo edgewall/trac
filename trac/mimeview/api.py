@@ -286,6 +286,7 @@ class Context(RenderingContext):
 
 KNOWN_MIME_TYPES = {
     'application/javascript': 'js',
+    'application/msword':     'doc dot',
     'application/pdf':        'pdf',
     'application/postscript': 'ps',
     'application/rtf':        'rtf',
@@ -590,7 +591,7 @@ class Mimeview(Component):
 
     treat_as_binary = ListOption('mimeviewer', 'treat_as_binary',
         'application/octet-stream, application/pdf, application/postscript, '
-        'application/rtf',
+        'application/msword,application/rtf,',
         doc="""Comma-separated list of MIME types that should be treated as
         binary data. (''since 0.11.5'')""")
 

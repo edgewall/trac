@@ -126,6 +126,9 @@ class InterTracDispatcher(Component):
                 intertrac[attribute] = value
             else:
                 intertracs[key] = value # alias
+        if 'trac' not in intertracs:
+            intertracs['trac'] = {'title': _('The Trac Project'),
+                                  'url': 'http://trac.edgewall.org'}
 
         def generate_prefix(prefix):
             intertrac = intertracs[prefix]

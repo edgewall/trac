@@ -1,3 +1,6 @@
+/* Avoid layout issues with side fieldsets, see #8866 */
+.admin h1, .admin h2 { margin-top: 0; }
+
 #content.admin h1 { float: left; }
 
 #tabs { background: #f7f7f0; border: 1px solid black;
@@ -20,7 +23,7 @@
 }
 
 #tabcontent { padding: 0.4em 0 0.4em 2em; margin-left: 12em; min-height: 300px; }
-#tabcontent h2 { color: #333; margin-top: 0; }
+#tabcontent h2 { color: #333; }
 #tabcontent form { overflow: auto; padding: 0 1px; }
 p.help { color: #666; font-size: 90%; margin: 1em .5em .5em; }
 
