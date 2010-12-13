@@ -185,7 +185,7 @@ class SQLiteConnector(Component):
         else:
             return SQLiteConnection(path, log, params)
 
-    def init_db(self, path, log=None, params={}):
+    def init_db(self, path, schema=None, log=None, params={}):
         if path != ':memory:':
             # make the directory to hold the database
             if os.path.exists(path):
@@ -202,7 +202,8 @@ class SQLiteConnector(Component):
         else:
             cnx = self.get_connection(path, log, params)
         cursor = cnx.cursor()
-        from trac.db_default import schema
+        if schema is None:
+            from trac.db_default import schema
         for table in schema:
             for stmt in self.to_sql(table):
                 cursor.execute(stmt)

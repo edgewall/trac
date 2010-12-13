@@ -92,15 +92,16 @@ class PostgreSQLConnector(Component):
             self.required = True
         return cnx
 
-    def init_db(self, path, log=None, user=None, password=None, host=None,
-                port=None, params={}):
+    def init_db(self, path, schema=None, log=None, user=None, password=None,
+                host=None, port=None, params={}):
         cnx = self.get_connection(path, log, user, password, host, port,
                                   params)
         cursor = cnx.cursor()
         if cnx.schema:
             cursor.execute('CREATE SCHEMA "%s"' % cnx.schema)
             cursor.execute('SET search_path TO %s', (cnx.schema,))
-        from trac.db_default import schema
+        if schema is None:
+            from trac.db_default import schema
         for table in schema:
             for stmt in self.to_sql(table):
                 cursor.execute(stmt)

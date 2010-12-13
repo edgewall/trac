@@ -181,8 +181,8 @@ class IDatabaseConnector(Interface):
 
     def get_connection(path, log=None, **kwargs):
         """Create a new connection to the database."""
-        
-    def init_db(path, log=None, **kwargs):
+    
+    def init_db(path, schema=None, log=None, **kwargs):
         """Initialize the database."""
 
     def to_sql(table):
@@ -218,6 +218,8 @@ class DatabaseManager(Component):
 
     def init_db(self):
         connector, args = self.get_connector()
+        from trac.db_default import schema
+        args['schema'] = schema
         connector.init_db(**args)
 
     def get_connection(self, readonly=False):
