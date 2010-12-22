@@ -28,7 +28,7 @@ from trac.ticket.api import ITicketActionController, TicketSystem
 from trac.ticket.model import Resolution
 from trac.util.text import obfuscate_email_address
 from trac.util.translation import _, tag_
-from trac.web.chrome import Chrome
+from trac.web.chrome import Chrome, add_warning
 
 # -- Utilities for the ConfigurableTicketWorkflow
 
@@ -39,13 +39,13 @@ def parse_workflow_config(rawactions):
         parts = option.split('.')
         action = parts[0]
         if action not in actions:
-            actions[action] = {}
+            actions[action] = {'oldstates': '', 'newstate': ''}
         if len(parts) == 1:
             # Base name, of the syntax: old,states,here -> newstate
             try:
                 oldstates, newstate = [x.strip() for x in value.split('->')]
             except ValueError:
-                raise Exception('Bad option "%s"' % (option, )) # 500, no _
+                continue # Syntax error, a warning will be logged later
             actions[action]['newstate'] = newstate
             actions[action]['oldstates'] = oldstates
         else:
@@ -53,30 +53,22 @@ def parse_workflow_config(rawactions):
             actions[action][attribute] = value
     # Fill in the defaults for every action, and normalize them to the desired
     # types
+    def as_list(key):
+        value = attributes.get(key, '')
+        return [item for item in (x.strip() for x in value.split(',')) if item]
+    
     for action, attributes in actions.items():
         # Default the 'name' attribute to the name used in the ini file
         if 'name' not in attributes:
             attributes['name'] = action
         # If not specified, an action is not the default.
-        if 'default' not in attributes:
-            attributes['default'] = 0
-        else:
-            attributes['default'] = int(attributes['default'])
+        attributes['default'] = int(attributes.get('default', 0))
         # If operations are not specified, that means no operations
-        if 'operations' not in attributes:
-            attributes['operations'] = []
-        else:
-            attributes['operations'] = [a.strip() for a in
-                                        attributes['operations'].split(',')]
+        attributes['operations'] = as_list('operations')
         # If no permissions are specified, then no permissions are needed
-        if 'permissions' not in attributes:
-            attributes['permissions'] = []
-        else:
-            attributes['permissions'] = [a.strip() for a in
-                                         attributes['permissions'].split(',')]
+        attributes['permissions'] = as_list('permissions')
         # Normalize the oldstates
-        attributes['oldstates'] = [x.strip() for x in
-                                   attributes['oldstates'].split(',')]
+        attributes['oldstates'] = as_list('oldstates')
     return actions
 
 def get_workflow_config(config):
@@ -107,7 +99,6 @@ class ConfigurableTicketWorkflow(Component):
     """
     
     def __init__(self, *args, **kwargs):
-        Component.__init__(self, *args, **kwargs)
         self.actions = get_workflow_config(self.config)
         if not '_reset' in self.actions:
             # Special action that gets enabled if the current status no longer
@@ -121,6 +112,10 @@ class ConfigurableTicketWorkflow(Component):
                 'permissions': []}
         self.log.debug('Workflow actions at initialization: %s\n' %
                        str(self.actions))
+        for name, info in self.actions.iteritems():
+            if not info['newstate']:
+                self.log.warning("Ticket workflow action '%s' doesn't define "
+                                 "any transitions", name)
 
     implements(ITicketActionController, IEnvironmentSetupParticipant)
 
@@ -209,6 +204,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             all_status.update(action_info['oldstates'])
             all_status.add(action_info['newstate'])
         all_status.discard('*')
+        all_status.discard('')
         return all_status
         
     def render_ticket_action_control(self, req, ticket, action):
