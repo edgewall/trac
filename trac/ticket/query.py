@@ -263,13 +263,14 @@ class Query(object):
             cols[-1] = self.order
         return cols
 
-    def count(self, req, db=None, cached_ids=None):
+    def count(self, req=None, db=None, cached_ids=None, authname=None,
+              tzinfo=None):
         """Get the number of matching tickets for the present query.
 
         :since 0.13: the `db` parameter is no longer needed and will be removed
         in version 0.14
         """
-        sql, args = self.get_sql(req, cached_ids)
+        sql, args = self.get_sql(req, cached_ids, authname, tzinfo)
         return self._count(sql, args)
 
     def _count(self, sql, args):
@@ -279,17 +280,20 @@ class Query(object):
         self.env.log.debug("Count results in Query: %d", cnt)
         return cnt
 
-    def execute(self, req, db=None, cached_ids=None):
+    def execute(self, req=None, db=None, cached_ids=None, authname=None,
+                tzinfo=None, href=None):
         """Retrieve the list of matching tickets.
 
         :since 0.13: the `db` parameter is no longer needed and will be removed
         in version 0.14
         """
+        if req is not None:
+            href = req.href
         with self.env.db_query as db:
             cursor = db.cursor()
 
             self.num_items = 0
-            sql, args = self.get_sql(req, cached_ids)
+            sql, args = self.get_sql(req, cached_ids, authname, tzinfo)
             self.num_items = self._count(sql, args)
 
             if self.num_items <= self.max:
@@ -323,7 +327,8 @@ class Query(object):
                         val = val or 'anonymous'
                     elif name == 'id':
                         val = int(val)
-                        result['href'] = req.href.ticket(val)
+                        if href is not None:
+                            result['href'] = href.ticket(val)
                     elif name in self.time_fields:
                         val = from_utimestamp(val)
                     elif field and field['type'] == 'checkbox':
@@ -413,8 +418,11 @@ class Query(object):
             query_string = query_string.split('?', 1)[1]
         return 'query:?' + query_string.replace('&', '\n&\n')
 
-    def get_sql(self, req=None, cached_ids=None):
+    def get_sql(self, req=None, cached_ids=None, authname=None, tzinfo=None):
         """Return a (sql, params) tuple for the query."""
+        if req is not None:
+            authname = req.authname
+            tzinfo = req.tz
         self.get_columns()
         db = self.env.get_read_db()
 
@@ -464,7 +472,7 @@ class Query(object):
         def get_timestamp(date):
             if date:
                 try:
-                    return to_utimestamp(parse_date(date, req.tz))
+                    return to_utimestamp(parse_date(date, tzinfo))
                 except TracError, e:
                     errors.append(unicode(e))
             return None
@@ -537,8 +545,8 @@ class Query(object):
             db = self.env.get_read_db()
             clauses = []
             for k, v in constraints.iteritems():
-                if req:
-                    v = [val.replace('$USER', req.authname) for val in v]
+                if authname is not None:
+                    v = [val.replace('$USER', authname) for val in v]
                 # Determine the match mode of the constraint (contains,
                 # starts-with, negation, etc.)
                 neg = v[0].startswith('!')

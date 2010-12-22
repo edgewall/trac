@@ -16,7 +16,7 @@ from ConfigParser import ConfigParser
 from copy import deepcopy
 import os.path
 
-from trac.admin import IAdminCommandProvider
+from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.core import *
 from trac.util import AtomicFile, as_bool
 from trac.util.text import printout, to_unicode, CRLF
@@ -736,7 +736,7 @@ class ConfigurationAdmin(Component):
         yield ('config set', '<section> <option> <value>',
                'Set the value for the given option in "trac.ini"',
                self._complete_config, self._do_set)
-    
+
     def _complete_config(self, args):
         if len(args) == 1:
             return self.config.sections()
@@ -744,8 +744,12 @@ class ConfigurationAdmin(Component):
             return [name for (name, value) in self.config[args[0]].options()]
 
     def _do_get(self, section, option):
+        if not self.config.has_option(section, option):
+            raise AdminCommandError(
+                _("Option '%(option)s' doesn't exist in section '%(section)s'",
+                  option=option, section=section))
         printout(self.config.get(section, option))
-        
+
     def _do_set(self, section, option, value):
         self.config.set(section, option, value)
         self.config.save()
@@ -753,6 +757,10 @@ class ConfigurationAdmin(Component):
             self.config.parse_if_needed(force=True) # Full reload
 
     def _do_remove(self, section, option):
+        if not self.config.has_option(section, option):
+            raise AdminCommandError(
+                _("Option '%(option)s' doesn't exist in section '%(section)s'",
+                  option=option, section=section))
         self.config.remove(section, option)
         self.config.save()
         if section == 'inherit' and option == 'file':
