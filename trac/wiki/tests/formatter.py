@@ -114,7 +114,7 @@ class WikiTestCase(unittest.TestCase):
         self._teardown = teardown
 
         req = Mock(href=Href('/'), abs_href=Href('http://www.example.com/'),
-                   authname='anonymous', perm=MockPerm(), args={})
+                   authname='anonymous', perm=MockPerm(), tz=None, args={})
         if context:
             if isinstance(context, tuple):
                 context = Context.from_request(req, *context)
