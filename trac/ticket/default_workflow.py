@@ -28,7 +28,7 @@ from trac.ticket.api import ITicketActionController, TicketSystem
 from trac.ticket.model import Resolution
 from trac.util.text import obfuscate_email_address
 from trac.util.translation import _, tag_
-from trac.web.chrome import Chrome, add_warning
+from trac.web.chrome import Chrome
 
 # -- Utilities for the ConfigurableTicketWorkflow
 
