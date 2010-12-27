@@ -77,7 +77,6 @@ from trac.tests.contentgen import random_sentence, random_page, random_word, \
 from trac.test import TestSetup, TestCaseSetup
 
 internal_error = 'Trac detected an internal error:'
-trac_error = 'Trac Error'
 
 trac_source_tree = os.path.normpath(os.path.join(trac.__file__, '..', '..'))
 

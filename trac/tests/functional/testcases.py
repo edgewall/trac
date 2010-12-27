@@ -158,7 +158,7 @@ class ErrorPageValidation(FunctionalTwillTestCaseSetup):
         url = self._tester.url + '/wiki/WikiStart'
         tc.go(url + '?version=bug')
         tc.url(url)
-        tc.find('Trac detected an internal error:')
+        tc.find(internal_error)
 
 
 class RegressionTestTicket3663(FunctionalTwillTestCaseSetup):
