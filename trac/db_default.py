@@ -175,11 +175,11 @@ schema = [
 def get_reports(db):
     return (
 ('Active Tickets',
-"""
+"""\
  * List all active tickets by priority.
  * Color each row based on priority.
 """,
-"""
+"""\
 SELECT p.value AS __color__,
    id AS ticket, summary, component, version, milestone, t.type AS type, 
    owner, status,
@@ -193,14 +193,14 @@ SELECT p.value AS __color__,
 """),
 #----------------------------------------------------------------------------
  ('Active Tickets by Version',
-"""
+"""\
 This report shows how to color results by priority,
 while grouping results by version.
 
 Last modification time, description and reporter are included as hidden fields
 for useful RSS export.
 """,
-"""
+"""\
 SELECT p.value AS __color__,
    version AS __group__,
    id AS ticket, summary, component, version, t.type AS type, 
@@ -216,14 +216,14 @@ SELECT p.value AS __color__,
 """),
 #----------------------------------------------------------------------------
 ('Active Tickets by Milestone',
-"""
+"""\
 This report shows how to color results by priority,
 while grouping results by milestone.
 
 Last modification time, description and reporter are included as hidden fields
 for useful RSS export.
 """,
-"""
+"""\
 SELECT p.value AS __color__,
    %s AS __group__,
    id AS ticket, summary, component, version, t.type AS type, 
@@ -238,11 +238,10 @@ SELECT p.value AS __color__,
 """ % (db.concat("'Milestone '", 'milestone'), db.cast('p.value', 'int'))),
 #----------------------------------------------------------------------------
 ('Accepted, Active Tickets by Owner',
-"""
+"""\
 List accepted tickets, group by ticket owner, sorted by priority.
 """,
-"""
-
+"""\
 SELECT p.value AS __color__,
    owner AS __group__,
    id AS ticket, summary, component, milestone, t.type AS type, time AS created,
@@ -255,11 +254,11 @@ SELECT p.value AS __color__,
 """),
 #----------------------------------------------------------------------------
 ('Accepted, Active Tickets by Owner (Full Description)',
-"""
+"""\
 List tickets accepted, group by ticket owner.
 This report demonstrates the use of full-row display.
 """,
-"""
+"""\
 SELECT p.value AS __color__,
    owner AS __group__,
    id AS ticket, summary, component, milestone, t.type AS type, time AS created,
@@ -272,10 +271,10 @@ SELECT p.value AS __color__,
 """),
 #----------------------------------------------------------------------------
 ('All Tickets By Milestone  (Including closed)',
-"""
+"""\
 A more complex example to show how to make advanced reports.
 """,
-"""
+"""\
 SELECT p.value AS __color__,
    t.milestone AS __group__,
    (CASE status 
@@ -294,31 +293,40 @@ SELECT p.value AS __color__,
 """ % db.cast('p.value', 'int')),
 #----------------------------------------------------------------------------
 ('My Tickets',
-"""
+"""\
 This report demonstrates the use of the automatically set 
 USER dynamic variable, replaced with the username of the
 logged in user when executed.
 """,
-"""
-SELECT p.value AS __color__,
-   (CASE status WHEN 'accepted' THEN 'Accepted' ELSE 'Owned' END) AS __group__,
-   id AS ticket, summary, component, version, milestone,
-   t.type AS type, priority, time AS created,
-   changetime AS _changetime, description AS _description,
-   reporter AS _reporter
+"""\
+SELECT DISTINCT
+       p.value AS __color__,
+       (CASE
+         WHEN owner = $USER AND status = 'accepted' THEN 'Accepted'
+         WHEN owner = $USER THEN 'Owned'
+         WHEN reporter = $USER THEN 'Reported'
+         ELSE 'Commented' END) AS __group__,
+       t.id AS ticket, summary, component, version, milestone,
+       t.type AS type, priority, t.time AS created,
+       t.changetime AS _changetime, description AS _description,
+       reporter AS _reporter
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
-  WHERE t.status <> 'closed' AND owner = $USER
-  ORDER BY (status = 'accepted') DESC, """ + db.cast('p.value', 'int') + 
-  """, milestone, t.type, time
+  LEFT JOIN ticket_change tc ON tc.ticket = t.id AND tc.author = $USER
+                                AND tc.field = 'comment'
+  WHERE t.status <> 'closed'
+        AND (owner = $USER OR reporter = $USER OR author = $USER)
+  ORDER BY (owner = $USER AND status = 'accepted') DESC,
+           owner = $USER DESC, reporter = $USER DESC,
+           """ + db.cast('p.value', 'int') + """, milestone, t.type, t.time
 """),
 #----------------------------------------------------------------------------
 ('Active Tickets, Mine first',
-"""
+"""\
  * List all active tickets by priority.
  * Show all tickets owned by the logged in user in a group first.
 """,
-"""
+"""\
 SELECT p.value AS __color__,
    (CASE owner 
      WHEN $USER THEN 'My Tickets' 
