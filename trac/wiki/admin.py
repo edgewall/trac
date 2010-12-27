@@ -96,7 +96,10 @@ class WikiAdmin(Component):
             cursor = db.cursor()
         cursor.execute("SELECT text FROM wiki WHERE name=%s "
                        "ORDER BY version DESC LIMIT 1", (page,))
-        text = cursor.fetchone()[0]
+        for text, in cursor:
+            break
+        else:
+            raise AdminCommandError(_("Page '%(page)s' not found", page=page))
         if not filename:
             printout(text)
         else:
