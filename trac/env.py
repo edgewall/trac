@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2009 Edgewall Software
+# Copyright (C) 2003-2010 Edgewall Software
 # Copyright (C) 2003-2007 Jonas Borgström <jonas@edgewall.com>
 # All rights reserved.
 #
@@ -789,22 +789,26 @@ def open_environment(env_path=None, use_cache=False):
 
 class EnvironmentAdmin(Component):
     """trac-admin command provider for environment administration."""
-    
+
     implements(IAdminCommandProvider)
-    
+
     # IAdminCommandProvider methods
-    
+
     def get_admin_commands(self):
         yield ('deploy', '<directory>',
                'Extract static resources from Trac and all plugins',
                None, self._do_deploy)
-        yield ('hotcopy', '<backupdir>',
-               'Make a hot backup copy of an environment',
+        yield ('hotcopy', '<backupdir> [--no-database]',
+               """Make a hot backup copy of an environment
+               
+               The database is backed up to the 'db' directory of the
+               destination, unless the --no-database option is specified.
+               """,
                None, self._do_hotcopy)
         yield ('upgrade', '',
                'Upgrade database to current version',
                None, self._do_upgrade)
-    
+
     def _do_deploy(self, dest):
         target = os.path.normpath(dest)
         chrome_target = os.path.join(target, 'htdocs')
@@ -842,8 +846,12 @@ class EnvironmentAdmin(Component):
                 stream.render('text', out=out)
             finally:
                 out.close()
-    
-    def _do_hotcopy(self, dest):
+
+    def _do_hotcopy(self, dest, no_db=None):
+        if no_db not in (None, '--no-database'):
+            raise AdminCommandError(_("Invalid argument '%(arg)s'", arg=no_db),
+                                    show_usage=True)
+
         if os.path.exists(dest):
             raise TracError(_("hotcopy can't overwrite existing '%(dest)s'",
                               dest=dest))
@@ -857,12 +865,15 @@ class EnvironmentAdmin(Component):
                        src=self.env.path, dst=dest))
             db_str = self.env.config.get('trac', 'database')
             prefix, db_path = db_str.split(':', 1)
+            skip = []
+
             if prefix == 'sqlite':
+                db_path = os.path.join(self.env.path, os.path.normpath(db_path))
                 # don't copy the journal (also, this would fail on Windows)
-                db = os.path.join(self.env.path, os.path.normpath(db_path))
-                skip = [db + '-journal', db + '-stmtjrnl']
-            else:
-                skip = []
+                skip = [db_path + '-journal', db_path + '-stmtjrnl']
+                if no_db:
+                    skip.append(db_path)
+
             try:
                 copytree(self.env.path, dest, symlinks=1, skip=skip)
                 retval = 0
@@ -876,13 +887,21 @@ class EnvironmentAdmin(Component):
                     else:
                         printerr("  %s: '%s'" % (err, src))
 
+
+            # db backup for non-sqlite
+            if prefix != 'sqlite' and not no_db:
+                printout(_("Backing up database ..."))
+                sql_backup = os.path.join(dest, 'db',
+                                          '%s-db-backup.sql' % prefix)
+                self.env.backup(sql_backup)
+
         printout(_("Hotcopy done."))
         return retval
-    
+
     def _do_upgrade(self, no_backup=None):
         if no_backup not in (None, '-b', '--no-backup'):
             raise AdminCommandError(_("Invalid arguments"), show_usage=True)
-        
+
         if not self.env.needs_upgrade():
             printout(_("Database is up to date, no upgrade necessary."))
             return
