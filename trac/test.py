@@ -238,9 +238,10 @@ class EnvironmentStub(Environment):
     def __init__(self, default_data=False, enable=None):
         """Construct a new Environment stub object.
 
-        default_data: If True, populate the database with some defaults.
-        enable: A list of component classes or name globs to activate in the
-                stub environment.
+        :param default_data: If True, populate the database with some
+                             defaults.
+        :param enable: A list of component classes or name globs to
+                       activate in the stub environment.
         """
         ComponentManager.__init__(self)
         Component.__init__(self)
@@ -284,7 +285,7 @@ class EnvironmentStub(Environment):
 
         self.known_users = []
         translation.activate(Locale and Locale('en', 'US'))
-
+        
     def get_read_db(self):
         return self.get_db_cnx()
     
@@ -381,6 +382,13 @@ class EnvironmentStub(Environment):
             db.commit()
         except Exception:
             db.rollback()
+
+    # overriden
+
+    def is_component_enabled(self, cls):
+        if self._component_name(cls).startswith('__main__.'):
+            return True
+        return Environment.is_component_enabled(self, cls)
 
     def get_known_users(self, cnx=None):
         return self.known_users
