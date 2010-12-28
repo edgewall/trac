@@ -16,6 +16,10 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 #
 
+from unicodedata import east_asian_width
+
+from genshi.template.text import NewTextTemplate
+
 from trac.core import *
 from trac.config import *
 from trac.notification import NotifyEmail
@@ -25,16 +29,14 @@ from trac.util.datefmt import to_utimestamp
 from trac.util.text import CRLF, wrap, obfuscate_email_address, to_unicode
 from trac.util.translation import deactivate, reactivate
 
-from genshi.template.text import NewTextTemplate
-from unicodedata import east_asian_width
-
 class TicketNotificationSystem(Component):
 
     always_notify_owner = BoolOption('notification', 'always_notify_owner',
                                      'false',
         """Always send notifications to the ticket owner (''since 0.9'').""")
 
-    always_notify_reporter = BoolOption('notification', 'always_notify_reporter',
+    always_notify_reporter = BoolOption('notification',
+                                        'always_notify_reporter',
                                         'false',
         """Always send notifications to any address in the ''reporter''
         field.""")
@@ -54,12 +56,13 @@ class TicketNotificationSystem(Component):
 
     ambiguous_char_width = Option('notification', 'ambiguous_char_width',
                                   'single',
-        """Which width of ambiguous characters (e.g. 'single' or 'double')
-        should be used in the table of notification mail.
+        """Which width of ambiguous characters (e.g. 'single' or
+        'double') should be used in the table of notification mail.
 
-        If 'single', the same width as characters in US-ASCII. This is expected
-        by most users. If 'double', twice the width of US-ASCII characters.
-        This is expected by CJK users.""")
+        If 'single', the same width as characters in US-ASCII. This is
+        expected by most users. If 'double', twice the width of
+        US-ASCII characters.  This is expected by CJK users. ''(since
+        0.12.2)''""")
 
 
 class TicketNotifyEmail(NotifyEmail):
@@ -383,13 +386,8 @@ class TicketNotifyEmail(NotifyEmail):
         NotifyEmail.send(self, torcpts, ccrcpts, hdrs)
 
     def get_text_width(self, text):
-        if self.ambiguous_char_width == 'double':
-            ambiwidth = 2
-        else:
-            ambiwidth = 1
-
-        if not isinstance(text, unicode):
-            text = to_unicode(text)
+        ambiwidth = (1, 2)[self.ambiguous_char_width == 'double']
+        text = to_unicode(text)
 
         if text in self.text_widths:
             return self.text_widths[text]
@@ -397,7 +395,7 @@ class TicketNotifyEmail(NotifyEmail):
         width = 0
         for ch in text:
             eaw = east_asian_width(ch)
-            if eaw == 'W' or eaw == 'F':
+            if eaw in 'WF':
                 width += 2
             elif eaw == 'A':
                 width += ambiwidth
