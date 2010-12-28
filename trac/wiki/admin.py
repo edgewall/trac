@@ -111,6 +111,9 @@ class WikiAdmin(Component):
                     f.write(text.encode('utf-8'))
                 finally:
                     f.close()
+            break
+        else:
+            raise AdminCommandError(_("Page '%(page)s' not found", page=page))
     
     def import_page(self, filename, title, create_only=[],
                     replace=False):

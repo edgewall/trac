@@ -227,9 +227,10 @@ class EnvironmentStub(Environment):
                  path=None, destroying=False):
         """Construct a new Environment stub object.
 
-        default_data: If True, populate the database with some defaults.
-        enable: A list of component classes or name globs to activate in the
-                stub environment.
+        :param default_data: If True, populate the database with some
+                             defaults.
+        :param enable: A list of component classes or name globs to
+                       activate in the stub environment.
         """
         ComponentManager.__init__(self)
         Component.__init__(self)
@@ -288,7 +289,7 @@ class EnvironmentStub(Environment):
 
         self.known_users = []
         translation.activate(Locale and Locale('en', 'US'))
-
+        
     def reset_db(self, default_data=None):
         """Remove all data from Trac tables, keeping the tables themselves.
         :param default_data: after clean-up, initialize with default data
@@ -367,6 +368,13 @@ class EnvironmentStub(Environment):
             # psycopg2.ProgrammingError: schema "tractest" does not exist
             pass
         return False
+
+    # overriden
+
+    def is_component_enabled(self, cls):
+        if self._component_name(cls).startswith('__main__.'):
+            return True
+        return Environment.is_component_enabled(self, cls)
 
     def get_known_users(self, cnx=None):
         return self.known_users

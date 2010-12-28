@@ -17,7 +17,9 @@ from trac.wiki import WikiPage, IWikiChangeListener
 
 
 class TestWikiChangeListener(Component):
+
     implements(IWikiChangeListener)
+
     def __init__(self):
         self.added = []
         self.changed = []

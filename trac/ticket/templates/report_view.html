@@ -80,25 +80,39 @@
         Results <span class="numresults">(${paginator.displayed_items()})</span>
       </h2>
       <xi:include href="page_index.html" />
-      <py:for each="value_for_group, row_group in row_groups">
-        <h2 class="report-result" py:if="value_for_group">
-          <a py:strip="'__grouplink__' not in row_group[0]" href="${row_group[0]['__grouplink__']}">$value_for_group</a>
+      <py:def function="column_headers()">
+        <tr py:for="header_group in header_groups" class="trac-columns">
+          <th py:for="header in header_group" py:if="not header.hidden" py:with="fullrow = header is header_group[-1]"
+              colspan="${fullrow and '100' or None}" class="${header.asc is not None and ('desc', 'asc')[header.asc] or None}">
+            <a py:strip="not sorting_enabled"
+              href="${report_href(sort=header.col, asc=not header.asc)}">
+              $header.title
+            </a>
+          </th>
+        </tr>
+      </py:def>
+      <py:def function="group_heading(value_for_group, row_group)">
+        <h2 py:if="value_for_group" class="report-result">
+          <a py:strip="not row_group or '__grouplink__' not in row_group[0]" href="${row_group[0]['__grouplink__']}">$value_for_group</a>
           <span class="numrows" py:with="cnt = len(row_group)">
             (${cnt and ngettext('%(num)s match', '%(num)s matches', cnt) or _('No matches found.')})
           </span>
         </h2>
-        <table class="listing tickets">
-          <thead>
-            <tr py:for="header_group in header_groups">
-              <th py:for="header in header_group" py:if="not header.hidden" py:with="fullrow = header is header_group[-1]"
-                colspan="${fullrow and '100' or None}" class="${header.asc is not None and ('desc', 'asc')[header.asc] or None}">
-                <a py:strip="not sorting_enabled"
-                  href="${report_href(sort=header.col, asc=not header.asc)}">
-                  $header.title
-                </a>
+      </py:def>
+      ${row_groups and group_heading(*row_groups[0]) or None}
+      <table py:if="row_groups" class="listing tickets">
+        <py:for each="groupindex, (value_for_group, row_group) in enumerate(row_groups)">
+          <thead py:if="not groupindex">
+            ${column_headers()}
+          </thead>
+          <tbody py:if="groupindex">
+            <tr class="trac-group">
+              <th colspan="100">
+                ${group_heading(value_for_group or _('(empty)'), row_group)}
               </th>
             </tr>
-          </thead>
+            ${column_headers()}
+          </tbody>
 
           <tbody>
             <py:for each="row in row_group">
@@ -185,8 +199,8 @@
               </tr>
             </py:for>
           </tbody>
-        </table>
-      </py:for>
+        </py:for>
+      </table>
       <xi:include href="page_index.html" />
 
       <div py:if="message" class="system-message">$message</div>

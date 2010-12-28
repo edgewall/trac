@@ -33,7 +33,8 @@ define HELP
 
   [db=...]            variable for selecting database backend
   [test=...]          variable for selecting a single test file
-  [coverageopts=...]  variable containing extra optios for coverage
+  [testopts=...]      variable containing extra options for running tests
+  [coverageopts=...]  variable containing extra options for coverage
 
  ---------------- Standalone test server
 
@@ -110,7 +111,7 @@ export HELP_CFG
 
 ifdef test
 all: status
-	python $(test)
+	python $(test) $(testopts)
 else
 all: help
 endif
@@ -281,13 +282,13 @@ clean-mo:
 test: unit-test functional-test
 
 unit-test: Trac.egg-info
-	python ./trac/test.py --skip-functional-tests
+	python ./trac/test.py --skip-functional-tests $(testopts)
 
 functional-test: Trac.egg-info
-	python trac/tests/functional/__init__.py -v
+	python trac/tests/functional/__init__.py -v $(testopts)
 
 test-wiki:
-	python trac/tests/allwiki.py
+	python trac/tests/allwiki.py $(testopts)
 
 # ----------------------------------------------------------------------------
 #
@@ -307,7 +308,7 @@ clean-coverage:
 
 ifdef test
 test-coverage:
-	coverage run $(test)
+	coverage run $(test) $(testopts)
 else
 test-coverage: unit-test-coverage functional-test-coverage
 endif

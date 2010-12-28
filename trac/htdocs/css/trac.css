@@ -461,7 +461,7 @@ table.listing {
  width: 100%;
 }
 table.listing th { text-align: left; padding: 0 1em .1em 0; font-size: 12px }
-table.listing thead { background: #f7f7f0 }
+table.listing thead tr { background: #f7f7f0 }
 table.listing thead th {
  border: 1px solid #d7d7d7;
  border-bottom-color: #999;

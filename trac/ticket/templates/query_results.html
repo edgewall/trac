@@ -21,7 +21,7 @@
     Results <span class="numresults">(${paginator.displayed_items()})</span>
   </h2>
   <xi:include py:if="paginator.show_index" href="page_index.html" />
-  <py:for each="group_index, (groupname, results) in enumerate(groups)">
+  <py:def function="group_heading(groupname, results)">
     <h2 class="report-result" py:if="groupname is not None"
         i18n:msg="grouplabel, groupname, count"
         py:with="grouplabel = fields[query.group].label;
@@ -29,19 +29,32 @@
                  count = ngettext('%(num)s match', '%(num)s matches', len(results))">
       ${grouplabel}: ${groupname} <span class="numrows">(${count})</span>
     </h2>
-    <table class="listing tickets">
-      <thead>
-        <tr>
-          <th py:for="header in headers"
-            class="$header.name${query.order == header.name and (query.desc and ' desc' or ' asc') or ''}">
-            <?python asc = _('(ascending)'); desc = _('(descending)') ?>
-            <a title="${_('Sort by %(col)s %(direction)s', col=header.label,
-                          direction=(query.order == header.name and not query.desc and desc or asc))}"
-               href="$header.href">${header.label}</a>
+  </py:def>
+  <py:def function="column_headers()">
+    <tr class="trac-columns">
+      <th py:for="header in headers"
+          class="$header.name${query.order == header.name and (query.desc and ' desc' or ' asc') or ''}">
+        <?python asc = _('(ascending)'); desc = _('(descending)') ?>
+        <a title="${_('Sort by %(col)s %(direction)s', col=header.label,
+                      direction=(query.order == header.name and not query.desc and desc or asc))}"
+           href="$header.href">${header.label}</a>
+      </th>
+    </tr>
+  </py:def>
+  ${groups and group_heading(*groups[0]) or None}
+  <table class="listing tickets">
+    <thead py:strip="group_index">
+      ${column_headers()}
+    </thead>
+    <py:for each="group_index, (groupname, results) in enumerate(groups)">
+      <tbody py:if="group_index">
+        <tr py:if="groupname is not None" class="trac-group">
+          <th colspan="${len(headers)}">
+            ${group_heading(groupname, results)}
           </th>
         </tr>
-      </thead>
-
+        ${column_headers()}
+      </tbody>
       <tbody>
         <tr py:if="not results" class="even">
           <td colspan="${len(headers)}">
@@ -104,8 +117,8 @@
           </td>
         </tr>
       </tbody>
-    </table>
-  </py:for>
+    </py:for>
+  </table>
   <xi:include py:if="paginator.show_index" href="page_index.html" />
 </div>
 

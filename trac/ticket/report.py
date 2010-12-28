@@ -474,6 +474,7 @@ class ReportModule(Component):
         # Structure the rows and cells:
         #  - group rows according to __group__ value, if defined
         #  - group cells the same way headers are grouped
+        chrome = Chrome(self.env)
         row_groups = []
         authorized_results = []
         prev_group_value = None
@@ -495,7 +496,7 @@ class ReportModule(Component):
                         prev_group_value = value
                         # Brute force handling of email in group by header
                         row_groups.append(
-                            (Chrome(self.env).format_author(req, value), []) )
+                            (value and chrome.format_author(req, value), []))
                     # Other row properties
                     row['__idx__'] = row_idx
                     if col in self._html_cols:
@@ -517,8 +518,8 @@ class ReportModule(Component):
             authorized_results.append(result)
             if email_cells:
                 for cell in email_cells:
-                    emails = Chrome(self.env).format_emails(
-                                context.child(resource), cell['value'])
+                    emails = chrome.format_emails(context.child(resource),
+                                                  cell['value'])
                     result[cell['index']] = cell['value'] = emails
             row['resource'] = resource
             if row_groups:
@@ -534,7 +535,7 @@ class ReportModule(Component):
                      'sorting_enabled': len(row_groups) == 1})
 
         if format == 'rss':
-            data['email_map'] = Chrome(self.env).get_email_map()
+            data['email_map'] = chrome.get_email_map()
             data['context'] = web_context(req, report_resource,
                                                    absurls=True)
             return 'report.rss', data, 'application/rss+xml'
