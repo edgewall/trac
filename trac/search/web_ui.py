@@ -47,10 +47,16 @@ class SearchModule(Component):
         """Minimum length of query string allowed when performing a search.""")
 
     default_disabled_filters = ListOption('search', 'default_disabled_filters',
-        doc="""Specifies which search filters should be disabled by default
-               on the search page. This will also restrict the filters for the
-               quick search function. Search filters can still be manually
-               enabled by the user on the search page. (since 0.12)""")
+        doc="""Specifies which search filters should be disabled by
+               default on the search page. This will also restrict the
+               filters for the quick search function. The filter names
+               defined by default components are: `wiki`, `ticket`,
+               `milestone` and `changeset`.  For plugins, look for
+               their implementation of the ISearchSource interface, in
+               the `get_search_filters()` method, the first member of
+               returned tuple. Once disabled, search filters can still
+               be manually enabled by the user on the search page.
+               (since 0.12)""")
 
     # INavigationContributor methods
 
