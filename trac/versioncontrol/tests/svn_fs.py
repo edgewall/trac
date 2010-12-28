@@ -30,7 +30,6 @@ try:
 except:
     has_svn = False
 
-from trac.log import logger_factory
 from trac.test import EnvironmentStub, TestSetup
 from trac.core import TracError
 from trac.resource import Resource, resource_exists
@@ -38,8 +37,6 @@ from trac.util.concurrency import get_thread_id
 from trac.util.datefmt import utc
 from trac.versioncontrol import DbRepositoryProvider, Changeset, Node, \
                                 NoSuchChangeset
-from trac.versioncontrol.svn_fs import SvnCachedRepository, \
-                                       SubversionRepository
 from trac.versioncontrol import svn_fs
 
 REPOS_PATH = os.path.join(tempfile.gettempdir(), 'trac-svnrepos')
