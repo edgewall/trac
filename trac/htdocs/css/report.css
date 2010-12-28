@@ -24,7 +24,10 @@
 }
 
 .report div.reports { clear: both }
-.report div.reports h2 { border-bottom: 1px solid #dfdfdf }
+.report div.reports h2 {
+ border-bottom: 1px solid #eeeeee;
+ margin-top: 0;
+}
 .report div.reports h2 :link, .report div.reports h2 :visited {
  color: #000;
  border-bottom: none;
