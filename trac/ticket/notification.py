@@ -19,16 +19,17 @@
 from __future__ import with_statement
 
 from hashlib import md5
+from unicodedata import east_asian_width
+
+from genshi.template.text import NewTextTemplate
 
 from trac.core import *
 from trac.config import *
 from trac.notification import NotifyEmail
 from trac.ticket.api import TicketSystem
 from trac.util.datefmt import to_utimestamp
-from trac.util.text import CRLF, wrap, obfuscate_email_address
+from trac.util.text import CRLF, wrap, obfuscate_email_address, to_unicode
 from trac.util.translation import deactivate, reactivate
-
-from genshi.template.text import NewTextTemplate
 
 class TicketNotificationSystem(Component):
 
@@ -36,7 +37,8 @@ class TicketNotificationSystem(Component):
                                      'false',
         """Always send notifications to the ticket owner (''since 0.9'').""")
 
-    always_notify_reporter = BoolOption('notification', 'always_notify_reporter',
+    always_notify_reporter = BoolOption('notification',
+                                        'always_notify_reporter',
                                         'false',
         """Always send notifications to any address in the ''reporter''
         field.""")
@@ -54,6 +56,16 @@ class TicketNotificationSystem(Component):
         `$prefix` being the value of the `smtp_subject_prefix` option.
         ''(since 0.11)''""")
 
+    ambiguous_char_width = Option('notification', 'ambiguous_char_width',
+                                  'single',
+        """Which width of ambiguous characters (e.g. 'single' or
+        'double') should be used in the table of notification mail.
+
+        If 'single', the same width as characters in US-ASCII. This is
+        expected by most users. If 'double', twice the width of
+        US-ASCII characters.  This is expected by CJK users. ''(since
+        0.12.2)''""")
+
 
 class TicketNotifyEmail(NotifyEmail):
     """Notification of ticket changes."""
@@ -68,6 +80,10 @@ class TicketNotifyEmail(NotifyEmail):
     def __init__(self, env):
         NotifyEmail.__init__(self, env)
         self.prev_cc = []
+        self.ambiguous_char_width = env.config.get('notification',
+                                                   'ambiguous_char_width',
+                                                   'single')
+        self.text_widths = {}
 
     def notify(self, ticket, newticket=True, modtime=None):
         """Send ticket change notification e-mail (untranslated)"""
@@ -195,9 +211,11 @@ class TicketNotifyEmail(NotifyEmail):
             fval = tkt[fname] or ''
             if fval.find('\n') != -1:
                 continue
+            if fname in ['owner', 'reporter']:
+                fval = obfuscate_email_address(fval)
             idx = 2 * (i % 2)
-            width[idx] = max(len(f['label']), width[idx])
-            width[idx + 1] = max(len(fval), width[idx + 1])
+            width[idx] = max(self.get_text_width(f['label']), width[idx])
+            width[idx + 1] = max(self.get_text_width(fval), width[idx + 1])
             i += 1
         width_l = width[0] + width[1] + 5
         width_r = width[2] + width[3] + 5
@@ -234,20 +252,22 @@ class TicketNotifyEmail(NotifyEmail):
                 str_tmp = u'%s:  %s' % (f['label'], unicode(fval))
                 idx = i % 2
                 cell_tmp[idx] += wrap(str_tmp, width_lr[idx] - 2 + 2 * idx,
-                                      (width[2 * idx] - len(f['label'])
+                                      (width[2 * idx]
+                                       - self.get_text_width(f['label'])
                                        + 2 * idx) * ' ',
                                       2 * ' ', CRLF)
                 cell_tmp[idx] += CRLF
                 i += 1
         cell_l = cell_tmp[0].splitlines()
         cell_r = cell_tmp[1].splitlines()
-        format = u'%%-%is|%%s%%s' % width_l
         for i in range(max(len(cell_l), len(cell_r))):
             if i >= len(cell_l):
                 cell_l.append(width_l * ' ')
             elif i >= len(cell_r):
                 cell_r.append('')
-            txt += format % (cell_l[i], cell_r[i], CRLF)
+            fmt_width = width_l - self.get_text_width(cell_l[i]) \
+                        + len(cell_l[i])
+            txt += u'%-*s|%s%s' % (fmt_width, cell_l[i], cell_r[i], CRLF)
         if big:
             txt += sep
             for name, value in big:
@@ -367,4 +387,23 @@ class TicketNotifyEmail(NotifyEmail):
             hdrs['In-Reply-To'] = msgid
             hdrs['References'] = msgid
         NotifyEmail.send(self, torcpts, ccrcpts, hdrs)
+
+    def get_text_width(self, text):
+        ambiwidth = (1, 2)[self.ambiguous_char_width == 'double']
+        text = to_unicode(text)
+
+        if text in self.text_widths:
+            return self.text_widths[text]
+
+        width = 0
+        for ch in text:
+            eaw = east_asian_width(ch)
+            if eaw in 'WF':
+                width += 2
+            elif eaw == 'A':
+                width += ambiwidth
+            else:
+                width += 1
+        self.text_widths[text] = width
+        return width
 

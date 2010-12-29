@@ -413,7 +413,7 @@ i.e. [mailto:cboos@neuf.fr me]
 
 joe'bar@site.info,
 trac+devel@another-site.fr,
-T_r=a-c1.23@yet_another-site.edu.au
+T_r+a-c1.23@yet_another-site.edu.au
 !not@an.email.com
 someone@louvre.museum-
 ------------------------------
@@ -424,7 +424,7 @@ i.e. <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon"> </spa
 <p>
 <a class="mail-link" href="mailto:joe'bar@site.info"><span class="icon"> </span>joe'bar@site.info</a>,
 <a class="mail-link" href="mailto:trac+devel@another-site.fr"><span class="icon"> </span>trac+devel@another-site.fr</a>,
-<a class="mail-link" href="mailto:T_r=a-c1.23@yet_another-site.edu.au"><span class="icon"> </span>T_r=a-c1.23@yet_another-site.edu.au</a>
+<a class="mail-link" href="mailto:T_r+a-c1.23@yet_another-site.edu.au"><span class="icon"> </span>T_r+a-c1.23@yet_another-site.edu.au</a>
 not@an.email.com
 <a class="mail-link" href="mailto:someone@louvre.museum"><span class="icon"> </span>someone@louvre.museum</a>-
 </p>

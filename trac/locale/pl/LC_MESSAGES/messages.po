@@ -3954,7 +3954,7 @@ msgstr[2] "%(num)d minut"
 #, python-format
 msgid "%(num)i second"
 msgid_plural "%(num)i seconds"
-msgstr[0] "%(num)i sekndę"
+msgstr[0] "%(num)i sekundę"
 msgstr[1] "%(num)i sekundy"
 msgstr[2] "%(num)i sekund"
 

@@ -123,6 +123,7 @@ try:
             self._null_translations = NullTranslationsBabel()
             self._plugin_domains = {}
             self._plugin_domains_lock = threading.RLock()
+            self._activate_failed = False
 
         # Public API
 
@@ -142,6 +143,7 @@ try:
             try:
                 locale_dir = pkg_resources.resource_filename('trac', 'locale')
             except Exception:
+                self._activate_failed = True
                 return
             t = Translations.load(locale_dir, locale or 'en_US')
             if not t or t.__class__ is NullTranslations:
@@ -155,6 +157,7 @@ try:
                 for domain, dirname in domains:
                     t.add(Translations.load(dirname, locale, domain))
             self._current.translations = t
+            self._activate_failed = False
          
         def deactivate(self):
             self._current.args = None
@@ -175,7 +178,10 @@ try:
                 get_locale, env_path = self._current.args
                 self._current.args = None
                 self.activate(get_locale(), env_path)
-            return self._current.translations is not None
+            # FIXME: The following always returns True: either a translation is
+            # active, or activation has failed.
+            return self._current.translations is not None \
+                   or self._activate_failed
 
         # Delegated methods
 

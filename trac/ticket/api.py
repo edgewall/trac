@@ -177,8 +177,12 @@ class TicketSystem(Component):
         """Make the owner field of tickets use a drop-down menu.
         Be sure to understand the performance implications before activating
         this option. See
-        [TracTickets#Assign-toasDrop-DownList Assign-to as Drop-Down List]
-        (''since 0.9'').""")
+        [TracTickets#Assign-toasDrop-DownList Assign-to as Drop-Down List].
+        
+        Please note that e-mail addresses are '''not''' obfuscated in the
+        resulting drop-down menu, so this option should not be used if
+        e-mail addresses must remain protected.
+        (''since 0.9'')""")
 
     default_version = Option('ticket', 'default_version', '',
         """Default version for newly created tickets.""")

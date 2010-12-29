@@ -35,7 +35,7 @@ from trac.util import as_int
 from trac.util.datefmt import format_datetime, format_time, from_utimestamp
 from trac.util.presentation import Paginator
 from trac.util.text import exception_to_unicode, to_unicode
-from trac.util.translation import _
+from trac.util.translation import _, tag_
 from trac.web.api import IRequestHandler, RequestDone
 from trac.web.chrome import (INavigationContributor, Chrome, 
                              add_ctxtnav, add_link, add_notice, add_script,
@@ -383,8 +383,8 @@ class ReportModule(Component):
                 numrows = len(results)
 
             except Exception, e:
-                data['message'] = _('Report execution failed: %(error)s',
-                        error=exception_to_unicode(e, traceback=True))
+                data['message'] = tag_('Report execution failed: %(error)s',
+                        error=tag.pre(exception_to_unicode(e, traceback=True)))
                 return 'report_view.html', data, None
 
         paginator = None
