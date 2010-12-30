@@ -594,13 +594,10 @@ class RepositoryManager(Component):
 
     def reload_repositories(self):
         """Reload the repositories from the providers."""
-        self._lock.acquire()
-        try:
+        with self._lock:
             # FIXME: trac-admin doesn't reload the environment
             self._cache = {}
             self._all_repositories = None
-        finally:
-            self._lock.release()
         self.config.touch()     # Force environment reload
  
     def notify(self, event, reponame, revs):
@@ -650,13 +647,10 @@ class RepositoryManager(Component):
     def shutdown(self, tid=None):
         if tid:
             assert tid == threading._get_ident()
-            try:
-                self._lock.acquire()
+            with self._lock:
                 repositories = self._cache.pop(tid, {})
                 for reponame, repos in repositories.iteritems():
                     repos.close()
-            finally:
-                self._lock.release()
         
     # private methods
 

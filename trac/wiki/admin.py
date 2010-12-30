@@ -106,11 +106,8 @@ class WikiAdmin(Component):
                 if os.path.isfile(filename):
                     raise AdminCommandError(_("File '%(name)s' exists",
                                               name=filename))
-                f = open(filename, 'w')
-                try:
+                with open(filename, 'w') as f:
                     f.write(text.encode('utf-8'))
-                finally:
-                    f.close()
             break
         else:
             raise AdminCommandError(_("Page '%(page)s' not found", page=page))

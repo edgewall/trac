@@ -12,6 +12,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from __future__ import with_statement
+
 import os
 import tempfile
 import time
@@ -39,11 +41,8 @@ class ConfigurationTestCase(unittest.TestCase):
         return Configuration(self.filename)
 
     def _write(self, lines):
-        fileobj = open(self.filename, 'w')
-        try:
+        with open(self.filename, 'w') as fileobj:
             fileobj.write(('\n'.join(lines + [''])).encode('utf-8'))
-        finally:
-            fileobj.close()
 
     def test_default(self):
         config = self._read()
@@ -433,12 +432,9 @@ class ConfigurationTestCase(unittest.TestCase):
 
     def _test_with_inherit(self, testcb):
         sitename = os.path.join(tempfile.gettempdir(), 'trac-site.ini')
-        sitefile = open(sitename, 'w')
         try:
-            try:
+            with open(sitename, 'w') as sitefile:
                 sitefile.write('[a]\noption = x\n')
-            finally:
-                sitefile.close()
 
             self._write(['[inherit]', 'file = trac-site.ini'])
             testcb()

@@ -265,7 +265,7 @@ class Attachment(object):
         filename = unicode_quote(filename)
         path, targetfile = create_unique_file(os.path.join(self.path,
                                                            filename))
-        try:
+        with targetfile:
             # Note: `path` is an unicode string because `self.path` was one.
             # As it contains only quoted chars and numbers, we can use `ascii`
             basename = os.path.basename(path).encode('ascii')
@@ -281,8 +281,6 @@ class Attachment(object):
 
                 self.env.log.info("New attachment: %s by %s", self.title,
                                   self.author)
-        finally:
-            targetfile.close()
 
         for listener in AttachmentModule(self.env).change_listeners:
             listener.attachment_added(self)
@@ -725,8 +723,7 @@ class AttachmentModule(Component):
                 'title': get_resource_name(self.env, attachment.resource),
                 'attachment': attachment}
 
-        fd = attachment.open()
-        try:
+        with attachment.open() as fd:
             mimeview = Mimeview(self.env)
 
             # MIME type detection
@@ -775,8 +772,6 @@ class AttachmentModule(Component):
                 os.fstat(fd.fileno()).st_size, mime_type,
                 attachment.filename, raw_href, annotations=['lineno'])
             return data
-        finally:
-            fd.close()
 
     def _format_link(self, formatter, ns, target, label):
         link, params, fragment = formatter.split_link(target)
@@ -946,11 +941,8 @@ class AttachmentAdmin(Component):
         attachment = Attachment(self.env, realm, id)
         attachment.author = author
         attachment.description = description
-        f = open(path, 'rb')
-        try:
+        with open(path, 'rb') as f:
             attachment.insert(os.path.basename(path), f, os.path.getsize(path))
-        finally:
-            f.close()
     
     def _do_remove(self, resource, name):
         (realm, id) = self.split_resource(resource)
@@ -966,8 +958,7 @@ class AttachmentAdmin(Component):
             if os.path.isfile(destination):
                 raise AdminCommandError(_("File '%(name)s' exists",
                                           name=destination))
-        input = attachment.open()
-        try:
+        with attachment.open() as input:
             output = (destination is None) and sys.stdout \
                                            or open(destination, "wb")
             try:
@@ -975,6 +966,4 @@ class AttachmentAdmin(Component):
             finally:
                 if destination is not None:
                     output.close()
-        finally:
-            input.close()
 

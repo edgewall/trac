@@ -14,6 +14,8 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from __future__ import with_statement
+
 """Content presentation for the web layer.
 
 The Chrome module deals with delivering and shaping content to the end user,
@@ -485,8 +487,7 @@ class Chrome(Component):
                 os.mkdir(templates_dir)
 
             site_path = os.path.join(templates_dir, 'site.html.sample')
-            fileobj = open(site_path, 'w')
-            try:
+            with open(site_path, 'w') as fileobj:
                 fileobj.write("""\
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -504,8 +505,6 @@ class Chrome(Component):
   -->
 </html>
 """)
-            finally:
-                fileobj.close()
 
     def environment_needs_upgrade(self, db):
         return False

@@ -11,6 +11,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from __future__ import with_statement
+
 """Utilities for text translation with gettext."""
 
 import pkg_resources
@@ -128,13 +130,10 @@ try:
         # Public API
 
         def add_domain(self, domain, env_path, locales_dir):
-            self._plugin_domains_lock.acquire()
-            try:
+            with self._plugin_domains_lock:
                 if env_path not in self._plugin_domains:
                     self._plugin_domains[env_path] = []
                 self._plugin_domains[env_path].append((domain, locales_dir))
-            finally:
-                self._plugin_domains_lock.release()
 
         def make_activable(self, get_locale, env_path=None):
             self._current.args = (get_locale, env_path)
@@ -149,11 +148,8 @@ try:
             if not t or t.__class__ is NullTranslations:
                 t = self._null_translations
             elif env_path:
-                self._plugin_domains_lock.acquire()
-                try:
+                with self._plugin_domains_lock:
                     domains = list(self._plugin_domains.get(env_path, []))
-                finally:
-                    self._plugin_domains_lock.release()
                 for domain, dirname in domains:
                     t.add(Translations.load(dirname, locale, domain))
             self._current.translations = t

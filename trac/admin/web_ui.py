@@ -14,6 +14,8 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from __future__ import with_statement
+
 from functools import partial
 import os
 import pkg_resources
@@ -477,14 +479,10 @@ class PluginAdminPanel(Component):
         except AttributeError:
             # OS_BINARY not available on every platform
             pass
-        target_file = os.fdopen(os.open(target_path, flags, 0666), 'w')
-        try:
+        with os.fdopen(os.open(target_path, flags, 0666), 'w') as target_file:
             shutil.copyfileobj(upload.file, target_file)
             self.log.info('Plugin %s installed to %s', plugin_filename,
                           target_path)
-        finally:
-            target_file.close()
-
         # TODO: Validate that the uploaded file is actually a valid Trac plugin
 
         # Make the environment reset itself on the next request

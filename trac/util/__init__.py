@@ -17,6 +17,8 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Matthew Good <trac@matt-good.net>
 
+from __future__ import with_statement
+
 import errno
 import inspect
 from itertools import izip, tee
@@ -181,7 +183,7 @@ class AtomicFile(object):
     
     def __getattr__(self, name):
         return getattr(self._file, name)
-    
+
     def commit(self):
         if self._file is None:
             return
@@ -204,9 +206,17 @@ class AtomicFile(object):
                 os.unlink(self._temp)
             except:
                 pass
-    
+            
     close = commit
     __del__ = rollback
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
+
+    closed = property(lambda self: self._file is None or self._file.closed)
 
 
 def read_file(path, mode='r'):
@@ -220,12 +230,9 @@ def read_file(path, mode='r'):
 
 def create_file(path, data='', mode='w'):
     """Create a new file with the given data."""
-    f = open(path, mode)
-    try:
+    with open(path, mode) as f:
         if data:
             f.write(data)
-    finally:
-        f.close()
 
 
 def create_unique_file(path):

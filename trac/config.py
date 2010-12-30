@@ -12,6 +12,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from __future__ import with_statement
+
 from ConfigParser import ConfigParser
 from copy import deepcopy
 import os.path
@@ -231,8 +233,7 @@ class Configuration(object):
 
         # At this point, all the strings in `sections` are UTF-8 encoded `str`
         try:
-            fileobj = AtomicFile(self.filename, 'w')
-            try:
+            with AtomicFile(self.filename, 'w') as fileobj:
                 fileobj.write('# -*- coding: utf-8 -*-\n\n')
                 for section, options in sections:
                     fileobj.write('[%s]\n' % section)
@@ -244,8 +245,6 @@ class Configuration(object):
                                              .replace('\n', '\n ')
                             fileobj.write('%s = %s\n' % (key_str, val_str))
                     fileobj.write('\n')
-            finally:
-                fileobj.close()
             self._old_sections = deepcopy(self.parser._sections)
         except Exception:
             # Revert all changes to avoid inconsistencies

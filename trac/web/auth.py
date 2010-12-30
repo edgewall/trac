@@ -265,14 +265,11 @@ class PasswordFileAuthentication(HTTPAuthentication):
         self._lock = threading.Lock()
 
     def check_reload(self):
-        self._lock.acquire()
-        try:
+        with self._lock:
             mtime = os.stat(self.filename).st_mtime
             if mtime > self.mtime:
                 self.mtime = mtime
                 self.load(self.filename)
-        finally:
-            self._lock.release()
 
 
 class BasicAuthentication(PasswordFileAuthentication):

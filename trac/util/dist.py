@@ -11,6 +11,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from __future__ import with_statement
+
 """Extra commands for setup.py.
 
 In addition to providing a few extra command classes in `l10n_cmdclass`,
@@ -131,18 +133,12 @@ try:
                 log.info('generating messages javascript %r to %r',
                          mo_file, js_file)
 
-                infile = open(mo_file, 'rb')
-                try:
+                with open(mo_file, 'rb') as infile:
                     t = Translations(infile, self.domain)
                     catalog = t._catalog
-                finally:
-                    infile.close()
 
-                outfile = open(js_file, 'w')
-                try:
+                with open(js_file, 'w') as outfile:
                     write_js(outfile, catalog, self.domain, locale)
-                finally:
-                    outfile.close()
 
     def write_js(fileobj, catalog, domain, locale):
         data = {'domain': domain, 'locale': locale}

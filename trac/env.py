@@ -350,11 +350,8 @@ class Environment(Component, ComponentManager):
     def verify(self):
         """Verify that the provided path points to a valid Trac environment
         directory."""
-        fd = open(os.path.join(self.path, 'VERSION'), 'r')
-        try:
+        with open(os.path.join(self.path, 'VERSION'), 'r') as fd:
             assert fd.read(26) == 'Trac Environment Version 1'
-        finally:
-            fd.close()
 
     def get_db_cnx(self):
         """Return a database connection from the connection pool 
@@ -754,8 +751,7 @@ def open_environment(env_path=None, use_cache=False):
 
     env_path = os.path.normcase(os.path.normpath(env_path))
     if use_cache:
-        env_cache_lock.acquire()
-        try:
+        with env_cache_lock:
             env = env_cache.get(env_path)
             if env and env.config.parse_if_needed():
                 # The environment configuration has changed, so shut it down
@@ -769,8 +765,6 @@ def open_environment(env_path=None, use_cache=False):
                 env = env_cache.setdefault(env_path, open_environment(env_path))
             else:
                 CacheManager(env).reset_metadata()
-        finally:
-            env_cache_lock.release()
     else:
         env = Environment(env_path)
         needs_upgrade = False
@@ -841,11 +835,8 @@ class EnvironmentAdmin(Component):
             template = Chrome(self.env).load_template('deploy_trac.' + script,
                                                       'text')
             stream = template.generate(**data)
-            out = file(dest, 'w')
-            try:
+            with open(dest, 'w') as out:
                 stream.render('text', out=out)
-            finally:
-                out.close()
 
     def _do_hotcopy(self, dest, no_db=None):
         if no_db not in (None, '--no-database'):

@@ -11,6 +11,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from __future__ import with_statement
+
 import atexit
 import errno
 import os
@@ -26,14 +28,11 @@ def daemonize(pidfile=None, progname=None, stdin='/dev/null',
         # process running
         pidfile = os.path.abspath(pidfile)
         if os.path.exists(pidfile):
-            fileobj = open(pidfile)
-            try:
+            with open(pidfile) as fileobj:
                 try:
                     pid = int(fileobj.read())
                 except ValueError:
                     sys.exit('Invalid PID in file %s' % pidfile)
-            finally:
-                fileobj.close()
 
             try: # signal the process to see if it is still running
                 os.kill(pid, 0)
@@ -80,11 +79,8 @@ def daemonize(pidfile=None, progname=None, stdin='/dev/null',
             if os.path.exists(pidfile):
                 os.remove(pidfile)
         atexit.register(remove_pidfile)
-        fileobj = open(pidfile, 'w')
-        try:
+        with open(pidfile, 'w') as fileobj:
             fileobj.write(str(os.getpid()))
-        finally:
-            fileobj.close()
 
 
 def handle_signal(signum, frame):
