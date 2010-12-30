@@ -466,28 +466,6 @@ class Request(object):
         self.end_headers()
         raise RequestDone
 
-    def display(self, template, content_type='text/html', status=200):
-        """Render the response using the ClearSilver template given by the
-        `template` parameter, which can be either the name of the template
-        file, or an already parsed `neo_cs.CS` object.
-        """
-        assert self.hdf, \
-               'HDF dataset not available. Check your clearsilver installation'
-        if self.args.has_key('hdfdump'):
-            # FIXME: the administrator should probably be able to disable HDF
-            #        dumps
-            self.perm.require('TRAC_ADMIN')
-            content_type = 'text/plain'
-            data = str(self.hdf)
-        else:
-            try:
-                form_token = self.form_token
-            except AttributeError:
-                form_token = None
-            data = self.hdf.render(template, form_token)
-
-        self.send(data, content_type, status)
-
     def send(self, content, content_type='text/html', status=200):
         self.send_response(status)
         self.send_header('Cache-Control', 'must-revalidate')

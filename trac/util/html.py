@@ -11,6 +11,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from HTMLParser import HTMLParser
 import re
 
 from genshi import Markup, escape, unescape
@@ -18,7 +19,8 @@ from genshi.core import stripentities, striptags, START, END
 from genshi.builder import Element, ElementFactory, Fragment
 from genshi.filters.html import HTMLSanitizer
 
-__all__ = ['escape', 'unescape', 'html', 'plaintext', 'TracHTMLSanitizer']
+__all__ = ['escape', 'unescape', 'html', 'plaintext', 'TracHTMLSanitizer',
+           'Deuglifier', 'FormTokenInjector']
 
 
 class TracHTMLSanitizer(HTMLSanitizer):
@@ -123,6 +125,50 @@ class Deuglifier(object):
                 elif mtype == 'endfont':
                     return '</span>'
                 return '<span class="code-%s">' % mtype
+
+
+class FormTokenInjector(HTMLParser):
+    """Identify and protect forms from CSRF attacks.
+
+    This filter works by adding a input type=hidden field to POST forms.
+    """
+    def __init__(self, form_token, out):
+        HTMLParser.__init__(self)
+        self.out = out
+        self.token = form_token
+
+    def handle_starttag(self, tag, attrs):
+        self.out.write(self.get_starttag_text())
+        if tag.lower() == 'form':
+            for name, value in attrs:
+                if name.lower() == 'method' and value.lower() == 'post':
+                    self.out.write('<input type="hidden" name="__FORM_TOKEN"'
+                                   ' value="%s"/>' % self.token)
+                    break
+                    
+    def handle_startendtag(self, tag, attrs):
+        self.out.write(self.get_starttag_text())
+        
+    def handle_charref(self, name):
+        self.out.write('&#%s;' % name)
+
+    def handle_entityref(self, name):
+        self.out.write('&%s;' % name)
+
+    def handle_comment(self, data):
+        self.out.write('<!--%s-->' % data)
+
+    def handle_decl(self, data):
+        self.out.write('<!%s>' % data)
+
+    def handle_pi(self, data):
+        self.out.write('<?%s?>' % data)
+
+    def handle_data(self, data):
+        self.out.write(data)
+
+    def handle_endtag(self, tag):
+        self.out.write('</' + tag + '>')
 
 
 class TransposingElementFactory(ElementFactory):

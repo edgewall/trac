@@ -48,7 +48,6 @@ from trac.util.translation import _, get_negotiated_locale, has_babel, \
                                   safefmt, tag_
 from trac.web.api import *
 from trac.web.chrome import Chrome
-from trac.web.clearsilver import HDFWrapper
 from trac.web.href import Href
 from trac.web.session import Session
 
@@ -64,61 +63,6 @@ class FakePerm(dict):
         return False
     def __call__(self, *args):
         return self
-
-
-def populate_hdf(hdf, env, req=None):
-    """Populate the HDF data set with various information, such as common URLs,
-    project information and request-related information.
-    """
-    # FIXME: do we really have req==None at times?
-    hdf['trac'] = {
-        'version': TRAC_VERSION,
-        'time': format_datetime(),
-        'time.gmt': http_date()
-    }
-    hdf['project'] = {
-        'shortname': os.path.basename(env.path),
-        'name': env.project_name,
-        'name_encoded': env.project_name,
-        'descr': env.project_description,
-        'footer': Markup(env.project_footer),
-        'url': env.project_url
-    }
-
-    if req:
-        hdf['trac.href'] = {
-            'wiki': req.href.wiki(),
-            'browser': req.href.browser('/'),
-            'timeline': req.href.timeline(),
-            'roadmap': req.href.roadmap(),
-            'milestone': req.href.milestone(None),
-            'report': req.href.report(),
-            'query': req.href.query(),
-            'newticket': req.href.newticket(),
-            'search': req.href.search(),
-            'about': req.href.about(),
-            'about_config': req.href.about('config'),
-            'login': req.href.login(),
-            'logout': req.href.logout(),
-            'settings': req.href.settings(),
-            'homepage': 'http://trac.edgewall.org/'
-        }
-
-        hdf['base_url'] = req.base_url
-        hdf['base_host'] = req.base_url[:req.base_url.rfind(req.base_path)]
-        hdf['cgi_location'] = req.base_path
-        hdf['trac.authname'] = req.authname
-
-        if req.perm:
-            for action in req.perm.permissions():
-                hdf['trac.acl.' + action] = True
-
-        for arg in [k for k in req.args.keys() if k]:
-            if isinstance(req.args[arg], (list, tuple)):
-                hdf['args.%s' % arg] = [v for v in req.args[arg]]
-            elif isinstance(req.args[arg], basestring):
-                hdf['args.%s' % arg] = req.args[arg]
-            # others are file uploads
 
 
 class RequestDispatcher(Component):
@@ -176,7 +120,6 @@ class RequestDispatcher(Component):
         req.callbacks.update({
             'authname': self.authenticate,
             'chrome': chrome.prepare_request,
-            'hdf': self._get_hdf,
             'perm': self._get_perm,
             'session': self._get_session,
             'locale': self._get_locale,
@@ -236,29 +179,27 @@ class RequestDispatcher(Component):
                 # Process the request and render the template
                 resp = chosen_handler.process_request(req)
                 if resp:
-                    if len(resp) == 2: # Clearsilver
-                        chrome.populate_hdf(req)
-                        template, content_type = \
-                                  self._post_process_request(req, *resp)
-                        # Give the session a chance to persist changes
-                        req.session.save()
-                        req.display(template, content_type or 'text/html')
-                    else: # Genshi
-                        template, data, content_type = \
-                                  self._post_process_request(req, *resp)
-                        if 'hdfdump' in req.args:
-                            req.perm.require('TRAC_ADMIN')
-                            # debugging helper - no need to render first
-                            out = StringIO()
-                            pprint(data, out)
-                            req.send(out.getvalue(), 'text/plain')
-                        else:
-                            output = chrome.render_template(req, template,
-                                                            data,
-                                                            content_type)
-                            # Give the session a chance to persist changes
-                            req.session.save()
-                            req.send(output, content_type or 'text/html')
+                    if len(resp) == 2: # old Clearsilver template and HDF data
+                        self.log.error("Clearsilver template are no longer "
+                                       "supported (%s)", resp[0])
+                        raise TracError(
+                            _("Clearsilver templates are no longer supported, "
+                              "please contact your Trac administrator."))
+                    # Genshi
+                    template, data, content_type = \
+                              self._post_process_request(req, *resp)
+                    if 'hdfdump' in req.args:
+                        req.perm.require('TRAC_ADMIN')
+                        # debugging helper - no need to render first
+                        out = StringIO()
+                        pprint(data, out)
+                        req.send(out.getvalue(), 'text/plain')
+
+                    output = chrome.render_template(req, template, data,
+                                                    content_type)
+                    # Give the session a chance to persist changes
+                    req.session.save()
+                    req.send(output, content_type or 'text/html')
                 else:
                     self._post_process_request(req)
             except RequestDone:
@@ -283,11 +224,6 @@ class RequestDispatcher(Component):
             raise HTTPInternalError(e)
 
     # Internal methods
-
-    def _get_hdf(self, req):
-        hdf = HDFWrapper(loadpaths=Chrome(self.env).get_all_templates_dirs())
-        populate_hdf(hdf, self.env, req)
-        return hdf
 
     def _get_perm(self, req):
         if isinstance(req.session, FakeSession):
@@ -655,13 +591,9 @@ def send_project_index(environ, start_response, parent_dir=None,
     req = Request(environ, start_response)
 
     loadpaths = [pkg_resources.resource_filename('trac', 'templates')]
-    use_clearsilver = False
     if req.environ.get('trac.env_index_template'):
         tmpl_path, template = os.path.split(req.environ['trac.env_index_template'])
         loadpaths.insert(0, tmpl_path)
-        use_clearsilver = template.endswith('.cs') # assume Clearsilver
-        if use_clearsilver:
-            req.hdf = HDFWrapper(loadpaths) # keep that for custom .cs templates
     else:
         template = 'index.html'
 
@@ -671,8 +603,6 @@ def send_project_index(environ, start_response, parent_dir=None,
         for pair in req.environ['trac.template_vars'].split(','):
             key, val = pair.split('=')
             data[key] = val
-            if use_clearsilver:
-                req.hdf[key] = val
     try:
         href = Href(req.base_path)
         projects = []
@@ -692,9 +622,6 @@ def send_project_index(environ, start_response, parent_dir=None,
         projects.sort(lambda x, y: cmp(x['name'].lower(), y['name'].lower()))
 
         data['projects'] = projects
-        if use_clearsilver:
-            req.hdf['projects'] = projects
-            req.display(template)
 
         loader = TemplateLoader(loadpaths, variable_lookup='lenient',
                                 default_encoding='utf-8')

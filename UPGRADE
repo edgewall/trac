@@ -75,7 +75,7 @@ taken to upgrade to specific versions of Trac.
 From 0.12.x to 0.13.x
 ---------------------
 
-See below.
+Note that Clearsilver based plugin are now no longer supported.
 
 From 0.11.x to 0.12.x
 ---------------------
@@ -97,8 +97,7 @@ However, take a look at the following documented caveats::
 Also, you should be careful to check that the plugins you depend on
 have been ported to 0.11, as they most probably won't work without
 adaptation due to the numerous internal changes that occurred during
-0.11 development.  Note however that Clearsilver based plugin are
-still supported.
+0.11 development.
 
 See: http://trac.edgewall.org/wiki/TracDev/ApiChanges/0.11
 
