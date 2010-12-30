@@ -7,3 +7,4 @@ API Reference
    :glob:
 
    trac_*
+   tracopt_*

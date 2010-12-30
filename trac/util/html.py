@@ -22,6 +22,14 @@ __all__ = ['escape', 'unescape', 'html', 'plaintext', 'TracHTMLSanitizer']
 
 
 class TracHTMLSanitizer(HTMLSanitizer):
+    """Sanitize HTML constructions which are potentially vector of
+    phishing or XSS attacks, in user-supplied HTML.
+
+    See also `genshi.HTMLSanitizer`_.
+
+    .. _genshi.HTMLSanitizer:
+       http://genshi.edgewall.org/wiki/Documentation/filters.html#html-sanitizer
+    """
 
     UNSAFE_CSS = ['position']
 
@@ -87,11 +95,20 @@ class TracHTMLSanitizer(HTMLSanitizer):
 
 
 class Deuglifier(object):
+    """Help base class used for cleaning up HTML riddled with ``<FONT
+    COLOR=...>`` tags and replace them with appropriate ``<span
+    class="...">``.
 
+    The subclass must define a `rules()` static method returning a
+    list of regular expression fragments, each defining a capture
+    group in which the name will be reused for the span's class. Two
+    special group names, ``font`` and ``endfont`` are used to emit
+    ``<span>`` and ``</span>``, respectively.
+    """
     def __new__(cls):
         self = object.__new__(cls)
         if not hasattr(cls, '_compiled_rules'):
-            cls._compiled_rules = re.compile('(?:' + '|'.join(cls.rules()) + ')')
+            cls._compiled_rules = re.compile('(?:%s)' % '|'.join(cls.rules()))
         self._compiled_rules = cls._compiled_rules
         return self
     
@@ -109,6 +126,9 @@ class Deuglifier(object):
 
 
 class TransposingElementFactory(ElementFactory):
+    """A `genshi.builder.ElementFactory` which applies `func` to the
+    named attributes before creating a `genshi.builder.Element`.
+    """
 
     def __init__(self, func, namespace=None):
         ElementFactory.__init__(self, namespace=namespace)
@@ -117,8 +137,15 @@ class TransposingElementFactory(ElementFactory):
     def __getattr__(self, name):
         return ElementFactory.__getattr__(self, self.func(name))
 
+html = TransposingElementFactory(str.lower)
+
 
 def plaintext(text, keeplinebreaks=True):
+    """Extract the text elements from (X)HTML content
+
+    :param text: `unicode` or `genshi.builder.Fragment`
+    :param keeplinebreaks: optionally keep linebreaks
+    """
     if isinstance(text, Fragment):
         text = text.generate().render('text', encoding=None)
     else:
@@ -129,10 +156,10 @@ def plaintext(text, keeplinebreaks=True):
 
 
 def expand_markup(stream, ctxt=None):
-    """A Genshi stream filter for expanding Markup events.
+    """A Genshi stream filter for expanding `genshi.Markup` events.
 
-    Note: Expansion may not be possible if the fragment is badly formed, or
-    partial.
+    Note: Expansion may not be possible if the fragment is badly
+    formed, or partial.
     """
     for event in stream:
         if isinstance(event[1], Markup):
@@ -143,6 +170,3 @@ def expand_markup(stream, ctxt=None):
                 yield event
         else:
             yield event
-
-
-html = TransposingElementFactory(str.lower)

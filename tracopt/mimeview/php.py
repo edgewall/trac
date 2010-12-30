@@ -53,11 +53,9 @@ class PhpDeuglifier(Deuglifier):
         colors = dict(comment='FF8000', lang='0000BB', keyword='007700',
                       string='DD0000')
         # rules check for <font> for PHP 4 or <span> for PHP 5
-        color_rules = [
-            r'(?P<%s><(?:font color="|span style="color: )#%s">)' % c
-            for c in colors.items()
-            ]
-        return color_rules + [ r'(?P<font><font.*?>)', r'(?P<endfont></font>)' ]
+        return [r'(?P<%s><(?:font color="|span style="color: )#%s">)' % c
+                for c in colors.items()
+                ] + [r'(?P<font><font.*?>)', r'(?P<endfont></font>)']
 
 
 class PHPRenderer(Component):
