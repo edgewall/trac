@@ -363,8 +363,8 @@ class RequestDispatcher(Component):
 def dispatch_request(environ, start_response):
     """Main entry point for the Trac web interface.
     
-    @param environ: the WSGI environment dict
-    @param start_response: the WSGI callback for starting the response
+    :param environ: the WSGI environment dict
+    :param start_response: the WSGI callback for starting the response
     """
 
     # SCRIPT_URL is an Apache var containing the URL before URL rewriting
@@ -512,51 +512,50 @@ def _dispatch_request(req, env, env_error):
         except RequestDone:
             pass
         resp = req._response or []
-
     except HTTPException, e:
-        # This part is a bit more complex than it should be.
-        # See trac/web/api.py for the definition of HTTPException subclasses.
-        if env:
-            env.log.warn('[%s] %s' % (req.remote_addr,
-                                      exception_to_unicode(e)))
-        try:
-            # We try to get localized error messages here, 
-            # but we should ignore secondary errors
-            title = _('Error')
-            if e.reason:
-                if title.lower() in e.reason.lower():
-                    title = e.reason
-                else:
-                    title = _('Error: %(message)s', message=e.reason)
-        except:
-            title = 'Error'
-        # The message is based on the e.detail, which can be an Exception
-        # object, but not a TracError one: when creating HTTPException,
-        # a TracError.message is directly assigned to e.detail
-        if isinstance(e.detail, Exception): # not a TracError
-            message = exception_to_unicode(e.detail)
-        elif isinstance(e.detail, Fragment): # markup coming from a TracError
-            message = e.detail
-        else:
-            message = to_unicode(e.detail)
-        data = {'title': title, 'type': 'TracError', 'message': message,
-                'frames': [], 'traceback': None}
-        if e.code == 403 and req.authname == 'anonymous':
-            # TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
-            do_so = tag.a(_("do so"), href=req.href.login())
-            req.chrome['notices'].append(
-                tag_("You are currently not logged in. You may want to "
-                     "%(do_so)s now.", do_so=do_so))
-        try:
-            req.send_error(sys.exc_info(), status=e.code, env=env, data=data)
-        except RequestDone:
-            pass
-
+        _send_user_error(req, env, e)
     except Exception, e:
         send_internal_error(env, req, sys.exc_info())
-
     return resp
 
+
+def _send_user_error(req, env, e):
+    # See trac/web/api.py for the definition of HTTPException subclasses.
+    if env:
+        env.log.warn('[%s] %s' % (req.remote_addr, exception_to_unicode(e)))
+    try:
+        # We first try to get localized error messages here, but we
+        # should ignore secondary errors if the main error was also
+        # due to i18n issues
+        title = _('Error')
+        if e.reason:
+            if title.lower() in e.reason.lower():
+                title = e.reason
+            else:
+                title = _('Error: %(message)s', message=e.reason)
+    except:
+        title = 'Error'
+    # The message is based on the e.detail, which can be an Exception
+    # object, but not a TracError one: when creating HTTPException,
+    # a TracError.message is directly assigned to e.detail
+    if isinstance(e.detail, Exception): # not a TracError
+        message = exception_to_unicode(e.detail)
+    elif isinstance(e.detail, Fragment): # markup coming from a TracError
+        message = e.detail
+    else:
+        message = to_unicode(e.detail)
+    data = {'title': title, 'type': 'TracError', 'message': message,
+            'frames': [], 'traceback': None}
+    if e.code == 403 and req.authname == 'anonymous':
+        # TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
+        do_so = tag.a(_("do so"), href=req.href.login())
+        req.chrome['notices'].append(
+            tag_("You are currently not logged in. You may want to "
+                 "%(do_so)s now.", do_so=do_so))
+    try:
+        req.send_error(sys.exc_info(), status=e.code, env=env, data=data)
+    except RequestDone:
+        pass
 
 def send_internal_error(env, req, exc_info):
     if env:
