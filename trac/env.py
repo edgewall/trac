@@ -820,6 +820,8 @@ class EnvironmentAdmin(Component):
             printout('  %s.%s' % (provider.__module__, 
                                   provider.__class__.__name__))
             for key, root in paths:
+                if not root:
+                    continue
                 source = os.path.normpath(root)
                 printout('   ', source)
                 if os.path.exists(source):
