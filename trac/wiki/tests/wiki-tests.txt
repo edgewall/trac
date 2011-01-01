@@ -472,6 +472,8 @@ svn+ssh://secureserver.org
 [svn+ssh://secureserver.org SVN link]
 rfc-2396.compatible://link
 [rfc-2396.compatible://link RFC 2396]
+rfc-2396+under_score://link
+[rfc-2396+under_score://link underscore]
 unsafe://scheme is not rendered
 ------------------------------
 <p>
@@ -479,6 +481,8 @@ unsafe://scheme is not rendered
 <a class="ext-link" href="svn+ssh://secureserver.org"><span class="icon"> </span>SVN link</a>
 <a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"> </span>rfc-2396.compatible://link</a>
 <a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"> </span>RFC 2396</a>
+<a class="ext-link" href="rfc-2396+under_score://link"><span class="icon"> </span>rfc-2396+under_score://link</a>
+<a class="ext-link" href="rfc-2396+under_score://link"><span class="icon"> </span>underscore</a>
 unsafe://scheme is not rendered
 </p>
 ------------------------------

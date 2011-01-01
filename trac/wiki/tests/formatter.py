@@ -141,7 +141,7 @@ class WikiTestCase(unittest.TestCase):
         # -- safe schemes
         self.env.config.set('wiki', 'safe_schemes',
                             'file,ftp,http,https,svn,svn+ssh,'
-                            'rfc-2396.compatible')
+                            'rfc-2396.compatible,rfc-2396+under_score')
 
         # TODO: remove the following lines in order to discover
         #       all the places were we should use the req.href
