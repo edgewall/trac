@@ -202,14 +202,13 @@ class MySQLConnector(Component):
             args.extend(['-u', db_prop['user']])
         for name, value in db_params.iteritems():
             if name == 'compress' and as_int(value, 0):
-                args.extend(['--compress'])
+                args.append('--compress')
             elif name == 'named_pipe' and as_int(value, 0):
-                args.extend(['--protocol', 'pipe'])
-            elif name == 'read_default_file':
-                args.extend(['--defaults-file=', value])
+                args.append('--protocol=pipe')
+            elif name == 'read_default_file': # Must be first
+                args.insert(1, '--defaults-file=' + value)
             elif name == 'unix_socket':
-                args.extend(['--protocol', 'socket'])
-                args.extend(['--socket', value])
+                args.extend(['--protocol=socket', '--socket=' + value])
             elif name not in ('init_command', 'read_default_group'):
                 self.log.warning("Invalid connection string parameter '%s'",
                                  name)
