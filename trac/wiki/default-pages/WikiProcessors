@@ -112,40 +112,40 @@ this extra indentation will be ignored when processing the content.
   {{{
   {{{
   #!html
-  <form action="/query" method="get">
-  <input type="text" name="keywords" value="~" size="30">
-  <input type="submit" value="Search by Keywords">
+  <form action="/query" method="get"><div>
+  <input type="text" name="keywords" value="~" size="30"/>
+  <input type="submit" value="Search by Keywords"/>
   <!-- To control what fields show up use hidden fields
-  <input type="hidden" name="col" value="id">
-  <input type="hidden" name="col" value="summary">
-  <input type="hidden" name="col" value="status">
-  <input type="hidden" name="col" value="milestone">
-  <input type="hidden" name="col" value="version">
-  <input type="hidden" name="col" value="owner">
-  <input type="hidden" name="col" value="priority">
-  <input type="hidden" name="col" value="component">
+  <input type="hidden" name="col" value="id"/>
+  <input type="hidden" name="col" value="summary"/>
+  <input type="hidden" name="col" value="status"/>
+  <input type="hidden" name="col" value="milestone"/>
+  <input type="hidden" name="col" value="version"/>
+  <input type="hidden" name="col" value="owner"/>
+  <input type="hidden" name="col" value="priority"/>
+  <input type="hidden" name="col" value="component"/>
   -->
-  </form>
+  </div></form>
   }}}
   }}}
 }}}
 {{{#!td valign=top style="border: none; padding: 1em"
   {{{
   #!html
-  <form action="/query" method="get">
-  <input type="text" name="keywords" value="~" size="30">
-  <input type="submit" value="Search by Keywords">
+  <form action="/query" method="get"><div>
+  <input type="text" name="keywords" value="~" size="30"/>
+  <input type="submit" value="Search by Keywords"/>
   <!-- To control what fields show up use hidden fields
-  <input type="hidden" name="col" value="id">
-  <input type="hidden" name="col" value="summary">
-  <input type="hidden" name="col" value="status">
-  <input type="hidden" name="col" value="milestone">
-  <input type="hidden" name="col" value="version">
-  <input type="hidden" name="col" value="owner">
-  <input type="hidden" name="col" value="priority">
-  <input type="hidden" name="col" value="component">
+  <input type="hidden" name="col" value="id"/>
+  <input type="hidden" name="col" value="summary"/>
+  <input type="hidden" name="col" value="status"/>
+  <input type="hidden" name="col" value="milestone"/>
+  <input type="hidden" name="col" value="version"/>
+  <input type="hidden" name="col" value="owner"/>
+  <input type="hidden" name="col" value="priority"/>
+  <input type="hidden" name="col" value="component"/>
   -->
-  </form>
+  </div></form>
   }}}
 }}}
 == Available Processors ==

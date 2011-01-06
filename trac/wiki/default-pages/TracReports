@@ -216,7 +216,7 @@ By default, all columns on each row are display on a single row in the HTML
 report, possibly formatted according to the descriptions above. However, it's
 also possible to create multi-line report entries.
 
- * '''`column_`''' — ''Break row after this''. By appending an underscore ('_') to the column name, the remaining columns will be be continued on a second line.
+ * '''`column_`''' — ''Break row after this''. By appending an underscore ('_') to the column name, the remaining columns will be continued on a second line.
 
  * '''`_column_`''' — ''Full row''. By adding an underscore ('_') both at the beginning and the end of a column name, the data will be shown on a separate row.
 
