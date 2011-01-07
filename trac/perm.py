@@ -330,7 +330,7 @@ class PermissionSystem(Component):
         """Revokes the permission of the specified user to perform an action."""
         self.store.revoke_permission(username, action)
 
-    def _get_actions(self):
+    def get_actions_dict(self):
         """Get all actions from permission requestors as a `dict`.
         
         The keys are the action names. The values are the additional actions
@@ -370,7 +370,7 @@ class PermissionSystem(Component):
             return dict.fromkeys(self.get_actions(), True)
 
         # Return all permissions that the given user has
-        actions = self._get_actions()
+        actions = self.get_actions_dict()
         permissions = {}
         def expand_meta(action):
             if action not in permissions:
@@ -403,7 +403,7 @@ class PermissionSystem(Component):
             return permissions
 
         parent_map = {}
-        for parent, children in self._get_actions().iteritems():
+        for parent, children in self.get_actions_dict().iteritems():
             for child in children:
                 parent_map.setdefault(child, set()).add(parent)
 
@@ -422,7 +422,7 @@ class PermissionSystem(Component):
 
     def expand_actions(self, actions):
         """Helper method for expanding all meta actions."""
-        all_actions = self._get_actions()
+        all_actions = self.get_actions_dict()
         expanded_actions = set()
         def expand_action(action):
             if action not in expanded_actions:
