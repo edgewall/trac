@@ -66,7 +66,8 @@ class IPermissionRequestor(Interface):
         The items in the list may either be simple strings, or
         `(string, sequence)` tuples. The latter are considered to be "meta
         permissions" that group several simple actions under one name for
-        convenience.
+        convenience, adding to it if another component already defined that
+        name.
         """
 
 
@@ -329,46 +330,55 @@ class PermissionSystem(Component):
         """Revokes the permission of the specified user to perform an action."""
         self.store.revoke_permission(username, action)
 
-    def get_actions(self):
-        actions = []
+    def _get_actions(self):
+        """Get all actions from permission requestors as a `dict`.
+        
+        The keys are the action names. The values are the additional actions
+        granted by each action. For simple actions, this is an empty list.
+        For meta actions, this is the list of actions covered by the action.
+        """
+        actions = {}
         for requestor in self.requestors:
             for action in requestor.get_permission_actions() or []:
                 if isinstance(action, tuple):
-                    actions.append(action[0])
+                    actions.setdefault(action[0], []).extend(action[1])
                 else:
-                    actions.append(action)
+                    actions.setdefault(action, [])
         return actions
+
+    def get_actions(self, skip=None):
+        """Get a list of all actions defined by permission requestors."""
+        actions = set()
+        for requestor in self.requestors:
+            if requestor is skip:
+                continue
+            for action in requestor.get_permission_actions() or []:
+                if isinstance(action, tuple):
+                    actions.add(action[0])
+                else:
+                    actions.add(action)
+        return list(actions)
 
     def get_user_permissions(self, username=None):
         """Return the permissions of the specified user.
         
-        The return value is a dictionary containing all the actions as keys, and
-        a boolean value. `True` means that the permission is granted, `False`
-        means the permission is denied."""
-        actions = []
-        for requestor in self.requestors:
-            actions += list(requestor.get_permission_actions() or [])
-        permissions = {}
-        if username:
-            # Return all permissions that the given user has
-            meta = {}
-            for action in actions:
-                if isinstance(action, tuple):
-                    name, value = action
-                    meta[name] = value
-            def _expand_meta(action):
-                permissions[action] = True
-                if meta.has_key(action):
-                    [_expand_meta(perm) for perm in meta[action]]
-            for perm in self.store.get_user_permissions(username) or []:
-                _expand_meta(perm)
-        else:
+        The return value is a dictionary containing all the actions granted to
+        the user mapped to `True`. If an action is missing as a key, or has
+        `False` as a value, permission is denied."""
+        if not username:
             # Return all permissions available in the system
-            for action in actions:
-                if isinstance(action, tuple):
-                    permissions[action[0]] = True
-                else:
-                    permissions[action] = True
+            return dict.fromkeys(self.get_actions(), True)
+
+        # Return all permissions that the given user has
+        actions = self._get_actions()
+        permissions = {}
+        def expand_meta(action):
+            if action not in permissions:
+                permissions[action] = True
+                for a in actions.get(action, ()):
+                    expand_meta(a)
+        for perm in self.store.get_user_permissions(username) or []:
+            expand_meta(perm)
         return permissions
 
     def get_all_permissions(self):
@@ -384,53 +394,43 @@ class PermissionSystem(Component):
         Users are returned as a list of user names.
         """
         now = time()
-
         if now - self.last_reap > self.CACHE_REAP_TIME:
             self.permission_cache = {}
             self.last_reap = time()
-
         timestamp, permissions = self.permission_cache.get(permission, 
                                                            (0, None))
         if now - timestamp <= self.CACHE_EXPIRY:
             return permissions
 
         parent_map = {}
-        for requestor in self.requestors:
-            for action in requestor.get_permission_actions() or []:
-                for child in action[1]:
-                    parent_map.setdefault(child, []).append(action[0])
+        for parent, children in self._get_actions().iteritems():
+            for child in children:
+                parent_map.setdefault(child, set()).add(parent)
 
-        satisfying_perms = {}
-        def _append_with_parents(action):
-            if action in satisfying_perms:
-                return # avoid unneccesary work and infinite loops
-            satisfying_perms[action] = True
-            if action in parent_map:
-                map(_append_with_parents, parent_map[action])
-        _append_with_parents(permission)
+        satisfying_perms = set()
+        def append_with_parents(action):
+            if action not in satisfying_perms:
+                satisfying_perms.add(action)
+                for action in parent_map.get(action, ()):
+                    append_with_parents(action)
+        append_with_parents(permission)
 
-        perms = self.store.get_users_with_permissions(satisfying_perms.keys())
+        perms = self.store.get_users_with_permissions(satisfying_perms)
         perms = perms or []
         self.permission_cache[permission] = (now, perms)
-
         return perms
 
     def expand_actions(self, actions):
         """Helper method for expanding all meta actions."""
-        actions = list(actions)     # Consume actions if it is an iterator
-        meta = {}
-        for requestor in self.requestors:
-            for m in requestor.get_permission_actions() or []:
-                if isinstance(m, tuple):
-                    meta[m[0]] = m[1]
-        expanded_actions = set(actions)
-
+        all_actions = self._get_actions()
+        expanded_actions = set()
         def expand_action(action):
-            actions = meta.get(action, [])
-            expanded_actions.update(actions)
-            [expand_action(a) for a in actions]
-
-        [expand_action(a) for a in actions]
+            if action not in expanded_actions:
+                expanded_actions.add(action)
+                for a in all_actions.get(action, ()):
+                    expand_action(a)
+        for a in actions:
+            expand_action(a)
         return expanded_actions
 
     def check_permission(self, action, username=None, resource=None, perm=None):
@@ -462,13 +462,8 @@ class PermissionSystem(Component):
         showing email addresses even if `[trac] show_email_addresses`
         is `false`.
         """
-        actions = ['EMAIL_VIEW']
-        for requestor in [r for r in self.requestors if r is not self]:
-            for action in requestor.get_permission_actions() or []:
-                if isinstance(action, tuple):
-                    actions.append(action[0])
-                else:
-                    actions.append(action)
+        actions = self.get_actions(skip=self)
+        actions.append('EMAIL_VIEW')
         return [('TRAC_ADMIN', actions), 'EMAIL_VIEW']
 
 

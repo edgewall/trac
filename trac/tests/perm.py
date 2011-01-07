@@ -78,8 +78,10 @@ class TestPermissionRequestor(Component):
 
     def get_permission_actions(self):
         return ['TEST_CREATE', 'TEST_DELETE', 'TEST_MODIFY',
-                ('TEST_ADMIN', ['TEST_CREATE', 'TEST_DELETE',
-                                'TEST_MODIFY'])]
+                ('TEST_CREATE', []),
+                ('TEST_ADMIN', ['TEST_CREATE', 'TEST_DELETE']),
+                ('TEST_ADMIN', ['TEST_MODIFY'])]
+
 
 class PermissionSystemTestCase(unittest.TestCase):
 
