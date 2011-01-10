@@ -34,7 +34,7 @@ from trac.util import Ranges, as_bool
 from trac.util.datefmt import format_datetime, from_utimestamp, parse_date, \
                               to_timestamp, to_utimestamp, utc
 from trac.util.presentation import Paginator
-from trac.util.text import empty, shorten_line, unicode_unquote
+from trac.util.text import empty, shorten_line
 from trac.util.translation import _, tag_
 from trac.web import arg_list_to_args, parse_arg_list, IRequestHandler
 from trac.web.href import Href
@@ -417,9 +417,8 @@ class Query(object):
         Note: for now, this is an "exploded" query href, but ideally should be
         expressed in TracQuery language.
         """
-        query_string = unicode_unquote(self.get_href(Href('')))
-        if query_string and '?' in query_string:
-            query_string = query_string.split('?', 1)[1]
+        query_string = self.get_href(Href(''))
+        query_string = query_string.split('?', 1)[-1]
         return 'query:?' + query_string.replace('&', '\n&\n')
 
     def get_sql(self, req=None, cached_ids=None, authname=None, tzinfo=None):
