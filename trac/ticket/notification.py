@@ -108,6 +108,7 @@ class TicketNotifyEmail(NotifyEmail):
         change_data = {}
         link = self.env.abs_href.ticket(ticket.id)
         summary = self.ticket['summary']
+        author = None
         
         if not self.newticket and modtime:  # Ticket change
             from trac.ticket.web_ui import TicketModule
@@ -115,8 +116,9 @@ class TicketNotifyEmail(NotifyEmail):
                                                 ticket, when=modtime):
                 if not change['permanent']: # attachment with same time...
                     continue
+                author = change['author']
                 change_data.update({
-                    'author': obfuscate_email_address(change['author']),
+                    'author': obfuscate_email_address(author),
                     'comment': wrap(change['comment'], self.COLS, ' ', ' ',
                                     CRLF)
                     })
@@ -174,6 +176,9 @@ class TicketNotifyEmail(NotifyEmail):
                     if newv:
                         change_data[field] = {'oldvalue': old, 'newvalue': new}
         
+        if newticket:
+            author = ticket['reporter']
+
         ticket_values = ticket.values.copy()
         ticket_values['id'] = ticket.id
         ticket_values['description'] = wrap(
@@ -194,7 +199,7 @@ class TicketNotifyEmail(NotifyEmail):
             'changes_descr': changes_descr,
             'change': change_data
             })
-        NotifyEmail.notify(self, ticket.id, subject)
+        NotifyEmail.notify(self, ticket.id, subject, author)
 
     def format_props(self):
         tkt = self.ticket

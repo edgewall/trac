@@ -63,6 +63,9 @@ class NotificationSystem(Component):
     smtp_from_name = Option('notification', 'smtp_from_name', '',
         """Sender name to use in notification emails.""")
 
+    smtp_from_author = BoolOption('notification', 'smtp_from_author', 'false',
+        """Use the action author as the sender of notification emails.""")
+
     smtp_replyto = Option('notification', 'smtp_replyto', 'trac@localhost',
         """Reply-To address to use in notification emails.""")
 
@@ -275,9 +278,12 @@ class NotifyEmail(Notify):
         self._init_pref_encoding()
         domains = self.env.config.get('notification', 'ignore_domains', '')
         self._ignore_domains = [x.strip() for x in domains.lower().split(',')]
-        # Get the email addresses of all known users
+        # Get the name and email addresses of all known users
+        self.name_map = {}
         self.email_map = {}
         for username, name, email in self.env.get_known_users():
+            if name:
+                self.name_map[username] = name
             if email:
                 self.email_map[username] = email
                 
@@ -302,15 +308,26 @@ class NotifyEmail(Notify):
             raise TracError(_('Invalid email encoding setting: %(pref)s',
                               pref=pref))
 
-    def notify(self, resid, subject):
+    def notify(self, resid, subject, author=None):
         self.subject = subject
-
-        if not self.config.getbool('notification', 'smtp_enabled'):
+        config = self.config['notification']
+        if not config.getbool('smtp_enabled'):
             return
-        self.from_email = self.config['notification'].get('smtp_from')
-        self.from_name = self.config['notification'].get('smtp_from_name')
-        self.replyto_email = self.config['notification'].get('smtp_replyto')
-        self.from_email = self.from_email or self.replyto_email
+        from_email, from_name = '', ''
+        if author and config.getbool('smtp_from_author'):
+            from_email = self.get_smtp_address(author)
+            if from_email:
+                from_name = self.name_map.get(author, '')
+                if not from_name:
+                    mo = self.longaddr_re.search(author)
+                    if mo:
+                        from_name = mo.group(1)
+        if not from_email:
+            from_email = config.get('smtp_from')
+            from_name = config.get('smtp_from_name') or self.env.project_name
+        self.replyto_email = config.get('smtp_replyto')
+        self.from_email = from_email or self.replyto_email
+        self.from_name = from_name
         if not self.from_email and not self.replyto_email:
             raise TracError(tag(
                     tag.p(_('Unable to send email due to identity crisis.')),
@@ -395,17 +412,17 @@ class NotifyEmail(Notify):
             body = stream.render('text', encoding='utf-8')
         finally:
             reactivate(t)
-        projname = self.env.project_name
         public_cc = self.config.getbool('notification', 'use_public_cc')
         headers = {}
         headers['X-Mailer'] = 'Trac %s, by Edgewall Software' % __version__
         headers['X-Trac-Version'] =  __version__
-        headers['X-Trac-Project'] =  projname
+        headers['X-Trac-Project'] =  self.env.project_name
         headers['X-URL'] = self.env.project_url
         headers['Precedence'] = 'bulk'
         headers['Auto-Submitted'] = 'auto-generated'
         headers['Subject'] = self.subject
-        headers['From'] = (self.from_name or projname, self.from_email)
+        headers['From'] = (self.from_name, self.from_email) if self.from_name \
+                          else self.from_email
         headers['Reply-To'] = self.replyto_email
 
         def build_addresses(rcpts):

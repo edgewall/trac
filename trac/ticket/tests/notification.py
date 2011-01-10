@@ -327,6 +327,76 @@ class NotificationTestCase(unittest.TestCase):
         self.failIf('joeuser' in tolist)
         self.failIf('jim@domain' in tolist)
         
+    def test_from_author(self):
+        """Using the reporter or change author as the notification sender"""
+        self.env.config.set('notification', 'smtp_from', 'trac@example.com')
+        self.env.config.set('notification', 'smtp_from_name', 'My Trac')
+        self.env.config.set('notification', 'smtp_from_author', 'true')
+        self.env.known_users = [('joeuser', 'Joe User',
+                                 'user-joe@example.com'),
+                                ('jim@domain', 'Jim User',
+                                 'user-jim@example.com'),
+                                ('noemail', 'No e-mail', ''),
+                                ('noname', '', 'user-noname@example.com')]
+        # Ticket creation uses the reporter
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'joeuser'
+        ticket['summary'] = 'This is a summary'
+        ticket.insert()
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=True)
+        message = notifysuite.smtpd.get_message()
+        (headers, body) = parse_smtp_message(message)
+        self.assertEqual('"Joe User" <user-joe@example.com>', headers['From'])
+        # Ticket change uses the change author
+        ticket['summary'] = 'Modified summary'
+        ticket.save_changes('jim@domain', 'Made some changes')
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=False, modtime=ticket['changetime'])
+        message = notifysuite.smtpd.get_message()
+        (headers, body) = parse_smtp_message(message)
+        self.assertEqual('"Jim User" <user-jim@example.com>', headers['From'])
+        # Known author without name uses e-mail address only
+        ticket['summary'] = 'Final summary'
+        ticket.save_changes('noname', 'Final changes')
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=False, modtime=ticket['changetime'])
+        message = notifysuite.smtpd.get_message()
+        (headers, body) = parse_smtp_message(message)
+        self.assertEqual('user-noname@example.com', headers['From'])
+        # Known author without e-mail uses smtp_from and smtp_from_name
+        ticket['summary'] = 'Other summary'
+        ticket.save_changes('noemail', 'More changes')
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=False, modtime=ticket['changetime'])
+        message = notifysuite.smtpd.get_message()
+        (headers, body) = parse_smtp_message(message)
+        self.assertEqual('"My Trac" <trac@example.com>', headers['From'])
+        # Unknown author with name and e-mail address 
+        ticket['summary'] = 'Some summary'
+        ticket.save_changes('Test User <test@example.com>', 'Some changes')
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=False, modtime=ticket['changetime'])
+        message = notifysuite.smtpd.get_message()
+        (headers, body) = parse_smtp_message(message)
+        self.assertEqual('"Test User" <test@example.com>', headers['From'])
+        # Unknown author with e-mail address only
+        ticket['summary'] = 'Some summary'
+        ticket.save_changes('test@example.com', 'Some changes')
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=False, modtime=ticket['changetime'])
+        message = notifysuite.smtpd.get_message()
+        (headers, body) = parse_smtp_message(message)
+        self.assertEqual('test@example.com', headers['From'])
+        # Unknown author uses smtp_from and smtp_from_name
+        ticket['summary'] = 'Better summary'
+        ticket.save_changes('unknown', 'Made more changes')
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=False, modtime=ticket['changetime'])
+        message = notifysuite.smtpd.get_message()
+        (headers, body) = parse_smtp_message(message)
+        self.assertEqual('"My Trac" <trac@example.com>', headers['From'])
+        
     def test_ignore_domains(self):
         """Non-SMTP domain exclusion"""
         self.env.config.set('notification', 'ignore_domains',
