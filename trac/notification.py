@@ -64,7 +64,8 @@ class NotificationSystem(Component):
         """Sender name to use in notification emails.""")
 
     smtp_from_author = BoolOption('notification', 'smtp_from_author', 'false',
-        """Use the action author as the sender of notification emails.""")
+        """Use the action author as the sender of notification emails.
+           (''since 0.13'')""")
 
     smtp_replyto = Option('notification', 'smtp_replyto', 'trac@localhost',
         """Reply-To address to use in notification emails.""")
@@ -75,7 +76,7 @@ class NotificationSystem(Component):
 
     smtp_always_bcc = Option('notification', 'smtp_always_bcc', '',
         """Email address(es) to always send notifications to,
-           addresses do not appear publicly (Bcc:). (''since 0.10'').""")
+           addresses do not appear publicly (Bcc:). (''since 0.10'')""")
            
     smtp_default_domain = Option('notification', 'smtp_default_domain', '',
         """Default host/domain to append to address that do not specify
@@ -115,7 +116,7 @@ class NotificationSystem(Component):
         
         If the setting is not defined, then the [$project_name] prefix.
         If no prefix is desired, then specifying an empty option 
-        will disable it. (''since 0.10.1'').""")
+        will disable it. (''since 0.10.1'')""")
 
     def send_email(self, from_addr, recipients, message):
         """Send message to recipients via e-mail."""
