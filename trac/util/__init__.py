@@ -828,6 +828,14 @@ class Ranges(object):
         else:
             return 0
 
+    def __nonzero__(self):
+        """Return True iff the range is not empty.
+        
+        >>> (bool(Ranges()), bool(Ranges('1-2')))
+        (False, True)
+        """
+        return self.a is not None and self.b is not None
+
     def truncate(self, max):
         """Truncate the Ranges by setting a maximal allowed value.
 

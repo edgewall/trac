@@ -26,28 +26,46 @@ To specify that a block of text should be parsed using RST, use the ''rst'' proc
 === TracLinks in reStructuredText ===
 
  * Trac provides a custom RST directive `trac::` to allow TracLinks from within RST text.
+   ||= Wiki Markup ||= Display ||
+   {{{#!td
+     {{{
+     {{{
+     #!rst
+     This is a reference to |a ticket|
 
- Example:
- {{{
- {{{
- #!rst
- This is a reference to |a ticket|
+     .. |a ticket| trac:: #42
+     }}}
+     }}}
+   }}}
+   {{{#!td
+     {{{
+     #!rst
+     This is a reference to |a ticket|
 
- .. |a ticket| trac:: #42
- }}}
- }}}
+     .. |a ticket| trac:: #42
+     }}}
+   }}}
 
  * Trac allows an even easier way of creating TracLinks in RST, using the custom `:trac:` role.
+   ||= Wiki Markup ||= Display ||
+   {{{#!td
+     {{{
+     {{{
+     #!rst
+     This is a reference to ticket `#12`:trac:
 
- Example:
- {{{
- {{{
- #!rst
- This is a reference to ticket `#12`:trac:
+     To learn how to use Trac, see `TracGuide`:trac:
+     }}}
+     }}}
+   }}}
+   {{{#!td
+     {{{
+     #!rst
+     This is a reference to ticket `#12`:trac:
 
- To learn how to use Trac, see `TracGuide`:trac:
- }}}
- }}}
+     To learn how to use Trac, see `TracGuide`:trac:
+     }}}
+   }}}
 
  For a complete example of all uses of the `:trac:` role, please see WikiRestructuredTextLinks. 
 
@@ -57,69 +75,90 @@ To specify that a block of text should be parsed using RST, use the ''rst'' proc
 There is a directive for doing TracSyntaxColoring in RST as well. The directive is called
 code-block
 
-Example
+||= Wiki Markup ||= Display ||
+{{{#!td
+  {{{
+  {{{
+  #!rst
 
-{{{
-{{{
-#!rst
+  .. code-block:: python
 
-.. code-block:: python
+     class Test:
 
- class Test:
-
-    def TestFunction(self):
-        pass
-
+         def TestFunction(self):
+             pass
+  
+  }}}
+  }}}
 }}}
+{{{#!td
+  {{{
+  #!rst
+
+  .. code-block:: python
+
+     class Test:
+
+         def TestFunction(self):
+             pass
+
+  }}}
 }}}
-
-Will result in the below.
-
-{{{
-#!rst
-
-.. code-block:: python
-
- class Test:
-
-    def TestFunction(self):
-        pass
-
-}}}
+Note the need to indent the code at least one character after the `.. code-block` directive.
 
 === Wiki Macros in reStructuredText ===
 
 For doing [WikiMacros Wiki Macros] in RST you use the same directive as for syntax highlighting i.e code-block.
 
-=== Wiki Macro Example ===
+||= Wiki Markup ||= Display ||
+{{{#!td
+  {{{
+  {{{
+  #!rst
 
-{{{
-{{{
-#!rst
+  .. code-block:: RecentChanges
 
-.. code-block:: RecentChanges
+     Trac,3
 
-   Trac,3
-
+  }}}
+  }}}
 }}}
+{{{#!td
+  {{{
+  #!rst
+
+  .. code-block:: RecentChanges
+
+     Trac,3
+
+  }}}
 }}}
 
-Will result in the below:
+Or a more concise Wiki Macro like syntax is also available, using the `:code-block:` role:
 
-     [[RecentChanges(Trac,3)]]
+||= Wiki Markup ||= Display ||
+{{{#!td
+  {{{
+  {{{
+  #!rst
 
-Or a more concise Wiki Macro like syntax is also available:
-
-{{{
-{{{
-#!rst
-
-:code-block:`RecentChanges:Trac,3`
+  :code-block:`RecentChanges:Trac,3`
+  }}}
+  }}}
 }}}
+{{{#!td
+  {{{
+  #!rst
+
+  :code-block:`RecentChanges:Trac,3`
+  }}}
 }}}
 
 === Bigger RST Example ===
 The example below should be mostly self-explanatory:
+
+||= Wiki Markup ||= Display ||
+{{{#!td
 {{{
 #!html
 <pre class="wiki">{{{
@@ -149,9 +188,8 @@ See also ticket `#42`:trac:.
 .. _webpage: http://docutils.sourceforge.net/rst.html
 }}}</pre>
 }}}
-
-
-Results in:
+}}}
+{{{#!td
 {{{
 #!rst
 FooBar Header
@@ -178,7 +216,7 @@ See also ticket `#42`:trac:.
 
 .. _webpage: http://docutils.sourceforge.net/rst.html
 }}}
-
+}}}
 
 ----
 See also: WikiRestructuredTextLinks, WikiProcessors, WikiFormatting

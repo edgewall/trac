@@ -55,8 +55,7 @@ For each revision log entry, there are 7 columns:
     with this change.
  1. The '''Revision''' number, displayed as `@xyz`.
     This is a link to the TracBrowser, using the displayed revision as the base line.
- 1. The '''Changeset''' number, displayed as `[xyz]`.
-    This is a link to the TracChangeset view.
+ Next to it, you can see a little "wheel" icon [[Image(htdocs:../common/changeset.png)]],  which is clickable and leads to the TracChangeset view for that revision.
  1. The '''Date''' at which the change was made.
     The date is displayed as the time elapsed from the date of the revision. The time
     elapsed is displayed as the number of hours, days, weeks, months, or years.
