@@ -152,6 +152,14 @@ LOG_TEST_CASES = u"""
 <a class="source" href="/log/trunk?revs=1-2">[2:1/trunk]</a> reversed, <a class="source" href="/log/trunk?revs=1-2">r2:1/trunk</a> reversed
 </p>
 ------------------------------
+============================== Big ranges (#9955 regression)
+[1234567890:12345678901]
+------------------------------
+<p>
+<a class="source" href="/log/?revs=1234567890-12345678901">[1234567890:12345678901]</a>
+</p>
+------------------------------
+<a class="source" href="/log/?revs=1234567890-12345678901">[1234567890:12345678901]</a>
 ============================== Escaping Log range TracLinks
 ![1:2], !r1:2, ![12:23], !r12:23
 ------------------------------

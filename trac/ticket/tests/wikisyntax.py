@@ -203,7 +203,7 @@ query:verbose=1
 <a class="query" href="/query?status=new&amp;status=reopened&amp;order=priority">query:status=new|reopened</a>
 </p>
 <p>
-<a class="query" href="/query?milestone=%21&amp;order=priority">query:milestone!=</a>
+<a class="query" href="/query?milestone=!&amp;order=priority">query:milestone!=</a>
 </p>
 <p>
 <a class="query" href="/query?owner=me&amp;milestone=1.0&amp;milestone=2.0&amp;order=priority">query:milestone=1.0|2.0&amp;owner=me</a>

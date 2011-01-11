@@ -700,6 +700,230 @@ class NotificationTestCase(unittest.TestCase):
             else:
                 self.failIf(props[p] != ticket[p])
 
+    def test_props_format_ambiwidth_single(self):
+        self.env.config.set('notification', 'mime_encoding', 'none')
+        self.env.config.set('notification', 'ambiguous_char_width', '')
+        ticket = Ticket(self.env)
+        ticket['summary'] = u'This is a summary'
+        ticket['reporter'] = u'аnonymoиs'
+        ticket['status'] = u'new'
+        ticket['owner'] = u'somеbody'
+        ticket['type'] = u'バグ(dеfеct)'
+        ticket['priority'] = u'メジャー(mаjor)'
+        ticket['milestone'] = u'マイルストーン1'
+        ticket['component'] = u'コンポーネント1'
+        ticket['version'] = u'2.0 аlphа'
+        ticket['resolution'] = u'fixed'
+        ticket['keywords'] = u''
+        ticket.insert()
+        formatted = """\
+  Reporter:  аnonymoиs        |      Owner:  somеbody
+      Type:  バグ(dеfеct)     |     Status:  new
+  Priority:  メジャー(mаjor)  |  Milestone:  マイルストーン1
+ Component:  コンポーネント1  |    Version:  2.0 аlphа
+Resolution:  fixed            |   Keywords:"""
+        self._validate_props_format(formatted, ticket, True)
+
+    def test_props_format_ambiwidth_double(self):
+        self.env.config.set('notification', 'mime_encoding', 'none')
+        self.env.config.set('notification', 'ambiguous_char_width', 'double')
+        ticket = Ticket(self.env)
+        ticket['summary'] = u'This is a summary'
+        ticket['reporter'] = u'аnonymoиs'
+        ticket['status'] = u'new'
+        ticket['owner'] = u'somеbody'
+        ticket['type'] = u'バグ(dеfеct)'
+        ticket['priority'] = u'メジャー(mаjor)'
+        ticket['milestone'] = u'マイルストーン1'
+        ticket['component'] = u'コンポーネント1'
+        ticket['version'] = u'2.0 аlphа'
+        ticket['resolution'] = u'fixed'
+        ticket['keywords'] = u''
+        ticket.insert()
+        formatted = """\
+  Reporter:  аnonymoиs       |      Owner:  somеbody
+      Type:  バグ(dеfеct)    |     Status:  new
+  Priority:  メジャー(mаjor)  |  Milestone:  マイルストーン1
+ Component:  コンポーネント1   |    Version:  2.0 аlphа
+Resolution:  fixed             |   Keywords:"""
+        self._validate_props_format(formatted, ticket, True)
+
+    def test_props_format_obfuscated_email(self):
+        self.env.config.set('notification', 'mime_encoding', 'none')
+        ticket = Ticket(self.env)
+        ticket['summary'] = u'This is a summary'
+        ticket['reporter'] = u'joe@foobar.foo.bar.example.org'
+        ticket['status'] = u'new'
+        ticket['owner'] = u'joe.bar@foobar.foo.bar.example.org'
+        ticket['type'] = u'defect'
+        ticket['priority'] = u'major'
+        ticket['milestone'] = u'milestone1'
+        ticket['component'] = u'component1'
+        ticket['version'] = u'2.0'
+        ticket['resolution'] = u'fixed'
+        ticket['keywords'] = u''
+        ticket.insert()
+        formatted = """\
+  Reporter:  joe@…       |      Owner:  joe.bar@…
+      Type:  defect      |     Status:  new
+  Priority:  major       |  Milestone:  milestone1
+ Component:  component1  |    Version:  2.0
+Resolution:  fixed       |   Keywords:"""
+        self._validate_props_format(formatted, ticket, True)
+
+    def test_props_format_wrap_leftside(self):
+        self.env.config.set('notification', 'mime_encoding', 'none')
+        ticket = Ticket(self.env)
+        ticket['summary'] = u'This is a summary'
+        ticket['reporter'] = u'anonymous'
+        ticket['status'] = u'new'
+        ticket['owner'] = u'somebody'
+        ticket['type'] = u'defect'
+        ticket['priority'] = u'major'
+        ticket['milestone'] = u'milestone1'
+        ticket['component'] = u'Lorem ipsum dolor sit amet, consectetur ' \
+                              u'adipisicing elit, sed do eiusmod tempor ' \
+                              u'incididunt ut labore et dolore magna ' \
+                              u'aliqua. Ut enim ad minim veniam, quis ' \
+                              u'nostrud exercitation ullamco laboris nisi ' \
+                              u'ut aliquip ex ea commodo consequat. Duis ' \
+                              u'aute irure dolor in reprehenderit in ' \
+                              u'voluptate velit esse cillum dolore eu ' \
+                              u'fugiat nulla pariatur. Excepteur sint ' \
+                              u'occaecat cupidatat non proident, sunt in ' \
+                              u'culpa qui officia deserunt mollit anim id ' \
+                              u'est laborum.'
+        ticket['version'] = u'2.0'
+        ticket['resolution'] = u'fixed'
+        ticket['keywords'] = u''
+        ticket.insert()
+        formatted = """\
+  Reporter:  anonymous                           |      Owner:  somebody
+      Type:  defect                              |     Status:  new
+  Priority:  major                               |  Milestone:  milestone1
+ Component:  Lorem ipsum dolor sit amet,         |    Version:  2.0
+  consectetur adipisicing elit, sed do eiusmod   |   Keywords:
+  tempor incididunt ut labore et dolore magna    |
+  aliqua. Ut enim ad minim veniam, quis nostrud  |
+  exercitation ullamco laboris nisi ut aliquip   |
+  ex ea commodo consequat. Duis aute irure       |
+  dolor in reprehenderit in voluptate velit      |
+  esse cillum dolore eu fugiat nulla pariatur.   |
+  Excepteur sint occaecat cupidatat non          |
+  proident, sunt in culpa qui officia deserunt   |
+  mollit anim id est laborum.                    |
+Resolution:  fixed                               |"""
+        self._validate_props_format(formatted, ticket, True)
+
+    def test_props_format_wrap_rightside(self):
+        self.env.config.set('notification', 'mime_encoding', 'none')
+        ticket = Ticket(self.env)
+        ticket['summary'] = u'This is a summary'
+        ticket['reporter'] = u'anonymous'
+        ticket['status'] = u'new'
+        ticket['owner'] = u'somebody'
+        ticket['type'] = u'defect'
+        ticket['priority'] = u'major'
+        ticket['milestone'] = u'Lorem ipsum dolor sit amet, consectetur ' \
+                              u'adipisicing elit, sed do eiusmod tempor ' \
+                              u'incididunt ut labore et dolore magna ' \
+                              u'aliqua. Ut enim ad minim veniam, quis ' \
+                              u'nostrud exercitation ullamco laboris nisi ' \
+                              u'ut aliquip ex ea commodo consequat. Duis ' \
+                              u'aute irure dolor in reprehenderit in ' \
+                              u'voluptate velit esse cillum dolore eu ' \
+                              u'fugiat nulla pariatur. Excepteur sint ' \
+                              u'occaecat cupidatat non proident, sunt in ' \
+                              u'culpa qui officia deserunt mollit anim id ' \
+                              u'est laborum.'
+        ticket['component'] = u'component1'
+        ticket['version'] = u'2.0'
+        ticket['resolution'] = u'fixed'
+        ticket['keywords'] = u''
+        ticket.insert()
+        formatted = """\
+  Reporter:  anonymous   |      Owner:  somebody
+      Type:  defect      |     Status:  new
+  Priority:  major       |  Milestone:  Lorem ipsum dolor sit amet,
+ Component:  component1  |  consectetur adipisicing elit, sed do eiusmod
+Resolution:  fixed       |  tempor incididunt ut labore et dolore magna
+                         |  aliqua. Ut enim ad minim veniam, quis nostrud
+                         |  exercitation ullamco laboris nisi ut aliquip ex
+                         |  ea commodo consequat. Duis aute irure dolor in
+                         |  reprehenderit in voluptate velit esse cillum
+                         |  dolore eu fugiat nulla pariatur. Excepteur sint
+                         |  occaecat cupidatat non proident, sunt in culpa
+                         |  qui officia deserunt mollit anim id est
+                         |  laborum.
+                         |    Version:  2.0
+                         |   Keywords:"""
+        self._validate_props_format(formatted, ticket, True)
+
+    def test_props_format_wrap_bothsides(self):
+        self.env.config.set('notification', 'mime_encoding', 'none')
+        ticket = Ticket(self.env)
+        ticket['summary'] = u'This is a summary'
+        ticket['reporter'] = u'anonymous'
+        ticket['status'] = u'new'
+        ticket['owner'] = u'somebody'
+        ticket['type'] = u'defect'
+        ticket['priority'] = u'major'
+        ticket['milestone'] = u'Lorem ipsum dolor sit amet, consectetur ' \
+                              u'adipisicing elit, sed do eiusmod tempor ' \
+                              u'incididunt ut labore et dolore magna ' \
+                              u'aliqua. Ut enim ad minim veniam, quis ' \
+                              u'nostrud exercitation ullamco laboris nisi ' \
+                              u'ut aliquip ex ea commodo consequat. Duis ' \
+                              u'aute irure dolor in reprehenderit in ' \
+                              u'voluptate velit esse cillum dolore eu ' \
+                              u'fugiat nulla pariatur. Excepteur sint ' \
+                              u'occaecat cupidatat non proident, sunt in ' \
+                              u'culpa qui officia deserunt mollit anim id ' \
+                              u'est laborum.'
+        ticket['component'] = ticket['milestone']
+        ticket['version'] = u'2.0'
+        ticket['resolution'] = u'fixed'
+        ticket['keywords'] = u''
+        ticket.insert()
+        formatted = """\
+  Reporter:  anonymous               |      Owner:  somebody
+      Type:  defect                  |     Status:  new
+  Priority:  major                   |  Milestone:  Lorem ipsum dolor sit
+ Component:  Lorem ipsum dolor sit   |  amet, consectetur adipisicing elit,
+  amet, consectetur adipisicing      |  sed do eiusmod tempor incididunt ut
+  elit, sed do eiusmod tempor        |  labore et dolore magna aliqua. Ut
+  incididunt ut labore et dolore     |  enim ad minim veniam, quis nostrud
+  magna aliqua. Ut enim ad minim     |  exercitation ullamco laboris nisi
+  veniam, quis nostrud exercitation  |  ut aliquip ex ea commodo consequat.
+  ullamco laboris nisi ut aliquip    |  Duis aute irure dolor in
+  ex ea commodo consequat. Duis      |  reprehenderit in voluptate velit
+  aute irure dolor in reprehenderit  |  esse cillum dolore eu fugiat nulla
+  in voluptate velit esse cillum     |  pariatur. Excepteur sint occaecat
+  dolore eu fugiat nulla pariatur.   |  cupidatat non proident, sunt in
+  Excepteur sint occaecat cupidatat  |  culpa qui officia deserunt mollit
+  non proident, sunt in culpa qui    |  anim id est laborum.
+  officia deserunt mollit anim id    |    Version:  2.0
+  est laborum.                       |   Keywords:
+Resolution:  fixed                   |"""
+        self._validate_props_format(formatted, ticket, True)
+
+    def _validate_props_format(self, expected, ticket, newtk):
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=newtk)
+        message = notifysuite.smtpd.get_message()
+        (headers, body) = parse_smtp_message(message)
+        bodylines = body.splitlines()
+        # Extract ticket properties
+        delim_re = re.compile(r'^\-+\+\-+$')
+        while not delim_re.match(bodylines[0]):
+            bodylines.pop(0)
+        lines = []
+        for line in bodylines[1:]:
+            if delim_re.match(line):
+                break
+            lines.append(line)
+        self.assertEqual(expected, '\n'.join(lines))
+
     def test_notification_does_not_alter_ticket_instance(self):
         ticket = Ticket(self.env)
         ticket['summary'] = 'My Summary'

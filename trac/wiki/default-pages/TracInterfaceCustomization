@@ -14,7 +14,7 @@ The logo or icon image should be put in a folder named "htdocs" in your project'
 Now configure the appropriate section of your [wiki:TracIni trac.ini]:
 
 === Logo ===
-Change the `src` setting to `site/` followed by the name of your image file.  The `width` and `height` settings should be modified to match your image's dimensions (the Trac chrome handler uses "`site/`" for files within the project directory `htdocs` and "`common/`" for the common ones).
+Change the `src` setting to `site/` followed by the name of your image file.  The `width` and `height` settings should be modified to match your image's dimensions (the Trac chrome handler uses "`site/`" for files within the project directory `htdocs` and "`common/`" for the common ones). Note that 'site/' is not a placeholder for your project name, it is the actual prefix that should be used (literally). For example, if your project is named 'sandbox', and the image file is 'red_logo.gif' then the 'src' setting would be 'site/red_logo.gif', not 'sandbox/red_logo.gif'.
 
 {{{
 [header_logo]
@@ -218,5 +218,6 @@ However, do not edit templates or site resources inside the Trac egg - installin
 Trac resolves requests for a template by first looking inside the project, then in any inherited templates location, and finally inside the Trac egg.
 
 Trac caches templates in memory by default to improve performance. To apply a template you need to restart the server.
+
 ----
 See also TracGuide, TracIni

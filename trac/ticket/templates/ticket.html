@@ -306,23 +306,25 @@ ${value}</textarea>
                                  checked="${value == option or None}" />
                           ${option}
                         </label>
+                        <input py:when="'time'" type="text" id="field-${field.name}" title="${field.format_hint}"
+                               name="field_${field.name}" value="${field.edit}" />
                         <py:otherwise><!--! Text input fields -->
                           <py:choose>
                             <span py:when="field.cc_entry"><!--! Special case for Cc: field -->
                               <em>${field.cc_entry}</em>
                               <input type="checkbox" id="field-cc" name="cc_update"
-                                title="This checkbox allows you to add or remove yourself from the CC list."
-                                checked="${field.cc_update}" />
+                                     title="This checkbox allows you to add or remove yourself from the CC list."
+                                     checked="${field.cc_update}" />
                             </span>
                             <!--! Cc: when TICKET_EDIT_CC is allowed -->
                             <span py:when="field.name == 'cc'">
-                              <input  type="text" id="field-${field.name}"
-                                title="Space or comma delimited email addresses and usernames are accepted."
-                                name="field_${field.name}" value="${value}" />
+                              <input type="text" id="field-${field.name}"
+                                     title="Space or comma delimited email addresses and usernames are accepted."
+                                     name="field_${field.name}" value="${value}" />
                             </span>
                             <!--! All the other text input fields -->
                             <input py:otherwise="" type="text" id="field-${field.name}"
-                              name="field_${field.name}" value="${value}" />
+                                   name="field_${field.name}" value="${value}" />
                           </py:choose>
                         </py:otherwise>
                       </py:choose>
