@@ -27,7 +27,7 @@ wiki:abc
 <a class="wiki" href="/wiki/TestPage">TestPage</a>
 <a class="wiki" href="/wiki/TestPage">/TestPage</a>
 <a class="wiki" href="/wiki/Space%201%2023">wiki:"Space 1 23"</a>
-<a class="wiki" href="/wiki/C'est%20l'%C3%A9t%C3%A9">wiki:"C'est l'\xe9t\xe9"</a>
+<a class="wiki" href="/wiki/C%27est%20l%27%C3%A9t%C3%A9">wiki:"C'est l'\xe9t\xe9"</a>
 <a class="missing wiki" href="/wiki/MissingPage" rel="nofollow">wiki:MissingPage?</a>
 <a class="missing wiki" href="/wiki/12" rel="nofollow">wiki:12?</a>
 <a class="missing wiki" href="/wiki/abc" rel="nofollow">wiki:abc?</a>

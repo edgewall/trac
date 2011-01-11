@@ -267,12 +267,10 @@ def parse_date(text, tzinfo=None, hint='date'):
     return dt
 
 
-_REL_FUTURE_RE = re.compile(
-    r'(?:in|\+)\s*(\d+\.?\d*)\s*'
-    r'(second|minute|hour|day|week|month|year|[hdwmy])s?$')
-_REL_PAST_RE = re.compile(
-    r'(?:-\s*)?(\d+\.?\d*)\s*'
-    r'(second|minute|hour|day|week|month|year|[hdwmy])s?\s*(?:ago)?$')
+_REL_TIME_RE = re.compile(
+    r'(\d+\.?\d*)\s*'
+    r'(second|minute|hour|day|week|month|year|[hdwmy])s?\s*'
+    r'(?:ago)?$')
 _time_intervals = dict(
     second=lambda v: timedelta(seconds=v),
     minute=lambda v: timedelta(minutes=v),
@@ -287,7 +285,7 @@ _time_intervals = dict(
     m=lambda v: timedelta(days=30 * v),
     y=lambda v: timedelta(days=365 * v),
 )
-_TIME_START_RE = re.compile(r'(this|last|next)\s*'
+_TIME_START_RE = re.compile(r'(this|last)\s*'
                             r'(second|minute|hour|day|week|month|year)$')
 _time_starts = dict(
     second=lambda now: now.replace(microsecond=0),
@@ -299,7 +297,7 @@ _time_starts = dict(
     month=lambda now: now.replace(microsecond=0, second=0, minute=0, hour=0,
                                   day=1),
     year=lambda now: now.replace(microsecond=0, second=0, minute=0, hour=0,
-                                 day=1, month=1),
+                                  day=1, month=1),
 )
 
 def _parse_relative_time(text, tzinfo):
@@ -311,20 +309,13 @@ def _parse_relative_time(text, tzinfo):
     if text == 'yesterday':
         return now.replace(microsecond=0, second=0, minute=0, hour=0) \
                - timedelta(days=1)
-    if text == 'tomorrow':
-        return now.replace(microsecond=0, second=0, minute=0, hour=0) \
-               + timedelta(days=1)
-    match = _REL_FUTURE_RE.match(text)
+    match = _REL_TIME_RE.match(text)
     if match:
-        value, interval = match.groups()
-        return now + _time_intervals[interval](float(value))
-    match = _REL_PAST_RE.match(text)
-    if match:
-        value, interval = match.groups()
+        (value, interval) = match.groups()
         return now - _time_intervals[interval](float(value))
     match = _TIME_START_RE.match(text)
     if match:
-        which, start = match.groups()
+        (which, start) = match.groups()
         dt = _time_starts[start](now)
         if which == 'last':
             if start == 'month':
@@ -334,15 +325,8 @@ def _parse_relative_time(text, tzinfo):
                     dt = dt.replace(year=dt.year - 1, month=12)
             else:
                 dt -= _time_intervals[start](1)
-        elif which == 'next':
-            if start == 'month':
-                if dt.month < 12:
-                    dt = dt.replace(month=dt.month + 1)
-                else:
-                    dt = dt.replace(year=dt.year + 1, month=1)
-            else:
-                dt += _time_intervals[start](1)
         return dt
+    return None
 
 
 # -- timezone utilities

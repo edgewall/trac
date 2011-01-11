@@ -97,9 +97,6 @@ Note that if you were using the `trac-post-commit-hook`, ''you're strongly advis
 ===== Authz permission checking =====
 The authz permission checking has been migrated to a fine-grained permission policy. If you use authz permissions (aka `[trac] authz_file` and `authz_module_name`), you must add `AuthzSourcePolicy` in front of your permission policies in `[trac] permission_policies`. You must also remove `BROWSER_VIEW`, `CHANGESET_VIEW`, `FILE_VIEW` and `LOG_VIEW` from your global permissions (with `trac-admin $ENV permission remove` or the "Permissions" admin panel).
 
-===== Microsecond timestamps =====
-All timestamps in database tables (except the `session` table) have been changed from "seconds since epoch" to "microseconds since epoch" values. This change should be transparent to most users, except for custom reports. If any of your reports use date/time columns in calculations (e.g. to pass them to `datetime()`), you must divide the values retrieved from the database by 1'000'000. Similarly, if a report provides a calculated value to be displayed as a date/time (i.e. with a column named "time", "datetime", "changetime", "date", "created" or "modified"), you must provide a microsecond timestamp, that is, multiply your previous calculation with 1'000'000.
-
 ==== Upgrading from Trac 0.10 to Trac 0.11 ====
 ===== Site Templates and Styles =====
 The templating engine has changed in 0.11 to Genshi, please look at TracInterfaceCustomization for more information.

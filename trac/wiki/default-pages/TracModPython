@@ -37,8 +37,6 @@ You can test your mod_python installation by adding the following to your httpd.
    SetHandler mod_python
    PythonInterpreter main_interpreter
    PythonHandler mod_python.testhandler
-   Order allow,deny
-   Allow from all
 </Location>
 }}}
 
@@ -51,8 +49,6 @@ A simple setup of Trac on mod_python looks like this:
    PythonHandler trac.web.modpython_frontend 
    PythonOption TracEnv /var/trac/myproject
    PythonOption TracUriRoot /projects/myproject
-   Order allow,deny
-   Allow from all
 </Location>
 }}}
 

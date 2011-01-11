@@ -185,7 +185,7 @@ Thing<link:2 and (3)>
 &lt;<a class="odd resolver" href="/thing/1">link:1</a>&gt;
 </p>
 <p>
-Thing&lt;<a class="text resolver" href="/stuff/2%20and%20(3)">link:2 and (3)</a>&gt;
+Thing&lt;<a class="text resolver" href="/stuff/2%20and%20%283%29">link:2 and (3)</a>&gt;
 </p>
 ------------------------------
 ============================== Escaping links resolvers, alternative short form
@@ -472,8 +472,6 @@ svn+ssh://secureserver.org
 [svn+ssh://secureserver.org SVN link]
 rfc-2396.compatible://link
 [rfc-2396.compatible://link RFC 2396]
-rfc-2396+under_score://link
-[rfc-2396+under_score://link underscore]
 unsafe://scheme is not rendered
 ------------------------------
 <p>
@@ -481,8 +479,6 @@ unsafe://scheme is not rendered
 <a class="ext-link" href="svn+ssh://secureserver.org"><span class="icon"> </span>SVN link</a>
 <a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"> </span>rfc-2396.compatible://link</a>
 <a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"> </span>RFC 2396</a>
-<a class="ext-link" href="rfc-2396+under_score://link"><span class="icon"> </span>rfc-2396+under_score://link</a>
-<a class="ext-link" href="rfc-2396+under_score://link"><span class="icon"> </span>underscore</a>
 unsafe://scheme is not rendered
 </p>
 ------------------------------
@@ -1009,10 +1005,10 @@ Hello, [[HelloWorld(...)]]
 [[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
 ------------------------------
 <p>
-<a class="missing wiki" href="/wiki/HelloWorld(hej%20hopp)%20" rel="nofollow">HelloWorld(hej hopp) ?</a> # This shouldnt executed as macro since it contain whitespace between ) and ]
+<a class="missing wiki" href="/wiki/HelloWorld%28hej%20hopp%29%20" rel="nofollow">HelloWorld(hej hopp) ?</a> # This shouldnt executed as macro since it contain whitespace between ) and ]
 </p>
 ------------------------------
-<a class="missing wiki" href="/wiki/HelloWorld(hej%20hopp)%20" rel="nofollow">HelloWorld(hej hopp) ?</a> # This shouldnt executed as macro since it contain whitespace between ) and ]
+<a class="missing wiki" href="/wiki/HelloWorld%28hej%20hopp%29%20" rel="nofollow">HelloWorld(hej hopp) ?</a> # This shouldnt executed as macro since it contain whitespace between ) and ]
 ============================== Another bad macro call
 [[HelloWorld(hej hopp))]] # Extra right brace and still executed
 ------------------------------

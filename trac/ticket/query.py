@@ -34,11 +34,10 @@ from trac.resource import Resource
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Milestone, group_milestones
 from trac.util import Ranges, as_bool
-from trac.util.datefmt import format_date, format_datetime, from_utimestamp, \
-                              parse_date, pretty_timedelta, to_timestamp, \
-                              to_utimestamp, utc
+from trac.util.datefmt import format_datetime, from_utimestamp, parse_date, \
+                              to_timestamp, to_utimestamp, utc
 from trac.util.presentation import Paginator
-from trac.util.text import empty, shorten_line
+from trac.util.text import empty, shorten_line, unicode_unquote
 from trac.util.translation import _, tag_
 from trac.web import arg_list_to_args, parse_arg_list, IRequestHandler
 from trac.web.href import Href
@@ -313,7 +312,10 @@ class Query(object):
             # self.env.log.debug("SQL: " + sql % tuple([repr(a) for a in args]))
             cursor.execute(sql, args)
             columns = get_column_names(cursor)
-            fields = [self.fields.by_name(column, None) for column in columns]
+            fields = []
+            for column in columns:
+                fields += [f for f in self.fields if f['name'] == column] or \
+                          [None]
             results = []
 
             column_indices = range(len(columns))
@@ -328,7 +330,7 @@ class Query(object):
                         if href is not None:
                             result['href'] = href.ticket(val)
                     elif name in self.time_fields:
-                        val = from_utimestamp(long(val)) if val else ''
+                        val = from_utimestamp(val)
                     elif field and field['type'] == 'checkbox':
                         try:
                             val = bool(int(val))
@@ -411,8 +413,9 @@ class Query(object):
         Note: for now, this is an "exploded" query href, but ideally should be
         expressed in TracQuery language.
         """
-        query_string = self.get_href(Href(''))
-        query_string = query_string.split('?', 1)[-1]
+        query_string = unicode_unquote(self.get_href(Href('')))
+        if query_string and '?' in query_string:
+            query_string = query_string.split('?', 1)[1]
         return 'query:?' + query_string.replace('&', '\n&\n')
 
     def get_sql(self, req=None, cached_ids=None, authname=None, tzinfo=None):
@@ -701,10 +704,12 @@ class Query(object):
 
         cols = self.get_columns()
         labels = TicketSystem(self.env).get_ticket_field_labels()
+        wikify = set(f['name'] for f in self.fields 
+                     if f['type'] == 'text' and f.get('format') == 'wiki')
 
         headers = [{
             'name': col, 'label': labels.get(col, _('Ticket')),
-            'field': self.fields.by_name(col, {}),
+            'wikify': col in wikify,
             'href': self.get_href(context.href, order=col,
                                   desc=(col == self.order and not self.desc))
         } for col in cols]
@@ -1051,9 +1056,9 @@ class QueryModule(Component):
                 add_warning(req, error)
 
         context = web_context(req, 'query')
-        owner_field = query.fields.by_name('owner', None)
+        owner_field = [f for f in query.fields if f['name'] == 'owner']
         if owner_field:
-            TicketSystem(self.env).eventually_restrict_owner(owner_field)
+            TicketSystem(self.env).eventually_restrict_owner(owner_field[0])
         data = query.template_data(context, tickets, orig_list, orig_time, req)
 
         req.session['query_href'] = query.get_href(context.href)
@@ -1121,15 +1126,7 @@ class QueryModule(Component):
                         value = Chrome(self.env).format_emails(
                                     context.child(ticket), value)
                     elif col in query.time_fields:
-                        format = query.fields.by_name(col).get('format')
-                        if format == 'age':
-                            value = pretty_timedelta(value) if value else ''
-                        elif format == 'date':
-                            value = format_date(value, tzinfo=req.tz) \
-                                    if value else ''
-                        else:
-                            value = format_datetime(value, tzinfo=req.tz) \
-                                    if value else ''
+                        value = format_datetime(value, tzinfo=req.tz)
                     values.append(unicode(value).encode('utf-8'))
                 writer.writerow(values)
         return (content.getvalue(), '%s;charset=utf-8' % mimetype)

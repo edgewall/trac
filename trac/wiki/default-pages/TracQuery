@@ -12,7 +12,7 @@ When you first go to the query page the default filter will display tickets rele
  * If not logged in but you have specified a name or email address in the preferences then it will display all open tickets where your email (or name if email not defined) is in the CC list.
  * If not logged and no name/email defined in the preferences then all open issues are displayed.
 
-Current filters can be removed by clicking the button to the left with the minus sign on the label.  New filters are added from the pulldown lists at the bottom corners of the filters box ('And' conditions on the left, 'Or' conditions on the right).  Filters with either a text box or a pulldown menu of options can be added multiple times to perform an ''or'' of the criteria.
+Current filters can be removed by clicking the button to the right with the minus sign on the label.  New filters are added from the pulldown lists at the bottom corners of the filters box ('And' conditions on the left, 'Or' conditions on the right).  Filters with either a text box or a pulldown menu of options can be added multiple times to perform an ''or'' of the criteria.
 
 You can use the fields just below the filters box to group the results based on a field, or display the full description for each ticket.
 
@@ -74,7 +74,7 @@ A more compact representation without the ticket summaries is also available:
 This is displayed as:
   [[TicketQuery(version=0.6|0.7&resolution=duplicate, compact)]]
 
-Finally, if you wish to receive only the number of defects that match the query, use the ``count`` parameter.
+Finally if you wish to receive only the number of defects that match the query using the ``count`` parameter.
 
 {{{
 [[TicketQuery(version=0.6|0.7&resolution=duplicate, count)]]
@@ -106,10 +106,10 @@ This is displayed as:
 
 === Query Language ===
 
-`query:` TracLinks and the `[[TicketQuery]]` macro both use a mini “query language” for specifying query filters. Basically, the filters are separated by ampersands (`&`). Each filter then consists of the ticket field name, an operator, and one or more values. More than one value are separated by a pipe (`|`), meaning that the filter matches any of the values. To include a literal `&` or `|` in a value, escape the character with a backslash (`\`).
+`query:` TracLinks and the `[[TicketQuery]]` macro both use a mini “query language” for specifying query filters. Basically, the filters are separated by ampersands (`&`). Each filter then consists of the ticket field name, an operator, and one or more values. More than one value are separated by a pipe (`|`), meaning that the filter matches any of the values. To include a litteral `&` or `|` in a value, escape the character with a backslash (`\`).
 
 The available operators are:
-|| '''`=`''' || the field content exactly matches one of the values ||
+|| '''`=`''' || the field content exactly matches the one of the values ||
 || '''`~=`''' || the field content contains one or more of the values ||
 || '''`^=`''' || the field content starts with one of the values ||
 || '''`$=`''' || the field content ends with one of the values ||

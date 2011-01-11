@@ -28,7 +28,7 @@ trac-admin /path/to/projenv help <command>
 
 === `trac-admin <targetdir> initenv` === #initenv
 
-This subcommand is very important as it's the one used to create a TracEnvironment in the specified `<targetdir>`. That directory must not exist prior to the call.
+This subcommand is very important as it's the one used to create a TracEnvironment in the specified `<targetdir>`. That directory must not exists prior to the call.
 
 [[TracAdminHelp(initenv)]]
 

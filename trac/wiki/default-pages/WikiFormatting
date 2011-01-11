@@ -40,7 +40,7 @@ A few other wiki pages present the advanced features of the Trac wiki markup in 
  }}}
 }}}
 {{{#!td style="padding-left: 2em"
-== Level 2 ==
+== Level 2
 === Level 3 ^([#hn note])^
 }}}
 |-----------------------------------------------------------
@@ -64,7 +64,7 @@ Second paragraph.
 {{{#!td
  {{{
  * bullets list
-   on multiple lines
+   on multiple paragraphs
    1. nested list
      a. different numbering 
         styles
@@ -72,7 +72,7 @@ Second paragraph.
 }}}
 {{{#!td
 * bullets list
-  on multiple lines
+  on multiple paragraphs
   1. nested list
     a. different numbering
        styles
@@ -84,12 +84,12 @@ Second paragraph.
 {{{#!td
  {{{
   term:: definition on
-         multiple lines
+         multiple paragraphs
  }}}
 }}}
 {{{#!td
  term:: definition on
-        multiple lines
+        multiple paragraphs
 }}}
 |-----------------------------------------------------------
 ||= [#PreformattedText Preformatted Text] =||\
@@ -174,15 +174,13 @@ Second paragraph.
 || `see [#point1 (1)]` ||\
 || see [#point1 (1)] ||
 |-----------------------------------------------------------
-{{{#!th rowspan=3
-[#Escaping Escaping Markup]
+{{{#!th rowspan=2
+[#EscapingLinksandWikiPageNames Escaping Markup]
 }}}
 || `!'' doubled quotes` ||\
 || !'' doubled quotes ||
 || `!wiki:WikiFormatting`, `!WikiFormatting` ||\
 || !wiki:WikiFormatting, !WikiFormatting ||
-|| `{{{-}}} curly brackets` ||\
-|| {{{-}}} curly brackets ||
 |-----------------------------------------------------------
 ||= [#Images Images] =|| `[[Image(`''link''`)]]` || [[Image(htdocs:../common/trac_logo_mini.png)]] ||
 |-----------------------------------------------------------
@@ -313,7 +311,6 @@ Finally, the heading might optionally be followed by an explicit id. If not, an 
 {{{#!td style="padding: 1em;"
   {{{
   #!div
-  = Heading =
   == Subheading
   === About ''this'' ===
   === Explicit id === #using-explicit-id-in-heading
@@ -724,7 +721,7 @@ Optionally, a label can be given to the anchor:
 For more complex anchors (e.g. when a custom title is wanted), one can use the Span macro, e.g. `[[span(id=point2, class=wikianchor, title=Point 2, ^(2)^)]]`.
 
 
-== Escaping Links, WikiPageNames and other Markup == #Escaping
+== Escaping Links and WikiPageNames ==
 
 You may avoid making hyperlinks out of TracLinks by preceding an expression with a single "!" (exclamation mark).
 
@@ -734,21 +731,10 @@ You may avoid making hyperlinks out of TracLinks by preceding an expression with
    !NoHyperLink
    !#42 is not a link
   }}}
-  {{{
-Various forms of escaping for list markup:
- `-` escaped minus sign \\
- ``1. escaped number  \\
- {{{*}}} escaped asterisk sign
-  }}}
 }}}
 {{{#!td
  !NoHyperLink
  !#42 is not a link
-
-Various forms of escaping for list markup:
- `-` escaped minus sign \\
- ``1. escaped number  \\
- {{{*}}} escaped asterisk sign
 }}}
 
 == Images ==

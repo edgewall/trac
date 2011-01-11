@@ -5,7 +5,8 @@ Trac is extensible with [trac:PluginList plugins] since version 0.9. The plugin 
 
 == Plugin discovery ==
 
-From the user point of view a Plugin is either standalone .py file or an .egg package. Trac looks for Plugins in a global shared plugins directory (see [TracIni#GlobalConfiguration Global Configuration]) and in `plugins` directory of local TracEnvironment. Components defined in globally installed plugins should be explicitly enabled in the [[TracIni#components-section| [components] ]] section of the trac.ini file.
+From the user point of view a Plugin is either standalone .py file or an .egg package. Trac looks for Plugins in a global shared plugins directory (see [TracIni#GlobalConfiguration Global Configuration]), or in a local TracEnvironment, in its `plugins` directory.
+Except for the later case, the components defined in a plugin should be explicitly enabled in the [[TracIni#components-section| [components] ]] section of the trac.ini file.
 
 == Requirements for Trac eggs  ==
 
@@ -18,7 +19,7 @@ $ python ez_setup.py
 
 If the `ez_setup.py` script fails to install the setuptools release, you can download it from [http://www.python.org/pypi/setuptools PyPI] and install it manually.
 
-Plugins can also consist of a single `.py` file dropped directly into the root of environment's or into shared `plugins` directory.
+Plugins can also consist of a single `.py` file dropped into either the environment or the shared plugins directory.
 
 == Installing a Trac Plugin ==
 

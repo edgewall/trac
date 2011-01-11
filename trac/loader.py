@@ -54,8 +54,10 @@ def load_eggs(entry_point_name):
                               item, ue)
             elif isinstance(e, UnknownExtra):
                 env.log.error('Skipping "%s": (unknown extra "%s")', item, ue)
+            elif isinstance(e, ImportError):
+                env.log.error('Skipping "%s": (can\'t import "%s")', item, ue)
             else:
-                env.log.error('Skipping "%s": %s', item,
+                env.log.error('Skipping "%s": %s)', item,
                               exception_to_unicode(e, traceback=True))
 
         for dist, e in errors.iteritems():

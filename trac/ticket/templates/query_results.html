@@ -75,19 +75,12 @@
                         class="${classes(closed=result.status == 'closed')}">#$result.id</a></td>
                     <td py:otherwise="" class="$name" py:choose="">
                       <a py:when="name == 'summary'" href="$result.href" title="View ticket">$value</a>
-                      <py:when test="isinstance(value, datetime)">
-                        <py:choose test="header.field.format">
-                          <py:when test="'age'">${dateinfo(value)}</py:when>
-                          <py:when test="'date'">${format_date(value, tzinfo=req.tz)}</py:when>
-                          <py:otherwise>${format_datetime(value, tzinfo=req.tz)}</py:otherwise>
-                        </py:choose>
-                      </py:when>
+                      <py:when test="isinstance(value, datetime)">${dateinfo(value)}</py:when>
                       <py:when test="name == 'reporter'">${authorinfo(value)}</py:when>
                       <py:when test="name == 'cc'">${format_emails(ticket_context, value)}</py:when>
                       <py:when test="name == 'owner' and value">${authorinfo(value)}</py:when>
                       <py:when test="name == 'milestone'"><a py:if="value" title="View milestone" href="${href.milestone(value)}">${value}</a></py:when>
-                      <py:when test="header.field.type == 'text'
-                                     and header.field.format == 'wiki'">${wiki_to_oneliner(ticket_context, value)}</py:when>
+                      <py:when test="header.wikify">${wiki_to_oneliner(ticket_context, value)}</py:when>
                       <py:otherwise>$value</py:otherwise>
                     </td>
                   </py:with>

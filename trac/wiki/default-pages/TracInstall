@@ -74,7 +74,7 @@ It is '''very''' important to read carefully the  [trac:MySqlDb] page before cre
 ==== Version Control System ====
 
 ===== Subversion =====
- * [http://subversion.apache.org/ Subversion], 1.5.x or 1.6.x and the '''''corresponding''''' Python bindings. Older versions starting from 1.4.0, etc. should still work. For troubleshooting information, check the [trac:TracSubversion#Troubleshooting TracSubversion] page. Versions prior to 1.4.0 won't probably work since trac uses svn core functionality (e.g. svn_path_canonicalize) that is not implemented in the python swig wrapper in svn <= 1.3.x (although it exists in the svn lib itself).
+ * [http://subversion.apache.org/ Subversion], 1.5.x or 1.6.x and the '''''corresponding''''' Python bindings. Older versions starting from 1.0, like 1.2.4, 1.3.2 or 1.4.2, etc. should still work. For troubleshooting information, check the [trac:TracSubversion#Troubleshooting TracSubversion] page.
 
 There are [http://subversion.apache.org/packages.html pre-compiled SWIG bindings] available for various platforms. (Good luck finding precompiled SWIG bindings for any Windows package at that listing. TracSubversion points you to [http://alagazam.net Algazam], which works for me under Python 2.6.)
 
@@ -131,31 +131,49 @@ With setuptools you can install Trac from the subversion repository;
 
 A few examples:
 
- - first install of the latest stable version Trac 0.12.1, with i18n support:
+ - install Trac 0.12:
    {{{
-   easy_install Babel==0.9.5 Genshi==0.6
-   easy_install Trac
-   }}}
-   ''It's very important to run the two `easy_install` commands separately, otherwise the message catalogs won't be generated.''
-
- - upgrade to the latest stable version of Trac:
-   {{{
-   easy_install -U Trac
+   easy_install Trac==0.12
    }}}
 
- - upgrade to the latest trunk development version (0.13dev):
+ - install latest development version 0.12dev:
    {{{
-   easy_install -U Trac==dev
+   easy_install Trac==dev
    }}}
+   Note that in this case you won't have the possibility to run a localized version of Trac;
+   either use a released version or install from source 
 
-For upgrades, reading the TracUpgrade page is mandatory, of course.
+=== Using `pip`
+'pip' is an easy_install replacement that is very useful to quickly install python packages.
+To get a trac installation up and running in less than 5 minutes:
+
+Assuming you want to have your entire pip installation in /opt/user/trac
+
+ - 
+{{{
+pip -E /opt/user/trac install trac psycopg2 
+}}}
+or
+ - 
+{{{
+pip -E /opt/user/trac install trac mysql-python 
+}}}
+
+Make sure your OS specific headers are available for pip to automatically build PostgreSQL (libpq-dev) or MySQL (libmysqlclient-dev) bindings.
+
+pip will automatically resolve all dependencies (like Genshi, pygments, etc.) and download the latest packages on pypi.python.org and create a self contained installation in /opt/user/trac 
+
+All commands (tracd, trac-admin) are available in /opt/user/trac/bin . This can also be leveraged for mod_python (using PythonHandler directive) and mod_wsgi (using WSGIDaemonProcess directive)
+
+Additionally, you can install several trac plugins (listed [http://pypi.python.org/pypi?:action=search&term=trac&submit=search here]) through pip.
+
+
 
 === From source
-If you want more control, you can download the source in archive form, or do a checkout from one of the official [[Trac:TracRepositories|source code repositories]].
+Of course, using the python-typical setup at the top of the source directory also works.
 
-Be sure to have the prerequisites already installed. You can also obtain the Genshi and Babel source packages from http://www.edgewall.org and follow for them a similar installation procedure, or you can just easy_install those, see [#Usingeasy_install above].
+You can obtain the source for a .tar.gz or .zip file corresponding to a release (e.g. Trac-0.12.tar.gz), or you can get the source directly from the repository (see [trac:SubversionRepository] for details).
 
-Once you've unpacked the Trac archive or performed the checkout, move in the top-level folder and do:
 {{{
 $ python ./setup.py install
 }}}
@@ -194,31 +212,6 @@ Note: If installing on Mac OS X 10.6 running {{{ easy_install http://svn.edgewal
 
 The above will place your `tracd` and `trac-admin` commands into `/usr/local/bin` and will install the Trac libraries and dependencies into `/Library/Python/2.5/site-packages`, which is Apple's preferred location for third-party Python application installations.
 
-=== Using `pip`
-'pip' is an easy_install replacement that is very useful to quickly install python packages.
-To get a trac installation up and running in less than 5 minutes:
-
-Assuming you want to have your entire pip installation in /opt/user/trac:
-
- - 
-{{{
-pip -E /opt/user/trac install trac psycopg2 
-}}}
-or
- - 
-{{{
-pip -E /opt/user/trac install trac mysql-python 
-}}}
-
-Make sure your OS specific headers are available for pip to automatically build PostgreSQL (libpq-dev) or MySQL (libmysqlclient-dev) bindings.
-
-pip will automatically resolve all dependencies (like Genshi, pygments, etc.) and download the latest packages on pypi.python.org and create a self contained installation in /opt/user/trac .
-
-All commands (tracd, trac-admin) are available in /opt/user/trac/bin. This can also be leveraged for mod_python (using !PythonHandler directive) and mod_wsgi (using WSGIDaemonProcess directive)
-
-Additionally, you can install several trac plugins (listed [http://pypi.python.org/pypi?:action=search&term=trac&submit=search here]) through pip.
-
-
 
 == Creating a Project Environment ==
 
@@ -242,11 +235,6 @@ Finally, make sure the user account under which the web front-end runs will have
 {{{
 # chown -R apache.apache /path/to/myproject
 }}}
-
-{{{#!div class=important
-'''Warning:''' Please only use ASCII-characters for account name and project path, unicode characters are not supported there.
-}}}
-
 
 == Running the Standalone Server ==
 

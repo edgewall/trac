@@ -22,7 +22,7 @@ from trac.util.text import unicode_quote, unicode_urlencode
 class Href(object):
     """Implements a callable that constructs URLs with the given base. The
     function can be called with any number of positional and keyword
-    arguments which then are used to assemble the URL.
+    arguments which than are used to assemble the URL.
 
     Positional arguments are appended as individual segments to
     the path of the URL:
@@ -118,24 +118,10 @@ class Href(object):
     '/trac/ticket/540'
     >>> href.browser('/trunk/README.txt', format='txt')
     '/trac/browser/trunk/README.txt?format=txt'
-    
-    The path_safe argument specifies the characters that don't need to be
-    quoted in the path arguments. Likewise, the query_safe argument specifies
-    the characters that don't need to be quoted in the query string:
-
-    >>> href = Href('')
-    >>> href.milestone('<look,here>', param='<here,too>')
-    '/milestone/%3Clook%2Chere%3E?param=%3Chere%2Ctoo%3E'
-
-    >>> href = Href('', path_safe='/<,', query_safe=',>')
-    >>> href.milestone('<look,here>', param='<here,too>')
-    '/milestone/<look,here%3E?param=%3Chere,too>'
     """
 
-    def __init__(self, base, path_safe="/!~*'()", query_safe="!~*'()"):
+    def __init__(self, base):
         self.base = base.rstrip('/')
-        self.path_safe = path_safe
-        self.query_safe = query_safe
         self._derived = {}
 
     def __call__(self, *args, **kw):
@@ -161,8 +147,8 @@ class Href(object):
                 args = args[:-1]
 
         # build the path
-        path = '/'.join(unicode_quote(unicode(arg).strip('/'), self.path_safe)
-                        for arg in args if arg is not None)
+        path = '/'.join([unicode_quote(unicode(arg).strip('/')) for arg in args
+                         if arg is not None])
         if path:
             href += '/' + path
         elif not href:
@@ -171,8 +157,9 @@ class Href(object):
         # assemble the query string
         for k, v in kw.items():
             add_param(k.endswith('_') and k[:-1] or k, v)
+
         if params:
-            href += '?' + unicode_urlencode(params, self.query_safe)
+            href += '?' + unicode_urlencode(params)
 
         return href
 

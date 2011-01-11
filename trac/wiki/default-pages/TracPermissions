@@ -18,7 +18,7 @@ To access this tab, a user must have `TRAC_ADMIN privileges`. This can be perfor
   $ trac-admin /path/to/projenv permission add bob TRAC_ADMIN
 }}}
 
-Then, the user `bob` will be able to see the Admin tab, and can then access the permissions menu. This menu will allow you to perform all the following actions, but from the browser without requiring root access to the server (just the correct permissions for your user account).   '''Use at least one lowercase character in user names, as all-uppercase names are reserved for permissions.'''
+Then, the user `bob` will be able to see the Admin tab, and can then access the permissions menu. This menu will allow you to perform all the following actions, but from the browser without requiring root access to the server (just the correct permissions for your user account).
 
  1. [[Image(htdocs:../common/guide/admin.png)]]
  1. [[Image(htdocs:../common/guide/admin-permissions.png)]]
@@ -87,16 +87,13 @@ Attention: the "view tickets" button appears with the `REPORT_VIEW` permission.
 || `PERMISSION_REVOKE` || remove/revoke a permission ||
 || `PERMISSION_ADMIN` || All `PERMISSION_*` permissions ||
 
+
 === Others ===
 
 || `TIMELINE_VIEW` || View the [wiki:TracTimeline timeline] page ||
 || `SEARCH_VIEW` || View and execute [wiki:TracSearch search] queries ||
 || `CONFIG_VIEW` || Enables additional pages on ''About Trac'' that show the current configuration or the list of installed plugins ||
 || `EMAIL_VIEW` || Shows email addresses even if [trac:wiki:0.11/TracIni trac show_email_addresses configuration option is false] ||
-
-== Creating New Privileges ==
-
-To create custom permissions, for example to be used in a custom workflow, enable the optional `tracopt.perm.config_perm_provider.ExtraPermissionsProvider` component in the "Plugins" admin panel, and add the desired permissions to the `[extra-permissions]` section in your [wiki:TracIni#extra-permissions-section trac.ini]. For more information, please refer to the documentation of the component in the admin panel.
 
 == Granting Privileges ==
 

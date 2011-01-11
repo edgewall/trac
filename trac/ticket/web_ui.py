@@ -37,9 +37,8 @@ from trac.ticket.model import Milestone, Ticket, group_milestones
 from trac.ticket.notification import TicketNotifyEmail
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import as_bool, get_reporter_id
-from trac.util.datefmt import format_date, format_datetime, from_utimestamp, \
-                              get_date_format_hint, get_datetime_format_hint, \
-                              pretty_timedelta, parse_date, to_utimestamp, utc
+from trac.util.datefmt import format_datetime, from_utimestamp, \
+                              to_utimestamp, utc
 from trac.util.text import exception_to_unicode, obfuscate_email_address, \
                            shorten_line, to_unicode
 from trac.util.presentation import separated
@@ -690,10 +689,6 @@ class TicketModule(Component):
         for each in Ticket.protected_fields:
             fields.pop(each, None)
             fields.pop('checkbox_' + each, None)    # See Ticket.populate()
-        for field, value in fields.iteritems():
-            if field in ticket.time_fields:
-                fields[field] = parse_date(value, req.tz, 'datetime') \
-                                if value else None
         ticket.populate(fields)
         # special case for updating the Cc: field
         if 'cc_update' in req.args:
@@ -1048,8 +1043,7 @@ class TicketModule(Component):
             if name in ('cc', 'reporter'):
                 value = Chrome(self.env).format_emails(context, value, ' ')
             elif name in ticket.time_fields:
-                format = ticket.fields.by_name(name).get('format')
-                value = self._render_time_field(req, value, format)
+                value = format_datetime(value, tzinfo=req.tz)
             cols.append(value.encode('utf-8'))
         writer.writerow(cols)
         return (content.getvalue(), '%s;charset=utf-8' % mimetype)
@@ -1188,8 +1182,6 @@ class TicketModule(Component):
         except ValueError:
             # Shouldn't happen in "normal" circumstances, hence not a warning
             raise InvalidTicket(_("Invalid comment threading identifier"))
-
-        # FIXME: Validate time field content
 
         # Custom validation rules
         for manipulator in self.ticket_manipulators:
@@ -1362,7 +1354,7 @@ class TicketModule(Component):
             type_ = field['type']
  
             # enable a link to custom query for all choice fields
-            if type_ not in ['text', 'textarea', 'time']:
+            if type_ not in ['text', 'textarea']:
                 field['rendered'] = self._query_link(req, name, ticket[name])
 
             # per field settings
@@ -1437,17 +1429,7 @@ class TicketModule(Component):
                     field['rendered'] = \
                         format_to_html(self.env, context, ticket[name],
                                 escape_newlines=self.must_preserve_newlines)
-            elif type_ == 'time':
-                value = ticket[name]
-                format = field.get('format', 'datetime')
-                field['rendered'] = self._render_time_field(req, value, format,
-                                                            relative=True)
-                field['edit'] = self._render_time_field(req, value, format)
-                if format == 'date':
-                    field['format_hint'] = get_date_format_hint()
-                else:
-                    field['format_hint'] = get_datetime_format_hint()
-
+            
             # ensure sane defaults
             field.setdefault('optional', False)
             field.setdefault('options', [])
@@ -1459,7 +1441,7 @@ class TicketModule(Component):
             fields.remove(owner_field)
             fields.append(owner_field)
         return fields
-
+        
     def _insert_ticket_data(self, req, ticket, data, author_id, field_changes):
         """Insert ticket data into the template `data`"""
         replyto = req.args.get('replyto')
@@ -1612,16 +1594,16 @@ class TicketModule(Component):
                                                   resource_new)
             if rendered:
                 changes['rendered'] = rendered
-            elif ticket.fields.by_name(field, {}).get('type') == 'time':
-                format = ticket.fields.by_name(field).get('format')
-                changes['old'] = self._render_time_field(req, old, format)
-                changes['new'] = self._render_time_field(req, new, format)
 
     def _render_property_diff(self, req, ticket, field, old, new, 
                               resource_new=None):
         rendered = None
         # per type special rendering of diffs
-        type_ = ticket.fields.by_name(field, {}).get('type')
+        type_ = None
+        for f in ticket.fields:
+            if f['name'] == field:
+                type_ = f['type']
+                break
         if type_ == 'checkbox':
             rendered = new == '1' and _("set") or _("unset")
         elif type_ == 'textarea':
@@ -1671,15 +1653,6 @@ class TicketModule(Component):
                 rendered = tag_("changed from %(old)s to %(new)s",
                                 old=tag.em(old), new=tag.em(new))
         return rendered
-
-    def _render_time_field(self, req, value, format, relative=False):
-        format = format or 'datetime'
-        if format == 'age' and relative:
-            return pretty_timedelta(value) if value else ''
-        elif format == 'date':
-            return format_date(value, tzinfo=req.tz) if value else ''
-        else:
-            return format_datetime(value, tzinfo=req.tz) if value else ''
 
     def grouped_changelog_entries(self, ticket, db=None, when=None):
         """Iterate on changelog entries, consolidating related changes

@@ -94,9 +94,9 @@ def unicode_quote(value, safe='/'):
     """A unicode aware version of urllib.quote"""
     return quote(value.encode('utf-8'), safe)
 
-def unicode_quote_plus(value, safe=''):
-    """A unicode aware version of urllib.quote_plus"""
-    return quote_plus(value.encode('utf-8'), safe)
+def unicode_quote_plus(value):
+    """A unicode aware version of urllib.quote"""
+    return quote_plus(value.encode('utf-8'))
 
 def unicode_unquote(value):
     """A unicode aware version of urllib.unquote.
@@ -105,7 +105,7 @@ def unicode_unquote(value):
     """
     return unquote(value).decode('utf-8')
 
-def unicode_urlencode(params, safe=''):
+def unicode_urlencode(params):
     """A unicode aware version of urllib.urlencode.
     
     Values set to `empty` are converted to the key alone, without the
@@ -115,13 +115,13 @@ def unicode_urlencode(params, safe=''):
         params = params.iteritems()
     l = []
     for k, v in params:
-        k = quote_plus(str(k), safe)
+        k = quote_plus(str(k))
         if v is empty:
             l.append(k)
         elif isinstance(v, unicode):
-            l.append(k + '=' + quote_plus(v.encode('utf-8'), safe))
+            l.append(k + '=' + quote_plus(v.encode('utf-8')))
         else:
-            l.append(k + '=' + quote_plus(str(v), safe))
+            l.append(k + '=' + quote_plus(str(v)))
     return '&'.join(l)
 
 def to_utf8(text, charset='iso-8859-15'):

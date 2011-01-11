@@ -94,13 +94,6 @@ If the port was not reachable, the interpreter command would be launched. Note t
 After doing this, we will just have to create a new rule managed by the SCGI handler to access Trac. It can be created in a new virtual server, trac.example.net for instance, and will only need two rules. The '''default''' one will use the SCGI handler associated to the previously created information source.
 The second rule will be there to serve the few static files needed to correctly display the Trac interface. Create it as ''Directory rule'' for ''/chrome/common'' and just set it to the ''Static files'' handler and with a ''Document root'' that points to the appropriate files: ''/usr/share/trac/htdocs/''
 
-Note:\\
-If the tracd process fails to start up, and cherokee displays a 503 error page, you might be missing the [http://trac.saddi.com/flup python-flup] package.\\
-Python-flup is a dependency which provides trac with SCGI capability. You can install it on debian based systems with:
-{{{
-sudo apt-get install python-flup
-}}}
-
 == Simple Lighttpd Configuration ==
 
 The FastCGI front-end was developed primarily for use with alternative webservers, such as [http://www.lighttpd.net/ lighttpd].
