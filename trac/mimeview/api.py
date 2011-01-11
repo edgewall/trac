@@ -573,7 +573,7 @@ class Mimeview(Component):
     annotators = ExtensionPoint(IHTMLPreviewAnnotator)
     converters = ExtensionPoint(IContentConverter)
 
-    default_charset = Option('trac', 'default_charset', 'iso-8859-15',
+    default_charset = Option('trac', 'default_charset', 'utf-8',
         """Charset to be used when in doubt.""")
 
     tab_width = IntOption('mimeviewer', 'tab_width', 8,
