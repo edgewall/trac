@@ -170,7 +170,6 @@ table.chglist { margin-top: 0 }
   padding: 0 0 0 5px; 
   margin: 0 5px 0 0; 
 }
-
 .chglist td.summary, .chglist td.log { 
  width: 100%; 
  font-size: 85%; 
@@ -214,3 +213,22 @@ table.chglist { margin-top: 0 }
 #preview .code-block { border-top: 1px solid #999; margin: 0 }
 #preview .image-file { overflow: hidden }
 #preview .image-file img { max-width: 100% }
+
+/* Branch and tag labels */
+.chglist td.summary .branch, .chglist td.summary .tag,
+.browser .trac-tags .branch, .browser .trac-tags .tag {
+ color: #777;
+ font-size: 80%;
+ background: #f6f6f6;
+ border: 1px solid #ddd;
+ margin: 0 0 0 .5em;
+ padding: 0 .2em;
+}
+.chglist td.summary .head, .browser .trac-tags .head {
+ background: #d0ffd0;
+ border: 1px solid #9d9;
+}
+.chglist td.summary .tag, .browser .trac-tags .tag {
+ background: #ffa;
+ border: 1px solid #fe0;
+}

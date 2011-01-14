@@ -181,6 +181,10 @@
                         ${wiki_to_oneliner(chgset_context, change.message, shorten=True)}
                       </py:when>
                       <py:otherwise>${shorten_line(change.message)}</py:otherwise>
+                      <span py:for="branch, head in change.get_branches()" py:if="branch not in ('default', 'master')"
+                            class="branch${' head' if head else ''}"
+                            title="${_('Branch head') if head else _('Branch')}">${branch}</span>
+                      <span py:for="tag in change.get_tags()" class="tag" title="Tag">${tag}</span>
                     </td>
                   </py:when>
                   <td colspan="5" py:otherwise="" />
