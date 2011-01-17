@@ -90,6 +90,7 @@ class TracEnvironMiddleware(object):
 
 
 class TracHTTPServer(ThreadingMixIn, WSGIServer):
+    daemon_threads = True
 
     def __init__(self, server_address, application, env_parent_dir, env_paths,
                  use_http_11=False):
