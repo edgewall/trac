@@ -1315,8 +1315,8 @@ msgstr "A cél fájl nem lett létrehozva"
 #, python-format
 msgid "Unable to get database connection within %(time)d seconds."
 msgstr ""
-"Nem sikerült az adatbázis kapcsolatot felépíteni %(time)d másodpercen \n"
-"belül"
+"Nem sikerült az adatbázis kapcsolatot felépíteni %(time)d másodpercen "
+"belül."
 
 #: trac/db/postgres_backend.py:81
 msgid "Cannot load Python bindings for PostgreSQL"
@@ -5403,7 +5403,7 @@ msgstr ""
 #, python-format
 msgid "Session '%(id)s' already exists. Please choose a different session ID."
 msgstr ""
-"A munkamenet azonosító '%(id)s' már létezik. Kérem válasszon egy \n"
+"A munkamenet azonosító '%(id)s' már létezik. Kérem válasszon egy "
 "másik munkamenet azonosítót."
 
 #: trac/web/session.py:204
