@@ -246,6 +246,10 @@ class Cookie(SimpleCookie):
     _strict_set = BaseCookie._BaseCookie__set
 
     def _loose_set(self, key, real_value, coded_value):
+        # If a key appears multiple times, the first occurrence has the
+        # narrowest scope, keep that
+        if key in self:
+            return
         try:
             self._strict_set(key, real_value, coded_value)
         except CookieError:

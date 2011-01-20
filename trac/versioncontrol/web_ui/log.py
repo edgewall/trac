@@ -132,12 +132,13 @@ class LogModule(Component):
                 ranges = list(revranges.pairs)
                 ranges.reverse()
                 for (a, b) in ranges:
-                    while b >= a:
-                        rev = repos.normalize_rev(b)
-                        node = get_existing_node(req, repos, prevpath, rev)
+                    a = repos.normalize_rev(a)
+                    b = repos.normalize_rev(b)
+                    while not repos.rev_older_than(b, a):
+                        node = get_existing_node(req, repos, prevpath, b)
                         node_history = list(node.get_history(2))
                         p, rev, chg = node_history[0]
-                        if rev < a:
+                        if repos.rev_older_than(rev, a):
                             break # simply skip, no separator
                         if 'CHANGESET_VIEW' in req.perm(cset_resource(id=rev)):
                             if expected_next_item:
@@ -147,7 +148,7 @@ class LogModule(Component):
                                     yield (np, nrev, None)
                             yield node_history[0]
                         prevpath = node_history[-1][0] # follow copy
-                        b = rev - 1
+                        b = repos.previous_rev(rev)
                         if len(node_history) > 1:
                             expected_next_item = node_history[-1]
                         else:
