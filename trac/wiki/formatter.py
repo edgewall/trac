@@ -586,20 +586,14 @@ class Formatter(object):
                 resource = get_relative_resource(self.resource, path)
                 path = get_resource_url(self.env, resource, self.href)
                 if resource.id:
-                    idx = path.find('?')
-                    if idx >= 0:
-                        if query:
-                            query = path[idx:] + '&' + query.lstrip('?')
-                        else:
-                            query = path[idx:]
-                    target = unicode(resource.id) + query + fragment
+                    target = concat_path_query_fragment(unicode(resource.id),
+                                                        query, fragment)
                     if resource.realm == 'wiki':
                         target = '/' + target   # Avoid wiki page scoping
                     return self._make_link(resource.realm, target, match,
                                            label, fullmatch)
-                if '?' in path and query:
-                    query = '&' + query.lstrip('?')
-            return tag.a(label, href=path + query + fragment)
+            return tag.a(label, 
+                         href=concat_path_query_fragment(path, query, fragment))
         else:
             return self._make_link(ns or 'wiki', target or '', match, label,
                                    fullmatch)
