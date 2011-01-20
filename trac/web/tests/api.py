@@ -116,7 +116,8 @@ class RequestTestCase(unittest.TestCase):
     def test_multiple_cookies(self):
         environ = self._make_environ(HTTP_COOKIE='key=value1; key=value2;')
         req = Request(environ, None)
-        self.assertEqual('Set-Cookie: key=value1', str(req.incookie))
+        self.assertEqual('Set-Cookie: key=value1',
+                         str(req.incookie).rstrip(';'))
         
     def test_read(self):
         environ = self._make_environ(**{'wsgi.input': StringIO('test input')})
