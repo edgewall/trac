@@ -41,7 +41,8 @@ from trac.wiki.parser import WikiParser
 
 __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline',
            'Formatter', 'format_to', 'format_to_html', 'format_to_oneliner',
-           'extract_link']
+           'extract_link', 'split_url_into_path_query_fragment',
+           'concat_path_query_fragment']
 
 
 def system_message(msg, text=None):
@@ -70,6 +71,31 @@ def split_url_into_path_query_fragment(target):
         target, query = target[:idx], target[idx:]
     return (target, query, fragment)
 
+def concat_path_query_fragment(path, query, fragment=None):
+    """Assemble `path`, `query` and `fragment` into a proper URL.
+
+    Can be used to re-assemble an URL decomposed using
+    `split_url_into_path_query_fragment` after modification.
+
+    >>> concat_path_query_fragment('/wiki/page', '?version=1')
+    '/wiki/page?version=1'
+    >>> concat_path_query_fragment('/wiki/page#a', '?version=1', '#b')
+    '/wiki/page?version=1#b'
+    >>> concat_path_query_fragment('/wiki/page?version=1#a', '?format=txt')
+    '/wiki/page?version=1&format=txt#a'
+    >>> concat_path_query_fragment('/wiki/page?version=1', '&format=txt')
+    '/wiki/page?version=1&format=txt'
+    >>> concat_path_query_fragment('/wiki/page?version=1', 'format=txt')
+    '/wiki/page?version=1&format=txt'
+    >>> concat_path_query_fragment('/wiki/page?version=1#a', '?format=txt', '#')
+    '/wiki/page?version=1&format=txt'
+    """
+    p, q, f = split_url_into_path_query_fragment(path)
+    if query:
+        q += ('&' if q else '?') + query.lstrip('?&')
+    if fragment:
+        f = fragment
+    return p + q + ('' if f == '#' else f)
 
 def _markup_to_unicode(markup):
     stream = None

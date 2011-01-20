@@ -37,6 +37,8 @@ from trac.web.chrome import (Chrome, INavigationContributor, ITemplateProvider,
                              add_link, add_stylesheet, auth_link, prevnext_nav,
                              web_context)
 from trac.wiki.api import IWikiSyntaxProvider
+from trac.wiki.formatter import concat_path_query_fragment, \
+                                split_url_into_path_query_fragment
 
 
 class TimelineModule(Component):
@@ -72,7 +74,7 @@ class TimelineModule(Component):
     def get_navigation_items(self, req):
         if 'TIMELINE_VIEW' in req.perm:
             yield ('mainnav', 'timeline',
-                   tag.a(_('Timeline'), href=req.href.timeline(), accesskey=2))
+                   tag.a(_("Timeline"), href=req.href.timeline(), accesskey=2))
 
     # IPermissionRequestor methods
 
@@ -278,8 +280,9 @@ class TimelineModule(Component):
 
     def get_link_resolvers(self):
         def link_resolver(formatter, ns, target, label):
+            path, query, fragment = split_url_into_path_query_fragment(target)
             precision = None
-            time = target.split("T", 1)
+            time = path.split("T", 1)
             if len(time) > 1:
                 time = time[1].split("Z")[0]
                 if len(time) >= 6:
@@ -290,8 +293,8 @@ class TimelineModule(Component):
                     precision = 'hours'
             try:
                 return self.get_timeline_link(formatter.req,
-                                              parse_date(target, utc),
-                                              label, precision)
+                                              parse_date(path, utc),
+                                              label, precision, query, fragment)
             except TracError, e:
                 return tag.a(label, title=to_unicode(e.message),
                              class_='timeline missing')
@@ -299,15 +302,16 @@ class TimelineModule(Component):
 
     # Public methods
 
-    def get_timeline_link(self, req, date, label=None, precision='hours'):
+    def get_timeline_link(self, req, date, label=None, precision='hours',
+                          query=None, fragment=None):
         iso_date = display_date = format_datetime(date, 'iso8601', req.tz)
         fmt = req.session.get('datefmt')
         if fmt and fmt != 'iso8601':
             display_date = format_datetime(date, fmt, req.tz)
+        href = req.href.timeline(from_=iso_date, precision=precision)
         return tag.a(label or iso_date, class_='timeline',
                      title=_("%(date)s in Timeline", date=display_date),
-                     href=req.href.timeline(from_=iso_date,
-                                            precision=precision))
+                     href=concat_path_query_fragment(href, query, fragment))
 
     # Internal methods
 
