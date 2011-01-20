@@ -75,7 +75,7 @@ class TitleIndexMacro(WikiMacroBase):
     Accepts a prefix string as parameter: if provided, only pages with names
     that start with the prefix are included in the resulting list. If this
     parameter is omitted, all pages are listed.
-    If the prefix is specified, a second argument of value 'hideprefix'
+    If the prefix is specified, a second argument of value `hideprefix`
     can be given as well, in order to remove that prefix from the output.
 
     Alternate `format` and `depth` named parameters can be specified:
@@ -91,10 +91,10 @@ class TitleIndexMacro(WikiMacroBase):
        children pages will be shown, etc. If not set, or set to -1,
        all pages in the hierarchy will be shown.
      - `include=page1:page*2`: include only pages that match an item in the
-        colon-separated list of pages. If the list is empty, or if no `include`
-        argument is given, include all pages.
+       colon-separated list of pages. If the list is empty, or if no `include`
+       argument is given, include all pages.
      - `exclude=page1:page*2`: exclude pages that match an item in the colon-
-        separated list of pages.
+       separated list of pages.
     
     The `include` and `exclude` lists accept shell-style patterns.
     """
