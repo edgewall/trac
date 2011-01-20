@@ -184,14 +184,13 @@ class WikiAdmin(Component):
             return get_dir_list(args[-1])
     
     def _do_list(self):
-        print_table([(title, int(edits), 
-                      format_datetime(from_utimestamp(r[2]),
-                                      console_datetime_format))
-                     for title, edits in self.env.db_query("""
-                        SELECT name, max(version), max(time)
-                        FROM wiki GROUP BY name ORDER BY name""")
-                     ],
-                     [_("Title"), _("Edits"), _("Modified")])
+        print_table(
+            [(title, int(edits), format_datetime(from_utimestamp(modified),
+                                                 console_datetime_format))
+             for title, edits, modified in self.env.db_query("""
+                    SELECT name, max(version), max(time)
+                    FROM wiki GROUP BY name ORDER BY name""")
+             ], [_("Title"), _("Edits"), _("Modified")])
     
     def _do_rename(self, name, new_name):
         if new_name == name:
