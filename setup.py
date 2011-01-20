@@ -40,11 +40,18 @@ try:
         'tracopt': extractors,
     }
 
-    from trac.util.dist import get_l10n_js_cmdclass
+    from trac.dist import get_l10n_js_cmdclass
     extra['cmdclass'] = get_l10n_js_cmdclass()
 
-except ImportError, e:
+except ImportError:
     pass
+
+try:
+    import genshi
+except ImportError:
+    print "Genshi is needed by Trac setup, pre-installing"
+    # give some context to the warnings we might get when installing Genshi
+
 
 setup(
     name = 'Trac',
@@ -85,6 +92,9 @@ facilities.
     test_suite = 'trac.test.suite',
     zip_safe = True,
 
+    setup_requires = [
+        'Genshi>=0.6',
+    ],
     install_requires = [
         'setuptools>=0.6b1',
         'Genshi>=0.6',
