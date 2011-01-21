@@ -49,8 +49,7 @@ form#addplug { width: 35% }
  padding: 2px .5em;
  text-align: left;
 }
-.plugin > h3 { margin: .5em 0; padding-left: 16px; color: #bb0000; }
-.plugin > h3 a { margin-left: -16px; }
+.plugin > .foldable { margin: .5em 0; color: #bb0000; }
 .plugin .buttons { margin-top: 0; text-align: right; }
 .plugin .uninstall { margin-top: -2.6em; padding: 0; }
 .plugin .summary, .plugin .info { padding-left: 16px; color: #999; font-size: 80%; }
@@ -60,16 +59,16 @@ form#addplug { width: 35% }
 .plugin .info dd { padding: 0; margin: 0; }
 .plugin .listing { width: 100%; }
 .plugin .listing td { background: #fff; }
-.plugin .listing .foldable :link,
-.plugin .listing .foldable :visited { margin-left: -16px; }
 .trac-heading { margin: 0; }
 .trac-name { font-family: monospace; }
 .trac-toggler { color: #000; font-weight: normal; }
 .trac-toggler :link, .trac-toggler :visited,
 .trac-toggler :link:hover, .trac-toggler :visited:hover { border: none; padding: 0; }
 .trac-module .trac-heading { padding-left: 16px; color: #888; }
+.trac-module .trac-heading.foldable { text-indent: -16px }
 .trac-module > div { margin-left: 1em; }
-.trac-component .trac-heading { margin-left: 2em; padding-left: 16px; }
+.trac-component .trac-heading { margin-left: 2em; padding-left: 16px }
+.trac-component .trac-heading.foldable { text-indent: -16px }
 .trac-component > div { margin-left: 3em; }
 .trac-summary { color: #888; }
 table.trac-pluglist td { padding-left: 1em; }
