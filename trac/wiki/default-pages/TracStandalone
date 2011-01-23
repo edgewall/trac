@@ -85,16 +85,13 @@ Use [http://trac-hacks.org/wiki/WindowsServiceScript WindowsServiceScript], avai
 
 == Using Authentication ==
 
-Tracd provides support for both Basic and Digest authentication. The default is to use Digest; to use Basic authentication, replace `--auth` with `--basic-auth` in the examples below. (You must still specify a dialogic "realm", which can be an empty string by trailing the BASICAUTH with a comma.)
-
+Tracd provides support for both Basic and Digest authentication. Digest is considered more secure. The examples below use Digest; to use Basic authentication, replace `--auth` with `--basic-auth` in the command line.
 
 The general format for using authentication is:
 {{{
  $ tracd -p port --auth="base_project_dir,password_file_path,realm" project_path
 }}}
-
 where:
-
  * '''base_project_dir''': the base directory of the project specified as follows:
    * when serving multiple projects: ''relative'' to the `project_path`
    * when serving only a single project (`-s`): the name of the project directory
@@ -102,7 +99,8 @@ where:
  * '''password_file_path''': path to the password file
  * '''realm''': the realm name (can be anything)
  * '''project_path''': path of the project
- * **`--auth`** in the above means use Digest authentication, replace `--auth` with `--basic-auth` if you want to use Basic auth
+
+ * **`--auth`** in the above means use Digest authentication, replace `--auth` with `--basic-auth` if you want to use Basic auth.  Although Basic authentication does not require a "realm", the command parser does, so the second comma is required, followed directly by the closing quote for an empty realm name.
 
 Examples:
 
@@ -126,11 +124,10 @@ Another way to share the password file is to specify "*" for the project name:
    /path/to/project1 /path/to/project2
 }}}
 
-=== Using a htpasswd password file ===
+=== Basic Authorization: Using a htpasswd password file ===
 This section describes how to use `tracd` with Apache .htpasswd files.
 
 To create a .htpasswd file use Apache's `htpasswd` command (see [#GeneratingPasswordsWithoutApache below] for a method to create these files without using Apache):
-
 {{{
  $ sudo htpasswd -c /path/to/env/.htpasswd username
 }}}
@@ -140,20 +137,17 @@ then for additional users:
 }}}
 
 Then to start `tracd` run something like this:
-
 {{{
  $ tracd -p 8080 --basic-auth="projectdirname,/fullpath/environmentname/.htpasswd,realmname" /fullpath/environmentname
 }}}
 
 For example:
-
 {{{
  $ tracd -p 8080 --basic-auth="testenv,/srv/tracenv/testenv/.htpasswd,My Test Env" /srv/tracenv/testenv
 }}}
-
 ''Note:'' You might need to pass "-m" as a parameter to htpasswd on some platforms (OpenBSD).
 
-=== Using a htdigest password file ===
+=== Digest authentication: Using a htdigest password file ===
 
 If you have Apache available, you can use the htdigest command to generate the password file. Type 'htdigest' to get some usage instructions, or read [http://httpd.apache.org/docs/2.0/programs/htdigest.html this page] from the Apache manual to get precise instructions.  You'll be prompted for a password to enter for each user that you create.  For the name of the password file, you can use whatever you like, but if you use something like `users.htdigest` it will remind you what the file contains. As a suggestion, put it in your <projectname>/conf folder along with the [TracIni trac.ini] file.
 
@@ -161,7 +155,9 @@ Note that you can start tracd without the --auth argument, but if you click on t
 
 === Generating Passwords Without Apache ===
 
-If you don't have Apache available, you can use this simple Python script to generate your passwords:
+Basic Authorization can be accomplished via this [http://www.4webhelp.net/us/password.php online HTTP Password generator].  Copy the generated password-hash line to the .htpasswd file on your system.
+
+You can use this simple Python script to generate a '''digest''' password file:
 
 {{{
 #!python
@@ -195,17 +191,15 @@ kd = lambda x: md5(':'.join(x)).hexdigest()
 print ':'.join((options.username, realm, kd([options.username, realm, options.password])))
 }}}
 
-Note: If you use the above script you must use the --auth option to tracd, not --basic-auth, and you must set the realm in the --auth value to 'trac' (without the quotes). Example usage (assuming you saved the script as trac-digest.py):
+Note: If you use the above script you must set the realm in the `--auth` argument to '''`trac`'''. Example usage (assuming you saved the script as trac-digest.py):
 
 {{{
  $ python trac-digest.py -u username -p password >> c:\digest.txt
  $ tracd --port 8000 --auth=proj_name,c:\digest.txt,trac c:\path\to\proj_name
 }}}
 
-
-Note: If you would like to use --basic-auth you need to use htpasswd tool from apache server to generate .htpasswd file. The remaining part is similar but make sure to use empty realm (i.e. coma after path). Make sure to use -m option for it.  If you do not have Apache, [trac:source:/tags/trac-0.11/contrib/htpasswd.py htpasswd.py] may help.  (Note that it requires a `crypt` or `fcrypt` module; see the source comments for details.)
-
-It is possible to use md5sum utility to generate digest-password file using such method:
+==== Using `md5sum`
+It is possible to use `md5sum` utility to generate digest-password file:
 {{{
  $ printf "${user}:trac:${password}" | md5sum - >>user.htdigest
 }}}

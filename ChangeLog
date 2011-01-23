@@ -1,5 +1,18 @@
-Trac 0.12.2 (? ?, 2010)
+Trac 0.12.2 (January ?, 2011)
 http://svn.edgewall.org/repos/trac/tags/trac-0.12.2
+
+This list contains only a few highlights:
+ - install: improved robustness of Trac installation if Babel is
+   installed after the fact (#9439, #9595, #9961)
+ - notifications: support for Asian character width (#4717)
+ - roadmap: fix display of progress bar in some corner cases (#9718)
+   and respect the overall_completion milestone group setting (#9721)
+ - reports: reports and queries look much better, as the columns now
+   keep the same width across groups; the absence of word wrapping in
+   reports has been fixed (#9825)
+ - web admin: improved layout (#8866, #9963)
+ - web: it's now possible to log in different Trac instances sharing
+   the same URL prefix (e.g. /project and /project-test) (#9951)
 
 Trac 0.12.1 (October 9, 2010)
 http://svn.edgewall.org/repos/trac/tags/trac-0.12.1
