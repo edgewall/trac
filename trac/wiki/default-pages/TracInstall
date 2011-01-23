@@ -54,7 +54,7 @@ See additional information in [trac:PySqlite].
 ==== For the PostgreSQL database #ForPostgreSQL
 
 You need to install the database and its Python bindings:
- * [http://www.postgresql.org/ PostgreSQL]
+ * [http://www.postgresql.org/ PostgreSQL], version 8.0 or later
  * [http://pypi.python.org/pypi/psycopg2 psycopg2]
 
 See [trac:DatabaseBackend#Postgresql DatabaseBackend] for details.
