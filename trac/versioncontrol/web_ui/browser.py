@@ -806,14 +806,17 @@ class BrowserModule(Component):
 
     def _get_link_info(self, path, rev, href, perm):
         rm = RepositoryManager(self.env)
-        reponame, repos, npath = rm.get_repository_by_path(path)
-        node = get_allowed_node(repos, npath, rev, perm)
-        if node is not None:
-            raw_href = self._get_download_href(href, repos, node, rev)
-            title = _("Download") if node.isfile \
-                    else _("Download as Zip archive")
-            return (node, raw_href, title)
-        return (None, None, None)
+        node = raw_href = title = None
+        try:
+            reponame, repos, npath = rm.get_repository_by_path(path)
+            node = get_allowed_node(repos, npath, rev, perm)
+            if node is not None:
+                raw_href = self._get_download_href(href, repos, node, rev)
+                title = _("Download") if node.isfile \
+                        else _("Download as Zip archive")
+        except TracError:
+            pass
+        return (node, raw_href, title)
         
     # IHTMLPreviewAnnotator methods
 
