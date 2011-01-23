@@ -16,56 +16,62 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
         self.env.reset_db()
 
     def test_simple_actions(self):
-        self.env.db_transaction("INSERT INTO permission VALUES (%s,%s)", 
-                                [('john', 'WIKI_MODIFY'),
-                                 ('john', 'REPORT_ADMIN'),
-                                 ('kate', 'TICKET_CREATE')])
+        self.env.db_transaction.executemany(
+            "INSERT INTO permission VALUES (%s,%s)", 
+            [('john', 'WIKI_MODIFY'),
+             ('john', 'REPORT_ADMIN'),
+             ('kate', 'TICKET_CREATE')])
         self.assertEquals(['REPORT_ADMIN', 'WIKI_MODIFY'],
                           sorted(self.store.get_user_permissions('john')))
         self.assertEquals(['TICKET_CREATE'],
                           self.store.get_user_permissions('kate'))
 
     def test_simple_group(self):
-        self.env.db_transaction("INSERT INTO permission VALUES (%s,%s)", 
-                                [('dev', 'WIKI_MODIFY'),
-                                 ('dev', 'REPORT_ADMIN'),
-                                 ('john', 'dev')])
+        self.env.db_transaction.executemany(
+            "INSERT INTO permission VALUES (%s,%s)", 
+            [('dev', 'WIKI_MODIFY'),
+             ('dev', 'REPORT_ADMIN'),
+             ('john', 'dev')])
         self.assertEquals(['REPORT_ADMIN', 'WIKI_MODIFY'],
                           sorted(self.store.get_user_permissions('john')))
 
     def test_nested_groups(self):
-        self.env.db_transaction("INSERT INTO permission VALUES (%s,%s)", 
-                                [('dev', 'WIKI_MODIFY'),
-                                 ('dev', 'REPORT_ADMIN'),
-                                 ('admin', 'dev'), 
-                                 ('john', 'admin')])
+        self.env.db_transaction.executemany(
+            "INSERT INTO permission VALUES (%s,%s)", 
+            [('dev', 'WIKI_MODIFY'),
+             ('dev', 'REPORT_ADMIN'),
+             ('admin', 'dev'), 
+             ('john', 'admin')])
         self.assertEquals(['REPORT_ADMIN', 'WIKI_MODIFY'],
                           sorted(self.store.get_user_permissions('john')))
 
     def test_mixed_case_group(self):
-        self.env.db_transaction("INSERT INTO permission VALUES (%s,%s)",
-                                [('Dev', 'WIKI_MODIFY'),
-                                 ('Dev', 'REPORT_ADMIN'),
-                                 ('Admin', 'Dev'),
-                                 ('john', 'Admin')])
+        self.env.db_transaction.executemany(
+            "INSERT INTO permission VALUES (%s,%s)",
+            [('Dev', 'WIKI_MODIFY'),
+             ('Dev', 'REPORT_ADMIN'),
+             ('Admin', 'Dev'),
+             ('john', 'Admin')])
         self.assertEquals(['REPORT_ADMIN', 'WIKI_MODIFY'],
                           sorted(self.store.get_user_permissions('john')))
 
     def test_builtin_groups(self):
-        self.env.db_transaction("INSERT INTO permission VALUES (%s,%s)", 
-                                [('authenticated', 'WIKI_MODIFY'),
-                                 ('authenticated', 'REPORT_ADMIN'),
-                                 ('anonymous', 'TICKET_CREATE')])
+        self.env.db_transaction.executemany(
+            "INSERT INTO permission VALUES (%s,%s)", 
+            [('authenticated', 'WIKI_MODIFY'),
+             ('authenticated', 'REPORT_ADMIN'),
+             ('anonymous', 'TICKET_CREATE')])
         self.assertEquals(['REPORT_ADMIN', 'TICKET_CREATE', 'WIKI_MODIFY'],
                           sorted(self.store.get_user_permissions('john')))
         self.assertEquals(['TICKET_CREATE'],
                           self.store.get_user_permissions('anonymous'))
 
     def test_get_all_permissions(self):
-        self.env.db_transaction("INSERT INTO permission VALUES (%s,%s)",
-                                [('dev', 'WIKI_MODIFY'),
-                                 ('dev', 'REPORT_ADMIN'),
-                                 ('john', 'dev')])
+        self.env.db_transaction.executemany(
+            "INSERT INTO permission VALUES (%s,%s)",
+            [('dev', 'WIKI_MODIFY'),
+             ('dev', 'REPORT_ADMIN'),
+             ('john', 'dev')])
         expected = [('dev', 'WIKI_MODIFY'),
                     ('dev', 'REPORT_ADMIN'),
                     ('john', 'dev')]

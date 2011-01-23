@@ -31,7 +31,7 @@ class CacheTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub()
         self.log = self.env.log
-        self.env.db_transaction(
+        self.env.db_transaction.executemany(
             "INSERT INTO repository (id, name, value) VALUES (%s, %s, %s)",
             [(1, 'name', 'test-repos'),
              (1, 'youngest_rev', '')])
@@ -63,7 +63,8 @@ class CacheTestCase(unittest.TestCase):
                       VALUES (1,%s,%s,%s,%s)
                       """, rev)
                 if changes:
-                    db("""INSERT INTO node_change (repos, rev, path, node_type,
+                    db.executemany("""
+                          INSERT INTO node_change (repos, rev, path, node_type,
                                                    change_type, base_path, 
                                                    base_rev)
                           VALUES (1, %s, %s, %s, %s, %s, %s)

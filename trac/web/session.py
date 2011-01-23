@@ -131,7 +131,7 @@ class DetachedSession(dict):
                       WHERE sid=%s AND authenticated=%s
                       """, (self.sid, authenticated))
                 self._old = dict(self.items())
-                db("""
+                db.executemany("""
                     INSERT INTO session_attribute
                       (sid,authenticated,name,value)
                     VALUES (%s,%s,%s,%s)

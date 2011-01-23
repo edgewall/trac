@@ -114,9 +114,10 @@ class CachedRepository(Repository):
                    (self.id,))
                 db("DELETE FROM node_change WHERE repos=%s",
                    (self.id,))
-                db("DELETE FROM repository WHERE id=%s AND name=%s",
-                   [(self.id, k) for k in CACHE_METADATA_KEYS])
-                db("""INSERT INTO repository (id, name, value) 
+                db.executemany("DELETE FROM repository WHERE id=%s AND name=%s",
+                               [(self.id, k) for k in CACHE_METADATA_KEYS])
+                db.executemany("""
+                      INSERT INTO repository (id, name, value) 
                       VALUES (%s, %s, %s)
                       """, [(self.id, k, '') for k in CACHE_METADATA_KEYS])
                 del self.metadata

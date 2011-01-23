@@ -235,9 +235,11 @@ class Ticket(object):
 
             # Insert custom fields
             if custom_fields:
-                db("""INSERT INTO ticket_custom (ticket, name, value)
+                db.executemany(
+                    """INSERT INTO ticket_custom (ticket, name, value)
                       VALUES (%s, %s, %s)
-                      """, [(tkt_id, c, self[c]) for c in custom_fields])
+                      """,
+                    [(tkt_id, c, self[c]) for c in custom_fields])
 
         self.id = tkt_id
         self.resource = self.resource(id=tkt_id)

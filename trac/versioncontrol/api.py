@@ -206,9 +206,10 @@ class DbRepositoryProvider(Component):
                               "supported", type=type_))
         with self.env.db_transaction as db:
             id = rm.get_repository_id(reponame)
-            db("INSERT INTO repository (id, name, value) VALUES (%s, %s, %s)",
-               [(id, 'dir', dir),
-                (id, 'type', type_ or '')])
+            db.executemany(
+                "INSERT INTO repository (id, name, value) VALUES (%s, %s, %s)",
+                [(id, 'dir', dir),
+                 (id, 'type', type_ or '')])
         rm.reload_repositories()
     
     def add_alias(self, reponame, target):
@@ -220,9 +221,10 @@ class DbRepositoryProvider(Component):
         rm = RepositoryManager(self.env)
         with self.env.db_transaction as db:
             id = rm.get_repository_id(reponame)
-            db("INSERT INTO repository (id, name, value) VALUES (%s, %s, %s)",
-               [(id, 'dir', None),
-                (id, 'alias', target)])
+            db.executemany(
+                "INSERT INTO repository (id, name, value) VALUES (%s, %s, %s)",
+                [(id, 'dir', None),
+                 (id, 'alias', target)])
         rm.reload_repositories()
     
     def remove_repository(self, reponame):

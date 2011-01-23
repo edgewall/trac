@@ -28,9 +28,9 @@ class EnvironmentTestCase(unittest.TestCase):
     def test_get_known_users(self):
         """Testing env.get_known_users"""
         with self.env.db_transaction as db:
-            db("INSERT INTO session VALUES (%s,%s,0)",
+            db.executemany("INSERT INTO session VALUES (%s,%s,0)",
                [('123', 0),('tom', 1), ('joe', 1), ('jane', 1)])
-            db("INSERT INTO session_attribute VALUES (%s,%s,%s,%s)",
+            db.executemany("INSERT INTO session_attribute VALUES (%s,%s,%s,%s)",
                [('123', 0, 'email', 'a@example.com'),
                 ('tom', 1, 'name', 'Tom'),
                 ('tom', 1, 'email', 'tom@example.com'),

@@ -107,25 +107,49 @@ class ConnectionWrapper(object):
             raise AttributeError
         return getattr(self.cnx, name)
 
-    def __call__(self, query, params=None):
-        """Execute an SQL `query`.
+    def execute(self, query, params=None):
+        """Execute an SQL `query`
 
-        The optional `params` are either a tuple containing the parameter
-        values expected by the query, or a sequence of such tuples. In the 
-        latter case, an "executemany" will be performed.
+        The optional `params` is a tuple containing the parameter
+        values expected by the query.
 
         If the query is a SELECT, return all the rows ("fetchall").
         When more control is needed, use `cursor()`.
         """
-        dql = query.lstrip().startswith('SELECT')
-        if self.readonly and not dql:
-            raise ValueError("a 'readonly' connection can only do a SELECT")
+        dql = self.check_select(query)
         cursor = self.cnx.cursor()
-        if params and isinstance(params[0], tuple) or params == []:
-            cursor.executemany(query, params)
-        else:
-            cursor.execute(query, params)
+        cursor.execute(query, params)
         rows = cursor.fetchall() if dql else None
         cursor.close()
         return rows
 
+    __call__ = execute
+
+    def executemany(self, query, params=None):
+        """Execute an SQL `query`, on a sequence of tuples ("executemany").
+
+        The optional `params` is a sequence of tuples containing the
+        parameter values expected by the query.
+
+        If the query is a SELECT, return all the rows ("fetchall").
+        When more control is needed, use `cursor()`.
+        """
+        dql = self.check_select(query)
+        cursor = self.cnx.cursor()
+        cursor.executemany(query, params)
+        rows = cursor.fetchall() if dql else None
+        cursor.close()
+        return rows
+
+    def check_select(self, query):
+        """Verify if the query is compatible according to the readonly nature
+        of the wrapped Connection.
+        
+        :return: `True` if this is a SELECT
+        :raise: `ValueError` if this is not a SELECT and the wrapped 
+                Connection is read-only.
+        """
+        dql = query.lstrip().startswith('SELECT')
+        if self.readonly and not dql:
+            raise ValueError("a 'readonly' connection can only do a SELECT")
+        return dql

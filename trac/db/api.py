@@ -109,10 +109,17 @@ class DbContextManager(object):
     def __init__(self, env):
         self.env = env
 
-    def __call__(self, query, params=None):
+    def execute(self, query, params=None):
         """Shortcut for directly executing a query."""
         with self as db:
-            return db(query, params)
+            return db.execute(query, params)
+
+    __call__ = execute
+
+    def executemany(self, query, params=None):
+        """Shortcut for directly calling "executemany" on a query."""
+        with self as db:
+            return db.executemany(query, params)
 
 
 class TransactionContextManager(DbContextManager):

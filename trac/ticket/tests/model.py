@@ -869,8 +869,9 @@ class MilestoneTestCase(unittest.TestCase):
         self.assertRaises(StopIteration, attachments.next)
         
     def test_select_milestones(self):
-        self.env.db_transaction("INSERT INTO milestone (name) VALUES (%s)",
-                                [('1.0',), ('2.0',)])
+        self.env.db_transaction.executemany(
+            "INSERT INTO milestone (name) VALUES (%s)",
+            [('1.0',), ('2.0',)])
 
         milestones = list(Milestone.select(self.env))
         self.assertEqual('1.0', milestones[0].name)

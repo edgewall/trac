@@ -342,10 +342,10 @@ class EnvironmentStub(Environment):
         with self.db_transaction as db:
             if default_data:
                 for table, cols, vals in db_default.get_data(db):
-                    db("INSERT INTO %s (%s) VALUES (%s)"
-                       % (table, ','.join(cols),
-                          ','.join(['%s' for c in cols])),
-                       vals)
+                    db.executemany("INSERT INTO %s (%s) VALUES (%s)"
+                                   % (table, ','.join(cols),
+                                      ','.join(['%s' for c in cols])),
+                                   vals)
             else:
                 db("INSERT INTO system (name, value) VALUES (%s, %s)",
                    ('database_version', str(db_default.db_version)))

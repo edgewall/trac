@@ -175,7 +175,7 @@ class WikiPageTestCase(unittest.TestCase):
         self.assertEqual(page, listener.deleted[0])
 
     def test_delete_page_version(self):
-        self.env.db_transaction(
+        self.env.db_transaction.executemany(
             "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
             [('TestPage', 1, 42, 'joe', '::1', 'Bla bla', 'Testing', 0),
              ('TestPage', 2, 43, 'kate', '192.168.0.11', 'Bla', 'Changing', 0)])

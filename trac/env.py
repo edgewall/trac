@@ -672,7 +672,7 @@ class EnvironmentSetup(Component):
         """Insert default data into the database."""
         with self.env.db_transaction as db:
             for table, cols, vals in db_default.get_data(db):
-                db("INSERT INTO %s (%s) VALUES (%s)"
+                db.executemany("INSERT INTO %s (%s) VALUES (%s)"
                    % (table, ','.join(cols), ','.join(['%s' for c in cols])),
                    vals)
         self._update_sample_config()
