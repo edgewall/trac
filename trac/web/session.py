@@ -151,9 +151,10 @@ class DetachedSession(dict):
 
         if session_saved[0] and now - self.last_visit > UPDATE_INTERVAL:
             self.last_visit = now
+            mintime = now - PURGE_AGE
 
             @self.env.with_transaction()
-            def purge_sessions(db):
+            def purge_session_attributes(db):
                 cursor = db.cursor()
                 # Update the session last visit time if it is over an
                 # hour old, so that session doesn't get purged
@@ -162,7 +163,6 @@ class DetachedSession(dict):
                     UPDATE session SET last_visit=%s
                     WHERE sid=%s AND authenticated=%s
                     """, (self.last_visit, self.sid, authenticated))
-                mintime = now - PURGE_AGE
                 self.env.log.debug('Purging old, expired, sessions.')
                 cursor.execute("""
                     DELETE FROM session_attribute
@@ -171,6 +171,12 @@ class DetachedSession(dict):
                       WHERE authenticated=0 AND last_visit < %s
                     )
                     """, (mintime,))
+
+            # Avoid holding locks on lot of rows on both session_attribute
+            # and session tables
+            @self.env.with_transaction()
+            def purge_sessions(db):
+                cursor = db.cursor()
                 cursor.execute("""
                     DELETE FROM session
                     WHERE authenticated=0 AND last_visit < %s
