@@ -1067,17 +1067,17 @@ class ChangesetModule(Component):
             rev, path = chgset[:sep], chgset[sep:]
         else:
             rev, path = chgset, '/'
-        reponame, repos, path = rm.get_repository_by_path(path)
-        if not reponame:
-            reponame = rm.get_default_repository(formatter.context)
-            if reponame is not None:
-                repos = rm.get_repository(reponame)
-        if path == '/':
-            path = None
+        try:
+            reponame, repos, path = rm.get_repository_by_path(path)
+            if not reponame:
+                reponame = rm.get_default_repository(formatter.context)
+                if reponame is not None:
+                    repos = rm.get_repository(reponame)
+            if path == '/':
+                path = None
 
-        # rendering changeset link
-        if repos:
-            try:
+            # rendering changeset link
+            if repos:
                 changeset = repos.get_changeset(rev)
                 if changeset.is_viewable(formatter.perm):
                     href = formatter.href.changeset(rev,
@@ -1089,12 +1089,12 @@ class ChangesetModule(Component):
                 errmsg = _("No permission to view changeset %(rev)s "
                            "on %(repos)s", rev=rev,
                            repos=reponame or _('(default)'))
-            except TracError, e:
-                errmsg = to_unicode(e)
-        elif reponame:
-            errmsg = _("Repository '%(repo)s' not found", repo=reponame)
-        else:
-            errmsg = _("No default repository defined")
+            elif reponame:
+                errmsg = _("Repository '%(repo)s' not found", repo=reponame)
+            else:
+                errmsg = _("No default repository defined")
+        except TracError, e:
+            errmsg = to_unicode(e)
         return tag.a(label, class_="missing changeset", title=errmsg)
 
     def _format_diff_link(self, formatter, ns, target, label):
