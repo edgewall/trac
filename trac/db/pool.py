@@ -142,7 +142,7 @@ class ConnectionPoolBackend(object):
         errmsg = _("Unable to get database connection within %(time)d seconds.",
                    time=timeout)
         if err:
-            errmsg += "\n%r" % err
+            errmsg += " (%r)" % err
         raise TimeoutError(errmsg)
 
     def _take_cnx(self, connector, kwargs, key, tid):
