@@ -16,4 +16,4 @@ from pkg_resources import DistributionNotFound, get_distribution
 try:
     __version__ = get_distribution('Trac').version
 except DistributionNotFound:
-    __version__ = '0.12.2'
+    __version__ = '0.12.2rc1'
