@@ -35,6 +35,11 @@ UPDATE_INTERVAL = 3600 * 24 # Update session last_visit time stamp after 1 day
 PURGE_AGE = 3600 * 24 * 90 # Purge session after 90 days idle
 COOKIE_KEY = 'trac_session'
 
+# Note: as we often manipulate both the `session` and the
+#       `session_attribute` tables, there's a possibility of table
+#       deadlocks (#9705). We try to prevent them to happen by always
+#       accessing the tables in the same order within the transaction,
+#       first `session`, then `session_attribute`.
 
 class DetachedSession(dict):
     def __init__(self, env, sid):
@@ -78,7 +83,8 @@ class DetachedSession(dict):
                 self._old = {}
 
     def save(self):
-        if not self._old and not self.items():
+        items = self.items()
+        if not self._old and not items:
             # The session doesn't have associated data, so there's no need to
             # persist it
             return
@@ -86,7 +92,19 @@ class DetachedSession(dict):
         authenticated = int(self.authenticated)
         now = int(time.time())
 
+        # We can't do the session management in one big transaction,
+        # as the intertwined changes to both the session and
+        # session_attribute tables are prone to deadlocks (#9705).
+        # Therefore we first we save the current session, then we
+        # eventually purge the tables.
+
+        session_saved = False
+
         with self.env.db_transaction as db:
+            # Try to save the session if it's a new one. A failure to
+            # do so is not critical but we nevertheless skip the
+            # following steps.
+            skip = False
             if self._new:
                 self.last_visit = now
                 self._new = False
@@ -99,34 +117,40 @@ class DetachedSession(dict):
                 except Exception:
                     self.env.log.warning('Session %s already exists', self.sid)
                     db.rollback()
-                    return
-            if self._old != self:
-                attrs = [(self.sid, authenticated, k, v) 
-                         for k, v in self.items()]
+                    skip = True
+
+            # Remove former values for session_attribute and save the
+            # new ones. The last concurrent request to do so "wins".
+
+            if not skip and self._old != self:
+                if not items and not authenticated:
+                    # No need to keep around empty unauthenticated sessions
+                    db("DELETE FROM session WHERE sid=%s AND authenticated=0",
+                       (self.sid,))
                 db("""DELETE FROM session_attribute
                       WHERE sid=%s AND authenticated=%s
                       """, (self.sid, authenticated))
                 self._old = dict(self.items())
-                if attrs:
-                    db("""INSERT INTO session_attribute
-                             (sid, authenticated, name, value)
-                          VALUES (%s, %s, %s, %s)
-                          """, attrs)
-                elif not authenticated:
-                    # No need to keep around empty unauthenticated sessions
-                    db("DELETE FROM session WHERE sid=%s AND authenticated=0",
-                       (self.sid,))
-                    return
-            # Update the session last visit time if it is over an hour old,
-            # so that session doesn't get purged
-            if now - self.last_visit > UPDATE_INTERVAL:
-                self.last_visit = now
+                db("""
+                    INSERT INTO session_attribute
+                      (sid,authenticated,name,value)
+                    VALUES (%s,%s,%s,%s)
+                    """, [(self.sid, authenticated, k, v) for k, v in items])
+                session_saved = True
+
+        # Purge expired sessions. We do this only when the session was
+        # changed as to minimize the purging.
+
+        if session_saved and now - self.last_visit > UPDATE_INTERVAL:
+            self.last_visit = now
+
+            with self.env.db_transaction as db:
+                # Update the session last visit time if it is over an
+                # hour old, so that session doesn't get purged
                 self.env.log.info("Refreshing session %s", self.sid)
                 db("""UPDATE session SET last_visit=%s
                       WHERE sid=%s AND authenticated=%s
                       """, (self.last_visit, self.sid, authenticated))
-                # Purge expired sessions. We do this only when the session was
-                # changed as to minimize the purging.
                 mintime = now - PURGE_AGE
                 self.env.log.debug('Purging old, expired, sessions.')
                 db("""DELETE FROM session_attribute
@@ -396,15 +420,15 @@ class SessionAdmin(Component):
             for sid in sids:
                 sid, authenticated = self._split_sid(sid)
                 if sid == 'anonymous':
-                    db("DELETE FROM session_attribute WHERE authenticated=0")
                     db("DELETE FROM session WHERE authenticated=0")
+                    db("DELETE FROM session_attribute WHERE authenticated=0")
                 else:
                     db("""
-                        DELETE FROM session_attribute
+                        DELETE FROM session
                         WHERE sid=%s AND authenticated=%s
                         """, (sid, authenticated))
                     db("""
-                        DELETE FROM session
+                        DELETE FROM session_attribute
                         WHERE sid=%s AND authenticated=%s
                         """, (sid, authenticated))
 
@@ -413,12 +437,12 @@ class SessionAdmin(Component):
         with self.env.db_transaction as db:
             ts = to_timestamp(when)
             db("""
+                DELETE FROM session
+                WHERE authenticated=0 AND last_visit<%s
+                """, (ts,))
+            db("""
                 DELETE FROM session_attribute
                 WHERE authenticated=0
                       AND sid IN (SELECT sid FROM session
                                   WHERE authenticated=0 AND last_visit<%s)
-                """, (ts,))
-            db("""
-                DELETE FROM session
-                WHERE authenticated=0 AND last_visit<%s
                 """, (ts,))

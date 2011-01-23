@@ -409,7 +409,8 @@ class SessionTestCase(unittest.TestCase):
             req = Mock(authname='anonymous', base_path='/', incookie=incookie,
                        outcookie=outcookie)
             session = Session(self.env, req)
-            session.save() # updating should not require modifications
+            session['modified'] = True
+            session.save() # updating does require modifications
 
             self.assertEqual(PURGE_AGE, outcookie['trac_session']['expires'])
 

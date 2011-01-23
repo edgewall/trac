@@ -121,7 +121,7 @@ class ConnectionWrapper(object):
         if self.readonly and not dql:
             raise ValueError("a 'readonly' connection can only do a SELECT")
         cursor = self.cnx.cursor()
-        if params and isinstance(params[0], tuple):
+        if params and isinstance(params[0], tuple) or params == []:
             cursor.executemany(query, params)
         else:
             cursor.execute(query, params)
