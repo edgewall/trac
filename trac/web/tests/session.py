@@ -400,7 +400,7 @@ class SessionTestCase(unittest.TestCase):
                    outcookie=outcookie)
         session = Session(self.env, req)
         session['modified'] = True
-        session.save() # updating should not require modifications
+        session.save() # updating does require modifications
 
         self.assertEqual(PURGE_AGE, outcookie['trac_session']['expires'])
 
