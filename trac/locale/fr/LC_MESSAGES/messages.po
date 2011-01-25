@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2011-01-23 16:15+0100\n"
+"PO-Revision-Date: 2011-01-25 20:28+0100\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -5591,7 +5591,7 @@ msgstr "La session « %(sid)s » existe déjà."
 #: trac/web/session.py:442
 #, python-format
 msgid "Invalid attribute '%(attr)s'"
-msgstr "Attribut invalide « %(attr)s »"
+msgstr "Attribut « %(attr)s » invalide"
 
 #: trac/web/session.py:452
 #, python-format
