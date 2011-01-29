@@ -129,7 +129,7 @@ class RenderingContext(object):
         self.perm = resource and perm and perm(resource) or perm
         self._hints = None
 
-    @classmethod
+    @staticmethod
     def from_request(*args, **kwargs):
         """:deprecated: since 0.13, use `web_context` instead."""
         from trac.web.chrome import web_context
