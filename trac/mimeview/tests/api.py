@@ -33,10 +33,8 @@ class GetMimeTypeTestCase(unittest.TestCase):
         self.assertEqual('text/plain', get_mimetype('README.txt', None))
         
     def test_from_suffix_using_mimetypes(self):
-        image_png = 'image/png'
-        if sys.version_info >= (2, 7):
-            image_png = 'image/x-png'
-        self.assertEqual(image_png, get_mimetype('doc/trac_logo.png', None))
+        accepted = ('image/png', 'image/x-png')
+        self.assertTrue(get_mimetype('doc/trac_logo.png', None) in accepted)
         
     def test_from_content_using_CONTENT_RE(self):
         self.assertEqual('text/x-python',
