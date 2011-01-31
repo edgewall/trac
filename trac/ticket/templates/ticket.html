@@ -13,6 +13,7 @@
       <py:when test="ticket.exists">#${ticket.id} (${ticket.summary})</py:when>
       <py:otherwise>New Ticket</py:otherwise>
     </title>
+    <script type="text/javascript" src="${chrome.htdocs_location}js/threaded_comments.js"></script>
     <script type="text/javascript" py:choose="">
       jQuery(document).ready(function($) {
         $("div.description").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
@@ -63,8 +64,8 @@
   </head>
 
   <body>
-    <py:def function="commentref(prefix, cnum)">
-      <a href="#comment:$cnum">$prefix$cnum</a>
+    <py:def function="commentref(prefix, cnum, cls=None)">
+      <a href="#comment:$cnum" class="$cls">$prefix$cnum</a>
     </py:def>
 
     <div id="content" class="ticket"
@@ -110,7 +111,15 @@
         </py:if>
 
         <div py:if="ticket.exists and changes">
+          <form id="trac-threaded-form" method="get" style="display: none">
+            <div>
+              <input id="trac-threaded-toggle" type="checkbox" />
+              <label for="trac-threaded-toggle">Threaded Comments</label>
+            </div>
+          </form>
+
           <h2 class="foldable">Change History</h2>
+
           <div id="changelog">
             <py:for each="change in changes"
                     py:with="can_edit_comment = has_edit_comment or (authname and authname != 'anonymous'
@@ -135,7 +144,7 @@
                           <span i18n:plural="">follow-ups:</span>
                         </i18n:choose>
                         <py:for each="reply in change_replies">
-                          ${commentref('&darr;&nbsp;', reply)}
+                          ${commentref('&darr;&nbsp;', reply, 'follow-up')}
                         </py:for></py:if>
                     </py:if>
                   </span>
@@ -176,7 +185,7 @@
                                }#comment:${change.cnum}">next</a>)
                   </py:if>
                   <py:if test="comment_version > 0">
-                    (<a href="${href.ticket(ticket.id, action='comment-diff', cnum=change.cnum, 
+                    (<a href="${href.ticket(ticket.id, action='comment-diff', cnum=change.cnum,
                                             version=comment_version)}">diff</a>)
                   </py:if>
                 </div>
