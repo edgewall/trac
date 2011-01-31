@@ -29,9 +29,9 @@
           <tr py:when="reports" py:for="id, title, can_edit, can_delete in reports">
             <td class="report"><a title="View report" href="${href.report(id)}">{$id}</a></td>
             <td class="title"><a title="View report" href="${href.report(id)}">$title</a></td>
-            <td py:if="any_edit"><a py:if="can_edit" href="${href.report(id, action='edit')}"
+            <td class="action" py:if="any_edit"><a py:if="can_edit" href="${href.report(id, action='edit')}"
                                     title="Edit report">Edit</a></td>
-            <td py:if="any_delete"><a py:if="can_delete" href="${href.report(id, action='delete')}"
+            <td class="action" py:if="any_delete"><a py:if="can_delete" href="${href.report(id, action='delete')}"
                                       title="Delete report">Delete</a></td>
           </tr>
           <tr py:otherwise="">
