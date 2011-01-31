@@ -147,7 +147,9 @@ class FunctionalTester(object):
         tc.formvalue('propertyform', 'comment', comment)
         tc.submit("submit")
         # Verify we're where we're supposed to be.
-        tc.url(self.url + '/ticket/%s#comment:.*' % ticketid)
+        # The fragment is stripped since Python 2.7.1, see:
+        # http://trac.edgewall.org/ticket/9990#comment:18
+        tc.url(self.url + '/ticket/%s(?:#comment:.*)?$' % ticketid)
         return comment
 
     def attach_file_to_ticket(self, ticketid, data=None, tempfilename=None,
