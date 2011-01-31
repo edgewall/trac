@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2011-01-23 17:53+0100\n"
+"PO-Revision-Date: 2011-01-23 22:10+0100\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: sv_SE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -5170,7 +5170,7 @@ msgstr "Inte behörig att visa ändringsloggen"
 #. TRANSLATOR: You can 'search' in the repository history... (link)
 #: trac/versioncontrol/web_ui/util.py:67
 msgid "search"
-msgstr "sök"
+msgstr "söka"
 
 #: trac/versioncontrol/web_ui/util.py:71
 #, python-format

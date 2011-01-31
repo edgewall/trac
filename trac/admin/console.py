@@ -128,7 +128,7 @@ class TracAdmin(cmd.Cmd):
         self.interactive = True
         printout(_("""Welcome to trac-admin %(version)s
 Interactive Trac administration console.
-Copyright (c) 2003-2010 Edgewall Software
+Copyright (C) 2003-2011 Edgewall Software
 
 Type:  '?' or 'help' for help on commands.
         """, version=TRAC_VERSION))
