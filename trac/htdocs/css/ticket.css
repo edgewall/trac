@@ -84,14 +84,20 @@ h1 .status { color: #444; }
 #changelog { border: 1px outset #996; padding: 1em }
 .trac-shade { background-color: #eee }
 #trac-threaded-form { float: right }
-ul.children { margin-top: 1.5em; }
-ul.children > li {
- list-style: none;
+ul.children {
+ margin-top: 1.5em;
+ padding-left: 2em;
  list-style-image: url(../inreply.png);
- border-left: 1px dotted #996;
+}
+ul.children > li.child {
+ border-left: 1px solid #e0e0e0;
  padding-left: .75em;
  margin-bottom: 1.5em;
 }
+div.comment ul { list-style: disc }
+div.comment ul ul, ol ul { list-style: circle }
+div.comment ul ul ul, ol ul ul, ul ol ul, ol ol ul { list-style: square }
+
 #trac-comment-editor { margin-left: 2em; margin-bottom: 1em }
 #trac-comment-editor div.trac-resizable { width: 100% }
 #trac-comment-editor textarea { 
