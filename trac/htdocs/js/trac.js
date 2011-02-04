@@ -1,4 +1,7 @@
 (function($){
+  // workaround for IE9 in jQuery 1.5 (will become unecessary with 1.5.1)
+  // http://bugs.jquery.com/ticket/8052#comment:14
+  $.support.noCloneEvent = !!window.addEventListener
 
   if (typeof _ == 'undefined')
     babel.Translations.load({}).install();
