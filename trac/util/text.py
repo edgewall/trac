@@ -50,8 +50,8 @@ def to_unicode(text, charset=None):
     the original byte sequence by mapping each byte to the corresponding
     unicode code point in the range U+0000 to U+00FF.
 
-    Otherwise, a simple `unicode()` conversion is attempted, with some special
-    care taken for `Exception` objects.
+    For anything else, a simple `unicode()` conversion is attempted,
+    with special care taken with `Exception` objects.
     """
     if isinstance(text, str):
         try:
@@ -69,6 +69,11 @@ def to_unicode(text, charset=None):
     return unicode(text)
 
 def exception_to_unicode(e, traceback=False):
+    """Convert an `Exception` to an `unicode` object.
+
+    In addition to `to_unicode`, this representation of the exception
+    also contains the class name and optionally the traceback.
+    """
     message = '%s: %s' % (e.__class__.__name__, to_unicode(e))
     if traceback:
         from trac.util import get_last_traceback
@@ -91,15 +96,15 @@ def javascript_quote(text):
     return _js_quote_re.sub(replace, text)
 
 def unicode_quote(value, safe='/'):
-    """A unicode aware version of urllib.quote"""
+    """A unicode aware version of `urllib.quote`"""
     return quote(value.encode('utf-8'), safe)
 
 def unicode_quote_plus(value, safe=''):
-    """A unicode aware version of urllib.quote_plus"""
+    """A unicode aware version of `urllib.quote_plus`"""
     return quote_plus(value.encode('utf-8'), safe)
 
 def unicode_unquote(value):
-    """A unicode aware version of urllib.unquote.
+    """A unicode aware version of `urllib.unquote`.
     
     Take `str` value previously obtained by `unicode_quote`.
     """
@@ -124,11 +129,12 @@ def unicode_urlencode(params, safe=''):
             l.append(k + '=' + quote_plus(str(v), safe))
     return '&'.join(l)
 
-def to_utf8(text, charset='iso-8859-15'):
+def to_utf8(text, charset='latin1'):
     """Convert a string to UTF-8, assuming the encoding is either UTF-8, ISO
     Latin-1, or as specified by the optional `charset` parameter.
 
-    ''Deprecated in 0.10. You should use `unicode` strings only.''
+    .. deprecated :: 0.10
+       You should use `unicode` strings only.
     """
     try:
         # Do nothing if it's already utf-8
@@ -140,7 +146,7 @@ def to_utf8(text, charset='iso-8859-15'):
             u = unicode(text, charset)
         except UnicodeError:
             # This should always work
-            u = unicode(text, 'iso-8859-15')
+            u = unicode(text, 'latin1')
         return u.encode('utf-8')
 
 
@@ -150,6 +156,12 @@ class unicode_passwd(unicode):
         return '*******'
 
 def console_print(out, *args, **kwargs):
+    """Output the given arguments to the console, encoding the output
+    as appropriate.
+
+    :param kwargs: ``newline`` controls whether a newline will be appended
+                   (defaults to `True`)
+    """
     cons_charset = getattr(out, 'encoding', None)
     # Windows returns 'cp0' to indicate no encoding
     if cons_charset in (None, 'cp0'):
@@ -160,18 +172,31 @@ def console_print(out, *args, **kwargs):
         out.write('\n')
 
 def printout(*args, **kwargs):
+    """Do a `console_print` on `sys.stdout`."""
     console_print(sys.stdout, *args, **kwargs)
 
 def printerr(*args, **kwargs):
+    """Do a `console_print` on `sys.stderr`."""
     console_print(sys.stderr, *args, **kwargs)
 
 def raw_input(prompt):
+    """Input one line from the console and converts it to unicode as
+    appropriate.
+    """
     printout(prompt, newline=False)
     return to_unicode(__builtin__.raw_input(), sys.stdin.encoding)
 
 # -- Plain text formatting
 
 def print_table(data, headers=None, sep='  ', out=None):
+    """Print data according to a tabular layout.
+
+    :param data: a sequence of rows; assume all rows are of equal length.
+    :param headers: an optional row containing column headers; must be of
+                    the same length as each row in `data`.
+    :param sep: column separator
+    :param out: output file descriptor (`None` means use `sys.stdout`)
+    """
     if out is None:
         out = sys.stdout
     charset = getattr(out, 'encoding', None) or 'utf-8'
@@ -181,7 +206,7 @@ def print_table(data, headers=None, sep='  ', out=None):
     elif not data:
         return
 
-    num_cols = len(data[0]) # assumes all rows are of equal length
+    num_cols = len(data[0])
     col_width = []
     for idx in range(num_cols):
         col_width.append(max([len(unicode(d[idx] or '')) for d in data]))
@@ -208,10 +233,14 @@ def print_table(data, headers=None, sep='  ', out=None):
             out.write(''.join(['-' for x in xrange(0, len(sep) * cidx +
                                                       sum(col_width))]))
             out.write('\n')
-
     out.write('\n')
 
 def shorten_line(text, maxlen=75):
+    """Truncates content to at most `maxlen` characters.
+
+    This tries to be (a bit) clever and attempts to find a proper word
+    boundary for doing so.
+    """
     if len(text or '') < maxlen:
         return text
     cut = max(text.rfind(' ', 0, maxlen), text.rfind('\n', 0, maxlen))
@@ -221,6 +250,9 @@ def shorten_line(text, maxlen=75):
 
 def wrap(t, cols=75, initial_indent='', subsequent_indent='',
          linesep=os.linesep):
+    """Helper function for using standard Python `textwrap` module.
+
+    """
     try:
         import textwrap
         t = t.strip().replace('\r\n', '\n').replace('\r', '\n')
@@ -237,6 +269,9 @@ def wrap(t, cols=75, initial_indent='', subsequent_indent='',
         return t
 
 def obfuscate_email_address(address):
+    """Replace anything looking like an e-mail address (``'@something'``)
+    with a trailing ellipsis (``'@…'``)
+    """
     if address:
         at = address.find('@')
         if at != -1:
@@ -278,6 +313,11 @@ def unquote_label(txt):
 # -- Conversion
 
 def pretty_size(size, format='%.1f'):
+    """Pretty print content size information with appropriate unit.
+
+    :param size: number of bytes
+    :param format: can be used to adjust the precision shown
+    """
     if size is None:
         return ''
 
@@ -294,6 +334,16 @@ def pretty_size(size, format='%.1f'):
     return (format + ' %s') % (size, units[i - 1])
 
 def expandtabs(s, tabstop=8, ignoring=None):
+    """Expand tab characters `'\\\\t'` into spaces.
+
+    :param tabstop: number of space characters per tab
+                    (defaults to the canonical 8)
+
+    :param ignoring: if not `None`, the expansion will be "smart" and
+                     go from one tabstop to the next. In addition,
+                     this parameter lists characters which can be
+                     ignored when computing the indent.
+    """
     if '\t' not in s:
         return s
     if ignoring is None:
