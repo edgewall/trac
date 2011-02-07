@@ -95,8 +95,10 @@ ul.children > li.child {
  margin-bottom: 1.5em;
 }
 div.comment ul { list-style: disc }
-div.comment ul ul, ol ul { list-style: circle }
-div.comment ul ul ul, ol ul ul, ul ol ul, ol ol ul { list-style: square }
+div.comment ul ul, div.comment ol ul { list-style: circle }
+div.comment ul ul ul, div.comment ol ul ul { list-style: square }
+div.comment ul ol ul, div.comment ol ol ul { list-style: square }
+div.comment ol { list-style: decimal }
 
 #trac-comment-editor { margin-left: 2em; margin-bottom: 1em }
 #trac-comment-editor div.trac-resizable { width: 100% }
