@@ -24,6 +24,7 @@ from trac.cache import cached
 from trac.config import BoolOption, ListOption
 from trac.core import *
 from trac.resource import IResourceManager
+from trac.util.text import unquote_label
 from trac.util.translation import _
 
 from .parser import WikiParser
@@ -389,6 +390,7 @@ class WikiSystem(Component):
             pagename = self._resolve_relative_name(pagename, referrer)
         else:
             pagename = self._resolve_scoped_name(pagename, referrer)
+        label = unquote_label(label)
         if 'WIKI_VIEW' in formatter.perm('wiki', pagename, version):
             href = formatter.href.wiki(pagename, version=version) + query \
                    + fragment

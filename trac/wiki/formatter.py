@@ -33,10 +33,10 @@ from trac.mimeview import *
 from trac.resource import get_relative_resource, get_resource_url
 from trac.util import arity
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode, \
-                           unicode_quote, unicode_quote_plus
+                           unicode_quote, unicode_quote_plus, unquote_label
 from trac.util.html import TracHTMLSanitizer
 from trac.util.translation import _
-from trac.wiki.api import WikiSystem, parse_args
+from trac.wiki.api import WikiSystem, parse_args, unquote_label
 from trac.wiki.parser import WikiParser
 
 __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline',
@@ -538,28 +538,22 @@ class Formatter(object):
 
     # Short form (shref) and long form (lhref) of TracLinks
 
-    def _unquote(self, text):
-        if text and text[0] in "'\"" and text[0] == text[-1]:
-            return text[1:-1]
-        else:
-            return text
-
     def _shrefbr_formatter(self, match, fullmatch):
         ns = fullmatch.group('snsbr')
-        target = self._unquote(fullmatch.group('stgtbr'))
+        target = unquote_label(fullmatch.group('stgtbr'))
         match = match[1:-1]
         return '&lt;%s&gt;' % \
                 self._make_link(ns, target, match, match, fullmatch)
 
     def _shref_formatter(self, match, fullmatch):
         ns = fullmatch.group('sns')
-        target = self._unquote(fullmatch.group('stgt'))
+        target = unquote_label(fullmatch.group('stgt'))
         return self._make_link(ns, target, match, match, fullmatch)
 
     def _lhref_formatter(self, match, fullmatch):
         rel = fullmatch.group('rel')
         ns = fullmatch.group('lns')
-        target = self._unquote(fullmatch.group('ltgt'))
+        target = unquote_label(fullmatch.group('ltgt'))
         label = fullmatch.group('label')
         return self._make_lhref_link(match, fullmatch, rel, ns, target, label)
 
@@ -573,7 +567,7 @@ class Formatter(object):
             else: # e.g. `[search:]` 
                 label = ns
         else:
-            label = self._unquote(label)
+            label = unquote_label(label)
         if rel:
             if not label:
                 label = self.wiki.make_label_from_target(rel)

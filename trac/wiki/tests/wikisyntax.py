@@ -220,10 +220,14 @@ This is a <a class="missing wiki" href="/wiki/Wiki?version=12" rel="nofollow">Wi
 ============================== WikiPageName with label
 See details of the [WikiPageNames wiki page name] syntax.
 Here's a [BadExample\fbad] example with special whitespace.
+We can also [WikiLabels '"use [quotes]"']
+or [WikiLabels "'use [quotes]'"]
 ------------------------------
 <p>
 See details of the <a class="missing wiki" href="/wiki/WikiPageNames" rel="nofollow">wiki page name?</a> syntax.
 Here's a <a class="missing wiki" href="/wiki/BadExample" rel="nofollow">bad?</a> example with special whitespace.
+We can also <a class="missing wiki" href="/wiki/WikiLabels" rel="nofollow">"use [quotes]"?</a>
+or <a class="missing wiki" href="/wiki/WikiLabels" rel="nofollow">'use [quotes]'?</a>
 </p>
 ------------------------------
 ============================== WikiPageName with label should be strict...

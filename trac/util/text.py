@@ -268,6 +268,13 @@ def normalize_whitespace(text, to_space=u'\u00a0', remove=u'\u200b'):
         text = text.replace(each, '')
     return text
 
+def unquote_label(txt):
+    """Remove (one level of) enclosing single or double quotes.
+
+    .. versionadded :: 0.13
+    """
+    return txt[1:-1] if txt and txt[0] in "'\"" and txt[0] == txt[-1] else txt
+
 # -- Conversion
 
 def pretty_size(size, format='%.1f'):
