@@ -19,11 +19,12 @@
 #         Christian Boos <cboos@neuf.fr>
 
 import __builtin__
-import locale
 import os
 import re
 import sys
-from urllib import quote, quote_plus, unquote, urlencode
+import textwrap
+from urllib import quote, quote_plus, unquote
+from unicodedata import east_asian_width
 
 from trac.util.translation import _
 
@@ -171,6 +172,24 @@ def raw_input(prompt):
 
 # -- Plain text formatting
 
+def text_width(text, ambiwidth=1):
+    """Determine the column width of `text` in Unicode characters.
+
+    The characters in the East Asian Fullwidth (F) or East Asian Wide (W)
+    have a column width of 2. The other characters in the East Asian
+    Halfwidth (H) or East Asian Narrow (Na) have a column width of 1.
+
+    That `ambiwidth` parameter is used for the column width of the East
+    Asian Ambiguous (A). If `1`, the same width as characters in US-ASCII.
+    This is expected by most users. If `2`, twice the width of US-ASCII
+    characters. This is expected by CJK users.
+
+    cf. http://www.unicode.org/reports/tr11/.
+    """
+    twice = ('FW', 'FWA')[ambiwidth == 2]
+    return sum([(1, 2)[east_asian_width(chr) in twice]
+                for chr in to_unicode(text)])
+
 def print_table(data, headers=None, sep='  ', out=None):
     if out is None:
         out = sys.stdout
@@ -219,22 +238,149 @@ def shorten_line(text, maxlen=75):
         cut = maxlen
     return text[:cut] + ' ...'
 
-def wrap(t, cols=75, initial_indent='', subsequent_indent='',
-         linesep=os.linesep):
-    try:
-        import textwrap
-        t = t.strip().replace('\r\n', '\n').replace('\r', '\n')
-        wrapper = textwrap.TextWrapper(cols, replace_whitespace=0,
-                                       break_long_words=0,
-                                       initial_indent=initial_indent,
-                                       subsequent_indent=subsequent_indent)
-        wrappedLines = []
-        for line in t.split('\n'):
-            wrappedLines += wrapper.wrap(line.rstrip()) or ['']
-        return linesep.join(wrappedLines)
+class UnicodeTextWrapper(textwrap.TextWrapper):
+    breakable_char_ranges = [
+        (0x1100, 0x11FF),   # Hangul Jamo
+        (0x2E80, 0x2EFF),   # CJK Radicals Supplement
+        (0x3000, 0x303F),   # CJK Symbols and Punctuation
+        (0x3040, 0x309F),   # Hiragana
+        (0x30A0, 0x30FF),   # Katakana
+        (0x3130, 0x318F),   # Hangul Compatibility Jamo
+        (0x3190, 0x319F),   # Kanbun
+        (0x31C0, 0x31EF),   # CJK Strokes
+        (0x3200, 0x32FF),   # Enclosed CJK Letters and Months
+        (0x3300, 0x33FF),   # CJK Compatibility
+        (0x3400, 0x4DBF),   # CJK Unified Ideographs Extension A
+        (0x4E00, 0x9FFF),   # CJK Unified Ideographs
+        (0xA960, 0xA97F),   # Hangul Jamo Extended-A
+        (0xAC00, 0xD7AF),   # Hangul Syllables
+        (0xD7B0, 0xD7FF),   # Hangul Jamo Extended-B
+        (0xF900, 0xFAFF),   # CJK Compatibility Ideographs
+        (0xFE30, 0xFE4F),   # CJK Compatibility Forms
+        (0xFF00, 0xFFEF),   # Halfwidth and Fullwidth Forms
+        (0x20000, 0x2FFFF, u'[\uD840-\uD87F][\uDC00-\uDFFF]'), # Plane 2
+        (0x30000, 0x3FFFF, u'[\uD880-\uD8BF][\uDC00-\uDFFF]'), # Plane 3
+    ]
 
-    except ImportError:
-        return t
+    split_re = None
+    breakable_re = None
+
+    @classmethod
+    def _init_patterns(cls):
+        char_ranges = []
+        surrogate_pairs = []
+        for val in cls.breakable_char_ranges:
+            try:
+                high = unichr(val[0])
+                low = unichr(val[1])
+                char_ranges.append(u'%s-%s' % (high, low))
+            except ValueError:
+                # Narrow build, `re` cannot use characters >= 0x10000
+                surrogate_pairs.append(val[2])
+        char_ranges = u''.join(char_ranges)
+        if surrogate_pairs:
+            pattern = u'(?:[%s]|%s)+' % (char_ranges,
+                                         u'|'.join(surrogate_pairs))
+        else:
+            pattern = u'[%s]+' % char_ranges
+
+        cls.split_re = re.compile(
+            ur'(\s+|' +                                 # any whitespace
+            pattern + u'|' +                            # breakable text
+            ur'[^\s\w]*\w+[^0-9\W]-(?=\w+[^0-9\W])|' +  # hyphenated words
+            ur'(?<=[\w\!\"\'\&\.\,\?])-{2,}(?=\w))',    # em-dash
+            re.UNICODE)
+        cls.breakable_re = re.compile(ur'\A' + pattern, re.UNICODE)
+
+    def __init__(self, cols, replace_whitespace=0, break_long_words=0,
+                 initial_indent='', subsequent_indent='', ambiwidth=1):
+        textwrap.TextWrapper.__init__(
+                self, cols, replace_whitespace=0, break_long_words=0,
+                initial_indent=initial_indent,
+                subsequent_indent=subsequent_indent)
+        self.ambiwidth = ambiwidth
+        if self.split_re is None:
+            self._init_patterns()
+
+    def _split(self, text):
+        chunks = self.split_re.split(to_unicode(text))
+        chunks = filter(None, chunks)
+        return chunks
+
+    def _text_width(self, text):
+        return text_width(text, ambiwidth=self.ambiwidth)
+
+    def _wrap_chunks(self, chunks):
+        lines = []
+        chunks.reverse()
+        text_width = self._text_width
+
+        while chunks:
+            cur_line = []
+            cur_width = 0
+
+            if lines:
+                indent = self.subsequent_indent
+            else:
+                indent = self.initial_indent
+            width = self.width - text_width(indent)
+
+            if chunks[-1].strip() == '' and lines:
+                del chunks[-1]
+
+            while chunks:
+                chunk = chunks[-1]
+                w = text_width(chunk)
+                if cur_width + w <= width:
+                    cur_line.append(chunks.pop())
+                    cur_width += w
+                elif self.breakable_re.match(chunk):
+                    left_space = width - cur_width
+                    for i in xrange(len(chunk)):
+                        w = text_width(chunk[i])
+                        if left_space < w:
+                            break
+                        left_space -= w
+                    if i > 0:
+                        cur_line.append(chunk[:i])
+                        chunk = chunk[i:]
+                        chunks[-1] = chunk
+                    w = text_width(chunk)
+                    break
+                else:
+                    break
+
+            if chunks and w > width:
+                self._handle_long_word(chunks, cur_line, cur_width, width)
+
+            if cur_line and cur_line[-1].strip() == '':
+                del cur_line[-1]
+
+            if cur_line:
+                lines.append(indent + ''.join(cur_line))
+
+        return lines
+
+def wrap(t, cols=75, initial_indent='', subsequent_indent='',
+         linesep=os.linesep, ambiwidth=1):
+    """Wraps the single paragraph in `t`, which contains unicode characters.
+    The every line is at most `cols` characters long.
+
+    That `ambiwidth` parameter is used for the column width of the East
+    Asian Ambiguous (A). If `1`, the same width as characters in US-ASCII.
+    This is expected by most users. If `2`, twice the width of US-ASCII
+    characters. This is expected by CJK users.
+    """
+    t = t.strip().replace('\r\n', '\n').replace('\r', '\n')
+    wrapper = UnicodeTextWrapper(cols, replace_whitespace=0,
+                                 break_long_words=0,
+                                 initial_indent=initial_indent,
+                                 subsequent_indent=subsequent_indent,
+                                 ambiwidth=ambiwidth)
+    wrappedLines = []
+    for line in t.split('\n'):
+        wrappedLines += wrapper.wrap(line.rstrip()) or ['']
+    return linesep.join(wrappedLines)
 
 def obfuscate_email_address(address):
     if address:
