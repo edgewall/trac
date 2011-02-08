@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C)2005-2009 Edgewall Software
+# Copyright (C)2005-2011 Edgewall Software
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
 # All rights reserved.
 #
@@ -65,21 +65,28 @@ class IRepositoryProvider(Interface):
     def get_repositories():
         """Generate repository information for known repositories.
         
-        Repository information is a key,value pair, where the value is 
-        a dictionary which must contain at the very least either of the
-        following entries:
-         - `'dir'`: the repository directory which can be used by the 
-                    connector to create a `Repository` instance. This defines
-                    a "real" repository.
-         - `'alias'`: the name of another repository. This defines an alias to
-                      another (real) repository.
+        Repository information is a key,value pair, where the value is
+        a dictionary which must contain at the very least either of
+        the following entries:
+
+         - `'dir'`: the repository directory which can be used by the
+                    connector to create a `Repository` instance. This
+                    defines a "real" repository.
+
+         - `'alias'`: the name of another repository. This defines an
+                      alias to another (real) repository.
+
         Optional entries:
-         - `'type'`: the type of the repository (if not given, the default
-                     repository type will be used).
-         - `'description'`: a description of the repository (can contain
-                            WikiFormatting).
-         - `'hidden'`: if set to `'true'`, the repository is hidden from the
-                       repository index.
+
+         - `'type'`: the type of the repository (if not given, the
+                     default repository type will be used).
+
+         - `'description'`: a description of the repository (can
+                            contain WikiFormatting).
+
+         - `'hidden'`: if set to `'true'`, the repository is hidden
+                       from the repository index.
+
          - `'url'`: the base URL for checking out the repository.
         """
 
@@ -464,7 +471,7 @@ class RepositoryManager(Component):
         """Retrieve the repositories based on the given directory.
 
            :param directory: the key for identifying the repositories.
-           :return: list of Repository instances.
+           :return: list of `Repository` instances.
         """
         directory = os.path.join(os.path.normcase(directory), '')
         repositories = []
@@ -481,7 +488,10 @@ class RepositoryManager(Component):
     def get_repository_id(self, reponame):
         """Return a unique id for the given repository name.
         
-        This will create and save a new id if none is found. FIXME rename
+        This will create and save a new id if none is found. 
+
+        \note: this should probably be renamed as we're dealing
+               exclusively with *db* repository ids here.
         """
         with self.env.db_transaction as db:
             for id, in db(
@@ -495,7 +505,8 @@ class RepositoryManager(Component):
             return id
     
     def get_repository(self, reponame):
-        """Retrieve the appropriate Repository for the given name.
+        """Retrieve the appropriate `Repository` for the given
+        repository name.
 
            :param reponame: the key for specifying the repository.
                             If no name is given, take the default 
@@ -532,7 +543,7 @@ class RepositoryManager(Component):
                 return repos
 
     def get_repository_by_path(self, path):
-        """Retrieve a matching Repository for the given path.
+        """Retrieve a matching `Repository` for the given `path`.
         
         :param path: the eventually scoped repository-scoped path
         :return: a `(reponame, repos, path)` triple, where `path` is 
@@ -647,6 +658,7 @@ class RepositoryManager(Component):
                     getattr(listener, event)(repos, changeset, *args)
     
     def shutdown(self, tid=None):
+        """Free `Repository` instances bound to a given thread identifier"""
         if tid:
             assert tid == threading._get_ident()
             with self._lock:
@@ -1113,7 +1125,10 @@ class Changeset(object):
         return []
 
     def get_tags(self):
-        """Yield tags associated with this changeset."""
+        """Yield tags associated with this changeset.
+
+        .. versionadded :: 0.13
+        """
         return []
 
     def is_viewable(self, perm):
