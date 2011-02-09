@@ -50,7 +50,10 @@ For example::
 The benefit of implementing an interface is to possibility to define
 an `ExtensionPoint` property for an `Interface`, in a `Component`
 subclass. Such a property provides a convenient way to retrieve *all*
-registered component instances for that interface.
+registered and enabled component instances for that interface.  The
+enabling of components is the responsibility of the
+`ComponentManager`, see `~ComponentManager.is_component_enabled`
+below.
 
 .. autoclass :: trac.core.ExtensionPoint
    :members:
