@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2010 Edgewall Software
+# Copyright (C) 2003-2011 Edgewall Software
 # Copyright (C) 2003-2007 Jonas Borgström <jonas@edgewall.com>
 # All rights reserved.
 #
@@ -42,40 +42,43 @@ __all__ = ['Environment', 'IEnvironmentSetupParticipant', 'open_environment']
 
 
 class ISystemInfoProvider(Interface):
-    """Provider of system information, displayed in the "About Trac" page and
-    in internal error reports.
+    """Provider of system information, displayed in the "About Trac"
+    page and in internal error reports.
     """
     def get_system_info():
-        """Yield a sequence of `(name, version)` tuples describing the name and
-        version information of external packages used by a component.
+        """Yield a sequence of `(name, version)` tuples describing the
+        name and version information of external packages used by a
+        component.
         """
 
 
 class IEnvironmentSetupParticipant(Interface):
-    """Extension point interface for components that need to participate in the
-    creation and upgrading of Trac environments, for example to create
-    additional database tables."""
+    """Extension point interface for components that need to
+    participate in the creation and upgrading of Trac environments,
+    for example to create additional database tables."""
 
     def environment_created():
         """Called when a new Trac environment is created."""
 
     def environment_needs_upgrade(db):
-        """Called when Trac checks whether the environment needs to be upgraded.
+        """Called when Trac checks whether the environment needs to be
+        upgraded.
         
-        Should return `True` if this participant needs an upgrade to be
-        performed, `False` otherwise.
+        Should return `True` if this participant needs an upgrade to
+        be performed, `False` otherwise.
         """
 
     def upgrade_environment(db):
         """Actually perform an environment upgrade.
         
-        Implementations of this method don't need to commit any database
-        transactions. This is done implicitly for each participant
-        if the upgrade succeeds without an error being raised.
+        Implementations of this method don't need to commit any
+        database transactions. This is done implicitly for each
+        participant if the upgrade succeeds without an error being
+        raised.
 
-        However, if the `upgrade_environment` consists of small, restartable,
-        steps of upgrade, it can decide to commit on its own after each
-        successful step.
+        However, if the `upgrade_environment` consists of small,
+        restartable, steps of upgrade, it can decide to commit on its
+        own after each successful step.
         """
 
 
@@ -83,7 +86,7 @@ class Environment(Component, ComponentManager):
     """Trac environment manager.
 
     Trac stores project information in a Trac environment. It consists
-    of a directory structure containing among other things:  
+    of a directory structure containing among other things:
         * a configuration file, 
         * project-specific templates and plugins,
         * the wiki and ticket attachments files,
@@ -99,17 +102,19 @@ class Environment(Component, ComponentManager):
     setup_participants = ExtensionPoint(IEnvironmentSetupParticipant)
 
     components_section = ConfigSection('components',
-        """This section is used to enable or disable components provided by
-        plugins, as well as by Trac itself. The component to enable/disable is
-        specified via the name of the option. Whether its enabled is determined
-        by the option value; setting the value to `enabled` or `on` will enable
-        the component, any other value (typically `disabled` or `off`) will
-        disable the component.
+        """This section is used to enable or disable components
+        provided by plugins, as well as by Trac itself. The component
+        to enable/disable is specified via the name of the
+        option. Whether its enabled is determined by the option value;
+        setting the value to `enabled` or `on` will enable the
+        component, any other value (typically `disabled` or `off`)
+        will disable the component.
 
-        The option name is either the fully qualified name of the components or
-        the module/package prefix of the component. The former enables/disables
-        a specific component, while the latter enables/disables any component
-        in the specified package/module.
+        The option name is either the fully qualified name of the
+        components or the module/package prefix of the component. The
+        former enables/disables a specific component, while the latter
+        enables/disables any component in the specified
+        package/module.
 
         Consider the following configuration snippet:
         {{{
@@ -119,12 +124,14 @@ class Environment(Component, ComponentManager):
         }}}
         
         The first option tells Trac to disable the
-        [wiki:TracReports report module]. The second option instructs Trac to
-        enable all components in the `webadmin` package. Note that the trailing
-        wildcard is required for module/package matching.
+        [wiki:TracReports report module]. 
+        The second option instructs Trac to enable all components in
+        the `webadmin` package. Note that the trailing wildcard is
+        required for module/package matching.
         
-        See the ''Plugins'' page on ''About Trac'' to get the list of active
-        components (requires `CONFIG_VIEW` [wiki:TracPermissions permissions]).
+        To view the list of active components, go to the ''Plugins''
+        page on ''About Trac'' (requires `CONFIG_VIEW`
+        [wiki:TracPermissions permissions]).
         
         See also: TracPlugins
         """)
@@ -132,37 +139,39 @@ class Environment(Component, ComponentManager):
     shared_plugins_dir = PathOption('inherit', 'plugins_dir', '',
         """Path to the //shared plugins directory//.
         
-        Plugins in that directory are loaded in addition to those in the
-        directory of the environment `plugins`, with this one taking 
-        precedence.
+        Plugins in that directory are loaded in addition to those in
+        the directory of the environment `plugins`, with this one
+        taking precedence.
         
         (''since 0.11'')""")
 
     base_url = Option('trac', 'base_url', '',
         """Reference URL for the Trac deployment.
         
-        This is the base URL that will be used when producing documents that
-        will be used outside of the web browsing context, like for example
-        when inserting URLs pointing to Trac resources in notification
-        e-mails.""")
+        This is the base URL that will be used when producing
+        documents that will be used outside of the web browsing
+        context, like for example when inserting URLs pointing to Trac
+        resources in notification e-mails.""")
 
     base_url_for_redirect = BoolOption('trac', 'use_base_url_for_redirect',
             False, 
         """Optionally use `[trac] base_url` for redirects.
         
-        In some configurations, usually involving running Trac behind a HTTP
-        proxy, Trac can't automatically reconstruct the URL that is used to
-        access it. You may need to use this option to force Trac to use the
-        `base_url` setting also for redirects. This introduces the obvious
-        limitation that this environment will only be usable when accessible
-        from that URL, as redirects are frequently used. ''(since 0.10.5)''""")
+        In some configurations, usually involving running Trac behind
+        a HTTP proxy, Trac can't automatically reconstruct the URL
+        that is used to access it. You may need to use this option to
+        force Trac to use the `base_url` setting also for
+        redirects. This introduces the obvious limitation that this
+        environment will only be usable when accessible from that URL,
+        as redirects are frequently used. ''(since 0.10.5)''""")
 
     secure_cookies = BoolOption('trac', 'secure_cookies', False,
         """Restrict cookies to HTTPS connections.
         
-        When true, set the `secure` flag on all cookies so that they are
-        only sent to the server on HTTPS connections. Use this if your Trac
-        instance is only accessible through HTTPS. (''since 0.11.2'')""")
+        When true, set the `secure` flag on all cookies so that they
+        are only sent to the server on HTTPS connections. Use this if
+        your Trac instance is only accessible through HTTPS. (''since
+        0.11.2'')""")
 
     project_name = Option('project', 'name', 'My Project',
         """Name of the project.""")
@@ -171,19 +180,20 @@ class Environment(Component, ComponentManager):
         """Short description of the project.""")
 
     project_url = Option('project', 'url', '',
-        """URL of the main project web site, usually the website in which
-        the `base_url` resides. This is used in notification e-mails.""")
+        """URL of the main project web site, usually the website in
+        which the `base_url` resides. This is used in notification
+        e-mails.""")
 
     project_admin = Option('project', 'admin', '',
         """E-Mail address of the project's administrator.""")
 
     project_admin_trac_url = Option('project', 'admin_trac_url', '.',
-        """Base URL of a Trac instance where errors in this Trac should be
-        reported.
+        """Base URL of a Trac instance where errors in this Trac
+        should be reported.
         
-        This can be an absolute or relative URL, or '.' to reference this
-        Trac instance. An empty value will disable the reporting buttons.
-        (''since 0.11.3'')""")
+        This can be an absolute or relative URL, or '.' to reference
+        this Trac instance. An empty value will disable the reporting
+        buttons.  (''since 0.11.3'')""")
 
     project_footer = Option('project', 'footer',
                             N_('Visit the Trac open source project at<br />'
@@ -200,9 +210,9 @@ class Environment(Component, ComponentManager):
         Should be one of (`none`, `file`, `stderr`, `syslog`, `winlog`).""")
 
     log_file = Option('logging', 'log_file', 'trac.log',
-        """If `log_type` is `file`, this should be a path to the log-file.
-        Relative paths are resolved relative to the `log` directory of the
-        environment.""")
+        """If `log_type` is `file`, this should be a path to the
+        log-file.  Relative paths are resolved relative to the `log`
+        directory of the environment.""")
 
     log_level = Option('logging', 'log_level', 'DEBUG',
         """Level of verbosity in log.
@@ -216,8 +226,9 @@ class Environment(Component, ComponentManager):
         
         Trac[$(module)s] $(levelname)s: $(message)s
 
-        In addition to regular key names supported by the Python logger library
-        (see http://docs.python.org/library/logging.html), one could use:
+        In addition to regular key names supported by the Python
+        logger library (see
+        http://docs.python.org/library/logging.html), one could use:
          - $(path)s     the path for the current environment
          - $(basename)s the last path component of the current environment
          - $(project)s  the project name
@@ -234,11 +245,11 @@ class Environment(Component, ComponentManager):
         """Initialize the Trac environment.
         
         :param path:   the absolute path to the Trac environment
-        :param create: if `True`, the environment is created and populated with
-                       default data; otherwise, the environment is expected to
-                       already exist.
-        :param options: A list of `(section, name, value)` tuples that define
-                        configuration options
+        :param create: if `True`, the environment is created and
+                       populated with default data; otherwise, the
+                       environment is expected to already exist.
+        :param options: A list of `(section, name, value)` tuples that
+                        define configuration options
         """
         ComponentManager.__init__(self)
 
@@ -257,8 +268,9 @@ class Environment(Component, ComponentManager):
                 setup_participant.environment_created()
 
     def get_systeminfo(self):
-        """Return a list of `(name, version)` tuples describing the name and
-        version information of external packages used by Trac and plugins.
+        """Return a list of `(name, version)` tuples describing the
+        name and version information of external packages used by Trac
+        and plugins.
         """
         info = self.systeminfo[:]
         for provider in self.system_info_providers:
@@ -280,9 +292,10 @@ class Environment(Component, ComponentManager):
     def component_activated(self, component):
         """Initialize additional member variables for components.
         
-        Every component activated through the `Environment` object gets three
-        member variables: `env` (the environment object), `config` (the
-        environment configuration) and `log` (a logger object)."""
+        Every component activated through the `Environment` object
+        gets three member variables: `env` (the environment object),
+        `config` (the environment configuration) and `log` (a logger
+        object)."""
         component.env = self
         component.config = self.config
         component.log = self.log
@@ -306,14 +319,14 @@ class Environment(Component, ComponentManager):
             return self._rules
         
     def is_component_enabled(self, cls):
-        """Implemented to only allow activation of components that are not
-        disabled in the configuration.
+        """Implemented to only allow activation of components that are
+        not disabled in the configuration.
         
-        This is called by the `ComponentManager` base class when a component is
-        about to be activated. If this method returns `False`, the component
-        does not get activated. If it returns `None`, the component only gets
-        activated if it is located in the `plugins` directory of the
-        enironment.
+        This is called by the `ComponentManager` base class when a
+        component is about to be activated. If this method returns
+        `False`, the component does not get activated. If it returns
+        `None`, the component only gets activated if it is located in
+        the `plugins` directory of the environment.
         """
         component_name = self._component_name(cls)
 
@@ -354,12 +367,12 @@ class Environment(Component, ComponentManager):
             assert fd.read(26) == 'Trac Environment Version 1'
 
     def get_db_cnx(self):
-        """Return a database connection from the connection pool 
+        """Return a database connection from the connection pool
 
         :deprecated: Use :meth:`db_transaction` or :meth:`db_query` instead
 
         `db_transaction` for obtaining the `db` database connection
-        which can be used for performing any query 
+        which can be used for performing any query
         (SELECT/INSERT/UPDATE/DELETE)::
         
            with env.db_transaction as db:
@@ -386,8 +399,8 @@ class Environment(Component, ComponentManager):
 
     @property
     def db_query(self):
-        """Return a context manager which can be used to obtain a read-only
-        database connection.
+        """Return a context manager which can be used to obtain a
+        read-only database connection.
 
         Example::
 
@@ -397,15 +410,15 @@ class Environment(Component, ComponentManager):
                 for row in cursor.fetchall():
                     ...
 
-        Note that a connection retrieved this way can be "called" directly 
-        in order to execute a query::
+        Note that a connection retrieved this way can be "called"
+        directly in order to execute a query::
 
             with env.db_query as db:
                 for row in db("SELECT ..."):
                     ...
         
-        If you don't need to manipulate the connection itself, this can even
-        be simplified to::
+        If you don't need to manipulate the connection itself, this
+        can even be simplified to::
 
             for row in env.db_query("SELECT ..."):
                 ...
@@ -420,8 +433,8 @@ class Environment(Component, ComponentManager):
 
     @property
     def db_transaction(self):
-        """Return a context manager which can be used to obtain a writable
-        database connection.
+        """Return a context manager which can be used to obtain a
+        writable database connection.
         
         Example::
 
@@ -429,26 +442,27 @@ class Environment(Component, ComponentManager):
                 cursor = db.cursor()
                 cursor.execute("UPDATE ...")
 
-        Upon successful exit of the context, the context manager will commit 
-        the transaction. In case of nested contexts, only the outermost context
-        performs a commit. However, should an exception happen, any context
-        manager will perform a rollback (?).
+        Upon successful exit of the context, the context manager will
+        commit the transaction. In case of nested contexts, only the
+        outermost context performs a commit. However, should an
+        exception happen, any context manager will perform a rollback.
 
-        Like for its read-only counterpart, you can directly execute a DML 
-        query on the `db`::
+        Like for its read-only counterpart, you can directly execute a
+        DML query on the `db`::
 
             with env.db_transaction as db:
                 db("UPDATE ...")
 
-        If you don't need to manipulate the connection itself, this can also
-        be simplified to::
+        If you don't need to manipulate the connection itself, this
+        can also be simplified to::
 
             env.db_transaction("UPDATE ...")
 
-        :warning: after a `with env.db_transaction` as db` block, though the
-          `db` variable is still available, you shouldn't use it as it might
-          have been closed when exiting the context, if this context was the
-          outermost context (`db_query` or `db_transaction`).
+        :warning: after a `with env.db_transaction` as db` block,
+          though the `db` variable is still available, you shouldn't
+          use it as it might have been closed when exiting the
+          context, if this context was the outermost context
+          (`db_query` or `db_transaction`).
         """
         return TransactionContextManager(self)
 
@@ -463,25 +477,28 @@ class Environment(Component, ComponentManager):
             del self._log_handler
 
     def get_repository(self, reponame=None, authname=None):
-        """Return the version control repository with the given name, or the
-        default repository if `None`.
+        """Return the version control repository with the given name,
+        or the default repository if `None`.
         
-        The standard way of retrieving repositories is to use the methods
-        of `RepositoryManager`. This method is retained here for backward
-        compatibility.
+        The standard way of retrieving repositories is to use the
+        methods of `RepositoryManager`. This method is retained here
+        for backward compatibility.
         
         :param reponame: the name of the repository
-        :param authname: the user name for authorization (not used anymore,
-                         left here for compatibility with 0.11)
+        :param authname: the user name for authorization (not used
+                         anymore, left here for compatibility with
+                         0.11)
         """
         return RepositoryManager(self).get_repository(reponame)
 
     def create(self, options=[]):
-        """Create the basic directory structure of the environment, initialize
-        the database and populate the configuration file with default values.
+        """Create the basic directory structure of the environment,
+        initialize the database and populate the configuration file
+        with default values.
 
-        If options contains ('inherit', 'file'), default values will not be
-        loaded; they are expected to be provided by that file or other options.
+        If options contains ('inherit', 'file'), default values will
+        not be loaded; they are expected to be provided by that file
+        or other options.
         """
         # Create the directory structure
         if not os.path.exists(self.path):
@@ -514,17 +531,17 @@ class Environment(Component, ComponentManager):
         DatabaseManager(self).init_db()
 
     def get_version(self, db=None, initial=False):
-        """Return the current version of the database.
-        If the optional argument `initial` is set to `True`, the version
-        of the database used at the time of creation will be returned.
+        """Return the current version of the database.  If the
+        optional argument `initial` is set to `True`, the version of
+        the database used at the time of creation will be returned.
 
-        In practice, for database created before 0.11, this will return `False`
-        which is "older" than any db version number.
+        In practice, for database created before 0.11, this will
+        return `False` which is "older" than any db version number.
 
         :since: 0.11
 
-        :since 0.13: deprecation warning: the `db` parameter is no longer used
-                     and will be removed in version 0.14
+        :since 0.13: deprecation warning: the `db` parameter is no
+                     longer used and will be removed in version 0.14
         """
         rows = self.db_query("""
                 SELECT value FROM system WHERE name='%sdatabase_version'
@@ -572,18 +589,18 @@ class Environment(Component, ComponentManager):
                       get_pkginfo(core).get('version', VERSION))
 
     def get_known_users(self, cnx=None):
-        """Generator that yields information about all known users, i.e. users
-        that have logged in to this Trac environment and possibly set their name
-        and email.
+        """Generator that yields information about all known users,
+        i.e. users that have logged in to this Trac environment and
+        possibly set their name and email.
 
         This function generates one tuple for every user, of the form
         (username, name, email) ordered alpha-numerically by username.
 
-        :param cnx: the database connection; if ommitted, a new connection is
-                    retrieved
+        :param cnx: the database connection; if ommitted, a new
+                    connection is retrieved
 
-        :since 0.13: deprecation warning: the `cnx` parameter is no longer used
-                     and will be removed in version 0.14
+        :since 0.13: deprecation warning: the `cnx` parameter is no
+                     longer used and will be removed in version 0.14
         """
         for username, name, email in self.db_query("""
                 SELECT DISTINCT s.sid, n.value, e.value
@@ -599,8 +616,8 @@ class Environment(Component, ComponentManager):
     def backup(self, dest=None):
         """Create a backup of the database.
 
-        :param dest: Destination file; if not specified, the backup is stored in
-                     a file called db_name.trac_version.bak
+        :param dest: Destination file; if not specified, the backup is
+                     stored in a file called db_name.trac_version.bak
         """
         return DatabaseManager(self).backup(dest)
 
@@ -736,10 +753,11 @@ def open_environment(env_path=None, use_cache=False):
     """Open an existing environment object, and verify that the database is up
     to date.
 
-    :param env_path: absolute path to the environment directory; if ommitted,
-                     the value of the `TRAC_ENV` environment variable is used
-    :param use_cache: whether the environment should be cached for subsequent
-                      invocations of this function
+    :param env_path: absolute path to the environment directory; if
+                     ommitted, the value of the `TRAC_ENV` environment
+                     variable is used
+    :param use_cache: whether the environment should be cached for
+                      subsequent invocations of this function
     :return: the `Environment` object
     """
     if not env_path:
@@ -796,7 +814,8 @@ class EnvironmentAdmin(Component):
                """Make a hot backup copy of an environment
                
                The database is backed up to the 'db' directory of the
-               destination, unless the --no-database option is specified.
+               destination, unless the --no-database option is
+               specified.
                """,
                None, self._do_hotcopy)
         yield ('upgrade', '',
