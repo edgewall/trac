@@ -93,6 +93,10 @@ div.trac-modifiedby {
 }
 div.trac-modifiedby :link, div.trac-modifiedby :visited { color: inherit }
 
+/* Styles related to RTL support */
+.rtl { direction: rtl; }
+.rtl div.wiki-toc { float: left; }
+
 /* TracIni default value */
 div.tracini td.default { font-size: 90% }
 div.tracini td.nodefault {
