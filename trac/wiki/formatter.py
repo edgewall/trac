@@ -139,6 +139,7 @@ class WikiProcessor(object):
                               'default': self._default_processor,
                               'comment': self._comment_processor,
                               'div': self._div_processor,
+                              'rtl': self._rtl_processor,
                               'span': self._span_processor,
                               'Span': self._span_processor,
                               'td': self._td_processor,
@@ -220,10 +221,15 @@ class WikiProcessor(object):
     def _div_processor(self, text):
         if not self.args:
             self.args = {}
-        if 'class' not in self.args:
-            self.args['class'] = 'wikipage'
+        self.args.setdefault('class', 'wikipage')
         return self._elt_processor('div', format_to_html, text)
     
+    def _rtl_processor(self, text):
+        if not self.args:
+            self.args = {}
+        self.args['class'] = ('rtl ' + self.args.get('class', '')).rstrip()
+        return self._elt_processor('div', format_to_html, text)
+
     def _span_processor(self, text):
         if self.args is None:
             args, self.args = parse_args(text, strict=True)
@@ -247,8 +253,7 @@ class WikiProcessor(object):
     def _table_processor(self, text):
         if not self.args:
             self.args = {}
-        if 'class' not in self.args:
-            self.args['class'] = 'wiki'
+        self.args.setdefault('class', 'wiki')
         try:
             return self._elt_processor('table', self._format_table, text)
         except ProcessorError, e:

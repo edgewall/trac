@@ -895,6 +895,13 @@ Go ahead, edit it freely.
  }}}
 etc.
 }}}
+and
+{{{#!rtl
+Some RTL text
+}}}
+{{{#!rtl class="important"
+with an additional class
+}}}
 Done.
 ------------------------------
 <p>
@@ -910,10 +917,22 @@ And now it's <span class="important"><strong>TIME FOR BED! </strong></span>. Rea
 etc.
 </p>
 </div><p>
+and
+</p>
+<div class="rtl"><p>
+Some RTL text
+</p>
+</div><div class="rtl important"><p>
+with an additional class
+</p>
+</div><p>
 Done.
 </p>
 ------------------------------
 And now it's [[span(...)]]. Really.
+ […]
+and
+ […]
  […]
 Done.
 ============================== div and Span wiki processors
