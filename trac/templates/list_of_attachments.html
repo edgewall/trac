@@ -35,7 +35,7 @@ Arguments:
               </li>
             </py:for>
           </ul>
-          <p py:if="alist.attachments">
+          <p py:if="alist.download_href">
             Download all attachments as: <a rel="nofollow" href="$alist.download_href">.zip</a>
           </p>
         </div>
@@ -51,7 +51,7 @@ Arguments:
               </dd>
             </py:for>
           </dl>
-          <p py:if="alist.attachments">
+          <p py:if="alist.attachments and alist.download_href">
             Download all attachments as: <a rel="nofollow" href="$alist.download_href">.zip</a>
           </p>
           <xi:include href="attach_file_form.html"/>

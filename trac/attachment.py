@@ -363,6 +363,11 @@ class AttachmentModule(Component):
         """Maximum allowed file size (in bytes) for ticket and wiki 
         attachments.""")
 
+    max_zip_size = IntOption('attachment', 'max_zip_size', 2097152,
+        """Maximum allowed total size (in bytes) for an attachment list to be
+        downloadable as a `.zip`. Set this to -1 to disable download as `.zip`.
+        (''since 0.13'')""")
+
     render_unsafe_content = BoolOption('attachment', 'render_unsafe_content',
                                        'false',
         """Whether attachments should be rendered in the browser, or
@@ -482,11 +487,13 @@ class AttachmentModule(Component):
         for attachment in Attachment.select(self.env, parent.realm, parent.id):
             if 'ATTACHMENT_VIEW' in context.perm(attachment.resource):
                 attachments.append(attachment)
+        total_size = sum(attachment.size for attachment in attachments)
         new_att = parent.child('attachment')
         return {'attach_href': get_resource_url(self.env, new_att,
                                                 context.href),
                 'download_href': get_resource_url(self.env, new_att,
-                                                  context.href, format='zip'),
+                                                  context.href, format='zip')
+                                 if total_size <= self.max_zip_size else None,
                 'can_create': 'ATTACHMENT_CREATE' in context.perm(new_att),
                 'attachments': attachments,
                 'parent': context.resource}
@@ -711,14 +718,19 @@ class AttachmentModule(Component):
             'attachment': attachment, 'max_size': self.max_size}
 
     def _download_as_zip(self, req, parent, attachments=None):
+        if attachments is None:
+            attachments = Attachment.select(self.env, parent.realm, parent.id)
+        total_size = sum(attachment.size for attachment in attachments)
+        if total_size > self.max_zip_size:
+            raise TracError(_("Maximum total attachment size: %(num)s bytes",
+                              num=self.max_zip_size), _("Download failed"))
+        
         req.send_response(200)
         req.send_header('Content-Type', 'application/zip')
         filename = 'attachments-%s-%s.zip' % \
                    (parent.realm, re.sub(r'[/\\:]', '-', unicode(parent.id)))
         req.send_header('Content-Disposition',
                         content_disposition('inline', filename))
-        if attachments is None:
-            attachments = Attachment.select(self.env, parent.realm, parent.id)
 
         from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
 
