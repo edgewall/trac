@@ -730,8 +730,8 @@ class MilestoneModule(Component):
                     UPDATE ticket SET milestone=%s
                     WHERE milestone=%s and status != 'closed'
                     """, (retarget_to, old_name))
-                self.env.log.info("Tickets associated with milestone %s "
-                                  "retargeted to %s" % (old_name, retarget_to))
+                self.log.info("Tickets associated with milestone %s "
+                              "retargeted to %s" % (old_name, retarget_to))
         else:
             milestone.insert()
 

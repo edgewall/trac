@@ -898,9 +898,9 @@ class LegacyAttachmentPolicy(Component):
         if legacy_action:
             decision = legacy_action in perm(resource.parent)
             if not decision:
-                self.env.log.debug('LegacyAttachmentPolicy denied %s '
-                                   'access to %s. User needs %s' %
-                                   (username, resource, legacy_action))
+                self.log.debug('LegacyAttachmentPolicy denied %s access to '
+                               '%s. User needs %s' %
+                               (username, resource, legacy_action))
             return decision
         else:
             for d in self.delegates:

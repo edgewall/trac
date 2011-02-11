@@ -111,7 +111,7 @@ class MySQLConnector(Component):
             from trac.db_default import schema
         for table in schema:
             for stmt in self.to_sql(table):
-                self.env.log.debug(stmt)
+                self.log.debug(stmt)
                 cursor.execute(stmt)
         cnx.commit()
 

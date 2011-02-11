@@ -29,7 +29,7 @@ from genshi.builder import tag
 from trac.config import Option, IntOption 
 from trac.core import *
 from trac.db import get_column_names
-from trac.mimeview.api import IContentConverter, Mimeview, RenderingContext
+from trac.mimeview.api import IContentConverter, Mimeview
 from trac.resource import Resource
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Milestone, group_milestones
@@ -47,6 +47,7 @@ from trac.web.chrome import (INavigationContributor, Chrome,
                              web_context)
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.macros import WikiMacroBase # TODO: should be moved in .api
+
 
 class QuerySyntaxError(TracError):
     """Exception raised when a ticket query cannot be parsed from a string."""

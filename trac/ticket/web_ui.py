@@ -1261,8 +1261,8 @@ class TicketModule(Component):
 
         # After saving the changes, apply the side-effects.
         for controller in controllers:
-            self.env.log.debug("Side effect for %s" %
-                               controller.__class__.__name__)
+            self.log.debug("Side effect for %s" %
+                           controller.__class__.__name__)
             controller.apply_action_side_effects(req, ticket, action)
 
         req.redirect(req.href.ticket(ticket.id) + fragment)

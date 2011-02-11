@@ -78,7 +78,7 @@ class PHPRenderer(Component):
     def render(self, context, mimetype, content, filename=None, rev=None):
         # -n to ignore php.ini so we're using default colors
         cmdline = '%s -sn' % self.path
-        self.env.log.debug("PHP command line: %s" % cmdline)
+        self.log.debug("PHP command line: %s" % cmdline)
 
         content = content_to_unicode(self.env, content, mimetype)
         content = content.encode('utf-8')
