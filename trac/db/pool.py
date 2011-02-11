@@ -19,6 +19,7 @@ import time
 
 from trac.db.util import ConnectionWrapper
 from trac.util.concurrency import threading
+from trac.util.text import exception_to_unicode
 from trac.util.translation import _
 
 
@@ -142,7 +143,7 @@ class ConnectionPoolBackend(object):
         errmsg = _("Unable to get database connection within %(time)d seconds.",
                    time=timeout)
         if err:
-            errmsg += " (%r)" % err
+            errmsg += " (%s)" % exception_to_unicode(err)
         raise TimeoutError(errmsg)
 
     def _take_cnx(self, connector, kwargs, key, tid):
