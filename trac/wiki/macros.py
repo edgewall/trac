@@ -292,7 +292,7 @@ class PageOutlineMacro(WikiMacroBase):
     """Display a structural outline of the current wiki page, each item in the
     outline being a link to the corresponding heading.
 
-    This macro accepts three optional parameters:
+    This macro accepts four optional parameters:
     
      * The first is a number or range that allows configuring the minimum and
        maximum level of headings that should be included in the outline. For
@@ -303,16 +303,20 @@ class PageOutlineMacro(WikiMacroBase):
      * The second parameter can be used to specify a custom title (the default
        is no title).
      * The third parameter selects the style of the outline. This can be
-       either `inline` or `pullout` (the latter being the default). The `inline`
-       style renders the outline as normal part of the content, while `pullout`
-       causes the outline to be rendered in a box that is by default floated to
-       the right side of the other content.
+       either `inline` or `pullout` (the latter being the default). The
+       `inline` style renders the outline as normal part of the content, while
+       `pullout` causes the outline to be rendered in a box that is by default
+       floated to the right side of the other content.
+     * The fourth parameter specifies whether the outline is numbered or not.
+       It can be either `numbered` or `unnumbered` (the former being the
+       default). This parameter only has an effect in `inline` style.
     """
 
     def expand_macro(self, formatter, name, content):
         min_depth, max_depth = 1, 6
         title = None
-        inline = 0
+        inline = False
+        numbered = True
         if content:
             argv = [arg.strip() for arg in content.split(',')]
             if len(argv) > 0:
@@ -324,8 +328,12 @@ class PageOutlineMacro(WikiMacroBase):
                     min_depth = max_depth = int(depth)
                 if len(argv) > 1:
                     title = argv[1].strip()
-                    if len(argv) > 2:
-                        inline = argv[2].strip().lower() == 'inline'
+                    for arg in argv[2:]:
+                        arg = arg.strip().lower()
+                        if arg == 'inline':
+                            inline = True
+                        elif arg == 'unnumbered':
+                            numbered = False
 
         # TODO: - integrate the rest of the OutlineFormatter directly here
         #       - use formatter.wikidom instead of formatter.source
@@ -339,6 +347,8 @@ class PageOutlineMacro(WikiMacroBase):
             outline = tag.h4(title) + outline
         if not inline:
             outline = tag.div(outline, class_='wiki-toc')
+        elif not numbered:
+            outline = tag.div(outline, class_='wiki-toc-un')
         return outline
 
 
