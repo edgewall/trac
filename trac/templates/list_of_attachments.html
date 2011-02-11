@@ -26,18 +26,23 @@ Arguments:
     <div id="attachments" py:choose="">
       <py:when test="compact and alist.attachments">
         <h3 class="${foldable and 'foldable' or None}">Attachments</h3>
-        <ul>
-          <py:for each="attachment in alist.attachments">
-            <li>
-              ${show_one_attachment(attachment)}
-              <q py:if="compact and attachment.description">${wiki_to_oneliner(context, attachment.description)}</q>
-            </li>
-          </py:for>
-        </ul>
+        <div>
+          <ul>
+            <py:for each="attachment in alist.attachments">
+              <li>
+                ${show_one_attachment(attachment)}
+                <q py:if="compact and attachment.description">${wiki_to_oneliner(context, attachment.description)}</q>
+              </li>
+            </py:for>
+          </ul>
+          <p py:if="alist.attachments">
+            Download all attachments as: <a rel="nofollow" href="$alist.download_href">.zip</a>
+          </p>
+        </div>
       </py:when>
       <py:when test="not compact">
         <h2 class="${foldable and 'foldable' or None}">Attachments</h2>
-        <div py:if="alist.attachments or alist.can_create">
+        <div py:if="alist.attachments or alist.can_create" class="attachments">
           <dl py:if="alist.attachments" class="attachments">
             <py:for each="attachment in alist.attachments">
               <dt>${show_one_attachment(attachment)}</dt>
@@ -46,6 +51,9 @@ Arguments:
               </dd>
             </py:for>
           </dl>
+          <p py:if="alist.attachments">
+            Download all attachments as: <a rel="nofollow" href="$alist.download_href">.zip</a>
+          </p>
           <xi:include href="attach_file_form.html"/>
         </div>
       </py:when>

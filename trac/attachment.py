@@ -18,6 +18,7 @@
 
 from __future__ import with_statement
 
+from cStringIO import StringIO
 from datetime import datetime
 import os.path
 import re
@@ -36,13 +37,13 @@ from trac.mimeview import *
 from trac.perm import PermissionError, IPermissionPolicy
 from trac.resource import *
 from trac.search import search_to_sql, shorten_result
-from trac.util import get_reporter_id, create_unique_file
+from trac.util import content_disposition, create_unique_file, get_reporter_id
 from trac.util.datefmt import format_datetime, from_utimestamp, \
                               to_datetime, to_utimestamp, utc
 from trac.util.text import exception_to_unicode, pretty_size, print_table, \
                            unicode_quote, unicode_unquote
 from trac.util.translation import _, tag_
-from trac.web import HTTPBadRequest, IRequestHandler
+from trac.web import HTTPBadRequest, IRequestHandler, RequestDone
 from trac.web.chrome import (INavigationContributor, add_ctxtnav, add_link,
                              add_stylesheet, web_context)
 from trac.web.href import Href
@@ -398,12 +399,12 @@ class AttachmentModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        match = re.match(r'/(raw-)?attachment/([^/]+)(?:/(.*))?$',
+        match = re.match(r'/(raw-|zip-)?attachment/([^/]+)(?:/(.*))?$',
                          req.path_info)
         if match:
-            raw, realm, path = match.groups()
-            if raw:
-                req.args['format'] = 'raw'
+            format, realm, path = match.groups()
+            if format:
+                req.args['format'] = format[:-1]
             req.args['realm'] = realm
             if path:
                 req.args['path'] = path
@@ -436,9 +437,11 @@ class AttachmentModule(Component):
         add_ctxtnav(req, _('Back to %(parent)s', parent=parent_name), 
                     parent_url)
         
-        if action != 'new' and not filename: 
-            # there's a trailing '/', show the list
-            return self._render_list(req, parent)
+        if not filename: # there's a trailing '/'
+            if req.args.get('format') == 'zip':
+                self._download_as_zip(req, parent)
+            elif action != 'new':
+                return self._render_list(req, parent)
 
         attachment = Attachment(self.env, parent.child('attachment', filename))
         
@@ -481,7 +484,9 @@ class AttachmentModule(Component):
                 attachments.append(attachment)
         new_att = parent.child('attachment')
         return {'attach_href': get_resource_url(self.env, new_att,
-                                                context.href, action='new'),
+                                                context.href),
+                'download_href': get_resource_url(self.env, new_att,
+                                                  context.href, format='zip'),
                 'can_create': 'ATTACHMENT_CREATE' in context.perm(new_att),
                 'attachments': attachments,
                 'parent': context.resource}
@@ -565,15 +570,15 @@ class AttachmentModule(Component):
             return None
         format = kwargs.get('format')
         prefix = 'attachment'
-        if format == 'raw':
+        if format in ('raw', 'zip'):
             kwargs.pop('format')
-            prefix = 'raw-attachment'
+            prefix = format + '-attachment'
         parent_href = unicode_unquote(get_resource_url(self.env,
                             resource.parent(version=None), Href('')))
-        if not resource.id: 
+        if not resource.id:
             # link to list of attachments, which must end with a trailing '/' 
             # (see process_request)
-            return href(prefix, parent_href) + '/'
+            return href(prefix, parent_href, '', **kwargs)
         else:
             return href(prefix, parent_href, resource.id, **kwargs)
 
@@ -705,6 +710,39 @@ class AttachmentModule(Component):
         return {'mode': 'new', 'author': get_reporter_id(req),
             'attachment': attachment, 'max_size': self.max_size}
 
+    def _download_as_zip(self, req, parent, attachments=None):
+        req.send_response(200)
+        req.send_header('Content-Type', 'application/zip')
+        filename = 'attachments-%s-%s.zip' % \
+                   (parent.realm, re.sub(r'[/\\:]', '-', unicode(parent.id)))
+        req.send_header('Content-Disposition',
+                        content_disposition('inline', filename))
+        if attachments is None:
+            attachments = Attachment.select(self.env, parent.realm, parent.id)
+
+        from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
+
+        buf = StringIO()
+        zipfile = ZipFile(buf, 'w', ZIP_DEFLATED)
+        for attachment in attachments:
+            if 'ATTACHMENT_VIEW' not in req.perm(attachment.resource):
+                continue
+            zipinfo = ZipInfo()
+            zipinfo.filename = attachment.filename.encode('utf-8')
+            zipinfo.date_time = attachment.date.utctimetuple()[:6]
+            zipinfo.compress_type = ZIP_DEFLATED
+            zipinfo.comment = attachment.description
+            zipinfo.external_attr = 0644 << 16L # needed since Python 2.5
+            with attachment.open() as fd:
+                zipfile.writestr(zipinfo, fd.read())
+        zipfile.close()
+
+        zip_str = buf.getvalue()
+        req.send_header("Content-Length", len(zip_str))
+        req.end_headers()
+        req.write(zip_str)
+        raise RequestDone()
+
     def _render_list(self, req, parent):
         data = {
             'mode': 'list',
@@ -734,7 +772,10 @@ class AttachmentModule(Component):
 
             # Eventually send the file directly
             format = req.args.get('format')
-            if format in ('raw', 'txt'):
+            if format == 'zip':
+                self._download_as_zip(req, attachment.resource.parent,
+                                      [attachment])
+            elif format in ('raw', 'txt'):
                 if not self.render_unsafe_content:
                     # Force browser to download files instead of rendering
                     # them, since they might contain malicious code enabling 
