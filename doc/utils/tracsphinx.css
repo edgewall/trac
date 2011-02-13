@@ -1,0 +1,70 @@
+/* Trac specific styling */
+
+@import url("sphinxdoc.css");
+
+/* Content */
+
+h1 { color: #555 }
+h2 { border-bottom: 1px solid #ddd }
+
+a, a tt { color: #b00 }
+a:visited, a:visited tt { color: #800 }
+
+:link:hover, :visited:hover,
+a:link:hover tt, a:visited:hover tt {
+    background-color: #eee; 
+    color: #555;
+}
+
+a.headerlink, a.headerlink:hover {
+    color: #bbb !important; 
+    font-size: .8em;
+    font-weight: normal;
+    vertical-align: text-top;
+    margin: 0;
+    padding: 0;
+}
+
+div.body h1 a, div.body h2 a, div.body h3 a,
+div.body h4 a, div.body h5 a, div.body h6 a {
+    background: none;
+    color: #555;
+}
+
+dl.class, dl.function {
+    -moz-box-shadow: 0 0 7px 0 #888;
+    -webkit-box-shadow: 0 0 7px 0 #888;
+    box-shadow: 0 0 7px 0 #888;
+    padding: .5em;
+}
+
+dl.class > dt, dl.function > dt {
+    border-bottom: 1px solid #ddd;
+}
+
+
+/* Navigation */
+
+div.related ul li a { color: #b00 }
+div.related ul li a:hover {
+    color: #b00 
+}
+
+/* Sidebar */
+
+div.sphinxsidebar h3 a,
+div.sphinxsidebar h4 a {
+    color: #b00;
+}
+
+div.sphinxsidebar h3,
+div.sphinxsidebar h4 {
+    padding: 0;
+    color: black;
+}
+
+div.sphinxsidebar h3, div.sphinxsidebar h4 {
+    background: none;
+    border: none;
+    border-bottom: 1px solid #ddd;
+}
