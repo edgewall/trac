@@ -3,13 +3,15 @@
 # Trac documentation build configuration file, created by
 # sphinx-quickstart on Wed May 14 09:05:13 2008.
 #
-# This file is execfile()d with the current directory set to its containing dir.
+# This file is execfile()d with the current directory set to its
+# containing dir.
 #
-# The contents of this file are pickled, so don't put values in the namespace
-# that aren't pickleable (module imports are okay, they're removed automatically).
+# The contents of this file are pickled, so don't put values in the
+# namespace that aren't pickleable (module imports are okay, they're
+# removed automatically).
 #
-# All configuration values have a default value; values that are commented out
-# serve to show the default value.
+# All configuration values have a default value; values that are
+# commented out serve to show the default value.
 
 import sys, os
 
@@ -25,6 +27,7 @@ url = 'http://trac.edgewall.org'
 version = '0.13'
 # The full version, including alpha/beta/rc tags.
 release = '0.13'
+
 # Devel or Release mode for the documentation (if devel, include TODOs,
 # can also be used in conditionals: .. ifconfig :: devel)
 devel = True
@@ -34,9 +37,9 @@ if devel:
 
 
 
-# If your extensions are in another directory, add it here. If the directory
-# is relative to the documentation root, use os.path.abspath to make it
-# absolute, like shown here.
+# If your extensions are in another directory, add it here. If the
+# directory is relative to the documentation root, use os.path.abspath
+# to make it absolute, like shown here.
 # sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 # General configuration
@@ -100,8 +103,6 @@ unused_docs = []
 exclude_patterns = [
     'contents.rst',
     'install',
-    'guide',
-    'admin',
 ]
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
@@ -248,7 +249,7 @@ pdf_stylesheets = [
     'sphinx',
     'a4',
     'trac',
-    os.path.join(os.path.dirname(__file__), 'trac_dev_pdf.style')
+    os.path.join(os.path.dirname(__file__), 'utils', 'trac_dev_pdf.style')
 ]
 
 # Create a compressed PDF
