@@ -430,7 +430,7 @@ apidoc-%:
 
 epydoc: apiref
 apiref: doc-images
-	@python doc/runepydoc.py --config=doc/epydoc.conf \
+	@python doc/utils/runepydoc.py --config=doc/utils/epydoc.conf \
 	    $(epydocopts) $(if $(dotpath),--dotpath=$(dotpath))
 
 doc-images: $(addprefix build/,$(wildcard doc/images/*.png))
