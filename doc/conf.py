@@ -185,6 +185,8 @@ html_use_modindex = True
 htmlhelp_basename = 'Tracdoc'
 
 
+modindex_common_prefix = ['trac.', 'tracopt.']
+
 
 # Options for LaTeX output
 # ------------------------

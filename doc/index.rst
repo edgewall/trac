@@ -1,11 +1,16 @@
-=====
-Index
-=====
-Welcome to Trac's documentation!
---------------------------------
+================================
+Trac |version| API Documentation
+================================
 
 :Release: |release|
 :Date: |today|
+
+*This is work in progress, not every part of the API is even
+mentioned, but what you'll find here should be accurate, otherwise
+it's a bug and you're welcome to open a ticket.*
+
+Content
+=======
 
 .. toctree::
    :maxdepth: 1
@@ -29,7 +34,7 @@ Welcome to Trac's documentation!
 Indices and tables
 ==================
 
-* :ref:`genindex`
+* :ref:`General Index <genindex>`
 * :ref:`modindex`
 * :ref:`search`
 * :doc:`glossary`
@@ -37,3 +42,4 @@ Indices and tables
 .. ifconfig:: devel
 
    * :doc:`todo`
+
