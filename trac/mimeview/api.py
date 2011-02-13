@@ -50,7 +50,7 @@ that can be `read()`.
   `content` might be, see the last paragraph of this description).
 
   So this area is mainly in a ''work in progress'' state, which will
-  be improved along the lines described in #3332.
+  be improved along the lines described in :teo:`#3332`.
 
   In particular, if you are interested in writing `IContentConverter`
   and `IHTMLPreviewRenderer` components, note that those interfaces
@@ -527,7 +527,7 @@ class IContentConverter(Interface):
     """An extension point interface for generic MIME based content
     conversion.
 
-    .. note:: This api will likely change in the future (see #3332)
+    .. note:: This api will likely change in the future (see :teo:`#3332`)
 
     """
 
