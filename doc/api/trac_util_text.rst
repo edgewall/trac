@@ -15,8 +15,8 @@ module will operate in a safe way on individual characters, and won't
 risk to eventually cut a multi-byte sequence in the middle. Similar
 issues with Python string handling routines are avoided as well, like
 surprising results when splitting text in lines. For example, did you
-know that e.g. "Priorità" is encoded as ``'Priorit\xc3\x0a'`` in
-UTF-8? Stripping this in some locales can cut away the trailing
+know that "Priorità" is encoded as ``'Priorit\xc3\x0a'`` in UTF-8?
+`strip()`ping this in some locales can cut away the trailing
 ``\x0a``...
 
 The drawback is that most of the outside world, while eventually

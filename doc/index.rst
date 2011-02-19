@@ -5,9 +5,9 @@ Trac |version| API Documentation
 :Release: |release|
 :Date: |today|
 
-*This is work in progress, not every part of the API is even
-mentioned, but what you'll find here should be accurate, otherwise
-it's a bug and you're welcome to open a ticket.*
+*This is work in progress. The API is not yet fully covered, but what
+you'll find here should be accurate, otherwise it's a bug and you're
+welcome to open a ticket for reporting the problem.*
 
 Content
 =======
