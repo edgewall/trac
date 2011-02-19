@@ -6,6 +6,7 @@
 
 div.footer {
     background-color: #4b4d4d;
+    text-align: center;
 }
 
 div.bodywrapper {
@@ -72,6 +73,7 @@ h1, h2, h3, h4 {
 h1 { color: #555 }
 h2 { border-bottom: 1px solid #ddd }
 
+div.body a { text-decoration: none }
 a, a tt { color: #b00 }
 a:visited, a:visited tt { color: #800 }
 
