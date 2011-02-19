@@ -550,8 +550,8 @@ class Environment(Component, ComponentManager):
 
     def setup_config(self):
         """Load the configuration file."""
-        self.config = Configuration(os.path.join(self.path, 'conf',
-                                                 'trac.ini'))
+        self.config = Configuration(os.path.join(self.path, 'conf', 'trac.ini'),
+                                    {'envname': os.path.basename(self.path)})
         self.setup_log()
         from trac.loader import load_components
         plugins_dir = self.shared_plugins_dir

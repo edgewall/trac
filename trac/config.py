@@ -14,7 +14,7 @@
 
 from __future__ import with_statement
 
-from ConfigParser import ConfigParser
+from ConfigParser import SafeConfigParser
 from copy import deepcopy
 import os.path
 
@@ -50,9 +50,9 @@ class Configuration(object):
     the last modification time of the configuration file, and reparses it
     when the file has changed.
     """
-    def __init__(self, filename):
+    def __init__(self, filename, params={}):
         self.filename = filename
-        self.parser = ConfigParser()
+        self.parser = SafeConfigParser(params)
         self._old_sections = {}
         self.parents = []
         self._lastmtime = 0
