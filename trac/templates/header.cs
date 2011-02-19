@@ -58,7 +58,7 @@
     if:first ?>first<?cs /if ?><?cs
     if:(item.active || first) && last ?> <?cs /if ?><?cs
     if:last ?>last<?cs /if ?>"<?cs
-   /if ?>><?cs var:item ?></li><?cs
+   /if ?>><?cs var:item.label ?></li><?cs
    set:idx = idx + 1 ?><?cs
   /each ?></ul><?cs
  /if ?><?cs

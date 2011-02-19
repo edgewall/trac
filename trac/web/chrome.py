@@ -679,9 +679,7 @@ class Chrome(Component):
         req.hdf['chrome.logo'] = req.chrome['logo']
 
         for category, items in req.chrome['nav'].items():
-            for item in items:
-                prefix = 'chrome.nav.%s.%s' % (category, item['name'])
-                req.hdf[prefix] = item['label']
+            req.hdf['chrome.nav.%s' % category] = items
 
     def populate_data(self, req, data):
         d = self._default_context_data.copy()
