@@ -28,7 +28,8 @@ from trac.config import *
 from trac.notification import NotifyEmail
 from trac.ticket.api import TicketSystem
 from trac.util.datefmt import to_utimestamp
-from trac.util.text import CRLF, wrap, obfuscate_email_address, to_unicode
+from trac.util.text import CRLF, wrap, obfuscate_email_address, to_unicode, \
+                           text_width
 from trac.util.translation import deactivate, reactivate
 
 class TicketNotificationSystem(Component):
@@ -80,10 +81,10 @@ class TicketNotifyEmail(NotifyEmail):
     def __init__(self, env):
         NotifyEmail.__init__(self, env)
         self.prev_cc = []
-        self.ambiguous_char_width = env.config.get('notification',
-                                                   'ambiguous_char_width',
-                                                   'single')
-        self.text_widths = {}
+        ambiguous_char_width = env.config.get('notification',
+                                              'ambiguous_char_width',
+                                              'single')
+        self.ambiwidth = (1, 2)[ambiguous_char_width == 'double']
 
     def notify(self, ticket, newticket=True, modtime=None):
         """Send ticket change notification e-mail (untranslated)"""
@@ -120,7 +121,7 @@ class TicketNotifyEmail(NotifyEmail):
                 change_data.update({
                     'author': obfuscate_email_address(author),
                     'comment': wrap(change['comment'], self.COLS, ' ', ' ',
-                                    CRLF)
+                                    CRLF, self.ambiwidth)
                     })
                 link += '#comment:%s' % str(change.get('cnum', ''))
                 for field, values in change['fields'].iteritems():
@@ -128,8 +129,10 @@ class TicketNotifyEmail(NotifyEmail):
                     new = values['new']
                     newv = ''
                     if field == 'description':
-                        new_descr = wrap(new, self.COLS, ' ', ' ', CRLF)
-                        old_descr = wrap(old, self.COLS, '> ', '> ', CRLF)
+                        new_descr = wrap(new, self.COLS, ' ', ' ', CRLF,
+                                         self.ambiwidth)
+                        old_descr = wrap(old, self.COLS, '> ', '> ', CRLF,
+                                         self.ambiwidth)
                         old_descr = old_descr.replace(2 * CRLF, CRLF + '>' + \
                                                       CRLF)
                         cdescr = CRLF
@@ -146,11 +149,13 @@ class TicketNotifyEmail(NotifyEmail):
                         if delcc:
                             chgcc += wrap(" * cc: %s (removed)" %
                                           ', '.join(delcc), 
-                                          self.COLS, ' ', ' ', CRLF) + CRLF
+                                          self.COLS, ' ', ' ', CRLF,
+                                          self.ambiwidth) + CRLF
                         if addcc:
                             chgcc += wrap(" * cc: %s (added)" %
                                           ', '.join(addcc), 
-                                          self.COLS, ' ', ' ', CRLF) + CRLF
+                                          self.COLS, ' ', ' ', CRLF,
+                                          self.ambiwidth) + CRLF
                         if chgcc:
                             changes_body += chgcc
                         self.prev_cc += old and self.parse_cc(old) or []
@@ -171,7 +176,8 @@ class TicketNotifyEmail(NotifyEmail):
                                                       spacer_old, spacer_new,
                                                       new)
                         chg = chg.replace(CRLF, CRLF + length * ' ')
-                        chg = wrap(chg, self.COLS, '', length * ' ', CRLF)
+                        chg = wrap(chg, self.COLS, '', length * ' ', CRLF,
+                                   self.ambiwidth)
                         changes_body += ' %s%s' % (chg, CRLF)
                     if newv:
                         change_data[field] = {'oldvalue': old, 'newvalue': new}
@@ -183,7 +189,8 @@ class TicketNotifyEmail(NotifyEmail):
         ticket_values['id'] = ticket.id
         ticket_values['description'] = wrap(
             ticket_values.get('description', ''), self.COLS,
-            initial_indent=' ', subsequent_indent=' ', linesep=CRLF)
+            initial_indent=' ', subsequent_indent=' ', linesep=CRLF,
+            ambiwidth=self.ambiwidth)
         ticket_values['new'] = self.newticket
         ticket_values['link'] = link
         
@@ -260,7 +267,7 @@ class TicketNotifyEmail(NotifyEmail):
                                       (width[2 * idx]
                                        - self.get_text_width(f['label'])
                                        + 2 * idx) * ' ',
-                                      2 * ' ', CRLF)
+                                      2 * ' ', CRLF, self.ambiwidth)
                 cell_tmp[idx] += CRLF
                 i += 1
         cell_l = cell_tmp[0].splitlines()
@@ -294,7 +301,8 @@ class TicketNotifyEmail(NotifyEmail):
 
     def format_hdr(self):
         return '#%s: %s' % (self.ticket.id, wrap(self.ticket['summary'],
-                                                 self.COLS, linesep=CRLF))
+                                                 self.COLS, linesep=CRLF,
+                                                 ambiwidth=self.ambiwidth))
 
     def format_subj(self, summary):
         template = self.config.get('notification','ticket_subject_template')
@@ -394,21 +402,5 @@ class TicketNotifyEmail(NotifyEmail):
         NotifyEmail.send(self, torcpts, ccrcpts, hdrs)
 
     def get_text_width(self, text):
-        ambiwidth = (1, 2)[self.ambiguous_char_width == 'double']
-        text = to_unicode(text)
-
-        if text in self.text_widths:
-            return self.text_widths[text]
-
-        width = 0
-        for ch in text:
-            eaw = east_asian_width(ch)
-            if eaw in 'WF':
-                width += 2
-            elif eaw == 'A':
-                width += ambiwidth
-            else:
-                width += 1
-        self.text_widths[text] = width
-        return width
+        return text_width(text, ambiwidth=self.ambiwidth)
 

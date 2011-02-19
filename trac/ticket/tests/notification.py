@@ -722,7 +722,7 @@ class NotificationTestCase(unittest.TestCase):
   Priority:  メジャー(mаjor)  |  Milestone:  マイルストーン1
  Component:  コンポーネント1  |    Version:  2.0 аlphа
 Resolution:  fixed            |   Keywords:"""
-        self._validate_props_format(formatted, ticket, True)
+        self._validate_props_format(formatted, ticket)
 
     def test_props_format_ambiwidth_double(self):
         self.env.config.set('notification', 'mime_encoding', 'none')
@@ -746,7 +746,7 @@ Resolution:  fixed            |   Keywords:"""
   Priority:  メジャー(mаjor)  |  Milestone:  マイルストーン1
  Component:  コンポーネント1   |    Version:  2.0 аlphа
 Resolution:  fixed             |   Keywords:"""
-        self._validate_props_format(formatted, ticket, True)
+        self._validate_props_format(formatted, ticket)
 
     def test_props_format_obfuscated_email(self):
         self.env.config.set('notification', 'mime_encoding', 'none')
@@ -769,7 +769,7 @@ Resolution:  fixed             |   Keywords:"""
   Priority:  major       |  Milestone:  milestone1
  Component:  component1  |    Version:  2.0
 Resolution:  fixed       |   Keywords:"""
-        self._validate_props_format(formatted, ticket, True)
+        self._validate_props_format(formatted, ticket)
 
     def test_props_format_wrap_leftside(self):
         self.env.config.set('notification', 'mime_encoding', 'none')
@@ -813,7 +813,38 @@ Resolution:  fixed       |   Keywords:"""
   proident, sunt in culpa qui officia deserunt   |
   mollit anim id est laborum.                    |
 Resolution:  fixed                               |"""
-        self._validate_props_format(formatted, ticket, True)
+        self._validate_props_format(formatted, ticket)
+
+    def test_props_format_wrap_leftside_unicode(self):
+        self.env.config.set('notification', 'mime_encoding', 'none')
+        ticket = Ticket(self.env)
+        ticket['summary'] = u'This is a summary'
+        ticket['reporter'] = u'anonymous'
+        ticket['status'] = u'new'
+        ticket['owner'] = u'somebody'
+        ticket['type'] = u'defect'
+        ticket['priority'] = u'major'
+        ticket['milestone'] = u'milestone1'
+        ticket['component'] = u'Trac は BSD ライセンスのもとで配' \
+                              u'布されています。[1:]このライセ' \
+                              u'ンスの全文は、配布ファイルに' \
+                              u'含まれている [3:COPYING] ファイル' \
+                              u'と同じものが[2:オンライン]で参' \
+                              u'照できます。'
+        ticket['version'] = u'2.0'
+        ticket['resolution'] = u'fixed'
+        ticket['keywords'] = u''
+        ticket.insert()
+        formatted = """\
+  Reporter:  anonymous                           |      Owner:  somebody
+      Type:  defect                              |     Status:  new
+  Priority:  major                               |  Milestone:  milestone1
+ Component:  Trac は BSD ライセンスのもとで配布  |    Version:  2.0
+  されています。[1:]このライセンスの全文は、配   |   Keywords:
+  布ファイルに含まれている [3:COPYING] ファイル  |
+  と同じものが[2:オンライン]で参照できます。     |
+Resolution:  fixed                               |"""
+        self._validate_props_format(formatted, ticket)
 
     def test_props_format_wrap_rightside(self):
         self.env.config.set('notification', 'mime_encoding', 'none')
@@ -857,7 +888,35 @@ Resolution:  fixed       |  tempor incididunt ut labore et dolore magna
                          |  laborum.
                          |    Version:  2.0
                          |   Keywords:"""
-        self._validate_props_format(formatted, ticket, True)
+        self._validate_props_format(formatted, ticket)
+
+    def test_props_format_wrap_rightside_unicode(self):
+        self.env.config.set('notification', 'mime_encoding', 'none')
+        ticket = Ticket(self.env)
+        ticket['summary'] = u'This is a summary'
+        ticket['reporter'] = u'anonymous'
+        ticket['status'] = u'new'
+        ticket['owner'] = u'somebody'
+        ticket['type'] = u'defect'
+        ticket['priority'] = u'major'
+        ticket['milestone'] = u'Trac 在经过修改的BSD协议下发布。' \
+                              u'[1:]协议的完整文本可以[2:在线查' \
+                              u'看]也可在发布版的 [3:COPYING] 文' \
+                              u'件中找到。'
+        ticket['component'] = u'component1'
+        ticket['version'] = u'2.0'
+        ticket['resolution'] = u'fixed'
+        ticket['keywords'] = u''
+        ticket.insert()
+        formatted = """\
+  Reporter:  anonymous   |      Owner:  somebody
+      Type:  defect      |     Status:  new
+  Priority:  major       |  Milestone:  Trac 在经过修改的BSD协议下发布。
+ Component:  component1  |  [1:]协议的完整文本可以[2:在线查看]也可在发布版
+Resolution:  fixed       |  的 [3:COPYING] 文件中找到。
+                         |    Version:  2.0
+                         |   Keywords:"""
+        self._validate_props_format(formatted, ticket)
 
     def test_props_format_wrap_bothsides(self):
         self.env.config.set('notification', 'mime_encoding', 'none')
@@ -905,11 +964,48 @@ Resolution:  fixed       |  tempor incididunt ut labore et dolore magna
   officia deserunt mollit anim id    |    Version:  2.0
   est laborum.                       |   Keywords:
 Resolution:  fixed                   |"""
-        self._validate_props_format(formatted, ticket, True)
+        self._validate_props_format(formatted, ticket)
 
-    def _validate_props_format(self, expected, ticket, newtk):
+    def test_props_format_wrap_bothsides_unicode(self):
+        self.env.config.set('notification', 'mime_encoding', 'none')
+        self.env.config.set('notification', 'ambiguous_char_width', 'double')
+        ticket = Ticket(self.env)
+        ticket['summary'] = u'This is a summary'
+        ticket['reporter'] = u'anonymous'
+        ticket['status'] = u'new'
+        ticket['owner'] = u'somebody'
+        ticket['type'] = u'defect'
+        ticket['priority'] = u'major'
+        ticket['milestone'] = u'Trac 在经过修改的BSD协议下发布。' \
+                              u'[1:]协议的完整文本可以[2:在线查' \
+                              u'看]也可在发布版的 [3:COPYING] 文' \
+                              u'件中找到。'
+        ticket['component'] = u'Trac は BSD ライセンスのもとで配' \
+                              u'布されています。[1:]このライセ' \
+                              u'ンスの全文は、𠀋配布ファイル' \
+                              u'に含まれている[3:CОPYING]ファイ' \
+                              u'ルと同じものが[2:オンライン]で' \
+                              u'参照できます。'
+        ticket['version'] = u'2.0'
+        ticket['resolution'] = u'fixed'
+        ticket['keywords'] = u''
+        ticket.insert()
+        formatted = """\
+  Reporter:  anonymous               |      Owner:  somebody
+      Type:  defect                  |     Status:  new
+  Priority:  major                   |  Milestone:  Trac 在经过修改的BSD协
+ Component:  Trac は BSD ライセンス  |  议下发布。[1:]协议的完整文本可以[2:
+  のもとで配布されています。[1:]こ   |  在线查看]也可在发布版的 [3:COPYING]
+  のライセンスの全文は、𠀋配布ファ   |  文件中找到。
+  イルに含まれている[3:CОPYING]フ   |    Version:  2.0
+  ァイルと同じものが[2:オンライン]   |   Keywords:
+  で参照できます。                   |
+Resolution:  fixed                   |"""
+        self._validate_props_format(formatted, ticket)
+
+    def _validate_props_format(self, expected, ticket):
         tn = TicketNotifyEmail(self.env)
-        tn.notify(ticket, newticket=newtk)
+        tn.notify(ticket, newticket=True)
         message = notifysuite.smtpd.get_message()
         (headers, body) = parse_smtp_message(message)
         bodylines = body.splitlines()
