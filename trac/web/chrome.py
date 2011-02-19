@@ -738,21 +738,6 @@ class Chrome(Component):
             logo = {'link': self.logo_link, 'alt': self.logo_alt}
         return logo
 
-    def populate_hdf(self, req):
-        """Add chrome-related data to the HDF (deprecated)."""
-        req.hdf['HTTP.PathInfo'] = req.path_info
-        req.hdf['htdocs_location'] = req.chrome['htdocs_location']
-
-        req.hdf['chrome.href'] = req.href.chrome()
-        req.hdf['chrome.links'] = req.chrome['links']
-        req.hdf['chrome.scripts'] = req.chrome['scripts']
-        req.hdf['chrome.logo'] = req.chrome['logo']
-
-        for category, items in req.chrome['nav'].items():
-            for item in items:
-                prefix = 'chrome.nav.%s.%s' % (category, item['name'])
-                req.hdf[prefix] = item['label']
-
     def populate_data(self, req, data):
         d = self._default_context_data.copy()
         d['trac'] = {
