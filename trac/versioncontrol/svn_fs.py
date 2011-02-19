@@ -16,7 +16,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 #         Christian Boos <cboos@neuf.fr>
 
-"""Filesystem access to Subversion repositories.
+"""
 
 Note about Unicode
 ------------------
