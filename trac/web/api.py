@@ -484,14 +484,6 @@ class Request(object):
     def send_error(self, exc_info, template='error.html',
                    content_type='text/html', status=500, env=None, data={}):
         try:
-            if template.endswith('.cs') and self.hdf: # FIXME: remove this
-                if self.args.has_key('hdfdump'):
-                    self.perm.require('TRAC_ADMIN')
-                    content_type = 'text/plain'
-                    data = str(self.hdf)
-                else:
-                    data = self.hdf.render(template)
-
             if template.endswith('.html'):
                 if env:
                     from trac.web.chrome import Chrome

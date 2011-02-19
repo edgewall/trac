@@ -127,12 +127,9 @@ class AdminModule(Component):
             data = {}
             cstmpl, ct = provider.process_admin_request(req, cat_id, panel_id,
                                                         path_info)
-            if isinstance(cstmpl, basestring):
-                output = req.hdf.render(cstmpl)
-            else:
-                output = cstmpl.render()
+            output = cstmpl.render()
 
-            title = 'Untitled'
+            title = _("Untitled")
             for panel in panels:
                 if (panel[0], panel[2]) == (cat_id, panel_id):
                     title = panel[3]
