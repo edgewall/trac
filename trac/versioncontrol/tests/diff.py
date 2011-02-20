@@ -2,6 +2,10 @@ from trac.versioncontrol import diff
 
 import unittest
 
+def get_opcodes(*args, **kwargs):
+    for hunk in diff.get_filtered_hunks(*args, **kwargs):
+        for opcode in hunk:
+            yield opcode
 
 class DiffTestCase(unittest.TestCase):
 
@@ -17,93 +21,83 @@ class DiffTestCase(unittest.TestCase):
         self.assertEqual((1, -1), diff._get_change_extent('xzzx', 'xyx'))
 
     def test_insert_blank_line(self):
-        opcodes = diff._get_opcodes(['A', 'B'], ['A', 'B', ''],
-                                     ignore_blank_lines=0)
+        opcodes = get_opcodes(['A', 'B'], ['A', 'B', ''], ignore_blank_lines=0)
         self.assertEqual(('equal', 0, 2, 0, 2), opcodes.next())
         self.assertEqual(('insert', 2, 2, 2, 3), opcodes.next())
         self.assertRaises(StopIteration, opcodes.next)
 
-        opcodes = diff._get_opcodes(['A', 'B'], ['A', 'B', ''],
-                                     ignore_blank_lines=1)
+        opcodes = get_opcodes(['A', 'B'], ['A', 'B', ''], ignore_blank_lines=1)
         self.assertEqual(('equal', 0, 2, 0, 3), opcodes.next())
         self.assertRaises(StopIteration, opcodes.next)
 
-        opcodes = diff._get_opcodes(['A'], ['A', 'B', ''],
-                                     ignore_blank_lines=0)
+        opcodes = get_opcodes(['A'], ['A', 'B', ''], ignore_blank_lines=0)
         self.assertEqual(('equal', 0, 1, 0, 1), opcodes.next())
         self.assertEqual(('insert', 1, 1, 1, 3), opcodes.next())
         self.assertRaises(StopIteration, opcodes.next)
 
-        opcodes = diff._get_opcodes(['A'], ['A', 'B', ''],
-                                     ignore_blank_lines=1)
+        opcodes = get_opcodes(['A'], ['A', 'B', ''], ignore_blank_lines=1)
         self.assertEqual(('equal', 0, 1, 0, 1), opcodes.next())
         self.assertEqual(('insert', 1, 1, 1, 3), opcodes.next())
         self.assertRaises(StopIteration, opcodes.next)
 
     def test_delete_blank_line(self):
-        opcodes = diff._get_opcodes(['A', 'B', ''], ['A', 'B'],
-                                     ignore_blank_lines=0)
+        opcodes = get_opcodes(['A', 'B', ''], ['A', 'B'], ignore_blank_lines=0)
         self.assertEqual(('equal', 0, 2, 0, 2), opcodes.next())
         self.assertEqual(('delete', 2, 3, 2, 2), opcodes.next())
         self.assertRaises(StopIteration, opcodes.next)
 
-        opcodes = diff._get_opcodes(['A', 'B', ''], ['A', 'B'],
-                                     ignore_blank_lines=1)
+        opcodes = get_opcodes(['A', 'B', ''], ['A', 'B'], ignore_blank_lines=1)
         self.assertEqual(('equal', 0, 3, 0, 2), opcodes.next())
         self.assertRaises(StopIteration, opcodes.next)
 
-        opcodes = diff._get_opcodes(['A', 'B', ''], ['A'],
-                                     ignore_blank_lines=0)
+        opcodes = get_opcodes(['A', 'B', ''], ['A'], ignore_blank_lines=0)
         self.assertEqual(('equal', 0, 1, 0, 1), opcodes.next())
         self.assertEqual(('delete', 1, 3, 1, 1), opcodes.next())
         self.assertRaises(StopIteration, opcodes.next)
 
-        opcodes = diff._get_opcodes(['A', 'B', ''], ['A'],
-                                     ignore_blank_lines=1)
+        opcodes = get_opcodes(['A', 'B', ''], ['A'], ignore_blank_lines=1)
         self.assertEqual(('equal', 0, 1, 0, 1), opcodes.next())
         self.assertEqual(('delete', 1, 3, 1, 1), opcodes.next())
         self.assertRaises(StopIteration, opcodes.next)
 
     def test_space_changes(self):
-        opcodes = diff._get_opcodes(['A', 'B b'], ['A', 'B  b'],
-                                     ignore_space_changes=0)
+        opcodes = get_opcodes(['A', 'B b'], ['A', 'B  b'], 
+                              ignore_space_changes=0)
         self.assertEqual(('equal', 0, 1, 0, 1), opcodes.next())
         self.assertEqual(('replace', 1, 2, 1, 2), opcodes.next())
         self.assertRaises(StopIteration, opcodes.next)
 
-        opcodes = diff._get_opcodes(['A', 'B b'], ['A', 'B  b'],
-                                     ignore_space_changes=1)
+        opcodes = get_opcodes(['A', 'B b'], ['A', 'B  b'], 
+                              ignore_space_changes=1)
         self.assertEqual(('equal', 0, 2, 0, 2), opcodes.next())
         self.assertRaises(StopIteration, opcodes.next)
 
     def test_case_changes(self):
-        opcodes = diff._get_opcodes(['A', 'B b'], ['A', 'B B'],
-                                     ignore_case=0)
+        opcodes = get_opcodes(['A', 'B b'], ['A', 'B B'], ignore_case=0)
         self.assertEqual(('equal', 0, 1, 0, 1), opcodes.next())
         self.assertEqual(('replace', 1, 2, 1, 2), opcodes.next())
         self.assertRaises(StopIteration, opcodes.next)
 
-        opcodes = diff._get_opcodes(['A', 'B b'], ['A', 'B B'],
-                                     ignore_case=1)
+        opcodes = get_opcodes(['A', 'B b'], ['A', 'B B'], ignore_case=1)
         self.assertEqual(('equal', 0, 2, 0, 2), opcodes.next())
         self.assertRaises(StopIteration, opcodes.next)
 
     def test_space_and_case_changes(self):
-        opcodes = diff._get_opcodes(['A', 'B b'], ['A', 'B  B'],
-                                     ignore_case=0, ignore_space_changes=0)
+        opcodes = get_opcodes(['A', 'B b'], ['A', 'B  B'], 
+                              ignore_case=0, ignore_space_changes=0)
         self.assertEqual(('equal', 0, 1, 0, 1), opcodes.next())
         self.assertEqual(('replace', 1, 2, 1, 2), opcodes.next())
         self.assertRaises(StopIteration, opcodes.next)
 
-        opcodes = diff._get_opcodes(['A', 'B b'], ['A', 'B  B'],
-                                     ignore_case=1, ignore_space_changes=1)
+        opcodes = get_opcodes(['A', 'B b'], ['A', 'B  B'],
+                              ignore_case=1, ignore_space_changes=1)
         self.assertEqual(('equal', 0, 2, 0, 2), opcodes.next())
         self.assertRaises(StopIteration, opcodes.next)
 
     def test_grouped_opcodes_context1(self):
-        opcodes = diff._get_opcodes(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
-                                    ['A', 'B', 'C', 'd', 'e', 'f', 'G', 'H'])
-        groups = diff._group_opcodes(opcodes, n=1)
+        groups = diff.get_filtered_hunks(
+            ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+            ['A', 'B', 'C', 'd', 'e', 'f', 'G', 'H'], context=1)
         group = groups.next()
         self.assertRaises(StopIteration, groups.next)
         self.assertEqual(('equal', 2, 3, 2, 3), group[0])
@@ -113,8 +107,7 @@ class DiffTestCase(unittest.TestCase):
     def test_grouped_opcodes_context1_ignorecase(self):
         old = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
         new = ['X', 'B', 'C', 'd', 'e', 'f', 'G', 'Y']
-        opcodes = diff._get_opcodes(old, new, ignore_case=1)
-        groups = diff._group_opcodes(opcodes, n=1)
+        groups = diff.get_filtered_hunks(old, new, context=1, ignore_case=1)
         group = groups.next()
         self.assertEqual([('replace', 0, 1, 0, 1), ('equal', 1, 2, 1, 2)],
                          group)
@@ -126,8 +119,7 @@ class DiffTestCase(unittest.TestCase):
     def test_grouped_opcodes_full_context(self):
         old = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
         new = ['X', 'B', 'C', 'd', 'e', 'f', 'G', 'Y']
-        opcodes = diff._get_opcodes(old, new)
-        groups = diff._group_opcodes(opcodes, n=None)
+        groups = diff.get_filtered_hunks(old, new, context=None)
         group = groups.next()
         self.assertRaises(StopIteration, groups.next)
         self.assertEqual([
@@ -138,8 +130,7 @@ class DiffTestCase(unittest.TestCase):
                 ('replace', 7, 8, 7, 8),
                 ], group)
 
-        opcodes = diff._get_opcodes(old, new, ignore_case=1)
-        groups = diff._group_opcodes(opcodes, n=None)
+        groups = diff.get_filtered_hunks(old, new, context=None, ignore_case=1)
         group = groups.next()
         self.assertRaises(StopIteration, groups.next)
         self.assertEqual([
@@ -153,9 +144,9 @@ class DiffTestCase(unittest.TestCase):
         Regression test for #2090. Make sure that the equal block following an
         insert at the top of a file is correct.
         """
-        opcodes = diff._get_opcodes(['B', 'C', 'D', 'E', 'F', 'G'],
-                                    ['A', 'B', 'C', 'D', 'E', 'F', 'G'])
-        groups = diff._group_opcodes(opcodes, n=3)
+        groups = diff.get_filtered_hunks(['B', 'C', 'D', 'E', 'F', 'G'],
+                                         ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+                                         context=3)
         self.assertEqual([('insert', 0, 0, 0, 1), ('equal', 0, 3, 1, 4)],
                          groups.next())
         self.assertRaises(StopIteration, groups.next)
