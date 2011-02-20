@@ -110,6 +110,44 @@ class DiffTestCase(unittest.TestCase):
         self.assertEqual(('replace', 3, 6, 3, 6), group[1])
         self.assertEqual(('equal', 6, 7, 6, 7), group[2])
 
+    def test_grouped_opcodes_context1_ignorecase(self):
+        old = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+        new = ['X', 'B', 'C', 'd', 'e', 'f', 'G', 'Y']
+        opcodes = diff._get_opcodes(old, new, ignore_case=1)
+        groups = diff._group_opcodes(opcodes, n=1)
+        group = groups.next()
+        self.assertEqual([('replace', 0, 1, 0, 1), ('equal', 1, 2, 1, 2)],
+                         group)
+        group = groups.next()
+        self.assertRaises(StopIteration, groups.next)
+        self.assertEqual([('equal', 6, 7, 6, 7), ('replace', 7, 8, 7, 8)],
+                         group)
+
+    def test_grouped_opcodes_full_context(self):
+        old = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+        new = ['X', 'B', 'C', 'd', 'e', 'f', 'G', 'Y']
+        opcodes = diff._get_opcodes(old, new)
+        groups = diff._group_opcodes(opcodes, n=None)
+        group = groups.next()
+        self.assertRaises(StopIteration, groups.next)
+        self.assertEqual([
+                ('replace', 0, 1, 0, 1), 
+                ('equal', 1, 3, 1, 3), 
+                ('replace', 3, 6, 3, 6),
+                ('equal', 6, 7, 6, 7),
+                ('replace', 7, 8, 7, 8),
+                ], group)
+
+        opcodes = diff._get_opcodes(old, new, ignore_case=1)
+        groups = diff._group_opcodes(opcodes, n=None)
+        group = groups.next()
+        self.assertRaises(StopIteration, groups.next)
+        self.assertEqual([
+                ('replace', 0, 1, 0, 1), 
+                ('equal', 1, 7, 1, 7), 
+                ('replace', 7, 8, 7, 8),
+                ], group)
+
     def test_grouped_opcodes_insert_blank_line_at_top(self):
         """
         Regression test for #2090. Make sure that the equal block following an
