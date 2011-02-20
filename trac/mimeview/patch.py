@@ -74,10 +74,10 @@ class PatchRenderer(Component):
         If the diff cannot be parsed, this method returns None.
         """
         def _markup_intraline_change(fromlines, tolines):
-            from trac.versioncontrol.diff import _get_change_extent
+            from trac.versioncontrol.diff import get_change_extent
             for i in xrange(len(fromlines)):
                 fr, to = fromlines[i], tolines[i]
-                (start, end) = _get_change_extent(fr, to)
+                (start, end) = get_change_extent(fr, to)
                 if start != 0 or end != 0:
                     last = end+len(fr)
                     fromlines[i] = fr[:start] + '\0' + fr[start:last] + \

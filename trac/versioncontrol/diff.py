@@ -21,10 +21,11 @@ from genshi import Markup, escape
 
 from trac.util.text import expandtabs
 
-__all__ = ['get_diff_options', 'diff_blocks', 'unified_diff']
+__all__ = ['diff_blocks', 'get_change_extent', 'get_diff_options', 
+           'unified_diff']
 
 
-def _get_change_extent(str1, str2):
+def get_change_extent(str1, str2):
     """Determines the extent of differences between two strings.
     
     Returns a pair containing the offset at which the changes start,
@@ -201,7 +202,7 @@ def diff_blocks(fromlines, tolines, context=None, tabwidth=8,
             if tag == 'replace' and i2 - i1 == j2 - j1:
                 for i in range(i2 - i1):
                     fromline, toline = fromlines[i1 + i], tolines[j1 + i]
-                    (start, end) = _get_change_extent(fromline, toline)
+                    (start, end) = get_change_extent(fromline, toline)
                     if start != 0 or end != 0:
                         last = end + len(fromline)
                         fromlines[i1 + i] = (

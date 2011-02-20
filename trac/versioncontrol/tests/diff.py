@@ -9,16 +9,16 @@ def get_opcodes(*args, **kwargs):
 
 class DiffTestCase(unittest.TestCase):
 
-    def test_get_change_extent(self):
-        self.assertEqual((3, 0), diff._get_change_extent('xxx', 'xxx'))
-        self.assertEqual((0, 0), diff._get_change_extent('', 'xxx'))
-        self.assertEqual((0, 0), diff._get_change_extent('xxx', ''))
-        self.assertEqual((0, 0), diff._get_change_extent('xxx', 'yyy'))
-        self.assertEqual((1, -1), diff._get_change_extent('xxx', 'xyx'))
-        self.assertEqual((1, -1), diff._get_change_extent('xxx', 'xyyyx'))
-        self.assertEqual((1, 0), diff._get_change_extent('xy', 'xzz'))
-        self.assertEqual((1, -1), diff._get_change_extent('xyx', 'xzzx'))
-        self.assertEqual((1, -1), diff._get_change_extent('xzzx', 'xyx'))
+    def testget_change_extent(self):
+        self.assertEqual((3, 0), diff.get_change_extent('xxx', 'xxx'))
+        self.assertEqual((0, 0), diff.get_change_extent('', 'xxx'))
+        self.assertEqual((0, 0), diff.get_change_extent('xxx', ''))
+        self.assertEqual((0, 0), diff.get_change_extent('xxx', 'yyy'))
+        self.assertEqual((1, -1), diff.get_change_extent('xxx', 'xyx'))
+        self.assertEqual((1, -1), diff.get_change_extent('xxx', 'xyyyx'))
+        self.assertEqual((1, 0), diff.get_change_extent('xy', 'xzz'))
+        self.assertEqual((1, -1), diff.get_change_extent('xyx', 'xzzx'))
+        self.assertEqual((1, -1), diff.get_change_extent('xzzx', 'xyx'))
 
     def test_insert_blank_line(self):
         opcodes = get_opcodes(['A', 'B'], ['A', 'B', ''], ignore_blank_lines=0)
