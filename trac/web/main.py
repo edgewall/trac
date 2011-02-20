@@ -42,7 +42,8 @@ from trac.resource import ResourceNotFound
 from trac.util import arity, get_frame_info, get_last_traceback, hex_entropy, \
                       read_file, translation
 from trac.util.concurrency import threading
-from trac.util.datefmt import format_datetime, http_date, localtz, timezone
+from trac.util.datefmt import format_datetime, http_date, localtz, timezone, \
+                              user_time
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode
 from trac.util.translation import _, get_negotiated_locale, has_babel, \
                                   safefmt, tag_
@@ -96,6 +97,11 @@ class RequestDispatcher(Component):
         (''since 0.12.1'')
         """)
 
+    default_date_format = Option('trac', 'default_date_format', '',
+        """The date format. Valid option is 'iso8601' for ISO 8601 format, If
+        not specified, use a browser's language. (''since 0.13'')
+        """)
+
     # Public API
 
     def authenticate(self, req):
@@ -123,6 +129,7 @@ class RequestDispatcher(Component):
             'perm': self._get_perm,
             'session': self._get_session,
             'locale': self._get_locale,
+            'lc_time': self._get_lc_time,
             'tz': self._get_timezone,
             'form_token': self._get_form_token
         })
@@ -247,6 +254,14 @@ class RequestDispatcher(Component):
                                                req.languages)
             self.log.debug("Negotiated locale: %s -> %s", preferred, negotiated)
             return negotiated
+
+    def _get_lc_time(self, req):
+        lc_time = req.session.get('lc_time')
+        if not lc_time or lc_time == 'locale' and not has_babel:
+            lc_time = self.default_date_format
+        if lc_time == 'iso8601':
+            return 'iso8601'
+        return req.locale
 
     def _get_timezone(self, req):
         try:
@@ -597,7 +612,8 @@ def send_project_index(environ, start_response, parent_dir=None,
     else:
         template = 'index.html'
 
-    data = {'trac': {'version': TRAC_VERSION, 'time': format_datetime()},
+    data = {'trac': {'version': TRAC_VERSION,
+                     'time': user_time(req, format_datetime)},
             'req': req}
     if req.environ.get('trac.template_vars'):
         for pair in req.environ['trac.template_vars'].split(','):

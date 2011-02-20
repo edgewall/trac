@@ -33,7 +33,7 @@ from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.util import as_bool
 from trac.util.datefmt import parse_date, utc, to_utimestamp, \
                               get_datetime_format_hint, format_date, \
-                              format_datetime, from_utimestamp
+                              format_datetime, from_utimestamp, user_time
 from trac.util.text import CRLF
 from trac.util.translation import _, tag_
 from trac.ticket import Milestone, Ticket, TicketSystem, group_milestones
@@ -676,7 +676,8 @@ class MilestoneModule(Component):
 
         if 'due' in req.args:
             due = req.args.get('duedate', '')
-            milestone.due = due and parse_date(due, req.tz, 'datetime') or None
+            milestone.due = user_time(req, parse_date, due, hint='datetime') \
+                            if due else None
         else:
             milestone.due = None
 
@@ -710,8 +711,8 @@ class MilestoneModule(Component):
 
         # -- check completed date
         if 'completed' in req.args:
-            completed = completed and parse_date(completed, req.tz,
-                                                 'datetime') or None
+            completed = user_time(req, parse_date, completed,
+                                  hint='datetime') if completed else None
             if completed and completed > datetime.now(utc):
                 warn(_('Completion date may not be in the future'))
         else:
@@ -760,7 +761,7 @@ class MilestoneModule(Component):
         
         data = {
             'milestone': milestone,
-            'datetime_hint': get_datetime_format_hint(),
+            'datetime_hint': get_datetime_format_hint(req.lc_time),
             'default_due': default_due,
             'milestone_groups': [],
         }

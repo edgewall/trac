@@ -18,6 +18,7 @@ import datetime
 import os
 import unittest
 
+from trac.core import TracError
 from trac.util import datefmt
 
 try:
@@ -145,6 +146,337 @@ class UTimestampTestCase(unittest.TestCase):
         self.assertEqual(t, datefmt.from_utimestamp(ts))
 
 
+class ISO8601TestCase(unittest.TestCase):
+    def test_format(self):
+        tz = datefmt.timezone('GMT +2:00')
+        t = datetime.datetime(2010, 8, 28, 11, 45, 56, 123456, tz)
+        self.assertEqual('2010-08-28',
+                         datefmt.format_date(t, tzinfo=tz, locale='iso8601'))
+        self.assertEqual('11:45:56+02:00',
+                         datefmt.format_time(t, tzinfo=tz, locale='iso8601'))
+        self.assertEqual('2010-08-28T11:45:56+02:00',
+                         datefmt.format_datetime(t, tzinfo=tz,
+                                                 locale='iso8601'))
+
+    def test_hint(self):
+        try:
+            datefmt.parse_date('***', locale='iso8601', hint='date')
+        except TracError, e:
+            self.assert_('"YYYY-MM-DD"' in unicode(e))
+        try:
+            datefmt.parse_date('***', locale='iso8601', hint='datetime')
+        except TracError, e:
+            self.assert_(u'"YYYY-MM-DDThh:mm:ss±hh:mm"' in unicode(e))
+        try:
+            datefmt.parse_date('***', locale='iso8601', hint='foobar')
+        except TracError, e:
+            self.assert_('"foobar"' in unicode(e))
+
+
+try:
+    from babel import Locale
+except:
+    I18nDateFormatTestCase = None
+else:
+    class I18nDateFormatTestCase(unittest.TestCase):
+        def test_i18n_format_datetime(self):
+            tz = datefmt.timezone('GMT +2:00')
+            t = datetime.datetime(2010, 8, 28, 11, 45, 56, 123456, datefmt.utc)
+            en_US = Locale.parse('en_US')
+            self.assertEqual('Aug 28, 2010 1:45:56 PM',
+                             datefmt.format_datetime(t, tzinfo=tz,
+                                                     locale=en_US))
+            en_GB = Locale.parse('en_GB')
+            self.assertEqual('28 Aug 2010 13:45:56',
+                             datefmt.format_datetime(t, tzinfo=tz,
+                                                     locale=en_GB))
+            fr = Locale.parse('fr')
+            self.assertEqual(u'28 août 2010 13:45:56',
+                             datefmt.format_datetime(t, tzinfo=tz, locale=fr))
+            ja = Locale.parse('ja')
+            self.assertEqual(u'2010/08/28 13:45:56',
+                             datefmt.format_datetime(t, tzinfo=tz, locale=ja))
+            vi = Locale.parse('vi')
+            self.assertEqual(u'13:45:56 28-08-2010',
+                             datefmt.format_datetime(t, tzinfo=tz, locale=vi))
+            zh_CN = Locale.parse('zh_CN')
+            self.assertEqual(u'2010-8-28 下午01:45:56',
+                             datefmt.format_datetime(t, tzinfo=tz,
+                                                     locale=zh_CN))
+
+        def test_i18n_format_date(self):
+            tz = datefmt.timezone('GMT +2:00')
+            t = datetime.datetime(2010, 8, 7, 11, 45, 56, 123456, datefmt.utc)
+            en_US = Locale.parse('en_US')
+            self.assertEqual('Aug 7, 2010',
+                             datefmt.format_date(t, tzinfo=tz, locale=en_US))
+            en_GB = Locale.parse('en_GB')
+            self.assertEqual('7 Aug 2010',
+                             datefmt.format_date(t, tzinfo=tz, locale=en_GB))
+            fr = Locale.parse('fr')
+            self.assertEqual(u'7 août 2010',
+                             datefmt.format_date(t, tzinfo=tz, locale=fr))
+            ja = Locale.parse('ja')
+            self.assertEqual(u'2010/08/07',
+                             datefmt.format_date(t, tzinfo=tz, locale=ja))
+            vi = Locale.parse('vi')
+            self.assertEqual(u'07-08-2010',
+                             datefmt.format_date(t, tzinfo=tz, locale=vi))
+            zh_CN = Locale.parse('zh_CN')
+            self.assertEqual(u'2010-8-7',
+                             datefmt.format_date(t, tzinfo=tz, locale=zh_CN))
+
+        def test_i18n_format_time(self):
+            tz = datefmt.timezone('GMT +2:00')
+            t = datetime.datetime(2010, 8, 28, 11, 45, 56, 123456, datefmt.utc)
+            en_US = Locale.parse('en_US')
+            en_GB = Locale.parse('en_GB')
+            fr = Locale.parse('fr')
+            ja = Locale.parse('ja')
+            vi = Locale.parse('vi')
+            zh_CN = Locale.parse('zh_CN')
+
+            self.assertEqual('1:45:56 PM',
+                             datefmt.format_time(t, tzinfo=tz, locale=en_US))
+            self.assertEqual('13:45:56',
+                             datefmt.format_time(t, tzinfo=tz, locale=en_GB))
+            self.assertEqual('13:45:56',
+                             datefmt.format_time(t, tzinfo=tz, locale=fr))
+            self.assertEqual('13:45:56',
+                             datefmt.format_time(t, tzinfo=tz, locale=ja))
+            self.assertEqual('13:45:56',
+                             datefmt.format_time(t, tzinfo=tz, locale=vi))
+            self.assertEqual(u'下午01:45:56',
+                             datefmt.format_time(t, tzinfo=tz, locale=zh_CN))
+
+        def test_i18n_datetime_hint(self):
+            en_US = Locale.parse('en_US')
+            en_GB = Locale.parse('en_GB')
+            fr = Locale.parse('fr')
+            ja = Locale.parse('ja')
+            vi = Locale.parse('vi')
+            zh_CN = Locale.parse('zh_CN')
+
+            self.assertEqual('MMM d, yyyy h:mm:ss a',
+                             datefmt.get_datetime_format_hint(en_US))
+            self.assertEqual('d MMM yyyy HH:mm:ss',
+                             datefmt.get_datetime_format_hint(en_GB))
+            self.assertEqual('d MMM yyyy HH:mm:ss',
+                             datefmt.get_datetime_format_hint(fr))
+            self.assertEqual('yyyy/MM/dd H:mm:ss',
+                             datefmt.get_datetime_format_hint(ja))
+            self.assertEqual('HH:mm:ss dd-MM-yyyy',
+                             datefmt.get_datetime_format_hint(vi))
+            self.assertEqual('yyyy-M-d ahh:mm:ss',
+                             datefmt.get_datetime_format_hint(zh_CN))
+
+        def test_i18n_date_hint(self):
+            en_US = Locale.parse('en_US')
+            en_GB = Locale.parse('en_GB')
+            fr = Locale.parse('fr')
+            ja = Locale.parse('ja')
+            vi = Locale.parse('vi')
+            zh_CN = Locale.parse('zh_CN')
+
+            self.assertEqual('MMM d, yyyy',
+                             datefmt.get_date_format_hint(en_US))
+            self.assertEqual('d MMM yyyy',
+                             datefmt.get_date_format_hint(en_GB))
+            self.assertEqual('d MMM yyyy',
+                             datefmt.get_date_format_hint(fr))
+            self.assertEqual('yyyy/MM/dd',
+                             datefmt.get_date_format_hint(ja))
+            self.assertEqual('dd-MM-yyyy',
+                             datefmt.get_date_format_hint(vi))
+            self.assertEqual('yyyy-M-d',
+                             datefmt.get_date_format_hint(zh_CN))
+
+        def test_i18n_parse_date_iso8609(self):
+            tz = datefmt.timezone('GMT +2:00')
+            dt = datetime.datetime(2010, 8, 28, 13, 45, 56, 0, tz)
+            d = datetime.datetime(2010, 8, 28, 0, 0, 0, 0, tz)
+            en_US = Locale.parse('en_US')
+            vi = Locale.parse('vi')
+
+            def iso8601(expected, text, tz, locale):
+                self.assertEqual(expected,
+                                 datefmt.parse_date(text, tz, locale))
+
+            iso8601(dt, '2010-08-28T15:45:56+0400', tz, en_US)
+            iso8601(dt, '2010-08-28T11:45:56+0000', tz, vi)
+            iso8601(dt, '2010-08-28T11:45:56Z', tz, vi)
+            iso8601(dt, '20100828T144556+0300', tz, en_US)
+            iso8601(dt, '20100828T114556Z', tz, vi)
+
+            iso8601(d, '2010-08-28+0200', tz, en_US)
+            # iso8601(d, '2010-08-28+0000', tz, vi)
+            # iso8601(d, '2010-08-28Z', tz, en_US)
+            iso8601(d, '2010-08-28', tz, vi)
+            iso8601(d, '20100828+0200', tz, en_US)
+            # iso8601(d, '20100828Z', tz, vi)
+
+        def test_i18n_parse_date_datetime(self):
+            tz = datefmt.timezone('GMT +2:00')
+            expected = datetime.datetime(2010, 8, 28, 13, 45, 56, 0, tz)
+            expected_minute = datetime.datetime(2010, 8, 28, 13, 45, 0, 0, tz)
+            en_US = Locale.parse('en_US')
+            en_GB = Locale.parse('en_GB')
+            fr = Locale.parse('fr')
+            ja = Locale.parse('ja')
+            vi = Locale.parse('vi')
+            zh_CN = Locale.parse('zh_CN')
+
+            self.assertEqual(expected,
+                             datefmt.parse_date('Aug 28, 2010 1:45:56 PM', tz,
+                                                en_US))
+            self.assertEqual(expected,
+                             datefmt.parse_date('8 28, 2010 1:45:56 PM', tz,
+                                                en_US))
+            self.assertEqual(expected,
+                             datefmt.parse_date('28 Aug 2010 1:45:56 PM', tz,
+                                                en_US))
+            self.assertEqual(expected,
+                             datefmt.parse_date('28 Aug 2010 PM 1:45:56', tz,
+                                                en_US))
+            self.assertEqual(expected,
+                             datefmt.parse_date('28 Aug 2010 13:45:56', tz,
+                                                en_US))
+            self.assertEqual(expected_minute,
+                             datefmt.parse_date('28 Aug 2010 PM 1:45', tz,
+                                                en_US))
+
+            self.assertEqual(expected,
+                             datefmt.parse_date('28 Aug 2010 13:45:56', tz,
+                                                en_GB))
+
+            self.assertEqual(expected,
+                             datefmt.parse_date(u'28 août 2010 13:45:56', tz,
+                                                fr))
+            self.assertEqual(expected,
+                             datefmt.parse_date(u'août 28 2010 13:45:56', tz,
+                                                fr))
+            self.assertEqual(expected_minute,
+                             datefmt.parse_date(u'août 28 2010 13:45', tz,
+                                                fr))
+
+            self.assertEqual(expected,
+                             datefmt.parse_date('2010/08/28 13:45:56', tz, ja))
+            self.assertEqual(expected_minute,
+                             datefmt.parse_date('2010/08/28 13:45', tz, ja))
+
+            self.assertEqual(expected,
+                             datefmt.parse_date('13:45:56 28-08-2010', tz, vi))
+            self.assertEqual(expected_minute,
+                             datefmt.parse_date('13:45 28-08-2010', tz, vi))
+
+            self.assertEqual(expected,
+                             datefmt.parse_date(u'2010-8-28 下午01:45:56',
+                                                tz, zh_CN))
+            self.assertEqual(expected,
+                             datefmt.parse_date(u'2010-8-28 01:45:56下午',
+                                                tz, zh_CN))
+            self.assertEqual(expected_minute,
+                             datefmt.parse_date(u'2010-8-28 下午01:45', tz,
+                                                zh_CN))
+            self.assertEqual(expected_minute,
+                             datefmt.parse_date(u'2010-8-28 01:45下午', tz,
+                                                zh_CN))
+
+        def test_i18n_parse_date_date(self):
+            tz = datefmt.timezone('GMT +2:00')
+            expected = datetime.datetime(2010, 8, 28, 0, 0, 0, 0, tz)
+            en_US = Locale.parse('en_US')
+            en_GB = Locale.parse('en_GB')
+            fr = Locale.parse('fr')
+            ja = Locale.parse('ja')
+            vi = Locale.parse('vi')
+            zh_CN = Locale.parse('zh_CN')
+
+            self.assertEqual(expected,
+                             datefmt.parse_date('Aug 28, 2010', tz, en_US))
+            self.assertEqual(expected,
+                             datefmt.parse_date('28 Aug 2010', tz, en_GB))
+            self.assertEqual(expected,
+                             datefmt.parse_date(u'28 août 2010', tz, fr))
+            self.assertEqual(expected,
+                             datefmt.parse_date('2010/08/28', tz, ja))
+            self.assertEqual(expected,
+                             datefmt.parse_date('28-08-2010', tz, vi))
+            self.assertEqual(expected,
+                             datefmt.parse_date(u'2010-8-28', tz, zh_CN))
+
+        def test_i18n_parse_date_roundtrip(self):
+            tz = datefmt.timezone('GMT +2:00')
+            t = datetime.datetime(2010, 8, 28, 11, 45, 56, 123456, datefmt.utc)
+            expected = datetime.datetime(2010, 8, 28, 13, 45, 56, 0, tz)
+
+            def roundtrip(locale):
+                locale = Locale.parse(locale)
+                formatted = datefmt.format_datetime(t, tzinfo=tz,
+                                                    locale=locale)
+                self.assertEqual(expected,
+                                 datefmt.parse_date(formatted, tz, locale))
+                self.assertEqual(formatted,
+                                 datefmt.format_datetime(expected, tzinfo=tz,
+                                                         locale=locale))
+
+            roundtrip('ca')
+            roundtrip('cs')
+            roundtrip('de')
+            roundtrip('el')
+            roundtrip('en_GB')
+            roundtrip('en_US')
+            roundtrip('eo')
+            roundtrip('es')
+            roundtrip('es_AR')
+            roundtrip('fa')
+            roundtrip('fi')
+            roundtrip('fr')
+            roundtrip('gl')
+            roundtrip('he')
+            roundtrip('hu')
+            roundtrip('hy')
+            roundtrip('it')
+            roundtrip('ja')
+            roundtrip('ko')
+            roundtrip('nb')
+            roundtrip('nl')
+            roundtrip('pl')
+            roundtrip('pt')
+            roundtrip('pt_BR')
+            roundtrip('ro')
+            roundtrip('ru')
+            roundtrip('sl')
+            roundtrip('sv')
+            roundtrip('tr')
+            roundtrip('vi')
+            roundtrip('zh_CN')
+            roundtrip('zh_TW')
+
+        def test_format_compatibility(self):
+            tz = datefmt.timezone('GMT +2:00')
+            t = datetime.datetime(2010, 8, 28, 11, 45, 56, 123456, datefmt.utc)
+            en_US = Locale.parse('en_US')
+
+            # Converting default format to babel's format
+            self.assertEqual('Aug 28, 2010 1:45:56 PM',
+                             datefmt.format_datetime(t, '%x %X', tz, en_US))
+            self.assertEqual('Aug 28, 2010',
+                             datefmt.format_datetime(t, '%x', tz, en_US))
+            self.assertEqual('1:45:56 PM',
+                             datefmt.format_datetime(t, '%X', tz, en_US))
+            self.assertEqual('Aug 28, 2010',
+                             datefmt.format_date(t, '%x', tz, en_US))
+            self.assertEqual('1:45:56 PM',
+                             datefmt.format_time(t, '%X', tz, en_US))
+
+            # Converting babel's format to strftime format
+            self.assertEqual('08/28/10 13:45:56',
+                             datefmt.format_datetime(t, 'medium', tz))
+            self.assertEqual('08/28/10', datefmt.format_date(t, 'medium', tz))
+            self.assertEqual('13:45:56', datefmt.format_time(t, 'medium', tz))
+
+
 def suite():
     suite = unittest.TestSuite()
     if PytzTestCase:
@@ -153,6 +485,11 @@ def suite():
         print "SKIP: utils/tests/datefmt.py (no pytz installed)"
     suite.addTest(unittest.makeSuite(DateFormatTestCase))
     suite.addTest(unittest.makeSuite(UTimestampTestCase))
+    suite.addTest(unittest.makeSuite(ISO8601TestCase))
+    if I18nDateFormatTestCase:
+        suite.addTest(unittest.makeSuite(I18nDateFormatTestCase, 'test'))
+    else:
+        print "SKIP: utils/tests/datefmt.py (no babel installed)"
     return suite
 
 if __name__ == '__main__':

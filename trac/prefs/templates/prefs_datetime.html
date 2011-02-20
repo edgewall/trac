@@ -53,5 +53,19 @@
 
     </div>
 
+    <div class="field">
+      <label>Date format:
+        <select name="lc_time">
+          <option value="">Default date format</option>
+          <option value="locale" py:if="locales and languages">Your language setting</option>
+          <option value="iso8601">ISO 8601 format</option>
+        </select>
+      </label>
+
+      <p class="hint">Configuring your date format will result in formatting
+      and parsing datetime displayed on this site to use your date format
+      instead of that of the server.</p>
+    </div>
+
   </body>
 </html>

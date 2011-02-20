@@ -4,6 +4,11 @@ import re
 import unittest
 from datetime import datetime
 
+try:
+    from babel import Locale
+except ImportError:
+    Locale = None
+
 from trac.core import *
 from trac.test import Mock, MockPerm, EnvironmentStub
 from trac.util.datefmt import utc
@@ -114,7 +119,8 @@ class WikiTestCase(unittest.TestCase):
         self._teardown = teardown
 
         req = Mock(href=Href('/'), abs_href=Href('http://www.example.com/'),
-                   authname='anonymous', perm=MockPerm(), tz=None, args={})
+                   authname='anonymous', perm=MockPerm(), tz=utc, args={},
+                   locale=Locale.parse('en_US') if Locale else None)
         if context:
             if isinstance(context, tuple):
                 context = web_context(req, *context)

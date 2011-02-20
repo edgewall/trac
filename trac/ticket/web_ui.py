@@ -1043,7 +1043,8 @@ class TicketModule(Component):
             if name in ('cc', 'reporter'):
                 value = Chrome(self.env).format_emails(context, value, ' ')
             elif name in ticket.time_fields:
-                value = format_datetime(value, tzinfo=req.tz)
+                value = format_datetime(value, '%Y-%m-%d %H:%M:%S',
+                                        tzinfo=req.tz)
             cols.append(value.encode('utf-8'))
         writer.writerow(cols)
         return (content.getvalue(), '%s;charset=utf-8' % mimetype)

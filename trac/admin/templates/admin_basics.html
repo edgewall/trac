@@ -49,6 +49,15 @@ ${project.descr}</textarea>
             </select>
           </label>
         </div>
+        <div class="field">
+          <label>Default date format:<br />
+            <select name="default_date_format">
+              <option value="">Browser's language</option>
+              <option value="iso8601"
+                      selected="${default_date_format == 'iso8601' or None}">ISO 8601 format</option>
+            </select>
+          </label>
+        </div>
       </fieldset>
       <div class="buttons">
         <input type="submit" value="${_('Apply changes')}" />

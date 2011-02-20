@@ -40,7 +40,8 @@ class PreferencesModule(Component):
     implements(INavigationContributor, IPreferencePanelProvider,
                IRequestHandler, ITemplateProvider)
 
-    _form_fields = ['newsid', 'name', 'email', 'tz', 'language', 'accesskeys']
+    _form_fields = ['newsid', 'name', 'email', 'tz', 'lc_time', 'language',
+                    'accesskeys']
 
     # INavigationContributor methods
 

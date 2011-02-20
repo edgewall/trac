@@ -4,8 +4,15 @@ import re
 
 from datetime import datetime, timedelta
 
+try:
+    import babel
+    locale_en = babel.Locale('en_US')
+except ImportError:
+    babel = None
+    locale_en = None
+
 from trac.tests.functional import *
-from trac.util.datefmt import utc, localtz, format_date
+from trac.util.datefmt import utc, localtz, format_date, format_datetime
 
 
 class TestTickets(FunctionalTwillTestCaseSetup):
@@ -394,7 +401,7 @@ class TestAdminMilestoneDue(FunctionalTwillTestCaseSetup):
         """Admin milestone duedate"""
         name = "DueMilestone"
         duedate = datetime.now(tz=utc)
-        duedate_string = format_date(duedate, tzinfo=utc)
+        duedate_string = format_datetime(duedate, tzinfo=utc, locale=locale_en)
         self._tester.create_milestone(name, due=duedate_string)
         tc.find(duedate_string)
 
@@ -413,7 +420,7 @@ class TestAdminMilestoneDetailDue(FunctionalTwillTestCaseSetup):
         tc.follow(name)
         tc.url(milestone_url + '/' + name)
         duedate = datetime.now(tz=utc)
-        duedate_string = format_date(duedate, tzinfo=utc)
+        duedate_string = format_datetime(duedate, tzinfo=utc, locale=locale_en)
         tc.formvalue('modifymilestone', 'due', duedate_string)
         tc.submit('save')
         tc.url(milestone_url + '$')
