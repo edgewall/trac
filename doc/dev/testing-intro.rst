@@ -1,6 +1,9 @@
 .. index::
     pair: tests; prerequisites
 
+Running the tests
+=================
+
 Prerequisites
 -------------
 

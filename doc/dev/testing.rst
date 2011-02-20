@@ -13,6 +13,4 @@ Excellent.  Here's what you need to know.
    testing-database
    testing-plugins
 
-.. include :: testing-intro.rst
-
 .. todo :: write more, with testing-specific steps.
