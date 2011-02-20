@@ -111,6 +111,21 @@ dl.class > dt, dl.function > dt {
     border-bottom: 1px solid #ddd;
 }
 
+th.field-name {
+    white-space: nowrap;
+    font-size: 90%;
+    color: #555;
+}
+
+td.field-body > ul {
+    list-style-type: square;
+}
+
+td.field-body > ul > li > strong {
+    font-weight: normal;
+    font-style: italic;
+}
+
 /* Admonitions */
 
 div.admonition p.admonition-title, div.warning p.admonition-title {
