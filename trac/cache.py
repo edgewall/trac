@@ -17,39 +17,31 @@ from .core import Component
 from .util import arity
 from .util.concurrency import ThreadLocal, threading
 
-__all__ = ["CacheManager", "cached"]
+__all__ = ['CacheManager', 'cached']
 
 
-class CachedProperty(object):
-    """Cached property descriptor"""
-    
-    def __init__(self, retriever, id_attr=None):
+_id_to_key = {}
+
+def key_to_id(s):
+    """Return a hash of the given property key."""
+    # This is almost the same algorithm as Python's string hash,
+    # except we only keep a 31-bit result.
+    result = ord(s[0]) << 7 if s else 0
+    for c in s:
+        result = ((1000003 * result) & 0x7fffffff) ^ ord(c)
+    result ^= len(s)
+    _id_to_key[result] = s
+    return result
+
+
+class CachedPropertyBase(object):
+    """Base class for cached property descriptors"""
+
+    def __init__(self, retriever):
         self.retriever = retriever
         self.__doc__ = retriever.__doc__
-        self.id_attr = id_attr
-        self.id = None
         
-    def __get__(self, instance, owner):
-        if instance is None:
-            return self
-        if self.id_attr is not None:
-            id = getattr(instance, self.id_attr)
-        else:
-            id = self.id
-            if id is None:
-                id = self.id = self.make_id(owner)
-        return CacheManager(instance.env).get(id, self.retriever, instance)
-        
-    def __delete__(self, instance):
-        if self.id_attr is not None:
-            id = getattr(instance, self.id_attr)
-        else:
-            id = self.id
-            if id is None:
-                id = self.id = self.make_id(instance.__class__)
-        CacheManager(instance.env).invalidate(id)
-
-    def make_id(self, cls):
+    def make_key(self, cls):
         attr = self.retriever.__name__
         for base in cls.mro():
             if base.__dict__.get(attr) is self:
@@ -57,8 +49,52 @@ class CachedProperty(object):
                 break
         return '%s.%s.%s' % (cls.__module__, cls.__name__, attr)
 
+    
+class CachedSingletonProperty(CachedPropertyBase):
+    """Cached property descriptor for singleton classes"""
+    
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+        try:
+            id = self.id
+        except AttributeError:
+            id = self.id = key_to_id(self.make_key(owner))
+        return CacheManager(instance.env).get(id, self.retriever, instance)
+        
+    def __delete__(self, instance):
+        try:
+            id = self.id
+        except AttributeError:
+            id = self.id = key_to_id(self.make_key(instance.__class__))
+        CacheManager(instance.env).invalidate(id)
 
-def cached(fn_or_id=None):
+
+class CachedProperty(CachedPropertyBase):
+    """Cached property descriptor"""
+    
+    def __init__(self, retriever, key_attr):
+        super(CachedProperty, self).__init__(retriever)
+        self.key_attr = key_attr
+        
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+        id = getattr(instance, self.key_attr)
+        if isinstance(id, str):
+            id = key_to_id(self.make_key(owner) + ':' + id)
+            setattr(instance, self.key_attr, id)
+        return CacheManager(instance.env).get(id, self.retriever, instance)
+        
+    def __delete__(self, instance):
+        id = getattr(instance, self.key_attr)
+        if isinstance(id, str):
+            id = key_to_id(self.make_key(instance.__class__) + ':' + id)
+            setattr(instance, self.key_attr, id)
+        CacheManager(instance.env).invalidate(id)
+
+
+def cached(fn_or_attr=None):
     """Method decorator creating a cached attribute from a data retrieval
     method.
     
@@ -70,20 +106,25 @@ def cached(fn_or_id=None):
     Cache invalidation is performed within a transaction block, and can be
     nested within another transaction block.
     
-    The id used to identify the attribute in the database is constructed from
+    The key used to identify the attribute in the database is constructed from
     the names of the containing module, class and retriever method. If the
     decorator is used in non-signleton (typically non-`Component`) objects,
-    an optional string specifying the name of the attribute containing the id
-    must be passed to the decorator call as follows:
+    an string specifying the name of an attribute containing a string unique
+    to the instance must be passed to the decorator. This value will be
+    appended to the key constructed from module, class and method name.
     {{{
-    def __init__(self, env, name):
-        self.env = env
-        self._metadata_id = 'custom_id.' + name
-    
-    @cached('_metadata_id')
-    def metadata(db):
-        ...
+    class SomeClass(object):
+        def __init__(self, env, name):
+            self.env = env
+            self.name = name
+            self._metadata_id = name
+        
+        @cached('_metadata_id')
+        def metadata(self):
+            ...
     }}}
+    Note that the key attribute is overwritten with a hash of the key on first
+    access, so it should not be used for any other purpose.
     
     This decorator requires that the object on which it is used has an `env`
     attribute containing the application `Environment`.
@@ -96,12 +137,11 @@ def cached(fn_or_id=None):
     longer needed, though methods supporting that argument are still supported
     (will be removed in version 0.14). 
     """
-    if not hasattr(fn_or_id, '__call__'):
-        def decorator(fn):
-            return CachedProperty(fn, fn_or_id)
-        return decorator
-    else:
-        return CachedProperty(fn_or_id)
+    if hasattr(fn_or_attr, '__call__'):
+        return CachedSingletonProperty(fn_or_attr)
+    def decorator(fn):
+        return CachedProperty(fn, fn_or_attr)
+    return decorator
 
 
 class CacheManager(Component):
@@ -187,8 +227,9 @@ class CacheManager(Component):
                 db("UPDATE cache SET generation=generation+1 WHERE id=%s",
                    (id,))
                 if not db("SELECT generation FROM cache WHERE id=%s", (id,)):
-                    db("INSERT INTO cache VALUES (%s, %s)", (id, 0))
-            
+                    db("INSERT INTO cache VALUES (%s, %s, %s)",
+                       (id, 0, _id_to_key.get(id, '<unknown>')))
+                
                 # Invalidate in this process
                 self._cache.pop(id, None)
                 
