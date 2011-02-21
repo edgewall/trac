@@ -57,10 +57,10 @@
   <py:def function="create_ticket(url=None)">
     <input type="hidden" name="reporter" value="${get_reporter_id(req)}" />
     <input py:if="url == trac.homepage.strip('/')" type="hidden" name="version"
-           value="${'dev' in trac.version and trac.version.split('-', 1)[0] or trac.version}" />
+           value="${trac.version.split('-', 1)[0] if 'dev' in trac.version else trac.version}" />
     <input type="hidden" name="summary" value="$message" />
     <textarea name="description" rows="3" cols="10">
-${url and description_en or description}</textarea>
+${description_en if url else description}</textarea>
     <span class="inlinebuttons">
       <input type="submit" name="create" value="${_('Create')}" />
     </span>
@@ -148,7 +148,7 @@ ${url and description_en or description}</textarea>
                           <thead><tr><th class="lineno">Line</th><th class="content"></th></tr></thead>
                           <tbody>
                             <tr py:for="i, line in enumerate(frame.lines_before + [frame.line] + frame.lines_after)"
-                                class="${i == len(frame.lines_before) and 'current' or None}">
+                                class="${'current' if i == len(frame.lines_before) else None}">
                               <th>${frame.lineno + i + 1 - len(frame.lines_before)}</th><td>${line or u'\xa0'}</td>
                             </tr>
                           </tbody>
@@ -160,7 +160,7 @@ ${url and description_en or description}</textarea>
                           <thead><tr><th>Name</th><th>Value</th></tr></thead>
                           <tbody>
                             <tr py:for="idx, (name, value) in enumerate(sorted(frame.vars.items()))"
-                                class="${idx % 2 and 'odd' or None}">
+                                class="${'odd' if idx % 2 else None}">
                               <th scope="row"><var>$name</var></th>
                               <td><code>${shorten_line(repr(value))}</code></td>
                             </tr>

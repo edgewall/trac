@@ -32,7 +32,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr py:for="idx, item in enumerate(history)" class="${idx % 2 and 'odd' or 'even'}">
+            <tr py:for="idx, item in enumerate(history)" class="${'odd' if idx % 2 else 'even'}">
               <td class="diff">
                 <input type="radio" name="old_version" value="$item.version"
                        checked="${idx == 1 or None}" />
@@ -44,8 +44,8 @@
               </td>
               <td class="date">${dateinfo(item.date)}</td>
               <td class="author"
-                  title="${show_ip_addresses and item.ipnr 
-                           and _('IP-Address: %(ipnr)s', ipnr=item.ipnr) or None}">${authorinfo(item.author)}</td>
+                  title="${_('IP-Address: %(ipnr)s', ipnr=item.ipnr)
+                           if show_ip_addresses and item.ipnr else None}">${authorinfo(item.author)}</td>
               <td class="comment">${wiki_to_oneliner(context.child(resource), item.comment, shorten=True)}</td>
             </tr>
           </tbody>

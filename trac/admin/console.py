@@ -303,7 +303,7 @@ Type:  '?' or 'help' for help on commands.
                     )
                 printout(_("Invoking trac-admin without command starts "
                            "interactive mode.\n"))
-            env = self.env_check() and self.env or None
+            env = self.env if self.env_check() else None
             self.print_doc(self.all_docs(env), short=True)
 
 

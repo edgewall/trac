@@ -64,8 +64,8 @@
           <h2>Installed Plugins</h2>
           <table class="listing">
             <tr py:for="plugin in plugins"
-                class="${all(not component.enabled for module in plugin.modules.itervalues()
-                             for component in module.components.itervalues()) and 'disabled' or None}">
+                class="${'disabled' if all(not component.enabled for module in plugin.modules.itervalues()
+                                           for component in module.components.itervalues()) else None}">
               <th py:with="url = plugin.info.home_page or plugin.info.author_email and 'mailto:' + plugin.info.author_email">
                 <a py:strip="not url" href="$url">$plugin.name</a>
               </th>
@@ -88,7 +88,7 @@
             <tbody>
               <py:for each="section in config">
                 <tr py:for="idx,option in enumerate(section.options)"
-                    class="${option.modified and 'modified' or None}">
+                    class="${'modified' if option.modified else None}">
                   <th py:if="idx == 0" class="section"
                       rowspan="${len(section.options)}">${section.name}</th>
                   <td class="name">${option.name}</td>

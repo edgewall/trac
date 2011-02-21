@@ -27,7 +27,6 @@ from genshi.builder import tag
 from trac.config import IntOption
 from trac.core import *
 from trac.db import get_column_names
-from trac.mimeview import RenderingContext
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
 from trac.ticket.api import TicketSystem
@@ -49,7 +48,7 @@ def cell_value(v):
     >>> (cell_value(None), cell_value(0), cell_value(1), cell_value('v'))
     ('', '0', u'1', u'v')
     """
-    return v is 0 and '0' or v and unicode(v) or ''
+    return '0' if v is 0 else unicode(v) if v else ''
 
 
 class ReportModule(Component):
@@ -265,7 +264,7 @@ class ReportModule(Component):
 
         def report_href(**kwargs):
             return req.href.report(sort=req.args.get('sort'),
-                                   asc=asc and '1' or '0', **kwargs)
+                                   asc='1' if asc else '0', **kwargs)
 
         add_link(req, 'alternate',
                  auth_link(req, report_href(format='rss')),
@@ -309,7 +308,7 @@ class ReportModule(Component):
         #
         query = ''.join([line.strip() for line in sql.splitlines()])
         if query and (query[0] == '?' or query.startswith('query:?')):
-            query = query[0] == '?' and query or query[6:]
+            query = query if query[0] == '?' else query[6:]
             report_id = 'report=%s' % id
             if 'report=' in query:
                 if not report_id in query:
@@ -362,7 +361,7 @@ class ReportModule(Component):
             if max:
                 params['max'] = max
             params.update(kwargs)
-            params['asc'] = params.get('asc', asc) and '1' or '0'            
+            params['asc'] = '1' if params.get('asc', asc) else '0'            
             return req.href.report(id, params)
 
         data = {'action': 'view',
@@ -540,16 +539,16 @@ class ReportModule(Component):
                                                    absurls=True)
             return 'report.rss', data, 'application/rss+xml'
         elif format == 'csv':
-            filename = id and 'report_%s.csv' % id or 'report.csv'
+            filename = 'report_%s.csv' % id if id else 'report.csv'
             self._send_csv(req, cols, authorized_results, mimetype='text/csv',
                            filename=filename)
         elif format == 'tab':
-            filename = id and 'report_%s.tsv' % id or 'report.tsv'
+            filename = 'report_%s.tsv' % id if id else 'report.tsv'
             self._send_csv(req, cols, authorized_results, '\t',
                            mimetype='text/tab-separated-values',
                            filename=filename)
         else:
-            p = max is not None and page or None
+            p = page if max is not None else None
             add_link(req, 'alternate',
                      auth_link(req, report_href(format='rss', page=None)),
                      _('RSS Feed'), 'application/rss+xml', 'rss')

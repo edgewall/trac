@@ -375,7 +375,7 @@ class Section(object):
             else:
                 if default is not _use_default:
                     option = Option.registry.get((self.name, key))
-                    value = option and option.default or _use_default
+                    value = option.default if option else _use_default
                 else:
                     value = _use_default
         if value is _use_default:

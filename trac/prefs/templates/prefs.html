@@ -20,8 +20,8 @@
       restored on subsequent visits.</p>
       <ul id="tabs">
         <li py:for="name, label in sorted(panels)"
-            class="${name == active_panel and 'active' or None}"
-            id="${name and ('tab_%s' % name) or None}">
+            class="${'active' if name == active_panel else None}"
+            id="${('tab_%s' % name) if name else None}">
           <a py:strip="name == active_panel" href="${href.prefs(name)}">${label}</a>
         </li>
       </ul>

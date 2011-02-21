@@ -183,7 +183,7 @@ class PygmentsRenderer(Component):
     def _init_types(self):
         self._types = {}
         for lexname, aliases, _, mimetypes in get_all_lexers():
-            name = aliases and aliases[0] or lexname
+            name = aliases[0] if aliases else lexname
             for mimetype in mimetypes:
                 self._types[mimetype] = (name, self.QUALITY_RATIO)
 

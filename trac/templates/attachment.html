@@ -5,7 +5,7 @@
       xmlns:py="http://genshi.edgewall.org/"
       xmlns:xi="http://www.w3.org/2001/XInclude"
       xmlns:i18n="http://genshi.edgewall.org/i18n"
-      py:with="parent = attachments and attachments.parent or attachment.resource.parent">
+      py:with="parent = attachments.parent if attachments else attachment.resource.parent">
   <xi:include href="layout.html" />
   <head>
     <title py:choose="mode">

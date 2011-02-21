@@ -560,7 +560,7 @@ class Ticket(object):
                                     comment))
                     ts0, author0 = ts, author
                 history.sort()
-                rev = history and (history[-1][0] + 1) or 0
+                rev = history[-1][0] + 1 if history else 0
                 history.append((rev, from_utimestamp(long(ts0)), author0,
                                 last_comment))
                 return history
@@ -892,8 +892,8 @@ class Milestone(object):
     def _from_database(self, row):
         name, due, completed, description = row
         self.name = name
-        self.due = due and from_utimestamp(due) or None
-        self.completed = completed and from_utimestamp(completed) or None
+        self.due = from_utimestamp(due) if due else None
+        self.completed = from_utimestamp(completed) if completed else None
         self.description = description or ''
         self._to_old()
 
@@ -1013,7 +1013,7 @@ def group_milestones(milestones, include_completed):
     """Group milestones into "open with due date", "open with no due date",
     and possibly "completed". Return a list of (label, milestones) tuples."""
     def category(m):
-        return m.is_completed and 1 or m.due and 2 or 3
+        return 1 if m.is_completed else 2 if m.due else 3
     open_due_milestones, open_not_due_milestones, \
         closed_milestones = partition([(m, category(m))
             for m in milestones], (2, 3, 1))
@@ -1035,7 +1035,7 @@ class Version(object):
                     SELECT time, description FROM version WHERE name=%s
                     """, (name,)):
                 self.name = self._old_name = name
-                self.time = time and from_utimestamp(time) or None
+                self.time = from_utimestamp(time) if time else None
                 self.description = description or ''
                 break
             else:
@@ -1111,7 +1111,7 @@ class Version(object):
                 SELECT name, time, description FROM version"""):
             version = cls(env)
             version.name = version._old_name = name
-            version.time = time and from_utimestamp(time) or None
+            version.time = from_utimestamp(time) if time else None
             version.description = description or ''
             versions.append(version)
         def version_order(v):

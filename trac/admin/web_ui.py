@@ -411,7 +411,7 @@ class PermissionAdminPanel(Component):
             elif req.args.get('remove') and req.args.get('sel'):
                 req.perm.require('PERMISSION_REVOKE')
                 sel = req.args.get('sel')
-                sel = isinstance(sel, list) and sel or [sel]
+                sel = sel if isinstance(sel, list) else [sel]
                 for key in sel:
                     subject, action = key.split(':', 1)
                     if (subject, action) in perm.get_all_permissions():
@@ -520,9 +520,9 @@ class PluginAdminPanel(Component):
             must_enable = component in enabled
             if is_enabled != must_enable:
                 self.config.set('components', component,
-                                is_enabled and 'disabled' or 'enabled')
+                                'disabled' if is_enabled else 'enabled')
                 self.log.info('%sabling component %s',
-                              is_enabled and 'Dis' or 'En', component)
+                              'Dis' if is_enabled else 'En', component)
                 if must_enable:
                     added.append(component)
                 else:

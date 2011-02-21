@@ -221,13 +221,13 @@ class Query(object):
             constrained_fields = self.constraint_cols.keys()
             if 'id' in (col1, col2):
                 # Ticket ID is always the first column
-                return col1 == 'id' and -1 or 1
+                return -1 if col1 == 'id' else 1
             elif 'summary' in (col1, col2):
                 # Ticket summary is always the second column
-                return col1 == 'summary' and -1 or 1
+                return -1 if col1 == 'summary' else 1
             elif col1 in constrained_fields or col2 in constrained_fields:
                 # Constrained columns appear before other columns
-                return col1 in constrained_fields and -1 or 1
+                return -1 if col1 in constrained_fields else 1
             return 0
         cols.sort(sort_columns)
         return cols
@@ -399,9 +399,9 @@ class Query(object):
         
         return href.query(constraints,
                           report=id,
-                          order=order, desc=desc and 1 or None,
+                          order=order, desc=1 if desc else None,
                           group=self.group or None,
-                          groupdesc=self.groupdesc and 1 or None,
+                          groupdesc=1 if self.groupdesc else None,
                           col=cols,
                           row=self.rows,
                           max=max,
@@ -496,14 +496,14 @@ class Query(object):
                 start = get_timestamp(start)
                 end = get_timestamp(end)
                 if start is not None and end is not None:
-                    return ("%s(%s>=%%s AND %s<%%s)" % (neg and 'NOT ' or '',
+                    return ("%s(%s>=%%s AND %s<%%s)" % ('NOT ' if neg else '',
                                                         col_cast, col_cast),
                             (start, end))
                 elif start is not None:
-                    return ("%s%s>=%%s" % (neg and 'NOT ' or '', col_cast),
+                    return ("%s%s>=%%s" % ('NOT ' if neg else '', col_cast),
                             (start, ))
                 elif end is not None:
-                    return ("%s%s<%%s" % (neg and 'NOT ' or '', col_cast),
+                    return ("%s%s<%%s" % ('NOT ' if neg else '', col_cast),
                             (end, ))
                 else:
                     return None
@@ -523,11 +523,11 @@ class Query(object):
                     args.append('%' + db.like_escape(word) + '%')
                 if not clauses:
                     return None
-                return ((neg and 'NOT ' or '')
+                return (('NOT ' if neg else '')
                         + '(' + ' AND '.join(clauses) + ')', args)
 
             if mode == '':
-                return ("COALESCE(%s,'')%s=%%s" % (col, neg and '!' or ''),
+                return ("COALESCE(%s,'')%s=%%s" % (col, '!' if neg else ''),
                         (value, ))
 
             if not value:
@@ -539,7 +539,7 @@ class Query(object):
                 value = value + '%'
             elif mode == '$':
                 value = '%' + value
-            return ("COALESCE(%s,'') %s%s" % (col, neg and 'NOT ' or '',
+            return ("COALESCE(%s,'') %s%s" % (col, 'NOT ' if neg else '',
                                               db.like()),
                     (value, ))
 
@@ -578,7 +578,7 @@ class Query(object):
                     if ids:
                         id_clauses.append('id IN (%s)' % (','.join(ids)))
                     if id_clauses:
-                        clauses.append('%s(%s)' % (neg and 'NOT ' or '',
+                        clauses.append('%s(%s)' % ('NOT 'if neg else '',
                                                    ' OR '.join(id_clauses)))
                 # Special case for exact matches on multiple values
                 elif not mode and len(v) > 1 and k not in self.time_fields:
@@ -587,7 +587,7 @@ class Query(object):
                     else:
                         col = '%s.value' % db.quote(k)
                     clauses.append("COALESCE(%s,'') %sIN (%s)"
-                                   % (col, neg and 'NOT ' or '',
+                                   % (col, 'NOT ' if neg else '',
                                       ','.join(['%s' for val in v])))
                     args.extend([val[neg:] for val in v])
                 elif v:
@@ -629,7 +629,7 @@ class Query(object):
                 col = '%s.value' % db.quote(name)
             else:
                 col = 't.' + name
-            desc = desc and ' DESC' or ''
+            desc = ' DESC' if desc else ''
             # FIXME: This is a somewhat ugly hack.  Can we also have the
             #        column type for this?  If it's an integer, we do first
             #        one, if text, we do 'else'
@@ -699,7 +699,7 @@ class Query(object):
                     if val[:1] in ('~', '^', '$') \
                                         and not val in self.substitutions:
                         mode, val = val[:1], val[1:]
-                    constraint['mode'] = (neg and '!' or '') + mode
+                    constraint['mode'] = ('!' if neg else '') + mode
                     constraint['values'].append(val)
                 constraints[k] = constraint
             clauses.append(constraints)
@@ -1017,7 +1017,7 @@ class QueryModule(Component):
                 if field:
                     clause = constraints.setdefault(int(add_num), {})
                     modes = Query.get_modes().get(fields[field]['type'])
-                    mode = modes and modes[0]['value'] or ''
+                    mode = modes[0]['value'] if modes else ''
                     clause.setdefault(field, []).append(mode)
             clauses.extend(each[1] for each in sorted(constraints.iteritems()))
         

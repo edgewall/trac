@@ -545,7 +545,7 @@ class Environment(Component, ComponentManager):
         """
         rows = self.db_query("""
                 SELECT value FROM system WHERE name='%sdatabase_version'
-                """ % (initial and 'initial_' or ''))
+                """ % ('initial_' if initial else ''))
         return rows and int(rows[0][0])
 
     def setup_config(self):

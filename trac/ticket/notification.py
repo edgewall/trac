@@ -158,7 +158,7 @@ class TicketNotifyEmail(NotifyEmail):
                                           self.ambiwidth) + CRLF
                         if chgcc:
                             changes_body += chgcc
-                        self.prev_cc += old and self.parse_cc(old) or []
+                        self.prev_cc += self.parse_cc(old) if old else []
                     else:
                         if field in ['owner', 'reporter']:
                             old = obfuscate_email_address(old)

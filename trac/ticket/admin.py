@@ -736,7 +736,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
         if up_down not in ('up', 'down'):
             raise AdminCommandError(_("Invalid up/down value: %(value)s",
                                       value=up_down))
-        direction = up_down == 'up' and -1 or 1
+        direction = -1 if up_down == 'up' else 1
         enum1 = self._enum_cls(self.env, name)
         enum1.value = int(float(enum1.value) + direction)
         for enum2 in self._enum_cls.select(self.env):

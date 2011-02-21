@@ -385,7 +385,7 @@ def locate(fn):
 
     Returns the fully-qualified path, or None.
     """
-    exec_suffix = os.name == 'nt' and '.exe' or ''
+    exec_suffix = '.exe' if os.name == 'nt' else ''
     
     for p in ["."] + os.environ['PATH'].split(os.pathsep):
         f = os.path.join(p, fn + exec_suffix)

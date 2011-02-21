@@ -125,7 +125,7 @@ def _to_sql(table):
     sql.append(',\n'.join(coldefs) + '\n);')
     yield '\n'.join(sql)
     for index in table.indices:
-        unique = index.unique and 'UNIQUE' or ''
+        unique = 'UNIQUE' if index.unique else ''
         yield "CREATE %s INDEX %s_%s_idx ON %s (%s);" % (unique, table.name,
               '_'.join(index.columns), table.name, ','.join(index.columns))
 
@@ -161,7 +161,7 @@ class SQLiteConnector(Component):
         elif (2, 5, 2) <= sqlite.version_info < (2, 5, 5):
             self.error = _("PySqlite 2.5.2 - 2.5.4 break Trac, please use "
                            "2.5.5 or higher")
-        yield ('sqlite', self.error and -1 or 1)
+        yield ('sqlite', -1 if self.error else 1)
 
     def get_connection(self, path, log=None, params={}):
         if not self._version:

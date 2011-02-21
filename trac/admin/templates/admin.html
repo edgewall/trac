@@ -17,12 +17,12 @@
       <div id="tabs">
         <ul py:for="category, panels in groupby(panels, lambda p: p.category)"
             py:with="cat_is_active = category.id == active_cat">
-          <li class="${cat_is_active and 'active' or None}">
+          <li class="${'active' if cat_is_active else None}">
             ${category.label}
             <ul>
               <li py:for="panel in panels" py:with="panel = panel.panel;
                       pan_is_active = cat_is_active and panel.id == active_panel"
-                  class="${pan_is_active and 'active' or None}">
+                  class="${'active' if pan_is_active else None}">
                 <a href="${href.admin(category.id, panel.id)}">${panel.label}</a>
               </li>
             </ul>

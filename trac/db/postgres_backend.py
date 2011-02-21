@@ -79,7 +79,7 @@ class PostgreSQLConnector(Component):
     def get_supported_schemes(self):
         if not has_psycopg:
             self.error = _("Cannot load Python bindings for PostgreSQL")
-        yield ('postgres', self.error and -1 or 1)
+        yield ('postgres', -1 if self.error else 1)
 
     def get_connection(self, path, log=None, user=None, password=None,
                        host=None, port=None, params={}):
@@ -124,7 +124,7 @@ class PostgreSQLConnector(Component):
         sql.append(',\n'.join(coldefs) + '\n)')
         yield '\n'.join(sql)
         for index in table.indices:
-            unique = index.unique and 'UNIQUE' or ''
+            unique = 'UNIQUE' if index.unique else ''
             yield 'CREATE %s INDEX "%s_%s_idx" ON "%s" ("%s")' % \
                     (unique, table.name, 
                      '_'.join(index.columns), table.name,

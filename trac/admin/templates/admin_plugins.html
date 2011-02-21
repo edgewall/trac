@@ -114,11 +114,11 @@
           <tbody py:for="module_name, module in sorted(plugin.modules.iteritems())">
             <tr>
               <td py:with="show_doc = show == plugin.name or show == module_name" id="trac-mod-${module_name}"
-                  class="trac-module${not show_doc and ' collapsed' or None}">
-                <p class="trac-heading${module.description and ' foldable' or None}">
+                  class="trac-module${' collapsed' if not show_doc and module.description else None}">
+                <p class="trac-heading${' foldable' if module.description else None}">
                   <py:choose>
                     <a py:when="module.description" class="trac-name"
-                       href="${href.admin('general', 'plugin', show=not show_doc and module_name or None)                                                     
+                       href="${href.admin('general', 'plugin', show=module_name if not show_doc else None)                                                     
                                + '#trac-mod-' + module_name}">${module_name}.*</a>
                     <span py:otherwise="" class="trac-name">${module_name}.*</span>
                   </py:choose>
@@ -130,11 +130,11 @@
             </tr>
             <tr py:for="component_name, component in sorted(module.components.iteritems())">
               <td py:with="show_doc = show == plugin.name or show == component.full_name" id="trac-comp-${component.full_name}"
-                  class="trac-component${not show_doc and ' collapsed' or None}">
-                <p class="trac-heading${component.description and ' foldable' or None}">
+                  class="trac-component${' collapsed' if not show_doc else None}">
+                <p class="trac-heading${' foldable' if component.description else None}">
                   <py:choose>
                     <a py:when="component.description" class="trac-name"
-                       href="${href.admin('general', 'plugin', show=not show_doc and component.full_name or None)                                             
+                       href="${href.admin('general', 'plugin', show=component.full_name if not show_doc else None)                                             
                                + '#trac-comp-' + component.full_name}">${component_name}</a>
                     <span py:otherwise="" class="trac-name">${component_name}</span>
                   </py:choose>

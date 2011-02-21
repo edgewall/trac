@@ -36,19 +36,19 @@ try:
     
     class MySQLUnicodeCursor(MySQLdb.cursors.Cursor):
         def _convert_row(self, row):
-            return tuple([(isinstance(v, str) and [v.decode('utf-8')] or [v])[0]
-                          for v in row])
+            return tuple(v.decode('utf-8') if isinstance(v, str) else v
+                         for v in row)
         def fetchone(self):
             row = super(MySQLUnicodeCursor, self).fetchone()
-            return row and self._convert_row(row) or None
+            return self._convert_row(row) if row else None
         def fetchmany(self, num):
             rows = super(MySQLUnicodeCursor, self).fetchmany(num)
-            return rows != None and [self._convert_row(row)
-                                     for row in rows] or []
+            return [self._convert_row(row) for row in rows] \
+                   if rows is not None else []
         def fetchall(self):
             rows = super(MySQLUnicodeCursor, self).fetchall()
-            return rows != None and [self._convert_row(row)
-                                     for row in rows] or []
+            return [self._convert_row(row) for row in rows] \
+                   if rows is not None else []
 except ImportError:
     has_mysqldb = False
 
@@ -85,7 +85,7 @@ class MySQLConnector(Component):
     def get_supported_schemes(self):
         if not has_mysqldb:
             self.error = _("Cannot load Python bindings for MySQL")
-        yield ('mysql', self.error and -1 or 1)
+        yield ('mysql', -1 if self.error else 1)
 
     def get_connection(self, path, log=None, user=None, password=None,
                        host=None, port=None, params={}):
@@ -164,7 +164,7 @@ class MySQLConnector(Component):
         yield '\n'.join(sql)
 
         for index in table.indices:
-            unique = index.unique and 'UNIQUE' or ''
+            unique = 'UNIQUE' if index.unique else ''
             yield 'CREATE %s INDEX %s_%s_idx ON %s (%s);' % (unique, table.name,
                   '_'.join(index.columns), table.name,
                   self._collist(table, index.columns))

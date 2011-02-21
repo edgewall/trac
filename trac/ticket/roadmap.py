@@ -452,7 +452,7 @@ class RoadmapModule(Component):
             else: return ''
 
         def escape_value(text): 
-            s = ''.join(map(lambda c: (c in ';,\\') and '\\' + c or c, text))
+            s = ''.join(map(lambda c: '\\' + c if c in ';,\\' else c, text))
             return '\\n'.join(re.split(r'[\r\n]+', s))
 
         def write_prop(name, value, params={}):
@@ -835,7 +835,7 @@ class MilestoneModule(Component):
             group_stats = []
 
             for group in groups:
-                values = group and (group,) or (None, group)
+                values = (group,) if group else (None, group)
                 group_tickets = [t for t in tickets if t[by] in values]
                 if not group_tickets:
                     continue
@@ -906,7 +906,7 @@ class MilestoneModule(Component):
         href = context.href.milestone(name)
         if milestone and milestone.exists:
             if 'MILESTONE_VIEW' in context.perm(milestone.resource):
-                closed = milestone.is_completed and 'closed ' or ''
+                closed = 'closed ' if milestone.is_completed else ''
                 return tag.a(label, class_='%smilestone' % closed,
                              href=href + extra)
         elif 'MILESTONE_CREATE' in context.perm('milestone', name):
@@ -964,8 +964,8 @@ class MilestoneModule(Component):
                     WHERE """ + sql_query, args):
                 milestone = milestone_realm(id=name)
                 if 'MILESTONE_VIEW' in req.perm(milestone):
-                    dt = (completed and from_utimestamp(completed) or
-                          due and from_utimestamp(due) or datetime.now(utc))
+                    dt = (from_utimestamp(completed) if completed else
+                          from_utimestamp(due) if due else datetime.now(utc))
                     yield (get_resource_url(self.env, milestone, req.href),
                            get_resource_name(self.env, milestone), dt,
                            '', shorten_result(description, terms))

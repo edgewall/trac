@@ -126,7 +126,7 @@ class RenderingContext(object):
         self.parent = None #: The parent context, if any
         self.resource = resource
         self.href = href
-        self.perm = resource and perm and perm(resource) or perm
+        self.perm = perm(resource) if perm and resource else perm
         self._hints = None
 
     @staticmethod
@@ -711,7 +711,7 @@ class Mimeview(Component):
             if isinstance(content, Content):
                 content.reset()
             try:
-                ann_names = annotations and ', '.join(annotations) or \
+                ann_names = ', '.join(annotations) if annotations else \
                            'no annotations'
                 self.log.debug('Trying to render HTML preview using %s [%s]',
                                renderer.__class__.__name__, ann_names)
@@ -744,7 +744,7 @@ class Mimeview(Component):
 
                 # Render content as source code
                 if annotations:
-                    m = context.req and context.req.args.get('marks') or None
+                    m = context.req.args.get('marks') if context.req else None
                     return self._render_source(context, result, annotations,
                                                m and Ranges(m))
                 else:

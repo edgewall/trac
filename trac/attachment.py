@@ -142,7 +142,7 @@ class Attachment(object):
     def _from_database(self, filename, description, size, time, author, ipnr):
         self.filename = filename
         self.description = description
-        self.size = size and int(size) or 0
+        self.size = int(size) if size else 0
         self.date = from_utimestamp(time or 0)
         self.author = author
         self.ipnr = ipnr
@@ -247,7 +247,7 @@ class Attachment(object):
         :since 0.13: the `db` parameter is no longer needed and will be removed
         in version 0.14
         """
-        self.size = size and int(size) or 0
+        self.size = int(size) if size else 0
         if t is None:
             t = datetime.now(utc)
         elif not isinstance(t, datetime): # Compatibility with 0.11

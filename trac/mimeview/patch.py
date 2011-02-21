@@ -220,7 +220,7 @@ class PatchRenderer(Component):
                         # Make a new block?
                         if (command == ' ') != last_type:
                             last_type = command == ' '
-                            kind = last_type and 'unmod' or 'mod'
+                            kind = 'unmod' if last_type else 'mod'
                             block = {'type': kind,
                                      'base': {'offset': fromline - 1,
                                               'lines': []},
