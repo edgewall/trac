@@ -1421,7 +1421,8 @@ class LinkFormatter(OutlineFormatter):
 
     def match(self, wikitext):
         """Return the Wiki match found at the beginning of the `wikitext`"""
-        wikitext = self.reset(wikitext)        
+        wikitext = self.reset(wikitext)
+        self.line = wikitext
         match = re.match(self.wikiparser.rules, wikitext)
         if match:
             return self.handle_match(match)
