@@ -56,8 +56,8 @@ class InvalidAttachment(TracError):
 
 
 class IAttachmentChangeListener(Interface):
-    """Extension point interface for components that require notification when
-    attachments are created or deleted."""
+    """Extension point interface for components that require
+    notification when attachments are created or deleted."""
 
     def attachment_added(attachment):
         """Called when an attachment is added."""
@@ -70,44 +70,47 @@ class IAttachmentChangeListener(Interface):
 
 
 class IAttachmentManipulator(Interface):
-    """Extension point interface for components that need to manipulate
-    attachments.
+    """Extension point interface for components that need to
+    manipulate attachments.
     
-    Unlike change listeners, a manipulator can reject changes being committed
-    to the database."""
+    Unlike change listeners, a manipulator can reject changes being
+    committed to the database."""
 
     def prepare_attachment(req, attachment, fields):
         """Not currently called, but should be provided for future
         compatibility."""
 
     def validate_attachment(req, attachment):
-        """Validate an attachment after upload but before being stored in Trac
-        environment.
+        """Validate an attachment after upload but before being stored
+        in Trac environment.
         
-        Must return a list of `(field, message)` tuples, one for each problem
-        detected. `field` can be any of `description`, `username`, `filename`,
-        `content`, or `None` to indicate an overall problem with the
-        attachment. Therefore, a return value of `[]` means everything is
-        OK."""
+        Must return a list of ``(field, message)`` tuples, one for
+        each problem detected. ``field`` can be any of
+        ``description``, ``username``, ``filename``, ``content``, or
+        `None` to indicate an overall problem with the
+        attachment. Therefore, a return value of ``[]`` means
+        everything is OK."""
 
 class ILegacyAttachmentPolicyDelegate(Interface):
-    """Interface that can be used by plugins to seemlessly participate to the
-       legacy way of checking for attachment permissions.
+    """Interface that can be used by plugins to seemlessly participate
+       to the legacy way of checking for attachment permissions.
 
-       This should no longer be necessary once it becomes easier to 
+       This should no longer be necessary once it becomes easier to
        setup fine-grained permissions in the default permission store.
     """
 
     def check_attachment_permission(action, username, resource, perm):
-        """Return the usual True/False/None security policy decision
-           appropriate for the requested action on an attachment.
+        """Return the usual `True`/`False`/`None` security policy
+           decision appropriate for the requested action on an
+           attachment.
 
             :param action: one of ATTACHMENT_VIEW, ATTACHMENT_CREATE,
                                   ATTACHMENT_DELETE
             :param username: the user string
-            :param resource: the `Resource` for the attachment. Note that when
-                             ATTACHMENT_CREATE is checked, the resource `.id`
-                             will be `None`. 
+            :param resource: the `~trac.resource.Resource` for the
+                             attachment. Note that when
+                             ATTACHMENT_CREATE is checked, the
+                             resource ``.id`` will be `None`.
             :param perm: the permission cache for that username and resource
             """
 
@@ -180,8 +183,9 @@ class Attachment(object):
         """Delete the attachment, both the record in the database and 
         the file itself.
 
-        :since 0.13: the `db` parameter is no longer needed and will be removed
-        in version 0.14
+        .. versionchanged :: 0.13
+           the `db` parameter is no longer needed
+           (will be removed in version 0.14)
         """
         assert self.filename, "Cannot delete non-existent attachment"
 
@@ -244,8 +248,9 @@ class Attachment(object):
     def insert(self, filename, fileobj, size, t=None, db=None):
         """Create a new Attachment record and save the file content.
 
-        :since 0.13: the `db` parameter is no longer needed and will be removed
-        in version 0.14
+        .. versionchanged :: 0.13
+           the `db` parameter is no longer needed
+           (will be removed in version 0.14)
         """
         self.size = int(size) if size else 0
         if t is None:
@@ -292,7 +297,7 @@ class Attachment(object):
         """Iterator yielding all `Attachment` instances attached to
         resource identified by `parent_realm` and `parent_id`.
 
-        .. versionchanged 0.13::
+        .. versionchanged :: 0.13
            the `db` parameter is no longer needed 
            (will be removed in version 0.14)
         """
@@ -308,8 +313,9 @@ class Attachment(object):
     def delete_all(cls, env, parent_realm, parent_id, db=None):
         """Delete all attachments of a given resource.
         
-        :since 0.13: the `db` parameter is no longer needed and will be removed
-        in version 0.14
+        .. versionchanged :: 0.13
+           the `db` parameter is no longer needed
+           (will be removed in version 0.14)
         """
         attachment_dir = None
         with env.db_transaction as db:
