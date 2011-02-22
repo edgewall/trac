@@ -751,10 +751,14 @@ class AttachmentModule(Component):
             zipinfo.filename = attachment.filename.encode('utf-8')
             zipinfo.date_time = attachment.date.utctimetuple()[:6]
             zipinfo.compress_type = ZIP_DEFLATED
-            zipinfo.comment = attachment.description
+            if attachment.description:
+                zipinfo.comment = attachment.description.encode('utf-8')
             zipinfo.external_attr = 0644 << 16L # needed since Python 2.5
-            with attachment.open() as fd:
-                zipfile.writestr(zipinfo, fd.read())
+            try:
+                with attachment.open() as fd:
+                    zipfile.writestr(zipinfo, fd.read())
+            except ResourceNotFound:
+                pass # skip missing files
         zipfile.close()
 
         zip_str = buf.getvalue()
