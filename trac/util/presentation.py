@@ -52,6 +52,9 @@ def classes(*args, **kwargs):
     return u' '.join(classes)
 
 def first_last(idx, seq):
+    """Generate ``first`` or ``last`` or both, according to the
+    position `idx` in sequence `seq`.
+    """
     return classes(first=idx == 0, last=idx == len(seq) - 1)
 
 
@@ -104,6 +107,7 @@ def group(iterable, num, predicate=None):
 
 
 def istext(text):
+    """`True` for text (`unicode` and `str`), but `False` for `Markup`."""
     from genshi.core import Markup
     return isinstance(text, basestring) and not isinstance(text, Markup)
 

@@ -7,7 +7,11 @@ The `trac.util` package is a hodgepodge of various categories of
 utilities.  If a category contains enough code in itself, it earns a
 sub-module on its own, like the following ones:
 
- - :doc:`trac_util_datefmt`
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   trac_util_*
 
 
 Otherwise, the functions are direct members of the `trac.util` package
