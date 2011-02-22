@@ -51,7 +51,15 @@ class CachedPropertyBase(object):
 
     
 class CachedSingletonProperty(CachedPropertyBase):
-    """Cached property descriptor for singleton classes"""
+    """Cached property descriptor for classes behaving as singletons
+    in the scope of one `~trac.env.Environment` instance.
+
+    This means there will be no more than one cache to monitor in the
+    database for this kind of cache. Therefore, using only "static"
+    information for the key is enough. For the same reason it is also
+    safe to store the corresponding id as a property of the descriptor
+    instance.
+    """
     
     def __get__(self, instance, owner):
         if instance is None:
@@ -71,7 +79,17 @@ class CachedSingletonProperty(CachedPropertyBase):
 
 
 class CachedProperty(CachedPropertyBase):
-    """Cached property descriptor"""
+    """Cached property descriptor for classes having potentially
+    multiple instances associated to a single `~trac.env.Environment`
+    instance.
+
+    As we'll have potentiall many different caches to monitor for this
+    kind of cache, the key needs to be augmented by a string unique to
+    each instance of the owner class.  As the resulting id will be
+    different for each instance of the owner class, we can't store it
+    as a property of the descriptor class, so we store it back in the
+    attribute used for augmenting the key (``key_attr``).
+    """
     
     def __init__(self, retriever, key_attr):
         super(CachedProperty, self).__init__(retriever)
@@ -99,21 +117,33 @@ def cached(fn_or_attr=None):
     retrieval method.
     
     Accessing the cached attribute gives back the cached value.  The
-    data retrieval method is called as needed by the
-    `CacheManager`. Invalidating the cache for this value is done by
-    ``del``\ eting the attribute.
+    data retrieval method is transparently called by the
+    `CacheManager` on first use after the program start or after the
+    cache has been invalidated.  Invalidating the cache for this value
+    is done by ``del``\ eting the attribute.
     
-    Note that the cache validity is maintained using a table in the
-    database.  Cache invalidation is performed within a transaction
-    block, and can be nested within another transaction block.
+    Note that the cache validity is maintained using the `cache` table
+    in the database.  Cache invalidation is performed within a
+    transaction block, and can be nested within another transaction
+    block.
     
-    The key used to identify the attribute in the database is
-    constructed from the names of the containing module, class and
-    retriever method. If the decorator is used in non-signleton
-    (typically non-`Component`) objects, an string specifying the name
-    of an attribute containing a string unique to the instance must be
-    passed to the decorator. This value will be appended to the key
-    constructed from module, class and method name::
+    When the decorator is used in a class for which instances behave
+    as singletons within the scope of a given `~trac.env.Environment`
+    (typically `~trac.core.Component` classes), the key used to
+    identify the attribute in the database is constructed from the
+    names of the containing module, class and retriever method::
+
+        class WikiSystem(Component):
+            @cached
+            def pages(self):
+                return set(name for name, in self.env.db_query(
+                               "SELECT DISTINCT name FROM wiki"))
+
+    Otherwise, when the decorator is used in non-"singleton" objects,
+    a string specifying the name of an attribute containing a string
+    unique to the instance must be passed to the decorator. This value
+    will be appended to the key constructed from module, class and
+    method name::
 
         class SomeClass(object):
             def __init__(self, env, name):
@@ -125,14 +155,15 @@ def cached(fn_or_attr=None):
             def metadata(self):
                 ...
 
-    Note that the key attribute is overwritten with a hash of the key on first
-    access, so it should not be used for any other purpose.
+    Note that in this case the key attribute is overwritten with a
+    hash of the key on first access, so it should not be used for any
+    other purpose.
     
-    This decorator requires that the object on which it is used has an `env`
-    attribute containing the application `Environment`.
+    In either case, this decorator requires that the object on which
+    it is used has an ``env`` attribute containing the application
+    `~trac.env.Environment`.
 
     .. versionchanged:: 0.13 
-
         The data retrieval method used to be called with a single
         argument ``db`` containing a reference to a database
         connection.  This is the same connection that can be retrieved
