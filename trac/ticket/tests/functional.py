@@ -454,7 +454,7 @@ class TestAdminMilestoneCompletedFuture(FunctionalTwillTestCaseSetup):
         tc.url(milestone_url + '/' + name)
         tc.formvalue('modifymilestone', 'completed', True)
         cdate = datetime.now(tz=utc) + timedelta(days=1)
-        cdate_string = format_date(cdate, tzinfo=localtz)
+        cdate_string = format_date(cdate, tzinfo=localtz, locale=locale_en)
         tc.formvalue('modifymilestone', 'completeddate', cdate_string)
         tc.submit('save')
         tc.find('Completion date may not be in the future')

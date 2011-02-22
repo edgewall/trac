@@ -382,6 +382,39 @@ else:
                              datefmt.parse_date(u'2010-8-28 01:45下午', tz,
                                                 zh_CN))
 
+        def test_i18n_parse_date_datetime_meridiem(self):
+            tz = datefmt.timezone('GMT +2:00')
+            expected_am = datetime.datetime(2011, 2, 22, 0, 45, 56, 0, tz)
+            expected_pm = datetime.datetime(2011, 2, 22, 12, 45, 56, 0, tz)
+            en_US = Locale.parse('en_US')
+            zh_CN = Locale.parse('zh_CN')
+
+            self.assertEqual(expected_am,
+                             datefmt.parse_date('Feb 22, 2011 0:45:56 AM', tz,
+                                                en_US))
+            self.assertEqual(expected_am,
+                             datefmt.parse_date('Feb 22, 2011 12:45:56 AM', tz,
+                                                en_US))
+            self.assertEqual(expected_am,
+                             datefmt.parse_date(u'2011-2-22 上午0:45:56', tz,
+                                                zh_CN))
+            self.assertEqual(expected_am,
+                             datefmt.parse_date(u'2011-2-22 上午12:45:56', tz,
+                                                zh_CN))
+
+            self.assertEqual(expected_pm,
+                             datefmt.parse_date('Feb 22, 2011 0:45:56 PM', tz,
+                                                en_US))
+            self.assertEqual(expected_pm,
+                             datefmt.parse_date('Feb 22, 2011 12:45:56 PM', tz,
+                                                en_US))
+            self.assertEqual(expected_pm,
+                             datefmt.parse_date(u'2011-2-22 下午0:45:56', tz,
+                                                zh_CN))
+            self.assertEqual(expected_pm,
+                             datefmt.parse_date(u'2011-2-22 下午12:45:56', tz,
+                                                zh_CN))
+
         def test_i18n_parse_date_date(self):
             tz = datefmt.timezone('GMT +2:00')
             expected = datetime.datetime(2010, 8, 28, 0, 0, 0, 0, tz)
@@ -456,6 +489,7 @@ else:
         def test_format_compatibility(self):
             tz = datefmt.timezone('GMT +2:00')
             t = datetime.datetime(2010, 8, 28, 11, 45, 56, 123456, datefmt.utc)
+            tz_t = datetime.datetime(2010, 8, 28, 13, 45, 56, 123456, tz)
             en_US = Locale.parse('en_US')
 
             # Converting default format to babel's format
@@ -471,10 +505,12 @@ else:
                              datefmt.format_time(t, '%X', tz, en_US))
 
             # Converting babel's format to strftime format
-            self.assertEqual('08/28/10 13:45:56',
+            self.assertEqual(tz_t.strftime('%x %X').decode('utf-8'),
                              datefmt.format_datetime(t, 'medium', tz))
-            self.assertEqual('08/28/10', datefmt.format_date(t, 'medium', tz))
-            self.assertEqual('13:45:56', datefmt.format_time(t, 'medium', tz))
+            self.assertEqual(tz_t.strftime('%x').decode('utf-8'),
+                             datefmt.format_date(t, 'medium', tz))
+            self.assertEqual(tz_t.strftime('%X').decode('utf-8'),
+                             datefmt.format_time(t, 'medium', tz))
 
 
 def suite():

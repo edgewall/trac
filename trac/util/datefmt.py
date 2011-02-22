@@ -487,8 +487,11 @@ def _i18n_parse_date_0(text, order, regexp, period_names, month_names, tzinfo):
     values.setdefault('m', 0)
     values.setdefault('s', 0)
 
-    if values['h'] < 12 and period == 'pm':
-        values['h'] += 12
+    if period and values['h'] <= 12:
+        if period == 'am':
+            values['h'] %= 12
+        elif period == 'pm':
+            values['h'] = values['h'] % 12 + 12
 
     return tzinfo.localize(datetime(values['y'], values['M'], values['d'],
                                     values['h'], values['m'], values['s']))
