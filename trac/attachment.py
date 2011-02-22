@@ -289,11 +289,12 @@ class Attachment(object):
 
     @classmethod
     def select(cls, env, parent_realm, parent_id, db=None):
-        """Iterator yielding all `Attachment` instances attached to resource
-        identified by `parent_realm` and `parent_id`.
+        """Iterator yielding all `Attachment` instances attached to
+        resource identified by `parent_realm` and `parent_id`.
 
-        :since 0.13: the `db` parameter is no longer needed and will be removed
-        in version 0.14
+        .. versionchanged 0.13::
+           the `db` parameter is no longer needed 
+           (will be removed in version 0.14)
         """
         for row in env.db_query("""
                 SELECT filename, description, size, time, author, ipnr
@@ -476,17 +477,26 @@ class AttachmentModule(Component):
 
     # Public methods
 
-    def attachment_data(self, context):
-        """Return the list of viewable attachments.
+    def viewable_attachments(self, context):
+        """Return the list of viewable attachments in the given context.
 
-        :param context: the rendering context corresponding to the parent
-                        `Resource` of the attachments
+        :param context: the `~trac.mimeview.api.RenderingContext`
+                        corresponding to the parent
+                        `~trac.resource.Resource` for the attachments
         """
         parent = context.resource
         attachments = []
         for attachment in Attachment.select(self.env, parent.realm, parent.id):
             if 'ATTACHMENT_VIEW' in context.perm(attachment.resource):
                 attachments.append(attachment)
+        return attachments
+
+    def attachment_data(self, context):
+        """Return a data dictionary describing the list of viewable
+        attachments in the current context.
+        """
+        attachments = self.viewable_attachments(context)
+        parent = context.resource
         total_size = sum(attachment.size for attachment in attachments)
         new_att = parent.child('attachment')
         return {'attach_href': get_resource_url(self.env, new_att,
@@ -719,7 +729,7 @@ class AttachmentModule(Component):
 
     def _download_as_zip(self, req, parent, attachments=None):
         if attachments is None:
-            attachments = Attachment.select(self.env, parent.realm, parent.id)
+            attachments = self.viewable_attachments(web_context(req, parent))
         total_size = sum(attachment.size for attachment in attachments)
         if total_size > self.max_zip_size:
             raise TracError(_("Maximum total attachment size: %(num)s bytes",
@@ -737,8 +747,6 @@ class AttachmentModule(Component):
         buf = StringIO()
         zipfile = ZipFile(buf, 'w', ZIP_DEFLATED)
         for attachment in attachments:
-            if 'ATTACHMENT_VIEW' not in req.perm(attachment.resource):
-                continue
             zipinfo = ZipInfo()
             zipinfo.filename = attachment.filename.encode('utf-8')
             zipinfo.date_time = attachment.date.utctimetuple()[:6]
