@@ -100,11 +100,14 @@ div.body h4 a, div.body h5 a, div.body h6 a {
     color: #d7d7d7 !important;
 }
 
-dl.class, dl.function {
+dl.class {
     -moz-box-shadow: 1px 1px 6px 0 #888;
     -webkit-box-shadow: 1px 1px 6px 0 #888;
     box-shadow:  1px 1px 6px 0 #888;
     padding: .5em;
+}
+dl.function {
+    margin-bottom: 24px;
 }
 
 dl.class > dt, dl.function > dt {
