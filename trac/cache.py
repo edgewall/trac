@@ -95,47 +95,51 @@ class CachedProperty(CachedPropertyBase):
 
 
 def cached(fn_or_attr=None):
-    """Method decorator creating a cached attribute from a data retrieval
-    method.
+    """Method decorator creating a cached attribute from a data
+    retrieval method.
     
-    Accessing the cached attribute gives back the cached value. The data
-    retrieval method is called as needed by the CacheManager. Invalidating
-    the cache for this value is done by `del`eting the attribute.
+    Accessing the cached attribute gives back the cached value.  The
+    data retrieval method is called as needed by the
+    `CacheManager`. Invalidating the cache for this value is done by
+    ``del``\ eting the attribute.
     
-    Note that the cache validity is maintained using a table in the database.
-    Cache invalidation is performed within a transaction block, and can be
-    nested within another transaction block.
+    Note that the cache validity is maintained using a table in the
+    database.  Cache invalidation is performed within a transaction
+    block, and can be nested within another transaction block.
     
-    The key used to identify the attribute in the database is constructed from
-    the names of the containing module, class and retriever method. If the
-    decorator is used in non-signleton (typically non-`Component`) objects,
-    an string specifying the name of an attribute containing a string unique
-    to the instance must be passed to the decorator. This value will be
-    appended to the key constructed from module, class and method name.
-    {{{
-    class SomeClass(object):
-        def __init__(self, env, name):
-            self.env = env
-            self.name = name
-            self._metadata_id = name
-        
-        @cached('_metadata_id')
-        def metadata(self):
-            ...
-    }}}
+    The key used to identify the attribute in the database is
+    constructed from the names of the containing module, class and
+    retriever method. If the decorator is used in non-signleton
+    (typically non-`Component`) objects, an string specifying the name
+    of an attribute containing a string unique to the instance must be
+    passed to the decorator. This value will be appended to the key
+    constructed from module, class and method name::
+
+        class SomeClass(object):
+            def __init__(self, env, name):
+                self.env = env
+                self.name = name
+                self._metadata_id = name
+
+            @cached('_metadata_id')
+            def metadata(self):
+                ...
+
     Note that the key attribute is overwritten with a hash of the key on first
     access, so it should not be used for any other purpose.
     
     This decorator requires that the object on which it is used has an `env`
     attribute containing the application `Environment`.
 
-    :since 0.13:
-    The data retrieval method used to be called with a single argument `db`
-    containing a reference to a database connection.
-    This is the same connection that can be retrieved via the normal
-    `Environment.db_query` or `Environment.db_transaction`, so this is no
-    longer needed, though methods supporting that argument are still supported
-    (will be removed in version 0.14). 
+    .. versionchanged:: 0.13 
+
+        The data retrieval method used to be called with a single
+        argument ``db`` containing a reference to a database
+        connection.  This is the same connection that can be retrieved
+        via the normal `~trac.env.Environment.db_query` or
+        `~trac.env.Environment.db_transaction`, so this is no longer
+        needed, though methods supporting that argument are still
+        supported (but will be removed in version 0.14).
     """
     if hasattr(fn_or_attr, '__call__'):
         return CachedSingletonProperty(fn_or_attr)
