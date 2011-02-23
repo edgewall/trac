@@ -10,7 +10,7 @@
     <image py:if="chrome.logo.src_abs">
       <title>$project.name</title>
       <url>$chrome.logo.src_abs</url>
-      <link>${abs_href.report(report.id != -1 and report.id or '')}</link>
+      <link>${abs_href.report(report.id if report.id != -1 else '')}</link>
     </image>
     <generator>Trac v${trac.version}</generator>
 

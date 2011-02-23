@@ -33,15 +33,15 @@
   <py:def function="column_headers()">
     <tr class="trac-columns">
       <th py:for="header in headers"
-          class="$header.name${query.order == header.name and (query.desc and ' desc' or ' asc') or ''}">
+          class="$header.name${(' desc' if query.desc else ' asc') if query.order == header.name else ''}">
         <?python asc = _('(ascending)'); desc = _('(descending)') ?>
         <a title="${_('Sort by %(col)s %(direction)s', col=header.label,
-                      direction=(query.order == header.name and not query.desc and desc or asc))}"
+                      direction=(desc if query.order == header.name and not query.desc else asc))}"
            href="$header.href">${header.label}</a>
       </th>
     </tr>
   </py:def>
-  ${groups and group_heading(*groups[0]) or None}
+  ${group_heading(*groups[0]) if groups else None}
   <table class="listing tickets">
     <thead py:strip="group_index">
       ${column_headers()}
@@ -65,10 +65,10 @@
           <py:with vars="ticket_context = context.child('ticket', result.id)">
             <py:if test="'TICKET_VIEW' in perm(ticket_context.resource)">
 
-              <tr class="${idx % 2 and 'odd' or 'even'} prio${result.priority_value}${
-                'added' in result and ' added' or ''}${
-                'changed' in result and ' changed' or ''}${
-                'removed' in result and ' removed' or ''}">
+              <tr class="${'odd' if idx % 2 else 'even'} prio${result.priority_value}${
+                ' added' if 'added' in result else ''}${
+                ' changed' if 'changed' in result else ''}${
+                ' removed' if 'removed' in result else ''}">
                 <py:for each="idx, header in enumerate(headers)" py:choose="">
                   <py:with vars="name = header.name; value = result[name]">
                     <td py:when="name == 'id'" class="id"><a href="$result.href" title="View ticket"

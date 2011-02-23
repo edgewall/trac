@@ -19,7 +19,7 @@ $changes_descr
 {%     end %}\
 {%     if change.comment %}\
 
-${changes_body and _('Comment:') or _('Comment (by %(author)s):', author=change.author)}
+${_('Comment:') if changes_body else _('Comment (by %(author)s):', author=change.author)}
 
 $change.comment
 {%     end %}\

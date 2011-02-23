@@ -576,7 +576,7 @@ class TicketModule(Component):
         format = req.args.get('format')
         if format:
             # FIXME: mime.send_converted(context, ticket, 'ticket_x') (#3332)
-            filename = ('t%d' % ticket.id, None)[format == 'rss']
+            filename = 't%d' % ticket.id if format != 'rss' else None
             mime.send_converted(req, 'trac.ticket.Ticket', ticket,
                                 format, filename=filename)
 
@@ -848,9 +848,9 @@ class TicketModule(Component):
 
         for field in text_fields:
             old_text = old_ticket.get(field)
-            old_text = old_text and old_text.splitlines() or []
+            old_text = old_text.splitlines() if old_text else []
             new_text = new_ticket.get(field)
-            new_text = new_text and new_text.splitlines() or []
+            new_text = new_text.splitlines() if new_text else []
             diffs = diff_blocks(old_text, new_text, context=diff_context,
                                 ignore_blank_lines='-B' in diff_options,
                                 ignore_case='-i' in diff_options,
@@ -894,7 +894,7 @@ class TicketModule(Component):
 
     def _make_comment_url(self, req, ticket, cnum, version=None):
         return req.href.ticket(ticket.id,
-                               cnum_hist=version is not None and cnum or None,
+                               cnum_hist=cnum if version is not None else None,
                                cversion=version) + '#comment:%d' % cnum
 
     def _get_comment_history(self, req, ticket, cnum):
@@ -902,7 +902,7 @@ class TicketModule(Component):
         for version, date, author, comment in ticket.get_comment_history(cnum):
             history.append({
                 'version': version, 'date': date, 'author': author,
-                'comment': version == 0 and _("''Initial version''") or '',
+                'comment': _("''Initial version''") if version == 0 else '',
                 'value': comment,
                 'url': self._make_comment_url(req, ticket, cnum, version)
             })
@@ -962,7 +962,7 @@ class TicketModule(Component):
         def get_text(version):
             try:
                 text = history[version]['value']
-                return text and text.splitlines() or []
+                return text.splitlines() if text else []
             except KeyError:
                 raise ResourceNotFound(_("No version %(version)d for comment "
                                          "%(cnum)d on ticket #%(ticket)s",
@@ -1243,7 +1243,7 @@ class TicketModule(Component):
         if ticket.save_changes(get_reporter_id(req, 'author'),
                                      req.args.get('comment'), when=now,
                                      cnum=internal_cnum):
-            fragment = cnum and '#comment:' + cnum or ''
+            fragment = '#comment:' + cnum if cnum else ''
             try:
                 tn = TicketNotifyEmail(self.env)
                 tn.notify(ticket, newticket=False, modtime=now)
@@ -1420,7 +1420,7 @@ class TicketModule(Component):
                 value = ticket.values.get(name)
                 if value in ('1', '0'):
                     field['rendered'] = self._query_link(req, name, value,
-                                value == '1' and _("yes") or _("no"))
+                                _("yes") if value == '1' else _("no"))
             elif type_ == 'text':
                 if field.get('format') == 'wiki':
                     field['rendered'] = format_to_oneliner(self.env, context,
@@ -1606,7 +1606,7 @@ class TicketModule(Component):
                 type_ = f['type']
                 break
         if type_ == 'checkbox':
-            rendered = new == '1' and _("set") or _("unset")
+            rendered = _("set") if new == '1' else _("unset")
         elif type_ == 'textarea':
             if not resource_new:
                 rendered = _("modified")
@@ -1667,7 +1667,7 @@ class TicketModule(Component):
         autonum = 0 # used for "root" numbers
         last_uid = current = None
         for date, author, field, old, new, permanent in changelog:
-            uid = permanent and (date,) or (date, author)
+            uid = (date,) if permanent else (date, author)
             if uid != last_uid:
                 if current:
                     last_comment = comment_history[max(comment_history)]

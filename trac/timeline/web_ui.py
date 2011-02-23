@@ -90,7 +90,7 @@ class TimelineModule(Component):
         req.perm.assert_permission('TIMELINE_VIEW')
 
         format = req.args.get('format')
-        maxrows = int(req.args.get('max', format == 'rss' and 50 or 0))
+        maxrows = int(req.args.get('max', 50 if format == 'rss' else 0))
         lastvisit = int(req.session.get('timeline.lastvisit', '0'))
 
         # indication of new events is unchanged when form is updated by user
@@ -123,7 +123,7 @@ class TimelineModule(Component):
                                     microsecond=999999)
 
         daysback = as_int(req.args.get('daysback'),
-                          format == 'rss' and 90 or None)
+                          90 if format == 'rss' else None)
         if daysback is None:
             daysback = as_int(req.session.get('timeline.daysback'), None)
         if daysback is None:
@@ -188,7 +188,7 @@ class TimelineModule(Component):
                 for event in provider.get_timeline_events(req, start, stop,
                                                           filters) or []:
                     # Check for 0.10 events
-                    author = (event[len(event) < 6 and 2 or 4] or '').lower()
+                    author = (event[2 if len(event) < 6 else 4] or '').lower()
                     if (not include or author in include) \
                        and not author in exclude:
                         events.append(self._event_data(provider, event))

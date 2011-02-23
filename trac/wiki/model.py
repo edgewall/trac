@@ -68,7 +68,7 @@ class WikiPage(object):
             self.time = from_utimestamp(time)
             self.text = text
             self.comment = comment
-            self.readonly = readonly and int(readonly) or 0
+            self.readonly = int(readonly) if readonly else 0
             break
         else:
             self.version = 0

@@ -79,8 +79,8 @@ class SubversionPropertyRenderer(Component):
     def match_property(self, name, mode):
         if name in ('svn:externals', 'svn:needs-lock'):
             return 4
-        return name in ('svn:mergeinfo', 'svnmerge-blocked',
-                        'svnmerge-integrated') and 2 or 0
+        return 2 if name in ('svn:mergeinfo', 'svnmerge-blocked',
+                             'svnmerge-integrated') else 0
     
     def render_property(self, name, mode, context, props):
         if name == 'svn:externals':
@@ -124,7 +124,7 @@ class SubversionPropertyRenderer(Component):
                 base_url, pref = posixpath.split(base_url)
                 prefix.append(pref)
             href = self._externals_map.get(base_url)
-            revstr = rev and ' at revision '+rev or ''
+            revstr = ' at revision ' + rev if rev else ''
             if not href and (url.startswith('http://') or 
                              url.startswith('https://')):
                 href = url.replace('%', '%%')
@@ -175,8 +175,8 @@ class SubversionMergePropertyRenderer(Component):
     # IPropertyRenderer methods
 
     def match_property(self, name, mode):
-        return name in ('svn:mergeinfo', 'svnmerge-blocked',
-                        'svnmerge-integrated') and 4 or 0
+        return 4 if name in ('svn:mergeinfo', 'svnmerge-blocked',
+                             'svnmerge-integrated') else 0
     
     def render_property(self, name, mode, context, props):
         """Parse svn:mergeinfo and svnmerge-* properties, converting branch
@@ -184,8 +184,8 @@ class SubversionMergePropertyRenderer(Component):
         and eligible revisions.
         """
         has_eligible = name in ('svnmerge-integrated', 'svn:mergeinfo')
-        revs_label = (_('merged'), _('blocked'))[name.endswith('blocked')]
-        revs_cols = has_eligible and 2 or None
+        revs_label = _('blocked') if name.endswith('blocked') else _('merged')
+        revs_cols = 2 if has_eligible else None
         reponame = context.resource.parent.id
         target_path = context.resource.id
         repos = RepositoryManager(self.env).get_repository(reponame)
@@ -249,12 +249,12 @@ class SubversionMergePropertyRenderer(Component):
         if not rows:
             return None
         rows.sort()
-        has_deleted = rows and rows[-1][0] or None
+        has_deleted = rows[-1][0] if rows else None
         return tag(has_deleted and tag.a(_('(toggle deleted branches)'),
                                          class_='trac-toggledeleted',
                                          href='#'),
                    tag.table(tag.tbody(
-                       [tag.tr(row, class_=deleted and 'trac-deleted' or None)
+                       [tag.tr(row, class_='trac-deleted' if deleted else None)
                         for deleted, spath, row in rows]), class_='props'))
 
 
@@ -318,8 +318,8 @@ class SubversionMergePropertyDiffRenderer(Component):
     # IPropertyDiffRenderer methods
 
     def match_property_diff(self, name):
-        return name in ('svn:mergeinfo', 'svnmerge-blocked',
-                        'svnmerge-integrated') and 4 or 0
+        return 4 if name in ('svn:mergeinfo', 'svnmerge-blocked',
+                             'svnmerge-integrated') else 0
 
     def render_property_diff(self, name, old_context, old_props,
                              new_context, new_props, options):

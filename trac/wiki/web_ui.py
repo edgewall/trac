@@ -234,7 +234,7 @@ class WikiModule(Component):
                     # TRANSLATOR: wiki page
                     'rev': v or _('currently edited'), 
                     'shortrev': v or last + 1,
-                    'href': v and req.href.wiki(page.name, version=v) or None}
+                    'href': req.href.wiki(page.name, version=v) if v else None}
         changes = [{'diffs': diffs, 'props': [],
                     'new': version_info(new_version, old_version),
                     'old': version_info(old_version)}]
@@ -314,7 +314,7 @@ class WikiModule(Component):
                           new_name, old_version, old_name, new_name)
                 redirection.save(author, comment, req.remote_addr)
         
-        req.redirect(req.href.wiki(redirect and old_name or new_name))
+        req.redirect(req.href.wiki(old_name if redirect else new_name))
 
     def _do_save(self, req, page):
         if page.readonly:
@@ -351,8 +351,9 @@ class WikiModule(Component):
             version = int(req.args.get('version', 0))
         old_version = int(req.args.get('old_version') or 0) or version
 
-        what = ((version and old_version and version - old_version > 1) and
-               'multiple') or version and 'single' or 'page'
+        what = 'multiple' if version and old_version \
+                             and version - old_version > 1 \
+               else 'single' if version else 'page'
 
         num_versions = 0
         new_date = None
@@ -382,7 +383,7 @@ class WikiModule(Component):
             req.perm(page.resource).require('WIKI_RENAME')
            
         data = self._page_data(req, page, 'rename')
-        data['new_name'] = new_name is None and page.name or new_name
+        data['new_name'] = new_name if new_name is not None else page.name
         self._wiki_ctxtnav(req, page)
         return 'wiki_rename.html', data, None
         
@@ -526,8 +527,8 @@ class WikiModule(Component):
             'attachments': AttachmentModule(self.env).attachment_data(context),
         })
         if action in ('diff', 'merge'):
-            old_text = original_text and original_text.splitlines() or []
-            new_text = page.text and page.text.splitlines() or []
+            old_text = original_text.splitlines() if original_text else []
+            new_text = page.text.splitlines() if page.text else []
             diff_data, changes = self._prepare_diff(
                 req, page, old_text, new_text, page.version, '')
             data.update({'diff': diff_data, 'changes': changes,

@@ -127,8 +127,8 @@
                              show_editor = can_edit_comment and str(change.cnum) == cnum_edit;
                              show_history = str(change.cnum) == cnum_hist;
                              max_version = max(change.comment_history);
-                             comment_version = (max_version, int(cversion or 0))[show_history]">
-              <div class="change" id="${'cnum' in change and 'trac-change-%d' % change.cnum or None}">
+                             comment_version = int(cversion or 0) if show_history else max_version">
+              <div class="change" id="${'trac-change-%d' % change.cnum if 'cnum' in change else None}">
                 <h3 class="change">
                   <span class="threading" py:if="'cnum' in change"
                         py:with="change_replies = replies.get(str(change.cnum), [])">
@@ -167,7 +167,7 @@
                 </py:if>
                 <xi:include href="ticket_change.html"/>
                 <div py:if="not show_editor and len(change.comment_history) > 1" py:choose=""
-                     class="trac-lastedit ${comment_version != max_version and 'trac-shade' or None}">
+                     class="trac-lastedit ${'trac-shade' if comment_version != max_version else None}">
                   <i18n:msg params="version, date, author" py:when="comment_version != max_version">
                       Version ${comment_version}, edited ${dateinfo(change.comment_history[comment_version].date)} ago
                       by ${authorinfo(change.comment_history[comment_version].author)}
@@ -197,7 +197,7 @@
       <!--! End of the section we don't show on initial new tickets -->
 
       <form py:if="has_property_editor" method="post" id="propertyform"
-            action="${ticket.exists and href.ticket(ticket.id) + '#trac-add-comment' or href.newticket()}">
+            action="${href.ticket(ticket.id) + '#trac-add-comment' if ticket.exists else href.newticket()}">
         <!--! Add comment -->
         <div py:if="ticket.exists and can_append" class="field"
              py:with="show_comment_preview = (change_preview.fields or change_preview.comment) and cnum_edit is None">
@@ -221,8 +221,8 @@ ${comment}</textarea>
             may have failed.
           </div>
           <!--! Preview of ticket changes -->
-          <div id="ticketchange" class="ticketdraft" style="${not show_comment_preview and 'display: none' or None}">
-            <h3 class="change" id="${'cnum' in change_preview and 'comment:%d' % change_preview.cnum or None}">
+          <div id="ticketchange" class="ticketdraft" style="${'display: none' if not show_comment_preview else None}">
+            <h3 class="change" id="${'comment:%d' % change_preview.cnum if 'cnum' in change_preview else None}">
               <span class="threading" py:if="'replyto' in change_preview">
                 in reply to: ${commentref('&uarr;&nbsp;', change_preview.replyto)}
               </span>
@@ -285,7 +285,7 @@ ${ticket.description}</textarea>
                         field.edit_label or field.label or field.name}:</label>
                     </th>
                     <td class="col${idx + 1}" py:if="idx == 0 or not fullrow"
-                        colspan="${fullrow and 3 or None}">
+                        colspan="${3 if fullrow else None}">
                       <py:choose test="field.type" py:if="field">
                         <select py:when="'select'" id="field-${field.name}" name="field_${field.name}">
                           <option py:if="field.optional"></option>
@@ -302,11 +302,11 @@ ${ticket.description}</textarea>
                         </select>
                         <textarea py:when="'textarea'" id="field-${field.name}" name="field_${field.name}"
                                   cols="${field.width}" rows="${field.height}"
-                                  class="${field.format == 'wiki' and 'wikitext ' or None}trac-resizable">
+                                  class="${'wikitext ' if field.format == 'wiki' else None}trac-resizable">
 ${value}</textarea>
                         <span py:when="'checkbox'">
                           <input type="checkbox" id="field-${field.name}" name="field_${field.name}"
-                                 checked="${value == '1' and 'checked' or None}" value="1" />
+                                 checked="${value == '1' or None}" value="1" />
                           <input type="hidden" name="field_checkbox_${field.name}" value="1" />
                         </span>
                         <label py:when="'radio'"
@@ -404,7 +404,7 @@ ${value}</textarea>
             <input type="hidden" name="cnum" value="${cnum}" />
           </py:if>
           <input type="submit" name="preview" value="${_('Preview')}" accesskey="r" />&nbsp;
-          <input type="submit" name="submit" value="${ticket.exists and _('Submit changes') or _('Create ticket')}" />
+          <input type="submit" name="submit" value="${_('Submit changes') if ticket.exists else _('Create ticket')}" />
         </div>
 
       </form>

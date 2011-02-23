@@ -40,7 +40,7 @@
           <table summary="Query filters">
             <tbody py:for="clause_num, constraints in enumerate(clauses or [{}])"
                    py:with="clause_pre = '%d_' % clause_num">
-              <tr style="${clause_num == 0 and 'display: none' or None}">
+              <tr style="${'display: none' if clause_num == 0 else None}">
                 <td>
                   <div class="trac-clause-lsep">&nbsp;<hr /></div>
                   <div class="trac-clause-msep">Or</div>
@@ -66,16 +66,16 @@
                           <td py:if="field.type not in ('radio', 'checkbox', 'time')" class="mode">
                             <select name="${n_field_name}_mode">
                               <option py:for="mode in modes[field.type]" value="$mode.value"
-                                selected="${mode.value == constraint.mode and 'selected' or None}">$mode.name</option>
+                                      selected="${mode.value == constraint.mode or None}">$mode.name</option>
                             </select>
                           </td>
                         </py:when>
                         <py:otherwise><!--! not the first line of a multiline constraint -->
-                          <th colspan="${field.type == 'time' and 1 or 2}"><label>or</label></th>
+                          <th colspan="${1 if field.type == 'time' else 2}"><label>or</label></th>
                         </py:otherwise>
                       </py:choose>
 
-                      <td class="filter" colspan="${field.type in ('radio', 'checkbox', 'time') and 2 or None}"
+                      <td class="filter" colspan="${2 if field.type in ('radio', 'checkbox', 'time') else None}"
                           py:choose="">
 
                         <py:when test="field.type == 'select'">
@@ -98,8 +98,7 @@
                           <py:for each="option in field.options">
                             <input type="checkbox" id="_${n_field_name}_$option" name="${n_field_name}"
                               value="$option"
-                              checked="${((constraint['mode'] == '') == (option in constraint['values']))
-                                       and 'checked' or None}" />
+                              checked="${((constraint['mode'] == '') == (option in constraint['values'])) or None}" />
                             <label for="_${n_field_name}_$option" class="control">${option or 'none'}</label>
                           </py:for>
                         </py:when>
@@ -172,8 +171,7 @@
             <py:for each="column in all_columns">
               <label>
                 <input type="checkbox" name="col" value="$column"
-                       checked="${any([(value == column) for value in col])
-                                  and 'checked' or None}" />
+                       checked="${any(value == column for value in col) or None}" />
                 ${fields.get(column, {'label': column or 'none'}).label}
               </label>
             </py:for>
@@ -200,7 +198,7 @@
           Show under each result:
           <py:for each="column in all_textareas">
             <label><input type="checkbox" name="row" value="$column"
-                checked="${any([(value == column) for value in row]) and 'checked' or None}" />
+                          checked="${any(value == column for value in row) or None}" />
             ${fields.get(column, {'label': column or 'none'}).label}</label>
           </py:for>
         </p>
@@ -233,13 +231,13 @@
                    value="${_('Edit query')}" />
           </div>
         </form>
-        <form py:if="new or edit" method="get" action="${edit and url_of(report_resource) or href.report()}">
+        <form py:if="new or edit" method="get" action="${url_of(report_resource) if edit else href.report()}">
           <div>
-            <input type="hidden" name="action" value="${edit and 'edit' or 'new'}" />
+            <input type="hidden" name="action" value="${'edit' if edit else 'new'}" />
             <input type="hidden" name="query" value="${query.to_string()}" />
             <input type="submit" value="${_('Save query')}"
-                   title="${edit and _('Save updated query in report {%(id)s}', id=report_resource.id) or
-                                     _('Create new report from current query')}" />
+                   title="${_('Save updated query in report {%(id)s}', id=report_resource.id) if edit
+                            else _('Create new report from current query')}" />
           </div>
         </form>
         <form py:if="delete" method="get" action="${url_of(report_resource)}">

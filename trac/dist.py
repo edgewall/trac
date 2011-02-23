@@ -11,8 +11,6 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from __future__ import with_statement
-
 """Extra commands for setup.py.
 
 In addition to providing a few extra command classes in `l10n_cmdclass`,
@@ -20,6 +18,8 @@ we also modify the standard `distutils.command.build` and
 `setuptools.command.install_lib` classes so that the relevant l10n commands
 for compiling catalogs are issued upon install.
 """
+
+from __future__ import with_statement
 
 from StringIO import StringIO
 import os

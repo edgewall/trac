@@ -83,7 +83,8 @@
       <py:def function="column_headers()">
         <tr py:for="header_group in header_groups" class="trac-columns">
           <th py:for="header in header_group" py:if="not header.hidden" py:with="fullrow = header is header_group[-1]"
-              colspan="${fullrow and '100' or None}" class="${header.asc is not None and ('desc', 'asc')[header.asc] or None}">
+              colspan="${'100' if fullrow else None}"
+              class="${'asc' if header.asc else 'desc' if header.asc is not None else None}">
             <a py:strip="not sorting_enabled"
               href="${report_href(sort=header.col, asc=not header.asc)}">
               $header.title
@@ -95,11 +96,11 @@
         <h2 py:if="value_for_group" class="report-result">
           <a py:strip="not row_group or '__grouplink__' not in row_group[0]" href="${row_group[0]['__grouplink__']}">$value_for_group</a>
           <span class="numrows" py:with="cnt = len(row_group)">
-            (${cnt and ngettext('%(num)s match', '%(num)s matches', cnt) or _('No matches found.')})
+            (${ngettext('%(num)s match', '%(num)s matches', cnt) if cnt else _('No matches found.')})
           </span>
         </h2>
       </py:def>
-      ${row_groups and group_heading(*row_groups[0]) or None}
+      ${group_heading(*row_groups[0]) if row_groups else None}
       <table py:if="row_groups" class="listing tickets">
         <py:for each="groupindex, (value_for_group, row_group) in enumerate(row_groups)">
           <thead py:if="not groupindex">
@@ -118,12 +119,12 @@
             <py:for each="row in row_group">
               <tr py:for="cell_group in row.cell_groups"
                 py:with="fullrow = len(cell_group) == 1;
-                         td_attrs = fullrow and {'class': 'fullrow', 'colspan': 100} or {}"
-                class="${'__color__' in row and 'color'+row.__color__+'-' or ''}${row.__idx__ % 2 and 'odd' or 'even'}"
-                style="${'__bgcolor__' in row and 'background: '+row.__bgcolor__+';' or None
-                }${'__fgcolor__' in row and 'color: '+row.__fgcolor__+';' or None
-                }${'__style__' in row and row.__style__+';' or None
-                }${fullrow and 'border: none; padding: 0;' or None}">
+                         td_attrs = {'class': 'fullrow', 'colspan': 100} if fullrow else {}"
+                class="${'color' + row.__color__ + '-' if '__color__' in row else ''}${'odd' if row.__idx__ % 2 else 'even'}"
+                style="${'background: ' + row.__bgcolor__ + ';' if '__bgcolor__' in row else None
+                }${'color: ' + row.__fgcolor__ + ';' if '__fgcolor__' in row else None
+                }${row.__style__ + ';' if '__style__' in row else None
+                }${'border: none; padding: 0;' if fullrow else None}">
 
                 <py:for each="cell in cell_group">
                   <py:if test="not cell.header.hidden">
@@ -155,19 +156,19 @@
 
                         <!--! generic fields -->
                         <py:when test="col == 'time'">
-                          <td class="date" py:attrs="td_attrs">${cell.value != '' and format_time(from_utimestamp(long(cell.value))) or '--'}
+                          <td class="date" py:attrs="td_attrs">${format_time(from_utimestamp(long(cell.value))) if cell.value != '' else '--'}
                             <hr py:if="fullrow"/>
                           </td>
                         </py:when>
 
                         <py:when test="col in ('date', 'created', 'modified')">
-                          <td class="date" py:attrs="td_attrs">${cell.value != '' and format_date(from_utimestamp(long(cell.value))) or '--'}
+                          <td class="date" py:attrs="td_attrs">${format_date(from_utimestamp(long(cell.value))) if cell.value != '' else '--'}
                             <hr py:if="fullrow"/>
                           </td>
                         </py:when>
 
                         <py:when test="col == 'datetime'">
-                          <td class="date" py:attrs="td_attrs">${cell.value != '' and format_datetime(from_utimestamp(long(cell.value))) or '--'}
+                          <td class="date" py:attrs="td_attrs">${format_datetime(from_utimestamp(long(cell.value))) if cell.value != '' else '--'}
                             <hr py:if="fullrow"/>
                           </td>
                         </py:when>

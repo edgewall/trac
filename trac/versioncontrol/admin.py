@@ -189,7 +189,7 @@ class RepositoryAdminPanel(Component):
         
         if path_info:
             # Detail view
-            reponame = not is_default(path_info) and path_info or ''
+            reponame = path_info if not is_default(path_info) else ''
             info = all_repos.get(reponame)
             if info is None:
                 raise TracError(_("Repository '%(repo)s' not found",

@@ -77,7 +77,7 @@
             </label>
           </i18n:msg><br />
           <label>
-            <input type="checkbox" id="verbose" name="verbose" checked="${verbose and 'checked' or None}" />
+            <input type="checkbox" id="verbose" name="verbose" checked="${verbose or None}" />
             Show full log messages
           </label>
         </div>
@@ -106,7 +106,7 @@
           <input type="submit" value="${_('View changes')}"
             title="Diff from Old Revision to New Revision (as selected in the Diff column)" />
         </div>
-        <table class="listing chglist${graph and ' trac-graph' or None}">
+        <table class="listing chglist${' trac-graph' if graph else None}">
           <thead>
             <tr>
               <th py:if="graph" class="trac-graph">Graph</th>
@@ -132,7 +132,7 @@
               <py:with vars="change = changes[item.rev];
                              is_separator = item.change is None;
                              chgset_context = context.child('changeset', change.rev, parent=repos.resource);
-                             odd_even = idx % 2 and 'odd' or 'even'">
+                             odd_even = 'odd' if idx % 2 else 'even'">
                 <!--! highlight copy or rename operations -->
                 <tr py:if="not is_separator and item.get('copyfrom_path')" class="$odd_even">
                   <td />

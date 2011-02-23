@@ -151,7 +151,7 @@ class EnscriptRenderer(Component):
         i = odata.find('<PRE>')
         beg = i > 0 and i + 6
         i = odata.rfind('</PRE>')
-        end = i > 0 and i or len(odata)
+        end = i if i > 0 else len(odata)
 
         odata = EnscriptDeuglifier().format(odata[beg:end].decode('utf-8'))
         return [Markup(line) for line in odata.splitlines()]

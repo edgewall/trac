@@ -331,7 +331,7 @@ def get_diff_options(req):
     
     arg = int(req.args.get('contextall', 0))
     options_data['contextall'] = arg
-    options = ['-U%d' % (arg and -1 or context)]
+    options = ['-U%d' % (-1 if arg else context)]
 
     arg = get_bool_option('ignoreblanklines')
     if arg:

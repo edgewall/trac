@@ -88,7 +88,7 @@
                       <div py:if="templates" id="template">
                         <label for="template">Using the template:</label>
                         <select name="template">
-                          <option selected="${not default_template in templates and 'selected' or None}"
+                          <option selected="${not default_template in templates or None}"
                                   value="">(blank page)</option>
                           <option py:for="t in sorted(templates)" value="$t"
                                   selected="${t == default_template or None}">$t</option>

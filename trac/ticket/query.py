@@ -940,7 +940,7 @@ class QueryModule(Component):
                      conversion[1], conversion[4], conversion[0])
 
         if format:
-            filename = ('query', None)[format == 'rss']
+            filename = 'query' if format != 'rss' else None
             Mimeview(self.env).send_converted(req, 'trac.ticket.Query', query,
                                               format, filename=filename)
 

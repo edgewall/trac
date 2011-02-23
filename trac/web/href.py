@@ -170,7 +170,7 @@ class Href(object):
 
         # assemble the query string
         for k, v in kw.items():
-            add_param(k.endswith('_') and k[:-1] or k, v)
+            add_param(k[:-1] if k.endswith('_') else k, v)
         if params:
             href += '?' + unicode_urlencode(params, self.query_safe)
 

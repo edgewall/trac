@@ -488,7 +488,7 @@ class ChangesetModule(Component):
         def node_info(node, annotated):
             href = req.href.browser(
                 reponame, node.created_path, rev=node.created_rev,
-                annotate=annotated and 'blame' or None)
+                annotate='blame' if annotated else None)
             title = _('Show revision %(rev)s of this file in browser',
                       rev=display_rev(node.rev))
             return {'path': node.path, 'rev': node.rev,
@@ -628,8 +628,8 @@ class ChangesetModule(Component):
                         'new': new_node and node_info(new_node, annotated),
                         'props': props,
                         'diffs': diffs}
-                files.append(new_node and new_node.path or \
-                             old_node and old_node.path or '')
+                files.append(new_node.path if new_node else \
+                             old_node.path if old_node else '')
                 filestats[change] += 1
                 if change in Changeset.DIFF_CHANGES:
                     if chgset:
@@ -1005,9 +1005,9 @@ class ChangesetModule(Component):
         if reponame or len(repos_for_uid) > 1:
             title = ngettext('Changeset in %(repo)s ',
                              'Changesets in %(repo)s ',
-                             single and 1 or 2, repo=', '.join(repos_for_uid))
+                             1 if single else 2, repo=', '.join(repos_for_uid))
         else:
-            title = ngettext('Changeset ', 'Changesets ', single and 1 or 2)
+            title = ngettext('Changeset ', 'Changesets ', 1 if single else 2)
         drev_a = older_cset.repos.display_rev(rev_a)
         if single:
             title = tag(title, tag.em('[%s]' % drev_a))
@@ -1045,7 +1045,7 @@ class ChangesetModule(Component):
             r"(?:\b|!)r\d+\b(?!:\d)(?:/[a-zA-Z0-9_/+-]+)?",
             lambda x, y, z:
             self._format_changeset_link(x, 'changeset',
-                                        y[0] == 'r' and y[1:] or y[1:-1],
+                                        y[1:] if y[0] == 'r' else y[1:-1],
                                         y, z))
 
     def get_link_resolvers(self):
@@ -1194,7 +1194,7 @@ class AnyDiffModule(Component):
                                if repos.is_viewable(req.perm))
 
             elem = tag.ul(
-                [tag.li(isdir and tag.b(path) or path)
+                [tag.li(tag.b(path) if isdir else path)
                  for (isdir, name, path) in sorted(entries, key=kind_order)
                  if name.lower().startswith(prefix)])
 

@@ -11,9 +11,9 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from __future__ import with_statement
-
 """Utilities for text translation with gettext."""
+
+from __future__ import with_statement
 
 import pkg_resources
 import re
@@ -44,7 +44,7 @@ def dgettext_noop(domain, string, **kwargs):
 N_ = _noop = lambda string: string
 
 def ngettext_noop(singular, plural, num, **kwargs):
-    string = (plural, singular)[num == 1]
+    string = singular if num == 1 else plural
     kwargs.setdefault('num', num)
     return safefmt(string, kwargs)
 
@@ -59,13 +59,13 @@ def _tag_kwargs(trans, kwargs):
     return tag(*trans_elts)
 
 def tgettext_noop(string, **kwargs):
-    return kwargs and _tag_kwargs(string, kwargs) or string
+    return _tag_kwargs(string, kwargs) if kwargs else string
 
 def dtgettext_noop(domain, string, **kwargs):
     return tgettext_noop(string, **kwargs)
 
 def tngettext_noop(singular, plural, num, **kwargs):
-    string = (plural, singular)[num == 1]
+    string = singular if num == 1 else plural
     kwargs.setdefault('num', num)
     return _tag_kwargs(string, kwargs)
 
@@ -221,7 +221,7 @@ try:
         def tgettext(self, string, **kwargs):
             def _tgettext():
                 trans = self.active.ugettext(string)
-                return kwargs and _tag_kwargs(trans, kwargs) or trans
+                return _tag_kwargs(trans, kwargs) if kwargs else trans
             if not self.isactive:
                 return LazyProxy(_tgettext)
             return _tgettext()
@@ -229,7 +229,7 @@ try:
         def dtgettext(self, domain, string, **kwargs):
             def _dtgettext():
                 trans = self.active.dugettext(domain, string)
-                return kwargs and _tag_kwargs(trans, kwargs) or trans
+                return _tag_kwargs(trans, kwargs) if kwargs else trans
             if not self.isactive:
                 return LazyProxy(_dtgettext)
             return _dtgettext()
@@ -250,7 +250,7 @@ try:
                 trans = self.active.dungettext(domain, singular, plural, num)
                 if '%(num)' in trans:
                     kwargs.update(num=num)
-                return kwargs and _tag_kwargs(trans, kwargs) or trans
+                return _tag_kwargs(trans, kwargs) if kwargs else trans
             if not self.isactive:
                 return LazyProxy(_dtngettext)
             return _dtngettext()

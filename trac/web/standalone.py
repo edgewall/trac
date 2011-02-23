@@ -315,7 +315,7 @@ def main():
                 from trac.web.fcgi_frontend import FlupMiddleware
                 flup_app = FlupMiddleware(flup_app)
             ret = server_cls(flup_app, bindAddress=server_address).run()
-            sys.exit(ret and 42 or 0) # if SIGHUP exit with status 42
+            sys.exit(42 if ret else 0) # if SIGHUP exit with status 42
 
     try:
         if options.daemonize:

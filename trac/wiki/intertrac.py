@@ -83,7 +83,7 @@ class InterTracDispatcher(Component):
         parts = link.split(':', 1)
         if len(parts) > 1:
             resolver, target = parts
-            if target and (target[0] not in '\'"' or target[0] != target[-1]):
+            if target[:1] + target[-1:] not in ('""', "''"):
                 link = '%s:"%s"' % (resolver, target)
         from trac.web.chrome import web_context
         link_frag = extract_link(self.env, web_context(req), link)

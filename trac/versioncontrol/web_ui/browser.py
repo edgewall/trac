@@ -130,8 +130,8 @@ class WikiPropertyRenderer(Component):
         (''since 0.11'')""")
 
     def match_property(self, name, mode):
-        return (name in self.wiki_properties or \
-                name in self.oneliner_properties) and 4 or 0
+        return 4 if name in self.wiki_properties \
+                    or name in self.oneliner_properties else 0
 
     def render_property(self, name, mode, context, props):
         if name in self.wiki_properties:
@@ -258,7 +258,7 @@ class BrowserModule(Component):
             # Get three ints out of a `rgb` string or return `default`
             try:
                 t = tuple([int(v) for v in re.split(r'(\d+)', rgb)[1::2]])
-                return len(t) == 3 and t or default
+                return t if len(t) == 3 else default
             except ValueError:
                 return default
         
@@ -355,8 +355,8 @@ class BrowserModule(Component):
         if reponame and reponame != repos.reponame: # Redirect alias
             qs = req.query_string
             req.redirect(req.href.browser(repos.reponame or None, path)
-                         + (qs and '?' + qs or ''))
-        reponame = repos and repos.reponame or None
+                         + ('?' + qs if qs else ''))
+        reponame = repos.reponame if repos else None
         
         # Find node for the requested path/rev
         context = web_context(req)
@@ -410,7 +410,7 @@ class BrowserModule(Component):
             'created_rev': node and node.created_rev,
             'properties': properties_data,
             'path_links': path_links,
-            'order': order, 'desc': desc and 1 or None,
+            'order': order, 'desc': 1 if desc else None,
             'repo': repo_data, 'dir': dir_data, 'file': file_data,
             'quickjump_entries': quickjump_data,
             'wiki_format_messages': \
@@ -525,11 +525,11 @@ class BrowserModule(Component):
         # Ordering of repositories
         if order == 'date':
             def repo_order((reponame, repoinfo, repos, youngest, err, href)):
-                return (youngest and youngest.date or to_datetime(0),
+                return (youngest.date if youngest else to_datetime(0),
                         embedded_numbers(reponame.lower()))
         elif order == 'author':
             def repo_order((reponame, repoinfo, repos, youngest, err, href)):
-                return (youngest and youngest.author.lower() or '',
+                return (youngest.author.lower() if youngest else '',
                         embedded_numbers(reponame.lower()))
         else:
             def repo_order((reponame, repoinfo, repos, youngest, err, href)):
@@ -592,10 +592,10 @@ class BrowserModule(Component):
             def file_order(a):
                 return embedded_numbers(a.name.lower())
 
-        dir_order = desc and 1 or -1
+        dir_order = 1 if desc else -1
 
         def browse_order(a):
-            return a.isdir and dir_order or 0, file_order(a)
+            return dir_order if a.isdir else 0, file_order(a)
         entries = sorted(entries, key=browse_order, reverse=desc)
 
         # ''Zip Archive'' alternate link
@@ -630,7 +630,7 @@ class BrowserModule(Component):
         if format in ('raw', 'txt'):
             req.send_response(200)
             req.send_header('Content-Type',
-                            format == 'txt' and 'text/plain' or mime_type)
+                            'text/plain' if format == 'txt' else mime_type)
             req.send_header('Content-Length', node.content_length)
             req.send_header('Last-Modified', http_date(node.last_modified))
             if rev is None:
@@ -877,7 +877,7 @@ class BrowserModule(Component):
             add_stylesheet(formatter.req, 'common/css/browser.css')
             wiki_format_messages = self.config['changeset'] \
                                        .getbool('wiki_format_messages')
-            data = {'repo': repo, 'order': order, 'desc': desc and 1 or None,
+            data = {'repo': repo, 'order': order, 'desc': 1 if desc else None,
                     'reponame': None, 'path': '/', 'stickyrev': None,
                     'wiki_format_messages': wiki_format_messages}
             from trac.web.chrome import Chrome

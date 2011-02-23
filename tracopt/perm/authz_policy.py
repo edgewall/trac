@@ -169,7 +169,7 @@ class AuthzPolicy(Component):
 
     def get_authz_file(self):
         f = self.authz_file
-        return os.path.isabs(f) and f or os.path.join(self.env.path, f)
+        return f if os.path.isabs(f) else os.path.join(self.env.path, f)
 
     def parse_authz(self):
         self.log.debug('Parsing authz security policy %s',

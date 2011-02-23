@@ -286,7 +286,7 @@ class WikiProcessor(object):
             raise ProcessorError(_("!#%(name)s must contain at least one table"
                                    " cell (and table cells only)",
                                    name=self.name))
-        return Markup(match.group(self.name == 'table' and 1 or 2))
+        return Markup(match.group(1 if self.name == 'table' else 2))
 
     def _format_row(self, env, context, text):
         if text:
@@ -539,7 +539,7 @@ class Formatter(object):
     # HTML escape of &, < and >
 
     def _htmlescape_formatter(self, match, fullmatch):
-        return match == "&" and "&amp;" or match == "<" and "&lt;" or "&gt;"
+        return "&amp;" if match == "&" else "&lt;" if match == "<" else "&gt;"
 
     # Short form (shref) and long form (lhref) of TracLinks
 
@@ -837,9 +837,9 @@ class Formatter(object):
             self.close_indentation() # FIXME: why not lists in quotes?
             self._list_stack.append((new_type, depth))
             self._set_tab(depth)
-            class_attr = (lclass and ' class="%s"' % lclass) or ''
-            start_attr = (start and ' start="%s"' % start) or ''
-            self.out.write('<'+new_type+class_attr+start_attr+'><li>')
+            class_attr = ' class="%s"' % lclass if lclass else ''
+            start_attr = ' start="%s"' % start if start else ''
+            self.out.write('<' + new_type + class_attr + start_attr + '><li>')
         def close_item():
             self.flush_tags()
             self.out.write('</li>')
@@ -877,7 +877,7 @@ class Formatter(object):
     # Definition Lists
 
     def _definition_formatter(self, match, fullmatch):
-        tmp = self.in_def_list and '</dd>' or '<dl class="wiki">'
+        tmp = '</dd>' if self.in_def_list else '<dl class="wiki">'
         definition = match[:match.find('::')]
         tmp += '<dt>%s</dt><dd>' % format_to_oneliner(self.env, self.context,
                                                       definition)
@@ -901,7 +901,7 @@ class Formatter(object):
                         self.in_list_item = True
                         self._set_list_depth(idepth)
                         return ''
-            elif idepth <= ldepth + (ltype == 'ol' and 3 or 2):
+            elif idepth <= ldepth + (3 if ltype == 'ol' else 2):
                 self.in_list_item = True
                 return ''
         if not self.in_def_list:
@@ -913,7 +913,7 @@ class Formatter(object):
 
     def _get_quote_depth(self):
         """Return the space offset associated to the deepest opened quote."""
-        return self._quote_stack and self._quote_stack[-1] or 0
+        return self._quote_stack[-1] if self._quote_stack else 0
 
     def _set_quote_depth(self, depth, citation=False):
         def open_quote(depth):
@@ -923,7 +923,7 @@ class Formatter(object):
             def open_one_quote(d):
                 self._quote_stack.append(d)
                 self._set_tab(d)
-                class_attr = citation and ' class="citation"' or ''
+                class_attr = ' class="citation"' if citation else ''
                 self.out.write('<blockquote%s>' % class_attr + os.linesep)
             if citation:
                 for d in range(quote_depth+1, depth+1):
@@ -1070,7 +1070,7 @@ class Formatter(object):
         args = WikiParser._processor_param_re.split(line)
         del args[::3]
         keys = [str(k) for k in args[::2]] # used as keyword parameters
-        values = [(v and v[0] in '"\'' and [v[1:-1]] or [v])[0]
+        values = [v[1:-1] if v[:1] + v[-1:] in ('""', "''") else v
                   for v in args[1::2]]
         return dict(zip(keys, values))
 
@@ -1323,7 +1323,7 @@ class OneLinerFormatter(Formatter):
             return ''
         else:
             args = fullmatch.group('macroargs')
-            return '[[%s%s]]' % (name,  args and '(...)' or '')
+            return '[[%s%s]]' % (name, '(...)' if args else '')
 
     def format(self, text, out, shorten=False):
         if not text:

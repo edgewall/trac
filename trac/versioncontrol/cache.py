@@ -346,7 +346,7 @@ class CachedRepository(Repository):
                 for i in range(1, len(components) + 1):
                     args.append('/'.join(components[:i]))
 
-            sql += " ORDER BY rev" + (direction == '<' and " DESC" or "") \
+            sql += " ORDER BY rev" + (" DESC" if direction == '<' else "") \
                    + " LIMIT 1"
             
             for rev, in db(sql, args):

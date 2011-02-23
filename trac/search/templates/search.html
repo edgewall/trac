@@ -30,7 +30,7 @@
         <p class="filters">
           <py:for each="filter in filters">
             <input type="checkbox" id="${filter.name}" name="${filter.name}"
-                   checked="${'checked' if filter.active else None}" />
+                   checked="${filter.active or None}" />
             <label for="${filter.name}">${filter.label}</label>
           </py:for>
        </p>

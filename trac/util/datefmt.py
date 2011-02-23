@@ -308,7 +308,7 @@ def _parse_date_iso8601(text, tzinfo):
                 if tz == 0:
                     tzinfo = utc
                 else:
-                    tzinfo = FixedOffset(tzsign == '-' and -tz or tz,
+                    tzinfo = FixedOffset(-tz if tzsign == '-' else tz,
                                          '%s%s:%s' %
                                          (tzsign, tzhours, tzminutes))
             tm = time.strptime('%s ' * 6 % (years, months, days,

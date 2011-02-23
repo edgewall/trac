@@ -38,7 +38,7 @@ Arguments:
   <form py:if="show_editor" id="trac-comment-editor" method="post" action="#comment:${change.cnum}">
     <div>
       <textarea name="edited_comment" class="wikitext trac-resizable" rows="10" cols="78">
-${(edited_comment, change.comment)[edited_comment is None]}</textarea>
+${edited_comment if edited_comment is not None else change.comment}</textarea>
       <input type="hidden" name="cnum_edit" value="${change.cnum}"/>
     </div>
     <div class="buttons">
@@ -51,8 +51,9 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
     </div>
   </form>
   <py:choose>
-    <div py:when="str(change.cnum) == cnum_edit" py:with="text = (edited_comment, change.comment)[edited_comment is None]"
-         class="comment searchable ticketdraft" style="${not text and 'display: none' or None}" xml:space="preserve">
+    <div py:when="str(change.cnum) == cnum_edit"
+         py:with="text = edited_comment if edited_comment is not None else change.comment"
+         class="comment searchable ticketdraft" style="${'display: none' if not text else None}" xml:space="preserve">
       ${wiki_to_html(context, text, escape_newlines=preserve_newlines)}
     </div>
     <div py:otherwise="" py:choose="" class="comment searchable" xml:space="preserve">

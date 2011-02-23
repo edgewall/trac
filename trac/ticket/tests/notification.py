@@ -176,7 +176,7 @@ class NotificationTestCase(unittest.TestCase):
         def run_bcc_feature(public):
             # CC list should be private
             self.env.config.set('notification', 'use_public_cc',
-                                public and 'true' or 'false')
+                                'true' if public else 'false')
             self.env.config.set('notification', 'smtp_always_bcc', 
                                 'joe.foobar@example.net')
             ticket = Ticket(self.env)

@@ -21,7 +21,7 @@ def _prep_session_table(env, spread_visits=False):
         db("DELETE FROM session")
         db("DELETE FROM session_attribute")
     last_visit_base = time.mktime(datetime(2010, 1, 1).timetuple())
-    visit_delta = spread_visits and 86400 or 0
+    visit_delta = 86400 if spread_visits else 0
     auth_list, anon_list = [], []
     with env.db_transaction as db:
         for x in xrange(20):

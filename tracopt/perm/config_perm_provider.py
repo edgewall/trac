@@ -51,4 +51,4 @@ class ExtraPermissionsProvider(Component):
             meta = meta.strip().upper()
             if meta and not meta.startswith('_'):
                 permissions.setdefault(meta, []).extend(perms)
-        return [v and (k, v) or k for k, v in permissions.iteritems()]
+        return [(k, v) if v else k for k, v in permissions.iteritems()]

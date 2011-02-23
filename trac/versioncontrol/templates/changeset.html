@@ -78,7 +78,7 @@
 
       <form py:if="not xhr and (has_diffs or diff.options.ignoreblanklines or diff.options.ignorecase or
                                 diff.options.ignorewhitespace)"
-        id="prefs" action="">
+            id="prefs" action="">
         <div>
           <py:if test="not changeset">
             <input type="hidden" name="old_path" value="${'/' + pathjoin(reponame, old_path)}" />
@@ -91,15 +91,15 @@
       </form>
 
       <py:def function="node_change(idx,item,cl,kind)">
-        <py:with vars="ndiffs = item.diffs is not None and len(item.diffs) or 0;
+        <py:with vars="ndiffs = len(item.diffs) if item.diffs is not None else 0;
                        nprops = len(item.props);
                        is_removal = cl == 'rem';
-                       path = is_removal and item.old.get('path') or item.new.get('path');
+                       path = item.old.get('path') if is_removal else item.new.get('path');
                        path = path and path[len(location):].strip('/')">
           <div class="$cl"> </div>
           <py:choose>
-          <a py:when="is_removal" href="$item.old.href"
-             title="${_('Show what was removed (content at revision %(old_rev)s)', old_rev=display_rev(item.old.rev))}">
+            <a py:when="is_removal" href="$item.old.href"
+               title="${_('Show what was removed (content at revision %(old_rev)s)', old_rev=display_rev(item.old.rev))}">
               $path
             </a>
             <a py:otherwise="" title="Show entry in browser" href="$item.new.href">
@@ -120,9 +120,9 @@
             </py:when>
             <py:when test="ndiffs + nprops &gt; 0">
               (<a title="Show differences" href="#file$idx">${
-                 ndiffs and ngettext('%(num)d diff', '%(num)d diffs', ndiffs) or None}${
-                 (ndiffs and nprops) and ', ' or ''
-                }${nprops and ngettext('%(num)d prop', '%(num)d props', nprops) or None}</a>)
+                 ngettext('%(num)d diff', '%(num)d diffs', ndiffs) if ndiffs else None}${
+                 ', ' if ndiffs and nprops else None
+                }${ngettext('%(num)d prop', '%(num)d props', nprops) if nprops else None}</a>)
             </py:when>
           </py:choose>
           <py:if test="cl == 'mod' and item.diffs is None">
@@ -167,7 +167,7 @@
           <dd class="searchable"><a href="${href.browser(reponame, location, rev=new_rev)}">$location</a></dd>
         </py:if>
         <dt class="property files">
-          ${files and ngettext('File:', 'Files:', num=len(files)) or _('(No files)')}
+          ${ngettext('File:', 'Files:', num=len(files)) if files else _('(No files)')}
         </dt>
         <dd class="files">
           <div class="legend" id="file-legend" py:if="filestats">

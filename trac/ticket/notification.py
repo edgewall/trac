@@ -84,7 +84,7 @@ class TicketNotifyEmail(NotifyEmail):
         ambiguous_char_width = env.config.get('notification',
                                               'ambiguous_char_width',
                                               'single')
-        self.ambiwidth = (1, 2)[ambiguous_char_width == 'double']
+        self.ambiwidth = 2 if ambiguous_char_width == 'double' else 1
 
     def notify(self, ticket, newticket=True, modtime=None):
         """Send ticket change notification e-mail (untranslated)"""

@@ -14,7 +14,7 @@ Arguments:
      xmlns:py="http://genshi.edgewall.org/"
      xmlns:xi="http://www.w3.org/2001/XInclude"
      xmlns:i18n="http://genshi.edgewall.org/i18n"
-     id="ticket" class="${preview_mode and 'ticketdraft' or None}">
+     id="ticket" class="${'ticketdraft' if preview_mode else None}">
   <div class="date">
     <p i18n:msg="created" py:if="ticket.exists">Opened ${dateinfo(ticket.time)} ago</p>
     <p i18n:msg="modified" py:if="ticket.changetime != ticket.time">Last modified ${dateinfo(ticket.changetime)} ago</p>
@@ -28,24 +28,24 @@ Arguments:
     <tr>
       <th id="h_reporter">Reported by:</th>
       <td headers="h_reporter" class="searchable">
-        ${defined('reporter_link') and reporter_link or authorinfo(ticket.reporter)}
+        ${reporter_link if defined('reporter_link') else authorinfo(ticket.reporter)}
       </td>
       <th id="h_owner">Owned by:</th>
       <td headers="h_owner">
-        ${ticket.owner and (defined('owner_link') and owner_link or authorinfo(ticket.owner)) or ''}
+        ${(owner_link if defined('owner_link') else authorinfo(ticket.owner)) if ticket.owner else ''}
       </td>
     </tr>
     <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
       py:with="fullrow = len(row) == 1">
       <py:for each="idx, field in enumerate(row)">
         <th py:if="idx == 0 or not fullrow"
-            id="${field and 'h_' + field.name or None}">
+            id="${'h_' + field.name if field else None}">
           <py:if test="field"><i18n:msg params="field">${field.label or field.name}:</i18n:msg></py:if>
         </th>
         <td py:if="idx == 0 or not fullrow"
-            headers="${field and 'h_' + field.name or None}"
-            class="${field and field.name in ('cc', 'keywords') and 'searchable' or None}"
-            colspan="${fullrow and 3 or None}">
+            headers="${'h_' + field.name if field else None}"
+            class="${'searchable' if field and field.name in ('cc', 'keywords') else None}"
+            colspan="${3 if fullrow else None}">
           <py:if test="field">
             <py:choose test="">
               <py:when test="'rendered' in field">${field.rendered}</py:when>

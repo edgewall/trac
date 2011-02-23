@@ -95,7 +95,7 @@ class SampleResolver(Component):
     def _format_link(self, formatter, ns, target, label):
         kind, module = 'text', 'stuff'
         try:
-            kind = int(target) % 2 and 'odd' or 'even'
+            kind = 'odd' if int(target) % 2 else 'even'
             module = 'thing'
         except ValueError:
             pass

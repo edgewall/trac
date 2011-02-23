@@ -65,10 +65,10 @@
             <span id="trac-sort-order" py:with="report_asc = asc if sort == 'report' else None;
                                                 title_asc = asc if sort == 'title' else None">
               Sort by:
-              <a href="${href.report(sort='report', asc=report_asc and '0' or '1')}"
+              <a href="${href.report(sort='report', asc='0' if report_asc else '1')}"
                  class="${('desc', 'asc')[report_asc] if report_asc is not None else None}">
                 Identifier</a>
-              <a href="${href.report(sort='title', asc=title_asc and '0' or '1')}"
+              <a href="${href.report(sort='title', asc='0' if title_asc else '1')}"
                  class="${('desc', 'asc')[title_asc] if title_asc is not None else None}">
                 Title</a>
             </span>

@@ -96,7 +96,7 @@ class LogModule(Component):
         if reponame != repos.reponame:  # Redirect alias
             qs = req.query_string
             req.redirect(req.href.log(repos.reponame or None, path)
-                         + (qs and '?' + qs or ''))
+                         + ('?' + qs if qs else ''))
 
         normpath = repos.normalize_path(path)
         # if `revs` parameter is given, then we're restricted to the 
@@ -263,7 +263,7 @@ class LogModule(Component):
                 files = []
                 actions = []
                 for cpath, kind, chg, bpath, brev in changeset.get_changes():
-                    files.append(chg == Changeset.DELETE and bpath or cpath)
+                    files.append(bpath if chg == Changeset.DELETE else cpath)
                     actions.append(chg)
                 cs['files'] = files
                 cs['actions'] = actions

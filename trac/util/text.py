@@ -203,8 +203,8 @@ def text_width(text, ambiwidth=1):
 
     cf. http://www.unicode.org/reports/tr11/.
     """
-    twice = ('FW', 'FWA')[ambiwidth == 2]
-    return sum([(1, 2)[east_asian_width(chr) in twice]
+    twice = 'FWA' if ambiwidth == 2 else 'FW'
+    return sum([2 if east_asian_width(chr) in twice else 1
                 for chr in to_unicode(text)])
 
 def print_table(data, headers=None, sep='  ', out=None):
@@ -419,7 +419,7 @@ def obfuscate_email_address(address):
         at = address.find('@')
         if at != -1:
             return address[:at] + u'@\u2026' + \
-                   (address[-1] == '>' and '>' or '')
+                   ('>' if address[-1] == '>' else '')
     return address
 
 def breakable_path(path):

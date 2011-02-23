@@ -117,7 +117,7 @@ def _is_path_within_scope(scope, fullpath):
     """Check whether the given `fullpath` is within the given `scope`"""
     if scope == '/':
         return fullpath is not None
-    fullpath = fullpath and fullpath.lstrip('/') or ''
+    fullpath = fullpath.lstrip('/') if fullpath else ''
     scope = scope.strip('/')
     return (fullpath + '/').startswith(scope + '/')
 
@@ -360,7 +360,7 @@ class SubversionRepository(Repository):
             self.scope = '/'
         assert self.scope[0] == '/'
         # we keep root_path_utf8 for  RA 
-        ra_prefix = os.name == 'nt' and 'file:///' or 'file://'
+        ra_prefix = 'file:///' if os.name == 'nt' else 'file://'
         self.ra_url_utf8 = ra_prefix + root_path_utf8
         self.clear()
 

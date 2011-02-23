@@ -496,7 +496,7 @@ def get_doc(obj):
         return (None, None)
     doc = to_unicode(doc).split('\n\n', 1)
     summary = doc[0].replace('\n', ' ')
-    description = len(doc) > 1 and doc[1] or None
+    description = doc[1] if len(doc) > 1 else None
     return (summary, description)
 
 # -- setuptools utils

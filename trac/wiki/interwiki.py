@@ -68,7 +68,7 @@ class InterWikiMap(Component):
         """Replace "$1" by the first args, "$2" by the second, etc."""
         def setarg(match):
             num = int(match.group()[1:])
-            return 0 < num <= len(args) and args[num-1] or ''
+            return args[num - 1] if 0 < num <= len(args) else ''
         return re.sub(InterWikiMap._argspec_re, setarg, txt)
 
     def _expand_or_append(self, txt, args):
@@ -76,7 +76,7 @@ class InterWikiMap(Component):
         if not args:
             return txt
         expanded = self._expand(txt, args)
-        return expanded == txt and txt + args[0] or expanded
+        return txt + args[0] if expanded == txt else expanded
 
     def url(self, ns, target):
         """Return `(url, title)` for the given InterWiki `ns`.
@@ -84,8 +84,8 @@ class InterWikiMap(Component):
         Expand the colon-separated `target` arguments.
         """
         ns, url, title = self[ns]
-        maxargnum = max([0]+[int(a[1:]) for a in
-                             re.findall(InterWikiMap._argspec_re, url)])
+        maxargnum = max([0] + [int(a[1:]) for a in
+                               re.findall(InterWikiMap._argspec_re, url)])
         target, query, fragment = split_url_into_path_query_fragment(target)
         if maxargnum > 0:
             args = target.split(':', (maxargnum - 1))
@@ -141,7 +141,7 @@ class InterWikiMap(Component):
                     if m:
                         prefix, url, title = m.groups()
                         url = url.strip()
-                        title = title and title.strip() or prefix
+                        title = title.strip() if title else prefix
                         map[prefix.upper()] = (prefix, url, title)
             elif line.startswith('----'):
                 in_map = True
@@ -168,7 +168,7 @@ class InterWikiMap(Component):
             interwikis.append({
                 'prefix': prefix, 'url': url, 'title': title,
                 'rc_url': self._expand_or_append(url, ['RecentChanges']),
-                'description': title == prefix and url or title})
+                'description': url if title == prefix else title})
 
         return tag.table(tag.tr(tag.th(tag.em("Prefix")),
                                 tag.th(tag.em("Site"))),

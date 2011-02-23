@@ -386,7 +386,7 @@ class RepositoryManager(Component):
                 kind = _("path")
                 if resource.version:
                     version = '@%s' % resource.version
-            in_repo = reponame and _(" in %(repo)s", repo=reponame) or ''
+            in_repo = _(" in %(repo)s", repo=reponame) if reponame else ''
             # TRANSLATOR: file /path/to/file.py at version 13 in reponame
             return _('%(kind)s %(id)s%(at_version)s%(in_repo)s',
                      kind=kind, id=id, at_version=version, in_repo=in_repo)
@@ -551,7 +551,7 @@ class RepositoryManager(Component):
                  been truncated, if needed.
         """
         matches = []
-        path = path and path.strip('/') + '/' or '/'
+        path = path.strip('/') + '/' if path else '/'
         for reponame in self.get_all_repositories().keys():
             stripped_reponame = reponame.strip('/') + '/'
             if path.startswith(stripped_reponame):
@@ -1061,7 +1061,7 @@ class Node(object):
 
     def is_viewable(self, perm):
         """Return True if view permission is granted on the node."""
-        return (self.isdir and 'BROWSER_VIEW' or 'FILE_VIEW') \
+        return ('BROWSER_VIEW' if self.isdir else 'FILE_VIEW') \
                in perm(self.resource)
 
     can_view = is_viewable  # 0.12 compatibility

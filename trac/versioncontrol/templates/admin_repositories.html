@@ -131,7 +131,7 @@ $info.description</textarea>
                 <td class="name">
                   <a href="${panel_href(info.name or '(default)')}">${info.name or _('(default)')}</a>
                 </td>
-                <td>${not info.alias and (info.type or _('(default)')) or None}</td>
+                <td>${(info.type or _('(default)')) if not info.alias else None}</td>
                 <td py:choose="">
                   <py:when test="info.dir">$info.prettydir</py:when>
                   <em py:otherwise="" i18n:msg="repo">Alias of ${info.alias or _('(default)')}</em>

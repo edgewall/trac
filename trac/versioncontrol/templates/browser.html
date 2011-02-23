@@ -73,7 +73,7 @@
         <div id="jumprev">
           <form action="" method="get">
             <div>
-              <label for="rev" title="${stickyrev and _('Hint: clear the field to view latest revision') or None}">
+              <label for="rev" title="${_('Hint: clear the field to view latest revision') if stickyrev else None}">
                 View revision:</label>
               <input type="text" id="rev" name="rev" value="$stickyrev" size="6" />
             </div>

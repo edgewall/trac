@@ -14,14 +14,14 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from __future__ import with_statement
-
 """Content presentation for the web layer.
 
 The Chrome module deals with delivering and shaping content to the end user,
 mostly targeting (X)HTML generation but not exclusively, RSS or other forms of
 web content are also using facilities provided here.
 """
+
+from __future__ import with_statement
 
 import datetime
 from functools import partial
@@ -226,7 +226,7 @@ def prevnext_nav(req, prev_label, next_label, up_label=None):
                           class_='prev')
         
     add_ctxtnav(req, tag.span(Markup('&larr; '), prev_link or prev_label,
-                              class_=not prev_link and 'missing' or None))
+                              class_='missing' if not prev_link else None))
 
     if up_label and 'up' in links:
         up = links['up'][0]
@@ -238,7 +238,7 @@ def prevnext_nav(req, prev_label, next_label, up_label=None):
                           class_='next')
 
     add_ctxtnav(req, tag.span(next_link or next_label, Markup(' &rarr;'),
-                              class_=not next_link and 'missing' or None))
+                              class_='missing' if not next_link else None))
 
 
 def web_context(req, resource=None, id=False, version=False, parent=False,
@@ -267,7 +267,7 @@ def web_context(req, resource=None, id=False, version=False, parent=False,
     :rtype: `RenderingContext`
     """
     if req:
-        href = absurls and req.abs_href or req.href
+        href = req.abs_href if absurls else req.href
         perm = req.perm
     else:
         href = None
@@ -728,8 +728,8 @@ class Chrome(Component):
                 # Like 'trac_banner.png'
                 logo_src_abs = abs_href.chrome('common', logo_src)
                 logo_src = href.chrome('common', logo_src)
-            width = self.logo_width > -1 and self.logo_width or None
-            height = self.logo_height > -1 and self.logo_height or None
+            width = self.logo_width if self.logo_width > -1 else None
+            height = self.logo_height if self.logo_height > -1 else None
             logo = {
                 'link': self.logo_link, 'src': logo_src,
                 'src_abs': logo_src_abs, 'alt': self.logo_alt,
@@ -747,7 +747,7 @@ class Chrome(Component):
         }
         
         href = req and req.href
-        abs_href = req and req.abs_href or self.env.abs_href
+        abs_href = req.abs_href if req else self.env.abs_href
         admin_href = None
         if self.env.project_admin_trac_url == '.':
             admin_href = href
@@ -794,7 +794,7 @@ class Chrome(Component):
             return get_resource_url(self.env, resource, abs_href, **kwargs)
 
         d.update({
-            'context': req and web_context(req) or None,
+            'context': web_context(req) if req else None,
             'Resource': Resource,
             'url_of': get_rel_url,
             'abs_url_of': get_abs_url,
@@ -805,7 +805,7 @@ class Chrome(Component):
             'abs_href': abs_href,
             'href': href,
             'perm': req and req.perm,
-            'authname': req and req.authname or '<trac>',
+            'authname': req.authname if req else '<trac>',
             'locale': req and req.locale,
             'show_email_addresses': show_email_addresses,
             'show_ip_addresses': self.show_ip_addresses,
