@@ -93,7 +93,7 @@
               message.find("div.inlinebuttons").next().css("clear", "right");
   
             show();
-          });
+          }, 'html');
         } else if (message_is_visible) {
           hide();
         } else {

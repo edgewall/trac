@@ -127,7 +127,7 @@
                  function() { $(this).removeClass("selected") })
           .click(function() { select(this); input.get(0).focus() });
         move(0);
-      });
+      }, 'html');
     }
   }
   
