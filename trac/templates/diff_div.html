@@ -41,7 +41,7 @@
       xmlns:i18n="http://genshi.edgewall.org/i18n"
       class="diff">
 
-  <ul py:if="any([item.diffs or item.props for item in changes])" class="entries">
+  <ul py:if="any(item.diffs or item.props for item in changes)" class="entries">
     <py:for each="idx, item in enumerate(changes)" py:with="old = item.old; new = item.new">
       <li py:if="item and (item.diffs or item.props or 'comments' in item)" class="entry" 
           py:with="comments = item.get('comments')">

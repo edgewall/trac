@@ -94,8 +94,8 @@ class TimelineModule(Component):
         lastvisit = int(req.session.get('timeline.lastvisit', '0'))
 
         # indication of new events is unchanged when form is updated by user
-        revisit = any([a in req.args for a in ['update', 'from', 'daysback',
-                                               'author']])
+        revisit = any(a in req.args for a in ['update', 'from', 'daysback',
+                                              'author'])
         if revisit:
             lastvisit = int(req.session.get('timeline.nextlastvisit',
                                             lastvisit))

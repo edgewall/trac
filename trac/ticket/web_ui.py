@@ -713,8 +713,8 @@ class TicketModule(Component):
 
         history = self._get_history(req, ticket)
         history.reverse()
-        history = [c for c in history if any([f in text_fields
-                                              for f in c['fields']])]
+        history = [c for c in history if any(f in text_fields
+                                             for f in c['fields'])]
         history.append({'version': 0, 'comment': "''Initial version''",
                         'date': ticket['time'],
                         'author': ticket['reporter'] # not 100% accurate...
@@ -746,7 +746,7 @@ class TicketModule(Component):
         for change in history:
             version = change['version']
             changes[version] = change
-            if any([f in text_fields for f in change['fields']]):
+            if any(f in text_fields for f in change['fields']):
                 if old_version and version <= old_version:
                     old_idx = len(descriptions)
                 if new_idx == -1 and new_version and version >= new_version:
