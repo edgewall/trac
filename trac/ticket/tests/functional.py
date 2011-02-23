@@ -922,14 +922,11 @@ class RegressionTestTicket4447(FunctionalTwillTestCaseSetup):
         env.config.set('ticket-custom', 'newfield.label',
                        'Another Custom Field')
         env.config.save()
-        try:
-            self._testenv.restart()
-            self._tester.go_to_ticket(ticketid)
-            self._tester.add_comment(ticketid)
-            tc.notfind('deleted')
-            tc.notfind('set to')
-        finally:
-            pass
+        self._testenv.restart()
+        self._tester.go_to_ticket(ticketid)
+        self._tester.add_comment(ticketid)
+        tc.notfind('deleted')
+        tc.notfind('set to')
 
 
 class RegressionTestTicket4630a(FunctionalTwillTestCaseSetup):

@@ -363,7 +363,7 @@ class EnvironmentStub(Environment):
                           SELECT table_name FROM information_schema.tables 
                           WHERE table_schema=%s""", (dbname,)):
                         db("DROP TABLE IF EXISTS `%s`" % table)
-        except:
+        except Exception:
             # "TracError: Database not found...",
             # psycopg2.ProgrammingError: schema "tractest" does not exist
             pass

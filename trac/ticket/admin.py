@@ -597,7 +597,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                     name = req.args.get('name')
                     try:
                         enum = self._enum_cls(self.env, name=name)
-                    except:
+                    except ResourceNotFound:
                         enum = self._enum_cls(self.env)
                         enum.name = name
                         enum.insert()
@@ -628,7 +628,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
 
                 # Apply changes
                 elif req.args.get('apply'):
-                    changed = [False]
+                    changed = False
                     
                     # Set default value
                     name = req.args.get('default')
@@ -639,7 +639,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                                         name)
                         try:
                             self.config.save()
-                            changed[0] = True
+                            changed = True
                         except Exception, e:
                             self.log.error("Error writing to trac.ini: %s",
                                            exception_to_unicode(e))
@@ -663,9 +663,9 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                             if new_value != enum.value:
                                 enum.value = new_value
                                 enum.update()
-                                changed[0] = True
+                                changed = True
 
-                    if changed[0]:
+                    if changed:
                         add_notice(req, _("Your changes have been saved."))
                     req.redirect(req.href.admin(cat, page))
 

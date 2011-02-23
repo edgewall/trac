@@ -432,12 +432,12 @@ class SubversionRepository(Repository):
                                        embedded_numbers(n.path.lower())):
                         if node.kind == Node.DIRECTORY:
                             yield node
-                except: # no right (TODO: should use a specific Exception here)
+                except Exception: # no right (TODO: use a specific Exception)
                     pass
             else:
                 try:
                     yield self.get_node(path)
-                except: # no right
+                except Exception: # no right
                     pass
 
     def get_quickjump_entries(self, rev):

@@ -212,11 +212,8 @@ import StringIO
 
 import MySQLdb
 import MySQLdb.cursors
-try:
-    from trac.env import Environment
-except:
-    from trac.Environment import Environment
 from trac.attachment import Attachment
+from trac.env import Environment
 
 if not hasattr(sys, 'setdefaultencoding'):
     reload(sys)

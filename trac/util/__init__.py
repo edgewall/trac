@@ -204,7 +204,7 @@ class AtomicFile(object):
         finally:
             try:
                 os.unlink(self._temp)
-            except:
+            except Exception:
                 pass
             
     close = commit
@@ -221,11 +221,8 @@ class AtomicFile(object):
 
 def read_file(path, mode='r'):
     """Read a file and return its content."""
-    f = open(path, mode)
-    try:
+    with open(path, mode) as f:
         return f.read()
-    finally:
-        f.close()
 
 
 def create_file(path, data='', mode='w'):

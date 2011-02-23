@@ -386,7 +386,7 @@ def get_mimetype(filename, content=None, mime_map=MIME_MAP):
             import mimetypes
             # 2) mimetype from the suffix, using the `mimetypes` module
             mimetype = mimetypes.guess_type(filename)[0]
-        except:
+        except Exception:
             pass
         if not mimetype and content:
             match = re.search(MODE_RE, content[:1000] + content[-1000:])

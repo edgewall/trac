@@ -267,7 +267,7 @@ class RequestDispatcher(Component):
         try:
             return timezone(req.session.get('tz', self.default_timezone
                                             or 'missing'))
-        except:
+        except Exception:
             return localtz
 
     def _get_form_token(self, req):
@@ -484,7 +484,7 @@ def _send_user_error(req, env, e):
                 title = e.reason
             else:
                 title = _('Error: %(message)s', message=e.reason)
-    except:
+    except Exception:
         title = 'Error'
     # The message is based on the e.detail, which can be an Exception
     # object, but not a TracError one: when creating HTTPException,

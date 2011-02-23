@@ -500,7 +500,7 @@ class Request(object):
                     data = '%s\n\n%s: %s' % (data.get('title'),
                                              data.get('type'),
                                              data.get('message'))
-        except: # failed to render
+        except Exception: # failed to render
             data = get_last_traceback()
             content_type = 'text/plain'
 

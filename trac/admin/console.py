@@ -148,7 +148,7 @@ Type:  '?' or 'help' for help on commands.
         if not self.__env:
             try:
                 self._init_env()
-            except:
+            except Exception:
                 return False
         return True
 

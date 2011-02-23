@@ -1030,8 +1030,8 @@ class AttachmentAdmin(Component):
                 raise AdminCommandError(_("File '%(name)s' exists",
                                           name=destination))
         with attachment.open() as input:
-            output = (destination is None) and sys.stdout \
-                                           or open(destination, "wb")
+            output = open(destination, "wb") if destination is not None \
+                     else sys.stdout
             try:
                 shutil.copyfileobj(input, output)
             finally:

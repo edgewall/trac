@@ -5,7 +5,7 @@ import random
 
 try:
     all_words = [x.strip() for x in open('/usr/share/dict/words').readlines() if x.strip().isalpha()]
-except:
+except Exception:
     all_words = [
         'one',
         'two',

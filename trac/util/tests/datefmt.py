@@ -175,7 +175,7 @@ class ISO8601TestCase(unittest.TestCase):
 
 try:
     from babel import Locale
-except:
+except ImportError:
     I18nDateFormatTestCase = None
 else:
     class I18nDateFormatTestCase(unittest.TestCase):
