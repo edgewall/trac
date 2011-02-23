@@ -456,7 +456,7 @@ class Request(object):
             status = 302 # 'Found' -- normal temporary redirect
 
         self.send_response(status)
-        if not url.startswith('http://') and not url.startswith('https://'):
+        if not url.startswith(('http://', 'https://')):
             # Make sure the URL is absolute
             scheme, host = urlparse.urlparse(self.base_url)[:2]
             url = urlparse.urlunparse((scheme, host, url, None, None, None))

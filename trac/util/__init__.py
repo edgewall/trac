@@ -502,7 +502,7 @@ def get_module_path(module):
     """Return the base path the given module is imported from"""
     path = module.__file__
     module_name = module.__name__
-    if path.endswith('.pyc') or path.endswith('.pyo'):
+    if path.endswith(('.pyc', '.pyo')):
         path = path[:-1]
     if os.path.basename(path) == '__init__.py':
         path = os.path.dirname(path)

@@ -62,7 +62,7 @@ def parse(authz, modules):
     for line in authz.splitlines():
         lineno += 1
         line = to_unicode(line.strip())
-        if not line or line.startswith('#') or line.startswith(';'):
+        if not line or line.startswith(('#', ';')):
             continue
         if line.startswith('[') and line.endswith(']'):
             section = line[1:-1]

@@ -136,7 +136,7 @@ def add_stylesheet(req, filename, mimetype='text/css', media=None):
     will be based off the application root path. If it is relative, the link
     will be based off the `/chrome/` path.
     """
-    if filename.startswith('http://') or filename.startswith('https://'):
+    if filename.startswith(('http://', 'https://')):
         href = filename
     elif filename.startswith('common/') and 'htdocs_location' in req.chrome:
         href = Href(req.chrome['htdocs_location'])(filename[7:])
@@ -158,7 +158,7 @@ def add_script(req, filename, mimetype='text/javascript', charset='utf-8'):
     if filename in scriptset:
         return False # Already added that script
 
-    if filename.startswith('http://') or filename.startswith('https://'):
+    if filename.startswith(('http://', 'https://')):
         href = filename
     elif filename.startswith('common/') and 'htdocs_location' in req.chrome:
         href = Href(req.chrome['htdocs_location'])(filename[7:])
@@ -715,9 +715,7 @@ class Chrome(Component):
         logo_src = self.logo_src
         if logo_src:
             abs_href = abs_href or href
-            if logo_src.startswith('http://') or \
-                    logo_src.startswith('https://') or \
-                    logo_src.startswith('/'):
+            if logo_src.startswith(('http://', 'https://', '/')):
                 # Nothing further can be calculated
                 logo_src_abs = logo_src
             elif '/' in logo_src:

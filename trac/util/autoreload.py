@@ -39,7 +39,7 @@ def _reloader_thread(modification_callback, loop_callback):
             if not filename: # Couldn't map to physical file, so just ignore
                 continue
 
-            if filename.endswith('.pyc') or filename.endswith('.pyo'):
+            if filename.endswith(('.pyc', '.pyo')):
                 filename = filename[:-1]
 
             if not os.path.isfile(filename):

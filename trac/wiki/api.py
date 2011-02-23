@@ -385,8 +385,7 @@ class WikiSystem(Component):
             referrer = formatter.resource.id
         if pagename.startswith('/'):
             pagename = pagename.lstrip('/')
-        elif pagename.startswith('./') or pagename.startswith('../') \
-                                                or pagename in ('.', '..'):
+        elif pagename.startswith(('./', '../')) or pagename in ('.', '..'):
             pagename = self._resolve_relative_name(pagename, referrer)
         else:
             pagename = self._resolve_scoped_name(pagename, referrer)
