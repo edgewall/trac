@@ -157,6 +157,8 @@ Makefile: ;
 #
 # ----------------------------------------------------------------------------
 
+catalogs = messages messages-js tracini
+
 ifdef locale
     locales = $(locale)
 else
@@ -166,52 +168,47 @@ else
     locales := $(sort $(locales))
 endif
 
-messages.po = trac/locale/$(*)/LC_MESSAGES/messages.po
-messages-js.po = trac/locale/$(*)/LC_MESSAGES/messages-js.po
-tracini.po = trac/locale/$(*)/LC_MESSAGES/tracini.po
-messages.pot = trac/locale/messages.pot
-messages-js.pot = trac/locale/messages-js.pot
-tracini.pot = trac/locale/tracini.pot
+# Note: variables only valid within a $(foreach catalog,...) evaluation
+catalog.po = trac/locale/$(*)/LC_MESSAGES/$(catalog).po
+catalog.pot = trac/locale/$(catalog).pot
+catalog_stripped = $(subst messages,,$(subst -,,$(catalog)))
+_catalog = $(if $(catalog_stripped),_)$(catalog_stripped)
 
 .PHONY: extract extraction update compile check stats summary diff
 
 init-%:
-	@[ -e $(messages.po) ] \
-	 && echo "$(messages.po) already exists" \
-	 || python setup.py init_catalog -l $(*)
-	@[ -e $(messages-js.po) ] \
-	 && echo "$(messages-js.po) already exists" \
-	 || python setup.py init_catalog_js -l $(*)
-	@[ -e $(tracini.po) ] \
-	 && echo "$(tracini.po) already exists" \
-	 || python setup.py init_catalog_tracini -l $(*)
+	@$(foreach catalog,$(catalogs), \
+	    [ -e $(catalog.po) ] \
+	    && echo "$(catalog.po) already exists" \
+	    || python setup.py init_catalog$(_catalog) -l $(*);)
 
 extract extraction:
-	python setup.py extract_messages extract_messages_js \
-	    extract_messages_tracini
+	python setup.py $(foreach catalog,$(catalogs),\
+	    extract_messages$(_catalog))
 
 update-%:
-	python setup.py update_catalog -l $(*) update_catalog_js -l $(*) \
-	    update_catalog_tracini -l $(*)
+	python setup.py $(foreach catalog,$(catalogs), \
+	    update_catalog$(_catalog) -l $(*))
 
 ifdef locale
 update: $(addprefix update-,$(locale))
 else
 update:
-	python setup.py update_catalog update_catalog_js update_catalog_tracini
+	python setup.py $(foreach catalog,$(catalogs), \
+       	    update_catalog$(_catalog))
 endif
 
 compile-%:
-	python setup.py compile_catalog -l $(*) \
-	    compile_catalog_js -l $(*) generate_messages_js -l $(*) \
-	    compile_catalog_tracini -l $(*)
+	python setup.py $(foreach catalog,$(catalogs), \
+	    compile_catalog$(_catalog) -l $(*)) \
+            generate_messages_js -l $(*)
 
 ifdef locale
 compile: $(addprefix compile-,$(locale))
 else
 compile:
-	python setup.py compile_catalog compile_catalog_js \
-	    compile_catalog_tracini
+	python setup.py $(foreach catalog,$(catalogs), \
+            compile_catalog$(_catalog))
 endif
 
 check: pre-check $(addprefix check-,$(locales))
@@ -222,8 +219,8 @@ pre-check:
 
 check-%:
 	@echo -n "$(@): "
-	@msgfmt --check $(messages.po) && msgfmt --check $(messages-js.po) \
-	 && msgfmt --check $(tracini.po) && echo OK
+	@$(foreach catalog,$(catalogs), \
+	    msgfmt --check $(catalog.po) &&) echo OK
 	@rm -f messages.mo
 
 stats: pre-stats $(addprefix stats-,$(locales))
@@ -233,46 +230,44 @@ pre-stats: stats-pot
 
 stats-pot:
 	@echo "translation statistics for catalog templates:"
-	@echo -n "messages.pot: "; msgfmt --statistics $(messages.pot)
-	@echo -n "messages-js.pot: "; msgfmt --statistics $(messages-js.pot) 
-	@echo -n "tracini.pot: "; msgfmt --statistics $(tracini.pot)
+	@$(foreach catalog,$(catalogs), \
+	    echo -n "$(catalog.pot): "; \
+	    msgfmt --statistics $(catalog.pot);)
+	@rm -f messages.mo
 
 stats-%:
-	@echo -n "messages.po: "; msgfmt --statistics $(messages.po)
-	@[ -e $(messages-js.po) ] \
-	 && echo -n "messages-js.po: "; msgfmt --statistics $(messages-js.po) \
-	 || echo "$(messages-js.po) doesn't exist (make init-$(*))"
-	@[ -e $(tracini.po) ] \
-	 && echo -n "tracini.po: "; msgfmt --statistics $(tracini.po) \
-	 || echo "$(tracini.po) doesn't exist (make init-$(*))"
+	@$(foreach catalog,$(catalogs), \
+	    [ -e $(catalog.po) ] \
+	    && echo -n "$(catalog.po): "; \
+	       msgfmt --statistics $(catalog.po) \
+	    || echo "$(catalog.po) doesn't exist (make init-$(*))";)
+	@rm -f messages.mo
 
 summary: $(addprefix summary-,$(locales))
 
 define untranslated-sh
-LC_ALL=C msgfmt --statistics $(1) 2>&1 \
+LC_ALL=C msgfmt --statistics $(catalog.pot) 2>&1 \
   | tail -1 \
   | sed -e 's/0 translated messages, \([0-9]*\) un.*/\1/'
 endef
 
 define translated-sh
-{ LC_ALL=C msgfmt --statistics $(1) 2>&1 || echo 0; } \
+{ LC_ALL=C msgfmt --statistics $(catalog.po) 2>&1 || echo 0; } \
     | tail -1 \
     | sed -e 's/[^0-9]*\([0-9]*\) translated.*/\1/'
 endef
 
 MESSAGES_TOTAL = \
-    $(eval MESSAGES_TOTAL := ( \
-        $(shell $(call untranslated-sh,$(messages.pot))) + \
-        $(shell $(call untranslated-sh,$(messages-js.pot))) + \
-        $(shell $(call untranslated-sh,$(tracini.pot)))))\
+    $(eval MESSAGES_TOTAL := ($(foreach catalog,$(catalogs), \
+                                  $(shell $(untranslated-sh)) + ) 0)) \
     $(MESSAGES_TOTAL)
 
 summary-%:
 	@python -c "print 'l10n/$(*): translations updated (%d%%)' \
-	    % (($(shell $(call translated-sh,$(messages.po))) + \
-	        $(shell $(call translated-sh,$(messages-js.po))) + \
-	        $(shell $(call translated-sh,$(tracini.po)))) * 100.0 \
+	    % (($(foreach catalog,$(catalogs), \
+	          $(shell $(translated-sh)) + ) 0) * 100.0 \
 	       / $(MESSAGES_TOTAL))"
+	@rm -f messages.mo
 
 diff: $(addprefix diff-,$(locales))
 
