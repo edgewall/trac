@@ -27,12 +27,11 @@ from genshi.core import Markup
 from trac.core import *
 from trac.resource import Resource, ResourceNotFound, get_resource_name, \
                           get_resource_summary, get_resource_url
-from trac.util.compat import cleandoc
 from trac.util.datefmt import format_date, from_utimestamp, user_time
 from trac.util.html import escape
 from trac.util.presentation import separated
 from trac.util.text import unquote, to_unicode
-from trac.util.translation import _
+from trac.util.translation import _, dgettext
 from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
 from trac.wiki.formatter import format_to_html, format_to_oneliner, \
                                 extract_link, OutlineFormatter
@@ -627,7 +626,8 @@ class TracIniMacro(WikiMacroBase):
             key_filter = args.pop(0).strip()
 
         registry = ConfigSection.get_registry(self.compmgr)
-        sections = dict((name, cleandoc(to_unicode(section.__doc__)))
+        sections = dict((name, dgettext(section.doc_domain,
+                                        to_unicode(section.__doc__)))
                         for name, section in registry.iteritems()
                         if name.startswith(section_filter))
 
@@ -643,8 +643,10 @@ class TracIniMacro(WikiMacroBase):
              format_to_html(self.env, formatter.context, section_doc),
              tag.table(class_='wiki')(tag.tbody(
                  tag.tr(tag.td(tag.tt(option.name)),
-                        tag.td(format_to_oneliner(self.env, formatter.context,
-                                                  to_unicode(option.__doc__))),
+                        tag.td(format_to_oneliner(
+                            self.env, formatter.context,
+                            dgettext(option.doc_domain,
+                                     to_unicode(option.__doc__)))),
                         tag.td(tag.code(option.default or 'false')
                                    if option.default or option.default is False
                                    else _("(no default)"),

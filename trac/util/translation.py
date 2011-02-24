@@ -147,11 +147,14 @@ try:
             t = Translations.load(locale_dir, locale or 'en_US')
             if not t or t.__class__ is NullTranslations:
                 t = self._null_translations
-            elif env_path:
-                with self._plugin_domains_lock:
-                    domains = list(self._plugin_domains.get(env_path, []))
-                for domain, dirname in domains:
-                    t.add(Translations.load(dirname, locale, domain))
+            else:
+                t.add(Translations.load(locale_dir, locale or 'en_US',
+                                        'tracini'))
+                if env_path:
+                    with self._plugin_domains_lock:
+                        domains = list(self._plugin_domains.get(env_path, []))
+                    for domain, dirname in domains:
+                        t.add(Translations.load(dirname, locale, domain))
             self._current.translations = t
             self._activate_failed = False
          

@@ -40,8 +40,8 @@ try:
         'tracopt': extractors,
     }
 
-    from trac.dist import get_l10n_js_cmdclass
-    extra['cmdclass'] = get_l10n_js_cmdclass()
+    from trac.dist import get_l10n_trac_cmdclass
+    extra['cmdclass'] = get_l10n_trac_cmdclass()
 
 except ImportError:
     pass
@@ -84,7 +84,8 @@ facilities.
         '': ['templates/*'],
         'trac': ['htdocs/*.*', 'htdocs/README', 'htdocs/js/*.*',
                  'htdocs/js/messages/*.*', 'htdocs/css/*.*',
-                 'htdocs/guide/*', 'locale/*/LC_MESSAGES/messages.mo'],
+                 'htdocs/guide/*', 'locale/*/LC_MESSAGES/messages.mo',
+                 'locale/*/LC_MESSAGES/tracini.mo'],
         'trac.wiki': ['default-pages/*'],
         'trac.ticket': ['workflows/*.ini'],
     },
