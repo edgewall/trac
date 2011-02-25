@@ -53,12 +53,14 @@
 
     </div>
 
-    <div class="field">
+    <div class="field" py:with="session_lc_time = settings.session.get('lc_time')">
       <label>Date format:
         <select name="lc_time">
           <option value="">Default date format</option>
-          <option value="locale" py:if="locales and languages">Your language setting</option>
-          <option value="iso8601">ISO 8601 format</option>
+          <option value="locale" py:if="locales and languages"
+                  selected="${session_lc_time == 'locale' or None}">Your language setting</option>
+          <option value="iso8601"
+                  selected="${session_lc_time == 'iso8601' or None}">ISO 8601 format</option>
         </select>
       </label>
 
