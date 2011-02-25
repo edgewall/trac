@@ -147,7 +147,7 @@ class UTimestampTestCase(unittest.TestCase):
 
 
 class ISO8601TestCase(unittest.TestCase):
-    def test_format(self):
+    def test_default(self):
         tz = datefmt.timezone('GMT +2:00')
         t = datetime.datetime(2010, 8, 28, 11, 45, 56, 123456, tz)
         self.assertEqual('2010-08-28',
@@ -157,6 +157,27 @@ class ISO8601TestCase(unittest.TestCase):
         self.assertEqual('2010-08-28T11:45:56+02:00',
                          datefmt.format_datetime(t, tzinfo=tz,
                                                  locale='iso8601'))
+
+    def test_with_iso8601(self):
+        tz = datefmt.timezone('GMT +2:00')
+        t = datetime.datetime(2010, 8, 28, 11, 45, 56, 123456, tz)
+        self.assertEqual('2010-08-28',
+                         datefmt.format_date(t, 'iso8601', tz, 'iso8601'))
+        self.assertEqual('11:45:56+02:00',
+                         datefmt.format_time(t, 'iso8601', tz, 'iso8601'))
+        self.assertEqual('2010-08-28T11:45:56+02:00',
+                         datefmt.format_datetime(t, 'iso8601', tz, 'iso8601'))
+
+    def test_with_babel_format(self):
+        tz = datefmt.timezone('GMT +2:00')
+        t = datetime.datetime(2010, 8, 28, 11, 45, 56, 123456, tz)
+        for f in ('short', 'medium', 'long', 'full'):
+            self.assertEqual('2010-08-28',
+                             datefmt.format_date(t, f, tz, 'iso8601'))
+            self.assertEqual('11:45:56+02:00',
+                             datefmt.format_time(t, f, tz, 'iso8601'))
+            self.assertEqual('2010-08-28T11:45:56+02:00',
+                             datefmt.format_datetime(t, f, tz, 'iso8601'))
 
     def test_hint(self):
         try:

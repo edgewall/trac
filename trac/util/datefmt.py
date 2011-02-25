@@ -141,9 +141,22 @@ def pretty_timedelta(time1, time2=None, resolution=None):
 
 _BABEL_FORMATS = ('short', 'medium', 'long', 'full')
 _ISO8601_FORMATS = {
-    '%x %X': 'iso8601', '%x': 'iso8601date', '%X': 'iso8601time',
-    'short': 'iso8601', 'medium': 'iso8601', 'long': 'iso8601',
-    'full': 'iso8601', None: 'iso8601'}
+    'datetime': {
+        '%x %X': 'iso8601', '%x': 'iso8601date', '%X': 'iso8601time',
+        'short': 'iso8601', 'medium': 'iso8601',
+        'long': 'iso8601', 'full': 'iso8601',
+        'iso8601': 'iso8601', None: 'iso8601'},
+    'date': {
+        '%x %X': 'iso8601', '%x': 'iso8601date', '%X': 'iso8601time',
+        'short': 'iso8601date', 'medium': 'iso8601date',
+        'long': 'iso8601date', 'full': 'iso8601date',
+        'iso8601': 'iso8601date', None: 'iso8601date'},
+    'time': {
+        '%x %X': 'iso8601', '%x': 'iso8601date', '%X': 'iso8601time',
+        'short': 'iso8601time', 'medium': 'iso8601time',
+        'long': 'iso8601time', 'full': 'iso8601time',
+        'iso8601': 'iso8601time', None: 'iso8601time'},
+}
 
 def _format_datetime_without_babel(t, format, tzinfo):
     tz = tzinfo or localtz
@@ -179,7 +192,7 @@ def format_datetime(t=None, format='%x %X', tzinfo=None, locale=None):
     `tzinfo` will default to the local timezone if left to `None`.
     """
     if locale == 'iso8601':
-        format = _ISO8601_FORMATS.get(format, format)
+        format = _ISO8601_FORMATS['datetime'].get(format, format)
         return _format_datetime_without_babel(t, format, tzinfo)
     if babel and locale:
         if format == '%x':
@@ -201,7 +214,7 @@ def format_date(t=None, format='%x', tzinfo=None, locale=None):
     See `format_datetime` for more details.
     """
     if locale == 'iso8601':
-        format = _ISO8601_FORMATS.get(format, format)
+        format = _ISO8601_FORMATS['date'].get(format, format)
         return _format_datetime_without_babel(t, format, tzinfo)
     if format == 'iso8601':
         format = 'iso8601date'
@@ -220,7 +233,7 @@ def format_time(t=None, format='%X', tzinfo=None, locale=None):
     See `format_datetime` for more details.
     """
     if locale == 'iso8601':
-        format = _ISO8601_FORMATS.get(format, format)
+        format = _ISO8601_FORMATS['time'].get(format, format)
         return _format_datetime_without_babel(t, format, tzinfo)
     if format == 'iso8601':
         format = 'iso8601time'
