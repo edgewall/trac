@@ -449,7 +449,15 @@ div.trac-grip {
 #attachments dl.attachments { margin-left: 2em; padding: 0 }
 #attachments dt { display: list-item; list-style: square; }
 #attachments dd { font-style: italic; margin-left: 0; padding-left: 0; }
-#attachments p { margin-left: 2em; }
+#attachments p {
+ margin-left: 2em;
+ font-size: 90%;
+ color: #666;
+}
+#attachments > div.attachments > p {
+ float: right;
+ margin: .4em 0;
+}
 
 /* Styles for tabular listings such as those used for displaying directory
    contents and report results. */
