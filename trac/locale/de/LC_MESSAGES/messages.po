@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-05-23 17:45+0200\n"
-"PO-Revision-Date: 2011-02-26 22:34+0100\n"
+"PO-Revision-Date: 2011-02-26 22:54+0100\n"
 "Last-Translator: Felix Schwarz <felix.schwarz@oss.schwarz.eu>\n"
 "Language-Team: de_DE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -325,7 +325,7 @@ msgstr ""
 #: trac/config.py:709 trac/config.py:722
 #, python-format
 msgid "Option '%(option)s' doesn't exist in section '%(section)s'"
-msgstr ""
+msgstr "Die Option '%(option)s' existiert nicht in der Sektion '%(section)s'"
 
 #: trac/core.py:33
 msgid "Trac Error"
@@ -1424,9 +1424,9 @@ msgid "Your preferences have been saved."
 msgstr "Ihre Einstellungen wurden gespeichert."
 
 #: trac/mimeview/rst.py:122 trac/mimeview/rst.py:145
-#, fuzzy, python-format
+#, python-format
 msgid "%(link)s is not a valid TracLink"
-msgstr "%(name)s ist keine gültige Aktion."
+msgstr "%(link)s ist kein gültiger TracLink"
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -1453,9 +1453,8 @@ msgid "Advanced"
 msgstr "Erweitert"
 
 #: trac/prefs/web_ui.py:150
-#, fuzzy
 msgid "The session has been loaded."
-msgstr "Die Version \"%(name)s\" wurde hinzugefügt."
+msgstr "Die Sitzung wurde geladen."
 
 #: trac/prefs/templates/prefs.html:10
 msgid "Preferences:"
@@ -1489,7 +1488,6 @@ msgid "Session key:"
 msgstr "Sitzungsschlüssel:"
 
 #: trac/prefs/templates/prefs_advanced.html:17
-#, fuzzy
 msgid "Change"
 msgstr "Änderung"
 
@@ -3663,7 +3661,7 @@ msgstr "Bericht kopieren"
 
 #: trac/ticket/templates/report_view.html:111
 msgid "(empty)"
-msgstr ""
+msgstr "(leer)"
 
 #: trac/ticket/templates/report_view.html:142
 #: trac/ticket/templates/report_view.html:150
@@ -4377,6 +4375,9 @@ msgid ""
 "The repository directory has changed, you should resynchronize the "
 "repository with: trac-admin $ENV repository resync '%(reponame)s'"
 msgstr ""
+"Der Pfad zum Repository hat sich geändert, Sie sollen das Repository mit "
+"diesem Befehl neu synchronisieren: trac-admin $ENV repository resync "
+"'%(reponame)s'"
 
 #: trac/versioncontrol/svn_authz.py:72
 #, python-format
@@ -5517,38 +5518,36 @@ msgid "SID"
 msgstr "SID"
 
 #: trac/web/session.py:417
-#, fuzzy
 msgid "Auth"
-msgstr "Pfad"
+msgstr "Eingeloggt"
 
 #: trac/web/session.py:417
-#, fuzzy
 msgid "Last Visit"
-msgstr "Letzte Revision"
+msgstr "Letzter Besuch"
 
 #: trac/web/session.py:418
 msgid "Email"
 msgstr "E-Mail"
 
 #: trac/web/session.py:429
-#, fuzzy, python-format
+#, python-format
 msgid "Session '%(sid)s' already exists"
-msgstr "Es gibt bereits eine Version %(name)s."
+msgstr "Die Sitzung '%(sid)s' existiert bereits."
 
 #: trac/web/session.py:442
 #, python-format
 msgid "Invalid attribute '%(attr)s'"
-msgstr ""
+msgstr "Ungültiges Attribut '%(attr)s'"
 
 #: trac/web/session.py:452
-#, fuzzy, python-format
+#, python-format
 msgid "Session '%(sid)s' not found"
-msgstr "Sitzungs-ID %(sid)s nicht gefunden"
+msgstr "Die Sitzung '%(sid)s' wurde nicht gefunden"
 
 #: trac/wiki/admin.py:102
-#, fuzzy, python-format
+#, python-format
 msgid "Page '%(page)s' not found"
-msgstr "Die Wiki-Seite %(name)s wurde nicht gefunden"
+msgstr "Die Seite '%(page)s' wurde nicht gefunden"
 
 #: trac/wiki/admin.py:119
 #, python-format
@@ -5630,9 +5629,8 @@ msgid "Can't view %(link)s:"
 msgstr "Kann %(link)s nicht anzeigen:"
 
 #: trac/wiki/intertrac.py:92
-#, fuzzy
 msgid "The Trac Project"
-msgstr "%(project)s durchsuchen"
+msgstr "Das Trac-Projekt"
 
 #: trac/wiki/macros.py:519
 #, python-format
