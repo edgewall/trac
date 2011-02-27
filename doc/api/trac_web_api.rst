@@ -36,8 +36,17 @@ Important classes
       The name associated with the user after authentification or
       `'anonymous'` if no authentification took place.
 
+   .. attribute :: Request.href
+
+      An `~trac.web.href.Href` instance for generating *relative* URLs
+      pointing to resources within the current Trac environment.
+
+   .. attribute :: Request.abs_href
+
+      An `~trac.web.href.Href` instance for generating *absolute* URLs
+      pointing to resources within the current Trac environment.
+
 
 .. autoclass :: trac.web.api.RequestDone
    :members:
 
-See also `trac.web.href.Href`.

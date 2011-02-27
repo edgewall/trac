@@ -119,9 +119,10 @@ class Href(object):
     >>> href.browser('/trunk/README.txt', format='txt')
     '/trac/browser/trunk/README.txt?format=txt'
     
-    The path_safe argument specifies the characters that don't need to be
-    quoted in the path arguments. Likewise, the query_safe argument specifies
-    the characters that don't need to be quoted in the query string:
+    The ``path_safe`` argument specifies the characters that don't
+    need to be quoted in the path arguments. Likewise, the
+    ``query_safe`` argument specifies the characters that don't need
+    to be quoted in the query string:
 
     >>> href = Href('')
     >>> href.milestone('<look,here>', param='<here,too>')
