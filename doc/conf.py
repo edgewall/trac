@@ -101,8 +101,6 @@ unused_docs = []
 # List of directories, relative to source directories, that shouldn't be searched
 # for source files.
 exclude_patterns = [
-    'contents.rst',
-    'install',
 ]
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
@@ -200,8 +198,7 @@ modindex_common_prefix = ['trac.', 'tracopt.']
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, document class [howto/manual]).
 latex_documents = [
-  ('index', 'Trac.tex', 'Trac Documentation', 'The Trac Team', 'manual'),
-  ('install/index', 'Install.tex', 'Trac Installation Guide', 'The Trac Team', 'manual'),
+  ('index', 'Trac.tex', 'Trac API Documentation', 'The Trac Team', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
