@@ -24,6 +24,7 @@ import locale
 import os
 import pkg_resources
 from pprint import pformat, pprint
+import re
 import sys
 
 from genshi.core import Markup
@@ -359,6 +360,7 @@ class RequestDispatcher(Component):
                 f.post_process_request(req, *(None,)*extra_arg_count)
         return resp
 
+_slashes_re = re.compile(r'/+')
 
 def dispatch_request(environ, start_response):
     """Main entry point for the Trac web interface.
@@ -374,8 +376,12 @@ def dispatch_request(environ, start_response):
         path_info = environ.get('PATH_INFO')
         if not path_info:
             environ['SCRIPT_NAME'] = script_url
-        elif script_url.endswith(path_info):
-            environ['SCRIPT_NAME'] = script_url[:-len(path_info)]
+        else:
+            # mod_wsgi squashes slashes in PATH_INFO (!)
+            script_url = _slashes_re.sub('/', script_url)
+            path_info = _slashes_re.sub('/', path_info)
+            if script_url.endswith(path_info):
+                environ['SCRIPT_NAME'] = script_url[:-len(path_info)]
 
     # If the expected configuration keys aren't found in the WSGI environment,
     # try looking them up in the process environment variables
