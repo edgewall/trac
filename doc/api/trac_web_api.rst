@@ -11,25 +11,31 @@ Interfaces
 The following interfaces allow components to interact at various
 stages of the web requests processing pipeline.
 
-.. autoclass :: trac.web.chrome.IRequestHandler
+.. autoclass :: IRequestHandler
    :members:
 
-.. autoclass :: trac.web.api.IRequestFilter
+.. autoclass :: IRequestFilter
    :members:
 
 For how the main content itself can be generated, see `trac.web.chrome`.
 
-.. autoclass :: trac.web.api.ITemplateStreamFilter
+.. autoclass :: ITemplateStreamFilter
    :members:
 
-.. autoclass :: trac.web.api.IAuthenticator
+.. autoclass :: IAuthenticator
    :members:
 
 Important classes
 -----------------
 
-.. autoclass :: trac.web.api.Request
+.. autoclass :: Request
    :members:
+
+   .. attribute :: Request.authname
+
+      The name associated with the user after authentification or
+      `'anonymous'` if no authentification took place.
+
 
 .. autoclass :: trac.web.api.RequestDone
    :members:

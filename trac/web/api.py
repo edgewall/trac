@@ -311,7 +311,7 @@ class Request(object):
                                  path_info)
 
     # Public API
-
+    
     @property
     def method(self):
         """The HTTP method of the request"""
