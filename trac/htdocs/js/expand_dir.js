@@ -74,10 +74,15 @@
 
     // update location, unless autoexpand in progress
     var a = expander.next("a");
-    if ( !autoexpand )
-      window.location.hash = a.attr("href")
-        .substr(window.location.pathname.replace(/\/+$/, '').length + 1)
+    if ( !autoexpand ) {
+      var pathname = window.location.pathname;
+      var entry_href = a.attr("href");
+      // normalize (PATH_INFO possibly has squashed "/")
+      pathname = pathname.replace(/\/+/g, '/').replace(/\/$/, '');
+      entry_href = entry_href.replace(/\/+/g, '/');
+      window.location.hash = entry_href.substr(pathname.length + 1)
         .replace(/([^?]*)(\?.*)?$/, '$1');
+    }
 
     // update sort links in column headers
     tr.parents("table:first").find("thead tr:first").find("a").each(function(){

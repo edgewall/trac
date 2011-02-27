@@ -4413,7 +4413,7 @@ msgstr "svn:externals не настроены в trac.ini"
 
 #: trac/versioncontrol/svn_prop.py:148
 msgid "merged"
-msgstr "объединен"
+msgstr "объединён"
 
 #: trac/versioncontrol/svn_prop.py:148
 msgid "blocked"
@@ -4450,7 +4450,7 @@ msgstr "%(title)s: %(revs)s"
 
 #: trac/versioncontrol/svn_prop.py:306
 msgid "merged: "
-msgstr "объединен: "
+msgstr "объединён: "
 
 #: trac/versioncontrol/svn_prop.py:306
 msgid "blocked: "
@@ -4458,7 +4458,7 @@ msgstr "заблокирован: "
 
 #: trac/versioncontrol/svn_prop.py:307
 msgid "reverse-merged: "
-msgstr "обратно-объединен: "
+msgstr "обратно-объединён: "
 
 #: trac/versioncontrol/svn_prop.py:307
 msgid "un-blocked: "
