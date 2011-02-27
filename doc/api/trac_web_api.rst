@@ -36,6 +36,10 @@ Important classes
       The name associated with the user after authentification or
       `'anonymous'` if no authentification took place.
 
+      This corresponds to the `~Request.remote_user` when the request
+      is targeted to an area requiring authentication, otherwise the
+      authname is retrieved from the ``trac_auth`` cookie.
+
    .. attribute :: Request.href
 
       An `~trac.web.href.Href` instance for generating *relative* URLs
