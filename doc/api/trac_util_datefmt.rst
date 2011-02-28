@@ -26,6 +26,13 @@ microseconds timestamps to `datetime`:
 
 .. autofunction :: from_utimestamp
 
+
+Parsing
+-------
+
+.. autofunction :: parse_date
+
+
 Formatting
 ----------
 
@@ -47,10 +54,10 @@ Propose suggestion for date/time input format:
 
 .. autofunction :: http_date
 
-Parsing
--------
+Formatting and parsing according to user preferences:
 
-.. autofunction :: parse_date
+.. autofunction	:: user_time
+
 
 Timezone utilities
 ------------------
