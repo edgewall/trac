@@ -32,7 +32,8 @@ from trac.util import translation
 from trac.util.html import html
 from trac.util.text import console_print, exception_to_unicode, printout, \
                            printerr, raw_input, to_unicode
-from trac.util.translation import _, get_negotiated_locale, has_babel
+from trac.util.translation import _, get_negotiated_locale, has_babel, \
+                                  cleandoc_
 from trac.versioncontrol.api import RepositoryManager
 from trac.wiki.admin import WikiAdmin
 from trac.wiki.macros import WikiMacroBase
@@ -489,6 +490,8 @@ Congratulations!
         
 
 class TracAdminHelpMacro(WikiMacroBase):
+    _domain = 'messages'
+    _description = cleandoc_(
     """Display help for trac-admin commands.
 
     Examples:
@@ -498,7 +501,7 @@ class TracAdminHelpMacro(WikiMacroBase):
     [[TracAdminHelp(wiki export)]]  # the "wiki export" command
     [[TracAdminHelp(upgrade)]]      # the upgrade command
     }}}
-    """
+    """)
 
     def expand_macro(self, formatter, name, content):
         if content:

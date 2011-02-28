@@ -50,6 +50,7 @@ from trac.ticket import Ticket
 from trac.ticket.notification import TicketNotifyEmail
 from trac.util.datefmt import utc
 from trac.util.text import exception_to_unicode
+from trac.util.translation import cleandoc_
 from trac.versioncontrol import IRepositoryChangeListener, RepositoryManager
 from trac.versioncontrol.web_ui.changeset import ChangesetModule
 from trac.wiki.formatter import format_to_html
@@ -256,6 +257,8 @@ In [%s]:
 
 
 class CommitTicketReferenceMacro(WikiMacroBase):
+    _domain = 'messages'
+    _description = cleandoc_(
     """Insert a changeset message into the output.
     
     This macro must be called using wiki processor syntax as follows:
@@ -267,7 +270,7 @@ class CommitTicketReferenceMacro(WikiMacroBase):
     where the arguments are the following:
      - `repository`: the repository containing the changeset
      - `revision`: the revision of the desired changeset
-    """
+    """)
     
     def expand_macro(self, formatter, name, content, args={}):
         reponame = args.get('repository') or ''

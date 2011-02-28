@@ -34,7 +34,7 @@ from trac.util.datefmt import format_datetime, utc
 from trac.wiki.macros import WikiMacroBase
 
 class TimestampMacro(WikiMacroBase):
-    """Inserts the current time (in seconds) into the wiki page."""
+    _description = "Inserts the current time (in seconds) into the wiki page."
 
     def expand_macro(self, formatter, name, args):
         t = datetime.now(utc)

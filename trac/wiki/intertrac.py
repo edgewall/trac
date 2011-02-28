@@ -21,7 +21,7 @@ from genshi.builder import Element, Fragment, tag
 from trac.config import ConfigSection
 from trac.core import *
 from trac.perm import PermissionError
-from trac.util.translation import _
+from trac.util.translation import _, N_
 from trac.web.api import IRequestHandler
 from trac.wiki.api import IWikiMacroProvider
 from trac.wiki.formatter import extract_link
@@ -114,7 +114,7 @@ class InterTracDispatcher(Component):
         yield 'InterTrac'
 
     def get_macro_description(self, name): 
-        return "Provide a list of known InterTrac prefixes."
+        return 'messages', N_("Provide a list of known InterTrac prefixes.")
 
     def expand_macro(self, formatter, name, content):
         intertracs = {}

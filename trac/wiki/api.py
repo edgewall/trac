@@ -95,8 +95,14 @@ class IWikiMacroProvider(Interface):
         """
 
     def get_macro_description(name):
-        """Return a plain text description of the macro with the specified
-        name."""
+        """Return a tuple of a domain name to translate and plain text
+        description of the macro or only the description with the specified
+        name.
+
+        .. versionchanged :: 0.13
+           `get_macro_description` can return a domain to translate the
+           description.
+        """
 
     def render_macro(req, name, content):
         """Return the HTML output of the macro :deprecated:"""

@@ -55,7 +55,7 @@ try:
     _DEFAULT_CLEANDOC_KEYWORDS = (
         'ConfigSection', 'Option', 'BoolOption', 'IntOption', 'FloatOption',
         'ListOption', 'ChoiceOption', 'PathOption', 'ExtensionOption',
-        'OrderedExtensionsOption',
+        'OrderedExtensionsOption', 'cleandoc_',
     )
 
     def extract_python(fileobj, keywords, comment_tags, options):

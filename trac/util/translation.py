@@ -21,6 +21,7 @@ import re
 from genshi.builder import tag
 
 from trac.util.concurrency import ThreadLocal, threading
+from trac.util.compat import cleandoc
 
 
 __all__ = ['gettext', 'ngettext', 'gettext_noop', 'ngettext_noop', 
@@ -42,6 +43,7 @@ def dgettext_noop(domain, string, **kwargs):
     return gettext_noop(string, **kwargs)
 
 N_ = _noop = lambda string: string
+cleandoc_ = cleandoc
 
 def ngettext_noop(singular, plural, num, **kwargs):
     string = singular if num == 1 else plural

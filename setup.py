@@ -30,7 +30,7 @@ try:
     import babel
     
     extractors = [
-        ('**.py',                'python', None),
+        ('**.py',                'trac.dist:extract_python', None),
         ('**/templates/**.html', 'genshi', None),
         ('**/templates/**.txt',  'genshi',
          {'template_class': 'genshi.template:NewTextTemplate'}),

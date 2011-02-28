@@ -38,7 +38,7 @@ from trac.util.datefmt import format_datetime, from_utimestamp, parse_date, \
                               to_timestamp, to_utimestamp, utc, user_time
 from trac.util.presentation import Paginator
 from trac.util.text import empty, shorten_line
-from trac.util.translation import _, tag_
+from trac.util.translation import _, tag_, cleandoc_
 from trac.web import arg_list_to_args, parse_arg_list, IRequestHandler
 from trac.web.href import Href
 from trac.web.chrome import (INavigationContributor, Chrome,
@@ -1173,6 +1173,8 @@ class QueryModule(Component):
 
 
 class TicketQueryMacro(WikiMacroBase):
+    _domain = 'messages'
+    _description = cleandoc_(
     """Wiki macro listing tickets that match certain criteria.
     
     This macro accepts a comma-separated list of keyed parameters,
@@ -1226,7 +1228,7 @@ class TicketQueryMacro(WikiMacroBase):
     given to the macro, it will be used to specify the `format`.
     Also, using "&" as a field separator still works (except for `order`)
     but is deprecated.
-    """
+    """)
 
     _comma_splitter = re.compile(r'(?<!\\),')
     

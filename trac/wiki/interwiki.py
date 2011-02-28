@@ -21,7 +21,7 @@ from genshi.builder import tag
 from trac.cache import cached
 from trac.config import ConfigSection
 from trac.core import *
-from trac.util.translation import _
+from trac.util.translation import _, N_
 from trac.wiki.api import IWikiChangeListener, IWikiMacroProvider
 from trac.wiki.parser import WikiParser
 from trac.wiki.formatter import split_url_into_path_query_fragment
@@ -159,7 +159,9 @@ class InterWikiMap(Component):
         yield 'InterWiki'
 
     def get_macro_description(self, name): 
-        return "Provide a description list for the known InterWiki prefixes."
+        return 'messages', \
+               N_("Provide a description list for the known InterWiki "
+                  "prefixes.")
 
     def expand_macro(self, formatter, name, content):
         interwikis = []

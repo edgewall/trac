@@ -31,7 +31,7 @@ from trac.util.compat import cleandoc
 from trac.util.datefmt import http_date, to_datetime, utc
 from trac.util.html import escape, Markup
 from trac.util.text import exception_to_unicode, shorten_line
-from trac.util.translation import _
+from trac.util.translation import _, cleandoc_
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import (INavigationContributor, add_ctxtnav, add_link,
                              add_script, add_stylesheet, prevnext_nav, 
@@ -836,7 +836,7 @@ class BrowserModule(Component):
         yield "RepositoryIndex"
 
     def get_macro_description(self, name):
-        return cleandoc("""
+        description = cleandoc_("""
         Display the list of available repositories.
 
         Can be given the following named arguments:
@@ -858,6 +858,7 @@ class BrowserModule(Component):
 
         (''since 0.12'')
         """)
+        return 'messages', description
 
     def expand_macro(self, formatter, name, content):
         args, kwargs = parse_args(content)
