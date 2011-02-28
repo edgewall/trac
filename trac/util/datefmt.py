@@ -139,11 +139,16 @@ def pretty_timedelta(time1, time2=None, resolution=None):
     return ''
 
 
-_BABEL_FORMATS = ('short', 'medium', 'long', 'full')
+_BABEL_FORMATS = {
+    'datetime': {'short': '%x %H:%M', 'medium': '%x %X', 'long': '%x %X',
+                 'full': '%x %X'},
+    'date': {'short': '%x', 'medium': '%x', 'long': '%x', 'full': '%x'},
+    'time': {'short': '%H:%M', 'medium': '%X', 'long': '%X', 'full': '%X'},
+}
 _ISO8601_FORMATS = {
     'datetime': {
         '%x %X': 'iso8601', '%x': 'iso8601date', '%X': 'iso8601time',
-        'short': 'iso8601', 'medium': 'iso8601',
+        'short': '%Y-%m-%dT%H:%M', 'medium': '%Y-%m-%dT%H:%M:%S',
         'long': 'iso8601', 'full': 'iso8601',
         'iso8601': 'iso8601', None: 'iso8601'},
     'date': {
@@ -153,7 +158,7 @@ _ISO8601_FORMATS = {
         'iso8601': 'iso8601date', None: 'iso8601date'},
     'time': {
         '%x %X': 'iso8601', '%x': 'iso8601date', '%X': 'iso8601time',
-        'short': 'iso8601time', 'medium': 'iso8601time',
+        'short': '%H:%M', 'medium': '%H:%M:%S',
         'long': 'iso8601time', 'full': 'iso8601time',
         'iso8601': 'iso8601time', None: 'iso8601time'},
 }
@@ -202,11 +207,10 @@ def format_datetime(t=None, format='%x %X', tzinfo=None, locale=None):
             return babel_format_time(t, 'medium', None, locale)
         if format in ('%x %X', None):
             format = 'medium'
-        if format in _BABEL_FORMATS:
+        if format in _BABEL_FORMATS['datetime']:
             t = to_datetime(t, tzinfo)
             return babel_format_datetime(t, format, None, locale)
-    if format in _BABEL_FORMATS:
-        format = '%x %X'
+    format = _BABEL_FORMATS['datetime'].get(format, format)
     return _format_datetime_without_babel(t, format, tzinfo)
 
 def format_date(t=None, format='%x', tzinfo=None, locale=None):
@@ -221,11 +225,10 @@ def format_date(t=None, format='%x', tzinfo=None, locale=None):
     if babel and locale:
         if format in ('%x', None):
             format = 'medium'
-        if format in _BABEL_FORMATS:
+        if format in _BABEL_FORMATS['date']:
             t = to_datetime(t, tzinfo)
             return babel_format_date(t, format, locale)
-    if format in _BABEL_FORMATS:
-        format = '%x'
+    format = _BABEL_FORMATS['date'].get(format, format)
     return _format_datetime_without_babel(t, format, tzinfo)
 
 def format_time(t=None, format='%X', tzinfo=None, locale=None):
@@ -240,11 +243,10 @@ def format_time(t=None, format='%X', tzinfo=None, locale=None):
     if babel and locale:
         if format in ('%X', None):
             format = 'medium'
-        if format in _BABEL_FORMATS:
+        if format in _BABEL_FORMATS['time']:
             t = to_datetime(t, tzinfo)
             return babel_format_time(t, format, None, locale)
-    if format in _BABEL_FORMATS:
-        format = '%X'
+    format = _BABEL_FORMATS['time'].get(format, format)
     return _format_datetime_without_babel(t, format, tzinfo)
 
 def get_date_format_hint(locale=None):

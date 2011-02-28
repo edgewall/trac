@@ -136,6 +136,26 @@ class DateFormatTestCase(unittest.TestCase):
         self.assertEqual('2009-08-20', 
                          datefmt.format_date(a_date, format='%Y-%m-%d'))
 
+    def test_format_compatibility(self):
+        tz = datefmt.timezone('GMT +2:00')
+        t = datetime.datetime(2010, 8, 28, 11, 45, 56, 123456, datefmt.utc)
+        tz_t = datetime.datetime(2010, 8, 28, 13, 45, 56, 123456, tz)
+
+        # Converting babel's format to strftime format
+        self.assertEqual(tz_t.strftime('%x %H:%M').decode('utf-8'),
+                         datefmt.format_datetime(t, 'short', tz))
+        self.assertEqual(tz_t.strftime('%x').decode('utf-8'),
+                         datefmt.format_date(t, 'short', tz))
+        self.assertEqual(tz_t.strftime('%H:%M').decode('utf-8'),
+                         datefmt.format_time(t, 'short', tz))
+        for f in ('medium', 'long', 'full'):
+            self.assertEqual(tz_t.strftime('%x %X').decode('utf-8'),
+                             datefmt.format_datetime(t, f, tz))
+            self.assertEqual(tz_t.strftime('%x').decode('utf-8'),
+                             datefmt.format_date(t, f, tz))
+            self.assertEqual(tz_t.strftime('%X').decode('utf-8'),
+                             datefmt.format_time(t, f, tz))
+
 
 class UTimestampTestCase(unittest.TestCase):
     
@@ -174,6 +194,15 @@ class ISO8601TestCase(unittest.TestCase):
         for f in ('short', 'medium', 'long', 'full'):
             self.assertEqual('2010-08-28',
                              datefmt.format_date(t, f, tz, 'iso8601'))
+        self.assertEqual('11:45',
+                         datefmt.format_time(t, 'short', tz, 'iso8601'))
+        self.assertEqual('2010-08-28T11:45',
+                         datefmt.format_datetime(t, 'short', tz, 'iso8601'))
+        self.assertEqual('11:45:56',
+                         datefmt.format_time(t, 'medium', tz, 'iso8601'))
+        self.assertEqual('2010-08-28T11:45:56',
+                         datefmt.format_datetime(t, 'medium', tz, 'iso8601'))
+        for f in ('long', 'full'):
             self.assertEqual('11:45:56+02:00',
                              datefmt.format_time(t, f, tz, 'iso8601'))
             self.assertEqual('2010-08-28T11:45:56+02:00',
@@ -524,14 +553,6 @@ else:
                              datefmt.format_date(t, '%x', tz, en_US))
             self.assertEqual('1:45:56 PM',
                              datefmt.format_time(t, '%X', tz, en_US))
-
-            # Converting babel's format to strftime format
-            self.assertEqual(tz_t.strftime('%x %X').decode('utf-8'),
-                             datefmt.format_datetime(t, 'medium', tz))
-            self.assertEqual(tz_t.strftime('%x').decode('utf-8'),
-                             datefmt.format_date(t, 'medium', tz))
-            self.assertEqual(tz_t.strftime('%X').decode('utf-8'),
-                             datefmt.format_time(t, 'medium', tz))
 
 
 def suite():

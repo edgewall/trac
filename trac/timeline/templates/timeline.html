@@ -41,11 +41,11 @@
             <dt class="${classes(event.kind, highlight=highlight, unread=unread)}">
               <a href="${event.render('url', context)}" py:choose="">
                 <py:when test="event.author"><i18n:msg params="time, title, author">
-                  <span class="time">${format_time(event.date, str('%H:%M'))}</span> ${event.render('title', context)}
+                  <span class="time">${format_time(event.date, 'short')}</span> ${event.render('title', context)}
                   by <span class="author">${format_author(event.author)}</span>
                 </i18n:msg></py:when>
                 <py:otherwise>
-                  <span class="time">${format_time(event.date, str('%H:%M'))}</span> ${event.render('title', context)}
+                  <span class="time">${format_time(event.date, 'short')}</span> ${event.render('title', context)}
                 </py:otherwise>
               </a>
             </dt>
