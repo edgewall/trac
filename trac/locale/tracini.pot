@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.13\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2011-02-23 13:05+0900\n"
+"POT-Creation-Date: 2011-02-28 22:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -55,7 +55,7 @@ msgstr ""
 msgid "Location of authz policy configuration file."
 msgstr ""
 
-#: tracopt/ticket/commit_updater.py:106
+#: tracopt/ticket/commit_updater.py:107
 msgid ""
 "Require commands to be enclosed in an envelope.\n"
 "\n"
@@ -63,11 +63,11 @@ msgid ""
 "then commands must be in the form of [closes #4]."
 msgstr ""
 
-#: tracopt/ticket/commit_updater.py:112
+#: tracopt/ticket/commit_updater.py:113
 msgid "Commands that close tickets, as a space-separated list."
 msgstr ""
 
-#: tracopt/ticket/commit_updater.py:116
+#: tracopt/ticket/commit_updater.py:117
 msgid ""
 "Commands that add a reference, as a space-separated list.\n"
 "\n"
@@ -75,7 +75,7 @@ msgid ""
 "message will get a reference to the changeset."
 msgstr ""
 
-#: tracopt/ticket/commit_updater.py:123
+#: tracopt/ticket/commit_updater.py:124
 msgid ""
 "Check that the committer has permission to perform the requested\n"
 "operations on the referenced tickets.\n"
@@ -84,24 +84,24 @@ msgid ""
 "operations."
 msgstr ""
 
-#: tracopt/ticket/commit_updater.py:131
+#: tracopt/ticket/commit_updater.py:132
 msgid "Send ticket change notification when updating a ticket."
 msgstr ""
 
-#: trac/attachment.py:362
+#: trac/attachment.py:369
 msgid ""
 "Maximum allowed file size (in bytes) for ticket and wiki \n"
 "attachments."
 msgstr ""
 
-#: trac/attachment.py:366
+#: trac/attachment.py:373
 msgid ""
 "Maximum allowed total size (in bytes) for an attachment list to be\n"
 "downloadable as a `.zip`. Set this to -1 to disable download as `.zip`.\n"
 "(''since 0.13'')"
 msgstr ""
 
-#: trac/attachment.py:371
+#: trac/attachment.py:378
 msgid ""
 "Whether attachments should be rendered in the browser, or\n"
 "only made downloadable.\n"
@@ -668,13 +668,13 @@ msgid ""
 "by default (''since 0.11'')"
 msgstr ""
 
-#: trac/ticket/report.py:60
+#: trac/ticket/report.py:59
 msgid ""
 "Number of tickets displayed per page in ticket reports,\n"
 "by default (''since 0.11'')"
 msgstr ""
 
-#: trac/ticket/report.py:64
+#: trac/ticket/report.py:63
 msgid ""
 "Number of tickets displayed in the rss feeds for reports\n"
 "(''since 0.11'')"
@@ -1087,33 +1087,34 @@ msgid ""
 "graph display. (''since 0.13'')"
 msgstr ""
 
-#: trac/web/auth.py:59
+#: trac/web/auth.py:60
 msgid ""
 "Whether the IP address of the user should be checked for\n"
 "authentication (''since 0.9'')."
 msgstr ""
 
-#: trac/web/auth.py:63
+#: trac/web/auth.py:64
 msgid ""
 "Whether login names should be converted to lower case\n"
 "(''since 0.9'')."
 msgstr ""
 
-#: trac/web/auth.py:67
+#: trac/web/auth.py:68
 msgid ""
 "Lifetime of the authentication cookie, in seconds.\n"
 "\n"
-"This value determines how long the browser will cache authentication\n"
-"information, and therefore, after how much inactivity a user will have\n"
-"to log in again. The default value of 0 makes the cookie expire at the\n"
-"end of the browsing session. (''since 0.12'')"
+"This value determines how long the browser will cache\n"
+"authentication information, and therefore, after how much\n"
+"inactivity a user will have to log in again. The default value\n"
+"of 0 makes the cookie expire at the end of the browsing\n"
+"session. (''since 0.12'')"
 msgstr ""
 
-#: trac/web/auth.py:75
+#: trac/web/auth.py:77
 msgid ""
-"Path for the authentication cookie. Set this to the common base path\n"
-"of several Trac instances if you want them to share the cookie.\n"
-"(''since 0.12'')"
+"Path for the authentication cookie. Set this to the common\n"
+"base path of several Trac instances if you want them to share\n"
+"the cookie.  (''since 0.12'')"
 msgstr ""
 
 #: trac/web/chrome.py:321
@@ -1244,50 +1245,53 @@ msgid ""
 "(''since 0.12'')"
 msgstr ""
 
-#: trac/web/main.py:79
+#: trac/web/main.py:82
 msgid ""
 "Ordered list of filters to apply to all requests\n"
 "(''since 0.10'')."
 msgstr ""
 
-#: trac/web/main.py:84
+#: trac/web/main.py:87
 msgid ""
-"Name of the component that handles requests to the base URL.\n"
+"Name of the component that handles requests to the base\n"
+"URL.\n"
 "\n"
-"Options include `TimelineModule`, `RoadmapModule`, `BrowserModule`,\n"
-"`QueryModule`, `ReportModule`, `TicketModule` and `WikiModule`. The\n"
-"default is `WikiModule`. (''since 0.9'')"
+"Options include `TimelineModule`, `RoadmapModule`,\n"
+"`BrowserModule`, `QueryModule`, `ReportModule`, `TicketModule`\n"
+"and `WikiModule`. The default is `WikiModule`. (''since 0.9'')"
 msgstr ""
 
-#: trac/web/main.py:92
+#: trac/web/main.py:96
 msgid "The default timezone to use"
 msgstr ""
 
-#: trac/web/main.py:95
+#: trac/web/main.py:99
 msgid ""
-"The preferred language to use if no user preference has been set.\n"
-"(''since 0.12.1'')"
+"The preferred language to use if no user preference has\n"
+"been set. (''since 0.12.1'')"
 msgstr ""
 
-#: trac/web/main.py:100
+#: trac/web/main.py:104
 msgid ""
-"The date format. Valid option is 'iso8601' for ISO 8601 format, If\n"
-"not specified, use a browser's language. (''since 0.13'')"
+"The date format. Valid options are 'iso8601' for selecting\n"
+"ISO 8601 format, or leave it empty which means the default\n"
+"date format will be inferred from the browser's default\n"
+"language. (''since 0.13'')"
 msgstr ""
 
-#: trac/wiki/api.py:242
+#: trac/wiki/api.py:248
 msgid ""
 "Enable/disable highlighting CamelCase links to missing pages\n"
 "(''since 0.9'')."
 msgstr ""
 
-#: trac/wiki/api.py:246
+#: trac/wiki/api.py:252
 msgid ""
 "Enable/disable splitting the WikiPageNames with space characters\n"
 "(''since 0.10'')."
 msgstr ""
 
-#: trac/wiki/api.py:250
+#: trac/wiki/api.py:256
 msgid ""
 "Enable/disable the use of unsafe HTML tags such as `<script>` or\n"
 "`<embed>` with the HTML [wiki:WikiProcessors WikiProcessor]\n"
@@ -1297,7 +1301,7 @@ msgid ""
 "recommended to leave this option disabled (which is the default)."
 msgstr ""
 
-#: trac/wiki/api.py:258
+#: trac/wiki/api.py:264
 msgid ""
 "List of URI schemes considered \"safe\", that will be rendered as\n"
 "external links even if `[wiki] render_unsafe_content` is `false`.\n"
