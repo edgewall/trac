@@ -51,6 +51,11 @@ span:hover .anchor {
  visibility: visible;
 }
 
+h1:target, h2:target, h3:target, h4:target, h5:target, h6:target,
+span:target {
+ background: #ffb;
+}
+
 @media screen {
  a.ext-link .icon {
   background: url(../extlink.gif) center center no-repeat;
