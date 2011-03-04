@@ -29,7 +29,7 @@
           </td>
           <td class="age" style="${chgset_view and change and repo.timerange and 'border-color: rgb(%s,%s,%s)' %
                                    repo.colorize_age(repo.timerange.relative(change.date)) or None}">
-            ${dateinfo(change.date) if chgset_view else '&ndash;'}
+            ${pretty_dateinfo(change.date, dateonly=True) if chgset_view else '&ndash;'}
           </td>
           <td class="author">${authorinfo_short(change.author) if chgset_view else '&ndash;'}</td>
           <td class="change" py:choose="">

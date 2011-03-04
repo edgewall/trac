@@ -19,7 +19,7 @@ Arguments:
       <a href="${url_of(attachment.resource)}" title="View attachment">${attachment.filename
         }</a><a href="${url_of(attachment.resource, format='raw')}" class="trac-rawlink" title="Download">&#8203;</a>
        (<span title="${_('%(size)s bytes', size=attachment.size)}">${pretty_size(attachment.size)}</span>) -
-      added by <em>${authorinfo(attachment.author)}</em> ${dateinfo(attachment.date)} ago.
+      added by <em>${authorinfo(attachment.author)}</em> ${pretty_dateinfo(attachment.date)}.
     </i18n:msg>
   </py:def>
   <py:if test="alist.attachments or alist.can_create">

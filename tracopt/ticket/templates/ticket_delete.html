@@ -55,7 +55,7 @@
                     py:with="change_replies = replies.get(str(change.cnum), [])">
                 <span class="cnum">comment:$change.cnum</span>
               </span>
-              <i18n:msg params="date, author">Changed ${dateinfo(change.date)} ago by ${authorinfo(change.author)}</i18n:msg>
+              <i18n:msg params="date, author">Changed ${pretty_dateinfo(change.date)} by ${authorinfo(change.author)}</i18n:msg>
             </h3>
             <xi:include href="ticket_change.html"/>
           </div>

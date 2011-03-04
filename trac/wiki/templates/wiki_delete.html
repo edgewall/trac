@@ -42,7 +42,7 @@
                 <br />
                   Removing <a href="${href.wiki(page.name, action='history', version=page.version)}">
                     $num_versions versions</a> of the page, 
-                  which was first modified ${dateinfo(old_date)} ago and last modified ${dateinfo(new_date)} ago.
+                  which was first modified ${pretty_dateinfo(old_date)} and last modified ${pretty_dateinfo(new_date)}.
               </i18n:msg>
             </py:when>
             <py:when test="'single'">
@@ -57,12 +57,12 @@
                   <i18n:msg params="created">
                     This is the only <a href="${href.wiki(page.name, action='history', version=page.version)}">
                       version</a> of the page,
-                    created ${dateinfo(new_date)} ago, so the page will be removed completely!
+                    created ${pretty_dateinfo(new_date)}, so the page will be removed completely!
                   </i18n:msg>
                 </py:when>
                 <py:otherwise>
                   <i18n:msg params="modified">
-                    Modified ${dateinfo(new_date)} ago.
+                    Modified ${pretty_dateinfo(new_date)}.
                   </i18n:msg>
                 </py:otherwise>
               </py:choose>
@@ -76,14 +76,14 @@
                 <py:when test="1">
                   <i18n:msg params="created">
                       Removing the one and only <a href="${href.wiki(page.name, action='history', version=page.version)}">
-                        version</a> of the page, which was created ${dateinfo(new_date)} ago.
+                        version</a> of the page, which was created ${pretty_dateinfo(new_date)}.
                   </i18n:msg>
                 </py:when>
                 <py:otherwise>
                   <i18n:msg params="versions, created, modified">
                       Removing all <a href="${href.wiki(page.name, action='history', version=page.version)}">
                         $num_versions versions</a> of the page, 
-                      which was created ${dateinfo(old_date)} ago and last modified ${dateinfo(new_date)} ago.
+                      which was created ${pretty_dateinfo(old_date)} and last modified ${pretty_dateinfo(new_date)}.
                   </i18n:msg>
                 </py:otherwise>
               </py:choose>

@@ -42,7 +42,7 @@
               <td class="version">
                 <a href="${item.url or url_of(resource, version=item.version)}" title="View this version">$item.version</a>
               </td>
-              <td class="date">${dateinfo(item.date)}</td>
+              <td class="date">${pretty_dateinfo(item.date, dateonly=True)}</td>
               <td class="author"
                   title="${_('IP-Address: %(ipnr)s', ipnr=item.ipnr)
                            if show_ip_addresses and item.ipnr else None}">${authorinfo(item.author)}</td>

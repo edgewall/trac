@@ -28,8 +28,9 @@ from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import as_int
-from trac.util.datefmt import format_date, format_datetime, parse_date, \
-                              to_utimestamp, utc, pretty_timedelta, user_time
+from trac.util.datefmt import format_date, format_datetime, format_time, \
+                              parse_date, to_utimestamp, utc, \
+                              pretty_timedelta,  user_time
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.web import IRequestHandler, IRequestFilter
@@ -266,10 +267,33 @@ class TimelineModule(Component):
     
     def post_process_request(self, req, template, data, content_type):
         if data:
+            def pretty_dateinfo(date, format=None, dateonly=False):
+                absolute = user_time(req, format_datetime, date)
+                relative = pretty_timedelta(date)
+                if not format:
+                    format = req.session.get('dateinfo',
+                                 Chrome(self.env).default_dateinfo_format)
+                if format == 'absolute':
+                    if dateonly:
+                        label = absolute
+                    elif req.lc_time == 'iso8601':
+                        label = _("at %(iso8601)s", iso8601=absolute)
+                    else:
+                        label = _("on %(date)s at %(time)s",
+                                  date=user_time(req, format_date, date),
+                                  time=user_time(req, format_time, date))
+                    title = _("See timeline %(relativetime)s ago",
+                              relativetime=relative)
+                else:
+                    label = _("%(relativetime)s ago", relativetime=relative) \
+                            if not dateonly else relative
+                    title = _("See timeline at %(absolutetime)s",
+                              absolutetime=absolute)
+                return self.get_timeline_link(req, date, label,
+                                              precision='second', title=title)
             def dateinfo(date):
-                return self.get_timeline_link(req, date,
-                                              pretty_timedelta(date),
-                                              precision='second')
+                return pretty_dateinfo(date, format='relative', dateonly=True)
+            data['pretty_dateinfo'] = pretty_dateinfo
             data['dateinfo'] = dateinfo
         return template, data, content_type
 
@@ -303,14 +327,12 @@ class TimelineModule(Component):
     # Public methods
 
     def get_timeline_link(self, req, date, label=None, precision='hours',
-                          query=None, fragment=None):
-        iso_date = display_date = format_datetime(date, 'iso8601', req.tz)
-        fmt = req.session.get('datefmt')
-        if fmt and fmt != 'iso8601':
-            display_date = format_datetime(date, fmt, req.tz)
+                          query=None, fragment=None, title=None):
+        iso_date = format_datetime(date, 'iso8601', req.tz)
         href = req.href.timeline(from_=iso_date, precision=precision)
         return tag.a(label or iso_date, class_='timeline',
-                     title=_("%(date)s in Timeline", date=display_date),
+                     title=title or _("See timeline at %(absolutetime)s",
+                                      absolutetime=iso_date),
                      href=concat_path_query_fragment(href, query, fragment))
 
     # Internal methods

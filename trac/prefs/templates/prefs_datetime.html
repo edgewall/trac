@@ -69,5 +69,21 @@
       instead of that of the server.</p>
     </div>
 
+    <div class="field" py:with="session_dateinfo = settings.session.get('dateinfo')">
+      <label>Date relative/absolute format:
+        <select name="dateinfo">
+          <option value="">Default format</option>
+          <option value="relative"
+                  selected="${session_dateinfo == 'relative' or None}">Relative format</option>
+          <option value="absolute"
+                  selected="${session_dateinfo == 'absolute' or None}">Absolute format</option>
+        </select>
+      </label>
+
+      <p class="hint">Configuring your relative/absolute format will result in
+      formatting datetime displayed on this site to use your format instead of
+      that of the server.</p>
+    </div>
+
   </body>
 </html>

@@ -148,7 +148,7 @@
                         </py:for></py:if>
                     </py:if>
                   </span>
-                  <i18n:msg params="date, author">Changed ${dateinfo(change.date)} ago by ${authorinfo(change.author)}</i18n:msg>
+                  <i18n:msg params="date, author">Changed ${pretty_dateinfo(change.date)} by ${authorinfo(change.author)}</i18n:msg>
                 </h3>
                 <py:if test="not show_editor and comment_version == max_version">
                   <form py:if="'cnum' in change and can_edit_comment" method="get" action="#comment:${change.cnum}">
@@ -169,11 +169,11 @@
                 <div py:if="not show_editor and len(change.comment_history) > 1" py:choose=""
                      class="trac-lastedit ${'trac-shade' if comment_version != max_version else None}">
                   <i18n:msg params="version, date, author" py:when="comment_version != max_version">
-                      Version ${comment_version}, edited ${dateinfo(change.comment_history[comment_version].date)} ago
+                      Version ${comment_version}, edited ${pretty_dateinfo(change.comment_history[comment_version].date)}
                       by ${authorinfo(change.comment_history[comment_version].author)}
                   </i18n:msg>
                   <i18n:msg params="date, author" py:otherwise="">
-                      Last edited ${dateinfo(change.comment_history[comment_version].date)} ago
+                      Last edited ${pretty_dateinfo(change.comment_history[comment_version].date)}
                       by ${authorinfo(change.comment_history[comment_version].author)}
                   </i18n:msg>
                   <py:if test="comment_version > 0">

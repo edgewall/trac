@@ -131,14 +131,14 @@
                        rcset = href.changeset(rev, reponame, created_path);
                        drev = display_rev(rev);
                        author = authorinfo(file.changeset.author);
-                       age = dateinfo(file.changeset.date)">
+                       age = pretty_dateinfo(file.changeset.date)">
             <py:choose>
               <py:when test="stickyrev">
                 <i18n:msg params="stickyrev, rev, author, age">
                   <a href="$rcset" title="View differences">Last change</a>
                   on this file since ${display_rev(stickyrev)} was
                   <a href="$cset" title="${_('View changeset %(rev)s', rev=drev)}">$drev</a>,
-                  checked in by $author, $age ago
+                  checked in by $author, $age
                 </i18n:msg>
               </py:when>
               <py:otherwise>
@@ -146,7 +146,7 @@
                   <a href="$rcset" title="View differences">Last change</a>
                   on this file was
                   <a href="$cset" title="${_('View changeset %(rev)s', rev=drev)}">$drev</a>,
-                  checked in by $author, $age ago
+                  checked in by $author, $age
                 </i18n:msg>
               </py:otherwise>
             </py:choose>

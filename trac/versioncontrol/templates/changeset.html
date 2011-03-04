@@ -137,7 +137,7 @@
           <dd class="time" py:choose="datetime.now(utc) - changeset.date &lt; timedelta(0, 3600)">
              ${format_datetime(changeset.date)}
              <py:when test="True">(less than one hour ago)</py:when>
-             <py:otherwise><i18n:msg params="age">(${dateinfo(changeset.date)} ago)</i18n:msg></py:otherwise>
+             <py:otherwise>(${dateinfo(changeset.date)} ago)</py:otherwise>
           </dd>
           <dt class="property author">Author:</dt>
           <dd class="author">${authorinfo(changeset.author)}</dd>

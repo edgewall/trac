@@ -171,7 +171,7 @@
                                       rev=display_rev(item.rev), path=item.path or '/')}">&nbsp;</a>
                       </py:choose>
                     </td>
-                    <td class="age" py:content="dateinfo(change.date)" />
+                    <td class="age" py:content="pretty_dateinfo(change.date, dateonly=True)" />
                     <td class="author" py:content="authorinfo_short(change.author)" />
                     <td class="summary" py:choose=""
                         style="${graph and ('border-left: 2px solid '
