@@ -503,7 +503,7 @@ class TicketCommentEditTestCase(TicketCommentTestCase):
                            new=str(to_utimestamp(t))))
         
     def test_modify_missing_cnums_and_comment(self):
-        """Editing a comments when all cnums are missing and one comment
+        """Editing a comment when all cnums are missing and one comment
         field is missing
         """
         cursor = self.db.cursor()

@@ -297,12 +297,11 @@ class Ticket(object):
                 cursor.execute("""
                     SELECT DISTINCT tc1.time,COALESCE(tc2.oldvalue,'')
                     FROM ticket_change AS tc1
-                      LEFT OUTER JOIN
-                        (SELECT time,oldvalue FROM ticket_change
-                         WHERE field='comment') AS tc2
-                      ON (tc1.time = tc2.time)
-                    WHERE ticket=%s ORDER BY tc1.time DESC
-                    """, (self.id,))
+                    LEFT OUTER JOIN ticket_change AS tc2
+                    ON tc2.ticket=%s AND tc2.time=tc1.time
+                       AND tc2.field='comment'
+                    WHERE tc1.ticket=%s ORDER BY tc1.time DESC
+                    """, (self.id, self.id))
                 for ts, old in cursor:
                     # Use oldvalue if available, else count edits
                     try:
@@ -604,17 +603,13 @@ class Ticket(object):
         # Fallback when comment number is not available in oldvalue
         num = 0
         cursor.execute("""
-            SELECT DISTINCT tc1.time,COALESCE(tc2.oldvalue,''), 
-               tc2.author,COALESCE(tc2.newvalue,'') 
-               FROM ticket_change AS tc1 
-                   LEFT OUTER JOIN 
-                          (SELECT time,author,oldvalue,newvalue 
-                           FROM ticket_change 
-                           WHERE field='comment') AS tc2 
-                        ON (tc1.time = tc2.time) 
-               WHERE ticket=%s 
-               ORDER BY tc1.time
-               """, (self.id,))
+            SELECT tc1.time,COALESCE(tc2.oldvalue,''), 
+                   tc2.author,COALESCE(tc2.newvalue,'') 
+            FROM ticket_change AS tc1 
+            LEFT OUTER JOIN ticket_change AS tc2
+            ON tc2.ticket=%s AND tc2.time=tc1.time AND tc2.field='comment'
+            WHERE tc1.ticket=%s ORDER BY tc1.time
+            """, (self.id, self.id))
         for ts, old, author, comment in cursor:
             # Use oldvalue if available, else count edits
             try:
