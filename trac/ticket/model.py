@@ -603,8 +603,8 @@ class Ticket(object):
         # Fallback when comment number is not available in oldvalue
         num = 0
         cursor.execute("""
-            SELECT tc1.time,COALESCE(tc2.oldvalue,''), 
-                   tc2.author,COALESCE(tc2.newvalue,'') 
+            SELECT DISTINCT tc1.time,COALESCE(tc2.oldvalue,''),
+                            tc2.author,COALESCE(tc2.newvalue,'')
             FROM ticket_change AS tc1 
             LEFT OUTER JOIN ticket_change AS tc2
             ON tc2.ticket=%s AND tc2.time=tc1.time AND tc2.field='comment'
