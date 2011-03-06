@@ -36,7 +36,7 @@ from trac.ticket.api import TicketSystem, ITicketManipulator
 from trac.ticket.model import Milestone, Ticket, group_milestones
 from trac.ticket.notification import TicketNotifyEmail
 from trac.timeline.api import ITimelineEventProvider
-from trac.util import as_bool, get_reporter_id
+from trac.util import as_bool, as_int, get_reporter_id
 from trac.util.datefmt import format_datetime, from_utimestamp, \
                               to_utimestamp, utc
 from trac.util.text import exception_to_unicode, obfuscate_email_address, \
@@ -441,19 +441,28 @@ class TicketModule(Component):
 
         data['fields'] = fields
 
+        if req.get_header('X-Requested-With') == 'XMLHttpRequest':
+            data['preview_mode'] = True
+            return 'ticket_box.html', data, None
+
         add_stylesheet(req, 'common/css/ticket.css')
         add_script(req, 'common/js/folding.js')
         Chrome(self.env).add_wiki_toolbars(req)
+        Chrome(self.env).add_auto_preview(req)
         return 'ticket.html', data, None
 
     def _process_ticket_request(self, req):
         id = int(req.args.get('id'))
-        version = req.args.get('version', None)
-        if version is not None:
-            try:
-                version = int(version)
-            except ValueError:
-                version = None
+        version = as_int(req.args.get('version'), None)
+        xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
+        
+        if xhr and 'preview_comment' in req.args:
+            context = web_context(req, 'ticket', id, version)
+            escape_newlines = self.must_preserve_newlines
+            rendered = format_to_html(self.env, context,
+                                      req.args.get('edited_comment', ''),
+                                      escape_newlines=escape_newlines)
+            req.send(rendered.encode('utf-8'))
 
         req.perm('ticket', id, version).require('TICKET_VIEW')
         ticket = Ticket(self.env, id, version=version)
@@ -571,6 +580,10 @@ class TicketModule(Component):
 
         self._insert_ticket_data(req, ticket, data,
                                  get_reporter_id(req, 'author'), field_changes)
+
+        if xhr:
+            data['preview_mode'] = bool(data['change_preview']['fields'])
+            return 'ticket_preview.html', data, None
 
         mime = Mimeview(self.env)
         format = req.args.get('format')

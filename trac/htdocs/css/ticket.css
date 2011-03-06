@@ -136,6 +136,7 @@ label[for=comment] { float: right }
 form .field .wikitoolbar { margin-left: -1px }
 form .field div.trac-resizable { width: 100% }
 
+#propertyform { margin-bottom: 2em; }
 #properties { white-space: nowrap; line-height: 160%; padding: .5em }
 #properties table { border-spacing: 0; width: 100%; padding: 0 .5em }
 #properties table th {

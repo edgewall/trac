@@ -13,7 +13,7 @@ Arguments:
       xmlns:i18n="http://genshi.edgewall.org/i18n"
       py:with="show_editor = value_of('show_editor', False)" py:strip="">
   <ul py:if="change.fields" class="changes">
-    <li py:for="field_name, field in change.fields.items()">
+    <li py:for="field_name, field in sorted(change.fields.iteritems(), key=lambda item: item[1].label.lower())">
       <strong>${field.label}</strong>
       <py:choose>
         <py:when test="field_name == 'attachment'"><i18n:msg params="name">
@@ -35,7 +35,8 @@ Arguments:
       </py:choose>
     </li>
   </ul>
-  <form py:if="show_editor" id="trac-comment-editor" method="post" action="#comment:${change.cnum}">
+  <form py:if="show_editor" id="trac-comment-editor" method="post"
+        action="${href.ticket(ticket.id) + '#comment:%d' % change.cnum}">
     <div>
       <textarea name="edited_comment" class="wikitext trac-resizable" rows="10" cols="78">
 ${edited_comment if edited_comment is not None else change.comment}</textarea>
@@ -56,10 +57,11 @@ ${edited_comment if edited_comment is not None else change.comment}</textarea>
          class="comment searchable ticketdraft" style="${'display: none' if not text else None}" xml:space="preserve">
       ${wiki_to_html(context, text, escape_newlines=preserve_newlines)}
     </div>
-    <div py:otherwise="" py:choose="" class="comment searchable" xml:space="preserve">
-      <py:when test="show_history">${wiki_to_html(context, change.comment_history[int(cversion)].comment,
-                                                  escape_newlines=preserve_newlines)}</py:when>
-      <py:otherwise>${wiki_to_html(context, change.comment, escape_newlines=preserve_newlines)}</py:otherwise>
+    <div py:when="show_history" class="comment searchable" xml:space="preserve">
+      ${wiki_to_html(context, change.comment_history[int(cversion)].comment, escape_newlines=preserve_newlines)}
+    </div>
+    <div py:when="change.comment" class="comment searchable" xml:space="preserve">
+      ${wiki_to_html(context, change.comment, escape_newlines=preserve_newlines)}
     </div>
   </py:choose>
 </html>

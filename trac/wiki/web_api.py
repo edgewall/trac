@@ -13,6 +13,7 @@
 
 from trac.core import *
 from trac.resource import Resource
+from trac.util import as_int
 from trac.web.api import IRequestHandler
 from trac.web.chrome import web_context
 from trac.wiki.formatter import format_to
@@ -36,12 +37,7 @@ class WikiRenderer(Component):
             req.perm.require('TRAC_ADMIN')
         realm = req.args.get('realm', 'wiki')
         id = req.args.get('id')
-        version = req.args.get('version')
-        if version is not None:
-            try:
-                version = int(version)
-            except ValueError:
-                version = None
+        version = as_int(req.args.get('version'), None)
         text = req.args.get('text', '')
         flavor = req.args.get('flavor')
         options = {}
