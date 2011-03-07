@@ -1672,7 +1672,7 @@ msgid ""
 "        [2:online]\n"
 "        as well as in the [3:COPYING] file included in the distribution."
 msgstr ""
-"Trac je distribuován pod licencí BSD [:1]. Její plné znění lze najít "
+"Trac je distribuován pod licencí BSD [1:]. Její plné znění lze najít "
 "[2:online] a také v souboru [3:COPYING], který je součástí instalace."
 
 #: trac/templates/about.html:41
