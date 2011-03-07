@@ -1,0 +1,12 @@
+<!--!
+Render a ticket box preview and a ticket change preview, to be sent as a reply
+to a ticket change auto-preview.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
+      py:strip="">
+  <xi:include href="ticket_box.html" py:with="can_append = 'TICKET_APPEND' in perm(ticket.resource)"/>
+  <xi:include href="ticket_change.html" py:with="change = change_preview"/>
+</html>
