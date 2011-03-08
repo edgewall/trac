@@ -35,8 +35,8 @@
         updateActionFields();
         
         var comment_focused = false;
-        $("#comment").focus(function() { comment_focused = true; console.log("focus"); })
-                     .blur(function() { comment_focused = false; console.log("blur"); });
+        $("#comment").focus(function() { comment_focused = true; })
+                     .blur(function() { comment_focused = false; });
         $("#propertyform").autoSubmit({preview: '1'}, function(data, reply) {
           var items = $(reply);
           $("#ticket").replaceWith(items.filter('#ticket'));
