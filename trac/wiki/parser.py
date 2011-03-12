@@ -168,20 +168,20 @@ class WikiParser(Component):
         self._helper_patterns = None
         self._external_handlers = None
 
-    def _get_rules(self):
+    @property
+    def rules(self):
         self._prepare_rules()
         return self._compiled_rules
-    rules = property(_get_rules)
 
-    def _get_helper_patterns(self):
+    @property
+    def helper_patterns(self):
         self._prepare_rules()
         return self._helper_patterns
-    helper_patterns = property(_get_helper_patterns)
 
-    def _get_external_handlers(self):
+    @property
+    def external_handlers(self):
         self._prepare_rules()
         return self._external_handlers
-    external_handlers = property(_get_external_handlers)
 
     def _prepare_rules(self):
         from trac.wiki.api import WikiSystem
@@ -204,7 +204,8 @@ class WikiParser(Component):
             self._helper_patterns = helpers
             self._compiled_rules = rules
 
-    def _get_link_resolvers(self):
+    @property
+    def link_resolvers(self):
         if not self._link_resolvers:
             from trac.wiki.api import WikiSystem
             resolvers = {}
@@ -213,7 +214,6 @@ class WikiParser(Component):
                     resolvers[namespace] = handler
             self._link_resolvers = resolvers
         return self._link_resolvers
-    link_resolvers = property(_get_link_resolvers)
 
     def parse(self, wikitext):
         """Parse `wikitext` and produce a WikiDOM tree."""
