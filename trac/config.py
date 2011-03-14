@@ -14,7 +14,7 @@
 
 from __future__ import with_statement
 
-from ConfigParser import SafeConfigParser
+from ConfigParser import ConfigParser
 from copy import deepcopy
 import os.path
 
@@ -53,7 +53,7 @@ class Configuration(object):
     """
     def __init__(self, filename, params={}):
         self.filename = filename
-        self.parser = SafeConfigParser(params)
+        self.parser = ConfigParser(params)
         self._old_sections = {}
         self.parents = []
         self._lastmtime = 0
