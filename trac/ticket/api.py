@@ -493,6 +493,11 @@ class TicketSystem(Component):
             href = "%s#comment:%s" % (formatter.href.ticket(resource.id), cnum)
             title = _("Comment %(cnum)s for Ticket #%(id)s", cnum=cnum,
                       id=resource.id)
+            if 'TICKET_VIEW' in formatter.perm(resource):
+                for status, in self.env.db_query(
+                    "SELECT status FROM ticket WHERE id=%s",
+                    (resource.id,)):
+                    return tag.a(label, href=href, title=title, class_=status)
             return tag.a(label, href=href, title=title)
         else:
             return label

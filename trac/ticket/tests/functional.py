@@ -1351,6 +1351,19 @@ class RegressionTestTicket9084(FunctionalTwillTestCaseSetup):
         tc.notfind('AssertionError')
 
 
+class RegressionTestTicket9981(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/9981"""
+        ticketid = self._tester.create_ticket()
+        self._tester.add_comment(ticketid)
+        tc.formvalue('propertyform', 'action', 'resolve')
+        tc.submit('submit')
+        comment = '[ticket:%s#comment:1]' % ticketid
+        self._tester.add_comment(ticketid, comment=comment)
+        self._tester.go_to_ticket(ticketid)
+        tc.find('class="closed ticket".*ticket/%s#comment:1"' % ticketid)
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional.testcases
@@ -1438,6 +1451,7 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket8247())
     suite.addTest(RegressionTestTicket8861())
     suite.addTest(RegressionTestTicket9084())
+    suite.addTest(RegressionTestTicket9981())
 
     return suite
 
