@@ -76,7 +76,7 @@ class WikiPage(object):
             self.time = None
             self.readonly = 0
             
-    exists = property(fget=lambda self: self.version > 0)
+    exists = property(lambda self: self.version > 0)
 
     def delete(self, version=None, db=None):
         """Delete one or all versions of a page.

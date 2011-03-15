@@ -115,12 +115,12 @@ class TicketModule(Component):
             return getattr(TicketSystem(self.env), name)
         raise AttributeError("TicketModule has no attribute '%s'" % name)
 
-    def _must_preserve_newlines(self):
+    @property
+    def must_preserve_newlines(self):
         preserve_newlines = self.preserve_newlines
         if preserve_newlines == 'default':
             preserve_newlines = self.env.get_version(initial=True) >= 21 # 0.11
         return as_bool(preserve_newlines)
-    must_preserve_newlines = property(_must_preserve_newlines)
 
     # IContentConverter methods
 

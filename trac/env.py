@@ -658,13 +658,16 @@ class Environment(Component, ComponentManager):
             DatabaseManager(self).shutdown()
         return True
 
-    def _get_href(self):
+    @property
+    def href(self):
+        """The application root path"""
         if not self._href:
             self._href = Href(urlsplit(self.abs_href.base)[2])
         return self._href
-    href = property(_get_href, 'The application root path')
 
-    def _get_abs_href(self):
+    @property
+    def abs_href(self):
+        """The application URL"""
         if not self._abs_href:
             if not self.base_url:
                 self.log.warn("base_url option not set in configuration, "
@@ -673,7 +676,6 @@ class Environment(Component, ComponentManager):
             else:
                 self._abs_href = Href(self.base_url)
         return self._abs_href
-    abs_href = property(_get_abs_href, 'The application URL')
 
 
 class EnvironmentSetup(Component):

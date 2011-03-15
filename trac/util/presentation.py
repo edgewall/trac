@@ -221,17 +221,17 @@ class Paginator(object):
     def __setitem__(self, idx, value):
         self.items[idx] = value
 
+    @property
     def has_more_pages(self):
         return self.num_pages > 1
-    has_more_pages = property(has_more_pages)
 
+    @property
     def has_next_page(self):
         return self.page + 1 < self.num_pages
-    has_next_page = property(has_next_page)
 
+    @property
     def has_previous_page(self):
         return self.page > 0
-    has_previous_page = property(has_previous_page)
    
     def get_shown_pages(self, page_index_count = 11):
         if self.has_more_pages == False:

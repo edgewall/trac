@@ -83,7 +83,7 @@ class Ticket(object):
             self.id = None
         self._old = {}
 
-    exists = property(fget=lambda self: self.id is not None)
+    exists = property(lambda self: self.id is not None)
 
     def _init_defaults(self):
         for field in self.fields:
@@ -637,7 +637,7 @@ class AbstractEnum(object):
             self.value = self._old_value = None
             self.name = self._old_name = None
 
-    exists = property(fget=lambda self: self._old_value is not None)
+    exists = property(lambda self: self._old_value is not None)
 
     def delete(self, db=None):
         """Delete the enum value.
@@ -780,7 +780,7 @@ class Component(object):
                 raise ResourceNotFound(_("Component %(name)s does not exist.",
                                          name=name))
 
-    exists = property(fget=lambda self: self._old_name is not None)
+    exists = property(lambda self: self._old_name is not None)
 
     def delete(self, db=None):
         """Delete the component.
@@ -865,9 +865,9 @@ class Milestone(object):
             self.description = ''
             self._to_old()
 
-    def _get_resource(self):
+    @property
+    def resource(self):
         return Resource('milestone', self.name) ### .version !!!
-    resource = property(_get_resource)
 
     def _fetch(self, name, db=None):
         for row in self.env.db_query("""
@@ -880,10 +880,10 @@ class Milestone(object):
             raise ResourceNotFound(_("Milestone %(name)s does not exist.",
                                      name=name), _("Invalid milestone name"))
 
-    exists = property(fget=lambda self: self._old['name'] is not None)
-    is_completed = property(fget=lambda self: self.completed is not None)
-    is_late = property(fget=lambda self: self.due and
-                                         self.due < datetime.now(utc))
+    exists = property(lambda self: self._old['name'] is not None)
+    is_completed = property(lambda self: self.completed is not None)
+    is_late = property(lambda self: self.due and
+                                    self.due < datetime.now(utc))
 
     def _from_database(self, row):
         name, due, completed, description = row
@@ -1038,7 +1038,7 @@ class Version(object):
                 raise ResourceNotFound(_("Version %(name)s does not exist.",
                                          name=name))
 
-    exists = property(fget=lambda self: self._old_name is not None)
+    exists = property(lambda self: self._old_name is not None)
 
     def delete(self, db=None):
         """Delete the version.
