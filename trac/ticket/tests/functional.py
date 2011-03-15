@@ -295,8 +295,7 @@ class TestAdminComponentNonRemoval(FunctionalTwillTestCaseSetup):
         """Admin remove no selected component"""
         component_url = self._tester.url + "/admin/ticket/components"
         tc.go(component_url)
-        tc.formvalue('component_table', 'remove', 'Remove selected items')
-        tc.submit('remove')
+        tc.submit('remove', formname='component_table')
         tc.find('No component selected')
 
 
@@ -501,8 +500,7 @@ class TestAdminMilestoneNonRemoval(FunctionalTwillTestCaseSetup):
         """Admin remove no selected milestone"""
         milestone_url = self._tester.url + "/admin/ticket/milestones"
         tc.go(milestone_url)
-        tc.formvalue('milestone_table', 'remove', 'Remove selected items')
-        tc.submit('remove')
+        tc.submit('remove', formname='milestone_table')
         tc.find('No milestone selected')
 
 
@@ -594,8 +592,7 @@ class TestAdminPriorityNonRemoval(FunctionalTwillTestCaseSetup):
         """Admin remove no selected priority"""
         priority_url = self._tester.url + "/admin/ticket/priority"
         tc.go(priority_url)
-        tc.formvalue('enumtable', 'remove', 'Remove selected items')
-        tc.submit('remove')
+        tc.submit('remove', formname='enumtable')
         tc.find('No priority selected')
 
 
@@ -837,8 +834,7 @@ class TestAdminVersionNonRemoval(FunctionalTwillTestCaseSetup):
         """Admin remove no selected version"""
         version_url = self._tester.url + "/admin/ticket/versions"
         tc.go(version_url)
-        tc.formvalue('version_table', 'remove', 'Remove selected items')
-        tc.submit('remove')
+        tc.submit('remove', formname='version_table')
         tc.find('No version selected')
 
 
@@ -1298,8 +1294,7 @@ class RegressionTestTicket6912b(FunctionalTwillTestCaseSetup):
             tc.formvalue('modcomp', 'owner', '')
         except twill.utils.ClientForm.ItemNotFoundError, e:
             raise twill.errors.TwillAssertionError(e)
-        tc.formvalue('modcomp', 'save', 'Save')
-        tc.submit()
+        tc.submit('save', formname='modcomp')
         tc.find('RegressionTestTicket6912b</a>[ \n\t]*</td>[ \n\t]*'
                 '<td class="owner"></td>', 's')
 
@@ -1350,8 +1345,7 @@ class RegressionTestTicket9084(FunctionalTwillTestCaseSetup):
         ticketid = self._tester.create_ticket()
         self._tester.add_comment(ticketid)
         self._tester.go_to_ticket(ticketid)
-        tc.formvalue('reply-to-comment-1', 'replyto', '1')
-        tc.submit('Reply')
+        tc.submit('Reply', formname='reply-to-comment-1')
         tc.formvalue('propertyform', 'comment', random_sentence(3))
         tc.submit('Submit changes')
         tc.notfind('AssertionError')

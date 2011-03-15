@@ -154,6 +154,21 @@ if twill:
     tc.formvalue = better_formvalue
     tc.fv = better_formvalue
 
+    # Twill requires that on pages with more than one form, you have to click a
+    # field within the form before you can click submit.  There are a number of
+    # cases where the first interaction a user would have with a form is
+    # clicking on a button.  This enhancement allows us to specify the form to
+    # click on.
+    def better_browser_submit(fieldname=None, formname=None, browser=b, old_submit=b.submit):
+        if formname is not None: # enhancement to directly specify the form
+            browser._browser.form = browser.get_form(formname)
+        old_submit(fieldname)
+
+    b.submit = better_browser_submit
+    def better_submit(fieldname=None, formname=None):
+        b.submit(fieldname, formname)
+    tc.submit = better_submit
+        
     # Twill's formfile function leaves a filehandle open which prevents the
     # file from being deleted on Windows.  Since we would just assume use a
     # StringIO object in the first place, allow the file-like object to be
