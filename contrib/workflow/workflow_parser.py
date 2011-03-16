@@ -2,6 +2,7 @@
 
 import sys
 import getopt
+import locale
 
 import pkg_resources
 pkg_resources.require('Trac')
@@ -70,7 +71,7 @@ digraph G {
     digraph_lines.append('}')
     return digraph_lines
 
-def main(filename, show_ops=False, show_perms=False):
+def main(filename, output, show_ops=False, show_perms=False):
     # Read in the config
     rawactions = readconfig(filename)
 
@@ -81,10 +82,10 @@ def main(filename, show_ops=False, show_perms=False):
     digraph_lines = actions2graphviz(actions, show_ops, show_perms)
 
     # And output
-    sys.stdout.write('\n'.join(digraph_lines))
+    output.write(unicode.encode('\n'.join(digraph_lines), locale.getpreferredencoding()))
 
 def usage(output):
-    output.write('workflow_parser [options] configfile.ini\n'
+    output.write('workflow_parser [options] configfile.ini [output.dot]\n'
                  '-h --help shows this message\n'
                  '-o --operations include operations in the graph\n'
                  '-p --permissions include permissions in the graph\n'
@@ -114,4 +115,10 @@ if __name__ == '__main__':
         usage(sys.stderr)
         sys.stderr.flush()
         sys.exit(1)
-    main(args[0], show_ops, show_perms)
+    ini_filename = args[0]
+    if len(args) > 1:
+        output = open(args[1], 'w')
+    else:
+        output = sys.stdout
+
+    main(ini_filename, output, show_ops, show_perms)

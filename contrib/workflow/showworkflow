@@ -17,7 +17,7 @@ ps=`echo "$config" | sed 's/\.ini$/.ps/g'`
 pdf=`echo "$config" | sed 's/\.ini$/.pdf/g'`
 png=`echo "$config" | sed 's/\.ini$/.png/g'`
 
-$basedir/workflow_parser.py $options "$config" > "$dot"
+$basedir/workflow_parser.py $options "$config" "$dot"
 if [ $? -ne 0 ]; then
     echo "Failed to parse \"$config\", exiting." >&2
     exit 1
@@ -28,6 +28,13 @@ if [ "$OSTYPE" = cygwin ]; then
     dot -T png -o "$png" "$dot"
     cmd /c start $png
 else
-    dot -T ps -o "$ps" "$dot" && ps2pdf "$ps" "$pdf" || exit 1
-    kpdf "$pdf"
+    dot -T ps -o "$ps" "$dot"
+    dot -T pdf -o "$pdf" "$dot"
+    # attempt to find a Linux pdf viewer
+    for viewer in kpdf okular evince; do
+        if which $viewer >/dev/null 2>&1; then
+            break
+        fi
+    done
+    $viewer "$pdf"
 fi
