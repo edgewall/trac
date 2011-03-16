@@ -200,14 +200,18 @@ class Ticket(object):
         self.values['time'] = self.values['changetime'] = when
 
         # The owner field defaults to the component owner
-        if self.values.get('component') and not self.values.get('owner'):
-            try:
-                component = Component(self.env, self['component'])
-                if component.owner:
-                    self['owner'] = component.owner
-            except ResourceNotFound:
-                # No such component exists
-                pass
+        if self.values.get('owner') == '< default >':
+            default_to_owner = ''
+            if self.values.get('component'):
+                try:
+                    component = Component(self.env, self['component'])
+                    default_to_owner = component.owner # even if it's empty
+                except ResourceNotFound:
+                    # No such component exists
+                    pass
+            # If the current owner is "< default >", we need to set it to
+            # _something_ else, even if that something else is blank.
+            self['owner'] = default_to_owner
 
         # Perform type conversions
         values = dict(self.values)
