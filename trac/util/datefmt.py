@@ -68,7 +68,11 @@ def to_datetime(t, tzinfo=None):
                     t = tzinfo.normalize(t)
         return t
     elif isinstance(t, date):
-        return (tzinfo or localtz).localize(datetime(t.year, t.month, t.day))
+        tz = tzinfo or localtz
+        t = tz.localize(datetime(t.year, t.month, t.day))
+        if hasattr(tz, 'normalize'): # pytz
+            t = tz.normalize(t)
+        return t
     elif isinstance(t, (int, long, float)):
         if not (_min_ts <= t <= _max_ts):
             # Handle microsecond timestamps for 0.11 compatibility
@@ -329,7 +333,10 @@ def _parse_date_iso8601(text, tzinfo):
             tm = time.strptime('%s ' * 6 % (years, months, days,
                                             hours, minutes, seconds),
                                '%Y %m %d %H %M %S ')
-            return tzinfo.localize(datetime(*tm[0:6]))
+            t = tzinfo.localize(datetime(*tm[0:6]))
+            if hasattr(tzinfo, 'normalize'): # pytz
+                t = tzinfo.normalize(t)
+            return t
         except ValueError:
             pass
 
@@ -349,6 +356,8 @@ def parse_date(text, tzinfo=None, locale=None, hint='date'):
                 try:
                     tm = time.strptime(text, format)
                     dt = tzinfo.localize(datetime(*tm[0:6]))
+                    if hasattr(tzinfo, 'normalize'): # pytz
+                        dt = tzinfo.normalize(dt)
                     break
                 except ValueError:
                     continue
@@ -508,8 +517,10 @@ def _i18n_parse_date_0(text, order, regexp, period_names, month_names, tzinfo):
         elif period == 'pm':
             values['h'] = values['h'] % 12 + 12
 
-    return tzinfo.localize(datetime(values['y'], values['M'], values['d'],
-                                    values['h'], values['m'], values['s']))
+    t = tzinfo.localize(datetime(*(values[k] for k in 'yMdhms')))
+    if hasattr(tzinfo, 'normalize'): # pytz
+        t = tzinfo.normalize(t)
+    return t
 
 _REL_TIME_RE = re.compile(
     r'(\d+\.?\d*)\s*'

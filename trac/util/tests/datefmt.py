@@ -24,6 +24,13 @@ from trac.util import datefmt
 try:
     import pytz
 except ImportError:
+    pytz = None
+try:
+    from babel import Locale
+except ImportError:
+    Locale = None
+
+if pytz is None:
     PytzTestCase = None
 else:
     class PytzTestCase(unittest.TestCase):
@@ -56,6 +63,30 @@ else:
             t_utc = datetime.datetime(2009, 8, 1, 10, 0, 0, 0, datefmt.utc)
             self.assertEqual(t_utc, t)
 
+        def test_parse_date_across_dst_boundary(self):
+            tz = datefmt.get_timezone('Europe/Zurich')
+            # DST start - 31 March, 02:00
+            format = '%Y-%m-%d %H:%M:%S %Z%z'
+            expected = '2002-03-31 03:30:00 CEST+0200'
+            # iso8601
+            t = datefmt.parse_date('2002-03-31T02:30:00', tz)
+            self.assertEqual(expected, t.strftime(format))
+            # strptime
+            t = datetime.datetime(2002, 3, 31, 2, 30)
+            t = datefmt.parse_date(t.strftime('%x %X'), tz)
+            self.assertEqual(expected, t.strftime(format))
+            # i18n datetime
+            if Locale:
+                en_US = Locale.parse('en_US')
+                t = datefmt.parse_date('Mar 31, 2002 02:30', tz, en_US)
+                self.assertEqual(expected, t.strftime(format))
+
+        def test_to_datetime_pytz_normalize(self):
+            tz = datefmt.get_timezone('Europe/Zurich')
+            date = datefmt.to_datetime(datetime.date(2002, 3, 31), tz)
+            format = '%Y-%m-%d %H:%M:%S %Z%z'
+            expected = '2002-03-31 00:00:00 CET+0100'
+            self.assertEqual(expected, date.strftime(format))
 
 class DateFormatTestCase(unittest.TestCase):
 
@@ -223,9 +254,7 @@ class ISO8601TestCase(unittest.TestCase):
             self.assert_('"foobar"' in unicode(e))
 
 
-try:
-    from babel import Locale
-except ImportError:
+if Locale is None:
     I18nDateFormatTestCase = None
 else:
     class I18nDateFormatTestCase(unittest.TestCase):
