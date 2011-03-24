@@ -19,6 +19,7 @@
 #         Christian Boos <cboos@neuf.fr>
 
 import __builtin__
+import locale
 import os
 import re
 import sys
@@ -190,42 +191,80 @@ def text_width(text, ambiwidth=1):
     return sum([(1, 2)[east_asian_width(chr) in twice]
                 for chr in to_unicode(text)])
 
-def print_table(data, headers=None, sep='  ', out=None):
+_default_ambiwidth = 1  # Default width of East Asian Ambiguous (A)
+if os.name == 'nt':
+    try:
+        # `ctypes` is available since Python 2.5
+        import ctypes
+        codepage = ctypes.windll.kernel32.GetConsoleOutputCP()
+    except ImportError:
+        # Try to retrieve the codepage from stderr and stdout
+        codepage = (sys.stderr.encoding or sys.stdout.encoding or '')[2:]
+        codepage = codepage.isdigit() and int(codepage) or 0
+
+    if codepage in (932,  # Japanese (Shift-JIS)
+                    936,  # Chinese Simplified (GB2312)
+                    949,  # Korean (Unified Hangul Code)
+                    950): # Chinese Traditional (Big5)
+        _default_ambiwidth = 2
+    del codepage
+else:
+    if re.match(r'zh|ja|kr', os.environ.get('LANG') or '', re.IGNORECASE):
+        _default_ambiwidth = 2
+
+def print_table(data, headers=None, sep='  ', out=None, ambiwidth=None):
+    """Print `data` as a table in the terminal.
+
+    That `ambiwidth` parameter is used for the column width of the East
+    Asian Ambiguous (A). If None, detect ambiwidth with the locale settings.
+    If others, pass to the `ambiwidth` parameter of `text_width`.
+    """
     if out is None:
         out = sys.stdout
     charset = getattr(out, 'encoding', None) or 'utf-8'
+    if ambiwidth is None:
+        ambiwidth = _default_ambiwidth
     data = list(data)
     if headers:
         data.insert(0, headers)
     elif not data:
         return
 
+    # Convert to an unicode object with `to_unicode`. If None, convert to a
+    # empty string.
+    def to_text(val):
+        if val is None:
+            return u''
+        return to_unicode(val)
+
+    def tw(text):
+        return text_width(text, ambiwidth=ambiwidth)
+
+    # Convert each cell to an unicode object
+    data = [[to_text(cell) for cell in row] for row in data]
+
     num_cols = len(data[0]) # assumes all rows are of equal length
-    col_width = []
-    for idx in range(num_cols):
-        col_width.append(max([len(unicode(d[idx] or '')) for d in data]))
+    col_width = [max(tw(row[idx]) for row in data)
+                 for idx in xrange(num_cols)]
 
     out.write('\n')
     for ridx, row in enumerate(data):
         for cidx, cell in enumerate(row):
             if headers and ridx == 0:
-                sp = ('%%%ds' % len(sep)) % ' '  # No separator in header
+                sp = '%*s' % (tw(sep), ' ') # No separator in header
             else:
                 sp = sep
             if cidx + 1 == num_cols:
                 sp = '' # No separator after last column
 
-            if cell is None:
-                cell = ''
-            line = (u'%%-%ds%s' % (col_width[cidx], sp)) % cell
-            if isinstance(line, unicode):
-                line = line.encode(charset, 'replace')
+            line = u'%-*s%s' % (col_width[cidx] - tw(cell) + len(cell),
+                                cell, sp)
+            line = line.encode(charset, 'replace')
             out.write(line)
 
         out.write('\n')
         if ridx == 0 and headers:
-            out.write(''.join(['-' for x in xrange(0, len(sep) * cidx +
-                                                      sum(col_width))]))
+            out.write('-' * (tw(sep) * cidx + sum(col_width)))
             out.write('\n')
 
     out.write('\n')

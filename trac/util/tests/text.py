@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+from StringIO import StringIO
 
 from trac.util.text import expandtabs, javascript_quote, \
                            normalize_whitespace, to_unicode, \
-                           text_width, wrap
+                           text_width, print_table, wrap
 
 
 class ToUnicodeTestCase(unittest.TestCase):
@@ -90,6 +91,96 @@ class TextWidthTestCase(unittest.TestCase):
         self.assertEqual(22, tw2(u'色は匂えど…酔ひもせず'))
 
 
+class PrintTableTestCase(unittest.TestCase):
+    def test_single_bytes(self):
+        data = (
+            ('Trac 0.12', '2010-06-13', 'Babel'),
+            ('Trac 0.11', '2008-06-22', 'Genshi'),
+            ('Trac 0.10', '2006-09-28', 'Zengia'),
+            ('Trac 0.9',  '2005-10-31', 'Vodun'),
+            ('Trac 0.8',  '2004-11-15', 'Qualia'),
+            ('Trac 0.7',  '2004-05-18', 'Fulci'),
+            ('Trac 0.6',  '2004-03-23', 'Solanum'),
+            ('Trac 0.5',  '2004-02-23', 'Incognito'),
+        )
+        headers = ('Version', 'Date', 'Name')
+        expected = """\
+
+Version     Date         Name     
+----------------------------------
+Trac 0.12 | 2010-06-13 | Babel    
+Trac 0.11 | 2008-06-22 | Genshi   
+Trac 0.10 | 2006-09-28 | Zengia   
+Trac 0.9  | 2005-10-31 | Vodun    
+Trac 0.8  | 2004-11-15 | Qualia   
+Trac 0.7  | 2004-05-18 | Fulci    
+Trac 0.6  | 2004-03-23 | Solanum  
+Trac 0.5  | 2004-02-23 | Incognito
+
+"""
+        self._validate_print_table(expected, data, headers=headers, sep=' | ',
+                                   ambiwidth=1)
+
+    def test_various_types(self):
+        data = (
+            ('NoneType', 'None',  None),
+            ('bool',     'True',  True),
+            ('bool',     'False', False),
+            ('int',      '0',     0),
+            ('float',    '0.0',   0.0),
+        )
+        expected = u"""\
+
+NoneType | None  |      
+bool     | True  | True 
+bool     | False | False
+int      | 0     | 0    
+float    | 0.0   | 0.0  
+
+"""
+        self._validate_print_table(expected, data, sep=' | ', ambiwidth=1)
+
+    def test_ambiwidth_1(self):
+        data = (
+            ('foo@localhost', 'foo@localhost'),
+            (u'bar@….com', 'bar@example.com'),
+        )
+        headers = ('Obfuscated', 'Email')
+        expected = u"""\
+
+Obfuscated      Email          
+-------------------------------
+foo@localhost | foo@localhost  
+bar@….com     | bar@example.com
+
+"""
+        self._validate_print_table(expected, data, headers=headers, sep=' | ',
+                                   ambiwidth=1)
+
+    def test_ambiwidth_2(self):
+        data = (
+            ('foo@localhost', 'foo@localhost'),
+            (u'bar@….com', 'bar@example.com'),
+        )
+        headers = ('Obfuscated', 'Email')
+        expected = u"""\
+
+Obfuscated      Email          
+-------------------------------
+foo@localhost | foo@localhost  
+bar@….com    | bar@example.com
+
+"""
+        self._validate_print_table(expected, data, headers=headers, sep=' | ',
+                                   ambiwidth=2)
+
+    def _validate_print_table(self, expected, data, **kwargs):
+        out = StringIO()
+        kwargs['out'] = out
+        print_table(data, **kwargs)
+        self.assertEqual(expected.encode('utf-8'), out.getvalue())
+
+
 class WrapTestCase(unittest.TestCase):
     def test_wrap_ambiwidth_single(self):
         text = u'Lorem ipsum dolor sit amet, consectetur adipisicing ' + \
@@ -135,6 +226,7 @@ def suite():
     suite.addTest(unittest.makeSuite(JavascriptQuoteTestCase, 'test'))
     suite.addTest(unittest.makeSuite(WhitespaceTestCase, 'test'))
     suite.addTest(unittest.makeSuite(TextWidthTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(PrintTableTestCase, 'test'))
     suite.addTest(unittest.makeSuite(WrapTestCase, 'test'))
     return suite
 
