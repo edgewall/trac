@@ -163,7 +163,7 @@ class WikiModule(Component):
         elif action == 'rename':
             return self._render_confirm_rename(req, page)
         elif action == 'edit':
-            return self._render_editor(req, versioned_page)
+            return self._render_editor(req, page)
         elif action == 'diff':
             return self._render_diff(req, versioned_page)
         elif action == 'history':
@@ -477,6 +477,7 @@ class WikiModule(Component):
         else:
             req.perm(page.resource).require('WIKI_MODIFY')
         original_text = page.text
+        comment = req.args.get('comment', '')
         if 'text' in req.args:
             page.text = req.args.get('text')
         elif 'template' in req.args:
@@ -485,12 +486,17 @@ class WikiModule(Component):
             if template_page and template_page.exists and \
                    'WIKI_VIEW' in req.perm(template_page.resource):
                 page.text = template_page.text
+        elif 'version' in req.args:
+            old_page = WikiPage(self.env, page.name,
+                                version=int(req.args['version']))
+            req.perm(page.resource).require('WIKI_VIEW')
+            page.text = old_page.text
+            comment = _("Reverted to version %(version)s.",
+                        version=req.args['version'])
         if action in ('preview', 'diff'):
             page.readonly = 'readonly' in req.args
 
         author = get_reporter_id(req, 'author')
-        comment = req.args.get('comment', '')
-
         defaults = {'editrows': 20}
         prefs = dict((key, req.session.get('wiki_%s' % key, defaults.get(key)))
                      for key in ('editrows', 'sidebyside'))
