@@ -51,18 +51,18 @@ class ITicketGroupStatsProvider(Interface):
     def get_ticket_group_stats(ticket_ids):
         """ Gather statistics on a group of tickets.
 
-        This method returns a valid TicketGroupStats object.
+        This method returns a valid `TicketGroupStats` object.
         """
 
 class TicketGroupStats(object):
     """Encapsulates statistics on a group of tickets."""
 
     def __init__(self, title, unit):
-        """Creates a new TicketGroupStats object.
-        
-        `title` is the display name of this group of stats (e.g.
-          'ticket status').
-        `unit` is the units for these stats in plural form, e.g. _('hours')
+        """
+        :param title: the display name of this group of stats (e.g.
+                      ``'ticket status'``)
+        :param unit: is the units for these stats in plural form,
+                     e.g. ``_('hours'``)
         """
         self.title = title
         self.unit = unit
@@ -72,31 +72,33 @@ class TicketGroupStats(object):
         self.done_percent = 0
         self.done_count = 0
 
-    def add_interval(self, title, count, qry_args, css_class,
-                     overall_completion=None, countsToProg=0):
+    def add_interval(self, title, count, qry_args, css_class, 
+                     overall_completion=None):
         """Adds a division to this stats' group's progress bar.
 
-        `title` is the display name (eg 'closed', 'spent effort') of this
-        interval that will be displayed in front of the unit name.
-        `count` is the number of units in the interval.
-        `qry_args` is a dict of extra params that will yield the subset of
-          tickets in this interval on a query.
-        `css_class` is the css class that will be used to display the division.
-        `overall_completion` can be set to true to make this interval count
-          towards overall completion of this group of tickets.
+        :param title: the display name (e.g. ``'closed'``, ``'spent
+                      effort'``) of this interval that will be
+                      displayed in front of the unit name
+        :param count: the number of units in the interval
+        :param qry_args: a dict of extra params that will yield the
+                         subset of tickets in this interval on a query.
+        :param css_class: is the css class that will be used to
+                          display the division
+        :param overall_completion: can be set to true to make this
+                                   interval count towards overall
+                                   completion of this group of
+                                   tickets.
           
-        (Warning: `countsToProg` argument will be removed in 0.12, use
-        `overall_completion` instead)
+        .. versionchanged :: 0.12
+           deprecated `countsToProg` argument was removed, use
+           `overall_completion` instead
         """
-        if overall_completion is None:
-            overall_completion = countsToProg
         self.intervals.append({
             'title': title,
             'count': count,
             'qry_args': qry_args,
             'css_class': css_class,
             'percent': None,
-            'countsToProg': overall_completion,
             'overall_completion': overall_completion,
         })
         self.count = self.count + count
@@ -132,55 +134,42 @@ class TicketGroupStats(object):
 class DefaultTicketGroupStatsProvider(Component):
     """Configurable ticket group statistics provider.
 
-    Example configuration (which is also the default):
-    {{{
-    [milestone-groups]
-
-    # Definition of a 'closed' group:
-    
-    closed = closed
-
-    # The definition consists in a comma-separated list of accepted status.
-    # Also, '*' means any status and could be used to associate all remaining
-    # states to one catch-all group.
-
-    # Qualifiers for the above group (the group must have been defined first):
-    
-    closed.order = 0                     # sequence number in the progress bar
-    closed.query_args = group=resolution # optional extra param for the query
-    closed.overall_completion = true     # count for overall completion
-
-    # Definition of an 'active' group:
-
-    active = *                           # one catch-all group is allowed
-    active.order = 1
-    active.css_class = open              # CSS class for this interval
-    active.label = in progress           # Displayed name for the group,
-                                         #  needed for non-ascii group names
-
-    # The CSS class can be one of: new (yellow), open (no color) or
-    # closed (green). New styles can easily be added using the following
-    # selector:  `table.progress td.<class>`
-    }}}
+    See :teo:`TracIni#milestone-groups-section` for a detailed
+    example configuration.
     """
 
     implements(ITicketGroupStatsProvider)
 
     milestone_groups_section = ConfigSection('milestone-groups',
-        """As the workflow for tickets is now configurable, there can be many
-        ticket states, and simply displaying closed tickets vs. all the others
-        is maybe not appropriate in all cases. This section enables one to
-        easily create ''groups'' of states that will be shown in different
-        colors in the milestone progress bar.
+        """As the workflow for tickets is now configurable, there can
+        be many ticket states, and simply displaying closed tickets
+        vs. all the others is maybe not appropriate in all cases. This
+        section enables one to easily create ''groups'' of states that
+        will be shown in different colors in the milestone progress
+        bar.
+
+        Note that the groups can only be based on the ticket
+        //status//, nothing else. In particular, it's not possible to
+        distinguish between different closed tickets based on the
+        //resolution//.
         
-        Example configuration (the default only has closed and active):
+        Example configuration with three groups, //closed//, //new//
+        and //active// (the default only has closed and active):
         {{{
+        # the 'closed' group correspond to the 'closed' tickets
         closed = closed
-        # sequence number in the progress bar
+
+        # .order: sequence number in the progress bar
         closed.order = 0
-        # optional extra param for the query (two additional columns: created and modified and sort on created)
+
+        # .query_args: optional parameters for the corresponding
+        #              query.  In this example, the changes from the
+        #              default are two additional columns ('created' and
+        #              'modified'), and sorting is done on 'created'.
         closed.query_args = group=resolution,order=time,col=id,col=summary,col=owner,col=type,col=priority,col=component,col=severity,col=time,col=changetime
-        # indicates groups that count for overall completion percentage
+
+        # .overall_completion: indicates groups that count for overall
+        #                      completion percentage
         closed.overall_completion = true
         
         new = new
@@ -188,22 +177,26 @@ class DefaultTicketGroupStatsProvider(Component):
         new.css_class = new
         new.label = new
         
-        # one catch-all group is allowed
+        # Note: one catch-all group for other statuses is allowed
         active = *
         active.order = 2
-        # CSS class for this interval
+
+        # .css_class: CSS class for this interval
         active.css_class = open
-        # Displayed label for this group
+
+        # .label: displayed label for this group
         active.label = in progress
         }}}
         
-        The definition consists in a comma-separated list of accepted status.
-        Also, '*' means any status and could be used to associate all remaining
-        states to one catch-all group.
+        The definition consists in a comma-separated list of accepted
+        status.  Also, '*' means any status and could be used to
+        associate all remaining states to one catch-all group.
         
-        The CSS class can be one of: new (yellow), open (no color) or closed
-        (green). New styles can easily be added using the following selector:
-        `table.progress td.<class>`
+        The CSS class can be one of: new (yellow), open (no color) or
+        closed (green). Other styles can easily be added using custom
+        CSS rule: `table.progress td.<class> { background: <color> }`
+        to a [TracInterfaceCustomization#SiteAppearance site/style.css] file
+        for example.
         
         (''since 0.11'')""")
 
@@ -303,8 +296,9 @@ def get_ticket_stats(provider, tickets):
 def get_tickets_for_milestone(env, db=None, milestone=None, field='component'):
     """Retrieve all tickets associated with the given `milestone`.
 
-    :since 0.13: the `db` parameter is no longer needed and will be removed
-    in version 0.14
+    .. versionchanged :: 0.13
+       the `db` parameter is no longer needed and will be removed in
+       version 0.14
     """
     with env.db_query as db:
         fields = TicketSystem(env).get_ticket_fields()
@@ -322,7 +316,7 @@ def get_tickets_for_milestone(env, db=None, milestone=None, field='component'):
 
 def apply_ticket_permissions(env, req, tickets):
     """Apply permissions to a set of milestone tickets as returned by
-    get_tickets_for_milestone()."""
+    `get_tickets_for_milestone()`."""
     return [t for t in tickets
             if 'TICKET_VIEW' in req.perm('ticket', t['id'])]
 
@@ -343,8 +337,10 @@ def milestone_stats_data(env, req, stat, name, grouped_by='component',
 
 
 class RoadmapModule(Component):
+    """Give an overview over all the milestones."""
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler)
+
     stats_provider = ExtensionOption('roadmap', 'stats_provider',
                                      ITicketGroupStatsProvider,
                                      'DefaultTicketGroupStatsProvider',
@@ -541,6 +537,7 @@ class RoadmapModule(Component):
 
 
 class MilestoneModule(Component):
+    """View and edit individual milestones."""
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
                ITimelineEventProvider, IWikiSyntaxProvider, IResourceManager,
