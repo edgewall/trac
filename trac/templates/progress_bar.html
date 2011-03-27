@@ -32,22 +32,14 @@ Arguments:
 
   <p class="percent">${'%d%%' % stats.done_percent if percent is None else percent}</p>
 
-  <dl py:if="legend">
-    <dt i18n:msg="unit">Number of ${stats.unit}:</dt><dd />
-
-    <py:for each="idx, interval in enumerate(stats.intervals)">
-      <py:with vars="href = interval_hrefs[idx] if interval_hrefs else None">
-        <i18n:msg params="title, count">
-          <dt><a href="${href}">${interval.title}:</a></dt>
-          <dd><a href="${href}">${interval.count}</a></dd>
-        </i18n:msg>
-      </py:with>
-    </py:for>
-
-    <i18n:msg params="count">
-      <dt><a href="${stats_href}" i18n:msg="num">total:</a></dt>
-      <dd><a href="${stats_href}">${stats.count}</a></dd>
-    </i18n:msg>
-
-  </dl>
+  <p py:if="legend" class="legend">
+    <span class="first interval">
+      <a href="${stats_href}"
+         i18n:msg="unit, count">Total number of ${stats.unit}: ${stats.count}</a>
+    </span>
+    <span py:for="idx, interval in enumerate(stats.intervals)" class="interval">
+      - <a href="${interval_hrefs[idx] if interval_hrefs else None}"
+           i18n:msg="title, count">${interval.title}: ${interval.count}</a>
+    </span>
+  </p>
 </html>

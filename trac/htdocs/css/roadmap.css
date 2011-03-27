@@ -52,15 +52,14 @@ p.percent {
  margin: 0 0 1em 0;
 }
 .milestone .info .progress { margin: 0 1em; width: 40em; max-width: 70% }
-.milestone .info dl {
+.milestone .info .legend {
  font-size: 10px;
  font-style: italic;
  margin: 1em 1em 2em;
  white-space: nowrap;
  clear: left;
 }
-.milestone .info dt { display: inline; margin-left: .5em }
-.milestone .info dd { display: inline; margin: 0 1em 0 .5em }
+.milestone .info .legend .interval { margin: 0 .8em }
 .milestone .description { margin-left: 1em }
 
 /* Styles for the milestone view */
