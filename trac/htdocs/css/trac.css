@@ -77,11 +77,16 @@ input, select { vertical-align: middle }
 input[type=button], input[type=submit], input[type=reset] {
  background: #eee;
  color: #222;
- border: 1px outset #ccc;
- padding: .1em .5em;
+ border: 1px outset #eee;
+ border-radius: .3em;
+ box-shadow: .1em .1em .4em 0 #888;
+ padding: .1em .5em .2em;
+ text-shadow: .1em .1em #ddd;
 }
 input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
- background: #ccb;
+ background: #f6f6f6;
+ box-shadow: .1em .1em .6em 0 #999;
+ text-shadow: .1em .1em #fcfcfc;
 }
 input[type=button][disabled], input[type=submit][disabled],
 input[type=reset][disabled] {
@@ -114,8 +119,8 @@ label.disabled { color: #d7d7d7 }
 .buttons input { margin: 1em .5em .1em 0 }
 .inlinebuttons input { 
  font-size: 70%;
- border-width: 1px;
- border-style: dotted;
+ border: 1px dotted #ccc;
+ box-shadow: none;
  margin: 0 .1em;
  padding: 0.1em;
  background: none;
@@ -298,7 +303,9 @@ fieldset > legend.foldable :link, fieldset > legend.foldable :visited {
 /* Page preferences form */
 #prefs {
  background: #f7f7f0;
- border: 1px outset #998;
+ border: 1px outset #eee;
+ border-radius: 1em;
+ box-shadow: .2em .2em .7em 0 #777;
  float: right;
  font-size: 9px;
  padding: .8em;
