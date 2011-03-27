@@ -100,7 +100,12 @@ input[type=text]:focus, input.textwidget:focus, textarea:focus {
  border: 1px solid #886;
 }
 option { border-bottom: 1px dotted #d7d7d7 }
-fieldset { border: 1px solid #d7d7d7; padding: .5em; margin: 1em 0 }
+fieldset {
+ border: 1px solid #d7d7d7;
+ border-radius: .5em;
+ padding: .5em;
+ margin: 1em 0;
+}
 p.hint, span.hint { color: #666; font-size: 85%; font-style: italic; margin: .5em 0;
   padding-left: 1em;
 }
@@ -112,7 +117,13 @@ fieldset.iefix {
 }
 * html fieldset.iefix { width: 98% }
 fieldset.iefix p { margin: 0 }
-legend { color: #999; padding: 0 .25em; font-size: 90%; font-weight: bold }
+legend {
+ color: #999;
+ margin-left: .6em;
+ padding: 0 .25em;
+ font-size: 90%;
+ font-weight: bold;
+}
 label.disabled { color: #d7d7d7 }
 .buttons { margin: .5em .5em .5em 0 }
 .buttons form, .buttons form div { display: inline }
@@ -457,7 +468,11 @@ div.trac-grip {
 .attachment #preview { margin-top: 1em }
 
 /* Styles for the list of attachments. */
-#attachments > div.attachments { border: 1px outset #996; padding: 1em }
+#attachments > div.attachments {
+ border: 1px outset #996;
+ border-radius: .5em;
+ padding: 1em;
+}
 #attachments dl.attachments { margin-left: 2em; padding: 0 }
 #attachments dt { display: list-item; list-style: square; }
 #attachments dd { font-style: italic; margin-left: 0; padding-left: 0; }
