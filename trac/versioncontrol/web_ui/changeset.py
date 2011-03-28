@@ -753,30 +753,37 @@ class ChangesetModule(Component):
         raise RequestDone
 
     def _render_zip(self, req, filename, repos, data):
-        """ZIP archive with all the added and/or modified files."""
+        """ZIP archive containing all the added and/or modified files."""
         req.send_response(200)
         req.send_header('Content-Type', 'application/zip')
         req.send_header('Content-Disposition',
                         content_disposition('inline', filename + '.zip'))
 
-        from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
+        from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED as compression
 
         buf = StringIO()
-        zipfile = ZipFile(buf, 'w', ZIP_DEFLATED)
+        zipfile = ZipFile(buf, 'w', compression)
         for old_node, new_node, kind, change in repos.get_changes(
             new_path=data['new_path'], new_rev=data['new_rev'],
             old_path=data['old_path'], old_rev=data['old_rev']):
-            if kind == Node.FILE and change != Changeset.DELETE \
-                    and new_node.can_view(req.perm):
+            if (kind == Node.FILE or kind == Node.DIRECTORY) and \
+                    change != Changeset.DELETE and new_node.can_view(req.perm):
                 zipinfo = ZipInfo()
-                zipinfo.filename = new_node.path.strip('/').encode('utf-8')
                 # Note: unicode filenames are not supported by zipfile.
                 # UTF-8 is not supported by all Zip tools either,
-                # but as some do, I think UTF-8 is the best option here.
+                # but as some do, UTF-8 is the best option here.
+                zipinfo.filename = new_node.path.strip('/').encode('utf-8')
                 zipinfo.date_time = new_node.last_modified.utctimetuple()[:6]
-                zipinfo.external_attr = 0644 << 16L # needed since Python 2.5
-                zipinfo.compress_type = ZIP_DEFLATED
-                zipfile.writestr(zipinfo, new_node.get_content().read())
+                zipinfo.compress_type = compression
+                # setting zipinfo.external_attr is needed since Python 2.5
+                if new_node.isfile:
+                    zipinfo.external_attr = 0644 << 16L
+                    content = new_node.get_content().read()
+                elif new_node.isdir:
+                    zipinfo.filename += '/'
+                    zipinfo.external_attr = 040755 << 16L
+                    content = ''
+                zipfile.writestr(zipinfo, content)
         zipfile.close()
 
         zip_str = buf.getvalue()
