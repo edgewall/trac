@@ -672,4 +672,6 @@ span.system-message {
    display: none;
  }
  form.printableform { display: block }
+ pre.wiki { overflow: visible }
+ :link, :visited { border-bottom: none }
 }
