@@ -396,7 +396,7 @@ class PermissionSystem(Component):
 
         if now - self.last_reap > self.CACHE_REAP_TIME:
             self.permission_cache = {}
-            self.last_reap = time()
+            self.last_reap = now
 
         timestamp, permissions = self.permission_cache.get(permission, 
                                                            (0, None))
@@ -406,20 +406,20 @@ class PermissionSystem(Component):
         parent_map = {}
         for requestor in self.requestors:
             for action in requestor.get_permission_actions() or []:
-                for child in action[1]:
-                    parent_map.setdefault(child, []).append(action[0])
+                if isinstance(action, tuple):
+                    for child in action[1]:
+                        parent_map.setdefault(child, []).append(action[0])
 
-        satisfying_perms = {}
+        satisfying_perms = set()
         def _append_with_parents(action):
             if action in satisfying_perms:
                 return # avoid unneccesary work and infinite loops
-            satisfying_perms[action] = True
+            satisfying_perms.add(action)
             if action in parent_map:
                 map(_append_with_parents, parent_map[action])
         _append_with_parents(permission)
 
-        perms = self.store.get_users_with_permissions(satisfying_perms.keys())
-        perms = perms or []
+        perms = self.store.get_users_with_permissions(satisfying_perms) or []
         self.permission_cache[permission] = (now, perms)
 
         return perms
