@@ -396,7 +396,7 @@ class PermissionSystem(Component):
         now = time()
         if now - self.last_reap > self.CACHE_REAP_TIME:
             self.permission_cache = {}
-            self.last_reap = time()
+            self.last_reap = now
         timestamp, permissions = self.permission_cache.get(permission, 
                                                            (0, None))
         if now - timestamp <= self.CACHE_EXPIRY:
@@ -415,8 +415,7 @@ class PermissionSystem(Component):
                     append_with_parents(action)
         append_with_parents(permission)
 
-        perms = self.store.get_users_with_permissions(satisfying_perms)
-        perms = perms or []
+        perms = self.store.get_users_with_permissions(satisfying_perms) or []
         self.permission_cache[permission] = (now, perms)
         return perms
 

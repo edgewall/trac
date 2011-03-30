@@ -90,6 +90,7 @@ class SearchModule(Component):
         available_filters = []
         for source in self.search_sources:
             available_filters.extend(source.get_search_filters(req) or [])
+        available_filters.sort(key=lambda f: f[1].lower())
         
         filters = self._get_selected_filters(req, available_filters)
         data = self._prepare_data(req, query, available_filters, filters)
