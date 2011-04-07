@@ -70,6 +70,7 @@
  padding: .5em 1em;
  margin: 0 0 2em 1em;
  float: right;
+ clear: right;
  border: 1px outset #ddc;
  background: #ffd;
  font-size: 85%;
