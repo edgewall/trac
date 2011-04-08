@@ -3,13 +3,14 @@
 import unittest
 from StringIO import StringIO
 
-from trac.util.text import expandtabs, javascript_quote, \
+from trac.util.text import empty, expandtabs, javascript_quote, \
                            normalize_whitespace, to_unicode, \
-                           text_width, print_table, wrap
+                           text_width, print_table, unicode_quote, \
+                           unicode_quote_plus, unicode_unquote, \
+                           unicode_urlencode, wrap
 
 
 class ToUnicodeTestCase(unittest.TestCase):
-
     def test_explicit_charset(self):
         uc = to_unicode('\xc3\xa7', 'utf-8')
         assert isinstance(uc, unicode)
@@ -62,6 +63,31 @@ class JavascriptQuoteTestCase(unittest.TestCase):
                          javascript_quote('\x02\x1e'))
         self.assertEqual(r'\u0026\u003c\u003e',
                          javascript_quote('&<>'))
+
+class UnicodeQuoteTestCase(unittest.TestCase):
+    def test_unicode_quote(self):
+        self.assertEqual(u'the%20%C3%9C%20thing',
+                         unicode_quote(u'the Ü thing'))
+        self.assertEqual(u'%2520%C3%9C%20%2520',
+                         unicode_quote(u'%20Ü %20'))
+
+    def test_unicode_quote_plus(self):
+        self.assertEqual(u'the+%C3%9C+thing',
+                         unicode_quote_plus(u'the Ü thing'))
+        self.assertEqual(u'%2520%C3%9C+%2520',
+                         unicode_quote_plus(u'%20Ü %20'))
+
+    def test_unicode_unquote(self):
+        u = u'the Ü thing'
+        up = u'%20Ü %20'
+        self.assertEqual(u, unicode_unquote(unicode_quote(u)))
+        self.assertEqual(up, unicode_unquote(unicode_quote(up)))
+
+    def test_unicode_urlencode(self):
+        self.assertEqual('thing=%C3%9C&%C3%9C=thing&%C3%9Cthing',
+                         unicode_urlencode({u'Ü': 'thing',
+                                            'thing': u'Ü',
+                                            u'Üthing': empty}))
 
 
 class WhitespaceTestCase(unittest.TestCase):
@@ -223,6 +249,7 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ToUnicodeTestCase, 'test'))
     suite.addTest(unittest.makeSuite(ExpandtabsTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(UnicodeQuoteTestCase, 'test'))
     suite.addTest(unittest.makeSuite(JavascriptQuoteTestCase, 'test'))
     suite.addTest(unittest.makeSuite(WhitespaceTestCase, 'test'))
     suite.addTest(unittest.makeSuite(TextWidthTestCase, 'test'))
