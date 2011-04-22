@@ -561,6 +561,12 @@ class Ticket(object):
                     field='comment'
                     """, (comment, self.id, ts))
 
+            # Update last changed time
+            cursor.execute("UPDATE ticket SET changetime=%s WHERE id=%s",
+                           (when_ts, self.id))
+
+        self.values['changetime'] = when
+
     def get_comment_history(self, cnum, db=None):
         db = self._get_db(db)
         history = []
