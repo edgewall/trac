@@ -49,12 +49,11 @@
             <input type="submit" value="${_('Update')}" />
           </div>
         </div>
-
-        <div py:if="description" id="description" xml:space="preserve">
-          ${wiki_to_html(context, description)}
-        </div>
-
       </form>
+
+      <div py:if="description" id="description" xml:space="preserve">
+        ${wiki_to_html(context, description)}
+      </div>
 
       <div class="buttons">
         <form py:if="'REPORT_MODIFY' in perm(report.resource)" action="" method="get">
