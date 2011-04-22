@@ -539,6 +539,12 @@ class Ticket(object):
                       WHERE ticket=%s AND time=%s AND field='comment'
                       """, (comment, self.id, ts))
 
+            # Update last changed time
+            db("UPDATE ticket SET changetime=%s WHERE id=%s",
+               (when_ts, self.id))
+
+        self.values['changetime'] = when
+
     def get_comment_history(self, cnum, db=None):
         """Retrieve the edit history of comment `cnum`.
 

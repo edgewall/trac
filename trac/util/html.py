@@ -33,7 +33,13 @@ class TracHTMLSanitizer(HTMLSanitizer):
        http://genshi.edgewall.org/wiki/Documentation/filters.html#html-sanitizer
     """
 
-    UNSAFE_CSS = ['position']
+    UNSAFE_CSS = set([
+        'position',
+        # IE <http://trac.edgewall.org/ticket/10114>
+        'behavior',
+        # Opera <http://trac.edgewall.org/ticket/10115>
+        '-o-link', '-o-link-source',
+    ])
 
     def __init__(self, safe_schemes=HTMLSanitizer.SAFE_SCHEMES):
         safe_attrs = HTMLSanitizer.SAFE_ATTRS | frozenset(['style'])

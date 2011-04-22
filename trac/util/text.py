@@ -98,22 +98,39 @@ def javascript_quote(text):
     return _js_quote_re.sub(replace, text)
 
 def unicode_quote(value, safe='/'):
-    """A unicode aware version of `urllib.quote`"""
-    return quote(value.encode('utf-8'), safe)
+    """A unicode aware version of `urllib.quote`
+
+    :param value: anything that converts to a `str`. If `unicode`
+                  input is given, it will be UTF-8 encoded.
+    :param safe: as in `quote`, the characters that would otherwise be
+                 quoted but shouldn't here (defaults to '/')
+    """
+    return quote(value.encode('utf-8') if isinstance(value, unicode)
+                 else str(value), safe)
 
 def unicode_quote_plus(value, safe=''):
-    """A unicode aware version of `urllib.quote_plus`"""
-    return quote_plus(value.encode('utf-8'), safe)
+    """A unicode aware version of `urllib.quote_plus`.
+
+    :param value: anything that converts to a `str`. If `unicode`
+                  input is given, it will be UTF-8 encoded.
+    :param safe: as in `quote_plus`, the characters that would
+                 otherwise be quoted but shouldn't here (defaults to
+                 '/')
+    """
+    return quote_plus(value.encode('utf-8') if isinstance(value, unicode)
+                      else str(value), safe)
 
 def unicode_unquote(value):
     """A unicode aware version of `urllib.unquote`.
     
-    Take `str` value previously obtained by `unicode_quote`.
+    :param str: UTF-8 encoded `str` value (for example, as obtained by
+                `unicode_quote`).
+    :rtype: `unicode`
     """
     return unquote(value).decode('utf-8')
 
 def unicode_urlencode(params, safe=''):
-    """A unicode aware version of urllib.urlencode.
+    """A unicode aware version of `urllib.urlencode`.
     
     Values set to `empty` are converted to the key alone, without the
     equal sign.
@@ -122,13 +139,11 @@ def unicode_urlencode(params, safe=''):
         params = params.iteritems()
     l = []
     for k, v in params:
-        k = quote_plus(str(k), safe)
         if v is empty:
-            l.append(k)
-        elif isinstance(v, unicode):
-            l.append(k + '=' + quote_plus(v.encode('utf-8'), safe))
+            l.append(unicode_quote_plus(k, safe))
         else:
-            l.append(k + '=' + quote_plus(str(v), safe))
+            l.append(unicode_quote_plus(k, safe) + '=' + 
+                     unicode_quote_plus(v, safe))
     return '&'.join(l)
 
 def to_utf8(text, charset='latin1'):

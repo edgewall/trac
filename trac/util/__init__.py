@@ -820,10 +820,10 @@ class Ranges(object):
         >>> (len(Ranges('99')), len(Ranges('1-2')), len(Ranges('')))
         (1, 2, 0)
         """
-        if self.a is not None and self.b is not None:
-            return self.b - self.a + 1
-        else:
+        if self.a is None or self.b is None:
             return 0
+        # Result must fit an int
+        return min(self.b - self.a + 1, sys.maxint)
 
     def __nonzero__(self):
         """Return True iff the range is not empty.

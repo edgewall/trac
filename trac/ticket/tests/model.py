@@ -453,6 +453,7 @@ class TicketCommentEditTestCase(TicketCommentTestCase):
             comment=dict(author='jack', old='1', new='New comment 1'),
             _comment0=dict(author='joe', old='Comment 1',
                            new=str(to_utimestamp(t))))
+        self.assertEqual(t, Ticket(self.env, self.id)['changetime'])
 
     def test_threading(self):
         """Check modification of a "threaded" comment"""
