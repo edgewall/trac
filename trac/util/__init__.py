@@ -799,7 +799,7 @@ class Ranges(object):
         if self.a is None or self.b is None:
             return 0
         # Result must fit an int
-        return min(self.b - self.a + 1, sys.maxint)
+        return min(self.b - self.a + 1, (1 << 31) - 1)
 
     def __nonzero__(self):
         """Return True iff the range is not empty.
