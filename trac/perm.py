@@ -647,15 +647,12 @@ class PermissionAdmin(Component):
         permsys = PermissionSystem(self.env)
         rows = permsys.get_all_permissions()
         for action in actions:
-            if action == '*':
-                for row in rows:
-                    if user != '*' and user != row[0]:
-                        continue
-                    permsys.revoke_permission(row[0], row[1])
-            else:
-                for row in rows:
-                    if action != row[1]:
-                        continue
-                    if user != '*' and user != row[0]:
-                        continue
-                    permsys.revoke_permission(row[0], row[1])
+            found = False
+            for u, a in rows:
+                if user in (u, '*') and action in (a, '*'):
+                    permsys.revoke_permission(u, a)
+                    found = True
+            if not found:
+                raise AdminCommandError(
+                    _("Cannot remove permission %(action)s for user %(user)s.",
+                      action=action, user=user))

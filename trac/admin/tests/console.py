@@ -274,6 +274,50 @@ class TracadminTestCase(unittest.TestCase):
         self.assertEqual(0, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
+    def test_permission_remove_all_actions_for_user(self):
+        """
+        Tests the 'permission remove' command in trac-admin.  This particular
+        test removes all permissions for anonymous.
+        """
+        test_name = sys._getframe().f_code.co_name
+        self._execute('permission remove anonymous *')
+        rv, output = self._execute('permission list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def test_permission_remove_action_for_all_users(self):
+        """
+        Tests the 'permission remove' command in trac-admin.  This particular
+        test removes the TICKET_CREATE permission from all users.
+        """
+        test_name = sys._getframe().f_code.co_name
+        self._execute('permission add anonymous TICKET_CREATE')
+        self._execute('permission remove * TICKET_CREATE')
+        rv, output = self._execute('permission list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def test_permission_remove_unknown_user(self):
+        """
+        Tests the 'permission remove' command in trac-admin.  This particular
+        test tries removing a permission from an unknown user.
+        """
+        test_name = sys._getframe().f_code.co_name
+        rv, output = self._execute('permission remove joe TICKET_VIEW')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def test_permission_remove_action_not_granted(self):
+        """
+        Tests the 'permission remove' command in trac-admin.  This particular
+        test tries removing TICKET_CREATE from user anonymous, who doesn't
+        have that permission.
+        """
+        test_name = sys._getframe().f_code.co_name
+        rv, output = self._execute('permission remove anonymous TICKET_CREATE')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
     # Component tests
 
     def test_component_list_ok(self):
