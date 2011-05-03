@@ -493,7 +493,7 @@ class TicketModule(Component):
             data.update({'action': None,
                          'reassign_owner': req.authname,
                          'resolve_resolution': None,
-                         'timestamp': str(ticket['changetime'])})
+                         'start_time': ticket['changetime']})
         elif req.method == 'POST': # 'Preview' or 'Submit'
             if 'cancel_comment' in req.args:
                 req.redirect(req.href.ticket(ticket.id))
@@ -556,9 +556,9 @@ class TicketModule(Component):
                 req.args['preview'] = True
 
             # Preview an existing ticket (after a Preview or a failed Save)
+            start_time = from_utimestamp(long(req.args.get('start_time', 0)))
             data.update({
-                'action': action,
-                'timestamp': req.args.get('ts'),
+                'action': action, 'start_time': start_time,
                 'reassign_owner': (req.args.get('reassign_choice') 
                                    or req.authname),
                 'resolve_resolution': req.args.get('resolve_choice'),
@@ -570,7 +570,7 @@ class TicketModule(Component):
                          'reassign_owner': req.authname,
                          'resolve_resolution': None,
                          # Store a timestamp for detecting "mid air collisions"
-                         'timestamp': str(ticket['changetime'])})
+                         'start_time': ticket['changetime']})
 
         data.update({'comment': req.args.get('comment'),
                      'cnum_edit': req.args.get('cnum_edit'),
@@ -655,7 +655,7 @@ class TicketModule(Component):
         return 'ticket.html', data, None
 
     def _prepare_data(self, req, ticket, absurls=False):
-        return {'ticket': ticket,
+        return {'ticket': ticket, 'to_utimestamp': to_utimestamp,
                 'context': web_context(req, ticket.resource,
                                                 absurls=absurls),
                 'preserve_newlines': self.must_preserve_newlines}
@@ -1141,7 +1141,8 @@ class TicketModule(Component):
 
         # Mid air collision?
         if ticket.exists and (ticket._old or comment or force_collision_check):
-            if req.args.get('ts') != str(ticket['changetime']):
+            changetime = ticket['changetime']
+            if req.args.get('view_time') != str(to_utimestamp(changetime)):
                 add_warning(req, _("Sorry, can not save your changes. "
                               "This ticket has been modified by someone else "
                               "since you started"))
@@ -1187,8 +1188,6 @@ class TicketModule(Component):
 
         # Validate comment numbering
         try:
-            # comment index must be a number
-            int(req.args.get('cnum') or 0)
             # replyto must be 'description' or a number
             replyto = req.args.get('replyto')
             if replyto != 'description':
@@ -1239,12 +1238,6 @@ class TicketModule(Component):
         req.redirect(req.href.ticket(ticket.id))
 
     def _do_save(self, req, ticket, action):
-        cnum = req.args.get('cnum')
-        replyto = req.args.get('replyto')
-        internal_cnum = cnum
-        if cnum and replyto: # record parent.child relationship
-            internal_cnum = '%s.%s' % (replyto, cnum)
-
         # Save the action controllers we need to call side-effects for before
         # we save the changes to the ticket.
         controllers = list(self._get_action_controllers(req, ticket, action))
@@ -1253,10 +1246,11 @@ class TicketModule(Component):
 
         fragment = ''
         now = datetime.now(utc)
-        if ticket.save_changes(get_reporter_id(req, 'author'),
-                                     req.args.get('comment'), when=now,
-                                     cnum=internal_cnum):
-            fragment = '#comment:' + cnum if cnum else ''
+        cnum = ticket.save_changes(get_reporter_id(req, 'author'),
+                                   req.args.get('comment'), when=now,
+                                   replyto=req.args.get('replyto'))
+        if cnum:
+            fragment = '#comment:%d' % cnum
             try:
                 tn = TicketNotifyEmail(self.env)
                 tn.notify(ticket, newticket=False, modtime=now)
@@ -1549,11 +1543,9 @@ class TicketModule(Component):
 
         # Insert change preview
         change_preview = {
-            'date': datetime.now(utc),
-            'author': author_id,
-            'fields': field_changes,
-            'preview': True,
+            'author': author_id, 'fields': field_changes, 'preview': True,
             'comment': req.args.get('comment', data.get('comment')),
+            'comment_history': {},
         }
         replyto = req.args.get('replyto')
         if replyto:
@@ -1575,11 +1567,9 @@ class TicketModule(Component):
                                                             ticket[user])
         data.update({
             'context': context,
-            'fields': fields, 'changes': changes,
-            'replies': replies, 'cnum': cnum + 1,
+            'fields': fields, 'changes': changes, 'replies': replies,
             'attachments': AttachmentModule(self.env).attachment_data(context),
-            'action_controls': action_controls,
-            'action': selected_action,
+            'action_controls': action_controls, 'action': selected_action,
             'change_preview': change_preview,
         })
 

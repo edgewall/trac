@@ -2,9 +2,9 @@ jQuery(document).ready(function($){
   var comments = null;
   var toggle = $('#trac-threaded-toggle');
   toggle.click(function() {
-    if ($(this).checked()) {
-      if (!comments)
-        comments = $("div.change");
+    $(this).toggleClass('checked');
+    if ($(this).hasClass('checked')) {
+      comments = $("div.change");
       comments.each(function() {
         var children = $("a.follow-up", this).map(function() {
           var cnum = $(this).attr("href").replace('#comment:', '');

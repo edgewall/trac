@@ -3,15 +3,73 @@ Render a ticket comment.
 
 Arguments:
  - change: the change data
- - show_editor=False: if True, show a comment editor
- - edited_comment: the current value of the comment edito
- - cnum_edit: the comment number being edited
+ - hide_buttons=False: hide all buttons (Edit, Reply)
+ - cnum_edit=None: the comment number being edited
+ - edited_comment: the current value of the comment editor
+ - cnum_hist=None: the comment number for which to show a historical content
+ - can_append=False: True if the user is allowed to append to tickets
+ - has_edit_comment=False: True if the user is allowed to edit all comments
 -->
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
       xmlns:xi="http://www.w3.org/2001/XInclude"
       xmlns:i18n="http://genshi.edgewall.org/i18n"
-      py:with="show_editor = value_of('show_editor', False)" py:strip="">
+      py:with="cnum = change.get('cnum'); hide_buttons = value_of('hide_buttons', False);
+               cnum_edit = value_of('cnum_edit'); cnum_hist = value_of('cnum_hist');
+               can_append = value_of('can_append', False); has_edit_comment = value_of('has_edit_comment', False);
+               can_edit_comment = has_edit_comment or (authname and authname != 'anonymous'
+                                                       and authname == change.author);
+               show_editor = can_edit_comment and str(cnum) == cnum_edit;
+               show_history = str(cnum) == cnum_hist;
+               max_version = max(change.comment_history) if change.comment_history else 0;
+               comment_version = int(cversion or 0) if show_history else max_version;
+               show_buttons = not hide_buttons and not show_editor and comment_version == max_version"
+      py:strip="">
+  <py:def function="commentref(prefix, cnum, cls=None)">
+    <a href="#comment:$cnum" class="$cls">$prefix$cnum</a>
+  </py:def>
+  <h3 class="change">
+    <span class="threading"
+          py:with="change_replies = replies.get(str(cnum), []) if 'cnum' in change else []">
+      <span py:if="'cnum' in change" id="comment:$cnum" class="cnum">${commentref('comment:', cnum)}</span>
+      <py:if test="'replyto' in change">
+        in reply to: ${commentref('&uarr;&nbsp;', change.replyto)}
+        <py:if test="change_replies">; </py:if>
+      </py:if>
+      <py:if test="change_replies">
+        <i18n:choose numeral="len(change_replies)">
+          <span i18n:singular="">follow-up:</span>
+          <span i18n:plural="">follow-ups:</span>
+        </i18n:choose>
+        <py:for each="reply in change_replies">
+          ${commentref('&darr;&nbsp;', reply, 'follow-up')}
+        </py:for>
+      </py:if>
+    </span>
+    <py:choose>
+      <py:when test="'date' in change">
+        <i18n:msg params="date, author">Changed ${pretty_dateinfo(change.date)} by ${authorinfo(change.author)}</i18n:msg>
+      </py:when>
+      <py:otherwise>
+        <i18n:msg params="author">Changed by ${authorinfo(change.author)}</i18n:msg>
+      </py:otherwise>
+    </py:choose>
+  </h3>
+  <div py:if="show_buttons" class="trac-ticket-buttons">
+    <form py:if="'cnum' in change and can_edit_comment" method="get" action="#comment:${cnum}">
+      <div class="inlinebuttons">
+        <input type="hidden" name="cnum_edit" value="${cnum}"/>
+        <input type="submit" value="${_('Edit')}" title="${_('Edit comment %(cnum)s', cnum=cnum)}"/>
+      </div>
+    </form>
+    <form py:if="'cnum' in change and can_append" id="reply-to-comment-${cnum}"
+          method="get" action="#comment">
+      <div class="inlinebuttons">
+        <input type="hidden" name="replyto" value="${cnum}"/>
+        <input type="submit" value="${_('Reply')}" title="${_('Reply to comment %(cnum)s', cnum=cnum)}"/>
+      </div>
+    </form>
+  </div>
   <ul py:if="change.fields" class="changes">
     <li py:for="field_name, field in sorted(change.fields.iteritems(), key=lambda item: item[1].label.lower())">
       <strong>${field.label}</strong>
@@ -36,23 +94,23 @@ Arguments:
     </li>
   </ul>
   <form py:if="show_editor" id="trac-comment-editor" method="post"
-        action="${href.ticket(ticket.id) + '#comment:%d' % change.cnum}">
+        action="${href.ticket(ticket.id) + '#comment:%d' % cnum}">
     <div>
       <textarea name="edited_comment" class="wikitext trac-resizable" rows="10" cols="78">
 ${edited_comment if edited_comment is not None else change.comment}</textarea>
-      <input type="hidden" name="cnum_edit" value="${change.cnum}"/>
+      <input type="hidden" name="cnum_edit" value="${cnum}"/>
     </div>
     <div class="buttons">
       <input type="submit" name="preview_comment" value="${_('Preview')}"
-             title="${_('Preview changes to comment %(cnum)s', cnum=change.cnum)}"/>
+             title="${_('Preview changes to comment %(cnum)s', cnum=cnum)}"/>
       <input type="submit" name="edit_comment" value="${_('Submit changes')}"
-             title="${_('Submit changes to comment %(cnum)s', cnum=change.cnum)}"/>
+             title="${_('Submit changes to comment %(cnum)s', cnum=cnum)}"/>
       <input type="submit" name="cancel_comment" value="${_('Cancel')}"
              title="Cancel comment edit"/>
     </div>
   </form>
   <py:choose>
-    <div py:when="str(change.cnum) == cnum_edit"
+    <div py:when="str(cnum) == cnum_edit"
          py:with="text = edited_comment if edited_comment is not None else change.comment"
          class="comment searchable ticketdraft" style="${'display: none' if not text else None}" xml:space="preserve">
       ${wiki_to_html(context, text, escape_newlines=preserve_newlines)}
@@ -64,4 +122,27 @@ ${edited_comment if edited_comment is not None else change.comment}</textarea>
       ${wiki_to_html(context, change.comment, escape_newlines=preserve_newlines)}
     </div>
   </py:choose>
+  <div py:if="not show_editor and len(change.comment_history) > 1" py:choose=""
+       class="trac-lastedit ${'trac-shade' if comment_version != max_version else None}">
+    <i18n:msg params="version, date, author" py:when="comment_version != max_version">
+        Version ${comment_version}, edited ${pretty_dateinfo(change.comment_history[comment_version].date)}
+        by ${authorinfo(change.comment_history[comment_version].author)}
+    </i18n:msg>
+    <i18n:msg params="date, author" py:otherwise="">
+        Last edited ${pretty_dateinfo(change.comment_history[comment_version].date)}
+        by ${authorinfo(change.comment_history[comment_version].author)}
+    </i18n:msg>
+    <py:if test="comment_version > 0">
+      (<a href="${href.ticket(ticket.id, cnum_hist=cnum, cversion=comment_version - 1)
+                 }#comment:${cnum}">previous</a>)
+    </py:if>
+    <py:if test="comment_version &lt; max_version">
+      (<a href="${href.ticket(ticket.id, cnum_hist=cnum, cversion=comment_version + 1)
+                 }#comment:${cnum}">next</a>)
+    </py:if>
+    <py:if test="comment_version > 0">
+      (<a href="${href.ticket(ticket.id, action='comment-diff', cnum=cnum,
+                              version=comment_version)}">diff</a>)
+    </py:if>
+  </div>
 </html>

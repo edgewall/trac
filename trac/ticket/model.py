@@ -255,7 +255,7 @@ class Ticket(object):
         return self.id
 
     def save_changes(self, author=None, comment=None, when=None, db=None,
-                     cnum=''):
+                     cnum='', replyto=None):
         """
         Store ticket changes in the database. The ticket must already exist in
         the database.  Returns False if there were no changes to save, True
@@ -263,6 +263,8 @@ class Ticket(object):
 
         :since 0.13: the `db` parameter is no longer needed and will be removed
         in version 0.14
+        :since 0.13: the `cnum` parameter is deprecated, and threading should
+        be controlled with the `replyto` argument
         """
         assert self.exists, "Cannot update a new ticket"
 
@@ -296,9 +298,11 @@ class Ticket(object):
                     pass
 
         with self.env.db_transaction as db:
+            db("UPDATE ticket SET changetime=%s WHERE id=%s",
+               (when_ts, self.id))
+            
             # find cnum if it isn't provided
-            comment_num = cnum
-            if not comment_num:
+            if not cnum:
                 num = 0
                 for ts, old in db("""
                         SELECT DISTINCT tc1.time, COALESCE(tc2.oldvalue,'')
@@ -314,7 +318,9 @@ class Ticket(object):
                         break
                     except ValueError:
                         num += 1
-                comment_num = str(num + 1)
+                cnum = str(num + 1)
+                if replyto:
+                    cnum = '%s.%s' % (replyto, cnum)
 
             # store fields
             for name in self._old.keys():
@@ -344,10 +350,7 @@ class Ticket(object):
             db("""INSERT INTO ticket_change
                     (ticket,time,author,field,oldvalue,newvalue)
                   VALUES (%s,%s,%s,'comment',%s,%s)
-                  """, (self.id, when_ts, author, comment_num, comment))
-
-            db("UPDATE ticket SET changetime=%s WHERE id=%s",
-               (when_ts, self.id))
+                  """, (self.id, when_ts, author, cnum, comment))
 
         old_values = self._old
         self._old = {}
@@ -355,7 +358,7 @@ class Ticket(object):
 
         for listener in TicketSystem(self.env).change_listeners:
             listener.ticket_changed(self, comment, author, old_values)
-        return True
+        return int(cnum.rsplit('.', 1)[-1])
 
     def get_changelog(self, when=None, db=None):
         """Return the changelog as a list of tuples of the form
@@ -420,31 +423,40 @@ class Ticket(object):
         for listener in TicketSystem(self.env).change_listeners:
             listener.ticket_deleted(self)
 
-    def get_change(self, cnum, db=None):
-        """Return a ticket change by its number.
+    def get_change(self, cnum=None, cdate=None, db=None):
+        """Return a ticket change by its number or date.
 
         :since 0.13: the `db` parameter is no longer needed and will be removed
         in version 0.14
         """
-        row = self._find_change(cnum)
-        if row:
-            ts, author, comment = row
-            fields = {}
-            change = {'date': from_utimestamp(ts),
-                      'author': author, 'fields': fields}
-            for field, author, old, new in self.env.db_query("""
-                    SELECT field, author, oldvalue, newvalue 
-                    FROM ticket_change WHERE ticket=%s AND time=%s
-                    """, (self.id, ts)):
-                fields[field] = {'author': author, 'old': old, 'new': new}
+        if cdate is None:
+            row = self._find_change(cnum)
+            if not row:
+                return
+            cdate = from_utimestamp(row[0])
+        ts = to_utimestamp(cdate)
+        fields = {}
+        change = {'date': cdate, 'fields': fields}
+        for field, author, old, new in self.env.db_query("""
+                SELECT field, author, oldvalue, newvalue 
+                FROM ticket_change WHERE ticket=%s AND time=%s
+                """, (self.id, ts)):
+            fields[field] = {'author': author, 'old': old, 'new': new}
+            if field == 'comment':
+                change['author'] = author
+            elif not field.startswith('_'):
+                change.setdefault('author', author)
+        if fields:
             return change
 
-    def delete_change(self, cnum):
-        """Delete a ticket change."""
-        row = self._find_change(cnum)
-        if not row:
-            return
-        ts = row[0]
+    def delete_change(self, cnum=None, cdate=None):
+        """Delete a ticket change identified by its number or date."""
+        if cdate is None:
+            row = self._find_change(cnum)
+            if not row:
+                return
+            cdate = from_utimestamp(row[0])
+        ts = to_utimestamp(cdate)
         with self.env.db_transaction as db:
             # Find modified fields and their previous value
             fields = [(field, old, new)
@@ -545,34 +557,57 @@ class Ticket(object):
 
         self.values['changetime'] = when
 
-    def get_comment_history(self, cnum, db=None):
-        """Retrieve the edit history of comment `cnum`.
+    def get_comment_history(self, cnum=None, cdate=None, db=None):
+        """Retrieve the edit history of a comment identified by its number or
+        date.
 
         :since 0.13: the `db` parameter is no longer needed and will be removed
         in version 0.14
         """
-        row = self._find_change(cnum)
-        if row:
+        if cdate is None:
+            row = self._find_change(cnum)
+            if not row:
+                return
             ts0, author0, last_comment = row
-            with self.env.db_query as db:
-                # Get all fields of the form "_comment%d"
-                rows = db("""SELECT field, author, oldvalue, newvalue 
-                             FROM ticket_change 
-                             WHERE ticket=%%s AND time=%%s AND field %s
-                             """ % db.like(),
-                             (self.id, ts0, db.like_escape('_comment') + '%'))
-                rows = sorted((int(field[8:]), author, old, new)
-                              for field, author, old, new in rows)
-                history = []
-                for rev, author, comment, ts in rows:
-                    history.append((rev, from_utimestamp(long(ts0)), author0,
-                                    comment))
-                    ts0, author0 = ts, author
-                history.sort()
-                rev = history[-1][0] + 1 if history else 0
+        else:
+            ts0, author0, last_comment = to_utimestamp(cdate), None, None
+        with self.env.db_query as db:
+            # Get last comment and author if not available
+            if last_comment is None:
+                last_comment = ''
+                for author0, last_comment in db("""
+                        SELECT author, newvalue FROM ticket_change 
+                        WHERE ticket=%s AND time=%s AND field='comment'
+                        """, (self.id, ts0)):
+                    break
+            if author0 is None:
+                for author0, last_comment in db("""
+                        SELECT author, new FROM ticket_change 
+                        WHERE ticket=%%s AND time=%%s AND NOT field %s LIMIT 1
+                        """ % db.like(),
+                        (self.id, ts0, db.like_escape('_') + '%')):
+                    break
+                else:
+                    return
+                
+            # Get all fields of the form "_comment%d"
+            rows = db("""SELECT field, author, oldvalue, newvalue 
+                         FROM ticket_change 
+                         WHERE ticket=%%s AND time=%%s AND field %s
+                         """ % db.like(),
+                         (self.id, ts0, db.like_escape('_comment') + '%'))
+            rows = sorted((int(field[8:]), author, old, new)
+                          for field, author, old, new in rows)
+            history = []
+            for rev, author, comment, ts in rows:
                 history.append((rev, from_utimestamp(long(ts0)), author0,
-                                last_comment))
-                return history
+                                comment))
+                ts0, author0 = ts, author
+            history.sort()
+            rev = history[-1][0] + 1 if history else 0
+            history.append((rev, from_utimestamp(long(ts0)), author0,
+                            last_comment))
+            return history
 
     def _find_change(self, cnum):
         """Find a comment by its number."""

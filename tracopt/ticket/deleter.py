@@ -19,6 +19,7 @@ from trac.core import Component, TracError, implements
 from trac.ticket.model import Ticket
 from trac.ticket.web_ui import TicketModule
 from trac.util import get_reporter_id
+from trac.util.datefmt import from_utimestamp
 from trac.util.translation import _
 from trac.web.api import IRequestFilter, IRequestHandler, ITemplateStreamFilter
 from trac.web.chrome import ITemplateProvider, add_notice, add_stylesheet
@@ -54,7 +55,7 @@ class TicketDeleter(Component):
     # ITemplateStreamFilter methods
     
     def filter_stream(self, req, method, filename, stream, data):
-        if filename != 'ticket.html':
+        if filename not in ('ticket.html', 'ticket_preview.html'):
             return stream
         ticket = data.get('ticket')
         if not (ticket and ticket.exists
@@ -73,12 +74,13 @@ class TicketDeleter(Component):
         
         def delete_comment():
             for event in buffer:
-                cnum = event[1][1].get('id')[12:]
+                cnum, cdate = event[1][1].get('id')[12:].split('-', 1)
                 return tag.form(
                     tag.div(
                         tag.input(type='hidden', name='action',
                                   value='delete-comment'),
                         tag.input(type='hidden', name='cnum', value=cnum),
+                        tag.input(type='hidden', name='cdate', value=cdate),
                         tag.input(type='submit', value=_('Delete'),
                                   title=_('Delete comment %(num)s',
                                           num=cnum)),
@@ -89,10 +91,11 @@ class TicketDeleter(Component):
         return stream | Transformer('//div[@class="description"]'
                                     '/h3[@id="comment:description"]') \
             .after(delete_ticket).end() \
-            .select('//div[@class="change"]/@id') \
+            .select('//div[starts-with(@class, "change")]/@id') \
             .copy(buffer).end() \
-            .select('//div[@class="change" and @id]/h3[@class="change"]') \
-            .after(delete_comment)
+            .select('//div[starts-with(@class, "change") and @id]'
+                    '/div[@class="trac-ticket-buttons"]') \
+            .prepend(delete_comment)
 
     # IRequestFilter methods
     
@@ -118,11 +121,12 @@ class TicketDeleter(Component):
         req.perm('ticket', id).require('TICKET_ADMIN')
         ticket = Ticket(self.env, id)
         action = req.args['action']
+        cnum = req.args.get('cnum')
         if req.method == 'POST':
             if 'cancel' in req.args:
                 href = req.href.ticket(id)
                 if action == 'delete-comment':
-                    href += '#comment:%s' % req.args.get('cnum')
+                    href += '#comment:%s' % cnum
                 req.redirect(href)
             
             if action == 'delete':
@@ -132,8 +136,8 @@ class TicketDeleter(Component):
                 req.redirect(req.href())
             
             elif action == 'delete-comment':
-                cnum = int(req.args.get('cnum'))
-                ticket.delete_change(cnum)
+                cdate = from_utimestamp(long(req.args.get('cdate')))
+                ticket.delete_change(cdate=cdate)
                 add_notice(req, _('The ticket comment %(num)s on ticket '
                                   '#%(id)s has been deleted.',
                                   num=cnum, id=ticket.id))
@@ -143,14 +147,15 @@ class TicketDeleter(Component):
         data = tm._prepare_data(req, ticket)
         tm._insert_ticket_data(req, ticket, data,
                                get_reporter_id(req, 'author'), {})
-        data.update(action=action, del_cnum=None)
+        data.update(action=action, cdate=None)
         
         if action == 'delete-comment':
-            cnum = int(req.args.get('cnum'))
-            data['del_cnum'] = cnum
+            data['cdate'] = req.args.get('cdate')
+            cdate = from_utimestamp(long(data['cdate']))
             for change in data['changes']:
-                if change.get('cnum') == cnum:
+                if change.get('date') == cdate:
                     data['change'] = change
+                    data['cnum'] = change.get('cnum')
                     break
             else:
                 raise TracError(_('Comment %(num)s not found', num=cnum))

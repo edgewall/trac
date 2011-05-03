@@ -1,12 +1,22 @@
 <!--!
-Render a ticket box preview and a ticket change preview, to be sent as a reply
-to a ticket change auto-preview.
+Render data relevant to automatic ticket preview.
 -->
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
       xmlns:xi="http://www.w3.org/2001/XInclude"
       xmlns:i18n="http://genshi.edgewall.org/i18n"
+      py:with="can_append = 'TICKET_APPEND' in perm(ticket.resource);
+               has_edit_comment = 'TICKET_EDIT_COMMENT' in perm(ticket.resource);"
       py:strip="">
-  <xi:include href="ticket_box.html" py:with="can_append = 'TICKET_APPEND' in perm(ticket.resource)"/>
-  <xi:include href="ticket_change.html" py:with="change = change_preview"/>
+  <xi:include href="ticket_box.html"/>
+  <div id="changelog">
+    <div py:for="change in changes"
+         class="change${' trac-new' if change.date > start_time and 'attachment' not in change.fields else None}"
+         id="${'trac-change-%d-%d' % (change.cnum, to_utimestamp(change.date)) if 'cnum' in change else None}">
+      <xi:include href="ticket_change.html" py:with="edited_comment = None; cnum_edit = 0"/>
+    </div>
+  </div>
+  <input type="hidden" name="view_time" value="${to_utimestamp(ticket['changetime'])}"/>
+  <div id="preview"><xi:include py:if="change_preview.fields or change_preview.comment"
+                                href="ticket_change.html" py:with="change = change_preview"/></div>
 </html>

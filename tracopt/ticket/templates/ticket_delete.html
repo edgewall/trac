@@ -9,7 +9,7 @@
   <head>
     <title py:choose="action">
       <py:when test="'delete'"><i18n:msg params="id">Delete Ticket #$ticket.id</i18n:msg></py:when>
-      <py:otherwise><i18n:msg params="num, id">Delete comment $del_cnum on Ticket #$ticket.id</i18n:msg></py:otherwise>
+      <py:otherwise><i18n:msg params="num, id">Delete comment $cnum on Ticket #$ticket.id</i18n:msg></py:otherwise>
     </title>
   </head>
 
@@ -46,25 +46,19 @@
       </py:when>
 
       <py:otherwise>
-        <h1 i18n:msg="num, id">Delete comment $del_cnum on Ticket #$ticket.id</h1>
+        <h1 i18n:msg="num, id">Delete comment $cnum on Ticket #$ticket.id</h1>
         
         <div id="changelog">
           <div class="change">
-            <h3 class="change">
-              <span class="threading" py:if="'cnum' in change"
-                    py:with="change_replies = replies.get(str(change.cnum), [])">
-                <span class="cnum">comment:$change.cnum</span>
-              </span>
-              <i18n:msg params="date, author">Changed ${pretty_dateinfo(change.date)} by ${authorinfo(change.author)}</i18n:msg>
-            </h3>
-            <xi:include href="ticket_change.html"/>
+            <xi:include href="ticket_change.html" py:with="hide_buttons = True"/>
           </div>
         </div>
         
         <form id="edit" action="" method="post">
           <div>
             <input type="hidden" name="action" value="delete-comment"/>
-            <input type="hidden" name="cnum" value="$del_cnum"/>
+            <input type="hidden" name="cnum" value="$cnum"/>
+            <input type="hidden" name="cdate" value="$cdate"/>
             <p><strong>Are you sure you want to delete this ticket comment?</strong><br/>
                This is an irreversible operation.</p>
           </div>
