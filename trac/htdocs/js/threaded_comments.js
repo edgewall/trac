@@ -8,7 +8,7 @@ jQuery(document).ready(function($){
       comments.each(function() {
         var children = $("a.follow-up", this).map(function() {
           var cnum = $(this).attr("href").replace('#comment:', '');
-          return $('#trac-change-' + cnum).get(0);
+          return $('[id^="trac-change-' + cnum + '-"]').get(0);
         });
         if (children.length) {
           var ul = $('<ul class="children"></ul>').appendTo(this);
@@ -16,11 +16,10 @@ jQuery(document).ready(function($){
         }
       });
     } else {
-      if (comments)
-        comments.each(function() {
-          $("#changelog").append(comments);
-          $("ul.children").remove();
-        });
+      if (comments) {
+        $("#changelog").append(comments);
+        $("#changelog ul.children").remove();
+      }
     }
   });
   if ($("a.follow-up").length)
