@@ -495,6 +495,6 @@ class SessionAdmin(Component):
             cursor.execute("""
                 DELETE FROM session_attribute
                 WHERE authenticated=0
-                      AND sid IN (SELECT sid FROM session
-                                  WHERE authenticated=0 AND last_visit<%s)
-                """, (ts,))
+                      AND sid NOT IN (SELECT sid FROM session
+                                      WHERE authenticated=0)
+                """)

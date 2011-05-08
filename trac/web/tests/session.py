@@ -512,12 +512,23 @@ class SessionTestCase(unittest.TestCase):
         sess_admin._do_purge('2010-01-02')
         result = [i for i in sess_admin._get_list(['*'])]
         self.assertEqual(result, auth_list + anon_list)
+        result = get_session_info(self.db, anon_list[0][0])
+        self.assertEqual(result, ('name10', 'val10', 'val10'))
+        result = get_session_info(self.db, anon_list[1][0])
+        self.assertEqual(result, ('name11', 'val11', 'val11'))
 
         auth_list, anon_list, all_list = \
             _prep_session_table(self.db, spread_visits=True)
         sess_admin._do_purge('2010-01-12')
         result = [i for i in sess_admin._get_list(['*'])]
         self.assertEqual(result, auth_list + anon_list[1:])
+        cursor = self.db.cursor()
+        cursor.execute("""
+            SELECT name, value FROM session_attribute WHERE sid = %s
+            """, (anon_list[0][0],))
+        self.assertEqual([], list(cursor))
+        result = get_session_info(self.db, anon_list[1][0])
+        self.assertEqual(result, ('name11', 'val11', 'val11'))
 
 
 def suite():
