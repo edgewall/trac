@@ -1480,6 +1480,8 @@ class TicketModule(Component):
         changes = []
         cnum = 0
         skip = False
+        start_time = data.get('start_time', ticket['changetime'])
+        conflicts = set()
         for change in self.rendered_changelog_entries(req, ticket):
             # change['permanent'] is false for attachment changes; true for
             # other changes.
@@ -1506,6 +1508,8 @@ class TicketModule(Component):
                             values[k] = v['new']
                     if 'description' in change['fields']:
                         data['description_change'] = change
+                if change['date'] > start_time:
+                    conflicts.update(change['fields'])
             if not skip:
                 changes.append(change)
 
@@ -1566,7 +1570,7 @@ class TicketModule(Component):
                 data['%s_link' % user] = self._query_link(req, user,
                                                             ticket[user])
         data.update({
-            'context': context,
+            'context': context, 'conflicts': conflicts,
             'fields': fields, 'changes': changes, 'replies': replies,
             'attachments': AttachmentModule(self.env).attachment_data(context),
             'action_controls': action_controls, 'action': selected_action,

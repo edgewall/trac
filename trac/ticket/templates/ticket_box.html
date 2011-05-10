@@ -18,7 +18,7 @@ Arguments:
   <div class="date">
     <p i18n:msg="created" py:if="ticket.exists">Opened ${pretty_dateinfo(ticket.time)}</p>
     <p i18n:msg="modified" py:if="ticket.changetime != ticket.time">Last modified ${pretty_dateinfo(ticket.changetime)}</p>
-    <p py:if="not ticket.exists"><i>(ticket not yet created)</i></p>
+    <p py:if="not ticket.exists"><span class="trac-loading"/><i>(ticket not yet created)</i></p>
   </div>
   <!--! use a placeholder if it's a new ticket -->
   <h2 class="summary searchable">$ticket.summary</h2>

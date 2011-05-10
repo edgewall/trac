@@ -60,11 +60,11 @@
           // Collapse property form if comment editor has focus
           if (show_preview && comment_focused)
             $("#modify").parent().addClass("collapsed");
-        });
+        }, "#ticketchange .trac-loading");
         $("#trac-comment-editor").autoSubmit({preview_comment: '1'}, function(data, reply) {
           var comment = $("#trac-comment-editor").next("div.comment").html(reply);
           comment.toggle(comment.children().length != 0);
-        });
+        }, "#changelog .trac-loading");
         /*]]>*/
         <py:if test="preview_mode">
         $("#attachments").toggleClass("collapsed");
@@ -74,7 +74,7 @@
       <py:otherwise>
         $("#propertyform").autoSubmit({preview: '1'}, function(data, reply) {
           $('#ticket').replaceWith(reply);
-        });
+        }, "#ticket .trac-loading");
         <py:if test="not preview_mode">
         $("#field-summary").focus();
         </py:if>
@@ -167,7 +167,8 @@
           <div id="trac-edit-warning" class="warning system-message"
                style="${'display: none' if start_time == ticket['changetime'] else None}">
             This ticket has been modified since you started editing. You should review the
-            <em class="trac-new">other modifications</em> which have been appended above.
+            <em class="trac-new">other modifications</em> which have been appended above,
+            and any <em class="trac-conflict">conflicts</em> shown in the preview below.
             You can nevertheless proceed and submit your changes if you wish so.
           </div>
           <!--! Comment field -->
@@ -317,7 +318,7 @@ ${value}</textarea>
         <div py:if="ticket.exists and can_append" id="ticketchange" class="ticketdraft"
              style="${'display: none' if not (change_preview.fields or change_preview.comment)
                                          or cnum_edit is not None else None}">
-          <xi:include href="ticket_change.html" py:with="change = change_preview"/>
+          <xi:include href="ticket_change.html" py:with="change = change_preview; preview = True"/>
         </div>
 
         <!--! Author or Reporter -->

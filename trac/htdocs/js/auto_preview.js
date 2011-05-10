@@ -12,7 +12,9 @@
   //  - `args`: additional form data to be passed with the XHR.
   //  - `update`: the function that is called with the submission reply. It
   //              is called with the request data and the reply.
-  $.fn.autoSubmit = function(args, update) {
+  //  - `busy`: an object or jQuery selector to be shown while requesting an
+  //            update.
+  $.fn.autoSubmit = function(args, update, busy) {
     if (this.length == 0 || auto_preview_timeout <= 0)
       return this;
     if (this[0].nodeName == 'FORM') {
@@ -46,6 +48,8 @@
         if (values_changed(new_values)) {
           values = new_values;
           updating = true;
+          if (busy != undefined)
+            $(busy).show();
           
           // Construct request data
           var data = values.slice(0);
@@ -60,11 +64,15 @@
                 timer = setTimeout(request, timeout);
               updating = false;
               queued = false;
+              if (busy != undefined)
+                $(busy).hide();
               update(data, reply);
             },
             error: function(req, err, exc) {
               updating = false;
               queued = false;
+              if (busy != undefined)
+                $(busy).hide();
             },
           });
         }

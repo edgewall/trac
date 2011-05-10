@@ -9,6 +9,7 @@ Arguments:
  - cnum_hist=None: the comment number for which to show a historical content
  - can_append=False: True if the user is allowed to append to tickets
  - has_edit_comment=False: True if the user is allowed to edit all comments
+ - preview=False: True if rendering a change preview
 -->
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
@@ -17,6 +18,7 @@ Arguments:
       py:with="cnum = change.get('cnum'); hide_buttons = value_of('hide_buttons', False);
                cnum_edit = value_of('cnum_edit'); cnum_hist = value_of('cnum_hist');
                can_append = value_of('can_append', False); has_edit_comment = value_of('has_edit_comment', False);
+               preview = value_of('preview', False);
                can_edit_comment = has_edit_comment or (authname and authname != 'anonymous'
                                                        and authname == change.author);
                show_editor = can_edit_comment and str(cnum) == cnum_edit;
@@ -54,6 +56,7 @@ Arguments:
         <i18n:msg params="author">Changed by ${authorinfo(change.author)}</i18n:msg>
       </py:otherwise>
     </py:choose>
+    <span py:if="preview or show_editor" class="trac-loading"/>
   </h3>
   <div py:if="show_buttons" class="trac-ticket-buttons">
     <form py:if="'cnum' in change and can_edit_comment" method="get" action="#comment:${cnum}">
@@ -71,7 +74,8 @@ Arguments:
     </form>
   </div>
   <ul py:if="change.fields" class="changes">
-    <li py:for="field_name, field in sorted(change.fields.iteritems(), key=lambda item: item[1].label.lower())">
+    <li py:for="field_name, field in sorted(change.fields.iteritems(), key=lambda item: item[1].label.lower())"
+        class="${'trac-conflict' if preview and field_name in conflicts else None}">
       <strong>${field.label}</strong>
       <py:choose>
         <py:when test="field_name == 'attachment'"><i18n:msg params="name">
