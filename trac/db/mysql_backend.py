@@ -233,7 +233,7 @@ class MySQLConnection(ConnectionWrapper):
         self._is_closed = False
 
     def cast(self, column, type):
-        if type == 'int'or type == 'int64':
+        if type == 'int' or type == 'int64':
             type = 'signed'
         elif type == 'text':
             type = 'char'
