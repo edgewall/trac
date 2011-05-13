@@ -253,6 +253,7 @@ class Attachment(object):
            (will be removed in version 0.14)
         """
         self.size = int(size) if size else 0
+        self.filename = None
         if t is None:
             t = datetime.now(utc)
         elif not isinstance(t, datetime): # Compatibility with 0.11
@@ -667,7 +668,7 @@ class AttachmentModule(Component):
         if not filename:
             raise TracError(_('No file uploaded'))
         # Now the filename is known, update the attachment resource
-        # attachment.filename = filename
+        attachment.filename = filename
         attachment.description = req.args.get('description', '')
         attachment.author = get_reporter_id(req, 'author')
         attachment.ipnr = req.remote_addr
@@ -703,7 +704,6 @@ class AttachmentModule(Component):
                 old_attachment.delete()
             except TracError:
                 pass # don't worry if there's nothing to replace
-            attachment.filename = None
         attachment.insert(filename, upload.file, size)
 
         req.redirect(get_resource_url(self.env, attachment.resource(id=None),
