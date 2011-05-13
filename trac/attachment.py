@@ -241,6 +241,7 @@ class Attachment(object):
                 listener.attachment_reparented(self, old_realm, old_id)
 
     def insert(self, filename, fileobj, size, t=None, db=None):
+        self.filename = None
         self.size = size and int(size) or 0
         if t is None:
             t = datetime.now(utc)
@@ -644,7 +645,7 @@ class AttachmentModule(Component):
         if not filename:
             raise TracError(_('No file uploaded'))
         # Now the filename is known, update the attachment resource
-        # attachment.filename = filename
+        attachment.filename = filename
         attachment.description = req.args.get('description', '')
         attachment.author = get_reporter_id(req, 'author')
         attachment.ipnr = req.remote_addr
@@ -680,7 +681,6 @@ class AttachmentModule(Component):
                 old_attachment.delete()
             except TracError:
                 pass # don't worry if there's nothing to replace
-            attachment.filename = None
         attachment.insert(filename, upload.file, size)
 
         req.redirect(get_resource_url(self.env, attachment.resource(id=None),
