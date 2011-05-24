@@ -53,6 +53,11 @@ from trac.web.clearsilver import HDFWrapper
 from trac.web.href import Href
 from trac.web.session import Session
 
+default_tracker = 'http://trac.edgewall.org'
+"""This URL is used for semi-automatic bug reports (see
+   `send_internal_error`).  Please modify it to point to your own
+   Trac instance if you distribute a patched version of Trac.
+"""
 
 class FakeSession(dict):
     sid = None
@@ -571,13 +576,14 @@ def send_internal_error(env, req, exc_info):
     traceback = get_last_traceback()
 
     frames, plugins, faulty_plugins = [], [], []
-    tracker = 'http://trac.edgewall.org'
     th = 'http://trac-hacks.org'
     has_admin = False
     try:
         has_admin = 'TRAC_ADMIN' in req.perm
     except Exception:
         pass
+
+    tracker = default_tracker
     if has_admin and not isinstance(exc_info[1], MemoryError):
         # Collect frame and plugin information
         frames = get_frame_info(exc_info[2])
