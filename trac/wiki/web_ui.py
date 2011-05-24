@@ -589,7 +589,9 @@ class WikiModule(Component):
             else:
                 name = page.name
             name = name.lower()
-            related = [each for each in ws.pages if name in each.lower()]
+            related = [each for each in ws.pages
+                       if name in each.lower()
+                          and 'WIKI_VIEW' in req.perm('wiki', each)]
             related.sort()
             related = [ws._format_link(formatter, 'wiki', '/' + each, each,
                                        False)
