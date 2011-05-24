@@ -2166,7 +2166,7 @@ msgid ""
 "If you think this should work and you can reproduce the problem,\n"
 "              you should consider creating a bug report."
 msgstr ""
-"Si vous pensez que ceci aurait du fonctionner et que vous pouvez\n"
+"Si vous pensez que ceci aurait dû fonctionner et que vous pouvez\n"
 "reproduire le problème, il vous est possible d'en informer\n"
 "l'équipe de développement de Trac."
 
@@ -2204,7 +2204,7 @@ msgstr ""
 "                et la configuration de Trac ou des ses extensions, "
 "utilisez la\n"
 "                [3:liste de diffusion]\n"
-"                plutôt que de créer un ticket."
+"                au lieu de créer un ticket."
 
 #: trac/templates/error.html:131
 #, python-format
