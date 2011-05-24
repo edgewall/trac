@@ -24,3 +24,7 @@ Components
 .. autoclass :: RequestDispatcher
    :members:
 
+Miscellaneous
+-------------
+
+.. autodata :: default_tracker
