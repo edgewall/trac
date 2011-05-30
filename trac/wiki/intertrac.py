@@ -21,6 +21,7 @@ from genshi.builder import Element, Fragment, tag
 from trac.core import *
 from trac.mimeview import Context
 from trac.perm import PermissionError
+from trac.util.html import find_element
 from trac.util.translation import _
 from trac.web import IRequestHandler
 from trac.wiki.api import IWikiMacroProvider
@@ -49,23 +50,11 @@ class InterTracDispatcher(Component):
             if target and (target[0] not in '\'"' or target[0] != target[-1]):
                 link = '%s:"%s"' % (resolver, target)
         link_frag = extract_link(self.env, Context.from_request(req), link)
-
-        def get_first_href(item):
-            """Depth-first search for the first `href` attribute."""
-            if isinstance(item, Element):
-                href = item.attrib.get('href')
-                if href is not None:
-                    return href
-            if isinstance(item, Fragment):
-                for each in item.children:
-                    href = get_first_href(each)
-                    if href is not None:
-                        return href
-
         if isinstance(link_frag, (Element, Fragment)):
-            href = get_first_href(link_frag)
-            if href is None: # most probably no permissions to view
+            elt = find_element(link_frag, 'href')
+            if elt is None: # most probably no permissions to view
                 raise PermissionError(_("Can't view %(link)s:", link=link))
+            href = elt.attrib['href']
         else:
             href = req.href(link.rstrip(':'))
         req.redirect(href)

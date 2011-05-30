@@ -37,7 +37,7 @@ except ImportError:
 from trac.core import *
 from trac.env import ISystemInfoProvider
 from trac.mimeview.api import IHTMLPreviewRenderer, content_to_unicode
-from trac.util.html import Element, Markup
+from trac.util.html import Element, Fragment, Markup, find_element
 from trac.util.translation import _
 from trac.wiki.api import WikiSystem
 from trac.wiki.formatter import WikiProcessor, Formatter, extract_link
@@ -67,15 +67,17 @@ if has_docutils:
         link = extract_link(env, context, fulltext)
         uri = None
         missing = False
-        if isinstance(link, Element):
+        if isinstance(link, (Element, Fragment)):
             linktext = Markup(link).striptags()
             # the following is a bit hackish, but it takes into account:
             #  - an eventual trailing '?' for missing wiki pages
             #  - space eventually introduced due to split_page_names option
             if linktext.rstrip('?').replace(' ', '') != target:
                 text = linktext
-            uri = link.attrib.get('href', '')
-            missing = 'missing' in link.attrib.get('class', '')
+            elt = find_element(link, 'href', 'missing')
+            if elt is not None:
+                uri = elt.attrib.get('href', '')
+                missing = 'missing' in elt.attrib.get('class', '').split()
         else:
             uri = context.href.wiki(target)
             missing = not WikiSystem(env).has_page(target)
@@ -85,7 +87,6 @@ if has_docutils:
             if missing:
                 reference['classes'].append('missing')
             return reference
-        return None
 
     def trac_directive(name, arguments, options, content, lineno,
                        content_offset, block_text, state, state_machine):
