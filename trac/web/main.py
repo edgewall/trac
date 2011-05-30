@@ -53,11 +53,11 @@ from trac.web.chrome import Chrome
 from trac.web.href import Href
 from trac.web.session import Session
 
+#: This URL is used for semi-automatic bug reports (see
+#: `send_internal_error`).  Please modify it to point to your own
+#: Trac instance if you distribute a patched version of Trac.
 default_tracker = 'http://trac.edgewall.org'
-"""This URL is used for semi-automatic bug reports (see
-   `send_internal_error`).  Please modify it to point to your own
-   Trac instance if you distribute a patched version of Trac.
-"""
+
 
 class FakeSession(dict):
     sid = None
