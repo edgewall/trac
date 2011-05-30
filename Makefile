@@ -36,6 +36,10 @@ define HELP
   [testopts=...]      variable containing extra options for running tests
   [coverageopts=...]  variable containing extra options for coverage
 
+ ---------------- Code checking tasks
+
+  pylint              check code with pylint
+
  ---------------- Standalone test server
 
   server              start tracd
@@ -299,6 +303,24 @@ functional-test: Trac.egg-info
 
 test-wiki:
 	python trac/tests/allwiki.py $(testopts)
+
+# ----------------------------------------------------------------------------
+#
+# Code checking tasks
+#
+# ----------------------------------------------------------------------------
+
+.PHONY: pylint
+
+pylint:
+	pylint \
+		--include-ids=y --persistent=n --comment=n --init-import=y \
+		--disable=E0102,E0211,E0213,E0602,E0611,E1002,E1101,E1102,E1103 \
+		--disable=F0401 \
+		--disable=W0102,W0141,W0142,W0201,W0212,W0221,W0223,W0231,W0232, \
+		--disable=W0401,W0511,W0603,W0613,W0614,W0621,W0622,W0703 \
+		--disable=C0103,C0111 \
+		trac tracopt
 
 # ----------------------------------------------------------------------------
 #
