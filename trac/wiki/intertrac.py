@@ -54,7 +54,7 @@ class InterTracDispatcher(Component):
             elt = find_element(link_frag, 'href')
             if elt is None: # most probably no permissions to view
                 raise PermissionError(_("Can't view %(link)s:", link=link))
-            href = elt.attrib['href']
+            href = elt.attrib.get('href')
         else:
             href = req.href(link.rstrip(':'))
         req.redirect(href)
