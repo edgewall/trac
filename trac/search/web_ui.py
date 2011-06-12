@@ -17,7 +17,7 @@
 import pkg_resources
 import re
 
-from genshi.builder import tag, Element
+from genshi.builder import tag
 
 from trac.config import IntOption, ListOption
 from trac.core import *
@@ -25,6 +25,7 @@ from trac.mimeview import RenderingContext
 from trac.perm import IPermissionRequestor
 from trac.search.api import ISearchSource
 from trac.util.datefmt import format_datetime, user_time
+from trac.util.html import find_element
 from trac.util.presentation import Paginator
 from trac.util.translation import _
 from trac.web import IRequestHandler
@@ -160,8 +161,9 @@ class SearchModule(Component):
             name = kwd
             description = _('Browse repository path %(path)s', path=kwd)
         else:
-            link = extract_link(self.env, web_context(req, 'search'), kwd)
-            if isinstance(link, Element):
+            context = web_context(req, 'search')
+            link = find_element(extract_link(self.env, context, kwd), 'href')
+            if link is not None:
                 quickjump_href = link.attrib.get('href')
                 name = link.children
                 description = link.attrib.get('title', '')

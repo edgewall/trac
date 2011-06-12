@@ -21,14 +21,14 @@ import os
 import re
 from StringIO import StringIO
 
-from genshi.builder import Element, tag
+from genshi.builder import tag
 from genshi.core import Markup
 
 from trac.core import *
 from trac.resource import Resource, ResourceNotFound, get_resource_name, \
                           get_resource_summary, get_resource_url
 from trac.util.datefmt import format_date, from_utimestamp, user_time
-from trac.util.html import escape
+from trac.util.html import escape, find_element
 from trac.util.presentation import separated
 from trac.util.text import unquote, to_unicode
 from trac.util.translation import _, dgettext, cleandoc_
@@ -461,8 +461,9 @@ class ImageMacro(WikiMacroBase):
             elif arg.startswith('link='):
                 val = arg.split('=', 1)[1]
                 elt = extract_link(self.env, formatter.context, val.strip())
+                elt = find_element(elt, 'href')
                 link = None
-                if isinstance(elt, Element):
+                if elt is not None:
                     link = elt.attrib.get('href')
             elif arg in ('left', 'right'):
                 style['float'] = arg

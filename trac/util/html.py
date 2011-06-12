@@ -19,8 +19,8 @@ from genshi.core import stripentities, striptags, START, END
 from genshi.builder import Element, ElementFactory, Fragment
 from genshi.filters.html import HTMLSanitizer
 
-__all__ = ['escape', 'unescape', 'html', 'plaintext', 'TracHTMLSanitizer',
-           'Deuglifier', 'FormTokenInjector']
+__all__ = ['escape', 'unescape', 'html', 'plaintext', 'find_element',
+           'TracHTMLSanitizer', 'Deuglifier', 'FormTokenInjector']
 
 
 class TracHTMLSanitizer(HTMLSanitizer):
@@ -205,6 +205,22 @@ def plaintext(text, keeplinebreaks=True):
     if not keeplinebreaks:
         text = text.replace(u'\n', u' ')
     return text
+
+
+def find_element(frag, attr=None, cls=None):
+    """Return the first element in the fragment having the given attribute or
+    class, using a preorder depth-first search.
+    """
+    if isinstance(frag, Element):
+        if attr is not None and attr in frag.attrib:
+            return frag
+        if cls is not None and cls in frag.attrib.get('class', '').split():
+            return fragment
+    if isinstance(frag, Fragment):
+        for child in frag.children:
+            elt = find_element(child, attr, cls)
+            if elt is not None:
+                return elt
 
 
 def expand_markup(stream, ctxt=None):
