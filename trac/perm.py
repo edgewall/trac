@@ -16,9 +16,13 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
+from __future__ import with_statement
+
+import csv
+import os
 from time import time
 
-from trac.admin import AdminCommandError, IAdminCommandProvider
+from trac.admin import AdminCommandError, IAdminCommandProvider, get_dir_list
 from trac.config import ExtensionOption, OrderedExtensionsOption
 from trac.core import *
 from trac.resource import Resource, get_resource_name
@@ -587,6 +591,12 @@ class PermissionAdmin(Component):
         yield ('permission remove', '<user> <action> [action] [...]',
                'Remove a permission rule',
                self._complete_remove, self._do_remove)
+        yield ('permission export', '<filename>',
+               'Export permission rules to a file',
+               self._complete_import_export, self._do_export)
+        yield ('permission import', '<filename>',
+               'Import permission rules from a file',
+               self._complete_import_export, self._do_import)
     
     def get_user_list(self):
         return set(user for (user, action) in 
@@ -613,6 +623,10 @@ class PermissionAdmin(Component):
             return self.get_user_list()
         elif len(args) >= 2:
             return set(self.get_user_perms(args[0])) - set(args[1:-1])
+
+    def _complete_import_export(self, args):
+        if len(args) == 1:
+            return get_dir_list(args[-1])
     
     def _do_list(self, user=None):
         permsys = PermissionSystem(self.env)
@@ -656,3 +670,45 @@ class PermissionAdmin(Component):
                 raise AdminCommandError(
                     _("Cannot remove permission %(action)s for user %(user)s.",
                       action=action, user=user))
+    
+    def _do_export(self, filename):
+        try:
+            with open(filename, 'wb') as f:
+                writer = csv.writer(f, lineterminator=os.linesep)
+                users = self.get_user_list()
+                for user in sorted(users):
+                    actions = sorted(self.get_user_perms(user))
+                    writer.writerow([user] + actions)
+        except IOError, e:
+            raise AdminCommandError(
+                _("Cannot export to %(filename)s: %(error)s",
+                  filename=filename, error=e.strerror))
+    
+    def _do_import(self, filename):
+        permsys = PermissionSystem(self.env)
+        try:
+            with open(filename, 'rb') as f:
+                reader = csv.reader(f, lineterminator=os.linesep)
+                for row in reader:
+                    if len(row) < 2:
+                        raise AdminCommandError(
+                            _("Invalid row %(line)d. Expected <user>, "
+                              "<action>, [action], [...]",
+                              line=reader.line_num))
+                    user, actions = row[0], row[1:]
+                    if user.isupper():
+                        raise AdminCommandError(
+                            _("Invalid user %(user)s on line %(line)d: All "
+                              "upper-cased tokens are reserved for permission "
+                              "names.", user=user, line=reader.line_num))
+                    old_actions = self.get_user_perms(user)
+                    for action in set(actions) - set(old_actions):
+                        permsys.grant_permission(user, action)
+        except csv.Error, e:
+            raise AdminCommandError(
+                _("Cannot import from %(filename)s line %(line)d: %(error)s ",
+                  filename=filename, line=reader.line_num, error=e))
+        except IOError, e:
+            raise AdminCommandError(
+                _("Cannot import from %(filename)s: %(error)s",
+                  filename=filename, error=e.strerror))

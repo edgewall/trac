@@ -47,6 +47,7 @@ from trac.admin import console, console_date_format
 from trac.config import Configuration
 from trac.db import DatabaseManager
 from trac.test import EnvironmentStub
+from trac.util import read_file
 from trac.util.datefmt import format_date, get_date_format_hint
 from trac.web.tests.session import _prep_session_table
 
@@ -316,6 +317,39 @@ class TracadminTestCase(unittest.TestCase):
         test_name = sys._getframe().f_code.co_name
         rv, output = self._execute('permission remove anonymous TICKET_CREATE')
         self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def test_permission_export_ok(self):
+        """
+        Tests the 'permission export' command in trac-admin.  This particular
+        test exports the default permissions to a file.
+        """
+        test_name = sys._getframe().f_code.co_name
+        filename = 'permissions.csv'
+        rv, output = self._execute('permission export ' + filename)
+        self.assertEqual(0, rv)
+        self.assertEqual('', output)
+        filecontent = read_file(filename, 'rb')
+        os.unlink(filename)
+        self.assertEqual(self.expected_results[test_name], filecontent)
+
+    def test_permission_import_ok(self):
+        """
+        Tests the 'permission import' command in trac-admin.  This particular
+        test exports additional permissions, removes them and imports them back.
+        """
+        test_name = sys._getframe().f_code.co_name
+        filename = 'permissions.csv'
+        self._execute('permission add test_user WIKI_VIEW')
+        self._execute('permission add test_user TICKET_VIEW')
+        self._execute('permission export ' + filename)
+        self._execute('permission remove test_user *')
+        rv, output = self._execute('permission import ' + filename)
+        self.assertEqual(0, rv)
+        self.assertEqual('', output)
+        os.unlink(filename)
+        rv, output = self._execute('permission list')
+        self.assertEqual(0, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
     # Component tests
