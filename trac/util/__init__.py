@@ -370,6 +370,31 @@ def is_path_below(path, parent):
     return path == parent or path.startswith(parent + os.sep)
 
 
+class file_or_std(object):
+    """Context manager for opening a file or using a standard stream
+    
+    If `filename` is non-empty, open the file and close it when exiting the
+    block. Otherwise, use `sys.stdin` if opening for reading, or `sys.stdout`
+    if opening for writing or appending."""
+    
+    file = None
+    
+    def __init__(self, filename, mode='r', bufsize=-1):
+        self.filename = filename
+        self.mode = mode
+        self.bufsize = bufsize
+
+    def __enter__(self):
+        if not self.filename:
+            return sys.stdin if 'r' in self.mode else sys.stdout
+        self.file = open(self.filename, self.mode, self.bufsize)
+        return self.file
+
+    def __exit__(self, et, ev, tb):
+        if self.file is not None:
+            self.file.close()
+
+        
 # -- sys utils
 
 def arity(f):

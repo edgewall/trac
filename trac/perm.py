@@ -26,6 +26,7 @@ from trac.admin import AdminCommandError, IAdminCommandProvider, get_dir_list
 from trac.config import ExtensionOption, OrderedExtensionsOption
 from trac.core import *
 from trac.resource import Resource, get_resource_name
+from trac.util import file_or_std
 from trac.util.text import print_table, printout, wrap
 from trac.util.translation import _
 
@@ -591,11 +592,11 @@ class PermissionAdmin(Component):
         yield ('permission remove', '<user> <action> [action] [...]',
                'Remove a permission rule',
                self._complete_remove, self._do_remove)
-        yield ('permission export', '<filename>',
-               'Export permission rules to a file',
+        yield ('permission export', '[file]',
+               'Export permission rules to a file or stdout',
                self._complete_import_export, self._do_export)
-        yield ('permission import', '<filename>',
-               'Import permission rules from a file',
+        yield ('permission import', '[file]',
+               'Import permission rules from a file or stdin',
                self._complete_import_export, self._do_import)
     
     def get_user_list(self):
@@ -671,10 +672,11 @@ class PermissionAdmin(Component):
                     _("Cannot remove permission %(action)s for user %(user)s.",
                       action=action, user=user))
     
-    def _do_export(self, filename):
+    def _do_export(self, filename=None):
         try:
-            with open(filename, 'wb') as f:
-                writer = csv.writer(f, lineterminator=os.linesep)
+            with file_or_std(filename, 'wb') as f:
+                linesep = os.linesep if filename else '\n'
+                writer = csv.writer(f, lineterminator=linesep)
                 users = self.get_user_list()
                 for user in sorted(users):
                     actions = sorted(self.get_user_perms(user))
@@ -684,11 +686,12 @@ class PermissionAdmin(Component):
                 _("Cannot export to %(filename)s: %(error)s",
                   filename=filename, error=e.strerror))
     
-    def _do_import(self, filename):
+    def _do_import(self, filename=None):
         permsys = PermissionSystem(self.env)
         try:
-            with open(filename, 'rb') as f:
-                reader = csv.reader(f, lineterminator=os.linesep)
+            with file_or_std(filename, 'rb') as f:
+                linesep = os.linesep if filename else '\n'
+                reader = csv.reader(f, lineterminator=linesep)
                 for row in reader:
                     if len(row) < 2:
                         raise AdminCommandError(

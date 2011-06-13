@@ -30,8 +30,8 @@ milestone list       Show milestones
 milestone remove     Remove milestone
 milestone rename     Rename milestone
 permission add       Add a new permission rule
-permission export    Export permission rules to a file
-permission import    Import permission rules from a file
+permission export    Export permission rules to a file or stdout
+permission import    Import permission rules from a file or stdin
 permission list      List permission rules
 permission remove    Remove a permission rule
 priority add         Add a priority value option

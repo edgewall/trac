@@ -97,10 +97,13 @@ class TracadminTestCase(unittest.TestCase):
     def tearDown(self):
         self.env = None
 
-    def _execute(self, cmd, strip_trailing_space=True):
+    def _execute(self, cmd, strip_trailing_space=True, input=None):
+        _in = sys.stdin
         _err = sys.stderr
         _out = sys.stdout
         try:
+            if input:
+                sys.stdin = StringIO(input)
             sys.stderr = sys.stdout = out = StringIO()
             setattr(out, 'encoding', 'utf-8') # fake output encoding
             retval = None
@@ -119,6 +122,7 @@ class TracadminTestCase(unittest.TestCase):
             else:
                 return retval, value
         finally:
+            sys.stdin = _in
             sys.stderr = _err
             sys.stdout = _out
 
@@ -322,16 +326,12 @@ class TracadminTestCase(unittest.TestCase):
     def test_permission_export_ok(self):
         """
         Tests the 'permission export' command in trac-admin.  This particular
-        test exports the default permissions to a file.
+        test exports the default permissions to stdout.
         """
         test_name = sys._getframe().f_code.co_name
-        filename = 'permissions.csv'
-        rv, output = self._execute('permission export ' + filename)
+        rv, output = self._execute('permission export')
         self.assertEqual(0, rv)
-        self.assertEqual('', output)
-        filecontent = read_file(filename, 'rb')
-        os.unlink(filename)
-        self.assertEqual(self.expected_results[test_name], filecontent)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_permission_import_ok(self):
         """
@@ -339,15 +339,13 @@ class TracadminTestCase(unittest.TestCase):
         test exports additional permissions, removes them and imports them back.
         """
         test_name = sys._getframe().f_code.co_name
-        filename = 'permissions.csv'
         self._execute('permission add test_user WIKI_VIEW')
         self._execute('permission add test_user TICKET_VIEW')
-        self._execute('permission export ' + filename)
+        rv, output = self._execute('permission export')
         self._execute('permission remove test_user *')
-        rv, output = self._execute('permission import ' + filename)
+        rv, output = self._execute('permission import', input=output)
         self.assertEqual(0, rv)
         self.assertEqual('', output)
-        os.unlink(filename)
         rv, output = self._execute('permission list')
         self.assertEqual(0, rv)
         self.assertEqual(self.expected_results[test_name], output)
