@@ -18,7 +18,7 @@ import cmd
 import locale
 import os.path
 import pkg_resources
-import shlex
+from shlex import shlex
 import StringIO
 import sys
 import traceback
@@ -71,7 +71,7 @@ class TracAdmin(cmd.Cmd):
         try:
             import readline
             delims = readline.get_completer_delims()
-            for c in '-/:()':
+            for c in '-/:()\\':
                 delims = delims.replace(c, '')
             readline.set_completer_delims(delims)
             
@@ -182,8 +182,12 @@ Type:  '?' or 'help' for help on commands.
 
         ... but shlex is not unicode friendly.
         """
-        return [unicode(token, 'utf-8')
-                for token in shlex.split(argstr.encode('utf-8'))] or ['']
+        lex = shlex(argstr.encode('utf-8'), posix=True)
+        lex.whitespace_split = True
+        lex.commenters = ''
+        if os.name == 'nt':
+            lex.escape = ''
+        return [unicode(token, 'utf-8') for token in lex] or ['']
 
     def word_complete(self, text, words):
         words = list(set(a for a in words if a.startswith(text)))

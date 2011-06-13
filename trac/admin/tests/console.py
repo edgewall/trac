@@ -42,7 +42,6 @@ import trac.search.web_ui
 import trac.timeline.web_ui
 import trac.wiki.web_ui
 
-
 from trac.admin import console, console_date_format
 from trac.config import Configuration
 from trac.db import DatabaseManager
