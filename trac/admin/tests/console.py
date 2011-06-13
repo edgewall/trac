@@ -20,6 +20,28 @@ import sys
 import unittest
 from StringIO import StringIO
 
+# IAdminCommandProvider implementations
+import trac.admin.api
+import trac.attachment
+import trac.perm
+import trac.ticket.admin
+import trac.versioncontrol.admin
+import trac.versioncontrol.api
+import trac.versioncontrol.web_ui
+import trac.wiki.admin
+
+# IPermissionRequestor implementations (for 'permission' related tests)
+import trac.about
+import trac.admin.web_ui
+import trac.config
+import trac.ticket.api
+import trac.ticket.report
+import trac.ticket.roadmap
+import trac.ticket.web_ui
+import trac.search.web_ui
+import trac.timeline.web_ui
+import trac.wiki.web_ui
+
 from trac.config import Configuration
 from trac.env import Environment
 from trac.admin import console, console_date_format
