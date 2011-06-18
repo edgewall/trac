@@ -851,12 +851,12 @@ class Repository(object):
     def get_oldest_rev(self):
         """Return the oldest revision stored in the repository."""
         raise NotImplementedError
-    oldest_rev = property(lambda x: x.get_oldest_rev())
+    oldest_rev = property(lambda self: self.get_oldest_rev())
 
     def get_youngest_rev(self):
         """Return the youngest revision in the repository."""
         raise NotImplementedError
-    youngest_rev = property(lambda x: x.get_youngest_rev())
+    youngest_rev = property(lambda self: self.get_youngest_rev())
 
     def previous_rev(self, rev, path=''):
         """Return the revision immediately preceding the specified revision.
@@ -1038,7 +1038,7 @@ class Node(object):
         Will be `None` for a directory.
         """
         raise NotImplementedError
-    content_length = property(lambda x: x.get_content_length())
+    content_length = property(lambda self: self.get_content_length())
 
     def get_content_type(self):
         """The MIME type corresponding to the content, if known.
@@ -1046,18 +1046,18 @@ class Node(object):
         Will be `None` for a directory.
         """
         raise NotImplementedError
-    content_type = property(lambda x: x.get_content_type())
+    content_type = property(lambda self: self.get_content_type())
 
     def get_name(self):
         return self.path.split('/')[-1]
-    name = property(lambda x: x.get_name())
+    name = property(lambda self: self.get_name())
 
     def get_last_modified(self):
         raise NotImplementedError
-    last_modified = property(lambda x: x.get_last_modified())
+    last_modified = property(lambda self: self.get_last_modified())
 
-    isdir = property(lambda x: x.kind == Node.DIRECTORY)
-    isfile = property(lambda x: x.kind == Node.FILE)
+    isdir = property(lambda self: self.kind == Node.DIRECTORY)
+    isfile = property(lambda self: self.kind == Node.FILE)
 
     def is_viewable(self, perm):
         """Return True if view permission is granted on the node."""
