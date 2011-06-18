@@ -24,7 +24,7 @@ from trac.config import *
 from trac.core import *
 from trac.perm import IPermissionRequestor, PermissionCache, PermissionSystem
 from trac.resource import IResourceManager
-from trac.util import Ranges
+from trac.util import Ranges, as_int
 from trac.util.text import shorten_line
 from trac.util.translation import _, N_, gettext
 from trac.wiki import IWikiSyntaxProvider, WikiParser
@@ -490,18 +490,20 @@ class TicketSystem(Component):
             resource = formatter.resource
             cnum = target
 
-        if resource:
-            href = "%s#comment:%s" % (formatter.href.ticket(resource.id), cnum)
-            title = _("Comment %(cnum)s for Ticket #%(id)s", cnum=cnum,
-                      id=resource.id)
-            if 'TICKET_VIEW' in formatter.perm(resource):
-                for status, in self.env.db_query(
-                    "SELECT status FROM ticket WHERE id=%s",
-                    (resource.id,)):
-                    return tag.a(label, href=href, title=title, class_=status)
-            return tag.a(label, href=href, title=title)
-        else:
-            return label
+        if resource and resource.realm == 'ticket':
+            id = as_int(resource.id, None)
+            if id is not None:
+                href = "%s#comment:%s" % (formatter.href.ticket(resource.id),
+                                          cnum)
+                title = _("Comment %(cnum)s for Ticket #%(id)s", cnum=cnum,
+                          id=resource.id)
+                if 'TICKET_VIEW' in formatter.perm(resource):
+                    for status, in self.env.db_query(
+                            "SELECT status FROM ticket WHERE id=%s", (id,)):
+                        return tag.a(label, href=href, title=title,
+                                     class_=status)
+                return tag.a(label, href=href, title=title)
+        return label
  
     # IResourceManager methods
 
