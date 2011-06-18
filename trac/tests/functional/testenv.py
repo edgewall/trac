@@ -60,7 +60,7 @@ class FunctionalTestEnvironment(object):
         locale.setlocale(locale.LC_ALL, '')
 
     trac_src = '.'
-    dburi = property(lambda x: get_dburi())
+    dburi = property(lambda self: get_dburi())
 
     def destroy(self):
         """Remove all of the test environment data."""
