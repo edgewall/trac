@@ -99,13 +99,14 @@ class TracadminTestCase(unittest.TestCase):
         _out = sys.stdout
         try:
             if input:
-                sys.stdin = StringIO(input)
+                sys.stdin = StringIO(input.encode('utf-8'))
+                sys.stdin.encoding = 'utf-8' # fake input encoding
             sys.stderr = sys.stdout = out = StringIO()
-            setattr(out, 'encoding', 'utf-8') # fake output encoding
+            out.encoding = 'utf-8' # fake output encoding
             retval = None
             try:
                 retval = self._admin.onecmd(cmd)
-            except SystemExit, e:
+            except SystemExit:
                 pass
             value = out.getvalue()
             if isinstance(value, str): # reverse what print_listing did
@@ -335,10 +336,11 @@ class TracadminTestCase(unittest.TestCase):
         test exports additional permissions, removes them and imports them back.
         """
         test_name = sys._getframe().f_code.co_name
-        self._execute('permission add test_user WIKI_VIEW')
-        self._execute('permission add test_user TICKET_VIEW')
+        user = u'test_user\u0251' 
+        self._execute('permission add ' + user + ' WIKI_VIEW') 
+        self._execute('permission add ' + user + ' TICKET_VIEW') 
         rv, output = self._execute('permission export')
-        self._execute('permission remove test_user *')
+        self._execute('permission remove ' + user + ' *') 
         rv, output = self._execute('permission import', input=output)
         self.assertEqual(0, rv)
         self.assertEqual('', output)

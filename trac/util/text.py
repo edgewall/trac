@@ -172,6 +172,12 @@ class unicode_passwd(unicode):
     def __repr__(self):
         return '*******'
 
+def stream_encoding(stream):
+    """Return the appropriate encoding for the given stream."""
+    encoding = getattr(stream, 'encoding', None)
+    # Windows returns 'cp0' to indicate no encoding
+    return encoding if encoding not in (None, 'cp0') else 'utf-8'
+        
 def console_print(out, *args, **kwargs):
     """Output the given arguments to the console, encoding the output
     as appropriate.
@@ -179,10 +185,7 @@ def console_print(out, *args, **kwargs):
     :param kwargs: ``newline`` controls whether a newline will be appended
                    (defaults to `True`)
     """
-    cons_charset = getattr(out, 'encoding', None)
-    # Windows returns 'cp0' to indicate no encoding
-    if cons_charset in (None, 'cp0'):
-        cons_charset = 'utf-8'
+    cons_charset = stream_encoding(out)
     out.write(' '.join([to_unicode(a).encode(cons_charset, 'replace') 
                         for a in args]))
     if kwargs.get('newline', True):

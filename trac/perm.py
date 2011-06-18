@@ -27,7 +27,8 @@ from trac.config import ExtensionOption, OrderedExtensionsOption
 from trac.core import *
 from trac.resource import Resource, get_resource_name
 from trac.util import file_or_std
-from trac.util.text import print_table, printout, wrap
+from trac.util.text import print_table, printout, wrap, stream_encoding, \
+                           to_unicode
 from trac.util.translation import _
 
 __all__ = ['IPermissionRequestor', 'IPermissionStore',
@@ -593,10 +594,10 @@ class PermissionAdmin(Component):
                'Remove a permission rule',
                self._complete_remove, self._do_remove)
         yield ('permission export', '[file]',
-               'Export permission rules to a file or stdout',
+               'Export permission rules to a file or stdout as CSV',
                self._complete_import_export, self._do_export)
         yield ('permission import', '[file]',
-               'Import permission rules from a file or stdin',
+               'Import permission rules from a file or stdin as CSV',
                self._complete_import_export, self._do_import)
     
     def get_user_list(self):
@@ -675,12 +676,14 @@ class PermissionAdmin(Component):
     def _do_export(self, filename=None):
         try:
             with file_or_std(filename, 'wb') as f:
+                encoding = stream_encoding(f)
                 linesep = os.linesep if filename else '\n'
                 writer = csv.writer(f, lineterminator=linesep)
                 users = self.get_user_list()
                 for user in sorted(users):
                     actions = sorted(self.get_user_perms(user))
-                    writer.writerow([user] + actions)
+                    writer.writerow([s.encode(encoding, 'replace')
+                                     for s in [user] + actions]) 
         except IOError, e:
             raise AdminCommandError(
                 _("Cannot export to %(filename)s: %(error)s",
@@ -690,6 +693,7 @@ class PermissionAdmin(Component):
         permsys = PermissionSystem(self.env)
         try:
             with file_or_std(filename, 'rb') as f:
+                encoding = stream_encoding(f)
                 linesep = os.linesep if filename else '\n'
                 reader = csv.reader(f, lineterminator=linesep)
                 for row in reader:
@@ -698,7 +702,9 @@ class PermissionAdmin(Component):
                             _("Invalid row %(line)d. Expected <user>, "
                               "<action>, [action], [...]",
                               line=reader.line_num))
-                    user, actions = row[0], row[1:]
+                    user = to_unicode(row[0], encoding)
+                    actions = [to_unicode(action, encoding)
+                               for action in row[1:]]
                     if user.isupper():
                         raise AdminCommandError(
                             _("Invalid user %(user)s on line %(line)d: All "

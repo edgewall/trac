@@ -30,8 +30,8 @@ milestone list       Show milestones
 milestone remove     Remove milestone
 milestone rename     Rename milestone
 permission add       Add a new permission rule
-permission export    Export permission rules to a file or stdout
-permission import    Import permission rules from a file or stdin
+permission export    Export permission rules to a file or stdout as CSV
+permission import    Import permission rules from a file or stdin as CSV
 permission list      List permission rules
 permission remove    Remove a permission rule
 priority add         Add a priority value option
@@ -346,8 +346,8 @@ authenticated  TICKET_CREATE
 authenticated  TICKET_MODIFY
 authenticated  WIKI_CREATE
 authenticated  WIKI_MODIFY
-test_user      TICKET_VIEW
-test_user      WIKI_VIEW
+test_userɑ     TICKET_VIEW
+test_userɑ     WIKI_VIEW
 
 
 Available actions:
