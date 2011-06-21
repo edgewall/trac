@@ -37,7 +37,7 @@ from trac.util.text import exception_to_unicode, shorten_line, to_unicode, \
 from trac.util.html import TracHTMLSanitizer
 from trac.util.translation import _
 from trac.wiki.api import WikiSystem, parse_args, unquote_label
-from trac.wiki.parser import WikiParser
+from trac.wiki.parser import WikiParser, parse_processor_args
 
 __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline',
            'Formatter', 'format_to', 'format_to_html', 'format_to_oneliner',
@@ -1067,21 +1067,7 @@ class Formatter(object):
     # Code blocks
 
     def parse_processor_args(self, line):
-        args = WikiParser._processor_param_re.split(line)
-        keys = [str(k) for k in args[1::3]] # used as keyword parameters
-        values = [v[1:-1] if v[:1] + v[-1:] in ('""', "''") else v
-                  for v in args[2::3]]
-        for flags in args[::3]:
-            for flag in flags.strip().split():
-                if re.match(r'-?\w+$', flag):
-                    if flag[0] == '-':
-                        if len(flag) > 1:
-                            keys.append(str(flag[1:]))
-                            values.append(False)
-                    else:
-                        keys.append(str(flag))
-                        values.append(True)
-        return dict(zip(keys, values))
+        return parse_processor_args(line)
 
     def handle_code_block(self, line, startmatch=None):
         if startmatch:
@@ -1089,7 +1075,7 @@ class Formatter(object):
             if self.in_code_block == 1:
                 name = startmatch.group(2)
                 if name:
-                    args = self.parse_processor_args(line[startmatch.end():])
+                    args = parse_processor_args(line[startmatch.end():])
                     self.code_processor = WikiProcessor(self, name, args)
                 else:
                     self.code_processor = None
@@ -1123,7 +1109,7 @@ class Formatter(object):
             if match:
                 self.code_prefix = match.group(1)
                 name = match.group(2)
-                args = self.parse_processor_args(line[match.end():])
+                args = parse_processor_args(line[match.end():])
                 self.code_processor = WikiProcessor(self, name, args)
             else:
                 self.code_buf.append(line)
