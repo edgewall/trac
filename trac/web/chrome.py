@@ -362,6 +362,18 @@ class Chrome(Component):
         will not be made available this way and additional rewrite 
         rules will be needed in the web server.""")
 
+    jquery_location = Option('trac', 'jquery_location', '',
+        """Location of the jQuery JavaScript library.
+        
+        An empty value loads jQuery from the copy bundled with Trac.
+        
+        Alternatively, jQuery could be loaded from a CDN, for example:
+         * http://code.jquery.com/jquery-1.5.1.min.js
+         * http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.5.1.min.js
+         * https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js
+        
+        (''since 0.13'')""")
+
     metanav_order = ListOption('trac', 'metanav',
                                'login, logout, prefs, help, about', doc=
         """Order of the items to display in the `metanav` navigation bar,
@@ -605,7 +617,7 @@ class Chrome(Component):
         add_link(req, 'search', req.href.search())
         add_link(req, 'help', req.href.wiki('TracGuide'))
         add_stylesheet(req, 'common/css/trac.css')
-        add_script(req, 'common/js/jquery.js')
+        add_script(req, self.jquery_location or 'common/js/jquery.js')
         # Only activate noConflict mode if requested to by the handler
         if handler is not None and \
            getattr(handler.__class__, 'jquery_noconflict', False):
