@@ -91,3 +91,8 @@ div.trac-modifiedby {
  float: right;
 }
 div.trac-modifiedby :link, div.trac-modifiedby :visited { color: inherit }
+div.trac-modifiedby span.trac-print { display: none; }
+@media print {
+ div.trac-modifiedby span { display: none; }
+ div.trac-modifiedby span.trac-print { display: block; }
+}
