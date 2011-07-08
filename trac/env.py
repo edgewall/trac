@@ -31,7 +31,7 @@ from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
 from trac.db.api import (DatabaseManager, QueryContextManager, 
                          TransactionContextManager, with_transaction)
-from trac.util import copytree, create_file, get_pkginfo, makedirs
+from trac.util import copytree, create_file, get_pkginfo, lazy, makedirs
 from trac.util.concurrency import threading
 from trac.util.text import exception_to_unicode, printerr, printout
 from trac.util.translation import _, N_
@@ -386,6 +386,23 @@ class Environment(Component, ComponentManager):
                ...
         """
         return DatabaseManager(self).get_connection()
+
+    @lazy
+    def db_exc(self):
+        """Return an object (typically a module) containing all the
+        backend-specific exception types as attributes, named
+        according to the Python Database API
+        (http://www.python.org/dev/peps/pep-0249/).
+        
+        To catch a database exception, use the following pattern::
+        
+            try:
+                with env.db_transaction as db:
+                    ...
+            except env.db_exc.IntegrityError, e:
+                ...
+        """
+        return DatabaseManager(self).get_exceptions()
 
     def with_transaction(self, db=None):
         """Decorator for transaction functions :deprecated:"""

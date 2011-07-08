@@ -917,6 +917,20 @@ def to_ranges(revs):
     return ','.join(ranges)
 
 
+class lazy(object):
+    """A lazily-evaluated attribute"""
+    
+    def __init__(self, fn):
+        self.fn = fn
+    
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+        result = self.fn(instance)
+        setattr(instance, self.fn.__name__, result)
+        return result
+
+
 # -- algorithmic utilities
 
 DIGITS = re.compile(r'(\d+)')

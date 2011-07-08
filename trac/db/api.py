@@ -17,8 +17,8 @@
 from __future__ import with_statement
 
 import os
-import urllib
 import time
+import urllib
 
 from trac.config import BoolOption, IntOption, Option
 from trac.core import *
@@ -28,6 +28,7 @@ from trac.util.translation import _
 
 from .pool import ConnectionPool
 from .util import ConnectionWrapper
+
 
 _transaction_local = ThreadLocal(wdb=None, rdb=None)
 
@@ -174,7 +175,8 @@ class QueryContextManager(DbContextManager):
 
 class IDatabaseConnector(Interface):
     """Extension point interface for components that support the connection to
-    relational databases."""
+    relational databases.
+    """
 
     def get_supported_schemes():
         """Return the connection URL schemes supported by the connector, and
@@ -189,6 +191,13 @@ class IDatabaseConnector(Interface):
     def get_connection(path, log=None, **kwargs):
         """Create a new connection to the database."""
     
+    def get_exceptions():
+        """Return an object (typically a module) containing all the
+        backend-specific exception types as attributes, named
+        according to the Python Database API
+        (http://www.python.org/dev/peps/pep-0249/).
+        """
+
     def init_db(path, schema=None, log=None, **kwargs):
         """Initialize the database."""
 
@@ -242,6 +251,9 @@ class DatabaseManager(Component):
         if readonly:
             db = ConnectionWrapper(db, readonly=True)
         return db
+
+    def get_exceptions(self):
+        return self.get_connector()[0].get_exceptions()
 
     def shutdown(self, tid=None):
         if self._cnx_pool:

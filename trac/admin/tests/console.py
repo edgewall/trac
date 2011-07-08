@@ -252,6 +252,20 @@ class TracadminTestCase(unittest.TestCase):
         self.assertEqual(0, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
+    def test_permission_add_already_exists(self):
+        """
+        Tests the 'permission add' command in trac-admin.  This particular
+        test passes a permission that already exists and checks for the
+        message. Other permissions passed are added.
+        """
+        test_name = sys._getframe().f_code.co_name
+        rv, output = self._execute('permission add anonymous WIKI_CREATE '
+                                   'WIKI_VIEW WIKI_MODIFY')
+        self.assertEqual(0, rv)
+        rv, output2 = self._execute('permission list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output + output2)
+
     def test_permission_remove_one_action_ok(self):
         """
         Tests the 'permission remove' command in trac-admin.  This particular

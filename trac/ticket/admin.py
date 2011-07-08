@@ -84,10 +84,14 @@ class ComponentAdminPanel(TicketAdminPanel):
             comp = model.Component(self.env, component)
             if req.method == 'POST':
                 if req.args.get('save'):
-                    comp.name = req.args.get('name')
+                    comp.name = name = req.args.get('name')
                     comp.owner = req.args.get('owner')
                     comp.description = req.args.get('description')
-                    comp.update()
+                    try:
+                        comp.update()
+                    except self.env.db_exc.IntegrityError:
+                        raise TracError(_('The component "%(name)s" already '
+                                          'exists.', name=name))
                     add_notice(req, _('Your changes have been saved.'))
                     req.redirect(req.href.admin(cat, page))
                 elif req.args.get('cancel'):
@@ -248,7 +252,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
             if req.method == 'POST':
                 if req.args.get('save'):
                     req.perm.require('MILESTONE_MODIFY')
-                    mil.name = req.args.get('name')
+                    mil.name = name = req.args.get('name')
                     mil.due = mil.completed = None
                     due = req.args.get('duedate', '')
                     if due:
@@ -263,7 +267,11 @@ class MilestoneAdminPanel(TicketAdminPanel):
                                               'the future'),
                                             _('Invalid Completion Date'))
                     mil.description = req.args.get('description', '')
-                    mil.update()
+                    try:
+                        mil.update()
+                    except self.env.db_exc.IntegrityError:
+                        raise TracError(_('The milestone "%(name)s" already '
+                                          'exists.', name=name))
                     add_notice(req, _('Your changes have been saved.'))
                     req.redirect(req.href.admin(cat, page))
                 elif req.args.get('cancel'):
@@ -428,7 +436,7 @@ class VersionAdminPanel(TicketAdminPanel):
             ver = model.Version(self.env, version)
             if req.method == 'POST':
                 if req.args.get('save'):
-                    ver.name = req.args.get('name')
+                    ver.name = name = req.args.get('name')
                     if req.args.get('time'):
                         ver.time = user_time(req, parse_date,
                                              req.args.get('time'),
@@ -436,7 +444,12 @@ class VersionAdminPanel(TicketAdminPanel):
                     else:
                         ver.time = None # unset
                     ver.description = req.args.get('description')
-                    ver.update()
+                    try:
+                        ver.update()
+                    except self.env.db_exc.IntegrityError:
+                        raise TracError(_('The version "%(name)s" already '
+                                          'exists.', name=name))
+                    
                     add_notice(req, _('Your changes have been saved.'))
                     req.redirect(req.href.admin(cat, page))
                 elif req.args.get('cancel'):
@@ -581,8 +594,12 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
             enum = self._enum_cls(self.env, path_info)
             if req.method == 'POST':
                 if req.args.get('save'):
-                    enum.name = req.args.get('name')
-                    enum.update()
+                    enum.name = name = req.args.get('name')
+                    try:
+                        enum.update()
+                    except self.env.db_exc.IntegrityError:
+                        raise TracError(_('%(type)s value "%(name)s" already '
+                                          'exists', type=label[0], name=name))
                     add_notice(req, _("Your changes have been saved."))
                     req.redirect(req.href.admin(cat, page))
                 elif req.args.get('cancel'):

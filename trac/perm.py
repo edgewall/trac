@@ -657,7 +657,11 @@ class PermissionAdmin(Component):
             raise AdminCommandError(_('All upper-cased tokens are reserved '
                                       'for permission names'))
         for action in actions:
-            permsys.grant_permission(user, action)
+            try:
+                permsys.grant_permission(user, action)
+            except self.env.db_exc.IntegrityError:
+                printout(_("The user %(user)s already has permission "
+                           "%(action)s.", user=user, action=action))
     
     def _do_remove(self, user, *actions):
         permsys = PermissionSystem(self.env)

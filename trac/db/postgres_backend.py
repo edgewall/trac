@@ -92,6 +92,9 @@ class PostgreSQLConnector(Component):
             self.required = True
         return cnx
 
+    def get_exceptions(self):
+        return psycopg
+
     def init_db(self, path, schema=None, log=None, user=None, password=None,
                 host=None, port=None, params={}):
         cnx = self.get_connection(path, log, user, password, host, port,

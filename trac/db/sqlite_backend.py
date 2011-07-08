@@ -185,6 +185,9 @@ class SQLiteConnector(Component):
         else:
             return SQLiteConnection(path, log, params)
 
+    def get_exceptions(self):
+        return sqlite
+
     def init_db(self, path, schema=None, log=None, params={}):
         if path != ':memory:':
             # make the directory to hold the database
