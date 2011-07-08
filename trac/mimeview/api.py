@@ -772,6 +772,7 @@ class Mimeview(Component):
                 labels[atype] = alabel
                 titles[atype] = atitle
                 annotators[atype] = annotator
+        annotations = [a for a in annotations if a in annotators]
 
         if isinstance(stream, list):
             stream = HTMLParser(StringIO(u'\n'.join(stream)))

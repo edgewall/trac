@@ -454,13 +454,14 @@ class BrowserModule(Component):
                             href=req.href.changeset(node.rev, reponame,
                                                     node.created_path)))
             if node.isfile:
-                if data['file']['annotate']:
+                annotate = data['file']['annotate']
+                if annotate:
                     add_ctxtnav(req, _('Normal'), 
                                 title=_('View file without annotations'), 
                                 href=req.href.browser(reponame,
                                                       node.created_path, 
                                                       rev=rev))
-                else:
+                if annotate != 'blame':
                     add_ctxtnav(req, _('Annotate'), 
                                 title=_('Annotate each line with the last '
                                         'changed revision '
@@ -675,21 +676,20 @@ class BrowserModule(Component):
             add_stylesheet(req, 'common/css/code.css')
 
             annotations = ['lineno']
-            force_source = False
-            if 'annotate' in req.args:
-                force_source = True
-                annotations.insert(0, req.args['annotate'])
+            annotate = req.args.get('annotate')
+            if annotate:
+                annotations.insert(0, annotate)
             preview_data = mimeview.preview_data(context, node.get_content(),
                                                  node.get_content_length(),
                                                  mime_type, node.created_path,
                                                  raw_href,
                                                  annotations=annotations,
-                                                 force_source=force_source)
+                                                 force_source=bool(annotate))
             return {
                 'changeset': changeset,
                 'size': node.content_length,
                 'preview': preview_data,
-                'annotate': force_source,
+                'annotate': annotate,
                 }
 
     def _get_download_href(self, href, repos, node, rev):
