@@ -24,17 +24,23 @@ search:"foo bar"
 <a class="search" href="/search?q=foo+bar">search:"foo bar"</a>
 <a class="search" href="/search?q=bar">Bar</a>
 <a class="search" href="/search?q=bar">bar</a>
-<a class="search" href="/search?q=">search</a>
+<a class="search" href="/search">search</a>
 </p>
 ------------------------------
 ============================== search: link resolver with query arguments
+search:foo?wiki=on
 search:?q=foo&wiki=on
+search:"foo bar?wiki=on"
 search:"?q=foo bar&wiki=on"
+[search:bar?ticket=on Bar in Tickets]
 [search:?q=bar&ticket=on Bar in Tickets]
 ------------------------------
 <p>
+<a class="search" href="/search?q=foo&amp;wiki=on">search:foo?wiki=on</a>
 <a class="search" href="/search?q=foo&amp;wiki=on">search:?q=foo&amp;wiki=on</a>
+<a class="search" href="/search?q=foo+bar&amp;wiki=on">search:"foo bar?wiki=on"</a>
 <a class="search" href="/search?q=foo+bar&amp;wiki=on">search:"?q=foo bar&amp;wiki=on"</a>
+<a class="search" href="/search?q=bar&amp;ticket=on">Bar in Tickets</a>
 <a class="search" href="/search?q=bar&amp;ticket=on">Bar in Tickets</a>
 </p>
 ------------------------------

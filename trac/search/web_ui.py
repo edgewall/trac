@@ -126,10 +126,13 @@ class SearchModule(Component):
 
     def _format_link(self, formatter, ns, target, label):
         path, query, fragment = formatter.split_link(target)
-        if query:
-            href = formatter.href.search() + query.replace(' ', '+')
-        else:
+        if path:
             href = formatter.href.search(q=path)
+            if query:
+                href += '&' + query[1:].replace(' ', '+')
+        else:
+            href = formatter.href.search() + query.replace(' ', '+')
+        href += fragment
         return tag.a(label, class_='search', href=href)
 
     # IRequestHandler helper methods
