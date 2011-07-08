@@ -37,7 +37,7 @@
             });
         </py:if>
         <py:if test="file">
-          <py:if test="file.annotate">
+          <py:if test="file.annotate == 'blame'">
             enableBlame("${href.changeset()}/", "${reponame}", "${path}");
           </py:if>
           $('#preview table.code').enableCollapsibleColumns($('#preview table.code thead th.content'));
