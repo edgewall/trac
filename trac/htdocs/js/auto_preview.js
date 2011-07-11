@@ -150,7 +150,7 @@
         return true;
       }
       
-      $(this).keydown(trigger).keypress(trigger).blur(request);
+      $(this).keydown(trigger).keypress(trigger).blur(trigger);
     });
   };
 })(jQuery);
