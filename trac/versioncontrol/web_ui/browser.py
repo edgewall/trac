@@ -461,7 +461,7 @@ class BrowserModule(Component):
                                                       node.created_path, 
                                                       rev=rev))
                 if annotate != 'blame':
-                    add_ctxtnav(req, _('Annotate'), 
+                    add_ctxtnav(req, _('Blame'), 
                                 title=_('Annotate each line with the last '
                                         'changed revision '
                                         '(this can be time consuming...)'), 
