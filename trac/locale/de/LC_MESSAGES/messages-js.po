@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-05-24 23:55+0200\n"
+"POT-Creation-Date: 2011-07-11 02:09+0200\n"
 "PO-Revision-Date: 2010-11-14 18:10+0100\n"
 "Last-Translator: Daniel Musketa <daniel@musketa.de>\n"
 "Language-Team: de <LL@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.5\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -41,20 +41,20 @@ msgstr "Unterverzeichnis ausklappen"
 msgid "Re-expand directory"
 msgstr "Verzeichnis ausklappen"
 
-#: trac/htdocs/js/expand_dir.js:115
+#: trac/htdocs/js/expand_dir.js:120
 #, python-format
 msgid "Loading %(entry)s..."
 msgstr "Lade %(entry)s …"
 
-#: trac/htdocs/js/expand_dir.js:143
+#: trac/htdocs/js/expand_dir.js:148
 msgid "(empty)"
 msgstr "(leer)"
 
-#: trac/htdocs/js/expand_dir.js:151
+#: trac/htdocs/js/expand_dir.js:156
 msgid "(error)"
 msgstr "(Fehler)"
 
-#: trac/htdocs/js/expand_dir.js:158
+#: trac/htdocs/js/expand_dir.js:163
 msgid "Fold directory"
 msgstr "Verzeichnis einklappen"
 
