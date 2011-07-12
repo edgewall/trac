@@ -1,0 +1,36 @@
+<!--!
+Display a table of progress bars for ticket groups
+
+Arguments:
+ - groups: a list of group data dicts
+ - grouped_by: ticket field by which tickets are grouped
+ - summary: table summary text
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
+      py:strip="">
+  <table summary="${value_of('summary', None)}">
+    <tr py:for="group in groups">
+      <th scope="row" py:choose="">
+        <i py:when="not group.name"><a href="${group.stats_href}">(none)</a></i>
+        <a py:when="grouped_by in ['owner', 'reporter']"
+           py:with="obfus_name = format_author(group.name)"
+           py:strip="obfus_name != group.name"
+           href="${group.stats_href}">${obfus_name}</a>
+        <a py:otherwise="" href="${group.stats_href}">${group.name}</a>
+      </th>
+      <td>
+        <xi:include href="progress_bar.html"
+                    py:with="stats = group.stats;
+                             interval_hrefs = (group.interval_hrefs, None)
+                                              [bool(grouped_by in ['owner', 'reporter']
+                                                    and group.name and group.name != format_author(group.name))];
+                             percent = '%d / %d' % (group.stats.done_count, group.stats.count);
+                             legend=False;
+                             style='width: %d%%' % (group.percent_of_max_total * 0.8)"/>
+      </td>
+    </tr>
+  </table>
+</html>

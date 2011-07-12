@@ -33,7 +33,7 @@
       <div class="milestones">
         <div py:for="idx, milestone in enumerate(milestones)" class="milestone">
 
-          <div class="info" py:with="mstats = milestone_stats[idx]">
+          <div class="info trac-progress" py:with="mstats = milestone_stats[idx]">
             <h2><a href="${href.milestone(milestone.name)}">
               Milestone: <em>${milestone.name}</em>
             </a></h2>

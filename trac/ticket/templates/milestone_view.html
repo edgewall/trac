@@ -21,7 +21,7 @@
   <body>
     <div id="content" class="milestone">
       <h1>Milestone ${milestone.name}</h1>
-      <div class="info">
+      <div class="info trac-progress">
         <py:choose>
           <p py:when="milestone.completed" class="date">
             <i18n:msg params="duration, date">
@@ -45,7 +45,7 @@
         <xi:include href="progress_bar.html" py:if="stats.count"/>
       </div>
 
-      <form py:if="available_groups and stats.count" id="stats" action="">
+      <form py:if="available_groups and stats.count" id="stats" class="trac-groupprogress" action="">
         <fieldset>
           <legend>
             <label for="by" i18n:msg="stat_title">${stats.title.capitalize()} by</label>
@@ -59,28 +59,9 @@
               jQuery(document).ready(function ($) { $(".noscript").attr("style", "display: none"); });
             </script>
           </legend>
-          <table py:if="groups" summary="Shows the milestone completion status grouped by ${grouped_by}">
-            <tr py:for="group in groups">
-              <th scope="row" py:choose="">
-                <i py:when="not group.name"><a href="${group.stats_href}">(none)</a></i>
-                <a py:when="grouped_by in ['owner', 'reporter']"
-                   py:with="obfus_name = format_author(group.name)"
-                   py:strip="obfus_name != group.name"
-                   href="${group.stats_href}">${obfus_name}</a>
-                <a py:otherwise="" href="${group.stats_href}">${group.name}</a>
-              </th>
-              <td>
-                <xi:include href="progress_bar.html"
-                            py:with="stats = group.stats;
-                                     interval_hrefs = (group.interval_hrefs, None)
-                                                      [bool(grouped_by in ['owner', 'reporter']
-                                                            and group.name and group.name != format_author(group.name))];
-                                     percent = '%d / %d' % (group.stats.done_count, group.stats.count);
-                                     legend=False;
-                                     style='width: %d%%' % (group.percent_of_max_total * 0.8)"/>
-              </td>
-            </tr>
-          </table>
+          <xi:include href="progress_bar_grouped.html" py:if="groups"
+                      py:with="summary = _('Shows the milestone completion status grouped by %(grouped_by)s',
+                                           grouped_by=grouped_by)"/>
         </fieldset>
       </form>
 

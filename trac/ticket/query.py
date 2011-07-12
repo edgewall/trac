@@ -1290,6 +1290,14 @@ class TicketQueryMacro(WikiMacroBase):
         
         tickets = query.execute(req)
 
+        if format == 'table':
+            data = query.template_data(formatter.context, tickets)
+
+            add_stylesheet(req, 'common/css/report.css')
+            
+            return Chrome(self.env).render_template(
+                req, 'query_results.html', data, None, fragment=True)
+
         if format == 'progress':
             from trac.ticket.roadmap import (RoadmapModule,
                                              apply_ticket_permissions,
@@ -1324,7 +1332,7 @@ class TicketQueryMacro(WikiMacroBase):
                 return tag.div(
                     chrome.render_template(req, 'progress_bar.html', data,
                                            None, fragment=True),
-                    class_='progressquery')
+                    class_='trac-progress')
                              
             def per_group_stats_data(gstat, group_name):
                 return {
@@ -1339,36 +1347,18 @@ class TicketQueryMacro(WikiMacroBase):
                 }
 
             groups = grouped_stats_data(self.env, stats_provider, tickets, by,
-                    per_group_stats_data)
-            for group in groups:
-                group['style'] = 'width: %d%%' % \
-                    (group['percent_of_max_total'] * 0.8)
-            
-            def label(group):
-                if not group['name']:
-                    return tag.i("(none)")
-                if by in ['reporter', 'owner']:
-                    obfuscated = chrome.format_author(req, group['name'])
-                    if obfuscated != group['name']:
-                        return obfuscated
-                return tag.a(group['name'], href=group['stats_href'])
-                
-            return tag.table(
-                [tag.tr([
-                    tag.th(label(group), scope='row'),
-                    tag.td(chrome.render_template(req, 'progress_bar.html',
-                        group, None, fragment=True))])
-                 for group in groups], class_='progressquery')
-        
-        if format == 'table':
-            data = query.template_data(formatter.context, tickets)
-
-            add_stylesheet(req, 'common/css/report.css')
-            
-            return Chrome(self.env).render_template(
-                req, 'query_results.html', data, None, fragment=True)
-
-        # 'table' format had its own permission checks, here we need to
+                                        per_group_stats_data)
+            data = {
+                'groups': groups, 'grouped_by': by,
+                'summary': _("Ticket completion status for each %(group)s",
+                             group=by),
+            }
+            return tag.div(
+                chrome.render_template(req, 'progress_bar_grouped.html', data,
+                                       None, fragment=True),
+                class_='trac-groupprogress')
+                                       
+        # Formats above had their own permission checks, here we need to
         # do it explicitly:
 
         tickets = [t for t in tickets 

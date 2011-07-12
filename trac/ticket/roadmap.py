@@ -349,9 +349,9 @@ def grouped_stats_data(env, stats_provider, tickets, by, per_group_stats_data):
                     group_names.insert(0, '')
             else:
                 group_names = [name for name, in env.db_query("""
-                          SELECT DISTINCT COALESCE(%s, '') FROM ticket
-                          ORDER BY COALESCE(%s, '')
-                          """ % (by, by))]
+                    SELECT DISTINCT COALESCE(%s, '') FROM ticket
+                    ORDER BY COALESCE(%s, '')
+                    """ % (by, by))]
     max_count = 0
     data = []
 
@@ -861,8 +861,9 @@ class MilestoneModule(Component):
             def per_group_stats_data(gstat, group_name):
                 return milestone_stats_data(self.env, req, gstat, 
                                             milestone.name, by, group_name)
-            milestone_groups.extend(grouped_stats_data(self.env,
-                self.stats_provider, tickets, by, per_group_stats_data))
+            milestone_groups.extend(
+                grouped_stats_data(self.env, self.stats_provider, tickets, by,
+                                   per_group_stats_data))
 
         add_stylesheet(req, 'common/css/roadmap.css')
         add_script(req, 'common/js/folding.js')
