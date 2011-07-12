@@ -1201,6 +1201,7 @@ class TicketQueryMacro(WikiMacroBase):
      - '''count''' -- only the count of matching tickets is displayed
      - '''table'''  -- a view similar to the custom query view (but without
        the controls)
+     - '''progress''' -- a view similar to the milestone progress bars
 
     The `max` parameter can be used to limit the number of tickets shown
     (defaults to '''0''', i.e. no maximum).
@@ -1289,6 +1290,76 @@ class TicketQueryMacro(WikiMacroBase):
         
         tickets = query.execute(req)
 
+        if format == 'progress':
+            from trac.ticket.roadmap import (RoadmapModule,
+                                             apply_ticket_permissions,
+                                             get_ticket_stats,
+                                             grouped_stats_data)
+                                             
+            add_stylesheet(req, 'common/css/roadmap.css')
+
+            def query_href(extra_args, group_value = None):
+                q = Query.from_string(self.env, query_string)
+                if q.group:
+                    extra_args[q.group] = group_value
+                    q.group = None
+                for constraint in q.constraints:
+                    constraint.update(extra_args)
+                if not q.constraints:
+                    q.constraints.append(extra_args)
+                return q.get_href(formatter.context)
+            chrome = Chrome(self.env)
+            tickets = apply_ticket_permissions(self.env, req, tickets)
+            stats_provider = RoadmapModule(self.env).stats_provider
+            by = query.group
+            if not by:
+                stat = get_ticket_stats(stats_provider, tickets)
+                data = {
+                    'stats': stat,
+                    'stats_href': query_href(stat.qry_args),
+                    'interval_hrefs': [query_href(interval['qry_args'])
+                                       for interval in stat.intervals],
+                    'legend': True,
+                }
+                return tag.div(
+                    chrome.render_template(req, 'progress_bar.html', data,
+                                           None, fragment=True),
+                    class_='progressquery')
+                             
+            def per_group_stats_data(gstat, group_name):
+                return {
+                    'stats': gstat,
+                    'stats_href': query_href(gstat.qry_args,  group_name),
+                    'interval_hrefs': [query_href(interval['qry_args'],
+                                                  group_name)
+                                       for interval in gstat.intervals],
+                    'percent': '%d / %d' % (gstat.done_count, 
+                                            gstat.count),
+                    'legend': False,
+                }
+
+            groups = grouped_stats_data(self.env, stats_provider, tickets, by,
+                    per_group_stats_data)
+            for group in groups:
+                group['style'] = 'width: %d%%' % \
+                    (group['percent_of_max_total'] * 0.8)
+            
+            def label(group):
+                if not group['name']:
+                    return tag.i("(none)")
+                if by in ['reporter', 'owner']:
+                    obfuscated = chrome.format_author(req, group['name'])
+                    if obfuscated != group['name']:
+                        return obfuscated
+                return tag.a(group['name'], href=group['stats_href'])
+                
+            return tag.table(
+                [tag.tr([
+                    tag.th(label(group), scope='row'),
+                    tag.td(chrome.render_template(req, 'progress_bar.html',
+                        group, None, fragment=True))])
+                 for group in groups], class_='progressquery')
+        
         if format == 'table':
             data = query.template_data(formatter.context, tickets)
 

@@ -37,7 +37,6 @@ from trac.util.datefmt import parse_date, utc, to_utimestamp, \
 from trac.util.text import CRLF
 from trac.util.translation import _, tag_
 from trac.ticket import Milestone, Ticket, TicketSystem, group_milestones
-from trac.ticket.query import QueryModule
 from trac.timeline.api import ITimelineEventProvider
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import (Chrome, INavigationContributor,
@@ -322,6 +321,7 @@ def apply_ticket_permissions(env, req, tickets):
 
 def milestone_stats_data(env, req, stat, name, grouped_by='component',
                          group=None):
+    from trac.ticket.query import QueryModule
     has_query = env[QueryModule] is not None
     def query_href(extra_args):
         if not has_query:
@@ -334,6 +334,48 @@ def milestone_stats_data(env, req, stat, name, grouped_by='component',
             'interval_hrefs': [query_href(interval['qry_args'])
                                for interval in stat.intervals]}
 
+def grouped_stats_data(env, stats_provider, tickets, by, per_group_stats_data):
+    """Get the `tickets` stats data grouped by ticket field `by`.
+    
+    `per_group_stats_data(gstat, group_name)` should return a data dict to
+    include for the group with field value `group_name`.
+    """
+    group_names = []
+    for field in TicketSystem(env).get_ticket_fields():
+        if field['name'] == by:
+            if 'options' in field:
+                group_names = field['options']
+                if field.get('optional'):
+                    group_names.insert(0, '')
+            else:
+                group_names = [name for name, in env.db_query("""
+                          SELECT DISTINCT COALESCE(%s, '') FROM ticket
+                          ORDER BY COALESCE(%s, '')
+                          """ % (by, by))]
+    max_count = 0
+    data = []
+
+    for name in group_names:
+        values = (name,) if name else (None, name)
+        group_tickets = [t for t in tickets if t[by] in values]
+        if not group_tickets:
+            continue
+
+        gstat = get_ticket_stats(stats_provider, group_tickets)
+        if gstat.count > max_count:
+            max_count = gstat.count
+
+        gs_dict = {'name': name}
+        gs_dict.update(per_group_stats_data(gstat, name))
+        data.append(gs_dict)
+
+    for gs_dict in data:
+        percent = 1.0
+        if max_count:
+            gstat = gs_dict['stats']
+            percent = float(gstat.count) / float(max_count) * 100
+        gs_dict['percent_of_max_total'] = percent
+    return data
 
 
 class RoadmapModule(Component):
@@ -816,44 +858,11 @@ class MilestoneModule(Component):
         data.update(milestone_stats_data(self.env, req, stat, milestone.name))
 
         if by:
-            groups = []
-            for field in ticket_fields:
-                if field['name'] == by:
-                    if 'options' in field:
-                        groups = field['options']
-                        if field.get('optional'):
-                            groups.insert(0, '')
-                    else:
-                        groups = [group for group, in self.env.db_query("""
-                                  SELECT DISTINCT COALESCE(%s, '') FROM ticket
-                                  ORDER BY COALESCE(%s, '')
-                                  """ % (by, by))]
-            max_count = 0
-            group_stats = []
-
-            for group in groups:
-                values = (group,) if group else (None, group)
-                group_tickets = [t for t in tickets if t[by] in values]
-                if not group_tickets:
-                    continue
-
-                gstat = get_ticket_stats(self.stats_provider, group_tickets)
-                if gstat.count > max_count:
-                    max_count = gstat.count
-
-                group_stats.append(gstat) 
-
-                gs_dict = {'name': group}
-                gs_dict.update(milestone_stats_data(self.env, req, gstat,
-                                                    milestone.name, by, group))
-                milestone_groups.append(gs_dict)
-
-            for idx, gstat in enumerate(group_stats):
-                gs_dict = milestone_groups[idx]
-                percent = 1.0
-                if max_count:
-                    percent = float(gstat.count) / float(max_count) * 100
-                gs_dict['percent_of_max_total'] = percent
+            def per_group_stats_data(gstat, group_name):
+                return milestone_stats_data(self.env, req, gstat, 
+                                            milestone.name, by, group_name)
+            milestone_groups.extend(grouped_stats_data(self.env,
+                self.stats_provider, tickets, by, per_group_stats_data))
 
         add_stylesheet(req, 'common/css/roadmap.css')
         add_script(req, 'common/js/folding.js')
