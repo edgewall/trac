@@ -13,10 +13,11 @@
 
 import re
 
-from genshi import Markup, escape, unescape
+from genshi import Markup, HTML, escape, unescape
 from genshi.core import stripentities, striptags, START, END
 from genshi.builder import Element, ElementFactory, Fragment
 from genshi.filters.html import HTMLSanitizer
+from genshi.input import ParseError
 
 __all__ = ['escape', 'unescape', 'html', 'plaintext', 'find_element',
            'TracHTMLSanitizer']
@@ -143,7 +144,7 @@ def find_element(frag, attr=None, cls=None):
         if attr is not None and attr in frag.attrib:
             return frag
         if cls is not None and cls in frag.attrib.get('class', '').split():
-            return fragment
+            return frag
     if isinstance(frag, Fragment):
         for child in frag.children:
             elt = find_element(child, attr, cls)

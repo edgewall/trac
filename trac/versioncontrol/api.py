@@ -17,7 +17,7 @@
 import os.path
 import time
 
-from trac.admin import AdminCommandError, IAdminCommandProvider
+from trac.admin import AdminCommandError, IAdminCommandProvider, get_dir_list
 from trac.config import ListOption, Option
 from trac.core import *
 from trac.resource import IResourceManager, Resource, ResourceNotFound
