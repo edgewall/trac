@@ -942,11 +942,14 @@ class Chrome(Component):
 
         links = req.chrome.get('links')
         scripts = req.chrome.get('scripts')
+        script_data = req.chrome.get('script_data')
         req.chrome['links'] = {}
         req.chrome['scripts'] = []
+        req.chrome['script_data'] = {}
         data.setdefault('chrome', {}).update({
             'late_links': req.chrome['links'],
             'late_scripts': req.chrome['scripts'],
+            'late_script_data': req.chrome['script_data'],
         })
 
         try:
@@ -958,6 +961,7 @@ class Chrome(Component):
             # restore what may be needed by the error template
             req.chrome['links'] = links
             req.chrome['scripts'] = scripts
+            req.chrome['script_data'] = script_data
             # give some hints when hitting a Genshi unicode error
             if isinstance(e, UnicodeError):
                 pos = self._stream_location(stream)

@@ -23,7 +23,7 @@ from trac.prefs import IPreferencePanelProvider
 from trac.util import get_pkginfo
 from trac.util.datefmt import http_date, localtz
 from trac.util.translation import _
-from trac.web import IRequestHandler
+from trac.web.api import IRequestHandler, HTTPNotFound
 from trac.web.chrome import add_notice, add_stylesheet
 
 from genshi import QName, Stream

@@ -26,6 +26,7 @@ from trac.config import Option
 from trac.mimeview.api import IHTMLPreviewRenderer, content_to_unicode
 from trac.util import NaivePopen
 from trac.util.html import Deuglifier
+from trac.util.translation import _
 
 __all__ = ['PHPRenderer']
 

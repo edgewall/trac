@@ -28,7 +28,7 @@
       </py:for>
     </script>
     <py:for each="script in chrome.scripts">
-      <script type="${script.type}" charset="${script.charset}" src="${script.href}" />
+      <script type="${script.type}" charset="${script.charset}" src="${script.href}"></script>
     </py:for>
     ${select("*[local-name() != 'title']|text()|comment()")}
   </head></py:match>
@@ -41,8 +41,14 @@
         jQuery.loadStyleSheet("${link.href}", "${link.type}");
       </py:for>
     </script>
-    <script py:for="script in chrome.late_scripts"
-            type="${script.type}" src="${script.href}"></script>
+    <script py:if="chrome.late_script_data" type="text/javascript">
+      <py:for each="key, value in chrome.late_script_data.iteritems()">
+      var ${key}=${to_json(value)};
+      </py:for>
+    </script>
+    <py:for each="script in chrome.late_scripts">
+      <script type="${script.type}" charset="${script.charset}" src="${script.href}"></script>
+    </py:for>
 
     <div id="altlinks" py:if="'alternate' in chrome.links">
       <h3>Download in other formats:</h3>
