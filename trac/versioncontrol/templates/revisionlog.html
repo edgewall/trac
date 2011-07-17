@@ -8,24 +8,19 @@
   <xi:include href="layout.html" />
   <head>
     <title>${'/'.join(part.name for part in path_links[1:]) or '/'} (log)</title>
-    <py:if test="graph">
-      ${Markup('&lt;!--[if IE]&gt;')}
-      <script type="text/javascript" src="${chrome.htdocs_location}js/excanvas.js"></script>
-      ${Markup('&lt;![endif]--&gt;')}
-      <script py:if="graph" type="text/javascript">//<![CDATA[
-        jQuery(document).ready(function($) {
-          $('th.trac-graph, td.trac-graph').show();
-          var canvas = $('<canvas>').css({width: '${graph.columns * 2}em',
-                                          height: '${len(items) * 2}em'})
-                                    .appendTo('td.trac-graph')[0];
-          canvas.width = $(canvas).width();
-          canvas.height = $(canvas).height();
-          if (typeof(G_vmlCanvasManager) != 'undefined')
-            canvas = G_vmlCanvasManager.initElement(canvas);
-          $.paintLogGraph(graph, canvas);
-        });
-      //]]></script>
-    </py:if>
+    <script py:if="graph" type="text/javascript">//<![CDATA[
+      jQuery(document).ready(function($) {
+        $('th.trac-graph, td.trac-graph').show();
+        var canvas = $('<canvas>').css({width: '${graph.columns * 2}em',
+                                        height: '${len(items) * 2}em'})
+                                  .appendTo('td.trac-graph')[0];
+        canvas.width = $(canvas).width();
+        canvas.height = $(canvas).height();
+        if (typeof(G_vmlCanvasManager) != 'undefined')
+          canvas = G_vmlCanvasManager.initElement(canvas);
+        $.paintLogGraph(graph, canvas);
+      });
+    //]]></script>
   </head>
 
   <body>

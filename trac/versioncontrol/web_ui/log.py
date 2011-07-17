@@ -216,6 +216,7 @@ class LogModule(Component):
             graph.update(threads=threads, vertices=vertices, columns=columns,
                          colors=self.graph_colors,
                          line_width=0.04, dot_radius=0.1)
+            add_script(req, 'common/js/excanvas.js', ie_if='IE')
             add_script(req, 'common/js/log_graph.js')
             add_script_data(req, {'graph': graph})
         

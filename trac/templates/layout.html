@@ -28,7 +28,7 @@
       </py:for>
     </script>
     <py:for each="script in chrome.scripts">
-      <script type="${script.type}" charset="${script.charset}" src="${script.href}"></script>
+      ${script.prefix}<script type="${script.type}" charset="${script.charset}" src="${script.href}"></script>${script.suffix}
     </py:for>
     ${select("*[local-name() != 'title']|text()|comment()")}
   </head></py:match>
@@ -47,7 +47,7 @@
       </py:for>
     </script>
     <py:for each="script in chrome.late_scripts">
-      <script type="${script.type}" charset="${script.charset}" src="${script.href}"></script>
+      ${script.prefix}<script type="${script.type}" charset="${script.charset}" src="${script.href}"></script>${script.suffix}
     </py:for>
 
     <div id="altlinks" py:if="'alternate' in chrome.links">
