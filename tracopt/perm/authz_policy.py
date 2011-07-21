@@ -130,7 +130,7 @@ class AuthzPolicy(Component):
     """
     implements(IPermissionPolicy)
 
-    authz_file = Option('authz_policy', 'authz_file', None,
+    authz_file = Option('authz_policy', 'authz_file', '',
                         'Location of authz policy configuration file.')
 
     authz = None
