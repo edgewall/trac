@@ -667,7 +667,7 @@ class ChangesetModule(Component):
             stream = Chrome(self.env).render_template(req, 'changeset.html',
                                                       data, fragment=True)
             content = stream.select('//div[@id="content"]')
-            str_content = content.render('xhtml')
+            str_content = content.render('xhtml', encoding='utf-8')
             req.send_header('Content-Length', len(str_content))
             req.end_headers()
             req.write(str_content)
@@ -1199,7 +1199,7 @@ class AnyDiffModule(Component):
                  for (isdir, name, path) in sorted(entries, key=kind_order)
                  if name.lower().startswith(prefix)])
 
-            xhtml = elem.generate().render('xhtml')
+            xhtml = elem.generate().render('xhtml', encoding='utf-8')
             req.send_header('Content-Length', len(xhtml))
             req.write(xhtml)
             return

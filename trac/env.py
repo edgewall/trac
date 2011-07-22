@@ -727,7 +727,7 @@ class EnvironmentAdmin(Component):
             stream = template.generate(**data)
             out = file(dest, 'w')
             try:
-                stream.render('text', out=out)
+                stream.render('text', out=out, encoding='utf-8')
             finally:
                 out.close()
     

@@ -382,11 +382,6 @@ class NotifyEmail(Notify):
     def encode_header(self, key, value):
         if isinstance(value, tuple):
             return self.format_header(key, value[0], value[1])
-        if isinstance(value, list):
-            items = []
-            for v in value:
-                items.append(self.encode_header(v))
-            return ',\n\t'.join(items)
         mo = self.longaddr_re.match(value)
         if mo:
             return self.format_header(key, mo.group(1), mo.group(2))
@@ -399,7 +394,7 @@ class NotifyEmail(Notify):
         # don't translate the e-mail stream
         t = deactivate()
         try:
-            body = stream.render('text')
+            body = stream.render('text', encoding='utf-8')
         finally:
             reactivate(t)
         projname = self.env.project_name
