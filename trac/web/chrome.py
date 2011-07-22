@@ -49,7 +49,7 @@ from trac.env import IEnvironmentSetupParticipant, ISystemInfoProvider
 from trac.mimeview.api import RenderingContext, get_mimetype
 from trac.resource import *
 from trac.util import compat, get_reporter_id, presentation, get_pkginfo, \
-                      pathjoin, translation
+                      lazy, pathjoin, sha1, translation
 from trac.util.html import escape, plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
                            shorten_line, unicode_quote_plus, to_unicode, \
@@ -141,10 +141,10 @@ def add_stylesheet(req, filename, mimetype='text/css', media=None):
     elif filename.startswith('common/') and 'htdocs_location' in req.chrome:
         href = Href(req.chrome['htdocs_location'])(filename[7:])
     else:
-        href = req.href
-        if not filename.startswith('/'):
-            href = href.chrome
-        href = href(filename)
+        if filename.startswith('/'):
+            href = req.href(filename)
+        else:
+            href = req.href.chrome(req.chrome['static_hash'], filename)
     add_link(req, 'stylesheet', href, mimetype=mimetype, media=media)
 
 def add_script(req, filename, mimetype='text/javascript', charset='utf-8',
@@ -164,10 +164,10 @@ def add_script(req, filename, mimetype='text/javascript', charset='utf-8',
     elif filename.startswith('common/') and 'htdocs_location' in req.chrome:
         href = Href(req.chrome['htdocs_location'])(filename[7:])
     else:
-        href = req.href
-        if not filename.startswith('/'):
-            href = href.chrome
-        href = href(filename)
+        if filename.startswith('/'):
+            href = req.href(filename)
+        else:
+            href = req.href.chrome(req.chrome['static_hash'], filename)
     script = {'href': href, 'type': mimetype, 'charset': charset,
               'prefix': Markup('<!--[if %s]>' % ie_if) if ie_if else None,
               'suffix': Markup('<![endif]-->') if ie_if else None}
@@ -343,6 +343,22 @@ class Chrome(Component):
     auto_reload = BoolOption('trac', 'auto_reload', False,
         """Automatically reload template files after modification.""")
     
+    fingerprint_resources = ChoiceOption('trac', 'fingerprint_resources',
+                                         ['content', 'meta', 'disabled'],
+        """Control the fingerprinting of static resources.
+        
+        URLs to static resources below `/chrome` have the form
+        `/chrome/![0-9a-f]{8}/.*`, where the second element is a fingerprint
+        of the ''content'' of all resources (for "content") or their
+        ''metadata'' (size and mtime, for "meta"). This allows aggressive
+        caching of static resources on the browser, while still ensuring that
+        they are reloaded when they change.
+        
+        Setting this option to "disabled" disables fingerprinting, and
+        reverts the URLs to static resources to `/chrome/.*`.
+        
+        (''since 0.13'')""")
+
     genshi_cache_size = IntOption('trac', 'genshi_cache_size', 128,
         """The maximum number of templates that the template loader will cache
         in memory. The default value is 128. You may want to choose a higher
@@ -537,15 +553,20 @@ class Chrome(Component):
 
     # IRequestHandler methods
 
+    _chrome_path_re = re.compile(r'/chrome/(?:(?P<hash>![0-9a-f]+)/)?'
+                                 r'(?P<prefix>[^/]+)/+(?P<filename>.+)')
+
     def match_request(self, req):
-        match = re.match(r'/chrome/(?P<prefix>[^/]+)/+(?P<filename>.+)',
-                         req.path_info)
+        match = self._chrome_path_re.match(req.path_info)
         if match:
+            req.args['hash'] = match.group('hash')
             req.args['prefix'] = match.group('prefix')
             req.args['filename'] = match.group('filename')
             return True
 
     def process_request(self, req):
+        hash_matches = self.static_hash \
+                       and req.args['hash'] == self.static_hash
         prefix = req.args['prefix']
         filename = req.args['filename']
 
@@ -558,7 +579,10 @@ class Chrome(Component):
                 path = os.path.normpath(os.path.join(dir, filename))
                 assert os.path.commonprefix([dir, path]) == dir
                 if os.path.isfile(path):
-                    req.send_file(path, get_mimetype(path))
+                    req.send_file(path, get_mimetype(path),
+                                  expires=datetime.datetime.now(utc)
+                                          + datetime.timedelta(days=365)
+                                          if hash_matches else None)
 
         self.log.warning('File %s not found in any of %s', filename, dirs)
         raise HTTPNotFound('File %s not found', filename)
@@ -587,10 +611,41 @@ class Chrome(Component):
 
     def _format_link(self, formatter, ns, file, label):
         file, query, fragment = formatter.split_link(file)
-        href = formatter.href.chrome('site', file) + query + fragment
+        href = formatter.href.chrome(self.static_hash, 'site', file) + query \
+               + fragment
         return tag.a(label, href=href)
 
     # Public API methods
+
+    @lazy
+    def static_hash(self):
+        """Return a hash of all available static resources."""
+        if self.fingerprint_resources == 'content':
+            def update(path):
+                with open(path, 'rb') as f:
+                    while True:
+                        data = f.read(65536)
+                        if not data:
+                            break
+                        hash.update(data)
+        elif self.fingerprint_resources == 'meta':
+            def update(path):
+                st = os.stat(path)
+                hash.update(str(st.st_size) + str(st.st_mtime))
+        else:
+            return None
+                
+        all_dirs = [dir[1] for provider in self.template_providers
+                    for dir in provider.get_htdocs_dirs() or []]
+        all_dirs.sort()
+        hash = sha1()
+        for dir in all_dirs:
+            for path, dirs, files in os.walk(dir):
+                dirs.sort()
+                files.sort()
+                for name in files:
+                    update(os.path.join(path, name))
+        return '!' + hash.hexdigest()[:8]
 
     def get_all_templates_dirs(self):
         """Return a list of the names of all known templates directories."""
@@ -610,9 +665,11 @@ class Chrome(Component):
 
         chrome = {'metas': [], 'links': {}, 'scripts': [], 'script_data': {},
                   'ctxtnav': [], 'warnings': [], 'notices': []}
-        setattr(req, 'chrome', chrome)
+        req.chrome = chrome
 
-        htdocs_location = self.htdocs_location or req.href.chrome('common')
+        chrome['static_hash'] = self.static_hash
+        htdocs_location = self.htdocs_location \
+                          or req.href.chrome(self.static_hash, 'common')
         chrome['htdocs_location'] = htdocs_location.rstrip('/') + '/'
 
         # HTML <head> links
@@ -721,11 +778,14 @@ class Chrome(Component):
         if icon_src:
             if not icon_src.startswith('/') and icon_src.find('://') == -1:
                 if '/' in icon_src:
-                    icon_abs_src = req.abs_href.chrome(icon_src)
-                    icon_src = req.href.chrome(icon_src)
+                    icon_abs_src = req.abs_href.chrome(self.static_hash,
+                                                       icon_src)
+                    icon_src = req.href.chrome(self.static_hash, icon_src)
                 else:
-                    icon_abs_src = req.abs_href.chrome('common', icon_src)
-                    icon_src = req.href.chrome('common', icon_src)
+                    icon_abs_src = req.abs_href.chrome(self.static_hash,
+                                                       'common', icon_src)
+                    icon_src = req.href.chrome(self.static_hash, 'common',
+                                               icon_src)
             mimetype = get_mimetype(icon_src)
             icon = {'src': icon_src, 'abs_src': icon_abs_src,
                     'mimetype': mimetype}
@@ -742,12 +802,13 @@ class Chrome(Component):
                 logo_src_abs = logo_src
             elif '/' in logo_src:
                 # Like 'common/trac_banner.png' or 'site/my_banner.png'
-                logo_src_abs = abs_href.chrome(logo_src)
-                logo_src = href.chrome(logo_src)
+                logo_src_abs = abs_href.chrome(self.static_hash, logo_src)
+                logo_src = href.chrome(self.static_hash, logo_src)
             else:
                 # Like 'trac_banner.png'
-                logo_src_abs = abs_href.chrome('common', logo_src)
-                logo_src = href.chrome('common', logo_src)
+                logo_src_abs = abs_href.chrome(self.static_hash, 'common',
+                                               logo_src)
+                logo_src = href.chrome(self.static_hash, 'common', logo_src)
             width = self.logo_width if self.logo_width > -1 else None
             height = self.logo_height if self.logo_height > -1 else None
             logo = {

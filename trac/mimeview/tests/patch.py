@@ -28,8 +28,8 @@ class PatchRendererTestCase(unittest.TestCase):
 
     def setUp(self):
         env = EnvironmentStub(enable=[Chrome, PatchRenderer])
-        req = Mock(base_path='', chrome={}, args={}, session={},
-                   abs_href=Href('/'), href=Href('/'), locale='',
+        req = Mock(base_path='', chrome={'static_hash': None}, args={},
+                   session={}, abs_href=Href('/'), href=Href('/'), locale='',
                    perm=MockPerm(), authname=None, tz=None)
         self.context = web_context(req)
         self.patch = Mimeview(env).renderers[0]

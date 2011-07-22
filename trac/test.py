@@ -283,6 +283,9 @@ class EnvironmentStub(Environment):
         if default_data or init_global:
             self.reset_db(default_data)
 
+        # -- avoid chrome URL fingerprinting
+        self.config.set('trac', 'fingerprint_resources', 'disabled')
+
         from trac.web.href import Href
         self.href = Href('/trac.cgi')
         self.abs_href = Href('http://example.org/trac.cgi')
