@@ -1,30 +1,61 @@
 (function($){
 
-  function drawNode(ctx, node) {
-    ctx.textBaseline = 'middle';
+  function computeBoundsAndJustify(ctx, nodes, width, height) {
+    var borderx = 20, bordery = 20, r = 7, h = 13;
     ctx.font = '13px Arial';
-    var measured = ctx.measureText(node.label);
-    var w = measured.width, h = 13;
-    var x = node.x - w / 2, y = node.y - h / 2, r = 7;
-    ctx.fillText(node.label, x, y + h / 2);
+    var bws = [], xs = [], ys = [];
+    $.each(nodes, function (index, node) {
+      var w = ctx.measureText(node.label).width;
+      node.labelWidth = w;
+      node.bw = w + r + r;
+      node.bh = h + r + r;
+      node.br = r;
+      bws.push(node.bw);
+      xs.push(node.x);
+      ys.push(node.y);
+    });
+    var maxbw = Math.max.apply(Math, bws);
+    var maxbh = h + r + r;
+    var minx = Math.min.apply(Math, xs);
+    var maxx = Math.max.apply(Math, xs);
+    var miny = Math.min.apply(Math, ys);
+    var maxy = Math.max.apply(Math, ys);
+    var bx = borderx + maxbw / 2;
+    var by = bordery + maxbh / 2;
+    if(minx == maxx) {
+      minx -= 1;
+      maxx += 1;
+    }
+    if(miny == maxy) {
+      miny -= 1;
+      maxy += 1;
+    }
+    $.each(nodes, function (index, node) {
+      node.x = bx + (node.x - minx) * (width - 2 * bx) / (maxx - minx);
+      node.y = by + (node.y - miny) * (height - 2 * by) / (maxy - miny);
+      node.bx = node.x - node.bw / 2;
+      node.by = node.y - node.bh / 2;
+    });
+  }
+
+  function drawNode(ctx, node) {
+    ctx.font = '13px Arial';
+    ctx.textBaseline = 'middle';
+    var x = node.bx, y = node.by, r = node.br, w = node.bw, h = node.bh;
+    ctx.fillText(node.label, x + r, y + h / 2);
     ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(x, y - r);
-    ctx.lineTo(x + w, y - r);
-    ctx.quadraticCurveTo(x + w + r, y - r, x + w + r, y);
-    ctx.lineTo(x + w + r, y + h);
-    ctx.quadraticCurveTo(x + w + r, y + h + r, x + w, y + h + r);
-    ctx.lineTo(x, y + h + r);
-    ctx.quadraticCurveTo(x - r, y + h + r, x - r, y + h);
-    ctx.lineTo(x - r, y);
-    ctx.quadraticCurveTo(x - r, y - r, x, y - r);
+    ctx.beginPath();  
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
     ctx.closePath();
     ctx.stroke();
-  
-    node.bx = x - r;
-    node.by = y - r;
-    node.bw = w + r + r;
-    node.bh = h + r + r;
   }
 
   function lerp(a, b, t) {
@@ -173,23 +204,11 @@
       node.x = Math.cos(radian);
       node.y = Math.sin(radian);
     });
-    if (graph.nodes.length == 1) {
-      graph.minx = 1;
-      graph.maxx = 1;
-      graph.miny = 1;
-      graph.maxy = 1;
-    } else {
-      graph.minx = -1;
-      graph.maxx = 1;
-      graph.miny = -1;
-      graph.maxy = 1;
-    }
   }
   
   $(document).ready(function() {
     $('.trac-workflow-graph').each(function (index) {
       var data = window['graph_' + this.id.slice(-8)];
-      var borderx = 50, bordery = 50;
       var width = data.width, height = data.height;
       var nodes = [], actions = [], edges = [];
       for (var i = 0; i < data.nodes.length; ++i)
@@ -218,21 +237,9 @@
       
       var graph = {nodes: nodes, edges: edges};
       layoutCircular(graph);
-  
-      if(graph.minx == graph.maxx) {
-        graph.minx -= 1;
-        graph.maxx += 1;
-      }
-      if(graph.miny == graph.maxy) {
-        graph.miny -= 1;
-        graph.maxy += 1;
-      }
+      computeBoundsAndJustify(ctx, nodes, width, height);
 
       $.each(nodes, function (index, node) {
-        node.x = borderx + (node.x - graph.minx) * (width - 2 * borderx)
-                           / (graph.maxx - graph.minx);
-        node.y = bordery + (node.y - graph.miny) * (height - 2 * bordery)
-                           / (graph.maxy - graph.miny);
         drawNode(ctx, node);
       });
       $.each(edges, function (index, edge) {
