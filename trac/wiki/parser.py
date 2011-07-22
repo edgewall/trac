@@ -42,6 +42,7 @@ class WikiParser(Component):
     STARTBLOCK = "{{{"
     ENDBLOCK_TOKEN = r"\}\}\}"
     ENDBLOCK = "}}}"
+    BULLET_CHARS = u"-*\u2022"
     
     LINK_SCHEME = r"[a-zA-Z][-a-zA-Z0-9+._]*" # as per RFC 2396 + '_'
     INTERTRAC_SCHEME = r"[a-zA-Z.+-]*?" # no digits (for shorthand links)
@@ -116,7 +117,8 @@ class WikiParser(Component):
         r"(?P<hanchor>#%s)?\s*$)" % XML_NAME,
         #  * list
         r"(?P<list>^(?P<ldepth>\s*)"
-        r"(?:[-*]|(?P<lstart>\d+|[a-zA-Z]|[ivxIVX]{1,5})\.)\s)",
+        ur"(?:[%s]|(?P<lstart>\d+|[a-zA-Z]|[ivxIVX]{1,5})\.)\s)"
+        % (BULLET_CHARS),
         # definition:: 
         r"(?P<definition>^\s+"
         r"((?:%s[^%s]*%s|%s(?:%s{,2}[^%s])*?%s|[^%s%s:]|:[^:])+::)(?:\s+|$))"

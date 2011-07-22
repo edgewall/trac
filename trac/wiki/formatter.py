@@ -802,7 +802,7 @@ class Formatter(object):
         listid = match[ldepth]
         self.in_list_item = True
         class_ = start = None
-        if listid in '-*':
+        if listid in WikiParser.BULLET_CHARS:
             type_ = 'ul'
         else:
             type_ = 'ol'
