@@ -18,6 +18,9 @@
 
 import pkg_resources
 
+from ConfigParser import RawConfigParser
+from StringIO import StringIO
+
 from genshi.builder import tag
 
 from trac.config import Configuration, ConfigSection
@@ -27,8 +30,9 @@ from trac.perm import PermissionSystem
 from trac.ticket.api import ITicketActionController, TicketSystem
 from trac.ticket.model import Resolution
 from trac.util.text import obfuscate_email_address
-from trac.util.translation import _, tag_
-from trac.web.chrome import Chrome
+from trac.util.translation import _, tag_, cleandoc_
+from trac.web.chrome import Chrome, add_script, add_script_data
+from trac.wiki.macros import WikiMacroBase
 
 # -- Utilities for the ConfigurableTicketWorkflow
 
@@ -408,3 +412,84 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                       self._has_perms_for_action(req, info, ticket.resource)]
         return actions
 
+
+class WorkflowMacro(WikiMacroBase):
+    _domain = 'messages'
+    _description = cleandoc_(
+    """Render a workflow graph.
+    
+    This macro accepts a TracWorkflow configuration and renders the states
+    and transitions as a directed graph. If no parameters are given, the
+    current ticket workflow is rendered. In WikiProcessors mode the `width`
+    and `height` arguments can be specified.
+
+    (Defaults: `width = 800` and `heigth = 600`)
+    
+    Examples:
+    {{{
+        [[Workflow()]]
+        
+        [[Workflow(go = here -> there; return = there -> here)]]
+        
+        {{{
+        #!Workflow width=700 height=700
+        leave = * -> *
+        leave.operations = leave_status
+        leave.default = 1
+
+        accept = new,assigned,accepted,reopened -> accepted
+        accept.permissions = TICKET_MODIFY
+        accept.operations = set_owner_to_self
+
+        resolve = new,assigned,accepted,reopened -> closed
+        resolve.permissions = TICKET_MODIFY
+        resolve.operations = set_resolution
+
+        reassign = new,assigned,accepted,reopened -> assigned
+        reassign.permissions = TICKET_MODIFY
+        reassign.operations = set_owner
+
+        reopen = closed -> reopened
+        reopen.permissions = TICKET_CREATE
+        reopen.operations = del_resolution
+        }}}
+    }}}
+    """)
+
+    def expand_macro(self, formatter, name, text, args):
+        if not text:
+            raw_actions = self.config.options('ticket-workflow')
+        else:
+            if args is None:
+                text = '\n'.join([line.lstrip() for line in text.split(';')])
+            if not '[ticket-workflow]' in text:
+                text = '[ticket-workflow]\n' + text
+            parser = RawConfigParser()
+            parser.readfp(StringIO(text))
+            raw_actions = list(parser.items('ticket-workflow'))
+        actions = parse_workflow_config(raw_actions)
+        states = list(set(
+            [state for action in actions.itervalues()
+                   for state in action['oldstates']] +
+            [action['newstate'] for action in actions.itervalues()]))
+        action_names = actions.keys()
+        edges = []
+        for name, action in actions.items():
+            new_index = states.index(action['newstate'])
+            name_index = action_names.index(name)
+            for old_state in action['oldstates']:
+                old_index = states.index(old_state)
+                edges.append((old_index, new_index, name_index))
+
+        args = args or {}
+        graph = {'nodes': states, 'actions': action_names, 'edges': edges,
+                 'width': args.get('width', 800), 
+                 'height': args.get('height', 600)}
+        graph_id = '%.8x' % id(graph)
+        req = formatter.req
+        add_script(req, 'common/js/excanvas.js', ie_if='IE')
+        add_script(req, 'common/js/workflow_graph.js')
+        add_script_data(req, {'graph_%s' % graph_id: graph})
+        return tag.div(_("Enable JavaScript to display the workflow graph."),
+                       class_='trac-workflow-graph system-message',
+                       id='trac-workflow-graph-%s' % graph_id)
