@@ -933,7 +933,7 @@ class Chrome(Component):
 
         if method == 'text':
             buffer = StringIO()
-            stream.render('text', out=buffer)
+            stream.render('text', out=buffer, encoding='utf-8')
             return buffer.getvalue()
 
         doctype = {'text/html': DocType.XHTML_STRICT}.get(content_type)
@@ -957,7 +957,8 @@ class Chrome(Component):
 
         try:
             buffer = StringIO()
-            stream.render(method, doctype=doctype, out=buffer, encoding="utf-8")
+            stream.render(method, doctype=doctype, out=buffer,
+                          encoding='utf-8')
             return buffer.getvalue().translate(_translate_nop,
                                                _invalid_control_chars)
         except Exception, e:

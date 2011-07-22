@@ -876,7 +876,7 @@ class EnvironmentAdmin(Component):
                                                       'text')
             stream = template.generate(**data)
             with open(dest, 'w') as out:
-                stream.render('text', out=out)
+                stream.render('text', out=out, encoding='utf-8')
 
     def _do_hotcopy(self, dest, no_db=None):
         if no_db not in (None, '--no-database'):

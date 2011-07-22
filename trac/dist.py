@@ -219,7 +219,8 @@ try:
 
         out = StringIO()
         stream = Stream(XMLParser(fileobj))
-        stream.select('//script[@type="text/javascript"]').render(out=out)
+        stream = stream.select('//script[@type="text/javascript"]')
+        stream.render(out=out, encoding='utf-8')
         out.seek(0)
         return extract_javascript(out, keywords, comment_tags, options)
 
