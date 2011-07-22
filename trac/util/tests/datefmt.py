@@ -336,12 +336,12 @@ else:
             vi = Locale.parse('vi')
             zh_CN = Locale.parse('zh_CN')
 
-            self.assertEqual('MMM d, yyyy h:mm:ss a',
-                             datefmt.get_datetime_format_hint(en_US))
-            self.assertEqual('d MMM yyyy HH:mm:ss',
-                             datefmt.get_datetime_format_hint(en_GB))
-            self.assertEqual('d MMM yyyy HH:mm:ss',
-                             datefmt.get_datetime_format_hint(fr))
+            self.assert_(datefmt.get_datetime_format_hint(en_US)
+                         in ('MMM d, yyyy h:mm:ss a', 'MMM d, y h:mm:ss a'))
+            self.assert_(datefmt.get_datetime_format_hint(en_GB)
+                         in ('d MMM yyyy HH:mm:ss', 'd MMM y HH:mm:ss'))
+            self.assert_(datefmt.get_datetime_format_hint(fr)
+                         in ('d MMM yyyy HH:mm:ss', 'd MMM y HH:mm:ss'))
             self.assertEqual('yyyy/MM/dd H:mm:ss',
                              datefmt.get_datetime_format_hint(ja))
             self.assertEqual('HH:mm:ss dd-MM-yyyy',
@@ -357,12 +357,12 @@ else:
             vi = Locale.parse('vi')
             zh_CN = Locale.parse('zh_CN')
 
-            self.assertEqual('MMM d, yyyy',
-                             datefmt.get_date_format_hint(en_US))
-            self.assertEqual('d MMM yyyy',
-                             datefmt.get_date_format_hint(en_GB))
-            self.assertEqual('d MMM yyyy',
-                             datefmt.get_date_format_hint(fr))
+            self.assert_(datefmt.get_date_format_hint(en_US)
+                         in ('MMM d, yyyy', 'MMM d, y'))
+            self.assert_(datefmt.get_date_format_hint(en_GB)
+                         in ('d MMM yyyy', 'd MMM y'))
+            self.assert_(datefmt.get_date_format_hint(fr)
+                         in ('d MMM yyyy', 'd MMM y'))
             self.assertEqual('yyyy/MM/dd',
                              datefmt.get_date_format_hint(ja))
             self.assertEqual('dd-MM-yyyy',
