@@ -538,8 +538,8 @@ class IHTMLPreviewAnnotator(Interface):
         `context` is the context corresponding to the content being annotated,
         `row` is the tr Element being built, `number` is the line number being
         processed and `line` is the line's actual content.
-        `annotations` is whatever additional data the `get_annotation_data`
-        method decided to provide.
+        `data` is whatever additional data the `get_annotation_data` method
+        decided to provide.
         """
 
 
