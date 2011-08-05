@@ -130,9 +130,10 @@ try:
         def add_domain(self, domain, env_path, locales_dir):
             self._plugin_domains_lock.acquire()
             try:
-                if env_path not in self._plugin_domains:
-                    self._plugin_domains[env_path] = []
-                self._plugin_domains[env_path].append((domain, locales_dir))
+                entry = (domain, locales_dir)
+                plugin_domains = self._plugin_domains.setdefault(env_path, [])
+                if entry not in plugin_domains:
+                    plugin_domains.append(entry)
             finally:
                 self._plugin_domains_lock.release()
 
