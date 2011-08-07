@@ -1,11 +1,11 @@
 (function($){
   
   /* Adapted from http://www.kryogenix.org/code/browser/searchhi/ */
-  $.fn.highlightText = function(text, className) {
+  $.fn.highlightText = function(text, className, caseSensitive) {
     function highlight(node) {
       if (node.nodeType == 3) { // Node.TEXT_NODE
         var val = node.nodeValue;
-        var pos = val.toLowerCase().indexOf(text);
+        var pos = (caseSensitive ? val : val.toLowerCase()).indexOf(text);
         if (pos >= 0 && !$(node.parentNode).hasClass(className)) {
           var span = document.createElement("span");
           span.className = className;
@@ -54,9 +54,35 @@
   
     var terms = getSearchTerms(document.URL);
     if (!terms.length) terms = getSearchTerms(document.referrer);
-    $.each(terms, function(idx) {
-      elems.highlightText(this.toLowerCase(), "searchword" + (idx % 5));
-    });
+    if (terms.length) {
+      $.each(terms, function(idx) {
+        elems.highlightText(this.toLowerCase(), "searchword" + (idx % 5));
+      });
+    } else {
+      function scrollToHashSearchMatch() {
+        var h = window.location.hash;
+        var direction = h[1];
+        var case_insensitive = h.match(/\/i$/);
+        if (direction == '/' || direction == '?') {
+          var hterm = h.substr(2);
+          if (case_insensitive)
+            hterm = hterm.substr(0, hterm.length - 2).toLowerCase();
+          $('.searchword0').each(function() {
+            $(this).after($(this).html()).remove();
+          });
+          elems.highlightText(hterm, "searchword0", !case_insensitive);
+          var hmatches = $('.searchword0');
+          if (direction == '?')
+            hmatches = hmatches.last();
+          hmatches.first().each(function() {
+            var offset = $(this).offset().top;
+            window.scrollTo(0, offset);
+          });
+        }
+      }
+      window.onhashchange = scrollToHashSearchMatch;
+      scrollToHashSearchMatch();
+    }
   });
 
 })(jQuery);
