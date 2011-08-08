@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2011-07-11 02:09+0200\n"
+"POT-Creation-Date: 2011-08-08 23:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: tracopt/mimeview/php.py:97
+#: tracopt/mimeview/php.py:98
 msgid ""
 "You appear to be using the PHP CGI binary. Trac requires the CLI version "
 "for syntax highlighting."
@@ -280,7 +280,7 @@ msgid "Date"
 msgstr ""
 
 #: trac/attachment.py:951 trac/templates/attachment.html:93
-#: trac/ticket/api.py:293 trac/ticket/templates/ticket_box.html:60
+#: trac/ticket/api.py:295 trac/ticket/templates/ticket_box.html:60
 msgid "Description"
 msgstr ""
 
@@ -883,7 +883,7 @@ msgid "Add"
 msgstr ""
 
 #: trac/admin/templates/admin_components.html:80 trac/ticket/admin.py:208
-#: trac/ticket/api.py:287 trac/ticket/web_ui.py:1363
+#: trac/ticket/api.py:289 trac/ticket/web_ui.py:1363
 msgid "Owner"
 msgstr ""
 
@@ -1129,7 +1129,7 @@ msgid "License:"
 msgstr ""
 
 #: trac/admin/templates/admin_plugins.html:102 trac/ticket/admin.py:75
-#: trac/ticket/api.py:300
+#: trac/ticket/api.py:302
 msgid "Component"
 msgstr ""
 
@@ -1822,7 +1822,7 @@ msgstr ""
 msgid "Removed"
 msgstr ""
 
-#: trac/templates/diff_view.html:70 trac/ticket/api.py:329
+#: trac/templates/diff_view.html:70 trac/ticket/api.py:331
 #: trac/versioncontrol/templates/changeset.html:204
 #: trac/versioncontrol/templates/revisionlog.html:79 trac/wiki/admin.py:203
 msgid "Modified"
@@ -1983,7 +1983,7 @@ msgid "Change history"
 msgstr ""
 
 #: trac/templates/history_view.html:28 trac/ticket/admin.py:440
-#: trac/ticket/api.py:301
+#: trac/ticket/api.py:303
 msgid "Version"
 msgstr ""
 
@@ -2009,7 +2009,7 @@ msgstr ""
 msgid "Search %(project)s"
 msgstr ""
 
-#: trac/templates/layout.html:50
+#: trac/templates/layout.html:53
 msgid "Download in other formats:"
 msgstr ""
 
@@ -2132,7 +2132,7 @@ msgstr ""
 msgid "The selected components have been removed."
 msgstr ""
 
-#: trac/ticket/admin.py:240 trac/ticket/api.py:299
+#: trac/ticket/admin.py:240 trac/ticket/api.py:301
 #: trac/ticket/templates/milestone_view.html:10
 #: trac/ticket/templates/milestone_view.html:23
 msgid "Milestone"
@@ -2238,7 +2238,7 @@ msgstr ""
 msgid "Invalid up/down value: %(value)s"
 msgstr ""
 
-#: trac/ticket/admin.py:791 trac/ticket/api.py:298
+#: trac/ticket/admin.py:791 trac/ticket/api.py:300
 msgid "Priority"
 msgstr ""
 
@@ -2246,7 +2246,7 @@ msgstr ""
 msgid "Priorities"
 msgstr ""
 
-#: trac/ticket/admin.py:797 trac/ticket/api.py:303
+#: trac/ticket/admin.py:797 trac/ticket/api.py:305
 msgid "Resolution"
 msgstr ""
 
@@ -2254,7 +2254,7 @@ msgstr ""
 msgid "Resolutions"
 msgstr ""
 
-#: trac/ticket/admin.py:803 trac/ticket/api.py:302
+#: trac/ticket/admin.py:803 trac/ticket/api.py:304
 msgid "Severity"
 msgstr ""
 
@@ -2279,41 +2279,45 @@ msgstr ""
 msgid "Ticket #%(num)s and all associated data removed."
 msgstr ""
 
-#: trac/ticket/api.py:281
+#: trac/ticket/api.py:253
+msgid "Attachment"
+msgstr ""
+
+#: trac/ticket/api.py:283
 msgid "Summary"
 msgstr ""
 
-#: trac/ticket/api.py:283 trac/ticket/templates/ticket.html:362
+#: trac/ticket/api.py:285 trac/ticket/templates/ticket.html:362
 msgid "Reporter"
 msgstr ""
 
-#: trac/ticket/api.py:296 trac/versioncontrol/admin.py:112
+#: trac/ticket/api.py:298 trac/versioncontrol/admin.py:112
 #: trac/versioncontrol/templates/admin_repositories.html:125
 msgid "Type"
 msgstr ""
 
-#: trac/ticket/api.py:297
+#: trac/ticket/api.py:299
 msgid "Status"
 msgstr ""
 
-#: trac/ticket/api.py:322
+#: trac/ticket/api.py:324
 msgid "Keywords"
 msgstr ""
 
-#: trac/ticket/api.py:323
+#: trac/ticket/api.py:325
 msgid "Cc"
 msgstr ""
 
-#: trac/ticket/api.py:327
+#: trac/ticket/api.py:329
 msgid "Created"
 msgstr ""
 
-#: trac/ticket/api.py:488
+#: trac/ticket/api.py:490
 #, python-format
 msgid "Comment %(cnum)s for Ticket #%(id)s"
 msgstr ""
 
-#: trac/ticket/api.py:509
+#: trac/ticket/api.py:511
 #, python-format
 msgid "Ticket #%(shortname)s"
 msgstr ""
@@ -4951,7 +4955,7 @@ msgstr ""
 msgid "Invalid URL encoding (was %(path_info)r)"
 msgstr ""
 
-#: trac/web/api.py:478
+#: trac/web/api.py:479
 #, python-format
 msgid "File %(path)s not found"
 msgstr ""
@@ -4995,16 +4999,16 @@ msgstr ""
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr ""
 
-#: trac/web/chrome.py:879
+#: trac/web/chrome.py:884
 msgid "(unknown template location)"
 msgstr ""
 
-#: trac/web/chrome.py:880
+#: trac/web/chrome.py:885
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr ""
 
-#: trac/web/chrome.py:928 trac/web/chrome.py:936
+#: trac/web/chrome.py:933 trac/web/chrome.py:941
 msgid "anonymous"
 msgstr ""
 
