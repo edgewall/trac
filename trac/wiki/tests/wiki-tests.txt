@@ -547,6 +547,9 @@ i.e. <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon"> </spa
 [[trac:wiki:Pipe (computing)|]]
 
 [[|b]] (might change to relative)
+
+[[]] no "empty" link here
+[[ ]] is not completely empty...
 ------------------------------
 <p>
 <a class="missing wiki" href="/wiki/coffeehouse%20setup" rel="nofollow">How to set up a coffee house?</a>
@@ -561,6 +564,10 @@ i.e. <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon"> </spa
 </p>
 <p>
 <a class="wiki" href="/wiki/WikiStart">b</a> (might change to relative)
+</p>
+<p>
+[[]] no "empty" link here
+<a class="missing wiki" href="/wiki/%20" rel="nofollow"> ?</a> is not completely empty...
 </p>
 ------------------------------
 ============================== Link resolver counter examples

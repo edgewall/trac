@@ -110,7 +110,7 @@ class WikiParser(Component):
         # [=#anchor] creation
         r"(?P<anchor>!?\[%s\])" % _set_anchor(XML_NAME, r'\s+'),
         # [[macro]] call or [[WikiCreole link]]
-        (r"(?P<macrolink>!?\[\[(?:[^]]|][^]])*\]\])"),
+        (r"(?P<macrolink>!?\[\[(?:[^]]|][^]])+\]\])"),
         # == heading == #hanchor
         r"(?P<heading>^\s*(?P<hdepth>={1,6})\s(?P<htext>.*?)"
         r"(?P<hanchor>#%s)?\s*$)" % XML_NAME,
