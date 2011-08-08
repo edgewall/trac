@@ -408,6 +408,7 @@ class Request(object):
     def send(self, content, content_type='text/html', status=200):
         self.send_response(status)
         self.send_header('Cache-Control', 'must-revalidate')
+        self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
         self.send_header('Content-Type', content_type + ';charset=utf-8')
         self.send_header('Content-Length', len(content))
         self.end_headers()
