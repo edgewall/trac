@@ -227,15 +227,20 @@ class LoginModule(Component):
     def _redirect_back(self, req):
         """Redirect the user back to the URL she came from."""
         referer = self._referer(req)
-        if referer and not (referer == req.base_url or \
-                referer.startswith(req.base_url.rstrip('/') + '/')):
+        if referer:
+            pos = req.base_url.find(':')
+            base_scheme = req.base_url[:pos]
+            base_noscheme = req.base_url[pos:]  
+            base_noscheme_norm = base_noscheme.rstrip('/')
+            referer_noscheme = referer[referer.find(':'):]
             # only redirect to referer if it is from the same site
-            referer = None
-        if referer and referer.rstrip('/') == req.base_url.rstrip('/') \
-                                              + req.path_info.rstrip('/'):
-            # Avoid redirect loops
-            referer = None
-        req.redirect(referer or req.abs_href())
+            if referer_noscheme == base_noscheme or \
+                    referer_noscheme.startswith(base_noscheme_norm + '/'):
+                # avoid redirect loops
+                if referer_noscheme.rstrip('/') != \
+                        base_noscheme_norm + req.path_info.rstrip('/'):
+                    req.redirect(base_scheme + referer_noscheme)
+        req.redirect(req.abs_href())
 
     def _referer(self, req):
         return req.args.get('referer') or req.get_header('Referer')
