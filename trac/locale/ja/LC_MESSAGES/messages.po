@@ -1,18 +1,18 @@
 # Japanese (Japan) translations for Trac.
-# Copyright (C) 2007-2010 Edgewall Software
+# Copyright (C) 2007-2011 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>, 2007.
 # Kyosuke Takayama <support@mc.neweb.ne.jp>, 2008,2009.
 # hirobe, 2008.
 # kabuchan, 2009.
 # IWAI, Masaharu <iwai@alib.jp>, 2009,2010.
-# Jun Omae <jun66j5@gmail.com>, 2010.
+# Jun Omae <jun66j5@gmail.com>, 2010,2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-04-26 09:50+0200\n"
+"POT-Creation-Date: 2011-08-08 23:42+0200\n"
 "PO-Revision-Date: 2011-07-14 21:38+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <trac-dev@googlegroups.com>\n"
@@ -20,13 +20,13 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.5\n"
+"Generated-By: Babel 0.9.6\n"
 
-#: tracopt/mimeview/php.py:97
+#: tracopt/mimeview/php.py:98
 msgid ""
 "You appear to be using the PHP CGI binary. Trac requires the CLI version "
 "for syntax highlighting."
-msgstr "PHP CGI binary が使われていますシンタックスハイライトを使用するためには CLI バージョンを利用してください"
+msgstr "PHP CGI binary が使われていますシンタックスハイライトを使用するためには CLI バージョンを利用してください。"
 
 #: tracopt/ticket/deleter.py:69 tracopt/ticket/deleter.py:82
 #: trac/ticket/templates/report_list.html:35
@@ -288,7 +288,7 @@ msgid "Date"
 msgstr "更新日時"
 
 #: trac/attachment.py:951 trac/templates/attachment.html:93
-#: trac/ticket/api.py:293 trac/ticket/templates/ticket_box.html:60
+#: trac/ticket/api.py:295 trac/ticket/templates/ticket_box.html:60
 msgid "Description"
 msgstr "詳細"
 
@@ -944,7 +944,7 @@ msgstr "保存"
 
 #: trac/admin/templates/admin_components.html:64
 msgid "Add Component:"
-msgstr "コンポーネントの追加"
+msgstr "コンポーネントの追加:"
 
 #: trac/admin/templates/admin_components.html:70
 #: trac/admin/templates/admin_enums.html:38
@@ -958,7 +958,7 @@ msgid "Add"
 msgstr "追加"
 
 #: trac/admin/templates/admin_components.html:80 trac/ticket/admin.py:208
-#: trac/ticket/api.py:287 trac/ticket/web_ui.py:1363
+#: trac/ticket/api.py:289 trac/ticket/web_ui.py:1363
 msgid "Owner"
 msgstr "担当者"
 
@@ -1106,7 +1106,7 @@ msgstr "詳細 ([1:WikiFormatting] が使用可能):"
 
 #: trac/admin/templates/admin_milestones.html:77
 msgid "Add Milestone:"
-msgstr "マイルストーンの追加"
+msgstr "マイルストーンの追加:"
 
 #: trac/admin/templates/admin_milestones.html:86
 #, python-format
@@ -1212,7 +1212,7 @@ msgid "License:"
 msgstr "ライセンス:"
 
 #: trac/admin/templates/admin_plugins.html:102 trac/ticket/admin.py:75
-#: trac/ticket/api.py:300
+#: trac/ticket/api.py:302
 msgid "Component"
 msgstr "コンポーネント"
 
@@ -1234,7 +1234,7 @@ msgstr "バージョン"
 
 #: trac/admin/templates/admin_versions.html:14
 msgid "Manage Versions"
-msgstr "バージョンの管理:"
+msgstr "バージョンの管理"
 
 #: trac/admin/templates/admin_versions.html:19
 msgid "Modify Version:"
@@ -1564,7 +1564,7 @@ msgstr ""
 
 #: trac/prefs/templates/prefs_language.html:15
 msgid "Language:"
-msgstr "言語"
+msgstr "言語:"
 
 #: trac/prefs/templates/prefs_language.html:17
 msgid "default language"
@@ -1627,7 +1627,7 @@ msgstr "前のページ"
 #: trac/ticket/templates/query_results.html:20
 #: trac/ticket/templates/report_view.html:78
 msgid "Results"
-msgstr "検索結果:"
+msgstr "検索結果"
 
 #: trac/search/templates/search.html:48
 #, python-format
@@ -1825,7 +1825,7 @@ msgstr "差分"
 
 #: trac/templates/diff_options.html:10
 msgid "View differences"
-msgstr "更新内容の表示方法:"
+msgstr "更新内容の表示方法"
 
 #: trac/templates/diff_options.html:13
 msgid "inline"
@@ -1951,7 +1951,7 @@ msgstr "追加"
 msgid "Removed"
 msgstr "削除"
 
-#: trac/templates/diff_view.html:70 trac/ticket/api.py:329
+#: trac/templates/diff_view.html:70 trac/ticket/api.py:331
 #: trac/versioncontrol/templates/changeset.html:204
 #: trac/versioncontrol/templates/revisionlog.html:79 trac/wiki/admin.py:203
 msgid "Modified"
@@ -2027,7 +2027,7 @@ msgstr "%(name)s プラグインに関係しているようです。"
 
 #: trac/templates/error.html:116
 msgid "Note that the following plugins seem to be involved:"
-msgstr "次のプラグインに関係しているようです。"
+msgstr "次のプラグインに関係しているようです:"
 
 #: trac/templates/error.html:120
 msgid "Please report this issue to the plugin maintainer."
@@ -2128,7 +2128,7 @@ msgid "Change history"
 msgstr "更新履歴"
 
 #: trac/templates/history_view.html:28 trac/ticket/admin.py:440
-#: trac/ticket/api.py:301
+#: trac/ticket/api.py:303
 msgid "Version"
 msgstr "バージョン"
 
@@ -2154,7 +2154,7 @@ msgstr "プロジェクト一覧"
 msgid "Search %(project)s"
 msgstr "%(project)s の検索"
 
-#: trac/templates/layout.html:50
+#: trac/templates/layout.html:53
 msgid "Download in other formats:"
 msgstr "異なるフォーマットでダウンロード:"
 
@@ -2283,7 +2283,7 @@ msgstr "コンポーネントが選択されていません"
 msgid "The selected components have been removed."
 msgstr "選択したコンポーネントを削除しました。"
 
-#: trac/ticket/admin.py:240 trac/ticket/api.py:299
+#: trac/ticket/admin.py:240 trac/ticket/api.py:301
 #: trac/ticket/templates/milestone_view.html:10
 #: trac/ticket/templates/milestone_view.html:23
 msgid "Milestone"
@@ -2389,7 +2389,7 @@ msgstr "名称"
 msgid "Invalid up/down value: %(value)s"
 msgstr "up/down 以外の値です: %(value)s"
 
-#: trac/ticket/admin.py:791 trac/ticket/api.py:298
+#: trac/ticket/admin.py:791 trac/ticket/api.py:300
 msgid "Priority"
 msgstr "優先度"
 
@@ -2397,7 +2397,7 @@ msgstr "優先度"
 msgid "Priorities"
 msgstr "優先度"
 
-#: trac/ticket/admin.py:797 trac/ticket/api.py:303
+#: trac/ticket/admin.py:797 trac/ticket/api.py:305
 msgid "Resolution"
 msgstr "解決方法"
 
@@ -2405,7 +2405,7 @@ msgstr "解決方法"
 msgid "Resolutions"
 msgstr "解決方法"
 
-#: trac/ticket/admin.py:803 trac/ticket/api.py:302
+#: trac/ticket/admin.py:803 trac/ticket/api.py:304
 msgid "Severity"
 msgstr "重要度"
 
@@ -2430,41 +2430,45 @@ msgstr "<number> は数値の必要があります"
 msgid "Ticket #%(num)s and all associated data removed."
 msgstr "チケット #%(num)s とそれに関するデータを削除しました。"
 
-#: trac/ticket/api.py:281
+#: trac/ticket/api.py:253
+msgid "Attachment"
+msgstr "添付ファイル"
+
+#: trac/ticket/api.py:283
 msgid "Summary"
 msgstr "概要"
 
-#: trac/ticket/api.py:283 trac/ticket/templates/ticket.html:362
+#: trac/ticket/api.py:285 trac/ticket/templates/ticket.html:362
 msgid "Reporter"
 msgstr "報告者"
 
-#: trac/ticket/api.py:296 trac/versioncontrol/admin.py:112
+#: trac/ticket/api.py:298 trac/versioncontrol/admin.py:112
 #: trac/versioncontrol/templates/admin_repositories.html:125
 msgid "Type"
 msgstr "分類"
 
-#: trac/ticket/api.py:297
+#: trac/ticket/api.py:299
 msgid "Status"
 msgstr "ステータス"
 
-#: trac/ticket/api.py:322
+#: trac/ticket/api.py:324
 msgid "Keywords"
 msgstr "キーワード"
 
-#: trac/ticket/api.py:323
+#: trac/ticket/api.py:325
 msgid "Cc"
 msgstr "関係者"
 
-#: trac/ticket/api.py:327
+#: trac/ticket/api.py:329
 msgid "Created"
 msgstr "作成"
 
-#: trac/ticket/api.py:488
+#: trac/ticket/api.py:490
 #, python-format
 msgid "Comment %(cnum)s for Ticket #%(id)s"
 msgstr "チケット #%(id)s のためのコメント %(cnum)s"
 
-#: trac/ticket/api.py:509
+#: trac/ticket/api.py:511
 #, python-format
 msgid "Ticket #%(shortname)s"
 msgstr "チケット #%(shortname)s"
@@ -3554,7 +3558,7 @@ msgstr "チケットの編集領域に移動"
 
 #: trac/ticket/templates/ticket.html:80
 msgid "Modify"
-msgstr "更新:"
+msgstr "更新"
 
 #: trac/ticket/templates/ticket.html:84
 msgid "Ticket #"
@@ -3584,7 +3588,7 @@ msgstr "親コメント:"
 #: trac/ticket/templates/ticket.html:133
 msgid "follow-up:"
 msgid_plural "follow-ups:"
-msgstr[0] "フォローアップ"
+msgstr[0] "フォローアップ:"
 
 #: trac/ticket/templates/ticket.html:148
 #, python-format
@@ -3628,7 +3632,7 @@ msgstr "次版"
 
 #: trac/ticket/templates/ticket.html:196
 msgid "View ticket fields and description"
-msgstr "チケットの項目と説明を見る"
+msgstr "チケットのフィールドと詳細を見る"
 
 #: trac/ticket/templates/ticket.html:196
 msgid "View"
@@ -3757,7 +3761,7 @@ msgstr "(最終更新者 %(author)s)"
 
 #: trac/ticket/templates/ticket_box.html:73
 msgid "Reply, quoting this description"
-msgstr "説明文を引用してコメントする"
+msgstr "詳細を引用してコメントする"
 
 #: trac/ticket/templates/ticket_change.html:19
 #, python-format
@@ -3799,17 +3803,17 @@ msgstr "コメントの編集を取り消す"
 #: trac/ticket/templates/ticket_notify_email.txt:9
 #, python-format
 msgid "Changes (by %(author)s):"
-msgstr "変更 (by %(author)s):"
+msgstr "変更 (%(author)s):"
 
 #: trac/ticket/templates/ticket_notify_email.txt:15
 #, python-format
 msgid "Description changed by %(author)s:"
-msgstr "変更後の説明 (by %(author)s):"
+msgstr "変更後の詳細 (%(author)s):"
 
 #: trac/ticket/templates/ticket_notify_email.txt:21
 #, python-format
 msgid "Comment (by %(author)s):"
-msgstr "コメント (by %(author)s):"
+msgstr "コメント (%(author)s):"
 
 #: trac/ticket/templates/ticket_notify_email.txt:29
 #, python-format
@@ -4773,7 +4777,7 @@ msgstr "(ログ)"
 
 #: trac/versioncontrol/templates/revisionlog.html:23
 msgid "Revision Log Mode:"
-msgstr "更新履歴の表示"
+msgstr "更新履歴の表示:"
 
 #: trac/versioncontrol/templates/revisionlog.html:27
 msgid "Stop on copy"
@@ -5122,7 +5126,7 @@ msgstr "削除されたパスがあれば、リポジトリの履歴から %(sea
 msgid "Invalid URL encoding (was %(path_info)r)"
 msgstr "不正な URL エンコーディング (%(path_info)r)"
 
-#: trac/web/api.py:478
+#: trac/web/api.py:479
 #, python-format
 msgid "File %(path)s not found"
 msgstr "ファイル %(path)s が見つかりません"
@@ -5166,16 +5170,16 @@ msgstr "すでに %(user)s としてログイン中です。"
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr "Navigation contributor \"%(name)s\" でエラー"
 
-#: trac/web/chrome.py:879
+#: trac/web/chrome.py:884
 msgid "(unknown template location)"
 msgstr "(ファイル名不明)"
 
-#: trac/web/chrome.py:880
+#: trac/web/chrome.py:885
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "テンプレート %(location)s のレンダリング中にGenshi %(error)s エラーが発生"
 
-#: trac/web/chrome.py:928 trac/web/chrome.py:936
+#: trac/web/chrome.py:933 trac/web/chrome.py:941
 msgid "anonymous"
 msgstr "匿名"
 
@@ -5268,7 +5272,7 @@ msgstr "セッション '%(id)s' はすでに存在します。別のセッシ�
 
 #: trac/web/session.py:241
 msgid "Error renaming session"
-msgstr "セッション変更中のエラー:"
+msgstr "セッション変更中のエラー"
 
 #: trac/web/session.py:417
 msgid "SID"
