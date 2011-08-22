@@ -7,7 +7,7 @@ import tempfile
 import unittest
 
 from trac.attachment import Attachment, AttachmentModule
-from trac.core import Component, implements
+from trac.core import Component, implements, TracError
 from trac.perm import IPermissionPolicy, PermissionCache
 from trac.resource import Resource, resource_exists
 from trac.test import EnvironmentStub
@@ -91,7 +91,7 @@ class AttachmentTestCase(unittest.TestCase):
 
     def test_insert_outside_attachments_dir(self):
         attachment = Attachment(self.env, '../../../../../sth/private', 42)
-        self.assertRaises(AssertionError, attachment.insert, 'foo.txt',
+        self.assertRaises(TracError, attachment.insert, 'foo.txt',
                           StringIO(''), 0)
 
     def test_delete(self):
