@@ -19,7 +19,7 @@ import sys
 from trac.admin import *
 from trac.core import *
 from trac.wiki import model
-from trac.wiki.api import WikiSystem
+from trac.wiki.api import WikiSystem, validate_page_name
 from trac.util import read_file
 from trac.util.compat import any
 from trac.util.datefmt import format_datetime, from_utimestamp, \
@@ -114,6 +114,9 @@ class WikiAdmin(Component):
     
     def import_page(self, filename, title, create_only=[],
                     replace=False):
+        if not validate_page_name(title):
+            raise AdminCommandError(_("Invalid Wiki page name '%(name)s'",
+                                      name=title))
         if filename:
             if not os.path.isfile(filename):
                 raise AdminCommandError(_("'%(name)s' is not a file",
@@ -207,6 +210,8 @@ class WikiAdmin(Component):
             return
         if not new_name:
             raise AdminCommandError(_('A new name is mandatory for a rename.'))
+        if not validate_page_name(new_name):
+            raise AdminCommandError(_("The new name is invalid."))
         @self.env.with_transaction()
         def do_rename(db):
             if model.WikiPage(self.env, new_name, db=db).exists:

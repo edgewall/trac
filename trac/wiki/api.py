@@ -24,6 +24,7 @@ from trac.cache import cached
 from trac.config import BoolOption, ListOption
 from trac.core import *
 from trac.resource import IResourceManager
+from trac.util.compat import all
 from trac.util.translation import _
 from trac.wiki.parser import WikiParser
 
@@ -187,6 +188,15 @@ def parse_args(args, strict=True):
             else:
                 largs.append(arg)
     return largs, kwargs
+
+
+def validate_page_name(pagename):
+    """Utility for validating wiki page name.
+
+    :param pagename: wiki page name to validate
+    """
+    return pagename and \
+           all(part not in ('', '.', '..') for part in pagename.split('/'))
 
 
 class WikiSystem(Component):

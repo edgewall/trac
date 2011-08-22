@@ -22,7 +22,7 @@ from trac.core import *
 from trac.resource import Resource
 from trac.util.datefmt import from_utimestamp, to_utimestamp, utc
 from trac.util.translation import _
-from trac.wiki.api import WikiSystem
+from trac.wiki.api import WikiSystem, validate_page_name
 
 
 class WikiPage(object):
@@ -118,6 +118,10 @@ class WikiPage(object):
                     listener.wiki_page_version_deleted(self)
 
     def save(self, author, comment, remote_addr, t=None, db=None):
+        if not validate_page_name(self.name):
+            raise TracError(_("Invalid Wiki page name '%(name)s'",
+                              name=self.name))
+
         new_text = self.text != self.old_text
         if not new_text and self.readonly == self.old_readonly:
             raise TracError(_('Page not modified'))
@@ -164,6 +168,9 @@ class WikiPage(object):
         """
         assert self.exists, 'Cannot rename non-existent page'
 
+        if not validate_page_name(new_name):
+            raise TracError(_("Invalid Wiki page name '%(name)s'",
+                              name=new_name))
         old_name = self.name
         
         @self.env.with_transaction()
