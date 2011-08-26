@@ -18,7 +18,7 @@ import tempfile
 import unittest
 
 from trac import util
-from trac.util.tests import concurrency, datefmt, presentation, text
+from trac.util.tests import concurrency, datefmt, presentation, text, html
 
 
 class AtomicFileTestCase(unittest.TestCase):
@@ -145,6 +145,7 @@ def suite():
     suite.addTest(presentation.suite())
     suite.addTest(doctest.DocTestSuite(util))
     suite.addTest(text.suite())
+    suite.addTest(html.suite())
     return suite
 
 if __name__ == '__main__':
