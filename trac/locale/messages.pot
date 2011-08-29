@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2011-08-08 23:42+0200\n"
+"POT-Creation-Date: 2011-08-30 01:20+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -139,86 +139,96 @@ msgstr ""
 msgid "Could not delete attachment"
 msgstr ""
 
-#: trac/attachment.py:210
+#: trac/attachment.py:216
+#, python-format
+msgid "Cannot reparent attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
+msgstr ""
+
+#: trac/attachment.py:222
 #, python-format
 msgid ""
 "Cannot reparent attachment \"%(att)s\" as it already exists in "
 "%(realm)s:%(id)s"
 msgstr ""
 
-#: trac/attachment.py:229
+#: trac/attachment.py:241
 #, python-format
 msgid "Could not reparent attachment %(name)s"
 msgstr ""
 
-#: trac/attachment.py:347
+#: trac/attachment.py:270
+#, python-format
+msgid "Cannot create attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
+msgstr ""
+
+#: trac/attachment.py:363
 #, python-format
 msgid "Attachment '%(filename)s' not found"
 msgstr ""
 
-#: trac/attachment.py:421
+#: trac/attachment.py:437
 msgid "Bad request"
 msgstr ""
 
-#: trac/attachment.py:438
+#: trac/attachment.py:454
 #, python-format
 msgid "Back to %(parent)s"
 msgstr ""
 
-#: trac/attachment.py:531
+#: trac/attachment.py:547
 #, python-format
 msgid "%(attachment)s attached to %(resource)s"
 msgstr ""
 
-#: trac/attachment.py:588
+#: trac/attachment.py:604
 #, python-format
 msgid "Unparented attachment %(id)s"
 msgstr ""
 
-#: trac/attachment.py:596
+#: trac/attachment.py:612
 #, python-format
 msgid "Attachment '%(id)s' in %(parent)s"
 msgstr ""
 
-#: trac/attachment.py:599
+#: trac/attachment.py:615
 #, python-format
 msgid "Attachments of %(parent)s"
 msgstr ""
 
-#: trac/attachment.py:616
+#: trac/attachment.py:632
 #, python-format
 msgid "%(parent)s doesn't exist, can't create attachment"
 msgstr ""
 
-#: trac/attachment.py:623 trac/attachment.py:646 trac/admin/web_ui.py:426
+#: trac/attachment.py:639 trac/attachment.py:662 trac/admin/web_ui.py:426
 #: trac/admin/web_ui.py:429 trac/admin/web_ui.py:433
 msgid "No file uploaded"
 msgstr ""
 
-#: trac/attachment.py:631
+#: trac/attachment.py:647
 msgid "Can't upload empty file"
 msgstr ""
 
-#: trac/attachment.py:636
+#: trac/attachment.py:652
 #, python-format
 msgid "Maximum attachment size: %(num)s bytes"
 msgstr ""
 
-#: trac/attachment.py:637
+#: trac/attachment.py:653
 msgid "Upload failed"
 msgstr ""
 
-#: trac/attachment.py:659
+#: trac/attachment.py:675
 #, python-format
 msgid "Attachment field %(field)s is invalid: %(message)s"
 msgstr ""
 
-#: trac/attachment.py:663
+#: trac/attachment.py:679
 #, python-format
 msgid "Invalid attachment: %(message)s"
 msgstr ""
 
-#: trac/attachment.py:673
+#: trac/attachment.py:689
 #, python-format
 msgid ""
 "You don't have permission to replace the attachment %(name)s. You can "
@@ -226,21 +236,21 @@ msgid ""
 " ATTACHMENT_DELETE permission."
 msgstr ""
 
-#: trac/attachment.py:704
+#: trac/attachment.py:720
 #, python-format
 msgid "%(attachment)s (delete)"
 msgstr ""
 
-#: trac/attachment.py:765 trac/versioncontrol/web_ui/browser.py:663
+#: trac/attachment.py:781 trac/versioncontrol/web_ui/browser.py:663
 #: trac/wiki/web_ui.py:68
 msgid "Plain Text"
 msgstr ""
 
-#: trac/attachment.py:771 trac/versioncontrol/web_ui/browser.py:669
+#: trac/attachment.py:787 trac/versioncontrol/web_ui/browser.py:669
 msgid "Original Format"
 msgstr ""
 
-#: trac/attachment.py:813 trac/attachment.py:819
+#: trac/attachment.py:829 trac/attachment.py:835
 #: trac/templates/list_of_attachments.html:20
 #: trac/templates/list_of_attachments.html:21
 #: trac/ticket/templates/ticket_change.html:21
@@ -248,12 +258,12 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
-#: trac/attachment.py:914
+#: trac/attachment.py:930
 #, python-format
 msgid "Invalid resource identifier '%(id)s'"
 msgstr ""
 
-#: trac/attachment.py:950 trac/admin/templates/admin_components.html:80
+#: trac/attachment.py:966 trac/admin/templates/admin_components.html:80
 #: trac/admin/templates/admin_enums.html:48
 #: trac/admin/templates/admin_milestones.html:101
 #: trac/admin/templates/admin_versions.html:78 trac/templates/about.html:84
@@ -265,26 +275,26 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: trac/attachment.py:950
+#: trac/attachment.py:966
 msgid "Size"
 msgstr ""
 
-#: trac/attachment.py:950 trac/templates/history_view.html:30
+#: trac/attachment.py:966 trac/templates/history_view.html:30
 #: trac/ticket/templates/ticket.html:361
 #: trac/versioncontrol/templates/revisionlog.html:98
 msgid "Author"
 msgstr ""
 
-#: trac/attachment.py:950 trac/templates/history_view.html:29
+#: trac/attachment.py:966 trac/templates/history_view.html:29
 msgid "Date"
 msgstr ""
 
-#: trac/attachment.py:951 trac/templates/attachment.html:93
+#: trac/attachment.py:967 trac/templates/attachment.html:93
 #: trac/ticket/api.py:295 trac/ticket/templates/ticket_box.html:60
 msgid "Description"
 msgstr ""
 
-#: trac/attachment.py:976 trac/wiki/admin.py:107
+#: trac/attachment.py:992 trac/wiki/admin.py:107
 #, python-format
 msgid "File '%(name)s' exists"
 msgstr ""
@@ -1824,7 +1834,7 @@ msgstr ""
 
 #: trac/templates/diff_view.html:70 trac/ticket/api.py:331
 #: trac/versioncontrol/templates/changeset.html:204
-#: trac/versioncontrol/templates/revisionlog.html:79 trac/wiki/admin.py:203
+#: trac/versioncontrol/templates/revisionlog.html:79 trac/wiki/admin.py:206
 msgid "Modified"
 msgstr ""
 
@@ -2791,8 +2801,8 @@ msgstr ""
 
 #: trac/ticket/web_ui.py:806 trac/ticket/web_ui.py:863
 #: trac/ticket/web_ui.py:871 trac/ticket/web_ui.py:942
-#: trac/ticket/web_ui.py:987 trac/ticket/web_ui.py:994 trac/wiki/web_ui.py:431
-#: trac/wiki/web_ui.py:437 trac/wiki/web_ui.py:628 trac/wiki/web_ui.py:642
+#: trac/ticket/web_ui.py:987 trac/ticket/web_ui.py:994 trac/wiki/web_ui.py:440
+#: trac/wiki/web_ui.py:446 trac/wiki/web_ui.py:637 trac/wiki/web_ui.py:651
 #, python-format
 msgid "Version %(num)s"
 msgstr ""
@@ -2811,12 +2821,12 @@ msgid "Property %(label)s %(rendered)s"
 msgstr ""
 
 #: trac/ticket/web_ui.py:873 trac/ticket/web_ui.py:996
-#: trac/versioncontrol/web_ui/changeset.py:370 trac/wiki/web_ui.py:450
+#: trac/versioncontrol/web_ui/changeset.py:370 trac/wiki/web_ui.py:459
 msgid "Previous Change"
 msgstr ""
 
 #: trac/ticket/web_ui.py:873 trac/ticket/web_ui.py:996
-#: trac/versioncontrol/web_ui/changeset.py:370 trac/wiki/web_ui.py:450
+#: trac/versioncontrol/web_ui/changeset.py:370 trac/wiki/web_ui.py:459
 msgid "Next Change"
 msgstr ""
 
@@ -2988,7 +2998,7 @@ msgstr ""
 
 #. TRANSLATOR: modified ('diff') (link)
 #: trac/ticket/web_ui.py:1610 trac/ticket/templates/ticket.html:180
-#: trac/ticket/templates/ticket_box.html:64 trac/wiki/web_ui.py:724
+#: trac/ticket/templates/ticket_box.html:64 trac/wiki/web_ui.py:733
 msgid "diff"
 msgstr ""
 
@@ -3322,7 +3332,7 @@ msgstr ""
 msgid "Report"
 msgstr ""
 
-#: trac/ticket/templates/report_list.html:24 trac/wiki/admin.py:203
+#: trac/ticket/templates/report_list.html:24 trac/wiki/admin.py:206
 msgid "Title"
 msgstr ""
 
@@ -5119,49 +5129,59 @@ msgstr ""
 msgid "Page '%(page)s' not found"
 msgstr ""
 
-#: trac/wiki/admin.py:119
+#: trac/wiki/admin.py:118 trac/wiki/model.py:122 trac/wiki/model.py:172
+#: trac/wiki/web_ui.py:119
+#, python-format
+msgid "Invalid Wiki page name '%(name)s'"
+msgstr ""
+
+#: trac/wiki/admin.py:122
 #, python-format
 msgid "'%(name)s' is not a file"
 msgstr ""
 
-#: trac/wiki/admin.py:136
+#: trac/wiki/admin.py:139
 #, python-format
 msgid "  %(title)s already exists"
 msgstr ""
 
-#: trac/wiki/admin.py:140
+#: trac/wiki/admin.py:143
 #, python-format
 msgid "  %(title)s is already up to date"
 msgstr ""
 
-#: trac/wiki/admin.py:171 trac/wiki/admin.py:268
+#: trac/wiki/admin.py:174 trac/wiki/admin.py:273
 #, python-format
 msgid "  %(page)s imported from %(filename)s"
 msgstr ""
 
-#: trac/wiki/admin.py:203
+#: trac/wiki/admin.py:206
 msgid "Edits"
 msgstr ""
 
-#: trac/wiki/admin.py:209 trac/wiki/web_ui.py:295
+#: trac/wiki/admin.py:212 trac/wiki/web_ui.py:301
 msgid "A new name is mandatory for a rename."
 msgstr ""
 
-#: trac/wiki/admin.py:213 trac/wiki/web_ui.py:299
+#: trac/wiki/admin.py:214
+msgid "The new name is invalid."
+msgstr ""
+
+#: trac/wiki/admin.py:218 trac/wiki/web_ui.py:308
 #, python-format
 msgid "The page %(name)s already exists."
 msgstr ""
 
-#: trac/wiki/admin.py:227
+#: trac/wiki/admin.py:232
 msgid "Deleted pages"
 msgstr ""
 
-#: trac/wiki/admin.py:246
+#: trac/wiki/admin.py:251
 #, python-format
 msgid "'%(name)s' is not a directory"
 msgstr ""
 
-#: trac/wiki/api.py:369
+#: trac/wiki/api.py:379
 msgid "no permission to view this wiki page"
 msgstr ""
 
@@ -5224,16 +5244,16 @@ msgstr ""
 msgid "Table of Contents"
 msgstr ""
 
-#: trac/wiki/model.py:123
+#: trac/wiki/model.py:127
 msgid "Page not modified"
 msgstr ""
 
-#: trac/wiki/model.py:174
+#: trac/wiki/model.py:181
 #, python-format
 msgid "Can't rename to existing %(name)s page."
 msgstr ""
 
-#: trac/wiki/web_ui.py:87 trac/wiki/web_ui.py:731
+#: trac/wiki/web_ui.py:87 trac/wiki/web_ui.py:740
 msgid "Wiki"
 msgstr ""
 
@@ -5241,138 +5261,144 @@ msgstr ""
 msgid "Help/Guide"
 msgstr ""
 
-#: trac/wiki/web_ui.py:125
+#: trac/wiki/web_ui.py:130
 #, python-format
 msgid "No version \"%(num)s\" for Wiki page \"%(name)s\""
 msgstr ""
 
-#: trac/wiki/web_ui.py:190
+#: trac/wiki/web_ui.py:195
 #, python-format
 msgid "The wiki page is too long (must be less than %(num)s characters)"
 msgstr ""
 
-#: trac/wiki/web_ui.py:200
+#: trac/wiki/web_ui.py:205
 #, python-format
 msgid "The Wiki page field '%(field)s' is invalid: %(message)s"
 msgstr ""
 
-#: trac/wiki/web_ui.py:204
+#: trac/wiki/web_ui.py:209
 #, python-format
 msgid "Invalid Wiki page: %(message)s"
 msgstr ""
 
 #. TRANSLATOR: wiki page
-#: trac/wiki/web_ui.py:231
+#: trac/wiki/web_ui.py:236
 msgid "currently edited"
-msgstr ""
-
-#: trac/wiki/web_ui.py:265
-#, python-format
-msgid "The page %(name)s has been deleted."
 msgstr ""
 
 #: trac/wiki/web_ui.py:270
 #, python-format
+msgid "The page %(name)s has been deleted."
+msgstr ""
+
+#: trac/wiki/web_ui.py:275
+#, python-format
 msgid "The versions %(from_)d to %(to)d of the page %(name)s have been deleted."
 msgstr ""
 
-#: trac/wiki/web_ui.py:274
+#: trac/wiki/web_ui.py:279
 #, python-format
 msgid "The version %(version)d of the page %(name)s has been deleted."
 msgstr ""
 
-#: trac/wiki/web_ui.py:297
+#: trac/wiki/web_ui.py:303
+msgid ""
+"The new name is invalid (a name which is separated with slashes cannot be"
+" '.' or '..')."
+msgstr ""
+
+#: trac/wiki/web_ui.py:306
 msgid "The new name must be different from the old name."
 msgstr ""
 
-#: trac/wiki/web_ui.py:309
+#: trac/wiki/web_ui.py:318
 #, python-format
 msgid "See [wiki:\"%(name)s\"]."
 msgstr ""
 
-#: trac/wiki/web_ui.py:333
+#: trac/wiki/web_ui.py:342
 #, python-format
 msgid "Your changes have been saved in version %(version)s."
 msgstr ""
 
-#: trac/wiki/web_ui.py:338
+#: trac/wiki/web_ui.py:347
 msgid "Page not modified, showing latest version."
 msgstr ""
 
-#: trac/wiki/web_ui.py:381
+#: trac/wiki/web_ui.py:390
 #, python-format
 msgid "Version %(num)s of page \"%(name)s\" does not exist"
 msgstr ""
 
-#: trac/wiki/web_ui.py:433
+#: trac/wiki/web_ui.py:442
 msgid "Page history"
 msgstr ""
 
-#: trac/wiki/web_ui.py:451
+#: trac/wiki/web_ui.py:460
 msgid "Wiki History"
 msgstr ""
 
-#: trac/wiki/web_ui.py:537
+#: trac/wiki/web_ui.py:546
 #, python-format
 msgid "Page %(name)s does not exist"
 msgstr ""
 
-#: trac/wiki/web_ui.py:551
+#: trac/wiki/web_ui.py:560
 #, python-format
 msgid "Back to %(wikipage)s"
 msgstr ""
 
-#: trac/wiki/web_ui.py:579
+#: trac/wiki/web_ui.py:588
 #, python-format
 msgid "Page %(name)s not found"
 msgstr ""
 
-#: trac/wiki/web_ui.py:633
+#: trac/wiki/web_ui.py:642
 msgid "View latest version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:637
+#: trac/wiki/web_ui.py:646
 msgid "View parent page"
 msgstr ""
 
-#: trac/wiki/web_ui.py:646
+#: trac/wiki/web_ui.py:655
 msgid "Previous Version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:646
+#: trac/wiki/web_ui.py:655
 msgid "Next Version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:647
+#: trac/wiki/web_ui.py:656
 msgid "View Latest Version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:650
+#: trac/wiki/web_ui.py:659
 msgid "Up"
 msgstr ""
 
-#: trac/wiki/web_ui.py:675
+#: trac/wiki/web_ui.py:684
 msgid "Start Page"
 msgstr ""
 
-#: trac/wiki/web_ui.py:676
+#: trac/wiki/web_ui.py:685
 msgid "Index"
 msgstr ""
 
-#: trac/wiki/web_ui.py:678
+#: trac/wiki/web_ui.py:687
 msgid "History"
 msgstr ""
 
-#: trac/wiki/web_ui.py:685
+#: trac/wiki/web_ui.py:694
 msgid "Wiki changes"
 msgstr ""
 
-#: trac/wiki/web_ui.py:714
+#: trac/wiki/web_ui.py:723
 #, python-format
 msgid "%(page)s edited"
 msgstr ""
 
-#: trac/wiki/web_ui.py:716
+#: trac/wiki/web_ui.py:725
 #, python-format
 msgid "%(page)s created"
 msgstr ""
