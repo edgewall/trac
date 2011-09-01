@@ -676,6 +676,15 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
             keywords=dict(author='joe', old='1, 2', new='a'),
             foo=dict(author='joe', old='change2', new='change4'))
         
+    def test_delete_all_comments(self):
+        # See ticket:10338
+        ticket = Ticket(self.env, self.id)
+        ticket.delete_change(4)
+        ticket.delete_change(3)
+        ticket.delete_change(2)
+        ticket.delete_change(1)
+        self.assertEquals(ticket['time'], ticket['changetime'])
+
 
 class EnumTestCase(unittest.TestCase):
 
