@@ -494,9 +494,11 @@ class Ticket(object):
             cursor.execute("""
                 UPDATE ticket SET changetime=(
                     SELECT time FROM ticket_change WHERE ticket=%s
+                    UNION
+                    SELECT time FROM ticket WHERE id=%s
                     ORDER BY time DESC LIMIT 1)
                 WHERE id=%s
-                """, (self.id, self.id))
+                """, (self.id, self.id, self.id))
 
         self._fetch_ticket(self.id)
 
