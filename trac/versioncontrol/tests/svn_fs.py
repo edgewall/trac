@@ -76,14 +76,7 @@ class SubversionRepositoryTestSetup(TestSetup):
             core.apr_terminate()
 
     def tearDown(self):
-        if os.name == 'nt':
-            # The Windows version of 'shutil.rmtree' doesn't override the
-            # permissions of read-only files, so we have to do it ourselves:
-            format_file = os.path.join(REPOS_PATH, 'db', 'format')
-            if os.path.isfile(format_file):
-                os.chmod(format_file, stat.S_IRWXU)
-            os.chmod(os.path.join(REPOS_PATH, 'format'), stat.S_IRWXU)
-        shutil.rmtree(REPOS_PATH)
+        repos.svn_repos_delete(REPOS_PATH)
 
 
 # -- Re-usable test mixins
