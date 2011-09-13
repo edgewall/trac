@@ -936,7 +936,7 @@ class TracadminTestCase(unittest.TestCase):
         test passes valid arguments and checks for success.
         """
         test_name = sys._getframe().f_code.co_name
-        self._execute(u'milestone add \xe9tat_final "%s"'  #\xc3\xa9
+        self._execute(u'milestone add \xa9tat_final "%s"'  #\xc2\xa9
                               % self._test_date)
         rv, output = self._execute('milestone list')
         self.assertEqual(0, rv)
