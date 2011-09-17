@@ -16,8 +16,6 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 #
 
-from unicodedata import east_asian_width
-
 from genshi.template.text import NewTextTemplate
 
 from trac.core import *
@@ -26,8 +24,7 @@ from trac.notification import NotifyEmail
 from trac.ticket.api import TicketSystem
 from trac.util import md5
 from trac.util.datefmt import to_utimestamp
-from trac.util.text import CRLF, wrap, obfuscate_email_address, to_unicode, \
-                           text_width
+from trac.util.text import CRLF, wrap, obfuscate_email_address, text_width
 from trac.util.translation import deactivate, reactivate
 
 class TicketNotificationSystem(Component):
