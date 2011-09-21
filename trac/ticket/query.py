@@ -129,8 +129,11 @@ class Query(object):
 
         constraint_cols = {}
         for clause in self.constraints:
-            for k, v in clause.iteritems():
-                constraint_cols.setdefault(k, []).append(v)
+            for k, v in clause.items():
+                if k == 'id' or k in field_names:
+                    constraint_cols.setdefault(k, []).append(v)
+                else:
+                    clause.pop(k)
         self.constraint_cols = constraint_cols
 
     _clause_splitter = re.compile(r'(?<!\\)&')
