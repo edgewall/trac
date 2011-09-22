@@ -3,7 +3,7 @@
 import os
 import unittest
 
-from trac.db.api import _parse_db_str, with_transaction
+from trac.db.api import _parse_db_str, with_transaction, get_column_names
 from trac.test import EnvironmentStub, Mock
 
 
@@ -296,6 +296,14 @@ class StringsTestCase(unittest.TestCase):
         cursor = db.cursor()
         cursor.execute("SELECT value FROM system WHERE name='test-markup'")
         self.assertEqual([(u'<em>märkup</em>',)], cursor.fetchall())
+
+    def test_quote(self):
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.execute('SELECT 1 AS %s' % \
+                       db.quote(r'alpha\`\"\'\\beta``gamma""delta'))
+        self.assertEqual(r'alpha\`\"\'\\beta``gamma""delta',
+                         get_column_names(cursor)[0])
 
 
 class ConnectionTestCase(unittest.TestCase):
