@@ -183,7 +183,7 @@ class CacheTestCase(unittest.TestCase):
         cache.sync(clean=True)
 
         cursor = self.db.cursor()
-        cursor.execute("SELECT time,author,message FROM revision")
+        cursor.execute("SELECT time,author,message FROM revision ORDER BY rev")
         self.assertEquals((to_utimestamp(t1), 'joe', '**empty**'),
                           cursor.fetchone())
         self.assertEquals((to_utimestamp(t2), 'joe', 'Initial Import'),
@@ -193,7 +193,7 @@ class CacheTestCase(unittest.TestCase):
         self.assertEquals(None, cursor.fetchone())
         cursor.execute("""
             SELECT rev,path,node_type,change_type,base_path,base_rev
-            FROM node_change ORDER BY rev
+            FROM node_change ORDER BY rev, path
             """)
         self.assertEquals(('1', 'trunk', 'D', 'A', None, None),
                           cursor.fetchone())
