@@ -177,9 +177,16 @@ def reset_postgres_db(db, db_prop):
     if dbname:
         cursor = db.cursor()
         # reset sequences
-        cursor.execute('SELECT sequence_name '
-                       'FROM information_schema.sequences '
-                       'WHERE sequence_schema=%s', (dbname,))
+        # information_schema.sequences view is available in PostgreSQL 8.2+
+        # however Trac supports PostgreSQL 8.0+, uses pg_get_serial_sequence()
+        cursor.execute("""
+            SELECT sequence_name FROM (
+                SELECT pg_get_serial_sequence(%s||table_name, column_name)
+                       AS sequence_name
+                FROM information_schema.columns
+                WHERE table_schema=%s) AS tab
+            WHERE sequence_name IS NOT NULL""",
+            (dbname + '.', dbname))
         for seq in cursor.fetchall():
             cursor.execute('ALTER SEQUENCE %s RESTART WITH 1' % seq)
         # clear tables
