@@ -491,11 +491,14 @@ class Ticket(object):
                 """, (self.id, ts))
 
             # Fix the last modification time
+            # Work around MySQL ERROR 1093 with the same table for the update
+            # target and the subquery FROM clause
             cursor.execute("""
                 UPDATE ticket SET changetime=(
                     SELECT time FROM ticket_change WHERE ticket=%s
                     UNION
-                    SELECT time FROM ticket WHERE id=%s
+                    SELECT time FROM (
+                        SELECT time FROM ticket WHERE id=%s) AS t
                     ORDER BY time DESC LIMIT 1)
                 WHERE id=%s
                 """, (self.id, self.id, self.id))
