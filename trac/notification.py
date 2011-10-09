@@ -24,7 +24,7 @@ from genshi.builder import tag
 from trac import __version__
 from trac.config import BoolOption, ExtensionOption, IntOption, Option
 from trac.core import *
-from trac.util.text import CRLF
+from trac.util.text import CRLF, fix_eol
 from trac.util.translation import _, deactivate, reactivate
 
 MAXHEADERLEN = 76
@@ -35,7 +35,6 @@ EMAIL_LOOKALIKE_PATTERN = (
         '(?:[a-zA-Z0-9_-]+\.)+' # labels (but also allow '_')
         '[a-zA-Z](?:[-a-zA-Z\d]*[a-zA-Z\d])?' # TLD
         )
-eol_re = re.compile('\r?\n')
 
 
 class IEmailSender(Interface):
@@ -143,7 +142,7 @@ class SmtpEmailSender(Component):
     
     def send(self, from_addr, recipients, message):
         # Ensure the message complies with RFC2822: use CRLF line endings
-        message = CRLF.join(eol_re.split(message))
+        message = fix_eol(message, CRLF)
         
         self.log.info("Sending notification through SMTP at %s:%d to %s"
                       % (self.smtp_server, self.smtp_port, recipients))
@@ -190,7 +189,7 @@ class SendmailEmailSender(Component):
 
     def send(self, from_addr, recipients, message):
         # Use native line endings in message
-        message = os.linesep.join(eol_re.split(message))
+        message = fix_eol(message, os.linesep)
 
         self.log.info("Sending notification through sendmail at %s to %s"
                       % (self.sendmail_path, recipients))

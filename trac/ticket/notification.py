@@ -24,7 +24,7 @@ from trac.notification import NotifyEmail
 from trac.ticket.api import TicketSystem
 from trac.util import md5
 from trac.util.datefmt import to_utimestamp
-from trac.util.text import CRLF, wrap, obfuscate_email_address, text_width
+from trac.util.text import obfuscate_email_address, text_width, wrap
 from trac.util.translation import deactivate, reactivate
 
 class TicketNotificationSystem(Component):
@@ -114,7 +114,7 @@ class TicketNotifyEmail(NotifyEmail):
                 change_data.update({
                     'author': obfuscate_email_address(change['author']),
                     'comment': wrap(change['comment'], self.COLS, ' ', ' ',
-                                    CRLF, self.ambiwidth)
+                                    '\n', self.ambiwidth)
                     })
                 link += '#comment:%s' % str(change.get('cnum', ''))
                 for field, values in change['fields'].iteritems():
@@ -122,17 +122,17 @@ class TicketNotifyEmail(NotifyEmail):
                     new = values['new']
                     newv = ''
                     if field == 'description':
-                        new_descr = wrap(new, self.COLS, ' ', ' ', CRLF,
+                        new_descr = wrap(new, self.COLS, ' ', ' ', '\n',
                                          self.ambiwidth)
-                        old_descr = wrap(old, self.COLS, '> ', '> ', CRLF,
+                        old_descr = wrap(old, self.COLS, '> ', '> ', '\n',
                                          self.ambiwidth)
-                        old_descr = old_descr.replace(2 * CRLF, CRLF + '>' + \
-                                                      CRLF)
-                        cdescr = CRLF
-                        cdescr += 'Old description:' + 2 * CRLF + old_descr + \
-                                  2 * CRLF
-                        cdescr += 'New description:' + 2 * CRLF + new_descr + \
-                                  CRLF
+                        old_descr = old_descr.replace(2 * '\n', '\n' + '>' + \
+                                                      '\n')
+                        cdescr = '\n'
+                        cdescr += 'Old description:' + 2 * '\n' + old_descr + \
+                                  2 * '\n'
+                        cdescr += 'New description:' + 2 * '\n' + new_descr + \
+                                  '\n'
                         changes_descr = cdescr
                     elif field == 'summary':
                         summary = "%s (was: %s)" % (new, old)
@@ -142,13 +142,13 @@ class TicketNotifyEmail(NotifyEmail):
                         if delcc:
                             chgcc += wrap(" * cc: %s (removed)" %
                                           ', '.join(delcc), 
-                                          self.COLS, ' ', ' ', CRLF,
-                                          self.ambiwidth) + CRLF
+                                          self.COLS, ' ', ' ', '\n',
+                                          self.ambiwidth) + '\n'
                         if addcc:
                             chgcc += wrap(" * cc: %s (added)" %
                                           ', '.join(addcc), 
-                                          self.COLS, ' ', ' ', CRLF,
-                                          self.ambiwidth) + CRLF
+                                          self.COLS, ' ', ' ', '\n',
+                                          self.ambiwidth) + '\n'
                         if chgcc:
                             changes_body += chgcc
                         self.prev_cc += old and self.parse_cc(old) or []
@@ -162,16 +162,16 @@ class TicketNotifyEmail(NotifyEmail):
                         if len(old + new) + length > self.COLS:
                             length = 5
                             if len(old) + length > self.COLS:
-                                spacer_old = CRLF
+                                spacer_old = '\n'
                             if len(new) + length > self.COLS:
-                                spacer_new = CRLF
+                                spacer_new = '\n'
                         chg = '* %s: %s%s%s=>%s%s' % (field, spacer_old, old,
                                                       spacer_old, spacer_new,
                                                       new)
-                        chg = chg.replace(CRLF, CRLF + length * ' ')
-                        chg = wrap(chg, self.COLS, '', length * ' ', CRLF,
+                        chg = chg.replace('\n', '\n' + length * ' ')
+                        chg = wrap(chg, self.COLS, '', length * ' ', '\n',
                                    self.ambiwidth)
-                        changes_body += ' %s%s' % (chg, CRLF)
+                        changes_body += ' %s%s' % (chg, '\n')
                     if newv:
                         change_data[field] = {'oldvalue': old, 'newvalue': new}
         
@@ -179,7 +179,7 @@ class TicketNotifyEmail(NotifyEmail):
         ticket_values['id'] = ticket.id
         ticket_values['description'] = wrap(
             ticket_values.get('description', ''), self.COLS,
-            initial_indent=' ', subsequent_indent=' ', linesep=CRLF,
+            initial_indent=' ', subsequent_indent=' ', linesep='\n',
             ambiwidth=self.ambiwidth)
         ticket_values['new'] = self.newticket
         ticket_values['link'] = link
@@ -234,7 +234,7 @@ class TicketNotifyEmail(NotifyEmail):
                 width_r = min((self.COLS - 1) * 2 / 3, width_r)         
                 width_l = self.COLS - width_r - 1
         sep = width_l * '-' + '+' + width_r * '-'
-        txt = sep + CRLF
+        txt = sep + '\n'
         cell_tmp = [u'', u'']
         big = []
         i = 0
@@ -247,7 +247,7 @@ class TicketNotifyEmail(NotifyEmail):
             if fname in ['owner', 'reporter']:
                 fval = obfuscate_email_address(fval)
             if f['type'] == 'textarea' or '\n' in unicode(fval):
-                big.append((f['label'], CRLF.join(fval.splitlines())))
+                big.append((f['label'], '\n'.join(fval.splitlines())))
             else:
                 # Note: f['label'] is a Babel's LazyObject, make sure its
                 # __str__ method won't be called.
@@ -257,8 +257,8 @@ class TicketNotifyEmail(NotifyEmail):
                                       (width[2 * idx]
                                        - self.get_text_width(f['label'])
                                        + 2 * idx) * ' ',
-                                      2 * ' ', CRLF, self.ambiwidth)
-                cell_tmp[idx] += CRLF
+                                      2 * ' ', '\n', self.ambiwidth)
+                cell_tmp[idx] += '\n'
                 i += 1
         cell_l = cell_tmp[0].splitlines()
         cell_r = cell_tmp[1].splitlines()
@@ -269,11 +269,11 @@ class TicketNotifyEmail(NotifyEmail):
                 cell_r.append('')
             fmt_width = width_l - self.get_text_width(cell_l[i]) \
                         + len(cell_l[i])
-            txt += u'%-*s|%s%s' % (fmt_width, cell_l[i], cell_r[i], CRLF)
+            txt += u'%-*s|%s%s' % (fmt_width, cell_l[i], cell_r[i], '\n')
         if big:
             txt += sep
             for name, value in big:
-                txt += CRLF.join(['', name + ':', value, '', ''])
+                txt += '\n'.join(['', name + ':', value, '', ''])
         txt += sep
         return txt
 
@@ -291,7 +291,7 @@ class TicketNotifyEmail(NotifyEmail):
 
     def format_hdr(self):
         return '#%s: %s' % (self.ticket.id, wrap(self.ticket['summary'],
-                                                 self.COLS, linesep=CRLF,
+                                                 self.COLS, linesep='\n',
                                                  ambiwidth=self.ambiwidth))
 
     def format_subj(self, summary):
