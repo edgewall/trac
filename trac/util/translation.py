@@ -133,9 +133,8 @@ try:
 
         def add_domain(self, domain, env_path, locales_dir):
             with self._plugin_domains_lock:
-                if env_path not in self._plugin_domains:
-                    self._plugin_domains[env_path] = []
-                self._plugin_domains[env_path].append((domain, locales_dir))
+                domains = self._plugin_domains.setdefault(env_path, {})
+                domains[domain] = locales_dir
 
         def make_activable(self, get_locale, env_path=None):
             self._current.args = (get_locale, env_path)
@@ -154,7 +153,8 @@ try:
                                         'tracini'))
                 if env_path:
                     with self._plugin_domains_lock:
-                        domains = list(self._plugin_domains.get(env_path, []))
+                        domains = self._plugin_domains.get(env_path, {})
+                        domains = domains.items()
                     for domain, dirname in domains:
                         t.add(Translations.load(dirname, locale, domain))
             self._current.translations = t
