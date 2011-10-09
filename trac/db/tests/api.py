@@ -5,7 +5,8 @@ from __future__ import with_statement
 import os
 import unittest
 
-from trac.db.api import _parse_db_str, DatabaseManager, with_transaction
+from trac.db.api import DatabaseManager, _parse_db_str, with_transaction, \
+                        get_column_names
 from trac.test import EnvironmentStub, Mock
 
 
@@ -302,6 +303,14 @@ class StringsTestCase(unittest.TestCase):
                 ('test-markup', Markup(u'<em>märkup</em>')))
         self.assertEqual([(u'<em>märkup</em>',)], self.env.db_query(
             "SELECT value FROM system WHERE name='test-markup'"))
+
+    def test_quote(self):
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.execute('SELECT 1 AS %s' % \
+                       db.quote(r'alpha\`\"\'\\beta``gamma""delta'))
+        self.assertEqual(r'alpha\`\"\'\\beta``gamma""delta',
+                         get_column_names(cursor)[0])
 
 
 class ConnectionTestCase(unittest.TestCase):

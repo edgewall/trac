@@ -235,7 +235,7 @@ class PostgreSQLConnection(ConnectionWrapper):
 
     def quote(self, identifier):
         """Return the quoted identifier."""
-        return '"%s"' % identifier
+        return '"%s"' % identifier.replace('"', '""')
 
     def get_last_id(self, cursor, table, column='id'):
         cursor.execute("""SELECT CURRVAL('"%s_%s_seq"')""" % (table, column))

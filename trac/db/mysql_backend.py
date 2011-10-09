@@ -285,7 +285,7 @@ class MySQLConnection(ConnectionWrapper):
 
     def quote(self, identifier):
         """Return the quoted identifier."""
-        return "`%s`" % identifier
+        return "`%s`" % identifier.replace('`', '``')
 
     def get_last_id(self, cursor, table, column='id'):
         return cursor.lastrowid
