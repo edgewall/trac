@@ -13,6 +13,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import os
 import re
 import smtplib
 from subprocess import Popen, PIPE
@@ -23,7 +24,7 @@ from genshi.builder import tag
 from trac import __version__
 from trac.config import BoolOption, ExtensionOption, IntOption, Option
 from trac.core import *
-from trac.util.text import CRLF
+from trac.util.text import CRLF, fix_eol
 from trac.util.translation import _, deactivate, reactivate
 
 MAXHEADERLEN = 76
@@ -143,11 +144,9 @@ class SmtpEmailSender(Component):
     use_tls = BoolOption('notification', 'use_tls', 'false',
         """Use SSL/TLS to send notifications over SMTP. (''since 0.10'')""")
     
-    crlf = re.compile("\r?\n")
-    
     def send(self, from_addr, recipients, message):
         # Ensure the message complies with RFC2822: use CRLF line endings
-        message = CRLF.join(self.crlf.split(message))
+        message = fix_eol(message, CRLF)
         
         self.log.info("Sending notification through SMTP at %s:%d to %s"
                       % (self.smtp_server, self.smtp_port, recipients))
@@ -193,6 +192,9 @@ class SendmailEmailSender(Component):
          (''since 0.12'')""")
 
     def send(self, from_addr, recipients, message):
+        # Use native line endings in message
+        message = fix_eol(message, os.linesep)
+
         self.log.info("Sending notification through sendmail at %s to %s"
                       % (self.sendmail_path, recipients))
         cmdline = [self.sendmail_path, "-i", "-f", from_addr]
@@ -200,7 +202,7 @@ class SendmailEmailSender(Component):
         self.log.debug("Sendmail command line: %s" % cmdline)
         child = Popen(cmdline, bufsize=-1, stdin=PIPE, stdout=PIPE,
                       stderr=PIPE)
-        (out, err) = child.communicate(message)
+        out, err = child.communicate(message)
         if child.returncode or err:
             raise Exception("Sendmail failed with (%s, %s), command: '%s'"
                             % (child.returncode, err.strip(), cmdline))

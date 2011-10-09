@@ -33,7 +33,8 @@ from trac.db.api import (DatabaseManager, QueryContextManager,
                          TransactionContextManager, with_transaction)
 from trac.util import copytree, create_file, get_pkginfo, lazy, makedirs
 from trac.util.concurrency import threading
-from trac.util.text import exception_to_unicode, printerr, printout
+from trac.util.text import exception_to_unicode, path_to_unicode, printerr, \
+                           printout
 from trac.util.translation import _, N_
 from trac.versioncontrol import RepositoryManager
 from trac.web.href import Href
@@ -885,7 +886,7 @@ class EnvironmentAdmin(Component):
 
         if os.path.exists(dest):
             raise TracError(_("hotcopy can't overwrite existing '%(dest)s'",
-                              dest=dest))
+                              dest=path_to_unicode(dest)))
         import shutil
 
         # Bogus statement to lock the database while copying files
@@ -893,7 +894,8 @@ class EnvironmentAdmin(Component):
             db("UPDATE system SET name=NULL WHERE name IS NULL")
 
             printout(_("Hotcopying %(src)s to %(dst)s ...", 
-                       src=self.env.path, dst=dest))
+                       src=path_to_unicode(self.env.path),
+                       dst=path_to_unicode(dest)))
             db_str = self.env.config.get('trac', 'database')
             prefix, db_path = db_str.split(':', 1)
             skip = []
@@ -916,7 +918,7 @@ class EnvironmentAdmin(Component):
                     if src in err:
                         printerr('  %s' % err)
                     else:
-                        printerr("  %s: '%s'" % (err, src))
+                        printerr("  %s: '%s'" % (err, path_to_unicode(src)))
 
 
             # db backup for non-sqlite
@@ -968,4 +970,4 @@ class EnvironmentAdmin(Component):
         printout(_("Upgrade done.\n\n"
                    "You may want to upgrade the Trac documentation now by "
                    "running:\n\n  trac-admin %(path)s wiki upgrade",
-                   path=self.env.path))
+                   path=path_to_unicode(self.env.path)))

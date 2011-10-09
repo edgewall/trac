@@ -40,8 +40,9 @@ from trac.search import search_to_sql, shorten_result
 from trac.util import content_disposition, create_unique_file, get_reporter_id
 from trac.util.datefmt import format_datetime, from_utimestamp, \
                               to_datetime, to_utimestamp, utc
-from trac.util.text import exception_to_unicode, pretty_size, print_table, \
-                           unicode_quote, unicode_unquote
+from trac.util.text import exception_to_unicode, path_to_unicode, \
+                           pretty_size, print_table, unicode_quote, \
+                           unicode_unquote
 from trac.util.translation import _, tag_
 from trac.web import HTTPBadRequest, IRequestHandler, RequestDone
 from trac.web.chrome import (INavigationContributor, add_ctxtnav, add_link,
@@ -1028,7 +1029,7 @@ class AttachmentAdmin(Component):
                 destination = os.path.join(destination, name)
             if os.path.isfile(destination):
                 raise AdminCommandError(_("File '%(name)s' exists",
-                                          name=destination))
+                                          name=path_to_unicode(destination)))
         with attachment.open() as input:
             output = open(destination, "wb") if destination is not None \
                      else sys.stdout

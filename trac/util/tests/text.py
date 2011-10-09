@@ -3,7 +3,7 @@
 import unittest
 from StringIO import StringIO
 
-from trac.util.text import empty, expandtabs, javascript_quote, \
+from trac.util.text import empty, expandtabs, fix_eol, javascript_quote, \
                            normalize_whitespace, to_unicode, \
                            text_width, print_table, unicode_quote, \
                            unicode_quote_plus, unicode_unquote, \
@@ -245,6 +245,17 @@ class WrapTestCase(unittest.TestCase):
                                        ambiwidth=2))
 
 
+class FixEolTestCase(unittest.TestCase):
+    def test_mixed_eol(self):
+        text = u'\nLine 2\rLine 3\r\nLine 4\n\r'
+        self.assertEqual(u'\nLine 2\nLine 3\nLine 4\n\n',
+                         fix_eol(text, '\n'))
+        self.assertEqual(u'\rLine 2\rLine 3\rLine 4\r\r',
+                         fix_eol(text, '\r'))
+        self.assertEqual(u'\r\nLine 2\r\nLine 3\r\nLine 4\r\n\r\n',
+                         fix_eol(text, '\r\n'))
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ToUnicodeTestCase, 'test'))
@@ -255,6 +266,7 @@ def suite():
     suite.addTest(unittest.makeSuite(TextWidthTestCase, 'test'))
     suite.addTest(unittest.makeSuite(PrintTableTestCase, 'test'))
     suite.addTest(unittest.makeSuite(WrapTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(FixEolTestCase, 'test'))
     return suite
 
 if __name__ == '__main__':

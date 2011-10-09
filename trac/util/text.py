@@ -70,6 +70,7 @@ def to_unicode(text, charset=None):
             return ' '.join([to_unicode(arg) for arg in text.args])
     return unicode(text)
 
+
 def exception_to_unicode(e, traceback=False):
     """Convert an `Exception` to an `unicode` object.
 
@@ -83,11 +84,23 @@ def exception_to_unicode(e, traceback=False):
         message = '\n%s\n%s' % (to_unicode('\n'.join(traceback_only)), message)
     return message
 
+
+def path_to_unicode(path):
+    """Convert a filesystem path to unicode, using the filesystem encoding."""
+    if isinstance(path, str):
+        try:
+            return unicode(path, sys.getfilesystemencoding())
+        except UnicodeDecodeError:
+            return unicode(path, 'latin1')
+    return unicode(path)
+
+
 _js_quote = {'\\': '\\\\', '"': '\\"', '\b': '\\b', '\f': '\\f',
              '\n': '\\n', '\r': '\\r', '\t': '\\t', "'": "\\'"}
 for i in range(0x20) + [ord(c) for c in '&<>']:
     _js_quote.setdefault(chr(i), '\\u%04x' % i)
 _js_quote_re = re.compile(r'[\x00-\x1f\\"\b\f\n\r\t\'&<>]')
+
 
 def javascript_quote(text):
     """Quote strings for inclusion in javascript"""
@@ -96,6 +109,7 @@ def javascript_quote(text):
     def replace(match):
         return _js_quote[match.group(0)]
     return _js_quote_re.sub(replace, text)
+
 
 def unicode_quote(value, safe='/'):
     """A unicode aware version of `urllib.quote`
@@ -107,6 +121,7 @@ def unicode_quote(value, safe='/'):
     """
     return quote(value.encode('utf-8') if isinstance(value, unicode)
                  else str(value), safe)
+
 
 def unicode_quote_plus(value, safe=''):
     """A unicode aware version of `urllib.quote_plus`.
@@ -120,6 +135,7 @@ def unicode_quote_plus(value, safe=''):
     return quote_plus(value.encode('utf-8') if isinstance(value, unicode)
                       else str(value), safe)
 
+
 def unicode_unquote(value):
     """A unicode aware version of `urllib.unquote`.
     
@@ -128,6 +144,7 @@ def unicode_unquote(value):
     :rtype: `unicode`
     """
     return unquote(value).decode('utf-8')
+
 
 def unicode_urlencode(params, safe=''):
     """A unicode aware version of `urllib.urlencode`.
@@ -145,6 +162,7 @@ def unicode_urlencode(params, safe=''):
             l.append(unicode_quote_plus(k, safe) + '=' + 
                      unicode_quote_plus(v, safe))
     return '&'.join(l)
+
 
 def to_utf8(text, charset='latin1'):
     """Convert a string to UTF-8, assuming the encoding is either UTF-8, ISO
@@ -172,12 +190,14 @@ class unicode_passwd(unicode):
     def __repr__(self):
         return '*******'
 
+
 def stream_encoding(stream):
     """Return the appropriate encoding for the given stream."""
     encoding = getattr(stream, 'encoding', None)
     # Windows returns 'cp0' to indicate no encoding
     return encoding if encoding not in (None, 'cp0') else 'utf-8'
         
+
 def console_print(out, *args, **kwargs):
     """Output the given arguments to the console, encoding the output
     as appropriate.
@@ -191,13 +211,16 @@ def console_print(out, *args, **kwargs):
     if kwargs.get('newline', True):
         out.write('\n')
 
+
 def printout(*args, **kwargs):
     """Do a `console_print` on `sys.stdout`."""
     console_print(sys.stdout, *args, **kwargs)
 
+
 def printerr(*args, **kwargs):
     """Do a `console_print` on `sys.stderr`."""
     console_print(sys.stderr, *args, **kwargs)
+
 
 def raw_input(prompt):
     """Input one line from the console and converts it to unicode as
@@ -246,6 +269,7 @@ if os.name == 'nt':
 else:
     if re.match(r'zh|ja|kr', os.environ.get('LANG') or '', re.IGNORECASE):
         _default_ambiwidth = 2
+
 
 def print_table(data, headers=None, sep='  ', out=None, ambiwidth=None):
     """Print data according to a tabular layout.
@@ -308,6 +332,7 @@ def print_table(data, headers=None, sep='  ', out=None, ambiwidth=None):
             out.write('\n')
     out.write('\n')
 
+
 def shorten_line(text, maxlen=75):
     """Truncates content to at most `maxlen` characters.
 
@@ -320,6 +345,7 @@ def shorten_line(text, maxlen=75):
     if cut < 0:
         cut = maxlen
     return text[:cut] + ' ...'
+
 
 class UnicodeTextWrapper(textwrap.TextWrapper):
     breakable_char_ranges = [
@@ -444,6 +470,7 @@ class UnicodeTextWrapper(textwrap.TextWrapper):
 
         return lines
 
+
 def wrap(t, cols=75, initial_indent='', subsequent_indent='',
          linesep=os.linesep, ambiwidth=1):
     """Wraps the single paragraph in `t`, which contains unicode characters.
@@ -465,6 +492,7 @@ def wrap(t, cols=75, initial_indent='', subsequent_indent='',
         wrappedLines += wrapper.wrap(line.rstrip()) or ['']
     return linesep.join(wrappedLines)
 
+
 def obfuscate_email_address(address):
     """Replace anything looking like an e-mail address (``'@something'``)
     with a trailing ellipsis (``'@…'``)
@@ -475,6 +503,7 @@ def obfuscate_email_address(address):
             return address[:at] + u'@\u2026' + \
                    ('>' if address[-1] == '>' else '')
     return address
+
 
 def breakable_path(path):
     """Make a path breakable after path separators, and conversely, avoid
@@ -488,6 +517,7 @@ def breakable_path(path):
         path = path[1:]
     return prefix + path.replace('/', u'/\u200b').replace('\\', u'\\\u200b') \
                         .replace(' ', u'\u00a0')
+
 
 def normalize_whitespace(text, to_space=u'\u00a0', remove=u'\u200b'):
     """Normalize whitespace in a string, by replacing special spaces by normal
@@ -530,6 +560,7 @@ def pretty_size(size, format='%.1f'):
 
     return (format + ' %s') % (size, units[i - 1])
 
+
 def expandtabs(s, tabstop=8, ignoring=None):
     """Expand tab characters `'\\\\t'` into spaces.
 
@@ -566,3 +597,9 @@ def expandtabs(s, tabstop=8, ignoring=None):
         outlines.append(''.join(s))
     return '\n'.join(outlines)
 
+
+def fix_eol(text, eol):
+    """Fix end-of-lines in a text."""
+    lines = text.splitlines()
+    lines.append('')
+    return eol.join(lines)
