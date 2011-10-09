@@ -43,6 +43,14 @@ def daemonize(pidfile=None, progname=None, stdin='/dev/null',
                 if e.errno != errno.ESRCH:
                     raise
 
+        # The pid file must be writable
+        try:
+            fileobj = open(pidfile, 'r+')
+            fileobj.close()
+        except IOError, e:
+            from trac.util.text import exception_to_unicode
+            sys.exit('Error writing to pid file: %s' % exception_to_unicode(e))
+
     # Perform first fork
     pid = os.fork()
     if pid > 0:

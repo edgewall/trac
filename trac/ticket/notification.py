@@ -19,7 +19,6 @@
 from __future__ import with_statement
 
 from hashlib import md5
-from unicodedata import east_asian_width
 
 from genshi.template.text import NewTextTemplate
 
@@ -30,6 +29,7 @@ from trac.ticket.api import TicketSystem
 from trac.util.datefmt import to_utimestamp
 from trac.util.text import obfuscate_email_address, text_width, wrap
 from trac.util.translation import deactivate, reactivate
+
 
 class TicketNotificationSystem(Component):
 
