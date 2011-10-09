@@ -80,6 +80,16 @@ def exception_to_unicode(e, traceback=False):
     return message
 
 
+def path_to_unicode(path):
+    """Convert a filesystem path to unicode, using the filesystem encoding."""
+    if isinstance(path, str):
+        try:
+            return unicode(path, sys.getfilesystemencoding())
+        except UnicodeDecodeError:
+            return unicode(path, 'latin1')
+    return unicode(path)
+
+
 _js_quote = {'\\': '\\\\', '"': '\\"', '\b': '\\b', '\f': '\\f',
              '\n': '\\n', '\r': '\\r', '\t': '\\t', "'": "\\'"}
 for i in range(0x20) + [ord(c) for c in '&<>']:

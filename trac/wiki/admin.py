@@ -24,8 +24,8 @@ from trac.util import read_file
 from trac.util.compat import any
 from trac.util.datefmt import format_datetime, from_utimestamp, \
                               to_utimestamp, utc
-from trac.util.text import to_unicode, unicode_quote, unicode_unquote, \
-                           print_table, printout
+from trac.util.text import path_to_unicode, print_table, printout, \
+                           to_unicode, unicode_quote, unicode_unquote
 from trac.util.translation import _
 
 
@@ -105,7 +105,7 @@ class WikiAdmin(Component):
         else:
             if os.path.isfile(filename):
                 raise AdminCommandError(_("File '%(name)s' exists",
-                                          name=filename))
+                                          name=path_to_unicode(filename)))
             f = open(filename, 'w')
             try:
                 f.write(text.encode('utf-8'))
@@ -120,7 +120,7 @@ class WikiAdmin(Component):
         if filename:
             if not os.path.isfile(filename):
                 raise AdminCommandError(_("'%(name)s' is not a file",
-                                          name=filename))
+                                          name=path_to_unicode(filename)))
             data = read_file(filename)
         else:
             data = sys.stdin.read()
@@ -172,7 +172,8 @@ class WikiAdmin(Component):
                 if os.path.isfile(filename):
                     if self.import_page(filename, page, create_only, replace):
                         printout(_("  %(page)s imported from %(filename)s",
-                                   filename=filename, page=page))
+                                   filename=path_to_unicode(filename),
+                                   page=page))
     
     def _complete_page(self, args):
         if len(args) == 1:
@@ -249,7 +250,7 @@ class WikiAdmin(Component):
                 os.mkdir(directory)
             else:
                 raise AdminCommandError(_("'%(name)s' is not a directory",
-                                          name=directory))
+                                          name=path_to_unicode(directory)))
         db = self.env.get_db_cnx()
         cursor = db.cursor()
         for p in pages:
@@ -271,7 +272,7 @@ class WikiAdmin(Component):
                     page = unicode_unquote(page.encode('utf-8'))
                     if self.import_page(path, page, replace=replace):
                         printout(_("  %(page)s imported from %(filename)s",
-                                   filename=path, page=page))
+                                   filename=path_to_unicode(path), page=page))
     
     def _do_load(self, *paths):
         self._load_or_replace(paths, replace=False)
