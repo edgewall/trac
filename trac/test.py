@@ -182,15 +182,24 @@ def reset_sqlite_db(env, db_prop):
             db("DELETE FROM %s" % table)
         return tables
 
+
 def reset_postgres_db(env, db_prop):
     with env.db_transaction as db:
         dbname = db.schema
         if dbname:
             # reset sequences
+            # information_schema.sequences view is available in PostgreSQL 8.2+
+            # however Trac supports PostgreSQL 8.0+, uses
+            # pg_get_serial_sequence()
             for seq in db("""
-                  SELECT sequence_name FROM information_schema.sequences
-                  WHERE sequence_schema=%s
-                  """, (dbname,)):
+                    SELECT sequence_name FROM (
+                        SELECT pg_get_serial_sequence(%s||table_name,
+                                                      column_name)
+                               AS sequence_name
+                        FROM information_schema.columns
+                        WHERE table_schema=%s) AS tab
+                    WHERE sequence_name IS NOT NULL""",
+                    (dbname + '.', dbname)):
                 db("ALTER SEQUENCE %s RESTART WITH 1" % seq)
             # clear tables
             tables = db("""SELECT table_name FROM information_schema.tables 
@@ -201,6 +210,7 @@ def reset_postgres_db(env, db_prop):
             # (see http://www.postgresql.org/docs/8.1/static/sql-truncate.html)
             # but on the small tables used here, DELETE is actually much faster
             return tables
+
 
 def reset_mysql_db(env, db_prop):
     dbname = os.path.basename(db_prop['path'])
