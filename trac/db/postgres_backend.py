@@ -234,12 +234,12 @@ class PostgreSQLConnection(ConnectionWrapper):
         return '"%s"' % identifier.replace('"', '""')
 
     def get_last_id(self, cursor, table, column='id'):
-        cursor.execute("SELECT CURRVAL('%s_%s_seq')" % (table, column))
+        cursor.execute("""SELECT CURRVAL('"%s_%s_seq"')""" % (table, column))
         return cursor.fetchone()[0]
 
     def update_sequence(self, cursor, table, column='id'):
         cursor.execute("""
-            SELECT setval('%s_%s_seq', (SELECT MAX(id) FROM %s))
+            SELECT setval('"%s_%s_seq"', (SELECT MAX(id) FROM %s))
             """ % (table, column, table))
 
     def cursor(self):
