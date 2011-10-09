@@ -383,6 +383,12 @@ in order to initialize and prepare the project database.
             initenv_error(_("Directory exists and is not empty."))
             return 2
 
+        if not os.path.exists(os.path.dirname(self.envname)):
+            initenv_error(_("Base directory '%(env)s' does not exist. Please "
+                            "create it manually and retry.",
+                            env=os.path.dirname(self.envname)))
+            return 2            
+
         arg = self.arg_tokenize(line)
         inherit_paths = []
         i = 0
