@@ -236,6 +236,15 @@ def parse_args(args, strict=True):
     return largs, kwargs
 
 
+def validate_page_name(pagename):
+    """Utility for validating wiki page name.
+
+    :param pagename: wiki page name to validate
+    """
+    return pagename and \
+           all(part not in ('', '.', '..') for part in pagename.split('/'))
+
+
 class WikiSystem(Component):
     """Wiki system manager."""
 

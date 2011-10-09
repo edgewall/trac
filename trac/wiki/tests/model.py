@@ -246,6 +246,26 @@ class WikiPageTestCase(unittest.TestCase):
         listener = TestWikiChangeListener(self.env)
         self.assertEqual((page, 'TestPage'), listener.renamed[0])
 
+    def test_invalid_page_name(self):
+        invalid_names = ('../Page', 'Page/..', 'Page/////SubPage',
+                         'Page/./SubPage', '/PagePrefix', 'PageSuffix/')
+
+        for name in invalid_names:
+            page = WikiPage(self.env)
+            page.name = name
+            page.text = 'Bla bla'
+            t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
+            self.assertRaises(TracError, page.save, 'joe', 'Testing', '::1', t)
+
+        page = WikiPage(self.env)
+        page.name = 'TestPage'
+        page.text = 'Bla bla'
+        t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
+        page.save('joe', 'Testing', '::1', t)
+        for name in invalid_names:
+            page = WikiPage(self.env, 'TestPage')
+            self.assertRaises(TracError, page.rename, name)
+
 
 def suite():
     return unittest.makeSuite(WikiPageTestCase, 'test')

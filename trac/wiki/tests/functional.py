@@ -35,6 +35,11 @@ class TestWikiRename(FunctionalTwillTestCaseSetup):
         tc.submit('submit')
         tc.url(page_url)
         tc.find("A new name is mandatory for a rename")
+        # attempt to rename the page to an invalid page name
+        tc.formvalue('rename-form', 'new_name', '../WikiStart')
+        tc.submit('submit')
+        tc.url(page_url)
+        tc.find("The new name is invalid")
         # attempt to rename the page to the current page name       
         tc.formvalue('rename-form', 'new_name', pagename)
         tc.submit('submit')
@@ -122,6 +127,17 @@ class ReStructuredTextCodeBlockTest(FunctionalTwillTestCaseSetup):
         tc.find('"123"')
 
 
+class RegressionTestTicket10274(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/10274"""
+        self._tester.go_to_wiki('WikiStart/..')
+        tc.find("Invalid Wiki page name 'WikiStart/..'")
+        self._tester.go_to_wiki('../WikiStart')
+        tc.find("Invalid Wiki page name '../WikiStart'")
+        self._tester.go_to_wiki('WikiStart/./SubPage')
+        tc.find("Invalid Wiki page name 'WikiStart/./SubPage'")
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional.testcases
@@ -129,6 +145,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestWiki())
     suite.addTest(TestWikiRename())
     suite.addTest(RegressionTestTicket4812())
+    suite.addTest(RegressionTestTicket10274())
     if has_docutils:
         import docutils
         if get_pkginfo(docutils):

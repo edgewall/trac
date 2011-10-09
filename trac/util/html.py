@@ -34,19 +34,89 @@ class TracHTMLSanitizer(HTMLSanitizer):
        http://genshi.edgewall.org/wiki/Documentation/filters.html#html-sanitizer
     """
 
-    UNSAFE_CSS = set([
-        'position',
-        # IE <http://trac.edgewall.org/ticket/10114>
-        'behavior',
-        # Opera <http://trac.edgewall.org/ticket/10115>
-        '-o-link', '-o-link-source',
+    SAFE_CSS = frozenset([
+        # CSS 3 properties <http://www.w3.org/TR/CSS/#properties>
+        'background', 'background-attachment', 'background-color',
+        'background-image', 'background-position', 'background-repeat',
+        'border', 'border-bottom', 'border-bottom-color',
+        'border-bottom-style', 'border-bottom-width', 'border-collapse',
+        'border-color', 'border-left', 'border-left-color',
+        'border-left-style', 'border-left-width', 'border-right',
+        'border-right-color', 'border-right-style', 'border-right-width',
+        'border-spacing', 'border-style', 'border-top', 'border-top-color',
+        'border-top-style', 'border-top-width', 'border-width', 'bottom',
+        'caption-side', 'clear', 'clip', 'color', 'content',
+        'counter-increment', 'counter-reset', 'cursor', 'direction', 'display',
+        'empty-cells', 'float', 'font', 'font-family', 'font-size',
+        'font-style', 'font-variant', 'font-weight', 'height', 'left',
+        'letter-spacing', 'line-height', 'list-style', 'list-style-image',
+        'list-style-position', 'list-style-type', 'margin', 'margin-bottom',
+        'margin-left', 'margin-right', 'margin-top', 'max-height', 'max-width',
+        'min-height', 'min-width', 'opacity', 'orphans', 'outline',
+        'outline-color', 'outline-style', 'outline-width', 'overflow',
+        'padding', 'padding-bottom', 'padding-left', 'padding-right',
+        'padding-top', 'page-break-after', 'page-break-before',
+        'page-break-inside', 'position', 'quotes', 'right', 'table-layout',
+        'text-align', 'text-decoration', 'text-indent', 'text-transform',
+        'top', 'unicode-bidi', 'vertical-align', 'visibility', 'white-space',
+        'widows', 'width', 'word-spacing', 'z-index',
     ])
 
-    def __init__(self, safe_schemes=HTMLSanitizer.SAFE_SCHEMES):
+    def __init__(self, safe_schemes=HTMLSanitizer.SAFE_SCHEMES,
+                 safe_css=SAFE_CSS):
         safe_attrs = HTMLSanitizer.SAFE_ATTRS | frozenset(['style'])
         safe_schemes = frozenset(safe_schemes)
         super(TracHTMLSanitizer, self).__init__(safe_attrs=safe_attrs,
                                                 safe_schemes=safe_schemes)
+        self.safe_css = frozenset(safe_css)
+
+    # IE6 <http://heideri.ch/jso/#80>
+    _EXPRESSION_SEARCH = re.compile(u"""
+        [eE
+         \uFF25 # FULLWIDTH LATIN CAPITAL LETTER E
+         \uFF45 # FULLWIDTH LATIN SMALL LETTER E
+        ]
+        [xX
+         \uFF38 # FULLWIDTH LATIN CAPITAL LETTER X
+         \uFF58 # FULLWIDTH LATIN SMALL LETTER X
+        ]
+        [pP
+         \uFF30 # FULLWIDTH LATIN CAPITAL LETTER P
+         \uFF50 # FULLWIDTH LATIN SMALL LETTER P
+        ]
+        [rR
+         \u0280 # LATIN LETTER SMALL CAPITAL R
+         \uFF32 # FULLWIDTH LATIN CAPITAL LETTER R
+         \uFF52 # FULLWIDTH LATIN SMALL LETTER R
+        ]
+        [eE
+         \uFF25 # FULLWIDTH LATIN CAPITAL LETTER E
+         \uFF45 # FULLWIDTH LATIN SMALL LETTER E
+        ]
+        [sS
+         \uFF33 # FULLWIDTH LATIN CAPITAL LETTER S
+         \uFF53 # FULLWIDTH LATIN SMALL LETTER S
+        ]{2}
+        [iI
+         \u026A # LATIN LETTER SMALL CAPITAL I
+         \uFF29 # FULLWIDTH LATIN CAPITAL LETTER I
+         \uFF49 # FULLWIDTH LATIN SMALL LETTER I
+        ]
+        [oO
+         \uFF2F # FULLWIDTH LATIN CAPITAL LETTER O
+         \uFF4F # FULLWIDTH LATIN SMALL LETTER O
+        ]
+        [nN
+         \u0274 # LATIN LETTER SMALL CAPITAL N
+         \uFF2E # FULLWIDTH LATIN CAPITAL LETTER N
+         \uFF4E # FULLWIDTH LATIN SMALL LETTER N
+        ]
+        """, re.VERBOSE).search
+
+    # IE6 <http://openmya.hacker.jp/hasegawa/security/expression.txt>
+    #     7) Particular bit of Unicode characters
+    _URL_FINDITER = re.compile(
+        u'[Uu][Rr\u0280][Ll\u029F]\s*\(([^)]+)').finditer
 
     def sanitize_css(self, text):
         decls = []
@@ -62,9 +132,9 @@ class TracHTMLSanitizer(HTMLSanitizer):
             if not self.is_safe_css(prop.strip().lower(), value.strip()):
                 continue
             is_evil = False
-            if 'expression' in decl:
+            if self._EXPRESSION_SEARCH(decl):
                 is_evil = True
-            for match in re.finditer(r'url\s*\(([^)]+)', decl):
+            for match in self._URL_FINDITER(decl):
                 if not self.is_safe_uri(match.group(1)):
                     is_evil = True
                     break
@@ -95,12 +165,33 @@ class TracHTMLSanitizer(HTMLSanitizer):
         """Determine whether the given css property declaration is to be 
         considered safe for inclusion in the output.
         """
-        if prop in self.UNSAFE_CSS:
+        if prop not in self.safe_css:
             return False
+        # Position can be used for phishing, 'static' excepted
+        if prop == 'position':
+            return value.lower() == 'static'
         # Negative margins can be used for phishing
-        elif prop.startswith('margin') and '-' in value:
-            return False
+        if prop.startswith('margin'):
+            return '-' not in value
         return True
+
+    _NORMALIZE_NEWLINES = re.compile(r'\r\n').sub
+    _UNICODE_ESCAPE = re.compile(
+        r"""\\([0-9a-fA-F]{1,6})\s?|\\([^\r\n\f0-9a-fA-F'"{};:()#*])""",
+        re.UNICODE).sub
+
+    def _replace_unicode_escapes(self, text):
+        def _repl(match):
+            t = match.group(1)
+            if t:
+                return unichr(int(t, 16))
+            t = match.group(2)
+            if t == '\\':
+                return r'\\'
+            else:
+                return t
+        return self._UNICODE_ESCAPE(_repl,
+                                    self._NORMALIZE_NEWLINES('\n', text))
 
 
 class Deuglifier(object):

@@ -213,6 +213,17 @@ class Attachment(object):
         assert self.filename, "Cannot reparent non-existent attachment"
         new_id = unicode(new_id)
         new_path = self._get_path(new_realm, new_id, self.filename)
+
+        # Make sure the path to the attachment is inside the environment
+        # attachments directory
+        attachments_dir = os.path.join(os.path.normpath(self.env.path),
+                                       'attachments')
+        commonprefix = os.path.commonprefix([attachments_dir, new_path])
+        if commonprefix != attachments_dir:
+            raise TracError(_('Cannot reparent attachment "%(att)s" as '
+                              '%(realm)s:%(id)s is invalid', 
+                              att=self.filename, realm=new_realm, id=new_id))
+
         if os.path.exists(new_path):
             raise TracError(_('Cannot reparent attachment "%(att)s" as '
                               'it already exists in %(realm)s:%(id)s', 
@@ -266,7 +277,11 @@ class Attachment(object):
         attachments_dir = os.path.join(os.path.normpath(self.env.path),
                                        'attachments')
         commonprefix = os.path.commonprefix([attachments_dir, self.path])
-        assert commonprefix == attachments_dir
+        if commonprefix != attachments_dir:
+            raise TracError(_('Cannot create attachment "%(att)s" as '
+                              '%(realm)s:%(id)s is invalid', 
+                              att=filename, realm=self.parent_realm,
+                              id=self.parent_id))
 
         if not os.access(self.path, os.F_OK):
             os.makedirs(self.path)

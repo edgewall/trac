@@ -41,10 +41,11 @@ from trac.web.chrome import (Chrome, INavigationContributor, ITemplateProvider,
                              add_ctxtnav, add_link, add_notice, add_script,
                              add_stylesheet, add_warning, prevnext_nav, 
                              web_context)
-from trac.wiki.api import IWikiPageManipulator, WikiSystem
+from trac.wiki.api import IWikiPageManipulator, WikiSystem, validate_page_name
 from trac.wiki.formatter import format_to, OneLinerFormatter
 from trac.wiki.model import WikiPage
- 
+
+
 class InvalidWikiPage(TracError):
     """Exception raised when a Wiki page fails validation.
     
@@ -115,8 +116,13 @@ class WikiModule(Component):
         version = req.args.get('version')
         old_version = req.args.get('old_version')
 
-        if pagename.endswith('/'):
-            req.redirect(req.href.wiki(pagename.strip('/')))
+        if pagename.startswith('/') or pagename.endswith('/') or \
+                '//' in pagename:
+            pagename = re.sub(r'/{2,}', '/', pagename.strip('/'))
+            req.redirect(req.href.wiki(pagename))
+        if not validate_page_name(pagename):
+            raise TracError(_("Invalid Wiki page name '%(name)s'",
+                              name=pagename))
 
         page = WikiPage(self.env, pagename)
         versioned_page = WikiPage(self.env, pagename, version=version)
@@ -289,13 +295,17 @@ class WikiModule(Component):
             req.redirect(get_resource_url(self.env, page.resource, req.href))
  	 
         old_name, old_version = page.name, page.version
-        new_name = req.args.get('new_name', '').rstrip('/')
+        new_name = req.args.get('new_name', '')
+        new_name = re.sub(r'/{2,}', '/', new_name.strip('/'))
         redirect = req.args.get('redirect')
  	 
         # verify input parameters
         warn = None
         if not new_name:
             warn = _("A new name is mandatory for a rename.")
+        elif not validate_page_name(new_name):
+            warn = _("The new name is invalid (a name which is separated "
+                     "with slashes cannot be '.' or '..').")
         elif new_name == old_name:
             warn = _("The new name must be different from the old name.")
         elif WikiPage(self.env, new_name).exists:
