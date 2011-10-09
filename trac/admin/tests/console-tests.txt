@@ -712,7 +712,7 @@ milestone4
 
 Name        Due         Completed
 ---------------------------------
-état_final  2004-01-11
+©tat_final  2004-01-11
 milestone1
 milestone2
 milestone3
