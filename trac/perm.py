@@ -27,8 +27,8 @@ from trac.config import ExtensionOption, OrderedExtensionsOption
 from trac.core import *
 from trac.resource import Resource, get_resource_name
 from trac.util import file_or_std
-from trac.util.text import print_table, printout, wrap, stream_encoding, \
-                           to_unicode
+from trac.util.text import path_to_unicode, print_table, printout, \
+                           stream_encoding, to_unicode, wrap
 from trac.util.translation import _
 
 __all__ = ['IPermissionRequestor', 'IPermissionStore',
@@ -691,7 +691,8 @@ class PermissionAdmin(Component):
         except IOError, e:
             raise AdminCommandError(
                 _("Cannot export to %(filename)s: %(error)s",
-                  filename=filename, error=e.strerror))
+                  filename=path_to_unicode(filename or 'stdout'),
+                  error=e.strerror))
     
     def _do_import(self, filename=None):
         permsys = PermissionSystem(self.env)
@@ -720,8 +721,10 @@ class PermissionAdmin(Component):
         except csv.Error, e:
             raise AdminCommandError(
                 _("Cannot import from %(filename)s line %(line)d: %(error)s ",
-                  filename=filename, line=reader.line_num, error=e))
+                  filename=path_to_unicode(filename or 'stdin'),
+                  line=reader.line_num, error=e))
         except IOError, e:
             raise AdminCommandError(
                 _("Cannot import from %(filename)s: %(error)s",
-                  filename=filename, error=e.strerror))
+                  filename=path_to_unicode(filename or 'stdin'),
+                  error=e.strerror))
