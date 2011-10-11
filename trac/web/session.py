@@ -301,11 +301,18 @@ class Session(DetachedSession):
                         WHERE sid=%s
                         """, (self.req.authname, sid))
             else:
-                # we didn't have an anonymous session for this sid
-                cursor.execute("""
-                    INSERT INTO session (sid,last_visit,authenticated)
-                    VALUES (%s,%s,1)
-                    """, (self.req.authname, int(time.time())))
+                # We didn't have an anonymous session for this sid. The
+                # authenticated session might have been inserted between the
+                # SELECT above and here, so we catch the error.
+                try:
+                    cursor.execute("""
+                        INSERT INTO session (sid,last_visit,authenticated)
+                        VALUES (%s,%s,1)
+                        """, (self.req.authname, int(time.time())))
+                except Exception:
+                    self.env.log.warning('Authenticated session for %s '
+                                         'already exists', self.req.authname)
+                    db.rollback()
         self._new = False
 
         self.sid = sid
