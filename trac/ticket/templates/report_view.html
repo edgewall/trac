@@ -119,11 +119,13 @@
               <tr py:for="cell_group in row.cell_groups"
                 py:with="fullrow = len(cell_group) == 1;
                          td_attrs = {'class': 'fullrow', 'colspan': 100} if fullrow else {}"
-                class="${'color' + row.__color__ + '-' if '__color__' in row else ''}${'odd' if row.__idx__ % 2 else 'even'}"
+                class="${'color' + row.__color__ + '-' if '__color__' in row else None
+                      }${'odd' if row.__idx__ % 2 else 'even'
+                      }${' ' + row['__class__'] if '__class__' in row else None}"
                 style="${'background: ' + row.__bgcolor__ + ';' if '__bgcolor__' in row else None
-                }${'color: ' + row.__fgcolor__ + ';' if '__fgcolor__' in row else None
-                }${row.__style__ + ';' if '__style__' in row else None
-                }${'border: none; padding: 0;' if fullrow else None}">
+                      }${'color: ' + row.__fgcolor__ + ';' if '__fgcolor__' in row else None
+                      }${row.__style__ + ';' if '__style__' in row else None
+                      }${'border: none; padding: 0;' if fullrow else None}">
 
                 <py:for each="cell in cell_group">
                   <py:if test="not cell.header.hidden">

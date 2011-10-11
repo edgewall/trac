@@ -282,8 +282,8 @@ class ReportModule(Component):
 
         return 'report_list.html', data, None
 
-    _html_cols = set(['__style__', '__color__', '__fgcolor__',
-                         '__bgcolor__', '__grouplink__'])
+    _html_cols = set(['__class__', '__style__', '__color__', '__fgcolor__',
+                      '__bgcolor__', '__grouplink__'])
 
     def _render_view(self, req, id):
         """Retrieve the report results and pre-process them for rendering."""
