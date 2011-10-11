@@ -139,11 +139,20 @@ class DetachedSession(dict):
                     WHERE sid=%s AND authenticated=%s
                     """, (self.sid, authenticated))
                 self._old = dict(self.items())
-                cursor.executemany("""
-                    INSERT INTO session_attribute
-                      (sid,authenticated,name,value)
-                    VALUES (%s,%s,%s,%s)
-                    """, [(self.sid, authenticated, k, v) for k, v in items])
+                # The session variables might already have been updated by a
+                # concurrent request.
+                try:
+                    cursor.executemany("""
+                        INSERT INTO session_attribute
+                          (sid,authenticated,name,value)
+                        VALUES (%s,%s,%s,%s)
+                        """, [(self.sid, authenticated, k, v)
+                              for k, v in items])
+                except Exception:
+                    self.env.log.warning('Attributes for session %s already '
+                                         'updated', self.sid)
+                    db.rollback()
+                    return
                 session_saved[0] = True
 
         # Purge expired sessions. We do this only when the session was
