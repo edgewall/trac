@@ -248,5 +248,6 @@ class ReStructuredTextRenderer(Component):
         parts = publish_parts(content, writer_name='html', parser=parser,
                               settings_overrides={'halt_level': 6, 
                                                   'file_insertion_enabled': 0, 
-                                                  'raw_enabled': 0})
+                                                  'raw_enabled': 0,
+                                                  'warning_stream': False})
         return parts['html_body']
