@@ -104,7 +104,7 @@ class DetachedSession(dict):
             # Try to save the session if it's a new one. A failure to
             # do so is not critical but we nevertheless skip the
             # following steps.
-            skip = False
+
             if self._new:
                 self.last_visit = now
                 self._new = False
@@ -114,15 +114,15 @@ class DetachedSession(dict):
                     db("""INSERT INTO session (sid, last_visit, authenticated)
                           VALUES (%s,%s,%s)
                           """, (self.sid, self.last_visit, authenticated))
-                except Exception:
+                except self.env.db_exc.IntegrityError:
                     self.env.log.warning('Session %s already exists', self.sid)
                     db.rollback()
-                    skip = True
+                    return
 
             # Remove former values for session_attribute and save the
             # new ones. The last concurrent request to do so "wins".
 
-            if not skip and self._old != self:
+            if self._old != self:
                 if not items and not authenticated:
                     # No need to keep around empty unauthenticated sessions
                     db("DELETE FROM session WHERE sid=%s AND authenticated=0",
@@ -131,11 +131,20 @@ class DetachedSession(dict):
                       WHERE sid=%s AND authenticated=%s
                       """, (self.sid, authenticated))
                 self._old = dict(self.items())
-                db.executemany("""
-                    INSERT INTO session_attribute
-                      (sid,authenticated,name,value)
-                    VALUES (%s,%s,%s,%s)
-                    """, [(self.sid, authenticated, k, v) for k, v in items])
+                # The session variables might already have been updated by a
+                # concurrent request.
+                try:
+                    db.executemany("""
+                        INSERT INTO session_attribute
+                          (sid,authenticated,name,value)
+                        VALUES (%s,%s,%s,%s)
+                        """, [(self.sid, authenticated, k, v)
+                              for k, v in items])
+                except self.env.db_exc.IntegrityError:
+                    self.env.log.warning('Attributes for session %s already '
+                                         'updated', self.sid)
+                    db.rollback()
+                    return
                 session_saved = True
 
         # Purge expired sessions. We do this only when the session was
