@@ -180,7 +180,7 @@ def _format_datetime_without_babel(t, format, tzinfo):
         else:
             format = '%Y-%m-%dT%H:%M:%S%z'
             normalize_Z = True
-    text = t.strftime(format)
+    text = t.strftime(str(format))
     if normalize_Z:
         text = text.replace('+0000', 'Z')
         if not text.endswith('Z'):
