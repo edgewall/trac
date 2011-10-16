@@ -829,8 +829,7 @@ class AttachmentModule(Component):
                 return tag(tag.a(label, class_='attachment', title=title,
                                  href=href + params),
                            tag.a(u'\u200b', class_='trac-rawlink',
-                                 href=raw_href + params,
-                                 title=_("Download")))
+                                 href=raw_href + params, title=_("Download")))
             except ResourceNotFound:
                 pass
             # FIXME: should be either:
