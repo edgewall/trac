@@ -113,7 +113,24 @@ class RandomTestCase(unittest.TestCase):
     def tearDown(self):
         random.setstate(self.state)
 
+    def test_urandom(self):
+        """urandom() returns random bytes"""
+        for i in xrange(129):
+            self.assertEqual(i, len(util.urandom(i)))
+        # For a large enough sample, each value should appear at least once
+        entropy = util.urandom(65536)
+        values = set(ord(c) for c in entropy)
+        self.assertEqual(256, len(values))
+        
     def test_hex_entropy(self):
+        """hex_entropy() returns random hex digits"""
+        hex_digits = set('0123456789abcdef')
+        for i in xrange(129):
+            entropy = util.hex_entropy(i)
+            self.assertEqual(i, len(entropy))
+            self.assertEqual(set(), set(entropy) - hex_digits)
+
+    def test_hex_entropy_global_state(self):
         """hex_entropy() not affected by global random generator state"""
         random.seed(0)
         data = util.hex_entropy(64)

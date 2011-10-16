@@ -555,11 +555,26 @@ def get_pkginfo(dist):
 
 # -- crypto utils
 
-_entropy = random.Random()
+try:
+    os.urandom(16)
+    urandom = os.urandom
+
+except NotImplementedError:
+    _entropy = random.Random()
+    
+    def urandom(n):
+        result = []
+        hasher = sha1(str(os.getpid()) + str(time.time()))
+        while len(result) * hasher.digest_size < n:
+            hasher.update(str(_entropy.random()))
+            result.append(hasher.digest())
+        result = ''.join(result)
+        return len(result) > n and result[:n] or result
+
 
 def hex_entropy(bytes=32):
-    return sha1(str(_entropy.random())).hexdigest()[:bytes]
-
+    result = ''.join('%.2x' % ord(v) for v in urandom((bytes + 1) // 2))
+    return len(result) > bytes and result[:bytes] or result
 
 # Original license for md5crypt:
 # Based on FreeBSD src/lib/libcrypt/crypt.c 1.2
