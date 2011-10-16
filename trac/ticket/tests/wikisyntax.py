@@ -76,10 +76,10 @@ trac:ticket:2041
 #trac2041
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in Trac's Trac"><span class="icon">\xa0</span>trac:ticket:2041</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in Trac's Trac"><span class="icon">\xa0</span>Trac #2041</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in Trac's Trac"><span class="icon">\xa0</span>#T2041</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in Trac's Trac"><span class="icon">\xa0</span>#trac2041</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in Trac's Trac"><span class="icon"></span>trac:ticket:2041</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in Trac's Trac"><span class="icon"></span>Trac #2041</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in Trac's Trac"><span class="icon"></span>#T2041</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in Trac's Trac"><span class="icon"></span>#trac2041</a>
 </p>
 ------------------------------
 ============================== Ticket InterTrac shorthands
@@ -87,8 +87,8 @@ T:#2041
 trac:#2041
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/%232041" title="#2041 in Trac's Trac"><span class="icon">\xa0</span>T:#2041</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/%232041" title="#2041 in Trac's Trac"><span class="icon">\xa0</span>trac:#2041</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/%232041" title="#2041 in Trac's Trac"><span class="icon"></span>T:#2041</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/%232041" title="#2041 in Trac's Trac"><span class="icon"></span>trac:#2041</a>
 </p>
 ------------------------------
 """ # " 
@@ -139,11 +139,11 @@ trac:report:1
 {trac 1}
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon">\xa0</span>trac:report:1</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon">\xa0</span>Trac r1</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon">\xa0</span>{T1}</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon">\xa0</span>{trac1}</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon">\xa0</span>{trac 1}</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon"></span>trac:report:1</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon"></span>Trac r1</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon"></span>{T1}</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon"></span>{trac1}</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon"></span>{trac 1}</a>
 </p>
 ------------------------------
 """ # '
@@ -152,7 +152,7 @@ def report_setup(tc):
     pass # TBD
 
 
-MILESTONE_TEST_CASES = """
+MILESTONE_TEST_CASES = u"""
 ============================== milestone: link resolver
 milestone:foo
 [milestone:boo Milestone Boo]
@@ -315,7 +315,7 @@ def query2_teardown(tc):
     tc.env.reset_db()
 
 
-COMMENT_TEST_CASES = """
+COMMENT_TEST_CASES = u"""
 ============================== comment: link resolver (deprecated)
 comment:ticket:123:2 (deprecated)
 [comment:ticket:123:2 see above] (deprecated)

@@ -120,8 +120,8 @@ trac:changeset:2081
 [trac:changeset:2081 Trac r2081]
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in Trac's Trac"><span class="icon">\xa0</span>trac:changeset:2081</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in Trac's Trac"><span class="icon">\xa0</span>Trac r2081</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>trac:changeset:2081</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>Trac r2081</a>
 </p>
 ------------------------------
 ============================== Changeset InterTrac shorthands
@@ -131,10 +131,10 @@ trac:changeset:2081
 T:r2081
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in Trac's Trac"><span class="icon">\xa0</span>[T2081]</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in Trac's Trac"><span class="icon">\xa0</span>[trac 2081]</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081/trunk" title="changeset:2081/trunk in Trac\'s Trac"><span class="icon">\xa0</span>[trac 2081/trunk]</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/r2081" title="r2081 in Trac's Trac"><span class="icon">\xa0</span>T:r2081</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>[T2081]</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>[trac 2081]</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081/trunk" title="changeset:2081/trunk in Trac\'s Trac"><span class="icon"></span>[trac 2081/trunk]</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/r2081" title="r2081 in Trac's Trac"><span class="icon"></span>T:r2081</a>
 </p>
 ------------------------------
 """ #"
@@ -232,15 +232,15 @@ rfc:4180 should not be a log link
 [trac 3317:3318/trunk]
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/log%3A/%403317%3A3318" title="log:/@3317:3318 in Trac\'s Trac"><span class="icon">\xa0</span>[T3317:3318]</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/log%3A/%403317%3A3318" title="log:/@3317:3318 in Trac\'s Trac"><span class="icon">\xa0</span>[trac 3317:3318]</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/log%3A/trunk%403317%3A3318" title="log:/trunk@3317:3318 in Trac\'s Trac"><span class="icon">\xa0</span>[trac 3317:3318/trunk]</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/log%3A/%403317%3A3318" title="log:/@3317:3318 in Trac\'s Trac"><span class="icon"></span>[T3317:3318]</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/log%3A/%403317%3A3318" title="log:/@3317:3318 in Trac\'s Trac"><span class="icon"></span>[trac 3317:3318]</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/log%3A/trunk%403317%3A3318" title="log:/trunk@3317:3318 in Trac\'s Trac"><span class="icon"></span>[trac 3317:3318/trunk]</a>
 </p>
 ------------------------------
 """
 
 
-DIFF_TEST_CASES = """
+DIFF_TEST_CASES = u"""
 ============================== diff: link resolver
 diff:trunk//branch
 diff:trunk@12//branch@23
@@ -286,16 +286,16 @@ source:/foo/bar@#L20
 source:/missing/file
 ------------------------------
 <p>
-<a class="source" href="/browser/foo/bar">source:/foo/bar</a><a class="trac-rawlink" href="/export/HEAD/foo/bar" title="Download">\u200b</a>
-<a class="source" href="/browser/foo/bar#42">source:/foo/bar#42</a><a class="trac-rawlink" href="/export/HEAD/foo/bar#42" title="Download">\u200b</a>   # no long works as rev spec
-<a class="source" href="/browser/foo/bar#head">source:/foo/bar#head</a><a class="trac-rawlink" href="/export/HEAD/foo/bar#head" title="Download">\u200b</a> #
-<a class="source" href="/browser/foo/bar?rev=42">source:/foo/bar@42</a><a class="trac-rawlink" href="/export/42/foo/bar" title="Download">\u200b</a>
-<a class="source" href="/browser/foo/bar?rev=head">source:/foo/bar@head</a><a class="trac-rawlink" href="/export/head/foo/bar" title="Download">\u200b</a>
-<a class="source" href="/browser/foo%2520bar/baz%252Bquux">source:/foo%20bar/baz%2Bquux</a><a class="trac-rawlink" href="/export/HEAD/foo%2520bar/baz%252Bquux" title="Download">\u200b</a>
-<a class="source" href="/browser/?rev=42">source:@42</a><a class="trac-rawlink" href="/export/42/" title="Download">\u200b</a>
-<a class="source" href="/browser/foo/bar?rev=42#L20">source:/foo/bar@42#L20</a><a class="trac-rawlink" href="/export/42/foo/bar#L20" title="Download">\u200b</a>
-<a class="source" href="/browser/foo/bar?rev=head#L20">source:/foo/bar@head#L20</a><a class="trac-rawlink" href="/export/head/foo/bar#L20" title="Download">\u200b</a>
-<a class="source" href="/browser/foo/bar#L20">source:/foo/bar@#L20</a><a class="trac-rawlink" href="/export/HEAD/foo/bar#L20" title="Download">\u200b</a>
+<a class="source" href="/browser/foo/bar">source:/foo/bar</a><a class="trac-rawlink" href="/export/HEAD/foo/bar" title="Download"></a>
+<a class="source" href="/browser/foo/bar#42">source:/foo/bar#42</a><a class="trac-rawlink" href="/export/HEAD/foo/bar#42" title="Download"></a>   # no long works as rev spec
+<a class="source" href="/browser/foo/bar#head">source:/foo/bar#head</a><a class="trac-rawlink" href="/export/HEAD/foo/bar#head" title="Download"></a> #
+<a class="source" href="/browser/foo/bar?rev=42">source:/foo/bar@42</a><a class="trac-rawlink" href="/export/42/foo/bar" title="Download"></a>
+<a class="source" href="/browser/foo/bar?rev=head">source:/foo/bar@head</a><a class="trac-rawlink" href="/export/head/foo/bar" title="Download"></a>
+<a class="source" href="/browser/foo%2520bar/baz%252Bquux">source:/foo%20bar/baz%2Bquux</a><a class="trac-rawlink" href="/export/HEAD/foo%2520bar/baz%252Bquux" title="Download"></a>
+<a class="source" href="/browser/?rev=42">source:@42</a><a class="trac-rawlink" href="/export/42/" title="Download"></a>
+<a class="source" href="/browser/foo/bar?rev=42#L20">source:/foo/bar@42#L20</a><a class="trac-rawlink" href="/export/42/foo/bar#L20" title="Download"></a>
+<a class="source" href="/browser/foo/bar?rev=head#L20">source:/foo/bar@head#L20</a><a class="trac-rawlink" href="/export/head/foo/bar#L20" title="Download"></a>
+<a class="source" href="/browser/foo/bar#L20">source:/foo/bar@#L20</a><a class="trac-rawlink" href="/export/HEAD/foo/bar#L20" title="Download"></a>
 <a class="missing source">source:/missing/file</a>
 </p>
 ------------------------------
@@ -305,7 +305,7 @@ source:/foo/bar?format=raw
 ------------------------------
 <p>
 <a class="source" href="/browser/foo?order=size&amp;desc=1">source:/foo?order=size&amp;desc=1</a>
-<a class="source" href="/browser/foo/bar?format=raw">source:/foo/bar?format=raw</a><a class="trac-rawlink" href="/export/HEAD/foo/bar" title="Download">\u200b</a>
+<a class="source" href="/browser/foo/bar?format=raw">source:/foo/bar?format=raw</a><a class="trac-rawlink" href="/export/HEAD/foo/bar" title="Download"></a>
 </p>
 ------------------------------
 ============================== source: provider, with quoting
@@ -315,10 +315,10 @@ source:"even with whitespaces"
 [source:"even with whitespaces" Path with spaces]
 ------------------------------
 <p>
-<a class="source" href="/browser/even%20with%20whitespaces">source:'even with whitespaces'</a><a class="trac-rawlink" href="/export/HEAD/even%20with%20whitespaces" title="Download">\u200b</a>
-<a class="source" href="/browser/even%20with%20whitespaces">source:"even with whitespaces"</a><a class="trac-rawlink" href="/export/HEAD/even%20with%20whitespaces" title="Download">\u200b</a>
-<a class="source" href="/browser/even%20with%20whitespaces">Path with spaces</a><a class="trac-rawlink" href="/export/HEAD/even%20with%20whitespaces" title="Download">\u200b</a>
-<a class="source" href="/browser/even%20with%20whitespaces">Path with spaces</a><a class="trac-rawlink" href="/export/HEAD/even%20with%20whitespaces" title="Download">\u200b</a>
+<a class="source" href="/browser/even%20with%20whitespaces">source:'even with whitespaces'</a><a class="trac-rawlink" href="/export/HEAD/even%20with%20whitespaces" title="Download"></a>
+<a class="source" href="/browser/even%20with%20whitespaces">source:"even with whitespaces"</a><a class="trac-rawlink" href="/export/HEAD/even%20with%20whitespaces" title="Download"></a>
+<a class="source" href="/browser/even%20with%20whitespaces">Path with spaces</a><a class="trac-rawlink" href="/export/HEAD/even%20with%20whitespaces" title="Download"></a>
+<a class="source" href="/browser/even%20with%20whitespaces">Path with spaces</a><a class="trac-rawlink" href="/export/HEAD/even%20with%20whitespaces" title="Download"></a>
 </p>
 ------------------------------
 ============================== export: link resolver

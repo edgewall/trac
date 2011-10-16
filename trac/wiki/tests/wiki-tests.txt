@@ -199,7 +199,7 @@ Thing&lt;<a class="text resolver" href="/stuff/2%20and%20(3)">link:2 and (3)</a>
 [link:1 thing one], [http://www.edgewall.com/ edgewall]
 ------------------------------
 <p>
-<a class="odd resolver" href="/thing/1">thing one</a>, <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"> </span>edgewall</a>
+<a class="odd resolver" href="/thing/1">thing one</a>, <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>edgewall</a>
 </p>
 ------------------------------
 ============================== Link resolver SHREF_TARGET_LAST
@@ -234,7 +234,7 @@ __Summary:__
 see link:Überflüssigkeit
 ------------------------------
 <p>
-&lt;bug&gt;<a class="ext-link" href="http://localhost/bugzilla/show_bug.cgi?id=1284"><span class="icon"> </span>http://localhost/bugzilla/show_bug.cgi?id=1284</a>&lt;/bug&gt; 804
+&lt;bug&gt;<a class="ext-link" href="http://localhost/bugzilla/show_bug.cgi?id=1284"><span class="icon"></span>http://localhost/bugzilla/show_bug.cgi?id=1284</a>&lt;/bug&gt; 804
 <span class="underline">Summary:</span>
 see <a class="text resolver" href="/stuff/%C3%9Cberfl%C3%BCssigkeit">link:Überflüssigkeit</a>
 </p>
@@ -243,10 +243,10 @@ see <a class="text resolver" href="/stuff/%C3%9Cberfl%C3%BCssigkeit">link:Überf
 ||http://example.com/img.png||text||
 ------------------------------
 <table class="wiki">
-<tr><td><a class="ext-link" href="http://example.com/img.png"><span class="icon"> </span>http://example.com/img.png</a></td><td>text
+<tr><td><a class="ext-link" href="http://example.com/img.png"><span class="icon"></span>http://example.com/img.png</a></td><td>text
 </td></tr></table>
 ------------------------------
-||<a class="ext-link" href="http://example.com/img.png"><span class="icon"> </span>http://example.com/img.png</a>||text||
+||<a class="ext-link" href="http://example.com/img.png"><span class="icon"></span>http://example.com/img.png</a>||text||
 ============================== Link resolver, long form with quoting
 [link:WikiStart Foo] [http://www.edgewall.com/ Edgewall]
 
@@ -261,7 +261,7 @@ link:"Foo Bar" link:"Foo Bar#baz"
 [link:pl/de %de]
 ------------------------------
 <p>
-<a class="text resolver" href="/stuff/WikiStart">Foo</a> <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"> </span>Edgewall</a>
+<a class="text resolver" href="/stuff/WikiStart">Foo</a> <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>Edgewall</a>
 </p>
 <p>
 <a class="text resolver" href="/stuff/Foo%20Bar">link:"Foo Bar"</a> <a class="text resolver" href="/stuff/Foo%20Bar%23baz">link:"Foo Bar#baz"</a>
@@ -400,15 +400,15 @@ Look for <span class="wikianchor" id="extra"><em>additional explanations</em></s
 http://example.com/img.png?foo=bar
 ------------------------------
 <p>
-<a class="ext-link" href="http://example.com/img.png?foo=bar"><span class="icon"> </span>http://example.com/img.png?foo=bar</a>
+<a class="ext-link" href="http://example.com/img.png?foo=bar"><span class="icon"></span>http://example.com/img.png?foo=bar</a>
 </p>
 ------------------------------
-<a class="ext-link" href="http://example.com/img.png?foo=bar"><span class="icon"> </span>http://example.com/img.png?foo=bar</a>
+<a class="ext-link" href="http://example.com/img.png?foo=bar"><span class="icon"></span>http://example.com/img.png?foo=bar</a>
 ============================== Arbitrary protocol Link
 ''RFCs von ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt''
 ------------------------------
 <p>
-<em>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt"><span class="icon"> </span>ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</a></em>
+<em>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt"><span class="icon"></span>ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</a></em>
 </p>
 ------------------------------
 ==============================  mailto: links and automatic e-mail detection
@@ -422,22 +422,22 @@ T_r+a-c1.23@yet_another-site.edu.au
 someone@louvre.museum-
 ------------------------------
 <p>
-Author: <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon"> </span>mailto:cboos@neuf.fr</a>, 
-i.e. <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon"> </span>me</a>
+Author: <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon"></span>mailto:cboos@neuf.fr</a>, 
+i.e. <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon"></span>me</a>
 </p>
 <p>
-<a class="mail-link" href="mailto:joe'bar@site.info"><span class="icon"> </span>joe'bar@site.info</a>,
-<a class="mail-link" href="mailto:trac+devel@another-site.fr"><span class="icon"> </span>trac+devel@another-site.fr</a>,
-<a class="mail-link" href="mailto:T_r+a-c1.23@yet_another-site.edu.au"><span class="icon"> </span>T_r+a-c1.23@yet_another-site.edu.au</a>
+<a class="mail-link" href="mailto:joe'bar@site.info"><span class="icon"></span>joe'bar@site.info</a>,
+<a class="mail-link" href="mailto:trac+devel@another-site.fr"><span class="icon"></span>trac+devel@another-site.fr</a>,
+<a class="mail-link" href="mailto:T_r+a-c1.23@yet_another-site.edu.au"><span class="icon"></span>T_r+a-c1.23@yet_another-site.edu.au</a>
 not@an.email.com
-<a class="mail-link" href="mailto:someone@louvre.museum"><span class="icon"> </span>someone@louvre.museum</a>-
+<a class="mail-link" href="mailto:someone@louvre.museum"><span class="icon"></span>someone@louvre.museum</a>-
 </p>
 ------------------------------
 ============================== Arbitrary protocol Link
 ''RFCs von ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt''
 ------------------------------
 <p>
-<em>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt"><span class="icon"> </span>ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</a></em>
+<em>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt"><span class="icon"></span>ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</a></em>
 </p>
 ------------------------------
 ============================== Generic InterTrac links
@@ -456,19 +456,19 @@ th:'wiki:"my test spaced wiki3"'
 [th:'wiki:"my test spaced wiki9"' My Test Spaced Wiki 9]
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac-hacks.org/intertrac/roadmap" title="roadmap in Trac Hacks"><span class="icon"> </span>th:roadmap</a>
-<a class="ext-link" href="http://trac-hacks.org/intertrac/roadmap" title="roadmap in Trac Hacks"><span class="icon"> </span>th:roadmap</a>:
-<a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon"> </span>th</a>
-<a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon"> </span>Trac Hacks</a>
-<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki1%22" title="wiki:&#34;my test spaced wiki1&#34; in Trac Hacks"><span class="icon"> </span>th:wiki:"my test spaced wiki1"</a>
-<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3Amy%20test%20spaced%20wiki2" title="wiki:my test spaced wiki2 in Trac Hacks"><span class="icon"> </span>th:"wiki:my test spaced wiki2"</a>
-<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki3%22" title="wiki:&#34;my test spaced wiki3&#34; in Trac Hacks"><span class="icon"> </span>th:'wiki:"my test spaced wiki3"'</a>
-<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki4%22" title="wiki:&#34;my test spaced wiki4&#34; in Trac Hacks"><span class="icon"> </span>wiki:"my test spaced wiki4"</a>
-<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki5%22" title="wiki:&#34;my test spaced wiki5&#34; in Trac Hacks"><span class="icon"> </span>wiki:"my test spaced wiki5"</a>
-<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3Amy%20test%20spaced%20wiki6" title="wiki:my test spaced wiki6 in Trac Hacks"><span class="icon"> </span>wiki:my test spaced wiki6</a>
-<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki7%22" title="wiki:&#34;my test spaced wiki7&#34; in Trac Hacks"><span class="icon"> </span>My Test Spaced Wiki 7</a>
-<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3Amy%20test%20spaced%20wiki8" title="wiki:my test spaced wiki8 in Trac Hacks"><span class="icon"> </span>My Test Spaced Wiki 8</a>
-<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki9%22" title="wiki:&#34;my test spaced wiki9&#34; in Trac Hacks"><span class="icon"> </span>My Test Spaced Wiki 9</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/roadmap" title="roadmap in Trac Hacks"><span class="icon"></span>th:roadmap</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/roadmap" title="roadmap in Trac Hacks"><span class="icon"></span>th:roadmap</a>:
+<a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon"></span>th</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon"></span>Trac Hacks</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki1%22" title="wiki:&#34;my test spaced wiki1&#34; in Trac Hacks"><span class="icon"></span>th:wiki:"my test spaced wiki1"</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3Amy%20test%20spaced%20wiki2" title="wiki:my test spaced wiki2 in Trac Hacks"><span class="icon"></span>th:"wiki:my test spaced wiki2"</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki3%22" title="wiki:&#34;my test spaced wiki3&#34; in Trac Hacks"><span class="icon"></span>th:'wiki:"my test spaced wiki3"'</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki4%22" title="wiki:&#34;my test spaced wiki4&#34; in Trac Hacks"><span class="icon"></span>wiki:"my test spaced wiki4"</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki5%22" title="wiki:&#34;my test spaced wiki5&#34; in Trac Hacks"><span class="icon"></span>wiki:"my test spaced wiki5"</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3Amy%20test%20spaced%20wiki6" title="wiki:my test spaced wiki6 in Trac Hacks"><span class="icon"></span>wiki:my test spaced wiki6</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki7%22" title="wiki:&#34;my test spaced wiki7&#34; in Trac Hacks"><span class="icon"></span>My Test Spaced Wiki 7</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3Amy%20test%20spaced%20wiki8" title="wiki:my test spaced wiki8 in Trac Hacks"><span class="icon"></span>My Test Spaced Wiki 8</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki9%22" title="wiki:&#34;my test spaced wiki9&#34; in Trac Hacks"><span class="icon"></span>My Test Spaced Wiki 9</a>
 </p>
 ------------------------------
 ============================== Another arbitrary protocol Link
@@ -481,12 +481,12 @@ rfc-2396+under_score://link
 unsafe://scheme is not rendered
 ------------------------------
 <p>
-<a class="ext-link" href="svn+ssh://secureserver.org"><span class="icon"> </span>svn+ssh://secureserver.org</a>
-<a class="ext-link" href="svn+ssh://secureserver.org"><span class="icon"> </span>SVN link</a>
-<a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"> </span>rfc-2396.compatible://link</a>
-<a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"> </span>RFC 2396</a>
-<a class="ext-link" href="rfc-2396+under_score://link"><span class="icon"> </span>rfc-2396+under_score://link</a>
-<a class="ext-link" href="rfc-2396+under_score://link"><span class="icon"> </span>underscore</a>
+<a class="ext-link" href="svn+ssh://secureserver.org"><span class="icon"></span>svn+ssh://secureserver.org</a>
+<a class="ext-link" href="svn+ssh://secureserver.org"><span class="icon"></span>SVN link</a>
+<a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"></span>rfc-2396.compatible://link</a>
+<a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"></span>RFC 2396</a>
+<a class="ext-link" href="rfc-2396+under_score://link"><span class="icon"></span>rfc-2396+under_score://link</a>
+<a class="ext-link" href="rfc-2396+under_score://link"><span class="icon"></span>underscore</a>
 unsafe://scheme is not rendered
 </p>
 ------------------------------
@@ -512,7 +512,7 @@ i.e. [[mailto:cboos@neuf.fr|me]]
 [[rfc-2396.compatible://link|RFC 2396]]
 ------------------------------
 <p>
-<a class="text resolver" href="/stuff/WikiStart"> Foo</a> <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"> </span>Edgewall</a>
+<a class="text resolver" href="/stuff/WikiStart"> Foo</a> <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>Edgewall</a>
 </p>
 <p>
 <a class="text resolver" href="/stuff/Foo%20Bar">Foo Bar</a> <a class="text resolver" href="/stuff/Foo%20Bar%23baz">Foo Bar</a>
@@ -530,15 +530,15 @@ i.e. [[mailto:cboos@neuf.fr|me]]
 <a class="text resolver" href="/stuff/pl/de">%de</a>
 </p>
 <p>
-i.e. <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon"> </span>me</a>
+i.e. <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon"></span>me</a>
 </p>
 <p>
-<a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon"> </span>th</a>
-<a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon"> </span>Trac Hacks</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon"></span>th</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon"></span>Trac Hacks</a>
 </p>
 <p>
-<a class="ext-link" href="svn+ssh://secureserver.org"><span class="icon"> </span>SVN link</a>
-<a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"> </span>RFC 2396</a>
+<a class="ext-link" href="svn+ssh://secureserver.org"><span class="icon"></span>SVN link</a>
+<a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"></span>RFC 2396</a>
 </p>
 ------------------------------
 ============================== More WikiCreole examples 
@@ -563,8 +563,8 @@ i.e. <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon"> </spa
 <a class="text resolver" href="/stuff/Template">Template</a>
 </p>
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/wiki%3APipe%20%28computing%29" title="wiki:Pipe (computing) in Trac's Trac"><span class="icon"> </span>wiki:Pipe (computing)</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/wiki%3APipe%20%28computing%29" title="wiki:Pipe (computing) in Trac's Trac"><span class="icon"> </span>wiki:Pipe (computing)</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/wiki%3APipe%20%28computing%29" title="wiki:Pipe (computing) in Trac's Trac"><span class="icon"></span>wiki:Pipe (computing)</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/wiki%3APipe%20%28computing%29" title="wiki:Pipe (computing) in Trac's Trac"><span class="icon"></span>wiki:Pipe (computing)</a>
 </p>
 <p>
 <a class="wiki" href="/wiki/WikiStart">b</a> (might change to relative)
@@ -1312,7 +1312,7 @@ Paragraph
 Paragraph
 ------------------------------
 <p>
-2003-09-18 23:26  Joe Bar &lt;<a class="mail-link" href="mailto:joeb@gloogle.gom"><span class="icon"> </span>joeb@gloogle.gom</a>&gt;
+2003-09-18 23:26  Joe Bar &lt;<a class="mail-link" href="mailto:joeb@gloogle.gom"><span class="icon"></span>joeb@gloogle.gom</a>&gt;
 </p>
 <ul><li>src/code.py: Fix problem with obsolete use of
 backslash in symbols.
@@ -2188,7 +2188,7 @@ Paragraph
 </td></tr><tr><td>Foo</td><td>Bar</td><td>Baz
 </td></tr></table>
 <p>
-<a class="ext-link" href="http://www.edgewall.com/"><span class="icon"> </span>http://www.edgewall.com/</a>
+<a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>http://www.edgewall.com/</a>
 </p>
 ------------------------------
 Paragraph
@@ -2197,7 +2197,7 @@ Paragraph
    2. Item 2
 ||Table||cell||
 ||Foo||Bar||Baz||
-<a class="ext-link" href="http://www.edgewall.com/"><span class="icon"> </span>http://www.edgewall.com/</a>
+<a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>http://www.edgewall.com/</a>
 ------------------------------
 <p>
 Paragraph<br />
@@ -2210,7 +2210,7 @@ Paragraph<br />
 </td></tr><tr><td>Foo</td><td>Bar</td><td>Baz
 </td></tr></table>
 <p>
-<a class="ext-link" href="http://www.edgewall.com/"><span class="icon"> </span>http://www.edgewall.com/</a><br />
+<a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>http://www.edgewall.com/</a><br />
 </p>
 ============================== Lists, indents and table
 

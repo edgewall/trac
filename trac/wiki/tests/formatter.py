@@ -171,7 +171,8 @@ class WikiTestCase(unittest.TestCase):
     def test(self):
         """Testing WikiFormatter"""
         formatter = self.formatter()
-        v = unicode(formatter.generate(**self.generate_opts)).replace('\r','')
+        v = unicode(formatter.generate(**self.generate_opts))
+        v = v.replace('\r', '').replace(u'\u200b', '')
         try:
             self.assertEquals(self.correct, v)
         except AssertionError, e:
