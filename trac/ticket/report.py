@@ -29,7 +29,7 @@ from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
 from trac.ticket.api import TicketSystem
-from trac.util import as_int
+from trac.util import as_int, content_disposition
 from trac.util.datefmt import format_datetime, format_time, from_utimestamp
 from trac.util.presentation import Paginator
 from trac.util.text import to_unicode
@@ -753,7 +753,8 @@ class ReportModule(Component):
         req.send_header('Content-Type', mimetype + ';charset=utf-8')
         req.send_header('Content-Length', len(data))
         if filename:
-            req.send_header('Content-Disposition', 'filename=' + filename)
+            req.send_header('Content-Disposition',
+                            content_disposition(filename=filename))
         req.end_headers()
         req.write(data)
         raise RequestDone
@@ -774,7 +775,7 @@ class ReportModule(Component):
         req.send_header('Content-Length', len(data))
         if id:
             req.send_header('Content-Disposition',
-                            'filename=report_%s.sql' % id)
+                            content_disposition(filename='report_%s.sql' % id))
         req.end_headers()
         req.write(data)
         raise RequestDone

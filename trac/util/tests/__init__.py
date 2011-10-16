@@ -132,6 +132,12 @@ class ContentDispositionTestCase(unittest.TestCase):
     def test_no_filename(self):
         self.assertEqual('inline', util.content_disposition('inline'))
         self.assertEqual('attachment', util.content_disposition('attachment'))
+    
+    def test_no_type(self):
+        self.assertEqual('filename=myfile.txt',
+                         util.content_disposition(filename='myfile.txt'))
+        self.assertEqual('filename=a%20file.txt',
+                         util.content_disposition(filename='a file.txt'))
 
 
 def suite():

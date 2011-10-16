@@ -66,7 +66,7 @@ from genshi.input import HTMLParser
 from trac.config import IntOption, ListOption, Option
 from trac.core import *
 from trac.resource import Resource
-from trac.util import Ranges
+from trac.util import Ranges, content_disposition
 from trac.util.text import exception_to_unicode, to_utf8, to_unicode
 from trac.util.translation import _, tag_
 
@@ -680,9 +680,8 @@ class Mimeview(Component):
         for ck, name, ext, input_mimettype, output_mimetype, quality, \
                 converter in candidates:
             output = converter.convert_content(req, mimetype, content, ck)
-            if not output:
-                continue
-            return (output[0], output[1], ext)
+            if output:
+                return (output[0], output[1], ext)
         raise TracError(
             _("No available MIME conversions from %(old)s to %(new)s",
               old=mimetype, new=key))
@@ -979,7 +978,7 @@ class Mimeview(Component):
         """Helper method for converting `content` and sending it directly.
 
         `selector` can be either a key or a MIME Type."""
-        from trac.web import RequestDone
+        from trac.web.api import RequestDone
         content, output_type, ext = self.convert_content(req, in_type,
                                                          content, selector)
         if isinstance(content, unicode):
@@ -988,8 +987,9 @@ class Mimeview(Component):
         req.send_header('Content-Type', output_type)
         req.send_header('Content-Length', len(content))
         if filename:
-            req.send_header('Content-Disposition', 'filename=%s.%s' % 
-                        (filename, ext))
+            req.send_header('Content-Disposition',
+                            content_disposition(filename='%s.%s' % 
+                                                         (filename, ext)))
         req.end_headers()
         req.write(content)
         raise RequestDone

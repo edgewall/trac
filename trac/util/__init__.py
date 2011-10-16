@@ -867,12 +867,15 @@ def to_ranges(revs):
         store()
     return ','.join(ranges)
 
-def content_disposition(type, filename=None):
-    """Generate a properly escaped Content-Disposition header"""
+def content_disposition(type=None, filename=None):
+    """Generate a properly escaped Content-Disposition header."""
+    type = type or ''
     if filename is not None:
         if isinstance(filename, unicode):
             filename = filename.encode('utf-8')
-        type += '; filename=' + quote(filename, safe='')
+        if type:
+            type += '; '
+        type += 'filename=' + quote(filename, safe='')
     return type
 
 def pairwise(iterable):
