@@ -61,12 +61,15 @@ def get_reporter_id(req, arg_name=None):
         return '%s <%s>' % (name, email)
     return name or email or req.authname # == 'anonymous'
 
-def content_disposition(type, filename=None):
-    """Generate a properly escaped Content-Disposition header"""
+def content_disposition(type=None, filename=None):
+    """Generate a properly escaped Content-Disposition header."""
+    type = type or ''
     if filename is not None:
         if isinstance(filename, unicode):
             filename = filename.encode('utf-8')
-        type += '; filename=' + quote(filename, safe='')
+        if type:
+            type += '; '
+        type += 'filename=' + quote(filename, safe='')
     return type
 
 
@@ -598,12 +601,27 @@ def get_pkginfo(dist):
 
 # -- crypto utils
 
-_entropy = random.Random()
+try:
+    os.urandom(16)
+    urandom = os.urandom
+
+except NotImplementedError:
+    _entropy = random.Random()
+    
+    def urandom(n):
+        result = []
+        hasher = sha1(str(os.getpid()) + str(time.time()))
+        while len(result) * hasher.digest_size < n:
+            hasher.update(str(_entropy.random()))
+            result.append(hasher.digest())
+        result = ''.join(result)
+        return len(result) > n and result[:n] or result
+
 
 def hex_entropy(digits=32):
-    """Generate `digits` number of hex digits of entropy (at most 40)."""
-    return sha1(str(_entropy.random())).hexdigest()[:digits]
-
+    """Generate `digits` number of hex digits of entropy."""
+    result = ''.join('%.2x' % ord(v) for v in urandom((digits + 1) // 2))
+    return len(result) > digits and result[:digits] or result
 
 # Original license for md5crypt:
 # Based on FreeBSD src/lib/libcrypt/crypt.c 1.2

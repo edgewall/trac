@@ -31,7 +31,7 @@ has_psycopg = False
 try:
     import psycopg2 as psycopg
     import psycopg2.extensions
-    from psycopg2 import ProgrammingError as PGSchemaError
+    from psycopg2 import DataError, ProgrammingError
     from psycopg2.extensions import register_type, UNICODE, \
                                     register_adapter, AsIs, QuotedString
 
@@ -215,7 +215,7 @@ class PostgreSQLConnection(ConnectionWrapper):
                 self.schema = params['schema']
                 cnx.cursor().execute('SET search_path TO %s', (self.schema,))
                 cnx.commit()
-        except PGSchemaError:
+        except (DataError, ProgrammingError):
             cnx.rollback()
         ConnectionWrapper.__init__(self, cnx, log)
 

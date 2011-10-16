@@ -74,11 +74,6 @@ class WikiModule(Component):
                9)
 
     def convert_content(self, req, mimetype, content, key):
-        # Tell the browser that the content should be downloaded and
-        # not rendered. The x=y part is needed to keep Safari from being 
-        # confused by the multiple content-disposition headers.
-        req.send_header('Content-Disposition', 'attachment; x=y')
-
         return (content, 'text/plain;charset=utf-8')
 
     # INavigationContributor methods

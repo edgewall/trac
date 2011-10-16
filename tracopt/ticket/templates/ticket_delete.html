@@ -23,8 +23,7 @@
               test="ticket.resolution">: $ticket.resolution</py:if>)</span>
         </h1>
         
-        <xi:include href="ticket_box.html" py:if="ticket.exists or preview_mode"
-                    py:with="can_append = False; preview_mode = False"/>
+        <xi:include href="ticket_box.html" py:with="can_append = False; preview_mode = False"/>
         
         <form id="edit" action="" method="post">
           <div>

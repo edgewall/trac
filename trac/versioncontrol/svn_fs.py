@@ -975,18 +975,19 @@ class SubversionChangeset(Changeset):
             path = _from_svn(path_utf8)
             base_path = _from_svn(base_path_utf8)
             base_rev = change.base_rev
+            action = getattr(change, 'action', None)
 
             # Ensure `base_path` is within the scope
             if not _is_path_within_scope(self.scope, base_path):
                 base_path, base_rev = None, -1
 
             # Determine the action
-            if not path:                # deletion
-                if new_path:
+            if not path and not new_path and self.scope == '/':
+                action = Changeset.EDIT # root property change
+            elif not path or action == repos.CHANGE_ACTION_DELETE:
+                if new_path:            # deletion
                     action = Changeset.DELETE
                     deletions[new_path.lstrip('/')] = idx
-                elif self.scope == '/': # root property change
-                    action = Changeset.EDIT
                 else:                   # deletion outside of scope, ignore
                     continue
             elif change.added or not base_path: # add or copy
