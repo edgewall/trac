@@ -16,8 +16,8 @@ Arguments:
                foldable = value_of('foldable', False)" py:strip="">
   <py:def function="show_one_attachment(attachment)">
     <i18n:msg params="file, size, author, date">
-      <a href="${url_of(attachment.resource)}" title="View attachment">${attachment.filename}</a><a
-         href="${url_of(attachment.resource, format='raw')}" class="trac-rawlink" title="Download">&#8203;</a>
+      <a href="${url_of(attachment.resource)}" title="View attachment">${attachment.filename
+        }</a><a href="${url_of(attachment.resource, format='raw')}" class="trac-rawlink" title="Download">&#8203;</a>
        (<span title="${_('%(size)s bytes', size=attachment.size)}">${pretty_size(attachment.size)}</span>) -
       added by <em>${authorinfo(attachment.author)}</em> ${dateinfo(attachment.date)} ago.
     </i18n:msg>
