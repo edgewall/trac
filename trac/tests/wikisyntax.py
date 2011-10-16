@@ -11,7 +11,7 @@ from trac.test import MockPerm
 from trac.web.href import Href
 from trac.wiki.tests import formatter
 
-SEARCH_TEST_CASES = """
+SEARCH_TEST_CASES = u"""
 ============================== search: link resolver
 search:foo
 search:"foo bar"
@@ -46,7 +46,7 @@ search:"?q=foo bar&wiki=on"
 ------------------------------
 """
 
-ATTACHMENT_TEST_CASES = """
+ATTACHMENT_TEST_CASES = u"""
 ============================== attachment: link resolver (deprecated)
 attachment:wiki:WikiStart:file.txt (deprecated)
 attachment:ticket:123:file.txt (deprecated)
@@ -54,10 +54,10 @@ attachment:ticket:123:file.txt (deprecated)
 [attachment:ticket:123:file.txt] (deprecated)
 ------------------------------
 <p>
-<a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment 'file.txt' in WikiStart">attachment:wiki:WikiStart:file.txt</a><span class="noprint"> <a class="trac-rawlink" href="/raw-attachment/wiki/WikiStart/file.txt" title="Download"><img src="/chrome/common/download.png" alt="Download"/></a></span> (deprecated)
-<a class="attachment" href="/attachment/ticket/123/file.txt" title="Attachment 'file.txt' in Ticket #123">attachment:ticket:123:file.txt</a><span class="noprint"> <a class="trac-rawlink" href="/raw-attachment/ticket/123/file.txt" title="Download"><img src="/chrome/common/download.png" alt="Download"/></a></span> (deprecated)
-<a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment 'file.txt' in WikiStart">file.txt</a><span class="noprint"> <a class="trac-rawlink" href="/raw-attachment/wiki/WikiStart/file.txt" title="Download"><img src="/chrome/common/download.png" alt="Download"/></a></span> (deprecated)
-<a class="attachment" href="/attachment/ticket/123/file.txt" title="Attachment 'file.txt' in Ticket #123">ticket:123:file.txt</a><span class="noprint"> <a class="trac-rawlink" href="/raw-attachment/ticket/123/file.txt" title="Download"><img src="/chrome/common/download.png" alt="Download"/></a></span> (deprecated)
+<a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment 'file.txt' in WikiStart">attachment:wiki:WikiStart:file.txt</a><a class="trac-rawlink" href="/raw-attachment/wiki/WikiStart/file.txt" title="Download"></a> (deprecated)
+<a class="attachment" href="/attachment/ticket/123/file.txt" title="Attachment 'file.txt' in Ticket #123">attachment:ticket:123:file.txt</a><a class="trac-rawlink" href="/raw-attachment/ticket/123/file.txt" title="Download"></a> (deprecated)
+<a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment 'file.txt' in WikiStart">file.txt</a><a class="trac-rawlink" href="/raw-attachment/wiki/WikiStart/file.txt" title="Download"></a> (deprecated)
+<a class="attachment" href="/attachment/ticket/123/file.txt" title="Attachment 'file.txt' in Ticket #123">ticket:123:file.txt</a><a class="trac-rawlink" href="/raw-attachment/ticket/123/file.txt" title="Download"></a> (deprecated)
 </p>
 ------------------------------
 ============================== attachment: "foreign" links
@@ -68,11 +68,11 @@ attachment:file.txt:ticket:123
 attachment:foo.txt:wiki:SomePage/SubPage
 ------------------------------
 <p>
-<a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment 'file.txt' in WikiStart">attachment:file.txt:wiki:WikiStart</a><span class="noprint"> <a class="trac-rawlink" href="/raw-attachment/wiki/WikiStart/file.txt" title="Download"><img src="/chrome/common/download.png" alt="Download"/></a></span>
-<a class="attachment" href="/attachment/ticket/123/file.txt" title="Attachment 'file.txt' in Ticket #123">attachment:file.txt:ticket:123</a><span class="noprint"> <a class="trac-rawlink" href="/raw-attachment/ticket/123/file.txt" title="Download"><img src="/chrome/common/download.png" alt="Download"/></a></span>
-<a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment 'file.txt' in WikiStart">file.txt</a><span class="noprint"> <a class="trac-rawlink" href="/raw-attachment/wiki/WikiStart/file.txt" title="Download"><img src="/chrome/common/download.png" alt="Download"/></a></span>
-<a class="attachment" href="/attachment/ticket/123/file.txt" title="Attachment 'file.txt' in Ticket #123">file.txt:ticket:123</a><span class="noprint"> <a class="trac-rawlink" href="/raw-attachment/ticket/123/file.txt" title="Download"><img src="/chrome/common/download.png" alt="Download"/></a></span>
-<a class="attachment" href="/attachment/wiki/SomePage/SubPage/foo.txt" title="Attachment 'foo.txt' in SomePage/SubPage">attachment:foo.txt:wiki:SomePage/SubPage</a><span class="noprint"> <a class="trac-rawlink" href="/raw-attachment/wiki/SomePage/SubPage/foo.txt" title="Download"><img src="/chrome/common/download.png" alt="Download"/></a></span>
+<a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment 'file.txt' in WikiStart">attachment:file.txt:wiki:WikiStart</a><a class="trac-rawlink" href="/raw-attachment/wiki/WikiStart/file.txt" title="Download"></a>
+<a class="attachment" href="/attachment/ticket/123/file.txt" title="Attachment 'file.txt' in Ticket #123">attachment:file.txt:ticket:123</a><a class="trac-rawlink" href="/raw-attachment/ticket/123/file.txt" title="Download"></a>
+<a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment 'file.txt' in WikiStart">file.txt</a><a class="trac-rawlink" href="/raw-attachment/wiki/WikiStart/file.txt" title="Download"></a>
+<a class="attachment" href="/attachment/ticket/123/file.txt" title="Attachment 'file.txt' in Ticket #123">file.txt:ticket:123</a><a class="trac-rawlink" href="/raw-attachment/ticket/123/file.txt" title="Download"></a>
+<a class="attachment" href="/attachment/wiki/SomePage/SubPage/foo.txt" title="Attachment 'foo.txt' in SomePage/SubPage">attachment:foo.txt:wiki:SomePage/SubPage</a><a class="trac-rawlink" href="/raw-attachment/wiki/SomePage/SubPage/foo.txt" title="Download"></a>
 </p>
 ------------------------------
 ============================== attachment: "local" links
@@ -80,8 +80,8 @@ attachment:file.txt
 [attachment:file.txt that file]
 ------------------------------
 <p>
-<a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment 'file.txt' in WikiStart">attachment:file.txt</a><span class="noprint"> <a class="trac-rawlink" href="/raw-attachment/wiki/WikiStart/file.txt" title="Download"><img src="/chrome/common/download.png" alt="Download"/></a></span>
-<a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment 'file.txt' in WikiStart">that file</a><span class="noprint"> <a class="trac-rawlink" href="/raw-attachment/wiki/WikiStart/file.txt" title="Download"><img src="/chrome/common/download.png" alt="Download"/></a></span>
+<a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment 'file.txt' in WikiStart">attachment:file.txt</a><a class="trac-rawlink" href="/raw-attachment/wiki/WikiStart/file.txt" title="Download"></a>
+<a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment 'file.txt' in WikiStart">that file</a><a class="trac-rawlink" href="/raw-attachment/wiki/WikiStart/file.txt" title="Download"></a>
 </p>
 ------------------------------
 ============================== attachment: "missing" links
@@ -107,8 +107,8 @@ attachment:file.txt?format=raw
 [attachment:file.txt?format=raw that file]
 ------------------------------
 <p>
-<a class="attachment" href="/attachment/wiki/WikiStart/file.txt?format=raw" title="Attachment 'file.txt' in WikiStart">attachment:file.txt?format=raw</a><span class="noprint"> <a class="trac-rawlink" href="/raw-attachment/wiki/WikiStart/file.txt?format=raw" title="Download"><img src="/chrome/common/download.png" alt="Download"/></a></span>
-<a class="attachment" href="/attachment/wiki/WikiStart/file.txt?format=raw" title="Attachment 'file.txt' in WikiStart">that file</a><span class="noprint"> <a class="trac-rawlink" href="/raw-attachment/wiki/WikiStart/file.txt?format=raw" title="Download"><img src="/chrome/common/download.png" alt="Download"/></a></span>
+<a class="attachment" href="/attachment/wiki/WikiStart/file.txt?format=raw" title="Attachment 'file.txt' in WikiStart">attachment:file.txt?format=raw</a><a class="trac-rawlink" href="/raw-attachment/wiki/WikiStart/file.txt?format=raw" title="Download"></a>
+<a class="attachment" href="/attachment/wiki/WikiStart/file.txt?format=raw" title="Attachment 'file.txt' in WikiStart">that file</a><a class="trac-rawlink" href="/raw-attachment/wiki/WikiStart/file.txt?format=raw" title="Download"></a>
 </p>
 ------------------------------
 """ # "
@@ -161,8 +161,8 @@ user@example.org vs. mailto:user@example.org
 and [mailto:user@example.org Joe User]
 ------------------------------
 <p>
-user@\u2026 vs. <a class="mail-link" href="mailto:user@example.org"><span class="icon">\xa0</span>mailto:user@example.org</a>
-and <a class="mail-link" href="mailto:user@example.org"><span class="icon">\xa0</span>Joe User</a>
+user@\u2026 vs. <a class="mail-link" href="mailto:user@example.org"><span class="icon"></span>mailto:user@example.org</a>
+and <a class="mail-link" href="mailto:user@example.org"><span class="icon"></span>Joe User</a>
 </p>
 ------------------------------
 """

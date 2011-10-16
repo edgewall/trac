@@ -33,7 +33,6 @@ h1 :link, h1 :visited ,h2 :link, h2 :visited, h3 :link, h3 :visited,
 h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
  color: inherit;
 }
-.trac-rawlink { border-bottom: none }
 
 /* Heading anchors */
 .anchor:link, .anchor:visited {
@@ -53,12 +52,17 @@ span:hover .anchor {
 
 @media screen {
  a.ext-link .icon {
-  background: url(../extlink.gif) center center no-repeat;
-  padding-left: 12px;
+  background: url(../extlink.gif) left center no-repeat;
+  padding-left: 15px;
  }
  a.mail-link .icon {
-  background: url(../envelope.png) center center no-repeat;
-  padding-left: 14px;
+  background: url(../envelope.png) left center no-repeat;
+  padding-left: 16px;
+ }
+ .trac-rawlink {
+  background: url('../download.png') right center no-repeat;
+  padding-right: 16px;
+  border-bottom: none;
  }
 }
 
@@ -229,8 +233,14 @@ label.disabled { color: #d7d7d7 }
  border: none;
  padding: 0 0 2px;
 }
-#altlinks li a.ics { background-image: url(../ics.png); padding-left: 22px }
-#altlinks li a.rss { background-image: url(../feed.png); padding-left: 20px }
+#altlinks li a.ics {
+ background: url(../ics.png) left center no-repeat;
+ padding-left: 22px;
+}
+#altlinks li a.rss {
+ background: url(../feed.png) left center no-repeat;
+ padding-left: 20px;
+}
 
 /* Footer */
 #footer {
@@ -617,7 +627,7 @@ div.system-message p.system-message-title { font-weight: bold; }
 @media print {
  #header, #altlinks, #footer, #help { display: none }
  .nav, form, .buttons form, form .buttons, form .inlinebuttons,
- .noprint, .trac-rawlink, .trac-nav, .trac-topnav {
+ .noprint, .trac-nav, .trac-topnav {
    display: none;
  }
  form.printableform { display: block }

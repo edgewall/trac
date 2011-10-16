@@ -17,9 +17,8 @@ Arguments:
       <strong>${field.label}</strong>
       <py:choose>
         <py:when test="field_name == 'attachment'"><i18n:msg params="name">
-          <a href="${href.attachment('ticket', ticket.id, field.new)}"><em>${field.new}</em></a>
-          <a href="${href('raw-attachment', 'ticket', ticket.id, field.new)}"
-             title="Download" class="trac-rawlink"><img src="${chrome.htdocs_location}download.png" alt="Download"/></a>
+          <a href="${href.attachment('ticket', ticket.id, field.new)}"><em>${field.new}</em></a><a
+             href="${href('raw-attachment', 'ticket', ticket.id, field.new)}" title="Download" class="trac-rawlink">&#8203;</a>
           added
         </i18n:msg></py:when>
         <py:when test="'rendered' in field">${field.rendered}</py:when>

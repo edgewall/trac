@@ -826,15 +826,11 @@ class AttachmentModule(Component):
                                  title=get_resource_name(self.env, attachment))
                 href = get_resource_url(self.env, attachment, formatter.href)
                 title = get_resource_name(self.env, attachment)
-                img = tag.img(src=formatter.href.chrome('common/download.png'),
-                              alt=_("Download"))
                 return tag(tag.a(label, class_='attachment', title=title,
                                  href=href + params),
-                           tag.span(" ",
-                                    tag.a(img, class_='trac-rawlink',
-                                          href=raw_href + params,
-                                          title=_("Download")),
-                                    class_="noprint"))
+                           tag.a(u'\u200b', class_='trac-rawlink',
+                                 href=raw_href + params,
+                                 title=_("Download")))
             except ResourceNotFound:
                 pass
             # FIXME: should be either:
