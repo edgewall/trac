@@ -59,7 +59,7 @@ span:hover .anchor {
   background: url(../envelope.png) left center no-repeat;
   padding-left: 16px;
  }
- .trac-rawlink {
+ a.trac-rawlink {
   background: url('../download.png') right center no-repeat;
   padding-right: 16px;
   border-bottom: none;
