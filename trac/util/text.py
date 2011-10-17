@@ -164,6 +164,14 @@ def unicode_urlencode(params, safe=''):
     return '&'.join(l)
 
 
+_qs_quote_safe = ''.join(chr(c) for c in xrange(0x21, 0x7f))
+
+def quote_query_string(text):
+    """Quote strings for query string
+    """
+    return unicode_quote_plus(text, _qs_quote_safe)
+
+
 def to_utf8(text, charset='latin1'):
     """Convert a string to UTF-8, assuming the encoding is either UTF-8, ISO
     Latin-1, or as specified by the optional `charset` parameter.

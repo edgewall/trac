@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
+
 from trac.db.mysql_backend import MySQLConnection
 from trac.ticket.report import ReportModule
-from trac.test import EnvironmentStub
+from trac.test import EnvironmentStub, Mock
 from trac.web.api import Request, RequestDone
 
 import unittest
@@ -16,6 +18,9 @@ class ReportTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub()
         self.report_module = ReportModule(self.env)
+
+    def tearDown(self):
+        self.env.reset_db()
 
     def _make_environ(self, scheme='http', server_name='example.org',
                       server_port=80, method='GET', script_name='/trac',
@@ -68,6 +73,28 @@ class ReportTestCase(unittest.TestCase):
             pass
         self.assertEqual('\xef\xbb\xbfTEST_COL,TEST_ZERO\r\n"value, needs escaped",0\r\n',
                          buf.getvalue())
+
+    def test_saved_custom_query_redirect(self):
+        query = u'query:?type=résumé'
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.execute("INSERT INTO report (title,query,description) "
+                       "VALUES (%s,%s,%s)", ('redirect', query, ''))
+        id = db.get_last_id(cursor, 'report')
+        db.commit()
+
+        headers_sent = {}
+        def start_response(status, headers):
+            headers_sent.update(dict(headers))
+        environ = self._make_environ()
+        req = Request(environ, start_response)
+        req.authname = 'anonymous'
+        req.session = Mock(save=lambda: None)
+        self.assertRaises(RequestDone,
+                          self.report_module._render_view, req, id)
+        self.assertEqual('http://example.org/trac/query?' + \
+                         'type=r%C3%A9sum%C3%A9&report=' + str(id),
+                         headers_sent['Location'])
 
 
 def suite():

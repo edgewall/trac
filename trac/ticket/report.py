@@ -33,7 +33,7 @@ from trac.ticket.api import TicketSystem
 from trac.util import as_int, content_disposition
 from trac.util.datefmt import format_datetime, format_time, from_utimestamp
 from trac.util.presentation import Paginator
-from trac.util.text import exception_to_unicode, to_unicode
+from trac.util.text import exception_to_unicode, to_unicode, quote_query_string
 from trac.util.translation import _, tag_
 from trac.web.api import IRequestHandler, RequestDone
 from trac.web.chrome import (INavigationContributor, Chrome, 
@@ -319,7 +319,7 @@ class ReportModule(Component):
                 if query[-1] != '?':
                     query += '&'
                 query += report_id
-            req.redirect(req.href.query() + query)
+            req.redirect(req.href.query() + quote_query_string(query))
         elif query.startswith('query:'):
             try:
                 from trac.ticket.query import Query, QuerySyntaxError

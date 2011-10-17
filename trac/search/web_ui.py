@@ -27,6 +27,7 @@ from trac.search.api import ISearchSource
 from trac.util.datefmt import format_datetime, user_time
 from trac.util.html import find_element
 from trac.util.presentation import Paginator
+from trac.util.text import quote_query_string
 from trac.util.translation import _
 from trac.web import IRequestHandler
 from trac.web.chrome import (INavigationContributor, ITemplateProvider,
@@ -130,9 +131,9 @@ class SearchModule(Component):
         if path:
             href = formatter.href.search(q=path)
             if query:
-                href += '&' + query[1:].replace(' ', '+')
+                href += '&' + quote_query_string(query[1:])
         else:
-            href = formatter.href.search() + query.replace(' ', '+')
+            href = formatter.href.search() + quote_query_string(query)
         href += fragment
         return tag.a(label, class_='search', href=href)
 

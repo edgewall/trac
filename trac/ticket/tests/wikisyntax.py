@@ -199,6 +199,8 @@ query:?order=priority
 
 query:?order=priority&owner=me
 
+query:?type=résumé
+
 query:status=new|reopened
 
 query:reporter!=
@@ -208,12 +210,17 @@ query:reporter=joe|jack&owner=me
 query:group=owner
 
 query:verbose=1
+
+query:summary=résumé
 ------------------------------
 <p>
 <a class="query" href="/query?order=priority">query:?order=priority</a>
 </p>
 <p>
 <a class="query" href="/query?order=priority&amp;owner=me">query:?order=priority&amp;owner=me</a>
+</p>
+<p>
+<a class="query" href="/query?type=r%C3%A9sum%C3%A9">query:?type=résumé</a>
 </p>
 <p>
 <a class="query" href="/query?status=new&amp;status=reopened&amp;order=priority">query:status=new|reopened</a>
@@ -229,6 +236,9 @@ query:verbose=1
 </p>
 <p>
 <a class="query" href="/query?order=priority&amp;row=description">query:verbose=1</a>
+</p>
+<p>
+<a class="query" href="/query?summary=r%C3%A9sum%C3%A9&amp;order=priority">query:summary=résumé</a>
 </p>
 ------------------------------
 ============================== TicketQuery macro: no results, list form
