@@ -7,7 +7,7 @@ from trac.util.text import empty, expandtabs, fix_eol, javascript_quote, \
                            normalize_whitespace, to_unicode, \
                            text_width, print_table, unicode_quote, \
                            unicode_quote_plus, unicode_unquote, \
-                           unicode_urlencode, wrap
+                           unicode_urlencode, wrap, quote_query_string
 
 
 class ToUnicodeTestCase(unittest.TestCase):
@@ -88,6 +88,13 @@ class UnicodeQuoteTestCase(unittest.TestCase):
                          unicode_urlencode({u'Ü': 'thing',
                                             'thing': u'Ü',
                                             u'Üthing': empty}))
+
+
+class QuoteQueryStringTestCase(unittest.TestCase):
+    def test_quote(self):
+        text = u'type=the Ü thing&component=comp\x7fonent'
+        self.assertEqual('type=the+%C3%9C+thing&component=comp%7Fonent',
+                         quote_query_string(text))
 
 
 class WhitespaceTestCase(unittest.TestCase):
@@ -262,6 +269,7 @@ def suite():
     suite.addTest(unittest.makeSuite(ExpandtabsTestCase, 'test'))
     suite.addTest(unittest.makeSuite(UnicodeQuoteTestCase, 'test'))
     suite.addTest(unittest.makeSuite(JavascriptQuoteTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(QuoteQueryStringTestCase, 'test'))
     suite.addTest(unittest.makeSuite(WhitespaceTestCase, 'test'))
     suite.addTest(unittest.makeSuite(TextWidthTestCase, 'test'))
     suite.addTest(unittest.makeSuite(PrintTableTestCase, 'test'))

@@ -34,7 +34,7 @@ from trac.util import Ranges, as_bool
 from trac.util.datefmt import format_datetime, from_utimestamp, parse_date, \
                               to_timestamp, to_utimestamp, utc
 from trac.util.presentation import Paginator
-from trac.util.text import empty, shorten_line
+from trac.util.text import empty, shorten_line, quote_query_string
 from trac.util.translation import _, tag_
 from trac.web import arg_list_to_args, parse_arg_list, IRequestHandler
 from trac.web.href import Href
@@ -1155,8 +1155,9 @@ class QueryModule(Component):
 
     def _format_link(self, formatter, ns, query, label):
         if query.startswith('?'):
+            query = quote_query_string(query)
             return tag.a(label, class_='query',
-                         href=formatter.href.query() + query.replace(' ', '+'))
+                         href=formatter.href.query() + query)
         else:
             try:
                 query = Query.from_string(self.env, query)
