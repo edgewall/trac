@@ -615,13 +615,13 @@ except NotImplementedError:
             hasher.update(str(_entropy.random()))
             result.append(hasher.digest())
         result = ''.join(result)
-        return len(result) > n and result[:n] or result
+        return result[:n] if len(result) > n else result
 
 
 def hex_entropy(digits=32):
     """Generate `digits` number of hex digits of entropy."""
     result = ''.join('%.2x' % ord(v) for v in urandom((digits + 1) // 2))
-    return len(result) > digits and result[:digits] or result
+    return result[:digits] if len(result) > digits else result
 
 # Original license for md5crypt:
 # Based on FreeBSD src/lib/libcrypt/crypt.c 1.2
