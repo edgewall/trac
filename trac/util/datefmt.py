@@ -360,6 +360,11 @@ class FixedOffset(tzinfo):
             raise ValueError('Not naive datetime (tzinfo is already set)')
         return dt.replace(tzinfo=self)
 
+    def normalize(self, dt, is_dst=False):
+        if dt.tzinfo is None:
+            raise ValueError('Naive time (no tzinfo set)')
+        return dt
+
 
 STDOFFSET = timedelta(seconds=-time.timezone)
 if time.daylight:
@@ -411,6 +416,11 @@ class LocalTimezone(tzinfo):
         if dt.tzinfo is not None:
             raise ValueError('Not naive datetime (tzinfo is already set)')
         return dt.replace(tzinfo=self)
+
+    def normalize(self, dt, is_dst=False):
+        if dt.tzinfo is None:
+            raise ValueError('Naive time (no tzinfo set)')
+        return dt
 
 
 utc = FixedOffset(0, 'UTC')

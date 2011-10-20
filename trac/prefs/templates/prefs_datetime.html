@@ -28,8 +28,7 @@
 
       <!-- This currently crashes Genshi's extractor if you add i18n:msg -->
       <p class="hint" py:with="now = datetime.now(utc);
-                               nowtz = now.astimezone(selected_tz);
-                               nowtz = hasattr(selected_tz, 'normalize') and selected_tz.normalize(nowtz) or nowtz"
+                               nowtz = selected_tz.normalize(now.astimezone(selected_tz))"
                       py:choose="">
         <i18n:msg params="time">Example: The current time is <strong>${format_time(now, 'iso8601', tzinfo=utc)}</strong> (UTC).</i18n:msg>
         <br />
