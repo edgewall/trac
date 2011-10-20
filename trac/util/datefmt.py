@@ -63,16 +63,12 @@ def to_datetime(t, tzinfo=None):
             if t.tzinfo is None:
                 t = t.replace(tzinfo=tzinfo)
             else:
-                t = t.astimezone(tzinfo)
-                if hasattr(tzinfo, 'normalize'): # pytz
-                    t = tzinfo.normalize(t)
+                t = tzinfo.normalize(t.astimezone(tzinfo))
         return t
     elif isinstance(t, date):
         tz = tzinfo or localtz
         t = tz.localize(datetime(t.year, t.month, t.day))
-        if hasattr(tz, 'normalize'): # pytz
-            t = tz.normalize(t)
-        return t
+        return tz.normalize(t)
     elif isinstance(t, (int, long, float)):
         if not (_min_ts <= t <= _max_ts):
             # Handle microsecond timestamps for 0.11 compatibility
@@ -334,9 +330,7 @@ def _parse_date_iso8601(text, tzinfo):
                                             hours, minutes, seconds),
                                '%Y %m %d %H %M %S ')
             t = tzinfo.localize(datetime(*tm[0:6]))
-            if hasattr(tzinfo, 'normalize'): # pytz
-                t = tzinfo.normalize(t)
-            return t
+            return tzinfo.normalize(t)
         except ValueError:
             pass
 
@@ -356,8 +350,7 @@ def parse_date(text, tzinfo=None, locale=None, hint='date'):
                 try:
                     tm = time.strptime(text, format)
                     dt = tzinfo.localize(datetime(*tm[0:6]))
-                    if hasattr(tzinfo, 'normalize'): # pytz
-                        dt = tzinfo.normalize(dt)
+                    dt = tzinfo.normalize(dt)
                     break
                 except ValueError:
                     continue
@@ -518,9 +511,7 @@ def _i18n_parse_date_0(text, order, regexp, period_names, month_names, tzinfo):
             values['h'] = values['h'] % 12 + 12
 
     t = tzinfo.localize(datetime(*(values[k] for k in 'yMdhms')))
-    if hasattr(tzinfo, 'normalize'): # pytz
-        t = tzinfo.normalize(t)
-    return t
+    return tzinfo.normalize(t)
 
 _REL_TIME_RE = re.compile(
     r'(\d+\.?\d*)\s*'
@@ -631,6 +622,11 @@ class FixedOffset(tzinfo):
             raise ValueError('Not naive datetime (tzinfo is already set)')
         return dt.replace(tzinfo=self)
 
+    def normalize(self, dt, is_dst=False):
+        if dt.tzinfo is None:
+            raise ValueError('Naive time (no tzinfo set)')
+        return dt
+
 
 STDOFFSET = timedelta(seconds=-time.timezone)
 if time.daylight:
@@ -682,6 +678,11 @@ class LocalTimezone(tzinfo):
         if dt.tzinfo is not None:
             raise ValueError('Not naive datetime (tzinfo is already set)')
         return dt.replace(tzinfo=self)
+
+    def normalize(self, dt, is_dst=False):
+        if dt.tzinfo is None:
+            raise ValueError('Naive time (no tzinfo set)')
+        return dt
 
 
 utc = FixedOffset(0, 'UTC')

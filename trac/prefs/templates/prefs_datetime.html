@@ -28,8 +28,7 @@
 
       <!-- This currently crashes Genshi's extractor if you add i18n:msg -->
       <p class="hint" py:with="now = datetime.now(utc);
-                               nowtz = now.astimezone(selected_tz);
-                               nowtz = selected_tz.normalize(nowtz) if hasattr(selected_tz, 'normalize') else nowtz;
+                               nowtz = selected_tz.normalize(now.astimezone(selected_tz));
                                formatted = format_time(now, 'iso8601', tzinfo=req.tz)"
                       py:choose="">
         <i18n:msg params="time">
