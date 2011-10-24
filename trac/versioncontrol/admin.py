@@ -71,11 +71,12 @@ class VersionControlAdmin(Component):
                self._complete_repos, self._do_resync)
         yield ('repository sync', '<repos> [rev]',
                """Resume synchronization of repositories
+
+               It works like `resync`, except that it doesn't clear the already
+               synchronized changesets, so it's a better way to resume an
+               interrupted `resync`.
                
-               Similar to `resync`, but doesn't clear the already synchronized
-               changesets. Useful for resuming an interrupted `resync`.
-               
-               To synchronize all repositories, specify "*" as the repository.
+               See `resync` help for detailed usage.
                """,
                self._complete_repos, self._do_sync)
     
