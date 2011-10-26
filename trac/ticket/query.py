@@ -704,6 +704,7 @@ class Query(object):
                     if val[:1] in ('~', '^', '$') \
                                         and not val in self.substitutions:
                         mode, val = val[:1], val[1:]
+                    val = val.replace('$USER', req.authname)
                     constraint['mode'] = (neg and '!' or '') + mode
                     constraint['values'].append(val)
                 constraints[k] = constraint
@@ -886,17 +887,25 @@ class QueryModule(Component):
                 args = arg_list_to_args(arg_list)
                 constraints = self._get_constraints(arg_list=arg_list)
             else:
-                constraints = Query.from_string(self.env, qstring).constraints
-                # Substitute $USER, or ensure no field constraints that depend
-                # on $USER are used if we have no username.
-                for clause in constraints:
-                    for field, vals in clause.items():
-                        for (i, val) in enumerate(vals):
-                            if user:
-                                vals[i] = val.replace('$USER', user)
-                            elif val.endswith('$USER'):
-                                del clause[field]
-                                break
+                query = Query.from_string(self.env, qstring)
+                args = {'order': query.order, 'group': query.group,
+                        'col': query.cols, 'max': query.max}
+                if query.desc:
+                    args['desc'] = '1'
+                if query.groupdesc:
+                    args['groupdesc'] = '1'
+                constraints = query.constraints
+
+            # Substitute $USER, or ensure no field constraints that depend
+            # on $USER are used if we have no username.
+            for clause in constraints:
+                for field, vals in clause.items():
+                    for (i, val) in enumerate(vals):
+                        if user:
+                            vals[i] = val.replace('$USER', user)
+                        elif val.endswith('$USER'):
+                            del clause[field]
+                            break
 
         cols = args.get('col')
         if isinstance(cols, basestring):
