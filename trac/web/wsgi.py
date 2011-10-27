@@ -72,6 +72,8 @@ class WSGIGateway(object):
         environ['wsgi.url_scheme'] = 'http'
         if environ.get('HTTPS', '').lower() in ('yes', 'on', '1'):
             environ['wsgi.url_scheme'] = 'https'
+        elif environ.get('HTTP_X_FORWARDED_PROTO', '').lower() == 'https':
+            environ['wsgi.url_scheme'] = 'https'
         environ['wsgi.input'] = stdin
         environ['wsgi.errors'] = stderr
         environ['wsgi.multithread'] = self.wsgi_multithread
