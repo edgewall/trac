@@ -704,7 +704,8 @@ class Query(object):
                     if val[:1] in ('~', '^', '$') \
                                         and not val in self.substitutions:
                         mode, val = val[:1], val[1:]
-                    val = val.replace('$USER', req.authname)
+                    if req:
+                        val = val.replace('$USER', req.authname)
                     constraint['mode'] = (neg and '!' or '') + mode
                     constraint['values'].append(val)
                 constraints[k] = constraint
@@ -1294,7 +1295,8 @@ class TicketQueryMacro(WikiMacroBase):
         tickets = query.execute(req)
 
         if format == 'table':
-            data = query.template_data(formatter.context, tickets)
+            data = query.template_data(formatter.context, tickets,
+                                       req=formatter.context.req)
 
             add_stylesheet(req, 'common/css/report.css')
             

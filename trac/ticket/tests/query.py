@@ -503,6 +503,21 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual('col1\r\n"value, needs escaped"\r\n',
                          content)
 
+    def test_template_data(self):
+        req = Mock(href=self.env.href, perm=MockPerm(), authname='anonymous',
+                   tz=None)
+        context = Context.from_request(req, 'query')
+
+        query = Query.from_string(self.env, 'owner=$USER&order=id')
+        tickets = query.execute(req)
+        data = query.template_data(context, tickets, req=req)
+        self.assertEqual(['anonymous'], data['clauses'][0]['owner']['values'])
+
+        query = Query.from_string(self.env, 'owner=$USER&order=id')
+        tickets = query.execute(req)
+        data = query.template_data(context, tickets)
+        self.assertEqual(['$USER'], data['clauses'][0]['owner']['values'])
+
 
 class QueryLinksTestCase(unittest.TestCase):
 
