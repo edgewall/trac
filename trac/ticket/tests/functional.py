@@ -1299,6 +1299,85 @@ class RegressionTestTicket6912b(FunctionalTwillTestCaseSetup):
                 '<td class="owner"></td>', 's')
 
 
+class RegressionTestTicket7821group(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/7821 group"""
+        env = self._testenv.get_trac_environment()
+        saved_default_query = env.config.get('query', 'default_query')
+        default_query = 'status!=closed&order=status&group=status&max=42' \
+                        '&desc=1&groupdesc=1&col=summary|status|cc' \
+                        '&cc~=$USER'
+        env.config.set('query', 'default_query', default_query)
+        env.config.save()
+        try:
+            self._testenv.restart()
+            self._tester.create_ticket('RegressionTestTicket7821 group')
+            self._tester.go_to_query()
+            # $USER
+            tc.find('<input type="text" name="0_cc" value="admin"'
+                    ' size="[0-9]+" />')
+            # col
+            tc.find('<input type="checkbox" name="col" value="summary"'
+                    ' checked="checked" />')
+            tc.find('<input type="checkbox" name="col" value="owner" />')
+            tc.find('<input type="checkbox" name="col" value="status"'
+                    ' checked="checked" />')
+            tc.find('<input type="checkbox" name="col" value="cc"'
+                    ' checked="checked" />')
+            # group
+            tc.find('<option selected="selected" value="status">Status'
+                    '</option>')
+            # groupdesc
+            tc.find('<input type="checkbox" name="groupdesc" id="groupdesc"'
+                    ' checked="checked" />')
+            # max
+            tc.find('<input type="text" name="max" id="max" size="[0-9]*?"'
+                    ' value="42" />')
+            # col in results
+            tc.find('<a title="Sort by Ticket [(]ascending[)]" ')
+            tc.find('<a title="Sort by Summary [(]ascending[)]" ')
+            tc.find('<a title="Sort by Status [(]ascending[)]" ')
+            tc.find('<a title="Sort by Cc [(]ascending[)]" ')
+            tc.notfind('<a title="Sort by Owner "')
+        finally:
+            env.config.set('query', 'default_query', saved_default_query)
+            env.config.save()
+            self._testenv.restart()
+
+
+class RegressionTestTicket7821var(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/7821 var"""
+        env = self._testenv.get_trac_environment()
+        saved_default_query = env.config.get('query', 'default_query')
+        saved_restrict_owner = env.config.get('ticket', 'restrict_owner')
+        default_query = '?status=!closed&cc=~$USER&owner=$USER'
+        env.config.set('query', 'default_query', default_query)
+        env.config.set('ticket', 'restrict_owner', 'no')
+        env.config.save()
+        try:
+            self._testenv.restart()
+            self._tester.create_ticket('RegressionTestTicket7821 var')
+            self._tester.go_to_query()
+            # $USER in default_query
+            tc.find('<input type="text" name="0_owner" value="admin"'
+                    ' size="[0-9]+" />')
+            tc.find('<input type="text" name="0_cc" value="admin"'
+                    ' size="[0-9]+" />')
+            # query:owner=$USER&or&cc~=$USER
+            tc.go(self._tester.url + \
+                  '/intertrac/query:owner=$USER&or&cc~=$USER')
+            tc.find('<input type="text" name="0_owner" value="admin"'
+                    ' size="[0-9]+" />')
+            tc.find('<input type="text" name="1_cc" value="admin"'
+                    ' size="[0-9]+" />')
+        finally:
+            env.config.set('query', 'default_query', saved_default_query)
+            env.config.set('ticket', 'restrict_owner', saved_restrict_owner)
+            env.config.save()
+            self._testenv.restart()
+
+
 class RegressionTestTicket8247(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/8247
@@ -1448,6 +1527,8 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket6879b())
     suite.addTest(RegressionTestTicket6912a())
     suite.addTest(RegressionTestTicket6912b())
+    suite.addTest(RegressionTestTicket7821group())
+    suite.addTest(RegressionTestTicket7821var())
     suite.addTest(RegressionTestTicket8247())
     suite.addTest(RegressionTestTicket8861())
     suite.addTest(RegressionTestTicket9084())

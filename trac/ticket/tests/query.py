@@ -486,6 +486,18 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(args, like_args)
         tickets = query.execute(self.req)
 
+    def test_user_var(self):
+        query = Query.from_string(self.env, 'owner=$USER&order=id')
+        sql, args = query.get_sql(req=self.req)
+        self.assertEqualSQL(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+WHERE ((COALESCE(t.owner,'')=%s))
+ORDER BY COALESCE(t.id,0)=0,t.id""")
+        self.assertEqual(['anonymous'], args)
+        tickets = query.execute(self.req)
+
     def test_csv_escape(self):
         query = Mock(get_columns=lambda: ['col1'],
                      execute=lambda r: [{'id': 1, 
