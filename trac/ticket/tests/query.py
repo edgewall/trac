@@ -572,7 +572,7 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(QueryTestCase, 'test'))
     suite.addTest(unittest.makeSuite(QueryLinksTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(TicketQueryMacroTestCase, 'text'))
+    suite.addTest(unittest.makeSuite(TicketQueryMacroTestCase, 'test'))
     return suite
 
 if __name__ == '__main__':
