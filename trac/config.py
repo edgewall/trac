@@ -261,7 +261,9 @@ class Configuration(object):
         if force or modtime > self._lastmtime:
             self._sections = {}
             self.parser._sections = {}
-            self.parser.read(self.filename)
+            if not self.parser.read(self.filename):
+                raise TracError(_("Error reading '%(file)s', make sure it is "
+                                  "readable.", file=self.filename))
             self._lastmtime = modtime
             self._old_sections = deepcopy(self.parser._sections)
             changed = True
