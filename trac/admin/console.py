@@ -263,8 +263,13 @@ Type:  '?' or 'help' for help on commands.
         return self.complete_line(text, line)
         
     def default(self, line):
-        if not self.env_check():
-            raise AdminCommandError(_("Command not found"))
+        try:
+            if not self.__env:
+                self._init_env()
+        except TracError, e:
+            raise AdminCommandError(to_unicode(e))
+        except Exception, e:
+            raise AdminCommandError(exception_to_unicode(e))
         args = self.arg_tokenize(line)
         cmd_mgr = AdminCommandManager(self.env)
         return cmd_mgr.execute_command(*args)
