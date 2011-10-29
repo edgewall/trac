@@ -5159,11 +5159,11 @@ msgstr "Normal"
 
 #: trac/versioncontrol/web_ui/browser.py:459
 msgid "View file without annotations"
-msgstr "Datei ohne Markierungen anzeigen"
+msgstr "Datei ohne Annotationen anzeigen"
 
 #: trac/versioncontrol/web_ui/browser.py:464
 msgid "Blame"
-msgstr "Annotieren"
+msgstr "Annotation"
 
 #: trac/versioncontrol/web_ui/browser.py:465
 msgid ""
