@@ -170,7 +170,7 @@ class PostgreSQLConnector(Component):
                 args.extend(['-p', str(db_prop.get('port', '5432'))])
 
         if 'schema' in db_params:
-            args.extend(['-n', '"%s"' % db_params['schema']])
+            args.extend(['-n', db_params['schema']])
 
         dest_file += ".gz"
         args.extend(['-f', dest_file, db_name])
