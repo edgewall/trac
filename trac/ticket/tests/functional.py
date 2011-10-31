@@ -879,6 +879,47 @@ class TestNewReport(FunctionalTwillTestCaseSetup):
             ' been closed this week.)')
 
 
+class TestReportRealmDecoration(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Realm/id decoration in report"""
+        self._tester.create_report(
+            'Realm/id decoration',
+            """\
+SELECT NULL AS _realm, NULL AS id, NULL AS _parent_realm, NULL AS _parent_id
+UNION ALL SELECT 'ticket', '42', NULL, NULL
+UNION ALL SELECT 'report', '42', NULL, NULL
+UNION ALL SELECT 'milestone', '42', NULL, NULL
+UNION ALL SELECT 'wiki', 'WikiStart', NULL, NULL
+UNION ALL SELECT 'changeset', '42/trunk', NULL, NULL
+UNION ALL SELECT 'changeset', '42/trunk', 'repository', 'repo'
+UNION ALL SELECT 'changeset', '43/tags', 'repository', ''
+UNION ALL SELECT 'attachment', 'file.ext', 'ticket', '42'
+UNION ALL SELECT 'attachment', 'file.ext', 'milestone', '42'
+UNION ALL SELECT 'attachment', 'file.ext', 'wiki', 'WikiStart'
+""", '')
+        tc.find('<a title="View ticket" href="[^"]*?/ticket/42">#42</a>')
+        tc.find('<a title="View report" href="[^"]*?/report/42">report:42</a>')
+        tc.find('<a title="View milestone" href="[^"]*?/milestone/42">42</a>')
+        tc.find('<a title="View wiki" href="[^"]*?/wiki/WikiStart">'
+                'WikiStart</a>')
+        tc.find('<a title="View changeset" href="[^"]*?/changeset/42/trunk">'
+                'Changeset 42/trunk</a>')
+        tc.find('<a title="View changeset" '
+                'href="[^"]*?/changeset/42/trunk/repo">'
+                'Changeset 42/trunk in repo</a>')
+        tc.find('<a title="View changeset" href="[^"]*?/changeset/43/tags">'
+                'Changeset 43/tags</a>')
+        tc.find('<a title="View attachment" '
+                'href="[^"]*?/attachment/ticket/42/file[.]ext">'
+                'file[.]ext [(]Ticket #42[)]</a>')
+        tc.find('<a title="View attachment" '
+                'href="[^"]*?/attachment/milestone/42/file[.]ext">'
+                'file[.]ext [(]Milestone 42[)]</a>')
+        tc.find('<a title="View attachment" '
+                'href="[^"]*?/attachment/wiki/WikiStart/file[.]ext">'
+                'file[.]ext [(]WikiStart[)]</a>')
+
+
 class RegressionTestRev5665(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create version without release time (r5665)"""
@@ -1492,6 +1533,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminVersionNonRemoval())
     suite.addTest(TestAdminVersionDefault())
     suite.addTest(TestNewReport())
+    suite.addTest(TestReportRealmDecoration())
     suite.addTest(RegressionTestRev5665())
     suite.addTest(RegressionTestRev5994())
 
