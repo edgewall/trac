@@ -142,7 +142,7 @@
                         <py:when test="col in ('ticket', 'id')">
                           <td class="ticket" py:attrs="td_attrs">
                             <a title="${_('View %(realm)s', realm=row.resource.realm)}"
-                               href="${url_of(row.resource)}">#$cell.value</a>
+                               href="${url_of(row.resource)}">${shortname_of(row.resource)}</a>
                             <hr py:if="fullrow"/>
                           </td>
                         </py:when>

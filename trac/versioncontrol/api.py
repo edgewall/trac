@@ -365,13 +365,17 @@ class RepositoryManager(Component):
 
     def get_resource_description(self, resource, format=None, **kwargs):
         if resource.realm == 'changeset':
-            reponame, id = resource.parent.id, resource.id
+            parent = resource.parent
+            reponame = parent and parent.id
+            id = resource.id
             if reponame:
                 return _("Changeset %(rev)s in %(repo)s", rev=id, repo=reponame)
             else:
                 return _("Changeset %(rev)s", rev=id)
         elif resource.realm == 'source':
-            reponame, id = resource.parent.id, resource.id
+            parent = resource.parent
+            reponame = parent and parent.id
+            id = resource.id
             version = ''
             if format == 'summary':
                 repos = self.get_repository(reponame)
@@ -395,9 +399,11 @@ class RepositoryManager(Component):
 
     def get_resource_url(self, resource, href, **kwargs):
         if resource.realm == 'changeset':
-            return href.changeset(resource.id, resource.parent.id or None)
+            parent = resource.parent
+            return href.changeset(resource.id, parent and parent.id or None)
         elif resource.realm == 'source':
-            return href.source(resource.parent.id or None, resource.id)
+            parent = resource.parent
+            return href.source(parent and parent.id or None, resource.id)
         elif resource.realm == 'repository':
             return href.source(resource.id or None)
 

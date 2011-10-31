@@ -482,6 +482,8 @@ class ReportModule(Component):
             cell_groups = []
             row = {'cell_groups': cell_groups}
             realm = 'ticket'
+            parent_realm = ''
+            parent_id = ''
             email_cells = []
             for header_group in header_groups:
                 cell_group = []
@@ -508,9 +510,17 @@ class ReportModule(Component):
                         email_cells.append(cell)
                     elif col == 'realm':
                         realm = value
+                    elif col == 'parent_realm':
+                        parent_realm = value
+                    elif col == 'parent_id':
+                        parent_id = value
                     cell_group.append(cell)
                 cell_groups.append(cell_group)
-            resource = Resource(realm, row.get('id'))
+            if parent_realm:
+                resource = Resource(realm, row.get('id'),
+                                    parent=Resource(parent_realm, parent_id))
+            else:
+                resource = Resource(realm, row.get('id'))
             # FIXME: for now, we still need to hardcode the realm in the action
             if resource.realm.upper()+'_VIEW' not in req.perm(resource):
                 continue
