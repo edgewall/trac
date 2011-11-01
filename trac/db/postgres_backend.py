@@ -166,7 +166,19 @@ class PostgreSQLConnector(Component):
                 args.extend(['-p', str(db_prop.get('port', '5432'))])
 
         if 'schema' in db_params:
-            args.extend(['-n', db_params['schema']])
+            try:
+                p = Popen([self.pg_dump_path, '--version'], stdout=PIPE,
+                          close_fds=close_fds)
+            except OSError, e:
+                raise TracError(_("Unable to run %(path)s: %(msg)s",
+                                  path=self.pg_dump_path,
+                                  msg=exception_to_unicode(e)))
+            # Need quote for -n (--schema) option in PostgreSQL 8.2+
+            version = p.communicate()[0]
+            if re.search(r' 8\.[01]\.', version):
+                args.extend(['-n', db_params['schema']])
+            else:
+                args.extend(['-n', '"%s"' % db_params['schema']])
 
         dest_file += ".gz"
         args.extend(['-f', dest_file, db_name])
