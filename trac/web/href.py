@@ -16,7 +16,12 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
+import re
+
 from trac.util.text import unicode_quote, unicode_urlencode
+
+
+slashes_re = re.compile(r'/{2,}')
 
 
 class Href(object):
@@ -165,7 +170,7 @@ class Href(object):
         path = '/'.join(unicode_quote(unicode(arg).strip('/'), self.path_safe)
                         for arg in args if arg is not None)
         if path:
-            href += '/' + path
+            href += '/' + slashes_re.sub('/', path).lstrip('/')
         elif not href:
             href = '/'
 
