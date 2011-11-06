@@ -24,7 +24,7 @@
     else { // rows are toplevel rows, this is the initial call
       var anchor = window.location.hash.substr(1);
       if (anchor)
-        autoexpand = anchor.split("/");
+        autoexpand = decodeURI(anchor).split("/");
     }
 
     var autoexpand_expander = null;
