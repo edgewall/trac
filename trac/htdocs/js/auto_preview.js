@@ -73,7 +73,7 @@
               queued = false;
               if (busy != undefined)
                 $(busy).hide();
-            },
+            }
           });
         }
       }
