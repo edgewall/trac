@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-05-24 23:55+0200\n"
-"PO-Revision-Date: 2011-01-23 16:24+0100\n"
+"PO-Revision-Date: 2011-11-01 10:17+0100\n"
 "Last-Translator: Nagy Zoltán <nzoltan@freemail.hu>\n"
 "Language-Team: hu_HU <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n!=1)\n"
@@ -41,20 +41,20 @@ msgstr "Alkönyvtár kibontása helyben"
 msgid "Re-expand directory"
 msgstr "Könyvtár ismételt kibontása"
 
-#: trac/htdocs/js/expand_dir.js:115
+#: trac/htdocs/js/expand_dir.js:120
 #, python-format
 msgid "Loading %(entry)s..."
 msgstr "A(z) %(entry)s betöltése..."
 
-#: trac/htdocs/js/expand_dir.js:143
+#: trac/htdocs/js/expand_dir.js:148
 msgid "(empty)"
 msgstr "(üres)"
 
-#: trac/htdocs/js/expand_dir.js:151
+#: trac/htdocs/js/expand_dir.js:156
 msgid "(error)"
 msgstr "(hiba)"
 
-#: trac/htdocs/js/expand_dir.js:158
+#: trac/htdocs/js/expand_dir.js:163
 msgid "Fold directory"
 msgstr "Könyvtár összehajtása"
 
