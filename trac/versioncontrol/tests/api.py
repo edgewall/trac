@@ -85,21 +85,21 @@ class ResourceManagerTestCase(unittest.TestCase):
         res = Resource('source', '/trunk/src')
         self.assertEqual('path /trunk/src',
                          get_resource_description(self.env, res))
-        self.assertEqual('/trac.cgi/source/trunk/src',
+        self.assertEqual('/trac.cgi/browser/trunk/src',
                          get_resource_url(self.env, res, self.env.href))
 
         repo = Resource('repository', 'repo')
         res = Resource('source', '/trunk/src', parent=repo)
         self.assertEqual('path /trunk/src in repo',
                          get_resource_description(self.env, res))
-        self.assertEqual('/trac.cgi/source/repo/trunk/src',
+        self.assertEqual('/trac.cgi/browser/repo/trunk/src',
                          get_resource_url(self.env, res, self.env.href))
 
         repo = Resource('repository', 'repo')
         res = Resource('source', '/trunk/src', version=42, parent=repo)
         self.assertEqual('path /trunk/src@42 in repo',
                          get_resource_description(self.env, res))
-        self.assertEqual('/trac.cgi/source/repo/trunk/src',
+        self.assertEqual('/trac.cgi/browser/repo/trunk/src?rev=42',
                          get_resource_url(self.env, res, self.env.href))
 
 
@@ -107,7 +107,7 @@ class ResourceManagerTestCase(unittest.TestCase):
         res = Resource('repository', 'testrepo')
         self.assertEqual('Repository testrepo',
                          get_resource_description(self.env, res))
-        self.assertEqual('/trac.cgi/source/testrepo',
+        self.assertEqual('/trac.cgi/browser/testrepo',
                          get_resource_url(self.env, res, self.env.href))
 
 

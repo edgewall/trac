@@ -1,7 +1,7 @@
 *~
 .*.sw[op]
 .svn
-.git
+.hg
 build
 dist
 Trac.egg-info

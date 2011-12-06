@@ -403,9 +403,10 @@ class RepositoryManager(Component):
             return href.changeset(resource.id, parent and parent.id or None)
         elif resource.realm == 'source':
             parent = resource.parent
-            return href.source(parent and parent.id or None, resource.id)
+            return href.browser(parent and parent.id or None, resource.id,
+                                rev=resource.version or None)
         elif resource.realm == 'repository':
-            return href.source(resource.id or None)
+            return href.browser(resource.id or None)
 
     def resource_exists(self, resource):
         if resource.realm == 'repository':
