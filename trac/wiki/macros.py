@@ -43,10 +43,10 @@ class WikiMacroBase(Component):
     implements(IWikiMacroProvider)
     abstract = True
 
-    # A gettext domain to translate the macro description
+    #: A gettext domain to translate the macro description
     _domain = None
 
-    # A macro description
+    #: A macro description
     _description = None
 
     def get_macros(self):
