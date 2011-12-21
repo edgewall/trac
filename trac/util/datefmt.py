@@ -467,6 +467,7 @@ def _i18n_parse_date_0(text, order, regexp, period_names, month_names, tzinfo):
     if not matches:
         return None
 
+    # remove am/pm markers on ahead
     period = None
     for idx, match in enumerate(matches):
         period = period_names.get(match)
@@ -474,7 +475,8 @@ def _i18n_parse_date_0(text, order, regexp, period_names, month_names, tzinfo):
             del matches[idx]
             break
 
-    if len(matches) == 5:
+    # for date+time, use 0 seconds if seconds are missing
+    if 's' in order and len(matches) == 5:
         matches.insert(order['s'], 0)
 
     values = {}

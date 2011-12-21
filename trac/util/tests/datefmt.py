@@ -583,6 +583,38 @@ else:
             self.assertEqual('1:45:56 PM',
                              datefmt.format_time(t, '%X', tz, en_US))
 
+        def test_parse_invalid_date(self):
+            tz = datefmt.timezone('GMT +2:00')
+            en_US = Locale.parse('en_US')
+
+            self.assertRaises(TracError, datefmt.parse_date,
+                              '',
+                              tzinfo=tz, locale=en_US, hint='date')
+            self.assertRaises(TracError, datefmt.parse_date,
+                              '2011 Apr Mar',
+                              tzinfo=tz, locale=en_US, hint='date')
+            self.assertRaises(TracError, datefmt.parse_date,
+                              '29 Feb',
+                              tzinfo=tz, locale=en_US, hint='date')
+            self.assertRaises(TracError, datefmt.parse_date,
+                              'Feb 2011',
+                              tzinfo=tz, locale=en_US, hint='date')
+            self.assertRaises(TracError, datefmt.parse_date,
+                              '29 Feb 2010',
+                              tzinfo=tz, locale=en_US, hint='date')
+            self.assertRaises(TracError, datefmt.parse_date,
+                              '29 Xxx 2012',
+                              tzinfo=tz, locale=en_US, hint='date')
+            self.assertRaises(TracError, datefmt.parse_date,
+                              '29 Xxx 2012 4:00:00 AM',
+                              tzinfo=tz, locale=en_US, hint='datetime')
+            self.assertRaises(TracError, datefmt.parse_date,
+                              '29 2012 4:01:02 AM Feb',
+                              tzinfo=tz, locale=en_US, hint='datetime')
+            self.assertRaises(TracError, datefmt.parse_date,
+                              '29 2012 4:00 Feb',
+                              tzinfo=tz, locale=en_US, hint='datetime')
+
 
 def suite():
     suite = unittest.TestSuite()
