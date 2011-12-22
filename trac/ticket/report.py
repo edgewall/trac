@@ -638,9 +638,9 @@ class ReportModule(Component):
             sort_col = req.args.get('sort', '')
             self.log.debug("Columns %r, Sort column %s" % (cols, sort_col))
             order_cols = []
+            if '__group__' in cols:
+                order_cols.append('__group__')
             if sort_col:
-                if '__group__' in cols:
-                    order_cols.append('__group__')
                 if sort_col in cols:
                     order_cols.append(sort_col)
                 else:
