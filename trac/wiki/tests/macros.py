@@ -16,6 +16,14 @@ IMAGE_MACRO_TEST_CASES = u"""
 </p>
 ------------------------------
 [[Image(...)]]
+============================== intertrac:source: Image, no other arguments
+[[Image(trac:source:/trunk/doc/images/bkgnd_pattern.png)]]
+------------------------------
+<p>
+<a style="padding:0; border:none" href="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern.png"><img src="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern.png%3Fformat%3Draw" alt="source:/trunk/doc/images/bkgnd_pattern.png in Trac's Trac" title="source:/trunk/doc/images/bkgnd_pattern.png in Trac's Trac" /></a>
+</p>
+------------------------------
+[[Image(...)]]
 ============================== source: Image, nolink
 [[Image(source:test.png, nolink)]]
 ------------------------------

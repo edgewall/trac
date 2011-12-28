@@ -30,7 +30,7 @@ from trac.util.compat import any, rpartition
 from trac.util.datefmt import format_date, from_utimestamp
 from trac.util.html import escape, find_element
 from trac.util.presentation import separated
-from trac.util.text import unquote, to_unicode
+from trac.util.text import unicode_quote, unquote, to_unicode
 from trac.util.translation import _
 from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
 from trac.wiki.formatter import format_to_html, format_to_oneliner, \
@@ -411,6 +411,16 @@ class ImageMacro(WikiMacroBase):
         attr = {}
         style = {}
         link = ''
+        # helper for the special case `source:`
+        #
+        from trac.versioncontrol.web_ui import BrowserModule
+        # FIXME: somehow use ResourceSystem.get_known_realms()
+        #        ... or directly trac.wiki.extract_link
+        try:
+            browser_links = [res[0] for res in
+                             BrowserModule(self.env).get_link_resolvers()]
+        except Exception:
+            browser_links = []
         while args:
             arg = args.pop(0).strip()
             if size_re.match(arg):
@@ -467,28 +477,22 @@ class ImageMacro(WikiMacroBase):
             # use href, but unquote to allow args (use default html escaping)
             raw_url = url = desc = unquote(formatter.href(filespec))
         elif len(parts) == 3:                 # realm:id:attachment-filename
+            #                                 # or intertrac:realm:id 
             realm, id, filename = parts
-            it = formatter.get_intertrac_url(realm, "%s:%s" % (id, filename))
-            if(it != None):
-                raw_url = url = it[0]
-                desc = it[1]
+            intertrac_target = "%s:%s" % (id, filename)
+            it = formatter.get_intertrac_url(realm, intertrac_target)
+            if it:
+                url, desc = it
+                raw_url = url + unicode_quote('?format=raw')
             else:
                 attachment = Resource(realm, id).child('attachment', filename)
         elif len(parts) == 2:
-            # FIXME: somehow use ResourceSystem.get_known_realms()
-            #        ... or directly trac.wiki.extract_link
-            from trac.versioncontrol.web_ui import BrowserModule
-            try:
-                browser_links = [res[0] for res in
-                                 BrowserModule(self.env).get_link_resolvers()]
-            except Exception:
-                browser_links = []
-            if parts[0] in browser_links:   # source:path
+            realm, filename = parts
+            if realm in browser_links:   # source:path
                 # TODO: use context here as well
-                realm, filename = parts
                 rev = None
                 if '@' in filename:
-                    filename, rev = filename.split('@')
+                    filename, rev = filename.rsplit('@', 1)
                 url = formatter.href.browser(filename, rev=rev)
                 raw_url = formatter.href.browser(filename, rev=rev,
                                                  format='raw')
