@@ -468,7 +468,12 @@ class ImageMacro(WikiMacroBase):
             raw_url = url = desc = unquote(formatter.href(filespec))
         elif len(parts) == 3:                 # realm:id:attachment-filename
             realm, id, filename = parts
-            attachment = Resource(realm, id).child('attachment', filename)
+            it = formatter.get_intertrac_url(realm, "%s:%s" % (id, filename))
+            if(it != None):
+                raw_url = url = it[0]
+                desc = it[1]
+            else:
+                attachment = Resource(realm, id).child('attachment', filename)
         elif len(parts) == 2:
             # FIXME: somehow use ResourceSystem.get_known_realms()
             #        ... or directly trac.wiki.extract_link
