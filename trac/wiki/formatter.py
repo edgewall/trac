@@ -630,13 +630,18 @@ class Formatter(object):
                    escape(match)
 
     def _make_intertrac_link(self, ns, target, label):
+        res = self.get_intertrac_url(ns, target)
+        if res:
+            return self._make_ext_link(res[0], label, res[1])
+
+    def get_intertrac_url(self, ns, target):
         intertrac = self.env.config['intertrac']
         url = intertrac.get(ns + '.url')
         if not url and ns == 'trac':
             url = 'http://trac.edgewall.org'
         if url:
-            name = intertrac.get(ns+'.title', 'Trac project %s' % ns)
-            compat = intertrac.getbool(ns+'.compat', 'false')
+            name = intertrac.get(ns + '.title', 'Trac project %s' % ns)
+            compat = intertrac.getbool(ns + '.compat', 'false')
             # set `compat` default to False now that 0.10 is widely used
             # TODO: remove compatibility code completely for 1.0 release
             if compat:
@@ -651,9 +656,7 @@ class Formatter(object):
                 title = _('%(target)s in %(name)s', target=target, name=name)
             else:
                 title = name
-            return self._make_ext_link(url, label, title)
-        else:
-            return None
+            return (url, title)
 
     def shorthand_intertrac_helper(self, ns, target, label, fullmatch):
         if fullmatch: # short form
