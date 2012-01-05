@@ -215,12 +215,12 @@ class RequestDispatcher(Component):
 
                     output = chrome.render_template(req, template, data,
                                                     content_type)
-                    # Give the session a chance to persist changes
-                    req.session.save()
                     req.send(output, content_type or 'text/html')
                 else:
                     self._post_process_request(req)
             except RequestDone:
+                # Give the session a chance to persist changes after a send()
+                req.session.save()
                 raise
             except:
                 # post-process the request in case of errors
