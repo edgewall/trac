@@ -107,6 +107,12 @@ class IWikiMacroProvider(Interface):
     def render_macro(req, name, content):
         """Return the HTML output of the macro :deprecated:"""
 
+    def is_inline(content):
+        """Return `True` if the content generated is an inline XHTML element.
+
+        .. versionadded :: 0.13
+        """
+
     def expand_macro(formatter, name, content, args=None):
         """Called by the formatter when rendering the parsed wiki text.
 

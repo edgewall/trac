@@ -134,6 +134,7 @@ class WikiProcessor(object):
         self.error = None
         self.macro_provider = None
 
+        # FIXME: move these tables outside of __init__
         builtin_processors = {'html': self._html_processor,
                               'htmlcomment': self._htmlcomment_processor,
                               'default': self._default_processor,
@@ -148,6 +149,11 @@ class WikiProcessor(object):
                               'table': self._table_processor,
                               }
 
+        self.inline_check = {'html': self._html_is_inline,
+                                'htmlcomment': True, 'comment': True,
+                                'span': True, 'Span': True,
+                                }.get(name)
+
         self._sanitizer = TracHTMLSanitizer(formatter.wiki.safe_schemes)
         
         self.processor = builtin_processors.get(name)
@@ -161,6 +167,8 @@ class WikiProcessor(object):
                         else:
                             self.processor = self._legacy_macro_processor
                         self.macro_provider = macro_provider
+                        self.inline_check = getattr(macro_provider, 'is_inline',
+                                                    False)
                         break
         if not self.processor:
             # Find a matching mimeview renderer
@@ -179,6 +187,20 @@ class WikiProcessor(object):
             self.processor = self._default_processor
             self.error = "No macro or processor named '%s' found" % name
 
+    # inline checks
+
+    def _html_is_inline(self, text):
+        if text:
+            tag = text[1:].lstrip()
+            idx = tag.find(' ')
+            if idx > -1:
+                tag = tag[:idx]
+            return tag.lower() in ('a', 'span', 'bdo', 'img',
+                                   'big', 'small', 'font',
+                                   'tt', 'i', 'b', 'u', 's', 'strike',
+                                   'em', 'strong', 'dfn', 'code', 'q',
+                                   'samp', 'kbd', 'var', 'cite', 'abbr',
+                                   'acronym', 'sub', 'sup')
     # builtin processors
 
     def _comment_processor(self, text):
@@ -332,36 +354,42 @@ class WikiProcessor(object):
                                   self.error)
         else:
             text = self.processor(text)
-        if not text:
-            return ''
-        if in_paragraph:
-            content_for_span = None
-            interrupt_paragraph = False
-            if isinstance(text, Element):
-                tagname = text.tag.lower()
-                if tagname == 'div':
-                    class_ = text.attrib.get('class', '')
-                    if class_ and 'code' in class_:
-                        content_for_span = text.children
-                    else:
-                        interrupt_paragraph = True
-                elif tagname == 'table':
+        return text or ''
+
+    def is_inline(self, text):
+        if callable(self.inline_check):
+            return self.inline_check(text)
+        else:
+            return self.inline_check
+
+    def ensure_inline(self, text):
+        content_for_span = None
+        interrupt_paragraph = False
+        if isinstance(text, Element):
+            tagname = text.tag.lower()
+            if tagname == 'div':
+                class_ = text.attrib.get('class', '')
+                if class_ and 'code' in class_:
+                    content_for_span = text.children
+                else:
                     interrupt_paragraph = True
-            else:
-                # FIXME: do something smarter for Streams
-                text = _markup_to_unicode(text)
-                match = re.match(self._code_block_re, text)
-                if match:
-                    if match.group(1) and 'code' in match.group(1):
-                        content_for_span = match.group(2)
-                    else:
-                        interrupt_paragraph = True
-                elif re.match(self._block_elem_re, text):
+            elif tagname == 'table':
+                interrupt_paragraph = True
+        else:
+            # FIXME: do something smarter for Streams
+            text = _markup_to_unicode(text)
+            match = re.match(self._code_block_re, text)
+            if match:
+                if match.group(1) and 'code' in match.group(1):
+                    content_for_span = match.group(2)
+                else:
                     interrupt_paragraph = True
-            if content_for_span:
-                text = tag.span(class_='code-block')(*content_for_span)
-            elif interrupt_paragraph:
-                text = "</p>%s<p>" % _markup_to_unicode(text)
+            elif re.match(self._block_elem_re, text):
+                interrupt_paragraph = True
+        if content_for_span:
+            text = tag.span(class_='code-block')(*content_for_span)
+        elif interrupt_paragraph:
+            text = "</p>%s<p>" % _markup_to_unicode(text)
         return text
 
 
@@ -725,7 +753,7 @@ class Formatter(object):
         fullmatch = WikiParser._creolelink_re.match(macro_or_link)
         return self._lhref_formatter(match, fullmatch)
     
-    def _macro_formatter(self, match, fullmatch, macro=None):
+    def _macro_formatter(self, match, fullmatch, macro, only_inline=False):
         name = fullmatch.group('macroname')
         if name.lower() == 'br':
             return '<br />'
@@ -734,7 +762,7 @@ class Formatter(object):
         else:
             args = fullmatch.group('macroargs')
         try:
-            return macro.process(args, in_paragraph=True)
+            return macro.ensure_inline(macro.process(args))
         except Exception, e:
             self.env.log.error('Macro %s(%s) failed: %s' % 
                     (name, args, exception_to_unicode(e, traceback=True)))
@@ -1313,14 +1341,14 @@ class OneLinerFormatter(Formatter):
     def _linebreak_wc_formatter(self, match, fullmatch):
         return ' '
 
-    def _macro_formatter(self, match, fullmatch, macro=None):
+    def _macro_formatter(self, match, fullmatch, macro):
         name = fullmatch.group('macroname')
         if name.lower() == 'br':
             return ' '
-        elif name == 'comment':
-            return ''
+        args = fullmatch.group('macroargs')
+        if macro.is_inline(args):
+            return Formatter._macro_formatter(self, match, fullmatch, macro)
         else:
-            args = fullmatch.group('macroargs')
             return '[[%s%s]]' % (name, '(...)' if args else '')
 
     def format(self, text, out, shorten=False):
@@ -1373,7 +1401,10 @@ class OutlineFormatter(Formatter):
     
     # Avoid the possible side-effects of rendering WikiProcessors
 
-    def _macro_formatter(self, match, fullmatch, macro=None):
+    def _macro_formatter(self, match, fullmatch, macro):
+        args = fullmatch.group('macroargs')
+        if macro.is_inline(args):
+            return Formatter._macro_formatter(self, match, fullmatch, macro)
         return ''
 
     def handle_code_block(self, line, startmatch=None):

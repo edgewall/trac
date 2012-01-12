@@ -936,7 +936,7 @@ with an additional class
 Done.
 </p>
 ------------------------------
-And now it's [[span(...)]]. Really.
+And now it's <span class="important"><strong>TIME FOR BED!</strong></span>. Really.
  […]
 and
  […]

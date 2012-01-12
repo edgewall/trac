@@ -1433,3 +1433,7 @@ class TicketQueryMacro(WikiMacroBase):
                                         tag.dd(ticket['summary']))
                                        for ticket in tickets],
                                       class_='wiki compact'))
+
+    def is_inline(self, content):
+        query_string, kwargs, format = self.parse_args(content)
+        return format in ('count', 'compact')
