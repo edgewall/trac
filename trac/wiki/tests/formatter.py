@@ -2,6 +2,17 @@ import difflib
 import os
 import re
 import unittest
+
+# Python 2.7 `assertMultiLineEqual` calls `safe_repr(..., short=True)`
+# which breaks our custom failure display in WikiTestCase.
+
+try:
+    from unittest.util import safe_repr
+    unittest.case.safe_repr = lambda obj, short: safe_repr(obj, False)
+except ImportError:
+    pass
+
+
 from datetime import datetime
 
 try:
