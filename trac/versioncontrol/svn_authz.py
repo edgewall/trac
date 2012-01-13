@@ -179,6 +179,14 @@ class AuthzSourcePolicy(Component):
                 if path != '/':
                     path += '/'
                 
+                # Allow access to parent directories of allowed resources
+                if any(section.get(user) is True
+                       for module in modules
+                       for spath, section in authz.get(module, {}).iteritems()
+                       if spath.startswith(path)
+                       for user in usernames):
+                    return True
+
                 # Walk from resource up parent directories
                 for spath in parent_iter(path):
                     for module in modules:
@@ -188,14 +196,6 @@ class AuthzSourcePolicy(Component):
                                 result = section.get(user)
                                 if result is not None:
                                     return result
-                
-                # Allow access to parent directories of allowed resources
-                if any(section.get(user) is True
-                       for module in modules
-                       for spath, section in authz.get(module, {}).iteritems()
-                       if spath.startswith(path)
-                       for user in usernames):
-                    return True
             
             if realm == 'source':
                 return check_path(resource.id)

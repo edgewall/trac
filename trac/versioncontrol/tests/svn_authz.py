@@ -350,7 +350,10 @@ unknown = r
         self.assertPathPerm(False, 'user', 'module', '/precedence_a')
         # The most specific section applies
         self.assertPathPerm(True, 'user', '', '/precedence_b/sub/test')
-        self.assertPathPerm(False, 'user', '', '/precedence_b/sub')
+        # ... intentional deviation from SVN's rules as we need to
+        # make '/precedence_b/sub' browseable so that the user can see
+        # '/precedence_b/sub/test':
+        self.assertPathPerm(True, 'user', '', '/precedence_b/sub')
         self.assertPathPerm(True, 'user', '', '/precedence_b')
         # Within a section, the first matching rule applies
         self.assertPathPerm(False, 'user', '', '/precedence_c')
