@@ -15,7 +15,7 @@ IMAGE_MACRO_TEST_CASES = u"""
 <a style="padding:0; border:none" href="/browser/test.png"><img src="/browser/test.png?format=raw" alt="source:test.png" title="source:test.png" /></a>
 </p>
 ------------------------------
-[[Image(...)]]
+<a style="padding:0; border:none" href="/browser/test.png"><img src="/browser/test.png?format=raw" alt="source:test.png" title="source:test.png" /></a>
 ============================== intertrac:source: Image, no other arguments
 [[Image(trac:source:/trunk/doc/images/bkgnd_pattern.png)]]
 ------------------------------
@@ -23,7 +23,7 @@ IMAGE_MACRO_TEST_CASES = u"""
 <a style="padding:0; border:none" href="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern.png"><img src="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern.png%3Fformat%3Draw" alt="source:/trunk/doc/images/bkgnd_pattern.png in Trac's Trac" title="source:/trunk/doc/images/bkgnd_pattern.png in Trac's Trac" /></a>
 </p>
 ------------------------------
-[[Image(...)]]
+<a style="padding:0; border:none" href="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern.png"><img src="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern.png%3Fformat%3Draw" alt="source:/trunk/doc/images/bkgnd_pattern.png in Trac's Trac" title="source:/trunk/doc/images/bkgnd_pattern.png in Trac's Trac" /></a>
 ============================== source: Image, nolink
 [[Image(source:test.png, nolink)]]
 ------------------------------
@@ -31,6 +31,7 @@ IMAGE_MACRO_TEST_CASES = u"""
 <img src="/browser/test.png?format=raw" alt="source:test.png" title="source:test.png" />
 </p>
 ------------------------------
+<img src="/browser/test.png?format=raw" alt="source:test.png" title="source:test.png" />
 ============================== source: Image, normal args
 [[Image(source:test.png, align=left, title=Test)]]
 ------------------------------
@@ -38,6 +39,7 @@ IMAGE_MACRO_TEST_CASES = u"""
 <a style="padding:0; border:none" href="/browser/test.png"><img src="/browser/test.png?format=raw" alt="source:test.png" style="float:left" title="Test" /></a>
 </p>
 ------------------------------
+<a style="padding:0; border:none" href="/browser/test.png"><img src="/browser/test.png?format=raw" alt="source:test.png" style="float:left" title="Test" /></a>
 ============================== source: Image, size arg
 [[Image(source:test.png, 30%)]]
 ------------------------------
@@ -80,6 +82,7 @@ IMAGE_MACRO_TEST_CASES = u"""
 <a style="padding:0; border:none" href="/wiki/WikiStart"><img src="/browser/test.png?format=raw" alt="/browser/test.png?format=raw" title="/browser/test.png?format=raw" /></a>
 </p>
 ------------------------------
+<a style="padding:0; border:none" href="/wiki/WikiStart"><img src="/browser/test.png?format=raw" alt="/browser/test.png?format=raw" title="/browser/test.png?format=raw" /></a>
 """
 
 

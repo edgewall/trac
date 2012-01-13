@@ -431,6 +431,9 @@ class ImageMacro(WikiMacroBase):
     <gotoh@taiyo.co.jp>''
     """)
 
+    def is_inline(self, content):
+        return True
+
     def expand_macro(self, formatter, name, content):
         # args will be null if the macro is called without parenthesis.
         if not content:
