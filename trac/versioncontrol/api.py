@@ -330,6 +330,11 @@ class RepositoryManager(Component):
                     repo = self.get_repository(reponame)
                     if repo:
                         repo.sync()
+                    else:
+                        self.log.warning("Unable to find repository '%s' for "
+                                         "synchronization",
+                                         reponame or '(default)')
+                        continue
                 except TracError, e:
                     add_warning(req,
                         _("Can't synchronize with repository \"%(name)s\" "
@@ -337,7 +342,7 @@ class RepositoryManager(Component):
                           "information.", name=reponame or '(default)',
                           error=to_unicode(e.message)))
                 self.log.info("Synchronized '%s' repository in %0.2f seconds",
-                              reponame, time.time() - start)
+                              reponame or '(default)', time.time() - start)
         return handler
 
     def post_process_request(self, req, template, data, content_type):
