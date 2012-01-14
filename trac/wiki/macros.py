@@ -110,13 +110,15 @@ class TitleIndexMacro(WikiMacroBase):
     The `include` and `exclude` lists accept shell-style patterns.
     """)
 
-    SPLIT_RE = re.compile(r"([/ 0-9.]+)")
+    SPLIT_RE = re.compile(r"(/| )")
+    NUM_SPLIT_RE = re.compile(r"([0-9.]+)")
 
     def expand_macro(self, formatter, name, content):
         args, kw = parse_args(content)
         prefix = args[0].strip() if args else None
         hideprefix = args and len(args) > 1 and args[1].strip() == 'hideprefix'
-        minsize = max(int(kw.get('min', 2)), 2)
+        minsize = max(int(kw.get('min', 1)), 1)
+        minsize_group = max(minsize, 2)
         depth = int(kw.get('depth', -1))
         start = prefix.count('/') if prefix else 0
         format = kw.get('format', '')
@@ -157,8 +159,9 @@ class TitleIndexMacro(WikiMacroBase):
             """
             page_paths = []
             for page in pages:
-                path = [elt.rstrip('/').strip() for elt in self.SPLIT_RE.split(
-                        wiki.format_page_name(omitprefix(page), split=True))]
+                path = [elt.strip() for elt in self.SPLIT_RE.split(
+                        self.NUM_SPLIT_RE.sub(r" \1 ", 
+                        wiki.format_page_name(omitprefix(page), split=True)))]
                 page_paths.append(([elt for elt in path if elt], page))
             return page_paths
 
@@ -170,8 +173,8 @@ class TitleIndexMacro(WikiMacroBase):
             return [(wiki.format_page_name(omitprefix(page)).split("/"), page)
                     for page in pages]
 
-        # create the group hierarchy (same for group and hierarchy formats)
-        def split_in_groups(entries):
+        # the different tree structures, each corresponding to its rendering
+        def tree_group(entries):
             """Transform a flat list of entries into a tree structure.
             
             `entries` is a list of `(path_elements, page_name)` pairs
@@ -191,44 +194,94 @@ class TitleIndexMacro(WikiMacroBase):
                 # grouping
                 grouped_entries = [(path_elements[1:], page_name)
                                    for path_elements, page_name in grouper]
-                if key and len(grouped_entries) >= minsize:
-                    subnodes = split_in_groups(sorted(grouped_entries))
+
+                if key and len(grouped_entries) >= minsize_group:
+                    subnodes = tree_group(sorted(grouped_entries))
                     if len(subnodes) == 1:
                         subkey, subnodes = subnodes[0]
-                        node = (key + subkey, subnodes) # FIXME
+                        node = (key + subkey, subnodes)
+                        groups.append(node)
+                    elif self.SPLIT_RE.match(key):
+                        for elt in subnodes:
+                            if isinstance(elt, tuple):
+                                subkey, subnodes = elt
+                                elt = (key + subkey, subnodes)
+                            groups.append(elt)
                     else:
                         node = (key, subnodes)
-                    groups.append(node)
+                        groups.append(node)                    
                 else:
                     for path_elements, page_name in grouped_entries:
                         groups.append(page_name)
             return groups
 
+        def tree_hierarchy(entries):
+            """Transform a flat list of entries into a tree structure.
+            
+            `entries` is a list of `(path_elements, page_name)` pairs
+            
+            Return a list organized in a tree structure, in which:
+              - a leaf is a `(rest, page)` pair, where:
+                - `rest` is the rest of the path to be shown
+                - `page` is a page name
+              - a node is a `(key, nodes, page)` pair, where:
+                - `key` is the leftmost of the path elements, common to the
+                  grouped (path element, page_name) entries
+                - `page` is a page name (if one exists for that node)
+                - `nodes` is a list of nodes or leaves
+            """
+            groups = []
+
+            for key, grouper in groupby(entries, lambda (elts, name):
+                                                    elts[0] if elts else ''):
+                grouped_entries  = [e for e in grouper]
+                sub_entries  = [e for e in grouped_entries if len(e[0]) > 1]
+                key_entries  = [e for e in grouped_entries if len(e[0]) == 1]
+                key_entry = key_entries[0] if key_entries else None
+                key_page = key_entry[1] if key_entries else None
+
+                if key and len(sub_entries) >= minsize:
+                    # remove key from path_elements in grouped entries for
+                    # further grouping
+                    sub_entries = [(path_elements[1:], page)
+                                   for path_elements, page in sub_entries]
+
+                    subnodes = tree_hierarchy(sorted(sub_entries))
+                    node = (key, key_page, subnodes)
+                    groups.append(node)
+                else:
+                    if key_entry:
+                        groups.append(key_entry)
+                    groups.extend(sub_entries)
+            return groups
+            
         # the different rendering formats
         def render_group(group):
             return tag.ul(
-                tag.li(isinstance(elt, tuple) and 
-                       tag(tag.strong(elt[0]), render_group(elt[1])) or
-                       tag.a(wiki.format_page_name(elt),
+                tag.li(tag(tag.strong(elt[0].strip('/')), render_group(elt[1]))
+                       if isinstance(elt, tuple) else
+                       tag.a(wiki.format_page_name(omitprefix(elt)),
                              href=formatter.href.wiki(elt)))
                 for elt in group)
 
         def render_hierarchy(group):
             return tag.ul(
-                tag.li(isinstance(elt, tuple) and 
-                       tag(tag.a(elt[0], href=formatter.href.wiki(elt[0])),
-                           render_hierarchy(elt[1][0:])) or
-                       tag.a(elt.rpartition('/')[2],
-                             href=formatter.href.wiki(elt)))
+                tag.li(tag(tag.a(elt[0], href=formatter.href.wiki(elt[1]))
+                           if elt[1] else tag(elt[0]),
+                           render_hierarchy(elt[2]))
+                       if len(elt) == 3 else
+                       tag.a('/'.join(elt[0]),
+                             href=formatter.href.wiki(elt[1])))
                 for elt in group)
         
-        splitter, renderer = {
-            'group':     (split_pages_group,     render_group),
-            'hierarchy': (split_pages_hierarchy, render_hierarchy),
-            }.get(format, (None, None))
+        transform = {
+            'group': lambda p: render_group(tree_group(split_pages_group(p))),
+            'hierarchy': lambda p: render_hierarchy(
+                                    tree_hierarchy(split_pages_hierarchy(p))),
+            }.get(format, None)
 
-        if splitter and renderer:
-            titleindex = renderer(split_in_groups(splitter(pages)))
+        if transform:
+            titleindex = transform(pages)
         else:
             titleindex = tag.ul(
                 tag.li(tag.a(wiki.format_page_name(omitprefix(page)),
