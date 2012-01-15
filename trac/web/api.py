@@ -116,10 +116,10 @@ def parse_arg_list(query_string):
         else:
             (name, value) = (nv[0], empty)
         name = unquote(name.replace('+', ' '))
-        if isinstance(name, unicode):
-            name = name.encode('utf-8')
+        if isinstance(name, str):
+            name = unicode(name, 'utf-8')
         value = unquote(value.replace('+', ' '))
-        if not isinstance(value, unicode):
+        if isinstance(value, str):
             value = unicode(value, 'utf-8')
         args.append((name, value))
     return args
