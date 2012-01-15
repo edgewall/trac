@@ -76,7 +76,8 @@
     var a = expander.next("a");
     if ( !autoexpand ) {
       var pathname = window.location.pathname;
-      var entry_href = a.attr("href");
+      // strip scheme and hostname, href is absolute with IE 6 and 7.
+      var entry_href = a.attr("href").replace(/^[^:]+:\/\/[^\/]+/, '');
       // normalize (PATH_INFO possibly has squashed "/")
       pathname = pathname.replace(/\/+/g, '/').replace(/\/$/, '');
       entry_href = entry_href.replace(/\/+/g, '/');
