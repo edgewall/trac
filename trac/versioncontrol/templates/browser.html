@@ -106,10 +106,10 @@
       <table py:if="properties or file" id="info" summary="Revision info">
         <tr py:if="file">
           <th scope="col" i18n:msg="rev, size, author, date">
-            Revision <a href="${href.changeset(rev, reponame)}">${display_rev(rev)}</a>,
+            Revision <a href="${href.changeset(created_rev, reponame)}">${display_rev(created_rev)}</a>,
             <span title="${_('%(size)s bytes', size=file.size)}">${pretty_size(file.size)}</span>
             checked in by ${authorinfo(file.changeset.author)}, ${dateinfo(file.changeset.date)} ago
-            (<a href="${href.changeset(rev, reponame, created_path)}">diff</a>)
+            (<a href="${href.changeset(created_rev, reponame, created_path)}">diff</a>)
           </th>
         </tr>
         <tr py:if="file">

@@ -952,8 +952,8 @@ class Node(object):
     DIRECTORY = "dir"
     FILE = "file"
 
-    resource = property(lambda self: Resource('source', self.created_path,
-                                              version=self.created_rev,
+    resource = property(lambda self: Resource('source', self.path,
+                                              version=self.rev,
                                               parent=self.repos.resource))
 
     # created_path and created_rev properties refer to the Node "creation"
