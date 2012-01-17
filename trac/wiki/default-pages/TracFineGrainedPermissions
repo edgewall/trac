@@ -28,23 +28,23 @@ See also [trac:source:branches/0.12-stable/sample-plugins/permissions sample-plu
 
 
 === !AuthzPolicy === 
-
- - Install [http://www.voidspace.org.uk/python/configobj.html ConfigObj] (required).
- - Copy authz_policy.py into your plugins directory.
- - Put a [http://swapoff.org/files/authzpolicy.conf authzpolicy.conf] file somewhere, preferably on a secured location on the server, not readable for others than the webuser. If the  file contains non-ASCII characters, the UTF-8 encoding should be used.
- - Update your `trac.ini`:
-   1. modify the [TracIni#trac-section permission_policies] entry in the `[trac]` section
+==== Configuration ====
+* Install [http://www.voidspace.org.uk/python/configobj.html ConfigObj] (still needed for 0.12).
+* Copy authz_policy.py into your plugins directory.
+* Put a [http://swapoff.org/files/authzpolicy.conf authzpolicy.conf] file somewhere, preferably on a secured location on the server, not readable for others than the webuser. If the  file contains non-ASCII characters, the UTF-8 encoding should be used.
+* Update your `trac.ini`:
+  1. modify the [TracIni#trac-section permission_policies] entry in the `[trac]` section
 {{{
 [trac]
 ...
 permission_policies = AuthzPolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy
 }}}
-   2. add a new `[authz_policy]` section
+  2. add a new `[authz_policy]` section
 {{{
 [authz_policy]
 authz_file = /some/trac/env/conf/authzpolicy.conf
 }}}
-   3. enable the single file plugin
+  3. enable the single file plugin
 {{{
 [components]
 ...
@@ -53,14 +53,61 @@ tracopt.perm.authz_policy.* = enabled
 # for Trac 0.11 use this
 #authz_policy.* = enabled 
 }}}
-
+==== Usage Notes ====
 Note that the order in which permission policies are specified is quite critical, 
 as policies will be examined in the sequence provided.
 
-A policy will return either `True`, `False` or `None` for a given permission check.
-Only if the return value is `None` will the ''next'' permission policy be consulted.
-If no policy explicitly grants the permission, the final result will be `False` 
-(i.e. no permission).
+A policy will return either `True`, `False` or `None` for a given permission check. `True` is returned if the policy explicitly grants the permission. `False` is returned if the policy explicitly denies the permission. `None` is returned if the policy is unable to either grant or deny the permission.
+
+NOTE: Only if the return value is `None` will the ''next'' permission policy be consulted.
+If none of the policies explicitly grants the permission, the final result will be `False` 
+(i.e. permission denied).
+
+The `authzpolicy.conf` file is a `.ini` style configuration file:
+{{{
+[wiki:PrivatePage@*]
+john = WIKI_VIEW, !WIKI_MODIFY
+jack = WIKI_VIEW
+* =
+}}}
+* Each section of the config is a glob pattern used to match against a Trac resource
+  descriptor. These descriptors are in the form:
+{{{
+<realm>:<id>@<version>[/<realm>:<id>@<version> ...]
+}}}
+  Resources are ordered left to right, from parent to child. If any
+  component is inapplicable, `*` is substituted. If the version pattern is
+  not specified explicitely, all versions (`@*`) is added implicitly
+
+  Example: Match the WikiStart page
+{{{
+[wiki:*]
+[wiki:WikiStart*]
+[wiki:WikiStart@*]
+[wiki:WikiStart]
+}}}
+
+  Example: Match the attachment `wiki:WikiStart@117/attachment/FOO.JPG@*`
+  on WikiStart
+{{{
+[wiki:*]
+[wiki:WikiStart*]
+[wiki:WikiStart@*]
+[wiki:WikiStart@*/attachment/*]
+[wiki:WikiStart@117/attachment/FOO.JPG]
+}}}
+
+* Sections are checked against the current Trac resource descriptor '''IN ORDER''' of
+  appearance in the configuration file. '''ORDER IS CRITICAL'''.
+
+* Once a section matches, the current username is matched against the keys 
+  (usernames) of the section, '''IN ORDER'''. 
+  * If a key (username) is prefixed with a `@`, it is treated as a group. 
+  * If a value (permission) is prefixed with a `!`, the permission is
+    denied rather than granted.
+
+  The username will match any of 'anonymous',
+  'authenticated', <username> or '*', using normal Trac permission rules.
 
 For example, if the `authz_file` contains:
 {{{
@@ -69,7 +116,7 @@ For example, if the `authz_file` contains:
 
 [wiki:PrivatePage@*]
 john = WIKI_VIEW
-* =
+* = !WIKI_VIEW
 }}}
 and the default permissions are set like this:
 {{{
@@ -79,9 +126,67 @@ jack           WIKI_VIEW
 }}}
 
 Then: 
- - All versions of WikiStart will be viewable by everybody (including anonymous)
- - !PrivatePage will be viewable only by john
- - other pages will be viewable only by john and jack
+  * All versions of WikiStart will be viewable by everybody (including anonymous)
+  * !PrivatePage will be viewable only by john
+  * other pages will be viewable only by john and jack
+
+Groups:
+{{{
+[groups]
+admins = john, jack
+devs = alice, bob
+
+[wiki:Dev@*]
+@admins = TRAC_ADMIN
+@devs = WIKI_VIEW
+* =
+
+[*]
+@admins = TRAC_ADMIN
+* =
+}}}
+
+Then:
+- everything is blocked (whitelist approach), but
+- admins get all TRAC_ADMIN everywhere and
+- devs can view wiki pages.
+
+Some repository examples (Browse Source specific):
+{{{
+# A single repository:
+[repository:test_repo@*]
+john = BROWSER_VIEW, FILE_VIEW
+# John has BROWSER_VIEW and FILE_VIEW for the entire test_repo
+
+# All repositories:
+[repository:*@*]
+jack = BROWSER_VIEW, FILE_VIEW
+# John has BROWSER_VIEW and FILE_VIEW for all repositories
+}}}
+
+Very fine grain repository access:
+{{{
+# John has BROWSER_VIEW and FILE_VIEW access to trunk/src/some/location/ only
+[repository:test_repo@*/source:trunk/src/some/location/*@*]
+john = BROWSER_VIEW, FILE_VIEW
+
+
+# John has BROWSER_VIEW and FILE_VIEW access to only revision 1 of all files at trunk/src/some/location only
+[repository:test_repo@*/source:trunk/src/some/location/*@1]
+john = BROWSER_VIEW, FILE_VIEW
+
+
+# John has BROWSER_VIEW and FILE_VIEW access to all revisions of 'somefile' at trunk/src/some/location only 
+[repository:test_repo@*/source:trunk/src/some/location/somefile@*]
+john = BROWSER_VIEW, FILE_VIEW
+
+
+# John has BROWSER_VIEW and FILE_VIEW access to only revision 1 of 'somefile' at trunk/src/some/location only
+[repository:test_repo@*/source:trunk/src/some/location/somefile@1]
+john = BROWSER_VIEW, FILE_VIEW
+}}}
+
+Note: In order for Timeline to work/visible for John, we must add CHANGESET_VIEW to the above permission list.
 
 
 === !AuthzSourcePolicy  (mod_authz_svn-like permission policy) === #AuthzSourcePolicy

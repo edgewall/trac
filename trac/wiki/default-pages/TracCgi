@@ -9,7 +9,7 @@ CGI script is the entrypoint that web-server calls when a web-request to an appl
 {{{
 trac-admin /path/to/env deploy /path/to/www/trac
 }}}
-`trac.cgi` will be in the `cgi-bin` folder inside the given path. Make sure it is executable by your web server. This command also copies `static resource` files to a `htdocs` directory of a given destination.
+`trac.cgi` will be in the `cgi-bin` folder inside the given path. ''Make sure it is executable by your web server''. This command also copies `static resource` files to a `htdocs` directory of a given destination.
 
 == Apache web-server configuration ==
 
@@ -57,118 +57,17 @@ If you are using the [http://httpd.apache.org/docs/suexec.html Apache suEXEC] fe
 
 On some systems, you ''may'' need to edit the shebang line in the `trac.cgi` file to point to your real Python installation path. On a Windows system you may need to configure Windows to know how to execute a .cgi file (Explorer -> Tools -> Folder Options -> File Types -> CGI).
 
+=== Using WSGI ===
+
+You can run a [http://henry.precheur.org/python/how_to_serve_cgi WSGI handler] [http://pythonweb.org/projects/webmodules/doc/0.5.3/html_multipage/lib/example-webserver-web-wsgi-simple-cgi.html under CGI].  You can [wiki:TracModWSGI#Thetrac.wsgiscript write your own application function], or use the deployed trac.wsgi's application.
+
 == Mapping Static Resources ==
 
-Out of the box, Trac will pass static resources such as style sheets or images through itself. For a CGI setup this is '''highly undesirable''', because this way CGI script is invoked for documents that could be much more efficiently served directly by web server.
-
-Web servers such as [http://httpd.apache.org/ Apache] allow you to create “Aliases” to resources, giving them a virtual URL that doesn't necessarily reflect the layout of the servers file system. We already used this capability by defining a `ScriptAlias` for the CGI script. We also can map requests for static resources directly to the directory on the file system, avoiding processing these requests by CGI script.
-
-There are two primary URL paths for static resources - `/chrome/common` and `/chrome/site`. Plugins can add their own resources usually accessible by `/chrome/plugin` path, so its important to override only known paths and not try to make universal `/chrome` alias for everything.
-
-Add the following snippet to Apache configuration '''before''' the `ScriptAlias` for the CGI script, changing paths to match your deployment:
-{{{
-Alias /trac/chrome/common /path/to/trac/htdocs/common
-Alias /trac/chrome/site /path/to/trac/htdocs/site
-<Directory "/path/to/www/trac/htdocs">
-  Order allow,deny
-  Allow from all
-</Directory>
-}}}
-
-If using mod_python, you might want to add this too (otherwise, the alias will be ignored):
-{{{
-<Location "/trac/chrome/common/">
-  SetHandler None
-</Location>
-}}}
-
-Note that we mapped `/trac` part of the URL to the `trac.cgi` script, and the path `/chrome/common` is the path you have to append to that location to intercept requests to the static resources. 
-
-For example, if Trac is mapped to `/cgi-bin/trac.cgi` on your server, the URL of the Alias should be `/cgi-bin/trac.cgi/chrome/common`.
-
-Similarly, if you have static resources in a project's htdocs directory (which is referenced by /chrome/site URL in themes), you can configure Apache to serve those resources (again, put this '''before''' the `ScriptAlias` for the CGI script, and adjust names and locations to match your installation):
-
-{{{
-Alias /trac/chrome/site /path/to/projectenv/htdocs
-<Directory "/path/to/projectenv/htdocs">
-  Order allow,deny
-  Allow from all
-</Directory>
-}}}
-
-Alternatively to hacking `/trac/chrome/site`, you can directly specify path to static resources using `htdocs_location` configuration option in [wiki:TracIni trac.ini]:
-{{{
-[trac]
-htdocs_location = http://yourhost.example.org/trac-htdocs
-}}}
-
-Trac will then use this URL when embedding static resources into HTML pages. Of course, you still need to make the Trac `htdocs` directory available through the web server at the specified URL, for example by copying (or linking) the directory into the document root of the web server:
-{{{
-$ ln -s /path/to/www/trac/htdocs /var/www/yourhost.example.org/trac-htdocs
-}}}
-
-Note that in order to get this `htdocs` directory, you need first to extract the relevant Trac resources using the `deploy` command of TracAdmin:
-[[TracAdminHelp(deploy)]]
-
+See TracInstall#MappingStaticResources.
 
 == Adding Authentication ==
 
-The simplest way to enable authentication with Apache is to create a password file. Use the `htpasswd` program to create the password file:
-{{{
-$ htpasswd -c /somewhere/trac.htpasswd admin
-New password: <type password>
-Re-type new password: <type password again>
-Adding password for user admin
-}}}
-
-After the first user, you dont need the "-c" option anymore:
-{{{
-$ htpasswd /somewhere/trac.htpasswd john
-New password: <type password>
-Re-type new password: <type password again>
-Adding password for user john
-}}}
-
-  ''See the man page for `htpasswd` for full documentation.''
-
-After you've created the users, you can set their permissions using TracPermissions.
-
-Now, you'll need to enable authentication against the password file in the Apache configuration:
-{{{
-<Location "/trac/login">
-  AuthType Basic
-  AuthName "Trac"
-  AuthUserFile /somewhere/trac.htpasswd
-  Require valid-user
-</Location>
-}}}
-
-If you're hosting multiple projects you can use the same password file for all of them:
-{{{
-<LocationMatch "/trac/[^/]+/login">
-  AuthType Basic
-  AuthName "Trac"
-  AuthUserFile /somewhere/trac.htpasswd
-  Require valid-user
-</LocationMatch>
-}}}
-
-For better security, it is recommended that you either enable SSL or at least use the “digest” authentication scheme instead of “Basic”. Please read the [http://httpd.apache.org/docs/2.0/ Apache HTTPD documentation] to find out more. For example, on a Debian 4.0r1 (etch) system the relevant section  in apache configuration can look like this:
-{{{
-<Location "/trac/login">
-    LoadModule auth_digest_module /usr/lib/apache2/modules/mod_auth_digest.so
-    AuthType Digest
-    AuthName "trac"
-    AuthDigestDomain /trac
-    AuthUserFile /somewhere/trac.htpasswd
-    Require valid-user
-</Location>
-}}}
-and you'll have to create your .htpasswd file with htdigest instead of htpasswd as follows:
-{{{
-# htdigest /somewhere/trac.htpasswd trac admin
-}}}
-where the "trac" parameter above is the same as !AuthName above  ("Realm" in apache-docs). 
+See TracInstall#ConfiguringAuthentication.
 
 ----
 See also:  TracGuide, TracInstall, [wiki:TracModWSGI], TracFastCgi, TracModPython

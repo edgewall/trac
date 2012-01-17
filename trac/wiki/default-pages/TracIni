@@ -1,10 +1,11 @@
 = The Trac Configuration File =
 
 [[TracGuideToc]]
+[[PageOutline]]
 
 Trac configuration is done by editing the '''`trac.ini`''' config file, located in `<projectenv>/conf/trac.ini`.  Changes to the configuration are usually reflected immediately, though changes to the `[components]` or `[logging]` sections will require restarting the web server. You may also need to restart the web server after creating a global configuration file when none was previously present.
 
-The `trac.ini` configuration file should be writable by the web server, as Trac currently relies on the possibility to trigger a complete environment reload to flush its caches.
+The `trac.ini` configuration file and its parent directory should be writable by the web server, as Trac currently relies on the possibility to trigger a complete environment reload to flush its caches.
 
 == Global Configuration ==
 
@@ -49,6 +50,11 @@ The first option tells Trac to disable the [wiki:TracReports report module]. The
 See the ''Plugins'' page on ''About Trac'' to get the list of active components (requires `CONFIG_VIEW` [wiki:TracPermissions permissions].)
 
 See also: TracPlugins
+
+=== [extra-permissions] === #extra-permissions-section
+''(since 0.12)''
+
+Custom additional permissions can be defined in this section when [wiki:ExtraPermissionsProvider] is enabled.
 
 === [milestone-groups] === #milestone-groups-section
 ''(since 0.11)''

@@ -70,6 +70,7 @@ Cache            http://www.google.com/search?q=cache:
 CPAN             http://search.cpan.org/perldoc?
 DebianBug        http://bugs.debian.org/
 DebianPackage    http://packages.debian.org/
+DebianPTS        http://packages.qa.debian.org/
 Dictionary       http://www.dict.org/bin/Dict?Database=*&Form=Dict1&Strategy=*&Query=
 Google           http://www.google.com/search?q=
 lmgtfy           http://lmgtfy.com/?q= # Well, just search for "$1", follow the link to see how to do it...
@@ -79,8 +80,14 @@ MeatBall         http://www.usemod.com/cgi-bin/mb.pl?
 MetaWiki         http://sunir.org/apps/meta.pl?
 MetaWikiPedia    http://meta.wikipedia.org/wiki/
 MoinMoin         http://moinmo.in/
+TracHacks        http://trac-hacks.org/wiki/
+OSM              http://www.openstreetmap.org/wiki/
 WhoIs            http://www.whois.sc/
 Why              http://clublet.com/c/c/why?
 c2Wiki           http://c2.com/cgi/wiki?
 WikiPedia        http://en.wikipedia.org/wiki/
 }}}
+
+
+----
+See also: InterWiki, InterTrac

@@ -83,6 +83,14 @@ net start tracd
 
 Use [http://trac-hacks.org/wiki/WindowsServiceScript WindowsServiceScript], available at [http://trac-hacks.org/ Trac Hacks]. Installs, removes, starts, stops, etc. your Trac service.
 
+=== Option 3 ===
+
+also cygwin's cygrunsrv.exe can be used:
+{{{
+$ cygrunsrv --install tracd --path /cygdrive/c/Python27/Scripts/tracd.exe --args '--port 8000 --env-parent-dir E:\IssueTrackers\Trac\Projects'
+$ net start tracd
+}}}
+
 == Using Authentication ==
 
 Tracd provides support for both Basic and Digest authentication. Digest is considered more secure. The examples below use Digest; to use Basic authentication, replace `--auth` with `--basic-auth` in the command line.
@@ -126,6 +134,10 @@ Another way to share the password file is to specify "*" for the project name:
 
 === Basic Authorization: Using a htpasswd password file ===
 This section describes how to use `tracd` with Apache .htpasswd files.
+
+  Note: It is necessary (at least with Python 2.6) to install the fcrypt package in order to
+  decode the htpasswd format.  Trac source code attempt an `import crypt` first, but there
+  is no such package for Python 2.6.
 
 To create a .htpasswd file use Apache's `htpasswd` command (see [#GeneratingPasswordsWithoutApache below] for a method to create these files without using Apache):
 {{{
@@ -259,6 +271,59 @@ In this situation, you might experience issues with redirects, like being redire
 If you're using the AJP protocol to connect with `tracd` (which is possible if you have flup installed), then you might experience problems with double quoting. Consider adding the `--unquote` parameter.
 
 See also [trac:TracOnWindowsIisAjp], [trac:TracNginxRecipe].
+
+=== Authentication for tracd behind a proxy
+It is convenient to provide central external authentication to your tracd instances, instead of using {{{--basic-auth}}}. There is some discussion about this in #9206.
+
+Below is example configuration based on Apache 2.2, mod_proxy, mod_authnz_ldap.
+
+First we bring tracd into Apache's location namespace.
+
+{{{
+<Location /project/proxified>
+        Require ldap-group cn=somegroup, ou=Groups,dc=domain.com
+        Require ldap-user somespecificusertoo
+        ProxyPass http://localhost:8101/project/proxified/
+        # Turns out we don't really need complicated RewriteRules here at all
+        RequestHeader set REMOTE_USER %{REMOTE_USER}s
+</Location>
+}}}
+
+Then we need a single file plugin to recognize HTTP_REMOTE_USER header as valid authentication source. HTTP headers like '''HTTP_FOO_BAR''' will get converted to '''Foo-Bar''' during processing. Name it something like '''remote-user-auth.py''' and drop it into '''proxified/plugins''' directory:
+{{{
+#!python
+from trac.core import *
+from trac.config import BoolOption
+from trac.web.api import IAuthenticator
+
+class MyRemoteUserAuthenticator(Component):
+
+    implements(IAuthenticator)
+
+    obey_remote_user_header = BoolOption('trac', 'obey_remote_user_header', 'false', 
+               """Whether the 'Remote-User:' HTTP header is to be trusted for user logins 
+                (''since ??.??').""") 
+
+    def authenticate(self, req):
+        if self.obey_remote_user_header and req.get_header('Remote-User'): 
+            return req.get_header('Remote-User') 
+        return None
+
+}}}
+
+Add this new parameter to your TracIni:
+{{{
+...
+[trac]
+...
+obey_remote_user_header = true
+...
+}}}
+
+Run tracd:
+{{{
+tracd -p 8101 -r -s proxified --base-path=/project/proxified
+}}}
 
 === Serving a different base path than / ===
 Tracd supports serving projects with different base urls than /<project>. The parameter name to change this is

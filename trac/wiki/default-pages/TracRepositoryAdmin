@@ -23,11 +23,10 @@ A number of attributes can be associated with each repository, which define the 
 ||`dir` ||\
 ||The `dir` attribute specifies the location of the repository in the filesystem. It corresponds to the value previously specified in the option `[trac] repository_dir`. The `alias` and `dir` attributes are mutually exclusive. ||
 ||`hidden` ||When set to `true`, the repository is hidden from the repository index page in the source browser. Browsing the repository is still possible, and links referencing the repository remain valid. ||
-||`name` ||The `name` attribute specifies the leading path element to the repository. ||
 ||`type` ||The `type` attribute sets the type of version control system used by the repository. Trac supports Subversion out-of-the-box, and plugins add support for many other systems. If `type` is not specified, it defaults to the value of the `[trac] repository_type` option. ||
 ||`url` ||The `url` attribute specifies the root URL to be used for checking out from the repository. When specified, a "Repository URL" link is added to the context navigation links in the source browser, that can be copied into the tool used for creating the working copy. ||
 
-The `name` attribute and one of `alias` or `dir` are mandatory. All others are optional.
+A repository `name` and one of `alias` or `dir` attributes are mandatory. All others are optional.
 
 After adding a repository, the cache for that repository must be re-synchronized once with the `trac-admin $ENV repository resync` command.
 
@@ -40,7 +39,7 @@ Repositories and repository attributes can be specified in the `[repositories]` 
 
 The main advantage of specifying repositories in `trac.ini` is that they can be inherited from a global configuration (see the [wiki:TracIni#GlobalConfiguration global configuration] section of TracIni). One drawback is that, due to limitations in the `ConfigParser` class used to parse `trac.ini`, the repository name is always all-lowercase.
 
-The following example defines two Subversion repositories named `project` and `lib`, and a hidden alias to `project` as the default repository. This is a typical use case where a Trac environment previously had a single repository (the `project` repository), and was converted to multiple repositories. The alias ensures that links predating the change continue to resolve to the `project` repository.
+The following example defines two Subversion repositories named `project` and `lib`, and an alias to `project` as the default repository. This is a typical use case where a Trac environment previously had a single repository (the `project` repository), and was converted to multiple repositories. The alias ensures that links predating the change continue to resolve to the `project` repository.
 {{{
 #!ini
 [repositories]
@@ -48,12 +47,14 @@ project.dir = /var/repos/project
 project.description = This is the ''main'' project repository.
 project.type = svn
 project.url = http://example.com/svn/project
+project.hidden = true
+
 lib.dir = /var/repos/lib
 lib.description = This is the secondary library code.
 lib.type = svn
 lib.url = http://example.com/svn/lib
+
 .alias = project
-.hidden = true
 }}}
 Note that `name.alias = target` makes `name` an alias for the `target` repo, not the other way around.
 
@@ -126,7 +127,29 @@ The Unix variants above assume that the user running the Subversion commit has w
 
 Note that calling `trac-admin` in your Subversion hooks can slow down the commit and log editing operations on the client side. You might want to use the [trac:source:trunk/contrib/trac-svn-hook contrib/trac-svn-hook] script which starts `trac-admin` in an asynchronous way. The script also comes with a number of safety checks and usage advices which should make it easier to set up and test your hooks. There's no equivalent `trac-svn-hook.bat` for Windows yet, but the script can be run by Cygwin's bash.
 
-See the [http://svnbook.red-bean.com/en/1.5/svn.reposadmin.create.html#svn.reposadmin.create.hooks section about hooks] in the Subversion book for more information. Other repository types will require different hook setups. Please see the plugin documentation for specific instructions.
+See the [http://svnbook.red-bean.com/en/1.5/svn.reposadmin.create.html#svn.reposadmin.create.hooks section about hooks] in the Subversion book for more information. Other repository types will require different hook setups.
+
+Git hooks can be used in the same way for explicit syncing of git repositories. Add the following to `.git/hooks/post-commit`:
+{{{#!sh
+REV=$(git rev-parse HEAD)
+trac-admin /path/to/env changeset added <my-repository> $REV
+}}}
+
+For Mercurial, add the following entries to the `.hgrc` file of each repository accessed by Trac (if [trac:TracMercurial] is installed in a Trac `plugins` directory, download [source:plugins/0.13/mercurial-plugin/tracext/hg/hooks.py hooks.py] and place it somewhere accessible):
+{{{#!ini
+[hooks]
+; If mercurial-plugin is installed globally
+commit = python:tracext.hg.hooks.add_changesets
+changegroup = python:tracext.hg.hooks.add_changesets
+
+; If mercurial-plugin is installed in a Trac plugins directory
+commit = python:/path/to/hooks.py:add_changesets
+changegroup = python:/path/to/hooks.py:add_changesets
+
+[trac]
+env = /path/to/env
+trac-admin = /path/to/trac-admin
+}}}
 
 === Per-request synchronization === #PerRequestSync
 If the post-commit hooks are not available, the environment can be set up for per-request synchronization. In that case, the `[trac] repository_sync_per_request` option in [wiki:TracIni#trac-section trac.ini] must be set to a comma-separated list of repository names to be synchronized.
@@ -138,20 +161,20 @@ Note that in this case, the changeset listener extension point is not called, an
 The following procedure illustrates a typical migration from a Subversion single-repository setup to multiple repositories.
 
  1. Remove the default repository specification from the `[trac] repository_dir` option.
- 1. Add the "main" repository as a named repository.
+ 1. Add the main repository as a named repository.
  1. Re-synchronize the main repository.
- 1. Set up post-commit and post-revprop-change hooks on the main repository, and set `[trac] repository_sync_per_request` to an empty value.
- 1. Add a hidden alias to the main repository as the default repository. This ensures that all links predating the migration still resolve to the main repository.
- 1. Repeat steps 2, 3 and 4 to add other (named) repositories as needed.
+ 1. Set up post-commit and post-revprop-change hooks on the "main" repository, and set `[trac] repository_sync_per_request` to an empty value.
+ 1. Add an alias to the main repository as the default repository (by leaving out the the `name`, e.g. `.alias = main`). This ensures that all links predating the migration still resolve to the main repository.
+ 1. Repeat steps 2, 3 and 4 to add other "named" repositories as needed.
 
 == Migration from a single-repository setup (Mercurial) == #MigrationMercurial
 The following procedure illustrates a typical migration from a Mercurial single-repository setup to multiple repositories. Please note that at the time of writing, no initial resynchronization or any hooks are necessary for Mercurial repositories - see #9485 for more information.
 
  1. Upgrade to the latest version of the TracMercurial plugin.
  1. Remove the default repository specification from the `[trac] repository_dir` option.
- 1. Add the "main" repository as a named repository.
- 1. Add a hidden alias to the main repository as the default repository. This ensures that all links predating the migration still resolve to the main repository.
- 1. Repeat step 3 to add other (named) repositories as needed.
+ 1. Add the main repository as a named repository.
+ 1. Add an alias to the main repository as the default repository (by leaving out the the `name`, e.g. `.alias = main`). This ensures that all links predating the migration still resolve to the main repository.
+ 1. Repeat step 3 to add other "named" repositories as needed.
 
 == Troubleshooting ==
 

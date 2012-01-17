@@ -29,12 +29,11 @@ won't be shown.
 In front of each listed file, you'll find  a colored rectangle. The color
 indicates how the file is affected by the changeset.
  
- * Green: Added
- * Red: Removed
- * Yellow: Modified
- * Blue: Copied
- * Gray: Moved
-
+ * [[span(style=background:#bfb;border:1px solid #999,` `)]] Green: Added
+ * [[span(style=background:#f88;border:1px solid #999,` `)]] Red: Removed
+ * [[span(style=background:#fd8;border:1px solid #999,` `)]] Yellow: Modified
+ * [[span(style=background:#88f;border:1px solid #999,` `)]] Blue: Copied
+ * [[span(style=background:#ccc;border:1px solid #999,` `)]] Gray: Moved
 The color legend is located below the header as a reminder.
 
 == Diff Views ==

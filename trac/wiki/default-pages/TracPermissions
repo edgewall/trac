@@ -96,7 +96,7 @@ Attention: the "view tickets" button appears with the `REPORT_VIEW` permission.
 
 == Creating New Privileges ==
 
-To create custom permissions, for example to be used in a custom workflow, enable the optional `tracopt.perm.config_perm_provider.ExtraPermissionsProvider` component in the "Plugins" admin panel, and add the desired permissions to the `[extra-permissions]` section in your [wiki:TracIni#extra-permissions-section trac.ini]. For more information, please refer to the documentation of the component in the admin panel.
+To create custom permissions, for example to be used in a custom workflow, enable the optional [trac:ExtraPermissionsProvider tracopt.perm.config_perm_provider.ExtraPermissionsProvider] component in the "Plugins" admin panel, and add the desired permissions to the `[extra-permissions]` section in your [wiki:TracIni#extra-permissions-section trac.ini]. For more information, please refer to the documentation of the component in the admin panel.
 
 == Granting Privileges ==
 
