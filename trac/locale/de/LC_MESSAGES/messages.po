@@ -5170,8 +5170,8 @@ msgid ""
 "Annotate each line with the last changed revision (this can be time "
 "consuming...)"
 msgstr ""
-"Jede Zeile mit der Revision der letzten Änderung markieren (dies kann "
-"lange dauern)"
+"Jede Zeile mit der Revision ihrer letzten Änderung anzeigen (dies kann lange "
+"dauern ...)"
 
 #: trac/versioncontrol/web_ui/browser.py:472
 msgid "Revision Log"
