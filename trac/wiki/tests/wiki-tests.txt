@@ -1222,10 +1222,15 @@ Inline  comment
 == Heading with fixed id == #heading-fixed-id
 ============================== Normal heading, auto-corrected id
 == 10 tips ==
+[[br]] oops!
 ------------------------------
 <h2 id="a10tips">10 tips</h2>
+<p>
+<br /> oops!
+</p>
 ------------------------------
 == 10 tips ==
+  oops!
 ------------------------------
 ------------------------------
 

@@ -1400,8 +1400,10 @@ class OutlineFormatter(Formatter):
     flavor = 'outline'
     
     # Avoid the possible side-effects of rendering WikiProcessors
-
     def _macro_formatter(self, match, fullmatch, macro):
+        name = fullmatch.group('macroname')
+        if name.lower() == 'br':
+            return ' '
         args = fullmatch.group('macroargs')
         if macro.is_inline(args):
             return Formatter._macro_formatter(self, match, fullmatch, macro)
