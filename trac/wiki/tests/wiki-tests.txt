@@ -1226,6 +1226,18 @@ Inline  comment
 <h2 id="a10tips">10 tips</h2>
 ------------------------------
 == 10 tips ==
+------------------------------
+------------------------------
+
+<ol>
+  <li>
+    <ol>
+      <li>
+        <a href="#a10tips">10 tips</a>
+      </li>
+    </ol>
+  </li>
+</ol>
 ============================== Relaxed heading
 = Title
 == Chapter
@@ -1252,6 +1264,39 @@ Inline  comment
 ===== Subsubsection #h5
 ====== h6
 ======== but no h7
+------------------------------
+------------------------------
+
+<ol>
+  <li>
+    <a href="#Title">Title</a>
+    <ol>
+      <li>
+        <a href="#Chapter">Chapter</a>
+        <ol>
+          <li>
+            <a href="#Section">Section</a>
+            <ol>
+              <li>
+                <a href="#Subsection">Subsection</a>
+                <ol>
+                  <li>
+                    <a href="#h5">Subsubsection</a>
+                    <ol>
+                      <li>
+                        <a href="#h6">h6</a>
+                      </li>
+                    </ol>
+                  </li>
+                </ol>
+              </li>
+            </ol>
+          </li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+</ol>
 ============================================================
 
              Lists

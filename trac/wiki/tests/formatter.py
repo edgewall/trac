@@ -28,7 +28,8 @@ from trac.util.text import to_unicode
 from trac.web.chrome import web_context
 from trac.web.href import Href
 from trac.wiki.api import IWikiSyntaxProvider
-from trac.wiki.formatter import HtmlFormatter, InlineHtmlFormatter
+from trac.wiki.formatter import (HtmlFormatter, InlineHtmlFormatter, 
+                                 OutlineFormatter)
 from trac.wiki.macros import WikiMacroBase
 from trac.wiki.model import WikiPage
 
@@ -227,6 +228,20 @@ class EscapeNewLinesTestCase(WikiTestCase):
     def formatter(self):
         return HtmlFormatter(self.env, self.context, self.input)
 
+class OutlineTestCase(WikiTestCase):
+    def formatter(self):
+        from StringIO import StringIO
+        class Outliner(object):
+            flavor = 'outliner'
+            def __init__(self, env, context, input):
+                self.outliner = OutlineFormatter(env, context)
+                self.input = input
+            def generate(self):
+                out = StringIO()
+                self.outliner.format(self.input, out)
+                return out.getvalue()
+        return Outliner(self.env, self.context, self.input)
+
 
 def suite(data=None, setup=None, file=__file__, teardown=None, context=None):
     suite = unittest.TestSuite()
@@ -244,10 +259,9 @@ def suite(data=None, setup=None, file=__file__, teardown=None, context=None):
             if 'SKIP' in title or 'WONTFIX' in title:
                 continue
             blocks = test.split('-' * 30 + '\n')
-            page_escape_nl = oneliner = None
-            if len(blocks) < 4:
-                blocks.extend([None,] * (4 - len(blocks)))
-            input, page, oneliner, page_escape_nl = blocks[:4]
+            if len(blocks) < 5:
+                blocks.extend([None,] * (5 - len(blocks)))
+            input, page, oneliner, page_escape_nl, outline = blocks[:5]
             if page:
                 page = WikiTestCase(
                     title, input, page, filename, line, setup,
@@ -260,7 +274,11 @@ def suite(data=None, setup=None, file=__file__, teardown=None, context=None):
                 page_escape_nl = EscapeNewLinesTestCase(
                     title, input, page_escape_nl, filename, line, setup,
                     teardown, context)
-            for tc in [page, oneliner, page_escape_nl]:
+            if outline:
+                outline = OutlineTestCase(
+                    title, input, outline, filename, line, setup, 
+                    teardown, context)
+            for tc in [page, oneliner, page_escape_nl, outline]:
                 if tc:
                     suite.addTest(tc)
     if data:
