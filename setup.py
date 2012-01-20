@@ -93,11 +93,11 @@ facilities.
     zip_safe = True,
 
     setup_requires = [
-        'Genshi>=0.6',
+        'Genshi>=0.6,<0.7dev',
     ],
     install_requires = [
         'setuptools>=0.6b1',
-        'Genshi>=0.6',
+        'Genshi>=0.6,<0.7dev',
     ],
     extras_require = {
         'Babel': ['Babel>=0.9.5'],
