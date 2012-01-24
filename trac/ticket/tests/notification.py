@@ -696,6 +696,31 @@ Resolution:  fixed             |   Keywords:"""
 Resolution:  fixed       |   Keywords:"""
         self._validate_props_format(formatted, ticket)
 
+    def test_props_format_obfuscated_email_disabled(self):
+        self.env.config.set('notification', 'mime_encoding', 'none')
+        self.env.config.set('trac', 'show_email_addresses', 'true')
+        ticket = Ticket(self.env)
+        ticket['summary'] = u'This is a summary'
+        ticket['reporter'] = u'joe@foobar.foo.bar.example.org'
+        ticket['status'] = u'new'
+        ticket['owner'] = u'joe.bar@foobar.foo.bar.example.org'
+        ticket['type'] = u'defect'
+        ticket['priority'] = u'major'
+        ticket['milestone'] = u'milestone1'
+        ticket['component'] = u'component1'
+        ticket['version'] = u'2.0'
+        ticket['resolution'] = u'fixed'
+        ticket['keywords'] = u''
+        ticket.insert()
+        formatted = """\
+  Reporter:                          |      Owner:
+  joe@foobar.foo.bar.example.org     |  joe.bar@foobar.foo.bar.example.org
+      Type:  defect                  |     Status:  new
+  Priority:  major                   |  Milestone:  milestone1
+ Component:  component1              |    Version:  2.0
+Resolution:  fixed                   |   Keywords:"""
+        self._validate_props_format(formatted, ticket)
+
     def test_props_format_wrap_leftside(self):
         self.env.config.set('notification', 'mime_encoding', 'none')
         ticket = Ticket(self.env)
