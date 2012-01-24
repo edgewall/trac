@@ -4323,7 +4323,7 @@ msgstr "Deponejo %(repo)s"
 #: trac/versioncontrol/api.py:687
 #, python-format
 msgid "Unsupported version control system \"%(name)s\": %(error)s"
-msgstr "Ne subtenaata versikontrolilo \"%(name)s\": %(error)s"
+msgstr "Ne subtenata versikontrolilo \"%(name)s\": %(error)s"
 
 #: trac/versioncontrol/api.py:690
 #, python-format
