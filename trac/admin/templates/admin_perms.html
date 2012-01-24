@@ -75,15 +75,17 @@
             <td>$subject</td>
             <td>
               <py:for each="(subject,action) in perm_group"
-                      py:with="subject_enc=unicode_to_base64(subject);
-                               action_enc=unicode_to_base64(action)">
+                      py:with="subject_action='%s:%s' % (unicode_to_base64(subject),
+                                                         unicode_to_base64(action));
+                               subject_action_id=subject_action.replace('=', '')">
                 <!--! base64 make it safe to use ':' as separator when passing
-                      both subject and action as one query parameter -->
+                      both subject and action as one query parameter;
+                      '=' not allowed in id attribute, so strip it there -->
                 <div>
                   <input py:if="revoke_perm" type="checkbox"
-                         id="$subject_enc:$action_enc"
-                         name="sel" value="$subject_enc:$action_enc" />
-                  <label for="$subject_enc:$action_enc">$action</label>
+                         id="$subject_action_id"
+                         name="sel" value="$subject_action" />
+                  <label for="$subject_action_id">$action</label>
                 </div>
               </py:for>
             </td>
