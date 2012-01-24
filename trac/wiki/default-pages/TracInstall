@@ -18,7 +18,7 @@ To install Trac, the following software packages must be installed:
  * [http://www.python.org/ Python], version >= 2.4 and < 3.0
    //(note that we dropped the support for Python 2.3 in this release and that this will be the last Trac release supporting Python 2.4)//
  * [http://peak.telecommunity.com/DevCenter/setuptools setuptools], version >= 0.6
- * [http://genshi.edgewall.org/wiki/Download Genshi], version >= 0.6
+ * [http://genshi.edgewall.org/wiki/Download Genshi], version >= 0.6 (but < 0.7dev, i.e. don't use Genshi trunk)
 
 You also need a database system and the corresponding python bindings.
 The database can be either SQLite, PostgreSQL or MySQL.
