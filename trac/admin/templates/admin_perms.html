@@ -74,10 +74,16 @@
               class="${'odd' if idx % 2 else 'even'}">
             <td>$subject</td>
             <td>
-              <py:for each="(subject,action) in perm_group">
+              <py:for each="(subject,action) in perm_group"
+                      py:with="subject_enc=unicode_to_base64(subject);
+                               action_enc=unicode_to_base64(action)">
+                <!--! base64 make it safe to use ':' as separator when passing
+                      both subject and action as one query parameter -->
                 <div>
-                  <input py:if="revoke_perm" type="checkbox" id="$subject:$action" name="sel" value="$subject:$action" />
-                  <label for="$subject:$action">$action</label>
+                  <input py:if="revoke_perm" type="checkbox"
+                         id="$subject_enc:$action_enc"
+                         name="sel" value="$subject_enc:$action_enc" />
+                  <label for="$subject_enc:$action_enc">$action</label>
                 </div>
               </py:for>
             </td>

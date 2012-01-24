@@ -1,6 +1,6 @@
 #!/usr/bin/python
 from trac.tests.functional import *
-
+from trac.util.text import unicode_to_base64, unicode_from_base64
 
 class TestBasicSettings(FunctionalTwillTestCaseSetup):
     def runTest(self):
@@ -63,7 +63,9 @@ class TestCreatePermissionGroup(FunctionalTwillTestCaseSetup):
         tc.formvalue('addperm', 'gp_subject', 'somegroup')
         tc.formvalue('addperm', 'action', 'REPORT_CREATE')
         tc.submit()
-        tc.find('somegroup:REPORT_CREATE')
+        somegroup = unicode_to_base64('somegroup')
+        REPORT_CREATE = unicode_to_base64('REPORT_CREATE')
+        tc.find('%s:%s' % (somegroup, REPORT_CREATE))
 
 
 class TestAddUserToGroup(FunctionalTwillTestCaseSetup):
@@ -75,7 +77,9 @@ class TestAddUserToGroup(FunctionalTwillTestCaseSetup):
         tc.formvalue('addsubj', 'sg_subject', 'authenticated')
         tc.formvalue('addsubj', 'sg_group', 'somegroup')
         tc.submit()
-        tc.find('authenticated:somegroup')
+        authenticated = unicode_to_base64('authenticated')
+        somegroup = unicode_to_base64('somegroup')
+        tc.find('%s:%s' % (authenticated, somegroup))
 
 
 class TestRemoveUserFromGroup(FunctionalTwillTestCaseSetup):
@@ -84,10 +88,12 @@ class TestRemoveUserFromGroup(FunctionalTwillTestCaseSetup):
         self._tester.go_to_admin()
         tc.follow('Permissions')
         tc.find('Manage Permissions')
-        tc.find('authenticated:somegroup')
-        tc.formvalue('revokeform', 'sel', 'authenticated:somegroup')
+        authenticated = unicode_to_base64('authenticated')
+        somegroup = unicode_to_base64('somegroup')
+        tc.find('%s:%s' % (authenticated, somegroup))
+        tc.formvalue('revokeform', 'sel', '%s:%s' % (authenticated, somegroup))
         tc.submit()
-        tc.notfind('authenticated:somegroup')
+        tc.notfind('%s:%s' % (authenticated, somegroup))
 
 
 class TestRemovePermissionGroup(FunctionalTwillTestCaseSetup):
@@ -96,11 +102,13 @@ class TestRemovePermissionGroup(FunctionalTwillTestCaseSetup):
         self._tester.go_to_admin()
         tc.follow('Permissions')
         tc.find('Manage Permissions')
-        tc.find('somegroup:REPORT_CREATE')
-        tc.formvalue('revokeform', 'sel', 'somegroup:REPORT_CREATE')
+        somegroup = unicode_to_base64('somegroup')
+        REPORT_CREATE = unicode_to_base64('REPORT_CREATE')
+        tc.find('%s:%s' % (somegroup, REPORT_CREATE))
+        tc.formvalue('revokeform', 'sel', '%s:%s' % (somegroup, REPORT_CREATE))
         tc.submit()
-        tc.notfind('somegroup:REPORT_CREATE')
-        tc.notfind('somegroup')
+        tc.notfind('%s:%s' % (somegroup, REPORT_CREATE))
+        tc.notfind(somegroup)
 
 
 class TestPluginSettings(FunctionalTwillTestCaseSetup):
