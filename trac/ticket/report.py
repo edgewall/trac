@@ -604,7 +604,7 @@ class ReportModule(Component):
         data.update({'header_groups': header_groups,
                      'row_groups': row_groups,
                      'numrows': numrows,
-                     'sorting_enabled': True})
+                     'sorting_enabled': '__group__' not in cols})
 
         if format == 'rss':
             data['email_map'] = chrome.get_email_map()
@@ -714,7 +714,7 @@ class ReportModule(Component):
                                   ' is invalid', sort_col=sort_col))
             skel = None
             if '__group__' in cols:
-                order_cols.append('__group__')
+                sort_col = '' # sorting is disabled (#15030)
             if sort_col:
                 sort_col = '%s %s' % (db.quote(sort_col), 
                                       asc == '1' and 'ASC' or 'DESC')
