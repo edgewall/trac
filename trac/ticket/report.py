@@ -43,69 +43,12 @@ from trac.web.chrome import (INavigationContributor, Chrome,
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 
-
-SORT_COLUMN = '@SORT_COLUMN@'
-LIMIT_OFFSET = '@LIMIT_OFFSET@'
-
-
 def cell_value(v):
     """Normalize a cell value for display.
     >>> (cell_value(None), cell_value(0), cell_value(1), cell_value('v'))
     ('', '0', u'1', u'v')
     """
     return '0' if v is 0 else unicode(v) if v else ''
-
-
-_sql_re = re.compile(r'''
-      --.*$                        # single line "--" comment 
-    | /\*([^*/]|\*[^/]|/[^*])*\*/  # C style comment
-    | '(\\.|[^'\\])*'              # literal string
-    | \([^()]+\)                   # parenthesis group
-''', re.MULTILINE | re.VERBOSE)
-
-def _expand_with_space(m):
-    return ' ' * len(m.group(0))
-
-def sql_skeleton(sql):
-    """Strip an SQL query to leave only its toplevel structure.
-
-    This is probably not 100% robust but should be enough for most
-    needs.
-
-    >>> re.sub('\s+', lambda m: '<%d>' % len(m.group(0)), sql_skeleton(''' \\n\
-        SELECT a FROM (SELECT x FROM z ORDER BY COALESCE(u, ')/*(')) ORDER \\n\
-          /* SELECT a FROM (SELECT x /* FROM z                             \\n\
-                        ORDER BY */ COALESCE(u, '\)X(')) ORDER */          \\n\
-          BY c, (SELECT s FROM f WHERE v in ('ORDER BY', '(\\')')          \\n\
-                 ORDER BY (1), '') -- LIMIT                                \\n\
-         '''))
-    '<10>SELECT<1>a<1>FROM<48>ORDER<164>BY<1>c,<144>'
-    """
-    old = None
-    while sql != old:
-        old = sql
-        sql = _sql_re.sub(_expand_with_space, old)
-    return old
-
-_order_by_re = re.compile(r'ORDER\s+BY', re.MULTILINE)
-
-def split_sql(sql, clause_re, skel=None):
-    """Split an SQL query according to a toplevel clause regexp.
-
-    We assume there's only one such clause present in the outer query.
-
-    >>> split_sql('''SELECT a FROM x  ORDER \
-            BY u, v''', _order_by_re)
-    ('SELECT a FROM x  ', ' u, v')
-    """
-    if skel is None:
-        skel = sql_skeleton(sql)
-    blocks = clause_re.split(skel.upper())
-    if len(blocks) == 2:
-        return sql[:len(blocks[0])], sql[-len(blocks[1]):] # (before, after)
-    else:
-        return sql, '' # no single clause separator
-
 
 
 class ReportModule(Component):
@@ -430,27 +373,21 @@ class ReportModule(Component):
                 'report_href': report_href, 
                 }
 
-        res = None
         with self.env.db_query as db:
-            res = self.execute_paginated_report(req, db, id, sql, args, limit,
-                                                offset)
+            try:
+                cols, results, num_items, missing_args = \
+                    self.execute_paginated_report(req, db, id, sql, args, limit,
+                                                  offset)
+                results = [list(row) for row in results]
+                numrows = len(results)
 
-        if len(res) == 2:
-             e, sql = res
-             data['message'] = \
-                 tag_("Report execution failed: %(error)s %(sql)s",
-                      error=tag.pre(exception_to_unicode(e)),
-                      sql=tag(tag.hr(), tag.pre(sql, style="white-space: pre")))
-             return 'report_view.html', data, None
-
-        cols, results, num_items, missing_args, limit_offset = res
-        need_paginator = limit > 0 and limit_offset
-        need_reorder = limit_offset is None
-        results = [list(row) for row in results]
-        numrows = len(results)
+            except Exception, e:
+                data['message'] = tag_('Report execution failed: %(error)s',
+                        error=tag.pre(exception_to_unicode(e, traceback=True)))
+                return 'report_view.html', data, None
 
         paginator = None
-        if need_paginator:
+        if limit > 0:
             paginator = Paginator(results, page - 1, limit, num_items)
             data['paginator'] = paginator
             if paginator.has_next_page:
@@ -493,7 +430,7 @@ class ReportModule(Component):
 
             if col == sort_col:
                 header['asc'] = asc
-                if not paginator and need_reorder:
+                if not paginator:
                     # this dict will have enum values for sorting
                     # and will be used in sortkey(), if non-empty:
                     sort_values = {}
@@ -664,107 +601,50 @@ class ReportModule(Component):
         
         :see: ``execute_paginated_report``
         """
-        res = self.execute_paginated_report(req, db, id, sql, args)
-        if len(res) == 2:
-            raise res[0]
-        return res[:5]
+        return self.execute_paginated_report(req, db, id, sql, args)[:2]
 
     def execute_paginated_report(self, req, db, id, sql, args, 
                                  limit=0, offset=0):
         sql, args, missing_args = self.sql_sub_vars(sql, args, db)
         if not sql:
             raise TracError(_("Report {%(num)s} has no SQL query.", num=id))
-        self.log.debug('Report {%d} with SQL "%s"', id, sql)
-        self.log.debug('Request args: %r', req.args)
 
         cursor = db.cursor()
 
         num_items = 0
-        order_by = []
-        limit_offset = None
-        base_sql = sql.replace(SORT_COLUMN, '1').replace(LIMIT_OFFSET, '')
-        if id == -1 or limit == 0:
-            sql = base_sql
-        else:
-            # The number of tickets is obtained
-            count_sql = 'SELECT COUNT(*) FROM (\n%s\n) AS tab' % base_sql
-            self.log.debug("Report {%d} SQL (count): %s", id, count_sql)
-            try:
-                cursor.execute(count_sql, args)
-            except Exception, e:
-                return e, count_sql
+        if id != -1 and limit > 0:
+            cursor.execute("SELECT COUNT(*) FROM (%s) AS tab" % sql, args)
             num_items = cursor.fetchone()[0]
     
-            # The column names are obtained
-            colnames_sql = 'SELECT * FROM (\n%s\n) AS tab LIMIT 1' % base_sql
-            self.log.debug("Report {%d} SQL (col names): %s", id, colnames_sql)
-            try:
-                cursor.execute(colnames_sql, args)
-            except Exception, e:
-                return e, colnames_sql
+            # get the column names
+            cursor.execute("SELECT * FROM (%s) AS tab LIMIT 1" % sql, args)
             cols = get_column_names(cursor)
 
-            # The ORDER BY columns are inserted
             sort_col = req.args.get('sort', '')
-            asc = req.args.get('asc', '1')
-            self.log.debug("%r %s (%s)", cols, sort_col, asc and '^' or 'v')
             order_cols = []
-            if sort_col and sort_col not in cols:
-                raise TracError(_('Query parameter "sort=%(sort_col)s" '
-                                  ' is invalid', sort_col=sort_col))
-            skel = None
             if '__group__' in cols:
                 sort_col = '' # sorting is disabled (#15030)
             if sort_col:
-                sort_col = '%s %s' % (db.quote(sort_col), 
-                                      asc == '1' and 'ASC' or 'DESC')
+                if sort_col in cols:
+                    order_cols.append(sort_col)
+                else:
+                    raise TracError(_('Query parameter "sort=%(sort_col)s" '
+                                      ' is invalid', sort_col=sort_col))
 
-            if SORT_COLUMN in sql:
-                # Method 1: insert sort_col at specified position
-                sql = sql.replace(SORT_COLUMN, sort_col or '1')
-            elif sort_col:
-                # Method 2: automagically insert sort_col (and __group__
-                # before it, if __group__ was specified) as first criterions
-                if '__group__' in cols:
-                    order_by.append('__group__ ASC')
-                order_by.append(sort_col)
-                # is there already an ORDER BY in the original sql?
-                skel = sql_skeleton(sql)
-                before, after = split_sql(sql, _order_by_re, skel)
-                if after: # there were some other criterions, keep them
-                    order_by.append(after)
-                sql = ' '.join([before, 'ORDER BY', ', '.join(order_by)])
-
-            # Add LIMIT/OFFSET if pagination needed
-            limit_offset = ''
-            if num_items > limit:
-                limit_offset = ' '.join(['LIMIT', str(limit), 
-                                         'OFFSET', str(offset)])
-            if LIMIT_OFFSET in sql:
-                # Method 1: insert LIMIT/OFFSET at specified position
-                sql = sql.replace(LIMIT_OFFSET, limit_offset)
-            else:
-                # Method 2: limit/offset is added unless already present
-                skel = skel or sql_skeleton(sql)
-                if 'LIMIT' not in skel.upper():
-                    sql = ' '.join([sql, limit_offset])
-            self.log.debug("Report {%d} SQL (order + limit): %s", id, sql)
-        try:
-            cursor.execute(sql, args)
-        except Exception, e: 
-            if order_by or limit_offset:
-                add_notice(req, _("Hint: if the report failed due to automatic "
-                                  "modification of the ORDER BY clause or the "
-                                  "addition of LIMIT/OFFSET, please look up "
-                                  "%(sort_column)s and %(limit_offset)s in "
-                                  "TracReports to see how to gain complete "
-                                  "control over report rewriting.",
-                                  sort_column=SORT_COLUMN, 
-                                  limit_offset=LIMIT_OFFSET))
-            return e, sql
+            # get the (partial) report results
+            order_by = ''
+            if order_cols:
+                asc = req.args.get('asc', '1')
+                order_by = " ORDER BY %s %s" % (
+                       ', '.join(db.quote(col) for col in order_cols),
+                        'ASC' if asc == '1' else 'DESC')
+            sql = "SELECT * FROM (%s) AS tab %s LIMIT %s OFFSET %s" % \
+                    (sql, order_by, str(limit), str(offset))
+            self.log.debug("Query SQL: " + sql)
+        cursor.execute(sql, args)
         rows = cursor.fetchall() or []
         cols = get_column_names(cursor)
-        return cols, rows, num_items, missing_args, limit_offset
+        return cols, rows, num_items, missing_args
 
     def get_var_args(self, req):
         # reuse somehow for #9574 (wiki vars)
