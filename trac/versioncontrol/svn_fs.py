@@ -715,7 +715,6 @@ class SubversionNode(Node):
         self.pool = Pool(pool)
         pool = self.pool()
         self._scoped_path_utf8 = _to_svn(pool, self.scope, path)
-        self._requested_rev = rev
 
         if parent_root:
             self.root = parent_root
@@ -739,9 +738,8 @@ class SubversionNode(Node):
             self.created_path = _path_within_scope(self.scope, cp)
         else:
             self.created_rev, self.created_path = rev, path
-        self.rev = self.created_rev
         # TODO: check node id
-        Node.__init__(self, repos, path, self.rev, _kindmap[node_type])
+        Node.__init__(self, repos, path, rev, _kindmap[node_type])
 
     def get_content(self):
         """Retrieve raw content as a "read()"able object."""
@@ -765,8 +763,8 @@ class SubversionNode(Node):
         entries = fs.dir_entries(self.root, self._scoped_path_utf8, pool())
         for item in entries.keys():
             path = posixpath.join(self.path, _from_svn(item))
-            yield SubversionNode(path, self._requested_rev, self.repos,
-                                 self.pool, self.root)
+            yield SubversionNode(path, self.rev, self.repos, self.pool,
+                                 self.root)
 
     def get_history(self, limit=None):
         """Yield change events that happened on this path"""
@@ -774,8 +772,7 @@ class SubversionNode(Node):
         older = None # 'older' is the currently examined history tuple
         pool = Pool(self.pool)
         numrevs = 0
-        for path, rev in self.repos._history(self.path, 1, self._requested_rev,
-                                             pool):
+        for path, rev in self.repos._history(self.path, 1, self.rev, pool):
             path = _path_within_scope(self.scope, path)
             if rev > 0 and path:
                 older = (path, rev, Changeset.ADD)
@@ -802,7 +799,7 @@ class SubversionNode(Node):
             def blame_receiver(line_no, revision, author, date, line, pool):
                 annotations.append(revision)
             try:
-                rev = _svn_rev(self._requested_rev)
+                rev = _svn_rev(self.rev)
                 start = _svn_rev(0)
                 file_url_utf8 = posixpath.join(self.repos.ra_url_utf8,
                                                self._scoped_path_utf8)
@@ -881,7 +878,7 @@ class SubversionNode(Node):
         operation was performed.
         """
         ancestors = []
-        previous = (self._scoped_path_utf8, self._requested_rev, self.root)
+        previous = (self._scoped_path_utf8, self.rev, self.root)
         while previous:
             (previous_path, previous_rev, previous_root) = previous
             previous = None

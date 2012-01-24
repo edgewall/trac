@@ -16,7 +16,6 @@ Rather than have its own report definition format, TracReports relies on standar
   }}}
   ''This will make the query module the default handler for the “View Tickets” navigation item. We encourage you to try this configuration and report back what kind of features of reports you are missing, if any.''
 
-
 A report consists of these basic parts:
  * '''ID''' — Unique (sequential) identifier 
  * '''Title''' — Descriptive title

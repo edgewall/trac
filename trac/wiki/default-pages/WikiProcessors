@@ -58,6 +58,7 @@ this extra indentation will be ignored when processing the content.
 {{{#!td style="border: none"
 {{{
 {{{
+#!html
 <h1 style="color: grey">This is raw HTML</h1>
 }}}
 }}}
@@ -152,71 +153,92 @@ this extra indentation will be ignored when processing the content.
 
 The following processors are included in the Trac distribution:
 
- `#!default` :: Present the text verbatim in a preformatted text block. 
-                This is the same as specifying ''no'' processor name
-                (and no `#!`)
- `#!comment` :: Do not process the text in this section (i.e. contents exist
-                only in the plain text - not in the rendered page).
-
-=== HTML related ===
-
- `#!html`        :: Insert custom HTML in a wiki page.
- `#!htmlcomment` :: Insert an HTML comment in a wiki page (''since 0.12'').
-
-Note that `#!html` blocks have to be ''self-contained'',
-i.e. you can't start an HTML element in one block and close it later in a second block. Use the following processors for achieving a similar effect. 
-
-  `#!div` :: Wrap an arbitrary Wiki content inside a <div> element
-             (''since 0.11'').
- `#!span` :: Wrap an arbitrary Wiki content inside a <span> element 
-             (''since 0.11''). 
-
- `#!td` :: Wrap an arbitrary Wiki content inside a <td> element (''since 0.12'')
- `#!th` :: Wrap an arbitrary Wiki content inside a <th> element (''since 0.12'') 
- `#!tr` :: Can optionally be used for wrapping `#!td` and `#!th` blocks,
-       either for specifying row attributes of better visual grouping
-       (''since 0.12'')
-
-See WikiHtml for example usage and more details about these processors.
-
-=== Other Markups ===
-
-     `#!rst` :: Trac support for Restructured Text. See WikiRestructuredText.
- `#!textile` :: Supported if [http://cheeseshop.python.org/pypi/textile Textile] 
-                is installed. 
-                See [http://www.textism.com/tools/textile/ a Textile reference].
-
-
-=== Code Highlighting Support ===
-
-Trac includes processors to provide inline syntax highlighting:
- `#!c` (C), `#!cpp` (C++), `#!python` (Python), `#!perl` (Perl), 
- `#!ruby` (Ruby), `#!php` (PHP), `#!asp` (ASP), `#!java` (Java), 
- `#!js` (Javascript), `#!sql (SQL)`, `#!xml` (XML or HTML),
- `#!sh` (!Bourne/Bash shell), etc.
-
-Trac relies on external software packages for syntax coloring,
-like [http://pygments.org Pygments]. 
-
-See TracSyntaxColoring for information about which languages
-are supported and how to enable support for more languages.
-
-Note also that by using the MIME type as processor, it is possible to syntax-highlight the same languages that are supported when browsing source code. For example, you can write:
-{{{
+|| '''`#!default`''' || Present the text verbatim in a preformatted text block. This is the same as specifying ''no'' processor name (and no `#!`) ||
+|| '''`#!comment`''' || Do not process the text in this section (i.e. contents exist only in the plain text - not in the rendered page). ||
+|||| ||
+||||= '''HTML related''' =||
+|| '''`#!html`''' || Insert custom HTML in a wiki page. ||
+|| '''`#!htmlcomment`''' || Insert an HTML comment in a wiki page (''since 0.12''). ||
+|| || Note that `#!html` blocks have to be ''self-contained'', i.e. you can't start an HTML element in one block and close it later in a second block. Use the following processors for achieving a similar effect.  ||
+|| '''`#!div`''' || Wrap an arbitrary Wiki content inside a <div> element (''since 0.11''). ||
+|| '''`#!span`''' || Wrap an arbitrary Wiki content inside a <span> element (''since 0.11''). ||
+|| '''`#!td`''' || Wrap an arbitrary Wiki content inside a <td> element (''since 0.12'') ||
+|| '''`#!th`''' || Wrap an arbitrary Wiki content inside a <th> element (''since 0.12'') ||
+|| '''`#!tr`''' || Can optionally be used for wrapping `#!td` and `#!th` blocks, either for specifying row attributes of better visual grouping (''since 0.12'') ||
+|| || See WikiHtml for example usage and more details about these processors. ||
+|||| ||
+||||= '''Other Markups''' =||
+|| '''`#!rst`''' || Trac support for Restructured Text. See WikiRestructuredText. ||
+|| '''`#!textile`''' || Supported if [http://cheeseshop.python.org/pypi/textile Textile] is installed. See [http://www.textism.com/tools/textile/ a Textile reference]. ||
+|||| ||
+||||= '''Code Highlighting Support''' =||
+|| '''`#!c`''' [[BR]] '''`#!cpp`''' (C++) [[BR]] '''`#!python`''' [[BR]] '''`#!perl`''' [[BR]] '''`#!ruby`''' [[BR]] '''`#!php`''' [[BR]] '''`#!asp`''' [[BR]] '''`#!java`''' [[BR]] '''`#!js`''' (Javascript) [[BR]] '''`#!sql`''' [[BR]] '''`#!xml`''' (XML or HTML) [[BR]] '''`#!sh`''' (!Bourne/Bash shell) [[BR]] '''etc.''' [[BR]] || Trac includes processors to provide inline syntax highlighting for source code in various languages. [[BR]] [[BR]] Trac relies on external software packages for syntax coloring, like [http://pygments.org Pygments]. [[BR]] [[BR]] See TracSyntaxColoring for information about which languages are supported and how to enable support for more languages. ||
+|||| ||
+||||= '''MIME Type Processors''' =||
+|||| Using the MIME type as processor, it is possible to syntax-highlight the same languages that are supported when browsing source code. ||
+{{{#!tr
+{{{#!td
+Some examples:
+ {{{
 {{{
 #!text/html
 <h1>text</h1>
 }}}
+ }}}
 }}}
-
+{{{#!td
 The result will be syntax highlighted HTML code:
-{{{
+ {{{
 #!text/html
 <h1>text</h1>
-}}}
+ }}}
 
 The same is valid for all other [TracSyntaxColoring#SyntaxColoringSupport mime types supported].
-
+}}}
+}}}
+{{{#!td
+ {{{
+{{{
+#!diff
+--- Version 55
++++ Version 56
+@@ -115,8 +115,9 @@
+     name='TracHelloWorld', version='1.0',
+     packages=find_packages(exclude=['*.tests*']),
+-    entry_points = """
+-        [trac.plugins]
+-        helloworld = myplugs.helloworld
+-    """,
++    entry_points = {
++        'trac.plugins': [
++            'helloworld = myplugs.helloworld',
++        ],
++    },
+ )
+}}}
+ }}}
+}}}
+{{{#!td
+'''`#!diff`''' has a particularly nice renderer:
+ {{{
+#!diff
+--- Version 55
++++ Version 56
+@@ -115,8 +115,9 @@
+     name='TracHelloWorld', version='1.0',
+     packages=find_packages(exclude=['*.tests*']),
+-    entry_points = """
+-        [trac.plugins]
+-        helloworld = myplugs.helloworld
+-    """,
++    entry_points = {
++        'trac.plugins': [
++            'helloworld = myplugs.helloworld',
++        ],
++    },
+ )
+ }}}
+}}}
 
 For more processor macros developed and/or contributed by users, visit: 
  * [trac:ProcessorBazaar]

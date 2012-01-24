@@ -27,8 +27,8 @@ A few other wiki pages present the advanced features of the Trac wiki markup in 
 }}}
 || `'''bold'''`, `''italic''`, `'''''Wikipedia style'''''` || \
 || '''bold''', ''italic'', '''''Wikipedia style''''' ||
-|| {{{`monospaced and ''nowiki''`}}} || \
-|| `monospaced and ''nowiki''` ||
+|| {{{`monospaced (''other markup ignored'')`}}} || \
+|| `monospaced (''other markup ignored'')` ||
 || `**bold**`, `//italic//`, `**//!WikiCreole style//**` || \
 || **bold**, //italic//, **//!WikiCreole style//** ||
 |-----------------------------------------------------------

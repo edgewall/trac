@@ -30,7 +30,7 @@ from trac.resource import Resource, ResourceNotFound, get_resource_name, \
 from trac.util.datefmt import format_date, from_utimestamp, user_time
 from trac.util.html import escape, find_element
 from trac.util.presentation import separated
-from trac.util.text import unicode_quote, unquote, to_unicode
+from trac.util.text import unicode_quote, to_unicode
 from trac.util.translation import _, dgettext, cleandoc_
 from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
 from trac.wiki.formatter import format_to_html, format_to_oneliner, \
@@ -566,12 +566,19 @@ class ImageMacro(WikiMacroBase):
         url = raw_url = desc = None
         attachment = None
         if (parts and parts[0] in ('http', 'https', 'ftp')): # absolute
-            raw_url = url = desc = filespec
+            raw_url = url = filespec
+            desc = url.rsplit('?')[0]
         elif filespec.startswith('//'):       # server-relative
-            raw_url = url = desc = filespec[1:]
+            raw_url = url = filespec[1:]
+            desc = url.rsplit('?')[0]
         elif filespec.startswith('/'):        # project-relative
-            # use href, but unquote to allow args (use default html escaping)
-            raw_url = url = desc = unquote(formatter.href(filespec))
+            params = ''
+            if '?' in filespec:
+                filespec, params = filespec.rsplit('?', 1)
+            url = formatter.href(filespec)
+            if params:
+                url += '?' + params
+            raw_url, desc = url, filespec
         elif len(parts) == 3:                 # realm:id:attachment-filename
             #                                 # or intertrac:realm:id 
             realm, id, filename = parts

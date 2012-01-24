@@ -427,7 +427,7 @@ class BrowserModule(Component):
         # Links for contextual navigation
         if node:
             if node.isfile:
-                prev_rev = repos.previous_rev(rev=node.rev,
+                prev_rev = repos.previous_rev(rev=node.created_rev,
                                               path=node.created_path)
                 if prev_rev:
                     href = req.href.browser(reponame,
@@ -437,7 +437,7 @@ class BrowserModule(Component):
                 if rev is not None:
                     add_link(req, 'up', req.href.browser(reponame,
                                                          node.created_path))
-                next_rev = repos.next_rev(rev=node.rev,
+                next_rev = repos.next_rev(rev=node.created_rev,
                                           path=node.created_path)
                 if next_rev:
                     href = req.href.browser(reponame, node.created_path,
@@ -451,7 +451,7 @@ class BrowserModule(Component):
                     add_link(req, 'up', path_links[-2]['href'],
                              _('Parent directory'))
                 add_ctxtnav(req, tag.a(_('Last Change'), 
-                            href=req.href.changeset(node.rev, reponame,
+                            href=req.href.changeset(node.created_rev, reponame,
                                                     node.created_path)))
             if node.isfile:
                 annotate = data['file']['annotate']
@@ -547,8 +547,10 @@ class BrowserModule(Component):
 
         # Entries metadata
         class entry(object):
-            _copy = 'name rev kind isdir path content_length'.split()
+            _copy = 'name rev created_rev kind isdir path content_length' \
+                    .split()
             __slots__ = _copy + ['raw_href']
+
             def __init__(self, node):
                 for f in entry._copy:
                     setattr(self, f, getattr(node, f))
@@ -556,7 +558,8 @@ class BrowserModule(Component):
                 
         entries = [entry(n) for n in node.get_entries()
                    if n.is_viewable(req.perm)]
-        changes = get_changes(repos, [i.rev for i in entries], self.log)
+        changes = get_changes(repos, [i.created_rev for i in entries],
+                              self.log)
 
         if rev:
             newest = repos.get_changeset(rev).date
@@ -579,7 +582,7 @@ class BrowserModule(Component):
         # Ordering of entries
         if order == 'date':
             def file_order(a):
-                return (changes[a.rev].date,
+                return (changes[a.created_rev].date,
                         embedded_numbers(a.name.lower()))
         elif order == 'size':
             def file_order(a):
@@ -587,7 +590,7 @@ class BrowserModule(Component):
                         embedded_numbers(a.name.lower()))
         elif order == 'author':
             def file_order(a):
-                return (changes[a.rev].author.lower(),
+                return (changes[a.created_rev].author.lower(),
                         embedded_numbers(a.name.lower()))
         else:
             def file_order(a):
@@ -653,7 +656,7 @@ class BrowserModule(Component):
         else:
             # The changeset corresponding to the last change on `node` 
             # is more interesting than the `rev` changeset.
-            changeset = repos.get_changeset(node.rev)
+            changeset = repos.get_changeset(node.created_rev)
 
             # add ''Plain Text'' alternate link if needed
             if not is_binary(chunk) and mime_type != 'text/plain':

@@ -3,11 +3,11 @@
 
 Trac is written in the Python programming language and needs a database, [http://sqlite.org/ SQLite], [http://www.postgresql.org/ PostgreSQL], or [http://mysql.com/ MySQL]. For HTML rendering, Trac uses the [http://genshi.edgewall.org Genshi] templating system.
 
-Since version 0.12, Trac can also be localized, and there's probably a translation available for your language. If you want to be able to use the Trac interface in other languages, then make sure you **first** have installed the optional package [#OtherPythonPackages Babel]. Lacking Babel, you will only get the default english version, as usual. If you install Babel later on, you will need to re-install Trac.
+Since version 0.12, Trac can also be localized, and there's probably a translation available for your language. If you want to be able to use the Trac interface in other languages, then make sure you **first** have installed the optional package [#OtherPythonPackages Babel]. Lacking Babel, you will only get the default English version, as usual. If you install Babel later on, you will need to re-install Trac.
 
 If you're interested in contributing new translations for other languages or enhance the existing translations, then please have a look at [trac:wiki:TracL10N TracL10N].
 
-What follows are generic instructions for installing and setting up Trac and its requirements. While you may find instructions for installing Trac on specific systems at TracInstallPlatforms on the main Trac site, please be sure to '''first read through these general instructions''' to get a good understanding of the tasks involved.
+What follows are generic instructions for installing and setting up Trac and its requirements. While you may find instructions for installing Trac on specific systems at [trac:wiki:TracInstallPlatforms TracInstallPlatforms] on the main Trac site, please be sure to '''first read through these general instructions''' to get a good understanding of the tasks involved.
 
 [[PageOutline(2-3,Installation Steps,inline)]]
 
@@ -16,7 +16,7 @@ What follows are generic instructions for installing and setting up Trac and its
 To install Trac, the following software packages must be installed:
 
  * [http://www.python.org/ Python], version >= 2.4 and < 3.0
-   (note that we dropped the support for Python 2.3 in this release)
+   //(note that we dropped the support for Python 2.3 in this release and that this will be the last Trac release supporting Python 2.4)//
  * [http://peak.telecommunity.com/DevCenter/setuptools setuptools], version >= 0.6
  * [http://genshi.edgewall.org/wiki/Download Genshi], version >= 0.6
 
@@ -74,14 +74,16 @@ It is '''very''' important to read carefully the  [trac:MySqlDb] page before cre
 ==== Version Control System ====
 
 ===== Subversion =====
- * [http://subversion.apache.org/ Subversion], 1.5.x or 1.6.x and the '''''corresponding''''' Python bindings. Older versions starting from 1.4.0, etc. should still work. For troubleshooting information, check the [trac:TracSubversion#Troubleshooting TracSubversion] page. Versions prior to 1.4.0 won't probably work since trac uses svn core functionality (e.g. svn_path_canonicalize) that is not implemented in the python swig wrapper in svn <= 1.3.x (although it exists in the svn lib itself).
 
-There are [http://subversion.apache.org/packages.html pre-compiled SWIG bindings] available for various platforms. (Good luck finding precompiled SWIG bindings for any Windows package at that listing. TracSubversion points you to [http://alagazam.net Algazam], which works for me under Python 2.6.)
+[http://subversion.apache.org/ Subversion] 1.5.x or 1.6.x and the '''''corresponding''''' Python bindings. 
 
-Note that Trac '''doesn't''' use [http://pysvn.tigris.org/ PySVN], neither does it work yet with the newer `ctype`-style bindings. [Is there a ticket for implementing ctype bindings?]
+There are [http://subversion.apache.org/packages.html pre-compiled SWIG bindings] available for various platforms. See also the TracSubversion page for details about Windows packages.
 
+Older versions starting from 1.4.0, etc. should still work. For troubleshooting information, check the [trac:TracSubversion#Troubleshooting TracSubversion] page. Versions prior to 1.4.0 won't probably work since trac uses svn core functionality (e.g. svn_path_canonicalize) that is not implemented in the python swig wrapper in svn <= 1.3.x (although it exists in the svn lib itself).
 
-'''Please note:''' if using Subversion, Trac must be installed on the '''same machine'''. Remote repositories are currently [trac:ticket:493 not supported].
+Note that Trac '''doesn't''' use [http://pysvn.tigris.org/ PySVN], neither does it work yet with the newer `ctype`-style bindings. 
+
+'''Please note:''' if using Subversion, Trac must be installed on the '''same machine'''. Remote repositories are currently [trac:#493 not supported].
 
 
 ===== Others =====
@@ -93,19 +95,19 @@ A web server is optional because Trac is shipped with a server included, see the
 
 Alternatively you configure Trac to run in any of the following environments.
  * [http://httpd.apache.org/ Apache] with 
-   - [http://code.google.com/p/modwsgi/ mod_wsgi], see [wiki:TracModWSGI] and 
-     http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac
-   - [http://modpython.org/ mod_python 3.3.1], deprecated: see TracModPython)
- * a [http://www.fastcgi.com/ FastCGI]-capable web server (see TracFastCgi)
- * an [http://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html AJP]-capable web
-   server (see [trac:TracOnWindowsIisAjp])
- * a CGI-capable web server (see TracCgi), '''but usage of Trac as a cgi script 
-   is highly discouraged''', better use one of the previous options. 
+   - [http://code.google.com/p/modwsgi/ mod_wsgi], see [wiki:TracModWSGI] (preferred)
+   - //[http://modpython.org/ mod_python 3.3.1], see TracModPython (deprecated)//
+ * any [http://www.fastcgi.com/ FastCGI]-capable web server, see TracFastCgi
+ * any [http://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html AJP]-capable web
+   server, see [trac:TracOnWindowsIisAjp]
+ * IIS with [http://code.google.com/p/isapi-wsgi/ Isapi-wsgi], see [trac:TracOnWindowsIisIsapi]
+ * //as a last resort, a CGI-capable web server (see TracCgi), but usage of Trac as a cgi script 
+   is highly discouraged, better use one of the previous options.//
    
 
 ==== Other Python Packages ====
 
- * [http://babel.edgewall.org Babel], version >= 0.9.5, 
+ * [http://babel.edgewall.org Babel], version 0.9.5, 
    needed for localization support[[BR]]
    ''Note: '' If you want to be able to use the Trac interface in other languages, then make sure you first have installed the optional package Babel. Lacking Babel, you will only get the default english version, as usual. If you install Babel later on, you will need to re-install Trac. 
  * [http://docutils.sourceforge.net/ docutils], version >= 0.3.9 
@@ -131,9 +133,9 @@ With setuptools you can install Trac from the subversion repository;
 
 A few examples:
 
- - first install of the latest stable version Trac 0.12.1, with i18n support:
+ - first install of the latest stable version Trac 0.12.2, with i18n support:
    {{{
-   easy_install Babel==0.9.5 Genshi==0.6
+   easy_install Babel==0.9.5
    easy_install Trac
    }}}
    ''It's very important to run the two `easy_install` commands separately, otherwise the message catalogs won't be generated.''
@@ -153,14 +155,14 @@ For upgrades, reading the TracUpgrade page is mandatory, of course.
 === From source
 If you want more control, you can download the source in archive form, or do a checkout from one of the official [[Trac:TracRepositories|source code repositories]].
 
-Be sure to have the prerequisites already installed. You can also obtain the Genshi and Babel source packages from http://www.edgewall.org and follow for them a similar installation procedure, or you can just easy_install those, see [#Usingeasy_install above].
+Be sure to have the prerequisites already installed. You can also obtain the Genshi and Babel source packages from http://www.edgewall.org and follow for them a similar installation procedure, or you can just `easy_install` those, see [#Usingeasy_install above].
 
 Once you've unpacked the Trac archive or performed the checkout, move in the top-level folder and do:
 {{{
 $ python ./setup.py install
 }}}
 
-''You'll need root permissions or equivalent for this step.''
+You'll need root permissions or equivalent for this step.
 
 This will byte-compile the python source code and install it as an .egg file or folder in the `site-packages` directory
 of your Python installation. The .egg will also contain all other resources needed by standard Trac, such as htdocs and templates.
@@ -174,6 +176,8 @@ $ python ./setup.py install
 Alternatively, you can do a `bdist_egg` and copy the .egg from dist/ to the place of your choice, or you can create a Windows installer (`bdist_wininst`).
 
 === Advanced Options ===
+
+==== Custom location with `easy_install`
 
 To install Trac to a custom location, or find out about other advanced installation options, run:
 {{{
@@ -194,7 +198,7 @@ Note: If installing on Mac OS X 10.6 running {{{ easy_install http://svn.edgewal
 
 The above will place your `tracd` and `trac-admin` commands into `/usr/local/bin` and will install the Trac libraries and dependencies into `/Library/Python/2.5/site-packages`, which is Apple's preferred location for third-party Python application installations.
 
-=== Using `pip`
+==== Using `pip`
 'pip' is an easy_install replacement that is very useful to quickly install python packages.
 To get a trac installation up and running in less than 5 minutes:
 
@@ -248,7 +252,9 @@ Finally, make sure the user account under which the web front-end runs will have
 }}}
 
 
-== Running the Standalone Server ==
+== Deploying Trac
+
+=== Running the Standalone Server ===
 
 After having created a Trac environment, you can easily try the web interface by running the standalone server [wiki:TracStandalone tracd]:
 {{{
@@ -260,13 +266,17 @@ Then, fire up a browser and visit `http://localhost:8000/`. You should get a sim
 $ tracd -s --port 8000 /path/to/myproject
 }}}
 
-== Running Trac on a Web Server ==
+=== Running Trac on a Web Server ===
 
-Trac provides various options for connecting to a "real" web server: [wiki:TracCgi CGI], [wiki:TracFastCgi FastCGI], [wiki:TracModWSGI mod_wsgi] and [wiki:TracModPython mod_python]. For decent performance, it is recommended that you use either FastCGI or mod_wsgi.
+Trac provides various options for connecting to a "real" web server: 
+ - [wiki:TracFastCgi FastCGI]
+ - [wiki:TracModWSGI mod_wsgi] 
+ - //[wiki:TracModPython mod_python] (no longer recommended, as mod_python is not actively maintained anymore)//
+ - //[wiki:TracCgi CGI] (should not be used, as the performance is far from optimal)//
 
-Trac also supports [trac:TracOnWindowsIisAjp AJP] which may be your choice if you want to connect to IIS.
+Trac also supports [trac:TracOnWindowsIisAjp AJP] which may be your choice if you want to connect to IIS. Other deployment scenarios are possible: [trac:TracNginxRecipe nginx], [http://projects.unbit.it/uwsgi/wiki/Example#Traconapacheinasub-uri uwsgi], [trac:TracOnWindowsIisIsapi Isapi-wsgi] etc.
 
-==== Generating the Trac cgi-bin directory ====
+==== Generating the Trac cgi-bin directory ==== #cgi-bin
 
 In order for Trac to function properly with FastCGI you need to have a `trac.fcgi` file and for mod_wsgi a `trac.wsgi` file. These are Python scripts which load the appropriate Python code. They can be generated using the `deploy` option of [wiki:TracAdmin trac-admin].
 
@@ -278,21 +288,98 @@ trac-admin /usr/share/trac/projects/my-project deploy /tmp/deploy
 mv /tmp/deploy/* /usr/share/trac
 }}}
 
+
+==== Mapping Static Resources ====
+
+Out of the box, Trac will pass static resources such as style sheets or images through itself. For anything but a tracd only based deployment, this is far from optimal as the web server could be set up to directly serve those static resources (for CGI setup, this is '''highly undesirable''' and will cause abysmal performance).
+
+Web servers such as [http://httpd.apache.org/ Apache] allow you to create “Aliases” to resources, giving them a virtual URL that doesn't necessarily reflect the layout of the servers file system. We also can map requests for static resources directly to the directory on the file system, avoiding processing these requests by Trac itself.
+
+There are two primary URL paths for static resources - `/chrome/common` and `/chrome/site`. Plugins can add their own resources, usually accessible by `/chrome/<plugin>` path, so its important to override only known paths and not try to make universal `/chrome` alias for everything.
+
+Note that in order to get those static resources on the filesystem, you need first to extract the relevant resources from Trac using the [TracAdmin trac-admin]` <environment> deploy` command:
+[[TracAdminHelp(deploy)]]
+
+The target `<directory>` will then contain an `htdocs` directory with:
+ - `site/` - a copy of the environment's directory `htdocs/` 
+ - `common/` - the static resources of Trac itself
+ - `<plugins>/` - one directory for each resource directory managed by the plugins enabled for this environment
+
+===== Example: Apache and `ScriptAlias` ===== #ScriptAlias-example
+
+Assuming the deployment has been done this way:
+{{{
+$ trac-admin /var/trac/env deploy /path/to/trac/htdocs/common
+}}}
+
+Add the following snippet to Apache configuration ''before'' the `ScriptAlias` or `WSGIScriptAlias` (which map all the other requests to the Trac application), changing paths to match your deployment:
+{{{
+Alias /trac/chrome/common /path/to/trac/htdocs/common
+Alias /trac/chrome/site /path/to/trac/htdocs/site
+
+<Directory "/path/to/www/trac/htdocs">
+  Order allow,deny
+  Allow from all
+</Directory>
+}}}
+
+If using mod_python, you might want to add this too (otherwise, the alias will be ignored):
+{{{
+<Location "/trac/chrome/common/">
+  SetHandler None
+</Location>
+}}}
+
+Note that we mapped `/trac` part of the URL to the `trac.*cgi` script, and the path `/trac/chrome/common` is the path you have to append to that location to intercept requests to the static resources. 
+
+Similarly, if you have static resources in a project's `htdocs` directory (which is referenced by `/trac/chrome/site` URL in themes), you can configure Apache to serve those resources (again, put this ''before'' the `ScriptAlias` or `WSGIScriptAlias` for the .*cgi scripts, and adjust names and locations to match your installation):
+{{{
+Alias /trac/chrome/site /path/to/projectenv/htdocs
+
+<Directory "/path/to/projectenv/htdocs">
+  Order allow,deny
+  Allow from all
+</Directory>
+}}}
+
+Alternatively to aliasing `/trac/chrome/common`, you can tell Trac to generate direct links for those static resources (and only those), using the [[wiki:TracIni#trac-section| [trac] htdocs_location]] configuration setting:
+{{{
+[trac]
+htdocs_location = http://static.example.org/trac-common/
+}}}
+Note that this makes it easy to have a dedicated domain serve those static resources (preferentially [http://code.google.com/speed/page-speed/docs/request.html#ServeFromCookielessDomain cookie-less]).
+
+Of course, you still need to make the Trac `htdocs/common` directory available through the web server at the specified URL, for example by copying (or linking) the directory into the document root of the web server:
+{{{
+$ ln -s /path/to/trac/htdocs/common /var/www/static.example.org/trac-common
+}}}
+
+
 ==== Setting up the Plugin Cache ====
 
 Some Python plugins need to be extracted to a cache directory. By default the cache resides in the home directory of the current user. When running Trac on a Web Server as a dedicated user (which is highly recommended) who has no home directory, this might prevent the plugins from starting. To override the cache location you can set the PYTHON_EGG_CACHE environment variable. Refer to your server documentation for detailed instructions on how to set environment variables.
 
 == Configuring Authentication ==
 
-The process of adding, removing, and configuring user accounts for authentication depends on the specific way you run Trac. The basic procedure is described in the [wiki:TracCgi#AddingAuthentication "Adding Authentication"] section on the TracCgi page. To learn how to setup authentication for the frontend you're using, please refer to one of the following pages:
+Trac uses HTTP authentication. You'll need to configure your webserver to request authentication when the `.../login` URL is hit (the virtual path of the "login" button). Trac will automatically pick the REMOTE_USER variable up after you provide your credentials. Therefore, all user management goes through your web server configuration. Please consult the documentation of your web server for more info.
 
- * TracStandalone if you use the standalone server, `tracd`.
- * TracCgi if you use the CGI or FastCGI web front ends.
- * [wiki:TracModWSGI] if you use the Apache mod_wsgi web front end.
- * TracModPython if you use the Apache mod_python web front end.
+The process of adding, removing, and configuring user accounts for authentication depends on the specific way you run Trac. 
 
+Please refer to one of the following sections:
+ * TracStandalone#UsingAuthentication if you use the standalone server, `tracd`.
+ * [wiki:TracModWSGI#ConfiguringAuthentication TracModWSGI#ConfiguringAuthentication] if you use the Apache web server, with any of its front end: `mod_wsgi` of course, but the same instructions applies also for `mod_python`, `mod_fcgi` or `mod_fastcgi`.
+ * TracFastCgi if you're using another web server with FCGI support (Cherokee, Lighttpd, !LiteSpeed, nginx)
 
-== Automatic reference to the SVN changesets in Trac tickets ==
+== Granting admin rights to the admin user
+Grant admin rights to user admin:
+{{{
+$ trac-admin /path/to/myproject permission add admin TRAC_ADMIN
+}}}
+This user will have an "Admin" entry menu that will allow you to admin your trac project.
+
+== Finishing the install
+
+=== Automatic reference to the SVN changesets in Trac tickets ===
 
 You can configure SVN to automatically add a reference to the changeset into the ticket comments, whenever changes are committed to the repository. The description of the commit needs to contain one of the following formulas:
  * '''`Refs #123`''' - to reference this changeset in `#123` ticket
@@ -304,15 +391,15 @@ tracopt.ticket.commit_updater.* = enabled
 }}}
 For more information, see the documentation of the `CommitTicketUpdater` component in the "Plugins" admin panel.
 
-== Using Trac ==
+=== Using Trac ===
 
 Once you have your Trac site up and running, you should be able to create tickets, view the timeline, browse your version control repository if configured, etc.
 
-Keep in mind that anonymous (not logged in) users can by default access most but not all of the features. You will need to configure authentication and grant additional [wiki:TracPermissions permissions] to authenticated users to see the full set of features.
+Keep in mind that //anonymous// (not logged in) users can by default access only a few of the features, in particular they will have a read-only access to the resources. You will need to configure authentication and grant additional [wiki:TracPermissions permissions] to authenticated users to see the full set of features.
 
 '' Enjoy! ''
 
 [trac:TracTeam The Trac Team]
 
 ----
-See also: [trac:TracInstallPlatforms TracInstallPlatforms], TracGuide, TracCgi, TracFastCgi, TracModPython, [wiki:TracModWSGI], TracUpgrade, TracPermissions
+See also: [trac:TracInstallPlatforms TracInstallPlatforms], TracGuide, TracUpgrade, TracPermissions

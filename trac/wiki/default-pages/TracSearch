@@ -6,6 +6,8 @@ Using the Trac search facility is straightforward and its interface should be fa
 
 Apart from the [search: Search module], you will also find a small search field above the navigation bar at all time. It provides convenient access to the search module from all pages.
 
+The search results show the most recent modifications ranked first in the results rather than the most relevant result.
+
 == "Quickjump" searches ==
 For quick access to various project resources, the quick-search field at the top of every page can be used to enter a [TracLinks wiki link], which will take you directly to the resource identified by that link.
 
@@ -19,7 +21,7 @@ For example:
 == Advanced ==
 
 === Disabling Quickjumps ===
-To disable the quickjump feature for a search keyword - for example when searching for occurences of the literal word !TracGuide - begin the query with an exclamation mark (!).
+To disable the quickjump feature for a search keyword - for example when searching for occurences of the literal word !TracGuide - begin the query with an exclamation mark (`!`).
 
 === Search Links ===
 From the Wiki, it is possible to link to a specific search, using

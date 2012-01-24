@@ -255,6 +255,10 @@ It is also possible to link to the ticket's description using one of the followi
  - `comment:description:ticket:123`
  - `ticket:123#comment:description`
 
+=== htdocs: links ===
+
+Use `htdocs:path/to/file` to reference files in the `htdocs` directory of the Trac environment, the [TracEnvironment#DirectoryStructure web resource directory].
+
 === query: links ===
 
 See TracQuery#UsingTracLinks and [#ticket:links].
@@ -288,7 +292,7 @@ Examples:
 
 === wiki: links ===
 
-See WikiPageNames and [#QuotingspaceinTracLinks quoting space in TracLinks] above.
+See WikiPageNames and [#QuotingspaceinTracLinks quoting space in TracLinks] above. It is possible to create a link to a specific page revision using the syntax WikiStart@1.
 
 === Version Control related links ===
 

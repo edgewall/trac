@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from trac.test import Mock
-from trac.web.api import Request, RequestDone
+from trac.web.api import Request, RequestDone, parse_arg_list
 
 from StringIO import StringIO
 import unittest
@@ -146,9 +146,31 @@ class RequestTestCase(unittest.TestCase):
         self.assertEqual('bar', req.args['action'])
 
 
+class ParseArgListTestCase(unittest.TestCase):
+
+    def test_qs_str(self):
+        args = parse_arg_list('k%C3%A9y=resum%C3%A9&r%C3%A9sum%C3%A9')
+        self.assertTrue(unicode, type(args[0][0]))
+        self.assertTrue(unicode, type(args[0][1]))
+        self.assertEqual(u'kéy', args[0][0])
+        self.assertEqual(u'resumé', args[0][1])
+        self.assertTrue(unicode, type(args[1][0]))
+        self.assertEqual(u'résumé', args[1][0])
+
+    def test_qs_unicode(self):
+        args = parse_arg_list(u'ké%3Dy=re%26su=mé&résu%26mé')
+        self.assertTrue(unicode, type(args[0][0]))
+        self.assertTrue(unicode, type(args[0][1]))
+        self.assertEqual(u'ké=y', args[0][0])
+        self.assertEqual(u're&su=mé', args[0][1])
+        self.assertTrue(unicode, type(args[1][0]))
+        self.assertEqual(u'résu&mé', args[1][0])
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(RequestTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(ParseArgListTestCase, 'test'))
     return suite
 
 if __name__ == '__main__':

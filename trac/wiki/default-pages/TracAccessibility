@@ -2,6 +2,8 @@
 
 Not every user has a graphic environment with a mouse or other pointing device. Some users rely on keyboard, alternative keyboard or voice input to navigate links, activate form controls, etc. In Trac, we work to assure users may interact with devices other than a pointing device.
 
+The keyboard shortcuts must be enabled for a session through the [/prefs/keybindings Keyboard Shortcuts] preferences panel.
+
 Trac supports accessibility keys for the most common operations. On Windows and Linux platforms, press any of the keys listed below in combination with the `<Alt>` key; on a Mac, use the `<ctrl>` key instead.
 
 ''Note that when using Internet Explorer on Windows, you need to hit `<Enter>` after having used the access key.''[[BR]]

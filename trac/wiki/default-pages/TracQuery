@@ -32,6 +32,9 @@ You can also save references to queries in Wiki content, as described below.
 
 ''Note:'' one way to easily build queries like the ones below, you can build and test the queries in the Custom report module and when ready - click ''Save query''. This will build the query string for you. All you need to do is remove the extra line breaks.
 
+''Note:'' you must have the '''REPORT_CREATE''' permission in order to save queries to the list of default reports. The ''Save query'' button will only appear if you are logged in as a user that has been granted this permission. If your account does not have permission to create reports, you can still use the methods below to save a query.
+
+
 === Using TracLinks ===
 
 You may want to save some queries so that you can come back to them later.  You can do this by making a link to the query from any Wiki page.
@@ -64,7 +67,13 @@ Example:
 This is displayed as:
   [[TicketQuery(version=0.6|0.7&resolution=duplicate)]]
 
-Just like the [wiki:TracQuery#UsingTracLinks query: wiki links], the parameter of this macro expects a query string formatted according to the rules of the simple [wiki:TracQuery#QueryLanguage ticket query language].
+Just like the [wiki:TracQuery#UsingTracLinks query: wiki links], the parameter of this macro expects a query string formatted according to the rules of the simple [wiki:TracQuery#QueryLanguage ticket query language]. This also allows displaying the link and description of a single ticket:
+{{{
+[[TicketQuery(id=123)]]
+}}}
+
+This is displayed as:
+  [[TicketQuery(id=123)]]
 
 A more compact representation without the ticket summaries is also available:
 {{{

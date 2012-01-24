@@ -2,8 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
       xmlns:xi="http://www.w3.org/2001/XInclude" py:strip="">
+<<<<<<< .working
   <py:for each="idx, entry in enumerate(dir.entries)"
-          py:with="change = dir.changes[entry.rev];
+          py:with="change = dir.changes[entry.created_rev];
                    chgset_context = change and context.child('changeset', change.rev, parent=repos.resource);
                    chgset_view = change and change.is_viewable(perm);
                    isdir = entry.kind == 'dir'">
@@ -19,7 +20,7 @@
            title="${_('Download as Zip archive') if isdir else _('Download')}">&#8203;</a>
       </td>
       <td class="rev">
-        <a title="View Revision Log" href="${href.log(reponame, entry.path, rev=rev)}">${display_rev(entry.rev)}</a>
+        <a title="View Revision Log" href="${href.log(reponame, entry.path, rev=rev)}">${display_rev(entry.created_rev)}</a>
         <a title="View Changeset" class="chgset" href="${href.changeset(change.rev, reponame)}">&nbsp;</a>
       </td>
       <td class="age" style="${chgset_view and dir.timerange and 'border-color: rgb(%s,%s,%s)' %
@@ -35,5 +36,38 @@
         <py:otherwise>&ndash;</py:otherwise>
       </td>
     </tr>
+=======
+  <py:for each="idx, entry in enumerate(dir.entries)">
+    <py:with vars="change = dir.changes[entry.created_rev];
+                   chgset_context = change and context('changeset', change.rev, parent=repos.resource);
+                   chgset_view = change and change.can_view(perm)">
+      <tr class="${idx % 2 and 'even' or 'odd'}">
+        <td class="name">
+          <a class="$entry.kind" title="${entry.kind == 'dir' and _('View Directory') or _('View File')}"
+             href="${href.browser(reponame, entry.path, rev=stickyrev, 
+                                  order=(order != 'name' and order or None), desc=desc)}">$entry.name</a>
+        </td>
+        <td class="size">
+          <span title="${_('%(size)s bytes', size=entry.content_length)}">${pretty_size(entry.content_length)}</span>
+        </td>
+        <td class="rev">
+          <a title="View Revision Log" href="${href.log(reponame, entry.path, rev=rev)}">${display_rev(entry.created_rev)}</a>
+          <a title="View Changeset" class="chgset" href="${href.changeset(change.rev, reponame)}">&nbsp;</a>
+        </td>
+        <td class="age" style="${chgset_view and dir.timerange and 'border-color: rgb(%s,%s,%s)' %
+                                 dir.colorize_age(dir.timerange.relative(change.date)) or None}">
+          ${chgset_view and dateinfo(change.date) or '&ndash;'}
+        </td>
+        <td class="author">${chgset_view and authorinfo_short(change.author) or '&ndash;'}</td>
+        <td class="change" py:choose="">
+          <py:when test="chgset_view" py:choose="">
+            <py:when test="wiki_format_messages">${wiki_to_oneliner(chgset_context, change.message, shorten=True)}</py:when>
+            <py:otherwise>${shorten_line(change.message)}</py:otherwise>
+          </py:when>
+          <py:otherwise>&ndash;</py:otherwise>
+        </td>
+      </tr>
+    </py:with>
+>>>>>>> .merge-right.r10917
   </py:for>
 </html>

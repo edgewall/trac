@@ -30,11 +30,18 @@ The Roadmap supports the [http://www.ietf.org/rfc/rfc2445.txt iCalendar] format 
  * [http://kontact.kde.org/korganizer/ Korganizer] (the calendar application of the [http://www.kde.org/ KDE] project)
  * [http://www.novell.com/de-de/products/desktop/features/evolution.html Evolution] also support iCalendar
  * [http://office.microsoft.com/en-us/outlook/ Microsoft Outlook] can also read iCalendar files (it appears as a new static calendar in Outlook)
+ * [https://www.google.com/calendar/ Google Calendar] 
 
 To subscribe to the roadmap, copy the iCalendar link from the roadmap (found at the bottom of the page) and choose the "Subscribe to remote calendar" action (or similar) of your calendar application, and insert the URL just copied.
 
 '''Note:''' For tickets to be included in the calendar as tasks, you need to be logged in when copying the link. You will only see tickets assigned to yourself, and associated with a milestone.
 
+'''Note:''' To include the milestones in Google Calendar you might need to rewrite the URL.
+{{{
+RewriteEngine on
+RewriteRule ([^/.]+)/roadmap/([^/.]+)/ics /$1/roadmap?user=$2&format=ics
+}}}
+
 More information about iCalendar can be found at [http://en.wikipedia.org/wiki/ICalendar Wikipedia].
 ----
-See also: TracTickets, TracReports, TracQuery, [trac:TracRoadmapCustomGroups TracRoadmapCustomGroups]
+See also: TracTickets, TracReports, TracQuery, [trac:TracRoadmapCustomGroups]

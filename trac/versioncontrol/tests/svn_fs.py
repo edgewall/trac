@@ -148,14 +148,16 @@ class NormalTests(object):
         self.assertEqual(u'tête', node.name)
         self.assertEqual(u'/tête', node.path)
         self.assertEqual(Node.DIRECTORY, node.kind)
-        self.assertEqual(TETE, node.rev)
+        self.assertEqual(HEAD, node.rev)
+        self.assertEqual(TETE, node.created_rev)
         self.assertEqual(datetime(2007, 4, 30, 17, 45, 26, 234375, utc),
                          node.last_modified)
         node = self.repos.get_node(u'/tête/README.txt')
         self.assertEqual('README.txt', node.name)
         self.assertEqual(u'/tête/README.txt', node.path)
         self.assertEqual(Node.FILE, node.kind)
-        self.assertEqual(3, node.rev)
+        self.assertEqual(HEAD, node.rev)
+        self.assertEqual(3, node.created_rev)
         self.assertEqual(datetime(2005, 4, 1, 13, 24, 58, 234643, utc),
                          node.last_modified)
 
@@ -216,14 +218,14 @@ class NormalTests(object):
 
     def test_created_path_rev(self):
         node = self.repos.get_node(u'/tête/README3.txt', 15)
-        self.assertEqual(14, node.rev)
+        self.assertEqual(15, node.rev)
         self.assertEqual(u'/tête/README3.txt', node.path)
         self.assertEqual(14, node.created_rev)
         self.assertEqual(u'tête/README3.txt', node.created_path)
 
     def test_created_path_rev_parent_copy(self):
         node = self.repos.get_node('/tags/v1/README.txt', 15)
-        self.assertEqual(3, node.rev)
+        self.assertEqual(15, node.rev)
         self.assertEqual('/tags/v1/README.txt', node.path)
         self.assertEqual(3, node.created_rev)
         self.assertEqual(u'tête/README.txt', node.created_path)
@@ -357,7 +359,7 @@ class NormalTests(object):
                         (Node.DIRECTORY, Changeset.ADD)), diffs.next())
         self._cmp_diff((None, (u'tête/dir1/dir3', 8),
                         (Node.DIRECTORY, Changeset.ADD)), diffs.next())
-        self._cmp_diff((None, (u'tête/README2.txt', 6),
+        self._cmp_diff((None, (u'tête/README2.txt', 8),
                         (Node.FILE, Changeset.ADD)), diffs.next())
         self._cmp_diff(((u'tête/dir2', 4), None,
                         (Node.DIRECTORY, Changeset.DELETE)), diffs.next())
@@ -576,14 +578,16 @@ class ScopedTests(object):
         self.assertEqual('dir1', node.name)
         self.assertEqual('/dir1', node.path)
         self.assertEqual(Node.DIRECTORY, node.kind)
-        self.assertEqual(5, node.rev)
+        self.assertEqual(TETE, node.rev)
+        self.assertEqual(5, node.created_rev)
         self.assertEqual(datetime(2005, 4, 1, 16, 25, 39, 658099, utc),
                          node.last_modified)
         node = self.repos.get_node('/README.txt')
         self.assertEqual('README.txt', node.name)
         self.assertEqual('/README.txt', node.path)
         self.assertEqual(Node.FILE, node.kind)
-        self.assertEqual(3, node.rev)
+        self.assertEqual(TETE, node.rev)
+        self.assertEqual(3, node.created_rev)
         self.assertEqual(datetime(2005, 4, 1, 13, 24, 58, 234643, utc),
                          node.last_modified)
 

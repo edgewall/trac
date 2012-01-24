@@ -43,56 +43,76 @@ The new way to wrap any wiki content inside a <div> is to use the `#!div` Wiki  
 {{{#!td
   {{{
   {{{
-  #!div class="important" style="border: 2pt solid; text-align: center"
-  This is the ''only'' way to go in Trac 0.11
+  #!div class="important" 
+  **important** is a predefined class.
   }}}
-
-  {{{
-  #!div class="wikipage" style="border: 1pt dotted"
-  Only `wikipage` (same as specifying no class attribute)
   }}}
-
   {{{
-  #!div class="wikipage compact " style="border: 1pt solid"
-  Use combined classes (`compact` and `wikipage`)
+  {{{
+  #!div style="border: 1pt dotted; margin: 1em"
+  **wikipage** is another predefined class that will 
+  be used when no class is specified.
   }}}
-
-  {{{
-  #!div class="compact" style="border: 1pt dotted"
-  Only `compact`
   }}}
-
   {{{
-  #!div class="" style="border: 1pt solid"
-  No classes (//not// the same as specifying no class attribute...)
+  {{{
+  #!div class="compact" style="border: 1pt dotted; margin: 1em"
+  **compact** is another predefined class reducing
+  the padding within the `<div>` to a minimum.
+  }}}
+  }}}
+  {{{
+  {{{
+  #!div class="wikipage compact" style="border: 1pt dotted"
+  Classes can be combined (here **wikipage** and **compact**)
+  which results in this case in reduced //vertical// 
+  padding but there's still some horizontal space for coping
+  with headings.
+  }}}
+  }}}
+  {{{
+  {{{
+  #!div class="" style="border: 1pt dotted; margin: 1em"
+  Explicitly specifying no classes is //not// the same
+  as specifying no class attribute, as this will remove
+  the //wikipage// default class.
   }}}
   }}}
 }}}
 {{{#!td style="padding-left: 2em"
+
   {{{
-  #!div class="important" style="border: 2pt solid; text-align: center"
-  This is the ''only'' way to go in Trac 0.11
+  #!div class="important" 
+  **important** is a predefined class.
   }}}
 
   {{{
-  #!div class="wikipage" style="border: 1pt dotted"
-  Only `wikipage` (same as specifying no class attribute)
+  #!div style="border: 1pt dotted; margin: 1em"
+  **wikipage** is another predefined class that will 
+  be used when no class is specified.
   }}}
 
   {{{
-  #!div class="wikipage compact " style="border: 1pt solid"
-  Use combined classes (`compact` and `wikipage`)
+  #!div class="compact" style="border: 1pt dotted; margin: 1em"
+  **compact** is another predefined class reducing
+  the padding within the `<div>` to a minimum.
   }}}
 
   {{{
-  #!div class="compact" style="border: 1pt dotted"
-  Only compact
+  #!div class="wikipage compact" style="border: 1pt dotted"
+  Classes can be combined (here **wikipage** and **compact**)
+  which results in this case in reduced //vertical// 
+  padding but there's still some horizontal space for coping
+  with headings.
   }}}
 
   {{{
-  #!div class="" style="border: 1pt solid"
-  No classes (//not// the same as specifying no class attribute...)
+  #!div class="" style="border: 1pt dotted; margin: 1em"
+  Explicitly specifying no classes is //not// the same
+  as specifying no class attribute, as this will remove
+  the //wikipage// default class.
   }}}
+
 }}}
 
 Note that the contents of a `#!div` block are contained in one or more paragraphs, which have a non-zero top and bottom margin. This leads to the top and bottom padding in the example above. To remove the top and bottom margin of the contents, add the `compact` class to the `#!div`. Another predefined class besides `wikipage` and `compact` is `important`, which can be used to make a paragraph stand out. Extra CSS classes can be defined via the `site/style.css` file for example, see TracInterfaceCustomization#SiteAppearance.

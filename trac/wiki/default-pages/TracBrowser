@@ -9,7 +9,7 @@ At the top-level of the repository browser is the '''Repository Index''',
 listing all the configured repositories. 
 Each repository has a name which is used as a path prefix in a 
 "virtual" file hierarchy encompassing all the available repositories.
-If a default repository has been configured, its top-level files and directories 
+One of the repositories can be configured with an empty name; this is the default repository.  When such a default repository is present, its top-level files and directories 
 are also listed, in a '''Default Repository''' section placed before the 
 repository index. If the default repository is the only repository associated 
 with the Trac environment the '''Repository Index''' will be omitted ^[#note-multirepos (1)]^.
@@ -59,7 +59,7 @@ directory. Alternatively, the [trac:TracKeys keyboard] can also be used for this
  - `'r'` can be used to force the reload of an already expanded directory
  - `'A'` can be used to directly visit a file in annotate (blame) mode
  - `'L'` to view the log for the selected entry
-If no row has been selected using `'j'` or `'k'` these keys will operate on the entry under the mouse .
+If no row has been selected using `'j'` or `'k'` these keys will operate on the entry under the mouse.
 
 {{{#!comment
 MMM: I guess that some keys are upper case and some lower to avoid conflicts with browser defined keys.

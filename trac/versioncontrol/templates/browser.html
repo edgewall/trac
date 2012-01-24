@@ -127,9 +127,9 @@
 
       <table py:if="properties or file" id="info" summary="Revision info">
         <tr py:if="file">
-          <th py:with="cset = href.changeset(rev, reponame);
-                       rcset = href.changeset(rev, reponame, created_path);
-                       drev = display_rev(rev);
+          <th py:with="cset = href.changeset(created_rev, reponame);
+                       rcset = href.changeset(created_rev, reponame, created_path);
+                       drev = display_rev(created_rev);
                        author = authorinfo(file.changeset.author);
                        age = pretty_dateinfo(file.changeset.date)">
             <py:choose>
