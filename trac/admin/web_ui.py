@@ -27,7 +27,8 @@ from trac.core import *
 from trac.loader import get_plugin_info, get_plugins_dir
 from trac.perm import PermissionSystem, IPermissionRequestor
 from trac.util.compat import partial
-from trac.util.text import exception_to_unicode
+from trac.util.text import exception_to_unicode, \
+                            unicode_to_base64, unicode_from_base64
 from trac.util.translation import _, ngettext
 from trac.web import HTTPNotFound, IRequestHandler
 from trac.web.chrome import add_notice, add_stylesheet, \
@@ -379,6 +380,8 @@ class PermissionAdminPanel(Component):
                 sel = isinstance(sel, list) and sel or [sel]
                 for key in sel:
                     subject, action = key.split(':', 1)
+                    subject = unicode_from_base64(subject)
+                    action = unicode_from_base64(action)
                     if (subject, action) in perm.get_all_permissions():
                         perm.revoke_permission(subject, action)
                 add_notice(req, _('The selected permissions have been '
@@ -387,7 +390,8 @@ class PermissionAdminPanel(Component):
 
         return 'admin_perms.html', {
             'actions': all_actions,
-            'perms': all_permissions
+            'perms': all_permissions,
+            'unicode_to_base64': unicode_to_base64
         }
 
 

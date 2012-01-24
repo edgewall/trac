@@ -7,7 +7,8 @@ from trac.util.text import empty, expandtabs, fix_eol, javascript_quote, \
                            normalize_whitespace, to_unicode, \
                            text_width, print_table, unicode_quote, \
                            unicode_quote_plus, unicode_unquote, \
-                           unicode_urlencode, wrap, quote_query_string
+                           unicode_urlencode, wrap, quote_query_string, \
+                           unicode_to_base64, unicode_from_base64
 
 
 class ToUnicodeTestCase(unittest.TestCase):
@@ -263,6 +264,31 @@ class FixEolTestCase(unittest.TestCase):
                          fix_eol(text, '\r\n'))
 
 
+class UnicodeBase64TestCase(unittest.TestCase):
+    def test_to_and_from_base64_unicode(self):
+        text = u'Trac は ØÆÅ'
+        text_base64 = unicode_to_base64(text)
+        self.assertEqual('VHJhYyDjga8gw5jDhsOF', text_base64)
+        self.assertEqual(text, unicode_from_base64(text_base64))
+
+    def test_to_and_from_base64_whitespace(self):
+        # test that removing whitespace does not affect conversion
+        text = 'a space: '
+        text_base64 = unicode_to_base64(text)
+        self.assertEqual('YSBzcGFjZTog', text_base64)
+        self.assertEqual(text, unicode_from_base64(text_base64))
+        text = 'two newlines: \n\n'
+        text_base64 = unicode_to_base64(text)
+        self.assertEqual('dHdvIG5ld2xpbmVzOiAKCg==', text_base64)
+        self.assertEqual(text, unicode_from_base64(text_base64))
+        text = 'a test string ' * 10000
+        text_base64_strip = unicode_to_base64(text)
+        text_base64_no_strip = unicode_to_base64(text, strip_newlines=False)
+        self.assertNotEqual(text_base64_strip, text_base64_no_strip)
+        self.assertEqual(text, unicode_from_base64(text_base64_strip))
+        self.assertEqual(text, unicode_from_base64(text_base64_no_strip))
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ToUnicodeTestCase, 'test'))
@@ -275,6 +301,7 @@ def suite():
     suite.addTest(unittest.makeSuite(PrintTableTestCase, 'test'))
     suite.addTest(unittest.makeSuite(WrapTestCase, 'test'))
     suite.addTest(unittest.makeSuite(FixEolTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(UnicodeBase64TestCase, 'test'))
     return suite
 
 if __name__ == '__main__':
