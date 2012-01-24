@@ -118,7 +118,7 @@ class TicketNotifyEmail(NotifyEmail):
                     continue
                 author = change['author']
                 change_data.update({
-                    'author': obfuscate_email_address(author),
+                    'author': self.obfuscate_email(author),
                     'comment': wrap(change['comment'], self.COLS, ' ', ' ',
                                     '\n', self.ambiwidth)
                     })
@@ -160,8 +160,8 @@ class TicketNotifyEmail(NotifyEmail):
                         self.prev_cc += self.parse_cc(old) if old else []
                     else:
                         if field in ['owner', 'reporter']:
-                            old = obfuscate_email_address(old)
-                            new = obfuscate_email_address(new)
+                            old = self.obfuscate_email(old)
+                            new = self.obfuscate_email(new)
                         newv = new
                         length = 7 + len(field)
                         spacer_old, spacer_new = ' ', ' '
@@ -223,7 +223,7 @@ class TicketNotifyEmail(NotifyEmail):
             if fval.find('\n') != -1:
                 continue
             if fname in ['owner', 'reporter']:
-                fval = obfuscate_email_address(fval)
+                fval = self.obfuscate_email(fval)
             idx = 2 * (i % 2)
             width[idx] = max(self.get_text_width(f['label']), width[idx])
             width[idx + 1] = max(self.get_text_width(fval), width[idx + 1])
@@ -254,7 +254,7 @@ class TicketNotifyEmail(NotifyEmail):
                 continue
             fval = tkt[fname] or ''
             if fname in ['owner', 'reporter']:
-                fval = obfuscate_email_address(fval)
+                fval = self.obfuscate_email(fval)
             if f['type'] == 'textarea' or '\n' in unicode(fval):
                 big.append((f['label'], '\n'.join(fval.splitlines())))
             else:
@@ -292,9 +292,9 @@ class TicketNotifyEmail(NotifyEmail):
     def diff_cc(self, old, new):
         oldcc = NotifyEmail.addrsep_re.split(old)
         newcc = NotifyEmail.addrsep_re.split(new)
-        added = [obfuscate_email_address(x) \
+        added = [self.obfuscate_email(x) \
                                 for x in newcc if x and x not in oldcc]
-        removed = [obfuscate_email_address(x) \
+        removed = [self.obfuscate_email(x) \
                                 for x in oldcc if x and x not in newcc]
         return (added, removed)
 
@@ -403,3 +403,12 @@ class TicketNotifyEmail(NotifyEmail):
     def get_text_width(self, text):
         return text_width(text, ambiwidth=self.ambiwidth)
 
+    def obfuscate_email(self, text):
+        """ Obfuscate text when `show_email_addresses` is disabled in config.
+        Obfuscation happens once per email, regardless of recipients, so
+        cannot use permission-based obfuscation.
+        """
+        if self.env.config.getbool('tself.obfuscate_emailrac', 'show_email_addresses'):
+            return text
+        else:
+            return obfuscate_email_address(text)
