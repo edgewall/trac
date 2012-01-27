@@ -678,6 +678,6 @@ span.system-message {
    display: none;
  }
  form.printableform { display: block }
- pre.wiki { overflow: visible }
+ div.code pre { white-space: pre-wrap }
  :link, :visited { border-bottom: none }
 }
