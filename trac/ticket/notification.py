@@ -408,7 +408,7 @@ class TicketNotifyEmail(NotifyEmail):
         Obfuscation happens once per email, regardless of recipients, so
         cannot use permission-based obfuscation.
         """
-        if self.env.config.getbool('tself.obfuscate_emailrac', 'show_email_addresses'):
+        if self.env.config.getbool('trac', 'show_email_addresses'):
             return text
         else:
             return obfuscate_email_address(text)
