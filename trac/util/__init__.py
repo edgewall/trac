@@ -34,7 +34,7 @@ import time
 from urllib import quote, unquote, urlencode
 
 from .compat import any, md5, sha1, sorted
-from .text import to_unicode
+from .text import exception_to_unicode, to_unicode
 
 # -- req, session and web utils
 
@@ -400,6 +400,12 @@ class file_or_std(object):
         
 # -- sys utils
 
+def fq_class_name(obj):
+    """Return the fully qualified class name of given object."""
+    c = type(obj)
+    m, n = c.__module__, c.__name__
+    return n if m == '__builtin__' else '%s.%s' % (m, n)
+
 def arity(f):
     """Return the number of arguments expected by the given function, unbound
     or bound method.
@@ -509,6 +515,22 @@ def safe__import__(module_name):
             if not already_imported.has_key(modname):
                 del(sys.modules[modname])
         raise e
+
+
+def safe_repr(x):
+    """`repr` replacement which "never" breaks.
+
+    Make sure we always get a representation of the input `x`
+    without risking to trigger an exception (e.g. from a buggy
+    `x.__repr__`).
+
+    .. versionadded :: 0.13
+    """
+    try:
+        return to_unicode(repr(x))
+    except Exception, e:     
+        return "<%s object at 0x%X (repr() error: %s)>" % (
+            fq_class_name(x), id(x), exception_to_unicode(e))
 
 
 def get_doc(obj):

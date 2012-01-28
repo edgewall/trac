@@ -45,11 +45,13 @@ Python "system" utilities
 
 Complements the `inspect`, `traceback` and `sys` modules.
 
+.. autofunction :: fq_class_name
 .. autofunction :: arity
 .. autofunction :: get_last_traceback
 .. autofunction :: get_lines_from_file
 .. autofunction :: get_frame_info
 .. autofunction :: safe__import__
+.. autofunction :: safe_repr
 .. autofunction :: get_doc
 
 Setuptools utilities

@@ -16,6 +16,7 @@ from __future__ import with_statement
 import doctest
 import os.path
 import random
+import re
 import tempfile
 import unittest
 
@@ -149,12 +150,32 @@ class ContentDispositionTestCase(unittest.TestCase):
                          util.content_disposition(filename='a file.txt'))
 
 
+class SafeReprTestCase(unittest.TestCase):
+    def test_normal_repr(self):
+        for x in ([1, 2, 3], "été", u"été"): 
+            self.assertEqual(repr(x), util.safe_repr(x))
+
+    def test_buggy_repr(self):
+        class eh_ix(object):
+            def __repr__(self):
+                return 1 + "2"
+        self.assertRaises(Exception, repr, eh_ix())
+        sr = util.safe_repr(eh_ix())
+        sr = re.sub('[A-F0-9]{4,}', 'ADDRESS', sr)
+        sr = re.sub(r'__main__|trac\.util\.tests', 'MODULE', sr)
+        self.assertEqual("<MODULE.eh_ix object at 0xADDRESS "
+                         "(repr() error: TypeError: unsupported operand "
+                         "type(s) for +: 'int' and 'str')>", sr)
+               
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AtomicFileTestCase, 'test'))
     suite.addTest(unittest.makeSuite(PathTestCase, 'test'))
     suite.addTest(unittest.makeSuite(RandomTestCase, 'test'))
     suite.addTest(unittest.makeSuite(ContentDispositionTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(SafeReprTestCase, 'test'))
     suite.addTest(concurrency.suite())
     suite.addTest(datefmt.suite())
     suite.addTest(presentation.suite())

@@ -41,7 +41,7 @@ from trac.loader import get_plugin_info, match_plugins_to_frames
 from trac.perm import PermissionCache, PermissionError
 from trac.resource import ResourceNotFound
 from trac.util import arity, get_frame_info, get_last_traceback, hex_entropy, \
-                      read_file, translation
+                      read_file, safe_repr, translation
 from trac.util.concurrency import threading
 from trac.util.datefmt import format_datetime, http_date, localtz, timezone, \
                               user_time
@@ -607,7 +607,7 @@ User agent: `#USER_AGENT#`
     data = {'title': 'Internal Error',
             'type': 'internal', 'message': message,
             'traceback': traceback, 'frames': frames,
-            'shorten_line': shorten_line,
+            'shorten_line': shorten_line, 'repr': safe_repr,
             'plugins': plugins, 'faulty_plugins': faulty_plugins,
             'tracker': tracker,
             'description': description, 'description_en': description_en}
