@@ -16,8 +16,8 @@ risk to eventually cut a multi-byte sequence in the middle. Similar
 issues with Python string handling routines are avoided as well, like
 surprising results when splitting text in lines. For example, did you
 know that "Priorità" is encoded as ``'Priorit\xc3\x0a'`` in UTF-8?
-`strip()`ping this in some locales can cut away the trailing
-``\x0a``...
+Calling `strip()` on this value in some locales can cut away the
+trailing ``\x0a`` and it's no longer valid UTF-8.
 
 The drawback is that most of the outside world, while eventually
 "Unicode", is definitely not `unicode`. This is why we need to convert
@@ -34,6 +34,9 @@ left to the `to_unicode` helper function, which converts `str` to
 
 .. autofunction :: exception_to_unicode
 
+Web utilities
+.............
+
 .. autofunction :: unicode_quote
 
 .. autofunction :: unicode_quote_plus
@@ -42,7 +45,14 @@ left to the `to_unicode` helper function, which converts `str` to
 
 .. autofunction :: unicode_urlencode
 
-.. class :: unicode_passwd
+.. autofunction	:: quote_query_string
+
+Console and file system
+.......................
+
+.. autofunction	:: path_to_unicode
+
+.. autofunction	:: stream_encoding
 
 .. autofunction :: console_print
 
@@ -52,30 +62,50 @@ left to the `to_unicode` helper function, which converts `str` to
 
 .. autofunction :: raw_input
 
-.. autofunction :: to_utf8
+Miscellaneous
+.............
 
 .. data :: empty
 
    A special tag object evaluating to the empty string, used as marker
    for missing value (as opposed to a present but empty value).
 
+.. autoclass :: unicode_passwd
+
+.. autofunction :: to_utf8
+
+
 Text formatting
 ---------------
 
-.. autofunction :: breakable_path
+.. autofunction :: pretty_size
 
-.. autofunction :: expandtabs
+.. autofunction :: breakable_path
 
 .. autofunction :: normalize_whitespace
 
+.. autofunction :: unquote_label
+
+.. autofunction :: fix_eol
+
+.. autofunction :: expandtabs
+
+.. autofunction :: javascript_quote
+
 .. autofunction :: obfuscate_email_address
 
-.. autofunction :: pretty_size
+.. autofunction :: text_width
 
 .. autofunction :: print_table
 
 .. autofunction :: shorten_line
 
-.. autofunction :: unquote_label
-
 .. autofunction :: wrap
+
+
+Conversion utilities
+--------------------
+
+.. autofunction	:: unicode_to_base64
+
+.. autofunction	:: unicode_from_base64
