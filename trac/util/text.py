@@ -613,8 +613,10 @@ def fix_eol(text, eol):
     return eol.join(lines)
 
 def unicode_to_base64(text, strip_newlines=True):
-    """Safe conversion of `text` to base64 representation using utf-8 bytes.
-    Strips newlines from output unless disabled by `strip_newlines=False`.
+    """Safe conversion of ``text`` to base64 representation using
+    utf-8 bytes.  
+
+    Strips newlines from output unless ``strip_newlines`` is `False`.
     """
     text = to_unicode(text)
     if strip_newlines:
@@ -622,5 +624,5 @@ def unicode_to_base64(text, strip_newlines=True):
     return text.encode('utf-8').encode('base64')
 
 def unicode_from_base64(text):
-    """Safe conversion of `text` to unicode based on utf-8 bytes."""
+    """Safe conversion of ``text`` to unicode based on utf-8 bytes."""
     return text.decode('base64').decode('utf-8')
