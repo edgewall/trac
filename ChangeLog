@@ -1,11 +1,11 @@
-Trac 0.12.3 (January 31, 2012)
+Trac 0.12.3 (February 5, 2012)
 http://svn.edgewall.org/repos/trac/tags/trac-0.12.3
 
 Trac 0.12.3 contains a few minor fixes and a few minor features:
- - compatibility with Subversion 1.7 (#10414)
- - easier troubleshooting of common startup errors (#10024)
+ - added compatibility with Subversion 1.7 (#10414)
+ - make it easier to troubleshoot common startup errors (#10024)
  - jQuery upgraded to 1.4.4 (#10001)
- - improve fine-grained permission handling in the source browser 
+ - improved fine-grained permission handling in the source browser 
    (#9976, #10208, #10110)
  - ... and dozens more fixes!
 
