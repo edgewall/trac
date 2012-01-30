@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2009 Edgewall Software
+# Copyright (C) 2003-2012 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -64,7 +64,7 @@ systems, an integrated wiki, flexible issue tracking and convenient report
 facilities.
 """,
     author = 'Edgewall Software',
-    author_email = 'info@edgewall.com',
+    author_email = 'trac-dev@googlegroups.com',
     license = 'BSD',
     url = 'http://trac.edgewall.org/',
     download_url = 'http://trac.edgewall.org/wiki/TracDownload',
