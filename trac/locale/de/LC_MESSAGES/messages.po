@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2012-01-29 14:04+0100\n"
-"PO-Revision-Date: 2011-02-26 22:54+0100\n"
+"PO-Revision-Date: 2012-01-31 23:16+0100\n"
 "Last-Translator: Felix Schwarz <felix.schwarz@oss.schwarz.eu>\n"
 "Language-Team: de_DE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -146,11 +146,11 @@ msgid "Could not delete attachment"
 msgstr "Anhang konnte nicht gelöscht werden"
 
 #: trac/attachment.py:217
-#, fuzzy, python-format
+#, python-format
 msgid "Cannot reparent attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
 msgstr ""
-"Anhang \"%(att)s\" konnte nicht neu zugeordnet werden, weil er schon zu "
-"%(realm)s:%(id)s gehört"
+"Anhang \"%(att)s\" konnte nicht neu zugeordnet werden, weil "
+"%(realm)s:%(id)s ungültig ist"
 
 #: trac/attachment.py:223
 #, python-format
@@ -167,11 +167,11 @@ msgid "Could not reparent attachment %(name)s"
 msgstr "Anhang %(name)s konnte nicht neu zugeordnet werden"
 
 #: trac/attachment.py:271
-#, fuzzy, python-format
+#, python-format
 msgid "Cannot create attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
 msgstr ""
-"Anhang \"%(att)s\" konnte nicht neu zugeordnet werden, weil er schon zu "
-"%(realm)s:%(id)s gehört"
+"Anhang \"%(att)s\" konnte nicht erstellt werden, weil %(realm)s:%(id)s "
+"ungültig ist"
 
 #: trac/attachment.py:364
 #, python-format
@@ -320,6 +320,8 @@ msgstr "Konfigurationsfehler"
 #, python-format
 msgid "Error reading '%(file)s', make sure it is readable."
 msgstr ""
+"Fehler beim Einlesen von '%(file)s', bitte stellen Sie sicher, dass die "
+"Datei lesbar ist."
 
 #: trac/config.py:420
 #, python-format
@@ -546,7 +548,7 @@ msgid "Error: %(msg)s"
 msgstr "Fehler: %(msg)s"
 
 #: trac/admin/console.py:130
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
@@ -557,7 +559,7 @@ msgid ""
 msgstr ""
 "Willkommen bei trac-admin %(version)s\n"
 "Interaktive Administrations-Konsole von Trac\n"
-"Copyright (c) 2003-2011 Edgewall Software\n"
+"Copyright (c) 2003-2012 Edgewall Software\n"
 "\n"
 "Geben Sie '?' oder 'help' für Hilfe zu den Kommandos ein.\n"
 "        "
@@ -654,11 +656,13 @@ msgid "Directory exists and is not empty."
 msgstr "Das Verzeichnis existiert bereits und ist nicht leer."
 
 #: trac/admin/console.py:394
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr "Die Seite %(name)s ist nicht vorhanden. Sie können sie hier erstellen."
+msgstr ""
+"Basisverzeichnis directory '%(env)s' existiert nicht. Bitte erstellen Sie"
+" es manuell und versuchen Sie es erneut."
 
 #: trac/admin/console.py:422
 msgid "Creating and Initializing Project"
@@ -1794,12 +1798,11 @@ msgstr ""
 "        [1:http://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
-#, fuzzy
 msgid ""
 "Copyright © 2003-2012\n"
 "        [1:Edgewall Software]"
 msgstr ""
-"Copyright © 2003–2011\n"
+"Copyright © 2003–2012\n"
 "        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
@@ -2275,16 +2278,15 @@ msgid "View attachment"
 msgstr "Anhang ansehen"
 
 #: trac/templates/list_of_attachments.html:18
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "[1:%(file)s][2:​]\n"
 "       ([3:%(size)s]) -\n"
 "      added by [4:%(author)s] %(date)s ago."
 msgstr ""
-"[1:%(file)s]\n"
-"      [2:[3:]]\n"
-"       ([4:%(size)s]) -\n"
-"      hinzugefügt von [5:%(author)s] vor %(date)s."
+"[1:%(file)s][2:​]\n"
+"       ([3:%(size)s]) -\n"
+"      hinzugefügt von [4:%(author)s] vor %(date)s."
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:39
@@ -2553,9 +2555,8 @@ msgid "Ticket #%(num)s and all associated data removed."
 msgstr "Ticket #%(num)s und alle zugehörigen Daten wurden entfernt."
 
 #: trac/ticket/api.py:253
-#, fuzzy
 msgid "Attachment"
-msgstr "Anhänge"
+msgstr "Anhang"
 
 #: trac/ticket/api.py:283
 msgid "Summary"
@@ -3937,13 +3938,12 @@ msgid "Reply, quoting this description"
 msgstr "Antworten mit Zitat dieser Beschreibung"
 
 #: trac/ticket/templates/ticket_change.html:19
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "[1:[2:%(name)s]][3:​]\n"
 "          added"
 msgstr ""
-"[1:[2:%(name)s]]\n"
-"          [3:[4:]]\n"
+"[1:[2:%(name)s]][3:​]\n"
 "          hinzugefügt"
 
 #: trac/ticket/templates/ticket_change.html:26
@@ -5579,9 +5579,9 @@ msgstr "Die Seite '%(page)s' wurde nicht gefunden"
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:122 trac/wiki/model.py:172
 #: trac/wiki/web_ui.py:114
-#, fuzzy, python-format
+#, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr "Ungültige Wiki-Seite: %(message)s"
+msgstr "Ungültiger Name für Wiki-Seite: '%(name)s'"
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -5613,7 +5613,7 @@ msgstr "Zum Umbenennen ist ein neuer Name erforderlich."
 
 #: trac/wiki/admin.py:215
 msgid "The new name is invalid."
-msgstr ""
+msgstr "Der neue Name ist ungültig."
 
 #: trac/wiki/admin.py:219 trac/wiki/web_ui.py:303
 #, python-format
@@ -5758,6 +5758,8 @@ msgid ""
 "The new name is invalid (a name which is separated with slashes cannot be"
 " '.' or '..')."
 msgstr ""
+"Der neue Name ist ungültig (ein durch Schrägstriche getrennter Name darf "
+"nicht '.' oder '..' sein)."
 
 #: trac/wiki/web_ui.py:301
 msgid "The new name must be different from the old name."
