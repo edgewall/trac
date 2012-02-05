@@ -498,7 +498,7 @@ class Ticket(object):
                     SELECT time FROM ticket_change WHERE ticket=%s
                     UNION
                     SELECT time FROM (
-                        SELECT time FROM ticket WHERE id=%s) AS t
+                        SELECT time FROM ticket WHERE id=%s LIMIT 1) AS t
                     ORDER BY time DESC LIMIT 1)
                 WHERE id=%s
                 """, (self.id, self.id, self.id))

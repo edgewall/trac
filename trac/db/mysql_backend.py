@@ -200,7 +200,7 @@ class MySQLConnector(Component):
             p = Popen(args, env=environ, stderr=PIPE, close_fds=close_fds)
         except OSError, e:
             raise TracError(_("Unable to run %(path)s: %(msg)s",
-                              path=self.pg_dump_path,
+                              path=self.mysqldump_path,
                               msg=exception_to_unicode(e)))
         errmsg = p.communicate()[1]
         if p.returncode != 0:
