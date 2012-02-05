@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2012-01-19 17:36-0200\n"
-"PO-Revision-Date: 2012-01-19 17:36-0200\n"
+"POT-Creation-Date: 2012-02-05 21:51-0200\n"
+"PO-Revision-Date: 2012-02-05 21:50-0200\n"
 "Last-Translator: Leslie Harlley Watter <leslie@watter.org>\n"
 "Language-Team: pt_BR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -251,8 +251,8 @@ msgstr "Anexos de %(parent)s"
 msgid "%(parent)s doesn't exist, can't create attachment"
 msgstr "%(parent)s não existe, não foi possível criar o anexo"
 
-#: trac/attachment.py:662 trac/attachment.py:685 trac/admin/web_ui.py:461
-#: trac/admin/web_ui.py:464 trac/admin/web_ui.py:468
+#: trac/attachment.py:662 trac/attachment.py:685 trac/admin/web_ui.py:465
+#: trac/admin/web_ui.py:468 trac/admin/web_ui.py:472
 msgid "No file uploaded"
 msgstr "Nenhum arquivo enviado"
 
@@ -304,19 +304,19 @@ msgstr "Tamanho total máximo de anexo: %(num)s bytes"
 msgid "Download failed"
 msgstr "Download falhou"
 
-#: trac/attachment.py:845 trac/versioncontrol/web_ui/browser.py:662
+#: trac/attachment.py:845 trac/versioncontrol/web_ui/browser.py:665
 #: trac/wiki/web_ui.py:73
 msgid "Plain Text"
 msgstr "Texto Puro"
 
-#: trac/attachment.py:851 trac/versioncontrol/web_ui/browser.py:668
+#: trac/attachment.py:851 trac/versioncontrol/web_ui/browser.py:671
 msgid "Original Format"
 msgstr "Formato Original"
 
 #: trac/attachment.py:893 trac/templates/list_of_attachments.html:20
 #: trac/ticket/templates/ticket_change.html:83
 #: trac/versioncontrol/templates/dir_entries.html:18
-#: trac/versioncontrol/web_ui/browser.py:815
+#: trac/versioncontrol/web_ui/browser.py:818
 msgid "Download"
 msgstr "Download"
 
@@ -593,7 +593,7 @@ msgstr "Ação"
 msgid "Available actions:"
 msgstr "Ações disponíveis:"
 
-#: trac/perm.py:657 trac/admin/web_ui.py:369
+#: trac/perm.py:657 trac/admin/web_ui.py:370
 msgid "All upper-cased tokens are reserved for permission names"
 msgstr "Todos os tokens em caixa alta são reservados para nomes de permissões"
 
@@ -658,14 +658,14 @@ msgstr "Erro: %(msg)s"
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
-"Copyright (C) 2003-2011 Edgewall Software\n"
+"Copyright (C) 2003-2012 Edgewall Software\n"
 "\n"
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
 msgstr ""
 "Bem vindo ao trac-admin versão %(version)s\n"
 "Console de Administração Interativa do Trac \n"
-"Copyright (c) 2003-2011 Edgewall Software\n"
+"Copyright (C) 2003-2012 Edgewall Software\n"
 "\n"
 "Digite:  '?' ou 'help' para ajuda nos comandos.\n"
 "        "
@@ -894,34 +894,34 @@ msgstr ""
 msgid "Non-ascii environment path '%(path)s' not supported."
 msgstr "Caracteres não-ascii no caminho de ambiente '%(path)s' não são suportados."
 
-#: trac/admin/web_ui.py:73
+#: trac/admin/web_ui.py:74
 msgid "Admin"
 msgstr "Admin"
 
-#: trac/admin/web_ui.py:74 trac/admin/templates/admin.html:16
+#: trac/admin/web_ui.py:75 trac/admin/templates/admin.html:16
 msgid "Administration"
 msgstr "Administração"
 
-#: trac/admin/web_ui.py:90
+#: trac/admin/web_ui.py:91
 msgid "No administration panels available"
 msgstr "Nenhum painel de administração disponível"
 
-#: trac/admin/web_ui.py:116 trac/admin/web_ui.py:120
+#: trac/admin/web_ui.py:117 trac/admin/web_ui.py:121
 msgid "Unknown administration panel"
 msgstr "Painel de administração desconhecido"
 
-#: trac/admin/web_ui.py:132
+#: trac/admin/web_ui.py:133
 msgid "Untitled"
 msgstr "Sem Título"
 
-#: trac/admin/web_ui.py:191 trac/ticket/admin.py:66 trac/ticket/admin.py:95
+#: trac/admin/web_ui.py:192 trac/ticket/admin.py:66 trac/ticket/admin.py:95
 #: trac/ticket/admin.py:275 trac/ticket/admin.py:453 trac/ticket/admin.py:603
 #: trac/ticket/admin.py:686 trac/ticket/report.py:191
 #: trac/ticket/roadmap.py:778 trac/versioncontrol/admin.py:215
 msgid "Your changes have been saved."
 msgstr "Suas mudanças foram armazenadas."
 
-#: trac/admin/web_ui.py:196 trac/ticket/admin.py:69
+#: trac/admin/web_ui.py:197 trac/ticket/admin.py:69
 msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "Your changes have not been saved."
@@ -930,120 +930,120 @@ msgstr ""
 "escrito pelo servidor web. \n"
 "Suas mudanças não foram armazenadas."
 
-#: trac/admin/web_ui.py:209 trac/admin/web_ui.py:267 trac/admin/web_ui.py:355
-#: trac/admin/web_ui.py:437 trac/prefs/web_ui.py:87
+#: trac/admin/web_ui.py:210 trac/admin/web_ui.py:268 trac/admin/web_ui.py:356
+#: trac/admin/web_ui.py:441 trac/prefs/web_ui.py:87
 #: trac/prefs/templates/prefs_general.html:9
 msgid "General"
 msgstr "Geral"
 
-#: trac/admin/web_ui.py:209 trac/admin/templates/admin_basics.html:13
+#: trac/admin/web_ui.py:210 trac/admin/templates/admin_basics.html:13
 msgid "Basic Settings"
 msgstr "Configurações Básicas"
 
-#: trac/admin/web_ui.py:267 trac/admin/templates/admin_logging.html:10
+#: trac/admin/web_ui.py:268 trac/admin/templates/admin_logging.html:10
 #: trac/admin/templates/admin_logging.html:22
 msgid "Logging"
 msgstr "Logging"
 
-#: trac/admin/web_ui.py:276 trac/ticket/templates/milestone_delete.html:31
+#: trac/admin/web_ui.py:277 trac/ticket/templates/milestone_delete.html:31
 #: trac/ticket/templates/milestone_edit.html:85
 msgid "None"
 msgstr "Nenhum"
 
-#: trac/admin/web_ui.py:277
+#: trac/admin/web_ui.py:278
 msgid "Console"
 msgstr "Console"
 
-#: trac/admin/web_ui.py:279 trac/templates/attachment.html:32
+#: trac/admin/web_ui.py:280 trac/templates/attachment.html:32
 msgid "File"
 msgstr "Arquivo"
 
-#: trac/admin/web_ui.py:281
+#: trac/admin/web_ui.py:282
 msgid "Syslog"
 msgstr "System Log"
 
-#: trac/admin/web_ui.py:283
+#: trac/admin/web_ui.py:284
 msgid "Windows event log"
 msgstr "Log de evento de janelas"
 
-#: trac/admin/web_ui.py:296
+#: trac/admin/web_ui.py:297
 #, python-format
 msgid "Unknown log type %(type)s"
 msgstr "Tipo de log desconhecido %(type)s"
 
-#: trac/admin/web_ui.py:297
+#: trac/admin/web_ui.py:298
 msgid "Invalid log type"
 msgstr "Tipo de log inválido"
 
-#: trac/admin/web_ui.py:311
+#: trac/admin/web_ui.py:312
 #, python-format
 msgid "Unknown log level %(level)s"
 msgstr "Nível de log desconhecido %(level)s"
 
-#: trac/admin/web_ui.py:312
+#: trac/admin/web_ui.py:313
 msgid "Invalid log level"
 msgstr "Nível de log inválido"
 
-#: trac/admin/web_ui.py:325
+#: trac/admin/web_ui.py:326
 msgid "You must specify a log file"
 msgstr "Você deve especificar um arquivo de log"
 
-#: trac/admin/web_ui.py:326
+#: trac/admin/web_ui.py:327
 msgid "Missing field"
 msgstr "Campo faltando"
 
-#: trac/admin/web_ui.py:355 trac/admin/templates/admin_perms.html:10
+#: trac/admin/web_ui.py:356 trac/admin/templates/admin_perms.html:10
 msgid "Permissions"
 msgstr "Permissões"
 
-#: trac/admin/web_ui.py:376
+#: trac/admin/web_ui.py:377
 msgid "Unknown action"
 msgstr "Ação desconhecida"
 
-#: trac/admin/web_ui.py:380
+#: trac/admin/web_ui.py:381
 #, python-format
 msgid "The subject %(subject)s has been granted the permission %(action)s."
 msgstr "O usuário %(subject)s teve a permissão %(action)s concedida."
 
-#: trac/admin/web_ui.py:385
+#: trac/admin/web_ui.py:386
 #, python-format
 msgid "The permission %(action)s was already granted to %(subject)s."
 msgstr "A permissão %(action)s já foi concedida ao usuário %(subject)s"
 
-#: trac/admin/web_ui.py:401
+#: trac/admin/web_ui.py:402
 #, python-format
 msgid "The subject %(subject)s has been added to the group %(group)s."
 msgstr "O usuário %(subject)s foi adicionado ao grupo %(group)s"
 
-#: trac/admin/web_ui.py:406
+#: trac/admin/web_ui.py:407
 #, python-format
 msgid "The subject %(subject)s was already added to the group %(group)s."
 msgstr "O usuário %(subject)s já foi adicionado ao grupo %(group)s"
 
-#: trac/admin/web_ui.py:419
+#: trac/admin/web_ui.py:422
 msgid "The selected permissions have been revoked."
 msgstr "As permissões selecionadas foram revogadas."
 
-#: trac/admin/web_ui.py:437 trac/admin/templates/admin_plugins.html:10
+#: trac/admin/web_ui.py:441 trac/admin/templates/admin_plugins.html:10
 msgid "Plugins"
 msgstr "Plugins"
 
-#: trac/admin/web_ui.py:471
+#: trac/admin/web_ui.py:475
 msgid "Uploaded file is not a Python source file or egg"
 msgstr "O arquivo enviado não é um arquivo fonte Python ou um arquivo egg"
 
-#: trac/admin/web_ui.py:476
+#: trac/admin/web_ui.py:480
 #, python-format
 msgid "Plugin %(name)s already installed"
 msgstr "O plugin %(name)s já está instalado"
 
-#: trac/admin/web_ui.py:545
+#: trac/admin/web_ui.py:549
 msgid "The following component has been disabled:"
 msgid_plural "The following components have been disabled:"
 msgstr[0] "O seguinte componente foi desabilitado:"
 msgstr[1] "Os seguintes componentes foram desabilitados:"
 
-#: trac/admin/web_ui.py:550
+#: trac/admin/web_ui.py:554
 msgid "The following component has been enabled:"
 msgid_plural "The following components have been enabled:"
 msgstr[0] "O seguinte componente foi habilitado:"
@@ -1186,7 +1186,7 @@ msgstr "Padrão"
 #: trac/admin/templates/admin_components.html:98
 #: trac/admin/templates/admin_enums.html:69
 #: trac/admin/templates/admin_milestones.html:125
-#: trac/admin/templates/admin_perms.html:88
+#: trac/admin/templates/admin_perms.html:95
 #: trac/admin/templates/admin_versions.html:94
 #: trac/versioncontrol/templates/admin_repositories.html:145
 msgid "Remove selected items"
@@ -1383,7 +1383,7 @@ msgstr "Adicionar um usuário ou grupo a um grupo de permissões existente."
 msgid "Subject"
 msgstr "Assunto"
 
-#: trac/admin/templates/admin_perms.html:92
+#: trac/admin/templates/admin_perms.html:99
 msgid ""
 "Note that [1:Subject] or [2:Group] names can't be all upper-case,\n"
 "      as that is reserved for permission names."
@@ -2009,10 +2009,10 @@ msgstr ""
 
 #: trac/templates/about.html:46
 msgid ""
-"Copyright © 2003-2011\n"
+"Copyright © 2003-2012\n"
 "        [1:Edgewall Software]"
 msgstr ""
-"Copyright © 2003-2011\n"
+"Copyright © 2003-2012\n"
 "        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
@@ -4851,7 +4851,7 @@ msgstr ""
 #: trac/versioncontrol/templates/admin_repositories.html:33
 #: trac/versioncontrol/templates/admin_repositories.html:132
 #: trac/versioncontrol/templates/admin_repositories.html:134
-#: trac/versioncontrol/web_ui/browser.py:904
+#: trac/versioncontrol/web_ui/browser.py:907
 #: trac/versioncontrol/web_ui/changeset.py:874
 #: trac/versioncontrol/web_ui/changeset.py:1012
 msgid "(default)"
@@ -4881,7 +4881,7 @@ msgstr "O diretório do repositório deve ser absoluto."
 msgid "The repository type '%(type)s' is not supported"
 msgstr "O tipo de repositório '%(type)s' não é suportado"
 
-#: trac/versioncontrol/api.py:351
+#: trac/versioncontrol/api.py:356
 #, python-format
 msgid ""
 "Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the "
@@ -4890,55 +4890,55 @@ msgstr ""
 "Não foi possível sincronizar com o repositório \"%(name)s\" (%(error)s). "
 "Veja o log do Trac para mais informações."
 
-#: trac/versioncontrol/api.py:372
+#: trac/versioncontrol/api.py:377
 #, python-format
 msgid "Changeset %(rev)s in %(repo)s"
 msgstr "Conjunto de mudanças %(rev)s no repositório %(repo)s"
 
-#: trac/versioncontrol/api.py:374
+#: trac/versioncontrol/api.py:379
 #, python-format
 msgid "Changeset %(rev)s"
 msgstr "Conjunto de Mudanças %(rev)s"
 
-#: trac/versioncontrol/api.py:384
+#: trac/versioncontrol/api.py:389
 msgid "directory"
 msgstr "diretório"
 
-#: trac/versioncontrol/api.py:386
+#: trac/versioncontrol/api.py:391
 msgid "file"
 msgstr "arquivo"
 
-#: trac/versioncontrol/api.py:388
+#: trac/versioncontrol/api.py:393
 #, python-format
 msgid " at version %(rev)s"
 msgstr "na versão %(rev)s"
 
-#: trac/versioncontrol/api.py:390
+#: trac/versioncontrol/api.py:395
 msgid "path"
 msgstr "caminho"
 
-#: trac/versioncontrol/api.py:393
+#: trac/versioncontrol/api.py:398
 #, python-format
 msgid " in %(repo)s"
 msgstr "no repositório %(repo)s"
 
 #. TRANSLATOR: file /path/to/file.py at version 13 in reponame
-#: trac/versioncontrol/api.py:395
+#: trac/versioncontrol/api.py:400
 #, python-format
 msgid "%(kind)s %(id)s%(at_version)s%(in_repo)s"
 msgstr "%(kind)s %(id)s%(at_version)s%(in_repo)s"
 
-#: trac/versioncontrol/api.py:398
+#: trac/versioncontrol/api.py:403
 #, python-format
 msgid "Repository %(repo)s"
 msgstr "Repositório %(repo)s"
 
-#: trac/versioncontrol/api.py:702
+#: trac/versioncontrol/api.py:707
 #, python-format
 msgid "Unsupported version control system \"%(name)s\": %(error)s"
 msgstr "Sistema de Controle de Versão não suportado \"%(name)s\": %(error)s "
 
-#: trac/versioncontrol/api.py:705
+#: trac/versioncontrol/api.py:710
 #, python-format
 msgid ""
 "Unsupported version control system \"%(name)s\": Can't find an "
@@ -4949,26 +4949,26 @@ msgstr ""
 " um componente apropriado, será que o plugin correspondente não foi "
 "habilitado? "
 
-#: trac/versioncontrol/api.py:713
+#: trac/versioncontrol/api.py:718
 #, python-format
 msgid "No changeset %(rev)s in the repository"
 msgstr "Nenhum conjunto de mudanças %(rev)s no repositório"
 
-#: trac/versioncontrol/api.py:715
+#: trac/versioncontrol/api.py:720
 msgid "No such changeset"
 msgstr "Nenhum conjunto de mudanças"
 
-#: trac/versioncontrol/api.py:721
+#: trac/versioncontrol/api.py:726
 #, python-format
 msgid "No node %(path)s at revision %(rev)s"
 msgstr "Nenhum nodo %(path)s na revisão %(rev)s"
 
-#: trac/versioncontrol/api.py:723
+#: trac/versioncontrol/api.py:728
 #, python-format
 msgid "%(msg)s: No node %(path)s at revision %(rev)s"
 msgstr "%(msg)s: Nenhum nodo %(path)s na revisão %(rev)s"
 
-#: trac/versioncontrol/api.py:725
+#: trac/versioncontrol/api.py:730
 msgid "No such node"
 msgstr "Nenhum nodo "
 
@@ -5017,7 +5017,7 @@ msgstr ""
 "revisão %(oldrev)s) e Alvo é um  %(newnode)s (%(newpath)s na revisão "
 "%(newrev)s)."
 
-#: trac/versioncontrol/svn_fs.py:817
+#: trac/versioncontrol/svn_fs.py:814
 #, python-format
 msgid "svn blame failed on %(path)s: %(error)s"
 msgstr "svn blame falhou em %(path)s: %(error)s"
@@ -5600,7 +5600,7 @@ msgstr "Ver Arquivo"
 
 #: trac/versioncontrol/templates/dir_entries.html:18
 #: trac/versioncontrol/templates/repository_index.html:22
-#: trac/versioncontrol/web_ui/browser.py:816
+#: trac/versioncontrol/web_ui/browser.py:819
 msgid "Download as Zip archive"
 msgstr "Download como um arquivo Zip"
 
@@ -5616,7 +5616,7 @@ msgstr "Visualizar Conjunto de Mudanças"
 
 #: trac/versioncontrol/templates/dirlist_thead.html:9
 #: trac/versioncontrol/templates/revisionlog.html:110
-#: trac/versioncontrol/web_ui/browser.py:824
+#: trac/versioncontrol/web_ui/browser.py:827
 msgid "Rev"
 msgstr "Rev"
 
@@ -5856,16 +5856,16 @@ msgstr "Log de Revisão"
 msgid "Repository URL"
 msgstr "URL do Repositório"
 
-#: trac/versioncontrol/web_ui/browser.py:605
+#: trac/versioncontrol/web_ui/browser.py:608
 #: trac/versioncontrol/web_ui/changeset.py:364
 msgid "Zip Archive"
 msgstr "Arquivo Zip"
 
-#: trac/versioncontrol/web_ui/browser.py:824
+#: trac/versioncontrol/web_ui/browser.py:827
 msgid "Revision in which the line changed"
 msgstr "Revisão na qual a linha mudou"
 
-#: trac/versioncontrol/web_ui/browser.py:839
+#: trac/versioncontrol/web_ui/browser.py:842
 msgid ""
 "Display the list of available repositories.\n"
 "\n"
@@ -5913,7 +5913,7 @@ msgstr ""
 "\n"
 "(''desde 0.12'')"
 
-#: trac/versioncontrol/web_ui/browser.py:906
+#: trac/versioncontrol/web_ui/browser.py:909
 #, python-format
 msgid "View repository %(repo)s"
 msgstr "Visualizar Repositorio %(repo)s"
@@ -6699,12 +6699,12 @@ msgstr ""
 "''Adaptado da macro Image.py macro criada por Shun-ichi Goto\n"
 "<gotoh@taiyo.co.jp>''"
 
-#: trac/wiki/macros.py:625
+#: trac/wiki/macros.py:632
 #, python-format
 msgid "No image \"%(id)s\" attached to %(parent)s"
 msgstr "Nenhuma imagem \"%(id)s\" anexada ao %(parent)s"
 
-#: trac/wiki/macros.py:641
+#: trac/wiki/macros.py:648
 msgid ""
 "Display a list of all installed Wiki macros, including documentation if\n"
 "available.\n"
@@ -6727,20 +6727,20 @@ msgstr ""
 " se a\n"
 " opção `PythonOptimize` estiver habilitada para o mod_python!"
 
-#: trac/wiki/macros.py:670
+#: trac/wiki/macros.py:677
 #, python-format
 msgid "Error: Can't get description for macro %(name)s"
 msgstr "Erro: Não foi possível recuperar a descrição para a macro %(name)s"
 
-#: trac/wiki/macros.py:691
+#: trac/wiki/macros.py:698
 msgid "Aliases:"
 msgstr "Apelidos:"
 
-#: trac/wiki/macros.py:694
+#: trac/wiki/macros.py:701
 msgid "Sorry, no documentation found"
 msgstr "Desculpe, nenhuma documentação encontrada"
 
-#: trac/wiki/macros.py:701
+#: trac/wiki/macros.py:708
 msgid ""
 "Produce documentation for the Trac configuration file.\n"
 "\n"
@@ -6757,11 +6757,11 @@ msgstr ""
 "configuração\n"
 "cuja seção e nome iniciarem com os filtros serão mostradas."
 
-#: trac/wiki/macros.py:743
+#: trac/wiki/macros.py:750
 msgid "(no default)"
 msgstr "(sem padrão)"
 
-#: trac/wiki/macros.py:756
+#: trac/wiki/macros.py:763
 msgid ""
 "List all known mime-types which can be used as WikiProcessors.\n"
 "\n"
@@ -6774,11 +6774,11 @@ msgstr ""
 "Pode ser fornecido um argumento opcional que serár interpretado como um "
 "filtro mime-type."
 
-#: trac/wiki/macros.py:779
+#: trac/wiki/macros.py:786
 msgid "MIME Types"
 msgstr "Tipos MIME"
 
-#: trac/wiki/macros.py:794
+#: trac/wiki/macros.py:801
 msgid ""
 "Display a table of content for the Trac guide.\n"
 "\n"
@@ -6795,7 +6795,7 @@ msgstr ""
 "pode ser customizado. Pesquise por TocMacro para um sumário mais "
 "customizável."
 
-#: trac/wiki/macros.py:839
+#: trac/wiki/macros.py:846
 msgid "Table of Contents"
 msgstr "Sumário"
 
