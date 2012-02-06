@@ -100,34 +100,34 @@ class MySQLConnector(Component):
         cnx = self.get_connection(path, log, user, password, host, port,
                                   params)
         cursor = cnx.cursor()
+        utf8_size = {'utf8': 3, 'utf8mb4': 4}.get(cnx.charset)
         from trac.db_default import schema
         for table in schema:
-            for stmt in self.to_sql(table):
+            for stmt in self.to_sql(table, utf8_size=utf8_size):
                 self.env.log.debug(stmt)
                 cursor.execute(stmt)
         cnx.commit()
 
-    def _collist(self, table, columns):
+    def _collist(self, table, columns, utf8_size=3):
         """Take a list of columns and impose limits on each so that indexing
         works properly.
         
-        Some Versions of MySQL limit each index prefix to 500 bytes total, with
-        a max of 255 bytes per column.
+        Some Versions of MySQL limit each index prefix to 1000 bytes total,
+        with a max of 767 bytes per column.
         """
         cols = []
-        limit = 333 / len(columns)
-        if limit > 255:
-            limit = 255
+        limit_col = 767 / utf8_size
+        limit = min(1000 / (utf8_size * len(columns)), limit_col)
         for c in columns:
             name = '`%s`' % c
             table_col = filter((lambda x: x.name == c), table.columns)
             if len(table_col) == 1 and table_col[0].type.lower() == 'text':
                 if table_col[0].key_size is not None:
-                    name += '(%d)' % table_col[0].key_size
+                    name += '(%d)' % min(table_col[0].key_size, limit_col)
                 elif name == '`rev`':
                     name += '(20)'
                 elif name == '`path`':
-                    name += '(255)'
+                    name += '(%d)' % limit_col
                 elif name == '`change_type`':
                     name += '(2)'
                 else:
@@ -137,7 +137,7 @@ class MySQLConnector(Component):
             cols.append(name)
         return ','.join(cols)
 
-    def to_sql(self, table):
+    def to_sql(self, table, utf8_size=3):
         sql = ['CREATE TABLE %s (' % table.name]
         coldefs = []
         for column in table.columns:
@@ -151,7 +151,8 @@ class MySQLConnector(Component):
             coldefs.append('    `%s` %s' % (column.name, ctype))
         if len(table.key) > 0:
             coldefs.append('    PRIMARY KEY (%s)' %
-                           self._collist(table, table.key))
+                           self._collist(table, table.key,
+                                         utf8_size=utf8_size))
         sql.append(',\n'.join(coldefs) + '\n)')
         yield '\n'.join(sql)
 
@@ -159,7 +160,7 @@ class MySQLConnector(Component):
             unique = index.unique and 'UNIQUE' or ''
             yield 'CREATE %s INDEX %s_%s_idx ON %s (%s);' % (unique, table.name,
                   '_'.join(index.columns), table.name,
-                  self._collist(table, index.columns))
+                  self._collist(table, index.columns, utf8_size=utf8_size))
 
     def alter_column_types(self, table, columns):
         """Yield SQL statements altering the type of one or more columns of
@@ -229,6 +230,13 @@ class MySQLConnection(ConnectionWrapper):
         if hasattr(cnx, 'encoders'):
             # 'encoders' undocumented but present since 1.2.1 (r422)
             cnx.encoders[Markup] = cnx.encoders[types.UnicodeType]
+        cursor = cnx.cursor()
+        cursor.execute("SHOW VARIABLES WHERE "
+                       " variable_name='character_set_database'")
+        self.charset = cursor.fetchone()[1]
+        if self.charset != 'utf8':
+            cnx.query("SET NAMES %s" % self.charset)
+            cnx.store_result()
         ConnectionWrapper.__init__(self, cnx, log)
         self._is_closed = False
 
@@ -244,7 +252,7 @@ class MySQLConnection(ConnectionWrapper):
 
     def like(self):
         """Return a case-insensitive LIKE clause."""
-        return "LIKE %s COLLATE utf8_general_ci ESCAPE '/'"
+        return "LIKE %%s COLLATE %s_general_ci ESCAPE '/'" % self.charset
 
     def like_escape(self, text):
         return _like_escape_re.sub(r'/\1', text)
