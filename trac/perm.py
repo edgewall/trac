@@ -25,7 +25,7 @@ from trac.resource import Resource, get_resource_name
 from trac.util.text import print_table, printout, wrap
 from trac.util.translation import _
 
-__all__ = ['IPermissionRequestor', 'IPermissionStore',
+__all__ = ['IPermissionRequestor', 'IPermissionStore', 'IPermissionPolicy',
            'IPermissionGroupProvider', 'PermissionError', 'PermissionSystem']
 
 
