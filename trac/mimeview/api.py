@@ -451,11 +451,25 @@ def detect_unicode(data):
         return None
 
 def content_to_unicode(env, content, mimetype):
-    """Retrieve an `unicode` object from a `content` to be previewed"""
+    """Retrieve an `unicode` object from a `content` to be previewed.
+
+    In case the raw content had an unicode BOM, we remove it.
+
+    >>> from trac.test import EnvironmentStub
+    >>> env = EnvironmentStub()
+    >>> content_to_unicode(env, u"\ufeffNo BOM! h\u00e9 !", '')
+    u'No BOM! h\\xe9 !'
+    >>> content_to_unicode(env, "\xef\xbb\xbfNo BOM! h\xc3\xa9 !", '')
+    u'No BOM! h\\xe9 !'
+
+    """
     mimeview = Mimeview(env)
     if hasattr(content, 'read'):
         content = content.read(mimeview.max_preview_size)
-    return mimeview.to_unicode(content, mimetype)
+    u = mimeview.to_unicode(content, mimetype)
+    if u and u[0] == u'\ufeff':
+        u = u[1:]
+    return u
 
 
 class IHTMLPreviewRenderer(Interface):
