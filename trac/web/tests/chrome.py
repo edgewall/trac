@@ -9,7 +9,7 @@ import unittest
 class Request(object):
     locale = None
     def __init__(self, **kwargs):
-        self.chrome = {'static_hash': None}
+        self.chrome = {}
         for k, v in kwargs.items():
             setattr(self, k, v)
 

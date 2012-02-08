@@ -521,7 +521,7 @@ class Request(object):
             self.write(data)
         raise RequestDone
 
-    def send_file(self, path, mimetype=None, expires=None):
+    def send_file(self, path, mimetype=None):
         """Send a local file to the browser.
         
         This method includes the "Last-Modified", "Content-Type" and
@@ -550,8 +550,6 @@ class Request(object):
         self.send_header('Content-Type', mimetype)
         self.send_header('Content-Length', stat.st_size)
         self.send_header('Last-Modified', last_modified)
-        if expires is not None:
-            self.send_header('Expires', http_date(expires))
         self.end_headers()
 
         if self.method != 'HEAD':
