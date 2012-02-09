@@ -31,7 +31,7 @@ from trac.util.text import path_to_unicode, print_table, printout, \
                            stream_encoding, to_unicode, wrap
 from trac.util.translation import _
 
-__all__ = ['IPermissionRequestor', 'IPermissionStore',
+__all__ = ['IPermissionRequestor', 'IPermissionStore', 'IPermissionPolicy',
            'IPermissionGroupProvider', 'PermissionError', 'PermissionSystem']
 
 
