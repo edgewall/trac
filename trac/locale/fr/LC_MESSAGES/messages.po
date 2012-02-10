@@ -669,7 +669,7 @@ msgid ""
 "retry."
 msgstr ""
 "Le répertoire de base '%(env)s' n'existe pas. Veuillez le créer "
-"manuellementet ressayer."
+"manuellement et ressayer."
 
 #: trac/admin/console.py:422
 msgid "Creating and Initializing Project"
@@ -5817,7 +5817,7 @@ msgid ""
 " '.' or '..')."
 msgstr ""
 "Le nouveau nom n'est pas valide (aucun élément séparé par des '/' ne "
-"peutêtre '.' ou '..')."
+"peut être '.' ou '..')."
 
 #: trac/wiki/web_ui.py:301
 msgid "The new name must be different from the old name."
