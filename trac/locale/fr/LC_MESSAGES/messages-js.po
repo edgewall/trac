@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-05-21 02:09+0200\n"
-"PO-Revision-Date: 2011-01-23 22:02+0100\n"
+"POT-Creation-Date: 2012-02-10 01:08+0100\n"
+"PO-Revision-Date: 2011-01-25 20:28+0100\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.5\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -41,20 +41,20 @@ msgstr "Ouvrir le sous-répertoire"
 msgid "Re-expand directory"
 msgstr "Réouvrir le sous-répertoire"
 
-#: trac/htdocs/js/expand_dir.js:115
+#: trac/htdocs/js/expand_dir.js:121
 #, python-format
 msgid "Loading %(entry)s..."
 msgstr "Chargement de %(entry)s ..."
 
-#: trac/htdocs/js/expand_dir.js:143
+#: trac/htdocs/js/expand_dir.js:149
 msgid "(empty)"
 msgstr "(vide)"
 
-#: trac/htdocs/js/expand_dir.js:151
+#: trac/htdocs/js/expand_dir.js:157
 msgid "(error)"
 msgstr "(erreur)"
 
-#: trac/htdocs/js/expand_dir.js:158
+#: trac/htdocs/js/expand_dir.js:164
 msgid "Fold directory"
 msgstr "Fermer le répertoire"
 
