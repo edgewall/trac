@@ -7,7 +7,10 @@
       xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="layout.html" />
   <head>
-    <title>Search<py:if test="query"> Results</py:if></title>
+    <title py:choose="">
+      <py:when test="query">Search Results</py:when>
+      <py:otherwise>Search</py:otherwise>
+    </title>
     <py:if test="results">
         <meta name="startIndex" content="${results.span[0] + 1}"/>
         <meta name="totalResults" content="$results.num_items"/>
