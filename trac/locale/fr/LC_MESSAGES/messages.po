@@ -5816,8 +5816,8 @@ msgid ""
 "The new name is invalid (a name which is separated with slashes cannot be"
 " '.' or '..')."
 msgstr ""
-"Le nouveau nom n'est pas valide (aucun élément séparé par des '/' ne "
-"peut être '.' ou '..')."
+"Le nouveau nom n'est pas valide (aucun élément séparé par des '/' ne peut"
+" être '.' ou '..')."
 
 #: trac/wiki/web_ui.py:301
 msgid "The new name must be different from the old name."
