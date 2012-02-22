@@ -102,7 +102,7 @@
       </div>
       <h1 id="trac-ticket-title" py:choose="">
         <py:when test="ticket.exists">
-          <a href="${href.ticket(ticket.id)}">Ticket #${ticket.id}</a>
+          <a href="${href.ticket(ticket.id)}" i18n:msg="id">Ticket #${ticket.id}</a>
           <span class="status">(${ticket.status}<py:if
               test="ticket.type"> ${ticket.type}</py:if><py:if
               test="ticket.resolution">: ${ticket.resolution}</py:if>)</span>
@@ -165,7 +165,8 @@
             <a id="edit" onfocus="$('#comment').get(0).focus()">Add a comment</a>
           </h2>
           <div id="trac-edit-warning" class="warning system-message"
-               style="${'display: none' if start_time == ticket['changetime'] else None}">
+               style="${'display: none' if start_time == ticket['changetime'] else None}"
+               i18n:msg="">
             This ticket has been modified since you started editing. You should review the
             <em class="trac-new">other modifications</em> which have been appended above,
             and any <em class="trac-conflict">conflicts</em> shown in the preview below.
