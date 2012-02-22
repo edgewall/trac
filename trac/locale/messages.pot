@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.13\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2012-02-10 02:32+0100\n"
+"POT-Creation-Date: 2012-02-22 23:22+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -300,9 +300,9 @@ msgstr ""
 #: trac/attachment.py:1023 trac/admin/templates/admin_components.html:80
 #: trac/admin/templates/admin_enums.html:48
 #: trac/admin/templates/admin_milestones.html:101
-#: trac/admin/templates/admin_versions.html:78 trac/templates/about.html:84
-#: trac/templates/error.html:160 trac/ticket/admin.py:210
-#: trac/ticket/admin.py:397 trac/ticket/admin.py:555
+#: trac/admin/templates/admin_versions.html:78 trac/templates/about.html:69
+#: trac/templates/about.html:90 trac/templates/error.html:160
+#: trac/ticket/admin.py:210 trac/ticket/admin.py:397 trac/ticket/admin.py:555
 #: trac/versioncontrol/admin.py:113
 #: trac/versioncontrol/templates/admin_repositories.html:125
 #: trac/web/session.py:402
@@ -314,7 +314,7 @@ msgid "Size"
 msgstr ""
 
 #: trac/attachment.py:1023 trac/templates/history_view.html:30
-#: trac/ticket/templates/ticket.html:327
+#: trac/ticket/templates/ticket.html:328
 #: trac/versioncontrol/templates/revisionlog.html:112
 msgid "Author"
 msgstr ""
@@ -524,7 +524,7 @@ msgid "User"
 msgstr ""
 
 #: trac/perm.py:644 trac/admin/templates/admin_perms.html:70
-#: trac/ticket/templates/ticket.html:298
+#: trac/ticket/templates/ticket.html:299
 msgid "Action"
 msgstr ""
 
@@ -944,7 +944,7 @@ msgid "URL:"
 msgstr ""
 
 #: trac/admin/templates/admin_basics.html:29
-#: trac/ticket/templates/ticket.html:214
+#: trac/ticket/templates/ticket.html:215
 msgid "Description:"
 msgstr ""
 
@@ -1088,17 +1088,13 @@ msgstr ""
 msgid "Order"
 msgstr ""
 
-#: trac/admin/templates/admin_enums.html:77
-msgid "Note:"
-msgstr ""
-
-#: trac/admin/templates/admin_enums.html:77
+#: trac/admin/templates/admin_enums.html:76
 msgid ""
-"The order of priorities determines the coloring of entries\n"
-"              in the ticket queries and reports."
+"[1:Note:] The order of priorities determines the\n"
+"              coloring of entries in the ticket queries and reports."
 msgstr ""
 
-#: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:79
+#: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:85
 msgid "Configuration"
 msgstr ""
 
@@ -1680,8 +1676,8 @@ msgstr ""
 msgid "Preview:"
 msgstr ""
 
-#: trac/search/web_ui.py:72 trac/search/templates/search.html:10
-#: trac/search/templates/search.html:23 trac/search/templates/search.html:28
+#: trac/search/web_ui.py:72 trac/search/templates/search.html:12
+#: trac/search/templates/search.html:26 trac/search/templates/search.html:31
 #: trac/templates/theme.html:29
 msgid "Search"
 msgstr ""
@@ -1704,29 +1700,33 @@ msgstr ""
 msgid "Previous Page"
 msgstr ""
 
-#: trac/search/templates/search.html:10 trac/search/templates/search.html:40
+#: trac/search/templates/search.html:11
+msgid "Search Results"
+msgstr ""
+
+#: trac/search/templates/search.html:43
 #: trac/ticket/templates/query_results.html:20
 #: trac/ticket/templates/report_view.html:78
 msgid "Results"
 msgstr ""
 
-#: trac/search/templates/search.html:48
+#: trac/search/templates/search.html:51
 #, python-format
 msgid "Quickjump to %(name)s"
 msgstr ""
 
-#: trac/search/templates/search.html:56
+#: trac/search/templates/search.html:59
 #, python-format
 msgid "By %(author)s"
 msgstr ""
 
-#: trac/search/templates/search.html:65
+#: trac/search/templates/search.html:68
 #: trac/ticket/templates/report_view.html:98
 #: trac/ticket/templates/report_view.html:209
 msgid "No matches found."
 msgstr ""
 
-#: trac/search/templates/search.html:69
+#: trac/search/templates/search.html:72
 msgid ""
 "[1:Note:] See [2:TracSearch]\n"
 "        for help on searching."
@@ -1774,20 +1774,34 @@ msgstr ""
 msgid "System Information"
 msgstr ""
 
-#: trac/templates/about.html:64
+#: trac/templates/about.html:56
+msgid "Package"
+msgstr ""
+
+#: trac/templates/about.html:56 trac/templates/about.html:69
+#: trac/templates/history_view.html:28 trac/ticket/admin.py:429
+#: trac/ticket/api.py:307
+msgid "Version"
+msgstr ""
+
+#: trac/templates/about.html:67
 msgid "Installed Plugins"
 msgstr ""
 
-#: trac/templates/about.html:72 trac/templates/error.html:192
+#: trac/templates/about.html:69
+msgid "Location"
+msgstr ""
+
+#: trac/templates/about.html:77 trac/templates/error.html:192
 #: trac/web/main.py:570
 msgid "N/A"
 msgstr ""
 
-#: trac/templates/about.html:83
+#: trac/templates/about.html:89
 msgid "Section"
 msgstr ""
 
-#: trac/templates/about.html:85 trac/templates/error.html:160
+#: trac/templates/about.html:91 trac/templates/error.html:160
 msgid "Value"
 msgstr ""
 
@@ -1822,7 +1836,7 @@ msgstr ""
 msgid "Attachment Info"
 msgstr ""
 
-#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:332
+#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:333
 #: trac/wiki/templates/wiki_edit_form.html:47
 msgid "Your email or username:"
 msgstr ""
@@ -2174,11 +2188,6 @@ msgstr ""
 msgid "Change history"
 msgstr ""
 
-#: trac/templates/history_view.html:28 trac/ticket/admin.py:429
-#: trac/ticket/api.py:307
-msgid "Version"
-msgstr ""
-
 #: trac/templates/history_view.html:31
 msgid "Comment"
 msgstr ""
@@ -2219,7 +2228,7 @@ msgstr ""
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:44
-#: trac/ticket/templates/ticket.html:355
+#: trac/ticket/templates/ticket.html:356
 msgid "Attachments"
 msgstr ""
 
@@ -2498,7 +2507,7 @@ msgstr ""
 msgid "Summary"
 msgstr ""
 
-#: trac/ticket/api.py:289 trac/ticket/templates/ticket.html:328
+#: trac/ticket/api.py:289 trac/ticket/templates/ticket.html:329
 msgid "Reporter"
 msgstr ""
 
@@ -3102,6 +3111,7 @@ msgid ""
 msgstr ""
 
 #: trac/ticket/web_ui.py:600 trac/ticket/web_ui.py:818
+#: trac/ticket/templates/ticket.html:105
 #, python-format
 msgid "Ticket #%(id)s"
 msgstr ""
@@ -3418,7 +3428,7 @@ msgid "Retarget associated open tickets to milestone:"
 msgstr ""
 
 #: trac/ticket/templates/milestone_edit.html:104
-#: trac/ticket/templates/ticket.html:364
+#: trac/ticket/templates/ticket.html:365
 #: trac/ticket/templates/ticket_change.html:110
 #: trac/wiki/templates/wiki_edit_form.html:71
 #: trac/wiki/templates/wiki_edit_form.html:76
@@ -3774,10 +3784,6 @@ msgstr ""
 msgid "Modify"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:105
-msgid "Ticket #"
-msgstr ""
-
 #: trac/ticket/templates/ticket.html:112
 msgid "at [1:Initial Version]"
 msgstr ""
@@ -3811,94 +3817,77 @@ msgstr ""
 msgid "Add a comment"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:168
+#: trac/ticket/templates/ticket.html:167
 msgid ""
 "This ticket has been modified since you started editing. You should "
-"review the"
-msgstr ""
-
-#: trac/ticket/templates/ticket.html:170
-msgid "other modifications"
-msgstr ""
-
-#: trac/ticket/templates/ticket.html:170
-msgid ""
-"which have been appended above,\n"
-"            and any"
-msgstr ""
-
-#: trac/ticket/templates/ticket.html:171
-msgid "conflicts"
-msgstr ""
-
-#: trac/ticket/templates/ticket.html:171
-msgid ""
-"shown in the preview below.\n"
+"review the\n"
+"            [1:other modifications] which have been appended above,\n"
+"            and any [2:conflicts] shown in the preview below.\n"
 "            You can nevertheless proceed and submit your changes if you "
 "wish so."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:176
+#: trac/ticket/templates/ticket.html:177
 msgid ""
 "You may use\n"
 "              [1:WikiFormatting]\n"
 "              here."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:186
+#: trac/ticket/templates/ticket.html:187
 msgid "Modify Ticket"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:192
+#: trac/ticket/templates/ticket.html:193
 msgid "Change Properties"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:193
+#: trac/ticket/templates/ticket.html:194
 msgid "Properties"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:197
+#: trac/ticket/templates/ticket.html:198
 msgid "Summary:"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:205
+#: trac/ticket/templates/ticket.html:206
 msgid "Reporter:"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:217
+#: trac/ticket/templates/ticket.html:218
 msgid ""
 "You may use\n"
 "                          [1:WikiFormatting] here."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:233
+#: trac/ticket/templates/ticket.html:234
 #: trac/ticket/templates/ticket_box.html:43
 #, python-format
 msgid "%(field)s:"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:272
+#: trac/ticket/templates/ticket.html:273
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:278
+#: trac/ticket/templates/ticket.html:279
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:341
+#: trac/ticket/templates/ticket.html:342
 #: trac/wiki/templates/wiki_edit_form.html:51
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:349
+#: trac/ticket/templates/ticket.html:350
 msgid "I have files to attach to this ticket"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:355
+#: trac/ticket/templates/ticket.html:356
 msgid "Go to the list of attachments"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:363
+#: trac/ticket/templates/ticket.html:364
 #: trac/ticket/templates/ticket_change.html:108
 #: trac/wiki/templates/wiki_edit.html:71 trac/wiki/templates/wiki_edit.html:129
 #: trac/wiki/templates/wiki_edit_form.html:40
@@ -3906,11 +3895,11 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:364
+#: trac/ticket/templates/ticket.html:365
 msgid "Create ticket"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:371
+#: trac/ticket/templates/ticket.html:372
 msgid ""
 "[1:Note:] See\n"
 "        [2:TracTickets] for help on using\n"
@@ -4898,7 +4887,8 @@ msgid "(less than one hour ago)"
 msgstr ""
 
 #: trac/versioncontrol/templates/changeset.html:140
-msgid "ago)"
+#, python-format
+msgid "(%(age)s ago)"
 msgstr ""
 
 #: trac/versioncontrol/templates/changeset.html:154
@@ -6231,7 +6221,8 @@ msgid "See the preview"
 msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:74
-msgid "Editing"
+#, python-format
+msgid "Editing %(name)s"
 msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:76
