@@ -509,7 +509,7 @@ msgstr "利用できるアクション:"
 
 #: trac/perm.py:656 trac/admin/web_ui.py:335
 msgid "All upper-cased tokens are reserved for permission names"
-msgstr "権限名に予約されているため、全て大文字の名称は使えません"
+msgstr "すべて大文字の名称は権限名に予約されているため使えません"
 
 #: trac/resource.py:336
 #, python-format
@@ -3584,7 +3584,7 @@ msgstr "チケット #"
 
 #: trac/ticket/templates/ticket.html:91
 msgid "at [1:Initial Version]"
-msgstr "初期バージョン"
+msgstr "[1:初期バージョン]"
 
 #: trac/ticket/templates/ticket.html:94
 #, python-format
@@ -5432,7 +5432,7 @@ msgstr "エイリアス:"
 
 #: trac/wiki/macros.py:654
 msgid "Sorry, no documentation found"
-msgstr "'ドキュメントが見つかりません"
+msgstr "ドキュメントが見つかりません"
 
 #: trac/wiki/macros.py:720
 msgid "MIME Types"
@@ -5503,7 +5503,7 @@ msgstr "ページ %(name)s のバージョン %(version)d を削除しました�
 msgid ""
 "The new name is invalid (a name which is separated with slashes cannot be"
 " '.' or '..')."
-msgstr "新しい名前が正しくありません (スラッシュで分割した名前を '.' または '..' に出来ません)。"
+msgstr "新しい名前が正しくありません (スラッシュで分割した名前を '.' または '..' にできません)。"
 
 #: trac/wiki/web_ui.py:301
 msgid "The new name must be different from the old name."
