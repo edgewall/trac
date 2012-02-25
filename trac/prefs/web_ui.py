@@ -61,6 +61,10 @@ class PreferencesModule(Component):
             return True
 
     def process_request(self, req):
+        xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
+        if xhr and req.method == 'POST' and 'save_prefs' in req.args:
+            self._do_save_xhr(req)
+
         panel_id = req.args['panel_id']
 
         panels = []
@@ -125,6 +129,13 @@ class PreferencesModule(Component):
         return [pkg_resources.resource_filename('trac.prefs', 'templates')]
 
     # Internal methods
+
+    def _do_save_xhr(self, req):
+        for key in req.args:
+            if not key in ['save_prefs', 'panel_id']:
+                req.session[key] = req.args[key]
+        req.session.save()
+        req.send_no_content()
 
     def _do_save(self, req):
         for field in self._form_fields:

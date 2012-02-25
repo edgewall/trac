@@ -44,11 +44,12 @@ from trac.util.text import exception_to_unicode, obfuscate_email_address, \
 from trac.util.presentation import separated
 from trac.util.translation import _, tag_, tagn_, N_, gettext, ngettext
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
-from trac.web import arg_list_to_args, parse_arg_list, IRequestHandler
+from trac.web import arg_list_to_args, parse_arg_list, IRequestHandler, \
+                     RequestDone
 from trac.web.chrome import (Chrome, INavigationContributor, ITemplateProvider,
                              add_ctxtnav, add_link, add_notice, add_script,
-                             add_stylesheet, add_warning, auth_link,
-                             prevnext_nav, web_context)
+                             add_script_data, add_stylesheet, add_warning,
+                             auth_link, prevnext_nav, web_context)
 from trac.wiki.formatter import format_to, format_to_html, format_to_oneliner
 
 
@@ -634,6 +635,7 @@ class TicketModule(Component):
                             add_ticket_link('next', int(next_id))
                     break
 
+        add_script_data(req, {'comments_prefs': self._get_prefs(req)})
         add_stylesheet(req, 'common/css/ticket.css')
         add_script(req, 'common/js/folding.js')
         Chrome(self.env).add_wiki_toolbars(req)
@@ -653,7 +655,13 @@ class TicketModule(Component):
                      _("Back to Query"))
 
         return 'ticket.html', data, None
-
+        
+    def _get_prefs(self, req):
+        return {'comments_order': req.session.get('ticket_comments_order',
+                                                  'oldest'),
+                'comments_only': req.session.get('ticket_comments_only',
+                                                 False)}
+        
     def _prepare_data(self, req, ticket, absurls=False):
         return {'ticket': ticket, 'to_utimestamp': to_utimestamp,
                 'context': web_context(req, ticket.resource,

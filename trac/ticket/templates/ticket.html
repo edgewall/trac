@@ -33,7 +33,7 @@
         }
         actions.click(updateActionFields);
         updateActionFields();
-        
+
         var comment_focused = false;
         $("#comment").focus(function() { comment_focused = true; })
                      .blur(function() { comment_focused = false; });
@@ -41,10 +41,9 @@
           var items = $(reply);
           // Update ticket box
           $("#ticket").replaceWith(items.filter('#ticket'));
-          // Unthread and update changelog
-          var threaded_toggle = $('#trac-threaded-toggle');
-          if (threaded_toggle.checked())
-            threaded_toggle.click();
+          // Unthread, unrevert and update changelog
+          if (!$('#trac-comments-oldest').checked())
+            $('#trac-comments-oldest').click().change();
           $("#changelog").replaceWith(items.filter("#changelog"));
           // Show warning
           var new_changes = $("#changelog .trac-new");
@@ -124,7 +123,7 @@
 
       <py:if test="ticket.exists">
         <xi:include href="ticket_box.html" py:with="preview_mode = change_preview.fields"/>
-        
+
         <!--! do not show attachments for old versions of this ticket or for new tickets -->
         <py:if test="not version and version != 0 and ticket.exists">
           <xi:include href="list_of_attachments.html"
@@ -132,12 +131,24 @@
         </py:if>
 
         <div style="${'display: none' if not changes else None}">
-          <form id="trac-threaded-form" method="get" action="" style="display: none">
-            <div>
-              <input id="trac-threaded-toggle" type="checkbox" />
-              <label for="trac-threaded-toggle">Threaded Comments</label>
-            </div>
-          </form>
+          <div style="position: relative">
+            <form id="prefs" method="get" action="${href.prefs()}" style="position: absolute; right: 0">
+              <div id="trac-comments-order">
+                <input type="radio" id="trac-comments-oldest" name="trac-comments-order" value="oldest" checked="checked" />
+                <label for="trac-comments-oldest">Oldest first</label>
+                <input type="radio" id="trac-comments-newest" name="trac-comments-order" value="newest" />
+                <label for="trac-comments-newest">Newest first</label>
+                <span id="trac-threaded-toggle" style="display: none">
+                  <input type="radio" id="trac-comments-threaded" name="trac-comments-order" value="threaded" />
+                  <label for="trac-comments-threaded">Threaded</label>
+                </span>
+              </div>
+              <div>
+                <input id="trac-comments-only-toggle" type="checkbox" />
+                <label for="trac-comments-only-toggle">Comments only</label>
+              </div>
+            </form>
+          </div>
 
           <h2 class="foldable">Change History</h2>
 
@@ -368,7 +379,7 @@ ${value}</textarea>
       </form>
 
       <xi:include href="ticket_box.html" py:if="not ticket.exists" py:with="preview_mode = True"/>
-      
+
       <div id="help" i18n:msg="">
         <strong>Note:</strong> See
         <a href="${href.wiki('TracTickets')}">TracTickets</a> for help on using

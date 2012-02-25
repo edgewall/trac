@@ -521,6 +521,13 @@ class Request(object):
             self.write(data)
         raise RequestDone
 
+    def send_no_content(self):
+        self.send_response(204)
+        self.send_header('Content-Length', 0)
+        self.send_header('Content-Type', 'text/plain')
+        self.end_headers()
+        raise RequestDone
+
     def send_file(self, path, mimetype=None):
         """Send a local file to the browser.
         
