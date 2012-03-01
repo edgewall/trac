@@ -1114,8 +1114,7 @@ class QueryModule(Component):
                                                   'optgroups')
                                       if key in field))
                           for name, field in data['fields'].iteritems())
-        add_script_data(req, {'properties': properties,
-                              'modes': data['modes']})
+        add_script_data(req, properties=properties, modes=data['modes'])
 
         add_stylesheet(req, 'common/css/report.css')
         add_script(req, 'common/js/query.js')

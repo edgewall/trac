@@ -218,7 +218,7 @@ class LogModule(Component):
                          line_width=0.04, dot_radius=0.1)
             add_script(req, 'common/js/excanvas.js', ie_if='IE')
             add_script(req, 'common/js/log_graph.js')
-            add_script_data(req, {'graph': graph})
+            add_script_data(req, graph=graph)
         
         def make_log_href(path, **args):
             link_rev = rev

@@ -30,7 +30,8 @@ try:
                             format_date as babel_format_date, \
                             format_time as babel_format_time, \
                             get_datetime_format, get_date_format, \
-                            get_time_format, get_month_names, get_period_names
+                            get_time_format, get_month_names, \
+                            get_period_names, get_day_names
 except ImportError:
     babel = None
 
@@ -283,10 +284,102 @@ def get_datetime_format_hint(locale=None):
 
     t = datetime(1999, 10, 29, 23, 59, 58, tzinfo=utc)
     tmpl = format_datetime(t, tzinfo=utc)
+    ampm = format_time(t, '%p', tzinfo=utc)
+    if ampm:
+        tmpl = tmpl.replace(ampm, 'a', 1)
     return tmpl.replace('1999', 'YYYY', 1).replace('99', 'YY', 1) \
                .replace('10', 'MM', 1).replace('29', 'DD', 1) \
                .replace('23', 'hh', 1).replace('11', 'hh', 1) \
                .replace('59', 'mm', 1).replace('58', 'ss', 1)
+
+def get_month_names_jquery_ui(req):
+    """Get the month names for the jQuery UI datepicker library"""
+    locale = req.lc_time
+    if locale == 'iso8601':
+        locale = req.locale
+    if babel and locale:
+        month_names = {}
+        for width in ('wide', 'abbreviated'):
+            names = get_month_names(width, locale=locale)
+            month_names[width] = [names[i + 1] for i in xrange(12)]
+        return month_names
+
+    return {
+        'wide': (
+            'January', 'February', 'March', 'April', 'May', 'June', 'July',
+            'August', 'September', 'October', 'November', 'December'),
+        'abbreviated': (
+            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+            'Oct', 'Nov', 'Dec'),
+    }
+
+def get_day_names_jquery_ui(req):
+    """Get the day names for the jQuery UI datepicker library"""
+    locale = req.lc_time
+    if locale == 'iso8601':
+        locale = req.locale
+    if babel and locale:
+        day_names = {}
+        for width in ('wide', 'abbreviated', 'narrow'):
+            names = get_day_names(width, locale=locale)
+            day_names[width] = [names[(i + 6) % 7] for i in xrange(7)]
+        return day_names
+
+    return {
+        'wide': ('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
+                 'Friday', 'Saturday'),
+        'abbreviated': ('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'),
+        'narrow': ('Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'),
+    }
+
+def get_date_format_jquery_ui(locale):
+    """Get the date format for the jQuery UI datepicker library."""
+    if locale == 'iso8601':
+        return 'yy-mm-dd'
+    if babel and locale:
+        values = {'yyyy': 'yy', 'y': 'yy', 'M': 'm', 'MM': 'mm', 'MMM': 'M',
+                  'd': 'd', 'dd': 'dd'}
+        return get_date_format('medium', locale=locale).format % values
+
+    t = datetime(1999, 10, 29, tzinfo=utc)
+    tmpl = format_date(t, tzinfo=utc)
+    return tmpl.replace('1999', 'yy', 1).replace('99', 'y', 1) \
+               .replace('10', 'mm', 1).replace('29', 'dd', 1)
+
+def get_time_format_jquery_ui(locale):
+    """Get the time format for the jQuery UI timepicker addon."""
+    if locale == 'iso8601':
+        return 'hh:mm:ssz'  # XXX timepicker doesn't support 'ISO_8601'
+    if babel and locale:
+        values = {'h': 'h', 'hh': 'hh', 'H': 'h', 'HH': 'hh',
+                  'm': 'm', 'mm': 'mm', 's': 's', 'ss': 'ss',
+                  'a': 'TT'}
+        return get_time_format('medium', locale=locale).format % values
+
+    t = datetime(1999, 10, 29, 23, 59, 58, tzinfo=utc)
+    tmpl = format_time(t, tzinfo=utc)
+    ampm = format_time(t, '%p', tzinfo=utc)
+    if ampm:
+        tmpl = tmpl.replace(ampm, 'TT', 1)
+    return tmpl.replace('23', 'hh', 1).replace('11', 'hh', 1) \
+               .replace('59', 'mm', 1).replace('58', 'ss', 1)
+
+def get_timezone_list_jquery_ui(t=None):
+    """Get timezone list for jQuery timepicker addon"""
+    t = datetime.now(utc) if t is None else utc.localize(t)
+    zones = set(t.astimezone(get_timezone(tz)).strftime('%z')
+                for tz in all_timezones)
+    return [{'value': 'Z', 'label': '+00:00'} \
+            if zone == '+0000' else zone[:-2] + ':' + zone[-2:]
+            for zone in sorted(zones, key=lambda tz: int(tz))]
+
+def is_24_hours(locale):
+    """Returns `True` for 24 hour time formats."""
+    if locale == 'iso8601':
+        return True
+    t = datetime(1999, 10, 29, 23, tzinfo=utc)
+    tmpl = format_datetime(t, tzinfo=utc, locale=locale)
+    return '23' in tmpl
 
 def http_date(t=None):
     """Format `datetime` object `t` as a rfc822 timestamp"""
@@ -764,4 +857,3 @@ except ImportError:
     def get_timezone(tzname):
         """Fetch timezone instance by name or return `None`"""
         return _tzmap.get(tzname)
-

@@ -73,7 +73,7 @@ class ChromeTestCase(unittest.TestCase):
     def test_add_script_data(self):
         req = Request(href=Href('/trac.cgi'))
         add_script_data(req, {'var1': 1, 'var2': 'Testing'})
-        add_script_data(req, {'var2': 'More testing', 'var3': 3})
+        add_script_data(req, var2='More testing', var3=3)
         self.assertEqual({'var1': 1, 'var2': 'More testing', 'var3': 3},
                          req.chrome['script_data'])
 

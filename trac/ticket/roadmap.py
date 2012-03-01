@@ -815,7 +815,9 @@ class MilestoneModule(Component):
         else:
             req.perm(milestone.resource).require('MILESTONE_CREATE')
 
-        Chrome(self.env).add_wiki_toolbars(req)
+        chrome = Chrome(self.env)
+        chrome.add_jquery_ui(req)
+        chrome.add_wiki_toolbars(req)
         return 'milestone_edit.html', data, None
 
     def _render_view(self, req, milestone):

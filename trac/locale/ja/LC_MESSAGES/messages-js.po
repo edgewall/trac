@@ -68,6 +68,70 @@ msgstr "%(title)sの表示"
 msgid "%(title)s (click to hide column)"
 msgstr "%(title)s (クリックすると列を非表示になります)"
 
+#. TRANSLATOR: Format in month heading in the datepicker, extracts yearSuffix
+#. and showMonthAfterYear
+#: trac/htdocs/js/jquery-ui-i18n.js:4
+msgid "$month$year"
+msgstr "$year年$month"
+
+#. TRANSLATOR: Link that closes the datepicker
+#. TRANSLATOR: Link that closes the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:39
+msgid "Done"
+msgstr "閉じる"
+
+#. TRANSLATOR: Link to the previous month in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:9
+msgid "Prev"
+msgstr "前"
+
+#. TRANSLATOR: Link to the next month in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:11
+msgid "Next"
+msgstr "次"
+
+#. TRANSLATOR: Link to the current day in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:13
+msgid "Today"
+msgstr "今日"
+
+#. TRANSLATOR: Heading for the week-of-the-year column in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:20
+msgid "Wk"
+msgstr "週"
+
+#. TRANSLATOR: Heading of the standalone timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:30
+msgid "Choose Time"
+msgstr "時間を選択"
+
+#. TRANSLATOR: Time selector label
+#: trac/htdocs/js/jquery-ui-i18n.js:32
+msgid "Time"
+msgstr "時間"
+
+#. TRANSLATOR: Time labels in the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:34
+msgid "Hour"
+msgstr "時"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:34
+msgid "Minute"
+msgstr "分"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:34
+msgid "Second"
+msgstr "秒"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:35
+msgid "Time Zone"
+msgstr "タイムゾーン"
+
+#. TRANSLATOR: Link to pick the current time in the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:37
+msgid "Now"
+msgstr "現時刻"
+
 #: trac/htdocs/js/query.js:131
 msgid "A filter already exists for that property"
 msgstr "このプロパティは既にフィルタで使われています"
