@@ -88,12 +88,6 @@
               </tr>
 
               <py:with vars="result_rows = [t for t in row if result[t]]">
-                <tr py:if="result_rows" class="fullrow">
-                  <td colspan="${len(headers)}">
-                    <p class="meta" i18n:msg="author, date">Reported by <strong>${authorinfo(result.reporter)}</strong>,
-                      ${pretty_dateinfo(result.time)}.</p>
-                  </td>
-                </tr>
                 <py:choose>
                   <tr py:when="ticket_context.resource in context" class="fullrow">
                     <td colspan="${len(headers)}">
