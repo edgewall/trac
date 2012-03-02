@@ -84,6 +84,8 @@ facilities.
         '': ['templates/*'],
         'trac': ['htdocs/*.*', 'htdocs/README', 'htdocs/js/*.*',
                  'htdocs/js/messages/*.*', 'htdocs/css/*.*',
+                 'htdocs/css/jquery-ui/*.*',
+                 'htdocs/css/jquery-ui/images/*.*',
                  'htdocs/guide/*', 'locale/*/LC_MESSAGES/messages.mo',
                  'locale/*/LC_MESSAGES/tracini.mo'],
         'trac.wiki': ['default-pages/*'],
