@@ -155,6 +155,7 @@ facilities.
         tracopt.ticket.clone = tracopt.ticket.clone
         tracopt.ticket.commit_updater = tracopt.ticket.commit_updater
         tracopt.ticket.deleter = tracopt.ticket.deleter
+        tracopt.versioncontrol.git.git_fs = tracopt.versioncontrol.git.git_fs
     """,
 
     **extra
