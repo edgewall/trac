@@ -14,17 +14,23 @@
 
 from __future__ import with_statement
 
-import os, re, sys, time, weakref
+import os
+import codecs
 from collections import deque
-from functools import partial
-from threading import Lock
-from subprocess import Popen, PIPE
-from operator import itemgetter
 from contextlib import contextmanager
 import cStringIO
-import codecs
+from functools import partial
+from operator import itemgetter
+import re
+from subprocess import Popen, PIPE
+import sys
+from threading import Lock
+import time
+import weakref
 
-__all__ = ["git_version", "GitError", "GitErrorSha", "Storage", "StorageFactory"]
+
+__all__ = ['git_version', 'GitError', 'GitErrorSha', 'Storage',
+           'StorageFactory']
 
 class GitError(Exception):
     pass
@@ -33,19 +39,18 @@ class GitErrorSha(GitError):
     pass
 
 class GitCore(object):
-    """
-    Low-level wrapper around git executable
-    """
+    """Low-level wrapper around git executable"""
 
-    def __init__(self, git_dir=None, git_bin="git"):
+    def __init__(self, git_dir=None, git_bin='git'):
         self.__git_bin = git_bin
         self.__git_dir = git_dir
 
     def __repr__(self):
-        return '<GitCore bin="%s" dir="%s">' % (self.__git_bin, self.__git_dir)
+        return '<GitCore bin="%s" dir="%s">' % (self.__git_bin,
+                                                self.__git_dir)
 
     def __build_git_cmd(self, gitcmd, *args):
-        "construct command tuple for git call suitable for Popen()"
+        """construct command tuple for git call suitable for Popen()"""
 
         cmd = [self.__git_bin]
         if self.__git_dir:
@@ -56,14 +61,14 @@ class GitCore(object):
         return cmd
 
     def __pipe(self, git_cmd, *cmd_args, **kw):
-        if sys.platform == "win32":
+        if sys.platform == 'win32':
             return Popen(self.__build_git_cmd(git_cmd, *cmd_args), **kw)
         else:
             return Popen(self.__build_git_cmd(git_cmd, *cmd_args),
                          close_fds=True, **kw)
 
     def __execute(self, git_cmd, *cmd_args):
-        "execute git command and return file-like object of stdout"
+        """execute git command and return file-like object of stdout"""
 
         #print >>sys.stderr, "DEBUG:", git_cmd, cmd_args
 
@@ -89,8 +94,7 @@ class GitCore(object):
 
     @classmethod
     def is_sha(cls, sha):
-        """
-        returns whether sha is a potential sha id
+        """returns whether sha is a potential sha id
         (i.e. proper hexstring between 4 and 40 characters)
         """
 
@@ -100,10 +104,9 @@ class GitCore(object):
 
         return bool(cls.__is_sha_pat.match(sha))
 
+
 class SizedDict(dict):
-    """
-    Size-bounded dictionary with FIFO replacement strategy
-    """
+    """Size-bounded dictionary with FIFO replacement strategy"""
 
     def __init__(self, max_size=0):
         dict.__init__(self)
@@ -130,12 +133,14 @@ class SizedDict(dict):
     def setdefault(self, *_):
         raise NotImplemented("SizedDict has no setdefault() method")
 
+
 class StorageFactory(object):
     __dict = weakref.WeakValueDictionary()
     __dict_nonweak = dict()
     __dict_lock = Lock()
 
-    def __init__(self, repo, log, weak=True, git_bin='git', git_fs_encoding=None):
+    def __init__(self, repo, log, weak=True, git_bin='git',
+                 git_fs_encoding=None):
         self.logger = log
 
         with StorageFactory.__dict_lock:
@@ -145,7 +150,8 @@ class StorageFactory(object):
                 i = Storage(repo, log, git_bin, git_fs_encoding)
                 StorageFactory.__dict[repo] = i
 
-                # create or remove additional reference depending on 'weak' argument
+                # create or remove additional reference depending on 'weak'
+                # argument
                 if weak:
                     try:
                         del StorageFactory.__dict_nonweak[repo]
@@ -160,54 +166,66 @@ class StorageFactory(object):
     def getInstance(self):
         is_weak = self.__repo not in StorageFactory.__dict_nonweak
         self.logger.debug("requested %sPyGIT.Storage instance %d for '%s'"
-                          % (("","weak ")[is_weak], id(self.__inst), self.__repo))
+                          % (("","weak ")[is_weak], id(self.__inst),
+                             self.__repo))
         return self.__inst
 
 
 class Storage(object):
-    """
-    High-level wrapper around GitCore with in-memory caching
-    """
+    """High-level wrapper around GitCore with in-memory caching"""
 
     __SREV_MIN = 4 # minimum short-rev length
 
 
     class RevCache(tuple):
-        """RevCache(youngest_rev, oldest_rev, rev_dict, tag_set, srev_dict, branch_dict)
+        """RevCache(youngest_rev, oldest_rev, rev_dict, tag_set, srev_dict,
+                    branch_dict)
 
         In Python 2.7 this class could be defined by:
             from collections import namedtuple
-            RevCache = namedtuple('RevCache', 'youngest_rev oldest_rev rev_dict tag_set srev_dict branch_dict')
+            RevCache = namedtuple('RevCache', 'youngest_rev oldest_rev '
+                                              'rev_dict tag_set srev_dict '
+                                              'branch_dict')
         This implementation is what that code generator would produce.
         """
 
         __slots__ = () 
 
-        _fields = ('youngest_rev', 'oldest_rev', 'rev_dict', 'tag_set', 'srev_dict', 'branch_dict') 
+        _fields = ('youngest_rev', 'oldest_rev', 'rev_dict', 'tag_set',
+                   'srev_dict', 'branch_dict') 
 
-        def __new__(cls, youngest_rev, oldest_rev, rev_dict, tag_set, srev_dict, branch_dict):
-            return tuple.__new__(cls, (youngest_rev, oldest_rev, rev_dict, tag_set, srev_dict, branch_dict)) 
+        def __new__(cls, youngest_rev, oldest_rev, rev_dict, tag_set,
+                    srev_dict, branch_dict):
+            return tuple.__new__(cls, (youngest_rev, oldest_rev, rev_dict,
+                                 tag_set, srev_dict, branch_dict)) 
 
         @classmethod
         def _make(cls, iterable, new=tuple.__new__, len=len):
-            'Make a new RevCache object from a sequence or iterable'
+            """Make a new RevCache object from a sequence or iterable"""
             result = new(cls, iterable)
             if len(result) != 6:
                 raise TypeError('Expected 6 arguments, got %d' % len(result))
             return result 
 
         def __repr__(self):
-            return 'RevCache(youngest_rev=%r, oldest_rev=%r, rev_dict=%r, tag_set=%r, srev_dict=%r, branch_dict=%r)' % self 
+            return 'RevCache(youngest_rev=%r, oldest_rev=%r, rev_dict=%r, ' \
+                   'tag_set=%r, srev_dict=%r, branch_dict=%r)' % self 
 
         def _asdict(t):
-            'Return a new dict which maps field names to their values'
-            return {'youngest_rev': t[0], 'oldest_rev': t[1], 'rev_dict': t[2], 'tag_set': t[3], 'srev_dict': t[4], 'branch_dict': t[5]} 
+            """Return a new dict which maps field names to their values"""
+            return {'youngest_rev': t[0], 'oldest_rev': t[1],
+                    'rev_dict': t[2], 'tag_set': t[3], 'srev_dict': t[4],
+                    'branch_dict': t[5]} 
 
         def _replace(self, **kwds):
-            'Return a new RevCache object replacing specified fields with new values'
-            result = self._make(map(kwds.pop, ('youngest_rev', 'oldest_rev', 'rev_dict', 'tag_set', 'srev_dict', 'branch_dict'), self))
+            """Return a new RevCache object replacing specified fields with
+            new values
+            """
+            result = self._make(map(kwds.pop, ('youngest_rev', 'oldest_rev',
+                'rev_dict', 'tag_set', 'srev_dict', 'branch_dict'), self))
             if kwds:
-                raise ValueError('Got unexpected field names: %r' % kwds.keys())
+                raise ValueError("Got unexpected field names: %r"
+                                 % kwds.keys())
             return result 
 
         def __getnewargs__(self):
@@ -230,13 +248,14 @@ class Storage(object):
         return srev_key
 
     @staticmethod
-    def git_version(git_bin="git"):
+    def git_version(git_bin='git'):
         GIT_VERSION_MIN_REQUIRED = (1, 5, 6)
         try:
             g = GitCore(git_bin=git_bin)
             [v] = g.version().splitlines()
             _, _, version = v.strip().split()
-            # 'version' has usually at least 3 numeric version components, e.g.::
+            # 'version' has usually at least 3 numeric version
+            # components, e.g.::
             #  1.5.4.2
             #  1.5.4.3.230.g2db511
             #  1.5.4.GIT
@@ -258,13 +277,12 @@ class Storage(object):
             return result
 
         except Exception, e:
-            raise GitError("Could not retrieve GIT version"
-                           " (tried to execute/parse '%s --version' but got %s)"
+            raise GitError("Could not retrieve GIT version (tried to "
+                           "execute/parse '%s --version' but got %s)"
                            % (git_bin, repr(e)))
 
     def __init__(self, git_dir, log, git_bin='git', git_fs_encoding=None):
-        """
-        Initialize PyGit.Storage instance
+        """Initialize PyGit.Storage instance
 
         `git_dir`: path to .git folder;
                 this setting is not affected by the `git_fs_encoding` setting
@@ -278,7 +296,6 @@ class Storage(object):
                 if `None`, no implicit decoding/encoding to/from
                 unicode objects is performed, and bytestrings are
                 returned instead
-
         """
 
         self.logger = log
@@ -302,8 +319,10 @@ class Storage(object):
             self.logger.error("GIT control files missing in '%s'" % git_dir)
             if os.path.exists(__git_file_path('.git')):
                 self.logger.error("entry '.git' found in '%s'"
-                                  " -- maybe use that folder instead..." % git_dir)
-            raise GitError("GIT control files not found, maybe wrong directory?")
+                                  " -- maybe use that folder instead..." 
+                                  % git_dir)
+            raise GitError("GIT control files not found, maybe wrong "
+                           "directory?")
 
         self.logger.debug("PyGIT.Storage instance %d constructed" % id(self))
 
@@ -332,14 +351,15 @@ class Storage(object):
 
     # called by Storage.sync()
     def __rev_cache_sync(self, youngest_rev=None):
-        "invalidates revision db cache if necessary"
+        """invalidates revision db cache if necessary"""
 
         with self.__rev_cache_lock:
             need_update = False
             if self.__rev_cache:
                 last_youngest_rev = self.__rev_cache.youngest_rev
                 if last_youngest_rev != youngest_rev:
-                    self.logger.debug("invalidated caches (%s != %s)" % (last_youngest_rev, youngest_rev))
+                    self.logger.debug("invalidated caches (%s != %s)"
+                                      % (last_youngest_rev, youngest_rev))
                     need_update = True
             else:
                 need_update = True # almost NOOP
@@ -350,8 +370,7 @@ class Storage(object):
             return need_update
 
     def get_rev_cache(self):
-        """
-        Retrieve revision cache
+        """Retrieve revision cache
 
         may rebuild cache on the fly if required
 
@@ -359,8 +378,10 @@ class Storage(object):
         """
 
         with self.__rev_cache_lock:
-            if self.__rev_cache is None: # can be cleared by Storage.__rev_cache_sync()
-                self.logger.debug("triggered rebuild of commit tree db for %d" % id(self))
+            if self.__rev_cache is None:
+                # can be cleared by Storage.__rev_cache_sync()
+                self.logger.debug("triggered rebuild of commit tree db "
+                                  "for %d" % id(self))
                 ts0 = time.time()
 
                 youngest = None
@@ -374,15 +395,20 @@ class Storage(object):
                     rev = str(rev)
                     return __rev_seen.setdefault(rev, rev)
 
-                new_tags = set(__rev_reuse(rev.strip()) for rev in self.repo.rev_parse("--tags").splitlines())
+                new_tags = set(__rev_reuse(rev.strip())
+                               for rev in self.repo.rev_parse('--tags')
+                                                   .splitlines())
 
-                new_branches = [(k, __rev_reuse(v)) for k, v in self._get_branches()]
+                new_branches = [(k, __rev_reuse(v))
+                                for k, v in self._get_branches()]
                 head_revs = set(v for _, v in new_branches)
 
                 rev = ord_rev = 0
-                for ord_rev, revs in enumerate(self.repo.rev_list("--parents",
-                                                                  "--topo-order",
-                                                                  "--all").splitlines()):
+                for ord_rev, revs in enumerate(
+                                        self.repo.rev_list('--parents',
+                                                           '--topo-order',
+                                                           '--all')
+                                                 .splitlines()):
                     revs = map(__rev_reuse, revs.strip().split())
 
                     rev = revs[0]
@@ -398,7 +424,8 @@ class Storage(object):
                     # parents
                     parents = tuple(revs[1:])
 
-                    # new_db[rev] = (children(rev), parents(rev), ordinal_id(rev), rheads(rev))
+                    # new_db[rev] = (children(rev), parents(rev),
+                    #                ordinal_id(rev), rheads(rev))
                     if rev in new_db:
                         # (incomplete) entry was already created by children
                         _children, _parents, _ord_rev, _rheads = new_db[rev]
@@ -413,13 +440,17 @@ class Storage(object):
                         _children = []
                         _rheads = [rev] if rev in head_revs else []
 
-                    # create/update entry -- transform lists into tuples since entry will be final
-                    new_db[rev] = tuple(_children), tuple(parents), ord_rev + 1, tuple(_rheads)
+                    # create/update entry
+                    # transform lists into tuples since entry will be final
+                    new_db[rev] = tuple(_children), tuple(parents), \
+                                  ord_rev + 1, tuple(_rheads)
 
                     # update parents(rev)s
                     for parent in parents:
-                        # by default, a dummy ordinal_id is used for the mean-time
-                        _children, _parents, _ord_rev, _rheads2 = new_db.setdefault(parent, ([], [], 0, []))
+                        # by default, a dummy ordinal_id is used
+                        # for the mean-time
+                        _children, _parents, _ord_rev, _rheads2 = \
+                            new_db.setdefault(parent, ([], [], 0, []))
 
                         # update parent(rev)'s children
                         if rev not in _children:
@@ -430,13 +461,15 @@ class Storage(object):
                             if rev not in _rheads2:
                                 _rheads2.append(rev)
 
-                # last rev seen is assumed to be the oldest one (with highest ord_rev)
+                # last rev seen is assumed to be the oldest
+                # one (with highest ord_rev)
                 oldest = rev
 
                 __rev_seen = None
 
                 # convert sdb either to dict or array depending on size
-                tmp = [()]*(max(new_sdb.keys())+1) if len(new_sdb) > 5000 else {}
+                tmp = [()]*(max(new_sdb.keys())+1) \
+                      if len(new_sdb) > 5000 else {}
 
                 try:
                     while True:
@@ -449,12 +482,16 @@ class Storage(object):
                 new_sdb = tmp
 
                 # atomically update self.__rev_cache
-                self.__rev_cache = Storage.RevCache(youngest, oldest, new_db, new_tags, new_sdb, new_branches)
+                self.__rev_cache = Storage.RevCache(youngest, oldest, new_db,
+                                                    new_tags, new_sdb,
+                                                    new_branches)
                 ts1 = time.time()
-                self.logger.debug("rebuilt commit tree db for %d with %d entries (took %.1f ms)"
+                self.logger.debug("rebuilt commit tree db for %d with %d "
+                                  "entries (took %.1f ms)"
                                   % (id(self), len(new_db), 1000*(ts1-ts0)))
 
-            assert all(e is not None for e in self.__rev_cache) or not any(self.__rev_cache)
+            assert all(e is not None for e in self.__rev_cache) \
+                   or not any(self.__rev_cache)
 
             return self.__rev_cache
         # with self.__rev_cache_lock
@@ -463,10 +500,12 @@ class Storage(object):
     rev_cache = property(get_rev_cache)
 
     def _get_branches(self):
-        "returns list of (local) branches, with active (= HEAD) one being the first item"
+        """returns list of (local) branches, with active (= HEAD) one being
+        the first item
+        """
 
         result = []
-        for e in self.repo.branch("-v", "--no-abbrev").splitlines():
+        for e in self.repo.branch('-v', '--no-abbrev').splitlines():
             bname, bsha = e[1:].strip().split()[:2]
             if e.startswith('*'):
                 result.insert(0, (bname, bsha))
@@ -476,7 +515,9 @@ class Storage(object):
         return result
 
     def get_branches(self):
-        "returns list of (local) branches, with active (= HEAD) one being the first item"
+        """returns list of (local) branches, with active (= HEAD) one being
+        the first item
+        """
         return self.rev_cache.branch_dict
 
     def get_commits(self):
@@ -489,8 +530,8 @@ class Storage(object):
         return self.rev_cache.youngest_rev
 
     def get_branch_contains(self, sha, resolve=False):
-        """
-        return list of reachable head sha ids or (names, sha) pairs if resolve is true
+        """return list of reachable head sha ids or (names, sha) pairs if
+        resolve is true
 
         see also get_branches()
         """
@@ -503,7 +544,7 @@ class Storage(object):
             return []
 
         if resolve:
-            return [ (k, v) for k, v in _rev_cache.branch_dict if v in rheads ]
+            return [(k, v) for k, v in _rev_cache.branch_dict if v in rheads]
 
         return rheads
 
@@ -537,13 +578,14 @@ class Storage(object):
     def get_commit_encoding(self):
         if self.commit_encoding is None:
             self.commit_encoding = \
-                self.repo.repo_config("--get", "i18n.commitEncoding").strip() or 'utf-8'
+                self.repo.repo_config("--get", "i18n.commitEncoding") \
+                    .strip() or 'utf-8'
 
         return self.commit_encoding
 
     def head(self):
-        "get current HEAD commit id"
-        return self.verifyrev("HEAD")
+        """get current HEAD commit id"""
+        return self.verifyrev('HEAD')
 
     def cat_file(self, kind, sha):
         if self.__cat_file_pipe is None:
@@ -554,13 +596,16 @@ class Storage(object):
         _sha, _type, _size = self.__cat_file_pipe.stdout.readline().split()
 
         if _type != kind:
-            raise TracError("internal error (got unexpected object kind '%s')" % k)
+            raise TracError("internal error (got unexpected object kind "
+                            "'%s')" % k)
 
         size = int(_size)
         return self.__cat_file_pipe.stdout.read(size + 1)[:size]
 
     def verifyrev(self, rev):
-        "verify/lookup given revision object and return a sha id or None if lookup failed"
+        """verify/lookup given revision object and return a sha id or None
+        if lookup failed
+        """
         rev = str(rev)
 
         _rev_cache = self.rev_cache
@@ -572,7 +617,7 @@ class Storage(object):
                 return fullrev
 
         # fall back to external git calls
-        rc = self.repo.rev_parse("--verify", rev).strip()
+        rc = self.repo.rev_parse('--verify', rev).strip()
         if not rc:
             return None
 
@@ -580,16 +625,17 @@ class Storage(object):
             return rc
 
         if rc in _rev_cache.tag_set:
-            sha = self.cat_file("tag", rc).split(None, 2)[:2]
+            sha = self.cat_file('tag', rc).split(None, 2)[:2]
             if sha[0] != 'object':
-                self.logger.debug("unexpected result from 'git-cat-file tag %s'" % rc)
+                self.logger.debug("unexpected result from 'git-cat-file tag "
+                                  "%s'" % rc)
                 return None
             return sha[1]
 
         return None
 
     def shortrev(self, rev, min_len=7):
-        "try to shorten sha id"
+        """try to shorten sha id"""
         #try to emulate the following:
         #return self.repo.rev_parse("--short", str(rev)).strip()
         rev = str(rev)
@@ -620,7 +666,7 @@ class Storage(object):
         return rev # worst-case, all except the last character match
 
     def fullrev(self, srev):
-        "try to reverse shortrev()"
+        """try to reverse shortrev()"""
         srev = str(srev)
 
         _rev_cache = self.rev_cache
@@ -644,9 +690,9 @@ class Storage(object):
         return None
 
     def get_tags(self):
-        return [ e.strip() for e in self.repo.tag("-l").splitlines() ]
+        return [ e.strip() for e in self.repo.tag('-l').splitlines() ]
 
-    def ls_tree(self, rev, path=""):
+    def ls_tree(self, rev, path=''):
         rev = rev and str(rev) or 'HEAD' # paranoia
 
         path = self._fs_from_unicode(path)
@@ -654,10 +700,10 @@ class Storage(object):
         if path.startswith('/'):
             path = path[1:]
 
-        tree = self.repo.ls_tree("-z", "-l", rev, "--", path).split('\0')
+        tree = self.repo.ls_tree('-z', '-l', rev, '--', path).split('\0')
 
         def split_ls_tree_line(l):
-            "split according to '<mode> <type> <sha> <size>\t<fname>'"
+            """split according to '<mode> <type> <sha> <size>\t<fname>'"""
 
             meta, fname = l.split('\t', 1)
             _mode, _type, _sha, _size = meta.split()
@@ -690,7 +736,7 @@ class Storage(object):
                 return result[0], dict(result[1])
 
             # cache miss
-            raw = self.cat_file("commit", commit_id)
+            raw = self.cat_file('commit', commit_id)
             raw = unicode(raw, self.get_commit_encoding(), 'replace')
             lines = raw.splitlines()
 
@@ -704,20 +750,20 @@ class Storage(object):
                 props.setdefault(key, []).append(value.strip())
                 line = lines.pop(0)
 
-            result = ("\n".join(lines), props)
+            result = ('\n'.join(lines), props)
 
             self.__commit_msg_cache[commit_id] = result
 
             return result[0], dict(result[1])
 
     def get_file(self, sha):
-        return cStringIO.StringIO(self.cat_file("blob", str(sha)))
+        return cStringIO.StringIO(self.cat_file('blob', str(sha)))
 
     def get_obj_size(self, sha):
         sha = str(sha)
 
         try:
-            obj_size = int(self.repo.cat_file("-s", sha).strip())
+            obj_size = int(self.repo.cat_file('-s', sha).strip())
         except ValueError:
             raise GitErrorSha("object '%s' not found" % sha)
 
@@ -732,9 +778,7 @@ class Storage(object):
             return []
 
     def children_recursive(self, sha, rev_dict=None):
-        """
-        Recursively traverse children in breadth-first order
-        """
+        """Recursively traverse children in breadth-first order"""
 
         if rev_dict is None:
             rev_dict = self.get_commits()
@@ -768,7 +812,8 @@ class Storage(object):
         return self.get_commits().iterkeys()
 
     def sync(self):
-        rev = self.repo.rev_list("--max-count=1", "--topo-order", "--all").strip()
+        rev = self.repo.rev_list('--max-count=1', '--topo-order', '--all') \
+                       .strip()
         return self.__rev_cache_sync(rev)
 
     @contextmanager
@@ -778,8 +823,7 @@ class Storage(object):
         next_path = []
 
         def terminate(process):
-            """
-            Python 2.5 compatibility method.
+            """Python 2.5 compatibility method.
             os.kill is not available on Windows before Python 2.7.
             In Python 2.6 subprocess.Popen has a terminate method.
             (It also seems to have some issues on Windows though.)
@@ -805,20 +849,22 @@ class Storage(object):
                 return terminate_win(process)
             return terminate_nix(process)
 
-
         def name_status_gen():
-            p[:] = [self.repo.log_pipe('--pretty=format:%n%H', '--name-status',
-                                       sha, '--', base_path)]
+            p[:] = [self.repo.log_pipe('--pretty=format:%n%H',
+                                       '--name-status', sha, '--', base_path)]
             f = p[0].stdout
             for l in f:
-                if l == '\n': continue
+                if l == '\n':
+                    continue
                 old_sha = l.rstrip('\n')
                 for l in f:
-                    if l == '\n': break
+                    if l == '\n':
+                        break
                     _, path = l.rstrip('\n').split('\t', 1)
                     while path not in change:
                         change[path] = old_sha
-                        if next_path == [path]: yield old_sha
+                        if next_path == [path]:
+                            yield old_sha
                         try:
                             path, _ = path.rsplit('/', 1)
                         except ValueError:
@@ -827,7 +873,8 @@ class Storage(object):
             terminate(p[0])
             p[0].wait()
             p[:] = []
-            while True: yield None
+            while True:
+                yield None
         gen = name_status_gen()
 
         def historian(path):
@@ -846,25 +893,25 @@ class Storage(object):
     def last_change(self, sha, path, historian=None):
         if historian is not None:
             return historian(path)
-        return self.repo.rev_list("--max-count=1",
-                                  sha, "--",
+        return self.repo.rev_list('--max-count=1',
+                                  sha, '--',
                                   self._fs_from_unicode(path)).strip() or None
 
     def history(self, sha, path, limit=None):
         if limit is None:
             limit = -1
 
-        tmp = self.repo.rev_list("--max-count=%d" % limit, str(sha), "--",
+        tmp = self.repo.rev_list('--max-count=%d' % limit, str(sha), '--',
                                  self._fs_from_unicode(path))
 
         return [ rev.strip() for rev in tmp.splitlines() ]
 
     def history_timerange(self, start, stop):
         return [ rev.strip() for rev in \
-                     self.repo.rev_list("--reverse",
-                                        "--max-age=%d" % start,
-                                        "--min-age=%d" % stop,
-                                        "--all").splitlines() ]
+                     self.repo.rev_list('--reverse',
+                                        '--max-age=%d' % start,
+                                        '--min-age=%d' % stop,
+                                        '--all').splitlines() ]
 
     def rev_is_anchestor_of(self, rev1, rev2):
         """return True if rev2 is successor of rev1"""
@@ -882,7 +929,8 @@ class Storage(object):
 
         path = self._fs_from_unicode(path)
 
-        for line in self.repo.blame("-p", "--", path, str(commit_sha)).splitlines():
+        for line in self.repo.blame('-p', '--', path, str(commit_sha)) \
+                             .splitlines():
             assert line
             if in_metadata:
                 in_metadata = not line.startswith('\t')
@@ -899,24 +947,24 @@ class Storage(object):
 
         assert not in_metadata
 
-    def diff_tree(self, tree1, tree2, path="", find_renames=False):
+    def diff_tree(self, tree1, tree2, path='', find_renames=False):
         """calls `git diff-tree` and returns tuples of the kind
         (mode1,mode2,obj1,obj2,action,path1,path2)"""
 
         # diff-tree returns records with the following structure:
         # :<old-mode> <new-mode> <old-sha> <new-sha> <change> NUL <old-path> NUL [ <new-path> NUL ]
 
-        path = self._fs_from_unicode(path).strip("/")
-        diff_tree_args = ["-z", "-r"]
+        path = self._fs_from_unicode(path).strip('/')
+        diff_tree_args = ['-z', '-r']
         if find_renames:
-            diff_tree_args.append("-M")
-        diff_tree_args.extend([str(tree1) if tree1 else "--root",
+            diff_tree_args.append('-M')
+        diff_tree_args.extend([str(tree1) if tree1 else '--root',
                                str(tree2),
-                               "--", path])
+                               '--', path])
 
         lines = self.repo.diff_tree(*diff_tree_args).split('\0')
 
-        assert lines[-1] == ""
+        assert lines[-1] == ''
         del lines[-1]
 
         if tree1 is None and lines:
@@ -960,16 +1008,16 @@ class Storage(object):
 def main():
     import logging, timeit
 
-    assert not GitCore.is_sha("123")
-    assert GitCore.is_sha("1a3f")
-    assert GitCore.is_sha("f"*40)
-    assert not GitCore.is_sha("x"+"f"*39)
-    assert not GitCore.is_sha("f"*41)
+    assert not GitCore.is_sha('123')
+    assert GitCore.is_sha('1a3f')
+    assert GitCore.is_sha('f'*40)
+    assert not GitCore.is_sha('x'+'f'*39)
+    assert not GitCore.is_sha('f'*41)
 
     print "git version [%s]" % str(Storage.git_version())
 
     # custom linux hack reading `/proc/<PID>/statm`
-    if sys.platform == "linux2":
+    if sys.platform == 'linux2':
         __pagesize = os.sysconf('SC_PAGESIZE')
 
         def proc_statm(pid = os.getpid()):
@@ -994,7 +1042,8 @@ def main():
 
     def print_data_usage():
         __tmp = proc_statm()[5]
-        print "DATA: %6d %+6d" % (__tmp - __data_size, __tmp - __data_size_last[0])
+        print "DATA: %6d %+6d" % (__tmp - __data_size,
+                                  __tmp - __data_size_last[0])
         __data_size_last[0] = __tmp
 
     print_data_usage()
@@ -1020,7 +1069,8 @@ def main():
     print "--------------"
     print g.get_branches()
     print "--------------"
-    print g.hist_prev_revision(g.oldest_rev()), g.oldest_rev(), g.hist_next_revision(g.oldest_rev())
+    print g.hist_prev_revision(g.oldest_rev()), g.oldest_rev(), \
+                               g.hist_next_revision(g.oldest_rev())
     print_data_usage()
     print "--------------"
     p = g.youngest_rev()
@@ -1073,7 +1123,7 @@ def main():
         rev = g.head()
         for mode, _type, sha, _size, name in g.ls_tree(rev):
             [last_rev] = g.history(rev, name, limit=1)
-            s = g.get_obj_size(sha) if _type == "blob" else 0
+            s = g.get_obj_size(sha) if _type == 'blob' else 0
             msg = g.read_commit(last_rev)
 
             print "%s %s %10d [%s]" % (_type, last_rev, s, name)
