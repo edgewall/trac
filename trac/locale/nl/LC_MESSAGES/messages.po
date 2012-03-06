@@ -1347,7 +1347,7 @@ msgstr "Geen doelbestand aangemaakt"
 #: trac/db/pool.py:143
 #, python-format
 msgid "Unable to get database connection within %(time)d seconds."
-msgstr "Databaseverbinding heeft niet gereageerd binnen %(time)d seconden"
+msgstr "Databaseverbinding heeft niet gereageerd binnen %(time)d seconden."
 
 #: trac/db/postgres_backend.py:81
 msgid "Cannot load Python bindings for PostgreSQL"
@@ -5580,7 +5580,7 @@ msgstr "'%(name)s' is geen bestand"
 #: trac/wiki/admin.py:139
 #, python-format
 msgid "  %(title)s already exists"
-msgstr "  %(title)s bestaat al."
+msgstr "  %(title)s bestaat al"
 
 #: trac/wiki/admin.py:143
 #, python-format
