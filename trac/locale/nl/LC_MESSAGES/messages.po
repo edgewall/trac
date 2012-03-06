@@ -5186,7 +5186,7 @@ msgstr "Bestand zonder annotaties weergeven"
 
 #: trac/versioncontrol/web_ui/browser.py:464
 msgid "Blame"
-msgstr "Blame"
+msgstr "Annoteer"
 
 #: trac/versioncontrol/web_ui/browser.py:465
 msgid ""
