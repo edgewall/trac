@@ -1,17 +1,18 @@
 # Dutch (Netherlands) translations for Trac.
-# Copyright (C) 2007-2009 Edgewall Software
+# Copyright (C) 2007-2012 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>, 2007-2009.
 # Laurens Holst <laurens.nospam@grauw.nl>, 2010.
 # Bas van Oostveen <trbs@trbs.net>, 2010.
+# Thijs Triemstra <info@collab.nl>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2012-01-29 14:04+0100\n"
-"PO-Revision-Date: 2010-05-25 14:08+0200\n"
-"Last-Translator: Trbs <trbs@trbs.net>\n"
+"PO-Revision-Date: 2012-02-15 11:05+0100\n"
+"Last-Translator: Thijs Triemstra <info@collab.nl>\n"
 "Language-Team: nl_NL <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
@@ -146,11 +147,11 @@ msgid "Could not delete attachment"
 msgstr "Bijlage kon niet verwijderd worden"
 
 #: trac/attachment.py:217
-#, fuzzy, python-format
+#, python-format
 msgid "Cannot reparent attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
 msgstr ""
-"Kan geen nieuwe ouder toewijzen aan bijlage \"%(att)s\", aangezien deze "
-"al bestaat in %(realm)s:%(id)s"
+"Kan geen nieuwe ouder toewijzen aan bijlage \"%(att)s\", aangezien "
+"%(realm)s:%(id)s ongeldig is"
 
 #: trac/attachment.py:223
 #, python-format
@@ -167,11 +168,11 @@ msgid "Could not reparent attachment %(name)s"
 msgstr "Bijlage %(name)s kon geen nieuwe ouder toegewezen krijgen"
 
 #: trac/attachment.py:271
-#, fuzzy, python-format
+#, python-format
 msgid "Cannot create attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
 msgstr ""
-"Kan geen nieuwe ouder toewijzen aan bijlage \"%(att)s\", aangezien deze "
-"al bestaat in %(realm)s:%(id)s"
+"Kan geen nieuwe bijlage \"%(att)s\" maken, aangezien %(realm)s:%(id)s "
+"ongeldig is"
 
 #: trac/attachment.py:364
 #, python-format
@@ -318,7 +319,7 @@ msgstr "Configuratiefout"
 #: trac/config.py:265
 #, python-format
 msgid "Error reading '%(file)s', make sure it is readable."
-msgstr ""
+msgstr "Fout bij het lezen van '%(file)s', controleer of het leesbaar is."
 
 #: trac/config.py:420
 #, python-format
@@ -338,7 +339,7 @@ msgstr "[%(section)s] %(entry)s: een van (%(choices)s) verwacht, kreeg %(value)s
 #: trac/config.py:711 trac/config.py:724
 #, python-format
 msgid "Option '%(option)s' doesn't exist in section '%(section)s'"
-msgstr ""
+msgstr "Optie '%(option)s' bestaat niet in sectie '%(section)s'"
 
 #: trac/core.py:33
 msgid "Trac Error"
@@ -415,12 +416,12 @@ msgid "Database is up to date, no upgrade necessary."
 msgstr "Database is up-to-date, geen upgrade nodig."
 
 #: trac/env.py:790
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Backup failed: %(msg)s.\n"
 "Use '--no-backup' to upgrade without doing a backup."
 msgstr ""
-"Maken backup is niet gelukt met '%(msg)s'.\n"
+"Maken backup is niet gelukt: %(msg)s.\n"
 "Gebruik '--no-backup' om te upgraden zonder backup."
 
 #: trac/env.py:800
@@ -533,12 +534,12 @@ msgid "Command not found"
 msgstr "Opdracht niet gevonden"
 
 #: trac/admin/console.py:111
-#, fuzzy, python-format
+#, python-format
 msgid "Error: %(msg)s"
-msgstr "Fout: %(message)s"
+msgstr "Fout: %(msg)s"
 
 #: trac/admin/console.py:130
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
@@ -549,7 +550,7 @@ msgid ""
 msgstr ""
 "Welkom in trac-admin %(version)s\n"
 "Interactieve Trac-administratieomgeving.\n"
-"Copyright (c) 2003-2010 Edgewall Software\n"
+"Copyright (c) 2003-2012 Edgewall Software\n"
 "\n"
 "Type:  '?' of 'help' voor hulp bij commando’s.\n"
 "        "
@@ -647,11 +648,13 @@ msgid "Directory exists and is not empty."
 msgstr "Map bestaat en is niet leeg."
 
 #: trac/admin/console.py:394
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr "De pagina %(name)s bestaat niet. U kunt er hier een aanmaken."
+msgstr ""
+"Hoofdmap '%(env)s' bestaat niet. Maak deze map handmatig aan en probeer "
+"het opnieuw."
 
 #: trac/admin/console.py:422
 msgid "Creating and Initializing Project"
@@ -783,7 +786,7 @@ msgid ""
 "Your changes have not been saved."
 msgstr ""
 "Fout bij het schrijven naar trac.ini, zorg dat de webserver "
-"schrijfrechten heeft.Uw wijzigingen zijn niet opgeslagen."
+"schrijfrechten heeft. Uw wijzigingen zijn niet opgeslagen."
 
 #: trac/admin/web_ui.py:205 trac/admin/web_ui.py:233 trac/admin/web_ui.py:321
 #: trac/admin/web_ui.py:406 trac/prefs/web_ui.py:86
@@ -1065,15 +1068,16 @@ msgstr "Volgorde"
 
 #: trac/admin/templates/admin_enums.html:77
 #: trac/prefs/templates/prefs_language.html:31
-#, fuzzy
 msgid "Note:"
-msgstr "Negeer:"
+msgstr "Let op:"
 
 #: trac/admin/templates/admin_enums.html:77
 msgid ""
 "The order of priorities determines the coloring of entries\n"
 "              in the ticket queries and reports."
 msgstr ""
+"De volgorde van de prioriteiten bepaalt de kleuren van de items in de "
+"ticketqueries en rapporten."
 
 #: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:79
 msgid "Configuration"
@@ -1154,9 +1158,9 @@ msgid "Add Milestone:"
 msgstr "Mijlpaal toevoegen:"
 
 #: trac/admin/templates/admin_milestones.html:86
-#, fuzzy, python-format
+#, python-format
 msgid "Format: %(datetimehint)s"
-msgstr "Formaat: %(datehint)s"
+msgstr "Formaat: %(datetimehint)s"
 
 #: trac/admin/templates/admin_milestones.html:101 trac/ticket/admin.py:399
 msgid "Due"
@@ -1326,23 +1330,22 @@ msgstr "Kan de Python-bindings voor MySQL niet laden"
 
 #: trac/db/mysql_backend.py:204 trac/db/postgres_backend.py:175
 #: trac/db/postgres_backend.py:194
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to run %(path)s: %(msg)s"
-msgstr "svn blame is mislukt op %(path)s: %(error)s"
+msgstr "Kan %(path)s niet uitvoeren: %(msg)s"
 
 #: trac/db/mysql_backend.py:208
 #, python-format
 msgid "mysqldump failed: %(msg)s"
-msgstr ""
+msgstr "mysqldump-fout: %(msg)s"
 
 #: trac/db/mysql_backend.py:210 trac/db/postgres_backend.py:200
 #: trac/db/sqlite_backend.py:230
-#, fuzzy
 msgid "No destination file created"
-msgstr "Geen versie geselecteerd"
+msgstr "Geen doelbestand aangemaakt"
 
 #: trac/db/pool.py:143
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to get database connection within %(time)d seconds."
 msgstr "Databaseverbinding heeft niet gereageerd binnen %(time)d seconden"
 
@@ -1353,7 +1356,7 @@ msgstr "Kan de Python-bindings voor PostgreSQL niet laden"
 #: trac/db/postgres_backend.py:198
 #, python-format
 msgid "pg_dump failed: %(msg)s"
-msgstr ""
+msgstr "pg_dump-fout: %(msg)s"
 
 #: trac/db/sqlite_backend.py:154
 msgid "Cannot load Python bindings for SQLite"
@@ -1367,6 +1370,8 @@ msgstr "PySqlite versie %(version)s of hoger vereist"
 #: trac/db/sqlite_backend.py:160
 msgid "PySqlite 2.5.2 - 2.5.4 break Trac, please use 2.5.5 or higher"
 msgstr ""
+"PySqlite 2.5.2 - 2.5.4 veroorzaken problemen met Trac, gebruik 2.5.5 of "
+"hoger"
 
 #: trac/db/sqlite_backend.py:185
 #, python-format
@@ -1433,9 +1438,9 @@ msgid "Your preferences have been saved."
 msgstr "Uw voorkeuren zijn opgeslagen."
 
 #: trac/mimeview/rst.py:123 trac/mimeview/rst.py:146
-#, fuzzy, python-format
+#, python-format
 msgid "%(link)s is not a valid TracLink"
-msgstr "%(name)s is geen geldige actie"
+msgstr "%(link)s is geen geldige TracLink"
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -1462,9 +1467,8 @@ msgid "Advanced"
 msgstr "Geavanceerd"
 
 #: trac/prefs/web_ui.py:150
-#, fuzzy, python-format
 msgid "The session has been loaded."
-msgstr "Versie %(name)s is toegevoegd."
+msgstr "De sessie is geladen."
 
 #: trac/prefs/templates/prefs.html:10
 msgid "Preferences:"
@@ -1495,9 +1499,8 @@ msgid "Session key:"
 msgstr "Sessiesleutel:"
 
 #: trac/prefs/templates/prefs_advanced.html:17
-#, fuzzy
 msgid "Change"
-msgstr "wijziging"
+msgstr "Wijzigen"
 
 #: trac/prefs/templates/prefs_advanced.html:18
 msgid ""
@@ -1582,7 +1585,7 @@ msgid ""
 "        A positive offset is used to indicate a timezone at the east of "
 "Greenwich, i.e. ahead of Universal Time."
 msgstr ""
-"Noot: Universal Co-ordinated Time (UTC) staat ook wel bekend als "
+"Opmerking: Universal Co-ordinated Time (UTC) staat ook wel bekend als "
 "Greenwich Mean Time (GMT).[1:]\n"
 "        Een positieve verschuiving wordt gebruikt om een tijdzone ten "
 "oosten van Greenwich aan te duiden, m.a.w. voor de Universal Time uit "
@@ -1778,12 +1781,11 @@ msgstr ""
 "        [1:http://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
-#, fuzzy
 msgid ""
 "Copyright © 2003-2012\n"
 "        [1:Edgewall Software]"
 msgstr ""
-"Copyright © 2003-2010\n"
+"Copyright © 2003-2012\n"
 "        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
@@ -2270,16 +2272,15 @@ msgid "View attachment"
 msgstr "Bijlage weergeven"
 
 #: trac/templates/list_of_attachments.html:18
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "[1:%(file)s][2:​]\n"
 "       ([3:%(size)s]) -\n"
 "      added by [4:%(author)s] %(date)s ago."
 msgstr ""
-"[1:%(file)s]\n"
-"      [2:[3:]]\n"
-"       ([4:%(size)s]) -\n"
-"      toegevoegd door [5:%(author)s] %(date)s geleden."
+"[1:%(file)s][2:​]\n"
+"       ([3:%(size)s]) -\n"
+"      toegevoegd door [4:%(author)s] %(date)s geleden."
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:39
@@ -2490,7 +2491,7 @@ msgid ""
 "The default value has not been saved."
 msgstr ""
 "Fout bij het schrijven naar trac.ini, zorg dat de webserver "
-"schrijfrechten heeft.De standaardwaarde is niet opgeslagen."
+"schrijfrechten heeft. De standaardwaarde is niet opgeslagen."
 
 #: trac/ticket/admin.py:686
 msgid "Order numbers must be unique"
@@ -2547,9 +2548,8 @@ msgid "Ticket #%(num)s and all associated data removed."
 msgstr "Ticket #%(num)s en alle gerelateerde data is verwijderd."
 
 #: trac/ticket/api.py:253
-#, fuzzy
 msgid "Attachment"
-msgstr "Bijlagen"
+msgstr "Bijlage"
 
 #: trac/ticket/api.py:283
 msgid "Summary"
@@ -2988,7 +2988,6 @@ msgid "%(title)s: %(message)s"
 msgstr "%(title)s: %(message)s"
 
 #: trac/ticket/web_ui.py:231
-#, fuzzy
 msgid "Tickets opened and closed"
 msgstr "Geopende en gesloten tickets"
 
@@ -3208,16 +3207,16 @@ msgstr ""
 "het verzenden van notificaties: %(message)s"
 
 #: trac/ticket/web_ui.py:1209
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The ticket %(ticketref)s has been created. You can now attach the desired"
 " files."
 msgstr ""
-"Uw ticket %(ticketref)s is aangemaakt, maar u heeft geen rechten om het "
-"te bekijken."
+"Uw ticket %(ticketref)s is aangemaakt. U kunt nu de gewenste bestanden "
+"bijvoegen."
 
 #: trac/ticket/web_ui.py:1215
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The ticket %(ticketref)s has been created, but you don't have permission "
 "to view it."
@@ -3679,7 +3678,7 @@ msgstr "Kopieer rapport"
 
 #: trac/ticket/templates/report_view.html:110
 msgid "(empty)"
-msgstr ""
+msgstr "(leeg)"
 
 #: trac/ticket/templates/report_view.html:141
 #: trac/ticket/templates/report_view.html:149
@@ -3935,13 +3934,12 @@ msgid "Reply, quoting this description"
 msgstr "Reageren, en citeer deze beschrijving"
 
 #: trac/ticket/templates/ticket_change.html:19
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "[1:[2:%(name)s]][3:​]\n"
 "          added"
 msgstr ""
-"[1:[2:%(name)s]]\n"
-"          [3:[4:]]\n"
+"[1:[2:%(name)s]][3:​]\n"
 "          toegevoegd"
 
 #: trac/ticket/templates/ticket_change.html:26
@@ -4257,9 +4255,8 @@ msgid "No repositories were selected."
 msgstr "Er zijn geen repositories geselecteerd."
 
 #: trac/versioncontrol/admin.py:343
-#, fuzzy
 msgid "The repository directory must be an absolute path."
-msgstr "Repositorymappad moet absoluut zijn"
+msgstr "Het pad naar de repositorymap moet absoluut zijn."
 
 #: trac/versioncontrol/admin.py:352
 #, python-format
@@ -4267,6 +4264,8 @@ msgid ""
 "The repository directory must be located below one of the following "
 "directories: %(dirs)s"
 msgstr ""
+"De repositorymap moet zich in een van de volgende mappen bevinden: "
+"%(dirs)s"
 
 #: trac/versioncontrol/api.py:32
 #: trac/versioncontrol/templates/admin_repositories.html:20
@@ -4399,6 +4398,8 @@ msgid ""
 "The repository directory has changed, you should resynchronize the "
 "repository with: trac-admin $ENV repository resync '%(reponame)s'"
 msgstr ""
+"De repositorymap is gewijzigd, u moet nu de repository opnieuw "
+"synchroniseren met: trac-admin $ENV repository resync '%(reponame)s'"
 
 #: trac/versioncontrol/svn_authz.py:72
 #, python-format
@@ -4454,11 +4455,11 @@ msgstr "geblokkeerd"
 
 #: trac/versioncontrol/svn_prop.py:182
 msgid "non-inheritable"
-msgstr ""
+msgstr "niet-overerfbare"
 
 #: trac/versioncontrol/svn_prop.py:184
 msgid "merged on the directory itself but not below"
-msgstr ""
+msgstr "samengevoegd op de map zelf maar niet daaronder"
 
 #: trac/versioncontrol/svn_prop.py:200
 msgid "eligible"
@@ -4477,9 +4478,9 @@ msgid "No revisions"
 msgstr "Geen revisies"
 
 #: trac/versioncontrol/svn_prop.py:270
-#, fuzzy, python-format
+#, python-format
 msgid "%(title)s: %(revs)s"
-msgstr "%(title)s: %(message)s"
+msgstr "%(title)s: %(revs)s"
 
 #: trac/versioncontrol/svn_prop.py:306
 msgid "merged: "
@@ -4495,15 +4496,15 @@ msgstr "omgekeerd samengevoegd:"
 
 #: trac/versioncontrol/svn_prop.py:307
 msgid "un-blocked: "
-msgstr "ontblokkeerd: "
+msgstr "gedeblokkeerd: "
 
 #: trac/versioncontrol/svn_prop.py:308
 msgid "marked as non-inheritable: "
-msgstr ""
+msgstr "gemarkeerd als niet-overerfbaar: "
 
 #: trac/versioncontrol/svn_prop.py:309
 msgid "unmarked as non-inheritable: "
-msgstr ""
+msgstr "ongemarkeerd als niet-overerfbaar: "
 
 #: trac/versioncontrol/svn_prop.py:321
 msgid " (added)"
@@ -5148,9 +5149,9 @@ msgid "Invalid changeset number"
 msgstr "Ongeldig wijzigingnummer"
 
 #: trac/versioncontrol/web_ui/browser.py:395
-#, fuzzy, python-format
+#, python-format
 msgid "No node %(path)s"
-msgstr "%(path)s weergeven"
+msgstr "Geen node %(path)s"
 
 #: trac/versioncontrol/web_ui/browser.py:435
 #: trac/versioncontrol/web_ui/browser.py:445
@@ -5184,9 +5185,8 @@ msgid "View file without annotations"
 msgstr "Bestand zonder annotaties weergeven"
 
 #: trac/versioncontrol/web_ui/browser.py:464
-#, fuzzy
 msgid "Blame"
-msgstr "Naam:"
+msgstr "Blame"
 
 #: trac/versioncontrol/web_ui/browser.py:465
 msgid ""
@@ -5522,9 +5522,9 @@ msgstr ""
 "%(traceback)s}}}"
 
 #: trac/web/session.py:247
-#, fuzzy, python-format
+#, python-format
 msgid "Session '%(id)s' already exists. Please choose a different session ID."
-msgstr "Sessie '%(id)s' bestaat al.<br />Kies aub een ander sessie-id."
+msgstr "Sessie '%(id)s' bestaat al. Kies een ander sessie-id."
 
 #: trac/web/session.py:250
 msgid "Error renaming session"
@@ -5535,44 +5535,42 @@ msgid "SID"
 msgstr "SID"
 
 #: trac/web/session.py:433
-#, fuzzy
 msgid "Auth"
-msgstr "pad"
+msgstr "Auth"
 
 #: trac/web/session.py:433
-#, fuzzy
 msgid "Last Visit"
-msgstr "Nieuwste revisie"
+msgstr "Laatste bezoek"
 
 #: trac/web/session.py:434
 msgid "Email"
 msgstr "E-mail"
 
 #: trac/web/session.py:445
-#, fuzzy, python-format
+#, python-format
 msgid "Session '%(sid)s' already exists"
-msgstr "Versie %(name)s bestaat al."
+msgstr "Sessie '%(sid)s' bestaat al."
 
 #: trac/web/session.py:458
 #, python-format
 msgid "Invalid attribute '%(attr)s'"
-msgstr ""
+msgstr "Ongeldig attribuut '%(attr)s'"
 
 #: trac/web/session.py:468
-#, fuzzy, python-format
+#, python-format
 msgid "Session '%(sid)s' not found"
-msgstr "Sessie-id %(sid)s niet gevonden"
+msgstr "Sessie-id '%(sid)s' niet gevonden"
 
 #: trac/wiki/admin.py:102
-#, fuzzy, python-format
+#, python-format
 msgid "Page '%(page)s' not found"
-msgstr "Pagina %(name)s niet gevonden"
+msgstr "Pagina '%(page)s' niet gevonden"
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:122 trac/wiki/model.py:172
 #: trac/wiki/web_ui.py:114
-#, fuzzy, python-format
+#, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr "Ongeldige wikipagina: %(message)s"
+msgstr "Ongeldige wikipaginanaam '%(name)s'"
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -5580,14 +5578,14 @@ msgid "'%(name)s' is not a file"
 msgstr "'%(name)s' is geen bestand"
 
 #: trac/wiki/admin.py:139
-#, fuzzy, python-format
+#, python-format
 msgid "  %(title)s already exists"
-msgstr "Versie %(name)s bestaat al."
+msgstr "  %(title)s bestaat al."
 
 #: trac/wiki/admin.py:143
 #, python-format
 msgid "  %(title)s is already up to date"
-msgstr ""
+msgstr "  %(title)s is al de nieuwste versie"
 
 #: trac/wiki/admin.py:175 trac/wiki/admin.py:275
 #, python-format
@@ -5604,7 +5602,7 @@ msgstr "Een nieuwe naam is verplict."
 
 #: trac/wiki/admin.py:215
 msgid "The new name is invalid."
-msgstr ""
+msgstr "De nieuwe naam is ongeldig."
 
 #: trac/wiki/admin.py:219 trac/wiki/web_ui.py:303
 #, python-format
@@ -5654,9 +5652,8 @@ msgid "Can't view %(link)s:"
 msgstr "Kan %(link)s niet weergeven:"
 
 #: trac/wiki/intertrac.py:81
-#, fuzzy, python-format
 msgid "The Trac Project"
-msgstr "Zoeken in %(project)s"
+msgstr "Het Trac-project"
 
 #: trac/wiki/macros.py:590
 #, python-format
@@ -5746,6 +5743,8 @@ msgid ""
 "The new name is invalid (a name which is separated with slashes cannot be"
 " '.' or '..')."
 msgstr ""
+"De nieuwe naam is ongeldig (een door schuine strepen gescheiden naam kan "
+"niet '.' of '..' zijn)."
 
 #: trac/wiki/web_ui.py:301
 msgid "The new name must be different from the old name."
@@ -6108,9 +6107,9 @@ msgid "[1:Last modified] %(reldate)s ago"
 msgstr "[1:Laatst gewijzigd] %(reldate)s geleden"
 
 #: trac/wiki/templates/wiki_view.html:59
-#, fuzzy, python-format
+#, python-format
 msgid "Last modified on %(date)s"
-msgstr "(laatst gewijzigd door %(author)s)"
+msgstr "Laatst gewijzigd op %(date)s"
 
 #: trac/wiki/templates/wiki_view.html:64
 #, python-format
@@ -6138,31 +6137,4 @@ msgid "The following pages have a name similar to this page, and may be related:
 msgstr ""
 "De volgende pagina’s hebben een naam die lijkt op deze, en kunnen "
 "gerelateerd zijn:"
-
-#~ msgid "Toggle the module description"
-#~ msgstr "Modulebeschrijving verbergen/weergeven"
-
-#~ msgid "Toggle the component description"
-#~ msgstr "Componentbeschrijving verbergen/weergeven"
-
-#~ msgid ""
-#~ "The 'repository_dir' has changed, a "
-#~ "'trac-admin $ENV repository resync' "
-#~ "operation is needed."
-#~ msgstr ""
-#~ "De 'repository_dir' is gewijzigd, een "
-#~ "'trac-admin $ENV repository resync'-actie "
-#~ "is nodig."
-
-#~ msgid "Annotate"
-#~ msgstr "Annoteer"
-
-#~ msgid "No SID found"
-#~ msgstr "Geen SID gevonden"
-
-#~ msgid "Session already exists. Unable to add a duplicate session."
-#~ msgstr "Sessie bestaat al. Kan een sessie niet dubbel toevoegen."
-
-#~ msgid "Unable to set session attribute on a non-existent SID"
-#~ msgstr "Kan een sessieparameter niet instellen op een niet-bestaand SID"
 
