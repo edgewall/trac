@@ -2508,10 +2508,9 @@ msgid ""
 "       ([3:%(size)s]) -\n"
 "      added by [4:%(author)s] %(date)s."
 msgstr ""
-"[1:%(file)s]\n"
-"      [2:[3:]]\n"
-"       ([4:%(size)s]) -\n"
-"      adicionado por [5:%(author)s] %(date)s ."
+"[1:%(file)s][2:​]\n"
+"       ([3:%(size)s]) -\n"
+"      adicionado por [4:%(author)s] %(date)s."
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:44
