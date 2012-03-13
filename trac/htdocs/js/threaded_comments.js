@@ -22,10 +22,10 @@ jQuery(document).ready(function($){
   var commentsOnly = $("#trac-comments-only-toggle");
   var applyCommentsOnly = function() {
     if (commentsOnly.attr('checked')) {
-      $("ul.changes").hide();
+      $("div.change ul.changes").hide();
       $("div.change:not(:has(.comment))").hide();
     } else {
-      $("ul.changes").show();
+      $("div.change ul.changes").show();
       $("div.change:not(:has(.comment))").show();
     }
   };
