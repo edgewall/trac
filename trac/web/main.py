@@ -299,6 +299,8 @@ class RequestDispatcher(Component):
             req.outcookie['trac_form_token']['path'] = req.base_path or '/'
             if self.env.secure_cookies:
                 req.outcookie['trac_form_token']['secure'] = True
+            if sys.version_info >= (2, 6):
+                req.outcookie['trac_form_token']['httponly'] = True
             return req.outcookie['trac_form_token'].value
 
     def _pre_process_request(self, req, chosen_handler):
