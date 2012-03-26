@@ -280,46 +280,76 @@ class TicketModule(Component):
                     (ticket, verb, info, summary, status, resolution, type,
                      description, comment, cid))
 
+        def produce_ticket_change_events(db):
+            data = None
+            for id, t, author, type, summary, field, oldvalue, newvalue \
+                    in db("""
+                    SELECT t.id, tc.time, tc.author, t.type, t.summary, 
+                           tc.field, tc.oldvalue, tc.newvalue 
+                    FROM ticket_change tc 
+                        INNER JOIN ticket t ON t.id = tc.ticket 
+                            AND tc.time>=%s AND tc.time<=%s 
+                    ORDER BY tc.time
+                    """ % (ts_start, ts_stop)):
+                if not (oldvalue or newvalue):
+                    # ignore empty change corresponding to custom field 
+                    # created (None -> '') or deleted ('' -> None)
+                    continue
+                if not data or (id, t) != data[:2]:
+                    if data:
+                        ev = produce_event(data, status, fields, comment,
+                                           cid)
+                        if ev:
+                             yield (ev, data[1])
+                    status, fields, comment, cid = 'edit', {}, '', None
+                    data = (id, t, author, type, summary, None)
+                if field == 'comment':
+                    comment = newvalue
+                    cid = oldvalue and oldvalue.split('.')[-1]
+                    # Always use the author from the comment field
+                    data = data[:2] + (author,) + data[3:]
+                elif field == 'status' and \
+                        newvalue in ('reopened', 'closed'):
+                    status = newvalue
+                elif field[0] != '_':
+                    # properties like _comment{n} are hidden
+                    fields[field] = newvalue
+            if data:
+                ev = produce_event(data, status, fields, comment, cid)
+                if ev:
+                    yield (ev, data[1])
+                     
         # Ticket changes
         with self.env.db_query as db:
             if 'ticket' in filters or 'ticket_details' in filters:
-                data = None
-                for id, t, author, type, summary, field, oldvalue, newvalue \
-                        in db("""
-                        SELECT t.id, tc.time, tc.author, t.type, t.summary, 
-                               tc.field, tc.oldvalue, tc.newvalue 
-                        FROM ticket_change tc 
-                            INNER JOIN ticket t ON t.id = tc.ticket 
-                                AND tc.time>=%s AND tc.time<=%s 
-                        ORDER BY tc.time
-                        """ % (ts_start, ts_stop)):
-                    if not (oldvalue or newvalue):
-                        # ignore empty change corresponding to custom field 
-                        # created (None -> '') or deleted ('' -> None)
-                        continue 
-                    if not data or (id, t) != data[:2]:
-                        if data:
-                            ev = produce_event(data, status, fields, comment,
-                                               cid)
-                            if ev:
-                                yield ev
-                        status, fields, comment, cid = 'edit', {}, '', None
-                        data = (id, t, author, type, summary, None)
-                    if field == 'comment':
-                        comment = newvalue
-                        cid = oldvalue and oldvalue.split('.')[-1]
-                        # Always use the author from the comment field
-                        data = data[:2] + (author,) + data[3:]
-                    elif field == 'status' and \
-                            newvalue in ('reopened', 'closed'):
-                        status = newvalue
-                    elif field[0] != '_':
-                        # properties like _comment{n} are hidden
-                        fields[field] = newvalue
-                if data:
-                    ev = produce_event(data, status, fields, comment, cid)
-                    if ev:
-                        yield ev
+                prev_t = None
+                prev_ev = None
+                batch_ev = None
+                for (ev, t) in produce_ticket_change_events(db):
+                    if batch_ev:
+                        if prev_t == t:
+                            ticket = ev[3][0]
+                            batch_ev[3][0].append(ticket.id)
+                        else:
+                            yield batch_ev
+                            prev_ev = ev
+                            prev_t = t
+                            batch_ev = None
+                    elif prev_t and prev_t == t:
+                        prev_ticket = prev_ev[3][0]
+                        ticket = ev[3][0]
+                        tickets = [prev_ticket.id, ticket.id]
+                        batch_data = (tickets,) + ev[3][1:]
+                        batch_ev = ('batchmodify', ev[1], ev[2], batch_data) 
+                    else:
+                        if prev_ev:
+                            yield prev_ev
+                        prev_ev = ev
+                        prev_t = t
+                if batch_ev:
+                    yield batch_ev
+                elif prev_ev:
+                    yield prev_ev
 
                 # New tickets
                 if 'ticket' in filters:
@@ -338,6 +368,9 @@ class TicketModule(Component):
                     yield event
 
     def render_timeline_event(self, context, field, event):
+        kind = event[0]
+        if kind == 'batchmodify':
+            return self._render_batched_timeline_event(context, field, event)
         ticket, verb, info, summary, status, resolution, type, \
                 description, comment, cid = event[3]
         if field == 'url':
@@ -366,6 +399,21 @@ class TicketModule(Component):
                 t_context.set_hints(wiki_flavor=flavor,
                                     shorten_lines=flavor == 'oneliner')
             return descr + format_to(self.env, None, t_context, message)
+
+    def _render_batched_timeline_event(self, context, field, event):
+        tickets, verb, info, summary, status, resolution, type, \
+                description, comment, cid = event[3]
+        if field == 'url':
+            return context.href.query(id=','.join([str(t) for t in tickets]))
+        elif field == 'title':
+            ticketids = ','.join([str(t) for t in tickets])
+            title = _("Tickets %(ticketids)s", ticketids=ticketids)
+            return tag_("Tickets %(ticketlist)s batch updated",
+                        ticketlist=tag.em('#', ticketids, title=title))
+        elif field == 'description':
+            t_context = context()
+            t_context.set_hints(preserve_newlines=self.must_preserve_newlines)
+            return info + format_to(self.env, None, t_context, comment)
 
     # Internal methods
 

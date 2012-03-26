@@ -54,6 +54,7 @@ dt.newticket, dt.newticket a { background-image: url(../newticket.png) !importan
 dt.reopenedticket, dt.reopenedticket a { background-image: url(../newticket.png) !important }
 dt.editedticket, dt.editedticket a { background-image: url(../editedticket.png) !important }
 dt.closedticket, dt.closedticket a { background-image: url(../closedticket.png) !important }
+dt.batchmodify, dt.batchmodify a { background-image: url(../batchmodify.png) !important }
 dt.wiki, dt.wiki a { background-image: url(../wiki.png) !important }
 dt.milestone, dt.milestone a { background-image: url(../milestone.png) !important }
 dt.attachment, dt.attachment a { background-image: url(../attachment.png) !important }

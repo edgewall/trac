@@ -1,0 +1,10 @@
+= Trac Ticket Batch Modification =
+[[TracGuideToc]]
+
+From [wiki:TracQuery custom query] results Trac provides support for modifying a batch of tickets in one request.
+
+To perform a batch modification select the tickets you wish to modify and set the new field values using the section underneath the query results. 
+
+== List fields
+
+The `Keywords` and `Cc` fields are treated as lists, where list items can be added and / or removed in addition of replacing the entire list value. All list field controls accept multiple items (i.e. multiple keywords or cc addresses).

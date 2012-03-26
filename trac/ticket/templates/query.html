@@ -12,6 +12,9 @@
     <script type="text/javascript">/*<![CDATA[*/
       jQuery(document).ready(function($) {
         initializeFilters();
+        if(batch_modify) {
+          initializeBatch();
+        }
         $("#group").change(function() {
           $("#groupdesc").enable(this.selectedIndex != 0)
         }).change();
@@ -218,6 +221,7 @@
       </form>
 
       <xi:include href="query_results.html" />
+      <xi:include py:if="batch_modify" href="batch_modify.html" />
 
       <div class="buttons"
            py:with="edit = report_resource and 'REPORT_MODIFY' in perm(report_resource);

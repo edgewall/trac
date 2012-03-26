@@ -827,6 +827,7 @@ class TracGuideTocMacro(WikiMacroBase):
            ('TracWorkflow',                 'Workflow'),
            ('TracRoadmap',                  'Roadmap'),
            ('TracQuery',                    'Ticket Queries'),
+           ('TracBatchModify',              'Batch Modify'),
            ('TracReports',                  'Reports'),
            ('TracRss',                      'RSS Support'),
            ('TracNotification',             'Notification'),

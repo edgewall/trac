@@ -32,7 +32,7 @@ from trac.db import get_column_names
 from trac.mimeview.api import IContentConverter, Mimeview
 from trac.resource import Resource
 from trac.ticket.api import TicketSystem
-from trac.ticket.model import Milestone, group_milestones
+from trac.ticket.model import Milestone, group_milestones, Ticket
 from trac.util import Ranges, as_bool
 from trac.util.datefmt import format_datetime, from_utimestamp, parse_date, \
                               to_timestamp, to_utimestamp, utc, user_time
@@ -1100,6 +1100,13 @@ class QueryModule(Component):
                     data['description'] = description
         else:
             data['report_href'] = None
+
+        # Only interact with the batch modify module it it is enabled
+        from trac.ticket.batch import BatchModifyModule
+        if 'TICKET_BATCH_MODIFY' in req.perm and \
+                self.env.is_component_enabled(BatchModifyModule):
+            self.env[BatchModifyModule].add_template_data(req, data, tickets)
+            
         data.setdefault('report', None)
         data.setdefault('description', None)
         data['title'] = title
