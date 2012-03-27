@@ -459,6 +459,11 @@ class Request(object):
             scheme, host = urlparse.urlparse(self.base_url)[:2]
             url = urlparse.urlunparse((scheme, host, url, None, None, None))
 
+        # Workaround #10382, IE6+ bug when post and redirect with hash
+        if status == 303 and '#' in url and \
+                ' MSIE ' in self.environ.get('HTTP_USER_AGENT', ''):
+            url = url.replace('#', '#__msie303:')
+
         self.send_header('Location', url)
         self.send_header('Content-Type', 'text/plain')
         self.send_header('Content-Length', 0)
