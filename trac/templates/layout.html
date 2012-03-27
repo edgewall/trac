@@ -12,7 +12,10 @@
     </title>
     <meta py:if="chrome.content_type == 'text/html'" http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta py:for="meta in chrome.metas" py:attrs="meta"/>
-    <!--[if IE]><script type="text/javascript">window.location.hash = window.location.hash;</script><![endif]-->
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
     <py:if test="chrome.links">
       <py:for each="rel, links in chrome.links.items()">
         <link rel="${rel}" py:for="link in links" py:attrs="link" />
