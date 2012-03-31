@@ -24,6 +24,7 @@ wiki_pages = [
  "TracAccessibility",
  "TracAdmin",
  "TracBackup",
+ "TracBatchModify",
  "TracBrowser",
  "TracCgi",
  "TracChangeset",
