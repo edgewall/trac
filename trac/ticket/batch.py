@@ -69,18 +69,12 @@ class BatchModifyModule(Component):
         """Pull all of the new values out of the post data."""
         values = {}
         
-        # Get the current users name.
-        if req.authname and req.authname != 'anonymous':
-            user = req.authname
-        else:
-            user = req.session.get('email') or req.session.get('name') or None
-        
         for field in TicketSystem(self.env).get_ticket_fields():
             name = field['name']
-            if name not in ('summary', 'reporter', 'description'):
+            if name not in ('id', 'resolution', 'status', 'owner', 'time',
+                            'changetime', 'summary', 'reporter',
+                            'description') and field['type'] != 'text-area':
                 value = req.args.get('batchmod_value_' + name)
-                if name == 'owner' and value == '$USER':
-                    value = user
                 if value is not None:
                     values[name] = value
         return values
@@ -102,7 +96,7 @@ class BatchModifyModule(Component):
             {'name': _("add"), 'value': "+"},
             {'name': _("remove"), 'value': "-"},
             {'name': _("add / remove"), 'value': "+-"},
-            {'name': _("assign"), 'value': "="},
+            {'name': _("set to"), 'value': "="},
         ]
         add_script_data(req, batch_modify=True,
                              batch_list_modes=batch_list_modes,

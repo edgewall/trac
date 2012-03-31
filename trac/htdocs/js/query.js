@@ -368,8 +368,14 @@
 
     // Add the click behavior for the group toggle. 
     $("input[name='batchmod_toggleGroup']").click(function() { 
-      $("tr td input.batchmod_selector",$(this).parents("table.listing"))
+      $("tr td input.batchmod_selector",
+        $(this).parents("table.listing tbody, table.listing thead").next())
         .attr("checked",this.checked);
+    });
+    
+    // Fix group table headers, increasing column span (for checkbox column).
+    $("table.listing tr.trac-group th").each(function() {
+      $(this).attr('colSpan', parseInt($(this).attr('colSpan')) + 1);
     });
   
     // At least one ticket must be selected to submit the batch.
