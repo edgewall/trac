@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.13\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2012-03-29 23:53+0200\n"
+"PO-Revision-Date: 2012-04-01 20:01+0200\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: sv_SE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -23,7 +23,7 @@ msgid ""
 "for syntax highlighting."
 msgstr ""
 "Du verkar använda PHP-CGI-biblioteket. Trac kräver CLI-versionen för "
-"syntax-känslig presentation."
+"syntaxmarkering."
 
 #: tracopt/ticket/clone.py:48
 #, python-format
@@ -482,7 +482,8 @@ msgid ""
 "doesn't load plugins from there anymore. Please remove it by hand."
 msgstr ""
 "Varning: Katalogen \"wiki-macros\" är inte tom för denna Trac-miljö,\n"
-"men Trac använder inte längre denna katalog för inladdning av tillägg.\n"
+"men Trac använder inte längre denna katalog för inläsning av "
+"insticksmoduler.\n"
 "Var vänlig töm katalogen, eller flytta dess innehåll, manuellt."
 
 #: trac/env.py:968
@@ -493,7 +494,7 @@ msgid ""
 "hand."
 msgstr ""
 "Ett fel inträffade vid borttagning av wiki-makron: %(err)s\n"
-"Trac laddar inte längre tillägg från katalogen \"wiki-macros\".\n"
+"Trac laddar inte längre insticksmoduler från katalogen \"wiki-macros\".\n"
 "Var vänlig töm katalogen eller flytta dess innehåll manuellt."
 
 #: trac/env.py:973
@@ -784,13 +785,13 @@ msgstr ""
 "---------------------------------------------------------------------\n"
 "Varning: kunde ej indexera standardarkivet.\n"
 "\n"
-"Detta kan hända av olika skäl: fel typ av arkiv, \n"
-"inget lämpligt tredjepartstillägg för denna typ av arkiv,\n"
-"inget arkiv existerar på angiven sökväg...\n"
+"Detta kan hända av olika skäl: fel typ av arkiv, ingen lämplig\n"
+"insticksmodul från tredje part för denna typ av arkiv, inget arkiv\n"
+"existerar på angiven sökväg...\n"
 "\n"
-"Du kan dock börja använda din Trac miljö men du måste\n"
-"kontrollera inställningarna för [trac] repository_type och\n"
-"repository_path i filen trac.ini.\n"
+"Du kan dock börja använda din Trac-miljö men du måste\n"
+"kontrollera inställningarna i filen trac.ini av\n"
+"[trac] repository_type och repository_path.\n"
 
 #: trac/admin/console.py:500
 #, python-format
@@ -1005,7 +1006,7 @@ msgstr "Valda behörigheter har blivit återkallade."
 
 #: trac/admin/web_ui.py:441 trac/admin/templates/admin_plugins.html:10
 msgid "Plugins"
-msgstr "Tillägg"
+msgstr "Insticksmoduler"
 
 #: trac/admin/web_ui.py:475
 msgid "Uploaded file is not a Python source file or egg"
@@ -1014,7 +1015,7 @@ msgstr "Den uppladdade filen är varken en Pythonkällkodsfil eller ett Pythonä
 #: trac/admin/web_ui.py:480
 #, python-format
 msgid "Plugin %(name)s already installed"
-msgstr "Tillägget %(name)s är redan installerat"
+msgstr "Insticksmodulen %(name)s är redan installerad"
 
 #: trac/admin/web_ui.py:549
 msgid "The following component has been disabled:"
@@ -1067,7 +1068,7 @@ msgstr "Beskrivning:"
 
 #: trac/admin/templates/admin_basics.html:35
 msgid "Default timezone:"
-msgstr "Förvald tidszon:"
+msgstr "Förinställd tidszon:"
 
 #: trac/admin/templates/admin_basics.html:37
 msgid "Server's local time zone"
@@ -1075,7 +1076,7 @@ msgstr "Serverns lokala tidszon"
 
 #: trac/admin/templates/admin_basics.html:44
 msgid "Default language:"
-msgstr "Förvalt språk:"
+msgstr "Förinställt språk:"
 
 #: trac/admin/templates/admin_basics.html:46
 #: trac/admin/templates/admin_basics.html:55
@@ -1084,7 +1085,7 @@ msgstr "Språk"
 
 #: trac/admin/templates/admin_basics.html:53
 msgid "Default date format:"
-msgstr "Förvalt datumformat:"
+msgstr "Förinställt datumformat:"
 
 #: trac/admin/templates/admin_basics.html:57
 #: trac/prefs/templates/prefs_datetime.html:65
@@ -1361,11 +1362,11 @@ msgstr ""
 
 #: trac/admin/templates/admin_plugins.html:35
 msgid "Manage Plugins"
-msgstr "Hantera tillägg"
+msgstr "Hantera insticksmoduler"
 
 #: trac/admin/templates/admin_plugins.html:39
 msgid "Install Plugin:"
-msgstr "Installera tillägg:"
+msgstr "Installera insticksmodul:"
 
 #: trac/admin/templates/admin_plugins.html:41
 msgid "File: [1:]"
@@ -1375,11 +1376,13 @@ msgstr "Fil: [1:]"
 msgid ""
 "The web server does not have sufficient permissions to store files in\n"
 "            the environment plugins directory."
-msgstr "Webbservern är ej behörig att lagra filer i Trac-miljöns tilläggskatalog."
+msgstr ""
+"Webbservern är ej behörig att lagra filer i Trac-miljöns katalog med "
+"insticksmoduler."
 
 #: trac/admin/templates/admin_plugins.html:50
 msgid "Upload a plugin packaged as Python egg."
-msgstr "Ladda upp ett tillägg förpackat som Pythonägg."
+msgstr "Ladda upp en insticksmodul förpackad som Pythonägg."
 
 #: trac/admin/templates/admin_plugins.html:55
 msgid "Install"
@@ -1564,7 +1567,7 @@ msgstr "denna del var kortare än förväntat"
 
 #: trac/mimeview/pygments.py:126 trac/prefs/templates/prefs_pygments.html:9
 msgid "Syntax Highlighting"
-msgstr "Syntax-färgläggning"
+msgstr "Syntaxmarkering"
 
 #: trac/mimeview/pygments.py:135 trac/prefs/web_ui.py:145
 msgid "Your preferences have been saved."
@@ -1642,8 +1645,8 @@ msgid ""
 "      in a different web browser."
 msgstr ""
 "Sessionsnyckeln används för att identifiera lagrade inställningar och "
-"sessionsdata som lagras på servern. Även om denna är automatiskt "
-"genererad så kan du ändra den till något som är enklare att komma ihåg "
+"sessionsdata som lagras på servern. Även om den genereras automatiskt som"
+" standard, så kan du ändra den till något som är enklare att komma ihåg "
 "ifall du vill hämta dina inställningar från en annan webbläsare."
 
 #: trac/prefs/templates/prefs_advanced.html:26
@@ -1671,7 +1674,7 @@ msgstr "Tidszon:"
 
 #: trac/prefs/templates/prefs_datetime.html:18
 msgid "Default time zone"
-msgstr "Förvald tidszon"
+msgstr "Förinställd tidszon"
 
 #: trac/prefs/templates/prefs_datetime.html:25
 msgid ""
@@ -1698,7 +1701,7 @@ msgstr "I din tidszon, %(tz)s, skulle detta visas som [1:%(formatted)s]."
 #: trac/prefs/templates/prefs_datetime.html:45
 #, python-format
 msgid "In the default time zone, this would be displayed as [1:%(formatted)s]."
-msgstr "För den förvalda tidszonen skulle detta visas som [1:%(formatted)s]."
+msgstr "För den valda tidszonen skulle detta visas som [1:%(formatted)s]."
 
 #: trac/prefs/templates/prefs_datetime.html:51
 msgid ""
@@ -1717,7 +1720,7 @@ msgstr "Datumformat:"
 
 #: trac/prefs/templates/prefs_datetime.html:61
 msgid "Default date format"
-msgstr "Förvalt datumformat"
+msgstr "Förinställt datumformat"
 
 #: trac/prefs/templates/prefs_datetime.html:63
 msgid "Your language setting"
@@ -1740,7 +1743,7 @@ msgstr "Datumformat (relativt/absolut):"
 
 #: trac/prefs/templates/prefs_datetime.html:77
 msgid "Default format"
-msgstr "Förvalt format"
+msgstr "Förinställt format"
 
 #: trac/prefs/templates/prefs_datetime.html:79
 msgid "Relative format"
@@ -1813,7 +1816,7 @@ msgstr "Språk:"
 
 #: trac/prefs/templates/prefs_language.html:17
 msgid "Default language"
-msgstr "Förvalt språk"
+msgstr "Förinställt språk"
 
 #: trac/prefs/templates/prefs_language.html:23
 msgid ""
@@ -1829,8 +1832,8 @@ msgid ""
 "The [1:Default language] option uses the browser's\n"
 "        language negotiation feature to select the appropriate language."
 msgstr ""
-"Alternativet [1:Förvalt språk] överlämnar avgörandet av lämpligt språk åt"
-" din webbläsare och servern."
+"Alternativet [1:Förinställt språk] överlämnar avgörandet av lämpligt "
+"språk åt din webbläsare och servern."
 
 #: trac/prefs/templates/prefs_pygments.html:36
 msgid ""
@@ -1965,7 +1968,7 @@ msgstr "Version"
 
 #: trac/templates/about.html:67
 msgid "Installed Plugins"
-msgstr "Installerade tillägg:"
+msgstr "Installerade insticksmoduler"
 
 #: trac/templates/about.html:69
 msgid "Location"
@@ -2283,17 +2286,17 @@ msgstr ""
 #: trac/templates/error.html:113
 #, python-format
 msgid "Note that the %(name)s plugin seems to be involved."
-msgstr "Observera att tillägget %(name)s kan vara involverat."
+msgstr "Observera att insticksmodulen %(name)s kan vara involverad."
 
 #: trac/templates/error.html:116
 msgid "Note that the following plugins seem to be involved:"
-msgstr "Observera att följande tillägg kan vara involverade:"
+msgstr "Observera att följande insticksmoduler kan vara involverade:"
 
 #: trac/templates/error.html:120
 msgid "Please report this issue to the plugin maintainer."
 msgstr ""
 "Var vänlig och rapportera problemet till den som utvecklar och "
-"underhåller tillägget."
+"underhåller insticksmodulen."
 
 #: trac/templates/error.html:122
 msgid ""
@@ -2360,7 +2363,7 @@ msgstr "Systeminformation:"
 
 #: trac/templates/error.html:186
 msgid "Enabled Plugins:"
-msgstr "Aktiverade tillägg:"
+msgstr "Aktiverade insticksmoduler:"
 
 #: trac/templates/error.html:202
 msgid "TracGuide"
@@ -3034,7 +3037,7 @@ msgstr "RSS-ström"
 #: trac/ticket/query.py:846 trac/ticket/report.py:273 trac/ticket/report.py:566
 #: trac/ticket/web_ui.py:128
 msgid "Comma-delimited Text"
-msgstr "Komma-separerad text"
+msgstr "Kommaseparerad text"
 
 #: trac/ticket/query.py:848 trac/ticket/report.py:275 trac/ticket/report.py:568
 #: trac/ticket/web_ui.py:130
@@ -3122,7 +3125,7 @@ msgid ""
 msgstr ""
 "Wiki-makro för att visa ärenden som matchar sökkriteria.\n"
 "\n"
-"Detta makro accepterar en komma-separerad lista med namngivna parametrar "
+"Detta makro accepterar en kommaseparerad lista med namngivna parametrar "
 "på formen \"key=value\".\n"
 "\n"
 "Om \"key\" är samma som namnet på ett ärendefält måste värdet anges "
@@ -3142,13 +3145,13 @@ msgstr ""
 "`format` -- Presentationsformat:\n"
 " - '''list''' -- den förvalda presentationen, visar ärendets ID ihop med "
 "dess sammanfattning i en enkel lista med ett ärende per rad.\n"
-" - '''compact''' -- Ärendena presenteras som en komma-separerad lista av "
+" - '''compact''' -- Ärendena presenteras som en kommaseparerad lista av "
 "ärende-IDn.\n"
 " - '''count''' -- Visa endast antal ärenden som matchar villkoret.\n"
 " - '''table'''  -- Ärendena visas i en tabell liknande Anpassad sökning "
 "(men utan dess kontroller).\n"
-" - '''progress''' -- Visa en förloppsmätare liknande den som visas för "
-"milstolpar.\n"
+" - '''progress''' -- Visa en förloppsindikator liknande den som visas för"
+" milstolpar.\n"
 "\n"
 "`max` -- Begränsa antalet visade ärenden (förval: '''0''', dvs ingen "
 "begränsning).\n"
@@ -4764,7 +4767,7 @@ msgid ""
 "appropriate component, maybe the corresponding plugin was not enabled? "
 msgstr ""
 "Versionshanteringssystemet \"%(name)s\" stöds ej: Det går inte att hitta "
-"en lämplig komponent, har motsvarande tillägg aktiverats? "
+"en lämplig komponent, har motsvarande insticksmodul aktiverats? "
 
 #: trac/versioncontrol/api.py:718
 #, python-format
@@ -5657,8 +5660,8 @@ msgstr ""
 "\n"
 "  ''format''::\n"
 "    Välj presentationsformat:\n"
-"    - ''compact'' visar en komma-separerad lista av kortfattade arkivnamn"
-" (förvalt)\n"
+"    - ''compact'' visar en kommaseparerad lista av kortfattade arkivnamn "
+"(förvalt)\n"
 "    - ''list'' visar en lista av korttfattade arkivnamn med beskrivningar"
 "\n"
 "    - ''table'' visar en tabell liknande den som visas på sidan ''Arkiv''"
@@ -5936,7 +5939,7 @@ msgstr "''Systeminformation ej tillgänglig''\n"
 
 #: trac/web/main.py:574
 msgid "''Plugin information not available''\n"
-msgstr "''Information om tillägg ej tillgänglig''\n"
+msgstr "''Information om insticksmoduler ej tillgänglig''\n"
 
 #: trac/web/main.py:598
 #, python-format
@@ -5970,7 +5973,7 @@ msgstr ""
 "\n"
 "''(var vänlig lämna kompletterande uppgifter här)''\n"
 "\n"
-"Request-parametrar::\n"
+"Request-parametrar:\n"
 "{{{\n"
 "%(req_args)s\n"
 "}}}\n"
@@ -5979,9 +5982,9 @@ msgstr ""
 "\n"
 "==== Systeminformation ====\n"
 "%(sys_info)s\n"
-"==== Aktiverade tillägg ====\n"
+"==== Aktiverade insticksmoduler ====\n"
 "%(enabled_plugins)s\n"
-"==== Python Traceback ====\n"
+"==== Python traceback ====\n"
 "{{{\n"
 "%(traceback)s}}}"
 
@@ -6174,7 +6177,7 @@ msgstr ""
 "\n"
 "Utöver detta kan följande namngivna parametrar anges:\n"
 " - format -- formattering av listan\n"
-"   - `format=compact`: Sidornas namn visas i en komma-separerad lista.\n"
+"   - `format=compact`: Sidornas namn visas i en kommaseparerad lista.\n"
 "   - `format=group`: Listan grupperas efter gemensamma prefix i sidornas "
 "namn. Detta format stödjer även paramtern `min=n`, där `n` är det minsta "
 "antalet sidor i en grupp.\n"
@@ -6262,16 +6265,16 @@ msgstr ""
 " * Den första är ett nummer eller intervall för att begränsa urvalet av "
 "rubriknivåer i innehållsförteckningen. Ange \"1\" för att endast lista "
 "rubriker på översta nivån. Ange \"2-3\" för att visa rubriker på nivå 2 "
-"och 3 som en nästlad lista. Anges inget värde så listas alla rubriker.\n"
+"till 3 som en nästlad lista. Anges inget värde så listas alla rubriker.\n"
 " * Den andra parametern anger titel på innehållsförteckningen (ingen "
 "titel om värdet utelämnas).\n"
 " * Den tredje parametern anger utseende på innehållsförteckningen; "
-"`inline` eller `pullout` (den senare är förvald). `inline` visar "
+"`inline` eller `pullout` (den senare är standard). `inline` visar "
 "innehållsförteckningen i löptexten på wikisidan, medan `pullout` visar "
 "den i en egen ruta (vanligtvis till höger om löptexten).\n"
 " * Fjärde parametern anger om innehållsförteckningen är numrerad eller "
-"inte. Ange antingen `numbered` eller `unnumbered` (den förra är förvald)."
-" Detta har endast påverkan då utseendet är satt till `inline`."
+"inte. Ange antingen `numbered` eller `unnumbered` (den förra är "
+"standard). Detta har endast påverkan då utseendet är satt till `inline`."
 
 #: trac/wiki/macros.py:426
 msgid ""
