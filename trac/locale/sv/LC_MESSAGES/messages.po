@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.13\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2012-04-01 20:01+0200\n"
+"PO-Revision-Date: 2012-04-01 22:52+0200\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: sv_SE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -1665,7 +1665,7 @@ msgid ""
 "      multiple computers and web browsers."
 msgstr ""
 "Du kan läsa in en befintlig session genom att ange tillhörande "
-"sessionsnyckel nedan. Detta gör det möjligt att dela "
+"sessionsnyckel ovan. Detta gör det möjligt att dela "
 "sessionsinställingarna mellan flera datorer och webbläsare."
 
 #: trac/prefs/templates/prefs_datetime.html:16
@@ -1839,7 +1839,7 @@ msgstr ""
 msgid ""
 "The Pygments syntax highlighter can be used with\n"
 "      different coloring styles."
-msgstr "Pygments syntaxfärgläggare kan användas med olika färgteman."
+msgstr "Pygments syntaxmarkerare kan användas med olika färgteman."
 
 #: trac/prefs/templates/prefs_pygments.html:38
 msgid "Style:"
@@ -1944,7 +1944,7 @@ msgstr "Python powered"
 msgid ""
 "Please visit the Trac open source project:\n"
 "        [1:http://trac.edgewall.org/]"
-msgstr "Besök gärna Trac's öppna källkodsprojekt:  [1:http://trac.edgewall.org/]"
+msgstr "Besök gärna Trac's öppna källkodsprojekt: [1:http://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
 msgid ""
@@ -3046,7 +3046,7 @@ msgstr "Tabb-separerad text"
 
 #: trac/ticket/query.py:870 trac/ticket/report.py:74
 msgid "View Tickets"
-msgstr "Visa ärenden"
+msgstr "Ärenden"
 
 #: trac/ticket/query.py:1083 trac/ticket/query.py:1094
 #: trac/ticket/report.py:140 trac/ticket/templates/report_list.html:56
@@ -3297,7 +3297,7 @@ msgstr ""
 #: trac/ticket/roadmap.py:660 trac/ticket/templates/roadmap.html:10
 #: trac/ticket/templates/roadmap.html:15
 msgid "Roadmap"
-msgstr "Tidsplan"
+msgstr "Tidplan"
 
 #: trac/ticket/roadmap.py:450
 msgid "iCalendar"
@@ -3351,7 +3351,7 @@ msgstr "Nästa milstolpe"
 
 #: trac/ticket/roadmap.py:888
 msgid "Back to Roadmap"
-msgstr "Tillbaks till Tidsplan"
+msgstr "Tillbaka till tidplanen"
 
 #: trac/ticket/web_ui.py:57
 msgid "Invalid Ticket"
@@ -3720,7 +3720,7 @@ msgid ""
 "[1:Note:] See\n"
 "      [2:TracRoadmap] for help on using\n"
 "      the roadmap."
-msgstr "[1:Tips:] Se [2:TracRoadmap] för hjälp med tidsplanen."
+msgstr "[1:Tips:] Se [2:TracRoadmap] för hjälp med tidplanen."
 
 #: trac/ticket/templates/milestone_edit.html:11
 #: trac/ticket/templates/milestone_edit.html:43
@@ -3763,7 +3763,7 @@ msgid ""
 "[1:Note:] See\n"
 "        [2:TracRoadmap] for help on using\n"
 "        the roadmap."
-msgstr "[1:Tips:] Se [2:TracRoadmap] för hjälp med tidsplanen."
+msgstr "[1:Tips:] Se [2:TracRoadmap] för hjälp med tidplanen."
 
 #: trac/ticket/templates/milestone_view.html:11
 msgid "Edit this milestone"
@@ -6980,12 +6980,12 @@ msgstr "Version %(version)s av %(author)s"
 #: trac/wiki/templates/wiki_view.html:57
 #, python-format
 msgid "[1:Last modified] %(reldate)s"
-msgstr "[1:Senast ändrad] för %(reldate)s sedan"
+msgstr "[1:Senast ändrad] %(reldate)s"
 
 #: trac/wiki/templates/wiki_view.html:61
 #, python-format
 msgid "Last modified on %(date)s"
-msgstr "Senast ändrad %(date)s"
+msgstr "Senast ändrad den %(date)s"
 
 #: trac/wiki/templates/wiki_view.html:66
 #, python-format
