@@ -469,13 +469,13 @@
       // New rows are added in the same order as listed in the dropdown.
       // This is the same behavior as the filters.
       var insertionPoint = null;
-      getDisabledBatchOptions().each(function(){
-        if(insertionPoint === null && $(this).val() > propertyName){
-          insertionPoint = $("#batchmod_" + $(this).val());
+      for (var i = this.selectedIndex + 1; i < this.options.length; i++) {
+        if (insertionPoint === null && this.options[i].disabled) {
+          insertionPoint = $("#batchmod_" + this.options[i].value);
         }
-      });
+      }
       if (insertionPoint === null) {
-        insertionPoint = $("#batchmod_comment");
+        insertionPoint = $("#add_batchmod_field_row");
       }
       insertionPoint.before(tr);
       
