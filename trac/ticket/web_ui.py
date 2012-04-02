@@ -403,6 +403,7 @@ class TicketModule(Component):
     def _render_batched_timeline_event(self, context, field, event):
         tickets, verb, info, summary, status, resolution, type, \
                 description, comment, cid = event[3]
+        tickets = sorted(tickets)
         if field == 'url':
             return context.href.query(id=','.join([str(t) for t in tickets]))
         elif field == 'title':
