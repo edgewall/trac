@@ -105,15 +105,18 @@ class BatchModifyModule(Component):
     def _get_action_controls(self, req, tickets):
         action_controls = []
         ts = TicketSystem(self.env)        
-        ticket_actions = []
+        tickets_by_action = {}
         for t in tickets:
             ticket = Ticket(self.env, t['id'])
-            ticket_actions.extend(ts.get_available_actions(req, ticket))
-        sorted_actions = sorted(set(ticket_actions))
+            actions = ts.get_available_actions(req, ticket)
+            for action in actions:
+                tickets_by_action.setdefault(action, []).append(ticket)
+        sorted_actions = sorted(set(tickets_by_action.keys()))
         for action in sorted_actions:
             first_label = None
             hints = []
             widgets = []
+            ticket = tickets_by_action[action][0]
             for controller in self._get_action_controllers(req, ticket,
                                                            action):
                 label, widget, hint = controller.render_ticket_action_control(
