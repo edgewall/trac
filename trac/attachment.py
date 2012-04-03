@@ -20,6 +20,7 @@ from __future__ import with_statement
 
 from cStringIO import StringIO
 from datetime import datetime
+import errno
 import os.path
 import re
 import shutil
@@ -37,12 +38,13 @@ from trac.mimeview import *
 from trac.perm import PermissionError, IPermissionPolicy
 from trac.resource import *
 from trac.search import search_to_sql, shorten_result
-from trac.util import content_disposition, create_unique_file, get_reporter_id
+from trac.util import content_disposition, get_reporter_id
+from trac.util.compat import sha1
 from trac.util.datefmt import format_datetime, from_utimestamp, \
                               to_datetime, to_utimestamp, utc
 from trac.util.text import exception_to_unicode, path_to_unicode, \
                            pretty_size, print_table, unicode_quote, \
-                           unicode_unquote
+                           unicode_unquote, printerr
 from trac.util.translation import _, tag_
 from trac.web import HTTPBadRequest, IRequestHandler, RequestDone
 from trac.web.chrome import (INavigationContributor, add_ctxtnav, add_link,
@@ -166,6 +168,22 @@ class Attachment(object):
                                    _('Invalid Attachment'))
 
     def _get_path(self, parent_realm, parent_id, filename):
+        path = os.path.join(self.env.path, 'files', 'attachments',
+                            parent_realm)
+        hash = sha1(parent_id.encode('utf-8')).hexdigest()
+        path = os.path.join(path, hash[0:3], hash)
+        if filename:
+            path = os.path.join(path, self._get_hashed_filename(filename))
+        return os.path.normpath(path)
+
+    _extension_re = re.compile(r'\.[A-Za-z0-9]+\Z')
+
+    def _get_hashed_filename(self, filename):
+        hash = sha1(filename.encode('utf-8')).hexdigest()
+        match = self._extension_re.search(filename)
+        return hash + match.group(0) if match else hash
+
+    def _get_path_old(self, parent_realm, parent_id, filename):
         path = os.path.join(self.env.path, 'attachments', parent_realm,
                             unicode_quote(parent_id))
         if filename:
@@ -194,13 +212,14 @@ class Attachment(object):
             db("""
                 DELETE FROM attachment WHERE type=%s AND id=%s AND filename=%s
                 """, (self.parent_realm, self.parent_id, self.filename))
-            if os.path.isfile(self.path):
+            path = self.path
+            if os.path.isfile(path):
                 try:
-                    os.unlink(self.path)
+                    os.unlink(path)
                 except OSError, e:
                     self.env.log.error("Failed to delete attachment "
                                        "file %s: %s",
-                                       self.path,
+                                       path,
                                        exception_to_unicode(e, traceback=True))
                     raise TracError(_("Could not delete attachment"))
 
@@ -217,7 +236,7 @@ class Attachment(object):
         # Make sure the path to the attachment is inside the environment
         # attachments directory
         attachments_dir = os.path.join(os.path.normpath(self.env.path),
-                                       'attachments')
+                                       'files', 'attachments')
         commonprefix = os.path.commonprefix([attachments_dir, new_path])
         if commonprefix != attachments_dir:
             raise TracError(_('Cannot reparent attachment "%(att)s" as '
@@ -236,12 +255,13 @@ class Attachment(object):
             dirname = os.path.dirname(new_path)
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
-            if os.path.isfile(self.path):
+            path = self.path
+            if os.path.isfile(path):
                 try:
-                    os.rename(self.path, new_path)
+                    os.rename(path, new_path)
                 except OSError, e:
                     self.env.log.error("Failed to move attachment file %s: %s",
-                                       self.path,
+                                       path,
                                        exception_to_unicode(e, traceback=True))
                     raise TracError(_("Could not reparent attachment %(name)s",
                                       name=self.filename))
@@ -275,25 +295,19 @@ class Attachment(object):
         # Make sure the path to the attachment is inside the environment
         # attachments directory
         attachments_dir = os.path.join(os.path.normpath(self.env.path),
-                                       'attachments')
-        commonprefix = os.path.commonprefix([attachments_dir, self.path])
+                                       'files', 'attachments')
+        dir = self.path
+        commonprefix = os.path.commonprefix([attachments_dir, dir])
         if commonprefix != attachments_dir:
             raise TracError(_('Cannot create attachment "%(att)s" as '
                               '%(realm)s:%(id)s is invalid', 
                               att=filename, realm=self.parent_realm,
                               id=self.parent_id))
 
-        if not os.access(self.path, os.F_OK):
-            os.makedirs(self.path)
-        filename = unicode_quote(filename)
-        path, targetfile = create_unique_file(os.path.join(self.path,
-                                                           filename))
+        if not os.access(dir, os.F_OK):
+            os.makedirs(dir)
+        filename, targetfile = self._create_unique_file(dir, filename)
         with targetfile:
-            # Note: `path` is an unicode string because `self.path` was one.
-            # As it contains only quoted chars and numbers, we can use `ascii`
-            basename = os.path.basename(path).encode('ascii')
-            filename = unicode_unquote(basename)
-
             with self.env.db_transaction as db:
                 db("INSERT INTO attachment VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
                    (self.parent_realm, self.parent_id, filename, self.size,
@@ -363,19 +377,93 @@ class Attachment(object):
                     attachment_dir, exception_to_unicode(e, traceback=True))
             
     def open(self):
-        self.env.log.debug('Trying to open attachment at %s', self.path)
+        path = self.path
+        self.env.log.debug('Trying to open attachment at %s', path)
         try:
-            fd = open(self.path, 'rb')
+            fd = open(path, 'rb')
         except IOError:
             raise ResourceNotFound(_("Attachment '%(filename)s' not found",
                                      filename=self.filename))
         return fd
 
+    def _create_unique_file(self, dir, filename):
+        parts = os.path.splitext(filename)
+        flags = os.O_CREAT + os.O_WRONLY + os.O_EXCL
+        if hasattr(os, 'O_BINARY'):
+            flags += os.O_BINARY
+        idx = 1
+        while 1:
+            path = os.path.join(dir, self._get_hashed_filename(filename))
+            try:
+                return filename, os.fdopen(os.open(path, flags, 0666), 'w')
+            except OSError, e:
+                if e.errno != errno.EEXIST:
+                    raise
+                idx += 1
+                # A sanity check
+                if idx > 100:
+                    raise Exception('Failed to create unique name: ' + path)
+                filename = '%s.%d%s' % (parts[0], idx, parts[1])
+
+
+class AttachmentSetup(Component):
+
+    implements(IEnvironmentSetupParticipant)
+
+    required = True
+
+    # IEnvironmentSetupParticipant methods
+
+    def environment_created(self):
+        """Create the attachments directory."""
+        path = self.env.path
+        if path:
+            os.makedirs(os.path.join(path, 'files', 'attachments'))
+
+    def environment_needs_upgrade(self, db):
+        path = self.env.path
+        if path:
+            return os.path.exists(os.path.join(path, 'attachments'))
+
+    def upgrade_environment(self, db):
+        """Migrate attachments from old-style directory to new-style
+        directory.
+        """
+        path = self.env.path
+        attachment_dir = os.path.join(path, 'files', 'attachments')
+        if not os.path.exists(attachment_dir):
+            os.makedirs(attachment_dir)
+
+        for row in db("""
+                SELECT type, id, filename, description, size, time, author,
+                ipnr FROM attachment ORDER BY type, id"""):
+            attachment = Attachment(self.env, row[0], row[1])
+            attachment._from_database(*row[2:])
+            self._move_attachment_file(attachment)
+
+        old_dir = os.path.join(path, 'attachments')
+        try:
+            if os.path.exists(old_dir):
+                os.rmdir(old_dir)
+        except OSError, e:
+            self.log.error("Can't delete old attachments directory %s: %s",
+                           old_dir, exception_to_unicode(e, traceback=True))
+            printerr(_("Error while deleting old attachments directory. "
+                       "Please move or remove files in\nthe directory and try "
+                       "again."))
+            raise
+
+    def _move_attachment_file(self, attachment):
+        old_path = attachment._get_path_old(attachment.parent_realm,
+                                            attachment.parent_id,
+                                            attachment.filename)
+        if os.path.isfile(old_path):
+            os.renames(old_path, attachment.path)
+
 
 class AttachmentModule(Component):
 
-    implements(IEnvironmentSetupParticipant, IRequestHandler,
-               INavigationContributor, IWikiSyntaxProvider,
+    implements(IRequestHandler, INavigationContributor, IWikiSyntaxProvider,
                IResourceManager)
 
     change_listeners = ExtensionPoint(IAttachmentChangeListener)
@@ -403,19 +491,6 @@ class AttachmentModule(Component):
 
         For public sites where anonymous users can create attachments it is
         recommended to leave this option disabled (which is the default).""")
-
-    # IEnvironmentSetupParticipant methods
-
-    def environment_created(self):
-        """Create the attachments directory."""
-        if self.env.path:
-            os.mkdir(os.path.join(self.env.path, 'attachments'))
-
-    def environment_needs_upgrade(self, db):
-        return False
-
-    def upgrade_environment(self, db):
-        pass
 
     # INavigationContributor methods
 
