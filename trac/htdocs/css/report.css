@@ -226,13 +226,14 @@ table.tickets tbody tr.fullrow th {
 .batchmod_property { width: 100%; }
 .batchmod_required:before { content: " * "; }
 
-#batchmod_form fieldset,
 #batchmod_form fieldset input,
 #batchmod_form fieldset select,
 .batchmod_property,
 .batchmod_label {
     font-size: 11px;
 }
+
+#batchmod_action { line-height: 2em }
 
 #batchmod_form th {
     text-align: right;

@@ -12,7 +12,7 @@
         <label for="batchmod_value_comment">Comment:</label>
       </th>
       <td class="fullrow"><textarea
-          id="batchmod_value_comment" name="batchmod_value_comment" value="" cols="70" rows="5"/>
+          id="batchmod_value_comment" name="batchmod_value_comment" cols="70" rows="5"/>
       </td>
     </tr>
     
@@ -31,7 +31,8 @@
     
     <tr>
       <td colspan="3">
-        <legend>Action</legend>
+        <fieldset id="batchmod_action"> 
+          <legend>Action</legend>
           <div py:for="key, label, controls, hints in action_controls">
             <input type="radio" id="action_$key" name="action" value="$key"
                    checked="${key == action or None}" />
@@ -39,6 +40,7 @@
             $controls
             <span class="hint" py:for="hint in hints">$hint</span>
           </div>
+        </fieldset>
       </td>
     </tr>
   </table>
@@ -46,7 +48,7 @@
   <div>
     <input type="hidden" name="selected_tickets" value=""/>
     <input type="hidden" name="query_href" value="${query_href}"/>
-    <input type="submit" id="batchmod_submit" name="batchmod_submit" value="Change tickets" />
+    <input type="submit" id="batchmod_submit" name="batchmod_submit" value="${_('Change tickets')}" />
   </div>
   
   <div id="batchmod_help" i18n:msg="">
