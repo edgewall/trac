@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.13\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2011-02-23 13:05+0900\n"
-"PO-Revision-Date: 2012-04-01 22:52+0200\n"
+"POT-Creation-Date: 2012-04-03 01:26+0200\n"
+"PO-Revision-Date: 2012-04-03 01:22+0100\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: sv <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.5\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: tracopt/mimeview/enscript.py:105
 msgid "Path to the Enscript executable."
@@ -111,6 +111,77 @@ msgstr ""
 #: tracopt/ticket/commit_updater.py:132
 msgid "Send ticket change notification when updating a ticket."
 msgstr "Skicka aviseringar när ett ärende uppdateras."
+
+#: tracopt/versioncontrol/git/git_fs.py:167
+msgid "enable persistent caching of commit tree"
+msgstr "aktivera bestående cachning av arkiverat träd"
+
+#: tracopt/versioncontrol/git/git_fs.py:170
+msgid "wrap `GitRepository` in `CachedRepository`"
+msgstr "linda in `GitRepository` i `CachedRepository`"
+
+#: tracopt/versioncontrol/git/git_fs.py:173
+msgid ""
+"length rev sha sums should be tried to be abbreviated to\n"
+"(must be >= 4 and <= 40)"
+msgstr ""
+"längd som rev sha-summor ska försöka förkortas till (mellan 4 till 40, "
+"inklusive)"
+
+#: tracopt/versioncontrol/git/git_fs.py:178
+msgid ""
+"minimum length of hex-string for which auto-detection as sha id is\n"
+" performed.\n"
+"(must be >= 4 and <= 40)"
+msgstr ""
+"minsta längd på hex-sträng för vilken automatisk detektering som sha id "
+"görs. (mellan 4 och 40, inklusive)"
+
+#: tracopt/versioncontrol/git/git_fs.py:184
+msgid "enable reverse mapping of git email addresses to trac user ids"
+msgstr ""
+"aktivera omvänd mappning mellan e-postadresser för git och användarid för"
+" trac"
+
+#: tracopt/versioncontrol/git/git_fs.py:187
+msgid ""
+"use git-committer id instead of git-author id as changeset owner\n"
+"        "
+msgstr ""
+"använd git-arkiverarens id istället för git-upphovsmannens id som "
+"ändringens ägare\n"
+"        "
+
+#: tracopt/versioncontrol/git/git_fs.py:191
+msgid ""
+"use git-committer-author timestamp instead of git-author timestamp\n"
+"as changeset timestamp"
+msgstr ""
+"använd tidsstämpeln för git-arkiverarens upphovsman istället för "
+"tidsstämpeln för git-upphovsmannen som ändringens tidsstämpel"
+
+#: tracopt/versioncontrol/git/git_fs.py:196
+msgid "define charset encoding of paths within git repository"
+msgstr "definiera teckenkodning för sökväger i ett git-arkiv"
+
+#: tracopt/versioncontrol/git/git_fs.py:199
+msgid "path to git executable (relative to trac project folder!)"
+msgstr "sökväg till exekveringsfil för git (relativt tracs projektkatalog!)"
+
+#: tracopt/versioncontrol/git/git_fs.py:730
+msgid "Path to a gitweb-formatted projects.list"
+msgstr "Sökväg till en gitwebb-formatterad projektlista"
+
+#: tracopt/versioncontrol/git/git_fs.py:733
+msgid "Path to the base of your git projects"
+msgstr "Sökväg till basen för dina git-projekt"
+
+#: tracopt/versioncontrol/git/git_fs.py:736
+#, python-format
+msgid ""
+"Template for project URLs. %s will be replaced with the repo\n"
+"name"
+msgstr "Mall för projektets URL. %s byts ut mot arkivets namn"
 
 #: trac/attachment.py:386
 msgid ""
@@ -858,6 +929,18 @@ msgstr ""
 
 #: trac/ticket/notification.py:59
 msgid ""
+"Like ticket_subject_template but for batch modifications.\n"
+"\n"
+"By default, the template is `$prefix Batch modify: $tickets_descr`.\n"
+"''(since 0.13)''"
+msgstr ""
+"Liksom `ticket_subject_template` men för batch-ändringar.\n"
+"\n"
+"Som standard är mallen `$prefix Batch modify: $tickets_descr`. (''sedan "
+"0.13'')"
+
+#: trac/ticket/notification.py:66
+msgid ""
 "Which width of ambiguous characters (e.g. 'single' or\n"
 "'double') should be used in the table of notification mail.\n"
 "\n"
@@ -1064,7 +1147,7 @@ msgstr ""
 "vilken samlar ihop statistik över grupper av ärenden för presentation av "
 "milstolpar."
 
-#: trac/ticket/web_ui.py:67
+#: trac/ticket/web_ui.py:68
 msgid ""
 "Enable the display of all ticket changes in the timeline, not only\n"
 "open / close operations (''since 0.9'')."
@@ -1072,19 +1155,19 @@ msgstr ""
 "Möjliggör presentation av alla ärenden i journalen, inte enbart öppna / "
 "stängda ärenden. (''sedan 0.9'')"
 
-#: trac/ticket/web_ui.py:71
+#: trac/ticket/web_ui.py:72
 msgid ""
 "Don't accept tickets with a too big description.\n"
 "(''since 0.11'')."
 msgstr "Acceptera ej ärenden med en för lång beskrivning. (''sedan 0.11'')"
 
-#: trac/ticket/web_ui.py:75
+#: trac/ticket/web_ui.py:76
 msgid ""
 "Don't accept tickets with a too big comment.\n"
 "(''since 0.11.2'')"
 msgstr "Acceptera ej ärenden med en för lång kommentar. (''sedan 0.11.2'')"
 
-#: trac/ticket/web_ui.py:79
+#: trac/ticket/web_ui.py:80
 msgid ""
 "Which formatter flavor (e.g. 'html' or 'oneliner') should be\n"
 "used when presenting the description for new tickets.\n"
@@ -1095,7 +1178,7 @@ msgstr ""
 "presentation av nya ärendens beskrivningar. Vid 'oneliner' så gäller "
 "alternativet [timeline] abbreviated_messages. (''sedan 0.11'')"
 
-#: trac/ticket/web_ui.py:86
+#: trac/ticket/web_ui.py:87
 msgid ""
 "Whether Wiki formatter should respect the new lines present\n"
 "in the Wiki text.\n"
@@ -1109,7 +1192,7 @@ msgstr ""
 "men behåller gammalt beteende för uppgraderade Trac-miljöer (ex.v. 'no')."
 " (''sedan 0.11'')"
 
-#: trac/ticket/web_ui.py:93
+#: trac/ticket/web_ui.py:94
 msgid ""
 "The base query to be used when linkifying values of ticket\n"
 "fields. The query is a URL query\n"
@@ -1627,7 +1710,7 @@ msgstr ""
 "Sökväg för autentiseringscookien. Sätt detta till en gemensam sökväg för "
 "flera Trac-miljöer om du vill att de delar cookie. (''sedan 0.12'')"
 
-#: trac/web/chrome.py:324
+#: trac/web/chrome.py:331
 msgid ""
 "Path to the //shared templates directory//.\n"
 "\n"
@@ -1643,7 +1726,7 @@ msgstr ""
 "\n"
 "(''sedan 0.11'')"
 
-#: trac/web/chrome.py:332
+#: trac/web/chrome.py:339
 msgid ""
 "Path to the //shared htdocs directory//.\n"
 "\n"
@@ -1665,11 +1748,11 @@ msgstr ""
 "\n"
 "(''sedan 0.13'')"
 
-#: trac/web/chrome.py:343
+#: trac/web/chrome.py:350
 msgid "Automatically reload template files after modification."
 msgstr "Automatisk omladdning av mallfiler vid ändringar av dem."
 
-#: trac/web/chrome.py:346
+#: trac/web/chrome.py:353
 msgid ""
 "The maximum number of templates that the template loader will cache\n"
 "in memory. The default value is 128. You may want to choose a higher\n"
@@ -1682,7 +1765,7 @@ msgstr ""
 "stort antal mallar, och du har tillräckligt med minnesutrymme, eller "
 "reducera antalet om minnesutrymmet är begränsat."
 
-#: trac/web/chrome.py:353
+#: trac/web/chrome.py:360
 msgid ""
 "Base URL for serving the core static resources below \n"
 "`/chrome/common/`.\n"
@@ -1710,7 +1793,7 @@ msgstr ""
 " av insticksmoduler) blir ej tillgängliga på det här sättet, och "
 "ytterligare omskrivningsregler kommer att behövas i webbservern."
 
-#: trac/web/chrome.py:368
+#: trac/web/chrome.py:375
 msgid ""
 "Location of the jQuery !JavaScript library (version 1.5.1).\n"
 "\n"
@@ -1734,7 +1817,67 @@ msgstr ""
 "\n"
 "(''sedan 0.13'')"
 
-#: trac/web/chrome.py:380
+#: trac/web/chrome.py:387 trac/web/chrome.py:414
+msgid ""
+"Location of the jQuery UI !JavaScript library (version 1.8.18).\n"
+"\n"
+"An empty value loads jQuery UI from the copy bundled with Trac.\n"
+"\n"
+"Alternatively, jQuery UI could be loaded from a CDN, for example:\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js\n"
+"or\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.18/jquery-ui.min.js.\n"
+"\n"
+"(''since 0.13'')"
+msgstr ""
+"Platsen för jQuery UI !JavaScript-bibioteket (version 1.8.18).\n"
+"\n"
+"Ett tomt värde medför att jQuery UI laddas från kopian som medföljde "
+"Trac.\n"
+"\n"
+"Alternativt, jQuery UI kan laddas från en CDN (Content Delivery Network),"
+" till exempel:\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js\n"
+"eller\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.18/jquery-ui.min.js.\n"
+"\n"
+"(''sedan 0.13'')"
+
+#: trac/web/chrome.py:399 trac/web/chrome.py:426
+msgid ""
+"Location of the theme to be used with the jQuery UI !JavaScript\n"
+"library (version 1.8.18).\n"
+"\n"
+"An empty value loads the custom Trac jQuery UI theme from the copy \n"
+"bundled with Trac.\n"
+"\n"
+"Alternatively, a jQuery UI theme could be loaded from a CDN, for \n"
+"example:\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/start"
+"/jquery-ui.css\n"
+"or\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.18/themes/start/jquery-"
+"ui.css.\n"
+"\n"
+"(''since 0.13'')"
+msgstr ""
+"Platsen för temat som används med jQuery UI !JavaScript-bibioteket "
+"(version 1.8.18).\n"
+"\n"
+"Ett tomt värde medför att en anpassat tema för jQuery UI laddas från "
+"kopian som medföljde Trac.\n"
+"\n"
+"Alternativt, ett tema för jQuery UI kan laddas från en CDN (Content "
+"Delivery Network), till exempel:\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/start"
+"/jquery-ui.css\n"
+"eller\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.18/themes/start/jquery-"
+"ui.css.\n"
+"\n"
+"(''sedan 0.13'')"
+
+#: trac/web/chrome.py:441
 msgid ""
 "Order of the items to display in the `metanav` navigation bar,\n"
 "listed by IDs. See also TracNavigation."
@@ -1742,7 +1885,7 @@ msgstr ""
 "Ordning på elementen som ska visas i navigationsfältet `metanav`, listade"
 " av IDn. Se också TracNavigation."
 
-#: trac/web/chrome.py:385
+#: trac/web/chrome.py:446
 msgid ""
 "Order of the items to display in the `mainnav` navigation bar, \n"
 "listed by IDs. See also TracNavigation."
@@ -1750,11 +1893,11 @@ msgstr ""
 "Ordning på elementen som ska visas i navigationsfältet `mainnav`, listade"
 " av IDn. Se också TracNavigation."
 
-#: trac/web/chrome.py:391
+#: trac/web/chrome.py:452
 msgid "URL to link to, from the header logo."
 msgstr "URL att länka till, från huvudlogotypen."
 
-#: trac/web/chrome.py:394
+#: trac/web/chrome.py:455
 msgid ""
 "URL of the image to use as header logo.\n"
 "It can be absolute, server relative or relative.\n"
@@ -1776,19 +1919,19 @@ msgstr ""
 "htdocs_location] URL. Om endast `din-logo.png` anges är detta ekvivalent "
 "med det senare."
 
-#: trac/web/chrome.py:405
+#: trac/web/chrome.py:466
 msgid "Alternative text for the header logo."
 msgstr "Alternativ text för huvudlogotyp."
 
-#: trac/web/chrome.py:409
+#: trac/web/chrome.py:470
 msgid "Width of the header logo image in pixels."
 msgstr "Bredden på huvudlogotypen (antal pixlar)."
 
-#: trac/web/chrome.py:412
+#: trac/web/chrome.py:473
 msgid "Height of the header logo image in pixels."
 msgstr "Höjden på huvudlogotypen (antal pixlar)."
 
-#: trac/web/chrome.py:415
+#: trac/web/chrome.py:476
 msgid ""
 "Show email addresses instead of usernames. If false, we obfuscate\n"
 "email addresses. (''since 0.11'')"
@@ -1796,7 +1939,7 @@ msgstr ""
 "Visa e-postadresser istället för användarnamn. Om `false` så fördunklas "
 "e-postadresserna. (''sedan 0.11'')"
 
-#: trac/web/chrome.py:419
+#: trac/web/chrome.py:480
 msgid ""
 "Never obfuscate `mailto:` links explicitly written in the wiki, \n"
 "even if `show_email_addresses` is false or the user has not the \n"
@@ -1806,13 +1949,13 @@ msgstr ""
 "`show_email_addresses` är satt till `false` eller om användaren ej har "
 "behörigheten EMAIL_PREVIEW. (''sedan 0.11.6'')"
 
-#: trac/web/chrome.py:425
+#: trac/web/chrome.py:486
 msgid ""
 "Show IP addresses for resource edits (e.g. wiki).\n"
 "(''since 0.11.3'')"
 msgstr "Visa IP-adresser för resursändringar (t.ex. wiki). (''sedan 0.11.3'')"
 
-#: trac/web/chrome.py:429
+#: trac/web/chrome.py:490
 msgid ""
 "Make `<textarea>` fields resizable. Requires !JavaScript.\n"
 "(''since 0.12'')"
@@ -1820,7 +1963,7 @@ msgstr ""
 "Gör storleken på `<textarea>`-fält ändringsbar. Kräver !JavaScript. "
 "(''sedan 0.12'')"
 
-#: trac/web/chrome.py:433
+#: trac/web/chrome.py:494
 msgid ""
 "Inactivity timeout in seconds after which the automatic wiki preview\n"
 "triggers an update. This option can contain floating-point values. The\n"
@@ -1834,7 +1977,7 @@ msgstr ""
 "förfrågningar kommer skickas till servern. Sätt till 0 för att inaktivera"
 " automatisk förhandsgranskning. Standard är 2.0 sekunder."
 
-#: trac/web/chrome.py:440
+#: trac/web/chrome.py:501
 msgid ""
 "The date information format. Valid options are 'relative' for\n"
 "displaying relative format and 'absolute' for displaying absolute\n"
