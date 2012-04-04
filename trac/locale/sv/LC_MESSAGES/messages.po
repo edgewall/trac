@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.13\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2012-04-03 01:25+0200\n"
-"PO-Revision-Date: 2012-04-03 01:28+0100\n"
+"POT-Creation-Date: 2012-04-04 18:55+0200\n"
+"PO-Revision-Date: 2012-04-04 19:32+0100\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: sv_SE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -168,25 +168,25 @@ msgstr "Ta bort kommentar"
 msgid "About Trac"
 msgstr "Om Trac"
 
-#: trac/attachment.py:164
+#: trac/attachment.py:166
 #, python-format
 msgid "Attachment '%(title)s' does not exist."
 msgstr "Bilagan \"%(title)s\" finns ej."
 
-#: trac/attachment.py:166
+#: trac/attachment.py:168
 msgid "Invalid Attachment"
 msgstr "Felaktig bilaga"
 
-#: trac/attachment.py:205
+#: trac/attachment.py:224
 msgid "Could not delete attachment"
 msgstr "Kunde ej ta bort bilaga"
 
-#: trac/attachment.py:223
+#: trac/attachment.py:242
 #, python-format
 msgid "Cannot reparent attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
 msgstr "Kan ej koppla om bilagan \"%(att)s\" eftersom %(realm)s:%(id)s är ogiltig"
 
-#: trac/attachment.py:228
+#: trac/attachment.py:247
 #, python-format
 msgid ""
 "Cannot reparent attachment \"%(att)s\" as it already exists in "
@@ -195,84 +195,93 @@ msgstr ""
 "Kan inte koppla bilagan \"%(att)s\" eftersom den redan existerar i "
 "%(realm)s:%(id)s"
 
-#: trac/attachment.py:246
+#: trac/attachment.py:266
 #, python-format
 msgid "Could not reparent attachment %(name)s"
 msgstr "Kunde ej koppla bilagan %(name)s"
 
-#: trac/attachment.py:281
+#: trac/attachment.py:302
 #, python-format
 msgid "Cannot create attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
 msgstr "Kan ej skapa bilagan \"%(att)s\" eftersom %(realm)s:%(id)s är ogiltig"
 
-#: trac/attachment.py:370
+#: trac/attachment.py:385
 #, python-format
 msgid "Attachment '%(filename)s' not found"
 msgstr "Bilagan \"%(filename)s\" hittades ej"
 
-#: trac/attachment.py:449
+#: trac/attachment.py:451
+msgid ""
+"Error while deleting old attachments directory. Please move or remove "
+"files in\n"
+"the directory and try again."
+msgstr ""
+"Fel vid radering av gammal katalog för bifogade filer. Var vänlig och "
+"flytta eller radera filerna i katalogen och försök igen."
+
+#: trac/attachment.py:524
 msgid "Bad request"
 msgstr "Felaktig förfrågan"
 
-#: trac/attachment.py:466
+#: trac/attachment.py:541
 #, python-format
 msgid "Back to %(parent)s"
 msgstr "Tillbaka till %(parent)s"
 
-#: trac/attachment.py:572
+#: trac/attachment.py:647
 #, python-format
 msgid "%(attachment)s attached to %(resource)s"
 msgstr "%(attachment)s bifogad till %(resource)s"
 
-#: trac/attachment.py:627
+#: trac/attachment.py:702
 #, python-format
 msgid "Unparented attachment %(id)s"
 msgstr "Bilagan %(id)s ej kopplad"
 
-#: trac/attachment.py:635
+#: trac/attachment.py:710
 #, python-format
 msgid "Attachment '%(id)s' in %(parent)s"
 msgstr "Bilagan \"%(id)s\" i %(parent)s"
 
-#: trac/attachment.py:638
+#: trac/attachment.py:713
 #, python-format
 msgid "Attachments of %(parent)s"
 msgstr "Bilagor till %(parent)s"
 
-#: trac/attachment.py:655
+#: trac/attachment.py:730
 #, python-format
 msgid "%(parent)s doesn't exist, can't create attachment"
 msgstr "%(parent)s existerar inte, bilagan kan ej bifogas"
 
-#: trac/attachment.py:662 trac/attachment.py:685 trac/admin/web_ui.py:465
+#: trac/attachment.py:737 trac/attachment.py:760 trac/admin/web_ui.py:465
 #: trac/admin/web_ui.py:468 trac/admin/web_ui.py:472
 msgid "No file uploaded"
 msgstr "Ingen fil uppladdad"
 
-#: trac/attachment.py:670
+#: trac/attachment.py:745
 msgid "Can't upload empty file"
 msgstr "Tom fil kan ej laddas upp"
 
-#: trac/attachment.py:675
+#: trac/attachment.py:750
 #, python-format
 msgid "Maximum attachment size: %(num)s bytes"
 msgstr "Maximal storlek på bilaga: %(num)s bytes"
 
-#: trac/attachment.py:676
+#: trac/attachment.py:751
 msgid "Upload failed"
 msgstr "Uppladdning misslyckades"
 
-#: trac/attachment.py:698
+#: trac/attachment.py:773
 #, python-format
 msgid "Attachment field %(field)s is invalid: %(message)s"
 msgstr "Bilagans fält %(field)s är ogiltigt: %(message)s"
 
-#: trac/attachment.py:702
+#: trac/attachment.py:777
 #, python-format
 msgid "Invalid attachment: %(message)s"
 msgstr "Ogiltig bilaga: %(message)s"
 
-#: trac/attachment.py:712
+#: trac/attachment.py:787
 #, python-format
 msgid ""
 "You don't have permission to replace the attachment %(name)s. You can "
@@ -283,42 +292,42 @@ msgstr ""
 " egna bilagor. För att ersätta andras bilagor krävs behörigheten "
 "ATTACHMENT_DELETE."
 
-#: trac/attachment.py:743
+#: trac/attachment.py:818
 #, python-format
 msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (ta bort)"
 
-#: trac/attachment.py:757
+#: trac/attachment.py:832
 #, python-format
 msgid "Maximum total attachment size: %(num)s bytes"
 msgstr "Maximal total storlek på bilaga: %(num)s bytes"
 
-#: trac/attachment.py:758
+#: trac/attachment.py:833
 msgid "Download failed"
 msgstr "Nedladdning misslyckades"
 
-#: trac/attachment.py:845 trac/versioncontrol/web_ui/browser.py:665
+#: trac/attachment.py:920 trac/versioncontrol/web_ui/browser.py:665
 #: trac/wiki/web_ui.py:73
 msgid "Plain Text"
 msgstr "Endast text"
 
-#: trac/attachment.py:851 trac/versioncontrol/web_ui/browser.py:671
+#: trac/attachment.py:926 trac/versioncontrol/web_ui/browser.py:671
 msgid "Original Format"
 msgstr "Orginalformat"
 
-#: trac/attachment.py:893 trac/templates/list_of_attachments.html:20
+#: trac/attachment.py:968 trac/templates/list_of_attachments.html:20
 #: trac/ticket/templates/ticket_change.html:83
 #: trac/versioncontrol/templates/dir_entries.html:18
 #: trac/versioncontrol/web_ui/browser.py:818
 msgid "Download"
 msgstr "Ladda ner"
 
-#: trac/attachment.py:987
+#: trac/attachment.py:1062
 #, python-format
 msgid "Invalid resource identifier '%(id)s'"
 msgstr "Ogiltig resursidentifierare \"%(id)s\""
 
-#: trac/attachment.py:1023 trac/admin/templates/admin_components.html:80
+#: trac/attachment.py:1098 trac/admin/templates/admin_components.html:80
 #: trac/admin/templates/admin_enums.html:48
 #: trac/admin/templates/admin_milestones.html:101
 #: trac/admin/templates/admin_versions.html:78 trac/templates/about.html:69
@@ -330,26 +339,26 @@ msgstr "Ogiltig resursidentifierare \"%(id)s\""
 msgid "Name"
 msgstr "Namn"
 
-#: trac/attachment.py:1023
+#: trac/attachment.py:1098
 msgid "Size"
 msgstr "Storlek"
 
-#: trac/attachment.py:1023 trac/templates/history_view.html:30
+#: trac/attachment.py:1098 trac/templates/history_view.html:30
 #: trac/ticket/templates/ticket.html:339
 #: trac/versioncontrol/templates/revisionlog.html:112
 msgid "Author"
 msgstr "Författare"
 
-#: trac/attachment.py:1023 trac/templates/history_view.html:29
+#: trac/attachment.py:1098 trac/templates/history_view.html:29
 msgid "Date"
 msgstr "Datum"
 
-#: trac/attachment.py:1024 trac/templates/attachment.html:93
+#: trac/attachment.py:1099 trac/templates/attachment.html:93
 #: trac/ticket/api.py:299 trac/ticket/templates/ticket_box.html:60
 msgid "Description"
 msgstr "Beskrivning"
 
-#: trac/attachment.py:1047 trac/wiki/admin.py:108
+#: trac/attachment.py:1122 trac/wiki/admin.py:108
 #, python-format
 msgid "File '%(name)s' exists"
 msgstr "Filen \"%(name)s\" finns"
@@ -570,7 +579,7 @@ msgid "User"
 msgstr "Användare"
 
 #: trac/perm.py:644 trac/admin/templates/admin_perms.html:70
-#: trac/ticket/templates/batch_modify.html:34
+#: trac/ticket/templates/batch_modify.html:35
 #: trac/ticket/templates/ticket.html:310
 msgid "Action"
 msgstr "Åtgärd"
@@ -3442,7 +3451,7 @@ msgstr "Ärendena %(ticketids)s"
 #: trac/ticket/web_ui.py:413
 #, python-format
 msgid "Tickets %(ticketlist)s batch updated"
-msgstr "Ärendena %(ticketlist)s batch-uppdaterade"
+msgstr "Ärendena %(ticketlist)s mass-uppdaterade"
 
 #: trac/ticket/web_ui.py:566
 #, python-format
@@ -3736,26 +3745,28 @@ msgstr "ändrad från %(old)s till %(new)s"
 
 #: trac/ticket/templates/batch_modify.html:8
 msgid "Batch Modify"
-msgstr "Batch-ändring"
+msgstr "Mass-uppdatera"
 
 #: trac/ticket/templates/batch_modify.html:9
 msgid "Batch modification fields"
-msgstr "Batch-ändringsfält"
+msgstr "Fält för mass-uppdatering"
 
 #: trac/ticket/templates/batch_modify.html:21
 msgid "Add Field:"
 msgstr "Lägg till fält:"
 
-#: trac/ticket/templates/batch_modify.html:52
+#: trac/ticket/templates/batch_modify.html:51
+msgid "Change tickets"
+msgstr "Ändra ärenden"
+
+#: trac/ticket/templates/batch_modify.html:54
 msgid "[1:Note:] See [2:TracBatchModify] for help on using batch modify."
-msgstr ""
-"[1:Note:] Se [2:TracBatchModify] för hjälp med att använda "
-"batch-ändringar."
+msgstr "[1:Note:] Se [2:TracBatchModify] för hjälp med att utföra mass-ändringar."
 
 #: trac/ticket/templates/batch_ticket_notify_email.txt:1
 #, python-format
 msgid "Batch modification to %(tickets)s by %(author)s:"
-msgstr "Batch-ändring av %(tickets)s av %(author)s:"
+msgstr "Mass-ändring av %(tickets)s av %(author)s:"
 
 #: trac/ticket/templates/batch_ticket_notify_email.txt:5
 #, python-format
