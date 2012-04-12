@@ -71,7 +71,7 @@ class GitCore(object):
 
         #print >>sys.stderr, "DEBUG:", git_cmd, cmd_args
 
-        p = self.__pipe(git_cmd, *cmd_args, stdout=PIPE, stderr=PIPE)
+        p = self.__pipe(git_cmd, stdout=PIPE, stderr=PIPE, *cmd_args)
 
         stdout_data, stderr_data = p.communicate()
         #TODO, do something with p.returncode, e.g. raise exception
@@ -82,7 +82,7 @@ class GitCore(object):
         return self.__pipe('cat-file', '--batch', stdin=PIPE, stdout=PIPE)
 
     def log_pipe(self, *cmd_args):
-        return self.__pipe('log', *cmd_args, stdout=PIPE)
+        return self.__pipe('log', stdout=PIPE, *cmd_args)
 
     def __getattr__(self, name):
         if name[0] == '_' or name in ['cat_file_batch', 'log_pipe']:
@@ -829,15 +829,13 @@ class Storage(object):
             """
 
             def terminate_win(process):
-                import win32api, win32pdhutil, win32con, pywintypes
-                try:
-                    handle = win32api.OpenProcess(win32con.PROCESS_TERMINATE,
-                                                  0, process.pid)
-                    win32api.TerminateProcess(handle, -1)
-                    win32api.CloseHandle(handle)
-                except pywintypes.error:
-                    # Windows tends to throw access denied errors
-                    pass
+                import ctypes
+                PROCESS_TERMINATE = 1
+                handle = ctypes.windll.kernel32.OpenProcess(PROCESS_TERMINATE,
+                                                            False,
+                                                            process.pid)
+                ctypes.windll.kernel32.TerminateProcess(handle, -1)
+                ctypes.windll.kernel32.CloseHandle(handle)
 
             def terminate_nix(process):
                 import os
