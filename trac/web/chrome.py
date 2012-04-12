@@ -393,7 +393,12 @@ class Chrome(Component):
     
     def get_system_info(self):
         import genshi
-        yield 'Genshi', get_pkginfo(genshi).get('version')
+        info = get_pkginfo(genshi).get('version')
+        if hasattr(genshi, '_speedups'):
+            info += ' (with speedups)'
+        else:
+            info += ' (without speedups)'
+        yield 'Genshi', info
         try:
             import babel
         except ImportError:
