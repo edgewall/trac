@@ -23,6 +23,7 @@ import os
 from time import time
 
 from trac.admin import AdminCommandError, IAdminCommandProvider, get_dir_list
+from trac.cache import cached
 from trac.config import ExtensionOption, OrderedExtensionsOption
 from trac.core import *
 from trac.resource import Resource, get_resource_name
@@ -182,11 +183,11 @@ class DefaultPermissionStore(Component):
             subjects.update(provider.get_permission_groups(username) or [])
 
         actions = set()
-        rows = self.env.db_query("SELECT username, action FROM permission")
+        perms = self._all_permissions
         while True:
             num_users = len(subjects)
             num_actions = len(actions)
-            for user, action in rows:
+            for user, action in perms:
                 if user in subjects:
                     if action.isupper() and action not in actions:
                         actions.add(action)
@@ -220,6 +221,11 @@ class DefaultPermissionStore(Component):
 
         The permissions are returned as a list of (subject, action)
         formatted tuples."""
+        return self._all_permissions
+        
+        
+    @cached
+    def _all_permissions(self):
         return [(username, action) for username, action in 
                 self.env.db_query("SELECT username, action FROM permission")]
 
@@ -228,6 +234,9 @@ class DefaultPermissionStore(Component):
         self.env.db_transaction("INSERT INTO permission VALUES (%s, %s)",
                                 (username, action))
         self.log.info("Granted permission for %s to %s", action, username)
+        
+        # Invalidate cached property
+        del self._all_permissions
 
     def revoke_permission(self, username, action):
         """Revokes a users' permission to perform the specified action."""
@@ -235,6 +244,9 @@ class DefaultPermissionStore(Component):
                 "DELETE FROM permission WHERE username=%s AND action=%s",
                 (username, action))
         self.log.info("Revoked permission for %s to %s", action, username)
+        
+        # Invalidate cached property
+        del self._all_permissions
 
 
 class DefaultPermissionGroupProvider(Component):
