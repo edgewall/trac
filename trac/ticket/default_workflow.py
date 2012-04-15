@@ -485,7 +485,7 @@ class WorkflowMacro(WikiMacroBase):
         graph = {'nodes': states, 'actions': action_names, 'edges': edges,
                  'width': args.get('width', 800), 
                  'height': args.get('height', 600)}
-        graph_id = '%.8x' % id(graph)
+        graph_id = '%012x' % id(graph)
         req = formatter.req
         add_script(req, 'common/js/excanvas.js', ie_if='IE')
         add_script(req, 'common/js/workflow_graph.js')
