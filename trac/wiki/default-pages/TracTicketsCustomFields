@@ -17,7 +17,11 @@ The example below should help to explain the syntax.
    * label: Descriptive label.
    * value: Default value.
    * order: Sort order placement. (Determines relative placement in forms with respect to other custom fields.)
-   * format: Either `plain` for plain text or `wiki` to interpret the content as WikiFormatting. (''since 0.11.3'')
+   * format: One of:
+     * `plain` for plain text
+     * `wiki` to interpret the content as WikiFormatting (''since 0.11.3'')
+     * `reference` to treat the content as a queryable value (''since 0.13'')
+     * `list` to interpret the content as a list of queryable values, separated by whitespace (''since 0.13'')
  * '''checkbox''': A boolean value check box.
    * label: Descriptive label.
    * value: Default value (0 or 1).

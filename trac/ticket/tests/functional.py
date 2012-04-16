@@ -241,6 +241,148 @@ class TestTicketQueryOrClause(FunctionalTwillTestCaseSetup):
             tc.find('TestTicketQueryOrClause%s' % i)
 
 
+class TestTicketCustomFieldTextNoFormat(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test custom text field with no format explicitly specified.
+        Its contents should be rendered as plain text.
+        """
+        env = self._testenv.get_trac_environment()
+        env.config.set('ticket-custom', 'newfield', 'text')
+        env.config.set('ticket-custom', 'newfield.label',
+                       'Another Custom Field')
+        env.config.set('ticket-custom', 'newfield.format', '')
+        env.config.save()
+
+        self._testenv.restart()
+        val = "%s %s" % (random_unique_camel(), random_word())
+        ticketid = self._tester.create_ticket(summary=random_sentence(3),
+                                              info={'newfield': val})
+        self._tester.go_to_ticket(ticketid)
+        tc.find('<td headers="h_newfield"[^>]*>\s*%s\s*</td>' % val)
+
+
+class TestTicketCustomFieldTextAreaNoFormat(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test custom textarea field with no format explicitly specified, 
+        its contents should be rendered as plain text.
+        """
+        env = self._testenv.get_trac_environment()
+        env.config.set('ticket-custom', 'newfield', 'textarea')
+        env.config.set('ticket-custom', 'newfield.label',
+                       'Another Custom Field')
+        env.config.set('ticket-custom', 'newfield.format', '')
+        env.config.save()
+
+        self._testenv.restart()
+        val = "%s %s" % (random_unique_camel(), random_word())
+        ticketid = self._tester.create_ticket(summary=random_sentence(3),
+                                              info={'newfield': val})
+        self._tester.go_to_ticket(ticketid)
+        tc.find('<td headers="h_newfield"[^>]*>\s*%s\s*</td>' % val)
+
+
+class TestTicketCustomFieldTextWikiFormat(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test custom text field with `wiki` format. 
+        Its contents should through the wiki engine, wiki-links and all.
+        Feature added in http://trac.edgewall.org/ticket/1791
+        """
+        env = self._testenv.get_trac_environment()
+        env.config.set('ticket-custom', 'newfield', 'text')
+        env.config.set('ticket-custom', 'newfield.label',
+                       'Another Custom Field')
+        env.config.set('ticket-custom', 'newfield.format', 'wiki')
+        env.config.save()
+
+        self._testenv.restart()
+        word1 = random_unique_camel()
+        word2 = random_word()
+        val = "%s %s" % (word1, word2)
+        ticketid = self._tester.create_ticket(summary=random_sentence(3),
+                                              info={'newfield': val})
+        self._tester.go_to_ticket(ticketid)
+        wiki = '<a [^>]*>%s\??</a> %s' % (word1, word2)
+        tc.find('<td headers="h_newfield"[^>]*>\s*%s\s*</td>' % wiki)
+
+
+class TestTicketCustomFieldTextAreaWikiFormat(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test custom textarea field with no format explicitly specified, 
+        its contents should be rendered as plain text.
+        """
+        env = self._testenv.get_trac_environment()
+        env.config.set('ticket-custom', 'newfield', 'textarea')
+        env.config.set('ticket-custom', 'newfield.label',
+                       'Another Custom Field')
+        env.config.set('ticket-custom', 'newfield.format', 'wiki')
+        env.config.save()
+
+        self._testenv.restart()
+        word1 = random_unique_camel()
+        word2 = random_word()
+        val = "%s %s" % (word1, word2)
+        ticketid = self._tester.create_ticket(summary=random_sentence(3),
+                                              info={'newfield': val})
+        self._tester.go_to_ticket(ticketid)
+        wiki = '<p>\s*<a [^>]*>%s\??</a> %s<br />\s*</p>' % (word1, word2)
+        tc.find('<td headers="h_newfield"[^>]*>\s*%s\s*</td>' % wiki)
+
+
+class TestTicketCustomFieldTextReferenceFormat(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test custom text field with `reference` format.
+        Its contents are treated as a single value
+        and are rendered as an auto-query link.
+        Feature added in http://trac.edgewall.org/ticket/10643
+        """
+        env = self._testenv.get_trac_environment()
+        env.config.set('ticket-custom', 'newfield', 'text')
+        env.config.set('ticket-custom', 'newfield.label',
+                       'Another Custom Field')
+        env.config.set('ticket-custom', 'newfield.format', 'reference')
+        env.config.save()
+
+        self._testenv.restart()
+        word1 = random_unique_camel()
+        word2 = random_word()
+        val = "%s %s" % (word1, word2)
+        ticketid = self._tester.create_ticket(summary=random_sentence(3),
+                                              info={'newfield': val})
+        self._tester.go_to_ticket(ticketid)
+        query = 'status=!closed&amp;newfield=%s\+%s' % (word1, word2)
+        querylink = '<a href="/query\?%s">%s</a>' % (query, val)
+        tc.find('<td headers="h_newfield"[^>]*>\s*%s\s*</td>' % querylink)
+
+
+class TestTicketCustomFieldTextListFormat(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test custom text field with `list` format. 
+        Its contents are treated as a space-separated list of values
+        and are rendered as separate auto-query links per word.
+        Feature added in http://trac.edgewall.org/ticket/10643
+        """
+        env = self._testenv.get_trac_environment()
+        env.config.set('ticket-custom', 'newfield', 'text')
+        env.config.set('ticket-custom', 'newfield.label',
+                       'Another Custom Field')
+        env.config.set('ticket-custom', 'newfield.format', 'list')
+        env.config.save()
+
+        self._testenv.restart()
+        word1 = random_unique_camel()
+        word2 = random_word()
+        val = "%s %s" % (word1, word2)
+        ticketid = self._tester.create_ticket(summary=random_sentence(3),
+                                              info={'newfield': val})
+        self._tester.go_to_ticket(ticketid)
+        query1 = 'status=!closed&amp;newfield=~%s' % word1
+        query2 = 'status=!closed&amp;newfield=~%s' % word2
+        querylink1 = '<a href="/query\?%s">%s</a>' % (query1, word1)
+        querylink2 = '<a href="/query\?%s">%s</a>' % (query2, word2)
+        querylinks = '%s %s' % (querylink1, querylink2)
+        tc.find('<td headers="h_newfield"[^>]*>\s*%s\s*</td>' % querylinks)
+
+
 class TestTimelineTicketDetails(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test ticket details on timeline"""
@@ -1501,6 +1643,12 @@ def functionalSuite(suite=None):
     suite.addTest(TestTicketHistoryDiff())
     suite.addTest(TestTicketQueryLinks())
     suite.addTest(TestTicketQueryOrClause())
+    suite.addTest(TestTicketCustomFieldTextNoFormat())
+    suite.addTest(TestTicketCustomFieldTextWikiFormat())
+    suite.addTest(TestTicketCustomFieldTextAreaNoFormat())
+    suite.addTest(TestTicketCustomFieldTextAreaWikiFormat())
+    suite.addTest(TestTicketCustomFieldTextReferenceFormat())
+    suite.addTest(TestTicketCustomFieldTextListFormat())
     suite.addTest(TestTimelineTicketDetails())
     suite.addTest(TestAdminComponent())
     suite.addTest(TestAdminComponentDuplicates())

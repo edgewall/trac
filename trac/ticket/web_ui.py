@@ -1489,6 +1489,12 @@ class TicketModule(Component):
                 if field.get('format') == 'wiki':
                     field['rendered'] = format_to_oneliner(self.env, context,
                                                            ticket[name])
+                elif field.get('format') == 'reference':
+                    field['rendered'] = self._query_link(req, name,
+                                                         ticket[name])
+                elif field.get('format') == 'list':
+                    field['rendered'] = self._query_link_words(context, name,
+                                                               ticket[name])
             elif type_ == 'textarea':
                 if field.get('format') == 'wiki':
                     field['rendered'] = \
