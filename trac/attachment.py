@@ -443,8 +443,8 @@ class AttachmentSetup(Component):
 
         old_dir = os.path.join(path, 'attachments')
         try:
-            if os.path.exists(old_dir):
-                os.rmdir(old_dir)
+            for dir, dirs, files in os.walk(old_dir, topdown=False):
+                os.rmdir(dir)
         except OSError, e:
             self.log.error("Can't delete old attachments directory %s: %s",
                            old_dir, exception_to_unicode(e, traceback=True))
