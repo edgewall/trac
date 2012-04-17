@@ -46,9 +46,9 @@
     <script type="text/javascript">/*<![CDATA[*/
       jQuery(document).ready(function($) {
         $("form.newticket textarea").each(function() {
-          $(this).text($(this).text()
-                         .replace(/#USER_AGENT#/m, navigator.userAgent)
-                         .replace(/#JQUERY#/m, $().jquery));
+          $(this).val($(this).val()
+                             .replace(/#USER_AGENT#/m, navigator.userAgent)
+                             .replace(/#JQUERY#/m, $().jquery));
         });
       });
     /*]]>*/</script>
