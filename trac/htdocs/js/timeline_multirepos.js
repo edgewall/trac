@@ -1,5 +1,5 @@
 jQuery(document).ready(function($){
-  csetfilter = $("input[name=changeset]");
+  var csetfilter = $("input[name=changeset]");
   function toggleRepositories() {
     $("input[name^=repo-]").parent().toggle();
   }
