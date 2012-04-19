@@ -430,9 +430,11 @@ class AttachmentSetup(Component):
         directory.
         """
         path = self.env.path
-        attachment_dir = os.path.join(path, 'files', 'attachments')
-        if not os.path.exists(attachment_dir):
-            os.makedirs(attachment_dir)
+        old_dir = os.path.join(path, 'attachments')
+        old_stat = os.stat(old_dir)
+        new_dir = os.path.join(path, 'files', 'attachments')
+        if not os.path.exists(new_dir):
+            os.makedirs(new_dir)
 
         for row in db("""
                 SELECT type, id, filename, description, size, time, author,
@@ -441,7 +443,19 @@ class AttachmentSetup(Component):
             attachment._from_database(*row[2:])
             self._move_attachment_file(attachment)
 
-        old_dir = os.path.join(path, 'attachments')
+        # Try to preserve permissions and ownerships of the attachments
+        # directory for $ENV/files
+        for dir, dirs, files in os.walk(os.path.join(path, 'files')):
+            try:
+                if hasattr(os, 'chmod'):
+                    os.chmod(dir, old_stat.st_mode)
+                if hasattr(os, 'chflags') and hasattr(old_stat, 'st_flags'):
+                    os.chflags(dir, old_stat.st_flags)
+                if hasattr(os, 'chown'):
+                    os.chown(dir, old_stat.st_uid, old_stat.st_gid)
+            except OSError:
+                pass
+
         try:
             for dir, dirs, files in os.walk(old_dir, topdown=False):
                 os.rmdir(dir)
