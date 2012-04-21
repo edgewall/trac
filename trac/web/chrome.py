@@ -373,14 +373,14 @@ class Chrome(Component):
         rules will be needed in the web server.""")
 
     jquery_location = Option('trac', 'jquery_location', '',
-        """Location of the jQuery !JavaScript library (version 1.5.1).
+        """Location of the jQuery !JavaScript library (version 1.7.2).
         
         An empty value loads jQuery from the copy bundled with Trac.
         
         Alternatively, jQuery could be loaded from a CDN, for example:
-        http://code.jquery.com/jquery-1.5.1.min.js,
-        http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.5.1.min.js or
-        https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js.
+        http://code.jquery.com/jquery-1.7.2.min.js,
+        http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js or
+        https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js.
         
         (''since 0.13'')""")
 
