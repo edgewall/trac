@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.13\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2012-04-04 18:55+0200\n"
-"PO-Revision-Date: 2012-04-04 19:32+0100\n"
+"PO-Revision-Date: 2012-04-29 21:23+0100\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: sv_SE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -3333,7 +3333,7 @@ msgstr ""
 #: trac/ticket/roadmap.py:660 trac/ticket/templates/roadmap.html:10
 #: trac/ticket/templates/roadmap.html:15
 msgid "Roadmap"
-msgstr "Tidplan"
+msgstr "Tidsplan"
 
 #: trac/ticket/roadmap.py:450
 msgid "iCalendar"
@@ -3387,7 +3387,7 @@ msgstr "Nästa milstolpe"
 
 #: trac/ticket/roadmap.py:890
 msgid "Back to Roadmap"
-msgstr "Tillbaka till tidplanen"
+msgstr "Tillbaka till tidsplanen"
 
 #: trac/ticket/web_ui.py:58
 msgid "Invalid Ticket"
@@ -3801,7 +3801,7 @@ msgid ""
 "[1:Note:] See\n"
 "      [2:TracRoadmap] for help on using\n"
 "      the roadmap."
-msgstr "[1:Tips:] Se [2:TracRoadmap] för hjälp med tidplanen."
+msgstr "[1:Tips:] Se [2:TracRoadmap] för hjälp med tidsplanen."
 
 #: trac/ticket/templates/milestone_edit.html:11
 #: trac/ticket/templates/milestone_edit.html:45
@@ -3844,7 +3844,7 @@ msgid ""
 "[1:Note:] See\n"
 "        [2:TracRoadmap] for help on using\n"
 "        the roadmap."
-msgstr "[1:Tips:] Se [2:TracRoadmap] för hjälp med tidplanen."
+msgstr "[1:Tips:] Se [2:TracRoadmap] för hjälp med tidsplanen."
 
 #: trac/ticket/templates/milestone_view.html:11
 msgid "Edit this milestone"
@@ -4467,7 +4467,7 @@ msgstr "Ärendets URL: <%(link)s>"
 #: trac/timeline/web_ui.py:78 trac/timeline/templates/timeline.html:10
 #: trac/timeline/templates/timeline.html:16
 msgid "Timeline"
-msgstr "Journal"
+msgstr "Tidslinje"
 
 #: trac/timeline/web_ui.py:243 trac/timeline/web_ui.py:251
 msgid "Previous Period"
@@ -4490,7 +4490,7 @@ msgstr "den %(date)s kl %(time)s"
 #: trac/timeline/web_ui.py:285
 #, python-format
 msgid "See timeline %(relativetime)s ago"
-msgstr "Se journalen för %(relativetime)s sedan"
+msgstr "Se tidslinjen för %(relativetime)s sedan"
 
 #: trac/timeline/web_ui.py:288 trac/web/chrome.py:875 trac/web/chrome.py:877
 #, python-format
@@ -4500,7 +4500,7 @@ msgstr "för %(relativetime)s sedan"
 #: trac/timeline/web_ui.py:290 trac/timeline/web_ui.py:334
 #, python-format
 msgid "See timeline at %(absolutetime)s"
-msgstr "Se journalen vid %(absolutetime)s"
+msgstr "Se tidslinjen vid %(absolutetime)s"
 
 #. TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
 #: trac/timeline/web_ui.py:381
@@ -4519,9 +4519,8 @@ msgid ""
 " Trac administrator about the error (detailed information was written to "
 "the log)."
 msgstr ""
-"Du vill kanske se %(other_events)s bland visade händelser eller meddela "
-"din Trac-administratör om felet (detaljerad information har skrivits i "
-"loggfilen)."
+"Du vill kanske se %(other_events)s på tidslinjen eller meddela din Trac-"
+"administratör om felet (detaljerad information har skrivits i loggfilen)."
 
 #: trac/timeline/templates/timeline.html:19
 msgid ""
@@ -4551,7 +4550,7 @@ msgstr "[1:%(time)s] %(title)s av [2:%(author)s]"
 msgid ""
 "[1:Note:] See [2:TracTimeline]\n"
 "        for information about the timeline view."
-msgstr "[1:Tips:] Se [2:TracTimeline] för information om journalen."
+msgstr "[1:Tips:] Se [2:TracTimeline] för information om tidslinjen."
 
 #: trac/util/datefmt.py:110
 #, python-format
