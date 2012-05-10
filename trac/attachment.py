@@ -860,6 +860,7 @@ class AttachmentModule(Component):
         for attachment in attachments:
             zipinfo = ZipInfo()
             zipinfo.filename = attachment.filename.encode('utf-8')
+            zipinfo.flag_bits |= 0x800 # filename is encoded with utf-8
             zipinfo.date_time = attachment.date.utctimetuple()[:6]
             zipinfo.compress_type = ZIP_DEFLATED
             if attachment.description:

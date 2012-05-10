@@ -775,6 +775,7 @@ class ChangesetModule(Component):
                 # UTF-8 is not supported by all Zip tools either,
                 # but as some do, UTF-8 is the best option here.
                 zipinfo.filename = new_node.path.strip('/').encode('utf-8')
+                zipinfo.flag_bits |= 0x800 # filename is encoded with utf-8
                 zipinfo.date_time = new_node.last_modified.utctimetuple()[:6]
                 zipinfo.compress_type = compression
                 # setting zipinfo.external_attr is needed since Python 2.5
