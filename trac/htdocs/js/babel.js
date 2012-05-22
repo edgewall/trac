@@ -36,7 +36,7 @@
 var babel = new function() {
 
   var defaultPluralExpr = function(n) { return n == 1 ? 0 : 1; };
-  var formatRegex = /%?%(?:\(([^\)]+)\))?([disr])/g;
+  var formatRegex = /%(?:(?:\(([^\)]+)\))?([disr])|%)/g;
 
   /**
    * A translations object implementing the gettext interface
@@ -151,7 +151,7 @@ var babel = new function() {
         arg[i - 1] = arguments[i];
     }
     return string.replace(formatRegex, function(all, name, type) {
-      if (all[0] == all[1]) return all.substring(1);
+      if (all == '%%') return '%';
       var value = arg[name || idx++];
       return (type == 'i' || type == 'd') ? +value : value; 
     });
