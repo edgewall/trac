@@ -1952,7 +1952,7 @@ msgstr "値"
 
 #: trac/templates/attach_file_form.html:15
 msgid "Attach file"
-msgstr "ファイルを添付します"
+msgstr "ファイルを添付"
 
 #: trac/templates/attachment.html:12
 msgid "– Attachment"
@@ -1996,7 +1996,7 @@ msgstr "同名の添付ファイルを置き換える"
 
 #: trac/templates/attachment.html:62
 msgid "Add attachment"
-msgstr "添付ファイルを登録"
+msgstr "添付ファイルを追加"
 
 #: trac/templates/attachment.html:70
 msgid "Are you sure you want to delete this attachment?"
@@ -2008,7 +2008,7 @@ msgstr "添付ファイルの削除"
 
 #: trac/templates/attachment.html:86
 msgid "Attach another file"
-msgstr "ファイルを添付します"
+msgstr "ファイルを添付"
 
 #: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:21
 #: trac/templates/macros.html:19 trac/util/text.py:561
