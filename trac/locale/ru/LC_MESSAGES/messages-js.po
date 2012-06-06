@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-05-24 23:55+0200\n"
-"PO-Revision-Date: 2011-10-30 22:20+0300\n"
+"PO-Revision-Date: 2012-06-07 00:32+0300\n"
 "Last-Translator: Alexandr Prudnikov <al.prudnikov@gmail.com>\n"
 "Language-Team: ru_RU <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
@@ -42,20 +42,20 @@ msgstr "Развернуть подкаталог на месте"
 msgid "Re-expand directory"
 msgstr "Повторно развернуть каталог"
 
-#: trac/htdocs/js/expand_dir.js:120
+#: trac/htdocs/js/expand_dir.js:121
 #, python-format
 msgid "Loading %(entry)s..."
 msgstr "Загрузка %(entry)s..."
 
-#: trac/htdocs/js/expand_dir.js:148
+#: trac/htdocs/js/expand_dir.js:149
 msgid "(empty)"
 msgstr "(пусто)"
 
-#: trac/htdocs/js/expand_dir.js:156
+#: trac/htdocs/js/expand_dir.js:157
 msgid "(error)"
 msgstr "(ошибка)"
 
-#: trac/htdocs/js/expand_dir.js:163
+#: trac/htdocs/js/expand_dir.js:164
 msgid "Fold directory"
 msgstr "Свернуть каталог"
 
