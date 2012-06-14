@@ -671,14 +671,14 @@ msgstr ""
 "---------------------------------------------------------------------\n"
 "注意: リポジトリのインデックスに失敗しました。\n"
 "\n"
-"これにはいくつかの原因が考えられます: リポジトリの種類が間違っている、\n"
-"このリポジトリのためのライブラリが用意されていない、\n"
-"指定したリポジトリのパスに実際のリポジトリがない…\n"
+"これにはいくつかの原因が考えられます。\n"
+"リポジトリの種類が間違っている、このリポジトリのためのライブラリが用\n"
+"意されていない、指定したリポジトリのパスに実際のリポジトリがない、な\n"
+"どです。\n"
 "\n"
-"現状でも Trac を使い始める事はできますが、\n"
-"リポジトリブラウザを有効にするために、\n"
-"trac.ini ファイルの [trac] repository_type と repository_path の\n"
-"設定を再度確認する必要があります。\n"
+"現状でも Trac を使い始める事はできますが、リポジトリブラウザを有効にす\n"
+"るには trac.ini ファイルの [trac] repository_type と repository_path\n"
+"の設定を再度確認する必要があります。\n"
 
 #: trac/admin/console.py:500
 #, python-format
@@ -712,20 +712,21 @@ msgstr ""
 "---------------------------------------------------------------------\n"
 "Trac Environment '%(project_name)s' ができました。\n"
 "\n"
-"今後、この環境の設定をする場合は、次のファイルを利用します:\n"
+"今後、この環境の設定をする場合は、次のファイルを利用します。\n"
 "\n"
 "  %(config_path)s\n"
 "\n"
-"あなたがこの新しいプロジェクトのテストを考えているなら、\n"
-"スタンドアロンウェブサーバ `tracd` を試してみてください:\n"
+"あなたがこの新しいプロジェクトのテストを考えているなら、スタンドアロ\n"
+"ンウェブサーバ `tracd` を試してみてください。\n"
 "\n"
 "  tracd --port 8000 %(project_path)s\n"
 "\n"
-"それから、ブラウザで http://localhost:8000/%(project_dir)s にアクセスします。\n"
-"インストールしたバージョンに合わせた今後のセットアップ情報などが含まれた、\n"
-"ドキュメントが閲覧できます。(例えばウェブサーバで公開する手順など)\n"
+"それから、ブラウザで http://localhost:8000/%(project_dir)s\n"
+"にアクセスします。インストールしたバージョンに合わせた今後のセット\n"
+"アップ情報などが含まれたドキュメントが閲覧できます。(例えばウェブサー\n"
+"バで公開する手順など。)\n"
 "\n"
-"最新のドキュメントは、プロジェクトのウェブサイトから入手できます:\n"
+"最新のドキュメントは、プロジェクトのウェブサイトから入手できます。\n"
 "\n"
 "  http://trac.edgewall.org/\n"
 "\n"
@@ -4501,7 +4502,7 @@ msgstr "ブラウザで表示する"
 msgid ""
 "Changeset [1:%(new_rev)s] in %(reponame)s\n"
 "              for [2:%(new_path)s]"
-msgstr "チェンジセット [1:%(new_rev)s] (%(reponame)s) [2:%(new_path)s]"
+msgstr "チェンジセット [1:%(new_rev)s] (%(reponame)s、[2:%(new_path)s])"
 
 #: trac/versioncontrol/templates/changeset.html:41
 #: trac/versioncontrol/templates/changeset.html:63
@@ -4537,7 +4538,7 @@ msgstr "チェンジセット [1:%(new_rev)s] (%(reponame)s)"
 msgid ""
 "Changeset [1:%(new_rev)s]\n"
 "              for [2:%(new_path)s]"
-msgstr "チェンジセット [1:%(new_rev)s] [2:%(new_path)s]"
+msgstr "チェンジセット [1:%(new_rev)s] ([2:%(new_path)s])"
 
 #: trac/versioncontrol/templates/changeset.html:61
 #, python-format
@@ -5855,7 +5856,7 @@ msgstr "ページ %(name)s がありません。ここから作成できます�
 
 #: trac/wiki/templates/wiki_view.html:66
 msgid "You could also create the same page higher in the hierarchy:"
-msgstr "また、上位の階層にページを作成することもできます:"
+msgstr "また、上位の階層にページを作成することもできます。"
 
 #: trac/wiki/templates/wiki_view.html:90
 msgid "Create this page"
@@ -5871,5 +5872,5 @@ msgstr "(空のページ)"
 
 #: trac/wiki/templates/wiki_view.html:131
 msgid "The following pages have a name similar to this page, and may be related:"
-msgstr "以下のページはこのページの名前に似ているので、関係があるかもしれません:"
+msgstr "以下のページはこのページの名前に似ているので、関係があるかもしれません。"
 
