@@ -11,87 +11,107 @@
   </head>
 
   <body>
-    <h2>Manage Permissions</h2>
+    <h2>Manage Permissions and Groups</h2>
 
     <py:if test="'PERMISSION_GRANT' in perm">
-    <form id="addperm" class="addnew" method="post" action="">
-      <fieldset>
-        <legend>Grant Permission:</legend>
-        <table>
-          <tr class="field">
-            <th><label for="gp_subject">Subject:</label></th>
-            <td><input id="gp_subject" type="text" name="subject" /></td>
-          </tr>
-          <tr class="field">
-            <th><label for="action">Action:</label></th>
-            <td>
-              <select id="action" name="action">
-                <option py:for="action in sorted(actions)">$action</option>
-              </select>
-            </td>
-          </tr>
-        </table>
-        <p class="help">
-          Grant permission for an action to a subject, which can be either a user
-          or a group.
-        </p>
-        <div class="buttons">
-          <input type="submit" name="add" value="${_('Add')}" />
-        </div>
-      </fieldset>
-    </form>
-
-    <form id="addsubj" class="addnew" method="post" action="">
-      <fieldset>
-        <legend>Add Subject to Group:</legend>
-        <table>
-          <tr class="field">
-            <th><label for="sg_subject">Subject:</label></th>
-            <td><input id="sg_subject" type="text" name="subject" /></td>
-          </tr>
-          <tr class="field">
-            <th><label for="sg_group">Group:</label></th>
-            <td><input id="sg_group" type="text" name="group" /></td>
-          </tr>
-        </table>
-        <p class="help">
-          Add a user or group to an existing permission group.
-        </p>
-        <div class="buttons">
-          <input type="submit" name="add" value="${_('Add')}"/>
-        </div>
-      </fieldset>
-    </form>
+      <form id="addperm" class="addnew" method="post" action="">
+        <fieldset>
+          <legend>Grant Permission:</legend>
+          <table>
+            <tr class="field">
+              <th><label for="gp_subject">Subject:</label></th>
+              <td><input id="gp_subject" type="text" name="subject" /></td>
+            </tr>
+            <tr class="field">
+              <th><label for="action">Action:</label></th>
+              <td>
+                <select id="action" name="action">
+                  <option py:for="action in sorted(actions)">$action</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+          <p class="help">
+            Grant permission for an action to a subject, which can be either a user
+            or a group.
+          </p>
+          <div class="buttons">
+            <input type="submit" name="add" value="${_('Add')}" />
+          </div>
+        </fieldset>
+      </form>
+  
+      <form id="addsubj" class="addnew" method="post" action="">
+        <fieldset>
+          <legend>Add Subject to Group:</legend>
+          <table>
+            <tr class="field">
+              <th><label for="sg_subject">Subject:</label></th>
+              <td><input id="sg_subject" type="text" name="subject" /></td>
+            </tr>
+            <tr class="field">
+              <th><label for="sg_group">Group:</label></th>
+              <td><input id="sg_group" type="text" name="group" /></td>
+            </tr>
+          </table>
+          <p class="help">
+            Add a user or group to an existing permission group.
+          </p>
+          <div class="buttons">
+            <input type="submit" name="add" value="${_('Add')}"/>
+          </div>
+        </fieldset>
+      </form>
     </py:if>
 
-    <form id="revokeform" method="post" py:with="revoke_perm = 'PERMISSION_REVOKE' in perm" action="">
+    <form id="revokeform" method="post" action="" py:with="can_revoke = 'PERMISSION_REVOKE' in perm">
+      <h3>Permissions</h3>
       <table class="listing" id="permlist">
         <thead>
           <tr><th>Subject</th><th>Action</th></tr>
         </thead>
         <tbody>
-          <tr py:for="idx, (subject, perm_group) in enumerate(groupby(sorted(perms), key=lambda tmp: tmp[0]))"
+          <tr py:for="idx, (subject, perm_group) in enumerate(groupby(sorted(perms), key=lambda p: p[0]))"
               class="${'odd' if idx % 2 else 'even'}">
             <td>$subject</td>
             <td>
-              <py:for each="cnt, (subject,action) in enumerate(perm_group)"
-                      py:with="subject_action='%s:%s' % (unicode_to_base64(subject),
-                                                         unicode_to_base64(action));
-                               subject_action_id='sa-%d-%d' % (idx, cnt)">
-                <!--! base64 make it safe to use ':' as separator when passing
+              <label py:for="subject, action in perm_group">
+                <!--! base64 makes it safe to use ':' as separator when passing
                       both subject and action as one query parameter -->
-                <div>
-                  <input py:if="revoke_perm" type="checkbox"
-                         id="$subject_action_id"
-                         name="sel" value="$subject_action" />
-                  <label for="$subject_action_id">$action</label>
-                </div>
-              </py:for>
+                <input py:if="can_revoke" type="checkbox" name="sel"
+                       value="${'%s:%s' % (unicode_to_base64(subject),
+                                           unicode_to_base64(action))}"/> $action
+              </label>
             </td>
           </tr>
+          <tr py:if="not perms"><td colspan="2">No permissions</td></tr>
         </tbody>
       </table>
-      <div class="buttons" py:if="revoke_perm">
+
+      <h3>Group Membership</h3>
+      <table class="listing" id="grouplist">
+        <thead>
+          <tr><th>Group</th><th>Subject</th></tr>
+        </thead>
+        <tbody>
+          <tr py:for="idx, (group, subj_group) in enumerate(groupby(sorted(groups, key=lambda p: p[1]),
+                                                                    key=lambda p: p[1]))"
+              class="${'odd' if idx % 2 else 'even'}">
+            <td>$group</td>
+            <td>
+              <label py:for="subject, action in sorted(subj_group)">
+                <!--! base64 makes it safe to use ':' as separator when passing
+                      both subject and action as one query parameter -->
+                <input py:if="can_revoke" type="checkbox" name="sel"
+                       value="${'%s:%s' % (unicode_to_base64(subject),
+                                           unicode_to_base64(action))}"/> $subject
+              </label>
+            </td>
+          </tr>
+          <tr py:if="not groups"><td colspan="2">No group memberships</td></tr>
+        </tbody>
+      </table>
+      <div class="buttons" py:if="can_revoke">
         <input type="submit" name="remove" value="${_('Remove selected items')}" />
       </div>
     </form>

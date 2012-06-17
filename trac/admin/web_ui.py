@@ -423,9 +423,11 @@ class PermissionAdminPanel(Component):
                                   'revoked.'))
                 req.redirect(req.href.admin(cat, page))
 
+        perms = [perm for perm in all_permissions if perm[1].isupper()]
+        groups = [perm for perm in all_permissions if not perm[1].isupper()]
+
         return 'admin_perms.html', {
-            'actions': all_actions,
-            'perms': all_permissions,
+            'actions': all_actions, 'perms': perms, 'groups': groups,
             'unicode_to_base64': unicode_to_base64
         }
 
