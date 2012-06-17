@@ -198,7 +198,7 @@ class CommitTicketUpdater(Component):
         if repos.reponame:
             revstring += '/' + repos.reponame
         return """\
-In [changeset:%s]:
+In [changeset:"%s"]:
 {{{
 #!CommitTicketReference repository="%s" revision="%s"
 %s
