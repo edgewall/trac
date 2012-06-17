@@ -1,0 +1,5601 @@
+# Translations template for Trac.
+# Copyright (C) 2010 Edgewall Software
+# This file is distributed under the same license as the Trac project.
+# 
+# Translators:
+# lkraav <leho@kraav.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: Trac\n"
+"Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
+"POT-Creation-Date: 2010-10-19 22:28+0200\n"
+"PO-Revision-Date: 2011-03-22 15:50+0000\n"
+"Last-Translator: lkraav <leho@kraav.com>\n"
+"Language-Team: Estonian (http://www.transifex.net/projects/p/trac/language/et/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.5\n"
+"Language: et\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: tracopt/mimeview/php.py:97
+msgid ""
+"You appear to be using the PHP CGI binary. Trac requires the CLI version for"
+" syntax highlighting."
+msgstr "Sa ilmselt kasutad PHP CGI binaari. Trac nõuab CLI versiooni süntaksi esile tõstmiseks."
+
+#: tracopt/ticket/deleter.py:69 tracopt/ticket/deleter.py:82
+#: trac/ticket/templates/report_list.html:35
+msgid "Delete"
+msgstr "Kustuta"
+
+#: tracopt/ticket/deleter.py:70 tracopt/ticket/templates/ticket_delete.html:43
+msgid "Delete ticket"
+msgstr "Kustuta sedel"
+
+#: tracopt/ticket/deleter.py:83
+#, python-format
+msgid "Delete comment %(num)s"
+msgstr "Kustuta kommentaar %(num)s "
+
+#: tracopt/ticket/deleter.py:130
+#, python-format
+msgid "The ticket #%(id)s has been deleted."
+msgstr "Sedel #%(id)s on kustutatud."
+
+#: tracopt/ticket/deleter.py:137
+#, python-format
+msgid "The ticket comment %(num)s on ticket #%(id)s has been deleted."
+msgstr "Sedeli #%(id)s kommentaar %(num)s on kustutatud."
+
+#: tracopt/ticket/deleter.py:156
+#, python-format
+msgid "Comment %(num)s not found"
+msgstr "Kommentaari %(num)s ei leitud"
+
+#: tracopt/ticket/templates/ticket_delete.html:11
+#, python-format
+msgid "Delete Ticket #%(id)s"
+msgstr "Kustuta sedel #%(id)s"
+
+#: tracopt/ticket/templates/ticket_delete.html:12
+#: tracopt/ticket/templates/ticket_delete.html:49
+#, python-format
+msgid "Delete comment %(num)s on Ticket #%(id)s"
+msgstr "Kustuta sedeli #%(id)s kommentaar %(num)s"
+
+#: tracopt/ticket/templates/ticket_delete.html:20
+#, python-format
+msgid "Delete [1:Ticket #%(id)s]"
+msgstr "Kustuta [1: sedel #%(id)s]"
+
+#: tracopt/ticket/templates/ticket_delete.html:33
+msgid "Are you sure you want to delete this ticket?"
+msgstr "Kas olete kindel, et soovite selle sedeli kustutada?"
+
+#: tracopt/ticket/templates/ticket_delete.html:34
+#, python-format
+msgid ""
+"(comments: %(comments)s,\n"
+"                 attachments: %(attachments)s)"
+msgstr "(kommentaarid: %(comments)s,\n                 manused: %(attachments)s)"
+
+#: tracopt/ticket/templates/ticket_delete.html:37
+#: tracopt/ticket/templates/ticket_delete.html:68
+#: trac/templates/attachment.html:70 trac/wiki/templates/wiki_delete.html:46
+msgid "This is an irreversible operation."
+msgstr "See on pöördumatu operatsioon."
+
+#: tracopt/ticket/templates/ticket_delete.html:42
+#: tracopt/ticket/templates/ticket_delete.html:72
+#: trac/admin/templates/admin_components.html:55
+#: trac/admin/templates/admin_enums.html:24
+#: trac/admin/templates/admin_milestones.html:68
+#: trac/admin/templates/admin_versions.html:45
+#: trac/templates/attachment.html:63 trac/templates/attachment.html:76
+#: trac/ticket/templates/milestone_delete.html:40
+#: trac/ticket/templates/milestone_edit.html:106
+#: trac/ticket/templates/report_delete.html:21
+#: trac/ticket/templates/report_edit.html:44
+#: trac/ticket/templates/ticket_change.html:49
+#: trac/versioncontrol/templates/admin_repositories.html:84
+#: trac/wiki/templates/wiki_delete.html:50
+#: trac/wiki/templates/wiki_edit_form.html:77
+#: trac/wiki/templates/wiki_rename.html:32
+msgid "Cancel"
+msgstr "Tühista"
+
+#: tracopt/ticket/templates/ticket_delete.html:56
+msgid "comment:"
+msgstr "kommentaar:"
+
+#: tracopt/ticket/templates/ticket_delete.html:58
+#: trac/ticket/templates/ticket.html:142
+#, python-format
+msgid "Changed %(date)s ago by %(author)s"
+msgstr "%(author)s muutis %(date)s tagasi"
+
+#: tracopt/ticket/templates/ticket_delete.html:68
+msgid "Are you sure you want to delete this ticket comment?"
+msgstr "Kas olete kindel, et soovite selle sedeli kommentaari kustutada?"
+
+#: tracopt/ticket/templates/ticket_delete.html:73
+msgid "Delete comment"
+msgstr "Kustuta kommentaar"
+
+#: trac/about.py:47 trac/templates/about.html:10 trac/templates/about.html:29
+msgid "About Trac"
+msgstr "Trac'ist lähemalt"
+
+#: trac/attachment.py:152
+#, python-format
+msgid "Attachment '%(title)s' does not exist."
+msgstr "Manus '%(title)s' ei eksisteeri."
+
+#: trac/attachment.py:154
+msgid "Invalid Attachment"
+msgstr "Vigane manus"
+
+#: trac/attachment.py:194
+msgid "Could not delete attachment"
+msgstr "Manust ei saanud kustutada"
+
+#: trac/attachment.py:210
+#, python-format
+msgid ""
+"Cannot reparent attachment \"%(att)s\" as it already exists in "
+"%(realm)s:%(id)s"
+msgstr "Manust \"%(att)s\" ei saa teisaldada, sest see on juba %(realm)s : %(id)s olemas"
+
+#: trac/attachment.py:229
+#, python-format
+msgid "Could not reparent attachment %(name)s"
+msgstr "Manust \"%(name)s\" ei saanud teisaldada"
+
+#: trac/attachment.py:346
+#, python-format
+msgid "Attachment '%(filename)s' not found"
+msgstr "Manust '%(filename)s' ei leitud"
+
+#: trac/attachment.py:420
+msgid "Bad request"
+msgstr "Vigane päring"
+
+#: trac/attachment.py:437
+#, python-format
+msgid "Back to %(parent)s"
+msgstr "Tagasi %(parent)s"
+
+#: trac/attachment.py:530
+#, python-format
+msgid "%(attachment)s attached to %(resource)s"
+msgstr "%(attachment)s lisatud %(resource)s"
+
+#: trac/attachment.py:587
+#, python-format
+msgid "Unparented attachment %(id)s"
+msgstr "Manus %(id)s ressursi küljest vabastatud"
+
+#: trac/attachment.py:595
+#, python-format
+msgid "Attachment '%(id)s' in %(parent)s"
+msgstr "Manus '%(id)s' ressursides %(parent)s"
+
+#: trac/attachment.py:598
+#, python-format
+msgid "Attachments of %(parent)s"
+msgstr "%(parent)s manused"
+
+#: trac/attachment.py:615
+#, python-format
+msgid "%(parent)s doesn't exist, can't create attachment"
+msgstr " %(parent)s ei eksisteeri, manust ei saa luua"
+
+#: trac/attachment.py:622 trac/attachment.py:645 trac/admin/web_ui.py:426
+#: trac/admin/web_ui.py:429 trac/admin/web_ui.py:433
+msgid "No file uploaded"
+msgstr "Üleslaetud faile ei ole"
+
+#: trac/attachment.py:630
+msgid "Can't upload empty file"
+msgstr "Tühja faili ei saa saata"
+
+#: trac/attachment.py:635
+#, python-format
+msgid "Maximum attachment size: %(num)s bytes"
+msgstr "Maksimaalne manuse suurus: %(num)s baiti"
+
+#: trac/attachment.py:636
+msgid "Upload failed"
+msgstr "Saatmine ebaõnnestus"
+
+#: trac/attachment.py:658
+#, python-format
+msgid "Attachment field %(field)s is invalid: %(message)s"
+msgstr "Manuse väli %(field)s on kehtetu: %(message)s "
+
+#: trac/attachment.py:662
+#, python-format
+msgid "Invalid attachment: %(message)s"
+msgstr "Vigane manus: %(message)s "
+
+#: trac/attachment.py:672
+#, python-format
+msgid ""
+"You don't have permission to replace the attachment %(name)s. You can only "
+"replace your own attachments. Replacing other's attachments requires "
+"ATTACHMENT_DELETE permission."
+msgstr "Sul ei ole luba asendada manust %(name)s. Asendada saab ainult enda saadetud manuseid. Teiste manuseid saab asendada ainult ATTACHMENT_DELETE loaga."
+
+#: trac/attachment.py:704
+#, python-format
+msgid "%(attachment)s (delete)"
+msgstr " %(attachment)s (kustuta)"
+
+#: trac/attachment.py:765 trac/versioncontrol/web_ui/browser.py:661
+#: trac/wiki/web_ui.py:68
+msgid "Plain Text"
+msgstr "Lihttekst"
+
+#: trac/attachment.py:771 trac/versioncontrol/web_ui/browser.py:667
+msgid "Original Format"
+msgstr "Algvormingus"
+
+#: trac/attachment.py:813 trac/attachment.py:819
+#: trac/templates/list_of_attachments.html:20
+#: trac/templates/list_of_attachments.html:21
+#: trac/ticket/templates/ticket_change.html:21
+#: trac/ticket/templates/ticket_change.html:22
+msgid "Download"
+msgstr "Lae alla"
+
+#: trac/attachment.py:914
+#, python-format
+msgid "Invalid resource identifier '%(id)s'"
+msgstr "Vigane ressursi identifikaator '%(id)s'"
+
+#: trac/attachment.py:950 trac/admin/templates/admin_components.html:80
+#: trac/admin/templates/admin_enums.html:48
+#: trac/admin/templates/admin_milestones.html:101
+#: trac/admin/templates/admin_versions.html:78 trac/templates/about.html:84
+#: trac/templates/error.html:160 trac/ticket/admin.py:208
+#: trac/ticket/admin.py:399 trac/ticket/admin.py:560
+#: trac/versioncontrol/admin.py:112
+#: trac/versioncontrol/templates/admin_repositories.html:125
+#: trac/web/session.py:313
+msgid "Name"
+msgstr "Nimi"
+
+#: trac/attachment.py:950
+msgid "Size"
+msgstr "Suurus"
+
+#: trac/attachment.py:950 trac/templates/history_view.html:30
+#: trac/ticket/templates/ticket.html:361
+#: trac/versioncontrol/templates/revisionlog.html:98
+msgid "Author"
+msgstr "Autor"
+
+#: trac/attachment.py:950 trac/templates/history_view.html:29
+msgid "Date"
+msgstr "Kuupäev"
+
+#: trac/attachment.py:951 trac/templates/attachment.html:93
+#: trac/ticket/api.py:289 trac/ticket/templates/ticket_box.html:60
+msgid "Description"
+msgstr "Kirjeldus"
+
+#: trac/attachment.py:976 trac/wiki/admin.py:104
+#, python-format
+msgid "File '%(name)s' exists"
+msgstr "Fail '%(name)s' on olemas"
+
+#: trac/config.py:40
+msgid "Configuration Error"
+msgstr "Konfiguratsiooni viga"
+
+#: trac/config.py:419
+#, python-format
+msgid "[%(section)s] %(entry)s: expected integer, got %(value)s"
+msgstr "[%(section)s] %(entry)s: ootasin täisarvu, sain %(value)s"
+
+#: trac/config.py:437
+#, python-format
+msgid "[%(section)s] %(entry)s: expected float, got %(value)s"
+msgstr "[%(section)s] %(entry)s: ootasin ujuvkomaarvu, sain %(value)s"
+
+#: trac/config.py:621
+#, python-format
+msgid "[%(section)s] %(entry)s: expected one of (%(choices)s), got %(value)s"
+msgstr "[%(section)s] %(entry)s: ootasin ühte järgnevatest (%(choices)s), sain %(value)s"
+
+#: trac/core.py:33
+msgid "Trac Error"
+msgstr "Trac'i viga"
+
+#: trac/env.py:152
+msgid ""
+"Visit the Trac open source project at<br /><a "
+"href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
+msgstr "Külasta Trac projekti: <br /><a href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
+
+#: trac/env.py:574
+msgid "Database newer than Trac version"
+msgstr "Andmebaas on Trac'i versioonist uuem"
+
+#: trac/env.py:591
+#, python-format
+msgid "No upgrade module for version %(num)i (%(version)s.py)"
+msgstr "Versioonile %(num)i (%(version)s.py) uuendusmoodul puudub"
+
+#: trac/env.py:637
+msgid ""
+"Missing environment variable \"TRAC_ENV\". Trac requires this variable to "
+"point to a valid Trac environment."
+msgstr "Puudub \"TRAC_ENV\" keskkonnamuutuja. Trac vajab seda muutujat korrektse Trac-keskkonna leidmiseks."
+
+#: trac/env.py:669
+#, python-format
+msgid ""
+"The Trac Environment needs to be upgraded.\n"
+"\n"
+"Run \"trac-admin %(path)s upgrade\""
+msgstr "Trac-keskkond vajab uuendamist\n\nKäivita \"trac-admin %(path)s upgrade\""
+
+#: trac/env.py:703
+msgid "Copying resources from:"
+msgstr "Kopeerin ressursse:"
+
+#: trac/env.py:719
+msgid "Creating scripts."
+msgstr "Loon skriptid."
+
+#: trac/env.py:734
+#, python-format
+msgid "hotcopy can't overwrite existing '%(dest)s'"
+msgstr "hotkopeerimine ei saa olemasolevad %(dest)s' üle kirjutada"
+
+#: trac/env.py:744
+#, python-format
+msgid "Hotcopying %(src)s to %(dst)s ..."
+msgstr "Hotkopeerin %(src)s -> %(dst)s ..."
+
+#: trac/env.py:759
+msgid "The following errors happened while copying the environment:"
+msgstr "Keskkonna kopeerimise ajal tekkisid järgnevad vead:"
+
+#: trac/env.py:770
+msgid "Hotcopy done."
+msgstr "Hotcopy valmis."
+
+#: trac/env.py:775 trac/admin/api.py:130
+msgid "Invalid arguments"
+msgstr "Vigased parameetrid"
+
+#: trac/env.py:778
+msgid "Database is up to date, no upgrade necessary."
+msgstr "Andmebaas on ajakohane, uuendus ei ole vajalik."
+
+#: trac/env.py:786
+#, python-format
+msgid ""
+"Backup failed: %(msg)s.\n"
+"Use '--no-backup' to upgrade without doing a backup."
+msgstr "Varukoopia tegemine ebaõnnestus: %(msg)s.\nKasuta '--no-backup' uuendamiseks ilma varunduseta."
+
+#: trac/env.py:796
+msgid ""
+"Warning: the wiki-macros directory in the environment is non-empty, but Trac\n"
+"doesn't load plugins from there anymore. Please remove it by hand."
+msgstr "Hoiatus: \"wiki-macros\" kataloog keskkonnas ei ole tühi, kuid Trac\nei lae sealt lisamooduleid ammu enam. Palun kustuta see kataloog käsitsi."
+
+#: trac/env.py:807
+#, python-format
+msgid ""
+"Error while removing wiki-macros: %(err)s\n"
+"Trac doesn't load plugins from wiki-macros anymore. Please remove it by hand."
+msgstr "Viga \"wiki-macros\" kataloogi kustutamisel: %(err)s\nTrac ei lae sealt lisamooduleid ammu enam. Palun kustuta see kataloog käsitsi."
+
+#: trac/env.py:809
+#, python-format
+msgid ""
+"Upgrade done.\n"
+"\n"
+"You may want to upgrade the Trac documentation now by running:\n"
+"\n"
+"  trac-admin %(path)s wiki upgrade"
+msgstr "Uuendus valmis.\n\nArvatavasti soovid nüüd Trac'i dokumentatsiooni uuendada, kasuta selleks käsku:\n\n  trac-admin %(path)s wiki upgrade"
+
+#: trac/notification.py:155
+msgid "TLS enabled but server does not support TLS"
+msgstr "TLS lubatud, aga server ei toeta TLS-i"
+
+#: trac/notification.py:303
+#, python-format
+msgid "Invalid email encoding setting: %(pref)s"
+msgstr "Vale e-posti kodeeringu seadistus: %(pref)s "
+
+#: trac/notification.py:317
+msgid "Unable to send email due to identity crisis."
+msgstr "Identiteedikriisi tõttu ei saa e-posti saata."
+
+#: trac/notification.py:321
+#, python-format
+msgid "Neither %(from_)s nor %(reply_to)s are specified in the configuration."
+msgstr "Konfiguratsioonis pole määratletud %(from_)s ega %(reply_to)s."
+
+#: trac/notification.py:322
+msgid "SMTP Notification Error"
+msgstr "SMTP teavituse viga"
+
+#: trac/notification.py:331
+msgid "Header length is too short"
+msgstr "Päise pikkus on ebapiisav"
+
+#: trac/perm.py:48
+#, python-format
+msgid ""
+"%(perm)s privileges are required to perform this operation on %(resource)s"
+msgstr "%(resource)s tegevuse sooritamiseks on vaja %(perm)s õiguseid."
+
+#: trac/perm.py:50
+#, python-format
+msgid "%(perm)s privileges are required to perform this operation"
+msgstr "Selle tegevuse sooritamiseks on vaja %(perm)s õiguseid."
+
+#: trac/perm.py:55
+msgid "Insufficient privileges to perform this operation."
+msgstr "Selleks tegevuseks puuduvad piisavad õigused."
+
+#: trac/perm.py:333
+#, python-format
+msgid "%(name)s is not a valid action."
+msgstr "%(name)s ei ole korrektne tegevus."
+
+#: trac/perm.py:643
+msgid "User"
+msgstr "Kasutaja"
+
+#: trac/perm.py:643 trac/admin/templates/admin_perms.html:70
+#: trac/ticket/templates/ticket.html:339
+msgid "Action"
+msgstr "Tegevus"
+
+#: trac/perm.py:645
+msgid "Available actions:"
+msgstr "Võimalikud tegevused:"
+
+#: trac/perm.py:656 trac/admin/web_ui.py:334
+msgid "All upper-cased tokens are reserved for permission names"
+msgstr "Kõik suurtähtedega tähised on reserveeritud õiguste nimede jaoks"
+
+#: trac/resource.py:336
+#, python-format
+msgid "%(name)s at version %(version)s"
+msgstr "%(name)s on versioon %(version)s"
+
+#: trac/admin/api.py:134 trac/admin/console.py:263
+msgid "Command not found"
+msgstr "Käsku ei leitud"
+
+#: trac/admin/console.py:111
+#, python-format
+msgid "Error: %(msg)s"
+msgstr "Viga: %(msg)s"
+
+#: trac/admin/console.py:130
+#, python-format
+msgid ""
+"Welcome to trac-admin %(version)s\n"
+"Interactive Trac administration console.\n"
+"Copyright (c) 2003-2010 Edgewall Software\n"
+"\n"
+"Type:  '?' or 'help' for help on commands.\n"
+"        "
+msgstr "trac-admin %(version)s tervitab\nInteraktiivne Trac halduskonsool.\nCopyright (c) 2003-2010 Edgewall Software\n\nKirjuta:  '?' või 'help' käskude abiinfo nägemiseks.\n        "
+
+#: trac/admin/console.py:164
+#, python-format
+msgid "Failed to open environment: %(err)s"
+msgstr "Keskkonna avamine ebaõnnestus: %(err)s"
+
+#: trac/admin/console.py:243
+#, python-format
+msgid "Completion error: %(err)s"
+msgstr "Viga lõpetamisel: %(err)s"
+
+#: trac/admin/console.py:296
+#, python-format
+msgid "No documentation found for '%(cmd)s'"
+msgstr "'%(cmd)s' dokumentatsiooni ei leitud"
+
+#: trac/admin/console.py:298
+#, python-format
+msgid "trac-admin - The Trac Administration Console %(version)s"
+msgstr "trac-admin - Trac halduskonsool %(version)s"
+
+#: trac/admin/console.py:302
+msgid ""
+"Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
+msgstr "Kasutamine: trac-admin </path/to/projenv> [käsk [alamkäsk] [valik ...]]\n"
+
+#: trac/admin/console.py:305
+msgid "Invoking trac-admin without command starts interactive mode.\n"
+msgstr "trac-admin'i käivitamine ilma käsuta alustab interaktiivse režiimi.\n"
+
+#: trac/admin/console.py:345
+#, python-format
+msgid "Creating a new Trac environment at %(envname)s"
+msgstr "Loon uue Trac keskkonna %(envname)s"
+
+#: trac/admin/console.py:347
+msgid ""
+"\n"
+"Trac will first ask a few questions about your environment \n"
+"in order to initialize and prepare the project database.\n"
+"\n"
+" Please enter the name of your project.\n"
+" This name will be used in page titles and descriptions.\n"
+msgstr "\nTrac küsib esmalt paar küsimust su keskkonna kohta, \net projekti andmebaas luua ja ette valmistada.\n\n Palun sisesta oma projekti nimi.\n Seda nime kasutatakse lehekülgede pealkirjades ja kirjeldustes.\n"
+
+#: trac/admin/console.py:355
+#, python-format
+msgid "Project Name [%(default)s]> "
+msgstr "Projekti nimi [%(default)s]> "
+
+#: trac/admin/console.py:357
+msgid ""
+" \n"
+" Please specify the connection string for the database to use.\n"
+" By default, a local SQLite database is created in the environment\n"
+" directory. It is also possible to use an already existing\n"
+" PostgreSQL database (check the Trac documentation for the exact\n"
+" connection string syntax).\n"
+msgstr " \n Palun määra ühendusstring mida andmebaas saab kasutada.\n Vaikimisi luuakse kohalik SQLite andmebaas keskkonna\n kataloogis. Veel on võimalik kasutada mõnda juba olemasolevat\n PostgreSQL andmebaasi (uuri Trac'i dokumentatsioonist täpset\n ühendusstringi süntaksit).\n"
+
+#: trac/admin/console.py:365
+#, python-format
+msgid "Database connection string [%(default)s]> "
+msgstr "Andmebaasi ühendusstring [%(default)s]> "
+
+#: trac/admin/console.py:372
+#, python-format
+msgid "Initenv for '%(env)s' failed."
+msgstr "Initenv keskkonnale '%(env)s' ebaõnnestus."
+
+#: trac/admin/console.py:375
+msgid "Does an environment already exist?"
+msgstr "Kas keskkond on juba olemas?"
+
+#: trac/admin/console.py:379
+msgid "Directory exists and is not empty."
+msgstr "Kataloog on olemas ja ei ole tühi."
+
+#: trac/admin/console.py:407
+msgid "Creating and Initializing Project"
+msgstr "Projekti loomine ja käivitamine"
+
+#: trac/admin/console.py:424
+msgid "Failed to create environment."
+msgstr "Keskkonna loomine ebaõnnestus."
+
+#: trac/admin/console.py:430
+msgid " Installing default wiki pages"
+msgstr " Paigaldan vaikekomplekti wiki-lehti"
+
+#: trac/admin/console.py:439
+msgid " Indexing default repository"
+msgstr " Indekseerin vaikehoidlat"
+
+#: trac/admin/console.py:442
+msgid ""
+"\n"
+"---------------------------------------------------------------------\n"
+"Warning: couldn't index the default repository.\n"
+"\n"
+"This can happen for a variety of reasons: wrong repository type, \n"
+"no appropriate third party library for this repository type,\n"
+"no actual repository at the specified repository path...\n"
+"\n"
+"You can nevertheless start using your Trac environment, but \n"
+"you'll need to check again your trac.ini file and the [trac] \n"
+"repository_type and repository_path settings.\n"
+msgstr "\n---------------------------------------------------------------------\nHoiatus: vaikehoidla indekseerimine ebaõnnestus.\n\nSee võib juhtuda mitmel põhjusel: vale hoidla tüüp, \nhoidlatüübi jaoks puuduvad vajalikud teegid,\nmääratud hoidla asukohas tegelikult hoidla puudub jne...\n\nTrac keskkonda võib sellest hoolimata kasutama hakata, kuid sa pead kontrollima oma trac.ini failis olevaid [trac] \nrepository_type ja repository_path seadeid.\n"
+
+#: trac/admin/console.py:485
+#, python-format
+msgid ""
+"\n"
+"---------------------------------------------------------------------\n"
+"Project environment for '%(project_name)s' created.\n"
+"\n"
+"You may now configure the environment by editing the file:\n"
+"\n"
+"  %(config_path)s\n"
+"\n"
+"If you'd like to take this new project environment for a test drive,\n"
+"try running the Trac standalone web server `tracd`:\n"
+"\n"
+"  tracd --port 8000 %(project_path)s\n"
+"\n"
+"Then point your browser to http://localhost:8000/%(project_dir)s.\n"
+"There you can also browse the documentation for your installed\n"
+"version of Trac, including information on further setup (such as\n"
+"deploying Trac to a real web server).\n"
+"\n"
+"The latest documentation can also always be found on the project\n"
+"website:\n"
+"\n"
+"  http://trac.edgewall.org/\n"
+"\n"
+"Congratulations!\n"
+msgstr "\n---------------------------------------------------------------------\nProjektikeskkond '%(project_name)s' loodud.\n\nSa võid nüüd keskkonda konfigureerida failis:\n\n  %(config_path)s\n\nKui sa soovid oma uut projektikeskkonda kohe katsetada,\nproovi käivitada Trac' sisseehitatud veebiserver `tracd`:\n\n  tracd --port 8000 %(project_path)s\n\nSeejärel suuna oma brauser http://localhost:8000/%(project_dir)s.\nSealt saad ka sirvida oma installeeritud Trac'i \nversiooni dokumentatsiooni, k.a. instruktsioone edasiseks seadistamiseks (nt. \nTraci paigaldamiseks päris veebiserverisse).\n\nViimast dokumentatsiooni saab alati näha meie projekti\nveebist:\n\n  http://trac.edgewall.org/\n\nÕnnitlused!\n"
+
+#: trac/admin/console.py:543
+#, python-format
+msgid "Non-ascii environment path '%(path)s' not supported."
+msgstr "Mitte-ascii tähti kasutatavaid keskkonna asukohti '%(path)s' ei toetata."
+
+#: trac/admin/web_ui.py:65
+msgid "Admin"
+msgstr "Admin"
+
+#: trac/admin/web_ui.py:66 trac/admin/templates/admin.html:16
+msgid "Administration"
+msgstr "Haldamine"
+
+#: trac/admin/web_ui.py:82
+msgid "No administration panels available"
+msgstr "Ühtegi halduspaneeli pole saadaval"
+
+#: trac/admin/web_ui.py:108 trac/admin/web_ui.py:112
+msgid "Unknown administration panel"
+msgstr "Tundmatu halduspaneel"
+
+#: trac/admin/web_ui.py:186 trac/ticket/admin.py:64 trac/ticket/admin.py:89
+#: trac/ticket/admin.py:275 trac/ticket/admin.py:458 trac/ticket/admin.py:611
+#: trac/ticket/admin.py:697 trac/ticket/report.py:189
+#: trac/ticket/roadmap.py:691 trac/versioncontrol/admin.py:216
+msgid "Your changes have been saved."
+msgstr "Sinu muudatused on salvestatud."
+
+#: trac/admin/web_ui.py:191 trac/ticket/admin.py:67
+msgid ""
+"Error writing to trac.ini, make sure it is writable by the web server. Your "
+"changes have not been saved."
+msgstr "Viga trac.ini kirjutamisel, vaata et see fail oleks veebiserveri poolt kirjutatav. Sinu muudatusi ei salvestatud."
+
+#: trac/admin/web_ui.py:204 trac/admin/web_ui.py:232 trac/admin/web_ui.py:320
+#: trac/admin/web_ui.py:402 trac/prefs/web_ui.py:86
+#: trac/prefs/templates/prefs_general.html:9
+msgid "General"
+msgstr "Üldine"
+
+#: trac/admin/web_ui.py:204 trac/admin/templates/admin_basics.html:13
+msgid "Basic Settings"
+msgstr "Põhiseaded"
+
+#: trac/admin/web_ui.py:232 trac/admin/templates/admin_logging.html:10
+#: trac/admin/templates/admin_logging.html:22
+msgid "Logging"
+msgstr "Logimine"
+
+#: trac/admin/web_ui.py:241 trac/ticket/templates/milestone_delete.html:31
+#: trac/ticket/templates/milestone_edit.html:85
+#: trac/ticket/templates/query_results.html:27
+msgid "None"
+msgstr "Mitte ükski"
+
+#: trac/admin/web_ui.py:242
+msgid "Console"
+msgstr "Konsool"
+
+#: trac/admin/web_ui.py:244 trac/templates/attachment.html:32
+msgid "File"
+msgstr "Fail"
+
+#: trac/admin/web_ui.py:246
+msgid "Syslog"
+msgstr "Syslog"
+
+#: trac/admin/web_ui.py:248
+msgid "Windows event log"
+msgstr "Windows'i sündmuslogi"
+
+#: trac/admin/web_ui.py:261
+#, python-format
+msgid "Unknown log type %(type)s"
+msgstr "Tundmatu logitüüp %(type)s"
+
+#: trac/admin/web_ui.py:262
+msgid "Invalid log type"
+msgstr "Vigane logitüüp"
+
+#: trac/admin/web_ui.py:276
+#, python-format
+msgid "Unknown log level %(level)s"
+msgstr "Tundmatu logitase %(level)s"
+
+#: trac/admin/web_ui.py:277
+msgid "Invalid log level"
+msgstr "Vigane logitase"
+
+#: trac/admin/web_ui.py:290
+msgid "You must specify a log file"
+msgstr "Peate määrama logifaili"
+
+#: trac/admin/web_ui.py:291
+msgid "Missing field"
+msgstr "Puuduolev väli"
+
+#: trac/admin/web_ui.py:320 trac/admin/templates/admin_perms.html:10
+msgid "Permissions"
+msgstr "Õigused"
+
+#: trac/admin/web_ui.py:341
+msgid "Unknown action"
+msgstr "Tundmatu tegevus"
+
+#: trac/admin/web_ui.py:345
+#, python-format
+msgid "The subject %(subject)s has been granted the permission %(action)s."
+msgstr "Subjektile %(subject)s on antud õigus %(action)s ."
+
+#: trac/admin/web_ui.py:350
+#, python-format
+msgid "The permission %(action)s was already granted to %(subject)s."
+msgstr "Õigus %(action)s oli %(subject)s juba antud."
+
+#: trac/admin/web_ui.py:366
+#, python-format
+msgid "The subject %(subject)s has been added to the group %(group)s."
+msgstr "Subjekt %(subject)s on lisatud rühma %(group)s."
+
+#: trac/admin/web_ui.py:371
+#, python-format
+msgid "The subject %(subject)s was already added to the group %(group)s."
+msgstr "Subjekt %(subject)s oli juba lisatud rühma %(group)s."
+
+#: trac/admin/web_ui.py:384
+msgid "The selected permissions have been revoked."
+msgstr "Valitud õigused on tühistatud."
+
+#: trac/admin/web_ui.py:402 trac/admin/templates/admin_plugins.html:10
+msgid "Plugins"
+msgstr "Lisamoodulid"
+
+#: trac/admin/web_ui.py:436
+msgid "Uploaded file is not a Python source file or egg"
+msgstr "Saadetud fail ei ole Python-lähtefail ega -muna"
+
+#: trac/admin/web_ui.py:441
+#, python-format
+msgid "Plugin %(name)s already installed"
+msgstr "Lisamoodul %(name)s on juba paigaldatud"
+
+#: trac/admin/web_ui.py:514
+msgid "The following component has been disabled:"
+msgid_plural "The following components have been disabled:"
+msgstr[0] "Keelatud komponent:"
+msgstr[1] "Keelatud komponendid:"
+
+#: trac/admin/web_ui.py:519
+msgid "The following component has been enabled:"
+msgid_plural "The following components have been enabled:"
+msgstr[0] "Lubatud komponent:"
+msgstr[1] "Lubatud komponendid:"
+
+#: trac/admin/templates/admin.html:10
+msgid "Administration:"
+msgstr "Haldus:"
+
+#: trac/admin/templates/admin_basics.html:9
+msgid "Basics"
+msgstr "Põhiasjad"
+
+#: trac/admin/templates/admin_basics.html:17
+msgid "Project"
+msgstr "Projekt"
+
+#: trac/admin/templates/admin_basics.html:19
+#: trac/admin/templates/admin_components.html:37
+#: trac/admin/templates/admin_components.html:66
+#: trac/admin/templates/admin_enums.html:21
+#: trac/admin/templates/admin_enums.html:35
+#: trac/admin/templates/admin_milestones.html:22
+#: trac/admin/templates/admin_milestones.html:79
+#: trac/admin/templates/admin_versions.html:21
+#: trac/admin/templates/admin_versions.html:56
+#: trac/versioncontrol/templates/admin_repositories.html:50
+#: trac/versioncontrol/templates/admin_repositories.html:95
+#: trac/versioncontrol/templates/admin_repositories.html:112
+msgid "Name:"
+msgstr "Nimi:"
+
+#: trac/admin/templates/admin_basics.html:24
+#: trac/versioncontrol/templates/admin_repositories.html:62
+msgid "URL:"
+msgstr "URL:"
+
+#: trac/admin/templates/admin_basics.html:29
+#: trac/ticket/templates/ticket.html:255
+msgid "Description:"
+msgstr "Kirjeldus:"
+
+#: trac/admin/templates/admin_basics.html:36
+#: trac/admin/templates/admin_components.html:99
+#: trac/admin/templates/admin_enums.html:70
+#: trac/admin/templates/admin_logging.html:54
+#: trac/admin/templates/admin_milestones.html:126
+#: trac/admin/templates/admin_plugins.html:158
+#: trac/admin/templates/admin_versions.html:95
+msgid "Apply changes"
+msgstr "Rakenda muudatused"
+
+#: trac/admin/templates/admin_components.html:10 trac/ticket/admin.py:75
+msgid "Components"
+msgstr "Komponendid"
+
+#: trac/admin/templates/admin_components.html:14
+msgid "Manage Components"
+msgstr "Halda komponente"
+
+#: trac/admin/templates/admin_components.html:18
+msgid "Owner:"
+msgstr "Omanik:"
+
+#: trac/admin/templates/admin_components.html:35
+msgid "Modify Component:"
+msgstr "Muuda komponenti:"
+
+#: trac/admin/templates/admin_components.html:42
+msgid ""
+"Description (you may use\n"
+"                [1:WikiFormatting]\n"
+"                here):"
+msgstr "Kirjeldus (võid kasutada siin\n                [1:WikiFormatting]\n                ):"
+
+#: trac/admin/templates/admin_components.html:56
+#: trac/admin/templates/admin_enums.html:25
+#: trac/admin/templates/admin_milestones.html:69
+#: trac/admin/templates/admin_versions.html:46
+#: trac/versioncontrol/templates/admin_repositories.html:85
+msgid "Save"
+msgstr "Salvesta"
+
+#: trac/admin/templates/admin_components.html:64
+msgid "Add Component:"
+msgstr "Lisa komponent:"
+
+#: trac/admin/templates/admin_components.html:70
+#: trac/admin/templates/admin_enums.html:38
+#: trac/admin/templates/admin_milestones.html:90
+#: trac/admin/templates/admin_perms.html:39
+#: trac/admin/templates/admin_perms.html:61
+#: trac/admin/templates/admin_versions.html:68
+#: trac/versioncontrol/templates/admin_repositories.html:102
+#: trac/versioncontrol/templates/admin_repositories.html:116
+msgid "Add"
+msgstr "Lisa"
+
+#: trac/admin/templates/admin_components.html:80 trac/ticket/admin.py:208
+#: trac/ticket/api.py:283 trac/ticket/web_ui.py:1363
+msgid "Owner"
+msgstr "Omanik"
+
+#: trac/admin/templates/admin_components.html:80
+#: trac/admin/templates/admin_enums.html:48
+#: trac/admin/templates/admin_milestones.html:101
+#: trac/admin/templates/admin_versions.html:78
+msgid "Default"
+msgstr "Vaikimisi"
+
+#: trac/admin/templates/admin_components.html:98
+#: trac/admin/templates/admin_enums.html:69
+#: trac/admin/templates/admin_milestones.html:125
+#: trac/admin/templates/admin_perms.html:88
+#: trac/admin/templates/admin_versions.html:94
+#: trac/versioncontrol/templates/admin_repositories.html:145
+msgid "Remove selected items"
+msgstr "Eemalda valitud elemendid"
+
+#: trac/admin/templates/admin_components.html:101
+#: trac/admin/templates/admin_enums.html:72
+#: trac/admin/templates/admin_milestones.html:128
+#: trac/admin/templates/admin_versions.html:97
+msgid ""
+"You can remove all items from this list to completely hide this\n"
+"              field from the user interface."
+msgstr "Sa võid kõik elemendid siit loetelust eemaldada ning sellega\n              välja kasutaja eest ära peita."
+
+#: trac/admin/templates/admin_components.html:107
+#: trac/admin/templates/admin_enums.html:82
+#: trac/admin/templates/admin_milestones.html:134
+#: trac/admin/templates/admin_versions.html:103
+msgid ""
+"As long as you don't add any items to the list, this field\n"
+"            will remain completely hidden from the user interface."
+msgstr "Kuni käesolev loetelu on tühi, jääb väli\n            kasutaja eest peidetuks."
+
+#: trac/admin/templates/admin_enums.html:14
+#, python-format
+msgid "Manage %(label_plural)s"
+msgstr "Halda %(label_plural)s"
+
+#: trac/admin/templates/admin_enums.html:19
+#, python-format
+msgid "Modify %(label_singular)s"
+msgstr "Muuda %(label_singular)s"
+
+#: trac/admin/templates/admin_enums.html:33
+#, python-format
+msgid "Add %(label_singular)s"
+msgstr "Lisa %(label_singular)s"
+
+#: trac/admin/templates/admin_enums.html:48
+msgid "Order"
+msgstr "Järjekord"
+
+#: trac/admin/templates/admin_enums.html:77
+#: trac/prefs/templates/prefs_language.html:31
+msgid "Note:"
+msgstr "Märkus:"
+
+#: trac/admin/templates/admin_enums.html:77
+msgid ""
+"The order of priorities determines the coloring of entries\n"
+"              in the ticket queries and reports."
+msgstr "Prioriteetide järjekorde otsustab kannete värvid\n              sedelipäringutes ja -raportites."
+
+#: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:79
+msgid "Configuration"
+msgstr "Konfiguratsioon"
+
+#: trac/admin/templates/admin_logging.html:28
+#: trac/versioncontrol/templates/admin_repositories.html:18
+msgid "Type:"
+msgstr "Tüüp:"
+
+#: trac/admin/templates/admin_logging.html:37
+msgid "Log level:"
+msgstr "Logitase:"
+
+#: trac/admin/templates/admin_logging.html:45
+msgid "Log file:"
+msgstr "Logifail:"
+
+#: trac/admin/templates/admin_logging.html:48
+#, python-format
+msgid ""
+"If you specify a relative path, the log file will be stored inside the\n"
+"            [1:log] directory of the project environment ([2:%(dir)s])."
+msgstr "Kui sa määrad suhtelise asukoha, siis logi salvestatakse\n            projektikeskkonna [1:log] kataloogi ([2:%(dir)s])."
+
+#: trac/admin/templates/admin_milestones.html:10 trac/ticket/admin.py:240
+#: trac/ticket/roadmap.py:890
+msgid "Milestones"
+msgstr "Verstapostid"
+
+#: trac/admin/templates/admin_milestones.html:14
+msgid "Manage Milestones"
+msgstr "Halda verstaposte"
+
+#: trac/admin/templates/admin_milestones.html:20
+msgid "Modify Milestone:"
+msgstr "Muuda verstaposti:"
+
+#: trac/admin/templates/admin_milestones.html:25
+#: trac/admin/templates/admin_milestones.html:82
+#: trac/ticket/templates/milestone_edit.html:59
+msgid "Due:"
+msgstr "Tähtaeg:"
+
+#: trac/admin/templates/admin_milestones.html:26
+#: trac/admin/templates/admin_milestones.html:29
+#: trac/admin/templates/admin_milestones.html:39
+#: trac/admin/templates/admin_milestones.html:43
+#: trac/admin/templates/admin_milestones.html:84
+#: trac/admin/templates/admin_versions.html:27
+#: trac/admin/templates/admin_versions.html:30
+#: trac/admin/templates/admin_versions.html:61
+#: trac/admin/templates/admin_versions.html:64
+#: trac/ticket/templates/milestone_edit.html:63
+#: trac/ticket/templates/milestone_edit.html:66
+#: trac/ticket/templates/milestone_edit.html:75
+#: trac/ticket/templates/milestone_edit.html:78
+#, python-format
+msgid "Format: %(datehint)s"
+msgstr "Formaat: %(datehint)s"
+
+#: trac/admin/templates/admin_milestones.html:35
+#: trac/ticket/templates/milestone_edit.html:71
+msgid "Completed:"
+msgstr "Valminud:"
+
+#: trac/admin/templates/admin_milestones.html:57
+#: trac/admin/templates/admin_versions.html:35
+#: trac/ticket/templates/milestone_edit.html:97
+#: trac/versioncontrol/templates/admin_repositories.html:73
+msgid "Description (you may use [1:WikiFormatting] here):"
+msgstr "Kirjeldus (võid kasutada siin [1: WikiFormatting]):"
+
+#: trac/admin/templates/admin_milestones.html:77
+msgid "Add Milestone:"
+msgstr "Lisa verstapost:"
+
+#: trac/admin/templates/admin_milestones.html:86
+#, python-format
+msgid "Format: %(datetimehint)s"
+msgstr "Formaat: %(datetimehint)s"
+
+#: trac/admin/templates/admin_milestones.html:101 trac/ticket/admin.py:399
+msgid "Due"
+msgstr "Tähtaeg"
+
+#: trac/admin/templates/admin_milestones.html:101 trac/ticket/admin.py:399
+msgid "Completed"
+msgstr "Valminud"
+
+#: trac/admin/templates/admin_milestones.html:101 trac/ticket/web_ui.py:184
+msgid "Tickets"
+msgstr "Sedelid"
+
+#: trac/admin/templates/admin_perms.html:14
+msgid "Manage Permissions"
+msgstr "Halda õiguseid"
+
+#: trac/admin/templates/admin_perms.html:19
+msgid "Grant Permission:"
+msgstr "Lisa õiguseid:"
+
+#: trac/admin/templates/admin_perms.html:22
+#: trac/admin/templates/admin_perms.html:49
+msgid "Subject:"
+msgstr "Subjekt:"
+
+#: trac/admin/templates/admin_perms.html:26
+msgid "Action:"
+msgstr "Tegevus:"
+
+#: trac/admin/templates/admin_perms.html:34
+msgid ""
+"Grant permission for an action to a subject, which can be either a user\n"
+"          or a group."
+msgstr "Anda tegevuse luba subjektile, mis võib olla kas kasutaja\n          või grupp."
+
+#: trac/admin/templates/admin_perms.html:46
+msgid "Add Subject to Group:"
+msgstr "Lisa subjekt gruppi:"
+
+#: trac/admin/templates/admin_perms.html:53
+msgid "Group:"
+msgstr "Grupp:"
+
+#: trac/admin/templates/admin_perms.html:57
+msgid "Add a user or group to an existing permission group."
+msgstr "Lisa kasutaja või grupp olemasolevasse õiguste gruppi."
+
+#: trac/admin/templates/admin_perms.html:70
+msgid "Subject"
+msgstr "Subjekt"
+
+#: trac/admin/templates/admin_perms.html:92
+msgid ""
+"Note that [1:Subject] or [2:Group] names can't be all upper-case,\n"
+"      as that is reserved for permission names."
+msgstr "Pane tähele,et [1:Subject] ega [2:Group] nimed ei tohi koosneda ainult suurtähtedest,\n      sest see formaat on reserveeritud õiguste nimedeks."
+
+#: trac/admin/templates/admin_plugins.html:35
+msgid "Manage Plugins"
+msgstr "Halda lisamooduleid"
+
+#: trac/admin/templates/admin_plugins.html:39
+msgid "Install Plugin:"
+msgstr "Installeeri lisamoodul:"
+
+#: trac/admin/templates/admin_plugins.html:41
+msgid "File: [1:]"
+msgstr "Fail: [1:]"
+
+#: trac/admin/templates/admin_plugins.html:46
+msgid ""
+"The web server does not have sufficient permissions to store files in\n"
+"            the environment plugins directory."
+msgstr "Veebiserveril ei ole piisavalt õigusi, et salvestada faile\n            keskkonna lisamoodulite kataloogi."
+
+#: trac/admin/templates/admin_plugins.html:50
+msgid "Upload a plugin packaged as Python egg."
+msgstr "Lae lisamoodul Python-muna vormingus."
+
+#: trac/admin/templates/admin_plugins.html:55
+msgid "Install"
+msgstr "Paigalda"
+
+#: trac/admin/templates/admin_plugins.html:78 trac/templates/diff_view.html:51
+#: trac/versioncontrol/templates/changeset.html:142
+msgid "Author:"
+msgstr "Autor:"
+
+#: trac/admin/templates/admin_plugins.html:87
+msgid "Home page:"
+msgstr "Kodulehekülg:"
+
+#: trac/admin/templates/admin_plugins.html:94
+msgid "License:"
+msgstr "Litsents:"
+
+#: trac/admin/templates/admin_plugins.html:102 trac/ticket/admin.py:75
+#: trac/ticket/api.py:296
+msgid "Component"
+msgstr "Komponent"
+
+#: trac/admin/templates/admin_plugins.html:105
+msgid "Show all descriptions"
+msgstr "Näita kõiki kirjeldusi"
+
+#: trac/admin/templates/admin_plugins.html:107
+msgid "Hide all descriptions"
+msgstr "Peida kõik kirjeldused"
+
+#: trac/admin/templates/admin_plugins.html:111
+msgid "Enabled"
+msgstr "Lubatud"
+
+#: trac/admin/templates/admin_versions.html:10 trac/ticket/admin.py:440
+msgid "Versions"
+msgstr "Versioonid"
+
+#: trac/admin/templates/admin_versions.html:14
+msgid "Manage Versions"
+msgstr "Halda versioone"
+
+#: trac/admin/templates/admin_versions.html:19
+msgid "Modify Version:"
+msgstr "Muuda versiooni:"
+
+#: trac/admin/templates/admin_versions.html:26
+msgid "Date:"
+msgstr "Kuupäev:"
+
+#: trac/admin/templates/admin_versions.html:54
+msgid "Add Version:"
+msgstr "Lisa versioon:"
+
+#: trac/admin/templates/admin_versions.html:59
+msgid "Released:"
+msgstr "Avaldatud:"
+
+#: trac/admin/templates/admin_versions.html:78
+msgid "Released"
+msgstr "Avaldatud"
+
+#: trac/db/api.py:191
+#, python-format
+msgid "Unsupported database type \"%(scheme)s\""
+msgstr "Andmebaasi tüüpi \"%(scheme)s\" ei toetata"
+
+#: trac/db/api.py:227
+#, python-format
+msgid ""
+"Unknown scheme \"%(scheme)s\"; database connection string must start with "
+"{scheme}:/"
+msgstr "Tundmatu skeem \"%(scheme)s\"; andmebaasi ühendusstring peab algama stringiga {scheme}:/"
+
+#: trac/db/mysql_backend.py:80
+msgid "Cannot load Python bindings for MySQL"
+msgstr "Python-MySQL teeki ei saa laadida"
+
+#: trac/db/mysql_backend.py:204 trac/db/postgres_backend.py:182
+#, python-format
+msgid "Unable to run %(path)s: %(msg)s"
+msgstr "%(path)s ei saa käivitada: %(msg)s"
+
+#: trac/db/mysql_backend.py:208
+#, python-format
+msgid "mysqldump failed: %(msg)s"
+msgstr "mysqldump ebaõnnestus: %(msg)s"
+
+#: trac/db/mysql_backend.py:210 trac/db/postgres_backend.py:188
+#: trac/db/sqlite_backend.py:230
+msgid "No destination file created"
+msgstr "Sihtfaile ei loodud"
+
+#: trac/db/pool.py:142
+#, python-format
+msgid "Unable to get database connection within %(time)d seconds."
+msgstr "Andmebaasiga ei saanud ühendust %(time)d sekundi jooksul."
+
+#: trac/db/postgres_backend.py:81
+msgid "Cannot load Python bindings for PostgreSQL"
+msgstr "Python-PostgresSQL teeki ei saa laadida"
+
+#: trac/db/postgres_backend.py:186
+#, python-format
+msgid "pg_dump failed: %(msg)s"
+msgstr "pg_dump ebaõnnestus: %(msg)s"
+
+#: trac/db/sqlite_backend.py:154
+msgid "Cannot load Python bindings for SQLite"
+msgstr "Python-SQLite teeki ei saa laadida"
+
+#: trac/db/sqlite_backend.py:157
+#, python-format
+msgid "Need at least PySqlite %(version)s or higher"
+msgstr "Vajame PySqlite'st vähemalt versiooni %(version)s või kõrgemat"
+
+#: trac/db/sqlite_backend.py:160
+msgid "PySqlite 2.5.2 - 2.5.4 break Trac, please use 2.5.5 or higher"
+msgstr "Kuna PySqlite 2.5.2 - 2.5.4 teeb Trac'i katki, siis palun kasutage 2.5.5 või uuemat"
+
+#: trac/db/sqlite_backend.py:185
+#, python-format
+msgid "Database already exists at %(path)s"
+msgstr "Andmebaas asukohas %(path)s on juba olemas"
+
+#: trac/db/sqlite_backend.py:247
+#, python-format
+msgid "Database \"%(path)s\" not found."
+msgstr "Andmebaasi \"%(path)s\" ei leitud."
+
+#: trac/db/sqlite_backend.py:256
+#, python-format
+msgid ""
+"The user %(user)s requires read _and_ write permissions to the database file"
+" %(path)s and the directory it is located in."
+msgstr "Kasutaja %(user)s vajab lugemis- _ja_ kirjutamisõigusi andmebaasile %(path)s ning kataloogile kus ta asub."
+
+#: trac/mimeview/api.py:675 trac/mimeview/api.py:686
+#, python-format
+msgid "No available MIME conversions from %(old)s to %(new)s"
+msgstr "MIME teisendusi %(old)s -> %(new)s ei ole saadaval"
+
+#: trac/mimeview/api.py:801
+#, python-format
+msgid "HTML preview using %(renderer)s failed (%(err)s)"
+msgstr "%(renderer)s kasutamine HTML-eelvaateks ebaõnnestus (%(err)s)"
+
+#: trac/mimeview/api.py:831
+#, python-format
+msgid "Can't use %(annotator)s annotator: %(error)s"
+msgstr "Ei saa kasutada %(annotator)s annotaatorit: %(error)s "
+
+#: trac/mimeview/api.py:1080 trac/templates/error.html:148
+msgid "Line"
+msgstr "Rida"
+
+#: trac/mimeview/api.py:1080
+msgid "Line numbers"
+msgstr "Reanumbrid"
+
+#: trac/mimeview/patch.py:172
+#, python-format
+msgid "new file %(new)s"
+msgstr "Uus fail %(new)s"
+
+#: trac/mimeview/patch.py:176
+#, python-format
+msgid "deleted file %(deleted)s"
+msgstr "kustutatud fail %(deleted)s "
+
+#: trac/mimeview/patch.py:248
+msgid "this hunk was shorter than expected"
+msgstr "see kamakas oli lühem kui oodatud"
+
+#: trac/mimeview/pygments.py:126 trac/prefs/templates/prefs_pygments.html:9
+msgid "Syntax Highlighting"
+msgstr "Süntaksi esiletõstmine"
+
+#: trac/mimeview/pygments.py:135 trac/prefs/web_ui.py:143
+msgid "Your preferences have been saved."
+msgstr "Teie eelistused on salvestatud."
+
+#: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
+msgid "Preferences"
+msgstr "Eelistused"
+
+#: trac/prefs/web_ui.py:75
+msgid "Unknown preference panel"
+msgstr "Tundmatu eelistuspaneel"
+
+#: trac/prefs/web_ui.py:87 trac/prefs/templates/prefs_datetime.html:10
+msgid "Date & Time"
+msgstr "Kuupäev ja kellaaeg"
+
+#: trac/prefs/web_ui.py:88 trac/prefs/templates/prefs_keybindings.html:10
+msgid "Keyboard Shortcuts"
+msgstr "Kiirklahvid"
+
+#: trac/prefs/web_ui.py:90 trac/prefs/templates/prefs_language.html:10
+msgid "Language"
+msgstr "Keel"
+
+#: trac/prefs/web_ui.py:92 trac/prefs/templates/prefs_advanced.html:9
+msgid "Advanced"
+msgstr "Edasijõudnutele"
+
+#: trac/prefs/templates/prefs.html:10
+msgid "Preferences:"
+msgstr "Eelistused:"
+
+#: trac/prefs/templates/prefs.html:17
+msgid ""
+"This page lets you customize your personal settings for this site.\n"
+"      These settings are stored on the server and are identified by a session\n"
+"      key stored in a browser cookie. That cookie allows your settings to be\n"
+"      restored on subsequent visits."
+msgstr "See lehekülg laseb sul seadistada oma isiklikud eelistused.\n      Need seadistused säilitatakse serveris ning on identifitseeritavad seansi-\n      võtme järgi mis salvestatakse brauseriküpsises. See küpsis laseb su seadistused järgnevatel külastustel\n      uuesti laadida."
+
+#: trac/prefs/templates/prefs.html:33
+msgid "Save changes"
+msgstr "Salvesta muudatused"
+
+#: trac/prefs/templates/prefs_advanced.html:14
+msgid "Session key:"
+msgstr "Seansivõti:"
+
+#: trac/prefs/templates/prefs_advanced.html:18
+msgid ""
+"The session key is used to identify stored custom\n"
+"      settings and session data on the server. Although it is\n"
+"      automatically generated by default, you may change it to something\n"
+"      easier to remember at any time if you wish to load your settings\n"
+"      in a different web browser."
+msgstr "Seansivõtit kasutatakse isiklike seadistuste\n      ja muude seansiandmete salvestamiseks serveris. \nKuigi see\n      genereeritakse vaikimisi automaatselt, võid sa ta muuta selle millekski\n      kergemini meeldejäetavamaks igal ajal, kui sa soovid laadida oma seadistused\n      mingis teises veebibrauseris."
+
+#: trac/prefs/templates/prefs_advanced.html:26
+msgid "Restore session:"
+msgstr "Taasta seanss:"
+
+#: trac/prefs/templates/prefs_advanced.html:29
+msgid "Load"
+msgstr "Lae"
+
+#: trac/prefs/templates/prefs_advanced.html:30
+msgid ""
+"You may load a previously created session by entering the\n"
+"      corresponding session key below. This lets you share settings between\n"
+"      multiple computers and web browsers."
+msgstr "Sa võid laadida eelnevalt loodud seansi sisestades\n      vastava võtme alla lahtrisse. Nii saab jagada seadistusi\n      mitmete arvutite ja brauserite vahel."
+
+#: trac/prefs/templates/prefs_datetime.html:16
+msgid "Time zone:"
+msgstr "Ajavöönd:"
+
+#: trac/prefs/templates/prefs_datetime.html:18
+msgid "Default time zone"
+msgstr "Vaikimisi ajavöönd"
+
+#: trac/prefs/templates/prefs_datetime.html:25
+msgid ""
+"Configuring your time zone will result in all\n"
+"      dates and times displayed on this site to use your time zone\n"
+"      instead of that of the server."
+msgstr "Ajavööndi seadistamise tulemuseks on, et\n      kõik kuupäevad ja ajad siin keskkonnas kasutavad sinu ajavööndit\n      serveri oma asemel."
+
+#: trac/prefs/templates/prefs_datetime.html:31
+#, python-format
+msgid "Example: The current time is [1:%(time)s] (UTC)."
+msgstr "Näide: praegune aeg on [1: %(time)s] (UTC)."
+
+#: trac/prefs/templates/prefs_datetime.html:34
+#, python-format
+msgid ""
+"In your time zone %(tz)s, this would be displayed as\n"
+"            [1:%(formatted)s]."
+msgstr "Sinu ajavööndis %(tz)s näidatakse seda järgnevalt:\n            [1:%(formatted)s]."
+
+#: trac/prefs/templates/prefs_datetime.html:40
+#, python-format
+msgid ""
+"In the default time zone, this would be displayed as\n"
+"            [1:%(formatted)s]."
+msgstr "Vaikimisi ajavööndis näidatakse seda järgnevalt:\n            [1:%(formatted)s]."
+
+#: trac/prefs/templates/prefs_datetime.html:47
+msgid ""
+"Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean Time (GMT).[1:]\n"
+"        A positive offset is used to indicate a timezone at the east of Greenwich, i.e. ahead of Universal Time."
+msgstr "Märkus: Universal Co-ordinated Time (UTC) on tuntud ka kui Greenwich Mean Time (GMT).[1:]\n        Positiivse täisarvuga offseti kasutatakse ajatsooni märgistamiseks, mis jääb Greenwich'ist itta, e. mis on universaalajast ees."
+
+#: trac/prefs/templates/prefs_general.html:15
+msgid "Full name:"
+msgstr "Täisnimi:"
+
+#: trac/prefs/templates/prefs_general.html:20
+msgid "Email address:"
+msgstr "E-posti aadress:"
+
+#: trac/prefs/templates/prefs_general.html:26
+msgid ""
+"This information is used to automatically populate some forms\n"
+"        on this site with your contact details."
+msgstr "Seda informatsiooni kasutatakse osade vormide automaatseks täitmiseks\n        sinu kontaktinfoga."
+
+#: trac/prefs/templates/prefs_general.html:30
+msgid ""
+"This information is used to associate your login name with your\n"
+"        email address and full name, which is used for email\n"
+"        notification and RSS feeds, for example."
+msgstr "Seda informatsiooni kasutatakse su kasutajanime seostamiseks sinu\n        e-posti aadressi ja täisnimega, mida kasutatakse näiteks\n        e-posti märguannetes ja RSS voogudes."
+
+#: trac/prefs/templates/prefs_keybindings.html:18
+msgid "Enable access keys"
+msgstr "Luba kiirklahvid"
+
+#: trac/prefs/templates/prefs_keybindings.html:21
+msgid ""
+"This site provides keyboard shortcuts for\n"
+"      faster access to certain functions of this site. As these shortcuts can\n"
+"      cause conflicts with shortcuts provided by the desktop system or\n"
+"      web browser, they are disabled by default. See\n"
+"      [1:TracAccessibility]\n"
+"      for more information on access keys."
+msgstr "Käesolev veebikeskkond pakub kiirklahve\n      keskkonna funktsioonidele kiiremaks kasutamiseks. Kuna need kiirklahvid võivad\n      põhjustada operatsioonisüsteemi või veebibrauseri kiirklahvidega konflikte\n      , on nad vaikimisi keelatud. Vaata\n      [1:TracAccessibility]\n      kiirklahvide kohta lisainformatsiooni saamiseks."
+
+#: trac/prefs/templates/prefs_language.html:15
+msgid "Language:"
+msgstr "Keel:"
+
+#: trac/prefs/templates/prefs_language.html:17
+msgid "default language"
+msgstr "vaikimisi keel"
+
+#: trac/prefs/templates/prefs_language.html:23
+msgid ""
+"Configuring your language will result in all text\n"
+"      displayed on this site to use your language instead of that of the\n"
+"      server."
+msgstr "Keele seadistamise tulemuseks on, et\n      kõik tekst siin veebis kasutab sinu keelt\n      serveri oma asemel."
+
+#: trac/prefs/templates/prefs_language.html:27
+msgid ""
+"The 'default language' option uses the browser's\n"
+"        language negotiation feature to select the appropriate language."
+msgstr "'Vaikimisi keel' valik kasutab sinu brauseri\n        automaatset keelevalikuoskust."
+
+#: trac/prefs/templates/prefs_pygments.html:36
+msgid ""
+"The Pygments syntax highlighter can be used with\n"
+"      different coloring styles."
+msgstr "Pygments süntaksi esiletõstjat võib kasutada\n      erinevate värviskeemidega."
+
+#: trac/prefs/templates/prefs_pygments.html:38
+msgid "Style:"
+msgstr "Stiil:"
+
+#: trac/prefs/templates/prefs_pygments.html:43
+msgid "Preview:"
+msgstr "Eelvaade:"
+
+#: trac/search/web_ui.py:63 trac/search/templates/search.html:10
+#: trac/search/templates/search.html:23 trac/search/templates/search.html:28
+#: trac/templates/theme.html:29
+msgid "Search"
+msgstr "Otsi"
+
+#: trac/search/web_ui.py:153
+#, python-format
+msgid "Browse repository path %(path)s"
+msgstr "Sirvi hoidlat %(path)s "
+
+#: trac/search/web_ui.py:193
+#, python-format
+msgid ""
+"Search query too short. Query must be at least %(num)s characters long."
+msgstr "Otsingupäring on liiga lühike. Päring peab olema vähemalt %(num)s märgi pikkune."
+
+#: trac/search/web_ui.py:232 trac/ticket/query.py:762
+#: trac/ticket/report.py:397
+msgid "Next Page"
+msgstr "Järgmine leht"
+
+#: trac/search/web_ui.py:238 trac/ticket/query.py:767
+#: trac/ticket/report.py:400
+msgid "Previous Page"
+msgstr "Eelmine leht"
+
+#: trac/search/templates/search.html:10 trac/search/templates/search.html:40
+#: trac/ticket/templates/query_results.html:20
+#: trac/ticket/templates/report_view.html:79
+msgid "Results"
+msgstr "Tulemused"
+
+#: trac/search/templates/search.html:48
+#, python-format
+msgid "Quickjump to %(name)s"
+msgstr "Kiirhüpe %(name)s "
+
+#: trac/search/templates/search.html:56
+#, python-format
+msgid "By %(author)s"
+msgstr "%(author)s järgi"
+
+#: trac/search/templates/search.html:65
+#: trac/ticket/templates/report_view.html:87
+#: trac/ticket/templates/report_view.html:193
+msgid "No matches found."
+msgstr "Ei leitud ühtegi."
+
+#: trac/search/templates/search.html:69
+msgid ""
+"[1:Note:] See [2:TracSearch]\n"
+"        for help on searching."
+msgstr "[1:Note:] Vaata [2:TracSearch]\n        otsingu kohta abi saamiseks."
+
+#: trac/templates/about.html:26
+msgid "Trac: Integrated SCM & Project Management"
+msgstr "Trac: Integreeritud koodi- &amp; ja projektihaldus"
+
+#: trac/templates/about.html:30
+msgid ""
+"Trac is a web-based software project management and bug/issue\n"
+"        tracking system emphasizing ease of use and low ceremony.\n"
+"        It provides an integrated Wiki, an interface to version control\n"
+"        systems, and a number of convenient ways to stay on top of events\n"
+"        and changes within a project."
+msgstr "Trac on veebipõhine tarkvaraprojekti haldus- ja probleemi-\n        lahendussüsteem, mille rõhuasetus on kasutamise lihtsusel.\n        Olemas on integreeritud wiki, kasutajaliides välistele versioonikontrolli-\n        süsteemidele, ning mitmed mugavad variandid projekti oluliste sündmuste ja muudatustega\n        kursis püsimiseks."
+
+#: trac/templates/about.html:36
+msgid ""
+"Trac is distributed under the modified BSD License.[1:]\n"
+"        The complete text of the license can be found\n"
+"        [2:online]\n"
+"        as well as in the [3:COPYING] file included in the distribution."
+msgstr "Trac kasutab modifitseeritud BSD litsentsi.[1:]\n        Kogu litsentsi teksti saab lugeda\n        [2:online]\n        ning [3:COPYING] failist, mis tarkvarapaketiga kaasas on."
+
+#: trac/templates/about.html:41
+msgid "python powered"
+msgstr "python powered"
+
+#: trac/templates/about.html:44
+msgid ""
+"Please visit the Trac open source project:\n"
+"        [1:http://trac.edgewall.org/]"
+msgstr "Külasta Trac avatud lähtekoodiga projekti:\n        [1:http://trac.edgewall.org/]"
+
+#: trac/templates/about.html:46
+msgid ""
+"Copyright © 2003-2010\n"
+"        [1:Edgewall Software]"
+msgstr "Copyright © 2003-2010\n        [1:Edgewall Software]"
+
+#: trac/templates/about.html:54
+msgid "System Information"
+msgstr "Süsteemi informatsioon"
+
+#: trac/templates/about.html:64
+msgid "Installed Plugins"
+msgstr "Paigaldatud lisamoodulid"
+
+#: trac/templates/about.html:72 trac/templates/error.html:192
+#: trac/web/main.py:602
+msgid "N/A"
+msgstr "ei ole saadaval"
+
+#: trac/templates/about.html:83
+msgid "Section"
+msgstr "Jagu"
+
+#: trac/templates/about.html:85 trac/templates/error.html:160
+msgid "Value"
+msgstr "Väärtus"
+
+#: trac/templates/attach_file_form.html:15
+msgid "Attach file"
+msgstr "Manusta fail"
+
+#: trac/templates/attachment.html:12
+msgid "– Attachment"
+msgstr "- Manus"
+
+#: trac/templates/attachment.html:13
+msgid "– Attachments"
+msgstr "- Manused"
+
+#: trac/templates/attachment.html:14
+#, python-format
+msgid "%(filename)s on %(parent)s – Attachment"
+msgstr "%(filename)s on %(parent)s – Manus"
+
+#: trac/templates/attachment.html:29
+#, python-format
+msgid "Add Attachment to [1:%(parent)s]"
+msgstr "Lisa manus [1:%(parent)s]"
+
+#: trac/templates/attachment.html:33
+#, python-format
+msgid "(size limit %(value)s)"
+msgstr "(mahupiirang %(value)s)"
+
+#: trac/templates/attachment.html:37
+msgid "Attachment Info"
+msgstr "Manuse info"
+
+#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:366
+#: trac/wiki/templates/wiki_edit_form.html:46
+msgid "Your email or username:"
+msgstr "Sinu e-post või kasutajanimi:"
+
+#: trac/templates/attachment.html:46
+msgid "Description of the file (optional):"
+msgstr "Faili kirjeldus (valikuline):"
+
+#: trac/templates/attachment.html:52
+msgid "Replace existing attachment of the same name"
+msgstr "Asenda olemasolevad samanimelised manused"
+
+#: trac/templates/attachment.html:62
+msgid "Add attachment"
+msgstr "Lisa manus"
+
+#: trac/templates/attachment.html:70
+msgid "Are you sure you want to delete this attachment?"
+msgstr "Oled sa kindel, et soovid seda manust kustutada?"
+
+#: trac/templates/attachment.html:77 trac/templates/attachment.html:119
+msgid "Delete attachment"
+msgstr "Kustuta manus"
+
+#: trac/templates/attachment.html:86
+msgid "Attach another file"
+msgstr "Manusta veel faile"
+
+#: trac/templates/attachment.html:98
+#: trac/templates/list_of_attachments.html:22 trac/templates/macros.html:19
+#: trac/util/text.py:277 trac/versioncontrol/templates/browser.html:110
+#: trac/versioncontrol/templates/dir_entries.html:16
+#, python-format
+msgid "%(size)s bytes"
+msgstr "%(size)s baiti"
+
+#: trac/templates/attachment.html:96
+#, python-format
+msgid ""
+"File %(file)s,\n"
+"                [1:%(size)s]\n"
+"                (added by %(author)s, %(date)s ago)"
+msgstr "Fail %(file)s,\n                [1:%(size)s]\n                (lisas %(author)s, %(date)s eest)"
+
+#: trac/templates/diff_div.html:72
+#, python-format
+msgid ""
+"Property %(name)s\n"
+"                  changed from %(old)s to %(new)s"
+msgstr "Omadus %(name)s\n                  muudetud %(old)s -> %(new)s"
+
+#: trac/templates/diff_div.html:76
+#, python-format
+msgid "Property %(name)s set to %(value)s"
+msgstr "Omadus %(name)s seadistatud %(value)s"
+
+#: trac/templates/diff_div.html:79
+#, python-format
+msgid "Property %(name)s deleted"
+msgstr "Omadus %(name)s kustutatud"
+
+#: trac/templates/diff_div.html:86
+msgid "Differences"
+msgstr "Erinevused"
+
+#: trac/templates/diff_options.html:10
+msgid "View differences"
+msgstr "Vaata erinevusi"
+
+#: trac/templates/diff_options.html:13
+msgid "inline"
+msgstr "ühe voona"
+
+#: trac/templates/diff_options.html:15
+msgid "side by side"
+msgstr "kõrvuti"
+
+#: trac/templates/diff_options.html:18
+msgid ""
+"[1:[2:]\n"
+"             Show]\n"
+"      [3:[4:]\n"
+"             lines around each change]"
+msgstr "[1:[2:]\n             Näita]\n      [3:[4:]\n             rida iga muudatuse ümber]"
+
+#: trac/templates/diff_options.html:28
+msgid "Show the changes in full context"
+msgstr "Näita muudatusi täiskontekstis"
+
+#: trac/templates/diff_options.html:32
+msgid "Ignore:"
+msgstr "Ignoreeri:"
+
+#: trac/templates/diff_options.html:36
+msgid "Blank lines"
+msgstr "Tühjad read"
+
+#: trac/templates/diff_options.html:41
+msgid "Case changes"
+msgstr "Tähesuuruste muutused"
+
+#: trac/templates/diff_options.html:46
+msgid "White space changes"
+msgstr "Tühikumuutused"
+
+#: trac/templates/diff_options.html:50
+#: trac/ticket/templates/milestone_view.html:57
+#: trac/ticket/templates/query.html:210
+#: trac/ticket/templates/report_view.html:49
+#: trac/ticket/templates/roadmap.html:29
+#: trac/timeline/templates/timeline.html:31
+#: trac/versioncontrol/templates/revisionlog.html:67
+msgid "Update"
+msgstr "Uuenda"
+
+#: trac/templates/diff_view.html:18
+#, python-format
+msgid ""
+"Changes between\n"
+"          [1:Version %(old)s] and\n"
+"          [2:Version %(new)s] of\n"
+"          [3:%(name)s]"
+msgstr "Muudatused\n          [3:%(name)s]\n          [1:Version %(old)s] ja\n          [2:Version %(new)s] vahel"
+
+#: trac/templates/diff_view.html:23
+#, python-format
+msgid ""
+"Changes between\n"
+"          [1:Initial Version] and\n"
+"          [2:Version %(new)s] of\n"
+"          [3:%(name)s]"
+msgstr "Muudatused\n          [3:%(name)s]\n          [1:Initial Version] ja\n          [2:Version %(new)s] vahel"
+
+#: trac/templates/diff_view.html:28
+#, python-format
+msgid ""
+"Changes from\n"
+"          [1:Version %(new)s] of\n"
+"          [2:%(name)s]"
+msgstr "Muudatused alates\n          [2:%(name)s]\n          [1:Version %(new)s]"
+
+#: trac/templates/diff_view.html:43
+#: trac/versioncontrol/templates/changeset.html:136
+msgid "Timestamp:"
+msgstr "Ajatempel:"
+
+#: trac/templates/diff_view.html:45 trac/templates/diff_view.html:53
+#: trac/templates/diff_view.html:59
+msgid "(multiple changes)"
+msgstr "(mitmed muudatused)"
+
+#: trac/templates/diff_view.html:47
+#, python-format
+msgid "%(date)s (%(duration)s ago)"
+msgstr "%(date)s (%(duration)s eest)"
+
+#: trac/templates/diff_view.html:55
+#, python-format
+msgid "(IP: %(ipnr)s)"
+msgstr "(IP: %(ipnr)s)"
+
+#: trac/templates/diff_view.html:57
+#: trac/ticket/templates/ticket_notify_email.txt:21
+msgid "Comment:"
+msgstr "Kommentaar:"
+
+#: trac/templates/diff_view.html:65
+#: trac/versioncontrol/templates/changeset.html:198
+#: trac/versioncontrol/templates/revisionlog.html:73
+msgid "Legend:"
+msgstr "Legend:"
+
+#: trac/templates/diff_view.html:67
+#: trac/versioncontrol/templates/changeset.html:200
+msgid "Unmodified"
+msgstr "Muutmata"
+
+#: trac/templates/diff_view.html:68
+#: trac/versioncontrol/templates/changeset.html:201
+#: trac/versioncontrol/templates/revisionlog.html:75
+msgid "Added"
+msgstr "Lisatud"
+
+#: trac/templates/diff_view.html:69
+#: trac/versioncontrol/templates/changeset.html:202
+#: trac/versioncontrol/templates/revisionlog.html:77
+msgid "Removed"
+msgstr "Eemaldatud"
+
+#: trac/templates/diff_view.html:70 trac/ticket/api.py:325
+#: trac/versioncontrol/templates/changeset.html:204
+#: trac/versioncontrol/templates/revisionlog.html:79 trac/wiki/admin.py:200
+msgid "Modified"
+msgstr "Muudetud"
+
+#: trac/templates/error.html:10 trac/templates/index.html:18
+#: trac/web/main.py:524
+msgid "Error"
+msgstr "Viga"
+
+#: trac/templates/error.html:65
+msgid "Create"
+msgstr "Loo"
+
+#: trac/templates/error.html:80
+msgid "Oops…"
+msgstr "Oih..."
+
+#: trac/templates/error.html:82
+msgid "Trac detected an internal error:"
+msgstr "Trac avastas sisemise vea:"
+
+#: trac/templates/error.html:87
+msgid ""
+"There was an internal error in Trac.\n"
+"                It is recommended that you notify your local\n"
+"                [1:\n"
+"                    Trac administrator] with the information needed to\n"
+"                reproduce the issue."
+msgstr "Trac'is toimus sisemine viga.\n                Soovitatav on oma kohaliku\n                [1:\n                    Trac administrator] poole pöörduda ja edastada informatsiooni mille abil\n                saaks vea uuesti esile kutsuda."
+
+#: trac/templates/error.html:95
+#, python-format
+msgid "To that end, you could %(create)s a ticket."
+msgstr "Selleks võib %(create)s sedeli."
+
+#: trac/templates/error.html:97
+msgid "The action that triggered the error was:"
+msgstr "Tegevus, mis põhjustas vea oli:"
+
+#: trac/templates/error.html:102
+msgid "This is probably a local installation issue."
+msgstr "See on ilmselt kohalik paigaldusprobleem."
+
+#: trac/templates/error.html:103
+#, python-format
+msgid ""
+"You should %(create)s a ticket at the admin Trac to report\n"
+"                    the issue."
+msgstr "Peaksid %(create)s sedeli admin'i Trac'is juhtumi\n                    raporteerimiseks."
+
+#: trac/templates/error.html:109
+msgid "Found a bug in Trac?"
+msgstr "Leidsid Trac'ist vea?"
+
+#: trac/templates/error.html:110
+msgid ""
+"If you think this should work and you can reproduce the problem,\n"
+"              you should consider creating a bug report."
+msgstr "Kui arvad, et see peaks töötama ja oskad viga uuesti esile kutsuda,\n              kaalu vearaporti loomist."
+
+#: trac/templates/error.html:113
+#, python-format
+msgid "Note that the %(name)s plugin seems to be involved."
+msgstr "Pane tähele, et %(name)s lisamoodul tundub olevat seotud."
+
+#: trac/templates/error.html:116
+msgid "Note that the following plugins seem to be involved:"
+msgstr "Pange tähele, et järgmised lisamoodulid näivad olevat seotud:"
+
+#: trac/templates/error.html:120
+msgid "Please report this issue to the plugin maintainer."
+msgstr "Palun teavitage lisamooduli hooldajat sellest probleemist."
+
+#: trac/templates/error.html:122
+msgid ""
+"Before you do that, though, please first try\n"
+"                [1:[2:searching]\n"
+"                for similar issues], as it is quite likely that this problem\n"
+"                has been reported before. For questions about installation\n"
+"                and configuration of Trac or its plugins, please try the\n"
+"                [3:mailing list]\n"
+"                instead of creating a ticket."
+msgstr "Enne selle tegemist, palun proovi\n                [1:[2:searching]\n                sarnaste juhtumite], sest on üpris tõenäoline,\n                et seda viga on varem raporteeritud. Trac'i ja selle lisamoodulite installeerimise\n                ja konfigureerimise küsimuste esitamiseks, kasuta \n                sedeli loomise asemel\n                [3:mailing list]."
+
+#: trac/templates/error.html:131
+#, python-format
+msgid ""
+"Otherwise, please %(create)s a new bug report\n"
+"                describing the problem and explain how to reproduce it."
+msgstr "Muul juhul, palun %(create)s uus vearaport milles\n                kirjelda probleemi ja seleta kuidas viga esile kutsuda."
+
+#: trac/templates/error.html:135
+msgid "Python Traceback"
+msgstr "Python Traceback"
+
+#: trac/templates/error.html:136
+msgid "Most recent call last:"
+msgstr "Kõige hilisem funktsiooni väljakutse viimasena:"
+
+#: trac/templates/error.html:140
+#, python-format
+msgid ""
+"[1:File \"%(file)s\",\n"
+"                        line [2:%(line)s], in]\n"
+"                        [3:%(function)s]"
+msgstr "[1:Fail \"%(file)s\",\n                        rida [2:%(line)s], funktsioonis]\n                        [3:%(function)s]"
+
+#: trac/templates/error.html:146
+msgid "Code fragment:"
+msgstr "Koodifragment:"
+
+#: trac/templates/error.html:158
+msgid "Local variables:"
+msgstr "Kohalikud muutujad:"
+
+#: trac/templates/error.html:172
+#, python-format
+msgid "File \"%(file)s\", line %(line)s, in %(function)s"
+msgstr "Fail \"%(file)s\", rida %(line)s, funktsioonis %(function)s"
+
+#: trac/templates/error.html:175
+msgid "Switch to plain text view"
+msgstr "Lülita lihttekstivaatesse"
+
+#: trac/templates/error.html:178
+msgid "System Information:"
+msgstr "Süsteemi informatsioon:"
+
+#: trac/templates/error.html:186
+msgid "Enabled Plugins:"
+msgstr "Lubatud lisamoodulid:"
+
+#: trac/templates/error.html:202
+msgid "TracGuide"
+msgstr "TracGuide"
+
+#: trac/templates/error.html:202
+msgid "— The Trac User and Administration Guide"
+msgstr "- Trac'i kasutamis- ja haldusjuhend"
+
+#: trac/templates/history_view.html:16
+#, python-format
+msgid "Change History for [1:%(name)s]"
+msgstr "[1:%(name)s] muudatuste ajalugu"
+
+#: trac/templates/history_view.html:22 trac/templates/history_view.html:55
+#: trac/versioncontrol/templates/diff_form.html:58
+#: trac/versioncontrol/templates/revisionlog.html:88
+#: trac/versioncontrol/templates/revisionlog.html:182
+msgid "View changes"
+msgstr "Vaata muudatusi"
+
+#: trac/templates/history_view.html:24
+msgid "Change history"
+msgstr "Muuda ajalugu"
+
+#: trac/templates/history_view.html:28 trac/ticket/admin.py:440
+#: trac/ticket/api.py:297
+msgid "Version"
+msgstr "Versioon"
+
+#: trac/templates/history_view.html:31
+msgid "Comment"
+msgstr "Kommentaar"
+
+#: trac/templates/history_view.html:43
+msgid "View this version"
+msgstr "Vaata seda versiooni"
+
+#: trac/templates/history_view.html:46
+#, python-format
+msgid "IP-Address: %(ipnr)s"
+msgstr "IP-aadress: %(ipnr)s "
+
+#: trac/templates/index.html:8 trac/templates/index.html:12
+msgid "Available Projects"
+msgstr "Saadavad projektid"
+
+#: trac/templates/layout.html:21
+#, python-format
+msgid "Search %(project)s"
+msgstr "Otsi %(project)s"
+
+#: trac/templates/layout.html:50
+msgid "Download in other formats:"
+msgstr "Lae alla teistes vormingutes:"
+
+#: trac/templates/list_of_attachments.html:19
+msgid "View attachment"
+msgstr "Vaata manust"
+
+#: trac/templates/list_of_attachments.html:18
+#, python-format
+msgid ""
+"[1:%(file)s]\n"
+"      [2:[3:]]\n"
+"       ([4:%(size)s]) -\n"
+"      added by [5:%(author)s] %(date)s ago."
+msgstr "[1:%(file)s]\n      [2:[3:]]\n       ([4:%(size)s]) -\n      [5:%(author)s] lisas %(date)s eest."
+
+#: trac/templates/list_of_attachments.html:29
+#: trac/templates/list_of_attachments.html:40
+#: trac/ticket/templates/ticket.html:389
+msgid "Attachments"
+msgstr "Manused"
+
+#: trac/templates/macros.html:37 trac/templates/macros.html:38
+msgid "Previous"
+msgstr "Eelmine"
+
+#: trac/templates/macros.html:47 trac/templates/macros.html:48
+msgid "Next"
+msgstr "Järgmine"
+
+#: trac/templates/preview_file.html:15
+msgid "(The file is empty)"
+msgstr "(Fail on tühi)"
+
+#: trac/templates/preview_file.html:19
+#, python-format
+msgid ""
+"[1:HTML preview not available], since the file size exceeds %(size)s bytes."
+msgstr "[1:HTML preview not available], kuna faili suurus ületab %(size)s baiti."
+
+#: trac/templates/preview_file.html:22
+msgid ""
+"[1:HTML preview not available], since no preview renderer could handle it."
+msgstr "[1:HTML preview not available], kuna ükski eelvaaterenderdaja ei osanud seda dokumenti käsitleda."
+
+#: trac/templates/preview_file.html:26
+msgid "Try [1:downloading] the file instead."
+msgstr "Proovi selle asemel faili [1:downloading]."
+
+#: trac/templates/progress_bar.html:26
+#, python-format
+msgid "%(count)s/%(total)s %(title)s"
+msgstr "%(count)s/%(total)s %(title)s"
+
+#: trac/templates/progress_bar.html:36
+#, python-format
+msgid "Number of %(unit)s:"
+msgstr "%(unit)s arv:"
+
+#: trac/templates/progress_bar.html:40
+#, python-format
+msgid ""
+"[1:[2:%(title)s:]]\n"
+"          [3:[4:%(count)s]]"
+msgstr "[1:[2:%(title)s:]]\n          [3:[4:%(count)s]]"
+
+#: trac/templates/progress_bar.html:47
+#, python-format
+msgid ""
+"[1:[2:Total:]]\n"
+"      [3:[4:%(count)s]]"
+msgstr "[1:[2:Total:]]\n      [3:[4:%(count)s]]"
+
+#: trac/templates/theme.html:27
+msgid "Search:"
+msgstr "Otsi:"
+
+#: trac/templates/theme.html:40
+msgid "Context Navigation"
+msgstr "Konteksti navigatsioon"
+
+#: trac/templates/theme.html:50
+msgid "Warning:"
+msgstr "Hoiatus:"
+
+#: trac/templates/theme.html:69
+#, python-format
+msgid ""
+"Powered by [1:[2:Trac %(version)s]][3:]\n"
+"        By [4:Edgewall Software]."
+msgstr "Powered by [1:[2:Trac %(version)s]][3:]\n        By [4:Edgewall Software]."
+
+#: trac/ticket/admin.py:35
+msgid "(Undefined)"
+msgstr "(Määratlemata)"
+
+#: trac/ticket/admin.py:46
+msgid "Ticket System"
+msgstr "Sedelisüsteem"
+
+#: trac/ticket/admin.py:111
+#, python-format
+msgid "The component \"%(name)s\" has been added."
+msgstr "Komponent \"%(name)s\" on lisatud."
+
+#: trac/ticket/admin.py:116 trac/ticket/model.py:846 trac/ticket/model.py:867
+msgid "Invalid component name."
+msgstr "Vigane komponendi nimi."
+
+#: trac/ticket/admin.py:117
+#, python-format
+msgid "Component %(name)s already exists."
+msgstr "Komponent %(name)s on juba olemas."
+
+#: trac/ticket/admin.py:124
+msgid "No component selected"
+msgstr "Ühtki komponenti ei ole valitud"
+
+#: trac/ticket/admin.py:132
+msgid "The selected components have been removed."
+msgstr "Valitud komponendid on eemaldatud."
+
+#: trac/ticket/admin.py:240 trac/ticket/api.py:295
+#: trac/ticket/templates/milestone_view.html:10
+#: trac/ticket/templates/milestone_view.html:23
+msgid "Milestone"
+msgstr "Verstapost"
+
+#: trac/ticket/admin.py:270 trac/ticket/roadmap.py:667
+msgid "Completion date may not be in the future"
+msgstr "Tööde lõpptähtaeg ei tohi olla tulevikus"
+
+#: trac/ticket/admin.py:272
+msgid "Invalid Completion Date"
+msgstr "Vigane lõppkuupäev"
+
+#: trac/ticket/admin.py:299
+#, python-format
+msgid "The milestone \"%(name)s\" has been added."
+msgstr "Verstapost \"%(name)s\" on lisatud."
+
+#: trac/ticket/admin.py:304 trac/ticket/model.py:982 trac/ticket/model.py:1006
+msgid "Invalid milestone name."
+msgstr "Vigane verstaposti nimi."
+
+#: trac/ticket/admin.py:305
+#, python-format
+msgid "Milestone %(name)s already exists."
+msgstr "Verstapost %(name)s on juba olemas."
+
+#: trac/ticket/admin.py:313
+msgid "No milestone selected"
+msgstr "Ühtegi verstaposti pole valitud"
+
+#: trac/ticket/admin.py:321
+msgid "The selected milestones have been removed."
+msgstr "Valitud verstapost on eemaldatud."
+
+#: trac/ticket/admin.py:481
+#, python-format
+msgid "The version \"%(name)s\" has been added."
+msgstr "Versioon \"%(name)s\" on lisatud."
+
+#: trac/ticket/admin.py:486 trac/ticket/model.py:1124
+#: trac/ticket/model.py:1144
+msgid "Invalid version name."
+msgstr "Vigane versiooni nimi."
+
+#: trac/ticket/admin.py:487
+#, python-format
+msgid "Version %(name)s already exists."
+msgstr "Versioon %(name)s on juba olemas."
+
+#: trac/ticket/admin.py:494
+msgid "No version selected"
+msgstr "Ühtegi versiooni pole valitud"
+
+#: trac/ticket/admin.py:502
+msgid "The selected versions have been removed."
+msgstr "Valitud versioonid on eemaldatud."
+
+#: trac/ticket/admin.py:560
+msgid "Time"
+msgstr "Aeg"
+
+#: trac/ticket/admin.py:629
+#, python-format
+msgid "The %(field)s value \"%(name)s\" has been added."
+msgstr "Väärtus \"%(name)s\" lisati väljale %(field)s."
+
+#: trac/ticket/admin.py:635
+#, python-format
+msgid "Invalid %(type)s value."
+msgstr "Vigane %(type)s väärtus."
+
+#: trac/ticket/admin.py:637
+#, python-format
+msgid "%(type)s value \"%(name)s\" already exists"
+msgstr "%(type)s väärtus \"%(name)s\" on juba olemas"
+
+#: trac/ticket/admin.py:644
+#, python-format
+msgid "No %s selected"
+msgstr "Ühtegi %s ei ole valitud"
+
+#: trac/ticket/admin.py:652
+#, python-format
+msgid "The selected %(field)s values have been removed."
+msgstr "%(field)s valitud väärtused on kustutatud."
+
+#: trac/ticket/admin.py:674
+msgid ""
+"Error writing to trac.ini, make sure it is writable by the web server. The "
+"default value has not been saved."
+msgstr "Viga trac.ini kirjutamisel, kontrolli, et see oleks veebiserveri poolt kirjutatav. Vaikimisi väärtus ei ole salvestatud."
+
+#: trac/ticket/admin.py:686
+msgid "Order numbers must be unique"
+msgstr "Järjekorranumbrid peavad olema unikaalsed"
+
+#: trac/ticket/admin.py:748
+msgid "Possible Values"
+msgstr "Võimalikud väärtused"
+
+#: trac/ticket/admin.py:770
+#, python-format
+msgid "Invalid up/down value: %(value)s"
+msgstr "Vigane üles/alla väärtus %(value)s"
+
+#: trac/ticket/admin.py:791 trac/ticket/api.py:294
+msgid "Priority"
+msgstr "Prioriteet"
+
+#: trac/ticket/admin.py:791
+msgid "Priorities"
+msgstr "Prioriteedid"
+
+#: trac/ticket/admin.py:797 trac/ticket/api.py:299
+msgid "Resolution"
+msgstr "Resolutsioon"
+
+#: trac/ticket/admin.py:797
+msgid "Resolutions"
+msgstr "Resolutsioonid"
+
+#: trac/ticket/admin.py:803 trac/ticket/api.py:298
+msgid "Severity"
+msgstr "Tõsidus"
+
+#: trac/ticket/admin.py:803
+msgid "Severities"
+msgstr "Tõsidusastmed"
+
+#: trac/ticket/admin.py:809
+msgid "Ticket Type"
+msgstr "Sedeli tüüp"
+
+#: trac/ticket/admin.py:809
+msgid "Ticket Types"
+msgstr "Sedeli tüübid"
+
+#: trac/ticket/admin.py:837
+msgid "<number> must be a number"
+msgstr "<number> peab olema number"
+
+#: trac/ticket/admin.py:842
+#, python-format
+msgid "Ticket #%(num)s and all associated data removed."
+msgstr "Sedel #%(num)s ja kõik seotud andmed on kustutatud."
+
+#: trac/ticket/api.py:277
+msgid "Summary"
+msgstr "Kokkuvõte"
+
+#: trac/ticket/api.py:279 trac/ticket/templates/ticket.html:362
+msgid "Reporter"
+msgstr "Raporteerija"
+
+#: trac/ticket/api.py:292 trac/versioncontrol/admin.py:112
+#: trac/versioncontrol/templates/admin_repositories.html:125
+msgid "Type"
+msgstr "Tüüp"
+
+#: trac/ticket/api.py:293
+msgid "Status"
+msgstr "Olek"
+
+#: trac/ticket/api.py:318
+msgid "Keywords"
+msgstr "Märksõnad"
+
+#: trac/ticket/api.py:319
+msgid "Cc"
+msgstr "Cc"
+
+#: trac/ticket/api.py:323
+msgid "Created"
+msgstr "Loodud"
+
+#: trac/ticket/api.py:483
+#, python-format
+msgid "Comment %(cnum)s for Ticket #%(id)s"
+msgstr "Sedeli #%(id)s kommentaar %(cnum)s"
+
+#: trac/ticket/api.py:504
+#, python-format
+msgid "Ticket #%(shortname)s"
+msgstr "Sedel #%(shortname)s"
+
+#: trac/ticket/default_workflow.py:233
+msgid "Current state no longer exists"
+msgstr "Praegune olek ei eksisteeri enam"
+
+#: trac/ticket/default_workflow.py:235
+msgid "The ticket will be disowned"
+msgstr "Sedelilt eemaldatakse omanik"
+
+#: trac/ticket/default_workflow.py:253 trac/ticket/default_workflow.py:272
+#, python-format
+msgid "to %(owner)s"
+msgstr "%(owner)s-le"
+
+#: trac/ticket/default_workflow.py:255 trac/ticket/default_workflow.py:275
+#, python-format
+msgid "The owner will be changed from %(current_owner)s"
+msgstr "Omanik vahetub: %(current_owner)s ->"
+
+#: trac/ticket/default_workflow.py:263
+#, python-format
+msgid "to %(owner)s "
+msgstr "%(owner)s "
+
+#: trac/ticket/default_workflow.py:265
+#, python-format
+msgid "The owner will be changed from %(current_owner)s to %(selected_owner)s"
+msgstr "Omanik vahetub: %(current_owner)s -> %(selected_owner)s"
+
+#: trac/ticket/default_workflow.py:280
+#, python-format
+msgid "The owner will be changed from %(current_owner)s to %(authname)s"
+msgstr "Omanik vahetub: %(current_owner)s -> %(authname)s"
+
+#: trac/ticket/default_workflow.py:290
+msgid ""
+"Your workflow attempts to set a resolution but none is defined "
+"(configuration issue, please contact your Trac admin)."
+msgstr "Sinu töövoog üritab määrata lahendust, kuid ühtegi resolutsiooni ei ole defineeritud (konfiguratsiooni probleem, palun kontakteeru oma Trac'i administraatoriga)."
+
+#: trac/ticket/default_workflow.py:298 trac/ticket/default_workflow.py:308
+#, python-format
+msgid "as %(resolution)s"
+msgstr "kui %(resolution)s"
+
+#: trac/ticket/default_workflow.py:300
+#, python-format
+msgid "The resolution will be set to %(name)s"
+msgstr "Lahenduseks määratakse %(name)s"
+
+#: trac/ticket/default_workflow.py:311
+msgid "The resolution will be set"
+msgstr "Resolutsiooniks seatakse"
+
+#: trac/ticket/default_workflow.py:313
+msgid "The resolution will be deleted"
+msgstr "Resolutsioon kustutatakse"
+
+#: trac/ticket/default_workflow.py:316
+#, python-format
+msgid "as %(status)s "
+msgstr "kui %(status)s "
+
+#: trac/ticket/default_workflow.py:320
+#, python-format
+msgid "Next status will be '%(name)s'"
+msgstr "Järgmine olek on '%(name)s'"
+
+#: trac/ticket/model.py:114
+#, python-format
+msgid "Ticket %(id)s does not exist."
+msgstr "Sedelit %(id)s ei eksisteeri."
+
+#: trac/ticket/model.py:115
+msgid "Invalid ticket number"
+msgstr "Vigane sedeli number"
+
+#: trac/ticket/model.py:152
+msgid "Multi-values fields not supported yet"
+msgstr "Multi-väärtustega väljad ei ole veel toetatud"
+
+#: trac/ticket/model.py:663
+#, python-format
+msgid "%(type)s %(name)s does not exist."
+msgstr "%(type)s %(name)s ei eksisteeri."
+
+#: trac/ticket/model.py:707 trac/ticket/model.py:734
+#, python-format
+msgid "Invalid %(type)s name."
+msgstr "Vigane %(type)s nimi."
+
+#: trac/ticket/model.py:811
+#, python-format
+msgid "Component %(name)s does not exist."
+msgstr "Komponent %(name)s ei eksisteerig."
+
+#: trac/ticket/model.py:926
+#, python-format
+msgid "Milestone %(name)s does not exist."
+msgstr "Verstapost %(name)s ei eksisteeri."
+
+#: trac/ticket/model.py:927
+msgid "Invalid milestone name"
+msgstr "Vigane verstaposti nimi"
+
+#: trac/ticket/model.py:1069
+msgid "Open (by due date)"
+msgstr "Avatud (tähtaja järgi)"
+
+#: trac/ticket/model.py:1070
+msgid "Open (no due date)"
+msgstr "Avatud (tähtaeg pudub)"
+
+#: trac/ticket/model.py:1073
+msgid "Closed"
+msgstr "Suletud"
+
+#: trac/ticket/model.py:1089
+#, python-format
+msgid "Version %(name)s does not exist."
+msgstr "Versioon %(name)s ei eksisteeri."
+
+#: trac/ticket/query.py:55
+msgid "Invalid query constraint value"
+msgstr "Vigane päring piirangu väärtus"
+
+#: trac/ticket/query.py:89
+#, python-format
+msgid "Query page %(page)s is invalid."
+msgstr "Vigane päringu leht: %(page)s."
+
+#: trac/ticket/query.py:104
+#, python-format
+msgid "Query max %(max)s is invalid."
+msgstr "Päringu parameeter max %(max)s on vigane."
+
+#: trac/ticket/query.py:160
+msgid "Query filter requires field and constraints separated by a \"=\""
+msgstr "Päringu filter nõuab välja ja piirangute eraldamist märgiga \"=\""
+
+#: trac/ticket/query.py:173
+msgid "Query filter requires field name"
+msgstr "Päringu filter nõuab välja nime"
+
+#: trac/ticket/query.py:306
+#, python-format
+msgid "Page %(page)s is beyond the number of pages in the query"
+msgstr "Lehekülg %(page)s on suurem kui päringus olevate lehekülgede arv"
+
+#: trac/ticket/query.py:561
+#, python-format
+msgid "Invalid ticket id list: %(value)s"
+msgstr "Vigane sedeli id loetelu: %(value)s"
+
+#: trac/ticket/query.py:661 trac/ticket/query.py:669
+msgid "contains"
+msgstr "contains"
+
+#: trac/ticket/query.py:662 trac/ticket/query.py:670
+msgid "doesn't contain"
+msgstr "ei sisalda"
+
+#: trac/ticket/query.py:663
+msgid "begins with"
+msgstr "algab"
+
+#: trac/ticket/query.py:664
+msgid "ends with"
+msgstr "lõppeb"
+
+#: trac/ticket/query.py:665 trac/ticket/query.py:673 trac/ticket/query.py:677
+msgid "is"
+msgstr "on"
+
+#: trac/ticket/query.py:666 trac/ticket/query.py:674 trac/ticket/query.py:678
+msgid "is not"
+msgstr "ei ole"
+
+#: trac/ticket/query.py:708 trac/ticket/query.py:714
+msgid "Ticket"
+msgstr "Sedel"
+
+#: trac/ticket/query.py:775 trac/ticket/report.py:406
+#, python-format
+msgid "Page %(num)d"
+msgstr "Lehekülg %(num)d"
+
+#: trac/ticket/query.py:824 trac/ticket/report.py:273
+#: trac/ticket/report.py:560 trac/ticket/web_ui.py:130
+#: trac/timeline/web_ui.py:214 trac/versioncontrol/web_ui/log.py:298
+msgid "RSS Feed"
+msgstr "RSS voog"
+
+#: trac/ticket/query.py:826 trac/ticket/report.py:275
+#: trac/ticket/report.py:562 trac/ticket/web_ui.py:126
+msgid "Comma-delimited Text"
+msgstr "Komaeraldatud tekst"
+
+#: trac/ticket/query.py:828 trac/ticket/report.py:277
+#: trac/ticket/report.py:564 trac/ticket/web_ui.py:128
+msgid "Tab-delimited Text"
+msgstr "Tab-eraldatud tekst"
+
+#: trac/ticket/query.py:850 trac/ticket/report.py:72
+msgid "View Tickets"
+msgstr "Sirvi sedeleid"
+
+#: trac/ticket/query.py:1057 trac/ticket/query.py:1068
+#: trac/ticket/report.py:133
+msgid "Custom Query"
+msgstr "Oma päring"
+
+#: trac/ticket/query.py:1067 trac/ticket/report.py:123
+#: trac/ticket/report.py:124 trac/ticket/report.py:126
+#: trac/ticket/templates/report_list.html:10
+#: trac/ticket/templates/report_list.html:15
+msgid "Available Reports"
+msgstr "Saadaolevad raportid"
+
+#: trac/ticket/query.py:1157
+#, python-format
+msgid "[Error: %(error)s]"
+msgstr "[Viga: %(error)s]"
+
+#: trac/ticket/query.py:1291
+msgid "No results"
+msgstr "Tulemusi ei ole"
+
+#: trac/ticket/query.py:1309
+#, python-format
+msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
+msgstr "päringule %(query)s vastavad %(groupvalue)s %(groupname)s sedelid"
+
+#: trac/ticket/query.py:1332
+#, python-format
+msgid "%(groupvalue)s %(groupname)s tickets:"
+msgstr "%(groupvalue)s %(groupname)s sedelid:"
+
+#: trac/ticket/report.py:159
+msgid "The report has been created."
+msgstr "Raport on loodud."
+
+#: trac/ticket/report.py:172
+#, python-format
+msgid "The report {%(id)d} has been deleted."
+msgstr "Raport {%(id)d} on kustutatud."
+
+#: trac/ticket/report.py:199
+#, python-format
+msgid "Delete Report {%(num)s} %(title)s"
+msgstr "Kustutat raport {%(num)s} %(title)s"
+
+#: trac/ticket/report.py:204 trac/ticket/report.py:217
+#: trac/ticket/report.py:296
+#, python-format
+msgid "Report {%(num)s} does not exist."
+msgstr "Raportit {%(num)s} ei eksisteeri."
+
+#: trac/ticket/report.py:205 trac/ticket/report.py:218
+#: trac/ticket/report.py:297
+msgid "Invalid Report Number"
+msgstr "Vigane raporti number"
+
+#: trac/ticket/report.py:230
+msgid "Create New Report"
+msgstr "Loo uus raport"
+
+#: trac/ticket/report.py:234
+#, python-format
+msgid "Edit Report {%(num)d} %(title)s"
+msgstr "Muuda raportit {%(num)d} %(title)s"
+
+#: trac/ticket/report.py:302
+#, python-format
+msgid "Report failed: %(error)s"
+msgstr "Raport ebaõnnestus: %(error)s"
+
+#: trac/ticket/report.py:317
+#, python-format
+msgid "When specified, the report number should be \"%(num)s\"."
+msgstr "Raporti numbri määramisel peaks see olema \"%(num)s\"."
+
+#: trac/ticket/report.py:388
+#, python-format
+msgid "Report execution failed: %(error)s"
+msgstr "Raporti käivitamine ebaõnnestus: %(error)s"
+
+#: trac/ticket/report.py:568
+msgid "SQL Query"
+msgstr "SQL päring"
+
+#: trac/ticket/report.py:592
+#, python-format
+msgid "The following arguments are missing: %(args)s"
+msgstr "Puuduvad järgnevad argumendid: %(args)s"
+
+#: trac/ticket/report.py:606
+#, python-format
+msgid "Report {%(num)s} has no SQL query."
+msgstr "Raportil {%(num)s} puudub SQL päring."
+
+#: trac/ticket/report.py:636
+#, python-format
+msgid "Query parameter \"sort=%(sort_col)s\"  is invalid"
+msgstr "Päringu parameeter \"sort=%(sort_col)s\"  on vigane"
+
+#: trac/ticket/roadmap.py:205
+msgid "ticket status"
+msgstr "sedeli olek"
+
+#: trac/ticket/roadmap.py:205
+msgid "tickets"
+msgstr "sedelid"
+
+#: trac/ticket/roadmap.py:215
+#, python-format
+msgid ""
+"'%(group1)s' and '%(group2)s' milestone groups both are declared to be "
+"\"catch-all\" groups. Please check your configuration."
+msgstr "'%(group1)s' ja '%(group2)s' verstapostigrupid on mõlemad määratud \"catch-all\" gruppideks. Palun kontrolli oma konfiguratsiooni."
+
+#: trac/ticket/roadmap.py:231
+#, python-format
+msgid ""
+"'%(groupname)s' milestone group reused status '%(status)s' already taken by "
+"other groups. Please check your configuration."
+msgstr "'%(groupname)s' verstapostigrupp üritab kasutab olekut '%(status)s' mis on juba teiste gruppide kasutuses. Palun kontrolli oma konfiguratsiooni."
+
+#: trac/ticket/roadmap.py:314 trac/ticket/roadmap.py:437
+#: trac/ticket/roadmap.py:571 trac/ticket/templates/roadmap.html:10
+#: trac/ticket/templates/roadmap.html:15
+msgid "Roadmap"
+msgstr "Tegevusplaan"
+
+#: trac/ticket/roadmap.py:364
+msgid "iCalendar"
+msgstr "iCalendar"
+
+#: trac/ticket/roadmap.py:446 trac/ticket/roadmap.py:860
+#, python-format
+msgid "Milestone %(name)s"
+msgstr "Verstapost %(name)s"
+
+#: trac/ticket/roadmap.py:464
+#, python-format
+msgid "Ticket #%(num)s: %(summary)s"
+msgstr "Sedel #%(num)s: %(summary)s"
+
+#: trac/ticket/roadmap.py:525
+msgid "Milestones reached"
+msgstr "Saavutatud verstapostid"
+
+#: trac/ticket/roadmap.py:553
+#, python-format
+msgid "Milestone %(name)s completed"
+msgstr "Verstapost %(name)s valmis"
+
+#: trac/ticket/roadmap.py:613
+#, python-format
+msgid "The milestone \"%(name)s\" has been deleted."
+msgstr "Verstapost \"%(name)s\" on kustutatud."
+
+#: trac/ticket/roadmap.py:655
+#, python-format
+msgid "Milestone \"%(name)s\" already exists, please choose another name."
+msgstr "Verstapost \"%(name)s\" on juba olemas, palun vali teine nimi."
+
+#: trac/ticket/roadmap.py:658
+msgid "You must provide a name for the milestone."
+msgstr "Verstapostile peab nime panema."
+
+#: trac/ticket/web_ui.py:55
+msgid "Invalid Ticket"
+msgstr "Vigane sedel"
+
+#: trac/ticket/web_ui.py:152 trac/ticket/templates/ticket.html:14
+msgid "New Ticket"
+msgstr "Uus sedel"
+
+#: trac/ticket/web_ui.py:168
+msgid "id can't be set for a new ticket request."
+msgstr "Uue sedeli päringus ei saa id-d määrata."
+
+#: trac/ticket/web_ui.py:217 trac/ticket/web_ui.py:268
+#: trac/versioncontrol/web_ui/changeset.py:1026
+#, python-format
+msgid "%(title)s: %(message)s"
+msgstr "%(title)s: %(message)s"
+
+#: trac/ticket/web_ui.py:231
+msgid "Tickets opened and closed"
+msgstr "Avatud ja suletud sedelid"
+
+#: trac/ticket/web_ui.py:233
+msgid "Ticket updates"
+msgstr "Sedelite muudatused"
+
+#: trac/ticket/web_ui.py:239
+msgid "created"
+msgstr "loodud"
+
+#: trac/ticket/web_ui.py:240
+msgid "reopened"
+msgstr "uuesti avatud"
+
+#: trac/ticket/web_ui.py:241
+msgid "closed"
+msgstr "suletud"
+
+#: trac/ticket/web_ui.py:242
+msgid "updated"
+msgstr "ajakohastatud"
+
+#: trac/ticket/web_ui.py:262 trac/ticket/web_ui.py:1069
+#, python-format
+msgid "%(labels)s changed"
+msgid_plural "%(labels)s changed"
+msgstr[0] "%(labels)s muudetud"
+msgstr[1] "%(labels)s muudetud"
+
+#: trac/ticket/web_ui.py:348
+#, python-format
+msgid "Ticket %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Sedel %(ticketref)s (%(summary)s) %(verb)s"
+
+#: trac/ticket/web_ui.py:503
+#, python-format
+msgid "The action \"%(name)s\" is not available."
+msgstr "Tegevus \"%(name)s\" ei ole kättesaadaval."
+
+#: trac/ticket/web_ui.py:529
+#, python-format
+msgid ""
+"Please review your configuration, probably starting with %(section)s in your"
+" %(tracini)s."
+msgstr "Palun kontrolli oma konfiguratsiooni, arvatavasti alates %(section)s oma %(tracini)s."
+
+#: trac/ticket/web_ui.py:583 trac/ticket/web_ui.py:800
+#, python-format
+msgid "Ticket #%(id)s"
+msgstr "Sedel #%(id)s"
+
+#: trac/ticket/web_ui.py:634
+msgid "Previous Ticket"
+msgstr "Eelmine sedel"
+
+#: trac/ticket/web_ui.py:634
+msgid "Next Ticket"
+msgstr "Järgmine sedel"
+
+#: trac/ticket/web_ui.py:635
+msgid "Back to Query"
+msgstr "Tagasi päringusse"
+
+#: trac/ticket/web_ui.py:717 trac/ticket/web_ui.py:866
+#: trac/ticket/web_ui.py:874
+msgid "Ticket History"
+msgstr "Sedeli ajalugu"
+
+#: trac/ticket/web_ui.py:721 trac/ticket/web_ui.py:921
+#, python-format
+msgid "Back to Ticket #%(num)s"
+msgstr "Tagasi sedelile #%(num)s"
+
+#: trac/ticket/web_ui.py:763
+msgid "No differences to show"
+msgstr "Erinevused puuduvad"
+
+#: trac/ticket/web_ui.py:806 trac/ticket/web_ui.py:863
+#: trac/ticket/web_ui.py:871 trac/ticket/web_ui.py:942
+#: trac/ticket/web_ui.py:987 trac/ticket/web_ui.py:994 trac/wiki/web_ui.py:431
+#: trac/wiki/web_ui.py:437 trac/wiki/web_ui.py:626 trac/wiki/web_ui.py:640
+#, python-format
+msgid "Version %(num)s"
+msgstr "Versioon %(num)s"
+
+#: trac/ticket/web_ui.py:809 trac/ticket/web_ui.py:945
+msgid "Initial Version"
+msgstr "Esialgne versioon"
+
+#: trac/ticket/web_ui.py:809 trac/ticket/web_ui.py:945
+msgid "initial"
+msgstr "esialgne"
+
+#: trac/ticket/web_ui.py:828
+#, python-format
+msgid "Property %(label)s %(rendered)s"
+msgstr "Omadus %(label)s %(rendered)s"
+
+#: trac/ticket/web_ui.py:873 trac/ticket/web_ui.py:996
+#: trac/versioncontrol/web_ui/changeset.py:370 trac/wiki/web_ui.py:450
+msgid "Previous Change"
+msgstr "Eelmine muudatus"
+
+#: trac/ticket/web_ui.py:873 trac/ticket/web_ui.py:996
+#: trac/versioncontrol/web_ui/changeset.py:370 trac/wiki/web_ui.py:450
+msgid "Next Change"
+msgstr "Järgmine muudatus"
+
+#: trac/ticket/web_ui.py:879
+msgid "Ticket Diff"
+msgstr "Sedelite erinevused"
+
+#: trac/ticket/web_ui.py:900
+msgid "''Initial version''"
+msgstr "''esialgne versioon''"
+
+#: trac/ticket/web_ui.py:913 trac/ticket/web_ui.py:990
+#: trac/ticket/web_ui.py:997
+msgid "Ticket Comment History"
+msgstr "Sedeli kommentaaride ajalugu"
+
+#: trac/ticket/web_ui.py:915 trac/ticket/web_ui.py:939
+#: trac/ticket/web_ui.py:1004
+#, python-format
+msgid "Ticket #%(num)s, comment %(cnum)d"
+msgstr "Sedel #%(num)s, kommentaar %(cnum)d"
+
+#: trac/ticket/web_ui.py:962
+#, python-format
+msgid "No version %(version)d for comment %(cnum)d on ticket #%(ticket)s"
+msgstr "Kommentaari %(cnum)d version %(version)d sedeli #%(ticket)s puudub"
+
+#: trac/ticket/web_ui.py:1002
+msgid "Ticket Comment Diff"
+msgstr "Sedeli kommentaari erinevused"
+
+#: trac/ticket/web_ui.py:1073
+#, python-format
+msgid "%(labels)s set"
+msgid_plural "%(labels)s set"
+msgstr[0] "%(labels)s set"
+msgstr[1] "%(labels)s set"
+
+#: trac/ticket/web_ui.py:1077
+#, python-format
+msgid "%(labels)s deleted"
+msgid_plural "%(labels)s deleted"
+msgstr[0] "%(labels)s kustutatud"
+msgstr[1] "%(labels)s kustutatud"
+
+#: trac/ticket/web_ui.py:1078 trac/ticket/web_ui.py:1636
+msgid "; "
+msgstr "; "
+
+#: trac/ticket/web_ui.py:1099
+msgid "No permission to edit the ticket description."
+msgstr "Sedeli kirjelduse muutmise õigused puuduvad."
+
+#: trac/ticket/web_ui.py:1105
+msgid "No permission to change the ticket reporter."
+msgstr "Sedeli raporteerija muutmise õigused puuduvad."
+
+#: trac/ticket/web_ui.py:1110
+msgid "No permission to change ticket fields."
+msgstr "Sedeli väljade muutmise õigused puuduvad."
+
+#: trac/ticket/web_ui.py:1119
+msgid "No permissions to add a comment."
+msgstr "Kommentaari lisamiseks puuduvad õigused."
+
+#: trac/ticket/web_ui.py:1125
+msgid ""
+"Sorry, can not save your changes. This ticket has been modified by someone "
+"else since you started"
+msgstr "Muudatusi ei saanud salvestada. Veel keegi teine alustas vahepeal sedeli muutmist"
+
+#: trac/ticket/web_ui.py:1132
+msgid "Tickets must contain a summary."
+msgstr "Sedel peab kokkuvõtet sisaldama."
+
+#: trac/ticket/web_ui.py:1150
+#, python-format
+msgid "field %(name)s must be set"
+msgstr "väli %(name)s peab olema määratud"
+
+#: trac/ticket/web_ui.py:1156
+#, python-format
+msgid "Ticket description is too long (must be less than %(num)s characters)"
+msgstr "Sedeli kirjeldus on liiga pikk (peab olema lühem kui %(num)s tähte)"
+
+#: trac/ticket/web_ui.py:1163
+#, python-format
+msgid "Ticket comment is too long (must be less than %(num)s characters)"
+msgstr "Sedeli kommentaar on liiga pikk (peab olema lühem kui %(num)s tähte)"
+
+#: trac/ticket/web_ui.py:1178
+msgid "Invalid comment threading identifier"
+msgstr "Vigane kommentaari lõimuidentifikaator"
+
+#: trac/ticket/web_ui.py:1185
+#, python-format
+msgid "The ticket field '%(field)s' is invalid: %(message)s"
+msgstr "Sedeli väli '%(field)s' on vigane: %(message)s"
+
+#: trac/ticket/web_ui.py:1204
+#, python-format
+msgid ""
+"The ticket has been created, but an error occurred while sending "
+"notifications: %(message)s"
+msgstr "Sedel sai loodud, aga märguande saatmisel tekkis viga: %(message)s"
+
+#: trac/ticket/web_ui.py:1209
+#, python-format
+msgid ""
+"The ticket %(ticketref)s has been created. You can now attach the desired "
+"files."
+msgstr "Sedel %(ticketref)s on loodud. Nüüd võib selle külge faile manustada."
+
+#: trac/ticket/web_ui.py:1215
+#, python-format
+msgid ""
+"The ticket %(ticketref)s has been created, but you don't have permission to "
+"view it."
+msgstr "Sedel %(ticketref)s on loodud, aga sul ei ole õigusi selle vaatamiseks."
+
+#. TRANSLATOR: The 'change' has been saved... (link)
+#: trac/ticket/web_ui.py:1247
+msgid "change"
+msgstr "muudatus"
+
+#: trac/ticket/web_ui.py:1253
+#, python-format
+msgid ""
+"The %(change)s has been saved, but an error occurred while sending "
+"notifications: %(message)s"
+msgstr "%(change)s on salvestatud, kuid märguannete saatmisel tekkis viga: %(message)s"
+
+#: trac/ticket/web_ui.py:1392
+msgid "Add to Cc"
+msgstr "Lisa Cc:sse"
+
+#: trac/ticket/web_ui.py:1393
+msgid "Remove from Cc"
+msgstr "Kõrvalda Cc:st"
+
+#: trac/ticket/web_ui.py:1394
+msgid "Add/Remove from Cc"
+msgstr "Lisa/Kõrvalda Cc:st"
+
+#: trac/ticket/web_ui.py:1395
+msgid "<Author field>"
+msgstr "<Autori väli>"
+
+#: trac/ticket/web_ui.py:1416 trac/ticket/templates/query.html:103
+msgid "yes"
+msgstr "jah"
+
+#: trac/ticket/web_ui.py:1416 trac/ticket/templates/query.html:106
+msgid "no"
+msgstr "ei"
+
+#: trac/ticket/web_ui.py:1602
+msgid "set"
+msgstr "määratud"
+
+#: trac/ticket/web_ui.py:1602
+msgid "unset"
+msgstr "määramata"
+
+#: trac/ticket/web_ui.py:1605 trac/versioncontrol/templates/changeset.html:189
+#: trac/versioncontrol/templates/revisionlog.txt:12
+msgid "modified"
+msgstr "muutmine"
+
+#. TRANSLATOR: modified ('diff') (link)
+#: trac/ticket/web_ui.py:1610 trac/ticket/templates/ticket.html:180
+#: trac/ticket/templates/ticket_box.html:64 trac/wiki/web_ui.py:722
+msgid "diff"
+msgstr "diff"
+
+#: trac/ticket/web_ui.py:1611
+#, python-format
+msgid "modified (%(diff)s)"
+msgstr "muudetud (%(diff)s)"
+
+#: trac/ticket/web_ui.py:1632
+#, python-format
+msgid "%(items)s added"
+msgid_plural "%(items)s added"
+msgstr[0] "%(items)s lisatud"
+msgstr[1] "%(items)s lisatud"
+
+#: trac/ticket/web_ui.py:1634
+#, python-format
+msgid "%(items)s removed"
+msgid_plural "%(items)s removed"
+msgstr[0] "%(items)s eemaldatud"
+msgstr[1] "%(items)s eemaldatud"
+
+#: trac/ticket/web_ui.py:1643
+#, python-format
+msgid "%(value)s deleted"
+msgstr "%(value)s kustutatud"
+
+#: trac/ticket/web_ui.py:1645
+#, python-format
+msgid "set to %(value)s"
+msgstr "määratud %(value)s"
+
+#: trac/ticket/web_ui.py:1648
+#, python-format
+msgid "changed from %(old)s to %(new)s"
+msgstr "muudetud %(old)s -> %(new)s"
+
+#: trac/ticket/templates/milestone_delete.html:10
+#: trac/ticket/templates/milestone_delete.html:22
+msgid "Delete Milestone"
+msgstr "Kustuta verstapost"
+
+#: trac/ticket/templates/milestone_delete.html:27
+msgid "Are you sure you want to delete this milestone?"
+msgstr "Kas olete kindel, et soovite selle verstaposti kustutada?"
+
+#: trac/ticket/templates/milestone_delete.html:29
+msgid "Retarget associated tickets to milestone"
+msgstr "Suuna seotud sedelid ümber verstapostile"
+
+#: trac/ticket/templates/milestone_delete.html:41
+#: trac/ticket/templates/milestone_view.html:107
+msgid "Delete milestone"
+msgstr "Kustuta verstapost"
+
+#: trac/ticket/templates/milestone_delete.html:45
+msgid ""
+"[1:Note:] See\n"
+"      [2:TracRoadmap] for help on using\n"
+"      the roadmap."
+msgstr "[1:Note:] Vaata\n      [2:TracRoadmap] abi saamiseks\n      tegevusplaani kasutamisel."
+
+#: trac/ticket/templates/milestone_edit.html:11
+#: trac/ticket/templates/milestone_edit.html:43
+msgid "Edit Milestone"
+msgstr "Muuda verstaposti"
+
+#: trac/ticket/templates/milestone_edit.html:12
+#: trac/ticket/templates/milestone_edit.html:44
+msgid "New Milestone"
+msgstr "Uus verstapost"
+
+#: trac/ticket/templates/milestone_edit.html:51
+msgid "Name of the milestone:"
+msgstr "Verstaposti nimi:"
+
+#: trac/ticket/templates/milestone_edit.html:56
+msgid "Schedule"
+msgstr "Ajakava"
+
+#: trac/ticket/templates/milestone_edit.html:83
+msgid "Retarget associated open tickets to milestone:"
+msgstr "Määra seotud avatud sedelid verstapostile:"
+
+#: trac/ticket/templates/milestone_edit.html:104
+#: trac/ticket/templates/ticket.html:398
+#: trac/ticket/templates/ticket_change.html:47
+#: trac/wiki/templates/wiki_edit_form.html:70
+#: trac/wiki/templates/wiki_edit_form.html:75
+msgid "Submit changes"
+msgstr "Edasta muudatused"
+
+#: trac/ticket/templates/milestone_edit.html:105
+msgid "Add milestone"
+msgstr "Lisa verstapost"
+
+#: trac/ticket/templates/milestone_edit.html:110
+#: trac/ticket/templates/milestone_view.html:113
+#: trac/ticket/templates/roadmap.html:79
+msgid ""
+"[1:Note:] See\n"
+"        [2:TracRoadmap] for help on using\n"
+"        the roadmap."
+msgstr "[1:Note:] Vaata\n        [2:TracRoadmap] for help on using\n        the roadmap."
+
+#: trac/ticket/templates/milestone_view.html:11
+msgid "Edit this milestone"
+msgstr "Muuda seda verstaposti"
+
+#: trac/ticket/templates/milestone_view.html:27
+#: trac/ticket/templates/roadmap.html:42
+#, python-format
+msgid "Completed %(duration)s ago (%(date)s)"
+msgstr "Valmis saadud %(duration)s eest (%(date)s)"
+
+#: trac/ticket/templates/milestone_view.html:32
+#: trac/ticket/templates/roadmap.html:47
+#, python-format
+msgid "[1:%(duration)s late] (%(date)s)"
+msgstr "[1:%(duration)s hilinenud] (%(date)s)"
+
+#: trac/ticket/templates/milestone_view.html:37
+#: trac/ticket/templates/roadmap.html:52
+#, python-format
+msgid "Due in %(duration)s (%(date)s)"
+msgstr "Tähtaeg %(duration)s pärast (%(date)s)"
+
+#: trac/ticket/templates/milestone_view.html:41
+#: trac/ticket/templates/roadmap.html:56
+msgid "No date set"
+msgstr "Kuupäeva pole määratud"
+
+#: trac/ticket/templates/milestone_view.html:51
+#, python-format
+msgid "%(stat_title)s by"
+msgstr "%(stat_title)s by"
+
+#: trac/ticket/templates/milestone_view.html:65
+msgid "(none)"
+msgstr "(puudub)"
+
+#: trac/ticket/templates/milestone_view.html:101
+msgid "Edit milestone"
+msgstr "Muuda verstaposti"
+
+#: trac/ticket/templates/query.html:30
+#: trac/ticket/templates/query_results.html:28
+#: trac/ticket/templates/report_view.html:21
+#: trac/ticket/templates/report_view.html:87
+#, python-format
+msgid "%(num)s match"
+msgid_plural "%(num)s matches"
+msgstr[0] "%(num)s vaste"
+msgstr[1] "%(num)s vastet"
+
+#: trac/ticket/templates/query.html:39
+msgid "Filters"
+msgstr "Filtrid"
+
+#: trac/ticket/templates/query.html:40
+msgid "Query filters"
+msgstr "Päringufiltrid"
+
+#: trac/ticket/templates/query.html:46 trac/ticket/templates/query.html:144
+msgid "Or"
+msgstr "Või"
+
+#: trac/ticket/templates/query.html:74
+msgid "or"
+msgstr "või"
+
+#: trac/ticket/templates/query.html:116
+msgid ""
+"[1:between]\n"
+"                            [2:]\n"
+"                            [3:and]\n"
+"                            [4:]"
+msgstr "[1:between]\n                            [2:]\n                            [3:and]\n                            [4:]"
+
+#: trac/ticket/templates/query.html:130
+msgid "And"
+msgstr "Ja"
+
+#: trac/ticket/templates/query.html:163
+msgid "Columns"
+msgstr "Veerud"
+
+#: trac/ticket/templates/query.html:177
+msgid "Group results by"
+msgstr "Grupeeri tulemused"
+
+#: trac/ticket/templates/query.html:188
+msgid "descending"
+msgstr "kahanevalt"
+
+#: trac/ticket/templates/query.html:192
+msgid "Show under each result:"
+msgstr "Näita iga tulemuse all:"
+
+#: trac/ticket/templates/query.html:202
+#: trac/ticket/templates/report_view.html:27
+msgid "Max items per page"
+msgstr "Max arv tulemusi leheküljel"
+
+#: trac/ticket/templates/query.html:224
+#, python-format
+msgid "Edit report {%(id)s} corresponding to this query"
+msgstr "Muuda sellele päringule vastavat raportit {%(id)s}"
+
+#: trac/ticket/templates/query.html:224
+msgid "Edit query"
+msgstr "Muuda päringut"
+
+#: trac/ticket/templates/query.html:233
+msgid "Save query"
+msgstr "Salvesta päring"
+
+#: trac/ticket/templates/query.html:233
+#, python-format
+msgid "Save updated query in report {%(id)s}"
+msgstr "Salvesta uuendatud päring raportis {%(id)s}"
+
+#: trac/ticket/templates/query.html:233
+msgid "Create new report from current query"
+msgstr "Loo sellest päringust uus raport"
+
+#: trac/ticket/templates/query.html:241
+#, python-format
+msgid "Delete report {%(id)s} corresponding to this query"
+msgstr "Kustuta sellele päringule vastav raport {%(id)s}"
+
+#: trac/ticket/templates/query.html:241
+msgid "Delete query"
+msgstr "Kustuta päring"
+
+#: trac/ticket/templates/query.html:248
+msgid ""
+"[1:Note:] See [2:TracQuery]\n"
+"        for help on using queries."
+msgstr "[1:Note:] Vaata [2:TracQuery]\n        päringute kohta abi saamiseks."
+
+#: trac/ticket/templates/query_results.html:35
+msgid "(ascending)"
+msgstr "(kasvavalt)"
+
+#: trac/ticket/templates/query_results.html:35
+msgid "(descending)"
+msgstr "(kahanevalt)"
+
+#: trac/ticket/templates/query_results.html:36
+#: trac/versioncontrol/templates/sortable_th.html:18
+#, python-format
+msgid "Sort by %(col)s %(direction)s"
+msgstr "Sorteeri %(col)s järgi %(direction)s"
+
+#: trac/ticket/templates/query_results.html:45
+msgid "No tickets found"
+msgstr "Ühtegi sedelit ei leitud"
+
+#: trac/ticket/templates/query_results.html:59
+#: trac/ticket/templates/query_results.html:62
+msgid "View ticket"
+msgstr "Vaata sedelit"
+
+#: trac/ticket/templates/query_results.html:67
+#: trac/ticket/templates/report_view.html:170
+msgid "View milestone"
+msgstr "Vaata verstapost"
+
+#: trac/ticket/templates/query_results.html:78
+#, python-format
+msgid ""
+"Reported by [1:%(author)s],\n"
+"                      %(date)s ago."
+msgstr "[1:%(author)s] raporteeris,\n                      %(date)s eest."
+
+#: trac/ticket/templates/query_results.html:85
+msgid "(this ticket)"
+msgstr "(see sedel)"
+
+#: trac/ticket/templates/query_results.html:101
+msgid "(more results for this group on next page)"
+msgstr "(järgmisel leheküljel on veel selle grupi tulemusi)"
+
+#: trac/ticket/templates/report_delete.html:17
+msgid "Are you sure you want to delete this report?"
+msgstr "Kas olete kindel, et soovite kustutada selle raporti?"
+
+#: trac/ticket/templates/report_delete.html:22
+#: trac/ticket/templates/report_list.html:34
+#: trac/ticket/templates/report_view.html:75
+msgid "Delete report"
+msgstr "Kustuta raport"
+
+#: trac/ticket/templates/report_delete.html:26
+#: trac/ticket/templates/report_edit.html:49
+#: trac/ticket/templates/report_list.html:52
+#: trac/ticket/templates/report_view.html:195
+msgid ""
+"[1:Note:]\n"
+"        See [2:TracReports] for help on using and creating reports."
+msgstr "[1:Note:]\n        Vaata [2:TracReports] raportite kasutamise ja loomise kohta abi saamiseks."
+
+#: trac/ticket/templates/report_edit.html:16
+msgid "New Report"
+msgstr "Uus raport"
+
+#: trac/ticket/templates/report_edit.html:21
+msgid "Report Title:"
+msgstr "Raporti nimi:"
+
+#: trac/ticket/templates/report_edit.html:25
+msgid "Description: (you may use [1:WikiFormatting] here)"
+msgstr "Kirjeldus: (siin võib kasutada [1:WikiFormatting])"
+
+#: trac/ticket/templates/report_edit.html:34
+msgid "Error:"
+msgstr "Viga:"
+
+#: trac/ticket/templates/report_edit.html:36
+msgid ""
+"Query for Report: (can be either SQL or, if starting with [1:query:],\n"
+"              a [2:TracQuery] expression)"
+msgstr "Päringu raport: (võib olla SQL või, kui algab prefiksiga [1:query:],\n              [2:TracQuery] väljend)"
+
+#: trac/ticket/templates/report_edit.html:43
+msgid "Save report"
+msgstr "Salvesta raport"
+
+#: trac/ticket/templates/report_list.html:23
+msgid "Report"
+msgstr "Raport"
+
+#: trac/ticket/templates/report_list.html:24 trac/wiki/admin.py:200
+msgid "Title"
+msgstr "Pealkiri"
+
+#: trac/ticket/templates/report_list.html:25
+#: trac/wiki/templates/wiki_edit.html:68
+#: trac/wiki/templates/wiki_edit.html:141
+msgid "Actions"
+msgstr "Tegevused"
+
+#: trac/ticket/templates/report_list.html:30
+#: trac/ticket/templates/report_list.html:31
+#: trac/ticket/templates/report_view.html:121
+msgid "View report"
+msgstr "Vaata raportit"
+
+#: trac/ticket/templates/report_list.html:32
+#: trac/ticket/templates/report_view.html:63
+msgid "Edit report"
+msgstr "Muuda raportit"
+
+#: trac/ticket/templates/report_list.html:33
+#: trac/ticket/templates/ticket.html:148
+#: trac/wiki/templates/wiki_edit.html:124
+msgid "Edit"
+msgstr "Muuda"
+
+#: trac/ticket/templates/report_list.html:38
+msgid "No reports available."
+msgstr "Ühtegi aruannet ei ole kättesaadaval."
+
+#: trac/ticket/templates/report_list.html:47
+msgid "Create new report"
+msgstr "Loo uus raport"
+
+#: trac/ticket/templates/report_view.html:32
+msgid "Arguments"
+msgstr "Argumendid"
+
+#: trac/ticket/templates/report_view.html:33
+msgid "Report arguments"
+msgstr "Raporti argumendid"
+
+#: trac/ticket/templates/report_view.html:69
+msgid "Copy report"
+msgstr "Kopeeri raport"
+
+#: trac/ticket/templates/report_view.html:128
+#: trac/ticket/templates/report_view.html:136
+#, python-format
+msgid "View %(realm)s"
+msgstr "Vaata %(realm)s"
+
+#: trac/ticket/templates/roadmap.html:21
+msgid "Show completed milestones"
+msgstr "Näita valmis saadud verstaposte"
+
+#: trac/ticket/templates/roadmap.html:26
+msgid "Hide milestones with no due date"
+msgstr "Peida tähtajatud verstapostid"
+
+#: trac/ticket/templates/roadmap.html:37
+msgid "Milestone:"
+msgstr "Verstapost:"
+
+#: trac/ticket/templates/roadmap.html:75
+msgid "Add new milestone"
+msgstr "Lisa verstapost"
+
+#: trac/ticket/templates/ticket.html:80
+msgid "Go to the ticket editor"
+msgstr "Mine sedelitoimetajasse"
+
+#: trac/ticket/templates/ticket.html:80
+msgid "Modify"
+msgstr "Muuda"
+
+#: trac/ticket/templates/ticket.html:84
+msgid "Ticket #"
+msgstr "Sedel #"
+
+#: trac/ticket/templates/ticket.html:91
+msgid "at [1:Initial Version]"
+msgstr "versiooniga [1:Initial Version]"
+
+#: trac/ticket/templates/ticket.html:94
+#, python-format
+msgid "at [1:Version %(version)s]"
+msgstr "versiooniga [1:Version %(version)s]"
+
+#: trac/ticket/templates/ticket.html:98
+msgid "Create New Ticket"
+msgstr "Loo uus sedel"
+
+#: trac/ticket/templates/ticket.html:113
+msgid "Change History"
+msgstr "Muudatuste ajalugu"
+
+#: trac/ticket/templates/ticket.html:128 trac/ticket/templates/ticket.html:217
+msgid "in reply to:"
+msgstr "vastuses:"
+
+#: trac/ticket/templates/ticket.html:133
+msgid "follow-up:"
+msgid_plural "follow-ups:"
+msgstr[0] "järelkaja:"
+msgstr[1] "järelkajad:"
+
+#: trac/ticket/templates/ticket.html:148
+#, python-format
+msgid "Edit comment %(cnum)s"
+msgstr "Muuda kommentaari %(cnum)s"
+
+#: trac/ticket/templates/ticket.html:155
+#: trac/ticket/templates/ticket_box.html:73
+msgid "Reply"
+msgstr "Vasta"
+
+#: trac/ticket/templates/ticket.html:155
+#, python-format
+msgid "Reply to comment %(cnum)s"
+msgstr "Vastus kommentaarile %(cnum)s"
+
+#: trac/ticket/templates/ticket.html:162
+#, python-format
+msgid ""
+"Version %(version)s, edited %(date)s ago\n"
+"                      by %(author)s"
+msgstr "Versioon %(version)s, %(author)s muutis\n                      %(date)s eest"
+
+#: trac/ticket/templates/ticket.html:166
+#, python-format
+msgid ""
+"Last edited %(date)s ago\n"
+"                      by %(author)s"
+msgstr "Viimatu muutis %(author)s,\n                       %(date)s eest"
+
+#: trac/ticket/templates/ticket.html:172
+#: trac/versioncontrol/templates/changeset.html:129
+msgid "previous"
+msgstr "eelmine"
+
+#: trac/ticket/templates/ticket.html:176
+msgid "next"
+msgstr "järgmine"
+
+#: trac/ticket/templates/ticket.html:196
+msgid "View ticket fields and description"
+msgstr "Vaata sedeli väljasid ja kirjeldust"
+
+#: trac/ticket/templates/ticket.html:196
+msgid "View"
+msgstr "Vaata"
+
+#: trac/ticket/templates/ticket.html:199
+msgid "Add a comment"
+msgstr "Lisa kommentaar"
+
+#: trac/ticket/templates/ticket.html:203
+msgid ""
+"You may use\n"
+"              [1:WikiFormatting]\n"
+"              here."
+msgstr "Siin võib kasutada\n              [1:WikiFormatting]."
+
+#: trac/ticket/templates/ticket.html:210
+msgid ""
+"Warnings are shown at the [1:top of the page]. The ticket validation\n"
+"            may have failed."
+msgstr "Hoiatusi näidatakse [1:top of the page]. Sedeli valideerimine\n            võis ebaõnnestuda."
+
+#: trac/ticket/templates/ticket.html:220
+#, python-format
+msgid "Changed by %(author)s"
+msgstr "%(author)s muutis"
+
+#: trac/ticket/templates/ticket.html:227
+msgid "Modify Ticket"
+msgstr "Muuda sedelit"
+
+#: trac/ticket/templates/ticket.html:233
+msgid "Change Properties"
+msgstr "Muuda omadusi"
+
+#: trac/ticket/templates/ticket.html:234
+msgid "Properties"
+msgstr "Omadused"
+
+#: trac/ticket/templates/ticket.html:238
+msgid "Summary:"
+msgstr "Kokkuvõte:"
+
+#: trac/ticket/templates/ticket.html:246
+msgid "Reporter:"
+msgstr "Raporteerija:"
+
+#: trac/ticket/templates/ticket.html:258
+msgid ""
+"You may use\n"
+"                          [1:WikiFormatting] here."
+msgstr "Siin võib kasutada\n                          [1:WikiFormatting]."
+
+#: trac/ticket/templates/ticket.html:274
+#: trac/ticket/templates/ticket_box.html:43
+#, python-format
+msgid "%(field)s:"
+msgstr "%(field)s:"
+
+#: trac/ticket/templates/ticket.html:313
+msgid "This checkbox allows you to add or remove yourself from the CC list."
+msgstr "See linnuke võimaldab sul end lisada või eemaldada koopia saajate loetelust."
+
+#: trac/ticket/templates/ticket.html:319
+msgid "Space or comma delimited email addresses and usernames are accepted."
+msgstr "Siia sobivad tühiku või komaga eraldatud e-posti aadressid ja kasutajanimed."
+
+#: trac/ticket/templates/ticket.html:375
+#: trac/wiki/templates/wiki_edit_form.html:50
+msgid "E-mail address and user name can be saved in the [1:Preferences]."
+msgstr "E-posti aadressi ja kasutajanime saab salvestada [1:Preferences]."
+
+#: trac/ticket/templates/ticket.html:383
+msgid "I have files to attach to this ticket"
+msgstr "Mul on faile mida sellele sedelile manustada"
+
+#: trac/ticket/templates/ticket.html:389
+msgid "Go to the list of attachments"
+msgstr "Vaata manuste nimekirja"
+
+#: trac/ticket/templates/ticket.html:397
+#: trac/ticket/templates/ticket_change.html:45
+#: trac/wiki/templates/wiki_edit.html:70
+#: trac/wiki/templates/wiki_edit.html:128
+#: trac/wiki/templates/wiki_edit_form.html:39
+#: trac/wiki/templates/wiki_edit_form.html:68
+msgid "Preview"
+msgstr "Eelvaade"
+
+#: trac/ticket/templates/ticket.html:398
+msgid "Create ticket"
+msgstr "Loo sedel"
+
+#: trac/ticket/templates/ticket.html:403
+msgid ""
+"[1:Note:] See\n"
+"        [2:TracTickets] for help on using\n"
+"        tickets."
+msgstr "[1:Note:] Vaata\n        [2:TracTickets] sedelite kasutamise kohta\n        abi saamiseks."
+
+#: trac/ticket/templates/ticket_box.html:19
+#, python-format
+msgid "Opened %(created)s ago"
+msgstr "Avatud %(created)s eest"
+
+#: trac/ticket/templates/ticket_box.html:20
+#, python-format
+msgid "Last modified %(modified)s ago"
+msgstr "Viimati muudetud %(modified)s eest"
+
+#: trac/ticket/templates/ticket_box.html:21
+msgid "(ticket not yet created)"
+msgstr "(sedel pole veel loodud)"
+
+#: trac/ticket/templates/ticket_box.html:29
+msgid "Reported by:"
+msgstr "Raporteeris:"
+
+#: trac/ticket/templates/ticket_box.html:33
+msgid "Owned by:"
+msgstr "Vastutav isik:"
+
+#: trac/ticket/templates/ticket_box.html:63
+#, python-format
+msgid "(last modified by %(author)s)"
+msgstr "(viimati muutsid: %(author)s)"
+
+#: trac/ticket/templates/ticket_box.html:73
+msgid "Reply, quoting this description"
+msgstr "Vasta, tsiteerides kirjeldust"
+
+#: trac/ticket/templates/ticket_change.html:19
+#, python-format
+msgid ""
+"[1:[2:%(name)s]]\n"
+"          [3:[4:]]\n"
+"          added"
+msgstr "[1:[2:%(name)s]]\n          [3:[4:]]\n          lisatud"
+
+#: trac/ticket/templates/ticket_change.html:26
+#, python-format
+msgid "changed from [1:%(old)s] to [2:%(new)s]"
+msgstr "muudetud [1:%(old)s] -> [2:%(new)s]"
+
+#: trac/ticket/templates/ticket_change.html:29
+#, python-format
+msgid "set to [1:%(value)s]"
+msgstr "väärtuseks määratud [1:%(value)s]"
+
+#: trac/ticket/templates/ticket_change.html:32
+#, python-format
+msgid "[1:%(value)s] deleted"
+msgstr "[1:%(value)s] kustutatud"
+
+#: trac/ticket/templates/ticket_change.html:45
+#, python-format
+msgid "Preview changes to comment %(cnum)s"
+msgstr "Kontrolli kommentaari %(cnum)s muudatuste eelvaadet"
+
+#: trac/ticket/templates/ticket_change.html:47
+#, python-format
+msgid "Submit changes to comment %(cnum)s"
+msgstr "Salvesta kommentaari %(cnum)s muudatused"
+
+#: trac/ticket/templates/ticket_change.html:49
+msgid "Cancel comment edit"
+msgstr "Tühista kommentaari muutmine"
+
+#: trac/ticket/templates/ticket_notify_email.txt:9
+#, python-format
+msgid "Changes (by %(author)s):"
+msgstr "Muudatused (autor: %(author)s):"
+
+#: trac/ticket/templates/ticket_notify_email.txt:15
+#, python-format
+msgid "Description changed by %(author)s:"
+msgstr "Kirjeldust muutis: %(author)s:"
+
+#: trac/ticket/templates/ticket_notify_email.txt:21
+#, python-format
+msgid "Comment (by %(author)s):"
+msgstr "Kommentaar (autor: %(author)s):"
+
+#: trac/ticket/templates/ticket_notify_email.txt:29
+#, python-format
+msgid "Ticket URL: <%(link)s>"
+msgstr "Sedeli URL: <%(link)s>"
+
+#: trac/timeline/web_ui.py:76 trac/timeline/templates/timeline.html:10
+#: trac/timeline/templates/timeline.html:16
+msgid "Timeline"
+msgstr "Ajatelg"
+
+#: trac/timeline/web_ui.py:227 trac/timeline/web_ui.py:235
+msgid "Previous Period"
+msgstr "Eelnev periood"
+
+#: trac/timeline/web_ui.py:234 trac/timeline/web_ui.py:235
+msgid "Next Period"
+msgstr "Järgnev periood"
+
+#: trac/timeline/web_ui.py:295
+#, python-format
+msgid "%(date)s in Timeline"
+msgstr "%(date)s ajateljel"
+
+#. TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
+#: trac/timeline/web_ui.py:342
+msgid "other kinds of events"
+msgstr "teist tüüpi sündmused"
+
+#: trac/timeline/web_ui.py:347
+#, python-format
+msgid "Event provider %(name)s failed for filters %(kinds)s: "
+msgstr "Sündmusepakkuja %(name)s viga filtri %(kinds)s suhtes: "
+
+#: trac/timeline/web_ui.py:350
+#, python-format
+msgid ""
+"You may want to see the %(other_events)s from the Timeline or notify your "
+"Trac administrator about the error (detailed information was written to the "
+"log)."
+msgstr "Võib-olla soovid näha ajatelje teisi sündmusi %(other_events)s või teavita veast oma Trac'i administraatorit (detailne informatsioon kirjutati logisse)."
+
+#: trac/timeline/templates/timeline.html:19
+msgid ""
+"[1:View changes from [2:]] [3:]\n"
+"        and [4:[5:] days back][6:]\n"
+"        [7:done by [8:]]"
+msgstr "[1:View changes from [2:]] [3:]\n        ja [4:[5:] days back][6:]\n        [7:done by [8:]]"
+
+#: trac/timeline/templates/timeline.html:36
+msgid "Today"
+msgstr "Täna"
+
+#: trac/timeline/templates/timeline.html:36
+msgid "Yesterday"
+msgstr "Eile"
+
+#: trac/timeline/templates/timeline.html:42
+#, python-format
+msgid ""
+"[1:%(time)s] %(title)s\n"
+"                  by [2:%(author)s]"
+msgstr "[1:%(time)s] %(title)s\n                  by [2:%(author)s]"
+
+#: trac/timeline/templates/timeline.html:58
+msgid ""
+"[1:Note:] See [2:TracTimeline]\n"
+"        for information about the timeline view."
+msgstr "[1:Note:] Vaata [2:TracTimeline]\n        ajatelje vaate kohta informatsiooni saamiseks."
+
+#: trac/util/datefmt.py:89
+#, python-format
+msgid "%(num)d year"
+msgid_plural "%(num)d years"
+msgstr[0] "%(num)d aasta"
+msgstr[1] "%(num)d aastat"
+
+#: trac/util/datefmt.py:90
+#, python-format
+msgid "%(num)d month"
+msgid_plural "%(num)d months"
+msgstr[0] "%(num)d kuu"
+msgstr[1] "%(num)d kuud"
+
+#: trac/util/datefmt.py:91
+#, python-format
+msgid "%(num)d week"
+msgid_plural "%(num)d weeks"
+msgstr[0] "%(num)d nädal"
+msgstr[1] "%(num)d nädalat"
+
+#: trac/util/datefmt.py:92
+#, python-format
+msgid "%(num)d day"
+msgid_plural "%(num)d days"
+msgstr[0] "%(num)d päev"
+msgstr[1] "%(num)d päeva"
+
+#: trac/util/datefmt.py:93
+#, python-format
+msgid "%(num)d hour"
+msgid_plural "%(num)d hours"
+msgstr[0] "%(num)d tund"
+msgstr[1] "%(num)d tundi"
+
+#: trac/util/datefmt.py:94
+#, python-format
+msgid "%(num)d minute"
+msgid_plural "%(num)d minutes"
+msgstr[0] "%(num)d minut"
+msgstr[1] "%(num)d minutit"
+
+#: trac/util/datefmt.py:113
+#, python-format
+msgid "%(num)i second"
+msgid_plural "%(num)i seconds"
+msgstr[0] "%(num)i sekund"
+msgstr[1] "%(num)i sekundit"
+
+#: trac/util/datefmt.py:258
+#, python-format
+msgid ""
+"\"%(date)s\" is an invalid date, or the date format is not known. Try "
+"\"%(hint)s\" instead."
+msgstr "\"%(date)s\" on vigane kuupäev, või on tegemist tundmatu kuupäevavorminguga. Proovi selle asemel \"%(hint)s\"."
+
+#: trac/util/datefmt.py:260 trac/util/datefmt.py:268
+msgid "Invalid Date"
+msgstr "Vigane kuupäev"
+
+#: trac/util/datefmt.py:266
+#, python-format
+msgid ""
+"The date \"%(date)s\" is outside valid range. Try a date closer to present "
+"time."
+msgstr "Kuupäev \"%(date)s\" on sobivaste vahemikust väljaspool. Proovi kuupäeva, mis on praegusele ajale lähemale."
+
+#: trac/util/presentation.py:255
+#, python-format
+msgid "%(last)d of %(total)d"
+msgstr "%(last)d / %(total)d"
+
+#: trac/util/presentation.py:257
+#, python-format
+msgid "%(start)d - %(stop)d of %(total)d"
+msgstr "%(start)d - %(stop)d / %(total)d"
+
+#: trac/versioncontrol/admin.py:112
+msgid "Alias"
+msgstr "Alias"
+
+#: trac/versioncontrol/admin.py:112
+#: trac/versioncontrol/templates/admin_repositories.html:125
+msgid "Directory"
+msgstr "Kataloog"
+
+#: trac/versioncontrol/admin.py:118
+msgid "Cannot synchronize a single revision on multiple repositories"
+msgstr "Ei saa sünkroonida ühte revisjoni mitmes hoidlas"
+
+#: trac/versioncontrol/admin.py:126 trac/versioncontrol/admin.py:197
+#: trac/versioncontrol/web_ui/browser.py:350
+#: trac/versioncontrol/web_ui/changeset.py:247
+#: trac/versioncontrol/web_ui/changeset.py:1090
+#: trac/versioncontrol/web_ui/log.py:88 trac/versioncontrol/web_ui/log.py:390
+#, python-format
+msgid "Repository '%(repo)s' not found"
+msgstr "Hoidlat '%(repo)s' ei leitud"
+
+#: trac/versioncontrol/admin.py:130
+#, python-format
+msgid "%(rev)s resynced on %(reponame)s."
+msgstr "%(rev)s uuesti sünkroonitud hoidlates %(reponame)s."
+
+#: trac/versioncontrol/admin.py:137
+#, python-format
+msgid "Resyncing repository history for %(reponame)s... "
+msgstr "Sünkroonin uuesti ajalugu hoidlates %(reponame)s... "
+
+#: trac/versioncontrol/admin.py:144
+#, python-format
+msgid "%(num)s revision cached."
+msgid_plural "%(num)s revisions cached."
+msgstr[0] "%(num)s revisjon puhverdatud."
+msgstr[1] "%(num)s revisjoni puhverdatud."
+
+#: trac/versioncontrol/admin.py:146
+msgid "Done."
+msgstr "Valmis."
+
+#: trac/versioncontrol/admin.py:181
+msgid "Version Control"
+msgstr "Versioonikontroll"
+
+#: trac/versioncontrol/admin.py:182
+#: trac/versioncontrol/templates/admin_repositories.html:10
+msgid "Repositories"
+msgstr "Hoidlad"
+
+#: trac/versioncontrol/admin.py:221 trac/versioncontrol/admin.py:263
+#, python-format
+msgid "You should now run %(resync)s to synchronize Trac with the repository."
+msgstr "Peaksid nüüd käivitama %(resync)s sünkroonimaks Trac'i hoidlaga."
+
+#: trac/versioncontrol/admin.py:226
+#, python-format
+msgid ""
+"You may have to run %(resync)s to synchronize Trac with the repository."
+msgstr "Arvatavasti pead käivitama %(resync)s sünkroonimaks Trac'i hoidlaga."
+
+#: trac/versioncontrol/admin.py:234
+#, python-format
+msgid ""
+"You will need to update your post-commit hook to call %(cset_added)s with "
+"the new repository name."
+msgstr "Pead uuendama oma \"post-commit\" haaki mis kutsuks %(cset_added)s hoidla uue nimega."
+
+#: trac/versioncontrol/admin.py:254
+msgid "Missing arguments to add a repository."
+msgstr "Hoidla lisamiseks on mõned argumendid puudu."
+
+#: trac/versioncontrol/admin.py:259
+#, python-format
+msgid "The repository \"%(name)s\" has been added."
+msgstr "Hoidla \"%(name)s\" on lisatud."
+
+#: trac/versioncontrol/admin.py:269
+#, python-format
+msgid ""
+"You should also set up a post-commit hook on the repository to call "
+"%(cset_added)s for each committed changeset."
+msgstr "Samuti peaksid seadistama hoidlale \"post-commit\" haagi mis kutsub %(cset_added)s iga salvestatud kande kohta."
+
+#: trac/versioncontrol/admin.py:282
+#, python-format
+msgid "The alias \"%(name)s\" has been added."
+msgstr "Alias \"%(name)s\" on lisatud."
+
+#: trac/versioncontrol/admin.py:285
+msgid "Missing arguments to add an alias."
+msgstr "Aliase lisamiseks on mõned argumendid puudu."
+
+#: trac/versioncontrol/admin.py:298
+msgid "The selected repositories have been removed."
+msgstr "Märgitud hoidlad on eemaldatud."
+
+#: trac/versioncontrol/admin.py:301
+msgid "No repositories were selected."
+msgstr "Ühtegi hoidlat ei olnud valitud."
+
+#: trac/versioncontrol/admin.py:342
+msgid "The repository directory must be an absolute path."
+msgstr "Hoidla kataloog peab olema absoluutne failisüsteemi asukoht."
+
+#: trac/versioncontrol/admin.py:351
+#, python-format
+msgid ""
+"The repository directory must be located below one of the following "
+"directories: %(dirs)s"
+msgstr "Hoidla kataloog peab olema alamakataloog ühes järgnevatest kataloogidest: %(dirs)s"
+
+#: trac/versioncontrol/api.py:32
+#: trac/versioncontrol/templates/admin_repositories.html:20
+#: trac/versioncontrol/templates/admin_repositories.html:33
+#: trac/versioncontrol/templates/admin_repositories.html:132
+#: trac/versioncontrol/templates/admin_repositories.html:134
+#: trac/versioncontrol/web_ui/browser.py:860
+#: trac/versioncontrol/web_ui/changeset.py:865
+#: trac/versioncontrol/web_ui/changeset.py:1009
+msgid "(default)"
+msgstr "(vaikimisi)"
+
+#: trac/versioncontrol/api.py:183
+#, python-format
+msgid "Invalid key \"%(key)s\""
+msgstr "Vigane võti \"%(key)s\""
+
+#: trac/versioncontrol/api.py:190
+#, python-format
+msgid "You should now run \"repository resync %(name)s\"."
+msgstr "Peaksid nüüd käivitama \"repository resync %(name)s\"."
+
+#: trac/versioncontrol/api.py:193
+#, python-format
+msgid "You may have to run \"repository resync %(name)s\"."
+msgstr "Võib-olla pead nüüd käivitama \"repository resync %(name)s\"."
+
+#: trac/versioncontrol/api.py:201 trac/versioncontrol/api.py:264
+msgid "The repository directory must be absolute"
+msgstr "Hoidla kataloog peab olema absoluutne"
+
+#: trac/versioncontrol/api.py:206
+#, python-format
+msgid "The repository type '%(type)s' is not supported"
+msgstr "'%(type)s'-tüüpi hoidla jaoks ei ole tuge"
+
+#: trac/versioncontrol/api.py:338
+#, python-format
+msgid ""
+"Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the Trac"
+" log for more information."
+msgstr "Ei saanud sünkroonida hoidlaga \"%(name)s\" (%(error)s). Vaata Trac'i logi, lisainformatsioon on seal."
+
+#: trac/versioncontrol/api.py:357
+#, python-format
+msgid "Changeset %(rev)s in %(repo)s"
+msgstr "Muutuskogum %(rev)s hoidlas %(repo)s"
+
+#: trac/versioncontrol/api.py:359
+#, python-format
+msgid "Changeset %(rev)s"
+msgstr "Muutuskogum %(rev)s"
+
+#: trac/versioncontrol/api.py:367
+msgid "directory"
+msgstr "kataloog"
+
+#: trac/versioncontrol/api.py:369
+msgid "file"
+msgstr "fail"
+
+#: trac/versioncontrol/api.py:371
+#, python-format
+msgid " at version %(rev)s"
+msgstr " versioon %(rev)s"
+
+#: trac/versioncontrol/api.py:373
+msgid "path"
+msgstr "tee"
+
+#: trac/versioncontrol/api.py:376
+#, python-format
+msgid " in %(repo)s"
+msgstr " hoidlas %(repo)s"
+
+#. TRANSLATOR: file /path/to/file.py at version 13 in reponame
+#: trac/versioncontrol/api.py:378
+#, python-format
+msgid "%(kind)s %(id)s%(at_version)s%(in_repo)s"
+msgstr "%(kind)s %(id)s%(at_version)s%(in_repo)s"
+
+#: trac/versioncontrol/api.py:381
+#, python-format
+msgid "Repository %(repo)s"
+msgstr "Hoidla %(repo)s"
+
+#: trac/versioncontrol/api.py:687
+#, python-format
+msgid "Unsupported version control system \"%(name)s\": %(error)s"
+msgstr "Mittetoetatud versioonihaldussüsteem \"%(name)s\": %(error)s"
+
+#: trac/versioncontrol/api.py:690
+#, python-format
+msgid ""
+"Unsupported version control system \"%(name)s\": Can't find an appropriate "
+"component, maybe the corresponding plugin was not enabled? "
+msgstr "Mittetoetatud versioonihaldussüsteem \"%(name)s\": sobivat komponenti ei leitud, võib-olla vastav lisamoodul pole lubatud? "
+
+#: trac/versioncontrol/api.py:698
+#, python-format
+msgid "No changeset %(rev)s in the repository"
+msgstr "Muutuskogumit %(rev)s pole hoidlas"
+
+#: trac/versioncontrol/api.py:700
+msgid "No such changeset"
+msgstr "Sellist muutuskogumit ei ole"
+
+#: trac/versioncontrol/api.py:706
+#, python-format
+msgid "No node %(path)s at revision %(rev)s"
+msgstr "Revisjonis %(rev)s puudub sõlm %(path)s"
+
+#: trac/versioncontrol/api.py:708
+#, python-format
+msgid "%(msg)s: No node %(path)s at revision %(rev)s"
+msgstr "%(msg)s: revisjonis %(rev)s puudub sõlm %(path)s"
+
+#: trac/versioncontrol/api.py:710
+msgid "No such node"
+msgstr "Seda sõlme ei ole"
+
+#: trac/versioncontrol/cache.py:149
+msgid ""
+"The 'repository_dir' has changed, a 'trac-admin $ENV repository resync' "
+"operation is needed."
+msgstr "'hoidla_kataloog' on muutunud, vajalik on käivitada 'trac-admin $ENV repository resync'."
+
+#: trac/versioncontrol/svn_authz.py:73
+#, python-format
+msgid "Line %(lineno)d: Entry before first section header"
+msgstr "Rida %(lineno)d: sissekanne enne esimese sektsiooni päist"
+
+#: trac/versioncontrol/svn_authz.py:77
+#, python-format
+msgid "Line %(lineno)d: Invalid entry"
+msgstr "Rida %(lineno)d: vigane sissekanne"
+
+#: trac/versioncontrol/svn_fs.py:277
+#, python-format
+msgid "Subversion >= 1.0 required, found %(version)s"
+msgstr "Subversion >= 1.0 vajalik, leidsin %(version)s"
+
+#: trac/versioncontrol/svn_fs.py:332
+#, python-format
+msgid "%(path)s does not appear to be a Subversion repository."
+msgstr "%(path)s ei paista olevat Subversion-hoidla."
+
+#: trac/versioncontrol/svn_fs.py:339
+#, python-format
+msgid "Couldn't open Subversion repository %(path)s: %(svn_error)s"
+msgstr "Subversion hoidla %(path)s avamine ebaõnnestus: %(svn_error)s"
+
+#: trac/versioncontrol/svn_fs.py:620
+#, python-format
+msgid ""
+"Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s) "
+"and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
+msgstr "Diff'i sobimatus: baasiks on %(oldnode)s (%(oldpath)s revisjonis %(oldrev)s) ning sihtmärk on %(newnode)s (%(newpath)s revisjonis %(newrev)s)."
+
+#: trac/versioncontrol/svn_fs.py:772
+#, python-format
+msgid "svn blame failed on %(path)s: %(error)s"
+msgstr "svn blame ebaõnnestus sõlmes %(path)s: %(error)s"
+
+#: trac/versioncontrol/svn_prop.py:111
+msgid "No svn:externals configured in trac.ini"
+msgstr "svn:externals definitsioonid trac.ini's puuduvad"
+
+#: trac/versioncontrol/svn_prop.py:148
+msgid "merged"
+msgstr "ühendatud"
+
+#: trac/versioncontrol/svn_prop.py:148
+msgid "blocked"
+msgstr "blokeeritud"
+
+#: trac/versioncontrol/svn_prop.py:182
+msgid "non-inheritable"
+msgstr "pärimatu"
+
+#: trac/versioncontrol/svn_prop.py:184
+msgid "merged on the directory itself but not below"
+msgstr "ühendatud kataloogis endas, kuid mitte sellest allpool"
+
+#: trac/versioncontrol/svn_prop.py:200
+msgid "eligible"
+msgstr "sobiv"
+
+#: trac/versioncontrol/svn_prop.py:214
+msgid "(toggle deleted branches)"
+msgstr "(kustutatud harude lüliti)"
+
+#: trac/versioncontrol/svn_prop.py:252
+msgid "View merge source"
+msgstr "Vaata ühendamise lähtekoodi"
+
+#: trac/versioncontrol/svn_prop.py:263
+msgid "No revisions"
+msgstr "Revisjonid puuduvad"
+
+#: trac/versioncontrol/svn_prop.py:270
+#, python-format
+msgid "%(title)s: %(revs)s"
+msgstr "%(title)s: %(revs)s"
+
+#: trac/versioncontrol/svn_prop.py:306
+msgid "merged: "
+msgstr "ühendatud: "
+
+#: trac/versioncontrol/svn_prop.py:306
+msgid "blocked: "
+msgstr "blokeeritud: "
+
+#: trac/versioncontrol/svn_prop.py:307
+msgid "reverse-merged: "
+msgstr "pöörd-ühendatud: "
+
+#: trac/versioncontrol/svn_prop.py:307
+msgid "un-blocked: "
+msgstr "deblokeeritud: "
+
+#: trac/versioncontrol/svn_prop.py:308
+msgid "marked as non-inheritable: "
+msgstr "märgitud pärimatuks: "
+
+#: trac/versioncontrol/svn_prop.py:309
+msgid "unmarked as non-inheritable: "
+msgstr "pärimatuse märgistus eemaldatud: "
+
+#: trac/versioncontrol/svn_prop.py:321
+msgid " (added)"
+msgstr " (lisatud)"
+
+#: trac/versioncontrol/svn_prop.py:358
+msgid "removed"
+msgstr "eemaldatud"
+
+#: trac/versioncontrol/svn_prop.py:361
+msgid " (with no actual effect on merging)"
+msgstr " (ilma tegeliku mõjuta ühendamisele)"
+
+#: trac/versioncontrol/svn_prop.py:362
+#, python-format
+msgid "Property %(prop)s changed"
+msgstr "Omadus %(prop)s muudetud"
+
+#: trac/versioncontrol/templates/admin_repositories.html:14
+msgid "Manage Repositories"
+msgstr "Halda hoidlaid"
+
+#: trac/versioncontrol/templates/admin_repositories.html:24
+msgid "Default:"
+msgstr "Vaikimisi:"
+
+#: trac/versioncontrol/templates/admin_repositories.html:30
+msgid "Repository:"
+msgstr "Hoidla:"
+
+#: trac/versioncontrol/templates/admin_repositories.html:43
+msgid "Modify Repository:"
+msgstr "Muuda hoidlat:"
+
+#: trac/versioncontrol/templates/admin_repositories.html:44
+msgid "View Repository:"
+msgstr "Sirvi hoidlat:"
+
+#: trac/versioncontrol/templates/admin_repositories.html:45
+msgid ""
+"[1:Note:]\n"
+"            This repository is defined in [2:[3:trac.ini]]\n"
+"            and cannot be edited on this page."
+msgstr "[1:Note:]\n            Hoidla on defineeritud [2:[3:trac.ini]]\n            ja seda ei saa sellelt lehelt muuta."
+
+#: trac/versioncontrol/templates/admin_repositories.html:59
+#: trac/versioncontrol/templates/admin_repositories.html:99
+msgid "Directory:"
+msgstr "Kataloog:"
+
+#: trac/versioncontrol/templates/admin_repositories.html:67
+msgid "Hide from repository index"
+msgstr "Peida hoidlate nimekirjast"
+
+#: trac/versioncontrol/templates/admin_repositories.html:93
+msgid "Add Repository:"
+msgstr "Lisa hoidla:"
+
+#: trac/versioncontrol/templates/admin_repositories.html:110
+msgid "Add Alias:"
+msgstr "Lisa alias:"
+
+#: trac/versioncontrol/templates/admin_repositories.html:125
+msgid "Revision"
+msgstr "Revisjon"
+
+#: trac/versioncontrol/templates/admin_repositories.html:137
+#, python-format
+msgid "Alias of %(repo)s"
+msgstr "Hoidla %(repo)s alias"
+
+#: trac/versioncontrol/templates/admin_repositories.html:144
+msgid "Refresh"
+msgstr "Värskenda"
+
+#: trac/versioncontrol/templates/browser.html:13
+#, python-format
+msgid "%(basename)s in %(dirname)s"
+msgstr "%(basename)s kataloogides %(dirname)s"
+
+#: trac/versioncontrol/templates/browser.html:54
+msgid "Default Repository"
+msgstr "Vaikimisi hoidla"
+
+#: trac/versioncontrol/templates/browser.html:61
+msgid "Hint: clear the field to view latest revision"
+msgstr "Vihje: tühjenda väli viimase revisjoni vaatamiseks"
+
+#: trac/versioncontrol/templates/browser.html:61
+msgid "View revision:"
+msgstr "Vaata revisjoni:"
+
+#: trac/versioncontrol/templates/browser.html:71
+msgid "Visit:"
+msgstr "Külasta:"
+
+#: trac/versioncontrol/templates/browser.html:79
+msgid "Go!"
+msgstr "Minek!"
+
+#: trac/versioncontrol/templates/browser.html:79
+msgid "Jump to the chosen preselected path"
+msgstr "Hüppa eelvalitud sõlmele"
+
+#: trac/versioncontrol/templates/browser.html:92
+msgid "Parent Directory"
+msgstr "Ülemkataloog"
+
+#: trac/versioncontrol/templates/browser.html:98
+msgid "No files found"
+msgstr "Ühtegi faili ei leitud"
+
+#: trac/versioncontrol/templates/browser.html:106
+#: trac/wiki/templates/wiki_edit.html:112
+#: trac/wiki/templates/wiki_view.html:32
+msgid "Revision info"
+msgstr "Revisjoni info"
+
+#: trac/versioncontrol/templates/browser.html:108
+#, python-format
+msgid ""
+"Revision [1:%(rev)s],\n"
+"            [2:%(size)s]\n"
+"            checked in by %(author)s, %(date)s ago\n"
+"            ([3:diff])"
+msgstr "Revisjon [1:%(rev)s],\n            [2:%(size)s]\n            %(author)s salvestas %(date)s eest\n            ([3:diff])"
+
+#: trac/versioncontrol/templates/browser.html:140
+#, python-format
+msgid "Property [1:%(name)s] set to %(value)s"
+msgstr "Omadusele [1:%(name)s] on määratud väärtus %(value)s"
+
+#: trac/versioncontrol/templates/browser.html:154
+msgid "Repository Index"
+msgstr "Hoidlate nimekiri"
+
+#: trac/versioncontrol/templates/browser.html:164
+msgid ""
+"[1:Note:] See [2:TracBrowser]\n"
+"        for help on using the repository browser."
+msgstr "[1:Note:] Vaata [2:TracBrowser]\n        hoidlasirvija kohta abiinformatsiooni saamiseks."
+
+#: trac/versioncontrol/templates/browser.html:176
+msgid "View changes..."
+msgstr "Vaata muudatusi..."
+
+#: trac/versioncontrol/templates/browser.html:176
+msgid "Select paths and revs for Diff"
+msgstr "Vali diff'i jaoks teed and revisjonid"
+
+#: trac/versioncontrol/templates/changeset.html:36
+#: trac/versioncontrol/templates/changeset.html:46
+#: trac/versioncontrol/templates/changeset.html:48
+#: trac/versioncontrol/templates/changeset.html:58
+#: trac/versioncontrol/templates/changeset.html:68
+#: trac/versioncontrol/templates/changeset.html:70
+msgid "Show full changeset"
+msgstr "Vaata täielikku muudatuskogumit"
+
+#: trac/versioncontrol/templates/changeset.html:37
+#: trac/versioncontrol/templates/changeset.html:40
+#: trac/versioncontrol/templates/changeset.html:45
+#: trac/versioncontrol/templates/changeset.html:47
+#: trac/versioncontrol/templates/changeset.html:59
+#: trac/versioncontrol/templates/changeset.html:62
+#: trac/versioncontrol/templates/changeset.html:67
+#: trac/versioncontrol/templates/changeset.html:69
+#: trac/versioncontrol/templates/changeset.html:105
+msgid "Show entry in browser"
+msgstr "Vaata kannet brauseris"
+
+#: trac/versioncontrol/templates/changeset.html:35
+#, python-format
+msgid ""
+"Changeset [1:%(new_rev)s] in %(reponame)s\n"
+"              for [2:%(new_path)s]"
+msgstr "Muudatuskogum [1:%(new_rev)s] hoidlas %(reponame)s\n              teel [2:%(new_path)s]"
+
+#: trac/versioncontrol/templates/changeset.html:41
+#: trac/versioncontrol/templates/changeset.html:63
+msgid "Show revision log"
+msgstr "Vaata revisjoniajalugu"
+
+#: trac/versioncontrol/templates/changeset.html:39
+#, python-format
+msgid ""
+"Changes in [1:%(new_path)s]\n"
+"              [2:\\[%(old_rev)s:%(new_rev)s\\]] in %(reponame)s"
+msgstr "Muudatused teel [1:%(new_path)s]\n              [2:\\[%(old_rev)s:%(new_rev)s\\]] hoidlas %(reponame)s"
+
+#: trac/versioncontrol/templates/changeset.html:43
+#, python-format
+msgid ""
+"Changes in %(reponame)s\n"
+"              from [1:%(old_path)s]\n"
+"              at [2:r%(old_rev)s]\n"
+"              to [3:%(new_path)s]\n"
+"              at [4:r%(new_rev)s]"
+msgstr "Muudatused hoidlas %(reponame)s\n              tee [1:%(old_path)s]\n              revisjonis [2:r%(old_rev)s] võrreldes\n              tee [3:%(new_path)s]\n              revisjoniga [4:r%(new_rev)s]"
+
+#: trac/versioncontrol/templates/changeset.html:50
+#, python-format
+msgid "Changeset [1:%(new_rev)s] in %(reponame)s"
+msgstr "Muutuskogum [1:%(new_rev)s] hoidlas %(reponame)s"
+
+#: trac/versioncontrol/templates/changeset.html:57
+#, python-format
+msgid ""
+"Changeset [1:%(new_rev)s]\n"
+"              for [2:%(new_path)s]"
+msgstr "Muutuskogum [1:%(new_rev)s]\n              teel [2:%(new_path)s]"
+
+#: trac/versioncontrol/templates/changeset.html:61
+#, python-format
+msgid ""
+"Changes in [1:%(new_path)s]\n"
+"              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
+msgstr "Muutuskogum teel [1:%(new_path)s]\n              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
+
+#: trac/versioncontrol/templates/changeset.html:65
+#, python-format
+msgid ""
+"Changes\n"
+"              from [1:%(old_path)s]\n"
+"              at [2:r%(old_rev)s]\n"
+"              to [3:%(new_path)s]\n"
+"              at [4:r%(new_rev)s]"
+msgstr "Muutused\n              tee [1:%(old_path)s]\n              revisjonis [2:r%(old_rev)s] võrreldes\n              tee [3:%(new_path)s]\n              revisjoniga [4:r%(new_rev)s]"
+
+#: trac/versioncontrol/templates/changeset.html:72
+#, python-format
+msgid "Changeset [1:%(new_rev)s]"
+msgstr "Muutuskogum [1:%(new_rev)s]"
+
+#: trac/versioncontrol/templates/changeset.html:101
+#, python-format
+msgid "Show what was removed (content at revision %(old_rev)s)"
+msgstr "Näita mida kõrvaldati (revisjoni %(old_rev)s sisu)"
+
+#: trac/versioncontrol/templates/changeset.html:106
+msgid "(root)"
+msgstr "(juurkataloog)"
+
+#: trac/versioncontrol/templates/changeset.html:112
+#, python-format
+msgid "Show original file (revision %(old_rev)s)"
+msgstr "Vaata algset faili (revisjonis %(old_rev)s)"
+
+#: trac/versioncontrol/templates/changeset.html:111
+#, python-format
+msgid ""
+"(%(kind)s from [1:\n"
+"                %(old_path)s])"
+msgstr "(%(kind)s teelt [1:\n                %(old_path)s])"
+
+#: trac/versioncontrol/templates/changeset.html:119
+#: trac/versioncontrol/templates/changeset.html:122
+msgid "Show differences"
+msgstr "Vaata erinevusi"
+
+#: trac/versioncontrol/templates/changeset.html:119
+msgid "view diffs"
+msgstr "vaata erinevusi"
+
+#: trac/versioncontrol/templates/changeset.html:122
+#, python-format
+msgid "%(num)d diff"
+msgid_plural "%(num)d diffs"
+msgstr[0] "%(num)d diff"
+msgstr[1] "%(num)d diffi"
+
+#: trac/versioncontrol/templates/changeset.html:125
+#, python-format
+msgid "%(num)d prop"
+msgid_plural "%(num)d props"
+msgstr[0] "%(num)d omadus"
+msgstr[1] "%(num)d omadusi"
+
+#: trac/versioncontrol/templates/changeset.html:129
+msgid "Show previous version in browser"
+msgstr "Sirvi eelmist versiooni brauseriga"
+
+#: trac/versioncontrol/templates/changeset.html:139
+msgid "(less than one hour ago)"
+msgstr "(vähem kui üks tund tagasi)"
+
+#: trac/versioncontrol/templates/changeset.html:140
+#, python-format
+msgid "(%(age)s ago)"
+msgstr "(%(age)s eest)"
+
+#: trac/versioncontrol/templates/changeset.html:154
+msgid "Message:"
+msgstr "Teade:"
+
+#: trac/versioncontrol/templates/changeset.html:166
+msgid "Location:"
+msgstr "Asukoht:"
+
+#: trac/versioncontrol/templates/changeset.html:170
+msgid "File:"
+msgid_plural "Files:"
+msgstr[0] "Fail"
+msgstr[1] "Failid"
+
+#: trac/versioncontrol/templates/changeset.html:170
+msgid "(No files)"
+msgstr "(Failid puuduvad)"
+
+#: trac/versioncontrol/templates/changeset.html:175
+#, python-format
+msgid "%(num)d added"
+msgid_plural "%(num)d added"
+msgstr[0] "%(num)d lisati"
+msgstr[1] "%(num)d lisatud"
+
+#: trac/versioncontrol/templates/changeset.html:176
+#, python-format
+msgid "%(num)d deleted"
+msgid_plural "%(num)d deleted"
+msgstr[0] "%(num)d kustutati"
+msgstr[1] "%(num)d kustutatud"
+
+#: trac/versioncontrol/templates/changeset.html:177
+#, python-format
+msgid "%(num)d edited"
+msgid_plural "%(num)d edited"
+msgstr[0] "%(num)d muudeti"
+msgstr[1] "%(num)d muudetud"
+
+#: trac/versioncontrol/templates/changeset.html:178
+#, python-format
+msgid "%(num)d copied"
+msgid_plural "%(num)d copied"
+msgstr[0] "%(num)d kopeeriti"
+msgstr[1] "%(num)d kopeeritud"
+
+#: trac/versioncontrol/templates/changeset.html:179
+#, python-format
+msgid "%(num)d moved"
+msgid_plural "%(num)d moved"
+msgstr[0] "%(num)d teisaldati"
+msgstr[1] "%(num)d teisaldatud"
+
+#: trac/versioncontrol/templates/changeset.html:185
+#: trac/versioncontrol/templates/revisionlog.txt:12
+msgid "added"
+msgstr "lisatud"
+
+#: trac/versioncontrol/templates/changeset.html:186
+#: trac/versioncontrol/templates/revisionlog.txt:12
+msgid "deleted"
+msgstr "kustutatud"
+
+#: trac/versioncontrol/templates/changeset.html:187
+#: trac/versioncontrol/templates/revisionlog.txt:12
+msgid "copied"
+msgstr "kopeeritud"
+
+#: trac/versioncontrol/templates/changeset.html:188
+#: trac/versioncontrol/templates/revisionlog.txt:12
+msgid "moved"
+msgstr "teisaldatud"
+
+#: trac/versioncontrol/templates/changeset.html:211
+msgid ""
+"[1:Note:] See [2:TracChangeset]\n"
+"          for help on using the changeset viewer."
+msgstr "[1:Note:] Vaata [2:TracChangeset]\n          muutuskogumite vaate kohta abi saamiseks."
+
+#: trac/versioncontrol/templates/diff_form.html:10
+#: trac/versioncontrol/templates/diff_form.html:21
+msgid "Prepare Diff"
+msgstr "Valmista ette Diff"
+
+#: trac/versioncontrol/templates/diff_form.html:27
+msgid "Select the base and the target for the diff:"
+msgstr "Vali diff'i jaoks alus ja sihtmärk:"
+
+#: trac/versioncontrol/templates/diff_form.html:30
+msgid "From:"
+msgstr "Alates:"
+
+#: trac/versioncontrol/templates/diff_form.html:34
+#: trac/versioncontrol/templates/diff_form.html:44
+msgid "at revision:"
+msgstr "revisjonis"
+
+#: trac/versioncontrol/templates/diff_form.html:40
+msgid "To:"
+msgstr "kuni"
+
+#: trac/versioncontrol/templates/diff_form.html:50
+msgid ""
+"For either path, you can start typing the path and will be\n"
+"              presented a list of existing directories and files to select\n"
+"              from. Select an entry by clicking on it, or by using the\n"
+"              up/down cursor keys and hitting tab."
+msgstr "Mõlema tee jaoks võid alustada teekonna kirjutamist ja sulle\n              esitatakse loetelu olemasolevatest kataloogidest ja failidest millest\n              valida. Valiku saab teha klikkides valikuvõimalusi hiirega, või kasutades\n              üles/alla kursornuppe ja vajutades Tab."
+
+#: trac/versioncontrol/templates/diff_form.html:62
+msgid ""
+"[1:Note:] See\n"
+"        [2:TracChangeset]\n"
+"        for help on using the diff feature."
+msgstr "[1:Note:] Vaata\n        [2:TracChangeset]\n        diff võimaluste kohta abi saamiseks."
+
+#: trac/versioncontrol/templates/dir_entries.html:11
+msgid "View Directory"
+msgstr "Vaata kataloogi"
+
+#: trac/versioncontrol/templates/dir_entries.html:11
+msgid "View File"
+msgstr "Vaata faili"
+
+#: trac/versioncontrol/templates/dir_entries.html:19
+#: trac/versioncontrol/templates/repository_index.html:24
+msgid "View Revision Log"
+msgstr "Vaata revisjoniajalugu"
+
+#: trac/versioncontrol/templates/dir_entries.html:20
+#: trac/versioncontrol/templates/repository_index.html:25
+msgid "View Changeset"
+msgstr "Vaata muutuskogumit"
+
+#: trac/versioncontrol/templates/dirlist_thead.html:9
+#: trac/versioncontrol/templates/revisionlog.html:96
+#: trac/versioncontrol/web_ui/browser.py:781
+msgid "Rev"
+msgstr "Rev"
+
+#: trac/versioncontrol/templates/dirlist_thead.html:12
+#: trac/versioncontrol/web_ui/browser.py:451
+msgid "Last Change"
+msgstr "Viimane muudatus"
+
+#: trac/versioncontrol/templates/path_links.html:16
+msgid "Go to repository root"
+msgstr "Mine hoidla juurkataloogi"
+
+#: trac/versioncontrol/templates/path_links.html:16
+msgid "Go to repository index"
+msgstr "Mine hoidlate indeksisse"
+
+#: trac/versioncontrol/templates/path_links.html:26
+#, python-format
+msgid "View %(name)s"
+msgstr "Vaata %(name)s"
+
+#: trac/versioncontrol/templates/path_links.html:32
+#, python-format
+msgid "View changeset %(rev)s"
+msgstr "Vaata muutuskogumit %(rev)s"
+
+#: trac/versioncontrol/templates/repository_index.html:15
+msgid "View Root Directory"
+msgstr "Vaata juurkataloogi"
+
+#: trac/versioncontrol/templates/revisionlog.html:10
+msgid "(log)"
+msgstr "(logi)"
+
+#: trac/versioncontrol/templates/revisionlog.html:23
+msgid "Revision Log Mode:"
+msgstr "Revisjoni ajaloo režiim:"
+
+#: trac/versioncontrol/templates/revisionlog.html:27
+msgid "Stop on copy"
+msgstr "Peatu kopeerimisel"
+
+#: trac/versioncontrol/templates/revisionlog.html:33
+msgid "Follow copies"
+msgstr "Järgne kopeerimistele"
+
+#: trac/versioncontrol/templates/revisionlog.html:39
+msgid "Show only adds and deletes"
+msgstr "Näita ainult lisamisi ja kustutamisi"
+
+#: trac/versioncontrol/templates/revisionlog.html:44
+msgid ""
+"[1:\n"
+"              View log starting at\n"
+"              [2:]\n"
+"            ]\n"
+"            [3:\n"
+"              and back to\n"
+"              [4:]\n"
+"            ]"
+msgstr "[1:\n              Vaata logi alates\n              [2:]\n            ]\n            [3:\n              ja tagasi kuni\n              [4:]\n            ]"
+
+#: trac/versioncontrol/templates/revisionlog.html:54
+msgid ""
+"[1:\n"
+"              Show at most\n"
+"              [2:]\n"
+"              revisions per page.\n"
+"            ]"
+msgstr "[1:\n              Näita kuni\n              [2:]\n              revisjoni ühel leheküljel.\n            ]"
+
+#: trac/versioncontrol/templates/revisionlog.html:62
+msgid "Show full log messages"
+msgstr "Näita täielikke logiteateid"
+
+#: trac/versioncontrol/templates/revisionlog.html:80
+msgid "Copied or renamed"
+msgstr "Kopeeritud või ümber nimetatud"
+
+#: trac/versioncontrol/templates/revisionlog.html:88
+#: trac/versioncontrol/templates/revisionlog.html:182
+msgid ""
+"Diff from Old Revision to New Revision (as selected in the Diff column)"
+msgstr "Diff vanast revisjonist uue revisjoni vastu (nagu valitud Diff veerus)"
+
+#: trac/versioncontrol/templates/revisionlog.html:94
+msgid "Old / New"
+msgstr "Uus / Vana"
+
+#: trac/versioncontrol/templates/revisionlog.html:94
+msgid "Diff"
+msgstr "Diff"
+
+#: trac/versioncontrol/templates/revisionlog.html:97
+msgid "Age"
+msgstr "Vanus"
+
+#: trac/versioncontrol/templates/revisionlog.html:99
+msgid "Log Message"
+msgstr "Logiteade"
+
+#: trac/versioncontrol/templates/revisionlog.html:106
+msgid "No revisions found"
+msgstr "Revisjonid puuduvad"
+
+#: trac/versioncontrol/templates/revisionlog.html:120
+#, python-format
+msgid "copied from [1:%(path)s]:"
+msgstr "kopeeritud teelt [1:%(path)s]:"
+
+#: trac/versioncontrol/templates/revisionlog.html:126
+#, python-format
+msgid "From [%(rev)s]"
+msgstr "Alates [%(rev)s]"
+
+#: trac/versioncontrol/templates/revisionlog.html:129
+#, python-format
+msgid "To [%(rev)s]"
+msgstr "kuni [%(rev)s]"
+
+#: trac/versioncontrol/templates/revisionlog.html:135
+msgid "View log starting at this revision"
+msgstr "Vaata logi alates sellest revisjonist"
+
+#: trac/versioncontrol/templates/revisionlog.html:142
+#, python-format
+msgid "Browse at revision %(rev)s"
+msgstr "Sirvi revisjoni %(rev)s"
+
+#: trac/versioncontrol/templates/revisionlog.html:146
+#, python-format
+msgid "View removal changeset [%(rev)s]"
+msgstr "Vaata eemaldavat muutuskogumit [%(rev)s]"
+
+#: trac/versioncontrol/templates/revisionlog.html:148
+#, python-format
+msgid "View changeset [%(rev)s] restricted to %(path)s"
+msgstr "Vaata muutuskogumit [%(rev)s] piiratuna teega %(path)s"
+
+#: trac/versioncontrol/templates/revisionlog.html:187
+msgid ""
+"[1:Note:] See [2:TracRevisionLog]\n"
+"        for help on using the revision log."
+msgstr "[1:Note:] Vaata [2:TracRevisionLog]\n        revisjoniajaloo vaate kohta abiinformatsiooni saamiseks."
+
+#: trac/versioncontrol/templates/revisionlog.txt:2
+#, python-format
+msgid "ChangeLog for %(path)s%(in_repo)s"
+msgstr "Muutuste ajalugu tee %(path)s%(in_repo)s jaoks"
+
+#: trac/versioncontrol/templates/revisionlog.txt:4
+#, python-format
+msgid "Generated by Trac %(version)s"
+msgstr "Loodud Trac %(version)s poolt"
+
+#: trac/versioncontrol/web_ui/browser.py:296
+msgid "Browse Source"
+msgstr "Sirvi lähtekoodi"
+
+#: trac/versioncontrol/web_ui/browser.py:373
+msgid "Invalid changeset number"
+msgstr "Vigane muutuskogumi number"
+
+#: trac/versioncontrol/web_ui/browser.py:394
+#, python-format
+msgid "No node %(path)s"
+msgstr "Sõlm %(path)s puudub"
+
+#: trac/versioncontrol/web_ui/browser.py:434
+#: trac/versioncontrol/web_ui/browser.py:444
+#, python-format
+msgid "Revision %(num)s"
+msgstr "Revisjon %(num)s"
+
+#: trac/versioncontrol/web_ui/browser.py:445
+msgid "Previous Revision"
+msgstr "Eelmine revisjon"
+
+#: trac/versioncontrol/web_ui/browser.py:445
+msgid "Next Revision"
+msgstr "Järgmine revisjon"
+
+#: trac/versioncontrol/web_ui/browser.py:446
+msgid "Latest Revision"
+msgstr "Viimane revisjon"
+
+#: trac/versioncontrol/web_ui/browser.py:450
+#: trac/versioncontrol/web_ui/log.py:294
+msgid "Parent directory"
+msgstr "Ülemkataloog"
+
+#: trac/versioncontrol/web_ui/browser.py:456
+msgid "Normal"
+msgstr "Normaalne"
+
+#: trac/versioncontrol/web_ui/browser.py:457
+msgid "View file without annotations"
+msgstr "Vaata faile ilma annotatsioonideta"
+
+#: trac/versioncontrol/web_ui/browser.py:462
+msgid "Annotate"
+msgstr "Annoteeri"
+
+#: trac/versioncontrol/web_ui/browser.py:463
+msgid ""
+"Annotate each line with the last changed revision (this can be time "
+"consuming...)"
+msgstr "Annoteeri iga rida viimase muudetud revisjoniga (see võib võtta kaua aega...)"
+
+#: trac/versioncontrol/web_ui/browser.py:470
+msgid "Revision Log"
+msgstr "Revisjoniajalugu"
+
+#: trac/versioncontrol/web_ui/browser.py:476
+msgid "Repository URL"
+msgstr "Hoidla URL"
+
+#: trac/versioncontrol/web_ui/browser.py:604
+#: trac/versioncontrol/web_ui/changeset.py:363
+msgid "Zip Archive"
+msgstr "Zip-arhiiv"
+
+#: trac/versioncontrol/web_ui/browser.py:781
+msgid "Revision in which the line changed"
+msgstr "Revisjon milles rida muutus"
+
+#: trac/versioncontrol/web_ui/browser.py:862
+#, python-format
+msgid "View repository %(repo)s"
+msgstr "Vaata hoidlat %(repo)s"
+
+#: trac/versioncontrol/web_ui/changeset.py:240
+#, python-format
+msgid "Can't compare across different repositories: %(old)s vs. %(new)s"
+msgstr "Ei saanud võrrelda üle erinevate hoidlate: %(old)s vs. %(new)s"
+
+#: trac/versioncontrol/web_ui/changeset.py:249
+msgid "No repository specified and no default repository configured."
+msgstr "Hoidlat pole määratud ja ühtegi vaikimisi hoidlat pole seadistatud."
+
+#: trac/versioncontrol/web_ui/changeset.py:261
+msgid "Invalid Changeset Number"
+msgstr "Vigane muutuskogumi number"
+
+#: trac/versioncontrol/web_ui/changeset.py:361
+msgid "Unified Diff"
+msgstr "Ühendatud diff"
+
+#: trac/versioncontrol/web_ui/changeset.py:372
+msgid "Previous Changeset"
+msgstr "Eelmine muutuskogum"
+
+#: trac/versioncontrol/web_ui/changeset.py:372
+msgid "Next Changeset"
+msgstr "Järgmine muutuskogum"
+
+#: trac/versioncontrol/web_ui/changeset.py:376
+msgid "Reverse Diff"
+msgstr "Pöörd-diff"
+
+#: trac/versioncontrol/web_ui/changeset.py:414
+#, python-format
+msgid "Changeset %(id)s for %(path)s"
+msgstr "Muutuskogum %(id)s teel %(path)s"
+
+#: trac/versioncontrol/web_ui/changeset.py:417
+#: trac/versioncontrol/web_ui/changeset.py:443
+#: trac/versioncontrol/web_ui/changeset.py:465
+#, python-format
+msgid "Changeset %(id)s"
+msgstr "Muutuskogum %(id)s"
+
+#: trac/versioncontrol/web_ui/changeset.py:492
+#, python-format
+msgid "Show revision %(rev)s of this file in browser"
+msgstr "Näita revisjoni %(rev)s sellest failist brauseris"
+
+#: trac/versioncontrol/web_ui/changeset.py:638
+#, python-format
+msgid "Show the changeset %(id)s restricted to %(path)s"
+msgstr "Näita muutuskogumit %(id)s piiratuna teega %(path)s"
+
+#: trac/versioncontrol/web_ui/changeset.py:650
+#, python-format
+msgid "Show the %(range)s differences restricted to %(path)s"
+msgstr "Näita %(range)s erinevusi piiratuna teega %(path)s"
+
+#. TRANSLATOR: 'latest' (revision)
+#: trac/versioncontrol/web_ui/changeset.py:790
+msgid "latest"
+msgstr "viimane"
+
+#: trac/versioncontrol/web_ui/changeset.py:793
+#, python-format
+msgid "Diff [%(old_rev)s:%(new_rev)s] for %(path)s"
+msgstr "Diff [%(old_rev)s:%(new_rev)s] teel %(path)s"
+
+#: trac/versioncontrol/web_ui/changeset.py:799
+#, python-format
+msgid "Diff from %(old_path)s@%(old_rev)s to %(new_path)s@%(new_rev)s"
+msgstr "Diff alates %(old_path)s@%(old_rev)s kuni %(new_path)s@%(new_rev)s"
+
+#: trac/versioncontrol/web_ui/changeset.py:871
+msgid "Changesets in all repositories"
+msgstr "Muutuskogum kõikides hoidlates"
+
+#: trac/versioncontrol/web_ui/changeset.py:873
+msgid "Repository changesets"
+msgstr "Hoidla muutuskogumid"
+
+#: trac/versioncontrol/web_ui/changeset.py:1013
+#, python-format
+msgid "Changeset in %(repo)s "
+msgid_plural "Changesets in %(repo)s "
+msgstr[0] "Muutuskogum hoidlas %(repo)s "
+msgstr[1] "Muutuskogumid hoidlas %(repo)s "
+
+#: trac/versioncontrol/web_ui/changeset.py:1015
+msgid "Changeset "
+msgid_plural "Changesets "
+msgstr[0] "Muutuskogum "
+msgstr[1] "Muutuskogumid "
+
+#: trac/versioncontrol/web_ui/changeset.py:1086
+#, python-format
+msgid "No permission to view changeset %(rev)s on %(repos)s"
+msgstr "Muutuskogumi %(rev)s vaatamiseks hoidlas %(repos)s puuduvad õigused"
+
+#: trac/versioncontrol/web_ui/changeset.py:1092
+#: trac/versioncontrol/web_ui/log.py:392
+msgid "No default repository defined"
+msgstr "Vaikimisi hoidlat pole seadistatud"
+
+#: trac/versioncontrol/web_ui/changeset.py:1131
+msgid "Changesets"
+msgstr "Muutuskogumid"
+
+#: trac/versioncontrol/web_ui/log.py:200
+#, python-format
+msgid ""
+"The file or directory '%(path)s' doesn't exist at revision %(rev)s or at any"
+" previous revision."
+msgstr "Faili või kataloogi '%(path)s' ei eksisteeri revisjonis %(rev)s ega üheski eelnevas."
+
+#: trac/versioncontrol/web_ui/log.py:200
+msgid "Nonexistent path"
+msgstr "Teed ei eksisteeri"
+
+#: trac/versioncontrol/web_ui/log.py:228
+#, python-format
+msgid "Revision Log (restarting at %(path)s, rev. %(rev)s)"
+msgstr "Revisjoniajalugu (algab uuesti teelt %(path)s, rev. %(rev)s)"
+
+#: trac/versioncontrol/web_ui/log.py:302
+msgid "ChangeLog"
+msgstr "Muutusajalugu"
+
+#: trac/versioncontrol/web_ui/log.py:304
+msgid "View Latest Revision"
+msgstr "Vaata viimast revisjoni"
+
+#: trac/versioncontrol/web_ui/log.py:308
+msgid "Older Revisions"
+msgstr "Vanemad revisjonid"
+
+#: trac/versioncontrol/web_ui/log.py:388
+msgid "No permission to view change log"
+msgstr "Muutusajaloo vaatamiseks puuduvad õigused"
+
+#. TRANSLATOR: You can 'search' in the repository history... (link)
+#: trac/versioncontrol/web_ui/util.py:67
+msgid "search"
+msgstr "otsing"
+
+#: trac/versioncontrol/web_ui/util.py:71
+#, python-format
+msgid ""
+"You can %(search)s in the repository history to see if that path existed but"
+" was later removed"
+msgstr "Võid %(search)s hoidla ajaloost nägemaks kas see tee kunagi eksisteeris, kuid sai hiljem kustutatud"
+
+#: trac/web/api.py:236
+#, python-format
+msgid "Invalid URL encoding (was %(path_info)r)"
+msgstr "Vigane URL-i kodeerimine (oli %(path_info)r)"
+
+#: trac/web/api.py:474
+#, python-format
+msgid "File %(path)s not found"
+msgstr "Faili %(path)s ei leitud"
+
+#: trac/web/auth.py:100
+#, python-format
+msgid "logged in as %(user)s"
+msgstr "sisse logitud kasutajana %(user)s"
+
+#: trac/web/auth.py:103
+msgid "Logout"
+msgstr "Logi välja"
+
+#: trac/web/auth.py:106
+msgid "Login"
+msgstr "Logi sisse"
+
+#. TRANSLATOR: ... refer to the 'installation documentation'. (link)
+#: trac/web/auth.py:138
+msgid "installation documentation"
+msgstr "paigalduse dokumentatsioon"
+
+#: trac/web/auth.py:139
+msgid "Configuring Authentication"
+msgstr "Konfigureerin autentimist"
+
+#: trac/web/auth.py:142
+#, python-format
+msgid ""
+"Authentication information not available. Please refer to the %(inst_doc)s."
+msgstr "Autentimiseks puudub vajalik informatsioon. Palun loe %(inst_doc)s."
+
+#: trac/web/auth.py:150
+#, python-format
+msgid "Already logged in as %(user)s."
+msgstr "Oled juba sisse logitud kasutajana %(user)s."
+
+#: trac/web/chrome.py:591
+#, python-format
+msgid "Error with navigation contributor \"%(name)s\""
+msgstr "Viga navigatsioonipakkujas \"%(name)s\""
+
+#: trac/web/chrome.py:881
+msgid "(unknown template location)"
+msgstr "(tundmatu mallide asukoht)"
+
+#: trac/web/chrome.py:882
+#, python-format
+msgid "Genshi %(error)s error while rendering template %(location)s"
+msgstr "Genshi %(error)s viga, mis tekkis malli %(location)s renderdamisel"
+
+#: trac/web/chrome.py:930 trac/web/chrome.py:938
+msgid "anonymous"
+msgstr "anonüümne"
+
+#: trac/web/main.py:229
+msgid "Secure cookies are enabled, you must use https to submit forms."
+msgstr "Turvalised küpsised on sisse lülitatud, seetõttu pead vormide saatmiseks kasutama https'i."
+
+#: trac/web/main.py:232
+msgid "Do you have cookies enabled?"
+msgstr "Kas teil on küpsised lubatud?"
+
+#: trac/web/main.py:233
+#, python-format
+msgid "Missing or invalid form token. %(msg)s"
+msgstr "Puuduv või vigane vormitähis. %(msg)s"
+
+#: trac/web/main.py:529
+#, python-format
+msgid "Error: %(message)s"
+msgstr "Viga: %(message)s"
+
+#. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
+#: trac/web/main.py:545
+msgid "do so"
+msgstr "tee seda"
+
+#: trac/web/main.py:547
+#, python-format
+msgid "You are currently not logged in. You may want to %(do_so)s now."
+msgstr "Sa ei ole hetkel sisse logitud. Võib-olla %(do_so)s praegu."
+
+#: trac/web/main.py:605
+msgid "''System information not available''\n"
+msgstr "''Süsteemiinformatsioon ei ole kättesaadav''\n"
+
+#: trac/web/main.py:606
+msgid "''Plugin information not available''\n"
+msgstr "'Lisamooduli informatsioon ei ole kättesaadav'\n"
+
+#: trac/web/main.py:630
+#, python-format
+msgid ""
+"==== How to Reproduce ====\n"
+"\n"
+"While doing a %(method)s operation on `%(path_info)s`, Trac issued an internal error.\n"
+"\n"
+"''(please provide additional details here)''\n"
+"\n"
+"Request parameters:\n"
+"{{{\n"
+"%(req_args)s\n"
+"}}}\n"
+"\n"
+"User agent: `#USER_AGENT#`\n"
+"\n"
+"==== System Information ====\n"
+"%(sys_info)s\n"
+"==== Enabled Plugins ====\n"
+"%(enabled_plugins)s\n"
+"==== Python Traceback ====\n"
+"{{{\n"
+"%(traceback)s}}}"
+msgstr "==== Kuidas korrata ====\n\nViies läbi %(method)s operatsiooni teel `%(path_info)s`, toimus Trac'is sisemine viga.\n\n''(kirjelda lisaüksikasju siin)''\n\nPäringu parameetrid:\n{{{\n%(req_args)s\n}}}\n\nKasutaja tarkvara: `#USER_AGENT#`\n\n==== Süsteemi informatsioon ====\n%(sys_info)s\n==== Lubatud lisamoodulid ====\n%(enabled_plugins)s\n==== Python jälitusajalugu ====\n{{{\n%(traceback)s}}}"
+
+#: trac/web/session.py:201
+#, python-format
+msgid "Session '%(id)s' already exists. Please choose a different session ID."
+msgstr "Seanss '%(id)s' on juba olemas. Palun vali mõni teine seansi ID."
+
+#: trac/web/session.py:204
+msgid "Error renaming session"
+msgstr "Viga seansi ümber nimetamisel"
+
+#: trac/web/session.py:311
+msgid "No SID found"
+msgstr "Seansi ID-d ei leitud"
+
+#: trac/web/session.py:313
+msgid "SID"
+msgstr "SID"
+
+#: trac/web/session.py:313
+msgid "Email"
+msgstr "E-post"
+
+#: trac/web/session.py:317
+msgid "Session already exists. Unable to add a duplicate session."
+msgstr "Seanss on juba olemas. Topeltsessiooni lisamine ebaõnnestus."
+
+#: trac/web/session.py:324
+msgid "Unable to set session attribute on a non-existent SID"
+msgstr "Seansi atribuuti ei ole võimalik saada seansi ID-st mida ei eksisteeri"
+
+#: trac/web/session.py:437
+#, python-format
+msgid "Session id %(sid)s not found"
+msgstr "Seansi id %(sid)s ei leitud"
+
+#: trac/wiki/admin.py:116
+#, python-format
+msgid "'%(name)s' is not a file"
+msgstr "'%(name)s' ei ole fail"
+
+#: trac/wiki/admin.py:133
+#, python-format
+msgid "  %(title)s already exists"
+msgstr "  %(title)s on juba olemas"
+
+#: trac/wiki/admin.py:137
+#, python-format
+msgid "  %(title)s is already up to date"
+msgstr "  %(title)s on juba ajakohane"
+
+#: trac/wiki/admin.py:168 trac/wiki/admin.py:265
+#, python-format
+msgid "  %(page)s imported from %(filename)s"
+msgstr "  %(page)s imporditud failidest %(filename)s"
+
+#: trac/wiki/admin.py:200
+msgid "Edits"
+msgstr "Muudatused"
+
+#: trac/wiki/admin.py:206 trac/wiki/web_ui.py:295
+msgid "A new name is mandatory for a rename."
+msgstr "Ümbernimetamisoperatsioon vajab uut nime."
+
+#: trac/wiki/admin.py:210 trac/wiki/web_ui.py:299
+#, python-format
+msgid "The page %(name)s already exists."
+msgstr "Lehekülg %(name)s on juba olemas."
+
+#: trac/wiki/admin.py:224
+msgid "Deleted pages"
+msgstr "Kustutatud leheküljed"
+
+#: trac/wiki/admin.py:243
+#, python-format
+msgid "'%(name)s' is not a directory"
+msgstr "'%(name)s' ei ole kataloog"
+
+#: trac/wiki/api.py:369
+msgid "no permission to view this wiki page"
+msgstr "õigused puuduvad selle wiki-lehe vaatamiseks"
+
+#: trac/wiki/formatter.py:174
+#, python-format
+msgid "HTML parsing error: %(message)s"
+msgstr "HTML parsimisviga: %(message)s"
+
+#: trac/wiki/formatter.py:178
+msgid "Error: Forbidden character sequence \"--\" in htmlcomment wiki code block"
+msgstr "Viga: keelatud märgijada \"--\" wiki htmlcomment koodiblokis"
+
+#: trac/wiki/formatter.py:252
+#, python-format
+msgid "!#%(name)s must contain at most one table"
+msgstr "!#%(name)s võib sisaldada kõige rohkem ühte tabelit"
+
+#: trac/wiki/formatter.py:256
+#, python-format
+msgid "!#%(name)s must contain at least one table cell (and table cells only)"
+msgstr "!#%(name)s peab sisaldama vähemalt ühte tabelilahtrit (ja ainult tabelilahtreid)"
+
+#: trac/wiki/formatter.py:634 trac/wiki/interwiki.py:88
+#, python-format
+msgid "%(target)s in %(name)s"
+msgstr "%(target)s nimedes %(name)s"
+
+#: trac/wiki/intertrac.py:68
+#, python-format
+msgid "Can't view %(link)s:"
+msgstr "Ei saa vaadata %(link)s:"
+
+#: trac/wiki/macros.py:519
+#, python-format
+msgid "No image \"%(id)s\" attached to %(parent)s"
+msgstr "%(parent)s pole manustatud pilti \"%(id)s\""
+
+#: trac/wiki/macros.py:562
+#, python-format
+msgid "Error: Can't get description for macro %(name)s"
+msgstr "Viga: kirjelduse saamine makrole %(name)s ebaõnnestus"
+
+#: trac/wiki/macros.py:580
+msgid "Aliases:"
+msgstr "Aliased:"
+
+#: trac/wiki/macros.py:583
+msgid "Sorry, no documentation found"
+msgstr "Vabandust, dokumentatsiooni puudub"
+
+#: trac/wiki/macros.py:649
+msgid "MIME Types"
+msgstr "MIME-tüübid"
+
+#: trac/wiki/macros.py:707
+msgid "Table of Contents"
+msgstr "Sisukord"
+
+#: trac/wiki/model.py:123
+msgid "Page not modified"
+msgstr "Lehekülge ei muudetud"
+
+#: trac/wiki/model.py:174
+#, python-format
+msgid "Can't rename to existing %(name)s page."
+msgstr "Ei saa ümber nimetada olemasolevale %(name)s lehele."
+
+#: trac/wiki/web_ui.py:87 trac/wiki/web_ui.py:729
+msgid "Wiki"
+msgstr "Wiki"
+
+#: trac/wiki/web_ui.py:89
+msgid "Help/Guide"
+msgstr "Abi/õpetus"
+
+#: trac/wiki/web_ui.py:125
+#, python-format
+msgid "No version \"%(num)s\" for Wiki page \"%(name)s\""
+msgstr "Wiki-lehe \"%(name)s\" versioon \"%(num)s\" puudub"
+
+#: trac/wiki/web_ui.py:190
+#, python-format
+msgid "The wiki page is too long (must be less than %(num)s characters)"
+msgstr "Wiki-leht on liiga pikk (peab olema vähem kui %(num)s tähemärki)"
+
+#: trac/wiki/web_ui.py:200
+#, python-format
+msgid "The Wiki page field '%(field)s' is invalid: %(message)s"
+msgstr "Wiki-lehe väli '%(field)s' on vigane: %(message)s"
+
+#: trac/wiki/web_ui.py:204
+#, python-format
+msgid "Invalid Wiki page: %(message)s"
+msgstr "Vigane wiki-leht: %(message)s"
+
+#. TRANSLATOR: wiki page
+#: trac/wiki/web_ui.py:231
+msgid "currently edited"
+msgstr "hetkel muutmisel"
+
+#: trac/wiki/web_ui.py:265
+#, python-format
+msgid "The page %(name)s has been deleted."
+msgstr "Leht %(name)s on kustutatud."
+
+#: trac/wiki/web_ui.py:270
+#, python-format
+msgid ""
+"The versions %(from_)d to %(to)d of the page %(name)s have been deleted."
+msgstr "Versioonid alates %(from_)d kuni %(to)d lehest %(name)s on kustutatud."
+
+#: trac/wiki/web_ui.py:274
+#, python-format
+msgid "The version %(version)d of the page %(name)s has been deleted."
+msgstr "Versioon %(version)d lehest %(name)s on kustutatud."
+
+#: trac/wiki/web_ui.py:297
+msgid "The new name must be different from the old name."
+msgstr "Uus nimi peab olema vanast nimest erinev."
+
+#: trac/wiki/web_ui.py:309
+#, python-format
+msgid "See [wiki:\"%(name)s\"]."
+msgstr "Vaata [wiki:\"%(name)s\"]."
+
+#: trac/wiki/web_ui.py:333
+#, python-format
+msgid "Your changes have been saved in version %(version)s."
+msgstr "Sinu muudatused on salvestatud versioonis %(version)s."
+
+#: trac/wiki/web_ui.py:338
+msgid "Page not modified, showing latest version."
+msgstr "Lehte ei muudetud, näitan viimast versiooni."
+
+#: trac/wiki/web_ui.py:381
+#, python-format
+msgid "Version %(num)s of page \"%(name)s\" does not exist"
+msgstr "Versioon %(num)s lehest \"%(name)s\" puudub"
+
+#: trac/wiki/web_ui.py:433
+msgid "Page history"
+msgstr "Lehe ajalugu"
+
+#: trac/wiki/web_ui.py:451
+msgid "Wiki History"
+msgstr "Wiki ajalugu"
+
+#: trac/wiki/web_ui.py:537
+#, python-format
+msgid "Page %(name)s does not exist"
+msgstr "Leht %(name)s puudub"
+
+#: trac/wiki/web_ui.py:551
+#, python-format
+msgid "Back to %(wikipage)s"
+msgstr "Tagasi %(wikipage)s"
+
+#: trac/wiki/web_ui.py:579
+#, python-format
+msgid "Page %(name)s not found"
+msgstr "Leht %(name)s puudub"
+
+#: trac/wiki/web_ui.py:631
+msgid "View latest version"
+msgstr "Vaata viimast versiooni"
+
+#: trac/wiki/web_ui.py:635
+msgid "View parent page"
+msgstr "Vaata ülemlehekülge"
+
+#: trac/wiki/web_ui.py:644
+msgid "Previous Version"
+msgstr "Eelmine versioon"
+
+#: trac/wiki/web_ui.py:644
+msgid "Next Version"
+msgstr "Järgmine versioon"
+
+#: trac/wiki/web_ui.py:645
+msgid "View Latest Version"
+msgstr "Vaata viimast versiooni"
+
+#: trac/wiki/web_ui.py:648
+msgid "Up"
+msgstr "Üles"
+
+#: trac/wiki/web_ui.py:673
+msgid "Start Page"
+msgstr "Alguslehekülg"
+
+#: trac/wiki/web_ui.py:674
+msgid "Index"
+msgstr "Indeks"
+
+#: trac/wiki/web_ui.py:676
+msgid "History"
+msgstr "Ajalugu"
+
+#: trac/wiki/web_ui.py:683
+msgid "Wiki changes"
+msgstr "Wiki muudatused"
+
+#: trac/wiki/web_ui.py:712
+#, python-format
+msgid "%(page)s edited"
+msgstr "%(page)s muudetud"
+
+#: trac/wiki/web_ui.py:714
+#, python-format
+msgid "%(page)s created"
+msgstr "%(page)s loodud"
+
+#: trac/wiki/templates/wiki_delete.html:19
+#, python-format
+msgid "Delete versions %(from)s to %(to)s of [1:%(name)s]"
+msgstr "Kustuta versioonid alates %(from)s kuni %(to)s lehest [1:%(name)s]"
+
+#: trac/wiki/templates/wiki_delete.html:22
+#, python-format
+msgid "Delete version %(version)s of [1:%(name)s]"
+msgstr "Kustuta versioon %(version)s lehest [1:%(name)s]"
+
+#: trac/wiki/templates/wiki_delete.html:25
+#, python-format
+msgid "Delete [1:%(name)s]"
+msgstr "Kustuta [1:%(name)s]"
+
+#: trac/wiki/templates/wiki_delete.html:33
+#, python-format
+msgid ""
+"Are you sure you want to delete versions %(from)s to %(to)s of this page?"
+msgstr "Oled kindel, et soovid kustutatda selle lehe versioonid alates %(from)s kuni %(to)s?"
+
+#: trac/wiki/templates/wiki_delete.html:36
+#, python-format
+msgid "Are you sure you want to delete version %(version)s of this page?"
+msgstr "Oled kindel, et soovid kustutatda selle lehe versiooni %(version)s?"
+
+#: trac/wiki/templates/wiki_delete.html:39
+msgid "Are you sure you want to completely delete this page?"
+msgstr "Oled kindel, et tahad selle lehe täielikult kustutada?"
+
+#: trac/wiki/templates/wiki_delete.html:42
+msgid ""
+"This is the only version the page, so the page will be removed completely!"
+msgstr "Käesolev on ainuke versioon sellest lehest, nii et lehekülg kustutatakse täielikult!"
+
+#: trac/wiki/templates/wiki_delete.html:51
+msgid "Delete those versions"
+msgstr "Kustuta need versioonid"
+
+#: trac/wiki/templates/wiki_delete.html:51
+#: trac/wiki/templates/wiki_view.html:117
+msgid "Delete this version"
+msgstr "Kustuta see versioon"
+
+#: trac/wiki/templates/wiki_delete.html:51
+#: trac/wiki/templates/wiki_view.html:119
+msgid "Delete page"
+msgstr "Kustuta lehekülg"
+
+#: trac/wiki/templates/wiki_diff.html:17
+#, python-format
+msgid "Delete version %(old_version)d to version %(version)d"
+msgstr "Kustuta alates versioon %(old_version)d kuni %(version)d"
+
+#: trac/wiki/templates/wiki_diff.html:18
+#, python-format
+msgid "Delete version %(version)d"
+msgstr "Kustuta versioon %(version)d"
+
+#: trac/wiki/templates/wiki_edit.html:67
+#: trac/wiki/templates/wiki_edit.html:140
+msgid "Go to Save, Preview, Review or Cancel buttons"
+msgstr "Mine salvestamise, eelvaate, ülevaate või tühistamise nupule"
+
+#: trac/wiki/templates/wiki_edit.html:69
+msgid "See the diffs"
+msgstr "Vaata diff'e"
+
+#: trac/wiki/templates/wiki_edit.html:69
+#: trac/wiki/templates/wiki_edit_form.html:38
+msgid "Review"
+msgstr "Ülevaade"
+
+#: trac/wiki/templates/wiki_edit.html:70
+msgid "See the preview"
+msgstr "Vaata eelvaadet"
+
+#: trac/wiki/templates/wiki_edit.html:73
+msgid "Editing"
+msgstr "Muutja"
+
+#: trac/wiki/templates/wiki_edit.html:75
+msgid "Someone else has modified that page since you started your edits."
+msgstr "Keegi teine on muutnud seda lehekülge pärast seda kui sa alustasid oma muudatustega."
+
+#: trac/wiki/templates/wiki_edit.html:76
+msgid ""
+"[1:If you save right away, you risk to revert those changes]\n"
+"        (highlighted below as deletions)."
+msgstr "[1:Kui sa nüüd kohe salvestad, siis on risk, et teiste vahepealsed muudatused kirjutatakse üle]\n        (tähistatud allpool kustutamistena)."
+
+#: trac/wiki/templates/wiki_edit.html:78
+msgid ""
+"Please review all those changes and manually merge them with your\n"
+"        own changes. [1:]\n"
+"        If you're unsure about what you're doing, please press [2:Cancel]\n"
+"        (losing your changes) and start editing the latest version of the page\n"
+"        again."
+msgstr "Palun võta ette nende muudatuste ülevaatus ja ühenda nad käsitsi\n        oma muudatustega. [1:]\n        Kui sa pole kindel mida teha, palun vajuta [2:Cancel]\n        (sinu muudatused kaovad) ning alusta lehe viimase versiooni muutmist\n        uuesti."
+
+#: trac/wiki/templates/wiki_edit.html:114
+#, python-format
+msgid ""
+"Change information for future version %(version)s (modified by %(author)s):"
+msgstr "Muudatuste informatsioon järgmiseks versiooniks %(version)s (autoriks %(author)s):"
+
+#: trac/wiki/templates/wiki_edit.html:124
+msgid "Go to the editor"
+msgstr "Mine redaktorisse"
+
+#: trac/wiki/templates/wiki_edit.html:127
+#: trac/wiki/templates/wiki_edit_form.html:74
+msgid "Review Changes"
+msgstr "Muudatuste ülevaatus"
+
+#: trac/wiki/templates/wiki_edit.html:129
+msgid "No changes"
+msgstr "Muudatused puuduvad"
+
+#: trac/wiki/templates/wiki_edit.html:146
+msgid ""
+"Sorry, this page has been modified by somebody else since you started\n"
+"            editing. Your changes cannot be saved."
+msgstr "Vabandust, seda lehte muudeti kellegi teise poolt peale seda kui sa oma toimetamist\n            alustasid. Sinu muudatusi ei ole seetõttu võimalik salvestada."
+
+#: trac/wiki/templates/wiki_edit_form.html:16
+msgid "Adjust edit area height:"
+msgstr "Seadista redaktori ala kõrgust:"
+
+#: trac/wiki/templates/wiki_edit_form.html:24
+msgid ""
+"Selecting and pressing 'Preview' enters a two-column [edit|preview] mode"
+msgstr "Valides ja vajutades 'Eelvaade' viib redaktori kahe-veerulisesse [muudatused|eelvaade] režiimi"
+
+#: trac/wiki/templates/wiki_edit_form.html:24
+msgid "Edit side-by-side"
+msgstr "Toimeta kõrvuti"
+
+#: trac/wiki/templates/wiki_edit_form.html:32
+msgid ""
+"[1:Note:] See [2:WikiFormatting] and\n"
+"        [3:TracWiki] for help on editing wiki content."
+msgstr "[1:Note:] Vaata [2:WikiFormatting] ja\n        [3:TracWiki] wiki sisu toimetamise kohta abiinformatsiooni saamiseks."
+
+#: trac/wiki/templates/wiki_edit_form.html:38
+msgid "See the start of the diffs"
+msgstr "Vaata diff'ide algust"
+
+#: trac/wiki/templates/wiki_edit_form.html:39
+msgid "See the start of the preview"
+msgstr "Vaata eelvaate algust"
+
+#: trac/wiki/templates/wiki_edit_form.html:43
+msgid "Change information"
+msgstr "Muudatuse informatsioon"
+
+#: trac/wiki/templates/wiki_edit_form.html:54
+msgid "Comment about this change (optional):"
+msgstr "Kommentaar selle muudatuse kohta (ei ole kohustulik):"
+
+#: trac/wiki/templates/wiki_edit_form.html:61
+msgid "Page is read-only"
+msgstr "Lehekülg on muutmatu"
+
+#: trac/wiki/templates/wiki_edit_form.html:69
+msgid "Merge changes"
+msgstr "Ühenda muudatused"
+
+#: trac/wiki/templates/wiki_edit_form.html:73
+msgid "Preview Page"
+msgstr "Lehekülje eelvaade"
+
+#: trac/wiki/templates/wiki_page_path.html:6
+msgid "View WikiStart"
+msgstr "Vaata WikiStart"
+
+#: trac/wiki/templates/wiki_page_path.html:6
+msgid "wiki:"
+msgstr "wiki:"
+
+#: trac/wiki/templates/wiki_page_path.html:8
+#, python-format
+msgid "View %(path)s"
+msgstr "Vaata %(path)s"
+
+#: trac/wiki/templates/wiki_rename.html:15
+#, python-format
+msgid "Rename [1:%(name)s]"
+msgstr "Vaheta [1:%(name)s] nime"
+
+#: trac/wiki/templates/wiki_rename.html:19
+msgid ""
+"Renaming the page will rename all existing versions of the page in place."
+msgstr "Lehekülje nimevahetus paneb uue nime kõigile olemasolevatele versioonidele sellest leheküljest."
+
+#: trac/wiki/templates/wiki_rename.html:19
+msgid "The complete history of the page will be moved to the new location."
+msgstr "Kogu lehekülje ajalugu liigub uue nimega asukohta."
+
+#: trac/wiki/templates/wiki_rename.html:23
+msgid "New name:"
+msgstr "Uus nimi:"
+
+#: trac/wiki/templates/wiki_rename.html:27
+msgid "Leave a redirection page at the old location"
+msgstr "Jäta ümbersuunamise leht vanasse asukohta"
+
+#: trac/wiki/templates/wiki_rename.html:33
+#: trac/wiki/templates/wiki_view.html:108
+msgid "Rename page"
+msgstr "Vaheta lehekülje nime"
+
+#: trac/wiki/templates/wiki_view.html:14 trac/wiki/templates/wiki_view.html:84
+msgid "Edit this page"
+msgstr "Muuda lehte"
+
+#: trac/wiki/templates/wiki_view.html:34
+#, python-format
+msgid ""
+"Version %(version)s (modified by %(author)s, %(date)s ago)\n"
+"               ([1:diff])"
+msgstr "Versioon %(version)s (autoriks %(author)s, %(date)s eest)\n               ([1:diff])"
+
+#: trac/wiki/templates/wiki_view.html:47
+#, python-format
+msgid "Version %(version)s by %(author)s: %(comment)s"
+msgstr "Versioon %(version)s, autoriks %(author)s: %(comment)s"
+
+#: trac/wiki/templates/wiki_view.html:47
+#, python-format
+msgid "Version %(version)s by %(author)s"
+msgstr "Versioon %(version)s, autoriks %(author)s"
+
+#: trac/wiki/templates/wiki_view.html:54
+#, python-format
+msgid "[1:Last modified] %(reldate)s ago"
+msgstr "[1:Last modified] %(reldate)s eest"
+
+#: trac/wiki/templates/wiki_view.html:61
+#, python-format
+msgid "The page %(name)s does not exist. You can create it here."
+msgstr "Lehekülge %(name)s puudub. Selle võib siin luua."
+
+#: trac/wiki/templates/wiki_view.html:63
+msgid "You could also create the same page higher in the hierarchy:"
+msgstr "Sama lehe võib luua ka hierarhias kõrgemal:"
+
+#: trac/wiki/templates/wiki_view.html:87
+msgid "Create this page"
+msgstr "Loo leht"
+
+#: trac/wiki/templates/wiki_view.html:89
+msgid "Using the template:"
+msgstr "Kasutades malli:"
+
+#: trac/wiki/templates/wiki_view.html:92
+msgid "(blank page)"
+msgstr "(tühi leht)"
+
+#: trac/wiki/templates/wiki_view.html:128
+msgid ""
+"The following pages have a name similar to this page, and may be related:"
+msgstr "Järgmistel lehekülgedel on sellele lehele sarnane nimi, ja nad võivad olla seotud:"

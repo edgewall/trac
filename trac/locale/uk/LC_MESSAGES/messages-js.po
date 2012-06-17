@@ -1,0 +1,148 @@
+# Translations template for Trac.
+# Copyright (C) 2012 Edgewall Software
+# This file is distributed under the same license as the Trac project.
+# 
+# Translators:
+# Remy Blank <remy.blank@pobox.com>, 2010.
+msgid ""
+msgstr ""
+"Project-Id-Version: Trac\n"
+"Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
+"POT-Creation-Date: 2012-01-29 14:04+0100\n"
+"PO-Revision-Date: 2012-02-14 09:21+0000\n"
+"Last-Translator: Sergii Galashyn <trovich@gmail.com>\n"
+"Language-Team: Ukrainian (http://www.transifex.net/projects/p/trac/language/uk/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.6\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+
+#: trac/htdocs/js/blame.js:84
+msgid "(no changeset information)"
+msgstr "(немає даних про набір змін)"
+
+#: trac/htdocs/js/blame.js:87
+msgid "Close"
+msgstr "Закрити"
+
+#: trac/htdocs/js/diff.js:119
+msgid "Tabular"
+msgstr "Табличний"
+
+#: trac/htdocs/js/diff.js:125
+msgid "Unified"
+msgstr "Уніфікований"
+
+#: trac/htdocs/js/expand_dir.js:42
+msgid "Expand sub-directory in place"
+msgstr "Розгорнути підтеку на місці"
+
+#: trac/htdocs/js/expand_dir.js:71
+msgid "Re-expand directory"
+msgstr "Знову розгорнути теку"
+
+#: trac/htdocs/js/expand_dir.js:121
+#, python-format
+msgid "Loading %(entry)s..."
+msgstr "Відкриття %(entry)s..."
+
+#: trac/htdocs/js/expand_dir.js:149
+msgid "(empty)"
+msgstr "(порожньо)"
+
+#: trac/htdocs/js/expand_dir.js:157
+msgid "(error)"
+msgstr "(помилка)"
+
+#: trac/htdocs/js/expand_dir.js:164
+msgid "Fold directory"
+msgstr "Згорнути теку"
+
+#: trac/htdocs/js/folding.js:62
+#, python-format
+msgid "Show %(title)s"
+msgstr "Показати %(title)s"
+
+#: trac/htdocs/js/folding.js:77
+#, python-format
+msgid "%(title)s (click to hide column)"
+msgstr "%(title)s (натисніть, щоб сховати стовпчик)"
+
+#: trac/htdocs/js/query.js:118
+msgid "A filter already exists for that property"
+msgstr "Фільтр для цієї властивості вже існує"
+
+#: trac/htdocs/js/query.js:145
+msgid "or"
+msgstr "або"
+
+#: trac/htdocs/js/query.js:164
+msgid "yes"
+msgstr "так"
+
+#: trac/htdocs/js/query.js:167
+msgid "no"
+msgstr "ні"
+
+#: trac/htdocs/js/query.js:170
+msgid "between"
+msgstr "між"
+
+#: trac/htdocs/js/query.js:172
+msgid "and"
+msgstr "та"
+
+#: trac/htdocs/js/trac.js:7
+msgid "Link here"
+msgstr "Посилання сюди"
+
+#: trac/htdocs/js/wikitoolbar.js:56
+msgid "Bold text: '''Example'''"
+msgstr "Жирний текст: '''Зразок'''"
+
+#: trac/htdocs/js/wikitoolbar.js:59
+msgid "Italic text: ''Example''"
+msgstr "Курсивний текст: ''Зразок''"
+
+#: trac/htdocs/js/wikitoolbar.js:62
+msgid "Heading: == Example =="
+msgstr "Заголовок: == Зразок =="
+
+#: trac/htdocs/js/wikitoolbar.js:65
+msgid "Link: [http://www.example.com/ Example]"
+msgstr "Посилання: [http://www.example.com/ Зразок]"
+
+#: trac/htdocs/js/wikitoolbar.js:68
+msgid "Code block: {{{ example }}}"
+msgstr "Блок коду: {{{ зразок }}}"
+
+#: trac/htdocs/js/wikitoolbar.js:71
+msgid "Horizontal rule: ----"
+msgstr "Горизонтальна лінія: ----"
+
+#: trac/htdocs/js/wikitoolbar.js:74
+msgid "New paragraph"
+msgstr "Новий абзац"
+
+#: trac/htdocs/js/wikitoolbar.js:77
+msgid "Line break: [[BR]]"
+msgstr "Розрив рядка: [[BR]]"
+
+#: trac/htdocs/js/wikitoolbar.js:80
+msgid "Image: [[Image()]]"
+msgstr "Зображення: [[Image()]]"
+
+#: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
+msgid "Link to this section"
+msgstr "Посилання на цю секцію"
+
+#: trac/versioncontrol/templates/changeset.html:7
+msgid "Link to this diff"
+msgstr "Посилання на цей diff"
+
+#: trac/wiki/templates/wiki_view.html:5
+#, python-format
+msgid "Link to #%(id)s"
+msgstr "Посилання на #%(id)s"

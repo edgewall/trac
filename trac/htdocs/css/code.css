@@ -6,7 +6,10 @@ div.code {
  overflow: auto
 }
 
-div.code pre { margin: 0; }
+div.code pre {
+ margin: 0;
+ overflow: auto;
+}
 
 table.code {
  border: 1px solid #ddd;
