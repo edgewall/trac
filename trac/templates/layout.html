@@ -34,6 +34,14 @@
     <py:for each="script in chrome.scripts">
       ${script.prefix}<script type="${script.type}" charset="${script.charset}" src="${script.href}"></script>${script.suffix}
     </py:for>
+    <script py:if="chrome.warnings or chrome.notices" type="text/javascript">
+      jQuery(document).ready(function($) {
+        $(".trac-close-msg").show().click(function () {
+          $(this).closest(".system-message").hide();
+          return false;
+        });
+      });
+    </script>
     ${select("*[local-name() != 'title']|text()|comment()")}
   </head></py:match>
 

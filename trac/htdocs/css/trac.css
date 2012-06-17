@@ -579,6 +579,11 @@ table.listing tbody tr.focus { background: #ddf !important }
 }
 div.system-message p { margin: 0; }
 div.system-message p.system-message-title { font-weight: bold; }
+div.system-message .trac-close-msg {
+  float: right;
+  margin: 0 0 0.5em 1em;
+  display: none;
+}
 
 /* rst errors are less emphasized */
 span.system-message {
@@ -672,7 +677,7 @@ span.system-message {
 }
 
 @media print {
- #header, #altlinks, #footer, #help { display: none }
+ #header, #altlinks, #footer, #help, #warning, #notice { display: none }
  .nav, form, .buttons form, form .buttons, form .inlinebuttons,
  .noprint, .trac-nav, .trac-topnav {
    display: none;
