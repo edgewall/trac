@@ -64,7 +64,3 @@ def logger_handler_factory(logtype='syslog', logfile=None, level='WARNING',
     logger._trac_handler = hdlr 
 
     return logger, hdlr
-
-def logger_factory(logtype='syslog', logfile=None, level='WARNING',
-                   logid='Trac', format=None):
-    return logger_handler_factory(logtype, logfile, level, logid, format)[0]
