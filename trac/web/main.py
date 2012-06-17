@@ -110,7 +110,7 @@ class RequestDispatcher(Component):
         """The date format. Valid options are 'iso8601' for selecting
         ISO 8601 format, or leave it empty which means the default
         date format will be inferred from the browser's default
-        language. (''since 0.13'')
+        language. (''since 1.0'')
         """)
 
     # Public API

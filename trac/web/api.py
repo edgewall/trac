@@ -62,7 +62,7 @@ class IRequestHandler(Interface):
         Note that if template processing should not occur, this method can
         simply send the response itself and not return anything.
 
-        :Since 0.13: Clearsilver templates are no longer supported.
+        :Since 1.0: Clearsilver templates are no longer supported.
         """
 
 
@@ -98,7 +98,7 @@ class IRequestFilter(Interface):
            at ClearSilver templates and the newer ones targeted at Genshi
            templates.
 
-        :Since 0.13: Clearsilver templates are no longer supported.
+        :Since 1.0: Clearsilver templates are no longer supported.
         """
 
 

@@ -99,7 +99,7 @@ class IWikiMacroProvider(Interface):
         description of the macro or only the description with the specified
         name.
 
-        .. versionchanged :: 0.13
+        .. versionchanged :: 1.0
            `get_macro_description` can return a domain to translate the
            description.
         """
@@ -110,7 +110,7 @@ class IWikiMacroProvider(Interface):
     def is_inline(content):
         """Return `True` if the content generated is an inline XHTML element.
 
-        .. versionadded :: 0.13
+        .. versionadded :: 1.0
         """
 
     def expand_macro(formatter, name, content, args=None):

@@ -558,8 +558,8 @@ class Environment(Component, ComponentManager):
 
         :since: 0.11
 
-        :since 0.13: deprecation warning: the `db` parameter is no
-                     longer used and will be removed in version 0.14
+        :since 1.0: deprecation warning: the `db` parameter is no
+                    longer used and will be removed in version 0.14
         """
         rows = self.db_query("""
                 SELECT value FROM system WHERE name='%sdatabase_version'
@@ -617,8 +617,8 @@ class Environment(Component, ComponentManager):
         :param cnx: the database connection; if ommitted, a new
                     connection is retrieved
 
-        :since 0.13: deprecation warning: the `cnx` parameter is no
-                     longer used and will be removed in version 0.14
+        :since 1.0: deprecation warning: the `cnx` parameter is no
+                    longer used and will be removed in version 0.14
         """
         for username, name, email in self.db_query("""
                 SELECT DISTINCT s.sid, n.value, e.value

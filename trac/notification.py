@@ -66,7 +66,7 @@ class NotificationSystem(Component):
 
     smtp_from_author = BoolOption('notification', 'smtp_from_author', 'false',
         """Use the action author as the sender of notification emails.
-           (''since 0.13'')""")
+           (''since 1.0'')""")
 
     smtp_replyto = Option('notification', 'smtp_replyto', 'trac@localhost',
         """Reply-To address to use in notification emails.""")

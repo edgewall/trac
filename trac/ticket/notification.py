@@ -61,7 +61,7 @@ class TicketNotificationSystem(Component):
         """Like ticket_subject_template but for batch modifications.
 
         By default, the template is `$prefix Batch modify: $tickets_descr`.
-        ''(since 0.13)''""")
+        ''(since 1.0)''""")
 
     ambiguous_char_width = Option('notification', 'ambiguous_char_width',
                                   'single',

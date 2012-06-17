@@ -81,7 +81,7 @@ class WikiPage(object):
     def delete(self, version=None, db=None):
         """Delete one or all versions of a page.
 
-        :since 0.13: the `db` parameter is no longer needed and will be removed
+        :since 1.0: the `db` parameter is no longer needed and will be removed
         in version 0.14
         """
         assert self.exists, "Cannot delete non-existent page"
@@ -120,7 +120,7 @@ class WikiPage(object):
     def save(self, author, comment, remote_addr, t=None, db=None):
         """Save a new version of a page.
 
-        :since 0.13: the `db` parameter is no longer needed and will be removed
+        :since 1.0: the `db` parameter is no longer needed and will be removed
         in version 0.14
         """
         if not validate_page_name(self.name):
@@ -199,7 +199,7 @@ class WikiPage(object):
     def get_history(self, db=None):
         """Retrieve the edit history of a wiki page.
 
-        :since 0.13: the `db` parameter is no longer needed and will be removed
+        :since 1.0: the `db` parameter is no longer needed and will be removed
         in version 0.14
         """
         for version, ts, author, comment, ipnr in self.env.db_query("""

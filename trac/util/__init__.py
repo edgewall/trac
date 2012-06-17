@@ -524,7 +524,7 @@ def safe_repr(x):
     without risking to trigger an exception (e.g. from a buggy
     `x.__repr__`).
 
-    .. versionadded :: 0.13
+    .. versionadded :: 1.0
     """
     try:
         return to_unicode(repr(x))

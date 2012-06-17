@@ -271,7 +271,7 @@ class Query(object):
               tzinfo=None, locale=None):
         """Get the number of matching tickets for the present query.
 
-        :since 0.13: the `db` parameter is no longer needed and will be removed
+        :since 1.0: the `db` parameter is no longer needed and will be removed
         in version 0.14
         """
         sql, args = self.get_sql(req, cached_ids, authname, tzinfo, locale)
@@ -288,7 +288,7 @@ class Query(object):
                 tzinfo=None, href=None, locale=None):
         """Retrieve the list of matching tickets.
 
-        :since 0.13: the `db` parameter is no longer needed and will be removed
+        :since 1.0: the `db` parameter is no longer needed and will be removed
         in version 0.14
         """
         if req is not None:

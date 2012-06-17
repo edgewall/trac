@@ -15,7 +15,7 @@ def _prep_session_table(env, spread_visits=False):
     """ Populate the session table with known values.
 
     :return: a tuple of lists `(auth_list, anon_list, all_list)`
-    :since 0.13: changed `db` input parameter to `env`
+    :since 1.0: changed `db` input parameter to `env`
     """
     with env.db_transaction as db:
         db("DELETE FROM session")
@@ -44,7 +44,7 @@ def _prep_session_table(env, spread_visits=False):
     return (auth_list, anon_list, all_list)
 
 def get_session_info(env, sid):
-    """:since 0.13: changed `db` input parameter to `env`"""
+    """:since 1.0: changed `db` input parameter to `env`"""
     for row in env.db_query("""
             SELECT DISTINCT s.sid, n.value, e.value FROM session AS s
             LEFT JOIN session_attribute AS n ON (n.sid=s.sid AND n.name='name')

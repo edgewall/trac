@@ -663,7 +663,7 @@ class ReportModule(Component):
     def sql_sub_vars(self, sql, args, db=None):
         """Extract $XYZ-style variables from the `sql` query.
 
-        :since 0.13: the `db` parameter is no longer needed and will be removed
+        :since 1.0: the `db` parameter is no longer needed and will be removed
         in version 0.14
         """
         names = set()

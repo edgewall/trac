@@ -163,7 +163,7 @@ def cached(fn_or_attr=None):
     it is used has an ``env`` attribute containing the application
     `~trac.env.Environment`.
 
-    .. versionchanged:: 0.13 
+    .. versionchanged:: 1.0 
         The data retrieval method used to be called with a single
         argument ``db`` containing a reference to a database
         connection.  This is the same connection that can be retrieved

@@ -202,7 +202,7 @@ class Attachment(object):
         """Delete the attachment, both the record in the database and 
         the file itself.
 
-        .. versionchanged :: 0.13
+        .. versionchanged :: 1.0
            the `db` parameter is no longer needed
            (will be removed in version 0.14)
         """
@@ -280,7 +280,7 @@ class Attachment(object):
     def insert(self, filename, fileobj, size, t=None, db=None):
         """Create a new Attachment record and save the file content.
 
-        .. versionchanged :: 0.13
+        .. versionchanged :: 1.0
            the `db` parameter is no longer needed
            (will be removed in version 0.14)
         """
@@ -328,7 +328,7 @@ class Attachment(object):
         """Iterator yielding all `Attachment` instances attached to
         resource identified by `parent_realm` and `parent_id`.
 
-        .. versionchanged :: 0.13
+        .. versionchanged :: 1.0
            the `db` parameter is no longer needed 
            (will be removed in version 0.14)
         """
@@ -344,7 +344,7 @@ class Attachment(object):
     def delete_all(cls, env, parent_realm, parent_id, db=None):
         """Delete all attachments of a given resource.
         
-        .. versionchanged :: 0.13
+        .. versionchanged :: 1.0
            the `db` parameter is no longer needed
            (will be removed in version 0.14)
         """
@@ -492,7 +492,7 @@ class AttachmentModule(Component):
     max_zip_size = IntOption('attachment', 'max_zip_size', 2097152,
         """Maximum allowed total size (in bytes) for an attachment list to be
         downloadable as a `.zip`. Set this to -1 to disable download as `.zip`.
-        (''since 0.13'')""")
+        (''since 1.0'')""")
 
     render_unsafe_content = BoolOption('attachment', 'render_unsafe_content',
                                        'false',

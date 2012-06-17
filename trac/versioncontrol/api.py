@@ -1139,7 +1139,7 @@ class Changeset(object):
     def get_tags(self):
         """Yield tags associated with this changeset.
 
-        .. versionadded :: 0.13
+        .. versionadded :: 1.0
         """
         return []
 

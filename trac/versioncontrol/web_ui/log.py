@@ -51,7 +51,7 @@ class LogModule(Component):
     graph_colors = ListOption('revisionlog', 'graph_colors',
         ['#cc0', '#0c0', '#0cc', '#00c', '#c0c', '#c00'],
         doc="""Comma-separated list of colors to use for the TracRevisionLog
-        graph display. (''since 0.13'')""")
+        graph display. (''since 1.0'')""")
 
     # INavigationContributor methods
 

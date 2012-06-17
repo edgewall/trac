@@ -295,7 +295,7 @@ def get_ticket_stats(provider, tickets):
 def get_tickets_for_milestone(env, db=None, milestone=None, field='component'):
     """Retrieve all tickets associated with the given `milestone`.
 
-    .. versionchanged :: 0.13
+    .. versionchanged :: 1.0
        the `db` parameter is no longer needed and will be removed in
        version 0.14
     """

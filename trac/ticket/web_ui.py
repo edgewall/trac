@@ -106,7 +106,7 @@ class TicketModule(Component):
         """Delegate access to ticket default Options which were move to
         TicketSystem.
 
-        .. todo:: remove in 0.13
+        .. todo:: remove in 1.0
         """
         if name.startswith('default_'):
             if name not in self._warn_for_default_attr:
@@ -1729,7 +1729,7 @@ class TicketModule(Component):
         """Iterate on changelog entries, consolidating related changes
         in a `dict` object.
 
-        :since 0.13: the `db` parameter is no longer needed and will be removed
+        :since 1.0: the `db` parameter is no longer needed and will be removed
         in version 0.14
         """
         field_labels = TicketSystem(self.env).get_ticket_field_labels()

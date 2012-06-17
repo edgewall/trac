@@ -151,7 +151,7 @@ def email_default_context():
 
     context = RenderingContext(Resource('wiki', 'WikiStart'), href=Href('/'), 
                                perm=NoEmailViewPerm())
-    context.req = None # 0.13 FIXME .req shouldn't be required by formatter
+    context.req = None # 1.0 FIXME .req shouldn't be required by formatter
     return context
 
 

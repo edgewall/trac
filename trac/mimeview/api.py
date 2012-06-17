@@ -131,7 +131,7 @@ class RenderingContext(object):
 
     @staticmethod
     def from_request(*args, **kwargs):
-        """:deprecated: since 0.13, use `web_context` instead."""
+        """:deprecated: since 1.0, use `web_context` instead."""
         from trac.web.chrome import web_context
         return web_context(*args, **kwargs)
 

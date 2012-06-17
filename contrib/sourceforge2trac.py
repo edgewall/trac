@@ -2,10 +2,10 @@
 Import a Sourceforge project's tracker items into a Trac database.
 
 Requires:
-   Trac 0.13 from http://trac.edgewall.org/
+   Trac 1.0 from http://trac.edgewall.org/
    Python 2.5 from http://www.python.org/
 
-0.13 clean-up by cboos **untested**, use at your own risks and send patches
+1.0 clean-up by cboos **untested**, use at your own risks and send patches
 
 The Sourceforge tracker items can be exported from the 'Backup' page
 of the project admin section. Substitute XXXXX with project id:

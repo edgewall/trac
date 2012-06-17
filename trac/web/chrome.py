@@ -345,7 +345,7 @@ class Chrome(Component):
         This can be useful in site.html for common interface customization
         of multiple Trac environments.
         
-        (''since 0.13'')""")
+        (''since 1.0'')""")
 
     auto_reload = BoolOption('trac', 'auto_reload', False,
         """Automatically reload template files after modification.""")
@@ -382,7 +382,7 @@ class Chrome(Component):
         http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js or
         https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js.
         
-        (''since 0.13'')""")
+        (''since 1.0'')""")
 
     jquery_ui_location = Option('trac', 'jquery_ui_location', '',
         """Location of the jQuery UI !JavaScript library (version 1.8.18).
@@ -394,7 +394,7 @@ class Chrome(Component):
         or
         http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.18/jquery-ui.min.js.
         
-        (''since 0.13'')""")
+        (''since 1.0'')""")
 
     jquery_ui_theme_location = Option('trac', 'jquery_ui_theme_location', '',
         """Location of the theme to be used with the jQuery UI !JavaScript
@@ -409,7 +409,7 @@ class Chrome(Component):
         or
         http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.18/themes/start/jquery-ui.css.
         
-        (''since 0.13'')""")
+        (''since 1.0'')""")
 
     jquery_ui_location = Option('trac', 'jquery_ui_location', '',
         """Location of the jQuery UI !JavaScript library (version 1.8.18).
@@ -421,7 +421,7 @@ class Chrome(Component):
         or
         http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.18/jquery-ui.min.js.
         
-        (''since 0.13'')""")
+        (''since 1.0'')""")
 
     jquery_ui_theme_location = Option('trac', 'jquery_ui_theme_location', '',
         """Location of the theme to be used with the jQuery UI !JavaScript
@@ -436,7 +436,7 @@ class Chrome(Component):
         or
         http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.18/themes/start/jquery-ui.css.
         
-        (''since 0.13'')""")
+        (''since 1.0'')""")
 
     metanav_order = ListOption('trac', 'metanav',
                                'login, logout, prefs, help, about', doc=
@@ -502,7 +502,7 @@ class Chrome(Component):
         'relative',
         """The date information format. Valid options are 'relative' for
         displaying relative format and 'absolute' for displaying absolute
-        format. (''since 0.13'')
+        format. (''since 1.0'')
         """)
 
     templates = None

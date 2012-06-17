@@ -24,9 +24,9 @@ url = 'http://trac.edgewall.org'
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = '0.13'
+version = '1.0'
 # The full version, including alpha/beta/rc tags.
-release = '0.13'
+release = '1.0'
 
 # Devel or Release mode for the documentation (if devel, include TODOs,
 # can also be used in conditionals: .. ifconfig :: devel)
