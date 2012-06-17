@@ -7,6 +7,7 @@ Arguments:
  - description_change: metadata about changes in the description
  - can_append: True if the user is allowed to append to tickets
  - preview_mode: if True, show the "draft" background
+ - hide=False: if True, hide the box
  - reporter_link=None: rendered link for the reporter field
  - owner_link=None: rendered link for the owner field
 -->
@@ -14,7 +15,8 @@ Arguments:
      xmlns:py="http://genshi.edgewall.org/"
      xmlns:xi="http://www.w3.org/2001/XInclude"
      xmlns:i18n="http://genshi.edgewall.org/i18n"
-     id="ticket" class="${'ticketdraft' if preview_mode else None}">
+     id="ticket" class="${'ticketdraft' if preview_mode else None}"
+     style="${'display: none' if value_of('hide', False) else None}">
   <div class="date">
     <p i18n:msg="created" py:if="ticket.exists">Opened ${pretty_dateinfo(ticket.time)}</p>
     <p i18n:msg="modified" py:if="ticket.changetime != ticket.time">Last modified ${pretty_dateinfo(ticket.changetime)}</p>

@@ -378,7 +378,8 @@ ${value}</textarea>
 
       </form>
 
-      <xi:include href="ticket_box.html" py:if="not ticket.exists" py:with="preview_mode = True"/>
+      <xi:include href="ticket_box.html" py:if="not ticket.exists"
+                  py:with="hide = not preview_mode; preview_mode = True"/>
 
       <div id="help" i18n:msg="">
         <strong>Note:</strong> See
