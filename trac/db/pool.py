@@ -19,6 +19,7 @@ from __future__ import with_statement
 import os
 import time
 
+from trac.core import TracError
 from trac.db.util import ConnectionWrapper
 from trac.util.concurrency import threading
 from trac.util.text import exception_to_unicode
@@ -101,7 +102,12 @@ class ConnectionPoolBackend(object):
                     cnx.close()
                 if op in ('close', 'create'):
                     cnx = connector.get_connection(**kwargs)
+            except TracError, e:
+                err = e
+                cnx = None
             except Exception, e:
+                if log:
+                    log.error('Exception caught on %s', op, exc_info=True)
                 err = e
                 cnx = None
         
