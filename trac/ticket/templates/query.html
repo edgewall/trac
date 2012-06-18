@@ -9,23 +9,25 @@
   <head>
     <title>$title</title>
     <script type="text/javascript" src="${chrome.htdocs_location}js/folding.js"></script>
-    <script type="text/javascript">/*<![CDATA[*/
+    <script type="text/javascript">
       jQuery(document).ready(function($) {
         initializeFilters();
-        if(batch_modify) {
-          initializeBatch();
-        }
+      <py:if test="batch_modify">
+        initializeBatch();
+      </py:if>
         $("#group").change(function() {
           $("#groupdesc").enable(this.selectedIndex != 0)
         }).change();
         $("fieldset legend.foldable").enableFolding(false);
+      /*<![CDATA[*/
         /* Hide the filters for saved queries. */
         if (window.location.href.search(/[?&]report=[0-9]+/) != -1)
           $("#filters").toggleClass("collapsed");
+      /*]]>*/
         /* Hide the columns by default. */
         $("#columns").toggleClass("collapsed");
       });
-    /*]]>*/</script>
+    </script>
   </head>
 
   <body>

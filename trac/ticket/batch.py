@@ -73,7 +73,7 @@ class BatchModifyModule(Component):
             name = field['name']
             if name not in ('id', 'resolution', 'status', 'owner', 'time',
                             'changetime', 'summary', 'reporter',
-                            'description') and field['type'] != 'text-area':
+                            'description') and field['type'] != 'textarea':
                 value = req.args.get('batchmod_value_' + name)
                 if value is not None:
                     values[name] = value
@@ -98,8 +98,7 @@ class BatchModifyModule(Component):
             {'name': _("add / remove"), 'value': "+-"},
             {'name': _("set to"), 'value': "="},
         ]
-        add_script_data(req, batch_modify=True,
-                             batch_list_modes=batch_list_modes,
+        add_script_data(req, batch_list_modes=batch_list_modes,
                              batch_list_properties=self.fields_as_list)
 
     def _get_action_controls(self, req, tickets):

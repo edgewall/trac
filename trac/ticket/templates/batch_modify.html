@@ -23,7 +23,9 @@
                 py:with="field_names = sorted(fields.iterkeys(), key=lambda name: fields[name].label.lower())">
           <option></option>
           <option py:for="field_name in field_names" py:with="field = fields[field_name]"
-                  py:if="field_name not in ('id', 'resolution', 'status', 'owner', 'time', 'changetime', 'summary', 'reporter', 'description') and fields[field_name].type != 'text-area'"
+                  py:if="field_name not in ('id', 'resolution', 'status', 'owner', 'time', 'changetime', 'summary',
+                                            'reporter', 'description')
+                         and fields[field_name].type != 'textarea'"
                   value="$field_name">${field.label}</option>
         </select>
       </td>
@@ -45,16 +47,16 @@
     </tr>
   </table>
   
+  <div id="batchmod_help" i18n:msg="">
+    <strong>Note:</strong> See <a href="${href.wiki('TracBatchModify')}">TracBatchModify</a> for help on using batch modify.
+  </div>
+
   <div>
     <input type="hidden" name="selected_tickets" value=""/>
     <input type="hidden" name="query_href" value="${query_href}"/>
     <input type="submit" id="batchmod_submit" name="batchmod_submit" value="${_('Change tickets')}" />
   </div>
   
-  <div id="batchmod_help" i18n:msg="">
-    <strong>Note:</strong> See <a href="${href.wiki('TracBatchModify')}">TracBatchModify</a> for help on using batch modify.
-  </div>
-
 </fieldset>
 
 </form>

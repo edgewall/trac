@@ -167,13 +167,17 @@
         if (property.type == "radio") {
           for (var i = 0; i < property.options.length; i++) {
             var option = property.options[i];
-            td.append(createCheckbox(propertyName, option, 
-                                     propertyName + "_" + option)).append(" ")
+            var control = createCheckbox(propertyName, option, 
+                                         propertyName + "_" + option);
+            if (i == 0)
+              focusElement = control;
+            td.append(control).append(" ")
               .append(createLabel(option ? option : "none",
                                   propertyName + "_" + option)).append(" ");
           }
         } else if (property.type == "checkbox") {
-          td.append(createRadio(propertyName, "1", propertyName + "_on"))
+          focusElement = createRadio(propertyName, "1", propertyName + "_on");
+          td.append(focusElement)
             .append(" ").append(createLabel(_("yes"), propertyName + "_on"))
             .append(" ")
             .append(createRadio(propertyName, "0", propertyName + "_off"))
@@ -279,23 +283,29 @@
     function createBatchInput(propertyName, property){
       var td = $('<td class="batchmod_property">');
       var inputName = getBatchInputName(propertyName);
-      switch(property.type){
+      var focusElement = null;
+      switch (property.type) {
         case 'select':
-          td.append(createSelect(inputName, property.options, true,
-                                 property.optgroups));
+          focusElement = createSelect(inputName, property.options, true,
+                                      property.optgroups)
+          td.append(focusElement);
           break;
         case 'radio':
           for (var i = 0; i < property.options.length; i++) {
             var option = property.options[i];
-            td.append(createRadio(inputName, option, inputName + "_" + option))
-              .append(" ")
+            var control = createRadio(inputName, option,
+                                      inputName + "_" + option);
+            if (i == 0)
+              focusElement = control;
+            td.append(control).append(" ")
               .append(createLabel(option ? option : "none",
                       inputName + "_" + option))
               .append(" ");
           }
           break;
         case 'checkbox':
-          td.append(createRadio(inputName, "1", inputName + "_on"))
+          focusElement = createRadio(inputName, "1", inputName + "_on");
+          td.append(focusElement)
             .append(" ").append(createLabel(_("yes"), inputName + "_on"))
             .append(" ")
             .append(createRadio(inputName, "0", inputName + "_off"))
@@ -303,16 +313,18 @@
           break;
         case 'text':
           if ($.inArray(propertyName, batch_list_properties) >= 0) {
-            appendBatchListControls(td, inputName);
+            focusElement = appendBatchListControls(td, inputName);
           } else {
-            td.append(createText(inputName, 42));
+            focusElement = createText(inputName, 42);
+            td.append(focusElement);
           }
           break;
         case 'time':
-          td.append(createText(inputName, 42).addClass("time"));
+          focusElement = createText(inputName, 42).addClass("time");
+          td.append(focusElement);
           break;
       }
-      return td;
+      return [td, focusElement];
     }
     
     function appendBatchListControls(td, inputName) {
@@ -337,10 +349,12 @@
             text2.remove();
             label2.remove();
           }
-          label1.text(" " + batch_list_modes[this.selectedIndex]['name'] +
-                      ":");
+          label1.text(" " + batch_list_modes[this.selectedIndex]['name']
+                      + ":");
         }
       });
+      
+      return text1;
     }
     
     function getBatchInputName(propertyName){
@@ -464,7 +478,8 @@
       );
       
       // Add the input element.
-      tr.append(createBatchInput(propertyName, property));
+      var batchInput = createBatchInput(propertyName, property);
+      tr.append(batchInput[0]);
       
       // New rows are added in the same order as listed in the dropdown.
       // This is the same behavior as the filters.
@@ -480,8 +495,11 @@
       insertionPoint.before(tr);
       
       // Disable each element from the option list when it is selected.
-      this.options[this.selectedIndex].disabled = 'disabled';
-    });
+      this.options[this.selectedIndex].disabled = true;
+      if (batchInput[1])
+        batchInput[1].focus();
+      this.selectedIndex = 0;
+});
   }
 
 })(jQuery);

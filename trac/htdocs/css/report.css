@@ -217,7 +217,7 @@ table.tickets tbody tr.fullrow th {
 
 #batchmod_form fieldset input#batchmod_submit { font-size: 14px; }
 #batchmod_form fieldset input[type="button"]{ padding: 0.1em 0.5em; }
-#batchmod_form fieldset { margin-top: 1em }
+#batchmod_form > fieldset { margin-top: 1.5em }
 #batchmod_form fieldset.collapsed { 
  border-width: 0;
  margin-bottom: 0pt;
@@ -225,34 +225,28 @@ table.tickets tbody tr.fullrow th {
 }
 .batchmod_property { width: 100%; }
 .batchmod_required:before { content: " * "; }
-
 #batchmod_form fieldset input,
 #batchmod_form fieldset select,
 .batchmod_property,
 .batchmod_label {
     font-size: 11px;
 }
-
-#batchmod_action { line-height: 2em }
-
+#batchmod_action { margin-top: 0; line-height: 2em; }
 #batchmod_form th {
-    text-align: right;
-    white-space: nowrap;
-    font-size: 11px;
-}
-
-.batchmod_required {
-    color: red;
-    font-size: 11px;
-    font-weight: bold;
-    font-style: italic;
-    padding-left: .5em;
-}
-
-#batchmod_help {
- clear: both;
- color: #999;
- margin: 1em;
  text-align: right;
+ white-space: nowrap;
+ font-size: 11px;
 }
-#batchmod_help :link, #batchmod_help :visited { cursor: help }
+.batchmod_required {
+ color: red;
+ font-size: 11px;
+ font-weight: bold;
+ font-style: italic;
+ padding-left: .5em;
+}
+#batchmod_help {
+ float: right;
+ color: #999;
+ margin: 0.3em 1em;
+}
+#batchmod_help :link, #batchmod_help :visited { cursor: help; }
