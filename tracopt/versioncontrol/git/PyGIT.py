@@ -31,6 +31,33 @@ import weakref
 
 __all__ = ['GitError', 'GitErrorSha', 'Storage', 'StorageFactory']
 
+
+def terminate(process):
+    """Python 2.5 compatibility method.
+    os.kill is not available on Windows before Python 2.7.
+    In Python 2.6 subprocess.Popen has a terminate method.
+    (It also seems to have some issues on Windows though.)
+    """
+
+    def terminate_win(process):
+        import ctypes
+        PROCESS_TERMINATE = 1
+        handle = ctypes.windll.kernel32.OpenProcess(PROCESS_TERMINATE,
+                                                    False,
+                                                    process.pid)
+        ctypes.windll.kernel32.TerminateProcess(handle, -1)
+        ctypes.windll.kernel32.CloseHandle(handle)
+
+    def terminate_nix(process):
+        import os
+        import signal
+        return os.kill(process.pid, signal.SIGTERM)
+
+    if sys.platform == 'win32':
+        return terminate_win(process)
+    return terminate_nix(process)
+
+
 class GitError(Exception):
     pass
 
@@ -338,11 +365,14 @@ class Storage(object):
         self.__commit_msg_lock = Lock()
 
         self.__cat_file_pipe = None
+        self.__cat_file_pipe_lock = Lock()
 
     def __del__(self):
-        if self.__cat_file_pipe is not None:
-            self.__cat_file_pipe.stdin.close()
-            self.__cat_file_pipe.wait()
+        with self.__cat_file_pipe_lock:
+            if self.__cat_file_pipe is not None:
+                self.__cat_file_pipe.stdin.close()
+                terminate(self.__cat_file_pipe)
+                self.__cat_file_pipe.wait()
 
     #
     # cache handling
@@ -587,20 +617,39 @@ class Storage(object):
         return self.verifyrev('HEAD')
 
     def cat_file(self, kind, sha):
-        if self.__cat_file_pipe is None:
-            self.__cat_file_pipe = self.repo.cat_file_batch()
+        with self.__cat_file_pipe_lock:
+            if self.__cat_file_pipe is None:
+                self.__cat_file_pipe = self.repo.cat_file_batch()
 
-        self.__cat_file_pipe.stdin.write(sha + '\n')
-        self.__cat_file_pipe.stdin.flush()
-        _sha, _type, _size = self.__cat_file_pipe.stdout.readline().split()
+            try:
+                self.__cat_file_pipe.stdin.write(sha + '\n')
+                self.__cat_file_pipe.stdin.flush()
+            
+                split_stdout_line = self.__cat_file_pipe.stdout.readline() \
+                                                               .split()
+                if len(split_stdout_line) != 3:
+                    raise GitError("internal error (could not split line "
+                                   "'%s')" % (split_stdout_line,))
+                    
+                _sha, _type, _size = split_stdout_line
 
-        if _type != kind:
-            raise TracError("internal error (got unexpected object kind "
-                            "'%s')" % k)
+                if _type != kind:
+                    raise GitError("internal error (got unexpected object "
+                                   "kind '%s', expected '%s')"
+                                   % (_type, kind))
 
-        size = int(_size)
-        return self.__cat_file_pipe.stdout.read(size + 1)[:size]
-
+                size = int(_size)
+                return self.__cat_file_pipe.stdout.read(size + 1)[:size]
+            except:
+                # There was an error, we should close the pipe to get to a
+                # consistent state (Otherwise it happens that next time we
+                # call cat_file we get payload from previous call)
+                self.logger.debug("closing cat_file pipe")
+                self.__cat_file_pipe.stdin.close()
+                terminate(self.__cat_file_pipe)
+                self.__cat_file_pipe.wait()
+                self.__cat_file_pipe = None
+        
     def verifyrev(self, rev):
         """verify/lookup given revision object and return a sha id or None
         if lookup failed
@@ -820,31 +869,6 @@ class Storage(object):
         p = []
         change = {}
         next_path = []
-
-        def terminate(process):
-            """Python 2.5 compatibility method.
-            os.kill is not available on Windows before Python 2.7.
-            In Python 2.6 subprocess.Popen has a terminate method.
-            (It also seems to have some issues on Windows though.)
-            """
-
-            def terminate_win(process):
-                import ctypes
-                PROCESS_TERMINATE = 1
-                handle = ctypes.windll.kernel32.OpenProcess(PROCESS_TERMINATE,
-                                                            False,
-                                                            process.pid)
-                ctypes.windll.kernel32.TerminateProcess(handle, -1)
-                ctypes.windll.kernel32.CloseHandle(handle)
-
-            def terminate_nix(process):
-                import os
-                import signal
-                return os.kill(process.pid, signal.SIGTERM)
-
-            if sys.platform == 'win32':
-                return terminate_win(process)
-            return terminate_nix(process)
 
         def name_status_gen():
             p[:] = [self.repo.log_pipe('--pretty=format:%n%H',
