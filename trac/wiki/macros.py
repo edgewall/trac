@@ -496,7 +496,7 @@ class ImageMacro(WikiMacroBase):
         args = content.split(',')
         if len(args) == 0:
             raise Exception("No argument.")
-        filespec = args.pop(0)
+        filespec = args.pop(0).strip()
 
         # style information
         size_re = re.compile('[0-9]+(%|px)?$')
