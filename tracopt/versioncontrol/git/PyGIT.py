@@ -64,6 +64,37 @@ class GitError(Exception):
 class GitErrorSha(GitError):
     pass
 
+# Helper functions
+
+def parse_commit(raw):
+    """Parse the raw content of a commit (as given by `git cat-file -p <rev>`).
+
+    Return the commit message and a dict of properties.
+    """
+    if not raw:
+        raise GitErrorSha
+    lines = raw.splitlines()
+    if not lines:
+        raise GitErrorSha
+    line = lines.pop(0)
+    props = {}
+    multiline = multiline_key = None
+    while line:
+        if line[0] == ' ':
+            if not multiline:
+                multiline_key = key
+                multiline = [props[multiline_key][-1]]
+            multiline.append(line[1:])
+        else:
+            key, value = line.split(None, 1)
+            props.setdefault(key, []).append(value.strip())
+        line = lines.pop(0)
+        if multiline and (not line or key != multiline_key):
+            props[multiline_key][-1] = '\n'.join(multiline)
+            multiline = None
+    return '\n'.join(lines), props
+
+
 class GitCore(object):
     """Low-level wrapper around git executable"""
 
@@ -786,19 +817,7 @@ class Storage(object):
             # cache miss
             raw = self.cat_file('commit', commit_id)
             raw = unicode(raw, self.get_commit_encoding(), 'replace')
-            lines = raw.splitlines()
-
-            if not lines:
-                raise GitErrorSha
-
-            line = lines.pop(0)
-            props = {}
-            while line:
-                key, value = line.split(None, 1)
-                props.setdefault(key, []).append(value.strip())
-                line = lines.pop(0)
-
-            result = ('\n'.join(lines), props)
+            result = parse_commit(raw)
 
             self.__commit_msg_cache[commit_id] = result
 

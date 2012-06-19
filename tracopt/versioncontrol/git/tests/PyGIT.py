@@ -14,7 +14,7 @@
 import unittest
 
 from trac.test import locate
-from tracopt.versioncontrol.git.PyGIT import GitCore, Storage
+from tracopt.versioncontrol.git.PyGIT import GitCore, Storage, parse_commit
 
 
 class GitTestCase(unittest.TestCase):
@@ -30,6 +30,111 @@ class GitTestCase(unittest.TestCase):
         v = Storage.git_version()
         self.assertTrue(v)
         self.assertTrue(v['v_compatible'])
+
+
+class TestParseCommit(unittest.TestCase):
+    commit2240a7b = '''\
+tree b19535236cfb6c64b798745dd3917dafc27bcd0a
+parent 30aaca4582eac20a52ac7b2ec35bdb908133e5b1
+parent 5a0dc7365c240795bf190766eba7a27600be3b3e
+author Linus Torvalds <torvalds@linux-foundation.org> 1323915958 -0800
+committer Linus Torvalds <torvalds@linux-foundation.org> 1323915958 -0800
+mergetag object 5a0dc7365c240795bf190766eba7a27600be3b3e
+ type commit
+ tag tytso-for-linus-20111214A
+ tagger Theodore Ts'o <tytso@mit.edu> 1323890113 -0500
+ 
+ tytso-for-linus-20111214
+ -----BEGIN PGP SIGNATURE-----
+ Version: GnuPG v1.4.10 (GNU/Linux)
+ 
+ iQIcBAABCAAGBQJO6PXBAAoJENNvdpvBGATwpuEP/2RCxmdWYZ8/6Z6pmTh3hHN5
+ fx6HckTdvLQOvbQs72wzVW0JKyc25QmW2mQc5z3MjSymjf/RbEKihPUITRNbHrTD
+ T2sP/lWu09AKLioEg4ucAKn/A7Do3UDIkXTszvVVP/t2psVPzLeJ1njQKra14Nyz
+ o0+gSlnwuGx9WaxfR+7MYNs2ikdSkXIeYsiFAOY4YOxwwC99J/lZ0YaNkbI7UBtC
+ yu2XLIvPboa5JZXANq2G3VhVIETMmOyRTCC76OAXjqkdp9nLFWDG0ydqQh0vVZwL
+ xQGOmAj+l3BNTE0QmMni1w7A0SBU3N6xBA5HN6Y49RlbsMYG27aN54Fy5K2R41I3
+ QXVhBL53VD6b0KaITcoz7jIGIy6qk9Wx+2WcCYtQBSIjL2YwlaJq0PL07+vRamex
+ sqHGDejcNY87i6AV0DP6SNuCFCi9xFYoAoMi9Wu5E9+T+Vck0okFzW/luk/FvsSP
+ YA5Dh+vISyBeCnWQvcnBmsUQyf8d9MaNnejZ48ath+GiiMfY8USAZ29RAG4VuRtS
+ 9DAyTTIBA73dKpnvEV9u4i8Lwd8hRVMOnPyOO785NwEXk3Ng08pPSSbMklW6UfCY
+ 4nr5UNB13ZPbXx4uoAvATMpCpYxMaLEdxmeMvgXpkekl0hHBzpVDey1Vu9fb/a5n
+ dQpo6WWG9HIJ23hOGAGR
+ =n3Lm
+ -----END PGP SIGNATURE-----
+
+Merge tag 'tytso-for-linus-20111214' of git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4
+
+* tag 'tytso-for-linus-20111214' of git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4:
+  ext4: handle EOF correctly in ext4_bio_write_page()
+  ext4: remove a wrong BUG_ON in ext4_ext_convert_to_initialized
+  ext4: correctly handle pages w/o buffers in ext4_discard_partial_buffers()
+  ext4: avoid potential hang in mpage_submit_io() when blocksize < pagesize
+  ext4: avoid hangs in ext4_da_should_update_i_disksize()
+  ext4: display the correct mount option in /proc/mounts for [no]init_itable
+  ext4: Fix crash due to getting bogus eh_depth value on big-endian systems
+  ext4: fix ext4_end_io_dio() racing against fsync()
+
+.. using the new signed tag merge of git that now verifies the gpg
+signature automatically.  Yay.  The branchname was just 'dev', which is
+prettier.  I'll tell Ted to use nicer tag names for future cases.
+'''
+
+    def test_parse(self):
+        msg, props = parse_commit(self.commit2240a7b)
+        self.assertTrue(msg)
+        self.assertTrue(props)
+        self.assertEquals(
+            ['30aaca4582eac20a52ac7b2ec35bdb908133e5b1',
+             '5a0dc7365c240795bf190766eba7a27600be3b3e'],
+            props['parent'])
+        self.assertEquals(
+            ['Linus Torvalds <torvalds@linux-foundation.org> 1323915958 -0800'],
+            props['author'])
+        self.assertEquals(props['author'], props['committer'])
+
+        # Merge tag
+        self.assertEquals(['''\
+object 5a0dc7365c240795bf190766eba7a27600be3b3e
+type commit
+tag tytso-for-linus-20111214A
+tagger Theodore Ts\'o <tytso@mit.edu> 1323890113 -0500
+
+tytso-for-linus-20111214
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iQIcBAABCAAGBQJO6PXBAAoJENNvdpvBGATwpuEP/2RCxmdWYZ8/6Z6pmTh3hHN5
+fx6HckTdvLQOvbQs72wzVW0JKyc25QmW2mQc5z3MjSymjf/RbEKihPUITRNbHrTD
+T2sP/lWu09AKLioEg4ucAKn/A7Do3UDIkXTszvVVP/t2psVPzLeJ1njQKra14Nyz
+o0+gSlnwuGx9WaxfR+7MYNs2ikdSkXIeYsiFAOY4YOxwwC99J/lZ0YaNkbI7UBtC
+yu2XLIvPboa5JZXANq2G3VhVIETMmOyRTCC76OAXjqkdp9nLFWDG0ydqQh0vVZwL
+xQGOmAj+l3BNTE0QmMni1w7A0SBU3N6xBA5HN6Y49RlbsMYG27aN54Fy5K2R41I3
+QXVhBL53VD6b0KaITcoz7jIGIy6qk9Wx+2WcCYtQBSIjL2YwlaJq0PL07+vRamex
+sqHGDejcNY87i6AV0DP6SNuCFCi9xFYoAoMi9Wu5E9+T+Vck0okFzW/luk/FvsSP
+YA5Dh+vISyBeCnWQvcnBmsUQyf8d9MaNnejZ48ath+GiiMfY8USAZ29RAG4VuRtS
+9DAyTTIBA73dKpnvEV9u4i8Lwd8hRVMOnPyOO785NwEXk3Ng08pPSSbMklW6UfCY
+4nr5UNB13ZPbXx4uoAvATMpCpYxMaLEdxmeMvgXpkekl0hHBzpVDey1Vu9fb/a5n
+dQpo6WWG9HIJ23hOGAGR
+=n3Lm
+-----END PGP SIGNATURE-----'''], props['mergetag'])
+
+        # Message
+        self.assertEquals("""Merge tag 'tytso-for-linus-20111214' of git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4
+
+* tag 'tytso-for-linus-20111214' of git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4:
+  ext4: handle EOF correctly in ext4_bio_write_page()
+  ext4: remove a wrong BUG_ON in ext4_ext_convert_to_initialized
+  ext4: correctly handle pages w/o buffers in ext4_discard_partial_buffers()
+  ext4: avoid potential hang in mpage_submit_io() when blocksize < pagesize
+  ext4: avoid hangs in ext4_da_should_update_i_disksize()
+  ext4: display the correct mount option in /proc/mounts for [no]init_itable
+  ext4: Fix crash due to getting bogus eh_depth value on big-endian systems
+  ext4: fix ext4_end_io_dio() racing against fsync()
+
+.. using the new signed tag merge of git that now verifies the gpg
+signature automatically.  Yay.  The branchname was just 'dev', which is
+prettier.  I'll tell Ted to use nicer tag names for future cases.""", msg)
 
 
 #class GitPerformanceTestCase(unittest.TestCase):
@@ -185,6 +290,7 @@ def suite():
     git = locate("git")
     if git:
         suite.addTest(unittest.makeSuite(GitTestCase, 'test'))
+        suite.addTest(unittest.makeSuite(TestParseCommit, 'test'))
     else:
         print("SKIP: tracopt/versioncontrol/git/tests/PyGIT.py (git cli "
               "binary, 'git', not found)")
