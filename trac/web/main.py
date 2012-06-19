@@ -28,13 +28,13 @@ from pprint import pformat, pprint
 import re
 import sys
 
-from genshi.core import Markup
 from genshi.builder import Fragment, tag
 from genshi.output import DocType
 from genshi.template import TemplateLoader
 
 from trac import __version__ as TRAC_VERSION
-from trac.config import ExtensionOption, Option, OrderedExtensionsOption
+from trac.config import BoolOption, ExtensionOption, Option, \
+                        OrderedExtensionsOption
 from trac.core import *
 from trac.env import open_environment
 from trac.loader import get_plugin_info, match_plugins_to_frames
@@ -43,8 +43,7 @@ from trac.resource import ResourceNotFound
 from trac.util import arity, get_frame_info, get_last_traceback, hex_entropy, \
                       read_file, safe_repr, translation
 from trac.util.concurrency import threading
-from trac.util.datefmt import format_datetime, http_date, localtz, timezone, \
-                              user_time
+from trac.util.datefmt import format_datetime, localtz, timezone, user_time
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode
 from trac.util.translation import _, get_negotiated_locale, has_babel, \
                                   safefmt, tag_
@@ -113,6 +112,13 @@ class RequestDispatcher(Component):
         language. (''since 1.0'')
         """)
 
+    use_xsendfile = BoolOption('trac', 'use_xsendfile', 'false',
+        """When true, send a `X-Sendfile` header and no content when sending
+        files from the filesystem, so that the web server handles the content.
+        This requires a web server that knows how to handle such a header,
+        like Apache with `mod_xsendfile` or lighttpd. (''since 1.0'')
+        """)
+
     # Public API
 
     def authenticate(self, req):
@@ -142,7 +148,8 @@ class RequestDispatcher(Component):
             'locale': self._get_locale,
             'lc_time': self._get_lc_time,
             'tz': self._get_timezone,
-            'form_token': self._get_form_token
+            'form_token': self._get_form_token,
+            'use_xsendfile': self._get_use_xsendfile,
         })
 
         try:
@@ -302,6 +309,9 @@ class RequestDispatcher(Component):
             if sys.version_info >= (2, 6):
                 req.outcookie['trac_form_token']['httponly'] = True
             return req.outcookie['trac_form_token'].value
+
+    def _get_use_xsendfile(self, req):
+        return self.use_xsendfile
 
     def _pre_process_request(self, req, chosen_handler):
         for filter_ in self.filters:
