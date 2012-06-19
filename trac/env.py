@@ -641,13 +641,13 @@ class Environment(Component, ComponentManager):
 
     def needs_upgrade(self):
         """Return whether the environment needs to be upgraded."""
-        with self.db_query as db:
-            for participant in self.setup_participants:
+        for participant in self.setup_participants:
+            with self.db_query as db:
                 if participant.environment_needs_upgrade(db):
                     self.log.warn("Component %s requires environment upgrade",
                                   participant)
                     return True
-            return False
+        return False
 
     def upgrade(self, backup=False, backup_dest=None):
         """Upgrade database.
@@ -657,8 +657,8 @@ class Environment(Component, ComponentManager):
         :return: whether the upgrade was performed
         """
         upgraders = []
-        with self.db_query as db:
-            for participant in self.setup_participants:
+        for participant in self.setup_participants:
+            with self.db_query as db:
                 if participant.environment_needs_upgrade(db):
                     upgraders.append(participant)
         if not upgraders:
