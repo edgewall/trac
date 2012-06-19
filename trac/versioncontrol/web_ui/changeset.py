@@ -990,6 +990,7 @@ class ChangesetModule(Component):
                                tag.strong(self._get_location(files) or '/')),
                         markup, class_="changes")
                 elif show_files:
+                    filter = set()
                     for c, r, repos_for_c in changesets:
                         for chg in c.get_changes():
                             resource = c.resource.parent.child('source',
@@ -998,8 +999,11 @@ class ChangesetModule(Component):
                                 continue
                             if show_files > 0 and len(files) > show_files:
                                 break
-                            files.append(tag.li(tag.div(class_=chg[2]),
-                                                chg[0] or '/'))
+                            f = (chg[2], chg[0])
+                            if not f in filter:
+                                filter.add(f)
+                                files.append(tag.li(tag.div(class_=chg[2]),
+                                                    chg[0] or '/'))
                     if show_files > 0 and len(files) > show_files:
                         files = files[:show_files] + [tag.li(u'\u2026')]
                     markup = tag(tag.ul(files, class_="changes"), markup)
