@@ -60,23 +60,42 @@ var babel = new function() {
 
   Translations.prototype = {
     /**
-     * translate a single string.
+     * translate a single string
+     *
+     * If extra parameters are given, use them to fill the format
+     * specified by the string.
      */
     gettext: function(string) {
       var translated = this.messages[string];
       if (typeof translated == 'undefined')
         return string;
-      return (typeof translated == 'string') ? translated : translated[0];
+      if (typeof translated != 'string')
+        translated = translated[0];
+      if (arguments.length > 1) {
+        arguments[0] = translated;
+        return babel.format.apply(this, arguments);
+      }
+      return translated;
     },
 
     /**
      * translate a pluralizable string
+     *
+     * If extra parameters are given, use them to fill the format
+     * specified by the string.
      */
     ngettext: function(singular, plural, n) {
       var translated = this.messages[singular];
       if (typeof translated == 'undefined')
-        return (n == 1) ? singular : plural;
-      return translated[this.pluralexpr(n)];
+        translated = (n == 1) ? singular : plural;
+      else
+        translated = translated[this.pluralexpr(n)];
+      if (arguments.length > 3) {
+        var format_args = Array.prototype.slice.call(arguments, 3);
+        format_args.unshift(translated);
+        return babel.format.apply(this, format_args)
+      }
+      return translated;
     },
 
     /**
@@ -85,11 +104,11 @@ var babel = new function() {
      */
     install: function() {
       var self = this;
-      window._ = window.gettext = function(string) {
-        return self.gettext(string);
+      window._ = window.gettext = function() {
+        return self.gettext.apply(self, arguments);
       };
       window.ngettext = function(singular, plural, n) {
-        return self.ngettext(singular, plural, n);
+        return self.ngettext.apply(self, arguments);
       };
       return this;
     },
@@ -138,7 +157,7 @@ var babel = new function() {
    *
    *    babel.format(_('Hello %s'), name)
    *    babel.format(_('Progress: %(percent)s%%'), {percent: 100})
-   */ 
+   */
   this.format = function() {
     var arg, string = arguments[0], idx = 0;
     if (arguments.length == 1)
@@ -153,7 +172,7 @@ var babel = new function() {
     return string.replace(formatRegex, function(all, name, type) {
       if (all == '%%') return '%';
       var value = arg[name || idx++];
-      return (type == 'i' || type == 'd') ? +value : value; 
+      return (type == 'i' || type == 'd') ? +value : value;
     });
   }
 

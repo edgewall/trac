@@ -118,7 +118,7 @@
         td_class: td_class, 
         colspan: tr.children("td").length, 
         depth: depth, 
-        loading: babel.format(_("Loading %(entry)s..."), {entry: a.text()})
+        loading: _("Loading %(entry)s...", {entry: a.text()})
       }));
       tr.after(loading_row);
   
