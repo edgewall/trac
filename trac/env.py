@@ -31,7 +31,8 @@ from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
 from trac.db.api import (DatabaseManager, QueryContextManager, 
                          TransactionContextManager, with_transaction)
-from trac.util import copytree, create_file, get_pkginfo, lazy, makedirs
+from trac.util import copytree, create_file, get_pkginfo, lazy, makedirs, \
+                      read_file
 from trac.util.concurrency import threading
 from trac.util.text import exception_to_unicode, path_to_unicode, printerr, \
                            printout
@@ -41,6 +42,10 @@ from trac.web.href import Href
 
 __all__ = ['Environment', 'IEnvironmentSetupParticipant', 'open_environment']
 
+
+# Content of the VERSION file in the environment
+_VERSION = 'Trac Environment Version 1'
+    
 
 class ISystemInfoProvider(Interface):
     """Provider of system information, displayed in the "About Trac"
@@ -364,8 +369,13 @@ class Environment(Component, ComponentManager):
     def verify(self):
         """Verify that the provided path points to a valid Trac environment
         directory."""
-        with open(os.path.join(self.path, 'VERSION'), 'r') as fd:
-            assert fd.read(26) == 'Trac Environment Version 1'
+        try:
+            tag = read_file(os.path.join(self.path, 'VERSION')).splitlines()[0]
+            if tag != _VERSION:
+                raise Exception("Unknown Trac environment type '%s'" % tag)
+        except Exception, e:
+            raise TracError("No Trac environment found at %s\n%s"
+                            % (self.path, e))
 
     def get_db_cnx(self):
         """Return a database connection from the connection pool
@@ -526,8 +536,7 @@ class Environment(Component, ComponentManager):
         os.mkdir(os.path.join(self.path, 'plugins'))
 
         # Create a few files
-        create_file(os.path.join(self.path, 'VERSION'),
-                    'Trac Environment Version 1\n')
+        create_file(os.path.join(self.path, 'VERSION'), _VERSION + '\n')
         create_file(os.path.join(self.path, 'README'),
                     'This directory contains a Trac environment.\n'
                     'Visit http://trac.edgewall.org/ for more information.\n')
