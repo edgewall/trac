@@ -30,7 +30,7 @@ from trac.resource import Resource, ResourceNotFound, get_resource_name, \
 from trac.util.datefmt import format_date, from_utimestamp, user_time
 from trac.util.html import escape, find_element
 from trac.util.presentation import separated
-from trac.util.text import unicode_quote, to_unicode
+from trac.util.text import unicode_quote, to_unicode, stripws
 from trac.util.translation import _, dgettext, cleandoc_
 from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
 from trac.wiki.formatter import format_to_html, format_to_oneliner, \
@@ -496,7 +496,9 @@ class ImageMacro(WikiMacroBase):
         args = content.split(',')
         if len(args) == 0:
             raise Exception("No argument.")
-        filespec = args.pop(0).strip()
+        # strip unicode white-spaces and ZWSPs are copied from attachments
+        # section (#10668)
+        filespec = stripws(args.pop(0))
 
         # style information
         size_re = re.compile('[0-9]+(%|px)?$')

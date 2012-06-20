@@ -8,7 +8,7 @@ from trac.util.text import empty, expandtabs, fix_eol, javascript_quote, \
                            text_width, print_table, unicode_quote, \
                            unicode_quote_plus, unicode_unquote, \
                            unicode_urlencode, wrap, quote_query_string, \
-                           unicode_to_base64, unicode_from_base64
+                           unicode_to_base64, unicode_from_base64, stripws
 
 
 class ToUnicodeTestCase(unittest.TestCase):
@@ -289,6 +289,21 @@ class UnicodeBase64TestCase(unittest.TestCase):
         self.assertEqual(text, unicode_from_base64(text_base64_no_strip))
 
 
+class StripwsTestCase(unittest.TestCase):
+    def test_stripws(self):
+        self.assertEquals(u'stripws',
+                          stripws(u' \u200b\t\u3000stripws \u200b\t\u2008'))
+        self.assertEquals(u'stripws \u3000\t',
+                          stripws(u'\u200b\t\u2008 stripws \u3000\t',
+                                  trailing=False))
+        self.assertEquals(u' \t\u3000stripws',
+                          stripws(u' \t\u3000stripws \u200b\t\u2008',
+                                  leading=False))
+        self.assertEquals(u' \t\u3000stripws \u200b\t\u2008',
+                          stripws(u' \t\u3000stripws \u200b\t\u2008',
+                                  leading=False, trailing=False))
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ToUnicodeTestCase, 'test'))
@@ -302,6 +317,7 @@ def suite():
     suite.addTest(unittest.makeSuite(WrapTestCase, 'test'))
     suite.addTest(unittest.makeSuite(FixEolTestCase, 'test'))
     suite.addTest(unittest.makeSuite(UnicodeBase64TestCase, 'test'))
+    suite.addTest(unittest.makeSuite(StripwsTestCase, 'test'))
     return suite
 
 if __name__ == '__main__':
