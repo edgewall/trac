@@ -29,27 +29,34 @@ from trac.attachment import AttachmentModule
 from trac.config import BoolOption, Option, IntOption
 from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter
-from trac.resource import Resource, ResourceNotFound, get_resource_url, \
-                         render_resource_link, get_resource_shortname
+from trac.resource import (
+    Resource, ResourceNotFound, get_resource_url, render_resource_link,
+    get_resource_shortname
+)
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.ticket.api import TicketSystem, ITicketManipulator
 from trac.ticket.model import Milestone, Ticket, group_milestones
 from trac.ticket.notification import TicketNotifyEmail
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import as_bool, as_int, get_reporter_id
-from trac.util.datefmt import format_datetime, from_utimestamp, \
-                              to_utimestamp, utc
-from trac.util.text import exception_to_unicode, empty, \
-                           obfuscate_email_address, shorten_line, to_unicode
+from trac.util.datefmt import (
+    format_datetime, from_utimestamp, to_utimestamp, utc
+)
+from trac.util.text import (
+    exception_to_unicode, empty, obfuscate_email_address, shorten_line,
+    to_unicode
+)
 from trac.util.presentation import separated
 from trac.util.translation import _, tag_, tagn_, N_, gettext, ngettext
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
-from trac.web import arg_list_to_args, parse_arg_list, IRequestHandler, \
-                     RequestDone
-from trac.web.chrome import (Chrome, INavigationContributor, ITemplateProvider,
-                             add_ctxtnav, add_link, add_notice, add_script,
-                             add_script_data, add_stylesheet, add_warning,
-                             auth_link, prevnext_nav, web_context)
+from trac.web import (
+    IRequestHandler, RequestDone, arg_list_to_args, parse_arg_list
+)
+from trac.web.chrome import (
+    Chrome, INavigationContributor, ITemplateProvider,
+    add_ctxtnav, add_link, add_notice, add_script, add_script_data,
+    add_stylesheet, add_warning, auth_link, prevnext_nav, web_context
+)
 from trac.wiki.formatter import format_to, format_to_html, format_to_oneliner
 
 
