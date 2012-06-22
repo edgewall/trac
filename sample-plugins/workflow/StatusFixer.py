@@ -15,10 +15,11 @@ class StatusFixerActionController(Component):
     status can then be set to some valid state.
 
     Don't forget to add `StatusFixerActionController` to the workflow
-    option in [ticket].
-    If there is no workflow option, the line will look like this:
-
+    option in the `[ticket]` section in TracIni.
+    If there is no other workflow option, the line will look like this:
+    {{{
     workflow = ConfigurableTicketWorkflow,StatusFixerActionController
+    }}}
     """
 
     implements(ITicketActionController, IPermissionRequestor)

@@ -15,10 +15,12 @@ class VoteOperation(Component):
     This is a sample action controller illustrating how to create additional
     ''operations''.
 
-    Don't forget to add `VoteOperation` to the workflow option in [ticket].
-    If there is no workflow option, the line will look like this:
-
+    Don't forget to add `VoteOperation` to the workflow
+    option in the `[ticket]` section in TracIni.
+    If there is no other workflow option, the line will look like this:
+    {{{
     workflow = ConfigurableTicketWorkflow,VoteOperation
+    }}}
     """
     
     implements(ITicketActionController)
