@@ -94,6 +94,12 @@ Arguments:
         <py:otherwise><i18n:msg params="value">
           <em>${field.old}</em> deleted
         </i18n:msg></py:otherwise>
+        <py:if test="preview and field.by == 'user'">
+          (<button py:with="old = ticket.get_default(field_name) if field.old is empty else field.old"
+                   type="submit" name="revert_$field_name" class="trac-revert"
+                   title="Revert this change">revert<div id="revert-$field_name">${
+            '0' if 'cc_update' in field else old}</div></button>)
+        </py:if>
       </py:choose>
     </li>
   </ul>

@@ -34,6 +34,30 @@
         actions.click(updateActionFields);
         updateActionFields();
 
+        function setRevertHandler() {
+          $("button.trac-revert").click(function() {
+            var div = $("div", this);
+            var field_name = div[0].id.substr(7);
+            var field_value = div.text();
+            var input = $("#propertyform *[name=field_" + field_name + "]");
+            if (input.length > 0) {
+              if (input.filter("input[type=radio]").length > 0) {
+                input.val([field_value]);
+              } else if (input.filter("input[type=checkbox]").length > 0) {
+                input.val(field_value == "1" ? [field_value] : []);
+              } else {
+                input.val(field_value);
+              }
+            } else { // Special case for CC checkbox
+              input = $("#propertyform input[name=cc_update]").val([]);
+            }
+            input.change();
+            $(this).closest("li").remove();
+            return false;
+          });
+        }
+        setRevertHandler();
+
         var comment_focused = false;
         $("#comment").focus(function() { comment_focused = true; })
                      .blur(function() { comment_focused = false; });
@@ -56,6 +80,7 @@
           var preview = $("#ticketchange").html(items.filter('#preview').children());
           var show_preview = preview.children().length != 0;
           $("#ticketchange").toggle(show_preview);
+          setRevertHandler();
           // Collapse property form if comment editor has focus
           if (show_preview && comment_focused)
             $("#modify").parent().addClass("collapsed");

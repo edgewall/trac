@@ -39,8 +39,8 @@ from trac.timeline.api import ITimelineEventProvider
 from trac.util import as_bool, as_int, get_reporter_id
 from trac.util.datefmt import format_datetime, from_utimestamp, \
                               to_utimestamp, utc
-from trac.util.text import exception_to_unicode, obfuscate_email_address, \
-                           shorten_line, to_unicode
+from trac.util.text import exception_to_unicode, empty, \
+                           obfuscate_email_address, shorten_line, to_unicode
 from trac.util.presentation import separated
 from trac.util.translation import _, tag_, tagn_, N_, gettext, ngettext
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
@@ -544,7 +544,7 @@ class TicketModule(Component):
                          'reassign_owner': req.authname,
                          'resolve_resolution': None,
                          'start_time': ticket['changetime']})
-        elif req.method == 'POST': # 'Preview' or 'Submit'
+        elif req.method == 'POST':
             if 'cancel_comment' in req.args:
                 req.redirect(req.href.ticket(ticket.id))
             elif 'edit_comment' in req.args:
@@ -598,7 +598,7 @@ class TicketModule(Component):
             # validates and there were no problems with the workflow side of
             # things.
             valid = self._validate_ticket(req, ticket, not valid) and valid
-            if 'preview' not in req.args:
+            if 'submit' in req.args:
                 if valid:
                     # redirected if successful
                     self._do_save(req, ticket, action)
@@ -713,9 +713,9 @@ class TicketModule(Component):
         
     def _prepare_data(self, req, ticket, absurls=False):
         return {'ticket': ticket, 'to_utimestamp': to_utimestamp,
-                'context': web_context(req, ticket.resource,
-                                                absurls=absurls),
-                'preserve_newlines': self.must_preserve_newlines}
+                'context': web_context(req, ticket.resource, absurls=absurls),
+                'preserve_newlines': self.must_preserve_newlines,
+                'emtpy': empty}
 
     def _toggle_cc(self, req, cc):
         """Return an (action, recipient) tuple corresponding to a change
@@ -750,8 +750,15 @@ class TicketModule(Component):
         
     def _populate(self, req, ticket, plain_fields=False):
         if not plain_fields:
-            fields = dict([(k[6:], v) for k, v in req.args.iteritems()
-                           if k.startswith('field_')])
+            fields = dict((k[6:], v) for k, v in req.args.iteritems()
+                          if k.startswith('field_')
+                             and not 'revert_' + k[6:] in req.args)
+            # Handle revert of checkboxes (in particular, revert to 1)
+            for k in list(fields):
+                if k.startswith('checkbox_'):
+                    k = k[9:]
+                    if 'revert_' + k in req.args:
+                        fields[k] = ticket[k]
         else:
             fields = req.args.copy()
         # Prevent direct changes to protected fields (status and resolution are
@@ -761,7 +768,7 @@ class TicketModule(Component):
             fields.pop('checkbox_' + each, None)    # See Ticket.populate()
         ticket.populate(fields)
         # special case for updating the Cc: field
-        if 'cc_update' in req.args:
+        if 'cc_update' in req.args and 'revert_cc' not in req.args:
             cc_action, cc_entry, cc_list = self._toggle_cc(req, ticket['cc'])
             if cc_action == 'remove':
                 cc_list.remove(cc_entry)
@@ -1410,7 +1417,7 @@ class TicketModule(Component):
                     items.append(rendered)
         return tag(items)
 
-    def _prepare_fields(self, req, ticket):
+    def _prepare_fields(self, req, ticket, field_changes=None):
         context = web_context(req, ticket.resource)
         fields = []
         owner_field = None
@@ -1453,18 +1460,34 @@ class TicketModule(Component):
                 field['rendered'] = self._query_link_words(context, name,
                                                            ticket[name])
             elif name == 'cc':
+                cc_changed = field_changes is not None and 'cc' in field_changes
                 field['rendered'] = self._query_link_words(context, name,
                                                            ticket[name])
                 if ticket.exists and \
                         'TICKET_EDIT_CC' not in req.perm(ticket.resource):
                     cc = ticket._old.get('cc', ticket['cc'])
                     cc_action, cc_entry, cc_list = self._toggle_cc(req, cc)
+                    cc_update = 'cc_update' in req.args \
+                                and 'revert_cc' not in req.args
                     field['edit_label'] = {
                             'add': _("Add to Cc"),
                             'remove': _("Remove from Cc"),
                             '': _("Add/Remove from Cc")}[cc_action]
                     field['cc_entry'] = cc_entry or _("<Author field>")
-                    field['cc_update'] = 'cc_update' in req.args or None
+                    field['cc_update'] = cc_update or None
+                    if cc_changed:
+                        field_changes['cc']['cc_update'] = cc_update
+                if cc_changed:
+                    # normalize the new CC: list; also remove the
+                    # change altogether if there's no real change
+                    cc_list = Chrome(self.env).cc_list
+                    old_cc_list = cc_list(field_changes['cc']['old'])
+                    new_cc_list = cc_list(field_changes['cc']['new']
+                                          .replace(' ', ','))
+                    if new_cc_list == old_cc_list:
+                        del field_changes['cc']
+                    else:
+                        field_changes['cc']['new'] = ','.join(new_cc_list)
 
             # per type settings
             if type_ in ('radio', 'select'):
@@ -1524,7 +1547,7 @@ class TicketModule(Component):
 
         # -- Ticket fields
 
-        fields = self._prepare_fields(req, ticket)
+        fields = self._prepare_fields(req, ticket, field_changes)
 
         # -- Ticket Change History
 

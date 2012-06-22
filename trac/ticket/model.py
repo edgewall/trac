@@ -163,13 +163,15 @@ class Ticket(object):
         """
         try:
             value = self.values[name]
-            if value is not empty:
-                return value
-            field = [field for field in self.fields if field['name'] == name]
-            if field:
-                return field[0].get('value', '')
+            return value if value is not empty else self.get_default(name)
         except KeyError:
             pass
+
+    def get_default(self, name):
+        """Return the default value of a field."""
+        field = [field for field in self.fields if field['name'] == name]
+        if field:
+            return field[0].get('value', '')
 
     def populate(self, values):
         """Populate the ticket with 'suitable' values from a dictionary"""

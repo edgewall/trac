@@ -142,6 +142,20 @@ div.comment ol { list-style: decimal }
 #changelog .changes, #ticketchange .changes { list-style: square; margin-left: 2em; padding: 0 }
 .trac-conflict { border-left: .3em solid #e44; padding-left: .3em; }
 #changelog .comment, #ticketchange .comment { margin-left: 2em }
+button.trac-revert, button.trac-revert:hover {
+ margin: 0;
+ padding: 0;
+ border: none;
+ border-bottom: 1px dotted #bbb;
+ overflow: visible;
+ cursor: pointer;
+ background: none;
+ color: #b00;
+ text-decoration: none;
+ -moz-user-select: text;
+}
+button.trac-revert:hover { background-color: #eee; color: #555; }
+button.trac-revert div { display: none; }
 
 form .field { margin-top: .75em; width: 100% }
 form .field fieldset.iefix { margin-left: 1px; margin-right: 1px }
