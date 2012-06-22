@@ -724,6 +724,9 @@ class TicketModule(Component):
                 'preserve_newlines': self.must_preserve_newlines,
                 'emtpy': empty}
 
+    def _cc_list(self, cc):
+        return Chrome(self.env).cc_list(cc)
+
     def _toggle_cc(self, req, cc):
         """Return an (action, recipient) tuple corresponding to a change
         of CC status for this user relative to the current `cc_list`."""
@@ -742,7 +745,7 @@ class TicketModule(Component):
                 entries.append(email)
         add = []
         remove = []
-        cc_list = Chrome(self.env).cc_list(cc)
+        cc_list = self._cc_list(cc)
         for entry in entries:
             if entry in cc_list:
                 remove.append(entry)
@@ -1487,10 +1490,9 @@ class TicketModule(Component):
                 if cc_changed:
                     # normalize the new CC: list; also remove the
                     # change altogether if there's no real change
-                    cc_list = Chrome(self.env).cc_list
-                    old_cc_list = cc_list(field_changes['cc']['old'])
-                    new_cc_list = cc_list(field_changes['cc']['new']
-                                          .replace(' ', ','))
+                    old_cc_list = self._cc_list(field_changes['cc']['old'])
+                    new_cc_list = self._cc_list(field_changes['cc']['new']
+                                                .replace(' ', ','))
                     if new_cc_list == old_cc_list:
                         del field_changes['cc']
                     else:
@@ -1722,8 +1724,7 @@ class TicketModule(Component):
         render_elt = lambda x: x
         sep = ', '
         if field == 'cc':
-            chrome = Chrome(self.env)
-            old_list, new_list = chrome.cc_list(old), chrome.cc_list(new)
+            old_list, new_list = self._cc_list(old), self._cc_list(new)
             if not (Chrome(self.env).show_email_addresses or 
                     'EMAIL_VIEW' in req.perm(resource_new or ticket.resource)):
                 render_elt = obfuscate_email_address
