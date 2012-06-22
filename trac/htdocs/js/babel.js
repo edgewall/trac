@@ -68,8 +68,8 @@ var babel = new function() {
     gettext: function(string) {
       var translated = this.messages[string];
       if (typeof translated == 'undefined')
-        return string;
-      if (typeof translated != 'string')
+        translated = string;
+      else if (typeof translated != 'string')
         translated = translated[0];
       if (arguments.length > 1) {
         arguments[0] = translated;
