@@ -1,4 +1,8 @@
-
+/* Warning: this module is deprecated and will be removed in Trac 1.1.x
+ *
+ * Don't use $.suggest in your own plugins, rather look into jquery-ui's
+ * autocomplete features (http://docs.jquery.com/UI/Autocomplete).
+ */
 (function($){
   
   
