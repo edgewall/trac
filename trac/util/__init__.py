@@ -406,6 +406,7 @@ def fq_class_name(obj):
     m, n = c.__module__, c.__name__
     return n if m == '__builtin__' else '%s.%s' % (m, n)
 
+
 def arity(f):
     """Return the number of arguments expected by the given function, unbound
     or bound method.
@@ -545,6 +546,23 @@ def get_doc(obj):
     summary = doc[0].replace('\n', ' ')
     description = doc[1] if len(doc) > 1 else None
     return (summary, description)
+
+
+_dont_import = frozenset(['__file__', '__name__', '__package__'])
+
+def import_namespace(globals_dict, module_name):
+    """Import the namespace of a module into a globals dict.
+    
+    This function is used in stub modules to import all symbols defined in
+    another module into the global namespace of the stub, usually for
+    backward compatibility.
+    """
+    __import__(module_name)
+    module = sys.modules[module_name]
+    globals_dict.update(item for item in module.__dict__.iteritems()
+                        if item[0] not in _dont_import)
+    globals_dict.pop('import_namespace', None)
+
 
 # -- setuptools utils
 

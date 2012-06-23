@@ -37,7 +37,7 @@ from trac.util.concurrency import get_thread_id
 from trac.util.datefmt import utc
 from trac.versioncontrol import DbRepositoryProvider, Changeset, Node, \
                                 NoSuchChangeset
-from trac.versioncontrol import svn_fs
+from tracopt.versioncontrol.svn import svn_fs
 
 REPOS_PATH = os.path.join(tempfile.gettempdir(), 'trac-svnrepos')
 REPOS_NAME = 'repo'
@@ -907,7 +907,8 @@ def suite():
             suite.addTest(unittest.makeSuite(
                 tc, 'test', suiteClass=SubversionRepositoryTestSetup))
     else:
-        print "SKIP: versioncontrol/tests/svn_fs.py (no svn bindings)"
+        print("SKIP: tracopt/versioncontrol/svn/tests/svn_fs.py (no svn "
+              "bindings)")
     return suite
 
 if __name__ == '__main__':

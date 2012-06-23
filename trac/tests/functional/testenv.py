@@ -110,7 +110,7 @@ class FunctionalTestEnvironment(object):
         environment creation.  For anything more complicated, use the
         :meth:`post_create` method.
         """
-        return []
+        return ['tracopt.*']
 
     def create(self):
         """Create a new test environment.
