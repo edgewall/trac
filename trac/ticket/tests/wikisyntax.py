@@ -32,8 +32,8 @@ ticket:12-14,33
 ticket:12,33?order=created
 ------------------------------
 <p>
-<a href="/query?id=12-14%2C33" title="Tickets 12-14,33">ticket:12-14,33</a>
-<a href="/query?id=12%2C33&amp;order=created" title="Tickets 12,33">ticket:12,33?order=created</a>
+<a href="/query?id=12-14%2C33" title="Tickets 12-14, 33">ticket:12-14,33</a>
+<a href="/query?id=12%2C33&amp;order=created" title="Tickets 12, 33">ticket:12,33?order=created</a>
 </p>
 ------------------------------
 ============================== ticket link shorthand form
@@ -50,8 +50,8 @@ ticket:12,33?order=created
 #1,3,5,7
 ------------------------------
 <p>
-<a href="/query?id=1-5%2C42" title="Tickets 1-5,42">#1-5,42</a>
-<a href="/query?id=1%2C3%2C5%2C7" title="Tickets 1,3,5,7">#1,3,5,7</a>
+<a href="/query?id=1-5%2C42" title="Tickets 1-5, 42">#1-5,42</a>
+<a href="/query?id=1%2C3%2C5%2C7" title="Tickets 1, 3, 5, 7">#1,3,5,7</a>
 </p>
 ------------------------------
 ============================== ticket link shorthand form with long ranges (#10111 regression)

@@ -184,7 +184,7 @@ class WikiTestCase(unittest.TestCase):
         """Testing WikiFormatter"""
         formatter = self.formatter()
         v = unicode(formatter.generate(**self.generate_opts))
-        v = v.replace('\r', '').replace(u'\u200b', '')
+        v = v.replace('\r', '').replace(u'\u200b', '') # FIXME: keep ZWSP
         try:
             self.assertEquals(self.correct, v)
         except AssertionError, e:

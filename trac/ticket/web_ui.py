@@ -412,9 +412,9 @@ class TicketModule(Component):
                 description, comment, cid = event[3]
         tickets = sorted(tickets)
         if field == 'url':
-            return context.href.query(id=','.join([str(t) for t in tickets]))
+            return context.href.query(id=','.join(str(t) for t in tickets))
         elif field == 'title':
-            ticketids = ','.join([str(t) for t in tickets])
+            ticketids = u',\u200b'.join(str(t) for t in tickets)
             title = _("Tickets %(ticketids)s", ticketids=ticketids)
             return tag_("Tickets %(ticketlist)s batch updated",
                         ticketlist=tag.em('#', ticketids, title=title))

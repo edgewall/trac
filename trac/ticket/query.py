@@ -1416,7 +1416,8 @@ class TicketQueryMacro(WikiMacroBase):
         if format == 'compact':
             if query.group:
                 groups = [(v, ' ', 
-                           tag.a('#%s' % ','.join([str(t['id']) for t in g]),
+                           tag.a('#%s' % u',\u200b'.join(str(t['id'])
+                                                         for t in g),
                                  href=href, class_='query', title=title))
                           for v, g, href, title in ticket_groups()]
                 return tag(groups[0], [(', ', g) for g in groups[1:]])

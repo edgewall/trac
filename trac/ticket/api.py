@@ -473,8 +473,10 @@ class TicketSystem(Component):
                 ranges = str(r)
                 if params:
                     params = '&' + params[1:]
-                return tag.a(label, 
-                             title=_("Tickets %(ranges)s", ranges=ranges),
+                label_wrap = label.replace(',', u',\u200b')
+                ranges_wrap = ranges.replace(',', u', ')
+                return tag.a(label_wrap,
+                             title=_("Tickets %(ranges)s", ranges=ranges_wrap),
                              href=formatter.href.query(id=ranges) + params)
         except ValueError:
             pass

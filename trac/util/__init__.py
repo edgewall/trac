@@ -787,9 +787,16 @@ class Ranges(object):
     >>> str(Ranges("20-10", reorder=True))
     '10-20'
 
+    As rendered ranges are often using u',\u200b' (comma + Zero-width
+    space) to enable wrapping, we also support reading such ranges, as
+    they can be copy/pasted back.
+
+    >>> str(Ranges(u'1,\u200b3,\u200b5,\u200b6,\u200b7,\u200b9'))
+    '1,3,5-7,9'
+
     """
 
-    RE_STR = r"""\d+(?:[-:]\d+)?(?:,\d+(?:[-:]\d+)?)*"""
+    RE_STR = ur'\d+(?:[-:]\d+)?(?:,\u200b?\d+(?:[-:]\d+)?)*'
     
     def __init__(self, r=None, reorder=False):
         self.pairs = []
@@ -808,7 +815,7 @@ class Ranges(object):
             return
         p = self.pairs
         if isinstance(r, basestring):
-            r = r.split(',')
+            r = re.split(u',\u200b?', r)
         for x in r:
             try:
                 a, b = map(int, x.split('-', 1))
