@@ -509,10 +509,7 @@ class WikiModule(Component):
         if 'from_editor' in req.args:
             sidebyside = req.args.get('sidebyside') or None
             if sidebyside != prefs['sidebyside']:
-                if sidebyside:
-                    req.session['wiki_sidebyside'] = '1'
-                else:
-                    del req.session['wiki_sidebyside']
+                req.session.set('wiki_sidebyside', int(bool(sidebyside)), 0)
         else:
             sidebyside = prefs['sidebyside']
 
@@ -523,7 +520,8 @@ class WikiModule(Component):
             editrows = req.args.get('editrows')
             if editrows:
                 if editrows != prefs['editrows']:
-                    req.session['wiki_editrows'] = editrows
+                    req.session.set('wiki_editrows', editrows,
+                                    defaults['editrows'])
             else:
                 editrows = prefs['editrows']
 

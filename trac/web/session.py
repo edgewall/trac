@@ -58,6 +58,18 @@ class DetachedSession(dict):
     def __setitem__(self, key, value):
         dict.__setitem__(self, key, unicode(value))
 
+    def set(self, key, value, default=None):
+        """Set a variable in the session, or remove it if it's equal to the
+        default value.
+        """
+        value = unicode(value)
+        if default is not None:
+            default = unicode(default)
+            if value == default:
+                self.pop(key, None)
+                return
+        dict.__setitem__(self, key, value)
+        
     def get_session(self, sid, authenticated=False):
         self.env.log.debug("Retrieving session for ID %r", sid)
 

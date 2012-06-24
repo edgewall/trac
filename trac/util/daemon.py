@@ -22,7 +22,6 @@ import sys
 def daemonize(pidfile=None, progname=None, stdin='/dev/null',
               stdout='/dev/null', stderr='/dev/null', umask=022):
     """Fork a daemon process."""
-
     if pidfile:
         # Check whether the pid file already exists and refers to a still
         # process running
@@ -32,7 +31,8 @@ def daemonize(pidfile=None, progname=None, stdin='/dev/null',
                 try:
                     pid = int(fileobj.read())
                 except ValueError:
-                    sys.exit('Invalid PID in file %s' % pidfile)
+                    sys.exit('Invalid pid in file %s\nPlease remove it to '
+                             'proceed' % pidfile)
 
             try: # signal the process to see if it is still running
                 os.kill(pid, 0)
@@ -45,7 +45,7 @@ def daemonize(pidfile=None, progname=None, stdin='/dev/null',
 
         # The pid file must be writable
         try:
-            fileobj = open(pidfile, 'r+')
+            fileobj = open(pidfile, 'a+')
             fileobj.close()
         except IOError, e:
             from trac.util.text import exception_to_unicode

@@ -211,8 +211,9 @@ class TimelineModule(Component):
             data['context'] = rss_context
             return 'timeline.rss', data, 'application/rss+xml'
         else:
-            req.session['timeline.daysback'] = daysback
-            req.session['timeline.authors'] = authors
+            req.session.set('timeline.daysback', daysback,
+                            self.default_daysback)
+            req.session.set('timeline.authors', authors, '')
             # store lastvisit
             if events and not revisit:
                 lastviewed = to_utimestamp(events[0]['date'])
