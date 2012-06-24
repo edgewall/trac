@@ -444,6 +444,32 @@ class SessionTestCase(unittest.TestCase):
                        "WHERE sid='john' AND name='foo'")
         self.assertEqual(0, cursor.fetchone()[0])
 
+    def test_session_set(self):
+        """Verify that setting a variable in a session to the default value
+        removes it from the session.
+        """
+        cursor = self.db.cursor()
+        cursor.execute("INSERT INTO session VALUES ('john', 1, 0)")
+        cursor.execute("INSERT INTO session_attribute VALUES "
+                       "('john', 1, 'foo', 'bar')")
+
+        session = DetachedSession(self.env, 'john')
+        self.assertEqual('bar', session['foo'])
+        
+        # Setting the variable to the default value removes the variable
+        session.set('foo', 'default', 'default')
+        session.save()
+        cursor.execute("SELECT COUNT(*) FROM session_attribute "
+                       "WHERE sid='john' AND name='foo'")
+        self.assertEqual(0, cursor.fetchone()[0])
+        
+        # Setting the variable to a value different from the default sets it
+        session.set('foo', 'something', 'default')
+        session.save()
+        cursor.execute("SELECT value FROM session_attribute "
+                       "WHERE sid='john' AND name='foo'")
+        self.assertEqual('something', cursor.fetchone()[0])
+        
     def test_session_admin_list(self):
         auth_list, anon_list, all_list = _prep_session_table(self.db)
         sess_admin = SessionAdmin(self.env)

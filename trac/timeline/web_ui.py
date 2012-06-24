@@ -200,8 +200,9 @@ class TimelineModule(Component):
             data['context'] = rss_context
             return 'timeline.rss', data, 'application/rss+xml'
         else:
-            req.session['timeline.daysback'] = daysback
-            req.session['timeline.authors'] = authors
+            req.session.set('timeline.daysback', daysback,
+                            self.default_daysback)
+            req.session.set('timeline.authors', authors, '')
             html_context = Context.from_request(req)
             html_context.set_hints(wiki_flavor='oneliner', 
                                    shorten_lines=self.abbreviated_messages)

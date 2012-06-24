@@ -232,7 +232,7 @@ def get_diff_options(req):
         pref = int(req.session.get('diff_' + name, default))
         arg = int(name in req.args)
         if 'update' in req.args and arg != pref:
-            req.session['diff_' + name] = arg
+            req.session.set('diff_' + name, arg, default)
         else:
             arg = pref
         return arg
@@ -240,7 +240,7 @@ def get_diff_options(req):
     pref = req.session.get('diff_style', 'inline')
     style = req.args.get('style', pref)
     if 'update' in req.args and style != pref:
-        req.session['diff_style'] = style
+        req.session.set('diff_style', style, 'inline')
     data['style'] = style
 
     pref = int(req.session.get('diff_contextlines', 2))
@@ -249,7 +249,7 @@ def get_diff_options(req):
     except ValueError:
         context = -1
     if 'update' in req.args and context != pref:
-        req.session['diff_contextlines'] = context
+        req.session.set('diff_contextlines', context, 2)
     options_data['contextlines'] = context
     
     arg = int(req.args.get('contextall', 0))
