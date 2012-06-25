@@ -112,7 +112,7 @@ class GitConnector(Component):
         self._version = None
 
         try:
-            self._version = PyGIT.Storage.git_version(git_bin=self._git_bin)
+            self._version = PyGIT.Storage.git_version(git_bin=self.git_bin)
         except PyGIT.GitError, e:
             self.log.error("GitError: " + str(e))
 
@@ -155,7 +155,7 @@ class GitConnector(Component):
                          title=to_unicode(e), rel='nofollow')
 
     def get_wiki_syntax(self):
-        yield (r'(?:\b|!)r?[0-9a-fA-F]{%d,40}\b' % self._wiki_shortrev_len,
+        yield (r'(?:\b|!)r?[0-9a-fA-F]{%d,40}\b' % self.wiki_shortrev_len,
                lambda fmt, sha, match:
                     self._format_sha_link(fmt, sha.startswith('r')
                                           and sha[1:] or sha, sha))
@@ -166,39 +166,39 @@ class GitConnector(Component):
 
     # IRepositoryConnector methods
 
-    _persistent_cache = BoolOption('git', 'persistent_cache', 'false',
+    persistent_cache = BoolOption('git', 'persistent_cache', 'false',
         """enable persistent caching of commit tree""")
 
-    _cached_repository = BoolOption('git', 'cached_repository', 'false',
+    cached_repository = BoolOption('git', 'cached_repository', 'false',
         """wrap `GitRepository` in `CachedRepository`""")
 
-    _shortrev_len = IntOption('git', 'shortrev_len', 7,
+    shortrev_len = IntOption('git', 'shortrev_len', 7,
         """length rev sha sums should be tried to be abbreviated to
         (must be >= 4 and <= 40)
         """)
 
-    _wiki_shortrev_len = IntOption('git', 'wiki_shortrev_len', 40,
+    wiki_shortrev_len = IntOption('git', 'wikishortrev_len', 40,
         """minimum length of hex-string for which auto-detection as sha id is
         performed.
        (must be >= 4 and <= 40)
        """)
 
-    _trac_user_rlookup = BoolOption('git', 'trac_user_rlookup', 'false',
+    trac_user_rlookup = BoolOption('git', 'trac_user_rlookup', 'false',
         """enable reverse mapping of git email addresses to trac user ids""")
 
-    _use_committer_id = BoolOption('git', 'use_committer_id', 'true',
+    use_committer_id = BoolOption('git', 'use_committer_id', 'true',
         """use git-committer id instead of git-author id as changeset owner
         """)
 
-    _use_committer_time = BoolOption('git', 'use_committer_time', 'true',
+    use_committer_time = BoolOption('git', 'use_committer_time', 'true',
         """use git-committer-author timestamp instead of git-author timestamp
         as changeset timestamp
         """)
 
-    _git_fs_encoding = Option('git', 'git_fs_encoding', 'utf-8',
+    git_fs_encoding = Option('git', 'git_fs_encoding', 'utf-8',
         """define charset encoding of paths within git repository""")
 
-    _git_bin = PathOption('git', 'git_bin', '/usr/bin/git',
+    git_bin = PathOption('git', 'git_bin', '/usr/bin/git',
         """path to git executable (relative to trac project folder!)""")
 
 
@@ -209,11 +209,11 @@ class GitConnector(Component):
         """GitRepository factory method"""
         assert type == 'git'
 
-        if not (4 <= self._shortrev_len <= 40):
+        if not (4 <= self.shortrev_len <= 40):
             raise TracError("shortrev_len must be withing [4..40]")
 
-        if not (4 <= self._wiki_shortrev_len <= 40):
-            raise TracError("wiki_shortrev_len must be withing [4..40]")
+        if not (4 <= self.wiki_shortrev_len <= 40):
+            raise TracError("wikishortrev_len must be withing [4..40]")
 
         if not self._version:
             raise TracError("GIT backend not available")
@@ -223,7 +223,7 @@ class GitConnector(Component):
                             (self._version['v_str'],
                              self._version['v_min_str']))
 
-        if self._trac_user_rlookup:
+        if self.trac_user_rlookup:
             def rlookup_uid(email):
                 """reverse map 'real name <user@domain.tld>' addresses to trac
                 user ids
@@ -250,16 +250,16 @@ class GitConnector(Component):
                 return None
 
         repos = GitRepository(dir, params, self.log,
-                              persistent_cache=self._persistent_cache,
-                              git_bin=self._git_bin,
-                              git_fs_encoding=self._git_fs_encoding,
-                              shortrev_len=self._shortrev_len,
+                              persistent_cache=self.persistent_cache,
+                              git_bin=self.git_bin,
+                              git_fs_encoding=self.git_fs_encoding,
+                              shortrev_len=self.shortrev_len,
                               rlookup_uid=rlookup_uid,
-                              use_committer_id=self._use_committer_id,
-                              use_committer_time=self._use_committer_time,
+                              use_committer_id=self.use_committer_id,
+                              use_committer_time=self.use_committer_time,
                               )
 
-        if self._cached_repository:
+        if self.cached_repository:
             repos = GitCachedRepository(self.env, repos, self.log)
             self.log.debug("enabled CachedRepository for '%s'" % dir)
         else:
@@ -369,10 +369,10 @@ class GitRepository(Repository):
         self.logger = log
         self.gitrepo = path
         self.params = params
-        self._shortrev_len = max(4, min(shortrev_len, 40))
+        self.shortrev_len = max(4, min(shortrev_len, 40))
         self.rlookup_uid = rlookup_uid
-        self._use_committer_time = use_committer_time
-        self._use_committer_id = use_committer_id
+        self.use_committer_time = use_committer_time
+        self.use_committer_id = use_committer_id
 
         self.git = PyGIT.StorageFactory(path, log, not persistent_cache,
                                         git_bin=git_bin,
@@ -406,7 +406,7 @@ class GitRepository(Repository):
 
     def short_rev(self, rev):
         return self.git.shortrev(self.normalize_rev(rev),
-                                 min_len=self._shortrev_len)
+                                 min_len=self.shortrev_len)
 
     def get_node(self, path, rev=None, historian=None):
         return GitNode(self, path, rev, self.log, None, historian)
@@ -654,12 +654,12 @@ class GitChangeset(Changeset):
         if author:
             a_user, a_time = _parse_user_time(author)
 
-        if repos._use_committer_time:
+        if repos.use_committer_time:
             time = c_time or a_time
         else:
             time = a_time or c_time
 
-        if repos._use_committer_id:
+        if repos.use_committer_id:
             user = c_user or a_user
         else:
             user = a_user or c_user
