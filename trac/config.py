@@ -668,7 +668,11 @@ class ChoiceOption(Option):
             
     
 class PathOption(Option):
-    """Descriptor for file system path configuration options."""
+    """Descriptor for file system path configuration options.
+
+    Relative paths are resolved to absolute paths using the directory
+    containing the configuration file as the reference.
+    """
     accessor = Section.getpath
 
 
