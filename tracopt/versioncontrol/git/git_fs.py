@@ -99,7 +99,7 @@ def _parse_user_time(s):
     """
 
     user, time, tz_str = s.rsplit(None, 2)
-    tz = FixedOffset((int(tz_str)*6)/10, tz_str)
+    tz = FixedOffset((int(tz_str) * 6) / 10, tz_str)
     time = datetime.fromtimestamp(float(time), tz)
     return user, time
 
@@ -646,22 +646,37 @@ class GitChangeset(Changeset):
         if _children:
             props['children'] = _children
 
+        committer, author = self._get_committer_and_author()
         # use 1st author/committer as changeset owner/timestamp
+        c_user = a_user = c_time = a_time = None
+        if committer:
+            c_user, c_time = _parse_user_time(committer)
+        if author:
+            a_user, a_time = _parse_user_time(author)
+
         if repos._use_committer_time:
-            _, time_ = _parse_user_time(props['committer'][0])
+            time = c_time or a_time
         else:
-            _, time_ = _parse_user_time(props['author'][0])
+            time = a_time or c_time
 
         if repos._use_committer_id:
-            user_, _ = _parse_user_time(props['committer'][0])
+            user = c_user or a_user
         else:
-            user_, _ = _parse_user_time(props['author'][0])
+            user = a_user or c_user
 
         # try to resolve email address to trac uid
-        user_ = repos.rlookup_uid(user_) or user_
+        user = repos.rlookup_uid(user) or user
 
-        Changeset.__init__(self, repos, rev=sha, message=msg, author=user_,
-                           date=time_)
+        Changeset.__init__(self, repos, rev=sha, message=msg, author=user,
+                           date=time)
+
+    def _get_committer_and_author(self):
+        committer = author = None
+        if 'committer' in self.props:
+            committer = self.props['committer'][0]
+        if 'author' in self.props:
+            author = self.props['author'][0]
+        return committer, author
 
     def get_properties(self):
         properties = {}
@@ -672,13 +687,10 @@ class GitChangeset(Changeset):
         if 'children' in self.props:
             properties['Children'] = self.props['children']
 
-        if 'committer' in self.props:
-            properties['git-committer'] = \
-                    _parse_user_time(self.props['committer'][0])
-
-        if 'author' in self.props:
-            properties['git-author'] = \
-                    _parse_user_time(self.props['author'][0])
+        committer, author = self._get_committer_and_author()
+        if author != committer:
+            properties['git-committer'] = _parse_user_time(committer)
+            properties['git-author'] = _parse_user_time(author)
 
         branches = list(self.repos.git.get_branch_contains(self.rev,
                                                            resolve=True))
