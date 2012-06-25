@@ -37,7 +37,7 @@ from tracopt.versioncontrol.git import PyGIT
 
 
 class GitCachedRepository(CachedRepository):
-    """Git-specific cached repository
+    """Git-specific cached repository.
 
     Passes through {display,short,normalize}_rev
     """
@@ -61,7 +61,7 @@ class GitCachedRepository(CachedRepository):
 
 
 class GitCachedChangeset(CachedChangeset):
-    """Git-specific cached changeset
+    """Git-specific cached changeset.
 
     Handles get_branches()
     """
@@ -85,7 +85,7 @@ def intersperse(sep, iterable):
     """The 'intersperse' generator takes an element and an iterable and
     intersperses that element between the elements of the iterable.
 
-    inspired by Haskell's Data.List.intersperse
+    inspired by Haskell's ``Data.List.intersperse``
     """
 
     for i, item in enumerate(iterable):
@@ -94,8 +94,8 @@ def intersperse(sep, iterable):
 
 # helper
 def _parse_user_time(s):
-    """parse author/committer attribute lines and return
-    (user,timestamp)
+    """Parse author or committer attribute lines and return
+    corresponding ``(user, timestamp)`` pair.
     """
 
     user, time, tz_str = s.rsplit(None, 2)
@@ -167,40 +167,41 @@ class GitConnector(Component):
     # IRepositoryConnector methods
 
     persistent_cache = BoolOption('git', 'persistent_cache', 'false',
-        """enable persistent caching of commit tree""")
+        """Enable persistent caching of commit tree.""")
 
     cached_repository = BoolOption('git', 'cached_repository', 'false',
-        """wrap `GitRepository` in `CachedRepository`""")
+        """Wrap `GitRepository` in `CachedRepository`.""")
 
     shortrev_len = IntOption('git', 'shortrev_len', 7,
-        """length rev sha sums should be tried to be abbreviated to
-        (must be >= 4 and <= 40)
+        """The length at which a sha1 should be abbreviated to (must
+        be >= 4 and <= 40).
         """)
 
     wiki_shortrev_len = IntOption('git', 'wikishortrev_len', 40,
-        """minimum length of hex-string for which auto-detection as sha id is
-        performed.
-       (must be >= 4 and <= 40)
-       """)
+        """The minimum length of an hex-string for which
+        auto-detection as sha1 is performed (must be >= 4 and <= 40).
+        """)
 
     trac_user_rlookup = BoolOption('git', 'trac_user_rlookup', 'false',
-        """enable reverse mapping of git email addresses to trac user ids""")
+        """Enable reverse mapping of git email addresses to trac user ids
+        (costly if you have many users).""")
 
     use_committer_id = BoolOption('git', 'use_committer_id', 'true',
-        """use git-committer id instead of git-author id as changeset owner
+        """Use git-committer id instead of git-author id for the
+        changeset ''Author'' field.
         """)
 
     use_committer_time = BoolOption('git', 'use_committer_time', 'true',
-        """use git-committer-author timestamp instead of git-author timestamp
-        as changeset timestamp
+        """Use git-committer timestamp instead of git-author timestamp
+        for the changeset ''Timestamp'' field.
         """)
 
     git_fs_encoding = Option('git', 'git_fs_encoding', 'utf-8',
-        """define charset encoding of paths within git repository""")
+        """Define charset encoding of paths within git repositories.""")
 
     git_bin = PathOption('git', 'git_bin', '/usr/bin/git',
-        """path to git executable (relative to the Trac configuration folder,
-        so better use an absolute path here)""")
+        """Path to git executable (relative to the Trac configuration folder,
+        so better use an absolute path here).""")
 
 
     def get_supported_types(self):
@@ -211,10 +212,10 @@ class GitConnector(Component):
         assert type == 'git'
 
         if not (4 <= self.shortrev_len <= 40):
-            raise TracError("shortrev_len must be withing [4..40]")
+            raise TracError("[git] shortrev_len setting must be within [4..40]")
 
         if not (4 <= self.wiki_shortrev_len <= 40):
-            raise TracError("wikishortrev_len must be withing [4..40]")
+            raise TracError("[git] wikishortrev_len must be within [4..40]")
 
         if not self._version:
             raise TracError("GIT backend not available")
@@ -226,10 +227,10 @@ class GitConnector(Component):
 
         if self.trac_user_rlookup:
             def rlookup_uid(email):
-                """reverse map 'real name <user@domain.tld>' addresses to trac
-                user ids
+                """Reverse map 'real name <user@domain.tld>' addresses to trac
+                user ids.
 
-                returns None if lookup failed
+                :return: `None` if lookup failed
                 """
 
                 try:
