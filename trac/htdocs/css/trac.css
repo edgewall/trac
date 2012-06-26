@@ -177,6 +177,9 @@ label.disabled { color: #d7d7d7 }
  display: inline-block;
  padding: 0 .75em;
  white-space: nowrap;
+ /* IE7 hack to make inline-block effective on block element */
+ zoom: 1;
+ *display: inline;
 }
 .nav li.last { border-right: none }
 
