@@ -7,6 +7,7 @@
 #pagepath { 
  font-size: 10px; /* same as .nav ul in trac.css */
  float: left;
+ padding: .4em 0;
 }
 #pagepath :link, #pagepath :visited { margin: 0 .2em }
 #pagepath .first:link, #pagepath .first:visited { color: #998 }

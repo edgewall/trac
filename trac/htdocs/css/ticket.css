@@ -13,7 +13,7 @@
 #ticket {
  background: #ffd;
  border: 1px outset #996;
- border-radius: .5em;
+ border-radius: .4em;
  margin-top: 1em;
  padding: .5em 1em;
  position: relative;
@@ -34,7 +34,7 @@
 .ticketdraft {
  background: #f8f8f8 url(../draft.png);
  border: 1px outset #996;
- border-radius: .5em;
+ border-radius: .4em;
  padding: 0 .2em;
 }
 
@@ -84,8 +84,8 @@ h1 .status { color: #444; }
 }
 
 #changelog {
- border: 1px outset #996;
- border-radius: .5em;
+ border: 1px outset #d7d7d7;
+ border-radius: .4em;
  padding: 1em;
 }
 .trac-shade { background-color: #eee }

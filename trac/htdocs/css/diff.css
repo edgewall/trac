@@ -6,8 +6,8 @@
 #overview dt.property {
  font-weight: bold;
  padding-right: .25em;
- position: absolute;
- left: 0;
+ position: absolute; /* relies on #content { position: relative } */
+ left: 1em;
  text-align: right;
  width: 7.75em;
 }

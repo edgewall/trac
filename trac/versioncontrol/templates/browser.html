@@ -207,11 +207,6 @@
         <xi:include href="preview_file.html" py:with="preview = file.preview"/>
       </div>
 
-      <div id="help" i18n:msg="">
-        <strong>Note:</strong> See <a href="${href.wiki('TracBrowser')}">TracBrowser</a>
-        for help on using the repository browser.
-      </div>
-
       <div id="anydiff">
         <form action="${href.diff()}" method="get">
           <div class="buttons">
@@ -222,6 +217,11 @@
             <input type="submit" value="${_('View changes...')}" title="Select paths and revs for Diff" />
           </div>
         </form>
+      </div>
+
+      <div id="help" i18n:msg="">
+        <strong>Note:</strong> See <a href="${href.wiki('TracBrowser')}">TracBrowser</a>
+        for help on using the repository browser.
       </div>
 
     </div>

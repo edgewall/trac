@@ -119,7 +119,7 @@ table.dirlist td span.loading {
 #content.browser div.description { padding: 0 0.5em }
 
 /* Style for the ''View Changes'' button and the diff preparation form */
-#anydiff { margin: 0 0 1em; float: left }
+#anydiff { margin-top: 1em; }
 #anydiff form, #anydiff div, #anydiff h2 { display: inline }
 #anydiff form th { text-align: right }
 #anydiff input {  vertical-align: baseline; margin: 0 -0.5em 0 1em }
