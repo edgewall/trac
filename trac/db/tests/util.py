@@ -13,4 +13,29 @@
 
 import unittest
 
-# TODO: test sql_escape_percent, IterableCursor, ConnectionWrapper ...
+from trac.db.util import sql_escape_percent
+
+# TODO: test IterableCursor, ConnectionWrapper
+
+class SQLEscapeTestCase(unittest.TestCase):
+    def test_sql_escape_percent(self):
+        self.assertEqual("%", sql_escape_percent("%"))
+        self.assertEqual("'%%'", sql_escape_percent("'%'"))
+        self.assertEqual("''%''", sql_escape_percent("''%''"))
+        self.assertEqual("'''%%'''", sql_escape_percent("'''%'''"))
+        self.assertEqual("'''%%'", sql_escape_percent("'''%'"))
+        self.assertEqual("%s", sql_escape_percent("%s"))
+        self.assertEqual("% %", sql_escape_percent("% %"))
+        self.assertEqual("%s %i", sql_escape_percent("%s %i"))
+        self.assertEqual("'%%s'", sql_escape_percent("'%s'"))
+        self.assertEqual("'%% %%'", sql_escape_percent("'% %'"))
+        self.assertEqual("'%%s %%i'", sql_escape_percent("'%s %i'"))
+
+
+def suite():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(SQLEscapeTestCase, 'test'))
+    return suite
+
+if __name__ == '__main__':
+    unittest.main(defaultTest='suite')

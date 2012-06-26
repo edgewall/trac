@@ -10,7 +10,7 @@ def suite():
     suite.addTest(api.suite())
     suite.addTest(mysql_test.suite())
     suite.addTest(postgres_test.suite())
-    #suite.addTest(util.suite())
+    suite.addTest(util.suite())
     return suite
 
 if __name__ == '__main__':
