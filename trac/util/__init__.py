@@ -715,7 +715,7 @@ class Ranges(object):
 
     """
 
-    RE_STR = r"""\d+(?:[-:]\d+)?(?:,\d+(?:[-:]\d+)?)*"""
+    RE_STR = r"""[0-9]+(?:[-:][0-9]+)?(?:,[0-9]+(?:[-:][0-9]+)?)*"""
     
     def __init__(self, r=None, reorder=False):
         self.pairs = []
