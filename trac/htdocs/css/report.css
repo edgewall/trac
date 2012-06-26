@@ -250,3 +250,7 @@ table.tickets tbody tr.fullrow th {
  margin: 0.3em 1em;
 }
 #batchmod_help :link, #batchmod_help :visited { cursor: help; }
+
+@media print {
+ .batchmod_selector { display: none }
+}

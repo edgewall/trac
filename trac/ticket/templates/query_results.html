@@ -42,14 +42,15 @@
     </tr>
   </py:def>
   ${group_heading(*groups[0]) if groups else None}
-  <table class="listing tickets">
+  <table class="listing tickets"
+         py:with="num_cols = len(headers) + int(batch_modify or 0)">
     <thead py:strip="group_index">
       ${column_headers()}
     </thead>
     <py:for each="group_index, (groupname, results) in enumerate(groups)">
       <tbody py:if="group_index">
         <tr py:if="groupname is not None" class="trac-group">
-          <th colspan="${len(headers)}">
+          <th colspan="$num_cols">
             ${group_heading(groupname, results)}
           </th>
         </tr>
@@ -57,7 +58,7 @@
       </tbody>
       <tbody>
         <tr py:if="not results" class="even">
-          <td colspan="${len(headers)}">
+          <td colspan="$num_cols">
             No tickets found
           </td>
         </tr>
@@ -90,13 +91,13 @@
               <py:with vars="result_rows = [t for t in row if result[t]]">
                 <py:choose>
                   <tr py:when="ticket_context.resource in context" class="fullrow">
-                    <td colspan="${len(headers)}">
+                    <td colspan="$num_cols">
                       <p class="meta"><em>(this ticket)</em></p>
                     </td>
                   </tr>
                   <tr py:otherwise="" py:for="r in result_rows" class="fullrow">
                     <th class="meta">${fields.get(r, {'label': r or 'none'}).label}</th>
-                    <td colspan="${len(headers)-1}" xml:space="preserve">
+                    <td colspan="${num_cols - 1}" xml:space="preserve">
                       ${wiki_to_html(ticket_context, result[r])}
                     </td>
                   </tr>
@@ -106,7 +107,7 @@
           </py:with>
         </py:for>
         <tr py:if="group_index == len(groups)-1 and last_group_is_partial">
-          <td colspan="${len(headers)}">
+          <td colspan="$num_cols">
             <i>(more results for this group on next page)</i>
           </td>
         </tr>
