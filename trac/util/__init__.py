@@ -814,7 +814,7 @@ class Ranges(object):
 
     """
 
-    RE_STR = ur'\d+(?:[-:]\d+)?(?:,\u200b?\d+(?:[-:]\d+)?)*'
+    RE_STR = ur'[0-9]+(?:[-:][0-9]+)?(?:,\u200b?[0-9]+(?:[-:][0-9]+)?)*'
     
     def __init__(self, r=None, reorder=False):
         self.pairs = []

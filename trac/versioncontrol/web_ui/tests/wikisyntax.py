@@ -99,7 +99,13 @@ changeset:1#file0
 [1], r1
 </p>
 ------------------------------
-[1], r1
+============================== unicode digits
+[₁₂₃], r₁₂₃, [₀A₁B₂C₃D]
+------------------------------
+<p>
+[₁₂₃], r₁₂₃, [₀A₁B₂C₃D]
+</p>
+------------------------------
 ============================== Link resolver counter examples
 Change:[10] There should be a link to changeset [10]
 
@@ -235,6 +241,19 @@ rfc:4180 should not be a log link
 <a class="ext-link" href="http://trac.edgewall.org/intertrac/log%3A/%403317%3A3318" title="log:/@3317:3318 in Trac\'s Trac"><span class="icon"></span>[T3317:3318]</a>
 <a class="ext-link" href="http://trac.edgewall.org/intertrac/log%3A/%403317%3A3318" title="log:/@3317:3318 in Trac\'s Trac"><span class="icon"></span>[trac 3317:3318]</a>
 <a class="ext-link" href="http://trac.edgewall.org/intertrac/log%3A/trunk%403317%3A3318" title="log:/trunk@3317:3318 in Trac\'s Trac"><span class="icon"></span>[trac 3317:3318/trunk]</a>
+</p>
+------------------------------
+============================== Log range with unicode digits
+r₁₂:₂₀,₂₅,₃₀-₃₅
+[₁₂:₂₀,₂₅,₃₀-₃₅]
+[T₃₃₁₇:₃₃₁₈]
+[trac ₃₃₁₇:₃₃₁₈]
+------------------------------
+<p>
+r₁₂:₂₀,₂₅,₃₀-₃₅
+[₁₂:₂₀,₂₅,₃₀-₃₅]
+[T₃₃₁₇:₃₃₁₈]
+[trac ₃₃₁₇:₃₃₁₈]
 </p>
 ------------------------------
 """

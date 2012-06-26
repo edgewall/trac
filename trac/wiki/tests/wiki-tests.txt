@@ -1578,6 +1578,21 @@ OTOH, the following is a roman numbered list:
 Paragraph
 </p>
 ------------------------------
+============================== Unicode digits will not start a numbered list
+ ³. U+00B3 will not start a numbered list.
+ ੧. U+0A67 will not start a numbered list.
+ ൬. U+0D6C will not start a numbered list.
+ ➀. U+2780 will not start a numbered list.
+------------------------------
+<blockquote>
+<p>
+³. U+00B3 will not start a numbered list.
+੧. U+0A67 will not start a numbered list.
+൬. U+0D6C will not start a numbered list.
+➀. U+2780 will not start a numbered list.
+</p>
+</blockquote>
+------------------------------
 ============================== Mixed lists multi-line items
  1. multi-line
     numbered list

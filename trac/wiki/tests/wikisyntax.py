@@ -322,6 +322,19 @@ This is not a link: x,://localhost
 This is not a link: x,:<em>localhost
 </em></p>
 ------------------------------
+============================== Wiki links with @version using unicode digits
+WikiStart@₄₂
+WikiStart@₄₂#heading
+[WikiStart@₄₂]
+[WikiStart@₄₂#heading]
+------------------------------
+<p>
+<a class="wiki" href="/wiki/WikiStart">WikiStart</a>@₄₂
+<a class="wiki" href="/wiki/WikiStart">WikiStart</a>@₄₂#heading
+[<a class="wiki" href="/wiki/WikiStart">WikiStart</a>@₄₂]
+[<a class="wiki" href="/wiki/WikiStart">WikiStart</a>@₄₂#heading]
+</p>
+------------------------------
 """ #" Emacs likes it that way better
 
 

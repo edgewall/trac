@@ -91,6 +91,21 @@ trac:#2041
 <a class="ext-link" href="http://trac.edgewall.org/intertrac/%232041" title="#2041 in Trac's Trac"><span class="icon"></span>trac:#2041</a>
 </p>
 ------------------------------
+============================== ticket syntax with unicode digits
+#⁴²
+#1-⁵,42
+#1,³,5,7
+#T²⁰⁴¹
+#trac²⁰⁴¹
+------------------------------
+<p>
+#⁴²
+<a class="new ticket" href="/ticket/1" title="This is the summary (new)">#1</a>-⁵,42
+<a class="new ticket" href="/ticket/1" title="This is the summary (new)">#1</a>,³,5,7
+#T²⁰⁴¹
+#trac²⁰⁴¹
+</p>
+------------------------------
 """ # " 
 
 def ticket_setup(tc):
@@ -144,6 +159,17 @@ trac:report:1
 <a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon"></span>{T1}</a>
 <a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon"></span>{trac1}</a>
 <a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon"></span>{trac 1}</a>
+</p>
+------------------------------
+============================== report syntax with unicode digits
+{⁴²} !{⁴²}
+{T⁴²}
+{trac⁴²}
+------------------------------
+<p>
+{⁴²} !{⁴²}
+{T⁴²}
+{trac⁴²}
 </p>
 ------------------------------
 """ # '

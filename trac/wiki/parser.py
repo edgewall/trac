@@ -117,7 +117,7 @@ class WikiParser(Component):
         r"(?P<hanchor>#%s)?\s*$)" % XML_NAME,
         #  * list
         r"(?P<list>^(?P<ldepth>\s*)"
-        ur"(?:[%s]|(?P<lstart>\d+|[a-zA-Z]|[ivxIVX]{1,5})\.)\s)"
+        ur"(?:[%s]|(?P<lstart>[0-9]+|[a-zA-Z]|[ivxIVX]{1,5})\.)\s)"
         % (BULLET_CHARS),
         # definition:: 
         r"(?P<definition>^\s+"

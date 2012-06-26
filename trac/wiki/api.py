@@ -342,7 +342,7 @@ class WikiSystem(Component):
     def get_wiki_syntax(self):
         wiki_page_name = (
             r"(?:[%(upper)s](?:[%(lower)s])+/?){2,}" # wiki words
-            r"(?:@\d+)?"                             # optional version
+            r"(?:@[0-9]+)?"                          # optional version
             r"(?:#%(xml)s)?"                         # optional fragment id
             r"(?=:(?:\Z|\s)|[^:\w%(upper)s%(lower)s]|\s|\Z)"
             # what should follow it
