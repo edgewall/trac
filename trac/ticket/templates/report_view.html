@@ -84,8 +84,7 @@
           <th py:for="header in header_group" py:if="not header.hidden" py:with="fullrow = header is header_group[-1]"
               colspan="${'100' if fullrow else None}"
               class="${'asc' if header.asc else 'desc' if header.asc is not None else None}">
-            <a py:strip="not sorting_enabled"
-              href="${report_href(sort=header.col, asc=not header.asc)}">
+            <a href="${report_href(sort=header.col, asc=not header.asc)}">
               $header.title
             </a>
           </th>

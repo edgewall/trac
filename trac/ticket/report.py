@@ -36,11 +36,16 @@ from trac.util.presentation import Paginator
 from trac.util.text import exception_to_unicode, to_unicode, quote_query_string
 from trac.util.translation import _, tag_
 from trac.web.api import IRequestHandler, RequestDone
-from trac.web.chrome import (INavigationContributor, Chrome, 
+from trac.web.chrome import (INavigationContributor, Chrome,
                              add_ctxtnav, add_link, add_notice, add_script,
                              add_stylesheet, add_warning, auth_link,
                              web_context)
 from trac.wiki import IWikiSyntaxProvider, WikiParser
+
+
+
+SORT_COLUMN = '@SORT_COLUMN@'
+LIMIT_OFFSET = '@LIMIT_OFFSET@'
 
 
 def cell_value(v):
@@ -49,6 +54,58 @@ def cell_value(v):
     ('', '0', u'1', u'v')
     """
     return '0' if v is 0 else unicode(v) if v else ''
+
+
+_sql_re = re.compile(r'''
+      --.*$                        # single line "--" comment
+    | /\*([^*/]|\*[^/]|/[^*])*\*/  # C style comment
+    | '(\\.|[^'\\])*'              # literal string
+    | \([^()]+\)                   # parenthesis group
+''', re.MULTILINE | re.VERBOSE)
+
+def _expand_with_space(m):
+    return ' ' * len(m.group(0))
+
+def sql_skeleton(sql):
+    """Strip an SQL query to leave only its toplevel structure.
+
+    This is probably not 100% robust but should be enough for most
+    needs.
+
+    >>> re.sub('\s+', lambda m: '<%d>' % len(m.group(0)), sql_skeleton(''' \\n\
+        SELECT a FROM (SELECT x FROM z ORDER BY COALESCE(u, ')/*(')) ORDER \\n\
+          /* SELECT a FROM (SELECT x /* FROM z                             \\n\
+                        ORDER BY */ COALESCE(u, '\)X(')) ORDER */          \\n\
+          BY c, (SELECT s FROM f WHERE v in ('ORDER BY', '(\\')')          \\n\
+                 ORDER BY (1), '') -- LIMIT                                \\n\
+         '''))
+    '<10>SELECT<1>a<1>FROM<48>ORDER<164>BY<1>c,<144>'
+    """
+    old = None
+    while sql != old:
+        old = sql
+        sql = _sql_re.sub(_expand_with_space, old)
+    return old
+
+_order_by_re = re.compile(r'ORDER\s+BY', re.MULTILINE)
+
+def split_sql(sql, clause_re, skel=None):
+    """Split an SQL query according to a toplevel clause regexp.
+
+    We assume there's only one such clause present in the outer query.
+
+    >>> split_sql('''SELECT a FROM x  ORDER \
+            BY u, v''', _order_by_re)
+    ('SELECT a FROM x  ', ' u, v')
+    """
+    if skel is None:
+        skel = sql_skeleton(sql)
+    blocks = clause_re.split(skel.upper())
+    if len(blocks) == 2:
+        return sql[:len(blocks[0])], sql[-len(blocks[1]):] # (before, after)
+    else:
+        return sql, '' # no single clause separator
+
 
 
 class ReportModule(Component):
@@ -63,7 +120,7 @@ class ReportModule(Component):
     items_per_page_rss = IntOption('report', 'items_per_page_rss', 0,
         """Number of tickets displayed in the rss feeds for reports
         (''since 0.11'')""")
-    
+
     # INavigationContributor methods
 
     def get_active_navigation_item(self, req):
@@ -74,12 +131,12 @@ class ReportModule(Component):
             yield ('mainnav', 'tickets', tag.a(_('View Tickets'),
                                                href=req.href.report()))
 
-    # IPermissionRequestor methods  
+    # IPermissionRequestor methods
 
-    def get_permission_actions(self):  
-        actions = ['REPORT_CREATE', 'REPORT_DELETE', 'REPORT_MODIFY',  
-                   'REPORT_SQL_VIEW', 'REPORT_VIEW']  
-        return actions + [('REPORT_ADMIN', actions)]  
+    def get_permission_actions(self):
+        actions = ['REPORT_CREATE', 'REPORT_DELETE', 'REPORT_MODIFY',
+                   'REPORT_SQL_VIEW', 'REPORT_VIEW']
+        return actions + [('REPORT_ADMIN', actions)]
 
     # IRequestHandler methods
 
@@ -132,8 +189,8 @@ class ReportModule(Component):
         else:
             add_ctxtnav(req, _('Available Reports'))
 
-        # Kludge: only show link to custom query if the query module is actually
-        # enabled
+        # Kludge: only show link to custom query if the query module
+        # is actually enabled
         from trac.ticket.query import QueryModule
         if 'TICKET_VIEW' in req.perm and \
                 self.env.is_component_enabled(QueryModule):
@@ -244,12 +301,12 @@ class ReportModule(Component):
         sort = req.args.get('sort', 'report')
         asc = bool(int(req.args.get('asc', 1)))
         format = req.args.get('format')
-        
+
         rows = self.env.db_query("""
                 SELECT id, title, description FROM report ORDER BY %s %s
                 """ % ('title' if sort == 'title' else 'id',
                        '' if asc else 'DESC'))
-            
+
         if format == 'rss':
             data = {'rows': rows}
             return 'report_list.rss', data, 'application/rss+xml'
@@ -273,8 +330,8 @@ class ReportModule(Component):
                  _('Comma-delimited Text'), 'text/plain')
         add_link(req, 'alternate', report_href(format='tab'),
                  _('Tab-delimited Text'), 'text/plain')
-        
-        reports = [(id, title, description, 
+
+        reports = [(id, title, description,
                     'REPORT_MODIFY' in req.perm('report', id),
                     'REPORT_DELETE' in req.perm('report', id))
                    for id, title, description in rows]
@@ -351,7 +408,7 @@ class ReportModule(Component):
         asc = bool(int(asc)) # string '0' or '1' to int/boolean
 
         def report_href(**kwargs):
-            """Generate links to this report preserving user variables, 
+            """Generate links to this report preserving user variables,
             and sorting and paging variables.
             """
             params = args.copy()
@@ -361,7 +418,7 @@ class ReportModule(Component):
             if max:
                 params['max'] = max
             params.update(kwargs)
-            params['asc'] = '1' if params.get('asc', asc) else '0'            
+            params['asc'] = '1' if params.get('asc', asc) else '0'
             return req.href.report(id, params)
 
         data = {'action': 'view',
@@ -370,24 +427,31 @@ class ReportModule(Component):
                 'title': title, 'description': description,
                 'max': limit, 'args': args, 'show_args_form': False,
                 'message': None, 'paginator': None,
-                'report_href': report_href, 
+                'report_href': report_href,
                 }
 
+        res = None
         with self.env.db_query as db:
-            try:
-                cols, results, num_items, missing_args = \
-                    self.execute_paginated_report(req, db, id, sql, args, limit,
-                                                  offset)
-                results = [list(row) for row in results]
-                numrows = len(results)
+            res = self.execute_paginated_report(req, db, id, sql, args, limit,
+                                                offset)
 
-            except Exception, e:
-                data['message'] = tag_('Report execution failed: %(error)s',
-                        error=tag.pre(exception_to_unicode(e, traceback=True)))
-                return 'report_view.html', data, None
+        if len(res) == 2:
+             e, sql = res
+             data['message'] = \
+                 tag_("Report execution failed: %(error)s %(sql)s",
+                      error=tag.pre(exception_to_unicode(e)),
+                      sql=tag(tag.hr(),
+                              tag.pre(sql, style="white-space: pre")))
+             return 'report_view.html', data, None
+
+        cols, results, num_items, missing_args, limit_offset = res
+        need_paginator = limit > 0 and limit_offset
+        need_reorder = limit_offset is None
+        results = [list(row) for row in results]
+        numrows = len(results)
 
         paginator = None
-        if limit > 0:
+        if need_paginator:
             paginator = Paginator(results, page - 1, limit, num_items)
             data['paginator'] = paginator
             if paginator.has_next_page:
@@ -430,11 +494,11 @@ class ReportModule(Component):
 
             if col == sort_col:
                 header['asc'] = asc
-                if not paginator:
+                if not paginator and need_reorder:
                     # this dict will have enum values for sorting
                     # and will be used in sortkey(), if non-empty:
                     sort_values = {}
-                    if sort_col in ('status', 'resolution', 'priority', 
+                    if sort_col in ('status', 'resolution', 'priority',
                                     'severity'):
                         # must fetch sort values for that columns
                         # instead of comparing them as strings
@@ -540,8 +604,7 @@ class ReportModule(Component):
 
         data.update({'header_groups': header_groups,
                      'row_groups': row_groups,
-                     'numrows': numrows,
-                     'sorting_enabled': '__group__' not in cols})
+                     'numrows': numrows})
 
         if format == 'rss':
             data['email_map'] = chrome.get_email_map()
@@ -567,12 +630,12 @@ class ReportModule(Component):
             add_link(req, 'alternate', report_href(format='tab', page=p),
                      _('Tab-delimited Text'), 'text/plain')
             if 'REPORT_SQL_VIEW' in req.perm:
-                add_link(req, 'alternate', 
+                add_link(req, 'alternate',
                          req.href.report(id=id, format='sql'),
                          _('SQL Query'), 'text/plain')
 
             # reuse the session vars of the query module so that
-            # the query navigation links on the ticket can be used to 
+            # the query navigation links on the ticket can be used to
             # navigate report results as well
             try:
                 req.session['query_tickets'] = \
@@ -581,7 +644,7 @@ class ReportModule(Component):
                 req.session['query_href'] = \
                     req.session['query_href'] = report_href()
                 # Kludge: we have to clear the other query session
-                # variables, but only if the above succeeded 
+                # variables, but only if the above succeeded
                 for var in ('query_constraints', 'query_time'):
                     if var in req.session:
                         del req.session[var]
@@ -598,53 +661,110 @@ class ReportModule(Component):
 
     def execute_report(self, req, db, id, sql, args):
         """Execute given sql report (0.10 backward compatibility method)
-        
+
         :see: ``execute_paginated_report``
         """
-        return self.execute_paginated_report(req, db, id, sql, args)[:2]
+        res = self.execute_paginated_report(req, db, id, sql, args)
+        if len(res) == 2:
+            raise res[0]
+        return res[:5]
 
-    def execute_paginated_report(self, req, db, id, sql, args, 
+    def execute_paginated_report(self, req, db, id, sql, args,
                                  limit=0, offset=0):
         sql, args, missing_args = self.sql_sub_vars(sql, args, db)
         if not sql:
             raise TracError(_("Report {%(num)s} has no SQL query.", num=id))
+        self.log.debug('Report {%d} with SQL "%s"', id, sql)
+        self.log.debug('Request args: %r', req.args)
 
         cursor = db.cursor()
 
         num_items = 0
-        if id != -1 and limit > 0:
-            cursor.execute("SELECT COUNT(*) FROM (%s) AS tab" % sql, args)
+        order_by = []
+        limit_offset = None
+        base_sql = sql.replace(SORT_COLUMN, '1').replace(LIMIT_OFFSET, '')
+        if id == -1 or limit == 0:
+            sql = base_sql
+        else:
+            # The number of tickets is obtained
+            count_sql = 'SELECT COUNT(*) FROM (\n%s\n) AS tab' % base_sql
+            self.log.debug("Report {%d} SQL (count): %s", id, count_sql)
+            try:
+                cursor.execute(count_sql, args)
+            except Exception, e:
+                return e, count_sql
             num_items = cursor.fetchone()[0]
-    
-            # get the column names
-            cursor.execute("SELECT * FROM (%s) AS tab LIMIT 1" % sql, args)
+
+            # The column names are obtained
+            colnames_sql = 'SELECT * FROM (\n%s\n) AS tab LIMIT 1' % base_sql
+            self.log.debug("Report {%d} SQL (col names): %s", id, colnames_sql)
+            try:
+                cursor.execute(colnames_sql, args)
+            except Exception, e:
+                return e, colnames_sql
             cols = get_column_names(cursor)
 
+            # The ORDER BY columns are inserted
             sort_col = req.args.get('sort', '')
+            asc = req.args.get('asc', '1')
+            self.log.debug("%r %s (%s)", cols, sort_col, asc and '^' or 'v')
             order_cols = []
+            if sort_col and sort_col not in cols:
+                raise TracError(_('Query parameter "sort=%(sort_col)s" '
+                                  ' is invalid', sort_col=sort_col))
+            skel = None
             if '__group__' in cols:
-                sort_col = '' # sorting is disabled (#15030)
+                order_cols.append('__group__')
             if sort_col:
-                if sort_col in cols:
-                    order_cols.append(sort_col)
-                else:
-                    raise TracError(_('Query parameter "sort=%(sort_col)s" '
-                                      ' is invalid', sort_col=sort_col))
+                sort_col = '%s %s' % (db.quote(sort_col),
+                                      asc == '1' and 'ASC' or 'DESC')
 
-            # get the (partial) report results
-            order_by = ''
-            if order_cols:
-                asc = req.args.get('asc', '1')
-                order_by = " ORDER BY %s %s" % (
-                       ', '.join(db.quote(col) for col in order_cols),
-                        'ASC' if asc == '1' else 'DESC')
-            sql = "SELECT * FROM (%s) AS tab %s LIMIT %s OFFSET %s" % \
-                    (sql, order_by, str(limit), str(offset))
-            self.log.debug("Query SQL: " + sql)
-        cursor.execute(sql, args)
+            if SORT_COLUMN in sql:
+                # Method 1: insert sort_col at specified position
+                sql = sql.replace(SORT_COLUMN, sort_col or '1')
+            elif sort_col:
+                # Method 2: automagically insert sort_col (and __group__
+                # before it, if __group__ was specified) as first criterions
+                if '__group__' in cols:
+                    order_by.append('__group__ ASC')
+                order_by.append(sort_col)
+                # is there already an ORDER BY in the original sql?
+                skel = sql_skeleton(sql)
+                before, after = split_sql(sql, _order_by_re, skel)
+                if after: # there were some other criterions, keep them
+                    order_by.append(after)
+                sql = ' '.join([before, 'ORDER BY', ', '.join(order_by)])
+
+            # Add LIMIT/OFFSET if pagination needed
+            limit_offset = ''
+            if num_items > limit:
+                limit_offset = ' '.join(['LIMIT', str(limit),
+                                         'OFFSET', str(offset)])
+            if LIMIT_OFFSET in sql:
+                # Method 1: insert LIMIT/OFFSET at specified position
+                sql = sql.replace(LIMIT_OFFSET, limit_offset)
+            else:
+                # Method 2: limit/offset is added unless already present
+                skel = skel or sql_skeleton(sql)
+                if 'LIMIT' not in skel.upper():
+                    sql = ' '.join([sql, limit_offset])
+            self.log.debug("Report {%d} SQL (order + limit): %s", id, sql)
+        try:
+            cursor.execute(sql, args)
+        except Exception, e:
+            if order_by or limit_offset:
+                add_notice(req, _("Hint: if the report failed due to automatic"
+                                  " modification of the ORDER BY clause or the"
+                                  " addition of LIMIT/OFFSET, please look up"
+                                  " %(sort_column)s and %(limit_offset)s in"
+                                  " TracReports to see how to gain complete"
+                                  " control over report rewriting.",
+                                  sort_column=SORT_COLUMN,
+                                  limit_offset=LIMIT_OFFSET))
+            return e, sql
         rows = cursor.fetchall() or []
         cols = get_column_names(cursor)
-        return cols, rows, num_items, missing_args
+        return cols, rows, num_items, missing_args, limit_offset
 
     def get_var_args(self, req):
         # reuse somehow for #9574 (wiki vars)
@@ -706,7 +826,7 @@ class ReportModule(Component):
                 sql_io.write(repl_literal(expr))
             else:
                 sql_io.write(var_re.sub(repl, expr))
-        
+
         # Remove arguments that don't appear in the SQL query
         for name in set(args) - names:
             del args[name]
@@ -773,9 +893,9 @@ class ReportModule(Component):
         req.end_headers()
         req.write(data)
         raise RequestDone
-        
+
     # IWikiSyntaxProvider methods
-    
+
     def get_link_resolvers(self):
         yield ('report', self._format_link)
 

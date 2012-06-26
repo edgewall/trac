@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import doctest
+
 from trac.db.mysql_backend import MySQLConnection
 from trac.ticket.report import ReportModule
 from trac.test import EnvironmentStub, Mock
 from trac.web.api import Request, RequestDone
+import trac
 
 import unittest
 from StringIO import StringIO
@@ -98,7 +101,10 @@ class ReportTestCase(unittest.TestCase):
 
 
 def suite():
-    return unittest.makeSuite(ReportTestCase, 'test')
+    suite = unittest.TestSuite()
+    suite.addTest(doctest.DocTestSuite(trac.ticket.report))
+    suite.addTest(unittest.makeSuite(ReportTestCase, 'test'))
+    return suite
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='suite')
