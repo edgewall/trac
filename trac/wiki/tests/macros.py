@@ -2,7 +2,7 @@
 from datetime import datetime
 import unittest
 
-from trac.util.datefmt import utc
+from trac.util.datefmt import format_date, utc
 from trac.wiki.model import WikiPage
 from trac.wiki.tests import formatter
 
@@ -327,6 +327,58 @@ def titleindex5_setup(tc):
         ])
 
 
+RECENTCHANGES_MACRO_TEST_CASES = u""""
+============================== RecentChanges, group option
+[[RecentChanges()]]
+[[RecentChanges(group=date)]]
+[[RecentChanges(group=none)]]
+[[RecentChanges(,2,group=none)]]
+[[RecentChanges(Wiki,group=none)]]
+[[RecentChanges(Wiki,1,group=none)]]
+------------------------------
+<p>
+</p><div><h3>%(date)s</h3><ul><li><a href="/wiki/WikiEnd">WikiEnd</a>
+</li><li><a href="/wiki/WikiMid">WikiMid</a>
+</li><li><a href="/wiki/WikiStart">WikiStart</a>
+</li></ul></div><p>
+</p><div><h3>%(date)s</h3><ul><li><a href="/wiki/WikiEnd">WikiEnd</a>
+</li><li><a href="/wiki/WikiMid">WikiMid</a>
+</li><li><a href="/wiki/WikiStart">WikiStart</a>
+</li></ul></div><p>
+</p><div><ul><li><a href="/wiki/WikiEnd">WikiEnd</a>
+</li><li><a href="/wiki/WikiMid">WikiMid</a>
+</li><li><a href="/wiki/WikiStart">WikiStart</a>
+</li></ul></div><p>
+</p><div><ul><li><a href="/wiki/WikiEnd">WikiEnd</a>
+</li><li><a href="/wiki/WikiMid">WikiMid</a>
+</li></ul></div><p>
+</p><div><ul><li><a href="/wiki/WikiEnd">WikiEnd</a>
+</li><li><a href="/wiki/WikiMid">WikiMid</a>
+</li><li><a href="/wiki/WikiStart">WikiStart</a>
+</li></ul></div><p>
+</p><div><ul><li><a href="/wiki/WikiEnd">WikiEnd</a>
+</li></ul></div><p>
+</p>
+------------------------------
+""" % {'date': format_date(tzinfo=utc)}
+
+def recentchanges_setup(tc):
+    def add_pages(tc, names):
+        for name in names:
+            now = datetime.now(utc)
+            w = WikiPage(tc.env)
+            w.name = name
+            w.text = '--'
+            w.save('joe', 'the page ' + name, '::1', now)
+    add_pages(tc, [
+        'WikiMid',
+        'WikiEnd',
+        ])
+
+def recentchanges_teardown(tc):
+    tc.env.reset_db()
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(IMAGE_MACRO_TEST_CASES, file=__file__))
@@ -343,6 +395,9 @@ def suite():
     suite.addTest(formatter.suite(TITLEINDEX5_MACRO_TEST_CASES, file=__file__,
                                   setup=titleindex5_setup,
                                   teardown=titleindex_teardown))
+    suite.addTest(formatter.suite(RECENTCHANGES_MACRO_TEST_CASES, file=__file__,
+                                  setup=recentchanges_setup,
+                                  teardown=recentchanges_teardown))
     return suite
 
 
