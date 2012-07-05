@@ -37,6 +37,8 @@ var babel = new function() {
 
   var defaultPluralExpr = function(n) { return n == 1 ? 0 : 1; };
   var formatRegex = /%(?:(?:\(([^\)]+)\))?([disr])|%)/g;
+  var translations = {};
+  var merged;
 
   /**
    * A translations object implementing the gettext interface
@@ -55,7 +57,18 @@ var babel = new function() {
   Translations.load = function(catalog) {
     var rv = new Translations();
     rv.load(catalog);
+    translations[rv.domain] = rv;
+    merged.load(catalog);
     return rv;
+  };
+
+  /**
+   * Get a Translations instance from the loaded translations. If the
+   * specified domain doesn't exist, returns a dummy Translations
+   * instance.
+   */
+  Translations.get = function(domain) {
+    return translations[domain] || (new Translations({domain: domain}));
   };
 
   Translations.prototype = {
@@ -103,12 +116,11 @@ var babel = new function() {
      * three new methods on the window object: _, gettext and ngettext
      */
     install: function() {
-      var self = this;
       window._ = window.gettext = function() {
-        return self.gettext.apply(self, arguments);
+        return merged.gettext.apply(merged, arguments);
       };
       window.ngettext = function(singular, plural, n) {
-        return self.ngettext.apply(self, arguments);
+        return merged.ngettext.apply(merged, arguments);
       };
       return this;
     },
@@ -146,6 +158,44 @@ var babel = new function() {
       this.pluralexpr = new Function('n', 'return +(' + expr + ')');
       return this;
     }
+  };
+
+  merged = new Translations({});
+
+  /**
+   * Translate a single string in the specified domain.
+   *
+   * If extra parameters are given, use them to fill the format
+   * specified by the string.
+   */
+  window.dgettext = this.dgettext = function(domain, string) {
+    var rv = translations[domain];
+    var args = Array.prototype.slice.call(arguments, 1);
+    if (typeof rv != 'undefined')
+      return rv.gettext.apply(rv, args);
+    if (arguments.length > 1)
+      return babel.format.apply(this, args);
+    return string;
+  };
+
+  /**
+   * Translate a pluralizable string in the specified domain.
+   *
+   * If extra parameters are given, use them to fill the format
+   * specified by the string.
+   */
+  window.dngettext = this.dngettext = function(domain, singular, plural, n) {
+    var rv = translations[domain];
+    if (typeof rv != 'undefined') {
+      var args = Array.prototype.slice.call(arguments, 1);
+      return rv.ngettext.apply(rv, args);
+    }
+    if (arguments.length > 4) {
+      var args = Array.prototype.slice.call(arguments, 4);
+      args.unshift(singular);
+      return babel.format.apply(this, format_args)
+    }
+    return (n == 1) ? singular : plural;
   };
 
   /**
