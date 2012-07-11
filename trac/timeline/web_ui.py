@@ -230,6 +230,7 @@ class TimelineModule(Component):
                                      format='rss')
         add_link(req, 'alternate', auth_link(req, rss_href), _('RSS Feed'),
                  'application/rss+xml', 'rss')
+        Chrome(self.env).add_jquery_ui(req)
 
         for filter_ in available_filters:
             data['filters'].append({'name': filter_[0], 'label': filter_[1],

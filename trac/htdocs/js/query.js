@@ -184,11 +184,11 @@
             .append(createRadio(propertyName, "0", propertyName + "_off"))
             .append(" ").append(createLabel(_("no"), propertyName + "_off"));
         } else if (property.type == "time") {
-          focusElement = createText(propertyName, 14)
+          focusElement = createText(propertyName, 14).datepicker();
           td.append(createLabel(_("between"))).append(" ")
             .append(focusElement).append(" ")
             .append(createLabel(_("and"))).append(" ")
-            .append(createText(propertyName + "_end", 14));
+            .append(createText(propertyName + "_end", 14).datepicker());
         }
         tr.append(td);
       } else {

@@ -342,6 +342,8 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     'milestones': milestones,
                     'default': default}
 
+        Chrome(self.env).add_jquery_ui(req)
+
         data.update({
             'datetime_hint': get_datetime_format_hint(req.lc_time),
         })
@@ -510,6 +512,8 @@ class VersionAdminPanel(TicketAdminPanel):
             data = {'view': 'list',
                     'versions': model.Version.select(self.env),
                     'default': default}
+
+        Chrome(self.env).add_jquery_ui(req)
 
         data.update({
             'datetime_hint': get_datetime_format_hint(req.lc_time),

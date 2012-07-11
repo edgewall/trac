@@ -1124,6 +1124,7 @@ class QueryModule(Component):
         add_script_data(req, properties=properties, modes=data['modes'])
 
         add_stylesheet(req, 'common/css/report.css')
+        Chrome(self.env).add_jquery_ui(req)
         add_script(req, 'common/js/query.js')
 
         return 'query.html', data, None
