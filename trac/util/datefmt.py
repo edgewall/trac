@@ -396,7 +396,11 @@ def http_date(t=None):
 
 _ISO_8601_RE = re.compile(r'''
     (\d\d\d\d)(?:-?(\d\d)(?:-?(\d\d))?)?    # date
-    (?:T(\d\d)(?::?(\d\d)(?::?(\d\d))?)?)?  # time
+    (?:
+        [T ]
+        (\d\d)(?::?(\d\d)(?::?(\d\d)        # time
+        (?:[,.](\d{1,6}))?)?)?              # microseconds
+    )?
     (Z?(?:([-+])?(\d\d):?(\d\d)?)?)?$       # timezone
     ''', re.VERBOSE)
 
@@ -408,8 +412,9 @@ def _parse_date_iso8601(text, tzinfo):
             years = g[0]
             months = g[1] or '01'
             days = g[2] or '01'
-            hours, minutes, seconds = [x or '00' for x in g[3:6]]
-            z, tzsign, tzhours, tzminutes = g[6:10]
+            hours, minutes, seconds, useconds = [x or '00' for x in g[3:7]]
+            useconds = (useconds + '000000')[:6]
+            z, tzsign, tzhours, tzminutes = g[7:11]
             if z:
                 tz = timedelta(hours=int(tzhours or '0'),
                                minutes=int(tzminutes or '0')).seconds / 60
@@ -419,10 +424,9 @@ def _parse_date_iso8601(text, tzinfo):
                     tzinfo = FixedOffset(-tz if tzsign == '-' else tz,
                                          '%s%s:%s' %
                                          (tzsign, tzhours, tzminutes))
-            tm = time.strptime('%s ' * 6 % (years, months, days,
-                                            hours, minutes, seconds),
-                               '%Y %m %d %H %M %S ')
-            t = tzinfo.localize(datetime(*tm[0:6]))
+            tm = [int(x) for x in (years, months, days,
+                                   hours, minutes, seconds, useconds)]
+            t = tzinfo.localize(datetime(*tm))
             return tzinfo.normalize(t)
         except ValueError:
             pass

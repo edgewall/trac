@@ -53,15 +53,19 @@ else:
 
         def test_parse_date(self):
             tz = datefmt.get_timezone('Europe/Zurich')
-            t = datefmt.parse_date('2009-12-01T12:00:00', tz)
             t_utc = datetime.datetime(2009, 12, 1, 11, 0, 0, 0, datefmt.utc)
-            self.assertEqual(t_utc, t)
+            self.assertEqual(t_utc,
+                    datefmt.parse_date('2009-12-01T12:00:00', tz))
+            self.assertEqual(t_utc,
+                    datefmt.parse_date('2009-12-01 12:00:00', tz))
 
         def test_parse_date_dst(self):
             tz = datefmt.get_timezone('Europe/Zurich')
-            t = datefmt.parse_date('2009-08-01T12:00:00', tz)
             t_utc = datetime.datetime(2009, 8, 1, 10, 0, 0, 0, datefmt.utc)
-            self.assertEqual(t_utc, t)
+            self.assertEqual(t_utc,
+                    datefmt.parse_date('2009-08-01T12:00:00', tz))
+            self.assertEqual(t_utc,
+                    datefmt.parse_date('2009-08-01 12:00:00', tz))
 
         def test_parse_date_across_dst_boundary(self):
             tz = datefmt.get_timezone('Europe/Zurich')
@@ -87,6 +91,7 @@ else:
             format = '%Y-%m-%d %H:%M:%S %Z%z'
             expected = '2002-03-31 00:00:00 CET+0100'
             self.assertEqual(expected, date.strftime(format))
+
 
 class DateFormatTestCase(unittest.TestCase):
 
@@ -218,6 +223,36 @@ class ISO8601TestCase(unittest.TestCase):
                          datefmt.format_time(t, 'iso8601', tz, 'iso8601'))
         self.assertEqual('2010-08-28T11:45:56+02:00',
                          datefmt.format_datetime(t, 'iso8601', tz, 'iso8601'))
+
+    def test_parse_date_offset(self):
+        t_utc = datetime.datetime(2009, 12, 1, 11, 0, 0, 0, datefmt.utc)
+        self.assertEqual(t_utc,
+                         datefmt.parse_date('2009-12-01T11:00:00Z'))
+        self.assertEqual(t_utc,
+                         datefmt.parse_date('2009-12-01T11:00:00+00:00'))
+        self.assertEqual(t_utc,
+                         datefmt.parse_date('2009-12-01T11:00:00-00:00'))
+        self.assertEqual(t_utc,
+                         datefmt.parse_date('2009-12-01T09:00:00-02:00'))
+        self.assertEqual(t_utc,
+                         datefmt.parse_date('2009-12-01T11:30:00+00:30'))
+
+    def test_parse_date_usec(self):
+        tz = datefmt.get_timezone('GMT +1:00')
+        t_utc = datetime.datetime(2009, 12, 1, 11, 0, 0, 98765, datefmt.utc)
+        self.assertEqual(t_utc,
+                         datefmt.parse_date('2009-12-01T12:00:00.098765', tz))
+        self.assertEqual(t_utc,
+                         datefmt.parse_date('2009-12-01T12:00:00,098765', tz))
+        self.assertEqual(datetime.datetime(2009, 12, 1, 11, 0, 0, 98700,
+                                           datefmt.utc),
+                         datefmt.parse_date('2009-12-01T12:00:00.0987', tz))
+        self.assertEqual(datetime.datetime(2009, 12, 1, 11, 0, 0, 90000,
+                                           datefmt.utc),
+                         datefmt.parse_date('2009-12-01T12:00:00.09', tz))
+        self.assertEqual(datetime.datetime(2009, 12, 1, 11, 0, 0, 0,
+                                           datefmt.utc),
+                         datefmt.parse_date('2009-12-01T12:00:00.0', tz))
 
     def test_with_babel_format(self):
         tz = datefmt.timezone('GMT +2:00')
