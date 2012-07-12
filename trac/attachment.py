@@ -48,7 +48,7 @@ from trac.util.text import exception_to_unicode, path_to_unicode, \
 from trac.util.translation import _, tag_
 from trac.web import HTTPBadRequest, IRequestHandler, RequestDone
 from trac.web.chrome import (INavigationContributor, add_ctxtnav, add_link,
-                             add_stylesheet, web_context)
+                             add_stylesheet, web_context, add_warning)
 from trac.web.href import Href
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to
@@ -565,7 +565,7 @@ class AttachmentModule(Component):
         
         if req.method == 'POST':
             if action == 'new':
-                self._do_save(req, attachment)
+                data = self._do_save(req, attachment)
             elif action == 'delete':
                 self._do_delete(req, attachment)
         elif action == 'delete':
@@ -779,16 +779,25 @@ class AttachmentModule(Component):
         attachment.ipnr = req.remote_addr
 
         # Validate attachment
+        valid = True
         for manipulator in self.manipulators:
             for field, message in manipulator.validate_attachment(req,
                                                                   attachment):
+                valid = False
                 if field:
-                    raise InvalidAttachment(
+                    add_warning(req,
                         _('Attachment field %(field)s is invalid: %(message)s',
                           field=field, message=message))
                 else:
-                    raise InvalidAttachment(
+                    add_warning(req,
                         _('Invalid attachment: %(message)s', message=message))
+        if not valid:
+            # Display the attach form with pre-existing data
+            # NOTE: Local file path not known, file field cannot be repopulated
+            add_warning(req, _('Note: File must be selected again.'))
+            data = self._render_form(req, attachment)
+            data['is_replace'] = req.args.get('replace')
+            return data
 
         if req.args.get('replace'):
             try:

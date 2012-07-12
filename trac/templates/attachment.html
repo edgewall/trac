@@ -38,18 +38,18 @@
             <py:if test="authname == 'anonymous'">
               <div class="field">
                 <label>Your email or username:<br />
-                  <input type="text" name="author" size="30" value="$author" />
+                  <input type="text" name="author" size="30" value="${attachment.author or author}" />
                 </label>
               </div>
               </py:if>
             <div class="field">
               <label>Description of the file (optional):<br />
-                <input type="text" name="description" size="60" /></label>
+                <input type="text" name="description" size="60" value="$attachment.description"/></label>
             </div>
             <br />
             <py:if test="authname and authname != 'anonymous'">
               <div class="options">
-                <label><input type="checkbox" name="replace" />
+                <label><input type="checkbox" name="replace" checked="${is_replace or None}" />
                   Replace existing attachment of the same name</label>
               </div>
               <br />
