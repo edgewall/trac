@@ -80,7 +80,9 @@
                       both subject and action as one query parameter -->
                 <input py:if="can_revoke" type="checkbox" name="sel"
                        value="${'%s:%s' % (unicode_to_base64(subject),
-                                           unicode_to_base64(action))}"/> $action
+                                           unicode_to_base64(action))}"/>
+                <span py:strip="action in actions" class="missing"
+                      title="Action is no longer defined">${action}</span>
               </label>
             </td>
           </tr>
