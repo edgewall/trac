@@ -36,6 +36,9 @@
         $("#editrows").change(function() {
           resizeTextArea("text", this.options[this.selectedIndex].value);
         });
+        $("#sidebyside").change(function() {
+          $("#edit input[type=submit][name=preview]").click();
+        });
         <py:if test="not sidebyside and (action == 'preview' or diff)">
           $("#info").scrollToTop();
         </py:if>
@@ -170,7 +173,7 @@
         </py:when>
       </py:choose>
       <py:if test="sidebyside"><xi:include href="wiki_edit_form.html" /></py:if>
-      
+
       <xi:include href="list_of_attachments.html"
                   py:with="alist = attachments; compact = True; foldable = True"/>
     </div>
