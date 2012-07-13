@@ -1576,7 +1576,8 @@ class RegressionTestTicket8247(FunctionalTwillTestCaseSetup):
         tc.formvalue('milestone_table', 'sel', name)
         tc.submit('remove')
         tc.go(ticket_url)
-        tc.find('<strong>Milestone</strong>[ \n\t]*<em>%s</em> deleted' % name)
+        tc.find('<strong class="trac-field-milestone">Milestone</strong>'
+                '[ \n\t]*<em>%s</em> deleted' % name)
         tc.find('Changed <a.* ago</a> by admin')
         tc.notfind('anonymous')
 

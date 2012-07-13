@@ -75,8 +75,8 @@ Arguments:
   </div>
   <ul py:if="change.fields" class="changes">
     <li py:for="field_name, field in sorted(change.fields.iteritems(), key=lambda item: item[1].label.lower())"
-        class="${'trac-conflict' if preview and field_name in conflicts else None}">
-      <strong>${field.label}</strong>
+        class="trac-field-${field_name}${' trac-conflict' if preview and field_name in conflicts else None}">
+      <strong class="trac-field-${field_name}">${field.label}</strong>
       <py:choose>
         <py:when test="field_name == 'attachment'"><i18n:msg params="name">
           <a href="${href.attachment('ticket', ticket.id, field.new)}"><em>${field.new
