@@ -5,7 +5,7 @@
       xmlns:py="http://genshi.edgewall.org/"
       xmlns:i18n="http://genshi.edgewall.org/i18n" py:strip="">
   <form id="edit" action="${href.wiki(page.name)}" method="post">
-    <fieldset class="iefix">
+    <fieldset class="${classes('iefix', sidebyside=sidebyside)}">
       <input type="hidden" name="from_editor" value="1" />
       <input type="hidden" name="action" value="edit" />
       <input type="hidden" name="version" value="$page.version" />

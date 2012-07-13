@@ -21,8 +21,9 @@
  display: block;
  margin: 0 0 0 1em;
 }
-.sidebyside > h2 { margin: .4em 0; }
-.sidebyside #preview { margin: 0 0 1em 0; }
+.sidebyside > h2 { margin: .4em 0 }
+.sidebyside #preview { margin: 0 }
+.sidebyside #text { overflow: hidden }
 
 #edit { margin-top: .5em }
 #edit #rows { 

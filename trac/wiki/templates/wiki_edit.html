@@ -39,15 +39,34 @@
         <py:if test="not sidebyside and (action == 'preview' or diff)">
           $("#info").scrollToTop();
         </py:if>
-        <py:if test="sidebyside">
+        <py:if test="sidebyside">/*<![CDATA[*/
+          function editorHeight() {
+            return $("#text").closest("fieldset").innerHeight();
+          }
+          function previewHeight() {
+            return $("#preview").innerHeight();
+          }
+          var preview_pad = previewHeight() - $("#preview").height();
+          var editor_pad = editorHeight() - $("#text").height();
           function autoResizeText() {
-            var preview_height = $("#preview").height();
-            if (preview_height)
-              $("#text").height(preview_height);
+            $("#preview").height(0); // neutralize preview
+            $("#text").height("auto"); // adapt textarea to its content
+            var text_height = $("#text").prop("scrollHeight");
+            var wikipage_height = $("#preview div.wikipage").height();
+            if (wikipage_height > text_height) {
+              // expand #text to its natural height and adapt #preview to it
+              $("#text").height(text_height).css("overflow-y", "hidden");
+              $("#preview").height(Math.max(16, editorHeight() - preview_pad));
+            } else {
+              // expand .wikipage to its natural height and adapt #text to it
+              $("#preview").height("auto");
+              $("#text").height(Math.max(16, previewHeight() - editor_pad))
+                .css("overflow-y", "auto");
+            }
           }
           autoResizeText();
           $(window).resize(autoResizeText);
-        </py:if>
+        /*]]>*/</py:if>
         <py:if test="sidebyside and not diff">
           $("#text").autoPreview("${href.wiki_render()}", {
               realm: "${page.resource.realm}", id: "${page.resource.id}"
