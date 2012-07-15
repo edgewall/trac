@@ -74,8 +74,10 @@
           $("#text").autoPreview("${href.wiki_render()}", {
               realm: "${page.resource.realm}", id: "${page.resource.id}"
             }, function(textarea, text, rendered) {
+              var window_scroll_top = $(window).scrollTop();
               $("#preview div.wikipage").html(rendered);
               autoResizeText();
+              $(window).scrollTop(window_scroll_top);
           });
         </py:if>
         $(".foldable").enableFolding(true, true);
