@@ -421,6 +421,7 @@ def suite():
     import trac.web.tests
     import trac.wiki.tests
     import tracopt.mimeview.tests
+    import tracopt.perm.tests
     import tracopt.versioncontrol.git.tests
     import tracopt.versioncontrol.svn.tests
 
@@ -438,6 +439,7 @@ def suite():
     suite.addTest(trac.web.tests.suite())
     suite.addTest(trac.wiki.tests.suite())
     suite.addTest(tracopt.mimeview.tests.suite())
+    suite.addTest(tracopt.perm.tests.suite())
     suite.addTest(tracopt.versioncontrol.git.tests.suite())
     suite.addTest(tracopt.versioncontrol.svn.tests.suite())
     suite.addTest(doctest.DocTestSuite(sys.modules[__name__]))

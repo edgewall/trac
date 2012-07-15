@@ -21,7 +21,6 @@ import os
 from trac.core import *
 from trac.config import Option
 from trac.perm import PermissionSystem, IPermissionPolicy
-from trac.util.text import to_unicode
 
 ConfigObj = None
 try:
@@ -174,7 +173,7 @@ class AuthzPolicy(Component):
     def parse_authz(self):
         self.log.debug('Parsing authz security policy %s',
                        self.get_authz_file())
-        self.authz = ConfigObj(self.get_authz_file())
+        self.authz = ConfigObj(self.get_authz_file(), encoding='utf8')
         groups = {}
         for group, users in self.authz.get('groups', {}).iteritems():
             if isinstance(users, basestring):
@@ -229,7 +228,7 @@ class AuthzPolicy(Component):
             valid_users = ['*', 'anonymous']
         for resource_section in [a for a in self.authz.sections
                                  if a != 'groups']:
-            resource_glob = to_unicode(resource_section)
+            resource_glob = resource_section
             if '@' not in resource_glob:
                 resource_glob += '@*'
 
