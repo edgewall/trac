@@ -1,3 +1,4 @@
+** Note: this page documents the 0.13dev version of Trac, see [[0.12/TracStandalone]] if you need the previous version **
 = Tracd =
 
 Tracd is a lightweight standalone Trac web server.
@@ -136,8 +137,8 @@ Another way to share the password file is to specify "*" for the project name:
 This section describes how to use `tracd` with Apache .htpasswd files.
 
   Note: It is necessary (at least with Python 2.6) to install the fcrypt package in order to
-  decode the htpasswd format.  Trac source code attempt an `import crypt` first, but there
-  is no such package for Python 2.6.
+  decode some htpasswd formats.  Trac source code attempt an `import crypt` first, but there
+  is no such package for Python 2.6. Only `SHA-1` passwords (since Trac 0.13) work without this module.
 
 To create a .htpasswd file use Apache's `htpasswd` command (see [#GeneratingPasswordsWithoutApache below] for a method to create these files without using Apache):
 {{{
@@ -167,7 +168,7 @@ Note that you can start tracd without the --auth argument, but if you click on t
 
 === Generating Passwords Without Apache ===
 
-Basic Authorization can be accomplished via this [http://www.4webhelp.net/us/password.php online HTTP Password generator].  Copy the generated password-hash line to the .htpasswd file on your system.
+Basic Authorization can be accomplished via this [http://www.4webhelp.net/us/password.php online HTTP Password generator], or [http://aspirine.org/htpasswd_en.html this alternative] which supports `SHA-1`. Copy the generated password-hash line to the .htpasswd file on your system.
 
 You can use this simple Python script to generate a '''digest''' password file:
 

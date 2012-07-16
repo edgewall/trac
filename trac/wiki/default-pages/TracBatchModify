@@ -7,4 +7,4 @@ To perform a batch modification select the tickets you wish to modify and set th
 
 == List fields
 
-The `Keywords` and `Cc` fields are treated as lists, where list items can be added and / or removed in addition of replacing the entire list value. All list field controls accept multiple items (i.e. multiple keywords or cc addresses).
+The `Keywords` and `Cc` fields are treated as lists, where list items can be added and/or removed in addition of replacing the entire list value. All list field controls accept multiple items (i.e. multiple keywords or cc addresses).

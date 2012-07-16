@@ -1,5 +1,7 @@
+** Note: this page documents the 0.13dev version of Trac, see [[0.12/TracLinks]] if you need the previous version **
 = Trac Links =
 [[TracGuideToc]]
+[[TranslatedPages]]
 
 TracLinks are a fundamental feature of Trac, because they allow easy hyperlinking between the various entities in the system—such as tickets, reports, changesets, Wiki pages, milestones, and source files—from anywhere WikiFormatting is used.
 
@@ -109,15 +111,6 @@ TracLinks are a very simple idea, but actually allow quite a complex network of 
 
 === Relative links ===
 
-To create a link to a specific anchor in a page, use '#':
-{{{
- [#Relativelinks relative links] or [[#Relativelinks|relative links]]
-}}}
-Displays:
-  [#Relativelinks relative links] or [[#Relativelinks|relative links]]
-
-Hint: when you move your mouse over the title of a section, a '¶' character will be displayed. This is a link to that specific section and you can use this to copy the `#...` part inside a relative link to an anchor.
-
 To create a link to a [trac:SubWiki SubWiki]-page just use a '/':
 {{{
  WikiPage/SubWikiPage or ./SubWikiPage
@@ -149,6 +142,50 @@ part in the resulting URL.
 
 ''(Changed in 0.11)'' Note that in Trac 0.10, using e.g. `[../newticket]`  may have worked for linking to the `/newticket` top-level URL, but since 0.11, such a link will stay in the wiki namespace and therefore link to a sibling page. 
 See [#Server-relativelinks] for the new syntax.
+
+=== Link anchors ===
+
+To create a link to a specific anchor in a page, use '#':
+{{{
+ [#Linkanchors Link anchors] or [[#Linkanchors|Link anchors]]
+}}}
+  [#Linkanchors Link anchors] or [[#Linkanchors|Link anchors]]
+
+Hint: when you move your mouse over the title of a section, a '¶' character will be displayed. This is a link to that specific section and you can use this to copy the `#...` part inside a relative link to an anchor.
+
+To create a link to the first or last occurrence of a term on a page, use a ''pseudo anchor'' starting with '#/' or '#?':
+{{{
+ [#/Milestone first occurrence of Milestone] or
+ [#?Milestone last occurrence of Milestone]
+}}}
+ [#/Milestone first occurrence of Milestone] or
+ [#?Milestone last occurrence of Milestone]
+This will also highlight all other matches on the linked page. By default only case sensitive matches are considered. To include case insensitive matches append '/i':
+{{{
+ [#/Milestone/i first occurrence of Milestone or milestone] or
+ [#?Milestone/i last occurrence of Milestone or milestone]
+}}}
+ [#/Milestone/i first occurrence of Milestone or milestone] or
+ [#?Milestone/i last occurrence of Milestone or milestone]
+
+''(since Trac 0.13)''
+
+Such anchors can be very useful for linking to specific lines in a file in the source browser:
+{{{
+ [trac:source:tags/trac-0.12/trac/wiki/api.py#L127 Line 127] or
+ [trac:source:tags/trac-0.12/trac/ticket/roadmap.py#L47 Line 47]
+}}}
+ [trac:source:tags/trac-0.12/trac/wiki/api.py#L127 Line 127] or
+ [trac:source:tags/trac-0.12/trac/ticket/roadmap.py#L47 Line 47]
+(Hint: The line numbers displayed in the source browser are links to anchors on the respective lines.)
+
+Since such links become outdated when the file changes, it can be useful to link using a '#/' pseudo anchor instead:
+{{{
+ [trac:source:trunk/trac/wiki/api.py#/IWikiSyntaxProvider IWikiSyntaxProvider] or
+ [trac:source:trunk/trac/env.py#/ISystemInfoProvider ISystemInfoProvider]
+}}}
+ [trac:source:trunk/trac/wiki/api.py#/IWikiSyntaxProvider IWikiSyntaxProvider] or
+ [trac:source:trunk/trac/env.py#/ISystemInfoProvider ISystemInfoProvider]
 
 === InterWiki links ===
 
@@ -254,10 +291,6 @@ It is also possible to link to the ticket's description using one of the followi
  - `comment:description` (within the ticket)
  - `comment:description:ticket:123`
  - `ticket:123#comment:description`
-
-=== htdocs: links ===
-
-Use `htdocs:path/to/file` to reference files in the `htdocs` directory of the Trac environment, the [TracEnvironment#DirectoryStructure web resource directory].
 
 === query: links ===
 

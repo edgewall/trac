@@ -1,6 +1,8 @@
+** Note: this page documents the 0.13 version of Trac, see [[0.12/WikiMacros]] if you need the previous version **
 = Trac Macros =
 
 [[PageOutline]]
+[[TranslatedPages]]
 
 Trac macros are plugins to extend the Trac engine with custom 'functions' written in Python. A macro inserts dynamic HTML data in any context supporting WikiFormatting.
 
@@ -13,9 +15,9 @@ Macro calls are enclosed in two ''square brackets''. Like Python functions, macr
 === Getting Detailed Help ===
 The list of available macros and the full help can be obtained using the !MacroList macro, as seen [#AvailableMacros below].
 
-A brief list can be obtained via ![[MacroList(*)]] or ![[?]].
+A brief list can be obtained via `[[MacroList(*)]]` or `[[?]]`.
 
-Detailed help on a specific macro can be obtained by passing it as an argument to !MacroList, e.g. ![[MacroList(MacroList)]], or, more conveniently, by appending a question mark (?) to the macro's name, like in ![[MacroList?]].
+Detailed help on a specific macro can be obtained by passing it as an argument to !MacroList, e.g. `[[MacroList(MacroList)]]`, or, more conveniently, by appending a question mark (`?`) to the macro's name, like in `[[MacroList?]]`.
 
 
 
@@ -52,11 +54,11 @@ A list of 3 most recently changed wiki pages starting with 'Trac':
 <div style="font-size: 80%" class="trac-macrolist">
 <h3><code>[[Image]]</code></h3>Embed an image in wiki-formatted text.
 
-The first argument is the file â€¦
+The first argument is the file …
 <h3><code>[[InterTrac]]</code></h3>Provide a list of known <a class="wiki" href="/wiki/InterTrac">InterTrac</a> prefixes.
 <h3><code>[[InterWiki]]</code></h3>Provide a description list for the known <a class="wiki" href="/wiki/InterWiki">InterWiki</a> prefixes.
 <h3><code>[[KnownMimeTypes]]</code></h3>List all known mime-types which can be used as <a class="wiki" href="/wiki/WikiProcessors">WikiProcessors</a>.
-Can be â€¦</div>
+Can be …</div>
 }}}
 etc.
 }}}
@@ -147,7 +149,7 @@ Note that `expand_macro` optionally takes a 4^th^ parameter ''`args`''. When the
 
 For example, when writing:
 {{{
-{{{#!HelloWorld style="polite"
+{{{#!HelloWorld style="polite" -silent verbose
 <Hello World!>
 }}}
 
@@ -159,7 +161,7 @@ For example, when writing:
 }}}
 One should get:
 {{{
-Hello World, text = <Hello World!> , args = {'style': u'polite'}
+Hello World, text = <Hello World!> , args = {'style': u'polite', 'silent': False, 'verbose': True}
 Hello World, text = <Hello World!> , args = {}
 Hello World, text = <Hello World!> , args = None
 }}}
