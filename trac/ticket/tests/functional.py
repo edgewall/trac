@@ -4,15 +4,9 @@ import re
 
 from datetime import datetime, timedelta
 
-try:
-    import babel
-    locale_en = babel.Locale('en_US')
-except ImportError:
-    babel = None
-    locale_en = None
-
 from trac.tests.functional import *
 from trac.util.datefmt import utc, localtz, format_date, format_datetime
+from trac.util.translation import locale_en
 
 
 class TestTickets(FunctionalTwillTestCaseSetup):

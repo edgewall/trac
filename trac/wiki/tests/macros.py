@@ -3,6 +3,7 @@ from datetime import datetime
 import unittest
 
 from trac.util.datefmt import format_date, utc
+from trac.util.translation import locale_en
 from trac.wiki.model import WikiPage
 from trac.wiki.tests import formatter
 
@@ -360,7 +361,7 @@ RECENTCHANGES_MACRO_TEST_CASES = u""""
 </li></ul></div><p>
 </p>
 ------------------------------
-""" % {'date': format_date(tzinfo=utc)}
+""" % {'date': format_date(tzinfo=utc, locale=locale_en)}
 
 def recentchanges_setup(tc):
     def add_pages(tc, names):
