@@ -61,6 +61,10 @@ Creole2Wiki  http://wiki.wikicreole.org/
 
 MediaWiki    http://www.mediawiki.org/wiki/
 
+SO  http://stackoverflow.com/questions/ # Question $1 in StackOverflow
+
+kwquery      /query?group=status&keywords=~  # Custom query for tickets matching keyword $1
+
 #
 # A arbitrary pick of InterWiki prefixes...
 #
@@ -75,6 +79,8 @@ Dictionary       http://www.dict.org/bin/Dict?Database=*&Form=Dict1&Strategy=*&Q
 Google           http://www.google.com/search?q=
 lmgtfy           http://lmgtfy.com/?q= # Well, just search for "$1", follow the link to see how to do it...
 GoogleGroups     http://groups.google.com/group/$1/msg/$2        # Message $2 in $1 Google Group
+gdiscussion      https://groups.google.com/d/topic/$1/$2/discussion # Discussion $2 in $1 Google 
+gmessage         https://groups.google.com/d/msg/$1/$2 # Message $2 in $1 Google Group
 JargonFile       http://downlode.org/perl/jargon-redirect.cgi?term=
 MeatBall         http://www.usemod.com/cgi-bin/mb.pl?
 MetaWiki         http://sunir.org/apps/meta.pl?

@@ -88,7 +88,7 @@ Note that Trac '''doesn't''' use [http://pysvn.tigris.org/ PySVN], neither does 
 
 ===== Others =====
 
-Support for other version control systems is provided via third-parties. See [trac:PluginList] and [trac:VersioningSystemBackend].
+Support for other version control systems is provided via third-parties. See [trac:PluginList] and [trac:VersionControlSystem].
 
 ==== Web Server ====
 A web server is optional because Trac is shipped with a server included, see the [#RunningtheStandaloneServer Running the Standalone Server ] section below.
@@ -133,7 +133,7 @@ With setuptools you can install Trac from the subversion repository;
 
 A few examples:
 
- - first install of the latest stable version Trac 0.12.2, with i18n support:
+ - first install of the latest stable version Trac 0.12.3, with i18n support:
    {{{
    easy_install Babel==0.9.5
    easy_install Trac

@@ -181,8 +181,8 @@ Second paragraph.
 || !'' doubled quotes ||
 || `!wiki:WikiFormatting`, `!WikiFormatting` ||\
 || !wiki:WikiFormatting, !WikiFormatting ||
-|| `{{{-}}} curly brackets` ||\
-|| {{{-}}} curly brackets ||
+|| {{{`}}}`{{{-}}}`{{{`}}}` triple curly brackets` ||\
+|| `{{{-}}}` triple curly brackets ||
 |-----------------------------------------------------------
 ||= [#Images Images] =|| `[[Image(`''link''`)]]` || [[Image(htdocs:../common/trac_logo_mini.png)]] ||
 |-----------------------------------------------------------

@@ -9,7 +9,7 @@ Editing wiki text is easy, using any web browser and a simple [WikiFormatting fo
 The main goal of the wiki is to make editing text easier and ''encourage'' people to contribute and annotate text content for a project. Trac also provides a simple toolbar to make formatting text even easier, and supports the [http://universaleditbutton.org/Universal_Edit_Button universal edit button] of your browser.
 
 The wiki itself does not enforce any structure, but rather resembles a stack of empty sheets of paper, where you can organize information and documentation as you see fit, and later reorganize if necessary. 
-As contributing to a wiki is essentially building an hypertext, 
+As contributing to a wiki is essentially building hypertext, 
 general advice regarding HTML authoring apply here as well.
 For example, the ''[http://www.w3.org/Provider/Style Style Guide for online hypertext]'' explains how to think about the
 [http://www.w3.org/Provider/Style/Structure.html overall structure of a work] 

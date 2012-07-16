@@ -146,7 +146,7 @@ An environment directory will usually consist of the following files and directo
  * `templates` - Custom Genshi environment-specific templates. ''(since 0.11)''
    * `site.html` - method to customize header, footer, and style, described in TracInterfaceCustomization#SiteAppearance
 
-'''Caveat:''' ''don't confuse a Trac environment directory with the source code repository directory.'' 
+=== Caveat: don't confuse a ''Trac environment directory'' with the ''source code repository directory'' #Caveat
 
 This is a common beginners' mistake.
 It happens that the structure for a Trac environment is loosely modelled after the Subversion repository directory 

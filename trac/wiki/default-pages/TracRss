@@ -23,9 +23,8 @@ Anywhere in Trac where RSS is available, you should find a small orange '''XML''
    * http://www.rssowl.org/ — Open source, Eclipse-based, RSS reader for Linux, Mac and Windows systems that supports https and authenticated feeds.
 
  * ''Linux/BSD/*n*x systems:''
-   * http://pim.kde.org/users.php — [http://kde.org KDE] RSS Reader for Linux/BSD/*n*x systems
    * http://liferea.sourceforge.net/ — Open source GTK2 RSS Reader for Linux
-   * http://akregator.sourceforge.net/ — Open source KDE RSS Reader (part of KDE-PIM)
+   * [http://akregator.sourceforge.net/ Akregator] — Open source KDE RSS Reader (part of KDE-PIM)
 
  * ''Mac OS X systems:''
    * http://ranchero.com/netnewswire/ — An excellent RSS reader for Mac OS X (has both free and pay versions)
@@ -38,9 +37,7 @@ Anywhere in Trac where RSS is available, you should find a small orange '''XML''
    * http://www.sharpreader.net/ — A free RSS Reader written in .NET for Windows
 
  * ''Firefox:''
-   * http://www.mozilla.org/products/firefox/ — Mozilla Firefox supports [http://www.mozilla.org/products/firefox/live-bookmarks.html live bookmarks] using RSS
-   * http://sage.mozdev.org — Sage RSS and Atom feed aggregator for Mozilla Firefox
-   * http://www.wizzrss.com/Welcome.php — WizzRSS Feed Reader for Firefox
+   * http://www.mozilla.org/products/firefox/ — Mozilla Firefox features plenty [https://addons.mozilla.org/en-US/firefox/search/?q=rss&appver=&platform= add-ons] for supporting RSS
 
 ----
 See also: TracGuide, TracTimeline, TracReports, TracBrowser

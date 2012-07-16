@@ -107,6 +107,12 @@ The following examples are complete post-commit and post-revprop-change scripts 
 export PYTHON_EGG_CACHE="/path/to/dir"
 /usr/bin/trac-admin /path/to/env changeset added "$1" "$2"
 }}}
+Note: Ubuntu doesn't seem to like /usr/bin/trac-admin, so just use:
+{{{#!sh
+#!/bin/sh
+export PYTHON_EGG_CACHE="/path/to/dir"
+trac-admin /path/to/env/ changeset added "$1" "$2"
+}}}
 On Windows (`post-commit.cmd`):
 {{{#!application/x-dos-batch
 @C:\Python26\Scripts\trac-admin.exe C:\path\to\env changeset added "%1" "%2"
@@ -168,7 +174,7 @@ The following procedure illustrates a typical migration from a Subversion single
  1. Repeat steps 2, 3 and 4 to add other "named" repositories as needed.
 
 == Migration from a single-repository setup (Mercurial) == #MigrationMercurial
-The following procedure illustrates a typical migration from a Mercurial single-repository setup to multiple repositories. Please note that at the time of writing, no initial resynchronization or any hooks are necessary for Mercurial repositories - see #9485 for more information.
+The following procedure illustrates a typical migration from a Mercurial single-repository setup to multiple repositories. Please note that at the time of writing, no initial resynchronization or any hooks are necessary for Mercurial repositories - see [trac:ticket:9485 #9485] for more information.
 
  1. Upgrade to the latest version of the TracMercurial plugin.
  1. Remove the default repository specification from the `[trac] repository_dir` option.

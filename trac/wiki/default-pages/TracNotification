@@ -97,7 +97,7 @@ The following variables are available in the template:
 
 === Customizing the e-mail content ===
 
-The notification e-mail content is generated based on `ticket_notify_email.txt` in `trac/ticket/templates`.  You can add your own version of this template by adding a `ticket_notify_email.txt` to the templates directory of your environment. The default looks like this:
+The notification e-mail content is generated based on `ticket_notify_email.txt` in `trac/templates`.  You can add your own version of this template by adding a `ticket_notify_email.txt` to the templates directory of your environment. The default looks like this:
 
 {{{
 $ticket_body_hdr
@@ -169,7 +169,7 @@ Replace the following second row in the template:
 $ticket_props
 }}}
 
-with this instead:
+with this instead (''requires Python 2.6 or later''):
 {{{
 --------------------------------------------------------------------------
 {% with
@@ -219,7 +219,12 @@ My Project &lt;http://myproj.example.com/&gt;<br />
 }}}
 }}}
 
-However, it's not as perfect as an HTML formatted e-mail would be, but presented ticket properties are at least readable...
+**Important**: Only those ticket fields that are listed in `sel` are part of the HTML mail. If you have defined custom ticket fields which shall be part of the mail they have to be added to `sel`, example:
+{{{
+   sel = ['Reporter', ..., 'Keywords', 'Custom1', 'Custom2']
+}}}
+
+However, it's not as perfect as an automatically HTML-formatted e-mail would be, but presented ticket properties are at least readable by default in MS Outlook...
 
 
 == Using GMail as the SMTP relay host ==

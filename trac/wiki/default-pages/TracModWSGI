@@ -359,6 +359,8 @@ Please use either version 1.6, 2.4 or later of `mod_wsgi`. Versions prior to 2.4
 
 ''Note: using mod_wsgi 2.5 and Python 2.6.1 gave an Internal Server Error on my system (Apache 2.2.11 and Trac 0.11.2.1). Upgrading to Python 2.6.2 (as suggested [http://www.mail-archive.com/modwsgi@googlegroups.com/msg01917.html here]) solved this for me[[BR]]-- Graham Shanks''
 
+If you plan to use `mod_wsgi` in embedded mode on Windows or with the MPM worker on Linux, then you'll even need version 0.3.4 or greater (see [trac:#10675] for details).
+
 === Getting Trac to work nicely with SSPI and 'Require Group' ===
 If like me you've set Trac up on Apache, Win32 and configured SSPI, but added a 'Require group' option to your apache configuration, then the SSPIOmitDomain option is probably not working.  If its not working your usernames in trac are probably looking like 'DOMAIN\user' rather than 'user'.
 
@@ -390,13 +392,20 @@ import trac.db.postgres_backend
 trac.db.postgres_backend.PostgreSQLConnection.poolable = False
 }}}
 
+or
+
+{{{
+import trac.db.mysql_backend
+trac.db.mysql_backend.MySQLConnection.poolable = False
+}}}
+
 Now Trac drops the connection after serving a page and the connection count on the database will be kept minimal.
 
 //This is not a recommended approach though. See also the notes at the bottom of the [http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac mod_wsgi's IntegrationWithTrac] wiki page.//
 
 === Other resources
 
-For more troubleshooting tips, see also the [TracModPython#Troubleshooting mod_python troubleshooting] section, as most Apache-related issues are quite similar, plus discussion of potential [http://code.google.com/p/modwsgi/wiki/ApplicationIssues application issues] when using mod_wsgi.
+For more troubleshooting tips, see also the [TracModPython#Troubleshooting mod_python troubleshooting] section, as most Apache-related issues are quite similar, plus discussion of potential [http://code.google.com/p/modwsgi/wiki/ApplicationIssues application issues] when using mod_wsgi. The wsgi page also has a [http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac Integration With Trac] document.
 
 
 ----

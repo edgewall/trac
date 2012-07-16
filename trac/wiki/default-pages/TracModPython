@@ -211,8 +211,8 @@ In general, if you get server error pages, you can either check the Apache error
 
 For multiple projects, try restarting the server as well.
 
-===Login Not Working===
-If you've used <Location /> directive, it will override any other directives, as well as <Location /Login>.
+=== Login Not Working ===
+If you've used `<Location />` directive, it will override any other directives, as well as `<Location /login>`.
 The workaround is to use negation expression as follows (for multi project setups):
 {{{
 #!xml
