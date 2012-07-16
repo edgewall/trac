@@ -673,9 +673,13 @@ def send_project_index(environ, start_response, parent_dir=None,
                                 default_encoding='utf-8')
         tmpl = loader.load(template)
         stream = tmpl.generate(**data)
-        output = stream.render('xhtml', doctype=DocType.XHTML_STRICT,
-                               encoding='utf-8')
-        req.send(output, 'text/html')
+        if template.endswith('.xml'):
+            output = stream.render('xml')
+            req.send(output, 'text/xml')
+        else:
+            output = stream.render('xhtml', doctype=DocType.XHTML_STRICT,
+                                   encoding='utf-8')
+            req.send(output, 'text/html')
 
     except RequestDone:
         pass
