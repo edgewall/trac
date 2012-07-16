@@ -1,4 +1,3 @@
-** Note: this page documents the 0.13dev version of Trac, see [[0.12/TracNotification]] if you need the previous version **
 = Email Notification of Ticket Changes =
 [[TracGuideToc]]
 
@@ -19,6 +18,8 @@ To receive notification mails, you can either enter a full email address or your
 
 Alternatively, a default domain name ('''`smtp_default_domain`''') can be set in the TracIni file (see [#ConfigurationOptions Configuration Options] below). In this case, the default domain will be appended to the username, which can be useful for an "Intranet" kind of installation.
 
+When using apache and mod_kerb for authentication against Kerberos / Active Directory, usernames take the form ('''`username@EXAMPLE.LOCAL`'''). To avoid this being interpreted as an email address, add the Kerberos domain to  ('''`ignore_domains`''').
+
 == Configuring SMTP Notification ==
 
 '''Important:''' For TracNotification to work correctly, the `[trac] base_url` option must be set in [wiki:TracIni trac.ini]. 
@@ -29,7 +30,7 @@ These are the available options for the `[notification]` section in trac.ini.
  * '''`smtp_enabled`''': Enable email notification.
  * '''`smtp_from`''': Email address to use for ''Sender''-headers in notification emails.
  * '''`smtp_from_name`''': Sender name to use for ''Sender''-headers in notification emails.
- * '''`smtp_from_author`''': (''since 0.13'') Use the author of a change (the reporter of a new ticket, or the author of a comment) as the `From:` header value in notification e-mails (default: false). If the author hasn't set an e-mail address, `smtp_from` and `smtp_from_name` are used instead.
+ * '''`smtp_from_author`''': (''since 1.0'') Use the author of a change (the reporter of a new ticket, or the author of a comment) as the `From:` header value in notification e-mails (default: false). If the author hasn't set an e-mail address, `smtp_from` and `smtp_from_name` are used instead.
  * '''`smtp_replyto`''': Email address to use for ''Reply-To''-headers in notification emails.
  * '''`smtp_default_domain`''': (''since 0.10'') Append the specified domain to addresses that do not contain one. Fully qualified addresses are not modified. The default domain is appended to all username/login for which an email address cannot be found from the user settings.
  * '''`smtp_always_cc`''': List of email addresses to always send notifications to. ''Typically used to post ticket changes to a dedicated mailing list.''
@@ -40,6 +41,7 @@ These are the available options for the `[notification]` section in trac.ini.
  * '''`always_notify_updater`''': (''since 0.10'') Always send a notification to the updater of a ticket (default: true).
  * '''`use_public_cc`''': (''since 0.10'') Addresses in To: (owner, reporter) and Cc: lists are visible by all recipients (default is ''Bcc:'' - hidden copy).
  * '''`use_short_addr`''': (''since 0.10'') Enable delivery of notifications to addresses that do not contain a domain (i.e. do not end with ''@<domain.com>'').This option is useful for intranets, where the SMTP server can handle local addresses and map the username/login to a local mailbox. See also `smtp_default_domain`. Do not use this option with a public SMTP server. 
+ * '''`ignore_domains`''': Comma-separated list of domains that should not be considered part of email addresses (for usernames with Kerberos domains).
  * '''`mime_encoding`''': (''since 0.10'') This option allows selecting the MIME encoding scheme. Supported values:
    * `none`: default value, uses 7bit encoding if the text is plain ASCII, or 8bit otherwise. 
    * `base64`: works with any kind of content. May cause some issues with touchy anti-spam/anti-virus engines.
@@ -101,34 +103,34 @@ The notification e-mail content is generated based on `ticket_notify_email.txt` 
 {{{
 $ticket_body_hdr
 $ticket_props
-#choose ticket.new
-  #when True
+{% choose ticket.new %}\
+{%   when True %}\
 $ticket.description
-  #end
-  #otherwise
-    #if changes_body
-Changes (by $change.author):
+{%   end %}\
+{%   otherwise %}\
+{%     if changes_body %}\
+${_('Changes (by %(author)s):', author=change.author)}
 
 $changes_body
-    #end
-    #if changes_descr
-      #if not changes_body and not change.comment and change.author
-Description changed by $change.author:
-      #end
+{%     end %}\
+{%     if changes_descr %}\
+{%       if not changes_body and not change.comment and change.author %}\
+${_('Description changed by %(author)s:', author=change.author)}
+{%       end %}\
 $changes_descr
 --
-    #end
-    #if change.comment
+{%     end %}\
+{%     if change.comment %}\
 
-Comment${not changes_body and '(by %s)' % change.author or ''}:
+${changes_body and _('Comment:') or _('Comment (by %(author)s):', author=change.author)}
 
 $change.comment
-    #end
-  #end
-#end
+{%     end %}\
+{%   end %}\
+{% end %}\
 
 -- 
-Ticket URL: <$ticket.link>
+${_('Ticket URL: <%(link)s>', link=ticket.link)}
 $project.name <${project.url or abs_href()}>
 $project.descr
 }}}
@@ -224,6 +226,7 @@ My Project &lt;http://myproj.example.com/&gt;<br />
 }}}
 
 However, it's not as perfect as an automatically HTML-formatted e-mail would be, but presented ticket properties are at least readable by default in MS Outlook...
+
 
 == Using GMail as the SMTP relay host ==
 
@@ -321,4 +324,4 @@ in the trac log. Have a look [http://support.microsoft.com/kb/291828 here] for i
 
 
 ----
-See also: TracTickets, TracIni, TracGuide, TracDev/NotificationApi
+See also: TracTickets, TracIni, TracGuide

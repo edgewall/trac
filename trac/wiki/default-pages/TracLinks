@@ -1,7 +1,5 @@
-** Note: this page documents the 0.13dev version of Trac, see [[0.12/TracLinks]] if you need the previous version **
 = Trac Links =
 [[TracGuideToc]]
-[[TranslatedPages]]
 
 TracLinks are a fundamental feature of Trac, because they allow easy hyperlinking between the various entities in the system—such as tickets, reports, changesets, Wiki pages, milestones, and source files—from anywhere WikiFormatting is used.
 
@@ -168,7 +166,7 @@ This will also highlight all other matches on the linked page. By default only c
  [#/Milestone/i first occurrence of Milestone or milestone] or
  [#?Milestone/i last occurrence of Milestone or milestone]
 
-''(since Trac 0.13)''
+''(since Trac 1.0)''
 
 Such anchors can be very useful for linking to specific lines in a file in the source browser:
 {{{
@@ -291,6 +289,10 @@ It is also possible to link to the ticket's description using one of the followi
  - `comment:description` (within the ticket)
  - `comment:description:ticket:123`
  - `ticket:123#comment:description`
+
+=== htdocs: links ===
+
+Use `htdocs:path/to/file` to reference files in the `htdocs` directory of the Trac environment, the [TracEnvironment#DirectoryStructure web resource directory].
 
 === query: links ===
 

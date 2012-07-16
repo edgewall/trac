@@ -20,8 +20,8 @@ The example below should help to explain the syntax.
    * format: One of: 
      * `plain` for plain text 
      * `wiki` to interpret the content as WikiFormatting (''since 0.11.3'') 
-     * `reference` to treat the content as a queryable value (''since 0.13'') 
-     * `list` to interpret the content as a list of queryable values, separated by whitespace (''since 0.13'')
+     * `reference` to treat the content as a queryable value (''since 1.0'') 
+     * `list` to interpret the content as a list of queryable values, separated by whitespace (''since 1.0'')
  * '''checkbox''': A boolean value check box.
    * label: Descriptive label.
    * value: Default value (0 or 1).

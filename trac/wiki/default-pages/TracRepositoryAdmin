@@ -141,7 +141,7 @@ REV=$(git rev-parse HEAD)
 trac-admin /path/to/env changeset added <my-repository> $REV
 }}}
 
-For Mercurial, add the following entries to the `.hgrc` file of each repository accessed by Trac (if [trac:TracMercurial] is installed in a Trac `plugins` directory, download [source:plugins/0.13/mercurial-plugin/tracext/hg/hooks.py hooks.py] and place it somewhere accessible):
+For Mercurial, add the following entries to the `.hgrc` file of each repository accessed by Trac (if [trac:TracMercurial] is installed in a Trac `plugins` directory, download [trac:source:mercurial-plugin/tracext/hg/hooks.py hooks.py] and place it somewhere accessible):
 {{{#!ini
 [hooks]
 ; If mercurial-plugin is installed globally

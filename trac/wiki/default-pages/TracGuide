@@ -1,7 +1,5 @@
-** Note: this page documents the 0.13 version of Trac, see [[0.12/TracGuide]] if you need the previous version **
 = The Trac User and Administration Guide =
 [[TracGuideToc]]
-[[TranslatedPages]]
 {{{#!span style="font-size:90%"
 //The TracGuide is meant to serve as a starting point for all documentation regarding Trac usage and development. The guide is a free document, a collaborative effort, and a part of the [http://trac.edgewall.org Trac Project] itself.//
 }}}
@@ -63,3 +61,5 @@ Trac allows wiki markup in issue descriptions and commit messages, creating link
  * TracSupport — How to get more information
 
 If you are looking for a good place to ask a question about Trac, look no further than the [http://trac.edgewall.org/wiki/MailingList MailingList]. It provides a friendly environment to discuss openly among Trac users and developers.
+
+See also the TracSupport page for more information resources.
