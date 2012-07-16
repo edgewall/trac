@@ -332,7 +332,7 @@ HTML comments are stripped from the output of the `html` processor. To add an HT
   }}}
 }}}
 
-Please note that the character sequence "--" is not allowed in HTML comments, and will generate a rendering error.
+Please note that the character sequence "`--`" is not allowed in HTML comments, and will generate a rendering error.
 
 
 == More Information ==

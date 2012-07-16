@@ -87,7 +87,7 @@ Note that Trac '''doesn't''' use [http://pysvn.tigris.org/ PySVN], neither does 
 
 ===== Others =====
 
-Support for other version control systems is provided via third-parties. See [trac:PluginList PluginList] and [trac:VersioningSystemBackend VersioningSystemBackend].
+Support for other version control systems is provided via third-parties. See [trac:PluginList] and [trac:VersionControlSystem].
 
 ==== Web Server ====
 A web server is optional because Trac is shipped with a server included, see the [#RunningtheStandaloneServer Running the Standalone Server ] section below.

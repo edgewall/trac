@@ -168,7 +168,7 @@ Note that you can start tracd without the --auth argument, but if you click on t
 
 === Generating Passwords Without Apache ===
 
-Basic Authorization can be accomplished via this [http://www.4webhelp.net/us/password.php online HTTP Password generator], or [http://aspirine.org/htpasswd_en.html this alternative] which supports `SHA-1`. Copy the generated password-hash line to the .htpasswd file on your system.
+Basic Authorization can be accomplished via this [http://aspirine.org/htpasswd_en.html online HTTP Password generator] which also supports `SHA-1`.  Copy the generated password-hash line to the .htpasswd file on your system. Note that Windows Python lacks the "crypt" module that is the default hash type for htpasswd ; Windows Python can grok MD5 password hashes just fine and you should use MD5.
 
 You can use this simple Python script to generate a '''digest''' password file:
 
@@ -214,9 +214,12 @@ Note: If you use the above script you must set the realm in the `--auth` argumen
 ==== Using `md5sum`
 It is possible to use `md5sum` utility to generate digest-password file:
 {{{
- $ printf "${user}:trac:${password}" | md5sum - >>user.htdigest
+user=
+realm=
+password=
+path_to_file=
+echo ${user}:${realm}:$(printf "${user}:${realm}:${password}" | md5sum - | sed -e 's/\s\+-//') > ${path_to_file}
 }}}
-and manually delete " -" from the end and add "${user}:trac:" to the start of line from 'to-file'.
 
 == Reference ==
 
@@ -234,17 +237,23 @@ Options:
   -p PORT, --port=PORT  the port number to bind to
   -b HOSTNAME, --hostname=HOSTNAME
                         the host name or IP address to bind to
-  --protocol=PROTOCOL   http|scgi|ajp
+  --protocol=PROTOCOL   http|scgi|ajp|fcgi
   -q, --unquote         unquote PATH_INFO (may be needed when using ajp)
-  --http10              use HTTP/1.0 protocol version (default)
-  --http11              use HTTP/1.1 protocol version instead of HTTP/1.0
+  --http10              use HTTP/1.0 protocol version instead of HTTP/1.1
+  --http11              use HTTP/1.1 protocol version (default)
   -e PARENTDIR, --env-parent-dir=PARENTDIR
                         parent directory of the project environments
   --base-path=BASE_PATH
                         the initial portion of the request URL's "path"
   -r, --auto-reload     restart automatically when sources are modified
   -s, --single-env      only serve a single project without the project list
+  -d, --daemonize       run in the background as a daemon
+  --pidfile=PIDFILE     When daemonizing, file to which to write pid
+  --umask=MASK          When daemonizing, file mode creation mask to use, in
+                        octal notation (default 022)
 }}}
+
+Use the -d option so that tracd doesn't hang if you close the terminal window where tracd was started.
 
 == Tips ==
 

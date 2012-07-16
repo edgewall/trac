@@ -243,7 +243,7 @@ The same is valid for all other [TracSyntaxColoring#SyntaxColoringSupport mime t
 For more processor macros developed and/or contributed by users, visit: 
  * [trac:ProcessorBazaar]
  * [trac:MacroBazaar]
- * [th:WikiStart Trac Hacks] community site
+ * [http://trac-hacks.org Trac Hacks] community site
 
 Developing processors is no different from Wiki macros. 
 In fact they work the same way, only the usage syntax differs. 

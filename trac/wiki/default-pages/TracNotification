@@ -96,7 +96,7 @@ The following variables are available in the template:
 
 === Customizing the e-mail content ===
 
-The notification e-mail content is generated based on `ticket_notify_email.txt` in `trac/ticket/templates`.  You can add your own version of this template by adding a `ticket_notify_email.txt` to the templates directory of your environment. The default looks like this:
+The notification e-mail content is generated based on `ticket_notify_email.txt` in `trac/templates`.  You can add your own version of this template by adding a `ticket_notify_email.txt` to the templates directory of your environment. The default looks like this:
 
 {{{
 $ticket_body_hdr
@@ -157,6 +157,73 @@ I'm interested too!
 Ticket URL: <http://example.com/trac/ticket/42>
 My Project <http://myproj.example.com/>
 }}}
+
+
+== Customizing e-mail content for MS Outlook ==
+
+Out-of-the-box, MS Outlook normally presents plain text e-mails with a variable-width font; the ticket properties table will most certainly look like a mess in MS Outlook. This can be fixed with some customization of the [#Customizingthee-mailcontent e-mail template].
+
+Replace the following second row in the template:
+{{{
+$ticket_props
+}}}
+
+with this instead (''requires Python 2.6 or later''):
+{{{
+--------------------------------------------------------------------------
+{% with
+   pv = [(a[0].strip(), a[1].strip()) for a in [b.split(':') for b in
+         [c.strip() for c in 
+          ticket_props.replace('|', '\n').splitlines()[1:-1]] if ':' in b]];
+   sel = ['Reporter', 'Owner', 'Type', 'Status', 'Priority', 'Milestone', 
+          'Component', 'Severity', 'Resolution', 'Keywords'] %}\
+${'\n'.join('%s\t%s' % (format(p[0]+':', ' <12'), p[1]) for p in pv if p[0] in sel)}
+{% end %}\
+--------------------------------------------------------------------------
+}}}
+
+The table of ticket properties is replaced with a list of a selection of the properties. A tab character separates the name and value in such a way that most people should find this more pleasing than the default table, when using MS Outlook.
+{{{#!div style="margin: 1em 1.75em; border:1px dotted"
+{{{#!html
+#42: testing<br />
+--------------------------------------------------------------------------<br />
+<table cellpadding=0>
+<tr><td>Reporter:</td><td>jonas@example.com</td></tr>
+<tr><td>Owner:</td><td>anonymous</td></tr>
+<tr><td>Type:</td><td>defect</td></tr>
+<tr><td>Status:</td><td>assigned</td></tr>
+<tr><td>Priority:</td><td>lowest</td></tr>
+<tr><td>Milestone:</td><td>0.9</td></tr>
+<tr><td>Component:</td><td>report system</td></tr>
+<tr><td>Severity:</td><td>major</td></tr>
+<tr><td>Resolution:</td><td> </td></tr>
+<tr><td>Keywords:</td><td> </td></tr>
+</table>
+--------------------------------------------------------------------------<br />
+Changes:<br />
+<br />
+&nbsp;&nbsp;* component: &nbsp;changset view =&gt; search system<br />
+&nbsp;&nbsp;* priority: &nbsp;low =&gt; highest<br />
+&nbsp;&nbsp;* owner: &nbsp;jonas =&gt; anonymous<br />
+&nbsp;&nbsp;* cc: &nbsp;daniel@example.com =&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;daniel@example.com, jonas@example.com<br />
+&nbsp;&nbsp;* status: &nbsp;new =&gt; assigned<br />
+<br />
+Comment:<br />
+I'm interested too!<br />
+<br />
+--<br />
+Ticket URL: &lt;http://example.com/trac/ticket/42&gt;<br />
+My Project &lt;http://myproj.example.com/&gt;<br />
+}}}
+}}}
+
+**Important**: Only those ticket fields that are listed in `sel` are part of the HTML mail. If you have defined custom ticket fields which shall be part of the mail they have to be added to `sel`, example:
+{{{
+   sel = ['Reporter', ..., 'Keywords', 'Custom1', 'Custom2']
+}}}
+
+However, it's not as perfect as an automatically HTML-formatted e-mail would be, but presented ticket properties are at least readable by default in MS Outlook...
 
 == Using GMail as the SMTP relay host ==
 
