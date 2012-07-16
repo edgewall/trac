@@ -4,9 +4,9 @@ import re
 
 from datetime import datetime, timedelta
 
+from trac.test import locale_en
 from trac.tests.functional import *
 from trac.util.datefmt import utc, localtz, format_date, format_datetime
-from trac.util.translation import locale_en
 
 
 class TestTickets(FunctionalTwillTestCaseSetup):

@@ -2,8 +2,8 @@
 from datetime import datetime
 import unittest
 
+from trac.test import locale_en
 from trac.util.datefmt import format_date, utc
-from trac.util.translation import locale_en
 from trac.wiki.model import WikiPage
 from trac.wiki.tests import formatter
 

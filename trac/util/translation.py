@@ -105,7 +105,6 @@ class NullTranslationsBabel(NullTranslations):
     def dungettext(self, domain, singular, plural, num):
         return self.ungettext(singular, plural, num)
 
-locale_en = None
 has_babel = False
 
 try:
@@ -348,7 +347,6 @@ try:
         return Locale.negotiate(normalize(preferred_locales),
                                 normalize(get_available_locales()))
         
-    locale_en = Locale.parse('en_US')
     has_babel = True
 
 except ImportError: # fall back on 0.11 behavior, i18n functions are no-ops

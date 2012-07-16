@@ -1,14 +1,9 @@
-from trac.test import Mock, EnvironmentStub, MockPerm
+from trac.test import Mock, EnvironmentStub, MockPerm, locale_en
 from trac.ticket.query import Query, QueryModule, TicketQueryMacro
 from trac.util.datefmt import utc
 from trac.web.chrome import web_context
 from trac.web.href import Href
 from trac.wiki.formatter import LinkFormatter
-
-try:
-    from babel import Locale
-except ImportError:
-    Locale = None
 
 import unittest
 import difflib
@@ -37,9 +32,8 @@ class QueryTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
-        locale = Locale.parse('en_US') if Locale else None
         self.req = Mock(href=self.env.href, authname='anonymous', tz=utc,
-                        locale=locale, lc_time=locale)
+                        locale=locale_en, lc_time=locale_en)
         
     def tearDown(self):
         self.env.reset_db()

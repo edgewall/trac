@@ -26,8 +26,9 @@ import sys
 
 try:
     from babel import Locale
+    locale_en = Locale.parse('en_US')
 except ImportError:
-    Locale = None
+    locale_en = None    
 
 from trac.config import Configuration
 from trac.core import Component, ComponentManager
@@ -301,7 +302,7 @@ class EnvironmentStub(Environment):
         self.abs_href = Href('http://example.org/trac.cgi')
 
         self.known_users = []
-        translation.activate(Locale and Locale('en', 'US'))
+        translation.activate(locale_en)
         
     def reset_db(self, default_data=None):
         """Remove all data from Trac tables, keeping the tables themselves.
