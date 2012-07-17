@@ -70,8 +70,8 @@
           if (!$('#trac-comments-oldest').checked())
             $('#trac-comments-oldest').click().change();
           $("#changelog").replaceWith(items.filter("#changelog"));
-          if ($('#trac-comments-only-toggle').attr('checked')) 
-            $('#trac-comments-only-toggle').click().attr('checked', true); 
+          if ($('#trac-comments-only-toggle').attr('checked'))
+            $('#trac-comments-only-toggle').click().attr('checked', true);
           // Show warning
           var new_changes = $("#changelog .trac-new");
           $("#trac-edit-warning").toggle(new_changes.length != 0);
@@ -197,28 +197,28 @@
         <!--! Add comment -->
         <div py:if="ticket.exists and can_append" id="trac-add-comment" class="field">
           <div class="trac-nav">
-            <a href="#content" title="View ticket fields and description">View</a> &uarr;
+            <a href="#content" title="View ticket fields and description">View Description</a> &uarr;
           </div>
-          <h2>
-            <a id="edit" onfocus="$('#comment').get(0).focus()">Add a comment</a>
-          </h2>
-          <div id="trac-edit-warning" class="warning system-message"
-               style="${'display: none' if start_time == ticket['changetime'] else None}"
-               i18n:msg="">
-            This ticket has been modified since you started editing. You should review the
-            <em class="trac-new">other modifications</em> which have been appended above,
-            and any <em class="trac-conflict">conflicts</em> shown in the preview below.
-            You can nevertheless proceed and submit your changes if you wish so.
-          </div>
-          <!--! Comment field -->
-          <fieldset class="iefix">
-            <label for="comment" i18n:msg="">You may use
-              <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a>
-              here.
-            </label>
-            <textarea id="comment" name="comment" class="wikitext trac-resizable" rows="10" cols="78">
+          <h2 class="foldable" id="edit">Add Comment</h2>
+          <div>
+            <div id="trac-edit-warning" class="warning system-message"
+                 style="${'display: none' if start_time == ticket['changetime'] else None}"
+                 i18n:msg="">
+              This ticket has been modified since you started editing. You should review the
+              <em class="trac-new">other modifications</em> which have been appended above,
+              and any <em class="trac-conflict">conflicts</em> shown in the preview below.
+              You can nevertheless proceed and submit your changes if you wish so.
+            </div>
+            <!--! Comment field -->
+            <fieldset class="iefix">
+              <label for="comment" i18n:msg="">You may use
+                <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a>
+                here.
+              </label>
+              <textarea id="comment" name="comment" class="wikitext trac-resizable" rows="10" cols="78">
 ${comment}</textarea>
-          </fieldset>
+            </fieldset>
+          </div>
         </div>
 
         <div>

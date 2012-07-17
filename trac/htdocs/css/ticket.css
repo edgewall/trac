@@ -115,7 +115,6 @@ div.comment ol { list-style: decimal }
  width: 100%;
 }
 #trac-comment-editor .wikitoolbar { margin-left: -1px }
-#trac-add-comment :link, #trac-add-comment :visited { color: #b00 }
 .trac-new { border-left: 0.31em solid #c0f0c0; padding-left: 0.31em; }
 #changelog h3, #ticketchange h3 {
  border-bottom: 1px solid #d7d7d7;
