@@ -17,7 +17,7 @@
     <script type="text/javascript" py:choose="">
       jQuery(document).ready(function($) {
         $("div.description").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $(".foldable").enableFolding(true, true);
+        $(".foldable").enableFolding(false, true);
       <py:when test="ticket.exists">/*<![CDATA[*/
         $("#attachments").toggleClass("collapsed");
         $("#modify").parent().toggleClass("collapsed");
@@ -177,7 +177,7 @@
             </form>
           </div>
 
-          <h2 class="foldable">Change History</h2>
+          <h2 class="foldable">Change History <span class="trac-count">(${len(changes)})</span></h2>
 
           <div id="changelog">
             <py:for each="change in changes">

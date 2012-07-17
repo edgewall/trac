@@ -362,6 +362,15 @@ fieldset > legend.foldable :link, fieldset > legend.foldable :visited {
  font-size: 110%;
 }
 
+/* Section with count */
+h2 .trac-count, h3 .trac-count {
+ margin-left: .2em;
+ vertical-align: baseline;
+ color: #999;
+ font-size: 90%;
+ font-weight: normal;
+}
+
 /* Page preferences form */
 #prefs {
  background: #f7f7f0;

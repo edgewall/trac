@@ -25,7 +25,7 @@ Arguments:
   <py:if test="alist.attachments or alist.can_create">
     <div id="attachments" py:choose="">
       <py:when test="compact and alist.attachments">
-        <h3 class="${'foldable' if foldable else None}">Attachments (${len(alist.attachments)})</h3>
+        <h3 class="${'foldable' if foldable else None}">Attachments <span class="trac-count">(${len(alist.attachments)})</span></h3>
         <div>
           <ul>
             <py:for each="attachment in alist.attachments">
@@ -41,7 +41,7 @@ Arguments:
         </div>
       </py:when>
       <py:when test="not compact">
-        <h2 class="${'foldable' if foldable else None}">Attachments (${len(alist.attachments)})</h2>
+        <h2 class="${'foldable' if foldable else None}">Attachments <span class="trac-count">(${len(alist.attachments)})</span></h2>
         <div py:if="alist.attachments or alist.can_create" class="attachments">
           <dl py:if="alist.attachments" class="attachments">
             <py:for each="attachment in alist.attachments">

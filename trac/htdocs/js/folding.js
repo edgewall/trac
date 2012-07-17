@@ -14,7 +14,7 @@
       if (trigger.length == 0) {
         trigger = $("<a" + (snap? " id='no" + count + "'": "")
             + " href='#no" + count + "'></a>");
-        trigger.text($(this).text());
+        trigger.html($(this).html());
         $(this).text("");
         $(this).append(trigger);
       }
