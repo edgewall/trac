@@ -42,7 +42,7 @@ jQuery(function($){
     timezone: 'Z',
     showTimezone: jquery_ui.show_timezone,
     timezoneList: jquery_ui.timezone_list,
-    timezoneIso8609: jquery_ui.timezone_iso8601,
+    timezoneIso8601: jquery_ui.timezone_iso8601,
     ampm: jquery_ui.ampm,
     showSecond: true
   });
