@@ -716,7 +716,7 @@ class TicketModule(Component):
         return {'comments_order': req.session.get('ticket_comments_order',
                                                   'oldest'),
                 'comments_only': req.session.get('ticket_comments_only',
-                                                 False)}
+                                                 'false')}
         
     def _prepare_data(self, req, ticket, absurls=False):
         return {'ticket': ticket, 'to_utimestamp': to_utimestamp,

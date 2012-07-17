@@ -69,6 +69,8 @@
           if (!$('#trac-comments-oldest').checked())
             $('#trac-comments-oldest').click().change();
           $("#changelog").replaceWith(items.filter("#changelog"));
+          if ($('#trac-comments-only-toggle').attr('checked')) 
+            $('#trac-comments-only-toggle').click().attr('checked', true); 
           // Show warning
           var new_changes = $("#changelog .trac-new");
           $("#trac-edit-warning").toggle(new_changes.length != 0);
