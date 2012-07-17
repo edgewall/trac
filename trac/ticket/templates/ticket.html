@@ -17,8 +17,9 @@
     <script type="text/javascript" py:choose="">
       jQuery(document).ready(function($) {
         $("div.description").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $(".foldable").enableFolding(false, true);
+        $(".foldable").enableFolding(true, true);
       <py:when test="ticket.exists">/*<![CDATA[*/
+        $("#attachments").toggleClass("collapsed");
         $("#modify").parent().toggleClass("collapsed");
         $(".trac-topnav a").click(function() { $("#modify").parent().removeClass("collapsed"); });
 
@@ -93,7 +94,6 @@
         }, "#changelog .trac-loading");
         /*]]>*/
         <py:if test="preview_mode">
-        $("#attachments").toggleClass("collapsed");
         $("#trac-add-comment").scrollToTop();
         </py:if>
       </py:when>
