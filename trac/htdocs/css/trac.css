@@ -137,7 +137,10 @@ legend {
 label.disabled { color: #d7d7d7 }
 .buttons { margin: .5em .5em .5em 0 }
 .buttons form, .buttons form div { display: inline }
-.buttons input { margin: 1em .5em .1em 0 }
+.buttons input {
+ margin: 1em .5em .1em 0;
+ cursor: pointer;
+}
 
 .inlinebuttons input { 
  border: 1px solid #ddd;
@@ -149,6 +152,7 @@ label.disabled { color: #d7d7d7 }
  margin: 0 .1em .1em;
  background: none;
  color: #808080;
+ cursor: pointer;
 }
 .uisymbols .inlinebuttons input[type=button],
 .uisymbols .inlinebuttons input[type=submit] {
