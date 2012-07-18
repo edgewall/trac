@@ -1,5 +1,11 @@
 /* -*- coding: utf-8 -*- */
-body { background: #fff; color: #000; margin: 10px; padding: 0; }
+body {
+ background: #fff;
+ color: #000;
+ margin: 10px;
+ padding: 0;
+ overflow-y: scroll;
+}
 body, th, tr {
  font: normal 13px Verdana,Arial,'Bitstream Vera Sans',Helvetica,sans-serif;
 }
@@ -274,7 +280,7 @@ input[type=submit].trac-delete:hover {
 #mainnav .active :link, #mainnav .active :visited {
  background: #000 url(../topbar_gradient2.png) 0 0 repeat-x;
  color: #eee;
- font-weight: bold;
+ text-shadow: 1px 0 #eee;
 }
 
 /* Context-dependent navigation links */
