@@ -65,7 +65,7 @@
         </fieldset>
       </form>
 
-      <div class="description" xml:space="preserve">
+      <div py:if="milestone.description" class="description trac-content" xml:space="preserve">
         ${wiki_to_html(context, milestone.description)}
       </div>
 

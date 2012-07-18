@@ -21,7 +21,6 @@
       <py:when test="ticket.exists">/*<![CDATA[*/
         $("#attachments").toggleClass("collapsed");
         $("#modify").parent().toggleClass("collapsed");
-        $(".trac-topnav a").click(function() { $("#modify").parent().removeClass("collapsed"); });
 
         /* only enable control elements for the currently selected action */
         var actions = $("#action input[name='action']");
@@ -123,30 +122,10 @@
                   has_edit_comment = 'TICKET_EDIT_COMMENT' in perm(ticket.resource);
                   has_property_editor = not version and version != 0 and not cnum_edit
                                         and (can_append or can_modify or can_edit or can_create)">
-      <div class="trac-topnav" py:if="ticket.exists and has_property_editor">
-        <a href="#propertyform" title="Go to the ticket editor">Modify</a> &darr;
-      </div>
-      <h1 id="trac-ticket-title" py:choose="">
-        <py:when test="ticket.exists">
-          <a href="${href.ticket(ticket.id)}" i18n:msg="id">Ticket #${ticket.id}</a>
-          <span class="status">(${ticket.status}<py:if
-              test="ticket.type"> ${ticket.type}</py:if><py:if
-              test="ticket.resolution">: ${ticket.resolution}</py:if>)</span>
-          <py:choose test="">
-            <py:when test="version is None" />
-            <py:when test="version == 0">
-              &mdash; <i18n:msg>at <a href="#comment:description">Initial Version</a></i18n:msg>
-            </py:when>
-            <py:otherwise>
-              &mdash; <i18n:msg params="version">at <a href="#comment:$version">Version $version</a></i18n:msg>
-            </py:otherwise>
-          </py:choose>
-        </py:when>
-        <py:otherwise>
-          Create New Ticket <span py:if="preview_mode and ticket.type" class="status">(${ticket.type})</span>
-        </py:otherwise>
-      </h1>
 
+      <h1 py:if="not ticket.exists">
+        Create New Ticket <span py:if="preview_mode and ticket.type" class="status">(${ticket.type})</span>
+      </h1>
 
       <py:if test="ticket.exists">
         <xi:include href="ticket_box.html" py:with="preview_mode = change_preview.fields"/>
@@ -196,9 +175,6 @@
                       else href.newticket() + '#ticket'}">
         <!--! Add comment -->
         <div py:if="ticket.exists and can_append" id="trac-add-comment" class="field">
-          <div class="trac-nav">
-            <a href="#content" title="View ticket fields and description">View Description</a> &uarr;
-          </div>
           <h2 class="foldable" id="edit">Add Comment</h2>
           <div>
             <div id="trac-edit-warning" class="warning system-message"
@@ -210,7 +186,7 @@
               You can nevertheless proceed and submit your changes if you wish so.
             </div>
             <!--! Comment field -->
-            <fieldset class="iefix">
+            <fieldset>
               <label for="comment" i18n:msg="">You may use
                 <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a>
                 here.
@@ -252,7 +228,7 @@ ${comment}</textarea>
                   <tr>
                     <th><label for="field-description">Description:</label></th>
                     <td class="fullrow" colspan="3">
-                      <fieldset class="iefix">
+                      <fieldset>
                         <label for="field-description" id="field-description-help" i18n:msg="">You may use
                           <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here.
                         </label>

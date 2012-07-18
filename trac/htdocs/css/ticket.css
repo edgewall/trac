@@ -10,15 +10,17 @@
 #field-description-help { float: right }
 #properties div.trac-resizable, #field-description { width: 100% }
 
+/* "Yellow Ticket Box" */
 #ticket {
  background: #ffd;
- border: 1px outset #996;
+ border: 1px solid #dd9;
  border-radius: .4em;
  margin-top: 1em;
  padding: .5em 1em;
  position: relative;
 }
 
+/* YTB in preview mode */
 #ticket.ticketdraft {
  background: #f8f8f8 url(../draft.png);
 }
@@ -33,13 +35,29 @@
 
 .ticketdraft {
  background: #f8f8f8 url(../draft.png);
- border: 1px outset #996;
+ border: 1px solid #d7d7d7;
  border-radius: .4em;
  padding: 0 .2em;
 }
 
-h1 .status { color: #444; }
-#ticket h2.summary { margin: 0 0 .8em 0 }
+#trac-ticket-title { margin-top: .4em; }
+
+#ticket h2 {
+ color: #844;
+ margin: 0 0 .4em;
+}
+#ticket h2 .trac-id {
+ font-size: 145%;
+ vertical-align: middle;
+ margin: 0 .4em 0 0;
+}
+#ticket h2 .status {
+ vertical-align: middle;
+}
+#ticket h2 .trac-type {
+ color: #955;
+}
+
 #ticket .date { color: #996; float: right; font-size: 85%; position: relative }
 #ticket .date p { margin: .3em }
 
@@ -62,6 +80,7 @@ h1 .status { color: #444; }
  text-align: left;
  width: 20%;
 }
+#ticket table.properties th.missing { color: #d3d398; }
 #ticket table.properties td { width: 30% }
 #ticket table.properties td p:first-child { margin-top: 0 }
 #ticket table.properties td p:last-child { margin-bottom: 0 }
@@ -76,36 +95,53 @@ h1 .status { color: #444; }
 #ticket .description h3 .lastmod {
  font-size: 90%;
 }
-#ticket .inlinebuttons { 
+#ticket .inlinebuttons {
  float: right;
  position: relative;
  bottom: 0.3em;
- margin-left: 0.2em;
 }
 
+/* Change History */
 #changelog {
- border: 1px outset #d7d7d7;
- border-radius: .4em;
  padding: 1em;
 }
 .trac-shade { background-color: #eee }
 #trac-threaded-form { float: right }
+
+/* Threaded comments */
 ul.children {
  margin-top: 1.5em;
  padding-left: 2em;
  list-style-image: url(../inreply.png);
 }
 ul.children > li.child {
- border-left: 1px solid #e0e0e0;
- padding-left: .75em;
+ padding: 0 .75em 0 .5em;
  margin-bottom: 1.5em;
+ border-left: 1px solid #bbb;
+ border-radius: 1em;
 }
+
+/* Comment contents */
+#changelog h3, #ticketchange h3 {
+ border-bottom: 1px solid #d7d7d7;
+ box-shadow: .1em .2em .8em 0 #eee;
+ padding: 0 .2em;
+ margin-bottom: .5em;
+ color: #999;
+ font-size: 100%;
+ font-weight: normal;
+}
+@media print {
+ #changelog h3, #ticketchange h3 { box-shadow: none }
+}
+
 div.comment ul { list-style: disc }
 div.comment ul ul, div.comment ol ul { list-style: circle }
 div.comment ul ul ul, div.comment ol ul ul { list-style: square }
 div.comment ul ol ul, div.comment ol ol ul { list-style: square }
 div.comment ol { list-style: decimal }
 
+/* Comment editor */
 #trac-comment-editor { margin-left: 2em; margin-bottom: 1em }
 #trac-comment-editor div.trac-resizable { width: 100% }
 #trac-comment-editor textarea { 
@@ -116,19 +152,16 @@ div.comment ol { list-style: decimal }
 }
 #trac-comment-editor .wikitoolbar { margin-left: -1px }
 .trac-new { border-left: 0.31em solid #c0f0c0; padding-left: 0.31em; }
-#changelog h3, #ticketchange h3 {
- border-bottom: 1px solid #d7d7d7;
- color: #999;
- font-size: 100%;
- font-weight: normal;
-}
+
 .trac-loading {
   background: url(../loading.gif) 0 50% no-repeat;
   margin: 0 1em;
   padding-left: 16px;
   display: none;
 }
-.threading, #changelog .inlinebuttons { float: right; margin-left: 0.2em }
+.threading, #changelog .inlinebuttons {
+ float: right;
+}
 .threading { font-size: 85%; }
 .threading :link, .threading :visited { border-bottom: 0 }
 #changelog .trac-lastedit {
@@ -157,7 +190,7 @@ button.trac-revert:hover { background-color: #eee; color: #555; }
 button.trac-revert div { display: none; }
 
 form .field { margin-top: .75em; width: 100% }
-form .field fieldset.iefix { margin-left: 1px; margin-right: 1px }
+form .field fieldset { margin-left: 1px; margin-right: 1px }
 label[for=comment] { float: right }
 #comment { margin-left: -1px; margin-right: -1px; padding: 0; width: 100% }
 form .field .wikitoolbar { margin-left: -1px }

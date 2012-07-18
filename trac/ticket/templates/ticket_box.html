@@ -15,33 +15,59 @@ Arguments:
      xmlns:py="http://genshi.edgewall.org/"
      xmlns:xi="http://www.w3.org/2001/XInclude"
      xmlns:i18n="http://genshi.edgewall.org/i18n"
-     id="ticket" class="${'ticketdraft' if preview_mode else None}"
+     id="ticket" class="trac-content ${'ticketdraft' if preview_mode else None}"
      style="${'display: none' if value_of('hide', False) else None}">
+
   <div class="date">
     <p i18n:msg="created" py:if="ticket.exists">Opened ${pretty_dateinfo(ticket.time)}</p>
-    <p i18n:msg="modified" py:if="ticket.changetime != ticket.time">Last modified ${pretty_dateinfo(ticket.changetime)}</p>
+    <p i18n:msg="closed" py:if="closetime">Closed ${pretty_dateinfo(closetime)}</p>
+    <p i18n:msg="modified" py:if="ticket.changetime != ticket.time and ticket.changetime != closetime">
+      Last modified ${pretty_dateinfo(ticket.changetime)}</p>
     <p py:if="not ticket.exists"><span class="trac-loading"/><i>(ticket not yet created)</i></p>
   </div>
   <!--! use a placeholder if it's a new ticket -->
-  <h2 class="summary searchable">$ticket.summary</h2>
+
+  <h2>
+    <a href="${href.ticket(ticket.id)}" class="${classes('trac-id', closed=ticket.status == 'closed')}">
+      #${ticket.id}
+    </a>
+    <span class="trac-status">${ticket.status}</span>
+    <span class="trac-type" py:if="ticket.type">${ticket.type}</span>
+    <span class="trac-resolution" py:if="ticket.resolution">(${ticket.resolution})</span>
+  </h2>
+
+  <h1 id="trac-ticket-title" class="searchable">
+    <span class="summary">$ticket.summary</span>
+    <py:choose test="">
+      <py:when test="version is None" />
+      <py:when test="version == 0">
+        &mdash; <i18n:msg>at <a href="#comment:description">Initial Version</a></i18n:msg>
+      </py:when>
+      <py:otherwise>
+        &mdash; <i18n:msg params="version">at <a href="#comment:$version">Version $version</a></i18n:msg>
+      </py:otherwise>
+    </py:choose>
+  </h1>
 
   <table class="properties"
          py:with="fields = [f for f in fields if not f.skip and f.name not in ('type', 'owner')]">
-    <tr>
-      <th id="h_reporter">Reported by:</th>
-      <td headers="h_reporter" class="searchable">
-        ${reporter_link if defined('reporter_link') else authorinfo(ticket.reporter)}
-      </td>
-      <th id="h_owner">Owned by:</th>
-      <td headers="h_owner">
-        ${(owner_link if defined('owner_link') else authorinfo(ticket.owner)) if ticket.owner else ''}
-      </td>
+    <tr py:with="
+      v_reporter = reporter_link if defined('reporter_link') else authorinfo(ticket.reporter);
+      v_owner = (owner_link if defined('owner_link') else authorinfo(ticket.owner)) if ticket.owner else ''
+      ">
+      <th id="h_reporter" class="${classes(missing=not v_reporter)}">Reported by:</th>
+      <td headers="h_reporter" class="searchable">$v_reporter</td>
+      <th id="h_owner" class="${classes(missing=not v_owner)}">Owned by:</th>
+      <td headers="h_owner">$v_owner</td>
     </tr>
     <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
       py:with="fullrow = len(row) == 1">
       <py:for each="idx, field in enumerate(row)">
         <th py:if="idx == 0 or not fullrow"
-            id="${'h_' + field.name if field else None}">
+            id="${'h_' + field.name if field else None}"
+            class="${classes(missing=not field or
+                              ('rendered' in field and not field.rendered) or
+                               not ticket[field.name])}" >
           <py:if test="field"><i18n:msg params="field">${field.label or field.name}:</i18n:msg></py:if>
         </th>
         <td py:if="idx == 0 or not fullrow"
@@ -61,10 +87,10 @@ Arguments:
   <div class="description">
     <h3 id="comment:description">
       Description
-      <span py:if="description_change" class="lastmod" title="$description_change.date">
-        <i18n:msg params="author">(last modified by ${authorinfo(description_change.author)})</i18n:msg>
-        (<a href="${href.ticket(ticket.id, action='diff', version=description_change.cnum)}">diff</a>)
-      </span>
+      <a href="${href.ticket(ticket.id, action='diff', version=description_change.cnum)}"
+         py:if="description_change" class="lastmod" title="$description_change.date">
+        <i18n:msg params="author">(last modified by ${authorinfo(description_change.author)})</i18n:msg> ∆
+      </a>
     </h3>
 
     <!--! Quote the description (only for existing tickets) -->
@@ -72,7 +98,7 @@ Arguments:
           id="addreply" method="get" action="#comment">
       <div class="inlinebuttons">
         <input type="hidden" name="replyto" value="description" />
-        <input type="submit" name="reply" value="${_('Reply')}" title="Reply, quoting this description" />
+        <input type="submit" name="reply" value="${captioned_button('↳', _('Reply'))}" title="Reply, quoting this description" />
       </div>
     </form>
     <div py:if="ticket.description" class="searchable" xml:space="preserve">

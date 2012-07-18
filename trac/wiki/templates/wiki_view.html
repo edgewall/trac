@@ -46,6 +46,7 @@
 
       <div class="wikipage searchable" py:choose="" xml:space="preserve">
         <py:when test="page.exists">
+          <div id="wikipage" class="trac-content" py:content="wiki_to_html(context, text)" />
           <?python
             last_modification = (page.comment and
                  _('Version %(version)s by %(author)s: %(comment)s',
@@ -60,7 +61,6 @@
             </span>
             <span class="trac-print" i18n:msg="date">Last modified on ${format_datetime(page.time)}</span>
           </div>
-          <div id="wikipage" py:content="wiki_to_html(context, text)" />
         </py:when>
         <py:otherwise>
           <p i18n:msg="name">The page ${name_of(page.resource)} does not exist. You can create it here.</p>

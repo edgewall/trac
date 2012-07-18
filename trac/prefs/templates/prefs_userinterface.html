@@ -1,0 +1,37 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="prefs.html" />
+  <head>
+    <title>User Interface</title>
+  </head>
+  <body>
+
+    <div class="field">
+      <input type="hidden" name="ui.use_symbols_cb" value="" />
+      <label>
+        <input type="checkbox" name="ui.use_symbols" value="1"
+               checked="${settings.session.get('ui.use_symbols') or None}" />
+        Use only symbols for buttons.
+      </label>
+      <p class="hint" i18n:msg="">Display only the icon or symbol for
+      short inline buttons, and hide the text caption.</p>
+    </div>
+
+    <div class="field">
+      <input type="hidden" name="ui.hide_help_cb" value="" />
+      <label>
+        <input type="checkbox" name="ui.hide_help" value="1"
+               checked="${settings.session.get('ui.hide_help') or None}" />
+        Hide help links.
+      </label>
+      <p class="hint" i18n:msg="">Don't show the various help links.
+      This reduces the verbosity of the pages.</p>
+    </div>
+
+  </body>
+</html>

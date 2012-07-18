@@ -20,6 +20,7 @@ from trac.ticket.model import Ticket
 from trac.ticket.web_ui import TicketModule
 from trac.util import get_reporter_id
 from trac.util.datefmt import from_utimestamp
+from trac.util.presentation import captioned_button
 from trac.util.translation import _
 from trac.web.api import IRequestFilter, IRequestHandler, ITemplateStreamFilter
 from trac.web.chrome import ITemplateProvider, add_notice, add_stylesheet
@@ -67,9 +68,12 @@ class TicketDeleter(Component):
             return tag.form(
                 tag.div(
                     tag.input(type='hidden', name='action', value='delete'),
-                    tag.input(type='submit', value=_('Delete'),
-                              title=_('Delete ticket')),
-                    class_='inlinebuttons'),
+                    tag.input(type='submit',
+                              value=captioned_button(req, u'–', # 'EN DASH'
+                                                     _("Delete")),
+                              title=_('Delete ticket'),
+                              class_="trac-delete"),
+                    class_="inlinebuttons"),
                 action='#', method='get')
         
         def delete_comment():
@@ -81,10 +85,12 @@ class TicketDeleter(Component):
                                   value='delete-comment'),
                         tag.input(type='hidden', name='cnum', value=cnum),
                         tag.input(type='hidden', name='cdate', value=cdate),
-                        tag.input(type='submit', value=_('Delete'),
-                                  title=_('Delete comment %(num)s',
-                                          num=cnum)),
-                        class_='inlinebuttons'),
+                        tag.input(type='submit',
+                                  value=captioned_button(req, u'–', # 'EN DASH'
+                                                         _("Delete")),
+                                  title=_('Delete comment %(num)s', num=cnum),
+                                  class_="trac-delete"),
+                        class_="inlinebuttons"),
                     action='#', method='get')
             
         buffer = StreamBuffer()

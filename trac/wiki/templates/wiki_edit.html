@@ -88,9 +88,7 @@
   <body>
     <div id="content" class="wiki"
          py:with="preview_or_review = action == 'preview' and (not diff or changes[0].diffs)">
-      <div class="trac-topnav" py:if="sidebyside or preview_or_review" py:choose="">
-        <a py:when="sidebyside" href="#changeinfo"
-           title="Go to Save, Preview, Review or Cancel buttons">Actions</a>
+      <div class="trac-topnav" py:if="not sidebyside and preview_or_review" py:choose="">
         <a py:when="diff" href="#info" title="See the diffs">Review</a>
         <a py:otherwise="" href="#info" title="See the preview">Preview</a>
         &darr;
@@ -148,12 +146,12 @@
             <div class="trac-nav" py:if="not sidebyside and preview_or_review">
               <a href="#content" title="Go to the editor">Edit</a> &uarr;
             </div>
-            <h2 py:choose="">
+            <h2 py:if="not sidebyside" py:choose="">
               <py:when test="preview_or_review and diff">Review Changes</py:when>
               <py:when test="preview_or_review">Preview</py:when>
               <py:otherwise>No changes</py:otherwise>
             </h2>
-            <div id="preview">
+            <div id="preview" class="trac-content">
               <div py:when="diff" class="diff">
                 <xi:include href="diff_div.html" py:with="no_id=True" />
               </div>

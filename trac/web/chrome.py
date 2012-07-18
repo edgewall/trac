@@ -914,6 +914,7 @@ class Chrome(Component):
             'format_author': partial(self.format_author, req),
             'format_emails': self.format_emails,
             'get_systeminfo': self.env.get_systeminfo,
+            'captioned_button': partial(presentation.captioned_button, req),
 
             # Date/time formatting
             'dateinfo': dateinfo,

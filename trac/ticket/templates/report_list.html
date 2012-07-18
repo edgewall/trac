@@ -40,11 +40,12 @@
         <div py:if="saved_query_href">
           <form method="get" action="${href.report()}">
             <div class="inlinebuttons">
+
               <input type="hidden" name="action" value="clear" />
-              <input type="submit" class="inlinebutton" title="Forget last query" value="${_('Clear')}" />
+              <input type="submit" value="${captioned_button('x', _('Clear'))}" title="Forget last query" class="trac-delete" />
             </div>
           </form>
-          <h2><a href="$saved_query_href"><em>Return to Last Query</em></a></h2>
+          <h3><a href="$saved_query_href"><em>Return to Last Query</em></a></h3>
           <span class="foldable" />
           <div class="description">
             <p>Continue browsing through the current list of results,
@@ -53,7 +54,7 @@
         </div>
 
         <div py:if="query_href">
-          <h2><a href="$query_href"><em>Custom Query</em></a></h2>
+          <h3><a href="$query_href"><em>Custom Query</em></a></h3>
           <span class="foldable" />
           <div class="description">
             <p>Compose a new ticket query by selecting filters and columns to display.</p>
@@ -78,16 +79,21 @@
             <form py:if="can_delete" method="get" action="${href.report(id)}">
               <div class="inlinebuttons">
                 <input type="hidden" name="action" value="delete" />
-                <input type="submit" class="inlinebutton" title="Delete report" value="${_('Delete')}" />
+                <input type="submit" value="${captioned_button('–', _('Delete'))}"
+                     title="Delete report" class="trac-delete" />
               </div>
             </form>
             <form py:if="can_edit" method="get" action="${href.report(id)}">
               <div class="inlinebuttons">
                 <input type="hidden" name="action" value="edit" />
-                <input type="submit" class="inlinebutton" title="Edit report" value="${_('Edit')}" />
+                <input type="submit" value="${captioned_button('✎', _('Edit'))}"
+                     title="Edit report" />
               </div>
             </form>
-            <h2><a title="View report" href="${href.report(id)}">{$id} <em>$title</em></a></h2>
+            <h3><a title="View report" href="${href.report(id)}" py:choose="sort">
+              <py:when test="'title'">$title <em>{$id}</em></py:when>
+              <py:otherwise><em>{$id}</em> $title</py:otherwise>
+              </a></h3>
             <span class="foldable" />
             <div py:if="description" class="description" xml:space="preserve">
               ${wiki_to_html(context, description)}

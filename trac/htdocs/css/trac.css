@@ -1,3 +1,4 @@
+/* -*- coding: utf-8 -*- */
 body { background: #fff; color: #000; margin: 10px; padding: 0; }
 body, th, tr {
  font: normal 13px Verdana,Arial,'Bitstream Vera Sans',Helvetica,sans-serif;
@@ -90,13 +91,26 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
  box-shadow: .1em .1em .6em 0 #999;
  text-shadow: .1em .1em #fcfcfc;
 }
+input[type=button]:active,
+input[type=submit]:active,
+input[type=reset]:active {
+ margin: 3px 1px 1px 3px; /* see input margin */
+}
+.buttons input[type=button]:active,
+.buttons input[type=submit]:active,
+.buttons input[type=reset]:active {
+ margin: 1.1em .4em 0 .1em; /* see .buttons input margin */
+}
 input[type=button][disabled], input[type=submit][disabled],
 input[type=reset][disabled] {
  background: #f6f6f6;
  border-style: solid;
  color: #999;
 }
-input[type=text], input.textwidget, textarea { border: 1px solid #d7d7d7 }
+input[type=text], input.textwidget, textarea {
+ border: 1px solid #d7d7d7;
+ border-radius: .3em;
+}
 input[type=text], input.textwidget { padding: .25em .5em }
 input[type=text]:focus, input.textwidget:focus, textarea:focus {
  border: 1px solid #886;
@@ -105,20 +119,14 @@ option { border-bottom: 1px dotted #d7d7d7 }
 fieldset {
  border: 1px solid #d7d7d7;
  border-radius: .4em;
- padding: .5em;
  margin: 1em 0;
+ background: #F7F7F0;
+ box-shadow: .1em .1em 1em 0 #E7E7E7 inset;
+ padding: 1em;
 }
 p.hint, span.hint { color: #666; font-size: 85%; font-style: italic; margin: .5em 0;
   padding-left: 1em;
 }
-fieldset.iefix {
-  background: transparent;
-  border: none;
-  padding: 0;
-  margin: 0;
-}
-* html fieldset.iefix { width: 98% }
-fieldset.iefix p { margin: 0 }
 legend {
  color: #999;
  margin-left: .6em;
@@ -130,13 +138,40 @@ label.disabled { color: #d7d7d7 }
 .buttons { margin: .5em .5em .5em 0 }
 .buttons form, .buttons form div { display: inline }
 .buttons input { margin: 1em .5em .1em 0 }
+
 .inlinebuttons input { 
+ border: 1px solid #ddd;
+ border-radius: 1em;
+ height: 1.6em;
+ padding: 0 .4em .1em;
  font-size: 70%;
- border: 1px dotted #ccc;
  box-shadow: none;
- margin: 0 .1em;
- padding: 0.1em;
+ margin: 0 .1em .1em;
  background: none;
+ color: #808080;
+}
+.uisymbols .inlinebuttons input[type=button],
+.uisymbols .inlinebuttons input[type=submit] {
+ font-size: 100%;
+}
+.inlinebuttons input[type=button]:hover,
+.inlinebuttons input[type=submit]:hover {
+ background: #f6f6f6;
+ color: #333;
+ text-shadow: .1em .1em #fcfcfc;
+ box-shadow: .1em .1em .6em 0 #999;
+}
+.inlinebuttons input[type=button]:active,
+.inlinebuttons input[type=submit]:active {
+ margin: .1em 0 0 .2em;
+}
+input[type=button].trac-delete,
+input[type=submit].trac-delete {
+ color: #d31313;
+}
+input[type=button].trac-delete:hover,
+input[type=submit].trac-delete:hover {
+ color: #e31313;
 }
 
 /* Header */
@@ -323,15 +358,22 @@ label.disabled { color: #d7d7d7 }
   text-align: right;
 }
 
+/* Container for all the elements in the page, usually single child of the body element */
 #content {
  position: relative; /* reference for absolute positioning of children */
- margin: .3em auto;
- padding: .5em 1em;
- border: 1px solid #e4e4e4;
- border-radius: .5em;
- box-shadow: 0 .5em 1.5em #eee;
 }
 
+/* Information content */
+div.trac-content {
+ padding: .5em 1em;
+ margin: .3em auto;
+ border: 1px solid #e4e4e4;
+ border-radius: .5em;
+ box-shadow: .2em .3em 1.5em #eee;
+}
+
+/* Help links */
+.uinohelp #help { display: none }
 #help {
  clear: both;
  color: #999;
@@ -360,6 +402,7 @@ label.disabled { color: #d7d7d7 }
 fieldset > legend.foldable :link, fieldset > legend.foldable :visited {
  color: #666;
  font-size: 110%;
+ text-shadow: .1em .1em #ddd;
 }
 
 /* Section with count */
@@ -452,6 +495,14 @@ pre.wiki, pre.literal-block {
  overflow: auto;
 }
 
+tt {
+ color: #600;
+ border: 1px solid #CBA;
+ border-radius: .25em;
+ padding: 0 0.3em;
+ background: #F7F7F7;
+}
+
 blockquote.citation { 
  margin: -0.6em 0;
  border-style: solid; 
@@ -531,9 +582,7 @@ div.trac-grip {
 
 /* Styles for the list of attachments. */
 #attachments > div.attachments {
- border: 1px outset #d7d7d7;
- border-radius: .4em;
- padding: 1em;
+ padding: 0 0 1em 1em;
 }
 #attachments dl.attachments { margin-left: 2em; padding: 0 }
 #attachments dt { display: list-item; list-style: square; }
@@ -633,13 +682,9 @@ table.listing tbody tr.focus { background: #ddf !important }
   overflow: hidden;
   white-space: normal;
 }
-div.system-message p { margin: 0; }
+
+div.system-message p { margin: 0 }
 div.system-message p.system-message-title { font-weight: bold; }
-div.system-message .trac-close-msg {
-  float: right;
-  margin: 0 0 0.5em 1em;
-  display: none;
-}
 
 /* rst errors are less emphasized */
 span.system-message {
@@ -651,11 +696,55 @@ span.system-message {
 }
 
 /* whole-page admonitions in theme.html */
-#warning.system-message, .warning.system-message { background: #ffb; border: 1px solid #000; }
+div.system-message {
+ border-radius: .5em;
+ /* taken from #prefs */
+ box-shadow: .2em .2em .7em 0 #777;
+}
+
+#warning.system-message, .warning.system-message {
+ background: #ffb;
+ border: 1px solid #500;
+}
 #warning.system-message li { list-style-type: square; }
 
-#notice.system-message, .notice.system-message { background: #dfd; border: 1px solid #000; }
+#notice.system-message, .notice.system-message {
+ background: #dfd;
+ border: 1px solid #500;
+}
 #notice.system-message li { list-style-type: square; }
+
+div.system-message .trac-close-msg {
+ display: none; /* hidden when no Javascript available */
+ float: right;
+ font-size: 80%;
+ /* taken from .inlinebuttons */
+ border: 1px solid #ddd;
+ border-radius: 1em;
+ height: 1.6em;
+ padding: 0 .4em .1em;
+ box-shadow: none;
+ margin: 0 .1em .1em 0;
+ background: none;
+ color: #999;
+ /* taken from trac-delete */
+ color: #d31313;
+ /* override */
+ height: 1.4em;
+}
+div.system-message .trac-close-msg:hover {
+ /* taken from .inlinebuttons */
+ background: #f6f6f6;
+ color: #333;
+ text-shadow: .1em .1em #fcfcfc;
+ box-shadow: .1em .1em .6em 0 #999;
+}
+.uisymbols div.system-message .trac-close-msg > span {
+ display: none;
+}
+.uisymbols div.system-message .trac-close-msg:after {
+ content: "x"; /* or &ndash; "–"; */
+}
 
 /* error.html page */
 #content.error form.newticket { display: inline; }
@@ -735,10 +824,16 @@ span.system-message {
 @media print {
  #header, #altlinks, #footer, #help, #warning, #notice { display: none }
  .nav, form, .buttons form, form .buttons, form .inlinebuttons,
- .noprint, .trac-nav, .trac-topnav {
+ .noprint, .trac-nav, .trac-topnav,
+ #attachments > div.attachments > p {
    display: none;
  }
  form.printableform { display: block }
  div.code pre { white-space: pre-wrap }
  :link, :visited { border-bottom: none }
+ div.trac-content { box-shadow: none }
+ .foldable :link, .foldable :visited {
+  text-shadow: none;
+  box-shadow: none;
+ }
 }

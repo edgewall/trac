@@ -3,6 +3,21 @@
 #info { margin: 0 0 1em 0 }
 #wikipage { clear: both }
 
+.wikipage h2 {
+ border-bottom: 1px solid #ddd;
+ box-shadow: .1em .2em .8em 0 #eee;
+ padding: 0.2em .3em .1em;
+}
+@media print { .wikipage h2 { box-shadow: none } }
+
+.wikipage h3 {
+ border-bottom: 1px dashed #ddd;
+}
+.wikipage .trac-content {
+ margin-left: -18px;
+ padding-left: 28px;
+}
+
 /* Styles for the path of hierarchical pages */
 #pagepath { 
  font-size: 10px; /* same as .nav ul in trac.css */

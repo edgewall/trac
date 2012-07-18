@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 import os
 import re
 
@@ -1602,7 +1603,7 @@ class RegressionTestTicket9084(FunctionalTwillTestCaseSetup):
         ticketid = self._tester.create_ticket()
         self._tester.add_comment(ticketid)
         self._tester.go_to_ticket(ticketid)
-        tc.submit('Reply', formname='reply-to-comment-1')
+        tc.submit('2', formname='reply-to-comment-1') # '1' hidden, '2' submit
         tc.formvalue('propertyform', 'comment', random_sentence(3))
         tc.submit('Submit changes')
         tc.notfind('AssertionError')

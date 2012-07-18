@@ -40,8 +40,11 @@ class PreferencesModule(Component):
     implements(INavigationContributor, IPreferencePanelProvider,
                IRequestHandler, ITemplateProvider)
 
-    _form_fields = ['newsid', 'name', 'email', 'tz', 'lc_time', 'dateinfo',
-                    'language', 'accesskeys']
+    _form_fields = [
+        'newsid', 'name', 'email', 'tz', 'lc_time', 'dateinfo',
+        'language', 'accesskeys',
+        'ui.use_symbols', 'ui.hide_help',
+        ]
 
     # INavigationContributor methods
 
@@ -91,6 +94,7 @@ class PreferencesModule(Component):
         yield (None, _('General'))
         yield ('datetime', _('Date & Time'))
         yield ('keybindings', _('Keyboard Shortcuts'))
+        yield ('userinterface', _('User Interface'))
         if Locale:
             yield ('language', _('Language'))
         if not req.authname or req.authname == 'anonymous':

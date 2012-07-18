@@ -1614,6 +1614,13 @@ class TicketModule(Component):
         # -- Workflow support
         
         selected_action = req.args.get('action')
+
+        # retrieve close time from changes
+        closetime = None
+        for c in changes:
+            s = c['fields'].get('status')
+            if s:
+                closetime = c['date'] if s['new'] == 'closed' else None
         
         # action_controls is an ordered list of "renders" tuples, where
         # renders is a list of (action_key, label, widgets, hints) representing
@@ -1669,7 +1676,7 @@ class TicketModule(Component):
             'fields': fields, 'changes': changes, 'replies': replies,
             'attachments': AttachmentModule(self.env).attachment_data(context),
             'action_controls': action_controls, 'action': selected_action,
-            'change_preview': change_preview,
+            'change_preview': change_preview, 'closetime': closetime,
         })
 
     def rendered_changelog_entries(self, req, ticket, when=None):

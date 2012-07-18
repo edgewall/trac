@@ -19,9 +19,13 @@ tasks such as grouping or pagination.
 from math import ceil
 import re
 
-__all__ = ['classes', 'first_last', 'group', 'istext', 'prepared_paginate', 
-           'paginate', 'Paginator']
+__all__ = ['captioned_button', 'classes', 'first_last', 'group', 'istext',
+           'prepared_paginate', 'paginate', 'Paginator']
 
+
+def captioned_button(req, symbol, text):
+    return symbol if req.session.get('ui.use_symbols') \
+        else u'%s %s' % (symbol, text)
 
 def classes(*args, **kwargs):
     """Helper function for dynamically assembling a list of CSS class names

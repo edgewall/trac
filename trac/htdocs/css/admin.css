@@ -3,9 +3,18 @@
 
 #content.admin h1 { float: left; }
 
-#tabs { background: #f7f7f0; border: 1px solid black;
-  border-color: #ccc #666 #666 #ccc; clear: left;
-  margin: 1em 0 2em; padding: .5em 0 0; float: left; width: 12em;
+#tabs {
+ background: #f7f7f0;
+ border: 1px solid black;
+ border-color: #ccc #666 #666 #ccc;
+ clear: left;
+ margin: 1em 0 2em;
+ padding: .5em 0 0;
+ float: left;
+ width: 12em;
+ /* taken from #prefs */
+ border-radius: 1em;
+ box-shadow: .2em .2em .7em 0 #777;
 }
 #tabs ul { list-style: none; margin: 0 0 .5em; padding: 0; }
 #tabs li { color: #999; font-size: 90%; font-weight: bold; margin: 0;
@@ -14,8 +23,13 @@
 #tabs li li { color: #000; font-size: 110%; font-weight: normal;
   margin: 0 -3px; padding: 1px 0 1px 10px;
 }
-#tabs li li.active { background: #ddc; border: 1px solid;
-  border-color: #ccc #000 #666 #ccc; padding: 0 0 0 9px;
+#tabs li li.active {
+ background: #ddc;
+ border: 1px solid;
+ border-color: #ccc #999 #999 #ccc;
+ border-radius: .2em;
+ box-shadow: .1em .2em .5em #aa9;
+ padding: 0 0 0 9px;
 }
 #tabs :link, #tabs :visited { border: none; display: block }
 #tabs :link:hover, #tabs :visited:hover { background: transparent;
@@ -53,7 +67,7 @@ form#addplug { width: 35% }
 .plugin .buttons { margin-top: 0; text-align: right; }
 .plugin .uninstall { margin-top: -2.6em; padding: 0; }
 .plugin .summary, .plugin .info { padding-left: 16px; color: #999; font-size: 80%; }
-.plugin .summary { margin: -.5em 0 .5em; }
+.plugin .summary { margin: 1.2em 0 .5em; }
 .plugin .info { margin: 1em 0 .5em; }
 .plugin .info dt { float: left; width: 7em; }
 .plugin .info dd { padding: 0; margin: 0; }
@@ -70,7 +84,8 @@ form#addplug { width: 35% }
 .trac-component .trac-heading { margin-left: 2em; padding-left: 16px }
 .trac-component .trac-heading.foldable { text-indent: -16px }
 .trac-component > div { margin-left: 3em; }
-.trac-summary { color: #888; }
+.trac-summary { color: #888 }
+.trac-heading :link { padding: .1em .5em 0 20px }
 table.trac-pluglist td { padding-left: 1em; }
 
 /* Perm Panel */

@@ -24,24 +24,29 @@
 }
 
 .report div.reports { clear: both }
+
+
 .report div.reports h2 {
- border-bottom: 1px solid #eeeeee;
- margin-top: 0;
+ /* taken from .wikipage h2 */
+ border-bottom: 1px solid #ddd;
+ box-shadow: .1em .2em .8em 0 #eee;
+ padding: 0.2em .3em .1em;
 }
-.report div.reports h2 :link, .report div.reports h2 :visited {
+.report div.reports h3 {
+ /* taken from .wikipage h3 */
+ border-bottom: 1px dashed #ddd;
+}
+.report div.reports h3 :link, .report div.reports h3 :visited {
  color: #000;
  border-bottom: none;
 }
-.report div.reports h2 em { 
+.report div.reports h3 em {
  color: #800;
  font-style: normal;
 }
 
-.report form div.inlinebuttons {
- float: right;
- margin-top: -2px;
- margin-left: 0.2em;
-}
+.report form .inlinebuttons { float: right }
+.uisymbols .report form .inlinebuttons { margin-top: -.6em }
 
 .report span.foldable { display: none }
 .report div.description {
@@ -70,7 +75,9 @@ h2.report-result {
  background: #f7f7f7;
  border-bottom: 1px solid #d7d7d7;
  margin: 2em 0 0;
- padding: 0 .33em;
+ padding: .2em .4em;
+ box-shadow: 1px 1px .5em 0 #ccc;
+ border-radius: .1em
 }
 #report-descr { margin: 0 2em; font-size: 90% }
 #report-notfound { margin: 2em; font-size: 110% }
@@ -78,11 +85,8 @@ h2.report-result {
 #content.report .field label { padding-bottom: .3em; }
 
 #query { clear: right }
-#query fieldset, #query fieldset input, #query fieldset select { font-size: 11px }
-#query fieldset input[type="button"] { 
- border: 1px solid #999;
- border-radius: 1em;
- padding: 0 .4em .1em;
+#query fieldset, #query fieldset input, #query fieldset select {
+ font-size: 11px;
 }
 #query fieldset { margin-top: 1em }
 #query fieldset.collapsed { 

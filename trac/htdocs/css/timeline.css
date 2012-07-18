@@ -9,6 +9,9 @@ h2 {
  border-bottom: 1px solid #d7d7d7;
  font-size: 105%;
  margin: 2em 0 .5em;
+ padding: .4em;
+ box-shadow: 1px 1px .5em 0 #ccc;
+ border-radius: .1em;
 }
 dl {
  line-height: 1.3em;

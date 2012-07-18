@@ -34,12 +34,15 @@ p.percent {
 .milestone .info h2 {
  background: #f7f7f7;
  border-bottom: 1px solid #d7d7d7;
- margin: 0;
+ margin: .5em 0;
+ box-shadow: 1px 1px .5em 0 #ccc;
+ border-radius: .1em;
 }
 .milestone .info h2 :link, .milestone .info h2 :visited {
  color: #000;
  display: block;
  border-bottom: none;
+ padding: .2em .4em;
 }
 .milestone .info h2 :link:hover, .milestone .info h2 :visited:hover {
  color: #000;
@@ -56,7 +59,13 @@ p.percent {
 /* Styles for the milestone view */
 .milestone .date { color: #888; font-style: italic; margin: 0 }
 .milestone .description { margin: 1em 0 2em }
-#stats { float: right; margin: 0 0 2em 2em; padding: 0; width: 400px; max-width: 40% }
+#stats {
+ float: right;
+ margin: 0 1em 2em 2em;
+ padding: 0;
+ width: 400px;
+ max-width: 40%;
+}
 #stats legend { white-space: nowrap }
 
 /* Styles for progress bars */
@@ -84,7 +93,7 @@ p.percent {
 #edit .disabled em { color: #d7d7d7 }
 #edit .field { margin: 0.5em 0 }
 #edit label { padding-left: .2em }
-#edit fieldset.iefix { margin-left: 1px; margin-right: 1px }
+#edit fieldset { margin-left: 1px; margin-right: 1px }
 #edit textarea#description { margin-left: -1px; margin-right: -1px; padding: 0; width: 100% }
 #edit .wikitoolbar { margin-left: -1px }
 #edit div.trac-resizable { width: 100% }

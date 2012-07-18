@@ -16,6 +16,7 @@ from genshi.filters import Transformer
 
 from trac.core import Component, implements
 from trac.web.api import ITemplateStreamFilter
+from trac.util.presentation import captioned_button
 from trac.util.translation import _
 
 
@@ -55,7 +56,8 @@ class TicketCloneButton(Component):
                 fields[name] = ticket[name]
         return tag.form(
             tag.div(
-                tag.input(type="submit", name="clone", value=_("Clone"),
+                tag.input(type="submit", name="clone",
+                          value=captioned_button(req, '+#', _("Clone")),
                           title=_("Create a copy of this ticket")),
                 [tag.input(type="hidden", name='field_' + n, value=v)
                  for n, v in fields.iteritems()],
