@@ -91,6 +91,7 @@ input[type=button], input[type=submit], input[type=reset] {
  box-shadow: .1em .1em .4em 0 #888;
  padding: .1em .5em .2em;
  text-shadow: .1em .1em #ddd;
+ cursor: pointer;
 }
 input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
  background: #f6f6f6;
@@ -143,10 +144,7 @@ legend {
 label.disabled { color: #d7d7d7 }
 .buttons { margin: .5em .5em .5em 0 }
 .buttons form, .buttons form div { display: inline }
-.buttons input {
- margin: 1em .5em .1em 0;
- cursor: pointer;
-}
+.buttons input { margin: 1em .5em .1em 0 }
 
 .inlinebuttons input { 
  border: 1px solid #ddd;
