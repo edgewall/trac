@@ -120,7 +120,7 @@
                         <py:when test="field.type in ('text', 'textarea', 'id')">
                           <input type="text" name="${n_field_name}" value="$constraint_value" size="42" />
                         </py:when>
-                        
+
                         <py:when test="field.type == 'time'"
                                  py:with="(start, end) = '..' in constraint_value and constraint_value.split('..', 1)
                                                          or (constraint_value, '')">
@@ -225,14 +225,14 @@
       <xi:include href="query_results.html" />
       <xi:include py:if="batch_modify" href="batch_modify.html" />
 
-      <div class="buttons"
+      <div id="trac-report-buttons" class="buttons"
            py:with="edit = report_resource and 'REPORT_MODIFY' in perm(report_resource);
                     new = 'REPORT_CREATE' in perm;
                     delete = report_resource and 'REPORT_DELETE' in perm(report_resource)">
         <form py:if="edit" method="get" action="${url_of(report_resource)}">
           <div>
             <input type="hidden" name="action" value="edit" />
-            <input type="submit" 
+            <input type="submit"
                    title="${_('Edit report {%(id)s} corresponding to this query', id=report_resource.id)}"
                    value="${_('Edit query')}" />
           </div>

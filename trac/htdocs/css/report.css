@@ -99,6 +99,7 @@ h2.report-result {
 #query .buttons { float: right; margin-top: .5em }
 #query .buttons input { margin: .5em }
 #query hr { clear: both; margin: 0; visibility: hidden }
+#trac-report-buttons { float: right }
 
 #filters table { width: 100% }
 #filters td.trac-clause { padding: 0 }
