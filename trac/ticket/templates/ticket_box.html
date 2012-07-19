@@ -88,8 +88,8 @@ Arguments:
     <h3 id="comment:description">
       Description
       <a href="${href.ticket(ticket.id, action='diff', version=description_change.cnum)}"
-         py:if="description_change" class="lastmod" title="$description_change.date">
-        <i18n:msg params="author">(last modified by ${authorinfo(description_change.author)})</i18n:msg> ∆
+         py:if="description_change" class="lastmod trac-diff" title="$description_change.date">
+        <i18n:msg params="author">(last modified by ${authorinfo(description_change.author)})</i18n:msg>
       </a>
     </h3>
 
