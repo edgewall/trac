@@ -412,6 +412,7 @@ fieldset > legend.foldable :link, fieldset > legend.foldable :visited {
  font-size: 110%;
  text-shadow: .1em .1em #ddd;
 }
+legend.foldable { background: white }
 
 /* Section with count */
 h2 .trac-count, h3 .trac-count {
