@@ -115,7 +115,7 @@ ul.children {
  list-style-image: url(../inreply.png);
 }
 ul.children > li.child {
- padding: 0 .75em 0 .5em;
+ padding-left: .5em;
  margin-bottom: 1.5em;
  border-left: 1px solid #bbb;
  border-radius: 1em;
