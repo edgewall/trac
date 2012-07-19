@@ -7,7 +7,7 @@
  font-weight: bold;
  padding-right: .25em;
  position: absolute; /* relies on #content { position: relative } */
- left: 1em;
+ left: 0;
  text-align: right;
  width: 7.75em;
 }
