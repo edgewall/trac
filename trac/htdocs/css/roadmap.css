@@ -3,6 +3,7 @@ table.progress {
  border: 1px solid #d7d7d7;
  border-collapse: collapse;
  border-spacing: 0;
+ box-shadow: 0 0 1em #eee; /* from pre.wiki */
  float: left;
  margin: 0;
  padding: 0;
@@ -83,7 +84,10 @@ p.percent {
 .trac-groupprogress th { text-align: right; }
 .trac-groupprogress th :link, .trac-groupprogress th :visited { border: none }
 .trac-groupprogress td { padding-left: 0.5em; width: 100% }
-.trac-groupprogress table.progress  { margin: 3px 1em 3px 0 }
+.trac-groupprogress table.progress  {
+ margin: 3px 1em 3px 0;
+ box-shadow: none;
+}
 .trac-groupprogress table.progress td  { padding: 0 }
 .trac-groupprogress p.percent { margin-top: 3px; white-space: nowrap }
 
