@@ -40,7 +40,10 @@
  padding: 0 .2em;
 }
 
-#trac-ticket-title { margin-top: .4em; }
+#trac-ticket-title {
+ margin-top: .4em;
+ margin-right: 0;
+}
 
 #ticket h2 {
  color: #844;
@@ -58,7 +61,14 @@
  color: #955;
 }
 
-#ticket .date { color: #996; float: right; font-size: 85%; position: relative }
+#ticket .date {
+ color: #996;
+ float: right;
+ font-size: 85%;
+ position: relative;
+ top: -.2em;
+ margin-bottom: -1em;
+}
 #ticket .date p { margin: .3em }
 
 #ticket table.properties {
