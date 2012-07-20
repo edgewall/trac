@@ -507,10 +507,10 @@ pre.wiki, pre.literal-block {
 
 tt {
  color: #600;
- border: 1px solid #CBA;
+ border: 1px solid #edc;
  border-radius: .25em;
  padding: 0 0.3em;
- background: #F7F7F7;
+ background: #fafafa;
 }
 
 blockquote.citation { 
