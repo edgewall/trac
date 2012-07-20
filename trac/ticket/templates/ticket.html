@@ -156,7 +156,7 @@
             </form>
           </div>
 
-          <h2 class="foldable">Change History <span class="trac-count">(${len(changes)})</span></h2>
+          <h3 class="foldable">Change History <span class="trac-count">(${len(changes)})</span></h3>
 
           <div id="changelog">
             <py:for each="change in changes">
@@ -175,7 +175,7 @@
                       else href.newticket() + '#ticket'}">
         <!--! Add comment -->
         <div py:if="ticket.exists and can_append" id="trac-add-comment" class="field">
-          <h2 class="foldable" id="edit">Add Comment</h2>
+          <h3 class="foldable" id="edit">Add Comment</h3>
           <div>
             <div id="trac-edit-warning" class="warning system-message"
                  style="${'display: none' if start_time == ticket['changetime'] else None}"
@@ -198,7 +198,7 @@ ${comment}</textarea>
         </div>
 
         <div>
-          <h2 py:if="ticket.exists" class="foldable">Modify Ticket</h2>
+          <h3 py:if="ticket.exists" class="foldable">Modify Ticket</h3>
           <div id="modify">
             <!--! Properties -->
             <fieldset id="properties" py:if="can_modify or can_edit or can_create"
