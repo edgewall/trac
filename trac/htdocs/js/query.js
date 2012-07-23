@@ -369,23 +369,23 @@
     // Add a new column with checkboxes for each ticket.
     // Selecting a ticket marks it for inclusion in the batch.
     $("table.listing tr td.id").each(function() {
-      tId = $(this).text().substring(1);
+      var tId = $(this).text().substring(1);
       $(this).before(
-	$('<td class="batchmod_selector">').append(
-	  $('<input type="checkbox" name="selected_ticket" />').attr({
-	    title: babel.format(_("Select ticket %(id)s for modification"), {id: tId}),
-	    value: tId
-	  })));
+        $('<td class="batchmod_selector">').append(
+          $('<input type="checkbox" name="selected_ticket" />').attr({
+            title: babel.format(_("Select ticket %(id)s for modification"), {id: tId}),
+            value: tId
+          })));
     });
 
     // Add a checkbox at the top of the column
     // to select ever ticket in the group.
     $("table.listing tr th.id").each(function() { 
       $(this).before(
-	$('<th class="batchmod_selector">').append(
-	  $('<input type="checkbox" name="batchmod_toggleGroup" />').attr({
-	    title: _("Toggle selection of all tickets shown in this group")
-	  })));
+        $('<th class="batchmod_selector">').append(
+          $('<input type="checkbox" name="batchmod_toggleGroup" />').attr({
+            title: _("Toggle selection of all tickets shown in this group")
+          })));
     });
 
     // Add the click behavior for the group toggle. 
