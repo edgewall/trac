@@ -2574,7 +2574,7 @@ msgstr "バージョンの名称が不正です。"
 #: trac/ticket/admin.py:483
 #, python-format
 msgid "Version %(name)s already exists."
-msgstr "プラグイン %(name)s はすでにインストールされています。"
+msgstr "バージョン %(name)s はすでに登録されています。"
 
 #: trac/ticket/admin.py:490
 msgid "No version selected"
@@ -3671,7 +3671,7 @@ msgstr "マイルストーンを編集"
 #: trac/ticket/templates/milestone_edit.html:12
 #: trac/ticket/templates/milestone_edit.html:44
 msgid "New Milestone"
-msgstr "マイルストーンの登録"
+msgstr "新規マイルストーン"
 
 #: trac/ticket/templates/milestone_edit.html:51
 msgid "Name of the milestone:"
@@ -3695,7 +3695,7 @@ msgstr "変更を送信"
 
 #: trac/ticket/templates/milestone_edit.html:105
 msgid "Add milestone"
-msgstr "登録"
+msgstr "マイルストーンを登録"
 
 #: trac/ticket/templates/milestone_edit.html:110
 #: trac/ticket/templates/milestone_view.html:94
@@ -3742,7 +3742,7 @@ msgstr "%(stat_title)s:"
 
 #: trac/ticket/templates/milestone_view.html:82
 msgid "Edit milestone"
-msgstr "マイルストーンの編集"
+msgstr "マイルストーンを編集"
 
 #: trac/ticket/templates/query.html:30
 #: trac/ticket/templates/report_view.html:21
@@ -3750,7 +3750,7 @@ msgstr "マイルストーンの編集"
 #, python-format
 msgid "%(num)s match"
 msgid_plural "%(num)s matches"
-msgstr[0] "%(num)s 件が該当"
+msgstr[0] "%(num)s件が該当"
 
 #: trac/ticket/templates/query.html:39
 msgid "Filters"
@@ -4035,7 +4035,7 @@ msgstr "マイルストーン:"
 
 #: trac/ticket/templates/roadmap.html:75
 msgid "Add new milestone"
-msgstr "新しいマイルストーンの登録"
+msgstr "新しいマイルストーンを登録"
 
 #: trac/ticket/templates/ticket.html:101
 msgid "Go to the ticket editor"
@@ -6497,7 +6497,7 @@ msgstr "次のバージョン"
 
 #: trac/wiki/web_ui.py:674
 msgid "View Latest Version"
-msgstr "最新バージョンを表示する"
+msgstr "最新バージョンの表示"
 
 #: trac/wiki/web_ui.py:677
 msgid "Up"
@@ -6513,7 +6513,7 @@ msgstr "ページ一覧"
 
 #: trac/wiki/web_ui.py:705
 msgid "History"
-msgstr "このページの履歴"
+msgstr "履歴"
 
 #: trac/wiki/web_ui.py:712
 msgid "Wiki changes"
@@ -6542,7 +6542,7 @@ msgstr "[1:%(name)s] のバージョン %(version)s を削除"
 #: trac/wiki/templates/wiki_delete.html:28
 #, python-format
 msgid "Delete [1:%(name)s]"
-msgstr "[1:%(name)s]の削除"
+msgstr "[1:%(name)s] の削除"
 
 #: trac/wiki/templates/wiki_delete.html:38
 #, python-format
@@ -6763,7 +6763,7 @@ msgstr "%(path)s の表示"
 #: trac/wiki/templates/wiki_rename.html:15
 #, python-format
 msgid "Rename [1:%(name)s]"
-msgstr "[1:%(name)s]の名前変更"
+msgstr "[1:%(name)s] の名前変更"
 
 #: trac/wiki/templates/wiki_rename.html:19
 msgid "Renaming the page will rename all existing versions of the page in place."
