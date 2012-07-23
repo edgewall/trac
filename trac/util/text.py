@@ -118,15 +118,29 @@ _js_quote = {'\\': '\\\\', '"': '\\"', '\b': '\\b', '\f': '\\f',
 for i in range(0x20) + [ord(c) for c in '&<>']:
     _js_quote.setdefault(chr(i), '\\u%04x' % i)
 _js_quote_re = re.compile(r'[\x00-\x1f\\"\b\f\n\r\t\'&<>]')
+_js_string_re = re.compile(r'[\x00-\x1f\\"\b\f\n\r\t&<>]')
 
 
 def javascript_quote(text):
-    """Quote strings for inclusion in javascript"""
+    """Quote strings for inclusion in single or double quote delimited
+    Javascript strings
+    """
     if not text:
         return ''
     def replace(match):
         return _js_quote[match.group(0)]
     return _js_quote_re.sub(replace, text)
+
+
+def to_js_string(text):
+    """Embed the given string in a double quote delimited Javascript string
+    (conform to the JSON spec)
+    """
+    if not text:
+        return ''
+    def replace(match):
+        return _js_quote[match.group(0)]
+    return '"%s"' % _js_string_re.sub(replace, text)
 
 
 def unicode_quote(value, safe='/'):
