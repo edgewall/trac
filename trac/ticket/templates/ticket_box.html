@@ -28,9 +28,7 @@ Arguments:
   <!--! use a placeholder if it's a new ticket -->
 
   <h2>
-    <a href="${href.ticket(ticket.id)}" class="${classes('trac-id', closed=ticket.status == 'closed')}">
-      #${ticket.id}
-    </a>
+    <a href="${href.ticket(ticket.id)}" class="trac-id">#${ticket.id}</a>
     <span class="trac-status">${ticket.status}</span>
     <span class="trac-type" py:if="ticket.type">${ticket.type}</span>
     <span class="trac-resolution" py:if="ticket.resolution">(${ticket.resolution})</span>
