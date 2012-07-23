@@ -43,11 +43,12 @@
 #trac-ticket-title {
  margin-top: .4em;
  margin-right: 0;
+ clear: right;
 }
 
 #ticket h2 {
  color: #844;
- margin: 0 0 .4em;
+ margin: .3em 0 .4em 0;
 }
 #ticket h2 .trac-id {
  font-size: 145%;
@@ -67,7 +68,6 @@
  font-size: 85%;
  position: relative;
  top: -.2em;
- margin-bottom: -1em;
 }
 #ticket .date p { margin: .3em }
 
