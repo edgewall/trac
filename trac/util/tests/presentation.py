@@ -28,6 +28,8 @@ class ToJsonTestCase(unittest.TestCase):
         self.assertEqual('null', presentation.to_json(None))
         self.assertEqual('"String"', presentation.to_json('String'))
         self.assertEqual(r'"a \" quote"', presentation.to_json('a " quote'))
+        self.assertEqual('''"a ' single quote"''',
+                         presentation.to_json("a ' single quote"))
         self.assertEqual(r'"\u003cb\u003e\u0026\u003c/b\u003e"',
                          presentation.to_json('<b>&</b>'))
 
@@ -35,11 +37,11 @@ class ToJsonTestCase(unittest.TestCase):
         self.assertEqual('[1,2,[true,false]]',
                          presentation.to_json([1, 2, [True, False]]))
         self.assertEqual(r'{"one":1,"other":[null,0],'
-                         r'"three":[3,"\u0026\u003c\u003e"],'
+                         r'''"three":[3,"\u0026\u003c\u003e'"],'''
                          r'"two":2}',
                          presentation.to_json({"one": 1, "two": 2,
                                                "other": [None, 0],
-                                               "three": [3, "&<>"]}))
+                                               "three": [3, "&<>'"]}))
 
 
 def suite():

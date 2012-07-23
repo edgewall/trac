@@ -4,7 +4,7 @@ import unittest
 from StringIO import StringIO
 
 from trac.util.text import empty, expandtabs, fix_eol, javascript_quote, \
-                           normalize_whitespace, to_unicode, \
+                           to_js_string, normalize_whitespace, to_unicode, \
                            text_width, print_table, unicode_quote, \
                            unicode_quote_plus, unicode_unquote, \
                            unicode_urlencode, wrap, quote_query_string, \
@@ -64,6 +64,19 @@ class JavascriptQuoteTestCase(unittest.TestCase):
                          javascript_quote('\x02\x1e'))
         self.assertEqual(r'\u0026\u003c\u003e',
                          javascript_quote('&<>'))
+
+
+class ToJsStringTestCase(unittest.TestCase):
+    def test_(self):
+        self.assertEqual(r'"Quote \" in text"',
+                         to_js_string('Quote " in text'))
+        self.assertEqual(r'''"\\\"\b\f\n\r\t'"''',
+                         to_js_string('\\"\b\f\n\r\t\''))
+        self.assertEqual(r'"\u0002\u001e"',
+                         to_js_string('\x02\x1e'))
+        self.assertEqual(r'"\u0026\u003c\u003e"',
+                         to_js_string('&<>'))
+
 
 class UnicodeQuoteTestCase(unittest.TestCase):
     def test_unicode_quote(self):
@@ -295,6 +308,7 @@ def suite():
     suite.addTest(unittest.makeSuite(ExpandtabsTestCase, 'test'))
     suite.addTest(unittest.makeSuite(UnicodeQuoteTestCase, 'test'))
     suite.addTest(unittest.makeSuite(JavascriptQuoteTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(ToJsStringTestCase, 'test'))
     suite.addTest(unittest.makeSuite(QuoteQueryStringTestCase, 'test'))
     suite.addTest(unittest.makeSuite(WhitespaceTestCase, 'test'))
     suite.addTest(unittest.makeSuite(TextWidthTestCase, 'test'))
