@@ -26,6 +26,8 @@ from locale import getlocale, getpreferredencoding, LC_TIME
 
 try:
     import babel
+    from babel import Locale
+    from babel.core import LOCALE_ALIASES
     from babel.dates import format_datetime as babel_format_datetime, \
                             format_date as babel_format_date, \
                             format_time as babel_format_time, \
@@ -372,6 +374,17 @@ def get_timezone_list_jquery_ui(t=None):
     return [{'value': 'Z', 'label': '+00:00'} \
             if zone == '+0000' else zone[:-2] + ':' + zone[-2:]
             for zone in sorted(zones, key=lambda tz: int(tz))]
+
+def get_first_week_day_jquery_ui(req):
+    """Get first week day for jQuery date picker"""
+    locale = req.lc_time
+    if locale == 'iso8601':
+        return 1 # Monday
+    if babel and locale:
+        if not locale.territory and locale.language in LOCALE_ALIASES:
+            locale = Locale.parse(LOCALE_ALIASES[locale.language])
+        return (locale.first_week_day + 1) % 7
+    return 0 # Sunday
 
 def is_24_hours(locale):
     """Returns `True` for 24 hour time formats."""
