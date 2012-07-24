@@ -55,11 +55,15 @@
  vertical-align: middle;
  margin: 0 .4em 0 0;
 }
-#ticket h2 .status {
+#ticket h2 .trac-status {
  vertical-align: middle;
 }
 #ticket h2 .trac-type {
  color: #955;
+ vertical-align: middle;
+}
+#ticket h2 .trac-resolution {
+ vertical-align: middle;
 }
 
 #ticket .date {
