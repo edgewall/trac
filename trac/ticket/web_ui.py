@@ -476,11 +476,6 @@ class TicketModule(Component):
 
         fields = self._prepare_fields(req, ticket)
 
-        # setup default values for the new ticket
-        
-        for field in fields:
-            ticket.values.setdefault(field['name'], field.get('value'))
-
         # position 'owner' immediately before 'cc',
         # if not already positioned after (?)
 
