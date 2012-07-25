@@ -180,6 +180,7 @@ div.comment ol { list-style: decimal }
 .threading :link, .threading :visited { border-bottom: 0 }
 #changelog .trac-lastedit {
  padding-left: 2.5em;
+ margin-top: .8em;
  color: #999;
  font-size: 80%;
 }
