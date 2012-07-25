@@ -656,6 +656,8 @@ table.listing tbody tr.odd { background-color: #f7f7f7 }
 table.listing tbody tr:hover { background: #eed !important }
 table.listing tbody tr.focus { background: #ddf !important }
 
+table.listing pre { white-space: pre-wrap }
+
 /* Styles for the page history table
    (extends the styles for "table.listing") */
 #fieldhist td { padding: 0 .5em }
