@@ -1,10 +1,10 @@
 /* -*- coding: utf-8 -*- */
+html { overflow-y: scroll }
 body {
  background: #fff;
  color: #000;
  margin: 10px;
  padding: 0;
- overflow-y: scroll;
 }
 body, th, tr {
  font: normal 13px Verdana,Arial,'Bitstream Vera Sans',Helvetica,sans-serif;

@@ -10,7 +10,10 @@
     <title py:with="title = list(select('title/text()'))">
       <py:if test="title">${title} – </py:if>${project.name or 'Trac'}
     </title>
-    <meta py:if="chrome.content_type == 'text/html'" http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <py:if test="chrome.content_type == 'text/html'">
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    </py:if>
     <meta py:for="meta in chrome.metas" py:attrs="meta"/>
     <!--[if IE]><script type="text/javascript">
       if (/^#__msie303:/.test(window.location.hash))
