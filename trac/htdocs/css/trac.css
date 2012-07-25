@@ -83,6 +83,9 @@ span:target {
 /* Forms */
 input, textarea, select { margin: 2px }
 input, select { vertical-align: middle }
+input[type=button], input[type=submit], input[type=reset], button {
+ *overflow: visible; /* Workaround too much margin on button in IE7 */
+}
 input[type=button], input[type=submit], input[type=reset] {
  background: #eee;
  color: #222;
