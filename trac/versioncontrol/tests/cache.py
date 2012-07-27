@@ -219,6 +219,69 @@ class CacheTestCase(unittest.TestCase):
         self.assertEquals((to_utimestamp(t1), 'joe', '**empty**'), rows[0])
         self.assertEquals((to_utimestamp(t2), 'joe', 'Import'), rows[1])
 
+    def test_sync_changeset_if_not_exists(self):
+        t = [
+            datetime(2001, 1, 1, 1, 1, 1, 0, utc), # r0
+            datetime(2002, 1, 1, 1, 1, 1, 0, utc), # r1
+            datetime(2003, 1, 1, 1, 1, 1, 0, utc), # r2
+            datetime(2004, 1, 1, 1, 1, 1, 0, utc), # r3
+        ]
+        self.preset_cache(
+            (('0', to_utimestamp(t[0]), 'joe', '**empty**'), []),
+            (('1', to_utimestamp(t[1]), 'joe', 'Import'),
+             [('trunk', 'D', 'A', None, None),
+              ('trunk/README', 'F', 'A', None, None)]),
+            # not exists r2
+            (('3', to_utimestamp(t[3]), 'joe', 'Add COPYING'),
+             [('trunk/COPYING', 'F', 'A', None, None)]),
+            )
+        repos = self.get_repos(get_changeset=lambda x: changesets[int(x)],
+                               youngest_rev=3)
+        changes = [
+            None,                                                       # r0
+            [('trunk', Node.DIRECTORY, Changeset.ADD, None, None),      # r1
+             ('trunk/README', Node.FILE, Changeset.ADD, None, None)],
+            [('branches', Node.DIRECTORY, Changeset.ADD, None, None),   # r2
+             ('tags', Node.DIRECTORY, Changeset.ADD, None, None)],
+            [('trunk/COPYING', Node.FILE, Changeset.ADD, None, None)],  # r3
+        ]
+        changesets = [
+            Mock(Changeset, repos, 0, '**empty**', 'joe', t[0],
+                 get_changes=lambda: []),
+            Mock(Changeset, repos, 1, 'Initial Import', 'joe', t[1],
+                 get_changes=lambda: iter(changes[1])),
+            Mock(Changeset, repos, 2, 'Created directories', 'john', t[2],
+                 get_changes=lambda: iter(changes[2])),
+            Mock(Changeset, repos, 3, 'Add COPYING', 'joe', t[3],
+                 get_changes=lambda: iter(changes[3])),
+            ]
+        cache = CachedRepository(self.env, repos, self.log)
+        self.assertRaises(NoSuchChangeset, cache.get_changeset, 2)
+        cache.sync()
+        self.assertRaises(NoSuchChangeset, cache.get_changeset, 2)
+
+        self.assertEqual(None, cache.sync_changeset(2))
+        cset = cache.get_changeset(2)
+        self.assertEqual('john', cset.author)
+        self.assertEqual('Created directories', cset.message)
+        self.assertEqual(t[2], cset.date)
+        cset_changes = cset.get_changes()
+        self.assertEqual(('branches', Node.DIRECTORY, Changeset.ADD, None,
+                          None),
+                         cset_changes.next())
+        self.assertEqual(('tags', Node.DIRECTORY, Changeset.ADD, None, None),
+                         cset_changes.next())
+        self.assertRaises(StopIteration, cset_changes.next)
+
+        rows = self.env.db_query(
+                "SELECT time,author,message FROM revision ORDER BY rev")
+        self.assertEquals(4, len(rows))
+        self.assertEquals((to_utimestamp(t[0]), 'joe', '**empty**'), rows[0])
+        self.assertEquals((to_utimestamp(t[1]), 'joe', 'Import'), rows[1])
+        self.assertEquals((to_utimestamp(t[2]), 'john', 'Created directories'),
+                          rows[2])
+        self.assertEquals((to_utimestamp(t[3]), 'joe', 'Add COPYING'), rows[3])
+
     def test_get_changes(self):
         t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)

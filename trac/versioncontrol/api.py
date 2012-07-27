@@ -663,7 +663,11 @@ class RepositoryManager(Component):
                 try:
                     changeset = repos.get_changeset(rev)
                 except NoSuchChangeset:
-                    continue
+                    try:
+                        repos.sync_changeset(rev)
+                        changeset = repos.get_changeset(rev)
+                    except NoSuchChangeset:
+                        continue
                 self.log.debug("Event %s on %s for revision %s",
                                event, repos.reponame or '(default)', rev)
                 for listener in self.change_listeners:

@@ -30,6 +30,12 @@ _actionmap = {'A': Changeset.ADD, 'C': Changeset.COPY,
               'D': Changeset.DELETE, 'E': Changeset.EDIT,
               'M': Changeset.MOVE}
 
+def _invert_dict(d):
+    return dict(zip(d.values(), d.keys()))
+
+_inverted_kindmap = _invert_dict(_kindmap)
+_inverted_actionmap = _invert_dict(_actionmap)
+
 CACHE_REPOSITORY_DIR = 'repository_dir'
 CACHE_YOUNGEST_REV = 'youngest_rev'
 
@@ -89,10 +95,13 @@ class CachedRepository(Repository):
                     """, (self.id, srev)):
                 old_cset = Changeset(self.repos, cset.rev, message, author,
                                      from_utimestamp(time))
-            db("""UPDATE revision SET time=%s, author=%s, message=%s
-                  WHERE repos=%s AND rev=%s
-                  """, (to_utimestamp(cset.date), cset.author, cset.message,
-                        self.id, srev))
+            if old_cset:
+                db("""UPDATE revision SET time=%s, author=%s, message=%s
+                      WHERE repos=%s AND rev=%s
+                      """, (to_utimestamp(cset.date), cset.author,
+                            cset.message, self.id, srev))
+            else:
+                self._insert_changeset(db, rev, cset)
         return old_cset
 
     @cached('_metadata_id')
@@ -215,68 +224,68 @@ class CachedRepository(Repository):
                     self.repos.clear(youngest_rev=youngest)
                     return
 
-            # 1. prepare for resyncing
-            #    (there still might be a race condition at this point)
-
-            kindmap = dict(zip(_kindmap.values(), _kindmap.keys()))
-            actionmap = dict(zip(_actionmap.values(), _actionmap.keys()))
-
+            # prepare for resyncing (there might still be a race
+            # condition at this point)
             while next_youngest is not None:
                 srev = self.db_rev(next_youngest)
-                
+
                 with self.env.db_transaction as db:
-                    
-                    # 1.1 Attempt to resync the 'revision' table
                     self.log.info("Trying to sync revision [%s]",
                                   next_youngest)
                     cset = self.repos.get_changeset(next_youngest)
                     try:
-                        db("""INSERT INTO revision
-                                (repos, rev, time, author, message)
-                              VALUES (%s, %s, %s, %s, %s)
-                              """, (self.id, srev, to_utimestamp(cset.date),
-                                    cset.author, cset.message))
-                    except Exception, e: # *another* 1.1. resync attempt won 
+                        # steps 1. and 2.
+                        self._insert_changeset(db, next_youngest, cset)
+                    except Exception, e: # *another* 1.1. resync attempt won
                         self.log.warning('Revision %s already cached: %r',
                                          next_youngest, e)
-                        # also potentially in progress, so keep ''previous''
-                        # notion of 'youngest'
+                        # the other resync attempts is also
+                        # potentially still in progress, so for our
+                        # process/thread, keep ''previous'' notion of
+                        # 'youngest'
                         self.repos.clear(youngest_rev=youngest)
                         # FIXME: This aborts a containing transaction
                         db.rollback()
                         return
-    
-                    # 1.2. now *only* one process was able to get there
-                    #      (i.e. there *shouldn't* be any race condition here)
-    
-                    for path, kind, action, bpath, brev in cset.get_changes():
-                        self.log.debug("Caching node change in [%s]: %r",
-                                       next_youngest,
-                                       (path, kind, action, bpath, brev))
-                        kind = kindmap[kind]
-                        action = actionmap[action]
-                        db("""INSERT INTO node_change
-                                (repos, rev, path, node_type, change_type,
-                                 base_path, base_rev)
-                              VALUES (%s, %s, %s, %s, %s, %s, %s)
-                              """, (self.id, srev, path, kind, action, bpath,
-                                    brev))
-    
-                    # 1.3. update 'youngest_rev' metadata 
-                    #      (minimize possibility of failures at point 0.)
-                    db("""UPDATE repository SET value=%s
-                          WHERE id=%s AND name=%s
-                          """, (str(next_youngest), 
-                                self.id, CACHE_YOUNGEST_REV))
+
+                    # 3. update 'youngest_rev' metadata (minimize
+                    # possibility of failures at point 0.)
+                    db("""
+                        UPDATE repository SET value=%s WHERE id=%s AND name=%s
+                        """, (str(next_youngest), self.id, CACHE_YOUNGEST_REV))
                     del self.metadata
 
-                # 1.4. iterate (1.1 should always succeed now)
+                # 4. iterate (1. should always succeed now)
                 youngest = next_youngest
                 next_youngest = self.repos.next_rev(next_youngest)
 
-                # 1.5. provide some feedback
+                # 5. provide some feedback
                 if feedback:
                     feedback(youngest)
+
+    def _insert_changeset(self, db, rev, cset):
+        srev = self.db_rev(rev)
+        # 1. Attempt to resync the 'revision' table.  In case of
+        # concurrent syncs, only such insert into the `revision` table
+        # will succeed, the others will fail and raise an exception.
+        db("""
+            INSERT INTO revision (repos,rev,time,author,message)
+            VALUES (%s,%s,%s,%s,%s)
+            """, (self.id, srev, to_utimestamp(cset.date),
+                  cset.author, cset.message))
+        # 2. now *only* one process was able to get there (i.e. there
+        # *shouldn't* be any race condition here)
+        for path, kind, action, bpath, brev in cset.get_changes():
+            self.log.debug("Caching node change in [%s]: %r", rev,
+                           (path, kind, action, bpath, brev))
+            kind = _inverted_kindmap[kind]
+            action = _inverted_actionmap[action]
+            db("""
+                INSERT INTO node_change
+                    (repos,rev,path,node_type,change_type,base_path,
+                     base_rev)
+                VALUES (%s,%s,%s,%s,%s,%s,%s)
+                """, (self.id, srev, path, kind, action, bpath, brev))
 
     def get_node(self, path, rev=None):
         return self.repos.get_node(path, self.normalize_rev(rev))
