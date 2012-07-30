@@ -20,6 +20,10 @@
         $(".foldable").enableFolding(false, true);
       <py:when test="ticket.exists">/*<![CDATA[*/
         $("#attachments").toggleClass("collapsed");
+        $("#trac-up-attachments").click(function () {
+          $("#attachments").removeClass("collapsed");
+          return true;
+        });
         $("#modify").parent().toggleClass("collapsed");
 
         /* only enable control elements for the currently selected action */
@@ -367,7 +371,7 @@ ${value}</textarea>
         </p>
 
         <div py:if="ticket.exists" class="trac-nav">
-          <a href="#attachments" title="Go to the list of attachments">Attachments</a> &uarr;
+          <a href="#attachments" id="trac-up-attachments" title="Go to the list of attachments">Attachments</a> &uarr;
         </div>
         <div class="buttons">
           <py:if test="ticket.exists">
