@@ -474,6 +474,7 @@ class AttachmentSetup(Component):
         except OSError, e:
             self.log.warning("Can't move old attachments directory %s: %s",
                              old_dir, exception_to_unicode(e))
+            # TRANSLATOR: Wrap message to 80 columns
             printerr(_("""\
 The upgrade of attachments was successful, but some files weren't referenced in
 the database. The old attachments directory:
@@ -492,6 +493,7 @@ Please move this directory out of the environment. Note that Trac won't run as
 long as the directory exists.
 """, src_dir=old_dir, dst_dir=stale_dir, exception=exception_to_unicode(e)))
         else:
+            # TRANSLATOR: Wrap message to 80 columns
             printerr(_("""\
 The upgrade of attachments was successful, but some files weren't referenced in
 the database. They were moved to:
