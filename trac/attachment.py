@@ -25,6 +25,7 @@ import os.path
 import re
 import shutil
 import sys
+import time
 import unicodedata
 
 from genshi.builder import tag
@@ -456,23 +457,60 @@ class AttachmentSetup(Component):
             except OSError:
                 pass
 
+        # Remove empty directory hierarchy
         try:
             for dir, dirs, files in os.walk(old_dir, topdown=False):
                 os.rmdir(dir)
+            return
         except OSError, e:
-            self.log.error("Can't delete old attachments directory %s: %s",
-                           old_dir, exception_to_unicode(e, traceback=True))
-            printerr(_("Error while deleting old attachments directory. "
-                       "Please move or remove files in\nthe directory and try "
-                       "again."))
-            raise
+            self.log.warning("Can't delete old attachments directory %s: %s",
+                             old_dir, exception_to_unicode(e))
+
+        # Some unreferenced files remain, inform admin
+        stale_name = time.strftime('attachments-stale-%Y%m%d')
+        stale_dir = os.path.join(path, stale_name)
+        try:
+            os.rename(old_dir, stale_dir)
+        except OSError, e:
+            self.log.warning("Can't move old attachments directory %s: %s",
+                             old_dir, exception_to_unicode(e))
+            printerr(_("""\
+The upgrade of attachments was successful, but some files weren't referenced in
+the database. The old attachments directory:
+
+  %(src_dir)s
+
+could not be moved to:
+
+  %(dst_dir)s
+  
+due to the following error:
+
+  %(exception)s
+
+Please move this directory out of the environment. Note that Trac won't run as
+long as the directory exists.
+""", src_dir=old_dir, dst_dir=stale_dir, exception=exception_to_unicode(e)))
+        else:
+            printerr(_("""\
+The upgrade of attachments was successful, but some files weren't referenced in
+the database. They were moved to:
+
+  %(dir)s
+""", dir=stale_dir))
 
     def _move_attachment_file(self, attachment):
         old_path = attachment._get_path_old(attachment.parent_realm,
                                             attachment.parent_id,
                                             attachment.filename)
         if os.path.isfile(old_path):
-            os.renames(old_path, attachment.path)
+            try:
+                os.renames(old_path, attachment.path)
+            except OSError, e:
+                printerr(_("Unable to move attachment from:\n\n"
+                           "  %(old_path)s\n\nto:\n\n  %(new_path)s\n",
+                           old_path=old_path, new_path=attachment.path))
+                raise
 
 
 class AttachmentModule(Component):
