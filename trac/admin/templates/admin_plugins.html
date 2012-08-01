@@ -42,6 +42,10 @@
             File: <input type="file" name="plugin_file" disabled="${readonly or None}" />
           </label>
         </div>
+        <div class="buttons">
+          <input type="submit" name="install" value="${_('Install')}"
+                 disabled="${readonly or None}" />
+        </div>
         <p class="help" py:choose="readonly">
           <py:when test="True">
             The web server does not have sufficient permissions to store files in
@@ -51,10 +55,6 @@
             Upload a plugin packaged as Python egg.
           </py:otherwise>
         </p>
-        <div class="buttons">
-          <input type="submit" name="install" value="${_('Install')}"
-                 disabled="${readonly or None}" />
-        </div>
       </fieldset>
     </form>
 

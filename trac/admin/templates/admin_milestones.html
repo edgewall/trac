@@ -32,7 +32,7 @@
               <input type="text" id="duedate" name="duedate" size="${len(datetime_hint)}"
                      value="${milestone.due and format_datetime(milestone.due)}" readonly="${readonly}"
                      title="${_('Format: %(datehint)s', datehint=datetime_hint)}"/>
-              <em i18n:msg="datehint">Format: $datetime_hint</em>
+              <span class="hint" i18n:msg="datehint">Format: $datetime_hint</span>
             </label>
           </div>
           <div class="field">
@@ -46,7 +46,7 @@
                      size="${len(datetime_hint)}"
                      value="${format_datetime(milestone.completed)}" readonly="${readonly}"
                      title="${_('Format: %(datehint)s', datehint=datetime_hint)}"/>
-              <em i18n:msg="datehint">Format: $datetime_hint</em>
+              <span class="hint" i18n:msg="datehint">Format: $datetime_hint</span>
             </label>
             <script type="text/javascript">
               jQuery(document).ready(function($) {
@@ -82,14 +82,14 @@ ${milestone.description}</textarea>
           <fieldset>
             <legend>Add Milestone:</legend>
             <div class="field">
-              <label>Name:<br /><input type="text" name="name" id="name" size="22" /></label>
+              <label>Name: <input type="text" name="name" id="name" size="22"/></label>
             </div>
             <div class="field">
               <label>
-                Due:<br />
+                Due:
                 <input type="text" id="duedate" name="duedate" size="${len(datetime_hint)}"
-                       title="${_('Format: %(datehint)s', datehint=datetime_hint)}" /><br/>
-                <em i18n:msg="datetimehint">Format: $datetime_hint</em>
+                       title="${_('Format: %(datehint)s', datehint=datetime_hint)}"/>
+                <span class="hint" i18n:msg="datetimehint">Format: $datetime_hint</span>
               </label>
             </div>
             <div class="buttons">

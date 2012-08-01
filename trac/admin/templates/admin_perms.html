@@ -17,49 +17,41 @@
       <form id="addperm" class="addnew" method="post" action="">
         <fieldset>
           <legend>Grant Permission:</legend>
-          <table>
-            <tr class="field">
-              <th><label for="gp_subject">Subject:</label></th>
-              <td><input id="gp_subject" type="text" name="subject" /></td>
-            </tr>
-            <tr class="field">
-              <th><label for="action">Action:</label></th>
-              <td>
-                <select id="action" name="action">
-                  <option py:for="action in sorted(actions)">$action</option>
-                </select>
-              </td>
-            </tr>
-          </table>
+          <div class="field">
+            <label>Subject: <input id="gp_subject" type="text" name="subject" /></label>
+          </div>
+          <div class="field">
+            <label>Action:
+              <select id="action" name="action">
+                <option py:for="action in sorted(actions)">$action</option>
+              </select>
+            </label>
+          </div>
+          <div class="buttons">
+            <input type="submit" name="add" value="${_('Add')}" />
+          </div>
           <p class="help">
             Grant permission for an action to a subject, which can be either a user
             or a group.
           </p>
-          <div class="buttons">
-            <input type="submit" name="add" value="${_('Add')}" />
-          </div>
         </fieldset>
       </form>
   
       <form id="addsubj" class="addnew" method="post" action="">
         <fieldset>
           <legend>Add Subject to Group:</legend>
-          <table>
-            <tr class="field">
-              <th><label for="sg_subject">Subject:</label></th>
-              <td><input id="sg_subject" type="text" name="subject" /></td>
-            </tr>
-            <tr class="field">
-              <th><label for="sg_group">Group:</label></th>
-              <td><input id="sg_group" type="text" name="group" /></td>
-            </tr>
-          </table>
-          <p class="help">
-            Add a user or group to an existing permission group.
-          </p>
+          <div class="field">
+            <label>Subject: <input id="sg_subject" type="text" name="subject"/></label>
+          </div>
+          <div class="field">
+            <label>Group: <input id="sg_group" type="text" name="group" /></label>
+          </div>
           <div class="buttons">
             <input type="submit" name="add" value="${_('Add')}"/>
           </div>
+          <p class="help">
+            Add a user or group to an existing permission group.
+          </p>
         </fieldset>
       </form>
     </py:if>

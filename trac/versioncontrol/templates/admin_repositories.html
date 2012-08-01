@@ -13,9 +13,9 @@
   <body>
     <h2>Manage Repositories</h2>
 
-    <py:def function="type_field(editable, selected=None)">
+    <py:def function="type_field(editable, multiline=False, selected=None)">
       <div class="field">
-        <label>Type:<br/>
+        <label>Type:<br py:if="multiline"/>
           <select size="1" id="trac-type" name="type" disabled="${not editable or None}">
             <option py:for="type in types" value="$type" selected="${type == selected or None}">${type or _('(default)')}</option>
             <option py:if="selected and selected not in types" selected="selected">$selected</option>
@@ -25,9 +25,9 @@
       </div>
     </py:def>
 
-    <py:def function="alias_field(editable, selected=None)">
+    <py:def function="alias_field(editable, multiline=False, selected=None)">
       <div class="field">
-        <label>Repository:<br/>
+        <label>Repository:<br py:if="multiline"/>
           <select size="1" id="trac-repository" name="alias" disabled="${not editable or None}">
             <option py:for="(reponame, info) in sorted(repositories.iteritems())" py:if="not info.alias"
                     value="$info.name" selected="${info.name == selected or None}">${info.name or _('(default)')}</option>
@@ -51,10 +51,10 @@
           </div>
           <py:choose>
             <py:when test="'alias' in info">
-              ${alias_field(info.editable, info.alias)}
+              ${alias_field(info.editable, True, info.alias)}
             </py:when>
             <py:otherwise>
-              ${type_field(info.editable, info.type)}
+              ${type_field(info.editable, True, info.type)}
               <div class="field">
                 <label>Directory:<br/><input type="text" name="dir" size="48" value="$info.dir" readonly="$readonly"/></label>
               </div>
@@ -92,11 +92,11 @@ $info.description</textarea>
           <fieldset>
             <legend>Add Repository:</legend>
             <div class="field">
-              <label>Name:<br/><input type="text" name="name"/></label>
+              <label>Name: <input type="text" name="name"/></label>
             </div>
             ${type_field(True)}
             <div class="field">
-              <label>Directory:<br/><input type="text" name="dir"/></label>
+              <label>Directory: <input type="text" name="dir"/></label>
             </div>
             <div class="buttons">
               <input type="submit" name="add_repos" value="${_('Add')}"/>
@@ -109,7 +109,7 @@ $info.description</textarea>
           <fieldset>
             <legend>Add Alias:</legend>
             <div class="field">
-              <label>Name:<br/><input type="text" name="name"/></label>
+              <label>Name: <input type="text" name="name"/></label>
             </div>
             ${alias_field(True)}
             <div class="buttons">

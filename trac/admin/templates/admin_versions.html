@@ -32,7 +32,7 @@
               <input type="text" id="releaseddate" name="time" size="${len(datetime_hint)}"
                      value="${format_datetime(version.time)}"
                      title="${_('Format: %(datehint)s', datehint=datetime_hint)}" />
-              <em i18n:msg="datehint">Format: $datetime_hint</em>
+              <span class="hint" i18n:msg="datehint">Format: $datetime_hint</span>
             </label>
           </div>
           <div class="field">
@@ -58,15 +58,15 @@ $version.description</textarea>
           <fieldset>
             <legend>Add Version:</legend>
             <div class="field">
-              <label>Name:<br /><input type="text" name="name" id="name" size="22" /></label>
+              <label>Name: <input type="text" name="name" id="name" size="22"/></label>
             </div>
             <div class="field">
               <label>
-                Released:<br />
+                Released:
                 <input type="text" id="releaseddate" name="time" size="${len(datetime_hint)}"
                        title="${_('Format: %(datehint)s', datehint=datetime_hint)}"
-                       value="${format_datetime()}" /><br />
-                <em i18n:msg="datehint">Format: $datetime_hint</em>
+                       value="${format_datetime()}"/>
+                <span class="hint" i18n:msg="datehint">Format: $datetime_hint</span>
               </label>
             </div>
             <div class="buttons">

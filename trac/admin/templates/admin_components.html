@@ -15,7 +15,7 @@
 
     <py:def function="owner_field(default_owner='')">
       <div class="field">
-        <label>Owner: <br />
+        <label>Owner:
           <py:choose>
             <select py:when="owners" size="1" id="owner" name="owner">
               <option py:for="owner in owners"
@@ -63,7 +63,7 @@ $component.description</textarea>
           <fieldset>
             <legend>Add Component:</legend>
             <div class="field">
-              <label>Name:<br /><input type="text" name="name" /></label>
+              <label>Name: <input type="text" name="name"/></label>
             </div>
             ${owner_field()}
             <div class="buttons">
