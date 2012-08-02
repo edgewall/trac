@@ -658,3 +658,22 @@ def unicode_to_base64(text, strip_newlines=True):
 def unicode_from_base64(text):
     """Safe conversion of ``text`` to unicode based on utf-8 bytes."""
     return text.decode('base64').decode('utf-8')
+
+
+def levenshtein_distance(lhs, rhs):
+    """Return the Levenshtein distance between two strings."""
+    if len(lhs) > len(rhs):
+        rhs, lhs = lhs, rhs
+    if not lhs:
+        return len(rhs)
+
+    prev = range(len(rhs) + 1)
+    for lidx, lch in enumerate(lhs):
+        curr = [lidx + 1]
+        for ridx, rch in enumerate(rhs):
+            cost = (lch != rch) * 2
+            curr.append(min(prev[ridx + 1] + 1, # deletion
+                            curr[ridx] + 1,     # insertion
+                            prev[ridx] + cost)) # substitution
+        prev = curr
+    return prev[-1]
