@@ -16,6 +16,7 @@ import sys
 import traceback
 
 from trac.core import *
+from trac.util.text import levenshtein_distance
 from trac.util.translation import _
 
 
@@ -132,6 +133,23 @@ class AdminCommandManager(Component):
                                                     cmd=' '.join(parts))
                         raise
         raise AdminCommandError(_("Command not found"), show_usage=True)
+
+    def get_similar_commands(self, arg, n=5):
+        if not arg:
+            return []
+
+        cmds = set()
+        for provider in self.providers:
+            for cmd in provider.get_admin_commands() or []:
+                cmds.add(cmd[0].split()[0]) # use only first token
+
+        def score(cmd, arg):
+            if cmd.startswith(arg):
+                return 0
+            return levenshtein_distance(cmd, arg) / float(len(cmd) + len(arg))
+        similars = sorted((score(cmd, arg), cmd) for cmd in cmds)
+        similars = [cmd for val, cmd in similars if val <= 0.5]
+        return similars[:n]
 
 
 class PrefixList(list):

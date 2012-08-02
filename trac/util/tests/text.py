@@ -8,7 +8,8 @@ from trac.util.text import empty, expandtabs, fix_eol, javascript_quote, \
                            text_width, print_table, unicode_quote, \
                            unicode_quote_plus, unicode_unquote, \
                            unicode_urlencode, wrap, quote_query_string, \
-                           unicode_to_base64, unicode_from_base64
+                           unicode_to_base64, unicode_from_base64, \
+                           levenshtein_distance
 
 
 class ToUnicodeTestCase(unittest.TestCase):
@@ -302,6 +303,16 @@ class UnicodeBase64TestCase(unittest.TestCase):
         self.assertEqual(text, unicode_from_base64(text_base64_no_strip))
 
 
+
+class LevenshteinDistanceTestCase(unittest.TestCase):
+    def test_distance(self):
+        self.assertEqual(5, levenshtein_distance('kitten', 'sitting'))
+        self.assertEqual(1, levenshtein_distance('wii', 'wiki'))
+        self.assertEqual(2, levenshtein_distance('comfig', 'config'))
+        self.assertEqual(5, levenshtein_distance('update', 'upgrade'))
+        self.assertEqual(0, levenshtein_distance('milestone', 'milestone'))
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ToUnicodeTestCase, 'test'))
@@ -316,6 +327,7 @@ def suite():
     suite.addTest(unittest.makeSuite(WrapTestCase, 'test'))
     suite.addTest(unittest.makeSuite(FixEolTestCase, 'test'))
     suite.addTest(unittest.makeSuite(UnicodeBase64TestCase, 'test'))
+    suite.addTest(unittest.makeSuite(LevenshteinDistanceTestCase, 'test'))
     return suite
 
 if __name__ == '__main__':
