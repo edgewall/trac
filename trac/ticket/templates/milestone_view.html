@@ -7,7 +7,7 @@
       xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="layout.html" />
   <head>
-    <title>Milestone ${milestone.name}</title>
+    <title i18n:msg="name">Milestone ${milestone.name}</title>
     <link py:if="'MILESTONE_MODIFY' in perm(milestone.resource)" rel="alternate" type="application/x-wiki"
           title="Edit this milestone" href="${href.milestone(milestone.name, action='edit')}" />
     <script type="text/javascript">
@@ -20,7 +20,7 @@
 
   <body>
     <div id="content" class="milestone">
-      <h1>Milestone ${milestone.name}</h1>
+      <h1 i18n:msg="name">Milestone ${milestone.name}</h1>
       <div class="info trac-progress">
         <py:choose>
           <p py:when="milestone.completed" class="date">

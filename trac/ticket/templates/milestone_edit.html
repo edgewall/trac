@@ -8,7 +8,7 @@
   <xi:include href="layout.html" />
   <head>
     <py:choose test="milestone.exists">
-      <title py:when="True">Edit Milestone ${milestone.name}</title>
+      <title py:when="True" i18n:msg="name">Edit Milestone ${milestone.name}</title>
       <title py:otherwise="">New Milestone</title>
     </py:choose>
     <link rel="stylesheet" type="text/css"
@@ -42,7 +42,7 @@
   <body>
     <div id="content" class="milestone">
       <py:choose test="milestone.exists">
-        <h1 py:when="True">Edit Milestone ${milestone.name}</h1>
+        <h1 py:when="True" i18n:msg="name">Edit Milestone ${milestone.name}</h1>
         <h1 py:otherwise="">New Milestone</h1>
       </py:choose>
 
