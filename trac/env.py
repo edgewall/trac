@@ -88,6 +88,10 @@ class IEnvironmentSetupParticipant(Interface):
         """
 
 
+class BackupError(RuntimeError):
+    """Exception raised during an upgrade when the DB backup fails."""
+
+
 class Environment(Component, ComponentManager):
     """Trac environment manager.
 
@@ -674,7 +678,10 @@ class Environment(Component, ComponentManager):
             return
 
         if backup:
-            self.backup(backup_dest)
+            try:
+                self.backup(backup_dest)
+            except Exception, e:
+                raise BackupError(e)
 
         for participant in upgraders:
             self.log.info("%s.%s upgrading...", participant.__module__,
@@ -950,10 +957,14 @@ class EnvironmentAdmin(Component):
 
         try:
             self.env.upgrade(backup=no_backup is None)
-        except TracError, e:
-            raise TracError(_("Backup failed: %(msg)s.\nUse '--no-backup' to "
-                              "upgrade without doing a backup.",
-                              msg=unicode(e)))
+        except BackupError, e:
+            printerr(_("The pre-upgrade backup failed.\nUse '--no-backup' to "
+                       "upgrade without doing a backup.\n"))
+            raise e.args[0]
+        except Exception, e:
+            printerr(_("The upgrade failed. Please fix the issue and try "
+                       "again.\n"))
+            raise
 
         # Remove wiki-macros if it is empty and warn if it isn't
         wiki_macros = os.path.join(self.env.path, 'wiki-macros')
