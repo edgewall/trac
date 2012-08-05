@@ -52,11 +52,11 @@ A list of 3 most recently changed wiki pages starting with 'Trac':
 <div style="font-size: 80%" class="trac-macrolist">
 <h3><code>[[Image]]</code></h3>Embed an image in wiki-formatted text.
 
-The first argument is the file â€¦
+The first argument is the file …
 <h3><code>[[InterTrac]]</code></h3>Provide a list of known <a class="wiki" href="/wiki/InterTrac">InterTrac</a> prefixes.
 <h3><code>[[InterWiki]]</code></h3>Provide a description list for the known <a class="wiki" href="/wiki/InterWiki">InterWiki</a> prefixes.
 <h3><code>[[KnownMimeTypes]]</code></h3>List all known mime-types which can be used as <a class="wiki" href="/wiki/WikiProcessors">WikiProcessors</a>.
-Can be â€¦</div>
+Can be …</div>
 }}}
 etc.
 }}}
