@@ -59,9 +59,15 @@ class ISystemInfoProvider(Interface):
 
 
 class IEnvironmentSetupParticipant(Interface):
-    """Extension point interface for components that need to
-    participate in the creation and upgrading of Trac environments,
-    for example to create additional database tables."""
+    """Extension point interface for components that need to participate in
+    the creation and upgrading of Trac environments, for example to create
+    additional database tables.
+    
+    Please note that `IEnvironmentSetupParticipant` instances are called in
+    arbitrary order. If your upgrades must be ordered consistently, please
+    implement the ordering in a single `IEnvironmentSetupParticipant`. See
+    the database upgrade infrastructure in Trac core for an example.
+    """
 
     def environment_created():
         """Called when a new Trac environment is created."""

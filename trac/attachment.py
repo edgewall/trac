@@ -25,7 +25,6 @@ import os.path
 import re
 import shutil
 import sys
-import time
 import unicodedata
 
 from genshi.builder import tag
@@ -34,7 +33,6 @@ from trac.admin import AdminCommandError, IAdminCommandProvider, PrefixList, \
                        console_datetime_format, get_dir_list
 from trac.config import BoolOption, IntOption
 from trac.core import *
-from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
 from trac.perm import PermissionError, IPermissionPolicy
 from trac.resource import *
@@ -44,8 +42,7 @@ from trac.util.compat import sha1
 from trac.util.datefmt import format_datetime, from_utimestamp, \
                               to_datetime, to_utimestamp, utc
 from trac.util.text import exception_to_unicode, path_to_unicode, \
-                           pretty_size, print_table, unicode_quote, \
-                           unicode_unquote, printerr
+                           pretty_size, print_table, unicode_unquote
 from trac.util.translation import _, tag_
 from trac.web import HTTPBadRequest, IRequestHandler, RequestDone
 from trac.web.chrome import (INavigationContributor, add_ctxtnav, add_link,
@@ -168,32 +165,43 @@ class Attachment(object):
                                      title=self.title),
                                    _('Invalid Attachment'))
 
-    def _get_path(self, parent_realm, parent_id, filename):
-        path = os.path.join(self.env.path, 'files', 'attachments',
+    # _get_path() and _get_hashed_filename() are class methods so that they
+    # can be used in db28.py.
+    
+    @classmethod
+    def _get_path(cls, env_path, parent_realm, parent_id, filename):
+        """Get the path of an attachment.
+        
+        WARNING: This method is used by db28.py for moving attachments from
+        the old "attachments" directory to the "files" directory. Please check
+        all changes so that they don't break the upgrade.
+        """
+        path = os.path.join(env_path, 'files', 'attachments',
                             parent_realm)
         hash = sha1(parent_id.encode('utf-8')).hexdigest()
         path = os.path.join(path, hash[0:3], hash)
         if filename:
-            path = os.path.join(path, self._get_hashed_filename(filename))
+            path = os.path.join(path, cls._get_hashed_filename(filename))
         return os.path.normpath(path)
 
     _extension_re = re.compile(r'\.[A-Za-z0-9]+\Z')
 
-    def _get_hashed_filename(self, filename):
+    @classmethod
+    def _get_hashed_filename(cls, filename):
+        """Get the hashed filename corresponding to the given filename.
+        
+        WARNING: This method is used by db28.py for moving attachments from
+        the old "attachments" directory to the "files" directory. Please check
+        all changes so that they don't break the upgrade.
+        """
         hash = sha1(filename.encode('utf-8')).hexdigest()
-        match = self._extension_re.search(filename)
+        match = cls._extension_re.search(filename)
         return hash + match.group(0) if match else hash
 
-    def _get_path_old(self, parent_realm, parent_id, filename):
-        path = os.path.join(self.env.path, 'attachments', parent_realm,
-                            unicode_quote(parent_id))
-        if filename:
-            path = os.path.join(path, unicode_quote(filename))
-        return os.path.normpath(path)
-    
     @property
     def path(self):
-        return self._get_path(self.parent_realm, self.parent_id, self.filename)
+        return self._get_path(self.env.path, self.parent_realm, self.parent_id,
+                              self.filename)
 
     @property
     def title(self):
@@ -232,7 +240,8 @@ class Attachment(object):
     def reparent(self, new_realm, new_id):
         assert self.filename, "Cannot reparent non-existent attachment"
         new_id = unicode(new_id)
-        new_path = self._get_path(new_realm, new_id, self.filename)
+        new_path = self._get_path(self.env.path, new_realm, new_id,
+                                  self.filename)
 
         # Make sure the path to the attachment is inside the environment
         # attachments directory
@@ -405,114 +414,6 @@ class Attachment(object):
                 if idx > 100:
                     raise Exception('Failed to create unique name: ' + path)
                 filename = '%s.%d%s' % (parts[0], idx, parts[1])
-
-
-class AttachmentSetup(Component):
-
-    implements(IEnvironmentSetupParticipant)
-
-    required = True
-
-    # IEnvironmentSetupParticipant methods
-
-    def environment_created(self):
-        """Create the attachments directory."""
-        path = self.env.path
-        if path:
-            os.makedirs(os.path.join(path, 'files', 'attachments'))
-
-    def environment_needs_upgrade(self, db):
-        path = self.env.path
-        if path:
-            return os.path.exists(os.path.join(path, 'attachments'))
-
-    def upgrade_environment(self, db):
-        """Migrate attachments from old-style directory to new-style
-        directory.
-        """
-        path = self.env.path
-        old_dir = os.path.join(path, 'attachments')
-        old_stat = os.stat(old_dir)
-        new_dir = os.path.join(path, 'files', 'attachments')
-        if not os.path.exists(new_dir):
-            os.makedirs(new_dir)
-
-        for row in db("""
-                SELECT type, id, filename, description, size, time, author,
-                ipnr FROM attachment ORDER BY type, id"""):
-            attachment = Attachment(self.env, row[0], row[1])
-            attachment._from_database(*row[2:])
-            self._move_attachment_file(attachment)
-
-        # Try to preserve permissions and ownerships of the attachments
-        # directory for $ENV/files
-        for dir, dirs, files in os.walk(os.path.join(path, 'files')):
-            try:
-                if hasattr(os, 'chmod'):
-                    os.chmod(dir, old_stat.st_mode)
-                if hasattr(os, 'chflags') and hasattr(old_stat, 'st_flags'):
-                    os.chflags(dir, old_stat.st_flags)
-                if hasattr(os, 'chown'):
-                    os.chown(dir, old_stat.st_uid, old_stat.st_gid)
-            except OSError:
-                pass
-
-        # Remove empty directory hierarchy
-        try:
-            for dir, dirs, files in os.walk(old_dir, topdown=False):
-                os.rmdir(dir)
-            return
-        except OSError, e:
-            self.log.warning("Can't delete old attachments directory %s: %s",
-                             old_dir, exception_to_unicode(e))
-
-        # Some unreferenced files remain, inform admin
-        stale_name = time.strftime('attachments-stale-%Y%m%d')
-        stale_dir = os.path.join(path, stale_name)
-        try:
-            os.rename(old_dir, stale_dir)
-        except OSError, e:
-            self.log.warning("Can't move old attachments directory %s: %s",
-                             old_dir, exception_to_unicode(e))
-            # TRANSLATOR: Wrap message to 80 columns
-            printerr(_("""\
-The upgrade of attachments was successful, but some files weren't referenced in
-the database. The old attachments directory:
-
-  %(src_dir)s
-
-could not be moved to:
-
-  %(dst_dir)s
-  
-due to the following error:
-
-  %(exception)s
-
-Please move this directory out of the environment. Note that Trac won't run as
-long as the directory exists.
-""", src_dir=old_dir, dst_dir=stale_dir, exception=exception_to_unicode(e)))
-        else:
-            # TRANSLATOR: Wrap message to 80 columns
-            printerr(_("""\
-The upgrade of attachments was successful, but some files weren't referenced in
-the database. They were moved to:
-
-  %(dir)s
-""", dir=stale_dir))
-
-    def _move_attachment_file(self, attachment):
-        old_path = attachment._get_path_old(attachment.parent_realm,
-                                            attachment.parent_id,
-                                            attachment.filename)
-        if os.path.isfile(old_path):
-            try:
-                os.renames(old_path, attachment.path)
-            except OSError, e:
-                printerr(_("Unable to move attachment from:\n\n"
-                           "  %(old_path)s\n\nto:\n\n  %(new_path)s\n",
-                           old_path=old_path, new_path=attachment.path))
-                raise
 
 
 class AttachmentModule(Component):
