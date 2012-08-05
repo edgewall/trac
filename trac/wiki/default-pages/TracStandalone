@@ -164,7 +164,7 @@ For example:
 
 If you have Apache available, you can use the htdigest command to generate the password file. Type 'htdigest' to get some usage instructions, or read [http://httpd.apache.org/docs/2.0/programs/htdigest.html this page] from the Apache manual to get precise instructions.  You'll be prompted for a password to enter for each user that you create.  For the name of the password file, you can use whatever you like, but if you use something like `users.htdigest` it will remind you what the file contains. As a suggestion, put it in your <projectname>/conf folder along with the [TracIni trac.ini] file.
 
-Note that you can start tracd without the --auth argument, but if you click on the ''Login'' link you will get an error.
+Note that you can start tracd without the `--auth` argument, but if you click on the ''Login'' link you will get an error.
 
 === Generating Passwords Without Apache ===
 
@@ -333,6 +333,24 @@ obey_remote_user_header = true
 Run tracd:
 {{{
 tracd -p 8101 -r -s proxified --base-path=/project/proxified
+}}}
+
+Note that if you want to install this plugin for all projects, you have to put it in your [TracPlugins#Plugindiscovery global plugins_dir] and enable it in your global trac.ini.
+
+Global config (e.g. `/srv/trac/conf/trac.ini`):
+{{{
+[components]
+remote-user-auth.* = enabled
+[inherit]
+plugins_dir = /srv/trac/plugins
+[trac]
+obey_remote_user_header = true
+}}}
+
+Environment config (e.g. `/srv/trac/envs/myenv`):
+{{{
+[inherit]
+file = /srv/trac/conf/trac.ini
 }}}
 
 === Serving a different base path than / ===

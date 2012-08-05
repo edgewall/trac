@@ -1,6 +1,6 @@
 = Upgrade Instructions =
 [[TracGuideToc]]
-[[PageOutline(2-3,,inline,unnumbered)]]
+[[PageOutline(2-4,,inline,unnumbered)]]
 
 == Instructions ==
 
@@ -73,6 +73,18 @@ Remove above note once #9936 is fixed.
 }}}
 
 === 6. Steps specific to a given Trac version  ===
+==== Upgrading from Trac 0.12 to Trac 1.0 ==== #to1.0
+
+The Trac components for Subversion support are no longer enabled by default. To enable the svn support, you need to make sure the `tracopt.versioncontrol.svn` components are enabled, for example by setting the following in the TracIni:
+{{{
+[components]
+tracopt.versioncontrol.svn.* = enabled
+}}}
+The upgrade procedure should take care of this and change the TracIni appropriately, unless you already had the svn components explicitly disabled.
+
+Another step in the automatic upgrade will change the way the attachments are stored. If you're a bit paranoid, you might want to take a backup of the `attachments` directory before upgrading (but if you are, you already did a full copy of the environment, no?). In case the `attachments` directory contains some files which are //not// attachments, the last step of the migration to the new layout will fail: the deletion of the now unused `attachments` directory can't be done if there are still files and folders in it. You may ignore this error, but better go have a look to these files, move them elsewhere and remove the `attachments` directory manually to cleanup the environment. The attachments themselves are now all located in your environment below the `files/attachments` directory.
+
+
 ==== Upgrading from Trac 0.11 to Trac 0.12 ====
 
 ===== Python 2.3 no longer supported =====

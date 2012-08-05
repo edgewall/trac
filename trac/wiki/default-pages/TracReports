@@ -288,7 +288,7 @@ SELECT p.value AS __color__,
   FROM ticket t,enum p
   WHERE status = 'assigned'
 AND p.name=t.priority AND p.type='priority'
-   ORDER BY __group__ ASC, `component` ASC,  __group__, p.value, severity, time
+  ORDER BY __group__ ASC, `component` ASC,  __group__, p.value, severity, time
  LIMIT 4 OFFSET 4
 }}}
 

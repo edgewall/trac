@@ -1,7 +1,7 @@
 = Trac Logging =
 [[TracGuideToc]]
 
-Trac supports logging of system messages using the standard [http://docs.python.org/lib/module-logging.html logging module] that comes with Python.
+Trac supports logging of system messages using the standard [http://docs.python.org/library/logging.html logging module] that comes with Python.
 
 Logging is configured in the `[logging]` section in [wiki:TracIni#logging-section trac.ini].
 
@@ -29,7 +29,7 @@ Note that starting with Trac 0.11.5 you can in addition enable logging of SQL st
 
 == Log Format ==
 
-Starting with Trac 0.10.4 (see [trac:#2844 #2844]), it is possible to set the output format for log entries. This can be done through the `log_format` option in [wiki:TracIni#logging-section trac.ini]. The format is a string which can contain any of the [http://docs.python.org/lib/node422.html Python logging Formatter variables]. Additonally, the following Trac-specific variables can be used:
+Starting with Trac 0.10.4 (see [trac:#2844 #2844]), it is possible to set the output format for log entries. This can be done through the `log_format` option in [wiki:TracIni#logging-section trac.ini]. The format is a string which can contain any of the [http://docs.python.org/library/logging.html#logrecord-attributes Python logging Formatter variables]. Additonally, the following Trac-specific variables can be used:
  '''$(basename)s''':: The last path component of the current environment.
  '''$(path)s''':: The absolute path for the current environment.
  '''$(project)s''':: The originating project's name.
