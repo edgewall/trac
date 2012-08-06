@@ -65,6 +65,7 @@ class TracAdmin(cmd.Cmd):
     prompt = "Trac> "
     envname = None
     __env = None
+    needs_upgrade = None
 
     def __init__(self, envdir=None):
         cmd.Cmd.__init__(self)
@@ -266,11 +267,19 @@ Type:  '?' or 'help' for help on commands.
         try:
             if not self.__env:
                 self._init_env()
+            if self.needs_upgrade is None:
+                self.needs_upgrade = self.__env.needs_upgrade()
         except TracError, e:
             raise AdminCommandError(to_unicode(e))
         except Exception, e:
             raise AdminCommandError(exception_to_unicode(e))
         args = self.arg_tokenize(line)
+        if args[0] == 'upgrade':
+            self.needs_upgrade = None
+        elif self.needs_upgrade:
+            raise TracError(_('The Trac Environment needs to be upgraded.\n\n'
+                              'Run "trac-admin %(path)s upgrade"',
+                              path=self.envname))
         cmd_mgr = AdminCommandManager(self.env)
         return cmd_mgr.execute_command(*args)
 
