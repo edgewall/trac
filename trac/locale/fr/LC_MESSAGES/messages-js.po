@@ -1,7 +1,7 @@
 # French translations for Trac.
 # Copyright (C) 2010 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# Christian Boos <cboos@neuf.fr>, 2010.
+# Christian Boos <cboos@edgewall.org>, 2010.
 #
 msgid ""
 msgstr ""
@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2012-02-10 02:32+0100\n"
 "PO-Revision-Date: 2011-01-25 20:28+0100\n"
-"Last-Translator: Christian Boos <cboos@neuf.fr>\n"
+"Last-Translator: Christian Boos <cboos@edgewall.org>\n"
 "Language-Team: fr <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 "MIME-Version: 1.0\n"
