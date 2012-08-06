@@ -15,9 +15,9 @@
 
 define HELP
 
- Please use `make <target>' where <target> is one of: 
+ Please use `make <target>' where <target> is one of:
 
-  clean               delete all compiled files 
+  clean               delete all compiled files
   status              show which Python is used and other infos
 
   [python=...]        variable for selecting Python version
@@ -82,6 +82,7 @@ define HELP
   apidoc|sphinx       generate the Sphinx documentation (all specified formats)
   apidoc-html         generate the Sphinx documentation in HTML format
   apidoc-pdf          generate the Sphinx documentation in PDF format
+  apidoc-check        check for missing symbols in Sphinx documentation
 
   apiref|epydoc       generate the full API reference using Epydoc
 
@@ -89,8 +90,8 @@ define HELP
   [sphinxopts=...]    variable containing extra options for Sphinx
   [sphinxopts-html=...] variable containing extra options used for html format
   [epydocopts=...]    variable containing extra options for Epydoc
-  [dotpath=/.../dot]  path to Graphviz' dot program (not used yet)
-                         
+  [dotpath=/.../dot]  path to Graphviz dot program (not used yet)
+
 endef
 export HELP
 
@@ -131,9 +132,9 @@ status:
 	@echo -n "Python version: "
 	@python -V
 	@echo -n "figleaf: "
-	@-which figleaf 2>/dev/null || echo 
+	@-which figleaf 2>/dev/null || echo
 	@echo -n "coverage: "
-	@-which coverage 2>/dev/null || echo 
+	@-which coverage 2>/dev/null || echo
 	@echo "PYTHONPATH=$$PYTHONPATH"
 	@echo "TRAC_TEST_DB_URI=$$TRAC_TEST_DB_URI"
 	@echo "server-options=$(server-options)"
@@ -199,20 +200,20 @@ update: $(addprefix update-,$(locale))
 else
 update:
 	python setup.py $(foreach catalog,$(catalogs), \
-       	    update_catalog$(_catalog))
+	    update_catalog$(_catalog))
 endif
 
 compile-%:
 	python setup.py $(foreach catalog,$(catalogs), \
 	    compile_catalog$(_catalog) -l $(*)) \
-            generate_messages_js -l $(*)
+	    generate_messages_js -l $(*)
 
 ifdef locale
 compile: $(addprefix compile-,$(locale))
 else
 compile:
 	python setup.py $(foreach catalog,$(catalogs), \
-            compile_catalog$(_catalog))
+	    compile_catalog$(_catalog))
 endif
 
 check: pre-check $(addprefix check-,$(locales))
@@ -314,13 +315,13 @@ test-wiki:
 
 pylint:
 	pylint \
-		--include-ids=y --persistent=n --comment=n --init-import=y \
-		--disable=E0102,E0211,E0213,E0602,E0611,E1002,E1101,E1102,E1103 \
-		--disable=F0401 \
-		--disable=W0102,W0141,W0142,W0201,W0212,W0221,W0223,W0231,W0232, \
-		--disable=W0401,W0511,W0603,W0613,W0614,W0621,W0622,W0703 \
-		--disable=C0103,C0111 \
-		trac tracopt
+	    --include-ids=y --persistent=n --comment=n --init-import=y \
+	    --disable=E0102,E0211,E0213,E0602,E0611,E1002,E1101,E1102,E1103 \
+	    --disable=F0401 \
+	    --disable=W0102,W0141,W0142,W0201,W0212,W0221,W0223,W0231,W0232, \
+	    --disable=W0401,W0511,W0603,W0613,W0614,W0621,W0622,W0703 \
+	    --disable=C0103,C0111 \
+	    trac tracopt
 
 # ----------------------------------------------------------------------------
 #
@@ -361,7 +362,7 @@ htmlcov/index.html:
 
 # ----------------------------------------------------------------------------
 #
-# Figleaf based coverage tasks 
+# Figleaf based coverage tasks
 #
 # (see http://darcs.idyll.org/~t/projects/figleaf/doc/)
 #
@@ -440,7 +441,7 @@ endif
 #
 # ----------------------------------------------------------------------------
 
-.PHONY: apidoc sphinx apiref epydoc clean-doc
+.PHONY: apidoc sphinx apidoc-check apiref epydoc clean-doc
 
 # We also try to honor the "conventional" environment variables used by Sphinx
 sphinxopts ?= $(SPHINXOPTS)
@@ -452,6 +453,9 @@ sphinxformat = html
 
 sphinx: apidoc
 apidoc: $(addprefix apidoc-,$(sphinxformat))
+
+apidoc-check:
+	@python doc/utils/checkapidoc.py
 
 apidoc-%:
 	@$(SPHINXBUILD) -b $(*) \
@@ -467,7 +471,7 @@ apiref: doc-images
 
 doc-images: $(addprefix build/,$(wildcard doc/images/*.png))
 build/doc/images/%: doc/images/% | build/doc/images
-	@cp $(<) $(@) 
+	@cp $(<) $(@)
 build/doc/images:
 	@mkdir -p $(@)
 
@@ -484,7 +488,7 @@ python-home := $(python.$(if $(python),$(python),$($(db).python)))
 
 ifeq "$(OS)" "Windows_NT"
     ifndef python-home
-        # Detect location of current python 
+        # Detect location of current python
         python-exe := $(shell python -c 'import sys; print sys.executable')
         python-home := $(subst \python.exe,,$(python-exe))
     endif
