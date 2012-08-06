@@ -4669,12 +4669,12 @@ msgstr[0] "%(num)d個の移動"
 #: trac/versioncontrol/templates/changeset.html:185
 #: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "added"
-msgstr "を追加"
+msgstr "追加"
 
 #: trac/versioncontrol/templates/changeset.html:186
 #: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "deleted"
-msgstr "を削除"
+msgstr "削除"
 
 #: trac/versioncontrol/templates/changeset.html:187
 #: trac/versioncontrol/templates/revisionlog.txt:12
