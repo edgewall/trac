@@ -1,23 +1,25 @@
-Release Notes for Trac 0.13 Cell Release
-========================================
-Month xx, 201x
+Release Notes for Trac 1.0 'Cell' Release (beta1)
+=================================================
+August 6, 2012
 
 Highlights
 ----------
- * ...
-
+ * Refreshed user interface
+ * Git support
+ * Branching structure displayed in the revision log
+ * Ticket batch modification support
 
 Detailed User Visible Changes
 -----------------------------
 
 A detailed view of the API changes since 0.12.x can be found in
-http://trac.edgewall.org/wiki/TracDev/ReleaseNotes/0.13.
+http://trac.edgewall.org/wiki/TracDev/ReleaseNotes/1.0
 
 Developer-visible changes
 -------------------------
 
 A detailed view of the API changes since 0.12.x can be found in 
-http://trac.edgewall.org/wiki/TracDev/ApiChanges/0.13.
+http://trac.edgewall.org/wiki/TracDev/ApiChanges/1.0
 
 Acknowledgements
 ----------------

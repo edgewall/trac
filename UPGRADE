@@ -5,10 +5,10 @@ A Trac environment sometimes needs to be upgraded before it can be
 used with a new version of Trac. This document describes the steps
 necessary to upgrade an environment.
 
-Note that you should also read the trac/wiki/default-pages/TracUpgrade
-documentation file present in the source distribution.
+**You should also read the trac/wiki/default-pages/TracUpgrade
+documentation file present in the source distribution.**
 
-Note that Environment upgrades are not necessary for minor version
+Note that environment upgrades are not necessary for minor version
 releases unless otherwise noted. For example, there's no need to
 upgrade a Trac environment created with (or upgraded) 0.8.0 when
 installing 0.8.4 (or any other 0.8.x release).
@@ -72,10 +72,20 @@ server (note this is not necessary for CGI).
 The following sections discuss any extra actions that may need to be
 taken to upgrade to specific versions of Trac.
 
-From 0.12.x to 0.13.x
----------------------
+From 0.12.x to 1.0
+------------------
 
 Note that Clearsilver based plugin are now no longer supported.
+
+The content of ``attachments`` folder has been restructured and been
+moved to ``files/attachments``. The migration is handled automatically
+on upgrade, but in some cases you might need to clean-up the old
+``attachments`` directory manually.
+
+The Subversion components have been moved to
+``tracopt/versioncontrol.svn``.  The upgrade will take care of
+re-enabling those components if you haven't disabled the older
+`trac.versioncontrol` ones.
 
 From 0.11.x to 0.12.x
 ---------------------

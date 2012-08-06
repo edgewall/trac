@@ -6,10 +6,11 @@ web-based application. Trac is written in the Python programming
 language and can use SQLite, PostgreSQL or MySQL as database. For HTML
 rendering, Trac uses the Genshi templating system.
 
-Note that you should also read the
-**trac/wiki/default-pages/TracInstall** documentation file present in
-the source distribution.  If you're upgrading an already installed
-environment, please also read trac/wiki/default-pages/TracUpgrade.
+**You should also read the trac/wiki/default-pages/TracInstall
+documentation file present in the source distribution.**
+
+If you're upgrading an already installed Trac environment, please also
+read trac/wiki/default-pages/TracUpgrade.
 
 
 Requirements
@@ -18,7 +19,7 @@ Requirements
 To install Trac, the following software packages must be installed:
 
  * Python, version >= 2.5.
- * setuptools, version >= 0.6
+ * setuptools, version >= 0.6, or the "distribute" package
  * Genshi, version >= 0.6
  * Optionally, Subversion, version >= 1.1.x and the Subversion SWIG
    Python bindings (not PySVN, that's something different).
@@ -37,6 +38,12 @@ bootstrap script::
   $ wget http://peak.telecommunity.com/dist/ez_setup.py
 
   $ python ez_setup.py
+
+or, alternatively, install distribute:
+
+  $ curl -O http://python-distribute.org/distribute_setup.py
+
+  $ python distribute_setup.py
 
 After that, you can do for example: easy_install Genshi
 
@@ -63,9 +70,7 @@ The command::
   $ python ./setup.py install
 
 will byte-compile the python source code and install it in the
-site-packages directory of your python installation. The directories
-cgi-bin, templates, htdocs and wiki-default are all copied to
-``$prefix/share/trac/``.
+site-packages directory of your python installation.
 
 The script will also install the trac-admin command-line tool, used to
 create and maintain project environments. Trac-admin is the command
@@ -125,8 +130,8 @@ Running Trac on a Web Server
 ----------------------------
 
 Trac provides three options for connecting to a "real" web server:
-CGI, FastCGI and mod_python. For decent performance, it is recommended
-that you use either FastCGI or mod_python.
+CGI, FastCGI, mod_python and mod_wsgi. For decent performance, it is
+recommended that you use either FastCGI or mod_wsgi.
 
 Please refer to the TracInstall page for details on these setups. You
 can find it either in the wiki of the Trac project you just created,
