@@ -5,8 +5,9 @@ Trac 0.12.3 contains a few minor fixes and a few minor features:
  - added compatibility with Subversion 1.7 (#10414)
  - make it easier to troubleshoot common startup errors (#10024)
  - jQuery upgraded to 1.4.4 (#10001)
- - improved fine-grained permission handling in the source browser 
+ - improved fine-grained permission handling in the source browser
    (#9976, #10208, #10110)
+ - added compatibility with MySQL 5.5.3 utf8mb4 databases (#9766)
  - ... and dozens more fixes!
 
 Trac 0.12.2 (January 31, 2011)
@@ -30,30 +31,36 @@ http://svn.edgewall.org/repos/trac/tags/trac-0.12.1
 
 This list contains only a few highlights:
  - db: improve concurrency behavior (#9111)
- - fcgi: add an environment variable `TRAC_USE_FLUP` to control the usage of flup vs. bundled _fcgi.py (defaults to 0, i.e. use bundled as before)
+ - fcgi: add an environment variable `TRAC_USE_FLUP` to control the
+   usage of flup vs. bundled _fcgi.py (defaults to 0, i.e. use bundled
+   as before)
  - svn authz: improve compatibility with svn 1.5 format (#8289)
  - milestone: allow to set the time for the due date (#6369, #9582)
  - ticket: fixes for the CC: property (#8597, #9522)
- - notification: improved the formatting of ticket fields in notification e-mails (#9484, #9494) 
+ - notification: improved the formatting of ticket fields in
+   notification e-mails (#9484, #9494)
  - i18n: added a configuration option to set the default language (#8117)
  - several fixes for upgrade (#9400, #9416, #9483, #9556)
 
 Trac 0.12 'Babel' (June 13, 2010)
 http://svn.edgewall.org/repos/trac/tags/trac-0.12
 
-Trac 0.12 is a major release introducing i18n and multiple repository support as the most visible changes.
+Trac 0.12 is a major release introducing i18n and multiple repository
+support as the most visible changes.
 
 The following list contains only a few highlights:
  - The user interface is translated in a dozen of languages, provided the
    [Babel:] package is installed
- - Multiple repositories can be associated to a single Trac environment; the
-   repositories can be of heterogeneous types (svn, hg, git, darcs...)
- - Usability improvements for the Wiki, with a nice side-by-side edit mode with
-   automatic preview
+ - Multiple repositories can be associated to a single Trac
+   environment; the repositories can be of heterogeneous types (svn,
+   hg, git, darcs...)
+ - Usability improvements for the Wiki, with a nice side-by-side edit
+   mode with automatic preview
  - Richer Wiki syntax, with much improved support for tables, partial
    WikiCreole compatibility and numerous smaller improvements
- - Usability improvements for the Ticket module, with automatic preview of
-   comments while you type and possibility to edit or remove them later
+ - Usability improvements for the Ticket module, with automatic
+   preview of comments while you type and possibility to edit or
+   remove them later
  - Improved Custom Queries (time fields, multiple disjoint conditions,
    a.k.a. OR queries)
  - Timeline filtering by user
@@ -63,6 +70,8 @@ Trac 0.12rc1 'Babel' (June 03, 2010)
 http://svn.edgewall.org/repos/trac/tags/trac-0.12rc1
 
   See 0.12.
+
+-----------------------------------------------------------------------------
 
 Trac 0.11.7 (March 10, 2010)
 http://svn.edgewall.org/repos/trac/tags/trac-0.11.7
@@ -78,15 +87,20 @@ Trac 0.11.7rc1 (February 23, 2010)
 http://svn.edgewall.org/repos/trac/tags/trac-0.11.7rc1
 
 Security fixes:
- - Fixed a ticket validation issue that would allow unauthorized users to modify the status and resolution of a ticket (#8884)
+ - Fixed a ticket validation issue that would allow unauthorized users
+   to modify the status and resolution of a ticket (#8884)
 
 Performance improvements:
- - Trac wiki had some trouble handling very long unicode words (#9025) [[comment(intentionally kept vague, we don't want to advertize a DOS, do we?)]]
+ - Trac wiki had some trouble handling very long unicode words (#9025)
+   [[comment(intentionally kept vague, we don't want to advertize a
+   DOS, do we?)]]
  - Full text search was very slow if lots of custom fields were used (#8935)
 
 Bug fixes:
- - Fixed a race condition that could lead to the destruction of the trac.ini file (#8623)
- - Fixed creation of new milestone which could have been a rename if performed after a name clash has been detected (#8816)
+ - Fixed a race condition that could lead to the destruction of the
+   trac.ini file (#8623)
+ - Fixed creation of new milestone which could have been a rename if
+   performed after a name clash has been detected (#8816)
  - Fixed display of value 0 in report cells (#7512)
 
 Trac 0.11.6 (November 28, 2009)
@@ -284,6 +298,8 @@ http://svn.edgewall.org/repos/trac/tags/trac-0.11b1
 
  See 0.11b2.
 
+-----------------------------------------------------------------------------
+
 Trac 0.10.5 (Jun 23, 2008)
 http://svn.edgewall.org/repos/trac/tags/trac-0.10.5
 
@@ -306,11 +322,11 @@ http://svn.edgewall.org/repos/trac/tags/trac-0.10.4
  Trac 0.10.4 is a bug fix release. The following list contains only a 
  few highlights:
 
- * Repository cache improvements. The new syncing scheme is incompatible with
-   the previous one and requires a database schema upgrade in order to prevent
-   the old and the new codebase to be mixed. A repository resync is not needed,
-   though. The 0.10.4 scheme is compatible with the 0.11 one.
-   (#3837, #4043 and #4586)
+ * Repository cache improvements. The new syncing scheme is
+   incompatible with the previous one and requires a database schema
+   upgrade in order to prevent the old and the new codebase to be
+   mixed. A repository resync is not needed, though. The 0.10.4 scheme
+   is compatible with the 0.11 one.  (#3837, #4043 and #4586)
  * Fix a possible freeze under heavy load (#4465)
 
  The complete list of closed tickets can be found here:
@@ -325,8 +341,9 @@ http://svn.edgewall.org/repos/trac/tags/trac-0.10.3.1
    unsafe (user provided) content is available for download. This behaviour
    can be altered using the "render_unsafe_content" option in the 
    "attachment" and "browser" sections of trac.ini.
- * Fixed XSS vulnerability in "download wiki page as text" in combination with 
-   Microsoft IE. Reported by Yoshinori Oota, Business Architects Inc.
+ * Fixed XSS vulnerability in "download wiki page as text" in
+   combination with Microsoft IE. Reported by Yoshinori Oota, Business
+   Architects Inc.
 
 Trac 0.10.3 (Dec 12, 2006)
 http://svn.edgewall.org/repos/trac/tags/trac-0.10.3
@@ -398,13 +415,13 @@ http://svn.edgewall.org/repos/trac/tags/trac-0.10b1
 
  See 0.10
 
-----
+-----------------------------------------------------------------------------
 
 Trac 0.9.6  (Jul 6, 2006)
 http://svn.edgewall.org/repos/trac/tags/trac-0.9.6
 
- * Fixed reStructuredText breach of privacy and denial of service vulnerability
-   found by Felix Wiemann.
+ * Fixed reStructuredText breach of privacy and denial of service
+   vulnerability found by Felix Wiemann.
  * trac-post-commit-hook fixes.
  * Fixed bugs: #2894, #3058, #3209 #3325.
 
@@ -511,7 +528,7 @@ http://svn.edgewall.org/repos/trac/tags/trac-0.9b1
  The complete list of closed tickets can be found here:
    http://trac.edgewall.org/query?status=closed&milestone=0.9
 
-----
+-----------------------------------------------------------------------------
 
 Trac 0.8.3  (Jun 15, 2005)
 http://svn.edgewall.org/repos/trac/tags/trac-0.8.3
@@ -588,7 +605,7 @@ http://svn.edgewall.org/repos/trac/tags/trac-0.8
    #885, #888, #889, #892, #901, #903, #907, #912, 
    #916, #923, #929, #931, #932, #935
 
-----
+-----------------------------------------------------------------------------
 
 Trac 0.7.1 'Argento'  (Jun, 2004)
 http://svn.edgewall.org/repos/trac/tags/trac-0.7.1
@@ -638,7 +655,7 @@ http://svn.edgewall.org/repos/trac/tags/trac-0.7
    #371, #372, #376, #377, #378, #381, #384, #385, #386, #387, #388,
    #392, #394, #396, #397, #398, #399, #402, #403, #410
 
-----
+-----------------------------------------------------------------------------
 
 Trac 0.6.1 '245 Trioxin' (April 12, 2004)
 http://svn.edgewall.org/repos/trac/tags/trac-0.6.1
@@ -674,14 +691,15 @@ http://svn.edgewall.org/repos/trac/tags/trac-0.6
    #135, #136, #138, #142, #145, #147, #151, #155, #170, #173,
    #174, #175, #177, #179
 
-----
+-----------------------------------------------------------------------------
 
 Trac 0.5.2 'Nameless' (March 2, 2004)
 http://svn.edgewall.org/repos/trac/tags/trac-0.5.2
 
  * Performance improvements.
  * Better unicode support in commit-messages.
- * TRAC_ADMIN is now a real "meta-permission" containing all other permissions.
+ * TRAC_ADMIN is now a real "meta-permission" containing all other
+   permissions.
  * Wiki-links of the svn:/path format can now also link to directories.
  * Handle subversion changesets without any "author" specified.
  * "view" checkboxes in the timeline view now reflect the current state.
