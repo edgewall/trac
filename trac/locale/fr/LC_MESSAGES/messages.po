@@ -2523,7 +2523,7 @@ msgstr "Fichiers joints"
 #: trac/templates/list_of_attachments.html:38
 #: trac/templates/list_of_attachments.html:54
 msgid "Download all attachments as:"
-msgstr "Télécharger toutes les fichiers joints "
+msgstr "Télécharger tous les fichiers joints :"
 
 #: trac/templates/list_of_attachments.html:39
 #: trac/templates/list_of_attachments.html:55
