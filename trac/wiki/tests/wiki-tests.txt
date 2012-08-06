@@ -408,8 +408,8 @@ http://example.com/img.png?foo=bar
 </p>
 ------------------------------
 ==============================  mailto: links and automatic e-mail detection
-Author: mailto:cboos@neuf.fr, 
-i.e. [mailto:cboos@neuf.fr me]
+Author: mailto:cboos@edgewall.org, 
+i.e. [mailto:cboos@edgewall.org me]
 
 joe'bar@site.info,
 trac+devel@another-site.fr,
@@ -418,8 +418,8 @@ T_r+a-c1.23@yet_another-site.edu.au
 someone@louvre.museum-
 ------------------------------
 <p>
-Author: <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon"></span>mailto:cboos@neuf.fr</a>, 
-i.e. <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon"></span>me</a>
+Author: <a class="mail-link" href="mailto:cboos@edgewall.org"><span class="icon"></span>mailto:cboos@edgewall.org</a>, 
+i.e. <a class="mail-link" href="mailto:cboos@edgewall.org"><span class="icon"></span>me</a>
 </p>
 <p>
 <a class="mail-link" href="mailto:joe'bar@site.info"><span class="icon"></span>joe'bar@site.info</a>,
@@ -499,7 +499,7 @@ unsafe://scheme is not rendered
 
 [[link:pl/de|%de]]
 
-i.e. [[mailto:cboos@neuf.fr|me]]
+i.e. [[mailto:cboos@edgewall.org|me]]
 
 [[th:]]
 [[th:|Trac Hacks]]
@@ -526,7 +526,7 @@ i.e. [[mailto:cboos@neuf.fr|me]]
 <a class="text resolver" href="/stuff/pl/de">%de</a>
 </p>
 <p>
-i.e. <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon"></span>me</a>
+i.e. <a class="mail-link" href="mailto:cboos@edgewall.org"><span class="icon"></span>me</a>
 </p>
 <p>
 <a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon"></span>th</a>

@@ -3,7 +3,7 @@
 # Copyright (C) 2006-2009 Edgewall Software
 # Copyright (C) 2006 Alec Thomas
 # Copyright (C) 2007 Eli Carter
-# Copyright (C) 2007 Christian Boos <cboos@neuf.fr>
+# Copyright (C) 2007 Christian Boos <cboos@edgewall.org>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which

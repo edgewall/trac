@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2006-2009 Edgewall Software
 # Copyright (C) 2006-2007 Alec Thomas <alec@swapoff.org>
-# Copyright (C) 2007 Christian Boos <cboos@neuf.fr>
+# Copyright (C) 2007 Christian Boos <cboos@edgewall.org>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -13,7 +13,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 #
-# Author: Christian Boos <cboos@neuf.fr>
+# Author: Christian Boos <cboos@edgewall.org>
 #         Alec Thomas <alec@swapoff.org>
 
 from trac.core import *
