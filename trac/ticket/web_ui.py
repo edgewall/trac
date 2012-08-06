@@ -247,10 +247,10 @@ class TicketModule(Component):
         ts_start = to_utimestamp(start)
         ts_stop = to_utimestamp(stop)
 
-        status_map = {'new': ('newticket', N_("created")),
-                      'reopened': ('reopenedticket', N_("reopened")),
-                      'closed': ('closedticket', N_("closed")),
-                      'edit': ('editedticket', N_("updated"))}
+        status_map = {'new': ('newticket', 'created'),
+                      'reopened': ('reopenedticket', 'reopened'),
+                      'closed': ('closedticket', 'closed'),
+                      'edit': ('editedticket', 'updated')}
 
         ticket_realm = Resource('ticket')
 
@@ -388,9 +388,15 @@ class TicketModule(Component):
         elif field == 'title':
             title = TicketSystem(self.env).format_summary(summary, status,
                                                           resolution, type)
-            return tag_("Ticket %(ticketref)s (%(summary)s) %(verb)s",
+            message = {
+                'created': N_("Ticket %(ticketref)s (%(summary)s) created"),
+                'reopened': N_("Ticket %(ticketref)s (%(summary)s) reopened"),
+                'closed': N_("Ticket %(ticketref)s (%(summary)s) closed"),
+                'updated': N_("Ticket %(ticketref)s (%(summary)s) updated"),
+            }[verb]
+            return tag_(message,
                         ticketref=tag.em('#', ticket.id, title=title),
-                        summary=shorten_line(summary), verb=gettext(verb))
+                        summary=shorten_line(summary))
         elif field == 'description':
             descr = message = ''
             if status == 'new':
