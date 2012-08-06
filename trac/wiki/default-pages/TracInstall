@@ -17,7 +17,7 @@ To install Trac, the following software packages must be installed:
 
  * [http://www.python.org/ Python], version >= 2.5 and < 3.0
    (note that we dropped the support for Python 2.4 in this release)
- * [http://peak.telecommunity.com/DevCenter/setuptools setuptools], version >= 0.6
+ * [http://peak.telecommunity.com/DevCenter/setuptools setuptools], version >= 0.6, or better yet, [http://pypi.python.org/pypi/distribute distribute]
  * [http://genshi.edgewall.org/wiki/Download Genshi], version >= 0.6
 
 You also need a database system and the corresponding python bindings.
@@ -141,7 +141,7 @@ A few examples:
 'pip' is an easy_install replacement that is very useful to quickly install python packages.
 To get a trac installation up and running in less than 5 minutes:
 
-Assuming you want to have your entire pip installation in /opt/user/trac
+Assuming you want to have your entire pip installation in `/opt/user/trac`
 
  - 
 {{{
@@ -155,9 +155,9 @@ pip -E /opt/user/trac install trac mysql-python
 
 Make sure your OS specific headers are available for pip to automatically build PostgreSQL (libpq-dev) or MySQL (libmysqlclient-dev) bindings.
 
-pip will automatically resolve all dependencies (like Genshi, pygments, etc.) and download the latest packages on pypi.python.org and create a self contained installation in /opt/user/trac 
+pip will automatically resolve all dependencies (like Genshi, pygments, etc.) and download the latest packages on pypi.python.org and create a self contained installation in `/opt/user/trac`.
 
-All commands (tracd, trac-admin) are available in /opt/user/trac/bin . This can also be leveraged for mod_python (using PythonHandler directive) and mod_wsgi (using WSGIDaemonProcess directive)
+All commands (`tracd`, `trac-admin`) are available in `/opt/user/trac/bin`. This can also be leveraged for `mod_python` (using `PythonHandler` directive) and `mod_wsgi` (using `WSGIDaemonProcess` directive)
 
 Additionally, you can install several trac plugins (listed [http://pypi.python.org/pypi?:action=search&term=trac&submit=search here]) through pip.
 
