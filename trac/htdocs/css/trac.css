@@ -101,15 +101,11 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
  box-shadow: .1em .1em .6em 0 #999;
  text-shadow: .1em .1em #fcfcfc;
 }
-input[type=button]:active,
-input[type=submit]:active,
+input[type=button]:active, input[type=submit]:active,
 input[type=reset]:active {
- margin: 3px 1px 1px 3px; /* see input margin */
-}
-.buttons input[type=button]:active,
-.buttons input[type=submit]:active,
-.buttons input[type=reset]:active {
- margin: 1.1em .4em 0 .1em; /* see .buttons input margin */
+ position: relative;
+ top: .1em;
+ left: .1em;
 }
 input[type=button][disabled], input[type=submit][disabled],
 input[type=reset][disabled] {
@@ -171,10 +167,6 @@ label.disabled { color: #d7d7d7 }
  color: #333;
  text-shadow: .1em .1em #fcfcfc;
  box-shadow: .1em .1em .6em 0 #999;
-}
-.inlinebuttons input[type=button]:active,
-.inlinebuttons input[type=submit]:active {
- margin: .1em 0 0 .2em;
 }
 input[type=button].trac-delete,
 input[type=submit].trac-delete {
