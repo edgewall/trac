@@ -29,7 +29,7 @@
 .report div.reports h2 {
  /* taken from .wikipage h2 */
  border-bottom: 1px solid #ddd;
- box-shadow: .1em .2em .8em 0 #eee;
+ box-shadow: .1em .4em .7em 0 #f2f2f2;
  padding: 0.2em .3em .1em;
 }
 .report div.reports h3 {
