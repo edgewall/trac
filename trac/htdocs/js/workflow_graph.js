@@ -172,10 +172,9 @@
   };
 
   function hexColor(r, g, b) {
-    r = (r < 16 ? '0' : '') + Math.floor(r).toString(16); 
-    g = (g < 16 ? '0' : '') + Math.floor(g).toString(16); 
-    b = (b < 16 ? '0' : '') + Math.floor(b).toString(16); 
-    return String.concat('#', r, g, b); 
+    return '#' + (r < 16 ? '0' : '') + Math.floor(r).toString(16) +
+                 (g < 16 ? '0' : '') + Math.floor(g).toString(16) +
+                 (b < 16 ? '0' : '') + Math.floor(b).toString(16);
   }
 
   function saturatedColor(r, g, b) {
