@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 0.12\n"
+"Project-Id-Version: Trac 1.0\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2012-04-03 01:25+0200\n"
-"PO-Revision-Date: 2012-04-03 00:56+0100\n"
+"POT-Creation-Date: 2012-08-06 17:09+0200\n"
+"PO-Revision-Date: 2012-08-15 13:19+0100\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: sv_SE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -63,7 +63,7 @@ msgstr "Kollapsa katalog"
 msgid "Show %(title)s"
 msgstr "Visa %(title)s"
 
-#: trac/htdocs/js/folding.js:77
+#: trac/htdocs/js/folding.js:78
 #, python-format
 msgid "%(title)s (click to hide column)"
 msgstr "%(title)s (klicka för att dölja kolumn)"
@@ -132,37 +132,46 @@ msgstr "Tidszon:"
 msgid "Now"
 msgstr "Nu"
 
-#: trac/htdocs/js/query.js:131
+#: trac/htdocs/js/query.js:132
 msgid "A filter already exists for that property"
 msgstr "Ett filter finns redan för denna egenskap"
 
-#: trac/htdocs/js/query.js:158
+#: trac/htdocs/js/query.js:159
 msgid "or"
 msgstr "eller"
 
-#: trac/htdocs/js/query.js:177 trac/htdocs/js/query.js:299
+#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:310
 msgid "yes"
 msgstr "ja"
 
-#: trac/htdocs/js/query.js:180 trac/htdocs/js/query.js:302
+#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:313
 msgid "no"
 msgstr "nej"
 
-#: trac/htdocs/js/query.js:183
+#: trac/htdocs/js/query.js:188
 msgid "between"
 msgstr "mellan"
 
-#: trac/htdocs/js/query.js:185
+#: trac/htdocs/js/query.js:190
 msgid "and"
 msgstr "och"
 
-#: trac/htdocs/js/query.js:324
+#: trac/htdocs/js/query.js:337
 msgid " remove:"
 msgstr "ta bort:"
 
-#: trac/htdocs/js/query.js:334
+#: trac/htdocs/js/query.js:347
 msgid " add:"
 msgstr "lägg till:"
+
+#: trac/htdocs/js/query.js:376
+#, python-format
+msgid "Select ticket %(id)s for modification"
+msgstr "Välj ärende %(id)s för modifiering"
+
+#: trac/htdocs/js/query.js:387
+msgid "Toggle selection of all tickets shown in this group"
+msgstr "Växla alla valda ärenden som visas i denna grupp"
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
