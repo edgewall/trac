@@ -272,7 +272,7 @@ class Query(object):
         """Get the number of matching tickets for the present query.
 
         :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 0.14
+        in version 1.1.1
         """
         sql, args = self.get_sql(req, cached_ids, authname, tzinfo, locale)
         return self._count(sql, args)
@@ -289,7 +289,7 @@ class Query(object):
         """Retrieve the list of matching tickets.
 
         :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 0.14
+        in version 1.1.1
         """
         if req is not None:
             href = req.href

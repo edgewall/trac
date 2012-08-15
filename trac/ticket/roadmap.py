@@ -297,7 +297,7 @@ def get_tickets_for_milestone(env, db=None, milestone=None, field='component'):
 
     .. versionchanged :: 1.0
        the `db` parameter is no longer needed and will be removed in
-       version 0.14
+       version 1.1.1
     """
     with env.db_query as db:
         fields = TicketSystem(env).get_ticket_fields()

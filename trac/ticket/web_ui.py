@@ -1769,7 +1769,7 @@ class TicketModule(Component):
         in a `dict` object.
 
         :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 0.14
+        in version 1.1.1
         """
         field_labels = TicketSystem(self.env).get_ticket_field_labels()
         changelog = ticket.get_changelog(when=when)

@@ -213,7 +213,7 @@ class Attachment(object):
 
         .. versionchanged :: 1.0
            the `db` parameter is no longer needed
-           (will be removed in version 0.14)
+           (will be removed in version 1.1.1)
         """
         assert self.filename, "Cannot delete non-existent attachment"
 
@@ -292,7 +292,7 @@ class Attachment(object):
 
         .. versionchanged :: 1.0
            the `db` parameter is no longer needed
-           (will be removed in version 0.14)
+           (will be removed in version 1.1.1)
         """
         self.size = int(size) if size else 0
         self.filename = None
@@ -340,7 +340,7 @@ class Attachment(object):
 
         .. versionchanged :: 1.0
            the `db` parameter is no longer needed 
-           (will be removed in version 0.14)
+           (will be removed in version 1.1.1)
         """
         for row in env.db_query("""
                 SELECT filename, description, size, time, author, ipnr
@@ -356,7 +356,7 @@ class Attachment(object):
         
         .. versionchanged :: 1.0
            the `db` parameter is no longer needed
-           (will be removed in version 0.14)
+           (will be removed in version 1.1.1)
         """
         attachment_dir = None
         with env.db_transaction as db:

@@ -784,7 +784,7 @@ class ReportModule(Component):
         """Extract $XYZ-style variables from the `sql` query.
 
         :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 0.14
+        in version 1.1.1
         """
         names = set()
         values = []

@@ -170,7 +170,7 @@ def cached(fn_or_attr=None):
         via the normal `~trac.env.Environment.db_query` or
         `~trac.env.Environment.db_transaction`, so this is no longer
         needed, though methods supporting that argument are still
-        supported (but will be removed in version 0.14).
+        supported (but will be removed in version 1.1.1).
     """
     if hasattr(fn_or_attr, '__call__'):
         return CachedSingletonProperty(fn_or_attr)
