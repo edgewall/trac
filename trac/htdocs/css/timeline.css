@@ -68,19 +68,22 @@ dd.changeset ul { padding-left: 15px; }
 
 /* Styles for the 'changeset_show_files' option */
 dd.changeset .changes { color: #aaa; font-size: 90%; }
-dd.changeset ul.changes { 
+dd.changeset ul.changes {
+ margin-left: 0;
  padding-left: 0;
  list-style-type: none;
 }
 dd.changeset .changes li div {
  border: 1px solid #999;
- float: left;
- margin: .5em .5em 0 0;
- overflow: hidden;
- width: .8em; height: .8em;
+ display: inline-block;
+ *display: inline;
+ *zoom: 1;
+ margin: 0 .5em 0 0;
+ width: .8em;
+ height: .8em;
+ vertical-align: middle;
 }
-dd.changeset .changes li span { 
- float: left;
+dd.changeset .changes li span {
  margin-right: .8em;
 }
 dd.changeset .changes .add     { background: #bfb }
