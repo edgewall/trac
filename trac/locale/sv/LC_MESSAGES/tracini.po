@@ -1,7 +1,7 @@
 # Swedish translations for Trac.
 # Copyright (C) 2011 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+# Mikael Relbe (mrelbe) <mikael@relbe.se>, 2012.
 #
 msgid ""
 msgstr ""
