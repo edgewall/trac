@@ -1,21 +1,21 @@
 # English (United Kingdom) translations for Trac.
-# Copyright (C) 2011 Edgewall Software
+# Copyright (C) 2012 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+# Mikael Relbe (mrelbe) <mikael@relbe.se>, 2012
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 0.13\n"
+"Project-Id-Version: Trac 1.0\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2011-02-23 13:05+0900\n"
-"PO-Revision-Date: 2012-02-25 10:30+0100\n"
+"POT-Creation-Date: 2012-08-06 17:09+0200\n"
+"PO-Revision-Date: 2012-08-15 12:05+0100\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
-"Language-Team: en_GB <LL@li.org>\n"
+"Language-Team: en_GB <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.5\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: tracopt/mimeview/enscript.py:105
 msgid "Path to the Enscript executable."
@@ -69,7 +69,7 @@ msgstr ""
 "quality ratio used by the SilverCity render, which is 3\n"
 "(''since 0.10'')."
 
-#: tracopt/perm/authz_policy.py:133
+#: tracopt/perm/authz_policy.py:132
 msgid "Location of authz policy configuration file."
 msgstr "Location of authz policy configuration file."
 
@@ -119,7 +119,196 @@ msgstr ""
 msgid "Send ticket change notification when updating a ticket."
 msgstr "Send ticket change notification when updating a ticket."
 
-#: trac/attachment.py:386
+#: tracopt/versioncontrol/git/git_fs.py:169
+msgid "Enable persistent caching of commit tree."
+msgstr "Enable persistent caching of commit tree."
+
+#: tracopt/versioncontrol/git/git_fs.py:172
+msgid "Wrap `GitRepository` in `CachedRepository`."
+msgstr "Wrap `GitRepository` in `CachedRepository`."
+
+#: tracopt/versioncontrol/git/git_fs.py:175
+msgid ""
+"The length at which a sha1 should be abbreviated to (must\n"
+"be >= 4 and <= 40)."
+msgstr ""
+"The length at which a sha1 should be abbreviated to (must\n"
+"be >= 4 and <= 40)."
+
+#: tracopt/versioncontrol/git/git_fs.py:180
+msgid ""
+"The minimum length of an hex-string for which\n"
+"auto-detection as sha1 is performed (must be >= 4 and <= 40)."
+msgstr ""
+"The minimum length of an hex-string for which\n"
+"auto-detection as sha1 is performed (must be >= 4 and <= 40)."
+
+#: tracopt/versioncontrol/git/git_fs.py:185
+msgid ""
+"Enable reverse mapping of git email addresses to trac user ids\n"
+"(costly if you have many users)."
+msgstr ""
+"Enable reverse mapping of git email addresses to trac user ids\n"
+"(costly if you have many users)."
+
+#: tracopt/versioncontrol/git/git_fs.py:189
+msgid ""
+"Use git-committer id instead of git-author id for the\n"
+"changeset ''Author'' field."
+msgstr ""
+"Use git-committer id instead of git-author id for the\n"
+"changeset ''Author'' field."
+
+#: tracopt/versioncontrol/git/git_fs.py:194
+msgid ""
+"Use git-committer timestamp instead of git-author timestamp\n"
+"for the changeset ''Timestamp'' field."
+msgstr ""
+"Use git-committer timestamp instead of git-author timestamp\n"
+"for the changeset ''Timestamp'' field."
+
+#: tracopt/versioncontrol/git/git_fs.py:199
+msgid "Define charset encoding of paths within git repositories."
+msgstr "Define charset encoding of paths within git repositories."
+
+#: tracopt/versioncontrol/git/git_fs.py:202
+msgid ""
+"Path to git executable (relative to the Trac configuration folder,\n"
+"so better use an absolute path here)."
+msgstr ""
+"Path to git executable (relative to the Trac configuration folder,\n"
+"so better use an absolute path here)."
+
+#: tracopt/versioncontrol/git/git_fs.py:746
+msgid "Path to a gitweb-formatted projects.list"
+msgstr "Path to a gitweb-formatted projects.list"
+
+#: tracopt/versioncontrol/git/git_fs.py:749
+msgid "Path to the base of your git projects"
+msgstr "Path to the base of your git projects"
+
+#: tracopt/versioncontrol/git/git_fs.py:752
+#, python-format
+msgid ""
+"Template for project URLs. %s will be replaced with the repo\n"
+"name"
+msgstr ""
+"Template for project URLs. %s will be replaced with the repo\n"
+"name"
+
+#: tracopt/versioncontrol/svn/svn_fs.py:253
+msgid ""
+"Comma separated list of paths categorized as branches.\n"
+"If a path ends with '*', then all the directory entries found below \n"
+"that path will be included. \n"
+"Example: `/trunk, /branches/*, /projectAlpha/trunk, /sandbox/*`"
+msgstr ""
+"Comma separated list of paths categorised as branches.\n"
+"If a path ends with '*', then all the directory entries found below \n"
+"that path will be included. \n"
+"Example: `/trunk, /branches/*, /projectAlpha/trunk, /sandbox/*`"
+
+#: tracopt/versioncontrol/svn/svn_fs.py:260
+msgid ""
+"Comma separated list of paths categorized as tags.\n"
+"\n"
+"If a path ends with '*', then all the directory entries found below\n"
+"that path will be included.\n"
+"Example: `/tags/*, /projectAlpha/tags/A-1.0, /projectAlpha/tags/A-v1.1`"
+msgstr ""
+"Comma separated list of paths categorised as tags.\n"
+"\n"
+"If a path ends with '*', then all the directory entries found below\n"
+"that path will be included.\n"
+"Example: `/tags/*, /projectAlpha/tags/A-1.0, /projectAlpha/tags/A-v1.1`"
+
+#: tracopt/versioncontrol/svn/svn_prop.py:37
+msgid ""
+"The TracBrowser for Subversion can interpret the `svn:externals`\n"
+"property of folders. By default, it only turns the URLs into links as\n"
+"Trac can't browse remote repositories.\n"
+"\n"
+"However, if you have another Trac instance (or an other repository\n"
+"browser like [http://www.viewvc.org/ ViewVC]) configured to browse the\n"
+"target repository, then you can instruct Trac which other repository\n"
+"browser to use for which external URL. This mapping is done in the\n"
+"`[svn:externals]` section of the TracIni.\n"
+"\n"
+"Example:\n"
+"{{{\n"
+"[svn:externals]\n"
+"1 = svn://server/repos1                       "
+"http://trac/proj1/browser/$path?rev=$rev\n"
+"2 = svn://server/repos2                       "
+"http://trac/proj2/browser/$path?rev=$rev\n"
+"3 = http://theirserver.org/svn/eng-soft       "
+"http://ourserver/viewvc/svn/$path/?pathrev=25914\n"
+"4 = svn://anotherserver.com/tools_repository  "
+"http://ourserver/tracs/tools/browser/$path?rev=$rev\n"
+"}}}\n"
+"With the above, the\n"
+"`svn://anotherserver.com/tools_repository/tags/1.1/tools` external will\n"
+"be mapped to `http://ourserver/tracs/tools/browser/tags/1.1/tools?rev=`\n"
+"(and `rev` will be set to the appropriate revision number if the\n"
+"external additionally specifies a revision, see the\n"
+"[http://svnbook.red-bean.com/en/1.4/svn.advanced.externals.html SVN Book "
+"on externals]\n"
+"for more details).\n"
+"\n"
+"Note that the number used as a key in the above section is purely used\n"
+"as a place holder, as the URLs themselves can't be used as a key due to\n"
+"various limitations in the configuration file parser.\n"
+"\n"
+"Finally, the relative URLs introduced in\n"
+"[http://subversion.apache.org/docs/release-notes/1.5.html#externals "
+"Subversion 1.5]\n"
+"are not yet supported.\n"
+"\n"
+"(''since 0.11'')"
+msgstr ""
+"The TracBrowser for Subversion can interpret the `svn:externals`\n"
+"property of folders. By default, it only turns the URLs into links as\n"
+"Trac can't browse remote repositories.\n"
+"\n"
+"However, if you have another Trac instance (or an other repository\n"
+"browser like [http://www.viewvc.org/ ViewVC]) configured to browse the\n"
+"target repository, then you can instruct Trac which other repository\n"
+"browser to use for which external URL. This mapping is done in the\n"
+"`[svn:externals]` section of the TracIni.\n"
+"\n"
+"Example:\n"
+"{{{\n"
+"[svn:externals]\n"
+"1 = svn://server/repos1                       "
+"http://trac/proj1/browser/$path?rev=$rev\n"
+"2 = svn://server/repos2                       "
+"http://trac/proj2/browser/$path?rev=$rev\n"
+"3 = http://theirserver.org/svn/eng-soft       "
+"http://ourserver/viewvc/svn/$path/?pathrev=25914\n"
+"4 = svn://anotherserver.com/tools_repository  "
+"http://ourserver/tracs/tools/browser/$path?rev=$rev\n"
+"}}}\n"
+"With the above, the\n"
+"`svn://anotherserver.com/tools_repository/tags/1.1/tools` external will\n"
+"be mapped to `http://ourserver/tracs/tools/browser/tags/1.1/tools?rev=`\n"
+"(and `rev` will be set to the appropriate revision number if the\n"
+"external additionally specifies a revision, see the\n"
+"[http://svnbook.red-bean.com/en/1.4/svn.advanced.externals.html SVN Book "
+"on externals]\n"
+"for more details).\n"
+"\n"
+"Note that the number used as a key in the above section is purely used\n"
+"as a place holder, as the URLs themselves can't be used as a key due to\n"
+"various limitations in the configuration file parser.\n"
+"\n"
+"Finally, the relative URLs introduced in\n"
+"[http://subversion.apache.org/docs/release-notes/1.5.html#externals "
+"Subversion 1.5]\n"
+"are not yet supported.\n"
+"\n"
+"(''since 0.11'')"
+
+#: trac/attachment.py:429
 msgid ""
 "Maximum allowed file size (in bytes) for ticket and wiki \n"
 "attachments."
@@ -127,17 +316,17 @@ msgstr ""
 "Maximum allowed file size (in bytes) for ticket and wiki \n"
 "attachments."
 
-#: trac/attachment.py:390
+#: trac/attachment.py:433
 msgid ""
 "Maximum allowed total size (in bytes) for an attachment list to be\n"
 "downloadable as a `.zip`. Set this to -1 to disable download as `.zip`.\n"
-"(''since 0.13'')"
+"(''since 1.0'')"
 msgstr ""
 "Maximum allowed total size (in bytes) for an attachment list to be\n"
 "downloadable as a `.zip`. Set this to -1 to disable download as `.zip`.\n"
-"(''since 0.13'')"
+"(''since 1.0'')"
 
-#: trac/attachment.py:395
+#: trac/attachment.py:438
 msgid ""
 "Whether attachments should be rendered in the browser, or\n"
 "only made downloadable.\n"
@@ -159,7 +348,7 @@ msgstr ""
 "For public sites where anonymous users can create attachments it is\n"
 "recommended to leave this option disabled (which is the default)."
 
-#: trac/env.py:105
+#: trac/env.py:120
 msgid ""
 "This section is used to enable or disable components\n"
 "provided by plugins, as well as by Trac itself. The component\n"
@@ -227,7 +416,7 @@ msgstr ""
 "\n"
 "See also: TracPlugins"
 
-#: trac/env.py:140
+#: trac/env.py:155
 msgid ""
 "Path to the //shared plugins directory//.\n"
 "\n"
@@ -245,7 +434,7 @@ msgstr ""
 "\n"
 "(''since 0.11'')"
 
-#: trac/env.py:149
+#: trac/env.py:164
 msgid ""
 "Reference URL for the Trac deployment.\n"
 "\n"
@@ -261,7 +450,7 @@ msgstr ""
 "context, like for example when inserting URLs pointing to Trac\n"
 "resources in notification e-mails."
 
-#: trac/env.py:157
+#: trac/env.py:172
 msgid ""
 "Optionally use `[trac] base_url` for redirects.\n"
 "\n"
@@ -283,7 +472,7 @@ msgstr ""
 "environment will only be usable when accessible from that URL,\n"
 "as redirects are frequently used. ''(since 0.10.5)''"
 
-#: trac/env.py:169
+#: trac/env.py:184
 msgid ""
 "Restrict cookies to HTTPS connections.\n"
 "\n"
@@ -299,15 +488,15 @@ msgstr ""
 "your Trac instance is only accessible through HTTPS. (''since\n"
 "0.11.2'')"
 
-#: trac/env.py:177
+#: trac/env.py:192
 msgid "Name of the project."
 msgstr "Name of the project."
 
-#: trac/env.py:180
+#: trac/env.py:195
 msgid "Short description of the project."
 msgstr "Short description of the project."
 
-#: trac/env.py:183
+#: trac/env.py:198
 msgid ""
 "URL of the main project web site, usually the website in\n"
 "which the `base_url` resides. This is used in notification\n"
@@ -317,11 +506,11 @@ msgstr ""
 "which the `base_url` resides. This is used in notification\n"
 "e-mails."
 
-#: trac/env.py:188
+#: trac/env.py:203
 msgid "E-Mail address of the project's administrator."
 msgstr "E-Mail address of the project's administrator."
 
-#: trac/env.py:191
+#: trac/env.py:206
 msgid ""
 "Base URL of a Trac instance where errors in this Trac\n"
 "should be reported.\n"
@@ -337,45 +526,45 @@ msgstr ""
 "this Trac instance. An empty value will disable the reporting\n"
 "buttons.  (''since 0.11.3'')"
 
-#: trac/env.py:200
+#: trac/env.py:215
 msgid "Page footer text (right-aligned)."
 msgstr "Page footer text (right-aligned)."
 
-#: trac/env.py:205
+#: trac/env.py:220
 msgid "URL of the icon of the project."
 msgstr "URL of the icon of the project."
 
-#: trac/env.py:208
-msgid ""
-"Logging facility to use.\n"
-"\n"
-"Should be one of (`none`, `file`, `stderr`, `syslog`, `winlog`)."
-msgstr ""
-"Logging facility to use.\n"
-"\n"
-"Should be one of (`none`, `file`, `stderr`, `syslog`, `winlog`)."
-
-#: trac/env.py:213
-msgid ""
-"If `log_type` is `file`, this should be a path to the\n"
-"log-file.  Relative paths are resolved relative to the `log`\n"
-"directory of the environment."
-msgstr ""
-"If `log_type` is `file`, this should be a path to the\n"
-"log-file.  Relative paths are resolved relative to the `log`\n"
-"directory of the environment."
-
-#: trac/env.py:218
-msgid ""
-"Level of verbosity in log.\n"
-"\n"
-"Should be one of (`CRITICAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`)."
-msgstr ""
-"Level of verbosity in log.\n"
-"\n"
-"Should be one of (`CRITICAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`)."
-
 #: trac/env.py:223
+msgid ""
+"Logging facility to use.\n"
+"\n"
+"Should be one of (`none`, `file`, `stderr`, `syslog`, `winlog`)."
+msgstr ""
+"Logging facility to use.\n"
+"\n"
+"Should be one of (`none`, `file`, `stderr`, `syslog`, `winlog`)."
+
+#: trac/env.py:228
+msgid ""
+"If `log_type` is `file`, this should be a path to the\n"
+"log-file.  Relative paths are resolved relative to the `log`\n"
+"directory of the environment."
+msgstr ""
+"If `log_type` is `file`, this should be a path to the\n"
+"log-file.  Relative paths are resolved relative to the `log`\n"
+"directory of the environment."
+
+#: trac/env.py:233
+msgid ""
+"Level of verbosity in log.\n"
+"\n"
+"Should be one of (`CRITICAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`)."
+msgstr ""
+"Level of verbosity in log.\n"
+"\n"
+"Should be one of (`CRITICAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`)."
+
+#: trac/env.py:238
 msgid ""
 "Custom logging format.\n"
 "\n"
@@ -450,10 +639,10 @@ msgstr "Sender name to use in notification emails."
 #: trac/notification.py:67
 msgid ""
 "Use the action author as the sender of notification emails.\n"
-"(''since 0.13'')"
+"(''since 1.0'')"
 msgstr ""
 "Use the action author as the sender of notification emails.\n"
-"(''since 0.13'')"
+"(''since 1.0'')"
 
 #: trac/notification.py:71
 msgid "Reply-To address to use in notification emails."
@@ -585,7 +774,7 @@ msgstr ""
 "The sendmail program must accept the `-i` and `-f` options.\n"
 " (''since 0.12'')"
 
-#: trac/perm.py:300
+#: trac/perm.py:312
 msgid ""
 "Name of the component implementing `IPermissionStore`, which is used\n"
 "for managing user and group permissions."
@@ -593,7 +782,7 @@ msgstr ""
 "Name of the component implementing `IPermissionStore`, which is used\n"
 "for managing user and group permissions."
 
-#: trac/perm.py:305
+#: trac/perm.py:317
 msgid ""
 "List of components implementing `IPermissionPolicy`, in the order in\n"
 "which they will be applied. These components manage fine-grained access\n"
@@ -891,6 +1080,18 @@ msgstr ""
 
 #: trac/ticket/notification.py:59
 msgid ""
+"Like ticket_subject_template but for batch modifications.\n"
+"\n"
+"By default, the template is `$prefix Batch modify: $tickets_descr`.\n"
+"''(since 1.0)''"
+msgstr ""
+"Like ticket_subject_template but for batch modifications.\n"
+"\n"
+"By default, the template is `$prefix Batch modify: $tickets_descr`.\n"
+"''(since 1.0)''"
+
+#: trac/ticket/notification.py:66
+msgid ""
 "Which width of ambiguous characters (e.g. 'single' or\n"
 "'double') should be used in the table of notification mail.\n"
 "\n"
@@ -943,7 +1144,7 @@ msgstr ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default (''since 0.11'')"
 
-#: trac/ticket/report.py:59
+#: trac/ticket/report.py:116
 msgid ""
 "Number of tickets displayed per page in ticket reports,\n"
 "by default (''since 0.11'')"
@@ -951,7 +1152,7 @@ msgstr ""
 "Number of tickets displayed per page in ticket reports,\n"
 "by default (''since 0.11'')"
 
-#: trac/ticket/report.py:63
+#: trac/ticket/report.py:120
 msgid ""
 "Number of tickets displayed in the rss feeds for reports\n"
 "(''since 0.11'')"
@@ -1103,32 +1304,32 @@ msgstr ""
 "which is used to collect statistics on groups of tickets for display\n"
 "in the milestone views."
 
-#: trac/ticket/web_ui.py:67
-msgid ""
-"Enable the display of all ticket changes in the timeline, not only\n"
-"open / close operations (''since 0.9'')."
-msgstr ""
-"Enable the display of all ticket changes in the timeline, not only\n"
-"open / close operations (''since 0.9'')."
-
-#: trac/ticket/web_ui.py:71
-msgid ""
-"Don't accept tickets with a too big description.\n"
-"(''since 0.11'')."
-msgstr ""
-"Don't accept tickets with a too big description.\n"
-"(''since 0.11'')."
-
 #: trac/ticket/web_ui.py:75
 msgid ""
-"Don't accept tickets with a too big comment.\n"
-"(''since 0.11.2'')"
+"Enable the display of all ticket changes in the timeline, not only\n"
+"open / close operations (''since 0.9'')."
 msgstr ""
-"Don't accept tickets with a too big comment.\n"
-"(''since 0.11.2'')"
+"Enable the display of all ticket changes in the timeline, not only\n"
+"open / close operations (''since 0.9'')."
 
 #: trac/ticket/web_ui.py:79
 msgid ""
+"Don't accept tickets with a too big description.\n"
+"(''since 0.11'')."
+msgstr ""
+"Don't accept tickets with a too big description.\n"
+"(''since 0.11'')."
+
+#: trac/ticket/web_ui.py:83
+msgid ""
+"Don't accept tickets with a too big comment.\n"
+"(''since 0.11.2'')"
+msgstr ""
+"Don't accept tickets with a too big comment.\n"
+"(''since 0.11.2'')"
+
+#: trac/ticket/web_ui.py:87
+msgid ""
 "Which formatter flavor (e.g. 'html' or 'oneliner') should be\n"
 "used when presenting the description for new tickets.\n"
 "If 'oneliner', the [timeline] abbreviated_messages option applies.\n"
@@ -1139,7 +1340,7 @@ msgstr ""
 "If 'oneliner', the [timeline] abbreviated_messages option applies.\n"
 "(''since 0.11'')."
 
-#: trac/ticket/web_ui.py:86
+#: trac/ticket/web_ui.py:94
 msgid ""
 "Whether Wiki formatter should respect the new lines present\n"
 "in the Wiki text.\n"
@@ -1153,7 +1354,7 @@ msgstr ""
 "but keeps the old behavior for upgraded environments (i.e. 'no').\n"
 "(''since 0.11'')."
 
-#: trac/ticket/web_ui.py:93
+#: trac/ticket/web_ui.py:101
 msgid ""
 "The base query to be used when linkifying values of ticket\n"
 "fields. The query is a URL query\n"
@@ -1312,118 +1513,6 @@ msgid ""
 msgstr ""
 "The module prefix used in the `authz_file` for the default\n"
 "repository. If left empty, the global section is used."
-
-#: trac/versioncontrol/svn_fs.py:253
-msgid ""
-"Comma separated list of paths categorized as branches.\n"
-"If a path ends with '*', then all the directory entries found below \n"
-"that path will be included. \n"
-"Example: `/trunk, /branches/*, /projectAlpha/trunk, /sandbox/*`"
-msgstr ""
-"Comma separated list of paths categorised as branches.\n"
-"If a path ends with '*', then all the directory entries found below \n"
-"that path will be included. \n"
-"Example: `/trunk, /branches/*, /projectAlpha/trunk, /sandbox/*`"
-
-#: trac/versioncontrol/svn_fs.py:260
-msgid ""
-"Comma separated list of paths categorized as tags.\n"
-"\n"
-"If a path ends with '*', then all the directory entries found below\n"
-"that path will be included.\n"
-"Example: `/tags/*, /projectAlpha/tags/A-1.0, /projectAlpha/tags/A-v1.1`"
-msgstr ""
-"Comma separated list of paths categorised as tags.\n"
-"\n"
-"If a path ends with '*', then all the directory entries found below\n"
-"that path will be included.\n"
-"Example: `/tags/*, /projectAlpha/tags/A-1.0, /projectAlpha/tags/A-v1.1`"
-
-#: trac/versioncontrol/svn_prop.py:37
-msgid ""
-"The TracBrowser for Subversion can interpret the `svn:externals`\n"
-"property of folders. By default, it only turns the URLs into links as\n"
-"Trac can't browse remote repositories.\n"
-"\n"
-"However, if you have another Trac instance (or an other repository\n"
-"browser like [http://www.viewvc.org/ ViewVC]) configured to browse the\n"
-"target repository, then you can instruct Trac which other repository\n"
-"browser to use for which external URL. This mapping is done in the\n"
-"`[svn:externals]` section of the TracIni.\n"
-"\n"
-"Example:\n"
-"{{{\n"
-"[svn:externals]\n"
-"1 = svn://server/repos1                       "
-"http://trac/proj1/browser/$path?rev=$rev\n"
-"2 = svn://server/repos2                       "
-"http://trac/proj2/browser/$path?rev=$rev\n"
-"3 = http://theirserver.org/svn/eng-soft       "
-"http://ourserver/viewvc/svn/$path/?pathrev=25914\n"
-"4 = svn://anotherserver.com/tools_repository  "
-"http://ourserver/tracs/tools/browser/$path?rev=$rev\n"
-"}}}\n"
-"With the above, the\n"
-"`svn://anotherserver.com/tools_repository/tags/1.1/tools` external will\n"
-"be mapped to `http://ourserver/tracs/tools/browser/tags/1.1/tools?rev=`\n"
-"(and `rev` will be set to the appropriate revision number if the\n"
-"external additionally specifies a revision, see the\n"
-"[http://svnbook.red-bean.com/en/1.4/svn.advanced.externals.html SVN Book "
-"on externals]\n"
-"for more details).\n"
-"\n"
-"Note that the number used as a key in the above section is purely used\n"
-"as a place holder, as the URLs themselves can't be used as a key due to\n"
-"various limitations in the configuration file parser.\n"
-"\n"
-"Finally, the relative URLs introduced in\n"
-"[http://subversion.apache.org/docs/release-notes/1.5.html#externals "
-"Subversion 1.5]\n"
-"are not yet supported.\n"
-"\n"
-"(''since 0.11'')"
-msgstr ""
-"The TracBrowser for Subversion can interpret the `svn:externals`\n"
-"property of folders. By default, it only turns the URLs into links as\n"
-"Trac can't browse remote repositories.\n"
-"\n"
-"However, if you have another Trac instance (or an other repository\n"
-"browser like [http://www.viewvc.org/ ViewVC]) configured to browse the\n"
-"target repository, then you can instruct Trac which other repository\n"
-"browser to use for which external URL. This mapping is done in the\n"
-"`[svn:externals]` section of the TracIni.\n"
-"\n"
-"Example:\n"
-"{{{\n"
-"[svn:externals]\n"
-"1 = svn://server/repos1                       "
-"http://trac/proj1/browser/$path?rev=$rev\n"
-"2 = svn://server/repos2                       "
-"http://trac/proj2/browser/$path?rev=$rev\n"
-"3 = http://theirserver.org/svn/eng-soft       "
-"http://ourserver/viewvc/svn/$path/?pathrev=25914\n"
-"4 = svn://anotherserver.com/tools_repository  "
-"http://ourserver/tracs/tools/browser/$path?rev=$rev\n"
-"}}}\n"
-"With the above, the\n"
-"`svn://anotherserver.com/tools_repository/tags/1.1/tools` external will\n"
-"be mapped to `http://ourserver/tracs/tools/browser/tags/1.1/tools?rev=`\n"
-"(and `rev` will be set to the appropriate revision number if the\n"
-"external additionally specifies a revision, see the\n"
-"[http://svnbook.red-bean.com/en/1.4/svn.advanced.externals.html SVN Book "
-"on externals]\n"
-"for more details).\n"
-"\n"
-"Note that the number used as a key in the above section is purely used\n"
-"as a place holder, as the URLs themselves can't be used as a key due to\n"
-"various limitations in the configuration file parser.\n"
-"\n"
-"Finally, the relative URLs introduced in\n"
-"[http://subversion.apache.org/docs/release-notes/1.5.html#externals "
-"Subversion 1.5]\n"
-"are not yet supported.\n"
-"\n"
-"(''since 0.11'')"
 
 #: trac/versioncontrol/web_ui/browser.py:118
 msgid ""
@@ -1644,10 +1733,10 @@ msgstr ""
 #: trac/versioncontrol/web_ui/log.py:51
 msgid ""
 "Comma-separated list of colors to use for the TracRevisionLog\n"
-"graph display. (''since 0.13'')"
+"graph display. (''since 1.0'')"
 msgstr ""
 "Comma-separated list of colors to use for the TracRevisionLog\n"
-"graph display. (''since 0.13'')"
+"graph display. (''since 1.0'')"
 
 #: trac/web/auth.py:61
 msgid ""
@@ -1693,7 +1782,7 @@ msgstr ""
 "base path of several Trac instances if you want them to share\n"
 "the cookie.  (''since 0.12'')"
 
-#: trac/web/chrome.py:324
+#: trac/web/chrome.py:330
 msgid ""
 "Path to the //shared templates directory//.\n"
 "\n"
@@ -1709,7 +1798,7 @@ msgstr ""
 "\n"
 "(''since 0.11'')"
 
-#: trac/web/chrome.py:332
+#: trac/web/chrome.py:338
 msgid ""
 "Path to the //shared htdocs directory//.\n"
 "\n"
@@ -1719,23 +1808,23 @@ msgid ""
 "This can be useful in site.html for common interface customization\n"
 "of multiple Trac environments.\n"
 "\n"
-"(''since 0.13'')"
+"(''since 1.0'')"
 msgstr ""
 "Path to the //shared htdocs directory//.\n"
 "\n"
 "Static resources in that directory are mapped to /chrome/shared\n"
 "under the environment URL, in addition to common and site locations.\n"
 "\n"
-"This can be useful in site.html for common interface customisation\n"
+"This can be useful in site.html for common interface customization\n"
 "of multiple Trac environments.\n"
 "\n"
-"(''since 0.13'')"
+"(''since 1.0'')"
 
-#: trac/web/chrome.py:343
+#: trac/web/chrome.py:349
 msgid "Automatically reload template files after modification."
 msgstr "Automatically reload template files after modification."
 
-#: trac/web/chrome.py:346
+#: trac/web/chrome.py:352
 msgid ""
 "The maximum number of templates that the template loader will cache\n"
 "in memory. The default value is 128. You may want to choose a higher\n"
@@ -1749,7 +1838,7 @@ msgstr ""
 "enough memory to spare, or you can reduce it if you are short on\n"
 "memory."
 
-#: trac/web/chrome.py:353
+#: trac/web/chrome.py:359
 msgid ""
 "Base URL for serving the core static resources below \n"
 "`/chrome/common/`.\n"
@@ -1779,7 +1868,7 @@ msgstr ""
 "will not be made available this way and additional rewrite \n"
 "rules will be needed in the web server."
 
-#: trac/web/chrome.py:368
+#: trac/web/chrome.py:374
 msgid ""
 "Location of the jQuery !JavaScript library (version 1.7.2).\n"
 "\n"
@@ -1790,7 +1879,7 @@ msgid ""
 "http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js or\n"
 "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js.\n"
 "\n"
-"(''since 0.13'')"
+"(''since 1.0'')"
 msgstr ""
 "Location of the jQuery !JavaScript library (version 1.7.2).\n"
 "\n"
@@ -1801,121 +1890,237 @@ msgstr ""
 "http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js or\n"
 "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js.\n"
 "\n"
-"(''since 0.13'')"
+"(''since 1.0'')"
 
-#: trac/web/chrome.py:380
+#: trac/web/chrome.py:386
 msgid ""
-"Order of the items to display in the `metanav` navigation bar,\n"
-"listed by IDs. See also TracNavigation."
-msgstr ""
-"Order of the items to display in the `metanav` navigation bar,\n"
-"listed by IDs. See also TracNavigation."
-
-#: trac/web/chrome.py:385
-msgid ""
-"Order of the items to display in the `mainnav` navigation bar, \n"
-"listed by IDs. See also TracNavigation."
-msgstr ""
-"Order of the items to display in the `mainnav` navigation bar, \n"
-"listed by IDs. See also TracNavigation."
-
-#: trac/web/chrome.py:391
-msgid "URL to link to, from the header logo."
-msgstr "URL to link to, from the header logo."
-
-#: trac/web/chrome.py:394
-msgid ""
-"URL of the image to use as header logo.\n"
-"It can be absolute, server relative or relative.\n"
+"Location of the jQuery UI !JavaScript library (version 1.8.21).\n"
 "\n"
-"If relative, it is relative to one of the `/chrome` locations:\n"
-"`site/your-logo.png` if `your-logo.png` is located in the `htdocs`\n"
-"folder within your TracEnvironment;\n"
-"`common/your-logo.png` if `your-logo.png` is located in the\n"
-"folder mapped to the [#trac-section htdocs_location] URL. \n"
-"Only specifying `your-logo.png` is equivalent to the latter."
-msgstr ""
-"URL of the image to use as header logo.\n"
-"It can be absolute, server relative or relative.\n"
+"An empty value loads jQuery UI from the copy bundled with Trac.\n"
 "\n"
-"If relative, it is relative to one of the `/chrome` locations:\n"
-"`site/your-logo.png` if `your-logo.png` is located in the `htdocs`\n"
-"folder within your TracEnvironment;\n"
-"`common/your-logo.png` if `your-logo.png` is located in the\n"
-"folder mapped to the [#trac-section htdocs_location] URL. \n"
-"Only specifying `your-logo.png` is equivalent to the latter."
-
-#: trac/web/chrome.py:405
-msgid "Alternative text for the header logo."
-msgstr "Alternative text for the header logo."
-
-#: trac/web/chrome.py:409
-msgid "Width of the header logo image in pixels."
-msgstr "Width of the header logo image in pixels."
-
-#: trac/web/chrome.py:412
-msgid "Height of the header logo image in pixels."
-msgstr "Height of the header logo image in pixels."
-
-#: trac/web/chrome.py:415
-msgid ""
-"Show email addresses instead of usernames. If false, we obfuscate\n"
-"email addresses. (''since 0.11'')"
+"Alternatively, jQuery UI could be loaded from a CDN, for example:\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js\n"
+"or\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/jquery-ui.min.js.\n"
+"\n"
+"(''since 1.0'')"
 msgstr ""
-"Show email addresses instead of usernames. If false, we obfuscate\n"
-"email addresses. (''since 0.11'')"
+"Location of the jQuery UI !JavaScript library (version 1.8.21).\n"
+"\n"
+"An empty value loads jQuery UI from the copy bundled with Trac.\n"
+"\n"
+"Alternatively, jQuery UI could be loaded from a CDN, for example:\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js\n"
+"or\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/jquery-ui.min.js.\n"
+"\n"
+"(''since 1.0'')"
 
-#: trac/web/chrome.py:419
+#: trac/web/chrome.py:398
 msgid ""
-"Never obfuscate `mailto:` links explicitly written in the wiki, \n"
-"even if `show_email_addresses` is false or the user has not the \n"
-"EMAIL_VIEW permission (''since 0.11.6'')."
+"Location of the theme to be used with the jQuery UI !JavaScript\n"
+"library (version 1.8.21).\n"
+"\n"
+"An empty value loads the custom Trac jQuery UI theme from the copy \n"
+"bundled with Trac.\n"
+"\n"
+"Alternatively, a jQuery UI theme could be loaded from a CDN, for \n"
+"example:\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/start"
+"/jquery-ui.css\n"
+"or\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/themes/start/jquery-"
+"ui.css.\n"
+"\n"
+"(''since 1.0'')"
 msgstr ""
-"Never obfuscate `mailto:` links explicitly written in the wiki, \n"
-"even if `show_email_addresses` is false or the user has not the \n"
-"EMAIL_VIEW permission (''since 0.11.6'')."
+"Location of the theme to be used with the jQuery UI !JavaScript\n"
+"library (version 1.8.21).\n"
+"\n"
+"An empty value loads the custom Trac jQuery UI theme from the copy \n"
+"bundled with Trac.\n"
+"\n"
+"Alternatively, a jQuery UI theme could be loaded from a CDN, for \n"
+"example:\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/start"
+"/jquery-ui.css\n"
+"or\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/themes/start/jquery-"
+"ui.css.\n"
+"\n"
+"(''since 1.0'')"
+
+#: trac/web/chrome.py:413
+msgid ""
+"Location of the jQuery UI !JavaScript library (version 1.8.18).\n"
+"\n"
+"An empty value loads jQuery UI from the copy bundled with Trac.\n"
+"\n"
+"Alternatively, jQuery UI could be loaded from a CDN, for example:\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js\n"
+"or\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.18/jquery-ui.min.js.\n"
+"\n"
+"(''since 1.0'')"
+msgstr ""
+"Location of the jQuery UI !JavaScript library (version 1.8.18).\n"
+"\n"
+"An empty value loads jQuery UI from the copy bundled with Trac.\n"
+"\n"
+"Alternatively, jQuery UI could be loaded from a CDN, for example:\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js\n"
+"or\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.18/jquery-ui.min.js.\n"
+"\n"
+"(''since 1.0'')"
 
 #: trac/web/chrome.py:425
 msgid ""
-"Show IP addresses for resource edits (e.g. wiki).\n"
-"(''since 0.11.3'')"
+"Location of the theme to be used with the jQuery UI !JavaScript\n"
+"library (version 1.8.18).\n"
+"\n"
+"An empty value loads the custom Trac jQuery UI theme from the copy \n"
+"bundled with Trac.\n"
+"\n"
+"Alternatively, a jQuery UI theme could be loaded from a CDN, for \n"
+"example:\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/start"
+"/jquery-ui.css\n"
+"or\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.18/themes/start/jquery-"
+"ui.css.\n"
+"\n"
+"(''since 1.0'')"
 msgstr ""
-"Show IP addresses for resource edits (e.g. wiki).\n"
-"(''since 0.11.3'')"
-
-#: trac/web/chrome.py:429
-msgid ""
-"Make `<textarea>` fields resizable. Requires !JavaScript.\n"
-"(''since 0.12'')"
-msgstr ""
-"Make `<textarea>` fields resizable. Requires !JavaScript.\n"
-"(''since 0.12'')"
-
-#: trac/web/chrome.py:433
-msgid ""
-"Inactivity timeout in seconds after which the automatic wiki preview\n"
-"triggers an update. This option can contain floating-point values. The\n"
-"lower the setting, the more requests will be made to the server. Set\n"
-"this to 0 to disable automatic preview. The default is 2.0 seconds.\n"
-"(''since 0.12'')"
-msgstr ""
-"Inactivity timeout in seconds after which the automatic wiki preview\n"
-"triggers an update. This option can contain floating-point values. The\n"
-"lower the setting, the more requests will be made to the server. Set\n"
-"this to 0 to disable automatic preview. The default is 2.0 seconds.\n"
-"(''since 0.12'')"
+"Location of the theme to be used with the jQuery UI !JavaScript\n"
+"library (version 1.8.18).\n"
+"\n"
+"An empty value loads the custom Trac jQuery UI theme from the copy \n"
+"bundled with Trac.\n"
+"\n"
+"Alternatively, a jQuery UI theme could be loaded from a CDN, for \n"
+"example:\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/start"
+"/jquery-ui.css\n"
+"or\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.18/themes/start/jquery-"
+"ui.css.\n"
+"\n"
+"(''since 1.0'')"
 
 #: trac/web/chrome.py:440
 msgid ""
+"Order of the items to display in the `metanav` navigation bar,\n"
+"listed by IDs. See also TracNavigation."
+msgstr ""
+"Order of the items to display in the `metanav` navigation bar,\n"
+"listed by IDs. See also TracNavigation."
+
+#: trac/web/chrome.py:445
+msgid ""
+"Order of the items to display in the `mainnav` navigation bar, \n"
+"listed by IDs. See also TracNavigation."
+msgstr ""
+"Order of the items to display in the `mainnav` navigation bar, \n"
+"listed by IDs. See also TracNavigation."
+
+#: trac/web/chrome.py:451
+msgid "URL to link to, from the header logo."
+msgstr "URL to link to, from the header logo."
+
+#: trac/web/chrome.py:454
+msgid ""
+"URL of the image to use as header logo.\n"
+"It can be absolute, server relative or relative.\n"
+"\n"
+"If relative, it is relative to one of the `/chrome` locations:\n"
+"`site/your-logo.png` if `your-logo.png` is located in the `htdocs`\n"
+"folder within your TracEnvironment;\n"
+"`common/your-logo.png` if `your-logo.png` is located in the\n"
+"folder mapped to the [#trac-section htdocs_location] URL. \n"
+"Only specifying `your-logo.png` is equivalent to the latter."
+msgstr ""
+"URL of the image to use as header logo.\n"
+"It can be absolute, server relative or relative.\n"
+"\n"
+"If relative, it is relative to one of the `/chrome` locations:\n"
+"`site/your-logo.png` if `your-logo.png` is located in the `htdocs`\n"
+"folder within your TracEnvironment;\n"
+"`common/your-logo.png` if `your-logo.png` is located in the\n"
+"folder mapped to the [#trac-section htdocs_location] URL. \n"
+"Only specifying `your-logo.png` is equivalent to the latter."
+
+#: trac/web/chrome.py:465
+msgid "Alternative text for the header logo."
+msgstr "Alternative text for the header logo."
+
+#: trac/web/chrome.py:469
+msgid "Width of the header logo image in pixels."
+msgstr "Width of the header logo image in pixels."
+
+#: trac/web/chrome.py:472
+msgid "Height of the header logo image in pixels."
+msgstr "Height of the header logo image in pixels."
+
+#: trac/web/chrome.py:475
+msgid ""
+"Show email addresses instead of usernames. If false, we obfuscate\n"
+"email addresses. (''since 0.11'')"
+msgstr ""
+"Show email addresses instead of usernames. If false, we obfuscate\n"
+"email addresses. (''since 0.11'')"
+
+#: trac/web/chrome.py:479
+msgid ""
+"Never obfuscate `mailto:` links explicitly written in the wiki, \n"
+"even if `show_email_addresses` is false or the user has not the \n"
+"EMAIL_VIEW permission (''since 0.11.6'')."
+msgstr ""
+"Never obfuscate `mailto:` links explicitly written in the wiki, \n"
+"even if `show_email_addresses` is false or the user has not the \n"
+"EMAIL_VIEW permission (''since 0.11.6'')."
+
+#: trac/web/chrome.py:485
+msgid ""
+"Show IP addresses for resource edits (e.g. wiki).\n"
+"(''since 0.11.3'')"
+msgstr ""
+"Show IP addresses for resource edits (e.g. wiki).\n"
+"(''since 0.11.3'')"
+
+#: trac/web/chrome.py:489
+msgid ""
+"Make `<textarea>` fields resizable. Requires !JavaScript.\n"
+"(''since 0.12'')"
+msgstr ""
+"Make `<textarea>` fields resizable. Requires !JavaScript.\n"
+"(''since 0.12'')"
+
+#: trac/web/chrome.py:493
+msgid ""
+"Inactivity timeout in seconds after which the automatic wiki preview\n"
+"triggers an update. This option can contain floating-point values. The\n"
+"lower the setting, the more requests will be made to the server. Set\n"
+"this to 0 to disable automatic preview. The default is 2.0 seconds.\n"
+"(''since 0.12'')"
+msgstr ""
+"Inactivity timeout in seconds after which the automatic wiki preview\n"
+"triggers an update. This option can contain floating-point values. The\n"
+"lower the setting, the more requests will be made to the server. Set\n"
+"this to 0 to disable automatic preview. The default is 2.0 seconds.\n"
+"(''since 0.12'')"
+
+#: trac/web/chrome.py:500
+msgid ""
 "The date information format. Valid options are 'relative' for\n"
 "displaying relative format and 'absolute' for displaying absolute\n"
-"format. (''since 0.13'')"
+"format. (''since 1.0'')"
 msgstr ""
 "The date information format. Valid options are 'relative' for\n"
 "displaying relative format and 'absolute' for displaying absolute\n"
-"format. (''since 0.13'')"
+"format. (''since 1.0'')"
 
-#: trac/web/main.py:87
+#: trac/web/main.py:86
 msgid ""
 "Ordered list of filters to apply to all requests\n"
 "(''since 0.10'')."
@@ -1923,7 +2128,7 @@ msgstr ""
 "Ordered list of filters to apply to all requests\n"
 "(''since 0.10'')."
 
-#: trac/web/main.py:92
+#: trac/web/main.py:91
 msgid ""
 "Name of the component that handles requests to the base\n"
 "URL.\n"
@@ -1939,11 +2144,11 @@ msgstr ""
 "`BrowserModule`, `QueryModule`, `ReportModule`, `TicketModule`\n"
 "and `WikiModule`. The default is `WikiModule`. (''since 0.9'')"
 
-#: trac/web/main.py:101
+#: trac/web/main.py:100
 msgid "The default timezone to use"
 msgstr "The default time zone to use"
 
-#: trac/web/main.py:104
+#: trac/web/main.py:103
 msgid ""
 "The preferred language to use if no user preference has\n"
 "been set. (''since 0.12.1'')"
@@ -1951,17 +2156,29 @@ msgstr ""
 "The preferred language to use if no user preference has\n"
 "been set. (''since 0.12.1'')"
 
-#: trac/web/main.py:109
+#: trac/web/main.py:108
 msgid ""
 "The date format. Valid options are 'iso8601' for selecting\n"
 "ISO 8601 format, or leave it empty which means the default\n"
 "date format will be inferred from the browser's default\n"
-"language. (''since 0.13'')"
+"language. (''since 1.0'')"
 msgstr ""
 "The date format. Valid options are 'iso8601' for selecting\n"
 "ISO 8601 format, or leave it empty which means the default\n"
 "date format will be inferred from the browser's default\n"
-"language. (''since 0.13'')"
+"language. (''since 1.0'')"
+
+#: trac/web/main.py:115
+msgid ""
+"When true, send a `X-Sendfile` header and no content when sending\n"
+"files from the filesystem, so that the web server handles the content.\n"
+"This requires a web server that knows how to handle such a header,\n"
+"like Apache with `mod_xsendfile` or lighttpd. (''since 1.0'')"
+msgstr ""
+"When true, send a `X-Sendfile` header and no content when sending\n"
+"files from the filesystem, so that the web server handles the content.\n"
+"This requires a web server that knows how to handle such a header,\n"
+"like Apache with `mod_xsendfile` or lighttpd. (''since 1.0'')"
 
 #: trac/wiki/api.py:263
 msgid ""
