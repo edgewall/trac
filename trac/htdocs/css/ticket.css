@@ -46,23 +46,23 @@
  clear: right;
 }
 
-#ticket h2 {
+#ticket > h2 {
  color: #844;
  margin: .3em 0 .4em 0;
 }
-#ticket h2 .trac-id {
+#ticket > h2 .trac-id {
  font-size: 145%;
  vertical-align: middle;
  margin: 0 .4em 0 0;
 }
-#ticket h2 .trac-status {
+#ticket > h2 .trac-status {
  vertical-align: middle;
 }
-#ticket h2 .trac-type {
+#ticket > h2 .trac-type {
  color: #955;
  vertical-align: middle;
 }
-#ticket h2 .trac-resolution {
+#ticket > h2 .trac-resolution {
  vertical-align: middle;
 }
 
