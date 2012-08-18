@@ -410,33 +410,6 @@ class Chrome(Component):
         
         (''since 1.0'')""")
 
-    jquery_ui_location = Option('trac', 'jquery_ui_location', '',
-        """Location of the jQuery UI !JavaScript library (version 1.8.18).
-        
-        An empty value loads jQuery UI from the copy bundled with Trac.
-        
-        Alternatively, jQuery UI could be loaded from a CDN, for example:
-        https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js
-        or
-        http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.18/jquery-ui.min.js.
-        
-        (''since 1.0'')""")
-
-    jquery_ui_theme_location = Option('trac', 'jquery_ui_theme_location', '',
-        """Location of the theme to be used with the jQuery UI !JavaScript
-        library (version 1.8.18).
-        
-        An empty value loads the custom Trac jQuery UI theme from the copy 
-        bundled with Trac.
-        
-        Alternatively, a jQuery UI theme could be loaded from a CDN, for 
-        example:
-        https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/start/jquery-ui.css
-        or
-        http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.18/themes/start/jquery-ui.css.
-        
-        (''since 1.0'')""")
-
     metanav_order = ListOption('trac', 'metanav',
                                'login, logout, prefs, help, about', doc=
         """Order of the items to display in the `metanav` navigation bar,
