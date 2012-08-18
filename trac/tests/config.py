@@ -190,9 +190,10 @@ class ConfigurationTestCase(unittest.TestCase):
         config = self._read()
 
         class Foo(object):
-            option = ChoiceOption('a', 'option', ['Item1', 2, '3'])
-            other = ChoiceOption('a', 'other', [1, 2, 3])
-            invalid = ChoiceOption('a', 'invalid', ['a', 'b', 'c'])
+            # enclose in parentheses to avoid messages extraction
+            option = (ChoiceOption)('a', 'option', ['Item1', 2, '3'])
+            other = (ChoiceOption)('a', 'other', [1, 2, 3])
+            invalid = (ChoiceOption)('a', 'invalid', ['a', 'b', 'c'])
         
             def __init__(self):
                 self.config = config
@@ -294,7 +295,8 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEquals(['a', 'b'], config.sections())
         
         class Foo(object):
-            section_c = ConfigSection('c', 'Doc for c')
+            # enclose in parentheses to avoid messages extraction
+            section_c = (ConfigSection)('c', 'Doc for c')
             option_c = Option('c', 'option', 'value')
         
         self.assertEquals(['a', 'b', 'c'], config.sections())
