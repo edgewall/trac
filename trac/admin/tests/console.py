@@ -350,7 +350,7 @@ class TracadminTestCase(unittest.TestCase):
         test exports additional permissions, removes them and imports them back.
         """
         test_name = sys._getframe().f_code.co_name
-        user = u'test_user\u0251' 
+        user = u'test_user\u0250'
         self._execute('permission add ' + user + ' WIKI_VIEW') 
         self._execute('permission add ' + user + ' TICKET_VIEW') 
         rv, output = self._execute('permission export')

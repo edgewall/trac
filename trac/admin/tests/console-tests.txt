@@ -383,8 +383,8 @@ authenticated  TICKET_CREATE
 authenticated  TICKET_MODIFY
 authenticated  WIKI_CREATE
 authenticated  WIKI_MODIFY
-test_userɑ     TICKET_VIEW
-test_userɑ     WIKI_VIEW
+test_userɐ     TICKET_VIEW
+test_userɐ     WIKI_VIEW
 
 
 Available actions:
