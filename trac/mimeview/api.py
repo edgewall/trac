@@ -389,7 +389,7 @@ MODE_RE = re.compile(r"""
     | vim:.*?(?:syntax|filetype|ft)=(\w+)   # 4. look for VIM's syntax=<n>
     """, re.VERBOSE)
 
-def get_mimetype(filename, content=None, mime_map=MIME_MAP):
+def get_mimetype(filename, content=None, mime_map=MIME_MAP, mime_map_patterns={}):
     """Guess the most probable MIME type of a file with the given name.
 
     `filename` is either a filename (the lookup will then use the suffix)
@@ -421,6 +421,10 @@ def get_mimetype(filename, content=None, mime_map=MIME_MAP):
                 if is_binary(content):
                     # 4) mimetype from the content, using`is_binary`
                     return 'application/octet-stream'
+        # 5) mimetype from filename pattern
+        for type, pattern in mime_map_patterns.iteritems():
+            if pattern.match(filename):
+                return type
         return mimetype
 
 def ct_mimetype(content_type):
@@ -639,6 +643,12 @@ class Mimeview(Component):
         there's a colon (":") separated list of associated keywords
         or file extensions. (''since 0.10'')""")
 
+    mime_map_patterns = ListOption('mimeviewer', 'mime_map_patterns',
+        'text/plain:README|INSTALL|COPYING.*',
+        doc="""List of additional MIME types and regex(!) filename patterns.
+        Mappings are comma-separated, and for each MIME type,
+        there's a colon (":") separated regex filename pattern (''since 0.12'')""")
+
     treat_as_binary = ListOption('mimeviewer', 'treat_as_binary',
         'application/octet-stream,application/pdf,application/postscript,'
         'application/msword,application/rtf,',
@@ -647,6 +657,7 @@ class Mimeview(Component):
 
     def __init__(self):
         self._mime_map = None
+        self._mime_map_patterns = None
 
     # Public API
 
@@ -918,13 +929,23 @@ class Mimeview(Component):
         or `None` if detection failed.
         """
 
-        mimetype = get_mimetype(filename, content, self.mime_map)
+        mimetype = get_mimetype(filename, content, self.mime_map, self.mime_map_patterns)
         charset = None
         if mimetype:
             charset = self.get_charset(content, mimetype)
         if mimetype and charset and not 'charset' in mimetype:
             mimetype += '; charset=' + charset
         return mimetype
+
+    @property
+    def mime_map_patterns(self):
+        if not self._mime_map_patterns:
+            self._mime_map_patterns = {}
+            for mapping in self.config['mimeviewer'].getlist('mime_map_patterns'):
+                if ':' in mapping:
+                    assocations = mapping.split(':')
+                    self._mime_map_patterns[assocations[0]] = re.compile((r'%s' % assocations[1]))
+        return self._mime_map_patterns
 
     def is_binary(self, mimetype=None, filename=None, content=None):
         """Check if a file must be considered as binary."""
