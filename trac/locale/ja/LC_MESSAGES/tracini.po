@@ -1,15 +1,15 @@
 # Japanese translations for Trac.
-# Copyright (C) 2011 Edgewall Software
+# Copyright (C) 2012 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+# Jun Omae <jun66j5@gmail.com>, 2012.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 0.13\n"
+"Project-Id-Version: Trac 1.0\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2012-02-10 02:32+0100\n"
+"POT-Creation-Date: 2012-08-06 17:09+0200\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <LL@li.org>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: tracopt/mimeview/enscript.py:105
 msgid "Path to the Enscript executable."
-msgstr ""
+msgstr "Enscript 実行ファイルへのパスを指定します。"
 
 #: tracopt/mimeview/enscript.py:108
 msgid ""
@@ -33,10 +33,14 @@ msgid ""
 "quality ratio used by the Enscript render, which is 2\n"
 "(''since 0.10'')."
 msgstr ""
+"Enscript に処理を行わせる MIME タイプを追加します。\n"
+"各々を `mimetype:mode:quality` という組合せで指定します。`mimetype` には MIME タイプ、`mode` "
+"には変換に使う Enscript のモード、`quality` にはその変換処理に対する割合を指定します。\n"
+"また、これは Enscript の描画時に使われるデフォルトの比率2を上書きすることもできます。(''0.10 以降'')"
 
 #: tracopt/mimeview/php.py:67
 msgid "Path to the PHP executable (''since 0.9'')."
-msgstr ""
+msgstr "PHP 実行可能ファイルへのパス (''0.9 以降'')"
 
 #: tracopt/mimeview/silvercity.py:81
 msgid ""
@@ -50,10 +54,14 @@ msgid ""
 "quality ratio used by the SilverCity render, which is 3\n"
 "(''since 0.10'')."
 msgstr ""
+"SilverCity に処理を行わせる MIME タイプを追加します。\n"
+"各々を `mimetype:mode:quality` という組合せで指定します。`mimetype` には MIME タイプ、`mode` "
+"には変換に使う SilverCity のモード、`quality` にはその変換処理に対する割合を指定します。\n"
+"またこれは SilverCity の描画時に使われるデフォルトの比率3を上書きすることもできます。(''0.10 以降'')"
 
-#: tracopt/perm/authz_policy.py:133
+#: tracopt/perm/authz_policy.py:132
 msgid "Location of authz policy configuration file."
-msgstr ""
+msgstr "authz ポリシーの設定ファイルのパスを指定します。"
 
 #: tracopt/ticket/commit_updater.py:107
 msgid ""
@@ -62,10 +70,14 @@ msgid ""
 "Must be empty or contain two characters. For example, if set to \"[]\",\n"
 "then commands must be in the form of [closes #4]."
 msgstr ""
+"コマンドを囲む文字を指定することができます。\n"
+"\n"
+"空にするか、2つの文字にする必要があります。例えば、\"[]\" を設定するとコマンドは [close #4] "
+"という形式にしなければならないようになります。"
 
 #: tracopt/ticket/commit_updater.py:113
 msgid "Commands that close tickets, as a space-separated list."
-msgstr ""
+msgstr "チケットをクローズするコマンド。クローズ対象のチケットは空白区切りにします。"
 
 #: tracopt/ticket/commit_updater.py:117
 msgid ""
@@ -74,6 +86,9 @@ msgid ""
 "If set to the special value <ALL>, all tickets referenced by the\n"
 "message will get a reference to the changeset."
 msgstr ""
+"参照を追加するコマンドを空白区切りで指定します。\n"
+"\n"
+"特別な値である <ALL> を設定した場合、メッセージ中のすべてのチケットに参照を追加します。"
 
 #: tracopt/ticket/commit_updater.py:124
 msgid ""
@@ -83,25 +98,197 @@ msgid ""
 "This requires that the user names be the same for Trac and repository\n"
 "operations."
 msgstr ""
+"コミットした更新者がそのチケットに対して要求の操作を行う権限を持っているかチェックします。\n"
+"\n"
+"これは、Trac とリポジトリとでユーザ名が同じ必要があります。"
 
 #: tracopt/ticket/commit_updater.py:132
 msgid "Send ticket change notification when updating a ticket."
-msgstr ""
+msgstr "チケットの更新時にチケットの変更通知を送信するかどうかを指定します。"
 
-#: trac/attachment.py:386
+#: tracopt/versioncontrol/git/git_fs.py:169
+msgid "Enable persistent caching of commit tree."
+msgstr "コミットツリーの永続的なキャッシュを有効にするかどうかを指定します。"
+
+#: tracopt/versioncontrol/git/git_fs.py:172
+msgid "Wrap `GitRepository` in `CachedRepository`."
+msgstr "`GitRepository` を `CachedRepository` でラップするかを指定します。"
+
+#: tracopt/versioncontrol/git/git_fs.py:175
+msgid ""
+"The length at which a sha1 should be abbreviated to (must\n"
+"be >= 4 and <= 40)."
+msgstr "sha1 ハッシュを省略する際の長さを指定します (4～40であること)。"
+
+#: tracopt/versioncontrol/git/git_fs.py:180
+msgid ""
+"The minimum length of an hex-string for which\n"
+"auto-detection as sha1 is performed (must be >= 4 and <= 40)."
+msgstr "sha1 ハッシュを自動的に検出する際における16進文字列の最小長を指定します (4～40であること)。"
+
+#: tracopt/versioncontrol/git/git_fs.py:185
+msgid ""
+"Enable reverse mapping of git email addresses to trac user ids\n"
+"(costly if you have many users)."
+msgstr "git のメールアドレスから Trac ユーザ名への逆マッピングを有効にするかを指定します (ユーザが多い場合には高コストになります)。"
+
+#: tracopt/versioncontrol/git/git_fs.py:189
+msgid ""
+"Use git-committer id instead of git-author id for the\n"
+"changeset ''Author'' field."
+msgstr "チェンジセットの''更新者''項目として git-author id の代わりに git-committer id を使うかどうかを指定します。"
+
+#: tracopt/versioncontrol/git/git_fs.py:194
+msgid ""
+"Use git-committer timestamp instead of git-author timestamp\n"
+"for the changeset ''Timestamp'' field."
+msgstr ""
+"チェンジセットの''日時''項目として git-author timestamp の代わりに git-committer timestamp "
+"を使うかどうかを指定します。"
+
+#: tracopt/versioncontrol/git/git_fs.py:199
+msgid "Define charset encoding of paths within git repositories."
+msgstr "git リポジトリ中のパスに対する文字エンコーディングを指定します。"
+
+#: tracopt/versioncontrol/git/git_fs.py:202
+msgid ""
+"Path to git executable (relative to the Trac configuration folder,\n"
+"so better use an absolute path here)."
+msgstr "git 実行ファイルへのパスを指定します (Trac 設定フォルダに対して相対パスだが絶対パスのほうが望ましい)。"
+
+#: tracopt/versioncontrol/git/git_fs.py:746
+msgid "Path to a gitweb-formatted projects.list"
+msgstr "gitweb 形式の projects.list ファイルへのパスを指定します。"
+
+#: tracopt/versioncontrol/git/git_fs.py:749
+msgid "Path to the base of your git projects"
+msgstr "git プロジェクトのベースディレクトリのパスを指定します。"
+
+#: tracopt/versioncontrol/git/git_fs.py:752
+#, python-format
+msgid ""
+"Template for project URLs. %s will be replaced with the repo\n"
+"name"
+msgstr "プロジェクト URL のテンプレート。%s はリポジトリ名に置換されます。"
+
+#: tracopt/versioncontrol/svn/svn_fs.py:253
+msgid ""
+"Comma separated list of paths categorized as branches.\n"
+"If a path ends with '*', then all the directory entries found below \n"
+"that path will be included. \n"
+"Example: `/trunk, /branches/*, /projectAlpha/trunk, /sandbox/*`"
+msgstr ""
+"ブランチとして分類させるパスをカンマ区切りで指定します。\n"
+"パスが '*' で終わっている場合は、そのパス配下にあるすべてのエントリになります。\n"
+"例: `/trunk, /branches/*, /projectAlpha/trunk, /sandbox/*`"
+
+#: tracopt/versioncontrol/svn/svn_fs.py:260
+msgid ""
+"Comma separated list of paths categorized as tags.\n"
+"\n"
+"If a path ends with '*', then all the directory entries found below\n"
+"that path will be included.\n"
+"Example: `/tags/*, /projectAlpha/tags/A-1.0, /projectAlpha/tags/A-v1.1`"
+msgstr ""
+"タグとして分類させるパスをカンマ区切りで指定します。\n"
+"\n"
+"パスが '*' で終わっている場合は、そのパス配下にあるすべてのエントリになります。\n"
+"例: `/tags/*, /projectAlpha/tags/A-1.0, /projectAlpha/tags/A-v1.1`"
+
+#: tracopt/versioncontrol/svn/svn_prop.py:37
+msgid ""
+"The TracBrowser for Subversion can interpret the `svn:externals`\n"
+"property of folders. By default, it only turns the URLs into links as\n"
+"Trac can't browse remote repositories.\n"
+"\n"
+"However, if you have another Trac instance (or an other repository\n"
+"browser like [http://www.viewvc.org/ ViewVC]) configured to browse the\n"
+"target repository, then you can instruct Trac which other repository\n"
+"browser to use for which external URL. This mapping is done in the\n"
+"`[svn:externals]` section of the TracIni.\n"
+"\n"
+"Example:\n"
+"{{{\n"
+"[svn:externals]\n"
+"1 = svn://server/repos1                       "
+"http://trac/proj1/browser/$path?rev=$rev\n"
+"2 = svn://server/repos2                       "
+"http://trac/proj2/browser/$path?rev=$rev\n"
+"3 = http://theirserver.org/svn/eng-soft       "
+"http://ourserver/viewvc/svn/$path/?pathrev=25914\n"
+"4 = svn://anotherserver.com/tools_repository  "
+"http://ourserver/tracs/tools/browser/$path?rev=$rev\n"
+"}}}\n"
+"With the above, the\n"
+"`svn://anotherserver.com/tools_repository/tags/1.1/tools` external will\n"
+"be mapped to `http://ourserver/tracs/tools/browser/tags/1.1/tools?rev=`\n"
+"(and `rev` will be set to the appropriate revision number if the\n"
+"external additionally specifies a revision, see the\n"
+"[http://svnbook.red-bean.com/en/1.4/svn.advanced.externals.html SVN Book "
+"on externals]\n"
+"for more details).\n"
+"\n"
+"Note that the number used as a key in the above section is purely used\n"
+"as a place holder, as the URLs themselves can't be used as a key due to\n"
+"various limitations in the configuration file parser.\n"
+"\n"
+"Finally, the relative URLs introduced in\n"
+"[http://subversion.apache.org/docs/release-notes/1.5.html#externals "
+"Subversion 1.5]\n"
+"are not yet supported.\n"
+"\n"
+"(''since 0.11'')"
+msgstr ""
+"Subversion に対する TracBrowser はフォルダの `svn:externals` "
+"プロパティを解釈できるようになっています。Trac はリモートにあるリポジトリを参照できないため、デフォルトでは単に URL "
+"をリンクに変換するだけです。\n"
+"\n"
+"しかし、対象のリポジトリを参照できるようにしている Trac (または [http://www.viewvc.org/ ViewVC] "
+"などのリポジトリブラウザ) がある場合は、外部参照の URL に対してそのリポジトリブラウザを使うように設定することができます。このマッピングは "
+"TracIni の `[svn:externals]` セクションで行います。\n"
+"\n"
+"例:\n"
+"{{{\n"
+"[svn:externals]\n"
+"1 = svn://server/repos1                       "
+"http://trac/proj1/browser/$path?rev=$rev\n"
+"2 = svn://server/repos2                       "
+"http://trac/proj2/browser/$path?rev=$rev\n"
+"3 = http://theirserver.org/svn/eng-soft       "
+"http://ourserver/viewvc/svn/$path/?pathrev=25914\n"
+"4 = svn://anotherserver.com/tools_repository  "
+"http://ourserver/tracs/tools/browser/$path?rev=$rev\n"
+"}}}\n"
+"上記では、外部参照 `svn://anotherserver.com/tools_repository/tags/1.1/tools` を "
+"`http://ourserver/tracs/tools/browser/tags/1.1/tools?rev=` "
+"にマッピングするようになります。(また外部参照がリビジョン番号を指定している場合 `rev` にはリビジョン番号が割り当てられます。詳細は "
+"[http://svnbook.red-bean.com/en/1.4/svn.advanced.externals.html SVN Book "
+"on externals] を参照してください)。\n"
+"\n"
+"注意事項として、設定ファイルのパーサーの制限により URL "
+"自体をキーにすることができないため、上記セクションのキーに単なるプレースホルダとして数字を使っています。\n"
+"\n"
+"最後に、[http://subversion.apache.org/docs/release-notes/1.5.html#externals "
+"Subversion 1.5] から導入された相対 URL はまだサポートしていません。\n"
+"\n"
+"(''0.11 以降'')"
+
+#: trac/attachment.py:429
 msgid ""
 "Maximum allowed file size (in bytes) for ticket and wiki \n"
 "attachments."
-msgstr ""
+msgstr "チケットと Wiki の添付ファイルの上限サイズを指定します (バイト単位)"
 
-#: trac/attachment.py:390
+#: trac/attachment.py:433
 msgid ""
 "Maximum allowed total size (in bytes) for an attachment list to be\n"
 "downloadable as a `.zip`. Set this to -1 to disable download as `.zip`.\n"
-"(''since 0.13'')"
+"(''since 1.0'')"
 msgstr ""
+"`.zip` ダウンロードを許可する合計に対する上限サイズ (バイト単位) です。-1 を指定した場合は `.zip` "
+"でのダウンロード機能を無効にします。(''1.0 以降'')"
 
-#: trac/attachment.py:395
+#: trac/attachment.py:438
 msgid ""
 "Whether attachments should be rendered in the browser, or\n"
 "only made downloadable.\n"
@@ -113,8 +300,14 @@ msgid ""
 "For public sites where anonymous users can create attachments it is\n"
 "recommended to leave this option disabled (which is the default)."
 msgstr ""
+"添付ファイルをブラウザ上で表示するか、単にダウンロード可能にしておくかどうかを指定します。\n"
+"\n"
+"ブラウザはほとんどのファイルを HTML "
+"として解釈するため、悪意のあるユーザにクロスサイトスクリプティング攻撃を行うファイルの作成を許すことになります。\n"
+"\n"
+"匿名ユーザが添付ファイルを作成できるような公開サイトでは、このオプションを無効 (これがデフォルトです) のままにしておくことを推奨します。"
 
-#: trac/env.py:105
+#: trac/env.py:120
 msgid ""
 "This section is used to enable or disable components\n"
 "provided by plugins, as well as by Trac itself. The component\n"
@@ -149,8 +342,32 @@ msgid ""
 "\n"
 "See also: TracPlugins"
 msgstr ""
+"このセクションは、プラグインが提供するコンポーネント、および、Trac "
+"自身のコンポーネントを有効または無効にするのに使います。有効/無効にするコンポーネントは、オプションの名前で特定します。オプションの値で有効なのかどうかを決定します。値を"
+" `enabled` または `on` に設定するとそのコンポーネントは有効になります。その他の値 (通常は `disabled` または "
+"`off`) だとそのコンポーネントは無効になります。\n"
+"\n"
+"オプション名は、コンポーネントの完全修飾名、または、コンポーネントに対するモジュール/パッケージのプレフィックスのどちらかです。前者は特定のコンポーネントを有効/無効にし、後者は特定のパッケージ/モジュールのコンポーネントを有効/無効にします。"
+"\n"
+"\n"
+"次にあげる設定 (抜粋) を考えてみます。\n"
+"{{{\n"
+"[components]\n"
+"trac.ticket.report.ReportModule = disabled\n"
+"webadmin.* = enabled\n"
+"}}}\n"
+"\n"
+"1つ目のオプションは、[wiki:TracReports レポートモジュール]を無効にするように指定しています。\n"
+"2つ目のオプションは、`webadmin` "
+"パッケージのすべてのコンポーネントを有効にするように指定しています。注意することは、末尾のワイルドカードはモジュール/パッケージにマッチさせるのに必要であることです。"
+"\n"
+"\n"
+"アクティブなコンポーネントの一覧を参照するには、''Trac について''の''プラグイン''ページにアクセスします (`CONFIG_VIEW`"
+" [wiki:TracPermissions 権限]が必要です)。\n"
+"\n"
+"関連項目: TracPlugins"
 
-#: trac/env.py:140
+#: trac/env.py:155
 msgid ""
 "Path to the //shared plugins directory//.\n"
 "\n"
@@ -160,8 +377,13 @@ msgid ""
 "\n"
 "(''since 0.11'')"
 msgstr ""
+"//共有させるプラグインディレクトリ//へのパスを指定します。\n"
+"\n"
+"このディレクトリのプラグインは、この環境にある `plugins` ディレクトリのものに加えて、優先してロードします。\n"
+"\n"
+"(''0.11 以降'')"
 
-#: trac/env.py:149
+#: trac/env.py:164
 msgid ""
 "Reference URL for the Trac deployment.\n"
 "\n"
@@ -170,8 +392,12 @@ msgid ""
 "context, like for example when inserting URLs pointing to Trac\n"
 "resources in notification e-mails."
 msgstr ""
+"Trac の展開先を指す URL を指定します。\n"
+"\n"
+"これは Web アクセスではないところからドキュメントを提示する場合に使用するベース URL です。例えば、通知メールで Trac "
+"のリソースを指し示す URL を入れる場合などです。"
 
-#: trac/env.py:157
+#: trac/env.py:172
 msgid ""
 "Optionally use `[trac] base_url` for redirects.\n"
 "\n"
@@ -183,8 +409,13 @@ msgid ""
 "environment will only be usable when accessible from that URL,\n"
 "as redirects are frequently used. ''(since 0.10.5)''"
 msgstr ""
+"`[trac] base_url` の設定値をリダイレクトに使用するかどうかを指定します。\n"
+"\n"
+"HTTP プロキシの背後で Trac を実行するような環境では、アクセスに使用した URL を自動で再構成することはできません。強制的に "
+"`base_url` 設定値にリダイレクトさせるこのオプションを設定しなければいけないかも知れません。これにより、リダイレクトに使われるこの "
+"URL からだけこの環境を利用できるような制限が設けられます。''(0.10.5 以降)''"
 
-#: trac/env.py:169
+#: trac/env.py:184
 msgid ""
 "Restrict cookies to HTTPS connections.\n"
 "\n"
@@ -193,27 +424,31 @@ msgid ""
 "your Trac instance is only accessible through HTTPS. (''since\n"
 "0.11.2'')"
 msgstr ""
+"HTTPS 接続でのみ Cookie を使用するかどうかを指定します。\n"
+"\n"
+"true に設定すると、すべての Cookie に `secure` フラグを設定することでサーバへ HTTPS 接続でのみ Cookie "
+"を送信するようにします。Trac を HTTPS 経由でだけアクセス可能にする場合、これを指定します。(''0.11.2 以降'')"
 
-#: trac/env.py:177
+#: trac/env.py:192
 msgid "Name of the project."
-msgstr ""
+msgstr "プロジェクトの名前を指定します。"
 
-#: trac/env.py:180
+#: trac/env.py:195
 msgid "Short description of the project."
-msgstr ""
+msgstr "プロジェクトの概要を指定します。"
 
-#: trac/env.py:183
+#: trac/env.py:198
 msgid ""
 "URL of the main project web site, usually the website in\n"
 "which the `base_url` resides. This is used in notification\n"
 "e-mails."
-msgstr ""
+msgstr "プロジェクトに対するメインの Web サイトの URL を指定します。通常は `base_url` のサイトにあります。通知メールでこれを使います。"
 
-#: trac/env.py:188
+#: trac/env.py:203
 msgid "E-Mail address of the project's administrator."
-msgstr ""
+msgstr "プロジェクト管理者のメールアドレスを指定します。"
 
-#: trac/env.py:191
+#: trac/env.py:206
 msgid ""
 "Base URL of a Trac instance where errors in this Trac\n"
 "should be reported.\n"
@@ -222,37 +457,49 @@ msgid ""
 "this Trac instance. An empty value will disable the reporting\n"
 "buttons.  (''since 0.11.3'')"
 msgstr ""
+"この Trac で発生したエラーの報告先になる Trac サイトのベース URL を指定します。\n"
+"\n"
+"これには、完全 URL または相対 URL、もしくはこの Trac を指す '.' "
+"を指定できます。空の値にすると報告用のボタンは使えなくなります。 (''0.11.3 以降'')"
 
-#: trac/env.py:200
+#: trac/env.py:215
 msgid "Page footer text (right-aligned)."
-msgstr ""
+msgstr "ページフッタのテキストを指定します (右揃え)。"
 
-#: trac/env.py:205
+#: trac/env.py:220
 msgid "URL of the icon of the project."
-msgstr ""
+msgstr "プロジェクトアイコンの URL を指定します。"
 
-#: trac/env.py:208
+#: trac/env.py:223
 msgid ""
 "Logging facility to use.\n"
 "\n"
 "Should be one of (`none`, `file`, `stderr`, `syslog`, `winlog`)."
 msgstr ""
+"ロギングに使用する出力先を指定します。\n"
+"\n"
+"(`none`, `file`, `stderr`, `syslog`, `winlog`) のうちのどれかを指定します。"
 
-#: trac/env.py:213
+#: trac/env.py:228
 msgid ""
 "If `log_type` is `file`, this should be a path to the\n"
 "log-file.  Relative paths are resolved relative to the `log`\n"
 "directory of the environment."
 msgstr ""
+"`log_type` が `file` の場合、ログファイルのパスを指定します。相対パスは、Trac 環境にある `log` "
+"ディレクトリから相対的に解釈します。"
 
-#: trac/env.py:218
+#: trac/env.py:233
 msgid ""
 "Level of verbosity in log.\n"
 "\n"
 "Should be one of (`CRITICAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`)."
 msgstr ""
+"ログレベルを指定します。\n"
+"\n"
+"(`CRITICAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`) のうちのどれかを指定します。"
 
-#: trac/env.py:223
+#: trac/env.py:238
 msgid ""
 "Custom logging format.\n"
 "\n"
@@ -275,6 +522,26 @@ msgid ""
 "\n"
 "''(since 0.10.5)''"
 msgstr ""
+"ログフォーマットを指定します。\n"
+"\n"
+"何も設定しない場合は、以下のものを使用します。\n"
+"\n"
+"Trac[$(module)s] $(levelname)s: $(message)s\n"
+"\n"
+"Python logging ライブラリ (http://docs.python.org/library/logging.html 参照) "
+"がサポートしている標準のキー名に加えて、使えるものがあります。\n"
+" - $(path)s     現在の Trac 環境のパス\n"
+" - $(basename)s 現在の Trac 環境のパスのベース名\n"
+" - $(project)s  プロジェクト名\n"
+"\n"
+"`%(...)s` の代わりに `$(...)s` を使っていることに注意してください。後者の形式は "
+"[http://docs.python.org/library/configparser.html ConfigParser] "
+"自身が解釈を行います。\n"
+"\n"
+"例:\n"
+"`($(thread)d) Trac[$(basename)s:$(module)s] $(levelname)s: $(message)s`\n"
+"\n"
+"''(0.10.5 以降)''"
 
 #: trac/notification.py:49
 msgid ""
@@ -285,58 +552,63 @@ msgid ""
 "server, and `SendmailEmailSender` for running a `sendmail`-compatible\n"
 "executable. (''since 0.12'')"
 msgstr ""
+"`IEmailSender` を実装しているコンポーネントの名前を指定します。\n"
+"\n"
+"このコンポーネントは、メール送信による通知処理で使います。Trac は今のところ SMTP サーバと接続を行う `SmtpEmailSender`"
+" と `sendmail` と互換性のあるコマンドを実行する `SendmailEmailSender` を用意しています。(''0.12 "
+"以降'')"
 
 #: trac/notification.py:58
 msgid "Enable email notification."
-msgstr ""
+msgstr "メール通知機能を有効にするかどうかを指定します。"
 
 #: trac/notification.py:61
 msgid "Sender address to use in notification emails."
-msgstr ""
+msgstr "通知メールに使用する送信者アドレスを指定します。"
 
 #: trac/notification.py:64
 msgid "Sender name to use in notification emails."
-msgstr ""
+msgstr "通知メールに使用する送信者名を指定します。"
 
 #: trac/notification.py:67
 msgid ""
 "Use the action author as the sender of notification emails.\n"
-"(''since 0.13'')"
-msgstr ""
+"(''since 1.0'')"
+msgstr "通知メールの送信者として実行者の名前を使うかどうかを指定します。(''1.0 以降'')"
 
 #: trac/notification.py:71
 msgid "Reply-To address to use in notification emails."
-msgstr ""
+msgstr "通知メールに使用する返信先アドレスを指定します。"
 
 #: trac/notification.py:74
 msgid ""
 "Email address(es) to always send notifications to,\n"
 "addresses can be seen by all recipients (Cc:)."
-msgstr ""
+msgstr "メールアドレスがすべての受信者から見えるように常に通知を送信するかどうかを指定します (Cc:)。"
 
 #: trac/notification.py:78
 msgid ""
 "Email address(es) to always send notifications to,\n"
 "addresses do not appear publicly (Bcc:). (''since 0.10'')"
-msgstr ""
+msgstr "メールアドレスが公開状態で現れないように常に通知を送信するかどうかを指定します (Bcc:)。(''0.10 以降'')"
 
 #: trac/notification.py:82
 msgid ""
 "Default host/domain to append to address that do not specify\n"
 "one."
-msgstr ""
+msgstr "ドメインがないアドレスに付加するデフォルトのホスト名/ドメイン名を指定します。"
 
 #: trac/notification.py:86
 msgid ""
 "Comma-separated list of domains that should not be considered\n"
 "part of email addresses (for usernames with Kerberos domains)."
-msgstr ""
+msgstr "メールアドレスだと判定させたくないドメイン名をカンマ区切りで指定します。(Kerberos ドメイン付きのユーザ名のため)"
 
 #: trac/notification.py:90
 msgid ""
 "Comma-separated list of domains that should be considered as\n"
 "valid for email addresses (such as localdomain)."
-msgstr ""
+msgstr "メールアドレス (localdomain のような) として有効だと判定させたいドメイン名をカンマ区切りで指定します。"
 
 #: trac/notification.py:94
 msgid ""
@@ -347,6 +619,10 @@ msgid ""
 "be sent as 7bit if the content is all ASCII, or 8bit otherwise.\n"
 "(''since 0.10'')"
 msgstr ""
+"メールの MIME エンコーディングを指定します。\n"
+"\n"
+"有効な設定は、Base64 エンコーディングの `base64`、Quoted-Printable の `qp`、エンコーディングなしの "
+"`none` で内容がすべて ASCII コードなら 7bit、そうでないなら 8bit として送信します。(''0.10 以降'')"
 
 #: trac/notification.py:102
 msgid ""
@@ -355,6 +631,9 @@ msgid ""
 "If this option is disabled (the default), recipients are put on BCC.\n"
 "(''since 0.10'')"
 msgstr ""
+"受信者アドレスを Cc で他の更新者から見えるようにするかどうかを指定します。\n"
+"\n"
+"このオプションに無効 (デフォルト) を設定している場合、受信者アドレスは Bcc に列挙します。(''0.10 以降'')"
 
 #: trac/notification.py:108
 msgid ""
@@ -363,6 +642,9 @@ msgid ""
 "The SMTP server should accept those addresses, and either append\n"
 "a FQDN or use local delivery. (''since 0.10'')"
 msgstr ""
+"ホスト名/ドメイン名なし (つまりユーザ名のみ) のメールアドレスを許可するかどうかを指定します。\n"
+"\n"
+"SMTP サーバはそれらのアドレスを受け入れて、FQDN を追加する、またはローカル配送のどちらかを行うべきです。(''0.10 以降'')"
 
 #: trac/notification.py:114
 msgid ""
@@ -372,26 +654,30 @@ msgid ""
 "If no prefix is desired, then specifying an empty option \n"
 "will disable it. (''since 0.10.1'')"
 msgstr ""
+"通知メールの件名の先頭に追加するテキストを指定します。\n"
+"\n"
+"設定が定義されていない場合は、[$project_name] プレフィックスとなります。\n"
+"プレフィックスが必要ない場合は、空を指定すると無効になります。(''0.10.1 以降'')"
 
 #: trac/notification.py:132
 msgid "SMTP server hostname to use for email notifications."
-msgstr ""
+msgstr "メール通知に使用する SMTP サーバのホスト名を指定します。"
 
 #: trac/notification.py:135
 msgid "SMTP server port to use for email notification."
-msgstr ""
+msgstr "メール通知に使用する SMTP サーバのポート番号を指定します。"
 
 #: trac/notification.py:138
 msgid "Username for SMTP server. (''since 0.9'')"
-msgstr ""
+msgstr "SMTP サーバのユーザ名を指定します。(''0.9 以降'')"
 
 #: trac/notification.py:141
 msgid "Password for SMTP server. (''since 0.9'')"
-msgstr ""
+msgstr "SMTP サーバのパスワードを指定します。(''0.9 以降'')"
 
 #: trac/notification.py:144
 msgid "Use SSL/TLS to send notifications over SMTP. (''since 0.10'')"
-msgstr ""
+msgstr "SMTP 接続により通知を送信する際に SSL/TLS を使用するかどうかを指定します。(''0.10 以降'')"
 
 #: trac/notification.py:188
 msgid ""
@@ -400,14 +686,17 @@ msgid ""
 "The sendmail program must accept the `-i` and `-f` options.\n"
 " (''since 0.12'')"
 msgstr ""
+"sendmail 実行ファイルへのパスを指定します。\n"
+"\n"
+"sendmail プログラムは `-i` と `-f` オプションを受け付ける必要があります。(''0.12 以降'')"
 
-#: trac/perm.py:300
+#: trac/perm.py:312
 msgid ""
 "Name of the component implementing `IPermissionStore`, which is used\n"
 "for managing user and group permissions."
-msgstr ""
+msgstr "`IPermissionStore` を実装しているコンポーネントの名前を指定します。これはユーザとグループの権限を管理するのに使います。"
 
-#: trac/perm.py:305
+#: trac/perm.py:317
 msgid ""
 "List of components implementing `IPermissionPolicy`, in the order in\n"
 "which they will be applied. These components manage fine-grained access\n"
@@ -416,6 +705,10 @@ msgid ""
 "LegacyAttachmentPolicy (map ATTACHMENT_* permissions to realm specific\n"
 "ones)"
 msgstr ""
+"適用する順番で `IPermissionPolicy` を実装しているコンポーネントのリストを指定します。それらのコンポーネントは Trac "
+"のソリースに対して細かい粒度のアクセス制御を行います。\n"
+"`DefaultPermissionPolicy` (0.11 以前の挙動) と `LegacyAttachmentPolicy` "
+"(ATTACHMENT_* 権限を個々のレルムの権限にマッピング) がデフォルトです。"
 
 #: trac/db/api.py:216
 msgid ""
@@ -423,48 +716,52 @@ msgid ""
 "[wiki:TracEnvironment#DatabaseConnectionStrings string] for this\n"
 "project"
 msgstr ""
+"このプロジェクトのデータベース接続[wiki:TracEnvironment#DatabaseConnectionStrings "
+"文字列]を指定します。"
 
 #: trac/db/api.py:221
 msgid "Database backup location"
-msgstr ""
+msgstr "データベースバックアップの場所を指定します。"
 
 #: trac/db/api.py:224
 msgid ""
 "Timeout value for database connection, in seconds.\n"
 "Use '0' to specify ''no timeout''. ''(Since 0.11)''"
 msgstr ""
+"データベース接続のタイムアウトを秒単位で指定します。\n"
+"''タイムアウトなし''を指定するには '0' を使います。''(0.11 以降)''"
 
 #: trac/db/api.py:228
 msgid ""
 "Show the SQL queries in the Trac log, at DEBUG level.\n"
 "''(Since 0.11.5)''"
-msgstr ""
+msgstr "DEBUG レベルのときに SQL クエリをログに表示するかどうかを指定します。''(0.11.5 以降)''"
 
 #: trac/db/mysql_backend.py:78
 msgid "Location of mysqldump for MySQL database backups"
-msgstr ""
+msgstr "MySQL データベースのバックアップに使う mysqldump の場所を指定します。"
 
 #: trac/db/postgres_backend.py:72
 msgid "Location of pg_dump for Postgres database backups"
-msgstr ""
+msgstr "Postgres データベースのバックアップに使う pg_dump の場所を指定します。"
 
 #: trac/db/sqlite_backend.py:143
 msgid ""
 "Paths to sqlite extensions, relative to Trac environment's\n"
 "directory or absolute. (''since 0.12'')"
-msgstr ""
+msgstr "SQLite 拡張のパスを Trac 環境ディレクトリからの相対パス、または、絶対パスで指定します。(''0.12 以降'')"
 
 #: trac/mimeview/api.py:590
 msgid "Charset to be used when in doubt."
-msgstr ""
+msgstr "文字コードが不明な場合に使用する文字コードを指定します。"
 
 #: trac/mimeview/api.py:593
 msgid "Displayed tab width in file preview. (''since 0.9'')"
-msgstr ""
+msgstr "ファイルのプレビューで表示するタブの幅を指定します。(''0.9 以降'')"
 
 #: trac/mimeview/api.py:596
 msgid "Maximum file size for HTML preview. (''since 0.9'')"
-msgstr ""
+msgstr "HTML プレビューするファイルの上限サイズを指定します。(''0.9 以降'')"
 
 #: trac/mimeview/api.py:599
 msgid ""
@@ -473,16 +770,19 @@ msgid ""
 "there's a colon (\":\") separated list of associated keywords\n"
 "or file extensions. (''since 0.10'')"
 msgstr ""
+"追加する MIME タイプとキーワードのマッピングのリストを指定します。\n"
+"マッピングはカンマ区切りで、MIME タイプごとに関連するキーワードまたはファイル拡張子のコロン区切り (\":\") "
+"のリストを持ちます。(''0.10 以降'')"
 
 #: trac/mimeview/api.py:606
 msgid ""
 "Comma-separated list of MIME types that should be treated as\n"
 "binary data. (''since 0.11.5'')"
-msgstr ""
+msgstr "バイナリデータとして扱わせる MIME タイプをカンマ区切りで指定します。(''0.11.5 以降'')"
 
 #: trac/mimeview/pygments.py:50
 msgid "The default style to use for Pygments syntax highlighting."
-msgstr ""
+msgstr "Pygments のシンタックスハイライトに使用するデフォルトのスタイルを指定します。"
 
 #: trac/mimeview/pygments.py:53
 msgid ""
@@ -496,10 +796,15 @@ msgid ""
 "to override the default quality ratio used by the\n"
 "Pygments render."
 msgstr ""
+"Pygments が処理できる追加の MIME タイプを指定します。\n"
+"\n"
+"各々を `mimetype:mode:quality` という組合せで指定します。`mimetype` には MIME タイプ、`mode` "
+"には変換に使う Pygments のモード、`quality` にはその変換処理に対する割合を指定します。またこれは Pygments "
+"の描画時に使われるデフォルトの比率を上書きすることもできます。"
 
 #: trac/search/web_ui.py:49
 msgid "Minimum length of query string allowed when performing a search."
-msgstr ""
+msgstr "検索の実行を許可する検索文字列の最小の長さを指定します。"
 
 #: trac/search/web_ui.py:52
 msgid ""
@@ -514,26 +819,32 @@ msgid ""
 "be manually enabled by the user on the search page.\n"
 "(since 0.12)"
 msgstr ""
+"検索ページのフィルタをデフォルトで無効にするものを指定します。クイック検索機能のフィルタにも適用します。デフォルトのコンポーネントが定義しているフィルタ名は"
+" `wiki`、`ticket`、`milestone`、`changeset` です。プラグインについては、ISearchSource "
+"インターフェイスの実装を探してください。`get_search_method()` "
+"メソッドが返すタプルの最初の要素になります。無効にしても、検索ページでユーザが手動でフィルタを有効にすることができます。(0.12 以降)"
 
 #: trac/tests/config.py:195
 msgid "b"
-msgstr ""
+msgstr "b"
 
 #: trac/tests/config.py:297
 msgid "Doc for c"
-msgstr ""
+msgstr "Doc for c"
 
 #: trac/ticket/api.py:166
 msgid ""
 "In this section, you can define additional fields for tickets. See\n"
 "TracTicketsCustomFields for more details."
 msgstr ""
+"このセクションでは、チケットに追加したいフィールドを定義することができます。詳細については TracTicketsCustomFields "
+"を参照してください。"
 
 #: trac/ticket/api.py:170
 msgid ""
 "Ordered list of workflow controllers to use for ticket actions\n"
 "(''since 0.11'')."
-msgstr ""
+msgstr "チケットのアクションに使用するワークフローコントローラを順番に指定します。(''0.11 以降'')"
 
 #: trac/ticket/api.py:176
 msgid ""
@@ -547,56 +858,63 @@ msgid ""
 "e-mail addresses must remain protected.\n"
 "(''since 0.9'')"
 msgstr ""
+"チケットの担当者フィールドにドロップダウンメニューを使うようになります。\n"
+"このオプションを有効にする前にパフォーマンスに対する影響を把握するようにしてください。[TracTickets#Assign-toasDrop-"
+"DownList ドロップダウンで担当振り分け]を参照。\n"
+"\n"
+"ドロップダウンメニュー中ではメールアドレスを隠せ'''ない'''ことに注意してください。そのため、メールアドレスを保護したままにしないといけない場合には、このオプションを使用するべきではありません。"
+"\n"
+"(''0.9 以降'')"
 
 #: trac/ticket/api.py:187
 msgid "Default version for newly created tickets."
-msgstr ""
+msgstr "新規登録チケットに対するデフォルトのバージョンを指定します。"
 
 #: trac/ticket/api.py:190
 msgid "Default type for newly created tickets (''since 0.9'')."
-msgstr ""
+msgstr "新規登録チケットに対するデフォルトの分類を指定します。(''0.9 以降'')"
 
 #: trac/ticket/api.py:193
 msgid "Default priority for newly created tickets."
-msgstr ""
+msgstr "新規登録チケットに対するデフォルトの優先度を指定します。"
 
 #: trac/ticket/api.py:196
 msgid "Default milestone for newly created tickets."
-msgstr ""
+msgstr "新規登録チケットに対するデフォルトのマイルストーンを指定します。"
 
 #: trac/ticket/api.py:199
 msgid "Default component for newly created tickets."
-msgstr ""
+msgstr "新規登録チケットに対するデフォルトのコンポーネントを指定します。"
 
 #: trac/ticket/api.py:202
 msgid "Default severity for newly created tickets."
-msgstr ""
+msgstr "新規登録チケットに対するデフォルトの重要度を指定します。"
 
 #: trac/ticket/api.py:205
 msgid "Default summary (title) for newly created tickets."
-msgstr ""
+msgstr "新規登録チケットに対するデフォルトの概要 (タイトル) を指定します。"
 
 #: trac/ticket/api.py:208
 msgid "Default description for newly created tickets."
-msgstr ""
+msgstr "新規登録チケットに対するデフォルトの詳細を指定します。"
 
 #: trac/ticket/api.py:211
 msgid "Default keywords for newly created tickets."
-msgstr ""
+msgstr "新規登録チケットに対するデフォルトのキーワードを指定します。"
 
 #: trac/ticket/api.py:214
 msgid "Default owner for newly created tickets."
-msgstr ""
+msgstr "新規登録チケットに対するデフォルトの担当者を指定します。"
 
 #: trac/ticket/api.py:217
 msgid "Default cc: list for newly created tickets."
-msgstr ""
+msgstr "新規登録チケットに対するデフォルトの関係者を指定します。"
 
 #: trac/ticket/api.py:220
 msgid ""
 "Default resolution for resolving (closing) tickets\n"
 "(''since 0.11'')."
-msgstr ""
+msgstr "解決 (クローズ) になるチケットに対するデフォルトの解決方法を指定します (''0.11 以降'')。"
 
 #: trac/ticket/default_workflow.py:105
 msgid ""
@@ -607,22 +925,28 @@ msgid ""
 "\n"
 "(''since 0.11'')"
 msgstr ""
+"チケットのワークフローはプラグインで制御します。デフォルトで制御しているのは `ConfigurableTicketWorkflow` "
+"コンポーネントのみです。\n"
+"そのコンポーネントは `trac.ini` ファイルのこのセクションでワークフローを設定するようになっています。詳細については "
+"TracWorkflow を参照してください。\n"
+"\n"
+"(''0.11 以降'')"
 
 #: trac/ticket/notification.py:36
 msgid "Always send notifications to the ticket owner (''since 0.9'')."
-msgstr ""
+msgstr "常にチケット担当者に通知を送信するかどうかを指定します。('' 0.9 以降'')"
 
 #: trac/ticket/notification.py:40
 msgid ""
 "Always send notifications to any address in the ''reporter''\n"
 "field."
-msgstr ""
+msgstr "常に''報告者''フィールドにあるアドレスに通知を送信するかどうかを指定します。"
 
 #: trac/ticket/notification.py:46
 msgid ""
 "Always send notifications to the person who causes the ticket \n"
 "property change and to any previous updater of that ticket."
-msgstr ""
+msgstr "チケットを変更した人とこれまでにそのチケットを変更した人に常に通知を送信するかどうかを指定します。"
 
 #: trac/ticket/notification.py:51
 msgid ""
@@ -632,8 +956,24 @@ msgid ""
 "`$prefix` being the value of the `smtp_subject_prefix` option.\n"
 "''(since 0.11)''"
 msgstr ""
+"通知メールの件名を生成するのに使う Genshi テキストテンプレートを指定します。\n"
+"\n"
+"デフォルトでは、件名のテンプレートは `$prefix #$ticket.id: $summary` です。\n"
+"`$prefix` は `smtp_subject_prefix` の設定値になります。\n"
+"''(0.11 以降)''"
 
 #: trac/ticket/notification.py:59
+msgid ""
+"Like ticket_subject_template but for batch modifications.\n"
+"\n"
+"By default, the template is `$prefix Batch modify: $tickets_descr`.\n"
+"''(since 1.0)''"
+msgstr ""
+"ticket_subject_template に似ていますが一括更新用のものです。\n"
+"\n"
+"デフォルトでは `$prefix Batch modify: $tickets_descr` になります ''(1.0 以降)''。"
+
+#: trac/ticket/notification.py:66
 msgid ""
 "Which width of ambiguous characters (e.g. 'single' or\n"
 "'double') should be used in the table of notification mail.\n"
@@ -643,6 +983,11 @@ msgid ""
 "US-ASCII characters.  This is expected by CJK users. ''(since\n"
 "0.12.2)''"
 msgstr ""
+"通知メールのテーブルで使用する ambiguous 文字の幅 ('single' または 'double') を指定します。\n"
+"\n"
+"'single' の場合、US-ASCII 文字と同じ幅となります。これは大部分のユーザが期待するものです。'double' の場合、US-"
+"ASCII 文字の倍の幅になります。これは CJK ユーザが期待するものです。\n"
+"''(0.12.2 以降)''"
 
 #: trac/ticket/query.py:821
 msgid ""
@@ -652,6 +997,10 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links].\n"
 "(''since 0.11.2'')"
 msgstr ""
+"認証しているユーザ向けのデフォルトのクエリを指定します。このクエリは、[TracQuery#QueryLanguage クエリ言語] "
+"シンタックス、または `query:` [TracQuery#UsingTracLinks Trac リンク]で使う `?` で始まる URL "
+"クエリ文字列のどちらかを指定します。\n"
+"(''0.11.2 以降'')"
 
 #: trac/ticket/query.py:829
 msgid ""
@@ -661,24 +1010,28 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links].\n"
 "(''since 0.11.2'')"
 msgstr ""
+"匿名ユーザ向けのデフォルトのクエリを指定します。このクエリは、[TracQuery#QueryLanguage クエリ言語] シンタックス、または"
+" `query:` [TracQuery#UsingTracLinks Trac リンク]で使う `?` で始まる URL "
+"クエリ文字列のどちらかを指定します。\n"
+"(''0.11.2 以降'')"
 
 #: trac/ticket/query.py:837
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default (''since 0.11'')"
-msgstr ""
+msgstr "チケットクエリで1ページあたりに表示するチケット数のデフォルトを指定します (''0.11 以降'')"
 
-#: trac/ticket/report.py:59
+#: trac/ticket/report.py:116
 msgid ""
 "Number of tickets displayed per page in ticket reports,\n"
 "by default (''since 0.11'')"
-msgstr ""
+msgstr "チケットのレポートで1ページあたりに表示するチケット数のデフォルトを指定します (''0.11 以降'')"
 
-#: trac/ticket/report.py:63
+#: trac/ticket/report.py:120
 msgid ""
 "Number of tickets displayed in the rss feeds for reports\n"
 "(''since 0.11'')"
-msgstr ""
+msgstr "レポートの RSS フィードに表示するチケット数を指定します (''0.11 以降'')"
 
 #: trac/ticket/roadmap.py:142
 msgid ""
@@ -743,6 +1096,56 @@ msgid ""
 "\n"
 "(''since 0.11'')"
 msgstr ""
+"チケットのワークフローは現在設定できるようになっているため、たくさんのチケットステータスを用意できますが、単純にクローズしているチケットとそれ以外のチケットで表示することは大抵の場合で適切ではありません。このセクションでは、マイルストーンのプログレスバーで個々の配色で表示されるようにステータスの''グループ''を作成することができます。"
+"\n"
+"\n"
+"チケットの//ステータス//でのみグループ化し、それ以外ではグループ化できないことに注意してください。特に、クローズしているチケットを//解決方法//で分類することはできません。"
+"\n"
+"\n"
+"3つのグループ //closed//、//new//、//active// の設定例 (デフォルトでは closed と active のみです)"
+"\n"
+"{{{\n"
+"# 'closed' グループは 'closed' チケットに対応\n"
+"closed = closed\n"
+"\n"
+"# .order: プログレスバーでの順序\n"
+"closed.order = 0\n"
+"\n"
+"# .query_args: 対応するクエリの任意のパラメータです。\n"
+"#              この例では2つの列 ('作成' と '変更') を追加し\n"
+"#              '作成' でソートするようにデフォルトを変更しています。\n"
+"closed.query_args = "
+"group=resolution,order=time,col=id,col=summary,col=owner,col=type,col=priority,col=component,col=severity,col=time,col=changetime"
+"\n"
+"\n"
+"# .overall_completion: 完了として割合を計算するグループを示します\n"
+"closed.overall_completion = true\n"
+"\n"
+"new = new\n"
+"new.order = 1\n"
+"new.css_class = new\n"
+"new.label = 新規\n"
+"\n"
+"# ※ このグループは他のステータスをひとまとめにする\n"
+"active = *\n"
+"active.order = 2\n"
+"\n"
+"# .css_class: この区間に対する CSS クラス\n"
+"active.css_class = open\n"
+"\n"
+"# .label: このグループに表示するラベル\n"
+"active.label = in progress\n"
+"}}}\n"
+"\n"
+"この定義に含めるステータスをカンマ区切りで指定します。また、'*' "
+"は任意のステータスを意味し、残りのすべてのステータスを1つのグループに関連付けるのに使用することができます。\n"
+"\n"
+"CSS クラスは new (黄色)、open (無色)、closed (緑色) のいずれかにできます。それ以外のスタイルはカスタム CSS "
+"ルールを使って簡単に追加できます。例えば `table.progress td.<class> { background: <color> }` "
+"を [TracInterfaceCustomization#SiteAppearance site/style.css] ファイルに追加します。"
+"\n"
+"\n"
+"(''0.11 以降'')"
 
 #: trac/ticket/roadmap.py:386
 msgid ""
@@ -750,6 +1153,8 @@ msgid ""
 "which is used to collect statistics on groups of tickets for display\n"
 "in the roadmap views."
 msgstr ""
+"`ITicketGroupStatsProvider` を実装しているコンポーネントの名前を指定します。\n"
+"これはロードマップの表示でチケットのグループごとに集計を行うのに使います。"
 
 #: trac/ticket/roadmap.py:588
 msgid ""
@@ -757,34 +1162,39 @@ msgid ""
 "which is used to collect statistics on groups of tickets for display\n"
 "in the milestone views."
 msgstr ""
-
-#: trac/ticket/web_ui.py:67
-msgid ""
-"Enable the display of all ticket changes in the timeline, not only\n"
-"open / close operations (''since 0.9'')."
-msgstr ""
-
-#: trac/ticket/web_ui.py:71
-msgid ""
-"Don't accept tickets with a too big description.\n"
-"(''since 0.11'')."
-msgstr ""
+"`ITicketGroupStatsProvider` を実装しているコンポーネントの名前を指定します。\n"
+"これはマイルストーンの表示でチケットのグループごとに集計を行うのに使います。"
 
 #: trac/ticket/web_ui.py:75
 msgid ""
-"Don't accept tickets with a too big comment.\n"
-"(''since 0.11.2'')"
-msgstr ""
+"Enable the display of all ticket changes in the timeline, not only\n"
+"open / close operations (''since 0.9'')."
+msgstr "タイムラインにチケットの登録と解決だけでなくすべてのチケットの変更を表示するかどうかを指定します。(''0.9 以降'')"
 
 #: trac/ticket/web_ui.py:79
+msgid ""
+"Don't accept tickets with a too big description.\n"
+"(''since 0.11'')."
+msgstr "チケットの詳細が大き過ぎる場合、チケットを受け付けないようにします。(''0.11 以降'')"
+
+#: trac/ticket/web_ui.py:83
+msgid ""
+"Don't accept tickets with a too big comment.\n"
+"(''since 0.11.2'')"
+msgstr "チケットのコメントが大き過ぎる場合、チケットを受け付けないようにします。(''0.11.2 以降'')"
+
+#: trac/ticket/web_ui.py:87
 msgid ""
 "Which formatter flavor (e.g. 'html' or 'oneliner') should be\n"
 "used when presenting the description for new tickets.\n"
 "If 'oneliner', the [timeline] abbreviated_messages option applies.\n"
 "(''since 0.11'')."
 msgstr ""
+"新規登録チケットの詳細を表示する際にどのフォーマッタを使用するかを指定します (例えば 'html' や 'oneliner')。\n"
+"'oneliner' の場合は、[timeline] abbreviated_messages の設定内容を適用します。\n"
+"(''0.11 以降'')"
 
-#: trac/ticket/web_ui.py:86
+#: trac/ticket/web_ui.py:94
 msgid ""
 "Whether Wiki formatter should respect the new lines present\n"
 "in the Wiki text.\n"
@@ -792,8 +1202,12 @@ msgid ""
 "but keeps the old behavior for upgraded environments (i.e. 'no').\n"
 "(''since 0.11'')."
 msgstr ""
+"Wiki フォーマッタが Wiki テキスト中の改行を考慮するかどうかを指定します。\n"
+"'default' を設定した場合、新規作成した環境下では 'yes' となりますが、アップグレードしてきた環境では以前の挙動のまま (つまり "
+"'no') となります。\n"
+"(''0.11 以降'')"
 
-#: trac/ticket/web_ui.py:93
+#: trac/ticket/web_ui.py:101
 msgid ""
 "The base query to be used when linkifying values of ticket\n"
 "fields. The query is a URL query\n"
@@ -801,18 +1215,23 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links].\n"
 "(''since 0.12'')"
 msgstr ""
+"チケットの値にリンクを作成するときに使用するベースのクエリを指定します。これは `query:` "
+"[TracQuery#UsingTracLinks Trac リンク] で使う `?` で始まる URL クエリ文字列です。\n"
+"(''0.12 以降'')"
 
 #: trac/timeline/web_ui.py:52
 msgid ""
 "Default number of days displayed in the Timeline, in days.\n"
 "(''since 0.9.'')"
 msgstr ""
+"タイムラインに表示する日数のデフォルトを指定します。\n"
+"(''0.9 以降'')"
 
 #: trac/timeline/web_ui.py:56
 msgid ""
 "Maximum number of days (-1 for unlimited) displayable in the \n"
 "Timeline. (''since 0.11'')"
-msgstr ""
+msgstr "タイムラインに表示できる最大日数 (-1 は無制限) を指定します。(''0.11 以降'')"
 
 #: trac/timeline/web_ui.py:60
 msgid ""
@@ -822,6 +1241,10 @@ msgid ""
 "specific event providers, see their own documentation.\n"
 "(''Since 0.11'')"
 msgstr ""
+"Wiki フォーマットしたイベントメッセージを切り詰めるかどうかを指定します。\n"
+"\n"
+"これは描画のみに有効でイベントプロバイダは無視することができます。詳細は個々のドキュメントを参照してください。\n"
+"(''0.11 以降'')"
 
 #: trac/versioncontrol/admin.py:169
 msgid ""
@@ -830,6 +1253,9 @@ msgid ""
 "admin panel. If the list is empty, all repository directories are\n"
 "allowed. (''since 0.12.1'')"
 msgstr ""
+"リポジトリ管理パネルで追加や変更の際に、リポジトリのディレクトリとして許可するプレフィックスをカンマ区切りで指定します。このリストが空の場合は、すべてのディレクトリを許可します。"
+"\n"
+"(''0.12.1 以降'')"
 
 #: trac/versioncontrol/api.py:284
 msgid ""
@@ -846,6 +1272,13 @@ msgid ""
 "\n"
 "(''since 0.12'')"
 msgstr ""
+"リポジトリを新規登録するやり方の1つは、`trac.ini` の `[repositories]` セクションに追加することです。\n"
+"これは便利なエイリアスや一時的なリポジトリの設定、インストール時の初期段階中に特に適しています。\n"
+"\n"
+"このセクションで使用する書式の詳細については [TracRepositoryAdmin#Intrac.ini "
+"TracRepositoryAdmin] を、他の方法についてはこのページの続きを参照してください。\n"
+"\n"
+"(''0.12 以降'')"
 
 #: trac/versioncontrol/api.py:298
 msgid ""
@@ -855,6 +1288,10 @@ msgid ""
 "defined in [[TracIni#repositories-section repositories]] or using the\n"
 "\"Repositories\" admin panel. (''since 0.12'')"
 msgstr ""
+"デフォルトになるリポジトリの接続方法を指定します。(''0.10 以降'')\n"
+"\n"
+"[[TracIni#repositories-section repositories]] "
+"セクションで定義するリポジトリや「リポジトリ」管理パネルなどでも使用します。(''0.12 以降'')"
 
 #: trac/versioncontrol/api.py:306
 msgid ""
@@ -865,6 +1302,10 @@ msgid ""
 "[TracIni#repositories-section repositories] section, or using the\n"
 "\"Repositories\" admin panel. (''since 0.12'')"
 msgstr ""
+"デフォルトのリポジトリへのパスを指定します。これは相対パスにすることもできます。(''0.11 以降'')\n"
+"\n"
+"このオプションは非推奨で、リポジトリは [TracIni#repositories-section repositories] "
+"セクションで定義、もしくは「リポジトリ」管理パネルを使うようにしてください。(''0.12 以降'')"
 
 #: trac/versioncontrol/api.py:314
 msgid ""
@@ -879,6 +1320,12 @@ msgid ""
 "repositories specified here. The default is to synchronize the default\n"
 "repository, for backward compatibility. (''since 0.12'')"
 msgstr ""
+"ページのリクエストのたびに同期を行うリポジトリのリストを指定します。\n"
+"\n"
+"post-commit フックから `trac-admin $ENV changeset added` "
+"を実行するようにすべてのリポジトリで設定しているなら、このオプションを空にしてください "
+"(推奨)。そうでないのであれば、リポジトリの名前をカンマ区切りで指定します。注意事項として、これはパフォーマンスに悪影響があり、チェンジセット・リスナーが指定したリポジトリからのイベント取得を妨げることになります。デフォルトは、下位互換のためデフォルトのリポジトリと同期を行います。(''0.12"
+" 以降'')"
 
 #: trac/versioncontrol/svn_authz.py:124
 msgid ""
@@ -888,74 +1335,17 @@ msgid ""
 "To enable authz permission checking, the `AuthzSourcePolicy` permission\n"
 "policy must be added to `[trac] permission_policies`."
 msgstr ""
+"Subversion [http://svnbook.red-"
+"bean.com/en/1.5/svn.serverconfig.pathbasedauthz.html authz ファイル] "
+"のパスを指定します。\n"
+"authz 権限チェックを有効にするには、`AuthzSourcePolicy` 権限ポリシーを `[trac] "
+"permission_policies` に追加してください。"
 
 #: trac/versioncontrol/svn_authz.py:131
 msgid ""
 "The module prefix used in the `authz_file` for the default\n"
 "repository. If left empty, the global section is used."
-msgstr ""
-
-#: trac/versioncontrol/svn_fs.py:253
-msgid ""
-"Comma separated list of paths categorized as branches.\n"
-"If a path ends with '*', then all the directory entries found below \n"
-"that path will be included. \n"
-"Example: `/trunk, /branches/*, /projectAlpha/trunk, /sandbox/*`"
-msgstr ""
-
-#: trac/versioncontrol/svn_fs.py:260
-msgid ""
-"Comma separated list of paths categorized as tags.\n"
-"\n"
-"If a path ends with '*', then all the directory entries found below\n"
-"that path will be included.\n"
-"Example: `/tags/*, /projectAlpha/tags/A-1.0, /projectAlpha/tags/A-v1.1`"
-msgstr ""
-
-#: trac/versioncontrol/svn_prop.py:37
-msgid ""
-"The TracBrowser for Subversion can interpret the `svn:externals`\n"
-"property of folders. By default, it only turns the URLs into links as\n"
-"Trac can't browse remote repositories.\n"
-"\n"
-"However, if you have another Trac instance (or an other repository\n"
-"browser like [http://www.viewvc.org/ ViewVC]) configured to browse the\n"
-"target repository, then you can instruct Trac which other repository\n"
-"browser to use for which external URL. This mapping is done in the\n"
-"`[svn:externals]` section of the TracIni.\n"
-"\n"
-"Example:\n"
-"{{{\n"
-"[svn:externals]\n"
-"1 = svn://server/repos1                       "
-"http://trac/proj1/browser/$path?rev=$rev\n"
-"2 = svn://server/repos2                       "
-"http://trac/proj2/browser/$path?rev=$rev\n"
-"3 = http://theirserver.org/svn/eng-soft       "
-"http://ourserver/viewvc/svn/$path/?pathrev=25914\n"
-"4 = svn://anotherserver.com/tools_repository  "
-"http://ourserver/tracs/tools/browser/$path?rev=$rev\n"
-"}}}\n"
-"With the above, the\n"
-"`svn://anotherserver.com/tools_repository/tags/1.1/tools` external will\n"
-"be mapped to `http://ourserver/tracs/tools/browser/tags/1.1/tools?rev=`\n"
-"(and `rev` will be set to the appropriate revision number if the\n"
-"external additionally specifies a revision, see the\n"
-"[http://svnbook.red-bean.com/en/1.4/svn.advanced.externals.html SVN Book "
-"on externals]\n"
-"for more details).\n"
-"\n"
-"Note that the number used as a key in the above section is purely used\n"
-"as a place holder, as the URLs themselves can't be used as a key due to\n"
-"various limitations in the configuration file parser.\n"
-"\n"
-"Finally, the relative URLs introduced in\n"
-"[http://subversion.apache.org/docs/release-notes/1.5.html#externals "
-"Subversion 1.5]\n"
-"are not yet supported.\n"
-"\n"
-"(''since 0.11'')"
-msgstr ""
+msgstr "`authz_file` に対するデフォルトのリポジトリのモジュール名を指定します。空の場合はグローバルセクションを使用します。"
 
 #: trac/versioncontrol/web_ui/browser.py:118
 msgid ""
@@ -964,6 +1354,9 @@ msgid ""
 "\n"
 "(''since 0.11'')"
 msgstr ""
+"リポジトリブラウザで Wiki として描画するバージョン管理のプロパティをカンマ区切りで指定します。\n"
+"\n"
+"(''0.11 以降'')"
 
 #: trac/versioncontrol/web_ui/browser.py:125
 msgid ""
@@ -972,6 +1365,9 @@ msgid ""
 "\n"
 "(''since 0.11'')"
 msgstr ""
+"リポジトリブラウザで1行スタイルの Wiki として描画するバージョン管理のプロパティをカンマ区切りで指定します。\n"
+"\n"
+"(''0.11 以降'')"
 
 #: trac/versioncontrol/web_ui/browser.py:184
 msgid ""
@@ -982,6 +1378,11 @@ msgid ""
 "glob patterns, i.e. \"*\" can be used as a wild card)\n"
 "(''since 0.10'')"
 msgstr ""
+"ダウンロードできるようにするリポジトリのパスをリストで指定します。\n"
+"\n"
+"ダウンロードを無効にしたい場合は空にします。そうでない場合は、許可するパスをカンマ区切りで指定します (ワイルドカードとして \"*\" "
+"が使えます)。\n"
+"(''0.10 以降'')"
 
 #: trac/versioncontrol/web_ui/browser.py:193
 msgid ""
@@ -991,6 +1392,10 @@ msgid ""
 "blue is older, red is newer.\n"
 "(''since 0.11'')"
 msgstr ""
+"''時期''列の色付けを行うかどうかを指定します。\n"
+"\n"
+"これにはソースコードの注釈と同じカラースケールを使います。青が古く、赤が新しいものとなります。\n"
+"(''0.11 以降'')"
 
 #: trac/versioncontrol/web_ui/browser.py:202
 msgid ""
@@ -999,6 +1404,9 @@ msgid ""
 "the browser ''age'' column if `color_scale` is enabled.\n"
 "(''since 0.11'')"
 msgstr ""
+"最新のものに対応する色を (r,g,b) で指定します。`color_scale` "
+"が有効の場合に、''注釈履歴''やソースブラウザの''時期''列で使います。\n"
+"(''0.11 以降'')"
 
 #: trac/versioncontrol/web_ui/browser.py:210
 msgid ""
@@ -1007,6 +1415,9 @@ msgid ""
 "the browser ''age'' column if `color_scale` is enabled.\n"
 "(''since 0.11'')"
 msgstr ""
+"最古のものに対応する色を (r,g,b) で指定します。`color_scale` "
+"が有効の場合に、''注釈履歴''やソースブラウザの''時期''列で使います。\n"
+"(''0.11 以降'')"
 
 #: trac/versioncontrol/web_ui/browser.py:216
 msgid ""
@@ -1015,6 +1426,8 @@ msgid ""
 "the color value.\n"
 "(''since 0.11'')"
 msgstr ""
+"0から1未満の値を設定すると、カラースケールの補間処理で設定した位置で `intermediate_color` の色を使うようになります。\n"
+"(''0.11 以降'')"
 
 #: trac/versioncontrol/web_ui/browser.py:222
 msgid ""
@@ -1025,6 +1438,9 @@ msgid ""
 "`newest_color` will be used.\n"
 "(''since 0.11'')"
 msgstr ""
+"カラースケールの2つの線形補間を行う場合の中間部分に対応する色を (r,g,b) で指定します (`intermediate_point` "
+"参照)。指定しない場合は、`oldest_color` と `newest_color` の中間色を使います。\n"
+"(''0.11 以降'')"
 
 #: trac/versioncontrol/web_ui/browser.py:230
 msgid ""
@@ -1038,6 +1454,12 @@ msgid ""
 "For open repositories where anyone can check-in a file, it is\n"
 "recommended to leave this option disabled (which is the default)."
 msgstr ""
+"ファイルをそのままブラウザで表示するか、単にダウンロードになるようにするかどうかを指定します。\n"
+"\n"
+"ブラウザはほとんどのファイルを HTML "
+"として解釈するため、悪意のあるユーザにクロスサイトスクリプティング攻撃を行うファイルの作成を許すことになります。\n"
+"\n"
+"誰でもファイルをチェックインできる公開リポジトリでは、この設定を無効のままにすることを推奨します。(これがデフォルトです)"
 
 #: trac/versioncontrol/web_ui/browser.py:242
 msgid ""
@@ -1045,6 +1467,8 @@ msgid ""
 "the repository browser.\n"
 "(''since 0.9'')"
 msgstr ""
+"リポジトリブラウザで非表示にするバージョン管理のプロパティをカンマ区切りで指定します。\n"
+"(''0.9 以降'')"
 
 #: trac/versioncontrol/web_ui/changeset.py:129
 msgid ""
@@ -1053,6 +1477,9 @@ msgid ""
 "This can also be `location`, for showing the common prefix for the\n"
 "changed files. (since 0.11)."
 msgstr ""
+"表示するファイル数を指定します。(`-1`は無制限、`0`は無効になります)\n"
+"\n"
+"`location` を指定することもできます。変更ファイルの共通しているプレフィックスを表示するようになります。(0.11 以降)"
 
 #: trac/versioncontrol/web_ui/changeset.py:136
 msgid ""
@@ -1063,6 +1490,10 @@ msgid ""
 "is set to true, changeset messages will be single line only, losing\n"
 "some formatting (bullet points, etc)."
 msgstr ""
+"Wiki フォーマットになっているチェンジセットのメッセージを複数行になるようにするかそうでないようにするかを指定します。\n"
+"\n"
+"この設定を指定しないか false にして `wiki_format_messages` を true "
+"にすると、チェンジセットのメッセージは1行スタイルになり、箇条書きなどの書式は反映されないようになります。"
 
 #: trac/versioncontrol/web_ui/changeset.py:145
 msgid ""
@@ -1071,19 +1502,22 @@ msgid ""
 "That event will link to the range of changesets in the log view.\n"
 "(''since 0.11'')"
 msgstr ""
+"同じ更新者で完全に同じメッセージを持っている連続したチェンジセットを1つのイベントになるようにするかどうかを指定します。このイベントは、更新履歴ページでのチェンジセットの範囲にリンクするようになります。"
+"\n"
+"(''0.11 以降'')"
 
 #: trac/versioncontrol/web_ui/changeset.py:152
 msgid ""
 "Maximum number of modified files for which the changeset view will\n"
 "attempt to show the diffs inlined (''since 0.10'')."
-msgstr ""
+msgstr "チェンジセットページで差分をインラインで表示するファイルの最大数を指定します。(''0.10 以降'')"
 
 #: trac/versioncontrol/web_ui/changeset.py:156
 msgid ""
 "Maximum total size in bytes of the modified files (their old size\n"
 "plus their new size) for which the changeset view will attempt to show\n"
 "the diffs inlined (''since 0.10'')."
-msgstr ""
+msgstr "チェンジセットページで差分をインラインで表示するファイルの合計の上限バイト数 (旧サイズと新サイズの和) を指定します。(''0.10 以降'')"
 
 #: trac/versioncontrol/web_ui/changeset.py:161
 msgid ""
@@ -1092,30 +1526,35 @@ msgid ""
 "If this option is disabled, changeset messages will be rendered as\n"
 "pre-formatted text."
 msgstr ""
+"チェンジセットのメッセージに Wiki フォーマットを適用するかどうかを指定します。\n"
+"\n"
+"この設定を無効にすると、チェンジセットのメッセージは pre フォーマットのテキストとして表示します。"
 
 #: trac/versioncontrol/web_ui/log.py:47
 msgid ""
 "Default value for the limit argument in the TracRevisionLog.\n"
 "(''since 0.11'')"
 msgstr ""
+"TracRevisionLog の limit 引数に対するデフォルト値を指定します。\n"
+"(''0.11 以降'')"
 
 #: trac/versioncontrol/web_ui/log.py:51
 msgid ""
 "Comma-separated list of colors to use for the TracRevisionLog\n"
-"graph display. (''since 0.13'')"
-msgstr ""
+"graph display. (''since 1.0'')"
+msgstr "TracRevisionLog のグラフ表示に使う配色をカンマ区切りで指定します。(''1.0 以降'')"
 
 #: trac/web/auth.py:61
 msgid ""
 "Whether the IP address of the user should be checked for\n"
 "authentication (''since 0.9'')."
-msgstr ""
+msgstr "認証チェックに IP アドレスを使用するかどうかを指定します。(''0.9 以降'')"
 
 #: trac/web/auth.py:65
 msgid ""
 "Whether login names should be converted to lower case\n"
 "(''since 0.9'')."
-msgstr ""
+msgstr "ログイン名を小文字に変換するかどうかを指定します。(''0.9 以降'')"
 
 #: trac/web/auth.py:69
 msgid ""
@@ -1127,6 +1566,10 @@ msgid ""
 "of 0 makes the cookie expire at the end of the browsing\n"
 "session. (''since 0.12'')"
 msgstr ""
+"認証用クッキーの生存期間を秒単位で指定します。\n"
+"\n"
+"この値を使って、ブラウザは認証情報をどれくらいの間キャッシュするか、つまり、ユーザのアクセスがどれくらいない時には再度ログインする必要があるか、を決めます。デフォルト値は0で、ブラウザの終了時にクッキーは期限切れになります。(''0.12"
+" 以降'')"
 
 #: trac/web/auth.py:78
 msgid ""
@@ -1134,8 +1577,10 @@ msgid ""
 "base path of several Trac instances if you want them to share\n"
 "the cookie.  (''since 0.12'')"
 msgstr ""
+"認証用クッキーのパスを指定します。クッキーを他の Trac インスタンスと共有したい場合には、共通になるベースのパスを設定します。(''0.12 "
+"以降'')"
 
-#: trac/web/chrome.py:324
+#: trac/web/chrome.py:330
 msgid ""
 "Path to the //shared templates directory//.\n"
 "\n"
@@ -1144,8 +1589,14 @@ msgid ""
 "\n"
 "(''since 0.11'')"
 msgstr ""
+"//共有するテンプレートディレクトリ//のパスを指定します。\n"
+"\n"
+"このディレクトリのテンプレートを環境中の `templates` ディレクトリにあるテンプレートに加えてロードしますが、後者を優先して使用します。"
+"\n"
+"\n"
+"(''0.11 以降'')"
 
-#: trac/web/chrome.py:332
+#: trac/web/chrome.py:338
 msgid ""
 "Path to the //shared htdocs directory//.\n"
 "\n"
@@ -1155,23 +1606,31 @@ msgid ""
 "This can be useful in site.html for common interface customization\n"
 "of multiple Trac environments.\n"
 "\n"
-"(''since 0.13'')"
+"(''since 1.0'')"
 msgstr ""
+"//共有する htdocs ディレクトリ//のパスを指定します。\n"
+"\n"
+"このディレクトリの静的リソースを common と site URL に対して追加で、環境配下の URL である /chrome/shared "
+"にマッピングします。\n"
+"\n"
+"複数の Trac 環境のインターフェイスに対して共通のカスタマイズを site.html で行うのに便利です。\n"
+"\n"
+"(''1.0 以降'')"
 
-#: trac/web/chrome.py:343
+#: trac/web/chrome.py:349
 msgid "Automatically reload template files after modification."
-msgstr ""
+msgstr "テンプレートの変更後に自動でリロードするかどうかを指定します。"
 
-#: trac/web/chrome.py:346
+#: trac/web/chrome.py:352
 msgid ""
 "The maximum number of templates that the template loader will cache\n"
 "in memory. The default value is 128. You may want to choose a higher\n"
 "value if your site uses a larger number of templates, and you have\n"
 "enough memory to spare, or you can reduce it if you are short on\n"
 "memory."
-msgstr ""
+msgstr "テンプレートローダがメモリにキャッシュするテンプレートの最大数を指定します。デフォルト値は128です。もっと多くのテンプレートを使っていてメモリに余裕がある場合は、大きな値にすることもできます。メモリが少ない場合には、小さくすることもできます。"
 
-#: trac/web/chrome.py:353
+#: trac/web/chrome.py:359
 msgid ""
 "Base URL for serving the core static resources below \n"
 "`/chrome/common/`.\n"
@@ -1187,8 +1646,16 @@ msgid ""
 "will not be made available this way and additional rewrite \n"
 "rules will be needed in the web server."
 msgstr ""
+"`/chrome/common/` 配下の静的リソースを処理するベース URL を指定します。\n"
+"\n"
+"空のままにすることもでき、Trac が自分で単にそのリソースを処理するようになります。\n"
+"\n"
+"上級者は [TracAdmin trac-admin ... deploy <deploydir>] を一緒に使って Web サーバが直接 "
+"Trac の静的リソースを処理するようにできます。しかし、`<deploydir>/htdocs/common` "
+"ディレクトリにしか適用されず、デプロイしているリソース (例えばプラグインのリソース) に対してはこの方法は有効ではありません。Web "
+"サーバに対し、追加でリライトルールが必要になります。"
 
-#: trac/web/chrome.py:368
+#: trac/web/chrome.py:374
 msgid ""
 "Location of the jQuery !JavaScript library (version 1.7.2).\n"
 "\n"
@@ -1199,26 +1666,144 @@ msgid ""
 "http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js or\n"
 "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js.\n"
 "\n"
-"(''since 0.13'')"
+"(''since 1.0'')"
 msgstr ""
+"jQuery !JavaScript ライブラリ (バージョン 1.7.2) の URL を指定します。\n"
+"\n"
+"空の値を指定すると、Trac にバンドルしているコピーを使って jQuery をロードします。\n"
+"\n"
+"もしくは、jQuery を CDN からロードすることができます。例えば "
+"http://code.jquery.com/jquery-1.7.2.min.js、http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js"
+" または https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js "
+"を指定します。\n"
+"\n"
+"(''1.0 以降'')"
 
-#: trac/web/chrome.py:380
+#: trac/web/chrome.py:386
+msgid ""
+"Location of the jQuery UI !JavaScript library (version 1.8.21).\n"
+"\n"
+"An empty value loads jQuery UI from the copy bundled with Trac.\n"
+"\n"
+"Alternatively, jQuery UI could be loaded from a CDN, for example:\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js\n"
+"or\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/jquery-ui.min.js.\n"
+"\n"
+"(''since 1.0'')"
+msgstr ""
+"jQuery UI !JavaScript ライブラリ (バージョン 1.8.21) の URL を指定します。\n"
+"\n"
+"空の値を指定すると、Trac にバンドルしているコピーを使って jQuery UI をロードします。\n"
+"\n"
+"もしくは、jQuery UI を CDN からロードすることができます。例えば "
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js "
+"または http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/jquery-ui.min.js "
+"を指定します。\n"
+"\n"
+"(''1.0 以降'')"
+
+#: trac/web/chrome.py:398
+msgid ""
+"Location of the theme to be used with the jQuery UI !JavaScript\n"
+"library (version 1.8.21).\n"
+"\n"
+"An empty value loads the custom Trac jQuery UI theme from the copy \n"
+"bundled with Trac.\n"
+"\n"
+"Alternatively, a jQuery UI theme could be loaded from a CDN, for \n"
+"example:\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/start"
+"/jquery-ui.css\n"
+"or\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/themes/start/jquery-"
+"ui.css.\n"
+"\n"
+"(''since 1.0'')"
+msgstr ""
+"jQuery UI !JavaScript ライブラリ (バージョン 1.8.21) で使用するテーマの URL を指定します。\n"
+"\n"
+"空の値を指定すると、Trac にバンドルしているコピーからカスタムの Trac jQuery UI テーマをロードします。\n"
+"\n"
+"もしくは、jQuery UI テーマを CDN からロードすることができます。例えば "
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/start"
+"/jquery-ui.css または "
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/themes/start/jquery-"
+"ui.css を指定します。\n"
+"\n"
+"(''1.0 以降'')"
+
+#: trac/web/chrome.py:413
+msgid ""
+"Location of the jQuery UI !JavaScript library (version 1.8.18).\n"
+"\n"
+"An empty value loads jQuery UI from the copy bundled with Trac.\n"
+"\n"
+"Alternatively, jQuery UI could be loaded from a CDN, for example:\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js\n"
+"or\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.18/jquery-ui.min.js.\n"
+"\n"
+"(''since 1.0'')"
+msgstr ""
+"jQuery UI !JavaScript ライブラリ (バージョン 1.8.18) の URL を指定します。\n"
+"\n"
+"空の値を指定すると、Trac にバンドルしているコピーを使って jQuery UI をロードします。\n"
+"\n"
+"もしくは、jQuery UI を CDN からロードすることができます。例えば "
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js "
+"または http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.18/jquery-ui.min.js "
+"を指定します。\n"
+"\n"
+"(''1.0 以降'')"
+
+#: trac/web/chrome.py:425
+msgid ""
+"Location of the theme to be used with the jQuery UI !JavaScript\n"
+"library (version 1.8.18).\n"
+"\n"
+"An empty value loads the custom Trac jQuery UI theme from the copy \n"
+"bundled with Trac.\n"
+"\n"
+"Alternatively, a jQuery UI theme could be loaded from a CDN, for \n"
+"example:\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/start"
+"/jquery-ui.css\n"
+"or\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.18/themes/start/jquery-"
+"ui.css.\n"
+"\n"
+"(''since 1.0'')"
+msgstr ""
+"jQuery UI !JavaScript ライブラリ (バージョン 1.8.18) で使用するテーマの URL を指定します。\n"
+"\n"
+"空の値を指定すると、Trac にバンドルしているコピーからカスタムの Trac jQuery UI テーマをロードします。\n"
+"\n"
+"もしくは、jQuery UI テーマを CDN からロードすることができます。例えば "
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/start"
+"/jquery-ui.css または "
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.18/themes/start/jquery-"
+"ui.css を指定します。\n"
+"\n"
+"(''1.0 以降'')"
+
+#: trac/web/chrome.py:440
 msgid ""
 "Order of the items to display in the `metanav` navigation bar,\n"
 "listed by IDs. See also TracNavigation."
-msgstr ""
+msgstr "`metanav` ナビゲーションバーに表示する項目の順番を ID で指定します。TracNavigation も参照してください。"
 
-#: trac/web/chrome.py:385
+#: trac/web/chrome.py:445
 msgid ""
 "Order of the items to display in the `mainnav` navigation bar, \n"
 "listed by IDs. See also TracNavigation."
-msgstr ""
+msgstr "`mainnav` ナビゲーションバーに表示する項目の順番を ID で指定します。TracNavigation も参照してください。"
 
-#: trac/web/chrome.py:391
+#: trac/web/chrome.py:451
 msgid "URL to link to, from the header logo."
-msgstr ""
+msgstr "ヘッダロゴからリンクする URL を指定します。"
 
-#: trac/web/chrome.py:394
+#: trac/web/chrome.py:454
 msgid ""
 "URL of the image to use as header logo.\n"
 "It can be absolute, server relative or relative.\n"
@@ -1230,45 +1815,57 @@ msgid ""
 "folder mapped to the [#trac-section htdocs_location] URL. \n"
 "Only specifying `your-logo.png` is equivalent to the latter."
 msgstr ""
+"ヘッダロゴに使う画像の URL を指定します。これには完全 URL、サーバ相対 URL、または、相対 URL が指定できます。\n"
+"\n"
+"相対 URL の場合、`/chrome` URL 配下に対するものとなります。`site/your-logo.png` にすると、環境中にある "
+"`htdocs` フォルダにある `your-logo.png` を指します。`common/your-logo.png` "
+"にすると、[#trac-section htdocs_location] URL に対応したフォルダにある `your-logo.png` "
+"を指します。単に `your-logo.png` を指定した場合は、後者と同じになります。"
 
-#: trac/web/chrome.py:405
+#: trac/web/chrome.py:465
 msgid "Alternative text for the header logo."
-msgstr ""
+msgstr "ヘッダロゴ画像の代替テキストを指定します。"
 
-#: trac/web/chrome.py:409
+#: trac/web/chrome.py:469
 msgid "Width of the header logo image in pixels."
-msgstr ""
+msgstr "ヘッダロゴ画像の幅をピクセル単位で指定します。"
 
-#: trac/web/chrome.py:412
+#: trac/web/chrome.py:472
 msgid "Height of the header logo image in pixels."
-msgstr ""
+msgstr "ヘッダロゴ画像の高さをピクセル単位で指定します。"
 
-#: trac/web/chrome.py:415
+#: trac/web/chrome.py:475
 msgid ""
 "Show email addresses instead of usernames. If false, we obfuscate\n"
 "email addresses. (''since 0.11'')"
-msgstr ""
+msgstr "ユーザ名の代わりにメールアドレスを表示するかどうかを指定します。false の場合、メールアドレスはぼかすようにします。(''0.11 以降'')"
 
-#: trac/web/chrome.py:419
+#: trac/web/chrome.py:479
 msgid ""
 "Never obfuscate `mailto:` links explicitly written in the wiki, \n"
 "even if `show_email_addresses` is false or the user has not the \n"
 "EMAIL_VIEW permission (''since 0.11.6'')."
 msgstr ""
+"`show_email_addresses` が false、または、EMAIL_VIEW 権限がない場合でも、Wiki 中に明示的に記述してある"
+" `mailto:` リンクをぼかさないようにするかを指定します。(''0.11.6 以降'')"
 
-#: trac/web/chrome.py:425
+#: trac/web/chrome.py:485
 msgid ""
 "Show IP addresses for resource edits (e.g. wiki).\n"
 "(''since 0.11.3'')"
 msgstr ""
+"リソース編集時の IP アドレスを表示するかどうかを指定します (例えば Wiki)。\n"
+"(''0.11.3 以降'')"
 
-#: trac/web/chrome.py:429
+#: trac/web/chrome.py:489
 msgid ""
 "Make `<textarea>` fields resizable. Requires !JavaScript.\n"
 "(''since 0.12'')"
 msgstr ""
+"`<textarea>` フィールドをリサイズできるようにするかどうかを指定します。!JavaScript が必要になります。\n"
+"(''0.12 以降'')"
 
-#: trac/web/chrome.py:433
+#: trac/web/chrome.py:493
 msgid ""
 "Inactivity timeout in seconds after which the automatic wiki preview\n"
 "triggers an update. This option can contain floating-point values. The\n"
@@ -1276,21 +1873,28 @@ msgid ""
 "this to 0 to disable automatic preview. The default is 2.0 seconds.\n"
 "(''since 0.12'')"
 msgstr ""
+"操作のないときに実行する Wiki "
+"プレビューの自動更新の時間を秒で指定します。この設定には浮動小数点を指定できます。値を小さくするとサーバが大量のリクエストを処理することになります。0を指定すると自動プレビューを無効にします。デフォルトは2.0秒です。(''0.12"
+" 以降'')"
 
-#: trac/web/chrome.py:440
+#: trac/web/chrome.py:500
 msgid ""
 "The date information format. Valid options are 'relative' for\n"
 "displaying relative format and 'absolute' for displaying absolute\n"
-"format. (''since 0.13'')"
+"format. (''since 1.0'')"
 msgstr ""
+"日付情報の書式を指定します。有効な設定は相対書式で表示する 'relative' と絶対書式で表示する 'absolute' です。(''1.0 "
+"以降'')"
 
-#: trac/web/main.py:87
+#: trac/web/main.py:86
 msgid ""
 "Ordered list of filters to apply to all requests\n"
 "(''since 0.10'')."
 msgstr ""
+"リクエストに適用するフィルタを順番に指定します。\n"
+"(''0.10 以降'')"
 
-#: trac/web/main.py:92
+#: trac/web/main.py:91
 msgid ""
 "Name of the component that handles requests to the base\n"
 "URL.\n"
@@ -1299,36 +1903,56 @@ msgid ""
 "`BrowserModule`, `QueryModule`, `ReportModule`, `TicketModule`\n"
 "and `WikiModule`. The default is `WikiModule`. (''since 0.9'')"
 msgstr ""
+"ベース URL へのリクエストを処理するコンポーネントの名前を指定します。\n"
+"\n"
+"選択肢には "
+"`TimelineModule`、`RoadmapModule`、`BrowserModule`、`QueryModule`、`ReportModule`、`TicketModule`、`WikiModule`"
+" があり、デフォルトは `WikiModule` です。(''0.9 以降'')"
 
-#: trac/web/main.py:101
+#: trac/web/main.py:100
 msgid "The default timezone to use"
-msgstr ""
+msgstr "デフォルトで使うタイムゾーンを指定します。"
 
-#: trac/web/main.py:104
+#: trac/web/main.py:103
 msgid ""
 "The preferred language to use if no user preference has\n"
 "been set. (''since 0.12.1'')"
-msgstr ""
+msgstr "個人設定がない場合に使う言語を指定します。(''0.12.1 以降'')"
 
-#: trac/web/main.py:109
+#: trac/web/main.py:108
 msgid ""
 "The date format. Valid options are 'iso8601' for selecting\n"
 "ISO 8601 format, or leave it empty which means the default\n"
 "date format will be inferred from the browser's default\n"
-"language. (''since 0.13'')"
+"language. (''since 1.0'')"
 msgstr ""
+"日付書式を指定します。有効な設定は ISO 8601 形式になる 'iso8601' "
+"で、空のままにするとブラウザの言語設定に基づいたデフォルト日付書式となります。(''1.0 以降'')"
+
+#: trac/web/main.py:115
+msgid ""
+"When true, send a `X-Sendfile` header and no content when sending\n"
+"files from the filesystem, so that the web server handles the content.\n"
+"This requires a web server that knows how to handle such a header,\n"
+"like Apache with `mod_xsendfile` or lighttpd. (''since 1.0'')"
+msgstr ""
+"true の場合、Web サーバがファイルの中身を処理できるように、ファイル送信時に `X-Sendfile` "
+"ヘッダを送信し中身を送信しません。Apache の `mod_xsendfile` や lighttpd "
+"のように、このようなヘッダを処理できるようにする必要があります。(''1.0 以降'')"
 
 #: trac/wiki/api.py:263
 msgid ""
 "Enable/disable highlighting CamelCase links to missing pages\n"
 "(''since 0.9'')."
 msgstr ""
+"存在しないページを指す CamelCase リンクをハイライトするかどうかを指定します。\n"
+"(''0.9 以降'')"
 
 #: trac/wiki/api.py:267
 msgid ""
 "Enable/disable splitting the WikiPageNames with space characters\n"
 "(''since 0.10'')."
-msgstr ""
+msgstr "WikiPageNames を空白文字で分割するかどうかを指定します。(''0.10 以降'')"
 
 #: trac/wiki/api.py:271
 msgid ""
@@ -1339,6 +1963,9 @@ msgid ""
 "For public sites where anonymous users can edit the wiki it is\n"
 "recommended to leave this option disabled (which is the default)."
 msgstr ""
+"危険性のある `<script>` や `<embed>` のような HTML タグを HTML [wiki:WikiProcessors "
+"WikiProcessor] で有効にするかどうかを指定します。(''0.10.4 以降'')\n"
+"匿名ユーザが Wiki を編集できるような公開サイトでは、このオプションは無効のまま (デフォルト) にしておくことを推奨します。"
 
 #: trac/wiki/api.py:279
 msgid ""
@@ -1346,6 +1973,9 @@ msgid ""
 "external links even if `[wiki] render_unsafe_content` is `false`.\n"
 "(''since 0.11.8'')"
 msgstr ""
+"「安全」とみなす URI スキームのリストを指定します。`[wiki] render_unsafe_content` が `false` "
+"の場合に、外部リンクとして表示します。\n"
+"(''0.11.8 以降'')"
 
 #: trac/wiki/intertrac.py:36
 msgid ""
@@ -1384,6 +2014,33 @@ msgid ""
 "trac.url = http://trac.edgewall.org\n"
 "}}}"
 msgstr ""
+"このセクションは InterTrac プレフィックスを設定します。名前に \".\" を含んでいる設定は、\".\" までの設定名に対する "
+"InterTrac プレフィックスを定義します。名前に \".\" を含んでいない設定はエイリアスを定義します。\n"
+"\n"
+"`.url` は他の Trac の URL を示すのに必ず指定します。同じサーバにある Trac 環境を示すのに相対 URL "
+"にすることもできます。\n"
+"\n"
+"`.title` 情報は InterTrac リンクの上にカーソルを持っていたときのツールチップを表示するのに使います。\n"
+"\n"
+"`.compat` は''互換''モードを有効または無効にするのに使います。\n"
+" * 対象の Trac が [trac:milestone:0.10 0.10] 以下のバージョン (正確には [trac:r3526 "
+"r3526]) で動作している場合、InterTrac リンクを処理する方法を知らないのでローカルの Trac "
+"が正しいリンクを用意します。すべてのリンクが機能するとは限らないが、大抵は動作します。これを互換モードと呼んでいて `true` "
+"を設定します。これがデフォルトです。\n"
+" * リモートの Trac が InterTrac "
+"リンクを処理する方法を知っている場合は、明示的にこの互換モードを無効にすることができ、そのときは ''any'' を設定して TracLinks "
+"を InterTrac リンクにすることができます。\n"
+"\n"
+"設定例:\n"
+"{{{\n"
+"[intertrac]\n"
+"# -- エイリアスの設定例:\n"
+"t = trac\n"
+"\n"
+"# -- 外部 Trac へのリンク:\n"
+"trac.title = Edgewall's Trac for Trac\n"
+"trac.url = http://trac.edgewall.org\n"
+"}}}"
 
 #: trac/wiki/interwiki.py:35
 msgid ""
@@ -1401,8 +2058,20 @@ msgid ""
 "tsvn = tsvn: Interact with TortoiseSvn\n"
 "}}}"
 msgstr ""
+"`[interwiki]` セクションのオプションは、各々で InterWiki "
+"プレフィックスを定義します。オプションの名前はプレフィックスを定義し、値は URL と任意で説明を定義します。空白で区切った URL "
+"の続きが説明となります。パラメータ付きの URL をサポートしています。\n"
+"\n"
+"'''例:'''\n"
+"{{{\n"
+"[interwiki]\n"
+"MeatBall = http://www.usemod.com/cgi-bin/mb.pl?\n"
+"PEP = http://www.python.org/peps/pep-$1.html Python Enhancement Proposal "
+"$1\n"
+"tsvn = tsvn: TortoiseSvn に渡します\n"
+"}}}"
 
 #: trac/wiki/web_ui.py:64
 msgid "Maximum allowed wiki page size in bytes. (''since 0.11.2'')"
-msgstr ""
+msgstr "Wiki ページの最大サイズをバイト数で指定します。(''0.11.2 以降'')"
 

@@ -1,13 +1,13 @@
 # Japanese translations for Trac.
-# Copyright (C) 2010 Edgewall Software
+# Copyright (C) 2010-2012 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# Jun Omae <jun66j5@gmail.com>, 2010.
+# Jun Omae <jun66j5@gmail.com>, 2010-2012.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 0.12\n"
+"Project-Id-Version: Trac 1.0\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2012-02-10 02:32+0100\n"
+"POT-Creation-Date: 2012-08-06 17:09+0200\n"
 "PO-Revision-Date: 2010-05-25 18:45+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <LL@li.org>\n"
@@ -44,7 +44,7 @@ msgstr "再度ディレクトリを開く"
 #: trac/htdocs/js/expand_dir.js:121
 #, python-format
 msgid "Loading %(entry)s..."
-msgstr "%(entry)s をロードしています..."
+msgstr "%(entry)s をロードしています…"
 
 #: trac/htdocs/js/expand_dir.js:149
 msgid "(empty)"
@@ -63,7 +63,7 @@ msgstr "ディレクトリを閉じる"
 msgid "Show %(title)s"
 msgstr "%(title)sの表示"
 
-#: trac/htdocs/js/folding.js:77
+#: trac/htdocs/js/folding.js:78
 #, python-format
 msgid "%(title)s (click to hide column)"
 msgstr "%(title)s (クリックすると列を非表示になります)"
@@ -132,29 +132,46 @@ msgstr "タイムゾーン"
 msgid "Now"
 msgstr "現時刻"
 
-#: trac/htdocs/js/query.js:131
+#: trac/htdocs/js/query.js:132
 msgid "A filter already exists for that property"
-msgstr "このプロパティは既にフィルタで使われています"
+msgstr "このプロパティは既にフィルタで使っています"
 
-#: trac/htdocs/js/query.js:158
+#: trac/htdocs/js/query.js:159
 msgid "or"
 msgstr "or"
 
-#: trac/htdocs/js/query.js:177
+#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:310
 msgid "yes"
 msgstr "はい"
 
-#: trac/htdocs/js/query.js:180
+#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:313
 msgid "no"
 msgstr "いいえ"
 
-#: trac/htdocs/js/query.js:183
+#: trac/htdocs/js/query.js:188
 msgid "between"
 msgstr " "
 
-#: trac/htdocs/js/query.js:185
+#: trac/htdocs/js/query.js:190
 msgid "and"
 msgstr "から"
+
+#: trac/htdocs/js/query.js:337
+msgid " remove:"
+msgstr " 削除:"
+
+#: trac/htdocs/js/query.js:347
+msgid " add:"
+msgstr " 追加:"
+
+#: trac/htdocs/js/query.js:376
+#, python-format
+msgid "Select ticket %(id)s for modification"
+msgstr "更新対象としてチケット %(id)s を選択する"
+
+#: trac/htdocs/js/query.js:387
+msgid "Toggle selection of all tickets shown in this group"
+msgstr "このグループに表示しているすべてのチケットに対し、選択を切り替える"
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
@@ -182,7 +199,7 @@ msgstr "コードブロック: {{{ 例 }}}"
 
 #: trac/htdocs/js/wikitoolbar.js:71
 msgid "Horizontal rule: ----"
-msgstr "横罫線"
+msgstr "横罫線: ----"
 
 #: trac/htdocs/js/wikitoolbar.js:74
 msgid "New paragraph"
