@@ -1426,7 +1426,7 @@ msgid ""
 "the color value.\n"
 "(''since 0.11'')"
 msgstr ""
-"0から1未満の値を設定すると、カラースケールの補間処理で設定した位置で `intermediate_color` の色を使うようになります。\n"
+"0より大きく1未満の値を設定すると、カラースケールの補間処理で設定した位置で `intermediate_color` の色を使うようになります。\n"
 "(''0.11 以降'')"
 
 #: trac/versioncontrol/web_ui/browser.py:222
