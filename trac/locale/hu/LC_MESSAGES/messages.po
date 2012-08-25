@@ -2380,7 +2380,7 @@ msgstr "Időbélyeg:"
 #: trac/templates/diff_view.html:45 trac/templates/diff_view.html:53
 #: trac/templates/diff_view.html:59
 msgid "(multiple changes)"
-msgstr "(többszörös változtatás)"
+msgstr "(több változtatás)"
 
 #: trac/templates/diff_view.html:47
 #, python-format
@@ -2695,7 +2695,7 @@ msgstr "%(title)s %(count)s/%(total)s"
 #: trac/templates/progress_bar.html:37
 #, python-format
 msgid "Total number of %(unit)s: %(count)s"
-msgstr "A(z) %(unit)s száma összesen: %(count)s"
+msgstr "A %(unit)s száma összesen: %(count)s"
 
 #: trac/templates/progress_bar.html:41
 #, python-format
@@ -3054,15 +3054,15 @@ msgstr "%(resolution)s"
 #: trac/ticket/default_workflow.py:308
 #, python-format
 msgid "The resolution will be set to %(name)s"
-msgstr "A megoldás beállítása erre: %(name)s"
+msgstr "Állapot beállítása erre: %(name)s"
 
 #: trac/ticket/default_workflow.py:319
 msgid "The resolution will be set"
-msgstr "A megoldás"
+msgstr "Az állapot módosulni fog"
 
 #: trac/ticket/default_workflow.py:321
 msgid "The resolution will be deleted"
-msgstr "A megoldás mező törölve"
+msgstr "Az állapot törlődni fog"
 
 #: trac/ticket/default_workflow.py:324
 #, python-format
@@ -3072,7 +3072,7 @@ msgstr "%(status)s "
 #: trac/ticket/default_workflow.py:328
 #, python-format
 msgid "Next status will be '%(name)s'"
-msgstr "A következő állapot '%(name)s'"
+msgstr "A következő állapot '%(name)s' lesz"
 
 #: trac/ticket/default_workflow.py:418
 msgid ""
@@ -4173,12 +4173,12 @@ msgstr "csökkenő"
 
 #: trac/ticket/templates/query.html:202
 msgid "Show under each result:"
-msgstr "Megjelenítés minden eredménynél:"
+msgstr "Megjelenítés minden tételnél:"
 
 #: trac/ticket/templates/query.html:212
 #: trac/ticket/templates/report_view.html:27
 msgid "Max items per page"
-msgstr "Max bejegyzés egy oldalon"
+msgstr "Tételek száma oldalanként"
 
 #: trac/ticket/templates/query.html:235
 #, python-format
@@ -4430,7 +4430,7 @@ msgstr "Beszélgetések"
 
 #: trac/ticket/templates/ticket.html:158
 msgid "Comments only"
-msgstr "Csak megjegyzések"
+msgstr "Csak a megjegyzések"
 
 #: trac/ticket/templates/ticket.html:163
 msgid "Change History"
