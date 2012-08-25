@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2008-01-30 09:20+0100\n"
+"POT-Creation-Date: 2012-01-29 14:04+0100\n"
 "PO-Revision-Date: 2012-05-11 22:09+0200\n"
 "Last-Translator: Nagy Zoltán <nzoltan@freemail.hu>\n"
 "Language-Team: hu_HU <trac-dev@googlegroups.com>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.5\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: tracopt/mimeview/php.py:98
 msgid ""
@@ -1982,7 +1982,7 @@ msgstr "Időbélyeg:"
 #: trac/templates/diff_view.html:45 trac/templates/diff_view.html:53
 #: trac/templates/diff_view.html:59
 msgid "(multiple changes)"
-msgstr "(többszörös változtatás)"
+msgstr "(több változtatás)"
 
 #: trac/templates/diff_view.html:47
 #, python-format
@@ -2604,15 +2604,15 @@ msgstr "%(resolution)s"
 #: trac/ticket/default_workflow.py:296
 #, python-format
 msgid "The resolution will be set to %(name)s"
-msgstr "A megoldás beállítása erre: %(name)s"
+msgstr "Állapot beállítása erre: %(name)s"
 
 #: trac/ticket/default_workflow.py:307
 msgid "The resolution will be set"
-msgstr "A megoldás"
+msgstr "Az állapot módosulni fog"
 
 #: trac/ticket/default_workflow.py:309
 msgid "The resolution will be deleted"
-msgstr "A megoldás mező törölve"
+msgstr "Az állapot törlődni fog"
 
 #: trac/ticket/default_workflow.py:312
 #, python-format
@@ -2622,7 +2622,7 @@ msgstr "%(status)s "
 #: trac/ticket/default_workflow.py:316
 #, python-format
 msgid "Next status will be '%(name)s'"
-msgstr "A következő állapot '%(name)s'"
+msgstr "A következő állapot '%(name)s' lesz"
 
 #: trac/ticket/model.py:114
 #, python-format
@@ -3441,12 +3441,12 @@ msgstr "csökkenő"
 
 #: trac/ticket/templates/query.html:192
 msgid "Show under each result:"
-msgstr "Megjelenítés minden eredménynél:"
+msgstr "Megjelenítés minden tételnél:"
 
 #: trac/ticket/templates/query.html:202
 #: trac/ticket/templates/report_view.html:27
 msgid "Max items per page"
-msgstr "Max bejegyzés egy oldalon"
+msgstr "Tételek száma oldalanként"
 
 #: trac/ticket/templates/query.html:224
 #, python-format
