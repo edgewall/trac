@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2012-02-10 02:32+0100\n"
+"POT-Creation-Date: 2012-08-06 17:09+0200\n"
 "PO-Revision-Date: 2011-11-01 10:17+0100\n"
-"Last-Translator: Nagy Zoltán <nzoltan@freemail.hu>\n"
+"Last-Translator: Zoltán Nagy <nzoltan@freemail.hu>\n"
 "Language-Team: hu_HU <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n!=1)\n"
 "MIME-Version: 1.0\n"
@@ -27,7 +27,7 @@ msgstr "Bezár"
 
 #: trac/htdocs/js/diff.js:119
 msgid "Tabular"
-msgstr "Táblázat"
+msgstr "Táblázatos"
 
 #: trac/htdocs/js/diff.js:125
 msgid "Unified"
@@ -63,38 +63,119 @@ msgstr "Könyvtár összehajtása"
 msgid "Show %(title)s"
 msgstr "A(z) %(title)s megjelenítése"
 
-#: trac/htdocs/js/folding.js:77
+#: trac/htdocs/js/folding.js:78
 #, python-format
 msgid "%(title)s (click to hide column)"
 msgstr "%(title)s (kattintson az oszlop elrejtéséhez)"
 
-#: trac/htdocs/js/query.js:131
+#. TRANSLATOR: Format in month heading in the datepicker, extracts yearSuffix
+#. and showMonthAfterYear
+#: trac/htdocs/js/jquery-ui-i18n.js:4
+msgid "$month$year"
+msgstr "$year$month"
+
+#. TRANSLATOR: Link that closes the datepicker
+#. TRANSLATOR: Link that closes the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:39
+msgid "Done"
+msgstr "Kész"
+
+#. TRANSLATOR: Link to the previous month in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:9
+msgid "Prev"
+msgstr "Előző"
+
+#. TRANSLATOR: Link to the next month in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:11
+msgid "Next"
+msgstr "Következő"
+
+#. TRANSLATOR: Link to the current day in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:13
+msgid "Today"
+msgstr "Ma"
+
+#. TRANSLATOR: Heading for the week-of-the-year column in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:20
+msgid "Wk"
+msgstr "Hét"
+
+#. TRANSLATOR: Heading of the standalone timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:30
+msgid "Choose Time"
+msgstr "Időpont"
+
+#. TRANSLATOR: Time selector label
+#: trac/htdocs/js/jquery-ui-i18n.js:32
+msgid "Time"
+msgstr "Idő"
+
+#. TRANSLATOR: Time labels in the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:34
+msgid "Hour"
+msgstr "Óra"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:34
+msgid "Minute"
+msgstr "Perc"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:34
+msgid "Second"
+msgstr "Másodperc"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:35
+msgid "Time Zone"
+msgstr "Időzóna"
+
+#. TRANSLATOR: Link to pick the current time in the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:37
+msgid "Now"
+msgstr "Most"
+
+#: trac/htdocs/js/query.js:132
 msgid "A filter already exists for that property"
 msgstr "A jellemzőhöz már létezik szűrő"
 
-#: trac/htdocs/js/query.js:158
+#: trac/htdocs/js/query.js:159
 msgid "or"
 msgstr "vagy"
 
-#: trac/htdocs/js/query.js:177
+#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:310
 msgid "yes"
 msgstr "igen"
 
-#: trac/htdocs/js/query.js:180
+#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:313
 msgid "no"
 msgstr "nem"
 
-#: trac/htdocs/js/query.js:183
+#: trac/htdocs/js/query.js:188
 msgid "between"
 msgstr "között"
 
-#: trac/htdocs/js/query.js:185
+#: trac/htdocs/js/query.js:190
 msgid "and"
 msgstr "és"
 
+#: trac/htdocs/js/query.js:337
+msgid " remove:"
+msgstr "eltávolít:"
+
+#: trac/htdocs/js/query.js:347
+msgid " add:"
+msgstr "hozzáad:"
+
+#: trac/htdocs/js/query.js:376
+#, python-format
+msgid "Select ticket %(id)s for modification"
+msgstr "Válassza a %(id)s jegyet a módosításhoz"
+
+#: trac/htdocs/js/query.js:387
+msgid "Toggle selection of all tickets shown in this group"
+msgstr "Kijelölés megfordítása az összes jegyen ebben a csoportban"
+
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
-msgstr "Hivatkozás itt"
+msgstr "Hivatkozás ide"
 
 #: trac/htdocs/js/wikitoolbar.js:56
 msgid "Bold text: '''Example'''"
