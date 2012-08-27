@@ -498,6 +498,8 @@ class TicketModule(Component):
                 del ticket.fields[curr_idx]
 
         data['fields'] = fields
+        data['fields_map'] = dict((field['name'], i)
+                                  for i, field in enumerate(fields))
 
         if req.get_header('X-Requested-With') == 'XMLHttpRequest':
             data['preview_mode'] = True
@@ -1558,6 +1560,7 @@ class TicketModule(Component):
         # -- Ticket fields
 
         fields = self._prepare_fields(req, ticket, field_changes)
+        fields_map = dict((field['name'], i) for i, field in enumerate(fields))
 
         # -- Ticket Change History
 
@@ -1674,7 +1677,8 @@ class TicketModule(Component):
                                                             ticket[user])
         data.update({
             'context': context, 'conflicts': conflicts,
-            'fields': fields, 'changes': changes, 'replies': replies,
+            'fields': fields, 'fields_map': fields_map,
+            'changes': changes, 'replies': replies,
             'attachments': AttachmentModule(self.env).attachment_data(context),
             'action_controls': action_controls, 'action': selected_action,
             'change_preview': change_preview, 'closetime': closetime,

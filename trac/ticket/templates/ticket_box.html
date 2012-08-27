@@ -29,9 +29,15 @@ Arguments:
 
   <h2>
     <a href="${href.ticket(ticket.id)}" class="trac-id">#${ticket.id}</a>
-    <span class="trac-status">${ticket.status}</span>
-    <span class="trac-type" py:if="ticket.type">${ticket.type}</span>
-    <span class="trac-resolution" py:if="ticket.resolution">(${ticket.resolution})</span>
+    <span class="trac-status">
+      ${'status' in fields_map and fields[fields_map['status']].rendered or ticket.status}
+    </span>
+    <span class="trac-type" py:if="ticket.type">
+      ${'type' in fields_map and fields[fields_map['type']].rendered or ticket.type}
+    </span>
+    <span class="trac-resolution" py:if="ticket.resolution">
+      (${'resolution' in fields_map and fields[fields_map['resolution']].rendered or ticket.resolution})
+    </span>
   </h2>
 
   <h1 id="trac-ticket-title" class="searchable">
