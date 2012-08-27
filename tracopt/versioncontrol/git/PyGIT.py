@@ -357,6 +357,19 @@ class Storage(object):
 
         self.logger = log
 
+        self.commit_encoding = None
+
+        # caches
+        self.__rev_cache = None
+        self.__rev_cache_lock = Lock()
+
+        # cache the last 200 commit messages
+        self.__commit_msg_cache = SizedDict(200)
+        self.__commit_msg_lock = Lock()
+
+        self.__cat_file_pipe = None
+        self.__cat_file_pipe_lock = Lock()
+
         if git_fs_encoding is not None:
             # validate encoding name
             codecs.lookup(git_fs_encoding)
@@ -376,27 +389,14 @@ class Storage(object):
             self.logger.error("GIT control files missing in '%s'" % git_dir)
             if os.path.exists(__git_file_path('.git')):
                 self.logger.error("entry '.git' found in '%s'"
-                                  " -- maybe use that folder instead..." 
+                                  " -- maybe use that folder instead..."
                                   % git_dir)
             raise GitError("GIT control files not found, maybe wrong "
                            "directory?")
 
-        self.logger.debug("PyGIT.Storage instance %d constructed" % id(self))
-
         self.repo = GitCore(git_dir, git_bin=git_bin)
 
-        self.commit_encoding = None
-
-        # caches
-        self.__rev_cache = None
-        self.__rev_cache_lock = Lock()
-
-        # cache the last 200 commit messages
-        self.__commit_msg_cache = SizedDict(200)
-        self.__commit_msg_lock = Lock()
-
-        self.__cat_file_pipe = None
-        self.__cat_file_pipe_lock = Lock()
+        self.logger.debug("PyGIT.Storage instance %d constructed" % id(self))
 
     def __del__(self):
         with self.__cat_file_pipe_lock:
