@@ -1401,10 +1401,11 @@ class TicketModule(Component):
 
     def _query_link(self, req, name, value, text=None):
         """Return a link to /query with the appropriate name and value"""
-        default_query = self.ticketlink_query.startswith('?') and \
-                        self.ticketlink_query[1:] or self.ticketlink_query
+        default_query = self.ticketlink_query.lstrip('?')
         args = arg_list_to_args(parse_arg_list(default_query))
         args[name] = value
+        if name == 'resolution':
+            args['status'] = 'closed'
         return tag.a(text or value, href=req.href.query(args))
 
     def _query_link_words(self, context, name, value):
@@ -1674,7 +1675,7 @@ class TicketModule(Component):
         for user in 'reporter', 'owner':
             if chrome.format_author(req, ticket[user]) == ticket[user]:
                 data['%s_link' % user] = self._query_link(req, user,
-                                                            ticket[user])
+                                                          ticket[user])
         data.update({
             'context': context, 'conflicts': conflicts,
             'fields': fields, 'fields_map': fields_map,
