@@ -8,7 +8,7 @@ import unittest
 
 try:
     from unittest.util import safe_repr
-    unittest.case.safe_repr = lambda obj, short: safe_repr(obj, False)
+    unittest.case.safe_repr = lambda obj, short=False: safe_repr(obj, False)
 except ImportError:
     pass
 
