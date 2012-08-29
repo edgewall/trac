@@ -4825,7 +4825,7 @@ msgstr "Zatrzymaj się po skopiowaniu"
 
 #: trac/versioncontrol/templates/revisionlog.html:33
 msgid "Follow copies"
-msgstr "Podąrzaj za kopiami"
+msgstr "Podążaj za kopiami"
 
 #: trac/versioncontrol/templates/revisionlog.html:39
 msgid "Show only adds and deletes"
