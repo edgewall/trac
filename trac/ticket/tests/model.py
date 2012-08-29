@@ -154,6 +154,22 @@ class TicketTestCase(unittest.TestCase):
         for change in ticket.get_changelog():
             self.assertEqual(None, change[1])
 
+    def test_comment_with_whitespace_only_is_not_saved(self):
+        ticket = Ticket(self.env)
+        ticket.insert()
+
+        ticket.save_changes(comment='\n \n ')
+        self.assertEqual(0, len(ticket.get_changelog()))
+
+    def test_prop_whitespace_change_is_not_saved(self):
+        ticket = Ticket(self.env)
+        ticket.populate({'summary': 'ticket summary'})
+        ticket.insert()
+
+        ticket['summary'] = ' ticket summary '
+        ticket.save_changes()
+        self.assertEqual(0, len(ticket.get_changelog()))
+
     def test_ticket_default_values(self):
         """
         Verify that a ticket uses default values specified in the configuration

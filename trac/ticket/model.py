@@ -273,7 +273,8 @@ class Ticket(object):
         if 'cc' in self.values:
             self['cc'] = _fixup_cc_list(self.values['cc'])
 
-        if not self._old and not comment:
+        props_unchanged = all(self.values.get(k) == v for k, v in self._old.iteritems())
+        if (not comment or not comment.strip()) and props_unchanged:
             return False # Not modified
 
         if when is None:
