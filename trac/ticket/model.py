@@ -589,7 +589,7 @@ class Ticket(object):
                     break
             if author0 is None:
                 for author0, last_comment in db("""
-                        SELECT author, new FROM ticket_change 
+                        SELECT author, newvalue FROM ticket_change 
                         WHERE ticket=%%s AND time=%%s AND NOT field %s LIMIT 1
                         """ % db.like(),
                         (self.id, ts0, db.like_escape('_') + '%')):
