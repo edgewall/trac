@@ -22,6 +22,7 @@ for compiling catalogs are issued upon install.
 from __future__ import with_statement
 
 from StringIO import StringIO
+from itertools import izip
 import os
 import re
 from tokenize import generate_tokens, COMMENT, NAME, OP, STRING
@@ -33,11 +34,15 @@ from distutils.errors import DistutilsOptionError
 from setuptools.command.install_lib import install_lib as _install_lib
 
 try:
+    from babel.messages.catalog import TranslationError
     from babel.messages.extract import extract_javascript
     from babel.messages.frontend import extract_messages, init_catalog, \
                                         compile_catalog, update_catalog
-    from babel.util import parse_encoding
+    from babel.messages.pofile import read_po
     from babel.support import Translations
+    from babel.util import parse_encoding
+
+    _GENSHI_MARKUP_SEARCH = re.compile(r'\[[0-9]+:').search
 
 
     _DEFAULT_KWARGS_MAPS = {
@@ -309,6 +314,108 @@ try:
                 with open(js_file, 'w') as outfile:
                     write_js(outfile, catalog, self.domain, locale)
 
+
+    class check_catalog(Command):
+        """Check message catalog command for use ``setup.py`` scripts."""
+
+        description = 'check message catalog files, like `msgfmt --check`'
+        user_options = [
+            ('domain=', 'D',
+             "domain of PO file (default 'messages')"),
+            ('input-dir=', 'I',
+             'path to base directory containing the catalogs'),
+            ('input-file=', 'i',
+             'name of the input file'),
+            ('locale=', 'l',
+             'locale of the catalog to compile'),
+        ]
+
+        def initialize_options(self):
+            self.domain = 'messages'
+            self.input_dir = None
+            self.input_file = None
+            self.locale = None
+
+        def finalize_options(self):
+            if not self.input_file and not self.input_dir:
+                raise DistutilsOptionError('you must specify either the input '
+                                           'file or directory')
+
+        def run(self):
+            for filename in self._get_po_files():
+                log.info('checking catalog %s', filename)
+                f = open(filename)
+                try:
+                    catalog = read_po(f, domain=self.domain)
+                finally:
+                    f.close()
+                for message in catalog:
+                    for error in self._check_message(catalog, message):
+                        log.warn('%s:%d: %s', filename, message.lineno, error)
+
+        def _get_po_files(self):
+            if self.input_file:
+                return [self.input_file]
+
+            if self.locale:
+                return [os.path.join(self.input_dir, self.locale,
+                                     'LC_MESSAGES', self.domain + '.po')]
+
+            files = []
+            for locale in os.listdir(self.input_dir):
+                filename = os.path.join(self.input_dir, locale, 'LC_MESSAGES',
+                                        self.domain + '.po')
+                if os.path.exists(filename):
+                    files.append(filename)
+            return sorted(files)
+
+        def _check_message(self, catalog, message):
+            errors = [e for e in message.check(catalog)]
+            try:
+                check_genshi_markup(catalog, message)
+            except TranslationError, e:
+                errors.append(e)
+            return errors
+
+
+    def check_genshi_markup(catalog, message):
+        """Verify the genshi markups in the translation."""
+        msgids = message.id
+        if not isinstance(msgids, (list, tuple)):
+            msgids = (msgids,)
+        msgstrs = message.string
+        if not isinstance(msgstrs, (list, tuple)):
+            msgstrs = (msgstrs,)
+
+        # check using genshi-markup
+        if not _GENSHI_MARKUP_SEARCH(msgids[0]):
+            return
+
+        for msgid, msgstr in izip(msgids, msgstrs):
+            if msgstr:
+                _validate_genshi_markup(msgid, msgstr)
+
+
+    def _validate_genshi_markup(markup, alternative):
+        indices_markup = _parse_genshi_markup(markup)
+        indices_alternative = _parse_genshi_markup(alternative)
+        indices = indices_markup - indices_alternative
+        if indices:
+            raise TranslationError(
+                'genshi markups are unbalanced %s' % \
+                ' '.join(['[%d:]' % idx for idx in indices]))
+
+
+    def _parse_genshi_markup(message):
+        from genshi.filters.i18n import parse_msg
+        try:
+            return set([idx for idx, text in parse_msg(message)
+                            if idx > 0])
+        except Exception, e:
+            raise TranslationError('cannot parse message (%s: %s)' % \
+                                   (e.__class__.__name__, unicode(e)))
+
+
     def write_js(fileobj, catalog, domain, locale):
         from trac.util.presentation import to_json
         data = {'domain': domain, 'locale': locale}
@@ -364,7 +471,10 @@ try:
 
     def get_l10n_cmdclass():
         build, install_lib = get_command_overriders()
-        return {'build': build, 'install_lib': install_lib}
+        return {
+            'build': build, 'install_lib': install_lib,
+            'check_catalog': check_catalog,
+        }
 
     def get_l10n_js_cmdclass():
         build, _install_lib = get_command_overriders()
@@ -377,11 +487,13 @@ try:
                 self.run_command('compile_catalog')
         return {
             'build': build, 'install_lib': install_lib,
+            'check_catalog': check_catalog,
             'extract_messages_js': extract_messages,
             'init_catalog_js': init_catalog,
             'compile_catalog_js': compile_catalog,
             'update_catalog_js': update_catalog,
             'generate_messages_js': generate_messages_js,
+            'check_catalog_js': check_catalog,
         }
 
     def get_l10n_trac_cmdclass():
@@ -397,15 +509,18 @@ try:
                 self.run_command('compile_catalog')
         return {
             'build': build, 'install_lib': install_lib,
+            'check_catalog': check_catalog,
             'extract_messages_js': extract_messages,
             'init_catalog_js': init_catalog,
             'compile_catalog_js': compile_catalog,
             'update_catalog_js': update_catalog,
             'generate_messages_js': generate_messages_js,
+            'check_catalog_js': check_catalog,
             'extract_messages_tracini': extract_messages,
             'init_catalog_tracini': init_catalog,
             'compile_catalog_tracini': compile_catalog,
             'update_catalog_tracini': update_catalog,
+            'check_catalog_tracini': check_catalog,
         }
 
 
