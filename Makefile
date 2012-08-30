@@ -181,9 +181,7 @@ pre-check:
 
 check-%:
 	@echo -n "$(@): "
-	@msgfmt --check $(messages.po) && msgfmt --check $(messages-js.po) \
-	 && echo OK
-	@rm -f messages.mo
+	@python setup.py check_catalog -l $(*) check_catalog_js -l $(*)
 
 stats: pre-stats $(addprefix stats-,$(locales))
 
