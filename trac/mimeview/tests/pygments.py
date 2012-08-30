@@ -110,6 +110,19 @@ def hello():
         result = self.pygments.render(self.context, 'text/x-python', '')
         self.assertEqual(None, result)
 
+    def test_extra_mimetypes(self):
+        """
+        The text/x-ini mimetype is normally not known by Trac, but
+        Pygments supports it.
+        """
+        mimeview = Mimeview(self.env)
+        self.assertEqual('text/x-ini; charset=utf-8',
+                         mimeview.get_mimetype('file.ini'))
+        self.assertEqual('text/x-ini; charset=utf-8',
+                         mimeview.get_mimetype('file.cfg'))
+        self.assertEqual('text/x-ini; charset=utf-8',
+                         mimeview.get_mimetype('file.text/x-ini'))
+
 def suite():
     suite = unittest.TestSuite()
     if have_pygments:

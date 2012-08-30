@@ -478,6 +478,24 @@ class IHTMLPreviewRenderer(Interface):
     #: be decorated with annotations
     returns_source = False
 
+    def get_extra_mimetypes():
+        """Augment the Mimeview system with new mimetypes associations.
+
+        This is an optional method. Not implementing the method or
+        returning nothing is fine, the component will still be asked
+        via `get_quality_ratio` if it supports a known mimetype.  But
+        implementing it can be useful when the component knows about
+        additional mimetypes which may augment the list of already
+        mimetype to keywords associations.
+
+        Generate ``(mimetype, keywords)`` pairs for each additional
+        mimetype, with ``keywords`` being a list of keywords or
+        extensions that can be used as aliases for the mimetype
+        (typically file suffixes or Wiki processor keys).
+
+        .. versionadded:: 1.0
+        """
+
     def get_quality_ratio(mimetype):
         """Return the level of support this renderer provides for the `content`
         of the specified MIME type. The return value must be a number between
@@ -863,6 +881,14 @@ class Mimeview(Component):
         # Extend default extension to MIME type mappings with configured ones
         if not self._mime_map:
             self._mime_map = MIME_MAP.copy()
+            # augment mime_map from `IHTMLPreviewRenderer`s
+            for renderer in self.renderers:
+                if hasattr(renderer, 'get_extra_mimetypes'):
+                    for mimetype, kwds in renderer.get_extra_mimetypes() or []:
+                        self._mime_map[mimetype] = mimetype
+                        for keyword in kwds:
+                            self._mime_map[keyword] = mimetype
+            # augment/override mime_map from trac.ini
             for mapping in self.config['mimeviewer'].getlist('mime_map'):
                 if ':' in mapping:
                     assocations = mapping.split(':')

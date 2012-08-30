@@ -96,6 +96,12 @@ class PygmentsRenderer(Component):
     
     # IHTMLPreviewRenderer methods
 
+    def get_extra_mimetypes(self):
+        for lexname, aliases, _, mimetypes in get_all_lexers():
+            name = aliases[0] if aliases else lexname
+            for mimetype in mimetypes:
+                yield mimetype, aliases
+
     def get_quality_ratio(self, mimetype):
         # Extend default MIME type to mode mappings with configured ones
         if self._types is None:

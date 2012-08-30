@@ -238,7 +238,8 @@ class ReStructuredTextRenderer(Component):
     # IHTMLPreviewRenderer methods
 
     def get_quality_ratio(self, mimetype):
-        if self.can_render and mimetype == 'text/x-rst':
+        if self.can_render and mimetype in ('text/x-rst',
+                                            'text/prs.fallenstein.rst'):
             return 8
         return 0
 
