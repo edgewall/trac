@@ -376,10 +376,14 @@ class GitRepository(Repository):
         self.use_committer_time = use_committer_time
         self.use_committer_id = use_committer_id
 
-        self.git = PyGIT.StorageFactory(path, log, not persistent_cache,
-                                        git_bin=git_bin,
-                                        git_fs_encoding=git_fs_encoding) \
-                        .getInstance()
+        try:
+            self.git = PyGIT.StorageFactory(path, log, not persistent_cache,
+                                            git_bin=git_bin,
+                                            git_fs_encoding=git_fs_encoding) \
+                            .getInstance()
+        except PyGIT.GitError, e:
+            raise TracError("%s does not appear to be a Git "
+                            "repository." % path)
 
         Repository.__init__(self, 'git:'+path, self.params, log)
 
