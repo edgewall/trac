@@ -33,6 +33,7 @@ from trac.db.api import (DatabaseManager, QueryContextManager,
                          TransactionContextManager, with_transaction)
 from trac.util import copytree, create_file, get_pkginfo, lazy, makedirs, \
                       read_file
+from trac.util.compat import sha1
 from trac.util.concurrency import threading
 from trac.util.text import exception_to_unicode, path_to_unicode, printerr, \
                            printout
@@ -614,13 +615,14 @@ class Environment(Component, ComponentManager):
         if logtype == 'file' and not os.path.isabs(logfile):
             logfile = os.path.join(self.get_log_dir(), logfile)
         format = self.log_format
+        logid = 'Trac.%s' % sha1(self.path).hexdigest()
         if format:
             format = format.replace('$(', '%(') \
                      .replace('%(path)s', self.path) \
                      .replace('%(basename)s', os.path.basename(self.path)) \
                      .replace('%(project)s', self.project_name)
         self.log, self._log_handler = logger_handler_factory(
-            logtype, logfile, self.log_level, self.path, format=format)
+            logtype, logfile, self.log_level, logid, format=format)
         from trac import core, __version__ as VERSION
         self.log.info('-' * 32 + ' environment startup [Trac %s] ' + '-' * 32,
                       get_pkginfo(core).get('version', VERSION))
