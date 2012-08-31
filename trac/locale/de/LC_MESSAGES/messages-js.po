@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-05-24 23:55+0200\n"
-"PO-Revision-Date: 2010-11-14 18:10+0100\n"
-"Last-Translator: Daniel Musketa <daniel@musketa.de>\n"
+"POT-Creation-Date: 2012-08-06 17:09+0200\n"
+"PO-Revision-Date: 2012-09-01 00:00+0200\n"
+"Last-Translator: Felix Schwarz <felix.schwarz@oss.schwarz.eu>\n"
 "Language-Team: de <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.5\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -41,20 +41,20 @@ msgstr "Unterverzeichnis ausklappen"
 msgid "Re-expand directory"
 msgstr "Verzeichnis ausklappen"
 
-#: trac/htdocs/js/expand_dir.js:115
+#: trac/htdocs/js/expand_dir.js:121
 #, python-format
 msgid "Loading %(entry)s..."
 msgstr "Lade %(entry)s …"
 
-#: trac/htdocs/js/expand_dir.js:143
+#: trac/htdocs/js/expand_dir.js:149
 msgid "(empty)"
 msgstr "(leer)"
 
-#: trac/htdocs/js/expand_dir.js:151
+#: trac/htdocs/js/expand_dir.js:157
 msgid "(error)"
 msgstr "(Fehler)"
 
-#: trac/htdocs/js/expand_dir.js:158
+#: trac/htdocs/js/expand_dir.js:164
 msgid "Fold directory"
 msgstr "Verzeichnis einklappen"
 
@@ -63,34 +63,115 @@ msgstr "Verzeichnis einklappen"
 msgid "Show %(title)s"
 msgstr "%(title)s zeigen"
 
-#: trac/htdocs/js/folding.js:77
+#: trac/htdocs/js/folding.js:78
 #, python-format
 msgid "%(title)s (click to hide column)"
 msgstr "%(title)s (klicken um Spalte auszublenden)"
 
-#: trac/htdocs/js/query.js:118
+#. TRANSLATOR: Format in month heading in the datepicker, extracts yearSuffix
+#. and showMonthAfterYear
+#: trac/htdocs/js/jquery-ui-i18n.js:4
+msgid "$month$year"
+msgstr "$month$year"
+
+#. TRANSLATOR: Link that closes the datepicker
+#. TRANSLATOR: Link that closes the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:39
+msgid "Done"
+msgstr "Schließen"
+
+#. TRANSLATOR: Link to the previous month in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:9
+msgid "Prev"
+msgstr "Vorheriger"
+
+#. TRANSLATOR: Link to the next month in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:11
+msgid "Next"
+msgstr "Nächster"
+
+#. TRANSLATOR: Link to the current day in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:13
+msgid "Today"
+msgstr "Heute"
+
+#. TRANSLATOR: Heading for the week-of-the-year column in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:20
+msgid "Wk"
+msgstr "KW"
+
+#. TRANSLATOR: Heading of the standalone timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:30
+msgid "Choose Time"
+msgstr "Zeit auswählen"
+
+#. TRANSLATOR: Time selector label
+#: trac/htdocs/js/jquery-ui-i18n.js:32
+msgid "Time"
+msgstr "Zeit"
+
+#. TRANSLATOR: Time labels in the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:34
+msgid "Hour"
+msgstr "Stunde"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:34
+msgid "Minute"
+msgstr "Minute"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:34
+msgid "Second"
+msgstr "Sekunde"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:35
+msgid "Time Zone"
+msgstr "Zeitzone"
+
+#. TRANSLATOR: Link to pick the current time in the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:37
+msgid "Now"
+msgstr "Jetzt"
+
+#: trac/htdocs/js/query.js:132
 msgid "A filter already exists for that property"
 msgstr "Es existiert bereits ein Filter für diese Eigenschaft"
 
-#: trac/htdocs/js/query.js:145
+#: trac/htdocs/js/query.js:159
 msgid "or"
 msgstr "oder"
 
-#: trac/htdocs/js/query.js:164
+#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:310
 msgid "yes"
 msgstr "ja"
 
-#: trac/htdocs/js/query.js:167
+#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:313
 msgid "no"
 msgstr "nein"
 
-#: trac/htdocs/js/query.js:170
+#: trac/htdocs/js/query.js:188
 msgid "between"
 msgstr "zwischen"
 
-#: trac/htdocs/js/query.js:172
+#: trac/htdocs/js/query.js:190
 msgid "and"
 msgstr "und"
+
+#: trac/htdocs/js/query.js:337
+msgid " remove:"
+msgstr " entfernen:"
+
+#: trac/htdocs/js/query.js:347
+msgid " add:"
+msgstr " hinzufügen:"
+
+#: trac/htdocs/js/query.js:376
+#, python-format
+msgid "Select ticket %(id)s for modification"
+msgstr "Ticket %(id)s für Änderung auswählen"
+
+#: trac/htdocs/js/query.js:387
+msgid "Toggle selection of all tickets shown in this group"
+msgstr "Auswahl für alle angezeigten Tickets dieser Gruppe umkehren"
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
@@ -98,7 +179,7 @@ msgstr "Link hierher"
 
 #: trac/htdocs/js/wikitoolbar.js:56
 msgid "Bold text: '''Example'''"
-msgstr "Fetter Text: '''Beipiel'''"
+msgstr "Fetter Text: '''Beispiel'''"
 
 #: trac/htdocs/js/wikitoolbar.js:59
 msgid "Italic text: ''Example''"
