@@ -681,7 +681,7 @@ class ChangesetModule(Component):
         req.send_response(200)
         req.send_header('Content-Type', 'text/x-patch;charset=utf-8')
         req.send_header('Content-Disposition',
-                        content_disposition('inline', filename + '.diff'))
+                        content_disposition('attachment', filename + '.diff'))
         buf = StringIO()
         mimeview = Mimeview(self.env)
 
@@ -758,7 +758,7 @@ class ChangesetModule(Component):
         req.send_response(200)
         req.send_header('Content-Type', 'application/zip')
         req.send_header('Content-Disposition',
-                        content_disposition('inline', filename + '.zip'))
+                        content_disposition('attachment', filename + '.zip'))
 
         from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED as compression
 
