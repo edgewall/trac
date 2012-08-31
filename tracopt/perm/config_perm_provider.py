@@ -12,39 +12,42 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 from trac.core import *
+from trac.config import ConfigSection
 from trac.perm import IPermissionRequestor
 
 
 class ExtraPermissionsProvider(Component):
-    """Extra permission provider.
-    
-    This component provides a way to add arbitrary permissions to a Trac
-    environment. This can be useful for adding new permissions to use for
-    workflow actions, for example.
-    
-    To add new permissions, create a new section `[extra-permissions]` in
-    your `trac.ini`. Every entry in that section defines a meta-permission
-    and a comma-separated list of permissions. For example:
-    {{{
-    [extra-permissions]
-    extra_admin = extra_view, extra_modify, extra_delete
-    }}}
-    This entry will define three new permissions `EXTRA_VIEW`, `EXTRA_MODIFY`
-    and `EXTRA_DELETE`, as well as a meta-permissions `EXTRA_ADMIN` that
-    grants all three permissions.
-    
-    If you don't want a meta-permission, start the meta-name with an
-    underscore (`_`):
-    {{{
-    [extra-permissions]
-    _perms = extra_view, extra_modify
-    }}}
-    """
+    """Extra permission provider."""
+
     implements(IPermissionRequestor)
-    
+
+    extra_permissions_section = ConfigSection('extra-permissions',
+        doc="""This section provides a way to add arbitrary permissions to a
+        Trac environment. This can be useful for adding new permissions to use
+        for workflow actions, for example.
+
+        To add new permissions, create a new section `[extra-permissions]` in
+        your `trac.ini`. Every entry in that section defines a meta-permission
+        and a comma-separated list of permissions. For example:
+        {{{
+        [extra-permissions]
+        extra_admin = extra_view, extra_modify, extra_delete
+        }}}
+        This entry will define three new permissions `EXTRA_VIEW`,
+        `EXTRA_MODIFY` and `EXTRA_DELETE`, as well as a meta-permissions
+        `EXTRA_ADMIN` that grants all three permissions.
+
+        If you don't want a meta-permission, start the meta-name with an
+        underscore (`_`):
+        {{{
+        [extra-permissions]
+        _perms = extra_view, extra_modify
+        }}}
+        """)
+
     def get_permission_actions(self):
         permissions = {}
-        for meta, perms in self.config.options('extra-permissions'):
+        for meta, perms in self.extra_permissions_section.options():
             perms = [each.strip().upper() for each in perms.split(',')]
             for perm in perms:
                 permissions.setdefault(perm, [])
