@@ -1002,8 +1002,8 @@ class Mimeview(Component):
         req.send_header('Content-Length', len(content))
         if filename:
             req.send_header('Content-Disposition',
-                            content_disposition(filename='%s.%s' % 
-                                                         (filename, ext)))
+                            content_disposition('attachment',
+                                                '%s.%s' % (filename, ext)))
         req.end_headers()
         req.write(content)
         raise RequestDone
