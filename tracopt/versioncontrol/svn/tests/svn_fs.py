@@ -355,12 +355,12 @@ class NormalTests(object):
  
     def test_diff_dir_different_revs(self):
         diffs = self.repos.get_changes(u'tête', 4, u'tête', 8)
+        self._cmp_diff((None, (u'tête/README2.txt', 8),
+                        (Node.FILE, Changeset.ADD)), diffs.next())
         self._cmp_diff((None, (u'tête/dir1/dir2', 8),
                         (Node.DIRECTORY, Changeset.ADD)), diffs.next())
         self._cmp_diff((None, (u'tête/dir1/dir3', 8),
                         (Node.DIRECTORY, Changeset.ADD)), diffs.next())
-        self._cmp_diff((None, (u'tête/README2.txt', 8),
-                        (Node.FILE, Changeset.ADD)), diffs.next())
         self._cmp_diff(((u'tête/dir2', 4), None,
                         (Node.DIRECTORY, Changeset.DELETE)), diffs.next())
         self._cmp_diff(((u'tête/dir3', 4), None,
@@ -369,16 +369,16 @@ class NormalTests(object):
 
     def test_diff_dir_different_dirs(self):
         diffs = self.repos.get_changes(u'tête', 1, 'branches/v1x', 12)
+        self._cmp_diff((None, ('branches/v1x/README.txt', 12),
+                        (Node.FILE, Changeset.ADD)), diffs.next())
+        self._cmp_diff((None, ('branches/v1x/README2.txt', 12),
+                        (Node.FILE, Changeset.ADD)), diffs.next())
         self._cmp_diff((None, ('branches/v1x/dir1', 12),
                         (Node.DIRECTORY, Changeset.ADD)), diffs.next())
         self._cmp_diff((None, ('branches/v1x/dir1/dir2', 12),
                         (Node.DIRECTORY, Changeset.ADD)), diffs.next())
         self._cmp_diff((None, ('branches/v1x/dir1/dir3', 12),
                         (Node.DIRECTORY, Changeset.ADD)), diffs.next())
-        self._cmp_diff((None, ('branches/v1x/README.txt', 12),
-                        (Node.FILE, Changeset.ADD)), diffs.next())
-        self._cmp_diff((None, ('branches/v1x/README2.txt', 12),
-                        (Node.FILE, Changeset.ADD)), diffs.next())
         self.assertRaises(StopIteration, diffs.next)
 
     def test_diff_dir_no_change(self):
