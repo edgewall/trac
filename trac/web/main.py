@@ -71,6 +71,15 @@ class FakePerm(dict):
         return self
 
 
+class RequestWithSession(Request):
+    """A request that saves its associated session when sending the reply."""
+    
+    def send_response(self, code=200):
+        if code < 400:
+            self.session.save()
+        super(RequestWithSession, self).send_response(code)
+
+
 class RequestDispatcher(Component):
     """Web request dispatcher.
     
@@ -226,8 +235,6 @@ class RequestDispatcher(Component):
                 else:
                     self._post_process_request(req)
             except RequestDone:
-                # Give the session a chance to persist changes after a send()
-                req.session.save()
                 raise
             except:
                 # post-process the request in case of errors
@@ -452,7 +459,7 @@ def dispatch_request(environ, start_response):
     except Exception, e:
         env_error = e
 
-    req = Request(environ, start_response)
+    req = RequestWithSession(environ, start_response)
     translation.make_activable(lambda: req.locale, env.path if env else None)
     try:
         return _dispatch_request(req, env, env_error)

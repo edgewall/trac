@@ -195,6 +195,7 @@ class TestTicketQueryLinks(FunctionalTwillTestCaseSetup):
         tc.formvalue('query', '0_summary', 'TestTicketQueryLinks')
         tc.submit('update')
         query_url = b.get_url()
+        tc.find(r'\(%d matches\)' % count)
         for i in range(count):
             tc.find('TestTicketQueryLinks%s' % i)
 
