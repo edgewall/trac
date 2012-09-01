@@ -92,7 +92,7 @@ def get_page_from_web(prefix, pname):
     d = r.read()
     if r.status == 200 and d:
         f = open(pname, 'w+')
-        f.write(d)
+        f.write(d.replace('\r\n', '\n'))
         f.close()
     else:
         print "Missing or empty page"
@@ -127,19 +127,19 @@ if __name__ == '__main__':
         # print help information and exit:
         print "%s [-d] [-C] [-p prefix] [PAGE ...]" % sys.argv[0]
         print "\t-d        -- Download pages from the main project wiki."
-        print "\t-C        -- Don't try to check links (it's broken anyway)"
+        print "\t-C        -- Try to check links (currently broken)"
         print "\t-p prefix -- When downloading, prepend 'prefix/' to the page."
         sys.exit()
     get_page = get_page_from_file
     prefix = ''
-    check = True
+    check = False
     for o,a in opts:
         if o == '-d':
             get_page = get_page_from_web
         elif o == '-p':
             prefix = a+'/'
         elif o == '-C':
-            check = False
+            check = True
     data = {}
     for p in args or wiki_pages:
         data[p] = get_page(prefix, p)
