@@ -2983,7 +2983,7 @@ msgstr "Stichworte"
 
 #: trac/ticket/api.py:329
 msgid "Cc"
-msgstr "Kopie"
+msgstr "Beobachter"
 
 #: trac/ticket/api.py:333
 msgid "Created"
@@ -3842,7 +3842,7 @@ msgstr "Ticket beobachten"
 
 #: trac/ticket/web_ui.py:1485
 msgid "Remove from Cc"
-msgstr "Aus der CC-Liste entfernen"
+msgstr "Nicht mehr beobachten"
 
 #: trac/ticket/web_ui.py:1486
 msgid "Add/Remove from Cc"
@@ -4437,7 +4437,7 @@ msgstr "%(field)s:"
 #: trac/ticket/templates/ticket.html:291
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr ""
-"Mit diesem Ankreuzfeld können Sie Ihre E-Mail-Adresse zur CC-Liste "
+"Mit diesem Ankreuzfeld können Sie Ihre E-Mail-Adresse zur Beobachtungsliste "
 "hinzufügen oder von dort entfernen."
 
 #: trac/ticket/templates/ticket.html:297
