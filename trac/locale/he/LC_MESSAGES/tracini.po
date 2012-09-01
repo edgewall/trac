@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Trac 0.13\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2011-02-23 13:05+0900\n"
-"PO-Revision-Date: 2011-02-23 22:27+0900\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2012-08-29 08:02+0200\n"
+"Last-Translator: Itamar Ostricher <itamarost (at) gmail (dot) com>\n"
 "Language-Team: he <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: tracopt/mimeview/enscript.py:105
 msgid "Path to the Enscript executable."
-msgstr ""
+msgstr "נתיב לקובץ ההרצה של Enscript."
 
 #: tracopt/mimeview/enscript.py:108
 msgid ""
@@ -36,7 +36,7 @@ msgstr ""
 
 #: tracopt/mimeview/php.py:66
 msgid "Path to the PHP executable (''since 0.9'')."
-msgstr ""
+msgstr "נתיב לקובץ ההרצה של PHP (\"מאז 0.9\")"
 
 #: tracopt/mimeview/silvercity.py:81
 msgid ""
@@ -53,7 +53,7 @@ msgstr ""
 
 #: tracopt/perm/authz_policy.py:133
 msgid "Location of authz policy configuration file."
-msgstr ""
+msgstr "מיקום קובץ קונפיגורציית מדיניות authz."
 
 #: tracopt/ticket/commit_updater.py:106
 msgid ""
@@ -65,7 +65,7 @@ msgstr ""
 
 #: tracopt/ticket/commit_updater.py:112
 msgid "Commands that close tickets, as a space-separated list."
-msgstr ""
+msgstr "פקודות שסוגרות טיקטים, כרשימה המופרדת ע\"י רווחים."
 
 #: tracopt/ticket/commit_updater.py:116
 msgid ""
@@ -86,13 +86,13 @@ msgstr ""
 
 #: tracopt/ticket/commit_updater.py:131
 msgid "Send ticket change notification when updating a ticket."
-msgstr ""
+msgstr "שלח התראת שינוי טיקט בעת עדכון טיקט."
 
 #: trac/attachment.py:362
 msgid ""
 "Maximum allowed file size (in bytes) for ticket and wiki \n"
 "attachments."
-msgstr ""
+msgstr "גודל מותר מירבי (בבתים) לקבצים מצורפים לויקי ולטיקטים."
 
 #: trac/attachment.py:366
 msgid ""
@@ -196,11 +196,11 @@ msgstr ""
 
 #: trac/env.py:176
 msgid "Name of the project."
-msgstr ""
+msgstr "שם הפרויקט."
 
 #: trac/env.py:179
 msgid "Short description of the project."
-msgstr ""
+msgstr "תיאור קצר של הפרויקט."
 
 #: trac/env.py:182
 msgid ""
@@ -208,10 +208,12 @@ msgid ""
 "which the `base_url` resides. This is used in notification\n"
 "e-mails."
 msgstr ""
+"כתובת אתר הפרויקט הראשי. בד\"כ האתר בו נמצא `base_url`.\n"
+"הכתובת משמשת בהתראות באימייל."
 
 #: trac/env.py:187
 msgid "E-Mail address of the project's administrator."
-msgstr ""
+msgstr "כתובת אימייל של מנהלן הפרויקט."
 
 #: trac/env.py:190
 msgid ""
@@ -225,11 +227,11 @@ msgstr ""
 
 #: trac/env.py:199
 msgid "Page footer text (right-aligned)."
-msgstr ""
+msgstr "טקסט לתחתית העמוד (מיושר לשמאל)."
 
 #: trac/env.py:204
 msgid "URL of the icon of the project."
-msgstr ""
+msgstr "כתובת לאייקון של הפרויקט."
 
 #: trac/env.py:207
 msgid ""
@@ -693,11 +695,10 @@ msgid ""
 "closed = closed\n"
 "# sequence number in the progress bar\n"
 "closed.order = 0\n"
-"# optional extra param for the query (two additional columns: created and"
-" modified and sort on created)\n"
-"closed.query_args = "
-"group=resolution,order=time,col=id,col=summary,col=owner,col=type,col=priority,col=component,col=severity,col=time,col=changetime"
-"\n"
+"# optional extra param for the query (two additional columns: created and "
+"modified and sort on created)\n"
+"closed.query_args = group=resolution,order=time,col=id,col=summary,col=owner,"
+"col=type,col=priority,col=component,col=severity,col=time,col=changetime\n"
 "# indicates groups that count for overall completion percentage\n"
 "closed.overall_completion = true\n"
 "\n"
@@ -909,22 +910,22 @@ msgid ""
 "Example:\n"
 "{{{\n"
 "[svn:externals]\n"
-"1 = svn://server/repos1                       "
-"http://trac/proj1/browser/$path?rev=$rev\n"
-"2 = svn://server/repos2                       "
-"http://trac/proj2/browser/$path?rev=$rev\n"
-"3 = http://theirserver.org/svn/eng-soft       "
-"http://ourserver/viewvc/svn/$path/?pathrev=25914\n"
-"4 = svn://anotherserver.com/tools_repository  "
-"http://ourserver/tracs/tools/browser/$path?rev=$rev\n"
+"1 = svn://server/repos1                       http://trac/proj1/browser/"
+"$path?rev=$rev\n"
+"2 = svn://server/repos2                       http://trac/proj2/browser/"
+"$path?rev=$rev\n"
+"3 = http://theirserver.org/svn/eng-soft       http://ourserver/viewvc/svn/"
+"$path/?pathrev=25914\n"
+"4 = svn://anotherserver.com/tools_repository  http://ourserver/tracs/tools/"
+"browser/$path?rev=$rev\n"
 "}}}\n"
 "With the above, the\n"
 "`svn://anotherserver.com/tools_repository/tags/1.1/tools` external will\n"
 "be mapped to `http://ourserver/tracs/tools/browser/tags/1.1/tools?rev=`\n"
 "(and `rev` will be set to the appropriate revision number if the\n"
 "external additionally specifies a revision, see the\n"
-"[http://svnbook.red-bean.com/en/1.4/svn.advanced.externals.html SVN Book "
-"on externals]\n"
+"[http://svnbook.red-bean.com/en/1.4/svn.advanced.externals.html SVN Book on "
+"externals]\n"
 "for more details).\n"
 "\n"
 "Note that the number used as a key in the above section is purely used\n"
@@ -1353,8 +1354,7 @@ msgid ""
 "{{{\n"
 "[interwiki]\n"
 "MeatBall = http://www.usemod.com/cgi-bin/mb.pl?\n"
-"PEP = http://www.python.org/peps/pep-$1.html Python Enhancement Proposal "
-"$1\n"
+"PEP = http://www.python.org/peps/pep-$1.html Python Enhancement Proposal $1\n"
 "tsvn = tsvn: Interact with TortoiseSvn\n"
 "}}}"
 msgstr ""
@@ -1362,4 +1362,3 @@ msgstr ""
 #: trac/wiki/web_ui.py:63
 msgid "Maximum allowed wiki page size in bytes. (''since 0.11.2'')"
 msgstr ""
-

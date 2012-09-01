@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: Trac 1.0\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2012-08-18 18:15+0300\n"
-"PO-Revision-Date: 2012-08-20 08:01+0200\n"
+"PO-Revision-Date: 2012-09-01 23:10+0200\n"
 "Last-Translator: Itamar Ostricher <itamarost (at) gmail (dot) com>\n"
 "Language-Team: he <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n!=1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -291,11 +291,10 @@ msgid "Could not delete attachment"
 msgstr "לא ניתן למחוק קובץ מצורף"
 
 #: trac/attachment.py:252
-#, fuzzy, python-format
+#, python-format
 msgid "Cannot reparent attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
 msgstr ""
-"לא ניתן לשייך מחדש קובץ מצורף \"%(att)s\" הואיל והוא כבר קיים ב-%(realm)s:"
-"%(id)s"
+"לא ניתן לשייך מחדש קובץ מצורף \"%(att)s\" הואיל ו-%(realm)s:%(id)s אינו תקין"
 
 #: trac/attachment.py:257
 #, python-format
@@ -312,11 +311,9 @@ msgid "Could not reparent attachment %(name)s"
 msgstr "לא ניתן לשייך מחדש קובץ מצורף %(name)s"
 
 #: trac/attachment.py:312
-#, fuzzy, python-format
+#, python-format
 msgid "Cannot create attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
-msgstr ""
-"לא ניתן לשייך מחדש קובץ מצורף \"%(att)s\" הואיל והוא כבר קיים ב-%(realm)s:"
-"%(id)s"
+msgstr "לא ניתן ליצור צרופה \"%(att)s\" הואיל ו-%(realm)s:%(id)s אינו תקין"
 
 #: trac/attachment.py:395
 #, python-format
@@ -583,7 +580,6 @@ msgid "Database is up to date, no upgrade necessary."
 msgstr "מסד הנתונים עדכני, אין צורך בשדרוג."
 
 #: trac/env.py:967
-#, python-format
 msgid ""
 "The pre-upgrade backup failed.\n"
 "Use '--no-backup' to upgrade without doing a backup.\n"
@@ -718,11 +714,13 @@ msgid "Invalid row %(line)d. Expected <user>, <action>, [action], [...]"
 msgstr "שורה %(line)d לא תקינה. ציפיתי ל: <משתמש>, <הרשאה>, [הרשאה], [...]"
 
 #: trac/perm.py:727
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Invalid user %(user)s on line %(line)d: All upper-cased tokens are reserved "
 "for permission names."
-msgstr "סימולים בעלי אותיות גדולות בלבד שמורים לשמות הרשאות"
+msgstr ""
+"שם משתמש %(user)s בשורה %(line)d לא תקין: סימולים בעלי אותיות גדולות בלבד "
+"שמורים לשמות הרשאות."
 
 #: trac/perm.py:736
 #, python-format
@@ -749,7 +747,7 @@ msgid "Error: %(msg)s"
 msgstr "שגיאה: %(msg)s"
 
 #: trac/admin/console.py:131
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
@@ -760,7 +758,7 @@ msgid ""
 msgstr ""
 "ברוך הבא ל-trac-admin %(version)s\n"
 "מסוף ניהול אינטראקטיבי לטראק.\n"
-"כל הזכויות שמורות (c) 2003-2010 Edgewall Software\n"
+"כל הזכויות שמורות (c) 2003-2012 Edgewall Software\n"
 "\n"
 "הקלד:  '?' או 'help' לעזרה עבור הפקודות.\n"
 "        "
@@ -776,10 +774,12 @@ msgid "Completion error: %(err)s"
 msgstr "שגיאה בהשלמה: %(err)s"
 
 #: trac/admin/console.py:315
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "No documentation found for '%(cmd)s'. Use 'help' to see the list of commands."
-msgstr "לא נמצא תיעוד עבור '%(cmd)s'"
+msgstr ""
+"לא נמצא תיעוד עבור '%(cmd)s'. ניתן להשתמש בפקודה \"help' ע\"מ לראות את רשימת "
+"הפקודות."
 
 #: trac/admin/console.py:321
 msgid "Did you mean this?"
@@ -1328,11 +1328,11 @@ msgid "Order"
 msgstr "סדר"
 
 #: trac/admin/templates/admin_enums.html:76
-#, fuzzy
 msgid ""
 "[1:Note:] The order of priorities determines the\n"
 "              coloring of entries in the ticket queries and reports."
-msgstr "סדר העדיפויות קובע את צביעת הרשומות בדו\"חות ושאילתות טיקטים."
+msgstr ""
+"[1:שים לב:] סדר העדיפויות קובע את צביעת הרשומות בדו\"חות ובשאילתות טיקטים."
 
 #: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:85
 msgid "Configuration"
@@ -1447,7 +1447,6 @@ msgid "Action:"
 msgstr "פעולה:"
 
 #: trac/admin/templates/admin_perms.html:33
-#, fuzzy
 msgid ""
 "Grant permission for an action to a subject, which can be either a user\n"
 "            or a group."
@@ -1745,7 +1744,6 @@ msgid "Advanced"
 msgstr "מתקדם"
 
 #: trac/prefs/web_ui.py:167
-#, python-format
 msgid "The session has been loaded."
 msgstr "הסשן נטען."
 
@@ -1871,14 +1869,13 @@ msgid "Your language setting"
 msgstr "הגדרות השפה שלך"
 
 #: trac/prefs/templates/prefs_datetime.html:69
-#, fuzzy
 msgid ""
 "Configuring your date format will result in formatting\n"
 "      and parsing datetime displayed on this site to use your date format\n"
 "      instead of that of the server."
 msgstr ""
-"שינוי הגדרות אזור הזמן יגרום לכך שכל התאריכים והזמנים\n"
-"      המוצגים באתר זה יוצגו באמצעות אזור הזמן שבחרת במקום\n"
+"שינוי הגדרות פורמט התאריך יגרום לכך שהתאריכים \n"
+"      המוצגים באתר זה יוצגו באמצעות הפורמט שבחרת במקום\n"
 "      בזה של השרת."
 
 #: trac/prefs/templates/prefs_datetime.html:75
@@ -1898,15 +1895,14 @@ msgid "Absolute format"
 msgstr "פורמט מוחלט"
 
 #: trac/prefs/templates/prefs_datetime.html:85
-#, fuzzy
 msgid ""
 "Configuring your relative/absolute format will result in\n"
 "      formatting datetime displayed on this site to use your format instead "
 "of\n"
 "      that of the server."
 msgstr ""
-"שינוי הגדרות אזור הזמן יגרום לכך שכל התאריכים והזמנים\n"
-"      המוצגים באתר זה יוצגו באמצעות אזור הזמן שבחרת במקום\n"
+"שינוי הגדרות פורמט יחסי/מוחלט יגרום לכך שהתאריכים והשעות\n"
+"      המוצגים באתר זה יוצגו באמצעות הפורמט שבחרת במקום\n"
 "      בזה של השרת."
 
 #: trac/prefs/templates/prefs_general.html:15
@@ -1973,12 +1969,11 @@ msgstr ""
 "      יוצג באמצעות השפה שבחרת במקום בשפת השרת."
 
 #: trac/prefs/templates/prefs_language.html:27
-#, fuzzy
 msgid ""
 "The [1:Default language] option uses the browser's\n"
 "        language negotiation feature to select the appropriate language."
 msgstr ""
-"האפשרות 'שפת ברירת מחדל' משתמשת ביכולות קביעת השפה\n"
+"האפשרות [1:שפת ברירת מחדל] משתמשת ביכולות קביעת השפה\n"
 "        של הדפדפן לצורך בחירת השפה המתאימה."
 
 #: trac/prefs/templates/prefs_pygments.html:36
@@ -3091,6 +3086,44 @@ msgid ""
 "    }}}\n"
 "}}}"
 msgstr ""
+"צור תצוגה של גרף זרימת העבודה.\n"
+"\n"
+"מאקרו זה מקבל קונפיגורציית TracWorkflow ומייצר תצוגה של המצבים והמעברים כגרף "
+"מכוון.\n"
+"אם לא מועבר פרמטר, המאקרו משתמש בתהליך זרימת העבודה הנוכחי.\n"
+"במצב WikiProcessor ניתן להעביר פרמטרי `width` ו-`height`.\n"
+"\n"
+"(ערכי ברירת מחדל: `width = 800` and `heigth = 600`)\n"
+"\n"
+"דוגמאות:\n"
+"{{{\n"
+"    [[Workflow()]]\n"
+"    \n"
+"    [[Workflow(go = here -> there; return = there -> here)]]\n"
+"    \n"
+"    {{{\n"
+"    #!Workflow width=700 height=700\n"
+"    leave = * -> *\n"
+"    leave.operations = leave_status\n"
+"    leave.default = 1\n"
+"\n"
+"    accept = new,assigned,accepted,reopened -> accepted\n"
+"    accept.permissions = TICKET_MODIFY\n"
+"    accept.operations = set_owner_to_self\n"
+"\n"
+"    resolve = new,assigned,accepted,reopened -> closed\n"
+"    resolve.permissions = TICKET_MODIFY\n"
+"    resolve.operations = set_resolution\n"
+"\n"
+"    reassign = new,assigned,accepted,reopened -> assigned\n"
+"    reassign.permissions = TICKET_MODIFY\n"
+"    reassign.operations = set_owner\n"
+"\n"
+"    reopen = closed -> reopened\n"
+"    reopen.permissions = TICKET_CREATE\n"
+"    reopen.operations = del_resolution\n"
+"    }}}\n"
+"}}}"
 
 #: trac/ticket/default_workflow.py:493
 msgid "Enable JavaScript to display the workflow graph."
@@ -3309,6 +3342,57 @@ msgid ""
 "Also, using \"&\" as a field separator still works (except for `order`)\n"
 "but is deprecated."
 msgstr ""
+"ויקי-מאקרו המייצר רשימת טיקטים עפ\"י קריטריון.\n"
+"\n"
+"מאקרו זה מקבל רשימת פרמטרים ממופתחת המופרדים ע\"י פסיקים,\n"
+"מהצורה \"key=value\".\n"
+"\n"
+"אם המפתח הינו שם של שדה, הערך חייב להיות עפ\"י התחביר של פילטר כפי שמוגדר ב-"
+"TracQuery#QueryLanguage.\n"
+"שים לב שזה ''לא'' זהה לתחביר URL מפושט המשמש לקישורי `query:` המתחילים ב-`?"
+"`.\n"
+"פסיקים (`,`) יכולים להופיע בערכי שדות ע\"י הוספת קו-נטוי (`\\`) לפני הפסיק.\n"
+"\n"
+"ניתן להשתמש במילה `or` ע\"מ להפריד קבוצות של אילוצים על שדות בלוגיקת \"או"
+"\".\n"
+"\n"
+"בנוסף לפילטרים ניתן לפרט פרמטרים נוספים ע\"מ לשלוט בצורת ההצגה של התוצאות. "
+"כל הפרמטרים הללו הינם אופציונאליים.\n"
+"\n"
+"הפרמטר `format` קובע את אופן הצגת רשימת הטיקטים:\n"
+" - '''list''' -- תצוגת ברירת המחדל היא רישום מזהה הטיקט ותיאור קצר, בשורה "
+"נפרדת לכל טיקט.\n"
+" - '''compact''' -- הטיקטים מוצגים כרשימת מזהים מופרדת ע\"י פסיקים.\n"
+" - '''count''' -- רק כמות הטיקטים המתאימים לקריטריון מוצגת.\n"
+" - '''table''' -- תצוגה דומה לתצוגת שאילתא-מותאמת-אישית (אך ללא הפקדים).\n"
+" - '''progress''' -- תצוגה דומה לסרגלי ההתקדמות של אבני דרך.\n"
+"\n"
+"הפרמטר `max` יכול לשמש ע\"מ להגביל את כמות הטיקטים המוצגים בתוצאה (ברירת "
+"מחדל היא '''0''', כלומר ללא הגבלה).\n"
+"\n"
+"הפרמטר `order` קובע עפ\"י איזה שדה הרשימה ממויינת (ברירת המחדל היא "
+"'''id''').\n"
+"\n"
+"הפרמטר `desc` קובע אם סדר הטיקטים ברשימה צריך להיות הפוך (ברירת המחדל היא "
+"'''false''').\n"
+"\n"
+"הפרמטר `group` קובע לפי איזה שדה הטיקטים יקובצו (ברירת המחדל היא ללא "
+"קיבוץ).\n"
+"\n"
+"הפרמטר `groupdesc` קובע אם סדר התצוגה הטבעי של קבוצות הטיקטים צריך להיות "
+"הפוך (ברירת המחדל היא '''false''').\n"
+"\n"
+"ניתן לקבוע את הפרמטר `verbose` לערך אמת ע\"מ לקבל גם תיאור מפורט של הטיקטים "
+"המוצגים. עבור פורמט '''table''' בלבד.\n"
+"''מיושן לטובת הפרמטר `rows`''\n"
+"\n"
+"הפרמטר `rows` משמש לבחירת שדות שיופיעו בשורות נפרדות, למשל `rows=description|"
+"summary`\n"
+"\n"
+"לשם תאימות מול טראק 0.10, אם ניתן פרמטר מיקומי אחרון למאקרו, הוא ישמש כערך "
+"לפרמטר `format`.\n"
+"כמוכן, שימוש ב\"&\" כתו-מפריד לשדות עדיין עובד (פרט ל-`order`), אך נחשב "
+"מיושן."
 
 #: trac/ticket/query.py:1375
 #, python-format
@@ -3405,6 +3489,9 @@ msgid ""
 "%(limit_offset)s in TracReports to see how to gain complete control over "
 "report rewriting."
 msgstr ""
+"רמז: אם הדו\"ח נכשל בגלל שינוי אוטומטי של סעיף ORDER BY או תוספת של LIMIT/"
+"OFFSET, מומלץ לחפש %(sort_column)s ו-%(limit_offset)s ב-TracReports כדי "
+"לראות איך להשיג שליטה מלאה בשכתוב דו\"חות."
 
 #: trac/ticket/roadmap.py:241
 msgid "ticket status"
@@ -6254,7 +6341,6 @@ msgid "Provide a list of known InterTrac prefixes."
 msgstr "ספק רשימה של תחיליות אינטר-טראק ידועות."
 
 #: trac/wiki/intertrac.py:119
-#, python-format
 msgid "The Trac Project"
 msgstr "פרויקט טראק"
 
@@ -6537,7 +6623,7 @@ msgstr "גרסה %(version)d של דף %(name)s נמחקה."
 msgid ""
 "The new name is invalid (a name which is separated with slashes cannot be "
 "'.' or '..')."
-msgstr ""
+msgstr "השם החדש אינו תקין (שם המכיל קווים נטויים לא יכול להיות '.' או '..')."
 
 #: trac/wiki/web_ui.py:305
 msgid "The new name must be different from the old name."
@@ -6668,6 +6754,15 @@ msgid ""
 "                  which was first modified %(first_modified)s and last "
 "modified %(last_modified)s."
 msgstr ""
+"[1:\n"
+"                  האם אתה בטוח שברצונך למחוק את גרסאות %(from)s עד %(to)s של "
+"עמוד זה?\n"
+"                ]\n"
+"                [2:]\n"
+"                  מסיר [3:\n"
+"                   גרסאות %(versions)s ] של העמוד, \n"
+"                  נערכו לראשונה %(first_modified)s ונערכו לאחרונה "
+"%(last_modified)s."
 
 #: trac/wiki/templates/wiki_delete.html:50
 #, python-format
@@ -6700,7 +6795,7 @@ msgstr "האם אתה בטוח שברצונך למחוק לחלוטין דף ז�
 msgid ""
 "Removing the one and only [1:\n"
 "                        version] of the page, which was created %(created)s."
-msgstr ""
+msgstr "מסיר את [1:הגרסה] האחת והיחידה של העמוד, אשר נוצרה %(created)s."
 
 #: trac/wiki/templates/wiki_delete.html:83
 #, python-format
@@ -6710,6 +6805,8 @@ msgid ""
 "                      which was created %(created)s and last modified "
 "%(modified)s."
 msgstr ""
+"מסיר את כל [1:הגרסאות %(versions)s] של העמוד,\n"
+"אשר נוצר %(created)s ונערך לאחרונה %(modified)s."
 
 #: trac/wiki/templates/wiki_delete.html:99
 msgid "Delete those versions"
@@ -6959,110 +7056,3 @@ msgstr "(דף ריק)"
 msgid ""
 "The following pages have a name similar to this page, and may be related:"
 msgstr "לדפים הבאים שם דומה לדף זה, ועשויים להיות קשורים:"
-
-#~ msgid "%(perm)s privileges are required to perform this operation"
-#~ msgstr "הרשאות %(perm)s נדרשות לביצוע הפעולה המבוקשת"
-
-#~ msgid "Note:"
-#~ msgstr "שים לב:"
-
-#~ msgid ""
-#~ "[1:[2:%(title)s:]]\n"
-#~ "          [3:[4:%(count)s]]"
-#~ msgstr ""
-#~ "[1:[2:%(title)s:]]\n"
-#~ "          [3:[4:%(count)s]]"
-
-#~ msgid ""
-#~ "[1:[2:Total:]]\n"
-#~ "      [3:[4:%(count)s]]"
-#~ msgstr ""
-#~ "[1:[2:סה\"כ:]]\n"
-#~ "      [3:[4:%(count)s]]"
-
-#~ msgid "reopened"
-#~ msgstr "נפתח מחדש"
-
-#~ msgid "updated"
-#~ msgstr "עודכן"
-
-#~ msgid "Delete Milestone"
-#~ msgstr "מחק אבן דרך"
-
-#~ msgid "Edit Milestone"
-#~ msgstr "ערוך אבן דרך"
-
-#~ msgid ""
-#~ "Reported by [1:%(author)s],\n"
-#~ "                      %(date)s ago."
-#~ msgstr ""
-#~ "דווח ע\"י [1:%(author)s],\n"
-#~ "                      לפני %(date)s."
-
-#~ msgid "Report"
-#~ msgstr "דו\"ח"
-
-#~ msgid "Go to the ticket editor"
-#~ msgstr "עבור לעורך טיקט"
-
-#~ msgid "Modify"
-#~ msgstr "שינוי"
-
-#~ msgid "Ticket #"
-#~ msgstr "טיקט #"
-
-#~ msgid "View ticket fields and description"
-#~ msgstr "הצג שדות טיקטים ותיאורים מפורטים"
-
-#~ msgid "View"
-#~ msgstr "צפייה"
-
-#~ msgid ""
-#~ "Warnings are shown at the [1:top of the page]. The ticket validation\n"
-#~ "            may have failed."
-#~ msgstr "אזהרות מוצגות [1:בתחילת העמוד]. ייתכן שוידוא הטיקט נכשל."
-
-#~ msgid "%(date)s in Timeline"
-#~ msgstr "%(date)s בציר-זמן"
-
-#~ msgid ""
-#~ "The 'repository_dir' has changed, a 'trac-admin $ENV repository resync' "
-#~ "operation is needed."
-#~ msgstr ""
-#~ "'repository_dir' השתנה, יש לבצע פעולת 'trac-admin $ENV repository resync'."
-
-#~ msgid ""
-#~ "Revision [1:%(rev)s],\n"
-#~ "            [2:%(size)s]\n"
-#~ "            checked in by %(author)s, %(date)s ago\n"
-#~ "            ([3:diff])"
-#~ msgstr ""
-#~ "מהדורה [1:%(rev)s],\n"
-#~ "            [2:%(size)s]\n"
-#~ "            נמסרה ע\"י %(author)s, לפני %(date)s\n"
-#~ "            ([3:diff])"
-
-#~ msgid "Annotate"
-#~ msgstr "סימון"
-
-#~ msgid "No SID found"
-#~ msgstr "לא נמצא SID"
-
-#~ msgid "Session already exists. Unable to add a duplicate session."
-#~ msgstr "שיחה קיימת. לא ניתן להוסיף שיחה זהה."
-
-#~ msgid "Unable to set session attribute on a non-existent SID"
-#~ msgstr "לא ניתן לקבוע מאפייני שיחה עבור SID שאינו קיים"
-
-#~ msgid ""
-#~ "Are you sure you want to delete versions %(from)s to %(to)s of this page?"
-#~ msgstr "האם אתה בטוח שברצונך למחוק גרסאות %(from)s עד %(to)s של דף זה?"
-
-#~ msgid "Editing"
-#~ msgstr "עריכה"
-
-#~ msgid "See the start of the diffs"
-#~ msgstr "ראה בתחילת ההפרשים"
-
-#~ msgid "See the start of the preview"
-#~ msgstr "ראה בתחילת התצוגה"
