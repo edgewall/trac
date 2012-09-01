@@ -248,9 +248,11 @@ Options:
   -r, --auto-reload     restart automatically when sources are modified
   -s, --single-env      only serve a single project without the project list
   -d, --daemonize       run in the background as a daemon
-  --pidfile=PIDFILE     When daemonizing, file to which to write pid
-  --umask=MASK          When daemonizing, file mode creation mask to use, in
+  --pidfile=PIDFILE     when daemonizing, file to which to write pid
+  --umask=MASK          when daemonizing, file mode creation mask to use, in
                         octal notation (default 022)
+  --group=GROUP         the group to run as
+  --user=USER           the user to run as
 }}}
 
 Use the -d option so that tracd doesn't hang if you close the terminal window where tracd was started.
