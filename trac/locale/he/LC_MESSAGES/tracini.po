@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.13\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2011-02-23 13:05+0900\n"
-"PO-Revision-Date: 2012-08-29 08:02+0200\n"
+"PO-Revision-Date: 2012-09-02 22:45+0200\n"
 "Last-Translator: Itamar Ostricher <itamarost (at) gmail (dot) com>\n"
 "Language-Team: he <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -290,55 +290,65 @@ msgstr ""
 
 #: trac/notification.py:57
 msgid "Enable email notification."
-msgstr ""
+msgstr "אפשר התראות באמצעות אימייל."
 
 #: trac/notification.py:60
 msgid "Sender address to use in notification emails."
-msgstr ""
+msgstr "כתובת השולח לשימוש באימיילי התראות."
 
 #: trac/notification.py:63
 msgid "Sender name to use in notification emails."
-msgstr ""
+msgstr "שם השולח לשימוש באימיילי התראות."
 
 #: trac/notification.py:66
 msgid ""
 "Use the action author as the sender of notification emails.\n"
 "(''since 0.13'')"
 msgstr ""
+"עשה שימוש במבצע הפעולה בתור השולח של אימייל ההתראה.\n"
+"(''מאז 0.13'')"
 
 #: trac/notification.py:70
 msgid "Reply-To address to use in notification emails."
-msgstr ""
+msgstr "כתובת לדוא\"ל-חוזר לשימוש באימיילי התראה."
 
 #: trac/notification.py:73
 msgid ""
 "Email address(es) to always send notifications to,\n"
 "addresses can be seen by all recipients (Cc:)."
 msgstr ""
+"כתובת/כתובות אימייל שתמיד יקבלו התראות,\n"
+"הכתובות גלויות לעיניי כל הנמענים (Cc)."
 
 #: trac/notification.py:77
 msgid ""
 "Email address(es) to always send notifications to,\n"
 "addresses do not appear publicly (Bcc:). (''since 0.10'')"
 msgstr ""
+"כתובת/כתובות אימייל שתמיד יקבלו התראות,\n"
+"הכתובות אינן מוצגות בפומבי (Bcc). (''מאז 0.10'')"
 
 #: trac/notification.py:81
 msgid ""
 "Default host/domain to append to address that do not specify\n"
 "one."
-msgstr ""
+msgstr "ערך host/domain ברירת מחדל להוסיף לכתובות שאינן מכילות ערך כזה."
 
 #: trac/notification.py:85
 msgid ""
 "Comma-separated list of domains that should not be considered\n"
 "part of email addresses (for usernames with Kerberos domains)."
 msgstr ""
+"רשימה מופרדת ע\"י פסיקים של דומיינים שאין לפרש כחלק מכתובת אימייל (עבור שמות-"
+"משתמש בדומיינים עם Kerberos)."
 
 #: trac/notification.py:89
 msgid ""
 "Comma-separated list of domains that should be considered as\n"
 "valid for email addresses (such as localdomain)."
 msgstr ""
+"רשימה מופרדת ע\"י פסיקים של דומיינים שאין לפרש ככתובות אימייל חוקיות (כגון "
+"localdomain)."
 
 #: trac/notification.py:93
 msgid ""
@@ -357,6 +367,10 @@ msgid ""
 "If this option is disabled (the default), recipients are put on BCC.\n"
 "(''since 0.10'')"
 msgstr ""
+"נמענים יכולים לראות כתובות אימייל של נמענים אחרים הנמצאים ב-CC.\n"
+"\n"
+"אם אפשרות זו מנוטרלת (ברירת המחדל), הנמענים יופיעו תחת BCC.\n"
+"(''מאז 0.10'')"
 
 #: trac/notification.py:107
 msgid ""
@@ -365,6 +379,10 @@ msgid ""
 "The SMTP server should accept those addresses, and either append\n"
 "a FQDN or use local delivery. (''since 0.10'')"
 msgstr ""
+"התר כתובות אימייל ללא host/domain (כגון שמות-משתמש בלבד).\n"
+"\n"
+"שרת ה-SMTP אמור לקבל כתובות כאלה, ולהוסיף FQDN או להשתמש בהעברה מקומית. "
+"(''מאז 0.10'')"
 
 #: trac/notification.py:113
 msgid ""
@@ -374,6 +392,10 @@ msgid ""
 "If no prefix is desired, then specifying an empty option \n"
 "will disable it. (''since 0.10.1'')"
 msgstr ""
+"טקסט שיש להוסיף בתחילת שורת הנושא של אימיילי התראה.\n"
+"\n"
+"אם ההגדרה חסרה אז נעשה שימוש בתחילית [$project_name].\n"
+"אם לא מעוניינים בתחילית כלל, יש להגדיר אופציה ריקה. (''מאז 0.10.1'')"
 
 #: trac/notification.py:131
 msgid "SMTP server hostname to use for email notifications."
