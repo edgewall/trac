@@ -10,7 +10,7 @@
     <title>Repositories</title>
   </head>
 
-  <body>
+  <body py:with="sorted_repos = sorted(repositories.iteritems(), key=lambda item: item[0].lower())">
     <h2>Manage Repositories</h2>
 
     <py:def function="type_field(editable, multiline=False, selected=None)">
@@ -29,7 +29,7 @@
       <div class="field">
         <label>Repository:<br py:if="multiline"/>
           <select size="1" id="trac-repository" name="alias" disabled="${not editable or None}">
-            <option py:for="(reponame, info) in sorted(repositories.iteritems())" py:if="not info.alias"
+            <option py:for="(reponame, info) in sorted_repos" py:if="not info.alias"
                     value="$info.name" selected="${info.name == selected or None}">${info.name or _('(default)')}</option>
             <option py:if="selected is not None and selected not in repositories" selected="selected">$selected</option>
           </select>
@@ -126,7 +126,7 @@ $info.description</textarea>
               </tr>
             </thead>
             <tbody>
-              <tr py:for="(reponame, info) in sorted(repositories.iteritems())">
+              <tr py:for="(reponame, info) in sorted_repos">
                 <td class="sel"><input py:if="info.editable" type="checkbox" name="sel" value="$info.name"/></td>
                 <td class="name">
                   <a href="${panel_href(info.name or '(default)')}">${info.name or _('(default)')}</a>
