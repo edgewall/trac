@@ -10,14 +10,14 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2012-08-06 17:09+0200\n"
-"PO-Revision-Date: 2011-03-01 22:45+0100\n"
+"PO-Revision-Date: 2012-09-02 23:54+0200\n"
 "Last-Translator: Felix Schwarz <felix.schwarz@oss.schwarz.eu>\n"
 "Language-Team: de_DE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6\n"
+"Generated-By: Babel 1.0dev-r658\n"
 
 #: tracopt/mimeview/php.py:96
 msgid ""
@@ -290,7 +290,8 @@ msgstr "Anhang konnte nicht gelöscht werden"
 #, python-format
 msgid "Cannot reparent attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
 msgstr ""
-"Anhang \"%(att)s\" konnte nicht neu zugeordnet werden, weil %(realm)s:%(id)s ungültig ist"
+"Anhang \"%(att)s\" konnte nicht neu zugeordnet werden, weil "
+"%(realm)s:%(id)s ungültig ist"
 
 #: trac/attachment.py:257
 #, python-format
@@ -475,8 +476,8 @@ msgstr "Konfigurationsfehler"
 #, python-format
 msgid "Error reading '%(file)s', make sure it is readable."
 msgstr ""
-"Fehler beim Lesen von '%(file)s', bitte stellen Sie sicher, dass die Datei "
-"lesbar ist."
+"Fehler beim Lesen von '%(file)s', bitte stellen Sie sicher, dass die "
+"Datei lesbar ist."
 
 #: trac/config.py:420
 #, python-format
@@ -885,8 +886,9 @@ msgstr "Das Verzeichnis existiert bereits und ist nicht leer."
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr "Basisverzeichnis '%(env)s' existiert nicht. Bitte erzeugen Sie es "
-"manuell und versuchen Sie es erneut."
+msgstr ""
+"Basisverzeichnis '%(env)s' existiert nicht. Bitte erzeugen Sie es manuell"
+" und versuchen Sie es erneut."
 
 #: trac/admin/console.py:440
 msgid "Creating and Initializing Project"
@@ -1911,8 +1913,8 @@ msgid ""
 "      instead of that of the server."
 msgstr ""
 "Durch das Konfigurieren Ihres Datumsformats wird für die Eingabe und "
-"Darstellung von Daten und Zeiten auf dieser Seite das von Ihnen gewünschte "
-"Format anstatt des Server-Formats verwendet."
+"Darstellung von Daten und Zeiten auf dieser Seite das von Ihnen "
+"gewünschte Format anstatt des Server-Formats verwendet."
 
 #: trac/prefs/templates/prefs_datetime.html:75
 msgid "Date relative/absolute format:"
@@ -1937,8 +1939,10 @@ msgid ""
 "instead of\n"
 "      that of the server."
 msgstr ""
-"Das Konfigurieren Ihres relativen/absoluten Formats wird zur Folge haben,\n"
-"      dass Ihr Format anstatt das des Servers bei der Anzeige jedes Datums \n"
+"Das Konfigurieren Ihres relativen/absoluten Formats wird zur Folge haben,"
+"\n"
+"      dass Ihr Format anstatt das des Servers bei der Anzeige jedes "
+"Datums \n"
 "      und jeder Zeit verwendet werden."
 
 #: trac/prefs/templates/prefs_general.html:15
@@ -3026,8 +3030,8 @@ msgid ""
 "The changes have been saved, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr ""
-"Die Änderungen wurden gespeichert, aber es trat ein Fehler beim "
-"Senden von Benachrichtigungen auf: %(message)s"
+"Die Änderungen wurden gespeichert, aber es trat ein Fehler beim Senden "
+"von Benachrichtigungen auf: %(message)s"
 
 #: trac/ticket/default_workflow.py:241
 msgid "Current state no longer exists"
@@ -3927,8 +3931,10 @@ msgstr "Feld hinzufügen:"
 
 #: trac/ticket/templates/batch_modify.html:50
 msgid "[1:Note:] See [2:TracBatchModify] for help on using batch modify."
-msgstr "[1:Hinweis:] Hilfe zur Verwendung von Massen-Änderungen [2:TracBatchModify]."
- 
+msgstr ""
+"[1:Hinweis:] Hilfe zur Verwendung von Massen-Änderungen "
+"[2:TracBatchModify]."
+
 #: trac/ticket/templates/batch_modify.html:57
 msgid "Change tickets"
 msgstr "Tickets ändern"
@@ -4399,8 +4405,10 @@ msgid ""
 "You may use\n"
 "                [1:WikiFormatting]\n"
 "                here."
-msgstr "Sie können hier \n"
-"                [1:Wiki-Formatierung] verwenden."
+msgstr ""
+"Sie können hier \n"
+"                [1:Wiki-Formatierung]\n"
+"                verwenden."
 
 #: trac/ticket/templates/ticket.html:205
 msgid "Modify Ticket"
@@ -4437,8 +4445,8 @@ msgstr "%(field)s:"
 #: trac/ticket/templates/ticket.html:291
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr ""
-"Mit diesem Ankreuzfeld können Sie Ihre E-Mail-Adresse zur Beobachtungsliste "
-"hinzufügen oder von dort entfernen."
+"Mit diesem Ankreuzfeld können Sie Ihre E-Mail-Adresse zur "
+"Beobachtungsliste hinzufügen oder von dort entfernen."
 
 #: trac/ticket/templates/ticket.html:297
 msgid "Space or comma delimited email addresses and usernames are accepted."
@@ -6848,8 +6856,8 @@ msgid ""
 "%(created)s."
 msgstr ""
 "Entferne die einzige [1:\n"
-"                        Version] dieser Seite, die %(created)s "
-"erstellt wurde."
+"                        Version] dieser Seite, die %(created)s erstellt "
+"wurde."
 
 #: trac/wiki/templates/wiki_delete.html:83
 #, python-format
