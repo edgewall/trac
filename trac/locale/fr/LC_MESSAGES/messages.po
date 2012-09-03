@@ -67,6 +67,18 @@ msgid ""
 " - `repository`: the repository containing the changeset\n"
 " - `revision`: the revision of the desired changeset"
 msgstr ""
+"Insère le message d'une révision.\n"
+"\n"
+"Cette macro doit être appellée en utilisant la syntaxe « wiki processor » "
+"suivante :\n"
+"{{{\n"
+"{{{\n"
+"#!CommitTicketReference repository=\"reponame\" revision=\"rev\"\n"
+"}}}\n"
+"}}}\n"
+"avec pour arguments :\n"
+" - `repository`: le dépôt auquel appertient la révision\n"
+" - `revision`: l'identifiant de la révision"
 
 #: tracopt/ticket/deleter.py:73 tracopt/ticket/deleter.py:90
 #: trac/ticket/templates/report_list.html:82
@@ -606,7 +618,7 @@ msgstr ""
 
 #: trac/env.py:973
 msgid "The upgrade failed. Please fix the issue and try again.\n"
-msgstr ""
+msgstr "La mise à jour a échouée. Corrigez le problème et réessayer.\n"
 
 #: trac/env.py:985
 msgid ""
@@ -1016,6 +1028,15 @@ msgid ""
 "[[TracAdminHelp(upgrade)]]      # the upgrade command\n"
 "}}}"
 msgstr ""
+"Montre l'aide pour les commandes de « trac-admin ».\n"
+"\n"
+"Exemples :\n"
+"{{{\n"
+"[[TracAdminHelp]]               # toutes les commandes\n"
+"[[TracAdminHelp(wiki)]]         # toutes les commandes « wiki »\n"
+"[[TracAdminHelp(wiki export)]]  # la commande « wiki export »\n"
+"[[TracAdminHelp(upgrade)]]      # la commande « upgrade »\n"
+"}}}"
 
 #: trac/admin/console.py:579
 #, python-format
@@ -1512,7 +1533,7 @@ msgstr "Sujet"
 
 #: trac/admin/templates/admin_perms.html:76
 msgid "Action is no longer defined"
-msgstr ""
+msgstr "L'action n'est plus définie"
 
 #: trac/admin/templates/admin_perms.html:81
 msgid "No permissions"
@@ -1520,7 +1541,7 @@ msgstr "Pas de permissions"
 
 #: trac/admin/templates/admin_perms.html:85
 msgid "Group Membership"
-msgstr ""
+msgstr "Appartenance aux groupes"
 
 #: trac/admin/templates/admin_perms.html:88
 msgid "Group"
@@ -1528,7 +1549,7 @@ msgstr "Groupe"
 
 #: trac/admin/templates/admin_perms.html:105
 msgid "No group memberships"
-msgstr ""
+msgstr "Aucun groupe n'est défini"
 
 #: trac/admin/templates/admin_perms.html:113
 msgid ""
@@ -1779,7 +1800,7 @@ msgstr "Raccourcis clavier"
 
 #: trac/prefs/web_ui.py:97 trac/prefs/templates/prefs_userinterface.html:10
 msgid "User Interface"
-msgstr ""
+msgstr "Interface utilisateur"
 
 #: trac/prefs/web_ui.py:99 trac/prefs/templates/prefs_language.html:10
 msgid "Language"
@@ -2060,23 +2081,28 @@ msgstr "Aperçu :"
 
 #: trac/prefs/templates/prefs_userinterface.html:18
 msgid "Use only symbols for buttons."
-msgstr ""
+msgstr "N'utiliser que des symboles pour les boutons."
 
 #: trac/prefs/templates/prefs_userinterface.html:21
 msgid ""
 "Display only the icon or symbol for\n"
 "      short inline buttons, and hide the text caption."
 msgstr ""
+"Ne montrer que le dessin ou le symbole pour\n"
+"      les boutons secondaires présents dans le corps de l'interface, "
+"      et cacher le texte correspondant."
 
 #: trac/prefs/templates/prefs_userinterface.html:29
 msgid "Hide help links."
-msgstr ""
+msgstr "Cacher les liens vers le guide d'utilisation."
 
 #: trac/prefs/templates/prefs_userinterface.html:32
 msgid ""
 "Don't show the various help links.\n"
 "      This reduces the verbosity of the pages."
 msgstr ""
+"Ne pas montrer les différents liens vers les pages d'aide.\n"
+"      Ceci permet de réduire la verbosité des pages."
 
 #: trac/search/web_ui.py:72 trac/search/templates/search.html:12
 #: trac/search/templates/search.html:26 trac/search/templates/search.html:31
@@ -3179,6 +3205,46 @@ msgid ""
 "    }}}\n"
 "}}}"
 msgstr ""
+"Génère un graphe représentant le « workflow ».\n"
+"\n"
+"Cette macro accepte une configuration de type TracWorkflow et représente\n"
+"les états et les transitions sous la forme d'un graphe dirigé. "
+"Si aucun paramètre n'est fourni, le\n"
+"« ticket workflow » actuel est montré. En syntaxe de type « wiki processor »"
+"les paramètres nommés `width` (largeur)\n"
+"et `height` (hauteur) peuvent être specifiés.\n"
+"\n"
+"(Defaults: `width = 800` and `heigth = 600`)\n"
+"\n"
+"Exemples :\n"
+"{{{\n"
+"    [[Workflow()]]\n"
+"    \n"
+"    [[Workflow(aller = ici -> là; retour = là -> ici)]]\n"
+"    \n"
+"    {{{\n"
+"    #!Workflow width=700 height=700\n"
+"    leave = * -> *\n"
+"    leave.operations = leave_status\n"
+"    leave.default = 1\n"
+"\n"
+"    accept = new,assigned,accepted,reopened -> accepted\n"
+"    accept.permissions = TICKET_MODIFY\n"
+"    accept.operations = set_owner_to_self\n"
+"\n"
+"    resolve = new,assigned,accepted,reopened -> closed\n"
+"    resolve.permissions = TICKET_MODIFY\n"
+"    resolve.operations = set_resolution\n"
+"\n"
+"    reassign = new,assigned,accepted,reopened -> assigned\n"
+"    reassign.permissions = TICKET_MODIFY\n"
+"    reassign.operations = set_owner\n"
+"\n"
+"    reopen = closed -> reopened\n"
+"    reopen.permissions = TICKET_CREATE\n"
+"    reopen.operations = del_resolution\n"
+"    }}}\n"
+"}}}"
 
 #: trac/ticket/default_workflow.py:493
 msgid "Enable JavaScript to display the workflow graph."
@@ -3496,6 +3562,11 @@ msgid ""
 "and %(limit_offset)s in TracReports to see how to gain complete control "
 "over report rewriting."
 msgstr ""
+"Indication : si le rapport a rencontré une erreur due à la modification "
+" automatique de la clause « ORDER BY » ou de l'addition de la clause "
+"« LIMIT/OFFSET », référez vous à %(sort_column)s "
+"et %(limit_offset)s dans la page TracReports pour voir comment prendre le "
+"contrôle de la réécriture du rapport."
 
 #: trac/ticket/roadmap.py:241
 msgid "ticket status"
@@ -3951,11 +4022,11 @@ msgstr "modifié de %(old)s à %(new)s"
 
 #: trac/ticket/templates/batch_modify.html:8
 msgid "Batch Modify"
-msgstr ""
+msgstr "Modification par lot"
 
 #: trac/ticket/templates/batch_modify.html:9
 msgid "Batch modification fields"
-msgstr ""
+msgstr "Champs concernés par la modification par lot"
 
 #: trac/ticket/templates/batch_modify.html:21
 msgid "Add Field:"
@@ -4402,15 +4473,15 @@ msgstr "Création d'un nouveau ticket"
 
 #: trac/ticket/templates/ticket.html:148
 msgid "Oldest first"
-msgstr ""
+msgstr "Anciens d'abord"
 
 #: trac/ticket/templates/ticket.html:150
 msgid "Newest first"
-msgstr ""
+msgstr "Récents d'abord"
 
 #: trac/ticket/templates/ticket.html:153
 msgid "Threaded"
-msgstr "Commentaires structurés"
+msgstr "Réponses liées"
 
 #: trac/ticket/templates/ticket.html:158
 msgid "Comments only"
@@ -4433,6 +4504,12 @@ msgid ""
 "              You can nevertheless proceed and submit your changes if you"
 " wish so."
 msgstr ""
+"Ce ticket a été modifié par quelqu'un d'autre dans l'intervalle. Vous devez "
+"passer en revue ces\n"
+"              [1:autres modifications] qui ont été rajoutées ci-dessus,\n"
+"              ainsi que tout [2:conflit] montré dans l'aperçu ci-dessous.\n"
+"              Vous pouvez toutefois continuer et valider vos modifications si"
+" vous le souhaitez."
 
 #: trac/ticket/templates/ticket.html:194
 msgid ""
@@ -4534,7 +4611,7 @@ msgstr "Ouvert %(created)s"
 #: trac/ticket/templates/ticket_box.html:23
 #, python-format
 msgid "Closed %(closed)s"
-msgstr ""
+msgstr "Fermé %(closed)s"
 
 #: trac/ticket/templates/ticket_box.html:24
 #, python-format
@@ -4636,7 +4713,7 @@ msgstr "Annuler cette modification"
 
 #: trac/ticket/templates/ticket_change.html:100
 msgid "revert"
-msgstr "Annuler"
+msgstr "annuler"
 
 #: trac/ticket/templates/ticket_change.html:114
 #, python-format
@@ -4715,7 +4792,7 @@ msgstr "Période suivante"
 #: trac/timeline/web_ui.py:282
 #, python-format
 msgid "at %(iso8601)s"
-msgstr ""
+msgstr "le %(iso8601)s"
 
 #: trac/timeline/web_ui.py:286
 #, python-format
@@ -4725,7 +4802,7 @@ msgstr "le %(date)s à %(time)s"
 #: trac/timeline/web_ui.py:287
 #, python-format
 msgid "See timeline %(relativetime)s ago"
-msgstr "Voir l'activité il y a %(relativetime)s"
+msgstr "Voir l'activité d'il y a %(relativetime)s"
 
 #: trac/timeline/web_ui.py:290 trac/web/chrome.py:852 trac/web/chrome.py:854
 #, python-format
@@ -4735,7 +4812,7 @@ msgstr "il y a %(relativetime)s"
 #: trac/timeline/web_ui.py:292 trac/timeline/web_ui.py:336
 #, python-format
 msgid "See timeline at %(absolutetime)s"
-msgstr ""
+msgstr "Voir l'activité du %(absolutetime)s"
 
 #. TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
 #: trac/timeline/web_ui.py:383
@@ -5244,7 +5321,7 @@ msgstr "Dépôt par défaut"
 
 #: trac/versioncontrol/templates/browser.html:62
 msgid "Show the diff against a specific revision"
-msgstr ""
+msgstr "Voir les différences par rapport à une révision particulière"
 
 #: trac/versioncontrol/templates/browser.html:63
 msgid "View diff against:"
@@ -5273,17 +5350,17 @@ msgstr "Saut direct au chemin préselectionné"
 #: trac/versioncontrol/templates/browser.html:100
 #: trac/versioncontrol/templates/revisionlog.html:179
 msgid "Branch head"
-msgstr ""
+msgstr "Extrémité de branche"
 
 #: trac/versioncontrol/templates/browser.html:100
 #: trac/versioncontrol/templates/revisionlog.html:179
 msgid "Branch"
-msgstr ""
+msgstr "Branche"
 
 #: trac/versioncontrol/templates/browser.html:103
 #: trac/versioncontrol/templates/revisionlog.html:182
 msgid "Tag"
-msgstr ""
+msgstr "Tag"
 
 #: trac/versioncontrol/templates/browser.html:114
 msgid "Parent Directory"
@@ -5783,7 +5860,7 @@ msgstr ""
 
 #: trac/versioncontrol/templates/revisionlog.html:107
 msgid "Graph"
-msgstr ""
+msgstr "Graphe"
 
 #: trac/versioncontrol/templates/revisionlog.html:108
 msgid "Old / New"
@@ -6202,6 +6279,8 @@ msgid ""
 "Clearsilver templates are no longer supported, please contact your Trac "
 "administrator."
 msgstr ""
+"Les templates Clearsilver ne sont plus acceptés, contactez votre "
+"administrateu(trice) Trac."
 
 #: trac/web/main.py:521
 #, python-format
@@ -6409,7 +6488,7 @@ msgstr "Impossible de voir %(link)s :"
 
 #: trac/wiki/intertrac.py:106
 msgid "Provide a list of known InterTrac prefixes."
-msgstr ""
+msgstr "Donne la liste des préfixes « InterTrac » existants"
 
 #: trac/wiki/intertrac.py:119
 msgid "The Trac Project"
@@ -6417,7 +6496,7 @@ msgstr "le projet Trac"
 
 #: trac/wiki/interwiki.py:163
 msgid "Provide a description list for the known InterWiki prefixes."
-msgstr ""
+msgstr "Donne la liste des préfixes « InterWiki » existants"
 
 #: trac/wiki/macros.py:83
 msgid ""
