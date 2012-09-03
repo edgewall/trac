@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.13\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2011-02-23 13:05+0900\n"
-"PO-Revision-Date: 2012-09-02 22:45+0200\n"
+"PO-Revision-Date: 2012-09-03 22:38+0200\n"
 "Last-Translator: Itamar Ostricher <itamarost (at) gmail (dot) com>\n"
 "Language-Team: he <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -399,23 +399,23 @@ msgstr ""
 
 #: trac/notification.py:131
 msgid "SMTP server hostname to use for email notifications."
-msgstr ""
+msgstr "hostname של שרת SMTP לשימוש במיילי התראה."
 
 #: trac/notification.py:134
 msgid "SMTP server port to use for email notification."
-msgstr ""
+msgstr "פורט של שרת SMTP לשימוש במיילי התראה."
 
 #: trac/notification.py:137
 msgid "Username for SMTP server. (''since 0.9'')"
-msgstr ""
+msgstr "שם משתמש לשרת SMTP. (''מאז 0.9'')"
 
 #: trac/notification.py:140
 msgid "Password for SMTP server. (''since 0.9'')"
-msgstr ""
+msgstr "סיסמה לשרת SMTP. (''מאז 0.9'')"
 
 #: trac/notification.py:143
 msgid "Use SSL/TLS to send notifications over SMTP. (''since 0.10'')"
-msgstr ""
+msgstr "השתמש ב-SSL/TLS לשליחת מייל התראה באמצעות SMTP. (''מאז 0.10'')"
 
 #: trac/notification.py:189
 msgid ""
@@ -424,12 +424,17 @@ msgid ""
 "The sendmail program must accept the `-i` and `-f` options.\n"
 " (''since 0.12'')"
 msgstr ""
+"נתיב לקובץ ההרצה של sendmail.\n"
+"\n"
+"תוכנית ה-sendmail חייבת לקבל את האופציות `-i` ו-`-f`.\n"
+"(''מאז 0.12'')"
 
 #: trac/perm.py:294
 msgid ""
 "Name of the component implementing `IPermissionStore`, which is used\n"
 "for managing user and group permissions."
 msgstr ""
+"שם המרכיב המממש את `IPermissionStore`, המשמש לניהול הרשאות משתמשים וקבוצות."
 
 #: trac/perm.py:299
 msgid ""
@@ -447,48 +452,56 @@ msgid ""
 "[wiki:TracEnvironment#DatabaseConnectionStrings string] for this\n"
 "project"
 msgstr ""
+"[wiki:TracEnvironment#DatabaseConnectionStrings מחרוזת] חיבור למסד הנתונים "
+"עבור פרויקט זה"
 
 #: trac/db/api.py:212
 msgid "Database backup location"
-msgstr ""
+msgstr "מיקום גיבוי מסד נתונים"
 
 #: trac/db/api.py:215
 msgid ""
 "Timeout value for database connection, in seconds.\n"
 "Use '0' to specify ''no timeout''. ''(Since 0.11)''"
 msgstr ""
+"ערך timeout לחיבור למסד הנתונים, בשניות.\n"
+"ניתן להשתמש בערך '0' ע\"מ לציין ''ללא timeout''. (''מאז 0.11'')"
 
 #: trac/db/api.py:219
 msgid ""
 "Show the SQL queries in the Trac log, at DEBUG level.\n"
 "''(Since 0.11.5)''"
 msgstr ""
+"הצג שאילתות SQL ביומן טראק, ברמת יומן DEBUG.\n"
+"''(מאז 0.11.5)''"
 
 #: trac/db/mysql_backend.py:78
 msgid "Location of mysqldump for MySQL database backups"
-msgstr ""
+msgstr "מיקום של mysqldump עבור גיבויי מסד נתונים MySQL"
 
 #: trac/db/postgres_backend.py:72
 msgid "Location of pg_dump for Postgres database backups"
-msgstr ""
+msgstr "מיקום של pg_dump עבור גיבויי מסד נתונים Postgres"
 
 #: trac/db/sqlite_backend.py:143
 msgid ""
 "Paths to sqlite extensions, relative to Trac environment's\n"
 "directory or absolute. (''since 0.12'')"
 msgstr ""
+"נתיבים להרחבות sqlite, יחסית לתיקיית סביבת טראק, או נתיבים מוחלטים. (''מאז "
+"0.12'')"
 
 #: trac/mimeview/api.py:576
 msgid "Charset to be used when in doubt."
-msgstr ""
+msgstr "סט-תווים לשימוש כאשר בספק."
 
 #: trac/mimeview/api.py:579
 msgid "Displayed tab width in file preview. (''since 0.9'')"
-msgstr ""
+msgstr "רוחב טאבים מוצג בתצוגה מקדימה של קבצים. (''מאז 0.9'')"
 
 #: trac/mimeview/api.py:582
 msgid "Maximum file size for HTML preview. (''since 0.9'')"
-msgstr ""
+msgstr "גודל קובץ מירבי לתצוגה מקדימה של HTML. (''מאז 0.9'')"
 
 #: trac/mimeview/api.py:585
 msgid ""
@@ -497,16 +510,21 @@ msgid ""
 "there's a colon (\":\") separated list of associated keywords\n"
 "or file extensions. (''since 0.10'')"
 msgstr ""
+"רשימה של סוגי MIME נוספים ומיפויי מילות מפתח.\n"
+"מיפויים מופרדים ע\"י פסיקים, ולכל סוג MIME יש רשימה מופרדת\n"
+"ע\"י נקודותיים (\":\") של מילות מפתח משוייכות או סיומות קבצים. (''מאז 0.10'')"
 
 #: trac/mimeview/api.py:592
 msgid ""
 "Comma-separated list of MIME types that should be treated as\n"
 "binary data. (''since 0.11.5'')"
 msgstr ""
+"רשימה מופרדת ע\"י פסיקים של סוגי MIME שיש לפרש בתור נתונים בינאריים. (''מאז "
+"0.11.5'')"
 
 #: trac/mimeview/pygments.py:50
 msgid "The default style to use for Pygments syntax highlighting."
-msgstr ""
+msgstr "סגנון ברירת מחדל לשימוש עבור הדגשת תחביר ב-Pygments."
 
 #: trac/mimeview/pygments.py:53
 msgid ""
@@ -523,7 +541,7 @@ msgstr ""
 
 #: trac/search/web_ui.py:47
 msgid "Minimum length of query string allowed when performing a search."
-msgstr ""
+msgstr "אורך מותר מינימאלי של מחרוזת השאילתא בעת ביצוע חיפוש."
 
 #: trac/search/web_ui.py:50
 msgid ""
@@ -541,23 +559,26 @@ msgstr ""
 
 #: trac/tests/config.py:195
 msgid "b"
-msgstr ""
+msgstr "b"
 
 #: trac/tests/config.py:297
 msgid "Doc for c"
-msgstr ""
+msgstr "Doc for c"
 
 #: trac/ticket/api.py:166
 msgid ""
 "In this section, you can define additional fields for tickets. See\n"
 "TracTicketsCustomFields for more details."
 msgstr ""
+"במקטע זה ניתן להגדיר שדות נוספים לטיקטים.\n"
+"ראה TracTicketsCustomFields לפרטים נוספים."
 
 #: trac/ticket/api.py:170
 msgid ""
 "Ordered list of workflow controllers to use for ticket actions\n"
 "(''since 0.11'')."
 msgstr ""
+"רשימה סדורה של בקרי זרימת תהליך עבודה לשימוש עבור פעולות טיקט (''מאז 0.11'')."
 
 #: trac/ticket/api.py:176
 msgid ""
@@ -574,53 +595,53 @@ msgstr ""
 
 #: trac/ticket/api.py:187
 msgid "Default version for newly created tickets."
-msgstr ""
+msgstr "ערך ברירת מחדל לשדה גרסה עבור טיקטים חדשים."
 
 #: trac/ticket/api.py:190
 msgid "Default type for newly created tickets (''since 0.9'')."
-msgstr ""
+msgstr "ערך ברירת מחדל לשדה סוג עבור טיקטים חדשים (''מאז 0.9'')."
 
 #: trac/ticket/api.py:193
 msgid "Default priority for newly created tickets."
-msgstr ""
+msgstr "ערך ברירת מחדל לשדה עדיפות עבור טיקטים חדשים."
 
 #: trac/ticket/api.py:196
 msgid "Default milestone for newly created tickets."
-msgstr ""
+msgstr "ערך ברירת מחדל לשדה אבן דרך עבור טיקטים חדשים."
 
 #: trac/ticket/api.py:199
 msgid "Default component for newly created tickets."
-msgstr ""
+msgstr "ערך ברירת מחדל לשדה רכיב עבור טיקטים חדשים."
 
 #: trac/ticket/api.py:202
 msgid "Default severity for newly created tickets."
-msgstr ""
+msgstr "ערך ברירת מחדל לשדה חומרה עבור טיקטים חדשים."
 
 #: trac/ticket/api.py:205
 msgid "Default summary (title) for newly created tickets."
-msgstr ""
+msgstr "ערך ברירת מחדל לשדה תיאור קצר (כותרת) עבור טיקטים חדשים."
 
 #: trac/ticket/api.py:208
 msgid "Default description for newly created tickets."
-msgstr ""
+msgstr "ערך ברירת מחדל לשדה תיאור מפורט עבור טיקטים חדשים."
 
 #: trac/ticket/api.py:211
 msgid "Default keywords for newly created tickets."
-msgstr ""
+msgstr "ערך ברירת מחדל לשדה מילות מפתח עבור טיקטים חדשים."
 
 #: trac/ticket/api.py:214
 msgid "Default owner for newly created tickets."
-msgstr ""
+msgstr "ערך ברירת מחדל לשדה אחראי עבור טיקטים חדשים."
 
 #: trac/ticket/api.py:217
 msgid "Default cc: list for newly created tickets."
-msgstr ""
+msgstr "ערך ברירת מחדל לשדה רשימת מכותבים עבור טיקטים חדשים."
 
 #: trac/ticket/api.py:220
 msgid ""
 "Default resolution for resolving (closing) tickets\n"
 "(''since 0.11'')."
-msgstr ""
+msgstr "ערך ברירת מחדל להחלטה בעת סגירת טיקטים (''מאז 0.11'')."
 
 #: trac/ticket/default_workflow.py:101
 msgid ""
