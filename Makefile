@@ -242,8 +242,8 @@ stats-pot:
 stats-%:
 	@$(foreach catalog,$(catalogs), \
 	    [ -e $(catalog.po) ] \
-	    && echo -n "$(catalog.po): "; \
-	       msgfmt --statistics $(catalog.po) \
+	    && { echo -n "$(catalog.po): "; \
+	         msgfmt --statistics $(catalog.po); } \
 	    || echo "$(catalog.po) doesn't exist (make init-$(*))";)
 	@rm -f messages.mo
 
