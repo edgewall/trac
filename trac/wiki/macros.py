@@ -752,6 +752,22 @@ class TracIniMacro(WikiMacroBase):
                 options.setdefault(section, {})[key] = option
                 sections.setdefault(section, '')
 
+        def default_cell(option):
+            default = option.default
+            if default is True:
+                default = 'true'
+            elif default is False:
+                default = 'false'
+            elif default == 0:
+                default = '0.0' if isinstance(default, float) else '0'
+            elif default:
+                default = ', '.join(to_unicode(val) for val in default) \
+                          if isinstance(default, (list, tuple)) \
+                          else to_unicode(default)
+            else:
+                return tag.td(_("(no default)"), class_='nodefault')
+            return tag.td(tag.code(default), class_='default')
+
         return tag.div(class_='tracini')(
             (tag.h3(tag.code('[%s]' % section), id='%s-section' % section),
              format_to_html(self.env, formatter.context, section_doc),
@@ -761,12 +777,7 @@ class TracIniMacro(WikiMacroBase):
                             self.env, formatter.context,
                             dgettext(option.doc_domain,
                                      to_unicode(option.__doc__)))),
-                        tag.td(tag.code(option.default or 'false')
-                                   if option.default or option.default is False
-                                   else _("(no default)"),
-                               class_='default' if option.default or
-                                                   option.default is False
-                                                else 'nodefault'))
+                        default_cell(option))
                  for option in sorted(options.get(section, {}).itervalues(),
                                       key=lambda o: o.name)
                  if option.name.startswith(key_filter))))
