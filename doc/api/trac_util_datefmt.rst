@@ -54,15 +54,37 @@ Propose suggestion for date/time input format:
 
 .. autofunction :: http_date
 
+.. autofunction	:: is_24_hours
+
 Formatting and parsing according to user preferences:
 
 .. autofunction	:: user_time
 
 
+jQuery UI datepicker helpers
+----------------------------
+
+.. autofunction	:: get_date_format_jquery_ui
+
+.. autofunction	:: get_time_format_jquery_ui
+
+.. autofunction	:: get_day_names_jquery_ui
+
+.. autofunction	:: get_first_week_day_jquery_ui
+
+.. autofunction	:: get_month_names_jquery_ui
+
+.. autofunction	:: get_timezone_list_jquery_ui
+
+
 Timezone utilities
 ------------------
 
-.. autoattribute :: trac.util.datefmt.localtz
+.. attribute :: trac.util.datefmt.localtz
+
+  A global `LocalTimezone` instance.
+
+.. autoclass :: LocalTimezone
 
 .. attribute :: trac.util.datefmt.all_timezones
 
@@ -70,6 +92,8 @@ List of all available timezones. If pytz_ is installed, this
 corresponds to a rich variety of "official" timezones, otherwise this
 corresponds to `FixedOffset` instances, ranging from GMT -12:00 to GMT
 +13:00.
+
+.. autofunction :: timezone
 
 .. autofunction :: get_timezone
 

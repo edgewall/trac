@@ -28,12 +28,14 @@ try:
     import babel
     from babel import Locale
     from babel.core import LOCALE_ALIASES
-    from babel.dates import format_datetime as babel_format_datetime, \
-                            format_date as babel_format_date, \
-                            format_time as babel_format_time, \
-                            get_datetime_format, get_date_format, \
-                            get_time_format, get_month_names, \
-                            get_period_names, get_day_names
+    from babel.dates import (
+        format_datetime as babel_format_datetime, 
+        format_date as babel_format_date,
+        format_time as babel_format_time,
+        get_datetime_format, get_date_format,
+        get_time_format, get_month_names,
+        get_period_names, get_day_names
+    )
 except ImportError:
     babel = None
 
