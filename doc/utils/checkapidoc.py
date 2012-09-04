@@ -120,12 +120,14 @@ def get_public_symbols(m):
     return set(symbol for symbol in dir(m) if not symbol.startswith('_'))
 
 import_from_re = re.compile(r'''
-^from \s+ ([\w\.]+) \s+ import \s+   # module
-(                                \*  # all symbols
-|       \w+ (?:[\s\\]*,[\s\\]*\w+)*  # list of symbols
-| \( \s* \w+ (?:\s*,\s*\w+)* \s* \)  # list of symbols in parenthesis
+^ \s* from \s+ ([\w\.]+) \s+ import \s+   # module
+(                                \*       # all symbols
+|       %s (?: [\s\\]* , [\s\\]* %s)*     # list of symbols
+| \( \s* %s (?: \s* , \s* %s)* \s* \)     # list of symbols in parenthesis
 )
-''', re.MULTILINE | re.VERBOSE)
+''' % ((r'(?:\w+|\w+\s+as\s+\w+)',) * 4), re.MULTILINE | re.VERBOSE)
+
+remove_original_re = re.compile(r'\w+\s+as', re.MULTILINE)
 
 def get_imported_symbols(module):
     src_filename = module.__file__.replace('\\', '/').replace('.pyc', '.py')
@@ -147,8 +149,9 @@ def get_imported_symbols(module):
         else:
             if symbol_list and symbol_list[0] == '(' and symbol_list[-1] == ')':
                 symbol_list = symbol_list[1:-1]
-            symbols = set(symbol_list.replace('\\', '').replace(',', ' ')
-                          .split())
+            symbol_list = re.sub(r'\w+\s+as', '', symbol_list)
+            symbols = set(remove_original_re.sub('', symbol_list)
+                          .replace('\\', '').replace(',', ' ').split())
         imported |= symbols
     return imported
 
