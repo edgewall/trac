@@ -17,7 +17,7 @@ import sys, os
 
 # General substitutions.
 project = 'Trac'
-copyright = '2010, Edgewall Software'
+copyright = '2012, Edgewall Software'
 url = 'http://trac.edgewall.org'
 
 # The default replacements for |version| and |release|, also used in various
