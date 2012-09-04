@@ -24,9 +24,9 @@ def usage(cmd):
     exit(0)
 
 def main(argv):
-    api_files = [rst for rst in os.listdir('doc/api')
-                 if fnmatch.fnmatch(rst, '*.rst')
-                 and rst not in excluded_docs]
+    api_files = rst_files = [rst for rst in os.listdir('doc/api')
+                             if fnmatch.fnmatch(rst, '*.rst')
+                             and rst not in excluded_docs]
     cmd = argv.pop(0)
     def has(*options):
         for opt in options:
@@ -48,13 +48,15 @@ def main(argv):
                 given_files.append(arg)
         api_files = given_files
     for rst in api_files:
-        check_api_doc(rst, verbose, only_documented)
+        check_api_doc(rst, verbose, only_documented, 
+                      sorted(f[:-4] for f in rst_files))
 
 
-def check_api_doc(rst, verbose, only_documented):
+def check_api_doc(rst, verbose, only_documented, rsts):
     if verbose:
         print "== Checking %s ... " % (rst,)
-    module_name = rst.replace('_', '.').replace('.rst', '')
+    basename = rst.replace('.rst', '')
+    module_name = basename.replace('_', '.')
     try:
         module = __import__(module_name, globals(), {}, ['__all__'])
     except ImportError, e:
@@ -64,7 +66,9 @@ def check_api_doc(rst, verbose, only_documented):
     if not all:
         print "Warning: %s doesn't define __all__, using exported symbols." % (
             module_name,)
-        all = get_default_symbols(module, only_documented)
+        all = get_default_symbols(module, only_documented, 
+                                  any(f.startswith(basename) and f != basename
+                                      for f in rsts))
     no_apidoc = getattr(module, '__no_apidoc__', None)
     if no_apidoc:
         if isinstance(no_apidoc, basestring):
@@ -103,8 +107,9 @@ def get_sphinx_documented_symbols(rst):
     return symbols, keywords
 
 
-def get_default_symbols(module, only_documented):
-    public = get_public_symbols(module) - get_imported_symbols(module)
+def get_default_symbols(module, only_documented, has_submodules):
+    public = get_public_symbols(module) - get_imported_symbols(module, 
+                                                               has_submodules)
     # eliminate modules
     all = []
     for symbol in public:
@@ -136,9 +141,9 @@ import_from_re = re.compile(r'''
 
 remove_original_re = re.compile(r'\w+\s+as', re.MULTILINE)
 
-def get_imported_symbols(module):
+def get_imported_symbols(module, has_submodules):
     src_filename = module.__file__.replace('\\', '/').replace('.pyc', '.py')
-    if src_filename.endswith('/__init__.py'):
+    if src_filename.endswith('/__init__.py') and not has_submodules:
         return set()
     src = file(src_filename).read()
     imported = set()
