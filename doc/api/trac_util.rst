@@ -40,6 +40,18 @@ OS related utilies
 .. autoclass :: NaivePopen
    :members:
 
+.. autoclass :: WindowsError
+
+   Also defined on non-Windows systems (by a dummy OSError subclass).
+
+.. autoclass :: file_or_std
+
+.. data :: urandom
+
+  The standard `os.urandom` when available, otherwise a reasonable
+  replacement.
+
+
 Python "system" utilities
 -------------------------
 
@@ -50,6 +62,7 @@ Complements the `inspect`, `traceback` and `sys` modules.
 .. autofunction :: get_last_traceback
 .. autofunction :: get_lines_from_file
 .. autofunction :: get_frame_info
+.. autofunction :: import_namespace
 .. autofunction :: safe__import__
 .. autofunction :: safe_repr
 .. autofunction :: get_doc
@@ -74,6 +87,9 @@ Data structures which don't fit anywhere else
    :members:
 
 .. autofunction :: to_ranges
+
+.. autoclass :: lazy
+
 
 Algorithmic utilities
 ---------------------

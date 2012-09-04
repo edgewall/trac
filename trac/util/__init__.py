@@ -1084,3 +1084,4 @@ from trac.util.datefmt import pretty_timedelta, format_datetime, \
                               get_datetime_format_hint, http_date, \
                               parse_date
 
+__no_apidoc__ = 'compat translation'
