@@ -65,6 +65,11 @@ def check_api_doc(rst, verbose, only_documented):
         print "Warning: %s doesn't define __all__, using exported symbols." % (
             module_name,)
         all = get_default_symbols(module, only_documented)
+    no_apidoc = getattr(module, '__no_apidoc__', None)
+    if no_apidoc:
+        if isinstance(no_apidoc, basestring):
+            no_apidoc = [s.strip() for s in no_apidoc.split()]
+        all = list(set(all) - set(no_apidoc))
     symbols, keywords = get_sphinx_documented_symbols(rst)
     for symbol in sorted(all):
         if symbol in symbols:
