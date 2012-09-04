@@ -17,7 +17,7 @@ issues with Python string handling routines are avoided as well, like
 surprising results when splitting text in lines. For example, did you
 know that "Priorità" is encoded as ``'Priorit\xc3\x0a'`` in UTF-8?
 Calling `strip()` on this value in some locales can cut away the
-trailing ``\x0a`` and it's no longer valid UTF-8.
+trailing ``\x0a`` and it's no longer valid UTF-8...
 
 The drawback is that most of the outside world, while eventually
 "Unicode", is definitely not `unicode`. This is why we need to convert
@@ -28,7 +28,7 @@ is used in the incoming `str` strings.
 Encoding `unicode` to `str` is usually directly performed by calling
 `encode()` on the `unicode` instance, while decoding is preferably
 left to the `to_unicode` helper function, which converts `str` to
-`unicode` in a robust, guaranteed successful way.
+`unicode` in a robust and guaranteed successful way.
 
 .. autofunction :: to_unicode
 
@@ -45,14 +45,19 @@ Web utilities
 
 .. autofunction :: unicode_urlencode
 
-.. autofunction	:: quote_query_string
+.. autofunction :: quote_query_string
+
+.. autofunction :: javascript_quote
+
+.. autofunction :: to_js_string
+
 
 Console and file system
 .......................
 
-.. autofunction	:: path_to_unicode
+.. autofunction :: path_to_unicode
 
-.. autofunction	:: stream_encoding
+.. autofunction :: stream_encoding
 
 .. autofunction :: console_print
 
@@ -72,7 +77,7 @@ Miscellaneous
 
 .. autoclass :: unicode_passwd
 
-.. autofunction :: to_utf8
+.. autofunction :: levenshtein_distance
 
 
 Text formatting
@@ -90,8 +95,6 @@ Text formatting
 
 .. autofunction :: expandtabs
 
-.. autofunction :: javascript_quote
-
 .. autofunction :: obfuscate_email_address
 
 .. autofunction :: text_width
@@ -100,12 +103,16 @@ Text formatting
 
 .. autofunction :: shorten_line
 
+.. autofunction :: stripws
+
 .. autofunction :: wrap
 
 
 Conversion utilities
 --------------------
 
-.. autofunction	:: unicode_to_base64
+.. autofunction :: unicode_to_base64
 
-.. autofunction	:: unicode_from_base64
+.. autofunction :: unicode_from_base64
+
+.. autofunction :: to_utf8
