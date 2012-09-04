@@ -149,7 +149,6 @@ def get_imported_symbols(module):
         else:
             if symbol_list and symbol_list[0] == '(' and symbol_list[-1] == ')':
                 symbol_list = symbol_list[1:-1]
-            symbol_list = re.sub(r'\w+\s+as', '', symbol_list)
             symbols = set(remove_original_re.sub('', symbol_list)
                           .replace('\\', '').replace(',', ' ').split())
         imported |= symbols
