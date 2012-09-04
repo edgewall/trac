@@ -74,17 +74,19 @@ def check_api_doc(rst, verbose, only_documented):
         else:
             value = getattr(module, symbol)
             cls = getattr(value, '__class__', None)
-            keyword = 'attribute'
+            keyword = 'data'
             if not cls or cls.__name__ == 'type':
                 keyword = 'class'
-            elif cls.__name__ in ('function', 'module'):
-                keyword = cls.__name__
+            elif cls.__name__ in ('function', 'instancemethod'):
+                keyword = 'function'
+            elif cls.__name__ == 'module':
+                keyword = 'module'
             print " * .. %14s :: %s" % ('auto' + keyword, symbol)
 
 
 sphinx_doc_re = re.compile(r'''
-^.. \s+ ((?:py:|auto)(?:module|class|function|attribute))  # keyword
-                                     \s* :: \s* ([\w\.]+)  # symbol
+^.. \s+ ((?:py:|auto)(?:module|class|function|attribute)|data)  # keyword
+                                     \s* :: \s* ([\w\.]+)       # symbol
 ''', re.MULTILINE | re.VERBOSE)
 
 def get_sphinx_documented_symbols(rst):

@@ -80,13 +80,13 @@ jQuery UI datepicker helpers
 Timezone utilities
 ------------------
 
-.. attribute :: trac.util.datefmt.localtz
+.. data :: trac.util.datefmt.localtz
 
   A global `LocalTimezone` instance.
 
 .. autoclass :: LocalTimezone
 
-.. attribute :: trac.util.datefmt.all_timezones
+.. data :: trac.util.datefmt.all_timezones
 
 List of all available timezones. If pytz_ is installed, this
 corresponds to a rich variety of "official" timezones, otherwise this
