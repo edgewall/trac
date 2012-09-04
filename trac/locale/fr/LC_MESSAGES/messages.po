@@ -618,7 +618,7 @@ msgstr ""
 
 #: trac/env.py:973
 msgid "The upgrade failed. Please fix the issue and try again.\n"
-msgstr "La mise à jour a échouée. Corrigez le problème et réessayer.\n"
+msgstr "La mise à jour a échouée. Corrigez le problème et réessayez.\n"
 
 #: trac/env.py:985
 msgid ""
@@ -6280,7 +6280,7 @@ msgid ""
 "administrator."
 msgstr ""
 "Les templates Clearsilver ne sont plus acceptés, contactez votre "
-"administrateu(trice) Trac."
+"administrateur(trice) Trac."
 
 #: trac/web/main.py:521
 #, python-format
