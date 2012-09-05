@@ -325,11 +325,14 @@ pdf_fit_background_mode = 'scale'
 
 def setup(app):
     # adding role for linking to InterTrac targets on t.e.o
-    from urllib import quote
     from docutils import nodes
     from docutils.parsers.rst import roles
     def teo_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
-        ref = url + '/intertrac/' + quote(text)
+        # special case ticket references
+        if text[0] == '#':
+            ref = url + '/ticket/' + text[1:]
+        else:
+            ref = url + '/intertrac/' + text
         roles.set_classes(options)
         node = nodes.reference(rawtext, text, refuri=ref, **options)
         return [node], []

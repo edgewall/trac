@@ -33,6 +33,9 @@ parameter of :meth:`IWikiMacroProvider.expand_macro`.
 .. autoclass :: trac.wiki.api.IWikiMacroProvider
    :members:
 
+   See also `trac.wiki.macros.WikiMacroBase` and 
+   :teo:`wiki/WikiMacros#DevelopingCustomMacros`.
+
 The Wiki syntax can also be extended by introducing new markup.
 
 .. autoclass :: trac.wiki.api.IWikiSyntaxProvider
@@ -41,7 +44,7 @@ The Wiki syntax can also be extended by introducing new markup.
 The Wiki System
 ---------------
 
-The wiky system provide an access to all the pages.
+The wiki system provide an access to all the pages.
 
 .. autoclass :: trac.wiki.api.WikiSystem
    :members:
