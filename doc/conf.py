@@ -327,6 +327,7 @@ def setup(app):
     # adding role for linking to InterTrac targets on t.e.o
     from docutils import nodes
     from docutils.parsers.rst import roles
+
     def teo_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
         # special case ticket references
         if text[0] == '#':
@@ -337,6 +338,15 @@ def setup(app):
         node = nodes.reference(rawtext, text, refuri=ref, **options)
         return [node], []
     roles.register_canonical_role('teo', teo_role)
+
+    def extensionpoints_role(name, rawtext, text, lineno, inliner, options={},
+                             content=[]):
+        ref = url + '/wiki/TracDev/PluginDevelopment/ExtensionPoints/' + text
+        roles.set_classes(options)
+        node = nodes.reference(rawtext, text + " extension points",
+                               refuri=ref, **options)
+        return [node], []
+    roles.register_canonical_role('extensionpoints', extensionpoints_role)
 
     # ifconfig variables
     app.add_config_value('devel', '', True)

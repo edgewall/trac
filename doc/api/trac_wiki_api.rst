@@ -17,11 +17,15 @@ wiki.
 .. autoclass :: trac.wiki.api.IWikiChangeListener
    :members:
 
+   See also :extensionpoints:`trac.wiki.api.IWikiChangeListener`.
+
 Components can also interfere with the changes, before or after
 they're made.
 
 .. autoclass :: trac.wiki.api.IWikiPageManipulator
    :members:
+
+   See also :extensionpoints:`trac.wiki.api.IWikiPageManipulator`.
 
 Then, the Wiki syntax itself can be extended. The first and less
 intrusive way is to provide new Wiki macros or Wiki processors. Those
@@ -34,12 +38,18 @@ parameter of :meth:`IWikiMacroProvider.expand_macro`.
    :members:
 
    See also `trac.wiki.macros.WikiMacroBase` and 
-   :teo:`wiki/WikiMacros#DevelopingCustomMacros`.
+   :teo:`wiki/WikiMacros#DevelopingCustomMacros` and
+   :extensionpoints:`trac.wiki.api.IWikiMacroProvider`.
+
 
 The Wiki syntax can also be extended by introducing new markup.
 
 .. autoclass :: trac.wiki.api.IWikiSyntaxProvider
    :members:
+
+   See also :teo:`wiki:TracDev/IWikiSyntaxProviderExample` and
+   :extensionpoints:`trac.wiki.api.IWikiSyntaxProvider`.
+
 
 The Wiki System
 ---------------
