@@ -4678,17 +4678,17 @@ msgstr "Nächste Zeitspanne"
 #: trac/timeline/web_ui.py:282
 #, python-format
 msgid "at %(iso8601)s"
-msgstr ""
+msgstr "am %(iso8601)s"
 
 #: trac/timeline/web_ui.py:286
 #, python-format
 msgid "on %(date)s at %(time)s"
-msgstr ""
+msgstr "am %(date)s um %(time)s"
 
 #: trac/timeline/web_ui.py:287
 #, python-format
 msgid "See timeline %(relativetime)s ago"
-msgstr ""
+msgstr "Siehe Journal vor %(relativetime)s"
 
 #: trac/timeline/web_ui.py:290 trac/web/chrome.py:879 trac/web/chrome.py:881
 #, python-format
@@ -4698,7 +4698,7 @@ msgstr "vor %(relativetime)s"
 #: trac/timeline/web_ui.py:292 trac/timeline/web_ui.py:336
 #, python-format
 msgid "See timeline at %(absolutetime)s"
-msgstr ""
+msgstr "Siehe Journal am %(absolutetime)s"
 
 #. TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
 #: trac/timeline/web_ui.py:383
@@ -4791,14 +4791,14 @@ msgstr ""
 msgid "%(num)d year"
 msgid_plural "%(num)d years"
 msgstr[0] "%(num)d Jahr"
-msgstr[1] "%(num)d Jahre"
+msgstr[1] "%(num)d Jahren"
 
 #: trac/util/datefmt.py:113
 #, python-format
 msgid "%(num)d month"
 msgid_plural "%(num)d months"
 msgstr[0] "%(num)d Monat"
-msgstr[1] "%(num)d Monate"
+msgstr[1] "%(num)d Monaten"
 
 #: trac/util/datefmt.py:114
 #, python-format
@@ -4812,7 +4812,7 @@ msgstr[1] "%(num)d Wochen"
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
 msgstr[0] "%(num)d Tag"
-msgstr[1] "%(num)d Tage"
+msgstr[1] "%(num)d Tagen"
 
 #: trac/util/datefmt.py:116
 #, python-format
