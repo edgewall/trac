@@ -104,11 +104,13 @@ class Environment(Component, ComponentManager):
 
     Trac stores project information in a Trac environment. It consists
     of a directory structure containing among other things:
-        * a configuration file, 
-        * project-specific templates and plugins,
-        * the wiki and ticket attachments files,
-        * the SQLite database file (stores tickets, wiki pages...)
-          in case the database backend is sqlite
+
+    * a configuration file, 
+    * project-specific templates and plugins,
+    * the wiki and ticket attachments files,
+    * the SQLite database file (stores tickets, wiki pages...)
+      in case the database backend is sqlite
+
     """
 
     implements(ISystemInfoProvider)
@@ -246,9 +248,10 @@ class Environment(Component, ComponentManager):
         In addition to regular key names supported by the Python
         logger library (see
         http://docs.python.org/library/logging.html), one could use:
-         - $(path)s     the path for the current environment
-         - $(basename)s the last path component of the current environment
-         - $(project)s  the project name
+
+        - $(path)s     the path for the current environment
+        - $(basename)s the last path component of the current environment
+        - $(project)s  the project name
 
         Note the usage of `$(...)s` instead of `%(...)s` as the latter form
         would be interpreted by the ConfigParser itself.
