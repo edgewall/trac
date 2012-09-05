@@ -10,8 +10,13 @@ Interfaces
 .. autoclass :: trac.web.chrome.INavigationContributor
    :members:
 
+   See also :extensionpoints:`trac.web.chrome.INavigationContributor`
+
 .. autoclass :: trac.web.chrome.ITemplateProvider
    :members:
+
+   See also :extensionpoints:`trac.web.chrome.ITemplateProvider`
+
 
 Components
 ----------

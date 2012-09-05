@@ -23,6 +23,8 @@ Interfaces
 .. autoclass :: ITicketGroupStatsProvider
    :members:
 
+   See also :extensionpoints:`trac.ticket.roadmap.ITicketGroupStatsProvider`
+
 .. autoclass :: TicketGroupStats
    :members:
 

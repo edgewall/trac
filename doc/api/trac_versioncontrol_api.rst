@@ -19,11 +19,18 @@ Interfaces
 .. autoclass :: IRepositoryConnector
    :members:
 
+   See also :extensionpoints:`trac.versioncontrol.api.IRepositoryConnector`
+
 .. autoclass :: IRepositoryProvider
    :members:
 
+   See also :extensionpoints:`trac.versioncontrol.api.IRepositoryProvider`
+
 .. autoclass :: IRepositoryChangeListener
    :members:
+
+   See also :extensionpoints:`trac.versioncontrol.api.IRepositoryChangeListener`
+
 
 Components
 ----------

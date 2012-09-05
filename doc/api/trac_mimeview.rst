@@ -9,11 +9,18 @@ Interfaces
 .. autoclass :: trac.mimeview.api.IHTMLPreviewRenderer
    :members:
 
+   See also :extensionpoints:`trac.mimeview.api.IHTMLPreviewRenderer`
+
 .. autoclass :: trac.mimeview.api.IHTMLPreviewAnnotator
    :members:
 
+   See also :extensionpoints:`trac.mimeview.api.IHTMLPreviewAnnotator`
+
 .. autoclass :: trac.mimeview.api.IContentConverter
    :members:
+
+   See also :extensionpoints:`trac.mimeview.api.IContentConverter`
+
 
 Components
 ----------

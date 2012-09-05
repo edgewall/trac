@@ -9,8 +9,13 @@ Interfaces
 .. autoclass :: trac.env.IEnvironmentSetupParticipant
    :members:
 
+   See also :extensionpoints:`trac.env.IEnvironmentSetupParticipant`
+
 .. autoclass :: trac.env.ISystemInfoProvider
    :members:
+
+   See also :extensionpoints:`trac.env.ISystemInfoProvider`
+
 
 Components
 ----------

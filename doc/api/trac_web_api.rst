@@ -14,16 +14,25 @@ stages of the web requests processing pipeline.
 .. autoclass :: IRequestHandler
    :members:
 
+   See also :extensionpoints:`trac.web.api.IRequestHandler`
+
 .. autoclass :: IRequestFilter
    :members:
+
+   See also :extensionpoints:`trac.web.api.IRequestFilter`
 
 For how the main content itself can be generated, see `trac.web.chrome`.
 
 .. autoclass :: ITemplateStreamFilter
    :members:
 
+   See also :extensionpoints:`trac.web.api.ITemplateStreamFilter`
+
 .. autoclass :: IAuthenticator
    :members:
+
+   See also :extensionpoints:`trac.web.api.IAuthenticator`
+
 
 Important classes
 -----------------

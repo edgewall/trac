@@ -23,11 +23,17 @@ Interfaces
 .. autoclass :: IAttachmentChangeListener
    :members:
 
+   See also :extensionpoints:`trac.attachment.IAttachmentChangeListener`
+
 .. autoclass :: IAttachmentManipulator
    :members:
 
+   See also :extensionpoints:`trac.attachment.IAttachmentManipulator`
+
 .. autoclass :: ILegacyAttachmentPolicyDelegate
    :members:
+
+   See also :extensionpoints:`trac.attachment.ILegacyAttachmentPolicyDelegate`
 
 
 Classes
