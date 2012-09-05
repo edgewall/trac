@@ -66,4 +66,5 @@ Other Functions
 ---------------
 
 .. autofunction :: trac.wiki.api.parse_args
+.. autofunction :: trac.wiki.api.validate_page_name
 
