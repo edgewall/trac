@@ -47,34 +47,34 @@ def main(argv):
             elif arg in api_files:
                 given_files.append(arg)
         api_files = given_files
+    rst_basenames = sorted(f[:-4] for f in rst_files)
     for rst in api_files:
-        check_api_doc(rst, verbose, only_documented, 
-                      sorted(f[:-4] for f in rst_files))
+        basename = rst.replace('.rst', '')
+        if verbose or len(api_files) > 1:
+            print "== Checking %s ... " % (rst,)
+        check_api_doc(basename, verbose, only_documented, 
+                      any(f.startswith(basename) and f != basename 
+                          for f in rst_basenames))
 
 
-def check_api_doc(rst, verbose, only_documented, rsts):
-    if verbose:
-        print "== Checking %s ... " % (rst,)
-    basename = rst.replace('.rst', '')
+def check_api_doc(basename, verbose, only_documented, has_submodules):
     module_name = basename.replace('_', '.')
     try:
         module = __import__(module_name, globals(), {}, ['__all__'])
     except ImportError, e:
-        print "Skipping %s (%s)" % (rst, e)
+        print "Skipping %s (%s)" % (basename, e)
         return
     all = getattr(module, '__all__', None)
     if not all:
         print "Warning: %s doesn't define __all__, using exported symbols." % (
             module_name,)
-        all = get_default_symbols(module, only_documented, 
-                                  any(f.startswith(basename) and f != basename
-                                      for f in rsts))
+        all = get_default_symbols(module, only_documented, has_submodules)
     no_apidoc = getattr(module, '__no_apidoc__', None)
     if no_apidoc:
         if isinstance(no_apidoc, basestring):
             no_apidoc = [s.strip() for s in no_apidoc.split()]
         all = list(set(all) - set(no_apidoc))
-    symbols, keywords = get_sphinx_documented_symbols(rst)
+    symbols, keywords = get_sphinx_documented_symbols(basename + '.rst')
     for symbol in sorted(all):
         if symbol in symbols:
             if verbose:
