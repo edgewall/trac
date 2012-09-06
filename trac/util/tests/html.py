@@ -17,6 +17,18 @@ class TracHTMLSanitizerTestCase(unittest.TestCase):
                     encoding='utf-8')
         self.assertEqual('<div>XSS</div>', unicode(html | TracHTMLSanitizer()))
 
+    def test_expression_with_comments(self):
+        html = HTML(r'<div style="top:exp/**/ression(alert())">XSS</div>')
+        self.assertEqual('<div style="top:exp ression(alert())">XSS</div>',
+                         unicode(html | TracHTMLSanitizer()))
+        html = HTML(r'<div style="top:exp//**/**/ression(alert())">XSS</div>')
+        self.assertEqual(
+            '<div style="top:exp/ **/ression(alert())">XSS</div>',
+            unicode(html | TracHTMLSanitizer()))
+        html = HTML(r'<div style="top:ex/*p*/ression(alert())">XSS</div>')
+        self.assertEqual('<div style="top:ex ression(alert())">XSS</div>',
+                         unicode(html | TracHTMLSanitizer()))
+
     def test_url_with_javascript(self):
         html = HTML('<div style="background-image:url(javascript:alert())">'
                     'XSS</div>', encoding='utf-8')
@@ -31,6 +43,18 @@ class TracHTMLSanitizerTestCase(unittest.TestCase):
         html = HTML(r'<div style="top:exp\72 ess\000069 on(alert())">'
                     r'XSS</div>', encoding='utf-8')
         self.assertEqual('<div>XSS</div>', unicode(html | TracHTMLSanitizer()))
+        # escaped backslash
+        html = HTML(r'<div style="top:exp\5c ression(alert())">XSS</div>')
+        self.assertEqual(r'<div style="top:exp\\ression(alert())">XSS</div>',
+                         unicode(html | TracHTMLSanitizer()))
+        html = HTML(r'<div style="top:exp\5c 72 ession(alert())">XSS</div>')
+        self.assertEqual(r'<div style="top:exp\\72 ession(alert())">XSS</div>',
+                         unicode(html | TracHTMLSanitizer()))
+        # escaped control characters
+        html = HTML(r'<div style="top:exp\000000res\1f sion(alert())">'
+                    r'XSS</div>')
+        self.assertEqual('<div style="top:exp res sion(alert())">XSS</div>',
+                         unicode(html | TracHTMLSanitizer()))
 
     def test_backslash_without_hex(self):
         html = HTML(r'<div style="top:e\xp\ression(alert())">XSS</div>',

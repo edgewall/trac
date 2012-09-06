@@ -71,47 +71,29 @@ class TracHTMLSanitizer(HTMLSanitizer):
         self.safe_css = frozenset(safe_css)
 
     # IE6 <http://heideri.ch/jso/#80>
-    _EXPRESSION_SEARCH = re.compile(u"""
-        [eE
-         \uFF25 # FULLWIDTH LATIN CAPITAL LETTER E
-         \uFF45 # FULLWIDTH LATIN SMALL LETTER E
-        ]
-        [xX
-         \uFF38 # FULLWIDTH LATIN CAPITAL LETTER X
-         \uFF58 # FULLWIDTH LATIN SMALL LETTER X
-        ]
-        [pP
-         \uFF30 # FULLWIDTH LATIN CAPITAL LETTER P
-         \uFF50 # FULLWIDTH LATIN SMALL LETTER P
-        ]
-        [rR
-         \u0280 # LATIN LETTER SMALL CAPITAL R
-         \uFF32 # FULLWIDTH LATIN CAPITAL LETTER R
-         \uFF52 # FULLWIDTH LATIN SMALL LETTER R
-        ]
-        [eE
-         \uFF25 # FULLWIDTH LATIN CAPITAL LETTER E
-         \uFF45 # FULLWIDTH LATIN SMALL LETTER E
-        ]
-        [sS
-         \uFF33 # FULLWIDTH LATIN CAPITAL LETTER S
-         \uFF53 # FULLWIDTH LATIN SMALL LETTER S
-        ]{2}
-        [iI
-         \u026A # LATIN LETTER SMALL CAPITAL I
-         \uFF29 # FULLWIDTH LATIN CAPITAL LETTER I
-         \uFF49 # FULLWIDTH LATIN SMALL LETTER I
-        ]
-        [oO
-         \uFF2F # FULLWIDTH LATIN CAPITAL LETTER O
-         \uFF4F # FULLWIDTH LATIN SMALL LETTER O
-        ]
-        [nN
-         \u0274 # LATIN LETTER SMALL CAPITAL N
-         \uFF2E # FULLWIDTH LATIN CAPITAL LETTER N
-         \uFF4E # FULLWIDTH LATIN SMALL LETTER N
-        ]
-        """, re.VERBOSE).search
+    _EXPRESSION_SEARCH = re.compile(
+        u'[eE\uFF25\uFF45]'         # FULLWIDTH LATIN CAPITAL LETTER E
+                                    # FULLWIDTH LATIN SMALL LETTER E
+        u'[xX\uFF38\uFF58]'         # FULLWIDTH LATIN CAPITAL LETTER X
+                                    # FULLWIDTH LATIN SMALL LETTER X
+        u'[pP\uFF30\uFF50]'         # FULLWIDTH LATIN CAPITAL LETTER P
+                                    # FULLWIDTH LATIN SMALL LETTER P
+        u'[rR\u0280\uFF32\uFF52]'   # LATIN LETTER SMALL CAPITAL R
+                                    # FULLWIDTH LATIN CAPITAL LETTER R
+                                    # FULLWIDTH LATIN SMALL LETTER R
+        u'[eE\uFF25\uFF45]'         # FULLWIDTH LATIN CAPITAL LETTER E
+                                    # FULLWIDTH LATIN SMALL LETTER E
+        u'[sS\uFF33\uFF53]{2}'      # FULLWIDTH LATIN CAPITAL LETTER S
+                                    # FULLWIDTH LATIN SMALL LETTER S
+        u'[iI\u026A\uFF29\uFF49]'   # LATIN LETTER SMALL CAPITAL I
+                                    # FULLWIDTH LATIN CAPITAL LETTER I
+                                    # FULLWIDTH LATIN SMALL LETTER I
+        u'[oO\uFF2F\uFF4F]'         # FULLWIDTH LATIN CAPITAL LETTER O
+                                    # FULLWIDTH LATIN SMALL LETTER O
+        u'[nN\u0274\uFF2E\uFF4E]'   # LATIN LETTER SMALL CAPITAL N
+                                    # FULLWIDTH LATIN CAPITAL LETTER N
+                                    # FULLWIDTH LATIN SMALL LETTER N
+    ).search
 
     # IE6 <http://openmya.hacker.jp/hasegawa/security/expression.txt>
     #     7) Particular bit of Unicode characters
@@ -184,7 +166,15 @@ class TracHTMLSanitizer(HTMLSanitizer):
         def _repl(match):
             t = match.group(1)
             if t:
-                return unichr(int(t, 16))
+                code = int(t, 16)
+                chr = unichr(code)
+                if code <= 0x1f:
+                    # replace space character because IE ignores control
+                    # characters
+                    chr = ' '
+                elif chr == '\\':
+                    chr = r'\\'
+                return chr
             t = match.group(2)
             if t == '\\':
                 return r'\\'
@@ -192,6 +182,14 @@ class TracHTMLSanitizer(HTMLSanitizer):
                 return t
         return self._UNICODE_ESCAPE(_repl,
                                     self._NORMALIZE_NEWLINES('\n', text))
+
+    _CSS_COMMENTS = re.compile(r'/\*.*?\*/').sub
+
+    def _strip_css_comments(self, text):
+        """Replace comments with space character instead of superclass which
+        removes comments to avoid problems when nested comments.
+        """
+        return self._CSS_COMMENTS(' ', text)
 
 
 class Deuglifier(object):
