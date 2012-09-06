@@ -4581,7 +4581,7 @@ msgstr ""
 #: trac/versioncontrol/templates/changeset.html:50
 #, python-format
 msgid "Changeset [1:%(new_rev)s] in %(reponame)s"
-msgstr "Niz popravkov %(new_rev)s v %(reponame)s"
+msgstr "Niz popravkov [1:%(new_rev)s] v %(reponame)s"
 
 #: trac/versioncontrol/templates/changeset.html:57
 #, python-format

@@ -2152,7 +2152,7 @@ msgstr ""
 "[1:%(file)s]\n"
 "      [2:[3:]]\n"
 "       ([4:%(size)s]) -\n"
-"      由 [4:%(author)s] 新增於 %(date)s 之前"
+"      由 [5:%(author)s] 新增於 %(date)s 之前"
 
 #: trac/templates/list_of_attachments.html:29
 #: trac/templates/list_of_attachments.html:40

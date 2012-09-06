@@ -2,6 +2,8 @@
 # Copyright (C) 2010 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # Instigate Training Center: Narine Martirosyan <training@instigate.am>, 2010
+#
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
@@ -1172,6 +1174,7 @@ msgid "Subject"
 msgstr "Թեմա"
 
 #: trac/admin/templates/admin_perms.html:92
+#, fuzzy
 msgid ""
 "Note that [1:Subject] or [2:Group] names can't be all upper-case,\n"
 "      as that is reserved for permission names."
@@ -1482,6 +1485,7 @@ msgstr ""
 "            [1:%(formatted)s]."
 
 #: trac/prefs/templates/prefs_datetime.html:47
+#, fuzzy
 msgid ""
 "Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean Time (GMT).[1:]\n"
 "        A positive offset is used to indicate a timezone at the east of Greenwich, i.e. ahead of Universal Time."
@@ -1646,6 +1650,7 @@ msgid "python powered"
 msgstr "python աջակցող"
 
 #: trac/templates/about.html:44
+#, fuzzy
 msgid ""
 "Please visit the Trac open source project:\n"
 "        [1:http://trac.edgewall.org/]"
@@ -1702,7 +1707,7 @@ msgstr "%(filename)s  %(parent)s մեջ - Կցում"
 #: trac/templates/attachment.html:29
 #, python-format
 msgid "Add Attachment to [1:%(parent)s]"
-msgstr "%(parent)s-ի կցված նյութերը"
+msgstr "[1:%(parent)s]-ի կցված նյութերը"
 
 #: trac/templates/attachment.html:33
 #, python-format
@@ -2049,7 +2054,7 @@ msgid ""
 "                        line [2:%(line)s], in]\n"
 "                        [3:%(function)s]"
 msgstr ""
-"Ֆայլ \"%(file)s\",\n"
+"[1:Ֆայլ \"%(file)s\",\n"
 "                        տող [2:%(line)s], in]\n"
 "                        [3:%(function)s]"
 
@@ -2179,6 +2184,7 @@ msgid "[1:HTML preview not available], since the file size exceeds %(size)s byte
 msgstr "[1:HTML preview not available] սկսած այն պահից, երբ ֆայլի չափը կգերազանցի %(size)s բայթ։"
 
 #: trac/templates/preview_file.html:22
+#, fuzzy
 msgid "[1:HTML preview not available], since no preview renderer could handle it."
 msgstr "քանի որ չի գտնվել համապատասխան մշակման ծրագիր։"
 
@@ -3589,10 +3595,10 @@ msgstr "Խնդիր #"
 
 #: trac/ticket/templates/ticket.html:91
 msgid "at [1:Initial Version]"
-msgstr "Նախնական Տարբերակ"
+msgstr "[1:Նախնական Տարբերակ]"
 
 #: trac/ticket/templates/ticket.html:94
-#, python-format
+#, fuzzy, python-format
 msgid "at [1:Version %(version)s]"
 msgstr "%(version)s տարբերակում"
 
@@ -3735,6 +3741,7 @@ msgstr "Բացակով կամ ստորակետով բաժանված փոստայ
 
 #: trac/ticket/templates/ticket.html:375
 #: trac/wiki/templates/wiki_edit_form.html:50
+#, fuzzy
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
 msgstr "Էլեկտրոնային փոստի հասցեն և օգտագործողի անունը կարող են պահպանվել"
 
@@ -3914,7 +3921,7 @@ msgid "Yesterday"
 msgstr "Երեկ"
 
 #: trac/timeline/templates/timeline.html:42
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "[1:%(time)s] %(title)s\n"
 "                  by [2:%(author)s]"
@@ -4544,7 +4551,7 @@ msgstr ""
 "              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
 
 #: trac/versioncontrol/templates/changeset.html:65
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "Changes\n"
 "              from [1:%(old_path)s]\n"
@@ -5660,6 +5667,7 @@ msgid "Someone else has modified that page since you started your edits."
 msgstr "Ձեր խմբագրումը սկսելուց հետո այդ էջը փոփոխվել է։"
 
 #: trac/wiki/templates/wiki_edit.html:76
+#, fuzzy
 msgid ""
 "[1:If you save right away, you risk to revert those changes]\n"
 "        (highlighted below as deletions)."
@@ -5767,7 +5775,7 @@ msgstr "%(path)s տեսք"
 #: trac/wiki/templates/wiki_rename.html:15
 #, python-format
 msgid "Rename [1:%(name)s]"
-msgstr "Ուղենիշ %(name)s"
+msgstr "Ուղենիշ [1:%(name)s]"
 
 #: trac/wiki/templates/wiki_rename.html:19
 msgid "Renaming the page will rename all existing versions of the page in place."
@@ -5796,7 +5804,7 @@ msgid "Edit this page"
 msgstr "Խմբագրել այս էջը"
 
 #: trac/wiki/templates/wiki_view.html:34
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "Version %(version)s (modified by %(author)s, %(date)s ago)\n"
 "               ([1:diff])"

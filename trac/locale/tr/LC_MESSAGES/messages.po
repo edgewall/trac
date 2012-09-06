@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the Trac project.
 # Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>, 2008.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
@@ -1570,6 +1571,7 @@ msgid "Enable access keys"
 msgstr "Kısayol tuşlarını etkinleştir"
 
 #: trac/prefs/templates/prefs_keybindings.html:21
+#, fuzzy
 msgid ""
 "This site provides keyboard shortcuts for\n"
 "      faster access to certain functions of this site. As these shortcuts can\n"
@@ -5874,7 +5876,7 @@ msgstr "Göster %(path)s"
 #: trac/wiki/templates/wiki_rename.html:15
 #, python-format
 msgid "Rename [1:%(name)s]"
-msgstr "Adlandır %(name)s"
+msgstr "Adlandır [1:%(name)s]"
 
 #: trac/wiki/templates/wiki_rename.html:19
 msgid "Renaming the page will rename all existing versions of the page in place."

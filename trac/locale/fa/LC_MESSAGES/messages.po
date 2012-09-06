@@ -361,6 +361,7 @@ msgid "Modify Component:"
 msgstr "تغییر مؤلفه"
 
 #: trac/admin/templates/admin_components.html:42
+#, fuzzy
 msgid ""
 "Description (you may use\n"
 "                [1:WikiFormatting]\n"
