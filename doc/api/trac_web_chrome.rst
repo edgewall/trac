@@ -24,6 +24,7 @@ Components
 .. autoclass :: trac.web.chrome.Chrome
    :members:
 
+
 Functions
 ---------
 
@@ -33,6 +34,7 @@ and in particular, (X)HTML content generation, in one way or another.
 .. autofunction :: trac.web.chrome.web_context
 .. autofunction :: trac.web.chrome.add_meta
 
+
 Web resources
 ~~~~~~~~~~~~~
 
@@ -41,11 +43,13 @@ Web resources
 .. autofunction :: trac.web.chrome.add_script
 .. autofunction :: trac.web.chrome.add_script_data
 
+
 Page admonitions
 ~~~~~~~~~~~~~~~~
 
 .. autofunction :: trac.web.chrome.add_warning
 .. autofunction :: trac.web.chrome.add_notice
+
 
 Contextual Navigation
 ~~~~~~~~~~~~~~~~~~~~~
@@ -53,3 +57,9 @@ Contextual Navigation
 .. autofunction :: trac.web.chrome.add_link
 .. autofunction :: trac.web.chrome.add_ctxtnav
 .. autofunction :: trac.web.chrome.prevnext_nav
+
+
+Miscellaneous
+~~~~~~~~~~~~~
+
+.. autofunction :: auth_link

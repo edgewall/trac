@@ -3,6 +3,7 @@
 
 .. automodule :: trac.mimeview.api
 
+
 Interfaces
 ----------
 
@@ -34,8 +35,12 @@ Helper classes
 .. autoclass :: trac.mimeview.api.RenderingContext
    :members:
 
+.. autoclass :: trac.mimeview.api.Context
+   :members:
+
 .. autoclass :: trac.mimeview.api.Content
    :members:
+
 
 Functions
 ---------
@@ -48,6 +53,8 @@ Functions
      or some arbitrary keyword.
     
    :param content: is either a `str` or an `unicode` string.
+
+.. autofunction :: trac.mimeview.api.ct_mimetype
 
 .. autofunction :: trac.mimeview.api.is_binary
 

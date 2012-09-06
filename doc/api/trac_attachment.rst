@@ -42,8 +42,14 @@ Classes
 .. autoclass :: Attachment
    :members:
 
+.. autoclass :: InvalidAttachment
+   :members:
+
 Components
 ----------
 
 .. autoclass :: AttachmentModule
+   :members:
+
+.. autoclass :: AttachmentAdmin
    :members:

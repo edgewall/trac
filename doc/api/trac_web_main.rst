@@ -24,6 +24,20 @@ Components
 .. autoclass :: RequestDispatcher
    :members:
 
+
+Classes
+-------
+
+.. autoclass :: RequestWithSession
+
+
+Helper Functions
+----------------
+
+.. autofunction :: get_environments
+.. autofunction :: get_tracignore_patterns
+
+
 Miscellaneous
 -------------
 

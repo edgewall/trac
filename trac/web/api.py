@@ -150,7 +150,7 @@ class HTTPException(Exception):
         new_class.reason = reason
         return new_class
 
-
+_HTTPException_subclass_names = []
 for code in [code for code in HTTP_STATUS if code >= 400]:
     exc_name = HTTP_STATUS[code].replace(' ', '').replace('-', '')
     # 2.5 compatibility hack:
@@ -158,9 +158,10 @@ for code in [code for code in HTTP_STATUS if code >= 400]:
         exc_name = 'InternalError'
     if exc_name.lower().startswith('http'):
         exc_name = exc_name[4:]
-    exc_name = 'HTTP' + exc_name        
+    exc_name = 'HTTP' + exc_name
     setattr(sys.modules[__name__], exc_name,
             HTTPException.subclass(exc_name, code))
+    _HTTPException_subclass_names.append(exc_name)
 del code, exc_name
 
 
@@ -706,3 +707,5 @@ class Request(object):
         cookies = to_unicode(self.outcookie.output(header='')).encode('utf-8')
         for cookie in cookies.splitlines():
             self._outheaders.append(('Set-Cookie', cookie.strip()))
+
+__no_apidoc__ = _HTTPException_subclass_names

@@ -38,6 +38,10 @@ Components
 .. autoclass :: RepositoryManager
    :members:
  
+.. autoclass :: DbRepositoryProvider
+   :members:
+ 
+
 Exceptions
 ----------
 
@@ -48,6 +52,7 @@ Subclasses of `ResourceNotFound`.
 
 .. autoclass :: NoSuchNode
    :members:
+
 
 Abstract classes
 ----------------
@@ -60,3 +65,10 @@ Abstract classes
 
 .. autoclass :: Changeset
    :members:
+
+
+Helper Functions
+----------------
+
+.. autofunction :: is_default
+

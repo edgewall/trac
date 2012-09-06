@@ -5,6 +5,7 @@
 
 Primary interface for handling web requests.
 
+
 Interfaces
 ----------
 
@@ -34,8 +35,8 @@ For how the main content itself can be generated, see `trac.web.chrome`.
    See also :extensionpoints:`trac.web.api.IAuthenticator`
 
 
-Important classes
------------------
+Classes
+-------
 
 .. autoclass :: Request
    :members:
@@ -63,3 +64,9 @@ Important classes
 .. autoclass :: trac.web.api.RequestDone
    :members:
 
+
+Helper Functions
+----------------
+
+.. autofunction :: arg_list_to_args
+.. autofunction :: parse_arg_list
