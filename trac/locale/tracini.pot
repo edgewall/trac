@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2012-09-02 08:26+0200\n"
+"POT-Creation-Date: 2012-09-06 15:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 1.0dev-r607\n"
+"Generated-By: Babel 0.9.6dev-r0\n"
 
 #: tracopt/mimeview/enscript.py:105
 msgid "Path to the Enscript executable."
@@ -264,7 +264,7 @@ msgid ""
 "recommended to leave this option disabled (which is the default)."
 msgstr ""
 
-#: trac/env.py:121
+#: trac/env.py:123
 msgid ""
 "This section is used to enable or disable components\n"
 "provided by plugins, as well as by Trac itself. The component\n"
@@ -300,7 +300,7 @@ msgid ""
 "See also: TracPlugins"
 msgstr ""
 
-#: trac/env.py:156
+#: trac/env.py:158
 msgid ""
 "Path to the //shared plugins directory//.\n"
 "\n"
@@ -311,7 +311,7 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/env.py:165
+#: trac/env.py:167
 msgid ""
 "Reference URL for the Trac deployment.\n"
 "\n"
@@ -321,7 +321,7 @@ msgid ""
 "resources in notification e-mails."
 msgstr ""
 
-#: trac/env.py:173
+#: trac/env.py:175
 msgid ""
 "Optionally use `[trac] base_url` for redirects.\n"
 "\n"
@@ -334,7 +334,7 @@ msgid ""
 "as redirects are frequently used. ''(since 0.10.5)''"
 msgstr ""
 
-#: trac/env.py:185
+#: trac/env.py:187
 msgid ""
 "Restrict cookies to HTTPS connections.\n"
 "\n"
@@ -344,26 +344,26 @@ msgid ""
 "0.11.2'')"
 msgstr ""
 
-#: trac/env.py:193
+#: trac/env.py:195
 msgid "Name of the project."
 msgstr ""
 
-#: trac/env.py:196
+#: trac/env.py:198
 msgid "Short description of the project."
 msgstr ""
 
-#: trac/env.py:199
+#: trac/env.py:201
 msgid ""
 "URL of the main project web site, usually the website in\n"
 "which the `base_url` resides. This is used in notification\n"
 "e-mails."
 msgstr ""
 
-#: trac/env.py:204
+#: trac/env.py:206
 msgid "E-Mail address of the project's administrator."
 msgstr ""
 
-#: trac/env.py:207
+#: trac/env.py:209
 msgid ""
 "Base URL of a Trac instance where errors in this Trac\n"
 "should be reported.\n"
@@ -373,36 +373,36 @@ msgid ""
 "buttons.  (''since 0.11.3'')"
 msgstr ""
 
-#: trac/env.py:216
+#: trac/env.py:218
 msgid "Page footer text (right-aligned)."
 msgstr ""
 
-#: trac/env.py:221
+#: trac/env.py:223
 msgid "URL of the icon of the project."
 msgstr ""
 
-#: trac/env.py:224
+#: trac/env.py:226
 msgid ""
 "Logging facility to use.\n"
 "\n"
 "Should be one of (`none`, `file`, `stderr`, `syslog`, `winlog`)."
 msgstr ""
 
-#: trac/env.py:229
+#: trac/env.py:231
 msgid ""
 "If `log_type` is `file`, this should be a path to the\n"
 "log-file.  Relative paths are resolved relative to the `log`\n"
 "directory of the environment."
 msgstr ""
 
-#: trac/env.py:234
+#: trac/env.py:236
 msgid ""
 "Level of verbosity in log.\n"
 "\n"
 "Should be one of (`CRITICAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`)."
 msgstr ""
 
-#: trac/env.py:239
+#: trac/env.py:241
 msgid ""
 "Custom logging format.\n"
 "\n"
@@ -413,9 +413,10 @@ msgid ""
 "In addition to regular key names supported by the Python\n"
 "logger library (see\n"
 "http://docs.python.org/library/logging.html), one could use:\n"
-" - $(path)s     the path for the current environment\n"
-" - $(basename)s the last path component of the current environment\n"
-" - $(project)s  the project name\n"
+"\n"
+"- $(path)s     the path for the current environment\n"
+"- $(basename)s the last path component of the current environment\n"
+"- $(project)s  the project name\n"
 "\n"
 "Note the usage of `$(...)s` instead of `%(...)s` as the latter form\n"
 "would be interpreted by the ConfigParser itself.\n"
