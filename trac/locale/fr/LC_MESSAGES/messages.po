@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2012-09-02 08:26+0200\n"
+"POT-Creation-Date: 2012-09-06 15:50+0200\n"
 "PO-Revision-Date: 2011-01-25 20:28+0100\n"
 "Last-Translator: Christian Boos <cboos@edgewall.org>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
@@ -69,8 +69,8 @@ msgid ""
 msgstr ""
 "Insère le message d'une révision.\n"
 "\n"
-"Cette macro doit être appellée en utilisant la syntaxe « wiki processor » "
-"suivante :\n"
+"Cette macro doit être appellée en utilisant la syntaxe « wiki processor »"
+" suivante :\n"
 "{{{\n"
 "{{{\n"
 "#!CommitTicketReference repository=\"reponame\" revision=\"rev\"\n"
@@ -523,7 +523,7 @@ msgstr "L'option « %(option)s » n'existe pas dans la section « %(section)s
 msgid "Trac Error"
 msgstr "Erreur Trac"
 
-#: trac/env.py:216
+#: trac/env.py:218
 msgid ""
 "Visit the Trac open source project at<br /><a "
 "href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
@@ -531,18 +531,18 @@ msgstr ""
 "En savoir plus sur le projet Trac :<br /> <a "
 "href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
 
-#: trac/env.py:746
+#: trac/env.py:749
 msgid "Database newer than Trac version"
 msgstr ""
 "La version de la base de données est plus récente que la version de Trac "
 "utilisée"
 
-#: trac/env.py:763
+#: trac/env.py:766
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
 msgstr "Pas de module de mise à jour pour la version %(num)i (%(version)s.py)"
 
-#: trac/env.py:810
+#: trac/env.py:813
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
@@ -550,7 +550,7 @@ msgstr ""
 "La variable d'environnement « TRAC_ENV » est manquante. Trac a besoin de "
 "cette variable pour pointer sur un environnement Trac valide."
 
-#: trac/env.py:839 trac/admin/console.py:280
+#: trac/env.py:842 trac/admin/console.py:280
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
@@ -561,53 +561,52 @@ msgstr ""
 "\n"
 "Exécutez la commande « trac-admin %(path)s upgrade »"
 
-#: trac/env.py:878
+#: trac/env.py:881
 msgid "Copying resources from:"
 msgstr "Copie des resources depuis :"
 
-#: trac/env.py:896
+#: trac/env.py:899
 msgid "Creating scripts."
 msgstr "Création des scripts."
 
-#: trac/env.py:908
+#: trac/env.py:911
 #, python-format
 msgid "Invalid argument '%(arg)s'"
 msgstr "Paramètre « %(arg)s »  invalide"
 
-#: trac/env.py:913
+#: trac/env.py:916
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr "la copie à chaud ne peut pas écraser la précédente « %(dest)s »"
 
-#: trac/env.py:922
+#: trac/env.py:925
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr "Copie à chaud the %(src)s vers %(dst)s …"
 
-#: trac/env.py:939
+#: trac/env.py:942
 msgid "The following errors happened while copying the environment:"
 msgstr ""
 "Les erreurs suivantes sont survenues au cours de la copie de \n"
 "l'environnement :"
 
-#: trac/env.py:950
+#: trac/env.py:953
 msgid "Backing up database ..."
 msgstr "Sauvegarde de la base de données …"
 
-#: trac/env.py:955
+#: trac/env.py:958
 msgid "Hotcopy done."
 msgstr "Copie à chaud terminée."
 
-#: trac/env.py:960 trac/admin/api.py:131
+#: trac/env.py:963 trac/admin/api.py:131
 msgid "Invalid arguments"
 msgstr "Paramètres non valides"
 
-#: trac/env.py:963
+#: trac/env.py:966
 msgid "Database is up to date, no upgrade necessary."
 msgstr "La base de données est à jour (aucune mise à jour nécessaire)."
 
-#: trac/env.py:969
-#, python-format
+#: trac/env.py:972
 msgid ""
 "The pre-upgrade backup failed.\n"
 "Use '--no-backup' to upgrade without doing a backup.\n"
@@ -616,11 +615,11 @@ msgstr ""
 "Utilisez « --no-backup » pour effectuer une mise à jour sans faire de "
 "copie de sauvegarde.\n"
 
-#: trac/env.py:973
+#: trac/env.py:976
 msgid "The upgrade failed. Please fix the issue and try again.\n"
 msgstr "La mise à jour a échouée. Corrigez le problème et réessayez.\n"
 
-#: trac/env.py:985
+#: trac/env.py:988
 msgid ""
 "Warning: the wiki-macros directory in the environment is non-empty, but "
 "Trac\n"
@@ -631,7 +630,7 @@ msgstr ""
 "ne prends plus en comple les extensions qui s'y trouvent. Vous pouvez "
 "supprimer ce répertoire manuellement."
 
-#: trac/env.py:996
+#: trac/env.py:999
 #, python-format
 msgid ""
 "Error while removing wiki-macros: %(err)s\n"
@@ -643,7 +642,7 @@ msgstr ""
 "Trac ne prends plus en comple les extensions qui s'y trouvent. Vous "
 "pouvez supprimer ce répertoire manuellement."
 
-#: trac/env.py:1001
+#: trac/env.py:1004
 #, python-format
 msgid ""
 "Upgrade done.\n"
@@ -815,8 +814,8 @@ msgid ""
 "No documentation found for '%(cmd)s'. Use 'help' to see the list of "
 "commands."
 msgstr ""
-"Aucune documentation trouvée pour « %(cmd)s ». Utilisez « help » "
-"pour visualiser la liste des commandes."
+"Aucune documentation trouvée pour « %(cmd)s ». Utilisez « help » pour "
+"visualiser la liste des commandes."
 
 #: trac/admin/console.py:321
 msgid "Did you mean this?"
@@ -2089,8 +2088,8 @@ msgid ""
 "      short inline buttons, and hide the text caption."
 msgstr ""
 "Ne montrer que le dessin ou le symbole pour\n"
-"      les boutons secondaires présents dans le corps de l'interface, "
-"      et cacher le texte correspondant."
+"      les boutons secondaires présents dans le corps de l'interface,"
+"       et cacher le texte correspondant."
 
 #: trac/prefs/templates/prefs_userinterface.html:29
 msgid "Hide help links."
@@ -3091,8 +3090,8 @@ msgid ""
 "The changes have been saved, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr ""
-"Les modifications ont été sauvegardées, mais une erreur est survenue lors de"
-" l'envoi des notifications : %(message)s"
+"Les modifications ont été sauvegardées, mais une erreur est survenue lors"
+" de l'envoi des notifications : %(message)s"
 
 #: trac/ticket/default_workflow.py:241
 msgid "Current state no longer exists"
@@ -3208,10 +3207,10 @@ msgstr ""
 "Génère un graphe représentant le « workflow ».\n"
 "\n"
 "Cette macro accepte une configuration de type TracWorkflow et représente\n"
-"les états et les transitions sous la forme d'un graphe dirigé. "
-"Si aucun paramètre n'est fourni, le\n"
-"« ticket workflow » actuel est montré. En syntaxe de type « wiki processor »"
-"les paramètres nommés `width` (largeur)\n"
+"les états et les transitions sous la forme d'un graphe dirigé. Si aucun "
+"paramètre n'est fourni, le\n"
+"« ticket workflow » actuel est montré. En syntaxe de type « wiki "
+"processor »les paramètres nommés `width` (largeur)\n"
 "et `height` (hauteur) peuvent être specifiés.\n"
 "\n"
 "(Defaults: `width = 800` and `heigth = 600`)\n"
@@ -3562,11 +3561,11 @@ msgid ""
 "and %(limit_offset)s in TracReports to see how to gain complete control "
 "over report rewriting."
 msgstr ""
-"Indication : si le rapport a rencontré une erreur due à la modification "
-" automatique de la clause « ORDER BY » ou de l'addition de la clause "
-"« LIMIT/OFFSET », référez vous à %(sort_column)s "
-"et %(limit_offset)s dans la page TracReports pour voir comment prendre le "
-"contrôle de la réécriture du rapport."
+"Indication : si le rapport a rencontré une erreur due à la modification  "
+"automatique de la clause « ORDER BY » ou de l'addition de la clause "
+"« LIMIT/OFFSET », référez vous à %(sort_column)s et %(limit_offset)s dans"
+" la page TracReports pour voir comment prendre le contrôle de la "
+"réécriture du rapport."
 
 #: trac/ticket/roadmap.py:241
 msgid "ticket status"
@@ -4407,7 +4406,7 @@ msgstr "Titre"
 
 #: trac/ticket/templates/report_list.html:89
 #: trac/ticket/templates/ticket_change.html:65
-#: trac/wiki/templates/wiki_edit.html:147
+#: trac/wiki/templates/wiki_edit.html:149
 msgid "Edit"
 msgstr "Modifier"
 
@@ -4504,12 +4503,13 @@ msgid ""
 "              You can nevertheless proceed and submit your changes if you"
 " wish so."
 msgstr ""
-"Ce ticket a été modifié par quelqu'un d'autre dans l'intervalle. Vous devez "
-"passer en revue ces\n"
+"Ce ticket a été modifié par quelqu'un d'autre dans l'intervalle. Vous "
+"devez passer en revue ces\n"
 "              [1:autres modifications] qui ont été rajoutées ci-dessus,\n"
-"              ainsi que tout [2:conflit] montré dans l'aperçu ci-dessous.\n"
-"              Vous pouvez toutefois continuer et valider vos modifications si"
-" vous le souhaitez."
+"              ainsi que tout [2:conflit] montré dans l'aperçu ci-dessous."
+"\n"
+"              Vous pouvez toutefois continuer et valider vos "
+"modifications si vous le souhaitez."
 
 #: trac/ticket/templates/ticket.html:194
 msgid ""
@@ -4585,7 +4585,7 @@ msgstr "Allez à la liste des pièces jointes"
 
 #: trac/ticket/templates/ticket.html:382
 #: trac/ticket/templates/ticket_change.html:114
-#: trac/wiki/templates/wiki_edit.html:93 trac/wiki/templates/wiki_edit.html:151
+#: trac/wiki/templates/wiki_edit.html:95 trac/wiki/templates/wiki_edit.html:153
 #: trac/wiki/templates/wiki_edit_form.html:64
 msgid "Preview"
 msgstr "Aperçu"
@@ -4892,8 +4892,8 @@ msgstr ""
 "  %(src_dir)s\n"
 "\n"
 "n'a pas pu être supprimé, probablement parce qu'il contient des fichiers\n"
-"qui n'étaient pas référencés dans la base de données. L'erreur rencontrée "
-"était :\n"
+"qui n'étaient pas référencés dans la base de données. L'erreur rencontrée"
+" était :\n"
 "\n"
 "  %(exception)s\n"
 "  \n"
@@ -4920,56 +4920,56 @@ msgstr ""
 "\n"
 "  %(new_path)s\n"
 
-#: trac/util/datefmt.py:112
+#: trac/util/datefmt.py:114
 #, python-format
 msgid "%(num)d year"
 msgid_plural "%(num)d years"
 msgstr[0] "un an"
 msgstr[1] "%(num)d ans"
 
-#: trac/util/datefmt.py:113
+#: trac/util/datefmt.py:115
 #, python-format
 msgid "%(num)d month"
 msgid_plural "%(num)d months"
 msgstr[0] "un mois"
 msgstr[1] "%(num)d mois"
 
-#: trac/util/datefmt.py:114
+#: trac/util/datefmt.py:116
 #, python-format
 msgid "%(num)d week"
 msgid_plural "%(num)d weeks"
 msgstr[0] "une semaine"
 msgstr[1] "%(num)d semaines"
 
-#: trac/util/datefmt.py:115
+#: trac/util/datefmt.py:117
 #, python-format
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
 msgstr[0] "un jour"
 msgstr[1] "%(num)d jours"
 
-#: trac/util/datefmt.py:116
+#: trac/util/datefmt.py:118
 #, python-format
 msgid "%(num)d hour"
 msgid_plural "%(num)d hours"
 msgstr[0] "une heure"
 msgstr[1] "%(num)d heures"
 
-#: trac/util/datefmt.py:117
+#: trac/util/datefmt.py:119
 #, python-format
 msgid "%(num)d minute"
 msgid_plural "%(num)d minutes"
 msgstr[0] "une minute"
 msgstr[1] "%(num)d minutes"
 
-#: trac/util/datefmt.py:136
+#: trac/util/datefmt.py:138
 #, python-format
 msgid "%(num)i second"
 msgid_plural "%(num)i seconds"
 msgstr[0] "%(num)i seconde"
 msgstr[1] "%(num)i secondes"
 
-#: trac/util/datefmt.py:473
+#: trac/util/datefmt.py:475
 #, python-format
 msgid ""
 "\"%(date)s\" is an invalid date, or the date format is not known. Try "
@@ -4978,11 +4978,11 @@ msgstr ""
 "« %(date)s » n'est pas une date valide, ou bien le format n'est pas "
 "reconnu. Essayez plutôt le format « %(hint)s »."
 
-#: trac/util/datefmt.py:475 trac/util/datefmt.py:483
+#: trac/util/datefmt.py:477 trac/util/datefmt.py:485
 msgid "Invalid Date"
 msgstr "Date erronée"
 
-#: trac/util/datefmt.py:481
+#: trac/util/datefmt.py:483
 #, python-format
 msgid ""
 "The date \"%(date)s\" is outside valid range. Try a date closer to "
@@ -4991,12 +4991,12 @@ msgstr ""
 "La date « %(date)s » est en-dehors de l'intervalle authorisé. Essayez une"
 " date plus proche du temps présent."
 
-#: trac/util/presentation.py:263
+#: trac/util/presentation.py:265
 #, python-format
 msgid "%(last)d of %(total)d"
 msgstr "%(last)d sur %(total)d"
 
-#: trac/util/presentation.py:265
+#: trac/util/presentation.py:267
 #, python-format
 msgid "%(start)d - %(stop)d of %(total)d"
 msgstr "%(start)d - %(stop)d sur %(total)d"
@@ -5391,7 +5391,7 @@ msgid "No files found"
 msgstr "Aucun fichier trouvé"
 
 #: trac/versioncontrol/templates/browser.html:128
-#: trac/wiki/templates/wiki_edit.html:135 trac/wiki/templates/wiki_view.html:34
+#: trac/wiki/templates/wiki_edit.html:137 trac/wiki/templates/wiki_view.html:34
 msgid "Revision info"
 msgstr "Info révision"
 
@@ -6215,12 +6215,12 @@ msgstr ""
 "Vous pouvez %(search)s dans le dépôt si un tel chemin a existé avant "
 "d'avoir été supprimé"
 
-#: trac/web/api.py:327
+#: trac/web/api.py:328
 #, python-format
 msgid "Invalid URL encoding (was %(path_info)r)"
 msgstr "Encodage de l'URL erroné (« %(path_info)r »)"
 
-#: trac/web/api.py:546
+#: trac/web/api.py:547
 #, python-format
 msgid "File %(path)s not found"
 msgstr "Le fichier « %(path)s » n'existe pas."
@@ -6709,7 +6709,8 @@ msgstr ""
 "Dans\n"
 "ce cas, seule la documentation pour cette macro sera générée.\n"
 "\n"
-"Remarquez que cette macro ne sera pas en mesure de fournir la documentation\n"
+"Remarquez que cette macro ne sera pas en mesure de fournir la "
+"documentation\n"
 "des macros si l'option « PythonOptimize » est activée pour mod_python !"
 
 #: trac/wiki/macros.py:693
@@ -6738,31 +6739,32 @@ msgstr ""
 "\n"
 "Cette macro est utilisée de façon habituelle dans la page TracIni.\n"
 "Ses paramètres optionels sont un filtre pour le nom de section\n"
-"et un filtre pour le nom de l'option : seules les options de configuration\n"
-"dont la section et le nom ont un préfixe identique aux filtres correspondant "
-" seront listés."
+"et un filtre pour le nom de l'option : seules les options de "
+"configuration\n"
+"dont la section et le nom ont un préfixe identique aux filtres "
+"correspondant  seront listés."
 
-#: trac/wiki/macros.py:766
+#: trac/wiki/macros.py:768
 msgid "(no default)"
 msgstr "(pas de valeur par défaut)"
 
-#: trac/wiki/macros.py:779
+#: trac/wiki/macros.py:790
 msgid ""
 "List all known mime-types which can be used as WikiProcessors.\n"
 "\n"
 "Can be given an optional argument which is interpreted as mime-type "
 "filter."
 msgstr ""
-"Liste les types « MIME » qui peuvent être utilisés en temps que "
-" WikiProcessors.\n"
+"Liste les types « MIME » qui peuvent être utilisés en temps que  "
+"WikiProcessors.\n"
 "\n"
 "Accepte un paramètre optionel qui sera utilisé pour filtrer les types."
 
-#: trac/wiki/macros.py:802
+#: trac/wiki/macros.py:813
 msgid "MIME Types"
 msgstr "Types « MIME »"
 
-#: trac/wiki/macros.py:817
+#: trac/wiki/macros.py:828
 msgid ""
 "Display a table of content for the Trac guide.\n"
 "\n"
@@ -6773,13 +6775,14 @@ msgid ""
 msgstr ""
 "Montre la table des matières pour le guide de Trac (en anglais).\n"
 "\n"
-"Cette macro montre comment implémenter une table des matières pour l'aide\n"
-"(d'une façon quelque peu expéditive). Cette table des matières contient les"
-"page Trac* et\n"
+"Cette macro montre comment implémenter une table des matières pour l'aide"
+"\n"
+"(d'une façon quelque peu expéditive). Cette table des matières contient "
+"lespage Trac* et\n"
 "WikiFormatting, et ne peut être adaptée. Tournez-vous vers l'extension\n"
 " « TocMacro » pour générer une table des matières plus personnalisée."
 
-#: trac/wiki/macros.py:863
+#: trac/wiki/macros.py:874
 msgid "Table of Contents"
 msgstr "Table des matières"
 
@@ -6982,8 +6985,8 @@ msgid ""
 "modified %(last_modified)s."
 msgstr ""
 "[1:\n"
-"                  Êtes-vous sûr de vouloir supprimer les versions %(from)s à "
-"%(to)s de cette page ?\n"
+"                  Êtes-vous sûr de vouloir supprimer les versions "
+"%(from)s à %(to)s de cette page ?\n"
 "                ]\n"
 "                [2:]\n"
 "                  Supprimer [3:\n"
@@ -7067,28 +7070,28 @@ msgstr "Supprimer de la version %(old_version)d à la version %(version)d"
 msgid "Delete version %(version)d"
 msgstr "Supprimer la version %(version)d"
 
-#: trac/wiki/templates/wiki_edit.html:92
+#: trac/wiki/templates/wiki_edit.html:94
 msgid "See the diffs"
 msgstr "Voir les différences"
 
-#: trac/wiki/templates/wiki_edit.html:92
+#: trac/wiki/templates/wiki_edit.html:94
 msgid "Review"
 msgstr "Passer en revue"
 
-#: trac/wiki/templates/wiki_edit.html:93
+#: trac/wiki/templates/wiki_edit.html:95
 msgid "See the preview"
 msgstr "Voir l'aperçu"
 
-#: trac/wiki/templates/wiki_edit.html:96
+#: trac/wiki/templates/wiki_edit.html:98
 #, python-format
 msgid "Editing %(name)s"
 msgstr "Édition de la page %(name)s"
 
-#: trac/wiki/templates/wiki_edit.html:98
+#: trac/wiki/templates/wiki_edit.html:100
 msgid "Someone else has modified that page since you started your edits."
 msgstr "Un autre utilisateur a modifié cette page pendant votre édition."
 
-#: trac/wiki/templates/wiki_edit.html:99
+#: trac/wiki/templates/wiki_edit.html:101
 msgid ""
 "[1:If you save right away, you risk to revert those changes]\n"
 "        (highlighted below as deletions)."
@@ -7096,7 +7099,7 @@ msgstr ""
 "[1:Une sauvegarde directe écraserait ces modifications]\n"
 "        (mises en évidence ci-dessous en tant que suppressions)."
 
-#: trac/wiki/templates/wiki_edit.html:101
+#: trac/wiki/templates/wiki_edit.html:103
 msgid ""
 "Please review all those changes and manually merge them with your\n"
 "        own changes. [1:]\n"
@@ -7115,7 +7118,7 @@ msgstr ""
 "partir de la\n"
 "        toute dernière version de cette page."
 
-#: trac/wiki/templates/wiki_edit.html:137
+#: trac/wiki/templates/wiki_edit.html:139
 #, python-format
 msgid ""
 "Change information for future version %(version)s (modified by "
@@ -7124,28 +7127,28 @@ msgstr ""
 "Commentaire concernant la future version %(version)s (modifiée par "
 "%(author)s) :"
 
-#: trac/wiki/templates/wiki_edit.html:147
+#: trac/wiki/templates/wiki_edit.html:149
 msgid "Go to the editor"
 msgstr "Éditer la page"
 
-#: trac/wiki/templates/wiki_edit.html:150
+#: trac/wiki/templates/wiki_edit.html:152
 #: trac/wiki/templates/wiki_edit_form.html:70
 msgid "Review Changes"
 msgstr "Passer en revue les modifications"
 
-#: trac/wiki/templates/wiki_edit.html:152
+#: trac/wiki/templates/wiki_edit.html:154
 msgid "No changes"
 msgstr "Pas de modifications"
 
-#: trac/wiki/templates/wiki_edit.html:163
+#: trac/wiki/templates/wiki_edit.html:165
 msgid "Go to Save, Preview, Review or Cancel buttons"
 msgstr "Aller aux boutons Enregistrer, Aperçu, … Annuler"
 
-#: trac/wiki/templates/wiki_edit.html:164
+#: trac/wiki/templates/wiki_edit.html:166
 msgid "Actions"
 msgstr "Actions"
 
-#: trac/wiki/templates/wiki_edit.html:169
+#: trac/wiki/templates/wiki_edit.html:171
 msgid ""
 "Sorry, this page has been modified by somebody else since you started\n"
 "            editing. Your changes cannot be saved."
@@ -7306,3 +7309,4 @@ msgid "The following pages have a name similar to this page, and may be related:
 msgstr ""
 "Les pages qui suivent ont un nom similaire à cette page et sont \n"
 "peut-être en rapport :"
+
