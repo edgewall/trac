@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.13\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2011-02-23 13:05+0900\n"
-"PO-Revision-Date: 2012-09-07 17:59+0200\n"
+"PO-Revision-Date: 2012-09-07 18:56+0200\n"
 "Last-Translator: Itamar Ostricher <itamarost (at) gmail (dot) com>\n"
 "Language-Team: he <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -253,6 +253,9 @@ msgid ""
 "\n"
 "Should be one of (`none`, `file`, `stderr`, `syslog`, `winlog`)."
 msgstr ""
+"שירות ניהול לוג לשימוש.\n"
+"\n"
+"אמור להיות אחד מהערכים (`none`, `file`, `stderr`, `syslog`, `winlog`)."
 
 #: trac/env.py:212
 msgid ""
@@ -260,6 +263,8 @@ msgid ""
 "log-file.  Relative paths are resolved relative to the `log`\n"
 "directory of the environment."
 msgstr ""
+"אם `log_type` הוא `file`, זה צריך להיות הנתיב לקובץ הלוג.\n"
+"נתיבים יחסיים מפורשים ביחס לתיקיית `log` של הסביבה."
 
 #: trac/env.py:217
 msgid ""
@@ -267,6 +272,9 @@ msgid ""
 "\n"
 "Should be one of (`CRITICAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`)."
 msgstr ""
+"רמת פירוט של הלוג.\n"
+"\n"
+"אמור להיות אחד מהערכים (`CRITICAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`)."
 
 #: trac/env.py:222
 msgid ""
@@ -302,6 +310,12 @@ msgid ""
 "server, and `SendmailEmailSender` for running a `sendmail`-compatible\n"
 "executable. (''since 0.12'')"
 msgstr ""
+"של של הרכיב המממש את `IEmailSender`.\n"
+"\n"
+"מערכת שליחת ההתראות משתמש ברכיב זה לשליחת אימיילים.\n"
+"טראק מספק רכיב `SmtpEmailSender` לצורל חיבור לשרת SMTP,\n"
+"ורכיב `SendmailEmailSender` להרצת קובץ הרצה תואם-`sendmail`.\n"
+"(''מאז 0.12'')"
 
 #: trac/notification.py:57
 msgid "Enable email notification."
@@ -374,6 +388,11 @@ msgid ""
 "be sent as 7bit if the content is all ASCII, or 8bit otherwise.\n"
 "(''since 0.10'')"
 msgstr ""
+"מגדיר את סכימת קידוד ה-MIME לאימיילים.\n"
+"\n"
+"אפשרויות תקינות הן 'base64' לקידוד Base64, 'qp' לקידוד\n"
+"Quoted-Printable, ו-'none' להגדרה ללא קידוד, במקרה זה יישלחו אימיילים\n"
+"כ-7bit אם התוכן כולו ASCII, ו-8bit אחרת. (''מאז 0.10'')"
 
 #: trac/notification.py:101
 msgid ""
@@ -670,19 +689,21 @@ msgstr ""
 
 #: trac/ticket/notification.py:37
 msgid "Always send notifications to the ticket owner (''since 0.9'')."
-msgstr ""
+msgstr "תמיד שלח התראות למשתמש האחראי על הטיקט (''מאז 0.9'')."
 
 #: trac/ticket/notification.py:41
 msgid ""
 "Always send notifications to any address in the ''reporter''\n"
 "field."
-msgstr ""
+msgstr "תמיד שלח התראות לכל כתובת בשדה ''reporter''."
 
 #: trac/ticket/notification.py:47
 msgid ""
 "Always send notifications to the person who causes the ticket \n"
 "property change and to any previous updater of that ticket."
 msgstr ""
+"תמיד שלח התראות למשתמש שביצע שינוי בטיקט ולכל משתמש קודם שביצע שינוי באותו "
+"טיקט."
 
 #: trac/ticket/notification.py:52
 msgid ""
@@ -727,18 +748,20 @@ msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default (''since 0.11'')"
 msgstr ""
+"מספר טיקטים המוצגים בכל עמוד בשאילתות טיקטים כברירת מחדל (''מאז 0.11'')"
 
 #: trac/ticket/report.py:60
 msgid ""
 "Number of tickets displayed per page in ticket reports,\n"
 "by default (''since 0.11'')"
 msgstr ""
+"מספר טיקטים המוצגים בכל עמוד בדו\"חות טיקטים כברירת מחדל (''מאז 0.11'')"
 
 #: trac/ticket/report.py:64
 msgid ""
 "Number of tickets displayed in the rss feeds for reports\n"
 "(''since 0.11'')"
-msgstr ""
+msgstr "מספר טיקטים המוצגים בפיד-RSS של דו\"חות (''מאז 0.11'')"
 
 #: trac/ticket/roadmap.py:169
 msgid ""
@@ -791,6 +814,8 @@ msgid ""
 "which is used to collect statistics on groups of tickets for display\n"
 "in the roadmap views."
 msgstr ""
+"שם הרכיב המממש `ITicketGroupStatsProvider`, \n"
+"המשמש לאיסוף סטטיסטיקות על קבוצות של טיקטים להצגה בתצוגת מפת הדרכים."
 
 #: trac/ticket/roadmap.py:549
 msgid ""
@@ -798,24 +823,28 @@ msgid ""
 "which is used to collect statistics on groups of tickets for display\n"
 "in the milestone views."
 msgstr ""
+"שם הרכיב המממש `ITicketGroupStatsProvider`, \n"
+"המשמש לאיסוף סטטיסטיקות על קבוצות של טיקטים להצגה בתצוגת אבני הדרך."
 
 #: trac/ticket/web_ui.py:67
 msgid ""
 "Enable the display of all ticket changes in the timeline, not only\n"
 "open / close operations (''since 0.9'')."
 msgstr ""
+"אפשר הצגה של כל שינויי הטיקטים בציר הזמן, ולא רק פעולות יצירה / סגירה (''מאז "
+"0.9'')."
 
 #: trac/ticket/web_ui.py:71
 msgid ""
 "Don't accept tickets with a too big description.\n"
 "(''since 0.11'')."
-msgstr ""
+msgstr "אל תקבל טיקטים עם תיאור מפורט ארוך מידי. (''מאז 0.11'')"
 
 #: trac/ticket/web_ui.py:75
 msgid ""
 "Don't accept tickets with a too big comment.\n"
 "(''since 0.11.2'')"
-msgstr ""
+msgstr "אל תקבל טיקטים עם הערה ארוכה מידי. (''מאז 0.11.2'')"
 
 #: trac/ticket/web_ui.py:79
 msgid ""
@@ -824,6 +853,9 @@ msgid ""
 "If 'oneliner', the [timeline] abbreviated_messages option applies.\n"
 "(''since 0.11'')."
 msgstr ""
+"באיזה סגנון פורמטר (למשל 'html' או 'oneliner') להשתמש בהצגת התיאור המפורט של "
+"טיקטים חדשים.\n"
+"אם 'oneliner', האופציה  [timeline] abbreviated_messages תקפה (''מאז 0.11'')."
 
 #: trac/ticket/web_ui.py:86
 msgid ""
@@ -847,7 +879,7 @@ msgstr ""
 msgid ""
 "Default number of days displayed in the Timeline, in days.\n"
 "(''since 0.9.'')"
-msgstr ""
+msgstr "ערך ברירת מחדל למספר הימים המוצגים בציר הזמן, בימים. (''מאז 0.9'')"
 
 #: trac/timeline/web_ui.py:55
 msgid ""
