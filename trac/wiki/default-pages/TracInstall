@@ -18,7 +18,7 @@ To install Trac, the following software packages must be installed:
  * [http://www.python.org/ Python], version >= 2.5 and < 3.0
    (note that we dropped the support for Python 2.4 in this release)
  * [http://peak.telecommunity.com/DevCenter/setuptools setuptools], version >= 0.6, or better yet, [http://pypi.python.org/pypi/distribute distribute]
- * [http://genshi.edgewall.org/wiki/Download Genshi], version >= 0.6
+ * [http://genshi.edgewall.org/wiki/Download Genshi], version >= 0.6 (unreleased version 0.7dev should work as well)
 
 You also need a database system and the corresponding python bindings.
 The database can be either SQLite, PostgreSQL or MySQL.
@@ -101,7 +101,7 @@ Alternatively you configure Trac to run in any of the following environments.
 ==== Other Python Packages ====
 
  * [http://babel.edgewall.org Babel], version >= 0.9.5, 
-   needed for localization support
+   needed for localization support (unreleased version 1.0dev should work as well)
  * [http://docutils.sourceforge.net/ docutils], version >= 0.3.9 
    for WikiRestructuredText.
  * [http://pygments.pocoo.org Pygments] for 
