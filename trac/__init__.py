@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2009 Edgewall Software
+# Copyright (C) 2003-2012 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -16,4 +16,4 @@ from pkg_resources import DistributionNotFound, get_distribution
 try:
     __version__ = get_distribution('Trac').version
 except DistributionNotFound:
-    __version__ = '1.0rc1'
+    __version__ = '1.0'

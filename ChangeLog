@@ -1,5 +1,5 @@
-Trac 1.0-rc1 'Cell' (September 1, 2012)
-http://svn.edgewall.org/repos/trac/tags/trac-1.0rc1
+Trac 1.0 'Cell' (September 7, 2012)
+http://svn.edgewall.org/repos/trac/tags/trac-1.0
 
 Trac 1.0 is a major release adding refreshed user interface and
 improved DVCS repository support as the most visible changes.
@@ -24,6 +24,11 @@ The following list contains only a few highlights:
  - jQuery/UI integration, featuring a date picker for date fields
  - Improved integration with Pygments syntax highlighting
  - ... and numerous smaller features added and bugs fixed since 0.12!
+
+Trac 1.0-rc1 'Cell' (September 1, 2012)
+http://svn.edgewall.org/repos/trac/tags/trac-1.0rc1
+
+ See 1.0
 
 Trac 1.0-beta1 'Cell' (August 6, 2012)
 http://svn.edgewall.org/repos/trac/tags/trac-1.0b1
