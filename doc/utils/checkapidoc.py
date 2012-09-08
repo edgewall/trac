@@ -84,12 +84,12 @@ def check_api_doc(basename, verbose, only_documented, has_submodules):
             value = getattr(module, symbol)
             cls = getattr(value, '__class__', None)
             keyword = 'data'
-            if not cls or cls.__name__ == 'type':
-                keyword = 'class'
-            elif cls.__name__ in ('function', 'instancemethod'):
+            if cls.__name__ in ('function', 'instancemethod'):
                 keyword = 'function'
             elif cls.__name__ == 'module':
                 keyword = 'module'
+            else:
+                keyword = 'class'
             print " * .. %14s :: %s" % ('auto' + keyword, symbol)
 
 
