@@ -65,7 +65,8 @@ def get_existing_node(req, repos, path, rev):
     except NoSuchNode, e:
         # TRANSLATOR: You can 'search' in the repository history... (link)
         search_a = tag.a(_("search"), 
-                         href=req.href.log(path, rev=rev, mode='path_history'))
+                         href=req.href.log(repos.reponame or None, path,
+                                           rev=rev, mode='path_history'))
         raise ResourceNotFound(tag(
             tag.p(e.message, class_="message"), 
             tag.p(tag_("You can %(search)s in the repository history to see "
