@@ -90,7 +90,7 @@ class ConnectionWrapper(object):
     """Generic wrapper around connection objects.
     
     :since 0.12: This wrapper no longer makes cursors produced by the
-    connection iterable using `IterableCursor`.
+                 connection iterable using `IterableCursor`.
 
     :since 1.0: added a 'readonly' flag preventing the forwarding of
                 `commit` and `rollback`
