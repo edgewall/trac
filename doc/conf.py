@@ -343,7 +343,7 @@ def setup(app):
                              content=[]):
         ref = url + '/wiki/TracDev/PluginDevelopment/ExtensionPoints/' + text
         roles.set_classes(options)
-        node = nodes.reference(rawtext, text + " extension points",
+        node = nodes.reference(rawtext, text + " extension point",
                                refuri=ref, **options)
         return [node], []
     roles.register_canonical_role('extensionpoints', extensionpoints_role)
