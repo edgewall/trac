@@ -44,7 +44,29 @@ def with_transaction(env, db=None):
     >>>         result[0] = value2
     >>>     return result[0]
 
-    :deprecated: use instead the new context manager:
+    In this example, the `implementation()` function is called
+    automatically right after its definition, with a database
+    connection as an argument. If the function completes, a COMMIT is
+    issued on the connection. If the function raises an exception, a
+    ROLLBACK is issued and the exception is re-raised. Nested
+    transactions are supported, and a COMMIT will only be issued when
+    the outermost transaction block in a thread exits.
+    
+    This mechanism is intended to replace the former practice of
+    getting a database connection with `env.get_db_cnx()` and issuing
+    an explicit commit or rollback, for mutating database
+    accesses. Its automatic handling of commit, rollback and nesting
+    makes it much more robust.
+    
+    The optional `db` argument is intended for legacy code and should
+    not be used in new code.
+
+    :deprecated: This decorator is in turn deprecated in favor of
+                 context managers now that python 2.4 support has been
+                 dropped. Use instead the new context manager,
+                 `QueryContextManager` and
+                 `TransactionContextManager`, which makes for much
+                 simpler to write code:
 
     >>> def api_method(p1, p2):
     >>>     result = value1
@@ -52,24 +74,7 @@ def with_transaction(env, db=None):
     >>>         # implementation
     >>>         result = value2
     >>>     return result
-    
-    In this example, the `implementation()` function is called automatically
-    right after its definition, with a database connection as an argument.
-    If the function completes, a COMMIT is issued on the connection. If the
-    function raises an exception, a ROLLBACK is issued and the exception is
-    re-raised. Nested transactions are supported, and a COMMIT will only be
-    issued when the outermost transaction block in a thread exits.
-    
-    This mechanism is intended to replace the former practice of getting a
-    database connection with `env.get_db_cnx()` and issuing an explicit commit
-    or rollback, for mutating database accesses. Its automatic handling of
-    commit, rollback and nesting makes it much more robust.
-    
-    The optional `db` argument is intended for legacy code and should not
-    be used in new code.
 
-    This decorator is in turn deprecated in favor of context managers 
-    now that python 2.4 support has been dropped.
     """
     def transaction_wrapper(fn):
         ldb = _transaction_local.wdb
@@ -102,7 +107,7 @@ def with_transaction(env, db=None):
 class DbContextManager(object):
     """Database Context Manager
 
-    The outermost DbContextManager will close the connection.
+    The outermost `DbContextManager` will close the connection.
     """
 
     db = None
@@ -124,10 +129,11 @@ class DbContextManager(object):
 
 
 class TransactionContextManager(DbContextManager):
-    """Transactioned Database Context Manager
+    """Transactioned Database Context Manager for retrieving a
+    `~trac.db.util.ConnectionWrapper`.
 
-    The outermost such context manager will perform a commit upon normal exit
-    or a rollback after an exception.
+    The outermost such context manager will perform a commit upon
+    normal exit or a rollback after an exception.
     """
 
     def __enter__(self):
@@ -153,7 +159,9 @@ class TransactionContextManager(DbContextManager):
 
 
 class QueryContextManager(DbContextManager):
-    """Database Context Manager for retrieving a readonly ConnectionWrapper"""
+    """Database Context Manager for retrieving a read-only
+    `~trac.db.util.ConnectionWrapper`.
+    """
 
     def __enter__(self):
         db = _transaction_local.rdb # outermost readonly db
@@ -174,17 +182,17 @@ class QueryContextManager(DbContextManager):
 
 
 class IDatabaseConnector(Interface):
-    """Extension point interface for components that support the connection to
-    relational databases.
+    """Extension point interface for components that support the
+    connection to relational databases.
     """
 
     def get_supported_schemes():
-        """Return the connection URL schemes supported by the connector, and
-        their relative priorities as an iterable of `(scheme, priority)`
-        tuples.
+        """Return the connection URL schemes supported by the
+        connector, and their relative priorities as an iterable of
+        `(scheme, priority)` tuples.
         
         If `priority` is a negative number, this is indicative of an
-        error  condition with the connector. An error message should be 
+        error condition with the connector. An error message should be
         attached to the `error` attribute of the connector.
         """
 
@@ -202,14 +210,16 @@ class IDatabaseConnector(Interface):
         """Initialize the database."""
 
     def to_sql(table):
-        """Return the DDL statements necessary to create the specified table,
-        including indices."""
+        """Return the DDL statements necessary to create the specified
+        table, including indices."""
         
     def backup(dest):
-        """Backup the database to a location defined by trac.backup_dir"""
+        """Backup the database to a location defined by
+        trac.backup_dir"""
 
 
 class DatabaseManager(Component):
+    """Component used to manage the `IDatabaseConnector` implementations."""
 
     connectors = ExtensionPoint(IDatabaseConnector)
 
@@ -264,7 +274,8 @@ class DatabaseManager(Component):
     def backup(self, dest=None):
         """Save a backup of the database.
 
-        @param dest: base filename to write to.
+        :param dest: base filename to write to.
+
         Returns the file actually written.
         """
         connector, args = self.get_connector()
@@ -317,6 +328,7 @@ class DatabaseManager(Component):
 
 
 def get_column_names(cursor):
+    """Retrieve column names from a cursor, if possible."""
     return [unicode(d[0], 'utf-8') if isinstance(d[0], str) else d[0]
             for d in cursor.description] if cursor.description else []
 

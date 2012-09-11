@@ -40,7 +40,7 @@ class PatchRenderer(Component):
     # IHTMLPreviewRenderer methods
 
     def get_quality_ratio(self, mimetype):
-        if mimetype == 'text/x-diff':
+        if mimetype in ('text/x-diff', 'text/x-patch'):
             return 8
         return 0
 

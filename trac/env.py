@@ -403,6 +403,11 @@ class Environment(Component, ComponentManager):
            with env.db_transaction as db:
                ...
 
+        Note that within the block, you don't need to (and shouldn't)
+        call ``commit()`` yourself, the context manager will take care
+        of it (if it's the outermost such context manager on the
+        stack).
+
            
         `db_query` for obtaining a `db` database connection which can
         be used for performing SELECT queries only::
@@ -441,8 +446,9 @@ class Environment(Component, ComponentManager):
 
     @property
     def db_query(self):
-        """Return a context manager which can be used to obtain a
-        read-only database connection.
+        """Return a context manager
+        (`~trac.db.api.QueryContextManager`) which can be used to
+        obtain a read-only database connection.
 
         Example::
 
@@ -459,24 +465,26 @@ class Environment(Component, ComponentManager):
                 for row in db("SELECT ..."):
                     ...
         
+        :warning: after a `with env.db_query as db` block, though the
+          `db` variable is still defined, you shouldn't use it as it
+          might have been closed when exiting the context, if this
+          context was the outermost context (`db_query` or
+          `db_transaction`).
+
         If you don't need to manipulate the connection itself, this
         can even be simplified to::
 
             for row in env.db_query("SELECT ..."):
                 ...
 
-        :warning: after a `with env.db_query as db` block, though the
-          `db` variable is still available, you shouldn't use it as it
-          might have been closed when exiting the context, if this
-          context was the outermost context (`db_query` or
-          `db_transaction`).
         """
         return QueryContextManager(self)
 
     @property
     def db_transaction(self):
-        """Return a context manager which can be used to obtain a
-        writable database connection.
+        """Return a context manager
+        (`~trac.db.api.TransactionContextManager`) which can be used
+        to obtain a writable database connection.
         
         Example::
 
@@ -488,6 +496,9 @@ class Environment(Component, ComponentManager):
         commit the transaction. In case of nested contexts, only the
         outermost context performs a commit. However, should an
         exception happen, any context manager will perform a rollback.
+        You should *not* call `commit()` yourself within such block,
+        as this will force a commit even if that transaction is part
+        of a larger transaction.
 
         Like for its read-only counterpart, you can directly execute a
         DML query on the `db`::
@@ -495,16 +506,17 @@ class Environment(Component, ComponentManager):
             with env.db_transaction as db:
                 db("UPDATE ...")
 
-        If you don't need to manipulate the connection itself, this
-        can also be simplified to::
-
-            env.db_transaction("UPDATE ...")
-
         :warning: after a `with env.db_transaction` as db` block,
           though the `db` variable is still available, you shouldn't
           use it as it might have been closed when exiting the
           context, if this context was the outermost context
           (`db_query` or `db_transaction`).
+
+        If you don't need to manipulate the connection itself, this
+        can also be simplified to::
+
+            env.db_transaction("UPDATE ...")
+
         """
         return TransactionContextManager(self)
 

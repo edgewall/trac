@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2011-07-11 02:09+0200\n"
+"POT-Creation-Date: 2012-09-06 15:50+0200\n"
 "PO-Revision-Date: 2010-10-03 14:13+0800\n"
 "Last-Translator: Chi-Chung Lin <zclin.csie92g@gmail.com>\n"
 "Language-Team: zh_TW <trac-dev@googlegroups.com>\n"
@@ -41,20 +41,20 @@ msgstr "展開子目錄"
 msgid "Re-expand directory"
 msgstr "重新展開目錄"
 
-#: trac/htdocs/js/expand_dir.js:120
+#: trac/htdocs/js/expand_dir.js:121
 #, python-format
 msgid "Loading %(entry)s..."
 msgstr "載入 %(entry)s 中..."
 
-#: trac/htdocs/js/expand_dir.js:148
+#: trac/htdocs/js/expand_dir.js:149
 msgid "(empty)"
 msgstr "(空白)"
 
-#: trac/htdocs/js/expand_dir.js:156
+#: trac/htdocs/js/expand_dir.js:157
 msgid "(error)"
 msgstr "(錯誤)"
 
-#: trac/htdocs/js/expand_dir.js:163
+#: trac/htdocs/js/expand_dir.js:164
 msgid "Fold directory"
 msgstr "摺疊目錄"
 
@@ -63,34 +63,115 @@ msgstr "摺疊目錄"
 msgid "Show %(title)s"
 msgstr "顯示 %(title)s"
 
-#: trac/htdocs/js/folding.js:77
+#: trac/htdocs/js/folding.js:78
 #, python-format
 msgid "%(title)s (click to hide column)"
 msgstr "%(title)s (點此隱藏)"
 
-#: trac/htdocs/js/query.js:118
+#. TRANSLATOR: Format in month heading in the datepicker, extracts yearSuffix
+#. and showMonthAfterYear
+#: trac/htdocs/js/jquery-ui-i18n.js:4
+msgid "$month$year"
+msgstr "$month$year"
+
+#. TRANSLATOR: Link that closes the datepicker
+#. TRANSLATOR: Link that closes the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:39
+msgid "Done"
+msgstr "完成"
+
+#. TRANSLATOR: Link to the previous month in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:9
+msgid "Prev"
+msgstr "上個月"
+
+#. TRANSLATOR: Link to the next month in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:11
+msgid "Next"
+msgstr "下個月"
+
+#. TRANSLATOR: Link to the current day in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:13
+msgid "Today"
+msgstr "今天"
+
+#. TRANSLATOR: Heading for the week-of-the-year column in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:20
+msgid "Wk"
+msgstr "週"
+
+#. TRANSLATOR: Heading of the standalone timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:30
+msgid "Choose Time"
+msgstr "選擇時間"
+
+#. TRANSLATOR: Time selector label
+#: trac/htdocs/js/jquery-ui-i18n.js:32
+msgid "Time"
+msgstr "時間"
+
+#. TRANSLATOR: Time labels in the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:34
+msgid "Hour"
+msgstr "時"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:34
+msgid "Minute"
+msgstr "分"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:34
+msgid "Second"
+msgstr "秒"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:35
+msgid "Time Zone"
+msgstr "時區"
+
+#. TRANSLATOR: Link to pick the current time in the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:37
+msgid "Now"
+msgstr "現在"
+
+#: trac/htdocs/js/query.js:132
 msgid "A filter already exists for that property"
 msgstr "此屬性已存在一過濾器"
 
-#: trac/htdocs/js/query.js:145
+#: trac/htdocs/js/query.js:159
 msgid "or"
 msgstr "或"
 
-#: trac/htdocs/js/query.js:164
+#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:310
 msgid "yes"
 msgstr "是"
 
-#: trac/htdocs/js/query.js:167
+#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:313
 msgid "no"
 msgstr "否"
 
-#: trac/htdocs/js/query.js:170
+#: trac/htdocs/js/query.js:188
 msgid "between"
 msgstr "介於"
 
-#: trac/htdocs/js/query.js:172
+#: trac/htdocs/js/query.js:190
 msgid "and"
 msgstr "且"
+
+#: trac/htdocs/js/query.js:337
+msgid " remove:"
+msgstr " 移除:"
+
+#: trac/htdocs/js/query.js:347
+msgid " add:"
+msgstr " 新增:"
+
+#: trac/htdocs/js/query.js:376
+#, python-format
+msgid "Select ticket %(id)s for modification"
+msgstr "請選擇代辦事項 %(id)s 進行修改"
+
+#: trac/htdocs/js/query.js:387
+msgid "Toggle selection of all tickets shown in this group"
+msgstr ""
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"

@@ -2,9 +2,9 @@
 
 [[PageOutline]]
 
-Trac macros are plugins to extend the Trac engine with custom 'functions' written in Python. A macro inserts dynamic HTML data in any context supporting WikiFormatting.
+Trac macros are plugins to extend the Trac engine with custom 'functions' written in Python. A macro inserts dynamic HTML data in any context supporting WikiFormatting. Its syntax is `[[macro-name(optional-arguments)]]`.
 
-Another kind of macros are WikiProcessors. They typically deal with alternate markup formats and representation of larger blocks of information (like source code highlighting).
+The WikiProcessors are another kind of macros. They typically deal with alternate markup formats and transformation of larger "blocks" of information (like source code highlighting). They are used for processing the multiline `{{{#!wiki-processor-name ... }}}` blocks.
 
 == Using Macros ==
 
