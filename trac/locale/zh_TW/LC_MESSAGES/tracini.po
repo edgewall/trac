@@ -53,7 +53,7 @@ msgstr ""
 
 #: tracopt/perm/authz_policy.py:132
 msgid "Location of authz policy configuration file."
-msgstr ""
+msgstr "authz policy 設定檔路徑"
 
 #: tracopt/perm/config_perm_provider.py:24
 msgid ""
@@ -167,7 +167,7 @@ msgstr ""
 
 #: tracopt/versioncontrol/git/git_fs.py:753
 msgid "Path to the base of your git projects"
-msgstr ""
+msgstr "您的 git 專案路徑"
 
 #: tracopt/versioncontrol/git/git_fs.py:756
 #, python-format
@@ -346,11 +346,11 @@ msgstr ""
 
 #: trac/env.py:195
 msgid "Name of the project."
-msgstr ""
+msgstr "專案名稱"
 
 #: trac/env.py:198
 msgid "Short description of the project."
-msgstr ""
+msgstr "專案簡短描述"
 
 #: trac/env.py:201
 msgid ""
@@ -361,7 +361,7 @@ msgstr ""
 
 #: trac/env.py:206
 msgid "E-Mail address of the project's administrator."
-msgstr ""
+msgstr "專案管理者 E-Mail 地址"
 
 #: trac/env.py:209
 msgid ""
@@ -379,7 +379,7 @@ msgstr ""
 
 #: trac/env.py:223
 msgid "URL of the icon of the project."
-msgstr ""
+msgstr "專案 icon 網址"
 
 #: trac/env.py:226
 msgid ""
@@ -439,7 +439,7 @@ msgstr ""
 
 #: trac/notification.py:58
 msgid "Enable email notification."
-msgstr ""
+msgstr "啟用 email 通知"
 
 #: trac/notification.py:61
 msgid "Sender address to use in notification emails."
@@ -526,23 +526,23 @@ msgstr ""
 
 #: trac/notification.py:132
 msgid "SMTP server hostname to use for email notifications."
-msgstr ""
+msgstr "EMail 通知用 SMTP 伺服器主機名稱"
 
 #: trac/notification.py:135
 msgid "SMTP server port to use for email notification."
-msgstr ""
+msgstr "EMail 通知用 SMTP 伺服器 Port"
 
 #: trac/notification.py:138
 msgid "Username for SMTP server. (''since 0.9'')"
-msgstr ""
+msgstr "SMTP 伺服器帳號 (''從 0.9'')"
 
 #: trac/notification.py:141
 msgid "Password for SMTP server. (''since 0.9'')"
-msgstr ""
+msgstr "SMTP 伺服器密碼 (''從 0.9'')"
 
 #: trac/notification.py:144
 msgid "Use SSL/TLS to send notifications over SMTP. (''since 0.10'')"
-msgstr ""
+msgstr "使用 SSL/TLS 寄送通知 (''從 0.10'')"
 
 #: trac/notification.py:188
 msgid ""
@@ -551,6 +551,10 @@ msgid ""
 "The sendmail program must accept the `-i` and `-f` options.\n"
 " (''since 0.12'')"
 msgstr ""
+"sendmail 執行檔路徑executable.\n"
+"\n"
+"sendmail 程式必須接受 `-i` 和 `-f` 選項.\n"
+" (''從 0.12'')"
 
 #: trac/perm.py:312
 msgid ""
@@ -577,7 +581,7 @@ msgstr ""
 
 #: trac/db/api.py:221
 msgid "Database backup location"
-msgstr ""
+msgstr "資料庫備份路徑"
 
 #: trac/db/api.py:224
 msgid ""
@@ -611,11 +615,11 @@ msgstr ""
 
 #: trac/mimeview/api.py:616
 msgid "Displayed tab width in file preview. (''since 0.9'')"
-msgstr ""
+msgstr "檔案預覽顯示寬度 (''從 0.9'')"
 
 #: trac/mimeview/api.py:619
 msgid "Maximum file size for HTML preview. (''since 0.9'')"
-msgstr ""
+msgstr "HTML 預覽最大檔案大小 (''從 0.9'')"
 
 #: trac/mimeview/api.py:622
 msgid ""
@@ -701,27 +705,27 @@ msgstr ""
 
 #: trac/ticket/api.py:187
 msgid "Default version for newly created tickets."
-msgstr ""
+msgstr "新建立待辦事項預設版本"
 
 #: trac/ticket/api.py:190
 msgid "Default type for newly created tickets (''since 0.9'')."
-msgstr ""
+msgstr "新建立待辦事項預設類型 (''從 0.9'')"
 
 #: trac/ticket/api.py:193
 msgid "Default priority for newly created tickets."
-msgstr ""
+msgstr "新建立待辦事項預設優先順序"
 
 #: trac/ticket/api.py:196
 msgid "Default milestone for newly created tickets."
-msgstr ""
+msgstr "新建立待辦事項預設里程碑"
 
 #: trac/ticket/api.py:199
 msgid "Default component for newly created tickets."
-msgstr ""
+msgstr "新建立待辦事項預設元件"
 
 #: trac/ticket/api.py:202
 msgid "Default severity for newly created tickets."
-msgstr ""
+msgstr "新建立待辦事項預設嚴重程度"
 
 #: trac/ticket/api.py:205
 msgid "Default summary (title) for newly created tickets."
@@ -729,15 +733,15 @@ msgstr ""
 
 #: trac/ticket/api.py:208
 msgid "Default description for newly created tickets."
-msgstr ""
+msgstr "新建立待辦事項預設描述"
 
 #: trac/ticket/api.py:211
 msgid "Default keywords for newly created tickets."
-msgstr ""
+msgstr "新建立待辦事項預設關鍵字"
 
 #: trac/ticket/api.py:214
 msgid "Default owner for newly created tickets."
-msgstr ""
+msgstr "新建立待辦事項預設負責人"
 
 #: trac/ticket/api.py:217
 msgid "Default cc: list for newly created tickets."
@@ -928,12 +932,16 @@ msgid ""
 "Don't accept tickets with a too big description.\n"
 "(''since 0.11'')."
 msgstr ""
+"限制待辦事項描述長度.\n"
+"(''從 0.11'')."
 
 #: trac/ticket/web_ui.py:83
 msgid ""
 "Don't accept tickets with a too big comment.\n"
 "(''since 0.11.2'')"
 msgstr ""
+"限制待辦事項評語長度.\n"
+"(''從 0.11.2'')"
 
 #: trac/ticket/web_ui.py:87
 msgid ""
@@ -1363,15 +1371,15 @@ msgstr ""
 
 #: trac/web/chrome.py:438
 msgid "Alternative text for the header logo."
-msgstr ""
+msgstr "頁首 Logo 描述文字"
 
 #: trac/web/chrome.py:442
 msgid "Width of the header logo image in pixels."
-msgstr ""
+msgstr "頁首 Logo 圖檔寬度(單位: pixel)"
 
 #: trac/web/chrome.py:445
 msgid "Height of the header logo image in pixels."
-msgstr ""
+msgstr "頁首 Logo 圖檔高度(單位: pixel)"
 
 #: trac/web/chrome.py:448
 msgid ""
