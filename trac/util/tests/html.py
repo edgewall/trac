@@ -18,14 +18,17 @@ class TracHTMLSanitizerTestCase(unittest.TestCase):
         self.assertEqual('<div>XSS</div>', unicode(html | TracHTMLSanitizer()))
 
     def test_expression_with_comments(self):
-        html = HTML(r'<div style="top:exp/**/ression(alert())">XSS</div>')
+        html = HTML(r'<div style="top:exp/**/ression(alert())">XSS</div>',
+                    encoding='utf-8')
         self.assertEqual('<div style="top:exp ression(alert())">XSS</div>',
                          unicode(html | TracHTMLSanitizer()))
-        html = HTML(r'<div style="top:exp//**/**/ression(alert())">XSS</div>')
+        html = HTML(r'<div style="top:exp//**/**/ression(alert())">XSS</div>',
+                    encoding='utf-8')
         self.assertEqual(
             '<div style="top:exp/ **/ression(alert())">XSS</div>',
             unicode(html | TracHTMLSanitizer()))
-        html = HTML(r'<div style="top:ex/*p*/ression(alert())">XSS</div>')
+        html = HTML(r'<div style="top:ex/*p*/ression(alert())">XSS</div>',
+                    encoding='utf-8')
         self.assertEqual('<div style="top:ex ression(alert())">XSS</div>',
                          unicode(html | TracHTMLSanitizer()))
 
@@ -44,15 +47,17 @@ class TracHTMLSanitizerTestCase(unittest.TestCase):
                     r'XSS</div>', encoding='utf-8')
         self.assertEqual('<div>XSS</div>', unicode(html | TracHTMLSanitizer()))
         # escaped backslash
-        html = HTML(r'<div style="top:exp\5c ression(alert())">XSS</div>')
+        html = HTML(r'<div style="top:exp\5c ression(alert())">XSS</div>',
+                    encoding='utf-8')
         self.assertEqual(r'<div style="top:exp\\ression(alert())">XSS</div>',
                          unicode(html | TracHTMLSanitizer()))
-        html = HTML(r'<div style="top:exp\5c 72 ession(alert())">XSS</div>')
+        html = HTML(r'<div style="top:exp\5c 72 ession(alert())">XSS</div>',
+                    encoding='utf-8')
         self.assertEqual(r'<div style="top:exp\\72 ession(alert())">XSS</div>',
                          unicode(html | TracHTMLSanitizer()))
         # escaped control characters
         html = HTML(r'<div style="top:exp\000000res\1f sion(alert())">'
-                    r'XSS</div>')
+                    r'XSS</div>', encoding='utf-8')
         self.assertEqual('<div style="top:exp res sion(alert())">XSS</div>',
                          unicode(html | TracHTMLSanitizer()))
 
