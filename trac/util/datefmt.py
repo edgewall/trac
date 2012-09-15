@@ -811,6 +811,8 @@ class LocalTimezone(tzinfo):
             return tt.tm_isdst > 0
         except OverflowError:
             return False
+        except ValueError:
+            return False
 
     def localize(self, dt, is_dst=False):
         if dt.tzinfo is not None:
