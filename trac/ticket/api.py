@@ -352,9 +352,9 @@ class TicketSystem(Component):
 
         # Date/time fields
         fields.append({'name': 'time', 'type': 'time',
-                       'label': N_('Created')})
+                       'format': 'relative', 'label': N_('Created')})
         fields.append({'name': 'changetime', 'type': 'time',
-                       'label': N_('Modified')})
+                       'format': 'relative', 'label': N_('Modified')})
 
         for field in self.custom_fields:
             if field['name'] in [f['name'] for f in fields]:
@@ -406,6 +406,8 @@ class TicketSystem(Component):
                 field['format'] = config.get(name + '.format', 'plain')
                 field['width'] = config.getint(name + '.cols')
                 field['height'] = config.getint(name + '.rows')
+            elif field['type'] == 'time':
+                field['format'] = config.get(name + '.format', 'datetime')
             fields.append(field)
 
         fields.sort(lambda x, y: cmp((x['order'], x['name']),

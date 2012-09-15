@@ -80,6 +80,7 @@ Arguments:
             colspan="${3 if fullrow else None}">
           <py:if test="field">
             <py:choose test="">
+              <py:when test="'dateinfo' in field">${pretty_dateinfo(field.dateinfo, field.format)}</py:when>
               <py:when test="'rendered' in field">${field.rendered}</py:when>
               <py:otherwise>${ticket[field.name]}</py:otherwise>
             </py:choose>

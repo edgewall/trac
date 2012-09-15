@@ -284,6 +284,8 @@ ${value}</textarea>
                                  checked="${value == option or None}" />
                           ${option}
                         </label>
+                        <input py:when="'time'" type="text" id="field-${field.name}" title="${field.format_hint}"
+                               name="field_${field.name}" value="${field.edit}" />
                         <py:otherwise><!--! Text input fields -->
                           <py:choose>
                             <span py:when="field.cc_entry"><!--! Special case for Cc: field -->

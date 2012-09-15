@@ -59,7 +59,7 @@ from trac.util.datefmt import (
     from_utimestamp, http_date, utc, get_date_format_jquery_ui, is_24_hours,
     get_time_format_jquery_ui, user_time, get_month_names_jquery_ui,
     get_day_names_jquery_ui, get_timezone_list_jquery_ui,
-    get_first_week_day_jquery_ui)
+    get_first_week_day_jquery_ui, localtz)
 from trac.util.translation import _, get_available_locales
 from trac.web.api import IRequestHandler, ITemplateStreamFilter, HTTPNotFound
 from trac.web.href import Href
@@ -842,19 +842,27 @@ class Chrome(Component):
             show_email_addresses = False
 
         def pretty_dateinfo(date, format=None, dateonly=False):
-            absolute = user_time(req, format_datetime, date)
-            relative = pretty_timedelta(date)
+            if not date:
+                return ''
+            if format == 'date':
+                absolute = user_time(req, format_date, date)
+            else:
+                absolute = user_time(req, format_datetime, date)
+            now = datetime.datetime.now(localtz)
+            relative = pretty_timedelta(date, now)
             if not format:
                 format = req.session.get('dateinfo',
                                          self.default_dateinfo_format)
-            if format == 'absolute':
-                label = absolute
-                title = _("%(relativetime)s ago", relativetime=relative)
-            else:
-                label = _("%(relativetime)s ago", relativetime=relative) \
-                        if not dateonly else relative
+            in_or_ago = _("in %(relative)s", relative=relative) \
+                        if date > now else \
+                        _("%(relative)s ago", relative=relative)
+            if format == 'relative':
+                label = in_or_ago if not dateonly else relative
                 title = absolute
-            return tag.span(label, title=title)
+            else:
+                label = absolute
+                title = in_or_ago
+            return tag.span(label, title=title)  
 
         def dateinfo(date):
             return pretty_dateinfo(date, format='relative', dateonly=True)

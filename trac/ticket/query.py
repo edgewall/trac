@@ -34,8 +34,9 @@ from trac.resource import Resource
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Milestone, group_milestones, Ticket
 from trac.util import Ranges, as_bool
-from trac.util.datefmt import format_datetime, from_utimestamp, parse_date, \
-                              to_timestamp, to_utimestamp, utc, user_time
+from trac.util.datefmt import from_utimestamp, format_date_or_datetime, \
+                              parse_date, to_timestamp, to_utimestamp, utc, \
+                              user_time
 from trac.util.presentation import Paginator
 from trac.util.text import empty, shorten_line, quote_query_string
 from trac.util.translation import _, tag_, cleandoc_
@@ -331,7 +332,7 @@ class Query(object):
                         if href is not None:
                             result['href'] = href.ticket(val)
                     elif name in self.time_fields:
-                        val = from_utimestamp(val)
+                        val = from_utimestamp(long(val)) if val else ''
                     elif field and field['type'] == 'checkbox':
                         try:
                             val = bool(int(val))
@@ -1143,8 +1144,9 @@ class QueryModule(Component):
                         value = Chrome(self.env).format_emails(
                                     context.child(ticket), value)
                     elif col in query.time_fields:
-                        value = format_datetime(value, '%Y-%m-%d %H:%M:%S',
-                                                tzinfo=req.tz)
+                        format = query.fields.by_name(col).get('format')
+                        value = user_time(req, format_date_or_datetime,
+                                          format, value) if value else ''
                     values.append(unicode(value).encode('utf-8'))
                 writer.writerow(values)
         return (content.getvalue(), '%s;charset=utf-8' % mimetype)

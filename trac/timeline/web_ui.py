@@ -30,7 +30,7 @@ from trac.timeline.api import ITimelineEventProvider
 from trac.util import as_int
 from trac.util.datefmt import format_date, format_datetime, format_time, \
                               parse_date, to_utimestamp, utc, \
-                              pretty_timedelta,  user_time
+                              pretty_timedelta,  user_time, localtz
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.web import IRequestHandler, IRequestFilter
@@ -270,27 +270,46 @@ class TimelineModule(Component):
     def post_process_request(self, req, template, data, content_type):
         if data:
             def pretty_dateinfo(date, format=None, dateonly=False):
-                absolute = user_time(req, format_datetime, date)
-                relative = pretty_timedelta(date)
+                if not date:
+                    return ''
+                if format == 'date':
+                    absolute = user_time(req, format_date, date)
+                else:
+                    absolute = user_time(req, format_datetime, date)
+                now = datetime.now(localtz)
+                relative = pretty_timedelta(date, now)
                 if not format:
                     format = req.session.get('dateinfo',
                                  Chrome(self.env).default_dateinfo_format)
-                if format == 'absolute':
+                if format == 'relative':
+                    if date > now:
+                        label = _("in %(relative)s", relative=relative) \
+                                if not dateonly else relative
+                        title = _("on %(date)s at %(time)s",
+                                  date=user_time(req, format_date, date),
+                                  time=user_time(req, format_time, date))
+                        return tag.span(label, title=title)
+                    else:
+                        label = _("%(relative)s ago", relative=relative) \
+                                if not dateonly else relative
+                        title = _("See timeline at %(absolutetime)s",
+                                  absolutetime=absolute)
+                else:
                     if dateonly:
                         label = absolute
                     elif req.lc_time == 'iso8601':
                         label = _("at %(iso8601)s", iso8601=absolute)
+                    elif format == 'date':
+                        label = _("on %(date)s", date=absolute)
                     else:
                         label = _("on %(date)s at %(time)s",
                                   date=user_time(req, format_date, date),
                                   time=user_time(req, format_time, date))
+                    if date > now:
+                        title = _("in %(relative)s", relative=relative)
+                        return tag.span(label, title=title)
                     title = _("See timeline %(relativetime)s ago",
                               relativetime=relative)
-                else:
-                    label = _("%(relativetime)s ago", relativetime=relative) \
-                            if not dateonly else relative
-                    title = _("See timeline at %(absolutetime)s",
-                              absolutetime=absolute)
                 return self.get_timeline_link(req, date, label,
                                               precision='second', title=title)
             def dateinfo(date):

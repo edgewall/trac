@@ -70,6 +70,16 @@ class TicketSystemTestCase(unittest.TestCase):
                           'order': 0, 'format': 'wiki', 'custom': True},
                          fields[0])
 
+    def test_custom_field_time(self):
+        self.env.config.set('ticket-custom', 'test', 'time')
+        self.env.config.set('ticket-custom', 'test.label', 'Test')
+        self.env.config.set('ticket-custom', 'test.value', '')
+        fields = TicketSystem(self.env).get_custom_fields()
+        self.assertEqual({'name': 'test', 'type': 'time', 'label': 'Test',
+                          'value': '', 'order': 0, 'format': 'datetime',
+                          'custom': True},
+                         fields[0])
+
     def test_custom_field_order(self):
         self.env.config.set('ticket-custom', 'test1', 'text')
         self.env.config.set('ticket-custom', 'test1.order', '2')
