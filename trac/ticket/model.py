@@ -153,8 +153,7 @@ class Ticket(object):
         if value:
             if isinstance(value, list):
                 raise TracError(_("Multi-values fields not supported yet"))
-            field = [field for field in self.fields if field['name'] == name]
-            if field and field[0].get('type') != 'textarea':
+            if self.fields.by_name(name, {}).get('type') != 'textarea':
                 value = value.strip()
         self.values[name] = value
 
@@ -169,9 +168,7 @@ class Ticket(object):
 
     def get_default(self, name):
         """Return the default value of a field."""
-        field = [field for field in self.fields if field['name'] == name]
-        if field:
-            return field[0].get('value', '')
+        return self.fields.by_name(name, {}).get('value', '')
 
     def populate(self, values):
         """Populate the ticket with 'suitable' values from a dictionary"""

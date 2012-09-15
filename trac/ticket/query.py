@@ -316,10 +316,7 @@ class Query(object):
             # self.env.log.debug("SQL: " + sql % tuple([repr(a) for a in args]))
             cursor.execute(sql, args)
             columns = get_column_names(cursor)
-            fields = []
-            for column in columns:
-                fields += [f for f in self.fields if f['name'] == column] or \
-                          [None]
+            fields = [self.fields.by_name(column, None) for column in columns]
             results = []
 
             column_indices = range(len(columns))
@@ -711,12 +708,10 @@ class Query(object):
 
         cols = self.get_columns()
         labels = TicketSystem(self.env).get_ticket_field_labels()
-        wikify = set(f['name'] for f in self.fields 
-                     if f['type'] == 'text' and f.get('format') == 'wiki')
 
         headers = [{
             'name': col, 'label': labels.get(col, _('Ticket')),
-            'wikify': col in wikify,
+            'field': self.fields.by_name(col, {}),
             'href': self.get_href(context.href, order=col,
                                   desc=(col == self.order and not self.desc))
         } for col in cols]
@@ -1071,9 +1066,9 @@ class QueryModule(Component):
                 add_warning(req, error)
 
         context = web_context(req, 'query')
-        owner_field = [f for f in query.fields if f['name'] == 'owner']
+        owner_field = query.fields.by_name('owner', None)
         if owner_field:
-            TicketSystem(self.env).eventually_restrict_owner(owner_field[0])
+            TicketSystem(self.env).eventually_restrict_owner(owner_field)
         data = query.template_data(context, tickets, orig_list, orig_time, req)
 
         req.session['query_href'] = query.get_href(context.href)

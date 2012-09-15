@@ -1715,11 +1715,7 @@ class TicketModule(Component):
                               resource_new=None):
         rendered = None
         # per type special rendering of diffs
-        type_ = None
-        for f in ticket.fields:
-            if f['name'] == field:
-                type_ = f['type']
-                break
+        type_ = ticket.fields.by_name(field, {}).get('type')
         if type_ == 'checkbox':
             rendered = _("set") if new == '1' else _("unset")
         elif type_ == 'textarea':

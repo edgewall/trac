@@ -30,6 +30,28 @@ from trac.util.translation import _, N_, gettext
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 
+class TicketFieldList(list):
+    """Improved ticket field list, allowing access by name."""
+    __slots__ = ['_map']
+
+    def __init__(self, *args):
+        super(TicketFieldList, self).__init__(*args)
+        self._map = dict((value['name'], value) for value in self)
+
+    def append(self, value):
+        super(TicketFieldList, self).append(value)
+        self._map[value['name']] = value
+
+    def by_name(self, name, default=None):
+        return self._map.get(name, default)
+
+    def __copy__(self):
+        return TicketFieldList(self)
+
+    def __deepcopy__(self, memo):
+        return TicketFieldList(copy.deepcopy(value, memo) for value in self)
+
+
 class ITicketActionController(Interface):
     """Extension point interface for components willing to participate
     in the ticket workflow.
@@ -280,7 +302,7 @@ class TicketSystem(Component):
         """Return the list of fields available for tickets."""
         from trac.ticket import model
 
-        fields = []
+        fields = TicketFieldList()
 
         # Basic text fields
         fields.append({'name': 'summary', 'type': 'text',
@@ -334,7 +356,7 @@ class TicketSystem(Component):
         fields.append({'name': 'changetime', 'type': 'time',
                        'label': N_('Modified')})
 
-        for field in self.get_custom_fields():
+        for field in self.custom_fields:
             if field['name'] in [f['name'] for f in fields]:
                 self.log.warning('Duplicate field name "%s" (ignoring)',
                                  field['name'])
@@ -347,7 +369,6 @@ class TicketSystem(Component):
                 self.log.warning('Invalid name for custom field: "%s" '
                                  '(ignoring)', field['name'])
                 continue
-            field['custom'] = True
             fields.append(field)
 
         return fields
@@ -362,12 +383,13 @@ class TicketSystem(Component):
     @cached
     def custom_fields(self, db):
         """Return the list of custom ticket fields available for tickets."""
-        fields = []
+        fields = TicketFieldList()
         config = self.ticket_custom_section
         for name in [option for option, value in config.options()
                      if '.' not in option]:
             field = {
                 'name': name,
+                'custom': True,
                 'type': config.get(name),
                 'order': config.getint(name + '.order', 0),
                 'label': config.get(name + '.label') or name.capitalize(),
