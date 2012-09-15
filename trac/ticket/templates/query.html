@@ -26,6 +26,8 @@
       /*]]>*/
         /* Hide the columns by default. */
         $("#columns").toggleClass("collapsed");
+        $(".datepicker").datepicker();
+        $(".datetimepicker").datetimepicker();
       });
     </script>
   </head>
@@ -123,12 +125,13 @@
 
                         <py:when test="field.type == 'time'"
                                  py:with="(start, end) = '..' in constraint_value and constraint_value.split('..', 1)
-                                                         or (constraint_value, '')">
+                                                         or (constraint_value, '');
+                                          date_or_datetime = field.get('format', 'datetime')">
                           <i18n:msg>
                             <label>between</label>
-                            <input type="text" name="${n_field_name}" value="$start" size="14" />
+                            <input type="text" name="${n_field_name}" value="$start" size="14" class="${date_or_datetime}picker" />
                             <label>and</label>
-                            <input type="text" name="${n_field_name}_end" value="$end" size="14" />
+                            <input type="text" name="${n_field_name}_end" value="$end" size="14" class="${date_or_datetime}picker" />
                           </i18n:msg>
                         </py:when>
                       </td>

@@ -510,6 +510,7 @@ class TicketModule(Component):
         add_script(req, 'common/js/folding.js')
         Chrome(self.env).add_wiki_toolbars(req)
         Chrome(self.env).add_auto_preview(req)
+        Chrome(self.env).add_jquery_ui(req)
         return 'ticket.html', data, None
 
     def _process_ticket_request(self, req):
@@ -700,6 +701,7 @@ class TicketModule(Component):
         add_script(req, 'common/js/folding.js')
         Chrome(self.env).add_wiki_toolbars(req)
         Chrome(self.env).add_auto_preview(req)
+        Chrome(self.env).add_jquery_ui(req)
 
         # Add registered converters
         for conversion in mime.get_supported_conversions('trac.ticket.Ticket'):

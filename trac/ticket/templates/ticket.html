@@ -18,6 +18,8 @@
       jQuery(document).ready(function($) {
         $("div.description").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
         $(".foldable").enableFolding(false, true);
+        $(".datepicker").datepicker();
+        $(".datetimepicker").datetimepicker();
       <py:when test="ticket.exists">/*<![CDATA[*/
         $("#attachments").toggleClass("collapsed");
         $("#trac-up-attachments").click(function () {
@@ -285,7 +287,7 @@ ${value}</textarea>
                           ${option}
                         </label>
                         <input py:when="'time'" type="text" id="field-${field.name}" title="${field.format_hint}"
-                               name="field_${field.name}" value="${field.edit}" />
+                               name="field_${field.name}" value="${field.edit}" class="${field.format}picker" />
                         <py:otherwise><!--! Text input fields -->
                           <py:choose>
                             <span py:when="field.cc_entry"><!--! Special case for Cc: field -->

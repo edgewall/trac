@@ -184,11 +184,19 @@
             .append(createRadio(propertyName, "0", propertyName + "_off"))
             .append(" ").append(createLabel(_("no"), propertyName + "_off"));
         } else if (property.type == "time") {
-          focusElement = createText(propertyName, 14).datepicker();
+          var endElement = createText(propertyName + "_end", 14);
+          focusElement = createText(propertyName, 14);
+          if (property.format == "datetime") {
+            focusElement.datetimepicker();
+            endElement.datetimepicker();
+          } else if (property.format == "date") {
+            focusElement.datepicker();
+            endElement.datepicker();
+          }
           td.append(createLabel(_("between"))).append(" ")
             .append(focusElement).append(" ")
             .append(createLabel(_("and"))).append(" ")
-            .append(createText(propertyName + "_end", 14).datepicker());
+            .append(endElement);
         }
         tr.append(td);
       } else {
