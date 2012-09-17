@@ -1217,6 +1217,8 @@ class TicketQueryMacro(WikiMacroBase):
      - '''compact''' -- the tickets are presented as a comma-separated
        list of ticket IDs. 
      - '''count''' -- only the count of matching tickets is displayed
+     - '''rawcount''' -- only the count of matching tickets is displayed,
+       not even with a link to the corresponding query //(since 1.1.1)//
      - '''table'''  -- a view similar to the custom query view (but without
        the controls)
      - '''progress''' -- a view similar to the milestone progress bars
@@ -1297,14 +1299,19 @@ class TicketQueryMacro(WikiMacroBase):
         query_string, kwargs, format = self.parse_args(content)
         if query_string:
             query_string += '&'
-        query_string += '&'.join('%s=%s' % item
-                                 for item in kwargs.iteritems())
+
+        query_string += '&'.join('%s=%s' % item for item in kwargs.iteritems())
         query = Query.from_string(self.env, query_string)
 
-        if format == 'count':
+        if format in ('count', 'rawcount'):
             cnt = query.count(req)
-            return tag.span(cnt, title='%d tickets for which %s' %
-                            (cnt, query_string), class_='query_count')
+            title = _("%(num)s tickets matching %(criteria)s",
+                      num=cnt, criteria=query_string.replace('&', ', '))
+            if format == 'rawcount':
+                return tag.span(cnt, title=title, class_='query_count')
+            else:
+                return tag.a(cnt, href=query.get_href(formatter.context),
+                             title=title)
         
         tickets = query.execute(req)
 
@@ -1441,4 +1448,4 @@ class TicketQueryMacro(WikiMacroBase):
 
     def is_inline(self, content):
         query_string, kwargs, format = self.parse_args(content)
-        return format in ('count', 'compact')
+        return format in ('compact', 'count', 'rawcount')
