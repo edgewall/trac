@@ -306,14 +306,14 @@ New tickets: </p><div><dl class="wiki compact"><dt><a class="new" href="/ticket/
 New tickets: [[TicketQuery(status=new, format=rawcount)]]
 ------------------------------
 <p>
-New tickets: <span class="query_count" title="1 tickets matching status=new, max=0, order=id">1</span>
+New tickets: <span class="query_count" title="1 ticket matching status=new, max=0, order=id">1</span>
 </p>
 ------------------------------
 ============================== TicketQuery macro: one result, count 1
 New tickets: [[TicketQuery(status=new, format=count)]]
 ------------------------------
 <p>
-New tickets: <a href="/query?status=new&amp;max=0&amp;order=id" title="1 tickets matching status=new, max=0, order=id">1</a>
+New tickets: <a href="/query?status=new&amp;max=0&amp;order=id" title="1 ticket matching status=new, max=0, order=id">1</a>
 </p>
 ------------------------------
 ============================== TicketQuery macro: one result, compact form

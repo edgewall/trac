@@ -39,7 +39,7 @@ from trac.util.datefmt import from_utimestamp, format_date_or_datetime, \
                               user_time
 from trac.util.presentation import Paginator
 from trac.util.text import empty, shorten_line, quote_query_string
-from trac.util.translation import _, tag_, cleandoc_
+from trac.util.translation import _, cleandoc_, ngettext, tag_
 from trac.web import arg_list_to_args, parse_arg_list, IRequestHandler
 from trac.web.href import Href
 from trac.web.chrome import (INavigationContributor, Chrome,
@@ -1305,8 +1305,9 @@ class TicketQueryMacro(WikiMacroBase):
 
         if format in ('count', 'rawcount'):
             cnt = query.count(req)
-            title = _("%(num)s tickets matching %(criteria)s",
-                      num=cnt, criteria=query_string.replace('&', ', '))
+            title = ngettext("%(num)s ticket matching %(criteria)s",
+                             "%(num)s tickets matching %(criteria)s", cnt, 
+                             criteria=query_string.replace('&', ', '))
             if format == 'rawcount':
                 return tag.span(cnt, title=title, class_='query_count')
             else:
