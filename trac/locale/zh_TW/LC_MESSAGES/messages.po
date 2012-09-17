@@ -36,6 +36,9 @@ msgid ""
 "----\n"
 "%(description)s"
 msgstr ""
+"從 #%(id)s 複製:\n"
+"----\n"
+"%(description)s"
 
 #: tracopt/ticket/clone.py:60
 msgid "Clone"
@@ -456,7 +459,7 @@ msgstr "組態錯誤"
 #: trac/config.py:265
 #, python-format
 msgid "Error reading '%(file)s', make sure it is readable."
-msgstr ""
+msgstr "讀取 '%(file)s' 錯誤，請確認該檔案可讀取。"
 
 #: trac/config.py:420
 #, python-format
@@ -545,7 +548,7 @@ msgstr "複製環境時，發生以下錯誤："
 
 #: trac/env.py:953
 msgid "Backing up database ..."
-msgstr ""
+msgstr "備份資料庫中 ..."
 
 #: trac/env.py:958
 msgid "Hotcopy done."
@@ -690,7 +693,7 @@ msgstr "無法匯出至檔案 %(filename)s: %(error)s"
 #: trac/perm.py:719
 #, python-format
 msgid "Invalid row %(line)d. Expected <user>, <action>, [action], [...]"
-msgstr ""
+msgstr "無效行 %(line)d。預期格式 <user>, <action>, [action], [...]"
 
 #: trac/perm.py:727
 #, python-format
@@ -943,6 +946,15 @@ msgid ""
 "[[TracAdminHelp(upgrade)]]      # the upgrade command\n"
 "}}}"
 msgstr ""
+"顯示 trac-admin 指令說明.\n"
+"\n"
+"例如:\n"
+"{{{\n"
+"[[TracAdminHelp]]               # 所有指令\n"
+"[[TracAdminHelp(wiki)]]         # 所有 wiki 指令\n"
+"[[TracAdminHelp(wiki export)]]  # \"wiki export\" 指令\n"
+"[[TracAdminHelp(upgrade)]]      # upgrade 指令\n"
+"}}}"
 
 #: trac/admin/console.py:579
 #, python-format
@@ -1674,7 +1686,7 @@ msgstr "鍵盤快捷鍵"
 
 #: trac/prefs/web_ui.py:97 trac/prefs/templates/prefs_userinterface.html:10
 msgid "User Interface"
-msgstr ""
+msgstr "使用者介面"
 
 #: trac/prefs/web_ui.py:99 trac/prefs/templates/prefs_language.html:10
 msgid "Language"
@@ -1926,13 +1938,15 @@ msgstr ""
 
 #: trac/prefs/templates/prefs_userinterface.html:29
 msgid "Hide help links."
-msgstr ""
+msgstr "隱藏說明連結"
 
 #: trac/prefs/templates/prefs_userinterface.html:32
 msgid ""
 "Don't show the various help links.\n"
 "      This reduces the verbosity of the pages."
 msgstr ""
+"不顯示說明連結。\n"
+"      此會精簡頁面。"
 
 #: trac/search/web_ui.py:72 trac/search/templates/search.html:12
 #: trac/search/templates/search.html:26 trac/search/templates/search.html:31
@@ -2994,7 +3008,7 @@ msgstr ""
 
 #: trac/ticket/default_workflow.py:493
 msgid "Enable JavaScript to display the workflow graph."
-msgstr ""
+msgstr "啟用 JavaScript 以顯示工作流程圖"
 
 #: trac/ticket/model.py:118
 #, python-format
@@ -3381,11 +3395,11 @@ msgstr "里程碑 \"%(name)s\""
 
 #: trac/ticket/roadmap.py:889
 msgid "Previous Milestone"
-msgstr ""
+msgstr "前一個里程碑"
 
 #: trac/ticket/roadmap.py:889
 msgid "Next Milestone"
-msgstr ""
+msgstr "下一個里程碑"
 
 #: trac/ticket/roadmap.py:890
 msgid "Back to Roadmap"
@@ -4081,7 +4095,7 @@ msgstr ""
 
 #: trac/ticket/templates/report_list.html:48
 msgid "Return to Last Query"
-msgstr ""
+msgstr "回上次查詢"
 
 #: trac/ticket/templates/report_list.html:51
 msgid ""
@@ -5366,7 +5380,7 @@ msgstr "檢視檔案"
 #: trac/versioncontrol/templates/repository_index.html:22
 #: trac/versioncontrol/web_ui/browser.py:819
 msgid "Download as Zip archive"
-msgstr ""
+msgstr "下載 Zip 壓縮檔"
 
 #: trac/versioncontrol/templates/dir_entries.html:22
 #: trac/versioncontrol/templates/repository_index.html:26
@@ -5474,7 +5488,7 @@ msgstr "比較新舊版之間的差異(在 差異 欄位中選擇新舊版)"
 
 #: trac/versioncontrol/templates/revisionlog.html:107
 msgid "Graph"
-msgstr ""
+msgstr "圖形"
 
 #: trac/versioncontrol/templates/revisionlog.html:108
 msgid "Old / New"
@@ -6012,7 +6026,7 @@ msgstr "您必須輸入新名稱"
 
 #: trac/wiki/admin.py:205
 msgid "The new name is invalid."
-msgstr ""
+msgstr "無效的新名稱"
 
 #: trac/wiki/admin.py:208 trac/wiki/web_ui.py:307
 #, python-format
