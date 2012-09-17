@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.0\n"
+"Project-Id-Version: Trac 1.0.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2012-09-06 15:50+0200\n"
+"POT-Creation-Date: 2012-09-17 21:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -485,22 +485,22 @@ msgid ""
 "href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
 msgstr ""
 
-#: trac/env.py:749
+#: trac/env.py:761
 msgid "Database newer than Trac version"
 msgstr ""
 
-#: trac/env.py:766
+#: trac/env.py:778
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
 msgstr ""
 
-#: trac/env.py:813
+#: trac/env.py:825
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
 msgstr ""
 
-#: trac/env.py:842 trac/admin/console.py:280
+#: trac/env.py:854 trac/admin/console.py:280
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
@@ -508,67 +508,67 @@ msgid ""
 "Run \"trac-admin %(path)s upgrade\""
 msgstr ""
 
-#: trac/env.py:881
+#: trac/env.py:893
 msgid "Copying resources from:"
 msgstr ""
 
-#: trac/env.py:899
+#: trac/env.py:911
 msgid "Creating scripts."
 msgstr ""
 
-#: trac/env.py:911
+#: trac/env.py:923
 #, python-format
 msgid "Invalid argument '%(arg)s'"
 msgstr ""
 
-#: trac/env.py:916
+#: trac/env.py:928
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr ""
 
-#: trac/env.py:925
+#: trac/env.py:937
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr ""
 
-#: trac/env.py:942
+#: trac/env.py:954
 msgid "The following errors happened while copying the environment:"
 msgstr ""
 
-#: trac/env.py:953
+#: trac/env.py:965
 msgid "Backing up database ..."
 msgstr ""
 
-#: trac/env.py:958
+#: trac/env.py:970
 msgid "Hotcopy done."
 msgstr ""
 
-#: trac/env.py:963 trac/admin/api.py:131
+#: trac/env.py:975 trac/admin/api.py:131
 msgid "Invalid arguments"
 msgstr ""
 
-#: trac/env.py:966
+#: trac/env.py:978
 msgid "Database is up to date, no upgrade necessary."
 msgstr ""
 
-#: trac/env.py:972
+#: trac/env.py:984
 msgid ""
 "The pre-upgrade backup failed.\n"
 "Use '--no-backup' to upgrade without doing a backup.\n"
 msgstr ""
 
-#: trac/env.py:976
+#: trac/env.py:988
 msgid "The upgrade failed. Please fix the issue and try again.\n"
 msgstr ""
 
-#: trac/env.py:988
+#: trac/env.py:1000
 msgid ""
 "Warning: the wiki-macros directory in the environment is non-empty, but "
 "Trac\n"
 "doesn't load plugins from there anymore. Please remove it by hand."
 msgstr ""
 
-#: trac/env.py:999
+#: trac/env.py:1011
 #, python-format
 msgid ""
 "Error while removing wiki-macros: %(err)s\n"
@@ -576,7 +576,7 @@ msgid ""
 "hand."
 msgstr ""
 
-#: trac/env.py:1004
+#: trac/env.py:1016
 #, python-format
 msgid ""
 "Upgrade done.\n"
@@ -1463,12 +1463,12 @@ msgstr ""
 msgid "Released"
 msgstr ""
 
-#: trac/db/api.py:295
+#: trac/db/api.py:306
 #, python-format
 msgid "Unsupported database type \"%(scheme)s\""
 msgstr ""
 
-#: trac/db/api.py:333
+#: trac/db/api.py:345
 #, python-format
 msgid ""
 "Unknown scheme \"%(scheme)s\"; database connection string must start with"
@@ -5619,7 +5619,7 @@ msgstr ""
 msgid "search"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/util.py:77
+#: trac/versioncontrol/web_ui/util.py:78
 #, python-format
 msgid ""
 "You can %(search)s in the repository history to see if that path existed "
