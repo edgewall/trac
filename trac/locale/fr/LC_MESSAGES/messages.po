@@ -3469,11 +3469,11 @@ msgid ""
 msgstr ""
 
 #: trac/ticket/query.py:1310
-#, fuzzy, python-format
+#, python-format
 msgid "%(num)s ticket matching %(criteria)s"
 msgid_plural "%(num)s tickets matching %(criteria)s"
-msgstr[0] "Les tickets de %(groupname)s %(groupvalue)s correspondent à %(query)s"
-msgstr[1] ""
+msgstr[0] "%(num)s ticket correspondant à %(criteria)s"
+msgstr[1] "%(num)s tickets correspondant à %(criteria)s"
 
 #: trac/ticket/query.py:1380
 #, python-format
@@ -4800,9 +4800,9 @@ msgstr "Période suivante"
 
 #: trac/timeline/web_ui.py:286 trac/timeline/web_ui.py:309
 #: trac/web/chrome.py:856
-#, fuzzy, python-format
+#, python-format
 msgid "in %(relative)s"
-msgstr "il y a %(relativetime)s"
+msgstr "dans %(relative)s"
 
 #: trac/timeline/web_ui.py:290 trac/timeline/web_ui.py:307
 #, python-format
@@ -4810,9 +4810,9 @@ msgid "on %(date)s at %(time)s"
 msgstr "le %(date)s à %(time)s"
 
 #: trac/timeline/web_ui.py:293 trac/web/chrome.py:858
-#, fuzzy, python-format
+#, python-format
 msgid "%(relative)s ago"
-msgstr "il y a %(relativetime)s"
+msgstr "il y a %(relative)s"
 
 #: trac/timeline/web_ui.py:295 trac/timeline/web_ui.py:355
 #, python-format
@@ -4825,9 +4825,9 @@ msgid "at %(iso8601)s"
 msgstr "le %(iso8601)s"
 
 #: trac/timeline/web_ui.py:303
-#, fuzzy, python-format
+#, python-format
 msgid "on %(date)s"
-msgstr "Pas de chemin %(path)s"
+msgstr "le %(date)s"
 
 #: trac/timeline/web_ui.py:311
 #, python-format
