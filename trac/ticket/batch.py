@@ -23,7 +23,7 @@ from genshi.builder import tag
 from trac.core import *
 from trac.ticket import TicketSystem, Ticket
 from trac.ticket.notification import BatchTicketNotifyEmail
-from trac.util.datefmt import utc
+from trac.util.datefmt import parse_date, user_time, utc
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.web import IRequestHandler
@@ -56,12 +56,18 @@ class BatchModifyModule(Component):
         comment = req.args.get('batchmod_value_comment', '')
         action = req.args.get('action')
         
-        new_values = self._get_new_ticket_values(req) 
-        selected_tickets = self._get_selected_tickets(req)
+        try:
+            new_values = self._get_new_ticket_values(req) 
+        except TracError, e:
+            new_values = None
+            add_warning(req, tag_("The changes could not be saved: "
+                                  "%(message)s", message=to_unicode(e)))
 
-        self._save_ticket_changes(req, selected_tickets,
-                                  new_values, comment, action) 
-                
+        if new_values:
+            selected_tickets = self._get_selected_tickets(req)
+            self._save_ticket_changes(req, selected_tickets,
+                                      new_values, comment, action)
+
         #Always redirect back to the query page we came from.
         req.redirect(req.session['query_href'])
 
@@ -76,8 +82,13 @@ class BatchModifyModule(Component):
                             'description') and field['type'] != 'textarea':
                 value = req.args.get('batchmod_value_' + name)
                 if value is not None:
-                    values[name] = value
+                    values[name] = self._parse_field_value(req, field, value)
         return values
+
+    def _parse_field_value(self, req, field, value):
+        if field['type'] == 'time':
+            return user_time(req, parse_date, value)
+        return value
 
     def _get_selected_tickets(self, req):
         """The selected tickets will be a comma separated list
