@@ -330,6 +330,11 @@
           break;
         case 'time':
           focusElement = createText(inputName, 42).addClass("time");
+          if (property.format == "datetime") {
+            focusElement.datetimepicker();
+          } else if (property.format == "date") {
+            focusElement.datepicker();
+          }
           td.append(focusElement);
           break;
       }
