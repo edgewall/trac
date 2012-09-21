@@ -702,8 +702,8 @@ class AttachmentModule(Component):
         # Maximum attachment size (in bytes)
         max_size = self.max_size
         if max_size >= 0 and size > max_size:
-            raise TracError(_('Maximum attachment size: %(num)s bytes',
-                              num=max_size), _('Upload failed'))
+            raise TracError(_('Maximum attachment size: %(num)s',
+                              num=pretty_size(max_size)), _('Upload failed'))
 
         # We try to normalize the filename to unicode NFC if we can.
         # Files uploaded from OS X might be in NFD.
@@ -793,8 +793,8 @@ class AttachmentModule(Component):
             attachments = self.viewable_attachments(web_context(req, parent))
         total_size = sum(attachment.size for attachment in attachments)
         if total_size > self.max_zip_size:
-            raise TracError(_("Maximum total attachment size: %(num)s bytes",
-                              num=self.max_zip_size), _("Download failed"))
+            raise TracError(_("Maximum total attachment size: %(num)s",
+                              num=pretty_size(self.max_zip_size)), _("Download failed"))
         
         req.send_response(200)
         req.send_header('Content-Type', 'application/zip')

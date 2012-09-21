@@ -17,7 +17,7 @@ Arguments:
     <p py:when="not preview.rendered">
       <py:choose>
         <py:when test="preview.max_file_size_reached"><i18n:msg params="size">
-          <strong>HTML preview not available</strong>, since the file size exceeds $preview.max_file_size bytes.
+          <strong>HTML preview not available</strong>, since the file size exceeds ${pretty_size(preview.max_file_size)}.
         </i18n:msg></py:when>
         <py:otherwise><i18n:msg>
           <strong>HTML preview not available</strong>, since no preview renderer could handle it.
