@@ -483,13 +483,13 @@ class Ticket(object):
                     break
                 else:
                     # No next change, edit ticket field
-                    if field in self.custom_fields:
+                    if field in self.std_fields:
+                        db("UPDATE ticket SET %s=%%s WHERE id=%%s"
+                           % field, (oldvalue, self.id))
+                    else:
                         db("""UPDATE ticket_custom SET value=%s
                               WHERE ticket=%s AND name=%s
                               """, (oldvalue, self.id, field))
-                    else:
-                        db("UPDATE ticket SET %s=%%s WHERE id=%%s"
-                           % field, (oldvalue, self.id))
 
             # Delete the change
             db("DELETE FROM ticket_change WHERE ticket=%s AND time=%s",

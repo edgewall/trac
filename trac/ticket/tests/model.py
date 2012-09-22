@@ -11,8 +11,12 @@ from trac import core
 from trac.attachment import Attachment
 from trac.core import TracError, implements
 from trac.resource import ResourceNotFound
-from trac.ticket.model import Ticket, Component, Milestone, Priority, Type, Version
-from trac.ticket.api import IMilestoneChangeListener, ITicketChangeListener
+from trac.ticket.model import (
+    Ticket, Component, Milestone, Priority, Type, Version
+)
+from trac.ticket.api import (
+    IMilestoneChangeListener, ITicketChangeListener, TicketSystem
+)
 from trac.test import EnvironmentStub
 from trac.util.datefmt import from_utimestamp, to_utimestamp, utc
 
@@ -31,7 +35,7 @@ class TestTicketChangeListener(core.Component):
         self.comment = comment
         self.author = author
         self.old_values = old_values
-        
+
     def ticket_deleted(self, ticket):
         self.action = 'deleted'
         self.ticket = ticket
@@ -135,10 +139,10 @@ class TicketTestCase(unittest.TestCase):
     def test_can_save_ticket_without_explicit_comment(self):
         ticket = Ticket(self.env)
         ticket.insert()
-        
+
         ticket['summary'] = 'another summary'
         ticket.save_changes('foo')
-        
+
         changes = ticket.get_changelog()
         comment_change = [c for c in changes if c[2] == 'comment'][0]
         self.assertEqual('1', comment_change[3])
@@ -147,10 +151,10 @@ class TicketTestCase(unittest.TestCase):
     def test_can_save_ticket_without_explicit_username(self):
         ticket = Ticket(self.env)
         ticket.insert()
-        
+
         ticket['summary'] = 'another summary'
         ticket.save_changes()
-        
+
         for change in ticket.get_changelog():
             self.assertEqual(None, change[1])
 
@@ -409,7 +413,7 @@ class TicketTestCase(unittest.TestCase):
 
 
 class TicketCommentTestCase(unittest.TestCase):
-    
+
     def _insert_ticket(self, summary, when, **kwargs):
         ticket = Ticket(self.env)
         for k, v in kwargs.iteritems():
@@ -421,15 +425,15 @@ class TicketCommentTestCase(unittest.TestCase):
         for k, v in kwargs.iteritems():
             ticket[k] = v
         ticket.save_changes(author, comment, when, cnum=cnum)
-    
+
     def _find_change(self, ticket, cnum):
         (ts, author, comment) = ticket._find_change(cnum)
         return from_utimestamp(ts)
-    
+
     def assertChange(self, ticket, cnum, date, author, **fields):
         change = ticket.get_change(cnum=cnum)
         self.assertEqual(dict(date=date, author=author, fields=fields), change)
-    
+
 
 class TicketCommentEditTestCase(TicketCommentTestCase):
 
@@ -461,7 +465,7 @@ class TicketCommentEditTestCase(TicketCommentTestCase):
         self.assertChange(ticket, 3, self.t3, 'jim',
             keywords=dict(author='jim', old='a, b, c', new='a, b'),
             comment=dict(author='jim', old='3', new='Comment 3'))
-        
+
         t = self.created + timedelta(seconds=10)
         ticket.modify_comment(self._find_change(ticket, 1),
                               'joe', 'New comment 1', t)
@@ -482,7 +486,7 @@ class TicketCommentEditTestCase(TicketCommentTestCase):
             comment=dict(author='john', old='1.2', new='New comment 2'),
             _comment0=dict(author='joe', old='Comment 2',
                            new=str(to_utimestamp(t))))
-        
+
     def test_modify_missing_cnum(self):
         """Editing a comment with no cnum in oldvalue"""
         self.env.db_transaction(
@@ -496,7 +500,7 @@ class TicketCommentEditTestCase(TicketCommentTestCase):
             comment=dict(author='jim', old='', new='New comment 3'),
             _comment0=dict(author='joe', old='Comment 3',
                            new=str(to_utimestamp(t))))
-        
+
     def test_modify_missing_comment(self):
         """Editing a comment where the comment field is missing"""
         self.env.db_transaction("""
@@ -511,7 +515,7 @@ class TicketCommentEditTestCase(TicketCommentTestCase):
             comment=dict(author='john', old='', new='New comment 2'),
             _comment0=dict(author='joe', old='',
                            new=str(to_utimestamp(t))))
-        
+
     def test_modify_missing_cnums_and_comment(self):
         """Editing a comment when all cnums are missing and one comment
         field is missing
@@ -559,14 +563,14 @@ class TicketCommentEditTestCase(TicketCommentTestCase):
                            new=str(to_utimestamp(t1))),
             _comment1=dict(author='joe', old='New comment 1',
                            new=str(to_utimestamp(t2))))
-        
+
         self.env.db_transaction(
             "DELETE FROM ticket_change WHERE field='_comment0'")
 
         t3 = self.created + timedelta(seconds=90)
         ticket.modify_comment(self._find_change(ticket, 1),
                               'joe', 'Newest comment 1', t3)
-        
+
         self.assertChange(ticket, 1, self.t1, 'jack',
             comment=dict(author='jack', old='1', new='Newest comment 1'),
             _comment1=dict(author='joe', old='New comment 1',
@@ -629,7 +633,30 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
         self.assertEqual(None, ticket.get_change(cnum=4))
         self.assertNotEqual(None, ticket.get_change(cnum=3))
         self.assertEqual(self.t3, ticket.time_changed)
-    
+
+    def test_delete_last_comment_when_custom_field_gone(self):
+        """Regression test for http://trac.edgewall.org/ticket/10858"""
+        ticket = Ticket(self.env, self.id)
+        self.assertEqual('a', ticket['keywords'])
+        self.assertEqual('change4', ticket['foo'])
+        # we simulate the removal of the definition of the 'foo' custom field
+        self.env.config.remove('ticket-custom', 'foo')
+        del TicketSystem(self.env).fields
+        del TicketSystem(self.env).custom_fields
+        ticket = Ticket(self.env, self.id)
+        #
+        ticket.delete_change(cnum=4)
+        self.assertEqual('a, b', ticket['keywords'])
+        # 'foo' is no longer defined for the ticket
+        self.assertEqual(None, ticket['foo'])
+        # however, 'foo=change3' is still in the database
+        self.assertEqual([('change3',)], self.env.db_query("""
+            SELECT value FROM ticket_custom WHERE ticket=%s AND name='foo'
+            """, (self.id,)))
+        self.assertEqual(None, ticket.get_change(cnum=4))
+        self.assertNotEqual(None, ticket.get_change(cnum=3))
+        self.assertEqual(self.t3, ticket.time_changed)
+
     def test_delete_last_comment_by_date(self):
         ticket = Ticket(self.env, self.id)
         self.assertEqual('a', ticket['keywords'])
@@ -640,7 +667,7 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
         self.assertEqual(None, ticket.get_change(cdate=self.t4))
         self.assertNotEqual(None, ticket.get_change(cdate=self.t3))
         self.assertEqual(self.t3, ticket.time_changed)
-    
+
     def test_delete_mid_comment(self):
         ticket = Ticket(self.env, self.id)
         self.assertChange(ticket, 4, self.t4, 'joe',
@@ -655,7 +682,7 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
             keywords=dict(author='joe', old='a, b, c', new='a'),
             foo=dict(author='joe', old='change2', new='change4'))
         self.assertEqual(self.t4, ticket.time_changed)
-        
+
     def test_delete_mid_comment_by_date(self):
         ticket = Ticket(self.env, self.id)
         self.assertChange(ticket, 4, self.t4, 'joe',
@@ -670,7 +697,7 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
             keywords=dict(author='joe', old='a, b, c', new='a'),
             foo=dict(author='joe', old='change2', new='change4'))
         self.assertEqual(self.t4, ticket.time_changed)
-        
+
     def test_delete_mid_comment_inconsistent(self):
         # Make oldvalue on keywords for change 4 inconsistent. This should
         # result in no change in oldvalue when deleting change 3. The
@@ -691,7 +718,7 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
             comment=dict(author='joe', old='4', new='Comment 4'),
             keywords=dict(author='joe', old='1, 2', new='a'),
             foo=dict(author='joe', old='change2', new='change4'))
-        
+
     def test_delete_all_comments(self):
         # See ticket:10338
         ticket = Ticket(self.env, self.id)
@@ -764,7 +791,7 @@ class TestMilestoneChangeListener(core.Component):
         self.action = 'changed'
         self.milestone = milestone
         self.old_values = old_values
-        
+
     def milestone_deleted(self, milestone):
         self.action = 'deleted'
         self.milestone = milestone
@@ -826,7 +853,7 @@ class MilestoneTestCase(unittest.TestCase):
             SELECT name, due, completed, description FROM milestone
             WHERE name='Test'
             """))
-        
+
         # Use the same model object to update the milestone
         milestone.description = 'Some text'
         milestone.update()
@@ -845,7 +872,7 @@ class MilestoneTestCase(unittest.TestCase):
         milestone = Milestone(self.env, 'Test')
         milestone.delete()
         self.assertEqual(False, milestone.exists)
-        self.assertEqual([], 
+        self.assertEqual([],
             self.env.db_query("SELECT * FROM milestone WHERE name='Test'"))
 
     def test_delete_milestone_retarget_tickets(self):
@@ -908,14 +935,14 @@ class MilestoneTestCase(unittest.TestCase):
         milestone = Milestone(self.env)
         milestone.name = 'OldName'
         milestone.insert()
-        
+
         attachment = Attachment(self.env, 'milestone', 'OldName')
         attachment.insert('foo.txt', StringIO(), 0, 1)
-        
+
         milestone = Milestone(self.env, 'OldName')
         milestone.name = 'NewName'
         milestone.update()
-        
+
         self.assertRaises(ResourceNotFound, Milestone, self.env, 'OldName')
         self.assertEqual('NewName', Milestone(self.env, 'NewName').name)
 
@@ -924,7 +951,7 @@ class MilestoneTestCase(unittest.TestCase):
         attachments = Attachment.select(self.env, 'milestone', 'NewName')
         self.assertEqual('foo.txt', attachments.next().filename)
         self.assertRaises(StopIteration, attachments.next)
-        
+
     def test_select_milestones(self):
         self.env.db_transaction.executemany(
             "INSERT INTO milestone (name) VALUES (%s)",
@@ -950,12 +977,12 @@ class MilestoneTestCase(unittest.TestCase):
             due=datetime(2001, 01, 01, tzinfo=utc),
             description='The milestone description')
         milestone.insert()
-        
+
         milestone.name = 'Milestone 2'
         milestone.completed = datetime(2001, 02, 03, tzinfo=utc)
         milestone.description = 'The changed description'
         milestone.update()
-        
+
         self.assertEqual('changed', listener.action)
         self.assertEqual(milestone, listener.milestone)
         self.assertEqual({'name': 'Milestone 1', 'completed': None,
@@ -998,11 +1025,11 @@ class ComponentTestCase(unittest.TestCase):
         component = Component(self.env)
         component.name = 'Test'
         component.insert()
-        
+
         self.assertEqual([('Test', None, None)], self.env.db_query("""
-            SELECT name, owner, description FROM component 
+            SELECT name, owner, description FROM component
             WHERE name='Test'"""))
-        
+
         # Use the same model object to update the component
         component.owner = 'joe'
         component.update()
@@ -1033,10 +1060,10 @@ class VersionTestCase(unittest.TestCase):
         version = Version(self.env)
         version.name = 'Test'
         version.insert()
-        
+
         self.assertEqual([('Test', 0, None)], self.env.db_query(
             "SELECT name, time, description FROM version WHERE name='Test'"))
-        
+
         # Use the same model object to update the version
         version.description = 'Some text'
         version.update()
