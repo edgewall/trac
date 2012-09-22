@@ -9,8 +9,10 @@ from trac import core
 from trac.attachment import Attachment
 from trac.core import TracError, implements
 from trac.resource import ResourceNotFound
-from trac.ticket.model import Ticket, Component, Milestone, Priority, Type, Version
-from trac.ticket.api import IMilestoneChangeListener, ITicketChangeListener
+from trac.ticket.model import Ticket, Component, Milestone, Priority, Type, \
+                              Version
+from trac.ticket.api import IMilestoneChangeListener, ITicketChangeListener, \
+                            TicketSystem
 from trac.test import EnvironmentStub
 from trac.util.datefmt import from_utimestamp, to_utimestamp, utc
 
@@ -621,6 +623,31 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
         self.assertEqual(None, ticket.get_change(4))
         self.assertNotEqual(None, ticket.get_change(3))
         self.assertEqual(self.t3, ticket.time_changed)
+
+    def test_delete_last_comment_when_custom_field_gone(self): 
+        """Regression test for http://trac.edgewall.org/ticket/10858""" 
+        ticket = Ticket(self.env, self.id) 
+        self.assertEqual('a', ticket['keywords']) 
+        self.assertEqual('change4', ticket['foo']) 
+        # we simulate the removal of the definition of the 'foo' custom field
+        self.env.config.remove('ticket-custom', 'foo') 
+        del TicketSystem(self.env).fields 
+        del TicketSystem(self.env).custom_fields 
+        ticket = Ticket(self.env, self.id) 
+        #
+        ticket.delete_change(cnum=4) 
+        self.assertEqual('a, b', ticket['keywords'])
+        # 'foo' is no longer defined for the ticket 
+        self.assertEqual(None, ticket['foo']) 
+        # however, 'foo=change3' is still in the database 
+        cursor = self.db.cursor()
+        cursor.execute("""
+            SELECT value FROM ticket_custom WHERE ticket=%s AND name='foo'
+            """, (self.id,))
+        self.assertEqual([('change3',)], cursor.fetchall())
+        self.assertEqual(None, ticket.get_change(cnum=4)) 
+        self.assertNotEqual(None, ticket.get_change(cnum=3)) 
+        self.assertEqual(self.t3, ticket.time_changed) 
     
     def test_delete_mid_comment(self):
         ticket = Ticket(self.env, self.id)

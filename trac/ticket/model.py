@@ -447,8 +447,8 @@ class Ticket(object):
                 return
             ts = row[0]
 
-            custom_fields = set(f['name'] for f in self.fields
-                                if f.get('custom'))
+            std_fields = set(f['name'] for f in self.fields
+                             if not f.get('custom'))
 
             # Find modified fields and their previous value
             cursor.execute("""
@@ -475,15 +475,15 @@ class Ticket(object):
                     break
                 else:
                     # No next change, edit ticket field
-                    if field in custom_fields:
+                    if field in std_fields:
+                        cursor.execute("""
+                            UPDATE ticket SET %s=%%s WHERE id=%%s
+                            """ % field, (oldvalue, self.id))
+                    else:
                         cursor.execute("""
                             UPDATE ticket_custom SET value=%s
                             WHERE ticket=%s AND name=%s
                             """, (oldvalue, self.id, field))
-                    else:
-                        cursor.execute("""
-                            UPDATE ticket SET %s=%%s WHERE id=%%s
-                            """ % field, (oldvalue, self.id))
 
             # Delete the change
             cursor.execute("""
