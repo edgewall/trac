@@ -442,9 +442,11 @@ class AttachmentModule(Component):
         if action == 'new':
             parent_id = path.rstrip('/')
         else:
-            segments = path.split('/')
-            parent_id = '/'.join(segments[:-1])
-            filename = len(segments) > 1 and segments[-1]
+            last_slash = path.rfind('/')
+            if last_slash == -1:
+                parent_id, filename = path, ''
+            else:
+                parent_id, filename = path[:last_slash], path[last_slash + 1:]
 
         parent = parent_realm(id=parent_id)
         
