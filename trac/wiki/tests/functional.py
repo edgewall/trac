@@ -138,6 +138,39 @@ class RegressionTestTicket10274(FunctionalTwillTestCaseSetup):
         tc.find("Invalid Wiki page name 'WikiStart/./SubPage'")
 
 
+class RegressionTestTicket10850(FunctionalTwillTestCaseSetup):
+
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/10850"""
+        pagename = random_unique_camel()
+        self._tester.create_wiki_page(pagename)
+        # colon characters
+        attachment = self._tester.attach_file_to_wiki(
+            pagename, tempfilename='2012-09-11_15:36:40-test.tbz2')
+        base_url = self._tester.url
+        tc.go(base_url + '/attachment/wiki/' + pagename +
+              '/2012-09-11_15:36:40-test.tbz2')
+        tc.notfind('Error: Invalid Attachment')
+        # backslash characters
+        attachment = self._tester.attach_file_to_wiki(
+            pagename, tempfilename=r'/tmp/back\slash.txt')
+        base_url = self._tester.url
+        tc.go(base_url + '/attachment/wiki/' + pagename + r'/back\slash.txt')
+        tc.notfind('Error: Invalid Attachment')
+        # Windows full path
+        attachment = self._tester.attach_file_to_wiki(
+            pagename, tempfilename=r'z:\tmp\windows:path.txt')
+        base_url = self._tester.url
+        tc.go(base_url + '/attachment/wiki/' + pagename + r'/windows:path.txt')
+        tc.notfind('Error: Invalid Attachment')
+        # Windows share folder path
+        attachment = self._tester.attach_file_to_wiki(
+            pagename, tempfilename=r'\\server\share\file:name.txt')
+        base_url = self._tester.url
+        tc.go(base_url + '/attachment/wiki/' + pagename + r'/file:name.txt')
+        tc.notfind('Error: Invalid Attachment')
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional.testcases
@@ -146,6 +179,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestWikiRename())
     suite.addTest(RegressionTestTicket4812())
     suite.addTest(RegressionTestTicket10274())
+    suite.addTest(RegressionTestTicket10850())
     if has_docutils:
         import docutils
         if get_pkginfo(docutils):

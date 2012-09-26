@@ -216,12 +216,14 @@ class FunctionalTester(object):
         tc.submit()
         tc.find(page + ".*created")
 
-    def attach_file_to_wiki(self, name, data=None):
+    def attach_file_to_wiki(self, name, data=None, tempfilename=None):
         """Attaches a file to the given wiki page, with random content if none
         is provided.  Assumes the wiki page exists.
         """
         if data == None:
             data = random_page()
+        if tempfilename is None:
+            tempfilename = random_word()
         self.go_to_wiki(name)
         # set the value to what it already is, so that twill will know we
         # want this form.
@@ -229,7 +231,6 @@ class FunctionalTester(object):
         tc.submit()
         tc.url(self.url + "/attachment/wiki/" \
                "%s/\\?action=new&attachfilebutton=Attach\\+file" % name)
-        tempfilename = random_word()
         fp = StringIO(data)
         tc.formfile('attachment', 'attachment', tempfilename, fp=fp)
         tc.formvalue('attachment', 'description', random_sentence())
