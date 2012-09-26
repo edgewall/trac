@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2012-09-02 08:26+0200\n"
+"POT-Creation-Date: 2012-09-17 22:04+0200\n"
 "PO-Revision-Date: 2010-05-25 18:45+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <LL@li.org>\n"
@@ -140,36 +140,36 @@ msgstr "このプロパティは既にフィルタで使っています"
 msgid "or"
 msgstr "or"
 
-#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:310
+#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:318
 msgid "yes"
 msgstr "はい"
 
-#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:313
+#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:321
 msgid "no"
 msgstr "いいえ"
 
-#: trac/htdocs/js/query.js:188
+#: trac/htdocs/js/query.js:196
 msgid "between"
 msgstr " "
 
-#: trac/htdocs/js/query.js:190
+#: trac/htdocs/js/query.js:198
 msgid "and"
 msgstr "から"
 
-#: trac/htdocs/js/query.js:337
+#: trac/htdocs/js/query.js:345
 msgid " remove:"
 msgstr " 削除:"
 
-#: trac/htdocs/js/query.js:347
+#: trac/htdocs/js/query.js:355
 msgid " add:"
 msgstr " 追加:"
 
-#: trac/htdocs/js/query.js:376
+#: trac/htdocs/js/query.js:384
 #, python-format
 msgid "Select ticket %(id)s for modification"
 msgstr "更新対象としてチケット %(id)s を選択する"
 
-#: trac/htdocs/js/query.js:387
+#: trac/htdocs/js/query.js:395
 msgid "Toggle selection of all tickets shown in this group"
 msgstr "このグループに表示しているすべてのチケットに対し、選択を切り替える"
 
