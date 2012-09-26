@@ -18,6 +18,7 @@
 
 from datetime import datetime
 import os.path
+import posixpath
 import re
 import shutil
 import sys
@@ -659,8 +660,12 @@ class AttachmentModule(Component):
         # Files uploaded from OS X might be in NFD.
         filename = unicodedata.normalize('NFC', unicode(upload.filename,
                                                         'utf-8'))
-        filename = filename.replace('\\', '/').replace(':', '/')
-        filename = os.path.basename(filename)
+        filename = filename.strip()
+        # Replace backslashes with slashes if filename is Windows full path
+        if filename.startswith('\\') or re.match(r'[A-Za-z]:\\', filename):
+            filename = filename.replace('\\', '/')
+        # We want basename to be delimited by only slashes on all platforms
+        filename = posixpath.basename(filename)
         if not filename:
             raise TracError(_('No file uploaded'))
         # Now the filename is known, update the attachment resource
