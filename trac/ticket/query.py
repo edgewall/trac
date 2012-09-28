@@ -446,6 +446,9 @@ class Query(object):
         cols.extend([c for c in self.constraint_cols if not c in cols])
 
         custom_fields = [f['name'] for f in self.fields if f.get('custom')]
+        list_fields = [f['name'] for f in self.fields
+                                 if f['type'] == 'text' and
+                                    f.get('format') == 'list']
 
         sql = []
         sql.append("SELECT " + ",".join(['t.%s AS %s' % (c, c) for c in cols
@@ -511,7 +514,7 @@ class Query(object):
                 else:
                     return None
                 
-            if mode == '~' and name == 'keywords':
+            if mode == '~' and name in list_fields:
                 words = value.split()
                 clauses, args = [], []
                 for word in words:
