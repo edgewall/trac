@@ -346,9 +346,10 @@ class TicketSystem(Component):
             fields.append(field)
 
         # Advanced text fields
-        fields.append({'name': 'keywords', 'type': 'text',
+        fields.append({'name': 'keywords', 'type': 'text', 'format': 'list',
                        'label': N_('Keywords')})
-        fields.append({'name': 'cc', 'type': 'text', 'label': N_('Cc')})
+        fields.append({'name': 'cc', 'type': 'text',  'format': 'list',
+                       'label': N_('Cc')})
 
         # Date/time fields
         fields.append({'name': 'time', 'type': 'time',

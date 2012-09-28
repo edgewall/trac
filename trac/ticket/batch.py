@@ -41,7 +41,6 @@ class BatchModifyModule(Component):
     
     implements(IRequestHandler)
     
-    fields_as_list = ['keywords', 'cc']
     list_separator_re =  re.compile(r'[;\s,]+')
     list_connector_string = ', '
 
@@ -110,7 +109,12 @@ class BatchModifyModule(Component):
             {'name': _("set to"), 'value': "="},
         ]
         add_script_data(req, batch_list_modes=batch_list_modes,
-                             batch_list_properties=self.fields_as_list)
+                             batch_list_properties=self._get_list_fields())
+
+    def _get_list_fields(self):
+        return [f['name']
+                for f in TicketSystem(self.env).get_ticket_fields()
+                if f['type'] == 'text' and f.get('format') == 'list']
 
     def _get_action_controls(self, req, tickets):
         action_controls = []
@@ -150,11 +154,12 @@ class BatchModifyModule(Component):
                              new_values, comment, action):
         """Save all of the changes to tickets."""
         when = datetime.now(utc)
+        list_fields = self._get_list_fields()
         with self.env.db_transaction as db:
             for id in selected_tickets:
                 t = Ticket(self.env, int(id))
                 _values = new_values.copy()
-                for field in self.fields_as_list:
+                for field in list_fields:
                     if field in new_values:
                         old = t.values[field] if field in t.values else ''
                         new = new_values[field]

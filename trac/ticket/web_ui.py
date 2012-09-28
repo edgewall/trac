@@ -1502,13 +1502,8 @@ class TicketModule(Component):
                 milestone = Resource('milestone', ticket[name])
                 field['rendered'] = render_resource_link(self.env, context,
                                                          milestone, 'compact')
-            elif name == 'keywords':
-                field['rendered'] = self._query_link_words(context, name,
-                                                           ticket[name])
             elif name == 'cc':
                 cc_changed = field_changes is not None and 'cc' in field_changes
-                field['rendered'] = self._query_link_words(context, name,
-                                                           ticket[name])
                 if ticket.exists and \
                         'TICKET_EDIT_CC' not in req.perm(ticket.resource):
                     cc = ticket._old.get('cc', ticket['cc'])
@@ -1766,8 +1761,13 @@ class TicketModule(Component):
     def _render_property_diff(self, req, ticket, field, old, new, 
                               resource_new=None):
         rendered = None
+        old_list, new_list = None, None
+        render_elt = lambda x: x
+        sep = ', '
+
         # per type special rendering of diffs
-        type_ = ticket.fields.by_name(field, {}).get('type')
+        field_info = ticket.fields.by_name(field, {})
+        type_ = field_info.get('type')
         if type_ == 'checkbox':
             rendered = _("set") if new == '1' else _("unset")
         elif type_ == 'textarea':
@@ -1779,19 +1779,16 @@ class TicketModule(Component):
                 # TRANSLATOR: modified ('diff') (link)
                 diff = tag.a(_("diff"), href=href)
                 rendered = tag_("modified (%(diff)s)", diff=diff)
+        elif type_ == 'text' and field_info.get('format') == 'list':
+            old_list, new_list = old.split(), new.split()
+            sep = ' '
 
         # per name special rendering of diffs
-        old_list, new_list = None, None
-        render_elt = lambda x: x
-        sep = ', '
         if field == 'cc':
             old_list, new_list = self._cc_list(old), self._cc_list(new)
             if not (Chrome(self.env).show_email_addresses or 
                     'EMAIL_VIEW' in req.perm(resource_new or ticket.resource)):
                 render_elt = obfuscate_email_address
-        elif field == 'keywords':
-            old_list, new_list = old.split(), new.split()
-            sep = ' '
         if (old_list, new_list) != (None, None):
             added = [tag.em(render_elt(x)) for x in new_list 
                      if x not in old_list]
