@@ -77,6 +77,10 @@ class ToJsStringTestCase(unittest.TestCase):
                          to_js_string('\x02\x1e'))
         self.assertEqual(r'"\u0026\u003c\u003e"',
                          to_js_string('&<>'))
+        self.assertEqual('""',
+                         to_js_string(''))
+        self.assertEqual('""',
+                         to_js_string(None))
 
 
 class UnicodeQuoteTestCase(unittest.TestCase):

@@ -137,7 +137,7 @@ def to_js_string(text):
     (conform to the JSON spec)
     """
     if not text:
-        return ''
+        return '""'
     def replace(match):
         return _js_quote[match.group(0)]
     return '"%s"' % _js_string_re.sub(replace, text)
