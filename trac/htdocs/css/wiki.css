@@ -12,6 +12,7 @@
 
 .wikipage h3 {
  border-bottom: 1px dashed #ddd;
+ padding: 0.2em .3em .1em;
 }
 .wikipage .trac-content {
  margin-left: -18px;
