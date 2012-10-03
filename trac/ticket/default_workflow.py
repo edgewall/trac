@@ -281,9 +281,9 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                      for x in owners],
                     id=id, name=id)))
                 hints.append(_("The owner will be changed from "
-                               "%(current_owner)s",
+                               "%(current_owner)s to the selected user",
                                current_owner=current_owner))
-        if 'set_owner_to_self' in operations and \
+        elif 'set_owner_to_self' in operations and \
                 ticket._old.get('owner', ticket['owner']) != req.authname:
             hints.append(_("The owner will be changed from %(current_owner)s "
                            "to %(authname)s", current_owner=current_owner,
@@ -326,7 +326,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         else:
             if status != '*':
                 hints.append(_("Next status will be '%(name)s'", name=status))
-        return (this_action['name'], tag(*control), '. '.join(hints))
+        return (this_action['name'], tag(*control), '. '.join(hints) + ".")
 
     def get_ticket_changes(self, req, ticket, action):
         this_action = self.actions[action]
