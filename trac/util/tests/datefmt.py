@@ -55,6 +55,27 @@ else:
             t_utc = datetime.datetime(2009, 8, 1, 10, 0, 0, 0, datefmt.utc)
             self.assertEqual(t_utc, t)
 
+        def test_to_datetime_normalized(self):
+            tz = datefmt.get_timezone('Europe/Paris')
+            t = datetime.datetime(2012, 3, 25, 2, 15)
+            dt = datefmt.to_datetime(t, tz)
+            self.assertEqual(datetime.timedelta(0, 7200), dt.utcoffset())
+
+        def test_to_datetime_astimezone(self):
+            tz = datefmt.get_timezone('Europe/Paris')
+            t = datetime.datetime(2012, 3, 25, 2, 15, tzinfo=datefmt.utc)
+            dt = datefmt.to_datetime(t, tz)
+            self.assertEqual(datetime.timedelta(0, 7200), dt.utcoffset())
+
+        def test_to_datetime_localtz(self):
+            t = datetime.datetime(2012, 3, 25, 2, 15)
+            dt = datefmt.to_datetime(t)
+            self.assertEqual(datefmt.localtz, dt.tzinfo)
+
+        def test_to_datetime_localtz(self):
+            dt = datefmt.to_datetime(None)
+            self.assertEqual(datefmt.localtz, dt.tzinfo)
+
 
 class DateFormatTestCase(unittest.TestCase):
 
