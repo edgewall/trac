@@ -48,32 +48,33 @@ from trac.util.translation import _, ngettext, get_available_locales
 # -- conversion
 
 def to_datetime(t, tzinfo=None):
-    """Convert `t` into a `datetime` object, using the following rules:
-    
-     - If `t` is already a `datetime` object and `tzinfo` is None, it is simply
-       returned.
-     - If `t` is already a `datetime` object and `tzinfo` is not None, it will
-       adjust `t` to `tzinfo` timezone.
-     - If `t` is None, the current time will be used.
-     - If `t` is a number, it is interpreted as a timestamp.
-     
-    If no `tzinfo` is given, the local timezone will be used.
+    """Convert ``t`` into a `datetime` object in the ``tzinfo`` timezone.
+
+    If no ``tzinfo`` is given, the local timezone `localtz` will be used.
+
+    ``t`` is converted using the following rules:
+
+     - If ``t`` is already a `datetime` object,
+       - if it is timezone-"naive", it is localized to ``tzinfo``
+       - if it is already timezone-aware, ``t`` is mapped to the given
+         timezone (`datetime.datetime.astimezone`)
+     - If ``t`` is None, the current time will be used.
+     - If ``t`` is a number, it is interpreted as a timestamp.
 
     Any other input will trigger a `TypeError`.
+
+    All returned datetime instances are timezone aware and normalized.
     """
+    tz = tzinfo or localtz
     if t is None:
-        return datetime.now(tzinfo or localtz)
+        dt = datetime.now(tz)
     elif isinstance(t, datetime):
-        if tzinfo is not None:
-            if t.tzinfo is None:
-                t = t.replace(tzinfo=tzinfo)
-            else:
-                t = tzinfo.normalize(t.astimezone(tzinfo))
-        return t
+        if t.tzinfo:
+            dt = t.astimezone(tz)
+        else:
+            dt = tz.localize(t)
     elif isinstance(t, date):
-        tz = tzinfo or localtz
-        t = tz.localize(datetime(t.year, t.month, t.day))
-        return tz.normalize(t)
+        dt = tz.localize(datetime(t.year, t.month, t.day))
     elif isinstance(t, (int, long, float)):
         if not (_min_ts <= t <= _max_ts):
             # Handle microsecond timestamps for 0.11 compatibility
@@ -82,9 +83,12 @@ def to_datetime(t, tzinfo=None):
             # Work around negative fractional times bug in Python 2.4
             # http://bugs.python.org/issue1646728
             frac, integer = math.modf(t)
-            return datetime.fromtimestamp(integer - 1, tzinfo or localtz) \
-                   + timedelta(seconds=frac + 1)
-        return datetime.fromtimestamp(t, tzinfo or localtz)
+            dt = datetime.fromtimestamp(integer - 1, tz) + \
+                    timedelta(seconds=frac + 1)
+        else:
+            dt = datetime.fromtimestamp(t, tz)
+    if dt:
+        return tz.normalize(dt)
     raise TypeError('expecting datetime, int, long, float, or None; got %s' %
                     type(t))
 
@@ -170,7 +174,7 @@ _ISO8601_FORMATS = {
 
 def _format_datetime_without_babel(t, format, tzinfo):
     tz = tzinfo or localtz
-    t = to_datetime(t, tzinfo).astimezone(tz)
+    t = to_datetime(t, tz)
     normalize_Z = False
     if format.lower().startswith('iso8601'):
         if 'date' in format:
