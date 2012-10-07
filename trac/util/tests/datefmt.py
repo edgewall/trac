@@ -67,12 +67,12 @@ else:
             dt = datefmt.to_datetime(t, tz)
             self.assertEqual(datetime.timedelta(0, 7200), dt.utcoffset())
 
-        def test_to_datetime_localtz(self):
+        def test_to_datetime_tz_from_naive_datetime_is_localtz(self):
             t = datetime.datetime(2012, 3, 25, 2, 15)
             dt = datefmt.to_datetime(t)
             self.assertEqual(datefmt.localtz, dt.tzinfo)
 
-        def test_to_datetime_localtz(self):
+        def test_to_datetime_tz_from_now_is_localtz(self):
             dt = datefmt.to_datetime(None)
             self.assertEqual(datefmt.localtz, dt.tzinfo)
 
