@@ -13,6 +13,8 @@ wiki:TestPage
 wiki:TestPage/
 wiki:/TestPage
 [wiki:/TestPage]
+[wiki:/TestPage ]
+[wiki:/TestPage\u200B]
 [wiki:/TestPage /TestPage]
 wiki:"Space 1 23"
 wiki:"C'est l'\xe9t\xe9"
@@ -24,6 +26,8 @@ wiki:abc
 <a class="wiki" href="/wiki/TestPage">wiki:TestPage</a>
 <a class="wiki" href="/wiki/TestPage">wiki:TestPage/</a>
 <a class="wiki" href="/wiki/TestPage">wiki:/TestPage</a>
+<a class="wiki" href="/wiki/TestPage">TestPage</a>
+<a class="wiki" href="/wiki/TestPage">TestPage</a>
 <a class="wiki" href="/wiki/TestPage">TestPage</a>
 <a class="wiki" href="/wiki/TestPage">/TestPage</a>
 <a class="wiki" href="/wiki/Space%201%2023">wiki:"Space 1 23"</a>
