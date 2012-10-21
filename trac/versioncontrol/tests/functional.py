@@ -88,7 +88,7 @@ class TestNewFileLog(FunctionalTwillTestCaseSetup):
     # TODO: move this out to a subversion-specific testing module
     def runTest(self):
         """Verify browser log for a new file"""
-        tempfilename = random_word()
+        tempfilename = random_word() + '_new.txt'
         fulltempfilename = 'component1/trunk/' + tempfilename
         revision = self._testenv.svn_add(fulltempfilename, '')
         tc.go(self._tester.url + '/log/' + fulltempfilename)
