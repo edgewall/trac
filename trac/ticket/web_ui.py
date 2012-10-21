@@ -77,6 +77,11 @@ class TicketModule(Component):
         """Enable the display of all ticket changes in the timeline, not only
         open / close operations (''since 0.9'').""")
 
+    timeline_component = BoolOption('timeline', 'ticket_show_component',
+                                    'false',
+        """Enable the display of component of tickets in the timeline
+        (''since 1.1.1'').""")
+
     max_description_size = IntOption('ticket', 'max_description_size', 262144,
         """Don't accept tickets with a too big description.
         (''since 0.11'').""")
@@ -257,7 +262,8 @@ class TicketModule(Component):
 
         field_labels = TicketSystem(self.env).get_ticket_field_labels()
 
-        def produce_event((id, ts, author, type, summary, description),
+        def produce_event((id, ts, author, type, summary, description,
+                           component),
                           status, fields, comment, cid):
             ticket = ticket_realm(id=id)
             if 'TICKET_VIEW' not in req.perm(ticket):
@@ -286,14 +292,14 @@ class TicketModule(Component):
             kind, verb = status_map[status]
             return (kind, from_utimestamp(ts), author,
                     (ticket, verb, info, summary, status, resolution, type,
-                     description, comment, cid))
+                     description, component, comment, cid))
 
         def produce_ticket_change_events(db):
             data = None
-            for id, t, author, type, summary, field, oldvalue, newvalue \
-                    in db("""
+            for (id, t, author, type, summary,
+                 component, field, oldvalue, newvalue) in db("""
                     SELECT t.id, tc.time, tc.author, t.type, t.summary, 
-                           tc.field, tc.oldvalue, tc.newvalue 
+                           t.component, tc.field, tc.oldvalue, tc.newvalue
                     FROM ticket_change tc 
                         INNER JOIN ticket t ON t.id = tc.ticket 
                             AND tc.time>=%s AND tc.time<=%s 
@@ -310,7 +316,7 @@ class TicketModule(Component):
                         if ev:
                              yield (ev, data[1])
                     status, fields, comment, cid = 'edit', {}, '', None
-                    data = (id, t, author, type, summary, None)
+                    data = (id, t, author, type, summary, None, component)
                 if field == 'comment':
                     comment = newvalue
                     cid = oldvalue and oldvalue.split('.')[-1]
@@ -362,7 +368,7 @@ class TicketModule(Component):
                 # New tickets
                 if 'ticket' in filters:
                     for row in db("""SELECT id, time, reporter, type, summary,
-                                            description
+                                            description, component
                                      FROM ticket WHERE time>=%s AND time<=%s
                                      """, (ts_start, ts_stop)):
                         ev = produce_event(row, 'new', {}, None, None)
@@ -380,7 +386,7 @@ class TicketModule(Component):
         if kind == 'batchmodify':
             return self._render_batched_timeline_event(context, field, event)
         ticket, verb, info, summary, status, resolution, type, \
-                description, comment, cid = event[3]
+                description, component, comment, cid = event[3]
         if field == 'url':
             href = context.href.ticket(ticket.id)
             if cid:
@@ -395,9 +401,14 @@ class TicketModule(Component):
                 'closed': N_("Ticket %(ticketref)s (%(summary)s) closed"),
                 'updated': N_("Ticket %(ticketref)s (%(summary)s) updated"),
             }[verb]
+            # Add component as prefix to summary if enabled and available
+            component_prefix = ''
+            if self.timeline_component and component:
+                component_prefix = component + ' - '
+            summary_complete = component_prefix + shorten_line(summary)
             return tag_(message,
                         ticketref=tag.em('#', ticket.id, title=title),
-                        summary=shorten_line(summary))
+                        summary=summary_complete)
         elif field == 'description':
             descr = message = ''
             if status == 'new':
@@ -416,7 +427,7 @@ class TicketModule(Component):
 
     def _render_batched_timeline_event(self, context, field, event):
         tickets, verb, info, summary, status, resolution, type, \
-                description, comment, cid = event[3]
+                description, component, comment, cid = event[3]
         tickets = sorted(tickets)
         if field == 'url':
             return context.href.query(id=','.join(str(t) for t in tickets))
