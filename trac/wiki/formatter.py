@@ -36,7 +36,7 @@ from trac.util.text import exception_to_unicode, shorten_line, to_unicode, \
                            unicode_quote, unicode_quote_plus, unquote_label
 from trac.util.html import TracHTMLSanitizer
 from trac.util.translation import _
-from trac.wiki.api import WikiSystem, parse_args, unquote_label
+from trac.wiki.api import WikiSystem, parse_args
 from trac.wiki.parser import WikiParser, parse_processor_args
 
 __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline',

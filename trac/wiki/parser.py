@@ -225,7 +225,7 @@ class WikiParser(Component):
 
 
 def parse_processor_args(processor_args):
-    """Parse a string containing parameter assignements, 
+    """Parse a string containing parameter assignments,
     and return the corresponding dictionary.
 
     Isolated keywords are interpreted as `bool` flags, `False` if the keyword
