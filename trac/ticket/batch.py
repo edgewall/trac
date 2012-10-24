@@ -62,7 +62,7 @@ class BatchModifyModule(Component):
             add_warning(req, tag_("The changes could not be saved: "
                                   "%(message)s", message=to_unicode(e)))
 
-        if new_values:
+        if new_values is not None:
             selected_tickets = self._get_selected_tickets(req)
             self._save_ticket_changes(req, selected_tickets,
                                       new_values, comment, action)
