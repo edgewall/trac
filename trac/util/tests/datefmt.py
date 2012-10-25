@@ -18,11 +18,13 @@ import datetime
 import os
 import unittest
 
+from trac.core import TracError
 from trac.util import datefmt
 
 try:
     import pytz
 except ImportError:
+    pytz = None
     PytzTestCase = None
 else:
     class PytzTestCase(unittest.TestCase):
@@ -61,6 +63,19 @@ else:
             dt = datefmt.to_datetime(t, tz)
             self.assertEqual(datetime.timedelta(0, 7200), dt.utcoffset())
 
+        def test_parse_date_across_dst_boundary(self):
+            tz = datefmt.get_timezone('Europe/Zurich')
+            # DST start - 31 March, 02:00
+            format = '%Y-%m-%d %H:%M:%S %Z%z'
+            expected = '2002-03-31 03:30:00 CEST+0200'
+            # iso8601
+            t = datefmt.parse_date('2002-03-31T02:30:00', tz)
+            self.assertEqual(expected, t.strftime(format))
+            # strptime
+            t = datetime.datetime(2002, 3, 31, 2, 30)
+            t = datefmt.parse_date(t.strftime('%x %X'), tz)
+            self.assertEqual(expected, t.strftime(format))
+
         def test_to_datetime_astimezone(self):
             tz = datefmt.get_timezone('Europe/Paris')
             t = datetime.datetime(2012, 3, 25, 2, 15, tzinfo=datefmt.utc)
@@ -75,6 +90,355 @@ else:
         def test_to_datetime_tz_from_now_is_localtz(self):
             dt = datefmt.to_datetime(None)
             self.assertEqual(datefmt.localtz, dt.tzinfo)
+
+
+class ParseISO8601TestCase(unittest.TestCase):
+
+    def test_iso8601_second(self):
+        t = datetime.datetime(2012, 10, 11, 2, 40, 57, 0, datefmt.utc)
+        self.assertEqual(t, datefmt.parse_date('2012-10-11T02:40:57Z'))
+        self.assertEqual(t, datefmt.parse_date('2012-10-10T14:40:57-12:00'))
+        self.assertEqual(t, datefmt.parse_date('2012-10-11T02:40:57+00:00'))
+        self.assertEqual(t, datefmt.parse_date('2012-10-11T02:40:57-00:00'))
+        self.assertEqual(t, datefmt.parse_date('2012-10-11T08:25:57+05:45'))
+        self.assertEqual(t, datefmt.parse_date('2012-10-11T16:40:57+14:00'))
+        self.assertEqual(t, datefmt.parse_date('20121011T024057Z'))
+        self.assertEqual(t, datefmt.parse_date('20121010T144057-1200'))
+        self.assertEqual(t, datefmt.parse_date('20121011T024057+0000'))
+        self.assertEqual(t, datefmt.parse_date('20121011T024057-0000'))
+        self.assertEqual(t, datefmt.parse_date('20121011T082557+0545'))
+        self.assertEqual(t, datefmt.parse_date('20121011T164057+1400'))
+
+    def test_iso8601_minute(self):
+        t = datetime.datetime(2012, 10, 11, 2, 40, 0, 0, datefmt.utc)
+        self.assertEqual(t, datefmt.parse_date('2012-10-11T02:40Z'))
+        self.assertEqual(t, datefmt.parse_date('2012-10-10T14:40-12:00'))
+        self.assertEqual(t, datefmt.parse_date('2012-10-11T16:40+14:00'))
+        self.assertEqual(t, datefmt.parse_date('20121011T0240Z'))
+        self.assertEqual(t, datefmt.parse_date('20121010T1440-1200'))
+        self.assertEqual(t, datefmt.parse_date('20121011T1640+1400'))
+
+    def test_iso8601_hour(self):
+        t = datetime.datetime(2012, 10, 11, 2, 0, 0, 0, datefmt.utc)
+        self.assertEqual(t, datefmt.parse_date('2012-10-11T02Z'))
+        self.assertEqual(t, datefmt.parse_date('2012-10-10T14-12'))
+        self.assertEqual(t, datefmt.parse_date('2012-10-10T14-12:00'))
+        self.assertEqual(t, datefmt.parse_date('2012-10-11T16+14'))
+        self.assertEqual(t, datefmt.parse_date('2012-10-11T16+14:00'))
+        self.assertEqual(t, datefmt.parse_date('20121011T02Z'))
+        self.assertEqual(t, datefmt.parse_date('20121010T14-12'))
+        self.assertEqual(t, datefmt.parse_date('20121010T14-1200'))
+        self.assertEqual(t, datefmt.parse_date('20121011T16+1400'))
+        self.assertEqual(t, datefmt.parse_date('20121011T16+14'))
+
+    def test_iso8601_day(self):
+        t = datetime.datetime(2012, 10, 11, 0, 0, 0, 0, datefmt.localtz)
+        self.assertEqual(t, datefmt.parse_date('2012-10-11'))
+        self.assertEqual(t, datefmt.parse_date('20121011'))
+
+    def test_iso8601_month(self):
+        t = datetime.datetime(2012, 10, 1, 0, 0, 0, 0, datefmt.localtz)
+        self.assertEqual(t, datefmt.parse_date('2012-10'))
+        self.assertEqual(t, datefmt.parse_date('201210'))
+
+    def test_iso8601_year(self):
+        t = datetime.datetime(2012, 1, 1, 0, 0, 0, 0, datefmt.localtz)
+        self.assertEqual(t, datefmt.parse_date('2012'))
+
+    def test_iso8601_tz(self):
+        self.assertEqual(
+            datetime.timedelta(),
+            datefmt.parse_date('2012-10-11T02:40:57Z').utcoffset())
+        self.assertEqual(
+            datetime.timedelta(hours=-12),
+            datefmt.parse_date('2012-10-10T14:40:57-12').utcoffset())
+        self.assertEqual(
+            datetime.timedelta(hours=-9, minutes=-30),
+            datefmt.parse_date('2012-10-10T17:10:57-09:30').utcoffset())
+        self.assertEqual(
+            datetime.timedelta(),
+            datefmt.parse_date('2012-10-11T02:40:57+00:00').utcoffset())
+        self.assertEqual(
+            datetime.timedelta(),
+            datefmt.parse_date('2012-10-11T02:40:57-00:00').utcoffset())
+        self.assertEqual(
+            datetime.timedelta(hours=5, minutes=45),
+            datefmt.parse_date('2012-10-11T08:25:57+05:45').utcoffset())
+
+    def test_iso8601_naive_tz_is_localtz(self):
+        t = datetime.datetime(2012, 10, 11, 2, 40, 57, 0, datefmt.localtz)
+        dt = datefmt.parse_date('2012-10-11T02:40:57')
+        self.assertEqual(t, dt)
+        self.assertEqual(datefmt.localtz, dt.tzinfo)
+
+    def test_iso8601_naive_tz_used_tzinfo_arg(self):
+        tz = datefmt.timezone('GMT +1:00')
+        t = datetime.datetime(2012, 10, 11, 2, 40, 57, 0, tz)
+        dt = datefmt.parse_date('2012-10-11T02:40:57', tz)
+        self.assertEqual(t, dt)
+        self.assertEqual(tz, dt.tzinfo)
+        self.assertEqual(datetime.timedelta(hours=1), dt.utcoffset())
+
+    def test_iso8601_tz_not_used_tzinfo_arg(self):
+        tz = datefmt.timezone('GMT +1:00')
+        dt = datefmt.parse_date('2012-10-10T17:10:57-09:30', tz)
+        self.assertEqual(datetime.timedelta(hours=-9, minutes=-30),
+                         dt.utcoffset())
+
+    if pytz:
+        def test_iso8601_naive_tz_normalize_non_existent_time(self):
+            t = datetime.datetime(2012, 3, 25, 1, 15, 57, 0, datefmt.utc)
+            tz = datefmt.timezone('Europe/Paris')
+            dt = datefmt.parse_date('2012-03-25T02:15:57', tz)
+            self.assertEqual(t, dt)
+            self.assertEqual(3, dt.hour)
+            self.assertEqual(datetime.timedelta(hours=2), dt.utcoffset())
+
+        def test_iso8601_naive_tz_normalize_ambiguous_time(self):
+            t = datetime.datetime(2011, 10, 31, 1, 15, 57, 0, datefmt.utc)
+            tz = datefmt.timezone('Europe/Paris')
+            dt = datefmt.parse_date('2011-10-31T02:15:57', tz)
+            self.assertEqual(t, dt)
+            self.assertEqual(2, dt.hour)
+            self.assertEqual(datetime.timedelta(hours=1), dt.utcoffset())
+
+
+class ParseRelativeDateTestCase(unittest.TestCase):
+
+    def test_time_interval_seconds(self):
+        tz = datefmt.timezone('GMT +1:00')
+        now = datetime.datetime(2012, 3, 25, 3, 15, 21, 987654, tzinfo=tz)
+        past_42s = datetime.datetime(2012, 3, 25, 3, 14, 39, 987654, tzinfo=tz)
+
+        self.assertEqual(
+            past_42s,
+            datefmt._parse_relative_time('42second ago', tz, now))
+        self.assertEqual(
+            past_42s,
+            datefmt._parse_relative_time('42 secondsago', tz, now))
+        self.assertEqual(
+            past_42s,
+            datefmt._parse_relative_time('42 second', tz, now))
+        self.assertEqual(
+            past_42s,
+            datefmt._parse_relative_time('42seconds', tz, now))
+        self.assertEqual(
+            None,
+            datefmt._parse_relative_time('42s ago', tz, now))
+        self.assertEqual(
+            None,
+            datefmt._parse_relative_time('42s', tz, now))
+
+    def test_time_interval_minutes(self):
+        tz = datefmt.timezone('GMT +1:00')
+        now = datetime.datetime(2012, 3, 25, 3, 15, 21, 987654, tzinfo=tz)
+
+        self.assertEqual(
+            datetime.datetime(2012, 3, 25, 2, 54, 21, 987654, tzinfo=tz),
+            datefmt._parse_relative_time('21minute', tz, now))
+        self.assertEqual(
+            datetime.datetime(2012, 3, 25, 2, 54, 6, 987654, tzinfo=tz),
+            datefmt._parse_relative_time('21.25 minutes', tz, now))
+
+    def test_time_interval_hours(self):
+        tz = datefmt.timezone('GMT +1:00')
+        now = datetime.datetime(2012, 3, 25, 3, 15, 21, 987654, tzinfo=tz)
+        past_42h = datetime.datetime(2012, 3, 23, 9, 15, 21, 987654, tzinfo=tz)
+
+        self.assertEqual(
+            past_42h,
+            datefmt._parse_relative_time('42 hours', tz, now))
+        self.assertEqual(
+            past_42h,
+            datefmt._parse_relative_time('42h ago', tz, now))
+
+    def test_time_interval_days(self):
+        tz = datefmt.timezone('GMT +1:00')
+        now = datetime.datetime(2012, 3, 25, 3, 15, 21, 987654, tzinfo=tz)
+        past_24d = datetime.datetime(2012, 3, 1, 3, 15, 21, 987654, tzinfo=tz)
+
+        self.assertEqual(
+            past_24d,
+            datefmt._parse_relative_time('24day', tz, now))
+        self.assertEqual(
+            past_24d,
+            datefmt._parse_relative_time('24ds', tz, now))
+
+    def test_time_interval_weeks(self):
+        tz = datefmt.timezone('GMT +1:00')
+        now = datetime.datetime(2012, 3, 25, 3, 15, 21, 987654, tzinfo=tz)
+        past_3w = datetime.datetime(2012, 3, 4, 3, 15, 21, 987654, tzinfo=tz)
+
+        self.assertEqual(past_3w,
+                         datefmt._parse_relative_time('3 weeks', tz, now))
+        self.assertEqual(past_3w,
+                         datefmt._parse_relative_time('3w', tz, now))
+
+    def test_time_interval_months(self):
+        tz = datefmt.timezone('GMT +1:00')
+        now = datetime.datetime(2012, 1, 1, 3, 15, 21, 987654, tzinfo=tz)
+        past_12m = datetime.datetime(2011, 1, 6, 3, 15, 21, 987654, tzinfo=tz)
+
+        self.assertEqual(
+            past_12m,
+            datefmt._parse_relative_time('12 months', tz, now))
+        self.assertEqual(
+            past_12m,
+            datefmt._parse_relative_time('12 ms ago', tz, now))
+
+    def test_time_interval_years(self):
+        tz = datefmt.timezone('GMT +1:00')
+        now = datetime.datetime(2012, 3, 25, 3, 15, 21, 987654, tzinfo=tz)
+        past_2y = datetime.datetime(2010, 3, 26, 3, 15, 21, 987654, tzinfo=tz)
+
+        self.assertEqual(past_2y,
+                         datefmt._parse_relative_time('2 years', tz, now))
+        self.assertEqual(past_2y, datefmt._parse_relative_time('2y', tz, now))
+
+    def test_time_start_now(self):
+        tz = datefmt.timezone('GMT +1:00')
+        now = datetime.datetime(2012, 3, 25, 3, 15, 21, 987654, tzinfo=tz)
+        self.assertEqual(now, datefmt._parse_relative_time('now', tz, now))
+
+    def test_time_start_today(self):
+        tz = datefmt.timezone('GMT +1:00')
+        now = datetime.datetime(2012, 3, 25, 3, 15, 21, 987654, tzinfo=tz)
+        today = datefmt.to_datetime(datetime.datetime(2012, 3, 25), tzinfo=tz)
+        self.assertEqual(today,
+                         datefmt._parse_relative_time('today', tz, now))
+        self.assertEqual(today,
+                         datefmt._parse_relative_time('this day', tz, now))
+
+    def test_time_start_yesterday(self):
+        tz = datefmt.timezone('GMT +1:00')
+        now = datetime.datetime(2012, 3, 25, 3, 15, 21, 987654, tzinfo=tz)
+        yesterday = datefmt.to_datetime(datetime.datetime(2012, 3, 24), tz)
+        self.assertEqual(yesterday,
+                         datefmt._parse_relative_time('yesterday', tz, now))
+        self.assertEqual(yesterday,
+                         datefmt._parse_relative_time('last day', tz, now))
+
+    def test_time_start_year(self):
+        tz = datefmt.timezone('GMT +1:00')
+
+        now = datetime.datetime(2012, 3, 25, 3, 15, 21, 987654, tzinfo=tz)
+        self.assertEqual(datetime.datetime(2012, 1, 1, tzinfo=tz),
+                         datefmt._parse_relative_time('this year', tz, now))
+        self.assertEqual(datetime.datetime(2011, 1, 1, tzinfo=tz),
+                         datefmt._parse_relative_time('last year', tz, now))
+
+        now = datetime.datetime(2009, 3, 25, 3, 15, 21, 987654, tzinfo=tz)
+        self.assertEqual(datetime.datetime(2009, 1, 1, tzinfo=tz),
+                         datefmt._parse_relative_time('this year', tz, now))
+        self.assertEqual(datetime.datetime(2008, 1, 1, tzinfo=tz),
+                         datefmt._parse_relative_time('last year', tz, now))
+
+    def test_time_start_month(self):
+        tz = datefmt.timezone('GMT +1:00')
+        now = datetime.datetime(2012, 1, 23, 3, 15, 42, 987654, tzinfo=tz)
+        self.assertEqual(datetime.datetime(2012, 1, 1, tzinfo=tz),
+                         datefmt._parse_relative_time('this month', tz, now))
+        self.assertEqual(datetime.datetime(2011, 12, 1, tzinfo=tz),
+                         datefmt._parse_relative_time('last month', tz, now))
+
+    def test_time_start_week(self):
+        tz = datefmt.timezone('GMT +1:00')
+        now = datetime.datetime(2012, 3, 25, 3, 15, 21, 987654, tzinfo=tz)
+        self.assertEqual(datetime.datetime(2012, 3, 19, tzinfo=tz),
+                         datefmt._parse_relative_time('this week', tz, now))
+        self.assertEqual(datetime.datetime(2012, 3, 12, tzinfo=tz),
+                         datefmt._parse_relative_time('last week', tz, now))
+
+    def test_time_start_day(self):
+        tz = datefmt.timezone('GMT +1:00')
+        now = datetime.datetime(2012, 3, 1, 3, 15, 21, 987654, tzinfo=tz)
+        self.assertEqual(datetime.datetime(2012, 3, 1, tzinfo=tz),
+                         datefmt._parse_relative_time('this day', tz, now))
+        self.assertEqual(datetime.datetime(2012, 2, 29, tzinfo=tz),
+                         datefmt._parse_relative_time('last day', tz, now))
+
+    def test_time_start_hour(self):
+        tz = datefmt.timezone('GMT +1:00')
+        now = datetime.datetime(2012, 3, 25, 0, 15, 21, 987654, tzinfo=tz)
+        self.assertEqual(datetime.datetime(2012, 3, 25, 0, tzinfo=tz),
+                         datefmt._parse_relative_time('this hour', tz, now))
+        self.assertEqual(datetime.datetime(2012, 3, 24, 23, tzinfo=tz),
+                         datefmt._parse_relative_time('last hour', tz, now))
+
+    def test_time_start_minute(self):
+        tz = datefmt.timezone('GMT +1:00')
+        now = datetime.datetime(2012, 3, 25, 3, 0, 21, 987654, tzinfo=tz)
+        self.assertEqual(datetime.datetime(2012, 3, 25, 3, 0, tzinfo=tz),
+                         datefmt._parse_relative_time('this minute', tz, now))
+        self.assertEqual(datetime.datetime(2012, 3, 25, 2, 59, tzinfo=tz),
+                         datefmt._parse_relative_time('last minute', tz, now))
+
+    def test_time_start_second(self):
+        tz = datefmt.timezone('GMT +1:00')
+        now = datetime.datetime(2012, 3, 25, 3, 15, 0, 987654, tzinfo=tz)
+        self.assertEqual(datetime.datetime(2012, 3, 25, 3, 15, 0, tzinfo=tz),
+                         datefmt._parse_relative_time('this second', tz, now))
+        self.assertEqual(datetime.datetime(2012, 3, 25, 3, 14, 59, tzinfo=tz),
+                         datefmt._parse_relative_time('last second', tz, now))
+
+    if pytz:
+        def test_time_interval_across_dst(self):
+            tz = datefmt.timezone('Europe/Paris')
+            now = datefmt.to_datetime(datetime.datetime(2012, 3, 25, 3, 0, 41),
+                                      tz)
+            dt = datefmt._parse_relative_time('41 seconds', tz, now)
+            self.assertEqual('2012-03-25T03:00:00+02:00', dt.isoformat())
+            dt = datefmt._parse_relative_time('42 seconds', tz, now)
+            self.assertEqual('2012-03-25T01:59:59+01:00', dt.isoformat())
+
+        def test_this_time_start_across_dst(self):
+            tz = datefmt.timezone('Europe/Paris')
+            now = datefmt.to_datetime(
+                datetime.datetime(2012, 3, 25, 3, 15, 21, 987654), tz)
+            dt = datefmt._parse_relative_time('this hour', tz, now)
+            self.assertEqual('2012-03-25T03:00:00+02:00', dt.isoformat())
+            dt = datefmt._parse_relative_time('today', tz, now)
+            self.assertEqual('2012-03-25T00:00:00+01:00', dt.isoformat())
+            dt = datefmt._parse_relative_time('this day', tz, now)
+            self.assertEqual('2012-03-25T00:00:00+01:00', dt.isoformat())
+
+        def test_last_time_start_across_dst(self):
+            tz = datefmt.timezone('Europe/Paris')
+            now = datefmt.to_datetime(datetime.datetime(2012, 3, 26, 3, 0, 41),
+                                      tz)
+            dt = datefmt._parse_relative_time('this day', tz, now)
+            self.assertEqual('2012-03-26T00:00:00+02:00', dt.isoformat())
+            dt = datefmt._parse_relative_time('yesterday', tz, now)
+            self.assertEqual('2012-03-25T00:00:00+01:00', dt.isoformat())
+            dt = datefmt._parse_relative_time('last day', tz, now)
+            self.assertEqual('2012-03-25T00:00:00+01:00', dt.isoformat())
+
+
+class ParseDateValidRangeTestCase(unittest.TestCase):
+
+    def test_max_timestamp(self):
+        # At least all platforms support maximal signed 32 bits integer,
+        # 2**31 - 1, INT32_MAX.
+        datefmt.parse_date('2038-01-19T03:14:07Z')
+        try:
+            datefmt.parse_date('9999-12-31T23:59:59-12:00')
+            raise AssertionError('TracError not raised')
+        except TracError, e:
+            self.assert_('is outside valid range' in unicode(e))
+
+    def test_min_timestamp(self):
+        if os.name != 'nt':
+            # At least all Unix support minimal signed 32 bits integer,
+            # -(2**31), INT32_MIN
+            datefmt.parse_date('1901-12-13T20:45:52Z')
+        else:
+            # At least All VC run-times support 0 as time_t
+            datefmt.parse_date('1970-01-01T00:00:00Z')
+        try:
+            datefmt.parse_date('0001-01-01T00:00:00+14:00')
+            raise AssertionError('TracError not raised')
+        except TracError, e:
+            self.assert_('is outside valid range' in unicode(e))
 
 
 class DateFormatTestCase(unittest.TestCase):
@@ -166,6 +530,13 @@ class UTimestampTestCase(unittest.TestCase):
         self.assertEqual(t, datefmt.from_utimestamp(ts))
 
 
+class HttpDateTestCase(unittest.TestCase):
+
+    def test_http_date(self):
+        t = datetime.datetime(2001, 2, 3, 4, 5, 6, 123456, datefmt.utc)
+        self.assertEqual('Sat, 03 Feb 2001 04:05:06 GMT', datefmt.http_date(t))
+
+
 def suite():
     suite = unittest.TestSuite()
     if PytzTestCase:
@@ -174,6 +545,10 @@ def suite():
         print "SKIP: utils/tests/datefmt.py (no pytz installed)"
     suite.addTest(unittest.makeSuite(DateFormatTestCase))
     suite.addTest(unittest.makeSuite(UTimestampTestCase))
+    suite.addTest(unittest.makeSuite(ParseISO8601TestCase))
+    suite.addTest(unittest.makeSuite(ParseRelativeDateTestCase))
+    suite.addTest(unittest.makeSuite(ParseDateValidRangeTestCase))
+    suite.addTest(unittest.makeSuite(HttpDateTestCase))
     return suite
 
 if __name__ == '__main__':

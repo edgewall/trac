@@ -30,7 +30,7 @@ from trac.perm import IPermissionRequestor
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import as_int
 from trac.util.datefmt import format_date, format_datetime, parse_date, \
-                              to_utimestamp, utc, pretty_timedelta
+                              to_utimestamp, to_datetime, utc, pretty_timedelta
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.web import IRequestHandler, IRequestFilter
@@ -94,13 +94,15 @@ class TimelineModule(Component):
         # Parse the from date and adjust the timestamp to the last second of
         # the day
         fromdate = today = datetime.now(req.tz)
+        yesterday = to_datetime(today.replace(tzinfo=None) - timedelta(days=1),
+                                req.tz)
         precisedate = precision = None
         if 'from' in req.args:
             # Acquire from date only from non-blank input
             reqfromdate = req.args['from'].strip()
             if reqfromdate:
                 precisedate = parse_date(reqfromdate, req.tz)
-                fromdate = precisedate
+                fromdate = precisedate.astimezone(req.tz)
             precision = req.args.get('precision', '')
             if precision.startswith('second'):
                 precision = timedelta(seconds=1)
@@ -110,8 +112,9 @@ class TimelineModule(Component):
                 precision = timedelta(hours=1)
             else:
                 precision = None
-        fromdate = fromdate.replace(hour=23, minute=59, second=59,
-                                    microsecond=999999)
+        fromdate = to_datetime(datetime(fromdate.year, fromdate.month,
+                                        fromdate.day, 23, 59, 59, 999999),
+                               req.tz)
 
         daysback = as_int(req.args.get('daysback'),
                           format == 'rss' and 90 or None)
@@ -131,8 +134,7 @@ class TimelineModule(Component):
         data = {'fromdate': fromdate, 'daysback': daysback,
                 'authors': authors,
                 'today': format_date(today, tzinfo=req.tz),
-                'yesterday': format_date(today - timedelta(days=1),
-                                         tzinfo=req.tz),
+                'yesterday': format_date(yesterday, tzinfo=req.tz),
                 'precisedate': precisedate, 'precision': precision,
                 'events': [], 'filters': [],
                 'abbreviated_messages': self.abbreviated_messages}
@@ -159,7 +161,9 @@ class TimelineModule(Component):
                     del req.session[key]
 
         stop = fromdate
-        start = stop - timedelta(days=daysback + 1)
+        start = to_datetime(stop.replace(tzinfo=None) - \
+                                timedelta(days=daysback + 1),
+                            req.tz)
 
         # create author include and exclude sets
         include = set()
@@ -220,14 +224,18 @@ class TimelineModule(Component):
                                     'enabled': filter_[0] in filters})
 
         # Navigation to the previous/next period of 'daysback' days
-        previous_start = format_date(fromdate - timedelta(days=daysback+1),
+        previous_start = fromdate.replace(tzinfo=None) - \
+                            timedelta(days=daysback + 1)
+        previous_start = format_date(to_datetime(previous_start, req.tz),
                                      format='%Y-%m-%d', tzinfo=req.tz)
         add_link(req, 'prev', req.href.timeline(from_=previous_start,
                                                 authors=authors,
                                                 daysback=daysback),
                  _('Previous Period'))
         if today - fromdate > timedelta(days=0):
-            next_start = format_date(fromdate + timedelta(days=daysback+1),
+            next_start = fromdate.replace(tzinfo=None) + \
+                            timedelta(days=daysback + 1)
+            next_start = format_date(to_datetime(next_start, req.tz),
                                      format='%Y-%m-%d', tzinfo=req.tz)
             add_link(req, 'next', req.href.timeline(from_=next_start,
                                                     authors=authors,
