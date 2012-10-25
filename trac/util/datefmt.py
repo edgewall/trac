@@ -392,18 +392,30 @@ class FixedOffset(tzinfo):
         return dt
 
 
-STDOFFSET = timedelta(seconds=-time.timezone)
-if time.daylight:
-    DSTOFFSET = timedelta(seconds=-time.altzone)
-else:
-    DSTOFFSET = STDOFFSET
-
-DSTDIFF = DSTOFFSET - STDOFFSET
-
-
 class LocalTimezone(tzinfo):
     """A 'local' time zone implementation"""
-    
+
+    _std_offset = None
+    _dst_offset = None
+    _dst_diff = None
+    _std_tz = None
+    _dst_tz = None
+
+    @classmethod
+    def _initialize(cls):
+        cls._std_tz = cls(False)
+        cls._std_offset = timedelta(seconds=-time.timezone)
+        if time.daylight:
+            cls._dst_tz = cls(True)
+            cls._dst_offset = timedelta(seconds=-time.altzone)
+        else:
+            cls._dst_tz = cls._std_tz
+            cls._dst_offset = cls._std_offset
+        cls._dst_diff = cls._dst_offset - cls._std_offset
+
+    def __init__(self, is_dst=None):
+        self.is_dst = is_dst
+
     def __str__(self):
         secs = self.utcoffset(datetime.now()).seconds
         hours, rem = divmod(secs, 3600)
@@ -412,45 +424,82 @@ class LocalTimezone(tzinfo):
             (hours + 1, (3600 - rem) / 60))[bool(secs < 0 and rem)]
 
     def __repr__(self):
-        return '<LocalTimezone "%s" %s "%s" %s>' % (
-            time.tzname[False], STDOFFSET,
-            time.tzname[True], DSTOFFSET)
+        if self.is_dst is None:
+            return '<LocalTimezone "%s" %s "%s" %s>' % \
+                   (time.tzname[False], self._std_offset,
+                    time.tzname[True], self._dst_offset)
+        if self.is_dst:
+            offset = self._dst_offset
+        else:
+            offset = self._std_offset
+        return '<LocalTimezone "%s" %s>' % (time.tzname[self.is_dst], offset)
+
+    def _is_dst(self, dt, is_dst=False):
+        if self.is_dst is not None:
+            return self.is_dst
+
+        tt = (dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second,
+              dt.weekday(), 0)
+        try:
+            std_tt = time.localtime(time.mktime(tt + (0,)))
+            dst_tt = time.localtime(time.mktime(tt + (1,)))
+        except (ValueError, OverflowError):
+            return False
+
+        std_correct = std_tt.tm_isdst == 0
+        dst_correct = dst_tt.tm_isdst == 1
+        if std_correct is dst_correct:
+            if is_dst is None:
+                if std_correct is True:
+                    raise ValueError('Ambiguous time "%s"' % dt)
+                if std_correct is False:
+                    raise ValueError('Non existent time "%s"' % dt)
+            return is_dst
+        if std_correct:
+            return False
+        if dst_correct:
+            return True
 
     def utcoffset(self, dt):
-        if self._isdst(dt):
-            return DSTOFFSET
+        if self._is_dst(dt):
+            return self._dst_offset
         else:
-            return STDOFFSET
+            return self._std_offset
 
     def dst(self, dt):
-        if self._isdst(dt):
-            return DSTDIFF
+        if self._is_dst(dt):
+            return self._dst_diff
         else:
             return _zero
 
     def tzname(self, dt):
-        return time.tzname[self._isdst(dt)]
-
-    def _isdst(self, dt):
-        tt = (dt.year, dt.month, dt.day,
-              dt.hour, dt.minute, dt.second,
-              dt.weekday(), 0, -1)
-        try:
-            stamp = time.mktime(tt)
-            tt = time.localtime(stamp)
-            return tt.tm_isdst > 0
-        except OverflowError:
-            return False
+        return time.tzname[self._is_dst(dt)]
 
     def localize(self, dt, is_dst=False):
         if dt.tzinfo is not None:
             raise ValueError('Not naive datetime (tzinfo is already set)')
-        return dt.replace(tzinfo=self)
+        if self._is_dst(dt, is_dst):
+            tz = self._dst_tz
+        else:
+            tz = self._std_tz
+        return dt.replace(tzinfo=tz)
 
     def normalize(self, dt, is_dst=False):
         if dt.tzinfo is None:
             raise ValueError('Naive time (no tzinfo set)')
-        return dt
+        if dt.tzinfo is localtz: # if not localized, returns without changes
+            return dt
+        return self.fromutc(dt.replace(tzinfo=self) - dt.utcoffset())
+
+    def fromutc(self, dt):
+        if dt.tzinfo is None or dt.tzinfo is not self:
+            raise ValueError('fromutc: dt.tzinfo is not self')
+        tt = time.localtime(to_timestamp(dt.replace(tzinfo=utc)))
+        if tt.tm_isdst > 0:
+            tz = self._dst_tz
+        else:
+            tz = self._std_tz
+        return datetime(microsecond=dt.microsecond, tzinfo=tz, *tt[0:6])
 
 
 utc = FixedOffset(0, 'UTC')
@@ -461,7 +510,13 @@ _zero = timedelta(0)
 _min_ts = -(1 << 31)
 _max_ts = (1 << 31) - 1
 
+LocalTimezone._initialize()
 localtz = LocalTimezone()
+
+STDOFFSET = LocalTimezone._std_offset
+DSTOFFSET = LocalTimezone._dst_offset
+DSTDIFF = LocalTimezone._dst_diff
+
 
 # Use a makeshift timezone implementation if pytz is not available.
 # This implementation only supports fixed offset time zones.
