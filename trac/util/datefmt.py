@@ -393,8 +393,12 @@ class LocalTimezone(tzinfo):
     """A 'local' time zone implementation"""
     
     def __str__(self):
-        return self.tzname(datetime.now())
-    
+        secs = self.utcoffset(datetime.now()).seconds
+        hours, rem = divmod(secs, 3600)
+        return 'UTC%+03d:%02d' % (
+            (hours, rem / 60),
+            (hours + 1, (3600 - rem) / 60))[bool(secs < 0 and rem)]
+
     def __repr__(self):
         return '<LocalTimezone "%s" %s "%s" %s>' % (
             time.tzname[False], STDOFFSET,
