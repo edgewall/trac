@@ -16,6 +16,7 @@
 
 import datetime
 import os
+import time
 import unittest
 
 from trac.core import TracError
@@ -120,11 +121,11 @@ else:
         def test_to_datetime_tz_from_naive_datetime_is_localtz(self):
             t = datetime.datetime(2012, 3, 25, 2, 15)
             dt = datefmt.to_datetime(t)
-            self.assertEqual(datefmt.localtz, dt.tzinfo)
+            self.assert_(isinstance(dt.tzinfo, datefmt.LocalTimezone))
 
         def test_to_datetime_tz_from_now_is_localtz(self):
             dt = datefmt.to_datetime(None)
-            self.assertEqual(datefmt.localtz, dt.tzinfo)
+            self.assert_(isinstance(dt.tzinfo, datefmt.LocalTimezone))
 
 
 class ParseISO8601TestCase(unittest.TestCase):
@@ -204,7 +205,7 @@ class ParseISO8601TestCase(unittest.TestCase):
         t = datetime.datetime(2012, 10, 11, 2, 40, 57, 0, datefmt.localtz)
         dt = datefmt.parse_date('2012-10-11T02:40:57')
         self.assertEqual(t, dt)
-        self.assertEqual(datefmt.localtz, dt.tzinfo)
+        self.assert_(isinstance(dt.tzinfo, datefmt.LocalTimezone))
 
     def test_iso8601_naive_tz_used_tzinfo_arg(self):
         tz = datefmt.timezone('GMT +1:00')
@@ -1162,6 +1163,245 @@ class HttpDateTestCase(unittest.TestCase):
         self.assertEqual('Sat, 03 Feb 2001 04:05:06 GMT', datefmt.http_date(t))
 
 
+class LocalTimezoneTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env_tz = os.environ.get('TZ')
+
+    def tearDown(self):
+        self._tzset(self.env_tz)
+
+    def _tzset(self, tz):
+        if tz is not None:
+            os.environ['TZ'] = tz
+        elif 'TZ' in os.environ:
+            del os.environ['TZ']
+        time.tzset()
+        datefmt.LocalTimezone._initialize()
+
+    def test_gmt01(self):
+        self._tzset('GMT-1')
+        self.assertEqual(datetime.timedelta(hours=1),
+                         datefmt.LocalTimezone._std_offset)
+        self.assertEqual(datetime.timedelta(hours=1),
+                         datefmt.LocalTimezone._dst_offset)
+        self.assertEqual(datetime.timedelta(0),
+                         datefmt.LocalTimezone._dst_diff)
+
+    def test_europe_paris(self):
+        self._tzset('Europe/Paris')
+        self.assertEqual(datetime.timedelta(hours=1),
+                         datefmt.LocalTimezone._std_offset)
+        self.assertEqual(datetime.timedelta(hours=2),
+                         datefmt.LocalTimezone._dst_offset)
+        self.assertEqual(datetime.timedelta(hours=1),
+                         datefmt.LocalTimezone._dst_diff)
+
+    def test_utcoffset_not_localized(self):
+        self._tzset('Europe/Paris')
+        self.assertEqual(datetime.timedelta(hours=1),
+                         datetime.datetime(2012, 3, 25, 1, 15, 42, 123456,
+                                           datefmt.localtz).utcoffset())
+        self.assertEqual(datetime.timedelta(hours=2),
+                         datetime.datetime(2012, 3, 25, 3, 15, 42, 123456,
+                                           datefmt.localtz).utcoffset())
+        # non existent time
+        self.assertEqual(datetime.timedelta(hours=1),
+                         datetime.datetime(2012, 3, 25, 2, 15, 42, 123456,
+                                           datefmt.localtz).utcoffset())
+        # ambiguous time
+        self.assertEqual(datetime.timedelta(hours=1),
+                         datetime.datetime(2011, 10, 30, 2, 45, 42, 123456,
+                                           datefmt.localtz).utcoffset())
+
+    def test_localized_non_existent_time(self):
+        self._tzset('Europe/Paris')
+        dt = datetime.datetime(2012, 3, 25, 2, 15, 42, 123456)
+        self.assertEqual('2012-03-25T02:15:42.123456+01:00',
+                         datefmt.localtz.localize(dt).isoformat())
+        try:
+            datefmt.localtz.localize(dt, is_dst=None)
+            raise AssertionError('ValueError not raised')
+        except ValueError, e:
+            self.assertEqual('Non existent time "2012-03-25 02:15:42.123456"',
+                             unicode(e))
+
+    def test_localized_ambiguous_time(self):
+        self._tzset('Europe/Paris')
+        dt = datetime.datetime(2011, 10, 30, 2, 45, 42, 123456)
+        self.assertEqual('2011-10-30T02:45:42.123456+01:00',
+                         datefmt.localtz.localize(dt).isoformat())
+        try:
+            datefmt.localtz.localize(dt, is_dst=None)
+            raise AssertionError('ValueError not raised')
+        except ValueError, e:
+            self.assertEqual('Ambiguous time "2011-10-30 02:45:42.123456"',
+                             unicode(e))
+
+    def test_normalized_non_existent_time(self):
+        self._tzset('Europe/Paris')
+        dt = datetime.datetime(2012, 3, 25, 2, 15, 42, 123456)
+        dt = datefmt.localtz.normalize(datefmt.localtz.localize(dt))
+        self.assertEqual('2012-03-25T03:15:42.123456+02:00', dt.isoformat())
+
+    def test_normalized_ambiguous_time(self):
+        self._tzset('Europe/Paris')
+        dt = datetime.datetime(2011, 10, 30, 2, 45, 42, 123456)
+        dt = datefmt.localtz.normalize(datefmt.localtz.localize(dt))
+        self.assertEqual('2011-10-30T02:45:42.123456+01:00', dt.isoformat())
+
+    def test_normalized_not_localized_non_existent_time(self):
+        self._tzset('Europe/Paris')
+        dt = datetime.datetime(2012, 3, 25, 2, 15, 42, 123456, datefmt.localtz)
+        self.assertEqual('2012-03-25T02:15:42.123456+01:00', dt.isoformat())
+        dt = datefmt.localtz.normalize(dt)
+        self.assertEqual(datefmt.localtz, dt.tzinfo)
+        self.assertEqual('2012-03-25T02:15:42.123456+01:00', dt.isoformat())
+
+    def test_normalized_not_localized_ambiguous_time(self):
+        self._tzset('Europe/Paris')
+        dt = datetime.datetime(2011, 10, 30, 2, 45, 42, 123456, datefmt.localtz)
+        self.assertEqual('2011-10-30T02:45:42.123456+01:00', dt.isoformat())
+        dt = datefmt.localtz.normalize(dt)
+        self.assertEqual(datefmt.localtz, dt.tzinfo)
+        self.assertEqual('2011-10-30T02:45:42.123456+01:00', dt.isoformat())
+
+    def test_astimezone_utc(self):
+        self._tzset('Europe/Paris')
+        dt = datetime.datetime(2012, 1, 23, 23, 32, 42, 123456, datefmt.utc)
+        self.assertEqual('2012-01-24T00:32:42.123456+01:00',
+                         dt.astimezone(datefmt.localtz).isoformat())
+        dt = datetime.datetime(2011, 7, 15, 23, 57, 42, 123456, datefmt.utc)
+        self.assertEqual('2011-07-16T01:57:42.123456+02:00',
+                         dt.astimezone(datefmt.localtz).isoformat())
+
+    def test_astimezone_non_utc(self):
+        self._tzset('Europe/Paris')
+        dt = datetime.datetime(2012, 1, 23, 16, 32, 42, 123456,
+                               datefmt.timezone('GMT -7:00'))
+        self.assertEqual('2012-01-24T00:32:42.123456+01:00',
+                         dt.astimezone(datefmt.localtz).isoformat())
+        dt = datetime.datetime(2011, 7, 16, 10, 57, 42, 123456,
+                               datefmt.timezone('GMT +11:00'))
+        self.assertEqual('2011-07-16T01:57:42.123456+02:00',
+                         dt.astimezone(datefmt.localtz).isoformat())
+
+    def test_astimezone_non_existent_time(self):
+        self._tzset('Europe/Paris')
+        dt = datetime.datetime(2012, 3, 25, 0, 15, 42, 123456, datefmt.utc)
+        self.assertEqual('2012-03-25T01:15:42.123456+01:00',
+                         dt.astimezone(datefmt.localtz).isoformat())
+        dt = datetime.datetime(2012, 3, 25, 1, 15, 42, 123456, datefmt.utc)
+        self.assertEqual('2012-03-25T03:15:42.123456+02:00',
+                         dt.astimezone(datefmt.localtz).isoformat())
+
+    def test_astimezone_ambiguous_time(self):
+        self._tzset('Europe/Paris')
+        dt = datetime.datetime(2011, 10, 30, 0, 45, 42, 123456, datefmt.utc)
+        self.assertEqual('2011-10-30T02:45:42.123456+02:00',
+                         dt.astimezone(datefmt.localtz).isoformat())
+        dt = datetime.datetime(2011, 10, 30, 1, 45, 42, 123456, datefmt.utc)
+        self.assertEqual('2011-10-30T02:45:42.123456+01:00',
+                         dt.astimezone(datefmt.localtz).isoformat())
+
+    def test_arithmetic_localized_non_existent_time(self):
+        self._tzset('Europe/Paris')
+        t = datetime.datetime(2012, 3, 25, 1, 15, 42, 123456)
+        t_utc = t.replace(tzinfo=datefmt.utc)
+        t1 = datefmt.localtz.localize(t)
+        self.assertEqual('2012-03-25T01:15:42.123456+01:00', t1.isoformat())
+        t2 = t1 + datetime.timedelta(hours=1)
+        self.assertEqual('2012-03-25T02:15:42.123456+01:00', t2.isoformat())
+        t3 = t1 + datetime.timedelta(hours=2)
+        self.assertEqual('2012-03-25T03:15:42.123456+01:00', t3.isoformat())
+        self.assertEqual(datetime.timedelta(hours=1),
+                         (t2 - t_utc) - (t1 - t_utc))
+        self.assertEqual(datetime.timedelta(hours=2),
+                         (t3 - t_utc) - (t1 - t_utc))
+
+    def test_arithmetic_localized_ambiguous_time(self):
+        self._tzset('Europe/Paris')
+        t = datetime.datetime(2011, 10, 30, 1, 45, 42, 123456)
+        t_utc = t.replace(tzinfo=datefmt.utc)
+        t1 = datefmt.localtz.localize(t)
+        self.assertEqual('2011-10-30T01:45:42.123456+02:00', t1.isoformat())
+        t2 = t1 + datetime.timedelta(hours=1)
+        self.assertEqual('2011-10-30T02:45:42.123456+02:00', t2.isoformat())
+        t3 = t1 + datetime.timedelta(hours=2)
+        self.assertEqual('2011-10-30T03:45:42.123456+02:00', t3.isoformat())
+        self.assertEqual(datetime.timedelta(hours=1),
+                         (t2 - t_utc) - (t1 - t_utc))
+        self.assertEqual(datetime.timedelta(hours=1),
+                         (t3 - t_utc) - (t2 - t_utc))
+
+    def test_arithmetic_normalized_non_existent_time(self):
+        self._tzset('Europe/Paris')
+        t = datetime.datetime(2012, 3, 25, 1, 15, 42, 123456)
+        t_utc = t.replace(tzinfo=datefmt.utc)
+        t1 = datefmt.localtz.normalize(datefmt.localtz.localize(t))
+        self.assertEqual('2012-03-25T01:15:42.123456+01:00', t1.isoformat())
+        t2 = datefmt.localtz.normalize(t1 + datetime.timedelta(hours=1))
+        self.assertEqual('2012-03-25T03:15:42.123456+02:00', t2.isoformat())
+        t3 = datefmt.localtz.normalize(t1 + datetime.timedelta(hours=2))
+        self.assertEqual('2012-03-25T04:15:42.123456+02:00', t3.isoformat())
+
+        self.assertEqual(datetime.timedelta(hours=1),
+                         (t2 - t_utc) - (t1 - t_utc))
+        self.assertEqual(datetime.timedelta(hours=1),
+                         (t3 - t_utc) - (t2 - t_utc))
+
+    def test_arithmetic_normalized_ambiguous_time(self):
+        self._tzset('Europe/Paris')
+        t = datetime.datetime(2011, 10, 30, 1, 45, 42, 123456)
+        t_utc = t.replace(tzinfo=datefmt.utc)
+        t1 = datefmt.localtz.normalize(datefmt.localtz.localize(t))
+        self.assertEqual('2011-10-30T01:45:42.123456+02:00', t1.isoformat())
+        t2 = datefmt.localtz.normalize(t1 + datetime.timedelta(hours=1))
+        self.assertEqual('2011-10-30T02:45:42.123456+02:00', t2.isoformat())
+        t3 = datefmt.localtz.normalize(t1 + datetime.timedelta(hours=2))
+        self.assertEqual('2011-10-30T02:45:42.123456+01:00', t3.isoformat())
+        t4 = datefmt.localtz.normalize(t1 + datetime.timedelta(hours=3))
+        self.assertEqual('2011-10-30T03:45:42.123456+01:00', t4.isoformat())
+
+        self.assertEqual(datetime.timedelta(hours=1),
+                         (t2 - t_utc) - (t1 - t_utc))
+        self.assertEqual(datetime.timedelta(hours=1),
+                         (t3 - t_utc) - (t2 - t_utc))
+        self.assertEqual(datetime.timedelta(hours=1),
+                         (t4 - t_utc) - (t3 - t_utc))
+
+    def test_arithmetic_not_localized_normalized_non_existent_time(self):
+        self._tzset('Europe/Paris')
+        t = datetime.datetime(2012, 3, 25, 1, 15, 42, 123456, datefmt.localtz)
+        t_utc = t.replace(tzinfo=datefmt.utc)
+        t1 = t
+        self.assertEqual('2012-03-25T01:15:42.123456+01:00', t1.isoformat())
+        t2 = datefmt.localtz.normalize(t1 + datetime.timedelta(hours=1))
+        self.assertEqual('2012-03-25T02:15:42.123456+01:00', t2.isoformat())
+        t3 = datefmt.localtz.normalize(t1 + datetime.timedelta(hours=2))
+        self.assertEqual('2012-03-25T03:15:42.123456+02:00', t3.isoformat())
+
+        self.assertEqual(datetime.timedelta(hours=1), t2 - t1)
+        self.assertEqual(datetime.timedelta(hours=1), t3 - t2)
+
+    def test_arithmetic_not_localized_normalized_ambiguous_time(self):
+        self._tzset('Europe/Paris')
+        t = datetime.datetime(2011, 10, 30, 1, 45, 42, 123456, datefmt.localtz)
+        t_utc = t.replace(tzinfo=datefmt.utc)
+        t1 = t
+        self.assertEqual('2011-10-30T01:45:42.123456+02:00', t1.isoformat())
+        t2 = datefmt.localtz.normalize(t1 + datetime.timedelta(hours=1))
+        self.assertEqual('2011-10-30T02:45:42.123456+01:00', t2.isoformat())
+        t3 = datefmt.localtz.normalize(t1 + datetime.timedelta(hours=2))
+        self.assertEqual('2011-10-30T03:45:42.123456+01:00', t3.isoformat())
+        t4 = datefmt.localtz.normalize(t1 + datetime.timedelta(hours=3))
+        self.assertEqual('2011-10-30T04:45:42.123456+01:00', t4.isoformat())
+
+        self.assertEqual(datetime.timedelta(hours=1), t2 - t1)
+        self.assertEqual(datetime.timedelta(hours=1), t3 - t2)
+        self.assertEqual(datetime.timedelta(hours=1), t4 - t3)
+
+
 def suite():
     suite = unittest.TestSuite()
     if PytzTestCase:
@@ -1179,6 +1419,8 @@ def suite():
     suite.addTest(unittest.makeSuite(ParseRelativeDateTestCase))
     suite.addTest(unittest.makeSuite(ParseDateValidRangeTestCase))
     suite.addTest(unittest.makeSuite(HttpDateTestCase))
+    if hasattr(time, 'tzset'):
+        suite.addTest(unittest.makeSuite(LocalTimezoneTestCase))
     return suite
 
 if __name__ == '__main__':
