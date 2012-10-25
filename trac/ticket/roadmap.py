@@ -31,7 +31,7 @@ from trac.perm import IPermissionRequestor
 from trac.resource import *
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.util import as_bool
-from trac.util.datefmt import parse_date, utc, to_utimestamp, \
+from trac.util.datefmt import parse_date, utc, to_utimestamp, to_datetime, \
                               get_datetime_format_hint, format_date, \
                               format_datetime, from_utimestamp, user_time
 from trac.util.text import CRLF
@@ -793,11 +793,12 @@ class MilestoneModule(Component):
 
     def _render_editor(self, req, milestone):
         # Suggest a default due time of 18:00 in the user's timezone
-        default_due = datetime.now(req.tz).replace(hour=18, minute=0, second=0,
-                                                   microsecond=0)
-        if default_due <= datetime.now(utc):
+        now = datetime.now(req.tz)
+        default_due = datetime(now.year, now.month, now.day, 18)
+        if now.hour > 18:
             default_due += timedelta(days=1)
-        
+        default_due = to_datetime(default_due, req.tz)
+
         data = {
             'milestone': milestone,
             'datetime_hint': get_datetime_format_hint(req.lc_time),
