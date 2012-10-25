@@ -243,7 +243,21 @@ class ParseRelativeDateTestCase(unittest.TestCase):
     def test_time_interval_seconds(self):
         tz = datefmt.timezone('GMT +1:00')
         now = datetime.datetime(2012, 3, 25, 3, 15, 21, 987654, tzinfo=tz)
+        in_53s = datetime.datetime(2012, 3, 25, 3, 16, 14, 987654, tzinfo=tz)
         past_42s = datetime.datetime(2012, 3, 25, 3, 14, 39, 987654, tzinfo=tz)
+
+        self.assertEqual(
+            in_53s,
+            datefmt._parse_relative_time('in53second', tz, now))
+        self.assertEqual(
+            in_53s,
+            datefmt._parse_relative_time('+ 53second', tz, now))
+        self.assertEqual(
+            None,
+            datefmt._parse_relative_time('+53s', tz, now))
+        self.assertEqual(
+            None,
+            datefmt._parse_relative_time('+ 53second ago', tz, now))
 
         self.assertEqual(
             past_42s,
@@ -258,6 +272,12 @@ class ParseRelativeDateTestCase(unittest.TestCase):
             past_42s,
             datefmt._parse_relative_time('42seconds', tz, now))
         self.assertEqual(
+            past_42s,
+            datefmt._parse_relative_time('-42seconds', tz, now))
+        self.assertEqual(
+            past_42s,
+            datefmt._parse_relative_time('- 42second ago', tz, now))
+        self.assertEqual(
             None,
             datefmt._parse_relative_time('42s ago', tz, now))
         self.assertEqual(
@@ -269,66 +289,121 @@ class ParseRelativeDateTestCase(unittest.TestCase):
         now = datetime.datetime(2012, 3, 25, 3, 15, 21, 987654, tzinfo=tz)
 
         self.assertEqual(
+            datetime.datetime(2012, 3, 25, 3, 57, 21, 987654, tzinfo=tz),
+            datefmt._parse_relative_time('+42minute', tz, now))
+        self.assertEqual(
+            datetime.datetime(2012, 3, 25, 3, 57, 51, 987654, tzinfo=tz),
+            datefmt._parse_relative_time('in 42.50 minutes', tz, now))
+
+        self.assertEqual(
             datetime.datetime(2012, 3, 25, 2, 54, 21, 987654, tzinfo=tz),
             datefmt._parse_relative_time('21minute', tz, now))
         self.assertEqual(
             datetime.datetime(2012, 3, 25, 2, 54, 6, 987654, tzinfo=tz),
             datefmt._parse_relative_time('21.25 minutes', tz, now))
+        self.assertEqual(
+            datetime.datetime(2012, 3, 25, 2, 53, 36, 987654, tzinfo=tz),
+            datefmt._parse_relative_time('- 21.75 minutes', tz, now))
 
     def test_time_interval_hours(self):
         tz = datefmt.timezone('GMT +1:00')
         now = datetime.datetime(2012, 3, 25, 3, 15, 21, 987654, tzinfo=tz)
+        in_31h = datetime.datetime(2012, 3, 26, 10, 15, 21, 987654, tzinfo=tz)
         past_42h = datetime.datetime(2012, 3, 23, 9, 15, 21, 987654, tzinfo=tz)
 
+        self.assertEqual(
+            in_31h,
+            datefmt._parse_relative_time('in 31 hours', tz, now))
+        self.assertEqual(
+            in_31h,
+            datefmt._parse_relative_time('+31. hours', tz, now))
+        self.assertEqual(
+            in_31h,
+            datefmt._parse_relative_time('in31h', tz, now))
         self.assertEqual(
             past_42h,
             datefmt._parse_relative_time('42 hours', tz, now))
         self.assertEqual(
             past_42h,
             datefmt._parse_relative_time('42h ago', tz, now))
+        self.assertEqual(
+            past_42h,
+            datefmt._parse_relative_time('-42h ago', tz, now))
 
     def test_time_interval_days(self):
         tz = datefmt.timezone('GMT +1:00')
         now = datetime.datetime(2012, 3, 25, 3, 15, 21, 987654, tzinfo=tz)
+        in_35d = datetime.datetime(2012, 4, 29, 3, 15, 21, 987654, tzinfo=tz)
         past_24d = datetime.datetime(2012, 3, 1, 3, 15, 21, 987654, tzinfo=tz)
 
+        self.assertEqual(
+            in_35d,
+            datefmt._parse_relative_time('+35day', tz, now))
+        self.assertEqual(
+            in_35d,
+            datefmt._parse_relative_time('in35ds', tz, now))
         self.assertEqual(
             past_24d,
             datefmt._parse_relative_time('24day', tz, now))
         self.assertEqual(
             past_24d,
             datefmt._parse_relative_time('24ds', tz, now))
+        self.assertEqual(
+            past_24d,
+            datefmt._parse_relative_time('- 24ds', tz, now))
 
     def test_time_interval_weeks(self):
         tz = datefmt.timezone('GMT +1:00')
         now = datetime.datetime(2012, 3, 25, 3, 15, 21, 987654, tzinfo=tz)
+        in_4w = datetime.datetime(2012, 4, 22, 3, 15, 21, 987654, tzinfo=tz)
         past_3w = datetime.datetime(2012, 3, 4, 3, 15, 21, 987654, tzinfo=tz)
 
+        self.assertEqual(in_4w,
+                         datefmt._parse_relative_time('in 4 weeks', tz, now))
+        self.assertEqual(in_4w,
+                         datefmt._parse_relative_time('+4w', tz, now))
         self.assertEqual(past_3w,
                          datefmt._parse_relative_time('3 weeks', tz, now))
         self.assertEqual(past_3w,
                          datefmt._parse_relative_time('3w', tz, now))
+        self.assertEqual(past_3w,
+                         datefmt._parse_relative_time('-3w', tz, now))
 
     def test_time_interval_months(self):
         tz = datefmt.timezone('GMT +1:00')
         now = datetime.datetime(2012, 1, 1, 3, 15, 21, 987654, tzinfo=tz)
+        in_18m = datetime.datetime(2013, 6, 24, 3, 15, 21, 987654, tzinfo=tz)
         past_12m = datetime.datetime(2011, 1, 6, 3, 15, 21, 987654, tzinfo=tz)
 
+        self.assertEqual(
+            in_18m,
+            datefmt._parse_relative_time('in 18 months', tz, now))
+        self.assertEqual(
+            in_18m,
+            datefmt._parse_relative_time('+18 ms', tz, now))
         self.assertEqual(
             past_12m,
             datefmt._parse_relative_time('12 months', tz, now))
         self.assertEqual(
             past_12m,
             datefmt._parse_relative_time('12 ms ago', tz, now))
+        self.assertEqual(
+            past_12m,
+            datefmt._parse_relative_time('- 12 ms ago', tz, now))
 
     def test_time_interval_years(self):
         tz = datefmt.timezone('GMT +1:00')
         now = datetime.datetime(2012, 3, 25, 3, 15, 21, 987654, tzinfo=tz)
+        in_5y = datetime.datetime(2017, 3, 24, 3, 15, 21, 987654, tzinfo=tz)
         past_2y = datetime.datetime(2010, 3, 26, 3, 15, 21, 987654, tzinfo=tz)
 
+        self.assertEqual(in_5y,
+                         datefmt._parse_relative_time('in 5 years', tz, now))
+        self.assertEqual(in_5y, datefmt._parse_relative_time('+5y', tz, now))
         self.assertEqual(past_2y,
                          datefmt._parse_relative_time('2 years', tz, now))
         self.assertEqual(past_2y, datefmt._parse_relative_time('2y', tz, now))
+        self.assertEqual(past_2y, datefmt._parse_relative_time('-2y', tz, now))
 
     def test_time_start_now(self):
         tz = datefmt.timezone('GMT +1:00')
@@ -353,6 +428,15 @@ class ParseRelativeDateTestCase(unittest.TestCase):
         self.assertEqual(yesterday,
                          datefmt._parse_relative_time('last day', tz, now))
 
+    def test_time_start_tomorrow(self):
+        tz = datefmt.timezone('GMT +1:00')
+        now = datetime.datetime(2012, 3, 25, 3, 15, 21, 987654, tzinfo=tz)
+        tomorrow = datefmt.to_datetime(datetime.datetime(2012, 3, 26), tz)
+        self.assertEqual(tomorrow,
+                         datefmt._parse_relative_time('tomorrow', tz, now))
+        self.assertEqual(tomorrow,
+                         datefmt._parse_relative_time('next day', tz, now))
+
     def test_time_start_year(self):
         tz = datefmt.timezone('GMT +1:00')
 
@@ -361,12 +445,16 @@ class ParseRelativeDateTestCase(unittest.TestCase):
                          datefmt._parse_relative_time('this year', tz, now))
         self.assertEqual(datetime.datetime(2011, 1, 1, tzinfo=tz),
                          datefmt._parse_relative_time('last year', tz, now))
+        self.assertEqual(datetime.datetime(2013, 1, 1, tzinfo=tz),
+                         datefmt._parse_relative_time('next year', tz, now))
 
         now = datetime.datetime(2009, 3, 25, 3, 15, 21, 987654, tzinfo=tz)
         self.assertEqual(datetime.datetime(2009, 1, 1, tzinfo=tz),
                          datefmt._parse_relative_time('this year', tz, now))
         self.assertEqual(datetime.datetime(2008, 1, 1, tzinfo=tz),
                          datefmt._parse_relative_time('last year', tz, now))
+        self.assertEqual(datetime.datetime(2010, 1, 1, tzinfo=tz),
+                         datefmt._parse_relative_time('next year', tz, now))
 
     def test_time_start_month(self):
         tz = datefmt.timezone('GMT +1:00')
@@ -375,6 +463,8 @@ class ParseRelativeDateTestCase(unittest.TestCase):
                          datefmt._parse_relative_time('this month', tz, now))
         self.assertEqual(datetime.datetime(2011, 12, 1, tzinfo=tz),
                          datefmt._parse_relative_time('last month', tz, now))
+        self.assertEqual(datetime.datetime(2012, 2, 1, tzinfo=tz),
+                         datefmt._parse_relative_time('next month', tz, now))
 
     def test_time_start_week(self):
         tz = datefmt.timezone('GMT +1:00')
@@ -383,6 +473,8 @@ class ParseRelativeDateTestCase(unittest.TestCase):
                          datefmt._parse_relative_time('this week', tz, now))
         self.assertEqual(datetime.datetime(2012, 3, 12, tzinfo=tz),
                          datefmt._parse_relative_time('last week', tz, now))
+        self.assertEqual(datetime.datetime(2012, 3, 26, tzinfo=tz),
+                         datefmt._parse_relative_time('next week', tz, now))
 
     def test_time_start_day(self):
         tz = datefmt.timezone('GMT +1:00')
@@ -391,6 +483,8 @@ class ParseRelativeDateTestCase(unittest.TestCase):
                          datefmt._parse_relative_time('this day', tz, now))
         self.assertEqual(datetime.datetime(2012, 2, 29, tzinfo=tz),
                          datefmt._parse_relative_time('last day', tz, now))
+        self.assertEqual(datetime.datetime(2012, 3, 2, tzinfo=tz),
+                         datefmt._parse_relative_time('next day', tz, now))
 
     def test_time_start_hour(self):
         tz = datefmt.timezone('GMT +1:00')
@@ -399,6 +493,8 @@ class ParseRelativeDateTestCase(unittest.TestCase):
                          datefmt._parse_relative_time('this hour', tz, now))
         self.assertEqual(datetime.datetime(2012, 3, 24, 23, tzinfo=tz),
                          datefmt._parse_relative_time('last hour', tz, now))
+        self.assertEqual(datetime.datetime(2012, 3, 25, 1, tzinfo=tz),
+                         datefmt._parse_relative_time('next hour', tz, now))
 
     def test_time_start_minute(self):
         tz = datefmt.timezone('GMT +1:00')
@@ -407,6 +503,8 @@ class ParseRelativeDateTestCase(unittest.TestCase):
                          datefmt._parse_relative_time('this minute', tz, now))
         self.assertEqual(datetime.datetime(2012, 3, 25, 2, 59, tzinfo=tz),
                          datefmt._parse_relative_time('last minute', tz, now))
+        self.assertEqual(datetime.datetime(2012, 3, 25, 3, 1, tzinfo=tz),
+                         datefmt._parse_relative_time('next minute', tz, now))
 
     def test_time_start_second(self):
         tz = datefmt.timezone('GMT +1:00')
@@ -415,9 +513,11 @@ class ParseRelativeDateTestCase(unittest.TestCase):
                          datefmt._parse_relative_time('this second', tz, now))
         self.assertEqual(datetime.datetime(2012, 3, 25, 3, 14, 59, tzinfo=tz),
                          datefmt._parse_relative_time('last second', tz, now))
+        self.assertEqual(datetime.datetime(2012, 3, 25, 3, 15, 1, tzinfo=tz),
+                         datefmt._parse_relative_time('next second', tz, now))
 
     if pytz:
-        def test_time_interval_across_dst(self):
+        def test_time_past_interval_across_dst(self):
             tz = datefmt.timezone('Europe/Paris')
             now = datefmt.to_datetime(datetime.datetime(2012, 3, 25, 3, 0, 41),
                                       tz)
@@ -425,6 +525,16 @@ class ParseRelativeDateTestCase(unittest.TestCase):
             self.assertEqual('2012-03-25T03:00:00+02:00', dt.isoformat())
             dt = datefmt._parse_relative_time('42 seconds', tz, now)
             self.assertEqual('2012-03-25T01:59:59+01:00', dt.isoformat())
+
+        def test_time_future_interval_across_dst(self):
+            tz = datefmt.timezone('Europe/Paris')
+            now = datefmt.to_datetime(
+                datetime.datetime(2012, 3, 25, 1, 59, 39), tz)
+
+            actual = datefmt._parse_relative_time('+20 seconds', tz, now)
+            self.assertEqual('2012-03-25T01:59:59+01:00', actual.isoformat())
+            actual = datefmt._parse_relative_time('+21 seconds', tz, now)
+            self.assertEqual('2012-03-25T03:00:00+02:00', actual.isoformat())
 
         def test_this_time_start_across_dst(self):
             tz = datefmt.timezone('Europe/Paris')
@@ -447,6 +557,17 @@ class ParseRelativeDateTestCase(unittest.TestCase):
             self.assertEqual('2012-03-25T00:00:00+01:00', dt.isoformat())
             dt = datefmt._parse_relative_time('last day', tz, now)
             self.assertEqual('2012-03-25T00:00:00+01:00', dt.isoformat())
+
+        def test_next_time_start_across_dst(self):
+            tz = datefmt.timezone('Europe/Paris')
+            now = datefmt.to_datetime(
+                datetime.datetime(2012, 3, 25, 1, 15, 42, 123456), tz)
+            dt = datefmt._parse_relative_time('next hour', tz, now)
+            self.assertEqual('2012-03-25T03:00:00+02:00', dt.isoformat())
+            dt = datefmt._parse_relative_time('tomorrow', tz, now)
+            self.assertEqual('2012-03-26T00:00:00+02:00', dt.isoformat())
+            dt = datefmt._parse_relative_time('next day', tz, now)
+            self.assertEqual('2012-03-26T00:00:00+02:00', dt.isoformat())
 
 
 class ParseDateValidRangeTestCase(unittest.TestCase):
