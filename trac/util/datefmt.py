@@ -417,11 +417,10 @@ class LocalTimezone(tzinfo):
         self.is_dst = is_dst
 
     def __str__(self):
-        secs = self.utcoffset(datetime.now()).seconds
-        hours, rem = divmod(secs, 3600)
-        return 'UTC%+03d:%02d' % (
-            (hours, rem / 60),
-            (hours + 1, (3600 - rem) / 60))[bool(secs < 0 and rem)]
+        offset = self.utcoffset(datetime.now())
+        secs = offset.days * 3600 * 24 + offset.seconds
+        hours, rem = divmod(abs(secs), 3600)
+        return 'UTC%c%02d:%02d' % ('+-'[secs < 0], hours, rem / 60)
 
     def __repr__(self):
         if self.is_dst is None:
