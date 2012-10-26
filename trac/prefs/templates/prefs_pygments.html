@@ -15,12 +15,13 @@
     <link py:for="style in sorted(styles)" rel="stylesheet" type="text/css"
           href="${href.pygments('%s.css' % style)}" title="${style.title()}" />
     <script type="text/javascript">
-    	(function($){
-	      window.switchStyleSheet = function(title) {
-	        $('link[rel="stylesheet"][title]').each(function() {
-	          this.disabled = this.getAttribute('title') != title;
-	        });
-	      }
+      (function($){
+        window.switchStyleSheet = function(title) {
+          $('link[rel="stylesheet"][title]').each(function() {
+            this.disabled = true; // needed to force correct behavior for WebKit (see #10923)
+            this.disabled = this.getAttribute('title') != title;
+          });
+        }
       })(jQuery);
       jQuery(document).ready(function($) {
         switchStyleSheet("${selection.title()}");
