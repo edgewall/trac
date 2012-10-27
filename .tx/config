@@ -1,19 +1,19 @@
 [main]
-host = https://www.transifex.net
+host = https://www.transifex.com
 
-[trac.trunk-messages-js-pot]
-file_filter = trac\locale\<lang>\LC_MESSAGES\messages-js.po
-source_file = trac\locale\messages-js.pot
+[trac.1_0-stable-messages-js-pot]
+file_filter = trac/locale/<lang>/LC_MESSAGES/messages-js.po
+source_file = trac/locale/messages-js.pot
 source_lang = en
 
-[trac.trunk-messages-pot]
-file_filter = trac\locale\<lang>\LC_MESSAGES\messages.po
-source_file = trac\locale\messages.pot
+[trac.1_0-stable-messages-pot]
+file_filter = trac/locale/<lang>/LC_MESSAGES/messages.po
+source_file = trac/locale/messages.pot
 source_lang = en
 
-[trac.trunk-tracini-pot]
-file_filter = trac\locale\<lang>\LC_MESSAGES\tracini.po
-source_file = trac\locale\tracini.pot
+[trac.1_0-stable-tracini-pot]
+file_filter = trac/locale/<lang>/LC_MESSAGES/tracini.po
+source_file = trac/locale/tracini.pot
 source_lang = en
 type = PO
 
