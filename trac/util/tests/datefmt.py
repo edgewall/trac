@@ -1402,6 +1402,25 @@ class LocalTimezoneTestCase(unittest.TestCase):
         self.assertEqual(datetime.timedelta(hours=1), t4 - t3)
 
 
+class LocalTimezoneStrTestCase(unittest.TestCase):
+
+    def test_localtz_str(self):
+        class FixedLocalTz(datefmt.LocalTimezone):
+            def __init__(self, hours, minutes):
+                self._offset = datetime.timedelta(hours=hours,
+                                                  seconds=minutes * 60)
+            def utcoffset(self, dt):
+                return self._offset
+
+        self.assertEqual("UTC+02:03", str(FixedLocalTz(02, 03)))
+        self.assertEqual("UTC+01:00", str(FixedLocalTz(01, 00)))
+        self.assertEqual("UTC+00:23", str(FixedLocalTz(00, 23)))
+        self.assertEqual("UTC+00:00", str(FixedLocalTz(00, 00)))
+        self.assertEqual("UTC-00:23", str(FixedLocalTz(-00, -23)))
+        self.assertEqual("UTC-01:00", str(FixedLocalTz(-01, -00)))
+        self.assertEqual("UTC-02:03", str(FixedLocalTz(-02, -03)))
+
+
 def suite():
     suite = unittest.TestSuite()
     if PytzTestCase:
@@ -1421,6 +1440,7 @@ def suite():
     suite.addTest(unittest.makeSuite(HttpDateTestCase))
     if hasattr(time, 'tzset'):
         suite.addTest(unittest.makeSuite(LocalTimezoneTestCase))
+    suite.addTest(unittest.makeSuite(LocalTimezoneStrTestCase))
     return suite
 
 if __name__ == '__main__':

@@ -808,8 +808,11 @@ class LocalTimezone(tzinfo):
         self.is_dst = is_dst
 
     def __str__(self):
-        return self.tzname(datetime.now())
-    
+        offset = self.utcoffset(datetime.now())
+        secs = offset.days * 3600 * 24 + offset.seconds
+        hours, rem = divmod(abs(secs), 3600)
+        return 'UTC%c%02d:%02d' % ('-' if secs < 0 else '+', hours, rem / 60)
+
     def __repr__(self):
         if self.is_dst is None:
             return '<LocalTimezone "%s" %s "%s" %s>' % \
