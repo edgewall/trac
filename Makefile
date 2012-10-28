@@ -65,6 +65,7 @@ define HELP
 
   diff                show relevant changes after an update for all catalogs
   diff-xy             show relevant changes after an update for the xy locale
+  [vc=...]            variable containing the version control command to use 
 
   [locale=...]        variable for selecting a set of locales
 
@@ -226,12 +227,15 @@ summary-%:
 	        $(shell $(call translated-sh,$(messages-js.po)))) * 100.0 \
 	       / $(MESSAGES_TOTAL))"
 
+
 diff: $(addprefix diff-,$(locales))
 
+vc ?= svn
 
 diff-%:
-	@svn diff trac/locale/$(*) \
+	@$(vc) diff trac/locale/$(*) \
 	    | grep -Ev '^([-+]#:|[@ ])' | grep -E '^[-+@]' || true
+
 
 clean-mo:
 	find trac/locale -name \*.mo -exec rm {} \;
