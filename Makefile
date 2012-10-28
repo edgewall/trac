@@ -142,6 +142,7 @@ messages-js.pot = trac/locale/messages-js.pot
 
 .PHONY: extract extraction update compile check stats summary diff
 
+
 init-%:
 	@[ -e $(messages.po) ] \
 	 && echo "$(messages.po) already exists" \
@@ -150,8 +151,10 @@ init-%:
 	 && echo "$(messages-js.po) already exists" \
 	 || python setup.py init_catalog_js -l $(*)
 
+
 extract extraction:
 	python setup.py extract_messages extract_messages_js
+
 
 update-%:
 	python setup.py update_catalog -l $(*) update_catalog_js -l $(*)
@@ -162,6 +165,7 @@ else
 update:
 	python setup.py update_catalog update_catalog_js
 endif
+
 
 compile-%:
 	python setup.py compile_catalog -l $(*) \
@@ -174,6 +178,7 @@ compile:
 	python setup.py compile_catalog compile_catalog_js
 endif
 
+
 check: pre-check $(addprefix check-,$(locales))
 	@echo "All catalogs checked are OK"
 
@@ -183,6 +188,7 @@ pre-check:
 check-%:
 	@echo -n "$(@): "
 	@python setup.py check_catalog -l $(*) check_catalog_js -l $(*)
+
 
 stats: pre-stats $(addprefix stats-,$(locales))
 
@@ -200,6 +206,7 @@ stats-%:
 	 && echo -n "$(*) messages-js.po: "; \
 	    msgfmt --statistics $(messages-js.po) \
 	 || echo "$(messages-js.po) doesn't exist (make init-$(*))"
+
 
 summary: $(addprefix summary-,$(locales))
 
