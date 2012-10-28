@@ -194,9 +194,10 @@ stats-pot:
 	@echo -n "messages-js.pot: "; msgfmt --statistics $(messages-js.pot) 
 
 stats-%:
-	@echo -n "messages.po: "; msgfmt --statistics $(messages.po)
+	@echo -n "$(*) messages.po: "; msgfmt --statistics $(messages.po)
 	@[ -e $(messages-js.po) ] \
-	 && echo -n "messages-js.po: "; msgfmt --statistics $(messages-js.po) \
+	 && echo -n "$(*) messages-js.po: "; \
+	    msgfmt --statistics $(messages-js.po) \
 	 || echo "$(messages-js.po) doesn't exist (make init-$(*))"
 
 summary: $(addprefix summary-,$(locales))
