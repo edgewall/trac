@@ -222,17 +222,20 @@ define translated-sh
     | sed -e 's/[^0-9]*\([0-9]*\) translated.*/\1/'
 endef
 
-MESSAGES_TOTAL = \
-    $(eval MESSAGES_TOTAL := ( \
-        $(shell $(call untranslated-sh,$(messages.pot))) + \
-        $(shell $(call untranslated-sh,$(messages-js.pot)))))\
-    $(MESSAGES_TOTAL)
+define compute_total_messages
+$(eval MESSAGES_TOTAL := \
+    ($(shell $(call untranslated-sh,$(messages.pot))) + \
+     $(shell $(call untranslated-sh,$(messages-js.pot)))))\
+$(info The catalog templates contain: $(MESSAGES_TOTAL) messages.)
+endef
+
+MESSAGES_TOTAL = $(compute_total_messages)$(MESSAGES_TOTAL)
 
 summary-%:
 	@python -c "print 'l10n/$(*): translations updated (%d%%)' \
-	    % (($(shell $(call translated-sh,$(messages.po))) + \
-	        $(shell $(call translated-sh,$(messages-js.po)))) * 100.0 \
-	       / $(MESSAGES_TOTAL))"
+	    % (($(shell $(call translated-sh,$(messages.po))) \
+	      + $(shell $(call translated-sh,$(messages-js.po)))) * 100.0 \
+	      / $(MESSAGES_TOTAL))"
 
 
 diff: $(addprefix diff-,$(locales))
