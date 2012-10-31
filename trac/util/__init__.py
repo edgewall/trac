@@ -34,7 +34,7 @@ import time
 from urllib import quote, unquote, urlencode
 
 from .compat import any, md5, sha1, sorted
-from .text import exception_to_unicode, to_unicode
+from .text import exception_to_unicode, to_unicode, getpreferredencoding
 
 # -- req, session and web utils
 
@@ -319,7 +319,7 @@ def copytree(src, dst, symlinks=False, skip=[], overwrite=False):
     def str_path(path):
         if isinstance(path, unicode):
             path = path.encode(sys.getfilesystemencoding() or
-                               locale.getpreferredencoding())
+                               getpreferredencoding())
         return path
 
     def remove_if_overwriting(path):

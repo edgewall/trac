@@ -31,7 +31,8 @@ from trac.ticket.model import *
 from trac.util import translation
 from trac.util.html import html
 from trac.util.text import console_print, exception_to_unicode, printout, \
-                           printerr, raw_input, to_unicode
+                           printerr, raw_input, to_unicode, \
+                           getpreferredencoding
 from trac.util.translation import _, ngettext, get_negotiated_locale, \
                                   has_babel, cleandoc_
 from trac.versioncontrol.api import RepositoryManager
@@ -101,7 +102,7 @@ class TracAdmin(cmd.Cmd):
                 if self.interactive:
                     encoding = sys.stdin.encoding
                 else:
-                    encoding = locale.getpreferredencoding() # sys.argv
+                    encoding = getpreferredencoding() # sys.argv
                 line = to_unicode(line, encoding)
             if self.interactive:
                 line = line.replace('\\', '\\\\')
