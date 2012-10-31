@@ -22,7 +22,7 @@ import re
 import sys
 import time
 from datetime import tzinfo, timedelta, datetime, date
-from locale import getlocale, getpreferredencoding, LC_TIME
+from locale import getlocale, LC_TIME
 
 try:
     import babel
@@ -40,7 +40,7 @@ except ImportError:
     babel = None
 
 from trac.core import TracError
-from trac.util.text import to_unicode
+from trac.util.text import to_unicode, getpreferredencoding
 from trac.util.translation import _, ngettext, get_available_locales
 
 # Date/time utilities
