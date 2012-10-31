@@ -229,6 +229,18 @@ def raw_input(prompt):
     printout(prompt, newline=False)
     return to_unicode(__builtin__.raw_input(), sys.stdin.encoding)
 
+
+_preferredencoding = locale.getpreferredencoding()
+
+def getpreferredencoding():
+    """Return the encoding, which is retrieved on ahead, according to user
+    preference.
+
+    We should use this instead of `locale.getpreferredencoding()` which
+    is not thread-safe."""
+    return _preferredencoding
+
+
 # -- Plain text formatting
 
 def text_width(text, ambiwidth=1):

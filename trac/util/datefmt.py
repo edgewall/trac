@@ -25,7 +25,7 @@ import time
 from datetime import tzinfo, timedelta, datetime, date
 
 from trac.core import TracError
-from trac.util.text import to_unicode
+from trac.util.text import to_unicode, getpreferredencoding
 from trac.util.translation import _, ngettext
 
 # Date/time utilities
@@ -161,7 +161,7 @@ def format_datetime(t=None, format='%x %X', tzinfo=None):
         text = text.replace('+0000', 'Z')
         if not text.endswith('Z'):
             text = text[:-2] + ":" + text[-2:]
-    encoding = locale.getpreferredencoding() or sys.getdefaultencoding()
+    encoding = getpreferredencoding() or sys.getdefaultencoding()
     if sys.platform != 'win32' or sys.version_info[:2] > (2, 3):
         encoding = locale.getlocale(locale.LC_TIME)[1] or encoding
         # Python 2.3 on windows doesn't know about 'XYZ' alias for 'cpXYZ'
