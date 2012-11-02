@@ -20,7 +20,7 @@ import time
 import unittest
 
 from trac.core import TracError
-from trac.util import datefmt
+from trac.util import datefmt, translation
 
 try:
     import pytz
@@ -941,48 +941,19 @@ else:
             t = datetime.datetime(2010, 8, 28, 11, 45, 56, 123456, datefmt.utc)
             expected = datetime.datetime(2010, 8, 28, 13, 45, 56, 0, tz)
 
-            def roundtrip(locale):
+            for locale in translation.get_available_locales():
                 locale = Locale.parse(locale)
                 formatted = datefmt.format_datetime(t, tzinfo=tz,
                                                     locale=locale)
-                self.assertEqual(expected,
-                                 datefmt.parse_date(formatted, tz, locale))
-                self.assertEqual(formatted,
-                                 datefmt.format_datetime(expected, tzinfo=tz,
-                                                         locale=locale))
 
-            roundtrip('ca')
-            roundtrip('cs')
-            roundtrip('de')
-            roundtrip('el')
-            roundtrip('en_GB')
-            roundtrip('en_US')
-            roundtrip('eo')
-            roundtrip('es')
-            roundtrip('es_AR')
-            roundtrip('fa')
-            roundtrip('fi')
-            roundtrip('fr')
-            roundtrip('gl')
-            roundtrip('he')
-            roundtrip('hu')
-            roundtrip('hy')
-            roundtrip('it')
-            roundtrip('ja')
-            roundtrip('ko')
-            roundtrip('nb')
-            roundtrip('nl')
-            roundtrip('pl')
-            roundtrip('pt')
-            roundtrip('pt_BR')
-            roundtrip('ro')
-            roundtrip('ru')
-            roundtrip('sl')
-            roundtrip('sv')
-            roundtrip('tr')
-            roundtrip('vi')
-            roundtrip('zh_CN')
-            roundtrip('zh_TW')
+                actual = datefmt.parse_date(formatted, tz, locale)
+                self.assertEqual(expected, actual,
+                                 '%r != %r (%r)' % (expected, actual, locale))
+
+                actual = datefmt.format_datetime(expected, tzinfo=tz,
+                                                 locale=locale)
+                self.assertEqual(formatted, actual,
+                                 '%r != %r (%r)' % (formatted, actual, locale))
 
         def test_format_compatibility(self):
             tz = datefmt.timezone('GMT +2:00')
