@@ -1,18 +1,19 @@
 # Ukrainian translations for Trac.
-# Copyright (C) 2010 Edgewall Software
+# Copyright (C) 2012 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 #
 # Translators:
 # Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>, 2008.
+# Sergii Galashyn <trovich@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
 "POT-Creation-Date: 2012-10-29 19:08+0100\n"
-"PO-Revision-Date: 2011-11-30 12:44+0000\n"
+"PO-Revision-Date: 2012-10-29 18:34+0000\n"
 "Last-Translator: Sergii Galashyn <trovich@gmail.com>\n"
 "Language-Team: Ukrainian "
-"(http://www.transifex.net/projects/p/trac/language/uk/)\n"
+"(http://www.transifex.com/projects/p/trac/language/uk/)\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 "MIME-Version: 1.0\n"
@@ -147,11 +148,11 @@ msgid "Could not delete attachment"
 msgstr "Не вдалося видалити долучення"
 
 #: trac/attachment.py:218
-#, fuzzy, python-format
+#, python-format
 msgid "Cannot reparent attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
 msgstr ""
-"Неможливо змінити батьківський елемент для долучення «%(att)s», бо воно "
-"вже існує у %(realm)s:%(id)s"
+"Не можу перенести долучення «%(att)s» так як %(realm)s:%(id)s є "
+"некоректним"
 
 #: trac/attachment.py:224
 #, python-format
@@ -168,11 +169,9 @@ msgid "Could not reparent attachment %(name)s"
 msgstr "Не вдалося змінити батьківський елемент для долучення %(name)s"
 
 #: trac/attachment.py:272
-#, fuzzy, python-format
+#, python-format
 msgid "Cannot create attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
-msgstr ""
-"Неможливо змінити батьківський елемент для долучення «%(att)s», бо воно "
-"вже існує у %(realm)s:%(id)s"
+msgstr "Не можу створити долучення «%(att)s» так як %(realm)s:%(id)s є некоректним"
 
 #: trac/attachment.py:365
 #, python-format
@@ -320,6 +319,8 @@ msgstr "Помилка налаштування"
 #, python-format
 msgid "Error reading '%(file)s', make sure it is readable."
 msgstr ""
+"Не вдалося прочитати «%(file)s», переконайтеся що він доступний для "
+"читання."
 
 #: trac/config.py:420
 #, python-format
@@ -343,7 +344,7 @@ msgstr ""
 #: trac/config.py:711 trac/config.py:724
 #, python-format
 msgid "Option '%(option)s' doesn't exist in section '%(section)s'"
-msgstr ""
+msgstr "Налаштування «%(option)s» не існує у секції «%(section)s»"
 
 #: trac/core.py:33
 msgid "Trac Error"
@@ -540,7 +541,7 @@ msgid "Error: %(msg)s"
 msgstr "Помилка: %(msg)s"
 
 #: trac/admin/console.py:130
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
@@ -549,11 +550,11 @@ msgid ""
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
 msgstr ""
-"Вітаємо у trac-адмін %(version)s\n"
-"Інтерактивна консоль адміністрування Trac.\n"
-"© 2003-2010 Edgewall Software\n"
+"Ласкаво просимо до trac-admin %(version)s\n"
+"Інтерактивна консоль керування Trac.\n"
+"Copyright (C) 2003-2012 Edgewall Software\n"
 "\n"
-"Впишіть «?» чи «help», щоб переглянути довідку щодо команд.\n"
+"Введіть  «?» чи «help» щоб переглянути довідку щодо команд.\n"
 "        "
 
 #: trac/admin/console.py:164
@@ -656,11 +657,13 @@ msgid "Directory exists and is not empty."
 msgstr "Тека вже існує і вона не порожня."
 
 #: trac/admin/console.py:403
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
 msgstr ""
+"Базова тека «%(env)s» не існує. Створіть її вручну, будь ласка, та "
+"спробуйте ще раз."
 
 #: trac/admin/console.py:431
 msgid "Creating and Initializing Project"
@@ -1442,9 +1445,9 @@ msgid "Your preferences have been saved."
 msgstr "Налаштування було збережено."
 
 #: trac/mimeview/rst.py:123 trac/mimeview/rst.py:146
-#, fuzzy, python-format
+#, python-format
 msgid "%(link)s is not a valid TracLink"
-msgstr ""
+msgstr "%(link)s не є коректним посиланням TracLink"
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -1471,9 +1474,8 @@ msgid "Advanced"
 msgstr "Додатково"
 
 #: trac/prefs/web_ui.py:150
-#, fuzzy
 msgid "The session has been loaded."
-msgstr "Версію «%(name)s» додано."
+msgstr "Сесію було завантажено."
 
 #: trac/prefs/templates/prefs.html:10
 msgid "Preferences:"
@@ -1503,9 +1505,8 @@ msgid "Session key:"
 msgstr "Ключ сеансу:"
 
 #: trac/prefs/templates/prefs_advanced.html:17
-#, fuzzy
 msgid "Change"
-msgstr "змінити"
+msgstr "Змінити"
 
 #: trac/prefs/templates/prefs_advanced.html:18
 msgid ""
@@ -1787,12 +1788,11 @@ msgstr ""
 "        [1:http://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
-#, fuzzy
 msgid ""
 "Copyright © 2003-2012\n"
 "        [1:Edgewall Software]"
 msgstr ""
-"Авторські права © 2003-2010\n"
+"Copyright © 2003-2012\n"
 "        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
@@ -2276,16 +2276,15 @@ msgid "View attachment"
 msgstr "Дивитися долучення"
 
 #: trac/templates/list_of_attachments.html:18
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "[1:%(file)s][2:​]\n"
 "       ([3:%(size)s]) -\n"
 "      added by [4:%(author)s] %(date)s ago."
 msgstr ""
-"[1:%(file)s]\n"
-"      [2:[3:]]\n"
-"       ([4:%(size)s]) -\n"
-"      додав [5:%(author)s] %(date)s тому."
+"[1:%(file)s][2:​]\n"
+"       ([3:%(size)s]) -\n"
+"      додав [4:%(author)s] %(date)s тому."
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:39
@@ -2551,7 +2550,6 @@ msgid "Ticket #%(num)s and all associated data removed."
 msgstr "Квиток №%(num)s та усі пов'язані дані вилучено."
 
 #: trac/ticket/api.py:253
-#, fuzzy
 msgid "Attachment"
 msgstr "Долучення"
 
@@ -3676,7 +3674,7 @@ msgstr "Копіювати звіт"
 
 #: trac/ticket/templates/report_view.html:110
 msgid "(empty)"
-msgstr ""
+msgstr "(нічого)"
 
 #: trac/ticket/templates/report_view.html:141
 #: trac/ticket/templates/report_view.html:149
@@ -3928,13 +3926,12 @@ msgid "Reply, quoting this description"
 msgstr "Відповісти, процитувавши цей опис"
 
 #: trac/ticket/templates/ticket_change.html:19
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "[1:[2:%(name)s]][3:​]\n"
 "          added"
 msgstr ""
-"[1:[2:%(name)s]]\n"
-"          [3:[4:]]\n"
+"[1:[2:%(name)s]][3:​]\n"
 "          додано"
 
 #: trac/ticket/templates/ticket_change.html:26
@@ -4398,6 +4395,8 @@ msgid ""
 "The repository directory has changed, you should resynchronize the "
 "repository with: trac-admin $ENV repository resync '%(reponame)s'"
 msgstr ""
+"Тека репозиторію змінилася, вам потрібно заново синхронізуватися за "
+"допомогою команди: trac-admin $ENV repository resync '%(reponame)s'"
 
 #: trac/versioncontrol/svn_authz.py:72
 #, python-format
@@ -5194,9 +5193,8 @@ msgid "View file without annotations"
 msgstr "Дивитися файл без анотації"
 
 #: trac/versioncontrol/web_ui/browser.py:464
-#, fuzzy
 msgid "Blame"
-msgstr "Ім'я"
+msgstr "Blame"
 
 #: trac/versioncontrol/web_ui/browser.py:465
 msgid ""
@@ -5545,44 +5543,42 @@ msgid "SID"
 msgstr "SID"
 
 #: trac/web/session.py:445
-#, fuzzy
 msgid "Auth"
-msgstr "шлях"
+msgstr "Авторизація"
 
 #: trac/web/session.py:445
-#, fuzzy
 msgid "Last Visit"
-msgstr "Остання ревізія"
+msgstr "Минулі відвідини"
 
 #: trac/web/session.py:446
 msgid "Email"
 msgstr "Е-пошта"
 
 #: trac/web/session.py:457
-#, fuzzy, python-format
+#, python-format
 msgid "Session '%(sid)s' already exists"
-msgstr ""
+msgstr "Сеанс «%(sid)s» вже існує"
 
 #: trac/web/session.py:470
 #, python-format
 msgid "Invalid attribute '%(attr)s'"
-msgstr ""
+msgstr "Хибний аргумент «%(attr)s»"
 
 #: trac/web/session.py:480
-#, fuzzy, python-format
+#, python-format
 msgid "Session '%(sid)s' not found"
 msgstr "Сеанс «%(sid)s» не знайдено"
 
 #: trac/wiki/admin.py:102
-#, fuzzy, python-format
+#, python-format
 msgid "Page '%(page)s' not found"
-msgstr "Сторінку '%(page)s' не знайдено"
+msgstr "Сторінку «%(page)s» не знайдено"
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:122 trac/wiki/model.py:172
 #: trac/wiki/web_ui.py:114
-#, fuzzy, python-format
+#, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr "Хибна сторінка Wiki: '%(name)s'"
+msgstr "Хибна назва Wiki сторінки «%(name)s»"
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -5614,7 +5610,7 @@ msgstr "Для здійснення перейменування нове ім'�
 
 #: trac/wiki/admin.py:215
 msgid "The new name is invalid."
-msgstr ""
+msgstr "Хибне нове ім’я."
 
 #: trac/wiki/admin.py:219 trac/wiki/web_ui.py:303
 #, python-format
@@ -5668,9 +5664,8 @@ msgid "Can't view %(link)s:"
 msgstr "Не можу переглянути %(link)s:"
 
 #: trac/wiki/intertrac.py:81
-#, fuzzy
 msgid "The Trac Project"
-msgstr "Знайти %(project)s"
+msgstr "The Trac Project"
 
 #: trac/wiki/macros.py:590
 #, python-format
@@ -5759,7 +5754,7 @@ msgstr "Версію %(version)d сторінки %(name)s було видале
 msgid ""
 "The new name is invalid (a name which is separated with slashes cannot be"
 " '.' or '..')."
-msgstr ""
+msgstr "Хибне нове ім’я (ім’я, що розділене слешами, не може бути «.» чи «..»)."
 
 #: trac/wiki/web_ui.py:301
 msgid "The new name must be different from the old name."
@@ -6117,9 +6112,9 @@ msgid "[1:Last modified] %(reldate)s ago"
 msgstr "[1:Востаннє змінено] %(reldate)s тому"
 
 #: trac/wiki/templates/wiki_view.html:59
-#, fuzzy, python-format
+#, python-format
 msgid "Last modified on %(date)s"
-msgstr ""
+msgstr "Востанє змінено %(date)s"
 
 #: trac/wiki/templates/wiki_view.html:64
 #, python-format
