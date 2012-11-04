@@ -1,18 +1,19 @@
 # Estonian translations for Trac.
-# Copyright (C) 2010 Edgewall Software
+# Copyright (C) 2012 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 #
 # Translators:
+# <boamaod@gmail.com>, 2012.
 # lkraav <leho@kraav.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
 "POT-Creation-Date: 2012-10-29 19:08+0100\n"
-"PO-Revision-Date: 2011-03-22 15:50+0000\n"
-"Last-Translator: lkraav <leho@kraav.com>\n"
+"PO-Revision-Date: 2012-10-29 18:34+0000\n"
+"Last-Translator: boamaod\n"
 "Language-Team: Estonian "
-"(http://www.transifex.net/projects/p/trac/language/et/)\n"
+"(http://www.transifex.com/projects/p/trac/language/et/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -146,11 +147,9 @@ msgid "Could not delete attachment"
 msgstr "Manust ei saanud kustutada"
 
 #: trac/attachment.py:218
-#, fuzzy, python-format
+#, python-format
 msgid "Cannot reparent attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
 msgstr ""
-"Manust \"%(att)s\" ei saa teisaldada, sest see on juba %(realm)s : %(id)s"
-" olemas"
 
 #: trac/attachment.py:224
 #, python-format
@@ -167,11 +166,9 @@ msgid "Could not reparent attachment %(name)s"
 msgstr "Manust \"%(name)s\" ei saanud teisaldada"
 
 #: trac/attachment.py:272
-#, fuzzy, python-format
+#, python-format
 msgid "Cannot create attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
 msgstr ""
-"Manust \"%(att)s\" ei saa teisaldada, sest see on juba %(realm)s : %(id)s"
-" olemas"
 
 #: trac/attachment.py:365
 #, python-format
@@ -538,7 +535,7 @@ msgid "Error: %(msg)s"
 msgstr "Viga: %(msg)s"
 
 #: trac/admin/console.py:130
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
@@ -547,12 +544,6 @@ msgid ""
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
 msgstr ""
-"trac-admin %(version)s tervitab\n"
-"Interaktiivne Trac halduskonsool.\n"
-"Copyright (c) 2003-2010 Edgewall Software\n"
-"\n"
-"Kirjuta:  '?' või 'help' käskude abiinfo nägemiseks.\n"
-"        "
 
 #: trac/admin/console.py:164
 #, python-format
@@ -565,11 +556,11 @@ msgid "Completion error: %(err)s"
 msgstr "Viga lõpetamisel: %(err)s"
 
 #: trac/admin/console.py:306
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "No documentation found for '%(cmd)s'. Use 'help' to see the list of "
 "commands."
-msgstr "'%(cmd)s' dokumentatsiooni ei leitud"
+msgstr ""
 
 #: trac/admin/console.py:312
 msgid "Did you mean this?"
@@ -651,7 +642,7 @@ msgid "Directory exists and is not empty."
 msgstr "Kataloog on olemas ja ei ole tühi."
 
 #: trac/admin/console.py:403
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
@@ -1439,9 +1430,9 @@ msgid "Your preferences have been saved."
 msgstr "Teie eelistused on salvestatud."
 
 #: trac/mimeview/rst.py:123 trac/mimeview/rst.py:146
-#, fuzzy, python-format
+#, python-format
 msgid "%(link)s is not a valid TracLink"
-msgstr ""
+msgstr "%(link)s pole korrektne TracLink"
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -1468,9 +1459,8 @@ msgid "Advanced"
 msgstr "Edasijõudnutele"
 
 #: trac/prefs/web_ui.py:150
-#, fuzzy
 msgid "The session has been loaded."
-msgstr "Versioon \"%(name)s\" on lisatud."
+msgstr "Sessioon on laaditud."
 
 #: trac/prefs/templates/prefs.html:10
 msgid "Preferences:"
@@ -1501,9 +1491,8 @@ msgid "Session key:"
 msgstr "Seansivõti:"
 
 #: trac/prefs/templates/prefs_advanced.html:17
-#, fuzzy
 msgid "Change"
-msgstr "muudatus"
+msgstr "Muuda"
 
 #: trac/prefs/templates/prefs_advanced.html:18
 msgid ""
@@ -1788,13 +1777,10 @@ msgstr ""
 "        [1:http://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
-#, fuzzy
 msgid ""
 "Copyright © 2003-2012\n"
 "        [1:Edgewall Software]"
 msgstr ""
-"Copyright © 2003-2010\n"
-"        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
 msgid "System Information"
@@ -2277,16 +2263,12 @@ msgid "View attachment"
 msgstr "Vaata manust"
 
 #: trac/templates/list_of_attachments.html:18
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "[1:%(file)s][2:​]\n"
 "       ([3:%(size)s]) -\n"
 "      added by [4:%(author)s] %(date)s ago."
 msgstr ""
-"[1:%(file)s]\n"
-"      [2:[3:]]\n"
-"       ([4:%(size)s]) -\n"
-"      [5:%(author)s] lisas %(date)s eest."
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:39
@@ -2552,9 +2534,8 @@ msgid "Ticket #%(num)s and all associated data removed."
 msgstr "Sedel #%(num)s ja kõik seotud andmed on kustutatud."
 
 #: trac/ticket/api.py:253
-#, fuzzy
 msgid "Attachment"
-msgstr "Manused"
+msgstr "Manus"
 
 #: trac/ticket/api.py:283
 msgid "Summary"
@@ -3665,7 +3646,7 @@ msgstr "Kopeeri raport"
 
 #: trac/ticket/templates/report_view.html:110
 msgid "(empty)"
-msgstr ""
+msgstr "(tühi)"
 
 #: trac/ticket/templates/report_view.html:141
 #: trac/ticket/templates/report_view.html:149
@@ -3917,14 +3898,11 @@ msgid "Reply, quoting this description"
 msgstr "Vasta, tsiteerides kirjeldust"
 
 #: trac/ticket/templates/ticket_change.html:19
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "[1:[2:%(name)s]][3:​]\n"
 "          added"
 msgstr ""
-"[1:[2:%(name)s]]\n"
-"          [3:[4:]]\n"
-"          lisatud"
 
 #: trac/ticket/templates/ticket_change.html:26
 #, python-format
@@ -5166,9 +5144,8 @@ msgid "View file without annotations"
 msgstr "Vaata faile ilma annotatsioonideta"
 
 #: trac/versioncontrol/web_ui/browser.py:464
-#, fuzzy
 msgid "Blame"
-msgstr "Nimi"
+msgstr ""
 
 #: trac/versioncontrol/web_ui/browser.py:465
 msgid ""
@@ -5515,44 +5492,42 @@ msgid "SID"
 msgstr "SID"
 
 #: trac/web/session.py:445
-#, fuzzy
 msgid "Auth"
-msgstr "tee"
+msgstr ""
 
 #: trac/web/session.py:445
-#, fuzzy
 msgid "Last Visit"
-msgstr "Viimane revisjon"
+msgstr "Viimatine külastus"
 
 #: trac/web/session.py:446
 msgid "Email"
 msgstr "E-post"
 
 #: trac/web/session.py:457
-#, fuzzy, python-format
+#, python-format
 msgid "Session '%(sid)s' already exists"
-msgstr ""
+msgstr "Sessioon '%(sid)s' on juba olemas"
 
 #: trac/web/session.py:470
 #, python-format
 msgid "Invalid attribute '%(attr)s'"
-msgstr ""
+msgstr "Vigane atribuut '%(attr)s'"
 
 #: trac/web/session.py:480
-#, fuzzy, python-format
+#, python-format
 msgid "Session '%(sid)s' not found"
-msgstr "Seansi id %(sid)s ei leitud"
+msgstr "Sessiooni '%(sid)s' ei leidu"
 
 #: trac/wiki/admin.py:102
-#, fuzzy, python-format
+#, python-format
 msgid "Page '%(page)s' not found"
-msgstr "Leht '%(page)s' puudub"
+msgstr "Lehte '%(page)s' ei leidu"
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:122 trac/wiki/model.py:172
 #: trac/wiki/web_ui.py:114
-#, fuzzy, python-format
+#, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr "Vigane wiki-leht: '%(name)s'"
+msgstr "Vigane viki lehe nimi '%(name)s'"
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -5584,7 +5559,7 @@ msgstr "Ümbernimetamisoperatsioon vajab uut nime."
 
 #: trac/wiki/admin.py:215
 msgid "The new name is invalid."
-msgstr ""
+msgstr "Uus nimi on vigane."
 
 #: trac/wiki/admin.py:219 trac/wiki/web_ui.py:303
 #, python-format
@@ -5636,9 +5611,8 @@ msgid "Can't view %(link)s:"
 msgstr "Ei saa vaadata %(link)s:"
 
 #: trac/wiki/intertrac.py:81
-#, fuzzy
 msgid "The Trac Project"
-msgstr "Otsi %(project)s"
+msgstr "Projekt Trac"
 
 #: trac/wiki/macros.py:590
 #, python-format
@@ -6091,9 +6065,9 @@ msgid "[1:Last modified] %(reldate)s ago"
 msgstr "[1:Last modified] %(reldate)s eest"
 
 #: trac/wiki/templates/wiki_view.html:59
-#, fuzzy, python-format
+#, python-format
 msgid "Last modified on %(date)s"
-msgstr ""
+msgstr "Viimati muudetud %(date)s"
 
 #: trac/wiki/templates/wiki_view.html:64
 #, python-format
