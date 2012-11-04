@@ -1,19 +1,21 @@
-# Czech (Czech Republic) translations for Trac.
-# Copyright (C) 2007-2009 Edgewall Software
+# Czech translations for Trac.
+# Copyright (C) 2012 Edgewall Software
 # This file is distributed under the same license as the Trac project.
+#
+# Translators:
 # Radek Bartoň <xbarto33@stud.fit.vutbr.cz>, 2007.
 # Tomáš Čapek <soulcharmer@gmail.com>, 2010.
-#
+# Zbyněk Schwarz <zbynek.schwarz@gmail.com>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 0.12\n"
-"Report-Msgid-Bugs-To: soulcharmer@gmail.com\n"
+"Project-Id-Version:  Trac\n"
+"Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
 "POT-Creation-Date: 2012-10-29 19:08+0100\n"
-"PO-Revision-Date: 2009-04-05 12:31+0200\n"
-"Last-Translator: Tomas Capek <soulcharmer@gmail.com>\n"
-"Language-Team: cs_CZ <soulcharmer@gmail.com>\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"PO-Revision-Date: 2012-10-29 18:34+0000\n"
+"Last-Translator: Zbyněk Schwarz <zbynek.schwarz@gmail.com>\n"
+"Language-Team: Czech "
+"(http://www.transifex.com/projects/p/trac/language/cs/)\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -146,9 +148,11 @@ msgid "Could not delete attachment"
 msgstr "Přílohu nelze odstranit"
 
 #: trac/attachment.py:218
-#, fuzzy, python-format
+#, python-format
 msgid "Cannot reparent attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
-msgstr "Nelze opravit přílohu \"%(att)s\", protože už existuje v %(realm)s:%(id)s"
+msgstr ""
+"Nelze znovu zařadit přílohu \"%(att)s\" protože %(realm)s:%(id)s je "
+"neplatné"
 
 #: trac/attachment.py:224
 #, python-format
@@ -163,9 +167,9 @@ msgid "Could not reparent attachment %(name)s"
 msgstr "Nelze obnovit přílohu %(name)s"
 
 #: trac/attachment.py:272
-#, fuzzy, python-format
+#, python-format
 msgid "Cannot create attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
-msgstr "Nelze opravit přílohu \"%(att)s\", protože už existuje v %(realm)s:%(id)s"
+msgstr "Nelze vytvořit přílohu \"%(att)s\", protože %(realm)s:%(id)s je neplatný"
 
 #: trac/attachment.py:365
 #, python-format
@@ -312,7 +316,7 @@ msgstr "Chyba nastavení"
 #: trac/config.py:265
 #, python-format
 msgid "Error reading '%(file)s', make sure it is readable."
-msgstr ""
+msgstr "Chyba při čtení '%(file)s', ujistěte se, že z něho lze číst."
 
 #: trac/config.py:420
 #, python-format
@@ -334,7 +338,7 @@ msgstr ""
 #: trac/config.py:711 trac/config.py:724
 #, python-format
 msgid "Option '%(option)s' doesn't exist in section '%(section)s'"
-msgstr ""
+msgstr "Volba '%(option)s' neexistuje v části '%(section)s'"
 
 #: trac/core.py:33
 msgid "Trac Error"
@@ -531,7 +535,7 @@ msgid "Error: %(msg)s"
 msgstr "Chyba: %(msg)s"
 
 #: trac/admin/console.py:130
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
@@ -540,11 +544,11 @@ msgid ""
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
 msgstr ""
-"Vítejte v interaktivní administrační konzoli Tracu trac-admin "
-"%(version)s.\n"
-"Copyright (c) 2003-2010 Edgewall Software\n"
+"Vítejte v trac-admin %(version)s\n"
+"Interaktivní konzoli pro správu Trac.\n"
+"Autorská práva (C) 2003-2012 Edgewall Software\n"
 "\n"
-"Napsáním '?' nebo 'help' zobrazíte nápovědu příkazů.\n"
+"Zadejte:  '?' nebo 'help' pro nápovědu pro příkazy.\n"
 "        "
 
 #: trac/admin/console.py:164
@@ -558,11 +562,11 @@ msgid "Completion error: %(err)s"
 msgstr "Chyba při dokončení: %(err)s"
 
 #: trac/admin/console.py:306
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "No documentation found for '%(cmd)s'. Use 'help' to see the list of "
 "commands."
-msgstr "Pro '%(cmd)s' nebyla nalezena žádná dokumentace"
+msgstr ""
 
 #: trac/admin/console.py:312
 msgid "Did you mean this?"
@@ -644,11 +648,13 @@ msgid "Directory exists and is not empty."
 msgstr "Adresář existuje a není prázdný."
 
 #: trac/admin/console.py:403
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
 msgstr ""
+"Základní adresář '%(env)s' neexistuje. Prosím vytvořte ho ručně a zkuste "
+"to znovu."
 
 #: trac/admin/console.py:431
 msgid "Creating and Initializing Project"
@@ -1425,9 +1431,9 @@ msgid "Your preferences have been saved."
 msgstr "Vaše předvolby byly uloženy."
 
 #: trac/mimeview/rst.py:123 trac/mimeview/rst.py:146
-#, fuzzy, python-format
+#, python-format
 msgid "%(link)s is not a valid TracLink"
-msgstr ""
+msgstr "%(link)s není platný TracLink"
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -1454,9 +1460,8 @@ msgid "Advanced"
 msgstr "Pokročilé"
 
 #: trac/prefs/web_ui.py:150
-#, fuzzy
 msgid "The session has been loaded."
-msgstr "Verze \"%(name)s\" byla přidána."
+msgstr "Sezení bylo načteno"
 
 #: trac/prefs/templates/prefs.html:10
 msgid "Preferences:"
@@ -1485,9 +1490,8 @@ msgid "Session key:"
 msgstr "Klíč sezení:"
 
 #: trac/prefs/templates/prefs_advanced.html:17
-#, fuzzy
 msgid "Change"
-msgstr "Změna"
+msgstr "Změnit"
 
 #: trac/prefs/templates/prefs_advanced.html:18
 msgid ""
@@ -1551,11 +1555,13 @@ msgid ""
 msgstr "Ve Vaší časové zóně %(tz)s se zobrazí jako [1:%(formatted)s]."
 
 #: trac/prefs/templates/prefs_datetime.html:42
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "In the default time zone, this would be displayed as\n"
 "            [1:%(formatted)s]."
-msgstr "Ve výchozí časové zóně se zobrazí jako [1:%(formatted)s]."
+msgstr ""
+"Ve výchozím časovém pásmu by toto bylo zobrazeno jako\n"
+"            [1:%(formatted)s]."
 
 #: trac/prefs/templates/prefs_datetime.html:49
 msgid ""
@@ -1618,9 +1624,8 @@ msgid "Language:"
 msgstr "Jazyk:"
 
 #: trac/prefs/templates/prefs_language.html:17
-#, fuzzy
 msgid "default language"
-msgstr "Výchozí jazyk"
+msgstr "výchozí jazyk"
 
 #: trac/prefs/templates/prefs_language.html:23
 msgid ""
@@ -1632,11 +1637,12 @@ msgstr ""
 "jazyka na serveru."
 
 #: trac/prefs/templates/prefs_language.html:27
-#, fuzzy
 msgid ""
 "The 'default language' option uses the browser's\n"
 "        language negotiation feature to select the appropriate language."
-msgstr "Volba [1:Výchozí jazyk] nastaví jazyk podle nastavení ve Vašem prohlížeči."
+msgstr ""
+"Možnost 'výchozí jazyk' používá funkci\n"
+"        projednání jazyka v prohlížeči pro výběr vhodného jazyka."
 
 #: trac/prefs/templates/prefs_pygments.html:37
 msgid ""
@@ -1741,16 +1747,15 @@ msgid ""
 "Please visit the Trac open source project:\n"
 "        [1:http://trac.edgewall.org/]"
 msgstr ""
-"Navštivte prosím stránky otevřeného projektu Trac \"\n"
-"\"na adrese [1:http://trac.edgewall.org/]"
+"Navštivte prosím stránky otevřeného projektu Trac na adrese "
+"[1:http://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
-#, fuzzy
 msgid ""
 "Copyright © 2003-2012\n"
 "        [1:Edgewall Software]"
 msgstr ""
-"Copyright © 2003-2010\n"
+"Autorská práva © 2003-2012\n"
 "        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
@@ -2119,13 +2124,13 @@ msgstr ""
 "                místo zasílání hlášení."
 
 #: trac/templates/error.html:131
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Otherwise, please %(create)s a new bug report\n"
 "                describing the problem and explain how to reproduce it."
 msgstr ""
-"V ostatních případech můžete %(create)s nové hlášení popisující\n"
-"                problém a postup, jak jej reprodukovat."
+"Jinak prosím %(create)s nové hlášení o chybě\n"
+"                popisující problém a vysvětlete."
 
 #: trac/templates/error.html:135
 msgid "Python Traceback"
@@ -2505,9 +2510,8 @@ msgid "Ticket #%(num)s and all associated data removed."
 msgstr "Hlášení #%(num)s byl odstraněn se všemi doprovodnými údaji."
 
 #: trac/ticket/api.py:253
-#, fuzzy
 msgid "Attachment"
-msgstr "Přílohy"
+msgstr "Příloha"
 
 #: trac/ticket/api.py:283
 msgid "Summary"
@@ -3579,9 +3583,8 @@ msgid "Save report"
 msgstr "Uložit výpis"
 
 #: trac/ticket/templates/report_list.html:23
-#, fuzzy
 msgid "Report"
-msgstr "Nahlásil/a:"
+msgstr "Hlášení"
 
 #: trac/ticket/templates/report_list.html:24 trac/wiki/admin.py:207
 msgid "Title"
@@ -3630,7 +3633,7 @@ msgstr "Kopírovat výpis"
 
 #: trac/ticket/templates/report_view.html:110
 msgid "(empty)"
-msgstr ""
+msgstr "(prázdné)"
 
 #: trac/ticket/templates/report_view.html:141
 #: trac/ticket/templates/report_view.html:149
@@ -3835,8 +3838,8 @@ msgid ""
 "        [2:TracTickets] for help on using\n"
 "        tickets."
 msgstr ""
-"[1:Poznámka:] Nápovědu k používání hlášení najdete na stránce \"\n"
-"\"[2:TracTickets]."
+"[1:Poznámka:] Nápovědu k používání hlášení najdete na stránce "
+"[2:TracTickets]."
 
 #: trac/ticket/templates/ticket_box.html:19
 #, python-format
@@ -3997,9 +4000,7 @@ msgstr ""
 msgid ""
 "[1:Note:] See [2:TracTimeline]\n"
 "        for information about the timeline view."
-msgstr ""
-"[1:Poznámka:] Nápovědu k historii najdete na stránce \"\n"
-"\"[2:TracTimeline]."
+msgstr "[1:Poznámka:] Nápovědu k historii najdete na stránce [2:TracTimeline]."
 
 #: trac/util/datefmt.py:103
 #, python-format
@@ -4151,8 +4152,8 @@ msgstr "Nyní byste měli spustit %(resync)s a sesynchronizovat Trac s repozitá
 #, python-format
 msgid "You may have to run %(resync)s to synchronize Trac with the repository."
 msgstr ""
-"Možná bude potřeba spustit %(resync)s a sesynchronizovat Trac s \"\n"
-"\"repozitářem."
+"Možná bude potřeba spustit %(resync)s a sesynchronizovat Trac s "
+"repozitářem."
 
 #: trac/versioncontrol/admin.py:235
 #, python-format
@@ -4244,7 +4245,7 @@ msgstr "Adresář repozitáře musí být zadán absolutně"
 #: trac/versioncontrol/api.py:206
 #, python-format
 msgid "The repository type '%(type)s' is not supported"
-msgstr ""
+msgstr "Typ repozitáře '%(type)s' není podporován"
 
 #: trac/versioncontrol/api.py:343
 #, python-format
@@ -4341,6 +4342,8 @@ msgid ""
 "The repository directory has changed, you should resynchronize the "
 "repository with: trac-admin $ENV repository resync '%(reponame)s'"
 msgstr ""
+"Adresář repozitáře byl změněn, měli byste ho resynchornizovat pomocí: "
+"trac-admin $ENV repository resync '%(reponame)s'"
 
 #: trac/versioncontrol/svn_authz.py:72
 #, python-format
@@ -4566,16 +4569,16 @@ msgid "Revision info"
 msgstr "Informace o revizi"
 
 #: trac/versioncontrol/templates/browser.html:108
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Revision [1:%(rev)s],\n"
 "            [2:%(size)s]\n"
 "            checked in by %(author)s, %(date)s ago\n"
 "            ([3:diff])"
 msgstr ""
-"Soubor [1:%(rev)s],\n"
+"Revize [1:%(rev)s],\n"
 "            [2:%(size)s]\n"
-"            přidal uživatel %(author)s, před %(date)s\n"
+"            odevzdána %(author)s, před %(date)s\n"
 "            ([3:diff])"
 
 #: trac/versioncontrol/templates/browser.html:140
@@ -5131,9 +5134,8 @@ msgid "View file without annotations"
 msgstr "Zobrazit soubor bez označení"
 
 #: trac/versioncontrol/web_ui/browser.py:464
-#, fuzzy
 msgid "Blame"
-msgstr "Jméno"
+msgstr "Obvinit"
 
 #: trac/versioncontrol/web_ui/browser.py:465
 msgid ""
@@ -5509,15 +5511,15 @@ msgid "Session '%(sid)s' not found"
 msgstr "Sezení '%(sid)s' nebylo nalezeno"
 
 #: trac/wiki/admin.py:102
-#, fuzzy, python-format
+#, python-format
 msgid "Page '%(page)s' not found"
-msgstr "Stránka '%(page)s' nebyla nalezena"
+msgstr "Stránka '%(page)s' nenalezena"
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:122 trac/wiki/model.py:172
 #: trac/wiki/web_ui.py:114
-#, fuzzy, python-format
+#, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr "Neplatná wiki stránka: '%(name)s'"
+msgstr "Neplatný název stránky Wiki '%(name)s'"
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -5549,7 +5551,7 @@ msgstr "Při přejmenování musíte zadat nové jméno."
 
 #: trac/wiki/admin.py:215
 msgid "The new name is invalid."
-msgstr ""
+msgstr "Nový název je neplatný"
 
 #: trac/wiki/admin.py:219 trac/wiki/web_ui.py:303
 #, python-format
@@ -5599,9 +5601,8 @@ msgid "Can't view %(link)s:"
 msgstr "Nemohu zobrazit %(link)s:"
 
 #: trac/wiki/intertrac.py:81
-#, fuzzy
 msgid "The Trac Project"
-msgstr "Prohledat %(project)s"
+msgstr "Projekt Trac"
 
 #: trac/wiki/macros.py:590
 #, python-format
@@ -5691,6 +5692,8 @@ msgid ""
 "The new name is invalid (a name which is separated with slashes cannot be"
 " '.' or '..')."
 msgstr ""
+"Nový název je neplatný (název, který je oddělen lomítky nemůže být '.' "
+"nebo '..')."
 
 #: trac/wiki/web_ui.py:301
 msgid "The new name must be different from the old name."
@@ -6042,9 +6045,9 @@ msgid "[1:Last modified] %(reldate)s ago"
 msgstr "[1:Naposledy upravena] před %(reldate)s"
 
 #: trac/wiki/templates/wiki_view.html:59
-#, fuzzy, python-format
+#, python-format
 msgid "Last modified on %(date)s"
-msgstr ""
+msgstr "Naposledy změněno %(date)s"
 
 #: trac/wiki/templates/wiki_view.html:64
 #, python-format
