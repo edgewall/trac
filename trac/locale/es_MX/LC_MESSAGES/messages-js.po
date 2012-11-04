@@ -1,0 +1,151 @@
+# Translations template for Trac.
+# Copyright (C) 2012 Edgewall Software
+# This file is distributed under the same license as the Trac project.
+# 
+# Translators:
+# Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>, 2007.
+# Jesús Franco <tezcatl@freire.mayfirst.org>, 2012.
+# Roberto Aragón <robarago@gmail.com>, 2010.
+#   <tezcatl@freire.mayfirst.org>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: Trac\n"
+"Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
+"POT-Creation-Date: 2012-10-29 19:08+0100\n"
+"PO-Revision-Date: 2012-10-31 15:35+0000\n"
+"Last-Translator: tzkmx <tezcatl@freire.mayfirst.org>\n"
+"Language-Team: Spanish (Mexico) <internationalization@lists.mayfirst.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.6\n"
+"Language: es_MX\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: trac/htdocs/js/blame.js:84
+msgid "(no changeset information)"
+msgstr "(sin información de cambios)"
+
+#: trac/htdocs/js/blame.js:87
+msgid "Close"
+msgstr "Cerrar"
+
+#: trac/htdocs/js/diff.js:119
+msgid "Tabular"
+msgstr "Tabla"
+
+#: trac/htdocs/js/diff.js:125
+msgid "Unified"
+msgstr "Unificado"
+
+#: trac/htdocs/js/expand_dir.js:42
+msgid "Expand sub-directory in place"
+msgstr "Desplegar subdirectorio aquí"
+
+#: trac/htdocs/js/expand_dir.js:71
+msgid "Re-expand directory"
+msgstr "Expandir directorio de nuevo"
+
+#: trac/htdocs/js/expand_dir.js:121
+#, python-format
+msgid "Loading %(entry)s..."
+msgstr "Cargando %(entry)s..."
+
+#: trac/htdocs/js/expand_dir.js:149
+msgid "(empty)"
+msgstr "(vacío)"
+
+#: trac/htdocs/js/expand_dir.js:157
+msgid "(error)"
+msgstr "(error)"
+
+#: trac/htdocs/js/expand_dir.js:164
+msgid "Fold directory"
+msgstr "Plegar directorio"
+
+#: trac/htdocs/js/folding.js:62
+#, python-format
+msgid "Show %(title)s"
+msgstr "Mostrar %(title)s"
+
+#: trac/htdocs/js/folding.js:77
+#, python-format
+msgid "%(title)s (click to hide column)"
+msgstr "%(title)s (clic para ocultar la columna)"
+
+#: trac/htdocs/js/query.js:118
+msgid "A filter already exists for that property"
+msgstr "Ya existe un filtro para esa propiedad"
+
+#: trac/htdocs/js/query.js:145
+msgid "or"
+msgstr "o"
+
+#: trac/htdocs/js/query.js:164
+msgid "yes"
+msgstr "sí"
+
+#: trac/htdocs/js/query.js:167
+msgid "no"
+msgstr "no"
+
+#: trac/htdocs/js/query.js:170
+msgid "between"
+msgstr "entre"
+
+#: trac/htdocs/js/query.js:172
+msgid "and"
+msgstr "y"
+
+#: trac/htdocs/js/trac.js:7
+msgid "Link here"
+msgstr "Enlazar aquí"
+
+#: trac/htdocs/js/wikitoolbar.js:56
+msgid "Bold text: '''Example'''"
+msgstr "Texto en negrita: '''Ejemplo'''"
+
+#: trac/htdocs/js/wikitoolbar.js:59
+msgid "Italic text: ''Example''"
+msgstr "Texto en cursiva: ''Ejemplo''"
+
+#: trac/htdocs/js/wikitoolbar.js:62
+msgid "Heading: == Example =="
+msgstr "Encabezado: == Ejemplo =="
+
+#: trac/htdocs/js/wikitoolbar.js:65
+msgid "Link: [http://www.example.com/ Example]"
+msgstr "Enlace: [http://www.ejemplo.com/ Ejemplo]"
+
+#: trac/htdocs/js/wikitoolbar.js:68
+msgid "Code block: {{{ example }}}"
+msgstr "Bloque de código: {{{ ejemplo }}}"
+
+#: trac/htdocs/js/wikitoolbar.js:71
+msgid "Horizontal rule: ----"
+msgstr "Línea horizontal: ----"
+
+#: trac/htdocs/js/wikitoolbar.js:74
+msgid "New paragraph"
+msgstr "Nuevo párrafo"
+
+#: trac/htdocs/js/wikitoolbar.js:77
+msgid "Line break: [[BR]]"
+msgstr "Forzar salto de línea: [[BR]]"
+
+#: trac/htdocs/js/wikitoolbar.js:80
+msgid "Image: [[Image()]]"
+msgstr "Image:[[Image(tuimagen.ext)]]"
+
+#: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
+msgid "Link to this section"
+msgstr "Enlazar a esta sección"
+
+#: trac/versioncontrol/templates/changeset.html:7
+msgid "Link to this diff"
+msgstr "Enlazar a esta diferencia"
+
+#: trac/wiki/templates/wiki_view.html:5
+#, python-format
+msgid "Link to #%(id)s"
+msgstr "Enlazar a #%(id)s"
