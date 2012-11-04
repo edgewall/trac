@@ -3568,12 +3568,12 @@ msgstr "Modyfikuj"
 #: trac/ticket/templates/ticket.html:91
 #, fuzzy
 msgid "at [1:Initial Version]"
-msgstr "Wersja początkowa"
+msgstr "[1:Wersja początkowa]"
 
 #: trac/ticket/templates/ticket.html:94
 #, fuzzy, FIXME, python-format
 msgid "at [1:Version %(version)s]"
-msgstr " w wersji %(version)s"
+msgstr " w [1:wersji %(version)s]"
 
 #: trac/ticket/templates/ticket.html:98
 msgid "Create New Ticket"
