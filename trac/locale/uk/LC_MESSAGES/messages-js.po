@@ -1,23 +1,24 @@
-# Translations template for Trac.
+# Ukrainian translations for Trac.
 # Copyright (C) 2012 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# 
+#
 # Translators:
 # Remy Blank <remy.blank@pobox.com>, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac\n"
+"Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
-"POT-Creation-Date: 2012-01-29 14:04+0100\n"
+"POT-Creation-Date: 2012-10-29 19:08+0100\n"
 "PO-Revision-Date: 2012-02-14 09:21+0000\n"
 "Last-Translator: Sergii Galashyn <trovich@gmail.com>\n"
-"Language-Team: Ukrainian (http://www.transifex.net/projects/p/trac/language/uk/)\n"
+"Language-Team: Ukrainian "
+"(http://www.transifex.net/projects/p/trac/language/uk/)\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6\n"
-"Language: uk\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"Generated-By: Babel 0.9.6dev-r0\n"
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -146,3 +147,4 @@ msgstr "Посилання на цей diff"
 #, python-format
 msgid "Link to #%(id)s"
 msgstr "Посилання на #%(id)s"
+
