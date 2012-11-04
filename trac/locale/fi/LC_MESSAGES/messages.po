@@ -1,17 +1,20 @@
-# Finnish (Finland) translations for Trac.
-# Copyright (C) 2008 Edgewall Software
-# Copyright (C) 2008 Mikko Rantalainen <mikko.rantalainen@peda.net>
+# Finnish translations for Trac.
+# Copyright (C) 2012 Edgewall Software
 # This file is distributed under the same license as the Trac project.
+#
+# Translators:
+# apuasi <kaannokset.hellberg@gmail.com>, 2011.
 # Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>, 2008.
-# Mikko Rantalainen <mikko.rantalainen@peda.net>, 2010
+# Mikko Rantalainen <mikko.rantalainen@peda.net>, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 0.12\n"
-"Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
+"Project-Id-Version:  Trac\n"
+"Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
 "POT-Creation-Date: 2012-10-29 19:08+0100\n"
-"PO-Revision-Date: 2010-11-04 14:55+0300\n"
-"Last-Translator: Mikko Rantalainen <mikko.rantalainen@peda.net>\n"
-"Language-Team: Peda.net\n"
+"PO-Revision-Date: 2012-10-29 18:34+0000\n"
+"Last-Translator: apuasi <kaannokset.hellberg@gmail.com>\n"
+"Language-Team: Finnish "
+"(http://www.transifex.com/projects/p/trac/language/fi/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -596,8 +599,7 @@ msgstr ""
 msgid "Invoking trac-admin without command starts interactive mode.\n"
 msgstr ""
 "Komennon trac-admin suorittaminen ilman komentoa käynnistää "
-"interaktiivisen \"\n"
-"\"tilan.\n"
+"interaktiivisen tilan.\n"
 
 #: trac/admin/console.py:363
 #, python-format
@@ -4005,10 +4007,8 @@ msgid ""
 "        [7:done by [8:]]"
 msgstr ""
 "[1:Näytä muutokset päivältä [2:]] [3:]\n"
-"\"\n"
-"\"        ja [4:[5:] päivää taaksepäin][6:]\n"
-"\"\n"
-"\"        [7:jotka teki käyttäjä [8:]]"
+"        ja [4:[5:] päivää taaksepäin][6:]\n"
+"        [7:jotka teki käyttäjä [8:]]"
 
 #: trac/timeline/templates/timeline.html:36
 msgid "Today"
