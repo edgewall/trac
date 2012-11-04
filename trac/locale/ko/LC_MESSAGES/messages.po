@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-01-06 22:56+0100\n"
+"POT-Creation-Date: 2012-10-29 19:08+0100\n"
 "PO-Revision-Date: 2010-04-25 14:05+0200\n"
 "Last-Translator: Taedong Kim <fly1004@gmail.com>\n"
 "Language-Team: ko_KR <trac-dev@googlegroups.com>\n"
@@ -15,21 +15,20 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.5\n"
+"Generated-By: Babel 0.9.6dev-r0\n"
 
-#: tracopt/mimeview/php.py:97
+#: tracopt/mimeview/php.py:98
 msgid ""
 "You appear to be using the PHP CGI binary. Trac requires the CLI version "
 "for syntax highlighting."
 msgstr "PHP CGI 바이너리를 사용하고 있는 것 같습니다. Trac은 구문 강조를 위해 CLI 버전을 필요로 합니다."
 
 #: tracopt/ticket/deleter.py:69 tracopt/ticket/deleter.py:82
-#: tracopt/ticket/templates/ticket_delete.html:19
 #: trac/ticket/templates/report_list.html:35
 msgid "Delete"
 msgstr "삭제하기"
 
-#: tracopt/ticket/deleter.py:70 tracopt/ticket/templates/ticket_delete.html:39
+#: tracopt/ticket/deleter.py:70 tracopt/ticket/templates/ticket_delete.html:42
 #, fuzzy
 msgid "Delete ticket"
 msgstr "티켓 만들기"
@@ -55,178 +54,186 @@ msgid "Comment %(num)s not found"
 msgstr "%(num)s 페이지를 찾을 수 없습니다"
 
 #: tracopt/ticket/templates/ticket_delete.html:11
-#, fuzzy
-msgid "Delete Ticket #"
+#, fuzzy, python-format
+msgid "Delete Ticket #%(id)s"
 msgstr "티켓 만들기"
 
 #: tracopt/ticket/templates/ticket_delete.html:12
-#: tracopt/ticket/templates/ticket_delete.html:45
-#: tracopt/ticket/templates/ticket_delete.html:69
-#, fuzzy
-msgid "Delete comment"
-msgstr "첨부파일 삭제"
-
-#: tracopt/ticket/templates/ticket_delete.html:12
-#: tracopt/ticket/templates/ticket_delete.html:45
-#, fuzzy
-msgid "on Ticket #"
-msgstr "티켓 #"
+#: tracopt/ticket/templates/ticket_delete.html:48
+#, fuzzy, python-format
+msgid "Delete comment %(num)s on Ticket #%(id)s"
+msgstr "티켓 #%(id)s에 대한 설명 %(num)s"
 
 #: tracopt/ticket/templates/ticket_delete.html:20
-#: trac/ticket/templates/ticket.html:84
-msgid "Ticket #"
-msgstr "티켓 #"
+#, fuzzy, python-format
+msgid "Delete [1:Ticket #%(id)s]"
+msgstr ""
 
 #: tracopt/ticket/templates/ticket_delete.html:32
 #, fuzzy
 msgid "Are you sure you want to delete this ticket?"
 msgstr "이 첨부파일을 정말로 삭제하시겠습니까?"
 
-#: tracopt/ticket/templates/ticket_delete.html:32
-#, fuzzy
-msgid "(comments:"
-msgstr "설명:"
-
 #: tracopt/ticket/templates/ticket_delete.html:33
+#, python-format
 msgid ""
-",\n"
-"                attachments:"
+"(comments: %(comments)s,\n"
+"                 attachments: %(attachments)s)"
 msgstr ""
 
-#: tracopt/ticket/templates/ticket_delete.html:34
-#: tracopt/ticket/templates/ticket_delete.html:64
+#: tracopt/ticket/templates/ticket_delete.html:36
+#: tracopt/ticket/templates/ticket_delete.html:67
 #: trac/templates/attachment.html:70 trac/wiki/templates/wiki_delete.html:46
 msgid "This is an irreversible operation."
 msgstr "이 작업은 되돌릴 수 없는 작업입니다."
 
-#: tracopt/ticket/templates/ticket_delete.html:38
-#: tracopt/ticket/templates/ticket_delete.html:68
+#: tracopt/ticket/templates/ticket_delete.html:41
+#: tracopt/ticket/templates/ticket_delete.html:71
 #: trac/admin/templates/admin_components.html:55
 #: trac/admin/templates/admin_enums.html:24
 #: trac/admin/templates/admin_milestones.html:68
 #: trac/admin/templates/admin_versions.html:45
 #: trac/templates/attachment.html:63 trac/templates/attachment.html:76
 #: trac/ticket/templates/milestone_delete.html:40
-#: trac/ticket/templates/milestone_edit.html:94
+#: trac/ticket/templates/milestone_edit.html:106
 #: trac/ticket/templates/report_delete.html:21
 #: trac/ticket/templates/report_edit.html:44
 #: trac/ticket/templates/ticket_change.html:49
 #: trac/versioncontrol/templates/admin_repositories.html:84
 #: trac/wiki/templates/wiki_delete.html:50
-#: trac/wiki/templates/wiki_edit.html:80
 #: trac/wiki/templates/wiki_edit_form.html:77
 #: trac/wiki/templates/wiki_rename.html:32
 msgid "Cancel"
 msgstr "취소"
 
-#: tracopt/ticket/templates/ticket_delete.html:52
+#: tracopt/ticket/templates/ticket_delete.html:55
 #, fuzzy
 msgid "comment:"
 msgstr "설명:"
 
-#: tracopt/ticket/templates/ticket_delete.html:54
+#: tracopt/ticket/templates/ticket_delete.html:57
 #: trac/ticket/templates/ticket.html:142
 #, python-format
 msgid "Changed %(date)s ago by %(author)s"
 msgstr "%(author)s에 의해 %(date)s 전에 변경됨"
 
-#: tracopt/ticket/templates/ticket_delete.html:64
+#: tracopt/ticket/templates/ticket_delete.html:67
 #, fuzzy
 msgid "Are you sure you want to delete this ticket comment?"
 msgstr "이 첨부파일을 정말로 삭제하시겠습니까?"
+
+#: tracopt/ticket/templates/ticket_delete.html:72
+#, fuzzy
+msgid "Delete comment"
+msgstr "첨부파일 삭제"
 
 #: trac/about.py:47 trac/templates/about.html:10 trac/templates/about.html:29
 msgid "About Trac"
 msgstr "Trac에 대해서"
 
-#: trac/attachment.py:151
+#: trac/attachment.py:154
 #, python-format
 msgid "Attachment '%(title)s' does not exist."
 msgstr "'%(title)s' 첨부파일이 존재하지 않습니다."
 
-#: trac/attachment.py:152
+#: trac/attachment.py:156
 msgid "Invalid Attachment"
 msgstr "유효하지 않은 첨부파일"
 
-#: trac/attachment.py:192
+#: trac/attachment.py:196
 msgid "Could not delete attachment"
 msgstr "첨부파일을 삭제할 수 없습니다."
 
-#: trac/attachment.py:208
+#: trac/attachment.py:218
+#, python-format
+msgid "Cannot reparent attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
+msgstr ""
+
+#: trac/attachment.py:224
 #, python-format
 msgid ""
 "Cannot reparent attachment \"%(att)s\" as it already exists in "
 "%(realm)s:%(id)s"
 msgstr ""
 
-#: trac/attachment.py:227
+#: trac/attachment.py:243
 #, fuzzy, python-format
 msgid "Could not reparent attachment %(name)s"
 msgstr "첨부파일을 삭제할 수 없습니다."
 
-#: trac/attachment.py:344
+#: trac/attachment.py:272
+#, python-format
+msgid "Cannot create attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
+msgstr ""
+
+#: trac/attachment.py:365
 #, python-format
 msgid "Attachment '%(filename)s' not found"
 msgstr "'%(filename)s' 첨부파일이 존재하지 않습니다."
 
-#: trac/attachment.py:418
+#: trac/attachment.py:439
 msgid "Bad request"
 msgstr "잘못된 요청"
 
-#: trac/attachment.py:435
+#: trac/attachment.py:458
 #, python-format
 msgid "Back to %(parent)s"
 msgstr "%(parent)s로 돌아가기"
 
-#: trac/attachment.py:528
+#: trac/attachment.py:551
 #, fuzzy, python-format
 msgid "%(attachment)s attached to %(resource)s"
 msgstr "%(attachment)s (삭제)"
 
-#: trac/attachment.py:585
+#: trac/attachment.py:608
 #, fuzzy, python-format
 msgid "Unparented attachment %(id)s"
 msgstr "유효하지 않은 첨부파일: %(id)s"
 
-#: trac/attachment.py:593
+#: trac/attachment.py:616
 #, python-format
 msgid "Attachment '%(id)s' in %(parent)s"
 msgstr "%(parent)s의 첨부파일 '%(id)s'"
 
-#: trac/attachment.py:596
+#: trac/attachment.py:619
 #, python-format
 msgid "Attachments of %(parent)s"
 msgstr "%(parent)s의 첨부파일"
 
-#: trac/attachment.py:609 trac/attachment.py:632 trac/admin/web_ui.py:425
-#: trac/admin/web_ui.py:428 trac/admin/web_ui.py:432
+#: trac/attachment.py:636
+#, fuzzy, python-format
+msgid "%(parent)s doesn't exist, can't create attachment"
+msgstr "존재하지 않습니다. 여기에 만들 수 있습니다."
+
+#: trac/attachment.py:643 trac/attachment.py:670 trac/admin/web_ui.py:430
+#: trac/admin/web_ui.py:433 trac/admin/web_ui.py:437
 msgid "No file uploaded"
 msgstr "업로드된 파일이 없습니다."
 
-#: trac/attachment.py:617
+#: trac/attachment.py:651
 msgid "Can't upload empty file"
 msgstr "빈 파일을 업로드할 수 없습니다."
 
-#: trac/attachment.py:622
+#: trac/attachment.py:656
 #, python-format
 msgid "Maximum attachment size: %(num)s bytes"
 msgstr "최대 첨부파일 사이즈: %(num)s 바이트"
 
-#: trac/attachment.py:623
+#: trac/attachment.py:657
 msgid "Upload failed"
 msgstr "업로드 실패"
 
-#: trac/attachment.py:644
+#: trac/attachment.py:683
 #, python-format
 msgid "Attachment field %(field)s is invalid: %(message)s"
 msgstr "첨부파일의 %(field)s 필드가 유효하지 않습니다: %(message)s"
 
-#: trac/attachment.py:648
+#: trac/attachment.py:687
 #, python-format
 msgid "Invalid attachment: %(message)s"
 msgstr "유효하지 않은 첨부파일: %(message)s"
 
-#: trac/attachment.py:659
+#: trac/attachment.py:697
 #, python-format
 msgid ""
 "You don't have permission to replace the attachment %(name)s. You can "
@@ -236,100 +243,122 @@ msgstr ""
 "%(name)s 첨부파일을 교체할 권한이 없습니다. 당신 자신의 첨부파일만을 교체할 수 있습니다. 다른 사람의 첨부파일을 교체하기 "
 "위해서는 ATTACHMENT_DELETE 권한이 필요합니다."
 
-#: trac/attachment.py:691
+#: trac/attachment.py:728
 #, python-format
 msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (삭제)"
 
-#: trac/attachment.py:752 trac/versioncontrol/web_ui/browser.py:633
+#: trac/attachment.py:789 trac/versioncontrol/web_ui/browser.py:666
 #: trac/wiki/web_ui.py:68
 msgid "Plain Text"
 msgstr "Plain Text"
 
-#: trac/attachment.py:758 trac/versioncontrol/web_ui/browser.py:639
+#: trac/attachment.py:795 trac/versioncontrol/web_ui/browser.py:672
 msgid "Original Format"
 msgstr "원본 포멧"
 
-#: trac/attachment.py:800 trac/attachment.py:806
-#: trac/templates/list_of_attachments.html:20
-#: trac/templates/list_of_attachments.html:21
+#: trac/attachment.py:839 trac/templates/list_of_attachments.html:20
 #: trac/ticket/templates/ticket_change.html:21
-#: trac/ticket/templates/ticket_change.html:22
 msgid "Download"
 msgstr "다운로드"
 
-#: trac/attachment.py:900
+#: trac/attachment.py:933
 #, python-format
 msgid "Invalid resource identifier '%(id)s'"
 msgstr "유효하지 않은 리소스 식별자 '%(id)s'"
 
-#: trac/attachment.py:936 trac/admin/templates/admin_components.html:80
+#: trac/attachment.py:969 trac/admin/templates/admin_components.html:80
 #: trac/admin/templates/admin_enums.html:48
-#: trac/admin/templates/admin_milestones.html:104
-#: trac/admin/templates/admin_versions.html:77 trac/templates/about.html:84
-#: trac/templates/error.html:185 trac/ticket/admin.py:209
-#: trac/ticket/admin.py:400 trac/ticket/admin.py:559
-#: trac/versioncontrol/admin.py:110
+#: trac/admin/templates/admin_milestones.html:101
+#: trac/admin/templates/admin_versions.html:78 trac/templates/about.html:84
+#: trac/templates/error.html:160 trac/ticket/admin.py:208
+#: trac/ticket/admin.py:399 trac/ticket/admin.py:560
+#: trac/versioncontrol/admin.py:113
 #: trac/versioncontrol/templates/admin_repositories.html:125
-#: trac/web/session.py:314
+#: trac/web/session.py:445
 msgid "Name"
 msgstr "이름"
 
-#: trac/attachment.py:936
+#: trac/attachment.py:969
 msgid "Size"
 msgstr "사이즈"
 
-#: trac/attachment.py:936 trac/templates/history_view.html:29
-#: trac/ticket/templates/ticket.html:360
-#: trac/versioncontrol/templates/revisionlog.html:96
+#: trac/attachment.py:969 trac/templates/history_view.html:30
+#: trac/ticket/templates/ticket.html:361
+#: trac/versioncontrol/templates/revisionlog.html:98
 msgid "Author"
 msgstr "작성자"
 
-#: trac/attachment.py:936 trac/templates/history_view.html:28
+#: trac/attachment.py:969 trac/templates/history_view.html:29
 msgid "Date"
 msgstr "날짜"
 
-#: trac/attachment.py:937 trac/templates/attachment.html:93
-#: trac/ticket/api.py:289 trac/ticket/templates/ticket_box.html:60
+#: trac/attachment.py:970 trac/templates/attachment.html:93
+#: trac/ticket/api.py:295 trac/ticket/templates/ticket_box.html:60
 msgid "Description"
 msgstr "상세설명"
 
-#: trac/attachment.py:962 trac/wiki/admin.py:104
+#: trac/attachment.py:996 trac/wiki/admin.py:108
 #, python-format
 msgid "File '%(name)s' exists"
 msgstr "'%(name)s' 파일이 존재합니다."
 
-#: trac/config.py:403
+#: trac/config.py:41
+#, fuzzy
+msgid "Configuration Error"
+msgstr "설정"
+
+#: trac/config.py:265
+#, python-format
+msgid "Error reading '%(file)s', make sure it is readable."
+msgstr ""
+
+#: trac/config.py:420
 #, python-format
 msgid "[%(section)s] %(entry)s: expected integer, got %(value)s"
 msgstr ""
 
-#: trac/config.py:421
+#: trac/config.py:438
 #, python-format
 msgid "[%(section)s] %(entry)s: expected float, got %(value)s"
 msgstr ""
 
-#: trac/config.py:605
+#: trac/config.py:622
 #, python-format
 msgid "[%(section)s] %(entry)s: expected one of (%(choices)s), got %(value)s"
 msgstr ""
 
-#: trac/env.py:587
+#: trac/config.py:711 trac/config.py:724
+#, python-format
+msgid "Option '%(option)s' doesn't exist in section '%(section)s'"
+msgstr ""
+
+#: trac/core.py:33
+msgid "Trac Error"
+msgstr ""
+
+#: trac/env.py:153
+msgid ""
+"Visit the Trac open source project at<br /><a "
+"href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
+msgstr ""
+
+#: trac/env.py:578
 msgid "Database newer than Trac version"
 msgstr "데이타베이스가 Trac 버전보다 더 새로운 버전입니다."
 
-#: trac/env.py:601
+#: trac/env.py:595
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
 msgstr "%(num)i 버전에 대한 업그레이드 모듈이 없습니다. (%(version)s.py)"
 
-#: trac/env.py:646
+#: trac/env.py:641
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
 msgstr "\"TRAC_ENV\" 환경 변수가 없습니다. 유효한 Trac 저장소를 지정하기 위해서 Trac은 이 변수를 필요로 합니다."
 
-#: trac/env.py:678
+#: trac/env.py:673
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
@@ -340,57 +369,57 @@ msgstr ""
 "\n"
 "\"trac-admin %(path)s upgrade\" 명령을 실행하십시오."
 
-#: trac/env.py:712
+#: trac/env.py:707
 msgid "Copying resources from:"
 msgstr "다음으로부터 리소스를 복사:"
 
-#: trac/env.py:728
+#: trac/env.py:723
 msgid "Creating scripts."
 msgstr "스트립트 생성."
 
-#: trac/env.py:743
+#: trac/env.py:739
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr "hotcopy는 존재하는 '%(dest)s'를 덮어쓸 수 없습니다."
 
-#: trac/env.py:753
+#: trac/env.py:750
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr "%(src)s를 %(dst)s로 핫카피 ..."
 
-#: trac/env.py:768
+#: trac/env.py:764
 msgid "The following errors happened while copying the environment:"
 msgstr "저장소를 복사하는 동안에 다음 에러가 발생했습니다.:"
 
-#: trac/env.py:779
+#: trac/env.py:775
 msgid "Hotcopy done."
 msgstr "핫카피 완료."
 
-#: trac/env.py:784 trac/admin/api.py:125
+#: trac/env.py:780 trac/admin/api.py:131
 msgid "Invalid arguments"
 msgstr "유효하지 않은 아규먼트"
 
-#: trac/env.py:787
+#: trac/env.py:783
 msgid "Database is up to date, no upgrade necessary."
 msgstr "데이타베이스가 최신입니다. 업그레이드가 필요하지 않습니다."
 
-#: trac/env.py:795
-#, python-format
+#: trac/env.py:791
+#, fuzzy, python-format
 msgid ""
-"Backup failed with '%(msg)s'.\n"
+"Backup failed: %(msg)s.\n"
 "Use '--no-backup' to upgrade without doing a backup."
 msgstr ""
 "백업 실패, '%(msg)s'.\n"
 "백업하지 않고 업그레이드를 하려면, '--no-backup' 옵션을 사용하십시오."
 
-#: trac/env.py:809
+#: trac/env.py:801
 msgid ""
 "Warning: the wiki-macros directory in the environment is non-empty, but "
 "Trac\n"
 "doesn't load plugins from there anymore. Please remove it by hand."
 msgstr ""
 
-#: trac/env.py:820
+#: trac/env.py:812
 #, python-format
 msgid ""
 "Error while removing wiki-macros: %(err)s\n"
@@ -398,20 +427,39 @@ msgid ""
 "hand."
 msgstr ""
 
-#: trac/env.py:822
-msgid "Upgrade done."
-msgstr "업그레이드 완료."
+#: trac/env.py:817
+#, python-format
+msgid ""
+"Upgrade done.\n"
+"\n"
+"You may want to upgrade the Trac documentation now by running:\n"
+"\n"
+"  trac-admin %(path)s wiki upgrade"
+msgstr ""
 
-#: trac/notification.py:155
+#: trac/notification.py:154
 msgid "TLS enabled but server does not support TLS"
 msgstr "TLS가 활성화되었지만, 서버가 TLS를 지원하지 않습니다."
 
-#: trac/notification.py:303
-#, python-format
-msgid "Invalid email encoding setting: %s"
-msgstr "유효하지 않은 이메일 인코딩 설정: %s"
+#: trac/notification.py:305
+#, fuzzy, python-format
+msgid "Invalid email encoding setting: %(pref)s"
+msgstr "유효하지 않은 이메일 인코딩 설정: %(pref)s"
 
-#: trac/notification.py:329
+#: trac/notification.py:319
+msgid "Unable to send email due to identity crisis."
+msgstr ""
+
+#: trac/notification.py:323
+#, python-format
+msgid "Neither %(from_)s nor %(reply_to)s are specified in the configuration."
+msgstr ""
+
+#: trac/notification.py:324
+msgid "SMTP Notification Error"
+msgstr ""
+
+#: trac/notification.py:333
 msgid "Header length is too short"
 msgstr "헤더의 길이가 너무 짧습니다."
 
@@ -434,42 +482,43 @@ msgstr "이 동작을 수행하기 위한 권한이 충분하지 않습니다."
 msgid "%(name)s is not a valid action."
 msgstr "%(name)s은 유효한 작업이 아닙니다."
 
-#: trac/perm.py:642
+#: trac/perm.py:643
 msgid "User"
 msgstr "사용자"
 
-#: trac/perm.py:642 trac/admin/templates/admin_perms.html:69
-#: trac/ticket/templates/ticket.html:338
+#: trac/perm.py:643 trac/admin/templates/admin_perms.html:70
+#: trac/ticket/templates/ticket.html:339
 msgid "Action"
 msgstr "작업"
 
-#: trac/perm.py:644
+#: trac/perm.py:645
 msgid "Available actions:"
 msgstr "이용 가능한 동작:"
 
-#: trac/perm.py:657
-msgid "Group names must be in lower case and actions in upper case"
-msgstr "그룹 이름은 소문자, 동작 이름은 대문자여야만 합니다."
+#: trac/perm.py:656 trac/admin/web_ui.py:335
+msgid "All upper-cased tokens are reserved for permission names"
+msgstr "모두 대문자로 된 단어는 권한 이름을 위해 예약되어있습니다."
 
-#: trac/resource.py:326
+#: trac/resource.py:336
 #, fuzzy, python-format
 msgid "%(name)s at version %(version)s"
 msgstr " 버전 %(version)s"
 
-#: trac/admin/api.py:129 trac/admin/console.py:254
+#: trac/admin/api.py:135
 msgid "Command not found"
 msgstr "명령이 없습니다."
 
-#: trac/admin/console.py:111 trac/ticket/templates/report_edit.html:34
-msgid "Error:"
-msgstr "오류:"
+#: trac/admin/console.py:111
+#, fuzzy, python-format
+msgid "Error: %(msg)s"
+msgstr ""
 
 #: trac/admin/console.py:130
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
-"Copyright (c) 2003-2010 Edgewall Software\n"
+"Copyright (C) 2003-2012 Edgewall Software\n"
 "\n"
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
@@ -486,35 +535,42 @@ msgstr ""
 msgid "Failed to open environment: %(err)s"
 msgstr "환경을 여는데 실패했습니다."
 
-#: trac/admin/console.py:234
+#: trac/admin/console.py:247
 #, fuzzy, python-format
 msgid "Completion error: %(err)s"
 msgstr "완료 에러:"
 
-#: trac/admin/console.py:287
-#, python-format
-msgid "No documentation found for '%(cmd)s'"
+#: trac/admin/console.py:306
+#, fuzzy, python-format
+msgid ""
+"No documentation found for '%(cmd)s'. Use 'help' to see the list of "
+"commands."
 msgstr "'%(cmd)s'에 대해서 문서가 없습니다."
 
-#: trac/admin/console.py:289
+#: trac/admin/console.py:312
+msgid "Did you mean this?"
+msgid_plural "Did you mean one of these?"
+msgstr[0] ""
+
+#: trac/admin/console.py:316
 #, python-format
 msgid "trac-admin - The Trac Administration Console %(version)s"
 msgstr "trac-admin - Trac 관리 콘솔 %(version)s"
 
-#: trac/admin/console.py:293
+#: trac/admin/console.py:320
 msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
 msgstr "사용법: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
 
-#: trac/admin/console.py:296
+#: trac/admin/console.py:323
 msgid "Invoking trac-admin without command starts interactive mode.\n"
 msgstr "상호대화 모드로 시작하지 않고 trac-admin 실행하기.\n"
 
-#: trac/admin/console.py:336
+#: trac/admin/console.py:363
 #, python-format
 msgid "Creating a new Trac environment at %(envname)s"
 msgstr "%(envname)s에 새로운 Trac 저장소 생성"
 
-#: trac/admin/console.py:338
+#: trac/admin/console.py:365
 msgid ""
 "\n"
 "Trac will first ask a few questions about your environment \n"
@@ -530,12 +586,12 @@ msgstr ""
 " 프로젝트 이름을 입력해 주십시오.\n"
 " 이 이름은 페이지의 제목과 설명에서 사용될 것 입니다.\n"
 
-#: trac/admin/console.py:346
+#: trac/admin/console.py:373
 #, python-format
 msgid "Project Name [%(default)s]> "
 msgstr "프로젝트 이름 [%(default)s]> "
 
-#: trac/admin/console.py:348
+#: trac/admin/console.py:375
 msgid ""
 " \n"
 " Please specify the connection string for the database to use.\n"
@@ -550,44 +606,51 @@ msgstr ""
 " 이미 존재하는 PostgreSQL 데이타베이스를 사용하는 것도 가능합니다.\n"
 " (정확한 연결 스트링 구문에 대해서는 Trac 문서를 체크하십시오.)\n"
 
-#: trac/admin/console.py:356
+#: trac/admin/console.py:383
 #, python-format
 msgid "Database connection string [%(default)s]> "
 msgstr "데이타베이스 연결 스트링 [%(default)s]> "
 
-#: trac/admin/console.py:363
+#: trac/admin/console.py:390
 #, python-format
 msgid "Initenv for '%(env)s' failed."
 msgstr "'%(env)s' 저장소 초기화 실패."
 
-#: trac/admin/console.py:366
-#, fuzzy, python-format
+#: trac/admin/console.py:393
+#, fuzzy
 msgid "Does an environment already exist?"
 msgstr "%(name)s 버전이 이미 존재합니다."
 
-#: trac/admin/console.py:370
+#: trac/admin/console.py:397
 msgid "Directory exists and is not empty."
 msgstr ""
 
-#: trac/admin/console.py:398
+#: trac/admin/console.py:403
+#, python-format
+msgid ""
+"Base directory '%(env)s' does not exist. Please create it manually and "
+"retry."
+msgstr ""
+
+#: trac/admin/console.py:431
 msgid "Creating and Initializing Project"
 msgstr "프로젝트 생성 및 초기화"
 
-#: trac/admin/console.py:415
+#: trac/admin/console.py:448
 #, fuzzy
 msgid "Failed to create environment."
 msgstr "환경을 여는데 실패했습니다."
 
-#: trac/admin/console.py:421
+#: trac/admin/console.py:454
 msgid " Installing default wiki pages"
 msgstr "기본 위키 페이지 설치"
 
-#: trac/admin/console.py:430
+#: trac/admin/console.py:463
 #, fuzzy
 msgid " Indexing default repository"
 msgstr "저장소 인덱싱"
 
-#: trac/admin/console.py:433
+#: trac/admin/console.py:466
 #, fuzzy
 msgid ""
 "\n"
@@ -615,7 +678,7 @@ msgstr ""
 "trac.ini 파일과 [trac]의 repository_type과 repository_path 설정을 다시 체크할 필요가 있을 "
 "것입니다.\n"
 
-#: trac/admin/console.py:476
+#: trac/admin/console.py:509
 #, python-format
 msgid ""
 "\n"
@@ -666,158 +729,155 @@ msgstr ""
 "\n"
 "축하합니다!\n"
 
-#: trac/admin/console.py:536
-#, python-format
-msgid "non-ascii environment path '%(path)s' not supported."
+#: trac/admin/console.py:568
+#, fuzzy, python-format
+msgid "Non-ascii environment path '%(path)s' not supported."
 msgstr "ascii가 아닌 저장소 경로 '%(path)s'는 지원되지 않습니다."
 
-#: trac/admin/web_ui.py:64
+#: trac/admin/web_ui.py:66
 msgid "Admin"
 msgstr "관리"
 
-#: trac/admin/web_ui.py:65 trac/admin/templates/admin.html:16
+#: trac/admin/web_ui.py:67 trac/admin/templates/admin.html:16
 msgid "Administration"
 msgstr "관리"
 
-#: trac/admin/web_ui.py:81
+#: trac/admin/web_ui.py:83
 msgid "No administration panels available"
 msgstr "관리 패널이 이용 가능하지 않습니다."
 
-#: trac/admin/web_ui.py:107 trac/admin/web_ui.py:111
+#: trac/admin/web_ui.py:109 trac/admin/web_ui.py:113
 msgid "Unknown administration panel"
 msgstr "알 수 없는 관리 패널"
 
-#: trac/admin/web_ui.py:185 trac/ticket/admin.py:65 trac/ticket/admin.py:90
-#: trac/ticket/admin.py:275 trac/ticket/admin.py:457 trac/ticket/admin.py:609
-#: trac/ticket/admin.py:695 trac/ticket/report.py:189
-#: trac/ticket/roadmap.py:687 trac/versioncontrol/admin.py:198
+#: trac/admin/web_ui.py:187 trac/ticket/admin.py:64 trac/ticket/admin.py:89
+#: trac/ticket/admin.py:275 trac/ticket/admin.py:458 trac/ticket/admin.py:611
+#: trac/ticket/admin.py:697 trac/ticket/report.py:189
+#: trac/ticket/roadmap.py:695 trac/versioncontrol/admin.py:217
 msgid "Your changes have been saved."
 msgstr "변경 내용이 저장되었습니다."
 
-#: trac/admin/web_ui.py:190 trac/ticket/admin.py:68
+#: trac/admin/web_ui.py:192 trac/ticket/admin.py:67
 msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "Your changes have not been saved."
 msgstr "trac.ini 파일에 쓰는 동안에 에러가 발생하였습니다. 웹 서버에서 쓸 수 있는지 확인하십시오. 변경사항은 저장되지 않았습니다."
 
-#: trac/admin/web_ui.py:203 trac/admin/web_ui.py:231 trac/admin/web_ui.py:319
-#: trac/admin/web_ui.py:401 trac/prefs/web_ui.py:86
+#: trac/admin/web_ui.py:205 trac/admin/web_ui.py:233 trac/admin/web_ui.py:321
+#: trac/admin/web_ui.py:406 trac/prefs/web_ui.py:86
 #: trac/prefs/templates/prefs_general.html:9
 msgid "General"
 msgstr "일반"
 
-#: trac/admin/web_ui.py:203 trac/admin/templates/admin_basics.html:13
+#: trac/admin/web_ui.py:205 trac/admin/templates/admin_basics.html:13
 msgid "Basic Settings"
 msgstr "기본 설정"
 
-#: trac/admin/web_ui.py:231 trac/admin/templates/admin_logging.html:10
+#: trac/admin/web_ui.py:233 trac/admin/templates/admin_logging.html:10
 #: trac/admin/templates/admin_logging.html:22
 msgid "Logging"
 msgstr "로깅"
 
-#: trac/admin/web_ui.py:240 trac/ticket/templates/milestone_delete.html:31
-#: trac/ticket/templates/milestone_edit.html:73
+#: trac/admin/web_ui.py:242 trac/ticket/templates/milestone_delete.html:31
+#: trac/ticket/templates/milestone_edit.html:85
+#: trac/ticket/templates/query_results.html:27
 msgid "None"
 msgstr "없음"
 
-#: trac/admin/web_ui.py:241
+#: trac/admin/web_ui.py:243
 msgid "Console"
 msgstr "콘솔"
 
-#: trac/admin/web_ui.py:243 trac/templates/attachment.html:32
+#: trac/admin/web_ui.py:245 trac/templates/attachment.html:32
 msgid "File"
 msgstr "파일"
 
-#: trac/admin/web_ui.py:245
+#: trac/admin/web_ui.py:247
 msgid "Syslog"
 msgstr "시스템로그"
 
-#: trac/admin/web_ui.py:247
+#: trac/admin/web_ui.py:249
 msgid "Windows event log"
 msgstr "윈도우즈 이벤트 로그"
 
-#: trac/admin/web_ui.py:260
+#: trac/admin/web_ui.py:262
 #, python-format
 msgid "Unknown log type %(type)s"
 msgstr "알 수 없는 로그 타입 %(type)s"
 
-#: trac/admin/web_ui.py:261
+#: trac/admin/web_ui.py:263
 msgid "Invalid log type"
 msgstr "유효하지 않은 로그 타입"
 
-#: trac/admin/web_ui.py:275
+#: trac/admin/web_ui.py:277
 #, python-format
 msgid "Unknown log level %(level)s"
 msgstr "알 수 없는 로그 레벨 %(level)s"
 
-#: trac/admin/web_ui.py:276
+#: trac/admin/web_ui.py:278
 msgid "Invalid log level"
 msgstr "유효하지 않은 로그 레벨"
 
-#: trac/admin/web_ui.py:289
+#: trac/admin/web_ui.py:291
 msgid "You must specify a log file"
 msgstr "로그 파일을 지정해야만 합니다."
 
-#: trac/admin/web_ui.py:290
+#: trac/admin/web_ui.py:292
 msgid "Missing field"
 msgstr "없는 필드"
 
-#: trac/admin/web_ui.py:319 trac/admin/templates/admin_perms.html:9
+#: trac/admin/web_ui.py:321 trac/admin/templates/admin_perms.html:10
 msgid "Permissions"
 msgstr "권한"
 
-#: trac/admin/web_ui.py:333
-msgid "All upper-cased tokens are reserved for permission names"
-msgstr "모두 대문자로 된 단어는 권한 이름을 위해 예약되어있습니다."
-
-#: trac/admin/web_ui.py:340
+#: trac/admin/web_ui.py:342
 msgid "Unknown action"
 msgstr "알 수 없는 작업"
 
-#: trac/admin/web_ui.py:344
+#: trac/admin/web_ui.py:346
 #, python-format
 msgid "The subject %(subject)s has been granted the permission %(action)s."
 msgstr "%(subject)s 은/는 %(action)s 권한이 허용되어있습니다."
 
-#: trac/admin/web_ui.py:349
+#: trac/admin/web_ui.py:351
 #, python-format
 msgid "The permission %(action)s was already granted to %(subject)s."
 msgstr "%(action)s 권한은 %(subject)s에게 이미 허용되어있습니다."
 
-#: trac/admin/web_ui.py:365
+#: trac/admin/web_ui.py:367
 #, python-format
 msgid "The subject %(subject)s has been added to the group %(group)s."
 msgstr "%(subject)s 은/는 %(group)s 그룹에 추가되었습니다."
 
-#: trac/admin/web_ui.py:370
+#: trac/admin/web_ui.py:372
 #, python-format
 msgid "The subject %(subject)s was already added to the group %(group)s."
 msgstr "%(subject)s 은/는 벌써 %(group)s 그룹에 추가되어있습니다."
 
-#: trac/admin/web_ui.py:383
+#: trac/admin/web_ui.py:387
 msgid "The selected permissions have been revoked."
 msgstr "선택된 권한이 무효화되었습니다."
 
-#: trac/admin/web_ui.py:401 trac/admin/templates/admin_plugins.html:9
+#: trac/admin/web_ui.py:406 trac/admin/templates/admin_plugins.html:10
 msgid "Plugins"
 msgstr "플러그인"
 
-#: trac/admin/web_ui.py:435
+#: trac/admin/web_ui.py:440
 msgid "Uploaded file is not a Python source file or egg"
 msgstr "업로드된 파일이 파이썬 소스 파일이나 egg 파일이 아닙니다."
 
-#: trac/admin/web_ui.py:440
+#: trac/admin/web_ui.py:445
 #, python-format
 msgid "Plugin %(name)s already installed"
 msgstr "%(name)s 플러그인이 이미 설치되어있습니다."
 
-#: trac/admin/web_ui.py:513
-#, fuzzy, python-format
+#: trac/admin/web_ui.py:518
+#, fuzzy
 msgid "The following component has been disabled:"
 msgid_plural "The following components have been disabled:"
 msgstr[0] "\"%(name)s\" 콤포넌트가 추가되었습니다."
 
-#: trac/admin/web_ui.py:518
+#: trac/admin/web_ui.py:523
 #, fuzzy
 msgid "The following component has been enabled:"
 msgid_plural "The following components have been enabled:"
@@ -841,7 +901,7 @@ msgstr "프로젝트"
 #: trac/admin/templates/admin_enums.html:21
 #: trac/admin/templates/admin_enums.html:35
 #: trac/admin/templates/admin_milestones.html:22
-#: trac/admin/templates/admin_milestones.html:80
+#: trac/admin/templates/admin_milestones.html:79
 #: trac/admin/templates/admin_versions.html:21
 #: trac/admin/templates/admin_versions.html:56
 #: trac/versioncontrol/templates/admin_repositories.html:50
@@ -856,7 +916,7 @@ msgid "URL:"
 msgstr "URL:"
 
 #: trac/admin/templates/admin_basics.html:29
-#: trac/ticket/templates/ticket.html:254
+#: trac/ticket/templates/ticket.html:255
 msgid "Description:"
 msgstr "상세한 설명:"
 
@@ -864,13 +924,13 @@ msgstr "상세한 설명:"
 #: trac/admin/templates/admin_components.html:99
 #: trac/admin/templates/admin_enums.html:70
 #: trac/admin/templates/admin_logging.html:54
-#: trac/admin/templates/admin_milestones.html:129
-#: trac/admin/templates/admin_plugins.html:164
-#: trac/admin/templates/admin_versions.html:94
+#: trac/admin/templates/admin_milestones.html:126
+#: trac/admin/templates/admin_plugins.html:158
+#: trac/admin/templates/admin_versions.html:95
 msgid "Apply changes"
 msgstr "변경사항 적용하기"
 
-#: trac/admin/templates/admin_components.html:10 trac/ticket/admin.py:76
+#: trac/admin/templates/admin_components.html:10 trac/ticket/admin.py:75
 msgid "Components"
 msgstr "컴포넌트"
 
@@ -909,51 +969,50 @@ msgid "Add Component:"
 msgstr "컴포넌트 추가:"
 
 #: trac/admin/templates/admin_components.html:70
-#: trac/admin/templates/admin_enums.html:33
 #: trac/admin/templates/admin_enums.html:38
-#: trac/admin/templates/admin_milestones.html:93
-#: trac/admin/templates/admin_perms.html:38
-#: trac/admin/templates/admin_perms.html:60
-#: trac/admin/templates/admin_versions.html:67
+#: trac/admin/templates/admin_milestones.html:90
+#: trac/admin/templates/admin_perms.html:39
+#: trac/admin/templates/admin_perms.html:61
+#: trac/admin/templates/admin_versions.html:68
 #: trac/versioncontrol/templates/admin_repositories.html:102
 #: trac/versioncontrol/templates/admin_repositories.html:116
 msgid "Add"
 msgstr "추가"
 
-#: trac/admin/templates/admin_components.html:80 trac/ticket/admin.py:209
-#: trac/ticket/api.py:283 trac/ticket/web_ui.py:1337
+#: trac/admin/templates/admin_components.html:80 trac/ticket/admin.py:208
+#: trac/ticket/api.py:289 trac/ticket/web_ui.py:1363
 msgid "Owner"
 msgstr "소유자"
 
 #: trac/admin/templates/admin_components.html:80
 #: trac/admin/templates/admin_enums.html:48
-#: trac/admin/templates/admin_milestones.html:104
-#: trac/admin/templates/admin_versions.html:77
+#: trac/admin/templates/admin_milestones.html:101
+#: trac/admin/templates/admin_versions.html:78
 msgid "Default"
 msgstr "기본값"
 
 #: trac/admin/templates/admin_components.html:98
 #: trac/admin/templates/admin_enums.html:69
-#: trac/admin/templates/admin_milestones.html:128
-#: trac/admin/templates/admin_perms.html:87
-#: trac/admin/templates/admin_versions.html:93
+#: trac/admin/templates/admin_milestones.html:125
+#: trac/admin/templates/admin_perms.html:95
+#: trac/admin/templates/admin_versions.html:94
 #: trac/versioncontrol/templates/admin_repositories.html:145
 msgid "Remove selected items"
 msgstr "선택된 아이템 삭제하기"
 
 #: trac/admin/templates/admin_components.html:101
 #: trac/admin/templates/admin_enums.html:72
-#: trac/admin/templates/admin_milestones.html:131
-#: trac/admin/templates/admin_versions.html:96
+#: trac/admin/templates/admin_milestones.html:128
+#: trac/admin/templates/admin_versions.html:97
 msgid ""
 "You can remove all items from this list to completely hide this\n"
 "              field from the user interface."
 msgstr "사용자 인터페이스에서 이 필드를 완전히 숨기기 위해서 이 리스트로부터 모든 아이템을 삭제할 수 있습니다."
 
 #: trac/admin/templates/admin_components.html:107
-#: trac/admin/templates/admin_enums.html:78
-#: trac/admin/templates/admin_milestones.html:137
-#: trac/admin/templates/admin_versions.html:102
+#: trac/admin/templates/admin_enums.html:82
+#: trac/admin/templates/admin_milestones.html:134
+#: trac/admin/templates/admin_versions.html:103
 msgid ""
 "As long as you don't add any items to the list, this field\n"
 "            will remain completely hidden from the user interface."
@@ -969,9 +1028,26 @@ msgstr ""
 msgid "Modify %(label_singular)s"
 msgstr ""
 
+#: trac/admin/templates/admin_enums.html:33
+#, python-format
+msgid "Add %(label_singular)s"
+msgstr ""
+
 #: trac/admin/templates/admin_enums.html:48
 msgid "Order"
 msgstr "순서"
+
+#: trac/admin/templates/admin_enums.html:77
+#: trac/prefs/templates/prefs_language.html:31
+#, fuzzy
+msgid "Note:"
+msgstr "다음 변경사항 무시하기:"
+
+#: trac/admin/templates/admin_enums.html:77
+msgid ""
+"The order of priorities determines the coloring of entries\n"
+"              in the ticket queries and reports."
+msgstr ""
 
 #: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:79
 msgid "Configuration"
@@ -999,8 +1075,8 @@ msgstr ""
 "만약 상대경로로 지정했다면, 로그 파일은 프로젝트 저장소([2:%(dir)s])의\n"
 "            [1:log] 디렉토리내에 저장될 것입니다."
 
-#: trac/admin/templates/admin_milestones.html:10 trac/ticket/admin.py:241
-#: trac/ticket/roadmap.py:855
+#: trac/admin/templates/admin_milestones.html:10 trac/ticket/admin.py:240
+#: trac/ticket/roadmap.py:895
 msgid "Milestones"
 msgstr "마일스톤"
 
@@ -1013,8 +1089,8 @@ msgid "Modify Milestone:"
 msgstr "마일스톤 수정:"
 
 #: trac/admin/templates/admin_milestones.html:25
-#: trac/admin/templates/admin_milestones.html:85
-#: trac/ticket/templates/milestone_edit.html:50
+#: trac/admin/templates/admin_milestones.html:82
+#: trac/ticket/templates/milestone_edit.html:59
 msgid "Due:"
 msgstr "완료 기한:"
 
@@ -1022,174 +1098,153 @@ msgstr "완료 기한:"
 #: trac/admin/templates/admin_milestones.html:29
 #: trac/admin/templates/admin_milestones.html:39
 #: trac/admin/templates/admin_milestones.html:43
-#: trac/admin/templates/admin_milestones.html:87
-#: trac/admin/templates/admin_milestones.html:89
+#: trac/admin/templates/admin_milestones.html:84
 #: trac/admin/templates/admin_versions.html:27
 #: trac/admin/templates/admin_versions.html:30
-#: trac/admin/templates/admin_versions.html:60
-#: trac/admin/templates/admin_versions.html:63
-#: trac/ticket/templates/milestone_edit.html:51
-#: trac/ticket/templates/milestone_edit.html:54
+#: trac/admin/templates/admin_versions.html:61
+#: trac/admin/templates/admin_versions.html:64
 #: trac/ticket/templates/milestone_edit.html:63
 #: trac/ticket/templates/milestone_edit.html:66
+#: trac/ticket/templates/milestone_edit.html:75
+#: trac/ticket/templates/milestone_edit.html:78
 #, python-format
 msgid "Format: %(datehint)s"
 msgstr ""
 
 #: trac/admin/templates/admin_milestones.html:35
-#: trac/ticket/templates/milestone_edit.html:59
+#: trac/ticket/templates/milestone_edit.html:71
 msgid "Completed:"
 msgstr "완료됨:"
 
 #: trac/admin/templates/admin_milestones.html:57
 #: trac/admin/templates/admin_versions.html:35
-#: trac/ticket/templates/milestone_edit.html:85
+#: trac/ticket/templates/milestone_edit.html:97
 #: trac/versioncontrol/templates/admin_repositories.html:73
 msgid "Description (you may use [1:WikiFormatting] here):"
 msgstr "상세설명 (여기에서 [1:WikiFormatting]을 사용할 수 있습니다.):"
 
-#: trac/admin/templates/admin_milestones.html:78
+#: trac/admin/templates/admin_milestones.html:77
 msgid "Add Milestone:"
 msgstr "마일스톤 추가:"
 
-#: trac/admin/templates/admin_milestones.html:104 trac/ticket/admin.py:400
+#: trac/admin/templates/admin_milestones.html:86
+#, python-format
+msgid "Format: %(datetimehint)s"
+msgstr ""
+
+#: trac/admin/templates/admin_milestones.html:101 trac/ticket/admin.py:399
 msgid "Due"
 msgstr "완료 기한"
 
-#: trac/admin/templates/admin_milestones.html:104 trac/ticket/admin.py:400
+#: trac/admin/templates/admin_milestones.html:101 trac/ticket/admin.py:399
 msgid "Completed"
 msgstr "완료됨"
 
-#: trac/admin/templates/admin_milestones.html:104 trac/ticket/web_ui.py:184
+#: trac/admin/templates/admin_milestones.html:101 trac/ticket/web_ui.py:184
 msgid "Tickets"
 msgstr "티켓"
 
-#: trac/admin/templates/admin_perms.html:13
+#: trac/admin/templates/admin_perms.html:14
 msgid "Manage Permissions"
 msgstr "권한 관리"
 
-#: trac/admin/templates/admin_perms.html:18
+#: trac/admin/templates/admin_perms.html:19
 msgid "Grant Permission:"
 msgstr "권한 수락:"
 
-#: trac/admin/templates/admin_perms.html:21
-#: trac/admin/templates/admin_perms.html:48
+#: trac/admin/templates/admin_perms.html:22
+#: trac/admin/templates/admin_perms.html:49
 msgid "Subject:"
 msgstr "사용자:"
 
-#: trac/admin/templates/admin_perms.html:25
+#: trac/admin/templates/admin_perms.html:26
 msgid "Action:"
 msgstr "작업:"
 
-#: trac/admin/templates/admin_perms.html:33
+#: trac/admin/templates/admin_perms.html:34
 msgid ""
 "Grant permission for an action to a subject, which can be either a user\n"
 "          or a group."
 msgstr "사용자나 그룹에 대해서 주어진 동작에 대한 권한을 수락합니다."
 
-#: trac/admin/templates/admin_perms.html:45
+#: trac/admin/templates/admin_perms.html:46
 msgid "Add Subject to Group:"
 msgstr "그룹에 사용자 추가:"
 
-#: trac/admin/templates/admin_perms.html:52
+#: trac/admin/templates/admin_perms.html:53
 msgid "Group:"
 msgstr "그룹:"
 
-#: trac/admin/templates/admin_perms.html:56
+#: trac/admin/templates/admin_perms.html:57
 msgid "Add a user or group to an existing permission group."
 msgstr "사용자나 그룹을 존재하는 권한 그룹에 추가합니다."
 
-#: trac/admin/templates/admin_perms.html:69
-#: trac/admin/templates/admin_perms.html:92
+#: trac/admin/templates/admin_perms.html:70
 msgid "Subject"
 msgstr "사용자"
 
-#: trac/admin/templates/admin_perms.html:91
-msgid "Note that"
-msgstr "다음을 주의하십시오. :"
-
-#: trac/admin/templates/admin_perms.html:92 trac/ticket/templates/query.html:73
-msgid "or"
-msgstr "혹은"
-
-#: trac/admin/templates/admin_perms.html:92
-msgid "Group"
-msgstr "그룹"
-
-#: trac/admin/templates/admin_perms.html:92
+#: trac/admin/templates/admin_perms.html:99
+#, fuzzy
 msgid ""
-"names can't be all upper-case,\n"
+"Note that [1:Subject] or [2:Group] names can't be all upper-case,\n"
 "      as that is reserved for permission names."
 msgstr ""
-"이름들은 모두 대문자일 수 없습니다.\n"
-"모두 대문자로 된 이름은 권한 이름으로 예약되어있습니다."
 
-#: trac/admin/templates/admin_plugins.html:41
+#: trac/admin/templates/admin_plugins.html:35
 msgid "Manage Plugins"
 msgstr "플러그인 관리"
 
-#: trac/admin/templates/admin_plugins.html:45
+#: trac/admin/templates/admin_plugins.html:39
 msgid "Install Plugin:"
 msgstr "를러그인 설치:"
 
-#: trac/admin/templates/admin_plugins.html:47
-#: trac/versioncontrol/templates/changeset.html:168
-#, fuzzy
-msgid "File:"
-msgid_plural "Files:"
-msgstr[0] "파일:"
+#: trac/admin/templates/admin_plugins.html:41
+msgid "File: [1:]"
+msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:52
+#: trac/admin/templates/admin_plugins.html:46
 msgid ""
 "The web server does not have sufficient permissions to store files in\n"
 "            the environment plugins directory."
 msgstr "저장소의 플러그인 디렉토리에 파일을 저장하기위한 충분한 권한을 웹서버가 가지고 있지 않습니다."
 
-#: trac/admin/templates/admin_plugins.html:56
+#: trac/admin/templates/admin_plugins.html:50
 msgid "Upload a plugin packaged as Python egg."
 msgstr "파이썬 egg로 패키지된 플러그인을 업로드합니다."
 
-#: trac/admin/templates/admin_plugins.html:61
+#: trac/admin/templates/admin_plugins.html:55
 msgid "Install"
 msgstr "설치하기"
 
-#: trac/admin/templates/admin_plugins.html:84 trac/templates/diff_view.html:51
-#: trac/versioncontrol/templates/changeset.html:140
+#: trac/admin/templates/admin_plugins.html:78 trac/templates/diff_view.html:51
+#: trac/versioncontrol/templates/changeset.html:142
 msgid "Author:"
 msgstr "작성자:"
 
-#: trac/admin/templates/admin_plugins.html:93
+#: trac/admin/templates/admin_plugins.html:87
 msgid "Home page:"
 msgstr "홈 페이지:"
 
-#: trac/admin/templates/admin_plugins.html:100
+#: trac/admin/templates/admin_plugins.html:94
 msgid "License:"
 msgstr "라이선스:"
 
-#: trac/admin/templates/admin_plugins.html:110
-msgid "Show all descriptions"
-msgstr "모든 상세 설명을 보이기"
-
-#: trac/admin/templates/admin_plugins.html:112
-msgid "Hide all descriptions"
-msgstr "모든 상세 설명을 숨기기"
-
-#: trac/admin/templates/admin_plugins.html:114 trac/ticket/admin.py:76
-#: trac/ticket/api.py:296
+#: trac/admin/templates/admin_plugins.html:102 trac/ticket/admin.py:75
+#: trac/ticket/api.py:302
 msgid "Component"
 msgstr "컴포넌트"
 
-#: trac/admin/templates/admin_plugins.html:117
+#: trac/admin/templates/admin_plugins.html:105
+msgid "Show all descriptions"
+msgstr "모든 상세 설명을 보이기"
+
+#: trac/admin/templates/admin_plugins.html:107
+msgid "Hide all descriptions"
+msgstr "모든 상세 설명을 숨기기"
+
+#: trac/admin/templates/admin_plugins.html:111
 msgid "Enabled"
 msgstr "활성화됨"
-
-#: trac/admin/templates/admin_plugins.html:126
-msgid "Toggle the module description"
-msgstr "모듈 상세 설명을 토글하기"
-
-#: trac/admin/templates/admin_plugins.html:142
-msgid "Toggle the component description"
-msgstr "콤포넌트 설명을 토글하기"
 
 #: trac/admin/templates/admin_versions.html:10 trac/ticket/admin.py:440
 msgid "Versions"
@@ -1215,16 +1270,16 @@ msgstr "버전 추가:"
 msgid "Released:"
 msgstr "릴리즈된 날짜:"
 
-#: trac/admin/templates/admin_versions.html:77
+#: trac/admin/templates/admin_versions.html:78
 msgid "Released"
 msgstr "릴리즈된 날짜"
 
-#: trac/db/api.py:132
+#: trac/db/api.py:191
 #, python-format
 msgid "Unsupported database type \"%(scheme)s\""
 msgstr "지원되지 않는 데이타베이스 타입 \"%(scheme)s\""
 
-#: trac/db/api.py:162
+#: trac/db/api.py:227
 #, python-format
 msgid ""
 "Unknown scheme \"%(scheme)s\"; database connection string must start with"
@@ -1235,34 +1290,61 @@ msgstr "알 수 없는 \"%(scheme)s\" 스킴; 데이타 베이스 연결 스트�
 msgid "Cannot load Python bindings for MySQL"
 msgstr "MySQL을 위한 파이썬 바인딩을 로드할 수 없습니다"
 
-#: trac/db/pool.py:118
+#: trac/db/mysql_backend.py:205 trac/db/postgres_backend.py:175
+#: trac/db/postgres_backend.py:194
+#, fuzzy, python-format
+msgid "Unable to run %(path)s: %(msg)s"
+msgstr ""
+
+#: trac/db/mysql_backend.py:209
 #, python-format
-msgid "Unable to get database connection within %(time)d seconds"
+msgid "mysqldump failed: %(msg)s"
+msgstr ""
+
+#: trac/db/mysql_backend.py:211 trac/db/postgres_backend.py:200
+#: trac/db/sqlite_backend.py:230
+#, fuzzy
+msgid "No destination file created"
+msgstr "선택된 버전이 없습니다."
+
+#: trac/db/pool.py:149
+#, fuzzy, python-format
+msgid "Unable to get database connection within %(time)d seconds."
 msgstr "%(time)d 초 내에 데이타베이스 연결을 할 수 없습니다."
 
 #: trac/db/postgres_backend.py:81
 msgid "Cannot load Python bindings for PostgreSQL"
 msgstr "PostgreSQL을 위한 파이썬 바인딩을 로드할 수 없습니다"
 
-#: trac/db/sqlite_backend.py:153
+#: trac/db/postgres_backend.py:198
+#, python-format
+msgid "pg_dump failed: %(msg)s"
+msgstr ""
+
+#: trac/db/sqlite_backend.py:154
 msgid "Cannot load Python bindings for SQLite"
 msgstr "SQLite를 위한 파이썬 바인딩을 로드할 수 없습니다"
 
 #: trac/db/sqlite_backend.py:157
-msgid "Need at least PySqlite 2.0.7 or higher"
+#, fuzzy, python-format
+msgid "Need at least PySqlite %(version)s or higher"
 msgstr "적어도 PySqlite 2.0.7 이상의 버전이 필요합니다"
 
-#: trac/db/sqlite_backend.py:181
+#: trac/db/sqlite_backend.py:160
+msgid "PySqlite 2.5.2 - 2.5.4 break Trac, please use 2.5.5 or higher"
+msgstr ""
+
+#: trac/db/sqlite_backend.py:185
 #, python-format
 msgid "Database already exists at %(path)s"
 msgstr "데이타베이스가 %(path)s에 이미 존재합니다."
 
-#: trac/db/sqlite_backend.py:241
+#: trac/db/sqlite_backend.py:247
 #, python-format
 msgid "Database \"%(path)s\" not found."
 msgstr "\"%(path)s\" 데이타베이스가 발견되지 않습니다."
 
-#: trac/db/sqlite_backend.py:250
+#: trac/db/sqlite_backend.py:256
 #, python-format
 msgid ""
 "The user %(user)s requires read _and_ write permissions to the database "
@@ -1271,36 +1353,41 @@ msgstr ""
 "%(user)s 사용자는 %(path)s 데이타 베이스 파일과 그 파일이 위치한 디렉토리에 대해서 읽기 _와_ 쓰기 권한을 필요로 "
 "합니다."
 
-#: trac/mimeview/api.py:674 trac/mimeview/api.py:685
+#: trac/mimeview/api.py:690 trac/mimeview/api.py:700
 #, python-format
 msgid "No available MIME conversions from %(old)s to %(new)s"
 msgstr "%(old)s에서 %(new)s로 변환하기 위해 사용할 수 있는 MIME 변환기가 없습니다."
 
-#: trac/mimeview/api.py:793
+#: trac/mimeview/api.py:815
 #, python-format
 msgid "HTML preview using %(renderer)s failed (%(err)s)"
 msgstr "%(renderer)s를 사용하는 HTML 미리보기 실패 (%(err)s)"
 
-#: trac/mimeview/api.py:825
+#: trac/mimeview/api.py:846
 #, python-format
 msgid "Can't use %(annotator)s annotator: %(error)s"
 msgstr ""
 
-#: trac/mimeview/patch.py:54
-msgid "Invalid unified diff content"
-msgstr "유효하지 않은 unified diff 내용입니다."
+#: trac/mimeview/api.py:1096 trac/templates/error.html:148
+msgid "Line"
+msgstr "라인"
 
-#: trac/mimeview/patch.py:171
+#: trac/mimeview/api.py:1096
+#, fuzzy
+msgid "Line numbers"
+msgstr "유효하지 않은 변경사항 번호"
+
+#: trac/mimeview/patch.py:172
 #, python-format
 msgid "new file %(new)s"
 msgstr "새 파일 %(new)s"
 
-#: trac/mimeview/patch.py:175
+#: trac/mimeview/patch.py:176
 #, python-format
 msgid "deleted file %(deleted)s"
 msgstr "삭제된 파일 %(deleted)s"
 
-#: trac/mimeview/patch.py:247
+#: trac/mimeview/patch.py:248
 msgid "this hunk was shorter than expected"
 msgstr "이 조각은 기대한 것보다 더 작습니다."
 
@@ -1312,9 +1399,12 @@ msgstr "구문 강조"
 msgid "Your preferences have been saved."
 msgstr "설정이 저장되었습니다."
 
+#: trac/mimeview/rst.py:123 trac/mimeview/rst.py:146
+#, fuzzy, python-format
+msgid "%(link)s is not a valid TracLink"
+msgstr ""
+
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
-#: trac/ticket/templates/ticket.html:374
-#: trac/wiki/templates/wiki_edit_form.html:50
 msgid "Preferences"
 msgstr "설정"
 
@@ -1330,13 +1420,18 @@ msgstr "날짜 & 시간"
 msgid "Keyboard Shortcuts"
 msgstr "키보드 단축키"
 
-#: trac/prefs/web_ui.py:90 trac/prefs/templates/prefs_language.html:9
+#: trac/prefs/web_ui.py:90 trac/prefs/templates/prefs_language.html:10
 msgid "Language"
 msgstr "언어"
 
 #: trac/prefs/web_ui.py:92 trac/prefs/templates/prefs_advanced.html:9
 msgid "Advanced"
 msgstr "고급"
+
+#: trac/prefs/web_ui.py:150
+#, fuzzy, python-format
+msgid "The session has been loaded."
+msgstr "\"%(name)s\" 버전이 추가되었습니다."
 
 #: trac/prefs/templates/prefs.html:10
 msgid "Preferences:"
@@ -1362,6 +1457,11 @@ msgstr "변경사항 저장"
 #: trac/prefs/templates/prefs_advanced.html:14
 msgid "Session key:"
 msgstr "세션 키:"
+
+#: trac/prefs/templates/prefs_advanced.html:17
+#, fuzzy
+msgid "Change"
+msgstr "변경"
 
 #: trac/prefs/templates/prefs_advanced.html:18
 msgid ""
@@ -1408,41 +1508,33 @@ msgid ""
 "      instead of that of the server."
 msgstr "시간대를 설정하면 이 사이트에서 표시되는 모든 날짜와 시간이 서버의 시간대가 아닌 설정한 시간대로 출력될 것입니다."
 
-#: trac/prefs/templates/prefs_datetime.html:30
-msgid "Example: The current time is"
-msgstr "예제: 현재 시간은"
+#: trac/prefs/templates/prefs_datetime.html:33
+#, fuzzy, python-format
+msgid "Example: The current time is [1:%(time)s] (UTC)."
+msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:31
-msgid "(UTC)."
-msgstr "(UTC)."
-
-#: trac/prefs/templates/prefs_datetime.html:34
+#: trac/prefs/templates/prefs_datetime.html:36
 #, python-format
 msgid ""
 "In your time zone %(tz)s, this would be displayed as\n"
 "            [1:%(formatted)s]."
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:40
+#: trac/prefs/templates/prefs_datetime.html:42
 #, python-format
 msgid ""
 "In the default time zone, this would be displayed as\n"
 "            [1:%(formatted)s]."
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:47
+#: trac/prefs/templates/prefs_datetime.html:49
+#, fuzzy
 msgid ""
 "Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean "
-"Time (GMT)."
-msgstr "주의: UTC(Universal Co-ordinated Time)는 GMT(Greenwich Mean Time)라고도 알려져있습니다."
-
-#: trac/prefs/templates/prefs_datetime.html:48
-msgid ""
-"A positive offset is used to indicate a timezone at the east of "
+"Time (GMT).[1:]\n"
+"        A positive offset is used to indicate a timezone at the east of "
 "Greenwich, i.e. ahead of Universal Time."
 msgstr ""
-"양의 옵셋은 그리니치(Greenwhich)에서 동쪽에 있는 시간대를 지시하기 위해서 사용됩니다. 즉, Universal Time보다"
-" 이른 시간대."
 
 #: trac/prefs/templates/prefs_general.html:15
 msgid "Full name:"
@@ -1486,22 +1578,22 @@ msgstr ""
 "기본적으로 비활성화되어있습니다.\n"
 "접근키에 대해 더 많은 정보가 필요하다면 [1:TracAccessibility]을 보십시오."
 
-#: trac/prefs/templates/prefs_language.html:14
+#: trac/prefs/templates/prefs_language.html:15
 msgid "Language:"
 msgstr "언어:"
 
-#: trac/prefs/templates/prefs_language.html:16
+#: trac/prefs/templates/prefs_language.html:17
 msgid "default language"
 msgstr "기본 언어"
 
-#: trac/prefs/templates/prefs_language.html:21
+#: trac/prefs/templates/prefs_language.html:23
 msgid ""
 "Configuring your language will result in all text\n"
 "      displayed on this site to use your language instead of that of the\n"
 "      server."
 msgstr "언어를 설정하면 이 사이트에서 표시되는 모든 텍스트들이 서버의 언어가 아닌 설정된 언어로 표시될 것입니다."
 
-#: trac/prefs/templates/prefs_language.html:25
+#: trac/prefs/templates/prefs_language.html:27
 msgid ""
 "The 'default language' option uses the browser's\n"
 "        language negotiation feature to select the appropriate language."
@@ -1509,52 +1601,53 @@ msgstr ""
 "'기본 언어' 옵션은 적당한 언어를 선택하기 위해서\n"
 "        브라우저의 언어 선택 특징을 사용합니다."
 
-#: trac/prefs/templates/prefs_pygments.html:36
+#: trac/prefs/templates/prefs_pygments.html:37
 msgid ""
 "The Pygments syntax highlighter can be used with\n"
 "      different coloring styles."
 msgstr "Pygments 구문 강조기는 다른 컬러 스타일과 함께 사용될 수 있습니다."
 
-#: trac/prefs/templates/prefs_pygments.html:38
+#: trac/prefs/templates/prefs_pygments.html:39
 msgid "Style:"
 msgstr "스타일:"
 
-#: trac/prefs/templates/prefs_pygments.html:43
+#: trac/prefs/templates/prefs_pygments.html:44
 msgid "Preview:"
 msgstr "미리 보기:"
 
-#: trac/search/web_ui.py:63 trac/search/templates/search.html:10
+#: trac/search/web_ui.py:71 trac/search/templates/search.html:10
 #: trac/search/templates/search.html:23 trac/search/templates/search.html:28
-#: trac/templates/theme.html:28
+#: trac/templates/theme.html:29
 msgid "Search"
 msgstr "검색"
 
-#: trac/search/web_ui.py:153
+#: trac/search/web_ui.py:165
 #, python-format
 msgid "Browse repository path %(path)s"
 msgstr "저장소 경로 %(path)s 브라우징하기"
 
-#: trac/search/web_ui.py:193
+#: trac/search/web_ui.py:205
 #, python-format
 msgid "Search query too short. Query must be at least %(num)s characters long."
 msgstr "검색 질의가 너무 짧습니다. 질의는 최소한 %(num)s개 문자보다 길어야 합니다."
 
-#: trac/search/web_ui.py:231 trac/ticket/query.py:763 trac/ticket/report.py:397
+#: trac/search/web_ui.py:244 trac/ticket/query.py:774 trac/ticket/report.py:400
 msgid "Next Page"
 msgstr "다음 페이지"
 
-#: trac/search/web_ui.py:237 trac/ticket/query.py:768 trac/ticket/report.py:400
+#: trac/search/web_ui.py:250 trac/ticket/query.py:779 trac/ticket/report.py:403
 msgid "Previous Page"
 msgstr "이전 페이지"
 
 #: trac/search/templates/search.html:10 trac/search/templates/search.html:40
 #: trac/ticket/templates/query_results.html:20
-#: trac/ticket/templates/report_view.html:79
+#: trac/ticket/templates/report_view.html:78
 msgid "Results"
 msgstr "결과"
 
 #: trac/search/templates/search.html:48
-msgid "Quickjump to"
+#, fuzzy, python-format
+msgid "Quickjump to %(name)s"
 msgstr "바로가기"
 
 #: trac/search/templates/search.html:56
@@ -1563,7 +1656,8 @@ msgid "By %(author)s"
 msgstr ""
 
 #: trac/search/templates/search.html:65
-#: trac/ticket/templates/report_view.html:193
+#: trac/ticket/templates/report_view.html:97
+#: trac/ticket/templates/report_view.html:206
 msgid "No matches found."
 msgstr "일치하는 결과가 없습니다."
 
@@ -1603,12 +1697,17 @@ msgid "python powered"
 msgstr "python powered"
 
 #: trac/templates/about.html:44
-msgid "Please visit the Trac open source project:"
-msgstr "Trac 오픈 소스 프로젝트를 방문해 주십시오:"
+#, fuzzy
+msgid ""
+"Please visit the Trac open source project:\n"
+"        [1:http://trac.edgewall.org/]"
+msgstr ""
 
-#: trac/templates/about.html:45
-msgid "http://trac.edgewall.org/"
-msgstr "http://trac.edgewall.org/"
+#: trac/templates/about.html:46
+msgid ""
+"Copyright © 2003-2012\n"
+"        [1:Edgewall Software]"
+msgstr ""
 
 #: trac/templates/about.html:54
 msgid "System Information"
@@ -1618,8 +1717,8 @@ msgstr "시스템 정보"
 msgid "Installed Plugins"
 msgstr "설치된 플러그인"
 
-#: trac/templates/about.html:72 trac/templates/error.html:83
-#: trac/templates/error.html:217
+#: trac/templates/about.html:72 trac/templates/error.html:192
+#: trac/web/main.py:614
 msgid "N/A"
 msgstr "N/A"
 
@@ -1627,7 +1726,7 @@ msgstr "N/A"
 msgid "Section"
 msgstr "섹션"
 
-#: trac/templates/about.html:85 trac/templates/error.html:185
+#: trac/templates/about.html:85 trac/templates/error.html:160
 msgid "Value"
 msgstr "값"
 
@@ -1651,18 +1750,20 @@ msgid "%(filename)s on %(parent)s – Attachment"
 msgstr ""
 
 #: trac/templates/attachment.html:29
-msgid "Add Attachment to"
-msgstr "첨부파일 추가"
+#, fuzzy, python-format
+msgid "Add Attachment to [1:%(parent)s]"
+msgstr "[1:%(parent)s]의 첨부파일"
 
-#: trac/templates/attachment.html:32
-msgid "(size limit"
+#: trac/templates/attachment.html:33
+#, fuzzy, python-format
+msgid "(size limit %(value)s)"
 msgstr "(사이즈 제한"
 
 #: trac/templates/attachment.html:37
 msgid "Attachment Info"
 msgstr "첨부파일 정보"
 
-#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:365
+#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:366
 #: trac/wiki/templates/wiki_edit_form.html:46
 msgid "Your email or username:"
 msgstr "이메일 주소 혹은 사용자 이름:"
@@ -1691,8 +1792,9 @@ msgstr "첨부파일 삭제"
 msgid "Attach another file"
 msgstr "다른 파일 첨부하기"
 
-#: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:22
-#: trac/templates/macros.html:19 trac/versioncontrol/templates/browser.html:110
+#: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:21
+#: trac/templates/macros.html:19 trac/util/text.py:529
+#: trac/versioncontrol/templates/browser.html:110
 #: trac/versioncontrol/templates/dir_entries.html:16
 #, python-format
 msgid "%(size)s bytes"
@@ -1703,7 +1805,7 @@ msgstr ""
 msgid ""
 "File %(file)s,\n"
 "                [1:%(size)s]\n"
-"                (added by %(author)s,  %(date)s ago)"
+"                (added by %(author)s, %(date)s ago)"
 msgstr ""
 "%(file)s 파일, [1:%(size)s]\n"
 "                (%(author)s에 의해 추가됨,  %(date)s 전)"
@@ -1729,53 +1831,53 @@ msgstr "콤포넌트 %(name)s 가 존재하지 않습니다."
 msgid "Differences"
 msgstr "차이점"
 
-#: trac/templates/diff_options.html:9
+#: trac/templates/diff_options.html:10
 msgid "View differences"
 msgstr "차이점 보기"
 
-#: trac/templates/diff_options.html:12
+#: trac/templates/diff_options.html:13
 msgid "inline"
 msgstr "인라인"
 
-#: trac/templates/diff_options.html:14
+#: trac/templates/diff_options.html:15
 msgid "side by side"
 msgstr "양쪽으로"
 
 #: trac/templates/diff_options.html:18
-msgid "Show"
-msgstr "보기"
+msgid ""
+"[1:[2:]\n"
+"             Show]\n"
+"      [3:[4:]\n"
+"             lines around each change]"
+msgstr ""
 
-#: trac/templates/diff_options.html:22
-msgid "lines around each change"
-msgstr "각 변경사항 주변 라인"
-
-#: trac/templates/diff_options.html:25
+#: trac/templates/diff_options.html:28
 msgid "Show the changes in full context"
 msgstr ""
 
-#: trac/templates/diff_options.html:29
+#: trac/templates/diff_options.html:32
 msgid "Ignore:"
 msgstr "다음 변경사항 무시하기:"
 
-#: trac/templates/diff_options.html:33
+#: trac/templates/diff_options.html:36
 msgid "Blank lines"
 msgstr "공백 라인들"
 
-#: trac/templates/diff_options.html:38
+#: trac/templates/diff_options.html:41
 msgid "Case changes"
 msgstr "대소문자 변경사항"
 
-#: trac/templates/diff_options.html:43
+#: trac/templates/diff_options.html:46
 msgid "White space changes"
 msgstr "공백문자 변경사항"
 
-#: trac/templates/diff_options.html:47
+#: trac/templates/diff_options.html:50
 #: trac/ticket/templates/milestone_view.html:57
-#: trac/ticket/templates/query.html:207
+#: trac/ticket/templates/query.html:210
 #: trac/ticket/templates/report_view.html:49
 #: trac/ticket/templates/roadmap.html:29
 #: trac/timeline/templates/timeline.html:31
-#: trac/versioncontrol/templates/revisionlog.html:65
+#: trac/versioncontrol/templates/revisionlog.html:67
 msgid "Update"
 msgstr "업데이트"
 
@@ -1806,7 +1908,7 @@ msgid ""
 msgstr ""
 
 #: trac/templates/diff_view.html:43
-#: trac/versioncontrol/templates/changeset.html:134
+#: trac/versioncontrol/templates/changeset.html:136
 msgid "Timestamp:"
 msgstr "시간:"
 
@@ -1821,103 +1923,62 @@ msgid "%(date)s (%(duration)s ago)"
 msgstr "%(date)s (%(duration)s 전)"
 
 #: trac/templates/diff_view.html:55
-msgid "(IP:"
-msgstr "(IP:"
+#, python-format
+msgid "(IP: %(ipnr)s)"
+msgstr ""
 
 #: trac/templates/diff_view.html:57
+#: trac/ticket/templates/ticket_notify_email.txt:21
 msgid "Comment:"
 msgstr "설명:"
 
 #: trac/templates/diff_view.html:65
-#: trac/versioncontrol/templates/changeset.html:196
-#: trac/versioncontrol/templates/revisionlog.html:71
+#: trac/versioncontrol/templates/changeset.html:198
+#: trac/versioncontrol/templates/revisionlog.html:73
 msgid "Legend:"
 msgstr "범례:"
 
 #: trac/templates/diff_view.html:67
-#: trac/versioncontrol/templates/changeset.html:198
+#: trac/versioncontrol/templates/changeset.html:200
 msgid "Unmodified"
 msgstr "변경되지 않음"
 
 #: trac/templates/diff_view.html:68
-#: trac/versioncontrol/templates/changeset.html:199
-#: trac/versioncontrol/templates/revisionlog.html:73
+#: trac/versioncontrol/templates/changeset.html:201
+#: trac/versioncontrol/templates/revisionlog.html:75
 msgid "Added"
 msgstr "추가됨"
 
 #: trac/templates/diff_view.html:69
-#: trac/versioncontrol/templates/changeset.html:200
-#: trac/versioncontrol/templates/revisionlog.html:75
+#: trac/versioncontrol/templates/changeset.html:202
+#: trac/versioncontrol/templates/revisionlog.html:77
 msgid "Removed"
 msgstr "제거됨"
 
-#: trac/templates/diff_view.html:70 trac/ticket/api.py:325
-#: trac/versioncontrol/templates/changeset.html:202
-#: trac/versioncontrol/templates/revisionlog.html:77 trac/wiki/admin.py:200
+#: trac/templates/diff_view.html:70 trac/ticket/api.py:331
+#: trac/versioncontrol/templates/changeset.html:204
+#: trac/versioncontrol/templates/revisionlog.html:79 trac/wiki/admin.py:207
 msgid "Modified"
 msgstr "수정됨"
 
-#: trac/templates/error.html:64
-msgid ""
-"==== How to Reproduce ====\n"
-"\n"
-"While doing a"
-msgstr ""
-"==== 어떻게 재현할 것인가? ====\n"
-"\n"
-"While doing a"
+#: trac/templates/error.html:10 trac/templates/index.html:18
+#: trac/web/main.py:535
+msgid "Error"
+msgstr "오류"
 
-#: trac/templates/error.html:67
-msgid "operation on `"
-msgstr ""
-
-#: trac/templates/error.html:67
-msgid ""
-"`, Trac issued an internal error.\n"
-"\n"
-"''(please provide additional details here)''"
-msgstr ""
-"`, Trac에서 내부적인 에러가 발생했습니다.\n"
-"\n"
-"''(여기에 추가적인 상세한 정보를 적어주십시오.)''"
-
-#: trac/templates/error.html:71
-msgid ""
-"Request parameters:\n"
-"{{{"
-msgstr ""
-"요청 파라메터:\n"
-"{{{"
-
-#: trac/templates/error.html:76
-msgid "==== System Information ===="
-msgstr "==== 시스템 정보 ===="
-
-#: trac/templates/error.html:80
-msgid "==== Enabled Plugins ===="
-msgstr "==== 활성화된 플러그인들 ===="
-
-#: trac/templates/error.html:83
-msgid ""
-"==== Python Traceback ====\n"
-"{{{"
-msgstr ""
-"==== Python Traceback ====\n"
-"{{{"
-
-#: trac/templates/error.html:90
+#: trac/templates/error.html:65
 msgid "Create"
 msgstr "생성하기"
 
-#: trac/templates/error.html:105
+#: trac/templates/error.html:80
 msgid "Oops…"
 msgstr "Oops…"
 
-#: trac/templates/error.html:107
+#: trac/templates/error.html:82
 msgid "Trac detected an internal error:"
 msgstr "Trac에서 내부 오류가 검출됨:"
 
-#: trac/templates/error.html:112
+#: trac/templates/error.html:87
 msgid ""
 "There was an internal error in Trac.\n"
 "                It is recommended that you notify your local\n"
@@ -1926,37 +1987,31 @@ msgid ""
 "                reproduce the issue."
 msgstr ""
 
-#: trac/templates/error.html:120
-msgid "To that end, you could"
+#: trac/templates/error.html:95
+#, python-format
+msgid "To that end, you could %(create)s a ticket."
 msgstr ""
 
-#: trac/templates/error.html:120
-msgid "a ticket."
-msgstr ""
-
-#: trac/templates/error.html:122
+#: trac/templates/error.html:97
 msgid "The action that triggered the error was:"
 msgstr "에러를 발생시킨 동작:"
 
-#: trac/templates/error.html:127
+#: trac/templates/error.html:102
 msgid "This is probably a local installation issue."
 msgstr "이것은 아마 로컬 설치에 관련된 문제인 것 같습니다."
 
-#: trac/templates/error.html:128
-msgid "You should"
-msgstr ""
-
-#: trac/templates/error.html:129
+#: trac/templates/error.html:103
+#, python-format
 msgid ""
-"a ticket at the admin Trac to report\n"
+"You should %(create)s a ticket at the admin Trac to report\n"
 "                    the issue."
 msgstr ""
 
-#: trac/templates/error.html:134
+#: trac/templates/error.html:109
 msgid "Found a bug in Trac?"
 msgstr "Trac에서 버그를 찾았습니까?"
 
-#: trac/templates/error.html:135
+#: trac/templates/error.html:110
 #, fuzzy
 msgid ""
 "If you think this should work and you can reproduce the problem,\n"
@@ -1965,20 +2020,20 @@ msgstr ""
 "이 문제를 해결해야 한다고 생각하고, 문제를 다시 만들어낼 수 있다면,\n"
 "Trac 팀에 이 문제를 보고하는 것을 고려해 주십시오."
 
-#: trac/templates/error.html:138
+#: trac/templates/error.html:113
 #, python-format
 msgid "Note that the %(name)s plugin seems to be involved."
 msgstr ""
 
-#: trac/templates/error.html:141
+#: trac/templates/error.html:116
 msgid "Note that the following plugins seem to be involved:"
 msgstr ""
 
-#: trac/templates/error.html:145
+#: trac/templates/error.html:120
 msgid "Please report this issue to the plugin maintainer."
 msgstr ""
 
-#: trac/templates/error.html:147
+#: trac/templates/error.html:122
 msgid ""
 "Before you do that, though, please first try\n"
 "                [1:[2:searching]\n"
@@ -1991,100 +2046,92 @@ msgid ""
 "                instead of creating a ticket."
 msgstr ""
 
-#: trac/templates/error.html:156
+#: trac/templates/error.html:131
 #, python-format
 msgid ""
 "Otherwise, please %(create)s a new bug report\n"
 "                describing the problem and explain how to reproduce it."
 msgstr ""
 
-#: trac/templates/error.html:160
+#: trac/templates/error.html:135
 msgid "Python Traceback"
 msgstr "Python Traceback"
 
-#: trac/templates/error.html:161
+#: trac/templates/error.html:136
 msgid "Most recent call last:"
 msgstr "가장 최근의 호출이 마지막에:"
 
-#: trac/templates/error.html:166 trac/templates/error.html:197
-msgid "File \""
-msgstr "파일 \""
-
-#: trac/templates/error.html:166
+#: trac/templates/error.html:140
+#, fuzzy, python-format
 msgid ""
-"\",\n"
-"                        line"
+"[1:File \"%(file)s\",\n"
+"                        line [2:%(line)s], in]\n"
+"                        [3:%(function)s]"
 msgstr ""
 
-#: trac/templates/error.html:167 trac/templates/error.html:197
-msgid ", in"
-msgstr ""
-
-#: trac/templates/error.html:171
+#: trac/templates/error.html:146
 msgid "Code fragment:"
 msgstr "코드 조각:"
 
-#: trac/templates/error.html:173
-msgid "Line"
-msgstr "라인"
-
-#: trac/templates/error.html:183
+#: trac/templates/error.html:158
 msgid "Local variables:"
 msgstr "지역 변수:"
 
-#: trac/templates/error.html:197
-msgid "\", line"
-msgstr "\", 라인"
+#: trac/templates/error.html:172
+#, python-format
+msgid "File \"%(file)s\", line %(line)s, in %(function)s"
+msgstr ""
 
-#: trac/templates/error.html:200
+#: trac/templates/error.html:175
 msgid "Switch to plain text view"
 msgstr "일반 텍스트 보기로 전환하기"
 
-#: trac/templates/error.html:203
+#: trac/templates/error.html:178
 msgid "System Information:"
 msgstr "시스템 정보:"
 
-#: trac/templates/error.html:211
+#: trac/templates/error.html:186
 msgid "Enabled Plugins:"
 msgstr "활성화된 플러그인:"
 
-#: trac/templates/error.html:227
+#: trac/templates/error.html:202
 msgid "TracGuide"
 msgstr "TracGuide"
 
-#: trac/templates/error.html:227
+#: trac/templates/error.html:202
 msgid "— The Trac User and Administration Guide"
 msgstr "— Trac 사용자와 관리자 가이드"
 
-#: trac/templates/history_view.html:15
-msgid "Change History for"
-msgstr "다음 페이지에 대한 변경 이력 : "
+#: trac/templates/history_view.html:16
+#, fuzzy, python-format
+msgid "Change History for [1:%(name)s]"
+msgstr ""
 
-#: trac/templates/history_view.html:21 trac/templates/history_view.html:54
+#: trac/templates/history_view.html:22 trac/templates/history_view.html:55
 #: trac/versioncontrol/templates/diff_form.html:58
-#: trac/versioncontrol/templates/revisionlog.html:180
+#: trac/versioncontrol/templates/revisionlog.html:88
+#: trac/versioncontrol/templates/revisionlog.html:182
 msgid "View changes"
 msgstr "변경사항 보기"
 
-#: trac/templates/history_view.html:23
+#: trac/templates/history_view.html:24
 msgid "Change history"
 msgstr "변경 이력"
 
-#: trac/templates/history_view.html:27 trac/ticket/admin.py:440
-#: trac/ticket/api.py:297
+#: trac/templates/history_view.html:28 trac/ticket/admin.py:440
+#: trac/ticket/api.py:303
 msgid "Version"
 msgstr "버전"
 
-#: trac/templates/history_view.html:30
-#: trac/ticket/templates/ticket_notify_email.txt:21
+#: trac/templates/history_view.html:31
 msgid "Comment"
 msgstr "설명"
 
-#: trac/templates/history_view.html:42
+#: trac/templates/history_view.html:43
 msgid "View this version"
 msgstr "이 버전 보기"
 
-#: trac/templates/history_view.html:45
+#: trac/templates/history_view.html:46
 #, python-format
 msgid "IP-Address: %(ipnr)s"
 msgstr "IP 주소: %(ipnr)s"
@@ -2093,16 +2140,12 @@ msgstr "IP 주소: %(ipnr)s"
 msgid "Available Projects"
 msgstr "이용 가능한 프로젝트"
 
-#: trac/templates/index.html:18
-msgid "Error"
-msgstr "오류"
-
-#: trac/templates/layout.html:21
+#: trac/templates/layout.html:25
 #, fuzzy, python-format
 msgid "Search %(project)s"
 msgstr "%(project)s로 돌아가기"
 
-#: trac/templates/layout.html:50
+#: trac/templates/layout.html:57
 msgid "Download in other formats:"
 msgstr "다른 포멧으로 다운로드:"
 
@@ -2114,19 +2157,18 @@ msgstr "첨부파일 추가하기"
 #: trac/templates/list_of_attachments.html:18
 #, fuzzy, python-format
 msgid ""
-"[1:%(file)s]\n"
-"      [2:[3:]]\n"
-"       ([4:%(size)s]) -\n"
-"      added by [5:%(author)s] %(date)s ago."
+"[1:%(file)s][2:​]\n"
+"       ([3:%(size)s]) -\n"
+"      added by [4:%(author)s] %(date)s ago."
 msgstr ""
 "[1:%(file)s]\n"
 "        [2:[3:]]\n"
 "        ([4:%(size)s]) - [5:%(author)s]에 의해 추가됨\n"
 "        %(date)s 전."
 
-#: trac/templates/list_of_attachments.html:29
-#: trac/templates/list_of_attachments.html:40
-#: trac/ticket/templates/ticket.html:388
+#: trac/templates/list_of_attachments.html:28
+#: trac/templates/list_of_attachments.html:39
+#: trac/ticket/templates/ticket.html:389
 msgid "Attachments"
 msgstr "첨부파일"
 
@@ -2142,29 +2184,20 @@ msgstr "다음"
 msgid "(The file is empty)"
 msgstr "(파일이 비어있습니다.)"
 
-#: trac/templates/preview_file.html:18
-msgid "HTML preview not available"
-msgstr "HTML 미리보기를 이용할 수 없습니다."
-
-#: trac/templates/preview_file.html:21
+#: trac/templates/preview_file.html:19
 #, fuzzy, python-format
-msgid "since the file size exceeds %(size)s bytes."
-msgstr "파일사이즈가 초과되었기 때문에"
-
-#: trac/templates/preview_file.html:25
-msgid "since no preview renderer could handle it."
-msgstr "어떤 미리보기 렌더러도 다룰 수 없기 때문에."
-
-#: trac/templates/preview_file.html:28
-msgid "Try"
+msgid ""
+"[1:HTML preview not available], since the file size exceeds %(size)s "
+"bytes."
 msgstr ""
 
-#: trac/templates/preview_file.html:29
-msgid "downloading"
-msgstr "다운로드"
+#: trac/templates/preview_file.html:22
+#, fuzzy
+msgid "[1:HTML preview not available], since no preview renderer could handle it."
+msgstr ""
 
-#: trac/templates/preview_file.html:29
-msgid "the file instead."
+#: trac/templates/preview_file.html:26
+msgid "Try [1:downloading] the file instead."
 msgstr ""
 
 #: trac/templates/progress_bar.html:26
@@ -2191,55 +2224,62 @@ msgid ""
 "      [3:[4:%(count)s]]"
 msgstr ""
 
-#: trac/templates/theme.html:26
+#: trac/templates/theme.html:27
 msgid "Search:"
 msgstr "검색:"
 
-#: trac/templates/theme.html:39
+#: trac/templates/theme.html:40
 msgid "Context Navigation"
 msgstr "컨텍스트 네비게이션"
 
-#: trac/templates/theme.html:49
+#: trac/templates/theme.html:50
 msgid "Warning:"
 msgstr "경고:"
 
-#: trac/ticket/admin.py:36
+#: trac/templates/theme.html:69
+#, python-format
+msgid ""
+"Powered by [1:[2:Trac %(version)s]][3:]\n"
+"        By [4:Edgewall Software]."
+msgstr ""
+
+#: trac/ticket/admin.py:35
 msgid "(Undefined)"
 msgstr "(정의되지 않음)"
 
-#: trac/ticket/admin.py:47
+#: trac/ticket/admin.py:46
 msgid "Ticket System"
 msgstr "티켓 시스템"
 
-#: trac/ticket/admin.py:112
+#: trac/ticket/admin.py:111
 #, python-format
 msgid "The component \"%(name)s\" has been added."
 msgstr "\"%(name)s\" 콤포넌트가 추가되었습니다."
 
-#: trac/ticket/admin.py:117 trac/ticket/model.py:843 trac/ticket/model.py:864
+#: trac/ticket/admin.py:116 trac/ticket/model.py:852 trac/ticket/model.py:873
 msgid "Invalid component name."
 msgstr "유효하지 않은 콤포넌트 이름."
 
-#: trac/ticket/admin.py:118
+#: trac/ticket/admin.py:117
 #, python-format
 msgid "Component %(name)s already exists."
 msgstr "%(name)s 콤포넌트가 이미 존재합니다."
 
-#: trac/ticket/admin.py:125
+#: trac/ticket/admin.py:124
 msgid "No component selected"
 msgstr "선택된 콤퍼넌트가 없습니다."
 
-#: trac/ticket/admin.py:133
+#: trac/ticket/admin.py:132
 msgid "The selected components have been removed."
 msgstr "선택된 콤포넌트가 제거되었습니다."
 
-#: trac/ticket/admin.py:241 trac/ticket/api.py:295
+#: trac/ticket/admin.py:240 trac/ticket/api.py:301
 #: trac/ticket/templates/milestone_view.html:10
 #: trac/ticket/templates/milestone_view.html:23
 msgid "Milestone"
 msgstr "마일스톤"
 
-#: trac/ticket/admin.py:270 trac/ticket/roadmap.py:663
+#: trac/ticket/admin.py:270 trac/ticket/roadmap.py:671
 msgid "Completion date may not be in the future"
 msgstr "완료된 날짜는 미래가 아닐지도 모릅니다."
 
@@ -2252,7 +2292,7 @@ msgstr "유효하지 않은 완료 날짜"
 msgid "The milestone \"%(name)s\" has been added."
 msgstr "\"%(name)s\" 마일스톤이 추가되었습니다."
 
-#: trac/ticket/admin.py:304 trac/ticket/model.py:981 trac/ticket/model.py:1005
+#: trac/ticket/admin.py:304 trac/ticket/model.py:988 trac/ticket/model.py:1012
 msgid "Invalid milestone name."
 msgstr "유효하지 않은 마일스톤 이름."
 
@@ -2269,190 +2309,195 @@ msgstr "선택된 마일스톤이 없습니다."
 msgid "The selected milestones have been removed."
 msgstr "선택된 마일스톤이 제거되었습니다."
 
-#: trac/ticket/admin.py:480
+#: trac/ticket/admin.py:481
 #, python-format
 msgid "The version \"%(name)s\" has been added."
 msgstr "\"%(name)s\" 버전이 추가되었습니다."
 
-#: trac/ticket/admin.py:485 trac/ticket/model.py:1116 trac/ticket/model.py:1136
+#: trac/ticket/admin.py:486 trac/ticket/model.py:1130 trac/ticket/model.py:1150
 msgid "Invalid version name."
 msgstr "유효하지 않은 버전 이름."
 
-#: trac/ticket/admin.py:486
+#: trac/ticket/admin.py:487
 #, python-format
 msgid "Version %(name)s already exists."
 msgstr "%(name)s 버전이 이미 존재합니다."
 
-#: trac/ticket/admin.py:493
+#: trac/ticket/admin.py:494
 msgid "No version selected"
 msgstr "선택된 버전이 없습니다."
 
-#: trac/ticket/admin.py:501
+#: trac/ticket/admin.py:502
 msgid "The selected versions have been removed."
 msgstr "선택된 버전이 제거되었습니다."
 
-#: trac/ticket/admin.py:559
+#: trac/ticket/admin.py:560
 msgid "Time"
 msgstr "시간"
 
-#: trac/ticket/admin.py:627
+#: trac/ticket/admin.py:629
 #, fuzzy, python-format
 msgid "The %(field)s value \"%(name)s\" has been added."
 msgstr "%(field)s \"%(name)s\"이 추가되었습니다."
 
-#: trac/ticket/admin.py:633
+#: trac/ticket/admin.py:635
 #, fuzzy, python-format
 msgid "Invalid %(type)s value."
 msgstr "유효하지 않은 %(type)s 이름."
 
-#: trac/ticket/admin.py:635
+#: trac/ticket/admin.py:637
 #, fuzzy, python-format
 msgid "%(type)s value \"%(name)s\" already exists"
 msgstr "%(type)s %(name)s가 이미 존재합니다"
 
-#: trac/ticket/admin.py:642
+#: trac/ticket/admin.py:644
 #, python-format
 msgid "No %s selected"
 msgstr "선택된 %s 값이 없습니다."
 
-#: trac/ticket/admin.py:650
+#: trac/ticket/admin.py:652
 #, fuzzy, python-format
 msgid "The selected %(field)s values have been removed."
 msgstr "선택된 %(field)s가 제거되었습니다."
 
-#: trac/ticket/admin.py:672
+#: trac/ticket/admin.py:674
 msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "The default value has not been saved."
 msgstr "trac.ini 파일에 쓰는 동안에 에러가 발생하였습니다. 웹 서버에서 쓸 수 있는지 확인하십시오. 기본 값은 저장되지 않았습니다."
 
-#: trac/ticket/admin.py:684
+#: trac/ticket/admin.py:686
 msgid "Order numbers must be unique"
 msgstr "순서를 가진 숫자는 유일해야 합니다"
 
-#: trac/ticket/admin.py:746
+#: trac/ticket/admin.py:748
 msgid "Possible Values"
 msgstr "가능한 값들"
 
-#: trac/ticket/admin.py:768
+#: trac/ticket/admin.py:770
 #, python-format
 msgid "Invalid up/down value: %(value)s"
 msgstr "유효하지 않은 업/다운 값: %(value)s"
 
-#: trac/ticket/admin.py:789 trac/ticket/api.py:294
+#: trac/ticket/admin.py:791 trac/ticket/api.py:300
 msgid "Priority"
 msgstr "우선순위"
 
-#: trac/ticket/admin.py:789
+#: trac/ticket/admin.py:791
 msgid "Priorities"
 msgstr "우선순위들"
 
-#: trac/ticket/admin.py:795 trac/ticket/api.py:299
+#: trac/ticket/admin.py:797 trac/ticket/api.py:305
 msgid "Resolution"
 msgstr "해결방법"
 
-#: trac/ticket/admin.py:795
+#: trac/ticket/admin.py:797
 msgid "Resolutions"
 msgstr "해결방법들"
 
-#: trac/ticket/admin.py:801 trac/ticket/api.py:298
+#: trac/ticket/admin.py:803 trac/ticket/api.py:304
 msgid "Severity"
 msgstr "중요도"
 
-#: trac/ticket/admin.py:801
+#: trac/ticket/admin.py:803
 msgid "Severities"
 msgstr "심각한 정도"
 
-#: trac/ticket/admin.py:807
+#: trac/ticket/admin.py:809
 msgid "Ticket Type"
 msgstr "티켓 타입"
 
-#: trac/ticket/admin.py:807
+#: trac/ticket/admin.py:809
 msgid "Ticket Types"
 msgstr "티켓 타입들"
 
-#: trac/ticket/admin.py:835
+#: trac/ticket/admin.py:837
 msgid "<number> must be a number"
 msgstr "<number>는 숫자여야만 합니다."
 
-#: trac/ticket/admin.py:840
-#, python-format
-msgid "Ticket %(num)s and all associated data removed."
+#: trac/ticket/admin.py:842
+#, fuzzy, python-format
+msgid "Ticket #%(num)s and all associated data removed."
 msgstr "%(num)s 티켓과 관련된 모든 데이타 삭제됨."
 
-#: trac/ticket/api.py:277
+#: trac/ticket/api.py:253
+#, fuzzy
+msgid "Attachment"
+msgstr "첨부파일"
+
+#: trac/ticket/api.py:283
 msgid "Summary"
 msgstr "제목"
 
-#: trac/ticket/api.py:279 trac/ticket/templates/ticket.html:361
+#: trac/ticket/api.py:285 trac/ticket/templates/ticket.html:362
 msgid "Reporter"
 msgstr "작성자"
 
-#: trac/ticket/api.py:292 trac/versioncontrol/admin.py:110
+#: trac/ticket/api.py:298 trac/versioncontrol/admin.py:113
 #: trac/versioncontrol/templates/admin_repositories.html:125
 msgid "Type"
 msgstr "타입"
 
-#: trac/ticket/api.py:293
+#: trac/ticket/api.py:299
 msgid "Status"
 msgstr "상태"
 
-#: trac/ticket/api.py:318
+#: trac/ticket/api.py:324
 msgid "Keywords"
 msgstr "키워드"
 
-#: trac/ticket/api.py:319
+#: trac/ticket/api.py:325
 msgid "Cc"
 msgstr "참조"
 
-#: trac/ticket/api.py:323
+#: trac/ticket/api.py:329
 msgid "Created"
 msgstr "생성됨"
 
-#: trac/ticket/api.py:483
+#: trac/ticket/api.py:490
 #, python-format
 msgid "Comment %(cnum)s for Ticket #%(id)s"
 msgstr "티켓 #%(id)s에 대한 설명 %(cnum)s"
 
-#: trac/ticket/api.py:504
+#: trac/ticket/api.py:511
 #, python-format
 msgid "Ticket #%(shortname)s"
 msgstr "티켓 #%(shortname)s"
 
-#: trac/ticket/default_workflow.py:225
+#: trac/ticket/default_workflow.py:229
 msgid "Current state no longer exists"
 msgstr "현재 상태가 더 이상 존재하지 않습니다"
 
-#: trac/ticket/default_workflow.py:227
+#: trac/ticket/default_workflow.py:231
 msgid "The ticket will be disowned"
 msgstr "이 티켓은 소유자가 없어질 것입니다"
 
-#: trac/ticket/default_workflow.py:245 trac/ticket/default_workflow.py:260
+#: trac/ticket/default_workflow.py:249 trac/ticket/default_workflow.py:268
 #, fuzzy, python-format
 msgid "to %(owner)s"
 msgstr "마일스톤 %(owner)s"
 
-#: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:263
+#: trac/ticket/default_workflow.py:251 trac/ticket/default_workflow.py:271
 #, fuzzy, python-format
 msgid "The owner will be changed from %(current_owner)s"
 msgstr "소유자가 %(current_owner)s에서 변경될 것 입니다."
 
-#: trac/ticket/default_workflow.py:251
+#: trac/ticket/default_workflow.py:259
 #, fuzzy, python-format
 msgid "to %(owner)s "
 msgstr "마일스톤 %(owner)s"
 
-#: trac/ticket/default_workflow.py:253
+#: trac/ticket/default_workflow.py:261
 #, fuzzy, python-format
 msgid "The owner will be changed from %(current_owner)s to %(selected_owner)s"
 msgstr "소유자가 %(current_owner)s에서 %(selected_owner)s로 변경될 것 입니다."
 
-#: trac/ticket/default_workflow.py:268
+#: trac/ticket/default_workflow.py:276
 #, fuzzy, python-format
 msgid "The owner will be changed from %(current_owner)s to %(authname)s"
 msgstr "소유자가 %(current_owner)s에서 %(authname)s로 변경될 것 입니다."
 
-#: trac/ticket/default_workflow.py:278
+#: trac/ticket/default_workflow.py:286
 msgid ""
 "Your workflow attempts to set a resolution but none is defined "
 "(configuration issue, please contact your Trac admin)."
@@ -2460,201 +2505,201 @@ msgstr ""
 "작업흐름이 해결방법을 설정할려고 하지만, 어떤 것도 정의되지 않았습니다.(설정과 관련된 문제입니다. Trac 관리자에게 "
 "연락하십시오)."
 
-#: trac/ticket/default_workflow.py:282 trac/ticket/default_workflow.py:293
+#: trac/ticket/default_workflow.py:294 trac/ticket/default_workflow.py:304
 #, fuzzy, python-format
 msgid "as %(resolution)s"
 msgstr "해결방법들"
 
-#: trac/ticket/default_workflow.py:284
+#: trac/ticket/default_workflow.py:296
 #, python-format
 msgid "The resolution will be set to %(name)s"
 msgstr "해결방법이 %(name)s 로 설정될 것입니다"
 
-#: trac/ticket/default_workflow.py:296
+#: trac/ticket/default_workflow.py:307
 msgid "The resolution will be set"
 msgstr "해결방법이 설정될 것입니다"
 
-#: trac/ticket/default_workflow.py:298
+#: trac/ticket/default_workflow.py:309
 #, fuzzy
 msgid "The resolution will be deleted"
 msgstr "해결방법이 설정될 것입니다"
 
-#: trac/ticket/default_workflow.py:301
+#: trac/ticket/default_workflow.py:312
 #, python-format
 msgid "as %(status)s "
 msgstr ""
 
-#: trac/ticket/default_workflow.py:305
+#: trac/ticket/default_workflow.py:316
 #, python-format
 msgid "Next status will be '%(name)s'"
 msgstr "다음 상태는 '%(name)s'가 될 것입니다."
 
-#: trac/ticket/model.py:105
+#: trac/ticket/model.py:114
 #, python-format
 msgid "Ticket %(id)s does not exist."
 msgstr "%(id)s 티켓이 존재하지 않습니다."
 
-#: trac/ticket/model.py:106
+#: trac/ticket/model.py:115
 msgid "Invalid ticket number"
 msgstr "유효하지 않은 티켓 번호"
 
-#: trac/ticket/model.py:143
+#: trac/ticket/model.py:152
 msgid "Multi-values fields not supported yet"
 msgstr "여러개의 값을 가진 필드는 아직 지원되지 않습니다."
 
-#: trac/ticket/model.py:658
+#: trac/ticket/model.py:669
 #, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr "%(type)s %(name)s 이 존재하지 않습니다."
 
-#: trac/ticket/model.py:702 trac/ticket/model.py:729
+#: trac/ticket/model.py:713 trac/ticket/model.py:740
 #, python-format
 msgid "Invalid %(type)s name."
 msgstr "유효하지 않은 %(type)s 이름."
 
-#: trac/ticket/model.py:808
+#: trac/ticket/model.py:817
 #, python-format
 msgid "Component %(name)s does not exist."
 msgstr "콤포넌트 %(name)s 가 존재하지 않습니다."
 
-#: trac/ticket/model.py:925
+#: trac/ticket/model.py:932
 #, python-format
 msgid "Milestone %(name)s does not exist."
 msgstr "%(name)s 마일스톤이 존재하지 않습니다."
 
-#: trac/ticket/model.py:926
+#: trac/ticket/model.py:933
 msgid "Invalid milestone name"
 msgstr "유효하지 않은 마일스톤 이름"
 
-#: trac/ticket/model.py:1059
+#: trac/ticket/model.py:1075
 msgid "Open (by due date)"
 msgstr "열기 (완료일에 따라)"
 
-#: trac/ticket/model.py:1060
+#: trac/ticket/model.py:1076
 msgid "Open (no due date)"
 msgstr "열기 (완료일이 설정되지 않음)"
 
-#: trac/ticket/model.py:1063
+#: trac/ticket/model.py:1079
 msgid "Closed"
 msgstr "닫힘"
 
-#: trac/ticket/model.py:1081
+#: trac/ticket/model.py:1095
 #, python-format
 msgid "Version %(name)s does not exist."
 msgstr "버전 %(name)s가 존재하지 않습니다."
 
-#: trac/ticket/query.py:54
+#: trac/ticket/query.py:55
 msgid "Invalid query constraint value"
 msgstr ""
 
-#: trac/ticket/query.py:88
+#: trac/ticket/query.py:89
 #, python-format
 msgid "Query page %(page)s is invalid."
 msgstr "쿼리 페이지 %(page)s가 유효하지 않습니다."
 
-#: trac/ticket/query.py:103
+#: trac/ticket/query.py:104
 #, python-format
 msgid "Query max %(max)s is invalid."
 msgstr "질의 최대값 %(max)s는 유효하지 않습니다."
 
-#: trac/ticket/query.py:159
+#: trac/ticket/query.py:163
 msgid "Query filter requires field and constraints separated by a \"=\""
 msgstr "질의 필터는 \"=\"로 분리되어있는 필드와 제약사항을 필요로 합니다."
 
-#: trac/ticket/query.py:172
+#: trac/ticket/query.py:176
 msgid "Query filter requires field name"
 msgstr "질의 필터는 필드 이름을 필요로 합니다."
 
-#: trac/ticket/query.py:305
+#: trac/ticket/query.py:313
 #, python-format
 msgid "Page %(page)s is beyond the number of pages in the query"
 msgstr "%(page)s 페이지는 질의에서 페이지의 수를 넘습니다"
 
-#: trac/ticket/query.py:562
+#: trac/ticket/query.py:571
 #, python-format
 msgid "Invalid ticket id list: %(value)s"
 msgstr "유효하지 않은 티켓 ID 리스트: %(value)s"
 
-#: trac/ticket/query.py:662 trac/ticket/query.py:670
+#: trac/ticket/query.py:671 trac/ticket/query.py:679
 msgid "contains"
 msgstr "다음을 포함하는"
 
-#: trac/ticket/query.py:663 trac/ticket/query.py:671
+#: trac/ticket/query.py:672 trac/ticket/query.py:680
 msgid "doesn't contain"
 msgstr "다음을 포함하지 않는"
 
-#: trac/ticket/query.py:664
+#: trac/ticket/query.py:673
 msgid "begins with"
 msgstr "다음으로 시작하는"
 
-#: trac/ticket/query.py:665
+#: trac/ticket/query.py:674
 msgid "ends with"
 msgstr "다음으로 끝나는"
 
-#: trac/ticket/query.py:666 trac/ticket/query.py:674 trac/ticket/query.py:678
+#: trac/ticket/query.py:675 trac/ticket/query.py:683 trac/ticket/query.py:687
 msgid "is"
 msgstr "다음과 같은"
 
-#: trac/ticket/query.py:667 trac/ticket/query.py:675 trac/ticket/query.py:679
+#: trac/ticket/query.py:676 trac/ticket/query.py:684 trac/ticket/query.py:688
 msgid "is not"
 msgstr "다음과 같지 않은"
 
-#: trac/ticket/query.py:709 trac/ticket/query.py:715
+#: trac/ticket/query.py:720 trac/ticket/query.py:726
 msgid "Ticket"
 msgstr "티켓"
 
-#: trac/ticket/query.py:776 trac/ticket/report.py:406
+#: trac/ticket/query.py:787 trac/ticket/report.py:409
 #, python-format
 msgid "Page %(num)d"
 msgstr "페이지 %(num)d"
 
-#: trac/ticket/query.py:825 trac/ticket/report.py:273 trac/ticket/report.py:566
-#: trac/ticket/web_ui.py:130 trac/timeline/web_ui.py:216
-#: trac/versioncontrol/web_ui/log.py:303
+#: trac/ticket/query.py:836 trac/ticket/report.py:273 trac/ticket/report.py:571
+#: trac/ticket/web_ui.py:130 trac/timeline/web_ui.py:219
+#: trac/versioncontrol/web_ui/log.py:299
 msgid "RSS Feed"
 msgstr "RSS Feed"
 
-#: trac/ticket/query.py:827 trac/ticket/report.py:275 trac/ticket/report.py:568
+#: trac/ticket/query.py:838 trac/ticket/report.py:275 trac/ticket/report.py:573
 #: trac/ticket/web_ui.py:126
 msgid "Comma-delimited Text"
 msgstr "쉼표로 분리된 텍스트"
 
-#: trac/ticket/query.py:829 trac/ticket/report.py:277 trac/ticket/report.py:570
+#: trac/ticket/query.py:840 trac/ticket/report.py:277 trac/ticket/report.py:575
 #: trac/ticket/web_ui.py:128
 msgid "Tab-delimited Text"
 msgstr "탭으로 분리된 텍스트"
 
-#: trac/ticket/query.py:851 trac/ticket/report.py:72
+#: trac/ticket/query.py:862 trac/ticket/report.py:72
 msgid "View Tickets"
 msgstr "티켓 보기"
 
-#: trac/ticket/query.py:1058 trac/ticket/query.py:1069
+#: trac/ticket/query.py:1077 trac/ticket/query.py:1088
 #: trac/ticket/report.py:133
 msgid "Custom Query"
 msgstr "맞춤형 질의"
 
-#: trac/ticket/query.py:1068 trac/ticket/report.py:123
+#: trac/ticket/query.py:1087 trac/ticket/report.py:123
 #: trac/ticket/report.py:124 trac/ticket/report.py:126
 #: trac/ticket/templates/report_list.html:10
 #: trac/ticket/templates/report_list.html:15
 msgid "Available Reports"
 msgstr "이용 가능한 리포트"
 
-#: trac/ticket/query.py:1151
+#: trac/ticket/query.py:1178
 #, python-format
 msgid "[Error: %(error)s]"
 msgstr "[오류: %(error)s]"
 
-#: trac/ticket/query.py:1285
+#: trac/ticket/query.py:1313
 msgid "No results"
 msgstr "결과가 없습니다."
 
-#: trac/ticket/query.py:1303
+#: trac/ticket/query.py:1331
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
 msgstr "%(query)s에 일치하는 %(groupvalue)s %(groupname)s 티켓들"
 
-#: trac/ticket/query.py:1326
+#: trac/ticket/query.py:1354
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
 msgstr "%(groupvalue)s %(groupname)s 티켓들:"
@@ -2674,13 +2719,13 @@ msgid "Delete Report {%(num)s} %(title)s"
 msgstr "{%(num)s} %(title)s 리포트 삭제하기"
 
 #: trac/ticket/report.py:204 trac/ticket/report.py:217
-#: trac/ticket/report.py:296
+#: trac/ticket/report.py:299
 #, fuzzy, python-format
 msgid "Report {%(num)s} does not exist."
 msgstr "리포트 %(num)s가 존재하지 않습니다."
 
 #: trac/ticket/report.py:205 trac/ticket/report.py:218
-#: trac/ticket/report.py:297
+#: trac/ticket/report.py:300
 msgid "Invalid Report Number"
 msgstr "유효하지 않은 리포트 번호"
 
@@ -2693,49 +2738,49 @@ msgstr "새로운 리포트 생성하기"
 msgid "Edit Report {%(num)d} %(title)s"
 msgstr "{%(num)d} %(title)s 리포트 편집하기"
 
-#: trac/ticket/report.py:302
+#: trac/ticket/report.py:305
 #, python-format
 msgid "Report failed: %(error)s"
 msgstr "리포트 실패함: %(error)s"
 
-#: trac/ticket/report.py:317
+#: trac/ticket/report.py:320
 #, python-format
 msgid "When specified, the report number should be \"%(num)s\"."
 msgstr "리포트 번호는 \"%(num)s\"여야 합니다."
 
-#: trac/ticket/report.py:388
+#: trac/ticket/report.py:391
 #, python-format
 msgid "Report execution failed: %(error)s"
 msgstr "리포트 실행 에러: %(error)s"
 
-#: trac/ticket/report.py:574
+#: trac/ticket/report.py:579
 msgid "SQL Query"
 msgstr "SQL 질의"
 
-#: trac/ticket/report.py:598
+#: trac/ticket/report.py:603
 #, python-format
 msgid "The following arguments are missing: %(args)s"
 msgstr "다음 아규먼트가 빠졌습니다.: %(args)s"
 
-#: trac/ticket/report.py:612
+#: trac/ticket/report.py:617
 #, fuzzy, python-format
 msgid "Report {%(num)s} has no SQL query."
 msgstr "리포트 %(num)s가 SQL 질의를 가지고 있지 않습니다."
 
-#: trac/ticket/report.py:642
+#: trac/ticket/report.py:647
 #, python-format
 msgid "Query parameter \"sort=%(sort_col)s\"  is invalid"
 msgstr "질의 파라메터 \"sort=%(sort_col)s\"는 유효하지 않습니다"
 
-#: trac/ticket/roadmap.py:205
+#: trac/ticket/roadmap.py:209
 msgid "ticket status"
 msgstr "티켓 상태"
 
-#: trac/ticket/roadmap.py:205
+#: trac/ticket/roadmap.py:209
 msgid "tickets"
 msgstr "티켓들"
 
-#: trac/ticket/roadmap.py:215
+#: trac/ticket/roadmap.py:219
 #, python-format
 msgid ""
 "'%(group1)s' and '%(group2)s' milestone groups both are declared to be "
@@ -2744,55 +2789,60 @@ msgstr ""
 "'%(group1)s'와 '%(group2)s' 마일스톤 그룹은 둘 다 \"catch-all\" 그룹들로 선언되어 있습니다. 설정을"
 " 체크하십시오."
 
-#: trac/ticket/roadmap.py:231
+#: trac/ticket/roadmap.py:235
 #, python-format
 msgid ""
 "'%(groupname)s' milestone group reused status '%(status)s' already taken "
 "by other groups. Please check your configuration."
 msgstr ""
 
-#: trac/ticket/roadmap.py:314 trac/ticket/roadmap.py:436
-#: trac/ticket/roadmap.py:571 trac/ticket/templates/roadmap.html:10
+#: trac/ticket/roadmap.py:318 trac/ticket/roadmap.py:441
+#: trac/ticket/roadmap.py:575 trac/ticket/templates/roadmap.html:10
 #: trac/ticket/templates/roadmap.html:15
 msgid "Roadmap"
 msgstr "로드맵"
 
-#: trac/ticket/roadmap.py:364
+#: trac/ticket/roadmap.py:368
 msgid "iCalendar"
 msgstr "iCalendar"
 
-#: trac/ticket/roadmap.py:445 trac/ticket/roadmap.py:845
+#: trac/ticket/roadmap.py:450 trac/ticket/roadmap.py:865
 #, python-format
 msgid "Milestone %(name)s"
 msgstr "마일스톤 %(name)s"
 
-#: trac/ticket/roadmap.py:464
+#: trac/ticket/roadmap.py:468
 #, python-format
 msgid "Ticket #%(num)s: %(summary)s"
 msgstr "티켓 #%(num)s: %(summary)s"
 
-#: trac/ticket/roadmap.py:525
+#: trac/ticket/roadmap.py:529
 msgid "Milestones reached"
 msgstr "도달한 마일스톤"
 
-#: trac/ticket/roadmap.py:553
+#: trac/ticket/roadmap.py:557
 #, fuzzy, python-format
 msgid "Milestone %(name)s completed"
 msgstr "마일스톤 %(name)s"
 
-#: trac/ticket/roadmap.py:613
+#: trac/ticket/roadmap.py:617
 #, python-format
 msgid "The milestone \"%(name)s\" has been deleted."
 msgstr "\"%(name)s\" 마일스톤이 삭제되었습니다."
 
-#: trac/ticket/roadmap.py:652
+#: trac/ticket/roadmap.py:659
 #, python-format
 msgid "Milestone \"%(name)s\" already exists, please choose another name."
 msgstr "\"%(name)s\" 마일스톤이 벌써 존재합니다, 다른 이름을 선택해 주십시오."
 
-#: trac/ticket/roadmap.py:655
+#: trac/ticket/roadmap.py:662
 msgid "You must provide a name for the milestone."
 msgstr "마일스톤을 위한 이름을 제공해야만 합니다."
+
+#: trac/ticket/web_ui.py:55
+#, fuzzy
+msgid "Invalid Ticket"
+msgstr "유효하지 않은 티켓 번호"
 
 #: trac/ticket/web_ui.py:152 trac/ticket/templates/ticket.html:14
 msgid "New Ticket"
@@ -2802,8 +2852,15 @@ msgstr "새로운 티켓"
 msgid "id can't be set for a new ticket request."
 msgstr "id는 새로운 티켓에 요청에 대해서 설정될 수 없습니다."
 
+#: trac/ticket/web_ui.py:217 trac/ticket/web_ui.py:268
+#: trac/versioncontrol/web_ui/changeset.py:1034
+#, fuzzy, python-format
+msgid "%(title)s: %(message)s"
+msgstr "%(title)s %(message)s:"
+
 #: trac/ticket/web_ui.py:231
-msgid "Opened and closed tickets"
+#, fuzzy
+msgid "Tickets opened and closed"
 msgstr "열려지거나 닫힌 티켓들"
 
 #: trac/ticket/web_ui.py:233
@@ -2826,248 +2883,292 @@ msgstr "닫힘"
 msgid "updated"
 msgstr "업데이트됨"
 
-#: trac/ticket/web_ui.py:262
+#: trac/ticket/web_ui.py:262 trac/ticket/web_ui.py:1069
 #, python-format
 msgid "%(labels)s changed"
 msgid_plural "%(labels)s changed"
 msgstr[0] "%(labels)s 변경됨"
 
-#: trac/ticket/web_ui.py:343
+#: trac/ticket/web_ui.py:348
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) %(verb)s"
 msgstr "티켓 %(ticketref)s (%(summary)s) %(verb)s"
 
-#: trac/ticket/web_ui.py:498
+#: trac/ticket/web_ui.py:503
 #, fuzzy, python-format
 msgid "The action \"%(name)s\" is not available."
 msgstr "\"%(name)s\" 버전이 추가되었습니다."
 
-#: trac/ticket/web_ui.py:524
+#: trac/ticket/web_ui.py:529
 #, python-format
 msgid ""
 "Please review your configuration, probably starting with %(section)s in "
 "your %(tracini)s."
 msgstr ""
 
-#: trac/ticket/web_ui.py:629
+#: trac/ticket/web_ui.py:583 trac/ticket/web_ui.py:800
+#, fuzzy, python-format
+msgid "Ticket #%(id)s"
+msgstr "티켓들"
+
+#: trac/ticket/web_ui.py:634
 msgid "Previous Ticket"
 msgstr "이전 티켓"
 
-#: trac/ticket/web_ui.py:629
+#: trac/ticket/web_ui.py:634
 msgid "Next Ticket"
 msgstr "다음 티켓"
 
-#: trac/ticket/web_ui.py:630
+#: trac/ticket/web_ui.py:635
 msgid "Back to Query"
 msgstr "질의로 돌아가기"
 
-#: trac/ticket/web_ui.py:712 trac/ticket/web_ui.py:860
-#: trac/ticket/web_ui.py:868
+#: trac/ticket/web_ui.py:717 trac/ticket/web_ui.py:866
+#: trac/ticket/web_ui.py:874
 msgid "Ticket History"
 msgstr "티켓 이력"
 
-#: trac/ticket/web_ui.py:716 trac/ticket/web_ui.py:915
+#: trac/ticket/web_ui.py:721 trac/ticket/web_ui.py:921
 #, python-format
 msgid "Back to Ticket #%(num)s"
 msgstr "#%(num)s 티켓으로 돌아가기"
 
-#: trac/ticket/web_ui.py:758
+#: trac/ticket/web_ui.py:763
 msgid "No differences to show"
 msgstr "보여줄 차이점이 없습니다"
 
-#: trac/ticket/web_ui.py:801 trac/ticket/web_ui.py:857
-#: trac/ticket/web_ui.py:865 trac/ticket/web_ui.py:936
-#: trac/ticket/web_ui.py:981 trac/ticket/web_ui.py:988 trac/wiki/web_ui.py:431
-#: trac/wiki/web_ui.py:437 trac/wiki/web_ui.py:626 trac/wiki/web_ui.py:640
+#: trac/ticket/web_ui.py:806 trac/ticket/web_ui.py:863
+#: trac/ticket/web_ui.py:871 trac/ticket/web_ui.py:942
+#: trac/ticket/web_ui.py:987 trac/ticket/web_ui.py:994 trac/wiki/web_ui.py:435
+#: trac/wiki/web_ui.py:441 trac/wiki/web_ui.py:630 trac/wiki/web_ui.py:644
 #, python-format
 msgid "Version %(num)s"
 msgstr "버전 %(num)s"
 
-#: trac/ticket/web_ui.py:804 trac/ticket/web_ui.py:939
+#: trac/ticket/web_ui.py:809 trac/ticket/web_ui.py:945
 msgid "Initial Version"
 msgstr "초기 버전"
 
-#: trac/ticket/web_ui.py:804 trac/ticket/web_ui.py:939
+#: trac/ticket/web_ui.py:809 trac/ticket/web_ui.py:945
 msgid "initial"
 msgstr "초기"
 
-#: trac/ticket/web_ui.py:867 trac/ticket/web_ui.py:990
-#: trac/versioncontrol/web_ui/changeset.py:369 trac/wiki/web_ui.py:450
+#: trac/ticket/web_ui.py:828
+#, fuzzy, python-format
+msgid "Property %(label)s %(rendered)s"
+msgstr ""
+
+#: trac/ticket/web_ui.py:873 trac/ticket/web_ui.py:996
+#: trac/versioncontrol/web_ui/changeset.py:370 trac/wiki/web_ui.py:454
 msgid "Previous Change"
 msgstr "이전 변경사항"
 
-#: trac/ticket/web_ui.py:867 trac/ticket/web_ui.py:990
-#: trac/versioncontrol/web_ui/changeset.py:369 trac/wiki/web_ui.py:450
+#: trac/ticket/web_ui.py:873 trac/ticket/web_ui.py:996
+#: trac/versioncontrol/web_ui/changeset.py:370 trac/wiki/web_ui.py:454
 msgid "Next Change"
 msgstr "다음 변경사항"
 
-#: trac/ticket/web_ui.py:873
+#: trac/ticket/web_ui.py:879
 msgid "Ticket Diff"
 msgstr "티켓 비교"
 
-#: trac/ticket/web_ui.py:907 trac/ticket/web_ui.py:984
-#: trac/ticket/web_ui.py:991
+#: trac/ticket/web_ui.py:900
+#, fuzzy
+msgid "''Initial version''"
+msgstr "초기 버전"
+
+#: trac/ticket/web_ui.py:913 trac/ticket/web_ui.py:990
+#: trac/ticket/web_ui.py:997
 msgid "Ticket Comment History"
 msgstr "티켓 코멘트 이력"
 
-#: trac/ticket/web_ui.py:909 trac/ticket/web_ui.py:933
-#: trac/ticket/web_ui.py:998
+#: trac/ticket/web_ui.py:915 trac/ticket/web_ui.py:939
+#: trac/ticket/web_ui.py:1004
 #, python-format
 msgid "Ticket #%(num)s, comment %(cnum)d"
 msgstr "#%(num)s 티켓, %(cnum)d 코멘트"
 
-#: trac/ticket/web_ui.py:956
+#: trac/ticket/web_ui.py:962
 #, python-format
 msgid "No version %(version)d for comment %(cnum)d on ticket #%(ticket)s"
 msgstr ""
 
-#: trac/ticket/web_ui.py:996
+#: trac/ticket/web_ui.py:1002
 msgid "Ticket Comment Diff"
 msgstr "티켓 코멘트 비교"
 
-#: trac/ticket/web_ui.py:1082
+#: trac/ticket/web_ui.py:1073
+#, fuzzy, python-format
+msgid "%(labels)s set"
+msgid_plural "%(labels)s set"
+msgstr[0] "%(labels)s 변경됨"
+
+#: trac/ticket/web_ui.py:1077
+#, fuzzy, python-format
+msgid "%(labels)s deleted"
+msgid_plural "%(labels)s deleted"
+msgstr[0] ""
+
+#: trac/ticket/web_ui.py:1078 trac/ticket/web_ui.py:1636
+msgid "; "
+msgstr ""
+
+#: trac/ticket/web_ui.py:1099
 msgid "No permission to edit the ticket description."
 msgstr "티켓 설명을 수정할 권한이 없습니다."
 
-#: trac/ticket/web_ui.py:1088
+#: trac/ticket/web_ui.py:1105
 msgid "No permission to change the ticket reporter."
 msgstr "티켓 작성자를 수정할 권한이 없습니다."
 
-#: trac/ticket/web_ui.py:1093
+#: trac/ticket/web_ui.py:1110
 msgid "No permission to change ticket fields."
 msgstr "티켓 필드를 변경할 권한이 없습니다."
 
-#: trac/ticket/web_ui.py:1102
+#: trac/ticket/web_ui.py:1119
 msgid "No permissions to add a comment."
 msgstr "설명을 추가할 권한이 없습니다."
 
-#: trac/ticket/web_ui.py:1108
+#: trac/ticket/web_ui.py:1125
 msgid ""
 "Sorry, can not save your changes. This ticket has been modified by "
 "someone else since you started"
 msgstr "죄송합니다. 변경사항을 저장할 수 없습니다. 수정을 시작한 다음에 다른 사람에 의해서 티켓이 변경되었습니다."
 
-#: trac/ticket/web_ui.py:1115
+#: trac/ticket/web_ui.py:1132
 msgid "Tickets must contain a summary."
 msgstr "티켓은 제목을 포함해야만 합니다."
 
-#: trac/ticket/web_ui.py:1138
+#: trac/ticket/web_ui.py:1150
+#, fuzzy, python-format
+msgid "field %(name)s must be set"
+msgstr "%(name)s 페이지가 존재하지 않습니다"
+
+#: trac/ticket/web_ui.py:1156
 #, python-format
 msgid "Ticket description is too long (must be less than %(num)s characters)"
 msgstr "티켓의 상세설명이 너무 깁니다. (%(num)s 개 문자보다 작아야만 합니다.)"
 
-#: trac/ticket/web_ui.py:1145
+#: trac/ticket/web_ui.py:1163
 #, python-format
 msgid "Ticket comment is too long (must be less than %(num)s characters)"
 msgstr "티켓의 상세설명이 너무 깁니다. (%(num)s 개 문자보다 작아야만 합니다.)"
 
-#: trac/ticket/web_ui.py:1160
+#: trac/ticket/web_ui.py:1178
 msgid "Invalid comment threading identifier"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1167
+#: trac/ticket/web_ui.py:1185
 #, python-format
 msgid "The ticket field '%(field)s' is invalid: %(message)s"
 msgstr "티켓 필드 '%(field)s'가 유효하지 않습니다.: %(message)s"
 
-#: trac/ticket/web_ui.py:1186
+#: trac/ticket/web_ui.py:1204
 #, python-format
 msgid ""
 "The ticket has been created, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr "티켓이 생성되었습니다. 그러나 통지를 보내는 동안에 에러가 발생하였습니다.: %(message)s"
 
-#: trac/ticket/web_ui.py:1196
-#, python-format
+#: trac/ticket/web_ui.py:1209
+#, fuzzy, python-format
 msgid ""
-"Your ticket %(ticketref)s has been created, but you don't have permission"
-" to view it."
+"The ticket %(ticketref)s has been created. You can now attach the desired"
+" files."
+msgstr "%(ticketref)s 티켓이 생성되었습니다. 하지만 그것을 볼 수 있는 권한이 없습니다."
+
+#: trac/ticket/web_ui.py:1215
+#, fuzzy, python-format
+msgid ""
+"The ticket %(ticketref)s has been created, but you don't have permission "
+"to view it."
 msgstr "%(ticketref)s 티켓이 생성되었습니다. 하지만 그것을 볼 수 있는 권한이 없습니다."
 
 #. TRANSLATOR: The 'change' has been saved... (link)
-#: trac/ticket/web_ui.py:1227
+#: trac/ticket/web_ui.py:1247
 msgid "change"
 msgstr "변경"
 
-#: trac/ticket/web_ui.py:1233
+#: trac/ticket/web_ui.py:1253
 #, python-format
 msgid ""
 "The %(change)s has been saved, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr "%(change)s 이/가 저장되었습니다. 그러나 통지를 보내는 동안에 에러가 발생하였습니다.: %(message)s"
 
-#: trac/ticket/web_ui.py:1367
+#: trac/ticket/web_ui.py:1392
 msgid "Add to Cc"
 msgstr "참조에 추가하기"
 
-#: trac/ticket/web_ui.py:1368
+#: trac/ticket/web_ui.py:1393
 msgid "Remove from Cc"
 msgstr "참조에서 제거하기"
 
-#: trac/ticket/web_ui.py:1369
+#: trac/ticket/web_ui.py:1394
 msgid "Add/Remove from Cc"
 msgstr "참조에서 추가/제거하기"
 
-#: trac/ticket/web_ui.py:1370
+#: trac/ticket/web_ui.py:1395
 msgid "<Author field>"
 msgstr "<작성자 필드>"
 
-#: trac/ticket/web_ui.py:1391 trac/ticket/templates/query.html:102
+#: trac/ticket/web_ui.py:1416 trac/ticket/templates/query.html:103
 msgid "yes"
 msgstr "예"
 
-#: trac/ticket/web_ui.py:1391 trac/ticket/templates/query.html:105
+#: trac/ticket/web_ui.py:1416 trac/ticket/templates/query.html:106
 msgid "no"
 msgstr "아니오"
 
-#: trac/ticket/web_ui.py:1577
+#: trac/ticket/web_ui.py:1602
 #, fuzzy
 msgid "set"
 msgstr "변경 세트"
 
-#: trac/ticket/web_ui.py:1577
+#: trac/ticket/web_ui.py:1602
 #, fuzzy
 msgid "unset"
 msgstr "다음"
 
-#: trac/ticket/web_ui.py:1580 trac/versioncontrol/templates/changeset.html:187
+#: trac/ticket/web_ui.py:1605 trac/versioncontrol/templates/changeset.html:189
+#: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "modified"
 msgstr "수정됨"
 
 #. TRANSLATOR: modified ('diff') (link)
-#: trac/ticket/web_ui.py:1585 trac/ticket/templates/ticket.html:180
-#: trac/ticket/templates/ticket_box.html:64
+#: trac/ticket/web_ui.py:1610 trac/ticket/templates/ticket.html:180
+#: trac/ticket/templates/ticket_box.html:64 trac/wiki/web_ui.py:726
 msgid "diff"
 msgstr "비교"
 
-#: trac/ticket/web_ui.py:1586
+#: trac/ticket/web_ui.py:1611
 #, fuzzy, python-format
 msgid "modified (%(diff)s)"
 msgstr "%(diff)s 전에 마지막으로 변경됨"
 
-#: trac/ticket/web_ui.py:1607
+#: trac/ticket/web_ui.py:1632
 #, fuzzy, python-format
 msgid "%(items)s added"
 msgid_plural "%(items)s added"
 msgstr[0] "%(items)s 변경됨"
 
-#: trac/ticket/web_ui.py:1609
+#: trac/ticket/web_ui.py:1634
 #, python-format
 msgid "%(items)s removed"
 msgid_plural "%(items)s removed"
 msgstr[0] ""
 
-#: trac/ticket/web_ui.py:1618
+#: trac/ticket/web_ui.py:1643
 #, fuzzy, python-format
 msgid "%(value)s deleted"
 msgstr "%(value)s (삭제)"
 
-#: trac/ticket/web_ui.py:1620
+#: trac/ticket/web_ui.py:1645
 #, python-format
 msgid "set to %(value)s"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1623
+#: trac/ticket/web_ui.py:1648
 #, fuzzy, python-format
 msgid "changed from %(old)s to %(new)s"
 msgstr "%(old)s에서 %(new)s로 변환하기 위해 사용할 수 있는 MIME 변환기가 없습니다."
@@ -3098,40 +3199,40 @@ msgid ""
 msgstr "[1:Note:] 로드맵을 사용하면서 도움이 필요하다면 [2:TracRoadmap]을 보십시오."
 
 #: trac/ticket/templates/milestone_edit.html:11
-#: trac/ticket/templates/milestone_edit.html:36
+#: trac/ticket/templates/milestone_edit.html:43
 msgid "Edit Milestone"
 msgstr "마일스톤 편집하기"
 
 #: trac/ticket/templates/milestone_edit.html:12
-#: trac/ticket/templates/milestone_edit.html:37
+#: trac/ticket/templates/milestone_edit.html:44
 msgid "New Milestone"
 msgstr "새로운 마일스톤"
 
-#: trac/ticket/templates/milestone_edit.html:44
+#: trac/ticket/templates/milestone_edit.html:51
 msgid "Name of the milestone:"
 msgstr "마일스톤의 이름:"
 
-#: trac/ticket/templates/milestone_edit.html:49
+#: trac/ticket/templates/milestone_edit.html:56
 msgid "Schedule"
 msgstr "스케줄"
 
-#: trac/ticket/templates/milestone_edit.html:71
+#: trac/ticket/templates/milestone_edit.html:83
 msgid "Retarget associated open tickets to milestone:"
 msgstr "마일스톤에 관계된 열려진 티켓을 다른 마일스톤으로 연결합니다.:"
 
-#: trac/ticket/templates/milestone_edit.html:92
-#: trac/ticket/templates/ticket.html:397
+#: trac/ticket/templates/milestone_edit.html:104
+#: trac/ticket/templates/ticket.html:398
 #: trac/ticket/templates/ticket_change.html:47
 #: trac/wiki/templates/wiki_edit_form.html:70
 #: trac/wiki/templates/wiki_edit_form.html:75
 msgid "Submit changes"
 msgstr "변경사항 적용하기"
 
-#: trac/ticket/templates/milestone_edit.html:93
+#: trac/ticket/templates/milestone_edit.html:105
 msgid "Add milestone"
 msgstr "마일스톤 추가"
 
-#: trac/ticket/templates/milestone_edit.html:98
+#: trac/ticket/templates/milestone_edit.html:110
 #: trac/ticket/templates/milestone_view.html:113
 #: trac/ticket/templates/roadmap.html:79
 msgid ""
@@ -3187,130 +3288,136 @@ msgstr "(없음)"
 msgid "Edit milestone"
 msgstr "마일스톤 편집하기"
 
-#: trac/ticket/templates/query.html:29
+#: trac/ticket/templates/query.html:30
 #: trac/ticket/templates/query_results.html:28
-#: trac/ticket/templates/report_view.html:87
+#: trac/ticket/templates/report_view.html:21
+#: trac/ticket/templates/report_view.html:97
 #, python-format
 msgid "%(num)s match"
 msgid_plural "%(num)s matches"
 msgstr[0] "%(num)s 개 일치함"
 
-#: trac/ticket/templates/query.html:38
+#: trac/ticket/templates/query.html:39
 msgid "Filters"
 msgstr "필터"
 
-#: trac/ticket/templates/query.html:39
+#: trac/ticket/templates/query.html:40
 msgid "Query filters"
 msgstr "질의 필터"
 
-#: trac/ticket/templates/query.html:45 trac/ticket/templates/query.html:141
+#: trac/ticket/templates/query.html:46 trac/ticket/templates/query.html:144
 msgid "Or"
 msgstr ""
 
-#: trac/ticket/templates/query.html:115
-msgid "between"
+#: trac/ticket/templates/query.html:74
+msgid "or"
+msgstr "혹은"
+
+#: trac/ticket/templates/query.html:116
+msgid ""
+"[1:between]\n"
+"                            [2:]\n"
+"                            [3:and]\n"
+"                            [4:]"
 msgstr ""
 
-#: trac/ticket/templates/query.html:117
-msgid "and"
-msgstr ""
-
-#: trac/ticket/templates/query.html:127
+#: trac/ticket/templates/query.html:130
 msgid "And"
 msgstr ""
 
-#: trac/ticket/templates/query.html:160
+#: trac/ticket/templates/query.html:163
 msgid "Columns"
 msgstr "열"
 
-#: trac/ticket/templates/query.html:174
+#: trac/ticket/templates/query.html:177
 msgid "Group results by"
 msgstr "결과를 다음 기준으로 그룹짓습니다.:"
 
-#: trac/ticket/templates/query.html:185
+#: trac/ticket/templates/query.html:188
 msgid "descending"
 msgstr "내림차순으로"
 
-#: trac/ticket/templates/query.html:189
+#: trac/ticket/templates/query.html:192
 msgid "Show under each result:"
 msgstr "각 결과 아래에 다음을 보여줍니다.:"
 
-#: trac/ticket/templates/query.html:199
+#: trac/ticket/templates/query.html:202
 #: trac/ticket/templates/report_view.html:27
 msgid "Max items per page"
 msgstr "페이지당 최대 아이템들"
 
-#: trac/ticket/templates/query.html:243
+#: trac/ticket/templates/query.html:224
 #, python-format
 msgid "Edit report {%(id)s} corresponding to this query"
 msgstr ""
 
-#: trac/ticket/templates/query.html:243
+#: trac/ticket/templates/query.html:224
 msgid "Edit query"
 msgstr "질의문 편집하기"
 
-#: trac/ticket/templates/query.html:252
+#: trac/ticket/templates/query.html:233
 msgid "Save query"
 msgstr "질의문 저장하기"
 
-#: trac/ticket/templates/query.html:252
+#: trac/ticket/templates/query.html:233
 #, python-format
 msgid "Save updated query in report {%(id)s}"
 msgstr "{%(id)s} 리포트에서 업데이트된 질의 저장하기"
 
-#: trac/ticket/templates/query.html:252
+#: trac/ticket/templates/query.html:233
 msgid "Create new report from current query"
 msgstr "현재 쿼리로부터 새로운 리포트를 생성합니다."
 
-#: trac/ticket/templates/query.html:260
+#: trac/ticket/templates/query.html:241
 #, python-format
 msgid "Delete report {%(id)s} corresponding to this query"
 msgstr ""
 
-#: trac/ticket/templates/query.html:260
+#: trac/ticket/templates/query.html:241
 msgid "Delete query"
 msgstr "질의문 삭제하기"
 
-#: trac/ticket/templates/query.html:267
+#: trac/ticket/templates/query.html:248
 msgid ""
 "[1:Note:] See [2:TracQuery]\n"
 "        for help on using queries."
 msgstr "[1:Note:] 쿼리를 사용하면서 도움이 필요하다면 [2:TracQuery]를 보십시오."
 
 #: trac/ticket/templates/query_results.html:35
+#, fuzzy
+msgid "(ascending)"
+msgstr "내림차순으로"
+
+#: trac/ticket/templates/query_results.html:35
+#, fuzzy
+msgid "(descending)"
+msgstr "내림차순으로"
+
+#: trac/ticket/templates/query_results.html:36
 #: trac/versioncontrol/templates/sortable_th.html:18
 #, python-format
 msgid "Sort by %(col)s %(direction)s"
 msgstr ""
 
-#: trac/ticket/templates/query_results.html:45
+#: trac/ticket/templates/query_results.html:58
 msgid "No tickets found"
 msgstr "티켓이 없습니다."
 
-#: trac/ticket/templates/query_results.html:59
-#: trac/ticket/templates/query_results.html:62
+#: trac/ticket/templates/query_results.html:72
+#: trac/ticket/templates/query_results.html:75
 msgid "View ticket"
 msgstr "티켓 보기"
 
-#: trac/ticket/templates/query_results.html:67
-#: trac/ticket/templates/report_view.html:170
+#: trac/ticket/templates/query_results.html:80
+#: trac/ticket/templates/report_view.html:183
 msgid "View milestone"
 msgstr "마일스톤 보기"
 
-#: trac/ticket/templates/query_results.html:78
-#, python-format
-msgid ""
-"Reported by [1:%(author)s],\n"
-"                      %(date)s ago."
-msgstr ""
-"[1:%(author)s]에 의해 작성됨,\n"
-"                      %(date)s 전."
-
-#: trac/ticket/templates/query_results.html:85
+#: trac/ticket/templates/query_results.html:92
 msgid "(this ticket)"
 msgstr "(이 티켓)"
 
-#: trac/ticket/templates/query_results.html:101
+#: trac/ticket/templates/query_results.html:108
 msgid "(more results for this group on next page)"
 msgstr "(다음 페이지에 이 그룹에 대한 더 많은 결과가 있습니다)"
 
@@ -3320,14 +3427,14 @@ msgstr "이 리포트를 정말로 삭제하기겠습니까?"
 
 #: trac/ticket/templates/report_delete.html:22
 #: trac/ticket/templates/report_list.html:34
-#: trac/ticket/templates/report_view.html:75
+#: trac/ticket/templates/report_view.html:74
 msgid "Delete report"
 msgstr "리포트 삭제하기"
 
 #: trac/ticket/templates/report_delete.html:26
 #: trac/ticket/templates/report_edit.html:49
 #: trac/ticket/templates/report_list.html:52
-#: trac/ticket/templates/report_view.html:195
+#: trac/ticket/templates/report_view.html:208
 msgid ""
 "[1:Note:]\n"
 "        See [2:TracReports] for help on using and creating reports."
@@ -3346,6 +3453,10 @@ msgstr "리포트 제목:"
 msgid "Description: (you may use [1:WikiFormatting] here)"
 msgstr "상세설명: (여기에서 [1:WikiFormatting] 을 사용할 수 있습니다.)"
 
+#: trac/ticket/templates/report_edit.html:34
+msgid "Error:"
+msgstr "오류:"
+
 #: trac/ticket/templates/report_edit.html:36
 #, fuzzy
 msgid ""
@@ -3363,7 +3474,7 @@ msgstr "리포트 저장하기"
 msgid "Report"
 msgstr "리포트"
 
-#: trac/ticket/templates/report_list.html:24 trac/wiki/admin.py:200
+#: trac/ticket/templates/report_list.html:24 trac/wiki/admin.py:207
 msgid "Title"
 msgstr "제목"
 
@@ -3374,12 +3485,12 @@ msgstr "액션들"
 
 #: trac/ticket/templates/report_list.html:30
 #: trac/ticket/templates/report_list.html:31
-#: trac/ticket/templates/report_view.html:121
+#: trac/ticket/templates/report_view.html:134
 msgid "View report"
 msgstr "리포트 보기"
 
 #: trac/ticket/templates/report_list.html:32
-#: trac/ticket/templates/report_view.html:63
+#: trac/ticket/templates/report_view.html:62
 msgid "Edit report"
 msgstr "리포트 편집하기"
 
@@ -3396,12 +3507,6 @@ msgstr "이용 가능한 리포트가 없습니다."
 msgid "Create new report"
 msgstr "새로운 리포트 생성하기"
 
-#: trac/ticket/templates/report_view.html:21
-#, python-format
-msgid "%(num)d match"
-msgid_plural "%(num)d matches"
-msgstr[0] "%(num)d 개 일치"
-
 #: trac/ticket/templates/report_view.html:32
 msgid "Arguments"
 msgstr "아규먼트"
@@ -3410,16 +3515,16 @@ msgstr "아규먼트"
 msgid "Report arguments"
 msgstr "리포트 아규먼트"
 
-#: trac/ticket/templates/report_view.html:69
+#: trac/ticket/templates/report_view.html:68
 msgid "Copy report"
 msgstr "리포트 복사하기"
 
-#: trac/ticket/templates/report_view.html:87
-msgid "No matches"
-msgstr "일치하는 것 없음"
+#: trac/ticket/templates/report_view.html:110
+msgid "(empty)"
+msgstr ""
 
-#: trac/ticket/templates/report_view.html:128
-#: trac/ticket/templates/report_view.html:136
+#: trac/ticket/templates/report_view.html:141
+#: trac/ticket/templates/report_view.html:149
 #, fuzzy, python-format
 msgid "View %(realm)s"
 msgstr "%(realm)s 보기"
@@ -3449,15 +3554,19 @@ msgstr "티켓 편집기로 이동"
 msgid "Modify"
 msgstr "수정"
 
+#: trac/ticket/templates/ticket.html:84
+msgid "Ticket #"
+msgstr "티켓 #"
+
 #: trac/ticket/templates/ticket.html:91
 #, fuzzy
 msgid "at [1:Initial Version]"
-msgstr "초기 버전"
+msgstr ""
 
 #: trac/ticket/templates/ticket.html:94
 #, fuzzy, python-format
 msgid "at [1:Version %(version)s]"
-msgstr " 버전 %(version)s"
+msgstr " [1:버전 %(version)s]"
 
 #: trac/ticket/templates/ticket.html:98
 msgid "Create New Ticket"
@@ -3467,7 +3576,7 @@ msgstr "새로운 티켓 생성하기"
 msgid "Change History"
 msgstr "변경 이력"
 
-#: trac/ticket/templates/ticket.html:128 trac/ticket/templates/ticket.html:216
+#: trac/ticket/templates/ticket.html:128 trac/ticket/templates/ticket.html:217
 msgid "in reply to:"
 msgstr "다음에 대한 답변:"
 
@@ -3511,7 +3620,7 @@ msgstr ""
 "%(date)s 전에 마지막으로 편집됨"
 
 #: trac/ticket/templates/ticket.html:172
-#: trac/versioncontrol/templates/changeset.html:127
+#: trac/versioncontrol/templates/changeset.html:129
 msgid "previous"
 msgstr "이전"
 
@@ -3542,34 +3651,37 @@ msgstr ""
 "              을 사용할 수 있습니다."
 
 #: trac/ticket/templates/ticket.html:210
-msgid "The ticket validation has [1:failed]."
-msgstr "티켓 검증이 [1:실패했습니다]."
+msgid ""
+"Warnings are shown at the [1:top of the page]. The ticket validation\n"
+"            may have failed."
+msgstr ""
 
-#: trac/ticket/templates/ticket.html:218
-msgid "Changed by"
-msgstr "다음 사람에 의해 변경됨"
+#: trac/ticket/templates/ticket.html:220
+#, fuzzy, python-format
+msgid "Changed by %(author)s"
+msgstr ""
 
-#: trac/ticket/templates/ticket.html:226
+#: trac/ticket/templates/ticket.html:227
 msgid "Modify Ticket"
 msgstr "티켓 수정"
 
-#: trac/ticket/templates/ticket.html:232
+#: trac/ticket/templates/ticket.html:233
 msgid "Change Properties"
 msgstr "속성 변경하기"
 
-#: trac/ticket/templates/ticket.html:233
+#: trac/ticket/templates/ticket.html:234
 msgid "Properties"
 msgstr "속성"
 
-#: trac/ticket/templates/ticket.html:237
+#: trac/ticket/templates/ticket.html:238
 msgid "Summary:"
 msgstr "제목:"
 
-#: trac/ticket/templates/ticket.html:245
+#: trac/ticket/templates/ticket.html:246
 msgid "Reporter:"
 msgstr "작성자:"
 
-#: trac/ticket/templates/ticket.html:257
+#: trac/ticket/templates/ticket.html:258
 #, fuzzy
 msgid ""
 "You may use\n"
@@ -3579,34 +3691,35 @@ msgstr ""
 "              [1:WikiFormatting]\n"
 "              을 사용할 수 있습니다."
 
-#: trac/ticket/templates/ticket.html:273
+#: trac/ticket/templates/ticket.html:274
 #: trac/ticket/templates/ticket_box.html:43
 #, python-format
 msgid "%(field)s:"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:312
+#: trac/ticket/templates/ticket.html:313
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr "이 체크박스는 CC 리스트에 당신 자신을 추가하거나 제거하도록 합니다."
 
-#: trac/ticket/templates/ticket.html:318
+#: trac/ticket/templates/ticket.html:319
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr "공백이나 쉼표로 구분된 이메일 주소나 사용자 이름이 사용될 수 있습니다."
 
-#: trac/ticket/templates/ticket.html:373
-#: trac/wiki/templates/wiki_edit_form.html:49
-msgid "E-mail address and user name can be saved in the"
-msgstr "이메일 주소와 사용자 이름이 다음에 저장될 수 있습니다."
+#: trac/ticket/templates/ticket.html:375
+#: trac/wiki/templates/wiki_edit_form.html:50
+#, fuzzy
+msgid "E-mail address and user name can be saved in the [1:Preferences]."
+msgstr ""
 
-#: trac/ticket/templates/ticket.html:382
+#: trac/ticket/templates/ticket.html:383
 msgid "I have files to attach to this ticket"
 msgstr "이 티켓에 첨부할 파일이 있습니다."
 
-#: trac/ticket/templates/ticket.html:388
+#: trac/ticket/templates/ticket.html:389
 msgid "Go to the list of attachments"
 msgstr "첨부파일 리스트로 이동"
 
-#: trac/ticket/templates/ticket.html:396
+#: trac/ticket/templates/ticket.html:397
 #: trac/ticket/templates/ticket_change.html:45
 #: trac/wiki/templates/wiki_edit.html:70 trac/wiki/templates/wiki_edit.html:128
 #: trac/wiki/templates/wiki_edit_form.html:39
@@ -3614,11 +3727,11 @@ msgstr "첨부파일 리스트로 이동"
 msgid "Preview"
 msgstr "미리 보기"
 
-#: trac/ticket/templates/ticket.html:397
+#: trac/ticket/templates/ticket.html:398
 msgid "Create ticket"
 msgstr "티켓 만들기"
 
-#: trac/ticket/templates/ticket.html:402
+#: trac/ticket/templates/ticket.html:403
 msgid ""
 "[1:Note:] See\n"
 "        [2:TracTickets] for help on using\n"
@@ -3647,8 +3760,9 @@ msgstr "작성자:"
 msgid "Owned by:"
 msgstr "소유됨:"
 
-#: trac/ticket/templates/ticket_box.html:62
-msgid "(last modified by"
+#: trac/ticket/templates/ticket_box.html:63
+#, fuzzy, python-format
+msgid "(last modified by %(author)s)"
 msgstr "(다음 사람에 의해 마지막으로 변경됨"
 
 #: trac/ticket/templates/ticket_box.html:73
@@ -3658,8 +3772,7 @@ msgstr "답변 (이 내용을 인용합니다)"
 #: trac/ticket/templates/ticket_change.html:19
 #, python-format
 msgid ""
-"[1:[2:%(name)s]]\n"
-"          [3:[4:]]\n"
+"[1:[2:%(name)s]][3:​]\n"
 "          added"
 msgstr ""
 
@@ -3693,51 +3806,55 @@ msgid "Cancel comment edit"
 msgstr "코멘트 수정 취소"
 
 #: trac/ticket/templates/ticket_notify_email.txt:9
-msgid "Changes (by"
+#, fuzzy, python-format
+msgid "Changes (by %(author)s):"
 msgstr ""
 
 #: trac/ticket/templates/ticket_notify_email.txt:15
-msgid "Description changed by"
+#, fuzzy, python-format
+msgid "Description changed by %(author)s:"
 msgstr "다음 사람에 의해 상세설명이 변경됨"
 
-#: trac/ticket/templates/ticket_notify_email.txt:28
-msgid ""
-"-- \n"
-"Ticket URL: <"
+#: trac/ticket/templates/ticket_notify_email.txt:21
+#, python-format
+msgid "Comment (by %(author)s):"
 msgstr ""
-"-- \n"
-"티켓 URL: <"
 
-#: trac/timeline/web_ui.py:75 trac/timeline/templates/timeline.html:10
+#: trac/ticket/templates/ticket_notify_email.txt:29
+#, python-format
+msgid "Ticket URL: <%(link)s>"
+msgstr ""
+
+#: trac/timeline/web_ui.py:76 trac/timeline/templates/timeline.html:10
 #: trac/timeline/templates/timeline.html:16
 msgid "Timeline"
 msgstr "시간이력"
 
-#: trac/timeline/web_ui.py:229 trac/timeline/web_ui.py:237
+#: trac/timeline/web_ui.py:234 trac/timeline/web_ui.py:244
 msgid "Previous Period"
 msgstr "이전 주기"
 
-#: trac/timeline/web_ui.py:236 trac/timeline/web_ui.py:237
+#: trac/timeline/web_ui.py:243 trac/timeline/web_ui.py:244
 msgid "Next Period"
 msgstr "다음 주기"
 
-#: trac/timeline/web_ui.py:297
+#: trac/timeline/web_ui.py:304
 #, python-format
 msgid "%(date)s in Timeline"
 msgstr "시간이력에서의 %(date)s"
 
 #. TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
-#: trac/timeline/web_ui.py:343
+#: trac/timeline/web_ui.py:351
 #, fuzzy
 msgid "other kinds of events"
 msgstr "다른 종류의 이벤트들"
 
-#: trac/timeline/web_ui.py:348
+#: trac/timeline/web_ui.py:356
 #, python-format
 msgid "Event provider %(name)s failed for filters %(kinds)s: "
 msgstr "%(kinds)s 필터에 대해서 이벤트 제공자 %(name)s 실패함:"
 
-#: trac/timeline/web_ui.py:351
+#: trac/timeline/web_ui.py:359
 #, python-format
 msgid ""
 "You may want to see the %(other_events)s from the Timeline or notify your"
@@ -3775,186 +3892,199 @@ msgid ""
 "        for information about the timeline view."
 msgstr "[1:Note:] 시간이력에 대한 정보가 필요하다면 [2:TracTimeline]을 보십시오."
 
-#: trac/util/datefmt.py:79
+#: trac/util/datefmt.py:103
 #, python-format
 msgid "%(num)d year"
 msgid_plural "%(num)d years"
 msgstr[0] "%(num)d 년"
 
-#: trac/util/datefmt.py:80
+#: trac/util/datefmt.py:104
 #, python-format
 msgid "%(num)d month"
 msgid_plural "%(num)d months"
 msgstr[0] "%(num)d 달"
 
-#: trac/util/datefmt.py:81
+#: trac/util/datefmt.py:105
 #, python-format
 msgid "%(num)d week"
 msgid_plural "%(num)d weeks"
 msgstr[0] "%(num)d 주"
 
-#: trac/util/datefmt.py:82
+#: trac/util/datefmt.py:106
 #, python-format
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
 msgstr[0] "%(num)d 일"
 
-#: trac/util/datefmt.py:83
+#: trac/util/datefmt.py:107
 #, python-format
 msgid "%(num)d hour"
 msgid_plural "%(num)d hours"
 msgstr[0] "%(num)d 시간"
 
-#: trac/util/datefmt.py:84
+#: trac/util/datefmt.py:108
 #, python-format
 msgid "%(num)d minute"
 msgid_plural "%(num)d minutes"
 msgstr[0] "%(num)d 분"
 
-#: trac/util/datefmt.py:103
+#: trac/util/datefmt.py:127
 #, python-format
 msgid "%(num)i second"
 msgid_plural "%(num)i seconds"
 msgstr[0] "%(num)i 초"
 
-#: trac/util/datefmt.py:247
+#: trac/util/datefmt.py:274
 #, python-format
 msgid ""
 "\"%(date)s\" is an invalid date, or the date format is not known. Try "
 "\"%(hint)s\" instead."
 msgstr ""
 
-#: trac/util/datefmt.py:249 trac/util/datefmt.py:257
+#: trac/util/datefmt.py:276 trac/util/datefmt.py:284
 #, fuzzy
 msgid "Invalid Date"
 msgstr "유효하지 않은 로그 타입"
 
-#: trac/util/datefmt.py:255
+#: trac/util/datefmt.py:282
 #, python-format
 msgid ""
 "The date \"%(date)s\" is outside valid range. Try a date closer to "
 "present time."
 msgstr ""
 
-#: trac/util/presentation.py:254
+#: trac/util/presentation.py:255
 #, python-format
 msgid "%(last)d of %(total)d"
 msgstr "%(last)d (전체 %(total)d)"
 
-#: trac/util/presentation.py:256
+#: trac/util/presentation.py:257
 #, python-format
 msgid "%(start)d - %(stop)d of %(total)d"
 msgstr "%(start)d - %(stop)d (전체 %(total)d)"
 
-#: trac/versioncontrol/admin.py:110
+#: trac/versioncontrol/admin.py:113
 msgid "Alias"
 msgstr ""
 
-#: trac/versioncontrol/admin.py:110
+#: trac/versioncontrol/admin.py:113
 #: trac/versioncontrol/templates/admin_repositories.html:125
 msgid "Directory"
 msgstr "디렉토리"
 
-#: trac/versioncontrol/admin.py:116
+#: trac/versioncontrol/admin.py:119
 msgid "Cannot synchronize a single revision on multiple repositories"
 msgstr ""
 
-#: trac/versioncontrol/admin.py:124 trac/versioncontrol/admin.py:182
-#: trac/versioncontrol/web_ui/browser.py:347
+#: trac/versioncontrol/admin.py:127 trac/versioncontrol/admin.py:198
+#: trac/versioncontrol/web_ui/browser.py:351
 #: trac/versioncontrol/web_ui/changeset.py:247
-#: trac/versioncontrol/web_ui/changeset.py:1074
-#: trac/versioncontrol/web_ui/log.py:87 trac/versioncontrol/web_ui/log.py:393
+#: trac/versioncontrol/web_ui/changeset.py:1096
+#: trac/versioncontrol/web_ui/log.py:88 trac/versioncontrol/web_ui/log.py:393
 #, fuzzy, python-format
 msgid "Repository '%(repo)s' not found"
 msgstr "%(repo)s 페이지를 찾을 수 없습니다"
 
-#: trac/versioncontrol/admin.py:128
+#: trac/versioncontrol/admin.py:131
 #, fuzzy, python-format
 msgid "%(rev)s resynced on %(reponame)s."
 msgstr "%(rev)s 다시 동기화됨."
 
-#: trac/versioncontrol/admin.py:135
+#: trac/versioncontrol/admin.py:138
 #, fuzzy, python-format
 msgid "Resyncing repository history for %(reponame)s... "
 msgstr "저장소 히스토리 동기화..."
 
-#: trac/versioncontrol/admin.py:142
+#: trac/versioncontrol/admin.py:145
 #, python-format
 msgid "%(num)s revision cached."
 msgid_plural "%(num)s revisions cached."
 msgstr[0] "%(num)s 개 리비전 캐시됨."
 
-#: trac/versioncontrol/admin.py:144
+#: trac/versioncontrol/admin.py:147
 msgid "Done."
 msgstr "완료."
 
-#: trac/versioncontrol/admin.py:166
+#: trac/versioncontrol/admin.py:182
 msgid "Version Control"
 msgstr ""
 
-#: trac/versioncontrol/admin.py:167
+#: trac/versioncontrol/admin.py:183
 #: trac/versioncontrol/templates/admin_repositories.html:10
 #, fuzzy
 msgid "Repositories"
 msgstr "저장소 체크인"
 
-#: trac/versioncontrol/admin.py:203 trac/versioncontrol/admin.py:242
+#: trac/versioncontrol/admin.py:222 trac/versioncontrol/admin.py:264
 #, python-format
 msgid "You should now run %(resync)s to synchronize Trac with the repository."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:208
+#: trac/versioncontrol/admin.py:227
 #, python-format
 msgid "You may have to run %(resync)s to synchronize Trac with the repository."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:216
+#: trac/versioncontrol/admin.py:235
 #, python-format
 msgid ""
 "You will need to update your post-commit hook to call %(cset_added)s with"
 " the new repository name."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:238
+#: trac/versioncontrol/admin.py:255
+msgid "Missing arguments to add a repository."
+msgstr ""
+
+#: trac/versioncontrol/admin.py:260
 #, fuzzy, python-format
 msgid "The repository \"%(name)s\" has been added."
 msgstr "\"%(name)s\" 버전이 추가되었습니다."
 
-#: trac/versioncontrol/admin.py:248
+#: trac/versioncontrol/admin.py:270
 #, python-format
 msgid ""
 "You should also set up a post-commit hook on the repository to call "
 "%(cset_added)s for each committed changeset."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:254
-msgid "Missing arguments to add a repository."
-msgstr ""
-
-#: trac/versioncontrol/admin.py:263
+#: trac/versioncontrol/admin.py:283
 #, fuzzy, python-format
 msgid "The alias \"%(name)s\" has been added."
 msgstr "\"%(name)s\" 마일스톤이 추가되었습니다."
 
-#: trac/versioncontrol/admin.py:266
+#: trac/versioncontrol/admin.py:286
 msgid "Missing arguments to add an alias."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:279
+#: trac/versioncontrol/admin.py:299
 #, fuzzy
 msgid "The selected repositories have been removed."
 msgstr "선택된 버전이 제거되었습니다."
 
-#: trac/versioncontrol/admin.py:282
+#: trac/versioncontrol/admin.py:302
 msgid "No repositories were selected."
+msgstr ""
+
+#: trac/versioncontrol/admin.py:343
+msgid "The repository directory must be an absolute path."
+msgstr ""
+
+#: trac/versioncontrol/admin.py:352
+#, python-format
+msgid ""
+"The repository directory must be located below one of the following "
+"directories: %(dirs)s"
 msgstr ""
 
 #: trac/versioncontrol/api.py:32
 #: trac/versioncontrol/templates/admin_repositories.html:20
+#: trac/versioncontrol/templates/admin_repositories.html:33
+#: trac/versioncontrol/templates/admin_repositories.html:132
 #: trac/versioncontrol/templates/admin_repositories.html:134
-#: trac/versioncontrol/web_ui/browser.py:809
-#: trac/versioncontrol/web_ui/changeset.py:853
-#: trac/versioncontrol/web_ui/changeset.py:995
+#: trac/versioncontrol/web_ui/browser.py:864
+#: trac/versioncontrol/web_ui/changeset.py:873
+#: trac/versioncontrol/web_ui/changeset.py:1017
 #, fuzzy
 msgid "(default)"
 msgstr "기본값"
@@ -3964,74 +4094,84 @@ msgstr "기본값"
 msgid "Invalid key \"%(key)s\""
 msgstr "유효하지 않은 동작 \"%(key)s\""
 
-#: trac/versioncontrol/api.py:188
+#: trac/versioncontrol/api.py:190
 #, python-format
 msgid "You should now run \"repository resync %(name)s\"."
 msgstr ""
 
-#: trac/versioncontrol/api.py:191
+#: trac/versioncontrol/api.py:193
 #, python-format
 msgid "You may have to run \"repository resync %(name)s\"."
 msgstr ""
 
-#: trac/versioncontrol/api.py:202
+#: trac/versioncontrol/api.py:201 trac/versioncontrol/api.py:264
+msgid "The repository directory must be absolute"
+msgstr ""
+
+#: trac/versioncontrol/api.py:206
 #, python-format
 msgid "The repository type '%(type)s' is not supported"
 msgstr ""
 
-#: trac/versioncontrol/api.py:331
+#: trac/versioncontrol/api.py:343
 #, fuzzy, python-format
 msgid ""
 "Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the "
 "Trac log for more information."
 msgstr "저장소와 동기화할 수 없습니다. (%(error)s). 더 많은 정보가 필요하면 Trac 로그를 보십시오."
 
-#: trac/versioncontrol/api.py:350
+#: trac/versioncontrol/api.py:364
 #, fuzzy, python-format
 msgid "Changeset %(rev)s in %(repo)s"
 msgstr "저장소에 %(rev)s 변경사항이 존재하지 않습니다."
 
-#: trac/versioncontrol/api.py:352
+#: trac/versioncontrol/api.py:366
 #, python-format
 msgid "Changeset %(rev)s"
 msgstr "변경사항 %(rev)s"
 
-#: trac/versioncontrol/api.py:360
+#: trac/versioncontrol/api.py:376
 #, fuzzy
 msgid "directory"
 msgstr "디렉토리"
 
-#: trac/versioncontrol/api.py:362
+#: trac/versioncontrol/api.py:378
 #, fuzzy
 msgid "file"
 msgstr "파일"
 
-#: trac/versioncontrol/api.py:364
-#, python-format
-msgid "at version %(rev)s"
+#: trac/versioncontrol/api.py:380
+#, fuzzy, python-format
+msgid " at version %(rev)s"
 msgstr "버전 %(rev)s"
 
-#: trac/versioncontrol/api.py:366
+#: trac/versioncontrol/api.py:382
 #, fuzzy
 msgid "path"
 msgstr "경로"
 
-#: trac/versioncontrol/api.py:369
+#: trac/versioncontrol/api.py:385
 #, fuzzy, python-format
 msgid " in %(repo)s"
 msgstr "버전 %(repo)s"
 
-#: trac/versioncontrol/api.py:372
+#. TRANSLATOR: file /path/to/file.py at version 13 in reponame
+#: trac/versioncontrol/api.py:387
+#, python-format
+msgid "%(kind)s %(id)s%(at_version)s%(in_repo)s"
+msgstr ""
+
+#: trac/versioncontrol/api.py:390
 #, fuzzy, python-format
 msgid "Repository %(repo)s"
 msgstr "저장소 경로 %(repo)s 브라우징하기"
 
-#: trac/versioncontrol/api.py:653
+#: trac/versioncontrol/api.py:703
 #, fuzzy, python-format
 msgid "Unsupported version control system \"%(name)s\": %(error)s"
 msgstr "지원되지 않는 버전 컨트롤 시스템 \"%(name)s\": \"%(error)s\" "
 
-#: trac/versioncontrol/api.py:656
+#: trac/versioncontrol/api.py:706
 #, python-format
 msgid ""
 "Unsupported version control system \"%(name)s\": Can't find an "
@@ -4040,62 +4180,62 @@ msgstr ""
 "지원되지 않는 버전 컨트롤 시스템 \"%(name)s\": 적당한 컴포넌트를 찾을 수 없습니다. 아마 적당한 플러그인이 활성화되지 "
 "않았을 수 있습니다."
 
-#: trac/versioncontrol/api.py:664
+#: trac/versioncontrol/api.py:714
 #, python-format
 msgid "No changeset %(rev)s in the repository"
 msgstr "저장소에 %(rev)s 변경사항이 존재하지 않습니다."
 
-#: trac/versioncontrol/api.py:666
+#: trac/versioncontrol/api.py:716
 msgid "No such changeset"
 msgstr "그런 변경사항이 없습니다."
 
-#: trac/versioncontrol/api.py:672
+#: trac/versioncontrol/api.py:722
 #, python-format
 msgid "No node %(path)s at revision %(rev)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:674
+#: trac/versioncontrol/api.py:724
 #, python-format
 msgid "%(msg)s: No node %(path)s at revision %(rev)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:676
+#: trac/versioncontrol/api.py:726
 msgid "No such node"
 msgstr "그런 노드가 없습니다."
 
-#: trac/versioncontrol/cache.py:149
-#, fuzzy
+#: trac/versioncontrol/cache.py:158
+#, python-format
 msgid ""
-"The 'repository_dir' has changed, a 'trac-admin $ENV repository resync' "
-"operation is needed."
-msgstr "'repository_dir'이 변경되었습니다. 'trac-admin resync' 동작을 수행해야 합니다."
+"The repository directory has changed, you should resynchronize the "
+"repository with: trac-admin $ENV repository resync '%(reponame)s'"
+msgstr ""
 
-#: trac/versioncontrol/svn_authz.py:73
+#: trac/versioncontrol/svn_authz.py:72
 #, python-format
 msgid "Line %(lineno)d: Entry before first section header"
 msgstr ""
 
-#: trac/versioncontrol/svn_authz.py:77
+#: trac/versioncontrol/svn_authz.py:76
 #, python-format
 msgid "Line %(lineno)d: Invalid entry"
 msgstr ""
 
-#: trac/versioncontrol/svn_fs.py:275
+#: trac/versioncontrol/svn_fs.py:277
 #, fuzzy, python-format
 msgid "Subversion >= 1.0 required, found %(version)s"
 msgstr "Subversion 1.0 버전 이상이 필요합니다.: %(version)s 버전을 발견했습니다."
 
-#: trac/versioncontrol/svn_fs.py:330
+#: trac/versioncontrol/svn_fs.py:332
 #, python-format
 msgid "%(path)s does not appear to be a Subversion repository."
 msgstr "%(path)s는 Subversion 저장소처럼 보이지 않습니다."
 
-#: trac/versioncontrol/svn_fs.py:337
+#: trac/versioncontrol/svn_fs.py:339
 #, python-format
 msgid "Couldn't open Subversion repository %(path)s: %(svn_error)s"
 msgstr "%(path)s의 Subversion 저장소를 열 수 없습니다. : %(svn_error)s"
 
-#: trac/versioncontrol/svn_fs.py:617
+#: trac/versioncontrol/svn_fs.py:628
 #, python-format
 msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
@@ -4104,7 +4244,7 @@ msgstr ""
 "차이점 비교가 일치하지 않음: 베이스는 %(oldnode)s (%(oldrev)s 리비전에 서의 %(oldpath)s), 그리고 "
 "타켓은 %(newnode)s (%(newrev)s 리비전에서의 %(newpath)s)."
 
-#: trac/versioncontrol/svn_fs.py:766
+#: trac/versioncontrol/svn_fs.py:777
 #, python-format
 msgid "svn blame failed on %(path)s: %(error)s"
 msgstr "%(path)s에 대한 svn blame 실패 : %(error)s"
@@ -4121,51 +4261,72 @@ msgstr "병합됨"
 msgid "blocked"
 msgstr "블락됨"
 
-#: trac/versioncontrol/svn_prop.py:192
+#: trac/versioncontrol/svn_prop.py:182
+msgid "non-inheritable"
+msgstr ""
+
+#: trac/versioncontrol/svn_prop.py:184
+msgid "merged on the directory itself but not below"
+msgstr ""
+
+#: trac/versioncontrol/svn_prop.py:200
 msgid "eligible"
 msgstr "적당한"
 
-#: trac/versioncontrol/svn_prop.py:206
+#: trac/versioncontrol/svn_prop.py:214
 msgid "(toggle deleted branches)"
 msgstr "(삭제된 브랜치들을 토글하기)"
 
-#: trac/versioncontrol/svn_prop.py:234
+#: trac/versioncontrol/svn_prop.py:252
 msgid "View merge source"
 msgstr "병합 원본 보기"
 
-#: trac/versioncontrol/svn_prop.py:245
+#: trac/versioncontrol/svn_prop.py:263
 msgid "No revisions"
 msgstr "리비전들이 없습니다"
 
-#: trac/versioncontrol/svn_prop.py:281
+#: trac/versioncontrol/svn_prop.py:270
+#, fuzzy, python-format
+msgid "%(title)s: %(revs)s"
+msgstr "%(title)s %(revs)s:"
+
+#: trac/versioncontrol/svn_prop.py:306
 msgid "merged: "
 msgstr "병합됨:"
 
-#: trac/versioncontrol/svn_prop.py:281
+#: trac/versioncontrol/svn_prop.py:306
 msgid "blocked: "
 msgstr "블럭됨:"
 
-#: trac/versioncontrol/svn_prop.py:282
+#: trac/versioncontrol/svn_prop.py:307
 msgid "reverse-merged: "
 msgstr "역방향으로 병합됨: "
 
-#: trac/versioncontrol/svn_prop.py:282
+#: trac/versioncontrol/svn_prop.py:307
 msgid "un-blocked: "
 msgstr "언블럭됨: "
 
-#: trac/versioncontrol/svn_prop.py:293
+#: trac/versioncontrol/svn_prop.py:308
+msgid "marked as non-inheritable: "
+msgstr ""
+
+#: trac/versioncontrol/svn_prop.py:309
+msgid "unmarked as non-inheritable: "
+msgstr ""
+
+#: trac/versioncontrol/svn_prop.py:321
 msgid " (added)"
 msgstr " (추가됨)"
 
-#: trac/versioncontrol/svn_prop.py:321
+#: trac/versioncontrol/svn_prop.py:358
 msgid "removed"
 msgstr "제거됨"
 
-#: trac/versioncontrol/svn_prop.py:324
+#: trac/versioncontrol/svn_prop.py:361
 msgid " (with no actual effect on merging)"
 msgstr " (병합시에 실제적으로 영향이 없이)"
 
-#: trac/versioncontrol/svn_prop.py:325
+#: trac/versioncontrol/svn_prop.py:362
 #, python-format
 msgid "Property %(prop)s changed"
 msgstr "%(prop)s 속성이 변경됨"
@@ -4227,8 +4388,9 @@ msgid "Revision"
 msgstr "리비전:"
 
 #: trac/versioncontrol/templates/admin_repositories.html:137
-msgid "Alias of"
-msgstr ""
+#, fuzzy, python-format
+msgid "Alias of %(repo)s"
+msgstr "버전 %(repo)s"
 
 #: trac/versioncontrol/templates/admin_repositories.html:144
 #, fuzzy
@@ -4314,47 +4476,47 @@ msgstr "변경사항 보기..."
 msgid "Select paths and revs for Diff"
 msgstr "차이점 비교를 위해 경로와 리비전을 선택하십시오."
 
-#: trac/versioncontrol/templates/changeset.html:34
-#: trac/versioncontrol/templates/changeset.html:44
+#: trac/versioncontrol/templates/changeset.html:36
 #: trac/versioncontrol/templates/changeset.html:46
-#: trac/versioncontrol/templates/changeset.html:56
-#: trac/versioncontrol/templates/changeset.html:66
+#: trac/versioncontrol/templates/changeset.html:48
+#: trac/versioncontrol/templates/changeset.html:58
 #: trac/versioncontrol/templates/changeset.html:68
+#: trac/versioncontrol/templates/changeset.html:70
 msgid "Show full changeset"
 msgstr "전체 변경사항 보기"
 
-#: trac/versioncontrol/templates/changeset.html:35
-#: trac/versioncontrol/templates/changeset.html:38
-#: trac/versioncontrol/templates/changeset.html:43
+#: trac/versioncontrol/templates/changeset.html:37
+#: trac/versioncontrol/templates/changeset.html:40
 #: trac/versioncontrol/templates/changeset.html:45
-#: trac/versioncontrol/templates/changeset.html:57
-#: trac/versioncontrol/templates/changeset.html:60
-#: trac/versioncontrol/templates/changeset.html:65
+#: trac/versioncontrol/templates/changeset.html:47
+#: trac/versioncontrol/templates/changeset.html:59
+#: trac/versioncontrol/templates/changeset.html:62
 #: trac/versioncontrol/templates/changeset.html:67
-#: trac/versioncontrol/templates/changeset.html:103
+#: trac/versioncontrol/templates/changeset.html:69
+#: trac/versioncontrol/templates/changeset.html:105
 msgid "Show entry in browser"
 msgstr "브라우저에서 보기"
 
-#: trac/versioncontrol/templates/changeset.html:33
+#: trac/versioncontrol/templates/changeset.html:35
 #, python-format
 msgid ""
 "Changeset [1:%(new_rev)s] in %(reponame)s\n"
 "              for [2:%(new_path)s]"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:39
-#: trac/versioncontrol/templates/changeset.html:61
+#: trac/versioncontrol/templates/changeset.html:41
+#: trac/versioncontrol/templates/changeset.html:63
 msgid "Show revision log"
 msgstr "리비전 로그 보기"
 
-#: trac/versioncontrol/templates/changeset.html:37
+#: trac/versioncontrol/templates/changeset.html:39
 #, python-format
 msgid ""
 "Changes in [1:%(new_path)s]\n"
 "              [2:\\[%(old_rev)s:%(new_rev)s\\]] in %(reponame)s"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:41
+#: trac/versioncontrol/templates/changeset.html:43
 #, python-format
 msgid ""
 "Changes in %(reponame)s\n"
@@ -4364,26 +4526,26 @@ msgid ""
 "              at [4:r%(new_rev)s]"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:48
+#: trac/versioncontrol/templates/changeset.html:50
 #, fuzzy, python-format
 msgid "Changeset [1:%(new_rev)s] in %(reponame)s"
 msgstr "저장소에 [1:%(new_rev)s] %(reponame)s 변경사항이 존재하지 않습니다."
 
-#: trac/versioncontrol/templates/changeset.html:55
+#: trac/versioncontrol/templates/changeset.html:57
 #, python-format
 msgid ""
 "Changeset [1:%(new_rev)s]\n"
 "              for [2:%(new_path)s]"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:59
+#: trac/versioncontrol/templates/changeset.html:61
 #, python-format
 msgid ""
 "Changes in [1:%(new_path)s]\n"
 "              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:63
+#: trac/versioncontrol/templates/changeset.html:65
 #, python-format
 msgid ""
 "Changes\n"
@@ -4393,26 +4555,26 @@ msgid ""
 "              at [4:r%(new_rev)s]"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:70
+#: trac/versioncontrol/templates/changeset.html:72
 #, fuzzy, python-format
 msgid "Changeset [1:%(new_rev)s]"
 msgstr "변경사항 [1:%(new_rev)s]"
 
-#: trac/versioncontrol/templates/changeset.html:99
+#: trac/versioncontrol/templates/changeset.html:101
 #, python-format
 msgid "Show what was removed (content at revision %(old_rev)s)"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:104
+#: trac/versioncontrol/templates/changeset.html:106
 msgid "(root)"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:110
+#: trac/versioncontrol/templates/changeset.html:112
 #, python-format
 msgid "Show original file (revision %(old_rev)s)"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:109
+#: trac/versioncontrol/templates/changeset.html:111
 #, fuzzy, python-format
 msgid ""
 "(%(kind)s from [1:\n"
@@ -4421,100 +4583,110 @@ msgstr ""
 "%(kind)s 남음[1:\n"
 "                %(old_path)s])"
 
-#: trac/versioncontrol/templates/changeset.html:117
-#: trac/versioncontrol/templates/changeset.html:120
+#: trac/versioncontrol/templates/changeset.html:119
+#: trac/versioncontrol/templates/changeset.html:122
 msgid "Show differences"
 msgstr "차이점 보기"
 
-#: trac/versioncontrol/templates/changeset.html:117
+#: trac/versioncontrol/templates/changeset.html:119
 msgid "view diffs"
 msgstr "차이점 보기"
 
-#: trac/versioncontrol/templates/changeset.html:120
+#: trac/versioncontrol/templates/changeset.html:122
 #, python-format
 msgid "%(num)d diff"
 msgid_plural "%(num)d diffs"
 msgstr[0] "%(num)d 차이점"
 
-#: trac/versioncontrol/templates/changeset.html:123
+#: trac/versioncontrol/templates/changeset.html:125
 #, python-format
 msgid "%(num)d prop"
 msgid_plural "%(num)d props"
 msgstr[0] "%(num)d 속성"
 
-#: trac/versioncontrol/templates/changeset.html:127
+#: trac/versioncontrol/templates/changeset.html:129
 msgid "Show previous version in browser"
 msgstr "브라우저에서 이전 버전 보여주기"
 
-#: trac/versioncontrol/templates/changeset.html:137
+#: trac/versioncontrol/templates/changeset.html:139
 msgid "(less than one hour ago)"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:138
+#: trac/versioncontrol/templates/changeset.html:140
 #, python-format
 msgid "(%(age)s ago)"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:152
+#: trac/versioncontrol/templates/changeset.html:154
 msgid "Message:"
 msgstr "메시지:"
 
-#: trac/versioncontrol/templates/changeset.html:164
+#: trac/versioncontrol/templates/changeset.html:166
 msgid "Location:"
 msgstr "위치:"
 
-#: trac/versioncontrol/templates/changeset.html:168
+#: trac/versioncontrol/templates/changeset.html:170
+#, fuzzy
+msgid "File:"
+msgid_plural "Files:"
+msgstr[0] "파일:"
+
+#: trac/versioncontrol/templates/changeset.html:170
 #, fuzzy
 msgid "(No files)"
 msgstr "로그 파일:"
 
-#: trac/versioncontrol/templates/changeset.html:173
+#: trac/versioncontrol/templates/changeset.html:175
 #, fuzzy, python-format
 msgid "%(num)d added"
 msgid_plural "%(num)d added"
 msgstr[0] "%(num)d 일"
 
-#: trac/versioncontrol/templates/changeset.html:174
+#: trac/versioncontrol/templates/changeset.html:176
 #, fuzzy, python-format
 msgid "%(num)d deleted"
 msgid_plural "%(num)d deleted"
 msgstr[0] "%(num)d 주"
 
-#: trac/versioncontrol/templates/changeset.html:175
+#: trac/versioncontrol/templates/changeset.html:177
 #, fuzzy, python-format
 msgid "%(num)d edited"
 msgid_plural "%(num)d edited"
 msgstr[0] "%(num)d 분"
 
-#: trac/versioncontrol/templates/changeset.html:176
+#: trac/versioncontrol/templates/changeset.html:178
 #, fuzzy, python-format
 msgid "%(num)d copied"
 msgid_plural "%(num)d copied"
 msgstr[0] "%(num)d 속성"
 
-#: trac/versioncontrol/templates/changeset.html:177
+#: trac/versioncontrol/templates/changeset.html:179
 #, fuzzy, python-format
 msgid "%(num)d moved"
 msgid_plural "%(num)d moved"
 msgstr[0] "%(num)d 달"
 
-#: trac/versioncontrol/templates/changeset.html:183
+#: trac/versioncontrol/templates/changeset.html:185
+#: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "added"
 msgstr "추가됨"
 
-#: trac/versioncontrol/templates/changeset.html:184
+#: trac/versioncontrol/templates/changeset.html:186
+#: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "deleted"
 msgstr "삭제됨"
 
-#: trac/versioncontrol/templates/changeset.html:185
+#: trac/versioncontrol/templates/changeset.html:187
+#: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "copied"
 msgstr "복사됨"
 
-#: trac/versioncontrol/templates/changeset.html:186
+#: trac/versioncontrol/templates/changeset.html:188
+#: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "moved"
 msgstr "이동됨"
 
-#: trac/versioncontrol/templates/changeset.html:209
+#: trac/versioncontrol/templates/changeset.html:211
 #, fuzzy
 msgid ""
 "[1:Note:] See [2:TracChangeset]\n"
@@ -4570,24 +4742,24 @@ msgid "View File"
 msgstr "차이점 보기"
 
 #: trac/versioncontrol/templates/dir_entries.html:19
-#: trac/versioncontrol/templates/repository_index.html:23
+#: trac/versioncontrol/templates/repository_index.html:24
 msgid "View Revision Log"
 msgstr "리비전 로그 보기"
 
 #: trac/versioncontrol/templates/dir_entries.html:20
-#: trac/versioncontrol/templates/repository_index.html:24
+#: trac/versioncontrol/templates/repository_index.html:25
 #, fuzzy
 msgid "View Changeset"
 msgstr "변경사항 보기"
 
 #: trac/versioncontrol/templates/dirlist_thead.html:9
-#: trac/versioncontrol/templates/revisionlog.html:94
-#: trac/versioncontrol/web_ui/browser.py:753
+#: trac/versioncontrol/templates/revisionlog.html:96
+#: trac/versioncontrol/web_ui/browser.py:785
 msgid "Rev"
 msgstr "리비전"
 
 #: trac/versioncontrol/templates/dirlist_thead.html:12
-#: trac/versioncontrol/web_ui/browser.py:441
+#: trac/versioncontrol/web_ui/browser.py:452
 msgid "Last Change"
 msgstr "마지막 변경사항"
 
@@ -4635,185 +4807,186 @@ msgid "Show only adds and deletes"
 msgstr "추가/삭제된 것만 보여주기"
 
 #: trac/versioncontrol/templates/revisionlog.html:44
-msgid "View log starting at"
-msgstr "다음에서부터 로그 보기"
-
-#: trac/versioncontrol/templates/revisionlog.html:48
-msgid "and back to"
+msgid ""
+"[1:\n"
+"              View log starting at\n"
+"              [2:]\n"
+"            ]\n"
+"            [3:\n"
+"              and back to\n"
+"              [4:]\n"
+"            ]"
 msgstr ""
 
-#: trac/versioncontrol/templates/revisionlog.html:53
-msgid "Show at most"
+#: trac/versioncontrol/templates/revisionlog.html:54
+msgid ""
+"[1:\n"
+"              Show at most\n"
+"              [2:]\n"
+"              revisions per page.\n"
+"            ]"
 msgstr ""
 
-#: trac/versioncontrol/templates/revisionlog.html:55
-msgid "revisions per page."
-msgstr "페이지당 리비전"
-
-#: trac/versioncontrol/templates/revisionlog.html:60
+#: trac/versioncontrol/templates/revisionlog.html:62
 msgid "Show full log messages"
 msgstr "전체 로그메시지 보기"
 
-#: trac/versioncontrol/templates/revisionlog.html:78
+#: trac/versioncontrol/templates/revisionlog.html:80
 msgid "Copied or renamed"
 msgstr "복사됨 혹은 이름변경됨"
 
-#: trac/versioncontrol/templates/revisionlog.html:86
-#: trac/versioncontrol/templates/revisionlog.html:180
+#: trac/versioncontrol/templates/revisionlog.html:88
+#: trac/versioncontrol/templates/revisionlog.html:182
 #, fuzzy
 msgid "Diff from Old Revision to New Revision (as selected in the Diff column)"
 msgstr "이전 리비전에서 새로운 리비전사이의 차이점 (위에서 선택하십시오.)"
 
-#: trac/versioncontrol/templates/revisionlog.html:92
+#: trac/versioncontrol/templates/revisionlog.html:94
 msgid "Old / New"
 msgstr "예전 / 새로운"
 
-#: trac/versioncontrol/templates/revisionlog.html:92
+#: trac/versioncontrol/templates/revisionlog.html:94
 msgid "Diff"
 msgstr "차이점비교"
 
-#: trac/versioncontrol/templates/revisionlog.html:95
+#: trac/versioncontrol/templates/revisionlog.html:97
 #, fuzzy
 msgid "Age"
 msgstr "변경"
 
-#: trac/versioncontrol/templates/revisionlog.html:97
+#: trac/versioncontrol/templates/revisionlog.html:99
 msgid "Log Message"
 msgstr "로그 메시지"
 
-#: trac/versioncontrol/templates/revisionlog.html:104
+#: trac/versioncontrol/templates/revisionlog.html:106
 msgid "No revisions found"
 msgstr "리비전이 없습니다."
 
-#: trac/versioncontrol/templates/revisionlog.html:117
-msgid "copied from"
-msgstr "다음으로부터 복사됨"
-
-#: trac/versioncontrol/templates/revisionlog.html:124
-#, python-format
-msgid "From r%(rev)s"
+#: trac/versioncontrol/templates/revisionlog.html:120
+#, fuzzy, python-format
+msgid "copied from [1:%(path)s]:"
 msgstr ""
 
-#: trac/versioncontrol/templates/revisionlog.html:127
+#: trac/versioncontrol/templates/revisionlog.html:126
 #, fuzzy, python-format
-msgid "To r%(rev)s"
+msgid "From [%(rev)s]"
 msgstr "버전 %(rev)s"
 
-#: trac/versioncontrol/templates/revisionlog.html:133
+#: trac/versioncontrol/templates/revisionlog.html:129
+#, fuzzy, python-format
+msgid "To [%(rev)s]"
+msgstr "버전 %(rev)s"
+
+#: trac/versioncontrol/templates/revisionlog.html:135
 msgid "View log starting at this revision"
 msgstr "이 리비전에서 시작해서 로그 보기"
 
-#: trac/versioncontrol/templates/revisionlog.html:140
+#: trac/versioncontrol/templates/revisionlog.html:142
 #, fuzzy, python-format
 msgid "Browse at revision %(rev)s"
 msgstr "버전 %(rev)s"
 
-#: trac/versioncontrol/templates/revisionlog.html:144
+#: trac/versioncontrol/templates/revisionlog.html:146
 #, fuzzy, python-format
 msgid "View removal changeset [%(rev)s]"
 msgstr "변경사항 %(rev)s"
 
-#: trac/versioncontrol/templates/revisionlog.html:146
+#: trac/versioncontrol/templates/revisionlog.html:148
 #, fuzzy, python-format
 msgid "View changeset [%(rev)s] restricted to %(path)s"
 msgstr "[%(rev)s] 경로에 대해 %(path)s 변경사항 보기"
 
-#: trac/versioncontrol/templates/revisionlog.html:185
+#: trac/versioncontrol/templates/revisionlog.html:187
 msgid ""
 "[1:Note:] See [2:TracRevisionLog]\n"
 "        for help on using the revision log."
 msgstr "[1:Note:] 리비전 로그를 사용하면서 도움이 필요하다면 [2:TracRevisionLog]를 보십시오."
 
-#: trac/versioncontrol/templates/revisionlog.txt:1
-msgid ""
-"#\n"
-"# ChangeLog for"
-msgstr ""
-"#\n"
-"# 변경로그"
-
 #: trac/versioncontrol/templates/revisionlog.txt:2
 #, fuzzy, python-format
-msgid " in %(reponame)s"
-msgstr "마일스톤 %(reponame)s"
-
-#: trac/versioncontrol/templates/revisionlog.txt:2
-msgid ""
-"# \n"
-"# Generated by Trac"
+msgid "ChangeLog for %(path)s%(in_repo)s"
 msgstr ""
-"# \n"
-"# Trac에 의해 생성됨."
 
-#: trac/versioncontrol/web_ui/browser.py:298
+#: trac/versioncontrol/templates/revisionlog.txt:4
+#, fuzzy, python-format
+msgid "Generated by Trac %(version)s"
+msgstr "%(version)s 버전 삭제하기"
+
+#: trac/versioncontrol/web_ui/browser.py:296
 msgid "Browse Source"
 msgstr "소스 둘러보기"
 
-#: trac/versioncontrol/web_ui/browser.py:369
+#: trac/versioncontrol/web_ui/browser.py:374
 #, fuzzy
 msgid "Invalid changeset number"
 msgstr "유효하지 않은 변경사항 번호"
 
-#: trac/versioncontrol/web_ui/browser.py:424
-#: trac/versioncontrol/web_ui/browser.py:434
+#: trac/versioncontrol/web_ui/browser.py:395
+#, python-format
+msgid "No node %(path)s"
+msgstr ""
+
+#: trac/versioncontrol/web_ui/browser.py:435
+#: trac/versioncontrol/web_ui/browser.py:445
 #, python-format
 msgid "Revision %(num)s"
 msgstr "리비전 %(num)s"
 
-#: trac/versioncontrol/web_ui/browser.py:435
+#: trac/versioncontrol/web_ui/browser.py:446
 msgid "Previous Revision"
 msgstr "이전 리비전"
 
-#: trac/versioncontrol/web_ui/browser.py:435
+#: trac/versioncontrol/web_ui/browser.py:446
 msgid "Next Revision"
 msgstr "다음 리비전"
 
-#: trac/versioncontrol/web_ui/browser.py:436
+#: trac/versioncontrol/web_ui/browser.py:447
 msgid "Latest Revision"
 msgstr "마지막 리비전"
 
-#: trac/versioncontrol/web_ui/browser.py:440
-#: trac/versioncontrol/web_ui/log.py:299
+#: trac/versioncontrol/web_ui/browser.py:451
+#: trac/versioncontrol/web_ui/log.py:295
 msgid "Parent directory"
 msgstr "부모 디렉토리"
 
-#: trac/versioncontrol/web_ui/browser.py:446
+#: trac/versioncontrol/web_ui/browser.py:458
 msgid "Normal"
 msgstr "일반"
 
-#: trac/versioncontrol/web_ui/browser.py:447
+#: trac/versioncontrol/web_ui/browser.py:459
 msgid "View file without annotations"
 msgstr "수정한 사람을 보여주는 것 없이 파일 보기"
 
-#: trac/versioncontrol/web_ui/browser.py:452
-msgid "Annotate"
-msgstr "수정한 사람보기"
+#: trac/versioncontrol/web_ui/browser.py:464
+#, fuzzy
+msgid "Blame"
+msgstr "이름"
 
-#: trac/versioncontrol/web_ui/browser.py:453
+#: trac/versioncontrol/web_ui/browser.py:465
 msgid ""
 "Annotate each line with the last changed revision (this can be time "
 "consuming...)"
 msgstr "마지막 변경사항과 함께 각 라인의 수정한 사람을 보여줍니다.(시간이 소요될 수 있습니다...)"
 
-#: trac/versioncontrol/web_ui/browser.py:460
+#: trac/versioncontrol/web_ui/browser.py:472
 msgid "Revision Log"
 msgstr "리비전 로그"
 
-#: trac/versioncontrol/web_ui/browser.py:466
+#: trac/versioncontrol/web_ui/browser.py:478
 #, fuzzy
 msgid "Repository URL"
 msgstr "저장소 체크인"
 
-#: trac/versioncontrol/web_ui/browser.py:580
-#: trac/versioncontrol/web_ui/changeset.py:362
+#: trac/versioncontrol/web_ui/browser.py:609
+#: trac/versioncontrol/web_ui/changeset.py:363
 msgid "Zip Archive"
 msgstr "Zip 파일"
 
-#: trac/versioncontrol/web_ui/browser.py:753
+#: trac/versioncontrol/web_ui/browser.py:785
 msgid "Revision in which the line changed"
 msgstr "변경된 라인의 리비전"
 
-#: trac/versioncontrol/web_ui/browser.py:811
+#: trac/versioncontrol/web_ui/browser.py:866
 #, fuzzy, python-format
 msgid "View repository %(repo)s"
 msgstr "저장소 경로 %(repo)s 브라우징하기"
@@ -4831,115 +5004,126 @@ msgstr ""
 msgid "Invalid Changeset Number"
 msgstr "유효하지 않은 변경사항 번호"
 
-#: trac/versioncontrol/web_ui/changeset.py:360
+#: trac/versioncontrol/web_ui/changeset.py:361
 msgid "Unified Diff"
 msgstr "Unified Diff"
 
-#: trac/versioncontrol/web_ui/changeset.py:371
+#: trac/versioncontrol/web_ui/changeset.py:372
 msgid "Previous Changeset"
 msgstr "이전 변경사항"
 
-#: trac/versioncontrol/web_ui/changeset.py:371
+#: trac/versioncontrol/web_ui/changeset.py:372
 msgid "Next Changeset"
 msgstr "다음 변경사항"
 
-#: trac/versioncontrol/web_ui/changeset.py:375
+#: trac/versioncontrol/web_ui/changeset.py:376
 msgid "Reverse Diff"
 msgstr "역으로 차이점 보기"
 
-#: trac/versioncontrol/web_ui/changeset.py:410
+#: trac/versioncontrol/web_ui/changeset.py:414
 #, python-format
 msgid "Changeset %(id)s for %(path)s"
 msgstr "%(path)s에 대한 %(id)s 변경사항"
 
-#: trac/versioncontrol/web_ui/changeset.py:413
-#: trac/versioncontrol/web_ui/changeset.py:439
-#: trac/versioncontrol/web_ui/changeset.py:460
+#: trac/versioncontrol/web_ui/changeset.py:417
+#: trac/versioncontrol/web_ui/changeset.py:443
+#: trac/versioncontrol/web_ui/changeset.py:465
 #, python-format
 msgid "Changeset %(id)s"
 msgstr "변경사항 %(id)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:486
+#: trac/versioncontrol/web_ui/changeset.py:492
 #, python-format
 msgid "Show revision %(rev)s of this file in browser"
 msgstr "브라우저에서 이 파일의 %(rev)s 리비전을 보여줍니다"
 
-#: trac/versioncontrol/web_ui/changeset.py:632
+#: trac/versioncontrol/web_ui/changeset.py:638
 #, python-format
 msgid "Show the changeset %(id)s restricted to %(path)s"
 msgstr "%(path)s 경로에 대해 %(id)s 변경사항 보기"
 
-#: trac/versioncontrol/web_ui/changeset.py:643
+#: trac/versioncontrol/web_ui/changeset.py:650
 #, python-format
 msgid "Show the %(range)s differences restricted to %(path)s"
 msgstr "%(path)s 경로에 대해 %(range)s 범위의 차이점 보기"
 
-#: trac/versioncontrol/web_ui/changeset.py:859
-#, fuzzy, python-format
+#. TRANSLATOR: 'latest' (revision)
+#: trac/versioncontrol/web_ui/changeset.py:798
+#, fuzzy
+msgid "latest"
+msgstr "필터"
+
+#: trac/versioncontrol/web_ui/changeset.py:801
+#, python-format
+msgid "Diff [%(old_rev)s:%(new_rev)s] for %(path)s"
+msgstr ""
+
+#: trac/versioncontrol/web_ui/changeset.py:807
+#, python-format
+msgid "Diff from %(old_path)s@%(old_rev)s to %(new_path)s@%(new_rev)s"
+msgstr ""
+
+#: trac/versioncontrol/web_ui/changeset.py:879
+#, fuzzy
 msgid "Changesets in all repositories"
 msgstr "저장소에 %(rev)s 변경사항이 존재하지 않습니다."
 
-#: trac/versioncontrol/web_ui/changeset.py:861
+#: trac/versioncontrol/web_ui/changeset.py:881
 #, fuzzy
 msgid "Repository changesets"
 msgstr "저장소 체크인"
 
-#: trac/versioncontrol/web_ui/changeset.py:999
+#: trac/versioncontrol/web_ui/changeset.py:1021
 #, fuzzy, python-format
 msgid "Changeset in %(repo)s "
 msgid_plural "Changesets in %(repo)s "
 msgstr[0] "변경사항 %(repo)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:1001
+#: trac/versioncontrol/web_ui/changeset.py:1023
 #, fuzzy
 msgid "Changeset "
 msgid_plural "Changesets "
 msgstr[0] "변경사항"
 
-#: trac/versioncontrol/web_ui/changeset.py:1010
-#, fuzzy, python-format
-msgid "%(title)s: %(message)s"
-msgstr "%(title)s %(message)s:"
-
-#: trac/versioncontrol/web_ui/changeset.py:1070
+#: trac/versioncontrol/web_ui/changeset.py:1094
 #, fuzzy, python-format
 msgid "No permission to view changeset %(rev)s on %(repos)s"
 msgstr "변경사항 %(rev)s %(repos)s 에 접근하기 위한 권한이 충분하지 않습니다."
 
-#: trac/versioncontrol/web_ui/changeset.py:1076
+#: trac/versioncontrol/web_ui/changeset.py:1098
 #: trac/versioncontrol/web_ui/log.py:395
 msgid "No default repository defined"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:1115
+#: trac/versioncontrol/web_ui/changeset.py:1139
 msgid "Changesets"
 msgstr "변경사항"
 
-#: trac/versioncontrol/web_ui/log.py:196
+#: trac/versioncontrol/web_ui/log.py:201
 #, python-format
 msgid ""
 "The file or directory '%(path)s' doesn't exist at revision %(rev)s or at "
 "any previous revision."
 msgstr "파일 혹은 '%(path)s' 디렉토리가 %(rev)s 리비전이나 이전 리비전에서 존재하지 않습니다."
 
-#: trac/versioncontrol/web_ui/log.py:198
+#: trac/versioncontrol/web_ui/log.py:201
 msgid "Nonexistent path"
 msgstr "존재하지 않는 경로"
 
-#: trac/versioncontrol/web_ui/log.py:225
+#: trac/versioncontrol/web_ui/log.py:229
 #, python-format
 msgid "Revision Log (restarting at %(path)s, rev. %(rev)s)"
 msgstr "리비전 로그 ( 경로 %(path)s, 리비전 %(rev)s에서 다시 시작함.)"
 
-#: trac/versioncontrol/web_ui/log.py:307
+#: trac/versioncontrol/web_ui/log.py:303
 msgid "ChangeLog"
 msgstr "변경 로그"
 
-#: trac/versioncontrol/web_ui/log.py:309
+#: trac/versioncontrol/web_ui/log.py:305
 msgid "View Latest Revision"
 msgstr "마지막 리비전 보기"
 
-#: trac/versioncontrol/web_ui/log.py:313
+#: trac/versioncontrol/web_ui/log.py:309
 msgid "Older Revisions"
 msgstr "더 오래된 리비전"
 
@@ -4948,175 +5132,246 @@ msgstr "더 오래된 리비전"
 msgid "No permission to view change log"
 msgstr "이 위키 페이지를 볼 수 있는 권한이 없습니다."
 
-#: trac/versioncontrol/web_ui/util.py:64
+#. TRANSLATOR: You can 'search' in the repository history... (link)
+#: trac/versioncontrol/web_ui/util.py:67
 msgid "search"
 msgstr "검색"
 
-#: trac/versioncontrol/web_ui/util.py:68
+#: trac/versioncontrol/web_ui/util.py:72
 #, python-format
 msgid ""
 "You can %(search)s in the repository history to see if that path existed "
 "but was later removed"
 msgstr "경로가 존재했지만 후에 삭제되었는지를 확인하기 위해서 저장소 히스토리에서 %(search)s 할 수 있습니다."
 
-#: trac/web/api.py:236
+#: trac/web/api.py:240
 #, python-format
 msgid "Invalid URL encoding (was %(path_info)r)"
 msgstr ""
 
-#: trac/web/api.py:474
+#: trac/web/api.py:484
 #, fuzzy, python-format
 msgid "File %(path)s not found"
 msgstr "\"%(path)s\" 데이타베이스가 발견되지 않습니다."
 
-#: trac/web/auth.py:99
+#: trac/web/auth.py:100
 #, python-format
 msgid "logged in as %(user)s"
 msgstr "%(user)s로 로그인됨"
 
-#: trac/web/auth.py:102
+#: trac/web/auth.py:103
 msgid "Logout"
 msgstr "로그아웃"
 
-#: trac/web/auth.py:105
+#: trac/web/auth.py:106
 msgid "Login"
 msgstr "로그인"
 
 #. TRANSLATOR: ... refer to the 'installation documentation'. (link)
-#: trac/web/auth.py:137
+#: trac/web/auth.py:138
 msgid "installation documentation"
 msgstr ""
 
-#: trac/web/auth.py:138
+#: trac/web/auth.py:139
 #, fuzzy
 msgid "Configuring Authentication"
 msgstr "설정"
 
-#: trac/web/auth.py:141
+#: trac/web/auth.py:142
 #, python-format
 msgid ""
 "Authentication information not available. Please refer to the "
 "%(inst_doc)s."
 msgstr ""
 
-#: trac/web/auth.py:149
+#: trac/web/auth.py:150
 #, python-format
 msgid "Already logged in as %(user)s."
 msgstr "이미 %(user)s로 로그인됨"
 
-#: trac/web/chrome.py:582
+#: trac/web/chrome.py:596
 #, python-format
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr ""
 
-#: trac/web/chrome.py:877
+#: trac/web/chrome.py:889
 msgid "(unknown template location)"
 msgstr "(알 수 없는 템플릿 위치)"
 
-#: trac/web/chrome.py:878
+#: trac/web/chrome.py:890
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "%(location)s 템플릿을 렌더링하는 동안 발생한 Genshi 에러 : %(error)s"
 
-#: trac/web/main.py:225
+#: trac/web/chrome.py:938 trac/web/chrome.py:946
+msgid "anonymous"
+msgstr ""
+
+#: trac/web/main.py:235
 msgid "Secure cookies are enabled, you must use https to submit forms."
 msgstr ""
 
-#: trac/web/main.py:228
+#: trac/web/main.py:238
 msgid "Do you have cookies enabled?"
 msgstr ""
 
-#: trac/web/main.py:229
+#: trac/web/main.py:239
 #, python-format
 msgid "Missing or invalid form token. %(msg)s"
 msgstr ""
 
-#: trac/web/main.py:527
+#: trac/web/main.py:540
 #, fuzzy, python-format
 msgid "Error: %(message)s"
 msgstr "HTML 파싱 에러: %(message)s"
 
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
-#: trac/web/main.py:541
+#: trac/web/main.py:556
 msgid "do so"
 msgstr ""
 
-#: trac/web/main.py:543
+#: trac/web/main.py:558
 #, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr "현재 로그인 상태가 아닙니다. %(do_so)s 를 원할지도 모릅니다."
 
-#: trac/web/session.py:203
-#, fuzzy, python-format
+#: trac/web/main.py:617
+#, fuzzy
+msgid "''System information not available''\n"
+msgstr "관리 패널이 이용 가능하지 않습니다."
+
+#: trac/web/main.py:618
+#, fuzzy
+msgid "''Plugin information not available''\n"
+msgstr "관리 패널이 이용 가능하지 않습니다."
+
+#: trac/web/main.py:642
+#, python-format
 msgid ""
-"Session '%(id)s' already exists.<br />Please choose a different session "
-"ID."
+"==== How to Reproduce ====\n"
+"\n"
+"While doing a %(method)s operation on `%(path_info)s`, Trac issued an "
+"internal error.\n"
+"\n"
+"''(please provide additional details here)''\n"
+"\n"
+"Request parameters:\n"
+"{{{\n"
+"%(req_args)s\n"
+"}}}\n"
+"\n"
+"User agent: `#USER_AGENT#`\n"
+"\n"
+"==== System Information ====\n"
+"%(sys_info)s\n"
+"==== Enabled Plugins ====\n"
+"%(enabled_plugins)s\n"
+"==== Python Traceback ====\n"
+"{{{\n"
+"%(traceback)s}}}"
+msgstr ""
+
+#: trac/web/session.py:259
+#, fuzzy, python-format
+msgid "Session '%(id)s' already exists. Please choose a different session ID."
 msgstr "'%(id)s' 마일스톤이 벌써 존재합니다, 다른 이름을 선택해 주십시오."
 
-#: trac/web/session.py:205
+#: trac/web/session.py:262
 #, fuzzy
 msgid "Error renaming session"
 msgstr "세션 복구:"
 
-#: trac/web/session.py:312
-#, fuzzy
-msgid "No SID found"
-msgstr "파일이 없습니다."
-
-#: trac/web/session.py:314
+#: trac/web/session.py:445
 msgid "SID"
 msgstr ""
 
-#: trac/web/session.py:314
+#: trac/web/session.py:445
+#, fuzzy
+msgid "Auth"
+msgstr "경로"
+
+#: trac/web/session.py:445
+#, fuzzy
+msgid "Last Visit"
+msgstr "마지막 리비전"
+
+#: trac/web/session.py:446
 msgid "Email"
 msgstr ""
 
-#: trac/web/session.py:318
-msgid "Session already exists. Unable to add a duplicate session."
-msgstr ""
-
-#: trac/web/session.py:325
-msgid "Unable to set session attribute on a non-existent SID"
-msgstr ""
-
-#: trac/web/session.py:438
+#: trac/web/session.py:457
 #, fuzzy, python-format
-msgid "Session id %(sid)s not found"
+msgid "Session '%(sid)s' already exists"
+msgstr ""
+
+#: trac/web/session.py:470
+#, python-format
+msgid "Invalid attribute '%(attr)s'"
+msgstr ""
+
+#: trac/web/session.py:480
+#, fuzzy, python-format
+msgid "Session '%(sid)s' not found"
 msgstr "%(sid)s 페이지를 찾을 수 없습니다"
 
-#: trac/wiki/admin.py:116
+#: trac/wiki/admin.py:102
+#, fuzzy, python-format
+msgid "Page '%(page)s' not found"
+msgstr "'%(page)s' 페이지를 찾을 수 없습니다"
+
+#: trac/wiki/admin.py:118 trac/wiki/model.py:122 trac/wiki/model.py:172
+#: trac/wiki/web_ui.py:114
+#, fuzzy, python-format
+msgid "Invalid Wiki page name '%(name)s'"
+msgstr ""
+
+#: trac/wiki/admin.py:123
 #, python-format
 msgid "'%(name)s' is not a file"
 msgstr "'%(name)s'은 파일이 아닙니다."
 
-#: trac/wiki/admin.py:168 trac/wiki/admin.py:265
+#: trac/wiki/admin.py:139
+#, fuzzy, python-format
+msgid "  %(title)s already exists"
+msgstr ""
+
+#: trac/wiki/admin.py:143
+#, python-format
+msgid "  %(title)s is already up to date"
+msgstr ""
+
+#: trac/wiki/admin.py:175 trac/wiki/admin.py:275
 #, python-format
 msgid "  %(page)s imported from %(filename)s"
 msgstr "  %(filename)s로부터 임포트된 %(page)s"
 
-#: trac/wiki/admin.py:200
+#: trac/wiki/admin.py:207
 msgid "Edits"
 msgstr "편집"
 
-#: trac/wiki/admin.py:206 trac/wiki/web_ui.py:295
+#: trac/wiki/admin.py:213 trac/wiki/web_ui.py:296
 msgid "A new name is mandatory for a rename."
 msgstr ""
 
-#: trac/wiki/admin.py:210 trac/wiki/web_ui.py:299
+#: trac/wiki/admin.py:215
+msgid "The new name is invalid."
+msgstr ""
+
+#: trac/wiki/admin.py:219 trac/wiki/web_ui.py:303
 #, fuzzy, python-format
 msgid "The page %(name)s already exists."
 msgstr "%(name)s가 이미 존재합니다"
 
-#: trac/wiki/admin.py:224
+#: trac/wiki/admin.py:233
 msgid "Deleted pages"
 msgstr "삭제된 페이지들"
 
-#: trac/wiki/admin.py:243
+#: trac/wiki/admin.py:253
 #, python-format
 msgid "'%(name)s' is not a directory"
 msgstr "'%(name)s'은 디렉토리가 아닙니다."
 
-#: trac/wiki/api.py:360
+#: trac/wiki/api.py:379
 msgid "no permission to view this wiki page"
 msgstr "이 위키 페이지를 볼 수 있는 권한이 없습니다."
 
@@ -5139,58 +5394,63 @@ msgstr ""
 msgid "!#%(name)s must contain at least one table cell (and table cells only)"
 msgstr ""
 
-#: trac/wiki/formatter.py:629 trac/wiki/interwiki.py:88
+#: trac/wiki/formatter.py:639 trac/wiki/interwiki.py:88
 #, fuzzy, python-format
 msgid "%(target)s in %(name)s"
 msgstr "  %(name)s로부터 임포트된 %(target)s"
 
-#: trac/wiki/intertrac.py:55
+#: trac/wiki/intertrac.py:56
 #, python-format
 msgid "Can't view %(link)s:"
 msgstr "%(link)s를 볼 수 없습니다:"
 
-#: trac/wiki/macros.py:494
+#: trac/wiki/intertrac.py:81
+#, fuzzy, python-format
+msgid "The Trac Project"
+msgstr "%(project)s로 돌아가기"
+
+#: trac/wiki/macros.py:590
 #, python-format
 msgid "No image \"%(id)s\" attached to %(parent)s"
 msgstr ""
 
-#: trac/wiki/macros.py:537
+#: trac/wiki/macros.py:633
 #, python-format
 msgid "Error: Can't get description for macro %(name)s"
 msgstr "오류: %(name)s 매크로에 대한 설명을 얻을 수 없습니다"
 
-#: trac/wiki/macros.py:555
+#: trac/wiki/macros.py:651
 msgid "Aliases:"
 msgstr ""
 
-#: trac/wiki/macros.py:558
-#, fuzzy, python-format
+#: trac/wiki/macros.py:654
+#, fuzzy
 msgid "Sorry, no documentation found"
 msgstr "'%(cmd)s'에 대해서 문서가 없습니다."
 
-#: trac/wiki/macros.py:623
+#: trac/wiki/macros.py:720
 #, fuzzy
 msgid "MIME Types"
 msgstr "티켓 타입들"
 
-#: trac/wiki/macros.py:681
+#: trac/wiki/macros.py:778
 msgid "Table of Contents"
 msgstr "목차"
 
-#: trac/wiki/model.py:123
+#: trac/wiki/model.py:127
 msgid "Page not modified"
 msgstr "페이지가 변경되지 않았습니다."
 
-#: trac/wiki/model.py:174
+#: trac/wiki/model.py:181
 #, python-format
 msgid "Can't rename to existing %(name)s page."
 msgstr ""
 
-#: trac/wiki/web_ui.py:87 trac/wiki/web_ui.py:726
+#: trac/wiki/web_ui.py:82 trac/wiki/web_ui.py:733
 msgid "Wiki"
 msgstr "위키"
 
-#: trac/wiki/web_ui.py:89
+#: trac/wiki/web_ui.py:84
 msgid "Help/Guide"
 msgstr "도움말"
 
@@ -5234,100 +5494,107 @@ msgstr "%(name)s 페이지의 %(from_)d부터 %(to)d까지의 버전이 삭제�
 msgid "The version %(version)d of the page %(name)s has been deleted."
 msgstr "%(name)s 페이지의 %(version)d 버전이 삭제되었습니다."
 
-#: trac/wiki/web_ui.py:297
+#: trac/wiki/web_ui.py:298
+msgid ""
+"The new name is invalid (a name which is separated with slashes cannot be"
+" '.' or '..')."
+msgstr ""
+
+#: trac/wiki/web_ui.py:301
 msgid "The new name must be different from the old name."
 msgstr ""
 
-#: trac/wiki/web_ui.py:309
+#: trac/wiki/web_ui.py:313
 #, python-format
 msgid "See [wiki:\"%(name)s\"]."
 msgstr ""
 
-#: trac/wiki/web_ui.py:333
+#: trac/wiki/web_ui.py:337
 #, fuzzy, python-format
 msgid "Your changes have been saved in version %(version)s."
 msgstr "변경 내용이 저장되었습니다."
 
-#: trac/wiki/web_ui.py:338
+#: trac/wiki/web_ui.py:342
 msgid "Page not modified, showing latest version."
 msgstr "수정되지 않은 페이지, 마지막 버전을 보여줍니다."
 
-#: trac/wiki/web_ui.py:381
+#: trac/wiki/web_ui.py:385
 #, python-format
 msgid "Version %(num)s of page \"%(name)s\" does not exist"
 msgstr "\"%(name)s\" 페이지의 %(num)s 버전이 존재하지 않습니다"
 
-#: trac/wiki/web_ui.py:433
+#: trac/wiki/web_ui.py:437
 msgid "Page history"
 msgstr "페이지 이력"
 
-#: trac/wiki/web_ui.py:451
+#: trac/wiki/web_ui.py:455
 msgid "Wiki History"
 msgstr "위키 이력"
 
-#: trac/wiki/web_ui.py:537
+#: trac/wiki/web_ui.py:539
 #, python-format
 msgid "Page %(name)s does not exist"
 msgstr "%(name)s 페이지가 존재하지 않습니다"
 
-#: trac/wiki/web_ui.py:551
+#: trac/wiki/web_ui.py:553
 #, fuzzy, python-format
 msgid "Back to %(wikipage)s"
 msgstr "%(wikipage)s로 돌아가기"
 
-#: trac/wiki/web_ui.py:579
+#: trac/wiki/web_ui.py:581
 #, python-format
 msgid "Page %(name)s not found"
 msgstr "%(name)s 페이지를 찾을 수 없습니다"
 
-#: trac/wiki/web_ui.py:631
+#: trac/wiki/web_ui.py:635
 msgid "View latest version"
 msgstr "마지막 버전 보기"
 
-#: trac/wiki/web_ui.py:635
+#: trac/wiki/web_ui.py:639
 msgid "View parent page"
 msgstr "부모 페이지 보기"
 
-#: trac/wiki/web_ui.py:644
+#: trac/wiki/web_ui.py:648
 msgid "Previous Version"
 msgstr "이전 버전"
 
-#: trac/wiki/web_ui.py:644
+#: trac/wiki/web_ui.py:648
 msgid "Next Version"
 msgstr "다음 버전"
 
-#: trac/wiki/web_ui.py:645
+#: trac/wiki/web_ui.py:649
 msgid "View Latest Version"
 msgstr "마지막 버전 보기"
 
-#: trac/wiki/web_ui.py:648
+#: trac/wiki/web_ui.py:652
 msgid "Up"
 msgstr "업"
 
-#: trac/wiki/web_ui.py:673
+#: trac/wiki/web_ui.py:677
 msgid "Start Page"
 msgstr "시작 페이지"
 
-#: trac/wiki/web_ui.py:674
+#: trac/wiki/web_ui.py:678
 msgid "Index"
 msgstr "페이지 색인"
 
-#: trac/wiki/web_ui.py:676
+#: trac/wiki/web_ui.py:680
 msgid "History"
 msgstr "이력"
 
-#: trac/wiki/web_ui.py:683
+#: trac/wiki/web_ui.py:687
 msgid "Wiki changes"
 msgstr "위키 변경사항"
 
-#. TRANSLATOR: wiki page
-#: trac/wiki/web_ui.py:712
-msgid " edited"
-msgstr " 편집됨"
+#: trac/wiki/web_ui.py:716
+#, fuzzy, python-format
+msgid "%(page)s edited"
+msgstr ""
 
-#: trac/wiki/web_ui.py:712
-msgid " created"
-msgstr " 생성됨"
+#: trac/wiki/web_ui.py:718
+#, fuzzy, python-format
+msgid "%(page)s created"
+msgstr ""
 
 #: trac/wiki/templates/wiki_delete.html:19
 #, fuzzy, python-format
@@ -5369,12 +5636,12 @@ msgid "Delete those versions"
 msgstr "이 버전 삭제"
 
 #: trac/wiki/templates/wiki_delete.html:51
-#: trac/wiki/templates/wiki_view.html:117
+#: trac/wiki/templates/wiki_view.html:120
 msgid "Delete this version"
 msgstr "이 버전 삭제"
 
 #: trac/wiki/templates/wiki_delete.html:51
-#: trac/wiki/templates/wiki_view.html:119
+#: trac/wiki/templates/wiki_view.html:122
 msgid "Delete page"
 msgstr "페이지 삭제"
 
@@ -5414,36 +5681,28 @@ msgid "Someone else has modified that page since you started your edits."
 msgstr "편집을 시작한 후에 다른 사람이 이 페이지를 변경했습니다."
 
 #: trac/wiki/templates/wiki_edit.html:76
-msgid "If you save right away, you risk to revert those changes"
-msgstr ""
-
-#: trac/wiki/templates/wiki_edit.html:76
-msgid "(highlighted below as deletions)."
+msgid ""
+"[1:If you save right away, you risk to revert those changes]\n"
+"        (highlighted below as deletions)."
 msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:78
 msgid ""
 "Please review all those changes and manually merge them with your\n"
-"        own changes."
-msgstr "모든 변경사항을 다시 확인하고 수정한 내용을 수동으로 병합하십시오."
-
-#: trac/wiki/templates/wiki_edit.html:79
-msgid "If you're unsure about what you're doing, please press"
-msgstr "무엇을 하고 있는지 확신할 수 없다면, 다음을 누르십시오"
-
-#: trac/wiki/templates/wiki_edit.html:80
-msgid ""
-"(losing your changes) and start editing the latest version of the page\n"
+"        own changes. [1:]\n"
+"        If you're unsure about what you're doing, please press [2:Cancel]"
+"\n"
+"        (losing your changes) and start editing the latest version of the"
+" page\n"
 "        again."
-msgstr "(변경내용을 잃었습니다.) 이 페이지의 마지막 버전으로 다시 편집을 시작하십시오."
+msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:114
-msgid "Change information for future version"
+#, fuzzy, python-format
+msgid ""
+"Change information for future version %(version)s (modified by "
+"%(author)s):"
 msgstr "다음 버전에 대한 변경 정보"
-
-#: trac/wiki/templates/wiki_edit.html:115
-msgid "(modified by"
-msgstr "(다음 사람에 의해 수정됨"
 
 #: trac/wiki/templates/wiki_edit.html:124
 msgid "Go to the editor"
@@ -5550,12 +5809,12 @@ msgid "Leave a redirection page at the old location"
 msgstr ""
 
 #: trac/wiki/templates/wiki_rename.html:33
-#: trac/wiki/templates/wiki_view.html:108
+#: trac/wiki/templates/wiki_view.html:111
 #, fuzzy
 msgid "Rename page"
 msgstr "홈 페이지:"
 
-#: trac/wiki/templates/wiki_view.html:14 trac/wiki/templates/wiki_view.html:84
+#: trac/wiki/templates/wiki_view.html:14 trac/wiki/templates/wiki_view.html:87
 msgid "Edit this page"
 msgstr "페이지 편집"
 
@@ -5564,9 +5823,7 @@ msgstr "페이지 편집"
 msgid ""
 "Version %(version)s (modified by %(author)s, %(date)s ago)\n"
 "               ([1:diff])"
-msgstr ""
-"%(version)s 버전 (%(author)s에 의해 수정됨, %(date)s 전)"
-"               ([1:diff])"
+msgstr "%(version)s 버전 (%(author)s에 의해 수정됨, %(date)s 전)               ([1:diff])"
 
 #: trac/wiki/templates/wiki_view.html:47
 #, fuzzy, python-format
@@ -5578,228 +5835,305 @@ msgstr "%(version)s 버전 (%(author)s에 의해 수정됨, %(comment)s 전)"
 msgid "Version %(version)s by %(author)s"
 msgstr "%(version)s 버전 (%(author)s에 의해 수정됨)"
 
-#: trac/wiki/templates/wiki_view.html:54
+#: trac/wiki/templates/wiki_view.html:55
 #, fuzzy, python-format
 msgid "[1:Last modified] %(reldate)s ago"
 msgstr "[1:] %(reldate)s 전에 마지막으로 변경됨"
 
-#: trac/wiki/templates/wiki_view.html:61
-msgid "The page"
-msgstr "페이지"
+#: trac/wiki/templates/wiki_view.html:59
+#, fuzzy, python-format
+msgid "Last modified on %(date)s"
+msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:61
-msgid "does not exist. You can create it here."
+#: trac/wiki/templates/wiki_view.html:64
+#, fuzzy, python-format
+msgid "The page %(name)s does not exist. You can create it here."
 msgstr "존재하지 않습니다. 여기에 만들 수 있습니다."
 
-#: trac/wiki/templates/wiki_view.html:63
+#: trac/wiki/templates/wiki_view.html:66
 msgid "You could also create the same page higher in the hierarchy:"
 msgstr "계층구조상에서 더 상위에 같은 페이지를 생성할 수도 있습니다.:"
 
-#: trac/wiki/templates/wiki_view.html:87
+#: trac/wiki/templates/wiki_view.html:90
 msgid "Create this page"
 msgstr "이 페이지 생성하기"
 
-#: trac/wiki/templates/wiki_view.html:89
+#: trac/wiki/templates/wiki_view.html:92
 msgid "Using the template:"
 msgstr "템플릿 사용하기:"
 
-#: trac/wiki/templates/wiki_view.html:92
+#: trac/wiki/templates/wiki_view.html:95
 msgid "(blank page)"
 msgstr "(빈 페이지)"
 
-#: trac/wiki/templates/wiki_view.html:128
+#: trac/wiki/templates/wiki_view.html:131
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr "다음의 페이지들은 이 페이지와 유사한 이름을 가지고 있는 페이지입니다. 아마 관계가 있을지도 모릅니다.:"
 
-#~ msgid " attached to "
-#~ msgstr " 다음에 첨부된"
+#~ msgid "on Ticket #"
+#~ msgstr "티켓 #"
+
+#~ msgid "(comments:"
+#~ msgstr "설명:"
 
 #~ msgid ""
-#~ " \n"
-#~ " Please specify the type of version control system,\n"
-#~ " By default, it will be svn.\n"
+#~ ",\n"
+#~ "                attachments:"
+#~ msgstr ""
+
+#~ msgid "Upgrade done."
+#~ msgstr "업그레이드 완료."
+
+#~ msgid "Group names must be in lower case and actions in upper case"
+#~ msgstr "그룹 이름은 소문자, 동작 이름은 대문자여야만 합니다."
+
+#~ msgid "Note that"
+#~ msgstr "다음을 주의하십시오. :"
+
+#~ msgid "Group"
+#~ msgstr "그룹"
+
+#~ msgid "Toggle the module description"
+#~ msgstr "모듈 상세 설명을 토글하기"
+
+#~ msgid "Toggle the component description"
+#~ msgstr "콤포넌트 설명을 토글하기"
+
+#~ msgid "Invalid unified diff content"
+#~ msgstr "유효하지 않은 unified diff 내용입니다."
+
+#~ msgid "(UTC)."
+#~ msgstr "(UTC)."
+
+#~ msgid ""
+#~ "Note: Universal Co-ordinated Time (UTC)"
+#~ " is also known as Greenwich Mean "
+#~ "Time (GMT)."
+#~ msgstr ""
+#~ "주의: UTC(Universal Co-ordinated Time)는 "
+#~ "GMT(Greenwich Mean Time)라고도 알려져있습니다."
+
+#~ msgid "http://trac.edgewall.org/"
+#~ msgstr "http://trac.edgewall.org/"
+
+#~ msgid "Add Attachment to"
+#~ msgstr "첨부파일 추가"
+
+#~ msgid "Show"
+#~ msgstr "보기"
+
+#~ msgid "lines around each change"
+#~ msgstr "각 변경사항 주변 라인"
+
+#~ msgid "(IP:"
+#~ msgstr "(IP:"
+
+#~ msgid ""
+#~ "==== How to Reproduce ====\n"
 #~ "\n"
-#~ " If you don't want to use Trac with version control integration,\n"
-#~ " choose the default here and don't specify a repository directory.\n"
-#~ " in the next question.\n"
+#~ "While doing a"
 #~ msgstr ""
-#~ " \n"
-#~ " 버전 컨트롤 시스템의 타입을 지정하십시오.\n"
-#~ " 기본적으로, svn이 됩니다.\n"
+#~ "==== 어떻게 재현할 것인가? ====\n"
 #~ "\n"
-#~ " 버전 컨트롤 시스템과 통합해서 Trac을 사용하는것을 원하지 않는다면,\n"
-#~ " 여기서 기본값을 선택하고, 다음 질문에서 저장소 디렉토리를 지정하지 마십시오.\n"
+#~ "While doing a"
 
-#~ msgid "Repository type [%(default)s]> "
-#~ msgstr "저장소 타입 [%(default)s]> "
+#~ msgid "operation on `"
+#~ msgstr ""
 
 #~ msgid ""
+#~ "`, Trac issued an internal error.\n"
 #~ "\n"
-#~ " Please specify the absolute path to the version control\n"
-#~ " repository, or leave it blank to use Trac without a repository.\n"
-#~ " You can also set the repository location later.\n"
+#~ "''(please provide additional details here)''"
 #~ msgstr ""
+#~ "`, Trac에서 내부적인 에러가 발생했습니다.\n"
 #~ "\n"
-#~ " 버전 컨트롤 저장소의 절대 경로를 지정하십시오.\n"
-#~ " 만약 저장소 없이 Trac을 사용하기를 원한다면 공백으로 남겨두십시오.\n"
-#~ " 저장소 경로를 나중에 지정할 수도 있습니다.\n"
+#~ "''(여기에 추가적인 상세한 정보를 적어주십시오.)''"
 
-#~ msgid "Path to repository [/path/to/repos]> "
-#~ msgstr "저장소 경로 [/path/to/repos]> "
+#~ msgid ""
+#~ "Request parameters:\n"
+#~ "{{{"
+#~ msgstr ""
+#~ "요청 파라메터:\n"
+#~ "{{{"
 
-#~ msgid "Manage"
-#~ msgstr "관리"
+#~ msgid "==== System Information ===="
+#~ msgstr "==== 시스템 정보 ===="
 
-#~ msgid "Format:"
-#~ msgstr "서식:"
+#~ msgid "==== Enabled Plugins ===="
+#~ msgstr "==== 활성화된 플러그인들 ===="
 
-#~ msgid "In"
+#~ msgid ""
+#~ "==== Python Traceback ====\n"
+#~ "{{{"
+#~ msgstr ""
+#~ "==== Python Traceback ====\n"
+#~ "{{{"
+
+#~ msgid "To that end, you could"
 #~ msgstr ""
 
-#~ msgid "time zone"
-#~ msgstr "시간대"
-
-#~ msgid ", this would be displayed as"
+#~ msgid "a ticket."
 #~ msgstr ""
 
-#~ msgid "By"
-#~ msgstr ""
-
-#~ msgid "Trac is distributed under the modified BSD License."
-#~ msgstr "Trac은 the modified BSD 라이센스하에서 배포됩니다."
-
-#~ msgid "The complete text of the license can be found"
-#~ msgstr "라이센스의 전문을 찾을 수 있습니다."
-
-#~ msgid "online"
-#~ msgstr "온라인"
-
-#~ msgid "as well as in the"
-#~ msgstr ""
-
-#~ msgid "COPYING"
-#~ msgstr "COPYING"
-
-#~ msgid "file included in the distribution."
-#~ msgstr "배포버전에 포함된 파일"
-
-#~ msgid "Attachment"
-#~ msgstr "첨부파일"
-
-#~ msgid "Property"
-#~ msgstr "속성"
-
-#~ msgid "to"
-#~ msgstr ""
-
-#~ msgid "Changes"
-#~ msgstr "변경사항"
-
-#~ msgid "from"
-#~ msgstr ""
-
-#~ msgid "of"
+#~ msgid "You should"
 #~ msgstr ""
 
 #~ msgid ""
-#~ "Before you do that, though, please first try\n"
-#~ "                [1:[2:searching]\n"
-#~ "                for similar issues], as "
-#~ "it is quite likely that this "
-#~ "problem\n"
-#~ "                has been reported before. "
-#~ "For questions about installation\n"
-#~ "                and configuration of Trac, please try the\n"
-#~ "                [3:mailing list]\n"
-#~ "                instead of filing a ticket."
+#~ "a ticket at the admin Trac to report\n"
+#~ "                    the issue."
+#~ msgstr ""
+
+#~ msgid "File \""
+#~ msgstr "파일 \""
+
+#~ msgid ""
+#~ "\",\n"
+#~ "                        line"
+#~ msgstr ""
+
+#~ msgid ", in"
+#~ msgstr ""
+
+#~ msgid "\", line"
+#~ msgstr "\", 라인"
+
+#~ msgid "HTML preview not available"
+#~ msgstr "HTML 미리보기를 이용할 수 없습니다."
+
+#~ msgid "Try"
+#~ msgstr ""
+
+#~ msgid "downloading"
+#~ msgstr "다운로드"
+
+#~ msgid "the file instead."
+#~ msgstr ""
+
+#~ msgid "between"
+#~ msgstr ""
+
+#~ msgid "and"
 #~ msgstr ""
 
 #~ msgid ""
-#~ "Otherwise, please %(create)s a new ticket at\n"
-#~ "                the Trac project site, "
-#~ "where you can describe the problem "
-#~ "and\n"
-#~ "                explain how to reproduce it."
+#~ "Reported by [1:%(author)s],\n"
+#~ "                      %(date)s ago."
 #~ msgstr ""
+#~ "[1:%(author)s]에 의해 작성됨,\n"
+#~ "                      %(date)s 전."
 
-#~ msgid "anonymous"
-#~ msgstr "익명사용자"
+#~ msgid "%(num)d match"
+#~ msgid_plural "%(num)d matches"
+#~ msgstr[0] "%(num)d 개 일치"
 
-#~ msgid "bytes."
-#~ msgstr "바이트."
+#~ msgid "No matches"
+#~ msgstr "일치하는 것 없음"
 
-#~ msgid "to "
-#~ msgstr ""
+#~ msgid "The ticket validation has [1:failed]."
+#~ msgstr "티켓 검증이 [1:실패했습니다]."
 
-#~ msgid "ticket"
-#~ msgstr "티켓"
-
-#~ msgid "by"
-#~ msgstr ""
-
-#~ msgid "This is a list of available reports."
-#~ msgstr "다음은 이용 가능한 리포트의 리스트입니다."
+#~ msgid "Changed by"
+#~ msgstr "다음 사람에 의해 변경됨"
 
 #~ msgid ""
-#~ "Completed %(duration)s ago\n"
-#~ "                  (%(date)s)"
-#~ msgstr ""
-#~ "%(duration)s 전에 완료됨\n"
-#~ "                  (%(date)s)"
-
-#~ msgid "changed from"
-#~ msgstr "다음으로부터 변경됨"
-
-#~ msgid "set to"
+#~ "[1:[2:%(name)s]]\n"
+#~ "          [3:[4:]]\n"
+#~ "          added"
 #~ msgstr ""
 
-#~ msgid "— at"
+#~ msgid "Changes (by"
 #~ msgstr ""
 
 #~ msgid ""
-#~ "\n"
-#~ "              You may want to see "
-#~ "the %(other_events)s from the Timeline "
-#~ "or \n"
-#~ "              notify your Trac administrator"
-#~ " about the error (detailed\n"
-#~ "              informations were written to the log).\n"
-#~ "            "
+#~ "-- \n"
+#~ "Ticket URL: <"
+#~ msgstr ""
+#~ "-- \n"
+#~ "티켓 URL: <"
+
+#~ msgid ""
+#~ "The 'repository_dir' has changed, a "
+#~ "'trac-admin $ENV repository resync' "
+#~ "operation is needed."
+#~ msgstr "'repository_dir'이 변경되었습니다. 'trac-admin resync' 동작을 수행해야 합니다."
+
+#~ msgid "Alias of"
 #~ msgstr ""
 
-#~ msgid "Insufficient permissions to access %(path)s"
-#~ msgstr "경로 %(path)s에 접근하기 위한 권한이 충분하지 않습니다."
+#~ msgid "View log starting at"
+#~ msgstr "다음에서부터 로그 보기"
 
-#~ msgid "Missing \"youngest_rev\" in cache metadata"
-#~ msgstr "캐시 메타데이타에서 \"youngest_rev\"이 존재하지 않습니다"
-
-#~ msgid "for"
+#~ msgid "and back to"
 #~ msgstr ""
 
-#~ msgid "Changes in"
+#~ msgid "Show at most"
 #~ msgstr ""
 
-#~ msgid "Changes from"
+#~ msgid "revisions per page."
+#~ msgstr "페이지당 리비전"
+
+#~ msgid "From r%(rev)s"
 #~ msgstr ""
 
-#~ msgid "at"
+#~ msgid ""
+#~ "#\n"
+#~ "# ChangeLog for"
+#~ msgstr ""
+#~ "#\n"
+#~ "# 변경로그"
+
+#~ msgid " in %(reponame)s"
+#~ msgstr "마일스톤 %(reponame)s"
+
+#~ msgid ""
+#~ "# \n"
+#~ "# Generated by Trac"
+#~ msgstr ""
+#~ "# \n"
+#~ "# Trac에 의해 생성됨."
+
+#~ msgid "Annotate"
+#~ msgstr "수정한 사람보기"
+
+#~ msgid "No SID found"
+#~ msgstr "파일이 없습니다."
+
+#~ msgid "Session already exists. Unable to add a duplicate session."
 #~ msgstr ""
 
-#~ msgid "r"
-#~ msgstr "r"
+#~ msgid "Unable to set session attribute on a non-existent SID"
+#~ msgstr ""
 
-#~ msgid "Diff from Old Revision to New Revision (select them above)"
-#~ msgstr "이전 리비전에서 새로운 리비전사이의 차이점 (위에서 선택하십시오.)"
+#~ msgid " edited"
+#~ msgstr " 편집됨"
 
-#~ msgid "Are you sure you want to"
-#~ msgstr "다음 동작을 정말로 원하십니까"
+#~ msgid " created"
+#~ msgstr " 생성됨"
 
-#~ msgid "delete"
-#~ msgstr "삭제"
+#~ msgid "If you save right away, you risk to revert those changes"
+#~ msgstr ""
 
-#~ msgid "this page?"
-#~ msgstr "이 페이지?"
+#~ msgid "(highlighted below as deletions)."
+#~ msgstr ""
 
-#~ msgid "Last modified by %(author)s on %(datetime)s (%(reldate)s ago)"
-#~ msgstr "%(datetime)s에 %(author)s에 의해 마지막으로 수정됨 (%(reldate)s 전)"
+#~ msgid ""
+#~ "Please review all those changes and manually merge them with your\n"
+#~ "        own changes."
+#~ msgstr "모든 변경사항을 다시 확인하고 수정한 내용을 수동으로 병합하십시오."
+
+#~ msgid "If you're unsure about what you're doing, please press"
+#~ msgstr "무엇을 하고 있는지 확신할 수 없다면, 다음을 누르십시오"
+
+#~ msgid ""
+#~ "(losing your changes) and start editing"
+#~ " the latest version of the page\n"
+#~ ""
+#~ "        again."
+#~ msgstr "(변경내용을 잃었습니다.) 이 페이지의 마지막 버전으로 다시 편집을 시작하십시오."
+
+#~ msgid "(modified by"
+#~ msgstr "(다음 사람에 의해 수정됨"
+
+#~ msgid "The page"
+#~ msgstr "페이지"
 
