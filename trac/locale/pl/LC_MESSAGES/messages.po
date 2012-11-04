@@ -66,12 +66,12 @@ msgstr "Usuń zgłoszenie #"
 #: tracopt/ticket/templates/ticket_delete.html:48
 #, fuzzy, python-format
 msgid "Delete comment %(num)s on Ticket #%(id)s"
-msgstr "Komentarz %(cnum)s dla zgłoszenia #%(id)s"
+msgstr "Komentarz %(num)s dla zgłoszenia #%(id)s"
 
 #: tracopt/ticket/templates/ticket_delete.html:20
 #, fuzzy, python-format
 msgid "Delete [1:Ticket #%(id)s]"
-msgstr "Usuń zgłoszenie #"
+msgstr ""
 
 #: tracopt/ticket/templates/ticket_delete.html:32
 msgid "Are you sure you want to delete this ticket?"
@@ -458,7 +458,7 @@ msgstr "Obsługa TLS jest włączona, ale serwer nie wspiera obsługi TLS"
 #: trac/notification.py:305
 #, fuzzy, python-format
 msgid "Invalid email encoding setting: %(pref)s"
-msgstr "Błędne ustawienie kodowania e-maili: %s"
+msgstr "Błędne ustawienie kodowania e-maili: %(pref)s"
 
 #: trac/notification.py:319
 msgid "Unable to send email due to identity crisis."
@@ -529,7 +529,7 @@ msgstr "Nie odnaleziono polecenia"
 #: trac/admin/console.py:111
 #, fuzzy, python-format
 msgid "Error: %(msg)s"
-msgstr "Błąd: %(message)s"
+msgstr "Błąd: %(msg)s"
 
 #: trac/admin/console.py:130
 #, fuzzy, python-format
@@ -1161,7 +1161,7 @@ msgstr "Dodaj etap:"
 #: trac/admin/templates/admin_milestones.html:86
 #, fuzzy, python-format
 msgid "Format: %(datetimehint)s"
-msgstr "Format: %(datehint)s"
+msgstr "Format: %(datetimehint)s"
 
 #: trac/admin/templates/admin_milestones.html:101 trac/ticket/admin.py:399
 msgid "Due"
@@ -1222,8 +1222,6 @@ msgid ""
 "Note that [1:Subject] or [2:Group] names can't be all upper-case,\n"
 "      as that is reserved for permission names."
 msgstr ""
-"nazwy nie mogą zawierać tylko wielkich liter,\n"
-"      ponieważ ten styl zarezerwowany jest dla nazw uprawnień."
 
 #: trac/admin/templates/admin_plugins.html:35
 msgid "Manage Plugins"
@@ -1333,7 +1331,7 @@ msgstr "Nie można załadować bibliotek MySQL dla języka Python"
 #: trac/db/postgres_backend.py:194
 #, fuzzy, python-format
 msgid "Unable to run %(path)s: %(msg)s"
-msgstr "Funkcja \"svn blame\" nie powiodła się w %(path)s: %(error)s"
+msgstr ""
 
 #: trac/db/mysql_backend.py:209
 #, python-format
@@ -1442,7 +1440,7 @@ msgstr "Ustawienia zostały zapisane."
 #: trac/mimeview/rst.py:123 trac/mimeview/rst.py:146
 #, fuzzy, python-format
 msgid "%(link)s is not a valid TracLink"
-msgstr "%(name)s nie jest prawidłową akcją."
+msgstr ""
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -1469,7 +1467,7 @@ msgid "Advanced"
 msgstr "Zaawansowane"
 
 #: trac/prefs/web_ui.py:150
-#, fuzzy, python-format
+#, fuzzy
 msgid "The session has been loaded."
 msgstr "Wersja o nazwie %(name)s została dodana."
 
@@ -1558,7 +1556,7 @@ msgstr ""
 #: trac/prefs/templates/prefs_datetime.html:33
 #, fuzzy, python-format
 msgid "Example: The current time is [1:%(time)s] (UTC)."
-msgstr "Przykład: w tej chwili jest "
+msgstr ""
 
 #: trac/prefs/templates/prefs_datetime.html:36
 #, python-format
@@ -1587,8 +1585,6 @@ msgid ""
 "        A positive offset is used to indicate a timezone at the east of "
 "Greenwich, i.e. ahead of Universal Time."
 msgstr ""
-"Wartość dodatnia oznacza przesunięcie na wschód od Greenwich natomiast "
-"wartość ujemna oznacza przesunięcie na zachód względem Greenwich."
 
 #: trac/prefs/templates/prefs_general.html:15
 msgid "Full name:"
@@ -1774,7 +1770,9 @@ msgstr "Oparty na języku Python"
 msgid ""
 "Please visit the Trac open source project:\n"
 "        [1:http://trac.edgewall.org/]"
-msgstr "Stronę projektu możesz odnaleźć pod adresem:"
+msgstr ""
+"Stronę projektu możesz odnaleźć pod adresem:        "
+"[1:http://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
 msgid ""
@@ -1823,7 +1821,7 @@ msgstr "%(filename)s do %(parent)s – Załącznik"
 #: trac/templates/attachment.html:29
 #, fuzzy, python-format
 msgid "Add Attachment to [1:%(parent)s]"
-msgstr "Załączniki %(parent)s"
+msgstr "Załączniki [1:%(parent)s]"
 
 #: trac/templates/attachment.html:33
 #, fuzzy, python-format
@@ -2154,9 +2152,6 @@ msgid ""
 "                        line [2:%(line)s], in]\n"
 "                        [3:%(function)s]"
 msgstr ""
-"Plik %(file)s,\n"
-"                [1:%(size)s]\n"
-"                (dodany przez %(author)s,  %(date)s temu)"
 
 #: trac/templates/error.html:146
 msgid "Code fragment:"
@@ -2194,7 +2189,7 @@ msgstr "— Przewodnik dla uzytkowników i administratorów"
 #: trac/templates/history_view.html:16
 #, fuzzy, python-format
 msgid "Change History for [1:%(name)s]"
-msgstr "Histroia zmian dla"
+msgstr ""
 
 #: trac/templates/history_view.html:22 trac/templates/history_view.html:55
 #: trac/versioncontrol/templates/diff_form.html:58
@@ -2278,17 +2273,17 @@ msgstr "(Plik jest pusty)"
 msgid ""
 "[1:HTML preview not available], since the file size exceeds %(size)s "
 "bytes."
-msgstr "ponieważ rozmiar pliku przekracza"
+msgstr ""
 
 #: trac/templates/preview_file.html:22
 #, fuzzy
 msgid "[1:HTML preview not available], since no preview renderer could handle it."
-msgstr "ponieważ nie można wyrenderować podglądu."
+msgstr ""
 
 #: trac/templates/preview_file.html:26
 #, fuzzy
 msgid "Try [1:downloading] the file instead."
-msgstr "ten plik."
+msgstr ""
 
 #: trac/templates/progress_bar.html:26
 #, fuzzy, python-format
@@ -3053,7 +3048,7 @@ msgstr "początkowa"
 #: trac/ticket/web_ui.py:828
 #, fuzzy, python-format
 msgid "Property %(label)s %(rendered)s"
-msgstr "%(name)s usunięty"
+msgstr ""
 
 #: trac/ticket/web_ui.py:873 trac/ticket/web_ui.py:996
 #: trac/versioncontrol/web_ui/changeset.py:370 trac/wiki/web_ui.py:454
@@ -3106,7 +3101,7 @@ msgstr[2] "%(labels)s zmienionych"
 #, fuzzy, python-format
 msgid "%(labels)s deleted"
 msgid_plural "%(labels)s deleted"
-msgstr[0] "%(value)s usunięty"
+msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
@@ -3787,7 +3782,7 @@ msgstr ""
 #: trac/ticket/templates/ticket.html:220
 #, fuzzy, python-format
 msgid "Changed by %(author)s"
-msgstr "Zmienione %(date)s przez %(author)s"
+msgstr ""
 
 #: trac/ticket/templates/ticket.html:227
 msgid "Modify Ticket"
@@ -3837,7 +3832,7 @@ msgstr ""
 #: trac/wiki/templates/wiki_edit_form.html:50
 #, fuzzy
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
-msgstr "Adres email i nazwa użytkownika mogą być zapisane w"
+msgstr ""
 
 #: trac/ticket/templates/ticket.html:383
 msgid "I have files to attach to this ticket"
@@ -3939,7 +3934,7 @@ msgstr "Anuluj edycję komentarza"
 #: trac/ticket/templates/ticket_notify_email.txt:9
 #, fuzzy, python-format
 msgid "Changes (by %(author)s):"
-msgstr "Zmienione %(date)s przez %(author)s"
+msgstr ""
 
 #: trac/ticket/templates/ticket_notify_email.txt:15
 #, fuzzy, python-format
@@ -4460,7 +4455,7 @@ msgstr "Brak wersji"
 #: trac/versioncontrol/svn_prop.py:270
 #, fuzzy, python-format
 msgid "%(title)s: %(revs)s"
-msgstr "%(title)s: %(message)s"
+msgstr "%(title)s: %(revs)s"
 
 #: trac/versioncontrol/svn_prop.py:306
 msgid "merged: "
@@ -5075,7 +5070,7 @@ msgstr "Nie znaleziono zmian"
 #: trac/versioncontrol/templates/revisionlog.html:120
 #, fuzzy, python-format
 msgid "copied from [1:%(path)s]:"
-msgstr "przekopiowany z"
+msgstr ""
 
 #: trac/versioncontrol/templates/revisionlog.html:126
 #, fuzzy, python-format
@@ -5117,12 +5112,12 @@ msgstr ""
 #: trac/versioncontrol/templates/revisionlog.txt:2
 #, fuzzy, python-format
 msgid "ChangeLog for %(path)s%(in_repo)s"
-msgstr "Konwersja MIME z %(old)s do %(new)s nie jest możliwa."
+msgstr ""
 
 #: trac/versioncontrol/templates/revisionlog.txt:4
 #, fuzzy, python-format
 msgid "Generated by Trac %(version)s"
-msgstr "Usuń wersję %(version)d"
+msgstr "Usuń wersję %(version)s"
 
 #: trac/versioncontrol/web_ui/browser.py:296
 msgid "Browse Source"
@@ -5525,7 +5520,7 @@ msgstr "Adres email"
 #: trac/web/session.py:457
 #, fuzzy, python-format
 msgid "Session '%(sid)s' already exists"
-msgstr "Wersja o nazwie %(name)s już istnieje."
+msgstr ""
 
 #: trac/web/session.py:470
 #, python-format
@@ -5540,13 +5535,13 @@ msgstr "Identyfikator sesji %(sid)s nie został odnaleziony"
 #: trac/wiki/admin.py:102
 #, fuzzy, python-format
 msgid "Page '%(page)s' not found"
-msgstr "Strona %(name)s nie został odnaleziona"
+msgstr "Strona '%(page)s' nie został odnaleziona"
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:122 trac/wiki/model.py:172
 #: trac/wiki/web_ui.py:114
 #, fuzzy, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr "Niepoprawna strona Wiki: %(message)s"
+msgstr "Niepoprawna strona Wiki: '%(name)s'"
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -5556,7 +5551,7 @@ msgstr "'%(name)s' nie jest plikiem"
 #: trac/wiki/admin.py:139
 #, fuzzy, python-format
 msgid "  %(title)s already exists"
-msgstr "Wersja o nazwie %(name)s już istnieje."
+msgstr ""
 
 #: trac/wiki/admin.py:143
 #, python-format
@@ -5630,7 +5625,7 @@ msgid "Can't view %(link)s:"
 msgstr "Nie można podejrzeć %(link)s:"
 
 #: trac/wiki/intertrac.py:81
-#, fuzzy, python-format
+#, fuzzy
 msgid "The Trac Project"
 msgstr "Szukaj %(project)s"
 
@@ -5812,12 +5807,12 @@ msgstr "Zmiany Wiki"
 #: trac/wiki/web_ui.py:716
 #, fuzzy, python-format
 msgid "%(page)s edited"
-msgstr "%(num)d edytowany"
+msgstr ""
 
 #: trac/wiki/web_ui.py:718
 #, fuzzy, python-format
 msgid "%(page)s created"
-msgstr "%(value)s usunięty"
+msgstr ""
 
 #: trac/wiki/templates/wiki_delete.html:19
 #, fuzzy, python-format
@@ -5911,8 +5906,6 @@ msgid ""
 "[1:If you save right away, you risk to revert those changes]\n"
 "        (highlighted below as deletions)."
 msgstr ""
-"Jeżeli w tej chwili zapiszesz, może nastąpić ryzyko utraty wprowadzonych "
-"zmian"
 
 #: trac/wiki/templates/wiki_edit.html:78
 msgid ""
@@ -6075,7 +6068,7 @@ msgstr "[1:Ostatnia zmiana] %(reldate)s temu"
 #: trac/wiki/templates/wiki_view.html:59
 #, fuzzy, python-format
 msgid "Last modified on %(date)s"
-msgstr "[1:Ostatnia zmiana] %(reldate)s temu"
+msgstr ""
 
 #: trac/wiki/templates/wiki_view.html:64
 #, fuzzy, python-format
@@ -6103,267 +6096,4 @@ msgid "The following pages have a name similar to this page, and may be related:
 msgstr ""
 "Następujące strony mają nazwę podobną do tej strony i mogą zostać "
 "powiązane:"
-
-#~ msgid "on Ticket #"
-#~ msgstr "w zgłoszeniu #"
-
-#~ msgid "(comments:"
-#~ msgstr "(komentarzy:"
-
-#~ msgid ""
-#~ ",\n"
-#~ "                attachments:"
-#~ msgstr ""
-#~ ",\n"
-#~ "                załączniki:"
-
-#~ msgid "Upgrade done."
-#~ msgstr "Aktualizacja zakończona."
-
-#~ msgid "Group names must be in lower case and actions in upper case"
-#~ msgstr "Nazwy grup muszą być pisane małymi literami, a akcji dużymi literami"
-
-#~ msgid "Note that"
-#~ msgstr "Proszę zwrócić uwagę, że nazwy dla"
-
-#~ msgid "Group"
-#~ msgstr "grupy"
-
-#~ msgid "Toggle the module description"
-#~ msgstr "Pokaż / ukryj opis modułu"
-
-#~ msgid "Toggle the component description"
-#~ msgstr "Pokaż / ukryj opis komponentu"
-
-#~ msgid "Invalid unified diff content"
-#~ msgstr "Niepoprawna zawartość pliku diff"
-
-#~ msgid "(UTC)."
-#~ msgstr "(Wg. czasu UTC)."
-
-#~ msgid ""
-#~ "Note: Universal Co-ordinated Time (UTC)"
-#~ " is also known as Greenwich Mean "
-#~ "Time (GMT)."
-#~ msgstr ""
-#~ "Uwaga: Czas uniwersalny UTC jest również"
-#~ " oznaczany jako GMT (Czas Greenwich)."
-
-#~ msgid "http://trac.edgewall.org/"
-#~ msgstr "http://trac.edgewall.org/"
-
-#~ msgid "Add Attachment to"
-#~ msgstr "Dodaj załącznik do"
-
-#~ msgid "Show"
-#~ msgstr "Pokaż"
-
-#~ msgid "lines around each change"
-#~ msgstr "lini dookoła każdej zmiany"
-
-#~ msgid "(IP:"
-#~ msgstr "(Adres IP:"
-
-#~ msgid ""
-#~ "==== How to Reproduce ====\n"
-#~ "\n"
-#~ "While doing a"
-#~ msgstr ""
-#~ "==== Sposób odtworzenia ====\n"
-#~ "\n"
-#~ "W trakcie"
-
-#~ msgid "operation on `"
-#~ msgstr "operacji na `"
-
-#~ msgid ""
-#~ "`, Trac issued an internal error.\n"
-#~ "\n"
-#~ "''(please provide additional details here)''"
-#~ msgstr ""
-#~ "`, Trac zgłosił błąd wewnętrzny.\n"
-#~ "\n"
-#~ "''(tutaj proszę podać dodatkowe informacje)''"
-
-#~ msgid ""
-#~ "Request parameters:\n"
-#~ "{{{"
-#~ msgstr ""
-#~ "Parametry żądania:\n"
-#~ "{{{"
-
-#~ msgid "==== System Information ===="
-#~ msgstr "==== Informacje o systemie ===="
-
-#~ msgid "==== Enabled Plugins ===="
-#~ msgstr "==== Aktywne Rozszerzenia ===="
-
-#~ msgid ""
-#~ "==== Python Traceback ====\n"
-#~ "{{{"
-#~ msgstr ""
-#~ "==== Python Traceback ====\n"
-#~ "{{{"
-
-#~ msgid "a ticket."
-#~ msgstr "zgłoszenie."
-
-#~ msgid "You should"
-#~ msgstr "Należy"
-
-#~ msgid "File \""
-#~ msgstr "Plik \""
-
-#~ msgid ""
-#~ "\",\n"
-#~ "                        line"
-#~ msgstr ", linia"
-
-#~ msgid ", in"
-#~ msgstr ", w funkcji"
-
-#~ msgid "\", line"
-#~ msgstr ", linia"
-
-#~ msgid "HTML preview not available"
-#~ msgstr "Podgląd jako HTML jest niedostępny"
-
-#~ msgid "Try"
-#~ msgstr "Spróbuj"
-
-#~ msgid "downloading"
-#~ msgstr "pobrać"
-
-#~ msgid "between"
-#~ msgstr "pomiędzy"
-
-#~ msgid "and"
-#~ msgstr "i"
-
-#~ msgid ""
-#~ "Reported by [1:%(author)s],\n"
-#~ "                      %(date)s ago."
-#~ msgstr ""
-#~ "Zgłoszone przez [1:%(author)s],\n"
-#~ "                      %(date)s temu."
-
-#~ msgid "%(num)d match"
-#~ msgid_plural "%(num)d matches"
-#~ msgstr[0] "%(num)d pasuje"
-#~ msgstr[1] "%(num)d pasują"
-#~ msgstr[2] "%(num)d pasuje"
-
-#~ msgid "No matches"
-#~ msgstr "Brak wyników odpowiadających kryteriom"
-
-#~ msgid "The ticket validation has [1:failed]."
-#~ msgstr "Sprawdzanie poprawności zgłoszenia zakończyło się [1:niepowodzeniem]."
-
-#~ msgid "Changed by"
-#~ msgstr "Zmieniony przez"
-
-#~ msgid ""
-#~ "[1:[2:%(name)s]]\n"
-#~ "          [3:[4:]]\n"
-#~ "          added"
-#~ msgstr ""
-
-#~ msgid "Changes (by"
-#~ msgstr "Zmiany (przez"
-
-#~ msgid ""
-#~ "-- \n"
-#~ "Ticket URL: <"
-#~ msgstr "-- Adres URL zgłoszenia:"
-
-#~ msgid ""
-#~ "The 'repository_dir' has changed, a "
-#~ "'trac-admin $ENV repository resync' "
-#~ "operation is needed."
-#~ msgstr ""
-#~ "Zmienna 'repository_dir' z pliku ustawień "
-#~ "uległa zmianie, wymagane jest wydanie "
-#~ "polecelnia 'trac-admin $ENV repository "
-#~ "resync' z konsoli serwera."
-
-#~ msgid "Alias of"
-#~ msgstr "Alias dla"
-
-#~ msgid "View log starting at"
-#~ msgstr "Podgląd dziennika rozpoczynając od"
-
-#~ msgid "and back to"
-#~ msgstr "i dni wstecz"
-
-#~ msgid "Show at most"
-#~ msgstr "Pokaż co najwyżej"
-
-#~ msgid "revisions per page."
-#~ msgstr "wersji na stronę"
-
-#~ msgid ""
-#~ "#\n"
-#~ "# ChangeLog for"
-#~ msgstr ""
-#~ "#\n"
-#~ "# Dziennik wersji dla"
-
-#~ msgid " in %(reponame)s"
-#~ msgstr " w $(reponame)s"
-
-#~ msgid ""
-#~ "# \n"
-#~ "# Generated by Trac"
-#~ msgstr ""
-#~ "# \n"
-#~ "# Wygenerowany przez Trac"
-
-#~ msgid "Annotate"
-#~ msgstr "Oznacz"
-
-#~ msgid "No SID found"
-#~ msgstr "Brak identyfikatora sesji"
-
-#~ msgid "Session already exists. Unable to add a duplicate session."
-#~ msgstr "Sesja już istnieje. Nie można dodać sesji ponownie."
-
-#~ msgid "Unable to set session attribute on a non-existent SID"
-#~ msgstr "Nie można ustawić atrybutu sesji na nie istniejącym SID"
-
-#~ msgid " edited"
-#~ msgstr " zaktualizowana"
-
-#~ msgid " created"
-#~ msgstr " utworzona"
-
-#~ msgid "(highlighted below as deletions)."
-#~ msgstr "(podświetlone poniżej jako usunięte)."
-
-#~ msgid ""
-#~ "Please review all those changes and manually merge them with your\n"
-#~ "        own changes."
-#~ msgstr ""
-#~ "Proszę przejrzyj wszystkie zmiany i ręcznie zintegruj je\n"
-#~ "        z własnymi zmianami."
-
-#~ msgid "If you're unsure about what you're doing, please press"
-#~ msgstr ""
-#~ "Jeżeli nie jesteś pewien co masz "
-#~ "zrobić to najlepszym rozwiązaniem jest "
-#~ "użycie przycisku"
-
-#~ msgid ""
-#~ "(losing your changes) and start editing"
-#~ " the latest version of the page\n"
-#~ ""
-#~ "        again."
-#~ msgstr ""
-#~ "(utracisz zmiany) i rozpoczniesz edycję od nowa używając najświeższej\n"
-#~ "        wersji tej strony."
-
-#~ msgid "(modified by"
-#~ msgstr "(zmieniona przez"
-
-#~ msgid "The page"
-#~ msgstr "Strona"
 

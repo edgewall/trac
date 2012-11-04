@@ -664,7 +664,7 @@ msgstr "Hakemisto on jo olemassa ja ei ole tyhjä."
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr "Sivua %(name)s ei ole olemassa. Voit luoda sen nyt, jos haluat."
+msgstr ""
 
 #: trac/admin/console.py:431
 msgid "Creating and Initializing Project"
@@ -1450,7 +1450,7 @@ msgstr "Asetuksesi on tallennettu"
 #: trac/mimeview/rst.py:123 trac/mimeview/rst.py:146
 #, fuzzy, python-format
 msgid "%(link)s is not a valid TracLink"
-msgstr "%(name)s ei ole kelvollinen toiminto."
+msgstr ""
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -1477,7 +1477,7 @@ msgid "Advanced"
 msgstr "Lisäasetukset"
 
 #: trac/prefs/web_ui.py:150
-#, fuzzy, python-format
+#, fuzzy
 msgid "The session has been loaded."
 msgstr "Versio \"%(name)s\" on lisätty."
 
@@ -5475,7 +5475,7 @@ msgstr "Sähköposti"
 #: trac/web/session.py:457
 #, fuzzy, python-format
 msgid "Session '%(sid)s' already exists"
-msgstr "Versio %(name)s on jo olemassa."
+msgstr ""
 
 #: trac/web/session.py:470
 #, python-format
@@ -5490,13 +5490,13 @@ msgstr "Sessiotunnistetta %(sid)s ei löytynyt"
 #: trac/wiki/admin.py:102
 #, fuzzy, python-format
 msgid "Page '%(page)s' not found"
-msgstr "Sivua %(name)s ei löydy"
+msgstr "Sivua '%(page)s' ei löydy"
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:122 trac/wiki/model.py:172
 #: trac/wiki/web_ui.py:114
 #, fuzzy, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr "Viallinen Wiki-sivu: %(message)s"
+msgstr "Viallinen Wiki-sivu: '%(name)s'"
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -5580,7 +5580,7 @@ msgid "Can't view %(link)s:"
 msgstr ""
 
 #: trac/wiki/intertrac.py:81
-#, fuzzy, python-format
+#, fuzzy
 msgid "The Trac Project"
 msgstr "Etsi projektista %(project)s"
 
@@ -6014,7 +6014,7 @@ msgstr "[1:Viimeksi muokattu] %(reldate)s sitten"
 #: trac/wiki/templates/wiki_view.html:59
 #, fuzzy, python-format
 msgid "Last modified on %(date)s"
-msgstr "(viimeksi muokannut: %(author)s)"
+msgstr ""
 
 #: trac/wiki/templates/wiki_view.html:64
 #, python-format
@@ -6040,29 +6040,4 @@ msgstr "(tyhjä sivu)"
 #: trac/wiki/templates/wiki_view.html:131
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr "Seuraavat sivut on nimetty samankaltaisesti ja voivat liittyä aiheeseen:"
-
-#~ msgid ""
-#~ "Reported by [1:%(author)s],\n"
-#~ "                      %(date)s ago."
-#~ msgstr ""
-#~ "Ilmoittaja: [1:%(author)s],\n"
-#~ "                      %(date)s sitten."
-
-#~ msgid ""
-#~ "The 'repository_dir' has changed, a "
-#~ "'trac-admin $ENV repository resync' "
-#~ "operation is needed."
-#~ msgstr ""
-
-#~ msgid "Annotate"
-#~ msgstr "Lähdemerkinnät"
-
-#~ msgid "No SID found"
-#~ msgstr "Sessiotunnistetta (SID) ei löytynyt"
-
-#~ msgid "Session already exists. Unable to add a duplicate session."
-#~ msgstr "Session on jo olemassa. Duplikaatin session lisääminen ei onnistunut."
-
-#~ msgid "Unable to set session attribute on a non-existent SID"
-#~ msgstr ""
 

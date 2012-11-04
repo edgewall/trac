@@ -655,7 +655,7 @@ msgstr "Kataloog on olemas ja ei ole tühi."
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr "Lehekülge %(name)s puudub. Selle võib siin luua."
+msgstr ""
 
 #: trac/admin/console.py:431
 msgid "Creating and Initializing Project"
@@ -1441,7 +1441,7 @@ msgstr "Teie eelistused on salvestatud."
 #: trac/mimeview/rst.py:123 trac/mimeview/rst.py:146
 #, fuzzy, python-format
 msgid "%(link)s is not a valid TracLink"
-msgstr "%(name)s ei ole korrektne tegevus."
+msgstr ""
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -1468,7 +1468,7 @@ msgid "Advanced"
 msgstr "Edasijõudnutele"
 
 #: trac/prefs/web_ui.py:150
-#, fuzzy, python-format
+#, fuzzy
 msgid "The session has been loaded."
 msgstr "Versioon \"%(name)s\" on lisatud."
 
@@ -5531,7 +5531,7 @@ msgstr "E-post"
 #: trac/web/session.py:457
 #, fuzzy, python-format
 msgid "Session '%(sid)s' already exists"
-msgstr "Versioon %(name)s on juba olemas."
+msgstr ""
 
 #: trac/web/session.py:470
 #, python-format
@@ -5546,13 +5546,13 @@ msgstr "Seansi id %(sid)s ei leitud"
 #: trac/wiki/admin.py:102
 #, fuzzy, python-format
 msgid "Page '%(page)s' not found"
-msgstr "Leht %(name)s puudub"
+msgstr "Leht '%(page)s' puudub"
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:122 trac/wiki/model.py:172
 #: trac/wiki/web_ui.py:114
 #, fuzzy, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr "Vigane wiki-leht: %(message)s"
+msgstr "Vigane wiki-leht: '%(name)s'"
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -5636,7 +5636,7 @@ msgid "Can't view %(link)s:"
 msgstr "Ei saa vaadata %(link)s:"
 
 #: trac/wiki/intertrac.py:81
-#, fuzzy, python-format
+#, fuzzy
 msgid "The Trac Project"
 msgstr "Otsi %(project)s"
 
@@ -6093,7 +6093,7 @@ msgstr "[1:Last modified] %(reldate)s eest"
 #: trac/wiki/templates/wiki_view.html:59
 #, fuzzy, python-format
 msgid "Last modified on %(date)s"
-msgstr "(viimati muutsid: %(author)s)"
+msgstr ""
 
 #: trac/wiki/templates/wiki_view.html:64
 #, python-format
@@ -6121,32 +6121,4 @@ msgid "The following pages have a name similar to this page, and may be related:
 msgstr ""
 "Järgmistel lehekülgedel on sellele lehele sarnane nimi, ja nad võivad "
 "olla seotud:"
-
-#~ msgid ""
-#~ "Reported by [1:%(author)s],\n"
-#~ "                      %(date)s ago."
-#~ msgstr ""
-#~ "[1:%(author)s] raporteeris,\n"
-#~ "                      %(date)s eest."
-
-#~ msgid ""
-#~ "The 'repository_dir' has changed, a "
-#~ "'trac-admin $ENV repository resync' "
-#~ "operation is needed."
-#~ msgstr ""
-#~ "'hoidla_kataloog' on muutunud, vajalik on "
-#~ "käivitada 'trac-admin $ENV repository "
-#~ "resync'."
-
-#~ msgid "Annotate"
-#~ msgstr "Annoteeri"
-
-#~ msgid "No SID found"
-#~ msgstr "Seansi ID-d ei leitud"
-
-#~ msgid "Session already exists. Unable to add a duplicate session."
-#~ msgstr "Seanss on juba olemas. Topeltsessiooni lisamine ebaõnnestus."
-
-#~ msgid "Unable to set session attribute on a non-existent SID"
-#~ msgstr "Seansi atribuuti ei ole võimalik saada seansi ID-st mida ei eksisteeri"
 

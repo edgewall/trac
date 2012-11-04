@@ -660,7 +660,7 @@ msgstr "Тека вже існує і вона не порожня."
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr "Сторінка %(name)s не існує. Тут можна створити її."
+msgstr ""
 
 #: trac/admin/console.py:431
 msgid "Creating and Initializing Project"
@@ -1444,7 +1444,7 @@ msgstr "Налаштування було збережено."
 #: trac/mimeview/rst.py:123 trac/mimeview/rst.py:146
 #, fuzzy, python-format
 msgid "%(link)s is not a valid TracLink"
-msgstr "%(name)s не є правильною дією."
+msgstr ""
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -1471,7 +1471,7 @@ msgid "Advanced"
 msgstr "Додатково"
 
 #: trac/prefs/web_ui.py:150
-#, fuzzy, python-format
+#, fuzzy
 msgid "The session has been loaded."
 msgstr "Версію «%(name)s» додано."
 
@@ -5561,7 +5561,7 @@ msgstr "Е-пошта"
 #: trac/web/session.py:457
 #, fuzzy, python-format
 msgid "Session '%(sid)s' already exists"
-msgstr "Версія %(name)s вже існує."
+msgstr ""
 
 #: trac/web/session.py:470
 #, python-format
@@ -5576,13 +5576,13 @@ msgstr "Сеанс «%(sid)s» не знайдено"
 #: trac/wiki/admin.py:102
 #, fuzzy, python-format
 msgid "Page '%(page)s' not found"
-msgstr "Сторінку %(name)s не знайдено"
+msgstr "Сторінку '%(page)s' не знайдено"
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:122 trac/wiki/model.py:172
 #: trac/wiki/web_ui.py:114
 #, fuzzy, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr "Хибна сторінка Wiki: %(message)s"
+msgstr "Хибна сторінка Wiki: '%(name)s'"
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -5668,7 +5668,7 @@ msgid "Can't view %(link)s:"
 msgstr "Не можу переглянути %(link)s:"
 
 #: trac/wiki/intertrac.py:81
-#, fuzzy, python-format
+#, fuzzy
 msgid "The Trac Project"
 msgstr "Знайти %(project)s"
 
@@ -6119,7 +6119,7 @@ msgstr "[1:Востаннє змінено] %(reldate)s тому"
 #: trac/wiki/templates/wiki_view.html:59
 #, fuzzy, python-format
 msgid "Last modified on %(date)s"
-msgstr "(востаннє змінив %(author)s)"
+msgstr ""
 
 #: trac/wiki/templates/wiki_view.html:64
 #, python-format
@@ -6147,32 +6147,4 @@ msgid "The following pages have a name similar to this page, and may be related:
 msgstr ""
 "Наступна сторінка має назву, подібну до назви цієї сторінки, тому вони "
 "можуть бути пов'язані:"
-
-#~ msgid ""
-#~ "Reported by [1:%(author)s],\n"
-#~ "                      %(date)s ago."
-#~ msgstr ""
-#~ "Повідомив [1:%(author)s],\n"
-#~ "                      %(date)s тому."
-
-#~ msgid ""
-#~ "The 'repository_dir' has changed, a "
-#~ "'trac-admin $ENV repository resync' "
-#~ "operation is needed."
-#~ msgstr ""
-#~ "Було змінено «repository_dir», потрібно "
-#~ "виконати операцію «trac-admin $ENV "
-#~ "repository resync»."
-
-#~ msgid "Annotate"
-#~ msgstr "Анотувати"
-
-#~ msgid "No SID found"
-#~ msgstr "Жодного SID не знайдено"
-
-#~ msgid "Session already exists. Unable to add a duplicate session."
-#~ msgstr "Сеанс вже існує. Не можна додати дублюючий сеанс."
-
-#~ msgid "Unable to set session attribute on a non-existent SID"
-#~ msgstr "Неможливо встановти атрибут сеансу неіснуючого SID"
 

@@ -648,7 +648,7 @@ msgstr "Adresář existuje a není prázdný."
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr "Stránka %(name)s neexistuje. Můžete ji zde vytvořit."
+msgstr ""
 
 #: trac/admin/console.py:431
 msgid "Creating and Initializing Project"
@@ -1427,7 +1427,7 @@ msgstr "Vaše předvolby byly uloženy."
 #: trac/mimeview/rst.py:123 trac/mimeview/rst.py:146
 #, fuzzy, python-format
 msgid "%(link)s is not a valid TracLink"
-msgstr "Akce %(name)s není platná."
+msgstr ""
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -1454,7 +1454,7 @@ msgid "Advanced"
 msgstr "Pokročilé"
 
 #: trac/prefs/web_ui.py:150
-#, fuzzy, python-format
+#, fuzzy
 msgid "The session has been loaded."
 msgstr "Verze \"%(name)s\" byla přidána."
 
@@ -4573,9 +4573,10 @@ msgid ""
 "            checked in by %(author)s, %(date)s ago\n"
 "            ([3:diff])"
 msgstr ""
-"Soubor %(file)s,\n"
-"                [1:%(size)s]\n"
-"                (přidal uživatel %(author)s, před %(date)s)"
+"Soubor [1:%(rev)s],\n"
+"            [2:%(size)s]\n"
+"            přidal uživatel %(author)s, před %(date)s\n"
+"            ([3:diff])"
 
 #: trac/versioncontrol/templates/browser.html:140
 #, python-format
@@ -5510,13 +5511,13 @@ msgstr "Sezení '%(sid)s' nebylo nalezeno"
 #: trac/wiki/admin.py:102
 #, fuzzy, python-format
 msgid "Page '%(page)s' not found"
-msgstr "Stránka %(name)s nebyla nalezena"
+msgstr "Stránka '%(page)s' nebyla nalezena"
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:122 trac/wiki/model.py:172
 #: trac/wiki/web_ui.py:114
 #, fuzzy, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr "Neplatná wiki stránka: %(message)s"
+msgstr "Neplatná wiki stránka: '%(name)s'"
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -5598,7 +5599,7 @@ msgid "Can't view %(link)s:"
 msgstr "Nemohu zobrazit %(link)s:"
 
 #: trac/wiki/intertrac.py:81
-#, fuzzy, python-format
+#, fuzzy
 msgid "The Trac Project"
 msgstr "Prohledat %(project)s"
 
@@ -6043,7 +6044,7 @@ msgstr "[1:Naposledy upravena] před %(reldate)s"
 #: trac/wiki/templates/wiki_view.html:59
 #, fuzzy, python-format
 msgid "Last modified on %(date)s"
-msgstr "(naposledy změnil uživatel %(author)s)"
+msgstr ""
 
 #: trac/wiki/templates/wiki_view.html:64
 #, python-format
@@ -6069,112 +6070,4 @@ msgstr "(prázdná stránka)"
 #: trac/wiki/templates/wiki_view.html:131
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr "Následující stránky mají jméno podobné této stránce; mohou spolu souviset:"
-
-#~ msgid "Default timezone:"
-#~ msgstr "Výchozí časové pásmo"
-
-#~ msgid "Server's local time zone"
-#~ msgstr "Lokální časové pásmo na serveru"
-
-#~ msgid "Default language:"
-#~ msgstr "Výchozí jazyk:"
-
-#~ msgid "Browser's language"
-#~ msgstr "Jazyk prohlížeče"
-
-#~ msgid "%(status)s ticket"
-#~ msgstr "Hlášení %(status)s"
-
-#~ msgid "Tickets %(ranges)s"
-#~ msgstr "Hlášení %(ranges)s"
-
-#~ msgid "%(grouplabel)s: %(groupname)s [1:(%(count)s)]"
-#~ msgstr "%(grouplabel)s: %(groupname)s [1:(%(count)s)]"
-
-#~ msgid ""
-#~ "Reported by [1:%(author)s],\n"
-#~ "                      %(date)s ago."
-#~ msgstr "Nahlášeno uživatelem [1:%(author)s] před %(date)s."
-
-#~ msgid "Show Descriptions"
-#~ msgstr "Zobrazit popisy"
-
-#~ msgid "Forget last query"
-#~ msgstr "Zapomenout poslední dotaz"
-
-#~ msgid "Clear"
-#~ msgstr "Vyčistit"
-
-#~ msgid "Return to Last Query"
-#~ msgstr "Zpět k poslednímu dotazu"
-
-#~ msgid ""
-#~ "Continue browsing through the current list of results,\n"
-#~ "              from the last selected report or custom query."
-#~ msgstr ""
-#~ "Pokračovat v prohlížení aktuálního seznamu výsledků\n"
-#~ "              z naposledy vybraného výpisu nebo uživatelského dotazu."
-
-#~ msgid "Compose a new ticket query by selecting filters and columns to display."
-#~ msgstr "Vytvořit nový dotaz k hlášením zvolením filtrů a zobrazených sloupců."
-
-#~ msgid "SQL reports and saved custom queries"
-#~ msgstr "Výpisy v SQL a uložené uživatelské dotazy"
-
-#~ msgid "Sort by:"
-#~ msgstr "Třídit podle:"
-
-#~ msgid "Identifier"
-#~ msgstr "Identifikátor"
-
-#~ msgid ""
-#~ "The 'repository_dir' has changed, a "
-#~ "'trac-admin $ENV repository resync' "
-#~ "operation is needed."
-#~ msgstr ""
-#~ "Adresář 'repository_dir' se změnil, je "
-#~ "potřeba provést 'synchronizaci repozitáře "
-#~ "trac-admin $ENV'."
-
-#~ msgid ""
-#~ "[1:Last change]\n"
-#~ "                  on this file since %(stickyrev)s was\n"
-#~ "                  [2:%(rev)s],\n"
-#~ "                  checked in by %(author)s, %(age)s ago"
-#~ msgstr ""
-#~ "[1:Poslední změna]\n"
-#~ "                  na tomto souboru od %(stickyrev)s byla\n"
-#~ "                  [2:%(rev)s],\n"
-#~ "                  odeslaná uživatelem %(author)s před %(age)s"
-
-#~ msgid ""
-#~ "[1:Last change]\n"
-#~ "                  on this file was\n"
-#~ "                  [2:%(rev)s],\n"
-#~ "                  checked in by %(author)s, %(age)s ago"
-#~ msgstr ""
-#~ "[1:Poslední změna]\n"
-#~ "                  na tomto souboru byla\n"
-#~ "                  [2:%(rev)s],\n"
-#~ "                  odeslaná uživatelem %(author)s před %(age)s"
-
-#~ msgid ""
-#~ "[1:\n"
-#~ "            [2:File size:]\n"
-#~ "            [3:%(size)s]\n"
-#~ "          ]"
-#~ msgstr ""
-#~ "[1:\n"
-#~ "            [2:Velikost souboru:]\n"
-#~ "            [3:%(size)s]\n"
-#~ "          ]"
-
-#~ msgid "Download as Zip archive"
-#~ msgstr "Stáhnout jako archiv ZIP"
-
-#~ msgid "Annotate"
-#~ msgstr "Označit"
-
-#~ msgid "(no default)"
-#~ msgstr "(bez výchozí hodnoty)"
 

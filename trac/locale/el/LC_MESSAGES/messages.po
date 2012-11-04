@@ -40,7 +40,7 @@ msgstr "Δημιουργία εργασίας"
 #: tracopt/ticket/deleter.py:83
 #, fuzzy, python-format
 msgid "Delete comment %(num)s"
-msgstr "Ορόσημο %(name)s"
+msgstr ""
 
 #: tracopt/ticket/deleter.py:130
 #, python-format
@@ -50,12 +50,12 @@ msgstr ""
 #: tracopt/ticket/deleter.py:137
 #, fuzzy, python-format
 msgid "The ticket comment %(num)s on ticket #%(id)s has been deleted."
-msgstr "΅Σχόλιο %(cnum)s για την Εργασία #%(id)s"
+msgstr "΅Σχόλιο %(num)s για την Εργασία #%(id)s"
 
 #: tracopt/ticket/deleter.py:156
 #, fuzzy, python-format
 msgid "Comment %(num)s not found"
-msgstr "Η σελίδα %(name)s δεν βρέθηκε"
+msgstr ""
 
 #: tracopt/ticket/templates/ticket_delete.html:11
 #, python-format
@@ -66,7 +66,7 @@ msgstr ""
 #: tracopt/ticket/templates/ticket_delete.html:48
 #, fuzzy, python-format
 msgid "Delete comment %(num)s on Ticket #%(id)s"
-msgstr "΅Σχόλιο %(cnum)s για την Εργασία #%(id)s"
+msgstr "΅Σχόλιο %(num)s για την Εργασία #%(id)s"
 
 #: tracopt/ticket/templates/ticket_delete.html:20
 #, python-format
@@ -119,7 +119,7 @@ msgstr "Σχόλιο:"
 #: trac/ticket/templates/ticket.html:142
 #, fuzzy, python-format
 msgid "Changed %(date)s ago by %(author)s"
-msgstr "Σύνολο αλλαγών %(id)s για %(path)s"
+msgstr ""
 
 #: tracopt/ticket/templates/ticket_delete.html:67
 #, fuzzy
@@ -192,7 +192,7 @@ msgstr "%(attachment)s (διαγραφή)"
 #: trac/attachment.py:608
 #, fuzzy, python-format
 msgid "Unparented attachment %(id)s"
-msgstr "Άκυρο επισυναπτόμενο: %(message)s"
+msgstr ""
 
 #: trac/attachment.py:616
 #, python-format
@@ -449,7 +449,7 @@ msgstr "Το TLS είναι ενεργοποιημένο αλλά ο εξυπη�
 #: trac/notification.py:305
 #, fuzzy, python-format
 msgid "Invalid email encoding setting: %(pref)s"
-msgstr "Άκυρη ρύθμιση κωδικοποίησης email: %s"
+msgstr ""
 
 #: trac/notification.py:319
 msgid "Unable to send email due to identity crisis."
@@ -520,7 +520,7 @@ msgstr "Τα Docutils δεν βρέθηκαν"
 #: trac/admin/console.py:111
 #, fuzzy, python-format
 msgid "Error: %(msg)s"
-msgstr "[Σφάλμα: %(error)s]"
+msgstr "Σφάλμα: %(msg)s"
 
 #: trac/admin/console.py:130
 #, python-format
@@ -541,7 +541,7 @@ msgstr ""
 #: trac/admin/console.py:247
 #, fuzzy, python-format
 msgid "Completion error: %(err)s"
-msgstr "[Σφάλμα: %(error)s]"
+msgstr "Σφάλμα: %(err)s"
 
 #: trac/admin/console.py:306
 #, python-format
@@ -612,7 +612,7 @@ msgid "Initenv for '%(env)s' failed."
 msgstr ""
 
 #: trac/admin/console.py:393
-#, fuzzy, python-format
+#, fuzzy
 msgid "Does an environment already exist?"
 msgstr "Η έκδοση %(name)s υπάρχει ήδη."
 
@@ -1039,8 +1039,6 @@ msgid ""
 "If you specify a relative path, the log file will be stored inside the\n"
 "            [1:log] directory of the project environment ([2:%(dir)s])."
 msgstr ""
-"Αν προσδιορίσετε ένα σχετικό μονοπάτι, το αρχείο ημερολογίου θα "
-"αποθηκευτεί μέσα στο"
 
 #: trac/admin/templates/admin_milestones.html:10 trac/ticket/admin.py:240
 #: trac/ticket/roadmap.py:895
@@ -1164,8 +1162,6 @@ msgid ""
 "Note that [1:Subject] or [2:Group] names can't be all upper-case,\n"
 "      as that is reserved for permission names."
 msgstr ""
-"τα ονόματα δεν πρέπει να είναι μόνο στα κεφαλαία,\n"
-"\tδιότι αυτά προορίζονται για ονόματα δικαιωμάτων."
 
 #: trac/admin/templates/admin_plugins.html:35
 msgid "Manage Plugins"
@@ -1287,7 +1283,7 @@ msgstr ""
 #: trac/db/mysql_backend.py:209
 #, fuzzy, python-format
 msgid "mysqldump failed: %(msg)s"
-msgstr "αποτυχία svn blame: %(error)s"
+msgstr ""
 
 #: trac/db/mysql_backend.py:211 trac/db/postgres_backend.py:200
 #: trac/db/sqlite_backend.py:230
@@ -1367,7 +1363,7 @@ msgstr ""
 #: trac/mimeview/patch.py:172
 #, fuzzy, python-format
 msgid "new file %(new)s"
-msgstr "αποτυχία svn blame: %(error)s"
+msgstr ""
 
 #: trac/mimeview/patch.py:176
 #, python-format
@@ -1389,7 +1385,7 @@ msgstr ""
 #: trac/mimeview/rst.py:123 trac/mimeview/rst.py:146
 #, fuzzy, python-format
 msgid "%(link)s is not a valid TracLink"
-msgstr "%(name)s δεν είναι έγκυρη εντολή"
+msgstr ""
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
 #, fuzzy
@@ -1511,7 +1507,7 @@ msgstr ""
 #: trac/prefs/templates/prefs_datetime.html:33
 #, fuzzy, python-format
 msgid "Example: The current time is [1:%(time)s] (UTC)."
-msgstr "Παράδειγμα: Η τρέχουσα ώρα είναι"
+msgstr ""
 
 #: trac/prefs/templates/prefs_datetime.html:36
 #, python-format
@@ -1535,8 +1531,6 @@ msgid ""
 "        A positive offset is used to indicate a timezone at the east of "
 "Greenwich, i.e. ahead of Universal Time."
 msgstr ""
-"Μία θετική τιμή χρησιμοποιείται για να δηλώσει μία ζώνη ώρας ανατολικά "
-"του Γκρίνουιτς."
 
 #: trac/prefs/templates/prefs_general.html:15
 msgid "Full name:"
@@ -1581,11 +1575,6 @@ msgid ""
 "      [1:TracAccessibility]\n"
 "      for more information on access keys."
 msgstr ""
-"Αυτός ο ιστότοπος παρέχει συντομεύσεις πληκτρολογίου για γρηγορότερη\n"
-"\tπρόσβαση σε ορισμένες λειτουργίες αυτού του ιστότοπου. Επειδή οι\n"
-"\tσυντομεύσεις αυτές μπορεί να προκαλέσουν συγκρούσεις με συντομεύσεις\n"
-"\tτου λειτουργικού συστήματος ή του φυλλομετρητή, είναι αρχικά "
-"απενεργοποιημένοι."
 
 #: trac/prefs/templates/prefs_language.html:15
 msgid "Language:"
@@ -1718,7 +1707,9 @@ msgstr ""
 msgid ""
 "Please visit the Trac open source project:\n"
 "        [1:http://trac.edgewall.org/]"
-msgstr "Παρακαλώ, επισκεφθείτε το "
+msgstr ""
+"Παρακαλώ, επισκεφθείτε το \n"
+"        [1:http://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
 msgid ""
@@ -1770,7 +1761,7 @@ msgstr ""
 #: trac/templates/attachment.html:29
 #, fuzzy, python-format
 msgid "Add Attachment to [1:%(parent)s]"
-msgstr "Επισυναπτόμενα του %(parent)s"
+msgstr "Επισυναπτόμενα του [1:%(parent)s]"
 
 #: trac/templates/attachment.html:33
 #, fuzzy, python-format
@@ -2131,7 +2122,7 @@ msgstr ""
 #: trac/templates/history_view.html:16
 #, fuzzy, python-format
 msgid "Change History for [1:%(name)s]"
-msgstr "Ιστορικό αλλαγών για"
+msgstr ""
 
 #: trac/templates/history_view.html:22 trac/templates/history_view.html:55
 #: trac/versioncontrol/templates/diff_form.html:58
@@ -2170,7 +2161,7 @@ msgstr "Διαθέσιμα έργα"
 #: trac/templates/layout.html:25
 #, fuzzy, python-format
 msgid "Search %(project)s"
-msgstr "Πίσω στο %(parent)s"
+msgstr ""
 
 #: trac/templates/layout.html:57
 msgid "Download in other formats:"
@@ -2216,12 +2207,12 @@ msgstr ""
 #: trac/templates/preview_file.html:22
 #, fuzzy
 msgid "[1:HTML preview not available], since no preview renderer could handle it."
-msgstr "εφόσον κανένας δημιουργός προεπισκόσεων δεν μπορεί να το χειριστεί."
+msgstr ""
 
 #: trac/templates/preview_file.html:26
 #, fuzzy
 msgid "Try [1:downloading] the file instead."
-msgstr "το αρχείο"
+msgstr ""
 
 #: trac/templates/progress_bar.html:26
 #, python-format
@@ -2341,7 +2332,7 @@ msgid "The version \"%(name)s\" has been added."
 msgstr "Η έκδοση %(name)s δεν υπάρχει."
 
 #: trac/ticket/admin.py:486 trac/ticket/model.py:1130 trac/ticket/model.py:1150
-#, fuzzy, python-format
+#, fuzzy
 msgid "Invalid version name."
 msgstr "Άκυρη εντολή \"%(name)s\""
 
@@ -2505,17 +2496,17 @@ msgstr "Η εργασία θα αποκηρυχθεί"
 #: trac/ticket/default_workflow.py:249 trac/ticket/default_workflow.py:268
 #, fuzzy, python-format
 msgid "to %(owner)s"
-msgstr "Ορόσημο %(name)s"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:251 trac/ticket/default_workflow.py:271
 #, fuzzy, python-format
 msgid "The owner will be changed from %(current_owner)s"
-msgstr "Ο συντάκτης θα αλλάξει σε %(name)s"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:259
 #, fuzzy, python-format
 msgid "to %(owner)s "
-msgstr "Ορόσημο %(name)s"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:261
 #, python-format
@@ -2525,7 +2516,7 @@ msgstr ""
 #: trac/ticket/default_workflow.py:276
 #, fuzzy, python-format
 msgid "The owner will be changed from %(current_owner)s to %(authname)s"
-msgstr "Ο συντάκτης θα αλλάξει σε %(name)s"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:286
 msgid ""
@@ -2568,7 +2559,7 @@ msgstr "Η επόμενη κατάσταση θα είναι '%(name)s'"
 #: trac/ticket/model.py:114
 #, fuzzy, python-format
 msgid "Ticket %(id)s does not exist."
-msgstr "Η αναφορά %(num)s δεν υπάρχει."
+msgstr ""
 
 #: trac/ticket/model.py:115
 #, fuzzy
@@ -2654,7 +2645,7 @@ msgstr "Η σελίδα %(page)s είναι πέρα από τον αριθμό 
 #: trac/ticket/query.py:571
 #, fuzzy, python-format
 msgid "Invalid ticket id list: %(value)s"
-msgstr "Άκυρη σελίδα Wiki: %(message)s"
+msgstr ""
 
 #: trac/ticket/query.py:671 trac/ticket/query.py:679
 msgid "contains"
@@ -3038,7 +3029,7 @@ msgstr "Ιστορικό Εργασίας"
 #: trac/ticket/web_ui.py:1004
 #, fuzzy, python-format
 msgid "Ticket #%(num)s, comment %(cnum)d"
-msgstr "Εργασία #%(num)s: %(summary)s"
+msgstr ""
 
 #: trac/ticket/web_ui.py:962
 #, python-format
@@ -3054,14 +3045,14 @@ msgstr "Diff Εργασιών"
 #, fuzzy, python-format
 msgid "%(labels)s set"
 msgid_plural "%(labels)s set"
-msgstr[0] "Επόμενη %(label)s"
+msgstr[0] ""
 msgstr[1] ""
 
 #: trac/ticket/web_ui.py:1077
 #, fuzzy, python-format
 msgid "%(labels)s deleted"
 msgid_plural "%(labels)s deleted"
-msgstr[0] "%(attachment)s (διαγραφή)"
+msgstr[0] ""
 msgstr[1] ""
 
 #: trac/ticket/web_ui.py:1078 trac/ticket/web_ui.py:1636
@@ -3230,12 +3221,12 @@ msgstr[1] ""
 #: trac/ticket/web_ui.py:1643
 #, fuzzy, python-format
 msgid "%(value)s deleted"
-msgstr "%(attachment)s (διαγραφή)"
+msgstr ""
 
 #: trac/ticket/web_ui.py:1645
 #, fuzzy, python-format
 msgid "set to %(value)s"
-msgstr "Επόμενη %(label)s"
+msgstr ""
 
 #: trac/ticket/web_ui.py:1648
 #, fuzzy, python-format
@@ -3269,8 +3260,6 @@ msgid ""
 "      [2:TracRoadmap] for help on using\n"
 "      the roadmap."
 msgstr ""
-"για βοήθεια σχετικά με  \n"
-"      την εξέλιξη εργασιών."
 
 #: trac/ticket/templates/milestone_edit.html:11
 #: trac/ticket/templates/milestone_edit.html:43
@@ -3318,8 +3307,6 @@ msgid ""
 "        [2:TracRoadmap] for help on using\n"
 "        the roadmap."
 msgstr ""
-"για βοήθεια σχετικά με\n"
-"        την εξέλιξη εργασιών."
 
 #: trac/ticket/templates/milestone_view.html:11
 #, fuzzy
@@ -3520,7 +3507,7 @@ msgstr "Διαγραφή αναφοράς"
 msgid ""
 "[1:Note:]\n"
 "        See [2:TracReports] for help on using and creating reports."
-msgstr "για βοήθεια στη χρήση και δημιουργία αναφορών."
+msgstr ""
 
 #: trac/ticket/templates/report_edit.html:16
 msgid "New Report"
@@ -3543,7 +3530,7 @@ msgstr "Σφάλμα:"
 msgid ""
 "Query for Report: (can be either SQL or, if starting with [1:query:],\n"
 "              a [2:TracQuery] expression)"
-msgstr "Ερώτημα για Αναφορά: (δύναται να είναι είτε SQL, ή, αν ξεκινάει με"
+msgstr ""
 
 #: trac/ticket/templates/report_edit.html:43
 msgid "Save report"
@@ -3649,12 +3636,12 @@ msgstr "Εργασία #"
 #: trac/ticket/templates/ticket.html:91
 #, fuzzy
 msgid "at [1:Initial Version]"
-msgstr "Αρχική Έκδοση"
+msgstr "[1:Αρχική Έκδοση]"
 
 #: trac/ticket/templates/ticket.html:94
 #, fuzzy, python-format
 msgid "at [1:Version %(version)s]"
-msgstr " στην έκδοση %(version)s"
+msgstr " στην [1:έκδοση %(version)s]"
 
 #: trac/ticket/templates/ticket.html:98
 msgid "Create New Ticket"
@@ -3677,7 +3664,7 @@ msgstr[1] ""
 #: trac/ticket/templates/ticket.html:148
 #, fuzzy, python-format
 msgid "Edit comment %(cnum)s"
-msgstr "Έκδοση %(num)s"
+msgstr ""
 
 #: trac/ticket/templates/ticket.html:155
 #: trac/ticket/templates/ticket_box.html:73
@@ -3830,8 +3817,6 @@ msgid ""
 "        [2:TracTickets] for help on using\n"
 "        tickets."
 msgstr ""
-"για βοήθεια στη χρήστη\n"
-"        των εργασιών."
 
 #: trac/ticket/templates/ticket_box.html:19
 #, python-format
@@ -3986,21 +3971,21 @@ msgstr ""
 msgid ""
 "[1:Note:] See [2:TracTimeline]\n"
 "        for information about the timeline view."
-msgstr "για πληροφορίες σχετικά με την όψη του Ιστορικού"
+msgstr ""
 
 #: trac/util/datefmt.py:103
 #, fuzzy, python-format
 msgid "%(num)d year"
 msgid_plural "%(num)d years"
-msgstr[0] "%(num)s αποτέλεσμα"
-msgstr[1] "%(num)s αποτελέσματα"
+msgstr[0] "%(num)d αποτέλεσμα"
+msgstr[1] "%(num)d αποτελέσματα"
 
 #: trac/util/datefmt.py:104
 #, fuzzy, python-format
 msgid "%(num)d month"
 msgid_plural "%(num)d months"
-msgstr[0] "%(num)s αποτέλεσμα"
-msgstr[1] "%(num)s αποτελέσματα"
+msgstr[0] "%(num)d αποτέλεσμα"
+msgstr[1] "%(num)d αποτελέσματα"
 
 #: trac/util/datefmt.py:105
 #, python-format
@@ -4013,22 +3998,22 @@ msgstr[1] ""
 #, fuzzy, python-format
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
-msgstr[0] "%(num)s αποτέλεσμα"
-msgstr[1] "%(num)s αποτελέσματα"
+msgstr[0] "%(num)d αποτέλεσμα"
+msgstr[1] "%(num)d αποτελέσματα"
 
 #: trac/util/datefmt.py:107
 #, fuzzy, python-format
 msgid "%(num)d hour"
 msgid_plural "%(num)d hours"
-msgstr[0] "%(num)s αποτέλεσμα"
-msgstr[1] "%(num)s αποτελέσματα"
+msgstr[0] "%(num)d αποτέλεσμα"
+msgstr[1] "%(num)d αποτελέσματα"
 
 #: trac/util/datefmt.py:108
 #, fuzzy, python-format
 msgid "%(num)d minute"
 msgid_plural "%(num)d minutes"
-msgstr[0] "%(num)s αποτέλεσμα"
-msgstr[1] "%(num)s αποτελέσματα"
+msgstr[0] "%(num)d αποτέλεσμα"
+msgstr[1] "%(num)d αποτελέσματα"
 
 #: trac/util/datefmt.py:127
 #, python-format
@@ -4086,7 +4071,7 @@ msgstr ""
 #: trac/versioncontrol/web_ui/log.py:88 trac/versioncontrol/web_ui/log.py:393
 #, fuzzy, python-format
 msgid "Repository '%(repo)s' not found"
-msgstr "Η σελίδα %(name)s δεν βρέθηκε"
+msgstr ""
 
 #: trac/versioncontrol/admin.py:131
 #, python-format
@@ -4196,7 +4181,7 @@ msgstr "Προεπιλογή"
 #: trac/versioncontrol/api.py:183
 #, fuzzy, python-format
 msgid "Invalid key \"%(key)s\""
-msgstr "Άκυρη εντολή \"%(name)s\""
+msgstr ""
 
 #: trac/versioncontrol/api.py:190
 #, python-format
@@ -4259,7 +4244,7 @@ msgstr "Μονοπάτι"
 #: trac/versioncontrol/api.py:385
 #, fuzzy, python-format
 msgid " in %(repo)s"
-msgstr "στην έκδοση %(rev)s"
+msgstr ""
 
 #. TRANSLATOR: file /path/to/file.py at version 13 in reponame
 #: trac/versioncontrol/api.py:387
@@ -4270,7 +4255,7 @@ msgstr ""
 #: trac/versioncontrol/api.py:390
 #, fuzzy, python-format
 msgid "Repository %(repo)s"
-msgstr "Φυλλομέτρηση μονοπατιού αποθετηρίου %(path)s"
+msgstr ""
 
 #: trac/versioncontrol/api.py:703
 #, fuzzy, python-format
@@ -4636,7 +4621,7 @@ msgstr ""
 #: trac/versioncontrol/templates/changeset.html:50
 #, fuzzy, python-format
 msgid "Changeset [1:%(new_rev)s] in %(reponame)s"
-msgstr "Κανένα σύνολο αλλαγών %(rev)s στο Αποθετήριο"
+msgstr ""
 
 #: trac/versioncontrol/templates/changeset.html:57
 #, python-format
@@ -4665,7 +4650,7 @@ msgstr ""
 #: trac/versioncontrol/templates/changeset.html:72
 #, fuzzy, python-format
 msgid "Changeset [1:%(new_rev)s]"
-msgstr "Σύνολο αλλαγών %(rev)s"
+msgstr ""
 
 #: trac/versioncontrol/templates/changeset.html:101
 #, python-format
@@ -4747,8 +4732,8 @@ msgstr "(Δεν υπάρχουν αρχεία)"
 #, fuzzy, python-format
 msgid "%(num)d added"
 msgid_plural "%(num)d added"
-msgstr[0] "%(num)s αποτέλεσμα"
-msgstr[1] "%(num)s αποτελέσματα"
+msgstr[0] "%(num)d αποτέλεσμα"
+msgstr[1] "%(num)d αποτελέσματα"
 
 #: trac/versioncontrol/templates/changeset.html:176
 #, fuzzy, python-format
@@ -4775,8 +4760,8 @@ msgstr[1] ""
 #, fuzzy, python-format
 msgid "%(num)d moved"
 msgid_plural "%(num)d moved"
-msgstr[0] "%(num)s αποτέλεσμα"
-msgstr[1] "%(num)s αποτελέσματα"
+msgstr[0] "%(num)d αποτέλεσμα"
+msgstr[1] "%(num)d αποτελέσματα"
 
 #: trac/versioncontrol/templates/changeset.html:185
 #: trac/versioncontrol/templates/revisionlog.txt:12
@@ -4981,7 +4966,7 @@ msgstr "Δεν βρέθηκαν αναθεωρήσεις"
 #: trac/versioncontrol/templates/revisionlog.html:120
 #, fuzzy, python-format
 msgid "copied from [1:%(path)s]:"
-msgstr "αντιγράφηκε από"
+msgstr ""
 
 #: trac/versioncontrol/templates/revisionlog.html:126
 #, python-format
@@ -5010,14 +4995,14 @@ msgstr "Σύνολο αλλαγών %(rev)s"
 #: trac/versioncontrol/templates/revisionlog.html:148
 #, fuzzy, python-format
 msgid "View changeset [%(rev)s] restricted to %(path)s"
-msgstr "Δείτε το σύνολο αλλαγών %(id)s που αφορά μόνο το %(path)s"
+msgstr "Δείτε το σύνολο αλλαγών [%(rev)s] που αφορά μόνο το %(path)s"
 
 #: trac/versioncontrol/templates/revisionlog.html:187
 #, fuzzy
 msgid ""
 "[1:Note:] See [2:TracRevisionLog]\n"
 "        for help on using the revision log."
-msgstr "για βοήθεια στη χρήση του ημερολογίου αναθεωρήσεων."
+msgstr ""
 
 #: trac/versioncontrol/templates/revisionlog.txt:2
 #, python-format
@@ -5027,7 +5012,7 @@ msgstr ""
 #: trac/versioncontrol/templates/revisionlog.txt:4
 #, fuzzy, python-format
 msgid "Generated by Trac %(version)s"
-msgstr "Διαγραφή έκδοσης %(version)d"
+msgstr "Διαγραφή έκδοσης %(version)s"
 
 #: trac/versioncontrol/web_ui/browser.py:296
 msgid "Browse Source"
@@ -5111,7 +5096,7 @@ msgstr "Αναθεώρηση στην οποία η γραμμή άλλαξε"
 #: trac/versioncontrol/web_ui/browser.py:866
 #, fuzzy, python-format
 msgid "View repository %(repo)s"
-msgstr "Φυλλομέτρηση μονοπατιού αποθετηρίου %(path)s"
+msgstr ""
 
 #: trac/versioncontrol/web_ui/changeset.py:240
 #, python-format
@@ -5188,7 +5173,7 @@ msgid "Diff from %(old_path)s@%(old_rev)s to %(new_path)s@%(new_rev)s"
 msgstr ""
 
 #: trac/versioncontrol/web_ui/changeset.py:879
-#, fuzzy, python-format
+#, fuzzy
 msgid "Changesets in all repositories"
 msgstr "Κανένα σύνολο αλλαγών %(rev)s στο Αποθετήριο"
 
@@ -5201,7 +5186,7 @@ msgstr "Checkins Αποθετηρίου"
 #, fuzzy, python-format
 msgid "Changeset in %(repo)s "
 msgid_plural "Changesets in %(repo)s "
-msgstr[0] "Σύνολο αλλαγών %(rev)s"
+msgstr[0] ""
 msgstr[1] ""
 
 #: trac/versioncontrol/web_ui/changeset.py:1023
@@ -5214,7 +5199,7 @@ msgstr[1] ""
 #: trac/versioncontrol/web_ui/changeset.py:1094
 #, fuzzy, python-format
 msgid "No permission to view changeset %(rev)s on %(repos)s"
-msgstr "Ανεπαρκή δικαιώματα για τη πρόσβαση στο σύνολο αλλαγών %(id)s"
+msgstr ""
 
 #: trac/versioncontrol/web_ui/changeset.py:1098
 #: trac/versioncontrol/web_ui/log.py:395
@@ -5364,8 +5349,6 @@ msgstr ""
 #, fuzzy, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr ""
-"Αυτή τη στιγμή δεν είστε συνδεδεμένος. Ίσως να θέλετε τώρα να <a "
-"href=\"%(href)s\">συνδεθείτε</a>."
 
 #: trac/web/main.py:617
 #, fuzzy
@@ -5407,8 +5390,6 @@ msgstr ""
 #, fuzzy, python-format
 msgid "Session '%(id)s' already exists. Please choose a different session ID."
 msgstr ""
-"Το ορόσημο \"%(name)s\" ήδη υπάρχει, παρακαλώ επιλέξτε ένα διαφορετικό "
-"όνομα"
 
 #: trac/web/session.py:262
 #, fuzzy
@@ -5436,28 +5417,28 @@ msgstr ""
 #: trac/web/session.py:457
 #, fuzzy, python-format
 msgid "Session '%(sid)s' already exists"
-msgstr "Η έκδοση %(name)s υπάρχει ήδη."
+msgstr ""
 
 #: trac/web/session.py:470
 #, fuzzy, python-format
 msgid "Invalid attribute '%(attr)s'"
-msgstr "Άκυρη εντολή \"%(name)s\""
+msgstr ""
 
 #: trac/web/session.py:480
 #, fuzzy, python-format
 msgid "Session '%(sid)s' not found"
-msgstr "Το επισυναπτόμενο '%(filename)s' δεν βρέθηκε"
+msgstr ""
 
 #: trac/wiki/admin.py:102
 #, fuzzy, python-format
 msgid "Page '%(page)s' not found"
-msgstr "Η σελίδα %(name)s δεν βρέθηκε"
+msgstr "Η σελίδα '%(page)s' δεν βρέθηκε"
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:122 trac/wiki/model.py:172
 #: trac/wiki/web_ui.py:114
 #, fuzzy, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr "Άκυρη σελίδα Wiki: %(message)s"
+msgstr "Άκυρη σελίδα Wiki: '%(name)s'"
 
 #: trac/wiki/admin.py:123
 #, fuzzy, python-format
@@ -5467,7 +5448,7 @@ msgstr "%(name)s δεν είναι έγκυρη εντολή"
 #: trac/wiki/admin.py:139
 #, fuzzy, python-format
 msgid "  %(title)s already exists"
-msgstr "%(type)s %(name)s ήδη υπάρχει"
+msgstr ""
 
 #: trac/wiki/admin.py:143
 #, python-format
@@ -5495,7 +5476,7 @@ msgstr ""
 #: trac/wiki/admin.py:219 trac/wiki/web_ui.py:303
 #, fuzzy, python-format
 msgid "The page %(name)s already exists."
-msgstr "%(type)s %(name)s ήδη υπάρχει"
+msgstr ""
 
 #: trac/wiki/admin.py:233
 #, fuzzy
@@ -5618,7 +5599,7 @@ msgstr "τροποποιούμενη τώρα"
 #: trac/wiki/web_ui.py:265
 #, fuzzy, python-format
 msgid "The page %(name)s has been deleted."
-msgstr "Η σελίδα ερωτημάτων %(page)s είναι άκυρη"
+msgstr ""
 
 #: trac/wiki/web_ui.py:270
 #, python-format
@@ -5675,7 +5656,7 @@ msgstr "Η σελίδα %(name)s δεν υπάρχει"
 #: trac/wiki/web_ui.py:553
 #, fuzzy, python-format
 msgid "Back to %(wikipage)s"
-msgstr "Πίσω στο %(parent)s"
+msgstr ""
 
 #: trac/wiki/web_ui.py:581
 #, python-format
@@ -5743,12 +5724,12 @@ msgstr ""
 #: trac/wiki/templates/wiki_delete.html:22
 #, fuzzy, python-format
 msgid "Delete version %(version)s of [1:%(name)s]"
-msgstr "Διαγραφή έκδοσης %(version)d"
+msgstr ""
 
 #: trac/wiki/templates/wiki_delete.html:25
 #, fuzzy, python-format
 msgid "Delete [1:%(name)s]"
-msgstr "Ορόσημο %(name)s"
+msgstr "Ορόσημο [1:%(name)s]"
 
 #: trac/wiki/templates/wiki_delete.html:33
 #, fuzzy, python-format
@@ -5833,7 +5814,7 @@ msgstr ""
 msgid ""
 "[1:If you save right away, you risk to revert those changes]\n"
 "        (highlighted below as deletions)."
-msgstr "Αν αποθηκεύστε αμέσως, υπάρχει κίνδυνος να ανατρέψετε τις αλλαγές αυτές"
+msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:78
 msgid ""
@@ -5939,7 +5920,7 @@ msgstr ""
 #: trac/wiki/templates/wiki_rename.html:15
 #, fuzzy, python-format
 msgid "Rename [1:%(name)s]"
-msgstr "Ορόσημο %(name)s"
+msgstr "Ορόσημο [1:%(name)s"
 
 #: trac/wiki/templates/wiki_rename.html:19
 msgid "Renaming the page will rename all existing versions of the page in place."
@@ -6019,617 +6000,4 @@ msgstr "(κενή σελίδα)"
 #: trac/wiki/templates/wiki_view.html:131
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr ""
-
-#~ msgid " attached to "
-#~ msgstr " συνημμένο στο "
-
-#~ msgid "Can only backup sqlite databases"
-#~ msgstr "Είναι δυνατή μόνο η αντιγραφή sqlite βάσεων δεδομένων"
-
-#~ msgid "Ticket contains non-ASCII chars. Please change encoding setting"
-#~ msgstr ""
-#~ "Η εργασία περιέχει χαρακτήρες που δεν"
-#~ " περιλαμβάνονται στο ASCII.Παρακαλώ, αλλάξτε "
-#~ "κωδικοποίηση"
-
-#~ msgid "Manage"
-#~ msgstr "Διαχείριση"
-
-#~ msgid "log"
-#~ msgstr "ημερολόγιο"
-
-#~ msgid "directory of the project environment ("
-#~ msgstr "κατάλογος του περιβάλλοντος του έργου ("
-
-#~ msgid "Format:"
-#~ msgstr "Μορφοποίηση:"
-
-#~ msgid "Note that"
-#~ msgstr "Σημειώστε ότι"
-
-#~ msgid "Group"
-#~ msgstr "Ομάδα"
-
-#~ msgid "Uninstall"
-#~ msgstr "Απεγκατάσταση"
-
-#~ msgid "Invalid unified diff content"
-#~ msgstr "Άκυρο ενοποιημένο diff περιεχόμενο"
-
-#~ msgid "Docutils version >= %(version)s required, %(found)s found"
-#~ msgstr "Έκδοση Docutils >= %(version)s απαιτείται, %(found)s βρέθηκε"
-
-#~ msgid "(UTC)."
-#~ msgstr ""
-
-#~ msgid "In"
-#~ msgstr "Στην"
-
-#~ msgid ", this would be displayed as"
-#~ msgstr ", αυτό θα παρουσιαζόταν ως"
-
-#~ msgid ""
-#~ "Note: Universal Co-ordinated Time (UTC)"
-#~ " is also known as Greenwich Mean "
-#~ "Time (GMT)."
-#~ msgstr ""
-#~ "Σημειωτέον: Η Παγκόσμια Συγχρονισμένη Ώρα "
-#~ "(UTC) είναι γνωστή και σαν Μέση "
-#~ "Ώρα Γκρίνουιτς (GMT)."
-
-#~ msgid "TracAccessibility"
-#~ msgstr ""
-
-#~ msgid "for more information on access keys."
-#~ msgstr "για περισσότερες πληροφορίες για τα κλειδιά πρόσβασης."
-
-#~ msgid "Pygments Theme"
-#~ msgstr "Θέμα Pygments"
-
-#~ msgid ""
-#~ "The Pygments syntax highlighter can be used with\n"
-#~ "      different coloring themes."
-#~ msgstr ""
-
-#~ msgid "Theme:"
-#~ msgstr "Θέμα:"
-
-#~ msgid "Search Error"
-#~ msgstr "Σφάλμα Αναζήτησης"
-
-#~ msgid "By"
-#~ msgstr "Κατά"
-
-#~ msgid "See"
-#~ msgstr "Δείτε το"
-
-#~ msgid "TracSearch"
-#~ msgstr "TracGreekWikiSearch"
-
-#~ msgid "for help on searching."
-#~ msgstr "για βοήθεια στην αναζήτηση."
-
-#~ msgid "Trac is distributed under the modified BSD License."
-#~ msgstr "Το Trac διατίθεται με την τροποποιημένη BSD άδεια."
-
-#~ msgid "The complete text of the license can be found"
-#~ msgstr "Το πλήρες κείμενο της άδειας μπορείτε να το βρείτε"
-
-#~ msgid "online"
-#~ msgstr ""
-
-#~ msgid "as well as in the"
-#~ msgstr "καθώς και στο"
-
-#~ msgid "COPYING"
-#~ msgstr ""
-
-#~ msgid "file included in the distribution."
-#~ msgstr "αρχείο που περιλαμβάνεται στην εφαρμογή."
-
-#~ msgid "http://trac.edgewall.org/"
-#~ msgstr ""
-
-#~ msgid "Add Attachment to"
-#~ msgstr "Προσθέστε συνημμένο στη"
-
-#~ msgid "(added by"
-#~ msgstr "(προστέθηκε από"
-
-#~ msgid "ago)"
-#~ msgstr "πριν)"
-
-#~ msgid "Property"
-#~ msgstr "Ιδιότητα"
-
-#~ msgid "to"
-#~ msgstr "σε"
-
-#~ msgid "Changes"
-#~ msgstr "Αλλαγές"
-
-#~ msgid "between"
-#~ msgstr "μεταξύ"
-
-#~ msgid "from"
-#~ msgstr "από"
-
-#~ msgid "of"
-#~ msgstr "του"
-
-#~ msgid "(IP:"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "==== How to Reproduce ====\n"
-#~ "\n"
-#~ "While doing a"
-#~ msgstr ""
-#~ "==== Πως να αναπαράγετε ====\n"
-#~ "\n"
-#~ "Ενώ κάνετε μία"
-
-#~ msgid "operation on `"
-#~ msgstr "λειτουργία σε"
-
-#~ msgid ""
-#~ "`, Trac issued an internal error.\n"
-#~ "\n"
-#~ "''(please provide additional details here)''"
-#~ msgstr ""
-#~ "`, Το Trac υπέβαλλε ένα εσωτερικό σφάλμα.\n"
-#~ "\n"
-#~ "''(Παρακαλώ δώστε περισσότερες λεπτομέρειες εδώ)''"
-
-#~ msgid ""
-#~ "Request parameters:\n"
-#~ "{{{"
-#~ msgstr ""
-#~ "Παράμετροι αίτησης:\n"
-#~ "{{{"
-
-#~ msgid "==== System Information ===="
-#~ msgstr "====Πληροφορίες Συστήματος===="
-
-#~ msgid ""
-#~ "==== Python Traceback ====\n"
-#~ "{{{"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "There was an internal error in Trac. It is recommended\n"
-#~ "              that you inform your local"
-#~ msgstr ""
-#~ "Υπήρξε ένα εσωτερικό σφάλμα στο Trac. Συστήνεται\n"
-#~ "              να πληροφορήσετε τον τοπικό"
-
-#~ msgid ""
-#~ "Trac\n"
-#~ "              administrator"
-#~ msgstr ""
-#~ "Trac\n"
-#~ "              διαχειριστή"
-
-#~ msgid ""
-#~ "and give him all the information he needs to\n"
-#~ "              reproduce the issue."
-#~ msgstr ""
-#~ "και δώστε του όλες τις πληροφορίες που χρειάζεται\n"
-#~ "              για να αναπαράγει το πρόβλημα."
-
-#~ msgid ""
-#~ "a ticket at this\n"
-#~ "                  site."
-#~ msgstr ""
-#~ "μία εργασία σε αυτό\n"
-#~ "                  ιστότοπο."
-
-#~ msgid ""
-#~ "Before you do that, though, please first try\n"
-#~ "                [1:searching]\n"
-#~ "                for similar issues, as "
-#~ "it is quite likely that this "
-#~ "problem\n"
-#~ "                has been reported before. "
-#~ "For questions about installation\n"
-#~ "                and configuration of Trac, please try the\n"
-#~ "                [2:mailing list]\n"
-#~ "                instead of filing a ticket."
-#~ msgstr ""
-#~ "Πριν κάνετε αυτό, όμως, δοκιμάστε πρώτα\n"
-#~ "                [1:searching]\n"
-#~ "                για παρόμοια θέματα, εφόσον"
-#~ " είναι πιθανόν ότι έχει problem\n"
-#~ "                αναφερθεί προηγουμένως. Για "
-#~ "ερωτήματα σχετικά με εγκατάσταση\n"
-#~ "                και ρυθμίσεις του Trac, παρακαλώ δοκιμάστε τη\n"
-#~ "                [2:mailing list]\n"
-#~ "                αντί να συμπληρώσετε μία εργασία."
-
-#~ msgid "Otherwise, please"
-#~ msgstr "Διαφορετικά, παρακαλώ"
-
-#~ msgid "File \""
-#~ msgstr "Αρχείο \""
-
-#~ msgid ""
-#~ "\",\n"
-#~ "                        line"
-#~ msgstr ""
-#~ "\",\n"
-#~ "                        γραμμή"
-
-#~ msgid ", in"
-#~ msgstr ", σε"
-
-#~ msgid "\", line"
-#~ msgstr "\", γραμμή"
-
-#~ msgid "Show"
-#~ msgstr "Εμφάνιση"
-
-#~ msgid "lines around each change"
-#~ msgstr "γραμμές γύρω από κάθε αλλαγή"
-
-#~ msgid "since the file size exceeds"
-#~ msgstr "εφόσον το μέγεθος του αρχείου υπερβαίνει"
-
-#~ msgid "bytes."
-#~ msgstr ""
-
-#~ msgid "Try"
-#~ msgstr "Αλλιώς, δοκιμάστε"
-
-#~ msgid "downloading"
-#~ msgstr "να κατεβάστε"
-
-#~ msgid ""
-#~ ".\n"
-#~ "          To view,"
-#~ msgstr ""
-#~ ".\n"
-#~ "          Για να δείτε,"
-
-#~ msgid "found:"
-#~ msgstr "βρέθηκε:"
-
-#~ msgid ") - added by"
-#~ msgstr ") - προστέθηκε από"
-
-#~ msgid "ago."
-#~ msgstr "πριν."
-
-#~ msgid ".Closed"
-#~ msgstr "Κλειστές"
-
-#~ msgid "Active"
-#~ msgstr "Ενεργές"
-
-#~ msgid "Total"
-#~ msgstr "Συνολικές"
-
-#~ msgid "Warnings:"
-#~ msgstr "Προειδοποιήσεις:"
-
-#~ msgid "Notice:"
-#~ msgstr "Σημείωση:"
-
-#~ msgid "Notices:"
-#~ msgstr "Σημειώσεις:"
-
-#~ msgid "new"
-#~ msgstr "νέα"
-
-#~ msgid "assigned"
-#~ msgstr "ανατεθειμένη"
-
-#~ msgid "The owner will change"
-#~ msgstr "Ο συντάκτης θα αλλάξει"
-
-#~ msgid "to "
-#~ msgstr "σε "
-
-#~ msgid "as"
-#~ msgstr "σαν "
-
-#~ msgid "This is a list of available reports."
-#~ msgstr "Αυτή είναι η λίστα με τις διαθέσιμες αναφορές."
-
-#~ msgid "Dynamic variable '%(name)s' not defined."
-#~ msgstr "Η δυναμική μεταβλητή '%(name)s' δεν ορίζεται."
-
-#~ msgid "Ticket details"
-#~ msgstr "Λεπτομέρειες εργασιών"
-
-#~ msgid "Componenent"
-#~ msgstr "Συστατικό"
-
-#~ msgid "No permissions to change ticket fields."
-#~ msgstr "Δεν έχετε τα δικαιώματα να αλλάξετε τα πεδία της εργασίας"
-
-#~ msgid "Assign to"
-#~ msgstr "Ανάθεση σε"
-
-#~ msgid "leave"
-#~ msgstr "διατήρηση"
-
-#~ msgid "resolve"
-#~ msgstr "επίλυση"
-
-#~ msgid "reassign"
-#~ msgstr "επανάθεση"
-
-#~ msgid "accept"
-#~ msgstr "αποδοχή"
-
-#~ msgid "changed from"
-#~ msgstr "άλλαξε από"
-
-#~ msgid "TracRoadmap"
-#~ msgstr "TracGreekRoadmap"
-
-#~ msgid ""
-#~ "ago\n"
-#~ "            ("
-#~ msgstr ""
-#~ "πριν\n"
-#~ "            ("
-
-#~ msgid "Due in"
-#~ msgstr "Προθεσμία"
-
-#~ msgid "_(\"or\")"
-#~ msgstr ""
-
-#~ msgid "Add filter"
-#~ msgstr "Προσθήκη φίλτρου"
-
-#~ msgid "TracQuery"
-#~ msgstr "TracGreekQuery"
-
-#~ msgid "for help on using queries."
-#~ msgstr "για βοήθεια στη χρήση ερωτημάτων"
-
-#~ msgid "Reported by"
-#~ msgstr "Αναφέρθηκε από"
-
-#~ msgid "TracReports"
-#~ msgstr "TracGreekReports"
-
-#~ msgid "query:"
-#~ msgstr ""
-
-#~ msgid ", a"
-#~ msgstr ", μία"
-
-#~ msgid "expression)"
-#~ msgstr "έκφραση)"
-
-#~ msgid "matches)"
-#~ msgstr "αποτελέσματα)"
-
-#~ msgid "match"
-#~ msgstr "αποτέλεσμα"
-
-#~ msgid "resolved"
-#~ msgstr "επίλυση"
-
-#~ msgid "reassigned"
-#~ msgstr "επανάθεση"
-
-#~ msgid ""
-#~ "ago\n"
-#~ "                ("
-#~ msgstr ""
-#~ "πριν\n"
-#~ "                ("
-
-#~ msgid "('Severity')}"
-#~ msgstr "Κρισιμότητα"
-
-#~ msgid "— at"
-#~ msgstr "- σε"
-
-#~ msgid "Preview ("
-#~ msgstr "Προεπισκόπιση ("
-
-#~ msgid "skip"
-#~ msgstr "παράλειψη"
-
-#~ msgid "Changed by"
-#~ msgstr "Άλλαξε από"
-
-#~ msgid "Opened"
-#~ msgstr "Άνοιξε"
-
-#~ msgid "ago"
-#~ msgstr "πριν"
-
-#~ msgid "Last modified"
-#~ msgstr "Τελευταία τροποποίηση"
-
-#~ msgid "follow-up"
-#~ msgstr ""
-
-#~ msgid "Changed"
-#~ msgstr "Aλλαξε"
-
-#~ msgid "ago by"
-#~ msgstr "πριν από"
-
-#~ msgid "Add/Change #"
-#~ msgstr "Προσθέσετε/τροποποιήσετε #"
-
-#~ msgid "TracTickets"
-#~ msgstr "TracGreekTickets"
-
-#~ msgid "Changes (by"
-#~ msgstr "Αλλαγές (από"
-
-#~ msgid ""
-#~ "-- \n"
-#~ "Ticket URL: <"
-#~ msgstr ""
-#~ "-- \n"
-#~ "Διεύθυνση Εργασίας: <"
-
-#~ msgid "Period"
-#~ msgstr "Περίοδος"
-
-#~ msgid "View changes from"
-#~ msgstr "Δείτε τις αλλαγές από"
-
-#~ msgid "days back"
-#~ msgstr "μέρες πριν"
-
-#~ msgid "by"
-#~ msgstr "από"
-
-#~ msgid "TracTimeline"
-#~ msgstr "TracGreekTimeline"
-
-#~ msgid "Insufficient permissions to access %(path)s"
-#~ msgstr "Ανεπαρκή δικαιώματα για τη πρόσβαση στο %(path)s"
-
-#~ msgid ""
-#~ "The 'repository_dir' has changed, a "
-#~ "'trac-admin resync' operation is needed."
-#~ msgstr ""
-#~ "To 'repository_dir' έχει αλλάξει, απαιτείται"
-#~ " μία λειτουργία 'trac-admin resync'"
-
-#~ msgid "Missing \"youngest_rev\" in cache metadata"
-#~ msgstr "Λείπει το \"youngest_rev\" από τη κρυφή μνήμη μεταδεδομένων"
-
-#~ msgid "(checked in by"
-#~ msgstr "(checked in από"
-
-#~ msgid "TracBrowser"
-#~ msgstr "TracGreekBrowser"
-
-#~ msgid "for help on using the browser."
-#~ msgstr "για βοήθεια στη χρήση του φυλλομετρητή."
-
-#~ msgid "for"
-#~ msgstr "για"
-
-#~ msgid "Changes in"
-#~ msgstr "Αλλαγές σε"
-
-#~ msgid "Changes from"
-#~ msgstr "Αλλαγές από"
-
-#~ msgid "at"
-#~ msgstr "στο"
-
-#~ msgid "r"
-#~ msgstr ""
-
-#~ msgid "Files:"
-#~ msgstr "Αρχεία:"
-
-#~ msgid "TracChangeset"
-#~ msgstr "TracGreekChangeset"
-
-#~ msgid "for help on using the diff feature."
-#~ msgstr "για βοήθεια σχετικά με τα diff."
-
-#~ msgid "View log starting at"
-#~ msgstr "Εμφάνιση ημερολογίου ξεκινώντας από"
-
-#~ msgid "and back to"
-#~ msgstr "και πίσω στη"
-
-#~ msgid "Show at most"
-#~ msgstr "Εμφάνιση το πολύ"
-
-#~ msgid "revisions per page."
-#~ msgstr "αναθεωρήσεις ανά σελίδα."
-
-#~ msgid "Chgset"
-#~ msgstr "Σύνολο αλλαγών"
-
-#~ msgid "Diff from Old Revision to New Revision (select them above)"
-#~ msgstr "Diff από τη Παλιά Αναθεώρηση στη Νέα Αναθεώρηση (επιλέξτε άνωθεν)"
-
-#~ msgid "TracRevisionLog"
-#~ msgstr "TracGreekRevisionLog"
-
-#~ msgid ""
-#~ "#\n"
-#~ "# ChangeLog for"
-#~ msgstr ""
-#~ "#\n"
-#~ "# Ημερολόγιο Αλλαγών για"
-
-#~ msgid ""
-#~ "# \n"
-#~ "# Generated by Trac"
-#~ msgstr ""
-#~ "# \n"
-#~ "# Παρήχθη από το Trac"
-
-#~ msgid "Annotate"
-#~ msgstr "Επισημειώσεις"
-
-#~ msgid "Previous %(label)s"
-#~ msgstr "Προηγούμενη %(label)s"
-
-#~ msgid "delete"
-#~ msgstr "διαγραφή"
-
-#~ msgid "Back to"
-#~ msgstr "Πίσω στη "
-
-#~ msgid "Are you sure you want to"
-#~ msgstr "Είστε σίγουρος ότι θέλετε "
-
-#~ msgid "this page?"
-#~ msgstr "αυτή τη σελίδα;"
-
-#~ msgid "(highlighted below as deletions)."
-#~ msgstr "(υπογραμμισμένο παρακάτω ως διαγραφές)."
-
-#~ msgid ""
-#~ "Please review all those changes and manually merge them with your\n"
-#~ "        own changes."
-#~ msgstr ""
-#~ "Παρακαλώ επανεξετάστε όλες τις αλλαγές "
-#~ "και χειρωνατικά συγχωνεύστε αυτές\n"
-#~ "\t\tμε τις δικές σας."
-
-#~ msgid "If you're unsure about what you're doing, please press"
-#~ msgstr "Αν δεν είστε βέβαιος σχετικά με αυτό που κάνετε, παρακαλώ πατήστε"
-
-#~ msgid ""
-#~ "(losing your changes) and start editing"
-#~ " the latest version of the page\n"
-#~ ""
-#~ "        again."
-#~ msgstr ""
-#~ "(χάριμο των αλλαγών) και ξεκινήστε την"
-#~ " επεξεργασία της τελευταίας έκδοσης της"
-#~ "\n"
-#~ "\t\tσελίδας ξανά."
-
-#~ msgid "Someone else modified that page since you started your edits."
-#~ msgstr ""
-#~ "Κάποιος άλλος τροποποίησε τη σελίδα από"
-#~ " τη στιγμή που ξεκινήσατε της "
-#~ "επεξεργασία της."
-
-#~ msgid "(modified by"
-#~ msgstr "(τροποποιήθηκε από"
-
-#~ msgid "For help with wiki, see"
-#~ msgstr "Για βοήθεια σχετικά με το wiki, δείτε το "
-
-#~ msgid "TracWiki"
-#~ msgstr "TracGreekWiki"
-
-#~ msgid "Describe"
-#~ msgstr "Περιγράψτε"
-
-#~ msgid "here."
-#~ msgstr "εδώ."
 
