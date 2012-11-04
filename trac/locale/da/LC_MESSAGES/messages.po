@@ -1,28 +1,30 @@
-# Translations template for Trac.
+# Danish translations for Trac.
 # Copyright (C) 2012 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# 
+#
 # Translators:
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac\n"
+"Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
 "POT-Creation-Date: 2012-10-29 19:08+0100\n"
 "PO-Revision-Date: 2012-11-03 08:44+0000\n"
 "Last-Translator: Jens Hyllegaard <jens.hyllegaard@gmail.com>\n"
-"Language-Team: Danish (http://www.transifex.com/projects/p/trac/language/da/)\n"
+"Language-Team: Danish "
+"(http://www.transifex.com/projects/p/trac/language/da/)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6\n"
-"Language: da\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 0.9.6dev-r0\n"
 
 #: tracopt/mimeview/php.py:98
 msgid ""
-"You appear to be using the PHP CGI binary. Trac requires the CLI version for"
-" syntax highlighting."
-msgstr "Det lader til at du bruger den binære PHP CGI. Trac kræver CLI udgaven for syntaksfremhævning."
+"You appear to be using the PHP CGI binary. Trac requires the CLI version "
+"for syntax highlighting."
+msgstr ""
+"Det lader til at du bruger den binære PHP CGI. Trac kræver CLI udgaven "
+"for syntaksfremhævning."
 
 #: tracopt/ticket/deleter.py:69 tracopt/ticket/deleter.py:82
 #: trac/ticket/templates/report_list.html:35
@@ -78,7 +80,9 @@ msgstr "Er du sikker på at du ønsker at slette denne sag?"
 msgid ""
 "(comments: %(comments)s,\n"
 "                 attachments: %(attachments)s)"
-msgstr "(kommentar: %(comments)s,\n                 vedhæftninger: %(attachments)s)"
+msgstr ""
+"(kommentar: %(comments)s,\n"
+"                 vedhæftninger: %(attachments)s)"
 
 #: tracopt/ticket/templates/ticket_delete.html:36
 #: tracopt/ticket/templates/ticket_delete.html:67
@@ -143,14 +147,18 @@ msgstr "Kunne ikke slette vedhæftning"
 #: trac/attachment.py:218
 #, python-format
 msgid "Cannot reparent attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
-msgstr "Kan ikke ændre forælder til vedhæftning \"%(att)s\" som %(realm)s:%(id)s er ugyldig"
+msgstr ""
+"Kan ikke ændre forælder til vedhæftning \"%(att)s\" som %(realm)s:%(id)s "
+"er ugyldig"
 
 #: trac/attachment.py:224
 #, python-format
 msgid ""
 "Cannot reparent attachment \"%(att)s\" as it already exists in "
 "%(realm)s:%(id)s"
-msgstr "Kan ikke ændre forælder til vedhæftning \"%(att)s\" da den allerede eksisterer i %(realm)s:%(id)s"
+msgstr ""
+"Kan ikke ændre forælder til vedhæftning \"%(att)s\" da den allerede "
+"eksisterer i %(realm)s:%(id)s"
 
 #: trac/attachment.py:243
 #, python-format
@@ -232,10 +240,13 @@ msgstr "Ugyldig vedhæftning: %(message)s"
 #: trac/attachment.py:697
 #, python-format
 msgid ""
-"You don't have permission to replace the attachment %(name)s. You can only "
-"replace your own attachments. Replacing other's attachments requires "
-"ATTACHMENT_DELETE permission."
-msgstr "Du har ikke rettigheder til at erstatte vedhæftningen %(name)s. Du kan kun erstatte dine egne vedhæftninger. Erstatning af andres vedhæftninger kræver ATTACHMENT_DELETE rettigheden."
+"You don't have permission to replace the attachment %(name)s. You can "
+"only replace your own attachments. Replacing other's attachments requires"
+" ATTACHMENT_DELETE permission."
+msgstr ""
+"Du har ikke rettigheder til at erstatte vedhæftningen %(name)s. Du kan "
+"kun erstatte dine egne vedhæftninger. Erstatning af andres vedhæftninger "
+"kræver ATTACHMENT_DELETE rettigheden."
 
 #: trac/attachment.py:728
 #, python-format
@@ -334,7 +345,9 @@ msgstr "Trac Fejl"
 msgid ""
 "Visit the Trac open source project at<br /><a "
 "href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
-msgstr "Besøg open source projektet Trac på<br /><a href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
+msgstr ""
+"Besøg open source projektet Trac på<br /><a "
+"href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
 
 #: trac/env.py:578
 msgid "Database newer than Trac version"
@@ -347,9 +360,11 @@ msgstr "Intet opgraderingsmodul for versionen %(num)i (%(version)s.py)"
 
 #: trac/env.py:641
 msgid ""
-"Missing environment variable \"TRAC_ENV\". Trac requires this variable to "
-"point to a valid Trac environment."
-msgstr "Manglende miljø variabel \"TRAC_ENV\". Trac kræver at denne variabel peger på et gyldigt Trac Miljø."
+"Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
+" point to a valid Trac environment."
+msgstr ""
+"Manglende miljø variabel \"TRAC_ENV\". Trac kræver at denne variabel "
+"peger på et gyldigt Trac Miljø."
 
 #: trac/env.py:673
 #, python-format
@@ -357,7 +372,10 @@ msgid ""
 "The Trac Environment needs to be upgraded.\n"
 "\n"
 "Run \"trac-admin %(path)s upgrade\""
-msgstr "Trac miljøet skal opgraderes.\n\nKør \"trac-admin %(path)s upgrade\""
+msgstr ""
+"Trac miljøet skal opgraderes.\n"
+"\n"
+"Kør \"trac-admin %(path)s upgrade\""
 
 #: trac/env.py:707
 msgid "Copying resources from:"
@@ -402,16 +420,23 @@ msgstr ""
 
 #: trac/env.py:801
 msgid ""
-"Warning: the wiki-macros directory in the environment is non-empty, but Trac\n"
+"Warning: the wiki-macros directory in the environment is non-empty, but "
+"Trac\n"
 "doesn't load plugins from there anymore. Please remove it by hand."
-msgstr "Advarsel: Wiki-macros mappen i miljøet er ikke tom, men Trac\nindlæser ikke udvidelser derfra mere. Fjern den venligst manuelt."
+msgstr ""
+"Advarsel: Wiki-macros mappen i miljøet er ikke tom, men Trac\n"
+"indlæser ikke udvidelser derfra mere. Fjern den venligst manuelt."
 
 #: trac/env.py:812
 #, python-format
 msgid ""
 "Error while removing wiki-macros: %(err)s\n"
-"Trac doesn't load plugins from wiki-macros anymore. Please remove it by hand."
-msgstr "Fejl ved fjernelse af wiki-macros: %(err)s\nTrac indlæser ikke udvidelser fra wiki-macros mere. Fjern den venligst manuelt."
+"Trac doesn't load plugins from wiki-macros anymore. Please remove it by "
+"hand."
+msgstr ""
+"Fejl ved fjernelse af wiki-macros: %(err)s\n"
+"Trac indlæser ikke udvidelser fra wiki-macros mere. Fjern den venligst "
+"manuelt."
 
 #: trac/env.py:817
 #, python-format
@@ -421,7 +446,12 @@ msgid ""
 "You may want to upgrade the Trac documentation now by running:\n"
 "\n"
 "  trac-admin %(path)s wiki upgrade"
-msgstr "Opgradering færdig.\n\nDu kan nu opgradere Trac dokumentationen ved at køre:\n\n  trac-admin %(path)s wiki upgrade"
+msgstr ""
+"Opgradering færdig.\n"
+"\n"
+"Du kan nu opgradere Trac dokumentationen ved at køre:\n"
+"\n"
+"  trac-admin %(path)s wiki upgrade"
 
 #: trac/notification.py:154
 msgid "TLS enabled but server does not support TLS"
@@ -451,8 +481,7 @@ msgstr "Header længden er for kort"
 
 #: trac/perm.py:48
 #, python-format
-msgid ""
-"%(perm)s privileges are required to perform this operation on %(resource)s"
+msgid "%(perm)s privileges are required to perform this operation on %(resource)s"
 msgstr ""
 
 #: trac/perm.py:50
@@ -509,7 +538,13 @@ msgid ""
 "\n"
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
-msgstr "Velkommen til trac-admin %(version)s\nInteraktiv Trac administrationskonsol.\nCopyright (C) 2003-2012 Edgewall Software\n\nSkriv:  '?' eller 'help' for hjælp til kommandoer.\n        "
+msgstr ""
+"Velkommen til trac-admin %(version)s\n"
+"Interaktiv Trac administrationskonsol.\n"
+"Copyright (C) 2003-2012 Edgewall Software\n"
+"\n"
+"Skriv:  '?' eller 'help' for hjælp til kommandoer.\n"
+"        "
 
 #: trac/admin/console.py:164
 #, python-format
@@ -526,7 +561,9 @@ msgstr "Færdiggørelsesfejl: %(err)s"
 msgid ""
 "No documentation found for '%(cmd)s'. Use 'help' to see the list of "
 "commands."
-msgstr "Ingen dokumentation fundet for '%(cmd)s'. Brug 'help' for at se listen med kommandoer."
+msgstr ""
+"Ingen dokumentation fundet for '%(cmd)s'. Brug 'help' for at se listen "
+"med kommandoer."
 
 #: trac/admin/console.py:312
 msgid "Did you mean this?"
@@ -540,9 +577,10 @@ msgid "trac-admin - The Trac Administration Console %(version)s"
 msgstr "trac-admin - Trac administrationskonsol %(version)s"
 
 #: trac/admin/console.py:320
-msgid ""
-"Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
-msgstr "Brug: trac-admin </sti/til/projenv> [kommando [subkommando] [indstilling ...]]\n"
+msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
+msgstr ""
+"Brug: trac-admin </sti/til/projenv> [kommando [subkommando] [indstilling "
+"...]]\n"
 
 #: trac/admin/console.py:323
 msgid "Invoking trac-admin without command starts interactive mode.\n"
@@ -561,7 +599,13 @@ msgid ""
 "\n"
 " Please enter the name of your project.\n"
 " This name will be used in page titles and descriptions.\n"
-msgstr "\nTrac vil først stille et par spørgsmål om dit miljø \nfor at kunne initialisere og forberede projekt databasen.\n\n Indtast venligst dit projekts navn.\n Dette navn vil blive brug i sidetitler og beskrivelser.\n"
+msgstr ""
+"\n"
+"Trac vil først stille et par spørgsmål om dit miljø \n"
+"for at kunne initialisere og forberede projekt databasen.\n"
+"\n"
+" Indtast venligst dit projekts navn.\n"
+" Dette navn vil blive brug i sidetitler og beskrivelser.\n"
 
 #: trac/admin/console.py:373
 #, python-format
@@ -576,7 +620,13 @@ msgid ""
 " directory. It is also possible to use an already existing\n"
 " PostgreSQL database (check the Trac documentation for the exact\n"
 " connection string syntax).\n"
-msgstr " \n Angiv venligst forbindelsesstrengen som databasen skal bruge.\n Som standard oprettes en lokal SQLite data i miljø\n mappen. Det er også muligt at bruge en allerede eksisterende\n PostgreSQL database (se Trac dokumentationen for korrekt\n forbindelsesstreng syntaks).\n"
+msgstr ""
+" \n"
+" Angiv venligst forbindelsesstrengen som databasen skal bruge.\n"
+" Som standard oprettes en lokal SQLite data i miljø\n"
+" mappen. Det er også muligt at bruge en allerede eksisterende\n"
+" PostgreSQL database (se Trac dokumentationen for korrekt\n"
+" forbindelsesstreng syntaks).\n"
 
 #: trac/admin/console.py:383
 #, python-format
@@ -601,7 +651,9 @@ msgstr "Mappen eksisterer og er ikke tom."
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr "Grundmappen '%(env)s' eksisterer ikke. Opret den venligst manuelt og prøv igen."
+msgstr ""
+"Grundmappen '%(env)s' eksisterer ikke. Opret den venligst manuelt og prøv"
+" igen."
 
 #: trac/admin/console.py:431
 msgid "Creating and Initializing Project"
@@ -632,7 +684,18 @@ msgid ""
 "You can nevertheless start using your Trac environment, but \n"
 "you'll need to check again your trac.ini file and the [trac] \n"
 "repository_type and repository_path settings.\n"
-msgstr "\n---------------------------------------------------------------------\nAdvarsel: kunne ikke indekserer standard opbevaringsstedet.\n\nDette kan ske af flere årsager: forkert opbevaringstype, \ningen brugbare tredjeparts biblioteker for denne type,\neller opbevaringsstedet findes ikke på denne sti...\n\nDu kan stadig starte med at bruge dit Trac miljø, men \ndu skal tjekke din trac.ini fil og [trac] \nrepository_type og repository_path indstillinger igen.\n"
+msgstr ""
+"\n"
+"---------------------------------------------------------------------\n"
+"Advarsel: kunne ikke indekserer standard opbevaringsstedet.\n"
+"\n"
+"Dette kan ske af flere årsager: forkert opbevaringstype, \n"
+"ingen brugbare tredjeparts biblioteker for denne type,\n"
+"eller opbevaringsstedet findes ikke på denne sti...\n"
+"\n"
+"Du kan stadig starte med at bruge dit Trac miljø, men \n"
+"du skal tjekke din trac.ini fil og [trac] \n"
+"repository_type og repository_path indstillinger igen.\n"
 
 #: trac/admin/console.py:509
 #, python-format
@@ -661,7 +724,31 @@ msgid ""
 "  http://trac.edgewall.org/\n"
 "\n"
 "Congratulations!\n"
-msgstr "\n---------------------------------------------------------------------\nProjektmiljø for '%(project_name)s' oprettet.\n\nDu kan konfigurere miljøet ved at redigere filen:\n\n  %(config_path)s\n\nHvis du gerne vil testkøre dette nye projektmiljø,\nså prøv at køre den selvstændige Trac webserver `tracd`:\n\n  tracd --port 8000 %(project_path)s\n\nIndtast så http://localhost:8000/%(project_dir)s i din browser.\nDer kan du også gennemse dokumentationen for din installerede\nversion af Trac, inklusiv information om yderligere opsætning (så som\nflytning af Trac til en rigtig webserver).\n\nDen nyeste dokumentation kan altid findes på projektets\nwebsted:\n\n  http://trac.edgewall.org/\n\nTillykke!\n"
+msgstr ""
+"\n"
+"---------------------------------------------------------------------\n"
+"Projektmiljø for '%(project_name)s' oprettet.\n"
+"\n"
+"Du kan konfigurere miljøet ved at redigere filen:\n"
+"\n"
+"  %(config_path)s\n"
+"\n"
+"Hvis du gerne vil testkøre dette nye projektmiljø,\n"
+"så prøv at køre den selvstændige Trac webserver `tracd`:\n"
+"\n"
+"  tracd --port 8000 %(project_path)s\n"
+"\n"
+"Indtast så http://localhost:8000/%(project_dir)s i din browser.\n"
+"Der kan du også gennemse dokumentationen for din installerede\n"
+"version af Trac, inklusiv information om yderligere opsætning (så som\n"
+"flytning af Trac til en rigtig webserver).\n"
+"\n"
+"Den nyeste dokumentation kan altid findes på projektets\n"
+"websted:\n"
+"\n"
+"  http://trac.edgewall.org/\n"
+"\n"
+"Tillykke!\n"
 
 #: trac/admin/console.py:568
 #, python-format
@@ -693,9 +780,11 @@ msgstr "Dine ændringer er blevet gemt."
 
 #: trac/admin/web_ui.py:192 trac/ticket/admin.py:67
 msgid ""
-"Error writing to trac.ini, make sure it is writable by the web server. Your "
-"changes have not been saved."
-msgstr "Fejl ved skrivning til trac.ini, sørg for at webserveren kan skrive i den. Dine ændringer er ikke blevet gemt."
+"Error writing to trac.ini, make sure it is writable by the web server. "
+"Your changes have not been saved."
+msgstr ""
+"Fejl ved skrivning til trac.ini, sørg for at webserveren kan skrive i "
+"den. Dine ændringer er ikke blevet gemt."
 
 #: trac/admin/web_ui.py:205 trac/admin/web_ui.py:233 trac/admin/web_ui.py:321
 #: trac/admin/web_ui.py:406 trac/prefs/web_ui.py:86
@@ -885,7 +974,10 @@ msgid ""
 "Description (you may use\n"
 "                [1:WikiFormatting]\n"
 "                here):"
-msgstr "Beskrivelse (du kan bruge\n                [1:WikiFormatting]\n                her):"
+msgstr ""
+"Beskrivelse (du kan bruge\n"
+"                [1:WikiFormatting]\n"
+"                her):"
 
 #: trac/admin/templates/admin_components.html:56
 #: trac/admin/templates/admin_enums.html:25
@@ -938,7 +1030,9 @@ msgstr "Fejl valgte emner"
 msgid ""
 "You can remove all items from this list to completely hide this\n"
 "              field from the user interface."
-msgstr "Du kan fjerne alle emner fra denne liste for helt at skjule dette\n              felt fra grænsefladen."
+msgstr ""
+"Du kan fjerne alle emner fra denne liste for helt at skjule dette\n"
+"              felt fra grænsefladen."
 
 #: trac/admin/templates/admin_components.html:107
 #: trac/admin/templates/admin_enums.html:82
@@ -947,7 +1041,9 @@ msgstr "Du kan fjerne alle emner fra denne liste for helt at skjule dette\n     
 msgid ""
 "As long as you don't add any items to the list, this field\n"
 "            will remain completely hidden from the user interface."
-msgstr "Så længe du ikke tilføjer nogen emner til listen, vil dette felt\n            være helt skjult fra grænsefladen."
+msgstr ""
+"Så længe du ikke tilføjer nogen emner til listen, vil dette felt\n"
+"            være helt skjult fra grænsefladen."
 
 #: trac/admin/templates/admin_enums.html:14
 #, python-format
@@ -1001,7 +1097,9 @@ msgstr "Logfil:"
 msgid ""
 "If you specify a relative path, the log file will be stored inside the\n"
 "            [1:log] directory of the project environment ([2:%(dir)s])."
-msgstr "Hvis du angiver en relativ sti, vil logfilen blive gemt inde i\n            [1:log] projektmiljøets mappe ([2:%(dir)s])."
+msgstr ""
+"Hvis du angiver en relativ sti, vil logfilen blive gemt inde i\n"
+"            [1:log] projektmiljøets mappe ([2:%(dir)s])."
 
 #: trac/admin/templates/admin_milestones.html:10 trac/ticket/admin.py:240
 #: trac/ticket/roadmap.py:895
@@ -1093,7 +1191,9 @@ msgstr "Handling:"
 msgid ""
 "Grant permission for an action to a subject, which can be either a user\n"
 "          or a group."
-msgstr "Giv tilladelse til en handling til et emne, som kan være enten en bruger\n            eller en gruppe."
+msgstr ""
+"Giv tilladelse til en handling til et emne, som kan være enten en bruger\n"
+"            eller en gruppe."
 
 #: trac/admin/templates/admin_perms.html:46
 msgid "Add Subject to Group:"
@@ -1209,8 +1309,8 @@ msgstr "Ej-understøttet databasetype \"%(scheme)s\""
 #: trac/db/api.py:227
 #, python-format
 msgid ""
-"Unknown scheme \"%(scheme)s\"; database connection string must start with "
-"{scheme}:/"
+"Unknown scheme \"%(scheme)s\"; database connection string must start with"
+" {scheme}:/"
 msgstr ""
 
 #: trac/db/mysql_backend.py:80
@@ -1273,8 +1373,8 @@ msgstr "Database \"%(path)s\" ikke fundet."
 #: trac/db/sqlite_backend.py:256
 #, python-format
 msgid ""
-"The user %(user)s requires read _and_ write permissions to the database file"
-" %(path)s and the directory it is located in."
+"The user %(user)s requires read _and_ write permissions to the database "
+"file %(path)s and the directory it is located in."
 msgstr ""
 
 #: trac/mimeview/api.py:690 trac/mimeview/api.py:700
@@ -1362,8 +1462,10 @@ msgstr "Indstillinger:"
 #: trac/prefs/templates/prefs.html:17
 msgid ""
 "This page lets you customize your personal settings for this site.\n"
-"      These settings are stored on the server and are identified by a session\n"
-"      key stored in a browser cookie. That cookie allows your settings to be\n"
+"      These settings are stored on the server and are identified by a "
+"session\n"
+"      key stored in a browser cookie. That cookie allows your settings to"
+" be\n"
 "      restored on subsequent visits."
 msgstr ""
 
@@ -1399,7 +1501,8 @@ msgstr "Indlæs"
 #: trac/prefs/templates/prefs_advanced.html:30
 msgid ""
 "You may load a previously created session by entering the\n"
-"      corresponding session key below. This lets you share settings between\n"
+"      corresponding session key below. This lets you share settings "
+"between\n"
 "      multiple computers and web browsers."
 msgstr ""
 
@@ -1439,8 +1542,10 @@ msgstr ""
 
 #: trac/prefs/templates/prefs_datetime.html:49
 msgid ""
-"Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean Time (GMT).[1:]\n"
-"        A positive offset is used to indicate a timezone at the east of Greenwich, i.e. ahead of Universal Time."
+"Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean "
+"Time (GMT).[1:]\n"
+"        A positive offset is used to indicate a timezone at the east of "
+"Greenwich, i.e. ahead of Universal Time."
 msgstr ""
 
 #: trac/prefs/templates/prefs_general.html:15
@@ -1471,7 +1576,8 @@ msgstr "Ektiver adgangs taster"
 #: trac/prefs/templates/prefs_keybindings.html:21
 msgid ""
 "This site provides keyboard shortcuts for\n"
-"      faster access to certain functions of this site. As these shortcuts can\n"
+"      faster access to certain functions of this site. As these shortcuts"
+" can\n"
 "      cause conflicts with shortcuts provided by the desktop system or\n"
 "      web browser, they are disabled by default. See\n"
 "      [1:TracAccessibility]\n"
@@ -1526,17 +1632,14 @@ msgstr "Gennemse opbevaringsstedssti %(path)s"
 
 #: trac/search/web_ui.py:205
 #, python-format
-msgid ""
-"Search query too short. Query must be at least %(num)s characters long."
+msgid "Search query too short. Query must be at least %(num)s characters long."
 msgstr ""
 
-#: trac/search/web_ui.py:244 trac/ticket/query.py:774
-#: trac/ticket/report.py:400
+#: trac/search/web_ui.py:244 trac/ticket/query.py:774 trac/ticket/report.py:400
 msgid "Next Page"
 msgstr "Næste side"
 
-#: trac/search/web_ui.py:250 trac/ticket/query.py:779
-#: trac/ticket/report.py:403
+#: trac/search/web_ui.py:250 trac/ticket/query.py:779 trac/ticket/report.py:403
 msgid "Previous Page"
 msgstr "Forrige side"
 
@@ -1577,7 +1680,8 @@ msgid ""
 "Trac is a web-based software project management and bug/issue\n"
 "        tracking system emphasizing ease of use and low ceremony.\n"
 "        It provides an integrated Wiki, an interface to version control\n"
-"        systems, and a number of convenient ways to stay on top of events\n"
+"        systems, and a number of convenient ways to stay on top of events"
+"\n"
 "        and changes within a project."
 msgstr ""
 
@@ -1597,13 +1701,17 @@ msgstr "python drevet"
 msgid ""
 "Please visit the Trac open source project:\n"
 "        [1:http://trac.edgewall.org/]"
-msgstr "Besøg venligst open source projektet Trac:\n        [1:http://trac.edgewall.org/]"
+msgstr ""
+"Besøg venligst open source projektet Trac:\n"
+"        [1:http://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
 msgid ""
 "Copyright © 2003-2012\n"
 "        [1:Edgewall Software]"
-msgstr "Copyright © 2003-2012\n        [1:Edgewall Software]"
+msgstr ""
+"Copyright © 2003-2012\n"
+"        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
 msgid "System Information"
@@ -1686,9 +1794,9 @@ msgstr "Slet vedhæftning"
 msgid "Attach another file"
 msgstr "Vedhæft en anden fil"
 
-#: trac/templates/attachment.html:98
-#: trac/templates/list_of_attachments.html:21 trac/templates/macros.html:19
-#: trac/util/text.py:529 trac/versioncontrol/templates/browser.html:110
+#: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:21
+#: trac/templates/macros.html:19 trac/util/text.py:529
+#: trac/versioncontrol/templates/browser.html:110
 #: trac/versioncontrol/templates/dir_entries.html:16
 #, python-format
 msgid "%(size)s bytes"
@@ -1707,7 +1815,9 @@ msgstr ""
 msgid ""
 "Property %(name)s\n"
 "                  changed from %(old)s to %(new)s"
-msgstr "Egenskab %(name)s\n                  ændret fra %(old)s til %(new)s"
+msgstr ""
+"Egenskab %(name)s\n"
+"                  ændret fra %(old)s til %(new)s"
 
 #: trac/templates/diff_div.html:76
 #, python-format
@@ -1741,7 +1851,11 @@ msgid ""
 "             Show]\n"
 "      [3:[4:]\n"
 "             lines around each change]"
-msgstr "[1:[2:]\n             Vis]\n      [3:[4:]\n             linjer om hver ændring]"
+msgstr ""
+"[1:[2:]\n"
+"             Vis]\n"
+"      [3:[4:]\n"
+"             linjer om hver ændring]"
 
 #: trac/templates/diff_options.html:28
 msgid "Show the changes in full context"
@@ -1780,7 +1894,11 @@ msgid ""
 "          [1:Version %(old)s] and\n"
 "          [2:Version %(new)s] of\n"
 "          [3:%(name)s]"
-msgstr "Ændringer mellem\n          [1:Version %(old)s] og\n          [2:Version %(new)s] af\n          [3:%(name)s]"
+msgstr ""
+"Ændringer mellem\n"
+"          [1:Version %(old)s] og\n"
+"          [2:Version %(new)s] af\n"
+"          [3:%(name)s]"
 
 #: trac/templates/diff_view.html:23
 #, python-format
@@ -1789,7 +1907,11 @@ msgid ""
 "          [1:Initial Version] and\n"
 "          [2:Version %(new)s] of\n"
 "          [3:%(name)s]"
-msgstr "Ændringer mellem\n          [1:Oprindelig version] og\n          [2:Version %(new)s] af\n          [3:%(name)s]"
+msgstr ""
+"Ændringer mellem\n"
+"          [1:Oprindelig version] og\n"
+"          [2:Version %(new)s] af\n"
+"          [3:%(name)s]"
 
 #: trac/templates/diff_view.html:28
 #, python-format
@@ -1797,7 +1919,10 @@ msgid ""
 "Changes from\n"
 "          [1:Version %(new)s] of\n"
 "          [2:%(name)s]"
-msgstr "Ændringer fra\n          [1:Version %(new)s] af\n          [2:%(name)s]"
+msgstr ""
+"Ændringer fra\n"
+"          [1:Version %(new)s] af\n"
+"          [2:%(name)s]"
 
 #: trac/templates/diff_view.html:43
 #: trac/versioncontrol/templates/changeset.html:136
@@ -1926,8 +2051,10 @@ msgstr ""
 msgid ""
 "Before you do that, though, please first try\n"
 "                [1:[2:searching]\n"
-"                for similar issues], as it is quite likely that this problem\n"
-"                has been reported before. For questions about installation\n"
+"                for similar issues], as it is quite likely that this "
+"problem\n"
+"                has been reported before. For questions about "
+"installation\n"
 "                and configuration of Trac or its plugins, please try the\n"
 "                [3:mailing list]\n"
 "                instead of creating a ticket."
@@ -1954,7 +2081,10 @@ msgid ""
 "[1:File \"%(file)s\",\n"
 "                        line [2:%(line)s], in]\n"
 "                        [3:%(function)s]"
-msgstr "[1:Fil \"%(file)s\",\n                        linje [2:%(line)s], i]\n                        [3:%(function)s]"
+msgstr ""
+"[1:Fil \"%(file)s\",\n"
+"                        linje [2:%(line)s], i]\n"
+"                        [3:%(function)s]"
 
 #: trac/templates/error.html:146
 msgid "Code fragment:"
@@ -2069,12 +2199,12 @@ msgstr "(Filen er tom)"
 #: trac/templates/preview_file.html:19
 #, python-format
 msgid ""
-"[1:HTML preview not available], since the file size exceeds %(size)s bytes."
+"[1:HTML preview not available], since the file size exceeds %(size)s "
+"bytes."
 msgstr ""
 
 #: trac/templates/preview_file.html:22
-msgid ""
-"[1:HTML preview not available], since no preview renderer could handle it."
+msgid "[1:HTML preview not available], since no preview renderer could handle it."
 msgstr ""
 
 #: trac/templates/preview_file.html:26
@@ -2126,7 +2256,9 @@ msgstr "Advarsel:"
 msgid ""
 "Powered by [1:[2:Trac %(version)s]][3:]\n"
 "        By [4:Edgewall Software]."
-msgstr "Drevet af [1:[2:Trac %(version)s]][3:]\n        af [4:Edgewall Software]."
+msgstr ""
+"Drevet af [1:[2:Trac %(version)s]][3:]\n"
+"        af [4:Edgewall Software]."
 
 #: trac/ticket/admin.py:35
 msgid "(Undefined)"
@@ -2199,8 +2331,7 @@ msgstr "De valgte milepæle er blevet fjernet."
 msgid "The version \"%(name)s\" has been added."
 msgstr "Versionen \"%(name)s\" er blevet tilføjet."
 
-#: trac/ticket/admin.py:486 trac/ticket/model.py:1130
-#: trac/ticket/model.py:1150
+#: trac/ticket/admin.py:486 trac/ticket/model.py:1130 trac/ticket/model.py:1150
 msgid "Invalid version name."
 msgstr "Ugyldigt versionsnavn."
 
@@ -2248,9 +2379,11 @@ msgstr "De valgte %(field)s værdier er blevet fjernet."
 
 #: trac/ticket/admin.py:674
 msgid ""
-"Error writing to trac.ini, make sure it is writable by the web server. The "
-"default value has not been saved."
-msgstr "Fejl ved skrivning til trac.ini, sørg for at den er skrivbar af webserveren. Standard værdien er ikke blevet gemt."
+"Error writing to trac.ini, make sure it is writable by the web server. "
+"The default value has not been saved."
+msgstr ""
+"Fejl ved skrivning til trac.ini, sørg for at den er skrivbar af "
+"webserveren. Standard værdien er ikke blevet gemt."
 
 #: trac/ticket/admin.py:686
 msgid "Order numbers must be unique"
@@ -2386,7 +2519,9 @@ msgstr "Ejeren vil blive ændret fra %(current_owner)s til %(authname)s"
 msgid ""
 "Your workflow attempts to set a resolution but none is defined "
 "(configuration issue, please contact your Trac admin)."
-msgstr "Dit workflow prøver at sætte en løsning, men der er ikke defineret nogen (konfigurationsproblem, kontakt venligst din Trac admin)."
+msgstr ""
+"Dit workflow prøver at sætte en løsning, men der er ikke defineret nogen "
+"(konfigurationsproblem, kontakt venligst din Trac admin)."
 
 #: trac/ticket/default_workflow.py:294 trac/ticket/default_workflow.py:304
 #, python-format
@@ -2535,19 +2670,19 @@ msgstr "Sag"
 msgid "Page %(num)d"
 msgstr "Side %(num)d"
 
-#: trac/ticket/query.py:836 trac/ticket/report.py:273
-#: trac/ticket/report.py:571 trac/ticket/web_ui.py:130
-#: trac/timeline/web_ui.py:219 trac/versioncontrol/web_ui/log.py:299
+#: trac/ticket/query.py:836 trac/ticket/report.py:273 trac/ticket/report.py:571
+#: trac/ticket/web_ui.py:130 trac/timeline/web_ui.py:219
+#: trac/versioncontrol/web_ui/log.py:299
 msgid "RSS Feed"
 msgstr "RSS feed"
 
-#: trac/ticket/query.py:838 trac/ticket/report.py:275
-#: trac/ticket/report.py:573 trac/ticket/web_ui.py:126
+#: trac/ticket/query.py:838 trac/ticket/report.py:275 trac/ticket/report.py:573
+#: trac/ticket/web_ui.py:126
 msgid "Comma-delimited Text"
 msgstr "Kommasepareret tekst"
 
-#: trac/ticket/query.py:840 trac/ticket/report.py:277
-#: trac/ticket/report.py:575 trac/ticket/web_ui.py:128
+#: trac/ticket/query.py:840 trac/ticket/report.py:277 trac/ticket/report.py:575
+#: trac/ticket/web_ui.py:128
 msgid "Tab-delimited Text"
 msgstr "Tab-afgrænset tekst"
 
@@ -2672,8 +2807,8 @@ msgstr ""
 #: trac/ticket/roadmap.py:235
 #, python-format
 msgid ""
-"'%(groupname)s' milestone group reused status '%(status)s' already taken by "
-"other groups. Please check your configuration."
+"'%(groupname)s' milestone group reused status '%(status)s' already taken "
+"by other groups. Please check your configuration."
 msgstr ""
 
 #: trac/ticket/roadmap.py:318 trac/ticket/roadmap.py:441
@@ -2781,9 +2916,11 @@ msgstr "Handlingen \"%(name)s\" er ikke tilgængelig."
 #: trac/ticket/web_ui.py:529
 #, python-format
 msgid ""
-"Please review your configuration, probably starting with %(section)s in your"
-" %(tracini)s."
-msgstr "Gennemse venligst din konfiguration, du bør nok starte med %(section)s i din %(tracini)s."
+"Please review your configuration, probably starting with %(section)s in "
+"your %(tracini)s."
+msgstr ""
+"Gennemse venligst din konfiguration, du bør nok starte med %(section)s i "
+"din %(tracini)s."
 
 #: trac/ticket/web_ui.py:583 trac/ticket/web_ui.py:800
 #, python-format
@@ -2911,9 +3048,11 @@ msgstr "Ingen rettigheder til at tilføje kommentar."
 
 #: trac/ticket/web_ui.py:1125
 msgid ""
-"Sorry, can not save your changes. This ticket has been modified by someone "
-"else since you started"
-msgstr "Beklager, kan ikke gemme dine ændringer. Sagen er blevet ændret af en anden, siden du startede"
+"Sorry, can not save your changes. This ticket has been modified by "
+"someone else since you started"
+msgstr ""
+"Beklager, kan ikke gemme dine ændringer. Sagen er blevet ændret af en "
+"anden, siden du startede"
 
 #: trac/ticket/web_ui.py:1132
 msgid "Tickets must contain a summary."
@@ -2948,21 +3087,27 @@ msgstr "Sagsfeltet '%(field)s' er ugyldigt: %(message)s"
 msgid ""
 "The ticket has been created, but an error occurred while sending "
 "notifications: %(message)s"
-msgstr "Sagen er blevet oprettet, men der opstod en fejl ved afsendelse af beskeder: %(message)s"
+msgstr ""
+"Sagen er blevet oprettet, men der opstod en fejl ved afsendelse af "
+"beskeder: %(message)s"
 
 #: trac/ticket/web_ui.py:1209
 #, python-format
 msgid ""
-"The ticket %(ticketref)s has been created. You can now attach the desired "
-"files."
-msgstr "Sagen %(ticketref)s er blevet oprettet. Du kan nu vedhæfte de ønskede filer."
+"The ticket %(ticketref)s has been created. You can now attach the desired"
+" files."
+msgstr ""
+"Sagen %(ticketref)s er blevet oprettet. Du kan nu vedhæfte de ønskede "
+"filer."
 
 #: trac/ticket/web_ui.py:1215
 #, python-format
 msgid ""
-"The ticket %(ticketref)s has been created, but you don't have permission to "
-"view it."
-msgstr "Sagen %(ticketref)s er blevet oprettet, men du har ikke rettigheder til at se den."
+"The ticket %(ticketref)s has been created, but you don't have permission "
+"to view it."
+msgstr ""
+"Sagen %(ticketref)s er blevet oprettet, men du har ikke rettigheder til "
+"at se den."
 
 #. TRANSLATOR: The 'change' has been saved... (link)
 #: trac/ticket/web_ui.py:1247
@@ -2974,7 +3119,9 @@ msgstr "ændrer"
 msgid ""
 "The %(change)s has been saved, but an error occurred while sending "
 "notifications: %(message)s"
-msgstr "%(change)s er blevet gemt, men der opstod en fejl ved afsendelse af beskeder: %(message)s"
+msgstr ""
+"%(change)s er blevet gemt, men der opstod en fejl ved afsendelse af "
+"beskeder: %(message)s"
 
 #: trac/ticket/web_ui.py:1392
 msgid "Add to Cc"
@@ -3193,7 +3340,11 @@ msgid ""
 "                            [2:]\n"
 "                            [3:and]\n"
 "                            [4:]"
-msgstr "[1:mellem]\n                            [2:]\n                            [3:og]\n                            [4:]"
+msgstr ""
+"[1:mellem]\n"
+"                            [2:]\n"
+"                            [3:og]\n"
+"                            [4:]"
 
 #: trac/ticket/templates/query.html:130
 msgid "And"
@@ -3255,7 +3406,9 @@ msgstr "Slet forespørgsel"
 msgid ""
 "[1:Note:] See [2:TracQuery]\n"
 "        for help on using queries."
-msgstr "[1:Note:] Se [2:TracQuery]\n        for hjælp til forespørgsler."
+msgstr ""
+"[1:Note:] Se [2:TracQuery]\n"
+"        for hjælp til forespørgsler."
 
 #: trac/ticket/templates/query_results.html:35
 msgid "(ascending)"
@@ -3310,7 +3463,9 @@ msgstr "Slet rapport"
 msgid ""
 "[1:Note:]\n"
 "        See [2:TracReports] for help on using and creating reports."
-msgstr "[1:Note:]\n        Se [2:TracReports] for hjælp til brug og oprettelse af rapporter."
+msgstr ""
+"[1:Note:]\n"
+"        Se [2:TracReports] for hjælp til brug og oprettelse af rapporter."
 
 #: trac/ticket/templates/report_edit.html:16
 msgid "New Report"
@@ -3322,7 +3477,10 @@ msgstr "Rapporttitel"
 
 #: trac/ticket/templates/report_edit.html:25
 msgid "Description: (you may use [1:WikiFormatting] here)"
-msgstr "Beskrivelse (du kan bruge\n                [1:WikiFormatting]\n                her):"
+msgstr ""
+"Beskrivelse (du kan bruge\n"
+"                [1:WikiFormatting]\n"
+"                her):"
 
 #: trac/ticket/templates/report_edit.html:34
 msgid "Error:"
@@ -3332,7 +3490,10 @@ msgstr "Fejl:"
 msgid ""
 "Query for Report: (can be either SQL or, if starting with [1:query:],\n"
 "              a [2:TracQuery] expression)"
-msgstr "Forespørgsel til rapport: (kvære enten SQL, eller hvis den starter med [1:query:],\n              et [2:TracQuery] udtryk)"
+msgstr ""
+"Forespørgsel til rapport: (kvære enten SQL, eller hvis den starter med "
+"[1:query:],\n"
+"              et [2:TracQuery] udtryk)"
 
 #: trac/ticket/templates/report_edit.html:43
 msgid "Save report"
@@ -3347,8 +3508,7 @@ msgid "Title"
 msgstr "Titel"
 
 #: trac/ticket/templates/report_list.html:25
-#: trac/wiki/templates/wiki_edit.html:68
-#: trac/wiki/templates/wiki_edit.html:141
+#: trac/wiki/templates/wiki_edit.html:68 trac/wiki/templates/wiki_edit.html:141
 msgid "Actions"
 msgstr "Handlinger"
 
@@ -3364,8 +3524,7 @@ msgid "Edit report"
 msgstr "Rediger rapport"
 
 #: trac/ticket/templates/report_list.html:33
-#: trac/ticket/templates/ticket.html:148
-#: trac/wiki/templates/wiki_edit.html:124
+#: trac/ticket/templates/ticket.html:148 trac/wiki/templates/wiki_edit.html:124
 msgid "Edit"
 msgstr "Redigér"
 
@@ -3509,7 +3668,10 @@ msgid ""
 "You may use\n"
 "              [1:WikiFormatting]\n"
 "              here."
-msgstr "Du kan bruge\n                [1:WikiFormatting]\n                her."
+msgstr ""
+"Du kan bruge\n"
+"                [1:WikiFormatting]\n"
+"                her."
 
 #: trac/ticket/templates/ticket.html:210
 msgid ""
@@ -3546,7 +3708,9 @@ msgstr ""
 msgid ""
 "You may use\n"
 "                          [1:WikiFormatting] here."
-msgstr "Du kan bruge\n                          [1:WikiFormatting] her."
+msgstr ""
+"Du kan bruge\n"
+"                          [1:WikiFormatting] her."
 
 #: trac/ticket/templates/ticket.html:274
 #: trac/ticket/templates/ticket_box.html:43
@@ -3556,7 +3720,9 @@ msgstr "%(field)s:"
 
 #: trac/ticket/templates/ticket.html:313
 msgid "This checkbox allows you to add or remove yourself from the CC list."
-msgstr "Dette afkydsningsfelt lader dig tilføje eller fjerne dig selv fra CC listen. "
+msgstr ""
+"Dette afkydsningsfelt lader dig tilføje eller fjerne dig selv fra CC "
+"listen. "
 
 #: trac/ticket/templates/ticket.html:319
 msgid "Space or comma delimited email addresses and usernames are accepted."
@@ -3577,8 +3743,7 @@ msgstr "Gå til listen med vedhæftninger"
 
 #: trac/ticket/templates/ticket.html:397
 #: trac/ticket/templates/ticket_change.html:45
-#: trac/wiki/templates/wiki_edit.html:70
-#: trac/wiki/templates/wiki_edit.html:128
+#: trac/wiki/templates/wiki_edit.html:70 trac/wiki/templates/wiki_edit.html:128
 #: trac/wiki/templates/wiki_edit_form.html:39
 #: trac/wiki/templates/wiki_edit_form.html:68
 msgid "Preview"
@@ -3593,7 +3758,10 @@ msgid ""
 "[1:Note:] See\n"
 "        [2:TracTickets] for help on using\n"
 "        tickets."
-msgstr "[1:Note:] Se\n        [2:TracTickets] for hjælp om brug af\n        sager."
+msgstr ""
+"[1:Note:] Se\n"
+"        [2:TracTickets] for hjælp om brug af\n"
+"        sager."
 
 #: trac/ticket/templates/ticket_box.html:19
 #, python-format
@@ -3631,7 +3799,9 @@ msgstr "Svar, citér denne beskrivelse"
 msgid ""
 "[1:[2:%(name)s]][3:​]\n"
 "          added"
-msgstr "[1:[2:%(name)s]][3:​]\n          tilføjet"
+msgstr ""
+"[1:[2:%(name)s]][3:​]\n"
+"          tilføjet"
 
 #: trac/ticket/templates/ticket_change.html:26
 #, python-format
@@ -3713,9 +3883,9 @@ msgstr ""
 #: trac/timeline/web_ui.py:359
 #, python-format
 msgid ""
-"You may want to see the %(other_events)s from the Timeline or notify your "
-"Trac administrator about the error (detailed information was written to the "
-"log)."
+"You may want to see the %(other_events)s from the Timeline or notify your"
+" Trac administrator about the error (detailed information was written to "
+"the log)."
 msgstr ""
 
 #: trac/timeline/templates/timeline.html:19
@@ -3723,7 +3893,10 @@ msgid ""
 "[1:View changes from [2:]] [3:]\n"
 "        and [4:[5:] days back][6:]\n"
 "        [7:done by [8:]]"
-msgstr "[1:Vis ændringer fra [2:]] [3:]\n        og [4:[5:] dage tilbage][6:]\n        [7:done by [8:]]"
+msgstr ""
+"[1:Vis ændringer fra [2:]] [3:]\n"
+"        og [4:[5:] dage tilbage][6:]\n"
+"        [7:done by [8:]]"
 
 #: trac/timeline/templates/timeline.html:36
 msgid "Today"
@@ -3738,7 +3911,9 @@ msgstr "I går"
 msgid ""
 "[1:%(time)s] %(title)s\n"
 "                  by [2:%(author)s]"
-msgstr "[1:%(time)s] %(title)s\n                  af [2:%(author)s]"
+msgstr ""
+"[1:%(time)s] %(title)s\n"
+"                  af [2:%(author)s]"
 
 #: trac/timeline/templates/timeline.html:58
 msgid ""
@@ -3800,7 +3975,9 @@ msgstr[1] "%(num)i sekunder"
 msgid ""
 "\"%(date)s\" is an invalid date, or the date format is not known. Try "
 "\"%(hint)s\" instead."
-msgstr "\"%(date)s\" er en ugyldig dato, eller datoformatet er ukendt. Prøv \"%(hint)s\" istedet."
+msgstr ""
+"\"%(date)s\" er en ugyldig dato, eller datoformatet er ukendt. Prøv "
+"\"%(hint)s\" istedet."
 
 #: trac/util/datefmt.py:276 trac/util/datefmt.py:284
 msgid "Invalid Date"
@@ -3809,9 +3986,11 @@ msgstr "Ugyldig dato"
 #: trac/util/datefmt.py:282
 #, python-format
 msgid ""
-"The date \"%(date)s\" is outside valid range. Try a date closer to present "
-"time."
-msgstr "Datoen \"%(date)s\" er uden for gyldig rækkevidde. Prøv en dato der tættere på nutiden."
+"The date \"%(date)s\" is outside valid range. Try a date closer to "
+"present time."
+msgstr ""
+"Datoen \"%(date)s\" er uden for gyldig rækkevidde. Prøv en dato der "
+"tættere på nutiden."
 
 #: trac/util/presentation.py:255
 #, python-format
@@ -3882,15 +4061,14 @@ msgstr ""
 
 #: trac/versioncontrol/admin.py:227
 #, python-format
-msgid ""
-"You may have to run %(resync)s to synchronize Trac with the repository."
+msgid "You may have to run %(resync)s to synchronize Trac with the repository."
 msgstr ""
 
 #: trac/versioncontrol/admin.py:235
 #, python-format
 msgid ""
-"You will need to update your post-commit hook to call %(cset_added)s with "
-"the new repository name."
+"You will need to update your post-commit hook to call %(cset_added)s with"
+" the new repository name."
 msgstr ""
 
 #: trac/versioncontrol/admin.py:255
@@ -3975,8 +4153,8 @@ msgstr "Opbevaringssteds-typen '%(type)s' er ikke understøttet"
 #: trac/versioncontrol/api.py:343
 #, python-format
 msgid ""
-"Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the Trac"
-" log for more information."
+"Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the "
+"Trac log for more information."
 msgstr ""
 
 #: trac/versioncontrol/api.py:364
@@ -4030,8 +4208,8 @@ msgstr ""
 #: trac/versioncontrol/api.py:706
 #, python-format
 msgid ""
-"Unsupported version control system \"%(name)s\": Can't find an appropriate "
-"component, maybe the corresponding plugin was not enabled? "
+"Unsupported version control system \"%(name)s\": Can't find an "
+"appropriate component, maybe the corresponding plugin was not enabled? "
 msgstr ""
 
 #: trac/versioncontrol/api.py:714
@@ -4092,9 +4270,12 @@ msgstr "Kunne ikke åbne Subversion opbevaringsstedet %(path)s: %(svn_error)s"
 #: trac/versioncontrol/svn_fs.py:628
 #, python-format
 msgid ""
-"Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s) "
-"and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
-msgstr "Diff uoverensstemmelse: Basen er en  %(oldnode)s (%(oldpath)s i revision %(oldrev)s) og målet er en %(newnode)s (%(newpath)s i revision %(newrev)s)."
+"Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
+" and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
+msgstr ""
+"Diff uoverensstemmelse: Basen er en  %(oldnode)s (%(oldpath)s i revision "
+"%(oldrev)s) og målet er en %(newnode)s (%(newpath)s i revision "
+"%(newrev)s)."
 
 #: trac/versioncontrol/svn_fs.py:777
 #, python-format
@@ -4278,8 +4459,7 @@ msgid "No files found"
 msgstr "Ingen filer fundet"
 
 #: trac/versioncontrol/templates/browser.html:106
-#: trac/wiki/templates/wiki_edit.html:112
-#: trac/wiki/templates/wiki_view.html:32
+#: trac/wiki/templates/wiki_edit.html:112 trac/wiki/templates/wiki_view.html:32
 msgid "Revision info"
 msgstr "Revisions-info"
 
@@ -4418,7 +4598,9 @@ msgstr ""
 msgid ""
 "(%(kind)s from [1:\n"
 "                %(old_path)s])"
-msgstr "(%(kind)s fra [1:\n                %(old_path)s])"
+msgstr ""
+"(%(kind)s fra [1:\n"
+"                %(old_path)s])"
 
 #: trac/versioncontrol/templates/changeset.html:119
 #: trac/versioncontrol/templates/changeset.html:122
@@ -4560,7 +4742,8 @@ msgstr "Til:"
 #: trac/versioncontrol/templates/diff_form.html:50
 msgid ""
 "For either path, you can start typing the path and will be\n"
-"              presented a list of existing directories and files to select\n"
+"              presented a list of existing directories and files to "
+"select\n"
 "              from. Select an entry by clicking on it, or by using the\n"
 "              up/down cursor keys and hitting tab."
 msgstr ""
@@ -4674,8 +4857,7 @@ msgstr "Kopieret eller omdøbt"
 
 #: trac/versioncontrol/templates/revisionlog.html:88
 #: trac/versioncontrol/templates/revisionlog.html:182
-msgid ""
-"Diff from Old Revision to New Revision (as selected in the Diff column)"
+msgid "Diff from Old Revision to New Revision (as selected in the Diff column)"
 msgstr ""
 
 #: trac/versioncontrol/templates/revisionlog.html:94
@@ -4933,8 +5115,8 @@ msgstr "Rettesæt"
 #: trac/versioncontrol/web_ui/log.py:201
 #, python-format
 msgid ""
-"The file or directory '%(path)s' doesn't exist at revision %(rev)s or at any"
-" previous revision."
+"The file or directory '%(path)s' doesn't exist at revision %(rev)s or at "
+"any previous revision."
 msgstr ""
 
 #: trac/versioncontrol/web_ui/log.py:201
@@ -4970,8 +5152,8 @@ msgstr "søg"
 #: trac/versioncontrol/web_ui/util.py:72
 #, python-format
 msgid ""
-"You can %(search)s in the repository history to see if that path existed but"
-" was later removed"
+"You can %(search)s in the repository history to see if that path existed "
+"but was later removed"
 msgstr ""
 
 #: trac/web/api.py:240
@@ -5009,7 +5191,8 @@ msgstr "Konfigurerer godkendelse"
 #: trac/web/auth.py:142
 #, python-format
 msgid ""
-"Authentication information not available. Please refer to the %(inst_doc)s."
+"Authentication information not available. Please refer to the "
+"%(inst_doc)s."
 msgstr ""
 
 #: trac/web/auth.py:150
@@ -5076,7 +5259,8 @@ msgstr "''Udvidelsesinformation er ikke tilgængelig''\n"
 msgid ""
 "==== How to Reproduce ====\n"
 "\n"
-"While doing a %(method)s operation on `%(path_info)s`, Trac issued an internal error.\n"
+"While doing a %(method)s operation on `%(path_info)s`, Trac issued an "
+"internal error.\n"
 "\n"
 "''(please provide additional details here)''\n"
 "\n"
@@ -5305,8 +5489,7 @@ msgstr "Siden %(name)s er blevet slettet."
 
 #: trac/wiki/web_ui.py:270
 #, python-format
-msgid ""
-"The versions %(from_)d to %(to)d of the page %(name)s have been deleted."
+msgid "The versions %(from_)d to %(to)d of the page %(name)s have been deleted."
 msgstr ""
 
 #: trac/wiki/web_ui.py:274
@@ -5316,8 +5499,8 @@ msgstr "Versionen %(version)d af siden %(name)s er blevet slettet."
 
 #: trac/wiki/web_ui.py:298
 msgid ""
-"The new name is invalid (a name which is separated with slashes cannot be "
-"'.' or '..')."
+"The new name is invalid (a name which is separated with slashes cannot be"
+" '.' or '..')."
 msgstr ""
 
 #: trac/wiki/web_ui.py:301
@@ -5433,8 +5616,7 @@ msgstr "Slet [1:%(name)s]"
 
 #: trac/wiki/templates/wiki_delete.html:33
 #, python-format
-msgid ""
-"Are you sure you want to delete versions %(from)s to %(to)s of this page?"
+msgid "Are you sure you want to delete versions %(from)s to %(to)s of this page?"
 msgstr ""
 
 #: trac/wiki/templates/wiki_delete.html:36
@@ -5447,8 +5629,7 @@ msgid "Are you sure you want to completely delete this page?"
 msgstr "Er du sikker på at du ønsker at slette denne side helt?"
 
 #: trac/wiki/templates/wiki_delete.html:42
-msgid ""
-"This is the only version the page, so the page will be removed completely!"
+msgid "This is the only version the page, so the page will be removed completely!"
 msgstr ""
 
 #: trac/wiki/templates/wiki_delete.html:51
@@ -5475,8 +5656,7 @@ msgstr "Slet version %(old_version)d til version %(version)d"
 msgid "Delete version %(version)d"
 msgstr "Slet version %(version)d"
 
-#: trac/wiki/templates/wiki_edit.html:67
-#: trac/wiki/templates/wiki_edit.html:140
+#: trac/wiki/templates/wiki_edit.html:67 trac/wiki/templates/wiki_edit.html:140
 msgid "Go to Save, Preview, Review or Cancel buttons"
 msgstr ""
 
@@ -5511,15 +5691,18 @@ msgstr ""
 msgid ""
 "Please review all those changes and manually merge them with your\n"
 "        own changes. [1:]\n"
-"        If you're unsure about what you're doing, please press [2:Cancel]\n"
-"        (losing your changes) and start editing the latest version of the page\n"
+"        If you're unsure about what you're doing, please press [2:Cancel]"
+"\n"
+"        (losing your changes) and start editing the latest version of the"
+" page\n"
 "        again."
 msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:114
 #, python-format
 msgid ""
-"Change information for future version %(version)s (modified by %(author)s):"
+"Change information for future version %(version)s (modified by "
+"%(author)s):"
 msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:124
@@ -5546,8 +5729,7 @@ msgid "Adjust edit area height:"
 msgstr ""
 
 #: trac/wiki/templates/wiki_edit_form.html:24
-msgid ""
-"Selecting and pressing 'Preview' enters a two-column [edit|preview] mode"
+msgid "Selecting and pressing 'Preview' enters a two-column [edit|preview] mode"
 msgstr ""
 
 #: trac/wiki/templates/wiki_edit_form.html:24
@@ -5607,8 +5789,7 @@ msgid "Rename [1:%(name)s]"
 msgstr "Omdøb [1:%(name)s]"
 
 #: trac/wiki/templates/wiki_rename.html:19
-msgid ""
-"Renaming the page will rename all existing versions of the page in place."
+msgid "Renaming the page will rename all existing versions of the page in place."
 msgstr ""
 
 #: trac/wiki/templates/wiki_rename.html:19
@@ -5681,6 +5862,6 @@ msgid "(blank page)"
 msgstr "(blank side)"
 
 #: trac/wiki/templates/wiki_view.html:131
-msgid ""
-"The following pages have a name similar to this page, and may be related:"
+msgid "The following pages have a name similar to this page, and may be related:"
 msgstr "Følgende sider har et navn der ligner denne sides, og kan være relateret:"
+

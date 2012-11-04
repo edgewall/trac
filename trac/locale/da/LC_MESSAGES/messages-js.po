@@ -1,22 +1,22 @@
-# Translations template for Trac.
+# Danish translations for Trac.
 # Copyright (C) 2012 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# 
+#
 # Translators:
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac\n"
+"Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
 "POT-Creation-Date: 2012-10-29 19:08+0100\n"
 "PO-Revision-Date: 2012-10-28 20:17+0000\n"
 "Last-Translator: Jens Hyllegaard <jens.hyllegaard@gmail.com>\n"
-"Language-Team: Danish (http://www.transifex.com/projects/p/trac/language/da/)\n"
+"Language-Team: Danish "
+"(http://www.transifex.com/projects/p/trac/language/da/)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6\n"
-"Language: da\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 0.9.6dev-r0\n"
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -145,3 +145,4 @@ msgstr "Link til denne diff"
 #, python-format
 msgid "Link to #%(id)s"
 msgstr "Link til #%(id)s"
+
