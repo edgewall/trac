@@ -1860,7 +1860,8 @@ msgid ""
 "                [1:%(size)s]\n"
 "                (added by %(author)s, %(date)s ago)"
 msgstr ""
-"Fájl %(file)s, %(size)s\n"
+"Fájl %(file)s,\n"
+"                [1:%(size)s]\n"
 "                (csatolta %(author)s, %(date)s)"
 
 #: trac/templates/diff_div.html:72

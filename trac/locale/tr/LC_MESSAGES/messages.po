@@ -1578,11 +1578,6 @@ msgid ""
 "      [1:TracAccessibility]\n"
 "      for more information on access keys."
 msgstr ""
-"Bu site bazı fonksiyonlarına erişimini kısayol \n"
-"      tuşlarıyla yapılabilmesin sağlar. Ancak \n"
-"      bu kısayollar masa üstü ve diğer programların \n"
-"      kısayolları ile çakışa bildiğinden başlangıçta devre\n"
-"\t   dışıdır. Bakınız"
 
 #: trac/prefs/templates/prefs_language.html:14
 msgid "Language:"
@@ -5874,7 +5869,7 @@ msgstr "Göster %(path)s"
 #: trac/wiki/templates/wiki_rename.html:15
 #, python-format
 msgid "Rename [1:%(name)s]"
-msgstr "Adlandır %(name)s"
+msgstr "Adlandır [1:%(name)s]"
 
 #: trac/wiki/templates/wiki_rename.html:19
 msgid "Renaming the page will rename all existing versions of the page in place."
