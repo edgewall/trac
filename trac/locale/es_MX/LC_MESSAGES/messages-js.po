@@ -1,26 +1,26 @@
-# Translations template for Trac.
+# Spanish (Mexico) translations for Trac.
 # Copyright (C) 2012 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# 
+#
 # Translators:
 # Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>, 2007.
 # Jesús Franco <tezcatl@freire.mayfirst.org>, 2012.
 # Roberto Aragón <robarago@gmail.com>, 2010.
-#   <tezcatl@freire.mayfirst.org>, 2012.
+# <tezcatl@freire.mayfirst.org>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac\n"
+"Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
 "POT-Creation-Date: 2012-10-29 19:08+0100\n"
 "PO-Revision-Date: 2012-10-31 15:35+0000\n"
 "Last-Translator: tzkmx <tezcatl@freire.mayfirst.org>\n"
-"Language-Team: Spanish (Mexico) <internationalization@lists.mayfirst.org>\n"
+"Language-Team: Spanish (Mexico) <internationalization@lists.mayfirst.org>"
+"\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6\n"
-"Language: es_MX\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 0.9.6dev-r0\n"
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -149,3 +149,4 @@ msgstr "Enlazar a esta diferencia"
 #, python-format
 msgid "Link to #%(id)s"
 msgstr "Enlazar a #%(id)s"
+
