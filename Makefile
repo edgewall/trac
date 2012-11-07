@@ -74,6 +74,7 @@ define HELP
 
   diff                show relevant changes after an update for all catalogs
   diff-xy             show relevant changes after an update for the xy locale
+  [vc=...]            variable containing the version control command to use
 
   [locale=...]        variable for selecting a set of locales
 
@@ -181,15 +182,18 @@ _catalog = $(if $(catalog_stripped),_)$(catalog_stripped)
 
 .PHONY: extract extraction update compile check stats summary diff
 
+
 init-%:
 	@$(foreach catalog,$(catalogs), \
 	    [ -e $(catalog.po) ] \
 	    && echo "$(catalog.po) already exists" \
 	    || python setup.py init_catalog$(_catalog) -l $(*);)
 
+
 extract extraction:
 	python setup.py $(foreach catalog,$(catalogs),\
 	    extract_messages$(_catalog))
+
 
 update-%:
 	python setup.py $(foreach catalog,$(catalogs), \
@@ -202,6 +206,7 @@ update:
 	python setup.py $(foreach catalog,$(catalogs), \
 	    update_catalog$(_catalog))
 endif
+
 
 compile-%:
 	python setup.py $(foreach catalog,$(catalogs), \
@@ -216,6 +221,7 @@ compile:
 	    compile_catalog$(_catalog))
 endif
 
+
 check: pre-check $(addprefix check-,$(locales))
 	@echo "All catalogs checked are OK"
 
@@ -226,6 +232,7 @@ check-%:
 	@echo -n "$(@): "
 	python setup.py $(foreach catalog,$(catalogs), \
 	    check_catalog$(_catalog) -l $(*))
+
 
 stats: pre-stats $(addprefix stats-,$(locales))
 
@@ -246,6 +253,7 @@ stats-%:
 	         msgfmt --statistics $(catalog.po); } \
 	    || echo "$(catalog.po) doesn't exist (make init-$(*))";)
 	@rm -f messages.mo
+
 
 summary: $(addprefix summary-,$(locales))
 
@@ -273,12 +281,15 @@ summary-%:
 	       / $(MESSAGES_TOTAL))"
 	@rm -f messages.mo
 
+
 diff: $(addprefix diff-,$(locales))
 
+vc ?= svn
 
 diff-%:
-	@svn diff trac/locale/$(*) \
+	@$(vc) diff trac/locale/$(*) \
 	    | grep -Ev '^([-+]#:|[@ ])' | grep -E '^[-+@]' || true
+
 
 clean-mo:
 	find trac/locale -name \*.mo -exec rm {} \;

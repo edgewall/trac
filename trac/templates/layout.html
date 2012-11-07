@@ -52,7 +52,7 @@
     ${select('*|text()|comment()')}
 
     <script type="text/javascript" py:if="chrome.late_links">
-      <py:for each="link in chrome.late_links.get('stylesheet')">
+      <py:for each="link in chrome.late_links.get('stylesheet', [])">
         jQuery.loadStyleSheet("${link.href}", "${link.type}");
       </py:for>
     </script>
