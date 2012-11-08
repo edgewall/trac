@@ -5,9 +5,10 @@ from __future__ import with_statement
 import os
 import unittest
 
-from trac.db.api import DatabaseManager, _parse_db_str, with_transaction, \
-                        get_column_names
+from trac.db.api import DatabaseManager, _parse_db_str, get_column_names, \
+                        with_transaction
 from trac.test import EnvironmentStub, Mock
+from trac.util.concurrency import ThreadLocal
 
 
 class Connection(object):
@@ -26,12 +27,17 @@ class Error(Exception):
     pass
 
 
-class WithTransactionTest(unittest.TestCase):
+def make_env(get_cnx):
+    return Mock(components={DatabaseManager:
+             Mock(get_connection=get_cnx,
+                  _transaction_local=ThreadLocal(wdb=None, rdb=None))})
 
+
+class WithTransactionTest(unittest.TestCase):
+                      
     def test_successful_transaction(self):
         db = Connection()
-        env = Mock(components={
-                DatabaseManager: Mock(get_connection=lambda: db)})
+        env = make_env(lambda: db)
         @with_transaction(env)
         def do_transaction(db):
             self.assertTrue(not db.committed and not db.rolledback)
@@ -39,8 +45,7 @@ class WithTransactionTest(unittest.TestCase):
         
     def test_failed_transaction(self):
         db = Connection()
-        env = Mock(components={
-                DatabaseManager: Mock(get_connection=lambda: db)})
+        env = make_env(lambda: db)
         try:
             @with_transaction(env)
             def do_transaction(db):
@@ -52,8 +57,7 @@ class WithTransactionTest(unittest.TestCase):
         self.assertTrue(not db.committed and db.rolledback)
         
     def test_implicit_nesting_success(self):
-        env = Mock(components={
-                DatabaseManager: Mock(get_connection=Connection)})
+        env = make_env(Connection)
         dbs = [None, None]
         @with_transaction(env)
         def level0(db):
@@ -68,8 +72,7 @@ class WithTransactionTest(unittest.TestCase):
         self.assertTrue(dbs[0].committed and not dbs[0].rolledback)
 
     def test_implicit_nesting_failure(self):
-        env = Mock(components={
-                DatabaseManager: Mock(get_connection=Connection)})
+        env = make_env(Connection)
         dbs = [None, None]
         try:
             @with_transaction(env)
@@ -94,9 +97,7 @@ class WithTransactionTest(unittest.TestCase):
 
     def test_explicit_success(self):
         db = Connection()
-        env = Mock(components={
-                DatabaseManager: Mock(get_connection=lambda: None)})
-        env = Mock(get_db_cnx=lambda: None)
+        env = make_env(lambda: None)
         @with_transaction(env, db)
         def do_transaction(idb):
             self.assertTrue(idb is db)
@@ -105,9 +106,7 @@ class WithTransactionTest(unittest.TestCase):
 
     def test_explicit_failure(self):
         db = Connection()
-        env = Mock(components={
-                DatabaseManager: Mock(get_connection=lambda: None)})
-        env = Mock(get_db_cnx=lambda: None)
+        env = make_env(lambda: None)
         try:
             @with_transaction(env, db)
             def do_transaction(idb):
@@ -121,8 +120,7 @@ class WithTransactionTest(unittest.TestCase):
 
     def test_implicit_in_explicit_success(self):
         db = Connection()
-        env = Mock(components={
-                DatabaseManager: Mock(get_connection=lambda: db)})
+        env = make_env(lambda: db)
         dbs = [None, None]
         @with_transaction(env, db)
         def level0(db):
@@ -138,8 +136,7 @@ class WithTransactionTest(unittest.TestCase):
 
     def test_implicit_in_explicit_failure(self):
         db = Connection()
-        env = Mock(components={
-                DatabaseManager: Mock(get_connection=lambda: db)})
+        env = make_env(lambda: db)
         dbs = [None, None]
         try:
             @with_transaction(env, db)
@@ -160,8 +157,7 @@ class WithTransactionTest(unittest.TestCase):
 
     def test_explicit_in_implicit_success(self):
         db = Connection()
-        env = Mock(components={
-                DatabaseManager: Mock(get_connection=lambda: db)})
+        env = make_env(lambda: db)
         dbs = [None, None]
         @with_transaction(env)
         def level0(db):
@@ -177,8 +173,7 @@ class WithTransactionTest(unittest.TestCase):
 
     def test_explicit_in_implicit_failure(self):
         db = Connection()
-        env = Mock(components={
-                DatabaseManager: Mock(get_connection=lambda: db)})
+        env = make_env(lambda: db)
         dbs = [None, None]
         try:
             @with_transaction(env)
@@ -198,8 +193,7 @@ class WithTransactionTest(unittest.TestCase):
         self.assertTrue(not dbs[0].committed and dbs[0].rolledback)
 
     def test_invalid_nesting(self):
-        env = Mock(components={
-                DatabaseManager: Mock(get_connection=Connection)})
+        env = make_env(Connection)
         try:
             @with_transaction(env)
             def level0(db):

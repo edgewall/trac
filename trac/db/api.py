@@ -30,8 +30,6 @@ from .pool import ConnectionPool
 from .util import ConnectionWrapper
 
 
-_transaction_local = ThreadLocal(wdb=None, rdb=None)
-
 def with_transaction(env, db=None):
     """Function decorator to emulate a context manager for database
     transactions.
@@ -76,6 +74,9 @@ def with_transaction(env, db=None):
     >>>     return result
 
     """
+    dbm = DatabaseManager(env)
+    _transaction_local = dbm._transaction_local
+    
     def transaction_wrapper(fn):
         ldb = _transaction_local.wdb
         if db is not None:
@@ -91,7 +92,7 @@ def with_transaction(env, db=None):
         elif ldb:
             fn(ldb)
         else:
-            ldb = _transaction_local.wdb = DatabaseManager(env).get_connection()
+            ldb = _transaction_local.wdb = dbm.get_connection()
             try:
                 fn(ldb)
                 ldb.commit()
@@ -113,7 +114,7 @@ class DbContextManager(object):
     db = None
 
     def __init__(self, env):
-        self.env = env
+        self.dbmgr = DatabaseManager(env)
 
     def execute(self, query, params=None):
         """Shortcut for directly executing a query."""
@@ -137,24 +138,24 @@ class TransactionContextManager(DbContextManager):
     """
 
     def __enter__(self):
-        db = _transaction_local.wdb # outermost writable db
+        db = self.dbmgr._transaction_local.wdb # outermost writable db
         if not db:
-            db = _transaction_local.rdb # reuse wrapped connection
+            db = self.dbmgr._transaction_local.rdb # reuse wrapped connection
             if db:
                 db = ConnectionWrapper(db.cnx, db.log)
             else:
-                db = DatabaseManager(self.env).get_connection()
-            _transaction_local.wdb = self.db = db
+                db = self.dbmgr.get_connection()
+            self.dbmgr._transaction_local.wdb = self.db = db
         return db
 
     def __exit__(self, et, ev, tb): 
         if self.db: 
-            _transaction_local.wdb = None
+            self.dbmgr._transaction_local.wdb = None
             if et is None: 
                 self.db.commit()
             else: 
                 self.db.rollback()
-            if not _transaction_local.rdb:
+            if not self.dbmgr._transaction_local.rdb:
                 self.db.close()
 
 
@@ -164,20 +165,20 @@ class QueryContextManager(DbContextManager):
     """
 
     def __enter__(self):
-        db = _transaction_local.rdb # outermost readonly db
+        db = self.dbmgr._transaction_local.rdb # outermost readonly db
         if not db:
-            db = _transaction_local.wdb # reuse wrapped connection
+            db = self.dbmgr._transaction_local.wdb # reuse wrapped connection
             if db:
                 db = ConnectionWrapper(db.cnx, db.log, readonly=True)
             else:
-                db = DatabaseManager(self.env).get_connection(readonly=True)
-            _transaction_local.rdb = self.db = db
+                db = self.dbmgr.get_connection(readonly=True)
+            self.dbmgr._transaction_local.rdb = self.db = db
         return db
 
     def __exit__(self, et, ev, tb): 
         if self.db:
-            _transaction_local.rdb = None
-            if not _transaction_local.wdb:
+            self.dbmgr._transaction_local.rdb = None
+            if not self.dbmgr._transaction_local.wdb:
                 self.db.close()
 
 
@@ -241,6 +242,7 @@ class DatabaseManager(Component):
 
     def __init__(self):
         self._cnx_pool = None
+        self._transaction_local = ThreadLocal(wdb=None, rdb=None)
 
     def init_db(self):
         connector, args = self.get_connector()
