@@ -3,8 +3,10 @@
 import os
 import unittest
 
-from trac.db.api import _parse_db_str, with_transaction, get_column_names
+from trac.db.api import DatabaseManager, _parse_db_str, get_column_names, \
+                        with_transaction
 from trac.test import EnvironmentStub, Mock
+from trac.util.concurrency import ThreadLocal
 
 
 class Connection(object):
@@ -23,11 +25,25 @@ class Error(Exception):
     pass
 
 
+class MockDatabaseManager(object):
+    def __init__(self):
+        self._transaction_local = ThreadLocal(db=None)
+        
+class MinimalEnv(object):
+    def __init__(self, db=None):
+        self.db = db
+        self.components = {DatabaseManager: MockDatabaseManager()}
+    def get_db_cnx(self):
+        if self.db is Connection:
+            return Connection()
+        return self.db
+
+
 class WithTransactionTest(unittest.TestCase):
 
     def test_successful_transaction(self):
         db = Connection()
-        env = Mock(get_db_cnx=lambda: db)
+        env = MinimalEnv(db)
         @with_transaction(env)
         def do_transaction(db):
             self.assertTrue(not db.committed and not db.rolledback)
@@ -35,7 +51,7 @@ class WithTransactionTest(unittest.TestCase):
         
     def test_failed_transaction(self):
         db = Connection()
-        env = Mock(get_db_cnx=lambda: db)
+        env = MinimalEnv(db)
         try:
             @with_transaction(env)
             def do_transaction(db):
@@ -47,7 +63,7 @@ class WithTransactionTest(unittest.TestCase):
         self.assertTrue(not db.committed and db.rolledback)
         
     def test_implicit_nesting_success(self):
-        env = Mock(get_db_cnx=lambda: Connection())
+        env = MinimalEnv(Connection)
         dbs = [None, None]
         @with_transaction(env)
         def level0(db):
@@ -62,7 +78,7 @@ class WithTransactionTest(unittest.TestCase):
         self.assertTrue(dbs[0].committed and not dbs[0].rolledback)
 
     def test_implicit_nesting_failure(self):
-        env = Mock(get_db_cnx=lambda: Connection())
+        env = MinimalEnv(Connection)
         dbs = [None, None]
         try:
             @with_transaction(env)
@@ -87,7 +103,7 @@ class WithTransactionTest(unittest.TestCase):
 
     def test_explicit_success(self):
         db = Connection()
-        env = Mock(get_db_cnx=lambda: None)
+        env = MinimalEnv(None)
         @with_transaction(env, db)
         def do_transaction(idb):
             self.assertTrue(idb is db)
@@ -96,7 +112,7 @@ class WithTransactionTest(unittest.TestCase):
 
     def test_explicit_failure(self):
         db = Connection()
-        env = Mock(get_db_cnx=lambda: None)
+        env = MinimalEnv(None)
         try:
             @with_transaction(env, db)
             def do_transaction(idb):
@@ -110,7 +126,7 @@ class WithTransactionTest(unittest.TestCase):
 
     def test_implicit_in_explicit_success(self):
         db = Connection()
-        env = Mock(get_db_cnx=lambda: Connection())
+        env = MinimalEnv(Connection)
         dbs = [None, None]
         @with_transaction(env, db)
         def level0(db):
@@ -126,7 +142,7 @@ class WithTransactionTest(unittest.TestCase):
 
     def test_implicit_in_explicit_failure(self):
         db = Connection()
-        env = Mock(get_db_cnx=lambda: Connection())
+        env = MinimalEnv(Connection)
         dbs = [None, None]
         try:
             @with_transaction(env, db)
@@ -147,7 +163,7 @@ class WithTransactionTest(unittest.TestCase):
 
     def test_explicit_in_implicit_success(self):
         db = Connection()
-        env = Mock(get_db_cnx=lambda: Connection())
+        env = MinimalEnv(Connection)
         dbs = [None, None]
         @with_transaction(env)
         def level0(db):
@@ -163,7 +179,7 @@ class WithTransactionTest(unittest.TestCase):
 
     def test_explicit_in_implicit_failure(self):
         db = Connection()
-        env = Mock(get_db_cnx=lambda: Connection())
+        env = MinimalEnv(Connection)
         dbs = [None, None]
         try:
             @with_transaction(env)
@@ -183,7 +199,7 @@ class WithTransactionTest(unittest.TestCase):
         self.assertTrue(not dbs[0].committed and dbs[0].rolledback)
 
     def test_invalid_nesting(self):
-        env = Mock(get_db_cnx=lambda: Connection())
+        env = MinimalEnv(Connection)
         try:
             @with_transaction(env)
             def level0(db):

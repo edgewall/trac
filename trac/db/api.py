@@ -25,7 +25,6 @@ from trac.util.concurrency import ThreadLocal
 from trac.util.text import unicode_passwd
 from trac.util.translation import _
 
-_transaction_local = ThreadLocal(db=None)
 
 def with_transaction(env, db=None):
     """Function decorator to emulate a context manager for database
@@ -57,6 +56,7 @@ def with_transaction(env, db=None):
     The optional `db` argument is intended for legacy code and should not
     be used in new code.
     """
+    _transaction_local = DatabaseManager(env)._transaction_local
     def transaction_wrapper(fn):
         ldb = _transaction_local.db
         if db is not None:
@@ -87,7 +87,8 @@ def with_transaction(env, db=None):
 
 def get_read_db(env):
     """Get a database connection for reading only."""
-    return _transaction_local.db or DatabaseManager(env).get_connection()
+    return (DatabaseManager(env)._transaction_local.db
+            or DatabaseManager(env).get_connection())
 
 
 class IDatabaseConnector(Interface):
@@ -140,6 +141,7 @@ class DatabaseManager(Component):
 
     def __init__(self):
         self._cnx_pool = None
+        self._transaction_local = ThreadLocal(db=None)
 
     def init_db(self):
         connector, args = self.get_connector()
