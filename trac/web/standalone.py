@@ -298,7 +298,7 @@ def main():
                                        use_http_11=options.http11)
             except socket.error, e:
                 print 'Error starting Trac server on %s' % loc
-                print e.strerror
+                print '[Errno %s] %s' % e.args
                 sys.exit(1)
 
             print 'Server starting in PID %i.' % os.getpid()
