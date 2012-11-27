@@ -820,8 +820,9 @@ class Chrome(Component):
             'admin_href': admin_href,
             'admin_trac_url': self.env.project_admin_trac_url,
         }
+        footer = self.env.project_footer
         d['chrome'] = {
-            'footer': Markup(translation.gettext(self.env.project_footer))
+            'footer': Markup(footer and translation.gettext(footer))
         }
         if req:
             d['chrome'].update(req.chrome)
