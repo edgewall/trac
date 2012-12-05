@@ -697,7 +697,9 @@ class MacroListMacro(WikiMacroBase):
                                                 key=lambda p: p[1]):
                         if descr:
                             if isinstance(descr, (tuple, list)):
-                                descr = dgettext(descr[0], descr[1])
+                                descr = dgettext(descr[0],
+                                                 to_unicode(descr[1])) \
+                                        if descr[1] else ''
                             else:
                                 descr = to_unicode(descr) or ''
                             if content == '*':
@@ -739,9 +741,14 @@ class TracIniMacro(WikiMacroBase):
         if args:
             key_filter = args.pop(0).strip()
 
+        def getdoc(option_or_section):
+            doc = to_unicode(option_or_section.__doc__)
+            if doc:
+                doc = dgettext(option_or_section.doc_domain, doc)
+            return doc
+
         registry = ConfigSection.get_registry(self.compmgr)
-        sections = dict((name, dgettext(section.doc_domain,
-                                        to_unicode(section.__doc__)))
+        sections = dict((name, getdoc(section))
                         for name, section in registry.iteritems()
                         if name.startswith(section_filter))
 
@@ -774,9 +781,7 @@ class TracIniMacro(WikiMacroBase):
              tag.table(class_='wiki')(tag.tbody(
                  tag.tr(tag.td(tag.tt(option.name)),
                         tag.td(format_to_oneliner(
-                            self.env, formatter.context,
-                            dgettext(option.doc_domain,
-                                     to_unicode(option.__doc__)))),
+                            self.env, formatter.context, getdoc(option))),
                         default_cell(option))
                  for option in sorted(options.get(section, {}).itervalues(),
                                       key=lambda o: o.name)
