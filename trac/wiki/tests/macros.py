@@ -2,6 +2,7 @@
 from datetime import datetime
 import unittest
 
+from trac.config import Option
 from trac.test import locale_en
 from trac.util.datefmt import format_date, utc
 from trac.wiki.model import WikiPage
@@ -382,6 +383,32 @@ def recentchanges_teardown(tc):
     tc.env.reset_db()
 
 
+TRACINI_MACRO_TEST_CASES = u"""\
+============================== TracIni, option with empty doc (#10940)
+[[TracIni(section-42)]]
+------------------------------
+<p>
+</p><div class="tracini">\
+<h3 id="section-42-section"><code>[section-42]</code></h3>\
+<table class="wiki"><tbody>\
+<tr><td><tt>option1</tt></td><td></td><td class="default"><code>value</code></td></tr>\
+<tr><td><tt>option2</tt></td><td>blah</td><td class="default"><code>value</code></td></tr>\
+</tbody></table>\
+</div><p>
+</p>
+------------------------------
+"""
+
+def tracini_setup(tc):
+    tc._orig_registry = Option.registry
+    class Foo(object):
+        option_a1 = (Option)('section-42', 'option1', 'value', doc='')
+        option_a2 = (Option)('section-42', 'option2', 'value', doc='blah')
+
+def tracini_teardown(tc):
+    Option.registry = tc._orig_registry
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(IMAGE_MACRO_TEST_CASES, file=__file__))
@@ -401,6 +428,9 @@ def suite():
     suite.addTest(formatter.suite(RECENTCHANGES_MACRO_TEST_CASES, file=__file__,
                                   setup=recentchanges_setup,
                                   teardown=recentchanges_teardown))
+    suite.addTest(formatter.suite(TRACINI_MACRO_TEST_CASES, file=__file__,
+                                  setup=tracini_setup,
+                                  teardown=tracini_teardown))
     return suite
 
 
