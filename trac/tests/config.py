@@ -185,6 +185,15 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEquals(['', 'bar', 'baz'],
                           config.getlist('a', 'option', keep_empty=True))
 
+    def test_read_and_getlist_false_values(self):
+        config = self._read()
+        values = [None, False, '', 'foo', u'', u'bar',
+                  0, 0L, 0.0, 0j, 42, 43.0]
+        self.assertEquals([False, 'foo', u'bar', 0, 0L, 0.0, 0j, 42, 43.0],
+                          config.getlist('a', 'false', values))
+        self.assertEquals(values, config.getlist('a', 'false', values,
+                                                 keep_empty=True))
+
     def test_read_and_choice(self):
         self._write(['[a]', 'option = 2', 'invalid = d'])
         config = self._read()

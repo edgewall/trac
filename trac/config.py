@@ -455,7 +455,7 @@ class Section(object):
         else:
             items = list(value)
         if not keep_empty:
-            items = filter(None, items)
+            items = [item for item in items if item not in (None, '')]
         return items
 
     def getpath(self, key, default=''):
