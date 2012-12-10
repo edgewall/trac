@@ -474,10 +474,7 @@ def parse_date(text, tzinfo=None, locale=None, hint='date'):
                           _('Invalid Date'))
     return dt
 
-def _i18n_parse_date_patterns():
-    if not babel:
-        return {}
-
+def _i18n_parse_date_pattern(locale):
     format_keys = {
         'y': ('y', 'Y'),
         'M': ('M',),
@@ -486,67 +483,67 @@ def _i18n_parse_date_patterns():
         'm': ('m',),
         's': ('s',),
     }
-    patterns = {}
+    regexp = [r'[0-9]+']
 
-    for locale in get_available_locales():
-        regexp = [r'[0-9]+']
+    date_format = get_date_format('medium', locale=locale)
+    time_format = get_time_format('medium', locale=locale)
+    datetime_format = get_datetime_format('medium', locale=locale)
+    formats = (
+        datetime_format.replace('{0}', time_format.format) \
+                       .replace('{1}', date_format.format),
+        date_format.format)
 
-        date_format = get_date_format('medium', locale=locale)
-        time_format = get_time_format('medium', locale=locale)
-        datetime_format = get_datetime_format('medium', locale=locale)
+    orders = []
+    for format in formats:
+        order = []
+        for key, chars in format_keys.iteritems():
+            for char in chars:
+                idx = format.find('%(' + char)
+                if idx != -1:
+                    order.append((idx, key))
+                    break
+        order.sort()
+        order = dict((key, idx) for idx, (_, key) in enumerate(order))
+        orders.append(order)
 
-        formats = (
-            datetime_format.replace('{0}', time_format.format) \
-                           .replace('{1}', date_format.format),
-            date_format.format)
-
-        orders = []
-        for format in formats:
-            order = []
-            for key, chars in format_keys.iteritems():
-                for char in chars:
-                    idx = format.find('%(' + char)
-                    if idx != -1:
-                        order.append((idx, key))
-                        break
-            order.sort()
-            order = dict((key, idx) for idx, (_, key) in enumerate(order))
-            orders.append(order)
-
-        month_names = {
-            'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4, 'may': 5, 'jun': 6,
-            'jul': 7, 'aug': 8, 'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12,
-        }
-        if formats[0].find('%(MMM)s') != -1:
-            for width in ('wide', 'abbreviated'):
-                names = get_month_names(width, locale=locale)
-                for num, name in names.iteritems():
-                    name = name.lower()
-                    month_names[name] = num
-        regexp.extend(month_names.iterkeys())
-
-        period_names = {'am': 'am', 'pm': 'pm'}
-        if formats[0].find('%(a)s') != -1:
-            names = get_period_names(locale=locale)
-            for period, name in names.iteritems():
+    month_names = {
+        'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4, 'may': 5, 'jun': 6,
+        'jul': 7, 'aug': 8, 'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12,
+    }
+    if formats[0].find('%(MMM)s') != -1:
+        for width in ('wide', 'abbreviated'):
+            names = get_month_names(width, locale=locale)
+            for num, name in names.iteritems():
                 name = name.lower()
-                period_names[name] = period
-        regexp.extend(period_names.iterkeys())
+                month_names[name] = num
+    regexp.extend(month_names.iterkeys())
 
-        patterns[locale] = {
-            'orders': orders,
-            'regexp': re.compile('(%s)' % '|'.join(regexp),
-                                 re.IGNORECASE | re.UNICODE),
-            'month_names': month_names,
-            'period_names': period_names,
-        }
+    period_names = {'am': 'am', 'pm': 'pm'}
+    if formats[0].find('%(a)s') != -1:
+        names = get_period_names(locale=locale)
+        for period, name in names.iteritems():
+            name = name.lower()
+            period_names[name] = period
+    regexp.extend(period_names.iterkeys())
 
-    return patterns
+    return {
+        'orders': orders,
+        'regexp': re.compile('(%s)' % '|'.join(regexp),
+                             re.IGNORECASE | re.UNICODE),
+        'month_names': month_names,
+        'period_names': period_names,
+    }
 
-_I18N_PARSE_DATE_PATTERNS = _i18n_parse_date_patterns()
+_I18N_PARSE_DATE_PATTERNS = dict(map(lambda l: (l, False),
+                                     get_available_locales()))
 
 def _i18n_parse_date(text, tzinfo, locale):
-    pattern = _I18N_PARSE_DATE_PATTERNS.get(str(locale))
+    locale = Locale.parse(locale)
+    key = str(locale)
+    pattern = _I18N_PARSE_DATE_PATTERNS.get(key)
+    if pattern is False:
+        pattern = _i18n_parse_date_pattern(locale)
+        _I18N_PARSE_DATE_PATTERNS[key] = pattern
     if pattern is None:
         return None
 
