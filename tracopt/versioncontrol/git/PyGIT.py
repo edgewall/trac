@@ -578,7 +578,8 @@ class Storage(object):
         """returns list of (local) branches, with active (= HEAD) one being
         the first item
         """
-        return self.rev_cache.branch_dict
+        return ((self._fs_to_unicode(name), sha)
+                for name, sha in self.rev_cache.branch_dict)
 
     def get_commits(self):
         return self.rev_cache.rev_dict
@@ -604,7 +605,8 @@ class Storage(object):
             return []
 
         if resolve:
-            return [(k, v) for k, v in _rev_cache.branch_dict if v in rheads]
+            return ((self._fs_to_unicode(k), v)
+                    for k, v in _rev_cache.branch_dict if v in rheads)
 
         return rheads
 
@@ -685,7 +687,7 @@ class Storage(object):
         """verify/lookup given revision object and return a sha id or None
         if lookup failed
         """
-        rev = str(rev)
+        rev = self._fs_from_unicode(rev)
 
         _rev_cache = self.rev_cache
 
@@ -769,7 +771,8 @@ class Storage(object):
         return None
 
     def get_tags(self):
-        return [ e.strip() for e in self.repo.tag('-l').splitlines() ]
+        return (self._fs_to_unicode(e.strip())
+                for e in self.repo.tag('-l').splitlines())
 
     def ls_tree(self, rev, path=''):
         rev = rev and str(rev) or 'HEAD' # paranoia
