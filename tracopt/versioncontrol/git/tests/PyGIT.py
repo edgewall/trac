@@ -11,9 +11,15 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import os
+import shutil
+import tempfile
 import unittest
+from subprocess import Popen, PIPE
 
-from trac.test import locate
+from trac.test import locate, EnvironmentStub
+from trac.util import create_file
+from trac.util.compat import close_fds
 from tracopt.versioncontrol.git.PyGIT import GitCore, Storage, parse_commit
 
 
@@ -135,6 +141,76 @@ dQpo6WWG9HIJ23hOGAGR
 .. using the new signed tag merge of git that now verifies the gpg
 signature automatically.  Yay.  The branchname was just 'dev', which is
 prettier.  I'll tell Ted to use nicer tag names for future cases.""", msg)
+
+
+class UnicodeNameTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.repos_path = tempfile.mkdtemp(prefix='trac-gitrepos')
+        self.git_bin = locate('git')
+        # create git repository and master branch
+        self._git('init', self.repos_path)
+        create_file(os.path.join(self.repos_path, '.gitignore'))
+        self._git('add', '.gitignore')
+        self._git('commit', '-a', '-m', 'test')
+
+    def tearDown(self):
+        if os.path.isdir(self.repos_path):
+            shutil.rmtree(self.repos_path)
+
+    def _git(self, *args):
+        args = [self.git_bin] + list(args)
+        proc = Popen(args, stdout=PIPE, stderr=PIPE, close_fds=close_fds,
+                     cwd=self.repos_path)
+        proc.wait()
+        assert proc.returncode == 0
+        return proc
+
+    def _storage(self):
+        path = os.path.join(self.repos_path, '.git')
+        return Storage(path, self.env.log, self.git_bin, 'utf-8')
+
+    def test_unicode_verifyrev(self):
+        storage = self._storage()
+        self.assertNotEqual(None, storage.verifyrev(u'master'))
+        self.assertEquals(None, storage.verifyrev(u'tété'))
+
+    def test_unicode_filename(self):
+        create_file(os.path.join(self.repos_path, 'tickét.txt'))
+        self._git('add', 'tickét.txt')
+        self._git('commit', '-m', 'unicode-filename')
+        storage = self._storage()
+        filenames = sorted(fname for mode, type, sha, size, fname
+                                 in storage.ls_tree('HEAD'))
+        self.assertEquals(unicode, type(filenames[0]))
+        self.assertEquals(unicode, type(filenames[1]))
+        self.assertEquals(u'.gitignore', filenames[0])
+        self.assertEquals(u'tickét.txt', filenames[1])
+
+    def test_unicode_branches(self):
+        self._git('checkout', '-b', 'tickét10980', 'master')
+        storage = self._storage()
+        branches = sorted(storage.get_branches())
+        self.assertEquals(unicode, type(branches[0][0]))
+        self.assertEquals(unicode, type(branches[1][0]))
+        self.assertEquals(u'master', branches[0][0])
+        self.assertEquals(u'tickét10980', branches[1][0])
+
+        contains = sorted(storage.get_branch_contains(branches[1][1],
+                                                      resolve=True))
+        self.assertEquals(unicode, type(contains[0][0]))
+        self.assertEquals(unicode, type(contains[1][0]))
+        self.assertEquals(u'master', contains[0][0])
+        self.assertEquals(u'tickét10980', contains[1][0])
+
+    def test_unicode_tags(self):
+        self._git('tag', 'täg-t10980', 'master')
+        storage = self._storage()
+        tags = tuple(storage.get_tags())
+        self.assertEquals(unicode, type(tags[0]))
+        self.assertEquals(u'täg-t10980', tags[0])
+        self.assertNotEqual(None, storage.verifyrev(u'täg-t10980'))
 
 
 #class GitPerformanceTestCase(unittest.TestCase):
@@ -291,6 +367,9 @@ def suite():
     if git:
         suite.addTest(unittest.makeSuite(GitTestCase, 'test'))
         suite.addTest(unittest.makeSuite(TestParseCommit, 'test'))
+        if os.name != 'nt':
+            # Popen doesn't accept unicode path and arguments on Windows
+            suite.addTest(unittest.makeSuite(UnicodeNameTestCase, 'test'))
     else:
         print("SKIP: tracopt/versioncontrol/git/tests/PyGIT.py (git cli "
               "binary, 'git', not found)")
