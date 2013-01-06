@@ -1461,7 +1461,7 @@ class TicketModule(Component):
         items = []
         for i, word in enumerate(re.split(r'([;,\s]+)', value)):
             if i % 2:
-                items.append(word)
+                items.append(word.strip() + ' ')
             elif word:
                 rendered = name != 'cc' and word \
                            or Chrome(self.env).format_emails(context, word)
@@ -1791,7 +1791,8 @@ class TicketModule(Component):
                 diff = tag.a(_("diff"), href=href)
                 rendered = tag_("modified (%(diff)s)", diff=diff)
         elif type_ == 'text' and field_info.get('format') == 'list':
-            old_list, new_list = old.split(), new.split()
+            old_list = re.split(r'[;,\s]+', old) if old else []
+            new_list = re.split(r'[;,\s]+', new) if new else []
             sep = ' '
 
         # per name special rendering of diffs
