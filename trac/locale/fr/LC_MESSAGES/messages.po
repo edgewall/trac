@@ -3866,8 +3866,8 @@ msgid ""
 "Sorry, can not save your changes. This ticket has been modified by "
 "someone else since you started"
 msgstr ""
-"Desolé, les changements ne peuvent pas être enregistrés. Ce ticket a été "
-"modifié par un autre utilisateur depuis que l'édition a débutée."
+"Désolé, les changements ne peuvent pas être enregistrés. Ce ticket a été "
+"modifié par un autre utilisateur dans l'intervalle."
 
 #: trac/ticket/web_ui.py:1230
 msgid "Tickets must contain a summary."
