@@ -15,7 +15,7 @@ from subprocess import call, Popen, PIPE, STDOUT
 
 from trac.env import open_environment
 from trac.test import EnvironmentStub, get_dburi
-from trac.tests.functional.compat import rmtree, close_fds
+from trac.tests.functional.compat import rmtree
 from trac.tests.functional import logfile
 from trac.tests.functional.better_twill import tc, ConnectError
 from trac.util.compat import close_fds

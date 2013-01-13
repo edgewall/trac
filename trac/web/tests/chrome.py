@@ -1,7 +1,22 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2013 Edgewall Software
+# All rights reserved.
+#
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at http://trac.edgewall.org/wiki/TracLicense.
+#
+# This software consists of voluntary contributions made by many
+# individuals. For the exact contribution history, see the revision
+# history and logs, available at http://trac.edgewall.org/log/.
+
 from trac.core import Component, implements
 from trac.test import EnvironmentStub
-from trac.web.chrome import add_link, add_meta, add_script, add_script_data, \
-                            add_stylesheet, Chrome, INavigationContributor
+from trac.tests.contentgen import random_sentence
+from trac.web.chrome import (
+    Chrome, INavigationContributor, add_link, add_meta, add_notice, add_script,
+    add_script_data, add_stylesheet, add_warning)
 from trac.web.href import Href
 
 import unittest
@@ -97,6 +112,28 @@ class ChromeTestCase(unittest.TestCase):
         links = req.chrome['links']['stylesheet']
         self.assertEqual(1, len(links))
         self.assertEqual('print', links[0]['media'])
+
+    def test_add_warning_is_unique(self):
+        req = Request(abs_href=Href('http://example.org/trac.cgi'),
+                      href=Href('/trac.cgi'), base_path='/trac.cgi',
+                      path_info='',
+                      add_redirect_listener=lambda listener: None)
+        Chrome(self.env).prepare_request(req)
+        message = random_sentence(5)
+        add_warning(req, message)
+        add_warning(req, message)
+        self.assertEqual(1, len(req.chrome['warnings']))
+
+    def test_add_notice_is_unique(self):
+        req = Request(abs_href=Href('http://example.org/trac.cgi'),
+                      href=Href('/trac.cgi'), base_path='/trac.cgi',
+                      path_info='',
+                      add_redirect_listener=lambda listener: None)
+        Chrome(self.env).prepare_request(req)
+        message = random_sentence(5)
+        add_notice(req, message)
+        add_notice(req, message)
+        self.assertEqual(1, len(req.chrome['notices']))
 
     def test_htdocs_location(self):
         req = Request(abs_href=Href('http://example.org/trac.cgi'),
