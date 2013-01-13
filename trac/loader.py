@@ -117,7 +117,7 @@ def load_components(env, extra_path=None, loaders=(load_eggs('trac.plugins'),
 def get_plugin_info(env, include_core=False):
     """Return package information about Trac core and installed plugins."""
     path_sources = {}
-    
+
     def find_distribution(module):
         name = module.__name__
         path = get_module_path(module)
@@ -133,7 +133,7 @@ def get_plugin_info(env, include_core=False):
                                               version='',
                                               location=module.__file__)
         return dist
-        
+
     plugins_dir = get_plugins_dir(env)
     plugins = {}
     from trac.core import ComponentMeta
@@ -160,19 +160,19 @@ def get_plugin_info(env, include_core=False):
                     if v and isinstance(v, basestring):
                         if k == 'home_page' or k == 'url':
                             k = 'home_page'
-                            v = v.replace('$', '').replace('URL: ', '') 
+                            v = v.replace('$', '').replace('URL: ', '')
                         else:
                             v = to_unicode(v)
                         info[k] = v
             else:
-                # Info found; set all those fields to "None" that have the 
+                # Info found; set all those fields to "None" that have the
                 # value "UNKNOWN" as this is the value for fields that
                 # aren't specified in "setup.py"
                 for k in info:
                     if info[k] == 'UNKNOWN':
                         info[k] = ''
                     else:
-                        # Must be encoded as unicode as otherwise Genshi 
+                        # Must be encoded as unicode as otherwise Genshi
                         # may raise a "UnicodeDecodeError".
                         info[k] = to_unicode(info[k])
 
@@ -182,7 +182,7 @@ def get_plugin_info(env, include_core=False):
                 version = (getattr(module, 'version', '') or
                            getattr(module, 'revision', ''))
                 # special handling for "$Rev$" strings
-                version = version.replace('$', '').replace('Rev: ', 'r') 
+                version = version.replace('$', '').replace('Rev: ', 'r')
             plugins[dist.project_name] = {
                 'name': dist.project_name, 'version': version,
                 'path': dist.location, 'plugin_filename': plugin_filename,
@@ -222,7 +222,7 @@ def match_plugins_to_frames(plugins, frames):
     """
     egg_frames = [(i, f) for i, f in enumerate(frames)
                   if f['filename'].startswith('build/')]
-    
+
     def find_egg_frame_index(plugin):
         for dist in pkg_resources.find_distributions(plugin['path'],
                                                      only=True):
@@ -237,7 +237,7 @@ def match_plugins_to_frames(plugins, frames):
                                 return
             except KeyError:
                 pass    # Metadata not found
-    
+
     for plugin in plugins:
         base, ext = os.path.splitext(plugin['path'])
         if ext == '.egg' and egg_frames:

@@ -45,8 +45,8 @@ if devel:
 # General configuration
 # ---------------------
 
-# Add any Sphinx extension module names here, as strings. 
-# They can be extensions coming with Sphinx (named 'sphinx.ext.*') 
+# Add any Sphinx extension module names here, as strings.
+# They can be extensions coming with Sphinx (named 'sphinx.ext.*')
 # or your custom ones.
 
 extensions = []
@@ -120,7 +120,7 @@ pygments_style = 'trac'
 # The default role is a reference to some Python object
 default_role = 'py:obj'
 
-
+
 # Options for HTML output
 # -----------------------
 
@@ -185,7 +185,7 @@ htmlhelp_basename = 'Tracdoc'
 
 modindex_common_prefix = ['trac.', 'tracopt.']
 
-
+
 # Options for LaTeX output
 # ------------------------
 
@@ -219,8 +219,8 @@ latex_documents = [
 #latex_use_modindex = True
 
 
-
-# Options for PDF output 
+
+# Options for PDF output
 # ----------------------
 # (initially copied from
 #  http://rst2pdf.googlecode.com/svn/tags/0.16/doc/manual.txt)
@@ -231,15 +231,15 @@ latex_documents = [
 # If there is more than one author, separate them with \\.
 # For example: r'Guido van Rossum\\Fred L. Drake, Jr., editor'
 #
-# The options element is a dictionary that lets you override 
+# The options element is a dictionary that lets you override
 # this config per-document.
-# For example, 
-# ('index', u'MyProject', u'My Project', u'Author Name', 
+# For example,
+# ('index', u'MyProject', u'My Project', u'Author Name',
 #  dict(pdf_compressed = True))
 # would mean that specific document would be compressed
 # regardless of the global pdf_compressed setting.
 
-pdf_documents = [ 
+pdf_documents = [
     ('index', 'trac_dev', project, u'The Trac Team'),
 ]
 
@@ -275,7 +275,7 @@ pdf_break_level = 1
 # or just use 'any'
 #pdf_breakside = 'any'
 
-# Insert footnotes where they are defined instead of 
+# Insert footnotes where they are defined instead of
 # at the end.
 #pdf_inline_footnotes = True
 
@@ -294,7 +294,7 @@ pdf_use_modindex = True
 # Name of the cover page template to use
 #pdf_cover_template = 'sphinxcover.tmpl'
 
-# Documents to append as an appendix to all manuals.    
+# Documents to append as an appendix to all manuals.
 #pdf_appendices = []
 
 # Enable experimental feature to split table cells. Use it

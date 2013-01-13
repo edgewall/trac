@@ -17,7 +17,7 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
 
     def test_simple_actions(self):
         self.env.db_transaction.executemany(
-            "INSERT INTO permission VALUES (%s,%s)", 
+            "INSERT INTO permission VALUES (%s,%s)",
             [('john', 'WIKI_MODIFY'),
              ('john', 'REPORT_ADMIN'),
              ('kate', 'TICKET_CREATE')])
@@ -28,7 +28,7 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
 
     def test_simple_group(self):
         self.env.db_transaction.executemany(
-            "INSERT INTO permission VALUES (%s,%s)", 
+            "INSERT INTO permission VALUES (%s,%s)",
             [('dev', 'WIKI_MODIFY'),
              ('dev', 'REPORT_ADMIN'),
              ('john', 'dev')])
@@ -37,10 +37,10 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
 
     def test_nested_groups(self):
         self.env.db_transaction.executemany(
-            "INSERT INTO permission VALUES (%s,%s)", 
+            "INSERT INTO permission VALUES (%s,%s)",
             [('dev', 'WIKI_MODIFY'),
              ('dev', 'REPORT_ADMIN'),
-             ('admin', 'dev'), 
+             ('admin', 'dev'),
              ('john', 'admin')])
         self.assertEquals(['REPORT_ADMIN', 'WIKI_MODIFY'],
                           sorted(self.store.get_user_permissions('john')))
@@ -57,7 +57,7 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
 
     def test_builtin_groups(self):
         self.env.db_transaction.executemany(
-            "INSERT INTO permission VALUES (%s,%s)", 
+            "INSERT INTO permission VALUES (%s,%s)",
             [('authenticated', 'WIKI_MODIFY'),
              ('authenticated', 'REPORT_ADMIN'),
              ('anonymous', 'TICKET_CREATE')])
@@ -131,7 +131,7 @@ class PermissionSystemTestCase(unittest.TestCase):
                     ('jane', 'TEST_ADMIN')]
         for res in self.perm.get_all_permissions():
             self.failIf(res not in expected)
-    
+
     def test_expand_actions_iter_7467(self):
         # Check that expand_actions works with iterators (#7467)
         perms = set(['EMAIL_VIEW', 'TRAC_ADMIN', 'TEST_DELETE', 'TEST_MODIFY',
@@ -148,7 +148,7 @@ class PermissionCacheTestCase(unittest.TestCase):
                                            TestPermissionRequestor])
         self.perm_system = perm.PermissionSystem(self.env)
         # by-pass DefaultPermissionPolicy cache:
-        perm.DefaultPermissionPolicy.CACHE_EXPIRY = -1 
+        perm.DefaultPermissionPolicy.CACHE_EXPIRY = -1
         self.perm_system.grant_permission('testuser', 'TEST_MODIFY')
         self.perm_system.grant_permission('testuser', 'TEST_ADMIN')
         self.perm = perm.PermissionCache(self.env, 'testuser')

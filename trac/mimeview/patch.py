@@ -171,7 +171,7 @@ class PatchRenderer(Component):
                                    new=newpath.lstrip('b/'))
                         shortrev = ('-', '+')
                     elif newpath == '/dev/null':
-                        common = _("deleted file %(deleted)s", 
+                        common = _("deleted file %(deleted)s",
                                    deleted=oldpath.lstrip('a/'))
                         shortrev = ('+', '-')
                     else:
@@ -185,7 +185,7 @@ class PatchRenderer(Component):
                 changes.append({'change': 'edit', 'props': [],
                                 'comments': '\n'.join(comments),
                                 'binary': binary,
-                                'diffs': groups, 
+                                'diffs': groups,
                                 'diffs_title': groups_title,
                                 'old': {'path': common,
                                         'rev': ' '.join(oldinfo[1:]),

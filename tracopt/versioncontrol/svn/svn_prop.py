@@ -44,7 +44,7 @@ class SubversionPropertyRenderer(Component):
         target repository, then you can instruct Trac which other repository
         browser to use for which external URL. This mapping is done in the
         `[svn:externals]` section of the TracIni.
-        
+
         Example:
         {{{
         [svn:externals]
@@ -60,11 +60,11 @@ class SubversionPropertyRenderer(Component):
         external additionally specifies a revision, see the
         [http://svnbook.red-bean.com/en/1.4/svn.advanced.externals.html SVN Book on externals]
         for more details).
-        
+
         Note that the number used as a key in the above section is purely used
         as a place holder, as the URLs themselves can't be used as a key due to
         various limitations in the configuration file parser.
-        
+
         Finally, the relative URLs introduced in
         [http://subversion.apache.org/docs/release-notes/1.5.html#externals Subversion 1.5]
         are not yet supported.
@@ -81,7 +81,7 @@ class SubversionPropertyRenderer(Component):
             return 4
         return 2 if name in ('svn:mergeinfo', 'svnmerge-blocked',
                              'svnmerge-integrated') else 0
-    
+
     def render_property(self, name, mode, context, props):
         if name == 'svn:externals':
             return self._render_externals(props[name])
@@ -96,7 +96,7 @@ class SubversionPropertyRenderer(Component):
                 value = value.split()
                 if len(value) != 2:
                     self.log.warn("svn:externals entry %s doesn't contain "
-                            "a space-separated key value pair, skipping.", 
+                            "a space-separated key value pair, skipping.",
                             dummykey)
                     continue
                 key, value = value
@@ -125,7 +125,7 @@ class SubversionPropertyRenderer(Component):
                 prefix.append(pref)
             href = self._externals_map.get(base_url)
             revstr = ' at revision ' + rev if rev else ''
-            if not href and (url.startswith('http://') or 
+            if not href and (url.startswith('http://') or
                              url.startswith('https://')):
                 href = url.replace('%', '%%')
             if href:
@@ -177,7 +177,7 @@ class SubversionMergePropertyRenderer(Component):
     def match_property(self, name, mode):
         return 4 if name in ('svn:mergeinfo', 'svnmerge-blocked',
                              'svnmerge-integrated') else 0
-    
+
     def render_property(self, name, mode, context, props):
         """Parse svn:mergeinfo and svnmerge-* properties, converting branch
         names to links and providing links to the revision log for merged
@@ -193,7 +193,7 @@ class SubversionMergePropertyRenderer(Component):
         if has_eligible:
             node = repos.get_node(target_path, target_rev)
             branch_starts = {}
-            for path, rev in node.get_copy_ancestry(): 
+            for path, rev in node.get_copy_ancestry():
                 if path not in branch_starts:
                     branch_starts[path] = rev + 1
         rows = []
@@ -260,7 +260,7 @@ class SubversionMergePropertyRenderer(Component):
 
 def _partition_inheritable(revs):
     """Non-inheritable revision ranges are marked with a trailing '*'."""
-    inheritable, non_inheritable = [], []           
+    inheritable, non_inheritable = [], []
     for r in revs.split(','):
         if r and r[-1] == '*':
             non_inheritable.append(r[:-1])
@@ -378,7 +378,7 @@ class SubversionMergePropertyDiffRenderer(Component):
                     added and tag(added_label, revs_link(added, new_context)),
                     removed and tag(removed_label,
                                     revs_link(removed, old_context)),
-                    added_ni and tag(added_ni_label, 
+                    added_ni and tag(added_ni_label,
                                      revs_link(added_ni, new_context)),
                     removed_ni and tag(removed_ni_label,
                                        revs_link(removed_ni, old_context))
@@ -392,7 +392,7 @@ class SubversionMergePropertyDiffRenderer(Component):
             modified_sources.sort()
             removed_sources.sort()
             changes = tag.table(tag.tbody(
-                [tag.tr(tag.td(c) for c in cols[1:]) 
+                [tag.tr(tag.td(c) for c in cols[1:])
                  for cols in modified_sources],
                 [tag.tr(tag.td(src), tag.td(_('removed'), colspan=4))
                  for spath, src in removed_sources]), class_='props')

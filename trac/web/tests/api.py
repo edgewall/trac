@@ -118,7 +118,7 @@ class RequestTestCase(unittest.TestCase):
         req = Request(environ, None)
         self.assertEqual('Set-Cookie: key=value1',
                          str(req.incookie).rstrip(';'))
-        
+
     def test_read(self):
         environ = self._make_environ(**{'wsgi.input': StringIO('test input')})
         req = Request(environ, None)

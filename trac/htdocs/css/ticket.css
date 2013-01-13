@@ -1,7 +1,7 @@
 @import url(code.css);
 
-#content.ticket { 
- width: 58em; 
+#content.ticket {
+ width: 58em;
  max-width: 100%;
  margin-left: auto;
  margin-right: auto;
@@ -158,7 +158,7 @@ div.comment ol { list-style: decimal }
 /* Comment editor */
 #trac-comment-editor { margin-left: 2em; margin-bottom: 1em }
 #trac-comment-editor div.trac-resizable { width: 100% }
-#trac-comment-editor textarea { 
+#trac-comment-editor textarea {
  background: #ffffe0;
  margin-left: -1px;
  margin-right: -1px;

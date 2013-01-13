@@ -9,7 +9,7 @@ Classes
 -------
 
 The following classes are not meant to be used directly.
-In particular, the `ConnectionWrapper` is what the 
+In particular, the `ConnectionWrapper` is what the
 `~trac.db.api.DbContextManager` context managers will return.
 
 For example::

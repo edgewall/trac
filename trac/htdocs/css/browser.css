@@ -3,8 +3,8 @@
 #prefs fieldset { margin: 0; }
 #prefs fieldset label { display: block }
 #prefs .buttons { margin-top: -2.3em }
-#prefs .choice { 
- float: left; 
+#prefs .choice {
+ float: left;
  margin: 0 .6em 0 .3em;
  border-right: 1px dotted #d7d7d7;
 }
@@ -21,9 +21,9 @@ h1 .pathentry { float: left; padding: 0 .1em }
 
 #diffrev, #jumprev, #jumploc { float: right; font-size: 10px; margin: 0 0 0.6em 2em; }
 #diffrev form, #jumprev form, #jumploc form { margin: 0 }
-#diffrev input, #jumprev input, #jumploc select, #jumploc input { 
-  font-size: 10px; 
-  margin: 0; 
+#diffrev input, #jumprev input, #jumploc select, #jumploc input {
+  font-size: 10px;
+  margin: 0;
 }
 #jumploc div.buttons { margin: 0; }
 
@@ -31,11 +31,11 @@ h1 .pathentry { float: left; padding: 0 .1em }
 table.code th.blame { width: 5em; }
 table.code th.blame a { color: #ddd; }
 
-div.message { 
+div.message {
   background: #f7f7f0;
   border: 3px double #d7d7d7;
   margin: 0;
-  padding: 8px; 
+  padding: 8px;
   /* Note: border width and padding must be compensated for in the placement */
 }
 
@@ -55,7 +55,7 @@ table.dirlist td.rev {
  font-size: 90%;
  text-align: right;
 }
-table.dirlist td.size {  
+table.dirlist td.size {
  color: #888;
  white-space: nowrap;
  text-align: right;
@@ -75,22 +75,22 @@ table.dirlist td.name a.parent {
   background: url(../parent.png) 0 50% no-repeat;
   padding-left: 20px;
 }
-table.dirlist tr span.expander { 
-  background: url(../expander_normal.png) 0 50% no-repeat; 
-  cursor: pointer; 
-  padding-left: 8px; 
-  margin-left: 4px; 
+table.dirlist tr span.expander {
+  background: url(../expander_normal.png) 0 50% no-repeat;
+  cursor: pointer;
+  padding-left: 8px;
+  margin-left: 4px;
 }
-table.dirlist tr span.expander:hover { 
+table.dirlist tr span.expander:hover {
   background: url(../expander_normal_hover.png) 0 50% no-repeat;
 }
-table.dirlist tr.expanded span.expander { 
-  background: url(../expander_open.png) 0 50% no-repeat; 
-  padding-left: 12px; 
-  margin-left: 0; 
+table.dirlist tr.expanded span.expander {
+  background: url(../expander_open.png) 0 50% no-repeat;
+  padding-left: 12px;
+  margin-left: 0;
 }
-table.dirlist tr.expanded span.expander:hover { 
-  background: url(../expander_open_hover.png) 0 50% no-repeat; 
+table.dirlist tr.expanded span.expander:hover {
+  background: url(../expander_open_hover.png) 0 50% no-repeat;
 }
 table.dirlist td.name a.dir {
   background: url(../folder.png) 0 50% no-repeat;
@@ -102,18 +102,18 @@ table.dirlist td.name a.file {
 }
 table.dirlist td.name a, table.dirlist td.rev a { border-bottom: none }
 table.dirlist td.author, table.dirlist td.change { font-size: 85% }
-table.dirlist td.rev a.chgset { 
+table.dirlist td.rev a.chgset {
   background: url(../changeset.png) 100% 50% no-repeat;
-  padding: 0 0 0 5px; 
-  margin: 0 5px 0 0; 
+  padding: 0 0 0 5px;
+  margin: 0 5px 0 0;
 }
 table.dirlist td.description { padding-left: 2em }
 table.dirlist td.description > :first-child { margin-top: 0 }
 table.dirlist td.description > :last-child { margin-bottom: 0 }
-table.dirlist td span.loading { 
+table.dirlist td span.loading {
   background: url(../loading.gif) 0 50% no-repeat;
   padding-left: 20px;
-  font-style: italic 
+  font-style: italic
 }
 
 #content.browser div.description { padding: 0 0.5em }
@@ -134,19 +134,19 @@ table.trac-graph tbody tr td.trac-graph { padding: 0; background-color: #fcfcfc;
 table.trac-graph th.trac-graph, table.trac-graph td.trac-graph { display: none; }
 table.trac-graph td.summary { white-space: nowrap; }
 
-@media print { 
+@media print {
  th.diff, td.diff { display: none }
 }
 
 /* Styles for the revision log table (extends the styles for "table.listing") */
 table.chglist { margin-top: 0 }
-.chglist td.diff, .chglist td.rev, .chglist td.age, 
+.chglist td.diff, .chglist td.rev, .chglist td.age,
 .chglist td.author, .chglist td.change {
  white-space: nowrap;
  vertical-align: middle;
 }
 .chglist td.author { color: #888 }
-.chglist td.change span.edit { 
+.chglist td.change span.edit {
  border: 1px solid #999;
  float: left;
  margin: .2em .5em 0 0;
@@ -156,24 +156,24 @@ table.chglist { margin-top: 0 }
 .chglist td.change .comment { display: none }
 .chglist td.age { font-size: 85% }
 .chglist td.author { font-size: 85% }
-.chglist td.rev { 
- font-family: monospace;  
+.chglist td.rev {
+ font-family: monospace;
  letter-spacing: -0.08em;
  font-size: 90%;
- text-align: right; 
+ text-align: right;
 }
 .chglist td.rev a { border-bottom: none }
 .chglist td.rev a.chgset {
   background-repeat: no-repeat;
-  background-image: url(../changeset.png); 
+  background-image: url(../changeset.png);
   background-position: 100% 50%;
-  padding: 0 0 0 5px; 
-  margin: 0 5px 0 0; 
+  padding: 0 0 0 5px;
+  margin: 0 5px 0 0;
 }
-.chglist td.summary, .chglist td.log { 
- width: 100%; 
- font-size: 85%; 
- vertical-align: middle; 
+.chglist td.summary, .chglist td.log {
+ width: 100%;
+ font-size: 85%;
+ vertical-align: middle;
 }
 .chglist td.summary *, .chglist td.log * { margin-top: 0 }
 /* verbose mode */
@@ -185,10 +185,10 @@ table.chglist { margin-top: 0 }
 }
 .chglist tr.verbose td { border: none; }
 .chglist tr.verbose td.diff, .chglist tr.verbose td.filler {
- border-left: 1px solid #ddd; 
+ border-left: 1px solid #ddd;
 }
 .chglist tr.verbose td.summary, .chglist tr.verbose td.log {
- border-right: 1px solid #ddd; 
+ border-right: 1px solid #ddd;
 }
 
 #paging { margin: 1em 0 }

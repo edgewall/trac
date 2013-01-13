@@ -39,6 +39,7 @@ class GitTestCase(unittest.TestCase):
 
 
 class TestParseCommit(unittest.TestCase):
+    # The ''' ''' lines are intended to keep lines with trailing whitespace
     commit2240a7b = '''\
 tree b19535236cfb6c64b798745dd3917dafc27bcd0a
 parent 30aaca4582eac20a52ac7b2ec35bdb908133e5b1
@@ -49,11 +50,11 @@ mergetag object 5a0dc7365c240795bf190766eba7a27600be3b3e
  type commit
  tag tytso-for-linus-20111214A
  tagger Theodore Ts'o <tytso@mit.edu> 1323890113 -0500
- 
+ ''' '''
  tytso-for-linus-20111214
  -----BEGIN PGP SIGNATURE-----
  Version: GnuPG v1.4.10 (GNU/Linux)
- 
+ ''' '''
  iQIcBAABCAAGBQJO6PXBAAoJENNvdpvBGATwpuEP/2RCxmdWYZ8/6Z6pmTh3hHN5
  fx6HckTdvLQOvbQs72wzVW0JKyc25QmW2mQc5z3MjSymjf/RbEKihPUITRNbHrTD
  T2sP/lWu09AKLioEg4ucAKn/A7Do3UDIkXTszvVVP/t2psVPzLeJ1njQKra14Nyz
@@ -222,10 +223,10 @@ class UnicodeNameTestCase(unittest.TestCase):
 #    def test_performance(self):
 #        import logging
 #        import timeit
-#        
+#
 #        g = Storage(path_to_repo, logging) # Need a git repository path here
 #        revs = g.get_commits().keys()
-#        
+#
 #        def shortrev_test():
 #            for i in revs:
 #                i = str(i)
@@ -252,7 +253,7 @@ class UnicodeNameTestCase(unittest.TestCase):
 #        # custom linux hack reading `/proc/<PID>/statm`
 #        if sys.platform == 'linux2':
 #            __pagesize = os.sysconf('SC_PAGESIZE')
-#    
+#
 #            def proc_statm(pid = os.getpid()):
 #                __proc_statm = '/proc/%d/statm' % pid
 #                try:
@@ -263,7 +264,7 @@ class UnicodeNameTestCase(unittest.TestCase):
 #                    return tuple([ __pagesize*int(p) for p in result ])
 #                except:
 #                    raise RuntimeError("failed to get memory stats")
-#    
+#
 #        else: # not linux2
 #            print "WARNING - meminfo.proc_statm() not available"
 #            def proc_statm():
@@ -272,19 +273,19 @@ class UnicodeNameTestCase(unittest.TestCase):
 #        print "statm =", proc_statm()
 #        __data_size = proc_statm()[5]
 #        __data_size_last = [__data_size]
-#    
+#
 #        def print_data_usage():
 #            __tmp = proc_statm()[5]
 #            print "DATA: %6d %+6d" % (__tmp - __data_size,
 #                                    __tmp - __data_size_last[0])
 #            __data_size_last[0] = __tmp
-#    
+#
 #        print_data_usage()
-#    
+#
 #        g = Storage(path_to_repo, logging) # Need a git repository path here
-#    
+#
 #        print_data_usage()
-#    
+#
 #        print "[%s]" % g.head()
 #        print g.ls_tree(g.head())
 #        print "--------------"
@@ -309,11 +310,11 @@ class UnicodeNameTestCase(unittest.TestCase):
 #        p = g.youngest_rev()
 #        print g.hist_prev_revision(p), p, g.hist_next_revision(p)
 #        print "--------------"
-#    
+#
 #        p = g.head()
 #        for i in range(-5, 5):
 #            print i, g.history_relative_rev(p, i)
-#    
+#
 #        # check for loops
 #        def check4loops(head):
 #            print "check4loops", head
@@ -323,9 +324,9 @@ class UnicodeNameTestCase(unittest.TestCase):
 #                    print "dupe detected :-/", _sha, len(seen)
 #                seen.add(_sha)
 #            return seen
-#    
+#
 #        print len(check4loops(g.parents(g.head())[0]))
-#    
+#
 #        #p = g.head()
 #        #revs = [ g.history_relative_rev(p, i) for i in range(0,10) ]
 #        print_data_usage()
@@ -334,11 +335,11 @@ class UnicodeNameTestCase(unittest.TestCase):
 #
 #        #print len(check4loops(g.oldest_rev()))
 #        #print len(list(g.children_recursive(g.oldest_rev())))
-#    
+#
 #        print_data_usage()
-#    
+#
 #        # perform typical trac operations:
-#    
+#
 #        if 1:
 #            print "--------------"
 #            rev = g.head()
@@ -346,15 +347,15 @@ class UnicodeNameTestCase(unittest.TestCase):
 #                [last_rev] = g.history(rev, name, limit=1)
 #                s = g.get_obj_size(sha) if _type == 'blob' else 0
 #                msg = g.read_commit(last_rev)
-#    
+#
 #                print "%s %s %10d [%s]" % (_type, last_rev, s, name)
-#    
+#
 #        print "allocating 2nd instance"
 #        print_data_usage()
 #        g2 = Storage(path_to_repo, logging) # Need a git repository path here
 #        g2.head()
 #        print_data_usage()
-#    
+#
 #        print "allocating 3rd instance"
 #        g3 = Storage(path_to_repo, logging) # Need a git repository path here
 #        g3.head()

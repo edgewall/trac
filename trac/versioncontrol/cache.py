@@ -47,7 +47,7 @@ class CachedRepository(Repository):
     has_linear_changesets = False
 
     scope = property(lambda self: self.repos.scope)
-    
+
     def __init__(self, env, repos, log):
         self.env = env
         self.repos = repos
@@ -59,7 +59,7 @@ class CachedRepository(Repository):
 
     def get_base(self):
         return self.repos.get_base()
-        
+
     def get_quickjump_entries(self, rev):
         return self.repos.get_quickjump_entries(self.normalize_rev(rev))
 
@@ -124,16 +124,16 @@ class CachedRepository(Repository):
                 db.executemany("DELETE FROM repository WHERE id=%s AND name=%s",
                                [(self.id, k) for k in CACHE_METADATA_KEYS])
                 db.executemany("""
-                      INSERT INTO repository (id, name, value) 
+                      INSERT INTO repository (id, name, value)
                       VALUES (%s, %s, %s)
                       """, [(self.id, k, '') for k in CACHE_METADATA_KEYS])
                 del self.metadata
 
         metadata = self.metadata
-        
+
         with self.env.db_transaction as db:
             invalidate = False
-    
+
             # -- check that we're populating the cache for the correct
             #    repository
             repository_dir = metadata.get(CACHE_REPOSITORY_DIR)
@@ -149,10 +149,10 @@ class CachedRepository(Repository):
                                       "repository with: trac-admin $ENV "
                                       "repository resync '%(reponame)s'",
                                       reponame=self.reponame or '(default)'))
-            elif repository_dir is None: # 
+            elif repository_dir is None: #
                 self.log.info('Storing initial "repository_dir": %s',
                               self.name)
-                db("""INSERT INTO repository (id, name, value) 
+                db("""INSERT INTO repository (id, name, value)
                       VALUES (%s, %s, %s)
                       """, (self.id, CACHE_REPOSITORY_DIR, self.name))
                 invalidate = True
@@ -161,14 +161,14 @@ class CachedRepository(Repository):
                 db("UPDATE repository SET value=%s WHERE id=%s AND name=%s",
                    (self.name, self.id, CACHE_REPOSITORY_DIR))
                 invalidate = True
-    
+
             # -- insert a 'youngeset_rev' for the repository if necessary
             if metadata.get(CACHE_YOUNGEST_REV) is None:
-                db("""INSERT INTO repository (id, name, value) 
+                db("""INSERT INTO repository (id, name, value)
                       VALUES (%s, %s, %s)
                       """, (self.id, CACHE_YOUNGEST_REV, ''))
                 invalidate = True
-    
+
             if invalidate:
                 del self.metadata
 
@@ -199,7 +199,7 @@ class CachedRepository(Repository):
             else:
                 try:
                     next_youngest = self.repos.oldest_rev
-                    # Ugly hack needed because doing that everytime in 
+                    # Ugly hack needed because doing that everytime in
                     # oldest_rev suffers from horrendeous performance (#5213)
                     if self.repos.scope != '/' and not \
                             self.repos.has_node('/', next_youngest):
@@ -357,7 +357,7 @@ class CachedRepository(Repository):
 
             sql += " ORDER BY rev" + (" DESC" if direction == '<' else "") \
                    + " LIMIT 1"
-            
+
             for rev, in db(sql, args):
                 return int(rev)
 
@@ -393,10 +393,10 @@ class CachedRepository(Repository):
         """Convert a revision from its representation in the database."""
         return rev
 
-    def get_changes(self, old_path, old_rev, new_path, new_rev, 
+    def get_changes(self, old_path, old_rev, new_path, new_rev,
                     ignore_ancestry=1):
         return self.repos.get_changes(old_path, self.normalize_rev(old_rev),
-                                      new_path, self.normalize_rev(new_rev), 
+                                      new_path, self.normalize_rev(new_rev),
                                       ignore_ancestry)
 
 

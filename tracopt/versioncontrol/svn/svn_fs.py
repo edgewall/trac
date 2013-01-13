@@ -38,7 +38,7 @@ Therefore:
 Whenever a value has to be stored as utf8, we explicitly mark the
 variable name with "_utf8", in order to avoid any possible confusion.
 
-Warning: 
+Warning:
   `SubversionNode.get_content()` returns an object from which one can
   read a stream of bytes. NO guarantees can be given about what that
   stream of bytes represents. It might be some text, encoded in some
@@ -78,8 +78,8 @@ def _import_svn():
 
 def _to_svn(pool, *args):
     """Expect a pool and a list of `unicode` path components.
-    
-    Returns an UTF-8 encoded string suitable for the Subversion python 
+
+    Returns an UTF-8 encoded string suitable for the Subversion python
     bindings (the returned path never starts with a leading "/")
     """
     return core.svn_path_canonicalize('/'.join(args).lstrip('/')
@@ -93,7 +93,7 @@ def _from_svn(path):
     non-UTF-8 byte strings, so we have to convert using `to_unicode`.
     """
     return path and to_unicode(path, 'utf-8')
-    
+
 # The following 3 helpers deal with unicode paths
 
 def _normalize_path(path):
@@ -252,14 +252,14 @@ class SubversionConnector(Component):
 
     branches = ListOption('svn', 'branches', 'trunk, branches/*', doc=
         """Comma separated list of paths categorized as branches.
-        If a path ends with '*', then all the directory entries found below 
-        that path will be included. 
+        If a path ends with '*', then all the directory entries found below
+        that path will be included.
         Example: `/trunk, /branches/*, /projectAlpha/trunk, /sandbox/*`
         """)
 
     tags = ListOption('svn', 'tags', 'tags/*', doc=
         """Comma separated list of paths categorized as tags.
-        
+
         If a path ends with '*', then all the directory entries found below
         that path will be included.
         Example: `/tags/*, /projectAlpha/tags/A-1.0, /projectAlpha/tags/A-v1.1`
@@ -285,13 +285,13 @@ class SubversionConnector(Component):
             Pool()
 
     # ISystemInfoProvider methods
-    
+
     def get_system_info(self):
         if self._version is not None:
             yield 'Subversion', self._version
-        
+
     # IRepositoryConnector methods
-    
+
     def get_supported_types(self):
         prio = 1
         if self.error:
@@ -321,7 +321,7 @@ class SubversionRepository(Repository):
     def __init__(self, path, params, log):
         self.log = log
         self.pool = Pool()
-        
+
         # Remove any trailing slash or else subversion might abort
         if isinstance(path, unicode):
             path_utf8 = path.encode('utf-8')
@@ -330,7 +330,7 @@ class SubversionRepository(Repository):
 
         path_utf8 = os.path.normpath(path_utf8).replace('\\', '/')
         self.path = path_utf8.decode('utf-8')
-        
+
         root_path_utf8 = repos.svn_repos_find_root_path(path_utf8, self.pool())
         if root_path_utf8 is None:
             raise TracError(_("%(path)s does not appear to be a Subversion "
@@ -343,7 +343,7 @@ class SubversionRepository(Repository):
                               "%(svn_error)s", path=to_unicode(path_utf8),
                               svn_error=exception_to_unicode(e)))
         self.fs_ptr = repos.svn_repos_fs(self.repos)
-        
+
         self.uuid = fs.get_uuid(self.fs_ptr, self.pool())
         self.base = 'svn:%s:%s' % (self.uuid, _from_svn(root_path_utf8))
         name = 'svn:%s:%s' % (self.uuid, self.path)
@@ -359,7 +359,7 @@ class SubversionRepository(Repository):
         else:
             self.scope = '/'
         assert self.scope[0] == '/'
-        # we keep root_path_utf8 for  RA 
+        # we keep root_path_utf8 for  RA
         ra_prefix = 'file:///' if os.name == 'nt' else 'file://'
         self.ra_url_utf8 = ra_prefix + root_path_utf8
         self.clear()
@@ -385,7 +385,7 @@ class SubversionRepository(Repository):
         return node_type in _kindmap
 
     def normalize_path(self, path):
-        """Take any path specification and produce a path suitable for 
+        """Take any path specification and produce a path suitable for
         the rest of the API
         """
         return _normalize_path(path)
@@ -414,13 +414,13 @@ class SubversionRepository(Repository):
 
     def get_base(self):
         """Retrieve the base path corresponding to the Subversion
-        repository itself. 
+        repository itself.
 
         This is the same as the `.path` property minus the
         intra-repository scope, if one was specified.
         """
         return self.base
-        
+
     def _get_tags_or_branches(self, paths):
         """Retrieve known branches or tags."""
         for path in self.params.get(paths, []):
@@ -428,7 +428,7 @@ class SubversionRepository(Repository):
                 folder = posixpath.dirname(path)
                 try:
                     entries = [n for n in self.get_node(folder).get_entries()]
-                    for node in sorted(entries, key=lambda n: 
+                    for node in sorted(entries, key=lambda n:
                                        embedded_numbers(n.path.lower())):
                         if node.kind == Node.DIRECTORY:
                             yield node
@@ -442,7 +442,7 @@ class SubversionRepository(Repository):
 
     def get_quickjump_entries(self, rev):
         """Retrieve known branches, as (name, id) pairs.
-        
+
         Purposedly ignores `rev` and always takes the last revision.
         """
         for n in self._get_tags_or_branches('branches'):
@@ -459,7 +459,7 @@ class SubversionRepository(Repository):
             if not path or path == '/':
                 return url
             return url + '/' + path.lstrip('/')
-    
+
     def get_changeset(self, rev):
         """Produce a `SubversionChangeset` from given revision
         specification"""
@@ -481,7 +481,7 @@ class SubversionRepository(Repository):
         return SubversionNode(path, rev, self, self.pool)
 
     def _get_node_revs(self, path, last=None, first=None):
-        """Return the revisions affecting `path` between `first` and `last` 
+        """Return the revisions affecting `path` between `first` and `last`
         revs. If `first` is not given, it goes down to the revision in which
         the branch was created.
         """
@@ -527,13 +527,13 @@ class SubversionRepository(Repository):
                 yield path, rev
         del tmp1
         del tmp2
-    
+
     def _previous_rev(self, rev, path='', pool=None):
         if rev > 1: # don't use oldest here, as it's too expensive
             for _, prev in self._history(path, 1, rev-1, pool or self.pool):
                 return prev
         return None
-    
+
 
     def get_oldest_rev(self):
         """Gives an approximation of the oldest revision."""
@@ -559,7 +559,7 @@ class SubversionRepository(Repository):
         return self.youngest
 
     def previous_rev(self, rev, path=''):
-        """Return revision immediately preceeding `rev`, eventually below 
+        """Return revision immediately preceeding `rev`, eventually below
         given `path` or globally.
         """
         # FIXME optimize for non-scoped
@@ -567,7 +567,7 @@ class SubversionRepository(Repository):
         return self._previous_rev(rev, path)
 
     def next_rev(self, rev, path='', find_initial_rev=False):
-        """Return revision immediately following `rev`, eventually below 
+        """Return revision immediately following `rev`, eventually below
         given `path` or globally.
         """
         rev = self.normalize_rev(rev)
@@ -575,7 +575,7 @@ class SubversionRepository(Repository):
         youngest = self.youngest_rev
         subpool = Pool(self.pool)
         while next <= youngest:
-            subpool.clear()            
+            subpool.clear()
             for _, next in self._history(path, rev+1, next, subpool):
                 return next
             else:
@@ -645,7 +645,7 @@ class SubversionRepository(Repository):
         return iter(sorted(self._get_changes(old_path, old_rev, new_path,
                                              new_rev, ignore_ancestry),
                            key=key))
-        
+
     def _get_changes(self, old_path, old_rev, new_path, new_rev,
                      ignore_ancestry):
         old_node = new_node = None
@@ -876,7 +876,7 @@ class SubversionNode(Node):
 
     def get_copy_ancestry(self):
         """Retrieve the list of `(path,rev)` copy ancestors of this node.
-        Most recent ancestor first. Each ancestor `(path, rev)` corresponds 
+        Most recent ancestor first. Each ancestor `(path, rev)` corresponds
         to the path and revision of the source at the time the copy or move
         operation was performed.
         """
@@ -1009,7 +1009,7 @@ class SubversionChangeset(Changeset):
                 cbase_path_utf8 = fs.node_created_path(b_root, base_path_utf8,
                                                        tmp())
                 cbase_path = _from_svn(cbase_path_utf8)
-                cbase_rev = fs.node_created_rev(b_root, base_path_utf8, tmp()) 
+                cbase_rev = fs.node_created_rev(b_root, base_path_utf8, tmp())
                 # give up if the created path is outside the scope
                 if _is_path_within_scope(self.scope, cbase_path):
                     base_path, base_rev = cbase_path, cbase_rev
@@ -1053,11 +1053,11 @@ class SubversionChangeset(Changeset):
 
 def DiffChangeEditor():
 
-    class DiffChangeEditor(delta.Editor): 
+    class DiffChangeEditor(delta.Editor):
 
         def __init__(self):
             self.deltas = []
-    
+
         # -- svn.delta.Editor callbacks
 
         def open_root(self, base_revision, dir_pool):
@@ -1086,5 +1086,5 @@ def DiffChangeEditor():
         def open_file(self, path, dir_baton, dummy_rev, file_pool):
             self.deltas.append((path, Node.FILE, Changeset.EDIT))
 
-    return DiffChangeEditor() 
+    return DiffChangeEditor()
 

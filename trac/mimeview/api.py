@@ -87,22 +87,22 @@ class RenderingContext(object):
 
     To that end, a context keeps track of the Href instance (`.href`) which
     should be used as a base for building URLs.
-    
+
     It also provides a `PermissionCache`  (`.perm`) which can be used to
     restrict the output so that only the authorized information is shown.
-    
+
     A rendering context may also be associated to some Trac resource which
     will be used as the implicit reference when rendering relative links
     or for retrieving relative content and can be used to retrieve related
     metadata.
 
-    Rendering contexts can be nested, and a new context can be created from 
+    Rendering contexts can be nested, and a new context can be created from
     an existing context using the call syntax. The previous context can be
     retrieved using the `.parent` attribute.
-    
+
     For example, when rendering a wiki text of a wiki page, the context will
     be associated to a resource identifying that wiki page.
-    
+
     If that wiki text contains a `[[TicketQuery]]` wiki macro, the macro will
     set up nested contexts for each matching ticket that will be used for
     rendering the ticket descriptions.
@@ -139,7 +139,7 @@ class RenderingContext(object):
         path = []
         context = self
         while context:
-            if context.resource.realm: # skip toplevel resource 
+            if context.resource.realm: # skip toplevel resource
                 path.append(repr(context.resource))
             context = context.parent
         return '<%s %s>' % (type(self).__name__, ' - '.join(reversed(path)))
@@ -204,7 +204,7 @@ class RenderingContext(object):
                 return True
             context = context.parent
 
-    # Rendering hints 
+    # Rendering hints
     #
     # A rendering hint is a key/value pairs that can influence renderers,
     # wiki formatters and processors in the way they produce their output.
@@ -294,22 +294,22 @@ KNOWN_MIME_TYPES = {
     'application/x-csh':      'csh',
     'application/x-troff':    'nroff roff troff',
     'application/x-yaml':     'yml yaml',
-    
+
     'application/rss+xml':    'rss',
     'application/xsl+xml':    'xsl',
     'application/xslt+xml':   'xslt',
-    
+
     'image/x-icon':           'ico',
     'image/svg+xml':          'svg',
-    
+
     'model/vrml':             'vrml wrl',
-    
+
     'text/css':               'css',
     'text/html':              'html htm',
     'text/plain':             'txt TXT text README INSTALL '
                               'AUTHORS COPYING ChangeLog RELEASE',
     'text/xml':               'xml',
-    
+
     # see also TEXT_X_TYPES below
     'text/x-csrc':            'c xs',
     'text/x-chdr':            'h',
@@ -374,7 +374,7 @@ def get_mimetype(filename, content=None, mime_map=MIME_MAP,
 
     `filename` is either a filename (the lookup will then use the suffix)
     or some arbitrary keyword.
-    
+
     `content` is either a `str` or an `unicode` string.
     """
     # 0) mimetype from filename pattern (most specific)
@@ -521,7 +521,7 @@ class IHTMLPreviewRenderer(Interface):
         be available through the `filename` or `url` parameters.
         This is useful for renderers that embed objects, using <object> or
         <img> instead of including the content inline.
-        
+
         Can return the generated XHTML text as a single string or as an
         iterable that yields strings. In the latter case, the list will
         be considered to correspond to lines of text in the original content.
@@ -540,7 +540,7 @@ class IHTMLPreviewAnnotator(Interface):
         while `description` is used as a display name to let the user
         toggle the appearance of the annotation type.
         """
-        
+
     def get_annotation_data(context):
         """Return some metadata to be used by the `annotate_row` method below.
 
@@ -588,14 +588,14 @@ class Content(object):
         self.input = input
         self.max_size = max_size
         self.content = None
-    
+
     def read(self, size=-1):
         if size == 0:
             return ''
         if self.content is None:
             self.content = StringIO(self.input.read(self.max_size))
         return self.content.read(size)
-    
+
     def reset(self):
         if self.content is not None:
             self.content.seek(0)
@@ -713,7 +713,7 @@ class Mimeview(Component):
         content.
 
         Return a string containing the XHTML text.
-        
+
         When rendering with an `IHTMLPreviewRenderer` fails, a warning is added
         to the request associated with the context (if any), unless the
         `disable_warnings` hint is set to `True`.
@@ -741,7 +741,7 @@ class Mimeview(Component):
             if qr > 0:
                 candidates.append((qr, renderer))
         candidates.sort(lambda x, y: cmp(y[0], x[0]))
-        
+
         # Wrap file-like object so that it can be read multiple times
         if hasattr(content, 'read'):
             content = Content(content, self.max_preview_size)
@@ -873,11 +873,11 @@ class Mimeview(Component):
         """Infer the character encoding from the `content` or the `mimetype`.
 
         `content` is either a `str` or an `unicode` object.
-        
+
         The charset will be determined using this order:
          * from the charset information present in the `mimetype` argument
          * auto-detection of the charset from the `content`
-         * the configured `default_charset` 
+         * the configured `default_charset`
         """
         if mimetype:
             ctpos = mimetype.find('charset=')
@@ -986,13 +986,13 @@ class Mimeview(Component):
                 self.log.warning("Invalid mapping '%s' specified in '%s' "
                                  "option.", mapping, option)
         return types
-    
+
     def preview_data(self, context, content, length, mimetype, filename,
                      url=None, annotations=None, force_source=False):
         """Prepares a rendered preview of the given `content`.
 
         Note: `content` will usually be an object with a `read` method.
-        """        
+        """
         data = {'raw_href': url, 'size': length,
                 'max_file_size': self.max_preview_size,
                 'max_file_size_reached': False,
@@ -1072,12 +1072,12 @@ def _group_lines(stream):
                     yield kind, data, pos
 
     buf = []
-    
+
     # Fix the \n at EOF.
     if not isinstance(stream, list):
         stream = list(stream)
     found_text = False
-    
+
     for i in range(len(stream)-1, -1, -1):
         if stream[i][0] is TEXT:
             e = stream[i]
@@ -1149,7 +1149,7 @@ class PlainTextRenderer(Component):
 
 class ImageRenderer(Component):
     """Inline image display.
-    
+
     This component doesn't need the `content` at all.
     """
     implements(IHTMLPreviewRenderer)

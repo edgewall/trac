@@ -102,7 +102,7 @@ class PhpRendererTestCase(unittest.TestCase):
                          u'<span class="code-keyword">; </span>'
                          u'<span class="code-lang">?&gt;</span>', result[0])
         self.assertEqual(1, len(result))
-    
+
     def test_way_too_many_nbsp(self):
         """
         Regression test for a tiny part of #1676

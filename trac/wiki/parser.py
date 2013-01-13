@@ -43,7 +43,7 @@ class WikiParser(Component):
     ENDBLOCK_TOKEN = r"\}\}\}"
     ENDBLOCK = "}}}"
     BULLET_CHARS = u"-*\u2022"
-    
+
     LINK_SCHEME = r"[a-zA-Z][-a-zA-Z0-9+._]*" # as per RFC 2396 + '_'
     INTERTRAC_SCHEME = r"[a-zA-Z.+-]*?" # no digits (for shorthand links)
 
@@ -57,8 +57,8 @@ class WikiParser(Component):
         return r"[/\?#][^%s\]]*|\.\.?(?:[/\?#][^%s\]]*)?" % (sep, sep)
 
     LHREF_RELATIVE_TARGET = _lhref_relative_target(r'\s')
-    
-    XML_NAME = r"[\w:](?<!\d)[\w:.-]*?" # See http://www.w3.org/TR/REC-xml/#id 
+
+    XML_NAME = r"[\w:](?<!\d)[\w:.-]*?" # See http://www.w3.org/TR/REC-xml/#id
 
     PROCESSOR = r"(\s*)#\!([\w+-][\w+-/]*)"
     PROCESSOR_PARAM = r'''(?P<proc_pname>\w+)=(?P<proc_pval>".*?"|'.*?'|\w+)'''
@@ -73,9 +73,9 @@ class WikiParser(Component):
         # Font styles
         r"(?P<bolditalic>!?%s)" % BOLDITALIC_TOKEN,
         r"(?P<bold>!?%s)" % BOLD_TOKEN,
-        r"(?P<bold_wc>!?%s)" % BOLD_TOKEN_WIKICREOLE,        
+        r"(?P<bold_wc>!?%s)" % BOLD_TOKEN_WIKICREOLE,
         r"(?P<italic>!?%s)" % ITALIC_TOKEN,
-        r"(?P<italic_wc>!?%s)" % ITALIC_TOKEN_WIKICREOLE,        
+        r"(?P<italic_wc>!?%s)" % ITALIC_TOKEN_WIKICREOLE,
         r"(?P<underline>!?%s)" % UNDERLINE_TOKEN,
         r"(?P<strike>!?%s)" % STRIKE_TOKEN,
         r"(?P<subscript>!?%s)" % SUBSCRIPT_TOKEN,
@@ -90,7 +90,7 @@ class WikiParser(Component):
 
     _post_rules = [
         # WikiCreole line breaks
-        r"(?P<linebreak_wc>!?\\\\)", 
+        r"(?P<linebreak_wc>!?\\\\)",
         # e-mails
         r"(?P<email>!?%s)" % EMAIL_LOOKALIKE_PATTERN,
         # <wiki:Trac bracket links>
@@ -120,7 +120,7 @@ class WikiParser(Component):
         r"(?P<list>^(?P<ldepth>\s*)"
         ur"(?:[%s]|(?P<lstart>[0-9]+|[a-zA-Z]|[ivxIVX]{1,5})\.)\s)"
         % (BULLET_CHARS),
-        # definition:: 
+        # definition::
         r"(?P<definition>^\s+"
         r"((?:%s[^%s]*%s|%s(?:%s{,2}[^%s])*?%s|[^%s%s:]|:[^:])+::)(?:\s+|$))"
         % (INLINE_TOKEN, INLINE_TOKEN, INLINE_TOKEN,

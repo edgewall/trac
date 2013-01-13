@@ -1047,7 +1047,7 @@ msgstr "Ordo"
 
 #: trac/admin/templates/admin_enums.html:77
 #: trac/prefs/templates/prefs_language.html:31
-#, 
+#,
 msgid "Note:"
 msgstr "Komento:"
 
@@ -1317,7 +1317,7 @@ msgstr "Programo mysqldump fiaskis: %(msg)s"
 
 #: trac/db/mysql_backend.py:210 trac/db/postgres_backend.py:188
 #: trac/db/sqlite_backend.py:230
-#, 
+#,
 msgid "No destination file created"
 msgstr "Neniu celdosiero kreiĝis"
 
@@ -1477,7 +1477,7 @@ msgid "Session key:"
 msgstr "Seancoŝlosilo:"
 
 #: trac/prefs/templates/prefs_advanced.html:17
-#, 
+#,
 msgid "Change"
 msgstr "Ŝanĝo"
 
@@ -1755,7 +1755,7 @@ msgstr ""
 "        [1:http://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
-#, 
+#,
 msgid ""
 "Copyright © 2003-2011\n"
 "        [1:Edgewall Software]"
@@ -2524,7 +2524,7 @@ msgid "Ticket #%(num)s and all associated data removed."
 msgstr "Avizo #%(num)s kaj ĉiuj ligitaj datumoj foriĝis."
 
 #: trac/ticket/api.py:253
-#, 
+#,
 msgid "Attachment"
 msgstr "Alpendaĵo"
 
@@ -2962,7 +2962,7 @@ msgid "%(title)s: %(message)s"
 msgstr "%(title)s: %(message)s"
 
 #: trac/ticket/web_ui.py:231
-#, 
+#,
 msgid "Tickets opened and closed"
 msgstr "Malfermitaj kaj fermitaj avizoj"
 
@@ -4220,7 +4220,7 @@ msgid "No repositories were selected."
 msgstr "Neniuj deponejoj estas elektitaj."
 
 #: trac/versioncontrol/admin.py:342
-#, 
+#,
 msgid "The repository directory must be an absolute path."
 msgstr "La pado al la deponejo devas esti absoluta."
 
@@ -5152,7 +5152,7 @@ msgid "View file without annotations"
 msgstr "Montru dosieron sen komentoj"
 
 #: trac/versioncontrol/web_ui/browser.py:464
-#, 
+#,
 msgid "Blame"
 msgstr "Nomo"
 
@@ -5499,12 +5499,12 @@ msgid "SID"
 msgstr "SID"
 
 #: trac/web/session.py:417
-#, 
+#,
 msgid "Auth"
 msgstr "Saluto"
 
 #: trac/web/session.py:417
-#, 
+#,
 msgid "Last Visit"
 msgstr "Lasta vizito"
 

@@ -106,7 +106,7 @@ trac:#2041
 #trac²⁰⁴¹
 </p>
 ------------------------------
-""" # " 
+""" # "
 
 def ticket_setup(tc):
     ticket = Ticket(tc.env)

@@ -138,7 +138,7 @@ class FlatXML(object):
             if type(val) != list:
                 buf += "%s : %s\n" % (sub, val)
             else:
-                for x in val: 
+                for x in val:
                     buf += "\n  ".join(x.__str__().split("\n"))
         return buf
 
@@ -149,7 +149,7 @@ class FlatXML(object):
             if type(val) != list:
                 buf += "<%s>%s</%s>\n" % (sub, val, sub)
             else:
-                for x in val: 
+                for x in val:
                     buf += "\n  ".join(x.__repr__().split("\n"))
         return buf
 
@@ -240,7 +240,7 @@ class Tracker(FlatXML):
   <id>2335316</id>
   <submitter>goblinhack</submitter>
   <date>1175610236</date>
-  <details>Logged In: YES 
+  <details>Logged In: YES
   user_id=1577972
   Originator: NO
 
@@ -306,10 +306,10 @@ class ExportedProjectData(object):
         # id '100' means no category
         self.used_categories['100'] = None
         self.users = {}       #: id:name
-        
-        root = ElementTree().parse(f)   
-        
-        self.users = dict([(FlatXML(u).userid, FlatXML(u).username) 
+
+        root = ElementTree().parse(f)
+
+        self.users = dict([(FlatXML(u).userid, FlatXML(u).username)
                           for u in root.find('referenced_users')])
 
         for tracker in root.find('trackers'):
@@ -338,7 +338,7 @@ class ExportedProjectData(object):
                 self.tickets.append(tck)
                 if int(tck.priority) not in self.priorities:
                     self.priorities.append(int(tck.priority))
-                res_id = getattr(tck, "resolution_id", None) 
+                res_id = getattr(tck, "resolution_id", None)
                 if res_id is not None and res_id not in self.used_resolutions:
                     for idx, name in self.resolutions:
                         if idx == res_id: break
@@ -379,18 +379,18 @@ class ExportedProjectData(object):
             categories = [x[1:] for x in categories]
         return categories
 
-    
+
 class TracDatabase(object):
     def __init__(self, path):
         self.env = trac.env.Environment(path)
-    
+
     def hasTickets(self):
         return int(self.env.db_query("SELECT count(*) FROM ticket")[0][0]) > 0
 
     def dbCheck(self):
         if self.hasTickets():
             raise DBNotEmpty
-    
+
     def setTypeList(self, s):
         """Remove all types, set them to `s`"""
         self.dbCheck()
@@ -399,7 +399,7 @@ class TracDatabase(object):
             for i, value in enumerate(s):
                 db("INSERT INTO enum (type, name, value) VALUES (%s, %s, %s)",
                    ("ticket_type", value, i))
-    
+
     def setPriorityList(self, s):
         """Remove all priorities, set them to `s`"""
         self.dbCheck()
@@ -417,7 +417,7 @@ class TracDatabase(object):
             for value, name in t:
                 db("INSERT INTO enum (type, name, value) VALUES (%s, %s, %s)",
                    ("resolution", name, value))
-    
+
     def setComponentList(self, t):
         """Remove all components, set them to `t` (name, owner)"""
         self.dbCheck()
@@ -426,7 +426,7 @@ class TracDatabase(object):
             for name, owner in t:
                 db("INSERT INTO component (name, owner) VALUES (%s, %s)",
                    (name, owner))
-    
+
     def setVersionList(self, v):
         """Remove all versions, set them to `v`"""
         self.dbCheck()
@@ -435,7 +435,7 @@ class TracDatabase(object):
             for value in v:
                 # time and description are also available
                 db("INSERT INTO version (name) VALUES (%s)", value)
-        
+
     def setMilestoneList(self, m):
         """Remove all milestones, set them to `m` ("""
         self.dbCheck()
@@ -444,7 +444,7 @@ class TracDatabase(object):
             for value in m:
                 # due, completed, description are also available
                 db("INSERT INTO milestone (name) VALUES (%s)", value)
-    
+
     def addTicket(self, type, time, changetime, component,
                   priority, owner, reporter, cc,
                   version, milestone, status, resolution,
@@ -479,7 +479,7 @@ class TracDatabase(object):
             c = db.cursor()
             c.execute("""
                 INSERT INTO ticket (type, time, changetime, component,
-                                    priority, owner, reporter, cc, version, 
+                                    priority, owner, reporter, cc, version,
                                     milestone, status, resolution, summary,
                                     description, keywords)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
@@ -488,7 +488,7 @@ class TracDatabase(object):
                       reporter, cc, version, milestone, status.lower(),
                       resolution, summary, '%s' % description, keywords))
             return db.get_last_id(c, 'ticket')
-    
+
     def addTicketComment(self, ticket, time, author, value):
         with self.env.db_transaction as db:
             db("""
@@ -508,7 +508,7 @@ class TracDatabase(object):
 def importData(f, env, opt):
     project = ExportedProjectData(f)
     trackers = project.trackers
-    
+
     trac = TracDatabase(env)
 
     # Data conversion
@@ -533,7 +533,7 @@ def importData(f, env, opt):
         % (len(project.groups), project.groups)
     print "%d resolutions found :\n  %s" \
         % (len(project.resolutions), project.resolutions)
-    resolutions = [(k,project.used_resolutions[k]) 
+    resolutions = [(k,project.used_resolutions[k])
                    for k in project.used_resolutions]
     resolutions.sort(key=lambda x:int(x[0]))
     print ".. only %d used will be imported:\n  %s" \
@@ -545,12 +545,12 @@ def importData(f, env, opt):
     # Data save
     trac.setTypeList(typeList)
     trac.setComponentList(components)
-    trac.setPriorityList(range(min(project.priorities), 
+    trac.setPriorityList(range(min(project.priorities),
                                max(project.priorities)))
     trac.setVersionList(set([x[1] for x in project.groups]))
     trac.setResolutionList(resolutions)
     trac.setMilestoneList([])
-    
+
     for tracker in project.trackers:
       # id 100 means no component selected
       component_lookup = dict(project.get_categories(noowner=True) +
@@ -569,7 +569,7 @@ def importData(f, env, opt):
                                    else user_map[t.submitter],
                            cc=None,
                            # 100 means no group selected
-                           version=dict(project.groups + 
+                           version=dict(project.groups +
                                         [("100", None)])[t.group_id],
                            milestone=None,
                            status=dict(project.statuses)[t.status_id],
@@ -587,16 +587,16 @@ def importData(f, env, opt):
                 attmsg = attmsg + " * [%s %s] (%s) - added by '%s' %s [[BR]] "\
                          % (a.url+t.id, a.filename, a.filesize+" bytes",
                             user_map.get(a.submitter, a.submitter),
-                            time.strftime("%Y-%m-%d %H:%M:%S", 
+                            time.strftime("%Y-%m-%d %H:%M:%S",
                                           time.localtime(int(a.date))))
-                attmsg = attmsg + "''%s ''\n" % (a.description or '') 
+                attmsg = attmsg + "''%s ''\n" % (a.description or '')
                 # empty description is as empty list
             trac.addTicketComment(ticket=i,
                                   time=time.strftime("%Y-%m-%d %H:%M:%S",
                                           time.localtime(int(t.submit_date))),
                                   author=None, value=attmsg)
             print '    added information about %d attachments for #%d' % \
-                    (len(t.attachments), i) 
+                    (len(t.attachments), i)
 
         for msg in t.followups:
             """
@@ -613,7 +613,7 @@ def importData(f, env, opt):
                                   value=msg.details)
         if t.followups:
             print '    imported %d messages for #%d' % (len(t.followups), i)
-        
+
         # Import history
         """
         <history_entry>
@@ -653,7 +653,7 @@ def importData(f, env, opt):
             elif h.field_name in ("summary", "priority"):
                 f = h.field_name
                 oldvalue = h.old_value
-                newvalue = revision.get(h.field_name, None) 
+                newvalue = revision.get(h.field_name, None)
             elif h.field_name == 'assigned_to':
                 f = "owner"
                 newvalue = revision['assignee']
@@ -668,7 +668,7 @@ def importData(f, env, opt):
                 f = 'status'
                 oldvalue = 'assigned'
                 newvalue = 'closed'
-                
+
             if f:
                 changes += 1
                 trac.addTicketChange(ticket=i,
@@ -677,13 +677,13 @@ def importData(f, env, opt):
                                      field=f,
                                      oldvalue=oldvalue,
                                      newvalue=newvalue)
-    
+
             if h.field_name != 'assigned_to':
                 revision[h.field_name] = h.old_value
         if changes:
             print '    processed %d out of %d history items for #%d' % \
                     (changes, len(t.history_entries), i)
-  
+
 
 def main():
     import optparse

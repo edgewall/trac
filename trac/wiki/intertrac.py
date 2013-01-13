@@ -38,14 +38,14 @@ class InterTracDispatcher(Component):
         whose name contain a "." define aspects of the InterTrac prefix
         corresponding to the option name up to the ".". Options whose name
         don't contain a "." define an alias.
-        
+
         The `.url` is mandatory and is used for locating the other Trac.
         This can be a relative URL in case that Trac environment is located
         on the same server.
-        
+
         The `.title` information is used for providing a useful tooltip when
         moving the cursor over an InterTrac link.
-        
+
         The `.compat` option can be used to activate or disable a
         ''compatibility'' mode:
          * If the targeted Trac is running a version below
@@ -63,7 +63,7 @@ class InterTracDispatcher(Component):
         [intertrac]
         # -- Example of setting up an alias:
         t = trac
-        
+
         # -- Link to an external Trac:
         trac.title = Edgewall's Trac for Trac
         trac.url = http://trac.edgewall.org
@@ -102,7 +102,7 @@ class InterTracDispatcher(Component):
     def get_macros(self):
         yield 'InterTrac'
 
-    def get_macro_description(self, name): 
+    def get_macro_description(self, name):
         return 'messages', N_("Provide a list of known InterTrac prefixes.")
 
     def expand_macro(self, formatter, name, content):

@@ -14,7 +14,7 @@ Trac is distributed using the modified BSD License.
 
  * If you are upgrading from a previous Trac version, please read UPGRADE
    for a short overview and the trac/wiki/default-pages/TracUpgrade for
-   complete, up-to-date instructions 
+   complete, up-to-date instructions
 
 You might also want to take a look at the RELEASE and ChangeLog files
 for more information about this release.

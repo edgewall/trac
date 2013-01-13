@@ -1,5 +1,5 @@
 <!--! Add diff option fields (to be used inside a form)
- 
+
      `diff` the datastructure which contains diff options
 -->
 <div xmlns="http://www.w3.org/1999/xhtml"
@@ -20,7 +20,7 @@
                     checked="${not diff.options.contextall or None}"/>
              Show</label>
       <label><input type="text" name="contextlines" id="contextlines" size="2"
-                    maxlength="3" value="${diff.options.contextlines &lt; 0 and 
+                    maxlength="3" value="${diff.options.contextlines &lt; 0 and
                                            'all' or diff.options.contextlines}"/>
              lines around each change</label>
     </i18n:msg><br/>

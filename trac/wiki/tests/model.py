@@ -69,7 +69,7 @@ class WikiPageTestCase(unittest.TestCase):
         t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         self.env.db_transaction(
             "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
-            ('TestPage', 1, to_utimestamp(t), 'joe', '::1', 'Bla bla', 
+            ('TestPage', 1, to_utimestamp(t), 'joe', '::1', 'Bla bla',
              'Testing', 0))
 
         page = WikiPage(self.env, 'TestPage')
@@ -82,11 +82,11 @@ class WikiPageTestCase(unittest.TestCase):
         self.assertEqual('joe', page.author)
         self.assertEqual('Testing', page.comment)
         self.assertEqual(t, page.time)
-        
+
         history = list(page.get_history())
         self.assertEqual(1, len(history))
         self.assertEqual((1, t, 'joe', 'Testing', '::1'), history[0])
-        
+
         page = WikiPage(self.env, 'TestPage', 1)
         self.assertEqual(1, page.resource.version)
 
@@ -96,7 +96,7 @@ class WikiPageTestCase(unittest.TestCase):
         page.text = 'Bla bla'
         t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         page.save('joe', 'Testing', '::1', t)
-        
+
         self.assertEqual(True, page.exists)
         self.assertEqual(1, page.version)
         self.assertEqual(1, page.resource.version)
@@ -142,7 +142,7 @@ class WikiPageTestCase(unittest.TestCase):
             self.assertEqual(2, len(rows))
             self.assertEqual((1, to_utimestamp(t), 'joe', '::1', 'Bla bla',
                               'Testing', 0), rows[0])
-            self.assertEqual((2, to_utimestamp(t2), 'kate', '192.168.0.101', 
+            self.assertEqual((2, to_utimestamp(t2), 'kate', '192.168.0.101',
                               'Bla', 'Changing', 0), rows[1])
 
         listener = TestWikiChangeListener(self.env)
@@ -219,16 +219,16 @@ class WikiPageTestCase(unittest.TestCase):
             ('TestPage',) + data)
         attachment = Attachment(self.env, 'wiki', 'TestPage')
         attachment.insert('foo.txt', StringIO(), 0, 1)
-        
+
         page = WikiPage(self.env, 'TestPage')
         page.rename('PageRenamed')
         self.assertEqual('PageRenamed', page.name)
-        
+
         self.assertEqual([data], self.env.db_query("""
             SELECT version, time, author, ipnr, text, comment, readonly
             FROM wiki WHERE name=%s
             """, ('PageRenamed',)))
-        
+
         attachments = Attachment.select(self.env, 'wiki', 'PageRenamed')
         self.assertEqual('foo.txt', attachments.next().filename)
         self.assertRaises(StopIteration, attachments.next)
@@ -236,13 +236,13 @@ class WikiPageTestCase(unittest.TestCase):
 
         old_page = WikiPage(self.env, 'TestPage')
         self.assertEqual(False, old_page.exists)
-        
-        
+
+
         self.assertEqual([], self.env.db_query("""
             SELECT version, time, author, ipnr, text, comment, readonly
             FROM wiki WHERE name=%s
             """, ('TestPage',)))
-        
+
         listener = TestWikiChangeListener(self.env)
         self.assertEqual((page, 'TestPage'), listener.renamed[0])
 

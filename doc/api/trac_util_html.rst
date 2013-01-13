@@ -19,7 +19,7 @@ ElementFactory_, and most of the code uses directly the latter.
 
 .. _Genshi: http://genshi.edgewall.org
 .. _builder: http://genshi.edgewall.org/wiki/ApiDocs/genshi.builder
-.. _ElementFactory: 
+.. _ElementFactory:
    http://genshi.edgewall.org/wiki/ApiDocs/genshi.builder#genshi.builder:ElementFactory
 
 

@@ -1,17 +1,17 @@
 
 
 (function($){
-  
-  
+
+
   window.addWikiFormattingToolbar = function(textarea) {
     if ((document.selection == undefined)
      && (textarea.setSelectionRange == undefined)) {
       return;
     }
-  
+
     var toolbar = document.createElement("div");
     toolbar.className = "wikitoolbar";
-  
+
     function addButton(id, title, fn) {
       var a = document.createElement("a");
       a.href = "#";
@@ -21,7 +21,7 @@
       a.tabIndex = 400;
       toolbar.appendChild(a);
     }
-  
+
     function encloseSelection(prefix, suffix) {
       textarea.focus();
       var start, end, sel, scrollPos, subst;
@@ -52,7 +52,7 @@
         textarea.scrollTop = scrollPos;
       }
     }
-  
+
     addButton("strong", _("Bold text: '''Example'''"), function() {
       encloseSelection("'''", "'''");
     });
@@ -80,7 +80,7 @@
     addButton("img", _("Image: [[Image()]]"), function() {
       encloseSelection("[[Image(", ")]]");
     });
-  
+
     $(textarea).before(toolbar);
   }
 

@@ -40,13 +40,13 @@ from .text import exception_to_unicode, to_unicode, getpreferredencoding
 
 def get_reporter_id(req, arg_name=None):
     """Get most informative "reporter" identity out of a request.
-    
+
     That's the `Request`'s authname if not 'anonymous', or a `Request`
     argument, or the session name and e-mail, or only the name or only
     the e-mail, or 'anonymous' as last resort.
 
     :param req: a `trac.web.api.Request`
-    :param arg_name: if given, a `Request` argument which may contain 
+    :param arg_name: if given, a `Request` argument which may contain
       the id for non-authentified users
     """
     if req.authname != 'anonymous':
@@ -97,13 +97,13 @@ can_rename_open_file = False
 if os.name == 'nt':
     _rename = lambda src, dst: False
     _rename_atomic = lambda src, dst: False
-    
+
     try:
         import ctypes
         MOVEFILE_REPLACE_EXISTING = 0x1
         MOVEFILE_WRITE_THROUGH = 0x8
         MoveFileEx = ctypes.windll.kernel32.MoveFileExW
-        
+
         def _rename(src, dst):
             if not isinstance(src, unicode):
                 src = unicode(src, sys.getfilesystemencoding())
@@ -113,13 +113,13 @@ if os.name == 'nt':
                 return True
             return MoveFileEx(src, dst, MOVEFILE_REPLACE_EXISTING
                                         | MOVEFILE_WRITE_THROUGH)
-        
+
         CreateTransaction = ctypes.windll.ktmw32.CreateTransaction
         CommitTransaction = ctypes.windll.ktmw32.CommitTransaction
         MoveFileTransacted = ctypes.windll.kernel32.MoveFileTransactedW
         CloseHandle = ctypes.windll.kernel32.CloseHandle
         can_rename_open_file = True
-        
+
         def _rename_atomic(src, dst):
             ta = CreateTransaction(None, 0, 0, 0, 0, 10000, 'Trac rename')
             if ta == -1:
@@ -133,7 +133,7 @@ if os.name == 'nt':
                 CloseHandle(ta)
     except Exception:
         pass
-    
+
     def rename(src, dst):
         # Try atomic or pseudo-atomic rename
         if _rename(src, dst):
@@ -158,7 +158,7 @@ else:
 
 class AtomicFile(object):
     """A file that appears atomically with its full content.
-    
+
     This file-like object writes to a temporary file in the same directory
     as the final file. If the file is committed, the temporary file is renamed
     atomically (on Unix, at least) to its final name. If it is rolled back,
@@ -170,7 +170,7 @@ class AtomicFile(object):
         (dir, name) = os.path.split(path)
         (fd, self._temp) = tempfile.mkstemp(prefix=name + '-', dir=dir)
         self._file = os.fdopen(fd, mode, bufsize)
-        
+
         # Try to preserve permissions and group ownership, but failure
         # should not be fatal
         try:
@@ -183,7 +183,7 @@ class AtomicFile(object):
                 os.chown(self._temp, -1, st.st_gid)
         except OSError:
             pass
-    
+
     def __getattr__(self, name):
         return getattr(self._file, name)
 
@@ -197,7 +197,7 @@ class AtomicFile(object):
         except Exception:
             os.unlink(self._temp)
             raise
-    
+
     def rollback(self):
         if self._file is None:
             return
@@ -209,7 +209,7 @@ class AtomicFile(object):
                 os.unlink(self._temp)
             except Exception:
                 pass
-            
+
     close = commit
     __del__ = rollback
 
@@ -261,7 +261,7 @@ class NaivePopen:
 
     The optional `input`, which must be a `str` object, is first written
     to a temporary file from which the process will read.
-    
+
     (`capturestderr` may not work under Windows 9x.)
 
     Example::
@@ -375,13 +375,13 @@ def is_path_below(path, parent):
 
 class file_or_std(object):
     """Context manager for opening a file or using a standard stream
-    
+
     If `filename` is non-empty, open the file and close it when exiting the
     block. Otherwise, use `sys.stdin` if opening for reading, or `sys.stdout`
     if opening for writing or appending."""
-    
+
     file = None
-    
+
     def __init__(self, filename, mode='r', bufsize=-1):
         self.filename = filename
         self.mode = mode
@@ -397,7 +397,7 @@ class file_or_std(object):
         if self.file is not None:
             self.file.close()
 
-        
+
 # -- sys utils
 
 def fq_class_name(obj):
@@ -428,7 +428,7 @@ _egg_path_re = re.compile(r'build/bdist\.[^/]+/egg/(.*)')
 def get_lines_from_file(filename, lineno, context=0, globals=None):
     """Return `content` number of lines before and after the specified
     `lineno` from the (source code) file identified by `filename`.
-    
+
     Returns a `(lines_before, line, lines_after)` tuple.
     """
     # The linecache module can load source code from eggs since Python 2.6.
@@ -502,10 +502,10 @@ def get_frame_info(tb):
 def safe__import__(module_name):
     """
     Safe imports: rollback after a failed import.
-    
+
     Initially inspired from the RollbackImporter in PyUnit,
     but it's now much simpler and works better for our needs.
-    
+
     See http://pyunit.sourceforge.net/notes/reloading.html
     """
     already_imported = sys.modules.copy()
@@ -529,7 +529,7 @@ def safe_repr(x):
     """
     try:
         return to_unicode(repr(x))
-    except Exception, e:     
+    except Exception, e:
         return "<%s object at 0x%X (repr() error: %s)>" % (
             fq_class_name(x), id(x), exception_to_unicode(e))
 
@@ -552,7 +552,7 @@ _dont_import = frozenset(['__file__', '__name__', '__package__'])
 
 def import_namespace(globals_dict, module_name):
     """Import the namespace of a module into a globals dict.
-    
+
     This function is used in stub modules to import all symbols defined in
     another module into the global namespace of the stub, usually for
     backward compatibility.
@@ -605,7 +605,7 @@ def get_pkginfo(dist):
     `dist` can be either a Distribution instance or, as a shortcut,
     directly the module instance, if one can safely infer a Distribution
     instance from it.
-    
+
     Always returns a dictionary but it will be empty if no Distribution
     instance can be created for the given module.
     """
@@ -647,7 +647,7 @@ try:
 
 except NotImplementedError:
     _entropy = random.Random()
-    
+
     def urandom(n):
         result = []
         hasher = sha1(str(os.getpid()) + str(time.time()))
@@ -745,7 +745,7 @@ class Ranges(object):
     """Holds information about ranges parsed from a string
 
     :author: Tim Hatch
-    
+
     >>> x = Ranges("1,2,9-15")
     >>> 1 in x
     True
@@ -757,15 +757,15 @@ class Ranges(object):
     False
     >>> [i for i in range(20) if i in x]
     [1, 2, 9, 10, 11, 12, 13, 14, 15]
-    
+
     Also supports iteration, which makes that last example a bit simpler:
-    
+
     >>> list(x)
     [1, 2, 9, 10, 11, 12, 13, 14, 15]
-    
+
     Note that it automatically reduces the list and short-circuits when the
     desired ranges are a relatively small portion of the entire set:
-    
+
     >>> x = Ranges("99")
     >>> 1 in x # really fast
     False
@@ -778,7 +778,7 @@ class Ranges(object):
 
     The members 'a' and 'b' refer to the min and max value of the range, and
     are None if the range is empty:
-    
+
     >>> x.a
     1
     >>> x.b
@@ -789,7 +789,7 @@ class Ranges(object):
 
     Empty ranges are ok, and ranges can be constructed in pieces, if you
     so choose:
-    
+
     >>> x = Ranges()
     >>> x.appendrange("1, 2, 3")
     >>> x.appendrange("5-9")
@@ -797,7 +797,7 @@ class Ranges(object):
     >>> list(x)
     [1, 2, 3, 5, 6, 7, 8, 9]
 
-    Reversed ranges are ignored, unless the Ranges has the `reorder` property 
+    Reversed ranges are ignored, unless the Ranges has the `reorder` property
     set.
 
     >>> str(Ranges("20-10"))
@@ -815,7 +815,7 @@ class Ranges(object):
     """
 
     RE_STR = ur'[0-9]+(?:[-:][0-9]+)?(?:,\u200b?[0-9]+(?:[-:][0-9]+)?)*'
-    
+
     def __init__(self, r=None, reorder=False):
         self.pairs = []
         self.a = self.b = None
@@ -823,9 +823,9 @@ class Ranges(object):
         self.appendrange(r)
 
     def appendrange(self, r):
-        """Add ranges to the current one. 
+        """Add ranges to the current one.
 
-        A range is specified as a string of the form "low-high", and 
+        A range is specified as a string of the form "low-high", and
         `r` can be a list of such strings, a string containing comma-separated
         ranges, or `None`.
         """
@@ -853,7 +853,7 @@ class Ranges(object):
         while i + 1 < len(p):
             if p[i+1][0]-1 <= p[i][1]: # this item overlaps with the next
                 # make the first include the second
-                p[i] = (p[i][0], max(p[i][1], p[i+1][1])) 
+                p[i] = (p[i][0], max(p[i][1], p[i+1][1]))
                 del p[i+1] # delete the second, after adjusting my endpoint
             else:
                 i += 1
@@ -861,12 +861,12 @@ class Ranges(object):
             self.a = p[0][0] # min value
             self.b = p[-1][1] # max value
         else:
-            self.a = self.b = None        
+            self.a = self.b = None
 
     def __iter__(self):
         """
         This is another way I came up with to do it.  Is it faster?
-        
+
         from itertools import chain
         return chain(*[xrange(a, b+1) for a, b in self.pairs])
         """
@@ -890,7 +890,7 @@ class Ranges(object):
 
     def __str__(self):
         """Provide a compact string representation of the range.
-        
+
         >>> (str(Ranges("1,2,3,5")), str(Ranges()), str(Ranges('2')))
         ('1-3,5', '', '2')
         >>> str(Ranges('99-1')) # only nondecreasing ranges allowed
@@ -906,7 +906,7 @@ class Ranges(object):
 
     def __len__(self):
         """The length of the entire span, ignoring holes.
-        
+
         >>> (len(Ranges('99')), len(Ranges('1-2')), len(Ranges('')))
         (1, 2, 0)
         """
@@ -917,7 +917,7 @@ class Ranges(object):
 
     def __nonzero__(self):
         """Return True iff the range is not empty.
-        
+
         >>> (bool(Ranges()), bool(Ranges('1-2')))
         (False, True)
         """
@@ -926,7 +926,7 @@ class Ranges(object):
     def truncate(self, max):
         """Truncate the Ranges by setting a maximal allowed value.
 
-        Note that this `max` can be a value in a gap, so the only guarantee 
+        Note that this `max` can be a value in a gap, so the only guarantee
         is that `self.b` will be lesser than or equal to `max`.
 
         >>> r = Ranges("10-20,25-45")
@@ -956,7 +956,7 @@ class Ranges(object):
 
 def to_ranges(revs):
     """Converts a list of revisions to a minimal set of ranges.
-    
+
     >>> to_ranges([2, 12, 3, 6, 9, 1, 5, 11])
     '1-3,5-6,9,11-12'
     >>> to_ranges([])
@@ -984,10 +984,10 @@ def to_ranges(revs):
 
 class lazy(object):
     """A lazily-evaluated attribute"""
-    
+
     def __init__(self, fn):
         self.fn = fn
-    
+
     def __get__(self, instance, owner):
         if instance is None:
             return self
@@ -1053,7 +1053,7 @@ def as_int(s, default, min=None, max=None):
 
 def as_bool(value):
     """Convert the given value to a `bool`.
-    
+
     If `value` is a string, return `True` for any of "yes", "true", "enabled",
     "on" or non-zero numbers, ignoring case. For non-string arguments, return
     the argument converted to a `bool`, or `False` if the conversion fails.

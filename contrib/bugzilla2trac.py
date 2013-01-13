@@ -387,7 +387,7 @@ class TracDatabase(object):
             db("""INSERT INTO ticket_change (ticket, time, author, field,
                                              oldvalue, newvalue)
                   VALUES (%s, %s, %s, %s, %s, %s)
-                  """, (ticket, datetime2epoch(time), author, 'comment', '', 
+                  """, (ticket, datetime2epoch(time), author, 'comment', '',
                         comment))
 
     def addTicketChange(self, ticket, time, author, field, oldvalue, newvalue):
@@ -428,7 +428,7 @@ class TracDatabase(object):
             attachment = Attachment(self.env, 'ticket', id)
             attachment.author = author
             attachment.description = description
-            attachment.insert(filename, filedata, filesize, 
+            attachment.insert(filename, filedata, filesize,
                               datetime2epoch(time))
             del attachment
 
@@ -480,7 +480,7 @@ def makeWhereClause(fieldName, values, negative=False):
         connector, op = ' AND ', '!='
     else:
         connector, op = ' OR ', '='
-    clause = connector.join(["%s %s '%s'" % (fieldName, op, value) 
+    clause = connector.join(["%s %s '%s'" % (fieldName, op, value)
                              for value in values])
     return ' (' + clause + ')'
 
@@ -567,12 +567,12 @@ def convert(_db, _host, _user, _password, _env, _force):
             sql = ("SELECT p.name AS product, c.name AS comp, "
                    " c.initialowner AS owner "
                    "FROM components c, products p "
-                   "WHERE c.product_id = p.id AND" + 
+                   "WHERE c.product_id = p.id AND" +
                    makeWhereClause('p.name', PRODUCTS))
         else:
             sql = ("SELECT program AS product, value AS comp, "
                    " initialowner AS owner "
-                   "FROM components WHERE" + 
+                   "FROM components WHERE" +
                    makeWhereClause('program', PRODUCTS))
         mysql_cur.execute(sql)
         lines = mysql_cur.fetchall()
@@ -623,7 +623,7 @@ def convert(_db, _host, _user, _password, _env, _force):
     trac.setMilestoneList(milestones, 'value')
 
     print "\n6. Retrieving bugs..."
-    if BZ_VERSION >= 2180: 
+    if BZ_VERSION >= 2180:
         sql = """SELECT DISTINCT b.*, c.name AS component, p.name AS product
                             FROM bugs AS b, components AS c, products AS p """
         sql += " WHERE" + makeWhereClause('p.name', PRODUCTS)
@@ -664,7 +664,7 @@ def convert(_db, _host, _user, _password, _env, _force):
             # priorities
             ticket['severity'] = ''
             ticket['priority'] = bug['bug_severity']
-        
+
         ticket['owner'] = trac.getLoginName(mysql_cur, bug['assigned_to'])
         ticket['reporter'] = trac.getLoginName(mysql_cur, bug['reporter'])
 
@@ -680,7 +680,7 @@ def convert(_db, _host, _user, _password, _env, _force):
         cc_list = []
         for cc in cc_records:
             cc_list.append(trac.getLoginName(mysql_cur, cc['who']))
-        cc_list = [cc for cc in cc_list if cc not in IGNORE_CC]  
+        cc_list = [cc for cc in cc_list if cc not in IGNORE_CC]
         ticket['cc'] = string.join(cc_list, ', ')
 
         ticket['version'] = bug['version']
@@ -831,7 +831,7 @@ def convert(_db, _host, _user, _password, _env, _force):
                   oldChange['oldvalue'] += " " + ticketChange['oldvalue']
                   oldChange['newvalue'] += " " + ticketChange['newvalue']
                   break
-              # cc and attachments.isobsolete sometime appear 
+              # cc and attachments.isobsolete sometime appear
               # in different activities with same time
               if ((field_name == "cc" or field_name == "attachments.isobsolete") \
                   and oldChange['time'] == ticketChange['time']):
@@ -877,7 +877,7 @@ def convert(_db, _host, _user, _password, _env, _force):
                               "WHERE attachments.bug_id = %s AND "
                               "attachments.attach_id = attach_data.id" % bugid)
         else:
-            mysql_cur.execute("SELECT * FROM attachments WHERE bug_id = %s" % 
+            mysql_cur.execute("SELECT * FROM attachments WHERE bug_id = %s" %
                               bugid)
         attachments = mysql_cur.fetchall()
         for a in attachments:
@@ -899,7 +899,7 @@ def convert(_db, _host, _user, _password, _env, _force):
             login = LOGIN_MAP[user['login_name']]
         else:
             login = user['login_name']
-        
+
         htpasswd.write(login + ":" + user['cryptpassword'] + "\n")
 
     htpasswd.close()
@@ -927,7 +927,7 @@ Available Options:
   -p | --passwd <MySQL password>   - Bugzilla's user password
   -c | --clean                     - Remove current Trac tickets before
                                      importing
-  -n | --noseverities              - import Bugzilla severities as Trac 
+  -n | --noseverities              - import Bugzilla severities as Trac
                                      priorities and forget Bugzilla priorities
   --help | help                    - This help info
 

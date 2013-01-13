@@ -28,7 +28,7 @@ try:
     from babel import Locale
     locale_en = Locale.parse('en_US')
 except ImportError:
-    locale_en = None    
+    locale_en = None
 
 from trac.config import Configuration
 from trac.core import Component, ComponentManager
@@ -44,9 +44,9 @@ from trac.util import translation
 
 def Mock(bases=(), *initargs, **kw):
     """
-    Simple factory for dummy classes that can be used as replacement for the 
+    Simple factory for dummy classes that can be used as replacement for the
     real implementation in tests.
-    
+
     Base classes for the mock can be specified using the first parameter, which
     must be either a tuple of class objects or a single class object. If the
     bases parameter is omitted, the base class of the mock will be object.
@@ -104,7 +104,7 @@ class MockPerm(object):
     overloading."""
 
     username = ''
-    
+
     def has_permission(self, action, realm_or_resource=None, id=False,
                        version=False):
         return True
@@ -203,11 +203,11 @@ def reset_postgres_db(env, db_prop):
                     (dbname + '.', dbname)):
                 db("ALTER SEQUENCE %s RESTART WITH 1" % seq)
             # clear tables
-            tables = db("""SELECT table_name FROM information_schema.tables 
+            tables = db("""SELECT table_name FROM information_schema.tables
                            WHERE table_schema=%s""", (dbname,))
             for table in tables:
                 db("DELETE FROM %s" % table)
-            # PostgreSQL supports TRUNCATE TABLE as well 
+            # PostgreSQL supports TRUNCATE TABLE as well
             # (see http://www.postgresql.org/docs/8.1/static/sql-truncate.html)
             # but on the small tables used here, DELETE is actually much faster
             return tables
@@ -303,7 +303,7 @@ class EnvironmentStub(Environment):
 
         self.known_users = []
         translation.activate(locale_en)
-        
+
     def reset_db(self, default_data=None):
         """Remove all data from Trac tables, keeping the tables themselves.
         :param default_data: after clean-up, initialize with default data
@@ -335,7 +335,7 @@ class EnvironmentStub(Environment):
             # "Database not found ...",
             # "OperationalError: no such table: system" or the like
             pass
-        
+
         db = None # as we might shutdown the pool     FIXME no longer needed!
 
         if scheme == 'sqlite' and remove_sqlite_db:
@@ -345,13 +345,13 @@ class EnvironmentStub(Environment):
                     path = os.path.join(self.path, path)
                 self.global_databasemanager.shutdown()
                 os.remove(path)
-            
+
         if not tables:
             self.global_databasemanager.init_db()
-            # we need to make sure the next get_db_cnx() will re-create 
+            # we need to make sure the next get_db_cnx() will re-create
             # a new connection aware of the new data model - see #8518.
             if self.dburi != 'sqlite::memory:':
-                self.global_databasemanager.shutdown() 
+                self.global_databasemanager.shutdown()
 
         with self.db_transaction as db:
             if default_data:
@@ -374,7 +374,7 @@ class EnvironmentStub(Environment):
                 elif scheme == 'mysql':
                     dbname = os.path.basename(db_prop['path'])
                     for table in db("""
-                          SELECT table_name FROM information_schema.tables 
+                          SELECT table_name FROM information_schema.tables
                           WHERE table_schema=%s""", (dbname,)):
                         db("DROP TABLE IF EXISTS `%s`" % table)
         except Exception:
@@ -400,7 +400,7 @@ def locate(fn):
     Returns the fully-qualified path, or None.
     """
     exec_suffix = '.exe' if os.name == 'nt' else ''
-    
+
     for p in ["."] + os.environ['PATH'].split(os.pathsep):
         f = os.path.join(p, fn + exec_suffix)
         if os.path.exists(f):

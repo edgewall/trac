@@ -54,7 +54,7 @@ class TimelineModule(Component):
         (''since 0.9.'')""")
 
     max_daysback = IntOption('timeline', 'max_daysback', 90,
-        """Maximum number of days (-1 for unlimited) displayable in the 
+        """Maximum number of days (-1 for unlimited) displayable in the
         Timeline. (''since 0.11'')""")
 
     abbreviated_messages = BoolOption('timeline', 'abbreviated_messages',
@@ -185,7 +185,7 @@ class TimelineModule(Component):
                 exclude.add(name)
             else:
                 include.add(name)
-        
+
         # gather all events for the given period of time
         events = []
         for provider in self.event_providers:
@@ -207,7 +207,7 @@ class TimelineModule(Component):
             events = events[:maxrows]
 
         data['events'] = events
-        
+
         if format == 'rss':
             data['email_map'] = Chrome(self.env).get_email_map()
             rss_context = web_context(req, absurls=True)
@@ -224,7 +224,7 @@ class TimelineModule(Component):
                 req.session['timeline.lastvisit'] = max(lastvisit, lastviewed)
                 req.session['timeline.nextlastvisit'] = lastvisit
             html_context = web_context(req)
-            html_context.set_hints(wiki_flavor='oneliner', 
+            html_context.set_hints(wiki_flavor='oneliner',
                                    shorten_lines=self.abbreviated_messages)
             data['context'] = html_context
 
@@ -259,7 +259,7 @@ class TimelineModule(Component):
                                                     daysback=daysback),
                      _('Next Period'))
         prevnext_nav(req, _('Previous Period'), _('Next Period'))
-        
+
         return 'timeline.html', data, None
 
     # ITemplateProvider methods
@@ -274,7 +274,7 @@ class TimelineModule(Component):
 
     def pre_process_request(self, req, handler):
         return handler
-    
+
     def post_process_request(self, req, template, data, content_type):
         if data:
             def pretty_dateinfo(date, format=None, dateonly=False):
@@ -393,7 +393,7 @@ class TimelineModule(Component):
         At the same time, the message will contain a link to the timeline
         without the filters corresponding to the guilty event provider `ep`.
         """
-        self.log.error('Timeline event provider failed: %s', 
+        self.log.error('Timeline event provider failed: %s',
                        exception_to_unicode(exc, traceback=True))
 
         ep_kinds = dict((f[0], f[1])
@@ -412,7 +412,7 @@ class TimelineModule(Component):
             tag.p(tag_("Event provider %(name)s failed for filters "
                        "%(kinds)s: ",
                        name=tag.tt(ep.__class__.__name__),
-                       kinds=', '.join('"%s"' % ep_kinds[f] for f in 
+                       kinds=', '.join('"%s"' % ep_kinds[f] for f in
                                        current_filters & ep_filters)),
                   tag.b(exception_to_unicode(exc)), class_='message'),
             tag.p(tag_("You may want to see the %(other_events)s from the "

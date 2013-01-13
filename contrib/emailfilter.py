@@ -7,7 +7,7 @@ A simple MTA filter to create Trac tickets from inbound emails.
 Copyright 2005, Daniel Lundin <daniel@edgewall.com>
 Copyright 2005, Edgewall Software
 
-Please note: 
+Please note:
 
 This is only a starting point. See
  * http://trac.edgewall.org/ticket/5327 and

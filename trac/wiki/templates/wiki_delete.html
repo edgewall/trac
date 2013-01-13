@@ -41,7 +41,7 @@
                 </strong>
                 <br />
                   Removing <a href="${href.wiki(page.name, action='history', version=page.version)}">
-                    $num_versions versions</a> of the page, 
+                    $num_versions versions</a> of the page,
                   which was first modified ${pretty_dateinfo(old_date)} and last modified ${pretty_dateinfo(new_date)}.
               </i18n:msg>
             </py:when>
@@ -82,7 +82,7 @@
                 <py:otherwise>
                   <i18n:msg params="versions, created, modified">
                       Removing all <a href="${href.wiki(page.name, action='history', version=page.version)}">
-                        $num_versions versions</a> of the page, 
+                        $num_versions versions</a> of the page,
                       which was created ${pretty_dateinfo(old_date)} and last modified ${pretty_dateinfo(new_date)}.
                   </i18n:msg>
                 </py:otherwise>

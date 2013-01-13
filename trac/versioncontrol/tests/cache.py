@@ -65,7 +65,7 @@ class CacheTestCase(unittest.TestCase):
                 if changes:
                     db.executemany("""
                           INSERT INTO node_change (repos, rev, path, node_type,
-                                                   change_type, base_path, 
+                                                   change_type, base_path,
                                                    base_rev)
                           VALUES (1, %s, %s, %s, %s, %s, %s)
                           """, [(rev[0],) + change for change in changes])
@@ -141,7 +141,7 @@ class CacheTestCase(unittest.TestCase):
                 db("SELECT time, author, message FROM revision WHERE rev='2'"))
             self.assertEquals([('trunk/README', 'F', 'E', 'trunk/README',
                                 '1')],
-                    db("""SELECT path, node_type, change_type, base_path, 
+                    db("""SELECT path, node_type, change_type, base_path,
                                  base_rev
                           FROM node_change WHERE rev='2'"""))
 
@@ -180,7 +180,7 @@ class CacheTestCase(unittest.TestCase):
         self.assertEquals((to_utimestamp(t2), 'joe', 'Initial Import'),
                           rows[1])
         self.assertEquals((to_utimestamp(t3), 'joe', 'Update'), rows[2])
-                          
+
         rows = self.env.db_query("""
             SELECT rev, path, node_type, change_type, base_path, base_rev
             FROM node_change ORDER BY rev, path""")
@@ -212,7 +212,7 @@ class CacheTestCase(unittest.TestCase):
         cache = CachedRepository(self.env, repos, self.log)
         cache.sync_changeset(0)
 
-        
+
         rows = self.env.db_query(
                 "SELECT time, author, message FROM revision ORDER BY rev")
         self.assertEquals(2, len(rows))

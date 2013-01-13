@@ -1,7 +1,7 @@
 # Translations template for Trac.
 # Copyright (C) 2010 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# 
+#
 # Translators:
 # lkraav <leho@kraav.com>, 2011.
 msgid ""

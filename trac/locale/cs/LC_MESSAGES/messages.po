@@ -3743,7 +3743,7 @@ msgstr "Tato volba určuje, zda budete v seznamu pro kopii."
 
 #: trac/ticket/templates/ticket.html:319
 msgid "Space or comma delimited email addresses and usernames are accepted."
-msgstr "" 
+msgstr ""
 "Povoleny jsou e-mailové adresy nebo uživatelská jména oddělená mezerami"
 " či čárkami."
 
@@ -3912,7 +3912,7 @@ msgstr ""
 "[1:Zobrazit změny z [2:]] [3:]\n"
 "        a [4:[5:] dní zpět][6:]\n"
 "        [7:od uživatele [8:]]"
-                          
+
 #: trac/timeline/templates/timeline.html:36
 msgid "Today"
 msgstr "dnes"
@@ -4010,7 +4010,7 @@ msgstr "Nesprávné datum"
 msgid ""
 "The date \"%(date)s\" is outside valid range. Try a date closer to present "
 "time."
-msgstr "" 
+msgstr ""
 "Datum \"%(date)s\" je mimo platný rozsah. Zadejte datum blíže "
 "k přítomnosti"
 
@@ -5813,7 +5813,7 @@ msgid ""
 msgstr ""
 "Změnit informace pro budoucí verzi %(version)s (upravenou uživatelem "
 "%(author)s):"
-                                                                             
+
 #: trac/wiki/templates/wiki_edit.html:125
 msgid "Go to the editor"
 msgstr "Přejít na editor"
@@ -5845,7 +5845,7 @@ msgid ""
 msgstr ""
 "Zvolením a kliknutím na volbu 'Náhled' přepnete do dvousloupcového "
 "režimu [editace|náhled]"
-                                                                          
+
 #: trac/wiki/templates/wiki_edit_form.html:24
 msgid "Edit side-by-side"
 msgstr "Editovat vedle sebe"
@@ -5908,7 +5908,7 @@ msgid ""
 "Renaming the page will rename all existing versions of the page in place."
 msgstr ""
 "Přejmenováním stránky se přejmenují všechny existující verze najednou."
-                                                                           
+
 #: trac/wiki/templates/wiki_rename.html:19
 msgid "The complete history of the page will be moved to the new location."
 msgstr "Úplná historie stránky bude přesunuta do nového umístění."

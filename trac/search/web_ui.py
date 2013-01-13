@@ -43,7 +43,7 @@ class SearchModule(Component):
                ITemplateProvider, IWikiSyntaxProvider)
 
     search_sources = ExtensionPoint(ISearchSource)
-    
+
     RESULTS_PER_PAGE = 10
 
     min_query_length = IntOption('search', 'min_query_length', 3,
@@ -93,7 +93,7 @@ class SearchModule(Component):
         for source in self.search_sources:
             available_filters.extend(source.get_search_filters(req) or [])
         available_filters.sort(key=lambda f: f[1].lower())
-        
+
         filters = self._get_selected_filters(req, available_filters)
         data = self._prepare_data(req, query, available_filters, filters)
         if query:
@@ -148,7 +148,7 @@ class SearchModule(Component):
                        if f[0] not in self.default_disabled_filters and
                        (len(f) < 3 or len(f) > 2 and f[2])]
         return filters
-        
+
     def _prepare_data(self, req, query, available_filters, filters):
         return {'filters': [{'name': f[0], 'label': f[1],
                              'active': f[0] in filters}
@@ -183,7 +183,7 @@ class SearchModule(Component):
 
     def _get_search_terms(self, query):
         """Break apart a search query into its various search terms.
-        
+
         Terms are grouped implicitly by word boundary, or explicitly by (single
         or double) quotes.
         """
@@ -202,7 +202,7 @@ class SearchModule(Component):
         if terms and (len(terms) > 1 or
                       len(terms[0]) >= self.min_query_length):
             return terms
-        
+
         add_warning(req, _('Search query too short. '
                            'Query must be at least %(num)s characters long.',
                            num=self.min_query_length))
@@ -222,7 +222,7 @@ class SearchModule(Component):
                             'date': user_time(req, format_datetime, result[2]),
                             'author': result[3], 'excerpt': result[4]}
 
-        pagedata = []    
+        pagedata = []
         shown_pages = results.get_shown_pages(21)
         for shown_page in shown_pages:
             page_href = req.href.search([(f, 'on') for f in filters],

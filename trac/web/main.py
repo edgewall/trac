@@ -73,7 +73,7 @@ class FakePerm(dict):
 
 class RequestWithSession(Request):
     """A request that saves its associated session when sending the reply."""
-    
+
     def send_response(self, code=200):
         if code < 400:
             self.session.save()
@@ -82,7 +82,7 @@ class RequestWithSession(Request):
 
 class RequestDispatcher(Component):
     """Web request dispatcher.
-    
+
     This component dispatches incoming requests to registered
     handlers.  Besides, it also takes care of user authentication and
     request pre- and post-processing.
@@ -101,7 +101,7 @@ class RequestDispatcher(Component):
                                       IRequestHandler, 'WikiModule',
         """Name of the component that handles requests to the base
         URL.
-        
+
         Options include `TimelineModule`, `RoadmapModule`,
         `BrowserModule`, `QueryModule`, `ReportModule`, `TicketModule`
         and `WikiModule`. The default is `WikiModule`. (''since 0.9'')""")
@@ -141,7 +141,7 @@ class RequestDispatcher(Component):
     def dispatch(self, req):
         """Find a registered handler that matches the request and let
         it process it.
-        
+
         In addition, this method initializes the data dictionary
         passed to the the template and adds the web site chrome.
         """
@@ -302,7 +302,7 @@ class RequestDispatcher(Component):
         cookie.  By requiring that every POST form to contain this
         value we're able to protect against CSRF attacks. Since this
         value is only known by the user and not by an attacker.
-        
+
         If the the user does not have a `trac_form_token` cookie a new
         one is generated.
         """
@@ -329,7 +329,7 @@ class RequestDispatcher(Component):
         nbargs = len(args)
         resp = args
         for f in reversed(self.filters):
-            # As the arity of `post_process_request` has changed since 
+            # As the arity of `post_process_request` has changed since
             # Trac 0.10, only filters with same arity gets passed real values.
             # Errors will call all filters with None arguments,
             # and results will not be not saved.
@@ -344,7 +344,7 @@ _slashes_re = re.compile(r'/+')
 
 def dispatch_request(environ, start_response):
     """Main entry point for the Trac web interface.
-    
+
     :param environ: the WSGI environment dict
     :param start_response: the WSGI callback for starting the response
     """
@@ -375,7 +375,7 @@ def dispatch_request(environ, start_response):
     environ.setdefault('trac.locale', '')
     environ.setdefault('trac.base_url',
                        os.getenv('TRAC_BASE_URL'))
-    
+
 
     locale.setlocale(locale.LC_ALL, environ['trac.locale'])
 
@@ -398,7 +398,7 @@ def dispatch_request(environ, start_response):
                 return []
 
             errmsg = None
-            
+
             # To make the matching patterns of request handlers work, we append
             # the environment name to the `SCRIPT_NAME` variable, and keep only
             # the remaining path in the `PATH_INFO` variable.
@@ -420,7 +420,7 @@ def dispatch_request(environ, start_response):
                 errmsg = 'Invalid URL encoding (was %r)' % script_name
 
             if errmsg:
-                start_response('404 Not Found', 
+                start_response('404 Not Found',
                                [('Content-Type', 'text/plain'),
                                 ('Content-Length', str(len(errmsg)))])
                 return [errmsg]
@@ -444,17 +444,17 @@ def dispatch_request(environ, start_response):
             mod_wsgi_version = environ.get('mod_wsgi.version')
             if mod_wsgi_version:
                 mod_wsgi_version = (
-                        "%s (WSGIProcessGroup %s WSGIApplicationGroup %s)" % 
+                        "%s (WSGIProcessGroup %s WSGIApplicationGroup %s)" %
                         ('.'.join([str(x) for x in mod_wsgi_version]),
                          environ.get('mod_wsgi.process_group'),
-                         environ.get('mod_wsgi.application_group') or 
+                         environ.get('mod_wsgi.application_group') or
                          '%{GLOBAL}'))
                 environ.update({
                     'trac.web.frontend': 'mod_wsgi',
                     'trac.web.version': mod_wsgi_version})
             env.webfrontend = environ.get('trac.web.frontend')
             if env.webfrontend:
-                env.systeminfo.append((env.webfrontend, 
+                env.systeminfo.append((env.webfrontend,
                                        environ['trac.web.version']))
     except Exception, e:
         env_error = e
@@ -545,7 +545,7 @@ def _send_user_error(req, env, e):
 
 def send_internal_error(env, req, exc_info):
     if env:
-        env.log.error("Internal Server Error: %s", 
+        env.log.error("Internal Server Error: %s",
                       exception_to_unicode(exc_info[1], traceback=True))
     message = exception_to_unicode(exc_info[1])
     traceback = get_last_traceback()
@@ -568,7 +568,7 @@ def send_internal_error(env, req, exc_info):
                               for m in p['modules'].itervalues()
                               for c in m['components'].itervalues())]
             match_plugins_to_frames(plugins, frames)
-        
+
             # Identify the tracker where the bug should be reported
             faulty_plugins = [p for p in plugins if 'frame_idx' in p]
             faulty_plugins.sort(key=lambda p: p['frame_idx'])
@@ -636,7 +636,7 @@ User agent: `#USER_AGENT#`
     except RequestDone:
         pass
 
-    
+
 def send_project_index(environ, start_response, parent_dir=None,
                        env_paths=None):
     req = Request(environ, start_response)

@@ -20,7 +20,7 @@ import re
 import sys
 
 if not 'PYTHON_EGG_CACHE' in os.environ:
-    os.environ['PYTHON_EGG_CACHE'] = os.path.join(sys.argv[1], '.egg-cache') 
+    os.environ['PYTHON_EGG_CACHE'] = os.path.join(sys.argv[1], '.egg-cache')
 
 from trac.env import open_environment
 
@@ -36,7 +36,7 @@ def main():
     for tmp in re.findall('(?:close|closed|closes|fix|fixed|fixes|addresses|references|refs|re|see)'
                           '.?(#[0-9]+(?:(?:[, &]+| *and *)#[0-9]+)*)', log.lower()):
         tickets += re.findall('#([0-9]+)', tmp)
-    
+
     # At least one ticket has to be mentioned in the log message
     if tickets == []:
         print >> sys.stderr, 'At least one open ticket must be mentioned ' \

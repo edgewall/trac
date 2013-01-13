@@ -19,7 +19,7 @@
     <item py:for="event in events"
           py:with="abs_url = event.render('url', context)">
       <title>${
-        plaintext(event.render('summary', context) or 
+        plaintext(event.render('summary', context) or
                   event.render('title', context), keeplinebreaks=False)
       }</title>
       <xi:include href="author_or_creator.rss" py:with="author = event.author"/>

@@ -21,13 +21,13 @@ from genshi import Markup, escape
 
 from trac.util.text import expandtabs
 
-__all__ = ['diff_blocks', 'get_change_extent', 'get_diff_options', 
+__all__ = ['diff_blocks', 'get_change_extent', 'get_diff_options',
            'unified_diff']
 
 
 def get_change_extent(str1, str2):
     """Determines the extent of differences between two strings.
-    
+
     Returns a pair containing the offset at which the changes start,
     and the negative offset at which the changes end.
 
@@ -51,7 +51,7 @@ def get_filtered_hunks(fromlines, tolines, context=None,
     """Retrieve differences in the form of `difflib.SequenceMatcher`
     opcodes, grouped according to the ``context`` and ``ignore_*``
     parameters.
-    
+
     :param fromlines: list of lines corresponding to the old content
     :param tolines: list of lines corresponding to the new content
     :param ignore_blank_lines: differences about empty lines only are ignored
@@ -71,7 +71,7 @@ def get_filtered_hunks(fromlines, tolines, context=None,
                                        ignore_blank_lines, ignore_case,
                                        ignore_space_changes)
     return hunks
-                 
+
 
 def get_hunks(fromlines, tolines, context=None):
     """Generator yielding grouped opcodes describing differences .
@@ -86,7 +86,7 @@ def get_hunks(fromlines, tolines, context=None):
 
 
 def filter_ignorable_lines(hunks, fromlines, tolines, context,
-                           ignore_blank_lines, ignore_case, 
+                           ignore_blank_lines, ignore_case,
                            ignore_space_changes):
     """Detect line changes that should be ignored and emits them as
     tagged as "equal", possibly joined with the preceding and/or
@@ -206,7 +206,7 @@ def diff_blocks(fromlines, tolines, context=None, tabwidth=8,
                     if start != 0 or end != 0:
                         last = end + len(fromline)
                         fromlines[i1 + i] = (
-                            fromline[:start] + '\0' + fromline[start:last] + 
+                            fromline[:start] + '\0' + fromline[start:last] +
                             '\1' + fromline[last:])
                         last = end+len(toline)
                         tolines[j1 + i] = (
@@ -215,7 +215,7 @@ def diff_blocks(fromlines, tolines, context=None, tabwidth=8,
             yield tag, i1, i2, j1, j2
 
     changes = []
-    for group in get_filtered_hunks(fromlines, tolines, context, 
+    for group in get_filtered_hunks(fromlines, tolines, context,
                                     ignore_blank_lines, ignore_case,
                                     ignore_space_changes):
         blocks = []
@@ -289,22 +289,22 @@ def get_diff_options(req):
     :return: ``(style, options, data)`` triple.
 
       ``style``
-        can be ``'inline'`` or ``'sidebyside'``, 
+        can be ``'inline'`` or ``'sidebyside'``,
       ``options``
         a sequence of "diff" flags,
       ``data``
         the style and options information represented as
         key/value pairs in dictionaries, for example::
 
-          {'style': u'sidebyside', 
+          {'style': u'sidebyside',
            'options': {'contextall': 1, 'contextlines': 2,
-                       'ignorecase': 0,  'ignoreblanklines': 0, 
+                       'ignorecase': 0,  'ignoreblanklines': 0,
                        'ignorewhitespace': 1}}
 
     """
     options_data = {}
     data = {'options': options_data}
-    
+
     def get_bool_option(name, default=0):
         pref = int(req.session.get('diff_' + name, default))
         arg = int(name in req.args)
@@ -328,7 +328,7 @@ def get_diff_options(req):
     if 'update' in req.args and context != pref:
         req.session.set('diff_contextlines', context, 2)
     options_data['contextlines'] = context
-    
+
     arg = int(req.args.get('contextall', 0))
     options_data['contextall'] = arg
     options = ['-U%d' % (-1 if arg else context)]

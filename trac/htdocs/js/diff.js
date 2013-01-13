@@ -1,5 +1,5 @@
 (function($){
-  
+
   function convertDiff(name, table, pre) {
     var inline = $(table).hasClass('inline');
     var ths = table.tHead.rows[0].cells;
@@ -26,7 +26,7 @@
     var title = "";
     if (inline)
       title = $(ths[2]).text();
-  
+
     for (var i = 0; i < table.tBodies.length; i++) {
       var tBody = table.tBodies[i];
       if (i == 0 || tBody.className == "skipped") {
@@ -86,14 +86,14 @@
         lines = lines.concat(tmpLines);
       }
     }
-  
+
     if (!oldOffset && oldLength) oldOffset = 1;
     if (!newOffset && newLength) newOffset = 1;
     lines[sepIndex] = lines[sepIndex]
       .replace("{1}", oldOffset).replace("{2}", oldLength)
       .replace("{3}", newOffset).replace("{4}", newLength)
       .replace("{5}", title);
-  
+
     /* remove trailing &nbsp; and join lines (with CR for IExplorer) */
     var sep = $.browser.msie ? "\r" : "\n";
     for ( var i = 0; i < lines.length; i++ )
@@ -108,7 +108,7 @@
               pre.append($('<span>').text(line));
         }
   }
-  
+
   $(document).ready(function($) {
     $("div.diff h2").each(function() {
       var switcher = $("<span class='switch'></span>").prependTo(this);

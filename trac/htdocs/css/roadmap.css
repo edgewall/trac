@@ -23,7 +23,7 @@ table.progress td { background: #fff; padding: 0 }
 table.progress td.new { background: #f5f5b5 }
 table.progress td.closed { background: #bae0ba }
 table.progress td :hover { background: none }
-p.percent { 
+p.percent {
  line-height: 1.2em;
  margin: 0;
 }

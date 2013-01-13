@@ -17,7 +17,7 @@ dl {
  line-height: 1.3em;
  margin-left: 1em;
 }
-dl.unread { 
+dl.unread {
  margin-left: 0.38em;
  border-left: 0.31em solid #c0f0c0;
  padding-left: 0.31em;
@@ -43,8 +43,8 @@ dt em {
 }
 dt .time { color: #999; font-size: 80%; }
 dt .author { color: #666; }
-dt.highlight { background-color: #ffa; } 
-dd { 
+dt.highlight { background-color: #ffa; }
+dd {
  font-size: 80%;
  margin: 0 0 .75em 5.8em;
  padding: 0;

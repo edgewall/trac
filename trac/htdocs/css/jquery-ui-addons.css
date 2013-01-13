@@ -8,5 +8,5 @@
 
 
 /* jQuery UI datepicker customization */
-.ui-datepicker , .ui-datepicker  table, .ui-datepicker  tr, .ui-datepicker td, 
+.ui-datepicker , .ui-datepicker  table, .ui-datepicker  tr, .ui-datepicker td,
 .ui-datepicker th, .ui-datepicker-calendar { font-size: 11px; }

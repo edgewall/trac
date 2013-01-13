@@ -26,7 +26,7 @@ class IterableCursor(object):
     """Wrapper for DB-API cursor objects that makes the cursor iterable
     and escapes all "%"s used inside literal strings with parameterized
     queries.
-    
+
     Iteration will generate the rows of a SELECT query one by one.
     """
     __slots__ = ['cursor', 'log']
@@ -88,7 +88,7 @@ class IterableCursor(object):
 
 class ConnectionWrapper(object):
     """Generic wrapper around connection objects.
-    
+
     :since 0.12: This wrapper no longer makes cursors produced by the
                  connection iterable using `IterableCursor`.
 
@@ -144,9 +144,9 @@ class ConnectionWrapper(object):
     def check_select(self, query):
         """Verify if the query is compatible according to the readonly nature
         of the wrapped Connection.
-        
+
         :return: `True` if this is a SELECT
-        :raise: `ValueError` if this is not a SELECT and the wrapped 
+        :raise: `ValueError` if this is not a SELECT and the wrapped
                 Connection is read-only.
         """
         dql = query.lstrip().startswith('SELECT')

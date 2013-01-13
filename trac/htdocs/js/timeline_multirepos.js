@@ -4,6 +4,6 @@ jQuery(document).ready(function($){
     $("input[name^=repo-]").parent().toggle();
   }
   csetfilter.click(toggleRepositories);
-  if (csetfilter.checked()) 
+  if (csetfilter.checked())
     toggleRepositories();
 });

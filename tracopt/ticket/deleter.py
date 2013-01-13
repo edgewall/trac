@@ -28,13 +28,13 @@ from trac.web.chrome import ITemplateProvider, add_notice, add_stylesheet
 
 class TicketDeleter(Component):
     """Ticket and ticket comment deleter.
-    
+
     This component allows deleting ticket comments and complete tickets. For
     users having `TICKET_ADMIN` permission, it adds a "Delete" button next to
     each "Reply" button on the page. The button in the ticket description
     requests deletion of the complete ticket, and the buttons in the change
     history request deletion of a single comment.
-    
+
     '''Comment and ticket deletion are irreversible (and therefore
     ''dangerous'') operations.''' For that reason, a confirmation step is
     requested. The confirmation page shows the ticket box (in the case of a
@@ -45,7 +45,7 @@ class TicketDeleter(Component):
                IRequestHandler)
 
     # ITemplateProvider methods
-    
+
     def get_htdocs_dirs(self):
         return []
 
@@ -54,7 +54,7 @@ class TicketDeleter(Component):
         return [resource_filename(__name__, 'templates')]
 
     # ITemplateStreamFilter methods
-    
+
     def filter_stream(self, req, method, filename, stream, data):
         if filename not in ('ticket.html', 'ticket_preview.html'):
             return stream
@@ -62,7 +62,7 @@ class TicketDeleter(Component):
         if not (ticket and ticket.exists
                 and 'TICKET_ADMIN' in req.perm(ticket.resource)):
             return stream
-        
+
         # Insert "Delete" buttons for ticket description and each comment
         def delete_ticket():
             return tag.form(
@@ -75,7 +75,7 @@ class TicketDeleter(Component):
                               class_="trac-delete"),
                     class_="inlinebuttons"),
                 action='#', method='get')
-        
+
         def delete_comment():
             for event in buffer:
                 cnum, cdate = event[1][1].get('id')[12:].split('-', 1)
@@ -92,7 +92,7 @@ class TicketDeleter(Component):
                                   class_="trac-delete"),
                         class_="inlinebuttons"),
                     action='#', method='get')
-            
+
         buffer = StreamBuffer()
         return stream | Transformer('//div[@class="description"]'
                                     '/h3[@id="comment:description"]') \
@@ -104,7 +104,7 @@ class TicketDeleter(Component):
             .prepend(delete_comment)
 
     # IRequestFilter methods
-    
+
     def pre_process_request(self, req, handler):
         if handler is not TicketModule(self.env):
             return handler
@@ -134,13 +134,13 @@ class TicketDeleter(Component):
                 if action == 'delete-comment':
                     href += '#comment:%s' % cnum
                 req.redirect(href)
-            
+
             if action == 'delete':
                 ticket.delete()
                 add_notice(req, _('The ticket #%(id)s has been deleted.',
                                   id=ticket.id))
                 req.redirect(req.href())
-            
+
             elif action == 'delete-comment':
                 cdate = from_utimestamp(long(req.args.get('cdate')))
                 ticket.delete_change(cdate=cdate)
@@ -148,13 +148,13 @@ class TicketDeleter(Component):
                                   '#%(id)s has been deleted.',
                                   num=cnum, id=ticket.id))
                 req.redirect(req.href.ticket(id))
-            
+
         tm = TicketModule(self.env)
         data = tm._prepare_data(req, ticket)
         tm._insert_ticket_data(req, ticket, data,
                                get_reporter_id(req, 'author'), {})
         data.update(action=action, cdate=None)
-        
+
         if action == 'delete-comment':
             data['cdate'] = req.args.get('cdate')
             cdate = from_utimestamp(long(data['cdate']))
@@ -165,6 +165,6 @@ class TicketDeleter(Component):
                     break
             else:
                 raise TracError(_('Comment %(num)s not found', num=cnum))
-        
+
         add_stylesheet(req, 'common/css/ticket.css')
         return 'ticket_delete.html', data, None

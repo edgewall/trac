@@ -16,7 +16,7 @@
                        .new          - new value for the property
                        (both .old and .new have .name, .value and .rendered properties)
                      .diffs        - a sequence of list of blocks
-                     
+
                        Each block being a dict:
                        .type         - one of 'unmod', 'add', 'rem' or 'mod'
                        .base and .changed - information about lines from old and new content
@@ -43,7 +43,7 @@
 
   <ul py:if="any(item.diffs or item.props for item in changes)" class="entries">
     <py:for each="idx, item in enumerate(changes)" py:with="old = item.old; new = item.new">
-      <li py:if="item and (item.diffs or item.props or 'comments' in item)" class="entry" 
+      <li py:if="item and (item.diffs or item.props or 'comments' in item)" class="entry"
           py:with="comments = item.get('comments')">
         <h2 id="${'file%s' % idx if not no_id else None}" py:choose="">
           <a py:when="new.path" href="${item.get('href', new.get('href'))}"

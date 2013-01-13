@@ -146,7 +146,7 @@ http://www.rawlink.org/, http://www.another.rawlink.org
 <a class="ext-link" href="http://trac.edgewall.org/intertrac/WikiFamily" title="WikiFamily in Trac's Trac"><span class="icon"></span>WikiFamily</a>
 </p>
 ============================================================
-
+
         Structural Markup for Creole 1.0
 
 ============================== Paragraphs
@@ -197,14 +197,14 @@ This is the first line,<br />and this is the second.
 </ol>
 ------------------------------
 ============================== Horizontal Rule
----- 
+----
 ------------------------------
 <hr />
 ------------------------------
 ============================== Image (inline) (SKIP)
-{{myimage.png|this is my image}} 
+{{myimage.png|this is my image}}
 ------------------------------
-<img src="myimage.png" alt="this is my image" /> 
+<img src="myimage.png" alt="this is my image" />
 ------------------------------
 ============================== Tables (SKIP)
 |=Heading Col 1 |=Heading Col 2         |
@@ -253,7 +253,7 @@ if (x != NULL) {
 }}}
 ------------------------------
 ============================================================
-
+
         Miscellaneous syntax for Creole 1.0
 
 ============================== Escape Character (SKIP)
@@ -264,14 +264,14 @@ CamelCaseLink
 ~CamelCaseLink
 Example output:
 ------------------------------
-#1 
-http://www.foo.com/~bar/ 
-http://www.foo.com/ 
-CamelCaseLink 
+#1
+http://www.foo.com/~bar/
+http://www.foo.com/
+CamelCaseLink
 CamelCaseLink
 ------------------------------
 ============================== Placeholder (SKIP)
-<<<x>>> 
+<<<x>>>
 ------------------------------
 ============================== Bold and/or italic links
 //[[Important page|this link is italicized]]//

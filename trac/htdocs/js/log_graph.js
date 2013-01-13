@@ -7,7 +7,7 @@
     ctx.scale(-canvas.width / graph.columns,
               canvas.height / graph.vertices.length);
     ctx.translate(-graph.columns + 0.5, 0.5)
-    
+
     // Paint threads
     ctx.lineWidth = graph.line_width;
     ctx.lineCap = 'round';
@@ -26,7 +26,7 @@
       }
       ctx.stroke();
     }
-    
+
     // Paint dots
     ctx.lineWidth = 0;
     var vertices = graph.vertices;
@@ -37,7 +37,7 @@
       ctx.arc(vertice[0], i, graph.dot_radius, 0, 2 * Math.PI, true);
       ctx.fill();
     }
-    
+
     return canvas;
   };
 

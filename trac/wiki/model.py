@@ -54,11 +54,11 @@ class WikiPage(object):
 
     def _fetch(self, name, version=None, db=None):
         if version is not None:
-            sql = """SELECT version, time, author, text, comment, readonly 
+            sql = """SELECT version, time, author, text, comment, readonly
                      FROM wiki WHERE name=%s AND version=%s"""
             args = (name, int(version))
         else:
-            sql = """SELECT version, time, author, text, comment, readonly 
+            sql = """SELECT version, time, author, text, comment, readonly
                      FROM wiki WHERE name=%s ORDER BY version DESC LIMIT 1"""
             args = (name,)
         for version, time, author, text, comment, readonly in \
@@ -75,7 +75,7 @@ class WikiPage(object):
             self.text = self.comment = self.author = ''
             self.time = None
             self.readonly = 0
-            
+
     exists = property(lambda self: self.version > 0)
 
     def delete(self, version=None, db=None):
@@ -85,7 +85,7 @@ class WikiPage(object):
         in version 1.1.1
         """
         assert self.exists, "Cannot delete non-existent page"
-        
+
         with self.env.db_transaction as db:
             if version is None:
                 # Delete a wiki page completely
@@ -148,7 +148,7 @@ class WikiPage(object):
             if self.version == 1:
                 # Invalidate page name cache
                 del WikiSystem(self.env).pages
-        
+
         self.author = author
         self.comment = comment
         self.time = t
@@ -174,7 +174,7 @@ class WikiPage(object):
             raise TracError(_("Invalid Wiki page name '%(name)s'",
                               name=new_name))
         old_name = self.name
-        
+
         with self.env.db_transaction as db:
             new_page = WikiPage(self.env, new_name)
             if new_page.exists:
@@ -191,7 +191,7 @@ class WikiPage(object):
 
         self.name = new_name
         self.env.log.info('Renamed page %s to %s', old_name, new_name)
-        
+
         for listener in WikiSystem(self.env).change_listeners:
             if hasattr(listener, 'wiki_page_renamed'):
                 listener.wiki_page_renamed(self, old_name)

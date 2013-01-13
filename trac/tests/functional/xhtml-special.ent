@@ -18,7 +18,7 @@
      existing ISO 8879 entity names. ISO 10646 character numbers
      are given for each character, in hex. values are decimal
      conversions of the ISO 10646 values and refer to the document
-     character set. Names are Unicode names. 
+     character set. Names are Unicode names.
 -->
 
 <!-- C0 Controls and Basic Latin -->

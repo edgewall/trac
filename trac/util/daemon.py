@@ -80,7 +80,7 @@ def daemonize(pidfile=None, progname=None, stdin='/dev/null',
         # Register signal handlers to ensure atexit hooks are called on exit
         for signum in [signal.SIGTERM, signal.SIGHUP]:
             signal.signal(signum, handle_signal)
-        
+
         # Create/update the pid file, and register a hook to remove it when the
         # process exits
         def remove_pidfile():

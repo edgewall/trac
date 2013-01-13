@@ -56,7 +56,7 @@ class MilestoneToVersion(Component):
             version = Version(self.env)
             version.name = version_name
             version.time = milestone.completed
-            version.insert()             
+            version.insert()
             self.log.info('New version "%s" created from completed milstone '
                           '"%s".' % (version.name, milestone.name))
 

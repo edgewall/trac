@@ -49,7 +49,7 @@ class ParseError(Exception):
 
 def parse(authz, modules):
     """Parse a Subversion authorization file.
-    
+
     Return a dict of modules, each containing a dict of paths, each containing
     a dict mapping users to permissions. Only modules contained in `modules`
     are retained.
@@ -97,30 +97,30 @@ def parse(authz, modules):
             yield aliases[subject[1:]]
         else:
             yield subject
-    
+
     authz = {}
     for (module, path), items in sections.iteritems():
         section = authz.setdefault(module, {}).setdefault(path, {})
         for subject, perms in items:
             for user in resolve(subject, set()):
                 section.setdefault(user, 'r' in perms)  # The first match wins
-    
+
     return authz
 
 
 class AuthzSourcePolicy(Component):
     """Permission policy for `source:` and `changeset:` resources using a
     Subversion authz file.
-    
+
     `FILE_VIEW` and `BROWSER_VIEW` permissions are granted as specified in the
     authz file.
-    
+
     `CHANGESET_VIEW` permission is granted for changesets where `FILE_VIEW` is
     granted on at least one modified file, as well as for empty changesets.
     """
 
     implements(IPermissionPolicy)
-    
+
     authz_file = PathOption('trac', 'authz_file', '',
         """The path to the Subversion
         [http://svnbook.red-bean.com/en/1.5/svn.serverconfig.pathbasedauthz.html authorization (authz) file].
@@ -136,7 +136,7 @@ class AuthzSourcePolicy(Component):
     _mtime = 0
     _authz = {}
     _users = set()
-    
+
     _handled_perms = frozenset([(None, 'BROWSER_VIEW'),
                                 (None, 'CHANGESET_VIEW'),
                                 (None, 'FILE_VIEW'),
@@ -154,7 +154,7 @@ class AuthzSourcePolicy(Component):
             authz, users = self._get_authz_info()
             if authz is None:
                 return False
-            
+
             if username == 'anonymous':
                 usernames = ('$anonymous', '*')
             else:
@@ -177,7 +177,7 @@ class AuthzSourcePolicy(Component):
                 path = '/' + join(repos.scope, path)
                 if path != '/':
                     path += '/'
-                
+
                 # Allow access to parent directories of allowed resources
                 if any(section.get(user) is True
                        for module in modules
@@ -195,7 +195,7 @@ class AuthzSourcePolicy(Component):
                                 result = section.get(user)
                                 if result is not None:
                                     return result
-            
+
             if realm == 'source':
                 return check_path(resource.id)
 

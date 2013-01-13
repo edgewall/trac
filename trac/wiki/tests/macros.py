@@ -107,7 +107,7 @@ IMAGE_MACRO_TEST_CASES = u"""
 #       according to the W3C XHTML validator).
 
 
-
+
 # == [[TitleIndex]]
 
 def add_pages(tc, names):

@@ -205,7 +205,7 @@ def main():
 
         try:
             import grp, pwd
-            
+
             def _group(option, opt_str, value, parser):
                 try:
                     value = int(value)
@@ -225,7 +225,7 @@ def main():
                     except KeyError:
                         raise OptionValueError('user not found: %r' % value)
                 setattr(parser.values, option.dest, value)
-            
+
             parser.add_option('--group', action='callback', type='string',
                               dest='group', metavar='GROUP', callback=_group,
                               help='the group to run as')

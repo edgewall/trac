@@ -17,7 +17,7 @@ from trac.util import as_int
 from trac.web.api import IRequestHandler
 from trac.web.chrome import web_context
 from trac.wiki.formatter import format_to
- 
+
 
 class WikiRenderer(Component):
     """Wiki text renderer."""
@@ -46,7 +46,7 @@ class WikiRenderer(Component):
                                                   or 0))
         if 'shorten' in req.args:
             options['shorten'] = bool(int(req.args['shorten'] or 0))
-        
+
         resource = Resource(realm, id=id, version=version)
         context = web_context(req, resource)
         rendered = format_to(self.env, flavor, context, text, **options)

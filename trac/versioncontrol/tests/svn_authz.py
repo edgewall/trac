@@ -40,7 +40,7 @@ baz = CN=Hàröld Hacker,OU=Enginéers,DC=red-bean,DC=com
 
 [/trunk]
 @developers = rw
-&baz = 
+&baz =
 @users = r
 
 [/branches]
@@ -200,10 +200,10 @@ jane = r
         self.env = EnvironmentStub(enable=[AuthzSourcePolicy])
         self.env.config.set('trac', 'authz_file', self.authz)
         self.policy = AuthzSourcePolicy(self.env)
-        
+
         # Monkey-subclass RepositoryManager to serve mock repositories
         rm = RepositoryManager(self.env)
-        
+
         class TestRepositoryManager(rm.__class__):
             def get_real_repositories(self):
                 return set([Mock(reponame='module'),
@@ -226,7 +226,7 @@ jane = r
                     return Mock(scope='/scope',
                                 get_changeset=get_changeset)
                 return Mock(scope='/')
-        
+
         rm.__class__ = TestRepositoryManager
 
     def tearDown(self):
@@ -244,7 +244,7 @@ jane = r
         for perm in ('BROWSER_VIEW', 'FILE_VIEW', 'LOG_VIEW'):
             check = self.policy.check_permission(perm, user, resource, None)
             self.assertEqual(result, check)
-        
+
     def assertRevPerm(self, result, user, reponame=None, rev=None):
         """Assert that `user` is granted access `result` to `rev` within
         the repository `reponame`.
@@ -256,7 +256,7 @@ jane = r
         check = self.policy.check_permission('CHANGESET_VIEW', user, resource,
                                              None)
         self.assertEqual(result, check)
-        
+
     def test_coarse_permissions(self):
         # Granted to all due to wildcard
         self.assertPathPerm(True, 'unknown')
@@ -310,7 +310,7 @@ unknown = r
         self.assertPathPerm(True, 'user', '', '/sub/path')
         self.assertPathPerm(True, 'user', '', '/sub/path/test')
         self.assertPathPerm(True, 'user', '', '/sub/path/other/sub')
-        
+
     def test_module_usage(self):
         # If a module name is specified, the rules are specific to the module
         self.assertPathPerm(True, 'user', 'module', '/module_a')
@@ -373,7 +373,7 @@ unknown = r
         self.assertPathPerm(None, 'jane', 'scoped', '/dir1')
         self.assertPathPerm(True, 'jane', 'scoped', '/dir2')
         self.assertPathPerm(True, 'jane', 'scoped', '/')
-    
+
     def test_changesets(self):
         # Changesets are allowed if at least one changed path is allowed, or
         # if the changeset is empty

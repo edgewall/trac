@@ -28,7 +28,7 @@
     var timer = null;
     var updating = false;
     var queued = false;
-    
+
     // Return true iff the values have changed
     function values_changed(new_values) {
       if (values.length != new_values.length)
@@ -40,7 +40,7 @@
       }
       return false;
     }
-    
+
     // Request a preview through XHR
     function request() {
       if (!updating) {
@@ -50,12 +50,12 @@
           updating = true;
           if (busy != undefined)
             $(busy).show();
-          
+
           // Construct request data
           var data = values.slice(0);
           for (var key in args)
             data.push({name: key, value: args[key]});
-          
+
           $.ajax({
             type: form.attr('method'), url: form.attr('action'),
             data: data, traditional: true, dataType: "html",
@@ -78,7 +78,7 @@
         }
       }
     }
-    
+
     // Trigger a request after the given timeout
     function trigger() {
       if (!updating) {
@@ -118,7 +118,7 @@
         data[key] = args[key];
       data["__FORM_TOKEN"] = form_token;
       data["text"] = textarea.value;
-      
+
       // Request a preview through XHR
       function request() {
         var text = textarea.value;
@@ -139,7 +139,7 @@
           });
         }
       }
-      
+
       // Trigger a request after the given timeout
       function trigger() {
         if (!updating) {
@@ -149,7 +149,7 @@
         }
         return true;
       }
-      
+
       $(this).keydown(trigger).keypress(trigger).blur(trigger);
     });
   };

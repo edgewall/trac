@@ -37,10 +37,10 @@ Components
 
 .. autoclass :: RepositoryManager
    :members:
- 
+
 .. autoclass :: DbRepositoryProvider
    :members:
- 
+
 
 Exceptions
 ----------

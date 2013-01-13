@@ -30,9 +30,9 @@ import os.path
 import pkg_resources
 import pprint
 import re
-try: 
+try:
     from cStringIO import StringIO
-except ImportError: 
+except ImportError:
     from StringIO import StringIO
 
 from genshi import Markup
@@ -75,7 +75,7 @@ class INavigationContributor(Interface):
     def get_active_navigation_item(req):
         """This method is only called for the `IRequestHandler` processing the
         request.
-        
+
         It should return the name of the navigation item that should be
         highlighted as active/current.
         """
@@ -98,7 +98,7 @@ class ITemplateProvider(Interface):
         Each item in the list must be a `(prefix, abspath)` tuple. The
         `prefix` part defines the path in the URL that requests to these
         resources are prefixed with.
-        
+
         The `abspath` is the absolute path to the directory containing the
         resources on the local file system.
         """
@@ -134,7 +134,7 @@ def add_link(req, rel, href, title=None, mimetype=None, classname=None,
 def add_stylesheet(req, filename, mimetype='text/css', media=None):
     """Add a link to a style sheet to the chrome info so that it gets included
     in the generated HTML page.
-    
+
     If the filename is absolute (i.e. starts with a slash), the generated link
     will be based off the application root path. If it is relative, the link
     will be based off the `/chrome/` path.
@@ -153,7 +153,7 @@ def add_stylesheet(req, filename, mimetype='text/css', media=None):
 def add_script(req, filename, mimetype='text/javascript', charset='utf-8',
                ie_if=None):
     """Add a reference to an external javascript file to the template.
-    
+
     If the filename is absolute (i.e. starts with a slash), the generated link
     will be based off the application root path. If it is relative, the link
     will be based off the `/chrome/` path.
@@ -180,7 +180,7 @@ def add_script(req, filename, mimetype='text/javascript', charset='utf-8',
 
 def add_script_data(req, data={}, **kwargs):
     """Add data to be made available in javascript scripts as global variables.
-    
+
     The keys in `data` and the keyword argument names provide the names of the
     global variables. The values are converted to JSON and assigned to the
     corresponding variables.
@@ -225,15 +225,15 @@ def prevnext_nav(req, prev_label, next_label, up_label=None):
     """
     links = req.chrome['links']
     prev_link = next_link = None
-    
+
     if not any(lnk in links for lnk in ('prev', 'up', 'next')): # Short circuit
         return
-    
+
     if 'prev' in links:
         prev = links['prev'][0]
         prev_link = tag.a(prev_label, href=prev['href'], title=prev['title'],
                           class_='prev')
-        
+
     add_ctxtnav(req, tag.span(Markup('&larr; '), prev_link or prev_label,
                               class_='missing' if not prev_link else None))
 
@@ -289,7 +289,7 @@ def web_context(req, resource=None, id=False, version=False, parent=False,
 
 def auth_link(req, link):
     """Return an "authenticated" link to `link` for authenticated users.
-    
+
     If the user is anonymous, returns `link` unchanged. For authenticated
     users, returns a link to `/login` that redirects to `link` after
     authentication.
@@ -312,14 +312,14 @@ _translate_nop = "".join([chr(i) for i in range(256)])
 _invalid_control_chars = "".join([chr(i) for i in range(32)
                                   if i not in [0x09, 0x0a, 0x0d]])
 
-    
+
 class Chrome(Component):
     """Web site chrome assembly manager.
-    
+
     Chrome is everything that is not actual page content.
     """
     required = True
-    
+
     implements(ISystemInfoProvider, IEnvironmentSetupParticipant,
                IRequestHandler, ITemplateProvider, IWikiSyntaxProvider)
 
@@ -329,26 +329,26 @@ class Chrome(Component):
 
     shared_templates_dir = PathOption('inherit', 'templates_dir', '',
         """Path to the //shared templates directory//.
-        
+
         Templates in that directory are loaded in addition to those in the
         environments `templates` directory, but the latter take precedence.
-        
+
         (''since 0.11'')""")
- 
+
     shared_htdocs_dir = PathOption('inherit', 'htdocs_dir', '',
         """Path to the //shared htdocs directory//.
-        
+
         Static resources in that directory are mapped to /chrome/shared
         under the environment URL, in addition to common and site locations.
-        
+
         This can be useful in site.html for common interface customization
         of multiple Trac environments.
-        
+
         (''since 1.0'')""")
 
     auto_reload = BoolOption('trac', 'auto_reload', False,
         """Automatically reload template files after modification.""")
-    
+
     genshi_cache_size = IntOption('trac', 'genshi_cache_size', 128,
         """The maximum number of templates that the template loader will cache
         in memory. The default value is 128. You may want to choose a higher
@@ -357,7 +357,7 @@ class Chrome(Component):
         memory.""")
 
     htdocs_location = Option('trac', 'htdocs_location', '',
-        """Base URL for serving the core static resources below 
+        """Base URL for serving the core static resources below
         `/chrome/common/`.
 
         It can be left empty, and Trac will simply serve those resources
@@ -367,47 +367,47 @@ class Chrome(Component):
         [TracAdmin trac-admin ... deploy <deploydir>] to allow serving the
         static resources for Trac directly from the web server.
         Note however that this only applies to the `<deploydir>/htdocs/common`
-        directory, the other deployed resources (i.e. those from plugins) 
-        will not be made available this way and additional rewrite 
+        directory, the other deployed resources (i.e. those from plugins)
+        will not be made available this way and additional rewrite
         rules will be needed in the web server.""")
 
     jquery_location = Option('trac', 'jquery_location', '',
         """Location of the jQuery !JavaScript library (version 1.7.2).
-        
+
         An empty value loads jQuery from the copy bundled with Trac.
-        
+
         Alternatively, jQuery could be loaded from a CDN, for example:
         http://code.jquery.com/jquery-1.7.2.min.js,
         http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js or
         https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js.
-        
+
         (''since 1.0'')""")
 
     jquery_ui_location = Option('trac', 'jquery_ui_location', '',
         """Location of the jQuery UI !JavaScript library (version 1.8.21).
-        
+
         An empty value loads jQuery UI from the copy bundled with Trac.
-        
+
         Alternatively, jQuery UI could be loaded from a CDN, for example:
         https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js
         or
         http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/jquery-ui.min.js.
-        
+
         (''since 1.0'')""")
 
     jquery_ui_theme_location = Option('trac', 'jquery_ui_theme_location', '',
         """Location of the theme to be used with the jQuery UI !JavaScript
         library (version 1.8.21).
-        
-        An empty value loads the custom Trac jQuery UI theme from the copy 
+
+        An empty value loads the custom Trac jQuery UI theme from the copy
         bundled with Trac.
-        
-        Alternatively, a jQuery UI theme could be loaded from a CDN, for 
+
+        Alternatively, a jQuery UI theme could be loaded from a CDN, for
         example:
         https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/start/jquery-ui.css
         or
         http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/themes/start/jquery-ui.css.
-        
+
         (''since 1.0'')""")
 
     metanav_order = ListOption('trac', 'metanav',
@@ -418,7 +418,7 @@ class Chrome(Component):
     mainnav_order = ListOption('trac', 'mainnav',
                                'wiki, timeline, roadmap, browser, tickets, '
                                'newticket, search', doc=
-        """Order of the items to display in the `mainnav` navigation bar, 
+        """Order of the items to display in the `mainnav` navigation bar,
            listed by IDs. See also TracNavigation.""")
 
     logo_link = Option('header_logo', 'link', '',
@@ -432,10 +432,10 @@ class Chrome(Component):
         `site/your-logo.png` if `your-logo.png` is located in the `htdocs`
         folder within your TracEnvironment;
         `common/your-logo.png` if `your-logo.png` is located in the
-        folder mapped to the [#trac-section htdocs_location] URL. 
+        folder mapped to the [#trac-section htdocs_location] URL.
         Only specifying `your-logo.png` is equivalent to the latter.""")
 
-    logo_alt = Option('header_logo', 'alt', 
+    logo_alt = Option('header_logo', 'alt',
         "(please configure the [header_logo] section in trac.ini)",
         """Alternative text for the header logo.""")
 
@@ -449,10 +449,10 @@ class Chrome(Component):
         """Show email addresses instead of usernames. If false, we obfuscate
         email addresses. (''since 0.11'')""")
 
-    never_obfuscate_mailto = BoolOption('trac', 'never_obfuscate_mailto', 
+    never_obfuscate_mailto = BoolOption('trac', 'never_obfuscate_mailto',
         'false',
-        """Never obfuscate `mailto:` links explicitly written in the wiki, 
-        even if `show_email_addresses` is false or the user has not the 
+        """Never obfuscate `mailto:` links explicitly written in the wiki,
+        even if `show_email_addresses` is false or the user has not the
         EMAIL_VIEW permission (''since 0.11.6'').""")
 
     show_ip_addresses = BoolOption('trac', 'show_ip_addresses', 'false',
@@ -518,7 +518,7 @@ class Chrome(Component):
     }
 
     # ISystemInfoProvider methods
-    
+
     def get_system_info(self):
         import genshi
         info = get_pkginfo(genshi).get('version')
@@ -559,9 +559,9 @@ class Chrome(Component):
     Add your customizations here and rename the file to site.html. Note that
     it will take precedence over a global site.html placed in the directory
     specified by [inherit] templates_dir.
-    
+
     More information about site appearance customization can be found here:
-    
+
       http://trac.edgewall.org/wiki/TracInterfaceCustomization#SiteAppearance
   -->
 </html>
@@ -605,7 +605,7 @@ class Chrome(Component):
 
     def get_htdocs_dirs(self):
         return [('common', pkg_resources.resource_filename('trac', 'htdocs')),
-                ('shared', self.shared_htdocs_dir), 
+                ('shared', self.shared_htdocs_dir),
                 ('site', self.env.get_htdocs_dir())]
 
     def get_templates_dirs(self):
@@ -616,10 +616,10 @@ class Chrome(Component):
         ])
 
     # IWikiSyntaxProvider methods
-    
+
     def get_wiki_syntax(self):
         return []
-    
+
     def get_link_resolvers(self):
         yield ('htdocs', self._format_link)
 
@@ -639,7 +639,7 @@ class Chrome(Component):
 
     def prepare_request(self, req, handler=None):
         """Prepare the basic chrome data for the request.
-        
+
         :param     req: the request object
         :param handler: the `IRequestHandler` instance that is processing the
                         request
@@ -744,7 +744,7 @@ class Chrome(Component):
                 })
 
         chrome['nav'] = nav
-        
+
         # Default theme file
         chrome['theme'] = 'theme.html'
 
@@ -803,7 +803,7 @@ class Chrome(Component):
             'version': VERSION,
             'homepage': 'http://trac.edgewall.org/', # FIXME: use setup data
         }
-        
+
         href = req and req.href
         abs_href = req.abs_href if req else self.env.abs_href
         admin_href = None
@@ -811,7 +811,7 @@ class Chrome(Component):
             admin_href = href
         elif self.env.project_admin_trac_url:
             admin_href = Href(self.env.project_admin_trac_url)
-            
+
         d['project'] = {
             'name': self.env.project_name,
             'descr': self.env.project_description,
@@ -838,7 +838,7 @@ class Chrome(Component):
         except Exception, e:
             # simply log the exception here, as we might already be rendering
             # the error page
-            self.log.error("Error during check of EMAIL_VIEW: %s", 
+            self.log.error("Error during check of EMAIL_VIEW: %s",
                            exception_to_unicode(e))
             show_email_addresses = False
 
@@ -863,7 +863,7 @@ class Chrome(Component):
             else:
                 label = absolute
                 title = in_or_ago
-            return tag.span(label, title=title)  
+            return tag.span(label, title=title)
 
         def dateinfo(date):
             return pretty_dateinfo(date, format='relative', dateonly=True)
@@ -1022,8 +1022,8 @@ class Chrome(Component):
                 else:
                     location = _("(unknown template location)")
                 raise TracError(_("Genshi %(error)s error while rendering "
-                                  "template %(location)s", 
-                                  error=e.__class__.__name__, 
+                                  "template %(location)s",
+                                  error=e.__class__.__name__,
                                   location=location))
             raise
 
@@ -1050,9 +1050,9 @@ class Chrome(Component):
         if not (self.show_email_addresses or 'EMAIL_VIEW' in context.perm):
             all_cc = [obfuscate_email_address(cc) for cc in all_cc]
         return sep.join(all_cc)
-    
+
     def authorinfo(self, req, author, email_map=None):
-        return self.format_author(req, 
+        return self.format_author(req,
                                   email_map and '@' not in author and
                                   email_map.get(author) or author)
 
@@ -1064,9 +1064,9 @@ class Chrome(Component):
                 if email:
                     email_map[username] = email
         return email_map
-        
+
     _long_author_re = re.compile(r'.*<([^@]+)@[^@]+>\s*|([^@]+)@[^@]+')
-    
+
     def authorinfo_short(self, author):
         if not author or author == 'anonymous':
             return _("anonymous")

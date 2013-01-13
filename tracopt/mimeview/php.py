@@ -44,7 +44,7 @@ class PhpDeuglifier(Deuglifier):
         # the first span after a set of 1+ "<br />" to before them.
         r_fixeol = re.compile(r"((?:<br />)+)(</(?:font|span)>)")
         indata = r_fixeol.sub(lambda m: m.group(2) + m.group(1), indata)
-        
+
         # Now call superclass implementation that handles the dirty work
         # of applying css classes.
         return Deuglifier.format(self, indata)

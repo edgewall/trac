@@ -4,8 +4,8 @@
  * autocomplete features (http://docs.jquery.com/UI/Autocomplete).
  */
 (function($){
-  
-  
+
+
   /*
    Text field auto-completion plugin for jQuery.
    Based on http://www.dyve.net/jquery/?autocomplete by Dylan Verheul.
@@ -16,7 +16,7 @@
     var prev = "";
     var selectedIndex = -1;
     var results = null;
-  
+
     input.keydown(function(e) {
       switch(e.keyCode) {
         case 27: // escape
@@ -57,7 +57,7 @@
       if (timeout) clearTimeout(timeout);
       timeout = setTimeout(hide, 200);
     });
-  
+
     function hide() {
       if (timeout) clearTimeout(timeout);
       input.removeClass("loading");
@@ -68,7 +68,7 @@
       $("iframe.iefix").remove();
       selectedIndex = -1;
     }
-  
+
     function move(index) {
       if (!results) return;
       items = $("li", results);
@@ -76,7 +76,7 @@
       $(items[index]).addClass("selected");
       selectedIndex = index;
     }
-  
+
     function select(li) {
       if (!li) li = $("<li>");
       else li = $(li);
@@ -86,7 +86,7 @@
       hide();
       selectedIndex = -1;
     }
-  
+
     function show() {
       var val = input.val();
       if (val == prev) return;
@@ -134,7 +134,7 @@
       }, 'html');
     }
   }
-  
+
   $.fn.suggest = function(url, paramName, minChars, delay) {
     url = url || window.location.pathname;
     paramName = paramName || 'q';

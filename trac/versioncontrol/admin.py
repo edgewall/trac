@@ -36,18 +36,18 @@ class VersionControlAdmin(Component):
     implements(IAdminCommandProvider, IPermissionRequestor)
 
     # IAdminCommandProvider methods
-    
+
     def get_admin_commands(self):
         yield ('changeset added', '<repos> <rev> [rev] [...]',
                """Notify trac about changesets added to a repository
-               
+
                This command should be called from a post-commit hook. It will
                trigger a cache update and notify components about the addition.
                """,
                self._complete_repos, self._do_changeset_added)
         yield ('changeset modified', '<repos> <rev> [rev] [...]',
                """Notify trac about changesets modified in a repository
-               
+
                This command should be called from a post-revprop hook after
                revision properties like the commit message, author or date
                have been changed. It will trigger a cache update for the given
@@ -59,13 +59,13 @@ class VersionControlAdmin(Component):
                None, self._do_list)
         yield ('repository resync', '<repos> [rev]',
                """Re-synchronize trac with repositories
-               
+
                When [rev] is specified, only that revision is synchronized.
                Otherwise, the complete revision history is synchronized. Note
                that this operation can take a long time to complete.
                If synchronization gets interrupted, it can be resumed later
                using the `sync` command.
-               
+
                To synchronize all repositories, specify "*" as the repository.
                """,
                self._complete_repos, self._do_resync)
@@ -75,32 +75,32 @@ class VersionControlAdmin(Component):
                It works like `resync`, except that it doesn't clear the already
                synchronized changesets, so it's a better way to resume an
                interrupted `resync`.
-               
+
                See `resync` help for detailed usage.
                """,
                self._complete_repos, self._do_sync)
-    
+
     def get_reponames(self):
         rm = RepositoryManager(self.env)
         return [reponame or '(default)' for reponame
                 in rm.get_all_repositories()]
-    
+
     def _complete_repos(self, args):
         if len(args) == 1:
             return self.get_reponames()
-    
+
     def _do_changeset_added(self, reponame, *revs):
         if is_default(reponame):
             reponame = ''
         rm = RepositoryManager(self.env)
         rm.notify('changeset_added', reponame, revs)
-    
+
     def _do_changeset_modified(self, reponame, *revs):
         if is_default(reponame):
             reponame = ''
         rm = RepositoryManager(self.env)
         rm.notify('changeset_modified', reponame, revs)
-    
+
     def _do_list(self):
         rm = RepositoryManager(self.env)
         values = []
@@ -111,7 +111,7 @@ class VersionControlAdmin(Component):
             values.append((reponame or '(default)', info.get('type', ''),
                            alias, info.get('dir', '')))
         print_table(values, [_('Name'), _('Type'), _('Alias'), _('Directory')])
-    
+
     def _sync(self, reponame, rev, clean):
         rm = RepositoryManager(self.env)
         if reponame == '*':
@@ -132,7 +132,7 @@ class VersionControlAdmin(Component):
                            reponame=repos.reponame or '(default)'))
                 return
             repositories = [repos]
-        
+
         for repos in sorted(repositories, key=lambda r: r.reponame):
             printout(_('Resyncing repository history for %(reponame)s... ',
                        reponame=repos.reponame or '(default)'))
@@ -179,15 +179,15 @@ class RepositoryAdminPanel(Component):
         if 'VERSIONCONTROL_ADMIN' in req.perm:
             yield ('versioncontrol', _('Version Control'), 'repository',
                    _('Repositories'))
-    
+
     def render_admin_panel(self, req, category, page, path_info):
         req.perm.require('VERSIONCONTROL_ADMIN')
-        
+
         # Retrieve info for all repositories
         rm = RepositoryManager(self.env)
         all_repos = rm.get_all_repositories()
         db_provider = self.env[DbRepositoryProvider]
-        
+
         if path_info:
             # Detail view
             reponame = path_info if not is_default(path_info) else ''
@@ -198,7 +198,7 @@ class RepositoryAdminPanel(Component):
             if req.method == 'POST':
                 if req.args.get('cancel'):
                     req.redirect(req.href.admin(category, page))
-                
+
                 elif db_provider and req.args.get('save'):
                     # Modify repository
                     changes = {}
@@ -236,10 +236,10 @@ class RepositoryAdminPanel(Component):
                         add_notice(req, msg)
                     if changes:
                         req.redirect(req.href.admin(category, page))
-            
+
             Chrome(self.env).add_wiki_toolbars(req)
             data = {'view': 'detail', 'reponame': reponame}
-        
+
         else:
             # List view
             if req.method == 'POST':
@@ -271,7 +271,7 @@ class RepositoryAdminPanel(Component):
                                    cset_added=cset_added)
                         add_notice(req, msg)
                         req.redirect(req.href.admin(category, page))
-                
+
                 # Add a repository alias
                 elif db_provider and req.args.get('add_alias'):
                     name = req.args.get('name')
@@ -283,11 +283,11 @@ class RepositoryAdminPanel(Component):
                         req.redirect(req.href.admin(category, page))
                     add_warning(req, _('Missing arguments to add an '
                                        'alias.'))
-                
+
                 # Refresh the list of repositories
                 elif req.args.get('refresh'):
                     req.redirect(req.href.admin(category, page))
-                
+
                 # Remove repositories
                 elif db_provider and req.args.get('remove'):
                     sel = req.args.getlist('sel')
@@ -298,14 +298,14 @@ class RepositoryAdminPanel(Component):
                                           'been removed.'))
                         req.redirect(req.href.admin(category, page))
                     add_warning(req, _('No repositories were selected.'))
-            
+
             data = {'view': 'list'}
 
         # Find repositories that are editable
         db_repos = {}
         if db_provider is not None:
             db_repos = dict(db_provider.get_repositories())
-        
+
         # Prepare common rendering data
         repositories = dict((reponame, self._extend_info(reponame, info.copy(),
                                                          reponame in db_repos))
@@ -313,7 +313,7 @@ class RepositoryAdminPanel(Component):
         types = sorted([''] + rm.get_supported_types())
         data.update({'types': types, 'default_type': rm.repository_type,
                      'repositories': repositories})
-        
+
         return 'admin_repositories.html', data
 
     def _extend_info(self, reponame, info, editable):

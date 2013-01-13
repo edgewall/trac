@@ -20,7 +20,7 @@ from itertools import izip
 
 from genshi.builder import tag
 
-from trac.resource import ResourceNotFound 
+from trac.resource import ResourceNotFound
 from trac.util.datefmt import datetime, utc
 from trac.util.translation import tag_, _
 from trac.versioncontrol.api import Changeset, NoSuchNode, NoSuchChangeset
@@ -52,7 +52,7 @@ def get_path_links(href, reponame, path, rev, order=None, desc=None):
                                    order=order, desc=desc)}]
     if reponame:
         links.append({
-            'name': reponame, 
+            'name': reponame,
             'href': href.browser(reponame, rev=rev, order=order, desc=desc)})
     partial_path = ''
     for part in [p for p in path.split('/') if p]:
@@ -66,15 +66,15 @@ def get_path_links(href, reponame, path, rev, order=None, desc=None):
 
 
 def get_existing_node(req, repos, path, rev):
-    try: 
-        return repos.get_node(path, rev) 
+    try:
+        return repos.get_node(path, rev)
     except NoSuchNode, e:
         # TRANSLATOR: You can 'search' in the repository history... (link)
-        search_a = tag.a(_("search"), 
+        search_a = tag.a(_("search"),
                          href=req.href.log(repos.reponame or None, path,
                                            rev=rev, mode='path_history'))
         raise ResourceNotFound(tag(
-            tag.p(e.message, class_="message"), 
+            tag.p(e.message, class_="message"),
             tag.p(tag_("You can %(search)s in the repository history to see "
                        "if that path existed but was later removed",
                        search=search_a))))
@@ -92,9 +92,9 @@ def get_allowed_node(repos, path, rev, perm):
 
 def make_log_graph(repos, revs):
     """Generate graph information for the given revisions.
-    
+
     Returns a tuple `(threads, vertices, columns)`, where:
-    
+
      * `threads`: List of paint command lists `[(type, column, line)]`, where
        `type` is either 0 for "move to" or 1 for "line to", and `column` and
        `line` are coordinates.
@@ -107,14 +107,14 @@ def make_log_graph(repos, revs):
     vertices = []
     columns = 0
     revs = iter(revs)
-    
+
     def add_edge(thread, column, line):
         if thread and thread[-1][:2] == [1, column] \
                 and thread[-2][1] == column:
             thread[-1][2] = line
         else:
             thread.append([1, column, line])
-        
+
     try:
         next_rev = revs.next()
         line = 0
@@ -127,32 +127,32 @@ def make_log_graph(repos, revs):
                 threads.append([[0, len(active), line]])
                 active_thread.append(threads[-1])
                 active.append(rev)
-            
+
             columns = max(columns, len(active))
             column = active.index(rev)
             vertices.append((column, threads.index(active_thread[column])))
-            
+
             next_rev = revs.next() # Raises StopIteration when no more revs
             next = active[:]
             parents = list(repos.parent_revs(rev))
-            
+
             # Replace current item with parents not already present
             new_parents = [p for p in parents if p not in active]
             next[column : column + 1] = new_parents
-            
+
             # Add edges to parents
             for col, (r, thread) in enumerate(izip(active, active_thread)):
                 if r in next:
                     add_edge(thread, next.index(r), line + 1)
                 elif r == rev:
-                    if new_parents: 
+                    if new_parents:
                         parents.remove(new_parents[0])
                         parents.append(new_parents[0])
                     for parent in parents:
                         if parent != parents[0]:
                             thread.append([0, col, line])
                         add_edge(thread, next.index(parent), line + 1)
-            
+
             if not new_parents:
                 del active_thread[column]
             else:
@@ -160,7 +160,7 @@ def make_log_graph(repos, revs):
                 threads.extend([[0, column + 1 + i, line + 1]]
                                 for i in xrange(len(new_parents) - 1))
                 active_thread[column + 1 : column + 1] = threads[base:]
-            
+
             active = next
             line += 1
     except StopIteration:

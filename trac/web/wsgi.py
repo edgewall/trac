@@ -120,7 +120,7 @@ class WSGIGateway(object):
 
     def _write(self, data):
         """Callback for writing data to the response.
-        
+
         Concrete subclasses must implement this method."""
         raise NotImplementedError
 
@@ -186,7 +186,7 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
                 self.close_connection = 1
             else:
                 raise
-        if environ: 
+        if environ:
             gateway = self.server.gateway(self, environ)
             gateway.run(self.server.application)
         # else we had no request or a bad request: we simply exit (#3043)

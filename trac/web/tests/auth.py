@@ -65,7 +65,7 @@ class LoginModuleTestCase(unittest.TestCase):
 
     def test_known_cookie_ip_check_disabled(self):
         self.env.config.set('trac', 'check_auth_ip', 'no')
-        self.env.db_transaction(""" 
+        self.env.db_transaction("""
             INSERT INTO auth_cookie (cookie, name, ipnr)
             VALUES ('123', 'john', '127.0.0.1')""")
         incookie = Cookie()
@@ -82,14 +82,14 @@ class LoginModuleTestCase(unittest.TestCase):
         # remote_user must be upper case to test that by default, case is
         # preserved.
         req = Mock(cgi_location='/trac', href=Href('/trac.cgi'),
-                   incookie=Cookie(), outcookie=outcookie, 
-                   remote_addr='127.0.0.1', remote_user='john', 
+                   incookie=Cookie(), outcookie=outcookie,
+                   remote_addr='127.0.0.1', remote_user='john',
                    authname='john', base_path='/trac.cgi')
         self.module._do_login(req)
 
         assert outcookie.has_key('trac_auth'), '"trac_auth" Cookie not set'
         auth_cookie = outcookie['trac_auth'].value
-        
+
         self.assertEquals([('john', '127.0.0.1')], self.env.db_query(
             "SELECT name, ipnr FROM auth_cookie WHERE cookie=%s",
             (auth_cookie,)))
@@ -103,7 +103,7 @@ class LoginModuleTestCase(unittest.TestCase):
 
         outcookie = Cookie()
         req = Mock(cgi_location='/trac', href=Href('/trac.cgi'),
-                   incookie=Cookie(), outcookie=outcookie, 
+                   incookie=Cookie(), outcookie=outcookie,
                    remote_addr='127.0.0.1', remote_user='John',
                    authname='anonymous', base_path='/trac.cgi')
         self.module._do_login(req)
@@ -111,7 +111,7 @@ class LoginModuleTestCase(unittest.TestCase):
         assert outcookie.has_key('trac_auth'), '"trac_auth" Cookie not set'
         auth_cookie = outcookie['trac_auth'].value
         self.assertEquals([('john', '127.0.0.1')], self.env.db_query(
-            "SELECT name, ipnr FROM auth_cookie WHERE cookie=%s", 
+            "SELECT name, ipnr FROM auth_cookie WHERE cookie=%s",
             (auth_cookie,)))
 
     def test_login_no_username(self):
@@ -143,14 +143,14 @@ class LoginModuleTestCase(unittest.TestCase):
         self.assertRaises(AssertionError, self.module._do_login, req)
 
     def test_logout(self):
-        self.env.db_transaction(""" 
+        self.env.db_transaction("""
             INSERT INTO auth_cookie (cookie, name, ipnr)
             VALUES ('123', 'john', '127.0.0.1')""")
         incookie = Cookie()
         incookie['trac_auth'] = '123'
         outcookie = Cookie()
         req = Mock(cgi_location='/trac', href=Href('/trac.cgi'),
-                   incookie=incookie, outcookie=outcookie, 
+                   incookie=incookie, outcookie=outcookie,
                    remote_addr='127.0.0.1', remote_user=None, authname='john',
                    base_path='/trac.cgi')
         self.module._do_logout(req)

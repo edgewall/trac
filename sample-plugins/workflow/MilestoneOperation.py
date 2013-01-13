@@ -3,9 +3,9 @@
 # Copyright (C) 2012 Franz Mayer <franz.mayer@gefasoft.de>
 #
 # "THE BEER-WARE LICENSE" (Revision 42):
-# <franz.mayer@gefasoft.de> wrote this file.  As long as you retain this 
-# notice you can do whatever you want with this stuff. If we meet some day, 
-# and you think this stuff is worth it, you can buy me a beer in return. 
+# <franz.mayer@gefasoft.de> wrote this file.  As long as you retain this
+# notice you can do whatever you want with this stuff. If we meet some day,
+# and you think this stuff is worth it, you can buy me a beer in return.
 # Franz Mayer
 #
 # Author: Franz Mayer <franz.mayer@gefasoft.de>
@@ -33,22 +33,22 @@ resolve.operations = set_resolution,set_milestone
 resolve.milestone = invalid,wontfix,duplicate,worksforme->rejected
 }}}
 
-When setting status to `duplicate` the milestone will automatically change 
+When setting status to `duplicate` the milestone will automatically change
 to `rejected`.
 
-'''Note:''' if user has changed milestone manually, this workflow operation 
+'''Note:''' if user has changed milestone manually, this workflow operation
 has ''no effect''!
 
 === Configuration ===
-Don't forget to add `MilestoneOperation` to the workflow option 
-in `[ticket]` section. If there is no workflow option, the line will look 
+Don't forget to add `MilestoneOperation` to the workflow option
+in `[ticket]` section. If there is no workflow option, the line will look
 like this:
 {{{
 [ticket]
 workflow = ConfigurableTicketWorkflow,MilestoneOperation
 }}}
 """
-    
+
     implements(ITicketActionController)
 
     def get_ticket_actions(self, req, ticket):
@@ -77,10 +77,10 @@ workflow = ConfigurableTicketWorkflow,MilestoneOperation
                 resolutions = "'%s'" % resolution
                 milestone = res_ms[resolution]
         hint = _("For resolution %(resolutions)s the milestone will be "
-                 "set to '%(milestone)s'.", 
+                 "set to '%(milestone)s'.",
                  resolutions=resolutions, milestone=milestone)
         return (label, None, hint)
-    
+
     def get_ticket_changes(self, req, ticket, action):
         if action == 'resolve' and \
                 req.args and 'action_resolve_resolve_resolution' in req.args:
@@ -90,7 +90,7 @@ workflow = ConfigurableTicketWorkflow,MilestoneOperation
             # using the defined resolution -> milestone mapping.
             if old_milestone is None:
                 new_status = req.args['action_resolve_resolve_resolution']
-                new_milestone = self.__get_new_milestone(ticket, action, 
+                new_milestone = self.__get_new_milestone(ticket, action,
                                                          new_status)
                 # ... but we don't reset it to None unless it was None
                 if new_milestone is not None or user_milestone is None:
@@ -103,7 +103,7 @@ workflow = ConfigurableTicketWorkflow,MilestoneOperation
                         add_warning(req, _("Milestone %(name)s does not exist.",
                                            name=new_milestone))
         return {}
-    
+
     def apply_action_side_effects(self, req, ticket, action):
         pass
 
@@ -112,7 +112,7 @@ workflow = ConfigurableTicketWorkflow,MilestoneOperation
         if new_status:
             res_ms = self.__get_resolution_milestone_dict(ticket, action)
             return res_ms.get(new_status)
-    
+
     def __get_resolution_milestone_dict(self, ticket, action):
         transitions = self.config.get('ticket-workflow',
                                       action + '.milestone').strip()

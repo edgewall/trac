@@ -180,8 +180,8 @@ authenticated  TICKET_CREATE
 authenticated  TICKET_MODIFY
 authenticated  WIKI_CREATE
 authenticated  WIKI_MODIFY
-test_user      FILE_VIEW      
-test_user      LOG_VIEW       
+test_user      FILE_VIEW
+test_user      LOG_VIEW
 
 
 Available actions:
@@ -401,14 +401,14 @@ Available actions:
 
 ===== test_component_list_ok =====
 
-Name        Owner   
+Name        Owner
 --------------------
 component1  somebody
 component2  somebody
 
 ===== test_component_add_ok =====
 
-Name           Owner   
+Name           Owner
 -----------------------
 component1     somebody
 component2     somebody
@@ -418,7 +418,7 @@ new_component  new_user
 IntegrityError: [...]
 ===== test_component_rename_ok =====
 
-Name          Owner   
+Name          Owner
 ----------------------
 changed_name  somebody
 component2    somebody
@@ -429,16 +429,16 @@ ResourceNotFound: Component bad_component does not exist.
 IntegrityError: [...]
 ===== test_component_chown_ok =====
 
-Name        Owner        
+Name        Owner
 -------------------------
-component1  somebody     
+component1  somebody
 component2  changed_owner
 
 ===== test_component_chown_error_bad_component =====
 ResourceNotFound: Component bad_component does not exist.
 ===== test_component_remove_ok =====
 
-Name        Owner   
+Name        Owner
 --------------------
 component2  somebody
 
@@ -506,43 +506,43 @@ ResourceNotFound: ticket_type bad_type does not exist.
 
 Possible Values
 ---------------
-blocker        
-critical       
-major          
-minor          
-trivial    
+blocker
+critical
+major
+minor
+trivial
 
 ===== test_priority_add_ok =====
 
 Possible Values
 ---------------
-blocker        
-critical       
-major          
-minor          
-trivial    
-new_priority   
+blocker
+critical
+major
+minor
+trivial
+new_priority
 
 ===== test_priority_add_many_ok =====
 
 Possible Values
 ---------------
-blocker        
-critical       
-major          
-minor          
-trivial    
-p0            
-p1            
-p2            
-p3            
-p4            
-p5            
-p6            
-p7            
-p8            
-p9            
-p10           
+blocker
+critical
+major
+minor
+trivial
+p0
+p1
+p2
+p3
+p4
+p5
+p6
+p7
+p8
+p9
+p10
 
 ===== test_priority_add_error_already_exists =====
 IntegrityError: [...]
@@ -550,11 +550,11 @@ IntegrityError: [...]
 
 Possible Values
 ---------------
-blocker        
-critical       
+blocker
+critical
 normal
-minor          
-trivial    
+minor
+trivial
 
 ===== test_priority_change_error_bad_priority =====
 ResourceNotFound: priority bad_priority does not exist.
@@ -564,10 +564,10 @@ IntegrityError: [...]
 
 Possible Values
 ---------------
-blocker        
-critical       
-minor          
-trivial    
+blocker
+critical
+minor
+trivial
 
 ===== test_priority_remove_error_bad_priority =====
 ResourceNotFound: priority bad_priority does not exist.
@@ -602,13 +602,13 @@ Possible Values
 
 Possible Values
 ---------------
-new_severity   
+new_severity
 
 ===== test_severity_add_error_already_exists =====
 IntegrityError: [...]
 ===== test_severity_change_ok =====
 
-Possible Values 
+Possible Values
 ----------------
 end-of-the-world
 
@@ -643,15 +643,15 @@ ResourceNotFound: severity bad_severity does not exist.
 
 Name  Time
 ----------
-2.0       
-1.0       
+2.0
+1.0
 
 ===== test_version_add_ok =====
 
-Name  Time                    
+Name  Time
 ----------------
-2.0                           
-1.0                           
+2.0
+1.0
 9.9   2004-01-11
 
 ===== test_version_add_error_already_exists =====
@@ -660,24 +660,24 @@ IntegrityError: [...]
 
 Name  Time
 ----------
-9.9       
-2.0       
+9.9
+2.0
 
 ===== test_version_rename_error_bad_version =====
 ResourceNotFound: Version bad_version does not exist.
 ===== test_version_time_ok =====
 
-Name  Time                    
+Name  Time
 ----------------
-1.0                           
+1.0
 2.0   2004-01-11
 
 ===== test_version_time_unset_ok =====
 
-Name  Time                    
+Name  Time
 ----------
-2.0                           
-1.0                           
+2.0
+1.0
 
 ===== test_version_time_error_bad_version =====
 ResourceNotFound: Version bad_version does not exist.
@@ -685,7 +685,7 @@ ResourceNotFound: Version bad_version does not exist.
 
 Name  Time
 ----------
-2.0       
+2.0
 
 ===== test_version_remove_error_bad_version =====
 ResourceNotFound: Version bad_version does not exist.
@@ -777,8 +777,8 @@ ResourceNotFound: Milestone bad_milestone does not exist.
 Name  Time
 ----------
 \
-2.0       
-1.0       
+2.0
+1.0
 
 ===== test_session_list_no_sessions =====
 
@@ -906,7 +906,7 @@ Error: Invalid arguments
 session set <name|email> <sid[:0|1]> <value>
 
     Set the name or email attribute of the given sid
-    
+
     An sid suffix ':0' operates on an unauthenticated session with the given
     sid, and a suffix ':1' on an authenticated session (the default).
 
@@ -916,7 +916,7 @@ Error: Invalid arguments
 session set <name|email> <sid[:0|1]> <value>
 
     Set the name or email attribute of the given sid
-    
+
     An sid suffix ':0' operates on an unauthenticated session with the given
     sid, and a suffix ':1' on an authenticated session (the default).
 
@@ -926,7 +926,7 @@ Error: Invalid arguments
 session set <name|email> <sid[:0|1]> <value>
 
     Set the name or email attribute of the given sid
-    
+
     An sid suffix ':0' operates on an unauthenticated session with the given
     sid, and a suffix ':1' on an authenticated session (the default).
 

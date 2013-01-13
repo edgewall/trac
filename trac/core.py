@@ -31,7 +31,7 @@ class TracError(Exception):
     """Exception base class for errors in Trac."""
 
     title = N_('Trac Error')
-    
+
     def __init__(self, message, title=None, show_traceback=False):
         """If message is a genshi.builder.tag object, everything up to
         the first <p> will be displayed in the red box, and everything
@@ -45,7 +45,7 @@ class TracError(Exception):
         self.title = title or gettext(self.title)
         self.show_traceback = show_traceback
 
-    message = property(lambda self: self._message, 
+    message = property(lambda self: self._message,
                        lambda self, v: setattr(self, '_message', v))
 
     def __unicode__(self):
@@ -61,7 +61,7 @@ class ExtensionPoint(property):
 
     def __init__(self, interface):
         """Create the extension point.
-        
+
         :param interface: the `Interface` subclass that defines the
                           protocol for the extension point
         """
@@ -85,7 +85,7 @@ class ExtensionPoint(property):
 
 class ComponentMeta(type):
     """Meta class for components.
-    
+
     Takes care of component and extension point registration.
     """
     _components = []
@@ -207,10 +207,10 @@ class ComponentManager(object):
         if cls not in self.enabled:
             self.enabled[cls] = self.is_component_enabled(cls)
         return self.enabled[cls]
-    
+
     def disable_component(self, component):
         """Force a component to be disabled.
-        
+
         :param component: can be a class or an instance.
         """
         if not isinstance(component, type):

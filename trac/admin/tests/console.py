@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright (C) 2004-2009 Edgewall Software
 # All rights reserved.
 #
@@ -131,16 +131,16 @@ class TracadminTestCase(unittest.TestCase):
             # Create a useful delta between the output and the expected output
             output_lines = ['%s\n' % x for x in output.split('\n')]
             expected_lines = ['%s\n' % x for x in expected_results.split('\n')]
-            return ''.join(difflib.unified_diff(expected_lines, output_lines, 
+            return ''.join(difflib.unified_diff(expected_lines, output_lines,
                                                 'expected', 'actual'))
         if '[...]' in expected_results:
             m = re.match(expected_results.replace('[...]', '.*'), output,
                          re.MULTILINE)
-            unittest.TestCase.assertTrue(self, m, 
+            unittest.TestCase.assertTrue(self, m,
                                          "%r != %r\n%s" % (expected_results,
                                                            output, diff()))
         else:
-            unittest.TestCase.assertEqual(self, expected_results, output, 
+            unittest.TestCase.assertEqual(self, expected_results, output,
                                           "%r != %r\n%s" % (expected_results,
                                                             output, diff()))
     # Help test
@@ -162,7 +162,7 @@ class TracadminTestCase(unittest.TestCase):
         self.assertEqual(expected_results, output)
 
     # Attachment tests
-    
+
     def test_attachment_list_empty(self):
         """
         Tests the 'attachment list' command in trac-admin, on a wiki page that
@@ -176,9 +176,9 @@ class TracadminTestCase(unittest.TestCase):
         rv, output = self._execute('attachment list wiki:WikiStart')
         self.assertEqual(0, rv)
         self.assertEqual(self.expected_results[test_name], output)
-    
+
     # Config tests
-    
+
     def test_config_get(self):
         """
         Tests the 'config get' command in trac-admin.  This particular
@@ -351,10 +351,10 @@ class TracadminTestCase(unittest.TestCase):
         """
         test_name = sys._getframe().f_code.co_name
         user = u'test_user\u0250'
-        self._execute('permission add ' + user + ' WIKI_VIEW') 
-        self._execute('permission add ' + user + ' TICKET_VIEW') 
+        self._execute('permission add ' + user + ' WIKI_VIEW')
+        self._execute('permission add ' + user + ' TICKET_VIEW')
         rv, output = self._execute('permission export')
-        self._execute('permission remove ' + user + ' *') 
+        self._execute('permission remove ' + user + ' *')
         rv, output = self._execute('permission import', input=output)
         self.assertEqual(0, rv)
         self.assertEqual('', output)
@@ -448,7 +448,7 @@ class TracadminTestCase(unittest.TestCase):
         test_name = sys._getframe().f_code.co_name
         rv, output = self._execute('component chown bad_component changed_owner')
         self.assertEqual(2, rv)
-        # We currently trigger a deprecation warning with py26 so we 
+        # We currently trigger a deprecation warning with py26 so we
         # can currrently only verify that the end of the output string is
         # correct
         self.assertEqual(output.endswith(self.expected_results[test_name]), True)

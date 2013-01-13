@@ -24,7 +24,7 @@ from trac.util.concurrency import ThreadLocal, threading
 from trac.util.compat import cleandoc
 
 
-__all__ = ['gettext', 'ngettext', 'gettext_noop', 'ngettext_noop', 
+__all__ = ['gettext', 'ngettext', 'gettext_noop', 'ngettext_noop',
            'tgettext', 'tgettext_noop', 'tngettext', 'tngettext_noop']
 
 def safefmt(string, kwargs):
@@ -159,16 +159,16 @@ try:
                         t.add(Translations.load(dirname, locale, domain))
             self._current.translations = t
             self._activate_failed = False
-         
+
         def deactivate(self):
             self._current.args = None
             t, self._current.translations = self._current.translations, None
             return t
-         
+
         def reactivate(self, t):
             if t:
                 self._current.translations = t
-    
+
         @property
         def active(self):
             return self._current.translations or self._null_translations
@@ -260,7 +260,7 @@ try:
                 return LazyProxy(_dtngettext)
             return _dtngettext()
 
-    
+
     translations = TranslationsProxy()
 
     def domain_functions(domain, *symbols):
@@ -269,7 +269,7 @@ try:
         :param domain: domain used for partial instantiation
         :param symbols: remaining parameters are the name of commonly used
                         translation function which will be bound to the domain
-                        
+
         Note: the symbols can also be given as an iterable in the 2nd argument.
         """
         if symbols and not isinstance(symbols[0], basestring):
@@ -290,18 +290,18 @@ try:
             return lambda *args, **kw: _functions[symbol](domain, *args, **kw)
         return [wrapdomain(s) for s in symbols]
 
-    gettext = translations.gettext 
-    _ = gettext 
-    dgettext = translations.dgettext 
-    ngettext = translations.ngettext 
-    dngettext = translations.dngettext 
-    tgettext = translations.tgettext 
-    tag_ = tgettext 
-    dtgettext = translations.dtgettext 
-    tngettext = translations.tngettext 
-    tagn_ = tngettext 
-    dtngettext = translations.dtngettext 
-    
+    gettext = translations.gettext
+    _ = gettext
+    dgettext = translations.dgettext
+    ngettext = translations.ngettext
+    dngettext = translations.dngettext
+    tgettext = translations.tgettext
+    tag_ = tgettext
+    dtgettext = translations.dtgettext
+    tngettext = translations.tngettext
+    tagn_ = tngettext
+    dtngettext = translations.dtngettext
+
     def deactivate():
         """Deactivate translations.
         :return: the current Translations, if any
@@ -346,7 +346,7 @@ try:
             return [id.replace('-', '_') for id in locale_ids if id]
         return Locale.negotiate(normalize(preferred_locales),
                                 normalize(get_available_locales()))
-        
+
     has_babel = True
 
 except ImportError: # fall back on 0.11 behavior, i18n functions are no-ops
@@ -360,7 +360,7 @@ except ImportError: # fall back on 0.11 behavior, i18n functions are no-ops
     dtngettext = dtngettext_noop
 
     translations = NullTranslationsBabel()
-    
+
     def activate(locale, env_path=None):
         pass
 

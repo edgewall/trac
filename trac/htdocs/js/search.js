@@ -1,5 +1,5 @@
 (function($){
-  
+
   /* Adapted from http://www.kryogenix.org/code/browser/searchhi/ */
   $.fn.highlightText = function(text, className, caseSensitive) {
     function highlight(node) {
@@ -22,11 +22,11 @@
     }
     return this.each(function() { highlight(this) });
   }
-  
+
   $(document).ready(function() {
     var elems = $(".searchable");
     if (!elems.length) return;
-  
+
     function getSearchTerms(url) {
       if (url.indexOf("?") == -1) return [];
       var params = url.substr(url.indexOf("?") + 1).split("&");
@@ -51,7 +51,7 @@
       }
       return [];
     }
-  
+
     var terms = getSearchTerms(document.URL);
     if (!terms.length) terms = getSearchTerms(document.referrer);
     if (terms.length) {

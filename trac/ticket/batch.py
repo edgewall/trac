@@ -31,16 +31,16 @@ from trac.web.chrome import add_warning, add_script_data
 
 class BatchModifyModule(Component):
     """Ticket batch modification module.
-    
+
     This component allows multiple tickets to be modified in one request from
     the custom query page. For users with the TICKET_BATCH_MODIFY permission
     it will add a [TracBatchModify batch modify] section underneath custom
     query results. Users can choose which tickets and fields they wish to
     modify.
     """
-    
+
     implements(IRequestHandler)
-    
+
     list_separator_re =  re.compile(r'[;\s,]+')
     list_connector_string = ', '
 
@@ -54,9 +54,9 @@ class BatchModifyModule(Component):
 
         comment = req.args.get('batchmod_value_comment', '')
         action = req.args.get('action')
-        
+
         try:
-            new_values = self._get_new_ticket_values(req) 
+            new_values = self._get_new_ticket_values(req)
         except TracError, e:
             new_values = None
             add_warning(req, tag_("The changes could not be saved: "
@@ -73,7 +73,7 @@ class BatchModifyModule(Component):
     def _get_new_ticket_values(self, req):
         """Pull all of the new values out of the post data."""
         values = {}
-        
+
         for field in TicketSystem(self.env).get_ticket_fields():
             name = field['name']
             if name not in ('id', 'resolution', 'status', 'owner', 'time',
@@ -118,7 +118,7 @@ class BatchModifyModule(Component):
 
     def _get_action_controls(self, req, tickets):
         action_controls = []
-        ts = TicketSystem(self.env)        
+        ts = TicketSystem(self.env)
         tickets_by_action = {}
         for t in tickets:
             ticket = Ticket(self.env, t['id'])
@@ -150,7 +150,7 @@ class BatchModifyModule(Component):
             if action in actions:
                 yield controller
 
-    def _save_ticket_changes(self, req, selected_tickets, 
+    def _save_ticket_changes(self, req, selected_tickets,
                              new_values, comment, action):
         """Save all of the changes to tickets."""
         when = datetime.now(utc)
@@ -172,7 +172,7 @@ class BatchModifyModule(Component):
                 controllers = list(self._get_action_controllers(req, t,
                                                                 action))
                 for controller in controllers:
-                    _values.update(controller.get_ticket_changes(req, t, 
+                    _values.update(controller.get_ticket_changes(req, t,
                                                                  action))
                 t.populate(_values)
                 t.save_changes(req.authname, comment, when=when)
@@ -189,7 +189,7 @@ class BatchModifyModule(Component):
                                   "error occurred while sending "
                                   "notifications: %(message)s",
                                   message=to_unicode(e)))
-    
+
     def _change_list(self, old_list, new_list, new_list2, mode):
         changed_list = [k.strip()
                         for k in self.list_separator_re.split(old_list)
@@ -200,7 +200,7 @@ class BatchModifyModule(Component):
         new_list2 = [k.strip()
                      for k in self.list_separator_re.split(new_list2)
                      if k]
-        
+
         if mode == '=':
             changed_list = new_list
         elif mode ==  '+':
