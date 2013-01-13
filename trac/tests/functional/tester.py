@@ -153,7 +153,8 @@ class FunctionalTester(object):
         return comment
 
     def attach_file_to_ticket(self, ticketid, data=None, tempfilename=None,
-                              description=None, replace=False):
+                              description=None, replace=False,
+                              content_type=None):
         """Attaches a file to the given ticket id, with random data if none is
         provided.  Assumes the ticket exists.
         """
@@ -172,7 +173,8 @@ class FunctionalTester(object):
         tc.url(self.url + "/attachment/ticket/" \
                "%s/\\?action=new&attachfilebutton=Attach\\+file" % ticketid)
         fp = StringIO(data)
-        tc.formfile('attachment', 'attachment', tempfilename, fp=fp)
+        tc.formfile('attachment', 'attachment', tempfilename,
+                    content_type=content_type, fp=fp)
         tc.formvalue('attachment', 'description', description)
         if replace:
             tc.formvalue('attachment', 'replace', True)

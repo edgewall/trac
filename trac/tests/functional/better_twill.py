@@ -196,5 +196,14 @@ if twill:
             args = e.args + (filename,)
             raise twill.errors.TwillAssertionError(*args)
     tc.notfind = better_notfind
+    # Same for tc.url - no hint about what went wrong!
+    def better_url(should_be, tcurl=tc.url):
+        try:
+            tcurl(should_be)
+        except twill.errors.TwillAssertionError, e:
+            filename = twill_write_html()
+            args = e.args + (filename,)
+            raise twill.errors.TwillAssertionError(*args)
+    tc.url = better_url
 else:
     b = tc = None
