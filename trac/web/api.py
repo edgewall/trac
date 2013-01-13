@@ -77,6 +77,18 @@ for code in [code for code in HTTP_STATUS if code >= 400]:
 del code, exc_name
 
 
+class _FieldStorage(cgi.FieldStorage):
+    """Our own version of cgi.FieldStorage, with tweaks."""
+
+    def read_multi(self, *args, **kwargs):
+        try:
+            cgi.FieldStorage.read_multi(self, *args, **kwargs)
+        except ValueError:
+            # Most likely "Invalid boundary in multipart form",
+            # possibly an upload of a .mht file? See #9880.
+            self.read_single()
+
+
 class _RequestArgs(dict):
     """Dictionary subclass that provides convenient access to request
     parameters that may contain multiple values."""
@@ -567,7 +579,7 @@ class Request(object):
         # requests. We'll keep the pre 2.6 behaviour for now...
         if self.method == 'POST':
             qs_on_post = self.environ.pop('QUERY_STRING', '')
-        fs = cgi.FieldStorage(fp, environ=self.environ, keep_blank_values=True)
+        fs = _FieldStorage(fp, environ=self.environ, keep_blank_values=True)
         if self.method == 'POST':
             self.environ['QUERY_STRING'] = qs_on_post
         
