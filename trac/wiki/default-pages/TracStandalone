@@ -1,4 +1,3 @@
-** Note: this page documents the version 1.0 of Trac, see [[0.12/TracStandalone]] if you need the previous version **
 = Tracd =
 
 Tracd is a lightweight standalone Trac web server.
