@@ -198,14 +198,16 @@ def add_warning(req, msg, *args):
     When rendering pages, any warnings will be rendered to the user."""
     if args:
         msg %= args
-    req.chrome['warnings'].append(msg)
+    if msg not in req.chrome['warnings']:
+        req.chrome['warnings'].append(msg)
 
 def add_notice(req, msg, *args):
     """Add an informational notice to the request object.
     When rendering pages, any notice will be rendered to the user."""
     if args:
         msg %= args
-    req.chrome['notices'].append(msg)
+    if msg not in req.chrome['notices']:
+        req.chrome['notices'].append(msg)
 
 def add_ctxtnav(req, elm_or_label, href=None, title=None):
     """Add an entry to the current page's ctxtnav bar."""
