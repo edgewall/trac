@@ -9,8 +9,30 @@
   <head>
     <title>Plugins</title>
     <script type="text/javascript" src="${chrome.htdocs_location}js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($){
+    <script type="text/javascript">/*<![CDATA[*/
+      jQuery(document).ready(function($) {
+        // Sets state of group toggler when component checkboxes are clicked
+        function setGroupTogglerState() {
+          var checkboxes = $("td.sel input:checkbox:enabled",
+                             $(this).closest("table.listing"));
+          var numSelected = checkboxes.filter(":checked").length;
+          var noneSelected = numSelected === 0;
+          var allSelected = numSelected === checkboxes.length;
+          $("th.sel input:checkbox", $(this).closest("table.listing"))
+            .prop({"checked": allSelected,
+                   "indeterminate": !(noneSelected || allSelected)});
+        }
+        // Add group event behavior for controlling state of toggler
+        $("table.listing td.sel input:checkbox:enabled")
+          .click(setGroupTogglerState);
+        // Add click behavior for the group toggler and initialize its state
+        $("table.listing th.sel").wrapInner('<label></label>').children()
+          .each(function() {
+            $('<input type="checkbox"/>').click(function() {
+              $("td.sel input:checkbox:enabled",
+                $(this).closest("table.listing")).prop("checked", this.checked);
+            }).prependTo(this).each(setGroupTogglerState);
+          });
         $("h3.foldable").enableFolding(true, true);
         $("p.foldable").enableFolding(true, false);
         $("thead .trac-toggler a").each(function() {
@@ -28,7 +50,7 @@
           });
         });
       });
-    </script>
+    /*]]>*/</script>
   </head>
 
   <body>
