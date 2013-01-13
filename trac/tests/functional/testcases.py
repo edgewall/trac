@@ -152,6 +152,25 @@ class RegressionTestTicket7209(FunctionalTwillTestCaseSetup):
         tc.notfind('Second Attachment')
 
 
+class RegressionTestTicket9880(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/9880
+
+        Upload of a file which the browsers associates a Content-Type
+        of multipart/related (e.g. an .mht file) should succeed.
+        """
+        summary = random_sentence(5)
+        ticketid = self._tester.create_ticket(summary)
+        self._tester.create_ticket()
+        self._tester.attach_file_to_ticket(ticketid, tempfilename='hello.mht',
+                                           content_type='multipart/related',
+                                           data="""
+Well, the actual content of the file doesn't matter, the problem is
+related to the "multipart/..." content_type associated to the file.
+See also http://bugs.python.org/issue15564.
+""")
+
+
 class ErrorPageValidation(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Validate the error page"""
@@ -191,6 +210,7 @@ def suite():
     suite.addTest(RegressionTestTicket3833c())
     suite.addTest(RegressionTestTicket5572())
     suite.addTest(RegressionTestTicket7209())
+    suite.addTest(RegressionTestTicket9880())
     suite.addTest(ErrorPageValidation())
     suite.addTest(RegressionTestTicket3663())
 
