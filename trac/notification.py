@@ -24,6 +24,7 @@ from genshi.builder import tag
 from trac import __version__
 from trac.config import BoolOption, ExtensionOption, IntOption, Option
 from trac.core import *
+from trac.util.compat import close_fds
 from trac.util.text import CRLF, fix_eol
 from trac.util.translation import _, deactivate, reactivate
 
@@ -201,7 +202,7 @@ class SendmailEmailSender(Component):
         cmdline.extend(recipients)
         self.log.debug("Sendmail command line: %s" % cmdline)
         child = Popen(cmdline, bufsize=-1, stdin=PIPE, stdout=PIPE,
-                      stderr=PIPE)
+                      stderr=PIPE, close_fds=close_fds)
         out, err = child.communicate(message)
         if child.returncode or err:
             raise Exception("Sendmail failed with (%s, %s), command: '%s'"
