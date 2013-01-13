@@ -626,6 +626,7 @@ table.listing thead th {
  vertical-align: bottom;
  white-space: nowrap;
 }
+table.listing thead th.sel { text-align: center; width: 1% }
 table.listing thead th :link:hover, table.listing thead th :visited:hover {
  background-color: transparent;
 }
