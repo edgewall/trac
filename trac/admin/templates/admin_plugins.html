@@ -13,12 +13,12 @@
       jQuery(document).ready(function($) {
         // Sets state of group toggler when component checkboxes are clicked
         function setGroupTogglerState() {
-          var checkboxes = $("td.sel input:checkbox:enabled",
-                             $(this).closest("table.listing"));
+          var table = $(this).closest("table.listing");
+          var checkboxes = $("td.sel input:checkbox:enabled", table);
           var numSelected = checkboxes.filter(":checked").length;
           var noneSelected = numSelected === 0;
           var allSelected = numSelected === checkboxes.length;
-          $("th.sel input:checkbox", $(this).closest("table.listing"))
+          $("th.sel input:checkbox", table)
             .prop({"checked": allSelected,
                    "indeterminate": !(noneSelected || allSelected)});
         }
