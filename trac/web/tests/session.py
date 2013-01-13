@@ -40,7 +40,7 @@ def _prep_session_table(env, spread_visits=False):
                (sid, authenticated, val))
             db("INSERT INTO session_attribute VALUES (%s, %s, 'email', %s)",
                (sid, authenticated, val))
-    all_list = auth_list + anon_list 
+    all_list = auth_list + anon_list
     return (auth_list, anon_list, all_list)
 
 def get_session_info(env, sid):
@@ -157,7 +157,7 @@ class SessionTestCase(unittest.TestCase):
         session = Session(self.env, req)
         session['foo'] = 'bar'
         session.save()
-        
+
         self.assertEqual('bar', self.env.db_query(
                 "SELECT value FROM session_attribute WHERE sid='123456'")[0][0])
 
@@ -169,7 +169,7 @@ class SessionTestCase(unittest.TestCase):
         with self.env.db_transaction as db:
             db("INSERT INTO session VALUES ('123456', 0, 0)")
             db("""
-                INSERT INTO session_attribute VALUES 
+                INSERT INTO session_attribute VALUES
                 ('123456', 0, 'foo', 'bar')
                 """)
             incookie = Cookie()
@@ -180,7 +180,7 @@ class SessionTestCase(unittest.TestCase):
             self.assertEqual('bar', session['foo'])
             session['foo'] = 'baz'
             session.save()
-        
+
         self.assertEqual('baz', self.env.db_query(
                 "SELECT value FROM session_attribute WHERE sid='123456'")[0][0])
 
@@ -192,7 +192,7 @@ class SessionTestCase(unittest.TestCase):
         with self.env.db_transaction as db:
             db("INSERT INTO session VALUES ('123456', 0, 0)")
             db("""
-                INSERT INTO session_attribute VALUES 
+                INSERT INTO session_attribute VALUES
                 ('123456', 0, 'foo', 'bar')
                 """)
             incookie = Cookie()
@@ -203,7 +203,7 @@ class SessionTestCase(unittest.TestCase):
             self.assertEqual('bar', session['foo'])
             del session['foo']
             session.save()
-        
+
         self.assertEqual(0, self.env.db_query("""
             SELECT COUNT(*) FROM session_attribute
             WHERE sid='123456' AND name='foo'
@@ -221,7 +221,7 @@ class SessionTestCase(unittest.TestCase):
                 INSERT INTO session_attribute
                 VALUES ('987654', 0, 'foo', 'bar')
                 """)
-            
+
             # We need to modify a different session to trigger the purging
             incookie = Cookie()
             incookie['trac_session'] = '123456'
@@ -230,7 +230,7 @@ class SessionTestCase(unittest.TestCase):
             session = Session(self.env, req)
             session['foo'] = 'bar'
             session.save()
-        
+
         self.assertEqual(0, self.env.db_query("""
             SELECT COUNT(*) FROM session WHERE sid='987654' AND authenticated=0
             """)[0][0])
@@ -283,7 +283,7 @@ class SessionTestCase(unittest.TestCase):
                    outcookie=Cookie())
         session = Session(self.env, req)
         self.assertEqual({'foo': 'bar'}, session)
-        
+
         session.get_session('7890')
         session['baz'] = 'moo'
         session.save()
@@ -308,7 +308,7 @@ class SessionTestCase(unittest.TestCase):
         session = Session(self.env, req)
         session['foo'] = 'bar'
         session.save()
-        
+
         self.assertEqual('bar', self.env.db_query("""
             SELECT value FROM session_attribute WHERE sid='john' AND name='foo'
             """)[0][0])
@@ -390,7 +390,7 @@ class SessionTestCase(unittest.TestCase):
 
     def test_update_session(self):
         """
-        Verify that accessing a session after one day updates the sessions 
+        Verify that accessing a session after one day updates the sessions
         'last_visit' variable so that the session doesn't get purged.
         """
         now = time.time()
@@ -450,7 +450,7 @@ class SessionTestCase(unittest.TestCase):
             self.assertEqual('bar', session['foo'])
             del session['foo']
             session.save()
-         
+
         self.assertEqual(0, self.env.db_query("""
             SELECT COUNT(*) FROM session_attribute
             WHERE sid='john' AND name='foo'
@@ -466,7 +466,7 @@ class SessionTestCase(unittest.TestCase):
 
         session = DetachedSession(self.env, 'john')
         self.assertEqual('bar', session['foo'])
-            
+
         # Setting the variable to the default value removes the variable
         with self.env.db_transaction as db:
             session.set('foo', 'default', 'default')
@@ -475,7 +475,7 @@ class SessionTestCase(unittest.TestCase):
             SELECT COUNT(*) FROM session_attribute
             WHERE sid='john' AND name='foo'
             """)[0][0])
-        
+
         # Setting the variable to a value different from the default sets it
         with self.env.db_transaction as db:
             session.set('foo', 'something', 'default')
@@ -484,7 +484,7 @@ class SessionTestCase(unittest.TestCase):
             SELECT value FROM session_attribute
             WHERE sid='john' AND name='foo'
             """)[0][0])
-        
+
     def test_session_admin_list(self):
         auth_list, anon_list, all_list = _prep_session_table(self.env)
         sess_admin = SessionAdmin(self.env)
@@ -504,7 +504,7 @@ class SessionTestCase(unittest.TestCase):
         self.assertEqual([i for i in sess_admin._get_list(['name00', 'name01',
                                                            'name02'])],
                          all_list[:3])
-            
+
     def test_session_admin_add(self):
         auth_list, anon_list, all_list = _prep_session_table(self.env)
         sess_admin = SessionAdmin(self.env)

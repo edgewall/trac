@@ -23,7 +23,7 @@ def do_upgrade(env, ver, cursor):
                    "version DESC")
     result = cursor.fetchall()
     if result:
-        cursor.executemany("UPDATE wiki SET version=version+1 WHERE name=%s " 
+        cursor.executemany("UPDATE wiki SET version=version+1 WHERE name=%s "
                            "and version=%s",
                            [tuple(row) for row in result])
 

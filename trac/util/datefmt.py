@@ -29,7 +29,7 @@ try:
     from babel import Locale
     from babel.core import LOCALE_ALIASES
     from babel.dates import (
-        format_datetime as babel_format_datetime, 
+        format_datetime as babel_format_datetime,
         format_date as babel_format_date,
         format_time as babel_format_time,
         get_datetime_format, get_date_format,
@@ -133,7 +133,7 @@ def pretty_timedelta(time1, time2=None, resolution=None):
     time2 = to_datetime(time2)
     if time1 > time2:
         time2, time1 = time1, time2
-    
+
     diff = time2 - time1
     age_s = int(diff.days * 86400 + diff.seconds)
     if resolution and age_s < resolution:
@@ -461,7 +461,7 @@ def parse_date(text, tzinfo=None, locale=None, hint='date'):
                 'date': get_date_format_hint
                }.get(hint, lambda(l): hint)(locale)
         raise TracError(_('"%(date)s" is an invalid date, or the date format '
-                          'is not known. Try "%(hint)s" instead.', 
+                          'is not known. Try "%(hint)s" instead.',
                           date=text, hint=hint), _('Invalid Date'))
     # Make sure we can convert it to a timestamp and back - fromtimestamp()
     # may raise ValueError if larger than platform C localtime() or gmtime()
@@ -918,7 +918,7 @@ try:
     _gmt_index = bisect(_pytz_zones, 'GMT')
     all_timezones = _pytz_zones[:_gmt_index] + all_timezones[1:] + \
                     _pytz_zones[_gmt_index:]
- 
+
 except ImportError:
     pytz = None
 

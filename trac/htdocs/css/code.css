@@ -16,7 +16,7 @@ table.code {
  border: 1px solid #ddd;
  border-spacing: 0;
  border-top: 0;
- border-collapse: collapse; 
+ border-collapse: collapse;
  empty-cells: show;
  font-size: 12px;
  line-height: 130%;
@@ -89,7 +89,7 @@ table.code tr.hilite td {
 .c_commentlinedoc, .h_comment,.pl_commentline, .p_commentblock,
 .p_commentline, .hphp_comment, .hphp_commentblock, .hphp_commentline,
 .yaml_comment {
- color: #998; 
+ color: #998;
  font-style: italic;
 }
 

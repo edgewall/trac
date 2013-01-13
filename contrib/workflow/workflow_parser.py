@@ -61,7 +61,7 @@ digraph G {
         if show_perms:
             label += attributes['permissions']
         if 'set_resolution' in attributes:
-            label += ['(' + attributes['set_resolution'] + ')'] 
+            label += ['(' + attributes['set_resolution'] + ')']
         for oldstate in attributes['oldstates']:
             color = color_scheme.get_color(attributes['name'])
             digraph_lines.append(
@@ -109,7 +109,7 @@ if __name__ == '__main__':
             show_ops = True
         elif option in ('-p', '--permissions'):
             show_perms = True
-            
+
     if not args:
         sys.stderr.write('Syntax error: config filename required.\n')
         usage(sys.stderr)

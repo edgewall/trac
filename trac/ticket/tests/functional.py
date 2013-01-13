@@ -259,7 +259,7 @@ class TestTicketCustomFieldTextNoFormat(FunctionalTwillTestCaseSetup):
 
 class TestTicketCustomFieldTextAreaNoFormat(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test custom textarea field with no format explicitly specified, 
+        """Test custom textarea field with no format explicitly specified,
         its contents should be rendered as plain text.
         """
         env = self._testenv.get_trac_environment()
@@ -279,7 +279,7 @@ class TestTicketCustomFieldTextAreaNoFormat(FunctionalTwillTestCaseSetup):
 
 class TestTicketCustomFieldTextWikiFormat(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test custom text field with `wiki` format. 
+        """Test custom text field with `wiki` format.
         Its contents should through the wiki engine, wiki-links and all.
         Feature added in http://trac.edgewall.org/ticket/1791
         """
@@ -303,7 +303,7 @@ class TestTicketCustomFieldTextWikiFormat(FunctionalTwillTestCaseSetup):
 
 class TestTicketCustomFieldTextAreaWikiFormat(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test custom textarea field with no format explicitly specified, 
+        """Test custom textarea field with no format explicitly specified,
         its contents should be rendered as plain text.
         """
         env = self._testenv.get_trac_environment()
@@ -352,7 +352,7 @@ class TestTicketCustomFieldTextReferenceFormat(FunctionalTwillTestCaseSetup):
 
 class TestTicketCustomFieldTextListFormat(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test custom text field with `list` format. 
+        """Test custom text field with `list` format.
         Its contents are treated as a space-separated list of values
         and are rendered as separate auto-query links per word.
         Feature added in http://trac.edgewall.org/ticket/10643
@@ -1056,12 +1056,12 @@ class TestNewReport(FunctionalTwillTestCaseSetup):
                reporter, time AS created,
                changetime AS modified, description AS _description,
                priority,
-               round(julianday('now') - 
+               round(julianday('now') -
                      julianday(changetime, 'unixepoch')) as days,
                resolution,
                owner as __group__
               FROM ticket t
-              LEFT JOIN enum p ON p.name = t.priority AND 
+              LEFT JOIN enum p ON p.name = t.priority AND
                                   p.type = 'priority'
               WHERE ((julianday('now') -
                       julianday(changetime, 'unixepoch')) < 7)
@@ -1143,7 +1143,7 @@ class RegressionTestTicket4447(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/4447"""
         ticketid = self._tester.create_ticket(summary="Hello World")
-        
+
         env = self._testenv.get_trac_environment()
         env.config.set('ticket-custom', 'newfield', 'text')
         env.config.set('ticket-custom', 'newfield.label',

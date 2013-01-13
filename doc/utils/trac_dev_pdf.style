@@ -29,7 +29,7 @@ linkColor: #B00000
 
 styles:
  admonition-heading: {fontSize: 80%, textColor: #A00000}
- code: 
+ code:
   backColor: #F5F5DC
   borderColor: #D5D5CC
   borderPadding: [6, 0, 6, 4]

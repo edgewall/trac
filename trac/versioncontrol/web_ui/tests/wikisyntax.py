@@ -318,7 +318,7 @@ source:/missing/file
 <a class="missing source">source:/missing/file</a>
 </p>
 ------------------------------
-============================== source: link resolver + query 
+============================== source: link resolver + query
 source:/foo?order=size&desc=1
 source:/foo/bar?format=raw
 ------------------------------

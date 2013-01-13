@@ -61,13 +61,13 @@ class DiffTestCase(unittest.TestCase):
         self.assertRaises(StopIteration, opcodes.next)
 
     def test_space_changes(self):
-        opcodes = get_opcodes(['A', 'B b'], ['A', 'B  b'], 
+        opcodes = get_opcodes(['A', 'B b'], ['A', 'B  b'],
                               ignore_space_changes=0)
         self.assertEqual(('equal', 0, 1, 0, 1), opcodes.next())
         self.assertEqual(('replace', 1, 2, 1, 2), opcodes.next())
         self.assertRaises(StopIteration, opcodes.next)
 
-        opcodes = get_opcodes(['A', 'B b'], ['A', 'B  b'], 
+        opcodes = get_opcodes(['A', 'B b'], ['A', 'B  b'],
                               ignore_space_changes=1)
         self.assertEqual(('equal', 0, 2, 0, 2), opcodes.next())
         self.assertRaises(StopIteration, opcodes.next)
@@ -83,7 +83,7 @@ class DiffTestCase(unittest.TestCase):
         self.assertRaises(StopIteration, opcodes.next)
 
     def test_space_and_case_changes(self):
-        opcodes = get_opcodes(['A', 'B b'], ['A', 'B  B'], 
+        opcodes = get_opcodes(['A', 'B b'], ['A', 'B  B'],
                               ignore_case=0, ignore_space_changes=0)
         self.assertEqual(('equal', 0, 1, 0, 1), opcodes.next())
         self.assertEqual(('replace', 1, 2, 1, 2), opcodes.next())
@@ -123,8 +123,8 @@ class DiffTestCase(unittest.TestCase):
         group = groups.next()
         self.assertRaises(StopIteration, groups.next)
         self.assertEqual([
-                ('replace', 0, 1, 0, 1), 
-                ('equal', 1, 3, 1, 3), 
+                ('replace', 0, 1, 0, 1),
+                ('equal', 1, 3, 1, 3),
                 ('replace', 3, 6, 3, 6),
                 ('equal', 6, 7, 6, 7),
                 ('replace', 7, 8, 7, 8),
@@ -134,8 +134,8 @@ class DiffTestCase(unittest.TestCase):
         group = groups.next()
         self.assertRaises(StopIteration, groups.next)
         self.assertEqual([
-                ('replace', 0, 1, 0, 1), 
-                ('equal', 1, 7, 1, 7), 
+                ('replace', 0, 1, 0, 1),
+                ('equal', 1, 7, 1, 7),
                 ('replace', 7, 8, 7, 8),
                 ], group)
 

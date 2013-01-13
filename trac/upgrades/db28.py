@@ -66,7 +66,7 @@ couldn't be removed, possibly due to the presence of files that weren't
 referenced in the database. The error was:
 
   %(exception)s
-  
+
 This error can be ignored, but for keeping your environment clean you should
 backup any remaining files in that directory and remove it manually.
 """, src_dir=old_dir, exception=exception_to_unicode(e)))

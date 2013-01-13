@@ -123,7 +123,7 @@ class Href(object):
     '/trac/ticket/540'
     >>> href.browser('/trunk/README.txt', format='txt')
     '/trac/browser/trunk/README.txt?format=txt'
-    
+
     The ``path_safe`` argument specifies the characters that don't
     need to be quoted in the path arguments. Likewise, the
     ``query_safe`` argument specifies the characters that don't need

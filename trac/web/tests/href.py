@@ -20,7 +20,7 @@ import trac.web.href
 
 class HrefTestCase(unittest.TestCase):
     """Unit tests for Href URL builder."""
-    
+
     def test_non_empty_base(self):
         """Build URLs with a non-empty base."""
         href = trac.web.href.Href('/base')
@@ -41,7 +41,7 @@ class HrefTestCase(unittest.TestCase):
             '/base/page?other=other+value&param=value']
         self.assertEqual('/base/page?param=multiple&param=values',
                          href('page', param=['multiple', 'values']))
-        
+
         self.assertEqual('/base/path/to/file/', href + '/path/to/file/')
         self.assertEqual('/base/path/to/file', href + 'path/to/file')
         self.assertEqual('/base', href + '')
@@ -53,11 +53,11 @@ class HrefTestCase(unittest.TestCase):
         self.assertEqual('/base', href('/'))
         self.assertEqual('/base/sub', href('sub'))
         self.assertEqual('/base/sub', href('/sub/'))
-        
+
         self.assertEqual('/base/path/to/file/', href + '/path/to/file/')
         self.assertEqual('/base/path/to/file', href + 'path/to/file')
         self.assertEqual('/base', href + '')
-        
+
     def test_empty_base(self):
         """Build URLs with an empty base."""
         href = trac.web.href.Href('')
@@ -78,11 +78,11 @@ class HrefTestCase(unittest.TestCase):
             '/page?other=other+value&param=value']
         self.assertEqual('/page?param=multiple&param=values',
                          href('page', param=['multiple', 'values']))
-        
+
         self.assertEqual('/path/to/file/', href + '/path/to/file/')
         self.assertEqual('/path/to/file', href + 'path/to/file')
         self.assertEqual('/', href + '')
-    
+
     def test_params_subclasses(self):
         """Parameters passed using subclasses of dict, list and tuple."""
         class MyDict(dict):

@@ -20,7 +20,7 @@ from trac.test import EnvironmentStub
 class MySQLTableAlterationSQLTest(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub()
-    
+
     def test_alter_column_types(self):
         connector = MySQLConnector(self.env)
         sql = connector.alter_column_types('milestone',

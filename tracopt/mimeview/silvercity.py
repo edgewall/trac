@@ -97,14 +97,14 @@ class SilverCityRenderer(Component):
         self._types = None
 
     # ISystemInfoProvider methods
-    
+
     def get_system_info(self):
         if have_silvercity:
             yield 'SilverCity', get_pkginfo(SilverCity).get('version', '?')
             # TODO: the above works only if setuptools was used to build
             # SilverCity, which is not yet the case by default for 0.9.7.
             # I've not been able to find an alternative way to get version.
-    
+
     # IHTMLPreviewRenderer methods
 
     def get_quality_ratio(self, mimetype):
@@ -138,7 +138,7 @@ class SilverCityRenderer(Component):
 
         # SilverCity does not like unicode strings
         content = content.encode('utf-8')
-        
+
         # SilverCity generates extra empty line against some types of
         # the line such as comment or #include with CRLF. So we
         # standardize to LF end-of-line style before call.
@@ -151,7 +151,7 @@ class SilverCityRenderer(Component):
         span_default_re = re.compile(r'<span class="\w+_default">(.*?)</span>',
                                      re.DOTALL)
         html = span_default_re.sub(r'\1', br_re.sub('', buf.getvalue()))
-        
+
         # Convert the output back to a unicode string
         html = html.decode('utf-8')
 

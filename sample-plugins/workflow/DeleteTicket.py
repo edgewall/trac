@@ -47,5 +47,5 @@ class DeleteTicketActionController(Component):
     def apply_action_side_effects(self, req, ticket, action):
         # Be paranoid here, as this should only be called when
         # action is delete...
-        if action == 'delete': 
+        if action == 'delete':
             ticket.delete()

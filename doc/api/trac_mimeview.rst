@@ -28,7 +28,7 @@ Components
 
 .. autoclass :: trac.mimeview.api.Mimeview
    :members:
- 
+
 Helper classes
 --------------
 
@@ -51,7 +51,7 @@ Functions
 
    :param filename: is either a filename (the lookup will then use the suffix)
      or some arbitrary keyword.
-    
+
    :param content: is either a `str` or an `unicode` string.
 
 .. autofunction :: trac.mimeview.api.ct_mimetype

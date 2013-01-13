@@ -46,9 +46,9 @@ The :file:`Makefile` is actually written in a way that allow you to
 get more control, if you want.
 
 Other possible usages::
-  
+
   make test=trac/tests/allwiki.py # run all the Wiki formatter tests
-  
+
   make unit-test db=postgres # run only the unit tests with PostgreSQL
 
   make functional-test db=mysql # run only the functional tests with MySQL

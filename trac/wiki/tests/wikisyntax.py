@@ -684,7 +684,7 @@ over        http://unused/? # Overridden in trac.ini
 {{{
 nolink          http://noweb
 }}}
-""" 
+"""
     imt.save('joe', 'test InterWiki links', '::1', now)
     tc.env.config.set('interwiki', 'inter',
                       'http://inter/$1/page/$2 Resource $2 in $1')
@@ -695,17 +695,17 @@ nolink          http://noweb
     w.name = 'FirstLevel'
     w.text = '--'
     w.save('joe', 'first level of hierarchy', '::1', now)
-    
+
     w = WikiPage(tc.env)
     w.name = 'FirstLevel/SecondLevel'
     w.text = '--'
     w.save('joe', 'second level of hierarchy', '::1', now)
-    
+
     w = WikiPage(tc.env)
     w.name = 'FirstLevel/SecondLevel/ThirdLevel'
     w.text = '--'
     w.save('joe', 'third level of hierarchy', '::1', now)
-    
+
     w = WikiPage(tc.env)
     w.name = 'FirstLevel/SecondLevel/OtherThirdLevel'
     w.text = '--'
@@ -733,9 +733,9 @@ def suite():
                                   context=('wiki', 'Main/Sub')))
     suite.addTest(formatter.suite(SCOPED_LINKS_TESTS, wiki_setup, __file__,
                                   wiki_teardown,
-                                  context=('wiki', 
+                                  context=('wiki',
                                       'FirstLevel/SecondLevel/ThirdLevel')))
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite') 
+    unittest.main(defaultTest='suite')

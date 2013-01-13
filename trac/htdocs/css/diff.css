@@ -161,12 +161,12 @@ pre.diff .add { background: #dfd; }
 .diff table.inline tbody.add tr.first td.r { border-top-width: 1px }
 .diff table.inline tbody.mod tr.last td.r,
 .diff table.inline tbody.add tr.last td.r { border-bottom-width: 1px }
-.diff table.inline tbody.mod td del { 
- background: #e99; 
+.diff table.inline tbody.mod td del {
+ background: #e99;
  color: #000;
 }
-.diff table.inline tbody.mod td ins { 
- background: #9e9; 
+.diff table.inline tbody.mod td ins {
+ background: #9e9;
  color: #000;
 }
 
@@ -179,7 +179,7 @@ pre.diff .add { background: #dfd; }
 .diff table.sidebyside tbody.rem td.l { background: #f88 }
 .diff table.sidebyside tbody.rem td.r { background: #faa }
 .diff table.sidebyside tbody.mod del, .diff table.sidebyside tbody.mod ins {
- background: #fc0; 
+ background: #fc0;
 }
 
 /* Styles for the plain-text diff view */

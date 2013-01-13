@@ -152,7 +152,7 @@ __foo__ x
  […]
 <tt>{{{this is verbatim}}}</tt> and <tt>`that` should also `be` verbatim</tt>
 ============================================================
-
+
         Link Resolvers
 
 ============================== Link resolvers, short form
@@ -317,7 +317,7 @@ nolink:&#34;&lt;blink&gt;&#34;
 </p>
 ------------------------------
 ============================================================
-
+
         Other Links
 
 ============================== Relative links
@@ -412,7 +412,7 @@ http://example.com/img.png?foo=bar
 </p>
 ------------------------------
 ==============================  mailto: links and automatic e-mail detection
-Author: mailto:cboos@edgewall.org, 
+Author: mailto:cboos@edgewall.org,
 i.e. [mailto:cboos@edgewall.org me]
 
 joe'bar@site.info,
@@ -422,7 +422,7 @@ T_r+a-c1.23@yet_another-site.edu.au
 someone@louvre.museum-
 ------------------------------
 <p>
-Author: <a class="mail-link" href="mailto:cboos@edgewall.org"><span class="icon"></span>mailto:cboos@edgewall.org</a>, 
+Author: <a class="mail-link" href="mailto:cboos@edgewall.org"><span class="icon"></span>mailto:cboos@edgewall.org</a>,
 i.e. <a class="mail-link" href="mailto:cboos@edgewall.org"><span class="icon"></span>me</a>
 </p>
 <p>
@@ -541,7 +541,7 @@ i.e. <a class="mail-link" href="mailto:cboos@edgewall.org"><span class="icon"></
 <a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"></span>RFC 2396</a>
 </p>
 ------------------------------
-============================== More WikiCreole examples 
+============================== More WikiCreole examples
 [[coffeehouse setup|How to set up a coffee house]]
 
 [[link:Template]]
@@ -610,7 +610,7 @@ Other test:<strong>bold text</strong> should be bold<br />
 <strong>Note:</strong>
 ==============================
 ============================================================
-
+
         Processor blocks
 
 ============================== Code Block 1
@@ -659,7 +659,7 @@ Paragraph
  […]
 Paragraph
 ============================== Consecutive code blocks
-Block 
+Block
 {{{
 number one
 }}}
@@ -670,7 +670,7 @@ number two
 .
 ------------------------------
 <p>
-Block 
+Block
 </p>
 <pre class="wiki">number one
 </pre><p>
@@ -681,13 +681,13 @@ and block
 .
 </p>
 ------------------------------
-Block 
+Block
  […]
 and block
  […]
 .
 ============================== Unfinished code blocks
-Block 
+Block
 {{{
 number one
 
@@ -697,7 +697,7 @@ number two
  }}
 ------------------------------
 <p>
-Block 
+Block
 </p>
 <pre class="wiki">number one
 
@@ -707,7 +707,7 @@ number two
  }}
 }}}
 </pre>------------------------------
-Block […]
+Block[…]
 ============================== Wiki processor
 {{{
 #!default
@@ -994,7 +994,7 @@ Done.
  […]
 Done.
 ============================================================
-
+
         Wiki Macros
 
 ============================== Macro help shortcut (with content)
@@ -1169,7 +1169,7 @@ Inline  comment
 ------------------------------
 Inline  comment
 ============================================================
-
+
            Headings
 
 ============================== I18N heading
@@ -1197,7 +1197,7 @@ Inline  comment
 ------------------------------
 = Version 0.10 =
 ============================== Normal heading
-== Heading with trailing white-space == 
+== Heading with trailing white-space ==
 ------------------------------
 <h2 id="Headingwithtrailingwhite-space">Heading with trailing white-space</h2>
 ------------------------------
@@ -1303,7 +1303,7 @@ Inline  comment
   </li>
 </ol>
 ============================================================
-
+
              Lists
 
 ============================== Bulleted lists
@@ -1760,19 +1760,19 @@ complex topic:: multiline
 complex topic:: multiline
                  <tt>not:: a dl</tt>
 ============================================================
-
+
             Tables
 
 ============================== Simple Table, one column
-|| a || 
+|| a ||
 || b ||
 ------------------------------
 <table class="wiki">
-<tr><td> a 
-</td></tr><tr><td> b 
+<tr><td> a
+</td></tr><tr><td> b
 </td></tr></table>
 ------------------------------
-|| a || 
+|| a ||
 || b ||
 ============================== Simple Table, multiple columns
 in:
@@ -1785,13 +1785,13 @@ out:
 in:
 </p>
 <table class="wiki">
-<tr><td> RPC# </td><td> parameter len </td><td> ..... parameter ..... 
+<tr><td> RPC# </td><td> parameter len </td><td> ..... parameter .....
 </td></tr></table>
 <p>
 out:
 </p>
 <table class="wiki">
-<tr><td> RPC# </td><td> parameter len </td><td> ..... parameter ..... 
+<tr><td> RPC# </td><td> parameter len </td><td> ..... parameter .....
 </td></tr></table>
 <hr />
 ------------------------------
@@ -1812,9 +1812,9 @@ in:
 in:
 </p>
 <table class="wiki">
-<tr><td> name </td><td colspan="2"> parameter info 
-</td></tr><tr><td> RPC# </td><td> parameter len </td><td> ..... parameter ..... 
-</td></tr><tr><td colspan="3"> end 
+<tr><td> name </td><td colspan="2"> parameter info
+</td></tr><tr><td> RPC# </td><td> parameter len </td><td> ..... parameter .....
+</td></tr><tr><td colspan="3"> end
 </td></tr><tr><td> #8977 </td><td> this should also work </td><td>
 </td></tr></table>
 <hr />
@@ -1830,8 +1830,8 @@ in:
 ||= also a header =|| some non- || header cells ||= header =||
 ------------------------------
 <table class="wiki">
-<tr><th> this is a header </th><th colspan="2"> another header </th><td> not a header 
-</td></tr><tr><th> also a header </th><td> some non- </td><td> header cells </td><th> header 
+<tr><th> this is a header </th><th colspan="2"> another header </th><td> not a header
+</td></tr><tr><th> also a header </th><td> some non- </td><td> header cells </td><th> header
 </th></tr></table>
 ------------------------------
 ============================== Table headings (plus alignment)
@@ -1839,8 +1839,8 @@ in:
 ||left align ||default|| default || right align||  center  ||
 ------------------------------
 <table class="wiki">
-<tr><th style="text-align: left">left align </th><th>default</th><th> default </th><th style="text-align: right"> right align</th><th style="text-align: center">  center  
-</th></tr><tr><td style="text-align: left">left align </td><td>default</td><td> default </td><td style="text-align: right"> right align</td><td style="text-align: center">  center  
+<tr><th style="text-align: left">left align </th><th>default</th><th> default </th><th style="text-align: right"> right align</th><th style="text-align: center">  center
+</th></tr><tr><td style="text-align: left">left align </td><td>default</td><td> default </td><td style="text-align: right"> right align</td><td style="text-align: center">  center
 </td></tr></table>
 ------------------------------
 ============================== Indented tables, multiple columns
@@ -1852,16 +1852,16 @@ in:
 || a || b ||
 ------------------------------
 <table class="wiki">
-<tr><td> a </td><td> b 
+<tr><td> a </td><td> b
 </td></tr></table>
 <blockquote>
 <table class="wiki">
-<tr><td> a </td><td> b 
-</td></tr><tr><td> a </td><td> b 
+<tr><td> a </td><td> b
+</td></tr><tr><td> a </td><td> b
 </td></tr></table>
 </blockquote>
 <table class="wiki">
-<tr><td> a </td><td> b 
+<tr><td> a </td><td> b
 </td></tr></table>
 ------------------------------
 || a || b ||
@@ -1876,7 +1876,7 @@ in:
 !|| a !|| b !||
 ------------------------------
 <table class="wiki">
-<tr><td> a || b 
+<tr><td> a || b
 </td></tr></table>
 <p>
 || a || b ||
@@ -1900,18 +1900,18 @@ in:
 || this should also work ||
 ------------------------------
 <table class="wiki">
-<tr><td> a very long cell, with lots of content 
+<tr><td> a very long cell, with lots of content
 
-</td><td> a second cell, on the same row 
+</td><td> a second cell, on the same row
 </td></tr><tr>
-</tr><tr><td> Another row 
-</td><td> Another row 
-</td></tr><tr><td> normal </td><td> row 
-</td></tr><tr><td> a very long cell, with lots of content 
-</td><td> a second cell, on the same row 
-</td></tr><tr><td> normal </td><td> row 
+</tr><tr><td> Another row
+</td><td> Another row
+</td></tr><tr><td> normal </td><td> row
+</td></tr><tr><td> a very long cell, with lots of content
+</td><td> a second cell, on the same row
+</td></tr><tr><td> normal </td><td> row
 </td></tr><tr><td>
-</td><td> this should also work 
+</td><td> this should also work
 </td></tr></table>
 ------------------------------
 ============================== Table with !#th and !#td wiki processors
@@ -1966,13 +1966,13 @@ Second cell, second row...
 Arbitrarily big content (even an embedded table of course):
 </p>
 <table class="wiki">
-<tr><td> A </td><td> B 
+<tr><td> A </td><td> B
 </td></tr></table>
 <div class="important"><p>
 or better, an embedded wiki paragraph, itself with a big table
 </p>
 <table class="wiki">
-<tr><th> A </th><th> B 
+<tr><th> A </th><th> B
 </th></tr><tr><td colspan="2"><pre class="wiki">def hello():
   print "A and B!"
 </pre></td></tr></table>
@@ -2061,12 +2061,12 @@ A very nice table:
     }}}
 }}}
 {{{#!tr ++++++++++++++++++++++++++++++++++++++++++++++ style="background: #fdf"
-    {{{#!td .......................................... 
+    {{{#!td ..........................................
 
     Content A
 
     }}}
-    {{{#!td .......................................... 
+    {{{#!td ..........................................
 
     Content B
 
@@ -2198,7 +2198,7 @@ Paragraph
 </p>
 ------------------------------
 ============================================================
-
+
          Mixed examples
 
 ============================== Mix of headings and lists
@@ -2291,13 +2291,13 @@ Paragraph<br />
 </li></ul></li></ul><blockquote>
 <blockquote>
 <table class="wiki">
-<tr><td> Foo </td><td> Bar 
+<tr><td> Foo </td><td> Bar
 </td></tr></table>
 </blockquote>
 </blockquote>
 <blockquote>
 <table class="wiki">
-<tr><td> Foo </td><td> Bar 
+<tr><td> Foo </td><td> Bar
 </td></tr></table>
 </blockquote>
 ------------------------------
@@ -2505,7 +2505,7 @@ a nested paragraph with a block (outside of the quoted list above as there's a p
 <pre class="wiki">block
 </pre><blockquote class="citation">
 <table class="wiki">
-<tr><td> nested </td><td> table 
+<tr><td> nested </td><td> table
 </td></tr></table>
 </blockquote>
 </blockquote>

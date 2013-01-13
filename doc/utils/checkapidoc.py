@@ -52,8 +52,8 @@ def main(argv):
         basename = rst.replace('.rst', '')
         if verbose or len(api_files) > 1:
             print "== Checking %s ... " % (rst,)
-        check_api_doc(basename, verbose, only_documented, 
-                      any(f.startswith(basename) and f != basename 
+        check_api_doc(basename, verbose, only_documented,
+                      any(f.startswith(basename) and f != basename
                           for f in rst_basenames))
 
 
@@ -108,7 +108,7 @@ def get_sphinx_documented_symbols(rst):
 
 
 def get_default_symbols(module, only_documented, has_submodules):
-    public = get_public_symbols(module) - get_imported_symbols(module, 
+    public = get_public_symbols(module) - get_imported_symbols(module,
                                                                has_submodules)
     # eliminate modules
     all = []
@@ -122,7 +122,7 @@ def get_default_symbols(module, only_documented, has_submodules):
         documented = []
         for symbol in all:
             value = getattr(module, symbol)
-            if value.__doc__ and (not getattr(value, '__class__', None) or 
+            if value.__doc__ and (not getattr(value, '__class__', None) or
                                   value.__doc__ != value.__class__.__doc__):
                 documented.append(symbol)
         all = documented
@@ -152,7 +152,7 @@ def get_imported_symbols(module, has_submodules):
         if symbol_list == '*':
             try:
                 imported_module = __import__(mod, globals(), {}, ['__all__'])
-                symbols = set(getattr(imported_module, '__all__', None) or 
+                symbols = set(getattr(imported_module, '__all__', None) or
                               get_public_symbols(imported_module))
             except ImportError:
                 print "Warning: 'from %s import *' couldn't be resolved" % (

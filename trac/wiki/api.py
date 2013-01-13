@@ -48,14 +48,14 @@ class IWikiChangeListener(Interface):
     def wiki_page_version_deleted(page):
         """Called when a version of a page has been deleted."""
 
-    def wiki_page_renamed(page, old_name): 
-        """Called when a page has been renamed.""" 
+    def wiki_page_renamed(page, old_name):
+        """Called when a page has been renamed."""
 
 
 class IWikiPageManipulator(Interface):
     """Components that need to do specific pre- and post- processing of
     wiki page changes have to implement this interface.
-    
+
     Unlike change listeners, a manipulator can reject changes being
     committed to the database.
     """
@@ -75,7 +75,7 @@ class IWikiPageManipulator(Interface):
         """Validate a wiki page after it's been populated from user input.
 
         :param page: is the `WikiPage` being edited.
-        
+
         :return: a list of `(field, message)` tuples, one for each
           problem detected. `field` can be `None` to indicate an
           overall problem with the page. Therefore, a return value of
@@ -126,7 +126,7 @@ class IWikiMacroProvider(Interface):
 
         :param formatter: the wiki `Formatter` currently processing
           the wiki markup
- 
+
         :param name: is the name by which the macro has been called;
           remember that via `get_macros`, multiple names could be
           associated to this macros. Note that the macro names are
@@ -177,7 +177,7 @@ class IWikiMacroProvider(Interface):
 
 class IWikiSyntaxProvider(Interface):
     """Enrich the Wiki syntax with new markup."""
- 
+
     def get_wiki_syntax():
         """Return an iterable that provides additional wiki syntax.
 
@@ -186,7 +186,7 @@ class IWikiSyntaxProvider(Interface):
         which will be called if there's a match.  That function is of
         the form `cb(formatter, ns, match)`.
         """
- 
+
     def get_link_resolvers():
         """Return an iterable over `(namespace, formatter)` tuples.
 
@@ -207,10 +207,10 @@ def parse_args(args, strict=True):
 
     The content is split along commas, unless they are escaped with a
     backquote (see example below).
-    
+
     :param args: a string containing macros arguments
     :param strict: if `True`, only Python-like identifiers will be
-                   recognized as keyword arguments 
+                   recognized as keyword arguments
 
     Example usage::
 
@@ -222,8 +222,8 @@ def parse_args(args, strict=True):
       (['Some text', ' some other arg, with a comma.'], {'mode': ' 3'})
       >>> parse_args('milestone=milestone1,status!=closed', strict=False)
       ([], {'status!': 'closed', 'milestone': 'milestone1'})
-    
-    """    
+
+    """
     largs, kwargs = [], {}
     if args:
         for arg in re.split(r'(?<!\\),', args):
@@ -323,7 +323,7 @@ class WikiSystem(Component):
 
     def make_label_from_target(self, target):
         """Create a label from a wiki target.
-        
+
         A trailing fragment and query string is stripped. Then, leading ./,
         ../ and / elements are stripped, except when this would lead to an
         empty label. Finally, if `split_page_names` is true, the label
@@ -347,13 +347,13 @@ class WikiSystem(Component):
             r"(?=:(?:\Z|\s)|[^:\w%(upper)s%(lower)s]|\s|\Z)"
             # what should follow it
             % {'upper': self.Lu, 'lower': self.Ll, 'xml': self.XML_NAME})
-        
+
         # Regular WikiPageNames
         def wikipagename_link(formatter, match, fullmatch):
             return self._format_link(formatter, 'wiki', match,
                                      self.format_page_name(match),
                                      self.ignore_missing_pages, match)
-        
+
         # Start after any non-word char except '/', with optional relative or
         # absolute prefix
         yield (r"!?(?<![\w/])(?:\.?\.?/)*"
@@ -370,7 +370,7 @@ class WikiSystem(Component):
                wikipagename_with_label_link)
 
         # MoinMoin's ["internal free link"] and ["free link" with label]
-        def internal_free_link(fmt, m, fullmatch): 
+        def internal_free_link(fmt, m, fullmatch):
             page = fullmatch.group('ifl_page')[1:-1]
             label = fullmatch.group('ifl_label')
             if label is None:
@@ -441,7 +441,7 @@ class WikiSystem(Component):
                 base.extend(components[i:])
                 break
         return '/'.join(base)
-    
+
     def _resolve_scoped_name(self, pagename, referrer):
         referrer = referrer.split('/')
         if len(referrer) == 1:           # Non-hierarchical referrer

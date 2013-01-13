@@ -197,7 +197,7 @@ class AttachmentTestCase(unittest.TestCase):
         self.assertEqual('ticket', attachment1.resource.parent.realm)
         self.assertEqual('123', attachment1.parent_id)
         self.assertEqual('123', attachment1.resource.parent.id)
-        
+
         attachments = Attachment.select(self.env, 'wiki', 'SomePage')
         self.assertEqual(1, len(list(attachments)))
         attachments = Attachment.select(self.env, 'ticket', 123)

@@ -19,7 +19,7 @@
 }
 
 /* Styles for the path of hierarchical pages */
-#pagepath { 
+#pagepath {
  font-size: 10px; /* same as .nav ul in trac.css */
  float: left;
  padding: .4em 0;
@@ -30,7 +30,7 @@
 #pagepath .pathentry { float: left }
 
 /* Styles for the page editing form */
-.preview-right { 
+.preview-right {
  float: right;
  width: 50%;
  display: block;
@@ -41,7 +41,7 @@
 .sidebyside #text { overflow: hidden }
 
 #edit { margin-top: .5em }
-#edit #rows { 
+#edit #rows {
  float: right;
  font-size: 80%;
  margin: .4em 0 0 0;
@@ -80,7 +80,7 @@
 #overview .ipnr { color: #999; font-size: 80% }
 #overview .comment { padding: 1em 0 0 }
 
-@media print { 
+@media print {
  th.diff, td.diff { display: none }
 }
 
@@ -100,7 +100,7 @@
 .wiki-toc ul ul, .wiki-toc ol ol { padding-left: 1.2em }
 .wiki-toc li { margin: 0; padding: 0 }
 .wiki-toc .active { background: #ff9; position: relative; }
-.wiki-toc-un ul, .wiki-toc-un ol { list-style: none; } 
+.wiki-toc-un ul, .wiki-toc-un ol { list-style: none; }
 
 div.trac-modifiedby {
  margin: .3em .5em;

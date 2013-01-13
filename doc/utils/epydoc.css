@@ -54,7 +54,7 @@ table.summary th, table.summary td { border: 1px solid #d7d7d7; }
 table.summary th th, table.summary td td { border: none; }
 table.summary td.summary table td { color: #666; font-size: 90%; }
 table.summary td.summary table br { display: none; }
-table.summary td.summary span.summary-type { font-family: monospace; 
+table.summary td.summary span.summary-type { font-family: monospace;
   font-size: 90%;
 }
 table.summary td.summary span.summary-type code { font-size: 110%; }

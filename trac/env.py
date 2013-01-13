@@ -29,7 +29,7 @@ from trac.cache import CacheManager
 from trac.config import *
 from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
-from trac.db.api import (DatabaseManager, QueryContextManager, 
+from trac.db.api import (DatabaseManager, QueryContextManager,
                          TransactionContextManager, with_transaction)
 from trac.util import copytree, create_file, get_pkginfo, lazy, makedirs, \
                       read_file
@@ -46,7 +46,7 @@ __all__ = ['Environment', 'IEnvironmentSetupParticipant', 'open_environment']
 
 # Content of the VERSION file in the environment
 _VERSION = 'Trac Environment Version 1'
-    
+
 
 class ISystemInfoProvider(Interface):
     """Provider of system information, displayed in the "About Trac"
@@ -63,7 +63,7 @@ class IEnvironmentSetupParticipant(Interface):
     """Extension point interface for components that need to participate in
     the creation and upgrading of Trac environments, for example to create
     additional database tables.
-    
+
     Please note that `IEnvironmentSetupParticipant` instances are called in
     arbitrary order. If your upgrades must be ordered consistently, please
     implement the ordering in a single `IEnvironmentSetupParticipant`. See
@@ -76,14 +76,14 @@ class IEnvironmentSetupParticipant(Interface):
     def environment_needs_upgrade(db):
         """Called when Trac checks whether the environment needs to be
         upgraded.
-        
+
         Should return `True` if this participant needs an upgrade to
         be performed, `False` otherwise.
         """
 
     def upgrade_environment(db):
         """Actually perform an environment upgrade.
-        
+
         Implementations of this method don't need to commit any
         database transactions. This is done implicitly for each
         participant if the upgrade succeeds without an error being
@@ -105,7 +105,7 @@ class Environment(Component, ComponentManager):
     Trac stores project information in a Trac environment. It consists
     of a directory structure containing among other things:
 
-    * a configuration file, 
+    * a configuration file,
     * project-specific templates and plugins,
     * the wiki and ticket attachments files,
     * the SQLite database file (stores tickets, wiki pages...)
@@ -116,7 +116,7 @@ class Environment(Component, ComponentManager):
     implements(ISystemInfoProvider)
 
     required = True
-    
+
     system_info_providers = ExtensionPoint(ISystemInfoProvider)
     setup_participants = ExtensionPoint(IEnvironmentSetupParticipant)
 
@@ -141,41 +141,41 @@ class Environment(Component, ComponentManager):
         trac.ticket.report.ReportModule = disabled
         webadmin.* = enabled
         }}}
-        
+
         The first option tells Trac to disable the
-        [wiki:TracReports report module]. 
+        [wiki:TracReports report module].
         The second option instructs Trac to enable all components in
         the `webadmin` package. Note that the trailing wildcard is
         required for module/package matching.
-        
+
         To view the list of active components, go to the ''Plugins''
         page on ''About Trac'' (requires `CONFIG_VIEW`
         [wiki:TracPermissions permissions]).
-        
+
         See also: TracPlugins
         """)
 
     shared_plugins_dir = PathOption('inherit', 'plugins_dir', '',
         """Path to the //shared plugins directory//.
-        
+
         Plugins in that directory are loaded in addition to those in
         the directory of the environment `plugins`, with this one
         taking precedence.
-        
+
         (''since 0.11'')""")
 
     base_url = Option('trac', 'base_url', '',
         """Reference URL for the Trac deployment.
-        
+
         This is the base URL that will be used when producing
         documents that will be used outside of the web browsing
         context, like for example when inserting URLs pointing to Trac
         resources in notification e-mails.""")
 
     base_url_for_redirect = BoolOption('trac', 'use_base_url_for_redirect',
-            False, 
+            False,
         """Optionally use `[trac] base_url` for redirects.
-        
+
         In some configurations, usually involving running Trac behind
         a HTTP proxy, Trac can't automatically reconstruct the URL
         that is used to access it. You may need to use this option to
@@ -186,7 +186,7 @@ class Environment(Component, ComponentManager):
 
     secure_cookies = BoolOption('trac', 'secure_cookies', False,
         """Restrict cookies to HTTPS connections.
-        
+
         When true, set the `secure` flag on all cookies so that they
         are only sent to the server on HTTPS connections. Use this if
         your Trac instance is only accessible through HTTPS. (''since
@@ -209,7 +209,7 @@ class Environment(Component, ComponentManager):
     project_admin_trac_url = Option('project', 'admin_trac_url', '.',
         """Base URL of a Trac instance where errors in this Trac
         should be reported.
-        
+
         This can be an absolute or relative URL, or '.' to reference
         this Trac instance. An empty value will disable the reporting
         buttons.  (''since 0.11.3'')""")
@@ -225,7 +225,7 @@ class Environment(Component, ComponentManager):
 
     log_type = Option('logging', 'log_type', 'none',
         """Logging facility to use.
-        
+
         Should be one of (`none`, `file`, `stderr`, `syslog`, `winlog`).""")
 
     log_file = Option('logging', 'log_file', 'trac.log',
@@ -235,14 +235,14 @@ class Environment(Component, ComponentManager):
 
     log_level = Option('logging', 'log_level', 'DEBUG',
         """Level of verbosity in log.
-        
+
         Should be one of (`CRITICAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`).""")
 
     log_format = Option('logging', 'log_format', None,
         """Custom logging format.
 
         If nothing is set, the following will be used:
-        
+
         Trac[$(module)s] $(levelname)s: $(message)s
 
         In addition to regular key names supported by the Python
@@ -263,7 +263,7 @@ class Environment(Component, ComponentManager):
 
     def __init__(self, path, create=False, options=[]):
         """Initialize the Trac environment.
-        
+
         :param path:   the absolute path to the Trac environment
         :param create: if `True`, the environment is created and
                        populated with default data; otherwise, the
@@ -308,10 +308,10 @@ class Environment(Component, ComponentManager):
         from trac.util.datefmt import pytz
         if pytz is not None:
             yield 'pytz', pytz.__version__
-    
+
     def component_activated(self, component):
         """Initialize additional member variables for components.
-        
+
         Every component activated through the `Environment` object
         gets three member variables: `env` (the environment object),
         `config` (the environment configuration) and `log` (a logger
@@ -337,11 +337,11 @@ class Environment(Component, ComponentManager):
                     name = name[:-2]
                 self._rules[name.lower()] = value.lower() in ('enabled', 'on')
             return self._rules
-        
+
     def is_component_enabled(self, cls):
         """Implemented to only allow activation of components that are
         not disabled in the configuration.
-        
+
         This is called by the `ComponentManager` base class when a
         component is about to be activated. If this method returns
         `False`, the component does not get activated. If it returns
@@ -361,7 +361,7 @@ class Environment(Component, ComponentManager):
                           "administration interface will be used "
                           "instead.")
             return False
-        
+
         rules = self._component_rules
         cname = component_name
         while cname:
@@ -399,7 +399,7 @@ class Environment(Component, ComponentManager):
         `db_transaction` for obtaining the `db` database connection
         which can be used for performing any query
         (SELECT/INSERT/UPDATE/DELETE)::
-        
+
            with env.db_transaction as db:
                ...
 
@@ -408,7 +408,7 @@ class Environment(Component, ComponentManager):
         of it (if it's the outermost such context manager on the
         stack).
 
-           
+
         `db_query` for obtaining a `db` database connection which can
         be used for performing SELECT queries only::
 
@@ -423,9 +423,9 @@ class Environment(Component, ComponentManager):
         backend-specific exception types as attributes, named
         according to the Python Database API
         (http://www.python.org/dev/peps/pep-0249/).
-        
+
         To catch a database exception, use the following pattern::
-        
+
             try:
                 with env.db_transaction as db:
                     ...
@@ -464,7 +464,7 @@ class Environment(Component, ComponentManager):
             with env.db_query as db:
                 for row in db("SELECT ..."):
                     ...
-        
+
         :warning: after a `with env.db_query as db` block, though the
           `db` variable is still defined, you shouldn't use it as it
           might have been closed when exiting the context, if this
@@ -485,7 +485,7 @@ class Environment(Component, ComponentManager):
         """Return a context manager
         (`~trac.db.api.TransactionContextManager`) which can be used
         to obtain a writable database connection.
-        
+
         Example::
 
             with env.db_transaction as db:
@@ -533,11 +533,11 @@ class Environment(Component, ComponentManager):
     def get_repository(self, reponame=None, authname=None):
         """Return the version control repository with the given name,
         or the default repository if `None`.
-        
+
         The standard way of retrieving repositories is to use the
         methods of `RepositoryManager`. This method is retained here
         for backward compatibility.
-        
+
         :param reponame: the name of the repository
         :param authname: the user name for authorization (not used
                          anymore, left here for compatibility with
@@ -687,7 +687,7 @@ class Environment(Component, ComponentManager):
 
     def upgrade(self, backup=False, backup_dest=None):
         """Upgrade database.
-        
+
         :param backup: whether or not to backup before upgrading
         :param backup_dest: name of the backup file
         :return: whether the upgrade was performed
@@ -737,7 +737,7 @@ class Environment(Component, ComponentManager):
 
 class EnvironmentSetup(Component):
     """Manage automatic environment upgrades."""
-    
+
     required = True
 
     implements(IEnvironmentSetupParticipant)
@@ -871,7 +871,7 @@ class EnvironmentAdmin(Component):
                None, self._do_deploy)
         yield ('hotcopy', '<backupdir> [--no-database]',
                """Make a hot backup copy of an environment
-               
+
                The database is backed up to the 'db' directory of the
                destination, unless the --no-database option is
                specified.
@@ -895,7 +895,7 @@ class EnvironmentAdmin(Component):
             paths = list(provider.get_htdocs_dirs() or [])
             if not len(paths):
                 continue
-            printout('  %s.%s' % (provider.__module__, 
+            printout('  %s.%s' % (provider.__module__,
                                   provider.__class__.__name__))
             for key, root in paths:
                 if not root:
@@ -932,7 +932,7 @@ class EnvironmentAdmin(Component):
         with self.env.db_transaction as db:
             db("UPDATE system SET name=NULL WHERE name IS NULL")
 
-            printout(_("Hotcopying %(src)s to %(dst)s ...", 
+            printout(_("Hotcopying %(src)s to %(dst)s ...",
                        src=path_to_unicode(self.env.path),
                        dst=path_to_unicode(dest)))
             db_str = self.env.config.get('trac', 'database')
@@ -1009,7 +1009,7 @@ class EnvironmentAdmin(Component):
                                "Trac doesn't load plugins from wiki-macros "
                                "anymore. Please remove it by hand.",
                                err=exception_to_unicode(e)))
-        
+
         printout(_("Upgrade done.\n\n"
                    "You may want to upgrade the Trac documentation now by "
                    "running:\n\n  trac-admin %(path)s wiki upgrade",

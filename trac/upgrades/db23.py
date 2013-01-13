@@ -8,7 +8,7 @@ def do_upgrade(env, ver, cursor):
     cursor.execute("CREATE TEMPORARY TABLE nc_old "
                    "AS SELECT * FROM node_change")
     cursor.execute("DROP TABLE node_change")
-    
+
     tables = [Table('repository', key=('id', 'name'))[
                 Column('id'),
                 Column('name'),
@@ -29,12 +29,12 @@ def do_upgrade(env, ver, cursor):
                 Column('base_path'),
                 Column('base_rev'),
                 Index(['repos', 'rev'])]]
-    
+
     db_connector, _ = DatabaseManager(env)._get_connector()
     for table in tables:
         for stmt in db_connector.to_sql(table):
             cursor.execute(stmt)
-    
+
     cursor.execute("INSERT INTO revision (repos,rev,time,author,message) "
                    "SELECT '',rev,time,author,message FROM rev_old")
     cursor.execute("DROP TABLE rev_old")
@@ -43,7 +43,7 @@ def do_upgrade(env, ver, cursor):
                    "SELECT '',rev,path,node_type,change_type,base_path,"
                    "base_rev FROM nc_old")
     cursor.execute("DROP TABLE nc_old")
-    
+
     cursor.execute("INSERT INTO repository (id,name,value) "
                    "SELECT '',name,value FROM system "
                    "WHERE name IN ('repository_dir', 'youngest_rev')")

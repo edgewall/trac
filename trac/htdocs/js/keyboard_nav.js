@@ -12,7 +12,7 @@
     var selection = SELECTED_FILE_ELEM;
     function pickFirst() {
       selection = $('#f0');
-      if ( !selection.length ) 
+      if ( !selection.length )
         selection = $("#dirlist tr:first");
     }
     function pickCurrent() {
@@ -43,7 +43,7 @@
       case 79: // 'o'pen
       case 82: // 'r'eload
       case 86: // 'v'iew
-        if (selection == null) 
+        if (selection == null)
           pickCurrent();
 
         var expander = selection.find('.expander');

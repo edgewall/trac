@@ -1,14 +1,14 @@
 #!/bin/sh
 #
 # = trac-svn-hook =
-# 
-#  Purpose:: this script is meant to be called from the Subversion hooks 
+#
+#  Purpose:: this script is meant to be called from the Subversion hooks
 #            for notifying Trac when changesets are added or modified.
 #
 #  Scope:: The http://trac.edgewall.org/wiki/TracRepositoryAdmin page
 #          describes how to directly call the relevant trac-admin commands
 #          from the Subversion hooks. In most cases this should be enough,
-#          however this script should make troubleshooting easier and 
+#          however this script should make troubleshooting easier and
 #          has support for notifying multiple Trac environments.
 #
 #  Usage:: copy this script to some central place, for example in your
@@ -16,7 +16,7 @@
 #          **Be sure to read the Configuration Notes section below first**
 #          then fill in the variables listed below the Configuration section.
 #
-# For each Subversion repository $REPOS that has to be monitored by 
+# For each Subversion repository $REPOS that has to be monitored by
 # your Trac environment(s), you need to modify the hooks in order to
 # call the present script:
 #
@@ -35,7 +35,7 @@
 # See also http://svnbook.red-bean.com/en/1.5/svn.reposadmin.create.html#svn.reposadmin.create.hooks
 #
 #  Platform:: Unix or Cygwin.
-# 
+#
 # On Windows, if you have Cygwin installed, you can also use this
 # script instead of the `trac-svn-hook.cmd`.
 # In your `post-commit.bat` and `post-revprop-change.bat` hooks, call
@@ -60,10 +60,10 @@
 # As a preliminary remark, you should be aware that Subversion usually
 # run the hooks in a very minimal environment.
 # This is why we have to be very explicit about where to find things.
-# 
+#
 # According to http://subversion.apache.org/faq.html#hook-debugging,
 # one useful method for getting the post-commit hook to work is to call
-# the hook manually from a shell, as the user(s) which will end up running 
+# the hook manually from a shell, as the user(s) which will end up running
 # the hook (e.g. wwwrun, www-data, nobody). For example:
 #
 #     env - $REPOS/hooks/post-commit $REPOS 1234
@@ -72,7 +72,7 @@
 #
 #     env - $REPOS/hooks/post-revprop-change $REPOS 1234 nobody svn:log
 #
-# 
+#
 # The environment variables that have to be set in this script are
 # TRAC_ENV, PATH and eventually LD_LIBRARY_PATH.
 #
@@ -81,28 +81,28 @@
 # In case you need to maintain more than one environment in sync with
 # the repository (using a different scope or not), simply specify more
 # than one path, using the ":" path separator (or ";" if the script is
-# used on Windows with Cygwin's bash - in this case also don't forget to 
+# used on Windows with Cygwin's bash - in this case also don't forget to
 # enclose the list of paths in quotes, e.g. TRAC_ENV="path1;path2").
-# 
+#
 # Note that if you have to maintain multiple repositories and multiple Trac
 # environments, and you have some non-trivial mapping between repositories
 # and Trac environments, then you can leave the TRAC_ENV setting out of
 # this file and put it directly in your post-commit and post-revprop-change
-# hooks, so that the changes to each repositories are notified to the 
+# hooks, so that the changes to each repositories are notified to the
 # appropriate environments (don't forget to export TRAC_ENV in this case).
 #
 #  PATH:: the folder containing the trac-admin script
 #
 # This folder is typically the same as your Python installation bin/ folder.
-# If this is /usr/bin, then you probably don't need to put it in the PATH. 
+# If this is /usr/bin, then you probably don't need to put it in the PATH.
 #
-# Note that if you're using a python program installed in a non-default 
-# location (such as /usr/local or a virtual environment), then you need 
+# Note that if you're using a python program installed in a non-default
+# location (such as /usr/local or a virtual environment), then you need
 # to add it to the PATH as well.
 #
 #  LD_LIBRARY_PATH:: folder(s) containing additional required libraries
 #
-# You may also need to setup the LD_LIBRARY_PATH accordingly. 
+# You may also need to setup the LD_LIBRARY_PATH accordingly.
 # The same goes for any custom dependency, such as SQLite libraries or
 # SVN libraries: make sure everything is reachable.
 # For example, if you get errors like "global name 'sqlite' is not defined"
@@ -130,8 +130,8 @@
 #
 # In this example, the virtualenv is located in
 # /packages/trac/branches/trac-multirepos
-# and is based off a custom Python installation (/opt/python-2.4.4). 
-# We're also using a custom SQLite build (/opt/sqlite-3.3.8). 
+# and is based off a custom Python installation (/opt/python-2.4.4).
+# We're also using a custom SQLite build (/opt/sqlite-3.3.8).
 #
 # Note that virtualenv's activate script doesn't seem to care
 # about LD_LIBRARY_PATH and the only other thing it does and that

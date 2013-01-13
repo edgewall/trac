@@ -49,13 +49,13 @@ def with_transaction(env, db=None):
     ROLLBACK is issued and the exception is re-raised. Nested
     transactions are supported, and a COMMIT will only be issued when
     the outermost transaction block in a thread exits.
-    
+
     This mechanism is intended to replace the former practice of
     getting a database connection with `env.get_db_cnx()` and issuing
     an explicit commit or rollback, for mutating database
     accesses. Its automatic handling of commit, rollback and nesting
     makes it much more robust.
-    
+
     The optional `db` argument is intended for legacy code and should
     not be used in new code.
 
@@ -76,7 +76,7 @@ def with_transaction(env, db=None):
     """
     dbm = DatabaseManager(env)
     _transaction_local = dbm._transaction_local
-    
+
     def transaction_wrapper(fn):
         ldb = _transaction_local.wdb
         if db is not None:
@@ -148,12 +148,12 @@ class TransactionContextManager(DbContextManager):
             self.dbmgr._transaction_local.wdb = self.db = db
         return db
 
-    def __exit__(self, et, ev, tb): 
-        if self.db: 
+    def __exit__(self, et, ev, tb):
+        if self.db:
             self.dbmgr._transaction_local.wdb = None
-            if et is None: 
+            if et is None:
                 self.db.commit()
-            else: 
+            else:
                 self.db.rollback()
             if not self.dbmgr._transaction_local.rdb:
                 self.db.close()
@@ -175,7 +175,7 @@ class QueryContextManager(DbContextManager):
             self.dbmgr._transaction_local.rdb = self.db = db
         return db
 
-    def __exit__(self, et, ev, tb): 
+    def __exit__(self, et, ev, tb):
         if self.db:
             self.dbmgr._transaction_local.rdb = None
             if not self.dbmgr._transaction_local.wdb:
@@ -191,7 +191,7 @@ class IDatabaseConnector(Interface):
         """Return the connection URL schemes supported by the
         connector, and their relative priorities as an iterable of
         `(scheme, priority)` tuples.
-        
+
         If `priority` is a negative number, this is indicative of an
         error condition with the connector. An error message should be
         attached to the `error` attribute of the connector.
@@ -199,7 +199,7 @@ class IDatabaseConnector(Interface):
 
     def get_connection(path, log=None, **kwargs):
         """Create a new connection to the database."""
-    
+
     def get_exceptions():
         """Return an object (typically a module) containing all the
         backend-specific exception types as attributes, named
@@ -213,7 +213,7 @@ class IDatabaseConnector(Interface):
     def to_sql(table):
         """Return the DDL statements necessary to create the specified
         table, including indices."""
-        
+
     def backup(dest):
         """Backup the database to a location defined by
         trac.backup_dir"""
@@ -272,7 +272,7 @@ class DatabaseManager(Component):
             self._cnx_pool.shutdown(tid)
             if not tid:
                 self._cnx_pool = None
-                
+
     def backup(self, dest=None):
         """Save a backup of the database.
 
@@ -313,7 +313,7 @@ class DatabaseManager(Component):
 
         if scheme == 'sqlite':
             if args['path'] == ':memory:':
-                # Special case for SQLite in-memory database, always get 
+                # Special case for SQLite in-memory database, always get
                 # the /same/ connection over
                 pass
             elif not args['path'].startswith('/'):

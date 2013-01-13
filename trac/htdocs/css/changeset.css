@@ -14,7 +14,7 @@
  border: 0;
  margin: 0;
  float: right;
- width: .35em; 
+ width: .35em;
 }
 
 #overview .changeset { padding: 0 0 1px }
@@ -33,8 +33,8 @@
 .diff ul.props li { margin: 0; padding: 0 }
 
 #title dl { display: inline; font-size: 110% }
-#title dt { 
- display: inline; 
+#title dt {
+ display: inline;
  font-size: 110%;
  font-weight: bold;
  margin-left: 3em;

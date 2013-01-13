@@ -140,10 +140,10 @@
                   <td py:if="graph and idx == 0" class="trac-graph" rowspan="${len(items)}"/>
                   <td class="diff">
                     <input type="radio" name="old" value="${item.rev}@${item.path}"
-                           checked="${idx == (len(items) - 1) or None}" 
+                           checked="${idx == (len(items) - 1) or None}"
                            title="${_('From [%(rev)s]', rev=display_rev(item.rev))}" />
                     <input type="radio" name="new" value="${item.rev}@${item.path}"
-                           checked="${idx == 0 or None}" 
+                           checked="${idx == 0 or None}"
                            title="${_('To [%(rev)s]', rev=display_rev(item.rev))}" />
                   </td>
                   <py:when test="not is_separator">

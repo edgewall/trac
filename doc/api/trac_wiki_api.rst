@@ -37,7 +37,7 @@ parameter of :meth:`IWikiMacroProvider.expand_macro`.
 .. autoclass :: trac.wiki.api.IWikiMacroProvider
    :members:
 
-   See also `~trac.wiki.macros.WikiMacroBase` and 
+   See also `~trac.wiki.macros.WikiMacroBase` and
    :teo:`wiki/WikiMacros#DevelopingCustomMacros` and
    :extensionpoints:`trac.wiki.api.IWikiMacroProvider`.
 

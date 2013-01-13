@@ -10,7 +10,7 @@
         .attr("title", title).appendTo(this);
     });
   }
-  
+
   $.fn.checked = function(checked) {
     if (checked == undefined) { // getter
       if (!this.length) return false;
@@ -21,7 +21,7 @@
       });
     }
   }
-  
+
   $.fn.enable = function(enabled) {
     if (enabled == undefined) enabled = true;
     return this.each(function() {
@@ -37,7 +37,7 @@
       }
     });
   }
-  
+
   $.fn.getAbsolutePos = function() {
     return this.map(function() {
       var left = this.offsetLeft;
@@ -51,14 +51,14 @@
       return {left: left, top: top};
     });
   }
-  
+
   $.fn.scrollToTop = function() {
     return this.each(function() {
       scrollTo(0, $(this).getAbsolutePos()[0].top);
       return false;
     });
   }
-  
+
   $.loadStyleSheet = function(href, type) {
     type = type || "text/css";
     $(document).ready(function() {
@@ -70,7 +70,7 @@
       }
     });
   }
-  
+
   // Escape special HTML characters (&<>")
   var quote = {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"};
 
@@ -79,7 +79,7 @@
       return value;
     return value.replace(/[&<>"]/g, function(c) { return quote[c]; });
   }
-  
+
   function format(str, args, escape) {
     var kwargs = args[args.length - 1];
     return str.replace(/\${?(\w+)}?/g, function(_, k) {
@@ -89,7 +89,7 @@
       else
         result = kwargs[k];
       return escape ? escape(result) : result;
-    }); 
+    });
   }
 
   // Expand positional ($1 .. $9) and keyword ($name) arguments in a string.
@@ -114,7 +114,7 @@
 
   // The following are defined for backwards compatibility with releases prior
   // to Trac 0.11
-  
+
   window.addEvent = function(elem, type, func) {
     $(elem).bind(type, func);
   }

@@ -37,12 +37,12 @@ class CodeReviewActionController(Component):
     implements(ITicketActionController, IPermissionRequestor)
 
     # IPermissionRequestor methods
-    
+
     def get_permission_actions(self):
         return ['TICKET_REVIEW']
 
     # ITicketActionController methods
-    
+
     def get_ticket_actions(self, req, ticket):
         # The review action is available in those status where it has been
         # configured, for those users who have the TICKET_REVIEW permission, as
@@ -74,7 +74,7 @@ class CodeReviewActionController(Component):
         actions = ConfigurableTicketWorkflow(self.env).actions
 
         selected_value = grade or review_options[0][0]
-        
+
         label = actions[action]['name']
         control = tag(["as: ",
                        tag.select([tag.option(option, selected=
@@ -104,7 +104,7 @@ class CodeReviewActionController(Component):
     def _get_grade(self, req, action):
         id = action + '_code_review_result'
         return id, req.args.get(id)
-        
+
     def _get_review_options(self, action):
         return [[x.strip() for x in raw_option.split('->')]
                 for raw_option in self.config.getlist('ticket-workflow',
@@ -116,4 +116,4 @@ class CodeReviewActionController(Component):
             review_options = self._get_review_options(action)
         for option, status in review_options:
             if grade == option:
-                return status            
+                return status

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
-# 
+#
 # This script completely migrates a <= 0.8.x Trac environment to use the new
 # default ticket model introduced in Trac 0.9.
-# 
+#
 # In particular, this means that the severity field is removed (or rather
 # disabled by removing all possible values), and the priority values are
 # changed to the more meaningful new defaults.
-# 
+#
 # Make sure to make a backup of the Trac environment before running this!
 
 from __future__ import with_statement

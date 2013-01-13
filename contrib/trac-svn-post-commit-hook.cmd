@@ -15,7 +15,7 @@
 ::
 :: 3. Verify that the hook is working:
 ::
-::      - enable DEBUG level logging to a file and to the console 
+::      - enable DEBUG level logging to a file and to the console
 ::        (see TracLogging)
 ::
 ::      - call the trac-post-commit-hook.cmd from a cmd.exe shell:
@@ -79,6 +79,6 @@ set REV=%2
 
 %TRAC_ADMIN% "%TRAC_ENV%" changeset added "%REPOS%" "%REV%"
 
-:: Based on either the symbolic name or the %REPOS% information, 
+:: Based on either the symbolic name or the %REPOS% information,
 :: Trac will figure out which repository (or which scoped repositories)
 :: it has to synchronize.

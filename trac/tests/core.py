@@ -174,7 +174,7 @@ class ComponentTestCase(unittest.TestCase):
 
     def test_nonconforming_extender(self):
         """
-        Verify that accessing a method of a declared extension point interface 
+        Verify that accessing a method of a declared extension point interface
         raises a normal `AttributeError` if the component does not implement
         the method.
         """
@@ -278,7 +278,7 @@ class ComponentTestCase(unittest.TestCase):
         from trac.core import ComponentMeta
         assert ConcreteComponent in ComponentMeta._registry.get(ITest, [])
         assert ConcreteComponent in ComponentMeta._registry.get(IOtherTest, [])
-        
+
     def test_component_manager_component(self):
         """
         Verify that a component manager can itself be a component with its own

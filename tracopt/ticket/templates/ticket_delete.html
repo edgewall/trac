@@ -22,9 +22,9 @@
               test="ticket.type"> $ticket.type</py:if><py:if
               test="ticket.resolution">: $ticket.resolution</py:if>)</span>
         </h1>
-        
+
         <xi:include href="ticket_box.html" py:with="can_append = False; preview_mode = False"/>
-        
+
         <form id="edit" action="" method="post">
           <div>
             <input type="hidden" name="action" value="delete"/>
@@ -46,13 +46,13 @@
 
       <py:otherwise>
         <h1 i18n:msg="num, id">Delete comment $cnum on Ticket #$ticket.id</h1>
-        
+
         <div id="changelog">
           <div class="change">
             <xi:include href="ticket_change.html" py:with="hide_buttons = True"/>
           </div>
         </div>
-        
+
         <form id="edit" action="" method="post">
           <div>
             <input type="hidden" name="action" value="delete-comment"/>

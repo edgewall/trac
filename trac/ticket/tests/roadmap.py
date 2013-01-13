@@ -86,7 +86,7 @@ class DefaultTicketGroupStatsProviderTestCase(unittest.TestCase):
         self.tkt1 = tkt1
         self.tkt2 = tkt2
         self.tkt3 = tkt3
-        
+
         prov = DefaultTicketGroupStatsProvider(ComponentManager())
         prov.env = self.env
         prov.config = self.env.config

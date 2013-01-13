@@ -12,13 +12,13 @@ from trac.util.concurrency import ThreadLocal
 
 
 class Connection(object):
-    
+
     committed = False
     rolledback = False
-    
+
     def commit(self):
         self.committed = True
-    
+
     def rollback(self):
         self.rolledback = True
 
@@ -34,7 +34,7 @@ def make_env(get_cnx):
 
 
 class WithTransactionTest(unittest.TestCase):
-                      
+
     def test_successful_transaction(self):
         db = Connection()
         env = make_env(lambda: db)
@@ -42,7 +42,7 @@ class WithTransactionTest(unittest.TestCase):
         def do_transaction(db):
             self.assertTrue(not db.committed and not db.rolledback)
         self.assertTrue(db.committed and not db.rolledback)
-        
+
     def test_failed_transaction(self):
         db = Connection()
         env = make_env(lambda: db)
@@ -55,7 +55,7 @@ class WithTransactionTest(unittest.TestCase):
         except Error:
             pass
         self.assertTrue(not db.committed and db.rolledback)
-        
+
     def test_implicit_nesting_success(self):
         env = make_env(Connection)
         dbs = [None, None]

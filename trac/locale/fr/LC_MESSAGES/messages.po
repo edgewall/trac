@@ -2884,7 +2884,7 @@ msgid "The milestone \"%(name)s\" has been added."
 msgstr "Le jalon « %(name)s » a été ajouté."
 
 #: trac/ticket/admin.py:305 trac/ticket/model.py:987 trac/ticket/model.py:1009
-#, 
+#,
 msgid "Invalid milestone name."
 msgstr "Le nom de jalon est non valide"
 
@@ -7203,7 +7203,7 @@ msgid "View WikiStart"
 msgstr "Voir WikiStart (page principale)"
 
 #: trac/wiki/templates/wiki_page_path.html:6
-#, 
+#,
 msgid "wiki:"
 msgstr "wiki:"
 

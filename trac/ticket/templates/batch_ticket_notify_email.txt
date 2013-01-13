@@ -11,7 +11,7 @@ ${_('Comment:')}
 $comment
 {% end %}\
 
--- 
+--
 ${_('Tickets URL: <%(link)s>', link=ticket_query_link)}
 $project.name <${project.url or abs_href()}>
 $project.descr

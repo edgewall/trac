@@ -79,12 +79,12 @@ a:visited, a:visited tt { color: #800 }
 
 :link:hover, :visited:hover,
 a:link:hover tt, a:visited:hover tt {
-    background-color: #eee; 
+    background-color: #eee;
     color: #555;
 }
 
 a.headerlink, a.headerlink:hover {
-    color: #d7d7d7 !important; 
+    color: #d7d7d7 !important;
     font-size: .8em;
     font-weight: normal;
     vertical-align: text-top;
@@ -141,13 +141,13 @@ div.admonition {
     background: none;
     border: none;
     border-left: 2px solid #acc;
-}    
+}
 
 div.warning {
     background: none;
     border: none;
     border-left: 3px solid #c33;
-}    
+}
 
 /* Search */
 

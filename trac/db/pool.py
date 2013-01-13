@@ -110,7 +110,7 @@ class ConnectionPoolBackend(object):
                     log.error('Exception caught on %s', op, exc_info=True)
                 err = e
                 cnx = None
-        
+
         if cnx:
             if deferred:
                 # replace placeholder with real Connection
@@ -179,7 +179,7 @@ class ConnectionPoolBackend(object):
                     self._pool.append(cnx)
                     self._pool_key.append(key)
                     self._pool_time.append(time.time())
-                self._available.notify() 
+                self._available.notify()
 
     def shutdown(self, tid=None):
         """Close pooled connections not used in a while"""

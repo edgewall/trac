@@ -17,8 +17,8 @@
       jQuery(document).ready(function($) {
         function updateDueDate() {
           $("#duedate").enable($("#due").checked());
-        }        
-        $("#due").click(updateDueDate);        
+        }
+        $("#due").click(updateDueDate);
         updateDueDate();
         function updateCompletedDate() {
           var checked = $("#completed").checked();
@@ -63,11 +63,11 @@
             </label>
             <label>
               <input type="text" id="duedate" name="duedate" size="${len(datetime_hint)}"
-                     value="${format_datetime(milestone.due or default_due)}" 
+                     value="${format_datetime(milestone.due or default_due)}"
                      title="${_('Format: %(datehint)s', datehint=datetime_hint)}" />
-              <em i18n:msg="datehint">Format: ${datetime_hint}</em>        
+              <em i18n:msg="datehint">Format: ${datetime_hint}</em>
             </label>
-          </div>          
+          </div>
           <div class="field">
             <label>
               <input type="checkbox" id="completed" name="completed" checked="${milestone.completed or None}" />

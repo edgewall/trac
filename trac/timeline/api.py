@@ -27,7 +27,7 @@ class ITimelineEventProvider(Interface):
 
     def get_timeline_filters(req):
         """Return a list of filters that this event provider supports.
-        
+
         Each filter must be a (name, label) tuple, where `name` is the internal
         name, and `label` is a human-readable name for display.
 

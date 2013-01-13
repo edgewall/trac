@@ -3,7 +3,7 @@
      xmlns:i18n="http://genshi.edgewall.org/i18n"
      xmlns:xi="http://www.w3.org/2001/XInclude"
      id="batchmod_form" method="post" action="${req.href + '/batchmodify'}">
-    
+
 <fieldset id="batchmod_fieldset">
   <legend class="foldable">Batch Modify</legend>
   <table summary="Batch modification fields">
@@ -15,7 +15,7 @@
           id="batchmod_value_comment" name="batchmod_value_comment" cols="70" rows="5"/>
       </td>
     </tr>
-    
+
     <tr id="add_batchmod_field_row">
       <td colspan="3">
         <label class="batchmod_label" for="add_batchmod_field">Add Field:</label>
@@ -30,10 +30,10 @@
         </select>
       </td>
     </tr>
-    
+
     <tr>
       <td colspan="3">
-        <fieldset id="batchmod_action"> 
+        <fieldset id="batchmod_action">
           <legend>Action</legend>
           <div py:for="key, label, controls, hints in action_controls">
             <input type="radio" id="action_$key" name="action" value="$key"
@@ -46,7 +46,7 @@
       </td>
     </tr>
   </table>
-  
+
   <div id="batchmod_help" i18n:msg="">
     <strong>Note:</strong> See <a href="${href.wiki('TracBatchModify')}">TracBatchModify</a> for help on using batch modify.
   </div>
@@ -56,7 +56,7 @@
     <input type="hidden" name="query_href" value="${query_href}"/>
     <input type="submit" id="batchmod_submit" name="batchmod_submit" value="${_('Change tickets')}" />
   </div>
-  
+
 </fieldset>
 
 </form>

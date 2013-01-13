@@ -164,7 +164,7 @@ class ErrorPageValidation(FunctionalTwillTestCaseSetup):
 class RegressionTestTicket3663(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Regression test for non-UTF-8 PATH_INFO (#3663)
-        
+
         Verify that URLs not encoded with UTF-8 are reported as invalid.
         """
         # invalid PATH_INFO

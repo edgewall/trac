@@ -70,7 +70,7 @@ except ImportError:
     # Taken from Python 2.6
     def cleandoc(doc):
         """De-indent a multi-line text.
-    
+
         Any whitespace that can be uniformly removed from the second line
         onwards is removed."""
         try:

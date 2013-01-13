@@ -44,7 +44,7 @@
     var x = node.bx, y = node.by, r = node.br, w = node.bw, h = node.bh;
     ctx.fillText(node.label, x + r, y + h / 2);
     ctx.lineWidth = 2;
-    ctx.beginPath();  
+    ctx.beginPath();
     ctx.moveTo(x + r, y);
     ctx.lineTo(x + w - r, y);
     ctx.quadraticCurveTo(x + w, y, x + w, y + r);
@@ -67,7 +67,7 @@
     var p123 = lerp(p12, p23, t), p234 = lerp(p23, p34, t);
     return {pos: lerp(p123, p234, t), dir: p234 - p123};
   }
-  
+
   function drawEdge(ctx, edge) {
     var p = [{x: edge.source.bx + edge.source.bw * 2 / 3,
               y: edge.source.by - 1,
@@ -111,22 +111,22 @@
         ady = Math.max(Math.abs(y1 - y4) / 3, 20);
     var x2 = x1 + p1.dx * adx, y2 = y1 + p1.dy * ady,
         x3 = x4 + p4.dx * adx, y3 = y4 + p4.dy * ady;
-        
+
     ctx.strokeStyle = edge.color;
     ctx.fillStyle = edge.color;
     ctx.lineWidth = 2;
-  
+
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     ctx.bezierCurveTo(x2, y2, x3, y3, x4, y4);
     ctx.stroke();
-    
+
     ctx.beginPath();
     ctx.moveTo(p4.x, p4.y)
     ctx.lineTo(x4 + hw * p4.dy, y4 - hw * p4.dx);
     ctx.lineTo(x4 - hw * p4.dy, y4 + hw * p4.dx);
     ctx.fill();
-    
+
     var labelLayout = {};
     edge.labelLayout = labelLayout;
     if (x1 < x4) {
@@ -138,10 +138,10 @@
       labelLayout.x = evalBezierCurve(x4, x3, x2, x1, 2 / 5);
       labelLayout.y = evalBezierCurve(y4, y3, y2, y1, 2 / 5);
       labelLayout.textBaseline = 'top';
-      labelLayout.margin = 2; 
+      labelLayout.margin = 2;
     }
   }
-  
+
   function drawEdgeLabel(ctx, edge) {
     ctx.save();
 
@@ -155,7 +155,7 @@
     var measured = ctx.measureText(edge.label);
 
     ctx.setTransform(dx, dy, -dy, dx, l.x.pos, l.y.pos);
-    
+
     // Halo effect
     ctx.save();
     ctx.shadowBlur = 5;
@@ -164,10 +164,10 @@
     for (var i = 0; i < 5; i++)
       ctx.fillText(edge.label, -measured.width / 2, l.margin);
     ctx.restore();
-    
+
     ctx.fillStyle = edge.color;
     ctx.fillText(edge.label, -measured.width / 2, l.margin);
-    
+
     ctx.restore();
   };
 
@@ -196,7 +196,7 @@
     return saturatedColor(((i+70) * 30269) % 253, ((i+71) * 30307) % 253,
                           ((i+72) * 30323) % 253);
   }
-  
+
   function layoutCircular(graph) {
     $.each(graph.nodes, function (index, node) {
       var radian = index * 2 * Math.PI / graph.nodes.length;
@@ -204,7 +204,7 @@
       node.y = Math.sin(radian);
     });
   }
-  
+
   $(document).ready(function() {
     $('.trac-workflow-graph').each(function (index) {
       var data = window['graph_' + this.id.slice(-12)];
@@ -222,7 +222,7 @@
                     sourceindex: sourceindex, targetindex: targetindex,
                     source: nodes[sourceindex], target: nodes[targetindex]});
       }
-  
+
       var canvas = $('<canvas>').css({width: width, height: height})[0];
       canvas.width = $(canvas).width();
       canvas.height = $(canvas).height();
@@ -230,10 +230,10 @@
         canvas = G_vmlCanvasManager.initElement(canvas);
       $(this).replaceWith(canvas);
       var ctx = canvas.getContext('2d');
-      
+
       if (nodes.length == 0)
         return;
-      
+
       var graph = {nodes: nodes, edges: edges};
       layoutCircular(graph);
       computeBoundsAndJustify(ctx, nodes, width, height);

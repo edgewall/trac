@@ -6,7 +6,7 @@
       fragId = parseInt(fragId.substr(3));
     if (snap == undefined)
       snap = false;
-    
+
     var count = 1;
     return this.each(function() {
       // Use first child <a> as a trigger, or generate a trigger from the text
@@ -18,7 +18,7 @@
         $(this).text("");
         $(this).append(trigger);
       }
-      
+
       trigger.click(function() {
         var div = $(this.parentNode.parentNode).toggleClass("collapsed");
         return snap && !div.hasClass("collapsed");

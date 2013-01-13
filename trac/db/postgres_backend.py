@@ -61,7 +61,7 @@ def assemble_pg_dsn(path, user=None, password=None, host=None, port=None):
 
 class PostgreSQLConnector(Component):
     """Database connector for PostgreSQL.
-    
+
     Database URLs should be of the form:
     {{{
     postgres://user[:password]@host[:port]/database[?schema=my_schema]
@@ -129,14 +129,14 @@ class PostgreSQLConnector(Component):
         for index in table.indices:
             unique = 'UNIQUE' if index.unique else ''
             yield 'CREATE %s INDEX "%s_%s_idx" ON "%s" ("%s")' % \
-                    (unique, table.name, 
+                    (unique, table.name,
                      '_'.join(index.columns), table.name,
                      '","'.join(index.columns))
 
     def alter_column_types(self, table, columns):
         """Yield SQL statements altering the type of one or more columns of
         a table.
-        
+
         Type changes are specified as a `columns` dict mapping column names
         to `(from, to)` SQL type tuples.
         """
@@ -216,7 +216,7 @@ class PostgreSQLConnection(ConnectionWrapper):
             path = path[1:]
         if 'host' in params:
             host = params['host']
-        
+
         cnx = psycopg.connect(assemble_pg_dsn(path, user, password, host,
                                               port))
 

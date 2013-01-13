@@ -37,7 +37,7 @@ class FunctionalTestEnvironment(object):
     """Common location for convenience functions that work with the test
     environment on Trac.  Subclass this and override some methods if you are
     using a different :term:`VCS`.
-    
+
     :class:`FunctionalTestEnvironment` requires a `dirname` in which
     the test repository and Trac environment will be created, `port`
     for the :command:`tracd` webserver to run on, and the `url` which
@@ -85,7 +85,7 @@ class FunctionalTestEnvironment(object):
     def init(self):
         """ Hook for modifying settings or class attributes before
         any methods are called. """
-        pass 
+        pass
 
     def create_repo(self):
         """Hook for creating the repository."""
@@ -162,7 +162,7 @@ class FunctionalTestEnvironment(object):
         """Starts the webserver, and waits for it to come up."""
         if 'FIGLEAF' in os.environ:
             exe = os.environ['FIGLEAF']
-            if ' ' in exe: # e.g. 'coverage run'                
+            if ' ' in exe: # e.g. 'coverage run'
                 args = exe.split()
             else:
                 args = [exe]

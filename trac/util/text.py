@@ -113,6 +113,22 @@ def stripws(text, leading=True, trailing=True):
     return text
 
 
+def strip_line_ws(text, leading=True, trailing=True):
+    """Strips unicode white-spaces and ZWSPs from each line of ``text``.
+
+    :param leading: strips leading spaces from ``text`` unless ``leading`` is
+                    `False`.
+    :param trailing: strips trailing spaces from ``text`` unless ``trailing``
+                     is `False`.
+    """
+    lines = re.compile(r'(\n|\r\n|\r)').split(text)
+    if leading:
+        lines[::2] = (_ws_leading_re.sub('', line) for line in lines[::2])
+    if trailing:
+        lines[::2] = (_ws_trailing_re.sub('', line) for line in lines[::2])
+    return ''.join(lines)
+
+
 _js_quote = {'\\': '\\\\', '"': '\\"', '\b': '\\b', '\f': '\\f',
              '\n': '\\n', '\r': '\\r', '\t': '\\t', "'": "\\'"}
 for i in range(0x20) + [ord(c) for c in '&<>']:
@@ -170,7 +186,7 @@ def unicode_quote_plus(value, safe=''):
 
 def unicode_unquote(value):
     """A unicode aware version of `urllib.unquote`.
-    
+
     :param str: UTF-8 encoded `str` value (for example, as obtained by
                 `unicode_quote`).
     :rtype: `unicode`
@@ -180,7 +196,7 @@ def unicode_unquote(value):
 
 def unicode_urlencode(params, safe=''):
     """A unicode aware version of `urllib.urlencode`.
-    
+
     Values set to `empty` are converted to the key alone, without the
     equal sign.
     """
@@ -191,7 +207,7 @@ def unicode_urlencode(params, safe=''):
         if v is empty:
             l.append(unicode_quote_plus(k, safe))
         else:
-            l.append(unicode_quote_plus(k, safe) + '=' + 
+            l.append(unicode_quote_plus(k, safe) + '=' +
                      unicode_quote_plus(v, safe))
     return '&'.join(l)
 
@@ -236,7 +252,7 @@ def stream_encoding(stream):
     encoding = getattr(stream, 'encoding', None)
     # Windows returns 'cp0' to indicate no encoding
     return encoding if encoding not in (None, 'cp0') else 'utf-8'
-        
+
 
 def console_print(out, *args, **kwargs):
     """Output the given arguments to the console, encoding the output
@@ -246,7 +262,7 @@ def console_print(out, *args, **kwargs):
                    (defaults to `True`)
     """
     cons_charset = stream_encoding(out)
-    out.write(' '.join([to_unicode(a).encode(cons_charset, 'replace') 
+    out.write(' '.join([to_unicode(a).encode(cons_charset, 'replace')
                         for a in args]))
     if kwargs.get('newline', True):
         out.write('\n')
@@ -658,7 +674,7 @@ def fix_eol(text, eol):
 
 def unicode_to_base64(text, strip_newlines=True):
     """Safe conversion of ``text`` to base64 representation using
-    utf-8 bytes.  
+    utf-8 bytes.
 
     Strips newlines from output unless ``strip_newlines`` is `False`.
     """

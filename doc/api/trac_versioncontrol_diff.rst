@@ -19,7 +19,7 @@ needed by the "diff_div.html" template.
 `unified_diff` is also a higher-level function returning differences
 following the `unified diff`_ file format.
 
-Finally, `get_diff_options` is an utility for retrieving user diff 
+Finally, `get_diff_options` is an utility for retrieving user diff
 preferences from a `~trac.web.api.Request`.
 
 .. _unified diff: http://www.gnu.org/software/hello/manual/diff/Detailed-Unified.html

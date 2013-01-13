@@ -86,14 +86,14 @@ class PygmentsRenderer(Component):
         self._types = None
 
     # ISystemInfoProvider methods
-    
+
     def get_system_info(self):
         version = get_pkginfo(pygments).get('version')
         # if installed from source, fallback to the hardcoded version info
         if not version and hasattr(pygments, '__version__'):
             version = pygments.__version__
         yield 'Pygments', version
-    
+
     # IHTMLPreviewRenderer methods
 
     def get_extra_mimetypes(self):

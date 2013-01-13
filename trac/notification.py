@@ -39,7 +39,7 @@ EMAIL_LOOKALIKE_PATTERN = (
 
 class IEmailSender(Interface):
     """Extension point interface for components that allow sending e-mail."""
-    
+
     def send(self, from_addr, recipients, message):
         """Send message to recipients."""
 
@@ -49,7 +49,7 @@ class NotificationSystem(Component):
     email_sender = ExtensionOption('notification', 'email_sender',
                                    IEmailSender, 'SmtpEmailSender',
         """Name of the component implementing `IEmailSender`.
-        
+
         This component is used by the notification system to send emails.
         Trac currently provides `SmtpEmailSender` for connecting to an SMTP
         server, and `SendmailEmailSender` for running a `sendmail`-compatible
@@ -60,7 +60,7 @@ class NotificationSystem(Component):
 
     smtp_from = Option('notification', 'smtp_from', 'trac@localhost',
         """Sender address to use in notification emails.""")
-        
+
     smtp_from_name = Option('notification', 'smtp_from_name', '',
         """Sender name to use in notification emails.""")
 
@@ -78,22 +78,22 @@ class NotificationSystem(Component):
     smtp_always_bcc = Option('notification', 'smtp_always_bcc', '',
         """Email address(es) to always send notifications to,
            addresses do not appear publicly (Bcc:). (''since 0.10'')""")
-           
+
     smtp_default_domain = Option('notification', 'smtp_default_domain', '',
         """Default host/domain to append to address that do not specify
            one.""")
-        
+
     ignore_domains = Option('notification', 'ignore_domains', '',
         """Comma-separated list of domains that should not be considered
            part of email addresses (for usernames with Kerberos domains).""")
-           
+
     admit_domains = Option('notification', 'admit_domains', '',
         """Comma-separated list of domains that should be considered as
         valid for email addresses (such as localdomain).""")
-           
+
     mime_encoding = Option('notification', 'mime_encoding', 'none',
         """Specifies the MIME encoding scheme for emails.
-        
+
         Valid options are 'base64' for Base64 encoding, 'qp' for
         Quoted-Printable, and 'none' for no encoding, in which case mails will
         be sent as 7bit if the content is all ASCII, or 8bit otherwise.
@@ -101,22 +101,22 @@ class NotificationSystem(Component):
 
     use_public_cc = BoolOption('notification', 'use_public_cc', 'false',
         """Recipients can see email addresses of other CC'ed recipients.
-        
+
         If this option is disabled (the default), recipients are put on BCC.
         (''since 0.10'')""")
 
     use_short_addr = BoolOption('notification', 'use_short_addr', 'false',
         """Permit email address without a host/domain (i.e. username only).
-        
+
         The SMTP server should accept those addresses, and either append
         a FQDN or use local delivery. (''since 0.10'')""")
-        
+
     smtp_subject_prefix = Option('notification', 'smtp_subject_prefix',
-                                 '__default__', 
-        """Text to prepend to subject line of notification emails. 
-        
+                                 '__default__',
+        """Text to prepend to subject line of notification emails.
+
         If the setting is not defined, then the [$project_name] prefix.
-        If no prefix is desired, then specifying an empty option 
+        If no prefix is desired, then specifying an empty option
         will disable it. (''since 0.10.1'')""")
 
     def send_email(self, from_addr, recipients, message):
@@ -126,9 +126,9 @@ class NotificationSystem(Component):
 
 class SmtpEmailSender(Component):
     """E-mail sender connecting to an SMTP server."""
-    
+
     implements(IEmailSender)
-    
+
     smtp_server = Option('notification', 'smtp_server', 'localhost',
         """SMTP server hostname to use for email notifications.""")
 
@@ -143,11 +143,11 @@ class SmtpEmailSender(Component):
 
     use_tls = BoolOption('notification', 'use_tls', 'false',
         """Use SSL/TLS to send notifications over SMTP. (''since 0.10'')""")
-    
+
     def send(self, from_addr, recipients, message):
         # Ensure the message complies with RFC2822: use CRLF line endings
         message = fix_eol(message, CRLF)
-        
+
         self.log.info("Sending notification through SMTP at %s:%d to %s"
                       % (self.smtp_server, self.smtp_port, recipients))
         server = smtplib.SMTP(self.smtp_server, self.smtp_port)
@@ -182,12 +182,12 @@ class SmtpEmailSender(Component):
 
 class SendmailEmailSender(Component):
     """E-mail sender using a locally-installed sendmail program."""
-    
+
     implements(IEmailSender)
-    
+
     sendmail_path = Option('notification', 'sendmail_path', 'sendmail',
         """Path to the sendmail executable.
-        
+
         The sendmail program must accept the `-i` and `-f` options.
          (''since 0.12'')""")
 
@@ -210,7 +210,7 @@ class SendmailEmailSender(Component):
 
 class Notify(object):
     """Generic notification class for Trac.
-    
+
     Subclass this to implement different methods.
     """
 
@@ -233,7 +233,7 @@ class Notify(object):
 
     def get_recipients(self, resid):
         """Return a pair of list of subscribers to the resource 'resid'.
-        
+
         First list represents the direct recipients (To:), second list
         represents the recipients in carbon copy (Cc:).
         """
@@ -241,7 +241,7 @@ class Notify(object):
 
     def begin_send(self):
         """Prepare to send messages.
-        
+
         Called before sending begins.
         """
 
@@ -251,7 +251,7 @@ class Notify(object):
 
     def finish_send(self):
         """Clean up after sending all messages.
-        
+
         Called after sending all messages.
         """
 
@@ -274,7 +274,7 @@ class NotifyEmail(Notify):
             pos = addrfmt.find('@')
             domains = '|'.join([x.strip() for x in \
                                 admit_domains.replace('.','\.').split(',')])
-            addrfmt = r'%s@(?:(?:%s)|%s)' % (addrfmt[:pos], addrfmt[pos+1:], 
+            addrfmt = r'%s@(?:(?:%s)|%s)' % (addrfmt[:pos], addrfmt[pos+1:],
                                               domains)
         self.shortaddr_re = re.compile(r'\s*(%s)\s*$' % addrfmt)
         self.longaddr_re = re.compile(r'^\s*(.*)\s+<\s*(%s)\s*>\s*$' % addrfmt)
@@ -289,7 +289,7 @@ class NotifyEmail(Notify):
                 self.name_map[username] = name
             if email:
                 self.email_map[username] = email
-                
+
     def _init_pref_encoding(self):
         from email.Charset import Charset, QP, BASE64, SHORTEST
         self._charset = Charset()
@@ -456,7 +456,7 @@ class NotifyEmail(Notify):
         (ccaddrs, recipients) = remove_dup(ccaddrs, recipients)
         (accaddrs, recipients) = remove_dup(accaddrs, recipients)
         (bccaddrs, recipients) = remove_dup(bccaddrs, recipients)
-        
+
         # if there is not valid recipient, leave immediately
         if len(recipients) < 1:
             self.env.log.info('no recipient for a ticket notification')

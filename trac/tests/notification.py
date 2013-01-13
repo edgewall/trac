@@ -12,7 +12,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 #
-# Include a basic SMTP server, based on L. Smithson 
+# Include a basic SMTP server, based on L. Smithson
 # (lsmithson@open-networks.co.uk) extensible Python SMTP Server
 #
 # This file does not contain unit tests, but provides a set of
@@ -51,10 +51,10 @@ class SMTPServerInterface:
 
     def helo(self, args):
         return None
-    
+
     def mail_from(self, args):
         return None
-        
+
     def rcpt_to(self, args):
         return None
 
@@ -66,7 +66,7 @@ class SMTPServerInterface:
 
     def reset(self, args):
         return None
-    
+
 #
 # Some helper functions for manipulating from & to addresses etc.
 #
@@ -99,7 +99,7 @@ class SMTPServerEngine:
     Server engine that calls methods on the SMTPServerInterface object
     passed at construction time. It is constructed with a bound socket
     connection to a client. The 'chug' method drives the state,
-    returning when the client RFC821 transaction is complete. 
+    returning when the client RFC821 transaction is complete.
     """
 
     ST_INIT = 0
@@ -108,7 +108,7 @@ class SMTPServerEngine:
     ST_RCPT = 3
     ST_DATA = 4
     ST_QUIT = 5
-    
+
     def __init__(self, socket, impl):
         self.impl = impl
         self.socket = socket
@@ -150,7 +150,7 @@ class SMTPServerEngine:
                         return
                 except socket.error:
                     return
-            
+
     def do_command(self, data):
         """Process a single SMTP Command"""
         cmd = data[0:4]
@@ -217,9 +217,9 @@ class SMTPServer:
     A single threaded SMTP Server connection manager. Listens for
     incoming SMTP connections on a given port. For each connection,
     the SMTPServerEngine is chugged, passing the given instance of
-    SMTPServerInterface. 
+    SMTPServerInterface.
     """
-    
+
     def __init__(self, port):
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -239,14 +239,14 @@ class SMTPServer:
 
     def start(self):
         self._socket.listen(1)
-        self._resume = True        
-        
+        self._resume = True
+
     def stop(self):
         self._resume = False
-        
+
     def terminate(self):
         if self._socket_service:
-            # force the blocking socket to stop waiting for data 
+            # force the blocking socket to stop waiting for data
             try:
                 #self._socket_service.shutdown(2)
                 self._socket_service.close()
@@ -270,11 +270,11 @@ class SMTPServerStore(SMTPServerInterface):
 
     def helo(self, args):
         self.reset(None)
-    
+
     def mail_from(self, args):
         if args.lower().startswith('from:'):
             self.sender = strip_address(args[5:].replace('\r\n','').strip())
-        
+
     def rcpt_to(self, args):
         if args.lower().startswith('to:'):
             rcpt = args[3:].replace('\r\n','').strip()
@@ -290,7 +290,7 @@ class SMTPServerStore(SMTPServerInterface):
         self.sender = None
         self.recipients = []
         self.message = None
-        
+
 
 class SMTPThreadedServer(threading.Thread):
     """
@@ -302,7 +302,7 @@ class SMTPThreadedServer(threading.Thread):
         self.server = SMTPServer(port)
         self.store  = SMTPServerStore()
         threading.Thread.__init__(self)
-      
+
     def run(self):
         # run from within the SMTP server thread
         self.server.serve(impl = self.store)
@@ -311,7 +311,7 @@ class SMTPThreadedServer(threading.Thread):
         # run from the main thread
         self.server.start()
         threading.Thread.start(self)
-        
+
     def stop(self):
         # run from the main thread
         self.server.stop()
@@ -336,7 +336,7 @@ class SMTPThreadedServer(threading.Thread):
 
     def get_message(self):
         return self.store.message
-        
+
     def cleanup(self):
         self.store.reset(None)
 
@@ -356,10 +356,10 @@ def decode_header(header):
     # header does not seem to be MIME-encoded
     if not mo:
         return header
-    # attempts to decode the hedear, 
+    # attempts to decode the hedear,
     # following the specified MIME endoding and charset
     try:
-        encoding = mo.group('code').lower() 
+        encoding = mo.group('code').lower()
         if encoding  == 'q':
             val = quopri.decodestring(mo.group('value'), header=True)
         elif encoding == 'b':
@@ -374,7 +374,7 @@ def decode_header(header):
 
 def parse_smtp_message(msg):
     """ Split a SMTP message into its headers and body.
-        Returns a (headers, body) tuple 
+        Returns a (headers, body) tuple
         We do not use the email/MIME Python facilities here
         as they may accept invalid RFC822 data, or data we do not
         want to support nor generate """
@@ -401,7 +401,7 @@ def parse_smtp_message(msg):
             line = line[0:-2]
             if line.strip() == '':
                 # end of headers, body starts
-                body = '' 
+                body = ''
             else:
                 val = None
                 if line[0] in ' \t':

@@ -31,38 +31,38 @@ except ImportError:
 
 class AuthzPolicy(Component):
     """Permission policy using an authz-like configuration file.
-    
+
     Refer to SVN documentation for syntax of the authz file. Groups are
     supported.
-    
+
     As the fine-grained permissions brought by this permission policy are
     often used in complement of the other pemission policies (like the
     `DefaultPermissionPolicy`), there's no need to redefine all the
     permissions here. Only additional rights or restrictions should be added.
-    
+
     === Installation ===
     Note that this plugin requires the `configobj` package:
-    
+
         http://www.voidspace.org.uk/python/configobj.html
-    
+
     You should be able to install it by doing a simple `easy_install configobj`
-    
+
     Enabling this policy requires listing it in `trac.ini:
     {{{
     [trac]
     permission_policies = AuthzPolicy, DefaultPermissionPolicy
-    
+
     [authz_policy]
     authz_file = conf/authzpolicy.conf
     }}}
-    
+
     This means that the `AuthzPolicy` permissions will be checked first, and
     only if no rule is found will the `DefaultPermissionPolicy` be used.
-    
-    
+
+
     === Configuration ===
     The `authzpolicy.conf` file is a `.ini` style configuration file.
-    
+
      - Each section of the config is a glob pattern used to match against a
        Trac resource descriptor. These descriptors are in the form:
        {{{
@@ -71,7 +71,7 @@ class AuthzPolicy(Component):
        Resources are ordered left to right, from parent to child. If any
        component is inapplicable, `*` is substituted. If the version pattern is
        not specified explicitely, all versions (`@*`) is added implicitly
-       
+
        Example: Match the WikiStart page
        {{{
        [wiki:*]
@@ -79,7 +79,7 @@ class AuthzPolicy(Component):
        [wiki:WikiStart@*]
        [wiki:WikiStart]
        }}}
-       
+
        Example: Match the attachment `wiki:WikiStart@117/attachment/FOO.JPG@*`
        on WikiStart
        {{{
@@ -89,33 +89,33 @@ class AuthzPolicy(Component):
        [wiki:WikiStart@*/attachment/*]
        [wiki:WikiStart@117/attachment/FOO.JPG]
        }}}
-    
+
      - Sections are checked against the current Trac resource '''IN ORDER''' of
        appearance in the configuration file. '''ORDER IS CRITICAL'''.
-    
+
      - Once a section matches, the current username is matched, '''IN ORDER''',
        against the keys of the section. If a key is prefixed with a `@`, it is
        treated as a group. If a key is prefixed with a `!`, the permission is
        denied rather than granted. The username will match any of 'anonymous',
        'authenticated', <username> or '*', using normal Trac permission rules.
-    
+
     Example configuration:
     {{{
     [groups]
     administrators = athomas
-    
+
     [*/attachment:*]
     * = WIKI_VIEW, TICKET_VIEW
-    
+
     [wiki:WikiStart@*]
     @administrators = WIKI_ADMIN
     anonymous = WIKI_VIEW
     * = WIKI_VIEW
-    
+
     # Deny access to page templates
     [wiki:PageTemplates/*]
     * =
-    
+
     # Match everything else
     [*]
     @administrators = TRAC_ADMIN
@@ -136,12 +136,12 @@ class AuthzPolicy(Component):
     authz_mtime = None
 
     # IPermissionPolicy methods
-    
+
     def check_permission(self, action, username, resource, perm):
         if ConfigObj is None:
             self.log.error('configobj package not found')
             return None
-        
+
         if self.authz_file and not self.authz_mtime or \
                 os.path.getmtime(self.get_authz_file()) > self.authz_mtime:
             self.parse_authz()
@@ -179,16 +179,16 @@ class AuthzPolicy(Component):
             if isinstance(users, basestring):
                 users = [users]
             groups[group] = users
-        
+
         self.groups_by_user = {}
-        
+
         def add_items(group, items):
             for item in items:
                 if item.startswith('@'):
                     add_items(group, groups[item[1:]])
                 else:
                     self.groups_by_user.setdefault(item, set()).add(group)
-                    
+
         for group, users in groups.iteritems():
             add_items('@' + group, users)
 

@@ -118,7 +118,7 @@
                 <p class="trac-heading${' foldable' if module.description else None}">
                   <py:choose>
                     <a py:when="module.description" class="trac-name"
-                       href="${href.admin('general', 'plugin', show=module_name if not show_doc else None)                                                     
+                       href="${href.admin('general', 'plugin', show=module_name if not show_doc else None)
                                + '#trac-mod-' + module_name}">${module_name}.*</a>
                     <span py:otherwise="" class="trac-name">${module_name}.*</span>
                   </py:choose>
@@ -134,7 +134,7 @@
                 <p class="trac-heading${' foldable' if component.description else None}">
                   <py:choose>
                     <a py:when="component.description" class="trac-name"
-                       href="${href.admin('general', 'plugin', show=component.full_name if not show_doc else None)                                             
+                       href="${href.admin('general', 'plugin', show=component.full_name if not show_doc else None)
                                + '#trac-comp-' + component.full_name}">${component_name}</a>
                     <span py:otherwise="" class="trac-name">${component_name}</span>
                   </py:choose>

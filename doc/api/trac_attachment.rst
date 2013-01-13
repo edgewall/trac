@@ -11,7 +11,7 @@ methods from the `AttachmentModule` as they do for easily adding
 attachments to other kinds of resources.
 
 See also the
-:download:`attach_file_form.html <../../trac/templates/attach_file_form.html>` 
+:download:`attach_file_form.html <../../trac/templates/attach_file_form.html>`
 and
 :download:`attachment.html <../../trac/templates/attachment.html>` templates
 which can be used to display the attachments.

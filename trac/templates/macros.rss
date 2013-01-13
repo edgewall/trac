@@ -3,8 +3,8 @@
                    xmlns:xi="http://www.w3.org/2001/XInclude"
                    xmlns:dc="http://purl.org/dc/elements/1.1/" py:strip="">
 
-  <!--! 
-     
+  <!--!
+
      WARNING: this file and the corresponding <py:def>s are going to be phased
               out soon. Please DON'T include macros.rss in your own templates.
 

@@ -54,7 +54,7 @@ if has_docutils and StrictVersion(__version__) < StrictVersion('0.6'):
             return [prb], [msg]
         return _raw_role(role, rawtext, text, lineno, inliner, options,
                          content)
-    
+
     from docutils.parsers.rst import roles
     raw_role.options = roles.raw_role.options
     _raw_role = roles.raw_role
@@ -83,7 +83,7 @@ if has_docutils:
         else:
             uri = context.href.wiki(target)
             missing = not WikiSystem(env).has_page(target)
-        if uri or missing:                    
+        if uri or missing:
             reference = nodes.reference(rawtext, text or target)
             reference['refuri'] = uri
             if missing:
@@ -194,7 +194,7 @@ if has_docutils:
             return []
         env, context = state.inliner.trac
         language = arguments[0]
-        text = '\n'.join(content)        
+        text = '\n'.join(content)
         return [code_formatter(env, context, language, text)]
 
     # These are documented
@@ -214,13 +214,13 @@ if has_docutils:
     rst.directives.register_directive('code-block', code_block_directive)
     rst.roles.register_local_role('code-block', code_block_role)
 
-    
+
 class ReStructuredTextRenderer(Component):
     """HTML renderer for plain text in reStructuredText format."""
     implements(ISystemInfoProvider, IHTMLPreviewRenderer)
 
     can_render = False
-    
+
     def __init__(self):
         if has_docutils:
             if StrictVersion(__version__) < StrictVersion('0.3.9'):
@@ -228,9 +228,9 @@ class ReStructuredTextRenderer(Component):
                                  '%s found' % ('0.3.9', __version__))
             else:
                 self.can_render = True
-        
+
     # ISystemInfoProvider methods
-    
+
     def get_system_info(self):
         if has_docutils:
             yield 'Docutils', __version__
@@ -271,9 +271,9 @@ class ReStructuredTextRenderer(Component):
         parser = rst.Parser(inliner=inliner)
         content = content_to_unicode(self.env, content, mimetype)
         parts = publish_parts(content, writer=writer, parser=parser,
-                              settings_overrides={'halt_level': 6, 
+                              settings_overrides={'halt_level': 6,
                                                   'warning_stream': False,
-                                                  'file_insertion_enabled': 0, 
+                                                  'file_insertion_enabled': 0,
                                                   'raw_enabled': 0,
                                                   'warning_stream': False})
         return parts['html_body']

@@ -12,7 +12,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from __future__ import with_statement 
+from __future__ import with_statement
 
 from datetime import datetime
 import os
@@ -639,7 +639,7 @@ class GitChangeset(Changeset):
     def __init__(self, repos, sha):
         if sha is None:
             raise NoSuchChangeset(sha)
-        
+
         try:
             msg, props = repos.git.read_commit(sha)
         except PyGIT.GitErrorSha:

@@ -1,18 +1,18 @@
 @import url(code.css);
 
 /* Report listing */
-.report #trac-sort-order { 
+.report #trac-sort-order {
  float: right;
  font-size: 11px;
  font-weight: normal;
 }
 
-.report #trac-sort-order a { 
+.report #trac-sort-order a {
  background-position: 100% 50%;
  background-repeat: no-repeat;
  margin-left: 4px;
 }
-.report #trac-sort-order a.asc { 
+.report #trac-sort-order a.asc {
  font-weight: bold;
  padding-right: 12px;
  background-image: url(../asc.png);
@@ -51,12 +51,12 @@
 .report span.foldable { display: none }
 .report div.description {
  font-size: 90%;
- margin: 1em .5em .5em; 
+ margin: 1em .5em .5em;
 }
 
 /* Report results */
 #prefs .buttons { margin-top: 0 }
-#prefs fieldset { 
+#prefs fieldset {
  margin-left: 1em;
  border: 1px dotted #dfdfdf;
 }
@@ -67,9 +67,9 @@
 
 h1 .numrows, h2 .numrows {
  margin-left: 1em;
- color: #999; 
- font-size: 65%; 
- font-weight: normal; 
+ color: #999;
+ font-size: 65%;
+ font-weight: normal;
 }
 h2.report-result {
  background: #f7f7f7;
@@ -89,7 +89,7 @@ h2.report-result {
  font-size: 11px;
 }
 #query fieldset { margin-top: 1em }
-#query fieldset.collapsed { 
+#query fieldset.collapsed {
  border-width: 0;
  margin-bottom: 0pt;
  padding: 0pt .5em;
@@ -103,7 +103,7 @@ h2.report-result {
 
 #filters table { width: 100% }
 #filters td.trac-clause { padding: 0 }
-#filters td .trac-clause-lsep { 
+#filters td .trac-clause-lsep {
  float: left;
  width: 47%;
  line-height: 50%;
@@ -113,9 +113,9 @@ h2.report-result {
  text-align: center;
  width: 5%;
 }
-#filters td .trac-clause-rsep { 
+#filters td .trac-clause-rsep {
  float: right;
- width: 47%; 
+ width: 47%;
  line-height: 50%;
 }
 #filters td hr {
@@ -134,7 +134,7 @@ h2.report-result {
 #filters td.or { text-align: right; white-space: nowrap }
 #filters div.inlinebuttons { display: inline }
 
-#columns div label { 
+#columns div label {
  display: block;
  float: left;
  padding: 0pt 1em .5em 0pt;
@@ -215,7 +215,7 @@ table.tickets tbody tr.prio5 { background: #e7eeff; border-color: #cde }
 table.tickets tbody tr.even.prio5 { background: #dde7ff }
 table.tickets tbody tr.prio6 { background: #f0f0f0; border-color: #ddd }
 table.tickets tbody tr.even.prio6 { background: #f7f7f7 }
-table.tickets tbody tr.fullrow th { 
+table.tickets tbody tr.fullrow th {
   border: none;
   vertical-align: middle;
   text-align: center;
@@ -227,7 +227,7 @@ table.tickets tbody tr.fullrow th {
 #batchmod_form fieldset input#batchmod_submit { font-size: 14px; }
 #batchmod_form fieldset input[type="button"]{ padding: 0.1em 0.5em; }
 #batchmod_form > fieldset { margin-top: 1.5em }
-#batchmod_form fieldset.collapsed { 
+#batchmod_form fieldset.collapsed {
  border-width: 0;
  margin-bottom: 0pt;
  padding: 0pt .5em;

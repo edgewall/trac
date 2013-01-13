@@ -22,7 +22,7 @@ class VoteOperation(Component):
     workflow = ConfigurableTicketWorkflow,VoteOperation
     }}}
     """
-    
+
     implements(ITicketActionController)
 
     def get_ticket_actions(self, req, ticket):
