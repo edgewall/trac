@@ -196,7 +196,8 @@ def _format_datetime_without_babel(t, format):
 def _format_datetime(t, format, tzinfo, locale, hint):
     t = to_datetime(t, tzinfo or localtz)
 
-    if locale == 'iso8601':
+    if (format in ('iso8601', 'iso8601date', 'iso8601time') or
+        locale == 'iso8601'):
         format = _ISO8601_FORMATS[hint].get(format, format)
         return _format_datetime_without_babel(t, format)
 
