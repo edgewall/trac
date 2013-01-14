@@ -379,7 +379,7 @@
     });
 
     // Add a checkbox at the top of the column
-    // to select ever ticket in the group.
+    // to select every ticket in the group.
     $("table.listing tr th.id").each(function() {
       $(this).before(
         $('<th class="batchmod_selector sel">').append(
@@ -505,6 +505,9 @@
         batchInput[1].focus();
       this.selectedIndex = 0;
     });
+
+    // Make the form visible
+    $("#batchmod_form").show();
   }
 
 })(jQuery);
