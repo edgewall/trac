@@ -657,6 +657,10 @@ class DateFormatTestCase(unittest.TestCase):
         self.assertEqual(datefmt.format_datetime(t, 'iso8601time',
                                                  datefmt.utc),
                                                  expected.split('T')[1])
+        self.assertEqual(datefmt.format_date(t, 'iso8601', datefmt.utc),
+                         expected.split('T')[0])
+        self.assertEqual(datefmt.format_time(t, 'iso8601', datefmt.utc),
+                         expected.split('T')[1])
 
     def test_format_datetime_gmt01(self):
         gmt01 = datefmt.FixedOffset(60, 'GMT +1:00')
@@ -671,6 +675,10 @@ class DateFormatTestCase(unittest.TestCase):
                                                  expected.split('T')[0])
         self.assertEqual(datefmt.format_datetime(t, 'iso8601time', gmt01),
                                                  expected.split('T')[1])
+        self.assertEqual(datefmt.format_date(t, 'iso8601', gmt01),
+                         expected.split('T')[0])
+        self.assertEqual(datefmt.format_time(t, 'iso8601', gmt01),
+                         expected.split('T')[1])
 
     def test_format_date_accepts_date_instances(self):
         a_date = datetime.date(2009, 8, 20)
