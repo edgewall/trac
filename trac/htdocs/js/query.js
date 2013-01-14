@@ -392,7 +392,7 @@
     });
 
     // Add a checkbox at the top of the column
-    // to select ever ticket in the group.
+    // to select every ticket in the group.
     $("table.listing tr th.id").each(function() {
       $(this).before(
         $('<th class="batchmod_selector sel">').append(
@@ -404,8 +404,18 @@
     // Add the click behavior for the group toggle.
     $("input[name='batchmod_toggleGroup']").click(function() {
       $("tr td.batchmod_selector input",
-        $(this).parents("table.listing tbody, table.listing thead").next())
-          .attr("checked", this.checked);
+        $(this).closest("table.listing thead, table.listing tbody").next())
+        .prop("checked", this.checked);
+    });
+    $("input[name='selected_ticket']").click(function() {
+      var tbody = $(this).closest("table.listing tbody");
+      var checkboxes = $("tr td.batchmod_selector input", tbody);
+      var numSelected = checkboxes.filter(":checked").length;
+      var noneSelected = numSelected === 0;
+      var allSelected = numSelected === checkboxes.length;
+      $("tr th.batchmod_selector input", tbody.prev())
+        .prop({"checked": allSelected,
+               "indeterminate": !(noneSelected || allSelected)});
     });
 
     // At least one ticket must be selected to submit the batch.
@@ -508,6 +518,9 @@
         batchInput[1].focus();
       this.selectedIndex = 0;
     });
+
+    // Make the form visible
+    $("#batchmod_form").show();
   }
 
 })(jQuery);

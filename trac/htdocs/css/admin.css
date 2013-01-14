@@ -81,31 +81,41 @@ table.listing .num { text-align: right; width: 1% }
 /* Plugins panel */
 .plugin {
  background: #f7f7f7;
- border: 1px solid #d7d7d7;
  margin: 2em 0 0;
+ border: 1px solid #d7d7d7;
+ border-radius: 0.4em 0.4em 0.4em 0.4em;
+ box-shadow: 0.1em 0.1em 1em 0 #E7E7E7 inset;
  padding: 2px .5em;
  text-align: left;
 }
 .plugin > .foldable { margin: .5em 0; color: #bb0000; }
+.plugin .foldable > :link, .plugin .foldable > :visited {
+ border-radius: 0;
+ box-shadow: none;
+ text-shadow: none;
+}
 .plugin .buttons { margin-top: 0; text-align: right; }
 .plugin .uninstall { margin-top: -2.6em; padding: 0; }
-.plugin .summary, .plugin .info { padding-left: 16px; color: #999; font-size: 80%; }
+.plugin .summary, .plugin .info { padding-left: 20px; color: #999; font-size: 80%; }
 .plugin .summary { margin: 1.2em 0 .5em; }
 .plugin .info { margin: 1em 0 .5em; }
 .plugin .info dt { float: left; width: 7em; }
 .plugin .info dd { padding: 0; margin: 0; }
 .plugin .listing { width: 100%; }
+.plugin .listing th.sel input { margin-right: 0.5em; vertical-align: bottom; }
 .plugin .listing td { background: #fff; }
 .trac-heading { margin: 0; }
 .trac-name { font-family: monospace; }
 .trac-toggler { color: #000; font-weight: normal; }
 .trac-toggler :link, .trac-toggler :visited,
 .trac-toggler :link:hover, .trac-toggler :visited:hover { border: none; padding: 0; }
-.trac-module .trac-heading { padding-left: 16px; color: #888; }
-.trac-module .trac-heading.foldable { text-indent: -16px }
+.trac-module .trac-heading { padding-left: 20px; color: #888; }
+.trac-module .trac-heading.foldable { text-indent: -20px }
+.trac-module .trac-heading.foldable :link,
+.trac-module .trac-heading.foldable :visited { color: #888; }
 .trac-module > div { margin-left: 1em; }
-.trac-component .trac-heading { margin-left: 2em; padding-left: 16px }
-.trac-component .trac-heading.foldable { text-indent: -16px }
+.trac-component .trac-heading { margin-left: 2em; padding-left: 20px }
+.trac-component .trac-heading.foldable { text-indent: -20px }
 .trac-component > div { margin-left: 3em; }
 .trac-summary { color: #888 }
 .trac-heading :link { padding: .1em .5em 0 20px }

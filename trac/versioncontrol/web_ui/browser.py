@@ -185,9 +185,13 @@ class BrowserModule(Component):
                                     '/trunk, /branches/*, /tags/*',
         doc="""List of repository paths that can be downloaded.
 
-        Leave the option empty if you want to disable all downloads, otherwise
+        Leave this option empty if you want to disable all downloads, otherwise
         set it to a comma-separated list of authorized paths (those paths are
-        glob patterns, i.e. "*" can be used as a wild card)
+        glob patterns, i.e. "*" can be used as a wild card). In a
+        multi-repository environment, the path must be qualified with the
+        repository name if the path does not point to the default repository
+        (e.g. /reponame/trunk). Note that a simple prefix matching is
+        performed on the paths, so aliases won't get automatically resolved.
         (''since 0.10'')""")
 
     color_scale = BoolOption('browser', 'color_scale', True,

@@ -224,6 +224,7 @@ table.tickets tbody tr.fullrow th {
 
 /* Batchmod Form */
 
+#batchmod_form { display: none; }
 #batchmod_form fieldset input#batchmod_submit { font-size: 14px; }
 #batchmod_form fieldset input[type="button"]{ padding: 0.1em 0.5em; }
 #batchmod_form > fieldset { margin-top: 1.5em }
