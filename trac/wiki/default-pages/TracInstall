@@ -136,7 +136,7 @@ A few examples:
  - first install of the latest stable version Trac 0.12.3, with i18n support:
    {{{
    easy_install Babel==0.9.5
-   easy_install Trac
+   easy_install Trac==0.12
    }}}
    ''It's very important to run the two `easy_install` commands separately, otherwise the message catalogs won't be generated.''
 
@@ -145,7 +145,7 @@ A few examples:
    easy_install -U Trac
    }}}
 
- - upgrade to the latest trunk development version (0.13dev):
+ - upgrade to the latest trunk development version:
    {{{
    easy_install -U Trac==dev
    }}}

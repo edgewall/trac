@@ -1,7 +1,7 @@
 = Steps to Add a New Wiki Page =
 [[TracGuideToc]]
 
-Note: make sure you have actually the rights to edit wiki pages. If you don't see the **Edit this page** button, read the informations relative to the editing policy for your Trac installation (usually on the front page WikiStart), or contact your local Trac administrator.
+Note: make sure you have actually the rights to edit wiki pages. If you don't see the **Edit this page** button, read the information relative to the editing policy for your Trac installation (usually on the front page WikiStart), or contact your local Trac administrator.
 
  1. Choose a name for your new page. See WikiPageNames for naming conventions.
  2. Edit an existing page (or any other resources that support WikiFormatting and add a [TracLinks link] to your new page. Save your changes.
