@@ -199,9 +199,8 @@ class GitConnector(Component):
     git_fs_encoding = Option('git', 'git_fs_encoding', 'utf-8',
         """Define charset encoding of paths within git repositories.""")
 
-    git_bin = PathOption('git', 'git_bin', '/usr/bin/git',
-        """Path to git executable (relative to the Trac configuration folder,
-        so better use an absolute path here).""")
+    git_bin = Option('git', 'git_bin', '/usr/bin/git',
+        """Absolute path to the git executable.""")
 
 
     def get_supported_types(self):
