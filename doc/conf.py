@@ -42,9 +42,9 @@ copyright = '2010, Edgewall Software'
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = '0.12.5'
+version = '0.12.6'
 # The full version, including alpha/beta/rc tags.
-release = '0.12.5'
+release = '0.12.6'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
