@@ -37,6 +37,22 @@ http://svn.edgewall.org/repos/trac/tags/trac-1.0b1
 
 -----------------------------------------------------------------------------
 
+Trac 0.12.5 (January 15, 2013)
+http://svn.edgewall.org/repos/trac/tags/trac-0.12.5
+
+Trac 0.12.5 is a maintenance release and contains
+a few interesting fixes:
+ - upload of .mht files (MHTML web page archive files) now works
+   (#9880)
+ - more robust parsing of attachment URLs (#10280) and uploaded
+   file names (#10850)
+ - lots of improvement to the date formatting code, which is now
+   much more robust when timezone and daylight saving time
+   computations are involved (#10768, #10863, #10864, #10912, #10920)
+ - no longer generate invalid JSON encoded data with Python 2.4 and
+   2.5 (#10877)
+ - ... and a few more!
+
 Trac 0.12.4 (September 7, 2012)
 http://svn.edgewall.org/repos/trac/tags/trac-0.12.4
 
