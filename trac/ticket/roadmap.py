@@ -29,7 +29,7 @@ from trac.config import ConfigSection, ExtensionOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.resource import *
-from trac.search import ISearchSource, search_to_sql, shorten_result
+from trac.search import ISearchSource, search_to_regexps, shorten_result
 from trac.util import as_bool
 from trac.util.datefmt import parse_date, utc, to_utimestamp, to_datetime, \
                               get_datetime_format_hint, format_date, \
@@ -965,17 +965,16 @@ class MilestoneModule(Component):
     def get_search_results(self, req, terms, filters):
         if not 'milestone' in filters:
             return
-        with self.env.db_query as db:
-            sql_query, args = search_to_sql(db, ['name', 'description'], terms)
-
-            milestone_realm = Resource('milestone')
-            for name, due, completed, description in db("""
-                    SELECT name, due, completed, description FROM milestone
-                    WHERE """ + sql_query, args):
+        term_regexps = search_to_regexps(terms)
+        milestone_realm = Resource('milestone')
+        for name, due, completed, description \
+                in MilestoneCache(self.env).milestones.itervalues():
+            if any(r.search(description) or r.search(name)
+                   for r in term_regexps):
                 milestone = milestone_realm(id=name)
                 if 'MILESTONE_VIEW' in req.perm(milestone):
-                    dt = (from_utimestamp(completed) if completed else
-                          from_utimestamp(due) if due else datetime.now(utc))
+                    dt = (completed if completed else
+                          due if due else datetime.now(utc))
                     yield (get_resource_url(self.env, milestone, req.href),
                            get_resource_name(self.env, milestone), dt,
                            '', shorten_result(description, terms))

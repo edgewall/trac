@@ -11,6 +11,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import re
+
 from trac.core import *
 
 
@@ -54,6 +56,12 @@ def search_to_sql(db, columns, terms):
     for t in terms:
         args.extend(['%' + db.like_escape(t) + '%'] * len(columns))
     return sql, tuple(args)
+
+
+def search_to_regexps(terms):
+    """Convert search query terms into regular expressions."""
+    return [re.compile(re.escape(term)) for term in terms]
+
 
 def shorten_result(text='', keywords=[], maxlen=240, fuzz=60):
     if not text:
