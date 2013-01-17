@@ -914,7 +914,12 @@ class MilestoneCache(core.Component):
 
     @cached
     def milestones(self):
-        """Dictionary containing milestone data, indexed by name."""
+        """Dictionary containing milestone data, indexed by name.
+
+        Milestone data consist of a tuple containing the name, the
+        datetime objects for due and completed dates and the
+        description.
+        """
         milestones = {}
         for name, due, completed, description in self.env.db_query("""
                 SELECT name, due, completed, description FROM milestone
