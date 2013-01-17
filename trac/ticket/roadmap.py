@@ -29,14 +29,16 @@ from trac.config import ConfigSection, ExtensionOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.resource import *
-from trac.search import ISearchSource, search_to_sql, shorten_result
+from trac.search import ISearchSource, search_to_regexps, shorten_result
 from trac.util import as_bool
 from trac.util.datefmt import parse_date, utc, to_utimestamp, to_datetime, \
                               get_datetime_format_hint, format_date, \
                               format_datetime, from_utimestamp, user_time
 from trac.util.text import CRLF
 from trac.util.translation import _, tag_
-from trac.ticket import Milestone, Ticket, TicketSystem, group_milestones
+from trac.ticket.api import TicketSystem
+from trac.ticket.model import Milestone, MilestoneCache, Ticket, \
+                              group_milestones
 from trac.timeline.api import ITimelineEventProvider
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import (Chrome, INavigationContributor,
@@ -617,16 +619,15 @@ class MilestoneModule(Component):
     def get_timeline_events(self, req, start, stop, filters):
         if 'milestone' in filters:
             milestone_realm = Resource('milestone')
-            for completed, name, description in self.env.db_query("""
-                    SELECT completed, name, description FROM milestone
-                    WHERE completed>=%s AND completed<=%s
-                    """, (to_utimestamp(start), to_utimestamp(stop))):
-                # TODO: creation and (later) modifications should also be
-                #       reported
-                milestone = milestone_realm(id=name)
-                if 'MILESTONE_VIEW' in req.perm(milestone):
-                    yield ('milestone', from_utimestamp(completed),
-                           '', (milestone, description)) # FIXME: author?
+            for name, due, completed, description \
+                    in MilestoneCache(self.env).milestones.itervalues():
+                if completed and start <= completed <= stop:
+                    # TODO: creation and (later) modifications should also be
+                    #       reported
+                    milestone = milestone_realm(id=name)
+                    if 'MILESTONE_VIEW' in req.perm(milestone):
+                        yield ('milestone', completed, '', # FIXME: author?
+                               (milestone, description))
 
             # Attachments
             for event in AttachmentModule(self.env).get_timeline_events(
@@ -953,8 +954,7 @@ class MilestoneModule(Component):
         >>> MilestoneModule(env).resource_exists(Resource('milestone', 'M2'))
         False
         """
-        return bool(self.env.db_query("""
-                SELECT name FROM milestone WHERE name=%s""", (resource.id,)))
+        return resource.id in MilestoneCache(self.env).milestones
 
     # ISearchSource methods
 
@@ -965,17 +965,16 @@ class MilestoneModule(Component):
     def get_search_results(self, req, terms, filters):
         if not 'milestone' in filters:
             return
-        with self.env.db_query as db:
-            sql_query, args = search_to_sql(db, ['name', 'description'], terms)
-
-            milestone_realm = Resource('milestone')
-            for name, due, completed, description in db("""
-                    SELECT name, due, completed, description FROM milestone
-                    WHERE """ + sql_query, args):
+        term_regexps = search_to_regexps(terms)
+        milestone_realm = Resource('milestone')
+        for name, due, completed, description \
+                in MilestoneCache(self.env).milestones.itervalues():
+            if any(r.search(description) or r.search(name)
+                   for r in term_regexps):
                 milestone = milestone_realm(id=name)
                 if 'MILESTONE_VIEW' in req.perm(milestone):
-                    dt = (from_utimestamp(completed) if completed else
-                          from_utimestamp(due) if due else datetime.now(utc))
+                    dt = (completed if completed else
+                          due if due else datetime.now(utc))
                     yield (get_resource_url(self.env, milestone, req.href),
                            get_resource_name(self.env, milestone), dt,
                            '', shorten_result(description, terms))
