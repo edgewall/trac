@@ -23,6 +23,8 @@ import re
 from datetime import datetime
 
 from trac.attachment import Attachment
+from trac import core
+from trac.cache import cached
 from trac.core import TracError
 from trac.resource import Resource, ResourceNotFound
 from trac.ticket.api import TicketSystem
@@ -907,49 +909,94 @@ class Component(object):
             yield component
 
 
+class MilestoneCache(core.Component):
+    """Cache for milestone data and factory for 'milestone' resources."""
+
+    @cached
+    def milestones(self):
+        """Dictionary containing milestone data, indexed by name."""
+        milestones = {}
+        for name, due, completed, description in self.env.db_query("""
+                SELECT name, due, completed, description FROM milestone
+                """):
+            milestones[name] = (name,
+                    from_utimestamp(due) if due else None,
+                    from_utimestamp(completed) if completed else None,
+                    description or '')
+        return milestones
+
+    def fetchone(self, name, milestone=None):
+        """Retrieve an existing milestone having the given `name`.
+
+        If `milestone` is specified, fill that instance instead of creating
+        a fresh one.
+
+        :return: `None` if no such milestone exists
+        """
+        data = self.milestones.get(name)
+        if data:
+            return self.factory(data, milestone)
+
+    def fetchall(self):
+        """Iterator on all milestones."""
+        for data in self.milestones.itervalues():
+            yield self.factory(data)
+
+    def factory(self, (name, due, completed, description), milestone=None):
+        """Build a `Milestone` object from milestone data.
+
+        That instance remains *private*, i.e. can't be retrieved by
+        name by other processes or even by other threads in the same
+        process, until its `~Milestone.insert` method gets called with
+        success.
+        """
+        milestone = milestone or Milestone(self.env)
+        milestone.name = name
+        milestone.due = due
+        milestone.completed = completed
+        milestone.description = description
+        milestone.checkin(invalidate=False)
+        return milestone
+
+
 class Milestone(object):
     def __init__(self, env, name=None, db=None):
+        """Create an undefined milestone or fetch one from the database,
+        if `name` is given.
+
+        In the latter case however, raise `~trac.resource.ResourceNotFound`
+        if a milestone of that name doesn't exist yet.
+        """
         self.env = env
         if name:
-            self._fetch(name, db)
+            if not self.cache.fetchone(name, self):
+                raise ResourceNotFound(
+                    _("Milestone %(name)s does not exist.",
+                      name=name), _("Invalid milestone name"))
         else:
-            self.name = None
-            self.due = self.completed = None
-            self.description = ''
-            self._to_old()
+            self.cache.factory((None, None, None, ''), self)
+
+    @property
+    def cache(self):
+        return MilestoneCache(self.env)
 
     @property
     def resource(self):
         return Resource('milestone', self.name) ### .version !!!
-
-    def _fetch(self, name, db=None):
-        for row in self.env.db_query("""
-                SELECT name, due, completed, description
-                FROM milestone WHERE name=%s
-                """, (name,)):
-            self._from_database(row)
-            break
-        else:
-            raise ResourceNotFound(_("Milestone %(name)s does not exist.",
-                                     name=name), _("Invalid milestone name"))
 
     exists = property(lambda self: self._old['name'] is not None)
     is_completed = property(lambda self: self.completed is not None)
     is_late = property(lambda self: self.due and
                                     self.due < datetime.now(utc))
 
-    def _from_database(self, row):
-        name, due, completed, description = row
-        self.name = name
-        self.due = from_utimestamp(due) if due else None
-        self.completed = from_utimestamp(completed) if completed else None
-        self.description = description or ''
-        self._to_old()
-
-    def _to_old(self):
+    def checkin(self, invalidate=True):
         self._old = {'name': self.name, 'due': self.due,
                      'completed': self.completed,
                      'description': self.description}
+        if invalidate:
+            del self.cache.milestones
+
+    _to_old = checkin #: compatibility with hacks < 0.12.5 (remove in 1.1.1)
 
     def delete(self, retarget_to=None, author=None, db=None):
         """Delete the milestone.
@@ -972,6 +1019,7 @@ class Milestone(object):
                 comment = "Milestone %s deleted" % self.name # don't translate
                 ticket.save_changes(author, comment, now)
             self._old['name'] = None
+            del self.cache.milestones
             TicketSystem(self.env).reset_ticket_fields()
 
         for listener in TicketSystem(self.env).milestone_change_listeners:
@@ -993,7 +1041,7 @@ class Milestone(object):
                   VALUES (%s,%s,%s,%s)
                   """, (self.name, to_utimestamp(self.due),
                         to_utimestamp(self.completed), self.description))
-            self._to_old()
+            self.checkin()
             TicketSystem(self.env).reset_ticket_fields()
 
         for listener in TicketSystem(self.env).milestone_change_listeners:
@@ -1009,8 +1057,9 @@ class Milestone(object):
         if not self.name:
             raise TracError(_("Invalid milestone name."))
 
+        old = self._old.copy()
         with self.env.db_transaction as db:
-            old_name = self._old['name']
+            old_name = old['name']
             self.env.log.info("Updating milestone '%s'", self.name)
             db("""UPDATE milestone
                   SET name=%s, due=%s, completed=%s, description=%s
@@ -1018,6 +1067,7 @@ class Milestone(object):
                   """, (self.name, to_utimestamp(self.due),
                         to_utimestamp(self.completed),
                         self.description, old_name))
+            self.checkin()
 
             if self.name != old_name:
                 # Update milestone field in tickets
@@ -1031,9 +1081,8 @@ class Milestone(object):
                 Attachment.reparent_all(self.env, 'milestone', old_name,
                                         'milestone', self.name)
 
-        old_values = dict((k, v) for k, v in self._old.iteritems()
+        old_values = dict((k, v) for k, v in old.iteritems()
                           if getattr(self, k) != v)
-        self._to_old()
         for listener in TicketSystem(self.env).milestone_change_listeners:
             listener.milestone_changed(self, old_values)
 
@@ -1043,14 +1092,9 @@ class Milestone(object):
         :since 1.0: the `db` parameter is no longer needed and will be removed
         in version 1.1.1
         """
-        sql = "SELECT name, due, completed, description FROM milestone "
+        milestones = MilestoneCache(env).fetchall()
         if not include_completed:
-            sql += "WHERE COALESCE(completed, 0)=0 "
-        milestones = []
-        for row in env.db_query(sql):
-            milestone = Milestone(env)
-            milestone._from_database(row)
-            milestones.append(milestone)
+            milestones = [m for m in milestones if m.completed is None]
         def milestone_order(m):
             return (m.completed or utcmax,
                     m.due or utcmax,
