@@ -212,12 +212,17 @@ In [changeset:"%s"]:
         for tkt_id, cmds in tickets.iteritems():
             try:
                 self.log.debug("Updating ticket #%d", tkt_id)
-                with self.env.db_transaction as db:
-                    ticket = Ticket(self.env, tkt_id, db)
+                save = False
+                with self.env.db_transaction:
+                    ticket = Ticket(self.env, tkt_id)
+                    ticket_perm = perm(ticket.resource)
                     for cmd in cmds:
-                        cmd(ticket, changeset, perm(ticket.resource))
-                    ticket.save_changes(changeset.author, comment, date, db)
-                self._notify(ticket, date)
+                        if cmd(ticket, changeset, ticket_perm) is not False:
+                            save = True
+                    if save:
+                        ticket.save_changes(changeset.author, comment, date)
+                if save:
+                    self._notify(ticket, date)
             except Exception, e:
                 self.log.error("Unexpected error while processing ticket "
                                "#%s: %s", tkt_id, exception_to_unicode(e))
@@ -245,15 +250,24 @@ In [changeset:"%s"]:
                 functions[cmd] = func
         return functions
 
+    # Command-specific behavior
+    # The ticket isn't updated if all extracted commands return False.
+
     def cmd_close(self, ticket, changeset, perm):
-        if not self.check_perms or 'TICKET_MODIFY' in perm:
-            ticket['status'] = 'closed'
-            ticket['resolution'] = 'fixed'
-            if not ticket['owner']:
-                ticket['owner'] = changeset.author
+        if self.check_perms and not 'TICKET_MODIFY' in perm:
+            self.log.info("%s doesn't have TICKET_MODIFY permission for #%d",
+                          changeset.author, ticket.id)
+            return False
+        ticket['status'] = 'closed'
+        ticket['resolution'] = 'fixed'
+        if not ticket['owner']:
+            ticket['owner'] = changeset.author
 
     def cmd_refs(self, ticket, changeset, perm):
-        pass
+        if self.check_perms and not 'TICKET_APPEND' in perm:
+            self.log.info("%s doesn't have TICKET_APPEND permission for #%d",
+                          changeset.author, ticket.id)
+            return False
 
 
 class CommitTicketReferenceMacro(WikiMacroBase):
