@@ -195,17 +195,27 @@ def add_javascript(req, filename):
 
 def add_warning(req, msg, *args):
     """Add a non-fatal warning to the request object.
-    When rendering pages, any warnings will be rendered to the user."""
+
+    When rendering pages, all warnings will be rendered to the user. Note that
+    the message is escaped (and therefore converted to `Markup`) before it is
+    stored in the request object.
+    """
     if args:
         msg %= args
+    msg = escape(msg, False)
     if msg not in req.chrome['warnings']:
         req.chrome['warnings'].append(msg)
 
 def add_notice(req, msg, *args):
     """Add an informational notice to the request object.
-    When rendering pages, any notice will be rendered to the user."""
+
+    When rendering pages, all notices will be rendered to the user. Note that
+    the message is escaped (and therefore converted to `Markup`) before it is
+    stored in the request object.
+    """
     if args:
         msg %= args
+    msg = escape(msg, False)
     if msg not in req.chrome['notices']:
         req.chrome['notices'].append(msg)
 
@@ -306,7 +316,7 @@ def _save_messages(req, url, permanent):
     be displayed after the redirect."""
     for type_ in ['warnings', 'notices']:
         for (i, message) in enumerate(req.chrome[type_]):
-            req.session['chrome.%s.%d' % (type_, i)] = escape(message)
+            req.session['chrome.%s.%d' % (type_, i)] = escape(message, False)
 
 
 # Mappings for removal of control characters
@@ -963,8 +973,10 @@ class Chrome(Component):
             for type_ in ['warnings', 'notices']:
                 try:
                     for i in itertools.count():
-                        message = req.session.pop('chrome.%s.%d' % (type_, i))
-                        req.chrome[type_].append(Markup(message))
+                        message = Markup(req.session.pop('chrome.%s.%d'
+                                                         % (type_, i)))
+                        if message not in req.chrome[type_]:
+                            req.chrome[type_].append(message)
                 except KeyError:
                     pass
 
