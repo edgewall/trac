@@ -1,4 +1,17 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2003-2013 Edgewall Software
+# All rights reserved.
+#
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at http://trac.edgewall.org/wiki/TracLicense.
+#
+# This software consists of voluntary contributions made by many
+# individuals. For the exact contribution history, see the revision
+# history and logs, available at http://trac.edgewall.org/log/.
+
 """The :class:`FunctionalTester` object provides a higher-level interface to
 working with a Trac environment to make test cases more succinct.
 """
@@ -138,6 +151,25 @@ class FunctionalTester(object):
         self.go_to_front()
         tc.follow('\\bRoadmap\\b')
         tc.url(self.url + '/roadmap')
+
+    def go_to_report(self, id, args=None):
+        """Surf to the specified report.
+
+        Assumes the report exists. Report variables will be appended if
+        specified.
+
+        :param id: id of the report
+        :param args: may optionally specify a dictionary of arguments to
+                     be encoded as a query string
+        """
+        report_url = self.url + "/report/%s" % id
+        if args:
+            arglist = []
+            for param, value in args.items():
+                arglist.append('%s=%s' % (param.upper(), unicode_quote(value)))
+            report_url += '?' + '&'.join(arglist)
+        tc.go(report_url)
+        tc.url(report_url.encode('string-escape').replace('?', '\?'))
 
     def add_comment(self, ticketid, comment=None):
         """Adds a comment to the given ticket ID, assumes ticket exists."""

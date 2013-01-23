@@ -1,5 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+#
+# Copyright (C) 2003-2013 Edgewall Software
+# All rights reserved.
+#
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at http://trac.edgewall.org/wiki/TracLicense.
+#
+# This software consists of voluntary contributions made by many
+# individuals. For the exact contribution history, see the revision
+# history and logs, available at http://trac.edgewall.org/log/.
+
 import os
 import re
 
@@ -1114,6 +1126,37 @@ UNION ALL SELECT 'attachment', 'file.ext', 'wiki', 'WikiStart'
                 'file[.]ext [(]WikiStart[)]</a>')
 
 
+class TestReportDynamicVariables(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Generate a report with dynamic variables in title, summary
+        and SQL"""
+        summary = random_sentence(3)
+        fields = {'component': 'component1'}
+        ticket_id = self._tester.create_ticket(summary, fields)
+        reportnum = self._tester.create_report(
+           "$USER's tickets for component $COMPONENT",
+           """SELECT DISTINCT
+               t.id AS ticket, summary, component, version, milestone,
+               t.type AS type, priority, t.time AS created,
+               t.changetime AS _changetime, summary AS _description,
+               reporter AS _reporter
+              FROM ticket t
+              LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
+              LEFT JOIN ticket_change tc ON tc.ticket = t.id AND tc.author = $USER
+               AND tc.field = 'comment'
+              WHERE t.status <> 'closed'
+               AND component = $COMPONENT
+               AND (owner = $USER OR reporter = $USER OR author = $USER)
+            """,
+           "Tickets assigned to $USER for component $COMPONENT"
+        )
+        self._tester.go_to_report(reportnum, fields)
+        tc.find("admin's tickets for component component1")
+        tc.find("Tickets assigned to admin for component component1")
+        tc.find('<a title="View ticket" href="/ticket/%s">%s</a>' %
+                (ticket_id, summary))
+
+
 class RegressionTestRev5665(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create version without release time (r5665)"""
@@ -1744,6 +1787,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminVersionDefault())
     suite.addTest(TestNewReport())
     suite.addTest(TestReportRealmDecoration())
+    suite.addTest(TestReportDynamicVariables())
     suite.addTest(RegressionTestRev5665())
     suite.addTest(RegressionTestRev5994())
 

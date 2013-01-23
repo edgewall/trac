@@ -598,6 +598,7 @@ def normalize_whitespace(text, to_space=u'\u00a0', remove=u'\u200b'):
         text = text.replace(each, '')
     return text
 
+
 def unquote_label(txt):
     """Remove (one level of) enclosing single or double quotes.
 
@@ -705,3 +706,17 @@ def levenshtein_distance(lhs, rhs):
                             prev[ridx] + cost)) # substitution
         prev = curr
     return prev[-1]
+
+
+sub_vars_re = re.compile("[$]([A-Z_][A-Z0-9_]*)")
+
+def sub_vars(text, args):
+    """Substitute $XYZ-style variables in a string with provided values.
+
+    :param text: string containing variables to substitute.
+    :param args: dictionary with keys matching the variables to be substituted.
+                 The keys should not be prefixed with the $ character."""
+    def repl(match):
+        key = match.group(1)
+        return args[key] if key in args else '$' + key
+    return sub_vars_re.sub(repl, text)

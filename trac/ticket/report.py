@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2009 Edgewall Software
+# Copyright (C) 2003-2013 Edgewall Software
 # Copyright (C) 2003-2004 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2006 Christian Boos <cboos@edgewall.org>
 # Copyright (C) 2006 Matthew Good <trac@matt-good.net>
@@ -33,7 +33,8 @@ from trac.ticket.api import TicketSystem
 from trac.util import as_int, content_disposition
 from trac.util.datefmt import format_datetime, format_time, from_utimestamp
 from trac.util.presentation import Paginator
-from trac.util.text import exception_to_unicode, to_unicode, quote_query_string
+from trac.util.text import (exception_to_unicode, quote_query_string, sub_vars,
+                            sub_vars_re, to_unicode)
 from trac.util.translation import _, tag_
 from trac.web.api import IRequestHandler, RequestDone
 from trac.web.chrome import (INavigationContributor, Chrome,
@@ -41,7 +42,6 @@ from trac.web.chrome import (INavigationContributor, Chrome,
                              add_stylesheet, add_warning, auth_link,
                              web_context)
 from trac.wiki import IWikiSyntaxProvider, WikiParser
-
 
 
 SORT_COLUMN = '@SORT_COLUMN@'
@@ -105,7 +105,6 @@ def split_sql(sql, clause_re, skel=None):
         return sql[:len(blocks[0])], sql[-len(blocks[1]):] # (before, after)
     else:
         return sql, '' # no single clause separator
-
 
 
 class ReportModule(Component):
@@ -424,7 +423,8 @@ class ReportModule(Component):
         data = {'action': 'view',
                 'report': {'id': id, 'resource': report_resource},
                 'context': context,
-                'title': title, 'description': description,
+                'title': sub_vars(title, args),
+                'description': sub_vars(description, args),
                 'max': limit, 'args': args, 'show_args_form': False,
                 'message': None, 'paginator': None,
                 'report_href': report_href,
@@ -798,8 +798,6 @@ class ReportModule(Component):
                 missing_args.append(aname)
             values.append(arg)
 
-        var_re = re.compile("[$]([A-Z_][A-Z0-9_]*)")
-
         # simple parameter substitution outside literal
         def repl(match):
             add_value(match.group(1))
@@ -807,7 +805,7 @@ class ReportModule(Component):
 
         # inside a literal break it and concatenate with the parameter
         def repl_literal(expr):
-            parts = var_re.split(expr[1:-1])
+            parts = sub_vars_re.split(expr[1:-1])
             if len(parts) == 1:
                 return expr
             params = parts[1::2]
@@ -825,7 +823,7 @@ class ReportModule(Component):
             if expr.startswith("'"):
                 sql_io.write(repl_literal(expr))
             else:
-                sql_io.write(var_re.sub(repl, expr))
+                sql_io.write(sub_vars_re.sub(repl, expr))
 
         # Remove arguments that don't appear in the SQL query
         for name in set(args) - names:
