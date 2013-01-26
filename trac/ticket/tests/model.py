@@ -649,12 +649,13 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
         ticket = Ticket(self.env, self.id)
         self.assertEqual('a', ticket['keywords'])
         self.assertEqual('change4', ticket['foo'])
-        ticket.delete_change(cnum=4)
+        t = datetime.now(utc)
+        ticket.delete_change(cnum=4, when=t)
         self.assertEqual('a, b', ticket['keywords'])
         self.assertEqual('change3', ticket['foo'])
         self.assertEqual(None, ticket.get_change(cnum=4))
         self.assertNotEqual(None, ticket.get_change(cnum=3))
-        self.assertEqual(self.t3, ticket.time_changed)
+        self.assertEqual(t, ticket.time_changed)
 
     def test_delete_last_comment_when_custom_field_gone(self):
         """Regression test for http://trac.edgewall.org/ticket/10858"""
@@ -667,7 +668,8 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
         del TicketSystem(self.env).custom_fields
         ticket = Ticket(self.env, self.id)
         #
-        ticket.delete_change(cnum=4)
+        t = datetime.now(utc)
+        ticket.delete_change(cnum=4, when=t)
         self.assertEqual('a, b', ticket['keywords'])
         # 'foo' is no longer defined for the ticket
         self.assertEqual(None, ticket['foo'])
@@ -677,18 +679,19 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
             """, (self.id,)))
         self.assertEqual(None, ticket.get_change(cnum=4))
         self.assertNotEqual(None, ticket.get_change(cnum=3))
-        self.assertEqual(self.t3, ticket.time_changed)
+        self.assertEqual(t, ticket.time_changed)
 
     def test_delete_last_comment_by_date(self):
         ticket = Ticket(self.env, self.id)
         self.assertEqual('a', ticket['keywords'])
         self.assertEqual('change4', ticket['foo'])
-        ticket.delete_change(cdate=self.t4)
+        t = datetime.now(utc)
+        ticket.delete_change(cdate=self.t4, when=t)
         self.assertEqual('a, b', ticket['keywords'])
         self.assertEqual('change3', ticket['foo'])
         self.assertEqual(None, ticket.get_change(cdate=self.t4))
         self.assertNotEqual(None, ticket.get_change(cdate=self.t3))
-        self.assertEqual(self.t3, ticket.time_changed)
+        self.assertEqual(t, ticket.time_changed)
 
     def test_delete_mid_comment(self):
         ticket = Ticket(self.env, self.id)
@@ -696,14 +699,15 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
             comment=dict(author='joe', old='4', new='Comment 4'),
             keywords=dict(author='joe', old='a, b', new='a'),
             foo=dict(author='joe', old='change3', new='change4'))
-        ticket.delete_change(cnum=3)
+        t = datetime.now(utc)
+        ticket.delete_change(cnum=3, when=t)
         self.assertEqual(None, ticket.get_change(cnum=3))
         self.assertEqual('a', ticket['keywords'])
         self.assertChange(ticket, 4, self.t4, 'joe',
             comment=dict(author='joe', old='4', new='Comment 4'),
             keywords=dict(author='joe', old='a, b, c', new='a'),
             foo=dict(author='joe', old='change2', new='change4'))
-        self.assertEqual(self.t4, ticket.time_changed)
+        self.assertEqual(t, ticket.time_changed)
 
     def test_delete_mid_comment_by_date(self):
         ticket = Ticket(self.env, self.id)
@@ -711,14 +715,15 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
             comment=dict(author='joe', old='4', new='Comment 4'),
             keywords=dict(author='joe', old='a, b', new='a'),
             foo=dict(author='joe', old='change3', new='change4'))
-        ticket.delete_change(cdate=self.t3)
+        t = datetime.now(utc)
+        ticket.delete_change(cdate=self.t3, when=t)
         self.assertEqual(None, ticket.get_change(cdate=self.t3))
         self.assertEqual('a', ticket['keywords'])
         self.assertChange(ticket, 4, self.t4, 'joe',
             comment=dict(author='joe', old='4', new='Comment 4'),
             keywords=dict(author='joe', old='a, b, c', new='a'),
             foo=dict(author='joe', old='change2', new='change4'))
-        self.assertEqual(self.t4, ticket.time_changed)
+        self.assertEqual(t, ticket.time_changed)
 
     def test_delete_mid_comment_inconsistent(self):
         # Make oldvalue on keywords for change 4 inconsistent. This should
@@ -742,13 +747,13 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
             foo=dict(author='joe', old='change2', new='change4'))
 
     def test_delete_all_comments(self):
-        # See ticket:10338
         ticket = Ticket(self.env, self.id)
         ticket.delete_change(4)
         ticket.delete_change(3)
         ticket.delete_change(2)
-        ticket.delete_change(1)
-        self.assertEquals(ticket['time'], ticket['changetime'])
+        t = datetime.now(utc)
+        ticket.delete_change(1, when=t)
+        self.assertEqual(t, ticket.time_changed)
 
 
 class EnumTestCase(unittest.TestCase):
