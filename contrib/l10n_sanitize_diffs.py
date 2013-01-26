@@ -14,15 +14,15 @@ import re
 
 ignore_lineno_re = re.compile(r'''
          <<<<  .*\n
-    ((?: \#    .*\n )+)   # \1 == comment only
+    ((?: \#    .*\n )+)   # \1 == comment only for "working copy"
          ====  .*\n
-    ((?: \#    .*\n )+)   # \2 == comment only
+    ((?: \#    .*\n )+)   # \2 == comment only for "theirs"
          >>>>  .*\n
     ''', re.MULTILINE | re.VERBOSE)
 
 def sanitize_file(path):
     with file(path, 'rb+') as f:
-        sanitized, nsub = ignore_lineno_re.subn(r'\2', f.read())
+        sanitized, nsub = ignore_lineno_re.subn(r'\1', f.read())
         if nsub:
             print("reverted %d ignorable changes in %s" % (nsub, path))
             f.seek(0)
