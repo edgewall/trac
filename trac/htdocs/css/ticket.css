@@ -10,12 +10,18 @@
 #field-description-help { float: right }
 #properties div.trac-resizable, #field-description { width: 100% }
 
+#content.ticket .trac-topnav {
+ float: none;
+ text-align: right;
+ margin-top: 0;
+}
+
 /* "Yellow Ticket Box" */
 #ticket {
  background: #ffd;
  border: 1px solid #dd9;
  border-radius: .4em;
- margin-top: 1em;
+ margin-top: .2em;
  padding: .5em 1em;
  position: relative;
 }
@@ -235,3 +241,5 @@ fieldset.radio legend {
  padding: 0 1em 0 0;
 }
 fieldset.radio label { padding-right: 1em }
+
+#content.ticket .trac-nav a { margin-left: 1em; }
