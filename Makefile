@@ -290,6 +290,9 @@ diff-%:
 	@$(vc) diff trac/locale/$(*) \
 	    | grep -Ev '^([-+]#:|[@ ])' | grep -E '^[-+@]' || true
 
+# The above filters out diffs consisting only of line number changes.
+# See also contrib/l10n_sanitize_diffs.py, which removes in-file
+# *conflicts* about the same.
 
 clean-mo:
 	find trac/locale -name \*.mo -exec rm {} \;
