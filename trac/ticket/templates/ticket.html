@@ -25,6 +25,7 @@
           return true;
         });
         $("#modify").parent().toggleClass("collapsed");
+        $(".trac-topnav a").click(function() { $("#modify").parent().removeClass("collapsed"); });
 
         /* only enable control elements for the currently selected action */
         var actions = $("#action input[name='action']");
@@ -127,6 +128,9 @@
                   has_property_editor = not version and version != 0 and not cnum_edit
                                         and (can_append or can_modify or can_edit or can_create)">
 
+      <div class="trac-topnav" py:if="(ticket.exists or preview_mode) and has_property_editor">
+        <a href="#modify" title="Go to the ticket editor">Modify</a> &darr;
+      </div>
       <h1 py:if="not ticket.exists">
         Create New Ticket <span py:if="preview_mode and ticket.type" class="status">(${ticket.type})</span>
       </h1>
@@ -372,6 +376,7 @@ ${value}</textarea>
 
         <div py:if="ticket.exists" class="trac-nav">
           <a href="#attachments" id="trac-up-attachments" title="Go to the list of attachments">Attachments</a> &uarr;
+          <a href="#content" id="trac-up-view" title="View the ticket description">Description</a> &uarr;
         </div>
         <div class="buttons">
           <py:if test="ticket.exists">
