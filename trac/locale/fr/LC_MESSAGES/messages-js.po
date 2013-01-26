@@ -1,11 +1,11 @@
 # French translations for Trac.
-# Copyright (C) 2010 Edgewall Software
+# Copyright (C) 2012 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# Christian Boos <cboos@edgewall.org>, 2010.
+# Christian Boos <cboos@edgewall.org>, 2010-2012.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 0.12\n"
+"Project-Id-Version: Trac 1.0\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2013-01-24 11:15+0100\n"
 "PO-Revision-Date: 2011-01-25 20:28+0100\n"
@@ -72,67 +72,65 @@ msgstr "%(title)s (cliquer pour cacher la colonne)"
 #. and showMonthAfterYear
 #: trac/htdocs/js/jquery-ui-i18n.js:4
 msgid "$month$year"
-msgstr ""
+msgstr "$month$year"
 
 #. TRANSLATOR: Link that closes the datepicker
 #. TRANSLATOR: Link that closes the timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:39
 msgid "Done"
-msgstr ""
+msgstr "Valider"
 
 #. TRANSLATOR: Link to the previous month in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:9
 msgid "Prev"
-msgstr ""
+msgstr "Précédent"
 
 #. TRANSLATOR: Link to the next month in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:11
 msgid "Next"
-msgstr ""
+msgstr "Suivant"
 
 #. TRANSLATOR: Link to the current day in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:13
 msgid "Today"
-msgstr ""
+msgstr "Aujourd'hui"
 
 #. TRANSLATOR: Heading for the week-of-the-year column in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:20
 msgid "Wk"
-msgstr ""
+msgstr "Sem"
 
 #. TRANSLATOR: Heading of the standalone timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:30
 msgid "Choose Time"
-msgstr ""
+msgstr "Sélectionnez une heure"
 
 #. TRANSLATOR: Time selector label
 #: trac/htdocs/js/jquery-ui-i18n.js:32
 msgid "Time"
-msgstr ""
+msgstr "hh:mm:ss"
 
 #. TRANSLATOR: Time labels in the timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:34
-#, fuzzy
 msgid "Hour"
-msgstr "ou"
+msgstr "Heure"
 
 #: trac/htdocs/js/jquery-ui-i18n.js:34
 msgid "Minute"
-msgstr ""
+msgstr "Minute"
 
 #: trac/htdocs/js/jquery-ui-i18n.js:34
 msgid "Second"
-msgstr ""
+msgstr "Secondes"
 
 #: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Time Zone"
-msgstr ""
+msgstr "Fuseau horaire"
 
 #. TRANSLATOR: Link to pick the current time in the timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:37
-#, fuzzy
 msgid "Now"
-msgstr "non"
+msgstr "Maintenant"
 
 #: trac/htdocs/js/query.js:132
 msgid "A filter already exists for that property"
@@ -160,20 +158,20 @@ msgstr "et"
 
 #: trac/htdocs/js/query.js:337
 msgid " remove:"
-msgstr ""
+msgstr " supprimer :"
 
 #: trac/htdocs/js/query.js:347
 msgid " add:"
-msgstr ""
+msgstr " ajouter :"
 
 #: trac/htdocs/js/query.js:376
 #, python-format
 msgid "Select ticket %(id)s for modification"
-msgstr ""
+msgstr "Sélectionner le ticket %(id)s pour le modifier"
 
 #: trac/htdocs/js/query.js:387
 msgid "Toggle selection of all tickets shown in this group"
-msgstr ""
+msgstr "Sélectionner tous les tickets visibles dans ce groupe"
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
