@@ -454,7 +454,7 @@ class Ticket(object):
         if fields:
             return change
 
-    def delete_change(self, cnum=None, cdate=None):
+    def delete_change(self, cnum=None, cdate=None, when=None):
         """Delete a ticket change identified by its number or date."""
         if cdate is None:
             row = self._find_change(cnum)
@@ -462,6 +462,10 @@ class Ticket(object):
                 return
             cdate = from_utimestamp(row[0])
         ts = to_utimestamp(cdate)
+        if when is None:
+            when = datetime.now(utc)
+        when_ts = to_utimestamp(when)
+
         with self.env.db_transaction as db:
             # Find modified fields and their previous value
             fields = [(field, old, new)
@@ -497,17 +501,10 @@ class Ticket(object):
             db("DELETE FROM ticket_change WHERE ticket=%s AND time=%s",
                (self.id, ts))
 
-            # Fix the last modification time
-            # Work around MySQL ERROR 1093 with the same table for the update
-            # target and the subquery FROM clause
-            db("""UPDATE ticket SET changetime=(
-                  SELECT time FROM ticket_change WHERE ticket=%s
-                  UNION
-                  SELECT time FROM (
-                      SELECT time FROM ticket WHERE id=%s LIMIT 1) AS t
-                  ORDER BY time DESC LIMIT 1)
-                  WHERE id=%s
-                  """, (self.id, self.id, self.id))
+            # Update last changed time
+            db("UPDATE ticket SET changetime=%s WHERE id=%s",
+               (when_ts, self.id))
+
         self._fetch_ticket(self.id)
 
     def modify_comment(self, cdate, author, comment, when=None):
