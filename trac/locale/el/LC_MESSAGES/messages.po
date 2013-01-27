@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-24 11:15+0100\n"
+"POT-Creation-Date: 2013-01-27 11:21+0900\n"
 "PO-Revision-Date: 2008-09-30 16:55+0300\n"
 "Last-Translator: Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>\n"
 "Language-Team: el_GR <trac-dev@googlegroups.com>\n"
@@ -448,7 +448,7 @@ msgid "Size"
 msgstr "Μέγεθος"
 
 #: trac/attachment.py:1070 trac/templates/history_view.html:30
-#: trac/ticket/templates/ticket.html:346
+#: trac/ticket/templates/ticket.html:350
 #: trac/versioncontrol/templates/revisionlog.html:112
 msgid "Author"
 msgstr "Συντάκτης"
@@ -458,7 +458,8 @@ msgid "Date"
 msgstr "Ημερομηνία"
 
 #: trac/attachment.py:1071 trac/templates/attachment.html:93
-#: trac/ticket/api.py:299 trac/ticket/templates/ticket_box.html:92
+#: trac/ticket/api.py:299 trac/ticket/templates/ticket.html:379
+#: trac/ticket/templates/ticket_box.html:92
 msgid "Description"
 msgstr "Περιγραφή"
 
@@ -671,7 +672,7 @@ msgstr ""
 
 #: trac/perm.py:656 trac/admin/templates/admin_perms.html:63
 #: trac/ticket/templates/batch_modify.html:37
-#: trac/ticket/templates/ticket.html:317
+#: trac/ticket/templates/ticket.html:321
 msgid "Action"
 msgstr "Εντολή"
 
@@ -1106,7 +1107,7 @@ msgid "URL:"
 msgstr "Ηλεκτρονική Διεύθυνση:"
 
 #: trac/admin/templates/admin_basics.html:29
-#: trac/ticket/templates/ticket.html:233
+#: trac/ticket/templates/ticket.html:237
 msgid "Description:"
 msgstr "Περιγραφή:"
 
@@ -2157,7 +2158,7 @@ msgstr "(όριο μεγέθους"
 msgid "Attachment Info"
 msgstr "Πληροφορίες συνημμένου"
 
-#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:351
+#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:355
 #: trac/wiki/templates/wiki_edit_form.html:42
 msgid "Your email or username:"
 msgstr "Η ηλεκτρονική διεύθυνσή σας ή το όνομα χρήστη:"
@@ -2563,7 +2564,7 @@ msgstr ""
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:44
-#: trac/ticket/templates/ticket.html:374
+#: trac/ticket/templates/ticket.html:378
 msgid "Attachments"
 msgstr "Συνημμένα"
 
@@ -2678,7 +2679,7 @@ msgstr "Το συστατικό %(name)s υπάρχει ήδη."
 msgid "The component \"%(name)s\" has been added."
 msgstr "Το συστατικό %(name)s δεν υπάρχει."
 
-#: trac/ticket/admin.py:122 trac/ticket/model.py:862 trac/ticket/model.py:881
+#: trac/ticket/admin.py:122 trac/ticket/model.py:859 trac/ticket/model.py:878
 #, fuzzy
 msgid "Invalid component name."
 msgstr "Άκυρη ημερομηνία διεκπεραίωσης"
@@ -2719,7 +2720,7 @@ msgstr "Το Ορόσημο %(name)s υπάρχει ήδη."
 msgid "The milestone \"%(name)s\" has been added."
 msgstr ""
 
-#: trac/ticket/admin.py:305 trac/ticket/model.py:1041 trac/ticket/model.py:1063
+#: trac/ticket/admin.py:305 trac/ticket/model.py:1038 trac/ticket/model.py:1060
 #, fuzzy
 msgid "Invalid milestone name."
 msgstr "Άκυρη ημερομηνία διεκπεραίωσης"
@@ -2747,7 +2748,7 @@ msgstr "Η έκδοση %(name)s υπάρχει ήδη."
 msgid "The version \"%(name)s\" has been added."
 msgstr "Η έκδοση %(name)s δεν υπάρχει."
 
-#: trac/ticket/admin.py:484 trac/ticket/model.py:1168 trac/ticket/model.py:1186
+#: trac/ticket/admin.py:484 trac/ticket/model.py:1165 trac/ticket/model.py:1183
 #, fuzzy
 msgid "Invalid version name."
 msgstr "Άκυρη εντολή \"%(name)s\""
@@ -2866,7 +2867,7 @@ msgstr "Συνημμένο"
 msgid "Summary"
 msgstr "Περίληψη"
 
-#: trac/ticket/api.py:289 trac/ticket/templates/ticket.html:347
+#: trac/ticket/api.py:289 trac/ticket/templates/ticket.html:351
 msgid "Reporter"
 msgstr "Αναφέρων"
 
@@ -3069,45 +3070,45 @@ msgstr "Άκυρος αριθμός αναφοράς."
 msgid "Multi-values fields not supported yet"
 msgstr "Τα πεδία πολλαπλών τιμών δεν υποστηρίζονται προς το παρόν"
 
-#: trac/ticket/model.py:688
+#: trac/ticket/model.py:685
 #, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr "%(type)s %(name)s δεν υπάρχει."
 
-#: trac/ticket/model.py:730 trac/ticket/model.py:755
+#: trac/ticket/model.py:727 trac/ticket/model.py:752
 #, python-format
 msgid "Invalid %(type)s name."
 msgstr ""
 
-#: trac/ticket/model.py:834
+#: trac/ticket/model.py:831
 #, fuzzy, python-format
 msgid "Component %(name)s does not exist."
 msgstr "Το συστατικό %(name)s δεν υπάρχει."
 
-#: trac/ticket/model.py:979
+#: trac/ticket/model.py:976
 #, fuzzy, python-format
 msgid "Milestone %(name)s does not exist."
 msgstr "Η έκδοση %(name)s δεν υπάρχει."
 
-#: trac/ticket/model.py:980
+#: trac/ticket/model.py:977
 #, fuzzy
 msgid "Invalid milestone name"
 msgstr "Άκυρη ημερομηνία διεκπεραίωσης"
 
-#: trac/ticket/model.py:1119
+#: trac/ticket/model.py:1116
 msgid "Open (by due date)"
 msgstr "Ανοιχτές (κατά προθεσμία)"
 
-#: trac/ticket/model.py:1120
+#: trac/ticket/model.py:1117
 msgid "Open (no due date)"
 msgstr "Ανοιχτές (χωρίς προθεσμία)"
 
-#: trac/ticket/model.py:1123
+#: trac/ticket/model.py:1120
 #, fuzzy
 msgid "Closed"
 msgstr "Έκλεισε"
 
-#: trac/ticket/model.py:1140
+#: trac/ticket/model.py:1137
 #, python-format
 msgid "Version %(name)s does not exist."
 msgstr "Η έκδοση %(name)s δεν υπάρχει."
@@ -3926,7 +3927,7 @@ msgid "Retarget associated open tickets to milestone:"
 msgstr ""
 
 #: trac/ticket/templates/milestone_edit.html:106
-#: trac/ticket/templates/ticket.html:383
+#: trac/ticket/templates/ticket.html:388
 #: trac/ticket/templates/ticket_change.html:116
 #: trac/wiki/templates/wiki_edit_form.html:66
 #: trac/wiki/templates/wiki_edit_form.html:71
@@ -4289,38 +4290,47 @@ msgstr "Ορόσημο:"
 msgid "Add new milestone"
 msgstr "Προσθέστε νέο ορόσημο"
 
-#: trac/ticket/templates/ticket.html:130
+#: trac/ticket/templates/ticket.html:132
+msgid "Go to the ticket editor"
+msgstr ""
+
+#: trac/ticket/templates/ticket.html:132
+#, fuzzy
+msgid "Modify"
+msgstr "τροποποιήθηκε"
+
+#: trac/ticket/templates/ticket.html:134
 msgid "Create New Ticket"
 msgstr "Δημιουργία νέας εργασίας"
 
-#: trac/ticket/templates/ticket.html:148
+#: trac/ticket/templates/ticket.html:152
 msgid "Oldest first"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:150
+#: trac/ticket/templates/ticket.html:154
 msgid "Newest first"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:153
+#: trac/ticket/templates/ticket.html:157
 #, fuzzy
 msgid "Threaded"
 msgstr " δημιουργήθηκε"
 
-#: trac/ticket/templates/ticket.html:158
+#: trac/ticket/templates/ticket.html:162
 #, fuzzy
 msgid "Comments only"
 msgstr "Σχόλιο:"
 
-#: trac/ticket/templates/ticket.html:163
+#: trac/ticket/templates/ticket.html:167
 msgid "Change History"
 msgstr "Ιστορικό αλλαγών"
 
-#: trac/ticket/templates/ticket.html:182
+#: trac/ticket/templates/ticket.html:186
 #, fuzzy
 msgid "Add Comment"
 msgstr "Προσθέστε συνημμένο"
 
-#: trac/ticket/templates/ticket.html:184
+#: trac/ticket/templates/ticket.html:188
 msgid ""
 "This ticket has been modified since you started editing. You should "
 "review the\n"
@@ -4330,7 +4340,7 @@ msgid ""
 " wish so."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:194
+#: trac/ticket/templates/ticket.html:198
 #, fuzzy
 msgid ""
 "You may use\n"
@@ -4341,29 +4351,29 @@ msgstr ""
 "              [1:TracGreekWikiFormatting]\n"
 "              εδώ):"
 
-#: trac/ticket/templates/ticket.html:205
+#: trac/ticket/templates/ticket.html:209
 #, fuzzy
 msgid "Modify Ticket"
 msgstr "τροποποιήθηκε"
 
-#: trac/ticket/templates/ticket.html:211
+#: trac/ticket/templates/ticket.html:215
 #, fuzzy
 msgid "Change Properties"
 msgstr "Αλλαγή ιδιοτήτων"
 
-#: trac/ticket/templates/ticket.html:212
+#: trac/ticket/templates/ticket.html:216
 msgid "Properties"
 msgstr "Ιδιότητες"
 
-#: trac/ticket/templates/ticket.html:216
+#: trac/ticket/templates/ticket.html:220
 msgid "Summary:"
 msgstr "Περίληψη:"
 
-#: trac/ticket/templates/ticket.html:224
+#: trac/ticket/templates/ticket.html:228
 msgid "Reporter:"
 msgstr "Αναφέρων:"
 
-#: trac/ticket/templates/ticket.html:236
+#: trac/ticket/templates/ticket.html:240
 #, fuzzy
 msgid ""
 "You may use\n"
@@ -4373,48 +4383,53 @@ msgstr ""
 "\t\t\t\t [1:TracGreekWikiFormatting]\n"
 "\t\t\t\t εδώ):"
 
-#: trac/ticket/templates/ticket.html:252
+#: trac/ticket/templates/ticket.html:256
 #: trac/ticket/templates/ticket_box.html:75
 #, python-format
 msgid "%(field)s:"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:291
+#: trac/ticket/templates/ticket.html:295
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr ""
 "Αυτό το κουτί σας επιτρέπει να προσθέσετε ή να αφαιρέστε τον εαυτό σας "
 "από τη λίστα CC"
 
-#: trac/ticket/templates/ticket.html:297
+#: trac/ticket/templates/ticket.html:301
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr "Διευθύνσεις ηλ. ταχυδρομείου διαχωρισμένες με κόμα ή κενό είναι αποδεκτές."
 
-#: trac/ticket/templates/ticket.html:360
+#: trac/ticket/templates/ticket.html:364
 #: trac/wiki/templates/wiki_edit_form.html:46
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:368
+#: trac/ticket/templates/ticket.html:372
 msgid "I have files to attach to this ticket"
 msgstr "Έχω αρχεία για εισαγωγή σε αυτή την εργασία"
 
-#: trac/ticket/templates/ticket.html:374
+#: trac/ticket/templates/ticket.html:378
 #, fuzzy
 msgid "Go to the list of attachments"
 msgstr "Διαγραφή συνημμένου"
 
-#: trac/ticket/templates/ticket.html:382
+#: trac/ticket/templates/ticket.html:379
+#, fuzzy
+msgid "View the ticket description"
+msgstr "Δεν έχετε το δικαίωμα να αλλάξετε τα πεδία της εργασίας"
+
+#: trac/ticket/templates/ticket.html:387
 #: trac/ticket/templates/ticket_change.html:114
 #: trac/wiki/templates/wiki_edit.html:95 trac/wiki/templates/wiki_edit.html:153
 #: trac/wiki/templates/wiki_edit_form.html:64
 msgid "Preview"
 msgstr "Προεπισκόπηση"
 
-#: trac/ticket/templates/ticket.html:383
+#: trac/ticket/templates/ticket.html:388
 msgid "Create ticket"
 msgstr "Δημιουργία εργασίας"
 
-#: trac/ticket/templates/ticket.html:391
+#: trac/ticket/templates/ticket.html:396
 #, fuzzy
 msgid ""
 "[1:Note:] See\n"
