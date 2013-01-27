@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-24 11:15+0100\n"
+"POT-Creation-Date: 2013-01-27 11:21+0900\n"
 "PO-Revision-Date: 2010-09-23 18:56+0200\n"
 "Last-Translator: Aranel Surion <aranel@aranelsurion.org>\n"
 "Language-Team: tr_TR <trac-dev@googlegroups.com>\n"
@@ -446,7 +446,7 @@ msgid "Size"
 msgstr "Boyut"
 
 #: trac/attachment.py:1070 trac/templates/history_view.html:30
-#: trac/ticket/templates/ticket.html:346
+#: trac/ticket/templates/ticket.html:350
 #: trac/versioncontrol/templates/revisionlog.html:112
 msgid "Author"
 msgstr "Yazar"
@@ -456,7 +456,8 @@ msgid "Date"
 msgstr "Tarih"
 
 #: trac/attachment.py:1071 trac/templates/attachment.html:93
-#: trac/ticket/api.py:299 trac/ticket/templates/ticket_box.html:92
+#: trac/ticket/api.py:299 trac/ticket/templates/ticket.html:379
+#: trac/ticket/templates/ticket_box.html:92
 msgid "Description"
 msgstr "Tanım"
 
@@ -577,7 +578,7 @@ msgid "Database is up to date, no upgrade necessary."
 msgstr "Veritabanı güncel, gücellemeye gerek yok."
 
 #: trac/env.py:984
-#, fuzzy, python-format
+#, fuzzy
 msgid ""
 "The pre-upgrade backup failed.\n"
 "Use '--no-backup' to upgrade without doing a backup.\n"
@@ -682,7 +683,7 @@ msgstr "Kullanıcı"
 
 #: trac/perm.py:656 trac/admin/templates/admin_perms.html:63
 #: trac/ticket/templates/batch_modify.html:37
-#: trac/ticket/templates/ticket.html:317
+#: trac/ticket/templates/ticket.html:321
 msgid "Action"
 msgstr "Eylem"
 
@@ -870,7 +871,7 @@ msgstr "Dizin mevcut ve boş değil."
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr "Bu sayfa %(name)s mevcut değil. Burada oluşturabilirsiniz."
+msgstr ""
 
 #: trac/admin/console.py:441
 msgid "Creating and Initializing Project"
@@ -1173,7 +1174,7 @@ msgid "URL:"
 msgstr "URL"
 
 #: trac/admin/templates/admin_basics.html:29
-#: trac/ticket/templates/ticket.html:233
+#: trac/ticket/templates/ticket.html:237
 msgid "Description:"
 msgstr "Açıklama"
 
@@ -1718,7 +1719,7 @@ msgstr "Seçenekleriniz kaydedildi."
 #: trac/mimeview/rst.py:125 trac/mimeview/rst.py:148
 #, fuzzy, python-format
 msgid "%(link)s is not a valid TracLink"
-msgstr "%(name)s geçerli bir eylem değil."
+msgstr ""
 
 #: trac/prefs/web_ui.py:56 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -2205,7 +2206,7 @@ msgstr "(boyut limiti %(value)s)"
 msgid "Attachment Info"
 msgstr "Dosya bilgisi"
 
-#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:351
+#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:355
 #: trac/wiki/templates/wiki_edit_form.html:42
 msgid "Your email or username:"
 msgstr "E-posta adresiniz ya da kullanıcı adınız:"
@@ -2644,7 +2645,7 @@ msgstr ""
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:44
-#: trac/ticket/templates/ticket.html:374
+#: trac/ticket/templates/ticket.html:378
 msgid "Attachments"
 msgstr "Ek Dosyalar"
 
@@ -2761,7 +2762,7 @@ msgstr "%(name)s bileşeni zaten tanımlı."
 msgid "The component \"%(name)s\" has been added."
 msgstr "\"%(name)s\" bileşeni eklendi."
 
-#: trac/ticket/admin.py:122 trac/ticket/model.py:862 trac/ticket/model.py:881
+#: trac/ticket/admin.py:122 trac/ticket/model.py:859 trac/ticket/model.py:878
 msgid "Invalid component name."
 msgstr "Geçersiz bileşen adı."
 
@@ -2800,7 +2801,7 @@ msgstr "Aşama %(name)s"
 msgid "The milestone \"%(name)s\" has been added."
 msgstr "Aşama \"%(name)s\" eklendi."
 
-#: trac/ticket/admin.py:305 trac/ticket/model.py:1041 trac/ticket/model.py:1063
+#: trac/ticket/admin.py:305 trac/ticket/model.py:1038 trac/ticket/model.py:1060
 msgid "Invalid milestone name."
 msgstr "Geçersiz miltaşı adı."
 
@@ -2827,7 +2828,7 @@ msgstr "Sürüm %(name)s zaten tanımlı."
 msgid "The version \"%(name)s\" has been added."
 msgstr "Sürüm \"%(name)s\" eklendi."
 
-#: trac/ticket/admin.py:484 trac/ticket/model.py:1168 trac/ticket/model.py:1186
+#: trac/ticket/admin.py:484 trac/ticket/model.py:1165 trac/ticket/model.py:1183
 msgid "Invalid version name."
 msgstr "Geçersiz sürüm adı."
 
@@ -2944,7 +2945,7 @@ msgstr "Ek Dosyalar"
 msgid "Summary"
 msgstr "Özet"
 
-#: trac/ticket/api.py:289 trac/ticket/templates/ticket.html:347
+#: trac/ticket/api.py:289 trac/ticket/templates/ticket.html:351
 msgid "Reporter"
 msgstr "Bildiren"
 
@@ -3146,43 +3147,43 @@ msgstr "Geçersiz bilet numarası"
 msgid "Multi-values fields not supported yet"
 msgstr "Birden çok değerli alanlar henüz desteklenmiyor."
 
-#: trac/ticket/model.py:688
+#: trac/ticket/model.py:685
 #, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr "%(type)s %(name)s bulunamadı."
 
-#: trac/ticket/model.py:730 trac/ticket/model.py:755
+#: trac/ticket/model.py:727 trac/ticket/model.py:752
 #, python-format
 msgid "Invalid %(type)s name."
 msgstr "Geçersiz %(type)s adı."
 
-#: trac/ticket/model.py:834
+#: trac/ticket/model.py:831
 #, python-format
 msgid "Component %(name)s does not exist."
 msgstr "%(name)s bileşeni bulunamadı."
 
-#: trac/ticket/model.py:979
+#: trac/ticket/model.py:976
 #, python-format
 msgid "Milestone %(name)s does not exist."
 msgstr "Aşama %(name)s mevcut değil."
 
-#: trac/ticket/model.py:980
+#: trac/ticket/model.py:977
 msgid "Invalid milestone name"
 msgstr "Geçersiz aşama adı"
 
-#: trac/ticket/model.py:1119
+#: trac/ticket/model.py:1116
 msgid "Open (by due date)"
 msgstr "Açık (bitiş tarihine göre)"
 
-#: trac/ticket/model.py:1120
+#: trac/ticket/model.py:1117
 msgid "Open (no due date)"
 msgstr "Açık (bitiş tarihi yok)"
 
-#: trac/ticket/model.py:1123
+#: trac/ticket/model.py:1120
 msgid "Closed"
 msgstr "Kapalı"
 
-#: trac/ticket/model.py:1140
+#: trac/ticket/model.py:1137
 #, python-format
 msgid "Version %(name)s does not exist."
 msgstr "Sürüm %(name)s mevcut değil."
@@ -3977,7 +3978,7 @@ msgid "Retarget associated open tickets to milestone:"
 msgstr "İlgili açık biletleri aşamaya bağla:"
 
 #: trac/ticket/templates/milestone_edit.html:106
-#: trac/ticket/templates/ticket.html:383
+#: trac/ticket/templates/ticket.html:388
 #: trac/ticket/templates/ticket_change.html:116
 #: trac/wiki/templates/wiki_edit_form.html:66
 #: trac/wiki/templates/wiki_edit_form.html:71
@@ -4332,38 +4333,48 @@ msgstr "Aşama:"
 msgid "Add new milestone"
 msgstr "Yeni aşama ekle"
 
-#: trac/ticket/templates/ticket.html:130
+#: trac/ticket/templates/ticket.html:132
+#, fuzzy
+msgid "Go to the ticket editor"
+msgstr "Düzenleyiciye git"
+
+#: trac/ticket/templates/ticket.html:132
+#, fuzzy
+msgid "Modify"
+msgstr "değişmiş"
+
+#: trac/ticket/templates/ticket.html:134
 msgid "Create New Ticket"
 msgstr "Yeni bilet oluştur"
 
-#: trac/ticket/templates/ticket.html:148
+#: trac/ticket/templates/ticket.html:152
 msgid "Oldest first"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:150
+#: trac/ticket/templates/ticket.html:154
 msgid "Newest first"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:153
+#: trac/ticket/templates/ticket.html:157
 #, fuzzy
 msgid "Threaded"
 msgstr "oluşturuldu"
 
-#: trac/ticket/templates/ticket.html:158
+#: trac/ticket/templates/ticket.html:162
 #, fuzzy
 msgid "Comments only"
 msgstr "yorum:"
 
-#: trac/ticket/templates/ticket.html:163
+#: trac/ticket/templates/ticket.html:167
 msgid "Change History"
 msgstr "Değişim Geçmişi"
 
-#: trac/ticket/templates/ticket.html:182
+#: trac/ticket/templates/ticket.html:186
 #, fuzzy
 msgid "Add Comment"
 msgstr "Yorum ekle"
 
-#: trac/ticket/templates/ticket.html:184
+#: trac/ticket/templates/ticket.html:188
 msgid ""
 "This ticket has been modified since you started editing. You should "
 "review the\n"
@@ -4373,7 +4384,7 @@ msgid ""
 " wish so."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:194
+#: trac/ticket/templates/ticket.html:198
 #, fuzzy
 msgid ""
 "You may use\n"
@@ -4384,27 +4395,27 @@ msgstr ""
 "                [1:WikiFormatting]\n"
 "                kullanabilirsiniz):"
 
-#: trac/ticket/templates/ticket.html:205
+#: trac/ticket/templates/ticket.html:209
 msgid "Modify Ticket"
 msgstr "Bileti Düzenle"
 
-#: trac/ticket/templates/ticket.html:211
+#: trac/ticket/templates/ticket.html:215
 msgid "Change Properties"
 msgstr "Özellikleri Değiştir"
 
-#: trac/ticket/templates/ticket.html:212
+#: trac/ticket/templates/ticket.html:216
 msgid "Properties"
 msgstr "Özellikler"
 
-#: trac/ticket/templates/ticket.html:216
+#: trac/ticket/templates/ticket.html:220
 msgid "Summary:"
 msgstr "Özet"
 
-#: trac/ticket/templates/ticket.html:224
+#: trac/ticket/templates/ticket.html:228
 msgid "Reporter:"
 msgstr "Bildiren:"
 
-#: trac/ticket/templates/ticket.html:236
+#: trac/ticket/templates/ticket.html:240
 msgid ""
 "You may use\n"
 "                          [1:WikiFormatting] here."
@@ -4413,47 +4424,52 @@ msgstr ""
 "                [1:WikiFormatting]\n"
 "                kullanabilirsiniz):"
 
-#: trac/ticket/templates/ticket.html:252
+#: trac/ticket/templates/ticket.html:256
 #: trac/ticket/templates/ticket_box.html:75
 #, python-format
 msgid "%(field)s:"
 msgstr "%(field)s:"
 
-#: trac/ticket/templates/ticket.html:291
+#: trac/ticket/templates/ticket.html:295
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr "Bu kutucuk sizi CC listesine ekleyip çıkarır."
 
-#: trac/ticket/templates/ticket.html:297
+#: trac/ticket/templates/ticket.html:301
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr ""
 "Boşluk veya virgülle ayrılan email adresi ve kullanıcı adları da kabul "
 "edilirler."
 
-#: trac/ticket/templates/ticket.html:360
+#: trac/ticket/templates/ticket.html:364
 #: trac/wiki/templates/wiki_edit_form.html:46
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
 msgstr "E-posta adresi ve kullanıcı adı [1:Tercihler] ile kaydedilebilir."
 
-#: trac/ticket/templates/ticket.html:368
+#: trac/ticket/templates/ticket.html:372
 msgid "I have files to attach to this ticket"
 msgstr "Bu bilete eklenecek dosyalar var."
 
-#: trac/ticket/templates/ticket.html:374
+#: trac/ticket/templates/ticket.html:378
 msgid "Go to the list of attachments"
 msgstr "Ek listesine git"
 
-#: trac/ticket/templates/ticket.html:382
+#: trac/ticket/templates/ticket.html:379
+#, fuzzy
+msgid "View the ticket description"
+msgstr "Bİlet açıklama alanını değiştirme yetkisi yok."
+
+#: trac/ticket/templates/ticket.html:387
 #: trac/ticket/templates/ticket_change.html:114
 #: trac/wiki/templates/wiki_edit.html:95 trac/wiki/templates/wiki_edit.html:153
 #: trac/wiki/templates/wiki_edit_form.html:64
 msgid "Preview"
 msgstr "Önizle"
 
-#: trac/ticket/templates/ticket.html:383
+#: trac/ticket/templates/ticket.html:388
 msgid "Create ticket"
 msgstr "Bilet oluştur"
 
-#: trac/ticket/templates/ticket.html:391
+#: trac/ticket/templates/ticket.html:396
 msgid ""
 "[1:Note:] See\n"
 "        [2:TracTickets] for help on using\n"
@@ -6192,7 +6208,7 @@ msgstr "Eposta"
 #: trac/web/session.py:427
 #, fuzzy, python-format
 msgid "Session '%(sid)s' already exists"
-msgstr "Sürüm %(name)s zaten tanımlı."
+msgstr ""
 
 #: trac/web/session.py:438
 #, python-format
@@ -6207,13 +6223,13 @@ msgstr "Oturum idsi %(sid)s bulunamadı"
 #: trac/wiki/admin.py:113
 #, fuzzy, python-format
 msgid "Page '%(page)s' not found"
-msgstr "%(name)s sayfası bulunamadı."
+msgstr ""
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:127 trac/wiki/model.py:174
 #: trac/wiki/web_ui.py:119
 #, fuzzy, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr "Geçersiz Wiki sayfası: %(message)s"
+msgstr ""
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -7001,7 +7017,7 @@ msgstr "[1:Son Değişiklik] %(reldate)s önce"
 #: trac/wiki/templates/wiki_view.html:62
 #, fuzzy, python-format
 msgid "Last modified on %(date)s"
-msgstr "(en son değiştiren %(author)s)"
+msgstr ""
 
 #: trac/wiki/templates/wiki_view.html:66
 #, python-format
@@ -7032,93 +7048,4 @@ msgstr "(boş sayfa)"
 #: trac/wiki/templates/wiki_view.html:135
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr "Bu sayfalar, mevcut sayfaya benzer isimler taşıyor, ilgili olabilir:"
-
-#~ msgid "%(perm)s privileges are required to perform this operation"
-#~ msgstr "Bu işlemi yapabilmek için  %(perm)s  yetkiniz olmalı"
-
-#~ msgid "Note:"
-#~ msgstr "Not:"
-
-#~ msgid ""
-#~ "[1:[2:%(title)s:]]\n"
-#~ "          [3:[4:%(count)s]]"
-#~ msgstr ""
-#~ "[1:[2:%(title)s:]]\n"
-#~ "          [3:[4:%(count)s]]"
-
-#~ msgid ""
-#~ "[1:[2:Total:]]\n"
-#~ "      [3:[4:%(count)s]]"
-#~ msgstr ""
-#~ "[1:[2:Toplam:]]\n"
-#~ "      [3:[4:%(count)s]]"
-
-#~ msgid "reopened"
-#~ msgstr "tekrar açıldı"
-
-#~ msgid "updated"
-#~ msgstr "güncelendi"
-
-#~ msgid "Delete Milestone"
-#~ msgstr "Aşamayı Sil"
-
-#~ msgid "Edit Milestone"
-#~ msgstr "Aşama Düzenle"
-
-#~ msgid "Report"
-#~ msgstr "Rapor"
-
-#~ msgid "Go to the ticket editor"
-#~ msgstr "Bilet düzenleyiciye git"
-
-#~ msgid "Modify"
-#~ msgstr "Düzenle"
-
-#~ msgid "Ticket #"
-#~ msgstr "Bilet No: "
-
-#~ msgid "View ticket fields and description"
-#~ msgstr "Bilet alanları ve açıklamasını göster"
-
-#~ msgid "View"
-#~ msgstr "Görüntüle"
-
-#~ msgid ""
-#~ "Warnings are shown at the [1:top of the page]. The ticket validation\n"
-#~ "            may have failed."
-#~ msgstr ""
-#~ "Uyarılar [1:sayfanın üzerinde] gösterildi. Bilet kontrolü\n"
-#~ "            başarısız olmuş olabilir."
-
-#~ msgid "%(date)s in Timeline"
-#~ msgstr "Zaman çizelgesinde %(date)s"
-
-#~ msgid ""
-#~ "Revision [1:%(rev)s],\n"
-#~ "            [2:%(size)s]\n"
-#~ "            checked in by %(author)s, %(date)s ago\n"
-#~ "            ([3:diff])"
-#~ msgstr ""
-#~ "Revizyon [1:%(rev)s],\n"
-#~ "            [2:%(size)s]\n"
-#~ "            %(author)s tarafından girildi, %(date)s önce\n"
-#~ "            ([3:fark])"
-
-#~ msgid ""
-#~ "Are you sure you want to delete"
-#~ " versions %(from)s to %(to)s of this"
-#~ " page?"
-#~ msgstr ""
-#~ "Bu sayfanın %(from)s ile %(to)s "
-#~ "arasındaki sürümlerini silmek istediğinize "
-#~ "emin misiniz?"
-
-#~ msgid "Editing"
-#~ msgstr "Düzenleme"
-
-#~ msgid "See the start of the diffs"
-#~ msgstr "Difflerin başlangıcını gör"
-
-#~ msgid "See the start of the preview"
-#~ msgstr "Önizlemenin başlangıcını gör"
 
