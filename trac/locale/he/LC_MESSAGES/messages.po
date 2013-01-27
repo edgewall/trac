@@ -644,7 +644,7 @@ msgstr "תיקייה קיימת ואינה ריקה."
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr "הדף %(name)s לא קיים. ניתן ליצור כאן."
+msgstr ""
 
 #: trac/admin/console.py:431
 msgid "Creating and Initializing Project"
@@ -1423,7 +1423,7 @@ msgstr "ההעדפות נשמרו."
 #: trac/mimeview/rst.py:123 trac/mimeview/rst.py:146
 #, fuzzy, python-format
 msgid "%(link)s is not a valid TracLink"
-msgstr "%(name)s אינה פעולה חוקית."
+msgstr ""
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -5453,7 +5453,7 @@ msgstr "אימייל"
 #: trac/web/session.py:457
 #, fuzzy, python-format
 msgid "Session '%(sid)s' already exists"
-msgstr "גרסה \"%(name)s\" כבר קיימת."
+msgstr ""
 
 #: trac/web/session.py:470
 #, python-format
@@ -5468,13 +5468,13 @@ msgstr "מזהה שיחה %(sid)s לא נמצא"
 #: trac/wiki/admin.py:102
 #, fuzzy, python-format
 msgid "Page '%(page)s' not found"
-msgstr "דף %(name)s לא נמצא"
+msgstr ""
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:122 trac/wiki/model.py:172
 #: trac/wiki/web_ui.py:114
 #, fuzzy, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr "דף ויקי לא חוקי: %(message)s"
+msgstr ""
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -5995,7 +5995,7 @@ msgstr "[1:שונה לאחרונה] לפני %(reldate)s"
 #: trac/wiki/templates/wiki_view.html:59
 #, fuzzy, python-format
 msgid "Last modified on %(date)s"
-msgstr "(שונה לאחרונה ע\"י %(author)s)"
+msgstr ""
 
 #: trac/wiki/templates/wiki_view.html:64
 #, python-format

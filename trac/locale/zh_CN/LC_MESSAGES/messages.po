@@ -520,7 +520,7 @@ msgstr "命令无法找到"
 #: trac/admin/console.py:111
 #, fuzzy, python-format
 msgid "Error: %(msg)s"
-msgstr "错误: %(message)s"
+msgstr "错误: %(msg)s"
 
 #: trac/admin/console.py:130
 #, fuzzy, python-format
@@ -636,7 +636,7 @@ msgstr "目录已存在并且非空。"
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr "页面 %(name)s 不存在。你可以在此创建它。"
+msgstr ""
 
 #: trac/admin/console.py:431
 msgid "Creating and Initializing Project"
@@ -1132,7 +1132,7 @@ msgstr "增加里程碑:"
 #: trac/admin/templates/admin_milestones.html:86
 #, fuzzy, python-format
 msgid "Format: %(datetimehint)s"
-msgstr "格式：%(datehint)s"
+msgstr "格式：%(datetimehint)s"
 
 #: trac/admin/templates/admin_milestones.html:101 trac/ticket/admin.py:399
 msgid "Due"
@@ -1297,7 +1297,7 @@ msgstr "无法加载 Python 的 MySQL 访问模块"
 #: trac/db/postgres_backend.py:194
 #, fuzzy, python-format
 msgid "Unable to run %(path)s: %(msg)s"
-msgstr "svn追溯失败 %(path)s: %(error)s"
+msgstr ""
 
 #: trac/db/mysql_backend.py:209
 #, python-format
@@ -1402,7 +1402,7 @@ msgstr "您的个人设置已保存。"
 #: trac/mimeview/rst.py:123 trac/mimeview/rst.py:146
 #, fuzzy, python-format
 msgid "%(link)s is not a valid TracLink"
-msgstr "%(name)s 是无效动作."
+msgstr ""
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -4309,7 +4309,7 @@ msgstr "没有修订版"
 #: trac/versioncontrol/svn_prop.py:270
 #, fuzzy, python-format
 msgid "%(title)s: %(revs)s"
-msgstr "%(title)s： %(message)s:"
+msgstr ""
 
 #: trac/versioncontrol/svn_prop.py:306
 msgid "merged: "
@@ -5347,7 +5347,7 @@ msgstr "邮件地址"
 #: trac/web/session.py:457
 #, fuzzy, python-format
 msgid "Session '%(sid)s' already exists"
-msgstr "版本 %(name)s 已经存在."
+msgstr ""
 
 #: trac/web/session.py:470
 #, python-format
@@ -5362,13 +5362,13 @@ msgstr "没有找到会话标识%(sid)s"
 #: trac/wiki/admin.py:102
 #, fuzzy, python-format
 msgid "Page '%(page)s' not found"
-msgstr "没有找到页面 %(name)s"
+msgstr ""
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:122 trac/wiki/model.py:172
 #: trac/wiki/web_ui.py:114
 #, fuzzy, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr "无效的Wiki页面: %(message)s"
+msgstr ""
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -5378,7 +5378,7 @@ msgstr "'%(name)s'不是一个文件。"
 #: trac/wiki/admin.py:139
 #, fuzzy, python-format
 msgid "  %(title)s already exists"
-msgstr "版本 %(name)s 已经存在."
+msgstr ""
 
 #: trac/wiki/admin.py:143
 #, python-format
@@ -5889,7 +5889,7 @@ msgstr "[1:最后修改于] %(reldate)s 前"
 #: trac/wiki/templates/wiki_view.html:59
 #, fuzzy, python-format
 msgid "Last modified on %(date)s"
-msgstr "(最后由 %(author)s 修改)"
+msgstr ""
 
 #: trac/wiki/templates/wiki_view.html:64
 #, python-format

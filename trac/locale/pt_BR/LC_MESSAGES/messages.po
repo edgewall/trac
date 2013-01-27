@@ -658,7 +658,7 @@ msgstr "O diretório existe e não está vazio."
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr "A página %(name)s não existe. Você pode criá-la aqui."
+msgstr ""
 
 #: trac/admin/console.py:431
 msgid "Creating and Initializing Project"
@@ -5599,7 +5599,7 @@ msgstr "Página %(page)s não encontrada"
 #: trac/wiki/web_ui.py:114
 #, fuzzy, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr "Página do Wiki Inválida: %(message)s"
+msgstr ""
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -6138,7 +6138,7 @@ msgstr "[1:Última modificação] %(reldate)s atrás"
 #: trac/wiki/templates/wiki_view.html:59
 #, fuzzy, python-format
 msgid "Last modified on %(date)s"
-msgstr "(última modificação por %(author)s)"
+msgstr ""
 
 #: trac/wiki/templates/wiki_view.html:64
 #, python-format
