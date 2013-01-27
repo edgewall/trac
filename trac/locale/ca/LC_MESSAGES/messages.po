@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: trac 0.12.3-dev\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-24 11:15+0100\n"
+"POT-Creation-Date: 2013-01-27 11:21+0900\n"
 "PO-Revision-Date: 2011-11-17 11:12+0100\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <ca@dodds.net>\n"
@@ -445,7 +445,7 @@ msgid "Size"
 msgstr "Mida"
 
 #: trac/attachment.py:1070 trac/templates/history_view.html:30
-#: trac/ticket/templates/ticket.html:346
+#: trac/ticket/templates/ticket.html:350
 #: trac/versioncontrol/templates/revisionlog.html:112
 msgid "Author"
 msgstr "Autor"
@@ -455,7 +455,8 @@ msgid "Date"
 msgstr "Data"
 
 #: trac/attachment.py:1071 trac/templates/attachment.html:93
-#: trac/ticket/api.py:299 trac/ticket/templates/ticket_box.html:92
+#: trac/ticket/api.py:299 trac/ticket/templates/ticket.html:379
+#: trac/ticket/templates/ticket_box.html:92
 msgid "Description"
 msgstr "Descripció"
 
@@ -581,7 +582,7 @@ msgid "Database is up to date, no upgrade necessary."
 msgstr "La base de dades està al dia, no cal una actualització."
 
 #: trac/env.py:984
-#, fuzzy, python-format
+#, fuzzy
 msgid ""
 "The pre-upgrade backup failed.\n"
 "Use '--no-backup' to upgrade without doing a backup.\n"
@@ -689,7 +690,7 @@ msgstr "Usuari"
 
 #: trac/perm.py:656 trac/admin/templates/admin_perms.html:63
 #: trac/ticket/templates/batch_modify.html:37
-#: trac/ticket/templates/ticket.html:317
+#: trac/ticket/templates/ticket.html:321
 msgid "Action"
 msgstr "Acció"
 
@@ -872,7 +873,7 @@ msgstr "El directori existeix i no és buit."
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr "La pàgina %(name)s no existeix. La podeu crear aquí."
+msgstr ""
 
 #: trac/admin/console.py:441
 msgid "Creating and Initializing Project"
@@ -1176,7 +1177,7 @@ msgid "URL:"
 msgstr "URL:"
 
 #: trac/admin/templates/admin_basics.html:29
-#: trac/ticket/templates/ticket.html:233
+#: trac/ticket/templates/ticket.html:237
 msgid "Description:"
 msgstr "Descripció:"
 
@@ -2229,7 +2230,7 @@ msgstr "(el límit de la mida és %(value)s)"
 msgid "Attachment Info"
 msgstr "Informació sobre l'adjunt"
 
-#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:351
+#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:355
 #: trac/wiki/templates/wiki_edit_form.html:42
 msgid "Your email or username:"
 msgstr "El vostre correu o nom d'usuari:"
@@ -2668,7 +2669,7 @@ msgstr ""
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:44
-#: trac/ticket/templates/ticket.html:374
+#: trac/ticket/templates/ticket.html:378
 msgid "Attachments"
 msgstr "Adjunts"
 
@@ -2787,7 +2788,7 @@ msgstr "El component %(name)s ja existeix."
 msgid "The component \"%(name)s\" has been added."
 msgstr "S'ha afegit el component «%(name)s»."
 
-#: trac/ticket/admin.py:122 trac/ticket/model.py:862 trac/ticket/model.py:881
+#: trac/ticket/admin.py:122 trac/ticket/model.py:859 trac/ticket/model.py:878
 msgid "Invalid component name."
 msgstr "El nom del component és invàlid."
 
@@ -2826,7 +2827,7 @@ msgstr "La fita %(name)s ja existeix."
 msgid "The milestone \"%(name)s\" has been added."
 msgstr "S'ha afegit la fita «%(name)s."
 
-#: trac/ticket/admin.py:305 trac/ticket/model.py:1041 trac/ticket/model.py:1063
+#: trac/ticket/admin.py:305 trac/ticket/model.py:1038 trac/ticket/model.py:1060
 msgid "Invalid milestone name."
 msgstr "El nom de la fita és invàlid."
 
@@ -2853,7 +2854,7 @@ msgstr "La versió %(name)s ja existeix."
 msgid "The version \"%(name)s\" has been added."
 msgstr "S'ha afegit la versió «%(name)s."
 
-#: trac/ticket/admin.py:484 trac/ticket/model.py:1168 trac/ticket/model.py:1186
+#: trac/ticket/admin.py:484 trac/ticket/model.py:1165 trac/ticket/model.py:1183
 msgid "Invalid version name."
 msgstr "El nom de la versió és invàlid."
 
@@ -2969,7 +2970,7 @@ msgstr "Adjunt"
 msgid "Summary"
 msgstr "Resum"
 
-#: trac/ticket/api.py:289 trac/ticket/templates/ticket.html:347
+#: trac/ticket/api.py:289 trac/ticket/templates/ticket.html:351
 msgid "Reporter"
 msgstr "Notificador"
 
@@ -3172,43 +3173,43 @@ msgstr "El número de tiquet és invàlid"
 msgid "Multi-values fields not supported yet"
 msgstr "Els camps amb múltiples valors encara no són suportats"
 
-#: trac/ticket/model.py:688
+#: trac/ticket/model.py:685
 #, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr "El %(type)s %(name)s no existeix."
 
-#: trac/ticket/model.py:730 trac/ticket/model.py:755
+#: trac/ticket/model.py:727 trac/ticket/model.py:752
 #, python-format
 msgid "Invalid %(type)s name."
 msgstr "El nom de %(type)s és invàlid."
 
-#: trac/ticket/model.py:834
+#: trac/ticket/model.py:831
 #, python-format
 msgid "Component %(name)s does not exist."
 msgstr "El component %(name)s no existeix."
 
-#: trac/ticket/model.py:979
+#: trac/ticket/model.py:976
 #, python-format
 msgid "Milestone %(name)s does not exist."
 msgstr "La fita %(name)s no existeix."
 
-#: trac/ticket/model.py:980
+#: trac/ticket/model.py:977
 msgid "Invalid milestone name"
 msgstr "El nom de la fita és invàlid"
 
-#: trac/ticket/model.py:1119
+#: trac/ticket/model.py:1116
 msgid "Open (by due date)"
 msgstr "Oberts (per data de venciment)"
 
-#: trac/ticket/model.py:1120
+#: trac/ticket/model.py:1117
 msgid "Open (no due date)"
 msgstr "Oberts (sense data de venciment)"
 
-#: trac/ticket/model.py:1123
+#: trac/ticket/model.py:1120
 msgid "Closed"
 msgstr "Tancats"
 
-#: trac/ticket/model.py:1140
+#: trac/ticket/model.py:1137
 #, python-format
 msgid "Version %(name)s does not exist."
 msgstr "La versió %(name)s no existeix."
@@ -4015,7 +4016,7 @@ msgid "Retarget associated open tickets to milestone:"
 msgstr "Assigna els tiquets oberts associats a la fita:"
 
 #: trac/ticket/templates/milestone_edit.html:106
-#: trac/ticket/templates/ticket.html:383
+#: trac/ticket/templates/ticket.html:388
 #: trac/ticket/templates/ticket_change.html:116
 #: trac/wiki/templates/wiki_edit_form.html:66
 #: trac/wiki/templates/wiki_edit_form.html:71
@@ -4372,38 +4373,48 @@ msgstr "Fita:"
 msgid "Add new milestone"
 msgstr "Afegeix una fita nova"
 
-#: trac/ticket/templates/ticket.html:130
+#: trac/ticket/templates/ticket.html:132
+#, fuzzy
+msgid "Go to the ticket editor"
+msgstr "Vés a l'editor"
+
+#: trac/ticket/templates/ticket.html:132
+#, fuzzy
+msgid "Modify"
+msgstr "modificat"
+
+#: trac/ticket/templates/ticket.html:134
 msgid "Create New Ticket"
 msgstr "Crea un tiquet nou"
 
-#: trac/ticket/templates/ticket.html:148
+#: trac/ticket/templates/ticket.html:152
 msgid "Oldest first"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:150
+#: trac/ticket/templates/ticket.html:154
 msgid "Newest first"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:153
+#: trac/ticket/templates/ticket.html:157
 #, fuzzy
 msgid "Threaded"
 msgstr "creat"
 
-#: trac/ticket/templates/ticket.html:158
+#: trac/ticket/templates/ticket.html:162
 #, fuzzy
 msgid "Comments only"
 msgstr "comentari:"
 
-#: trac/ticket/templates/ticket.html:163
+#: trac/ticket/templates/ticket.html:167
 msgid "Change History"
 msgstr "Historial de canvis"
 
-#: trac/ticket/templates/ticket.html:182
+#: trac/ticket/templates/ticket.html:186
 #, fuzzy
 msgid "Add Comment"
 msgstr "Afegeix un comentari"
 
-#: trac/ticket/templates/ticket.html:184
+#: trac/ticket/templates/ticket.html:188
 msgid ""
 "This ticket has been modified since you started editing. You should "
 "review the\n"
@@ -4413,7 +4424,7 @@ msgid ""
 " wish so."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:194
+#: trac/ticket/templates/ticket.html:198
 #, fuzzy
 msgid ""
 "You may use\n"
@@ -4424,27 +4435,27 @@ msgstr ""
 "              [1:WikiFormatting]\n"
 "              aquí):"
 
-#: trac/ticket/templates/ticket.html:205
+#: trac/ticket/templates/ticket.html:209
 msgid "Modify Ticket"
 msgstr "Modifica el tiquet"
 
-#: trac/ticket/templates/ticket.html:211
+#: trac/ticket/templates/ticket.html:215
 msgid "Change Properties"
 msgstr "Canvia les propietats"
 
-#: trac/ticket/templates/ticket.html:212
+#: trac/ticket/templates/ticket.html:216
 msgid "Properties"
 msgstr "Propietats"
 
-#: trac/ticket/templates/ticket.html:216
+#: trac/ticket/templates/ticket.html:220
 msgid "Summary:"
 msgstr "Resum:"
 
-#: trac/ticket/templates/ticket.html:224
+#: trac/ticket/templates/ticket.html:228
 msgid "Reporter:"
 msgstr "Notificador:"
 
-#: trac/ticket/templates/ticket.html:236
+#: trac/ticket/templates/ticket.html:240
 msgid ""
 "You may use\n"
 "                          [1:WikiFormatting] here."
@@ -4452,49 +4463,54 @@ msgstr ""
 "Podeu emprar\n"
 "                          [1:WikiFormatting] aquí."
 
-#: trac/ticket/templates/ticket.html:252
+#: trac/ticket/templates/ticket.html:256
 #: trac/ticket/templates/ticket_box.html:75
 #, python-format
 msgid "%(field)s:"
 msgstr "%(field)s:"
 
-#: trac/ticket/templates/ticket.html:291
+#: trac/ticket/templates/ticket.html:295
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr ""
 "Aquesta casella de selecció us permet afegir-vos o treure-vos de la "
 "llista de CC."
 
-#: trac/ticket/templates/ticket.html:297
+#: trac/ticket/templates/ticket.html:301
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr "S'accepten adreces de correu electrònic separades per espais o comes."
 
-#: trac/ticket/templates/ticket.html:360
+#: trac/ticket/templates/ticket.html:364
 #: trac/wiki/templates/wiki_edit_form.html:46
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
 msgstr ""
 "Es poden desar l'adreça de correu i el nom d'usuari a les "
 "[1:preferències]."
 
-#: trac/ticket/templates/ticket.html:368
+#: trac/ticket/templates/ticket.html:372
 msgid "I have files to attach to this ticket"
 msgstr "Tinc fitxers per a adjuntar a aquest tiquet"
 
-#: trac/ticket/templates/ticket.html:374
+#: trac/ticket/templates/ticket.html:378
 msgid "Go to the list of attachments"
 msgstr "Vés a la llista d'adjunts"
 
-#: trac/ticket/templates/ticket.html:382
+#: trac/ticket/templates/ticket.html:379
+#, fuzzy
+msgid "View the ticket description"
+msgstr "No teniu permís per a editar la descripció del tiquet."
+
+#: trac/ticket/templates/ticket.html:387
 #: trac/ticket/templates/ticket_change.html:114
 #: trac/wiki/templates/wiki_edit.html:95 trac/wiki/templates/wiki_edit.html:153
 #: trac/wiki/templates/wiki_edit_form.html:64
 msgid "Preview"
 msgstr "Previsualitza"
 
-#: trac/ticket/templates/ticket.html:383
+#: trac/ticket/templates/ticket.html:388
 msgid "Create ticket"
 msgstr "Crea un tiquet nou"
 
-#: trac/ticket/templates/ticket.html:391
+#: trac/ticket/templates/ticket.html:396
 msgid ""
 "[1:Note:] See\n"
 "        [2:TracTickets] for help on using\n"
@@ -7124,95 +7140,4 @@ msgid "The following pages have a name similar to this page, and may be related:
 msgstr ""
 "Les pàgines següents tenen un nom similar a aquesta pàgina, i poden estar"
 " relacionades:"
-
-#~ msgid "%(perm)s privileges are required to perform this operation"
-#~ msgstr "Es requereixen privilegis de %(perm)s per a realitzar aquesta operació"
-
-#~ msgid "Note:"
-#~ msgstr "Nota:"
-
-#~ msgid ""
-#~ "[1:[2:%(title)s:]]\n"
-#~ "          [3:[4:%(count)s]]"
-#~ msgstr ""
-#~ "[1:[2:%(title)s:]]\n"
-#~ "          [3:[4:%(count)s]]"
-
-#~ msgid ""
-#~ "[1:[2:Total:]]\n"
-#~ "      [3:[4:%(count)s]]"
-#~ msgstr ""
-#~ "[1:[2:Total:]]\n"
-#~ "      [3:[4:%(count)s]]"
-
-#~ msgid "reopened"
-#~ msgstr "reobert"
-
-#~ msgid "updated"
-#~ msgstr "actualitzat"
-
-#~ msgid "Delete Milestone"
-#~ msgstr "Suprimeix la fita"
-
-#~ msgid "Edit Milestone"
-#~ msgstr "Edita la fita"
-
-#~ msgid "Report"
-#~ msgstr "Informe"
-
-#~ msgid "Go to the ticket editor"
-#~ msgstr "Vés a l'editor de  tiquets"
-
-#~ msgid "Modify"
-#~ msgstr "Modifica"
-
-#~ msgid "Ticket #"
-#~ msgstr "Tiquet #"
-
-#~ msgid "View ticket fields and description"
-#~ msgstr "Mostra els camps dels tiquets i la seua descripció"
-
-#~ msgid "View"
-#~ msgstr "Visualitza"
-
-#~ msgid ""
-#~ "Warnings are shown at the [1:top of the page]. The ticket validation\n"
-#~ "            may have failed."
-#~ msgstr ""
-#~ "Es mostren els avisos a la [1:part"
-#~ " superior de la pàgina]. La validació"
-#~ "\n"
-#~ "            del tiquet pot haver fallat."
-
-#~ msgid "%(date)s in Timeline"
-#~ msgstr "%(date)s a l'Historial"
-
-#~ msgid ""
-#~ "Revision [1:%(rev)s],\n"
-#~ "            [2:%(size)s]\n"
-#~ "            checked in by %(author)s, %(date)s ago\n"
-#~ "            ([3:diff])"
-#~ msgstr ""
-#~ "Revisió [1:%(rev)s],\n"
-#~ "            [2:%(size)s]\n"
-#~ "            enregistrada per %(author)s, fa %(date)s\n"
-#~ "            ([3:diff])"
-
-#~ msgid ""
-#~ "Are you sure you want to delete"
-#~ " versions %(from)s to %(to)s of this"
-#~ " page?"
-#~ msgstr ""
-#~ "Esteu segur de voler suprimir les "
-#~ "versions de %(from)s a %(to)s d'aquesta"
-#~ " pàgina?"
-
-#~ msgid "Editing"
-#~ msgstr "S'està editant"
-
-#~ msgid "See the start of the diffs"
-#~ msgstr "Vegeu l'inici dels diffs"
-
-#~ msgid "See the start of the preview"
-#~ msgstr "Vegeu l'inici de la previsualizació"
 
