@@ -654,11 +654,13 @@ msgid "Directory exists and is not empty."
 msgstr "O diretório existe e não está vazio."
 
 #: trac/admin/console.py:403
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
 msgstr ""
+"O diretório base '%(env)s' não existe. Por favor, crie o diretório "
+"manualmente e tente novamente."
 
 #: trac/admin/console.py:431
 msgid "Creating and Initializing Project"
@@ -2572,9 +2574,8 @@ msgid "Ticket #%(num)s and all associated data removed."
 msgstr "Tíquete #%(num)s e todas as informações associadas removidas."
 
 #: trac/ticket/api.py:253
-#, fuzzy
 msgid "Attachment"
-msgstr "Anexos"
+msgstr "Anexo"
 
 #: trac/ticket/api.py:283
 msgid "Summary"
@@ -3956,8 +3957,7 @@ msgid ""
 "[1:[2:%(name)s]][3:​]\n"
 "          added"
 msgstr ""
-"[1:[2:%(name)s]]\n"
-"          [3:[4:]]\n"
+"[1:[2:%(name)s]][3:]\n"
 "          adicionado"
 
 #: trac/ticket/templates/ticket_change.html:26
@@ -5597,9 +5597,9 @@ msgstr "Página %(page)s não encontrada"
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:122 trac/wiki/model.py:172
 #: trac/wiki/web_ui.py:114
-#, fuzzy, python-format
+#, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr ""
+msgstr "'%(name)s' não é um nome válido de página Wiki"
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -6136,9 +6136,9 @@ msgid "[1:Last modified] %(reldate)s ago"
 msgstr "[1:Última modificação] %(reldate)s atrás"
 
 #: trac/wiki/templates/wiki_view.html:59
-#, fuzzy, python-format
+#, python-format
 msgid "Last modified on %(date)s"
-msgstr ""
+msgstr "Modificado pela última vez em %(date)s"
 
 #: trac/wiki/templates/wiki_view.html:64
 #, python-format

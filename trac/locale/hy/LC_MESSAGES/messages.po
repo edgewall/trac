@@ -4737,7 +4737,7 @@ msgstr ""
 #: trac/versioncontrol/templates/changeset.html:72
 #, python-format
 msgid "Changeset [1:%(new_rev)s]"
-msgstr ""
+msgstr "[1:%(new_rev)s] փոփոխություններ"
 
 #: trac/versioncontrol/templates/changeset.html:101
 #, python-format
@@ -6025,7 +6025,7 @@ msgstr "%(path)s տեսք"
 #: trac/wiki/templates/wiki_rename.html:15
 #, python-format
 msgid "Rename [1:%(name)s]"
-msgstr ""
+msgstr "Ուղենիշ [1:%(name)s]"
 
 #: trac/wiki/templates/wiki_rename.html:19
 msgid "Renaming the page will rename all existing versions of the page in place."

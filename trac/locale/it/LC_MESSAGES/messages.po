@@ -164,11 +164,9 @@ msgid "Could not reparent attachment %(name)s"
 msgstr "Non è stato possibile ricollegare l'allegato \"%(name)s\""
 
 #: trac/attachment.py:272
-#, fuzzy, python-format
+#, python-format
 msgid "Cannot create attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
-msgstr ""
-"Impossibile ricollegare l'allegato \"%(att)s\" perché esiste già in "
-"\"%(realm)s:%(id)s\""
+msgstr "Impossibile creare allegato \"%(att)s\" come %(realm)s:%(id)s non è valido"
 
 #: trac/attachment.py:365
 #, python-format
@@ -315,7 +313,7 @@ msgstr "Errore di configurazione"
 #: trac/config.py:265
 #, python-format
 msgid "Error reading '%(file)s', make sure it is readable."
-msgstr ""
+msgstr "Errore nel leggere '%(file)s'. Assicurarsi che sia leggibile."
 
 #: trac/config.py:420
 #, python-format
@@ -337,7 +335,7 @@ msgstr ""
 #: trac/config.py:711 trac/config.py:724
 #, python-format
 msgid "Option '%(option)s' doesn't exist in section '%(section)s'"
-msgstr ""
+msgstr "L'opzione '%(option)s' non è presente nella sezione '%(section)s'"
 
 #: trac/core.py:33
 msgid "Trac Error"
@@ -537,7 +535,7 @@ msgid "Error: %(msg)s"
 msgstr "Errore: %(msg)s"
 
 #: trac/admin/console.py:130
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
@@ -654,11 +652,11 @@ msgid "Directory exists and is not empty."
 msgstr "La cartella esiste già e non è vuota."
 
 #: trac/admin/console.py:403
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr ""
+msgstr "La cartella di base '%(env)s' non esiste. Crearla manualmente e riprovare."
 
 #: trac/admin/console.py:431
 msgid "Creating and Initializing Project"
@@ -1348,11 +1346,11 @@ msgid "No destination file created"
 msgstr "Il file destinazione non è stato creato"
 
 #: trac/db/pool.py:149
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to get database connection within %(time)d seconds."
 msgstr ""
 "Non è stato possibile ottenere una connessione al database entro %(time)d"
-" secondi"
+" secondi."
 
 #: trac/db/postgres_backend.py:81
 msgid "Cannot load Python bindings for PostgreSQL"
@@ -1443,9 +1441,9 @@ msgid "Your preferences have been saved."
 msgstr "Le tue preferenze sono state memorizzate."
 
 #: trac/mimeview/rst.py:123 trac/mimeview/rst.py:146
-#, fuzzy, python-format
+#, python-format
 msgid "%(link)s is not a valid TracLink"
-msgstr ""
+msgstr "%(link)s non è un TracLink valido"
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -1472,9 +1470,8 @@ msgid "Advanced"
 msgstr "Avanzate"
 
 #: trac/prefs/web_ui.py:150
-#, fuzzy
 msgid "The session has been loaded."
-msgstr "La versione \"%(name)s\" è stata aggiunta."
+msgstr "La sessione è stata caricata."
 
 #: trac/prefs/templates/prefs.html:10
 msgid "Preferences:"
@@ -1503,9 +1500,8 @@ msgid "Session key:"
 msgstr "Chiave della sessione:"
 
 #: trac/prefs/templates/prefs_advanced.html:17
-#, fuzzy
 msgid "Change"
-msgstr "modifica"
+msgstr "Modifica"
 
 #: trac/prefs/templates/prefs_advanced.html:18
 msgid ""
@@ -1779,11 +1775,12 @@ msgid ""
 msgstr "Visita il progetto open source Trac: [1:http://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
-#, fuzzy
 msgid ""
 "Copyright © 2003-2012\n"
 "        [1:Edgewall Software]"
-msgstr "Copyright © 2003-2010 [1:Edgewall Software]"
+msgstr ""
+"Copyright © 2003-2012\n"
+"        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
 msgid "System Information"
@@ -2253,16 +2250,15 @@ msgid "View attachment"
 msgstr "Mostra allegato"
 
 #: trac/templates/list_of_attachments.html:18
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "[1:%(file)s][2:​]\n"
 "       ([3:%(size)s]) -\n"
 "      added by [4:%(author)s] %(date)s ago."
 msgstr ""
-"[1:%(file)s]\n"
-"      [2:[3:]]\n"
-"       ([4:%(size)s]) -\n"
-"       aggiunto da [5:%(author)s] %(date)s fa."
+"[1:%(file)s][2:​]\n"
+"       ([3:%(size)s]) -\n"
+"      aggiunto da [4:%(author)s] %(date)s fa."
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:39
@@ -2532,9 +2528,8 @@ msgstr ""
 "rimosse."
 
 #: trac/ticket/api.py:253
-#, fuzzy
 msgid "Attachment"
-msgstr "Allegati"
+msgstr "Allegato."
 
 #: trac/ticket/api.py:283
 msgid "Summary"
@@ -3654,7 +3649,7 @@ msgstr "Copia il report"
 
 #: trac/ticket/templates/report_view.html:110
 msgid "(empty)"
-msgstr ""
+msgstr "(vuoto)"
 
 #: trac/ticket/templates/report_view.html:141
 #: trac/ticket/templates/report_view.html:149
@@ -3904,13 +3899,12 @@ msgid "Reply, quoting this description"
 msgstr "Replica, citando questa descrizione"
 
 #: trac/ticket/templates/ticket_change.html:19
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "[1:[2:%(name)s]][3:​]\n"
 "          added"
 msgstr ""
-"[1:[2:%(name)s]]\n"
-"          [3:[4:]]\n"
+"[1:[2:%(name)s]][3:​]\n"
 "          aggiunto"
 
 #: trac/ticket/templates/ticket_change.html:26
@@ -4370,6 +4364,9 @@ msgid ""
 "The repository directory has changed, you should resynchronize the "
 "repository with: trac-admin $ENV repository resync '%(reponame)s'"
 msgstr ""
+"La cartella del repository è cambiata. Sincronizzare di nuovo il "
+"repository con il comando: trac-admin $ENV repository resync "
+"'%(reponame)s'"
 
 #: trac/versioncontrol/svn_authz.py:72
 #, python-format
@@ -4425,11 +4422,11 @@ msgstr "bloccati"
 
 #: trac/versioncontrol/svn_prop.py:182
 msgid "non-inheritable"
-msgstr ""
+msgstr "non-ereditabile"
 
 #: trac/versioncontrol/svn_prop.py:184
 msgid "merged on the directory itself but not below"
-msgstr ""
+msgstr "integrato sulla cartella stessa ma non al di sotto"
 
 #: trac/versioncontrol/svn_prop.py:200
 msgid "eligible"
@@ -4448,9 +4445,9 @@ msgid "No revisions"
 msgstr "Nessuna revisione"
 
 #: trac/versioncontrol/svn_prop.py:270
-#, fuzzy, python-format
+#, python-format
 msgid "%(title)s: %(revs)s"
-msgstr ""
+msgstr "%(title)s: %(revs)s"
 
 #: trac/versioncontrol/svn_prop.py:306
 msgid "merged: "
@@ -4470,11 +4467,11 @@ msgstr "sbloccati: "
 
 #: trac/versioncontrol/svn_prop.py:308
 msgid "marked as non-inheritable: "
-msgstr ""
+msgstr "contrassegnati come non-ereditabile:"
 
 #: trac/versioncontrol/svn_prop.py:309
 msgid "unmarked as non-inheritable: "
-msgstr ""
+msgstr "eliminato il contrassegno di non-ereditabile:"
 
 #: trac/versioncontrol/svn_prop.py:321
 msgid " (added)"
@@ -5142,9 +5139,8 @@ msgid "View file without annotations"
 msgstr "Mostra il file senza attribuzioni"
 
 #: trac/versioncontrol/web_ui/browser.py:464
-#, fuzzy
 msgid "Blame"
-msgstr "Nome"
+msgstr "Blame"
 
 #: trac/versioncontrol/web_ui/browser.py:465
 msgid ""
@@ -5481,11 +5477,9 @@ msgstr ""
 "%(traceback)s}}}"
 
 #: trac/web/session.py:259
-#, fuzzy, python-format
+#, python-format
 msgid "Session '%(id)s' already exists. Please choose a different session ID."
-msgstr ""
-"La sessione \"%(id)s\" esiste già.<br />Scegli un ID differente per la "
-"sessione, per favore."
+msgstr "La sessione '%(id)s' esiste già. Selezionare un diverso ID di sessione."
 
 #: trac/web/session.py:262
 msgid "Error renaming session"
@@ -5496,44 +5490,42 @@ msgid "SID"
 msgstr "SID"
 
 #: trac/web/session.py:445
-#, fuzzy
 msgid "Auth"
-msgstr "percorso"
+msgstr "Autore"
 
 #: trac/web/session.py:445
-#, fuzzy
 msgid "Last Visit"
-msgstr "Revisione più recente"
+msgstr "Ultima Visita"
 
 #: trac/web/session.py:446
 msgid "Email"
 msgstr "Email"
 
 #: trac/web/session.py:457
-#, fuzzy, python-format
+#, python-format
 msgid "Session '%(sid)s' already exists"
-msgstr ""
+msgstr "La sessione '%(sid)s' esiste già"
 
 #: trac/web/session.py:470
 #, python-format
 msgid "Invalid attribute '%(attr)s'"
-msgstr ""
+msgstr "Attributo '%(attr)s' non valido"
 
 #: trac/web/session.py:480
-#, fuzzy, python-format
+#, python-format
 msgid "Session '%(sid)s' not found"
-msgstr "La sessione %(sid)s non è stata trovata"
+msgstr "Sessione '%(sid)s' non trovata"
 
 #: trac/wiki/admin.py:102
-#, fuzzy, python-format
+#, python-format
 msgid "Page '%(page)s' not found"
-msgstr ""
+msgstr "Pagina '%(page)s' non trovata"
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:122 trac/wiki/model.py:172
 #: trac/wiki/web_ui.py:114
-#, fuzzy, python-format
+#, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr ""
+msgstr "Nome della pagina Wiki '%(name)s' non valido"
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -5565,7 +5557,7 @@ msgstr "Il nuovo nome è indispensabile per sostituire quello precedente."
 
 #: trac/wiki/admin.py:215
 msgid "The new name is invalid."
-msgstr ""
+msgstr "Il nuovo nome non è valido."
 
 #: trac/wiki/admin.py:219 trac/wiki/web_ui.py:303
 #, python-format
@@ -5619,9 +5611,8 @@ msgid "Can't view %(link)s:"
 msgstr "Impossibile mostrare %(link)s:"
 
 #: trac/wiki/intertrac.py:81
-#, fuzzy
 msgid "The Trac Project"
-msgstr "Cerca %(project)s"
+msgstr "Il Progetto Trac"
 
 #: trac/wiki/macros.py:590
 #, python-format
@@ -5713,6 +5704,8 @@ msgid ""
 "The new name is invalid (a name which is separated with slashes cannot be"
 " '.' or '..')."
 msgstr ""
+"Il nuovo nome non è valido (un nome separato da barre non può essere  '.'"
+" o '..')."
 
 #: trac/wiki/web_ui.py:301
 msgid "The new name must be different from the old name."
@@ -6069,9 +6062,9 @@ msgid "[1:Last modified] %(reldate)s ago"
 msgstr "[1:Ultima modifica] %(reldate)s fa"
 
 #: trac/wiki/templates/wiki_view.html:59
-#, fuzzy, python-format
+#, python-format
 msgid "Last modified on %(date)s"
-msgstr ""
+msgstr "Ultima modifica il %(date)s"
 
 #: trac/wiki/templates/wiki_view.html:64
 #, python-format

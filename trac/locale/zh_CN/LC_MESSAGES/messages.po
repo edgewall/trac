@@ -309,7 +309,7 @@ msgstr "配置错误"
 #: trac/config.py:265
 #, python-format
 msgid "Error reading '%(file)s', make sure it is readable."
-msgstr ""
+msgstr "无法读取'%(file)s'，请确认该文件可读。"
 
 #: trac/config.py:420
 #, python-format
@@ -632,11 +632,11 @@ msgid "Directory exists and is not empty."
 msgstr "目录已存在并且非空。"
 
 #: trac/admin/console.py:403
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr ""
+msgstr "基础目录‘%(env)s'不存在。请手工创建并重试。"
 
 #: trac/admin/console.py:431
 msgid "Creating and Initializing Project"
@@ -1295,14 +1295,14 @@ msgstr "无法加载 Python 的 MySQL 访问模块"
 
 #: trac/db/mysql_backend.py:205 trac/db/postgres_backend.py:175
 #: trac/db/postgres_backend.py:194
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to run %(path)s: %(msg)s"
-msgstr ""
+msgstr "无法运行%(path)s: %(msg)s"
 
 #: trac/db/mysql_backend.py:209
 #, python-format
 msgid "mysqldump failed: %(msg)s"
-msgstr ""
+msgstr "mysqldump失败: %(msg)s"
 
 #: trac/db/mysql_backend.py:211 trac/db/postgres_backend.py:200
 #: trac/db/sqlite_backend.py:230
@@ -1322,7 +1322,7 @@ msgstr "无法加载 Python 的 PostgreSQL 访问模块"
 #: trac/db/postgres_backend.py:198
 #, python-format
 msgid "pg_dump failed: %(msg)s"
-msgstr ""
+msgstr "pg_dump失败: %(msg)s"
 
 #: trac/db/sqlite_backend.py:154
 msgid "Cannot load Python bindings for SQLite"
@@ -1335,7 +1335,7 @@ msgstr "至少需要 PySqlite %(version)s 或以上版本"
 
 #: trac/db/sqlite_backend.py:160
 msgid "PySqlite 2.5.2 - 2.5.4 break Trac, please use 2.5.5 or higher"
-msgstr ""
+msgstr "PySqlite 2.5.2 - 2.5.4 与Trac冲突, 请使用2.5.5或更高版本"
 
 #: trac/db/sqlite_backend.py:185
 #, python-format
@@ -1400,9 +1400,9 @@ msgid "Your preferences have been saved."
 msgstr "您的个人设置已保存。"
 
 #: trac/mimeview/rst.py:123 trac/mimeview/rst.py:146
-#, fuzzy, python-format
+#, python-format
 msgid "%(link)s is not a valid TracLink"
-msgstr ""
+msgstr "%(link)s不是一个有效的TracLink"
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -3554,7 +3554,7 @@ msgstr "复制报表"
 
 #: trac/ticket/templates/report_view.html:110
 msgid "(empty)"
-msgstr ""
+msgstr "(空)"
 
 #: trac/ticket/templates/report_view.html:141
 #: trac/ticket/templates/report_view.html:149
@@ -4093,16 +4093,15 @@ msgid "No repositories were selected."
 msgstr "没有选择版本库。"
 
 #: trac/versioncontrol/admin.py:343
-#, fuzzy
 msgid "The repository directory must be an absolute path."
-msgstr "版本库目录必须是绝对路径"
+msgstr "代码仓库目录必须是绝对路径。"
 
 #: trac/versioncontrol/admin.py:352
 #, python-format
 msgid ""
 "The repository directory must be located below one of the following "
 "directories: %(dirs)s"
-msgstr ""
+msgstr "代码仓库目录必须是下列目录的子目录：%(dirs)s"
 
 #: trac/versioncontrol/api.py:32
 #: trac/versioncontrol/templates/admin_repositories.html:20
@@ -4284,7 +4283,7 @@ msgstr "被阻止"
 
 #: trac/versioncontrol/svn_prop.py:182
 msgid "non-inheritable"
-msgstr ""
+msgstr "不可继承"
 
 #: trac/versioncontrol/svn_prop.py:184
 msgid "merged on the directory itself but not below"
@@ -4307,9 +4306,9 @@ msgid "No revisions"
 msgstr "没有修订版"
 
 #: trac/versioncontrol/svn_prop.py:270
-#, fuzzy, python-format
+#, python-format
 msgid "%(title)s: %(revs)s"
-msgstr ""
+msgstr "%(title)s: %(revs)s"
 
 #: trac/versioncontrol/svn_prop.py:306
 msgid "merged: "
@@ -4329,11 +4328,11 @@ msgstr "取消阻止："
 
 #: trac/versioncontrol/svn_prop.py:308
 msgid "marked as non-inheritable: "
-msgstr ""
+msgstr "标记为不可继承的："
 
 #: trac/versioncontrol/svn_prop.py:309
 msgid "unmarked as non-inheritable: "
-msgstr ""
+msgstr "未标记为不可继承的："
 
 #: trac/versioncontrol/svn_prop.py:321
 msgid " (added)"
@@ -4956,9 +4955,9 @@ msgid "Invalid changeset number"
 msgstr "无效变更集版本号"
 
 #: trac/versioncontrol/web_ui/browser.py:395
-#, fuzzy, python-format
+#, python-format
 msgid "No node %(path)s"
-msgstr "查看 %(path)s"
+msgstr "无此节点%(path)s"
 
 #: trac/versioncontrol/web_ui/browser.py:435
 #: trac/versioncontrol/web_ui/browser.py:445
@@ -5352,7 +5351,7 @@ msgstr ""
 #: trac/web/session.py:470
 #, python-format
 msgid "Invalid attribute '%(attr)s'"
-msgstr ""
+msgstr "非法属性'%(attr)s'"
 
 #: trac/web/session.py:480
 #, fuzzy, python-format
@@ -5366,9 +5365,9 @@ msgstr ""
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:122 trac/wiki/model.py:172
 #: trac/wiki/web_ui.py:114
-#, fuzzy, python-format
+#, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr ""
+msgstr "无效的Wiki页名称'%(name)s'"
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -5376,14 +5375,14 @@ msgid "'%(name)s' is not a file"
 msgstr "'%(name)s'不是一个文件。"
 
 #: trac/wiki/admin.py:139
-#, fuzzy, python-format
+#, python-format
 msgid "  %(title)s already exists"
-msgstr ""
+msgstr "  %(title)s 已经存在"
 
 #: trac/wiki/admin.py:143
 #, python-format
 msgid "  %(title)s is already up to date"
-msgstr ""
+msgstr "  %(title)s 已经是最新的了"
 
 #: trac/wiki/admin.py:175 trac/wiki/admin.py:275
 #, python-format
@@ -5400,7 +5399,7 @@ msgstr "重命名必须提供新的名称。"
 
 #: trac/wiki/admin.py:215
 msgid "The new name is invalid."
-msgstr ""
+msgstr "新名称无效。"
 
 #: trac/wiki/admin.py:219 trac/wiki/web_ui.py:303
 #, python-format
