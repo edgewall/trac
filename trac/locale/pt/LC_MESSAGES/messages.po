@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-24 11:15+0100\n"
+"POT-Creation-Date: 2013-01-27 11:21+0900\n"
 "PO-Revision-Date: 2009-03-26 16:59+0000\n"
 "Last-Translator: Carlos Sobrinho <carlossobrinho@easysoftware.pt>\n"
 "Language-Team: pt_PT <trac-dev@googlegroups.com>\n"
@@ -440,7 +440,7 @@ msgid "Size"
 msgstr "Tamanho"
 
 #: trac/attachment.py:1070 trac/templates/history_view.html:30
-#: trac/ticket/templates/ticket.html:346
+#: trac/ticket/templates/ticket.html:350
 #: trac/versioncontrol/templates/revisionlog.html:112
 msgid "Author"
 msgstr "Autor"
@@ -450,7 +450,8 @@ msgid "Date"
 msgstr "Data"
 
 #: trac/attachment.py:1071 trac/templates/attachment.html:93
-#: trac/ticket/api.py:299 trac/ticket/templates/ticket_box.html:92
+#: trac/ticket/api.py:299 trac/ticket/templates/ticket.html:379
+#: trac/ticket/templates/ticket_box.html:92
 msgid "Description"
 msgstr "Descrição"
 
@@ -664,7 +665,7 @@ msgstr "Utilizador"
 
 #: trac/perm.py:656 trac/admin/templates/admin_perms.html:63
 #: trac/ticket/templates/batch_modify.html:37
-#: trac/ticket/templates/ticket.html:317
+#: trac/ticket/templates/ticket.html:321
 msgid "Action"
 msgstr "Acção"
 
@@ -1096,7 +1097,7 @@ msgid "URL:"
 msgstr "URL:"
 
 #: trac/admin/templates/admin_basics.html:29
-#: trac/ticket/templates/ticket.html:233
+#: trac/ticket/templates/ticket.html:237
 msgid "Description:"
 msgstr "Descrição:"
 
@@ -2110,7 +2111,7 @@ msgstr "(tamanho máximo"
 msgid "Attachment Info"
 msgstr "Informacão do Anexo"
 
-#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:351
+#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:355
 #: trac/wiki/templates/wiki_edit_form.html:42
 msgid "Your email or username:"
 msgstr "O seu email ou nome de utilizador:"
@@ -2505,7 +2506,7 @@ msgstr ""
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:44
-#: trac/ticket/templates/ticket.html:374
+#: trac/ticket/templates/ticket.html:378
 msgid "Attachments"
 msgstr "Anexos"
 
@@ -2618,7 +2619,7 @@ msgstr "Componente %(name)s já existe."
 msgid "The component \"%(name)s\" has been added."
 msgstr "Componente %(name)s não existe."
 
-#: trac/ticket/admin.py:122 trac/ticket/model.py:862 trac/ticket/model.py:881
+#: trac/ticket/admin.py:122 trac/ticket/model.py:859 trac/ticket/model.py:878
 #, fuzzy
 msgid "Invalid component name."
 msgstr "Acção inválido \"%(name)s\""
@@ -2658,7 +2659,7 @@ msgstr "Marco %(name)s já existe."
 msgid "The milestone \"%(name)s\" has been added."
 msgstr ""
 
-#: trac/ticket/admin.py:305 trac/ticket/model.py:1041 trac/ticket/model.py:1063
+#: trac/ticket/admin.py:305 trac/ticket/model.py:1038 trac/ticket/model.py:1060
 #, fuzzy
 msgid "Invalid milestone name."
 msgstr "Acção inválido \"%(name)s\""
@@ -2686,7 +2687,7 @@ msgstr "Versão %(name)s já existe."
 msgid "The version \"%(name)s\" has been added."
 msgstr "Versão %(name)s já existe."
 
-#: trac/ticket/admin.py:484 trac/ticket/model.py:1168 trac/ticket/model.py:1186
+#: trac/ticket/admin.py:484 trac/ticket/model.py:1165 trac/ticket/model.py:1183
 #, fuzzy
 msgid "Invalid version name."
 msgstr "Acção inválido \"%(name)s\""
@@ -2808,7 +2809,7 @@ msgstr "Anexo"
 msgid "Summary"
 msgstr "Resumo:"
 
-#: trac/ticket/api.py:289 trac/ticket/templates/ticket.html:347
+#: trac/ticket/api.py:289 trac/ticket/templates/ticket.html:351
 #, fuzzy
 msgid "Reporter"
 msgstr "Ver relatório"
@@ -3008,44 +3009,44 @@ msgstr "Número de Relatório Inválido"
 msgid "Multi-values fields not supported yet"
 msgstr ""
 
-#: trac/ticket/model.py:688
+#: trac/ticket/model.py:685
 #, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr "%(type)s %(name)s não existe."
 
-#: trac/ticket/model.py:730 trac/ticket/model.py:755
+#: trac/ticket/model.py:727 trac/ticket/model.py:752
 #, python-format
 msgid "Invalid %(type)s name."
 msgstr ""
 
-#: trac/ticket/model.py:834
+#: trac/ticket/model.py:831
 #, python-format
 msgid "Component %(name)s does not exist."
 msgstr "Componente %(name)s não existe."
 
-#: trac/ticket/model.py:979
+#: trac/ticket/model.py:976
 #, fuzzy, python-format
 msgid "Milestone %(name)s does not exist."
 msgstr "Versão %(name)s já existe."
 
-#: trac/ticket/model.py:980
+#: trac/ticket/model.py:977
 #, fuzzy
 msgid "Invalid milestone name"
 msgstr "Acção inválido \"%(name)s\""
 
-#: trac/ticket/model.py:1119
+#: trac/ticket/model.py:1116
 msgid "Open (by due date)"
 msgstr "Aberto (por data de fecho)"
 
-#: trac/ticket/model.py:1120
+#: trac/ticket/model.py:1117
 msgid "Open (no due date)"
 msgstr "Aberto (sem data de fecho)"
 
-#: trac/ticket/model.py:1123
+#: trac/ticket/model.py:1120
 msgid "Closed"
 msgstr "Fechado"
 
-#: trac/ticket/model.py:1140
+#: trac/ticket/model.py:1137
 #, python-format
 msgid "Version %(name)s does not exist."
 msgstr "Versão %(name)s já existe."
@@ -3844,7 +3845,7 @@ msgid "Retarget associated open tickets to milestone:"
 msgstr ""
 
 #: trac/ticket/templates/milestone_edit.html:106
-#: trac/ticket/templates/ticket.html:383
+#: trac/ticket/templates/ticket.html:388
 #: trac/ticket/templates/ticket_change.html:116
 #: trac/wiki/templates/wiki_edit_form.html:66
 #: trac/wiki/templates/wiki_edit_form.html:71
@@ -4196,38 +4197,47 @@ msgstr "Marco:"
 msgid "Add new milestone"
 msgstr "Adicionar Marco"
 
-#: trac/ticket/templates/ticket.html:130
+#: trac/ticket/templates/ticket.html:132
+msgid "Go to the ticket editor"
+msgstr ""
+
+#: trac/ticket/templates/ticket.html:132
+#, fuzzy
+msgid "Modify"
+msgstr "modificado"
+
+#: trac/ticket/templates/ticket.html:134
 msgid "Create New Ticket"
 msgstr "Criar Novo Assunto"
 
-#: trac/ticket/templates/ticket.html:148
+#: trac/ticket/templates/ticket.html:152
 msgid "Oldest first"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:150
+#: trac/ticket/templates/ticket.html:154
 msgid "Newest first"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:153
+#: trac/ticket/templates/ticket.html:157
 #, fuzzy
 msgid "Threaded"
 msgstr "criado"
 
-#: trac/ticket/templates/ticket.html:158
+#: trac/ticket/templates/ticket.html:162
 #, fuzzy
 msgid "Comments only"
 msgstr "Comentário:"
 
-#: trac/ticket/templates/ticket.html:163
+#: trac/ticket/templates/ticket.html:167
 msgid "Change History"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:182
+#: trac/ticket/templates/ticket.html:186
 #, fuzzy
 msgid "Add Comment"
 msgstr "Addicionar anexo"
 
-#: trac/ticket/templates/ticket.html:184
+#: trac/ticket/templates/ticket.html:188
 msgid ""
 "This ticket has been modified since you started editing. You should "
 "review the\n"
@@ -4237,7 +4247,7 @@ msgid ""
 " wish so."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:194
+#: trac/ticket/templates/ticket.html:198
 #, fuzzy
 msgid ""
 "You may use\n"
@@ -4248,29 +4258,29 @@ msgstr ""
 "                [1:WikiFormatting]\n"
 "                aqui):"
 
-#: trac/ticket/templates/ticket.html:205
+#: trac/ticket/templates/ticket.html:209
 #, fuzzy
 msgid "Modify Ticket"
 msgstr "modificado"
 
-#: trac/ticket/templates/ticket.html:211
+#: trac/ticket/templates/ticket.html:215
 #, fuzzy
 msgid "Change Properties"
 msgstr "Propriedades"
 
-#: trac/ticket/templates/ticket.html:212
+#: trac/ticket/templates/ticket.html:216
 msgid "Properties"
 msgstr "Propriedades"
 
-#: trac/ticket/templates/ticket.html:216
+#: trac/ticket/templates/ticket.html:220
 msgid "Summary:"
 msgstr "Resumo:"
 
-#: trac/ticket/templates/ticket.html:224
+#: trac/ticket/templates/ticket.html:228
 msgid "Reporter:"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:236
+#: trac/ticket/templates/ticket.html:240
 #, fuzzy
 msgid ""
 "You may use\n"
@@ -4280,46 +4290,51 @@ msgstr ""
 "                [1:WikiFormatting]\n"
 "                aqui):"
 
-#: trac/ticket/templates/ticket.html:252
+#: trac/ticket/templates/ticket.html:256
 #: trac/ticket/templates/ticket_box.html:75
 #, python-format
 msgid "%(field)s:"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:291
+#: trac/ticket/templates/ticket.html:295
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:297
+#: trac/ticket/templates/ticket.html:301
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:360
+#: trac/ticket/templates/ticket.html:364
 #: trac/wiki/templates/wiki_edit_form.html:46
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:368
+#: trac/ticket/templates/ticket.html:372
 msgid "I have files to attach to this ticket"
 msgstr "Tenho ficheiros para anexar a este assunto"
 
-#: trac/ticket/templates/ticket.html:374
+#: trac/ticket/templates/ticket.html:378
 #, fuzzy
 msgid "Go to the list of attachments"
 msgstr "Apagar anexo"
 
-#: trac/ticket/templates/ticket.html:382
+#: trac/ticket/templates/ticket.html:379
+#, fuzzy
+msgid "View the ticket description"
+msgstr "sem permissão para ver esta página"
+
+#: trac/ticket/templates/ticket.html:387
 #: trac/ticket/templates/ticket_change.html:114
 #: trac/wiki/templates/wiki_edit.html:95 trac/wiki/templates/wiki_edit.html:153
 #: trac/wiki/templates/wiki_edit_form.html:64
 msgid "Preview"
 msgstr "Pré-visualizar"
 
-#: trac/ticket/templates/ticket.html:383
+#: trac/ticket/templates/ticket.html:388
 msgid "Create ticket"
 msgstr "Criar assunto"
 
-#: trac/ticket/templates/ticket.html:391
+#: trac/ticket/templates/ticket.html:396
 #, fuzzy
 msgid ""
 "[1:Note:] See\n"
@@ -6862,198 +6877,4 @@ msgstr "(página em branco)"
 #: trac/wiki/templates/wiki_view.html:135
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr ""
-
-#~ msgid "Changed %(date)s ago by %(author)s"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Backup failed: %(msg)s.\n"
-#~ "Use '--no-backup' to upgrade without doing a backup."
-#~ msgstr ""
-
-#~ msgid "%(perm)s privileges are required to perform this operation"
-#~ msgstr "São necessários os privilégios %(perm)s para efectuar esta operação"
-
-#~ msgid ""
-#~ "Welcome to trac-admin %(version)s\n"
-#~ "Interactive Trac administration console.\n"
-#~ "Copyright (C) 2003-2012 Edgewall Software\n"
-#~ "\n"
-#~ "Type:  '?' or 'help' for help on commands.\n"
-#~ "        "
-#~ msgstr ""
-
-#~ msgid ""
-#~ "\n"
-#~ "Trac will first ask a few questions about your environment \n"
-#~ "in order to initialize and prepare the project database.\n"
-#~ "\n"
-#~ " Please enter the name of your project.\n"
-#~ " This name will be used in page titles and descriptions.\n"
-#~ msgstr ""
-
-#~ msgid ""
-#~ " \n"
-#~ " Please specify the connection string for the database to use.\n"
-#~ " By default, a local SQLite database is created in the environment\n"
-#~ " directory. It is also possible to use an already existing\n"
-#~ " PostgreSQL database (check the Trac documentation for the exact\n"
-#~ " connection string syntax).\n"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "\n"
-#~ "---------------------------------------------------------------------\n"
-#~ "Warning: couldn't index the default repository.\n"
-#~ "\n"
-#~ "This can happen for a variety of reasons: wrong repository type, \n"
-#~ "no appropriate third party library for this repository type,\n"
-#~ "no actual repository at the specified repository path...\n"
-#~ "\n"
-#~ "You can nevertheless start using your Trac environment, but \n"
-#~ "you'll need to check again your trac.ini file and the [trac] \n"
-#~ "repository_type and repository_path settings.\n"
-#~ msgstr ""
-
-#~ msgid "Note:"
-#~ msgstr "Nota:"
-
-#~ msgid ""
-#~ "The order of priorities determines the coloring of entries\n"
-#~ "              in the ticket queries and reports."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "In the default time zone, this would be displayed as\n"
-#~ "            [1:%(formatted)s]."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "The 'default language' option uses the browser's\n"
-#~ "        language negotiation feature to "
-#~ "select the appropriate language."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Copyright © 2003-2012\n"
-#~ "        [1:Edgewall Software]"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "File %(file)s,\n"
-#~ "                [1:%(size)s]\n"
-#~ "                (added by %(author)s, %(date)s ago)"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "[1:%(file)s][2:​]\n"
-#~ "       ([3:%(size)s]) -\n"
-#~ "      added by [4:%(author)s] %(date)s ago."
-#~ msgstr ""
-
-#~ msgid "Number of %(unit)s:"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "[1:[2:%(title)s:]]\n"
-#~ "          [3:[4:%(count)s]]"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "[1:[2:Total:]]\n"
-#~ "      [3:[4:%(count)s]]"
-#~ msgstr ""
-
-#~ msgid "Report execution failed: %(error)s"
-#~ msgstr ""
-
-#~ msgid "reopened"
-#~ msgstr "reaberto"
-
-#~ msgid "updated"
-#~ msgstr "actualizado"
-
-#~ msgid "Ticket %(ticketref)s (%(summary)s) %(verb)s"
-#~ msgstr ""
-
-#~ msgid "Delete Milestone"
-#~ msgstr "Remover Marco"
-
-#~ msgid "Edit Milestone"
-#~ msgstr "Editar Marco"
-
-#~ msgid "Report"
-#~ msgstr "Ver relatório"
-
-#~ msgid "Go to the ticket editor"
-#~ msgstr ""
-
-#~ msgid "Modify"
-#~ msgstr "Modificar"
-
-#~ msgid "Ticket #"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Version %(version)s, edited %(date)s ago\n"
-#~ "                      by %(author)s"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Last edited %(date)s ago\n"
-#~ "                      by %(author)s"
-#~ msgstr ""
-
-#~ msgid "View ticket fields and description"
-#~ msgstr ""
-
-#~ msgid "View"
-#~ msgstr "Pré-visualizar"
-
-#~ msgid ""
-#~ "Warnings are shown at the [1:top of the page]. The ticket validation\n"
-#~ "            may have failed."
-#~ msgstr ""
-
-#~ msgid "Opened %(created)s ago"
-#~ msgstr ""
-
-#~ msgid "Last modified %(modified)s ago"
-#~ msgstr ""
-
-#~ msgid "%(date)s in Timeline"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Revision [1:%(rev)s],\n"
-#~ "            [2:%(size)s]\n"
-#~ "            checked in by %(author)s, %(date)s ago\n"
-#~ "            ([3:diff])"
-#~ msgstr ""
-
-#~ msgid "ChangeLog for %(path)s%(in_repo)s"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Are you sure you want to delete"
-#~ " versions %(from)s to %(to)s of this"
-#~ " page?"
-#~ msgstr "Tem a certeza que quer eliminar este anexo?"
-
-#~ msgid "Editing"
-#~ msgstr "Edição"
-
-#~ msgid "See the start of the diffs"
-#~ msgstr ""
-
-#~ msgid "See the start of the preview"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Version %(version)s (modified by %(author)s, %(date)s ago)\n"
-#~ "               ([1:diff])"
-#~ msgstr ""
-
-#~ msgid "[1:Last modified] %(reldate)s ago"
-#~ msgstr ""
 
