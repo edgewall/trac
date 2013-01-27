@@ -1416,7 +1416,7 @@ msgid "Advanced"
 msgstr "Avansert"
 
 #: trac/prefs/web_ui.py:150
-#, fuzzy, python-format
+#, fuzzy
 msgid "The session has been loaded."
 msgstr "Versjonen %(name)s har blitt opprettet."
 
@@ -5540,7 +5540,7 @@ msgid "Can't view %(link)s:"
 msgstr "Kan ikke vise %(link)s:"
 
 #: trac/wiki/intertrac.py:81
-#, fuzzy, python-format
+#, fuzzy
 msgid "The Trac Project"
 msgstr "Søk i %(project)s"
 
@@ -6013,43 +6013,4 @@ msgstr "(tom side)"
 #: trac/wiki/templates/wiki_view.html:131
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr "Følgende sider har navn som ligner denne siden, og kan være relatert:"
-
-#~ msgid "Toggle the module description"
-#~ msgstr "Skru av/på modul-beskrivelse"
-
-#~ msgid "Toggle the component description"
-#~ msgstr "Vis/skjul komponent-beskrivelse"
-
-#~ msgid ""
-#~ "Copyright © 2003-2010\n"
-#~ "        [1:Edgewall Software]"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Reported by [1:%(author)s],\n"
-#~ "                      %(date)s ago."
-#~ msgstr ""
-#~ "Rapportert av [1:%(author)s],\n"
-#~ "                      for %(date)s siden."
-
-#~ msgid ""
-#~ "The 'repository_dir' has changed, a "
-#~ "'trac-admin $ENV repository resync' "
-#~ "operation is needed."
-#~ msgstr ""
-#~ "Innstillingen 'repository_dir' er endret, og"
-#~ " 'trac-admin $ENV repository resync' "
-#~ "kommando må kjøres."
-
-#~ msgid "Annotate"
-#~ msgstr "Annotèr"
-
-#~ msgid "No SID found"
-#~ msgstr "Ingen SID funnet"
-
-#~ msgid "Session already exists. Unable to add a duplicate session."
-#~ msgstr "Sesjonen finnes allerede. Kan ikke opprette duplikat."
-
-#~ msgid "Unable to set session attribute on a non-existent SID"
-#~ msgstr "Kan ikke sette sesjonsattributt på en ikke-eksisterende SID"
 

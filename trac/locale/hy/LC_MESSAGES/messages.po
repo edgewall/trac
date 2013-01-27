@@ -1470,7 +1470,7 @@ msgid "Advanced"
 msgstr "Լրացուցիչ"
 
 #: trac/prefs/web_ui.py:150
-#, fuzzy, python-format
+#, fuzzy
 msgid "The session has been loaded."
 msgstr "\"%(name)s\" տարբերակն ավելացված է։"
 
@@ -5632,7 +5632,7 @@ msgid "Can't view %(link)s:"
 msgstr "Հնարավոր չէ դիտել %(link)s-ը․"
 
 #: trac/wiki/intertrac.py:81
-#, fuzzy, python-format
+#, fuzzy
 msgid "The Trac Project"
 msgstr "Վերադառնալ %(project)s-ին"
 
@@ -6107,37 +6107,4 @@ msgid "The following pages have a name similar to this page, and may be related:
 msgstr ""
 "Հետևյալ էջերի անունները նման են այս էջի անվանը և հնարավոր է իրար հետ "
 "կապված են․"
-
-#~ msgid "Toggle the module description"
-#~ msgstr "Ցույց տալ/թաքցնել մոդուլի նկարագրությունը"
-
-#~ msgid "Toggle the component description"
-#~ msgstr "Ցույց տալ/թաքցնել բաղադրիչի նկարագրությունը"
-
-#~ msgid ""
-#~ "Reported by [1:%(author)s],\n"
-#~ "                      %(date)s ago."
-#~ msgstr ""
-#~ "Զեկուցված է [1:%(author)s]-ի կողմից,\n"
-#~ "                      %(date)s առաջ։"
-
-#~ msgid ""
-#~ "The 'repository_dir' has changed, a "
-#~ "'trac-admin $ENV repository resync' "
-#~ "operation is needed."
-#~ msgstr ""
-#~ "\"repository_dir\"-ը փոփոխվել է, անհրաժեշտ է"
-#~ " \"trac-admin resync\" գործողություն։"
-
-#~ msgid "Annotate"
-#~ msgstr "Մեկնաբանել"
-
-#~ msgid "No SID found"
-#~ msgstr "Ոչ մի ֆայլ չի գտնվել"
-
-#~ msgid "Session already exists. Unable to add a duplicate session."
-#~ msgstr "Սեսիան արդեն գոյություն ունի․ Չի հաջովել ավելացնել կրկնօրինակ սեսիա։"
-
-#~ msgid "Unable to set session attribute on a non-existent SID"
-#~ msgstr "Չի հաջողվել դնել սեսիայի հատկանիշը գոյություն ունեցող SID-ի համար"
 

@@ -6060,10 +6060,3 @@ msgstr ""
 "A következő oldalak a jelenlegihez hasonló névvel rendelkeznek és talán \n"
 "kapcsolódnak ehhez:"
 
-#~ msgid ""
-#~ "Reported by [1:%(author)s],\n"
-#~ "                      %(date)s ago."
-#~ msgstr ""
-#~ "Beküldte [1:%(author)s],\n"
-#~ "                      %(date)s."
-

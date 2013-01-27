@@ -1465,7 +1465,7 @@ msgid "Advanced"
 msgstr "Napredno"
 
 #: trac/prefs/web_ui.py:150
-#, fuzzy, python-format
+#, fuzzy
 msgid "The session has been loaded."
 msgstr "Različica \"%(name)s\" je dodana."
 
@@ -5667,7 +5667,7 @@ msgid "Can't view %(link)s:"
 msgstr "Ni mogoče prikazati %(link)s:"
 
 #: trac/wiki/intertrac.py:81
-#, fuzzy, python-format
+#, fuzzy
 msgid "The Trac Project"
 msgstr "Išči v %(project)s"
 
@@ -6145,37 +6145,4 @@ msgstr "(prazna stran)"
 #: trac/wiki/templates/wiki_view.html:131
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr "Naslednje strani imajo ime podobno tej strani in so lahko povezane:"
-
-#~ msgid "Toggle the module description"
-#~ msgstr "Preklopi opis modula"
-
-#~ msgid "Toggle the component description"
-#~ msgstr "Preklopi opis komponente"
-
-#~ msgid ""
-#~ "Reported by [1:%(author)s],\n"
-#~ "                      %(date)s ago."
-#~ msgstr ""
-#~ "Vložil [1:%(author)s],\n"
-#~ "                  %(date)s prej."
-
-#~ msgid ""
-#~ "The 'repository_dir' has changed, a "
-#~ "'trac-admin $ENV repository resync' "
-#~ "operation is needed."
-#~ msgstr ""
-#~ "'repository_dir' se je spremenil, potrebna je operacija \n"
-#~ "'trac-admin $ENV repository resync'."
-
-#~ msgid "Annotate"
-#~ msgstr "Zaznamuj"
-
-#~ msgid "No SID found"
-#~ msgstr "SID-a ni bilo mogoče najti."
-
-#~ msgid "Session already exists. Unable to add a duplicate session."
-#~ msgstr "Seja že obstaja. Dvojne seje ni mogoče dodati."
-
-#~ msgid "Unable to set session attribute on a non-existent SID"
-#~ msgstr "Nastavitev sejnega atributa ni možna pri neobstoječem SIDu"
 

@@ -6038,8 +6038,10 @@ msgstr "Editar esta páxina"
 msgid ""
 "Version %(version)s (modified by %(author)s, %(date)s ago)\n"
 "               ([1:diff])"
-msgstr "Versión %(version)s (modificada por %(author)s, hai %(date)s)\n"
-"               ([1:diff])"
+msgstr ""
+"Versión %(version)s (modificada por %(author)s, hai %(date)s)\n"
+"\"\n"
+"\"               ([1:diff])"
 
 #: trac/wiki/templates/wiki_view.html:47
 #, fuzzy, python-format

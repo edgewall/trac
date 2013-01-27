@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-09-12 09:58+0200\n"
+"POT-Creation-Date: 2012-10-29 19:08+0100\n"
 "PO-Revision-Date: 2010-09-15 17:52+0200\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
 "Language-Team: it_IT <trac-dev@googlegroups.com>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.5\n"
+"Generated-By: Babel 0.9.6dev-r0\n"
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -41,20 +41,20 @@ msgstr "Espandi sotto-directory"
 msgid "Re-expand directory"
 msgstr "Ri-espandi la directory"
 
-#: trac/htdocs/js/expand_dir.js:115
+#: trac/htdocs/js/expand_dir.js:121
 #, python-format
 msgid "Loading %(entry)s..."
 msgstr "Caricamento di %(entry)s..."
 
-#: trac/htdocs/js/expand_dir.js:143
+#: trac/htdocs/js/expand_dir.js:149
 msgid "(empty)"
 msgstr "(vuoto)"
 
-#: trac/htdocs/js/expand_dir.js:151
+#: trac/htdocs/js/expand_dir.js:157
 msgid "(error)"
 msgstr "(errore)"
 
-#: trac/htdocs/js/expand_dir.js:158
+#: trac/htdocs/js/expand_dir.js:164
 msgid "Fold directory"
 msgstr "Collassa directory"
 

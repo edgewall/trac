@@ -6142,10 +6142,3 @@ msgstr ""
 "Les pàgines següents tenen un nom similar a aquesta pàgina, i poden estar"
 " relacionades:"
 
-#~ msgid ""
-#~ "Reported by [1:%(author)s],\n"
-#~ "                      %(date)s ago."
-#~ msgstr ""
-#~ "Notificat per [1:%(author)s],\n"
-#~ "                        fa %(date)s."
-
