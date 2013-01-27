@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
-"POT-Creation-Date: 2013-01-24 11:15+0100\n"
+"POT-Creation-Date: 2013-01-27 11:21+0900\n"
 "PO-Revision-Date: 2012-10-29 18:34+0000\n"
 "Last-Translator: apuasi <kaannokset.hellberg@gmail.com>\n"
 "Language-Team: Finnish "
@@ -447,7 +447,7 @@ msgid "Size"
 msgstr "Koko"
 
 #: trac/attachment.py:1070 trac/templates/history_view.html:30
-#: trac/ticket/templates/ticket.html:346
+#: trac/ticket/templates/ticket.html:350
 #: trac/versioncontrol/templates/revisionlog.html:112
 msgid "Author"
 msgstr "Tekijä"
@@ -457,7 +457,8 @@ msgid "Date"
 msgstr "Päivä"
 
 #: trac/attachment.py:1071 trac/templates/attachment.html:93
-#: trac/ticket/api.py:299 trac/ticket/templates/ticket_box.html:92
+#: trac/ticket/api.py:299 trac/ticket/templates/ticket.html:379
+#: trac/ticket/templates/ticket_box.html:92
 msgid "Description"
 msgstr "Kuvaus"
 
@@ -687,7 +688,7 @@ msgstr "Käyttäjä"
 
 #: trac/perm.py:656 trac/admin/templates/admin_perms.html:63
 #: trac/ticket/templates/batch_modify.html:37
-#: trac/ticket/templates/ticket.html:317
+#: trac/ticket/templates/ticket.html:321
 msgid "Action"
 msgstr "Toiminto"
 
@@ -1183,7 +1184,7 @@ msgid "URL:"
 msgstr "URL:"
 
 #: trac/admin/templates/admin_basics.html:29
-#: trac/ticket/templates/ticket.html:233
+#: trac/ticket/templates/ticket.html:237
 msgid "Description:"
 msgstr "Kuvaus:"
 
@@ -2236,7 +2237,7 @@ msgstr "(kokorajoitus %(value)s)"
 msgid "Attachment Info"
 msgstr "Liitteen tiedot"
 
-#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:351
+#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:355
 #: trac/wiki/templates/wiki_edit_form.html:42
 msgid "Your email or username:"
 msgstr "Sähköpostiosoitteesi tai käyttäjätunnuksesi:"
@@ -2666,7 +2667,7 @@ msgstr ""
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:44
-#: trac/ticket/templates/ticket.html:374
+#: trac/ticket/templates/ticket.html:378
 msgid "Attachments"
 msgstr "Liitteet"
 
@@ -2785,7 +2786,7 @@ msgstr "Komponentti %(name)s on jo olemassa."
 msgid "The component \"%(name)s\" has been added."
 msgstr "Komponentti \"%(name)s\" on lisätty."
 
-#: trac/ticket/admin.py:122 trac/ticket/model.py:862 trac/ticket/model.py:881
+#: trac/ticket/admin.py:122 trac/ticket/model.py:859 trac/ticket/model.py:878
 msgid "Invalid component name."
 msgstr "Viallinen komponentin nimi."
 
@@ -2824,7 +2825,7 @@ msgstr "Tavoite %(name)s on jo olemassa."
 msgid "The milestone \"%(name)s\" has been added."
 msgstr "Tavoite \"%(name)s\" on lisätty."
 
-#: trac/ticket/admin.py:305 trac/ticket/model.py:1041 trac/ticket/model.py:1063
+#: trac/ticket/admin.py:305 trac/ticket/model.py:1038 trac/ticket/model.py:1060
 msgid "Invalid milestone name."
 msgstr "Viallinen tavoitteen nimi."
 
@@ -2851,7 +2852,7 @@ msgstr "Versio %(name)s on jo olemassa."
 msgid "The version \"%(name)s\" has been added."
 msgstr "Versio \"%(name)s\" on lisätty."
 
-#: trac/ticket/admin.py:484 trac/ticket/model.py:1168 trac/ticket/model.py:1186
+#: trac/ticket/admin.py:484 trac/ticket/model.py:1165 trac/ticket/model.py:1183
 msgid "Invalid version name."
 msgstr "Viallinen version nimi."
 
@@ -2969,7 +2970,7 @@ msgstr "Liitteet"
 msgid "Summary"
 msgstr "Yhteenveto"
 
-#: trac/ticket/api.py:289 trac/ticket/templates/ticket.html:347
+#: trac/ticket/api.py:289 trac/ticket/templates/ticket.html:351
 msgid "Reporter"
 msgstr "Ilmoittaja"
 
@@ -3170,43 +3171,43 @@ msgstr "Viallinen lipun numero"
 msgid "Multi-values fields not supported yet"
 msgstr "Moniarvoisia kenttiä ei tueta vielä"
 
-#: trac/ticket/model.py:688
+#: trac/ticket/model.py:685
 #, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr "%(type)s %(name)s ei ole olemassa."
 
-#: trac/ticket/model.py:730 trac/ticket/model.py:755
+#: trac/ticket/model.py:727 trac/ticket/model.py:752
 #, python-format
 msgid "Invalid %(type)s name."
 msgstr "Viallinen %(type)s nimi."
 
-#: trac/ticket/model.py:834
+#: trac/ticket/model.py:831
 #, python-format
 msgid "Component %(name)s does not exist."
 msgstr "Komponenttia %(name)s ei ole olemassa."
 
-#: trac/ticket/model.py:979
+#: trac/ticket/model.py:976
 #, python-format
 msgid "Milestone %(name)s does not exist."
 msgstr "Tavoitetta %(name)s ei ole olemassa."
 
-#: trac/ticket/model.py:980
+#: trac/ticket/model.py:977
 msgid "Invalid milestone name"
 msgstr "Viallinen tavoitteen nimi"
 
-#: trac/ticket/model.py:1119
+#: trac/ticket/model.py:1116
 msgid "Open (by due date)"
 msgstr "Avoin (tehtävä ennen -päivän mukaan)"
 
-#: trac/ticket/model.py:1120
+#: trac/ticket/model.py:1117
 msgid "Open (no due date)"
 msgstr "Avoin (ei tehtävä ennen -päivää)"
 
-#: trac/ticket/model.py:1123
+#: trac/ticket/model.py:1120
 msgid "Closed"
 msgstr "Suljettu"
 
-#: trac/ticket/model.py:1140
+#: trac/ticket/model.py:1137
 #, python-format
 msgid "Version %(name)s does not exist."
 msgstr "Versiota %(name)s ei ole olemassa."
@@ -4001,7 +4002,7 @@ msgid "Retarget associated open tickets to milestone:"
 msgstr "Siirrä liitetyt avoimet liput tavoitteeseen:"
 
 #: trac/ticket/templates/milestone_edit.html:106
-#: trac/ticket/templates/ticket.html:383
+#: trac/ticket/templates/ticket.html:388
 #: trac/ticket/templates/ticket_change.html:116
 #: trac/wiki/templates/wiki_edit_form.html:66
 #: trac/wiki/templates/wiki_edit_form.html:71
@@ -4356,38 +4357,47 @@ msgstr "Tavoite:"
 msgid "Add new milestone"
 msgstr "Luo uusi tavoite"
 
-#: trac/ticket/templates/ticket.html:130
+#: trac/ticket/templates/ticket.html:132
+msgid "Go to the ticket editor"
+msgstr ""
+
+#: trac/ticket/templates/ticket.html:132
+#, fuzzy
+msgid "Modify"
+msgstr "muokattu"
+
+#: trac/ticket/templates/ticket.html:134
 msgid "Create New Ticket"
 msgstr "Luo uusi lippu"
 
-#: trac/ticket/templates/ticket.html:148
+#: trac/ticket/templates/ticket.html:152
 msgid "Oldest first"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:150
+#: trac/ticket/templates/ticket.html:154
 msgid "Newest first"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:153
+#: trac/ticket/templates/ticket.html:157
 #, fuzzy
 msgid "Threaded"
 msgstr "luotu"
 
-#: trac/ticket/templates/ticket.html:158
+#: trac/ticket/templates/ticket.html:162
 #, fuzzy
 msgid "Comments only"
 msgstr "kommentti:"
 
-#: trac/ticket/templates/ticket.html:163
+#: trac/ticket/templates/ticket.html:167
 msgid "Change History"
 msgstr "Muutoshistoria"
 
-#: trac/ticket/templates/ticket.html:182
+#: trac/ticket/templates/ticket.html:186
 #, fuzzy
 msgid "Add Comment"
 msgstr "Lisää kommentti"
 
-#: trac/ticket/templates/ticket.html:184
+#: trac/ticket/templates/ticket.html:188
 msgid ""
 "This ticket has been modified since you started editing. You should "
 "review the\n"
@@ -4397,7 +4407,7 @@ msgid ""
 " wish so."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:194
+#: trac/ticket/templates/ticket.html:198
 #, fuzzy
 msgid ""
 "You may use\n"
@@ -4407,27 +4417,27 @@ msgstr ""
 "Voit käyttää\n"
 "              [1:WikiFormatting]-muotoiluja."
 
-#: trac/ticket/templates/ticket.html:205
+#: trac/ticket/templates/ticket.html:209
 msgid "Modify Ticket"
 msgstr "Muokkaa lippua"
 
-#: trac/ticket/templates/ticket.html:211
+#: trac/ticket/templates/ticket.html:215
 msgid "Change Properties"
 msgstr "Muokkaa ominaisuuksia"
 
-#: trac/ticket/templates/ticket.html:212
+#: trac/ticket/templates/ticket.html:216
 msgid "Properties"
 msgstr "Ominaisuudet"
 
-#: trac/ticket/templates/ticket.html:216
+#: trac/ticket/templates/ticket.html:220
 msgid "Summary:"
 msgstr "Yhteenveto:"
 
-#: trac/ticket/templates/ticket.html:224
+#: trac/ticket/templates/ticket.html:228
 msgid "Reporter:"
 msgstr "Ilmoittaja:"
 
-#: trac/ticket/templates/ticket.html:236
+#: trac/ticket/templates/ticket.html:240
 msgid ""
 "You may use\n"
 "                          [1:WikiFormatting] here."
@@ -4435,47 +4445,52 @@ msgstr ""
 "Voit käyttää\n"
 "                          [1:WikiFormatting]-muotoiluja."
 
-#: trac/ticket/templates/ticket.html:252
+#: trac/ticket/templates/ticket.html:256
 #: trac/ticket/templates/ticket_box.html:75
 #, python-format
 msgid "%(field)s:"
 msgstr "%(field)s:"
 
-#: trac/ticket/templates/ticket.html:291
+#: trac/ticket/templates/ticket.html:295
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr "Tämä valintaruutu sallii sinun lisätä tai poistaa itsesi Cc-listalta."
 
-#: trac/ticket/templates/ticket.html:297
+#: trac/ticket/templates/ticket.html:301
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr ""
 "Sallittu: välilyönnillä tai pilkulla erotetut sähköpostiosoitteet ja "
 "käyttäjätunnukset."
 
-#: trac/ticket/templates/ticket.html:360
+#: trac/ticket/templates/ticket.html:364
 #: trac/wiki/templates/wiki_edit_form.html:46
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
 msgstr "Sähköpostiosoite ja nimi voidaan asettaa asetuksissa: [1:Preferences]."
 
-#: trac/ticket/templates/ticket.html:368
+#: trac/ticket/templates/ticket.html:372
 msgid "I have files to attach to this ticket"
 msgstr "Haluan liittää tähän lippuun tiedostoja"
 
-#: trac/ticket/templates/ticket.html:374
+#: trac/ticket/templates/ticket.html:378
 msgid "Go to the list of attachments"
 msgstr "Siirry liitetiedostojen listaan"
 
-#: trac/ticket/templates/ticket.html:382
+#: trac/ticket/templates/ticket.html:379
+#, fuzzy
+msgid "View the ticket description"
+msgstr "Ei oikeutta muokata lipun kuvausta."
+
+#: trac/ticket/templates/ticket.html:387
 #: trac/ticket/templates/ticket_change.html:114
 #: trac/wiki/templates/wiki_edit.html:95 trac/wiki/templates/wiki_edit.html:153
 #: trac/wiki/templates/wiki_edit_form.html:64
 msgid "Preview"
 msgstr "Esikatselu"
 
-#: trac/ticket/templates/ticket.html:383
+#: trac/ticket/templates/ticket.html:388
 msgid "Create ticket"
 msgstr "Luo lippu"
 
-#: trac/ticket/templates/ticket.html:391
+#: trac/ticket/templates/ticket.html:396
 msgid ""
 "[1:Note:] See\n"
 "        [2:TracTickets] for help on using\n"
