@@ -1,13 +1,13 @@
 # Japanese translations for Trac.
-# Copyright (C) 2012 Edgewall Software
+# Copyright (C) 2013 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# Jun Omae <jun66j5@gmail.com>, 2012.
+# Jun Omae <jun66j5@gmail.com>, 2013.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-24 11:15+0100\n"
+"POT-Creation-Date: 2013-01-27 11:21+0900\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <LL@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: tracopt/mimeview/enscript.py:105
 msgid "Path to the Enscript executable."
@@ -194,9 +194,8 @@ msgid "Define charset encoding of paths within git repositories."
 msgstr "git リポジトリ中のパスに対する文字エンコーディングを指定します。"
 
 #: tracopt/versioncontrol/git/git_fs.py:202
-#, fuzzy
 msgid "Path to the git executable."
-msgstr "Enscript 実行ファイルへのパスを指定します。"
+msgstr "git 実行ファイルへのパスを指定します。"
 
 #: tracopt/versioncontrol/git/git_fs.py:749
 msgid "Path to a gitweb-formatted projects.list"
@@ -214,7 +213,6 @@ msgid ""
 msgstr "プロジェクト URL のテンプレート。%s はリポジトリ名に置換されます。"
 
 #: tracopt/versioncontrol/svn/svn_fs.py:253
-#, fuzzy
 msgid ""
 "Comma separated list of paths categorized as branches.\n"
 "If a path ends with '*', then all the directory entries found below\n"
@@ -317,7 +315,6 @@ msgstr ""
 "(''0.11 以降'')"
 
 #: trac/attachment.py:430
-#, fuzzy
 msgid ""
 "Maximum allowed file size (in bytes) for ticket and wiki\n"
 "attachments."
@@ -352,7 +349,6 @@ msgstr ""
 "匿名ユーザが添付ファイルを作成できるような公開サイトでは、このオプションを無効 (これがデフォルトです) のままにしておくことを推奨します。"
 
 #: trac/env.py:123
-#, fuzzy
 msgid ""
 "This section is used to enable or disable components\n"
 "provided by plugins, as well as by Trac itself. The component\n"
@@ -694,7 +690,6 @@ msgstr ""
 "SMTP サーバはそれらのアドレスを受け入れて、FQDN を追加する、またはローカル配送のどちらかを行うべきです。(''0.10 以降'')"
 
 #: trac/notification.py:115
-#, fuzzy
 msgid ""
 "Text to prepend to subject line of notification emails.\n"
 "\n"
@@ -993,7 +988,6 @@ msgid ""
 msgstr "常に''報告者''フィールドにあるアドレスに通知を送信するかどうかを指定します。"
 
 #: trac/ticket/notification.py:46
-#, fuzzy
 msgid ""
 "Always send notifications to the person who causes the ticket\n"
 "property change and to any previous updater of that ticket."
@@ -1199,7 +1193,6 @@ msgstr ""
 "(''0.11 以降'')"
 
 #: trac/ticket/roadmap.py:388
-#, fuzzy
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
@@ -1209,7 +1202,6 @@ msgstr ""
 "これはロードマップの表示でチケットのグループごとに集計を行うのに使います。"
 
 #: trac/ticket/roadmap.py:590
-#, fuzzy
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
@@ -1281,7 +1273,6 @@ msgstr ""
 "(''0.9 以降'')"
 
 #: trac/timeline/web_ui.py:56
-#, fuzzy
 msgid ""
 "Maximum number of days (-1 for unlimited) displayable in the\n"
 "Timeline. (''since 0.11'')"
@@ -1399,7 +1390,7 @@ msgstr ""
 msgid ""
 "The module prefix used in the `authz_file` for the default\n"
 "repository. If left empty, the global section is used."
-msgstr "`authz_file` に対するデフォルトのリポジトリのモジュール名を指定します。空の場合はグローバルセクションを使用します。"
+msgstr "`authz_file` で使うデフォルトのリポジトリに対応するモジュール名を指定します。空の場合はグローバルセクションを使用します。"
 
 #: trac/versioncontrol/web_ui/browser.py:118
 msgid ""
@@ -1424,7 +1415,6 @@ msgstr ""
 "(''0.11 以降'')"
 
 #: trac/versioncontrol/web_ui/browser.py:184
-#, fuzzy
 msgid ""
 "List of repository paths that can be downloaded.\n"
 "\n"
@@ -1441,6 +1431,9 @@ msgstr ""
 "\n"
 "ダウンロードを無効にしたい場合は空にします。そうでない場合は、許可するパスをカンマ区切りで指定します (ワイルドカードとして \"*\" "
 "が使えます)。\n"
+"マルチリポジトリ環境でパスがデフォルトのリポジトリを指していない場合には、そのパスはリポジトリ名付きで指定する必要があります (例えば "
+"/reponame/trunk)。\n"
+"また、パスのプレフィックスマッチング処理はシンプルhもので、自動でエイリアスの解決は行わないことに注意してください。\n"
 "(''0.10 以降'')"
 
 #: trac/versioncontrol/web_ui/browser.py:197
@@ -1503,7 +1496,6 @@ msgstr ""
 "(''0.11 以降'')"
 
 #: trac/versioncontrol/web_ui/browser.py:234
-#, fuzzy
 msgid ""
 "Whether raw files should be rendered in the browser, or only made\n"
 "downloadable.\n"
@@ -1557,7 +1549,6 @@ msgstr ""
 "にすると、チェンジセットのメッセージは1行スタイルになり、箇条書きなどの書式は反映されないようになります。"
 
 #: trac/versioncontrol/web_ui/changeset.py:145
-#, fuzzy
 msgid ""
 "Whether consecutive changesets from the same author having\n"
 "exactly the same message should be presented as one event.\n"
@@ -1693,7 +1684,6 @@ msgid ""
 msgstr "テンプレートローダがメモリにキャッシュするテンプレートの最大数を指定します。デフォルト値は128です。もっと多くのテンプレートを使っていてメモリに余裕がある場合は、大きな値にすることもできます。メモリが少ない場合には、小さくすることもできます。"
 
 #: trac/web/chrome.py:371
-#, fuzzy
 msgid ""
 "Base URL for serving the core static resources below\n"
 "`/chrome/common/`.\n"
@@ -1767,7 +1757,6 @@ msgstr ""
 "(''1.0 以降'')"
 
 #: trac/web/chrome.py:410
-#, fuzzy
 msgid ""
 "Location of the theme to be used with the jQuery UI !JavaScript\n"
 "library (version 1.8.21).\n"
@@ -1804,7 +1793,6 @@ msgid ""
 msgstr "`metanav` ナビゲーションバーに表示する項目の順番を ID で指定します。TracNavigation も参照してください。"
 
 #: trac/web/chrome.py:430
-#, fuzzy
 msgid ""
 "Order of the items to display in the `mainnav` navigation bar,\n"
 "listed by IDs. See also TracNavigation."
@@ -1815,7 +1803,6 @@ msgid "URL to link to, from the header logo."
 msgstr "ヘッダロゴからリンクする URL を指定します。"
 
 #: trac/web/chrome.py:439
-#, fuzzy
 msgid ""
 "URL of the image to use as header logo.\n"
 "It can be absolute, server relative or relative.\n"
@@ -1853,7 +1840,6 @@ msgid ""
 msgstr "ユーザ名の代わりにメールアドレスを表示するかどうかを指定します。false の場合、メールアドレスはぼかすようにします。(''0.11 以降'')"
 
 #: trac/web/chrome.py:464
-#, fuzzy
 msgid ""
 "Never obfuscate `mailto:` links explicitly written in the wiki,\n"
 "even if `show_email_addresses` is false or the user has not the\n"
@@ -2087,9 +2073,4 @@ msgstr ""
 #: trac/wiki/web_ui.py:64
 msgid "Maximum allowed wiki page size in bytes. (''since 0.11.2'')"
 msgstr "Wiki ページの最大サイズをバイト数で指定します。(''0.11.2 以降'')"
-
-#~ msgid ""
-#~ "Path to git executable (relative to the Trac configuration folder,\n"
-#~ "so better use an absolute path here)."
-#~ msgstr "git 実行ファイルへのパスを指定します (Trac 設定フォルダに対して相対パスだが絶対パスのほうが望ましい)。"
 
