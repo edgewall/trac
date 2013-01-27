@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-24 11:15+0100\n"
+"POT-Creation-Date: 2013-01-27 11:21+0900\n"
 "PO-Revision-Date: 2012-05-11 22:09+0200\n"
 "Last-Translator: Nagy Zoltán <nzoltan@freemail.hu>\n"
 "Language-Team: hu_HU <trac-dev@googlegroups.com>\n"
@@ -441,7 +441,7 @@ msgid "Size"
 msgstr "Méret"
 
 #: trac/attachment.py:1070 trac/templates/history_view.html:30
-#: trac/ticket/templates/ticket.html:346
+#: trac/ticket/templates/ticket.html:350
 #: trac/versioncontrol/templates/revisionlog.html:112
 msgid "Author"
 msgstr "Szerző"
@@ -451,7 +451,8 @@ msgid "Date"
 msgstr "Dátum"
 
 #: trac/attachment.py:1071 trac/templates/attachment.html:93
-#: trac/ticket/api.py:299 trac/ticket/templates/ticket_box.html:92
+#: trac/ticket/api.py:299 trac/ticket/templates/ticket.html:379
+#: trac/ticket/templates/ticket_box.html:92
 msgid "Description"
 msgstr "Leírás"
 
@@ -579,7 +580,7 @@ msgid "Database is up to date, no upgrade necessary."
 msgstr "Az adatbázis aktuális, nincs szükség frissítésre."
 
 #: trac/env.py:984
-#, fuzzy, python-format
+#, fuzzy
 msgid ""
 "The pre-upgrade backup failed.\n"
 "Use '--no-backup' to upgrade without doing a backup.\n"
@@ -685,7 +686,7 @@ msgstr "Felhasználó"
 
 #: trac/perm.py:656 trac/admin/templates/admin_perms.html:63
 #: trac/ticket/templates/batch_modify.html:37
-#: trac/ticket/templates/ticket.html:317
+#: trac/ticket/templates/ticket.html:321
 msgid "Action"
 msgstr "Művelet"
 
@@ -1176,7 +1177,7 @@ msgid "URL:"
 msgstr "URL:"
 
 #: trac/admin/templates/admin_basics.html:29
-#: trac/ticket/templates/ticket.html:233
+#: trac/ticket/templates/ticket.html:237
 msgid "Description:"
 msgstr "Leírás:"
 
@@ -2209,7 +2210,7 @@ msgstr "(a méretkorlát %(value)s)"
 msgid "Attachment Info"
 msgstr "A melléklet adatlapja"
 
-#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:351
+#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:355
 #: trac/wiki/templates/wiki_edit_form.html:42
 msgid "Your email or username:"
 msgstr "Az Ön e-mail címe vagy felhasználóneve:"
@@ -2642,7 +2643,7 @@ msgstr ""
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:44
-#: trac/ticket/templates/ticket.html:374
+#: trac/ticket/templates/ticket.html:378
 msgid "Attachments"
 msgstr "Mellékletek"
 
@@ -2759,7 +2760,7 @@ msgstr "%(name)s komponens már létezik."
 msgid "The component \"%(name)s\" has been added."
 msgstr "A %(name)s komponens rögzítve."
 
-#: trac/ticket/admin.py:122 trac/ticket/model.py:862 trac/ticket/model.py:881
+#: trac/ticket/admin.py:122 trac/ticket/model.py:859 trac/ticket/model.py:878
 msgid "Invalid component name."
 msgstr "Érvénytelen komponens név"
 
@@ -2798,7 +2799,7 @@ msgstr "%(name)s mérföldkő már létezik."
 msgid "The milestone \"%(name)s\" has been added."
 msgstr "A mérföldkő \"%(name)s\" rögzítve."
 
-#: trac/ticket/admin.py:305 trac/ticket/model.py:1041 trac/ticket/model.py:1063
+#: trac/ticket/admin.py:305 trac/ticket/model.py:1038 trac/ticket/model.py:1060
 msgid "Invalid milestone name."
 msgstr "Érvénytelen mérföldkő név"
 
@@ -2825,7 +2826,7 @@ msgstr "A %(name)s verzió már létezik."
 msgid "The version \"%(name)s\" has been added."
 msgstr "A \"%(name)s\" verzió rögzítve."
 
-#: trac/ticket/admin.py:484 trac/ticket/model.py:1168 trac/ticket/model.py:1186
+#: trac/ticket/admin.py:484 trac/ticket/model.py:1165 trac/ticket/model.py:1183
 msgid "Invalid version name."
 msgstr "Érvénytelen verzió név"
 
@@ -2941,7 +2942,7 @@ msgstr "Melléklet"
 msgid "Summary"
 msgstr "Összefoglaló"
 
-#: trac/ticket/api.py:289 trac/ticket/templates/ticket.html:347
+#: trac/ticket/api.py:289 trac/ticket/templates/ticket.html:351
 msgid "Reporter"
 msgstr "Bejelentő"
 
@@ -3144,43 +3145,43 @@ msgstr "Érvénytelen jegy azonosító"
 msgid "Multi-values fields not supported yet"
 msgstr "A többes értékű (multi-values) mezők jelenleg nem támogatottak"
 
-#: trac/ticket/model.py:688
+#: trac/ticket/model.py:685
 #, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr "A %(type)s típusú %(name)s nem létezik."
 
-#: trac/ticket/model.py:730 trac/ticket/model.py:755
+#: trac/ticket/model.py:727 trac/ticket/model.py:752
 #, python-format
 msgid "Invalid %(type)s name."
 msgstr "Érvénytelen %(type)s név."
 
-#: trac/ticket/model.py:834
+#: trac/ticket/model.py:831
 #, python-format
 msgid "Component %(name)s does not exist."
 msgstr "A %(name)s komponens nem létezik."
 
-#: trac/ticket/model.py:979
+#: trac/ticket/model.py:976
 #, python-format
 msgid "Milestone %(name)s does not exist."
 msgstr "A %(name)s mérföldkő nem létezik."
 
-#: trac/ticket/model.py:980
+#: trac/ticket/model.py:977
 msgid "Invalid milestone name"
 msgstr "Érvénytelen mérföldkő név"
 
-#: trac/ticket/model.py:1119
+#: trac/ticket/model.py:1116
 msgid "Open (by due date)"
 msgstr "Nyitott (határidővel)"
 
-#: trac/ticket/model.py:1120
+#: trac/ticket/model.py:1117
 msgid "Open (no due date)"
 msgstr "Nyitott (nincs határidő)"
 
-#: trac/ticket/model.py:1123
+#: trac/ticket/model.py:1120
 msgid "Closed"
 msgstr "Lezárva"
 
-#: trac/ticket/model.py:1140
+#: trac/ticket/model.py:1137
 #, python-format
 msgid "Version %(name)s does not exist."
 msgstr "A %(name)s verzió nem létezik."
@@ -3977,7 +3978,7 @@ msgid "Retarget associated open tickets to milestone:"
 msgstr "A kapcsolódó nyitott jegyek átirányítása másik mérföldkőhöz"
 
 #: trac/ticket/templates/milestone_edit.html:106
-#: trac/ticket/templates/ticket.html:383
+#: trac/ticket/templates/ticket.html:388
 #: trac/ticket/templates/ticket_change.html:116
 #: trac/wiki/templates/wiki_edit_form.html:66
 #: trac/wiki/templates/wiki_edit_form.html:71
@@ -4325,38 +4326,48 @@ msgstr "Mérföldkő:"
 msgid "Add new milestone"
 msgstr "Új mérföldkő hozzáadása"
 
-#: trac/ticket/templates/ticket.html:130
+#: trac/ticket/templates/ticket.html:132
+#, fuzzy
+msgid "Go to the ticket editor"
+msgstr "Ugrás a szerkesztőmezőhöz"
+
+#: trac/ticket/templates/ticket.html:132
+#, fuzzy
+msgid "Modify"
+msgstr "módosítva"
+
+#: trac/ticket/templates/ticket.html:134
 msgid "Create New Ticket"
 msgstr "Új jegy létrehozása"
 
-#: trac/ticket/templates/ticket.html:148
+#: trac/ticket/templates/ticket.html:152
 msgid "Oldest first"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:150
+#: trac/ticket/templates/ticket.html:154
 msgid "Newest first"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:153
+#: trac/ticket/templates/ticket.html:157
 #, fuzzy
 msgid "Threaded"
 msgstr "létrehozva"
 
-#: trac/ticket/templates/ticket.html:158
+#: trac/ticket/templates/ticket.html:162
 #, fuzzy
 msgid "Comments only"
 msgstr "megjegyzés:"
 
-#: trac/ticket/templates/ticket.html:163
+#: trac/ticket/templates/ticket.html:167
 msgid "Change History"
 msgstr "Változás napló"
 
-#: trac/ticket/templates/ticket.html:182
+#: trac/ticket/templates/ticket.html:186
 #, fuzzy
 msgid "Add Comment"
 msgstr "Megjegyzés hozzáadása"
 
-#: trac/ticket/templates/ticket.html:184
+#: trac/ticket/templates/ticket.html:188
 msgid ""
 "This ticket has been modified since you started editing. You should "
 "review the\n"
@@ -4366,7 +4377,7 @@ msgid ""
 " wish so."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:194
+#: trac/ticket/templates/ticket.html:198
 #, fuzzy
 msgid ""
 "You may use\n"
@@ -4374,73 +4385,78 @@ msgid ""
 "                here."
 msgstr "Itt használható a [1:WikiFormatting]."
 
-#: trac/ticket/templates/ticket.html:205
+#: trac/ticket/templates/ticket.html:209
 msgid "Modify Ticket"
 msgstr "Jegy módosítása"
 
-#: trac/ticket/templates/ticket.html:211
+#: trac/ticket/templates/ticket.html:215
 msgid "Change Properties"
 msgstr "Jellemzők módosítása"
 
-#: trac/ticket/templates/ticket.html:212
+#: trac/ticket/templates/ticket.html:216
 msgid "Properties"
 msgstr "Jellemzők"
 
-#: trac/ticket/templates/ticket.html:216
+#: trac/ticket/templates/ticket.html:220
 msgid "Summary:"
 msgstr "Összefoglaló:"
 
-#: trac/ticket/templates/ticket.html:224
+#: trac/ticket/templates/ticket.html:228
 msgid "Reporter:"
 msgstr "Bejelentő:"
 
-#: trac/ticket/templates/ticket.html:236
+#: trac/ticket/templates/ticket.html:240
 msgid ""
 "You may use\n"
 "                          [1:WikiFormatting] here."
 msgstr "Itt használható a [1:WikiFormatting]."
 
-#: trac/ticket/templates/ticket.html:252
+#: trac/ticket/templates/ticket.html:256
 #: trac/ticket/templates/ticket_box.html:75
 #, python-format
 msgid "%(field)s:"
 msgstr "%(field)s:"
 
-#: trac/ticket/templates/ticket.html:291
+#: trac/ticket/templates/ticket.html:295
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr "A jelölőnégyzet eltávolítja vagy hozzáadja Önt a Cc listából/-hoz."
 
-#: trac/ticket/templates/ticket.html:297
+#: trac/ticket/templates/ticket.html:301
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr ""
 "Szóközzel vagy vesszővel elválasztott e-mail címek és felhasználónevek "
 "adhatók meg."
 
-#: trac/ticket/templates/ticket.html:360
+#: trac/ticket/templates/ticket.html:364
 #: trac/wiki/templates/wiki_edit_form.html:46
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
 msgstr "Beállíthatja az e-mail címét és felhasználónevét a [1:beállításokban]."
 
-#: trac/ticket/templates/ticket.html:368
+#: trac/ticket/templates/ticket.html:372
 msgid "I have files to attach to this ticket"
 msgstr "Melléklet csatolása a jegyhez"
 
-#: trac/ticket/templates/ticket.html:374
+#: trac/ticket/templates/ticket.html:378
 msgid "Go to the list of attachments"
 msgstr "Ugrás a mellékletekhez"
 
-#: trac/ticket/templates/ticket.html:382
+#: trac/ticket/templates/ticket.html:379
+#, fuzzy
+msgid "View the ticket description"
+msgstr "Nincs engedélye megváltoztatni a jegy leírását."
+
+#: trac/ticket/templates/ticket.html:387
 #: trac/ticket/templates/ticket_change.html:114
 #: trac/wiki/templates/wiki_edit.html:95 trac/wiki/templates/wiki_edit.html:153
 #: trac/wiki/templates/wiki_edit_form.html:64
 msgid "Preview"
 msgstr "Előnézet"
 
-#: trac/ticket/templates/ticket.html:383
+#: trac/ticket/templates/ticket.html:388
 msgid "Create ticket"
 msgstr "Új jegy létrehozása"
 
-#: trac/ticket/templates/ticket.html:391
+#: trac/ticket/templates/ticket.html:396
 msgid ""
 "[1:Note:] See\n"
 "        [2:TracTickets] for help on using\n"
@@ -7041,93 +7057,4 @@ msgid "The following pages have a name similar to this page, and may be related:
 msgstr ""
 "A következő oldalak a jelenlegihez hasonló névvel rendelkeznek és talán \n"
 "kapcsolódnak ehhez:"
-
-#~ msgid "%(perm)s privileges are required to perform this operation"
-#~ msgstr "%(perm)s jogosultság szükséges a művelet végrehajtásához"
-
-#~ msgid "Note:"
-#~ msgstr "Megjegyzés:"
-
-#~ msgid ""
-#~ "[1:[2:%(title)s:]]\n"
-#~ "          [3:[4:%(count)s]]"
-#~ msgstr ""
-#~ "[1:[2:%(title)s:]]\n"
-#~ "          [3:[4:%(count)s]]"
-
-#~ msgid ""
-#~ "[1:[2:Total:]]\n"
-#~ "      [3:[4:%(count)s]]"
-#~ msgstr ""
-#~ "[1:[2:Teljes:]]\n"
-#~ "      [3:[4:%(count)s]]"
-
-#~ msgid "reopened"
-#~ msgstr "újra megnyitva"
-
-#~ msgid "updated"
-#~ msgstr "frissítve"
-
-#~ msgid "Delete Milestone"
-#~ msgstr "Mérföldkő törlése"
-
-#~ msgid "Edit Milestone"
-#~ msgstr "Mérföldkő Szerkesztése"
-
-#~ msgid "Report"
-#~ msgstr "Jelentés"
-
-#~ msgid "Go to the ticket editor"
-#~ msgstr "Úgrás a jegyszerkesztőbe"
-
-#~ msgid "Modify"
-#~ msgstr "Módosítás"
-
-#~ msgid "Ticket #"
-#~ msgstr "Jegy #"
-
-#~ msgid "View ticket fields and description"
-#~ msgstr "Jegy mezők és leírás megjelenítése"
-
-#~ msgid "View"
-#~ msgstr "Nézet"
-
-#~ msgid ""
-#~ "Warnings are shown at the [1:top of the page]. The ticket validation\n"
-#~ "            may have failed."
-#~ msgstr ""
-#~ "Figyelmeztetetéseket talál az [1:oldal tetején]. A jegy érvényesítése\n"
-#~ "            sikertelen."
-
-#~ msgid "%(date)s in Timeline"
-#~ msgstr "%(date)s az idővonalban"
-
-#~ msgid ""
-#~ "Revision [1:%(rev)s],\n"
-#~ "            [2:%(size)s]\n"
-#~ "            checked in by %(author)s, %(date)s ago\n"
-#~ "            ([3:diff])"
-#~ msgstr ""
-#~ "A(z) [1:%(rev)s]. változat,\n"
-#~ "            [2:%(size)s]\n"
-#~ "            beküldte %(author)s, %(date)s\n"
-#~ "            ([3:diff])"
-
-#~ msgid ""
-#~ "Are you sure you want to delete"
-#~ " versions %(from)s to %(to)s of this"
-#~ " page?"
-#~ msgstr ""
-#~ "Valóban törölni akarja a %(from)s. és"
-#~ " %(to)s. közötti vezióit ennek a "
-#~ "lapnak?"
-
-#~ msgid "Editing"
-#~ msgstr "Szerkesztés"
-
-#~ msgid "See the start of the diffs"
-#~ msgstr "A összehasonlítás kezdete"
-
-#~ msgid "See the start of the preview"
-#~ msgstr "Az előnézet kezdete"
 
