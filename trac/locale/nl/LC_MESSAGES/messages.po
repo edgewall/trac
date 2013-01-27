@@ -6137,10 +6137,3 @@ msgstr ""
 "De volgende pagina’s hebben een naam die lijkt op deze, en kunnen "
 "gerelateerd zijn:"
 
-#~ msgid ""
-#~ "Reported by [1:%(author)s],\n"
-#~ "                      %(date)s ago."
-#~ msgstr ""
-#~ "Gemeld door [1:%(author)s],\n"
-#~ "                      %(date)s geleden."
-

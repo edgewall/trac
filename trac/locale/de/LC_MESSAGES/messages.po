@@ -6159,10 +6159,3 @@ msgstr ""
 "Die folgenden Seiten haben einen dem dieser Seite ähnlichen Namen und "
 "könnten verwandt sein:"
 
-#~ msgid ""
-#~ "Reported by [1:%(author)s],\n"
-#~ "                      %(date)s ago."
-#~ msgstr ""
-#~ "Erstellt von [1:%(author)s],\n"
-#~ "                      vor %(date)s."
-

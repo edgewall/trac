@@ -6167,13 +6167,3 @@ msgstr ""
 "As seguintes páginas tem um nome similar a esta, e podem estar "
 "relacionadas com ela:"
 
-#~ msgid ""
-#~ "Reported by [1:%(author)s],\n"
-#~ "                      %(date)s ago."
-#~ msgstr ""
-#~ "Relatado por [1:%(author)s],\n"
-#~ "                      %(date)s atrás."
-
-#~ msgid "Annotate"
-#~ msgstr "Anotar"
-

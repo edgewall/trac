@@ -1429,7 +1429,7 @@ msgid "Advanced"
 msgstr "高级"
 
 #: trac/prefs/web_ui.py:150
-#, fuzzy, python-format
+#, fuzzy
 msgid "The session has been loaded."
 msgstr "版本 '%(name)s' 已添加。"
 
@@ -5450,7 +5450,7 @@ msgid "Can't view %(link)s:"
 msgstr "无法查看 %(link)s:"
 
 #: trac/wiki/intertrac.py:81
-#, fuzzy, python-format
+#, fuzzy
 msgid "The Trac Project"
 msgstr "搜索 %(project)s"
 
@@ -5915,37 +5915,4 @@ msgstr "(空白页面)"
 #: trac/wiki/templates/wiki_view.html:131
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr "以下页面与此页面名称相似，可能会有关联："
-
-#~ msgid "Toggle the module description"
-#~ msgstr "显隐模块描述"
-
-#~ msgid "Toggle the component description"
-#~ msgstr "显隐组件描述"
-
-#~ msgid ""
-#~ "Reported by [1:%(author)s],\n"
-#~ "                      %(date)s ago."
-#~ msgstr ""
-#~ "由 [1:%(author)s] 报告,\n"
-#~ "                      %(date)s前。"
-
-#~ msgid ""
-#~ "The 'repository_dir' has changed, a "
-#~ "'trac-admin $ENV repository resync' "
-#~ "operation is needed."
-#~ msgstr ""
-#~ "'repository_dir' 已经被修改，需要执行 'trac-admin $ENV \"\n"
-#~ "\"reposityory resync' 操作。"
-
-#~ msgid "Annotate"
-#~ msgstr "标注"
-
-#~ msgid "No SID found"
-#~ msgstr "没有找到SID"
-
-#~ msgid "Session already exists. Unable to add a duplicate session."
-#~ msgstr "会话已经存在，不能添加重复的会话。"
-
-#~ msgid "Unable to set session attribute on a non-existent SID"
-#~ msgstr "无法给一个不存在的SID设置会话属性"
 

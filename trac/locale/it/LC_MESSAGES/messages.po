@@ -1472,7 +1472,7 @@ msgid "Advanced"
 msgstr "Avanzate"
 
 #: trac/prefs/web_ui.py:150
-#, fuzzy, python-format
+#, fuzzy
 msgid "The session has been loaded."
 msgstr "La versione \"%(name)s\" è stata aggiunta."
 
@@ -5619,7 +5619,7 @@ msgid "Can't view %(link)s:"
 msgstr "Impossibile mostrare %(link)s:"
 
 #: trac/wiki/intertrac.py:81
-#, fuzzy, python-format
+#, fuzzy
 msgid "The Trac Project"
 msgstr "Cerca %(project)s"
 
@@ -6099,32 +6099,4 @@ msgid "The following pages have a name similar to this page, and may be related:
 msgstr ""
 "Le pagine seguenti hanno un nome simile a questa e potrebbero essere "
 "correlate:"
-
-#~ msgid ""
-#~ "Reported by [1:%(author)s],\n"
-#~ "                      %(date)s ago."
-#~ msgstr ""
-#~ "Segnalata da [1:%(author)s],\n"
-#~ "                      %(date)s fa."
-
-#~ msgid ""
-#~ "The 'repository_dir' has changed, a "
-#~ "'trac-admin $ENV repository resync' "
-#~ "operation is needed."
-#~ msgstr ""
-#~ "È stata modificata la 'repository_dir', "
-#~ "è necessario eseguire \"trac-admin $ENV"
-#~ " repository resync\"."
-
-#~ msgid "Annotate"
-#~ msgstr "Attribuzioni"
-
-#~ msgid "No SID found"
-#~ msgstr "Non è stato trovato alcun SID"
-
-#~ msgid "Session already exists. Unable to add a duplicate session."
-#~ msgstr "La sessione esiste già. Impossibile aggiungere un duplicato."
-
-#~ msgid "Unable to set session attribute on a non-existent SID"
-#~ msgstr "Impossibile impostare un attributo di una sessione non esistente"
 

@@ -6148,10 +6148,3 @@ msgstr ""
 "Las siguientes páginas tienen un nombre similar a esta, y pueden estar "
 "relacionadas:"
 
-#~ msgid ""
-#~ "Reported by [1:%(author)s],\n"
-#~ "                      %(date)s ago."
-#~ msgstr ""
-#~ "Informado por [1:%(author)s],\n"
-#~ "                      hace %(date)s."
-

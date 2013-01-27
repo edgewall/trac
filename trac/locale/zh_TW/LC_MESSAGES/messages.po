@@ -5861,10 +5861,3 @@ msgstr "(空白頁面)"
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr "以下頁面名稱與此名稱相似，有可能是有關聯的："
 
-#~ msgid ""
-#~ "Reported by [1:%(author)s],\n"
-#~ "                      %(date)s ago."
-#~ msgstr ""
-#~ "由 [1:%(author)s] 回報\n"
-#~ "                      於 %(date)s 以前"
-

@@ -1450,7 +1450,7 @@ msgid "Advanced"
 msgstr "מתקדם"
 
 #: trac/prefs/web_ui.py:150
-#, fuzzy, python-format
+#, fuzzy
 msgid "The session has been loaded."
 msgstr "הגרסה \"%(name)s\" התווספה."
 
@@ -5556,7 +5556,7 @@ msgid "Can't view %(link)s:"
 msgstr "לא ניתן להציג %(link)s:"
 
 #: trac/wiki/intertrac.py:81
-#, fuzzy, python-format
+#, fuzzy
 msgid "The Trac Project"
 msgstr "חפש ב%(project)s"
 
@@ -6021,31 +6021,4 @@ msgstr "(דף ריק)"
 #: trac/wiki/templates/wiki_view.html:131
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr "לדפים הבאים שם דומה לדף זה, ועשויים להיות קשורים:"
-
-#~ msgid ""
-#~ "Reported by [1:%(author)s],\n"
-#~ "                      %(date)s ago."
-#~ msgstr ""
-#~ "דווח ע\"י [1:%(author)s],\n"
-#~ "                      לפני %(date)s."
-
-#~ msgid ""
-#~ "The 'repository_dir' has changed, a "
-#~ "'trac-admin $ENV repository resync' "
-#~ "operation is needed."
-#~ msgstr ""
-#~ "'repository_dir' השתנה, יש לבצע פעולת "
-#~ "'trac-admin $ENV repository resync'."
-
-#~ msgid "Annotate"
-#~ msgstr "סימון"
-
-#~ msgid "No SID found"
-#~ msgstr "לא נמצא SID"
-
-#~ msgid "Session already exists. Unable to add a duplicate session."
-#~ msgstr "שיחה קיימת. לא ניתן להוסיף שיחה זהה."
-
-#~ msgid "Unable to set session attribute on a non-existent SID"
-#~ msgstr "לא ניתן לקבוע מאפייני שיחה עבור SID שאינו קיים"
 
