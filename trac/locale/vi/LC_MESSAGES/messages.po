@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-24 11:15+0100\n"
+"POT-Creation-Date: 2013-01-27 11:21+0900\n"
 "PO-Revision-Date: 2008-06-28 21:56+0200\n"
 "Last-Translator: Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>\n"
 "Language-Team: vi_VN <trac-dev@googlegroups.com>\n"
@@ -446,7 +446,7 @@ msgid "Size"
 msgstr ""
 
 #: trac/attachment.py:1070 trac/templates/history_view.html:30
-#: trac/ticket/templates/ticket.html:346
+#: trac/ticket/templates/ticket.html:350
 #: trac/versioncontrol/templates/revisionlog.html:112
 msgid "Author"
 msgstr "Tác giả"
@@ -456,7 +456,8 @@ msgid "Date"
 msgstr "Ngày"
 
 #: trac/attachment.py:1071 trac/templates/attachment.html:93
-#: trac/ticket/api.py:299 trac/ticket/templates/ticket_box.html:92
+#: trac/ticket/api.py:299 trac/ticket/templates/ticket.html:379
+#: trac/ticket/templates/ticket_box.html:92
 #, fuzzy
 msgid "Description"
 msgstr "Mô tả"
@@ -671,7 +672,7 @@ msgstr "truy vấn:"
 
 #: trac/perm.py:656 trac/admin/templates/admin_perms.html:63
 #: trac/ticket/templates/batch_modify.html:37
-#: trac/ticket/templates/ticket.html:317
+#: trac/ticket/templates/ticket.html:321
 msgid "Action"
 msgstr "Hành động"
 
@@ -1110,7 +1111,7 @@ msgid "URL:"
 msgstr "URL:"
 
 #: trac/admin/templates/admin_basics.html:29
-#: trac/ticket/templates/ticket.html:233
+#: trac/ticket/templates/ticket.html:237
 #, fuzzy
 msgid "Description:"
 msgstr "Mô tả:"
@@ -2145,7 +2146,7 @@ msgstr "(kích thước giới hạn"
 msgid "Attachment Info"
 msgstr "Thông tin tập tin đính kèm"
 
-#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:351
+#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:355
 #: trac/wiki/templates/wiki_edit_form.html:42
 msgid "Your email or username:"
 msgstr "Thư điện tử hoặc tên đăng nhập:"
@@ -2546,7 +2547,7 @@ msgstr ""
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:44
-#: trac/ticket/templates/ticket.html:374
+#: trac/ticket/templates/ticket.html:378
 msgid "Attachments"
 msgstr "Tập tin đính kèm"
 
@@ -2663,7 +2664,7 @@ msgstr "Thành phần %(name)s đã tồn tại."
 msgid "The component \"%(name)s\" has been added."
 msgstr "Thành phần %(name)s không tồn tại."
 
-#: trac/ticket/admin.py:122 trac/ticket/model.py:862 trac/ticket/model.py:881
+#: trac/ticket/admin.py:122 trac/ticket/model.py:859 trac/ticket/model.py:878
 #, fuzzy
 msgid "Invalid component name."
 msgstr "Ngày hoàn tất không hợp lệ"
@@ -2703,7 +2704,7 @@ msgstr "Mốc thời gian %(name)s đã tồn tại"
 msgid "The milestone \"%(name)s\" has been added."
 msgstr ""
 
-#: trac/ticket/admin.py:305 trac/ticket/model.py:1041 trac/ticket/model.py:1063
+#: trac/ticket/admin.py:305 trac/ticket/model.py:1038 trac/ticket/model.py:1060
 #, fuzzy
 msgid "Invalid milestone name."
 msgstr "Ngày hoàn tất không hợp lệ"
@@ -2731,7 +2732,7 @@ msgstr "Phiên bản %(name)s đã tồn tại"
 msgid "The version \"%(name)s\" has been added."
 msgstr "Phiên bản %(name)s không tồn tại."
 
-#: trac/ticket/admin.py:484 trac/ticket/model.py:1168 trac/ticket/model.py:1186
+#: trac/ticket/admin.py:484 trac/ticket/model.py:1165 trac/ticket/model.py:1183
 #, fuzzy
 msgid "Invalid version name."
 msgstr "Hành động không hợp lệ \"%(name)s\""
@@ -2855,7 +2856,7 @@ msgstr "Tập tin đính kèm"
 msgid "Summary"
 msgstr "Tóm tắt:"
 
-#: trac/ticket/api.py:289 trac/ticket/templates/ticket.html:347
+#: trac/ticket/api.py:289 trac/ticket/templates/ticket.html:351
 #, fuzzy
 msgid "Reporter"
 msgstr "Người thông báo:"
@@ -3057,44 +3058,44 @@ msgstr "Số báo cáo không hợp lệ"
 msgid "Multi-values fields not supported yet"
 msgstr "Trường đa trị chưa được hổ trợ"
 
-#: trac/ticket/model.py:688
+#: trac/ticket/model.py:685
 #, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr "%(type)s %(name)s không tồn tại."
 
-#: trac/ticket/model.py:730 trac/ticket/model.py:755
+#: trac/ticket/model.py:727 trac/ticket/model.py:752
 #, python-format
 msgid "Invalid %(type)s name."
 msgstr ""
 
-#: trac/ticket/model.py:834
+#: trac/ticket/model.py:831
 #, python-format
 msgid "Component %(name)s does not exist."
 msgstr "Thành phần %(name)s không tồn tại."
 
-#: trac/ticket/model.py:979
+#: trac/ticket/model.py:976
 #, fuzzy, python-format
 msgid "Milestone %(name)s does not exist."
 msgstr "Phiên bản %(name)s không tồn tại."
 
-#: trac/ticket/model.py:980
+#: trac/ticket/model.py:977
 #, fuzzy
 msgid "Invalid milestone name"
 msgstr "Ngày hoàn tất không hợp lệ"
 
-#: trac/ticket/model.py:1119
+#: trac/ticket/model.py:1116
 msgid "Open (by due date)"
 msgstr ""
 
-#: trac/ticket/model.py:1120
+#: trac/ticket/model.py:1117
 msgid "Open (no due date)"
 msgstr ""
 
-#: trac/ticket/model.py:1123
+#: trac/ticket/model.py:1120
 msgid "Closed"
 msgstr "Đóng"
 
-#: trac/ticket/model.py:1140
+#: trac/ticket/model.py:1137
 #, python-format
 msgid "Version %(name)s does not exist."
 msgstr "Phiên bản %(name)s không tồn tại."
@@ -3896,7 +3897,7 @@ msgid "Retarget associated open tickets to milestone:"
 msgstr "Dời các thẻ mở có liên quan về mốc thời gian"
 
 #: trac/ticket/templates/milestone_edit.html:106
-#: trac/ticket/templates/ticket.html:383
+#: trac/ticket/templates/ticket.html:388
 #: trac/ticket/templates/ticket_change.html:116
 #: trac/wiki/templates/wiki_edit_form.html:66
 #: trac/wiki/templates/wiki_edit_form.html:71
@@ -4254,38 +4255,47 @@ msgstr "Mốc thời gian:"
 msgid "Add new milestone"
 msgstr "Thêm mốc thời gian mới"
 
-#: trac/ticket/templates/ticket.html:130
+#: trac/ticket/templates/ticket.html:132
+msgid "Go to the ticket editor"
+msgstr ""
+
+#: trac/ticket/templates/ticket.html:132
+#, fuzzy
+msgid "Modify"
+msgstr "đã thay đổi"
+
+#: trac/ticket/templates/ticket.html:134
 msgid "Create New Ticket"
 msgstr "Tạo thẻ mới"
 
-#: trac/ticket/templates/ticket.html:148
+#: trac/ticket/templates/ticket.html:152
 msgid "Oldest first"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:150
+#: trac/ticket/templates/ticket.html:154
 msgid "Newest first"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:153
+#: trac/ticket/templates/ticket.html:157
 #, fuzzy
 msgid "Threaded"
 msgstr "tạo"
 
-#: trac/ticket/templates/ticket.html:158
+#: trac/ticket/templates/ticket.html:162
 #, fuzzy
 msgid "Comments only"
 msgstr "Lời bình:"
 
-#: trac/ticket/templates/ticket.html:163
+#: trac/ticket/templates/ticket.html:167
 msgid "Change History"
 msgstr "Lịch sử thay đổi"
 
-#: trac/ticket/templates/ticket.html:182
+#: trac/ticket/templates/ticket.html:186
 #, fuzzy
 msgid "Add Comment"
 msgstr "Thêm tập tin đính kèm"
 
-#: trac/ticket/templates/ticket.html:184
+#: trac/ticket/templates/ticket.html:188
 msgid ""
 "This ticket has been modified since you started editing. You should "
 "review the\n"
@@ -4295,7 +4305,7 @@ msgid ""
 " wish so."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:194
+#: trac/ticket/templates/ticket.html:198
 #, fuzzy
 msgid ""
 "You may use\n"
@@ -4306,29 +4316,29 @@ msgstr ""
 "              [1:WikiFormatting]\n"
 "              tại đây):"
 
-#: trac/ticket/templates/ticket.html:205
+#: trac/ticket/templates/ticket.html:209
 #, fuzzy
 msgid "Modify Ticket"
 msgstr "đã thay đổi"
 
-#: trac/ticket/templates/ticket.html:211
+#: trac/ticket/templates/ticket.html:215
 #, fuzzy
 msgid "Change Properties"
 msgstr "Các thuộc tính"
 
-#: trac/ticket/templates/ticket.html:212
+#: trac/ticket/templates/ticket.html:216
 msgid "Properties"
 msgstr "Các thuộc tính"
 
-#: trac/ticket/templates/ticket.html:216
+#: trac/ticket/templates/ticket.html:220
 msgid "Summary:"
 msgstr "Tóm tắt:"
 
-#: trac/ticket/templates/ticket.html:224
+#: trac/ticket/templates/ticket.html:228
 msgid "Reporter:"
 msgstr "Người thông báo:"
 
-#: trac/ticket/templates/ticket.html:236
+#: trac/ticket/templates/ticket.html:240
 #, fuzzy
 msgid ""
 "You may use\n"
@@ -4338,49 +4348,54 @@ msgstr ""
 "              [1:WikiFormatting]\n"
 "              tại đây):"
 
-#: trac/ticket/templates/ticket.html:252
+#: trac/ticket/templates/ticket.html:256
 #: trac/ticket/templates/ticket_box.html:75
 #, python-format
 msgid "%(field)s:"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:291
+#: trac/ticket/templates/ticket.html:295
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr "Hộp đánh dấu này cho phép bạn thêm hoặc bỏ chính bạn ra khỏi danh sách CC"
 
-#: trac/ticket/templates/ticket.html:297
+#: trac/ticket/templates/ticket.html:301
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr ""
 "Địa chỉ thư điện tử và tên đăng nhập phân cách bởi khoảng trắng hoặc dấu "
 "phẩy được chấp nhận."
 
-#: trac/ticket/templates/ticket.html:360
+#: trac/ticket/templates/ticket.html:364
 #: trac/wiki/templates/wiki_edit_form.html:46
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:368
+#: trac/ticket/templates/ticket.html:372
 msgid "I have files to attach to this ticket"
 msgstr "Tôi có tập tin cần đính kềm vào thẻ này"
 
-#: trac/ticket/templates/ticket.html:374
+#: trac/ticket/templates/ticket.html:378
 #, fuzzy
 msgid "Go to the list of attachments"
 msgstr "Xóa tập tin đính kèm"
 
-#: trac/ticket/templates/ticket.html:382
+#: trac/ticket/templates/ticket.html:379
+#, fuzzy
+msgid "View the ticket description"
+msgstr "Không có quyền thay đổi các trường của thẻ"
+
+#: trac/ticket/templates/ticket.html:387
 #: trac/ticket/templates/ticket_change.html:114
 #: trac/wiki/templates/wiki_edit.html:95 trac/wiki/templates/wiki_edit.html:153
 #: trac/wiki/templates/wiki_edit_form.html:64
 msgid "Preview"
 msgstr "Xem trước"
 
-#: trac/ticket/templates/ticket.html:383
+#: trac/ticket/templates/ticket.html:388
 #, fuzzy
 msgid "Create ticket"
 msgstr "Tạo thẻ mới"
 
-#: trac/ticket/templates/ticket.html:391
+#: trac/ticket/templates/ticket.html:396
 #, fuzzy
 msgid ""
 "[1:Note:] See\n"
@@ -6918,183 +6933,4 @@ msgstr "(trang trống)"
 #: trac/wiki/templates/wiki_view.html:135
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr ""
-
-#~ msgid "Changed %(date)s ago by %(author)s"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Backup failed: %(msg)s.\n"
-#~ "Use '--no-backup' to upgrade without doing a backup."
-#~ msgstr ""
-
-#~ msgid "%(perm)s privileges are required to perform this operation"
-#~ msgstr "Cần quyền %(perm)s để thực thi tác vụ này"
-
-#~ msgid ""
-#~ "Welcome to trac-admin %(version)s\n"
-#~ "Interactive Trac administration console.\n"
-#~ "Copyright (C) 2003-2012 Edgewall Software\n"
-#~ "\n"
-#~ "Type:  '?' or 'help' for help on commands.\n"
-#~ "        "
-#~ msgstr ""
-
-#~ msgid ""
-#~ "\n"
-#~ "Trac will first ask a few questions about your environment \n"
-#~ "in order to initialize and prepare the project database.\n"
-#~ "\n"
-#~ " Please enter the name of your project.\n"
-#~ " This name will be used in page titles and descriptions.\n"
-#~ msgstr ""
-
-#~ msgid ""
-#~ " \n"
-#~ " Please specify the connection string for the database to use.\n"
-#~ " By default, a local SQLite database is created in the environment\n"
-#~ " directory. It is also possible to use an already existing\n"
-#~ " PostgreSQL database (check the Trac documentation for the exact\n"
-#~ " connection string syntax).\n"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "\n"
-#~ "---------------------------------------------------------------------\n"
-#~ "Warning: couldn't index the default repository.\n"
-#~ "\n"
-#~ "This can happen for a variety of reasons: wrong repository type, \n"
-#~ "no appropriate third party library for this repository type,\n"
-#~ "no actual repository at the specified repository path...\n"
-#~ "\n"
-#~ "You can nevertheless start using your Trac environment, but \n"
-#~ "you'll need to check again your trac.ini file and the [trac] \n"
-#~ "repository_type and repository_path settings.\n"
-#~ msgstr ""
-
-#~ msgid "Note:"
-#~ msgstr "Ghi chú:"
-
-#~ msgid ""
-#~ "The order of priorities determines the coloring of entries\n"
-#~ "              in the ticket queries and reports."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "In the default time zone, this would be displayed as\n"
-#~ "            [1:%(formatted)s]."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Copyright © 2003-2012\n"
-#~ "        [1:Edgewall Software]"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "File %(file)s,\n"
-#~ "                [1:%(size)s]\n"
-#~ "                (added by %(author)s, %(date)s ago)"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "[1:%(file)s][2:​]\n"
-#~ "       ([3:%(size)s]) -\n"
-#~ "      added by [4:%(author)s] %(date)s ago."
-#~ msgstr ""
-
-#~ msgid "Number of %(unit)s:"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "[1:[2:%(title)s:]]\n"
-#~ "          [3:[4:%(count)s]]"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "[1:[2:Total:]]\n"
-#~ "      [3:[4:%(count)s]]"
-#~ msgstr ""
-
-#~ msgid "reopened"
-#~ msgstr "mở lại"
-
-#~ msgid "updated"
-#~ msgstr "cập nhật"
-
-#~ msgid "Delete Milestone"
-#~ msgstr "xóa Mốc thời gian"
-
-#~ msgid "Edit Milestone"
-#~ msgstr "Sửa đổi Mốc thời gian"
-
-#~ msgid "Report"
-#~ msgstr "Xem báo cáo"
-
-#~ msgid "Go to the ticket editor"
-#~ msgstr ""
-
-#~ msgid "Modify"
-#~ msgstr "Thay đổi"
-
-#~ msgid "Ticket #"
-#~ msgstr "Thẻ #"
-
-#~ msgid ""
-#~ "Version %(version)s, edited %(date)s ago\n"
-#~ "                      by %(author)s"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Last edited %(date)s ago\n"
-#~ "                      by %(author)s"
-#~ msgstr ""
-
-#~ msgid "View ticket fields and description"
-#~ msgstr ""
-
-#~ msgid "View"
-#~ msgstr "Xem trước"
-
-#~ msgid ""
-#~ "Warnings are shown at the [1:top of the page]. The ticket validation\n"
-#~ "            may have failed."
-#~ msgstr ""
-
-#~ msgid "Opened %(created)s ago"
-#~ msgstr ""
-
-#~ msgid "Last modified %(modified)s ago"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Revision [1:%(rev)s],\n"
-#~ "            [2:%(size)s]\n"
-#~ "            checked in by %(author)s, %(date)s ago\n"
-#~ "            ([3:diff])"
-#~ msgstr ""
-
-#~ msgid "ChangeLog for %(path)s%(in_repo)s"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Are you sure you want to delete"
-#~ " versions %(from)s to %(to)s of this"
-#~ " page?"
-#~ msgstr "Bạn có chắc là bạn muốn xóa báo cáo này?"
-
-#~ msgid "Editing"
-#~ msgstr "Đang soạn thảo"
-
-#~ msgid "See the start of the diffs"
-#~ msgstr "Hãy chọn Gốc và Đích để thực hiện diff:"
-
-#~ msgid "See the start of the preview"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Version %(version)s (modified by %(author)s, %(date)s ago)\n"
-#~ "               ([1:diff])"
-#~ msgstr ""
-
-#~ msgid "[1:Last modified] %(reldate)s ago"
-#~ msgstr ""
 
