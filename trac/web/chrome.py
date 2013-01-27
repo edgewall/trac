@@ -384,41 +384,41 @@ class Chrome(Component):
         rules will be needed in the web server.""")
 
     jquery_location = Option('trac', 'jquery_location', '',
-        """Location of the jQuery !JavaScript library (version 1.7.2).
+        """Location of the jQuery !JavaScript library (version 1.8.3).
 
         An empty value loads jQuery from the copy bundled with Trac.
 
         Alternatively, jQuery could be loaded from a CDN, for example:
-        http://code.jquery.com/jquery-1.7.2.min.js,
-        http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js or
-        https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js.
+        http://code.jquery.com/jquery-1.8.3.min.js,
+        http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js or
+        https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js.
 
         (''since 1.0'')""")
 
     jquery_ui_location = Option('trac', 'jquery_ui_location', '',
-        """Location of the jQuery UI !JavaScript library (version 1.8.21).
+        """Location of the jQuery UI !JavaScript library (version 1.9.2).
 
         An empty value loads jQuery UI from the copy bundled with Trac.
 
         Alternatively, jQuery UI could be loaded from a CDN, for example:
-        https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js
+        https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js
         or
-        http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/jquery-ui.min.js.
+        http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js.
 
         (''since 1.0'')""")
 
     jquery_ui_theme_location = Option('trac', 'jquery_ui_theme_location', '',
         """Location of the theme to be used with the jQuery UI !JavaScript
-        library (version 1.8.21).
+        library (version 1.9.2).
 
         An empty value loads the custom Trac jQuery UI theme from the copy
         bundled with Trac.
 
         Alternatively, a jQuery UI theme could be loaded from a CDN, for
         example:
-        https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/start/jquery-ui.css
+        https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/start/jquery-ui.css
         or
-        http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/themes/start/jquery-ui.css.
+        http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/start/jquery-ui.css.
 
         (''since 1.0'')""")
 
