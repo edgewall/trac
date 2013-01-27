@@ -1216,6 +1216,9 @@ msgid ""
 "Note that [1:Subject] or [2:Group] names can't be all upper-case,\n"
 "      as that is reserved for permission names."
 msgstr ""
+"Bemærk at [1:Subject] eller [2:Group] navne ikke kan være med store "
+"bogstaver,\n"
+"      da de er begrænset til rettighedsnavne."
 
 #: trac/admin/templates/admin_plugins.html:35
 msgid "Manage Plugins"
@@ -1234,6 +1237,8 @@ msgid ""
 "The web server does not have sufficient permissions to store files in\n"
 "            the environment plugins directory."
 msgstr ""
+"Webserveren har ikke de nødvendige rettigheder til at gemme filer i\n"
+"            miljøets udvidelsesmappe."
 
 #: trac/admin/templates/admin_plugins.html:50
 msgid "Upload a plugin packaged as Python egg."
@@ -1312,10 +1317,12 @@ msgid ""
 "Unknown scheme \"%(scheme)s\"; database connection string must start with"
 " {scheme}:/"
 msgstr ""
+"Ukendt skema \"%(scheme)s\"; database forbindelsesstreng skal starte med "
+"{scheme}:/"
 
 #: trac/db/mysql_backend.py:80
 msgid "Cannot load Python bindings for MySQL"
-msgstr ""
+msgstr "Kan ikke indlæse Python bindinger for MySQL"
 
 #: trac/db/mysql_backend.py:205 trac/db/postgres_backend.py:175
 #: trac/db/postgres_backend.py:194
@@ -1340,21 +1347,21 @@ msgstr ""
 
 #: trac/db/postgres_backend.py:81
 msgid "Cannot load Python bindings for PostgreSQL"
-msgstr ""
+msgstr "Kan ikke indlæse Python bindinger for PostgreSQL"
 
 #: trac/db/postgres_backend.py:198
 #, python-format
 msgid "pg_dump failed: %(msg)s"
-msgstr ""
+msgstr "pg_dump misklykkedes: %(msg)s"
 
 #: trac/db/sqlite_backend.py:154
 msgid "Cannot load Python bindings for SQLite"
-msgstr ""
+msgstr "Kan ikke indlæse Python bindinger for SQLite"
 
 #: trac/db/sqlite_backend.py:157
 #, python-format
 msgid "Need at least PySqlite %(version)s or higher"
-msgstr ""
+msgstr "Kræver minimum PySqlite %(version)s eller nyere"
 
 #: trac/db/sqlite_backend.py:160
 msgid "PySqlite 2.5.2 - 2.5.4 break Trac, please use 2.5.5 or higher"
@@ -1376,16 +1383,18 @@ msgid ""
 "The user %(user)s requires read _and_ write permissions to the database "
 "file %(path)s and the directory it is located in."
 msgstr ""
+"Brugeren %(user)s skal have læse _og_ skrive rettigheder til "
+"databasefilen %(path)s og den mappe den er i."
 
 #: trac/mimeview/api.py:690 trac/mimeview/api.py:700
 #, python-format
 msgid "No available MIME conversions from %(old)s to %(new)s"
-msgstr ""
+msgstr "Ingen tilgængelige MIME koverteringer fra %(old)s til %(new)s"
 
 #: trac/mimeview/api.py:815
 #, python-format
 msgid "HTML preview using %(renderer)s failed (%(err)s)"
-msgstr ""
+msgstr "HTML forhåndsvisning ved brug af %(renderer)s mislykkedes (%(err)s)"
 
 #: trac/mimeview/api.py:846
 #, python-format
@@ -1520,11 +1529,14 @@ msgid ""
 "      dates and times displayed on this site to use your time zone\n"
 "      instead of that of the server."
 msgstr ""
+"Konfigurering af din tidszone vil resultere i at alle\n"
+"      datoer og tider der vises på dette websted, vil bruge din tidszone\n"
+"      i stedet for serverens."
 
 #: trac/prefs/templates/prefs_datetime.html:33
 #, python-format
 msgid "Example: The current time is [1:%(time)s] (UTC)."
-msgstr ""
+msgstr "Eksempel: den aktuelle tid er [1:%(time)s] (UTC)."
 
 #: trac/prefs/templates/prefs_datetime.html:36
 #, python-format
@@ -1532,13 +1544,15 @@ msgid ""
 "In your time zone %(tz)s, this would be displayed as\n"
 "            [1:%(formatted)s]."
 msgstr ""
+"I din tidszone %(tz)s, vil dette blive vist som\n"
+"            [1:%(formatted)s]."
 
 #: trac/prefs/templates/prefs_datetime.html:42
 #, python-format
 msgid ""
 "In the default time zone, this would be displayed as\n"
 "            [1:%(formatted)s]."
-msgstr ""
+msgstr "I standard tidszonen, ville dette blive vist som [1:%(formatted)s]."
 
 #: trac/prefs/templates/prefs_datetime.html:49
 msgid ""
@@ -1547,6 +1561,10 @@ msgid ""
 "        A positive offset is used to indicate a timezone at the east of "
 "Greenwich, i.e. ahead of Universal Time."
 msgstr ""
+"Besmærk: Universal Co-ordinated Time (UTC) er også kendt som Greenwich "
+"Mean Time (GMT).[1:]\n"
+"        Et positivt tillæg bruges til at vise at tidszonen er øst for "
+"Greenwich, altså foran Universal Time."
 
 #: trac/prefs/templates/prefs_general.html:15
 msgid "Full name:"
@@ -1993,7 +2011,7 @@ msgstr "Ups..."
 
 #: trac/templates/error.html:82
 msgid "Trac detected an internal error:"
-msgstr ""
+msgstr "Trac opdagede en intern fejl:"
 
 #: trac/templates/error.html:87
 msgid ""
@@ -2015,7 +2033,7 @@ msgstr ""
 
 #: trac/templates/error.html:102
 msgid "This is probably a local installation issue."
-msgstr ""
+msgstr "Dette er sandsynligvis en lokal fejl."
 
 #: trac/templates/error.html:103
 #, python-format
@@ -2037,11 +2055,11 @@ msgstr ""
 #: trac/templates/error.html:113
 #, python-format
 msgid "Note that the %(name)s plugin seems to be involved."
-msgstr ""
+msgstr "Bemærk at %(name)s udvidelsen ser ud til at være involveret."
 
 #: trac/templates/error.html:116
 msgid "Note that the following plugins seem to be involved:"
-msgstr ""
+msgstr "Bemærk at følgende udvidelser ser ud til at være involveret:"
 
 #: trac/templates/error.html:120
 msgid "Please report this issue to the plugin maintainer."
@@ -2117,7 +2135,7 @@ msgstr "TracGuide"
 
 #: trac/templates/error.html:202
 msgid "— The Trac User and Administration Guide"
-msgstr ""
+msgstr "— Trac bruger og administrativ guide"
 
 #: trac/templates/history_view.html:16
 #, python-format
@@ -4522,6 +4540,8 @@ msgid ""
 "Changeset [1:%(new_rev)s] in %(reponame)s\n"
 "              for [2:%(new_path)s]"
 msgstr ""
+"Rettesæt [1:%(new_rev)s] i %(reponame)s\n"
+"              for [2:%(new_path)s]"
 
 #: trac/versioncontrol/templates/changeset.html:41
 #: trac/versioncontrol/templates/changeset.html:63
@@ -4534,6 +4554,8 @@ msgid ""
 "Changes in [1:%(new_path)s]\n"
 "              [2:\\[%(old_rev)s:%(new_rev)s\\]] in %(reponame)s"
 msgstr ""
+"Ændringer i [1:%(new_path)s]\n"
+"              [2:\\[%(old_rev)s:%(new_rev)s\\]] i %(reponame)s"
 
 #: trac/versioncontrol/templates/changeset.html:43
 #, python-format
@@ -4544,11 +4566,16 @@ msgid ""
 "              to [3:%(new_path)s]\n"
 "              at [4:r%(new_rev)s]"
 msgstr ""
+"Ændringer i %(reponame)s\n"
+"              fra [1:%(old_path)s]\n"
+"              ved [2:r%(old_rev)s]\n"
+"              til [3:%(new_path)s]\n"
+"              ved [4:r%(new_rev)s]"
 
 #: trac/versioncontrol/templates/changeset.html:50
 #, python-format
 msgid "Changeset [1:%(new_rev)s] in %(reponame)s"
-msgstr ""
+msgstr "Rettesæt [1:%(new_rev)s] i %(reponame)s"
 
 #: trac/versioncontrol/templates/changeset.html:57
 #, python-format
@@ -4556,6 +4583,8 @@ msgid ""
 "Changeset [1:%(new_rev)s]\n"
 "              for [2:%(new_path)s]"
 msgstr ""
+"Rettesæt [1:%(new_rev)s]\n"
+"              for [2:%(new_path)s]"
 
 #: trac/versioncontrol/templates/changeset.html:61
 #, python-format
@@ -4563,6 +4592,8 @@ msgid ""
 "Changes in [1:%(new_path)s]\n"
 "              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
 msgstr ""
+"Ændringer i [1:%(new_path)s]\n"
+"              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
 
 #: trac/versioncontrol/templates/changeset.html:65
 #, python-format
@@ -4573,6 +4604,11 @@ msgid ""
 "              to [3:%(new_path)s]\n"
 "              at [4:r%(new_rev)s]"
 msgstr ""
+"Ændringer\n"
+"              fra [1:%(old_path)s]\n"
+"              ved [2:r%(old_rev)s]\n"
+"              til [3:%(new_path)s]\n"
+"              ved [4:r%(new_rev)s]"
 
 #: trac/versioncontrol/templates/changeset.html:72
 #, python-format
@@ -4582,7 +4618,7 @@ msgstr "Rettesæt [1:%(new_rev)s]"
 #: trac/versioncontrol/templates/changeset.html:101
 #, python-format
 msgid "Show what was removed (content at revision %(old_rev)s)"
-msgstr ""
+msgstr "Vis hvad der blev fjernet (indhold ved revision %(old_rev)s)"
 
 #: trac/versioncontrol/templates/changeset.html:106
 msgid "(root)"
@@ -4591,7 +4627,7 @@ msgstr "(rod)"
 #: trac/versioncontrol/templates/changeset.html:112
 #, python-format
 msgid "Show original file (revision %(old_rev)s)"
-msgstr ""
+msgstr "Vis original fil (revision %(old_rev)s)"
 
 #: trac/versioncontrol/templates/changeset.html:111
 #, python-format
@@ -4627,11 +4663,11 @@ msgstr[1] "%(num)d egenskaber"
 
 #: trac/versioncontrol/templates/changeset.html:129
 msgid "Show previous version in browser"
-msgstr ""
+msgstr "Vis tidligere version i browser"
 
 #: trac/versioncontrol/templates/changeset.html:139
 msgid "(less than one hour ago)"
-msgstr ""
+msgstr "(Mindre end én time siden)"
 
 #: trac/versioncontrol/templates/changeset.html:140
 #, python-format
@@ -4704,7 +4740,7 @@ msgstr "slettet"
 #: trac/versioncontrol/templates/changeset.html:187
 #: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "copied"
-msgstr ""
+msgstr "kopieret"
 
 #: trac/versioncontrol/templates/changeset.html:188
 #: trac/versioncontrol/templates/revisionlog.txt:12
@@ -4824,7 +4860,7 @@ msgstr "Følg kopier"
 
 #: trac/versioncontrol/templates/revisionlog.html:39
 msgid "Show only adds and deletes"
-msgstr ""
+msgstr "Vis kun tilføjelser og sletninger"
 
 #: trac/versioncontrol/templates/revisionlog.html:44
 msgid ""
@@ -5142,7 +5178,7 @@ msgstr "Ældre revisioner"
 
 #: trac/versioncontrol/web_ui/log.py:391
 msgid "No permission to view change log"
-msgstr ""
+msgstr "Ingen rettigheder til at se ændringslog"
 
 #. TRANSLATOR: You can 'search' in the repository history... (link)
 #: trac/versioncontrol/web_ui/util.py:67
@@ -5229,7 +5265,7 @@ msgstr "Har du cookies aktiveret?"
 #: trac/web/main.py:239
 #, python-format
 msgid "Missing or invalid form token. %(msg)s"
-msgstr ""
+msgstr "Manglende eller ugyldig formular token. %(msg)s"
 
 #: trac/web/main.py:540
 #, python-format
@@ -5353,7 +5389,7 @@ msgstr "  %(page)s importeret fra %(filename)s"
 
 #: trac/wiki/admin.py:207
 msgid "Edits"
-msgstr ""
+msgstr "Redigeringer"
 
 #: trac/wiki/admin.py:213 trac/wiki/web_ui.py:296
 msgid "A new name is mandatory for a rename."
@@ -5726,7 +5762,7 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_edit_form.html:16
 msgid "Adjust edit area height:"
-msgstr ""
+msgstr "Tilpas redigeringsområde-højde:"
 
 #: trac/wiki/templates/wiki_edit_form.html:24
 msgid "Selecting and pressing 'Preview' enters a two-column [edit|preview] mode"
@@ -5756,7 +5792,7 @@ msgstr "Ret information"
 
 #: trac/wiki/templates/wiki_edit_form.html:54
 msgid "Comment about this change (optional):"
-msgstr ""
+msgstr "Kommentar til denne ændring (valgfri):"
 
 #: trac/wiki/templates/wiki_edit_form.html:61
 msgid "Page is read-only"
