@@ -537,7 +537,7 @@ msgstr "Հրամանը գտնված չէ"
 #: trac/admin/console.py:111
 #, fuzzy, python-format
 msgid "Error: %(msg)s"
-msgstr "HTML անալիզի սխալ։ %(message)s"
+msgstr ""
 
 #: trac/admin/console.py:130
 #, fuzzy, python-format
@@ -659,7 +659,7 @@ msgstr "կատալոգը գոյություն ունի և այն դատարկ չ
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr "%(name)s էջը գոյություն չունի։ Դուք կարող եք այն ստեղծել ասյտեղ։"
+msgstr ""
 
 #: trac/admin/console.py:431
 msgid "Creating and Initializing Project"
@@ -1166,7 +1166,7 @@ msgstr "Ուղենիշի ավելացում․"
 #: trac/admin/templates/admin_milestones.html:86
 #, fuzzy, python-format
 msgid "Format: %(datetimehint)s"
-msgstr "Ֆորմատ՝ %(datehint)s"
+msgstr "Ֆորմատ՝ %(datetimehint)s"
 
 #: trac/admin/templates/admin_milestones.html:101 trac/ticket/admin.py:399
 msgid "Due"
@@ -1334,7 +1334,7 @@ msgstr "Հնարավոր չէ բեռնել Python-ի կապերը MySQL-ի հա�
 #: trac/db/postgres_backend.py:194
 #, fuzzy, python-format
 msgid "Unable to run %(path)s: %(msg)s"
-msgstr "svn blame-ը խափանվեց %(path)s վրա: %(error)s"
+msgstr ""
 
 #: trac/db/mysql_backend.py:209
 #, python-format
@@ -1443,7 +1443,7 @@ msgstr "Ձեր նախընտրությունները պահպանված են։"
 #: trac/mimeview/rst.py:123 trac/mimeview/rst.py:146
 #, fuzzy, python-format
 msgid "%(link)s is not a valid TracLink"
-msgstr "%(name)s-ը թույլատրելի գործողություն չէ։"
+msgstr ""
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -4456,7 +4456,7 @@ msgstr "Չկան ռեվիզիաներ"
 #: trac/versioncontrol/svn_prop.py:270
 #, fuzzy, python-format
 msgid "%(title)s: %(revs)s"
-msgstr "%(title)s: %(message)s"
+msgstr ""
 
 #: trac/versioncontrol/svn_prop.py:306
 msgid "merged: "
@@ -5527,7 +5527,7 @@ msgstr "Էլեկտրոնային փոստ"
 #: trac/web/session.py:457
 #, fuzzy, python-format
 msgid "Session '%(sid)s' already exists"
-msgstr "%(name)s տարբերակն արդեն գոյություն ունի։"
+msgstr ""
 
 #: trac/web/session.py:470
 #, python-format
@@ -5542,13 +5542,13 @@ msgstr "%(sid)s էջը գոյություն չունի"
 #: trac/wiki/admin.py:102
 #, fuzzy, python-format
 msgid "Page '%(page)s' not found"
-msgstr "%(name)s էջը գոյություն չունի"
+msgstr ""
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:122 trac/wiki/model.py:172
 #: trac/wiki/web_ui.py:114
 #, fuzzy, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr "Անսարք Wiki էջ՝ %(message)s"
+msgstr ""
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -5558,7 +5558,7 @@ msgstr "\"%(name)s\" ֆայլի անուն չէ"
 #: trac/wiki/admin.py:139
 #, fuzzy, python-format
 msgid "  %(title)s already exists"
-msgstr "%(name)s տարբերակն արդեն գոյություն ունի։"
+msgstr ""
 
 #: trac/wiki/admin.py:143
 #, python-format
@@ -6079,7 +6079,7 @@ msgstr "[1:Վերջին անգամ փոփոխված է] %(reldate)s առաջ"
 #: trac/wiki/templates/wiki_view.html:59
 #, fuzzy, python-format
 msgid "Last modified on %(date)s"
-msgstr "(վերջին անգամ փոփոխված է %(author)s կողմից)"
+msgstr ""
 
 #: trac/wiki/templates/wiki_view.html:64
 #, python-format

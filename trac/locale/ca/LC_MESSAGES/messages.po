@@ -657,7 +657,7 @@ msgstr "El directori existeix i no és buit."
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr "La pàgina %(name)s no existeix. La podeu crear aquí."
+msgstr ""
 
 #: trac/admin/console.py:431
 msgid "Creating and Initializing Project"

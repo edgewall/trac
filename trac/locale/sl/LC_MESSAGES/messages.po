@@ -532,7 +532,7 @@ msgstr "Ukaza ni bilo mogoče najti"
 #: trac/admin/console.py:111
 #, fuzzy, python-format
 msgid "Error: %(msg)s"
-msgstr "Napaka: %(message)s"
+msgstr "Napaka: %(msg)s"
 
 #: trac/admin/console.py:130
 #, fuzzy, python-format
@@ -653,7 +653,7 @@ msgstr "Mapa obstaja in ni prazna."
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr "Stran %(name)s ne obstaja. Tu jo lahko ustvarite."
+msgstr ""
 
 #: trac/admin/console.py:431
 msgid "Creating and Initializing Project"
@@ -1160,7 +1160,7 @@ msgstr "Dodaj mejnik"
 #: trac/admin/templates/admin_milestones.html:86
 #, fuzzy, python-format
 msgid "Format: %(datetimehint)s"
-msgstr "Oblika: %(datehint)s"
+msgstr "Oblika: %(datetimehint)s"
 
 #: trac/admin/templates/admin_milestones.html:101 trac/ticket/admin.py:399
 msgid "Due"
@@ -1331,7 +1331,7 @@ msgstr "Pythonovih vezi za MySQL ni mogoče naložiti"
 #: trac/db/postgres_backend.py:194
 #, fuzzy, python-format
 msgid "Unable to run %(path)s: %(msg)s"
-msgstr "'svn blame' je odpovedal pri %(path)s: %(error)s"
+msgstr ""
 
 #: trac/db/mysql_backend.py:209
 #, python-format
@@ -1438,7 +1438,7 @@ msgstr "Tvoje nastavitve so shranjene."
 #: trac/mimeview/rst.py:123 trac/mimeview/rst.py:146
 #, fuzzy, python-format
 msgid "%(link)s is not a valid TracLink"
-msgstr "%(name)s ni veljaven ukrep."
+msgstr ""
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -4470,7 +4470,7 @@ msgstr "Ni popravkov"
 #: trac/versioncontrol/svn_prop.py:270
 #, fuzzy, python-format
 msgid "%(title)s: %(revs)s"
-msgstr "%(title)s: %(message)s"
+msgstr ""
 
 #: trac/versioncontrol/svn_prop.py:306
 msgid "merged: "
@@ -5562,7 +5562,7 @@ msgstr "Elektronski naslov"
 #: trac/web/session.py:457
 #, fuzzy, python-format
 msgid "Session '%(sid)s' already exists"
-msgstr "Različica %(name)s že obstaja."
+msgstr ""
 
 #: trac/web/session.py:470
 #, python-format
@@ -5577,13 +5577,13 @@ msgstr "Sejnega identifikatorja %(sid)s ni mogoče najti"
 #: trac/wiki/admin.py:102
 #, fuzzy, python-format
 msgid "Page '%(page)s' not found"
-msgstr "Strani %(name)s ni mogoče najti"
+msgstr ""
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:122 trac/wiki/model.py:172
 #: trac/wiki/web_ui.py:114
 #, fuzzy, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr "Neveljavna wiki stran: %(message)s"
+msgstr ""
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -5593,7 +5593,7 @@ msgstr "'%(name)s' ni datoteka"
 #: trac/wiki/admin.py:139
 #, fuzzy, python-format
 msgid "  %(title)s already exists"
-msgstr "Različica %(name)s že obstaja."
+msgstr ""
 
 #: trac/wiki/admin.py:143
 #, python-format
@@ -6119,7 +6119,7 @@ msgstr "[1:Nazadnje popravljena] %(reldate)s prej"
 #: trac/wiki/templates/wiki_view.html:59
 #, fuzzy, python-format
 msgid "Last modified on %(date)s"
-msgstr "(nazadnje popravil %(author)s)"
+msgstr ""
 
 #: trac/wiki/templates/wiki_view.html:64
 #, python-format

@@ -651,7 +651,7 @@ msgstr "La dosierujo ekzistas kaj ne estas malplena."
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr "La paĝo %(name)s ne ekzistas. Vi povus krei ĝin nun."
+msgstr ""
 
 #: trac/admin/console.py:431
 msgid "Creating and Initializing Project"

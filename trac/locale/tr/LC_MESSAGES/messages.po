@@ -653,7 +653,7 @@ msgstr "Dizin mevcut ve boş değil."
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr "Bu sayfa %(name)s mevcut değil. Burada oluşturabilirsiniz."
+msgstr ""
 
 #: trac/admin/console.py:431
 msgid "Creating and Initializing Project"
@@ -1432,7 +1432,7 @@ msgstr "Seçenekleriniz kaydedildi."
 #: trac/mimeview/rst.py:123 trac/mimeview/rst.py:146
 #, fuzzy, python-format
 msgid "%(link)s is not a valid TracLink"
-msgstr "%(name)s geçerli bir eylem değil."
+msgstr ""
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -4417,7 +4417,7 @@ msgstr "Revizyon yok"
 #: trac/versioncontrol/svn_prop.py:270
 #, fuzzy, python-format
 msgid "%(title)s: %(revs)s"
-msgstr "%(title)s: %(message)s"
+msgstr ""
 
 #: trac/versioncontrol/svn_prop.py:306
 msgid "merged: "
@@ -5473,7 +5473,7 @@ msgstr "Eposta"
 #: trac/web/session.py:457
 #, fuzzy, python-format
 msgid "Session '%(sid)s' already exists"
-msgstr "Sürüm %(name)s zaten tanımlı."
+msgstr ""
 
 #: trac/web/session.py:470
 #, python-format
@@ -5488,13 +5488,13 @@ msgstr "Oturum idsi %(sid)s bulunamadı"
 #: trac/wiki/admin.py:102
 #, fuzzy, python-format
 msgid "Page '%(page)s' not found"
-msgstr "%(name)s sayfası bulunamadı."
+msgstr ""
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:122 trac/wiki/model.py:172
 #: trac/wiki/web_ui.py:114
 #, fuzzy, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr "Geçersiz Wiki sayfası: %(message)s"
+msgstr ""
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -6023,7 +6023,7 @@ msgstr "[1:Son Değişiklik] %(reldate)s önce"
 #: trac/wiki/templates/wiki_view.html:59
 #, fuzzy, python-format
 msgid "Last modified on %(date)s"
-msgstr "(en son değiştiren %(author)s)"
+msgstr ""
 
 #: trac/wiki/templates/wiki_view.html:64
 #, python-format
