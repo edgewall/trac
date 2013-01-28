@@ -4244,9 +4244,8 @@ msgid "SQL reports and saved custom queries"
 msgstr ""
 
 #: trac/ticket/templates/report_list.html:67
-#, fuzzy
 msgid "Sort by:"
-msgstr "Zgłoszone przez:"
+msgstr "Sortuj wg:"
 
 #: trac/ticket/templates/report_list.html:70
 msgid "Identifier"
@@ -4346,16 +4345,14 @@ msgid "Threaded"
 msgstr "utworzone"
 
 #: trac/ticket/templates/ticket.html:162
-#, fuzzy
 msgid "Comments only"
-msgstr "komentarz:"
+msgstr "Tylko komentarze"
 
 #: trac/ticket/templates/ticket.html:167
 msgid "Change History"
 msgstr "Historia zmian"
 
 #: trac/ticket/templates/ticket.html:186
-#, fuzzy
 msgid "Add Comment"
 msgstr "Dodaj komentarz"
 
