@@ -563,17 +563,6 @@ msgstr "Ugyldigt argument '%(arg)s'"
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr ""
-"Indsæt en rettesætbesked i outputtet.\n"
-"\n"
-"Denne makro skal kaldes ved brug af wiki behandler syntaks som følger:\n"
-"{{{\n"
-"{{{\n"
-"#!CommitTicketReference repository=\"reponame\" revision=\"rev\"\n"
-"}}}\n"
-"}}}\n"
-"hvor argumenterne er som følger:\n"
-" - `repository`: det opbevaringssted der indeholder rettesættet\n"
-" - `revision`: revisionen for det ønskede rettesæt"
 
 #: trac/env.py:937
 #, python-format
@@ -772,7 +761,7 @@ msgid "Error: %(msg)s"
 msgstr "Fejl: %(msg)s"
 
 #: trac/admin/console.py:132
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
@@ -834,7 +823,6 @@ msgid "Creating a new Trac environment at %(envname)s"
 msgstr "Opretter et nyt Trac miljø på %(envname)s"
 
 #: trac/admin/console.py:375
-#, fuzzy
 msgid ""
 "\n"
 "Trac will first ask a few questions about your environment\n"
@@ -856,7 +844,6 @@ msgid "Project Name [%(default)s]> "
 msgstr "Projektnavn [%(default)s]> "
 
 #: trac/admin/console.py:385
-#, fuzzy
 msgid ""
 "\n"
 " Please specify the connection string for the database to use.\n"
@@ -916,7 +903,6 @@ msgid " Indexing default repository"
 msgstr "Indexerer standard opbevaringssted"
 
 #: trac/admin/console.py:476
-#, fuzzy
 msgid ""
 "\n"
 "---------------------------------------------------------------------\n"
@@ -1482,7 +1468,6 @@ msgid "Action:"
 msgstr "Handling:"
 
 #: trac/admin/templates/admin_perms.html:33
-#, fuzzy
 msgid ""
 "Grant permission for an action to a subject, which can be either a user\n"
 "            or a group."
@@ -2458,9 +2443,6 @@ msgid ""
 "If you think this should work and you can reproduce the problem,\n"
 "              you should consider creating a bug report."
 msgstr ""
-"[1:%(file)s][2:​]\n"
-"       ([3:%(size)s]) -\n"
-"      tilføjet af [4:%(author)s] %(date)s."
 
 #: trac/templates/error.html:113
 #, python-format
