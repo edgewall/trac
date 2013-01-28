@@ -403,14 +403,13 @@ msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (usuń)"
 
 #: trac/attachment.py:803
-#, fuzzy, python-format
+#, python-format
 msgid "Maximum total attachment size: %(num)s bytes"
-msgstr "Maksymalny rozmiar załącznego pliku nie może przekroczyć %(num)s bajtów"
+msgstr "Maksymalny rozmiar załącznego pliku: %(num)s bajtów"
 
 #: trac/attachment.py:804
-#, fuzzy
 msgid "Download failed"
-msgstr "Dodawanie załącznika nie powiodło się"
+msgstr ""
 
 #: trac/attachment.py:892 trac/versioncontrol/web_ui/browser.py:669
 #: trac/wiki/web_ui.py:73
@@ -552,9 +551,9 @@ msgid "Creating scripts."
 msgstr "Tworzenie skryptów."
 
 #: trac/env.py:923
-#, fuzzy, python-format
+#, python-format
 msgid "Invalid argument '%(arg)s'"
-msgstr "Nieprawidłowe dane"
+msgstr "Nieprawidłowy argument '%(arg)s'"
 
 #: trac/env.py:928
 #, python-format
@@ -653,20 +652,22 @@ msgid "Header length is too short"
 msgstr "Długość nagłówka jest zbyt krótka"
 
 #: trac/perm.py:56
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "%(perm)s privileges are required to perform this operation on "
 "%(resource)s. You don't have the required permissions."
 msgstr ""
 "Uprawnienie %(perm)s jest wymagane, aby wykonać żądaną operację na "
-"%(resource)s"
+"%(resource)s. Nie posiadasz wymaganych uprawnień."
 
 #: trac/perm.py:58
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "%(perm)s privileges are required to perform this operation. You don't "
 "have the required permissions."
 msgstr ""
+"Uprawnienie %(perm)s jest wymagane, aby wykonać żądaną operację. Nie "
+"posiadasz wymaganych uprawnień."
 
 #: trac/perm.py:64
 msgid "Insufficient privileges to perform this operation."
@@ -778,11 +779,13 @@ msgid "Completion error: %(err)s"
 msgstr ""
 
 #: trac/admin/console.py:316
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "No documentation found for '%(cmd)s'. Use 'help' to see the list of "
 "commands."
-msgstr "Brak dokumentacji dla '%(cmd)s'"
+msgstr ""
+"Brak dokumentacji dla '%(cmd)s'. Proszę użyć 'help' aby zobaczyć listę "
+"poleceń"
 
 #: trac/admin/console.py:322
 msgid "Did you mean this?"
@@ -1190,33 +1193,30 @@ msgid "Description:"
 msgstr "Opis:"
 
 #: trac/admin/templates/admin_basics.html:35
-#, fuzzy
 msgid "Default timezone:"
-msgstr "Domyślna strefa czasowa"
+msgstr "Domyślna strefa czasowa:"
 
 #: trac/admin/templates/admin_basics.html:37
-#, fuzzy
 msgid "Server's local time zone"
-msgstr "Domyślna strefa czasowa"
+msgstr "Domyślna strefa czasowa serwera"
 
 #: trac/admin/templates/admin_basics.html:44
-#, fuzzy
 msgid "Default language:"
-msgstr "domyślny język"
+msgstr "Domyślny język:"
 
 #: trac/admin/templates/admin_basics.html:46
 #: trac/admin/templates/admin_basics.html:55
 msgid "Browser's language"
-msgstr ""
+msgstr "Język przeglądarki"
 
 #: trac/admin/templates/admin_basics.html:53
 msgid "Default date format:"
-msgstr ""
+msgstr "Domyślny format daty:"
 
 #: trac/admin/templates/admin_basics.html:57
 #: trac/prefs/templates/prefs_datetime.html:65
 msgid "ISO 8601 format"
-msgstr ""
+msgstr "format ISO 8601"
 
 #: trac/admin/templates/admin_basics.html:63
 #: trac/admin/templates/admin_components.html:99
@@ -1421,9 +1421,9 @@ msgid "Add Milestone:"
 msgstr "Dodaj etap:"
 
 #: trac/admin/templates/admin_milestones.html:92
-#, fuzzy, python-format
+#, python-format
 msgid "Format: %(datetimehint)s"
-msgstr "Format: %(datetimehint)s"
+msgstr ""
 
 #: trac/admin/templates/admin_milestones.html:107 trac/ticket/admin.py:399
 msgid "Due"
@@ -1438,9 +1438,8 @@ msgid "Tickets"
 msgstr "Zgłoszenia"
 
 #: trac/admin/templates/admin_perms.html:14
-#, fuzzy
 msgid "Manage Permissions and Groups"
-msgstr "Zarządzaj uprawnieniami"
+msgstr "Zarządzaj uprawnieniami i grupami"
 
 #: trac/admin/templates/admin_perms.html:19
 msgid "Grant Permission:"
@@ -1495,9 +1494,8 @@ msgid "Group Membership"
 msgstr ""
 
 #: trac/admin/templates/admin_perms.html:88
-#, fuzzy
 msgid "Group"
-msgstr "Grupa:"
+msgstr "Grupa"
 
 #: trac/admin/templates/admin_perms.html:105
 msgid "No group memberships"
@@ -1872,21 +1870,18 @@ msgid ""
 msgstr ""
 
 #: trac/prefs/templates/prefs_datetime.html:59
-#, fuzzy
 msgid "Date format:"
-msgstr "Informacja o systemie:"
+msgstr "Format daty:"
 
 #: trac/prefs/templates/prefs_datetime.html:61
-#, fuzzy
 msgid "Default date format"
-msgstr "Domyślna strefa czasowa"
+msgstr "Domyślny format daty"
 
 #: trac/prefs/templates/prefs_datetime.html:63
 msgid "Your language setting"
 msgstr ""
 
 #: trac/prefs/templates/prefs_datetime.html:69
-#, fuzzy
 msgid ""
 "Configuring your date format will result in formatting\n"
 "      and parsing datetime displayed on this site to use your date format"
@@ -1902,18 +1897,16 @@ msgid "Date relative/absolute format:"
 msgstr ""
 
 #: trac/prefs/templates/prefs_datetime.html:77
-#, fuzzy
 msgid "Default format"
-msgstr "(domyślne)"
+msgstr "Domyślny format"
 
 #: trac/prefs/templates/prefs_datetime.html:79
 msgid "Relative format"
 msgstr ""
 
 #: trac/prefs/templates/prefs_datetime.html:81
-#, fuzzy
 msgid "Absolute format"
-msgstr "Informacja o systemie"
+msgstr ""
 
 #: trac/prefs/templates/prefs_datetime.html:85
 #, fuzzy
@@ -1979,9 +1972,8 @@ msgid "Language:"
 msgstr "Język:"
 
 #: trac/prefs/templates/prefs_language.html:17
-#, fuzzy
 msgid "Default language"
-msgstr "domyślny język"
+msgstr "Domyślny język"
 
 #: trac/prefs/templates/prefs_language.html:23
 msgid ""
@@ -2065,9 +2057,8 @@ msgid "Previous Page"
 msgstr "Poprzednia strona"
 
 #: trac/search/templates/search.html:11
-#, fuzzy
 msgid "Search Results"
-msgstr "Brak wyników"
+msgstr "Wyniki wyszukiwania"
 
 #: trac/search/templates/search.html:43
 #: trac/ticket/templates/query_results.html:20
@@ -2168,9 +2159,8 @@ msgid "Installed Plugins"
 msgstr "Zainstalowane rozszerzenia"
 
 #: trac/templates/about.html:69
-#, fuzzy
 msgid "Location"
-msgstr "Lokalizacja:"
+msgstr "Lokalizacja"
 
 #: trac/templates/about.html:77 trac/templates/error.html:192
 #: trac/web/main.py:589
@@ -2634,9 +2624,8 @@ msgstr "Załączniki"
 
 #: trac/templates/list_of_attachments.html:38
 #: trac/templates/list_of_attachments.html:54
-#, fuzzy
 msgid "Download all attachments as:"
-msgstr "Dodaj załącznik"
+msgstr "Pobierz wszystkie załączniki jako:"
 
 #: trac/templates/list_of_attachments.html:39
 #: trac/templates/list_of_attachments.html:55
@@ -2698,9 +2687,8 @@ msgid "Context Navigation"
 msgstr "Nawigacja kontekstowa"
 
 #: trac/templates/theme.html:50
-#, fuzzy
 msgid "Hide this warning"
-msgstr "Podgląd tej wersji"
+msgstr "Ukryj to ostrzeżenie"
 
 #: trac/templates/theme.html:50 trac/templates/theme.html:58
 #, fuzzy
@@ -2771,9 +2759,9 @@ msgid "Invalid Completion Date"
 msgstr "Błędna data zakończenia"
 
 #: trac/ticket/admin.py:273
-#, fuzzy, python-format
+#, python-format
 msgid "The milestone \"%(name)s\" already exists."
-msgstr "Etap o nazwie %(name)s już istnieje."
+msgstr "Etap o nazwie \"%(name)s\" już istnieje."
 
 #: trac/ticket/admin.py:300
 #, python-format
@@ -2798,9 +2786,9 @@ msgid "The selected milestones have been removed."
 msgstr "Wybrane etapy zostały usunięte."
 
 #: trac/ticket/admin.py:452
-#, fuzzy, python-format
+#, python-format
 msgid "The version \"%(name)s\" already exists."
-msgstr "Wersja o nazwie %(name)s już istnieje."
+msgstr "Wersja \"%(name)s\" już istnieje."
 
 #: trac/ticket/admin.py:479
 #, python-format
@@ -2950,9 +2938,9 @@ msgid "Created"
 msgstr "Utworzony"
 
 #: trac/ticket/api.py:480
-#, fuzzy, python-format
+#, python-format
 msgid "Tickets %(ranges)s"
-msgstr ""
+msgstr "Zgłoszenia %(ranges)s"
 
 #: trac/ticket/api.py:504
 #, python-format
@@ -3391,9 +3379,9 @@ msgid "When specified, the report number should be \"%(num)s\"."
 msgstr "Kiedy podane, numer raportu powinien być \"%(num)s\"."
 
 #: trac/ticket/report.py:444
-#, fuzzy, python-format
+#, python-format
 msgid "Report execution failed: %(error)s %(sql)s"
-msgstr "Wygenerowanie raportu nie powiodło się: %(error)s"
+msgstr "Wygenerowanie raportu nie powiodło się: %(error)s %(sql)s"
 
 #: trac/ticket/report.py:635
 msgid "SQL Query"
@@ -3496,28 +3484,25 @@ msgid "You must provide a name for the milestone."
 msgstr "Nazwa etapu jest wymagana."
 
 #: trac/ticket/roadmap.py:877
-#, fuzzy, python-format
+#, python-format
 msgid "Milestone \"%(name)s\""
-msgstr "Etap %(name)s"
+msgstr "Etap \"%(name)s\""
 
 #: trac/ticket/roadmap.py:891
-#, fuzzy
 msgid "Previous Milestone"
-msgstr "Poprzednia wersja"
+msgstr "Poprzedni etap"
 
 #: trac/ticket/roadmap.py:891
-#, fuzzy
 msgid "Next Milestone"
-msgstr "Usuń etap"
+msgstr "Następny etap"
 
 #: trac/ticket/roadmap.py:892
 msgid "Back to Roadmap"
-msgstr ""
+msgstr "Wróć do planu prac"
 
 #: trac/ticket/web_ui.py:65
-#, fuzzy
 msgid "Invalid Ticket"
-msgstr "Nieprawidłowy numer raportu"
+msgstr ""
 
 #: trac/ticket/web_ui.py:162 trac/ticket/templates/ticket.html:14
 msgid "New Ticket"
@@ -3551,29 +3536,29 @@ msgstr[1] "%(labels)s zmienione"
 msgstr[2] "%(labels)s zmienionych"
 
 #: trac/ticket/web_ui.py:392
-#, fuzzy, python-format
+#, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) created"
-msgstr "Zgłoszenie %(ticketref)s (%(summary)s) created"
+msgstr ""
 
 #: trac/ticket/web_ui.py:393
-#, fuzzy, python-format
+#, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) reopened"
-msgstr "Zgłoszenie %(ticketref)s (%(summary)s) reopened"
+msgstr ""
 
 #: trac/ticket/web_ui.py:394
-#, fuzzy, python-format
+#, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) closed"
-msgstr "Zgłoszenie %(ticketref)s (%(summary)s) closed"
+msgstr ""
 
 #: trac/ticket/web_ui.py:395
-#, fuzzy, python-format
+#, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) updated"
-msgstr "Zgłoszenie %(ticketref)s (%(summary)s) updated"
+msgstr ""
 
 #: trac/ticket/web_ui.py:424
-#, fuzzy, python-format
+#, python-format
 msgid "Tickets %(ticketids)s"
-msgstr "Usuń zgłoszenie %(ticketids)s"
+msgstr "Zgłoszenia %(ticketids)s"
 
 #: trac/ticket/web_ui.py:426
 #, python-format
@@ -3920,9 +3905,9 @@ msgstr ""
 
 #: trac/ticket/templates/milestone_delete.html:10
 #: trac/ticket/templates/milestone_delete.html:22
-#, fuzzy, python-format
+#, python-format
 msgid "Delete Milestone %(name)s"
-msgstr "Etap %(name)s"
+msgstr "Usuń etap %(name)s"
 
 #: trac/ticket/templates/milestone_delete.html:27
 msgid "Are you sure you want to delete this milestone?"
@@ -3949,9 +3934,9 @@ msgstr ""
 
 #: trac/ticket/templates/milestone_edit.html:11
 #: trac/ticket/templates/milestone_edit.html:45
-#, fuzzy, python-format
+#, python-format
 msgid "Edit Milestone %(name)s"
-msgstr "Etap %(name)s"
+msgstr "Modyfikuj etap %(name)s"
 
 #: trac/ticket/templates/milestone_edit.html:12
 #: trac/ticket/templates/milestone_edit.html:46
@@ -4385,14 +4370,13 @@ msgid ""
 msgstr ""
 
 #: trac/ticket/templates/ticket.html:198
-#, fuzzy
 msgid ""
 "You may use\n"
 "                [1:WikiFormatting]\n"
 "                here."
 msgstr ""
 "Możesz tutaj używać\n"
-"              [1:formatowania Wiki])."
+"              [1:formatowania Wiki]."
 
 #: trac/ticket/templates/ticket.html:209
 msgid "Modify Ticket"
@@ -4582,9 +4566,8 @@ msgid "[1:%(value)s] deleted"
 msgstr "[1:%(value)s] usunięty"
 
 #: trac/ticket/templates/ticket_change.html:98
-#, fuzzy
 msgid "Revert this change"
-msgstr "Utwórz stronę"
+msgstr "Wycofaj tę zmianę"
 
 #: trac/ticket/templates/ticket_change.html:100
 #, fuzzy
@@ -6991,14 +6974,12 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_rename.html:33
 #: trac/wiki/templates/wiki_view.html:117
-#, fuzzy
 msgid "Rename page"
-msgstr "Strona domowa:"
+msgstr ""
 
 #: trac/wiki/templates/wiki_view.html:15
-#, fuzzy
 msgid "Revert page to this version"
-msgstr "Usuń tą wersję"
+msgstr "Przywróć stronę do tej wersji"
 
 #: trac/wiki/templates/wiki_view.html:15 trac/wiki/templates/wiki_view.html:93
 msgid "Edit this page"
@@ -7043,9 +7024,8 @@ msgid "You could also create the same page higher in the hierarchy:"
 msgstr "Możesz także utworzyć tą samą stronę wyżej w hierarchii:"
 
 #: trac/wiki/templates/wiki_view.html:90
-#, fuzzy
 msgid "Revert to this version"
-msgstr "Usuń tą wersję"
+msgstr "Przywróć do tej wersji"
 
 #: trac/wiki/templates/wiki_view.html:96
 msgid "Create this page"
