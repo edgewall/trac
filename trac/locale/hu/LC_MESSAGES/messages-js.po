@@ -27,7 +27,7 @@ msgstr "Bezár"
 
 #: trac/htdocs/js/diff.js:119
 msgid "Tabular"
-msgstr "Táblázat"
+msgstr "Táblázatos"
 
 #: trac/htdocs/js/diff.js:125
 msgid "Unified"
@@ -72,67 +72,65 @@ msgstr "%(title)s (kattintson az oszlop elrejtéséhez)"
 #. and showMonthAfterYear
 #: trac/htdocs/js/jquery-ui-i18n.js:4
 msgid "$month$year"
-msgstr ""
+msgstr "$year$month"
 
 #. TRANSLATOR: Link that closes the datepicker
 #. TRANSLATOR: Link that closes the timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:39
 msgid "Done"
-msgstr ""
+msgstr "Kész"
 
 #. TRANSLATOR: Link to the previous month in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:9
 msgid "Prev"
-msgstr ""
+msgstr "Előző"
 
 #. TRANSLATOR: Link to the next month in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:11
 msgid "Next"
-msgstr ""
+msgstr "Következő"
 
 #. TRANSLATOR: Link to the current day in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:13
 msgid "Today"
-msgstr ""
+msgstr "Ma"
 
 #. TRANSLATOR: Heading for the week-of-the-year column in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:20
 msgid "Wk"
-msgstr ""
+msgstr "Hét"
 
 #. TRANSLATOR: Heading of the standalone timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:30
 msgid "Choose Time"
-msgstr ""
+msgstr "Időpont"
 
 #. TRANSLATOR: Time selector label
 #: trac/htdocs/js/jquery-ui-i18n.js:32
 msgid "Time"
-msgstr ""
+msgstr "Idő"
 
 #. TRANSLATOR: Time labels in the timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:34
-#, fuzzy
 msgid "Hour"
-msgstr "vagy"
+msgstr "Óra"
 
 #: trac/htdocs/js/jquery-ui-i18n.js:34
 msgid "Minute"
-msgstr ""
+msgstr "Perc"
 
 #: trac/htdocs/js/jquery-ui-i18n.js:34
 msgid "Second"
-msgstr ""
+msgstr "Másodperc"
 
 #: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Time Zone"
-msgstr ""
+msgstr "Időzóna"
 
 #. TRANSLATOR: Link to pick the current time in the timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:37
-#, fuzzy
 msgid "Now"
-msgstr "nem"
+msgstr "Most"
 
 #: trac/htdocs/js/query.js:132
 msgid "A filter already exists for that property"
@@ -160,24 +158,24 @@ msgstr "és"
 
 #: trac/htdocs/js/query.js:337
 msgid " remove:"
-msgstr ""
+msgstr "eltávolít:"
 
 #: trac/htdocs/js/query.js:347
 msgid " add:"
-msgstr ""
+msgstr "hozzáad:"
 
 #: trac/htdocs/js/query.js:376
 #, python-format
 msgid "Select ticket %(id)s for modification"
-msgstr ""
+msgstr "Válassza a %(id)s jegyet a módosításhoz"
 
 #: trac/htdocs/js/query.js:387
 msgid "Toggle selection of all tickets shown in this group"
-msgstr ""
+msgstr "Kijelölés megfordítása az összes jegyen ebben a csoportban"
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
-msgstr "Hivatkozás itt"
+msgstr "Hivatkozás ide"
 
 #: trac/htdocs/js/wikitoolbar.js:56
 msgid "Bold text: '''Example'''"
