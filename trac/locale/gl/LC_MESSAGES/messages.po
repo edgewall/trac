@@ -1476,25 +1476,22 @@ msgid "Action is no longer defined"
 msgstr ""
 
 #: trac/admin/templates/admin_perms.html:81
-#, fuzzy
 msgid "No permissions"
-msgstr "Permisos"
+msgstr ""
 
 #: trac/admin/templates/admin_perms.html:85
 msgid "Group Membership"
 msgstr ""
 
 #: trac/admin/templates/admin_perms.html:88
-#, fuzzy
 msgid "Group"
-msgstr "Grupo:"
+msgstr "Grupo"
 
 #: trac/admin/templates/admin_perms.html:105
 msgid "No group memberships"
 msgstr ""
 
 #: trac/admin/templates/admin_perms.html:113
-#, fuzzy
 msgid ""
 "Note that [1:Subject] or [2:Group] names can't be all upper-case,\n"
 "      as that is reserved for permission names."

@@ -23,8 +23,8 @@ msgid ""
 "You appear to be using the PHP CGI binary. Trac requires the CLI version "
 "for syntax highlighting."
 msgstr ""
-"Bạn dường như đang sử dụng PHP CGI nhị phân. Trac cần phiên bản CLI\"\n"
-"\"để làm nổi cú pháp"
+"Bạn dường như đang sử dụng PHP CGI nhị phân. Trac cần phiên bản CLIđể làm"
+" nổi cú pháp"
 
 #: tracopt/ticket/clone.py:49
 #, python-format
@@ -521,8 +521,8 @@ msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
 msgstr ""
-"Thiếu biến môi trường \"TRAC_ENV\". Trac cần biến môi trường này trỏ\"\n"
-"\" tới một môi trường Trac hợp lệ"
+"Thiếu biến môi trường \"TRAC_ENV\". Trac cần biến môi trường này trỏ tới "
+"một môi trường Trac hợp lệ"
 
 #: trac/env.py:854 trac/admin/console.py:281
 #, python-format
@@ -532,10 +532,8 @@ msgid ""
 "Run \"trac-admin %(path)s upgrade\""
 msgstr ""
 "Môi trường Trac cần được nâng cấp.\n"
-"\"\n"
-"\"\n"
-"\"\n"
-"\"Run \"trac-admin %(path)s upgrade\""
+"\n"
+"Run \"trac-admin %(path)s upgrade\""
 
 #: trac/env.py:893
 msgid "Copying resources from:"
@@ -1415,18 +1413,16 @@ msgid "Action is no longer defined"
 msgstr ""
 
 #: trac/admin/templates/admin_perms.html:81
-#, fuzzy
 msgid "No permissions"
-msgstr "Quyền hạn"
+msgstr ""
 
 #: trac/admin/templates/admin_perms.html:85
 msgid "Group Membership"
 msgstr ""
 
 #: trac/admin/templates/admin_perms.html:88
-#, fuzzy
 msgid "Group"
-msgstr "Nhóm:"
+msgstr "Nhóm"
 
 #: trac/admin/templates/admin_perms.html:105
 msgid "No group memberships"
@@ -3383,8 +3379,7 @@ msgid ""
 "by other groups. Please check your configuration."
 msgstr ""
 "Nhóm mốc thời gian '%(groupname)s' đã sử dụng lại trạng thái '%(status)s'"
-" đã được sử dụng\"\n"
-"\"bởi nhóm khác. Hãy kiểm tra lại cấu hình của bạn."
+" đã được sử dụngbởi nhóm khác. Hãy kiểm tra lại cấu hình của bạn."
 
 #: trac/ticket/roadmap.py:403 trac/ticket/roadmap.py:527
 #: trac/ticket/roadmap.py:661 trac/ticket/templates/roadmap.html:10
@@ -3665,17 +3660,16 @@ msgid ""
 "someone else since you started"
 msgstr ""
 "Xin lỗi, không thể lưu các thay đổi của bạn. Thẻ này đã được thay đổi bởi"
-" \"\n"
-"\"người khác kể từ khi bạn bắt đầu"
+" người khác kể từ khi bạn bắt đầu"
 
 #: trac/ticket/web_ui.py:1230
 msgid "Tickets must contain a summary."
 msgstr "Thẻ phải chứa phần tóm lược."
 
 #: trac/ticket/web_ui.py:1248
-#, fuzzy, python-format
+#, python-format
 msgid "field %(name)s must be set"
-msgstr "Trang %(name)s không tồn tại"
+msgstr ""
 
 #: trac/ticket/web_ui.py:1254
 #, python-format

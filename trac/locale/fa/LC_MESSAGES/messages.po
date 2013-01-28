@@ -1410,9 +1410,8 @@ msgid "Group Membership"
 msgstr ""
 
 #: trac/admin/templates/admin_perms.html:88
-#, fuzzy
 msgid "Group"
-msgstr "گروه:"
+msgstr "گروه"
 
 #: trac/admin/templates/admin_perms.html:105
 msgid "No group memberships"
