@@ -29,7 +29,7 @@ msgstr ""
 #: tracopt/ticket/clone.py:49
 #, python-format
 msgid "%(summary)s (cloned)"
-msgstr ""
+msgstr "%(summary)s (klonet)"
 
 #: tracopt/ticket/clone.py:53
 #, python-format
@@ -38,15 +38,17 @@ msgid ""
 "----\n"
 "%(description)s"
 msgstr ""
+"Klonet fra #%(id)s:\n"
+"----\n"
+"%(description)s"
 
 #: tracopt/ticket/clone.py:60
-#, fuzzy
 msgid "Clone"
-msgstr "lukket"
+msgstr "Klon"
 
 #: tracopt/ticket/clone.py:61
 msgid "Create a copy of this ticket"
-msgstr ""
+msgstr "Opret en kopi af denne sag"
 
 #: tracopt/ticket/commit_updater.py:275
 msgid ""
@@ -62,6 +64,17 @@ msgid ""
 " - `repository`: the repository containing the changeset\n"
 " - `revision`: the revision of the desired changeset"
 msgstr ""
+"Indsæt en rettesætbesked i outputtet.\n"
+"\n"
+"Denne makro skal kaldes ved brug af wiki behandler syntaks som følger:\n"
+"{{{\n"
+"{{{\n"
+"#!CommitTicketReference repository=\"reponame\" revision=\"rev\"\n"
+"}}}\n"
+"}}}\n"
+"hvor argumenterne er som følger:\n"
+" - `repository`: det opbevaringssted der indeholder rettesættet\n"
+" - `revision`: revisionen for det ønskede rettesæt"
 
 #: tracopt/ticket/deleter.py:73 tracopt/ticket/deleter.py:90
 #: trac/ticket/templates/report_list.html:82
@@ -144,7 +157,7 @@ msgstr "Dette er en uoprettelig handling."
 #: trac/wiki/templates/wiki_edit_form.html:73
 #: trac/wiki/templates/wiki_rename.html:32
 msgid "Cancel"
-msgstr "Annullér"
+msgstr "Annuller"
 
 #: tracopt/ticket/templates/ticket_delete.html:61
 msgid "Are you sure you want to delete this ticket comment?"
@@ -377,9 +390,8 @@ msgid "Invalid attachment: %(message)s"
 msgstr "Ugyldig vedhæftning: %(message)s"
 
 #: trac/attachment.py:745
-#, fuzzy
 msgid "Note: File must be selected again."
-msgstr "Ingen milepæl valgt"
+msgstr "Bemærk: Filen skal vælges igen."
 
 #: trac/attachment.py:758
 #, python-format
@@ -398,14 +410,13 @@ msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (slet)"
 
 #: trac/attachment.py:803
-#, fuzzy, python-format
+#, python-format
 msgid "Maximum total attachment size: %(num)s bytes"
-msgstr "Maksimum vedhæftningsstørrelse: %(num)s bytes"
+msgstr "Maksimum total vedhæftningsstørrelse: %(num)s bytes"
 
 #: trac/attachment.py:804
-#, fuzzy
 msgid "Download failed"
-msgstr "Upload mislykkedes"
+msgstr "Download mislykkedes"
 
 #: trac/attachment.py:892 trac/versioncontrol/web_ui/browser.py:669
 #: trac/wiki/web_ui.py:73
@@ -543,9 +554,9 @@ msgid "Creating scripts."
 msgstr "Opretter scripts."
 
 #: trac/env.py:923
-#, fuzzy, python-format
+#, python-format
 msgid "Invalid argument '%(arg)s'"
-msgstr "Ugyldige argumenter"
+msgstr "Ugyldigt argument '%(arg)s'"
 
 #: trac/env.py:928
 #, python-format
@@ -563,7 +574,7 @@ msgstr "Følgende fejl opstod ved kopiering af miljøet:"
 
 #: trac/env.py:965
 msgid "Backing up database ..."
-msgstr ""
+msgstr "Sikkerhedskopierer databasen ..."
 
 #: trac/env.py:970
 msgid "Hotcopy done."
@@ -582,10 +593,12 @@ msgid ""
 "The pre-upgrade backup failed.\n"
 "Use '--no-backup' to upgrade without doing a backup.\n"
 msgstr ""
+"Backuppen før opgradering mislykkedes.\n"
+"Brug '--no-backup' for at opgradere uden backup.\n"
 
 #: trac/env.py:988
 msgid "The upgrade failed. Please fix the issue and try again.\n"
-msgstr ""
+msgstr "Opgraderingen mislykkedes. Ret venligst fejlen og prøv igen.\n"
 
 #: trac/env.py:1000
 msgid ""
@@ -654,6 +667,8 @@ msgid ""
 "%(perm)s privileges are required to perform this operation on "
 "%(resource)s. You don't have the required permissions."
 msgstr ""
+"%(perm)s rettigheder er påkrævet for at udføre denne handling på "
+"%(resource)s. Du har ikke de nødvendige rettigheder."
 
 #: trac/perm.py:58
 #, python-format
@@ -661,6 +676,8 @@ msgid ""
 "%(perm)s privileges are required to perform this operation. You don't "
 "have the required permissions."
 msgstr ""
+"%(perm)s rettigheder er påkrævet for at udføre denne handling. Du har "
+"ikke de nødvendige rettigheder."
 
 #: trac/perm.py:64
 msgid "Insufficient privileges to perform this operation."
@@ -690,41 +707,43 @@ msgid "All upper-cased tokens are reserved for permission names"
 msgstr "Alle tokens med store bogstaver er reserveret til rettighedsnavne"
 
 #: trac/perm.py:675
-#, fuzzy, python-format
+#, python-format
 msgid "The user %(user)s already has permission %(action)s."
-msgstr "Emnet %(user)s har fået tildelt rettigheden %(action)s."
+msgstr "Brugeren %(user)s har allerede rettigheden %(action)s."
 
 #: trac/perm.py:689
 #, python-format
 msgid "Cannot remove permission %(action)s for user %(user)s."
-msgstr ""
+msgstr "Kan ikke fjerne rettigheden %(action)s for brugeren %(user)s."
 
 #: trac/perm.py:706
-#, fuzzy, python-format
+#, python-format
 msgid "Cannot export to %(filename)s: %(error)s"
-msgstr "Rapport mislykkedes: %(error)s"
+msgstr "Kan ikke eksportere til %(filename)s: %(error)s"
 
 #: trac/perm.py:719
 #, python-format
 msgid "Invalid row %(line)d. Expected <user>, <action>, [action], [...]"
-msgstr ""
+msgstr "Ugyldig række %(line)d. Forventede <user>, <action>, [action], [...]"
 
 #: trac/perm.py:727
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Invalid user %(user)s on line %(line)d: All upper-cased tokens are "
 "reserved for permission names."
-msgstr "Alle tokens med store bogstaver er reserveret til rettighedsnavne"
+msgstr ""
+"Ugyldig bruger %(user)s på linje %(line)d: Alle tokens med store "
+"bogstaver er reserveret til rettighedsnavne."
 
 #: trac/perm.py:736
 #, python-format
 msgid "Cannot import from %(filename)s line %(line)d: %(error)s "
-msgstr ""
+msgstr "Kan ikke importere fra %(filename)s linje %(line)d: %(error)s "
 
 #: trac/perm.py:741
-#, fuzzy, python-format
+#, python-format
 msgid "Cannot import from %(filename)s: %(error)s"
-msgstr ""
+msgstr "Kan ikke importere fra %(filename)s: %(error)s"
 
 #: trac/resource.py:336
 #, python-format
@@ -976,6 +995,15 @@ msgid ""
 "[[TracAdminHelp(upgrade)]]      # the upgrade command\n"
 "}}}"
 msgstr ""
+"Vis hjælp til trac-admin kommandoer.\n"
+"\n"
+"Eksempler:\n"
+"{{{\n"
+"[[TracAdminHelp]]               # alle kommandoer\n"
+"[[TracAdminHelp(wiki)]]         # alle wiki kommandoer\n"
+"[[TracAdminHelp(wiki export)]]  # \"wiki export\" kommandoen\n"
+"[[TracAdminHelp(upgrade)]]      # opgraderingskommandoen\n"
+"}}}"
 
 #: trac/admin/console.py:580
 #, python-format
@@ -999,9 +1027,8 @@ msgid "Unknown administration panel"
 msgstr "Ukendt administrationspanel"
 
 #: trac/admin/web_ui.py:133
-#, fuzzy
 msgid "Untitled"
-msgstr "Titel"
+msgstr "Unavngivet"
 
 #: trac/admin/web_ui.py:192 trac/ticket/admin.py:66 trac/ticket/admin.py:95
 #: trac/ticket/admin.py:275 trac/ticket/admin.py:455 trac/ticket/admin.py:607
@@ -1083,7 +1110,7 @@ msgstr "Manglende felt"
 #: trac/admin/web_ui.py:356 trac/admin/templates/admin_perms.html:10
 #: trac/admin/templates/admin_perms.html:60
 msgid "Permissions"
-msgstr "Tilladelser"
+msgstr "Rettigheder"
 
 #: trac/admin/web_ui.py:377
 msgid "Unknown action"
@@ -1176,33 +1203,30 @@ msgid "Description:"
 msgstr "Beskrivelse:"
 
 #: trac/admin/templates/admin_basics.html:35
-#, fuzzy
 msgid "Default timezone:"
 msgstr "Standard tidszone"
 
 #: trac/admin/templates/admin_basics.html:37
-#, fuzzy
 msgid "Server's local time zone"
-msgstr "Standard tidszone"
+msgstr "Servers lokale tidszone"
 
 #: trac/admin/templates/admin_basics.html:44
-#, fuzzy
 msgid "Default language:"
-msgstr "Standard sprog"
+msgstr "Standard sprog:"
 
 #: trac/admin/templates/admin_basics.html:46
 #: trac/admin/templates/admin_basics.html:55
 msgid "Browser's language"
-msgstr ""
+msgstr "Browsers sprog"
 
 #: trac/admin/templates/admin_basics.html:53
 msgid "Default date format:"
-msgstr ""
+msgstr "Standard dato format"
 
 #: trac/admin/templates/admin_basics.html:57
 #: trac/prefs/templates/prefs_datetime.html:65
 msgid "ISO 8601 format"
-msgstr ""
+msgstr "ISO 8601 format"
 
 #: trac/admin/templates/admin_basics.html:63
 #: trac/admin/templates/admin_components.html:99
@@ -1330,6 +1354,8 @@ msgid ""
 "[1:Note:] The order of priorities determines the\n"
 "              coloring of entries in the ticket queries and reports."
 msgstr ""
+"[1:Obs:] Rækkefølgen af prioriteter bestemmer\n"
+"              farven på emner i sagsforespørgsler og rapporter."
 
 #: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:85
 msgid "Configuration"
@@ -1428,7 +1454,7 @@ msgstr "Sager"
 
 #: trac/admin/templates/admin_perms.html:14
 msgid "Manage Permissions and Groups"
-msgstr ""
+msgstr "Håndter rettigheder og grupper"
 
 #: trac/admin/templates/admin_perms.html:19
 msgid "Grant Permission:"
@@ -1471,25 +1497,23 @@ msgstr "Emne"
 
 #: trac/admin/templates/admin_perms.html:76
 msgid "Action is no longer defined"
-msgstr ""
+msgstr "Handling er ikke længere defineret"
 
 #: trac/admin/templates/admin_perms.html:81
-#, fuzzy
 msgid "No permissions"
-msgstr "Tilladelser"
+msgstr "Ingen rettigheder"
 
 #: trac/admin/templates/admin_perms.html:85
 msgid "Group Membership"
-msgstr ""
+msgstr "Gruppemedlemsskab"
 
 #: trac/admin/templates/admin_perms.html:88
-#, fuzzy
 msgid "Group"
-msgstr "Gruppe:"
+msgstr "Gruppe"
 
 #: trac/admin/templates/admin_perms.html:105
 msgid "No group memberships"
-msgstr ""
+msgstr "Ingen gruppemedlemskaber"
 
 #: trac/admin/templates/admin_perms.html:113
 msgid ""
@@ -1514,7 +1538,7 @@ msgstr "Fil: [1:]"
 
 #: trac/admin/templates/admin_plugins.html:68
 msgid "Install"
-msgstr "Installér"
+msgstr "Installer"
 
 #: trac/admin/templates/admin_plugins.html:72
 msgid ""
@@ -1734,7 +1758,7 @@ msgstr "Tastaturgenveje"
 
 #: trac/prefs/web_ui.py:97 trac/prefs/templates/prefs_userinterface.html:10
 msgid "User Interface"
-msgstr ""
+msgstr "Brugergrænseflade"
 
 #: trac/prefs/web_ui.py:99 trac/prefs/templates/prefs_language.html:10
 msgid "Language"
@@ -1772,7 +1796,7 @@ msgstr "Sessionsnøgle:"
 
 #: trac/prefs/templates/prefs_advanced.html:17
 msgid "Change"
-msgstr "Ændrer"
+msgstr "Tilpas"
 
 #: trac/prefs/templates/prefs_advanced.html:18
 msgid ""
@@ -1849,18 +1873,16 @@ msgstr ""
 "Greenwich, altså foran Universal Time."
 
 #: trac/prefs/templates/prefs_datetime.html:59
-#, fuzzy
 msgid "Date format:"
-msgstr "Systeminformation:"
+msgstr "Datoformat:"
 
 #: trac/prefs/templates/prefs_datetime.html:61
-#, fuzzy
 msgid "Default date format"
-msgstr "Standard tidszone"
+msgstr "Standard datoformat"
 
 #: trac/prefs/templates/prefs_datetime.html:63
 msgid "Your language setting"
-msgstr ""
+msgstr "Din sprogindstilling"
 
 #: trac/prefs/templates/prefs_datetime.html:69
 msgid ""
@@ -1872,21 +1894,19 @@ msgstr ""
 
 #: trac/prefs/templates/prefs_datetime.html:75
 msgid "Date relative/absolute format:"
-msgstr ""
+msgstr "Dato relativ/absolut format:"
 
 #: trac/prefs/templates/prefs_datetime.html:77
-#, fuzzy
 msgid "Default format"
-msgstr "(standard)"
+msgstr "Standard format"
 
 #: trac/prefs/templates/prefs_datetime.html:79
 msgid "Relative format"
-msgstr ""
+msgstr "Relativt format"
 
 #: trac/prefs/templates/prefs_datetime.html:81
-#, fuzzy
 msgid "Absolute format"
-msgstr "Systeminformationer"
+msgstr "Absolut format"
 
 #: trac/prefs/templates/prefs_datetime.html:85
 msgid ""
@@ -1937,7 +1957,6 @@ msgid "Language:"
 msgstr "Sprog:"
 
 #: trac/prefs/templates/prefs_language.html:17
-#, fuzzy
 msgid "Default language"
 msgstr "Standard sprog"
 
@@ -1970,7 +1989,7 @@ msgstr "Forhåndsvisning:"
 
 #: trac/prefs/templates/prefs_userinterface.html:18
 msgid "Use only symbols for buttons."
-msgstr ""
+msgstr "Brug kun symboler til knapper."
 
 #: trac/prefs/templates/prefs_userinterface.html:21
 msgid ""
@@ -1980,7 +1999,7 @@ msgstr ""
 
 #: trac/prefs/templates/prefs_userinterface.html:29
 msgid "Hide help links."
-msgstr ""
+msgstr "Skjul hjælpelinks."
 
 #: trac/prefs/templates/prefs_userinterface.html:32
 msgid ""
@@ -2085,17 +2104,16 @@ msgid ""
 "Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
 msgstr ""
-"Copyright © 2003-2012\n"
+"Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
 msgid "System Information"
-msgstr "Systeminformationer"
+msgstr "Systeminformation"
 
 #: trac/templates/about.html:56
-#, fuzzy
 msgid "Package"
-msgstr "ændrer"
+msgstr "Pakke"
 
 #: trac/templates/about.html:56 trac/templates/about.html:69
 #: trac/templates/history_view.html:28 trac/ticket/admin.py:431
@@ -2108,14 +2126,13 @@ msgid "Installed Plugins"
 msgstr "Installerede udvidelser"
 
 #: trac/templates/about.html:69
-#, fuzzy
 msgid "Location"
-msgstr "Placering:"
+msgstr "Placering"
 
 #: trac/templates/about.html:77 trac/templates/error.html:192
 #: trac/web/main.py:589
 msgid "N/A"
-msgstr "Ikke tilgængelig"
+msgstr "I/T"
 
 #: trac/templates/about.html:89
 msgid "Section"
@@ -2194,12 +2211,15 @@ msgid "%(size)s bytes"
 msgstr "%(size)s bytes"
 
 #: trac/templates/attachment.html:96
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "File %(file)s,\n"
 "                [1:%(size)s]\n"
 "                (added by %(author)s, %(date)s)"
 msgstr ""
+"Fil %(file)s,\n"
+"                [1:%(size)s]\n"
+"                (tilføjet af %(author)s, %(date)s)"
 
 #: trac/templates/diff_div.html:72
 #, python-format
@@ -2566,6 +2586,9 @@ msgid ""
 "       ([3:%(size)s]) -\n"
 "      added by [4:%(author)s] %(date)s."
 msgstr ""
+"[1:%(file)s][2:​]\n"
+"       ([3:%(size)s]) -\n"
+"      tilføjet af [4:%(author)s] %(date)s."
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:44
@@ -2575,14 +2598,13 @@ msgstr "Vedhæftninger"
 
 #: trac/templates/list_of_attachments.html:38
 #: trac/templates/list_of_attachments.html:54
-#, fuzzy
 msgid "Download all attachments as:"
-msgstr "Tilføj vedhæftning"
+msgstr "Download alle vedhæftninger som:"
 
 #: trac/templates/list_of_attachments.html:39
 #: trac/templates/list_of_attachments.html:55
 msgid ".zip"
-msgstr ""
+msgstr ".zip"
 
 #: trac/templates/macros.html:37 trac/templates/macros.html:38
 msgid "Previous"
@@ -2619,16 +2641,16 @@ msgstr "%(count)s/%(total)s %(title)s"
 #: trac/templates/progress_bar.html:37
 #, python-format
 msgid "Total number of %(unit)s: %(count)s"
-msgstr ""
+msgstr "Totalt antal af %(unit)s: %(count)s"
 
 #: trac/templates/progress_bar.html:41
-#, fuzzy, python-format
+#, python-format
 msgid "%(title)s: %(count)s"
 msgstr "%(title)s: %(count)s"
 
 #: trac/templates/progress_bar_grouped.html:17
 msgid "(none)"
-msgstr "ingen"
+msgstr "(ingen)"
 
 #: trac/templates/theme.html:27
 msgid "Search:"
@@ -2639,23 +2661,20 @@ msgid "Context Navigation"
 msgstr "Kontekst navigation"
 
 #: trac/templates/theme.html:50
-#, fuzzy
 msgid "Hide this warning"
-msgstr "Vis denne version"
+msgstr "Skjul denne advarsel"
 
 #: trac/templates/theme.html:50 trac/templates/theme.html:58
-#, fuzzy
 msgid "close"
-msgstr "lukket"
+msgstr "luk"
 
 #: trac/templates/theme.html:52
 msgid "Warning:"
 msgstr "Advarsel:"
 
 #: trac/templates/theme.html:58
-#, fuzzy
 msgid "Hide this notice"
-msgstr "(denne sag)"
+msgstr "Skjul denne besked"
 
 #: trac/templates/theme.html:72
 #, python-format
@@ -2675,9 +2694,9 @@ msgid "Ticket System"
 msgstr "Sagssystem"
 
 #: trac/ticket/admin.py:93
-#, fuzzy, python-format
+#, python-format
 msgid "The component \"%(name)s\" already exists."
-msgstr "Komponenten %(name)s eksisterer allerede."
+msgstr "Komponenten \"%(name)s\" eksisterer allerede."
 
 #: trac/ticket/admin.py:117
 #, python-format
@@ -2714,9 +2733,9 @@ msgid "Invalid Completion Date"
 msgstr "Ugyldig færdiggørelsesdato"
 
 #: trac/ticket/admin.py:273
-#, fuzzy, python-format
+#, python-format
 msgid "The milestone \"%(name)s\" already exists."
-msgstr "Milpælen %(name)s eksisterer allerede."
+msgstr "Milpælen \"%(name)s\" eksisterer allerede."
 
 #: trac/ticket/admin.py:300
 #, python-format
@@ -2741,9 +2760,9 @@ msgid "The selected milestones have been removed."
 msgstr "De valgte milepæle er blevet fjernet."
 
 #: trac/ticket/admin.py:452
-#, fuzzy, python-format
+#, python-format
 msgid "The version \"%(name)s\" already exists."
-msgstr "Versionen %(name)s eksisterer allerede."
+msgstr "Versionen \"%(name)s\" eksisterer allerede."
 
 #: trac/ticket/admin.py:479
 #, python-format
@@ -2827,7 +2846,7 @@ msgstr "Prioriteter"
 
 #: trac/ticket/admin.py:783 trac/ticket/api.py:309
 msgid "Resolution"
-msgstr "Opløsning"
+msgstr "Løsning"
 
 #: trac/ticket/admin.py:783
 msgid "Resolutions"
@@ -2864,7 +2883,7 @@ msgstr "Vedhæftning"
 
 #: trac/ticket/api.py:287
 msgid "Summary"
-msgstr "Sammendrag"
+msgstr "Opsummering"
 
 #: trac/ticket/api.py:289 trac/ticket/templates/ticket.html:351
 msgid "Reporter"
@@ -2892,9 +2911,9 @@ msgid "Created"
 msgstr "Oprettet"
 
 #: trac/ticket/api.py:480
-#, fuzzy, python-format
+#, python-format
 msgid "Tickets %(ranges)s"
-msgstr ""
+msgstr "Sager %(ranges)s"
 
 #: trac/ticket/api.py:504
 #, python-format
@@ -2907,31 +2926,29 @@ msgid "Ticket #%(shortname)s"
 msgstr "Sag #%(shortname)s"
 
 #: trac/ticket/batch.py:95
-#, fuzzy
 msgid "add"
-msgstr "tilføjet"
+msgstr "tilføj"
 
 #: trac/ticket/batch.py:96
-#, fuzzy
 msgid "remove"
-msgstr "fjernet"
+msgstr "fjern"
 
 #: trac/ticket/batch.py:97
-#, fuzzy
 msgid "add / remove"
-msgstr "fjernet"
+msgstr "tilføj / fjern"
 
 #: trac/ticket/batch.py:98
-#, fuzzy
 msgid "set to"
-msgstr "indstil"
+msgstr "sæt til"
 
 #: trac/ticket/batch.py:180
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The changes have been saved, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr ""
+"Ændringerne er blevet gemt, men der opstod en fejl ved afsendelse af "
+"beskeder: %(message)s"
 
 #: trac/ticket/default_workflow.py:241
 msgid "Current state no longer exists"
@@ -2962,7 +2979,7 @@ msgid "The owner will be changed from %(current_owner)s to %(selected_owner)s"
 msgstr "Ejeren vil blive ændret fra %(current_owner)s til %(selected_owner)s"
 
 #: trac/ticket/default_workflow.py:283
-#, fuzzy, python-format
+#, python-format
 msgid "The owner will be changed from %(current_owner)s to the selected user"
 msgstr ""
 
@@ -3051,7 +3068,7 @@ msgstr ""
 
 #: trac/ticket/default_workflow.py:493
 msgid "Enable JavaScript to display the workflow graph."
-msgstr ""
+msgstr "Aktiver JavaScript for at vise workflow grafen."
 
 #: trac/ticket/model.py:120
 #, python-format
@@ -3271,7 +3288,7 @@ msgstr ""
 #: trac/ticket/query.py:1378
 #, python-format
 msgid "Ticket completion status for each %(group)s"
-msgstr ""
+msgstr "Sags færdiggørelsesstatus for hver %(group)s"
 
 #: trac/ticket/query.py:1393
 msgid "No results"
@@ -3332,9 +3349,9 @@ msgid "When specified, the report number should be \"%(num)s\"."
 msgstr "Når angivet, bør rapportnummeret være \"%(num)s\"."
 
 #: trac/ticket/report.py:444
-#, fuzzy, python-format
+#, python-format
 msgid "Report execution failed: %(error)s %(sql)s"
-msgstr "Rapport mislykkedes: %(error)s"
+msgstr "Rapport udførelse mislykkedes: %(error)s %(sql)s"
 
 #: trac/ticket/report.py:635
 msgid "SQL Query"
@@ -3432,23 +3449,21 @@ msgid "You must provide a name for the milestone."
 msgstr "Du skal angive et navn for milepælen."
 
 #: trac/ticket/roadmap.py:877
-#, fuzzy, python-format
+#, python-format
 msgid "Milestone \"%(name)s\""
-msgstr "Milepæl %(name)s"
+msgstr "Milepæl \"%(name)s\""
 
 #: trac/ticket/roadmap.py:891
-#, fuzzy
 msgid "Previous Milestone"
-msgstr "Forrige version"
+msgstr "Forrige milepæl"
 
 #: trac/ticket/roadmap.py:891
-#, fuzzy
 msgid "Next Milestone"
-msgstr "Slet milepæl"
+msgstr "Næste milepæl"
 
 #: trac/ticket/roadmap.py:892
 msgid "Back to Roadmap"
-msgstr ""
+msgstr "Tilbage til roadmap"
 
 #: trac/ticket/web_ui.py:65
 msgid "Invalid Ticket"
@@ -3484,34 +3499,34 @@ msgstr[0] "%(labels)s ændret"
 msgstr[1] "%(labels)s ændret"
 
 #: trac/ticket/web_ui.py:392
-#, fuzzy, python-format
+#, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) created"
-msgstr "Sag %(ticketref)s: %(summary)s created"
+msgstr "Sag %(ticketref)s (%(summary)s) oprettet"
 
 #: trac/ticket/web_ui.py:393
-#, fuzzy, python-format
+#, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) reopened"
-msgstr "Sag %(ticketref)s: %(summary)s reopened"
+msgstr "Sag %(ticketref)s (%(summary)s) genåbnet"
 
 #: trac/ticket/web_ui.py:394
-#, fuzzy, python-format
+#, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) closed"
-msgstr "Sag %(ticketref)s: %(summary)s closed"
+msgstr "Sag %(ticketref)s (%(summary)s) lukket"
 
 #: trac/ticket/web_ui.py:395
-#, fuzzy, python-format
+#, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) updated"
-msgstr "Sag %(ticketref)s: %(summary)s updated"
+msgstr "Sag %(ticketref)s (%(summary)s) opdateret"
 
 #: trac/ticket/web_ui.py:424
-#, fuzzy, python-format
+#, python-format
 msgid "Tickets %(ticketids)s"
-msgstr "Sag %(ticketids)s"
+msgstr "Sager %(ticketids)s"
 
 #: trac/ticket/web_ui.py:426
 #, python-format
 msgid "Tickets %(ticketlist)s batch updated"
-msgstr ""
+msgstr "Sager %(ticketlist)s batch-opdateret"
 
 #: trac/ticket/web_ui.py:576
 #, python-format
@@ -3718,7 +3733,7 @@ msgstr ""
 #. TRANSLATOR: The 'change' has been saved... (link)
 #: trac/ticket/web_ui.py:1338
 msgid "change"
-msgstr "ændrer"
+msgstr "tilpas"
 
 #: trac/ticket/web_ui.py:1344
 #, python-format
@@ -3759,7 +3774,7 @@ msgstr "indstil"
 
 #: trac/ticket/web_ui.py:1724
 msgid "unset"
-msgstr "nulstil"
+msgstr "frakobl"
 
 #: trac/ticket/web_ui.py:1727 trac/versioncontrol/templates/changeset.html:189
 #: trac/versioncontrol/templates/revisionlog.txt:12
@@ -3808,49 +3823,44 @@ msgstr "ret fra %(old)s til %(new)s"
 
 #: trac/ticket/templates/batch_modify.html:8
 msgid "Batch Modify"
-msgstr ""
+msgstr "Batch-tilpas"
 
 #: trac/ticket/templates/batch_modify.html:9
 msgid "Batch modification fields"
-msgstr ""
+msgstr "Batch-tilpasningsfelter"
 
 #: trac/ticket/templates/batch_modify.html:21
-#, fuzzy
 msgid "Add Field:"
-msgstr "tilføjet"
+msgstr "Tilføj felt:"
 
 #: trac/ticket/templates/batch_modify.html:50
-#, fuzzy
 msgid "[1:Note:] See [2:TracBatchModify] for help on using batch modify."
 msgstr ""
-"[1:Note:] Se [2:TracQuery]\n"
-"        for hjælp til forespørgsler."
 
 #: trac/ticket/templates/batch_modify.html:57
-#, fuzzy
 msgid "Change tickets"
-msgstr "sager"
+msgstr "Tilpas sager"
 
 #: trac/ticket/templates/batch_ticket_notify_email.txt:1
-#, fuzzy, python-format
+#, python-format
 msgid "Batch modification to %(tickets)s by %(author)s:"
-msgstr "(sidst ændret af %(author)s)"
-
-#: trac/ticket/templates/batch_ticket_notify_email.txt:5
-#, fuzzy, python-format
-msgid "Action: %(action)s"
 msgstr ""
 
+#: trac/ticket/templates/batch_ticket_notify_email.txt:5
+#, python-format
+msgid "Action: %(action)s"
+msgstr "Handling: %(action)s"
+
 #: trac/ticket/templates/batch_ticket_notify_email.txt:14
-#, fuzzy, python-format
+#, python-format
 msgid "Tickets URL: <%(link)s>"
 msgstr "Sags-URL: <%(link)s>"
 
 #: trac/ticket/templates/milestone_delete.html:10
 #: trac/ticket/templates/milestone_delete.html:22
-#, fuzzy, python-format
+#, python-format
 msgid "Delete Milestone %(name)s"
-msgstr "Milepæl %(name)s"
+msgstr "Slet milepæl %(name)s"
 
 #: trac/ticket/templates/milestone_delete.html:27
 msgid "Are you sure you want to delete this milestone?"
@@ -3874,9 +3884,9 @@ msgstr ""
 
 #: trac/ticket/templates/milestone_edit.html:11
 #: trac/ticket/templates/milestone_edit.html:45
-#, fuzzy, python-format
+#, python-format
 msgid "Edit Milestone %(name)s"
-msgstr "Milepæl %(name)s"
+msgstr "Rediger milepæl %(name)s"
 
 #: trac/ticket/templates/milestone_edit.html:12
 #: trac/ticket/templates/milestone_edit.html:46
@@ -4054,9 +4064,9 @@ msgstr ""
 "        for hjælp til forespørgsler."
 
 #: trac/ticket/templates/query_results.html:25
-#, fuzzy, python-format
+#, python-format
 msgid "%(grouplabel)s: %(groupname)s [1:(%(count)s)]"
-msgstr ""
+msgstr "%(grouplabel)s: %(groupname)s [1:(%(count)s)]"
 
 #: trac/ticket/templates/query_results.html:37
 msgid "(ascending)"
@@ -4125,10 +4135,7 @@ msgstr "Rapporttitel"
 
 #: trac/ticket/templates/report_edit.html:25
 msgid "Description: (you may use [1:WikiFormatting] here)"
-msgstr ""
-"Beskrivelse (du kan bruge\n"
-"                [1:WikiFormatting]\n"
-"                her):"
+msgstr "Beskrivelse: (kan kan bruge [1:WikiFormatting] her)"
 
 #: trac/ticket/templates/report_edit.html:34
 msgid "Error:"
@@ -4148,21 +4155,20 @@ msgid "Save report"
 msgstr "Gem rapport"
 
 #: trac/ticket/templates/report_list.html:33
-#, fuzzy
 msgid "Show Descriptions"
-msgstr "Vis alle beskrivelser"
+msgstr "Vis beskrivelser"
 
 #: trac/ticket/templates/report_list.html:45
 msgid "Clear"
-msgstr ""
+msgstr "Ryd"
 
 #: trac/ticket/templates/report_list.html:45
 msgid "Forget last query"
-msgstr ""
+msgstr "Glem sidste forespørgsel"
 
 #: trac/ticket/templates/report_list.html:48
 msgid "Return to Last Query"
-msgstr ""
+msgstr "Tilbage til forrige forespørgsel"
 
 #: trac/ticket/templates/report_list.html:51
 msgid ""
@@ -4173,19 +4179,20 @@ msgstr ""
 #: trac/ticket/templates/report_list.html:60
 msgid "Compose a new ticket query by selecting filters and columns to display."
 msgstr ""
+"Opret en nye sags-forespørgsel ved at vælge filtre og kolonner der skal "
+"vises."
 
 #: trac/ticket/templates/report_list.html:65
 msgid "SQL reports and saved custom queries"
-msgstr ""
+msgstr "SQL rapporter og gemte tilpassede forespørgsler"
 
 #: trac/ticket/templates/report_list.html:67
-#, fuzzy
 msgid "Sort by:"
-msgstr "Rapporteret af:"
+msgstr "Sorter efter:"
 
 #: trac/ticket/templates/report_list.html:70
 msgid "Identifier"
-msgstr ""
+msgstr "Identifikation"
 
 #: trac/ticket/templates/report_list.html:73 trac/wiki/admin.py:197
 msgid "Title"
@@ -4195,7 +4202,7 @@ msgstr "Titel"
 #: trac/ticket/templates/ticket_change.html:65
 #: trac/wiki/templates/wiki_edit.html:149
 msgid "Edit"
-msgstr "Redigér"
+msgstr "Rediger"
 
 #: trac/ticket/templates/report_list.html:89
 #: trac/ticket/templates/report_view.html:62
@@ -4247,21 +4254,19 @@ msgstr "Skjul milepæle uden forfaldsdato"
 
 #: trac/ticket/templates/roadmap.html:38
 msgid "Milestone:"
-msgstr "Milepæl"
+msgstr "Milepæl:"
 
 #: trac/ticket/templates/roadmap.html:76
 msgid "Add new milestone"
 msgstr "Tilføj ny milepæl"
 
 #: trac/ticket/templates/ticket.html:132
-#, fuzzy
 msgid "Go to the ticket editor"
-msgstr "Gå til editoren"
+msgstr ""
 
 #: trac/ticket/templates/ticket.html:132
-#, fuzzy
 msgid "Modify"
-msgstr "ændret"
+msgstr ""
 
 #: trac/ticket/templates/ticket.html:134
 msgid "Create New Ticket"
@@ -4269,30 +4274,27 @@ msgstr "Opret ny sag"
 
 #: trac/ticket/templates/ticket.html:152
 msgid "Oldest first"
-msgstr ""
+msgstr "Ældste først"
 
 #: trac/ticket/templates/ticket.html:154
 msgid "Newest first"
-msgstr ""
+msgstr "Nyeste først"
 
 #: trac/ticket/templates/ticket.html:157
-#, fuzzy
 msgid "Threaded"
-msgstr "Oprettet"
+msgstr "Trådet"
 
 #: trac/ticket/templates/ticket.html:162
-#, fuzzy
 msgid "Comments only"
-msgstr "Kommentar"
+msgstr "Kun kommentarer"
 
 #: trac/ticket/templates/ticket.html:167
 msgid "Change History"
 msgstr "Ændringshistorik"
 
 #: trac/ticket/templates/ticket.html:186
-#, fuzzy
 msgid "Add Comment"
-msgstr "Tilføj en kommentar"
+msgstr "Tilføj Kommentar"
 
 #: trac/ticket/templates/ticket.html:188
 msgid ""
@@ -4303,9 +4305,13 @@ msgid ""
 "              You can nevertheless proceed and submit your changes if you"
 " wish so."
 msgstr ""
+"Sagen er blevet ændret siden du begyndte at redigere. Du bør gennemse de\n"
+"              [1:other modifications] der er blevet tilføjet ovenfor,\n"
+"              og mulige [2:conflicts] vist i forhåndsvisningen nedenfor.\n"
+"              Du kan stadig fortsætte og indsende dine ændringer hvis du "
+"vil det."
 
 #: trac/ticket/templates/ticket.html:198
-#, fuzzy
 msgid ""
 "You may use\n"
 "                [1:WikiFormatting]\n"
@@ -4321,7 +4327,7 @@ msgstr "Tilpas sag"
 
 #: trac/ticket/templates/ticket.html:215
 msgid "Change Properties"
-msgstr "Ret egenskaber"
+msgstr "Ændrings-egenskaber"
 
 #: trac/ticket/templates/ticket.html:216
 msgid "Properties"
@@ -4329,7 +4335,7 @@ msgstr "Egenskaber"
 
 #: trac/ticket/templates/ticket.html:220
 msgid "Summary:"
-msgstr "Sammendrag:"
+msgstr "Opsummering:"
 
 #: trac/ticket/templates/ticket.html:228
 msgid "Reporter:"
@@ -4373,16 +4379,15 @@ msgid "Go to the list of attachments"
 msgstr "Gå til listen med vedhæftninger"
 
 #: trac/ticket/templates/ticket.html:379
-#, fuzzy
 msgid "View the ticket description"
-msgstr "Ingen rettigheder til at redigere sags-beskrivelsen."
+msgstr ""
 
 #: trac/ticket/templates/ticket.html:387
 #: trac/ticket/templates/ticket_change.html:114
 #: trac/wiki/templates/wiki_edit.html:95 trac/wiki/templates/wiki_edit.html:153
 #: trac/wiki/templates/wiki_edit_form.html:64
 msgid "Preview"
-msgstr "Forhåndsvisning"
+msgstr "Forhåndsvis"
 
 #: trac/ticket/templates/ticket.html:388
 msgid "Create ticket"
@@ -4401,17 +4406,17 @@ msgstr ""
 #: trac/ticket/templates/ticket_box.html:22
 #, python-format
 msgid "Opened %(created)s"
-msgstr ""
+msgstr "Åbnet den %(created)s"
 
 #: trac/ticket/templates/ticket_box.html:23
 #, python-format
 msgid "Closed %(closed)s"
-msgstr ""
+msgstr "Lukket den %(closed)s"
 
 #: trac/ticket/templates/ticket_box.html:24
-#, fuzzy, python-format
+#, python-format
 msgid "Last modified %(modified)s"
-msgstr ""
+msgstr "Sidst ændret %(modified)s"
 
 #: trac/ticket/templates/ticket_box.html:26
 msgid "(ticket not yet created)"
@@ -4459,9 +4464,9 @@ msgstr[0] "Opfølgning:"
 msgstr[1] "Opfølgninger:"
 
 #: trac/ticket/templates/ticket_change.html:53
-#, fuzzy, python-format
+#, python-format
 msgid "Changed %(date)s by %(author)s"
-msgstr "Ændret af %(author)s"
+msgstr "Ændret %(date)s af %(author)s"
 
 #: trac/ticket/templates/ticket_change.html:56
 #, python-format
@@ -4503,14 +4508,12 @@ msgid "[1:%(value)s] deleted"
 msgstr "[1:%(value)s] slettet"
 
 #: trac/ticket/templates/ticket_change.html:98
-#, fuzzy
 msgid "Revert this change"
-msgstr "Opret denne side"
+msgstr "Fortryd denne ændring"
 
 #: trac/ticket/templates/ticket_change.html:100
-#, fuzzy
 msgid "revert"
-msgstr "Alvorlighed"
+msgstr "fortryd"
 
 #: trac/ticket/templates/ticket_change.html:114
 #, python-format
@@ -4527,18 +4530,22 @@ msgid "Cancel comment edit"
 msgstr "Anuller kommentar redigering"
 
 #: trac/ticket/templates/ticket_change.html:137
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Version %(version)s, edited %(date)s\n"
 "        by %(author)s"
-msgstr "Version %(version)s af %(author)s"
+msgstr ""
+"Version %(version)s, redigeret %(date)s\n"
+"        af %(author)s"
 
 #: trac/ticket/templates/ticket_change.html:141
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Last edited %(date)s\n"
 "        by %(author)s"
-msgstr "(sidst ændret af %(author)s)"
+msgstr ""
+"Sidst redigeret %(date)s\n"
+"        af %(author)s"
 
 #: trac/ticket/templates/ticket_change.html:147
 #: trac/versioncontrol/templates/changeset.html:129
@@ -4585,12 +4592,12 @@ msgstr "Næste periode"
 #: trac/timeline/web_ui.py:290
 #, python-format
 msgid "at %(iso8601)s"
-msgstr ""
+msgstr "den %(iso8601)s"
 
 #: trac/timeline/web_ui.py:294
-#, fuzzy, python-format
+#, python-format
 msgid "on %(date)s at %(time)s"
-msgstr ""
+msgstr "den %(date)s kl %(time)s"
 
 #: trac/timeline/web_ui.py:295
 #, python-format
@@ -4598,14 +4605,14 @@ msgid "See timeline %(relativetime)s ago"
 msgstr ""
 
 #: trac/timeline/web_ui.py:298 trac/web/chrome.py:865 trac/web/chrome.py:867
-#, fuzzy, python-format
+#, python-format
 msgid "%(relativetime)s ago"
-msgstr "Opret denne side"
+msgstr "%(relativetime)s siden"
 
 #: trac/timeline/web_ui.py:300 trac/timeline/web_ui.py:344
 #, python-format
 msgid "See timeline at %(absolutetime)s"
-msgstr ""
+msgstr "Se tidslinje ved %(absolutetime)s"
 
 #. TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
 #: trac/timeline/web_ui.py:391
@@ -4687,6 +4694,13 @@ msgid ""
 "\n"
 "  %(new_path)s\n"
 msgstr ""
+"Kan ikke flytte vedhæftningen fra:\n"
+"\n"
+"  %(old_path)s\n"
+"\n"
+"til:\n"
+"\n"
+"  %(new_path)s\n"
 
 #: trac/util/datefmt.py:118
 #, python-format
@@ -4810,7 +4824,7 @@ msgstr[1] "%(num)s revisioner cached."
 
 #: trac/versioncontrol/admin.py:145
 msgid "Done."
-msgstr "Udført."
+msgstr "Færdig."
 
 #: trac/versioncontrol/admin.py:180
 msgid "Version Control"
@@ -5065,7 +5079,7 @@ msgstr "Tilføj alias:"
 
 #: trac/versioncontrol/templates/admin_repositories.html:125
 msgid "Revision"
-msgstr "Version"
+msgstr "Revision"
 
 #: trac/versioncontrol/templates/admin_repositories.html:137
 #, python-format
@@ -5090,9 +5104,8 @@ msgid "Show the diff against a specific revision"
 msgstr ""
 
 #: trac/versioncontrol/templates/browser.html:63
-#, fuzzy
 msgid "View diff against:"
-msgstr "vis diffs"
+msgstr "Vis diff imod:"
 
 #: trac/versioncontrol/templates/browser.html:76
 msgid "Hint: clear the field to view latest revision"
@@ -5117,21 +5130,21 @@ msgstr ""
 #: trac/versioncontrol/templates/browser.html:100
 #: trac/versioncontrol/templates/revisionlog.html:179
 msgid "Branch head"
-msgstr ""
+msgstr "Gren-hoved"
 
 #: trac/versioncontrol/templates/browser.html:100
 #: trac/versioncontrol/templates/revisionlog.html:179
 msgid "Branch"
-msgstr ""
+msgstr "Gren"
 
 #: trac/versioncontrol/templates/browser.html:103
 #: trac/versioncontrol/templates/revisionlog.html:182
 msgid "Tag"
-msgstr ""
+msgstr "Mærke"
 
 #: trac/versioncontrol/templates/browser.html:114
 msgid "Parent Directory"
-msgstr "Ejermappe"
+msgstr "Forælder-mappe"
 
 #: trac/versioncontrol/templates/browser.html:120
 msgid "No files found"
@@ -5180,6 +5193,10 @@ msgid ""
 "            [3:%(size)s]\n"
 "          ]"
 msgstr ""
+"[1:\n"
+"            [2:Filstørrelse:]\n"
+"            [3:%(size)s]\n"
+"          ]"
 
 #: trac/versioncontrol/templates/browser.html:200
 msgid "Repository Index"
@@ -5489,7 +5506,7 @@ msgstr "Vis fil"
 #: trac/versioncontrol/templates/repository_index.html:22
 #: trac/versioncontrol/web_ui/browser.py:823
 msgid "Download as Zip archive"
-msgstr ""
+msgstr "Download som Zip arkiv"
 
 #: trac/versioncontrol/templates/dir_entries.html:22
 #: trac/versioncontrol/templates/repository_index.html:26
@@ -5585,7 +5602,7 @@ msgstr ""
 
 #: trac/versioncontrol/templates/revisionlog.html:107
 msgid "Graph"
-msgstr ""
+msgstr "Graf"
 
 #: trac/versioncontrol/templates/revisionlog.html:108
 msgid "Old / New"
@@ -5648,14 +5665,14 @@ msgid ""
 msgstr ""
 
 #: trac/versioncontrol/templates/revisionlog.txt:2
-#, fuzzy, python-format
+#, python-format
 msgid "ChangeLog for %(path)s in %(repo)s"
-msgstr "Rettesæt %(path)s i %(repo)s"
+msgstr ""
 
 #: trac/versioncontrol/templates/revisionlog.txt:2
-#, fuzzy, python-format
+#, python-format
 msgid "ChangeLog for %(path)s"
-msgstr "Rettesæt %(path)s"
+msgstr "Ændringslog for %(path)s"
 
 #: trac/versioncontrol/templates/revisionlog.txt:4
 #, python-format
@@ -5852,7 +5869,7 @@ msgstr[1] "Rettesæt i %(repo)s "
 msgid "Changeset "
 msgid_plural "Changesets "
 msgstr[0] "Rettessæt "
-msgstr[1] "Rettessæt "
+msgstr[1] "Rettesæt "
 
 #: trac/versioncontrol/web_ui/changeset.py:1102
 #, python-format
@@ -5933,7 +5950,7 @@ msgstr "Log af"
 
 #: trac/web/auth.py:114
 msgid "Login"
-msgstr "Log på"
+msgstr "Log in"
 
 #. TRANSLATOR: ... refer to the 'installation documentation'. (link)
 #: trac/web/auth.py:147
@@ -6391,9 +6408,8 @@ msgid ""
 msgstr ""
 
 #: trac/wiki/macros.py:775
-#, fuzzy
 msgid "(no default)"
-msgstr "(standard)"
+msgstr "(ingen standard)"
 
 #: trac/wiki/macros.py:795
 msgid ""
@@ -6405,7 +6421,7 @@ msgstr ""
 
 #: trac/wiki/macros.py:818
 msgid "MIME Types"
-msgstr "MIME Typer"
+msgstr "MIME typer"
 
 #: trac/wiki/macros.py:833
 msgid ""
@@ -6516,9 +6532,9 @@ msgid "Wiki History"
 msgstr "Wiki-historik"
 
 #: trac/wiki/web_ui.py:499
-#, fuzzy, python-format
+#, python-format
 msgid "Reverted to version %(version)s."
-msgstr "Slet version %(version)s"
+msgstr "Vendte tilbage til versionen %(version)s."
 
 #: trac/wiki/web_ui.py:562
 #, python-format
@@ -6629,9 +6645,9 @@ msgid ""
 msgstr ""
 
 #: trac/wiki/templates/wiki_delete.html:64
-#, fuzzy, python-format
+#, python-format
 msgid "Modified %(modified)s."
-msgstr "ændret (%(modified)s)"
+msgstr "Ændret %(modified)s."
 
 #: trac/wiki/templates/wiki_delete.html:71
 msgid "Are you sure you want to completely delete this page?"
@@ -6691,9 +6707,9 @@ msgid "See the preview"
 msgstr "Se forhåndsvisning"
 
 #: trac/wiki/templates/wiki_edit.html:98
-#, fuzzy, python-format
+#, python-format
 msgid "Editing %(name)s"
-msgstr "Milepæl %(name)s"
+msgstr "Redigerer %(name)s"
 
 #: trac/wiki/templates/wiki_edit.html:100
 msgid "Someone else has modified that page since you started your edits."
@@ -6816,7 +6832,7 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_rename.html:23
 msgid "New name:"
-msgstr "Nyt navn"
+msgstr "Nyt navn:"
 
 #: trac/wiki/templates/wiki_rename.html:27
 msgid "Leave a redirection page at the old location"
@@ -6828,20 +6844,21 @@ msgid "Rename page"
 msgstr "Omdøb side"
 
 #: trac/wiki/templates/wiki_view.html:15
-#, fuzzy
 msgid "Revert page to this version"
-msgstr "Slet denne version"
+msgstr "Gendan side til denne version"
 
 #: trac/wiki/templates/wiki_view.html:15 trac/wiki/templates/wiki_view.html:93
 msgid "Edit this page"
 msgstr "Rediger denne side"
 
 #: trac/wiki/templates/wiki_view.html:36
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Version %(version)s (modified by %(author)s, %(date)s)\n"
 "               ([1:diff])"
 msgstr ""
+"Version %(version)s (ændret af %(author)s, %(date)s)\n"
+"               ([1:diff])"
 
 #: trac/wiki/templates/wiki_view.html:50
 #, python-format
@@ -6854,9 +6871,9 @@ msgid "Version %(version)s by %(author)s"
 msgstr "Version %(version)s af %(author)s"
 
 #: trac/wiki/templates/wiki_view.html:58
-#, fuzzy, python-format
+#, python-format
 msgid "[1:Last modified] %(reldate)s"
-msgstr ""
+msgstr "[1:Sidst ændret] %(reldate)s"
 
 #: trac/wiki/templates/wiki_view.html:62
 #, python-format
@@ -6873,9 +6890,8 @@ msgid "You could also create the same page higher in the hierarchy:"
 msgstr "Du kan også oprette den samme side højere oppe i hierakiet:"
 
 #: trac/wiki/templates/wiki_view.html:90
-#, fuzzy
 msgid "Revert to this version"
-msgstr "Slet denne version"
+msgstr "Vend tilbage til denne version"
 
 #: trac/wiki/templates/wiki_view.html:96
 msgid "Create this page"
