@@ -1,23 +1,26 @@
-# Copyright (C) 2007-2012 Edgewall Software
+# Copyright (C) 2013 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 
 """
 
-L10N tool which takes a list of .po files containing conflict markers
-and removes the conflicts which are only about differences in line
-numbers.
+L10N tool which takes a list of .po in conflicted state and revert
+ignorable changes.
+
+It resolve the conflicts for which "theirs" changes consist solely of
+line number changes, by reverting to the working copy content.
 
 This makes it easier to merge translation .po files across branches.
-      
+
 """
+
 import re
 
 ignore_lineno_re = re.compile(r'''
-         <<<<  .*\n
-    ((?: \#    .*\n )+)   # \1 == comment only for "working copy"
-         ====  .*\n
-    ((?: \#    .*\n )+)   # \2 == comment only for "theirs"
-         >>>>  .*\n
+          <<<< .* \n
+    ( (?: [^=] .* \n )+)   # \1 == "working copy"
+          ==== .* \n
+    ( (?: \#   .* \n )+)   # \2 == comment only for "theirs"
+          >>>> .* \n
     ''', re.MULTILINE | re.VERBOSE)
 
 def sanitize_file(path):
