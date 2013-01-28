@@ -243,9 +243,19 @@ diff: $(addprefix diff-,$(locales))
 vc ?= svn
 
 diff-%:
-	@$(vc) diff trac/locale/$(*) \
-	    | grep -Ev '^([-+]#:|[@ ])' | grep -E '^[-+@]' || true
+	@diff=l10n-$(*).diff; \
+	$(vc) diff trac/locale/$(*) > $$diff; \
+	[ -s $$diff ] && { \
+	    echo -n "# $(*) changed -> "; \
+	    python contrib/l10n_diff_index.py $$diff; \
+	} || rm $$diff
 
+# The above create l10n-xy.diff files but also a  l10n-xy.diff.index
+# file pointing to "interesting" diffs (message changes or addition
+# for valid msgid).
+#
+# See also contrib/l10n_sanitize_diffs.py, which removes in-file
+# *conflicts* for line change only.
 
 clean-mo:
 	find trac/locale -name \*.mo -exec rm {} \;
