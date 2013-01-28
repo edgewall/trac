@@ -1,16 +1,17 @@
 # Italian translations for Trac.
-# Copyright (C) 2011 Edgewall Software
+# Copyright (C) 2013 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
 #
+# Translators:
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 0.13\n"
-"Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
+"Project-Id-Version:  Trac\n"
+"Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
 "POT-Creation-Date: 2013-01-27 11:21+0900\n"
-"PO-Revision-Date: 2011-02-23 22:27+0900\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: it <LL@li.org>\n"
+"PO-Revision-Date: 2013-01-25 08:50+0000\n"
+"Last-Translator: Christian Boos <cboos@edgewall.org>\n"
+"Language-Team: Italian "
+"(http://www.transifex.com/projects/p/trac/language/it/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
