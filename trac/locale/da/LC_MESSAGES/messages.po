@@ -1,14 +1,15 @@
 # Danish translations for Trac.
-# Copyright (C) 2012 Edgewall Software
+# Copyright (C) 2013 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 #
 # Translators:
+# Jens Hyllegaard <jens.hyllegaard@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
 "POT-Creation-Date: 2013-01-27 11:21+0900\n"
-"PO-Revision-Date: 2012-11-03 08:44+0000\n"
+"PO-Revision-Date: 2013-01-27 08:43+0000\n"
 "Last-Translator: Jens Hyllegaard <jens.hyllegaard@gmail.com>\n"
 "Language-Team: Danish "
 "(http://www.transifex.com/projects/p/trac/language/da/)\n"
@@ -562,6 +563,17 @@ msgstr "Ugyldigt argument '%(arg)s'"
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr ""
+"Indsæt en rettesætbesked i outputtet.\n"
+"\n"
+"Denne makro skal kaldes ved brug af wiki behandler syntaks som følger:\n"
+"{{{\n"
+"{{{\n"
+"#!CommitTicketReference repository=\"reponame\" revision=\"rev\"\n"
+"}}}\n"
+"}}}\n"
+"hvor argumenterne er som følger:\n"
+" - `repository`: det opbevaringssted der indeholder rettesættet\n"
+" - `revision`: revisionen for det ønskede rettesæt"
 
 #: trac/env.py:937
 #, python-format
@@ -1648,6 +1660,21 @@ msgstr "Ingen destinationsfil oprettet"
 #, python-format
 msgid "Unable to get database connection within %(time)d seconds."
 msgstr ""
+"%(perm)s rettigheder er påkrævet for at udføre denne handling på "
+"%(resource)s. Du har ikke de nødvendige rettigheder."
+"%(perm)s rettigheder er påkrævet for at udføre denne handling. Du har "
+"ikke de nødvendige rettigheder."
+"Vis hjælp til trac-admin kommandoer.\n"
+"\n"
+"Eksempler:\n"
+"{{{\n"
+"[[TracAdminHelp]]               # alle kommandoer\n"
+"[[TracAdminHelp(wiki)]]         # alle wiki kommandoer\n"
+"[[TracAdminHelp(wiki export)]]  # \"wiki export\" kommandoen\n"
+"[[TracAdminHelp(upgrade)]]      # opgraderingskommandoen\n"
+"}}}"
+"[1:Obs:] Rækkefølgen af prioriteter bestemmer\n"
+"              farven på emner i sagsforespørgsler og rapporter."
 
 #: trac/db/postgres_backend.py:81
 msgid "Cannot load Python bindings for PostgreSQL"
@@ -2032,9 +2059,8 @@ msgid "Previous Page"
 msgstr "Forrige side"
 
 #: trac/search/templates/search.html:11
-#, fuzzy
 msgid "Search Results"
-msgstr "Ingen resultater"
+msgstr "Søgeresultater"
 
 #: trac/search/templates/search.html:43
 #: trac/ticket/templates/query_results.html:20
@@ -2447,6 +2473,9 @@ msgid ""
 "If you think this should work and you can reproduce the problem,\n"
 "              you should consider creating a bug report."
 msgstr ""
+"[1:%(file)s][2:​]\n"
+"       ([3:%(size)s]) -\n"
+"      tilføjet af [4:%(author)s] %(date)s."
 
 #: trac/templates/error.html:113
 #, python-format
@@ -4682,6 +4711,13 @@ msgid ""
 "should\n"
 "backup any remaining files in that directory and remove it manually.\n"
 msgstr ""
+"Kan ikke flytte vedhæftningen fra:\n"
+"\n"
+"  %(old_path)s\n"
+"\n"
+"til:\n"
+"\n"
+"  %(new_path)s\n"
 
 #: trac/upgrades/db28.py:87
 #, python-format
@@ -5170,6 +5206,10 @@ msgid ""
 "                  [2:%(rev)s],\n"
 "                  checked in by %(author)s, %(age)s"
 msgstr ""
+"[1:\n"
+"            [2:Filstørrelse:]\n"
+"            [3:%(size)s]\n"
+"          ]"
 
 #: trac/versioncontrol/templates/browser.html:145
 #, python-format
