@@ -1335,7 +1335,8 @@ msgid ""
 "[1:Note:] The order of priorities determines the\n"
 "              coloring of entries in the ticket queries and reports."
 msgstr ""
-"[1:Note:] L'ordre de les prioritats determina la coloració de les entrades\n"
+"[1:Note:] L'ordre de les prioritats determina la coloració de les "
+"entrades\n"
 "              a les consultes de tiquets i informes."
 
 #: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:85

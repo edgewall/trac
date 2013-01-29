@@ -78,6 +78,8 @@ define HELP
 
   [locale=...]        variable for selecting a set of locales
 
+  [updateopts=...]    variable containing extra options for update (e.g. -N)
+
  ---------------- Documentation tasks
 
   apidoc|sphinx       generate the Sphinx documentation (all specified formats)
@@ -197,14 +199,14 @@ extract extraction:
 
 update-%:
 	python setup.py $(foreach catalog,$(catalogs), \
-	    update_catalog$(_catalog) -l $(*))
+	    update_catalog$(_catalog) -l $(*)) $(updateopts)
 
 ifdef locale
 update: $(addprefix update-,$(locale))
 else
 update:
 	python setup.py $(foreach catalog,$(catalogs), \
-	    update_catalog$(_catalog))
+	    update_catalog$(_catalog)) $(updateopts)
 endif
 
 

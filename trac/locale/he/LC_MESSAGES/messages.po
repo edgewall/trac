@@ -7297,9 +7297,3 @@ msgstr "(דף ריק)"
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr "לדפים הבאים שם דומה לדף זה, ועשויים להיות קשורים:"
 
-#~ msgid "comment:"
-#~ msgstr "הערה:"
-
-#~ msgid "Changed %(date)s ago by %(author)s"
-#~ msgstr "שונה לפני %(date)s ע\"י %(author)s"
-

@@ -381,6 +381,11 @@ msgstr "El campo %(field)s del archivo adjunto no es válido: %(message)s"
 msgid "Invalid attachment: %(message)s"
 msgstr "Adjunto no válido: %(message)s"
 
+#: trac/attachment.py:745
+#, fuzzy
+msgid "Note: File must be selected again."
+msgstr "No hay ningún hito seleccionado"
+
 #: trac/attachment.py:758
 #, python-format
 msgid ""
@@ -397,8 +402,18 @@ msgstr ""
 msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (borrar)"
 
-#: trac/attachment.py:789 trac/versioncontrol/web_ui/browser.py:666
-#: trac/wiki/web_ui.py:68
+#: trac/attachment.py:803
+#, fuzzy, python-format
+msgid "Maximum total attachment size: %(num)s bytes"
+msgstr "Tamaño máximo del adjunto: %(num)s bytes"
+
+#: trac/attachment.py:804
+#, fuzzy
+msgid "Download failed"
+msgstr "Falló la subida"
+
+#: trac/attachment.py:892 trac/versioncontrol/web_ui/browser.py:669
+#: trac/wiki/web_ui.py:73
 msgid "Plain Text"
 msgstr "Texto plano"
 
@@ -532,7 +547,12 @@ msgstr "Copiando recursos desde:"
 msgid "Creating scripts."
 msgstr "Creando guiones."
 
-#: trac/env.py:739
+#: trac/env.py:923
+#, fuzzy, python-format
+msgid "Invalid argument '%(arg)s'"
+msgstr "Argumentos no válidos"
+
+#: trac/env.py:928
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr "la copia en caliente no puede sobreescribir '%(dest)s' porque ya existe"

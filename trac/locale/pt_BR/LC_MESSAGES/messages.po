@@ -7574,9 +7574,3 @@ msgstr ""
 "As seguintes páginas tem um nome similar a esta, e podem estar "
 "relacionadas com ela:"
 
-#~ msgid "comment:"
-#~ msgstr "comentário:"
-
-#~ msgid "Changed %(date)s ago by %(author)s"
-#~ msgstr "Modificado %(date)s atrás por %(author)s"
-
