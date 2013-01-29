@@ -3952,7 +3952,7 @@ msgstr "Tickets ändern"
 #: trac/ticket/templates/batch_ticket_notify_email.txt:1
 #, python-format
 msgid "Batch modification to %(tickets)s by %(author)s:"
-msgstr "Massen(zuletzt geändert von %(author)s)"
+msgstr ""
 
 #: trac/ticket/templates/batch_ticket_notify_email.txt:5
 #, python-format

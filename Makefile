@@ -234,6 +234,9 @@ check-%:
 	@echo -n "$(@): "
 	python setup.py $(foreach catalog,$(catalogs), \
 	    check_catalog$(_catalog) -l $(*))
+	@$(foreach catalog,$(catalogs), \
+	    msgfmt --check $(catalog.po) &&) echo msgfmt OK
+	@rm -f messages.mo
 
 
 stats: pre-stats $(addprefix stats-,$(locales))
