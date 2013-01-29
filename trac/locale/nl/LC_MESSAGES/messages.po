@@ -224,7 +224,7 @@ msgstr "Geen revisies"
 #: tracopt/versioncontrol/svn/svn_prop.py:309
 #, fuzzy, python-format
 msgid "%(title)s: %(revs)s"
-msgstr "%(title)s: %(message)s"
+msgstr "%(title)s: %(revs)s"
 
 #: tracopt/versioncontrol/svn/svn_prop.py:345
 msgid "merged: "
@@ -670,8 +670,6 @@ msgid ""
 "%(perm)s privileges are required to perform this operation. You don't "
 "have the required permissions."
 msgstr ""
-"%(perm)s privileges zijn nodig om deze actie op %(resource)s uit te "
-"kunnen voeren"
 
 #: trac/perm.py:64
 msgid "Insufficient privileges to perform this operation."
@@ -703,7 +701,7 @@ msgstr "All hoofdletter-tokens zijn gereserveerd voor rechtnamen."
 #: trac/perm.py:675
 #, fuzzy, python-format
 msgid "The user %(user)s already has permission %(action)s."
-msgstr "Het recht %(action)s is toegekend aan %(subject)s."
+msgstr "Het recht %(action)s is toegekend aan %(user)s."
 
 #: trac/perm.py:689
 #, python-format
@@ -735,7 +733,7 @@ msgstr ""
 #: trac/perm.py:741
 #, fuzzy, python-format
 msgid "Cannot import from %(filename)s: %(error)s"
-msgstr "  %(page)s geïmporteerd van %(filename)s"
+msgstr ""
 
 #: trac/resource.py:336
 #, python-format
@@ -749,7 +747,7 @@ msgstr "Opdracht niet gevonden"
 #: trac/admin/console.py:113
 #, fuzzy, python-format
 msgid "Error: %(msg)s"
-msgstr "Fout: %(message)s"
+msgstr "Fout: %(msg)s"
 
 #: trac/admin/console.py:132
 #, fuzzy, python-format
@@ -875,7 +873,7 @@ msgstr "Map bestaat en is niet leeg."
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr "De pagina %(name)s bestaat niet. U kunt er hier een aanmaken."
+msgstr ""
 
 #: trac/admin/console.py:441
 msgid "Creating and Initializing Project"
@@ -1422,7 +1420,7 @@ msgstr "Mijlpaal toevoegen:"
 #: trac/admin/templates/admin_milestones.html:92
 #, fuzzy, python-format
 msgid "Format: %(datetimehint)s"
-msgstr "Formaat: %(datehint)s"
+msgstr "Formaat: %(datetimehint)s"
 
 #: trac/admin/templates/admin_milestones.html:107 trac/ticket/admin.py:399
 msgid "Due"
@@ -1619,7 +1617,7 @@ msgstr "Kan de Python-bindings voor MySQL niet laden"
 #: trac/db/postgres_backend.py:198
 #, fuzzy, python-format
 msgid "Unable to run %(path)s: %(msg)s"
-msgstr "svn blame is mislukt op %(path)s: %(error)s"
+msgstr ""
 
 #: trac/db/mysql_backend.py:233
 #, python-format
@@ -1726,7 +1724,7 @@ msgstr "Uw voorkeuren zijn opgeslagen."
 #: trac/mimeview/rst.py:125 trac/mimeview/rst.py:148
 #, fuzzy, python-format
 msgid "%(link)s is not a valid TracLink"
-msgstr "%(name)s is geen geldige actie"
+msgstr ""
 
 #: trac/prefs/web_ui.py:56 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -2009,7 +2007,7 @@ msgid ""
 "The [1:Default language] option uses the browser's\n"
 "        language negotiation feature to select the appropriate language."
 msgstr ""
-"De 'standaardtaal'-optie gebruikt de taalbepalingsfunctionaliteit\n"
+"De [1:standaardtaal]-optie gebruikt de taalbepalingsfunctionaliteit\n"
 "        van uw webbrowser om de juiste taal te selecteren."
 
 #: trac/prefs/templates/prefs_pygments.html:37
@@ -2732,7 +2730,7 @@ msgstr "Aantal %(unit)s:"
 #: trac/templates/progress_bar.html:41
 #, fuzzy, python-format
 msgid "%(title)s: %(count)s"
-msgstr "%(title)s: %(message)s"
+msgstr "%(title)s: %(count)s"
 
 #: trac/templates/progress_bar_grouped.html:17
 msgid "(none)"
@@ -3003,7 +3001,7 @@ msgstr "Gemaakt"
 #: trac/ticket/api.py:480
 #, fuzzy, python-format
 msgid "Tickets %(ranges)s"
-msgstr "Ticket #%(id)s"
+msgstr ""
 
 #: trac/ticket/api.py:504
 #, python-format
@@ -3041,8 +3039,6 @@ msgid ""
 "The changes have been saved, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr ""
-"De %(change)s is opgeslagen, maar er heeft zich een fout voorgedaan "
-"tijdens het verzenden van notificaties: %(message)s"
 
 #: trac/ticket/default_workflow.py:241
 msgid "Current state no longer exists"
@@ -3075,7 +3071,7 @@ msgstr "De eigenaar zal veranderen van %(current_owner)s naar %(selected_owner)s
 #: trac/ticket/default_workflow.py:283
 #, fuzzy, python-format
 msgid "The owner will be changed from %(current_owner)s to the selected user"
-msgstr "De eigenaar zal veranderen van %(current_owner)s naar %(selected_owner)s"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:288
 #, python-format
@@ -3605,27 +3601,27 @@ msgstr[1] "%(labels)s veranderd"
 #: trac/ticket/web_ui.py:392
 #, fuzzy, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) created"
-msgstr "Ticket %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Ticket %(ticketref)s (%(summary)s) created"
 
 #: trac/ticket/web_ui.py:393
 #, fuzzy, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) reopened"
-msgstr "Ticket %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Ticket %(ticketref)s (%(summary)s) reopened"
 
 #: trac/ticket/web_ui.py:394
 #, fuzzy, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) closed"
-msgstr "Ticket %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Ticket %(ticketref)s (%(summary)s) closed"
 
 #: trac/ticket/web_ui.py:395
 #, fuzzy, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) updated"
-msgstr "Ticket %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Ticket %(ticketref)s (%(summary)s) updated"
 
 #: trac/ticket/web_ui.py:424
 #, fuzzy, python-format
 msgid "Tickets %(ticketids)s"
-msgstr "Ticket #%(id)s"
+msgstr ""
 
 #: trac/ticket/web_ui.py:426
 #, python-format
@@ -3958,7 +3954,7 @@ msgstr "(laatst gewijzigd door %(author)s)"
 #: trac/ticket/templates/batch_ticket_notify_email.txt:5
 #, fuzzy, python-format
 msgid "Action: %(action)s"
-msgstr "Terug naar %(parent)s"
+msgstr ""
 
 #: trac/ticket/templates/batch_ticket_notify_email.txt:14
 #, fuzzy, python-format
@@ -4181,7 +4177,7 @@ msgstr ""
 #: trac/ticket/templates/query_results.html:25
 #, fuzzy, python-format
 msgid "%(grouplabel)s: %(groupname)s [1:(%(count)s)]"
-msgstr "%(groupvalue)s %(groupname)s tickets:"
+msgstr ""
 
 #: trac/ticket/templates/query_results.html:37
 msgid "(ascending)"
@@ -4720,17 +4716,17 @@ msgstr ""
 #: trac/timeline/web_ui.py:294
 #, fuzzy, python-format
 msgid "on %(date)s at %(time)s"
-msgstr "Gewijzigd %(date)s geleden door %(author)s"
+msgstr ""
 
 #: trac/timeline/web_ui.py:295
 #, fuzzy, python-format
 msgid "See timeline %(relativetime)s ago"
-msgstr "Geopend %(created)s geleden"
+msgstr ""
 
 #: trac/timeline/web_ui.py:298 trac/web/chrome.py:865 trac/web/chrome.py:867
 #, fuzzy, python-format
 msgid "%(relativetime)s ago"
-msgstr "Geopend %(created)s geleden"
+msgstr ""
 
 #: trac/timeline/web_ui.py:300 trac/timeline/web_ui.py:344
 #, python-format
@@ -5826,12 +5822,12 @@ msgstr ""
 #: trac/versioncontrol/templates/revisionlog.txt:2
 #, fuzzy, python-format
 msgid "ChangeLog for %(path)s in %(repo)s"
-msgstr "ChangeLog voor %(path)s%(in_repo)s"
+msgstr "ChangeLog voor %(path)s %(repo)s"
 
 #: trac/versioncontrol/templates/revisionlog.txt:2
 #, fuzzy, python-format
 msgid "ChangeLog for %(path)s"
-msgstr "ChangeLog voor %(path)s%(in_repo)s"
+msgstr "ChangeLog voor %(path)s"
 
 #: trac/versioncontrol/templates/revisionlog.txt:4
 #, python-format
@@ -6280,7 +6276,7 @@ msgstr "E-mail"
 #: trac/web/session.py:427
 #, fuzzy, python-format
 msgid "Session '%(sid)s' already exists"
-msgstr "Versie %(name)s bestaat al."
+msgstr ""
 
 #: trac/web/session.py:438
 #, python-format
@@ -6295,13 +6291,13 @@ msgstr "Sessie-id %(sid)s niet gevonden"
 #: trac/wiki/admin.py:113
 #, fuzzy, python-format
 msgid "Page '%(page)s' not found"
-msgstr "Pagina %(name)s niet gevonden"
+msgstr "Pagina %(page)s niet gevonden"
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:127 trac/wiki/model.py:174
 #: trac/wiki/web_ui.py:119
 #, fuzzy, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr "Ongeldige wikipagina: %(message)s"
+msgstr ""
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -6311,7 +6307,7 @@ msgstr "'%(name)s' is geen bestand"
 #: trac/wiki/admin.py:135
 #, fuzzy, python-format
 msgid "  %(title)s already exists"
-msgstr "Versie %(name)s bestaat al."
+msgstr ""
 
 #: trac/wiki/admin.py:138
 #, python-format
@@ -6729,7 +6725,7 @@ msgstr "Wikigeschiedenis"
 #: trac/wiki/web_ui.py:499
 #, fuzzy, python-format
 msgid "Reverted to version %(version)s."
-msgstr "Verwijder versie %(version)d"
+msgstr "Verwijder versie %(version)s"
 
 #: trac/wiki/web_ui.py:562
 #, python-format
@@ -6838,8 +6834,6 @@ msgid ""
 "                    created %(created)s, so the page will be removed "
 "completely!"
 msgstr ""
-"Dit is de enige versie van deze pagina, dus de pagina zal volledig worden"
-" verwijderd!"
 
 #: trac/wiki/templates/wiki_delete.html:64
 #, fuzzy, python-format
@@ -7098,7 +7092,7 @@ msgstr "[1:Laatst gewijzigd] %(reldate)s geleden"
 #: trac/wiki/templates/wiki_view.html:62
 #, fuzzy, python-format
 msgid "Last modified on %(date)s"
-msgstr "(laatst gewijzigd door %(author)s)"
+msgstr ""
 
 #: trac/wiki/templates/wiki_view.html:66
 #, python-format

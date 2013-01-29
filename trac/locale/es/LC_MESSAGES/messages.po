@@ -652,8 +652,6 @@ msgid ""
 "%(perm)s privileges are required to perform this operation. You don't "
 "have the required permissions."
 msgstr ""
-"Se necesitan los permisos %(perm)s para realizar esta operación en "
-"%(resource)s "
 
 #: trac/perm.py:64
 msgid "Insufficient privileges to perform this operation."
@@ -685,7 +683,7 @@ msgstr "Todas las cadenas en mayúsculas están reservadas para nombres de permi
 #: trac/perm.py:675
 #, fuzzy, python-format
 msgid "The user %(user)s already has permission %(action)s."
-msgstr "Se ha otorgado el permiso %(action)s al sujeto %(subject)s."
+msgstr "Se ha otorgado el permiso %(action)s al sujeto %(user)s."
 
 #: trac/perm.py:689
 #, python-format
@@ -717,7 +715,7 @@ msgstr ""
 #: trac/perm.py:741
 #, fuzzy, python-format
 msgid "Cannot import from %(filename)s: %(error)s"
-msgstr " %(page)s importadas de %(filename)s"
+msgstr ""
 
 #: trac/resource.py:336
 #, python-format
@@ -1325,7 +1323,7 @@ msgid ""
 "[1:Note:] The order of priorities determines the\n"
 "              coloring of entries in the ticket queries and reports."
 msgstr ""
-"El orden de las prioridades determina el color de las entradas\n"
+"[1:Note:] El orden de las prioridades determina el color de las entradas\n"
 "            en las consultas de tickets y reportes."
 
 #: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:85
@@ -1997,7 +1995,7 @@ msgid ""
 "The [1:Default language] option uses the browser's\n"
 "        language negotiation feature to select the appropriate language."
 msgstr ""
-"El 'idioma predeterminado' usa la capacidad de negociación\n"
+"El [1:idioma predeterminado] usa la capacidad de negociación\n"
 "        del navegador para seleccionar el idioma más apropiado."
 
 #: trac/prefs/templates/prefs_pygments.html:37
@@ -2718,7 +2716,7 @@ msgstr "Número de %(unit)s:"
 #: trac/templates/progress_bar.html:41
 #, fuzzy, python-format
 msgid "%(title)s: %(count)s"
-msgstr "%(title)s: %(revs)s"
+msgstr "%(title)s: %(count)s"
 
 #: trac/templates/progress_bar_grouped.html:17
 msgid "(none)"
@@ -2988,7 +2986,7 @@ msgstr "Creado"
 #: trac/ticket/api.py:480
 #, fuzzy, python-format
 msgid "Tickets %(ranges)s"
-msgstr "%(title)s: %(revs)s"
+msgstr ""
 
 #: trac/ticket/api.py:504
 #, python-format
@@ -3026,8 +3024,6 @@ msgid ""
 "The changes have been saved, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr ""
-"El %(change)s ha sido guardado, pero ocurrió un error mientras se enviaba"
-" la notificación: %(message)s"
 
 #: trac/ticket/default_workflow.py:241
 msgid "Current state no longer exists"
@@ -3060,7 +3056,7 @@ msgstr "El propietario será cambiado de %(current_owner)s a %(selected_owner)s"
 #: trac/ticket/default_workflow.py:283
 #, fuzzy, python-format
 msgid "The owner will be changed from %(current_owner)s to the selected user"
-msgstr "El propietario será cambiado de %(current_owner)s a %(selected_owner)s"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:288
 #, python-format
@@ -3589,27 +3585,27 @@ msgstr[1] "%(labels)s cambiados"
 #: trac/ticket/web_ui.py:392
 #, fuzzy, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) created"
-msgstr "Incidencia %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Incidencia %(ticketref)s (%(summary)s) created"
 
 #: trac/ticket/web_ui.py:393
 #, fuzzy, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) reopened"
-msgstr "Incidencia %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Incidencia %(ticketref)s (%(summary)s) reopened"
 
 #: trac/ticket/web_ui.py:394
 #, fuzzy, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) closed"
-msgstr "Incidencia %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Incidencia %(ticketref)s (%(summary)s) closed"
 
 #: trac/ticket/web_ui.py:395
 #, fuzzy, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) updated"
-msgstr "Incidencia %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Incidencia %(ticketref)s (%(summary)s) updated"
 
 #: trac/ticket/web_ui.py:424
 #, fuzzy, python-format
 msgid "Tickets %(ticketids)s"
-msgstr "Incidencia #%(id)s"
+msgstr "Incidencia %(ticketids)s"
 
 #: trac/ticket/web_ui.py:426
 #, python-format
@@ -3948,7 +3944,7 @@ msgstr "(modificado por última vez por %(author)s"
 #: trac/ticket/templates/batch_ticket_notify_email.txt:5
 #, fuzzy, python-format
 msgid "Action: %(action)s"
-msgstr "Volver a %(parent)s"
+msgstr ""
 
 #: trac/ticket/templates/batch_ticket_notify_email.txt:14
 #, fuzzy, python-format
@@ -4169,7 +4165,7 @@ msgstr ""
 #: trac/ticket/templates/query_results.html:25
 #, fuzzy, python-format
 msgid "%(grouplabel)s: %(groupname)s [1:(%(count)s)]"
-msgstr "Incidencias de %(groupvalue)s %(groupname)s:"
+msgstr ""
 
 #: trac/ticket/templates/query_results.html:37
 msgid "(ascending)"
@@ -4699,17 +4695,17 @@ msgstr ""
 #: trac/timeline/web_ui.py:294
 #, fuzzy, python-format
 msgid "on %(date)s at %(time)s"
-msgstr "Cambiado el %(date)s por %(author)s"
+msgstr ""
 
 #: trac/timeline/web_ui.py:295
 #, fuzzy, python-format
 msgid "See timeline %(relativetime)s ago"
-msgstr "Abierto hace %(created)s"
+msgstr ""
 
 #: trac/timeline/web_ui.py:298 trac/web/chrome.py:865 trac/web/chrome.py:867
 #, fuzzy, python-format
 msgid "%(relativetime)s ago"
-msgstr "Abierto hace %(created)s"
+msgstr ""
 
 #: trac/timeline/web_ui.py:300 trac/timeline/web_ui.py:344
 #, python-format
@@ -5815,12 +5811,12 @@ msgstr ""
 #: trac/versioncontrol/templates/revisionlog.txt:2
 #, fuzzy, python-format
 msgid "ChangeLog for %(path)s in %(repo)s"
-msgstr "Registro de cambios para %(path)s%(in_repo)s"
+msgstr "Registro de cambios para %(path)s %(repo)s"
 
 #: trac/versioncontrol/templates/revisionlog.txt:2
 #, fuzzy, python-format
 msgid "ChangeLog for %(path)s"
-msgstr "Registro de cambios para %(path)s%(in_repo)s"
+msgstr "Registro de cambios para %(path)s"
 
 #: trac/versioncontrol/templates/revisionlog.txt:4
 #, python-format
@@ -6833,8 +6829,6 @@ msgid ""
 "                    created %(created)s, so the page will be removed "
 "completely!"
 msgstr ""
-"Esta es la única versión de la página, así que será eliminada "
-"completamente"
 
 #: trac/wiki/templates/wiki_delete.html:64
 #, fuzzy, python-format

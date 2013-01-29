@@ -221,7 +221,7 @@ msgstr "没有修订版"
 #: tracopt/versioncontrol/svn/svn_prop.py:309
 #, fuzzy, python-format
 msgid "%(title)s: %(revs)s"
-msgstr "%(title)s： %(message)s:"
+msgstr ""
 
 #: tracopt/versioncontrol/svn/svn_prop.py:345
 msgid "merged: "
@@ -651,7 +651,7 @@ msgstr "对 %(resource)s 执行的操作需要 %(perm)s 权限"
 msgid ""
 "%(perm)s privileges are required to perform this operation. You don't "
 "have the required permissions."
-msgstr "对 %(resource)s 执行的操作需要 %(perm)s 权限"
+msgstr ""
 
 #: trac/perm.py:64
 msgid "Insufficient privileges to perform this operation."
@@ -683,7 +683,7 @@ msgstr "所有大写标识均保留为权限名称"
 #: trac/perm.py:675
 #, fuzzy, python-format
 msgid "The user %(user)s already has permission %(action)s."
-msgstr "主体 %(subject)s 已分配权限 %(action)s 。"
+msgstr "主体 %(user)s 已分配权限 %(action)s 。"
 
 #: trac/perm.py:689
 #, python-format
@@ -715,7 +715,7 @@ msgstr ""
 #: trac/perm.py:741
 #, fuzzy, python-format
 msgid "Cannot import from %(filename)s: %(error)s"
-msgstr "从%(filename)s中导入了%(page)s"
+msgstr ""
 
 #: trac/resource.py:336
 #, python-format
@@ -1575,7 +1575,7 @@ msgstr "无法加载 Python 的 MySQL 访问模块"
 #: trac/db/postgres_backend.py:198
 #, fuzzy, python-format
 msgid "Unable to run %(path)s: %(msg)s"
-msgstr "svn追溯失败 %(path)s: %(error)s"
+msgstr ""
 
 #: trac/db/mysql_backend.py:233
 #, python-format
@@ -1942,7 +1942,7 @@ msgstr ""
 msgid ""
 "The [1:Default language] option uses the browser's\n"
 "        language negotiation feature to select the appropriate language."
-msgstr "“缺省语言”选项使用浏览器的语言协商功能选择合适的语言。"
+msgstr "[1:缺省语言]选项使用浏览器的语言协商功能选择合适的语言。"
 
 #: trac/prefs/templates/prefs_pygments.html:37
 msgid ""
@@ -2640,7 +2640,7 @@ msgstr "%(unit)s数:"
 #: trac/templates/progress_bar.html:41
 #, fuzzy, python-format
 msgid "%(title)s: %(count)s"
-msgstr "%(title)s： %(message)s:"
+msgstr ""
 
 #: trac/templates/progress_bar_grouped.html:17
 msgid "(none)"
@@ -2911,7 +2911,7 @@ msgstr "创建"
 #: trac/ticket/api.py:480
 #, fuzzy, python-format
 msgid "Tickets %(ranges)s"
-msgstr "任务单#%(id)s"
+msgstr ""
 
 #: trac/ticket/api.py:504
 #, python-format
@@ -2948,7 +2948,7 @@ msgstr "设置"
 msgid ""
 "The changes have been saved, but an error occurred while sending "
 "notifications: %(message)s"
-msgstr "%(change)s已保存，但在发送邮件通知时发生错误： %(message)s"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:241
 msgid "Current state no longer exists"
@@ -2981,7 +2981,7 @@ msgstr "属主将由%(current_owner)s改变为%(selected_owner)s"
 #: trac/ticket/default_workflow.py:283
 #, fuzzy, python-format
 msgid "The owner will be changed from %(current_owner)s to the selected user"
-msgstr "属主将由%(current_owner)s改变为%(selected_owner)s"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:288
 #, python-format
@@ -3523,7 +3523,7 @@ msgstr "任务单 %(ticketref)s (%(summary)s) 已更新"
 #: trac/ticket/web_ui.py:424
 #, fuzzy, python-format
 msgid "Tickets %(ticketids)s"
-msgstr "任务单#%(id)s"
+msgstr "任务单%(ticketids)s"
 
 #: trac/ticket/web_ui.py:426
 #, python-format
@@ -3838,7 +3838,7 @@ msgstr "(最后由 %(author)s 修改)"
 #: trac/ticket/templates/batch_ticket_notify_email.txt:5
 #, fuzzy, python-format
 msgid "Action: %(action)s"
-msgstr "返回 %(parent)s"
+msgstr ""
 
 #: trac/ticket/templates/batch_ticket_notify_email.txt:14
 #, fuzzy, python-format
@@ -4052,7 +4052,7 @@ msgstr "[1:注意：]有关使用查询的帮助参见[2:TracQuery]"
 #: trac/ticket/templates/query_results.html:25
 #, fuzzy, python-format
 msgid "%(grouplabel)s: %(groupname)s [1:(%(count)s)]"
-msgstr "%(groupvalue)s %(groupname)s 任务单："
+msgstr ""
 
 #: trac/ticket/templates/query_results.html:37
 msgid "(ascending)"
@@ -4569,17 +4569,17 @@ msgstr ""
 #: trac/timeline/web_ui.py:294
 #, fuzzy, python-format
 msgid "on %(date)s at %(time)s"
-msgstr "由 %(author)s 在 %(date)s 前变更"
+msgstr ""
 
 #: trac/timeline/web_ui.py:295
 #, fuzzy, python-format
 msgid "See timeline %(relativetime)s ago"
-msgstr "开启于 %(created)s 前"
+msgstr ""
 
 #: trac/timeline/web_ui.py:298 trac/web/chrome.py:865 trac/web/chrome.py:867
 #, fuzzy, python-format
 msgid "%(relativetime)s ago"
-msgstr "开启于 %(created)s 前"
+msgstr ""
 
 #: trac/timeline/web_ui.py:300 trac/timeline/web_ui.py:344
 #, python-format
@@ -5627,12 +5627,12 @@ msgstr "[1:注意:] 使用版本日志的帮助参见[2:TracRevisionLog]。"
 #: trac/versioncontrol/templates/revisionlog.txt:2
 #, fuzzy, python-format
 msgid "ChangeLog for %(path)s in %(repo)s"
-msgstr "%(path)s%(in_repo)s 的变更日志"
+msgstr "%(path)s %(repo)s 的变更日志"
 
 #: trac/versioncontrol/templates/revisionlog.txt:2
 #, fuzzy, python-format
 msgid "ChangeLog for %(path)s"
-msgstr "%(path)s%(in_repo)s 的变更日志"
+msgstr "%(path)s 的变更日志"
 
 #: trac/versioncontrol/templates/revisionlog.txt:4
 #, python-format
@@ -6069,7 +6069,7 @@ msgstr "邮件地址"
 #: trac/web/session.py:427
 #, fuzzy, python-format
 msgid "Session '%(sid)s' already exists"
-msgstr "版本 %(name)s 已经存在."
+msgstr ""
 
 #: trac/web/session.py:438
 #, python-format
@@ -6518,7 +6518,7 @@ msgstr "Wiki历史"
 #: trac/wiki/web_ui.py:499
 #, fuzzy, python-format
 msgid "Reverted to version %(version)s."
-msgstr "删除版本 %(version)d"
+msgstr "删除版本 %(version)s"
 
 #: trac/wiki/web_ui.py:562
 #, python-format
@@ -6626,7 +6626,7 @@ msgid ""
 "                      version] of the page,\n"
 "                    created %(created)s, so the page will be removed "
 "completely!"
-msgstr "这是此页面的唯一版本, 因此该页面将彻底删除!"
+msgstr = ""
 
 #: trac/wiki/templates/wiki_delete.html:64
 #, fuzzy, python-format

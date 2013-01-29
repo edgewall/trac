@@ -2933,7 +2933,7 @@ msgstr "負責人將由 %(current_owner)s 變更為 %(selected_owner)s"
 #: trac/ticket/default_workflow.py:283
 #, fuzzy, python-format
 msgid "The owner will be changed from %(current_owner)s to the selected user"
-msgstr "負責人將由 %(current_owner)s 變更為 %(selected_owner)s"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:288
 #, python-format

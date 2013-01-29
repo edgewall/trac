@@ -3944,7 +3944,7 @@ msgstr "(последним изменил %(author)s)"
 #: trac/ticket/templates/batch_ticket_notify_email.txt:5
 #, fuzzy, python-format
 msgid "Action: %(action)s"
-msgstr "Вернуться к %(parent)s"
+msgstr ""
 
 #: trac/ticket/templates/batch_ticket_notify_email.txt:14
 #, fuzzy, python-format
@@ -4168,7 +4168,7 @@ msgstr ""
 #: trac/ticket/templates/query_results.html:25
 #, fuzzy, python-format
 msgid "%(grouplabel)s: %(groupname)s [1:(%(count)s)]"
-msgstr "%(groupvalue)s %(groupname)s [1:(%(count)s)]:"
+msgstr ""
 
 #: trac/ticket/templates/query_results.html:37
 msgid "(ascending)"

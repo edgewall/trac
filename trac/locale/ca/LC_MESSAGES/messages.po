@@ -672,8 +672,6 @@ msgid ""
 "%(perm)s privileges are required to perform this operation. You don't "
 "have the required permissions."
 msgstr ""
-"Es requereixen privilegis de %(perm)s per a realitzar aquesta operació a "
-"%(resource)s"
 
 #: trac/perm.py:64
 msgid "Insufficient privileges to perform this operation."
@@ -705,7 +703,7 @@ msgstr "Els testimonis en majúscules són reservats per a noms de permisos"
 #: trac/perm.py:675
 #, fuzzy, python-format
 msgid "The user %(user)s already has permission %(action)s."
-msgstr "S'ha concedit el permís %(action)s al subjecte %(subject)s."
+msgstr "S'ha concedit el permís %(action)s al subjecte %(user)s."
 
 #: trac/perm.py:689
 #, python-format
@@ -737,7 +735,7 @@ msgstr ""
 #: trac/perm.py:741
 #, fuzzy, python-format
 msgid "Cannot import from %(filename)s: %(error)s"
-msgstr "  %(page)s importada des de %(filename)s"
+msgstr ""
 
 #: trac/resource.py:336
 #, python-format
@@ -1337,7 +1335,7 @@ msgid ""
 "[1:Note:] The order of priorities determines the\n"
 "              coloring of entries in the ticket queries and reports."
 msgstr ""
-"L'ordre de les prioritats determina la coloració de les entrades\n"
+"[1:Note:] L'ordre de les prioritats determina la coloració de les entrades\n"
 "              a les consultes de tiquets i informes."
 
 #: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:85
@@ -2006,7 +2004,7 @@ msgid ""
 "The [1:Default language] option uses the browser's\n"
 "        language negotiation feature to select the appropriate language."
 msgstr ""
-"L'opció «Llengua per defecte» empra la funcionalitat\n"
+"L'opció [1:Llengua per defecte] empra la funcionalitat\n"
 "        de negociació de llengua del navegador per a seleccionar la\n"
 "        llengua apropiada."
 
@@ -2728,7 +2726,7 @@ msgstr "Nombre de %(unit)s:"
 #: trac/templates/progress_bar.html:41
 #, fuzzy, python-format
 msgid "%(title)s: %(count)s"
-msgstr "%(title)s: %(revs)s"
+msgstr ""
 
 #: trac/templates/progress_bar_grouped.html:17
 msgid "(none)"
@@ -2998,7 +2996,7 @@ msgstr "Creat"
 #: trac/ticket/api.py:480
 #, fuzzy, python-format
 msgid "Tickets %(ranges)s"
-msgstr "%(title)s: %(revs)s"
+msgstr ""
 
 #: trac/ticket/api.py:504
 #, python-format
@@ -3036,8 +3034,6 @@ msgid ""
 "The changes have been saved, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr ""
-"S'ha desat el %(change)s, però s'ha produït un error en enviar les "
-"notificacions: %(message)s"
 
 #: trac/ticket/default_workflow.py:241
 msgid "Current state no longer exists"
@@ -3070,7 +3066,7 @@ msgstr "El propietari canviarà de %(current_owner)s a %(selected_owner)s"
 #: trac/ticket/default_workflow.py:283
 #, fuzzy, python-format
 msgid "The owner will be changed from %(current_owner)s to the selected user"
-msgstr "El propietari canviarà de %(current_owner)s a %(selected_owner)s"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:288
 #, python-format
@@ -3599,27 +3595,27 @@ msgstr[1] "%(labels)s canviats"
 #: trac/ticket/web_ui.py:392
 #, fuzzy, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) created"
-msgstr "Tiquet %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Tiquet %(ticketref)s (%(summary)s) created"
 
 #: trac/ticket/web_ui.py:393
 #, fuzzy, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) reopened"
-msgstr "Tiquet %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Tiquet %(ticketref)s (%(summary)s) reopened"
 
 #: trac/ticket/web_ui.py:394
 #, fuzzy, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) closed"
-msgstr "Tiquet %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Tiquet %(ticketref)s (%(summary)s) closed"
 
 #: trac/ticket/web_ui.py:395
 #, fuzzy, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) updated"
-msgstr "Tiquet %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Tiquet %(ticketref)s (%(summary)s) updated"
 
 #: trac/ticket/web_ui.py:424
 #, fuzzy, python-format
 msgid "Tickets %(ticketids)s"
-msgstr "Tiquet #%(id)s"
+msgstr "Tiquet %(ticketids)s"
 
 #: trac/ticket/web_ui.py:426
 #, python-format
@@ -3956,7 +3952,7 @@ msgstr "(modificat per darrera vegada per %(author)s)"
 #: trac/ticket/templates/batch_ticket_notify_email.txt:5
 #, fuzzy, python-format
 msgid "Action: %(action)s"
-msgstr "Torna a %(parent)s"
+msgstr ""
 
 #: trac/ticket/templates/batch_ticket_notify_email.txt:14
 #, fuzzy, python-format
@@ -4179,7 +4175,7 @@ msgstr ""
 #: trac/ticket/templates/query_results.html:25
 #, fuzzy, python-format
 msgid "%(grouplabel)s: %(groupname)s [1:(%(count)s)]"
-msgstr "Tiquets de %(groupvalue)s %(groupname)s:"
+msgstr ""
 
 #: trac/ticket/templates/query_results.html:37
 msgid "(ascending)"
@@ -4717,17 +4713,17 @@ msgstr ""
 #: trac/timeline/web_ui.py:294
 #, fuzzy, python-format
 msgid "on %(date)s at %(time)s"
-msgstr "Canviat fa %(date)s per %(author)s"
+msgstr ""
 
 #: trac/timeline/web_ui.py:295
 #, fuzzy, python-format
 msgid "See timeline %(relativetime)s ago"
-msgstr "Obert fa %(created)s"
+msgstr ""
 
 #: trac/timeline/web_ui.py:298 trac/web/chrome.py:865 trac/web/chrome.py:867
 #, fuzzy, python-format
 msgid "%(relativetime)s ago"
-msgstr "Obert fa %(created)s"
+msgstr ""
 
 #: trac/timeline/web_ui.py:300 trac/timeline/web_ui.py:344
 #, python-format
@@ -5832,12 +5828,12 @@ msgstr ""
 #: trac/versioncontrol/templates/revisionlog.txt:2
 #, fuzzy, python-format
 msgid "ChangeLog for %(path)s in %(repo)s"
-msgstr "Conjunt de canvis per a %(path)s%(in_repo)s"
+msgstr "Conjunt de canvis per a %(path)s %(repo)s"
 
 #: trac/versioncontrol/templates/revisionlog.txt:2
 #, fuzzy, python-format
 msgid "ChangeLog for %(path)s"
-msgstr "Conjunt de canvis per a %(path)s%(in_repo)s"
+msgstr "Conjunt de canvis per a %(path)s"
 
 #: trac/versioncontrol/templates/revisionlog.txt:4
 #, python-format
@@ -6743,7 +6739,7 @@ msgstr "Historial del wiki"
 #: trac/wiki/web_ui.py:499
 #, fuzzy, python-format
 msgid "Reverted to version %(version)s."
-msgstr "Suprimeix la versió %(version)d"
+msgstr "Suprimeix la versió %(version)s"
 
 #: trac/wiki/web_ui.py:562
 #, python-format
@@ -6852,8 +6848,6 @@ msgid ""
 "                    created %(created)s, so the page will be removed "
 "completely!"
 msgstr ""
-"Aquesta és la única versió de la pàgina, per la qual cosa aquesta pàgina "
-"es suprimirà completament!"
 
 #: trac/wiki/templates/wiki_delete.html:64
 #, fuzzy, python-format

@@ -221,7 +221,7 @@ msgstr "Ingen revisjoner"
 #: tracopt/versioncontrol/svn/svn_prop.py:309
 #, fuzzy, python-format
 msgid "%(title)s: %(revs)s"
-msgstr "%(title)s: %(message)s"
+msgstr ""
 
 #: tracopt/versioncontrol/svn/svn_prop.py:345
 msgid "merged: "
@@ -658,8 +658,6 @@ msgid ""
 "%(perm)s privileges are required to perform this operation. You don't "
 "have the required permissions."
 msgstr ""
-"%(perm)s rettigheter er nødvendig for å utføre denne operasjonen på "
-"%(resource)s"
 
 #: trac/perm.py:64
 msgid "Insufficient privileges to perform this operation."
@@ -691,7 +689,7 @@ msgstr "Store bokstaver er reservert for navn på rettigheter"
 #: trac/perm.py:675
 #, fuzzy, python-format
 msgid "The user %(user)s already has permission %(action)s."
-msgstr "Subjektet %(subject)s har blitt tildelt rettigheten %(action)s."
+msgstr "Subjektet %(user)s har blitt tildelt rettigheten %(action)s."
 
 #: trac/perm.py:689
 #, python-format
@@ -723,7 +721,7 @@ msgstr ""
 #: trac/perm.py:741
 #, fuzzy, python-format
 msgid "Cannot import from %(filename)s: %(error)s"
-msgstr "  %(page)s importert fra %(filename)s"
+msgstr ""
 
 #: trac/resource.py:336
 #, python-format
@@ -1950,7 +1948,7 @@ msgid ""
 "The [1:Default language] option uses the browser's\n"
 "        language negotiation feature to select the appropriate language."
 msgstr ""
-"Valget 'default language' bruker nettleserens\n"
+"Valget [1:default language] bruker nettleserens\n"
 "        språk funksjonalitet for å velge korrekt språk."
 
 #: trac/prefs/templates/prefs_pygments.html:37
@@ -2657,7 +2655,7 @@ msgstr "Antall %(unit)s:"
 #: trac/templates/progress_bar.html:41
 #, fuzzy, python-format
 msgid "%(title)s: %(count)s"
-msgstr "%(title)s: %(message)s"
+msgstr ""
 
 #: trac/templates/progress_bar_grouped.html:17
 msgid "(none)"
@@ -2926,7 +2924,7 @@ msgstr "Opprettet"
 #: trac/ticket/api.py:480
 #, fuzzy, python-format
 msgid "Tickets %(ranges)s"
-msgstr "%(title)s: %(message)s"
+msgstr ""
 
 #: trac/ticket/api.py:504
 #, python-format
@@ -2964,8 +2962,6 @@ msgid ""
 "The changes have been saved, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr ""
-"%(change)s har blitt lagret, men en feil oppstod ved utsending av "
-"varslinger: %(message)s"
 
 #: trac/ticket/default_workflow.py:241
 msgid "Current state no longer exists"
@@ -2998,7 +2994,7 @@ msgstr "Eier vil endres fra %(current_owner)s til %(selected_owner)s"
 #: trac/ticket/default_workflow.py:283
 #, fuzzy, python-format
 msgid "The owner will be changed from %(current_owner)s to the selected user"
-msgstr "Eier vil endres fra %(current_owner)s til %(selected_owner)s"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:288
 #, python-format
@@ -3525,27 +3521,27 @@ msgstr[1] "%(labels)s endret"
 #: trac/ticket/web_ui.py:392
 #, fuzzy, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) created"
-msgstr "Sak %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Sak %(ticketref)s (%(summary)s) created"
 
 #: trac/ticket/web_ui.py:393
 #, fuzzy, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) reopened"
-msgstr "Sak %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Sak %(ticketref)s (%(summary)s) reopened"
 
 #: trac/ticket/web_ui.py:394
 #, fuzzy, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) closed"
-msgstr "Sak %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Sak %(ticketref)s (%(summary)s) closed"
 
 #: trac/ticket/web_ui.py:395
 #, fuzzy, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) updated"
-msgstr "Sak %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Sak %(ticketref)s (%(summary)s) updated"
 
 #: trac/ticket/web_ui.py:424
 #, fuzzy, python-format
 msgid "Tickets %(ticketids)s"
-msgstr "Sak #%(id)s"
+msgstr "Sak %(ticketids)s"
 
 #: trac/ticket/web_ui.py:426
 #, python-format
@@ -3878,7 +3874,7 @@ msgstr "(sist endret av %(author)s)"
 #: trac/ticket/templates/batch_ticket_notify_email.txt:5
 #, fuzzy, python-format
 msgid "Action: %(action)s"
-msgstr "Tilbake til %(parent)s"
+msgstr ""
 
 #: trac/ticket/templates/batch_ticket_notify_email.txt:14
 #, fuzzy, python-format
@@ -4101,7 +4097,7 @@ msgstr ""
 #: trac/ticket/templates/query_results.html:25
 #, fuzzy, python-format
 msgid "%(grouplabel)s: %(groupname)s [1:(%(count)s)]"
-msgstr "%(groupvalue)s %(groupname)s saker:"
+msgstr ""
 
 #: trac/ticket/templates/query_results.html:37
 msgid "(ascending)"
@@ -4635,17 +4631,17 @@ msgstr ""
 #: trac/timeline/web_ui.py:294
 #, fuzzy, python-format
 msgid "on %(date)s at %(time)s"
-msgstr "Endret for %(date)s siden av %(author)s"
+msgstr ""
 
 #: trac/timeline/web_ui.py:295
 #, fuzzy, python-format
 msgid "See timeline %(relativetime)s ago"
-msgstr "Åpnet %(created)s siden"
+msgstr ""
 
 #: trac/timeline/web_ui.py:298 trac/web/chrome.py:865 trac/web/chrome.py:867
 #, fuzzy, python-format
 msgid "%(relativetime)s ago"
-msgstr "Åpnet %(created)s siden"
+msgstr ""
 
 #: trac/timeline/web_ui.py:300 trac/timeline/web_ui.py:344
 #, python-format
@@ -5738,12 +5734,12 @@ msgstr ""
 #: trac/versioncontrol/templates/revisionlog.txt:2
 #, fuzzy, python-format
 msgid "ChangeLog for %(path)s in %(repo)s"
-msgstr "Endringslogg for %(path)s%(in_repo)s"
+msgstr "Endringslogg for %(path)s %(repo)s"
 
 #: trac/versioncontrol/templates/revisionlog.txt:2
 #, fuzzy, python-format
 msgid "ChangeLog for %(path)s"
-msgstr "Endringslogg for %(path)s%(in_repo)s"
+msgstr "Endringslogg for %(path)s"
 
 #: trac/versioncontrol/templates/revisionlog.txt:4
 #, python-format
@@ -6618,7 +6614,7 @@ msgstr "Wiki-historikk"
 #: trac/wiki/web_ui.py:499
 #, fuzzy, python-format
 msgid "Reverted to version %(version)s."
-msgstr "Slett versjon %(version)d"
+msgstr "Slett versjon %(version)s"
 
 #: trac/wiki/web_ui.py:562
 #, python-format
@@ -6726,7 +6722,7 @@ msgid ""
 "                      version] of the page,\n"
 "                    created %(created)s, so the page will be removed "
 "completely!"
-msgstr "Dette er eneste versjonen av siden, så siden vil fjernes helt!"
+msgstr ""
 
 #: trac/wiki/templates/wiki_delete.html:64
 #, fuzzy, python-format

@@ -3104,7 +3104,7 @@ msgstr "O dono será mudado de %(current_owner)s para %(selected_owner)s"
 #: trac/ticket/default_workflow.py:283
 #, fuzzy, python-format
 msgid "The owner will be changed from %(current_owner)s to the selected user"
-msgstr "O dono será mudado de %(current_owner)s para %(selected_owner)s"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:288
 #, python-format

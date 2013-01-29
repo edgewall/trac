@@ -222,7 +222,7 @@ msgstr "Չկան ռեվիզիաներ"
 #: tracopt/versioncontrol/svn/svn_prop.py:309
 #, fuzzy, python-format
 msgid "%(title)s: %(revs)s"
-msgstr "%(title)s: %(message)s"
+msgstr ""
 
 #: tracopt/versioncontrol/svn/svn_prop.py:345
 msgid "merged: "
@@ -670,8 +670,6 @@ msgid ""
 "%(perm)s privileges are required to perform this operation. You don't "
 "have the required permissions."
 msgstr ""
-"Այս գործողությունը %(resource)s-ի վրա կատարելու համար անհրաժեշտ են "
-"%(perm)s արտոնություններ"
 
 #: trac/perm.py:64
 msgid "Insufficient privileges to perform this operation."
@@ -705,7 +703,7 @@ msgstr ""
 #: trac/perm.py:675
 #, fuzzy, python-format
 msgid "The user %(user)s already has permission %(action)s."
-msgstr "%(subject)s սուբյեկտին տրվել է %(action)s թույլտվությունը։"
+msgstr "%(user)s սուբյեկտին տրվել է %(action)s թույլտվությունը։"
 
 #: trac/perm.py:689
 #, python-format
@@ -739,7 +737,7 @@ msgstr ""
 #: trac/perm.py:741
 #, fuzzy, python-format
 msgid "Cannot import from %(filename)s: %(error)s"
-msgstr " %(page)s ներմուծված %(filename)s-ից"
+msgstr ""
 
 #: trac/resource.py:336
 #, python-format
@@ -2000,7 +1998,7 @@ msgid ""
 "The [1:Default language] option uses the browser's\n"
 "        language negotiation feature to select the appropriate language."
 msgstr ""
-"\"Լռությամբ լեզու\" կարգավորումն օգտագործում է բրոուզերի համապատասխան "
+"[1:Լռությամբ լեզու] կարգավորումն օգտագործում է բրոուզերի համապատասխան "
 "լեզու ընտրելու հնարավորությունը։"
 
 #: trac/prefs/templates/prefs_pygments.html:37
@@ -2711,7 +2709,7 @@ msgstr "%(unit)s քանակը՝"
 #: trac/templates/progress_bar.html:41
 #, fuzzy, python-format
 msgid "%(title)s: %(count)s"
-msgstr "%(title)s: %(message)s"
+msgstr ""
 
 #: trac/templates/progress_bar_grouped.html:17
 msgid "(none)"
@@ -2982,7 +2980,7 @@ msgstr "Ստեղծված է"
 #: trac/ticket/api.py:480
 #, fuzzy, python-format
 msgid "Tickets %(ranges)s"
-msgstr "%(title)s: %(message)s"
+msgstr ""
 
 #: trac/ticket/api.py:504
 #, python-format
@@ -3020,8 +3018,6 @@ msgid ""
 "The changes have been saved, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr ""
-"%(change)s պահպանվել է, սակայն առաջացել է սխալ զգուշացում ուղարկելուց․ "
-"%(message)s"
 
 #: trac/ticket/default_workflow.py:241
 msgid "Current state no longer exists"
@@ -3054,7 +3050,7 @@ msgstr "Տերը կփոխվի %(current_owner)s-ից %(selected_owner)s-ի"
 #: trac/ticket/default_workflow.py:283
 #, fuzzy, python-format
 msgid "The owner will be changed from %(current_owner)s to the selected user"
-msgstr "Տերը կփոխվի %(current_owner)s-ից %(selected_owner)s-ի"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:288
 #, python-format
@@ -3586,27 +3582,27 @@ msgstr[1] "%(labels)s փոփոխվել են"
 #: trac/ticket/web_ui.py:392
 #, fuzzy, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) created"
-msgstr "Խնդիր %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Խնդիր %(ticketref)s (%(summary)s) created"
 
 #: trac/ticket/web_ui.py:393
 #, fuzzy, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) reopened"
-msgstr "Խնդիր %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Խնդիր %(ticketref)s (%(summary)s) reopened"
 
 #: trac/ticket/web_ui.py:394
 #, fuzzy, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) closed"
-msgstr "Խնդիր %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Խնդիր %(ticketref)s (%(summary)s) closed"
 
 #: trac/ticket/web_ui.py:395
 #, fuzzy, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) updated"
-msgstr "Խնդիր %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Խնդիր %(ticketref)s (%(summary)s) updated"
 
 #: trac/ticket/web_ui.py:424
 #, fuzzy, python-format
 msgid "Tickets %(ticketids)s"
-msgstr "Խնդիր #%(id)s"
+msgstr "Խնդիր %(ticketids)s"
 
 #: trac/ticket/web_ui.py:426
 #, python-format
@@ -3941,7 +3937,7 @@ msgstr "(վերջին անգամ փոփոխված է %(author)s կողմից)"
 #: trac/ticket/templates/batch_ticket_notify_email.txt:5
 #, fuzzy, python-format
 msgid "Action: %(action)s"
-msgstr "Վերադառնալ %(parent)s-ին"
+msgstr ""
 
 #: trac/ticket/templates/batch_ticket_notify_email.txt:14
 #, fuzzy, python-format
@@ -4168,7 +4164,7 @@ msgstr ""
 #: trac/ticket/templates/query_results.html:25
 #, fuzzy, python-format
 msgid "%(grouplabel)s: %(groupname)s [1:(%(count)s)]"
-msgstr "%(groupvalue)s %(groupname)s խնդիրներ․"
+msgstr ""
 
 #: trac/ticket/templates/query_results.html:37
 msgid "(ascending)"
@@ -4703,17 +4699,17 @@ msgstr ""
 #: trac/timeline/web_ui.py:294
 #, fuzzy, python-format
 msgid "on %(date)s at %(time)s"
-msgstr "Փոփոխված է %(date)s առաջ %(author)s-ի կողմից"
+msgstr ""
 
 #: trac/timeline/web_ui.py:295
 #, fuzzy, python-format
 msgid "See timeline %(relativetime)s ago"
-msgstr "Բացված է %(created)s առաջ"
+msgstr ""
 
 #: trac/timeline/web_ui.py:298 trac/web/chrome.py:865 trac/web/chrome.py:867
 #, fuzzy, python-format
 msgid "%(relativetime)s ago"
-msgstr "Բացված է %(created)s առաջ"
+msgstr ""
 
 #: trac/timeline/web_ui.py:300 trac/timeline/web_ui.py:344
 #, python-format
@@ -5810,12 +5806,12 @@ msgstr ""
 #: trac/versioncontrol/templates/revisionlog.txt:2
 #, fuzzy, python-format
 msgid "ChangeLog for %(path)s in %(repo)s"
-msgstr "Ռեպոզիտորիայի փոփոխությունները %(path)s%(in_repo)s"
+msgstr "Ռեպոզիտորիայի փոփոխությունները %(path)s %(repo)s"
 
 #: trac/versioncontrol/templates/revisionlog.txt:2
 #, fuzzy, python-format
 msgid "ChangeLog for %(path)s"
-msgstr "Ռեպոզիտորիայի փոփոխությունները %(path)s%(in_repo)s"
+msgstr "Ռեպոզիտորիայի փոփոխությունները %(path)s"
 
 #: trac/versioncontrol/templates/revisionlog.txt:4
 #, python-format
@@ -6715,7 +6711,7 @@ msgstr "Wiki Պատմություն"
 #: trac/wiki/web_ui.py:499
 #, fuzzy, python-format
 msgid "Reverted to version %(version)s."
-msgstr "Ջնջել %(version)d տարբերակը"
+msgstr "Ջնջել %(version)s տարբերակը"
 
 #: trac/wiki/web_ui.py:562
 #, python-format
@@ -6823,7 +6819,7 @@ msgid ""
 "                      version] of the page,\n"
 "                    created %(created)s, so the page will be removed "
 "completely!"
-msgstr "Սա էջի միակ տարբերակն է, հետևաբար էջը կհեռացվի ամբողջովին։"
+msgstr ""
 
 #: trac/wiki/templates/wiki_delete.html:64
 #, fuzzy, python-format
