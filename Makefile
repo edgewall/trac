@@ -10,9 +10,9 @@
 
 define HELP
 
- Please use `make <target>' where <target> is one of: 
+ Please use `make <target>' where <target> is one of:
 
-  clean               delete all compiled files 
+  clean               delete all compiled files
   status              show which Python is used and other infos
 
   [python=...]        variable for selecting Python version
@@ -65,7 +65,7 @@ define HELP
 
   diff                show relevant changes after an update for all catalogs
   diff-xy             show relevant changes after an update for the xy locale
-  [vc=...]            variable containing the version control command to use 
+  [vc=...]            variable containing the version control command to use
 
   [locale=...]        variable for selecting a set of locales
 
@@ -94,9 +94,9 @@ status:
 	@echo -n "Python version: "
 	@python -V
 	@echo -n "figleaf: "
-	@-which figleaf 2>/dev/null || echo 
+	@-which figleaf 2>/dev/null || echo
 	@echo -n "coverage: "
-	@-which coverage 2>/dev/null || echo 
+	@-which coverage 2>/dev/null || echo
 	@echo "PYTHONPATH=$$PYTHONPATH"
 	@echo "TRAC_TEST_DB_URI=$$TRAC_TEST_DB_URI"
 	@echo "server-options=$(server-options)"
@@ -201,7 +201,7 @@ pre-stats: stats-pot
 stats-pot:
 	@echo "translation statistics for catalog templates:"
 	@echo -n "messages.pot: "; msgfmt --statistics $(messages.pot)
-	@echo -n "messages-js.pot: "; msgfmt --statistics $(messages-js.pot) 
+	@echo -n "messages-js.pot: "; msgfmt --statistics $(messages-js.pot)
 
 stats-%:
 	@echo -n "$(*) messages.po: "; msgfmt --statistics $(messages.po)
@@ -319,7 +319,7 @@ htmlcov/index.html:
 
 # ----------------------------------------------------------------------------
 #
-# Figleaf based coverage tasks 
+# Figleaf based coverage tasks
 #
 # (see http://darcs.idyll.org/~t/projects/figleaf/doc/)
 #
@@ -393,7 +393,7 @@ python-home := $(python.$(if $(python),$(python),$($(db).python)))
 
 ifeq "$(OS)" "Windows_NT"
     ifndef python-home
-        # Detect location of current python 
+        # Detect location of current python
         python-exe := $(shell python -c 'import sys; print sys.executable')
         python-home := $(subst \python.exe,,$(python-exe))
     endif
