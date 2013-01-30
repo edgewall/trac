@@ -2,20 +2,20 @@
 # Copyright (C) 2007-2012 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # Jonas Lind <wise@linux.nu>, 2010.
-# Mikael Relbe (mrelbe) <mikael@relbe.se>, 2010-2012.
+# Mikael Relbe (mrelbe) <mikael@relbe.se>, 2010-2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2013-01-27 11:21+0900\n"
-"PO-Revision-Date: 2012-10-30 19:53+0100\n"
+"PO-Revision-Date: 2013-01-30 22:42+0100\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: sv <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: tracopt/mimeview/php.py:96
 msgid ""
@@ -757,7 +757,7 @@ msgid "Error: %(msg)s"
 msgstr "Fel: %(msg)s"
 
 #: trac/admin/console.py:132
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
@@ -768,7 +768,7 @@ msgid ""
 msgstr ""
 "Välkommen till trac-admin %(version)s\n"
 "Interaktiv administrationskonsoll för Trac.\n"
-"Copyright (c) 2003-2012 Edgewall Software\n"
+"Copyright (c) 2003-2013 Edgewall Software\n"
 "\n"
 "Skriv: '?' eller 'help' för att få hjälp om kommandon.\n"
 "        "
@@ -819,7 +819,6 @@ msgid "Creating a new Trac environment at %(envname)s"
 msgstr "Skapar en ny Trac miljö i %(envname)s"
 
 #: trac/admin/console.py:375
-#, fuzzy
 msgid ""
 "\n"
 "Trac will first ask a few questions about your environment\n"
@@ -841,7 +840,6 @@ msgid "Project Name [%(default)s]> "
 msgstr "Projektets namn [%(default)s]> "
 
 #: trac/admin/console.py:385
-#, fuzzy
 msgid ""
 "\n"
 " Please specify the connection string for the database to use.\n"
@@ -850,7 +848,7 @@ msgid ""
 " PostgreSQL database (check the Trac documentation for the exact\n"
 " connection string syntax).\n"
 msgstr ""
-" \n"
+"\n"
 " Ange anslutningssträngen för databasen.\n"
 " Som standard skapas en lokal SQLite databas i Trac-miljöns\n"
 " katalog. Det är också möjligt att använda en befintlig\n"
@@ -901,7 +899,6 @@ msgid " Indexing default repository"
 msgstr " Indexerar standardarkivet"
 
 #: trac/admin/console.py:476
-#, fuzzy
 msgid ""
 "\n"
 "---------------------------------------------------------------------\n"
@@ -2129,11 +2126,10 @@ msgid ""
 msgstr "Besök gärna Trac's öppna källkodsprojekt: [1:http://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
-#, fuzzy
 msgid ""
 "Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
-msgstr "Copyright © 2003-2012 [1:Edgewall Software]"
+msgstr "Copyright © 2003-2013 [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
 msgid "System Information"
@@ -3002,9 +2998,9 @@ msgid "The owner will be changed from %(current_owner)s to %(selected_owner)s"
 msgstr "Ägarbyte från %(current_owner)s till %(selected_owner)s"
 
 #: trac/ticket/default_workflow.py:283
-#, fuzzy, python-format
+#, python-format
 msgid "The owner will be changed from %(current_owner)s to the selected user"
-msgstr ""
+msgstr "Ägaren kommer att ändras från %(current_owner)s till vald användare."
 
 #: trac/ticket/default_workflow.py:288
 #, python-format
@@ -3049,7 +3045,6 @@ msgid "Next status will be '%(name)s'"
 msgstr "Status blir \"%(name)s\""
 
 #: trac/ticket/default_workflow.py:418
-#, fuzzy
 msgid ""
 "Render a workflow graph.\n"
 "\n"
@@ -3103,9 +3098,9 @@ msgstr ""
 "Exempel:\n"
 "{{{\n"
 "    [[Workflow()]]\n"
-"    \n"
+"\n"
 "    [[Workflow(go = here -> there; return = there -> here)]]\n"
-"    \n"
+"\n"
 "    {{{\n"
 "    #!Workflow width=700 height=700\n"
 "    leave = * -> *\n"
@@ -3291,7 +3286,6 @@ msgid "[Error: %(error)s]"
 msgstr "[Fel: %(error)s]"
 
 #: trac/ticket/query.py:1201
-#, fuzzy
 msgid ""
 "Wiki macro listing tickets that match certain criteria.\n"
 "\n"
@@ -3356,8 +3350,8 @@ msgstr ""
 "\n"
 "Om \"key\" är samma som namnet på ett ärendefält måste värdet anges "
 "enligt filtersyntax specificerad av TracQuery#QueryLanguage. Notera att "
-"denna syntax ''inte'' är samma som den förenklade URL-syntaxen vilken "
-"används för `query:`-länkar vilka startar med ett frågetecken (`?`).\n"
+"denna syntax ''inte'' är samma som den förenklade URL-syntaxen som "
+"används för `query:`-länkar, vilka startar med ett frågetecken (`?`).\n"
 "\n"
 "Kommatecken (`,`) kan ingå i ett värde om de föregås av ett bakvänt "
 "snedstreck (`\\`).\n"
@@ -3365,7 +3359,7 @@ msgstr ""
 "Använd ordet `or` för att ange eller-villkor mellan grupper av "
 "villkorsuttryck.\n"
 "\n"
-"Utöver filter kan följande, valfria, parametrar anges för att styra hur "
+"Utöver filter kan följande valfria parametrar anges för att styra hur "
 "resultatet presenteras.\n"
 "\n"
 "`format` -- Presentationsformat:\n"
@@ -4377,14 +4371,12 @@ msgid "Add new milestone"
 msgstr "Lägg till ny milstolpe"
 
 #: trac/ticket/templates/ticket.html:132
-#, fuzzy
 msgid "Go to the ticket editor"
-msgstr "Gå till redigeraren"
+msgstr "Gå till ärende-redigeraren"
 
 #: trac/ticket/templates/ticket.html:132
-#, fuzzy
 msgid "Modify"
-msgstr "ändrad"
+msgstr "Ändra"
 
 #: trac/ticket/templates/ticket.html:134
 msgid "Create New Ticket"
@@ -4491,9 +4483,8 @@ msgid "Go to the list of attachments"
 msgstr "Gå till listan över bilagor"
 
 #: trac/ticket/templates/ticket.html:379
-#, fuzzy
 msgid "View the ticket description"
-msgstr "Inte behörig att ändra ärendets beskrivning."
+msgstr "Visa ärendets beskrivning"
 
 #: trac/ticket/templates/ticket.html:387
 #: trac/ticket/templates/ticket_change.html:114
@@ -4769,7 +4760,7 @@ msgid ""
 msgstr "[1:Tips:] Se [2:TracTimeline] för information om tidslinjen."
 
 #: trac/upgrades/db28.py:72
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The upgrade of attachments was successful, but the old attachments "
 "directory:\n"
@@ -4794,7 +4785,7 @@ msgstr ""
 "refereras i databasen. Felet var:\n"
 "\n"
 "  %(exception)s\n"
-"  \n"
+"\n"
 "Detta fel kan ignoreras, men för att hålla miljön ren bör du "
 "säkerhetskopiera eventuella kvarvarande filer i denna katalog och sedan "
 "ta bort den manuellt.\n"
@@ -5871,7 +5862,6 @@ msgid "Revision in which the line changed"
 msgstr "Revision i vilken raden ändrats"
 
 #: trac/versioncontrol/web_ui/browser.py:846
-#, fuzzy
 msgid ""
 "Display the list of available repositories.\n"
 "\n"
@@ -5902,8 +5892,7 @@ msgstr ""
 "    Välj presentationsformat:\n"
 "    - ''compact'' visar en kommaseparerad lista av kortfattade arkivnamn "
 "(förvalt)\n"
-"    - ''list'' visar en lista av korttfattade arkivnamn med beskrivningar"
-"\n"
+"    - ''list'' visar en lista av kortfattade arkivnamn med beskrivningar\n"
 "    - ''table'' visar en tabell liknande den som visas på sidan ''Arkiv''"
 "\n"
 "  ''glob''::\n"
@@ -6951,7 +6940,7 @@ msgid "Delete [1:%(name)s]"
 msgstr "Ta bort [1:%(name)s]"
 
 #: trac/wiki/templates/wiki_delete.html:38
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "[1:\n"
 "                  Are you sure you want to delete versions %(from)s to "
@@ -7002,7 +6991,7 @@ msgid ""
 msgstr "Raderar den enda [1: versionen] av sidan, vilken skapades %(created)s."
 
 #: trac/wiki/templates/wiki_delete.html:83
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Removing all [1:\n"
 "                        %(versions)s versions] of the page,\n"
@@ -7010,7 +6999,7 @@ msgid ""
 "%(modified)s."
 msgstr ""
 "Raderar alla [1: %(versions)s versioner] av sidan, vilken skapades "
-"%(created)s och sist ändrades %(modified)s."
+"%(created)s och senast ändrades %(modified)s."
 
 #: trac/wiki/templates/wiki_delete.html:99
 msgid "Delete those versions"
