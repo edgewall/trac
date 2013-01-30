@@ -424,7 +424,7 @@ class ReportModule(Component):
                 'report': {'id': id, 'resource': report_resource},
                 'context': context,
                 'title': sub_vars(title, args),
-                'description': sub_vars(description, args),
+                'description': sub_vars(description or '', args),
                 'max': limit, 'args': args, 'show_args_form': False,
                 'message': None, 'paginator': None,
                 'report_href': report_href,
