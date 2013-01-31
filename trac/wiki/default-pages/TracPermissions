@@ -49,6 +49,7 @@ Otherwise, individual privileges can be assigned to users for the various differ
 || `TICKET_EDIT_CC` || Full modify cc field ||
 || `TICKET_EDIT_DESCRIPTION` || Modify description field ||
 || `TICKET_EDIT_COMMENT` || Modify comments ||
+|| `TICKET_BATCH_MODIFY` || [wiki:TracBatchModify Batch modify] tickets ||
 || `TICKET_ADMIN` || All `TICKET_*` permissions, plus the deletion of ticket attachments and modification of the reporter and description fields. It also allows managing ticket properties in the WebAdmin panel. ||
 
 Attention: the "view tickets" button appears with the `REPORT_VIEW` permission.

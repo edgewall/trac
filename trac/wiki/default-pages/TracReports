@@ -135,6 +135,7 @@ Example:
  http://trac.edgewall.org/reports/14?PRIORITY=high&SEVERITY=critical
 }}}
 
+Dynamic variables can also be used in the report title and description (since 1.1.1).
 
 === !Special/Constant Variables ===
 There is one dynamic variable whose value is set automatically (the URL does not have to be changed) to allow practical reports. 

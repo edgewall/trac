@@ -114,7 +114,7 @@ If not specified for an action, `.default` is 0.  The value may be negative.
 
 There are a couple of hard-coded constraints to the workflow.  In particular, tickets are created with status `new`, and tickets are expected to have a `closed` state.  Further, the default reports/queries treat any state other than `closed` as an open state.
 
-While creating or modifying a ticket workfow, `contrib/workflow/workflow_parser.py` may be useful.  It can create `.dot` files that [http://www.graphviz.org GraphViz] understands to provide a visual description of the workflow.
+While creating or modifying a ticket workflow, `contrib/workflow/workflow_parser.py` may be useful.  It can create `.dot` files that [http://www.graphviz.org GraphViz] understands to provide a visual description of the workflow.
 
 This can be done as follows (your install path may be different).
 {{{
