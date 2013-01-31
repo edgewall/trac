@@ -19,9 +19,9 @@ committing:
 
 Example workflow 2), force a pull of all changes from Transifex::
 
-  make update
+  make update updateopts=-N
   tx pull -f
-  make update
+  make update updateopts=-N
   svn diff > tx.diff
   python l10n_diff_index.py tx.diff
   svn revert -R .
