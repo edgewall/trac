@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: Trac 1.0\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2013-01-27 11:21+0900\n"
-"PO-Revision-Date: 2012-09-04 14:46+0100\n"
+"PO-Revision-Date: 2013-01-31 08:25+0100\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: en_GB <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: tracopt/mimeview/enscript.py:105
 msgid "Path to the Enscript executable."
@@ -219,7 +219,7 @@ msgstr "Define charset encoding of paths within git repositories."
 
 #: tracopt/versioncontrol/git/git_fs.py:202
 msgid "Path to the git executable."
-msgstr "Path to the Enscript executable."
+msgstr "Path to the git executable."
 
 #: tracopt/versioncontrol/git/git_fs.py:749
 msgid "Path to a gitweb-formatted projects.list"
@@ -1603,7 +1603,11 @@ msgstr ""
 "\n"
 "Leave the option empty if you want to disable all downloads, otherwise\n"
 "set it to a comma-separated list of authorised paths (those paths are\n"
-"glob patterns, i.e. \"*\" can be used as a wild card)\n"
+"glob patterns, i.e. \"*\" can be used as a wild card). In a\n"
+"multi-repository environment, the path must be qualified with the\n"
+"repository name if the path does not point to the default repository\n"
+"(e.g. /reponame/trunk). Note that a simple prefix matching is\n"
+"performed on the paths, so aliases won't get automatically resolved.\n"
 "(''since 0.10'')"
 
 #: trac/versioncontrol/web_ui/browser.py:197
