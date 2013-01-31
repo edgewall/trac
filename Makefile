@@ -69,6 +69,8 @@ define HELP
 
   [locale=...]        variable for selecting a set of locales
 
+  [updateopts=...]    variable containing extra options for update (e.g. -N)
+
 endef
 export HELP
 
@@ -157,7 +159,8 @@ extract extraction:
 
 
 update-%:
-	python setup.py update_catalog -l $(*) update_catalog_js -l $(*)
+	python setup.py update_catalog $(updateopts) \
+	     -l $(*) update_catalog_js -l $(*)
 
 ifdef locale
 update: $(addprefix update-,$(locale))
