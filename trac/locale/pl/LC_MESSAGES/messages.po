@@ -34,7 +34,7 @@ msgstr ""
 #: tracopt/ticket/clone.py:49
 #, python-format
 msgid "%(summary)s (cloned)"
-msgstr ""
+msgstr "%(summary)s (sklonowany)"
 
 #: tracopt/ticket/clone.py:53
 #, python-format
@@ -43,15 +43,17 @@ msgid ""
 "----\n"
 "%(description)s"
 msgstr ""
+"Sklonowany z #%(id)s:\n"
+"----\n"
+"%(description)s"
 
 #: tracopt/ticket/clone.py:60
-#, fuzzy
 msgid "Clone"
-msgstr "zamknięty"
+msgstr "Klonuj"
 
 #: tracopt/ticket/clone.py:61
 msgid "Create a copy of this ticket"
-msgstr ""
+msgstr "Utwórz kopię tego zgłoszenia"
 
 #: tracopt/ticket/commit_updater.py:275
 msgid ""
@@ -2899,12 +2901,11 @@ msgstr "<number> musi być liczbą"
 #: trac/ticket/admin.py:826
 #, python-format
 msgid "Ticket #%(num)s and all associated data removed."
-msgstr ""
+msgstr "Usunięto zgłosznie #%(num)s i wszystkie dane z nim powiązane."
 
 #: trac/ticket/api.py:279
-#, fuzzy
 msgid "Attachment"
-msgstr "Załączniki"
+msgstr "Załącznik"
 
 #: trac/ticket/api.py:309
 msgid "Summary"
@@ -3551,22 +3552,22 @@ msgstr[2] "%(labels)s zmienionych"
 #: trac/ticket/web_ui.py:399
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) created"
-msgstr ""
+msgstr "Utworzono zgłoszenie %(ticketref)s (%(summary)s)"
 
 #: trac/ticket/web_ui.py:400
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) reopened"
-msgstr ""
+msgstr "Ponownie otwarto zgłoszenie %(ticketref)s (%(summary)s)"
 
 #: trac/ticket/web_ui.py:401
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) closed"
-msgstr ""
+msgstr "Zamknięto zgłoszenie %(ticketref)s (%(summary)s)"
 
 #: trac/ticket/web_ui.py:402
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) updated"
-msgstr ""
+msgstr "Zaktualizowano zgłoszenie %(ticketref)s (%(summary)s)"
 
 #: trac/ticket/web_ui.py:436
 #, python-format
@@ -3576,12 +3577,12 @@ msgstr "Zgłoszenia %(ticketids)s"
 #: trac/ticket/web_ui.py:438
 #, python-format
 msgid "Tickets %(ticketlist)s batch updated"
-msgstr ""
+msgstr "Paczka zgłoszeń %(ticketlist)s została zaktualizowana"
 
 #: trac/ticket/web_ui.py:589
-#, fuzzy, python-format
+#, python-format
 msgid "The action \"%(name)s\" is not available."
-msgstr "Wersja o nazwie %(name)s została dodana."
+msgstr ""
 
 #: trac/ticket/web_ui.py:615
 #, python-format
@@ -3593,7 +3594,7 @@ msgstr ""
 #: trac/ticket/web_ui.py:673 trac/ticket/web_ui.py:921
 #, python-format
 msgid "Ticket #%(id)s"
-msgstr ""
+msgstr "Zgłoszenie #%(id)s"
 
 #: trac/ticket/web_ui.py:727
 msgid "Previous Ticket"
@@ -3676,19 +3677,19 @@ msgstr "Zgłoszenie #%(num)s, komentarz %(cnum)d"
 #: trac/ticket/web_ui.py:1083
 #, python-format
 msgid "No version %(version)d for comment %(cnum)d on ticket #%(ticket)s"
-msgstr ""
+msgstr "Brak wersji %(version)d komentarza %(cnum)d do zgłoszenia #%(ticket)s"
 
 #: trac/ticket/web_ui.py:1123
 msgid "Ticket Comment Diff"
 msgstr "Różnice dla komentarzy zgłoszenia"
 
 #: trac/ticket/web_ui.py:1197
-#, fuzzy, python-format
+#, python-format
 msgid "%(labels)s set"
 msgid_plural "%(labels)s set"
-msgstr[0] "%(labels)s zmieniona"
-msgstr[1] "%(labels)s zmienione"
-msgstr[2] "%(labels)s zmienionych"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #: trac/ticket/web_ui.py:1201
 #, python-format
@@ -4660,19 +4661,19 @@ msgstr "Następny okres"
 
 #: trac/timeline/web_ui.py:294 trac/timeline/web_ui.py:317
 #: trac/web/chrome.py:869
-#, fuzzy, python-format
+#, python-format
 msgid "in %(relative)s"
 msgstr ""
 
 #: trac/timeline/web_ui.py:298 trac/timeline/web_ui.py:315
-#, fuzzy, python-format
+#, python-format
 msgid "on %(date)s at %(time)s"
 msgstr ""
 
 #: trac/timeline/web_ui.py:301 trac/web/chrome.py:871
-#, fuzzy, python-format
+#, python-format
 msgid "%(relative)s ago"
-msgstr ""
+msgstr "%(relative)s temu"
 
 #: trac/timeline/web_ui.py:303 trac/timeline/web_ui.py:363
 #, python-format
