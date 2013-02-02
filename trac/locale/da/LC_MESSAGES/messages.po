@@ -158,7 +158,7 @@ msgstr "Dette er en uoprettelig handling."
 #: trac/wiki/templates/wiki_edit_form.html:73
 #: trac/wiki/templates/wiki_rename.html:32
 msgid "Cancel"
-msgstr "Annuller"
+msgstr "Annullér"
 
 #: tracopt/ticket/templates/ticket_delete.html:61
 msgid "Are you sure you want to delete this ticket comment?"
@@ -1026,7 +1026,7 @@ msgstr "Ukendt administrationspanel"
 
 #: trac/admin/web_ui.py:133
 msgid "Untitled"
-msgstr "Unavngivet"
+msgstr "Uden navn"
 
 #: trac/admin/web_ui.py:192 trac/ticket/admin.py:66 trac/ticket/admin.py:95
 #: trac/ticket/admin.py:275 trac/ticket/admin.py:455 trac/ticket/admin.py:607
@@ -1108,7 +1108,7 @@ msgstr "Manglende felt"
 #: trac/admin/web_ui.py:356 trac/admin/templates/admin_perms.html:10
 #: trac/admin/templates/admin_perms.html:60
 msgid "Permissions"
-msgstr "Rettigheder"
+msgstr "Tilladelser"
 
 #: trac/admin/web_ui.py:377
 msgid "Unknown action"
@@ -1535,7 +1535,7 @@ msgstr "Fil: [1:]"
 
 #: trac/admin/templates/admin_plugins.html:68
 msgid "Install"
-msgstr "Installer"
+msgstr "Installér"
 
 #: trac/admin/templates/admin_plugins.html:72
 msgid ""
@@ -1793,7 +1793,7 @@ msgstr "Sessionsnøgle:"
 
 #: trac/prefs/templates/prefs_advanced.html:17
 msgid "Change"
-msgstr "Tilpas"
+msgstr "Ændrer"
 
 #: trac/prefs/templates/prefs_advanced.html:18
 msgid ""
@@ -2100,12 +2100,12 @@ msgid ""
 "Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
 msgstr ""
-"Copyright © 2003-2013\n"
+"Copyright © 2003-2012\n"
 "        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
 msgid "System Information"
-msgstr "Systeminformation"
+msgstr "Systeminformationer"
 
 #: trac/templates/about.html:56
 msgid "Package"
@@ -2128,7 +2128,7 @@ msgstr "Placering"
 #: trac/templates/about.html:77 trac/templates/error.html:192
 #: trac/web/main.py:589
 msgid "N/A"
-msgstr "I/T"
+msgstr "Ikke tilgængelig"
 
 #: trac/templates/about.html:89
 msgid "Section"
@@ -3064,6 +3064,45 @@ msgid ""
 "    }}}\n"
 "}}}"
 msgstr ""
+"Rendere en workflow graf.\n"
+"\n"
+"Denne makro tager en TracWorkflow konfiguration og renderer tilstandende\n"
+"og overgange som en graf. Hvis der ikke angives nogen parametre, vil\n"
+"det aktuelle sags-workflow blive renderet. I WikiProcessors tilstand kan "
+"`width`\n"
+"og `height` argumenterne angives.\n"
+"\n"
+"(Standarder: `width = 800` og `heigth = 600`)\n"
+"\n"
+"Eksempler:\n"
+"{{{\n"
+"    [[Workflow()]]\n"
+"    \n"
+"    [[Workflow(go = here -> there; return = there -> here)]]\n"
+"    \n"
+"    {{{\n"
+"    #!Workflow width=700 height=700\n"
+"    leave = * -> *\n"
+"    leave.operations = leave_status\n"
+"    leave.default = 1\n"
+"\n"
+"    accept = new,assigned,accepted,reopened -> accepted\n"
+"    accept.permissions = TICKET_MODIFY\n"
+"    accept.operations = set_owner_to_self\n"
+"\n"
+"    resolve = new,assigned,accepted,reopened -> closed\n"
+"    resolve.permissions = TICKET_MODIFY\n"
+"    resolve.operations = set_resolution\n"
+"\n"
+"    reassign = new,assigned,accepted,reopened -> assigned\n"
+"    reassign.permissions = TICKET_MODIFY\n"
+"    reassign.operations = set_owner\n"
+"\n"
+"    reopen = closed -> reopened\n"
+"    reopen.permissions = TICKET_CREATE\n"
+"    reopen.operations = del_resolution\n"
+"    }}}\n"
+"}}}"
 
 #: trac/ticket/default_workflow.py:493
 msgid "Enable JavaScript to display the workflow graph."
@@ -4210,7 +4249,7 @@ msgstr "Titel"
 #: trac/ticket/templates/ticket_change.html:65
 #: trac/wiki/templates/wiki_edit.html:149
 msgid "Edit"
-msgstr "Rediger"
+msgstr "Redigér"
 
 #: trac/ticket/templates/report_list.html:89
 #: trac/ticket/templates/report_view.html:62
@@ -4262,19 +4301,21 @@ msgstr "Skjul milepæle uden forfaldsdato"
 
 #: trac/ticket/templates/roadmap.html:38
 msgid "Milestone:"
-msgstr "Milepæl:"
+msgstr "Milepæl"
 
 #: trac/ticket/templates/roadmap.html:76
 msgid "Add new milestone"
 msgstr "Tilføj ny milepæl"
 
 #: trac/ticket/templates/ticket.html:134
+#, fuzzy
 msgid "Go to the ticket editor"
-msgstr ""
+msgstr "Gå til editoren"
 
 #: trac/ticket/templates/ticket.html:134
+#, fuzzy
 msgid "Modify"
-msgstr ""
+msgstr "ændret"
 
 #: trac/ticket/templates/ticket.html:136
 msgid "Create New Ticket"
@@ -4395,7 +4436,7 @@ msgstr ""
 #: trac/wiki/templates/wiki_edit.html:95 trac/wiki/templates/wiki_edit.html:153
 #: trac/wiki/templates/wiki_edit_form.html:64
 msgid "Preview"
-msgstr "Forhåndsvis"
+msgstr "Forhåndsvisning"
 
 #: trac/ticket/templates/ticket.html:392
 msgid "Create ticket"
@@ -4701,6 +4742,20 @@ msgid ""
 "should\n"
 "backup any remaining files in that directory and remove it manually.\n"
 msgstr ""
+"Opgraderingen af vedhæftninger lykkedes korrekt, men den gamle "
+"vedhæftninfsmappe:\n"
+"\n"
+"  %(src_dir)s\n"
+"\n"
+"kunne ikke fjernes, sandsynligvis på grund af tilstedeværelsen af filer "
+"der ikke\n"
+"var refereret i databasen. Fejlen var:\n"
+"\n"
+"  %(exception)s\n"
+"  \n"
+"Denne fejl kan ignoreresm men for at holde dit miljø rent, bør du\n"
+"sikkerhedskopiere alle tilbageblivne filer i den mappe, og fjerne den "
+"manuelt.\n"
 
 #: trac/upgrades/db28.py:87
 #, python-format
