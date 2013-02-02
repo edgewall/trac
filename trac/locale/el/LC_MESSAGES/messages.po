@@ -3377,7 +3377,7 @@ msgstr ""
 #, fuzzy, python-format
 msgid "%(num)s ticket matching %(criteria)s"
 msgid_plural "%(num)s tickets matching %(criteria)s"
-msgstr[0] "%(groupvalue)s %(groupname)s αιτήματα ταιριάζουν με το %(query)s"
+msgstr[0] ""
 msgstr[1] ""
 
 #: trac/ticket/query.py:1383
@@ -4718,7 +4718,7 @@ msgstr "Επόμενη Περίοδος"
 #: trac/web/chrome.py:869
 #, fuzzy, python-format
 msgid "in %(relative)s"
-msgstr "%(relativetime)s πριν"
+msgstr ""
 
 #: trac/timeline/web_ui.py:298 trac/timeline/web_ui.py:315
 #, python-format
@@ -4728,7 +4728,7 @@ msgstr "στις %(date)s και ώρα %(time)s"
 #: trac/timeline/web_ui.py:301 trac/web/chrome.py:871
 #, fuzzy, python-format
 msgid "%(relative)s ago"
-msgstr "%(relativetime)s πριν"
+msgstr ""
 
 #: trac/timeline/web_ui.py:303 trac/timeline/web_ui.py:363
 #, python-format
@@ -4743,7 +4743,7 @@ msgstr "at %(iso8601)s"
 #: trac/timeline/web_ui.py:311
 #, fuzzy, python-format
 msgid "on %(date)s"
-msgstr "Δεν υπάρχει κόμβος %(path)s"
+msgstr ""
 
 #: trac/timeline/web_ui.py:319
 #, python-format

@@ -4551,7 +4551,7 @@ msgstr ""
 #: trac/timeline/web_ui.py:311
 #, fuzzy, python-format
 msgid "on %(date)s"
-msgstr "Obiectiv: %(name)s"
+msgstr ""
 
 #: trac/timeline/web_ui.py:319
 #, python-format

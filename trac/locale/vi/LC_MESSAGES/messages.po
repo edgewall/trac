@@ -3266,7 +3266,7 @@ msgstr ""
 #, fuzzy, python-format
 msgid "%(num)s ticket matching %(criteria)s"
 msgid_plural "%(num)s tickets matching %(criteria)s"
-msgstr[0] "%(groupvalue)s %(groupname)s thẻ:"
+msgstr[0] ""
 
 #: trac/ticket/query.py:1383
 #, python-format

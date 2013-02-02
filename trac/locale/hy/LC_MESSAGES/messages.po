@@ -3366,7 +3366,7 @@ msgstr ""
 #, fuzzy, python-format
 msgid "%(num)s ticket matching %(criteria)s"
 msgid_plural "%(num)s tickets matching %(criteria)s"
-msgstr[0] "%(groupvalue)s %(groupname)s խնդիրների համապատասխանեցում %(query)s-ին"
+msgstr[0] ""
 msgstr[1] ""
 
 #: trac/ticket/query.py:1383
@@ -4707,7 +4707,7 @@ msgstr "Հաջորդ Ինտերվալ"
 #: trac/web/chrome.py:869
 #, fuzzy, python-format
 msgid "in %(relative)s"
-msgstr "Բացված է %(created)s առաջ"
+msgstr ""
 
 #: trac/timeline/web_ui.py:298 trac/timeline/web_ui.py:315
 #, fuzzy, python-format
@@ -4717,7 +4717,7 @@ msgstr ""
 #: trac/timeline/web_ui.py:301 trac/web/chrome.py:871
 #, fuzzy, python-format
 msgid "%(relative)s ago"
-msgstr "(%(age)s առաջ)"
+msgstr ""
 
 #: trac/timeline/web_ui.py:303 trac/timeline/web_ui.py:363
 #, python-format
@@ -4732,7 +4732,7 @@ msgstr ""
 #: trac/timeline/web_ui.py:311
 #, fuzzy, python-format
 msgid "on %(date)s"
-msgstr "%(path)s տեսք"
+msgstr ""
 
 #: trac/timeline/web_ui.py:319
 #, fuzzy, python-format

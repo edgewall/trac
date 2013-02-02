@@ -3244,7 +3244,7 @@ msgstr ""
 #, fuzzy, python-format
 msgid "%(num)s ticket matching %(criteria)s"
 msgid_plural "%(num)s tickets matching %(criteria)s"
-msgstr[0] "%(groupvalue)s %(groupname)s tickets 符合 %(query)s"
+msgstr[0] ""
 
 #: trac/ticket/query.py:1383
 #, python-format
@@ -4528,7 +4528,7 @@ msgstr "後一時段"
 #: trac/web/chrome.py:869
 #, fuzzy, python-format
 msgid "in %(relative)s"
-msgstr "%(relativetime)s 前"
+msgstr ""
 
 #: trac/timeline/web_ui.py:298 trac/timeline/web_ui.py:315
 #, python-format
@@ -4538,7 +4538,7 @@ msgstr "於 %(date)s %(time)s"
 #: trac/timeline/web_ui.py:301 trac/web/chrome.py:871
 #, fuzzy, python-format
 msgid "%(relative)s ago"
-msgstr "%(relativetime)s 前"
+msgstr ""
 
 #: trac/timeline/web_ui.py:303 trac/timeline/web_ui.py:363
 #, python-format
@@ -4553,7 +4553,7 @@ msgstr "於 %(iso8601)s"
 #: trac/timeline/web_ui.py:311
 #, fuzzy, python-format
 msgid "on %(date)s"
-msgstr "不存在的結點 %(path)s"
+msgstr ""
 
 #: trac/timeline/web_ui.py:319
 #, python-format

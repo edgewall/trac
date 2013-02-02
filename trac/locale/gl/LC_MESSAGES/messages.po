@@ -3365,7 +3365,7 @@ msgstr ""
 #, fuzzy, python-format
 msgid "%(num)s ticket matching %(criteria)s"
 msgid_plural "%(num)s tickets matching %(criteria)s"
-msgstr[0] "Tíckets de %(groupvalue)s %(groupname)s que coinciden con %(query)s"
+msgstr[0] ""
 msgstr[1] ""
 
 #: trac/ticket/query.py:1383
@@ -4716,7 +4716,7 @@ msgstr "Seguinte período"
 #: trac/web/chrome.py:869
 #, fuzzy, python-format
 msgid "in %(relative)s"
-msgstr "Aberto hai %(created)s"
+msgstr ""
 
 #: trac/timeline/web_ui.py:298 trac/timeline/web_ui.py:315
 #, fuzzy, python-format
