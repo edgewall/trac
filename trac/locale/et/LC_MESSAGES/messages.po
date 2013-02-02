@@ -42,13 +42,12 @@ msgid ""
 msgstr ""
 
 #: tracopt/ticket/clone.py:60
-#, fuzzy
 msgid "Clone"
-msgstr "suletud"
+msgstr "Klooni"
 
 #: tracopt/ticket/clone.py:61
 msgid "Create a copy of this ticket"
-msgstr ""
+msgstr "Tee sellest sedelist koopia"
 
 #: tracopt/ticket/commit_updater.py:275
 msgid ""
@@ -403,9 +402,8 @@ msgid "Maximum total attachment size: %(num)s"
 msgstr "Maksimaalne manuse suurus: %(num)s baiti"
 
 #: trac/attachment.py:804
-#, fuzzy
 msgid "Download failed"
-msgstr "Saatmine ebaõnnestus"
+msgstr "Allalaadimine ebaõnnestus"
 
 #: trac/attachment.py:892 trac/versioncontrol/web_ui/browser.py:669
 #: trac/wiki/web_ui.py:73
@@ -472,7 +470,7 @@ msgstr "Konfiguratsiooni viga"
 #: trac/config.py:265
 #, python-format
 msgid "Error reading '%(file)s', make sure it is readable."
-msgstr ""
+msgstr "Viga '%(file)s' lugemisel, kontrolli faili õigusi."
 
 #: trac/config.py:420
 #, python-format
@@ -565,7 +563,7 @@ msgstr "Keskkonna kopeerimise ajal tekkisid järgnevad vead:"
 
 #: trac/env.py:965
 msgid "Backing up database ..."
-msgstr ""
+msgstr "Teen andmebaasist varukoopiat ..."
 
 #: trac/env.py:970
 msgid "Hotcopy done."
@@ -655,11 +653,13 @@ msgid "Header length is too short"
 msgstr "Päise pikkus on ebapiisav"
 
 #: trac/perm.py:56
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "%(perm)s privileges are required to perform this operation on "
 "%(resource)s. You don't have the required permissions."
-msgstr "%(resource)s tegevuse sooritamiseks on vaja %(perm)s õiguseid."
+msgstr ""
+"%(resource)s ressursil selle toimingu tegemiseks on vajalikud %(perm)s "
+"õigused. Sinul need õigused puuduvad."
 
 #: trac/perm.py:58
 #, python-format
@@ -667,6 +667,8 @@ msgid ""
 "%(perm)s privileges are required to perform this operation. You don't "
 "have the required permissions."
 msgstr ""
+"Selleks toiminguks vajalikud %(perm)s õigused. Sinul need õigused "
+"puuduvad."
 
 #: trac/perm.py:64
 msgid "Insufficient privileges to perform this operation."
@@ -696,9 +698,9 @@ msgid "All upper-cased tokens are reserved for permission names"
 msgstr "Kõik suurtähtedega tähised on reserveeritud õiguste nimede jaoks"
 
 #: trac/perm.py:675
-#, fuzzy, python-format
+#, python-format
 msgid "The user %(user)s already has permission %(action)s."
-msgstr "Subjektile %(user)s on antud õigus %(action)s ."
+msgstr "Kasutajal %(user)s on %(action)s õigused juba olemas."
 
 #: trac/perm.py:689
 #, python-format
@@ -994,9 +996,8 @@ msgid "Unknown administration panel"
 msgstr "Tundmatu halduspaneel"
 
 #: trac/admin/web_ui.py:133
-#, fuzzy
 msgid "Untitled"
-msgstr "Pealkiri"
+msgstr "Pealkiri puudub"
 
 #: trac/admin/web_ui.py:192 trac/ticket/admin.py:66 trac/ticket/admin.py:95
 #: trac/ticket/admin.py:275 trac/ticket/admin.py:455 trac/ticket/admin.py:607
@@ -1171,33 +1172,30 @@ msgid "Description:"
 msgstr "Kirjeldus:"
 
 #: trac/admin/templates/admin_basics.html:35
-#, fuzzy
 msgid "Default timezone:"
-msgstr "Vaikimisi ajavöönd"
+msgstr "Vaikimisi ajavöönd:"
 
 #: trac/admin/templates/admin_basics.html:37
-#, fuzzy
 msgid "Server's local time zone"
-msgstr "Vaikimisi ajavöönd"
+msgstr "Serveri kohalik ajavöönd"
 
 #: trac/admin/templates/admin_basics.html:44
-#, fuzzy
 msgid "Default language:"
-msgstr "vaikimisi keel"
+msgstr "Vaikimisi keel:"
 
 #: trac/admin/templates/admin_basics.html:46
 #: trac/admin/templates/admin_basics.html:55
 msgid "Browser's language"
-msgstr ""
+msgstr "Brauseri keel"
 
 #: trac/admin/templates/admin_basics.html:53
 msgid "Default date format:"
-msgstr ""
+msgstr "Vaikimisi kuupäeva vorming:"
 
 #: trac/admin/templates/admin_basics.html:57
 #: trac/prefs/templates/prefs_datetime.html:65
 msgid "ISO 8601 format"
-msgstr ""
+msgstr "ISO 8601 vorming"
 
 #: trac/admin/templates/admin_basics.html:63
 #: trac/admin/templates/admin_components.html:99
@@ -1715,7 +1713,7 @@ msgstr "Teie eelistused on salvestatud."
 #: trac/mimeview/rst.py:125 trac/mimeview/rst.py:148
 #, python-format
 msgid "%(link)s is not a valid TracLink"
-msgstr "%(link)s pole korrektne TracLink"
+msgstr "%(link)s ei ole korrektne TracLink"
 
 #: trac/prefs/web_ui.py:56 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -1747,7 +1745,7 @@ msgstr "Edasijõudnutele"
 
 #: trac/prefs/web_ui.py:167
 msgid "The session has been loaded."
-msgstr "Sessioon on laaditud."
+msgstr "Sessioon on laetud."
 
 #: trac/prefs/templates/prefs.html:10
 msgid "Preferences:"
@@ -1850,11 +1848,9 @@ msgstr ""
 "            [1:%(formatted)s]."
 
 #: trac/prefs/templates/prefs_datetime.html:45
-#, fuzzy, python-format
+#, python-format
 msgid "In the default time zone, this would be displayed as [1:%(formatted)s]."
-msgstr ""
-"Vaikimisi ajavööndis näidatakse seda järgnevalt:\n"
-"            [1:%(formatted)s]."
+msgstr "Vaikimisi ajavööndis näidatakse seda [1:%(formatted)s]."
 
 #: trac/prefs/templates/prefs_datetime.html:51
 msgid ""
@@ -1870,18 +1866,16 @@ msgstr ""
 "ees."
 
 #: trac/prefs/templates/prefs_datetime.html:59
-#, fuzzy
 msgid "Date format:"
-msgstr "Süsteemi informatsioon:"
+msgstr "Kuupäeva vorming:"
 
 #: trac/prefs/templates/prefs_datetime.html:61
-#, fuzzy
 msgid "Default date format"
-msgstr "Vaikimisi ajavöönd"
+msgstr "Vaikimisi kuupäeva vorming"
 
 #: trac/prefs/templates/prefs_datetime.html:63
 msgid "Your language setting"
-msgstr ""
+msgstr "Sinu keeleseadistus"
 
 #: trac/prefs/templates/prefs_datetime.html:69
 #, fuzzy
@@ -1897,21 +1891,19 @@ msgstr ""
 
 #: trac/prefs/templates/prefs_datetime.html:75
 msgid "Date relative/absolute format:"
-msgstr ""
+msgstr "Kuupäeva suhteline või absoluutvorm:"
 
 #: trac/prefs/templates/prefs_datetime.html:77
-#, fuzzy
 msgid "Default format"
-msgstr "(vaikimisi)"
+msgstr "Vaikimisi vorm"
 
 #: trac/prefs/templates/prefs_datetime.html:79
 msgid "Relative format"
-msgstr ""
+msgstr "Suhteline"
 
 #: trac/prefs/templates/prefs_datetime.html:81
-#, fuzzy
 msgid "Absolute format"
-msgstr "Süsteemi informatsioon"
+msgstr "Absoluutne"
 
 #: trac/prefs/templates/prefs_datetime.html:85
 #, fuzzy
@@ -1979,9 +1971,8 @@ msgid "Language:"
 msgstr "Keel:"
 
 #: trac/prefs/templates/prefs_language.html:17
-#, fuzzy
 msgid "Default language"
-msgstr "vaikimisi keel"
+msgstr "Vaikimisi keel"
 
 #: trac/prefs/templates/prefs_language.html:23
 msgid ""
@@ -1994,13 +1985,12 @@ msgstr ""
 "      serveri oma asemel."
 
 #: trac/prefs/templates/prefs_language.html:27
-#, fuzzy
 msgid ""
 "The [1:Default language] option uses the browser's\n"
 "        language negotiation feature to select the appropriate language."
 msgstr ""
-"[1:Vaikimisi keel] valik kasutab sinu brauseri\n"
-"        automaatset keelevalikuoskust."
+"[1:Default language] valik kasutab brauseri\n"
+"        automaatset keeleseadistuse oskust õige keele valimiseks."
 
 #: trac/prefs/templates/prefs_pygments.html:37
 msgid ""
@@ -2065,9 +2055,8 @@ msgid "Previous Page"
 msgstr "Eelmine leht"
 
 #: trac/search/templates/search.html:11
-#, fuzzy
 msgid "Search Results"
-msgstr "Tulemusi ei ole"
+msgstr "Otsingu tulemused"
 
 #: trac/search/templates/search.html:43
 #: trac/ticket/templates/query_results.html:20
@@ -2155,9 +2144,8 @@ msgid "System Information"
 msgstr "Süsteemi informatsioon"
 
 #: trac/templates/about.html:56
-#, fuzzy
 msgid "Package"
-msgstr "muudatus"
+msgstr "Pakett"
 
 #: trac/templates/about.html:56 trac/templates/about.html:69
 #: trac/templates/history_view.html:28 trac/ticket/admin.py:431
@@ -2170,9 +2158,8 @@ msgid "Installed Plugins"
 msgstr "Paigaldatud lisamoodulid"
 
 #: trac/templates/about.html:69
-#, fuzzy
 msgid "Location"
-msgstr "Asukoht:"
+msgstr "Asukoht"
 
 #: trac/templates/about.html:77 trac/templates/error.html:192
 #: trac/web/main.py:589
@@ -2660,14 +2647,13 @@ msgstr "Manused"
 
 #: trac/templates/list_of_attachments.html:38
 #: trac/templates/list_of_attachments.html:54
-#, fuzzy
 msgid "Download all attachments as:"
-msgstr "Lisa manus"
+msgstr "Lae kõik manused alla selles vormis:"
 
 #: trac/templates/list_of_attachments.html:39
 #: trac/templates/list_of_attachments.html:55
 msgid ".zip"
-msgstr ""
+msgstr ".zip"
 
 #: trac/templates/macros.html:37 trac/templates/macros.html:38
 msgid "Previous"
@@ -2977,9 +2963,9 @@ msgid "Created"
 msgstr "Loodud"
 
 #: trac/ticket/api.py:504
-#, fuzzy, python-format
+#, python-format
 msgid "Tickets %(ranges)s"
-msgstr ""
+msgstr "Sedelid %(ranges)s"
 
 #: trac/ticket/api.py:528
 #, python-format
@@ -3536,23 +3522,21 @@ msgid "You must provide a name for the milestone."
 msgstr "Verstapostile peab nime panema."
 
 #: trac/ticket/roadmap.py:877
-#, fuzzy, python-format
+#, python-format
 msgid "Milestone \"%(name)s\""
-msgstr "Verstapost %(name)s"
+msgstr "Verstapost \"%(name)s\""
 
 #: trac/ticket/roadmap.py:891
-#, fuzzy
 msgid "Previous Milestone"
-msgstr "Eelmine versioon"
+msgstr "Eelmine verstapost"
 
 #: trac/ticket/roadmap.py:891
-#, fuzzy
 msgid "Next Milestone"
-msgstr "Kustuta verstapost"
+msgstr "Järgmine verstapost"
 
 #: trac/ticket/roadmap.py:892
 msgid "Back to Roadmap"
-msgstr ""
+msgstr "Tagasi tegevusplaani juurde"
 
 #: trac/ticket/web_ui.py:66
 msgid "Invalid Ticket"
@@ -4158,9 +4142,9 @@ msgstr ""
 "        päringute kohta abi saamiseks."
 
 #: trac/ticket/templates/query_results.html:25
-#, fuzzy, python-format
+#, python-format
 msgid "%(grouplabel)s: %(groupname)s [1:(%(count)s)]"
-msgstr ""
+msgstr "%(grouplabel)s: %(groupname)s [1:(%(count)s)]"
 
 #: trac/ticket/templates/query_results.html:37
 msgid "(ascending)"
@@ -4249,44 +4233,44 @@ msgid "Save report"
 msgstr "Salvesta raport"
 
 #: trac/ticket/templates/report_list.html:33
-#, fuzzy
 msgid "Show Descriptions"
-msgstr "Näita kõiki kirjeldusi"
+msgstr "Näita kirjeldusi"
 
 #: trac/ticket/templates/report_list.html:45
 msgid "Clear"
-msgstr ""
+msgstr "Tühjenda"
 
 #: trac/ticket/templates/report_list.html:45
 msgid "Forget last query"
-msgstr ""
+msgstr "Unusta viimane päring"
 
 #: trac/ticket/templates/report_list.html:48
 msgid "Return to Last Query"
-msgstr ""
+msgstr "Tagasi viimasesse päringusse"
 
 #: trac/ticket/templates/report_list.html:51
 msgid ""
 "Continue browsing through the current list of results,\n"
 "              from the last selected report or custom query."
 msgstr ""
+"Jätka viimasest raportist või oma päringust\n"
+"              saadud tulemuste loetelu sirvimist."
 
 #: trac/ticket/templates/report_list.html:60
 msgid "Compose a new ticket query by selecting filters and columns to display."
-msgstr ""
+msgstr "Koosta uus sedelipäring valides filtrid ja veerud mida näidata."
 
 #: trac/ticket/templates/report_list.html:65
 msgid "SQL reports and saved custom queries"
-msgstr ""
+msgstr "SQL raportid ja salvestatud päringud"
 
 #: trac/ticket/templates/report_list.html:67
-#, fuzzy
 msgid "Sort by:"
-msgstr "Raporteeris:"
+msgstr "Sorteeri:"
 
 #: trac/ticket/templates/report_list.html:70
 msgid "Identifier"
-msgstr ""
+msgstr "Identifikaator"
 
 #: trac/ticket/templates/report_list.html:73 trac/wiki/admin.py:197
 msgid "Title"
@@ -4586,6 +4570,8 @@ msgid ""
 "[1:[2:%(name)s]][3:​]\n"
 "          added"
 msgstr ""
+"[1:[2:%(name)s]][3:​]\n"
+"          lisatud"
 
 #: trac/ticket/templates/ticket_change.html:88
 #, python-format
@@ -5313,6 +5299,10 @@ msgid ""
 "            [3:%(size)s]\n"
 "          ]"
 msgstr ""
+"[1:\n"
+"            [2:File size:]\n"
+"            [3:%(size)s]\n"
+"          ]"
 
 #: trac/versioncontrol/templates/browser.html:200
 msgid "Repository Index"
@@ -5635,7 +5625,7 @@ msgstr "Vaata faili"
 #: trac/versioncontrol/templates/repository_index.html:22
 #: trac/versioncontrol/web_ui/browser.py:823
 msgid "Download as Zip archive"
-msgstr ""
+msgstr "Lae alla zip-arhiivina"
 
 #: trac/versioncontrol/templates/dir_entries.html:22
 #: trac/versioncontrol/templates/repository_index.html:26
@@ -6247,11 +6237,11 @@ msgstr "SID"
 
 #: trac/web/session.py:417
 msgid "Auth"
-msgstr ""
+msgstr "Autent"
 
 #: trac/web/session.py:417
 msgid "Last Visit"
-msgstr "Viimatine külastus"
+msgstr "Viimane külastus"
 
 #: trac/web/session.py:418
 msgid "Email"
@@ -6260,7 +6250,7 @@ msgstr "E-post"
 #: trac/web/session.py:427
 #, python-format
 msgid "Session '%(sid)s' already exists"
-msgstr "Sessioon '%(sid)s' on juba olemas"
+msgstr "Seanss '%(sid)s' on juba olemas"
 
 #: trac/web/session.py:438
 #, python-format
@@ -6270,18 +6260,18 @@ msgstr "Vigane atribuut '%(attr)s'"
 #: trac/web/session.py:445
 #, python-format
 msgid "Session '%(sid)s' not found"
-msgstr "Sessiooni '%(sid)s' ei leidu"
+msgstr "Seanssi '%(sid)s' ei leitud"
 
 #: trac/wiki/admin.py:113
 #, python-format
 msgid "Page '%(page)s' not found"
-msgstr "Lehte '%(page)s' ei leidu"
+msgstr ""
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:127 trac/wiki/model.py:174
 #: trac/wiki/web_ui.py:119
 #, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr "Vigane viki lehe nimi '%(name)s'"
+msgstr ""
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -6583,9 +6573,8 @@ msgid ""
 msgstr ""
 
 #: trac/wiki/macros.py:775
-#, fuzzy
 msgid "(no default)"
-msgstr "(vaikimisi)"
+msgstr "(vaikimisi seadistus puudub)"
 
 #: trac/wiki/macros.py:795
 msgid ""
