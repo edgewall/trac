@@ -93,6 +93,8 @@ $ net start tracd
 
 == Using Authentication ==
 
+Tracd allows you to run Trac without the need for Apache, but you can take advantage of Apache's password tools (htpasswd and htdigest) to easily create a password file in the proper format for tracd to use in authentication. (It is also possible to create the password file without htpasswd or htdigest; see below for alternatives)
+
 Tracd provides support for both Basic and Digest authentication. Digest is considered more secure. The examples below use Digest; to use Basic authentication, replace `--auth` with `--basic-auth` in the command line.
 
 The general format for using authentication is:

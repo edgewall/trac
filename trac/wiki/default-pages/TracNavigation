@@ -55,7 +55,7 @@ Relevant excerpt from the TracIni:
 mainnav = wiki,tickets,newticket,timeline,roadmap,browser,search,admin
 }}}
 
-The default order and item names can be found in the source, which at the time of writing [source:trunk/trac/web/chrome.py@10883:397,402-403#L396 is here]
+The default order and item names can be viewed in the [TracIni#trac-section trac section of TracIni].
 
 === Context Navigation #ctxtnav-bar
 

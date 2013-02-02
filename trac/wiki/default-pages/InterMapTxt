@@ -63,6 +63,8 @@ MediaWiki    http://www.mediawiki.org/wiki/
 
 SO  http://stackoverflow.com/questions/ # Question $1 in StackOverflow
 
+Transifex https://www.transifex.com/projects/p/trac/
+
 kwquery      /query?group=status&keywords=~  # Custom query for tickets matching keyword $1
 
 #

@@ -114,7 +114,7 @@ In addition to supporting multiple repositories, there is now a more efficient m
 
 While you can keep the same synchronization as in 0.11 adding the post-commit hook as outlined in TracRepositoryAdmin#Synchronization and TracRepositoryAdmin#ExplicitSync will allow more efficient synchronization and is more or less required for multiple repositories.
 
-Note that if you were using the `trac-post-commit-hook`, ''you're strongly advised to upgrade it'' to the new hook documented in the above references, as the old hook will not work with anything else than the default repository and even for this case, it won't trigger the appropriate notifications.
+Note that if you were using the `trac-post-commit-hook`, ''you're strongly advised to upgrade it'' to the new hook documented in the above references and [TracWorkflow#Howtocombinethetracopt.ticket.commit_updaterwiththetestingworkflow here], as the old hook will not work with anything else than the default repository and even for this case, it won't trigger the appropriate notifications.
 
 ===== Authz permission checking =====
 The authz permission checking has been migrated to a fine-grained permission policy. If you use authz permissions (aka `[trac] authz_file` and `authz_module_name`), you must add `AuthzSourcePolicy` in front of your permission policies in `[trac] permission_policies`. You must also remove `BROWSER_VIEW`, `CHANGESET_VIEW`, `FILE_VIEW` and `LOG_VIEW` from your global permissions (with `trac-admin $ENV permission remove` or the "Permissions" admin panel).
