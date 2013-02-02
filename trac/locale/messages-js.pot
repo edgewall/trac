@@ -1,14 +1,14 @@
 # Translations template for Trac.
-# Copyright (C) 2012 Edgewall Software
+# Copyright (C) 2013 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2013.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.1.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2012-09-17 22:04+0200\n"
+"POT-Creation-Date: 2013-02-02 15:20+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -156,20 +156,20 @@ msgstr ""
 msgid "and"
 msgstr ""
 
-#: trac/htdocs/js/query.js:345
+#: trac/htdocs/js/query.js:350
 msgid " remove:"
 msgstr ""
 
-#: trac/htdocs/js/query.js:355
+#: trac/htdocs/js/query.js:360
 msgid " add:"
 msgstr ""
 
-#: trac/htdocs/js/query.js:384
+#: trac/htdocs/js/query.js:389
 #, python-format
 msgid "Select ticket %(id)s for modification"
 msgstr ""
 
-#: trac/htdocs/js/query.js:395
+#: trac/htdocs/js/query.js:400
 msgid "Toggle selection of all tickets shown in this group"
 msgstr ""
 
