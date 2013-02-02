@@ -7354,6 +7354,3 @@ msgstr ""
 "Les pages qui suivent ont un nom similaire à cette page et sont \n"
 "peut-être en rapport :"
 
-#~ msgid "%(relativetime)s ago"
-#~ msgstr "il y a %(relativetime)s"
-
