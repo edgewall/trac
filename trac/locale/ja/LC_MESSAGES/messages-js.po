@@ -5,9 +5,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.0\n"
+"Project-Id-Version: Trac 1.1.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-27 11:21+0900\n"
+"POT-Creation-Date: 2013-02-02 15:20+0100\n"
 "PO-Revision-Date: 2010-05-25 18:45+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <LL@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -156,20 +156,20 @@ msgstr " "
 msgid "and"
 msgstr "から"
 
-#: trac/htdocs/js/query.js:345
+#: trac/htdocs/js/query.js:350
 msgid " remove:"
 msgstr " 削除:"
 
-#: trac/htdocs/js/query.js:355
+#: trac/htdocs/js/query.js:360
 msgid " add:"
 msgstr " 追加:"
 
-#: trac/htdocs/js/query.js:384
+#: trac/htdocs/js/query.js:389
 #, python-format
 msgid "Select ticket %(id)s for modification"
 msgstr "更新対象としてチケット %(id)s を選択する"
 
-#: trac/htdocs/js/query.js:395
+#: trac/htdocs/js/query.js:400
 msgid "Toggle selection of all tickets shown in this group"
 msgstr "このグループに表示しているすべてのチケットに対し、選択を切り替える"
 

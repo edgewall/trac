@@ -5,9 +5,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.0\n"
+"Project-Id-Version: Trac 1.1.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-27 11:21+0900\n"
+"POT-Creation-Date: 2013-02-02 15:20+0100\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <LL@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: tracopt/mimeview/enscript.py:105
 msgid "Path to the Enscript executable."
@@ -753,7 +753,7 @@ msgstr ""
 "`DefaultPermissionPolicy` (0.11 以前の挙動) と `LegacyAttachmentPolicy` "
 "(ATTACHMENT_* 権限を個々のレルムの権限にマッピング) がデフォルトです。"
 
-#: trac/db/api.py:226
+#: trac/db/api.py:227
 msgid ""
 "Database connection\n"
 "[wiki:TracEnvironment#DatabaseConnectionStrings string] for this\n"
@@ -762,11 +762,11 @@ msgstr ""
 "このプロジェクトのデータベース接続[wiki:TracEnvironment#DatabaseConnectionStrings "
 "文字列]を指定します。"
 
-#: trac/db/api.py:231
+#: trac/db/api.py:232
 msgid "Database backup location"
 msgstr "データベースバックアップの場所を指定します。"
 
-#: trac/db/api.py:234
+#: trac/db/api.py:235
 msgid ""
 "Timeout value for database connection, in seconds.\n"
 "Use '0' to specify ''no timeout''. ''(Since 0.11)''"
@@ -774,7 +774,7 @@ msgstr ""
 "データベース接続のタイムアウトを秒単位で指定します。\n"
 "''タイムアウトなし''を指定するには '0' を使います。''(0.11 以降)''"
 
-#: trac/db/api.py:238
+#: trac/db/api.py:239
 msgid ""
 "Show the SQL queries in the Trac log, at DEBUG level.\n"
 "''(Since 0.11.5)''"
@@ -1034,7 +1034,7 @@ msgstr ""
 "ASCII 文字の倍の幅になります。これは CJK ユーザが期待するものです。\n"
 "''(0.12.2 以降)''"
 
-#: trac/ticket/query.py:817
+#: trac/ticket/query.py:820
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -1047,7 +1047,7 @@ msgstr ""
 "クエリ文字列のどちらかを指定します。\n"
 "(''0.11.2 以降'')"
 
-#: trac/ticket/query.py:825
+#: trac/ticket/query.py:828
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -1060,19 +1060,19 @@ msgstr ""
 "クエリ文字列のどちらかを指定します。\n"
 "(''0.11.2 以降'')"
 
-#: trac/ticket/query.py:833
+#: trac/ticket/query.py:836
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default (''since 0.11'')"
 msgstr "チケットクエリで1ページあたりに表示するチケット数のデフォルトを指定します (''0.11 以降'')"
 
-#: trac/ticket/report.py:116
+#: trac/ticket/report.py:115
 msgid ""
 "Number of tickets displayed per page in ticket reports,\n"
 "by default (''since 0.11'')"
 msgstr "チケットのレポートで1ページあたりに表示するチケット数のデフォルトを指定します (''0.11 以降'')"
 
-#: trac/ticket/report.py:120
+#: trac/ticket/report.py:119
 msgid ""
 "Number of tickets displayed in the rss feeds for reports\n"
 "(''since 0.11'')"
@@ -1218,17 +1218,23 @@ msgstr "タイムラインにチケットの登録と解決だけでなくすべ
 
 #: trac/ticket/web_ui.py:80
 msgid ""
+"Enable the display of component of tickets in the timeline\n"
+"(''since 1.1.1'')."
+msgstr "タイムラインにチケットのコンポーネントに対する値を表示するかどうかを指定します。(''1.1.1 以降'')"
+
+#: trac/ticket/web_ui.py:85
+msgid ""
 "Don't accept tickets with a too big description.\n"
 "(''since 0.11'')."
 msgstr "チケットの詳細が大き過ぎる場合、チケットを受け付けないようにします。(''0.11 以降'')"
 
-#: trac/ticket/web_ui.py:84
+#: trac/ticket/web_ui.py:89
 msgid ""
 "Don't accept tickets with a too big comment.\n"
 "(''since 0.11.2'')"
 msgstr "チケットのコメントが大き過ぎる場合、チケットを受け付けないようにします。(''0.11.2 以降'')"
 
-#: trac/ticket/web_ui.py:88
+#: trac/ticket/web_ui.py:93
 msgid ""
 "Which formatter flavor (e.g. 'html' or 'oneliner') should be\n"
 "used when presenting the description for new tickets.\n"
@@ -1239,7 +1245,7 @@ msgstr ""
 "'oneliner' の場合は、[timeline] abbreviated_messages の設定内容を適用します。\n"
 "(''0.11 以降'')"
 
-#: trac/ticket/web_ui.py:95
+#: trac/ticket/web_ui.py:100
 msgid ""
 "Whether Wiki formatter should respect the new lines present\n"
 "in the Wiki text.\n"
@@ -1252,7 +1258,7 @@ msgstr ""
 "'no') となります。\n"
 "(''0.11 以降'')"
 
-#: trac/ticket/web_ui.py:102
+#: trac/ticket/web_ui.py:107
 msgid ""
 "The base query to be used when linkifying values of ticket\n"
 "fields. The query is a URL query\n"
@@ -1710,79 +1716,78 @@ msgstr ""
 
 #: trac/web/chrome.py:386
 msgid ""
-"Location of the jQuery !JavaScript library (version 1.7.2).\n"
+"Location of the jQuery !JavaScript library (version 1.8.3).\n"
 "\n"
 "An empty value loads jQuery from the copy bundled with Trac.\n"
 "\n"
 "Alternatively, jQuery could be loaded from a CDN, for example:\n"
-"http://code.jquery.com/jquery-1.7.2.min.js,\n"
-"http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js or\n"
-"https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js.\n"
+"http://code.jquery.com/jquery-1.8.3.min.js,\n"
+"http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js or\n"
+"https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js.\n"
 "\n"
 "(''since 1.0'')"
 msgstr ""
-"jQuery !JavaScript ライブラリ (バージョン 1.7.2) の URL を指定します。\n"
+"jQuery !JavaScript ライブラリ (バージョン 1.8.3) の URL を指定します。\n"
 "\n"
 "空の値を指定すると、Trac にバンドルしているコピーを使って jQuery をロードします。\n"
 "\n"
 "もしくは、jQuery を CDN からロードすることができます。例えば "
-"http://code.jquery.com/jquery-1.7.2.min.js、http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js"
-" または https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js "
+"http://code.jquery.com/jquery-1.8.3.min.js、http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js"
+" または https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js "
 "を指定します。\n"
 "\n"
 "(''1.0 以降'')"
 
 #: trac/web/chrome.py:398
 msgid ""
-"Location of the jQuery UI !JavaScript library (version 1.8.21).\n"
+"Location of the jQuery UI !JavaScript library (version 1.9.2).\n"
 "\n"
 "An empty value loads jQuery UI from the copy bundled with Trac.\n"
 "\n"
 "Alternatively, jQuery UI could be loaded from a CDN, for example:\n"
-"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js\n"
 "or\n"
-"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/jquery-ui.min.js.\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js.\n"
 "\n"
 "(''since 1.0'')"
 msgstr ""
-"jQuery UI !JavaScript ライブラリ (バージョン 1.8.21) の URL を指定します。\n"
+"jQuery UI !JavaScript ライブラリ (バージョン 1.9.2) の URL を指定します。\n"
 "\n"
 "空の値を指定すると、Trac にバンドルしているコピーを使って jQuery UI をロードします。\n"
 "\n"
 "もしくは、jQuery UI を CDN からロードすることができます。例えば "
-"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js "
-"または http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/jquery-ui.min.js "
-"を指定します。\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js または"
+" http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js を指定します。"
+"\n"
 "\n"
 "(''1.0 以降'')"
 
 #: trac/web/chrome.py:410
 msgid ""
 "Location of the theme to be used with the jQuery UI !JavaScript\n"
-"library (version 1.8.21).\n"
+"library (version 1.9.2).\n"
 "\n"
 "An empty value loads the custom Trac jQuery UI theme from the copy\n"
 "bundled with Trac.\n"
 "\n"
 "Alternatively, a jQuery UI theme could be loaded from a CDN, for\n"
 "example:\n"
-"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/start"
-"/jquery-ui.css\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/start/jquery-"
+"ui.css\n"
 "or\n"
-"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/themes/start/jquery-"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/start/jquery-"
 "ui.css.\n"
 "\n"
 "(''since 1.0'')"
 msgstr ""
-"jQuery UI !JavaScript ライブラリ (バージョン 1.8.21) で使用するテーマの URL を指定します。\n"
+"jQuery UI !JavaScript ライブラリ (バージョン 1.9.2) で使用するテーマの URL を指定します。\n"
 "\n"
 "空の値を指定すると、Trac にバンドルしているコピーからカスタムの Trac jQuery UI テーマをロードします。\n"
 "\n"
 "もしくは、jQuery UI テーマを CDN からロードすることができます。例えば "
-"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/start"
-"/jquery-ui.css または "
-"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/themes/start/jquery-"
-"ui.css を指定します。\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/start/jquery-"
+"ui.css または http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/start"
+"/jquery-ui.css を指定します。\n"
 "\n"
 "(''1.0 以降'')"
 
