@@ -93,7 +93,7 @@ msgstr "Komentář %(num)s k hlášení #%(id)s byl smazán."
 #: tracopt/ticket/deleter.py:167
 #, python-format
 msgid "Comment %(num)s not found"
-msgstr "Komentář %(num)s nebyl nalezena"
+msgstr "Komentář %(num)s nebyl nalezen"
 
 #: tracopt/ticket/templates/ticket_delete.html:11
 #, python-format
@@ -109,7 +109,7 @@ msgstr "Smazat komentář %(num)s k hlášení #%(id)s"
 #: tracopt/ticket/templates/ticket_delete.html:20
 #, python-format
 msgid "Delete [1:Ticket #%(id)s]"
-msgstr "Smazat [1:Hlášení #%(id)s]"
+msgstr "Smazat [1:Hlášení č.%(id)s ]"
 
 #: tracopt/ticket/templates/ticket_delete.html:32
 msgid "Are you sure you want to delete this ticket?"
@@ -270,7 +270,7 @@ msgstr "Vlastnost %(prop)s se změnila"
 
 #: trac/about.py:47 trac/templates/about.html:10 trac/templates/about.html:29
 msgid "About Trac"
-msgstr "O systému Trac"
+msgstr "O Trac"
 
 #: trac/attachment.py:165
 #, python-format
@@ -279,11 +279,11 @@ msgstr "Příloha '%(title)s' neexistuje."
 
 #: trac/attachment.py:167
 msgid "Invalid Attachment"
-msgstr "Vadná příloha"
+msgstr "Neplatná příloha"
 
 #: trac/attachment.py:234
 msgid "Could not delete attachment"
-msgstr "Přílohu nelze odstranit"
+msgstr "Nelze smazat přílohu"
 
 #: trac/attachment.py:253
 #, python-format
