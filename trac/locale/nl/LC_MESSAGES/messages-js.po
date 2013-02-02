@@ -73,67 +73,65 @@ msgstr "%(title)s (klik om kolom te verbergen)"
 #. and showMonthAfterYear
 #: trac/htdocs/js/jquery-ui-i18n.js:4
 msgid "$month$year"
-msgstr ""
+msgstr "$month$year"
 
 #. TRANSLATOR: Link that closes the datepicker
 #. TRANSLATOR: Link that closes the timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:39
 msgid "Done"
-msgstr ""
+msgstr "Gereed"
 
 #. TRANSLATOR: Link to the previous month in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:9
 msgid "Prev"
-msgstr ""
+msgstr "Vorige"
 
 #. TRANSLATOR: Link to the next month in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:11
 msgid "Next"
-msgstr ""
+msgstr "Volgende"
 
 #. TRANSLATOR: Link to the current day in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:13
 msgid "Today"
-msgstr ""
+msgstr "Vandaag"
 
 #. TRANSLATOR: Heading for the week-of-the-year column in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:20
 msgid "Wk"
-msgstr ""
+msgstr "Wk"
 
 #. TRANSLATOR: Heading of the standalone timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:30
 msgid "Choose Time"
-msgstr ""
+msgstr "Kies Tijd"
 
 #. TRANSLATOR: Time selector label
 #: trac/htdocs/js/jquery-ui-i18n.js:32
 msgid "Time"
-msgstr ""
+msgstr "Tijd"
 
 #. TRANSLATOR: Time labels in the timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:34
-#, fuzzy
 msgid "Hour"
-msgstr "of"
+msgstr "Uur"
 
 #: trac/htdocs/js/jquery-ui-i18n.js:34
 msgid "Minute"
-msgstr ""
+msgstr "Minuut"
 
 #: trac/htdocs/js/jquery-ui-i18n.js:34
 msgid "Second"
-msgstr ""
+msgstr "Seconde"
 
 #: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Time Zone"
-msgstr ""
+msgstr "Tijdzone"
 
 #. TRANSLATOR: Link to pick the current time in the timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:37
-#, fuzzy
 msgid "Now"
-msgstr "nee"
+msgstr "Nu"
 
 #: trac/htdocs/js/query.js:132
 msgid "A filter already exists for that property"
@@ -161,20 +159,20 @@ msgstr "en"
 
 #: trac/htdocs/js/query.js:350
 msgid " remove:"
-msgstr ""
+msgstr "verwijder:"
 
 #: trac/htdocs/js/query.js:360
 msgid " add:"
-msgstr ""
+msgstr "voeg toe:"
 
 #: trac/htdocs/js/query.js:389
 #, python-format
 msgid "Select ticket %(id)s for modification"
-msgstr ""
+msgstr "Selecteer ticket %(id)s om aan te passen"
 
 #: trac/htdocs/js/query.js:400
 msgid "Toggle selection of all tickets shown in this group"
-msgstr ""
+msgstr "Wijzig selectie van alle getoonde tickets uit deze groep"
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
