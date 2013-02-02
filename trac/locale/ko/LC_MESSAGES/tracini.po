@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
-"POT-Creation-Date: 2013-01-27 11:21+0900\n"
+"POT-Creation-Date: 2013-02-02 15:20+0100\n"
 "PO-Revision-Date: 2013-01-28 03:17+0000\n"
 "Last-Translator: YT H <dev@theYT.net>\n"
 "Language-Team: Korean "
@@ -878,19 +878,19 @@ msgstr ""
 "튜플의 첫 번째 멤버를 보십시오.\n"
 "비활성화 된 필터는 사용자가 검색 페이지에서 수동으로 다시 활성화 할 수 있습니다. (''0.12 버전부터'')"
 
-#: trac/ticket/api.py:166
+#: trac/ticket/api.py:188
 msgid ""
 "In this section, you can define additional fields for tickets. See\n"
 "TracTicketsCustomFields for more details."
 msgstr "이 구역에서, 티켓의 추가 필드를 정의할 수 있습니다. 자세한 정보는 [[TracTicketsCustomFields]]를 보십시오."
 
-#: trac/ticket/api.py:170
+#: trac/ticket/api.py:192
 msgid ""
 "Ordered list of workflow controllers to use for ticket actions\n"
 "(''since 0.11'')."
 msgstr "티켓 작업에 사용될 작업 흐름 컨트롤러에 대한 정렬된 목록입니다 (''0.11 버전부터'')."
 
-#: trac/ticket/api.py:176
+#: trac/ticket/api.py:198
 msgid ""
 "Make the owner field of tickets use a drop-down menu.\n"
 "Be sure to understand the performance implications before activating\n"
@@ -911,51 +911,51 @@ msgstr ""
 "유의하십시오.\n"
 "(''0.9 버전부터'')"
 
-#: trac/ticket/api.py:187
+#: trac/ticket/api.py:209
 msgid "Default version for newly created tickets."
 msgstr "새로 생성될 티켓의 기본 버전입니다."
 
-#: trac/ticket/api.py:190
+#: trac/ticket/api.py:212
 msgid "Default type for newly created tickets (''since 0.9'')."
 msgstr "새로 생성될 티켓의 기본 유형입니다 (''0.9 버전부터'')."
 
-#: trac/ticket/api.py:193
+#: trac/ticket/api.py:215
 msgid "Default priority for newly created tickets."
 msgstr "새로 생성될 티켓의 기본 우선순위입니다."
 
-#: trac/ticket/api.py:196
+#: trac/ticket/api.py:218
 msgid "Default milestone for newly created tickets."
 msgstr "새로 생성될 티켓의 기본 마일스톤입니다."
 
-#: trac/ticket/api.py:199
+#: trac/ticket/api.py:221
 msgid "Default component for newly created tickets."
 msgstr "새로 생성될 티켓의 기본 컴포넌트입니다."
 
-#: trac/ticket/api.py:202
+#: trac/ticket/api.py:224
 msgid "Default severity for newly created tickets."
 msgstr "새로 생성될 티켓의 기본 중요도입니다."
 
-#: trac/ticket/api.py:205
+#: trac/ticket/api.py:227
 msgid "Default summary (title) for newly created tickets."
 msgstr "새로 생성될 티켓의 기본 개요(제목)입니다."
 
-#: trac/ticket/api.py:208
+#: trac/ticket/api.py:230
 msgid "Default description for newly created tickets."
 msgstr "새로 생성될 티켓의 기본 설명입니다."
 
-#: trac/ticket/api.py:211
+#: trac/ticket/api.py:233
 msgid "Default keywords for newly created tickets."
 msgstr "새로 생성될 티켓의 기본 키워드입니다."
 
-#: trac/ticket/api.py:214
+#: trac/ticket/api.py:236
 msgid "Default owner for newly created tickets."
 msgstr "새로 생성될 티켓의 기본 소유자입니다."
 
-#: trac/ticket/api.py:217
+#: trac/ticket/api.py:239
 msgid "Default cc: list for newly created tickets."
 msgstr "새로 생성될 티켓의 기본 참조자 목록입니다."
 
-#: trac/ticket/api.py:220
+#: trac/ticket/api.py:242
 msgid ""
 "Default resolution for resolving (closing) tickets\n"
 "(''since 0.11'')."
@@ -975,23 +975,23 @@ msgstr ""
 "이 컴포넌트는 `trac.ini` 파일의 현재 구역을 통해 업무 흐름이 구성될 수 있도록 합니다. 자세한 정보는 "
 "[TracWorkflow]를 보십시오. (''0.11 버전부터'')"
 
-#: trac/ticket/notification.py:36
+#: trac/ticket/notification.py:37
 msgid "Always send notifications to the ticket owner (''since 0.9'')."
 msgstr "항상 티켓 소유자에게 알림을 전송합니다 (''0.9 버전부터'')."
 
-#: trac/ticket/notification.py:40
+#: trac/ticket/notification.py:41
 msgid ""
 "Always send notifications to any address in the ''reporter''\n"
 "field."
 msgstr "항상 티켓 ''작성자'' 필드의 모든 주소에 알림을 전송합니다."
 
-#: trac/ticket/notification.py:46
+#: trac/ticket/notification.py:47
 msgid ""
 "Always send notifications to the person who causes the ticket\n"
 "property change and to any previous updater of that ticket."
 msgstr "티켓 속성을 변경한 사람이나 이전에 티켓을 변경한 적이 있는 사용자에게 항상 알림을 전송합니다."
 
-#: trac/ticket/notification.py:51
+#: trac/ticket/notification.py:52
 msgid ""
 "A Genshi text template snippet used to get the notification subject.\n"
 "\n"
@@ -1004,7 +1004,7 @@ msgstr ""
 "제목 템플릿의 기본값은 `$prefix #$ticket.id: $summary`입니다. `$prefix`는 "
 "`smtp_subject_prefix` 설정의 값입니다. (''0.11 버전부터'')"
 
-#: trac/ticket/notification.py:59
+#: trac/ticket/notification.py:60
 msgid ""
 "Like ticket_subject_template but for batch modifications.\n"
 "\n"
@@ -1015,7 +1015,7 @@ msgstr ""
 "\n"
 "템플릿의 기본값은 `$prefix Batch modify: $tickets_descr`입니다. (''1.0 버전부터'')"
 
-#: trac/ticket/notification.py:66
+#: trac/ticket/notification.py:67
 msgid ""
 "Which width of ambiguous characters (e.g. 'single' or\n"
 "'double') should be used in the table of notification mail.\n"
@@ -1030,7 +1030,7 @@ msgstr ""
 "'single'은 US-ASCII 문자의 너비와 같으며, 대부분의 사용자에게 적용됩니다.\n"
 "'double'은 US-ASCII 문자 너비의 두 배이며, 한중일 사용자에게 적용됩니다. (''0.12.2 버전부터'')"
 
-#: trac/ticket/query.py:824
+#: trac/ticket/query.py:820
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -1043,7 +1043,7 @@ msgstr ""
 "[TracQuery#UsingTracLinks Trac 링크]에서 `?`로 시작하는 URL 질의 문자열입니다.\n"
 "(''0.11.2 버전부터'')"
 
-#: trac/ticket/query.py:832
+#: trac/ticket/query.py:828
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -1056,19 +1056,19 @@ msgstr ""
 "[TracQuery#UsingTracLinks Trac 링크]에서 `?`로 시작하는 URL 질의 문자열입니다.\n"
 "(''0.11.2 버전부터'')"
 
-#: trac/ticket/query.py:840
+#: trac/ticket/query.py:836
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default (''since 0.11'')"
 msgstr "티켓 검색에서, 기본적으로 페이지 당 보여 줄 티켓의 수입니다 (''0.11 버전부터'')."
 
-#: trac/ticket/report.py:116
+#: trac/ticket/report.py:115
 msgid ""
 "Number of tickets displayed per page in ticket reports,\n"
 "by default (''since 0.11'')"
 msgstr "티켓 보고서에서, 기본적으로 페이지 당 보여 줄 티켓의 수입니다 (''0.11 버전부터'')."
 
-#: trac/ticket/report.py:120
+#: trac/ticket/report.py:119
 msgid ""
 "Number of tickets displayed in the rss feeds for reports\n"
 "(''since 0.11'')"
@@ -1207,25 +1207,31 @@ msgstr ""
 "`ITicketGroupStatsProvider`를 구현하는 컴포넌트의 이름입니다. 이 컴포넌트는 마일스톤 보기에 표시할 티켓 "
 "그룹에 대한 통계를 수집하는 데 사용됩니다."
 
-#: trac/ticket/web_ui.py:75
+#: trac/ticket/web_ui.py:76
 msgid ""
 "Enable the display of all ticket changes in the timeline, not only\n"
 "open / close operations (''since 0.9'')."
 msgstr "열기/닫기 동작 이외에, 모든 티켓 변경 사항이 타임라인에 표시되도록 합니다 (''0.9 버전부터'')."
 
-#: trac/ticket/web_ui.py:79
+#: trac/ticket/web_ui.py:80
+msgid ""
+"Enable the display of component of tickets in the timeline\n"
+"(''since 1.1.1'')."
+msgstr ""
+
+#: trac/ticket/web_ui.py:85
 msgid ""
 "Don't accept tickets with a too big description.\n"
 "(''since 0.11'')."
 msgstr "너무 큰 용량의 설명이 있는 티켓을 허용하지 않습니다. (''0.11 버전부터'')"
 
-#: trac/ticket/web_ui.py:83
+#: trac/ticket/web_ui.py:89
 msgid ""
 "Don't accept tickets with a too big comment.\n"
 "(''since 0.11.2'')"
 msgstr "너무 큰 용량의 덧글이 있는 티켓을 허용하지 않습니다. (''0.11.2 버전부터'')"
 
-#: trac/ticket/web_ui.py:87
+#: trac/ticket/web_ui.py:93
 msgid ""
 "Which formatter flavor (e.g. 'html' or 'oneliner') should be\n"
 "used when presenting the description for new tickets.\n"
@@ -1235,7 +1241,7 @@ msgstr ""
 "새로운 티켓에 대한 설명을 보여줄 때 어떠한 포맷터 취향(예: 'html' 또는 'oneliner')이 사용되는지 지정합니다.\n"
 "'oneliner'이면, [timeline]의 abbreviated_messages 설정이 적용됩니다. (''0.11 버전부터'')"
 
-#: trac/ticket/web_ui.py:94
+#: trac/ticket/web_ui.py:100
 msgid ""
 "Whether Wiki formatter should respect the new lines present\n"
 "in the Wiki text.\n"
@@ -1247,7 +1253,7 @@ msgstr ""
 "'default'로 설정하면, 새로운 저장소에 대해서는 'yes'와 동일하지만 업그레이드 된 저장소에서는 이전 동작(예: "
 "'no')을 유지합니다. (''0.11 버전부터'')"
 
-#: trac/ticket/web_ui.py:101
+#: trac/ticket/web_ui.py:107
 msgid ""
 "The base query to be used when linkifying values of ticket\n"
 "fields. The query is a URL query\n"
@@ -1704,80 +1710,50 @@ msgstr ""
 
 #: trac/web/chrome.py:386
 msgid ""
-"Location of the jQuery !JavaScript library (version 1.7.2).\n"
+"Location of the jQuery !JavaScript library (version 1.8.3).\n"
 "\n"
 "An empty value loads jQuery from the copy bundled with Trac.\n"
 "\n"
 "Alternatively, jQuery could be loaded from a CDN, for example:\n"
-"http://code.jquery.com/jquery-1.7.2.min.js,\n"
-"http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js or\n"
-"https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js.\n"
+"http://code.jquery.com/jquery-1.8.3.min.js,\n"
+"http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js or\n"
+"https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js.\n"
 "\n"
 "(''since 1.0'')"
 msgstr ""
-"jQuery !JavaScript 라이브러리의 경로입니다 (1.7.2 버전).\n"
-"\n"
-"빈 값을 지정하면 Trac에 동봉된 jQuery 파일을 사용합니다.\n"
-"\n"
-"또한, jQuery는 CDN에서 로드될 수도 있습니다. 다음은 예제 주소입니다:\n"
-"http://code.jquery.com/jquery-1.7.2.min.js,\n"
-"http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js,\n"
-"https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js.\n"
-"\n"
-"(''1.0 버전부터'')"
 
 #: trac/web/chrome.py:398
 msgid ""
-"Location of the jQuery UI !JavaScript library (version 1.8.21).\n"
+"Location of the jQuery UI !JavaScript library (version 1.9.2).\n"
 "\n"
 "An empty value loads jQuery UI from the copy bundled with Trac.\n"
 "\n"
 "Alternatively, jQuery UI could be loaded from a CDN, for example:\n"
-"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js\n"
 "or\n"
-"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/jquery-ui.min.js.\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js.\n"
 "\n"
 "(''since 1.0'')"
 msgstr ""
-"jQuery UI !JavaScript 라이브러리의 경로입니다 (1.8.21 버전).\n"
-"\n"
-"빈 값을 지정하면 Trac에 동봉된 jQuery UI 파일을 사용합니다.\n"
-"\n"
-"또한, jQuery UI는 CDN에서 로드될 수도 있습니다. 다음은 예제 주소입니다:\n"
-"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js,\n"
-"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/jquery-ui.min.js.\n"
-"\n"
-"(''1.0 버전부터'')"
 
 #: trac/web/chrome.py:410
 msgid ""
 "Location of the theme to be used with the jQuery UI !JavaScript\n"
-"library (version 1.8.21).\n"
+"library (version 1.9.2).\n"
 "\n"
 "An empty value loads the custom Trac jQuery UI theme from the copy\n"
 "bundled with Trac.\n"
 "\n"
 "Alternatively, a jQuery UI theme could be loaded from a CDN, for\n"
 "example:\n"
-"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/start"
-"/jquery-ui.css\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/start/jquery-"
+"ui.css\n"
 "or\n"
-"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/themes/start/jquery-"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/start/jquery-"
 "ui.css.\n"
 "\n"
 "(''since 1.0'')"
 msgstr ""
-"jQuery UI !JavaScript 라이브러리에서 사용되는 테마 파일의 경로입니다 (1.8.21 버전).\n"
-"\n"
-"빈 값을 지정하면 Trac에 동봉된 Trac 사용자 정의 jQuery UI 테마를 사용합니다.\n"
-"\n"
-"또한, jQuery UI 테마는 CDN에서 로드될 수도 있습니다. 다음은 예제 주소입니다:\n"
-"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/start"
-"/jquery-ui.css,\n"
-"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/themes/start/jquery-"
-"ui.css.\n"
-"\n"
-"(''1.0 버전부터'')"
 
 #: trac/web/chrome.py:425
 msgid ""
@@ -2061,4 +2037,80 @@ msgstr ""
 #: trac/wiki/web_ui.py:64
 msgid "Maximum allowed wiki page size in bytes. (''since 0.11.2'')"
 msgstr "위키 페이지의 최대 크기(바이트)입니다. (''0.11.2 버전부터'')"
+
+#~ msgid ""
+#~ "Location of the jQuery !JavaScript library (version 1.7.2).\n"
+#~ "\n"
+#~ "An empty value loads jQuery from the copy bundled with Trac.\n"
+#~ "\n"
+#~ "Alternatively, jQuery could be loaded from a CDN, for example:\n"
+#~ "http://code.jquery.com/jquery-1.7.2.min.js,\n"
+#~ "http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js or\n"
+#~ "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js.\n"
+#~ "\n"
+#~ "(''since 1.0'')"
+#~ msgstr ""
+#~ "jQuery !JavaScript 라이브러리의 경로입니다 (1.7.2 버전).\n"
+#~ "\n"
+#~ "빈 값을 지정하면 Trac에 동봉된 jQuery 파일을 사용합니다.\n"
+#~ "\n"
+#~ "또한, jQuery는 CDN에서 로드될 수도 있습니다. 다음은 예제 주소입니다:\n"
+#~ "http://code.jquery.com/jquery-1.7.2.min.js,\n"
+#~ "http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js,\n"
+#~ "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js.\n"
+#~ "\n"
+#~ "(''1.0 버전부터'')"
+
+#~ msgid ""
+#~ "Location of the jQuery UI !JavaScript library (version 1.8.21).\n"
+#~ "\n"
+#~ "An empty value loads jQuery UI from the copy bundled with Trac.\n"
+#~ "\n"
+#~ "Alternatively, jQuery UI could be loaded from a CDN, for example:\n"
+#~ "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-"
+#~ "ui.min.js\n"
+#~ "or\n"
+#~ "http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/jquery-ui.min.js.\n"
+#~ "\n"
+#~ "(''since 1.0'')"
+#~ msgstr ""
+#~ "jQuery UI !JavaScript 라이브러리의 경로입니다 (1.8.21 버전).\n"
+#~ "\n"
+#~ "빈 값을 지정하면 Trac에 동봉된 jQuery UI 파일을 사용합니다.\n"
+#~ "\n"
+#~ "또한, jQuery UI는 CDN에서 로드될 수도 있습니다. 다음은 예제 주소입니다:\n"
+#~ "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-"
+#~ "ui.min.js,\n"
+#~ "http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/jquery-ui.min.js.\n"
+#~ "\n"
+#~ "(''1.0 버전부터'')"
+
+#~ msgid ""
+#~ "Location of the theme to be used with the jQuery UI !JavaScript\n"
+#~ "library (version 1.8.21).\n"
+#~ "\n"
+#~ "An empty value loads the custom Trac jQuery UI theme from the copy\n"
+#~ "bundled with Trac.\n"
+#~ "\n"
+#~ "Alternatively, a jQuery UI theme could be loaded from a CDN, for\n"
+#~ "example:\n"
+#~ "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/start"
+#~ "/jquery-ui.css\n"
+#~ "or\n"
+#~ "http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/themes/start"
+#~ "/jquery-ui.css.\n"
+#~ "\n"
+#~ "(''since 1.0'')"
+#~ msgstr ""
+#~ "jQuery UI !JavaScript 라이브러리에서 사용되는 테마 파일의 경로입니다 (1.8.21 버전).\n"
+#~ "\n"
+#~ "빈 값을 지정하면 Trac에 동봉된 Trac 사용자 정의 jQuery UI 테마를 사용합니다.\n"
+#~ "\n"
+#~ "또한, jQuery UI 테마는 CDN에서 로드될 수도 있습니다. 다음은 예제 주소입니다:\n"
+#~ "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/start"
+#~ "/jquery-ui.css,\n"
+#~ "http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/themes/start"
+#~ "/jquery-ui.css.\n"
+#~ "\n"
+#~ "(''1.0 버전부터'')"
 

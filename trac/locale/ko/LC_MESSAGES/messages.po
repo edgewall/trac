@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
-"POT-Creation-Date: 2013-01-27 11:21+0900\n"
+"POT-Creation-Date: 2013-02-02 15:20+0100\n"
 "PO-Revision-Date: 2013-01-28 03:53+0000\n"
 "Last-Translator: YT H <dev@theYT.net>\n"
 "Language-Team: Korean "
@@ -189,7 +189,7 @@ msgstr ""
 "차이점 비교가 일치하지 않음: 베이스는 %(oldnode)s(%(oldrev)s 리비전의 %(oldpath)s)이고 타겟은 "
 "%(newnode)s(%(newrev)s 리비전의 %(newpath)s)입니다."
 
-#: tracopt/versioncontrol/svn/svn_fs.py:823
+#: tracopt/versioncontrol/svn/svn_fs.py:817
 #, python-format
 msgid "svn blame failed on %(path)s: %(error)s"
 msgstr "%(path)s에 대한 svn blame 실패: %(error)s"
@@ -363,9 +363,9 @@ msgstr "업로드된 파일이 없습니다."
 msgid "Can't upload empty file"
 msgstr "빈 파일을 업로드할 수 없습니다."
 
-#: trac/attachment.py:708
-#, python-format
-msgid "Maximum attachment size: %(num)s bytes"
+#: trac/attachment.py:709
+#, fuzzy, python-format
+msgid "Maximum attachment size: %(num)s"
 msgstr "최대 첨부파일 사이즈: %(num)s 바이트"
 
 #: trac/attachment.py:709
@@ -401,9 +401,9 @@ msgstr ""
 msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (삭제)"
 
-#: trac/attachment.py:803
-#, python-format
-msgid "Maximum total attachment size: %(num)s bytes"
+#: trac/attachment.py:804
+#, fuzzy, python-format
+msgid "Maximum total attachment size: %(num)s"
 msgstr "첨부 파일 합계 최대 크기: %(num)s 바이트"
 
 #: trac/attachment.py:804
@@ -448,7 +448,7 @@ msgid "Size"
 msgstr "크기"
 
 #: trac/attachment.py:1070 trac/templates/history_view.html:30
-#: trac/ticket/templates/ticket.html:350
+#: trac/ticket/templates/ticket.html:354
 #: trac/versioncontrol/templates/revisionlog.html:112
 msgid "Author"
 msgstr "작성자"
@@ -458,8 +458,8 @@ msgid "Date"
 msgstr "날짜"
 
 #: trac/attachment.py:1071 trac/templates/attachment.html:93
-#: trac/ticket/api.py:299 trac/ticket/templates/ticket.html:379
-#: trac/ticket/templates/ticket_box.html:92
+#: trac/ticket/api.py:321 trac/ticket/templates/ticket.html:383
+#: trac/ticket/templates/ticket_box.html:93
 msgid "Description"
 msgstr "상세 설명"
 
@@ -679,7 +679,7 @@ msgstr "사용자"
 
 #: trac/perm.py:656 trac/admin/templates/admin_perms.html:63
 #: trac/ticket/templates/batch_modify.html:37
-#: trac/ticket/templates/ticket.html:321
+#: trac/ticket/templates/ticket.html:325
 msgid "Action"
 msgstr "작업"
 
@@ -1002,7 +1002,7 @@ msgstr "제목 없음"
 
 #: trac/admin/web_ui.py:192 trac/ticket/admin.py:66 trac/ticket/admin.py:95
 #: trac/ticket/admin.py:275 trac/ticket/admin.py:455 trac/ticket/admin.py:607
-#: trac/ticket/admin.py:690 trac/ticket/report.py:248
+#: trac/ticket/admin.py:690 trac/ticket/report.py:247
 #: trac/ticket/roadmap.py:779 trac/versioncontrol/admin.py:215
 msgid "Your changes have been saved."
 msgstr "변경 내용이 저장되었습니다."
@@ -1166,7 +1166,7 @@ msgid "URL:"
 msgstr "URL:"
 
 #: trac/admin/templates/admin_basics.html:29
-#: trac/ticket/templates/ticket.html:237
+#: trac/ticket/templates/ticket.html:239
 msgid "Description:"
 msgstr "상세 설명:"
 
@@ -1253,7 +1253,7 @@ msgid "Add"
 msgstr "추가"
 
 #: trac/admin/templates/admin_components.html:80 trac/ticket/admin.py:210
-#: trac/ticket/api.py:293 trac/ticket/web_ui.py:1455
+#: trac/ticket/api.py:315 trac/ticket/web_ui.py:1498
 msgid "Owner"
 msgstr "소유자"
 
@@ -1407,7 +1407,7 @@ msgstr "완료 기한"
 msgid "Completed"
 msgstr "완료됨"
 
-#: trac/admin/templates/admin_milestones.html:107 trac/ticket/web_ui.py:194
+#: trac/admin/templates/admin_milestones.html:107 trac/ticket/web_ui.py:200
 msgid "Tickets"
 msgstr "티켓"
 
@@ -1519,7 +1519,7 @@ msgid "License:"
 msgstr "라이선스:"
 
 #: trac/admin/templates/admin_plugins.html:124 trac/ticket/admin.py:77
-#: trac/ticket/api.py:306
+#: trac/ticket/api.py:328
 msgid "Component"
 msgstr "컴포넌트"
 
@@ -1978,11 +1978,11 @@ msgstr "저장소 경로 %(path)s 탐색"
 msgid "Search query too short. Query must be at least %(num)s characters long."
 msgstr "검색 질의문이 너무 짧습니다. 질의문은 최소 %(num)s 글자보다 길어야 합니다."
 
-#: trac/search/web_ui.py:245 trac/ticket/query.py:785 trac/ticket/report.py:459
+#: trac/search/web_ui.py:245 trac/ticket/query.py:781 trac/ticket/report.py:459
 msgid "Next Page"
 msgstr "다음 페이지"
 
-#: trac/search/web_ui.py:251 trac/ticket/query.py:790 trac/ticket/report.py:462
+#: trac/search/web_ui.py:251 trac/ticket/query.py:786 trac/ticket/report.py:462
 msgid "Previous Page"
 msgstr "이전 페이지"
 
@@ -2071,7 +2071,7 @@ msgstr "패키지"
 
 #: trac/templates/about.html:56 trac/templates/about.html:69
 #: trac/templates/history_view.html:28 trac/ticket/admin.py:431
-#: trac/ticket/api.py:307
+#: trac/ticket/api.py:329
 msgid "Version"
 msgstr "버전"
 
@@ -2127,7 +2127,7 @@ msgstr "(용량 제한 %(value)s)"
 msgid "Attachment Info"
 msgstr "첨부 파일 정보"
 
-#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:355
+#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:359
 #: trac/wiki/templates/wiki_edit_form.html:42
 msgid "Your email or username:"
 msgstr "메일 주소 또는 사용자 이름:"
@@ -2157,7 +2157,7 @@ msgid "Attach another file"
 msgstr "다른 파일 첨부하기"
 
 #: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:21
-#: trac/templates/macros.html:19 trac/util/text.py:621
+#: trac/templates/macros.html:19 trac/util/text.py:622
 #: trac/versioncontrol/templates/browser.html:189
 #: trac/versioncontrol/templates/dir_entries.html:17
 #, python-format
@@ -2244,7 +2244,7 @@ msgstr "공백문자 차이"
 
 #: trac/templates/diff_options.html:50
 #: trac/ticket/templates/milestone_view.html:57
-#: trac/ticket/templates/query.html:220
+#: trac/ticket/templates/query.html:223
 #: trac/ticket/templates/report_view.html:49
 #: trac/ticket/templates/roadmap.html:28
 #: trac/timeline/templates/timeline.html:36
@@ -2327,7 +2327,7 @@ msgstr "추가됨"
 msgid "Removed"
 msgstr "삭제됨"
 
-#: trac/templates/diff_view.html:70 trac/ticket/api.py:336
+#: trac/templates/diff_view.html:70 trac/ticket/api.py:358
 #: trac/versioncontrol/templates/changeset.html:204
 #: trac/versioncontrol/templates/revisionlog.html:92 trac/wiki/admin.py:197
 msgid "Modified"
@@ -2536,7 +2536,7 @@ msgstr ""
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:44
-#: trac/ticket/templates/ticket.html:378
+#: trac/ticket/templates/ticket.html:382
 msgid "Attachments"
 msgstr "첨부 파일 목록"
 
@@ -2563,10 +2563,8 @@ msgid "(The file is empty)"
 msgstr "(파일이 비어있습니다)"
 
 #: trac/templates/preview_file.html:19
-#, python-format
-msgid ""
-"[1:HTML preview not available], since the file size exceeds %(size)s "
-"bytes."
+#, fuzzy, python-format
+msgid "[1:HTML preview not available], since the file size exceeds %(size)s."
 msgstr "파일 크기가 %(size)s 바이트를 초과하였기 때문에, [1:HTML 미리보기를 이용할 수 없습니다]."
 
 #: trac/templates/preview_file.html:22
@@ -2647,7 +2645,7 @@ msgstr "\"%(name)s\" 컴포넌트가 이미 존재합니다."
 msgid "The component \"%(name)s\" has been added."
 msgstr "\"%(name)s\" 컴포넌트가 추가되었습니다."
 
-#: trac/ticket/admin.py:122 trac/ticket/model.py:859 trac/ticket/model.py:878
+#: trac/ticket/admin.py:122 trac/ticket/model.py:908 trac/ticket/model.py:927
 msgid "Invalid component name."
 msgstr "컴포넌트 이름이 유효하지 않습니다."
 
@@ -2664,7 +2662,7 @@ msgstr "선택한 컴퍼넌트가 없습니다."
 msgid "The selected components have been removed."
 msgstr "선택한 컴포넌트가 제거되었습니다."
 
-#: trac/ticket/admin.py:235 trac/ticket/api.py:305
+#: trac/ticket/admin.py:235 trac/ticket/api.py:327
 msgid "Milestone"
 msgstr "마일스톤"
 
@@ -2686,7 +2684,7 @@ msgstr "\"%(name)s\" 마일스톤이 이미 존재합니다."
 msgid "The milestone \"%(name)s\" has been added."
 msgstr "\"%(name)s\" 마일스톤이 추가되었습니다."
 
-#: trac/ticket/admin.py:305 trac/ticket/model.py:1038 trac/ticket/model.py:1060
+#: trac/ticket/admin.py:305 trac/ticket/model.py:1087 trac/ticket/model.py:1109
 msgid "Invalid milestone name."
 msgstr "마일스톤 이름이 유효하지 않습니다."
 
@@ -2713,7 +2711,7 @@ msgstr "\"%(name)s\" 버전이 이미 존재합니다."
 msgid "The version \"%(name)s\" has been added."
 msgstr "\"%(name)s\" 버전이 추가되었습니다."
 
-#: trac/ticket/admin.py:484 trac/ticket/model.py:1165 trac/ticket/model.py:1183
+#: trac/ticket/admin.py:484 trac/ticket/model.py:1214 trac/ticket/model.py:1232
 msgid "Invalid version name."
 msgstr "버전 이름이 유효하지 않습니다."
 
@@ -2778,7 +2776,7 @@ msgstr "가능한 값들"
 msgid "Invalid up/down value: %(value)s"
 msgstr "유효하지 않은 업/다운 값: %(value)s"
 
-#: trac/ticket/admin.py:777 trac/ticket/api.py:304
+#: trac/ticket/admin.py:777 trac/ticket/api.py:326
 msgid "Priority"
 msgstr "우선 순위"
 
@@ -2786,7 +2784,7 @@ msgstr "우선 순위"
 msgid "Priorities"
 msgstr "우선 순위"
 
-#: trac/ticket/admin.py:783 trac/ticket/api.py:309
+#: trac/ticket/admin.py:783 trac/ticket/api.py:331
 msgid "Resolution"
 msgstr "해결 방법"
 
@@ -2794,7 +2792,7 @@ msgstr "해결 방법"
 msgid "Resolutions"
 msgstr "해결 방법"
 
-#: trac/ticket/admin.py:789 trac/ticket/api.py:308
+#: trac/ticket/admin.py:789 trac/ticket/api.py:330
 msgid "Severity"
 msgstr "중요도"
 
@@ -2819,71 +2817,76 @@ msgstr "<number>는 숫자여야 합니다."
 msgid "Ticket #%(num)s and all associated data removed."
 msgstr "#%(num)s 티켓과, 관련된 모든 데이터가 삭제됨."
 
-#: trac/ticket/api.py:257
+#: trac/ticket/api.py:279
 msgid "Attachment"
 msgstr "첨부 파일"
 
-#: trac/ticket/api.py:287
+#: trac/ticket/api.py:309
 msgid "Summary"
 msgstr "제목"
 
-#: trac/ticket/api.py:289 trac/ticket/templates/ticket.html:351
+#: trac/ticket/api.py:311 trac/ticket/templates/ticket.html:355
 msgid "Reporter"
 msgstr "작성자"
 
-#: trac/ticket/api.py:302 trac/versioncontrol/admin.py:113
+#: trac/ticket/api.py:324 trac/versioncontrol/admin.py:113
 #: trac/versioncontrol/templates/admin_repositories.html:125
 msgid "Type"
 msgstr "종류"
 
-#: trac/ticket/api.py:303
+#: trac/ticket/api.py:325
 msgid "Status"
 msgstr "상태"
 
-#: trac/ticket/api.py:328
+#: trac/ticket/api.py:350
 msgid "Keywords"
 msgstr "키워드"
 
-#: trac/ticket/api.py:330
+#: trac/ticket/api.py:352
 msgid "Cc"
 msgstr "참조"
 
-#: trac/ticket/api.py:334
+#: trac/ticket/api.py:356
 msgid "Created"
 msgstr "작성됨"
 
-#: trac/ticket/api.py:480
+#: trac/ticket/api.py:504
 #, python-format
 msgid "Tickets %(ranges)s"
 msgstr "티켓 %(ranges)s"
 
-#: trac/ticket/api.py:504
+#: trac/ticket/api.py:528
 #, python-format
 msgid "Comment %(cnum)s for Ticket #%(id)s"
 msgstr "티켓 #%(id)s의 덧글 %(cnum)s"
 
-#: trac/ticket/api.py:529
+#: trac/ticket/api.py:553
 #, python-format
 msgid "Ticket #%(shortname)s"
 msgstr "티켓 #%(shortname)s"
 
-#: trac/ticket/batch.py:95
+#: trac/ticket/batch.py:63
+#, python-format
+msgid "The changes could not be saved: %(message)s"
+msgstr ""
+
+#: trac/ticket/batch.py:106
 msgid "add"
 msgstr "추가"
 
-#: trac/ticket/batch.py:96
+#: trac/ticket/batch.py:107
 msgid "remove"
 msgstr "삭제"
 
-#: trac/ticket/batch.py:97
+#: trac/ticket/batch.py:108
 msgid "add / remove"
 msgstr "추가 / 삭제"
 
-#: trac/ticket/batch.py:98
+#: trac/ticket/batch.py:109
 msgid "set to"
 msgstr "설정"
 
-#: trac/ticket/batch.py:180
+#: trac/ticket/batch.py:191
 #, python-format
 msgid ""
 "The changes have been saved, but an error occurred while sending "
@@ -3047,163 +3050,164 @@ msgstr ""
 msgid "Enable JavaScript to display the workflow graph."
 msgstr "작업 흐름 그래프를 표시하려면 자바스크립트를 활성화 하십시오."
 
-#: trac/ticket/model.py:120
+#: trac/ticket/model.py:155
 #, python-format
 msgid "Ticket %(id)s does not exist."
 msgstr "%(id)s 티켓이 없습니다."
 
-#: trac/ticket/model.py:121
+#: trac/ticket/model.py:156
 msgid "Invalid ticket number"
 msgstr "유효하지 않은 티켓 번호"
 
-#: trac/ticket/model.py:157
+#: trac/ticket/model.py:194
 msgid "Multi-values fields not supported yet"
 msgstr "여러 개의 값을 가진 필드는 아직 지원되지 않습니다."
 
-#: trac/ticket/model.py:685
+#: trac/ticket/model.py:734
 #, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr "%(type)s %(name)s이(가) 없습니다."
 
-#: trac/ticket/model.py:727 trac/ticket/model.py:752
+#: trac/ticket/model.py:776 trac/ticket/model.py:801
 #, python-format
 msgid "Invalid %(type)s name."
 msgstr "%(type)s 이름이 유효하지 않습니다."
 
-#: trac/ticket/model.py:831
+#: trac/ticket/model.py:880
 #, python-format
 msgid "Component %(name)s does not exist."
 msgstr "%(name)s 컴포넌트가 없습니다."
 
-#: trac/ticket/model.py:976
+#: trac/ticket/model.py:1025
 #, python-format
 msgid "Milestone %(name)s does not exist."
 msgstr "%(name)s 마일스톤이 없습니다."
 
-#: trac/ticket/model.py:977
+#: trac/ticket/model.py:1026
 msgid "Invalid milestone name"
 msgstr "유효하지 않은 마일스톤 이름"
 
-#: trac/ticket/model.py:1116
+#: trac/ticket/model.py:1165
 msgid "Open (by due date)"
 msgstr "열기 (완료일에 따라)"
 
-#: trac/ticket/model.py:1117
+#: trac/ticket/model.py:1166
 msgid "Open (no due date)"
 msgstr "열기 (완료일이 설정되지 않음)"
 
-#: trac/ticket/model.py:1120
+#: trac/ticket/model.py:1169
 msgid "Closed"
 msgstr "닫힘"
 
-#: trac/ticket/model.py:1137
+#: trac/ticket/model.py:1186
 #, python-format
 msgid "Version %(name)s does not exist."
 msgstr "%(name)s 버전이 없습니다."
 
-#: trac/ticket/query.py:59
+#: trac/ticket/query.py:60
 msgid "Invalid query constraint value"
 msgstr "질의 제한 값이 올바르지 않습니다."
 
-#: trac/ticket/query.py:93
+#: trac/ticket/query.py:94
 #, python-format
 msgid "Query page %(page)s is invalid."
 msgstr "질의 페이지 %(page)s이(가) 유효하지 않습니다."
 
-#: trac/ticket/query.py:108
+#: trac/ticket/query.py:109
 #, python-format
 msgid "Query max %(max)s is invalid."
 msgstr "질의 최대값 %(max)s은(는) 유효하지 않습니다."
 
-#: trac/ticket/query.py:167
+#: trac/ticket/query.py:168
 msgid "Query filter requires field and constraints separated by a \"=\""
 msgstr "질의 필터에는 \"=\"로 구분된, 필드와 제약 사항이 필요합니다."
 
-#: trac/ticket/query.py:180
+#: trac/ticket/query.py:181
 msgid "Query filter requires field name"
 msgstr "질의 필터에는 필드 이름이 필요합니다."
 
-#: trac/ticket/query.py:313
+#: trac/ticket/query.py:314
 #, python-format
 msgid "Page %(page)s is beyond the number of pages in the query"
 msgstr "%(page)s 페이지는 질의 결과의 총 페이지의 수를 넘습니다."
 
-#: trac/ticket/query.py:573
+#: trac/ticket/query.py:571
 #, python-format
 msgid "Invalid ticket id list: %(value)s"
 msgstr "유효하지 않은 티켓 ID 목록: %(value)s"
 
-#: trac/ticket/query.py:672 trac/ticket/query.py:680
+#: trac/ticket/query.py:670 trac/ticket/query.py:678
 msgid "contains"
 msgstr "다음을 포함"
 
-#: trac/ticket/query.py:673 trac/ticket/query.py:681
+#: trac/ticket/query.py:671 trac/ticket/query.py:679
 msgid "doesn't contain"
 msgstr "다음을 포함하지 않음"
 
-#: trac/ticket/query.py:674
+#: trac/ticket/query.py:672
 msgid "begins with"
 msgstr "다음으로 시작"
 
-#: trac/ticket/query.py:675
+#: trac/ticket/query.py:673
 msgid "ends with"
 msgstr "다음으로 끝남"
 
-#: trac/ticket/query.py:676 trac/ticket/query.py:684 trac/ticket/query.py:688
+#: trac/ticket/query.py:674 trac/ticket/query.py:682 trac/ticket/query.py:686
 msgid "is"
 msgstr "다음과 같음"
 
-#: trac/ticket/query.py:677 trac/ticket/query.py:685 trac/ticket/query.py:689
+#: trac/ticket/query.py:675 trac/ticket/query.py:683 trac/ticket/query.py:687
 msgid "is not"
 msgstr "다음과 같지 않음"
 
-#: trac/ticket/query.py:721 trac/ticket/query.py:727
+#: trac/ticket/query.py:717 trac/ticket/query.py:723
 msgid "Ticket"
 msgstr "티켓"
 
-#: trac/ticket/query.py:798 trac/ticket/report.py:468
+#: trac/ticket/query.py:794 trac/ticket/report.py:468
 #, python-format
 msgid "Page %(num)d"
 msgstr "%(num)d 페이지"
 
-#: trac/ticket/query.py:847 trac/ticket/report.py:328 trac/ticket/report.py:627
-#: trac/ticket/web_ui.py:140 trac/timeline/web_ui.py:235
+#: trac/ticket/query.py:843 trac/ticket/report.py:327 trac/ticket/report.py:627
+#: trac/ticket/web_ui.py:146 trac/timeline/web_ui.py:235
 #: trac/versioncontrol/web_ui/log.py:319
 msgid "RSS Feed"
 msgstr "RSS 피드"
 
-#: trac/ticket/query.py:849 trac/ticket/report.py:330 trac/ticket/report.py:629
-#: trac/ticket/web_ui.py:136
+#: trac/ticket/query.py:845 trac/ticket/report.py:329 trac/ticket/report.py:629
+#: trac/ticket/web_ui.py:142
 msgid "Comma-delimited Text"
 msgstr "쉼표로 분리된 텍스트"
 
-#: trac/ticket/query.py:851 trac/ticket/report.py:332 trac/ticket/report.py:631
-#: trac/ticket/web_ui.py:138
+#: trac/ticket/query.py:847 trac/ticket/report.py:331 trac/ticket/report.py:631
+#: trac/ticket/web_ui.py:144
 msgid "Tab-delimited Text"
 msgstr "탭으로 분리된 텍스트"
 
-#: trac/ticket/query.py:873 trac/ticket/report.py:131
+#: trac/ticket/query.py:869 trac/ticket/report.py:130
 msgid "View Tickets"
 msgstr "티켓 보기"
 
-#: trac/ticket/query.py:1086 trac/ticket/query.py:1097
-#: trac/ticket/report.py:197 trac/ticket/templates/report_list.html:57
+#: trac/ticket/query.py:1082 trac/ticket/query.py:1093
+#: trac/ticket/report.py:196 trac/ticket/templates/report_list.html:57
 msgid "Custom Query"
 msgstr "맞춤형 질의"
 
-#: trac/ticket/query.py:1096 trac/ticket/report.py:187
-#: trac/ticket/report.py:188 trac/ticket/report.py:190
+#: trac/ticket/query.py:1092 trac/ticket/report.py:186
+#: trac/ticket/report.py:187 trac/ticket/report.py:189
 #: trac/ticket/templates/report_list.html:10
 #: trac/ticket/templates/report_list.html:28
 msgid "Available Reports"
 msgstr "이용 가능한 보고서"
 
-#: trac/ticket/query.py:1195
+#: trac/ticket/query.py:1192
 #, python-format
 msgid "[Error: %(error)s]"
 msgstr "[오류: %(error)s]"
 
-#: trac/ticket/query.py:1201
+#: trac/ticket/query.py:1198
+#, fuzzy
 msgid ""
 "Wiki macro listing tickets that match certain criteria.\n"
 "\n"
@@ -3230,6 +3234,8 @@ msgid ""
 " - '''compact''' -- the tickets are presented as a comma-separated\n"
 "   list of ticket IDs.\n"
 " - '''count''' -- only the count of matching tickets is displayed\n"
+" - '''rawcount''' -- only the count of matching tickets is displayed,\n"
+"   not even with a link to the corresponding query //(since 1.1.1)//\n"
 " - '''table'''  -- a view similar to the custom query view (but without\n"
 "   the controls)\n"
 " - '''progress''' -- a view similar to the milestone progress bars\n"
@@ -3300,65 +3306,71 @@ msgstr ""
 "또한, 필드를 구분하는 데 \\\"&\\\"를 사용하는 것이 (`order`를 제외하고) 여전히 지원되지만, 사용이 권장되지 "
 "않습니다."
 
-#: trac/ticket/query.py:1378
+#: trac/ticket/query.py:1313
+#, fuzzy, python-format
+msgid "%(num)s ticket matching %(criteria)s"
+msgid_plural "%(num)s tickets matching %(criteria)s"
+msgstr[0] "%(query)s에 일치하는 %(groupvalue)s %(groupname)s 티켓들"
+
+#: trac/ticket/query.py:1383
 #, python-format
 msgid "Ticket completion status for each %(group)s"
 msgstr "각 %(group)s 별 티켓 완료 상태"
 
-#: trac/ticket/query.py:1393
+#: trac/ticket/query.py:1398
 msgid "No results"
 msgstr "결과가 없습니다."
 
-#: trac/ticket/query.py:1411
+#: trac/ticket/query.py:1416
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
 msgstr "%(query)s에 일치하는 %(groupvalue)s %(groupname)s 티켓들"
 
-#: trac/ticket/query.py:1435
+#: trac/ticket/query.py:1440
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
 msgstr "%(groupvalue)s %(groupname)s 티켓:"
 
-#: trac/ticket/report.py:223
+#: trac/ticket/report.py:222
 msgid "The report has been created."
 msgstr "보고서를 만들었습니다."
 
-#: trac/ticket/report.py:233
+#: trac/ticket/report.py:232
 #, python-format
 msgid "The report {%(id)d} has been deleted."
 msgstr "{%(id)d} 보고서를 삭제하였습니다."
 
-#: trac/ticket/report.py:257
+#: trac/ticket/report.py:256
 #, python-format
 msgid "Delete Report {%(num)s} %(title)s"
 msgstr "{%(num)s} %(title)s 보고서 삭제하기"
 
-#: trac/ticket/report.py:262 trac/ticket/report.py:273
-#: trac/ticket/report.py:352
+#: trac/ticket/report.py:261 trac/ticket/report.py:272
+#: trac/ticket/report.py:351
 #, python-format
 msgid "Report {%(num)s} does not exist."
 msgstr "보고서 {%(num)s}이(가) 없습니다."
 
-#: trac/ticket/report.py:263 trac/ticket/report.py:274
-#: trac/ticket/report.py:353
+#: trac/ticket/report.py:262 trac/ticket/report.py:273
+#: trac/ticket/report.py:352
 msgid "Invalid Report Number"
 msgstr "유효하지 않은 보고서 번호"
 
-#: trac/ticket/report.py:286
+#: trac/ticket/report.py:285
 msgid "Create New Report"
 msgstr "새로운 보고서 작성"
 
-#: trac/ticket/report.py:290
+#: trac/ticket/report.py:289
 #, python-format
 msgid "Edit Report {%(num)d} %(title)s"
 msgstr "{%(num)d} %(title)s 보고서 편집"
 
-#: trac/ticket/report.py:357
+#: trac/ticket/report.py:356
 #, python-format
 msgid "Report failed: %(error)s"
 msgstr "보고서 실패함: %(error)s"
 
-#: trac/ticket/report.py:372
+#: trac/ticket/report.py:371
 #, python-format
 msgid "When specified, the report number should be \"%(num)s\"."
 msgstr "지정할 경우, 보고서 번호는 \"%(num)s\"여야 합니다."
@@ -3487,252 +3499,252 @@ msgstr "다음 마일스톤"
 msgid "Back to Roadmap"
 msgstr "로드맵으로 돌아가기"
 
-#: trac/ticket/web_ui.py:65
+#: trac/ticket/web_ui.py:66
 msgid "Invalid Ticket"
 msgstr "유효하지 않은 티켓"
 
-#: trac/ticket/web_ui.py:162 trac/ticket/templates/ticket.html:14
+#: trac/ticket/web_ui.py:168 trac/ticket/templates/ticket.html:14
 msgid "New Ticket"
 msgstr "새로운 티켓"
 
-#: trac/ticket/web_ui.py:178
+#: trac/ticket/web_ui.py:184
 msgid "id can't be set for a new ticket request."
 msgstr "id는 새로운 티켓 요청에 대해서 설정할 수 없습니다."
 
-#: trac/ticket/web_ui.py:228 trac/ticket/web_ui.py:279
+#: trac/ticket/web_ui.py:234 trac/ticket/web_ui.py:286
 #: trac/versioncontrol/web_ui/changeset.py:1042
 #, python-format
 msgid "%(title)s: %(message)s"
 msgstr "%(title)s: %(message)s"
 
-#: trac/ticket/web_ui.py:242
+#: trac/ticket/web_ui.py:248
 msgid "Tickets opened and closed"
 msgstr "열리거나 닫힌 티켓들"
 
-#: trac/ticket/web_ui.py:244
+#: trac/ticket/web_ui.py:250
 msgid "Ticket updates"
 msgstr "티켓 변경 사항"
 
-#: trac/ticket/web_ui.py:273 trac/ticket/web_ui.py:1166
+#: trac/ticket/web_ui.py:280 trac/ticket/web_ui.py:1193
 #, python-format
 msgid "%(labels)s changed"
 msgid_plural "%(labels)s changed"
 msgstr[0] "%(labels)s 변경됨"
 
-#: trac/ticket/web_ui.py:392
+#: trac/ticket/web_ui.py:399
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) created"
 msgstr "티켓 %(ticketref)s (%(summary)s) 작성됨"
 
-#: trac/ticket/web_ui.py:393
+#: trac/ticket/web_ui.py:400
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) reopened"
 msgstr "티켓 %(ticketref)s (%(summary)s) 다시 열림"
 
-#: trac/ticket/web_ui.py:394
+#: trac/ticket/web_ui.py:401
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) closed"
 msgstr "티켓 %(ticketref)s (%(summary)s) 닫힘"
 
-#: trac/ticket/web_ui.py:395
+#: trac/ticket/web_ui.py:402
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) updated"
 msgstr "티켓 %(ticketref)s (%(summary)s) 변경됨"
 
-#: trac/ticket/web_ui.py:424
+#: trac/ticket/web_ui.py:436
 #, python-format
 msgid "Tickets %(ticketids)s"
 msgstr "티켓 %(ticketids)s"
 
-#: trac/ticket/web_ui.py:426
+#: trac/ticket/web_ui.py:438
 #, python-format
 msgid "Tickets %(ticketlist)s batch updated"
 msgstr "티켓 %(ticketlist)s이(가) 일괄 변경됨"
 
-#: trac/ticket/web_ui.py:576
+#: trac/ticket/web_ui.py:589
 #, python-format
 msgid "The action \"%(name)s\" is not available."
 msgstr "\"%(name)s\" 동작이 사용 가능하지 않습니다."
 
-#: trac/ticket/web_ui.py:602
+#: trac/ticket/web_ui.py:615
 #, python-format
 msgid ""
 "Please review your configuration, probably starting with %(section)s in "
 "your %(tracini)s."
 msgstr "%(tracini)s 파일의 %(section)s(으)로 시작되는 부분에 있는 설정을 확인하십시오."
 
-#: trac/ticket/web_ui.py:660 trac/ticket/web_ui.py:895
+#: trac/ticket/web_ui.py:673 trac/ticket/web_ui.py:921
 #, python-format
 msgid "Ticket #%(id)s"
 msgstr "티켓 #%(id)s"
 
-#: trac/ticket/web_ui.py:713
+#: trac/ticket/web_ui.py:727
 msgid "Previous Ticket"
 msgstr "이전 티켓"
 
-#: trac/ticket/web_ui.py:713
+#: trac/ticket/web_ui.py:727
 msgid "Next Ticket"
 msgstr "다음 티켓"
 
-#: trac/ticket/web_ui.py:714
+#: trac/ticket/web_ui.py:728
 msgid "Back to Query"
 msgstr "질의로 돌아가기"
 
-#: trac/ticket/web_ui.py:812 trac/ticket/web_ui.py:961
-#: trac/ticket/web_ui.py:969
+#: trac/ticket/web_ui.py:838 trac/ticket/web_ui.py:987
+#: trac/ticket/web_ui.py:995
 msgid "Ticket History"
 msgstr "티켓 이력"
 
-#: trac/ticket/web_ui.py:816 trac/ticket/web_ui.py:1016
+#: trac/ticket/web_ui.py:842 trac/ticket/web_ui.py:1042
 #, python-format
 msgid "Back to Ticket #%(num)s"
 msgstr "#%(num)s 티켓으로 돌아가기"
 
-#: trac/ticket/web_ui.py:858
+#: trac/ticket/web_ui.py:884
 msgid "No differences to show"
 msgstr "보여줄 차이점이 없습니다."
 
-#: trac/ticket/web_ui.py:901 trac/ticket/web_ui.py:958
-#: trac/ticket/web_ui.py:966 trac/ticket/web_ui.py:1037
-#: trac/ticket/web_ui.py:1082 trac/ticket/web_ui.py:1089
+#: trac/ticket/web_ui.py:927 trac/ticket/web_ui.py:984
+#: trac/ticket/web_ui.py:992 trac/ticket/web_ui.py:1063
+#: trac/ticket/web_ui.py:1108 trac/ticket/web_ui.py:1115
 #: trac/wiki/web_ui.py:449 trac/wiki/web_ui.py:455 trac/wiki/web_ui.py:653
 #: trac/wiki/web_ui.py:667
 #, python-format
 msgid "Version %(num)s"
 msgstr "버전 %(num)s"
 
-#: trac/ticket/web_ui.py:904 trac/ticket/web_ui.py:1040
+#: trac/ticket/web_ui.py:930 trac/ticket/web_ui.py:1066
 msgid "Initial Version"
 msgstr "초기 버전"
 
-#: trac/ticket/web_ui.py:904 trac/ticket/web_ui.py:1040
+#: trac/ticket/web_ui.py:930 trac/ticket/web_ui.py:1066
 msgid "initial"
 msgstr "초기"
 
-#: trac/ticket/web_ui.py:923
+#: trac/ticket/web_ui.py:949
 #, python-format
 msgid "Property %(label)s %(rendered)s"
 msgstr "속성 %(label)s %(rendered)s"
 
-#: trac/ticket/web_ui.py:968 trac/ticket/web_ui.py:1091
+#: trac/ticket/web_ui.py:994 trac/ticket/web_ui.py:1117
 #: trac/versioncontrol/web_ui/changeset.py:371 trac/wiki/web_ui.py:468
 msgid "Previous Change"
 msgstr "이전 변경 사항"
 
-#: trac/ticket/web_ui.py:968 trac/ticket/web_ui.py:1091
+#: trac/ticket/web_ui.py:994 trac/ticket/web_ui.py:1117
 #: trac/versioncontrol/web_ui/changeset.py:371 trac/wiki/web_ui.py:468
 msgid "Next Change"
 msgstr "다음 변경 사항"
 
-#: trac/ticket/web_ui.py:974
+#: trac/ticket/web_ui.py:1000
 msgid "Ticket Diff"
 msgstr "티켓 비교"
 
-#: trac/ticket/web_ui.py:995
+#: trac/ticket/web_ui.py:1021
 msgid "''Initial version''"
 msgstr "''초기 버전''"
 
-#: trac/ticket/web_ui.py:1008 trac/ticket/web_ui.py:1085
-#: trac/ticket/web_ui.py:1092
+#: trac/ticket/web_ui.py:1034 trac/ticket/web_ui.py:1111
+#: trac/ticket/web_ui.py:1118
 msgid "Ticket Comment History"
 msgstr "티켓 덧글 이력"
 
-#: trac/ticket/web_ui.py:1010 trac/ticket/web_ui.py:1034
-#: trac/ticket/web_ui.py:1099
+#: trac/ticket/web_ui.py:1036 trac/ticket/web_ui.py:1060
+#: trac/ticket/web_ui.py:1125
 #, python-format
 msgid "Ticket #%(num)s, comment %(cnum)d"
 msgstr "티켓 #%(num)s, 덧글 %(cnum)d"
 
-#: trac/ticket/web_ui.py:1057
+#: trac/ticket/web_ui.py:1083
 #, python-format
 msgid "No version %(version)d for comment %(cnum)d on ticket #%(ticket)s"
 msgstr "티켓 #%(ticket)s의 덧글 %(cnum)d에 대한 버전 %(version)d이(가) 없습니다."
 
-#: trac/ticket/web_ui.py:1097
+#: trac/ticket/web_ui.py:1123
 msgid "Ticket Comment Diff"
 msgstr "티켓 덧글 비교"
 
-#: trac/ticket/web_ui.py:1170
+#: trac/ticket/web_ui.py:1197
 #, python-format
 msgid "%(labels)s set"
 msgid_plural "%(labels)s set"
 msgstr[0] "%(labels)s 설정됨"
 
-#: trac/ticket/web_ui.py:1174
+#: trac/ticket/web_ui.py:1201
 #, python-format
 msgid "%(labels)s deleted"
 msgid_plural "%(labels)s deleted"
 msgstr[0] "%(labels)s 삭제됨"
 
-#: trac/ticket/web_ui.py:1175 trac/ticket/web_ui.py:1755
+#: trac/ticket/web_ui.py:1202 trac/ticket/web_ui.py:1814
 msgid "; "
 msgstr "; "
 
-#: trac/ticket/web_ui.py:1196
+#: trac/ticket/web_ui.py:1223
 msgid "No permission to edit the ticket description."
 msgstr "티켓 설명을 수정할 권한이 없습니다."
 
-#: trac/ticket/web_ui.py:1202
+#: trac/ticket/web_ui.py:1229
 msgid "No permission to change the ticket reporter."
 msgstr "티켓 작성자를 수정할 권한이 없습니다."
 
-#: trac/ticket/web_ui.py:1207
+#: trac/ticket/web_ui.py:1234
 msgid "No permission to change ticket fields."
 msgstr "티켓 필드를 변경할 권한이 없습니다."
 
-#: trac/ticket/web_ui.py:1216
+#: trac/ticket/web_ui.py:1243
 msgid "No permissions to add a comment."
 msgstr "덧글을 추가할 권한이 없습니다."
 
-#: trac/ticket/web_ui.py:1223
+#: trac/ticket/web_ui.py:1250
 msgid ""
 "Sorry, can not save your changes. This ticket has been modified by "
 "someone else since you started"
 msgstr "변경 사항을 저장할 수 없습니다. 수정을 시작한 후에 다른 사람에 의해 티켓이 변경되었습니다."
 
-#: trac/ticket/web_ui.py:1230
+#: trac/ticket/web_ui.py:1257
 msgid "Tickets must contain a summary."
 msgstr "티켓의 제목을 입력하십시오."
 
-#: trac/ticket/web_ui.py:1248
+#: trac/ticket/web_ui.py:1275
 #, python-format
 msgid "field %(name)s must be set"
 msgstr "%(name)s 필드는 반드시 설정되어야 합니다."
 
-#: trac/ticket/web_ui.py:1254
+#: trac/ticket/web_ui.py:1281
 #, python-format
 msgid "Ticket description is too long (must be less than %(num)s characters)"
 msgstr "티켓의 상세 설명이 너무 깁니다. (%(num)s 문자보다 짧아야 합니다.)"
 
-#: trac/ticket/web_ui.py:1261
+#: trac/ticket/web_ui.py:1288
 #, python-format
 msgid "Ticket comment is too long (must be less than %(num)s characters)"
 msgstr "티켓의 덧글이 너무 깁니다. (%(num)s 문자보다 짧아야 합니다.)"
 
-#: trac/ticket/web_ui.py:1274
+#: trac/ticket/web_ui.py:1301
 msgid "Invalid comment threading identifier"
 msgstr "유효하지 않은 덧글 순서 식별자"
 
-#: trac/ticket/web_ui.py:1281
+#: trac/ticket/web_ui.py:1324
 #, python-format
 msgid "The ticket field '%(field)s' is invalid: %(message)s"
 msgstr "티켓 필드 '%(field)s'이(가) 유효하지 않습니다: %(message)s"
 
-#: trac/ticket/web_ui.py:1300
+#: trac/ticket/web_ui.py:1343
 #, python-format
 msgid ""
 "The ticket has been created, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr "티켓이 작성되었습니다. 하지만 알림를 보내는 동안 오류가 발생하였습니다: %(message)s"
 
-#: trac/ticket/web_ui.py:1305
+#: trac/ticket/web_ui.py:1348
 #, python-format
 msgid ""
 "The ticket %(ticketref)s has been created. You can now attach the desired"
 " files."
 msgstr "%(ticketref)s 티켓이 작성되었습니다. 이제 원하는 파일을 첨부할 수 있습니다."
 
-#: trac/ticket/web_ui.py:1311
+#: trac/ticket/web_ui.py:1354
 #, python-format
 msgid ""
 "The ticket %(ticketref)s has been created, but you don't have permission "
@@ -3740,88 +3752,88 @@ msgid ""
 msgstr "%(ticketref)s 티켓이 작성되었지만, 이를 볼 수 있는 권한이 없습니다."
 
 #. TRANSLATOR: The 'change' has been saved... (link)
-#: trac/ticket/web_ui.py:1338
+#: trac/ticket/web_ui.py:1381
 msgid "change"
 msgstr "변경 사항"
 
-#: trac/ticket/web_ui.py:1344
+#: trac/ticket/web_ui.py:1387
 #, python-format
 msgid ""
 "The %(change)s has been saved, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr "%(change)s이 저장되었습니다. 그러나 알림를 보내는 동안 오류가 발생하였습니다: %(message)s"
 
-#: trac/ticket/web_ui.py:1482
+#: trac/ticket/web_ui.py:1525
 msgid "Add to Cc"
 msgstr "참조에 추가하기"
 
-#: trac/ticket/web_ui.py:1483
+#: trac/ticket/web_ui.py:1526
 msgid "Remove from Cc"
 msgstr "참조에서 제거하기"
 
-#: trac/ticket/web_ui.py:1484
+#: trac/ticket/web_ui.py:1527
 msgid "Add/Remove from Cc"
 msgstr "참조에서 추가/제거하기"
 
-#: trac/ticket/web_ui.py:1485
+#: trac/ticket/web_ui.py:1528
 msgid "<Author field>"
 msgstr "<작성자 필드>"
 
-#: trac/ticket/web_ui.py:1518 trac/ticket/templates/query.html:114
+#: trac/ticket/web_ui.py:1561 trac/ticket/templates/query.html:116
 msgid "yes"
 msgstr "예"
 
-#: trac/ticket/web_ui.py:1518 trac/ticket/templates/query.html:117
+#: trac/ticket/web_ui.py:1561 trac/ticket/templates/query.html:119
 msgid "no"
 msgstr "아니오"
 
-#: trac/ticket/web_ui.py:1724
+#: trac/ticket/web_ui.py:1783
 msgid "set"
 msgstr "설정"
 
-#: trac/ticket/web_ui.py:1724
+#: trac/ticket/web_ui.py:1783
 msgid "unset"
 msgstr "해제"
 
-#: trac/ticket/web_ui.py:1727 trac/versioncontrol/templates/changeset.html:189
+#: trac/ticket/web_ui.py:1786 trac/versioncontrol/templates/changeset.html:189
 #: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "modified"
 msgstr "수정됨"
 
 #. TRANSLATOR: modified ('diff') (link)
-#: trac/ticket/web_ui.py:1732 trac/ticket/templates/ticket_change.html:155
+#: trac/ticket/web_ui.py:1791 trac/ticket/templates/ticket_change.html:155
 #: trac/wiki/web_ui.py:747
 msgid "diff"
 msgstr "비교"
 
-#: trac/ticket/web_ui.py:1733
+#: trac/ticket/web_ui.py:1792
 #, python-format
 msgid "modified (%(diff)s)"
 msgstr "수정됨 (%(diff)s)"
 
-#: trac/ticket/web_ui.py:1751
+#: trac/ticket/web_ui.py:1810
 #, python-format
 msgid "%(items)s added"
 msgid_plural "%(items)s added"
 msgstr[0] "%(items)s 추가됨"
 
-#: trac/ticket/web_ui.py:1753
+#: trac/ticket/web_ui.py:1812
 #, python-format
 msgid "%(items)s removed"
 msgid_plural "%(items)s removed"
 msgstr[0] "%(items)s 제거됨"
 
-#: trac/ticket/web_ui.py:1762
+#: trac/ticket/web_ui.py:1821
 #, python-format
 msgid "%(value)s deleted"
 msgstr "%(value)s 삭제됨"
 
-#: trac/ticket/web_ui.py:1764
+#: trac/ticket/web_ui.py:1823
 #, python-format
 msgid "set to %(value)s"
 msgstr "%(value)s(으)로 설정됨"
 
-#: trac/ticket/web_ui.py:1767
+#: trac/ticket/web_ui.py:1826
 #, python-format
 msgid "changed from %(old)s to %(new)s"
 msgstr "%(old)s에서 %(new)s(으)로 변경됨"
@@ -3911,7 +3923,7 @@ msgid "Retarget associated open tickets to milestone:"
 msgstr "마일스톤과 관련된 열린 티켓을 다른 마일스톤으로 넘깁니다:"
 
 #: trac/ticket/templates/milestone_edit.html:106
-#: trac/ticket/templates/ticket.html:388
+#: trac/ticket/templates/ticket.html:392
 #: trac/ticket/templates/ticket_change.html:116
 #: trac/wiki/templates/wiki_edit_form.html:66
 #: trac/wiki/templates/wiki_edit_form.html:71
@@ -3967,7 +3979,7 @@ msgstr "분류에 따른 %(stat_title)s:"
 msgid "Edit milestone"
 msgstr "마일스톤 편집하기"
 
-#: trac/ticket/templates/query.html:35
+#: trac/ticket/templates/query.html:37
 #: trac/ticket/templates/report_view.html:21
 #: trac/ticket/templates/report_view.html:97
 #, python-format
@@ -3975,23 +3987,23 @@ msgid "%(num)s match"
 msgid_plural "%(num)s matches"
 msgstr[0] "%(num)s 개 일치함"
 
-#: trac/ticket/templates/query.html:44
+#: trac/ticket/templates/query.html:46
 msgid "Filters"
 msgstr "필터"
 
-#: trac/ticket/templates/query.html:45
+#: trac/ticket/templates/query.html:47
 msgid "Query filters"
 msgstr "질의 필터"
 
-#: trac/ticket/templates/query.html:51 trac/ticket/templates/query.html:155
+#: trac/ticket/templates/query.html:53 trac/ticket/templates/query.html:158
 msgid "Or"
 msgstr "또는"
 
-#: trac/ticket/templates/query.html:79
+#: trac/ticket/templates/query.html:81
 msgid "or"
 msgstr "또는"
 
-#: trac/ticket/templates/query.html:127
+#: trac/ticket/templates/query.html:130
 msgid ""
 "[1:between]\n"
 "                            [2:]\n"
@@ -4003,63 +4015,63 @@ msgstr ""
 "                            [3:끝 시간]\n"
 "                            [4:]"
 
-#: trac/ticket/templates/query.html:141
+#: trac/ticket/templates/query.html:144
 msgid "And"
 msgstr "그리고"
 
-#: trac/ticket/templates/query.html:174
+#: trac/ticket/templates/query.html:177
 msgid "Columns"
 msgstr "열 선택"
 
-#: trac/ticket/templates/query.html:187
+#: trac/ticket/templates/query.html:190
 msgid "Group results by"
 msgstr "결과를 다음 기준으로 묶습니다:"
 
-#: trac/ticket/templates/query.html:198
+#: trac/ticket/templates/query.html:201
 msgid "descending"
 msgstr "내림차순으로"
 
-#: trac/ticket/templates/query.html:202
+#: trac/ticket/templates/query.html:205
 msgid "Show under each result:"
 msgstr "각 결과 아래에 다음을 보여줍니다:"
 
-#: trac/ticket/templates/query.html:212
+#: trac/ticket/templates/query.html:215
 #: trac/ticket/templates/report_view.html:27
 msgid "Max items per page"
 msgstr "페이지당 최대 항목 수"
 
-#: trac/ticket/templates/query.html:235
+#: trac/ticket/templates/query.html:238
 #, python-format
 msgid "Edit report {%(id)s} corresponding to this query"
 msgstr "이 질의에 연관된 {%(id)s} 보고서 편집"
 
-#: trac/ticket/templates/query.html:235
+#: trac/ticket/templates/query.html:238
 msgid "Edit query"
 msgstr "질의 편집하기"
 
-#: trac/ticket/templates/query.html:244
+#: trac/ticket/templates/query.html:247
 msgid "Save query"
 msgstr "질의 저장하기"
 
-#: trac/ticket/templates/query.html:244
+#: trac/ticket/templates/query.html:247
 #, python-format
 msgid "Save updated query in report {%(id)s}"
 msgstr "{%(id)s} 보고서에 변경한 질의 저장"
 
-#: trac/ticket/templates/query.html:244
+#: trac/ticket/templates/query.html:247
 msgid "Create new report from current query"
 msgstr "현재 질의로 새로운 보고서 만들기"
 
-#: trac/ticket/templates/query.html:252
+#: trac/ticket/templates/query.html:255
 #, python-format
 msgid "Delete report {%(id)s} corresponding to this query"
 msgstr "이 질의에 연관된 {%(id)s} 보고서 삭제"
 
-#: trac/ticket/templates/query.html:252
+#: trac/ticket/templates/query.html:255
 msgid "Delete query"
 msgstr "질의 삭제하기"
 
-#: trac/ticket/templates/query.html:259
+#: trac/ticket/templates/query.html:262
 msgid ""
 "[1:Note:] See [2:TracQuery]\n"
 "        for help on using queries."
@@ -4098,11 +4110,11 @@ msgstr "티켓 보기"
 msgid "View milestone"
 msgstr "마일스톤 보기"
 
-#: trac/ticket/templates/query_results.html:95
+#: trac/ticket/templates/query_results.html:96
 msgid "(this ticket)"
 msgstr "(이 티켓)"
 
-#: trac/ticket/templates/query_results.html:111
+#: trac/ticket/templates/query_results.html:112
 msgid "(more results for this group on next page)"
 msgstr "(다음 페이지에 이 그룹에 대한 결과가 더 있습니다)"
 
@@ -4255,43 +4267,43 @@ msgstr "마일스톤:"
 msgid "Add new milestone"
 msgstr "새로운 마일스톤 추가하기"
 
-#: trac/ticket/templates/ticket.html:132
+#: trac/ticket/templates/ticket.html:134
 msgid "Go to the ticket editor"
 msgstr "티켓 편집기로 이동"
 
-#: trac/ticket/templates/ticket.html:132
+#: trac/ticket/templates/ticket.html:134
 msgid "Modify"
 msgstr "수정"
 
-#: trac/ticket/templates/ticket.html:134
+#: trac/ticket/templates/ticket.html:136
 msgid "Create New Ticket"
 msgstr "새로운 티켓 작성하기"
 
-#: trac/ticket/templates/ticket.html:152
+#: trac/ticket/templates/ticket.html:154
 msgid "Oldest first"
 msgstr "오래된 것부터"
 
-#: trac/ticket/templates/ticket.html:154
+#: trac/ticket/templates/ticket.html:156
 msgid "Newest first"
 msgstr "새 것부터"
 
-#: trac/ticket/templates/ticket.html:157
+#: trac/ticket/templates/ticket.html:159
 msgid "Threaded"
 msgstr "계층형 보기"
 
-#: trac/ticket/templates/ticket.html:162
+#: trac/ticket/templates/ticket.html:164
 msgid "Comments only"
 msgstr "덧글만 보기"
 
-#: trac/ticket/templates/ticket.html:167
+#: trac/ticket/templates/ticket.html:169
 msgid "Change History"
 msgstr "변경 이력"
 
-#: trac/ticket/templates/ticket.html:186
+#: trac/ticket/templates/ticket.html:188
 msgid "Add Comment"
 msgstr "덧글 추가"
 
-#: trac/ticket/templates/ticket.html:188
+#: trac/ticket/templates/ticket.html:190
 msgid ""
 "This ticket has been modified since you started editing. You should "
 "review the\n"
@@ -4304,82 +4316,82 @@ msgstr ""
 "위쪽에 추가된 [1:다른 수정사항]과 아래 미리보기에 있는 [2:충돌 사항]을 확인하십시오.\n"
 "하지만 원할 경우 계속 진행하여 변경 사항을 적용할 수 있습니다."
 
-#: trac/ticket/templates/ticket.html:198
+#: trac/ticket/templates/ticket.html:200
 msgid ""
 "You may use\n"
 "                [1:WikiFormatting]\n"
 "                here."
 msgstr "여기에서 [1:위키 서식]을 사용할 수 있습니다."
 
-#: trac/ticket/templates/ticket.html:209
+#: trac/ticket/templates/ticket.html:211
 msgid "Modify Ticket"
 msgstr "티켓 수정"
 
-#: trac/ticket/templates/ticket.html:215
+#: trac/ticket/templates/ticket.html:217
 msgid "Change Properties"
 msgstr "속성 변경하기"
 
-#: trac/ticket/templates/ticket.html:216
+#: trac/ticket/templates/ticket.html:218
 msgid "Properties"
 msgstr "속성"
 
-#: trac/ticket/templates/ticket.html:220
+#: trac/ticket/templates/ticket.html:222
 msgid "Summary:"
 msgstr "제목:"
 
-#: trac/ticket/templates/ticket.html:228
+#: trac/ticket/templates/ticket.html:230
 msgid "Reporter:"
 msgstr "작성자:"
 
-#: trac/ticket/templates/ticket.html:240
+#: trac/ticket/templates/ticket.html:242
 msgid ""
 "You may use\n"
 "                          [1:WikiFormatting] here."
 msgstr "여기에서 [1:위키 서식]을 사용할 수 있습니다."
 
-#: trac/ticket/templates/ticket.html:256
+#: trac/ticket/templates/ticket.html:258
 #: trac/ticket/templates/ticket_box.html:75
 #, python-format
 msgid "%(field)s:"
 msgstr "%(field)s:"
 
-#: trac/ticket/templates/ticket.html:295
+#: trac/ticket/templates/ticket.html:299
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr "이 선택란을 이용하여 참조 목록에 본인을 추가하거나 제거합니다."
 
-#: trac/ticket/templates/ticket.html:301
+#: trac/ticket/templates/ticket.html:305
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr "공백이나 쉼표로 구분하여, 메일 주소나 사용자 이름을 입력합니다."
 
-#: trac/ticket/templates/ticket.html:364
+#: trac/ticket/templates/ticket.html:368
 #: trac/wiki/templates/wiki_edit_form.html:46
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
 msgstr "메일 주소와 사용자 이름을 [1:설정]에서 저장할 수 있습니다."
 
-#: trac/ticket/templates/ticket.html:372
+#: trac/ticket/templates/ticket.html:376
 msgid "I have files to attach to this ticket"
 msgstr "이 티켓에 첨부할 파일이 있음"
 
-#: trac/ticket/templates/ticket.html:378
+#: trac/ticket/templates/ticket.html:382
 msgid "Go to the list of attachments"
 msgstr "첨부 파일 목록으로 이동"
 
-#: trac/ticket/templates/ticket.html:379
+#: trac/ticket/templates/ticket.html:383
 msgid "View the ticket description"
 msgstr "티켓 설명 보기"
 
-#: trac/ticket/templates/ticket.html:387
+#: trac/ticket/templates/ticket.html:391
 #: trac/ticket/templates/ticket_change.html:114
 #: trac/wiki/templates/wiki_edit.html:95 trac/wiki/templates/wiki_edit.html:153
 #: trac/wiki/templates/wiki_edit_form.html:64
 msgid "Preview"
 msgstr "미리보기"
 
-#: trac/ticket/templates/ticket.html:388
+#: trac/ticket/templates/ticket.html:392
 msgid "Create ticket"
 msgstr "티켓 만들기"
 
-#: trac/ticket/templates/ticket.html:396
+#: trac/ticket/templates/ticket.html:400
 msgid ""
 "[1:Note:] See\n"
 "        [2:TracTickets] for help on using\n"
@@ -4422,17 +4434,17 @@ msgstr "작성자:"
 msgid "Owned by:"
 msgstr "소유자:"
 
-#: trac/ticket/templates/ticket_box.html:96
+#: trac/ticket/templates/ticket_box.html:97
 #, python-format
 msgid "(last modified by %(author)s)"
 msgstr "(%(author)s이(가) 마지막으로 변경함)"
 
-#: trac/ticket/templates/ticket_box.html:105
+#: trac/ticket/templates/ticket_box.html:106
 #: trac/ticket/templates/ticket_change.html:72
 msgid "Reply"
 msgstr "답변"
 
-#: trac/ticket/templates/ticket_box.html:105
+#: trac/ticket/templates/ticket_box.html:106
 msgid "Reply, quoting this description"
 msgstr "이 내용을 인용하여 답변함"
 
@@ -4565,42 +4577,53 @@ msgstr "이전 주기"
 msgid "Next Period"
 msgstr "다음 주기"
 
-#: trac/timeline/web_ui.py:290
-#, python-format
-msgid "at %(iso8601)s"
-msgstr "%(iso8601)s"
+#: trac/timeline/web_ui.py:294 trac/timeline/web_ui.py:317
+#: trac/web/chrome.py:869
+#, fuzzy, python-format
+msgid "in %(relative)s"
+msgstr "%(relativetime)s 전"
 
-#: trac/timeline/web_ui.py:294
+#: trac/timeline/web_ui.py:298 trac/timeline/web_ui.py:315
 #, python-format
 msgid "on %(date)s at %(time)s"
 msgstr "%(date)s %(time)s"
 
-#: trac/timeline/web_ui.py:295
-#, python-format
-msgid "See timeline %(relativetime)s ago"
-msgstr "%(relativetime)s 전의 시간이력 보기"
-
-#: trac/timeline/web_ui.py:298 trac/web/chrome.py:865 trac/web/chrome.py:867
-#, python-format
-msgid "%(relativetime)s ago"
+#: trac/timeline/web_ui.py:301 trac/web/chrome.py:871
+#, fuzzy, python-format
+msgid "%(relative)s ago"
 msgstr "%(relativetime)s 전"
 
-#: trac/timeline/web_ui.py:300 trac/timeline/web_ui.py:344
+#: trac/timeline/web_ui.py:303 trac/timeline/web_ui.py:363
 #, python-format
 msgid "See timeline at %(absolutetime)s"
 msgstr "%(absolutetime)s의 시간이력 보기"
 
+#: trac/timeline/web_ui.py:309
+#, python-format
+msgid "at %(iso8601)s"
+msgstr "%(iso8601)s"
+
+#: trac/timeline/web_ui.py:311
+#, fuzzy, python-format
+msgid "on %(date)s"
+msgstr "%(path)s 노드가 없습니다."
+
+#: trac/timeline/web_ui.py:319
+#, python-format
+msgid "See timeline %(relativetime)s ago"
+msgstr "%(relativetime)s 전의 시간이력 보기"
+
 #. TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
-#: trac/timeline/web_ui.py:391
+#: trac/timeline/web_ui.py:410
 msgid "other kinds of events"
 msgstr "다른 종류의 이벤트"
 
-#: trac/timeline/web_ui.py:396
+#: trac/timeline/web_ui.py:415
 #, python-format
 msgid "Event provider %(name)s failed for filters %(kinds)s: "
 msgstr "%(kinds)s 필터에 대해서 이벤트 제공자 %(name)s 실패함:"
 
-#: trac/timeline/web_ui.py:399
+#: trac/timeline/web_ui.py:418
 #, python-format
 msgid ""
 "You may want to see the %(other_events)s from the Timeline or notify your"
@@ -4730,7 +4753,7 @@ msgid "%(num)i second"
 msgid_plural "%(num)i seconds"
 msgstr[0] "%(num)i 초"
 
-#: trac/util/datefmt.py:464
+#: trac/util/datefmt.py:465
 #, python-format
 msgid ""
 "\"%(date)s\" is an invalid date, or the date format is not known. Try "
@@ -4739,11 +4762,11 @@ msgstr ""
 "\"%(date)s\"은(는) 유효하지 않은 날짜이거나, 알 수 없는 날짜 형식입니다. \"%(hint)s\" 형식을 사용해 "
 "보십시오."
 
-#: trac/util/datefmt.py:466 trac/util/datefmt.py:474
+#: trac/util/datefmt.py:467 trac/util/datefmt.py:475
 msgid "Invalid Date"
 msgstr "유효하지 않은 날짜"
 
-#: trac/util/datefmt.py:472
+#: trac/util/datefmt.py:473
 #, python-format
 msgid ""
 "The date \"%(date)s\" is outside valid range. Try a date closer to "
@@ -5951,16 +5974,16 @@ msgstr "이미 %(user)s로 로그인했습니다."
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr "탐색 막대 컨트리뷰터 \"%(name)s\"에서 오류가 발생하였습니다."
 
-#: trac/web/chrome.py:1029
+#: trac/web/chrome.py:1037
 msgid "(unknown template location)"
 msgstr "(알 수 없는 템플릿 위치)"
 
-#: trac/web/chrome.py:1030
+#: trac/web/chrome.py:1038
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "%(location)s 템플릿을 렌더링하는 동안 Genshi 오류 %(error)s이(가) 발생하였습니다."
 
-#: trac/web/chrome.py:1078 trac/web/chrome.py:1086
+#: trac/web/chrome.py:1086 trac/web/chrome.py:1094
 msgid "anonymous"
 msgstr "익명사용자"
 

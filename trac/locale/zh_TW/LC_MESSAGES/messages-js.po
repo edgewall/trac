@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-27 11:21+0900\n"
+"POT-Creation-Date: 2013-02-02 15:20+0100\n"
 "PO-Revision-Date: 2010-10-03 14:13+0800\n"
 "Last-Translator: Chi-Chung Lin <zclin.csie92g@gmail.com>\n"
 "Language-Team: zh_TW <trac-dev@googlegroups.com>\n"
@@ -140,36 +140,36 @@ msgstr "此屬性已存在一過濾器"
 msgid "or"
 msgstr "或"
 
-#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:310
+#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:318
 msgid "yes"
 msgstr "是"
 
-#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:313
+#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:321
 msgid "no"
 msgstr "否"
 
-#: trac/htdocs/js/query.js:188
+#: trac/htdocs/js/query.js:196
 msgid "between"
 msgstr "介於"
 
-#: trac/htdocs/js/query.js:190
+#: trac/htdocs/js/query.js:198
 msgid "and"
 msgstr "且"
 
-#: trac/htdocs/js/query.js:337
+#: trac/htdocs/js/query.js:350
 msgid " remove:"
 msgstr " 移除:"
 
-#: trac/htdocs/js/query.js:347
+#: trac/htdocs/js/query.js:360
 msgid " add:"
 msgstr " 新增:"
 
-#: trac/htdocs/js/query.js:376
+#: trac/htdocs/js/query.js:389
 #, python-format
 msgid "Select ticket %(id)s for modification"
 msgstr "請選擇代辦事項 %(id)s 進行修改"
 
-#: trac/htdocs/js/query.js:387
+#: trac/htdocs/js/query.js:400
 msgid "Toggle selection of all tickets shown in this group"
 msgstr ""
 

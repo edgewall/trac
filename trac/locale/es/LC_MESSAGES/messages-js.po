@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-27 11:21+0900\n"
+"POT-Creation-Date: 2013-02-02 15:20+0100\n"
 "PO-Revision-Date: 2010-06-10 23:31+0200\n"
 "Last-Translator: Roberto Aragón <robarago@gmail.com>\n"
 "Language-Team: es <LL@li.org>\n"
@@ -142,36 +142,36 @@ msgstr "Ya existe un filtro para esa propiedad"
 msgid "or"
 msgstr "o"
 
-#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:310
+#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:318
 msgid "yes"
 msgstr "sí"
 
-#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:313
+#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:321
 msgid "no"
 msgstr "no"
 
-#: trac/htdocs/js/query.js:188
+#: trac/htdocs/js/query.js:196
 msgid "between"
 msgstr "entre"
 
-#: trac/htdocs/js/query.js:190
+#: trac/htdocs/js/query.js:198
 msgid "and"
 msgstr "y"
 
-#: trac/htdocs/js/query.js:337
+#: trac/htdocs/js/query.js:350
 msgid " remove:"
 msgstr ""
 
-#: trac/htdocs/js/query.js:347
+#: trac/htdocs/js/query.js:360
 msgid " add:"
 msgstr ""
 
-#: trac/htdocs/js/query.js:376
+#: trac/htdocs/js/query.js:389
 #, python-format
 msgid "Select ticket %(id)s for modification"
 msgstr ""
 
-#: trac/htdocs/js/query.js:387
+#: trac/htdocs/js/query.js:400
 msgid "Toggle selection of all tickets shown in this group"
 msgstr ""
 

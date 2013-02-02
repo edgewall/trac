@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
-"POT-Creation-Date: 2013-01-27 11:21+0900\n"
+"POT-Creation-Date: 2013-02-02 15:20+0100\n"
 "PO-Revision-Date: 2013-01-27 08:43+0000\n"
 "Last-Translator: Jens Hyllegaard <jens.hyllegaard@gmail.com>\n"
 "Language-Team: Danish "
@@ -193,7 +193,7 @@ msgstr ""
 "%(oldrev)s) og målet er en %(newnode)s (%(newpath)s i revision "
 "%(newrev)s)."
 
-#: tracopt/versioncontrol/svn/svn_fs.py:823
+#: tracopt/versioncontrol/svn/svn_fs.py:817
 #, python-format
 msgid "svn blame failed on %(path)s: %(error)s"
 msgstr "svn blame mislykkedes på %(path)s: %(error)s"
@@ -371,9 +371,9 @@ msgstr "Ingen fil uploadet"
 msgid "Can't upload empty file"
 msgstr "Kan ikke uploade tom fil"
 
-#: trac/attachment.py:708
-#, python-format
-msgid "Maximum attachment size: %(num)s bytes"
+#: trac/attachment.py:709
+#, fuzzy, python-format
+msgid "Maximum attachment size: %(num)s"
 msgstr "Maksimum vedhæftningsstørrelse: %(num)s bytes"
 
 #: trac/attachment.py:709
@@ -410,9 +410,9 @@ msgstr ""
 msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (slet)"
 
-#: trac/attachment.py:803
-#, python-format
-msgid "Maximum total attachment size: %(num)s bytes"
+#: trac/attachment.py:804
+#, fuzzy, python-format
+msgid "Maximum total attachment size: %(num)s"
 msgstr "Maksimum total vedhæftningsstørrelse: %(num)s bytes"
 
 #: trac/attachment.py:804
@@ -457,7 +457,7 @@ msgid "Size"
 msgstr "Størrelse"
 
 #: trac/attachment.py:1070 trac/templates/history_view.html:30
-#: trac/ticket/templates/ticket.html:350
+#: trac/ticket/templates/ticket.html:354
 #: trac/versioncontrol/templates/revisionlog.html:112
 msgid "Author"
 msgstr "Forfatter"
@@ -467,8 +467,8 @@ msgid "Date"
 msgstr "Dato"
 
 #: trac/attachment.py:1071 trac/templates/attachment.html:93
-#: trac/ticket/api.py:299 trac/ticket/templates/ticket.html:379
-#: trac/ticket/templates/ticket_box.html:92
+#: trac/ticket/api.py:321 trac/ticket/templates/ticket.html:383
+#: trac/ticket/templates/ticket_box.html:93
 msgid "Description"
 msgstr "Beskrivelse"
 
@@ -695,7 +695,7 @@ msgstr "Bruger"
 
 #: trac/perm.py:656 trac/admin/templates/admin_perms.html:63
 #: trac/ticket/templates/batch_modify.html:37
-#: trac/ticket/templates/ticket.html:321
+#: trac/ticket/templates/ticket.html:325
 msgid "Action"
 msgstr "Handling"
 
@@ -1030,7 +1030,7 @@ msgstr "Unavngivet"
 
 #: trac/admin/web_ui.py:192 trac/ticket/admin.py:66 trac/ticket/admin.py:95
 #: trac/ticket/admin.py:275 trac/ticket/admin.py:455 trac/ticket/admin.py:607
-#: trac/ticket/admin.py:690 trac/ticket/report.py:248
+#: trac/ticket/admin.py:690 trac/ticket/report.py:247
 #: trac/ticket/roadmap.py:779 trac/versioncontrol/admin.py:215
 msgid "Your changes have been saved."
 msgstr "Dine ændringer er blevet gemt."
@@ -1196,7 +1196,7 @@ msgid "URL:"
 msgstr "URL:"
 
 #: trac/admin/templates/admin_basics.html:29
-#: trac/ticket/templates/ticket.html:237
+#: trac/ticket/templates/ticket.html:239
 msgid "Description:"
 msgstr "Beskrivelse:"
 
@@ -1286,7 +1286,7 @@ msgid "Add"
 msgstr "Tilføj"
 
 #: trac/admin/templates/admin_components.html:80 trac/ticket/admin.py:210
-#: trac/ticket/api.py:293 trac/ticket/web_ui.py:1455
+#: trac/ticket/api.py:315 trac/ticket/web_ui.py:1498
 msgid "Owner"
 msgstr "Ejer"
 
@@ -1446,7 +1446,7 @@ msgstr "Færdigdato"
 msgid "Completed"
 msgstr "Fuldført"
 
-#: trac/admin/templates/admin_milestones.html:107 trac/ticket/web_ui.py:194
+#: trac/admin/templates/admin_milestones.html:107 trac/ticket/web_ui.py:200
 msgid "Tickets"
 msgstr "Sager"
 
@@ -1563,7 +1563,7 @@ msgid "License:"
 msgstr "Licens:"
 
 #: trac/admin/templates/admin_plugins.html:124 trac/ticket/admin.py:77
-#: trac/ticket/api.py:306
+#: trac/ticket/api.py:328
 msgid "Component"
 msgstr "Komponent"
 
@@ -2020,11 +2020,11 @@ msgstr "Gennemse opbevaringsstedssti %(path)s"
 msgid "Search query too short. Query must be at least %(num)s characters long."
 msgstr ""
 
-#: trac/search/web_ui.py:245 trac/ticket/query.py:785 trac/ticket/report.py:459
+#: trac/search/web_ui.py:245 trac/ticket/query.py:781 trac/ticket/report.py:459
 msgid "Next Page"
 msgstr "Næste side"
 
-#: trac/search/web_ui.py:251 trac/ticket/query.py:790 trac/ticket/report.py:462
+#: trac/search/web_ui.py:251 trac/ticket/query.py:786 trac/ticket/report.py:462
 msgid "Previous Page"
 msgstr "Forrige side"
 
@@ -2113,7 +2113,7 @@ msgstr "Pakke"
 
 #: trac/templates/about.html:56 trac/templates/about.html:69
 #: trac/templates/history_view.html:28 trac/ticket/admin.py:431
-#: trac/ticket/api.py:307
+#: trac/ticket/api.py:329
 msgid "Version"
 msgstr "Version"
 
@@ -2169,7 +2169,7 @@ msgstr "(størrelsesgrænse %(value)s)"
 msgid "Attachment Info"
 msgstr "Vedhæftningsinfo"
 
-#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:355
+#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:359
 #: trac/wiki/templates/wiki_edit_form.html:42
 msgid "Your email or username:"
 msgstr "Din e-mail eller brugernavn:"
@@ -2199,7 +2199,7 @@ msgid "Attach another file"
 msgstr "Vedhæft en anden fil"
 
 #: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:21
-#: trac/templates/macros.html:19 trac/util/text.py:621
+#: trac/templates/macros.html:19 trac/util/text.py:622
 #: trac/versioncontrol/templates/browser.html:189
 #: trac/versioncontrol/templates/dir_entries.html:17
 #, python-format
@@ -2288,7 +2288,7 @@ msgstr "Ændringer i mellemrum"
 
 #: trac/templates/diff_options.html:50
 #: trac/ticket/templates/milestone_view.html:57
-#: trac/ticket/templates/query.html:220
+#: trac/ticket/templates/query.html:223
 #: trac/ticket/templates/report_view.html:49
 #: trac/ticket/templates/roadmap.html:28
 #: trac/timeline/templates/timeline.html:36
@@ -2382,7 +2382,7 @@ msgstr "Tilføjet"
 msgid "Removed"
 msgstr "Fjernet"
 
-#: trac/templates/diff_view.html:70 trac/ticket/api.py:336
+#: trac/templates/diff_view.html:70 trac/ticket/api.py:358
 #: trac/versioncontrol/templates/changeset.html:204
 #: trac/versioncontrol/templates/revisionlog.html:92 trac/wiki/admin.py:197
 msgid "Modified"
@@ -2588,7 +2588,7 @@ msgstr ""
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:44
-#: trac/ticket/templates/ticket.html:378
+#: trac/ticket/templates/ticket.html:382
 msgid "Attachments"
 msgstr "Vedhæftninger"
 
@@ -2616,9 +2616,7 @@ msgstr "(Filen er tom)"
 
 #: trac/templates/preview_file.html:19
 #, python-format
-msgid ""
-"[1:HTML preview not available], since the file size exceeds %(size)s "
-"bytes."
+msgid "[1:HTML preview not available], since the file size exceeds %(size)s."
 msgstr ""
 
 #: trac/templates/preview_file.html:22
@@ -2699,7 +2697,7 @@ msgstr "Komponenten \"%(name)s\" eksisterer allerede."
 msgid "The component \"%(name)s\" has been added."
 msgstr "Komponenten \"%(name)s\" er blevet tilføjet."
 
-#: trac/ticket/admin.py:122 trac/ticket/model.py:859 trac/ticket/model.py:878
+#: trac/ticket/admin.py:122 trac/ticket/model.py:908 trac/ticket/model.py:927
 msgid "Invalid component name."
 msgstr "Ugyldigt komponentnavn."
 
@@ -2716,7 +2714,7 @@ msgstr "Ingen komponenter valgt"
 msgid "The selected components have been removed."
 msgstr "De valgte komponenter er blevet fjernet."
 
-#: trac/ticket/admin.py:235 trac/ticket/api.py:305
+#: trac/ticket/admin.py:235 trac/ticket/api.py:327
 msgid "Milestone"
 msgstr "Milepæl"
 
@@ -2738,7 +2736,7 @@ msgstr "Milpælen \"%(name)s\" eksisterer allerede."
 msgid "The milestone \"%(name)s\" has been added."
 msgstr "Milpælen \"%(name)s\" er blevet tilføjet."
 
-#: trac/ticket/admin.py:305 trac/ticket/model.py:1038 trac/ticket/model.py:1060
+#: trac/ticket/admin.py:305 trac/ticket/model.py:1087 trac/ticket/model.py:1109
 msgid "Invalid milestone name."
 msgstr "Ugyldigt milepælenavn."
 
@@ -2765,7 +2763,7 @@ msgstr "Versionen \"%(name)s\" eksisterer allerede."
 msgid "The version \"%(name)s\" has been added."
 msgstr "Versionen \"%(name)s\" er blevet tilføjet."
 
-#: trac/ticket/admin.py:484 trac/ticket/model.py:1165 trac/ticket/model.py:1183
+#: trac/ticket/admin.py:484 trac/ticket/model.py:1214 trac/ticket/model.py:1232
 msgid "Invalid version name."
 msgstr "Ugyldigt versionsnavn."
 
@@ -2832,7 +2830,7 @@ msgstr "Mulige værdier"
 msgid "Invalid up/down value: %(value)s"
 msgstr "Ugyldig op/ned værdi: %(value)s"
 
-#: trac/ticket/admin.py:777 trac/ticket/api.py:304
+#: trac/ticket/admin.py:777 trac/ticket/api.py:326
 msgid "Priority"
 msgstr "Prioritet"
 
@@ -2840,7 +2838,7 @@ msgstr "Prioritet"
 msgid "Priorities"
 msgstr "Prioriteter"
 
-#: trac/ticket/admin.py:783 trac/ticket/api.py:309
+#: trac/ticket/admin.py:783 trac/ticket/api.py:331
 msgid "Resolution"
 msgstr "Løsning"
 
@@ -2848,7 +2846,7 @@ msgstr "Løsning"
 msgid "Resolutions"
 msgstr "Løsninger"
 
-#: trac/ticket/admin.py:789 trac/ticket/api.py:308
+#: trac/ticket/admin.py:789 trac/ticket/api.py:330
 msgid "Severity"
 msgstr "Alvorlighed"
 
@@ -2873,71 +2871,76 @@ msgstr "<number> skal være et tal"
 msgid "Ticket #%(num)s and all associated data removed."
 msgstr "Sagen #%(num)s og alle tilknyttede data fjernet."
 
-#: trac/ticket/api.py:257
+#: trac/ticket/api.py:279
 msgid "Attachment"
 msgstr "Vedhæftning"
 
-#: trac/ticket/api.py:287
+#: trac/ticket/api.py:309
 msgid "Summary"
 msgstr "Opsummering"
 
-#: trac/ticket/api.py:289 trac/ticket/templates/ticket.html:351
+#: trac/ticket/api.py:311 trac/ticket/templates/ticket.html:355
 msgid "Reporter"
 msgstr ""
 
-#: trac/ticket/api.py:302 trac/versioncontrol/admin.py:113
+#: trac/ticket/api.py:324 trac/versioncontrol/admin.py:113
 #: trac/versioncontrol/templates/admin_repositories.html:125
 msgid "Type"
 msgstr "Type"
 
-#: trac/ticket/api.py:303
+#: trac/ticket/api.py:325
 msgid "Status"
 msgstr "Status"
 
-#: trac/ticket/api.py:328
+#: trac/ticket/api.py:350
 msgid "Keywords"
 msgstr "Nøgleord"
 
-#: trac/ticket/api.py:330
+#: trac/ticket/api.py:352
 msgid "Cc"
 msgstr "Cc"
 
-#: trac/ticket/api.py:334
+#: trac/ticket/api.py:356
 msgid "Created"
 msgstr "Oprettet"
 
-#: trac/ticket/api.py:480
+#: trac/ticket/api.py:504
 #, python-format
 msgid "Tickets %(ranges)s"
 msgstr "Sager %(ranges)s"
 
-#: trac/ticket/api.py:504
+#: trac/ticket/api.py:528
 #, python-format
 msgid "Comment %(cnum)s for Ticket #%(id)s"
 msgstr "Kommentar %(cnum)s til sag #%(id)s"
 
-#: trac/ticket/api.py:529
+#: trac/ticket/api.py:553
 #, python-format
 msgid "Ticket #%(shortname)s"
 msgstr "Sag #%(shortname)s"
 
-#: trac/ticket/batch.py:95
+#: trac/ticket/batch.py:63
+#, python-format
+msgid "The changes could not be saved: %(message)s"
+msgstr ""
+
+#: trac/ticket/batch.py:106
 msgid "add"
 msgstr "tilføj"
 
-#: trac/ticket/batch.py:96
+#: trac/ticket/batch.py:107
 msgid "remove"
 msgstr "fjern"
 
-#: trac/ticket/batch.py:97
+#: trac/ticket/batch.py:108
 msgid "add / remove"
 msgstr "tilføj / fjern"
 
-#: trac/ticket/batch.py:98
+#: trac/ticket/batch.py:109
 msgid "set to"
 msgstr "sæt til"
 
-#: trac/ticket/batch.py:180
+#: trac/ticket/batch.py:191
 #, python-format
 msgid ""
 "The changes have been saved, but an error occurred while sending "
@@ -3066,163 +3069,163 @@ msgstr ""
 msgid "Enable JavaScript to display the workflow graph."
 msgstr "Aktiver JavaScript for at vise workflow grafen."
 
-#: trac/ticket/model.py:120
+#: trac/ticket/model.py:155
 #, python-format
 msgid "Ticket %(id)s does not exist."
 msgstr "Sagen %(id)s eksisterer ikke."
 
-#: trac/ticket/model.py:121
+#: trac/ticket/model.py:156
 msgid "Invalid ticket number"
 msgstr "Ugyldigt sagsnummer"
 
-#: trac/ticket/model.py:157
+#: trac/ticket/model.py:194
 msgid "Multi-values fields not supported yet"
 msgstr "Multi-værdi felter er ikke understøttet endnu"
 
-#: trac/ticket/model.py:685
+#: trac/ticket/model.py:734
 #, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr "%(type)s %(name)s eksisterer ikke."
 
-#: trac/ticket/model.py:727 trac/ticket/model.py:752
+#: trac/ticket/model.py:776 trac/ticket/model.py:801
 #, python-format
 msgid "Invalid %(type)s name."
 msgstr "Ugyldigt %(type)s navn."
 
-#: trac/ticket/model.py:831
+#: trac/ticket/model.py:880
 #, python-format
 msgid "Component %(name)s does not exist."
 msgstr "Komponenten %(name)s eksisterer ikke."
 
-#: trac/ticket/model.py:976
+#: trac/ticket/model.py:1025
 #, python-format
 msgid "Milestone %(name)s does not exist."
 msgstr "Milepælen %(name)s eksisterer ikke."
 
-#: trac/ticket/model.py:977
+#: trac/ticket/model.py:1026
 msgid "Invalid milestone name"
 msgstr "Ugyldigt milepælnavn"
 
-#: trac/ticket/model.py:1116
+#: trac/ticket/model.py:1165
 msgid "Open (by due date)"
 msgstr "Åben (efter forfaldsdato)"
 
-#: trac/ticket/model.py:1117
+#: trac/ticket/model.py:1166
 msgid "Open (no due date)"
 msgstr "Åben (ingen forfaldsdato)"
 
-#: trac/ticket/model.py:1120
+#: trac/ticket/model.py:1169
 msgid "Closed"
 msgstr "Lukket"
 
-#: trac/ticket/model.py:1137
+#: trac/ticket/model.py:1186
 #, python-format
 msgid "Version %(name)s does not exist."
 msgstr "Versionen %(name)s eksisterer ikke."
 
-#: trac/ticket/query.py:59
+#: trac/ticket/query.py:60
 msgid "Invalid query constraint value"
 msgstr "Ugyldig forespørgsels-begrænsningsværdi"
 
-#: trac/ticket/query.py:93
+#: trac/ticket/query.py:94
 #, python-format
 msgid "Query page %(page)s is invalid."
 msgstr "Forespørgselssiden %(page)s er ugyldig."
 
-#: trac/ticket/query.py:108
+#: trac/ticket/query.py:109
 #, python-format
 msgid "Query max %(max)s is invalid."
 msgstr "Forespørgselsmaks %(max)s er ugyldig."
 
-#: trac/ticket/query.py:167
+#: trac/ticket/query.py:168
 msgid "Query filter requires field and constraints separated by a \"=\""
 msgstr "Forespørgselsfilter kræver felter og begrænsninger adskilt af et \"=\""
 
-#: trac/ticket/query.py:180
+#: trac/ticket/query.py:181
 msgid "Query filter requires field name"
 msgstr "Forespørgselsfilter kræver et feltnavn"
 
-#: trac/ticket/query.py:313
+#: trac/ticket/query.py:314
 #, python-format
 msgid "Page %(page)s is beyond the number of pages in the query"
 msgstr "Siden %(page)s er uden for antallet af sider i forespørgslen"
 
-#: trac/ticket/query.py:573
+#: trac/ticket/query.py:571
 #, python-format
 msgid "Invalid ticket id list: %(value)s"
 msgstr "Ugyldig sags-id-liste: %(value)s"
 
-#: trac/ticket/query.py:672 trac/ticket/query.py:680
+#: trac/ticket/query.py:670 trac/ticket/query.py:678
 msgid "contains"
 msgstr "indeholder"
 
-#: trac/ticket/query.py:673 trac/ticket/query.py:681
+#: trac/ticket/query.py:671 trac/ticket/query.py:679
 msgid "doesn't contain"
 msgstr "indeholder ikke"
 
-#: trac/ticket/query.py:674
+#: trac/ticket/query.py:672
 msgid "begins with"
 msgstr "begynder med"
 
-#: trac/ticket/query.py:675
+#: trac/ticket/query.py:673
 msgid "ends with"
 msgstr "slutter med"
 
-#: trac/ticket/query.py:676 trac/ticket/query.py:684 trac/ticket/query.py:688
+#: trac/ticket/query.py:674 trac/ticket/query.py:682 trac/ticket/query.py:686
 msgid "is"
 msgstr "er"
 
-#: trac/ticket/query.py:677 trac/ticket/query.py:685 trac/ticket/query.py:689
+#: trac/ticket/query.py:675 trac/ticket/query.py:683 trac/ticket/query.py:687
 msgid "is not"
 msgstr "er ikke"
 
-#: trac/ticket/query.py:721 trac/ticket/query.py:727
+#: trac/ticket/query.py:717 trac/ticket/query.py:723
 msgid "Ticket"
 msgstr "Sag"
 
-#: trac/ticket/query.py:798 trac/ticket/report.py:468
+#: trac/ticket/query.py:794 trac/ticket/report.py:468
 #, python-format
 msgid "Page %(num)d"
 msgstr "Side %(num)d"
 
-#: trac/ticket/query.py:847 trac/ticket/report.py:328 trac/ticket/report.py:627
-#: trac/ticket/web_ui.py:140 trac/timeline/web_ui.py:235
+#: trac/ticket/query.py:843 trac/ticket/report.py:327 trac/ticket/report.py:627
+#: trac/ticket/web_ui.py:146 trac/timeline/web_ui.py:235
 #: trac/versioncontrol/web_ui/log.py:319
 msgid "RSS Feed"
 msgstr "RSS feed"
 
-#: trac/ticket/query.py:849 trac/ticket/report.py:330 trac/ticket/report.py:629
-#: trac/ticket/web_ui.py:136
+#: trac/ticket/query.py:845 trac/ticket/report.py:329 trac/ticket/report.py:629
+#: trac/ticket/web_ui.py:142
 msgid "Comma-delimited Text"
 msgstr "Kommasepareret tekst"
 
-#: trac/ticket/query.py:851 trac/ticket/report.py:332 trac/ticket/report.py:631
-#: trac/ticket/web_ui.py:138
+#: trac/ticket/query.py:847 trac/ticket/report.py:331 trac/ticket/report.py:631
+#: trac/ticket/web_ui.py:144
 msgid "Tab-delimited Text"
 msgstr "Tab-afgrænset tekst"
 
-#: trac/ticket/query.py:873 trac/ticket/report.py:131
+#: trac/ticket/query.py:869 trac/ticket/report.py:130
 msgid "View Tickets"
 msgstr "Vis sager"
 
-#: trac/ticket/query.py:1086 trac/ticket/query.py:1097
-#: trac/ticket/report.py:197 trac/ticket/templates/report_list.html:57
+#: trac/ticket/query.py:1082 trac/ticket/query.py:1093
+#: trac/ticket/report.py:196 trac/ticket/templates/report_list.html:57
 msgid "Custom Query"
 msgstr "Tilpasset forespørgsel"
 
-#: trac/ticket/query.py:1096 trac/ticket/report.py:187
-#: trac/ticket/report.py:188 trac/ticket/report.py:190
+#: trac/ticket/query.py:1092 trac/ticket/report.py:186
+#: trac/ticket/report.py:187 trac/ticket/report.py:189
 #: trac/ticket/templates/report_list.html:10
 #: trac/ticket/templates/report_list.html:28
 msgid "Available Reports"
 msgstr "Tilgængelige rapporter"
 
-#: trac/ticket/query.py:1195
+#: trac/ticket/query.py:1192
 #, python-format
 msgid "[Error: %(error)s]"
 msgstr "[Fejl: %(error)s]"
 
-#: trac/ticket/query.py:1201
+#: trac/ticket/query.py:1198
 msgid ""
 "Wiki macro listing tickets that match certain criteria.\n"
 "\n"
@@ -3249,6 +3252,8 @@ msgid ""
 " - '''compact''' -- the tickets are presented as a comma-separated\n"
 "   list of ticket IDs.\n"
 " - '''count''' -- only the count of matching tickets is displayed\n"
+" - '''rawcount''' -- only the count of matching tickets is displayed,\n"
+"   not even with a link to the corresponding query //(since 1.1.1)//\n"
 " - '''table'''  -- a view similar to the custom query view (but without\n"
 "   the controls)\n"
 " - '''progress''' -- a view similar to the milestone progress bars\n"
@@ -3281,65 +3286,72 @@ msgid ""
 "but is deprecated."
 msgstr ""
 
-#: trac/ticket/query.py:1378
+#: trac/ticket/query.py:1313
+#, fuzzy, python-format
+msgid "%(num)s ticket matching %(criteria)s"
+msgid_plural "%(num)s tickets matching %(criteria)s"
+msgstr[0] "%(groupvalue)s %(groupname)s sager der matcher %(query)s"
+msgstr[1] ""
+
+#: trac/ticket/query.py:1383
 #, python-format
 msgid "Ticket completion status for each %(group)s"
 msgstr "Sags færdiggørelsesstatus for hver %(group)s"
 
-#: trac/ticket/query.py:1393
+#: trac/ticket/query.py:1398
 msgid "No results"
 msgstr "Ingen resultater"
 
-#: trac/ticket/query.py:1411
+#: trac/ticket/query.py:1416
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
 msgstr "%(groupvalue)s %(groupname)s sager der matcher %(query)s"
 
-#: trac/ticket/query.py:1435
+#: trac/ticket/query.py:1440
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
 msgstr "%(groupvalue)s %(groupname)s sager:"
 
-#: trac/ticket/report.py:223
+#: trac/ticket/report.py:222
 msgid "The report has been created."
 msgstr "Rapporten er blevet oprettet."
 
-#: trac/ticket/report.py:233
+#: trac/ticket/report.py:232
 #, python-format
 msgid "The report {%(id)d} has been deleted."
 msgstr "Rapporten {%(id)d} er blevet slettet."
 
-#: trac/ticket/report.py:257
+#: trac/ticket/report.py:256
 #, python-format
 msgid "Delete Report {%(num)s} %(title)s"
 msgstr "Slet rapport {%(num)s} %(title)s"
 
-#: trac/ticket/report.py:262 trac/ticket/report.py:273
-#: trac/ticket/report.py:352
+#: trac/ticket/report.py:261 trac/ticket/report.py:272
+#: trac/ticket/report.py:351
 #, python-format
 msgid "Report {%(num)s} does not exist."
 msgstr "Rapporten {%(num)s} eksisterer ikke."
 
-#: trac/ticket/report.py:263 trac/ticket/report.py:274
-#: trac/ticket/report.py:353
+#: trac/ticket/report.py:262 trac/ticket/report.py:273
+#: trac/ticket/report.py:352
 msgid "Invalid Report Number"
 msgstr "Ugyldigt rapportnummer"
 
-#: trac/ticket/report.py:286
+#: trac/ticket/report.py:285
 msgid "Create New Report"
 msgstr "Opret en ny rapport"
 
-#: trac/ticket/report.py:290
+#: trac/ticket/report.py:289
 #, python-format
 msgid "Edit Report {%(num)d} %(title)s"
 msgstr "Rediger rapport {%(num)d} %(title)s"
 
-#: trac/ticket/report.py:357
+#: trac/ticket/report.py:356
 #, python-format
 msgid "Report failed: %(error)s"
 msgstr "Rapport mislykkedes: %(error)s"
 
-#: trac/ticket/report.py:372
+#: trac/ticket/report.py:371
 #, python-format
 msgid "When specified, the report number should be \"%(num)s\"."
 msgstr "Når angivet, bør rapportnummeret være \"%(num)s\"."
@@ -3461,75 +3473,75 @@ msgstr "Næste milepæl"
 msgid "Back to Roadmap"
 msgstr "Tilbage til roadmap"
 
-#: trac/ticket/web_ui.py:65
+#: trac/ticket/web_ui.py:66
 msgid "Invalid Ticket"
 msgstr "Ugyldig sag"
 
-#: trac/ticket/web_ui.py:162 trac/ticket/templates/ticket.html:14
+#: trac/ticket/web_ui.py:168 trac/ticket/templates/ticket.html:14
 msgid "New Ticket"
 msgstr "Ny sag"
 
-#: trac/ticket/web_ui.py:178
+#: trac/ticket/web_ui.py:184
 msgid "id can't be set for a new ticket request."
 msgstr ""
 
-#: trac/ticket/web_ui.py:228 trac/ticket/web_ui.py:279
+#: trac/ticket/web_ui.py:234 trac/ticket/web_ui.py:286
 #: trac/versioncontrol/web_ui/changeset.py:1042
 #, python-format
 msgid "%(title)s: %(message)s"
 msgstr "%(title)s: %(message)s"
 
-#: trac/ticket/web_ui.py:242
+#: trac/ticket/web_ui.py:248
 msgid "Tickets opened and closed"
 msgstr "Åbnede og lukkede sager"
 
-#: trac/ticket/web_ui.py:244
+#: trac/ticket/web_ui.py:250
 msgid "Ticket updates"
 msgstr "Sagsopdateringer"
 
-#: trac/ticket/web_ui.py:273 trac/ticket/web_ui.py:1166
+#: trac/ticket/web_ui.py:280 trac/ticket/web_ui.py:1193
 #, python-format
 msgid "%(labels)s changed"
 msgid_plural "%(labels)s changed"
 msgstr[0] "%(labels)s ændret"
 msgstr[1] "%(labels)s ændret"
 
-#: trac/ticket/web_ui.py:392
+#: trac/ticket/web_ui.py:399
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) created"
 msgstr "Sag %(ticketref)s (%(summary)s) oprettet"
 
-#: trac/ticket/web_ui.py:393
+#: trac/ticket/web_ui.py:400
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) reopened"
 msgstr "Sag %(ticketref)s (%(summary)s) genåbnet"
 
-#: trac/ticket/web_ui.py:394
+#: trac/ticket/web_ui.py:401
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) closed"
 msgstr "Sag %(ticketref)s (%(summary)s) lukket"
 
-#: trac/ticket/web_ui.py:395
+#: trac/ticket/web_ui.py:402
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) updated"
 msgstr "Sag %(ticketref)s (%(summary)s) opdateret"
 
-#: trac/ticket/web_ui.py:424
+#: trac/ticket/web_ui.py:436
 #, python-format
 msgid "Tickets %(ticketids)s"
 msgstr "Sager %(ticketids)s"
 
-#: trac/ticket/web_ui.py:426
+#: trac/ticket/web_ui.py:438
 #, python-format
 msgid "Tickets %(ticketlist)s batch updated"
 msgstr "Sager %(ticketlist)s batch-opdateret"
 
-#: trac/ticket/web_ui.py:576
+#: trac/ticket/web_ui.py:589
 #, python-format
 msgid "The action \"%(name)s\" is not available."
 msgstr "Handlingen \"%(name)s\" er ikke tilgængelig."
 
-#: trac/ticket/web_ui.py:602
+#: trac/ticket/web_ui.py:615
 #, python-format
 msgid ""
 "Please review your configuration, probably starting with %(section)s in "
@@ -3538,132 +3550,132 @@ msgstr ""
 "Gennemse venligst din konfiguration, du bør nok starte med %(section)s i "
 "din %(tracini)s."
 
-#: trac/ticket/web_ui.py:660 trac/ticket/web_ui.py:895
+#: trac/ticket/web_ui.py:673 trac/ticket/web_ui.py:921
 #, python-format
 msgid "Ticket #%(id)s"
 msgstr "Sag #%(id)s"
 
-#: trac/ticket/web_ui.py:713
+#: trac/ticket/web_ui.py:727
 msgid "Previous Ticket"
 msgstr "Forrige sag"
 
-#: trac/ticket/web_ui.py:713
+#: trac/ticket/web_ui.py:727
 msgid "Next Ticket"
 msgstr "Næste sag"
 
-#: trac/ticket/web_ui.py:714
+#: trac/ticket/web_ui.py:728
 msgid "Back to Query"
 msgstr "Tilbage til forespørgslen"
 
-#: trac/ticket/web_ui.py:812 trac/ticket/web_ui.py:961
-#: trac/ticket/web_ui.py:969
+#: trac/ticket/web_ui.py:838 trac/ticket/web_ui.py:987
+#: trac/ticket/web_ui.py:995
 msgid "Ticket History"
 msgstr "Sagshistorik"
 
-#: trac/ticket/web_ui.py:816 trac/ticket/web_ui.py:1016
+#: trac/ticket/web_ui.py:842 trac/ticket/web_ui.py:1042
 #, python-format
 msgid "Back to Ticket #%(num)s"
 msgstr "Tilbage til sag #%(num)s"
 
-#: trac/ticket/web_ui.py:858
+#: trac/ticket/web_ui.py:884
 msgid "No differences to show"
 msgstr "Ingen forskelle at vise"
 
-#: trac/ticket/web_ui.py:901 trac/ticket/web_ui.py:958
-#: trac/ticket/web_ui.py:966 trac/ticket/web_ui.py:1037
-#: trac/ticket/web_ui.py:1082 trac/ticket/web_ui.py:1089
+#: trac/ticket/web_ui.py:927 trac/ticket/web_ui.py:984
+#: trac/ticket/web_ui.py:992 trac/ticket/web_ui.py:1063
+#: trac/ticket/web_ui.py:1108 trac/ticket/web_ui.py:1115
 #: trac/wiki/web_ui.py:449 trac/wiki/web_ui.py:455 trac/wiki/web_ui.py:653
 #: trac/wiki/web_ui.py:667
 #, python-format
 msgid "Version %(num)s"
 msgstr "Version %(num)s"
 
-#: trac/ticket/web_ui.py:904 trac/ticket/web_ui.py:1040
+#: trac/ticket/web_ui.py:930 trac/ticket/web_ui.py:1066
 msgid "Initial Version"
 msgstr "Oprindelig version"
 
-#: trac/ticket/web_ui.py:904 trac/ticket/web_ui.py:1040
+#: trac/ticket/web_ui.py:930 trac/ticket/web_ui.py:1066
 msgid "initial"
 msgstr "oprindelig"
 
-#: trac/ticket/web_ui.py:923
+#: trac/ticket/web_ui.py:949
 #, python-format
 msgid "Property %(label)s %(rendered)s"
 msgstr "Egenskab %(label)s %(rendered)s"
 
-#: trac/ticket/web_ui.py:968 trac/ticket/web_ui.py:1091
+#: trac/ticket/web_ui.py:994 trac/ticket/web_ui.py:1117
 #: trac/versioncontrol/web_ui/changeset.py:371 trac/wiki/web_ui.py:468
 msgid "Previous Change"
 msgstr "Forrige ændring"
 
-#: trac/ticket/web_ui.py:968 trac/ticket/web_ui.py:1091
+#: trac/ticket/web_ui.py:994 trac/ticket/web_ui.py:1117
 #: trac/versioncontrol/web_ui/changeset.py:371 trac/wiki/web_ui.py:468
 msgid "Next Change"
 msgstr "Næste ændring"
 
-#: trac/ticket/web_ui.py:974
+#: trac/ticket/web_ui.py:1000
 msgid "Ticket Diff"
 msgstr "Sags diff"
 
-#: trac/ticket/web_ui.py:995
+#: trac/ticket/web_ui.py:1021
 msgid "''Initial version''"
 msgstr "''oprindelig version''"
 
-#: trac/ticket/web_ui.py:1008 trac/ticket/web_ui.py:1085
-#: trac/ticket/web_ui.py:1092
+#: trac/ticket/web_ui.py:1034 trac/ticket/web_ui.py:1111
+#: trac/ticket/web_ui.py:1118
 msgid "Ticket Comment History"
 msgstr "Sags-kommentar historik"
 
-#: trac/ticket/web_ui.py:1010 trac/ticket/web_ui.py:1034
-#: trac/ticket/web_ui.py:1099
+#: trac/ticket/web_ui.py:1036 trac/ticket/web_ui.py:1060
+#: trac/ticket/web_ui.py:1125
 #, python-format
 msgid "Ticket #%(num)s, comment %(cnum)d"
 msgstr "Sag #%(num)s, kommentar %(cnum)d"
 
-#: trac/ticket/web_ui.py:1057
+#: trac/ticket/web_ui.py:1083
 #, python-format
 msgid "No version %(version)d for comment %(cnum)d on ticket #%(ticket)s"
 msgstr "Ingen version %(version)d for kommentaren %(cnum)d i sagen #%(ticket)s"
 
-#: trac/ticket/web_ui.py:1097
+#: trac/ticket/web_ui.py:1123
 msgid "Ticket Comment Diff"
 msgstr "Sags-kommentar diff"
 
-#: trac/ticket/web_ui.py:1170
+#: trac/ticket/web_ui.py:1197
 #, python-format
 msgid "%(labels)s set"
 msgid_plural "%(labels)s set"
 msgstr[0] "%(labels)s sat"
 msgstr[1] "%(labels)s sat"
 
-#: trac/ticket/web_ui.py:1174
+#: trac/ticket/web_ui.py:1201
 #, python-format
 msgid "%(labels)s deleted"
 msgid_plural "%(labels)s deleted"
 msgstr[0] "%(labels)s slettet"
 msgstr[1] "%(labels)s slettet"
 
-#: trac/ticket/web_ui.py:1175 trac/ticket/web_ui.py:1755
+#: trac/ticket/web_ui.py:1202 trac/ticket/web_ui.py:1814
 msgid "; "
 msgstr ";"
 
-#: trac/ticket/web_ui.py:1196
+#: trac/ticket/web_ui.py:1223
 msgid "No permission to edit the ticket description."
 msgstr "Ingen rettigheder til at redigere sags-beskrivelsen."
 
-#: trac/ticket/web_ui.py:1202
+#: trac/ticket/web_ui.py:1229
 msgid "No permission to change the ticket reporter."
 msgstr ""
 
-#: trac/ticket/web_ui.py:1207
+#: trac/ticket/web_ui.py:1234
 msgid "No permission to change ticket fields."
 msgstr "Ingen rettigheder til at ændre sags-felter."
 
-#: trac/ticket/web_ui.py:1216
+#: trac/ticket/web_ui.py:1243
 msgid "No permissions to add a comment."
 msgstr "Ingen rettigheder til at tilføje kommentar."
 
-#: trac/ticket/web_ui.py:1223
+#: trac/ticket/web_ui.py:1250
 msgid ""
 "Sorry, can not save your changes. This ticket has been modified by "
 "someone else since you started"
@@ -3671,35 +3683,35 @@ msgstr ""
 "Beklager, kan ikke gemme dine ændringer. Sagen er blevet ændret af en "
 "anden, siden du startede"
 
-#: trac/ticket/web_ui.py:1230
+#: trac/ticket/web_ui.py:1257
 msgid "Tickets must contain a summary."
 msgstr "Sagen skal indeholde en opsummering."
 
-#: trac/ticket/web_ui.py:1248
+#: trac/ticket/web_ui.py:1275
 #, python-format
 msgid "field %(name)s must be set"
 msgstr "Feltet %(name)s skal være udfyldt"
 
-#: trac/ticket/web_ui.py:1254
+#: trac/ticket/web_ui.py:1281
 #, python-format
 msgid "Ticket description is too long (must be less than %(num)s characters)"
 msgstr "Sags-beskrivelsen er for lang (skal være mindre end %(num)s tegn)"
 
-#: trac/ticket/web_ui.py:1261
+#: trac/ticket/web_ui.py:1288
 #, python-format
 msgid "Ticket comment is too long (must be less than %(num)s characters)"
 msgstr "Sags-kommentaren er for lang (skal være mindre end %(num)s tegn)"
 
-#: trac/ticket/web_ui.py:1274
+#: trac/ticket/web_ui.py:1301
 msgid "Invalid comment threading identifier"
 msgstr "Ugyldig kommentar-trådnings identifikation"
 
-#: trac/ticket/web_ui.py:1281
+#: trac/ticket/web_ui.py:1324
 #, python-format
 msgid "The ticket field '%(field)s' is invalid: %(message)s"
 msgstr "Sagsfeltet '%(field)s' er ugyldigt: %(message)s"
 
-#: trac/ticket/web_ui.py:1300
+#: trac/ticket/web_ui.py:1343
 #, python-format
 msgid ""
 "The ticket has been created, but an error occurred while sending "
@@ -3708,7 +3720,7 @@ msgstr ""
 "Sagen er blevet oprettet, men der opstod en fejl ved afsendelse af "
 "beskeder: %(message)s"
 
-#: trac/ticket/web_ui.py:1305
+#: trac/ticket/web_ui.py:1348
 #, python-format
 msgid ""
 "The ticket %(ticketref)s has been created. You can now attach the desired"
@@ -3717,7 +3729,7 @@ msgstr ""
 "Sagen %(ticketref)s er blevet oprettet. Du kan nu vedhæfte de ønskede "
 "filer."
 
-#: trac/ticket/web_ui.py:1311
+#: trac/ticket/web_ui.py:1354
 #, python-format
 msgid ""
 "The ticket %(ticketref)s has been created, but you don't have permission "
@@ -3727,11 +3739,11 @@ msgstr ""
 "at se den."
 
 #. TRANSLATOR: The 'change' has been saved... (link)
-#: trac/ticket/web_ui.py:1338
+#: trac/ticket/web_ui.py:1381
 msgid "change"
 msgstr "tilpas"
 
-#: trac/ticket/web_ui.py:1344
+#: trac/ticket/web_ui.py:1387
 #, python-format
 msgid ""
 "The %(change)s has been saved, but an error occurred while sending "
@@ -3740,79 +3752,79 @@ msgstr ""
 "%(change)s er blevet gemt, men der opstod en fejl ved afsendelse af "
 "beskeder: %(message)s"
 
-#: trac/ticket/web_ui.py:1482
+#: trac/ticket/web_ui.py:1525
 msgid "Add to Cc"
 msgstr "Tilføj til Cc"
 
-#: trac/ticket/web_ui.py:1483
+#: trac/ticket/web_ui.py:1526
 msgid "Remove from Cc"
 msgstr "Fjern fra Cc"
 
-#: trac/ticket/web_ui.py:1484
+#: trac/ticket/web_ui.py:1527
 msgid "Add/Remove from Cc"
 msgstr "Tilføj/fjern fra Cc"
 
-#: trac/ticket/web_ui.py:1485
+#: trac/ticket/web_ui.py:1528
 msgid "<Author field>"
 msgstr "<Forfatter felt>"
 
-#: trac/ticket/web_ui.py:1518 trac/ticket/templates/query.html:114
+#: trac/ticket/web_ui.py:1561 trac/ticket/templates/query.html:116
 msgid "yes"
 msgstr "ja"
 
-#: trac/ticket/web_ui.py:1518 trac/ticket/templates/query.html:117
+#: trac/ticket/web_ui.py:1561 trac/ticket/templates/query.html:119
 msgid "no"
 msgstr "nej"
 
-#: trac/ticket/web_ui.py:1724
+#: trac/ticket/web_ui.py:1783
 msgid "set"
 msgstr "indstil"
 
-#: trac/ticket/web_ui.py:1724
+#: trac/ticket/web_ui.py:1783
 msgid "unset"
 msgstr "frakobl"
 
-#: trac/ticket/web_ui.py:1727 trac/versioncontrol/templates/changeset.html:189
+#: trac/ticket/web_ui.py:1786 trac/versioncontrol/templates/changeset.html:189
 #: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "modified"
 msgstr "ændret"
 
 #. TRANSLATOR: modified ('diff') (link)
-#: trac/ticket/web_ui.py:1732 trac/ticket/templates/ticket_change.html:155
+#: trac/ticket/web_ui.py:1791 trac/ticket/templates/ticket_change.html:155
 #: trac/wiki/web_ui.py:747
 msgid "diff"
 msgstr "diff"
 
-#: trac/ticket/web_ui.py:1733
+#: trac/ticket/web_ui.py:1792
 #, python-format
 msgid "modified (%(diff)s)"
 msgstr "ændret (%(diff)s)"
 
-#: trac/ticket/web_ui.py:1751
+#: trac/ticket/web_ui.py:1810
 #, python-format
 msgid "%(items)s added"
 msgid_plural "%(items)s added"
 msgstr[0] "%(items)s tilføjet"
 msgstr[1] "%(items)s tilføjet"
 
-#: trac/ticket/web_ui.py:1753
+#: trac/ticket/web_ui.py:1812
 #, python-format
 msgid "%(items)s removed"
 msgid_plural "%(items)s removed"
 msgstr[0] "%(items)s fjernet"
 msgstr[1] "%(items)s fjernet"
 
-#: trac/ticket/web_ui.py:1762
+#: trac/ticket/web_ui.py:1821
 #, python-format
 msgid "%(value)s deleted"
 msgstr "%(value)s slettet"
 
-#: trac/ticket/web_ui.py:1764
+#: trac/ticket/web_ui.py:1823
 #, python-format
 msgid "set to %(value)s"
 msgstr "sæt til %(value)s"
 
-#: trac/ticket/web_ui.py:1767
+#: trac/ticket/web_ui.py:1826
 #, python-format
 msgid "changed from %(old)s to %(new)s"
 msgstr "ret fra %(old)s til %(new)s"
@@ -3902,7 +3914,7 @@ msgid "Retarget associated open tickets to milestone:"
 msgstr "Flyttede tilknyttede åbne sager til milepælen:"
 
 #: trac/ticket/templates/milestone_edit.html:106
-#: trac/ticket/templates/ticket.html:388
+#: trac/ticket/templates/ticket.html:392
 #: trac/ticket/templates/ticket_change.html:116
 #: trac/wiki/templates/wiki_edit_form.html:66
 #: trac/wiki/templates/wiki_edit_form.html:71
@@ -3958,7 +3970,7 @@ msgstr "%(stat_title)s after"
 msgid "Edit milestone"
 msgstr "Rediger milepæl"
 
-#: trac/ticket/templates/query.html:35
+#: trac/ticket/templates/query.html:37
 #: trac/ticket/templates/report_view.html:21
 #: trac/ticket/templates/report_view.html:97
 #, python-format
@@ -3967,23 +3979,23 @@ msgid_plural "%(num)s matches"
 msgstr[0] "%(num)s matcher"
 msgstr[1] "%(num)s matcher"
 
-#: trac/ticket/templates/query.html:44
+#: trac/ticket/templates/query.html:46
 msgid "Filters"
 msgstr "Filtre"
 
-#: trac/ticket/templates/query.html:45
+#: trac/ticket/templates/query.html:47
 msgid "Query filters"
 msgstr "Forespørgselsfiltre"
 
-#: trac/ticket/templates/query.html:51 trac/ticket/templates/query.html:155
+#: trac/ticket/templates/query.html:53 trac/ticket/templates/query.html:158
 msgid "Or"
 msgstr "Eller"
 
-#: trac/ticket/templates/query.html:79
+#: trac/ticket/templates/query.html:81
 msgid "or"
 msgstr "eller"
 
-#: trac/ticket/templates/query.html:127
+#: trac/ticket/templates/query.html:130
 msgid ""
 "[1:between]\n"
 "                            [2:]\n"
@@ -3995,63 +4007,63 @@ msgstr ""
 "                            [3:og]\n"
 "                            [4:]"
 
-#: trac/ticket/templates/query.html:141
+#: trac/ticket/templates/query.html:144
 msgid "And"
 msgstr "Og"
 
-#: trac/ticket/templates/query.html:174
+#: trac/ticket/templates/query.html:177
 msgid "Columns"
 msgstr "Kolonner"
 
-#: trac/ticket/templates/query.html:187
+#: trac/ticket/templates/query.html:190
 msgid "Group results by"
 msgstr "Grupper resultater efter"
 
-#: trac/ticket/templates/query.html:198
+#: trac/ticket/templates/query.html:201
 msgid "descending"
 msgstr "faldende"
 
-#: trac/ticket/templates/query.html:202
+#: trac/ticket/templates/query.html:205
 msgid "Show under each result:"
 msgstr "Vis under hvert resultat:"
 
-#: trac/ticket/templates/query.html:212
+#: trac/ticket/templates/query.html:215
 #: trac/ticket/templates/report_view.html:27
 msgid "Max items per page"
 msgstr "Maks emner per side"
 
-#: trac/ticket/templates/query.html:235
+#: trac/ticket/templates/query.html:238
 #, python-format
 msgid "Edit report {%(id)s} corresponding to this query"
 msgstr "Rediger rapporten {%(id)s} der svarer til denne forespørgsel"
 
-#: trac/ticket/templates/query.html:235
+#: trac/ticket/templates/query.html:238
 msgid "Edit query"
 msgstr "Rediger forespørgsel"
 
-#: trac/ticket/templates/query.html:244
+#: trac/ticket/templates/query.html:247
 msgid "Save query"
 msgstr "Gem forespørgsel"
 
-#: trac/ticket/templates/query.html:244
+#: trac/ticket/templates/query.html:247
 #, python-format
 msgid "Save updated query in report {%(id)s}"
 msgstr "Gem opdateret forespørgsel i rapporten {%(id)s}"
 
-#: trac/ticket/templates/query.html:244
+#: trac/ticket/templates/query.html:247
 msgid "Create new report from current query"
 msgstr "Opret ny rapport fra nuværende forespørgsel"
 
-#: trac/ticket/templates/query.html:252
+#: trac/ticket/templates/query.html:255
 #, python-format
 msgid "Delete report {%(id)s} corresponding to this query"
 msgstr "Slet rapporten {%(id)s} der svarer til denne forespørgsel"
 
-#: trac/ticket/templates/query.html:252
+#: trac/ticket/templates/query.html:255
 msgid "Delete query"
 msgstr "Slet forespørgsel"
 
-#: trac/ticket/templates/query.html:259
+#: trac/ticket/templates/query.html:262
 msgid ""
 "[1:Note:] See [2:TracQuery]\n"
 "        for help on using queries."
@@ -4092,11 +4104,11 @@ msgstr "Vis sag"
 msgid "View milestone"
 msgstr "Vis milepæl"
 
-#: trac/ticket/templates/query_results.html:95
+#: trac/ticket/templates/query_results.html:96
 msgid "(this ticket)"
 msgstr "(denne sag)"
 
-#: trac/ticket/templates/query_results.html:111
+#: trac/ticket/templates/query_results.html:112
 msgid "(more results for this group on next page)"
 msgstr "(flere resultater for denne gruppe på næste side)"
 
@@ -4256,43 +4268,43 @@ msgstr "Milepæl:"
 msgid "Add new milestone"
 msgstr "Tilføj ny milepæl"
 
-#: trac/ticket/templates/ticket.html:132
+#: trac/ticket/templates/ticket.html:134
 msgid "Go to the ticket editor"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:132
+#: trac/ticket/templates/ticket.html:134
 msgid "Modify"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:134
+#: trac/ticket/templates/ticket.html:136
 msgid "Create New Ticket"
 msgstr "Opret ny sag"
 
-#: trac/ticket/templates/ticket.html:152
+#: trac/ticket/templates/ticket.html:154
 msgid "Oldest first"
 msgstr "Ældste først"
 
-#: trac/ticket/templates/ticket.html:154
+#: trac/ticket/templates/ticket.html:156
 msgid "Newest first"
 msgstr "Nyeste først"
 
-#: trac/ticket/templates/ticket.html:157
+#: trac/ticket/templates/ticket.html:159
 msgid "Threaded"
 msgstr "Trådet"
 
-#: trac/ticket/templates/ticket.html:162
+#: trac/ticket/templates/ticket.html:164
 msgid "Comments only"
 msgstr "Kun kommentarer"
 
-#: trac/ticket/templates/ticket.html:167
+#: trac/ticket/templates/ticket.html:169
 msgid "Change History"
 msgstr "Ændringshistorik"
 
-#: trac/ticket/templates/ticket.html:186
+#: trac/ticket/templates/ticket.html:188
 msgid "Add Comment"
 msgstr "Tilføj Kommentar"
 
-#: trac/ticket/templates/ticket.html:188
+#: trac/ticket/templates/ticket.html:190
 msgid ""
 "This ticket has been modified since you started editing. You should "
 "review the\n"
@@ -4307,7 +4319,7 @@ msgstr ""
 "              Du kan stadig fortsætte og indsende dine ændringer hvis du "
 "vil det."
 
-#: trac/ticket/templates/ticket.html:198
+#: trac/ticket/templates/ticket.html:200
 msgid ""
 "You may use\n"
 "                [1:WikiFormatting]\n"
@@ -4317,27 +4329,27 @@ msgstr ""
 "                [1:WikiFormatting]\n"
 "                her."
 
-#: trac/ticket/templates/ticket.html:209
+#: trac/ticket/templates/ticket.html:211
 msgid "Modify Ticket"
 msgstr "Tilpas sag"
 
-#: trac/ticket/templates/ticket.html:215
+#: trac/ticket/templates/ticket.html:217
 msgid "Change Properties"
 msgstr "Ændrings-egenskaber"
 
-#: trac/ticket/templates/ticket.html:216
+#: trac/ticket/templates/ticket.html:218
 msgid "Properties"
 msgstr "Egenskaber"
 
-#: trac/ticket/templates/ticket.html:220
+#: trac/ticket/templates/ticket.html:222
 msgid "Summary:"
 msgstr "Opsummering:"
 
-#: trac/ticket/templates/ticket.html:228
+#: trac/ticket/templates/ticket.html:230
 msgid "Reporter:"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:240
+#: trac/ticket/templates/ticket.html:242
 msgid ""
 "You may use\n"
 "                          [1:WikiFormatting] here."
@@ -4345,51 +4357,51 @@ msgstr ""
 "Du kan bruge\n"
 "                          [1:WikiFormatting] her."
 
-#: trac/ticket/templates/ticket.html:256
+#: trac/ticket/templates/ticket.html:258
 #: trac/ticket/templates/ticket_box.html:75
 #, python-format
 msgid "%(field)s:"
 msgstr "%(field)s:"
 
-#: trac/ticket/templates/ticket.html:295
+#: trac/ticket/templates/ticket.html:299
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr ""
 "Dette afkydsningsfelt lader dig tilføje eller fjerne dig selv fra CC "
 "listen. "
 
-#: trac/ticket/templates/ticket.html:301
+#: trac/ticket/templates/ticket.html:305
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr "Mellemrum eller kommaseparerede email-adresser og brugernavne accepteres."
 
-#: trac/ticket/templates/ticket.html:364
+#: trac/ticket/templates/ticket.html:368
 #: trac/wiki/templates/wiki_edit_form.html:46
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
 msgstr "Email adresser og brugernavne kan gemmes i  [1:Preferences]."
 
-#: trac/ticket/templates/ticket.html:372
+#: trac/ticket/templates/ticket.html:376
 msgid "I have files to attach to this ticket"
 msgstr "Jeg har filer der skal vedhæftes til denne sag"
 
-#: trac/ticket/templates/ticket.html:378
+#: trac/ticket/templates/ticket.html:382
 msgid "Go to the list of attachments"
 msgstr "Gå til listen med vedhæftninger"
 
-#: trac/ticket/templates/ticket.html:379
+#: trac/ticket/templates/ticket.html:383
 msgid "View the ticket description"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:387
+#: trac/ticket/templates/ticket.html:391
 #: trac/ticket/templates/ticket_change.html:114
 #: trac/wiki/templates/wiki_edit.html:95 trac/wiki/templates/wiki_edit.html:153
 #: trac/wiki/templates/wiki_edit_form.html:64
 msgid "Preview"
 msgstr "Forhåndsvis"
 
-#: trac/ticket/templates/ticket.html:388
+#: trac/ticket/templates/ticket.html:392
 msgid "Create ticket"
 msgstr "Opret sag"
 
-#: trac/ticket/templates/ticket.html:396
+#: trac/ticket/templates/ticket.html:400
 msgid ""
 "[1:Note:] See\n"
 "        [2:TracTickets] for help on using\n"
@@ -4435,17 +4447,17 @@ msgstr "Rapporteret af:"
 msgid "Owned by:"
 msgstr "Ejet af:"
 
-#: trac/ticket/templates/ticket_box.html:96
+#: trac/ticket/templates/ticket_box.html:97
 #, python-format
 msgid "(last modified by %(author)s)"
 msgstr "(sidst ændret af %(author)s)"
 
-#: trac/ticket/templates/ticket_box.html:105
+#: trac/ticket/templates/ticket_box.html:106
 #: trac/ticket/templates/ticket_change.html:72
 msgid "Reply"
 msgstr "Svar"
 
-#: trac/ticket/templates/ticket_box.html:105
+#: trac/ticket/templates/ticket_box.html:106
 msgid "Reply, quoting this description"
 msgstr "Svar, citér denne beskrivelse"
 
@@ -4585,42 +4597,53 @@ msgstr "Forrige periode"
 msgid "Next Period"
 msgstr "Næste periode"
 
-#: trac/timeline/web_ui.py:290
-#, python-format
-msgid "at %(iso8601)s"
-msgstr "den %(iso8601)s"
+#: trac/timeline/web_ui.py:294 trac/timeline/web_ui.py:317
+#: trac/web/chrome.py:869
+#, fuzzy, python-format
+msgid "in %(relative)s"
+msgstr "%(relativetime)s siden"
 
-#: trac/timeline/web_ui.py:294
+#: trac/timeline/web_ui.py:298 trac/timeline/web_ui.py:315
 #, python-format
 msgid "on %(date)s at %(time)s"
 msgstr "den %(date)s kl %(time)s"
 
-#: trac/timeline/web_ui.py:295
-#, python-format
-msgid "See timeline %(relativetime)s ago"
-msgstr ""
-
-#: trac/timeline/web_ui.py:298 trac/web/chrome.py:865 trac/web/chrome.py:867
-#, python-format
-msgid "%(relativetime)s ago"
+#: trac/timeline/web_ui.py:301 trac/web/chrome.py:871
+#, fuzzy, python-format
+msgid "%(relative)s ago"
 msgstr "%(relativetime)s siden"
 
-#: trac/timeline/web_ui.py:300 trac/timeline/web_ui.py:344
+#: trac/timeline/web_ui.py:303 trac/timeline/web_ui.py:363
 #, python-format
 msgid "See timeline at %(absolutetime)s"
 msgstr "Se tidslinje ved %(absolutetime)s"
 
+#: trac/timeline/web_ui.py:309
+#, python-format
+msgid "at %(iso8601)s"
+msgstr "den %(iso8601)s"
+
+#: trac/timeline/web_ui.py:311
+#, fuzzy, python-format
+msgid "on %(date)s"
+msgstr "Intet punkt %(path)s"
+
+#: trac/timeline/web_ui.py:319
+#, python-format
+msgid "See timeline %(relativetime)s ago"
+msgstr ""
+
 #. TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
-#: trac/timeline/web_ui.py:391
+#: trac/timeline/web_ui.py:410
 msgid "other kinds of events"
 msgstr "andre typer hændelser"
 
-#: trac/timeline/web_ui.py:396
+#: trac/timeline/web_ui.py:415
 #, python-format
 msgid "Event provider %(name)s failed for filters %(kinds)s: "
 msgstr ""
 
-#: trac/timeline/web_ui.py:399
+#: trac/timeline/web_ui.py:418
 #, python-format
 msgid ""
 "You may want to see the %(other_events)s from the Timeline or notify your"
@@ -4747,7 +4770,7 @@ msgid_plural "%(num)i seconds"
 msgstr[0] "%(num)i sekund"
 msgstr[1] "%(num)i sekunder"
 
-#: trac/util/datefmt.py:464
+#: trac/util/datefmt.py:465
 #, python-format
 msgid ""
 "\"%(date)s\" is an invalid date, or the date format is not known. Try "
@@ -4756,11 +4779,11 @@ msgstr ""
 "\"%(date)s\" er en ugyldig dato, eller datoformatet er ukendt. Prøv "
 "\"%(hint)s\" istedet."
 
-#: trac/util/datefmt.py:466 trac/util/datefmt.py:474
+#: trac/util/datefmt.py:467 trac/util/datefmt.py:475
 msgid "Invalid Date"
 msgstr "Ugyldig dato"
 
-#: trac/util/datefmt.py:472
+#: trac/util/datefmt.py:473
 #, python-format
 msgid ""
 "The date \"%(date)s\" is outside valid range. Try a date closer to "
@@ -5974,16 +5997,16 @@ msgstr "Allerede logget ind som %(user)s."
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr ""
 
-#: trac/web/chrome.py:1029
+#: trac/web/chrome.py:1037
 msgid "(unknown template location)"
 msgstr "(ukendt skabelon placering)"
 
-#: trac/web/chrome.py:1030
+#: trac/web/chrome.py:1038
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr ""
 
-#: trac/web/chrome.py:1078 trac/web/chrome.py:1086
+#: trac/web/chrome.py:1086 trac/web/chrome.py:1094
 msgid "anonymous"
 msgstr "anonym"
 
@@ -6904,4 +6927,78 @@ msgstr "(blank side)"
 #: trac/wiki/templates/wiki_view.html:135
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr "Følgende sider har et navn der ligner denne sides, og kan være relateret:"
+
+#~ msgid ""
+#~ "[1:HTML preview not available], since "
+#~ "the file size exceeds %(size)s bytes."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Wiki macro listing tickets that match certain criteria.\n"
+#~ "\n"
+#~ "This macro accepts a comma-separated list of keyed parameters,\n"
+#~ "in the form \"key=value\".\n"
+#~ "\n"
+#~ "If the key is the name of a field, the value must use the syntax\n"
+#~ "of a filter specifier as defined in TracQuery#QueryLanguage.\n"
+#~ "Note that this is ''not'' the same as the simplified URL syntax\n"
+#~ "used for `query:` links starting with a `?` character. Commas (`,`)\n"
+#~ "can be included in field values by"
+#~ " escaping them with a backslash "
+#~ "(`\\`).\n"
+#~ "\n"
+#~ "Groups of field constraints to be "
+#~ "OR-ed together can be separated by"
+#~ " a\n"
+#~ "litteral `or` argument.\n"
+#~ "\n"
+#~ "In addition to filters, several other named parameters can be used\n"
+#~ "to control how the results are presented. All of them are optional.\n"
+#~ "\n"
+#~ "The `format` parameter determines how the list of tickets is\n"
+#~ "presented:\n"
+#~ " - '''list''' -- the default "
+#~ "presentation is to list the ticket "
+#~ "ID next\n"
+#~ "   to the summary, with each ticket on a separate line.\n"
+#~ " - '''compact''' -- the tickets are presented as a comma-separated\n"
+#~ "   list of ticket IDs.\n"
+#~ " - '''count''' -- only the count of matching tickets is displayed\n"
+#~ " - '''table'''  -- a view similar"
+#~ " to the custom query view (but "
+#~ "without\n"
+#~ "   the controls)\n"
+#~ " - '''progress''' -- a view similar to the milestone progress bars\n"
+#~ "\n"
+#~ "The `max` parameter can be used to limit the number of tickets shown\n"
+#~ "(defaults to '''0''', i.e. no maximum).\n"
+#~ "\n"
+#~ "The `order` parameter sets the field used for ordering tickets\n"
+#~ "(defaults to '''id''').\n"
+#~ "\n"
+#~ "The `desc` parameter indicates whether the order of the tickets\n"
+#~ "should be reversed (defaults to '''false''').\n"
+#~ "\n"
+#~ "The `group` parameter sets the field used for grouping tickets\n"
+#~ "(defaults to not being set).\n"
+#~ "\n"
+#~ "The `groupdesc` parameter indicates whether the natural display\n"
+#~ "order of the groups should be reversed (defaults to '''false''').\n"
+#~ "\n"
+#~ "The `verbose` parameter can be set to a true value in order to\n"
+#~ "get the description for the listed "
+#~ "tickets. For '''table''' format only.\n"
+#~ "''deprecated in favor of the `rows` parameter''\n"
+#~ "\n"
+#~ "The `rows` parameter can be used to specify which field(s) should\n"
+#~ "be viewed as a row, e.g. `rows=description|summary`\n"
+#~ "\n"
+#~ "For compatibility with Trac 0.10, if "
+#~ "there's a last positional parameter\n"
+#~ "given to the macro, it will be used to specify the `format`.\n"
+#~ "Also, using \"&\" as a field "
+#~ "separator still works (except for "
+#~ "`order`)\n"
+#~ "but is deprecated."
+#~ msgstr ""
 

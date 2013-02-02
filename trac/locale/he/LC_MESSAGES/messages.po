@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-27 11:21+0900\n"
+"POT-Creation-Date: 2013-02-02 15:20+0100\n"
 "PO-Revision-Date: 2012-09-07 15:53+0200\n"
 "Last-Translator: Itamar Ostricher <itamarost (at) gmail (dot) com>\n"
 "Language-Team: he <LL@li.org>\n"
@@ -186,7 +186,7 @@ msgstr ""
 "חוסר התאמה בהפרש: הבסיס הוא %(oldnode)s (%(oldpath)s במהדורה %(oldrev)s) "
 "והיעד הוא %(newnode)s (%(newpath)s במהדורה %(newrev)s)."
 
-#: tracopt/versioncontrol/svn/svn_fs.py:823
+#: tracopt/versioncontrol/svn/svn_fs.py:817
 #, python-format
 msgid "svn blame failed on %(path)s: %(error)s"
 msgstr "svn blame נכשל על %(path)s: %(error)s"
@@ -364,9 +364,9 @@ msgstr "לא הועלה קובץ"
 msgid "Can't upload empty file"
 msgstr "לא ניתן להעלות קובץ ריק"
 
-#: trac/attachment.py:708
-#, python-format
-msgid "Maximum attachment size: %(num)s bytes"
+#: trac/attachment.py:709
+#, fuzzy, python-format
+msgid "Maximum attachment size: %(num)s"
 msgstr "גודל קובץ מצורף מרבי: %(num)s בתים"
 
 #: trac/attachment.py:709
@@ -403,9 +403,9 @@ msgstr ""
 msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (מחק)"
 
-#: trac/attachment.py:803
-#, python-format
-msgid "Maximum total attachment size: %(num)s bytes"
+#: trac/attachment.py:804
+#, fuzzy, python-format
+msgid "Maximum total attachment size: %(num)s"
 msgstr "גודל קובץ מצורף מרבי: %(num)s בתים"
 
 #: trac/attachment.py:804
@@ -450,7 +450,7 @@ msgid "Size"
 msgstr "גודל"
 
 #: trac/attachment.py:1070 trac/templates/history_view.html:30
-#: trac/ticket/templates/ticket.html:350
+#: trac/ticket/templates/ticket.html:354
 #: trac/versioncontrol/templates/revisionlog.html:112
 msgid "Author"
 msgstr "מחבר"
@@ -460,8 +460,8 @@ msgid "Date"
 msgstr "תאריך"
 
 #: trac/attachment.py:1071 trac/templates/attachment.html:93
-#: trac/ticket/api.py:299 trac/ticket/templates/ticket.html:379
-#: trac/ticket/templates/ticket_box.html:92
+#: trac/ticket/api.py:321 trac/ticket/templates/ticket.html:383
+#: trac/ticket/templates/ticket_box.html:93
 msgid "Description"
 msgstr "תיאור מפורט"
 
@@ -685,7 +685,7 @@ msgstr "משתמש"
 
 #: trac/perm.py:656 trac/admin/templates/admin_perms.html:63
 #: trac/ticket/templates/batch_modify.html:37
-#: trac/ticket/templates/ticket.html:321
+#: trac/ticket/templates/ticket.html:325
 msgid "Action"
 msgstr "פעולה"
 
@@ -1016,7 +1016,7 @@ msgstr "ללא שם"
 
 #: trac/admin/web_ui.py:192 trac/ticket/admin.py:66 trac/ticket/admin.py:95
 #: trac/ticket/admin.py:275 trac/ticket/admin.py:455 trac/ticket/admin.py:607
-#: trac/ticket/admin.py:690 trac/ticket/report.py:248
+#: trac/ticket/admin.py:690 trac/ticket/report.py:247
 #: trac/ticket/roadmap.py:779 trac/versioncontrol/admin.py:215
 msgid "Your changes have been saved."
 msgstr "השינויים נשמרו."
@@ -1182,7 +1182,7 @@ msgid "URL:"
 msgstr "כתובת:"
 
 #: trac/admin/templates/admin_basics.html:29
-#: trac/ticket/templates/ticket.html:237
+#: trac/ticket/templates/ticket.html:239
 msgid "Description:"
 msgstr "פירוט:"
 
@@ -1272,7 +1272,7 @@ msgid "Add"
 msgstr "הוסף"
 
 #: trac/admin/templates/admin_components.html:80 trac/ticket/admin.py:210
-#: trac/ticket/api.py:293 trac/ticket/web_ui.py:1455
+#: trac/ticket/api.py:315 trac/ticket/web_ui.py:1498
 msgid "Owner"
 msgstr "אחראי"
 
@@ -1430,7 +1430,7 @@ msgstr "יעד"
 msgid "Completed"
 msgstr "הושלם"
 
-#: trac/admin/templates/admin_milestones.html:107 trac/ticket/web_ui.py:194
+#: trac/admin/templates/admin_milestones.html:107 trac/ticket/web_ui.py:200
 msgid "Tickets"
 msgstr "טיקטים"
 
@@ -1547,7 +1547,7 @@ msgid "License:"
 msgstr "רישיון:"
 
 #: trac/admin/templates/admin_plugins.html:124 trac/ticket/admin.py:77
-#: trac/ticket/api.py:306
+#: trac/ticket/api.py:328
 msgid "Component"
 msgstr "מרכיב"
 
@@ -2041,11 +2041,11 @@ msgstr "עיין במצבור בנתיב %(path)s"
 msgid "Search query too short. Query must be at least %(num)s characters long."
 msgstr "מחרוזת חיפוש קצרה מידי. המחרוזת חייבת להכיל לפחות %(num)s תווים."
 
-#: trac/search/web_ui.py:245 trac/ticket/query.py:785 trac/ticket/report.py:459
+#: trac/search/web_ui.py:245 trac/ticket/query.py:781 trac/ticket/report.py:459
 msgid "Next Page"
 msgstr "לדף הבא"
 
-#: trac/search/web_ui.py:251 trac/ticket/query.py:790 trac/ticket/report.py:462
+#: trac/search/web_ui.py:251 trac/ticket/query.py:786 trac/ticket/report.py:462
 msgid "Previous Page"
 msgstr "לדף הקודם"
 
@@ -2144,7 +2144,7 @@ msgstr "חבילה"
 
 #: trac/templates/about.html:56 trac/templates/about.html:69
 #: trac/templates/history_view.html:28 trac/ticket/admin.py:431
-#: trac/ticket/api.py:307
+#: trac/ticket/api.py:329
 msgid "Version"
 msgstr "גרסה"
 
@@ -2200,7 +2200,7 @@ msgstr "(הגבלת גודל %(value)s)"
 msgid "Attachment Info"
 msgstr "פרטי קובץ מצורף"
 
-#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:355
+#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:359
 #: trac/wiki/templates/wiki_edit_form.html:42
 msgid "Your email or username:"
 msgstr "שם המשתמש או האימייל שלך:"
@@ -2230,7 +2230,7 @@ msgid "Attach another file"
 msgstr "צרף קובץ נוסף"
 
 #: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:21
-#: trac/templates/macros.html:19 trac/util/text.py:621
+#: trac/templates/macros.html:19 trac/util/text.py:622
 #: trac/versioncontrol/templates/browser.html:189
 #: trac/versioncontrol/templates/dir_entries.html:17
 #, python-format
@@ -2317,7 +2317,7 @@ msgstr "שינויי תווים שקופים"
 
 #: trac/templates/diff_options.html:50
 #: trac/ticket/templates/milestone_view.html:57
-#: trac/ticket/templates/query.html:220
+#: trac/ticket/templates/query.html:223
 #: trac/ticket/templates/report_view.html:49
 #: trac/ticket/templates/roadmap.html:28
 #: trac/timeline/templates/timeline.html:36
@@ -2411,7 +2411,7 @@ msgstr "התווסף"
 msgid "Removed"
 msgstr "הוסר"
 
-#: trac/templates/diff_view.html:70 trac/ticket/api.py:336
+#: trac/templates/diff_view.html:70 trac/ticket/api.py:358
 #: trac/versioncontrol/templates/changeset.html:204
 #: trac/versioncontrol/templates/revisionlog.html:92 trac/wiki/admin.py:197
 msgid "Modified"
@@ -2629,7 +2629,7 @@ msgstr ""
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:44
-#: trac/ticket/templates/ticket.html:378
+#: trac/ticket/templates/ticket.html:382
 msgid "Attachments"
 msgstr "קבצים מצורפים"
 
@@ -2656,10 +2656,8 @@ msgid "(The file is empty)"
 msgstr "(הקובץ ריק)"
 
 #: trac/templates/preview_file.html:19
-#, python-format
-msgid ""
-"[1:HTML preview not available], since the file size exceeds %(size)s "
-"bytes."
+#, fuzzy, python-format
+msgid "[1:HTML preview not available], since the file size exceeds %(size)s."
 msgstr "[1:תצוגת HTML לא זמינה], מפני שגודל הקובץ חורג מ-%(size)s בתים."
 
 #: trac/templates/preview_file.html:22
@@ -2740,7 +2738,7 @@ msgstr "המרכיב \"%(name)s\" כבר קיים."
 msgid "The component \"%(name)s\" has been added."
 msgstr "המרכיב \"%(name)s\" התווסף."
 
-#: trac/ticket/admin.py:122 trac/ticket/model.py:859 trac/ticket/model.py:878
+#: trac/ticket/admin.py:122 trac/ticket/model.py:908 trac/ticket/model.py:927
 msgid "Invalid component name."
 msgstr "שם מרכיב לא חוקי"
 
@@ -2757,7 +2755,7 @@ msgstr "לא נבחר מרכיב"
 msgid "The selected components have been removed."
 msgstr "המרכיבים הנבחרים הוסרו."
 
-#: trac/ticket/admin.py:235 trac/ticket/api.py:305
+#: trac/ticket/admin.py:235 trac/ticket/api.py:327
 msgid "Milestone"
 msgstr "אבן דרך"
 
@@ -2779,7 +2777,7 @@ msgstr "אבן דרך \"%(name)s\" כבר קיימת."
 msgid "The milestone \"%(name)s\" has been added."
 msgstr "אבן הדרך \"%(name)s\" התווספה."
 
-#: trac/ticket/admin.py:305 trac/ticket/model.py:1038 trac/ticket/model.py:1060
+#: trac/ticket/admin.py:305 trac/ticket/model.py:1087 trac/ticket/model.py:1109
 msgid "Invalid milestone name."
 msgstr "שם אבן דרך לא חוקי."
 
@@ -2806,7 +2804,7 @@ msgstr "גרסה \"%(name)s\" כבר קיימת."
 msgid "The version \"%(name)s\" has been added."
 msgstr "הגרסה \"%(name)s\" התווספה."
 
-#: trac/ticket/admin.py:484 trac/ticket/model.py:1165 trac/ticket/model.py:1183
+#: trac/ticket/admin.py:484 trac/ticket/model.py:1214 trac/ticket/model.py:1232
 msgid "Invalid version name."
 msgstr "שם גרסה לא חוקי."
 
@@ -2873,7 +2871,7 @@ msgstr "ערכים אפשריים"
 msgid "Invalid up/down value: %(value)s"
 msgstr "ערך מעלה/מטה לא חוקי: %(value)s"
 
-#: trac/ticket/admin.py:777 trac/ticket/api.py:304
+#: trac/ticket/admin.py:777 trac/ticket/api.py:326
 msgid "Priority"
 msgstr "עדיפות"
 
@@ -2881,7 +2879,7 @@ msgstr "עדיפות"
 msgid "Priorities"
 msgstr "עדיפויות"
 
-#: trac/ticket/admin.py:783 trac/ticket/api.py:309
+#: trac/ticket/admin.py:783 trac/ticket/api.py:331
 msgid "Resolution"
 msgstr "החלטה"
 
@@ -2889,7 +2887,7 @@ msgstr "החלטה"
 msgid "Resolutions"
 msgstr "החלטות"
 
-#: trac/ticket/admin.py:789 trac/ticket/api.py:308
+#: trac/ticket/admin.py:789 trac/ticket/api.py:330
 msgid "Severity"
 msgstr "חומרה"
 
@@ -2914,71 +2912,76 @@ msgstr "<מספר> חייב להיות מספר"
 msgid "Ticket #%(num)s and all associated data removed."
 msgstr "טיקט #%(num)s וכל המידע הנלווה הוסרו."
 
-#: trac/ticket/api.py:257
+#: trac/ticket/api.py:279
 msgid "Attachment"
 msgstr "צרופה"
 
-#: trac/ticket/api.py:287
+#: trac/ticket/api.py:309
 msgid "Summary"
 msgstr "תיאור"
 
-#: trac/ticket/api.py:289 trac/ticket/templates/ticket.html:351
+#: trac/ticket/api.py:311 trac/ticket/templates/ticket.html:355
 msgid "Reporter"
 msgstr "מדווח"
 
-#: trac/ticket/api.py:302 trac/versioncontrol/admin.py:113
+#: trac/ticket/api.py:324 trac/versioncontrol/admin.py:113
 #: trac/versioncontrol/templates/admin_repositories.html:125
 msgid "Type"
 msgstr "סוג"
 
-#: trac/ticket/api.py:303
+#: trac/ticket/api.py:325
 msgid "Status"
 msgstr "סטאטוס"
 
-#: trac/ticket/api.py:328
+#: trac/ticket/api.py:350
 msgid "Keywords"
 msgstr "מילות מפתח"
 
-#: trac/ticket/api.py:330
+#: trac/ticket/api.py:352
 msgid "Cc"
 msgstr "מכותבים"
 
-#: trac/ticket/api.py:334
+#: trac/ticket/api.py:356
 msgid "Created"
 msgstr "נוצר"
 
-#: trac/ticket/api.py:480
+#: trac/ticket/api.py:504
 #, python-format
 msgid "Tickets %(ranges)s"
 msgstr "טיקטים %(ranges)s"
 
-#: trac/ticket/api.py:504
+#: trac/ticket/api.py:528
 #, python-format
 msgid "Comment %(cnum)s for Ticket #%(id)s"
 msgstr "הערה %(cnum)s לטיקט #%(id)s"
 
-#: trac/ticket/api.py:529
+#: trac/ticket/api.py:553
 #, python-format
 msgid "Ticket #%(shortname)s"
 msgstr "טיקט #%(shortname)s"
 
-#: trac/ticket/batch.py:95
+#: trac/ticket/batch.py:63
+#, python-format
+msgid "The changes could not be saved: %(message)s"
+msgstr ""
+
+#: trac/ticket/batch.py:106
 msgid "add"
 msgstr "הוסף"
 
-#: trac/ticket/batch.py:96
+#: trac/ticket/batch.py:107
 msgid "remove"
 msgstr "הסר"
 
-#: trac/ticket/batch.py:97
+#: trac/ticket/batch.py:108
 msgid "add / remove"
 msgstr "הוסף / הסר"
 
-#: trac/ticket/batch.py:98
+#: trac/ticket/batch.py:109
 msgid "set to"
 msgstr "קבע לערך"
 
-#: trac/ticket/batch.py:180
+#: trac/ticket/batch.py:191
 #, python-format
 msgid ""
 "The changes have been saved, but an error occurred while sending "
@@ -3144,163 +3147,163 @@ msgstr ""
 msgid "Enable JavaScript to display the workflow graph."
 msgstr "אפשר ל-JavaScript להציג את גרף זרימת-העבודה."
 
-#: trac/ticket/model.py:120
+#: trac/ticket/model.py:155
 #, python-format
 msgid "Ticket %(id)s does not exist."
 msgstr "טיקט %(id)s לא קיים."
 
-#: trac/ticket/model.py:121
+#: trac/ticket/model.py:156
 msgid "Invalid ticket number"
 msgstr "מספר טיקט לא חוקי"
 
-#: trac/ticket/model.py:157
+#: trac/ticket/model.py:194
 msgid "Multi-values fields not supported yet"
 msgstr "עדיין אין תמיכה בשדות מרובי-בחירה"
 
-#: trac/ticket/model.py:685
+#: trac/ticket/model.py:734
 #, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr "%(type)s %(name)s לא קיים."
 
-#: trac/ticket/model.py:727 trac/ticket/model.py:752
+#: trac/ticket/model.py:776 trac/ticket/model.py:801
 #, python-format
 msgid "Invalid %(type)s name."
 msgstr "שם לא חוקי %(type)s"
 
-#: trac/ticket/model.py:831
+#: trac/ticket/model.py:880
 #, python-format
 msgid "Component %(name)s does not exist."
 msgstr "מרכיב %(name)s לא קיים."
 
-#: trac/ticket/model.py:976
+#: trac/ticket/model.py:1025
 #, python-format
 msgid "Milestone %(name)s does not exist."
 msgstr "אבן דרך %(name)s לא קיימת."
 
-#: trac/ticket/model.py:977
+#: trac/ticket/model.py:1026
 msgid "Invalid milestone name"
 msgstr "שם אבן דרך לא חוקי"
 
-#: trac/ticket/model.py:1116
+#: trac/ticket/model.py:1165
 msgid "Open (by due date)"
 msgstr "פתוח (לפי תאריך יעד)"
 
-#: trac/ticket/model.py:1117
+#: trac/ticket/model.py:1166
 msgid "Open (no due date)"
 msgstr "פתוח (ללא תאריך יעד)"
 
-#: trac/ticket/model.py:1120
+#: trac/ticket/model.py:1169
 msgid "Closed"
 msgstr "סגור"
 
-#: trac/ticket/model.py:1137
+#: trac/ticket/model.py:1186
 #, python-format
 msgid "Version %(name)s does not exist."
 msgstr "גרסה %(name)s לא קיימת."
 
-#: trac/ticket/query.py:59
+#: trac/ticket/query.py:60
 msgid "Invalid query constraint value"
 msgstr "ערך אילוץ לא חוקי לשאילתא"
 
-#: trac/ticket/query.py:93
+#: trac/ticket/query.py:94
 #, python-format
 msgid "Query page %(page)s is invalid."
 msgstr "דף שאילתא %(page)s לא חוקי."
 
-#: trac/ticket/query.py:108
+#: trac/ticket/query.py:109
 #, python-format
 msgid "Query max %(max)s is invalid."
 msgstr "מספר פריטים מירבי לשאילתא %(max)s לא חוקי."
 
-#: trac/ticket/query.py:167
+#: trac/ticket/query.py:168
 msgid "Query filter requires field and constraints separated by a \"=\""
 msgstr "פילטר השאילתא דורש הפרדה באמצעות \"=\" בין שדה לאילוץ"
 
-#: trac/ticket/query.py:180
+#: trac/ticket/query.py:181
 msgid "Query filter requires field name"
 msgstr "פילטר השאילתא דורש שם שדה"
 
-#: trac/ticket/query.py:313
+#: trac/ticket/query.py:314
 #, python-format
 msgid "Page %(page)s is beyond the number of pages in the query"
 msgstr "דף %(page)s מעבר למספר הדפים בשאילתא"
 
-#: trac/ticket/query.py:573
+#: trac/ticket/query.py:571
 #, python-format
 msgid "Invalid ticket id list: %(value)s"
 msgstr "רשימת מזהי טיקטים לא חוקית: %(value)s"
 
-#: trac/ticket/query.py:672 trac/ticket/query.py:680
+#: trac/ticket/query.py:670 trac/ticket/query.py:678
 msgid "contains"
 msgstr "מכיל"
 
-#: trac/ticket/query.py:673 trac/ticket/query.py:681
+#: trac/ticket/query.py:671 trac/ticket/query.py:679
 msgid "doesn't contain"
 msgstr "לא מכיל"
 
-#: trac/ticket/query.py:674
+#: trac/ticket/query.py:672
 msgid "begins with"
 msgstr "מתחיל ב-"
 
-#: trac/ticket/query.py:675
+#: trac/ticket/query.py:673
 msgid "ends with"
 msgstr "מסתיים ב-"
 
-#: trac/ticket/query.py:676 trac/ticket/query.py:684 trac/ticket/query.py:688
+#: trac/ticket/query.py:674 trac/ticket/query.py:682 trac/ticket/query.py:686
 msgid "is"
 msgstr "שווה"
 
-#: trac/ticket/query.py:677 trac/ticket/query.py:685 trac/ticket/query.py:689
+#: trac/ticket/query.py:675 trac/ticket/query.py:683 trac/ticket/query.py:687
 msgid "is not"
 msgstr "שונה"
 
-#: trac/ticket/query.py:721 trac/ticket/query.py:727
+#: trac/ticket/query.py:717 trac/ticket/query.py:723
 msgid "Ticket"
 msgstr "טיקט"
 
-#: trac/ticket/query.py:798 trac/ticket/report.py:468
+#: trac/ticket/query.py:794 trac/ticket/report.py:468
 #, python-format
 msgid "Page %(num)d"
 msgstr "עמוד %(num)d"
 
-#: trac/ticket/query.py:847 trac/ticket/report.py:328 trac/ticket/report.py:627
-#: trac/ticket/web_ui.py:140 trac/timeline/web_ui.py:235
+#: trac/ticket/query.py:843 trac/ticket/report.py:327 trac/ticket/report.py:627
+#: trac/ticket/web_ui.py:146 trac/timeline/web_ui.py:235
 #: trac/versioncontrol/web_ui/log.py:319
 msgid "RSS Feed"
 msgstr "RSS Feed"
 
-#: trac/ticket/query.py:849 trac/ticket/report.py:330 trac/ticket/report.py:629
-#: trac/ticket/web_ui.py:136
+#: trac/ticket/query.py:845 trac/ticket/report.py:329 trac/ticket/report.py:629
+#: trac/ticket/web_ui.py:142
 msgid "Comma-delimited Text"
 msgstr "טקסט מופרד-פסיקים"
 
-#: trac/ticket/query.py:851 trac/ticket/report.py:332 trac/ticket/report.py:631
-#: trac/ticket/web_ui.py:138
+#: trac/ticket/query.py:847 trac/ticket/report.py:331 trac/ticket/report.py:631
+#: trac/ticket/web_ui.py:144
 msgid "Tab-delimited Text"
 msgstr "טקסט מופרד-טאבים"
 
-#: trac/ticket/query.py:873 trac/ticket/report.py:131
+#: trac/ticket/query.py:869 trac/ticket/report.py:130
 msgid "View Tickets"
 msgstr "הצג טיקטים"
 
-#: trac/ticket/query.py:1086 trac/ticket/query.py:1097
-#: trac/ticket/report.py:197 trac/ticket/templates/report_list.html:57
+#: trac/ticket/query.py:1082 trac/ticket/query.py:1093
+#: trac/ticket/report.py:196 trac/ticket/templates/report_list.html:57
 msgid "Custom Query"
 msgstr "שאילתא מותאמת"
 
-#: trac/ticket/query.py:1096 trac/ticket/report.py:187
-#: trac/ticket/report.py:188 trac/ticket/report.py:190
+#: trac/ticket/query.py:1092 trac/ticket/report.py:186
+#: trac/ticket/report.py:187 trac/ticket/report.py:189
 #: trac/ticket/templates/report_list.html:10
 #: trac/ticket/templates/report_list.html:28
 msgid "Available Reports"
 msgstr "דו\"חות זמינים"
 
-#: trac/ticket/query.py:1195
+#: trac/ticket/query.py:1192
 #, python-format
 msgid "[Error: %(error)s]"
 msgstr "[שגיאה: %(error)s]"
 
-#: trac/ticket/query.py:1201
+#: trac/ticket/query.py:1198
 #, fuzzy
 msgid ""
 "Wiki macro listing tickets that match certain criteria.\n"
@@ -3328,6 +3331,8 @@ msgid ""
 " - '''compact''' -- the tickets are presented as a comma-separated\n"
 "   list of ticket IDs.\n"
 " - '''count''' -- only the count of matching tickets is displayed\n"
+" - '''rawcount''' -- only the count of matching tickets is displayed,\n"
+"   not even with a link to the corresponding query //(since 1.1.1)//\n"
 " - '''table'''  -- a view similar to the custom query view (but without\n"
 "   the controls)\n"
 " - '''progress''' -- a view similar to the milestone progress bars\n"
@@ -3412,65 +3417,72 @@ msgstr ""
 "כמוכן, שימוש ב\"&\" כתו-מפריד לשדות עדיין עובד (פרט ל-`order`), אך נחשב "
 "מיושן."
 
-#: trac/ticket/query.py:1378
+#: trac/ticket/query.py:1313
+#, fuzzy, python-format
+msgid "%(num)s ticket matching %(criteria)s"
+msgid_plural "%(num)s tickets matching %(criteria)s"
+msgstr[0] "%(groupvalue)s %(groupname)s טיקטים הותאמו ל-%(query)s"
+msgstr[1] ""
+
+#: trac/ticket/query.py:1383
 #, python-format
 msgid "Ticket completion status for each %(group)s"
 msgstr "סטאטוס השלמת טיקטים לכל %(group)s"
 
-#: trac/ticket/query.py:1393
+#: trac/ticket/query.py:1398
 msgid "No results"
 msgstr "אין תוצאות"
 
-#: trac/ticket/query.py:1411
+#: trac/ticket/query.py:1416
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
 msgstr "%(groupvalue)s %(groupname)s טיקטים הותאמו ל-%(query)s"
 
-#: trac/ticket/query.py:1435
+#: trac/ticket/query.py:1440
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
 msgstr "%(groupvalue)s %(groupname)s טיקטים:"
 
-#: trac/ticket/report.py:223
+#: trac/ticket/report.py:222
 msgid "The report has been created."
 msgstr "הדו\"ח נוצר."
 
-#: trac/ticket/report.py:233
+#: trac/ticket/report.py:232
 #, python-format
 msgid "The report {%(id)d} has been deleted."
 msgstr "הדו\"ח {%(id)d} נמחק."
 
-#: trac/ticket/report.py:257
+#: trac/ticket/report.py:256
 #, python-format
 msgid "Delete Report {%(num)s} %(title)s"
 msgstr "מחק דו\"ח {%(num)s} %(title)s"
 
-#: trac/ticket/report.py:262 trac/ticket/report.py:273
-#: trac/ticket/report.py:352
+#: trac/ticket/report.py:261 trac/ticket/report.py:272
+#: trac/ticket/report.py:351
 #, python-format
 msgid "Report {%(num)s} does not exist."
 msgstr "דו\"ח {%(num)s} לא קיים."
 
-#: trac/ticket/report.py:263 trac/ticket/report.py:274
-#: trac/ticket/report.py:353
+#: trac/ticket/report.py:262 trac/ticket/report.py:273
+#: trac/ticket/report.py:352
 msgid "Invalid Report Number"
 msgstr "מספר דו\"ח לא חוקי"
 
-#: trac/ticket/report.py:286
+#: trac/ticket/report.py:285
 msgid "Create New Report"
 msgstr "צור דו\"ח חדש"
 
-#: trac/ticket/report.py:290
+#: trac/ticket/report.py:289
 #, python-format
 msgid "Edit Report {%(num)d} %(title)s"
 msgstr "ערוך דו\"ח {%(num)d} %(title)s"
 
-#: trac/ticket/report.py:357
+#: trac/ticket/report.py:356
 #, python-format
 msgid "Report failed: %(error)s"
 msgstr "דו\"ח נכשל: %(error)s"
 
-#: trac/ticket/report.py:372
+#: trac/ticket/report.py:371
 #, python-format
 msgid "When specified, the report number should be \"%(num)s\"."
 msgstr "בשימוש בדו\"ח זה, מספר הדו\"ח אמור להיות \"%(num)s\"."
@@ -3599,255 +3611,255 @@ msgstr "אבן דרך באה"
 msgid "Back to Roadmap"
 msgstr "חזרה למפת הדרכים"
 
-#: trac/ticket/web_ui.py:65
+#: trac/ticket/web_ui.py:66
 msgid "Invalid Ticket"
 msgstr "טיקט לא חוקי"
 
-#: trac/ticket/web_ui.py:162 trac/ticket/templates/ticket.html:14
+#: trac/ticket/web_ui.py:168 trac/ticket/templates/ticket.html:14
 msgid "New Ticket"
 msgstr "טיקט חדש"
 
-#: trac/ticket/web_ui.py:178
+#: trac/ticket/web_ui.py:184
 msgid "id can't be set for a new ticket request."
 msgstr "לא ניתן לקבוע מזהה לבקשת טיקט חדש"
 
-#: trac/ticket/web_ui.py:228 trac/ticket/web_ui.py:279
+#: trac/ticket/web_ui.py:234 trac/ticket/web_ui.py:286
 #: trac/versioncontrol/web_ui/changeset.py:1042
 #, python-format
 msgid "%(title)s: %(message)s"
 msgstr "%(title)s: %(message)s"
 
-#: trac/ticket/web_ui.py:242
+#: trac/ticket/web_ui.py:248
 msgid "Tickets opened and closed"
 msgstr "טיקטים פתוחים וסגורים"
 
-#: trac/ticket/web_ui.py:244
+#: trac/ticket/web_ui.py:250
 msgid "Ticket updates"
 msgstr "עדכון טיקט"
 
-#: trac/ticket/web_ui.py:273 trac/ticket/web_ui.py:1166
+#: trac/ticket/web_ui.py:280 trac/ticket/web_ui.py:1193
 #, python-format
 msgid "%(labels)s changed"
 msgid_plural "%(labels)s changed"
 msgstr[0] "%(labels)s שונתה"
 msgstr[1] "%(labels)s שונו"
 
-#: trac/ticket/web_ui.py:392
+#: trac/ticket/web_ui.py:399
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) created"
 msgstr "טיקט %(ticketref)s (%(summary)s) נוצר"
 
-#: trac/ticket/web_ui.py:393
+#: trac/ticket/web_ui.py:400
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) reopened"
 msgstr "טיקט %(ticketref)s (%(summary)s) נפתח מחדש"
 
-#: trac/ticket/web_ui.py:394
+#: trac/ticket/web_ui.py:401
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) closed"
 msgstr "טיקט %(ticketref)s (%(summary)s) נסגר"
 
-#: trac/ticket/web_ui.py:395
+#: trac/ticket/web_ui.py:402
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) updated"
 msgstr "טיקט %(ticketref)s (%(summary)s) עודכן"
 
-#: trac/ticket/web_ui.py:424
+#: trac/ticket/web_ui.py:436
 #, python-format
 msgid "Tickets %(ticketids)s"
 msgstr "טיקטים %(ticketids)s"
 
-#: trac/ticket/web_ui.py:426
+#: trac/ticket/web_ui.py:438
 #, python-format
 msgid "Tickets %(ticketlist)s batch updated"
 msgstr "טיקטים %(ticketlist)s עודכנו בקבוצה"
 
-#: trac/ticket/web_ui.py:576
+#: trac/ticket/web_ui.py:589
 #, python-format
 msgid "The action \"%(name)s\" is not available."
 msgstr " לא זמינה \"%(name)s\" הפעולה."
 
-#: trac/ticket/web_ui.py:602
+#: trac/ticket/web_ui.py:615
 #, python-format
 msgid ""
 "Please review your configuration, probably starting with %(section)s in "
 "your %(tracini)s."
 msgstr "אנא בדוק את הקונפיגורציה, כנראה במקטע %(section)s של %(tracini)s."
 
-#: trac/ticket/web_ui.py:660 trac/ticket/web_ui.py:895
+#: trac/ticket/web_ui.py:673 trac/ticket/web_ui.py:921
 #, python-format
 msgid "Ticket #%(id)s"
 msgstr "טיקט #%(id)s"
 
-#: trac/ticket/web_ui.py:713
+#: trac/ticket/web_ui.py:727
 msgid "Previous Ticket"
 msgstr "לטיקט הקודם"
 
-#: trac/ticket/web_ui.py:713
+#: trac/ticket/web_ui.py:727
 msgid "Next Ticket"
 msgstr "לטיקט הבא"
 
-#: trac/ticket/web_ui.py:714
+#: trac/ticket/web_ui.py:728
 msgid "Back to Query"
 msgstr "חזרה לשאילתא"
 
-#: trac/ticket/web_ui.py:812 trac/ticket/web_ui.py:961
-#: trac/ticket/web_ui.py:969
+#: trac/ticket/web_ui.py:838 trac/ticket/web_ui.py:987
+#: trac/ticket/web_ui.py:995
 msgid "Ticket History"
 msgstr "היסטוריית טיקט"
 
-#: trac/ticket/web_ui.py:816 trac/ticket/web_ui.py:1016
+#: trac/ticket/web_ui.py:842 trac/ticket/web_ui.py:1042
 #, python-format
 msgid "Back to Ticket #%(num)s"
 msgstr "חזרה לטיקט #%(num)s"
 
-#: trac/ticket/web_ui.py:858
+#: trac/ticket/web_ui.py:884
 msgid "No differences to show"
 msgstr "אין הפרשים להציג"
 
-#: trac/ticket/web_ui.py:901 trac/ticket/web_ui.py:958
-#: trac/ticket/web_ui.py:966 trac/ticket/web_ui.py:1037
-#: trac/ticket/web_ui.py:1082 trac/ticket/web_ui.py:1089
+#: trac/ticket/web_ui.py:927 trac/ticket/web_ui.py:984
+#: trac/ticket/web_ui.py:992 trac/ticket/web_ui.py:1063
+#: trac/ticket/web_ui.py:1108 trac/ticket/web_ui.py:1115
 #: trac/wiki/web_ui.py:449 trac/wiki/web_ui.py:455 trac/wiki/web_ui.py:653
 #: trac/wiki/web_ui.py:667
 #, python-format
 msgid "Version %(num)s"
 msgstr "גרסה %(num)s"
 
-#: trac/ticket/web_ui.py:904 trac/ticket/web_ui.py:1040
+#: trac/ticket/web_ui.py:930 trac/ticket/web_ui.py:1066
 msgid "Initial Version"
 msgstr "גרסה ראשונית"
 
-#: trac/ticket/web_ui.py:904 trac/ticket/web_ui.py:1040
+#: trac/ticket/web_ui.py:930 trac/ticket/web_ui.py:1066
 msgid "initial"
 msgstr "ראשונית"
 
-#: trac/ticket/web_ui.py:923
+#: trac/ticket/web_ui.py:949
 #, python-format
 msgid "Property %(label)s %(rendered)s"
 msgstr "מאפיין %(label)s %(rendered)s"
 
-#: trac/ticket/web_ui.py:968 trac/ticket/web_ui.py:1091
+#: trac/ticket/web_ui.py:994 trac/ticket/web_ui.py:1117
 #: trac/versioncontrol/web_ui/changeset.py:371 trac/wiki/web_ui.py:468
 msgid "Previous Change"
 msgstr "לשינוי הקודם"
 
-#: trac/ticket/web_ui.py:968 trac/ticket/web_ui.py:1091
+#: trac/ticket/web_ui.py:994 trac/ticket/web_ui.py:1117
 #: trac/versioncontrol/web_ui/changeset.py:371 trac/wiki/web_ui.py:468
 msgid "Next Change"
 msgstr "לשינוי הבא"
 
-#: trac/ticket/web_ui.py:974
+#: trac/ticket/web_ui.py:1000
 msgid "Ticket Diff"
 msgstr "הפרש טיקט"
 
-#: trac/ticket/web_ui.py:995
+#: trac/ticket/web_ui.py:1021
 msgid "''Initial version''"
 msgstr "\"גרסה ראשונית\""
 
-#: trac/ticket/web_ui.py:1008 trac/ticket/web_ui.py:1085
-#: trac/ticket/web_ui.py:1092
+#: trac/ticket/web_ui.py:1034 trac/ticket/web_ui.py:1111
+#: trac/ticket/web_ui.py:1118
 msgid "Ticket Comment History"
 msgstr "היסטוריית הערות לטיקט"
 
-#: trac/ticket/web_ui.py:1010 trac/ticket/web_ui.py:1034
-#: trac/ticket/web_ui.py:1099
+#: trac/ticket/web_ui.py:1036 trac/ticket/web_ui.py:1060
+#: trac/ticket/web_ui.py:1125
 #, python-format
 msgid "Ticket #%(num)s, comment %(cnum)d"
 msgstr "טיקט #%(num)s, הערה %(cnum)d"
 
-#: trac/ticket/web_ui.py:1057
+#: trac/ticket/web_ui.py:1083
 #, python-format
 msgid "No version %(version)d for comment %(cnum)d on ticket #%(ticket)s"
 msgstr "לא קיימת גרסה %(version)d עבור הערה %(cnum)d בטיקט #%(ticket)s"
 
-#: trac/ticket/web_ui.py:1097
+#: trac/ticket/web_ui.py:1123
 msgid "Ticket Comment Diff"
 msgstr "הפרש הערה לטיקט"
 
-#: trac/ticket/web_ui.py:1170
+#: trac/ticket/web_ui.py:1197
 #, python-format
 msgid "%(labels)s set"
 msgid_plural "%(labels)s set"
 msgstr[0] "%(labels)s נקבע"
 msgstr[1] "%(labels)s נקבעו"
 
-#: trac/ticket/web_ui.py:1174
+#: trac/ticket/web_ui.py:1201
 #, python-format
 msgid "%(labels)s deleted"
 msgid_plural "%(labels)s deleted"
 msgstr[0] "%(labels)s נמחק"
 msgstr[1] "%(labels)s נמחקו"
 
-#: trac/ticket/web_ui.py:1175 trac/ticket/web_ui.py:1755
+#: trac/ticket/web_ui.py:1202 trac/ticket/web_ui.py:1814
 msgid "; "
 msgstr ";"
 
-#: trac/ticket/web_ui.py:1196
+#: trac/ticket/web_ui.py:1223
 msgid "No permission to edit the ticket description."
 msgstr "אין הרשאות לעריכת פירוט הטיקט"
 
-#: trac/ticket/web_ui.py:1202
+#: trac/ticket/web_ui.py:1229
 msgid "No permission to change the ticket reporter."
 msgstr "אין הרשאות לשינוי מדווח הטיקט."
 
-#: trac/ticket/web_ui.py:1207
+#: trac/ticket/web_ui.py:1234
 msgid "No permission to change ticket fields."
 msgstr "אין הרשאות לשינוי שדות הטיקט."
 
-#: trac/ticket/web_ui.py:1216
+#: trac/ticket/web_ui.py:1243
 msgid "No permissions to add a comment."
 msgstr "אין הרשאות להוספת הערה."
 
-#: trac/ticket/web_ui.py:1223
+#: trac/ticket/web_ui.py:1250
 msgid ""
 "Sorry, can not save your changes. This ticket has been modified by "
 "someone else since you started"
 msgstr "לא ניתן לשמור את השינויים שביצעת. טיקט זה שונה ע/\"י מישהו אחר מאז שהתחל"
 
-#: trac/ticket/web_ui.py:1230
+#: trac/ticket/web_ui.py:1257
 msgid "Tickets must contain a summary."
 msgstr "טיקטים חייבים לכלול תיאור."
 
-#: trac/ticket/web_ui.py:1248
+#: trac/ticket/web_ui.py:1275
 #, python-format
 msgid "field %(name)s must be set"
 msgstr "נדרש למלא את שדה %(name)s"
 
-#: trac/ticket/web_ui.py:1254
+#: trac/ticket/web_ui.py:1281
 #, python-format
 msgid "Ticket description is too long (must be less than %(num)s characters)"
 msgstr "פירוט הטיקט ארוך מידי (חייב להיות פחות מ-%(num)s תווים)"
 
-#: trac/ticket/web_ui.py:1261
+#: trac/ticket/web_ui.py:1288
 #, python-format
 msgid "Ticket comment is too long (must be less than %(num)s characters)"
 msgstr "הערה טיקט ארוכה מידי (חייבת להיות פחות מ-%(num)s תווים)"
 
-#: trac/ticket/web_ui.py:1274
+#: trac/ticket/web_ui.py:1301
 msgid "Invalid comment threading identifier"
 msgstr "מזהה שרשרת הערה לא חוקי"
 
-#: trac/ticket/web_ui.py:1281
+#: trac/ticket/web_ui.py:1324
 #, python-format
 msgid "The ticket field '%(field)s' is invalid: %(message)s"
 msgstr "שדה '%(field)s' של הטיקט לא חוקי: %(message)s"
 
-#: trac/ticket/web_ui.py:1300
+#: trac/ticket/web_ui.py:1343
 #, python-format
 msgid ""
 "The ticket has been created, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr "הטיקט נוצר, אך אירעה שגיאה בעת שליחת התראות: %(message)s"
 
-#: trac/ticket/web_ui.py:1305
+#: trac/ticket/web_ui.py:1348
 #, python-format
 msgid ""
 "The ticket %(ticketref)s has been created. You can now attach the desired"
 " files."
 msgstr "הטיקט %(ticketref)s נוצר. ניתן כעת לצרף קבצים."
 
-#: trac/ticket/web_ui.py:1311
+#: trac/ticket/web_ui.py:1354
 #, python-format
 msgid ""
 "The ticket %(ticketref)s has been created, but you don't have permission "
@@ -3855,90 +3867,90 @@ msgid ""
 msgstr "הטיקט %(ticketref)s נוצר, אך אין לך הרשאות לצפייה בו."
 
 #. TRANSLATOR: The 'change' has been saved... (link)
-#: trac/ticket/web_ui.py:1338
+#: trac/ticket/web_ui.py:1381
 msgid "change"
 msgstr "שינוי"
 
-#: trac/ticket/web_ui.py:1344
+#: trac/ticket/web_ui.py:1387
 #, python-format
 msgid ""
 "The %(change)s has been saved, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr "%(change)s נשמר, אך אירעה שגיאה בעת שליחת התראות: %(message)s"
 
-#: trac/ticket/web_ui.py:1482
+#: trac/ticket/web_ui.py:1525
 msgid "Add to Cc"
 msgstr "הוסף לרשימת מכותבים"
 
-#: trac/ticket/web_ui.py:1483
+#: trac/ticket/web_ui.py:1526
 msgid "Remove from Cc"
 msgstr "הסר מרשימת מכותבים"
 
-#: trac/ticket/web_ui.py:1484
+#: trac/ticket/web_ui.py:1527
 msgid "Add/Remove from Cc"
 msgstr "הוסף / הסר מרשימת מכותבים"
 
-#: trac/ticket/web_ui.py:1485
+#: trac/ticket/web_ui.py:1528
 msgid "<Author field>"
 msgstr "<שדה מחבר>"
 
-#: trac/ticket/web_ui.py:1518 trac/ticket/templates/query.html:114
+#: trac/ticket/web_ui.py:1561 trac/ticket/templates/query.html:116
 msgid "yes"
 msgstr "כן"
 
-#: trac/ticket/web_ui.py:1518 trac/ticket/templates/query.html:117
+#: trac/ticket/web_ui.py:1561 trac/ticket/templates/query.html:119
 msgid "no"
 msgstr "לא"
 
-#: trac/ticket/web_ui.py:1724
+#: trac/ticket/web_ui.py:1783
 msgid "set"
 msgstr "קבע ערך"
 
-#: trac/ticket/web_ui.py:1724
+#: trac/ticket/web_ui.py:1783
 msgid "unset"
 msgstr "מחק ערך"
 
-#: trac/ticket/web_ui.py:1727 trac/versioncontrol/templates/changeset.html:189
+#: trac/ticket/web_ui.py:1786 trac/versioncontrol/templates/changeset.html:189
 #: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "modified"
 msgstr "שונה"
 
 #. TRANSLATOR: modified ('diff') (link)
-#: trac/ticket/web_ui.py:1732 trac/ticket/templates/ticket_change.html:155
+#: trac/ticket/web_ui.py:1791 trac/ticket/templates/ticket_change.html:155
 #: trac/wiki/web_ui.py:747
 msgid "diff"
 msgstr "הפרש"
 
-#: trac/ticket/web_ui.py:1733
+#: trac/ticket/web_ui.py:1792
 #, python-format
 msgid "modified (%(diff)s)"
 msgstr "שונה (%(diff)s)"
 
-#: trac/ticket/web_ui.py:1751
+#: trac/ticket/web_ui.py:1810
 #, python-format
 msgid "%(items)s added"
 msgid_plural "%(items)s added"
 msgstr[0] "%(items)s נוסף"
 msgstr[1] "%(items)s נוספו"
 
-#: trac/ticket/web_ui.py:1753
+#: trac/ticket/web_ui.py:1812
 #, python-format
 msgid "%(items)s removed"
 msgid_plural "%(items)s removed"
 msgstr[0] "%(items)s הוסר"
 msgstr[1] "%(items)s הוסרו"
 
-#: trac/ticket/web_ui.py:1762
+#: trac/ticket/web_ui.py:1821
 #, python-format
 msgid "%(value)s deleted"
 msgstr "%(value)s נמחק"
 
-#: trac/ticket/web_ui.py:1764
+#: trac/ticket/web_ui.py:1823
 #, python-format
 msgid "set to %(value)s"
 msgstr "נקבע ל%(value)s"
 
-#: trac/ticket/web_ui.py:1767
+#: trac/ticket/web_ui.py:1826
 #, python-format
 msgid "changed from %(old)s to %(new)s"
 msgstr "השתנה מ-%(old)s ל-%(new)s"
@@ -4031,7 +4043,7 @@ msgid "Retarget associated open tickets to milestone:"
 msgstr "הקצה מחדש טיקטים פתוחים הקשורים לאבן הדרך"
 
 #: trac/ticket/templates/milestone_edit.html:106
-#: trac/ticket/templates/ticket.html:388
+#: trac/ticket/templates/ticket.html:392
 #: trac/ticket/templates/ticket_change.html:116
 #: trac/wiki/templates/wiki_edit_form.html:66
 #: trac/wiki/templates/wiki_edit_form.html:71
@@ -4090,7 +4102,7 @@ msgstr "%(stat_title)s לפי"
 msgid "Edit milestone"
 msgstr "ערוך אבן דרך"
 
-#: trac/ticket/templates/query.html:35
+#: trac/ticket/templates/query.html:37
 #: trac/ticket/templates/report_view.html:21
 #: trac/ticket/templates/report_view.html:97
 #, python-format
@@ -4099,23 +4111,23 @@ msgid_plural "%(num)s matches"
 msgstr[0] "התאמה %(num)s"
 msgstr[1] "%(num)s התאמות"
 
-#: trac/ticket/templates/query.html:44
+#: trac/ticket/templates/query.html:46
 msgid "Filters"
 msgstr "פילטרים"
 
-#: trac/ticket/templates/query.html:45
+#: trac/ticket/templates/query.html:47
 msgid "Query filters"
 msgstr "פילטרי שאילתא"
 
-#: trac/ticket/templates/query.html:51 trac/ticket/templates/query.html:155
+#: trac/ticket/templates/query.html:53 trac/ticket/templates/query.html:158
 msgid "Or"
 msgstr "או"
 
-#: trac/ticket/templates/query.html:79
+#: trac/ticket/templates/query.html:81
 msgid "or"
 msgstr "או"
 
-#: trac/ticket/templates/query.html:127
+#: trac/ticket/templates/query.html:130
 msgid ""
 "[1:between]\n"
 "                            [2:]\n"
@@ -4127,63 +4139,63 @@ msgstr ""
 "                            [3:ל-]\n"
 "                            [4:]"
 
-#: trac/ticket/templates/query.html:141
+#: trac/ticket/templates/query.html:144
 msgid "And"
 msgstr "וגם"
 
-#: trac/ticket/templates/query.html:174
+#: trac/ticket/templates/query.html:177
 msgid "Columns"
 msgstr "עמודות"
 
-#: trac/ticket/templates/query.html:187
+#: trac/ticket/templates/query.html:190
 msgid "Group results by"
 msgstr "קבץ תוצאות לפי"
 
-#: trac/ticket/templates/query.html:198
+#: trac/ticket/templates/query.html:201
 msgid "descending"
 msgstr "סדר יורד"
 
-#: trac/ticket/templates/query.html:202
+#: trac/ticket/templates/query.html:205
 msgid "Show under each result:"
 msgstr "הצג מתחת לכל תוצאה:"
 
-#: trac/ticket/templates/query.html:212
+#: trac/ticket/templates/query.html:215
 #: trac/ticket/templates/report_view.html:27
 msgid "Max items per page"
 msgstr "מספר פריטים מירבי לעמוד"
 
-#: trac/ticket/templates/query.html:235
+#: trac/ticket/templates/query.html:238
 #, python-format
 msgid "Edit report {%(id)s} corresponding to this query"
 msgstr "ערוך דו\"ח {%(id)s} השייך לשאילתא זו"
 
-#: trac/ticket/templates/query.html:235
+#: trac/ticket/templates/query.html:238
 msgid "Edit query"
 msgstr "ערוך שאילתא"
 
-#: trac/ticket/templates/query.html:244
+#: trac/ticket/templates/query.html:247
 msgid "Save query"
 msgstr "שמור שאילתא"
 
-#: trac/ticket/templates/query.html:244
+#: trac/ticket/templates/query.html:247
 #, python-format
 msgid "Save updated query in report {%(id)s}"
 msgstr "שמור שאילתא מעודכנת בדו\"ח {%(id)s}"
 
-#: trac/ticket/templates/query.html:244
+#: trac/ticket/templates/query.html:247
 msgid "Create new report from current query"
 msgstr "צור דו\"ח חדש משאילתא נוכחית"
 
-#: trac/ticket/templates/query.html:252
+#: trac/ticket/templates/query.html:255
 #, python-format
 msgid "Delete report {%(id)s} corresponding to this query"
 msgstr "מחק דו\"ח {%(id)s} השייך לשאילתא זו"
 
-#: trac/ticket/templates/query.html:252
+#: trac/ticket/templates/query.html:255
 msgid "Delete query"
 msgstr "מחק שאילתא"
 
-#: trac/ticket/templates/query.html:259
+#: trac/ticket/templates/query.html:262
 msgid ""
 "[1:Note:] See [2:TracQuery]\n"
 "        for help on using queries."
@@ -4224,11 +4236,11 @@ msgstr "הצג טיקט"
 msgid "View milestone"
 msgstr "הצג אבן דרך"
 
-#: trac/ticket/templates/query_results.html:95
+#: trac/ticket/templates/query_results.html:96
 msgid "(this ticket)"
 msgstr "(טיקט זה)"
 
-#: trac/ticket/templates/query_results.html:111
+#: trac/ticket/templates/query_results.html:112
 msgid "(more results for this group on next page)"
 msgstr "(תוצאות נוספות מקבוצה זו בעמוד הבא)"
 
@@ -4387,45 +4399,45 @@ msgstr "אבן דרך:"
 msgid "Add new milestone"
 msgstr "הוסף אבן דרך חדשה"
 
-#: trac/ticket/templates/ticket.html:132
+#: trac/ticket/templates/ticket.html:134
 #, fuzzy
 msgid "Go to the ticket editor"
 msgstr "עבור לעורך"
 
-#: trac/ticket/templates/ticket.html:132
+#: trac/ticket/templates/ticket.html:134
 #, fuzzy
 msgid "Modify"
 msgstr "שונה"
 
-#: trac/ticket/templates/ticket.html:134
+#: trac/ticket/templates/ticket.html:136
 msgid "Create New Ticket"
 msgstr "יצירת טיקט חדש"
 
-#: trac/ticket/templates/ticket.html:152
+#: trac/ticket/templates/ticket.html:154
 msgid "Oldest first"
 msgstr "הישן ביותר ראשון"
 
-#: trac/ticket/templates/ticket.html:154
+#: trac/ticket/templates/ticket.html:156
 msgid "Newest first"
 msgstr "החדש ביותר ראשון"
 
-#: trac/ticket/templates/ticket.html:157
+#: trac/ticket/templates/ticket.html:159
 msgid "Threaded"
 msgstr "שזור"
 
-#: trac/ticket/templates/ticket.html:162
+#: trac/ticket/templates/ticket.html:164
 msgid "Comments only"
 msgstr "הערות בלבד"
 
-#: trac/ticket/templates/ticket.html:167
+#: trac/ticket/templates/ticket.html:169
 msgid "Change History"
 msgstr "שנה היסטוריה"
 
-#: trac/ticket/templates/ticket.html:186
+#: trac/ticket/templates/ticket.html:188
 msgid "Add Comment"
 msgstr "הוסף הערה"
 
-#: trac/ticket/templates/ticket.html:188
+#: trac/ticket/templates/ticket.html:190
 msgid ""
 "This ticket has been modified since you started editing. You should "
 "review the\n"
@@ -4439,7 +4451,7 @@ msgstr ""
 "ועל [2:קונפליקטים] המוצגים בתצוגה המקדימה שמתחת.\n"
 "אפשר יחד עם זאת להמשיך ולשמור את השינויים שלך אם ברצונך לעשות זאת."
 
-#: trac/ticket/templates/ticket.html:198
+#: trac/ticket/templates/ticket.html:200
 msgid ""
 "You may use\n"
 "                [1:WikiFormatting]\n"
@@ -4449,27 +4461,27 @@ msgstr ""
 "              [1:בויקי-פורמט]\n"
 "              כאן."
 
-#: trac/ticket/templates/ticket.html:209
+#: trac/ticket/templates/ticket.html:211
 msgid "Modify Ticket"
 msgstr "שנה טיקט"
 
-#: trac/ticket/templates/ticket.html:215
+#: trac/ticket/templates/ticket.html:217
 msgid "Change Properties"
 msgstr "שנה מאפיינים"
 
-#: trac/ticket/templates/ticket.html:216
+#: trac/ticket/templates/ticket.html:218
 msgid "Properties"
 msgstr "מאפיינים"
 
-#: trac/ticket/templates/ticket.html:220
+#: trac/ticket/templates/ticket.html:222
 msgid "Summary:"
 msgstr "תיאור:"
 
-#: trac/ticket/templates/ticket.html:228
+#: trac/ticket/templates/ticket.html:230
 msgid "Reporter:"
 msgstr "מדווח:"
 
-#: trac/ticket/templates/ticket.html:240
+#: trac/ticket/templates/ticket.html:242
 msgid ""
 "You may use\n"
 "                          [1:WikiFormatting] here."
@@ -4477,50 +4489,50 @@ msgstr ""
 "ניתן להשתמש\n"
 "              [1:בויקי-פורמט] כאן."
 
-#: trac/ticket/templates/ticket.html:256
+#: trac/ticket/templates/ticket.html:258
 #: trac/ticket/templates/ticket_box.html:75
 #, python-format
 msgid "%(field)s:"
 msgstr "%(field)s:"
 
-#: trac/ticket/templates/ticket.html:295
+#: trac/ticket/templates/ticket.html:299
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr "תיבת סימון זה מאפשרת לך להוסיף או להסיר את עצמך מרשימת המכותבים."
 
-#: trac/ticket/templates/ticket.html:301
+#: trac/ticket/templates/ticket.html:305
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr "ניתן לקבל רשימת כתובות אימייל או שמות משתמש מפורדת ברווחים או בפסיקים."
 
-#: trac/ticket/templates/ticket.html:364
+#: trac/ticket/templates/ticket.html:368
 #: trac/wiki/templates/wiki_edit_form.html:46
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
 msgstr "ניתן לשמור כתובת אימיל ושם משתמש ב[1:העדפות]."
 
-#: trac/ticket/templates/ticket.html:372
+#: trac/ticket/templates/ticket.html:376
 msgid "I have files to attach to this ticket"
 msgstr "יש לי קבצים לצרף לטיקט הזה"
 
-#: trac/ticket/templates/ticket.html:378
+#: trac/ticket/templates/ticket.html:382
 msgid "Go to the list of attachments"
 msgstr "עבור לרשימת הקבצים המצורפים"
 
-#: trac/ticket/templates/ticket.html:379
+#: trac/ticket/templates/ticket.html:383
 #, fuzzy
 msgid "View the ticket description"
 msgstr "אין הרשאות לעריכת פירוט הטיקט"
 
-#: trac/ticket/templates/ticket.html:387
+#: trac/ticket/templates/ticket.html:391
 #: trac/ticket/templates/ticket_change.html:114
 #: trac/wiki/templates/wiki_edit.html:95 trac/wiki/templates/wiki_edit.html:153
 #: trac/wiki/templates/wiki_edit_form.html:64
 msgid "Preview"
 msgstr "תצוגה מקדימה"
 
-#: trac/ticket/templates/ticket.html:388
+#: trac/ticket/templates/ticket.html:392
 msgid "Create ticket"
 msgstr "צור טיקט"
 
-#: trac/ticket/templates/ticket.html:396
+#: trac/ticket/templates/ticket.html:400
 msgid ""
 "[1:Note:] See\n"
 "        [2:TracTickets] for help on using\n"
@@ -4566,17 +4578,17 @@ msgstr "דווח ע\"י:"
 msgid "Owned by:"
 msgstr "אחראי:"
 
-#: trac/ticket/templates/ticket_box.html:96
+#: trac/ticket/templates/ticket_box.html:97
 #, python-format
 msgid "(last modified by %(author)s)"
 msgstr "(שונה לאחרונה ע\"י %(author)s)"
 
-#: trac/ticket/templates/ticket_box.html:105
+#: trac/ticket/templates/ticket_box.html:106
 #: trac/ticket/templates/ticket_change.html:72
 msgid "Reply"
 msgstr "השב"
 
-#: trac/ticket/templates/ticket_box.html:105
+#: trac/ticket/templates/ticket_box.html:106
 msgid "Reply, quoting this description"
 msgstr "השב, וצטט פירוט זה"
 
@@ -4716,42 +4728,53 @@ msgstr "לתקופה הקודמת"
 msgid "Next Period"
 msgstr "לתקופה הבאה"
 
-#: trac/timeline/web_ui.py:290
-#, python-format
-msgid "at %(iso8601)s"
-msgstr "ב%(iso8601)s"
+#: trac/timeline/web_ui.py:294 trac/timeline/web_ui.py:317
+#: trac/web/chrome.py:869
+#, fuzzy, python-format
+msgid "in %(relative)s"
+msgstr "לפני %(relativetime)s"
 
-#: trac/timeline/web_ui.py:294
+#: trac/timeline/web_ui.py:298 trac/timeline/web_ui.py:315
 #, python-format
 msgid "on %(date)s at %(time)s"
 msgstr "בתאריך %(date)s בשעה %(time)s"
 
-#: trac/timeline/web_ui.py:295
-#, python-format
-msgid "See timeline %(relativetime)s ago"
-msgstr "ראה בציר הזמן לפני %(relativetime)s"
-
-#: trac/timeline/web_ui.py:298 trac/web/chrome.py:865 trac/web/chrome.py:867
-#, python-format
-msgid "%(relativetime)s ago"
+#: trac/timeline/web_ui.py:301 trac/web/chrome.py:871
+#, fuzzy, python-format
+msgid "%(relative)s ago"
 msgstr "לפני %(relativetime)s"
 
-#: trac/timeline/web_ui.py:300 trac/timeline/web_ui.py:344
+#: trac/timeline/web_ui.py:303 trac/timeline/web_ui.py:363
 #, python-format
 msgid "See timeline at %(absolutetime)s"
 msgstr "ראה ציר-זמן ב%(absolutetime)s"
 
+#: trac/timeline/web_ui.py:309
+#, python-format
+msgid "at %(iso8601)s"
+msgstr "ב%(iso8601)s"
+
+#: trac/timeline/web_ui.py:311
+#, fuzzy, python-format
+msgid "on %(date)s"
+msgstr "לא קיים צומת %(path)s"
+
+#: trac/timeline/web_ui.py:319
+#, python-format
+msgid "See timeline %(relativetime)s ago"
+msgstr "ראה בציר הזמן לפני %(relativetime)s"
+
 #. TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
-#: trac/timeline/web_ui.py:391
+#: trac/timeline/web_ui.py:410
 msgid "other kinds of events"
 msgstr "אירועים מסוגים אחרים"
 
-#: trac/timeline/web_ui.py:396
+#: trac/timeline/web_ui.py:415
 #, python-format
 msgid "Event provider %(name)s failed for filters %(kinds)s: "
 msgstr "ספק האירועים %(name)s נכשל עבור הפילטרים %(kinds)s: "
 
-#: trac/timeline/web_ui.py:399
+#: trac/timeline/web_ui.py:418
 #, python-format
 msgid ""
 "You may want to see the %(other_events)s from the Timeline or notify your"
@@ -4891,7 +4914,7 @@ msgid_plural "%(num)i seconds"
 msgstr[0] "שנייה %(num)i"
 msgstr[1] "%(num)i שניות"
 
-#: trac/util/datefmt.py:464
+#: trac/util/datefmt.py:465
 #, python-format
 msgid ""
 "\"%(date)s\" is an invalid date, or the date format is not known. Try "
@@ -4900,11 +4923,11 @@ msgstr ""
 "\"%(date)s\" הינו תאריך לא חוקי, או בפורמט לא מוכר. נסה \"%(hint)s\" "
 "במקום."
 
-#: trac/util/datefmt.py:466 trac/util/datefmt.py:474
+#: trac/util/datefmt.py:467 trac/util/datefmt.py:475
 msgid "Invalid Date"
 msgstr "תאריך לא חוקי"
 
-#: trac/util/datefmt.py:472
+#: trac/util/datefmt.py:473
 #, python-format
 msgid ""
 "The date \"%(date)s\" is outside valid range. Try a date closer to "
@@ -6182,16 +6205,16 @@ msgstr "כבר מחובר בתור %(user)s."
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr "שגיאה בספק ניווט \"%(name)s\""
 
-#: trac/web/chrome.py:1029
+#: trac/web/chrome.py:1037
 msgid "(unknown template location)"
 msgstr "(מיקום תבנית לא ידוע)"
 
-#: trac/web/chrome.py:1030
+#: trac/web/chrome.py:1038
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "שגיאה %(error)s בגנשי בעת עיבוד תבנית %(location)s"
 
-#: trac/web/chrome.py:1078 trac/web/chrome.py:1086
+#: trac/web/chrome.py:1086 trac/web/chrome.py:1094
 msgid "anonymous"
 msgstr "אנונימי"
 

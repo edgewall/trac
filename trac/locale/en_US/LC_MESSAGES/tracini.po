@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.13\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-27 11:21+0900\n"
+"POT-Creation-Date: 2013-02-02 15:20+0100\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: en_US <LL@li.org>\n"
@@ -672,19 +672,19 @@ msgid ""
 "(since 0.12)"
 msgstr ""
 
-#: trac/ticket/api.py:166
+#: trac/ticket/api.py:188
 msgid ""
 "In this section, you can define additional fields for tickets. See\n"
 "TracTicketsCustomFields for more details."
 msgstr ""
 
-#: trac/ticket/api.py:170
+#: trac/ticket/api.py:192
 msgid ""
 "Ordered list of workflow controllers to use for ticket actions\n"
 "(''since 0.11'')."
 msgstr ""
 
-#: trac/ticket/api.py:176
+#: trac/ticket/api.py:198
 msgid ""
 "Make the owner field of tickets use a drop-down menu.\n"
 "Be sure to understand the performance implications before activating\n"
@@ -697,51 +697,51 @@ msgid ""
 "(''since 0.9'')"
 msgstr ""
 
-#: trac/ticket/api.py:187
+#: trac/ticket/api.py:209
 msgid "Default version for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:190
+#: trac/ticket/api.py:212
 msgid "Default type for newly created tickets (''since 0.9'')."
 msgstr ""
 
-#: trac/ticket/api.py:193
+#: trac/ticket/api.py:215
 msgid "Default priority for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:196
+#: trac/ticket/api.py:218
 msgid "Default milestone for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:199
+#: trac/ticket/api.py:221
 msgid "Default component for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:202
+#: trac/ticket/api.py:224
 msgid "Default severity for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:205
+#: trac/ticket/api.py:227
 msgid "Default summary (title) for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:208
+#: trac/ticket/api.py:230
 msgid "Default description for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:211
+#: trac/ticket/api.py:233
 msgid "Default keywords for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:214
+#: trac/ticket/api.py:236
 msgid "Default owner for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:217
+#: trac/ticket/api.py:239
 msgid "Default cc: list for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:220
+#: trac/ticket/api.py:242
 msgid ""
 "Default resolution for resolving (closing) tickets\n"
 "(''since 0.11'')."
@@ -757,23 +757,23 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/ticket/notification.py:36
+#: trac/ticket/notification.py:37
 msgid "Always send notifications to the ticket owner (''since 0.9'')."
 msgstr ""
 
-#: trac/ticket/notification.py:40
+#: trac/ticket/notification.py:41
 msgid ""
 "Always send notifications to any address in the ''reporter''\n"
 "field."
 msgstr ""
 
-#: trac/ticket/notification.py:46
+#: trac/ticket/notification.py:47
 msgid ""
 "Always send notifications to the person who causes the ticket\n"
 "property change and to any previous updater of that ticket."
 msgstr ""
 
-#: trac/ticket/notification.py:51
+#: trac/ticket/notification.py:52
 msgid ""
 "A Genshi text template snippet used to get the notification subject.\n"
 "\n"
@@ -782,7 +782,7 @@ msgid ""
 "''(since 0.11)''"
 msgstr ""
 
-#: trac/ticket/notification.py:59
+#: trac/ticket/notification.py:60
 msgid ""
 "Like ticket_subject_template but for batch modifications.\n"
 "\n"
@@ -790,7 +790,7 @@ msgid ""
 "''(since 1.0)''"
 msgstr ""
 
-#: trac/ticket/notification.py:66
+#: trac/ticket/notification.py:67
 msgid ""
 "Which width of ambiguous characters (e.g. 'single' or\n"
 "'double') should be used in the table of notification mail.\n"
@@ -801,7 +801,7 @@ msgid ""
 "0.12.2)''"
 msgstr ""
 
-#: trac/ticket/query.py:824
+#: trac/ticket/query.py:820
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -810,7 +810,7 @@ msgid ""
 "(''since 0.11.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:832
+#: trac/ticket/query.py:828
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -819,19 +819,19 @@ msgid ""
 "(''since 0.11.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:840
+#: trac/ticket/query.py:836
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default (''since 0.11'')"
 msgstr ""
 
-#: trac/ticket/report.py:116
+#: trac/ticket/report.py:115
 msgid ""
 "Number of tickets displayed per page in ticket reports,\n"
 "by default (''since 0.11'')"
 msgstr ""
 
-#: trac/ticket/report.py:120
+#: trac/ticket/report.py:119
 msgid ""
 "Number of tickets displayed in the rss feeds for reports\n"
 "(''since 0.11'')"
@@ -915,25 +915,31 @@ msgid ""
 "in the milestone views."
 msgstr ""
 
-#: trac/ticket/web_ui.py:75
+#: trac/ticket/web_ui.py:76
 msgid ""
 "Enable the display of all ticket changes in the timeline, not only\n"
 "open / close operations (''since 0.9'')."
 msgstr ""
 
-#: trac/ticket/web_ui.py:79
+#: trac/ticket/web_ui.py:80
+msgid ""
+"Enable the display of component of tickets in the timeline\n"
+"(''since 1.1.1'')."
+msgstr ""
+
+#: trac/ticket/web_ui.py:85
 msgid ""
 "Don't accept tickets with a too big description.\n"
 "(''since 0.11'')."
 msgstr ""
 
-#: trac/ticket/web_ui.py:83
+#: trac/ticket/web_ui.py:89
 msgid ""
 "Don't accept tickets with a too big comment.\n"
 "(''since 0.11.2'')"
 msgstr ""
 
-#: trac/ticket/web_ui.py:87
+#: trac/ticket/web_ui.py:93
 msgid ""
 "Which formatter flavor (e.g. 'html' or 'oneliner') should be\n"
 "used when presenting the description for new tickets.\n"
@@ -941,7 +947,7 @@ msgid ""
 "(''since 0.11'')."
 msgstr ""
 
-#: trac/ticket/web_ui.py:94
+#: trac/ticket/web_ui.py:100
 msgid ""
 "Whether Wiki formatter should respect the new lines present\n"
 "in the Wiki text.\n"
@@ -950,7 +956,7 @@ msgid ""
 "(''since 0.11'')."
 msgstr ""
 
-#: trac/ticket/web_ui.py:101
+#: trac/ticket/web_ui.py:107
 msgid ""
 "The base query to be used when linkifying values of ticket\n"
 "fields. The query is a URL query\n"
@@ -1289,28 +1295,28 @@ msgstr ""
 
 #: trac/web/chrome.py:386
 msgid ""
-"Location of the jQuery !JavaScript library (version 1.7.2).\n"
+"Location of the jQuery !JavaScript library (version 1.8.3).\n"
 "\n"
 "An empty value loads jQuery from the copy bundled with Trac.\n"
 "\n"
 "Alternatively, jQuery could be loaded from a CDN, for example:\n"
-"http://code.jquery.com/jquery-1.7.2.min.js,\n"
-"http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js or\n"
-"https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js.\n"
+"http://code.jquery.com/jquery-1.8.3.min.js,\n"
+"http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js or\n"
+"https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js.\n"
 "\n"
 "(''since 1.0'')"
 msgstr ""
 
 #: trac/web/chrome.py:398
 msgid ""
-"Location of the jQuery UI !JavaScript library (version 1.8.21).\n"
+"Location of the jQuery UI !JavaScript library (version 1.9.2).\n"
 "\n"
 "An empty value loads jQuery UI from the copy bundled with Trac.\n"
 "\n"
 "Alternatively, jQuery UI could be loaded from a CDN, for example:\n"
-"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js\n"
 "or\n"
-"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/jquery-ui.min.js.\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js.\n"
 "\n"
 "(''since 1.0'')"
 msgstr ""
@@ -1318,17 +1324,17 @@ msgstr ""
 #: trac/web/chrome.py:410
 msgid ""
 "Location of the theme to be used with the jQuery UI !JavaScript\n"
-"library (version 1.8.21).\n"
+"library (version 1.9.2).\n"
 "\n"
 "An empty value loads the custom Trac jQuery UI theme from the copy\n"
 "bundled with Trac.\n"
 "\n"
 "Alternatively, a jQuery UI theme could be loaded from a CDN, for\n"
 "example:\n"
-"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/start"
-"/jquery-ui.css\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/start/jquery-"
+"ui.css\n"
 "or\n"
-"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/themes/start/jquery-"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/start/jquery-"
 "ui.css.\n"
 "\n"
 "(''since 1.0'')"
@@ -1547,272 +1553,47 @@ msgid "Maximum allowed wiki page size in bytes. (''since 0.11.2'')"
 msgstr ""
 
 #~ msgid ""
-#~ "Maximum allowed file size (in bytes) for ticket and wiki \n"
-#~ "attachments."
+#~ "Location of the jQuery !JavaScript library (version 1.7.2).\n"
+#~ "\n"
+#~ "An empty value loads jQuery from the copy bundled with Trac.\n"
+#~ "\n"
+#~ "Alternatively, jQuery could be loaded from a CDN, for example:\n"
+#~ "http://code.jquery.com/jquery-1.7.2.min.js,\n"
+#~ "http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js or\n"
+#~ "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js.\n"
+#~ "\n"
+#~ "(''since 1.0'')"
 #~ msgstr ""
 
 #~ msgid ""
-#~ "Maximum allowed total size (in bytes) for an attachment list to be\n"
-#~ "downloadable as a `.zip`. Set this "
-#~ "to -1 to disable download as "
-#~ "`.zip`.\n"
-#~ "(''since 0.13'')"
+#~ "Location of the jQuery UI !JavaScript library (version 1.8.21).\n"
+#~ "\n"
+#~ "An empty value loads jQuery UI from the copy bundled with Trac.\n"
+#~ "\n"
+#~ "Alternatively, jQuery UI could be loaded from a CDN, for example:\n"
+#~ "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-"
+#~ "ui.min.js\n"
+#~ "or\n"
+#~ "http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/jquery-ui.min.js.\n"
+#~ "\n"
+#~ "(''since 1.0'')"
 #~ msgstr ""
 
 #~ msgid ""
-#~ "This section is used to enable or disable components\n"
-#~ "provided by plugins, as well as by Trac itself. The component\n"
-#~ "to enable/disable is specified via the name of the\n"
-#~ "option. Whether its enabled is determined by the option value;\n"
-#~ "setting the value to `enabled` or `on` will enable the\n"
-#~ "component, any other value (typically `disabled` or `off`)\n"
-#~ "will disable the component.\n"
+#~ "Location of the theme to be used with the jQuery UI !JavaScript\n"
+#~ "library (version 1.8.21).\n"
 #~ "\n"
-#~ "The option name is either the fully qualified name of the\n"
-#~ "components or the module/package prefix of the component. The\n"
-#~ "former enables/disables a specific component, while the latter\n"
-#~ "enables/disables any component in the specified\n"
-#~ "package/module.\n"
+#~ "An empty value loads the custom Trac jQuery UI theme from the copy\n"
+#~ "bundled with Trac.\n"
 #~ "\n"
-#~ "Consider the following configuration snippet:\n"
-#~ "{{{\n"
-#~ "[components]\n"
-#~ "trac.ticket.report.ReportModule = disabled\n"
-#~ "webadmin.* = enabled\n"
-#~ "}}}\n"
+#~ "Alternatively, a jQuery UI theme could be loaded from a CDN, for\n"
+#~ "example:\n"
+#~ "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/start"
+#~ "/jquery-ui.css\n"
+#~ "or\n"
+#~ "http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/themes/start"
+#~ "/jquery-ui.css.\n"
 #~ "\n"
-#~ "The first option tells Trac to disable the\n"
-#~ "[wiki:TracReports report module]. \n"
-#~ "The second option instructs Trac to enable all components in\n"
-#~ "the `webadmin` package. Note that the trailing wildcard is\n"
-#~ "required for module/package matching.\n"
-#~ "\n"
-#~ "To view the list of active components, go to the ''Plugins''\n"
-#~ "page on ''About Trac'' (requires `CONFIG_VIEW`\n"
-#~ "[wiki:TracPermissions permissions]).\n"
-#~ "\n"
-#~ "See also: TracPlugins"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Use the action author as the sender of notification emails.\n"
-#~ "(''since 0.13'')"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Text to prepend to subject line of notification emails. \n"
-#~ "\n"
-#~ "If the setting is not defined, then the [$project_name] prefix.\n"
-#~ "If no prefix is desired, then specifying an empty option \n"
-#~ "will disable it. (''since 0.10.1'')"
-#~ msgstr ""
-
-#~ msgid "b"
-#~ msgstr ""
-
-#~ msgid "Doc for c"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Always send notifications to the person who causes the ticket \n"
-#~ "property change and to any previous updater of that ticket."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "As the workflow for tickets is now configurable, there can be many\n"
-#~ "ticket states, and simply displaying "
-#~ "closed tickets vs. all the others\n"
-#~ ""
-#~ "is maybe not appropriate in all cases. This section enables one to\n"
-#~ "easily create ''groups'' of states that will be shown in different\n"
-#~ "colors in the milestone progress bar.\n"
-#~ "\n"
-#~ "Example configuration (the default only has closed and active):\n"
-#~ "{{{\n"
-#~ "closed = closed\n"
-#~ "# sequence number in the progress bar\n"
-#~ "closed.order = 0\n"
-#~ "# optional extra param for the "
-#~ "query (two additional columns: created "
-#~ "and modified and sort on created)\n"
-#~ ""
-#~ "closed.query_args = "
-#~ "group=resolution,order=time,col=id,col=summary,col=owner,col=type,col=priority,col=component,col=severity,col=time,col=changetime"
-#~ "\n"
-#~ "# indicates groups that count for overall completion percentage\n"
-#~ "closed.overall_completion = true\n"
-#~ "\n"
-#~ "new = new\n"
-#~ "new.order = 1\n"
-#~ "new.css_class = new\n"
-#~ "new.label = new\n"
-#~ "\n"
-#~ "# one catch-all group is allowed\n"
-#~ "active = *\n"
-#~ "active.order = 2\n"
-#~ "# CSS class for this interval\n"
-#~ "active.css_class = open\n"
-#~ "# Displayed label for this group\n"
-#~ "active.label = in progress\n"
-#~ "}}}\n"
-#~ "\n"
-#~ "The definition consists in a comma-separated list of accepted status.\n"
-#~ "Also, '*' means any status and "
-#~ "could be used to associate all "
-#~ "remaining\n"
-#~ "states to one catch-all group.\n"
-#~ "\n"
-#~ "The CSS class can be one of: new (yellow), open (no color) or closed\n"
-#~ "(green). New styles can easily be added using the following selector:\n"
-#~ "`table.progress td.<class>`\n"
-#~ "\n"
-#~ "(''since 0.11'')"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Name of the component implementing `ITicketGroupStatsProvider`, \n"
-#~ "which is used to collect statistics on groups of tickets for display\n"
-#~ "in the roadmap views."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Name of the component implementing `ITicketGroupStatsProvider`, \n"
-#~ "which is used to collect statistics on groups of tickets for display\n"
-#~ "in the milestone views."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Maximum number of days (-1 for unlimited) displayable in the \n"
-#~ "Timeline. (''since 0.11'')"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Comma separated list of paths categorized as branches.\n"
-#~ "If a path ends with '*', then all the directory entries found below \n"
-#~ "that path will be included. \n"
-#~ "Example: `/trunk, /branches/*, /projectAlpha/trunk, /sandbox/*`"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "List of repository paths that can be downloaded.\n"
-#~ "\n"
-#~ "Leave the option empty if you want"
-#~ " to disable all downloads, otherwise\n"
-#~ ""
-#~ "set it to a comma-separated list of authorized paths (those paths are\n"
-#~ "glob patterns, i.e. \"*\" can be used as a wild card)\n"
-#~ "(''since 0.10'')"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Whether raw files should be rendered in the browser, or only made \n"
-#~ "downloadable.\n"
-#~ "\n"
-#~ "Pretty much any file may be interpreted as HTML by the browser,\n"
-#~ "which allows a malicious user to create a file containing cross-site\n"
-#~ "scripting attacks.\n"
-#~ "\n"
-#~ "For open repositories where anyone can check-in a file, it is\n"
-#~ "recommended to leave this option disabled (which is the default)."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Whether consecutive changesets from the same author having \n"
-#~ "exactly the same message should be presented as one event.\n"
-#~ "That event will link to the range of changesets in the log view.\n"
-#~ "(''since 0.11'')"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Comma-separated list of colors to use for the TracRevisionLog\n"
-#~ "graph display. (''since 0.13'')"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Lifetime of the authentication cookie, in seconds.\n"
-#~ "\n"
-#~ "This value determines how long the browser will cache authentication\n"
-#~ "information, and therefore, after how "
-#~ "much inactivity a user will have\n"
-#~ "to log in again. The default value"
-#~ " of 0 makes the cookie expire "
-#~ "at the\n"
-#~ "end of the browsing session. (''since 0.12'')"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Path for the authentication cookie. Set this to the common base path\n"
-#~ "of several Trac instances if you want them to share the cookie.\n"
-#~ "(''since 0.12'')"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Path to the //shared htdocs directory//.\n"
-#~ "\n"
-#~ "Static resources in that directory are mapped to /chrome/shared\n"
-#~ "under the environment URL, in addition to common and site locations.\n"
-#~ "\n"
-#~ "This can be useful in site.html for common interface customization\n"
-#~ "of multiple Trac environments.\n"
-#~ "\n"
-#~ "(''since 0.13'')"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Base URL for serving the core static resources below \n"
-#~ "`/chrome/common/`.\n"
-#~ "\n"
-#~ "It can be left empty, and Trac will simply serve those resources\n"
-#~ "itself.\n"
-#~ "\n"
-#~ "Advanced users can use this together with\n"
-#~ "[TracAdmin trac-admin ... deploy <deploydir>] to allow serving the\n"
-#~ "static resources for Trac directly from the web server.\n"
-#~ "Note however that this only applies "
-#~ "to the `<deploydir>/htdocs/common`\n"
-#~ "directory, the other deployed resources (i.e. those from plugins) \n"
-#~ "will not be made available this way and additional rewrite \n"
-#~ "rules will be needed in the web server."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Order of the items to display in the `mainnav` navigation bar, \n"
-#~ "listed by IDs. See also TracNavigation."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "URL of the image to use as header logo.\n"
-#~ "It can be absolute, server relative or relative.\n"
-#~ "\n"
-#~ "If relative, it is relative to one of the `/chrome` locations:\n"
-#~ "`site/your-logo.png` if `your-logo.png` is located in the `htdocs`\n"
-#~ "folder within your TracEnvironment;\n"
-#~ "`common/your-logo.png` if `your-logo.png` is located in the\n"
-#~ "folder mapped to the [#trac-section htdocs_location] URL. \n"
-#~ "Only specifying `your-logo.png` is equivalent to the latter."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Never obfuscate `mailto:` links explicitly written in the wiki, \n"
-#~ "even if `show_email_addresses` is false or the user has not the \n"
-#~ "EMAIL_VIEW permission (''since 0.11.6'')."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Name of the component that handles requests to the base URL.\n"
-#~ "\n"
-#~ "Options include `TimelineModule`, `RoadmapModule`, `BrowserModule`,\n"
-#~ "`QueryModule`, `ReportModule`, `TicketModule` and `WikiModule`. The\n"
-#~ "default is `WikiModule`. (''since 0.9'')"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "The preferred language to use if no user preference has been set.\n"
-#~ "(''since 0.12.1'')"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "The date format. Valid option is 'iso8601' for ISO 8601 format, If\n"
-#~ "not specified, use a browser's language. (''since 0.13'')"
+#~ "(''since 1.0'')"
 #~ msgstr ""
 

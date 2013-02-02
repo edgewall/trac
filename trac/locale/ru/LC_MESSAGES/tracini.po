@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.13\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-27 11:21+0900\n"
+"POT-Creation-Date: 2013-02-02 15:20+0100\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ru <LL@li.org>\n"
@@ -673,19 +673,19 @@ msgid ""
 "(since 0.12)"
 msgstr ""
 
-#: trac/ticket/api.py:166
+#: trac/ticket/api.py:188
 msgid ""
 "In this section, you can define additional fields for tickets. See\n"
 "TracTicketsCustomFields for more details."
 msgstr ""
 
-#: trac/ticket/api.py:170
+#: trac/ticket/api.py:192
 msgid ""
 "Ordered list of workflow controllers to use for ticket actions\n"
 "(''since 0.11'')."
 msgstr ""
 
-#: trac/ticket/api.py:176
+#: trac/ticket/api.py:198
 msgid ""
 "Make the owner field of tickets use a drop-down menu.\n"
 "Be sure to understand the performance implications before activating\n"
@@ -698,51 +698,51 @@ msgid ""
 "(''since 0.9'')"
 msgstr ""
 
-#: trac/ticket/api.py:187
+#: trac/ticket/api.py:209
 msgid "Default version for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:190
+#: trac/ticket/api.py:212
 msgid "Default type for newly created tickets (''since 0.9'')."
 msgstr ""
 
-#: trac/ticket/api.py:193
+#: trac/ticket/api.py:215
 msgid "Default priority for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:196
+#: trac/ticket/api.py:218
 msgid "Default milestone for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:199
+#: trac/ticket/api.py:221
 msgid "Default component for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:202
+#: trac/ticket/api.py:224
 msgid "Default severity for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:205
+#: trac/ticket/api.py:227
 msgid "Default summary (title) for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:208
+#: trac/ticket/api.py:230
 msgid "Default description for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:211
+#: trac/ticket/api.py:233
 msgid "Default keywords for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:214
+#: trac/ticket/api.py:236
 msgid "Default owner for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:217
+#: trac/ticket/api.py:239
 msgid "Default cc: list for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:220
+#: trac/ticket/api.py:242
 msgid ""
 "Default resolution for resolving (closing) tickets\n"
 "(''since 0.11'')."
@@ -758,23 +758,23 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/ticket/notification.py:36
+#: trac/ticket/notification.py:37
 msgid "Always send notifications to the ticket owner (''since 0.9'')."
 msgstr ""
 
-#: trac/ticket/notification.py:40
+#: trac/ticket/notification.py:41
 msgid ""
 "Always send notifications to any address in the ''reporter''\n"
 "field."
 msgstr ""
 
-#: trac/ticket/notification.py:46
+#: trac/ticket/notification.py:47
 msgid ""
 "Always send notifications to the person who causes the ticket\n"
 "property change and to any previous updater of that ticket."
 msgstr ""
 
-#: trac/ticket/notification.py:51
+#: trac/ticket/notification.py:52
 msgid ""
 "A Genshi text template snippet used to get the notification subject.\n"
 "\n"
@@ -783,7 +783,7 @@ msgid ""
 "''(since 0.11)''"
 msgstr ""
 
-#: trac/ticket/notification.py:59
+#: trac/ticket/notification.py:60
 msgid ""
 "Like ticket_subject_template but for batch modifications.\n"
 "\n"
@@ -791,7 +791,7 @@ msgid ""
 "''(since 1.0)''"
 msgstr ""
 
-#: trac/ticket/notification.py:66
+#: trac/ticket/notification.py:67
 msgid ""
 "Which width of ambiguous characters (e.g. 'single' or\n"
 "'double') should be used in the table of notification mail.\n"
@@ -802,7 +802,7 @@ msgid ""
 "0.12.2)''"
 msgstr ""
 
-#: trac/ticket/query.py:824
+#: trac/ticket/query.py:820
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -811,7 +811,7 @@ msgid ""
 "(''since 0.11.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:832
+#: trac/ticket/query.py:828
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -820,19 +820,19 @@ msgid ""
 "(''since 0.11.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:840
+#: trac/ticket/query.py:836
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default (''since 0.11'')"
 msgstr ""
 
-#: trac/ticket/report.py:116
+#: trac/ticket/report.py:115
 msgid ""
 "Number of tickets displayed per page in ticket reports,\n"
 "by default (''since 0.11'')"
 msgstr ""
 
-#: trac/ticket/report.py:120
+#: trac/ticket/report.py:119
 msgid ""
 "Number of tickets displayed in the rss feeds for reports\n"
 "(''since 0.11'')"
@@ -916,25 +916,31 @@ msgid ""
 "in the milestone views."
 msgstr ""
 
-#: trac/ticket/web_ui.py:75
+#: trac/ticket/web_ui.py:76
 msgid ""
 "Enable the display of all ticket changes in the timeline, not only\n"
 "open / close operations (''since 0.9'')."
 msgstr ""
 
-#: trac/ticket/web_ui.py:79
+#: trac/ticket/web_ui.py:80
+msgid ""
+"Enable the display of component of tickets in the timeline\n"
+"(''since 1.1.1'')."
+msgstr ""
+
+#: trac/ticket/web_ui.py:85
 msgid ""
 "Don't accept tickets with a too big description.\n"
 "(''since 0.11'')."
 msgstr ""
 
-#: trac/ticket/web_ui.py:83
+#: trac/ticket/web_ui.py:89
 msgid ""
 "Don't accept tickets with a too big comment.\n"
 "(''since 0.11.2'')"
 msgstr ""
 
-#: trac/ticket/web_ui.py:87
+#: trac/ticket/web_ui.py:93
 msgid ""
 "Which formatter flavor (e.g. 'html' or 'oneliner') should be\n"
 "used when presenting the description for new tickets.\n"
@@ -942,7 +948,7 @@ msgid ""
 "(''since 0.11'')."
 msgstr ""
 
-#: trac/ticket/web_ui.py:94
+#: trac/ticket/web_ui.py:100
 msgid ""
 "Whether Wiki formatter should respect the new lines present\n"
 "in the Wiki text.\n"
@@ -951,7 +957,7 @@ msgid ""
 "(''since 0.11'')."
 msgstr ""
 
-#: trac/ticket/web_ui.py:101
+#: trac/ticket/web_ui.py:107
 msgid ""
 "The base query to be used when linkifying values of ticket\n"
 "fields. The query is a URL query\n"
@@ -1290,28 +1296,28 @@ msgstr ""
 
 #: trac/web/chrome.py:386
 msgid ""
-"Location of the jQuery !JavaScript library (version 1.7.2).\n"
+"Location of the jQuery !JavaScript library (version 1.8.3).\n"
 "\n"
 "An empty value loads jQuery from the copy bundled with Trac.\n"
 "\n"
 "Alternatively, jQuery could be loaded from a CDN, for example:\n"
-"http://code.jquery.com/jquery-1.7.2.min.js,\n"
-"http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js or\n"
-"https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js.\n"
+"http://code.jquery.com/jquery-1.8.3.min.js,\n"
+"http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js or\n"
+"https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js.\n"
 "\n"
 "(''since 1.0'')"
 msgstr ""
 
 #: trac/web/chrome.py:398
 msgid ""
-"Location of the jQuery UI !JavaScript library (version 1.8.21).\n"
+"Location of the jQuery UI !JavaScript library (version 1.9.2).\n"
 "\n"
 "An empty value loads jQuery UI from the copy bundled with Trac.\n"
 "\n"
 "Alternatively, jQuery UI could be loaded from a CDN, for example:\n"
-"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js\n"
 "or\n"
-"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/jquery-ui.min.js.\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js.\n"
 "\n"
 "(''since 1.0'')"
 msgstr ""
@@ -1319,17 +1325,17 @@ msgstr ""
 #: trac/web/chrome.py:410
 msgid ""
 "Location of the theme to be used with the jQuery UI !JavaScript\n"
-"library (version 1.8.21).\n"
+"library (version 1.9.2).\n"
 "\n"
 "An empty value loads the custom Trac jQuery UI theme from the copy\n"
 "bundled with Trac.\n"
 "\n"
 "Alternatively, a jQuery UI theme could be loaded from a CDN, for\n"
 "example:\n"
-"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/start"
-"/jquery-ui.css\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/start/jquery-"
+"ui.css\n"
 "or\n"
-"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/themes/start/jquery-"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/start/jquery-"
 "ui.css.\n"
 "\n"
 "(''since 1.0'')"
@@ -1546,4 +1552,49 @@ msgstr ""
 #: trac/wiki/web_ui.py:64
 msgid "Maximum allowed wiki page size in bytes. (''since 0.11.2'')"
 msgstr ""
+
+#~ msgid ""
+#~ "Location of the jQuery !JavaScript library (version 1.7.2).\n"
+#~ "\n"
+#~ "An empty value loads jQuery from the copy bundled with Trac.\n"
+#~ "\n"
+#~ "Alternatively, jQuery could be loaded from a CDN, for example:\n"
+#~ "http://code.jquery.com/jquery-1.7.2.min.js,\n"
+#~ "http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js or\n"
+#~ "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js.\n"
+#~ "\n"
+#~ "(''since 1.0'')"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Location of the jQuery UI !JavaScript library (version 1.8.21).\n"
+#~ "\n"
+#~ "An empty value loads jQuery UI from the copy bundled with Trac.\n"
+#~ "\n"
+#~ "Alternatively, jQuery UI could be loaded from a CDN, for example:\n"
+#~ "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-"
+#~ "ui.min.js\n"
+#~ "or\n"
+#~ "http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/jquery-ui.min.js.\n"
+#~ "\n"
+#~ "(''since 1.0'')"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Location of the theme to be used with the jQuery UI !JavaScript\n"
+#~ "library (version 1.8.21).\n"
+#~ "\n"
+#~ "An empty value loads the custom Trac jQuery UI theme from the copy\n"
+#~ "bundled with Trac.\n"
+#~ "\n"
+#~ "Alternatively, a jQuery UI theme could be loaded from a CDN, for\n"
+#~ "example:\n"
+#~ "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/start"
+#~ "/jquery-ui.css\n"
+#~ "or\n"
+#~ "http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/themes/start"
+#~ "/jquery-ui.css.\n"
+#~ "\n"
+#~ "(''since 1.0'')"
+#~ msgstr ""
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.13\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-27 11:21+0900\n"
+"POT-Creation-Date: 2013-02-02 15:20+0100\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -566,24 +566,24 @@ msgid ""
 "ones)"
 msgstr ""
 
-#: trac/db/api.py:226
+#: trac/db/api.py:227
 msgid ""
 "Database connection\n"
 "[wiki:TracEnvironment#DatabaseConnectionStrings string] for this\n"
 "project"
 msgstr ""
 
-#: trac/db/api.py:231
+#: trac/db/api.py:232
 msgid "Database backup location"
 msgstr ""
 
-#: trac/db/api.py:234
+#: trac/db/api.py:235
 msgid ""
 "Timeout value for database connection, in seconds.\n"
 "Use '0' to specify ''no timeout''. ''(Since 0.11)''"
 msgstr ""
 
-#: trac/db/api.py:238
+#: trac/db/api.py:239
 msgid ""
 "Show the SQL queries in the Trac log, at DEBUG level.\n"
 "''(Since 0.11.5)''"
@@ -801,7 +801,7 @@ msgid ""
 "0.12.2)''"
 msgstr ""
 
-#: trac/ticket/query.py:817
+#: trac/ticket/query.py:820
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -810,7 +810,7 @@ msgid ""
 "(''since 0.11.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:825
+#: trac/ticket/query.py:828
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -819,19 +819,19 @@ msgid ""
 "(''since 0.11.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:833
+#: trac/ticket/query.py:836
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default (''since 0.11'')"
 msgstr ""
 
-#: trac/ticket/report.py:116
+#: trac/ticket/report.py:115
 msgid ""
 "Number of tickets displayed per page in ticket reports,\n"
 "by default (''since 0.11'')"
 msgstr ""
 
-#: trac/ticket/report.py:120
+#: trac/ticket/report.py:119
 msgid ""
 "Number of tickets displayed in the rss feeds for reports\n"
 "(''since 0.11'')"
@@ -923,17 +923,23 @@ msgstr ""
 
 #: trac/ticket/web_ui.py:80
 msgid ""
+"Enable the display of component of tickets in the timeline\n"
+"(''since 1.1.1'')."
+msgstr ""
+
+#: trac/ticket/web_ui.py:85
+msgid ""
 "Don't accept tickets with a too big description.\n"
 "(''since 0.11'')."
 msgstr ""
 
-#: trac/ticket/web_ui.py:84
+#: trac/ticket/web_ui.py:89
 msgid ""
 "Don't accept tickets with a too big comment.\n"
 "(''since 0.11.2'')"
 msgstr ""
 
-#: trac/ticket/web_ui.py:88
+#: trac/ticket/web_ui.py:93
 msgid ""
 "Which formatter flavor (e.g. 'html' or 'oneliner') should be\n"
 "used when presenting the description for new tickets.\n"
@@ -941,7 +947,7 @@ msgid ""
 "(''since 0.11'')."
 msgstr ""
 
-#: trac/ticket/web_ui.py:95
+#: trac/ticket/web_ui.py:100
 msgid ""
 "Whether Wiki formatter should respect the new lines present\n"
 "in the Wiki text.\n"
@@ -950,7 +956,7 @@ msgid ""
 "(''since 0.11'')."
 msgstr ""
 
-#: trac/ticket/web_ui.py:102
+#: trac/ticket/web_ui.py:107
 msgid ""
 "The base query to be used when linkifying values of ticket\n"
 "fields. The query is a URL query\n"
@@ -1289,28 +1295,28 @@ msgstr ""
 
 #: trac/web/chrome.py:386
 msgid ""
-"Location of the jQuery !JavaScript library (version 1.7.2).\n"
+"Location of the jQuery !JavaScript library (version 1.8.3).\n"
 "\n"
 "An empty value loads jQuery from the copy bundled with Trac.\n"
 "\n"
 "Alternatively, jQuery could be loaded from a CDN, for example:\n"
-"http://code.jquery.com/jquery-1.7.2.min.js,\n"
-"http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js or\n"
-"https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js.\n"
+"http://code.jquery.com/jquery-1.8.3.min.js,\n"
+"http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js or\n"
+"https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js.\n"
 "\n"
 "(''since 1.0'')"
 msgstr ""
 
 #: trac/web/chrome.py:398
 msgid ""
-"Location of the jQuery UI !JavaScript library (version 1.8.21).\n"
+"Location of the jQuery UI !JavaScript library (version 1.9.2).\n"
 "\n"
 "An empty value loads jQuery UI from the copy bundled with Trac.\n"
 "\n"
 "Alternatively, jQuery UI could be loaded from a CDN, for example:\n"
-"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js\n"
 "or\n"
-"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/jquery-ui.min.js.\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js.\n"
 "\n"
 "(''since 1.0'')"
 msgstr ""
@@ -1318,17 +1324,17 @@ msgstr ""
 #: trac/web/chrome.py:410
 msgid ""
 "Location of the theme to be used with the jQuery UI !JavaScript\n"
-"library (version 1.8.21).\n"
+"library (version 1.9.2).\n"
 "\n"
 "An empty value loads the custom Trac jQuery UI theme from the copy\n"
 "bundled with Trac.\n"
 "\n"
 "Alternatively, a jQuery UI theme could be loaded from a CDN, for\n"
 "example:\n"
-"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/start"
-"/jquery-ui.css\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/start/jquery-"
+"ui.css\n"
 "or\n"
-"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/themes/start/jquery-"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/start/jquery-"
 "ui.css.\n"
 "\n"
 "(''since 1.0'')"
@@ -1545,4 +1551,49 @@ msgstr ""
 #: trac/wiki/web_ui.py:64
 msgid "Maximum allowed wiki page size in bytes. (''since 0.11.2'')"
 msgstr ""
+
+#~ msgid ""
+#~ "Location of the jQuery !JavaScript library (version 1.7.2).\n"
+#~ "\n"
+#~ "An empty value loads jQuery from the copy bundled with Trac.\n"
+#~ "\n"
+#~ "Alternatively, jQuery could be loaded from a CDN, for example:\n"
+#~ "http://code.jquery.com/jquery-1.7.2.min.js,\n"
+#~ "http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js or\n"
+#~ "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js.\n"
+#~ "\n"
+#~ "(''since 1.0'')"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Location of the jQuery UI !JavaScript library (version 1.8.21).\n"
+#~ "\n"
+#~ "An empty value loads jQuery UI from the copy bundled with Trac.\n"
+#~ "\n"
+#~ "Alternatively, jQuery UI could be loaded from a CDN, for example:\n"
+#~ "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-"
+#~ "ui.min.js\n"
+#~ "or\n"
+#~ "http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/jquery-ui.min.js.\n"
+#~ "\n"
+#~ "(''since 1.0'')"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Location of the theme to be used with the jQuery UI !JavaScript\n"
+#~ "library (version 1.8.21).\n"
+#~ "\n"
+#~ "An empty value loads the custom Trac jQuery UI theme from the copy\n"
+#~ "bundled with Trac.\n"
+#~ "\n"
+#~ "Alternatively, a jQuery UI theme could be loaded from a CDN, for\n"
+#~ "example:\n"
+#~ "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/start"
+#~ "/jquery-ui.css\n"
+#~ "or\n"
+#~ "http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/themes/start"
+#~ "/jquery-ui.css.\n"
+#~ "\n"
+#~ "(''since 1.0'')"
+#~ msgstr ""
 
