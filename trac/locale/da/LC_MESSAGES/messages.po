@@ -4898,7 +4898,7 @@ msgstr[1] "%(num)s revisioner cached."
 
 #: trac/versioncontrol/admin.py:145
 msgid "Done."
-msgstr "Færdig."
+msgstr "Udført."
 
 #: trac/versioncontrol/admin.py:180
 msgid "Version Control"
@@ -5153,7 +5153,7 @@ msgstr "Tilføj alias:"
 
 #: trac/versioncontrol/templates/admin_repositories.html:125
 msgid "Revision"
-msgstr "Revision"
+msgstr "Version"
 
 #: trac/versioncontrol/templates/admin_repositories.html:137
 #, python-format
@@ -5218,7 +5218,7 @@ msgstr "Mærke"
 
 #: trac/versioncontrol/templates/browser.html:114
 msgid "Parent Directory"
-msgstr "Forælder-mappe"
+msgstr "Ejermappe"
 
 #: trac/versioncontrol/templates/browser.html:120
 msgid "No files found"
@@ -5943,7 +5943,7 @@ msgstr[1] "Rettesæt i %(repo)s "
 msgid "Changeset "
 msgid_plural "Changesets "
 msgstr[0] "Rettessæt "
-msgstr[1] "Rettesæt "
+msgstr[1] "Rettessæt "
 
 #: trac/versioncontrol/web_ui/changeset.py:1102
 #, python-format
@@ -6024,7 +6024,7 @@ msgstr "Log af"
 
 #: trac/web/auth.py:114
 msgid "Login"
-msgstr "Log in"
+msgstr "Log på"
 
 #. TRANSLATOR: ... refer to the 'installation documentation'. (link)
 #: trac/web/auth.py:147
@@ -6495,7 +6495,7 @@ msgstr ""
 
 #: trac/wiki/macros.py:818
 msgid "MIME Types"
-msgstr "MIME typer"
+msgstr "MIME Typer"
 
 #: trac/wiki/macros.py:833
 msgid ""
