@@ -1,3 +1,23 @@
+Trac 1.0.1 (February 1, 2013)
+http://svn.edgewall.org/repos/trac/tags/trac-1.0.1
+
+ - Fix zip source download for large directories in Subversion repositories
+ - Performance improvement for the Roadmap, by caching milestone properties 
+ - Added a ''select all'' checkbox to table of components for each plugin on
+   the Plugins admin panel
+ - Restore the ''Modify'' link at the top of the ticket page, as it was in
+   Trac 0.12
+ - `ListOption` keeps values other than empty string and None in raw list
+   as default
+ - Prevent possibility of multiple identical info or warning messages being
+   presented to the user
+ - The BatchModify select-all checkboxes are toggled with tri-state behavior
+   when the ticket checkboxes are toggled
+ - Update the ticket changetime to the current time when deleting a ticket
+   comment
+ - ... and quite more! In particular, see also the changes for 0.12.5
+   which are also integrated and new since 1.0
+
 Trac 1.0 'Cell' (September 7, 2012)
 http://svn.edgewall.org/repos/trac/tags/trac-1.0
 
