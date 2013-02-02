@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-06-11 16:41+0200\n"
+"POT-Creation-Date: 2013-01-27 11:21+0900\n"
 "PO-Revision-Date: 2010-05-25 14:18+0200\n"
 "Last-Translator: Odd Simon Simonsen <simon-code@bvnetwork.no>\n"
 "Language-Team: nb <trac-dev@googlegroups.com>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r541\n"
+"Generated-By: Babel 0.9.6dev-r0\n"
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -41,56 +41,139 @@ msgstr "Åpne undermappe dynamisk"
 msgid "Re-expand directory"
 msgstr "Gjenåpne mappe"
 
-#: trac/htdocs/js/expand_dir.js:115
+#: trac/htdocs/js/expand_dir.js:121
 #, python-format
 msgid "Loading %(entry)s..."
 msgstr "Laster %(entry)s..."
 
-#: trac/htdocs/js/expand_dir.js:143
+#: trac/htdocs/js/expand_dir.js:149
 msgid "(empty)"
 msgstr "(tom)"
 
-#: trac/htdocs/js/expand_dir.js:151
+#: trac/htdocs/js/expand_dir.js:157
 msgid "(error)"
 msgstr "(feil)"
 
-#: trac/htdocs/js/expand_dir.js:158
+#: trac/htdocs/js/expand_dir.js:164
 msgid "Fold directory"
 msgstr "Kollapse mappe"
 
-#: trac/htdocs/js/folding.js:59
+#: trac/htdocs/js/folding.js:62
 #, python-format
 msgid "Show %(title)s"
 msgstr "Vis %(title)s"
 
-#: trac/htdocs/js/folding.js:74
+#: trac/htdocs/js/folding.js:78
 #, python-format
 msgid "%(title)s (click to hide column)"
 msgstr "%(title)s (klikk for å skjule kolonnen)"
 
-#: trac/htdocs/js/query.js:118
+#. TRANSLATOR: Format in month heading in the datepicker, extracts yearSuffix
+#. and showMonthAfterYear
+#: trac/htdocs/js/jquery-ui-i18n.js:4
+msgid "$month$year"
+msgstr ""
+
+#. TRANSLATOR: Link that closes the datepicker
+#. TRANSLATOR: Link that closes the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:39
+msgid "Done"
+msgstr ""
+
+#. TRANSLATOR: Link to the previous month in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:9
+msgid "Prev"
+msgstr ""
+
+#. TRANSLATOR: Link to the next month in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:11
+msgid "Next"
+msgstr ""
+
+#. TRANSLATOR: Link to the current day in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:13
+msgid "Today"
+msgstr ""
+
+#. TRANSLATOR: Heading for the week-of-the-year column in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:20
+msgid "Wk"
+msgstr ""
+
+#. TRANSLATOR: Heading of the standalone timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:30
+msgid "Choose Time"
+msgstr ""
+
+#. TRANSLATOR: Time selector label
+#: trac/htdocs/js/jquery-ui-i18n.js:32
+msgid "Time"
+msgstr ""
+
+#. TRANSLATOR: Time labels in the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:34
+#, fuzzy
+msgid "Hour"
+msgstr "eller"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:34
+msgid "Minute"
+msgstr ""
+
+#: trac/htdocs/js/jquery-ui-i18n.js:34
+msgid "Second"
+msgstr ""
+
+#: trac/htdocs/js/jquery-ui-i18n.js:35
+msgid "Time Zone"
+msgstr ""
+
+#. TRANSLATOR: Link to pick the current time in the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:37
+#, fuzzy
+msgid "Now"
+msgstr "nei"
+
+#: trac/htdocs/js/query.js:132
 msgid "A filter already exists for that property"
 msgstr "Et filter eksisterer allerede for denne egenskapen"
 
-#: trac/htdocs/js/query.js:145
+#: trac/htdocs/js/query.js:159
 msgid "or"
 msgstr "eller"
 
-#: trac/htdocs/js/query.js:164
+#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:310
 msgid "yes"
 msgstr "ja"
 
-#: trac/htdocs/js/query.js:167
+#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:313
 msgid "no"
 msgstr "nei"
 
-#: trac/htdocs/js/query.js:170
+#: trac/htdocs/js/query.js:188
 msgid "between"
 msgstr "mellom"
 
-#: trac/htdocs/js/query.js:172
+#: trac/htdocs/js/query.js:190
 msgid "and"
 msgstr "og"
+
+#: trac/htdocs/js/query.js:337
+msgid " remove:"
+msgstr ""
+
+#: trac/htdocs/js/query.js:347
+msgid " add:"
+msgstr ""
+
+#: trac/htdocs/js/query.js:376
+#, python-format
+msgid "Select ticket %(id)s for modification"
+msgstr ""
+
+#: trac/htdocs/js/query.js:387
+msgid "Toggle selection of all tickets shown in this group"
+msgstr ""
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
