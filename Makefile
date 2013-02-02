@@ -78,6 +78,8 @@ define HELP
 
   [locale=...]        variable for selecting a set of locales
 
+  [updateopts=...]    variable containing extra options for update (e.g. -N)
+
  ---------------- Documentation tasks
 
   apidoc|sphinx       generate the Sphinx documentation (all specified formats)
@@ -197,14 +199,14 @@ extract extraction:
 
 update-%:
 	python setup.py $(foreach catalog,$(catalogs), \
-	    update_catalog$(_catalog) -l $(*))
+	    update_catalog$(_catalog) -l $(*)) $(updateopts)
 
 ifdef locale
 update: $(addprefix update-,$(locale))
 else
 update:
 	python setup.py $(foreach catalog,$(catalogs), \
-	    update_catalog$(_catalog))
+	    update_catalog$(_catalog)) $(updateopts)
 endif
 
 
@@ -232,6 +234,9 @@ check-%:
 	@echo -n "$(@): "
 	python setup.py $(foreach catalog,$(catalogs), \
 	    check_catalog$(_catalog) -l $(*))
+	@$(foreach catalog,$(catalogs), \
+	    msgfmt --check $(catalog.po) &&) echo msgfmt OK
+	@rm -f messages.mo
 
 
 stats: pre-stats $(addprefix stats-,$(locales))
@@ -287,9 +292,19 @@ diff: $(addprefix diff-,$(locales))
 vc ?= svn
 
 diff-%:
-	@$(vc) diff trac/locale/$(*) \
-	    | grep -Ev '^([-+]#:|[@ ])' | grep -E '^[-+@]' || true
+	@diff=l10n-$(*).diff; \
+	$(vc) diff trac/locale/$(*) > $$diff; \
+	[ -s $$diff ] && { \
+	    echo -n "# $(*) changed -> "; \
+	    python contrib/l10n_diff_index.py $$diff; \
+	} || rm $$diff
 
+# The above create l10n-xy.diff files but also a  l10n-xy.diff.index
+# file pointing to "interesting" diffs (message changes or addition
+# for valid msgid).
+#
+# See also contrib/l10n_sanitize_diffs.py, which removes in-file
+# *conflicts* for line change only.
 
 clean-mo:
 	find trac/locale -name \*.mo -exec rm {} \;
