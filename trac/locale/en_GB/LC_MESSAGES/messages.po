@@ -2,6 +2,7 @@
 # Copyright (C) 2008-2012 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # David Lodge <dave@cirt.net>, 2008.
+# Mikael Relbe (mrelbe) <mikael@relbe.se>, 2010-2013
 #
 msgid ""
 msgstr ""
@@ -15,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: tracopt/mimeview/php.py:96
 msgid ""
@@ -367,9 +368,9 @@ msgid "Can't upload empty file"
 msgstr "Can't upload empty file"
 
 #: trac/attachment.py:709
-#, fuzzy, python-format
+#, python-format
 msgid "Maximum attachment size: %(num)s"
-msgstr "Maximum attachment size: %(num)s bytes"
+msgstr "Maximum attachment size: %(num)s"
 
 #: trac/attachment.py:709
 msgid "Upload failed"
@@ -406,9 +407,9 @@ msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (delete)"
 
 #: trac/attachment.py:804
-#, fuzzy, python-format
+#, python-format
 msgid "Maximum total attachment size: %(num)s"
-msgstr "Maximum total attachment size: %(num)s bytes"
+msgstr "Maximum total attachment size: %(num)s"
 
 #: trac/attachment.py:804
 msgid "Download failed"
@@ -2648,11 +2649,9 @@ msgid "(The file is empty)"
 msgstr "(The file is empty)"
 
 #: trac/templates/preview_file.html:19
-#, fuzzy, python-format
+#, python-format
 msgid "[1:HTML preview not available], since the file size exceeds %(size)s."
-msgstr ""
-"[1:HTML preview not available], since the file size exceeds %(size)s "
-"bytes."
+msgstr "[1:HTML preview not available], since the file size exceeds %(size)s."
 
 #: trac/templates/preview_file.html:22
 msgid "[1:HTML preview not available], since no preview renderer could handle it."
@@ -2957,7 +2956,7 @@ msgstr "Ticket #%(shortname)s"
 #: trac/ticket/batch.py:63
 #, python-format
 msgid "The changes could not be saved: %(message)s"
-msgstr ""
+msgstr "The changes could not be saved: %(message)s"
 
 #: trac/ticket/batch.py:106
 msgid "add"
