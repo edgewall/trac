@@ -152,6 +152,8 @@ class UnicodeNameTestCase(unittest.TestCase):
         self.git_bin = locate('git')
         # create git repository and master branch
         self._git('init', self.repos_path)
+        self._git('config', 'user.name', u"Joé")
+        self._git('config', 'user.email', "joe@example.com")
         create_file(os.path.join(self.repos_path, '.gitignore'))
         self._git('add', '.gitignore')
         self._git('commit', '-a', '-m', 'test')
@@ -165,7 +167,7 @@ class UnicodeNameTestCase(unittest.TestCase):
         proc = Popen(args, stdout=PIPE, stderr=PIPE, close_fds=close_fds,
                      cwd=self.repos_path)
         proc.wait()
-        assert proc.returncode == 0
+        assert proc.returncode == 0, proc.stderr.read()
         return proc
 
     def _storage(self):
@@ -180,7 +182,8 @@ class UnicodeNameTestCase(unittest.TestCase):
     def test_unicode_filename(self):
         create_file(os.path.join(self.repos_path, 'tickét.txt'))
         self._git('add', 'tickét.txt')
-        self._git('commit', '-m', 'unicode-filename')
+        self._git('commit', '-m', 'unicode-filename',
+                  '--date', 'Sun Feb 3 18:30 2013 +0100')
         storage = self._storage()
         filenames = sorted(fname for mode, type, sha, size, fname
                                  in storage.ls_tree('HEAD'))
@@ -188,6 +191,9 @@ class UnicodeNameTestCase(unittest.TestCase):
         self.assertEquals(unicode, type(filenames[1]))
         self.assertEquals(u'.gitignore', filenames[0])
         self.assertEquals(u'tickét.txt', filenames[1])
+        # check commit author, for good measure
+        self.assertEquals(u'Joé <joe@example.com> 1359912600 +0100',
+                          storage.read_commit(storage.head())[1]['author'][0])
 
     def test_unicode_branches(self):
         self._git('checkout', '-b', 'tickét10980', 'master')
