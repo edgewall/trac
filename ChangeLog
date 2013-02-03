@@ -1,8 +1,31 @@
+Trac 1.1.1 (February 3, 2013)
+http://svn.edgewall.org/repos/trac/tags/trac-1.1.1
+
+Trac 1.1.1 starts the 1.1.x development line leading to 1.2 with some
+new features and a few not-so-disruptive changes.
+
+ - Added support for custom ticket fields of type time (#1942)
+ - In new tickets, custom time ticket fields may default to an
+   absolute or relative date / time (#10853)
+ - In TracBatchModify, custom time ticket fields can be changed with a
+   date(time)picker popup control (#10854)
+ - Optionally display the component of tickets in their timeline
+   entries ([timeline] ticket_show_component setting) (#10885)
+ - Fixed batch modification when no fields are changed (#10924)
+ - Dynamic variables can be used in the report title and description
+   (#10979)
+ - jQuery upgraded to 1.8.3, jQuery UI upgraded to 1.9.2 and jQuery UI
+   Timepicker upgraded to 1.1.1 (#10976)
+ - Dropped support for Python 2.5, either Python 2.6 or Python 2.7 is
+   required
+
+-----------------------------------------------------------------------------
+
 Trac 1.0.1 (February 1, 2013)
 http://svn.edgewall.org/repos/trac/tags/trac-1.0.1
 
  - Fix zip source download for large directories in Subversion repositories
- - Performance improvement for the Roadmap, by caching milestone properties 
+ - Performance improvement for the Roadmap, by caching milestone properties
  - Added a ''select all'' checkbox to table of components for each plugin on
    the Plugins admin panel
  - Restore the ''Modify'' link at the top of the ticket page, as it was in
