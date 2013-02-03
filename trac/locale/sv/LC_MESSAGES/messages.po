@@ -15,7 +15,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: tracopt/mimeview/php.py:96
 msgid ""
@@ -366,9 +366,9 @@ msgid "Can't upload empty file"
 msgstr "Tom fil kan ej laddas upp"
 
 #: trac/attachment.py:709
-#, fuzzy, python-format
+#, python-format
 msgid "Maximum attachment size: %(num)s"
-msgstr "Maximal storlek på bilaga: %(num)s bytes"
+msgstr "Maximal storlek på bilaga: %(num)s"
 
 #: trac/attachment.py:709
 msgid "Upload failed"
@@ -405,9 +405,9 @@ msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (ta bort)"
 
 #: trac/attachment.py:804
-#, fuzzy, python-format
+#, python-format
 msgid "Maximum total attachment size: %(num)s"
-msgstr "Maximal total storlek på bilaga: %(num)s bytes"
+msgstr "Maximal total storlek på bilaga: %(num)s"
 
 #: trac/attachment.py:804
 msgid "Download failed"
@@ -2636,11 +2636,11 @@ msgid "(The file is empty)"
 msgstr "(Filen är tom)"
 
 #: trac/templates/preview_file.html:19
-#, fuzzy, python-format
+#, python-format
 msgid "[1:HTML preview not available], since the file size exceeds %(size)s."
 msgstr ""
 "[1:Förhandsgranskning i webbläsaren ej möjligt] då filstorleken "
-"överskrider %(size)s bytes."
+"överskrider %(size)s."
 
 #: trac/templates/preview_file.html:22
 msgid "[1:HTML preview not available], since no preview renderer could handle it."
@@ -2945,7 +2945,7 @@ msgstr "Ärende #%(shortname)s"
 #: trac/ticket/batch.py:63
 #, python-format
 msgid "The changes could not be saved: %(message)s"
-msgstr ""
+msgstr "Ändringarna kunde ej sparas: %(message)s"
 
 #: trac/ticket/batch.py:106
 msgid "add"
