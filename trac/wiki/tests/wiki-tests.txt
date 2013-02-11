@@ -316,6 +316,13 @@ nolink:"<blink>"
 nolink:&#34;&lt;blink&gt;&#34;
 </p>
 ------------------------------
+============================== Bracketed links
+See <http://en.wikipedia.org/wiki/Mornington_Crescent_(game)>
+------------------------------
+<p>
+See &lt;<a class="ext-link" href="http://en.wikipedia.org/wiki/Mornington_Crescent_(game)"><span class="icon"></span>http://en.wikipedia.org/wiki/Mornington_Crescent_(game)</a>&gt;
+</p>
+------------------------------
 ============================================================
 
         Other Links
