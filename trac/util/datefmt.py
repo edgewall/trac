@@ -534,8 +534,8 @@ def _i18n_parse_date_pattern(locale):
         'period_names': period_names,
     }
 
-_I18N_PARSE_DATE_PATTERNS = dict(map(lambda l: (l, False),
-                                     get_available_locales()))
+_I18N_PARSE_DATE_PATTERNS = dict(
+    (l, False) for l in get_available_locales(check_catalog=False))
 
 def _i18n_parse_date(text, tzinfo, locale):
     locale = Locale.parse(locale)
