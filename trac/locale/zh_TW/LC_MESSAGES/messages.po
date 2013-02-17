@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2012-10-29 19:08+0100\n"
+"POT-Creation-Date: 2013-02-17 15:58+0100\n"
 "PO-Revision-Date: 2011-02-04 09:36+0800\n"
 "Last-Translator: Chi-Chung Lin <zclin.csie92g@gmail.com>\n"
 "Language-Team: zh_TW <trac-dev@googlegroups.com>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: tracopt/mimeview/php.py:98
 msgid ""
@@ -514,69 +514,69 @@ msgstr "%(name)s，版本 %(version)s"
 msgid "Command not found"
 msgstr "找不到指令"
 
-#: trac/admin/console.py:111
+#: trac/admin/console.py:112
 #, python-format
 msgid "Error: %(msg)s"
 msgstr "錯誤: %(msg)s"
 
-#: trac/admin/console.py:130
+#: trac/admin/console.py:131
 #, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
-"Copyright (C) 2003-2012 Edgewall Software\n"
+"Copyright (C) 2003-2013 Edgewall Software\n"
 "\n"
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
 msgstr ""
 "歡迎來到 trac-admin %(version)s\n"
 "互動式 Trac 管理終端機\n"
-"版權所有 (C) 2003-2012 Edgewall Software\n"
+"版權所有 (C) 2003-2013 Edgewall Software\n"
 "\n"
 "輸入 '?' 或 'help' 來取得命令說明\n"
 "        "
 
-#: trac/admin/console.py:164
+#: trac/admin/console.py:165
 #, python-format
 msgid "Failed to open environment: %(err)s"
 msgstr "無法開啟環境: %(err)s"
 
-#: trac/admin/console.py:247
+#: trac/admin/console.py:248
 #, python-format
 msgid "Completion error: %(err)s"
 msgstr "自動完成發生錯誤: %(err)s"
 
-#: trac/admin/console.py:306
+#: trac/admin/console.py:307
 #, fuzzy, python-format
 msgid ""
 "No documentation found for '%(cmd)s'. Use 'help' to see the list of "
 "commands."
 msgstr "找不到 '%(cmd)s' 的文件"
 
-#: trac/admin/console.py:312
+#: trac/admin/console.py:313
 msgid "Did you mean this?"
 msgid_plural "Did you mean one of these?"
 msgstr[0] ""
 
-#: trac/admin/console.py:316
+#: trac/admin/console.py:317
 #, python-format
 msgid "trac-admin - The Trac Administration Console %(version)s"
 msgstr "trac-admin - Trac 管理終端機 %(version)s"
 
-#: trac/admin/console.py:320
+#: trac/admin/console.py:321
 msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
 msgstr "用法: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
 
-#: trac/admin/console.py:323
+#: trac/admin/console.py:324
 msgid "Invoking trac-admin without command starts interactive mode.\n"
 msgstr "不帶任何命令使用 trac-admin 將會啟動互動模式。\n"
 
-#: trac/admin/console.py:363
+#: trac/admin/console.py:364
 #, python-format
 msgid "Creating a new Trac environment at %(envname)s"
 msgstr "正在建立新的 Trac 環境 %(envname)s"
 
-#: trac/admin/console.py:365
+#: trac/admin/console.py:366
 msgid ""
 "\n"
 "Trac will first ask a few questions about your environment \n"
@@ -591,12 +591,12 @@ msgstr ""
 "\n"
 " 請輸入您的專案名稱，請名稱會用在頁面的標題和描述。\n"
 
-#: trac/admin/console.py:373
+#: trac/admin/console.py:374
 #, python-format
 msgid "Project Name [%(default)s]> "
 msgstr "專案名稱 [%(default)s]> "
 
-#: trac/admin/console.py:375
+#: trac/admin/console.py:376
 msgid ""
 " \n"
 " Please specify the connection string for the database to use.\n"
@@ -611,48 +611,48 @@ msgstr ""
 " 您也可以用已經存在的 PostgreSQL 資料庫。\n"
 " (請查閱 Trac 文件已取得正確的連接字串格式。)\n"
 
-#: trac/admin/console.py:383
+#: trac/admin/console.py:384
 #, python-format
 msgid "Database connection string [%(default)s]> "
 msgstr "資料庫連接字串 [%(default)s]> "
 
-#: trac/admin/console.py:390
+#: trac/admin/console.py:391
 #, python-format
 msgid "Initenv for '%(env)s' failed."
 msgstr "初始化環境 '%(env)s' 失敗"
 
-#: trac/admin/console.py:393
+#: trac/admin/console.py:394
 msgid "Does an environment already exist?"
 msgstr "該環境已經存在?"
 
-#: trac/admin/console.py:397
+#: trac/admin/console.py:398
 msgid "Directory exists and is not empty."
 msgstr "該目錄已存在且不是空的"
 
-#: trac/admin/console.py:403
+#: trac/admin/console.py:404
 #, python-format
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
 msgstr "環境目錄 '%(env)s' 不存在。請手動建立並重試。"
 
-#: trac/admin/console.py:431
+#: trac/admin/console.py:432
 msgid "Creating and Initializing Project"
 msgstr "建立並初始化專案"
 
-#: trac/admin/console.py:448
+#: trac/admin/console.py:449
 msgid "Failed to create environment."
 msgstr "建立環境失敗"
 
-#: trac/admin/console.py:454
+#: trac/admin/console.py:455
 msgid " Installing default wiki pages"
 msgstr "正在安裝預設 wiki 頁面"
 
-#: trac/admin/console.py:463
+#: trac/admin/console.py:464
 msgid " Indexing default repository"
 msgstr "正在為預設檔案庫產生索引"
 
-#: trac/admin/console.py:466
+#: trac/admin/console.py:467
 msgid ""
 "\n"
 "---------------------------------------------------------------------\n"
@@ -676,7 +676,7 @@ msgstr ""
 "但是您需要再次檢查您的 trac.ini 檔案，\n"
 "以及 [trac] 中的 repository_type 和 repository_path 設定。\n"
 
-#: trac/admin/console.py:509
+#: trac/admin/console.py:510
 #, python-format
 msgid ""
 "\n"
@@ -727,7 +727,7 @@ msgstr ""
 "\n"
 "祝您一切順利、愉快！\n"
 
-#: trac/admin/console.py:568
+#: trac/admin/console.py:569
 #, python-format
 msgid "Non-ascii environment path '%(path)s' not supported."
 msgstr "不支援非 ASCII 的環境路徑 '%(path)s'"
@@ -1267,12 +1267,12 @@ msgstr "發布:"
 msgid "Released"
 msgstr "發布"
 
-#: trac/db/api.py:191
+#: trac/db/api.py:193
 #, python-format
 msgid "Unsupported database type \"%(scheme)s\""
 msgstr "不支援的資料庫類型 \"%(scheme)s\""
 
-#: trac/db/api.py:227
+#: trac/db/api.py:229
 #, python-format
 msgid ""
 "Unknown scheme \"%(scheme)s\"; database connection string must start with"
@@ -1694,12 +1694,11 @@ msgstr ""
 "        [1:http://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
-#, 
 msgid ""
-"Copyright © 2003-2012\n"
+"Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
 msgstr ""
-"版權所有 © 2003-2012\n"
+"版權所有 © 2003-2013\n"
 "        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
@@ -1784,7 +1783,7 @@ msgid "Attach another file"
 msgstr "附加其他檔案"
 
 #: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:21
-#: trac/templates/macros.html:19 trac/util/text.py:529
+#: trac/templates/macros.html:19 trac/util/text.py:541
 #: trac/versioncontrol/templates/browser.html:110
 #: trac/versioncontrol/templates/dir_entries.html:16
 #, python-format
@@ -5146,12 +5145,12 @@ msgid ""
 "but was later removed"
 msgstr "您可以在檔案庫歷史紀錄中 %(search)s 是否有路徑曾經存在而後移除"
 
-#: trac/web/api.py:240
+#: trac/web/api.py:252
 #, python-format
 msgid "Invalid URL encoding (was %(path_info)r)"
 msgstr "無效的 URL 編碼 (%(path_info)r)"
 
-#: trac/web/api.py:484
+#: trac/web/api.py:496
 #, python-format
 msgid "File %(path)s not found"
 msgstr "找不到檔案 %(path)s"
@@ -5195,16 +5194,16 @@ msgstr "已經以 %(user)s 登入系統"
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr ""
 
-#: trac/web/chrome.py:889
+#: trac/web/chrome.py:890
 msgid "(unknown template location)"
 msgstr "(未知的 template 位址)"
 
-#: trac/web/chrome.py:890
+#: trac/web/chrome.py:891
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "當顯示樣板 %(location)s 時，Genshi 發生錯誤 %(error)s"
 
-#: trac/web/chrome.py:938 trac/web/chrome.py:946
+#: trac/web/chrome.py:939 trac/web/chrome.py:947
 msgid "anonymous"
 msgstr "匿名"
 

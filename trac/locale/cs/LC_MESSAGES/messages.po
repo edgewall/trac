@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
-"POT-Creation-Date: 2012-10-29 19:08+0100\n"
+"POT-Creation-Date: 2013-02-17 15:58+0100\n"
 "PO-Revision-Date: 2013-02-03 13:00+0000\n"
 "Last-Translator: Zbyněk Schwarz <zbynek.schwarz@gmail.com>\n"
 "Language-Team: Czech "
@@ -529,39 +529,39 @@ msgstr "%(name)s ve verzi %(version)s"
 msgid "Command not found"
 msgstr "Příkaz nenalezen"
 
-#: trac/admin/console.py:111
+#: trac/admin/console.py:112
 #, python-format
 msgid "Error: %(msg)s"
 msgstr "Chyba: %(msg)s"
 
-#: trac/admin/console.py:130
+#: trac/admin/console.py:131
 #, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
-"Copyright (C) 2003-2012 Edgewall Software\n"
+"Copyright (C) 2003-2013 Edgewall Software\n"
 "\n"
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
 msgstr ""
 "Vítejte v trac-admin %(version)s\n"
 "Interaktivní konzoli pro správu Trac.\n"
-"Autorská práva (C) 2003-2012 Edgewall Software\n"
+"Autorská práva (C) 2003-2013 Edgewall Software\n"
 "\n"
 "Zadejte:  '?' nebo 'help' pro nápovědu pro příkazy.\n"
 "        "
 
-#: trac/admin/console.py:164
+#: trac/admin/console.py:165
 #, python-format
 msgid "Failed to open environment: %(err)s"
 msgstr "Otevření prostředí selhalo: %(err)s"
 
-#: trac/admin/console.py:247
+#: trac/admin/console.py:248
 #, python-format
 msgid "Completion error: %(err)s"
 msgstr "Chyba při dokončení: %(err)s"
 
-#: trac/admin/console.py:306
+#: trac/admin/console.py:307
 #, python-format
 msgid ""
 "No documentation found for '%(cmd)s'. Use 'help' to see the list of "
@@ -570,32 +570,32 @@ msgstr ""
 "Pro '%(cmd)s' nebyla nalezena žádná dokumentace, Použijte 'help' pro "
 "zobrazení seznamu příkazů."
 
-#: trac/admin/console.py:312
+#: trac/admin/console.py:313
 msgid "Did you mean this?"
 msgid_plural "Did you mean one of these?"
 msgstr[0] "Mysleli jste toto?"
 msgstr[1] "Mysleli jste tyto?"
 msgstr[2] "Mysleli jste tyto?"
 
-#: trac/admin/console.py:316
+#: trac/admin/console.py:317
 #, python-format
 msgid "trac-admin - The Trac Administration Console %(version)s"
 msgstr "trac-admin - administrační konzole Tracu verze %(version)s"
 
-#: trac/admin/console.py:320
+#: trac/admin/console.py:321
 msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
 msgstr "Užití: trac-admin </cesta/k/prostredi> [příkaz [podpříkaz] [volba ...]]\n"
 
-#: trac/admin/console.py:323
+#: trac/admin/console.py:324
 msgid "Invoking trac-admin without command starts interactive mode.\n"
 msgstr "Volání trac-admin bez příkazu nastartuje interaktivní režim.\n"
 
-#: trac/admin/console.py:363
+#: trac/admin/console.py:364
 #, python-format
 msgid "Creating a new Trac environment at %(envname)s"
 msgstr "Vytvářím nové prostředí Tracu v %(envname)s"
 
-#: trac/admin/console.py:365
+#: trac/admin/console.py:366
 msgid ""
 "\n"
 "Trac will first ask a few questions about your environment \n"
@@ -611,12 +611,12 @@ msgstr ""
 " Zadejte prosím jméno vašeho projektu.\n"
 " Toto jméno bude použito v titulcích a popisech stránek.\n"
 
-#: trac/admin/console.py:373
+#: trac/admin/console.py:374
 #, python-format
 msgid "Project Name [%(default)s]> "
 msgstr "Jméno projektu [%(default)s]> "
 
-#: trac/admin/console.py:375
+#: trac/admin/console.py:376
 msgid ""
 " \n"
 " Please specify the connection string for the database to use.\n"
@@ -631,25 +631,25 @@ msgstr ""
 " Je také možné použít již existující databázi PostgreSQL\n"
 " (v dokumentaci Tracu najdete přesnou syntax pro připojovací řetězec.)\n"
 
-#: trac/admin/console.py:383
+#: trac/admin/console.py:384
 #, python-format
 msgid "Database connection string [%(default)s]> "
 msgstr "Řetězec pro připojení k databázi [%(default)s]> "
 
-#: trac/admin/console.py:390
+#: trac/admin/console.py:391
 #, python-format
 msgid "Initenv for '%(env)s' failed."
 msgstr "Initenv pro '%(env)s' selhal."
 
-#: trac/admin/console.py:393
+#: trac/admin/console.py:394
 msgid "Does an environment already exist?"
 msgstr "Existuje již nějaké prostředí?"
 
-#: trac/admin/console.py:397
+#: trac/admin/console.py:398
 msgid "Directory exists and is not empty."
 msgstr "Adresář existuje a není prázdný."
 
-#: trac/admin/console.py:403
+#: trac/admin/console.py:404
 #, python-format
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
@@ -658,23 +658,23 @@ msgstr ""
 "Základní adresář '%(env)s' neexistuje. Prosím vytvořte ho ručně a zkuste "
 "to znovu."
 
-#: trac/admin/console.py:431
+#: trac/admin/console.py:432
 msgid "Creating and Initializing Project"
 msgstr "Vytvářím a inicializuji projekt"
 
-#: trac/admin/console.py:448
+#: trac/admin/console.py:449
 msgid "Failed to create environment."
 msgstr "Vytvoření prostředí selhalo."
 
-#: trac/admin/console.py:454
+#: trac/admin/console.py:455
 msgid " Installing default wiki pages"
 msgstr " Instaluji výchozí wiki stránky"
 
-#: trac/admin/console.py:463
+#: trac/admin/console.py:464
 msgid " Indexing default repository"
 msgstr " Indexuji výchozí repozitář"
 
-#: trac/admin/console.py:466
+#: trac/admin/console.py:467
 msgid ""
 "\n"
 "---------------------------------------------------------------------\n"
@@ -700,7 +700,7 @@ msgstr ""
 "zkontrolovat soubor trac.ini a v něm nastavení repository_type a \n"
 "repository_path v sekci [trac].\n"
 
-#: trac/admin/console.py:509
+#: trac/admin/console.py:510
 #, python-format
 msgid ""
 "\n"
@@ -751,7 +751,7 @@ msgstr ""
 "\n"
 "Blahopřejeme!\n"
 
-#: trac/admin/console.py:568
+#: trac/admin/console.py:569
 #, python-format
 msgid "Non-ascii environment path '%(path)s' not supported."
 msgstr "Znaky mimo ASCII v cestě prostředí '%(path)s' nejsou podporovány."
@@ -1307,12 +1307,12 @@ msgstr "Datum vydání:"
 msgid "Released"
 msgstr "Datum vydání"
 
-#: trac/db/api.py:191
+#: trac/db/api.py:193
 #, python-format
 msgid "Unsupported database type \"%(scheme)s\""
 msgstr "Nepodporovaný typ databáze \"%(scheme)s\""
 
-#: trac/db/api.py:227
+#: trac/db/api.py:229
 #, python-format
 msgid ""
 "Unknown scheme \"%(scheme)s\"; database connection string must start with"
@@ -1754,10 +1754,10 @@ msgstr ""
 
 #: trac/templates/about.html:46
 msgid ""
-"Copyright © 2003-2012\n"
+"Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
 msgstr ""
-"Autorská práva © 2003-2012\n"
+"Autorská práva © 2003-2013\n"
 "        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
@@ -1842,7 +1842,7 @@ msgid "Attach another file"
 msgstr "Přidat další soubor"
 
 #: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:21
-#: trac/templates/macros.html:19 trac/util/text.py:529
+#: trac/templates/macros.html:19 trac/util/text.py:541
 #: trac/versioncontrol/templates/browser.html:110
 #: trac/versioncontrol/templates/dir_entries.html:16
 #, python-format
@@ -5323,12 +5323,12 @@ msgstr ""
 "Můžete %(search)s v historii repozitáře a ověřit, zda taková cesta "
 "existovala a později byla odstraněna"
 
-#: trac/web/api.py:240
+#: trac/web/api.py:252
 #, python-format
 msgid "Invalid URL encoding (was %(path_info)r)"
 msgstr "Neplatné kódování URL (%(path_info)r)"
 
-#: trac/web/api.py:484
+#: trac/web/api.py:496
 #, python-format
 msgid "File %(path)s not found"
 msgstr "Soubor %(path)s nebyl nalezen"
@@ -5374,16 +5374,16 @@ msgstr "Již přihlášen jako %(user)s."
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr "Chyba generování navigace u \"%(name)s\""
 
-#: trac/web/chrome.py:889
+#: trac/web/chrome.py:890
 msgid "(unknown template location)"
 msgstr "(neznámé umístění šablony)"
 
-#: trac/web/chrome.py:890
+#: trac/web/chrome.py:891
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "Chyba Genshi %(error)s při tvorbě šablony %(location)s"
 
-#: trac/web/chrome.py:938 trac/web/chrome.py:946
+#: trac/web/chrome.py:939 trac/web/chrome.py:947
 msgid "anonymous"
 msgstr "anonymní"
 

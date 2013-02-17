@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2012-10-29 19:08+0100\n"
+"POT-Creation-Date: 2013-02-17 15:58+0100\n"
 "PO-Revision-Date: 2010-09-29 18:44+0200\n"
 "Last-Translator: Itamar Ostricher <itamarost@gmail.com>\n"
 "Language-Team: he <LL@li.org>\n"
@@ -11,7 +11,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: tracopt/mimeview/php.py:98
 msgid ""
@@ -522,17 +522,17 @@ msgstr "%(name)s בגרסה %(version)s"
 msgid "Command not found"
 msgstr "פקודה לא נמצאה"
 
-#: trac/admin/console.py:111
+#: trac/admin/console.py:112
 #, python-format
 msgid "Error: %(msg)s"
 msgstr "שגיאה: %(msg)s"
 
-#: trac/admin/console.py:130
+#: trac/admin/console.py:131
 #, fuzzy, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
-"Copyright (C) 2003-2012 Edgewall Software\n"
+"Copyright (C) 2003-2013 Edgewall Software\n"
 "\n"
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
@@ -544,48 +544,48 @@ msgstr ""
 "הקלד:  '?' או 'help' לעזרה עבור הפקודות.\n"
 "        "
 
-#: trac/admin/console.py:164
+#: trac/admin/console.py:165
 #, python-format
 msgid "Failed to open environment: %(err)s"
 msgstr "כישלון בפתיחת סביבה: %(err)s"
 
-#: trac/admin/console.py:247
+#: trac/admin/console.py:248
 #, python-format
 msgid "Completion error: %(err)s"
 msgstr "שגיאה בהשלמה: %(err)s"
 
-#: trac/admin/console.py:306
+#: trac/admin/console.py:307
 #, fuzzy, python-format
 msgid ""
 "No documentation found for '%(cmd)s'. Use 'help' to see the list of "
 "commands."
 msgstr "לא נמצא תיעוד עבור '%(cmd)s'"
 
-#: trac/admin/console.py:312
+#: trac/admin/console.py:313
 msgid "Did you mean this?"
 msgid_plural "Did you mean one of these?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/admin/console.py:316
+#: trac/admin/console.py:317
 #, python-format
 msgid "trac-admin - The Trac Administration Console %(version)s"
 msgstr "trac-admin - מסוף ניהול של טראק %(version)s"
 
-#: trac/admin/console.py:320
+#: trac/admin/console.py:321
 msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
 msgstr "שימוש: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
 
-#: trac/admin/console.py:323
+#: trac/admin/console.py:324
 msgid "Invoking trac-admin without command starts interactive mode.\n"
 msgstr "קריאה ל-trac-admin ללא פקודה מפעילה את המצב האינטראקטיבי.\n"
 
-#: trac/admin/console.py:363
+#: trac/admin/console.py:364
 #, python-format
 msgid "Creating a new Trac environment at %(envname)s"
 msgstr "יוצר סביבת טראק חדשה ב-%(envname)s"
 
-#: trac/admin/console.py:365
+#: trac/admin/console.py:366
 msgid ""
 "\n"
 "Trac will first ask a few questions about your environment \n"
@@ -601,12 +601,12 @@ msgstr ""
 " אנא הזן את שם הפרויקט.\n"
 " שם זה יופיע בכותרות דפים ובתיאורים.\n"
 
-#: trac/admin/console.py:373
+#: trac/admin/console.py:374
 #, python-format
 msgid "Project Name [%(default)s]> "
 msgstr "שם הפרויקט [%(default)s]> "
 
-#: trac/admin/console.py:375
+#: trac/admin/console.py:376
 msgid ""
 " \n"
 " Please specify the connection string for the database to use.\n"
@@ -621,48 +621,48 @@ msgstr ""
 " ניתן גם להשתמש במסד נתונים PostgreSQL קיים (בדוק בתיעוד של טראק\n"
 " לגבי התחביר המדויק של מחרוזת ההתחברות).\n"
 
-#: trac/admin/console.py:383
+#: trac/admin/console.py:384
 #, python-format
 msgid "Database connection string [%(default)s]> "
 msgstr "מחרוזת התחברות למסד הנתונים [%(default)s]> "
 
-#: trac/admin/console.py:390
+#: trac/admin/console.py:391
 #, python-format
 msgid "Initenv for '%(env)s' failed."
 msgstr "כישלון באתחול-סביבה עבור '%(env)s'."
 
-#: trac/admin/console.py:393
+#: trac/admin/console.py:394
 msgid "Does an environment already exist?"
 msgstr "האם כבר קיימת סביבה?"
 
-#: trac/admin/console.py:397
+#: trac/admin/console.py:398
 msgid "Directory exists and is not empty."
 msgstr "תיקייה קיימת ואינה ריקה."
 
-#: trac/admin/console.py:403
+#: trac/admin/console.py:404
 #, fuzzy, python-format
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
 msgstr ""
 
-#: trac/admin/console.py:431
+#: trac/admin/console.py:432
 msgid "Creating and Initializing Project"
 msgstr "יוצר ומאתחל פרויקט."
 
-#: trac/admin/console.py:448
+#: trac/admin/console.py:449
 msgid "Failed to create environment."
 msgstr "כישלון ביצירת סביבה."
 
-#: trac/admin/console.py:454
+#: trac/admin/console.py:455
 msgid " Installing default wiki pages"
 msgstr " מתקין דפי ויקי דיפולטיים"
 
-#: trac/admin/console.py:463
+#: trac/admin/console.py:464
 msgid " Indexing default repository"
 msgstr " מאנדקס מצבור ברירת מחדל"
 
-#: trac/admin/console.py:466
+#: trac/admin/console.py:467
 msgid ""
 "\n"
 "---------------------------------------------------------------------\n"
@@ -688,7 +688,7 @@ msgstr ""
 "עליך לבדוק שוב את trac.ini שלך ואת הגדרות repository_type \n"
 "ו-repository_path ב-[trac].\n"
 
-#: trac/admin/console.py:509
+#: trac/admin/console.py:510
 #, python-format
 msgid ""
 "\n"
@@ -739,7 +739,7 @@ msgstr ""
 "\n"
 "בהצלחה!\n"
 
-#: trac/admin/console.py:568
+#: trac/admin/console.py:569
 #, python-format
 msgid "Non-ascii environment path '%(path)s' not supported."
 msgstr "אין תמיכה בנתיב סביבה עם תווי non-ascii '%(path)s'."
@@ -1295,12 +1295,12 @@ msgstr "שוחררה:"
 msgid "Released"
 msgstr "שוחררה"
 
-#: trac/db/api.py:191
+#: trac/db/api.py:193
 #, python-format
 msgid "Unsupported database type \"%(scheme)s\""
 msgstr "טיפוס מסד נתונים \"%(scheme)s\" לא נתמך"
 
-#: trac/db/api.py:227
+#: trac/db/api.py:229
 #, python-format
 msgid ""
 "Unknown scheme \"%(scheme)s\"; database connection string must start with"
@@ -1754,7 +1754,7 @@ msgstr ""
 #: trac/templates/about.html:46
 #, fuzzy
 msgid ""
-"Copyright © 2003-2012\n"
+"Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
 msgstr ""
 "כל הזכויות שמורות © 2003-2010\n"
@@ -1842,7 +1842,7 @@ msgid "Attach another file"
 msgstr "צרף קובץ נוסף"
 
 #: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:21
-#: trac/templates/macros.html:19 trac/util/text.py:529
+#: trac/templates/macros.html:19 trac/util/text.py:541
 #: trac/versioncontrol/templates/browser.html:110
 #: trac/versioncontrol/templates/dir_entries.html:16
 #, python-format
@@ -5278,12 +5278,12 @@ msgstr ""
 "ניתן %(search)s בהיסטוריה של המצבור ולראות האם הנתיב היה קיים בעבר אך "
 "הוסר בהמשך"
 
-#: trac/web/api.py:240
+#: trac/web/api.py:252
 #, python-format
 msgid "Invalid URL encoding (was %(path_info)r)"
 msgstr "קידוד URL לא חוקי (היה %(path_info)r)"
 
-#: trac/web/api.py:484
+#: trac/web/api.py:496
 #, python-format
 msgid "File %(path)s not found"
 msgstr "הקובץ %(path)s לא נמצא"
@@ -5327,16 +5327,16 @@ msgstr "כבר מחובר בתור %(user)s."
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr "שגיאה בספק ניווט \"%(name)s\""
 
-#: trac/web/chrome.py:889
+#: trac/web/chrome.py:890
 msgid "(unknown template location)"
 msgstr "(מיקום תבנית לא ידוע)"
 
-#: trac/web/chrome.py:890
+#: trac/web/chrome.py:891
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "שגיאה %(error)s בגנשי בעת עיבוד תבנית %(location)s"
 
-#: trac/web/chrome.py:938 trac/web/chrome.py:946
+#: trac/web/chrome.py:939 trac/web/chrome.py:947
 msgid "anonymous"
 msgstr "אנונימי"
 

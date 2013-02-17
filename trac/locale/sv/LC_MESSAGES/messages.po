@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2012-10-29 19:08+0100\n"
+"POT-Creation-Date: 2013-02-17 15:58+0100\n"
 "PO-Revision-Date: 2012-10-30 19:53+0100\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: sv_SE <trac-dev@googlegroups.com>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: tracopt/mimeview/php.py:98
 msgid ""
@@ -526,39 +526,39 @@ msgstr "%(name)s i version %(version)s"
 msgid "Command not found"
 msgstr "Kommandot hittades ej"
 
-#: trac/admin/console.py:111
+#: trac/admin/console.py:112
 #, python-format
 msgid "Error: %(msg)s"
 msgstr "Fel: %(msg)s"
 
-#: trac/admin/console.py:130
+#: trac/admin/console.py:131
 #, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
-"Copyright (C) 2003-2012 Edgewall Software\n"
+"Copyright (C) 2003-2013 Edgewall Software\n"
 "\n"
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
 msgstr ""
 "Välkommen till trac-admin %(version)s\n"
 "Interaktiv administrationskonsoll för Trac.\n"
-"Copyright (c) 2003-2012 Edgewall Software\n"
+"Copyright (c) 2003-2013 Edgewall Software\n"
 "\n"
 "Skriv: '?' eller 'help' för att få hjälp om kommandon.\n"
 "        "
 
-#: trac/admin/console.py:164
+#: trac/admin/console.py:165
 #, python-format
 msgid "Failed to open environment: %(err)s"
 msgstr "Trac-miljön kunde inte öppnas: %(err)s"
 
-#: trac/admin/console.py:247
+#: trac/admin/console.py:248
 #, python-format
 msgid "Completion error: %(err)s"
 msgstr "Fel vid genomförande: %(err)s"
 
-#: trac/admin/console.py:306
+#: trac/admin/console.py:307
 #, python-format
 msgid ""
 "No documentation found for '%(cmd)s'. Use 'help' to see the list of "
@@ -567,33 +567,33 @@ msgstr ""
 "Ingen dokumentation hittades för \"%(cmd)s\". Använd \"help\" för att "
 "visa listan över kommandon."
 
-#: trac/admin/console.py:312
+#: trac/admin/console.py:313
 msgid "Did you mean this?"
 msgid_plural "Did you mean one of these?"
 msgstr[0] "Menade du det här?"
 msgstr[1] "Menade du en av dessa?"
 
-#: trac/admin/console.py:316
+#: trac/admin/console.py:317
 #, python-format
 msgid "trac-admin - The Trac Administration Console %(version)s"
 msgstr "trac-admin - Trac's administrationskonsoll %(version)s"
 
-#: trac/admin/console.py:320
+#: trac/admin/console.py:321
 msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
 msgstr ""
 "Användning: trac-admin </sökväg/till/miljö> [kommando [underkommando] "
 "[alternativ ...]]\n"
 
-#: trac/admin/console.py:323
+#: trac/admin/console.py:324
 msgid "Invoking trac-admin without command starts interactive mode.\n"
 msgstr "Starta trac-admin utan kommando för att starta interaktivt läge.\n"
 
-#: trac/admin/console.py:363
+#: trac/admin/console.py:364
 #, python-format
 msgid "Creating a new Trac environment at %(envname)s"
 msgstr "Skapar en ny Trac miljö i %(envname)s"
 
-#: trac/admin/console.py:365
+#: trac/admin/console.py:366
 msgid ""
 "\n"
 "Trac will first ask a few questions about your environment \n"
@@ -609,12 +609,12 @@ msgstr ""
 " Ange namnet på ditt projekt.\n"
 " Detta namn kommer användas i sidrubriker och beskrivningar.\n"
 
-#: trac/admin/console.py:373
+#: trac/admin/console.py:374
 #, python-format
 msgid "Project Name [%(default)s]> "
 msgstr "Projektets namn [%(default)s]> "
 
-#: trac/admin/console.py:375
+#: trac/admin/console.py:376
 msgid ""
 " \n"
 " Please specify the connection string for the database to use.\n"
@@ -630,48 +630,48 @@ msgstr ""
 " PostgreSQL-databas (läs Trac's dokumentation för beskrivning av\n"
 " anslutningssträngens syntax).\n"
 
-#: trac/admin/console.py:383
+#: trac/admin/console.py:384
 #, python-format
 msgid "Database connection string [%(default)s]> "
 msgstr "Databasens anslutningssträng [%(default)s]> "
 
-#: trac/admin/console.py:390
+#: trac/admin/console.py:391
 #, python-format
 msgid "Initenv for '%(env)s' failed."
 msgstr "\"Initenv\" för \"%(env)s\" misslyckades."
 
-#: trac/admin/console.py:393
+#: trac/admin/console.py:394
 msgid "Does an environment already exist?"
 msgstr "Existerar redan Trac-miljön?"
 
-#: trac/admin/console.py:397
+#: trac/admin/console.py:398
 msgid "Directory exists and is not empty."
 msgstr "Katalogen existerar och är inte tom"
 
-#: trac/admin/console.py:403
+#: trac/admin/console.py:404
 #, python-format
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
 msgstr "Rot-katalogen '%(env)s' existerar ej. Skapa den manuellt och försök igen."
 
-#: trac/admin/console.py:431
+#: trac/admin/console.py:432
 msgid "Creating and Initializing Project"
 msgstr "Skapar och initierar projektet"
 
-#: trac/admin/console.py:448
+#: trac/admin/console.py:449
 msgid "Failed to create environment."
 msgstr "Det gick inte att skapa Trac-miljön."
 
-#: trac/admin/console.py:454
+#: trac/admin/console.py:455
 msgid " Installing default wiki pages"
 msgstr "Installerar standardsidor i wikin"
 
-#: trac/admin/console.py:463
+#: trac/admin/console.py:464
 msgid " Indexing default repository"
 msgstr " Indexerar standardförrådet"
 
-#: trac/admin/console.py:466
+#: trac/admin/console.py:467
 msgid ""
 "\n"
 "---------------------------------------------------------------------\n"
@@ -697,7 +697,7 @@ msgstr ""
 "kontrollera inställningarna för [trac] repository_type och\n"
 "repository_path i filen trac.ini.\n"
 
-#: trac/admin/console.py:509
+#: trac/admin/console.py:510
 #, python-format
 msgid ""
 "\n"
@@ -750,7 +750,7 @@ msgstr ""
 "\n"
 "Grattis!\n"
 
-#: trac/admin/console.py:568
+#: trac/admin/console.py:569
 #, python-format
 msgid "Non-ascii environment path '%(path)s' not supported."
 msgstr ""
@@ -1300,12 +1300,12 @@ msgstr "Levererad:"
 msgid "Released"
 msgstr "Levererad"
 
-#: trac/db/api.py:191
+#: trac/db/api.py:193
 #, python-format
 msgid "Unsupported database type \"%(scheme)s\""
 msgstr "Databastypen \"%(scheme)s\" stöds ej"
 
-#: trac/db/api.py:227
+#: trac/db/api.py:229
 #, python-format
 msgid ""
 "Unknown scheme \"%(scheme)s\"; database connection string must start with"
@@ -1750,9 +1750,9 @@ msgstr "Besök gärna Trac's öppna källkodsprojekt:  [1:http://trac.edgewall.o
 
 #: trac/templates/about.html:46
 msgid ""
-"Copyright © 2003-2012\n"
+"Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
-msgstr "Copyright © 2003-2012 [1:Edgewall Software]"
+msgstr "Copyright © 2003-2013 [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
 msgid "System Information"
@@ -1836,7 +1836,7 @@ msgid "Attach another file"
 msgstr "Bifoga ytterligare en bilaga"
 
 #: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:21
-#: trac/templates/macros.html:19 trac/util/text.py:529
+#: trac/templates/macros.html:19 trac/util/text.py:541
 #: trac/versioncontrol/templates/browser.html:110
 #: trac/versioncontrol/templates/dir_entries.html:16
 #, python-format
@@ -5208,12 +5208,12 @@ msgstr ""
 "Du kan %(search)s i förrådets historik för att se om sökvägen någonsin "
 "existerat men blivit borttagen"
 
-#: trac/web/api.py:240
+#: trac/web/api.py:252
 #, python-format
 msgid "Invalid URL encoding (was %(path_info)r)"
 msgstr "Ogiltig URL-kodning (var %(path_info)r)"
 
-#: trac/web/api.py:484
+#: trac/web/api.py:496
 #, python-format
 msgid "File %(path)s not found"
 msgstr "Filen %(path)s hittades inte"
@@ -5257,16 +5257,16 @@ msgstr "Redan inloggad som %(user)s."
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr "Internt fel (fel i \"navigation contributor %(name)s\")"
 
-#: trac/web/chrome.py:889
+#: trac/web/chrome.py:890
 msgid "(unknown template location)"
 msgstr "(okänd plats för mall)"
 
-#: trac/web/chrome.py:890
+#: trac/web/chrome.py:891
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "Genshi-fel %(error)s vid rendering av mallen %(location)s"
 
-#: trac/web/chrome.py:938 trac/web/chrome.py:946
+#: trac/web/chrome.py:939 trac/web/chrome.py:947
 msgid "anonymous"
 msgstr "anonym"
 

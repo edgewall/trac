@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
-"POT-Creation-Date: 2012-10-29 19:08+0100\n"
+"POT-Creation-Date: 2013-02-17 15:58+0100\n"
 "PO-Revision-Date: 2013-01-27 17:56+0000\n"
 "Last-Translator: Pander <pander@users.sourceforge.net>\n"
 "Language-Team: Dutch "
@@ -536,39 +536,39 @@ msgstr "%(name)s op versie %(version)s"
 msgid "Command not found"
 msgstr "Opdracht niet gevonden"
 
-#: trac/admin/console.py:111
+#: trac/admin/console.py:112
 #, python-format
 msgid "Error: %(msg)s"
 msgstr "Fout: %(msg)s"
 
-#: trac/admin/console.py:130
+#: trac/admin/console.py:131
 #, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
-"Copyright (C) 2003-2012 Edgewall Software\n"
+"Copyright (C) 2003-2013 Edgewall Software\n"
 "\n"
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
 msgstr ""
 "Welkom in trac-admin %(version)s\n"
 "Interactieve Trac-administratieomgeving.\n"
-"Copyright (c) 2003-2012 Edgewall Software\n"
+"Copyright (c) 2003-2013 Edgewall Software\n"
 "\n"
 "Type:  '?' of 'help' voor hulp bij commando’s.\n"
 "        "
 
-#: trac/admin/console.py:164
+#: trac/admin/console.py:165
 #, python-format
 msgid "Failed to open environment: %(err)s"
 msgstr "Fout bij openen omgeving: %(err)s"
 
-#: trac/admin/console.py:247
+#: trac/admin/console.py:248
 #, python-format
 msgid "Completion error: %(err)s"
 msgstr "Voltooiingsfout: %(err)s"
 
-#: trac/admin/console.py:306
+#: trac/admin/console.py:307
 #, python-format
 msgid ""
 "No documentation found for '%(cmd)s'. Use 'help' to see the list of "
@@ -577,35 +577,35 @@ msgstr ""
 "Er is geen documentatie gevonden voor '%(cmd)s'. Gebruik 'help' om de "
 "lijst van commando's te tonen."
 
-#: trac/admin/console.py:312
+#: trac/admin/console.py:313
 msgid "Did you mean this?"
 msgid_plural "Did you mean one of these?"
 msgstr[0] "Bedoeldt u deze?"
 msgstr[1] "Bedoeldt u een van deze? "
 
-#: trac/admin/console.py:316
+#: trac/admin/console.py:317
 #, python-format
 msgid "trac-admin - The Trac Administration Console %(version)s"
 msgstr "trac-admin - De Trac-administratieomgeving %(version)s"
 
-#: trac/admin/console.py:320
+#: trac/admin/console.py:321
 msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
 msgstr ""
 "Gebruik: trac-admin </pad/naar/projectomgeving> [commando [subcommando] "
 "[optie ...]]\n"
 
-#: trac/admin/console.py:323
+#: trac/admin/console.py:324
 msgid "Invoking trac-admin without command starts interactive mode.\n"
 msgstr ""
 "Het starten van trac-admin zonder extra opties start de interactieve "
 "omgeving\n"
 
-#: trac/admin/console.py:363
+#: trac/admin/console.py:364
 #, python-format
 msgid "Creating a new Trac environment at %(envname)s"
 msgstr "Bezig met maken nieuwe Trac-omgeving op %(envname)s"
 
-#: trac/admin/console.py:365
+#: trac/admin/console.py:366
 msgid ""
 "\n"
 "Trac will first ask a few questions about your environment \n"
@@ -621,12 +621,12 @@ msgstr ""
 " Geef de naam van uw project op.\n"
 " Deze zal gebruik worden in paginatitels en beschrijvingen.\n"
 
-#: trac/admin/console.py:373
+#: trac/admin/console.py:374
 #, python-format
 msgid "Project Name [%(default)s]> "
 msgstr "Projectnaam [%(default)s]"
 
-#: trac/admin/console.py:375
+#: trac/admin/console.py:376
 msgid ""
 " \n"
 " Please specify the connection string for the database to use.\n"
@@ -642,25 +642,25 @@ msgstr ""
 " te gebruiken (kijk hiervoor in de Trac-documentatie voor de\n"
 " juiste instellingen).\n"
 
-#: trac/admin/console.py:383
+#: trac/admin/console.py:384
 #, python-format
 msgid "Database connection string [%(default)s]> "
 msgstr "Databaseverbinding [%(default)s]> "
 
-#: trac/admin/console.py:390
+#: trac/admin/console.py:391
 #, python-format
 msgid "Initenv for '%(env)s' failed."
 msgstr "Initenv voor '%(env)s' mislukt."
 
-#: trac/admin/console.py:393
+#: trac/admin/console.py:394
 msgid "Does an environment already exist?"
 msgstr "Bestaat de omgeving al?"
 
-#: trac/admin/console.py:397
+#: trac/admin/console.py:398
 msgid "Directory exists and is not empty."
 msgstr "Map bestaat en is niet leeg."
 
-#: trac/admin/console.py:403
+#: trac/admin/console.py:404
 #, python-format
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
@@ -669,23 +669,23 @@ msgstr ""
 "Hoofdmap '%(env)s' bestaat niet. Maak deze map handmatig aan en probeer "
 "het opnieuw."
 
-#: trac/admin/console.py:431
+#: trac/admin/console.py:432
 msgid "Creating and Initializing Project"
 msgstr "Bezig met aanmaken en initialiseren van het project"
 
-#: trac/admin/console.py:448
+#: trac/admin/console.py:449
 msgid "Failed to create environment."
 msgstr "Aanmaken omgeving mislukt."
 
-#: trac/admin/console.py:454
+#: trac/admin/console.py:455
 msgid " Installing default wiki pages"
 msgstr " Bezig met installeren standaard-wikipagina’s"
 
-#: trac/admin/console.py:463
+#: trac/admin/console.py:464
 msgid " Indexing default repository"
 msgstr " Indexeren standaardrepository"
 
-#: trac/admin/console.py:466
+#: trac/admin/console.py:467
 msgid ""
 "\n"
 "---------------------------------------------------------------------\n"
@@ -711,7 +711,7 @@ msgstr ""
 "[trac]-categorie van uw trac.ini-bestand nog de repository_type en \n"
 "repository_path-instellingen moeten controleren.\n"
 
-#: trac/admin/console.py:509
+#: trac/admin/console.py:510
 #, python-format
 msgid ""
 "\n"
@@ -763,7 +763,7 @@ msgstr ""
 "\n"
 "Gefeliciteerd!\n"
 
-#: trac/admin/console.py:568
+#: trac/admin/console.py:569
 #, python-format
 msgid "Non-ascii environment path '%(path)s' not supported."
 msgstr ""
@@ -1323,12 +1323,12 @@ msgstr "Uitgebracht:"
 msgid "Released"
 msgstr "Uitgebracht"
 
-#: trac/db/api.py:191
+#: trac/db/api.py:193
 #, python-format
 msgid "Unsupported database type \"%(scheme)s\""
 msgstr "Databasetype \"%(scheme)s\" wordt niet ondersteund"
 
-#: trac/db/api.py:227
+#: trac/db/api.py:229
 #, python-format
 msgid ""
 "Unknown scheme \"%(scheme)s\"; database connection string must start with"
@@ -1795,10 +1795,10 @@ msgstr ""
 
 #: trac/templates/about.html:46
 msgid ""
-"Copyright © 2003-2012\n"
+"Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
 msgstr ""
-"Copyright © 2003-2012\n"
+"Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
@@ -1883,7 +1883,7 @@ msgid "Attach another file"
 msgstr "Nog een bestand toevoegen"
 
 #: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:21
-#: trac/templates/macros.html:19 trac/util/text.py:529
+#: trac/templates/macros.html:19 trac/util/text.py:541
 #: trac/versioncontrol/templates/browser.html:110
 #: trac/versioncontrol/templates/dir_entries.html:16
 #, python-format
@@ -5378,12 +5378,12 @@ msgstr ""
 "U kunt %(search)s in de repositorygeschiedenis om te zien of dat pad "
 "bestond maar later was verwijderd"
 
-#: trac/web/api.py:240
+#: trac/web/api.py:252
 #, python-format
 msgid "Invalid URL encoding (was %(path_info)r)"
 msgstr "Ongeldige URL-codering (was %(path_info)r)"
 
-#: trac/web/api.py:484
+#: trac/web/api.py:496
 #, python-format
 msgid "File %(path)s not found"
 msgstr "Bestand %(path)s niet gevonden"
@@ -5427,16 +5427,16 @@ msgstr "U bent al ingelogd als %(user)s."
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr "Fout in navigatie-contributor \"%(name)s\""
 
-#: trac/web/chrome.py:889
+#: trac/web/chrome.py:890
 msgid "(unknown template location)"
 msgstr "(onbekende sjabloonlocatie)"
 
-#: trac/web/chrome.py:890
+#: trac/web/chrome.py:891
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "Genshi %(error)s-fout tijdens het weergeven van sjabloon %(location)s"
 
-#: trac/web/chrome.py:938 trac/web/chrome.py:946
+#: trac/web/chrome.py:939 trac/web/chrome.py:947
 msgid "anonymous"
 msgstr "anoniem"
 

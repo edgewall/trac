@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
-"POT-Creation-Date: 2012-10-29 19:08+0100\n"
+"POT-Creation-Date: 2013-02-17 15:58+0100\n"
 "PO-Revision-Date: 2013-01-28 04:13+0000\n"
 "Last-Translator: YT H <dev@theYT.net>\n"
 "Language-Team: Korean "
@@ -516,17 +516,17 @@ msgstr "버전 %(version)s의 %(name)s"
 msgid "Command not found"
 msgstr "명령이 없습니다."
 
-#: trac/admin/console.py:111
+#: trac/admin/console.py:112
 #, python-format
 msgid "Error: %(msg)s"
 msgstr "오류: %(msg)s"
 
-#: trac/admin/console.py:130
+#: trac/admin/console.py:131
 #, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
-"Copyright (C) 2003-2012 Edgewall Software\n"
+"Copyright (C) 2003-2013 Edgewall Software\n"
 "\n"
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
@@ -538,47 +538,47 @@ msgstr ""
 "명령에 대해 도움말이 필요하면 '?' 또는 'help'를 입력하십시오.\n"
 "        "
 
-#: trac/admin/console.py:164
+#: trac/admin/console.py:165
 #, python-format
 msgid "Failed to open environment: %(err)s"
 msgstr "저장소를 여는 데 실패하였습니다: %(err)s"
 
-#: trac/admin/console.py:247
+#: trac/admin/console.py:248
 #, python-format
 msgid "Completion error: %(err)s"
 msgstr "자동 완성 오류: %(err)s"
 
-#: trac/admin/console.py:306
+#: trac/admin/console.py:307
 #, python-format
 msgid ""
 "No documentation found for '%(cmd)s'. Use 'help' to see the list of "
 "commands."
 msgstr "'%(cmd)s'에 대한 문서가 없습니다. 'help'를 사용하여 명령 목록을 볼 수 있습니다."
 
-#: trac/admin/console.py:312
+#: trac/admin/console.py:313
 msgid "Did you mean this?"
 msgid_plural "Did you mean one of these?"
 msgstr[0] "이것을 원하십니까?"
 
-#: trac/admin/console.py:316
+#: trac/admin/console.py:317
 #, python-format
 msgid "trac-admin - The Trac Administration Console %(version)s"
 msgstr "trac-admin - Trac 관리 콘솔 %(version)s"
 
-#: trac/admin/console.py:320
+#: trac/admin/console.py:321
 msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
 msgstr "사용법: trac-admin </저장소/의/경로> [명령 [세부명령] [옵션 ...]]\n"
 
-#: trac/admin/console.py:323
+#: trac/admin/console.py:324
 msgid "Invoking trac-admin without command starts interactive mode.\n"
 msgstr "명령 없이 trac-admin을 실행하면 상호대화 모드로 시작합니다.\n"
 
-#: trac/admin/console.py:363
+#: trac/admin/console.py:364
 #, python-format
 msgid "Creating a new Trac environment at %(envname)s"
 msgstr "%(envname)s에 새로운 Trac 저장소 생성"
 
-#: trac/admin/console.py:365
+#: trac/admin/console.py:366
 msgid ""
 "\n"
 "Trac will first ask a few questions about your environment \n"
@@ -594,12 +594,12 @@ msgstr ""
 " 프로젝트 이름을 입력해 주십시오.\n"
 " 이 이름은 페이지의 제목과 설명에서 사용될 것 입니다.\n"
 
-#: trac/admin/console.py:373
+#: trac/admin/console.py:374
 #, python-format
 msgid "Project Name [%(default)s]> "
 msgstr "프로젝트 이름 [%(default)s]> "
 
-#: trac/admin/console.py:375
+#: trac/admin/console.py:376
 msgid ""
 " \n"
 " Please specify the connection string for the database to use.\n"
@@ -614,48 +614,48 @@ msgstr ""
 " 이미 존재하는 PostgreSQL 데이타베이스를 사용하는 것도 가능합니다.\n"
 " (정확한 연결 스트링 구문에 대해서는 Trac 문서를 체크하십시오.)\n"
 
-#: trac/admin/console.py:383
+#: trac/admin/console.py:384
 #, python-format
 msgid "Database connection string [%(default)s]> "
 msgstr "데이터베이스 연결 문자열 [%(default)s]> "
 
-#: trac/admin/console.py:390
+#: trac/admin/console.py:391
 #, python-format
 msgid "Initenv for '%(env)s' failed."
 msgstr "'%(env)s' 저장소 초기화 실패."
 
-#: trac/admin/console.py:393
+#: trac/admin/console.py:394
 msgid "Does an environment already exist?"
 msgstr "저장소가 이미 존재합니까?"
 
-#: trac/admin/console.py:397
+#: trac/admin/console.py:398
 msgid "Directory exists and is not empty."
 msgstr "디렉토리가 이미 존재하며 비어 있지 않습니다."
 
-#: trac/admin/console.py:403
+#: trac/admin/console.py:404
 #, python-format
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
 msgstr "기본 디렉토리 '%(env)s'이(가) 없습니다. 수동으로 디렉토리를 만든 다음 다시 시도하십시오."
 
-#: trac/admin/console.py:431
+#: trac/admin/console.py:432
 msgid "Creating and Initializing Project"
 msgstr "프로젝트 생성 및 초기화"
 
-#: trac/admin/console.py:448
+#: trac/admin/console.py:449
 msgid "Failed to create environment."
 msgstr "저장소를 생성하는데 실패했습니다."
 
-#: trac/admin/console.py:454
+#: trac/admin/console.py:455
 msgid " Installing default wiki pages"
 msgstr " 기본 위키 페이지 설치"
 
-#: trac/admin/console.py:463
+#: trac/admin/console.py:464
 msgid " Indexing default repository"
 msgstr " 기본 저장소 인덱싱"
 
-#: trac/admin/console.py:466
+#: trac/admin/console.py:467
 msgid ""
 "\n"
 "---------------------------------------------------------------------\n"
@@ -681,7 +681,7 @@ msgstr ""
 "trac.ini 파일과 [trac] 항목의 repository_type과 repository_path 설정을 다시 체크할 필요가 "
 "있을 것입니다.\n"
 
-#: trac/admin/console.py:509
+#: trac/admin/console.py:510
 #, python-format
 msgid ""
 "\n"
@@ -732,7 +732,7 @@ msgstr ""
 "\n"
 "축하합니다!\n"
 
-#: trac/admin/console.py:568
+#: trac/admin/console.py:569
 #, python-format
 msgid "Non-ascii environment path '%(path)s' not supported."
 msgstr "ASCII가 아닌 문자가 포함된 저장소 경로 '%(path)s'는 지원되지 않습니다."
@@ -1274,12 +1274,12 @@ msgstr "릴리즈된 날짜:"
 msgid "Released"
 msgstr "릴리즈된 날짜"
 
-#: trac/db/api.py:191
+#: trac/db/api.py:193
 #, python-format
 msgid "Unsupported database type \"%(scheme)s\""
 msgstr "지원되지 않는 데이터베이스 형식 \"%(scheme)s\""
 
-#: trac/db/api.py:227
+#: trac/db/api.py:229
 #, python-format
 msgid ""
 "Unknown scheme \"%(scheme)s\"; database connection string must start with"
@@ -1700,7 +1700,7 @@ msgstr "Trac 오픈 소스 프로젝트를 방문해 주십시오: [1:http://tra
 
 #: trac/templates/about.html:46
 msgid ""
-"Copyright © 2003-2012\n"
+"Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
 msgstr "저작권 © 2003~2013 [1:Edgewall Software]"
 
@@ -1786,7 +1786,7 @@ msgid "Attach another file"
 msgstr "다른 파일 첨부하기"
 
 #: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:21
-#: trac/templates/macros.html:19 trac/util/text.py:529
+#: trac/templates/macros.html:19 trac/util/text.py:541
 #: trac/versioncontrol/templates/browser.html:110
 #: trac/versioncontrol/templates/dir_entries.html:16
 #, python-format
@@ -5100,12 +5100,12 @@ msgid ""
 "but was later removed"
 msgstr "경로가 존재했다가 나중에 삭제되었는지를 확인하기 위해, 저장소 기록에서 %(search)s 할 수 있습니다."
 
-#: trac/web/api.py:240
+#: trac/web/api.py:252
 #, python-format
 msgid "Invalid URL encoding (was %(path_info)r)"
 msgstr "URL 인코딩이 유효하지 않습니다 (값은 %(path_info)r)."
 
-#: trac/web/api.py:484
+#: trac/web/api.py:496
 #, python-format
 msgid "File %(path)s not found"
 msgstr "%(path)s 파일이 없습니다."
@@ -5149,16 +5149,16 @@ msgstr "이미 %(user)s로 로그인했습니다."
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr "탐색 막대 컨트리뷰터 \"%(name)s\"에서 오류가 발생하였습니다."
 
-#: trac/web/chrome.py:889
+#: trac/web/chrome.py:890
 msgid "(unknown template location)"
 msgstr "(알 수 없는 템플릿 위치)"
 
-#: trac/web/chrome.py:890
+#: trac/web/chrome.py:891
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "%(location)s 템플릿을 렌더링하는 동안 Genshi 오류 %(error)s이(가) 발생하였습니다."
 
-#: trac/web/chrome.py:938 trac/web/chrome.py:946
+#: trac/web/chrome.py:939 trac/web/chrome.py:947
 msgid "anonymous"
 msgstr "익명사용자"
 

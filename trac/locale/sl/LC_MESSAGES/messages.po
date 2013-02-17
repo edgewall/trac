@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2012-10-29 19:08+0100\n"
+"POT-Creation-Date: 2013-02-17 15:58+0100\n"
 "PO-Revision-Date: 2010-06-11 13:25+0200\n"
 "Last-Translator: Venčeslav Vezjak <vezjakv@gmail.com>\n"
 "Language-Team: sl_SI <trac-dev@googlegroups.com>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: tracopt/mimeview/php.py:98
 msgid ""
@@ -529,17 +529,17 @@ msgstr "%(name)s z različico %(version)s"
 msgid "Command not found"
 msgstr "Ukaza ni bilo mogoče najti"
 
-#: trac/admin/console.py:111
+#: trac/admin/console.py:112
 #, fuzzy, python-format
 msgid "Error: %(msg)s"
 msgstr "Napaka: %(msg)s"
 
-#: trac/admin/console.py:130
+#: trac/admin/console.py:131
 #, fuzzy, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
-"Copyright (C) 2003-2012 Edgewall Software\n"
+"Copyright (C) 2003-2013 Edgewall Software\n"
 "\n"
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
@@ -551,24 +551,24 @@ msgstr ""
 "Vtipkaj:  '?' ali 'help' za pomoč pri ukazih.\n"
 "        "
 
-#: trac/admin/console.py:164
+#: trac/admin/console.py:165
 #, python-format
 msgid "Failed to open environment: %(err)s"
 msgstr "Odpiranje okolja je odpovedalo: %(err)s"
 
-#: trac/admin/console.py:247
+#: trac/admin/console.py:248
 #, python-format
 msgid "Completion error: %(err)s"
 msgstr "Napaka pri dokončevanju: %(err)s"
 
-#: trac/admin/console.py:306
+#: trac/admin/console.py:307
 #, fuzzy, python-format
 msgid ""
 "No documentation found for '%(cmd)s'. Use 'help' to see the list of "
 "commands."
 msgstr "Za '%(cmd)s' dokumentacije ni mogoče najti"
 
-#: trac/admin/console.py:312
+#: trac/admin/console.py:313
 msgid "Did you mean this?"
 msgid_plural "Did you mean one of these?"
 msgstr[0] ""
@@ -576,25 +576,25 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: trac/admin/console.py:316
+#: trac/admin/console.py:317
 #, python-format
 msgid "trac-admin - The Trac Administration Console %(version)s"
 msgstr "trac-admin - Trac skrbniška plošča %(version)s"
 
-#: trac/admin/console.py:320
+#: trac/admin/console.py:321
 msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
 msgstr "Raba: trac-admin </pot/do/proj/okolja> [ukaz [podukaz] [možnost...]]\n"
 
-#: trac/admin/console.py:323
+#: trac/admin/console.py:324
 msgid "Invoking trac-admin without command starts interactive mode.\n"
 msgstr "Z zagonom trac-admin brez ukaza vstopimo v interaktivni način.\n"
 
-#: trac/admin/console.py:363
+#: trac/admin/console.py:364
 #, python-format
 msgid "Creating a new Trac environment at %(envname)s"
 msgstr "Ustvarjanje novega Trac okolja v %(envname)s"
 
-#: trac/admin/console.py:365
+#: trac/admin/console.py:366
 msgid ""
 "\n"
 "Trac will first ask a few questions about your environment \n"
@@ -610,12 +610,12 @@ msgstr ""
 " Prosim vnesi ime projekta.\n"
 " To ime se bo uporabljalo v naslovih straneh in opisih.\n"
 
-#: trac/admin/console.py:373
+#: trac/admin/console.py:374
 #, python-format
 msgid "Project Name [%(default)s]> "
 msgstr "Ime projekta [%(default)s]> "
 
-#: trac/admin/console.py:375
+#: trac/admin/console.py:376
 msgid ""
 " \n"
 " Please specify the connection string for the database to use.\n"
@@ -630,48 +630,48 @@ msgstr ""
 " Možno je tudi uporabiti že obstoječo PostgreSQL zbirko podatkov\n"
 " (preveri Trac dokumentacijo za točno skladnjo povezavnega niza).\n"
 
-#: trac/admin/console.py:383
+#: trac/admin/console.py:384
 #, python-format
 msgid "Database connection string [%(default)s]> "
 msgstr "Povezavni niz zbirke podatkov [%(default)s]> "
 
-#: trac/admin/console.py:390
+#: trac/admin/console.py:391
 #, python-format
 msgid "Initenv for '%(env)s' failed."
 msgstr "Initenv za '%(env)s' odpovedal."
 
-#: trac/admin/console.py:393
+#: trac/admin/console.py:394
 msgid "Does an environment already exist?"
 msgstr "Ali okolje že obstaja?"
 
-#: trac/admin/console.py:397
+#: trac/admin/console.py:398
 msgid "Directory exists and is not empty."
 msgstr "Mapa obstaja in ni prazna."
 
-#: trac/admin/console.py:403
+#: trac/admin/console.py:404
 #, fuzzy, python-format
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
 msgstr ""
 
-#: trac/admin/console.py:431
+#: trac/admin/console.py:432
 msgid "Creating and Initializing Project"
 msgstr "Ustvarjanje in inicializacija projekta"
 
-#: trac/admin/console.py:448
+#: trac/admin/console.py:449
 msgid "Failed to create environment."
 msgstr "Ustvarjanje okolja je odpovedalo."
 
-#: trac/admin/console.py:454
+#: trac/admin/console.py:455
 msgid " Installing default wiki pages"
 msgstr "Nameščanje prizvetih wiki strani"
 
-#: trac/admin/console.py:463
+#: trac/admin/console.py:464
 msgid " Indexing default repository"
 msgstr "Indeksiranje privzetega repozitorija"
 
-#: trac/admin/console.py:466
+#: trac/admin/console.py:467
 msgid ""
 "\n"
 "---------------------------------------------------------------------\n"
@@ -697,7 +697,7 @@ msgstr ""
 "boš moral zopet pregledati trac.ini datoteko in nastavitve\n"
 "repository_type in repository_path v odseku [trac].\n"
 
-#: trac/admin/console.py:509
+#: trac/admin/console.py:510
 #, python-format
 msgid ""
 "\n"
@@ -749,7 +749,7 @@ msgstr ""
 "\n"
 "Vse čestitke!\n"
 
-#: trac/admin/console.py:568
+#: trac/admin/console.py:569
 #, python-format
 msgid "Non-ascii environment path '%(path)s' not supported."
 msgstr "Ne-ascii pot okolja '%(path)s' ni podprta."
@@ -1309,12 +1309,12 @@ msgstr "Izdano:"
 msgid "Released"
 msgstr "izdano"
 
-#: trac/db/api.py:191
+#: trac/db/api.py:193
 #, python-format
 msgid "Unsupported database type \"%(scheme)s\""
 msgstr "Nepodrta vrsta zbirke podatkov \"%(scheme)s\""
 
-#: trac/db/api.py:227
+#: trac/db/api.py:229
 #, python-format
 msgid ""
 "Unknown scheme \"%(scheme)s\"; database connection string must start with"
@@ -1783,7 +1783,7 @@ msgstr ""
 #: trac/templates/about.html:46
 #, fuzzy
 msgid ""
-"Copyright © 2003-2012\n"
+"Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
 msgstr ""
 "Pravice pridržane © 2003-2010\n"
@@ -1871,7 +1871,7 @@ msgid "Attach another file"
 msgstr "Dodaj drugo datoteko"
 
 #: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:21
-#: trac/templates/macros.html:19 trac/util/text.py:529
+#: trac/templates/macros.html:19 trac/util/text.py:541
 #: trac/versioncontrol/templates/browser.html:110
 #: trac/versioncontrol/templates/dir_entries.html:16
 #, python-format
@@ -5385,12 +5385,12 @@ msgstr ""
 "Če je ta pot obstajala in je bila nato odstranjena, \n"
 "lahko %(search)s po zgodovini odlagališča."
 
-#: trac/web/api.py:240
+#: trac/web/api.py:252
 #, python-format
 msgid "Invalid URL encoding (was %(path_info)r)"
 msgstr "Neveljavni kodni niz za URL (prej %(path_info)r)"
 
-#: trac/web/api.py:484
+#: trac/web/api.py:496
 #, python-format
 msgid "File %(path)s not found"
 msgstr "Datoteke %(path)s ni bilo mogoče najti"
@@ -5434,16 +5434,16 @@ msgstr "Že prijavljen kot %(user)s."
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr "Napaka pri dodatku \"%(name)s\" za krmarjenje."
 
-#: trac/web/chrome.py:889
+#: trac/web/chrome.py:890
 msgid "(unknown template location)"
 msgstr "(neznana lokacija predloge)"
 
-#: trac/web/chrome.py:890
+#: trac/web/chrome.py:891
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "Genshi napaka %(error)s pri izvajanju predloge %(location)s"
 
-#: trac/web/chrome.py:938 trac/web/chrome.py:946
+#: trac/web/chrome.py:939 trac/web/chrome.py:947
 msgid "anonymous"
 msgstr "anonimni"
 

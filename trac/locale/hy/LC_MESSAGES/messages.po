@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2012-10-29 19:08+0100\n"
+"POT-Creation-Date: 2013-02-17 15:58+0100\n"
 "PO-Revision-Date: 2010-06-04 10:09+0400\n"
 "Last-Translator: \n"
 "Language-Team: hy_AM <trac-dev@googlegroups.com>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: tracopt/mimeview/php.py:98
 msgid ""
@@ -534,17 +534,17 @@ msgstr "%(name)s %(version)s տարբերակում"
 msgid "Command not found"
 msgstr "Հրամանը գտնված չէ"
 
-#: trac/admin/console.py:111
+#: trac/admin/console.py:112
 #, fuzzy, python-format
 msgid "Error: %(msg)s"
 msgstr ""
 
-#: trac/admin/console.py:130
+#: trac/admin/console.py:131
 #, fuzzy, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
-"Copyright (C) 2003-2012 Edgewall Software\n"
+"Copyright (C) 2003-2013 Edgewall Software\n"
 "\n"
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
@@ -556,50 +556,50 @@ msgstr ""
 "Տպեք:  '?' կամ 'help' հրամանների օգնության համար։\n"
 "        "
 
-#: trac/admin/console.py:164
+#: trac/admin/console.py:165
 #, python-format
 msgid "Failed to open environment: %(err)s"
 msgstr "Միջավայրի բացումը խափանվեց։ %(err)s"
 
-#: trac/admin/console.py:247
+#: trac/admin/console.py:248
 #, python-format
 msgid "Completion error: %(err)s"
 msgstr "Եզրափակման սխալ`%(err)s"
 
-#: trac/admin/console.py:306
+#: trac/admin/console.py:307
 #, fuzzy, python-format
 msgid ""
 "No documentation found for '%(cmd)s'. Use 'help' to see the list of "
 "commands."
 msgstr "\"%(cmd)s\"-ի համար թղթաբանություն չգտնվեց"
 
-#: trac/admin/console.py:312
+#: trac/admin/console.py:313
 msgid "Did you mean this?"
 msgid_plural "Did you mean one of these?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/admin/console.py:316
+#: trac/admin/console.py:317
 #, python-format
 msgid "trac-admin - The Trac Administration Console %(version)s"
 msgstr "trac-admin - Trac-ի ադմինիստրացիոն Console %(version)s"
 
-#: trac/admin/console.py:320
+#: trac/admin/console.py:321
 msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
 msgstr ""
 "Օգտագործումը: trac-admin </path/to/projenv> [command [subcommand] [option"
 " ...]]\n"
 
-#: trac/admin/console.py:323
+#: trac/admin/console.py:324
 msgid "Invoking trac-admin without command starts interactive mode.\n"
 msgstr "Կանչելով trac-admin-ը առանց հրամանների՝ սկսվում է դիալոգային ռեժիմը։\n"
 
-#: trac/admin/console.py:363
+#: trac/admin/console.py:364
 #, python-format
 msgid "Creating a new Trac environment at %(envname)s"
 msgstr "Նոր Trac միջավայրի ստեղծում %(envname)s-ում"
 
-#: trac/admin/console.py:365
+#: trac/admin/console.py:366
 msgid ""
 "\n"
 "Trac will first ask a few questions about your environment \n"
@@ -615,12 +615,12 @@ msgstr ""
 "Մուտքագրեք Ձեր պրոյեկտի անվանումը։\n"
 "Այս անունը կօգտագործվի էջերի վերնագրում և նկարագրության մեջ։\n"
 
-#: trac/admin/console.py:373
+#: trac/admin/console.py:374
 #, python-format
 msgid "Project Name [%(default)s]> "
 msgstr "Պրոյեկտի Անվանումը [%(default)s]> "
 
-#: trac/admin/console.py:375
+#: trac/admin/console.py:376
 msgid ""
 " \n"
 " Please specify the connection string for the database to use.\n"
@@ -636,48 +636,48 @@ msgstr ""
 " ունեցող PostgreSQL տվյալների բազա (կարդացեք Trac-ի թղթաբանությունը\n"
 " միացման տողի ճիշտ շարահյուսության համար)։\n"
 
-#: trac/admin/console.py:383
+#: trac/admin/console.py:384
 #, python-format
 msgid "Database connection string [%(default)s]> "
 msgstr "Տվյալների բազայի միացման տող [%(default)s]> "
 
-#: trac/admin/console.py:390
+#: trac/admin/console.py:391
 #, python-format
 msgid "Initenv for '%(env)s' failed."
 msgstr "Initenv '%(env)s'-ի համար խափանվեց։"
 
-#: trac/admin/console.py:393
+#: trac/admin/console.py:394
 msgid "Does an environment already exist?"
 msgstr "%(name)s տարբերակն արդեն գոյություն ունի։"
 
-#: trac/admin/console.py:397
+#: trac/admin/console.py:398
 msgid "Directory exists and is not empty."
 msgstr "կատալոգը գոյություն ունի և այն դատարկ չէ։"
 
-#: trac/admin/console.py:403
+#: trac/admin/console.py:404
 #, fuzzy, python-format
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
 msgstr ""
 
-#: trac/admin/console.py:431
+#: trac/admin/console.py:432
 msgid "Creating and Initializing Project"
 msgstr "Պրոյեկտի ստեղծում և Ինիցիալիզացում"
 
-#: trac/admin/console.py:448
+#: trac/admin/console.py:449
 msgid "Failed to create environment."
 msgstr "Միջավայրի բացումը խափանվեց։"
 
-#: trac/admin/console.py:454
+#: trac/admin/console.py:455
 msgid " Installing default wiki pages"
 msgstr "Լռությամբ wiki էջերի տեղադրում"
 
-#: trac/admin/console.py:463
+#: trac/admin/console.py:464
 msgid " Indexing default repository"
 msgstr "Բազայի ինդեքսավորում"
 
-#: trac/admin/console.py:466
+#: trac/admin/console.py:467
 msgid ""
 "\n"
 "---------------------------------------------------------------------\n"
@@ -705,7 +705,7 @@ msgstr ""
 "բրոուզերը\n"
 "ակտիվացնելու համար:\n"
 
-#: trac/admin/console.py:509
+#: trac/admin/console.py:510
 #, python-format
 msgid ""
 "\n"
@@ -759,7 +759,7 @@ msgstr ""
 "\n"
 "Շնորհավորում ենք !\n"
 
-#: trac/admin/console.py:568
+#: trac/admin/console.py:569
 #, python-format
 msgid "Non-ascii environment path '%(path)s' not supported."
 msgstr "'%(path)s' non-ascii միջավայրի ճանապարհը ապահովված չէ։"
@@ -1312,12 +1312,12 @@ msgstr "Թողարկված է․"
 msgid "Released"
 msgstr "Թողարկված է"
 
-#: trac/db/api.py:191
+#: trac/db/api.py:193
 #, python-format
 msgid "Unsupported database type \"%(scheme)s\""
 msgstr "Տվյալների բազայի չապահովված \"%(scheme)s\" տեսակ"
 
-#: trac/db/api.py:227
+#: trac/db/api.py:229
 #, python-format
 msgid ""
 "Unknown scheme \"%(scheme)s\"; database connection string must start with"
@@ -1773,7 +1773,7 @@ msgstr "Այցելեք Trac բաց կոդով պրոյեկտ․[1:http://trac.ed
 #: trac/templates/about.html:46
 #, fuzzy
 msgid ""
-"Copyright © 2003-2012\n"
+"Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
 msgstr ""
 "Copyright © 2003-2010\n"
@@ -1861,7 +1861,7 @@ msgid "Attach another file"
 msgstr "Կցեք մեկ ուրիշ ֆայլ"
 
 #: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:21
-#: trac/templates/macros.html:19 trac/util/text.py:529
+#: trac/templates/macros.html:19 trac/util/text.py:541
 #: trac/versioncontrol/templates/browser.html:110
 #: trac/versioncontrol/templates/dir_entries.html:16
 #, python-format
@@ -5348,12 +5348,12 @@ msgstr ""
 "Դուք կարող եք %(search)s ռեպոզիտորիայի պատմությունում, որպեսզի տեսնեք "
 "արդյոք ճանապարհը գոյություն ունեցել է և ջնջվել է։"
 
-#: trac/web/api.py:240
+#: trac/web/api.py:252
 #, python-format
 msgid "Invalid URL encoding (was %(path_info)r)"
 msgstr "Անվավեր կոդավորված URL (նախկինում %(path_info)r)"
 
-#: trac/web/api.py:484
+#: trac/web/api.py:496
 #, python-format
 msgid "File %(path)s not found"
 msgstr "Տվյալների բազայի \"%(path)s\" ճանապարհը չի գտնվել։"
@@ -5397,16 +5397,16 @@ msgstr "Արդեն մուտք է եղել որպես %(user)s։"
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr "Ուղղորդման սխալ \"%(name)s\""
 
-#: trac/web/chrome.py:889
+#: trac/web/chrome.py:890
 msgid "(unknown template location)"
 msgstr "(շաբլոնի անհայտ տեղակայում)"
 
-#: trac/web/chrome.py:890
+#: trac/web/chrome.py:891
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "Genshi %(error)s սխալ մինչ %(location)s շաբլոնը ներկայացնելը "
 
-#: trac/web/chrome.py:938 trac/web/chrome.py:946
+#: trac/web/chrome.py:939 trac/web/chrome.py:947
 msgid "anonymous"
 msgstr "անանուն"
 
