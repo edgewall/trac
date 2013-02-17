@@ -1,21 +1,24 @@
 # Portuguese (Brazil) translations for Trac.
-# Copyright (C) 2007-2008 Edgewall Software
+# Copyright (C) 2012 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>, 2007.
 #
+# Translators:
+# Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>, 2007.
+# Manuel  <mfcn2000@gmail.com>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 0.12\n"
-"Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
+"Project-Id-Version:  Trac\n"
+"Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
 "POT-Creation-Date: 2012-10-29 19:08+0100\n"
-"PO-Revision-Date: 2011-01-24 15:16-0200\n"
-"Last-Translator: Leslie Harlley Watter <leslie@watter.org>\n"
-"Language-Team: pt_BR <trac-dev@googlegroups.com>\n"
+"PO-Revision-Date: 2012-10-29 18:34+0000\n"
+"Last-Translator: Christian Boos <cboos@edgewall.org>\n"
+"Language-Team: Portuguese (Brazil) "
+"(http://www.transifex.com/projects/p/trac/language/pt_BR/)\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: tracopt/mimeview/php.py:98
 msgid ""
@@ -144,11 +147,9 @@ msgid "Could not delete attachment"
 msgstr "Não foi possível remover o anexo"
 
 #: trac/attachment.py:218
-#, fuzzy, python-format
+#, python-format
 msgid "Cannot reparent attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
 msgstr ""
-"Não foi possível reatribuir a localização do anexo \"%(att)s\" uma vez "
-"que ele já existe em %(realm)s:%(id)s"
 
 #: trac/attachment.py:224
 #, python-format
@@ -165,11 +166,9 @@ msgid "Could not reparent attachment %(name)s"
 msgstr "Não foi possível reatribuir a localização do anexo %(name)s"
 
 #: trac/attachment.py:272
-#, fuzzy, python-format
+#, python-format
 msgid "Cannot create attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
 msgstr ""
-"Não foi possível reatribuir a localização do anexo \"%(att)s\" uma vez "
-"que ele já existe em %(realm)s:%(id)s"
 
 #: trac/attachment.py:365
 #, python-format
@@ -541,7 +540,7 @@ msgid "Error: %(msg)s"
 msgstr "Erro: %(msg)s"
 
 #: trac/admin/console.py:130
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
@@ -550,12 +549,6 @@ msgid ""
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
 msgstr ""
-"Bem vindo ao trac-admin versão %(version)s\n"
-"Console de Administração Interativa do Trac \n"
-"Copyright (c) 2003-2010 Edgewall Software\n"
-"\n"
-"Digite:  '?' ou 'help' para ajuda nos comandos.\n"
-"        "
 
 #: trac/admin/console.py:164
 #, python-format
@@ -568,11 +561,11 @@ msgid "Completion error: %(err)s"
 msgstr "Erro de completação: %(err)s"
 
 #: trac/admin/console.py:306
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "No documentation found for '%(cmd)s'. Use 'help' to see the list of "
 "commands."
-msgstr "Nenhuma documentação encontrada para '%(cmd)s'"
+msgstr ""
 
 #: trac/admin/console.py:312
 msgid "Did you mean this?"
@@ -1803,13 +1796,10 @@ msgstr ""
 "        [1:http://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
-#, fuzzy
 msgid ""
 "Copyright © 2003-2012\n"
 "        [1:Edgewall Software]"
 msgstr ""
-"Copyright © 2003-2010\n"
-"        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
 msgid "System Information"
@@ -2296,16 +2286,12 @@ msgid "View attachment"
 msgstr "Visualizar anexo"
 
 #: trac/templates/list_of_attachments.html:18
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "[1:%(file)s][2:​]\n"
 "       ([3:%(size)s]) -\n"
 "      added by [4:%(author)s] %(date)s ago."
 msgstr ""
-"[1:%(file)s]\n"
-"      [2:[3:]]\n"
-"       ([4:%(size)s]) -\n"
-"      adicionado por [5:%(author)s] %(date)s atrás."
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:39
@@ -3952,13 +3938,11 @@ msgid "Reply, quoting this description"
 msgstr "Responder, citando essa descrição"
 
 #: trac/ticket/templates/ticket_change.html:19
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "[1:[2:%(name)s]][3:​]\n"
 "          added"
 msgstr ""
-"[1:[2:%(name)s]][3:]\n"
-"          adicionado"
 
 #: trac/ticket/templates/ticket_change.html:26
 #, python-format
@@ -5213,9 +5197,8 @@ msgid "View file without annotations"
 msgstr "Visualizar arquivo sem anotações"
 
 #: trac/versioncontrol/web_ui/browser.py:464
-#, fuzzy
 msgid "Blame"
-msgstr "Nome"
+msgstr ""
 
 #: trac/versioncontrol/web_ui/browser.py:465
 msgid ""
@@ -5631,7 +5614,7 @@ msgstr "Um novo nome é obrigatório para renomear"
 
 #: trac/wiki/admin.py:215
 msgid "The new name is invalid."
-msgstr ""
+msgstr "O novo nome é inválido."
 
 #: trac/wiki/admin.py:219 trac/wiki/web_ui.py:303
 #, python-format
