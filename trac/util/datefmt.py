@@ -36,12 +36,16 @@ try:
         get_time_format, get_month_names,
         get_period_names, get_day_names
     )
+    from babel.localedata import list as get_known_locales
+
 except ImportError:
     babel = None
+    def get_known_locales():
+        return []
 
 from trac.core import TracError
 from trac.util.text import to_unicode, getpreferredencoding
-from trac.util.translation import _, ngettext, get_available_locales
+from trac.util.translation import _, ngettext
 
 # Date/time utilities
 
@@ -534,8 +538,7 @@ def _i18n_parse_date_pattern(locale):
         'period_names': period_names,
     }
 
-_I18N_PARSE_DATE_PATTERNS = dict(
-    (l, False) for l in get_available_locales(check_catalog=False))
+_I18N_PARSE_DATE_PATTERNS = dict((l, False) for l in get_known_locales())
 
 def _i18n_parse_date(text, tzinfo, locale):
     locale = Locale.parse(locale)

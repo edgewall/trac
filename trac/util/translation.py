@@ -330,20 +330,16 @@ try:
     def get_translations():
         return translations
 
-    def get_available_locales(check_catalog=True):
+    def get_available_locales():
         """Return a list of locale identifiers of the locales for which
         translations are available.
-
-        :param check_catalog: if `True` check for the compiled catalog
-                              (.mo), otherwise the presence of the
-                              directory is enough.
         """
         try:
             locales = [dirname for dirname
                        in pkg_resources.resource_listdir('trac', 'locale')
                        if '.' not in dirname
-                       and (not check_catalog or pkg_resources.resource_exists(
-                        'trac', 'locale/%s/LC_MESSAGES/messages.mo' % dirname))]
+                       and pkg_resources.resource_exists(
+                        'trac', 'locale/%s/LC_MESSAGES/messages.mo' % dirname)]
             if 'en_US' not in locales:
                 locales.append('en_US')
             return locales
