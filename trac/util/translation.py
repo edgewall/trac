@@ -335,9 +335,14 @@ try:
         translations are available.
         """
         try:
-            return [dirname for dirname
-                    in pkg_resources.resource_listdir('trac', 'locale')
-                    if '.' not in dirname]
+            locales = [dirname for dirname
+                       in pkg_resources.resource_listdir('trac', 'locale')
+                       if '.' not in dirname
+                       and pkg_resources.resource_exists(
+                        'trac', 'locale/%s/LC_MESSAGES/messages.mo' % dirname)]
+            if 'en_US' not in locales:
+                locales.append('en_US')
+            return locales
         except Exception:
             return []
 

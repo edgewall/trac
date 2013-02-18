@@ -575,7 +575,7 @@ class Formatter(object):
         ns = fullmatch.group('snsbr')
         target = unquote_label(fullmatch.group('stgtbr'))
         match = match[1:-1]
-        return '&lt;%s&gt;' % \
+        return u'&lt;%s&gt;' % \
                 self._make_link(ns, target, match, match, fullmatch)
 
     def _shref_formatter(self, match, fullmatch):
