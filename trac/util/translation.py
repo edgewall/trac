@@ -381,7 +381,7 @@ except ImportError: # fall back on 0.11 behavior, i18n functions are no-ops
     def get_translations():
         return translations
 
-    def get_available_locales(check_catalog=True):
+    def get_available_locales():
         return []
 
     def get_negotiated_locale(preferred=None, default=None):
