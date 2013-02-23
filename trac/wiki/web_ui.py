@@ -82,11 +82,12 @@ class WikiModule(Component):
         return 'wiki'
 
     def get_navigation_items(self, req):
-        if 'WIKI_VIEW' in req.perm('wiki'):
+        if 'WIKI_VIEW' in req.perm('wiki', 'WikiStart'):
             yield ('mainnav', 'wiki',
-                   tag.a(_('Wiki'), href=req.href.wiki(), accesskey=1))
+                   tag.a(_("Wiki"), href=req.href.wiki(), accesskey=1))
+        if 'WIKI_VIEW' in req.perm('wiki', 'TracGuide'):
             yield ('metanav', 'help',
-                   tag.a(_('Help/Guide'), href=req.href.wiki('TracGuide'),
+                   tag.a(_("Help/Guide"), href=req.href.wiki('TracGuide'),
                          accesskey=6))
 
     # IPermissionRequestor methods
