@@ -1,8 +1,9 @@
 # Chinese (China) translations for Trac.
-# Copyright (C) 2010 Edgewall Software
+# Copyright (C) 2012 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# Zeng Jie <zengjie@gmail.com>, 2010.
 #
+# Translators:
+# Shuning Hong <>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
@@ -15,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -27,24 +28,24 @@ msgstr "关闭"
 
 #: trac/htdocs/js/diff.js:119
 msgid "Tabular"
-msgstr "表式"
+msgstr ""
 
 #: trac/htdocs/js/diff.js:125
 msgid "Unified"
-msgstr "标准"
+msgstr ""
 
 #: trac/htdocs/js/expand_dir.js:42
 msgid "Expand sub-directory in place"
-msgstr "就地展开子目录"
+msgstr "在此处展开子目录"
 
 #: trac/htdocs/js/expand_dir.js:71
 msgid "Re-expand directory"
-msgstr "再次展开目录"
+msgstr "重新展开目录"
 
 #: trac/htdocs/js/expand_dir.js:121
 #, python-format
 msgid "Loading %(entry)s..."
-msgstr "加载 %(entry)s..."
+msgstr "正在装载%(entry)s..."
 
 #: trac/htdocs/js/expand_dir.js:149
 msgid "(empty)"
@@ -56,7 +57,7 @@ msgstr "(错误)"
 
 #: trac/htdocs/js/expand_dir.js:164
 msgid "Fold directory"
-msgstr "收起目录"
+msgstr "折叠目录"
 
 #: trac/htdocs/js/folding.js:62
 #, python-format
@@ -66,7 +67,7 @@ msgstr "显示%(title)s"
 #: trac/htdocs/js/folding.js:78
 #, python-format
 msgid "%(title)s (click to hide column)"
-msgstr "%(title)s (点击隐藏列)"
+msgstr "%(title)s (点击隐藏本列)"
 
 #. TRANSLATOR: Format in month heading in the datepicker, extracts yearSuffix
 #. and showMonthAfterYear
@@ -136,7 +137,7 @@ msgstr "否"
 
 #: trac/htdocs/js/query.js:132
 msgid "A filter already exists for that property"
-msgstr "此属性已有过滤器"
+msgstr "该属性的过滤器已存在"
 
 #: trac/htdocs/js/query.js:159
 msgid "or"
@@ -156,7 +157,7 @@ msgstr "介于"
 
 #: trac/htdocs/js/query.js:190
 msgid "and"
-msgstr "到"
+msgstr "和"
 
 #: trac/htdocs/js/query.js:337
 msgid " remove:"
@@ -177,31 +178,31 @@ msgstr ""
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
-msgstr "链接到此"
+msgstr ""
 
 #: trac/htdocs/js/wikitoolbar.js:56
 msgid "Bold text: '''Example'''"
-msgstr "粗体字: '''示例'''"
+msgstr "加粗文字: '''Example'''"
 
 #: trac/htdocs/js/wikitoolbar.js:59
 msgid "Italic text: ''Example''"
-msgstr "斜体字: ''示例''"
+msgstr "斜体文字: ''Example''"
 
 #: trac/htdocs/js/wikitoolbar.js:62
 msgid "Heading: == Example =="
-msgstr "标题: == 示例 =="
+msgstr "标题: == Example =="
 
 #: trac/htdocs/js/wikitoolbar.js:65
 msgid "Link: [http://www.example.com/ Example]"
-msgstr "链接: [http://www.example.com/ 示例]"
+msgstr "链接: [http://www.example.com/ Example]"
 
 #: trac/htdocs/js/wikitoolbar.js:68
 msgid "Code block: {{{ example }}}"
-msgstr "代码块: {{{ 示例 }}}"
+msgstr "代码块: {{{ example }}}"
 
 #: trac/htdocs/js/wikitoolbar.js:71
 msgid "Horizontal rule: ----"
-msgstr "水平线: ----"
+msgstr "水平分割线: ----"
 
 #: trac/htdocs/js/wikitoolbar.js:74
 msgid "New paragraph"
@@ -209,22 +210,22 @@ msgstr "新段落"
 
 #: trac/htdocs/js/wikitoolbar.js:77
 msgid "Line break: [[BR]]"
-msgstr "折行: [[BR]]"
+msgstr "换行: [[BR]]"
 
 #: trac/htdocs/js/wikitoolbar.js:80
 msgid "Image: [[Image()]]"
-msgstr "图片: [[Image()]]"
+msgstr "图像: [[Image()]]"
 
 #: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
 msgid "Link to this section"
-msgstr "链接到这一节"
+msgstr "链接至本节"
 
 #: trac/versioncontrol/templates/changeset.html:7
 msgid "Link to this diff"
-msgstr "链接到这一差异"
+msgstr "链接至该diff"
 
 #: trac/wiki/templates/wiki_view.html:5
 #, python-format
 msgid "Link to #%(id)s"
-msgstr "链接到#%(id)s"
+msgstr "链接至#%(id)s"
 

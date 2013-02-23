@@ -1,10 +1,12 @@
 # Chinese (China) translations for Trac.
-# Copyright (C) 2010 Edgewall Software
+# Copyright (C) 2012 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 #
+# Translators:
 # Hong Shuning <hongshuning@gmail.com>, 2010.
-# Zeng Jie <zengjie@gmail.com>, 2010.
 # Jake Li <gnozil@gmail.com>, 2010.
+# Shuning Hong <>, 2012.
+# Zeng Jie <zengjie@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
@@ -17,7 +19,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: tracopt/mimeview/php.py:96
 msgid ""
@@ -282,9 +284,9 @@ msgid "Could not delete attachment"
 msgstr "不能删除附件"
 
 #: trac/attachment.py:253
-#, fuzzy, python-format
+#, python-format
 msgid "Cannot reparent attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
-msgstr "不能为附件 \"%(att)s\" 重定父页面，因为它已经在 %(realm)s:%(id)s 中存在"
+msgstr ""
 
 #: trac/attachment.py:258
 #, python-format
@@ -299,9 +301,9 @@ msgid "Could not reparent attachment %(name)s"
 msgstr "不能为附件 %(name)s 重定父页面"
 
 #: trac/attachment.py:313
-#, fuzzy, python-format
+#, python-format
 msgid "Cannot create attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
-msgstr "不能为附件 \"%(att)s\" 重定父页面，因为它已经在 %(realm)s:%(id)s 中存在"
+msgstr "无法创建附件\"%(att)s\"，因为%(realm)s:%(id)s非法"
 
 #: trac/attachment.py:396
 #, python-format
@@ -485,7 +487,7 @@ msgstr "[%(section)s] %(entry)s: 期望是 (%(choices)s)之一, 得到 %(value)s
 #: trac/config.py:761 trac/config.py:774
 #, python-format
 msgid "Option '%(option)s' doesn't exist in section '%(section)s'"
-msgstr ""
+msgstr "在'%(section)s'节中没有'%(option)s'选项"
 
 #: trac/core.py:33
 msgid "Trac Error"
@@ -742,10 +744,11 @@ msgid ""
 "        "
 msgstr ""
 "欢迎使用 trac-admin %(version)s\n"
-"交互式Trac管理控制台。\n"
-"Copyright (c) 2003-2010 Edgewall Software\n"
+"Trac交互式管理控制台。\n"
+"Copyright (C) 2003-2013 Edgewall Software\n"
 "\n"
-"输入 '?' 或 'help' 获取命令帮助"
+"输入:  '?' 或 'help' 可获得命令帮助。\n"
+"        "
 
 #: trac/admin/console.py:166
 #, python-format
@@ -762,7 +765,7 @@ msgstr "自动完成错误: %(err)s"
 msgid ""
 "No documentation found for '%(cmd)s'. Use 'help' to see the list of "
 "commands."
-msgstr "没有找到 '%(cmd)s' 的文档"
+msgstr ""
 
 #: trac/admin/console.py:322
 msgid "Did you mean this?"
@@ -1383,9 +1386,9 @@ msgid "Add Milestone:"
 msgstr "增加里程碑:"
 
 #: trac/admin/templates/admin_milestones.html:92
-#, fuzzy, python-format
+#, python-format
 msgid "Format: %(datetimehint)s"
-msgstr "格式：%(datetimehint)s"
+msgstr "格式: %(datetimehint)s"
 
 #: trac/admin/templates/admin_milestones.html:107 trac/ticket/admin.py:399
 msgid "Due"
@@ -1584,14 +1587,13 @@ msgstr "mysqldump失败: %(msg)s"
 
 #: trac/db/mysql_backend.py:235 trac/db/postgres_backend.py:204
 #: trac/db/sqlite_backend.py:245
-#, fuzzy
 msgid "No destination file created"
-msgstr "没有选择版本"
+msgstr "未创建目标文件"
 
 #: trac/db/pool.py:130
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to get database connection within %(time)d seconds."
-msgstr "无法在 %(time)d 秒内获得数据库连接"
+msgstr "无法在%(time)d秒内获取数据库连接。"
 
 #: trac/db/postgres_backend.py:81
 msgid "Cannot load Python bindings for PostgreSQL"
@@ -1711,7 +1713,6 @@ msgid "Advanced"
 msgstr "高级"
 
 #: trac/prefs/web_ui.py:167
-#, fuzzy
 msgid "The session has been loaded."
 msgstr ""
 
@@ -1741,9 +1742,8 @@ msgid "Session key:"
 msgstr "会话标志:"
 
 #: trac/prefs/templates/prefs_advanced.html:17
-#, fuzzy
 msgid "Change"
-msgstr "变更"
+msgstr ""
 
 #: trac/prefs/templates/prefs_advanced.html:18
 msgid ""
@@ -2078,12 +2078,11 @@ msgstr ""
 "        [1:http://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
-#, fuzzy
 msgid ""
 "Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
 msgstr ""
-"Copyright © 2003-2010\n"
+"Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
@@ -2572,16 +2571,12 @@ msgid "View attachment"
 msgstr "查看附件"
 
 #: trac/templates/list_of_attachments.html:18
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "[1:%(file)s][2:​]\n"
 "       ([3:%(size)s]) -\n"
 "      added by [4:%(author)s] %(date)s."
 msgstr ""
-"[1:%(file)s]\n"
-"        [2:[3:]]\n"
-"        ([4:%(size)s) -\n"
-"        (由[5:%(author)s]在%(date)s前添加)"
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:44
@@ -2875,7 +2870,6 @@ msgid "Ticket #%(num)s and all associated data removed."
 msgstr "任务单 #%(num)s 和所有相关数据均已删除。"
 
 #: trac/ticket/api.py:257
-#, fuzzy
 msgid "Attachment"
 msgstr "附件"
 
@@ -3486,9 +3480,8 @@ msgid "%(title)s: %(message)s"
 msgstr "%(title)s： %(message)s:"
 
 #: trac/ticket/web_ui.py:242
-#, fuzzy
 msgid "Tickets opened and closed"
-msgstr "任务单启闭"
+msgstr ""
 
 #: trac/ticket/web_ui.py:244
 msgid "Ticket updates"
@@ -3707,18 +3700,18 @@ msgid ""
 msgstr "该任务单已创建，但在发送邮件通知时发生错误： %(message)s"
 
 #: trac/ticket/web_ui.py:1305
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The ticket %(ticketref)s has been created. You can now attach the desired"
 " files."
-msgstr "你的任务单 %(ticketref)s 已经创建，但你没有权限查看它。"
+msgstr ""
 
 #: trac/ticket/web_ui.py:1311
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The ticket %(ticketref)s has been created, but you don't have permission "
 "to view it."
-msgstr "你的任务单 %(ticketref)s 已经创建，但你没有权限查看它。"
+msgstr "任务单%(ticketref)s已创建，但你没有权限查看它。"
 
 #. TRANSLATOR: The 'change' has been saved... (link)
 #: trac/ticket/web_ui.py:1338
@@ -4436,7 +4429,7 @@ msgid_plural "follow-ups:"
 msgstr[0] "跟随："
 
 #: trac/ticket/templates/ticket_change.html:53
-#, fuzzy, python-format
+#, python-format
 msgid "Changed %(date)s by %(author)s"
 msgstr "由 %(author)s 在 %(date)s 前变更"
 
@@ -4461,8 +4454,6 @@ msgid ""
 "[1:[2:%(name)s]][3:​]\n"
 "          added"
 msgstr ""
-"[1:[2:%(name)s]]\n"
-"          [3:[4:]]被添加"
 
 #: trac/ticket/templates/ticket_change.html:88
 #, python-format
@@ -5684,9 +5675,8 @@ msgid "View file without annotations"
 msgstr "查看文件(不包含标注)"
 
 #: trac/versioncontrol/web_ui/browser.py:469
-#, fuzzy
 msgid "Blame"
-msgstr "名称"
+msgstr ""
 
 #: trac/versioncontrol/web_ui/browser.py:470
 msgid ""
@@ -6040,9 +6030,9 @@ msgstr ""
 "%(traceback)s}}}"
 
 #: trac/web/session.py:245
-#, fuzzy, python-format
+#, python-format
 msgid "Session '%(id)s' already exists. Please choose a different session ID."
-msgstr "会话'%(id)s'已经存在，<br />请选择其它会话标识。"
+msgstr ""
 
 #: trac/web/session.py:248
 msgid "Error renaming session"
@@ -6053,21 +6043,19 @@ msgid "SID"
 msgstr "SID"
 
 #: trac/web/session.py:417
-#, fuzzy
 msgid "Auth"
-msgstr "路径"
+msgstr ""
 
 #: trac/web/session.py:417
-#, fuzzy
 msgid "Last Visit"
-msgstr "最新修订版"
+msgstr "上次访问"
 
 #: trac/web/session.py:418
 msgid "Email"
 msgstr "邮件地址"
 
 #: trac/web/session.py:427
-#, fuzzy, python-format
+#, python-format
 msgid "Session '%(sid)s' already exists"
 msgstr ""
 
@@ -6077,12 +6065,12 @@ msgid "Invalid attribute '%(attr)s'"
 msgstr "非法属性'%(attr)s'"
 
 #: trac/web/session.py:445
-#, fuzzy, python-format
+#, python-format
 msgid "Session '%(sid)s' not found"
-msgstr "没有找到会话标识%(sid)s"
+msgstr ""
 
 #: trac/wiki/admin.py:113
-#, fuzzy, python-format
+#, python-format
 msgid "Page '%(page)s' not found"
 msgstr ""
 
@@ -6176,9 +6164,8 @@ msgid "Provide a list of known InterTrac prefixes."
 msgstr ""
 
 #: trac/wiki/intertrac.py:119
-#, fuzzy
 msgid "The Trac Project"
-msgstr "搜索 %(project)s"
+msgstr "The Trac Project"
 
 #: trac/wiki/interwiki.py:163
 msgid "Provide a description list for the known InterWiki prefixes."
@@ -6870,7 +6857,7 @@ msgid "[1:Last modified] %(reldate)s"
 msgstr "[1:最后修改于] %(reldate)s 前"
 
 #: trac/wiki/templates/wiki_view.html:62
-#, fuzzy, python-format
+#, python-format
 msgid "Last modified on %(date)s"
 msgstr ""
 

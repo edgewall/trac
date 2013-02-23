@@ -1,8 +1,9 @@
-# Turkish (Turkey) translations for Trac.
-# Copyright (C) 2008-2009 Edgewall Software
+# Turkish translations for Trac.
+# Copyright (C) 2012 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>, 2008.
 #
+# Translators:
+# Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>, 2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
@@ -15,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: tracopt/mimeview/php.py:96
 msgid ""
@@ -283,11 +284,9 @@ msgid "Could not delete attachment"
 msgstr "Ek dosya silinemiyor."
 
 #: trac/attachment.py:253
-#, fuzzy, python-format
+#, python-format
 msgid "Cannot reparent attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
 msgstr ""
-"Ek sahibi değiştirilemiyor \"%(att)s\" , zaten %(realm)s:%(id)s üzerinde "
-"mevcut."
 
 #: trac/attachment.py:258
 #, python-format
@@ -304,11 +303,9 @@ msgid "Could not reparent attachment %(name)s"
 msgstr "Ek %(name)s sahibi değiştirilemiyor"
 
 #: trac/attachment.py:313
-#, fuzzy, python-format
+#, python-format
 msgid "Cannot create attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
 msgstr ""
-"Ek sahibi değiştirilemiyor \"%(att)s\" , zaten %(realm)s:%(id)s üzerinde "
-"mevcut."
 
 #: trac/attachment.py:396
 #, python-format
@@ -758,12 +755,6 @@ msgid ""
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
 msgstr ""
-"Hoşgeldiniz, trac-admin %(version)s\n"
-"İnteraktif Trac yönetim konsolu.\n"
-"Copyright (c) 2003-2010 Edgewall Software\n"
-"\n"
-"Yazın:  '?' veya 'help' ile komutlar hakkında yardım için.\n"
-"        "
 
 #: trac/admin/console.py:166
 #, python-format
@@ -780,7 +771,7 @@ msgstr "Tamamlama hatası: Completion error: %(err)s"
 msgid ""
 "No documentation found for '%(cmd)s'. Use 'help' to see the list of "
 "commands."
-msgstr "'%(cmd)s' için döküman bulunamadı"
+msgstr ""
 
 #: trac/admin/console.py:322
 msgid "Did you mean this?"
@@ -1624,9 +1615,9 @@ msgid "No destination file created"
 msgstr "Hedef dosya oluşturulmadı"
 
 #: trac/db/pool.py:130
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to get database connection within %(time)d seconds."
-msgstr " %(time)d saniye boyunca veritabanı bağlantısı kurulamadı"
+msgstr ""
 
 #: trac/db/postgres_backend.py:81
 msgid "Cannot load Python bindings for PostgreSQL"
@@ -1715,7 +1706,7 @@ msgid "Your preferences have been saved."
 msgstr "Seçenekleriniz kaydedildi."
 
 #: trac/mimeview/rst.py:125 trac/mimeview/rst.py:148
-#, fuzzy, python-format
+#, python-format
 msgid "%(link)s is not a valid TracLink"
 msgstr ""
 
@@ -1748,9 +1739,8 @@ msgid "Advanced"
 msgstr "Gelişmiş"
 
 #: trac/prefs/web_ui.py:167
-#, fuzzy
 msgid "The session has been loaded."
-msgstr "Sürüm \"%(name)s\" eklendi."
+msgstr ""
 
 #: trac/prefs/templates/prefs.html:10
 msgid "Preferences:"
@@ -1778,9 +1768,8 @@ msgid "Session key:"
 msgstr "Oturum anahtarı:"
 
 #: trac/prefs/templates/prefs_advanced.html:17
-#, fuzzy
 msgid "Change"
-msgstr "değişiklik"
+msgstr ""
 
 #: trac/prefs/templates/prefs_advanced.html:18
 msgid ""
@@ -1961,6 +1950,11 @@ msgid ""
 "      [1:TracAccessibility]\n"
 "      for more information on access keys."
 msgstr ""
+"Bu site bazı fonksiyonlarına erişimini kısayol \n"
+"      tuşlarıyla yapılabilmesin sağlar. Ancak \n"
+"      bu kısayollar masa üstü ve diğer programların \n"
+"      kısayolları ile çakışa bildiğinden başlangıçta devre\n"
+"      dışıdır. Bakınız [1:TracAccessibility]."
 
 #: trac/prefs/templates/prefs_language.html:15
 msgid "Language:"
@@ -2128,13 +2122,10 @@ msgstr ""
 "        [1:http://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
-#, fuzzy
 msgid ""
 "Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
 msgstr ""
-"Copyright © 2003-2010\n"
-"        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
 msgid "System Information"
@@ -2630,16 +2621,12 @@ msgid "View attachment"
 msgstr "Ek dosyayı görüntüle"
 
 #: trac/templates/list_of_attachments.html:18
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "[1:%(file)s][2:​]\n"
 "       ([3:%(size)s]) -\n"
 "      added by [4:%(author)s] %(date)s."
 msgstr ""
-"[1:%(file)s]\n"
-"      [2:[3:]]\n"
-"       ([4:%(size)s]) -\n"
-"      eklendi [5:%(author)s] tarafından %(date)s önce."
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:44
@@ -2935,9 +2922,8 @@ msgid "Ticket #%(num)s and all associated data removed."
 msgstr "Bilet #%(num)s ve tüm ilgili veri silindi."
 
 #: trac/ticket/api.py:257
-#, fuzzy
 msgid "Attachment"
-msgstr "Ek Dosyalar"
+msgstr ""
 
 #: trac/ticket/api.py:287
 msgid "Summary"
@@ -4535,7 +4521,7 @@ msgid_plural "follow-ups:"
 msgstr[0] "takip:"
 
 #: trac/ticket/templates/ticket_change.html:53
-#, fuzzy, python-format
+#, python-format
 msgid "Changed %(date)s by %(author)s"
 msgstr "Değiştirildi %(date)s önce %(author)s tarafından"
 
@@ -4560,9 +4546,6 @@ msgid ""
 "[1:[2:%(name)s]][3:​]\n"
 "          added"
 msgstr ""
-"[1:[2:%(name)s]]\n"
-"          [3:[4:]]\n"
-"          eklendi"
 
 #: trac/ticket/templates/ticket_change.html:88
 #, python-format
@@ -5815,9 +5798,8 @@ msgid "View file without annotations"
 msgstr "Dosyayı notlar olmadan görüntüle"
 
 #: trac/versioncontrol/web_ui/browser.py:469
-#, fuzzy
 msgid "Blame"
-msgstr "İsim"
+msgstr ""
 
 #: trac/versioncontrol/web_ui/browser.py:470
 msgid ""
@@ -6175,9 +6157,9 @@ msgstr ""
 "%(traceback)s}}}"
 
 #: trac/web/session.py:245
-#, fuzzy, python-format
+#, python-format
 msgid "Session '%(id)s' already exists. Please choose a different session ID."
-msgstr "Oturum '%(id)s' zaten mevcut.<br />Lütfen farklı bir oturum ID seçin."
+msgstr ""
 
 #: trac/web/session.py:248
 msgid "Error renaming session"
@@ -6188,21 +6170,19 @@ msgid "SID"
 msgstr "SID"
 
 #: trac/web/session.py:417
-#, fuzzy
 msgid "Auth"
-msgstr "yol"
+msgstr ""
 
 #: trac/web/session.py:417
-#, fuzzy
 msgid "Last Visit"
-msgstr "Son Revizyon"
+msgstr ""
 
 #: trac/web/session.py:418
 msgid "Email"
 msgstr "Eposta"
 
 #: trac/web/session.py:427
-#, fuzzy, python-format
+#, python-format
 msgid "Session '%(sid)s' already exists"
 msgstr ""
 
@@ -6212,18 +6192,18 @@ msgid "Invalid attribute '%(attr)s'"
 msgstr ""
 
 #: trac/web/session.py:445
-#, fuzzy, python-format
+#, python-format
 msgid "Session '%(sid)s' not found"
-msgstr "Oturum idsi %(sid)s bulunamadı"
+msgstr ""
 
 #: trac/wiki/admin.py:113
-#, fuzzy, python-format
+#, python-format
 msgid "Page '%(page)s' not found"
 msgstr ""
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:127 trac/wiki/model.py:174
 #: trac/wiki/web_ui.py:119
-#, fuzzy, python-format
+#, python-format
 msgid "Invalid Wiki page name '%(name)s'"
 msgstr ""
 
@@ -6311,9 +6291,8 @@ msgid "Provide a list of known InterTrac prefixes."
 msgstr ""
 
 #: trac/wiki/intertrac.py:119
-#, fuzzy
 msgid "The Trac Project"
-msgstr "Ara %(project)s"
+msgstr ""
 
 #: trac/wiki/interwiki.py:163
 msgid "Provide a description list for the known InterWiki prefixes."
@@ -7011,7 +6990,7 @@ msgid "[1:Last modified] %(reldate)s"
 msgstr "[1:Son Değişiklik] %(reldate)s önce"
 
 #: trac/wiki/templates/wiki_view.html:62
-#, fuzzy, python-format
+#, python-format
 msgid "Last modified on %(date)s"
 msgstr ""
 
@@ -7044,4 +7023,18 @@ msgstr "(boş sayfa)"
 #: trac/wiki/templates/wiki_view.html:135
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr "Bu sayfalar, mevcut sayfaya benzer isimler taşıyor, ilgili olabilir:"
+
+#~ msgid ""
+#~ "Welcome to trac-admin %(version)s\n"
+#~ "Interactive Trac administration console.\n"
+#~ "Copyright (C) 2003-2012 Edgewall Software\n"
+#~ "\n"
+#~ "Type:  '?' or 'help' for help on commands.\n"
+#~ "        "
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Copyright © 2003-2012\n"
+#~ "        [1:Edgewall Software]"
+#~ msgstr ""
 

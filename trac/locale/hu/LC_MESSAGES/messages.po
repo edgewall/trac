@@ -15,7 +15,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: tracopt/mimeview/php.py:96
 msgid ""
@@ -773,6 +773,12 @@ msgid ""
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
 msgstr ""
+"Üdvözöli Önt a trac-admin %(version)s\n"
+"Interaktív Trac Adminisztrációs Konzol.\n"
+"Copyright (C) 2003-2013 Edgewall Software\n"
+"\n"
+"Segítséget a '?' vagy 'help' beírásával kaphat.\n"
+"        "
 
 #: trac/admin/console.py:166
 #, python-format
@@ -2113,6 +2119,8 @@ msgid ""
 "Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
 msgstr ""
+"Copyright © 2003-2013\n"
+"        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
 msgid "System Information"

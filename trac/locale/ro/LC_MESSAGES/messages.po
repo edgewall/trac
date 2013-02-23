@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: tracopt/mimeview/php.py:96
 msgid ""
@@ -6868,4 +6868,9 @@ msgstr "(pagină goală)"
 #: trac/wiki/templates/wiki_view.html:135
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr ""
+
+#~ msgid ""
+#~ "Copyright © 2003-2012\n"
+#~ "        [1:Edgewall Software]"
+#~ msgstr ""
 
