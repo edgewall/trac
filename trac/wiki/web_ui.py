@@ -320,6 +320,14 @@ class WikiModule(Component):
                           new_name, old_version, old_name, new_name)
                 redirection.save(author, comment, req.remote_addr)
 
+        add_notice(req, _("The page %(old_name)s has been renamed to "
+                          "%(new_name)s.", old_name=old_name,
+                          new_name=new_name))
+        if redirect:
+            add_notice(req, _("The page %(old_name)s has been recreated "
+                              "with a redirect to %(new_name)s.",
+                              old_name=old_name, new_name=new_name))
+
         req.redirect(req.href.wiki(old_name if redirect else new_name))
 
     def _do_save(self, req, page):
