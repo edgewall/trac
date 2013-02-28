@@ -326,7 +326,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         else:
             if status != '*':
                 hints.append(_("Next status will be '%(name)s'", name=status))
-        return (this_action['name'], tag(*control), '. '.join(hints) + ".")
+        return (this_action['name'], tag(*control), '. '.join(hints) + '.'
+                if hints else '')
 
     def get_ticket_changes(self, req, ticket, action):
         this_action = self.actions[action]
