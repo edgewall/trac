@@ -434,6 +434,9 @@ class GitRepository(Repository):
         """GitChangeset factory method"""
         return GitChangeset(self, rev)
 
+    def get_changeset_uid(self, rev):
+        return self.normalize_rev(rev)
+
     def get_changes(self, old_path, old_rev, new_path, new_rev,
                     ignore_ancestry=0):
         # TODO: handle renames/copies, ignore_ancestry
