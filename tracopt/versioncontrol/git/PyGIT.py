@@ -51,7 +51,14 @@ def terminate(process):
     def terminate_nix(process):
         import os
         import signal
-        return os.kill(process.pid, signal.SIGTERM)
+        try:
+            os.kill(process.pid, signal.SIGTERM)
+        except OSError, e:
+            # If the process has already finished and has not been
+            # waited for, killing it raises an ESRCH error on Cygwin
+            import errno
+            if e.errno != errno.ESRCH:
+                raise
 
     if sys.platform == 'win32':
         return terminate_win(process)
