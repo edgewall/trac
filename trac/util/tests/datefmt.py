@@ -1066,20 +1066,27 @@ else:
                              datefmt.parse_date(u'2010-8-28', tz, zh_CN))
 
         def test_i18n_parse_date_roundtrip(self):
+            from pkg_resources import resource_listdir
+            locales = sorted(dirname
+                             for dirname in resource_listdir('trac', 'locale')
+                             if '.' not in dirname)
+
             tz = datefmt.timezone('GMT +2:00')
             t = datetime.datetime(2010, 8, 28, 11, 45, 56, 123456, datefmt.utc)
-            expected = datetime.datetime(2010, 8, 28, 13, 45, 56, 0, tz)
+            tz_t = datetime.datetime(2010, 8, 28, 13, 45, 56, 0, tz)
 
-            for locale in translation.get_available_locales():
+            for locale in locales:
                 locale = Locale.parse(locale)
                 formatted = datefmt.format_datetime(t, tzinfo=tz,
                                                     locale=locale)
 
                 actual = datefmt.parse_date(formatted, tz, locale)
-                self.assertEqual(expected, actual,
-                                 '%r != %r (%r)' % (expected, actual, locale))
+                self.assertEqual(tz_t, actual,
+                                 '%r != %r (%r %r)' % (tz_t, actual, formatted,
+                                                       locale))
+                self.assertEqual(tz_t.isoformat(), actual.isoformat())
 
-                actual = datefmt.format_datetime(expected, tzinfo=tz,
+                actual = datefmt.format_datetime(tz_t, tzinfo=tz,
                                                  locale=locale)
                 self.assertEqual(formatted, actual,
                                  '%r != %r (%r)' % (formatted, actual, locale))
