@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
 "POT-Creation-Date: 2013-02-02 15:20+0100\n"
-"PO-Revision-Date: 2013-02-14 11:44+0100\n"
+"PO-Revision-Date: 2013-02-14 19:16+0100\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/trac/language/it/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -300,9 +300,7 @@ msgstr "Non è stato possibile eliminare l'allegato"
 #: trac/attachment.py:253
 #, python-format
 msgid "Cannot reparent attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
-msgstr ""
-"Impossibile ricollegare l'allegato \"%(att)s\" come %(realm)s:%(id)s non "
-"è valido"
+msgstr "Impossibile ricollegare l'allegato \"%(att)s\" perché %(realm)s:%(id)s non è valido"
 
 #: trac/attachment.py:258
 #, python-format
@@ -321,9 +319,7 @@ msgstr "Non è stato possibile ricollegare l'allegato \"%(name)s\""
 #: trac/attachment.py:313
 #, python-format
 msgid "Cannot create attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
-msgstr ""
-"Impossibile creare l'allegato \"%(att)s\" come %(realm)s:%(id)s non è "
-"valido"
+msgstr "Impossibile creare l'allegato \"%(att)s\" perché %(realm)s:%(id)s non è valido"
 
 #: trac/attachment.py:396
 #, python-format
