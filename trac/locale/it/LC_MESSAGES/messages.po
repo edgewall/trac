@@ -4,15 +4,16 @@
 #
 # Translators:
 # Giancarlo Gaifas <lallo@artiemestieri.tn.it>, 2007.
+# Lele Gaifax <lele@metapensiero.it>, 2007-2013
+# Roberto Longobardi <seccanj@gmail.com>, 2013
 msgid ""
 msgstr ""
-"Project-Id-Version:  Trac\n"
+"Project-Id-Version: Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
 "POT-Creation-Date: 2013-02-02 15:20+0100\n"
-"PO-Revision-Date: 2013-01-27 08:43+0000\n"
-"Last-Translator: Roberto Longobardi <seccanj@gmail.com>\n"
-"Language-Team: Italian "
-"(http://www.transifex.com/projects/p/trac/language/it/)\n"
+"PO-Revision-Date: 2013-02-14 11:44+0100\n"
+"Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/trac/language/it/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -373,9 +374,9 @@ msgid "Can't upload empty file"
 msgstr "Non è possibile caricare un file vuoto"
 
 #: trac/attachment.py:709
-#, fuzzy, python-format
+#, python-format
 msgid "Maximum attachment size: %(num)s"
-msgstr "Dimensione massima dell'allegato: %(num)s byte"
+msgstr "Dimensione massima dell'allegato: %(num)s"
 
 #: trac/attachment.py:709
 msgid "Upload failed"
@@ -412,9 +413,9 @@ msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (elimina)"
 
 #: trac/attachment.py:804
-#, fuzzy, python-format
+#, python-format
 msgid "Maximum total attachment size: %(num)s"
-msgstr "Dimensione massima dell'allegato: %(num)s byte"
+msgstr "Dimensione massima dell'allegato: %(num)s"
 
 #: trac/attachment.py:804
 msgid "Download failed"
@@ -776,6 +777,12 @@ msgid ""
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
 msgstr ""
+"Benvenuto in trac-admin %(version)s\n"
+"Console di amministrazione interattiva Trac.\n"
+"Copyright (C) 2003-2013 Edgewall Software\n"
+"\n"
+"Digita:  '?' o 'help' per un aiuto sui comandi.\n"
+"        "
 
 #: trac/admin/console.py:166
 #, python-format
@@ -833,6 +840,12 @@ msgid ""
 " Please enter the name of your project.\n"
 " This name will be used in page titles and descriptions.\n"
 msgstr ""
+"\n"
+"Trac comincerà col farti alcune domande sul tuo ambiente\n"
+"per poter inizializzare e preparare il database del progetto.\n"
+"\n"
+" Inserisci il nome del tuo progetto.\n"
+" Questo nome verrà usato nei titoli delle pagine e nelle descrizioni.\n"
 
 #: trac/admin/console.py:383
 #, python-format
@@ -848,6 +861,12 @@ msgid ""
 " PostgreSQL database (check the Trac documentation for the exact\n"
 " connection string syntax).\n"
 msgstr ""
+"\n"
+" Inserisci la stringa di connessione per il database da usare.\n"
+" Di default viene creato un database SQLite locale nella directory\n"
+" del progetto. È anche possibile utilizzare un database PostgreSQL\n"
+" preesistente (consulta la documentazione Trac per l'esatta sintassi\n"
+" della stringa di connessione).\n"
 
 #: trac/admin/console.py:393
 #, python-format
@@ -906,6 +925,18 @@ msgid ""
 "you'll need to check again your trac.ini file and the [trac]\n"
 "repository_type and repository_path settings.\n"
 msgstr ""
+"\n"
+"----------------------------------------------------------------------\n"
+"Attenzione: non è stato possibile indicizzare il repository di default.\n"
+"\n"
+"Questo può accadere per varie ragioni: tipo di repository errato,\n"
+"mancanza dell'appropriata libreria di terze parti per il tipo di\n"
+"repository, il percorso specificato non corrisponde all'effettivo\n"
+"repository...\n"
+"\n"
+"Puoi comunque cominciare a usare l'ambiente Trac, ma dovrai\n"
+"controllare nuovamente il file trac.ini e le impostazioni di\n"
+"repository_type e repository_path nella sezione [trac].\n"
 
 #: trac/admin/console.py:519
 #, python-format
@@ -1472,7 +1503,7 @@ msgstr "Soggetto"
 
 #: trac/admin/templates/admin_perms.html:76
 msgid "Action is no longer defined"
-msgstr ""
+msgstr "Azione non più disponibile"
 
 #: trac/admin/templates/admin_perms.html:81
 msgid "No permissions"
@@ -1872,7 +1903,7 @@ msgstr "Formato data predefinito"
 
 #: trac/prefs/templates/prefs_datetime.html:63
 msgid "Your language setting"
-msgstr ""
+msgstr "Specificato dalla tua lingua"
 
 #: trac/prefs/templates/prefs_datetime.html:69
 msgid ""
@@ -1881,9 +1912,10 @@ msgid ""
 "\n"
 "      instead of that of the server."
 msgstr ""
-"La configurazione del fuso orario comporta la visualizzazione\\      e "
-"l'interpretazione di tutti i campi Data e Ora secondo il tuo formato\n"
-"      invece di quello del server."
+"La selezione del formato delle date influirà sulla\n"
+"visualizzazione e sull'interpretazione delle date\n"
+"mostrate in questo sito usando la regola specificata\n"
+"invece che quella determinata dal server."
 
 #: trac/prefs/templates/prefs_datetime.html:75
 msgid "Date relative/absolute format:"
@@ -2131,7 +2163,7 @@ msgstr "Visita il progetto open source Trac: [1:http://trac.edgewall.org/]"
 msgid ""
 "Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
-msgstr ""
+msgstr "Copyright © 2003-2013 [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
 msgid "System Information"
@@ -2652,11 +2684,9 @@ msgid "(The file is empty)"
 msgstr "(il file è vuoto)"
 
 #: trac/templates/preview_file.html:19
-#, fuzzy, python-format
+#, python-format
 msgid "[1:HTML preview not available], since the file size exceeds %(size)s."
-msgstr ""
-"[1:anteprima HTML non disponibile], in quanto la dimensione del file "
-"supera i %(size)s byte."
+msgstr "[1:anteprima HTML non disponibile], in quanto la dimensione del file supera i %(size)s"
 
 #: trac/templates/preview_file.html:22
 msgid "[1:HTML preview not available], since no preview renderer could handle it."
@@ -2965,7 +2995,7 @@ msgstr "Segnalazione #%(shortname)s"
 #: trac/ticket/batch.py:63
 #, python-format
 msgid "The changes could not be saved: %(message)s"
-msgstr ""
+msgstr "Non è stato possibile memorizzare le modifiche: %(message)s"
 
 #: trac/ticket/batch.py:106
 msgid "add"
@@ -3023,7 +3053,7 @@ msgstr "L'incaricato cambierà da %(current_owner)s a %(selected_owner)s"
 #: trac/ticket/default_workflow.py:283
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to the selected user"
-msgstr ""
+msgstr "L'incaricato cambierà da %(current_owner)s all'utente selezionato"
 
 #: trac/ticket/default_workflow.py:288
 #, python-format
@@ -3108,6 +3138,44 @@ msgid ""
 "    }}}\n"
 "}}}"
 msgstr ""
+"Visualizza un grafo del flusso di lavoro.\n"
+"\n"
+"Questa macro accetta una configurazione di TracWorkflow e visualizza\n"
+"gli stati e le transizioni come un grafo direzionato. Se non viene\n"
+"specificato alcun argomento viene visualizzato il flusso corrente.\n"
+"Utilizzando la modalità WikiProcessors si possono specificare la dimensione del grafo con gli argomenti `width` e `height`.\n"
+"\n"
+"(Default: `width = 800` e `heigth = 600`)\n"
+"\n"
+"Esempi:\n"
+"{{{\n"
+"    [[Workflow()]]\n"
+"\n"
+"    [[Workflow(go = here -> there; return = there -> here)]]\n"
+"\n"
+"    {{{\n"
+"    #!Workflow width=700 height=700\n"
+"    leave = * -> *\n"
+"    leave.operations = leave_status\n"
+"    leave.default = 1\n"
+"\n"
+"    accept = new,assigned,accepted,reopened -> accepted\n"
+"    accept.permissions = TICKET_MODIFY\n"
+"    accept.operations = set_owner_to_self\n"
+"\n"
+"    resolve = new,assigned,accepted,reopened -> closed\n"
+"    resolve.permissions = TICKET_MODIFY\n"
+"    resolve.operations = set_resolution\n"
+"\n"
+"    reassign = new,assigned,accepted,reopened -> assigned\n"
+"    reassign.permissions = TICKET_MODIFY\n"
+"    reassign.operations = set_owner\n"
+"\n"
+"    reopen = closed -> reopened\n"
+"    reopen.permissions = TICKET_CREATE\n"
+"    reopen.operations = del_resolution\n"
+"    }}}\n"
+"}}}"
 
 #: trac/ticket/default_workflow.py:493
 msgid "Enable JavaScript to display the workflow graph."
@@ -3118,7 +3186,7 @@ msgstr ""
 #: trac/ticket/model.py:155
 #, python-format
 msgid "Ticket %(id)s does not exist."
-msgstr "Il report %(id)s non esiste."
+msgstr "La segnalazione %(id)s non esiste."
 
 #: trac/ticket/model.py:156
 msgid "Invalid ticket number"
@@ -3331,18 +3399,57 @@ msgid ""
 "Also, using \"&\" as a field separator still works (except for `order`)\n"
 "but is deprecated."
 msgstr ""
+"Elenca le segnalazioni che corrispondono a certi criteri.\n"
+"\n"
+"Questa macro accetta una lista di argomenti nella forma \"chiave=valore\" separati da virgole.\n"
+"\n"
+"Quando la chiave è il nome di un campo, la sintassi del valore deve corrispondere a quella dei filtri, definita in TracQuery#QueryLanguage.\n"
+"Nota che ''non'' si tratta della medesima sintassi semplificata usata nei URL di collegamento `query:` che cominciano con il carattere `?`.\n"
+"È possibile includere delle virgole (`,`) nei valori precedendole con un backslash (`\\\\`).\n"
+"\n"
+"Per utilizzare una serie di alternative separare i singoli criteri con l'operatore `or`.\n"
+"\n"
+"Oltre ai criteri di filtro, è possibile usare diversi altri argomenti, tutti opzionali, per controllare la presentazione dei risultati. \n"
+"\n"
+"Il parametro `format` determina come verrà presentata la lista delle segnalazioni:\n"
+" - '''list''' -- la presentazione di default è un elenco di segnalazioni,\n"
+"   una per riga, con l'ID seguito dal suo sommario.\n"
+" - '''compact''' -- le segnalazioni verranno presentate come una lista di ID\n"
+"   separati da virgole.\n"
+" - '''count''' -- verrà mostrato solo il numero di segnalazioni corrispondenti.\n"
+" - '''rawcount''' -- verrà mostrato solo il numero di segnalazioni corrispondenti,\n"
+"   senza neanche il collegamento alla ricerca effettuata //(dalla 1.1.1)//.\n"
+" - '''table''' -- una vista simile a quella delle ricerche personalizzate (ma senza i controlli).\n"
+" - '''progress''' -- una vista simile ai grafici mostrati negli obiettivi.\n"
+"\n"
+"Il parametro `max` può essere usato per limitare il numero di segnalazioni mostrate (di default '''0''', cioè illimitato).\n"
+"\n"
+"Il parametro `order` imposta il campo utilizzato per ordinare le segnalazioni (di default il campo '''id''').\n"
+"\n"
+"Il parametro `desc` indica se l'ordinamento delle segnalazioni debba essere invertito (di default '''false''').\n"
+"\n"
+"Il parametro `group` imposta il campo utilizzato per raggruppare le segnalazioni (di default non viene effettuato alcun raggruppamento).\n"
+"\n"
+"Il parametro `groupdesc` indica se l'ordine di visualizzazione dei gruppi debba essere invertito (di default '''false''').\n"
+"\n"
+"Il parametro `verbose` può essere impostato a un valore '''true''' per ottenere la descrizione delle segnalazioni elencate. Solo per il formato '''table'''. ''deprecato, sostituito dal parametro `rows`.''\n"
+"\n"
+"Il parametro `rows` può essere usato per specificare il campo, o i campi, da visualizzare, ad esempio `rows=description|summary`.\n"
+"\n"
+"Per compatibilità con Trac 0.10, l'eventuale ultimo argomento posizionale verrà usato per specificare il `format`.\n"
+"Inoltre, è ancora consentito l'utilizzo di \"&\" come separatore dei campi (tranne che nel caso di `order`), ma è deprecato."
 
 #: trac/ticket/query.py:1313
-#, fuzzy, python-format
+#, python-format
 msgid "%(num)s ticket matching %(criteria)s"
 msgid_plural "%(num)s tickets matching %(criteria)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)s segnalazione corrispondente a %(criteria)s"
+msgstr[1] "%(num)s segnalazioni corrispondenti a %(criteria)s<"
 
 #: trac/ticket/query.py:1383
 #, python-format
 msgid "Ticket completion status for each %(group)s"
-msgstr ""
+msgstr "Stato avanzamento della segnalazione per ciascun %(group)s"
 
 #: trac/ticket/query.py:1398
 msgid "No results"
@@ -3433,7 +3540,7 @@ msgid ""
 "clause or the addition of LIMIT/OFFSET, please look up %(sort_column)s "
 "and %(limit_offset)s in TracReports to see how to gain complete control "
 "over report rewriting."
-msgstr ""
+msgstr "Suggerimento: se il report è fallito a causa della modifica automatica della clausola ORDER BY o per l'aggiunta di LIMIT/OFFSET, puoi consultare %(sort_column)s e %(limit_offset)s in TracReports dove viene spiegato come ottenere completo controllo sulla riscrittura del report."
 
 #: trac/ticket/roadmap.py:243
 msgid "ticket status"
@@ -4333,11 +4440,11 @@ msgstr "Aggiungi nuovo obiettivo"
 
 #: trac/ticket/templates/ticket.html:134
 msgid "Go to the ticket editor"
-msgstr ""
+msgstr "Vai all'editor della segnalazione"
 
 #: trac/ticket/templates/ticket.html:134
 msgid "Modify"
-msgstr ""
+msgstr "Modifica"
 
 #: trac/ticket/templates/ticket.html:136
 msgid "Create New Ticket"
@@ -4452,7 +4559,7 @@ msgstr "Vai alla lista degli allegati"
 
 #: trac/ticket/templates/ticket.html:383
 msgid "View the ticket description"
-msgstr ""
+msgstr "Mostra la descrizione della segnalazione"
 
 #: trac/ticket/templates/ticket.html:391
 #: trac/ticket/templates/ticket_change.html:114
@@ -4663,9 +4770,9 @@ msgstr "Periodo successivo"
 
 #: trac/timeline/web_ui.py:294 trac/timeline/web_ui.py:317
 #: trac/web/chrome.py:869
-#, fuzzy, python-format
+#, python-format
 msgid "in %(relative)s"
-msgstr ""
+msgstr "fra %(relative)s"
 
 #: trac/timeline/web_ui.py:298 trac/timeline/web_ui.py:315
 #, python-format
@@ -4673,14 +4780,14 @@ msgid "on %(date)s at %(time)s"
 msgstr "il %(date)s alle %(time)s"
 
 #: trac/timeline/web_ui.py:301 trac/web/chrome.py:871
-#, fuzzy, python-format
+#, python-format
 msgid "%(relative)s ago"
-msgstr ""
+msgstr "%(relative)s fa"
 
 #: trac/timeline/web_ui.py:303 trac/timeline/web_ui.py:363
 #, python-format
 msgid "See timeline at %(absolutetime)s"
-msgstr "Vedi la cronologia %(absolutetime)s"
+msgstr "Vedi la cronologia del %(absolutetime)s"
 
 #: trac/timeline/web_ui.py:309
 #, python-format
@@ -4688,9 +4795,9 @@ msgid "at %(iso8601)s"
 msgstr "alle %(iso8601)s"
 
 #: trac/timeline/web_ui.py:311
-#, fuzzy, python-format
+#, python-format
 msgid "on %(date)s"
-msgstr ""
+msgstr "il %(date)s"
 
 #: trac/timeline/web_ui.py:319
 #, python-format
@@ -4768,6 +4875,18 @@ msgid ""
 "should\n"
 "backup any remaining files in that directory and remove it manually.\n"
 msgstr ""
+"L'aggiornamento degli allegati è stato completato con successo, ma la\n"
+"directory con i vecchi allegati:\n"
+"\n"
+"  %(src_dir)s\n"
+"\n"
+"non è stata rimossa, probilmente perché contiene dei file non referenziati\n"
+"nel database. Si è verificato questo errore:\n"
+"\n"
+"  %(exception)s\n"
+"\n"
+"Puoi ignorare l'errore, ma per tenere pulito il tuo ambiente dovresti fare\n"
+"un backup dei file rimanenti in quella directory e rimuoverla manualmente.\n"
 
 #: trac/upgrades/db28.py:87
 #, python-format
@@ -5123,7 +5242,7 @@ msgstr "Questo nodo non esiste"
 msgid ""
 "The repository directory has changed, you should resynchronize the "
 "repository with: trac-admin $ENV repository resync '%(reponame)s'"
-msgstr ""
+msgstr "La directory del repository è cambiata, dovresti risincronizzare il repository con: trac-admin $ENV repository resync '%(reponame)s'"
 
 #: trac/versioncontrol/svn_authz.py:71
 #, python-format
@@ -5275,6 +5394,8 @@ msgid ""
 "                  [2:%(rev)s],\n"
 "                  checked in by %(author)s, %(age)s"
 msgstr ""
+"L'[1:ultima modifica] su questo file dal %(stickyrev)s è stata\n"
+"[2:%(rev)s], effettuata da %(author)s, %(age)s"
 
 #: trac/versioncontrol/templates/browser.html:145
 #, python-format
@@ -5284,6 +5405,8 @@ msgid ""
 "                  [2:%(rev)s],\n"
 "                  checked in by %(author)s, %(age)s"
 msgstr ""
+"L'[1:ultima modifica] su questo file è stata  [2:%(rev)s],\n"
+"effettuata da %(author)s, %(age)s"
 
 #: trac/versioncontrol/templates/browser.html:180
 #, python-format
@@ -5843,7 +5966,7 @@ msgstr "Mostra il file senza attribuzioni"
 
 #: trac/versioncontrol/web_ui/browser.py:469
 msgid "Blame"
-msgstr "Responsabilità (Blame)"
+msgstr "Responsabilità"
 
 #: trac/versioncontrol/web_ui/browser.py:470
 msgid ""
@@ -5894,6 +6017,25 @@ msgid ""
 "\n"
 "(''since 0.12'')"
 msgstr ""
+"Mostra l'elenco dei repository disponibili.\n"
+"\n"
+"Accetta i seguenti argomenti nominali:\n"
+"\n"
+"  ''format''::\n"
+"    Seleziona il formato di visualizzazione:\n"
+"    - ''compact'' produce una lista di prefissi ai repository separati\n"
+"      da virgole (default)\n"
+"    - ''list'' produce un elenco descrittivo dei prefissi ai repository\n"
+"    - ''table'' produce una vista tabellare, simile a quella visibile nella\n"
+"      pagina ''Sorgenti''\n"
+"  ''glob''::\n"
+"    Applica un filtro di tipo glob ai nomi dei repository (di default '*')\n"
+"  ''order''::\n"
+"    Ordina i repository per la colonna specificata (valori possibili: \"name\", \"date\" o \"author\")\n"
+"  ''desc''::\n"
+"    Se impostato a 1, inverti l'ordine di presentazione\n"
+"\n"
+"(''dalla 0.12'')"
 
 #: trac/versioncontrol/web_ui/browser.py:913
 #, python-format
@@ -6013,9 +6155,7 @@ msgstr "Changeset"
 msgid ""
 "The file or directory '%(path)s' doesn't exist at revision %(rev)s or at "
 "any previous revision."
-msgstr ""
-"Il file o la cartella '%(path)s' non esiste nella revisione %(rev)s o "
-"nelle revisioni precedenti."
+msgstr "Il file o la cartella \"%(path)s\" non esiste nella revisione %(rev)s o nelle revisioni precedenti."
 
 #: trac/versioncontrol/web_ui/log.py:209
 msgid "Nonexistent path"
@@ -6137,7 +6277,7 @@ msgstr "Token mancante o non valido. %(msg)s"
 msgid ""
 "Clearsilver templates are no longer supported, please contact your Trac "
 "administrator."
-msgstr ""
+msgstr "I template Clearsilver non sono più supportati, contatta per favore l'amministratore del tuo Trac."
 
 #: trac/web/main.py:521
 #, python-format
@@ -6230,7 +6370,7 @@ msgstr "Autorizzazione"
 
 #: trac/web/session.py:417
 msgid "Last Visit"
-msgstr "Ultima Visita"
+msgstr "Ultima visita"
 
 #: trac/web/session.py:418
 msgid "Email"
@@ -6239,28 +6379,28 @@ msgstr "Email"
 #: trac/web/session.py:427
 #, python-format
 msgid "Session '%(sid)s' already exists"
-msgstr "La sessione '%(sid)s' esiste già"
+msgstr "La sessione \"%(sid)s\" esiste già"
 
 #: trac/web/session.py:438
 #, python-format
 msgid "Invalid attribute '%(attr)s'"
-msgstr "Attributo '%(attr)s' non valido"
+msgstr "Attributo \"%(attr)s\" non valido"
 
 #: trac/web/session.py:445
 #, python-format
 msgid "Session '%(sid)s' not found"
-msgstr "La sessione '%(sid)s' non è stata trovata"
+msgstr "La sessione \"%(sid)s\" non è stata trovata"
 
 #: trac/wiki/admin.py:113
 #, python-format
 msgid "Page '%(page)s' not found"
-msgstr "La pagina '%(page)s' non è stata trovata"
+msgstr "La pagina \"%(page)s\" non è stata trovata"
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:127 trac/wiki/model.py:174
 #: trac/wiki/web_ui.py:119
 #, python-format
 msgid "Invalid Wiki page name '%(name)s'"
-msgstr "'%(name)s' non è un nome valido per la pagina Wiki"
+msgstr "\"%(name)s\" non è un nome valido per la pagina Wiki"
 
 #: trac/wiki/admin.py:123
 #, python-format
@@ -6596,6 +6736,63 @@ msgid ""
 "''Adapted from the Image.py macro created by Shun-ichi Goto\n"
 "<gotoh@taiyo.co.jp>''"
 msgstr ""
+"Inserisci una immagine nel testo formattato.\n"
+"\n"
+"Il primo argomento è la specifica del file, che può essere referenziare un allegato in tre modi:\n"
+" * `modulo:id:file`, dove modulo può essere o '''wiki''' oppure '''ticket''',\n"
+"   per riferirsi all'allegato con nome ''file'' della pagina wiki o della \n"
+"   segnalazione indicata.\n"
+" * `id:file`: come sopra, ma id può essere il riferimento a una segnalazione\n"
+"   oppure il nome di una pagina Wiki.\n"
+" * `file` per riferirsi all'allegato con nome ''file'' della medesima pagina\n"
+"   o segnalazione.\n"
+"\n"
+"La specifica può anche referenziare un file contenuto nel repository,\n"
+"usando la sintassi `source:file` (o più specificamente `source:file@rev`).\n"
+"\n"
+"Infine, il file può essere specificato direttamente con un URL: con `/file`\n"
+"si indica una posizione relativa al progetto, con `//file` una relativa\n"
+"al server, oppure con `http://server/file` per una posizione assoluta.\n"
+"\n"
+"I rimanenti argomenti sono opzionali e consentono di configurare gli attributi\n"
+"e lo stile usato per rendere l'elemento `<img>`:\n"
+" * numeri e unità vengono interpretati come dimensione dell'immagine (ad esempio\n"
+"   120, 25%)\n"
+" * `right`, `left`, `center`, `top`, `bottom` e `middle` sono interpretati\n"
+"   come l'allineamento dell'immagine (in alternativa, i primi tre possono\n"
+"   essere espressi con `align=...` e gli ultimi tre con `valign=...`)\n"
+" * `link=qualche TracLink...` sostituisce il link alla sorgente dell'immagine\n"
+"   con il TracLink specificato. Se non viene specificato nessun valore,\n"
+"   il link viene semplicemente rimosso.\n"
+" * `nolink` per omettere il link al sorgente dell'immagine (deprecato, usare `link=`)\n"
+" * `chiave=valore` viene interpretato come un attributo HTML o come indicazione\n"
+"   di uno stile CSS per l'immagine. Le chiavi valide sono:\n"
+"    * align, valign, border, width, height, alt, title, longdesc, class,\n"
+"      margin, margin-(left,right,top,bottom), id e usemap\n"
+"    * `border`, `margin` e `margin-*` accettano solamente un singolo numero\n"
+"    * `margin` è stato sostituito da `center` che utilizza i margini automatici\n"
+"\n"
+"Esempi:\n"
+"{{{\n"
+"    [[Image(foto.jpg)]]                           # il più semplice\n"
+"    [[Image(foto.jpg, 120px)]]                    # con dimensione immagine\n"
+"    [[Image(foto.jpg, right)]]                    # allineata con chiave\n"
+"    [[Image(foto.jpg, nolink)]]                   # senza link alla sorgente\n"
+"    [[Image(foto.jpg, align=right)]]              # allineata con attributo\n"
+"}}}\n"
+"\n"
+"Puoi usare una immagine allegata a una pagina diversa, o a un'altra segnalazione o modulo.\n"
+"{{{\n"
+"    [[Image(OtherPage:foo.bmp)]]    # se il modulo corrente è wiki\n"
+"    [[Image(base/sub:bar.bmp)]]     # da una pagina wiki gerarchica\n"
+"    [[Image(#3:baz.bmp)]]           # se in una segnalazione, punta alla #3\n"
+"    [[Image(ticket:36:boo.jpg)]]\n"
+"    [[Image(source:/images/bee.jpg)]] # direttamente dal repository!\n"
+"    [[Image(htdocs:foo/bar.png)]]   # immagine nella directory htdocs del progetto.\n"
+"}}}\n"
+"\n"
+"''Adattata dalla macro Image.py creata da Shun-ichi Goto\n"
+"<gotoh@taiyo.co.jp>''"
 
 #: trac/wiki/macros.py:648
 #, python-format
@@ -6618,7 +6815,7 @@ msgstr ""
 "documentazione, se disponibile.\n"
 "\n"
 "Come argomento opzionale si può specificare il nome di una macro\n"
-"specifica. In questo caso, verrà mostrata solo la socumentazione della\n"
+"specifica. In questo caso, verrà mostrata solo la documentazione della\n"
 "macro specificata.\n"
 "\n"
 "Nota che questa macro non sarà in grado di mostrare la documentazione\n"
@@ -6895,6 +7092,9 @@ msgid ""
 "                  which was first modified %(first_modified)s and last "
 "modified %(last_modified)s."
 msgstr ""
+"[1:Confermi di voler eliminare le versioni dalla %(from)s alla %(to)s di questa pagina?]\n"
+"[2:]\n"
+"Eliminazione di [3:%(versions)s versioni] della pagina, modificata la prima volta il %(first_modified)s e l'ultima il %(last_modified)s."
 
 #: trac/wiki/templates/wiki_delete.html:50
 #, python-format
@@ -6942,6 +7142,8 @@ msgid ""
 "                      which was created %(created)s and last modified "
 "%(modified)s."
 msgstr ""
+"Eliminazione di tutte le [1:%(versions)s versioni] della pagina,\n"
+"creata il %(created)s e modificata l'ultima volta il %(modified)s."
 
 #: trac/wiki/templates/wiki_delete.html:99
 msgid "Delete those versions"
