@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-03-21 22:43+0100\n"
+"POT-Creation-Date: 2013-03-21 22:54+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1172,7 +1172,7 @@ msgstr ""
 #: trac/admin/templates/admin_components.html:98
 #: trac/admin/templates/admin_enums.html:69
 #: trac/admin/templates/admin_milestones.html:131
-#: trac/admin/templates/admin_perms.html:109
+#: trac/admin/templates/admin_perms.html:111
 #: trac/admin/templates/admin_versions.html:99
 #: trac/versioncontrol/templates/admin_repositories.html:145
 msgid "Remove selected items"
@@ -1350,31 +1350,32 @@ msgid "Add a user or group to an existing permission group."
 msgstr ""
 
 #: trac/admin/templates/admin_perms.html:63
-#: trac/admin/templates/admin_perms.html:88
+#: trac/admin/templates/admin_perms.html:90
 msgid "Subject"
 msgstr ""
 
 #: trac/admin/templates/admin_perms.html:76
-msgid "Action is no longer defined"
+#, python-format
+msgid "%(action)s is no longer defined"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:81
+#: trac/admin/templates/admin_perms.html:83
 msgid "No permissions"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:85
+#: trac/admin/templates/admin_perms.html:87
 msgid "Group Membership"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:88
+#: trac/admin/templates/admin_perms.html:90
 msgid "Group"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:105
+#: trac/admin/templates/admin_perms.html:107
 msgid "No group memberships"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:113
+#: trac/admin/templates/admin_perms.html:115
 msgid ""
 "Note that [1:Subject] or [2:Group] names can't be all upper-case,\n"
 "      as that is reserved for permission names."
