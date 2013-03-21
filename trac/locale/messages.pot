@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.0.1\n"
+"Project-Id-Version: Trac 1.0.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-27 11:21+0900\n"
+"POT-Creation-Date: 2013-03-21 22:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1449,15 +1449,12 @@ msgid "Modify Version:"
 msgstr ""
 
 #: trac/admin/templates/admin_versions.html:31
-msgid "Date:"
+#: trac/admin/templates/admin_versions.html:64
+msgid "Released:"
 msgstr ""
 
 #: trac/admin/templates/admin_versions.html:59
 msgid "Add Version:"
-msgstr ""
-
-#: trac/admin/templates/admin_versions.html:64
-msgid "Released:"
 msgstr ""
 
 #: trac/admin/templates/admin_versions.html:83
@@ -2825,7 +2822,7 @@ msgstr ""
 msgid "Next status will be '%(name)s'"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:418
+#: trac/ticket/default_workflow.py:419
 msgid ""
 "Render a workflow graph.\n"
 "\n"
@@ -2867,7 +2864,7 @@ msgid ""
 "}}}"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:493
+#: trac/ticket/default_workflow.py:494
 msgid "Enable JavaScript to display the workflow graph."
 msgstr ""
 
@@ -3042,7 +3039,7 @@ msgid ""
 "\n"
 "\n"
 "Groups of field constraints to be OR-ed together can be separated by a\n"
-"litteral `or` argument.\n"
+"literal `or` argument.\n"
 "\n"
 "In addition to filters, several other named parameters can be used\n"
 "to control how the results are presented. All of them are optional.\n"
@@ -3375,8 +3372,8 @@ msgstr ""
 #: trac/ticket/web_ui.py:901 trac/ticket/web_ui.py:958
 #: trac/ticket/web_ui.py:966 trac/ticket/web_ui.py:1037
 #: trac/ticket/web_ui.py:1082 trac/ticket/web_ui.py:1089
-#: trac/wiki/web_ui.py:449 trac/wiki/web_ui.py:455 trac/wiki/web_ui.py:653
-#: trac/wiki/web_ui.py:667
+#: trac/wiki/web_ui.py:458 trac/wiki/web_ui.py:464 trac/wiki/web_ui.py:662
+#: trac/wiki/web_ui.py:676
 #, python-format
 msgid "Version %(num)s"
 msgstr ""
@@ -3395,12 +3392,12 @@ msgid "Property %(label)s %(rendered)s"
 msgstr ""
 
 #: trac/ticket/web_ui.py:968 trac/ticket/web_ui.py:1091
-#: trac/versioncontrol/web_ui/changeset.py:371 trac/wiki/web_ui.py:468
+#: trac/versioncontrol/web_ui/changeset.py:371 trac/wiki/web_ui.py:477
 msgid "Previous Change"
 msgstr ""
 
 #: trac/ticket/web_ui.py:968 trac/ticket/web_ui.py:1091
-#: trac/versioncontrol/web_ui/changeset.py:371 trac/wiki/web_ui.py:468
+#: trac/versioncontrol/web_ui/changeset.py:371 trac/wiki/web_ui.py:477
 msgid "Next Change"
 msgstr ""
 
@@ -3572,7 +3569,7 @@ msgstr ""
 
 #. TRANSLATOR: modified ('diff') (link)
 #: trac/ticket/web_ui.py:1732 trac/ticket/templates/ticket_change.html:155
-#: trac/wiki/web_ui.py:747
+#: trac/wiki/web_ui.py:756
 msgid "diff"
 msgstr ""
 
@@ -4445,67 +4442,67 @@ msgid ""
 "  %(new_path)s\n"
 msgstr ""
 
-#: trac/util/datefmt.py:118
+#: trac/util/datefmt.py:122
 #, python-format
 msgid "%(num)d year"
 msgid_plural "%(num)d years"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/util/datefmt.py:119
+#: trac/util/datefmt.py:123
 #, python-format
 msgid "%(num)d month"
 msgid_plural "%(num)d months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/util/datefmt.py:120
+#: trac/util/datefmt.py:124
 #, python-format
 msgid "%(num)d week"
 msgid_plural "%(num)d weeks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/util/datefmt.py:121
+#: trac/util/datefmt.py:125
 #, python-format
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/util/datefmt.py:122
+#: trac/util/datefmt.py:126
 #, python-format
 msgid "%(num)d hour"
 msgid_plural "%(num)d hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/util/datefmt.py:123
+#: trac/util/datefmt.py:127
 #, python-format
 msgid "%(num)d minute"
 msgid_plural "%(num)d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/util/datefmt.py:142
+#: trac/util/datefmt.py:146
 #, python-format
 msgid "%(num)i second"
 msgid_plural "%(num)i seconds"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/util/datefmt.py:464
+#: trac/util/datefmt.py:468
 #, python-format
 msgid ""
 "\"%(date)s\" is an invalid date, or the date format is not known. Try "
 "\"%(hint)s\" instead."
 msgstr ""
 
-#: trac/util/datefmt.py:466 trac/util/datefmt.py:474
+#: trac/util/datefmt.py:470 trac/util/datefmt.py:478
 msgid "Invalid Date"
 msgstr ""
 
-#: trac/util/datefmt.py:472
+#: trac/util/datefmt.py:476
 #, python-format
 msgid ""
 "The date \"%(date)s\" is outside valid range. Try a date closer to "
@@ -5820,7 +5817,7 @@ msgid "Page '%(page)s' not found"
 msgstr ""
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:127 trac/wiki/model.py:174
-#: trac/wiki/web_ui.py:119
+#: trac/wiki/web_ui.py:120
 #, python-format
 msgid "Invalid Wiki page name '%(name)s'"
 msgstr ""
@@ -5849,7 +5846,7 @@ msgstr ""
 msgid "Edits"
 msgstr ""
 
-#: trac/wiki/admin.py:203 trac/wiki/web_ui.py:300
+#: trac/wiki/admin.py:203 trac/wiki/web_ui.py:301
 msgid "A new name is mandatory for a rename."
 msgstr ""
 
@@ -5857,7 +5854,7 @@ msgstr ""
 msgid "The new name is invalid."
 msgstr ""
 
-#: trac/wiki/admin.py:208 trac/wiki/web_ui.py:307
+#: trac/wiki/admin.py:208 trac/wiki/web_ui.py:308
 #, python-format
 msgid "The page %(name)s already exists."
 msgstr ""
@@ -6161,157 +6158,167 @@ msgstr ""
 msgid "Can't rename to existing %(name)s page."
 msgstr ""
 
-#: trac/wiki/web_ui.py:87 trac/wiki/web_ui.py:754
+#: trac/wiki/web_ui.py:87 trac/wiki/web_ui.py:763
 msgid "Wiki"
 msgstr ""
 
-#: trac/wiki/web_ui.py:89
+#: trac/wiki/web_ui.py:90
 msgid "Help/Guide"
 msgstr ""
 
-#: trac/wiki/web_ui.py:130
+#: trac/wiki/web_ui.py:131
 #, python-format
 msgid "No version \"%(num)s\" for Wiki page \"%(name)s\""
 msgstr ""
 
-#: trac/wiki/web_ui.py:195
+#: trac/wiki/web_ui.py:196
 #, python-format
 msgid "The wiki page is too long (must be less than %(num)s characters)"
 msgstr ""
 
-#: trac/wiki/web_ui.py:205
+#: trac/wiki/web_ui.py:206
 #, python-format
 msgid "The Wiki page field '%(field)s' is invalid: %(message)s"
 msgstr ""
 
-#: trac/wiki/web_ui.py:209
+#: trac/wiki/web_ui.py:210
 #, python-format
 msgid "Invalid Wiki page: %(message)s"
 msgstr ""
 
 #. TRANSLATOR: wiki page
-#: trac/wiki/web_ui.py:236
+#: trac/wiki/web_ui.py:237
 msgid "currently edited"
 msgstr ""
 
-#: trac/wiki/web_ui.py:269
+#: trac/wiki/web_ui.py:270
 #, python-format
 msgid "The page %(name)s has been deleted."
 msgstr ""
 
-#: trac/wiki/web_ui.py:274
+#: trac/wiki/web_ui.py:275
 #, python-format
 msgid "The versions %(from_)d to %(to)d of the page %(name)s have been deleted."
 msgstr ""
 
-#: trac/wiki/web_ui.py:278
+#: trac/wiki/web_ui.py:279
 #, python-format
 msgid "The version %(version)d of the page %(name)s has been deleted."
 msgstr ""
 
-#: trac/wiki/web_ui.py:302
+#: trac/wiki/web_ui.py:303
 msgid ""
 "The new name is invalid (a name which is separated with slashes cannot be"
 " '.' or '..')."
 msgstr ""
 
-#: trac/wiki/web_ui.py:305
+#: trac/wiki/web_ui.py:306
 msgid "The new name must be different from the old name."
 msgstr ""
 
-#: trac/wiki/web_ui.py:316
+#: trac/wiki/web_ui.py:317
 #, python-format
 msgid "See [wiki:\"%(name)s\"]."
 msgstr ""
 
-#: trac/wiki/web_ui.py:340
+#: trac/wiki/web_ui.py:323
+#, python-format
+msgid "The page %(old_name)s has been renamed to %(new_name)s."
+msgstr ""
+
+#: trac/wiki/web_ui.py:327
+#, python-format
+msgid "The page %(old_name)s has been recreated with a redirect to %(new_name)s."
+msgstr ""
+
+#: trac/wiki/web_ui.py:349
 #, python-format
 msgid "Your changes have been saved in version %(version)s."
 msgstr ""
 
-#: trac/wiki/web_ui.py:345
+#: trac/wiki/web_ui.py:354
 msgid "Page not modified, showing latest version."
 msgstr ""
 
-#: trac/wiki/web_ui.py:399
+#: trac/wiki/web_ui.py:408
 #, python-format
 msgid "Version %(num)s of page \"%(name)s\" does not exist"
 msgstr ""
 
-#: trac/wiki/web_ui.py:451
+#: trac/wiki/web_ui.py:460
 msgid "Page history"
 msgstr ""
 
-#: trac/wiki/web_ui.py:469
+#: trac/wiki/web_ui.py:478
 msgid "Wiki History"
 msgstr ""
 
-#: trac/wiki/web_ui.py:499
+#: trac/wiki/web_ui.py:508
 #, python-format
 msgid "Reverted to version %(version)s."
 msgstr ""
 
-#: trac/wiki/web_ui.py:562
+#: trac/wiki/web_ui.py:571
 #, python-format
 msgid "Page %(name)s does not exist"
 msgstr ""
 
-#: trac/wiki/web_ui.py:576
+#: trac/wiki/web_ui.py:585
 #, python-format
 msgid "Back to %(wikipage)s"
 msgstr ""
 
-#: trac/wiki/web_ui.py:604
+#: trac/wiki/web_ui.py:613
 #, python-format
 msgid "Page %(name)s not found"
 msgstr ""
 
-#: trac/wiki/web_ui.py:658
+#: trac/wiki/web_ui.py:667
 msgid "View latest version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:662
+#: trac/wiki/web_ui.py:671
 msgid "View parent page"
 msgstr ""
 
-#: trac/wiki/web_ui.py:671
+#: trac/wiki/web_ui.py:680
 msgid "Previous Version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:671
+#: trac/wiki/web_ui.py:680
 msgid "Next Version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:672
+#: trac/wiki/web_ui.py:681
 msgid "View Latest Version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:675
+#: trac/wiki/web_ui.py:684
 msgid "Up"
 msgstr ""
 
-#: trac/wiki/web_ui.py:700
+#: trac/wiki/web_ui.py:709
 msgid "Start Page"
 msgstr ""
 
-#: trac/wiki/web_ui.py:701
+#: trac/wiki/web_ui.py:710
 msgid "Index"
 msgstr ""
 
-#: trac/wiki/web_ui.py:703
+#: trac/wiki/web_ui.py:712
 msgid "History"
 msgstr ""
 
-#: trac/wiki/web_ui.py:710
+#: trac/wiki/web_ui.py:719
 msgid "Wiki changes"
 msgstr ""
 
-#: trac/wiki/web_ui.py:737
+#: trac/wiki/web_ui.py:746
 #, python-format
 msgid "%(page)s edited"
 msgstr ""
 
-#: trac/wiki/web_ui.py:739
+#: trac/wiki/web_ui.py:748
 #, python-format
 msgid "%(page)s created"
 msgstr ""
