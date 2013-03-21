@@ -4472,14 +4472,12 @@ msgid "Add new milestone"
 msgstr "Ajouter un nouveau jalon"
 
 #: trac/ticket/templates/ticket.html:132
-#, fuzzy
 msgid "Go to the ticket editor"
-msgstr "Éditer la page"
+msgstr "Aller éditer le ticket"
 
 #: trac/ticket/templates/ticket.html:132
-#, fuzzy
 msgid "Modify"
-msgstr "modifié"
+msgstr "Modifier"
 
 #: trac/ticket/templates/ticket.html:134
 msgid "Create New Ticket"
@@ -4599,9 +4597,8 @@ msgid "Go to the list of attachments"
 msgstr "Allez à la liste des pièces jointes"
 
 #: trac/ticket/templates/ticket.html:379
-#, fuzzy
 msgid "View the ticket description"
-msgstr "Aucun droit pour modifier la description."
+msgstr "Voir la description du ticket."
 
 #: trac/ticket/templates/ticket.html:387
 #: trac/ticket/templates/ticket_change.html:114
@@ -4891,7 +4888,7 @@ msgstr ""
 "        de l'aide relative aux activités."
 
 #: trac/upgrades/db28.py:72
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The upgrade of attachments was successful, but the old attachments "
 "directory:\n"
@@ -4916,7 +4913,7 @@ msgstr ""
 " était :\n"
 "\n"
 "  %(exception)s\n"
-"  \n"
+"\n"
 "Cette erreur peut être ignorée, mais pour conserver un environnement en "
 "bon ordre, il conviendrait de faire une sauvegarde des fichiers encore "
 "présent dans ce répertoire et de le supprimer manuellement ensuite.\n"
@@ -6885,14 +6882,16 @@ msgid "See [wiki:\"%(name)s\"]."
 msgstr "Voir [wiki:\"%(name)s\"]."
 
 #: trac/wiki/web_ui.py:323
-#, fuzzy, python-format
+#, python-format
 msgid "The page %(old_name)s has been renamed to %(new_name)s."
-msgstr "Cette page %(name)s a été supprimée."
+msgstr "La page « %(old_name)s » a été renommée « %(new_name)s »."
 
 #: trac/wiki/web_ui.py:327
 #, python-format
 msgid "The page %(old_name)s has been recreated with a redirect to %(new_name)s."
 msgstr ""
+"La page « %(old_name)s » a été recréée et redirige à présent vers \"\n"
+"\"« %(new_name)s »."
 
 #: trac/wiki/web_ui.py:349
 #, python-format
@@ -7002,7 +7001,7 @@ msgid "Delete [1:%(name)s]"
 msgstr "Supprimer [1:%(name)s]"
 
 #: trac/wiki/templates/wiki_delete.html:38
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "[1:\n"
 "                  Are you sure you want to delete versions %(from)s to "
@@ -7020,7 +7019,7 @@ msgstr ""
 "                ]\n"
 "                [2:]\n"
 "                  Supprimer [3:\n"
-"                    %(versions)s versions] de la page, \n"
+"                    %(versions)s versions] de la page,\n"
 "                  initiallement modifiée le %(first_modified)s et "
 "dernièrement modifiée le %(last_modified)s."
 
@@ -7064,7 +7063,7 @@ msgstr ""
 "supprimée !"
 
 #: trac/wiki/templates/wiki_delete.html:83
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Removing all [1:\n"
 "                        %(versions)s versions] of the page,\n"
@@ -7072,8 +7071,8 @@ msgid ""
 "%(modified)s."
 msgstr ""
 "Suppression de toutes les [1:\n"
-"                        %(versions)s versions] de la page, \n"
-"                    créée %(created)s et dernièrement modifiée \n"
+"                        %(versions)s versions] de la page,\n"
+"                    créée %(created)s et dernièrement modifiée "
 "%(modified)s."
 
 #: trac/wiki/templates/wiki_delete.html:99
@@ -7338,76 +7337,4 @@ msgid "The following pages have a name similar to this page, and may be related:
 msgstr ""
 "Les pages qui suivent ont un nom similaire à cette page et sont \n"
 "peut-être en rapport :"
-
-#~ msgid "Date:"
-#~ msgstr "Date :"
-
-#~ msgid ""
-#~ "Wiki macro listing tickets that match certain criteria.\n"
-#~ "\n"
-#~ "This macro accepts a comma-separated list of keyed parameters,\n"
-#~ "in the form \"key=value\".\n"
-#~ "\n"
-#~ "If the key is the name of a field, the value must use the syntax\n"
-#~ "of a filter specifier as defined in TracQuery#QueryLanguage.\n"
-#~ "Note that this is ''not'' the same as the simplified URL syntax\n"
-#~ "used for `query:` links starting with a `?` character. Commas (`,`)\n"
-#~ "can be included in field values by"
-#~ " escaping them with a backslash "
-#~ "(`\\`).\n"
-#~ "\n"
-#~ "Groups of field constraints to be "
-#~ "OR-ed together can be separated by"
-#~ " a\n"
-#~ "litteral `or` argument.\n"
-#~ "\n"
-#~ "In addition to filters, several other named parameters can be used\n"
-#~ "to control how the results are presented. All of them are optional.\n"
-#~ "\n"
-#~ "The `format` parameter determines how the list of tickets is\n"
-#~ "presented:\n"
-#~ " - '''list''' -- the default "
-#~ "presentation is to list the ticket "
-#~ "ID next\n"
-#~ "   to the summary, with each ticket on a separate line.\n"
-#~ " - '''compact''' -- the tickets are presented as a comma-separated\n"
-#~ "   list of ticket IDs.\n"
-#~ " - '''count''' -- only the count of matching tickets is displayed\n"
-#~ " - '''table'''  -- a view similar"
-#~ " to the custom query view (but "
-#~ "without\n"
-#~ "   the controls)\n"
-#~ " - '''progress''' -- a view similar to the milestone progress bars\n"
-#~ "\n"
-#~ "The `max` parameter can be used to limit the number of tickets shown\n"
-#~ "(defaults to '''0''', i.e. no maximum).\n"
-#~ "\n"
-#~ "The `order` parameter sets the field used for ordering tickets\n"
-#~ "(defaults to '''id''').\n"
-#~ "\n"
-#~ "The `desc` parameter indicates whether the order of the tickets\n"
-#~ "should be reversed (defaults to '''false''').\n"
-#~ "\n"
-#~ "The `group` parameter sets the field used for grouping tickets\n"
-#~ "(defaults to not being set).\n"
-#~ "\n"
-#~ "The `groupdesc` parameter indicates whether the natural display\n"
-#~ "order of the groups should be reversed (defaults to '''false''').\n"
-#~ "\n"
-#~ "The `verbose` parameter can be set to a true value in order to\n"
-#~ "get the description for the listed "
-#~ "tickets. For '''table''' format only.\n"
-#~ "''deprecated in favor of the `rows` parameter''\n"
-#~ "\n"
-#~ "The `rows` parameter can be used to specify which field(s) should\n"
-#~ "be viewed as a row, e.g. `rows=description|summary`\n"
-#~ "\n"
-#~ "For compatibility with Trac 0.10, if "
-#~ "there's a last positional parameter\n"
-#~ "given to the macro, it will be used to specify the `format`.\n"
-#~ "Also, using \"&\" as a field "
-#~ "separator still works (except for "
-#~ "`order`)\n"
-#~ "but is deprecated."
-#~ msgstr ""
 
