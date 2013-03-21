@@ -1533,9 +1533,9 @@ msgid "Subject"
 msgstr "Sujet"
 
 #: trac/admin/templates/admin_perms.html:76
-#, fuzzy, python-format
+#, python-format
 msgid "%(action)s is no longer defined"
-msgstr "L'action n'est plus définie"
+msgstr "L'action « %(action)s » n'est plus définie"
 
 #: trac/admin/templates/admin_perms.html:83
 msgid "No permissions"
