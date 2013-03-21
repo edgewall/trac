@@ -125,9 +125,10 @@ table.trac-pluglist td { padding-left: 1em; }
 #permlist { margin-bottom: 2em; }
 #permlist label, #grouplist label {
  float: left;
- min-width: 13em;
- max-width: 33%;
- padding: 0 2em 0 0;
+ width: 13em;
+ overflow: hidden;
+ text-overflow: ellipsis;
+ padding: 0;
  white-space: nowrap;
 }
 fieldset tr.field th { text-align: right; }
