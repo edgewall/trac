@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-27 11:21+0900\n"
+"POT-Creation-Date: 2013-03-21 22:54+0100\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <LL@li.org>\n"
@@ -197,15 +197,15 @@ msgstr "git リポジトリ中のパスに対する文字エンコーディン�
 msgid "Path to the git executable."
 msgstr "git 実行ファイルへのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:749
+#: tracopt/versioncontrol/git/git_fs.py:752
 msgid "Path to a gitweb-formatted projects.list"
 msgstr "gitweb 形式の projects.list ファイルへのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:752
+#: tracopt/versioncontrol/git/git_fs.py:755
 msgid "Path to the base of your git projects"
 msgstr "git プロジェクトのベースディレクトリのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:755
+#: tracopt/versioncontrol/git/git_fs.py:758
 #, python-format
 msgid ""
 "Template for project URLs. %s will be replaced with the repo\n"

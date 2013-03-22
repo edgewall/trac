@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-27 11:21+0900\n"
+"POT-Creation-Date: 2013-03-21 22:54+0100\n"
 "PO-Revision-Date: 2011-07-14 21:38+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <trac-dev@googlegroups.com>\n"
@@ -1272,7 +1272,7 @@ msgstr "デフォルト"
 #: trac/admin/templates/admin_components.html:98
 #: trac/admin/templates/admin_enums.html:69
 #: trac/admin/templates/admin_milestones.html:131
-#: trac/admin/templates/admin_perms.html:109
+#: trac/admin/templates/admin_perms.html:111
 #: trac/admin/templates/admin_versions.html:99
 #: trac/versioncontrol/templates/admin_repositories.html:145
 msgid "Remove selected items"
@@ -1454,31 +1454,32 @@ msgid "Add a user or group to an existing permission group."
 msgstr "対象(ユーザやグループ)に権限グループを追加します。"
 
 #: trac/admin/templates/admin_perms.html:63
-#: trac/admin/templates/admin_perms.html:88
+#: trac/admin/templates/admin_perms.html:90
 msgid "Subject"
 msgstr "対象"
 
 #: trac/admin/templates/admin_perms.html:76
-msgid "Action is no longer defined"
-msgstr "アクションはすでに定義されていません"
+#, python-format
+msgid "%(action)s is no longer defined"
+msgstr "%(action)s はすでに定義されていません"
 
-#: trac/admin/templates/admin_perms.html:81
+#: trac/admin/templates/admin_perms.html:83
 msgid "No permissions"
 msgstr "権限なし"
 
-#: trac/admin/templates/admin_perms.html:85
+#: trac/admin/templates/admin_perms.html:87
 msgid "Group Membership"
 msgstr "グループメンバ"
 
-#: trac/admin/templates/admin_perms.html:88
+#: trac/admin/templates/admin_perms.html:90
 msgid "Group"
 msgstr "グループ"
 
-#: trac/admin/templates/admin_perms.html:105
+#: trac/admin/templates/admin_perms.html:107
 msgid "No group memberships"
 msgstr "グループメンバなし"
 
-#: trac/admin/templates/admin_perms.html:113
+#: trac/admin/templates/admin_perms.html:115
 msgid ""
 "Note that [1:Subject] or [2:Group] names can't be all upper-case,\n"
 "      as that is reserved for permission names."
@@ -1555,16 +1556,13 @@ msgid "Modify Version:"
 msgstr "バージョンの変更:"
 
 #: trac/admin/templates/admin_versions.html:31
-msgid "Date:"
-msgstr "日時:"
+#: trac/admin/templates/admin_versions.html:64
+msgid "Released:"
+msgstr "リリース日時:"
 
 #: trac/admin/templates/admin_versions.html:59
 msgid "Add Version:"
 msgstr "バージョンの追加:"
-
-#: trac/admin/templates/admin_versions.html:64
-msgid "Released:"
-msgstr "リリース日時:"
 
 #: trac/admin/templates/admin_versions.html:83
 msgid "Released"
@@ -2980,7 +2978,7 @@ msgstr "(ステータス %(status)s)"
 msgid "Next status will be '%(name)s'"
 msgstr "次のステータスは '%(name)s' です"
 
-#: trac/ticket/default_workflow.py:418
+#: trac/ticket/default_workflow.py:419
 msgid ""
 "Render a workflow graph.\n"
 "\n"
@@ -3060,7 +3058,7 @@ msgstr ""
 "    }}}\n"
 "}}}"
 
-#: trac/ticket/default_workflow.py:493
+#: trac/ticket/default_workflow.py:494
 msgid "Enable JavaScript to display the workflow graph."
 msgstr "ワークフローグラフを表示するには JavaScript を有効にしてください。"
 
@@ -3235,7 +3233,7 @@ msgid ""
 "\n"
 "\n"
 "Groups of field constraints to be OR-ed together can be separated by a\n"
-"litteral `or` argument.\n"
+"literal `or` argument.\n"
 "\n"
 "In addition to filters, several other named parameters can be used\n"
 "to control how the results are presented. All of them are optional.\n"
@@ -3616,8 +3614,8 @@ msgstr "表示できる差分はありません"
 #: trac/ticket/web_ui.py:901 trac/ticket/web_ui.py:958
 #: trac/ticket/web_ui.py:966 trac/ticket/web_ui.py:1037
 #: trac/ticket/web_ui.py:1082 trac/ticket/web_ui.py:1089
-#: trac/wiki/web_ui.py:449 trac/wiki/web_ui.py:455 trac/wiki/web_ui.py:653
-#: trac/wiki/web_ui.py:667
+#: trac/wiki/web_ui.py:458 trac/wiki/web_ui.py:464 trac/wiki/web_ui.py:662
+#: trac/wiki/web_ui.py:676
 #, python-format
 msgid "Version %(num)s"
 msgstr "バージョン %(num)s"
@@ -3636,12 +3634,12 @@ msgid "Property %(label)s %(rendered)s"
 msgstr "プロパティ %(label)s %(rendered)s"
 
 #: trac/ticket/web_ui.py:968 trac/ticket/web_ui.py:1091
-#: trac/versioncontrol/web_ui/changeset.py:371 trac/wiki/web_ui.py:468
+#: trac/versioncontrol/web_ui/changeset.py:371 trac/wiki/web_ui.py:477
 msgid "Previous Change"
 msgstr "前の変更"
 
 #: trac/ticket/web_ui.py:968 trac/ticket/web_ui.py:1091
-#: trac/versioncontrol/web_ui/changeset.py:371 trac/wiki/web_ui.py:468
+#: trac/versioncontrol/web_ui/changeset.py:371 trac/wiki/web_ui.py:477
 msgid "Next Change"
 msgstr "次の変更"
 
@@ -3811,7 +3809,7 @@ msgstr "更新"
 
 #. TRANSLATOR: modified ('diff') (link)
 #: trac/ticket/web_ui.py:1732 trac/ticket/templates/ticket_change.html:155
-#: trac/wiki/web_ui.py:747
+#: trac/wiki/web_ui.py:756
 msgid "diff"
 msgstr "差分表示"
 
@@ -4710,60 +4708,60 @@ msgstr ""
 "\n"
 "  %(new_path)s\n"
 
-#: trac/util/datefmt.py:118
+#: trac/util/datefmt.py:122
 #, python-format
 msgid "%(num)d year"
 msgid_plural "%(num)d years"
 msgstr[0] "%(num)d年"
 
-#: trac/util/datefmt.py:119
+#: trac/util/datefmt.py:123
 #, python-format
 msgid "%(num)d month"
 msgid_plural "%(num)d months"
 msgstr[0] "%(num)dヵ月"
 
-#: trac/util/datefmt.py:120
+#: trac/util/datefmt.py:124
 #, python-format
 msgid "%(num)d week"
 msgid_plural "%(num)d weeks"
 msgstr[0] "%(num)d週"
 
-#: trac/util/datefmt.py:121
+#: trac/util/datefmt.py:125
 #, python-format
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
 msgstr[0] "%(num)d日"
 
-#: trac/util/datefmt.py:122
+#: trac/util/datefmt.py:126
 #, python-format
 msgid "%(num)d hour"
 msgid_plural "%(num)d hours"
 msgstr[0] "%(num)d時間"
 
-#: trac/util/datefmt.py:123
+#: trac/util/datefmt.py:127
 #, python-format
 msgid "%(num)d minute"
 msgid_plural "%(num)d minutes"
 msgstr[0] "%(num)d分"
 
-#: trac/util/datefmt.py:142
+#: trac/util/datefmt.py:146
 #, python-format
 msgid "%(num)i second"
 msgid_plural "%(num)i seconds"
 msgstr[0] "%(num)i秒"
 
-#: trac/util/datefmt.py:464
+#: trac/util/datefmt.py:468
 #, python-format
 msgid ""
 "\"%(date)s\" is an invalid date, or the date format is not known. Try "
 "\"%(hint)s\" instead."
 msgstr "\"%(date)s\" は間違っているか、日付書式が不明です。代わりに \"%(hint)s\" を試してください。"
 
-#: trac/util/datefmt.py:466 trac/util/datefmt.py:474
+#: trac/util/datefmt.py:470 trac/util/datefmt.py:478
 msgid "Invalid Date"
 msgstr "不正な日付"
 
-#: trac/util/datefmt.py:472
+#: trac/util/datefmt.py:476
 #, python-format
 msgid ""
 "The date \"%(date)s\" is outside valid range. Try a date closer to "
@@ -6122,7 +6120,7 @@ msgid "Page '%(page)s' not found"
 msgstr "ページ '%(page)s' が見つかりません"
 
 #: trac/wiki/admin.py:118 trac/wiki/model.py:127 trac/wiki/model.py:174
-#: trac/wiki/web_ui.py:119
+#: trac/wiki/web_ui.py:120
 #, python-format
 msgid "Invalid Wiki page name '%(name)s'"
 msgstr "Wiki ページ名 '%(name)s' は正しくありません"
@@ -6151,7 +6149,7 @@ msgstr "  %(page)s を %(filename)s からインポートしました"
 msgid "Edits"
 msgstr "編集"
 
-#: trac/wiki/admin.py:203 trac/wiki/web_ui.py:300
+#: trac/wiki/admin.py:203 trac/wiki/web_ui.py:301
 msgid "A new name is mandatory for a rename."
 msgstr "変更後の新しい名前が必要です。"
 
@@ -6159,7 +6157,7 @@ msgstr "変更後の新しい名前が必要です。"
 msgid "The new name is invalid."
 msgstr "新しい名前が不正です。"
 
-#: trac/wiki/admin.py:208 trac/wiki/web_ui.py:307
+#: trac/wiki/admin.py:208 trac/wiki/web_ui.py:308
 #, python-format
 msgid "The page %(name)s already exists."
 msgstr "ページ %(name)s はすでに存在しています。"
@@ -6584,157 +6582,167 @@ msgstr "ページは更新されませんでした"
 msgid "Can't rename to existing %(name)s page."
 msgstr "存在している %(name)s ページに名前を変更できません。"
 
-#: trac/wiki/web_ui.py:87 trac/wiki/web_ui.py:754
+#: trac/wiki/web_ui.py:87 trac/wiki/web_ui.py:763
 msgid "Wiki"
 msgstr "Wiki"
 
-#: trac/wiki/web_ui.py:89
+#: trac/wiki/web_ui.py:90
 msgid "Help/Guide"
 msgstr "ヘルプ/ガイド"
 
-#: trac/wiki/web_ui.py:130
+#: trac/wiki/web_ui.py:131
 #, python-format
 msgid "No version \"%(num)s\" for Wiki page \"%(name)s\""
 msgstr "Wiki ページ \"%(name)s\" のバージョン \"%(num)s\" はありません"
 
-#: trac/wiki/web_ui.py:195
+#: trac/wiki/web_ui.py:196
 #, python-format
 msgid "The wiki page is too long (must be less than %(num)s characters)"
 msgstr "Wiki ページの内容が長過ぎます (%(num)s文字未満にしてください)"
 
-#: trac/wiki/web_ui.py:205
+#: trac/wiki/web_ui.py:206
 #, python-format
 msgid "The Wiki page field '%(field)s' is invalid: %(message)s"
 msgstr "Wiki ページのフィールド '%(field)s' が不正です: %(message)s"
 
-#: trac/wiki/web_ui.py:209
+#: trac/wiki/web_ui.py:210
 #, python-format
 msgid "Invalid Wiki page: %(message)s"
 msgstr "不正な Wiki ページです: %(message)s"
 
 #. TRANSLATOR: wiki page
-#: trac/wiki/web_ui.py:236
+#: trac/wiki/web_ui.py:237
 msgid "currently edited"
 msgstr "編集中のもの"
 
-#: trac/wiki/web_ui.py:269
+#: trac/wiki/web_ui.py:270
 #, python-format
 msgid "The page %(name)s has been deleted."
 msgstr "%(name)s を削除しました。"
 
-#: trac/wiki/web_ui.py:274
+#: trac/wiki/web_ui.py:275
 #, python-format
 msgid "The versions %(from_)d to %(to)d of the page %(name)s have been deleted."
 msgstr "ページ %(name)s のバージョン %(from_)d から %(to)d を削除しました。"
 
-#: trac/wiki/web_ui.py:278
+#: trac/wiki/web_ui.py:279
 #, python-format
 msgid "The version %(version)d of the page %(name)s has been deleted."
 msgstr "ページ %(name)s のバージョン %(version)d を削除しました。"
 
-#: trac/wiki/web_ui.py:302
+#: trac/wiki/web_ui.py:303
 msgid ""
 "The new name is invalid (a name which is separated with slashes cannot be"
 " '.' or '..')."
 msgstr "新しい名前が正しくありません (スラッシュで分割した名前を '.' または '..' にできません)。"
 
-#: trac/wiki/web_ui.py:305
+#: trac/wiki/web_ui.py:306
 msgid "The new name must be different from the old name."
 msgstr "新しい名前は元の名前とは違うものにしてください。"
 
-#: trac/wiki/web_ui.py:316
+#: trac/wiki/web_ui.py:317
 #, python-format
 msgid "See [wiki:\"%(name)s\"]."
 msgstr "[wiki:\"%(name)s\"] を見る。"
 
-#: trac/wiki/web_ui.py:340
+#: trac/wiki/web_ui.py:323
+#, python-format
+msgid "The page %(old_name)s has been renamed to %(new_name)s."
+msgstr "ページ %(old_name)s を %(new_name)s に変更しました。"
+
+#: trac/wiki/web_ui.py:327
+#, python-format
+msgid "The page %(old_name)s has been recreated with a redirect to %(new_name)s."
+msgstr "ページ %(old_name)s に %(new_name)s へのリダイレクト用のページを作成しました。"
+
+#: trac/wiki/web_ui.py:349
 #, python-format
 msgid "Your changes have been saved in version %(version)s."
 msgstr "バージョン %(version)s に変更を保存しました。"
 
-#: trac/wiki/web_ui.py:345
+#: trac/wiki/web_ui.py:354
 msgid "Page not modified, showing latest version."
 msgstr "変更がありません、最新のバージョンを表示します。"
 
-#: trac/wiki/web_ui.py:399
+#: trac/wiki/web_ui.py:408
 #, python-format
 msgid "Version %(num)s of page \"%(name)s\" does not exist"
 msgstr "ページ %(name)s のバージョン %(num)s は存在しません"
 
-#: trac/wiki/web_ui.py:451
+#: trac/wiki/web_ui.py:460
 msgid "Page history"
 msgstr "ページ履歴"
 
-#: trac/wiki/web_ui.py:469
+#: trac/wiki/web_ui.py:478
 msgid "Wiki History"
 msgstr "ページ履歴"
 
-#: trac/wiki/web_ui.py:499
+#: trac/wiki/web_ui.py:508
 #, python-format
 msgid "Reverted to version %(version)s."
 msgstr "バージョン %(version)s に戻しました。"
 
-#: trac/wiki/web_ui.py:562
+#: trac/wiki/web_ui.py:571
 #, python-format
 msgid "Page %(name)s does not exist"
 msgstr "ページ %(name)s は存在しません"
 
-#: trac/wiki/web_ui.py:576
+#: trac/wiki/web_ui.py:585
 #, python-format
 msgid "Back to %(wikipage)s"
 msgstr "%(wikipage)s に戻る"
 
-#: trac/wiki/web_ui.py:604
+#: trac/wiki/web_ui.py:613
 #, python-format
 msgid "Page %(name)s not found"
 msgstr "ページ %(name)s が見つかりません"
 
-#: trac/wiki/web_ui.py:658
+#: trac/wiki/web_ui.py:667
 msgid "View latest version"
 msgstr "最新バージョンを表示する"
 
-#: trac/wiki/web_ui.py:662
+#: trac/wiki/web_ui.py:671
 msgid "View parent page"
 msgstr "上位のページを表示"
 
-#: trac/wiki/web_ui.py:671
+#: trac/wiki/web_ui.py:680
 msgid "Previous Version"
 msgstr "前のバージョン"
 
-#: trac/wiki/web_ui.py:671
+#: trac/wiki/web_ui.py:680
 msgid "Next Version"
 msgstr "次のバージョン"
 
-#: trac/wiki/web_ui.py:672
+#: trac/wiki/web_ui.py:681
 msgid "View Latest Version"
 msgstr "最新バージョンの表示"
 
-#: trac/wiki/web_ui.py:675
+#: trac/wiki/web_ui.py:684
 msgid "Up"
 msgstr "上へ"
 
-#: trac/wiki/web_ui.py:700
+#: trac/wiki/web_ui.py:709
 msgid "Start Page"
 msgstr "スタートページ"
 
-#: trac/wiki/web_ui.py:701
+#: trac/wiki/web_ui.py:710
 msgid "Index"
 msgstr "ページ一覧"
 
-#: trac/wiki/web_ui.py:703
+#: trac/wiki/web_ui.py:712
 msgid "History"
 msgstr "履歴"
 
-#: trac/wiki/web_ui.py:710
+#: trac/wiki/web_ui.py:719
 msgid "Wiki changes"
 msgstr "Wiki ページの更新"
 
-#: trac/wiki/web_ui.py:737
+#: trac/wiki/web_ui.py:746
 #, python-format
 msgid "%(page)s edited"
 msgstr "%(page)s を更新しました"
 
-#: trac/wiki/web_ui.py:739
+#: trac/wiki/web_ui.py:748
 #, python-format
 msgid "%(page)s created"
 msgstr "%(page)s を作成しました"
