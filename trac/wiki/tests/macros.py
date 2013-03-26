@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+from StringIO import StringIO
 from datetime import datetime
+import os
+import shutil
+import tempfile
 import unittest
 
 from trac.config import Option
@@ -8,7 +12,30 @@ from trac.util.datefmt import format_date, utc
 from trac.wiki.model import WikiPage
 from trac.wiki.tests import formatter
 
+
+def add_pages(tc, names):
+    now = datetime.now(utc)
+    for name in names:
+        w = WikiPage(tc.env)
+        w.name = name
+        w.text = '--'
+        w.save('joe', 'the page ' + name, '::1', now)
+
+
 # == [[Image]]
+
+def image_setup(tc):
+    add_pages(tc, ['page:fr'])
+    from trac.attachment import Attachment
+    tc.env.path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
+    attachment = Attachment(tc.env, 'wiki', 'page:fr')
+    attachment.description = "image in page:fr"
+    attachment.insert('img.png', StringIO(''), 0, 2)
+
+def image_teardown(tc):
+    shutil.rmtree(os.path.join(tc.env.path, 'files'))
+    os.rmdir(tc.env.path)
+    tc.env.reset_db()
 
 # Note: using `« test »` string in the following tests for checking
 #       unicode robustness and whitespace support (first space is
@@ -99,6 +126,15 @@ IMAGE_MACRO_TEST_CASES = u"""
 ------------------------------
 <img src="/browser/%C2%AB%20test%C2%A0%C2%BB.png?format=raw" alt="source:« test ».png" title="source:« test ».png" />
 ------------------------------
+============================== Attachments on page with ':' characters (#10562)
+[[Image("page:fr":img.png​,nolink)]]
+------------------------------
+<p>
+<img src="/raw-attachment/wiki/page%3Afr/img.png" alt="image in page:fr" title="image in page:fr" />
+</p>
+------------------------------
+<img src="/raw-attachment/wiki/page%3Afr/img.png" alt="image in page:fr" title="image in page:fr" />
+------------------------------
 """
 
 # Note: in the <img> src attribute above, the Unicode characters
@@ -109,14 +145,6 @@ IMAGE_MACRO_TEST_CASES = u"""
 
 
 # == [[TitleIndex]]
-
-def add_pages(tc, names):
-    now = datetime.now(utc)
-    for name in names:
-        w = WikiPage(tc.env)
-        w.name = name
-        w.text = '--'
-        w.save('joe', 'the page ' + name, '::1', now)
 
 def titleindex_teardown(tc):
     tc.env.reset_db()
@@ -411,7 +439,9 @@ def tracini_teardown(tc):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(formatter.suite(IMAGE_MACRO_TEST_CASES, file=__file__))
+    suite.addTest(formatter.suite(IMAGE_MACRO_TEST_CASES, file=__file__,
+                                  setup=image_setup,
+                                  teardown=image_teardown))
     suite.addTest(formatter.suite(TITLEINDEX1_MACRO_TEST_CASES, file=__file__))
     suite.addTest(formatter.suite(TITLEINDEX2_MACRO_TEST_CASES, file=__file__,
                                   setup=titleindex2_setup,
