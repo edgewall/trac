@@ -78,12 +78,12 @@ class WikiPage(object):
             self.text = self.comment = self.author = ''
             self.time = None
             self.readonly = 0
-            
+
     exists = property(lambda self: self.version > 0)
 
     def delete(self, version=None, db=None):
         assert self.exists, 'Cannot delete non-existent page'
-        
+
         @self.env.with_transaction(db)
         def do_delete(db):
             cursor = db.cursor()
@@ -146,7 +146,7 @@ class WikiPage(object):
             if self.version == 1:
                 # Invalidate page name cache
                 del WikiSystem(self.env).pages
-        
+
         self.author = author
         self.comment = comment
         self.time = t
@@ -172,7 +172,7 @@ class WikiPage(object):
             raise TracError(_("Invalid Wiki page name '%(name)s'",
                               name=new_name))
         old_name = self.name
-        
+
         @self.env.with_transaction()
         def do_rename(db):
             cursor = db.cursor()
@@ -190,9 +190,9 @@ class WikiPage(object):
             Attachment.reparent_all(self.env, 'wiki', old_name, 'wiki',
                                     new_name)
 
-        self.name = new_name
+        self.name = self.resource.id = new_name
         self.env.log.info('Renamed page %s to %s', old_name, new_name)
-        
+
         for listener in WikiSystem(self.env).change_listeners:
             if hasattr(listener, 'wiki_page_renamed'):
                 listener.wiki_page_renamed(self, old_name)

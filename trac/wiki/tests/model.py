@@ -81,11 +81,11 @@ class WikiPageTestCase(unittest.TestCase):
         self.assertEqual('joe', page.author)
         self.assertEqual('Testing', page.comment)
         self.assertEqual(t, page.time)
-        
+
         history = list(page.get_history())
         self.assertEqual(1, len(history))
         self.assertEqual((1, t, 'joe', 'Testing', '::1'), history[0])
-        
+
         page = WikiPage(self.env, 'TestPage', 1)
         self.assertEqual(1, page.resource.version)
 
@@ -95,7 +95,7 @@ class WikiPageTestCase(unittest.TestCase):
         page.text = 'Bla bla'
         t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         page.save('joe', 'Testing', '::1', t)
-        
+
         self.assertEqual(True, page.exists)
         self.assertEqual(1, page.version)
         self.assertEqual(1, page.resource.version)
@@ -217,16 +217,17 @@ class WikiPageTestCase(unittest.TestCase):
                        ('TestPage',) + data)
         attachment = Attachment(self.env, 'wiki', 'TestPage')
         attachment.insert('foo.txt', StringIO(), 0, 1)
-        
+
         page = WikiPage(self.env, 'TestPage')
         page.rename('PageRenamed')
         self.assertEqual('PageRenamed', page.name)
-        
+        self.assertEqual('PageRenamed', page.resource.id)
+
         cursor.execute("SELECT version,time,author,ipnr,text,comment,"
                        "readonly FROM wiki WHERE name=%s", ('PageRenamed',))
         self.assertEqual(data, cursor.fetchone())
         self.assertEqual(None, cursor.fetchone())
-        
+
         attachments = Attachment.select(self.env, 'wiki', 'PageRenamed')
         self.assertEqual('foo.txt', attachments.next().filename)
         self.assertRaises(StopIteration, attachments.next)
@@ -234,11 +235,11 @@ class WikiPageTestCase(unittest.TestCase):
 
         old_page = WikiPage(self.env, 'TestPage')
         self.assertEqual(False, old_page.exists)
-        
+
         cursor.execute("SELECT version,time,author,ipnr,text,comment,"
                        "readonly FROM wiki WHERE name=%s", ('TestPage',))
         self.assertEqual(None, cursor.fetchone())
-        
+
         listener = TestWikiChangeListener(self.env)
         self.assertEqual((page, 'TestPage'), listener.renamed[0])
 
