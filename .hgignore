@@ -20,3 +20,7 @@ Makefile.cfg
 doc/.build
 *.mo
 trac/htdocs/js/messages/*.js
+.idea
+.project
+.pydevproject
+.settings
