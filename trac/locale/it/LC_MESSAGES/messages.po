@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
 "POT-Creation-Date: 2013-02-02 15:20+0100\n"
-"PO-Revision-Date: 2013-02-14 19:16+0100\n"
+"PO-Revision-Date: 2013-03-28 09:42+0100\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/trac/language/it/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -2387,7 +2387,7 @@ msgstr "(modifiche multiple)"
 #: trac/templates/diff_view.html:47
 #, python-format
 msgid "%(date)s (%(duration)s ago)"
-msgstr "%(date)s (%(duration)s)"
+msgstr "%(date)s (%(duration)s fa)"
 
 #: trac/templates/diff_view.html:55
 #, python-format
@@ -4109,7 +4109,7 @@ msgstr "Modifica questo obiettivo"
 #: trac/ticket/templates/roadmap.html:43
 #, python-format
 msgid "Completed %(duration)s ago (%(date)s)"
-msgstr "Completato %(duration)s (%(date)s)"
+msgstr "Completato %(duration)s fa (%(date)s)"
 
 #: trac/ticket/templates/milestone_view.html:32
 #: trac/ticket/templates/roadmap.html:48
@@ -4798,7 +4798,7 @@ msgstr "il %(date)s"
 #: trac/timeline/web_ui.py:319
 #, python-format
 msgid "See timeline %(relativetime)s ago"
-msgstr "Guarda la cronologia %(relativetime)s"
+msgstr "Guarda la cronologia di %(relativetime)s fa"
 
 #. TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
 #: trac/timeline/web_ui.py:410
@@ -5601,7 +5601,7 @@ msgstr "(meno di un'ora fa)"
 #: trac/versioncontrol/templates/changeset.html:140
 #, python-format
 msgid "(%(age)s ago)"
-msgstr "(%(age)s)"
+msgstr "(%(age)s fa)"
 
 #: trac/versioncontrol/templates/changeset.html:154
 msgid "Message:"
