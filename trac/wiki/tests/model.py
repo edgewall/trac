@@ -223,6 +223,7 @@ class WikiPageTestCase(unittest.TestCase):
         page = WikiPage(self.env, 'TestPage')
         page.rename('PageRenamed')
         self.assertEqual('PageRenamed', page.name)
+        self.assertEqual('PageRenamed', page.resource.id)
 
         self.assertEqual([data], self.env.db_query("""
             SELECT version, time, author, ipnr, text, comment, readonly
