@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
 "POT-Creation-Date: 2013-02-02 15:20+0100\n"
-"PO-Revision-Date: 2013-03-28 09:42+0100\n"
+"PO-Revision-Date: 2013-03-28 11:21+0100\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/trac/language/it/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -1085,7 +1085,7 @@ msgstr "Syslog"
 
 #: trac/admin/web_ui.py:284
 msgid "Windows event log"
-msgstr "Windows event log"
+msgstr "Registro eventi di Windows"
 
 #: trac/admin/web_ui.py:297
 #, python-format
@@ -5475,7 +5475,7 @@ msgstr ""
 #: trac/versioncontrol/templates/changeset.html:41
 #: trac/versioncontrol/templates/changeset.html:63
 msgid "Show revision log"
-msgstr "Mostra il log della revisione"
+msgstr "Mostra il registro delle revisioni"
 
 #: trac/versioncontrol/templates/changeset.html:39
 #, python-format
@@ -5746,7 +5746,7 @@ msgstr "Scarica come archivio Zip"
 #: trac/versioncontrol/templates/dir_entries.html:22
 #: trac/versioncontrol/templates/repository_index.html:26
 msgid "View Revision Log"
-msgstr "Mostra il log della revisione"
+msgstr "Mostra il registro delle revisioni"
 
 #: trac/versioncontrol/templates/dir_entries.html:23
 #: trac/versioncontrol/templates/repository_index.html:27
@@ -5783,11 +5783,11 @@ msgstr "Mostra cartella principale"
 
 #: trac/versioncontrol/templates/revisionlog.html:10
 msgid "(log)"
-msgstr "(log)"
+msgstr "(registro modifiche)"
 
 #: trac/versioncontrol/templates/revisionlog.html:36
 msgid "Revision Log Mode:"
-msgstr "Modalità di log della revisione:"
+msgstr "Modalità di visualizzazione del registro:"
 
 #: trac/versioncontrol/templates/revisionlog.html:40
 msgid "Stop on copy"
@@ -5811,7 +5811,7 @@ msgid ""
 "              and back to\n"
 "              [4:]\n"
 "            ]"
-msgstr "[1:Mostra il log cominciando da [2:]] [3:e indietro fino a [4:]]"
+msgstr "[1:Comincia dalla revisione [2:]] [3:e retrocedi fino alla [4:]]"
 
 #: trac/versioncontrol/templates/revisionlog.html:67
 msgid ""
@@ -5876,7 +5876,7 @@ msgstr "A [%(rev)s]"
 
 #: trac/versioncontrol/templates/revisionlog.html:151
 msgid "View log starting at this revision"
-msgstr "Mostra i log a partire da questa revisione"
+msgstr "Mostra il registro a partire da questa revisione"
 
 #: trac/versioncontrol/templates/revisionlog.html:158
 #, python-format
@@ -5897,9 +5897,7 @@ msgstr "Mostra il changeset [%(rev)s] ristretto a %(path)s"
 msgid ""
 "[1:Note:] See [2:TracRevisionLog]\n"
 "        for help on using the revision log."
-msgstr ""
-"[1:Nota:] Vedi [2:TracRevisionLog]\n"
-"        per un aiuto sull'uso del log delle revisioni."
+msgstr "[1:Nota:] Vedi [2:TracRevisionLog] per un aiuto sull'uso del registro delle revisioni."
 
 #: trac/versioncontrol/templates/revisionlog.txt:2
 #, python-format
@@ -5975,7 +5973,7 @@ msgstr ""
 
 #: trac/versioncontrol/web_ui/browser.py:477
 msgid "Revision Log"
-msgstr "Log della revisione"
+msgstr "Registro revisioni"
 
 #: trac/versioncontrol/web_ui/browser.py:483
 msgid "Repository URL"
@@ -6160,7 +6158,7 @@ msgstr "Percorso inesistente"
 #: trac/versioncontrol/web_ui/log.py:249
 #, python-format
 msgid "Revision Log (restarting at %(path)s, rev. %(rev)s)"
-msgstr "Log della revisione (ripartendo da %(path)s, rev. %(rev)s)"
+msgstr "Registro revisioni (ripartendo da %(path)s, rev. %(rev)s)"
 
 #: trac/versioncontrol/web_ui/log.py:323
 msgid "ChangeLog"
@@ -6176,7 +6174,7 @@ msgstr "Revisioni più vecchie"
 
 #: trac/versioncontrol/web_ui/log.py:411
 msgid "No permission to view change log"
-msgstr "Non hai i permessi per vedere il log delle modifiche"
+msgstr "Non hai i permessi per vedere il registro delle modifiche"
 
 #. TRANSLATOR: You can 'search' in the repository history... (link)
 #: trac/versioncontrol/web_ui/util.py:73
