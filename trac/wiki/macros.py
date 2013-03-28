@@ -501,6 +501,8 @@ class ImageMacro(WikiMacroBase):
     def is_inline(self, content):
         return True
 
+    _split_filespec_re = re.compile(r''':(?!(?:[^"':]|[^"']:[^'"])+["'])''')
+
     def expand_macro(self, formatter, name, content):
         # args will be null if the macro is called without parenthesis.
         if not content:
@@ -578,7 +580,8 @@ class ImageMacro(WikiMacroBase):
                         attr[str(key)] = val # will be used as a __call__ kwd
 
         # parse filespec argument to get realm and id if contained.
-        parts = filespec.split(':')
+        parts = [i.strip('''['"]''')
+                 for i in self._split_filespec_re.split(filespec)]
         url = raw_url = desc = None
         attachment = None
         if (parts and parts[0] in ('http', 'https', 'ftp')): # absolute

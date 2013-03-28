@@ -26,7 +26,7 @@
         <input type="hidden" name="action" value="delete" />
         <p><strong>Are you sure you want to delete this milestone?</strong></p>
         <input type="checkbox" id="retarget" name="retarget" checked="checked" />
-        <label for="target">Retarget associated tickets to milestone</label>
+        <label for="retarget">Retarget associated tickets to milestone</label>
         <select name="target" id="target">
           <option value="">None</option>
           <optgroup py:for="(label, milestones) in milestone_groups"

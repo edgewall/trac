@@ -60,6 +60,10 @@ class TestWikiRename(FunctionalTwillTestCaseSetup):
         # check redirection page
         tc.url(page_url)
         tc.find("See.*/wiki/" + newpagename)
+        tc.find("The page %s has been renamed to %s."
+                % (pagename, newpagename))
+        tc.find("The page %s has been recreated with a redirect to %s."
+                % (pagename, newpagename))
         # check whether attachment exists on the new page but not on old page
         tc.go(base_url + '/attachment/wiki/' + newpagename + '/' + attachment)
         tc.notfind("Error: Invalid Attachment")
@@ -73,6 +77,8 @@ class TestWikiRename(FunctionalTwillTestCaseSetup):
         tc.formvalue('rename-form', 'redirect', False)
         tc.submit('submit')
         tc.url(base_url + "/wiki/" + newpagename)
+        tc.find("The page %s has been renamed to %s."
+                % (pagename, newpagename))
         # this time, the original page is gone
         tc.go(page_url)
         tc.url(page_url)

@@ -1208,7 +1208,7 @@ class TicketQueryMacro(WikiMacroBase):
     can be included in field values by escaping them with a backslash (`\`).
 
     Groups of field constraints to be OR-ed together can be separated by a
-    litteral `or` argument.
+    literal `or` argument.
 
     In addition to filters, several other named parameters can be used
     to control how the results are presented. All of them are optional.
