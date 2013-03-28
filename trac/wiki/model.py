@@ -189,7 +189,7 @@ class WikiPage(object):
             Attachment.reparent_all(self.env, 'wiki', old_name, 'wiki',
                                     new_name)
 
-        self.name = new_name
+        self.name = self.resource.id = new_name
         self.env.log.info('Renamed page %s to %s', old_name, new_name)
 
         for listener in WikiSystem(self.env).change_listeners:
