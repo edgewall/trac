@@ -599,7 +599,7 @@ class Environment(Component, ComponentManager):
         rows = self.db_query("""
                 SELECT value FROM system WHERE name='%sdatabase_version'
                 """ % ('initial_' if initial else ''))
-        return rows and int(rows[0][0])
+        return int(rows[0][0]) if rows else False
 
     def setup_config(self):
         """Load the configuration file."""
