@@ -20,6 +20,7 @@
 
 from __future__ import with_statement
 
+from functools import partial
 from itertools import groupby
 import os
 import posixpath
@@ -45,6 +46,7 @@ from trac.versioncontrol.api import RepositoryManager, Changeset, Node, \
 from trac.versioncontrol.diff import get_diff_options, diff_blocks, \
                                      unified_diff
 from trac.versioncontrol.web_ui.browser import BrowserModule
+from trac.versioncontrol.web_ui.util import render_zip
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import (Chrome, INavigationContributor, add_ctxtnav,
                              add_link, add_script, add_stylesheet,
@@ -345,7 +347,8 @@ class ChangesetModule(Component):
             if format == 'diff':
                 self._render_diff(req, filename, repos, data)
             elif format == 'zip':
-                self._render_zip(req, filename, repos, data)
+                render_zip(req, filename, repos, None,
+                           partial(self._zip_iter_nodes, req, repos, data))
 
         # -- HTML format
         self._render_html(req, repos, chgset, restricted, xhr, data)
@@ -751,47 +754,16 @@ class ChangesetModule(Component):
         req.write(diff_str)
         raise RequestDone
 
-    def _render_zip(self, req, filename, repos, data):
-        """ZIP archive containing all the added and/or modified files."""
-        req.send_response(200)
-        req.send_header('Content-Type', 'application/zip')
-        req.send_header('Content-Disposition',
-                        content_disposition('attachment', filename + '.zip'))
-
-        from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED as compression
-
-        buf = StringIO()
-        zipfile = ZipFile(buf, 'w', compression)
+    def _zip_iter_nodes(self, req, repos, data, root_node):
+        """Node iterator yielding all the added and/or modified files."""
         for old_node, new_node, kind, change in repos.get_changes(
             new_path=data['new_path'], new_rev=data['new_rev'],
             old_path=data['old_path'], old_rev=data['old_rev']):
             if (kind == Node.FILE or kind == Node.DIRECTORY) and \
                     change != Changeset.DELETE \
                     and new_node.is_viewable(req.perm):
-                zipinfo = ZipInfo()
-                # Note: unicode filenames are not supported by zipfile.
-                # UTF-8 is not supported by all Zip tools either,
-                # but as some do, UTF-8 is the best option here.
-                zipinfo.filename = new_node.path.strip('/').encode('utf-8')
-                zipinfo.flag_bits |= 0x800 # filename is encoded with utf-8
-                zipinfo.date_time = new_node.last_modified.utctimetuple()[:6]
-                zipinfo.compress_type = compression
-                # setting zipinfo.external_attr is needed since Python 2.5
-                if new_node.isfile:
-                    zipinfo.external_attr = 0644 << 16L
-                    content = new_node.get_content().read()
-                elif new_node.isdir:
-                    zipinfo.filename += '/'
-                    zipinfo.external_attr = 040755 << 16L
-                    content = ''
-                zipfile.writestr(zipinfo, content)
-        zipfile.close()
+                yield new_node
 
-        zip_str = buf.getvalue()
-        req.send_header("Content-Length", len(zip_str))
-        req.end_headers()
-        req.write(zip_str)
-        raise RequestDone
 
     def title_for_diff(self, data):
         # TRANSLATOR: 'latest' (revision)

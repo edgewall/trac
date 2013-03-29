@@ -18,7 +18,6 @@
 from datetime import datetime, timedelta
 from fnmatch import fnmatchcase
 import re
-from StringIO import StringIO
 
 from genshi.builder import tag
 
@@ -27,7 +26,7 @@ from trac.core import *
 from trac.mimeview.api import IHTMLPreviewAnnotator, Mimeview, is_binary
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
-from trac.util import as_bool, content_disposition, embedded_numbers
+from trac.util import as_bool, embedded_numbers
 from trac.util.compat import cleandoc
 from trac.util.datefmt import http_date, to_datetime, utc
 from trac.util.html import escape, Markup
@@ -639,82 +638,13 @@ class BrowserModule(Component):
         if not self.is_path_downloadable(repos, root_node.path):
             raise TracError(_("Path not available for download"))
         req.perm(context.resource).require('FILE_VIEW')
-
         root_path = root_node.path.rstrip('/')
         if root_path:
-            root_path += '/'
-            root_name = root_node.name + '/'
             archive_name = root_node.name
         else:
-            root_name = ''
             archive_name = repos.reponame or 'repository'
         filename = '%s-%s.zip' % (archive_name, root_node.rev)
-        root_len = len(root_path)
-
-        req.send_response(200)
-        req.send_header('Content-Type', 'application/zip')
-        req.send_header('Content-Disposition',
-                        content_disposition('inline', filename))
-        req.send_header('Last-Modified', http_date(root_node.last_modified))
-
-        from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED, ZIP_STORED
-
-        buf = StringIO()
-        zipfile = ZipFile(buf, 'w', ZIP_DEFLATED)
-        for node in self._iter_nodes(root_node):
-            if node is root_node:
-                continue
-            zipinfo = ZipInfo()
-            path = node.path
-            if not path.startswith(root_path):
-                self.log.debug('path=%r, root_path=%r', path, root_path)
-            assert path.startswith(root_path)
-            # The general purpose bit flag 11 is used to denote
-            # UTF-8 encoding for path and comment. Only set it for
-            # non-ascii files for increased portability.
-            # See http://www.pkware.com/documents/casestudies/APPNOTE.TXT
-            path = root_name + path[root_len:]
-            for c in path:
-                if ord(c) >= 128:
-                    zipinfo.flag_bits |= 0x0800
-                    break
-            zipinfo.filename = path.encode('utf-8')
-            if node.last_modified: # git doesn't have it when node.isdir
-                zipinfo.date_time = node.last_modified.utctimetuple()[:6]
-
-            # external_attr is 4 bytes in size. The high order two
-            # bytes represent UNIX permission and file type bits,
-            # while the low order two contain MS-DOS FAT file
-            # attributes, most notably bit 4 marking directories.
-            if node.isfile:
-                zipinfo.compress_type = ZIP_DEFLATED
-                zipinfo.external_attr = 0644 << 16L # permissions -r-wr--r--
-                data = node.get_content().read()
-                properties = node.get_properties()
-                # Subversion specific
-                if 'svn:special' in properties and \
-                       data.startswith('link '):
-                    data = data[5:]
-                    zipinfo.external_attr |= 0120000 << 16L # symlink file type
-                    zipinfo.compress_type = ZIP_STORED
-                if 'svn:executable' in properties:
-                    zipinfo.external_attr |= 0755 << 16L # -rwxr-xr-x
-                zipfile.writestr(zipinfo, data)
-            elif node.isdir and path:
-                if not zipinfo.filename.endswith('/'):
-                    zipinfo.filename += '/'
-                zipinfo.compress_type = ZIP_STORED
-                zipinfo.external_attr = 040755 << 16L # permissions drwxr-xr-x
-                zipinfo.external_attr |= 0x10 # MS-DOS directory flag
-                zipfile.writestr(zipinfo, '')
-
-        zipfile.close()
-
-        zip_str = buf.getvalue()
-        req.send_header("Content-Length", len(zip_str))
-        req.end_headers()
-        req.write(zip_str)
-        raise RequestDone
+        render_zip(req, filename, repos, root_node, self._iter_nodes)
 
     def _render_file(self, req, context, repos, node, rev=None):
         req.perm(node.resource).require('FILE_VIEW')
