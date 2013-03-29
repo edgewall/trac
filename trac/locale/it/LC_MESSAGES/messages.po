@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
 "POT-Creation-Date: 2013-02-02 15:20+0100\n"
-"PO-Revision-Date: 2013-03-28 11:21+0100\n"
+"PO-Revision-Date: 2013-03-29 12:33+0100\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/trac/language/it/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -1356,9 +1356,7 @@ msgstr "Ordina"
 msgid ""
 "[1:Note:] The order of priorities determines the\n"
 "              coloring of entries in the ticket queries and reports."
-msgstr ""
-"[1:Note:] L'ordinamento delle priorità determina il\n"
-"              colore dei risultati nelle ricerche e nei report."
+msgstr "[1:Nota:] L'ordinamento delle priorità determina il colore dei risultati nelle ricerche e nei report."
 
 #: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:85
 msgid "Configuration"
@@ -2010,10 +2008,7 @@ msgstr ""
 msgid ""
 "The [1:Default language] option uses the browser's\n"
 "        language negotiation feature to select the appropriate language."
-msgstr ""
-"L'opzione [1:Default language] usa la funzionalità di\n"
-"        negoziazione della lingua del browser per selezionare quella più "
-"appropriata."
+msgstr "L'opzione [1:Lingua predefinita] usa la funzionalità di negoziazione della lingua del browser per selezionare quella più appropriata."
 
 #: trac/prefs/templates/prefs_pygments.html:37
 msgid ""
@@ -2455,11 +2450,7 @@ msgid ""
 "                reproduce the issue."
 msgstr ""
 "Si è verificato un errore interno a Trac.\n"
-"                Si raccomanda di avvisare l'\n"
-"                [1:\n"
-"                    amministratore Trac] locale passandogli le "
-"informazioni\n"
-"                necessarie per riprodurre il problema."
+"Si raccomanda di avvisare l'[1:amministratore Trac] locale passandogli le informazioni necessarie per riprodurre il problema."
 
 #: trac/templates/error.html:95
 #, python-format
@@ -2520,27 +2511,14 @@ msgid ""
 "                and configuration of Trac or its plugins, please try the\n"
 "                [3:mailing list]\n"
 "                instead of creating a ticket."
-msgstr ""
-"Prima di farlo, però, prova per favore a\n"
-"                [1:[2:cercare]\n"
-"                segnalazioni simili], dal momento che molto probabilmente"
-"\n"
-"                il problema è già stato riportato. Per questioni relative"
-"\n"
-"                all'installazione e alla configurazione di Trac e dei "
-"suoi\n"
-"                moduli aggiuntivi, prova anche a consultare la [3:mailing"
-" list]\n"
-"                invece di creare una nuova segnalazione."
+msgstr "Prima di farlo, però, prova per favore a [1:[2:cercare] segnalazioni simili], dal momento che molto probabilmente il problema è già stato riportato. Per questioni relative all'installazione e alla configurazione di Trac e dei suoi moduli aggiuntivi, prova anche a consultare la [3:mailing list] invece di creare una nuova segnalazione."
 
 #: trac/templates/error.html:131
 #, python-format
 msgid ""
 "Otherwise, please %(create)s a new bug report\n"
 "                describing the problem and explain how to reproduce it."
-msgstr ""
-"Altrimenti, potresti %(create)s una nuova segnalazione\n"
-"                descrivendo il problema e spiegando come riprodurlo."
+msgstr "Altrimenti, potresti %(create)s una nuova segnalazione descrivendo il problema e spiegando come riprodurlo."
 
 #: trac/templates/error.html:135
 msgid "Python Traceback"
@@ -2556,10 +2534,7 @@ msgid ""
 "[1:File \"%(file)s\",\n"
 "                        line [2:%(line)s], in]\n"
 "                        [3:%(function)s]"
-msgstr ""
-"[1:File \"%(file)s\",\n"
-"                        riga [2:%(line)s], in]\n"
-"                        [3:%(function)s]"
+msgstr "[1:File \"%(file)s\", riga [2:%(line)s], in] [3:%(function)s]"
 
 #: trac/templates/error.html:146
 msgid "Code fragment:"
@@ -2646,10 +2621,7 @@ msgid ""
 "[1:%(file)s][2:​]\n"
 "       ([3:%(size)s]) -\n"
 "      added by [4:%(author)s] %(date)s."
-msgstr ""
-"[1:%(file)s][2:​]\n"
-"       ([3:%(size)s]) -\n"
-"      aggiunto da [4:%(author)s] %(date)s."
+msgstr "[1:%(file)s][2:​] ([3:%(size)s]) - aggiunto da [4:%(author)s] %(date)s."
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:44
@@ -4002,9 +3974,7 @@ msgstr "Aggiungi Campo:"
 
 #: trac/ticket/templates/batch_modify.html:50
 msgid "[1:Note:] See [2:TracBatchModify] for help on using batch modify."
-msgstr ""
-"[1:Note:] Vedi [2:TracBatchModify] per un aiuto sull'uso della modifica "
-"massiva."
+msgstr "[1:Nota:] Vedi [2:TracBatchModify] per un aiuto sull'uso della modifica massiva."
 
 #: trac/ticket/templates/batch_modify.html:57
 msgid "Change tickets"
@@ -4049,10 +4019,7 @@ msgid ""
 "[1:Note:] See\n"
 "      [2:TracRoadmap] for help on using\n"
 "      the roadmap."
-msgstr ""
-"[1:Nota:] Vedi\n"
-"      [2:TracRoadmap] per un aiuto sull'uso\n"
-"      degli obiettivi."
+msgstr "[1:Nota:] Vedi [2:TracRoadmap] per un aiuto sull'uso degli obiettivi."
 
 #: trac/ticket/templates/milestone_edit.html:11
 #: trac/ticket/templates/milestone_edit.html:45
@@ -4096,10 +4063,7 @@ msgid ""
 "[1:Note:] See\n"
 "        [2:TracRoadmap] for help on using\n"
 "        the roadmap."
-msgstr ""
-"[1:Nota:] Vedi\n"
-"        [2:TracRoadmap] per un aiuto sull'uso\n"
-"        degli obiettivi."
+msgstr "[1:Nota:] Vedi [2:TracRoadmap] per un aiuto sull'uso degli obiettivi."
 
 #: trac/ticket/templates/milestone_view.html:11
 msgid "Edit this milestone"
@@ -4230,9 +4194,7 @@ msgstr "Elimina query"
 msgid ""
 "[1:Note:] See [2:TracQuery]\n"
 "        for help on using queries."
-msgstr ""
-"[1:Nota:] Vedi [2:TracQuery]\n"
-"        per un aiuto sull'uso delle ricerche."
+msgstr "[1:Nota:] Vedi [2:TracQuery] per un aiuto sull'uso delle ricerche."
 
 #: trac/ticket/templates/query_results.html:25
 #, python-format
@@ -4292,10 +4254,7 @@ msgstr "Elimina il report"
 msgid ""
 "[1:Note:]\n"
 "        See [2:TracReports] for help on using and creating reports."
-msgstr ""
-"[1:Nota:]\n"
-"        Vedi [2:TracReports] per un aiuto sull'uso e sulla creazione dei "
-"report."
+msgstr "[1:Nota:] Vedi [2:TracReports] per un aiuto sull'uso e sulla creazione dei report."
 
 #: trac/ticket/templates/report_edit.html:16
 msgid "New Report"
@@ -4317,10 +4276,7 @@ msgstr "Errore:"
 msgid ""
 "Query for Report: (can be either SQL or, if starting with [1:query:],\n"
 "              a [2:TracQuery] expression)"
-msgstr ""
-"Query per il report: (può essere una istruzione SQL oppure, se inizia con"
-" [1:query:],\n"
-"             una espressione [2:TracQuery])"
+msgstr "Query per il report: (può essere una istruzione SQL oppure, se inizia con [1:query:], una espressione [2:TracQuery])"
 
 #: trac/ticket/templates/report_edit.html:43
 msgid "Save report"
@@ -4479,20 +4435,16 @@ msgid ""
 "              You can nevertheless proceed and submit your changes if you"
 " wish so."
 msgstr ""
-"Questa segnalazione è stata modificata dopo che hai iniziato a lavorarci."
-"  Dovresti rivedere le [1:altre modifiche] mostrate sopra e\n"
-"              ogni [2:conflitto] mostrato nell'anteprima di sotto.\n"
-"              In ogni caso, puoi procedere e sovrascrivere con le tue "
-"modifiche, se lo desideri."
+"Questa segnalazione è stata modificata dopo che hai iniziato a lavorarci.\n"
+"Dovresti rivedere le [1:altre modifiche] mostrate sopra e ogni [2:conflitto] mostrato nell'anteprima sottostante.\n"
+"In ogni caso, puoi procedere e sovrascrivere con le tue modifiche, se lo desideri."
 
 #: trac/ticket/templates/ticket.html:200
 msgid ""
 "You may use\n"
 "                [1:WikiFormatting]\n"
 "                here."
-msgstr ""
-"Qui puoi usare\n"
-"                la [1:WikiFormatting]."
+msgstr "Qui puoi usare la [1:WikiFormatting]."
 
 #: trac/ticket/templates/ticket.html:211
 msgid "Modify Ticket"
@@ -4541,9 +4493,7 @@ msgstr ""
 #: trac/ticket/templates/ticket.html:368
 #: trac/wiki/templates/wiki_edit_form.html:46
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
-msgstr ""
-"L'indirizzo e-mail e il nominativo possono essere impostati nelle "
-"[1:Preferenze]."
+msgstr "L'indirizzo email e il nominativo possono essere impostati nelle [1:Preferenze]."
 
 #: trac/ticket/templates/ticket.html:376
 msgid "I have files to attach to this ticket"
@@ -4573,10 +4523,7 @@ msgid ""
 "[1:Note:] See\n"
 "        [2:TracTickets] for help on using\n"
 "        tickets."
-msgstr ""
-"[1:Nota:] Vedi\n"
-"        [2:TracTickets] per un aiuto sull'uso delle\n"
-"        segnalazioni."
+msgstr "[1:Nota:] Vedi [2:TracTickets] per un aiuto sull'uso delle segnalazioni."
 
 #: trac/ticket/templates/ticket_box.html:22
 #, python-format
@@ -4586,7 +4533,7 @@ msgstr "Aperta %(created)s fa"
 #: trac/ticket/templates/ticket_box.html:23
 #, python-format
 msgid "Closed %(closed)s"
-msgstr "Chiuso %(closed)s fa"
+msgstr "Chiusa %(closed)s fa"
 
 #: trac/ticket/templates/ticket_box.html:24
 #, python-format
@@ -4663,9 +4610,7 @@ msgstr "Replica al commento %(cnum)s"
 msgid ""
 "[1:[2:%(name)s]][3:​]\n"
 "          added"
-msgstr ""
-"[1:[2:%(name)s]][3:​]\n"
-"          aggiunto"
+msgstr "[1:[2:%(name)s]][3:​] aggiunto"
 
 #: trac/ticket/templates/ticket_change.html:88
 #, python-format
@@ -4850,9 +4795,7 @@ msgstr "[1:%(time)s] %(title)s da parte di [2:%(author)s]"
 msgid ""
 "[1:Note:] See [2:TracTimeline]\n"
 "        for information about the timeline view."
-msgstr ""
-"[1:Nota:] Vedi [2:TracTimeline]\n"
-"        per informazioni sulla vista cronologica."
+msgstr "[1:Nota:] Vedi [2:TracTimeline] per informazioni sulla vista cronologica."
 
 #: trac/upgrades/db28.py:72
 #, python-format
@@ -5275,10 +5218,7 @@ msgid ""
 "[1:Note:]\n"
 "            This repository is defined in [2:[3:trac.ini]]\n"
 "            and cannot be edited on this page."
-msgstr ""
-"[1:Nota:]\n"
-"           Questo repository è definito nel [2:[3:trac.ini]] e non può "
-"essere modificato da questa pagina."
+msgstr "[1:Nota:] Questo repository è definito nel [2:[3:trac.ini]] e non può essere modificato da questa pagina."
 
 #: trac/versioncontrol/templates/admin_repositories.html:59
 #: trac/versioncontrol/templates/admin_repositories.html:99
@@ -5438,9 +5378,7 @@ msgstr "Seleziona i percorsi e le revisioni per Diff"
 msgid ""
 "[1:Note:] See [2:TracBrowser]\n"
 "        for help on using the repository browser."
-msgstr ""
-"[1:Nota:] Vedi [2:TracBrowser]\n"
-"        per un aiuto sull'uso del repository browser."
+msgstr "[1:Nota:] Vedi [2:TracBrowser] per un aiuto sull'uso del repository browser."
 
 #: trac/versioncontrol/templates/changeset.html:36
 #: trac/versioncontrol/templates/changeset.html:46
@@ -7088,7 +7026,7 @@ msgid ""
 msgstr ""
 "[1:Confermi di voler eliminare le versioni dalla %(from)s alla %(to)s di questa pagina?]\n"
 "[2:]\n"
-"Eliminazione di [3:%(versions)s versioni] della pagina, modificata la prima volta il %(first_modified)s e l'ultima il %(last_modified)s."
+"Eliminazione di [3:%(versions)s versioni] della pagina, modificata la prima volta %(first_modified)s e l'ultima %(last_modified)s."
 
 #: trac/wiki/templates/wiki_delete.html:50
 #, python-format
@@ -7123,10 +7061,7 @@ msgid ""
 "Removing the one and only [1:\n"
 "                        version] of the page, which was created "
 "%(created)s."
-msgstr ""
-"Eliminazione della sola ed unica [1:\n"
-"                        versione] della pagina, che è stata creata "
-"%(created)s."
+msgstr "Eliminazione della sola ed unica [1:versione] della pagina, che è stata creata %(created)s."
 
 #: trac/wiki/templates/wiki_delete.html:83
 #, python-format
@@ -7137,7 +7072,7 @@ msgid ""
 "%(modified)s."
 msgstr ""
 "Eliminazione di tutte le [1:%(versions)s versioni] della pagina,\n"
-"creata il %(created)s e modificata l'ultima volta il %(modified)s."
+"creata %(created)s e modificata l'ultima volta %(modified)s."
 
 #: trac/wiki/templates/wiki_delete.html:99
 msgid "Delete those versions"
@@ -7343,9 +7278,7 @@ msgstr "Modifica questa pagina"
 msgid ""
 "Version %(version)s (modified by %(author)s, %(date)s)\n"
 "               ([1:diff])"
-msgstr ""
-"Versione %(version)s (modificata da %(author)s, %(date)s)\n"
-"               ([1:diff])"
+msgstr "Versione %(version)s (modificata da %(author)s, %(date)s) ([1:diff])"
 
 #: trac/wiki/templates/wiki_view.html:50
 #, python-format
