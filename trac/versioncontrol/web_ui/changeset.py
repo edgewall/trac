@@ -268,7 +268,7 @@ class ChangesetModule(Component):
         diff_opts = diff_data['options']
 
         # -- setup the `chgset` and `restricted` flags, see docstring above.
-        chgset = not old and not old_path
+        chgset = not old and old_path is None
         if chgset:
             restricted = new_path not in ('', '/') # (subset or not)
         else:
@@ -305,7 +305,7 @@ class ChangesetModule(Component):
                 new = repos.youngest_rev
             elif not old:
                 old = repos.youngest_rev
-            if not old_path:
+            if old_path is None:
                 old_path = new_path
             data = {'old_path': old_path, 'old_rev': old,
                     'new_path': new_path, 'new_rev': new}
