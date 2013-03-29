@@ -1,12 +1,41 @@
 from __future__ import with_statement
 
 from trac import db_default
+from trac.core import ComponentManager
 from trac.env import Environment
 
 import os.path
 import unittest
 import tempfile
 import shutil
+
+class EnvironmentCreatedWithoutData(Environment):
+    def __init__(self, path, create=False, options=[]):
+        ComponentManager.__init__(self)
+
+        self.path = path
+        self.systeminfo = []
+        self._href = self._abs_href = None
+
+        if create:
+            self.create(options)
+        else:
+            self.verify()
+            self.setup_config()
+
+class EmptyEnvironmentTestCase(unittest.TestCase):
+
+    def setUp(self):
+        env_path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
+        self.env = EnvironmentCreatedWithoutData(env_path, create=True)
+
+    def tearDown(self):
+        self.env.shutdown() # really closes the db connections
+        shutil.rmtree(self.env.path)
+
+    def test_get_version(self):
+        """Testing env.get_version"""
+        assert self.env.get_version() is False, self.env.get_version()
 
 
 class EnvironmentTestCase(unittest.TestCase):
@@ -16,8 +45,6 @@ class EnvironmentTestCase(unittest.TestCase):
         self.env = Environment(env_path, create=True)
 
     def tearDown(self):
-        with self.env.db_query as db:
-            db.close()
         self.env.shutdown() # really closes the db connections
         shutil.rmtree(self.env.path)
 
@@ -47,7 +74,10 @@ class EnvironmentTestCase(unittest.TestCase):
 
 
 def suite():
-    return unittest.makeSuite(EnvironmentTestCase,'test')
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(EnvironmentTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(EmptyEnvironmentTestCase, 'test'))
+    return suite
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')

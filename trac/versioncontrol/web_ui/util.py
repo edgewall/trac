@@ -16,17 +16,21 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christian Boos <cboos@edgewall.org>
 
+from StringIO import StringIO
 from itertools import izip
+from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED, ZIP_STORED
 
 from genshi.builder import tag
 
 from trac.resource import ResourceNotFound
-from trac.util.datefmt import datetime, utc
+from trac.util import content_disposition
+from trac.util.datefmt import datetime, http_date, utc
 from trac.util.translation import tag_, _
 from trac.versioncontrol.api import Changeset, NoSuchNode, NoSuchChangeset
+from trac.web.api import RequestDone
 
 __all__ = ['get_changes', 'get_path_links', 'get_existing_node',
-           'get_allowed_node', 'make_log_graph']
+           'get_allowed_node', 'make_log_graph', 'render_zip']
 
 
 def get_changes(repos, revs, log=None):
@@ -166,3 +170,87 @@ def make_log_graph(repos, revs):
     except StopIteration:
         pass
     return threads, vertices, columns
+
+
+def render_zip(req, filename, repos, root_node, iter_nodes):
+    """Send a ZIP file containing the data corresponding to the `nodes`
+    iterable.
+
+    :type root_node: `~trac.versioncontrol.api.Node`
+    :param root_node: optional ancestor for all the *nodes*
+
+    :param iter_nodes: callable taking the optional *root_node* as input
+                       and generating the `~trac.versioncontrol.api.Node`
+                       for which the content should be added into the zip.
+    """
+    req.send_response(200)
+    req.send_header('Content-Type', 'application/zip')
+    req.send_header('Content-Disposition',
+                    content_disposition('inline', filename))
+    if root_node:
+        req.send_header('Last-Modified', http_date(root_node.last_modified))
+        root_path = root_node.path.rstrip('/')
+    else:
+        root_path = ''
+    if root_path:
+        root_path += '/'
+        root_name = root_node.name + '/'
+    else:
+        root_name = ''
+    root_len = len(root_path)
+
+    buf = StringIO()
+    zipfile = ZipFile(buf, 'w', ZIP_DEFLATED)
+    for node in iter_nodes(root_node):
+        if node is root_node:
+            continue
+        zipinfo = ZipInfo()
+        path = node.path.strip('/')
+        if not path.startswith(root_path):
+            self.log.debug('path=%r, root_path=%r', path, root_path)
+        assert path.startswith(root_path)
+        # The general purpose bit flag 11 is used to denote
+        # UTF-8 encoding for path and comment. Only set it for
+        # non-ascii files for increased portability.
+        # See http://www.pkware.com/documents/casestudies/APPNOTE.TXT
+        path = root_name + path[root_len:]
+        for c in path:
+            if ord(c) >= 128:
+                zipinfo.flag_bits |= 0x0800
+                break
+        zipinfo.filename = path.encode('utf-8')
+        if node.last_modified: # git doesn't have it when node.isdir
+            zipinfo.date_time = node.last_modified.utctimetuple()[:6]
+
+        # external_attr is 4 bytes in size. The high order two
+        # bytes represent UNIX permission and file type bits,
+        # while the low order two contain MS-DOS FAT file
+        # attributes, most notably bit 4 marking directories.
+        if node.isfile:
+            zipinfo.compress_type = ZIP_DEFLATED
+            zipinfo.external_attr = 0644 << 16L # permissions -r-wr--r--
+            data = node.get_content().read()
+            properties = node.get_properties()
+            # Subversion specific
+            if 'svn:special' in properties and \
+                   data.startswith('link '):
+                data = data[5:]
+                zipinfo.external_attr |= 0120000 << 16L # symlink file type
+                zipinfo.compress_type = ZIP_STORED
+            if 'svn:executable' in properties:
+                zipinfo.external_attr |= 0755 << 16L # -rwxr-xr-x
+            zipfile.writestr(zipinfo, data)
+        elif node.isdir and path:
+            if not zipinfo.filename.endswith('/'):
+                zipinfo.filename += '/'
+            zipinfo.compress_type = ZIP_STORED
+            zipinfo.external_attr = 040755 << 16L # permissions drwxr-xr-x
+            zipinfo.external_attr |= 0x10 # MS-DOS directory flag
+            zipfile.writestr(zipinfo, '')
+    zipfile.close()
+
+    zip_str = buf.getvalue()
+    req.send_header("Content-Length", len(zip_str))
+    req.end_headers()
+    req.write(zip_str)
+    raise RequestDone

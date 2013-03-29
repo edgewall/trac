@@ -337,6 +337,7 @@ class BrowserModule(Component):
         rev = req.args.get('rev', '')
         if rev.lower() in ('', 'head'):
             rev = None
+        format = req.args.get('format')
         order = req.args.get('order', 'name').lower()
         desc = req.args.has_key('desc')
         xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
@@ -392,6 +393,9 @@ class BrowserModule(Component):
                                         context, all_repositories, order, desc)
         if node:
             if node.isdir:
+                if format in ('zip',): # extension point here...
+                    self._render_zip(req, context, repos, node, rev)
+                    # not reached
                 dir_data = self._render_dir(req, repos, node, rev, order, desc)
             elif node.isfile:
                 file_data = self._render_file(req, context, repos, node, rev)
@@ -620,6 +624,28 @@ class BrowserModule(Component):
                                    timerange.to_seconds(timerange.oldest)),
                 }
 
+    def _iter_nodes(self, node):
+        stack = [node]
+        while stack:
+            node = stack.pop()
+            yield node
+            if node.isdir:
+                stack.extend(sorted(node.get_entries(),
+                                    key=lambda x: x.name,
+                                    reverse=True))
+
+    def _render_zip(self, req, context, repos, root_node, rev=None):
+        if not self.is_path_downloadable(repos, root_node.path):
+            raise TracError(_("Path not available for download"))
+        req.perm(context.resource).require('FILE_VIEW')
+        root_path = root_node.path.rstrip('/')
+        if root_path:
+            archive_name = root_node.name
+        else:
+            archive_name = repos.reponame or 'repository'
+        filename = '%s-%s.zip' % (archive_name, root_node.rev)
+        render_zip(req, filename, repos, root_node, self._iter_nodes)
+
     def _render_file(self, req, context, repos, node, rev=None):
         req.perm(node.resource).require('FILE_VIEW')
 
@@ -704,17 +730,18 @@ class BrowserModule(Component):
         if node is not None and node.isfile:
             return href.export(rev or 'HEAD', repos.reponame or None,
                                node.path)
-        path = npath = '' if node is None else node.path.strip('/')
-        if repos.reponame:
-            path = (repos.reponame + '/' + npath).rstrip('/')
-        if any(fnmatchcase(path, p.strip('/'))
-               for p in self.downloadable_paths):
-            return href.changeset(rev or repos.youngest_rev,
-                                  repos.reponame or None, npath,
-                                  old=rev, old_path=repos.reponame or '/',
-                                  format='zip')
+        path = '' if node is None else node.path.strip('/')
+        if self.is_path_downloadable(repos, path):
+            return href.browser(repos.reponame or None, path,
+                                rev=rev or repos.youngest_rev, format='zip')
 
     # public methods
+
+    def is_path_downloadable(self, repos, path):
+        if repos.reponame:
+            path = repos.reponame + '/' + path
+        return any(fnmatchcase(path, dp.strip('/'))
+                   for dp in self.downloadable_paths)
 
     def render_properties(self, mode, context, props):
         """Prepare rendering of a collection of properties."""
