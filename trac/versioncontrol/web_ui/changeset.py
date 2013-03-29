@@ -339,8 +339,6 @@ class ChangesetModule(Component):
                 if restricted:
                     filename = 'diff-%s-from-%s-to-%s' \
                                   % (rpath, old, new)
-                elif old_path == '/': # special case for download (#238)
-                    filename = '%s-%s' % (rpath, old)
                 else:
                     filename = 'diff-from-%s-%s-to-%s-%s' \
                                % (old_path.replace('/','_'), old, rpath, new)

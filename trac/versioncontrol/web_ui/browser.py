@@ -18,6 +18,7 @@
 from datetime import datetime, timedelta
 from fnmatch import fnmatchcase
 import re
+from StringIO import StringIO
 
 from genshi.builder import tag
 
@@ -26,7 +27,7 @@ from trac.core import *
 from trac.mimeview.api import IHTMLPreviewAnnotator, Mimeview, is_binary
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
-from trac.util import as_bool, embedded_numbers
+from trac.util import as_bool, content_disposition, embedded_numbers
 from trac.util.compat import cleandoc
 from trac.util.datefmt import http_date, to_datetime, utc
 from trac.util.html import escape, Markup
@@ -337,6 +338,7 @@ class BrowserModule(Component):
         rev = req.args.get('rev', '')
         if rev.lower() in ('', 'head'):
             rev = None
+        format = req.args.get('format')
         order = req.args.get('order', 'name').lower()
         desc = req.args.has_key('desc')
         xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
@@ -392,6 +394,9 @@ class BrowserModule(Component):
                                         context, all_repositories, order, desc)
         if node:
             if node.isdir:
+                if format in ('zip',): # extension point here...
+                    self._render_zip(req, context, repos, node, rev)
+                    # not reached
                 dir_data = self._render_dir(req, repos, node, rev, order, desc)
             elif node.isfile:
                 file_data = self._render_file(req, context, repos, node, rev)
@@ -620,6 +625,97 @@ class BrowserModule(Component):
                                    timerange.to_seconds(timerange.oldest)),
                 }
 
+    def _iter_nodes(self, node):
+        stack = [node]
+        while stack:
+            node = stack.pop()
+            yield node
+            if node.isdir:
+                stack.extend(sorted(node.get_entries(),
+                                    key=lambda x: x.name,
+                                    reverse=True))
+
+    def _render_zip(self, req, context, repos, root_node, rev=None):
+        if not self.is_path_downloadable(repos, root_node.path):
+            raise TracError(_("Path not available for download"))
+        req.perm(context.resource).require('FILE_VIEW')
+
+        root_path = root_node.path.rstrip('/')
+        if root_path:
+            root_path += '/'
+            root_name = root_node.name + '/'
+            archive_name = root_node.name
+        else:
+            root_name = ''
+            archive_name = repos.reponame or 'repository'
+        filename = '%s-%s.zip' % (archive_name, root_node.rev)
+        root_len = len(root_path)
+
+        req.send_response(200)
+        req.send_header('Content-Type', 'application/zip')
+        req.send_header('Content-Disposition',
+                        content_disposition('inline', filename))
+        req.send_header('Last-Modified', http_date(root_node.last_modified))
+
+        from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED, ZIP_STORED
+
+        buf = StringIO()
+        zipfile = ZipFile(buf, 'w', ZIP_DEFLATED)
+        for node in self._iter_nodes(root_node):
+            if node is root_node:
+                continue
+            zipinfo = ZipInfo()
+            path = node.path
+            if not path.startswith(root_path):
+                self.log.debug('path=%r, root_path=%r', path, root_path)
+            assert path.startswith(root_path)
+            # The general purpose bit flag 11 is used to denote
+            # UTF-8 encoding for path and comment. Only set it for
+            # non-ascii files for increased portability.
+            # See http://www.pkware.com/documents/casestudies/APPNOTE.TXT
+            path = root_name + path[root_len:]
+            for c in path:
+                if ord(c) >= 128:
+                    zipinfo.flag_bits |= 0x0800
+                    break
+            zipinfo.filename = path.encode('utf-8')
+            if node.last_modified: # git doesn't have it when node.isdir
+                zipinfo.date_time = node.last_modified.utctimetuple()[:6]
+
+            # external_attr is 4 bytes in size. The high order two
+            # bytes represent UNIX permission and file type bits,
+            # while the low order two contain MS-DOS FAT file
+            # attributes, most notably bit 4 marking directories.
+            if node.isfile:
+                zipinfo.compress_type = ZIP_DEFLATED
+                zipinfo.external_attr = 0644 << 16L # permissions -r-wr--r--
+                data = node.get_content().read()
+                properties = node.get_properties()
+                # Subversion specific
+                if 'svn:special' in properties and \
+                       data.startswith('link '):
+                    data = data[5:]
+                    zipinfo.external_attr |= 0120000 << 16L # symlink file type
+                    zipinfo.compress_type = ZIP_STORED
+                if 'svn:executable' in properties:
+                    zipinfo.external_attr |= 0755 << 16L # -rwxr-xr-x
+                zipfile.writestr(zipinfo, data)
+            elif node.isdir and path:
+                if not zipinfo.filename.endswith('/'):
+                    zipinfo.filename += '/'
+                zipinfo.compress_type = ZIP_STORED
+                zipinfo.external_attr = 040755 << 16L # permissions drwxr-xr-x
+                zipinfo.external_attr |= 0x10 # MS-DOS directory flag
+                zipfile.writestr(zipinfo, '')
+
+        zipfile.close()
+
+        zip_str = buf.getvalue()
+        req.send_header("Content-Length", len(zip_str))
+        req.end_headers()
+        req.write(zip_str)
+        raise RequestDone
+
     def _render_file(self, req, context, repos, node, rev=None):
         req.perm(node.resource).require('FILE_VIEW')
 
@@ -704,17 +800,18 @@ class BrowserModule(Component):
         if node is not None and node.isfile:
             return href.export(rev or 'HEAD', repos.reponame or None,
                                node.path)
-        path = npath = '' if node is None else node.path.strip('/')
-        if repos.reponame:
-            path = (repos.reponame + '/' + npath).rstrip('/')
-        if any(fnmatchcase(path, p.strip('/'))
-               for p in self.downloadable_paths):
-            return href.changeset(rev or repos.youngest_rev,
-                                  repos.reponame or None, npath,
-                                  old=rev, old_path=repos.reponame or '/',
-                                  format='zip')
+        path = '' if node is None else node.path.strip('/')
+        if self.is_path_downloadable(repos, path):
+            return href.browser(repos.reponame or None, path,
+                                rev=rev or repos.youngest_rev, format='zip')
 
     # public methods
+
+    def is_path_downloadable(self, repos, path):
+        if repos.reponame:
+            path = repos.reponame + '/' + path
+        return any(fnmatchcase(path, dp.strip('/'))
+                   for dp in self.downloadable_paths)
 
     def render_properties(self, mode, context, props):
         """Prepare rendering of a collection of properties."""
