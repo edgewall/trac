@@ -30,8 +30,6 @@ class EmptyEnvironmentTestCase(unittest.TestCase):
         self.env = EnvironmentCreatedWithoutData(env_path, create=True)
 
     def tearDown(self):
-        with self.env.db_query as db:
-            db.close()
         self.env.shutdown() # really closes the db connections
         shutil.rmtree(self.env.path)
 
@@ -47,8 +45,6 @@ class EnvironmentTestCase(unittest.TestCase):
         self.env = Environment(env_path, create=True)
 
     def tearDown(self):
-        with self.env.db_query as db:
-            db.close()
         self.env.shutdown() # really closes the db connections
         shutil.rmtree(self.env.path)
 
