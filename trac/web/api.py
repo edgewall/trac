@@ -356,7 +356,9 @@ class Request(object):
 
         Will be `None` if the user has not logged in using HTTP authentication.
         """
-        return self.environ.get('REMOTE_USER')
+        user = self.environ.get('REMOTE_USER')
+        if user is not None:
+            return to_unicode(user)
 
     @property
     def scheme(self):

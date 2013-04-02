@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from trac.test import locale_en
 from trac.tests.functional import *
 from trac.util.datefmt import utc, localtz, format_date, format_datetime
+from trac.util.text import to_utf8
 
 
 class TestTickets(FunctionalTwillTestCaseSetup):
@@ -1169,6 +1170,8 @@ class RegressionTestTicket4630a(FunctionalTwillTestCaseSetup):
             self._tester.logout()
             self._tester.login('user')
             self._tester.logout()
+            self._tester.login(u'joé')
+            self._tester.logout()
             self._tester.login('admin')
             ticket_id = self._tester.create_ticket()
             self._tester.go_to_ticket(ticket_id)
@@ -1195,7 +1198,7 @@ class RegressionTestTicket4630b(FunctionalTestCaseSetup):
         users = perm.get_users_with_permission('TRAC_ADMIN')
         self.assertEqual(users, ['admin'])
         users = perm.get_users_with_permission('TICKET_MODIFY')
-        self.assertEqual(users, ['admin', 'user'])
+        self.assertEqual(sorted(users), ['admin', u'joé', 'user'])
 
 
 class RegressionTestTicket5022(FunctionalTwillTestCaseSetup):
@@ -1241,8 +1244,8 @@ class RegressionTestTicket5394a(FunctionalTwillTestCaseSetup):
 
         options = 'id="action_reassign_reassign_owner">' + \
             ''.join(['<option[^>]*>%s</option>' % user for user in
-                     sorted(test_users + ['admin', 'user'])])
-        tc.find(options, 's')
+                     sorted(test_users + ['admin', u'joé', 'user'])])
+        tc.find(to_utf8(options), 's')
         # We don't have a good way to fully delete a user from the Trac db.
         # Once we do, we may want to cleanup our list of users here.
 
