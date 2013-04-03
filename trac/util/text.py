@@ -221,24 +221,27 @@ def quote_query_string(text):
 
 
 def to_utf8(text, charset='latin1'):
-    """Convert a string to UTF-8, assuming the encoding is either UTF-8, ISO
-    Latin-1, or as specified by the optional `charset` parameter.
+    """Convert a string to an UTF-8 `str` object.
 
-    .. deprecated :: 0.10
-       You should use `unicode` strings only.
+    If the input is not an `unicode` object, we assume the encoding is
+    already UTF-8, ISO Latin-1, or as specified by the optional
+    *charset* parameter.
     """
-    try:
-        # Do nothing if it's already utf-8
-        u = unicode(text, 'utf-8')
-        return text
-    except UnicodeError:
+    if isinstance(text, unicode):
+        u = text
+    else:
         try:
-            # Use the user supplied charset if possible
-            u = unicode(text, charset)
+            # Do nothing if it's already utf-8
+            u = unicode(text, 'utf-8')
+            return text
         except UnicodeError:
-            # This should always work
-            u = unicode(text, 'latin1')
-        return u.encode('utf-8')
+            try:
+                # Use the user supplied charset if possible
+                u = unicode(text, charset)
+            except UnicodeError:
+                # This should always work
+                u = unicode(text, 'latin1')
+    return u.encode('utf-8')
 
 
 class unicode_passwd(unicode):

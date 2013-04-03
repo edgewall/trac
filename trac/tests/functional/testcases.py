@@ -196,6 +196,29 @@ class RegressionTestTicket3663(FunctionalTwillTestCaseSetup):
         tc.find('Invalid URL encoding')
 
 
+class RegressionTestTicket6318(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Regression test for non-ascii usernames (#6318)
+        """
+        # first do a logout, otherwise we might end up logged in as
+        # admin again, as this is the first thing the tester does.
+        # ... but even before that we need to make sure we're coming
+        # from a valid URL, which is not the case if we're just coming
+        # from the above test! ('/wiki/\xE9t\xE9')
+        self._tester.go_to_front()
+        self._tester.logout()
+        # also test a regular ascii user name
+        self._testenv.adduser(u'user')
+        self._tester.login(u'user')
+        self._tester.logout()
+        # now test utf-8 user name
+        self._testenv.adduser(u'joé')
+        self._tester.login(u'joé')
+        self._tester.logout()
+        # finally restore expected 'admin' login
+        self._tester.login('admin')
+
+
 def functionalSuite():
     suite = FunctionalTestSuite()
     return suite
@@ -213,6 +236,7 @@ def suite():
     suite.addTest(RegressionTestTicket9880())
     suite.addTest(ErrorPageValidation())
     suite.addTest(RegressionTestTicket3663())
+    suite.addTest(RegressionTestTicket6318())
 
     import trac.versioncontrol.tests
     trac.versioncontrol.tests.functionalSuite(suite)

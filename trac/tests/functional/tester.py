@@ -20,7 +20,7 @@ from trac.tests.functional import internal_error
 from trac.tests.functional.better_twill import tc, b
 from trac.tests.contentgen import random_page, random_sentence, random_word, \
     random_unique_camel
-from trac.util.text import unicode_quote
+from trac.util.text import to_utf8, unicode_quote
 
 try:
     from cStringIO import StringIO
@@ -47,6 +47,7 @@ class FunctionalTester(object):
 
     def login(self, username):
         """Login as the given user"""
+        username = to_utf8(username)
         tc.add_auth("", self.url, username, username)
         self.go_to_front()
         tc.find("Login")

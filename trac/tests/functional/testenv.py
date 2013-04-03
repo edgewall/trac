@@ -19,6 +19,7 @@ from trac.tests.functional.compat import rmtree
 from trac.tests.functional import logfile
 from trac.tests.functional.better_twill import tc, ConnectError
 from trac.util.compat import close_fds
+from trac.util.text import to_utf8
 
 # TODO: refactor to support testing multiple frontends, backends
 #       (and maybe repositories and authentication).
@@ -140,6 +141,7 @@ class FunctionalTestEnvironment(object):
     def adduser(self, user):
         """Add a user to the environment.  The password will be set to the
         same as username."""
+        user = to_utf8(user)
         if call([sys.executable, os.path.join(self.trac_src, 'contrib',
                  'htpasswd.py'), '-b', self.htpasswd,
                  user, user], close_fds=close_fds, cwd=self.command_cwd):
