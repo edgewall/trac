@@ -31,6 +31,7 @@ from trac.mimeview.api import Mimeview, IContentConverter, Context
 from trac.resource import Resource
 from trac.ticket.api import TicketSystem
 from trac.util import Ranges, as_bool
+from trac.util.compat import any
 from trac.util.datefmt import format_datetime, from_utimestamp, parse_date, \
                               to_timestamp, to_utimestamp, utc
 from trac.util.presentation import Paginator
@@ -453,14 +454,17 @@ class Query(object):
                                          if c not in custom_fields]))
         sql.append(",priority.value AS priority_value")
         for k in [db.quote(k) for k in cols if k in custom_fields]:
-            sql.append(",%s.value AS %s" % (k, k))
+            sql.append(",c.%s AS %s" % (k, k))
         sql.append("\nFROM ticket AS t")
 
         # Join with ticket_custom table as necessary
-        for k in [k for k in cols if k in custom_fields]:
-            qk = db.quote(k)
-            sql.append("\n  LEFT OUTER JOIN ticket_custom AS %s ON " \
-                       "(id=%s.ticket AND %s.name='%s')" % (qk, qk, qk, k))
+        if any(k in custom_fields for k in cols):
+            sql.append("\n  LEFT JOIN (SELECT id")
+            sql.extend(",\n    (SELECT c.value FROM ticket_custom c "
+                       "WHERE c.ticket=t.id AND c.name='%s') AS %s"
+                       % (k, db.quote(k))
+                       for k in cols if k in custom_fields)
+            sql.append("\n    FROM ticket t) AS c ON (c.id=t.id)")
 
         # Join with the enum table for proper sorting
         for col in [c for c in enum_columns
@@ -487,7 +491,7 @@ class Query(object):
             if name not in custom_fields:
                 col = 't.' + name
             else:
-                col = '%s.value' % db.quote(name)
+                col = 'c.' + db.quote(name)
             value = value[len(mode) + neg:]
 
             if name in self.time_fields:
@@ -589,7 +593,7 @@ class Query(object):
                     if k not in custom_fields:
                         col = 't.' + k
                     else:
-                        col = '%s.value' % db.quote(k)
+                        col = 'c.' + db.quote(k)
                     clauses.append("COALESCE(%s,'') %sIN (%s)"
                                    % (col, neg and 'NOT ' or '',
                                       ','.join(['%s' for val in v])))
@@ -630,7 +634,7 @@ class Query(object):
             if name in enum_columns:
                 col = name + '.value'
             elif name in custom_fields:
-                col = '%s.value' % db.quote(name)
+                col = 'c.' + db.quote(name)
             else:
                 col = 't.' + name
             desc = desc and ' DESC' or ''
