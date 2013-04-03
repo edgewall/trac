@@ -1,4 +1,5 @@
 from trac.test import Mock, EnvironmentStub, MockPerm, locale_en
+from trac.ticket.model import Ticket
 from trac.ticket.query import Query, QueryModule, TicketQueryMacro
 from trac.util.datefmt import utc
 from trac.web.chrome import web_context
@@ -257,12 +258,14 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': self.env.get_read_db().like()})
         sql, args = query.get_sql()
         foo = self.env.get_read_db().quote('foo')
         self.assertEqualSQL(sql,
-"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value,%s.value AS %s
+"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value,c.%s AS %s
 FROM ticket AS t
-  LEFT OUTER JOIN ticket_custom AS %s ON (id=%s.ticket AND %s.name='foo')
+  LEFT JOIN (SELECT id,
+    (SELECT c.value FROM ticket_custom c WHERE c.ticket=t.id AND c.name='foo') AS %s
+    FROM ticket t) AS c ON (c.id=t.id)
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE ((COALESCE(%s.value,'')=%%s))
-ORDER BY COALESCE(t.id,0)=0,t.id""" % ((foo,) * 6))
+WHERE ((COALESCE(c.%s,'')=%%s))
+ORDER BY COALESCE(t.id,0)=0,t.id""" % ((foo,) * 4))
         self.assertEqual(['something'], args)
         tickets = query.execute(self.req)
 
@@ -272,14 +275,41 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % ((foo,) * 6))
         sql, args = query.get_sql()
         foo = self.env.get_read_db().quote('foo')
         self.assertEqualSQL(sql,
-"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value,%s.value AS %s
+"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value,c.%s AS %s
 FROM ticket AS t
-  LEFT OUTER JOIN ticket_custom AS %s ON (id=%s.ticket AND %s.name='foo')
+  LEFT JOIN (SELECT id,
+    (SELECT c.value FROM ticket_custom c WHERE c.ticket=t.id AND c.name='foo') AS %s
+    FROM ticket t) AS c ON (c.id=t.id)
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-ORDER BY COALESCE(%s.value,'')='',%s.value,COALESCE(t.id,0)=0,t.id""" %
-        ((foo,) * 7))
+ORDER BY COALESCE(c.%s,'')='',c.%s,COALESCE(t.id,0)=0,t.id""" %
+        ((foo,) * 5))
         self.assertEqual([], args)
         tickets = query.execute(self.req)
+
+    def test_too_many_custom_fields(self):
+        fields = ['col_%02d' % i for i in xrange(100)]
+        for f in fields:
+            self.env.config.set('ticket-custom', f, 'text')
+
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'joe'
+        ticket['summary'] = 'Foo'
+        for idx, f in enumerate(fields):
+            ticket[f] = '%d.%s' % (idx, f)
+        ticket.insert()
+
+        string = 'col_00=0.col_00&order=id&col=id&col=reporter&col=summary' + \
+                 ''.join('&col=' + f for f in fields)
+        query = Query.from_string(self.env, string)
+        tickets = query.execute(self.req)
+        self.assertEqual(ticket.id, tickets[0]['id'])
+        self.assertEqual('joe', tickets[0]['reporter'])
+        self.assertEqual('Foo', tickets[0]['summary'])
+        self.assertEqual('0.col_00', tickets[0]['col_00'])
+        self.assertEqual('99.col_99', tickets[0]['col_99'])
+
+        query = Query.from_string(self.env, 'col_00=notfound')
+        self.assertEqual([], query.execute(self.req))
 
     def test_constrained_by_multiple_owners(self):
         query = Query.from_string(self.env, 'owner=someone|someone_else',
