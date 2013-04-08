@@ -654,7 +654,7 @@ table.listing tbody td a:hover, table.listing tbody th a:hover {
 table.listing tbody tr { border-top: 1px solid #ddd }
 table.listing tbody tr.even { background-color: #fcfcfc }
 table.listing tbody tr.odd { background-color: #f7f7f7 }
-table.listing tbody tr:hover { background: #eed !important }
+table.listing tbody tr:hover td { background: #eed !important }
 table.listing tbody tr.focus { background: #ddf !important }
 
 table.listing pre { white-space: pre-wrap }
