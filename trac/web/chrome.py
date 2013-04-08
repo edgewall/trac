@@ -475,6 +475,10 @@ class Chrome(Component):
         """Make `<textarea>` fields resizable. Requires !JavaScript.
         (''since 0.12'')""")
 
+    wiki_toolbars = BoolOption('trac', 'wiki_toolbars', 'true',
+        """Add a simple toolbar on top of Wiki `<textarea>`s.
+        (''since 1.0.2'')""")
+
     auto_preview_timeout = FloatOption('trac', 'auto_preview_timeout', 2.0,
         """Inactivity timeout in seconds after which the automatic wiki preview
         triggers an update. This option can contain floating-point values. The
@@ -1098,7 +1102,8 @@ class Chrome(Component):
 
     def add_wiki_toolbars(self, req):
         """Add wiki toolbars to `<textarea class="wikitext">` fields."""
-        add_script(req, 'common/js/wikitoolbar.js')
+        if self.wiki_toolbars:
+            add_script(req, 'common/js/wikitoolbar.js')
         self.add_textarea_grips(req)
 
     def add_auto_preview(self, req):
@@ -1166,4 +1171,3 @@ class Chrome(Component):
     def _stream_location(self, stream):
         for kind, data, pos in stream:
             return pos
-
