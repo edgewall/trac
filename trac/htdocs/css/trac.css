@@ -473,6 +473,11 @@ a.trac-diff:after { content: "∆" }
 div.compact > p:first-child { margin-top: 0 }
 div.compact > p:last-child { margin-bottom: 0 }
 
+/* Styles related to RTL support */
+.rtl { direction: rtl; }
+.rtl div.wiki-toc { float: left; }
+.rtl .wiki-toc ul ul, .wiki-toc ol ol { padding-right: 1.2em }
+
 a.missing:link, a.missing:visited, a.missing, span.missing,
 a.forbidden, span.forbidden { color: #998 }
 a.missing:hover { color: #000 }
