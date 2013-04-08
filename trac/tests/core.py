@@ -15,6 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from trac.core import *
+from trac.core import ComponentManager
 
 import unittest
 
@@ -300,12 +301,36 @@ class ComponentTestCase(unittest.TestCase):
         self.assertEquals('x', tests.next().test())
         self.assertRaises(StopIteration, tests.next)
 
+    def test_component_manager_component_isolation(self):
+        """
+        Verify that a component manager that is also a component will only
+        be listed in extension points for components instantiated in
+        its scope.
+
+        See bh:comment:5:ticket:438 and #11121
+        """
+        class ManagerComponentA(ComponentManager, Component):
+            implements(ITest)
+            def test(self):
+                pass
+
+        class ManagerComponentB(ManagerComponentA):
+            pass
+
+        class Tester(Component):
+            tests = ExtensionPoint(ITest)
+
+        mgrA = ManagerComponentA()
+        mgrB = ManagerComponentB()
+
+        self.assertEquals([mgrA], Tester(mgrA).tests)
+        self.assertEquals([mgrB], Tester(mgrB).tests)
+
     def test_instantiation_doesnt_enable(self):
         """
         Make sure that a component disabled by the ComponentManager is not
         implicitly enabled by instantiating it directly.
         """
-        from trac.core import ComponentManager
         class DisablingComponentManager(ComponentManager):
             def is_component_enabled(self, cls):
                 return False
