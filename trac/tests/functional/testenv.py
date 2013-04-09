@@ -167,7 +167,8 @@ class FunctionalTestEnvironment(object):
         else:
             self._tracadmin('permission', 'add', user, perm)
         # Seems to be necessary for the permission change to take effect
-        self.restart()
+        if self.pid:
+            self.restart()
 
     def revoke_perm(self, user, perm):
         """Revoke permission(s) from specified user. A single permission
@@ -236,7 +237,7 @@ class FunctionalTestEnvironment(object):
         """
         if self.pid:
             if os.name == 'nt':
-                # Untested
+                # Crude but works (reuse terminate from PyGIT?)
                 res = call(["taskkill", "/f", "/pid", str(self.pid)],
                      stdin=PIPE, stdout=PIPE, stderr=PIPE)
             else:
