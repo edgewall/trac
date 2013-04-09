@@ -28,6 +28,7 @@ from trac.test import EnvironmentStub, get_dburi
 from trac.tests.functional.compat import rmtree
 from trac.tests.functional import logfile
 from trac.tests.functional.better_twill import tc, ConnectError
+from trac.util import terminate
 from trac.util.compat import close_fds
 from trac.util.text import to_utf8
 
@@ -236,17 +237,7 @@ class FunctionalTestEnvironment(object):
         FIXME: probably needs a nicer way to exit for coverage to work
         """
         if self.pid:
-            if os.name == 'nt':
-                # Crude but works (reuse terminate from PyGIT?)
-                res = call(["taskkill", "/f", "/pid", str(self.pid)],
-                     stdin=PIPE, stdout=PIPE, stderr=PIPE)
-            else:
-                os.kill(self.pid, signal.SIGTERM)
-                try:
-                    os.waitpid(self.pid, 0)
-                except OSError, e:
-                    if e.errno != errno.ESRCH:
-                        raise
+            terminate(self)
 
     def restart(self):
         """Restarts the webserver"""

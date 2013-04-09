@@ -299,6 +299,39 @@ class NaivePopen:
                 os.remove(errfile)
 
 
+def terminate(process):
+    """Python 2.5 compatibility method.
+    os.kill is not available on Windows before Python 2.7.
+    In Python 2.6 subprocess.Popen has a terminate method.
+    (It also seems to have some issues on Windows though.)
+    """
+
+    def terminate_win(process):
+        import ctypes
+        PROCESS_TERMINATE = 1
+        handle = ctypes.windll.kernel32.OpenProcess(PROCESS_TERMINATE,
+                                                    False,
+                                                    process.pid)
+        ctypes.windll.kernel32.TerminateProcess(handle, -1)
+        ctypes.windll.kernel32.CloseHandle(handle)
+
+    def terminate_nix(process):
+        import os
+        import signal
+        try:
+            os.kill(process.pid, signal.SIGTERM)
+        except OSError, e:
+            # If the process has already finished and has not been
+            # waited for, killing it raises an ESRCH error on Cygwin
+            import errno
+            if e.errno != errno.ESRCH:
+                raise
+
+    if sys.platform == 'win32':
+        return terminate_win(process)
+    return terminate_nix(process)
+
+
 def makedirs(path, overwrite=False):
     """Create as many directories as necessary to make `path` exist.
 
