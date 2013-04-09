@@ -1,4 +1,3 @@
-#!/usr/bin/python
 """The :class:`FunctionalTester` object provides a higher-level interface to
 working with a Trac environment to make test cases more succinct.
 """
@@ -95,26 +94,27 @@ class FunctionalTester(object):
         tc.submit()
         tc.notfind(internal_error)
 
+    def go_to_url(self, url):
+        tc.go(url)
+        tc.url(url)
+        tc.notfind(internal_error)
+
     def go_to_front(self):
         """Go to the Trac front page"""
-        tc.go(self.url)
-        tc.url(self.url)
-        tc.notfind(internal_error)
+        self.go_to_url(self.url)
 
     def go_to_ticket(self, ticketid):
         """Surf to the page for the given ticket ID.  Assumes ticket
         exists."""
         ticket_url = self.url + "/ticket/%s" % ticketid
-        tc.go(ticket_url)
-        tc.url(ticket_url)
+        self.go_to_url(ticket_url)
 
     def go_to_wiki(self, name):
         """Surf to the page for the given wiki page."""
         # Used to go based on a quickjump, but if the wiki pagename isn't
         # camel case, that won't work.
         wiki_url = self.url + '/wiki/%s' % name
-        tc.go(wiki_url)
-        tc.url(wiki_url)
+        self.go_to_url(wiki_url)
 
     def go_to_timeline(self):
         """Surf to the timeline page."""

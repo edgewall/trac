@@ -1,6 +1,16 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
+# Copyright (C) 2003-2013 Edgewall Software
+# All rights reserved.
+#
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at http://trac.edgewall.org/wiki/TracLicense.
+#
+# This software consists of voluntary contributions made by many
+# individuals. For the exact contribution history, see the revision
+# history and logs, available at http://trac.edgewall.org/log/.
+
 """Object for creating and destroying a Trac environment for testing purposes.
 Provides some Trac environment-wide utility functions, and a way to call
 :command:`trac-admin` without it being on the path."""
@@ -129,7 +139,7 @@ class FunctionalTestEnvironment(object):
                  cwd=self.command_cwd):
             raise Exception('Unable to setup admin password')
         self.adduser('user')
-        self._tracadmin('permission', 'add', 'admin', 'TRAC_ADMIN')
+        self.grant_perm('admin', 'TRAC_ADMIN')
         # Setup Trac logging
         env = self.get_trac_environment()
         env.config.set('logging', 'log_type', 'file')
@@ -146,6 +156,30 @@ class FunctionalTestEnvironment(object):
                  'htpasswd.py'), '-b', self.htpasswd,
                  user, user], close_fds=close_fds, cwd=self.command_cwd):
             raise Exception('Unable to setup password for user "%s"' % user)
+
+    def grant_perm(self, user, perm):
+        """Grant permission(s) to specified user. A single permission may
+        be specified as a string, or multiple permissions may be
+        specified as a list or tuple of strings."""
+        if isinstance(perm, (list, tuple)):
+            for p in perm:
+                self._tracadmin('permission', 'add', user, p)
+        else:
+            self._tracadmin('permission', 'add', user, perm)
+        # Seems to be necessary for the permission change to take effect
+        self.restart()
+
+    def revoke_perm(self, user, perm):
+        """Revoke permission(s) from specified user. A single permission
+        may be specified as a string, or multiple permissions may be
+        specified as a list or tuple of strings."""
+        if isinstance(perm, (list, tuple)):
+            for p in perm:
+                self._tracadmin('permission', 'remove', user, p)
+        else:
+            self._tracadmin('permission', 'remove', user, perm)
+        # Seems to be necessary for the permission change to take effect
+        self.restart()
 
     def _tracadmin(self, *args):
         """Internal utility method for calling trac-admin"""
@@ -226,13 +260,12 @@ class FunctionalTestEnvironment(object):
         """Default to no repository"""
         return "''" # needed for Python 2.3 and 2.4 on win32
 
-    def call_in_workdir(self, args, environ=None):
+    def call_in_dir(self, dir, args, environ=None):
         proc = Popen(args, stdout=PIPE, stderr=logfile,
-                     close_fds=close_fds, cwd=self.work_dir(), env=environ)
+            close_fds=close_fds, cwd=dir, env=environ)
         (data, _) = proc.communicate()
         if proc.wait():
             raise Exception('Unable to run command %s in %s' %
-                            (args, self.work_dir()))
-
+                            (args, dir))
         logfile.write(data)
         return data
