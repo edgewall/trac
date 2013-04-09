@@ -415,7 +415,7 @@ class RoadmapModule(Component):
         return req.path_info == '/roadmap'
 
     def process_request(self, req):
-        req.perm.require('MILESTONE_VIEW')
+        req.perm.require('ROADMAP_VIEW')
 
         show = req.args.getlist('show')
         if 'all' in show:
