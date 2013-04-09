@@ -163,25 +163,26 @@ class FunctionalTestEnvironment(object):
         be specified as a string, or multiple permissions may be
         specified as a list or tuple of strings."""
         if isinstance(perm, (list, tuple)):
-            for p in perm:
-                self._tracadmin('permission', 'add', user, p)
+            self._tracadmin('permission', 'add', user, *perm)
         else:
             self._tracadmin('permission', 'add', user, perm)
-        # Seems to be necessary for the permission change to take effect
-        if self.pid:
-            self.restart()
+        # We need to force an environment reset, as this is necessary
+        # for the permission change to take effect: grant only
+        # invalidates the `DefaultPermissionStore._all_permissions`
+        # cache, but the `DefaultPermissionPolicy.permission_cache` is
+        # unaffected.
+        self.get_trac_environment().config.touch()
 
     def revoke_perm(self, user, perm):
         """Revoke permission(s) from specified user. A single permission
         may be specified as a string, or multiple permissions may be
         specified as a list or tuple of strings."""
         if isinstance(perm, (list, tuple)):
-            for p in perm:
-                self._tracadmin('permission', 'remove', user, p)
+            self._tracadmin('permission', 'remove', user, *perm)
         else:
             self._tracadmin('permission', 'remove', user, perm)
-        # Seems to be necessary for the permission change to take effect
-        self.restart()
+        # Force an environment reset (see grant_perm above)
+        self.get_trac_environment().config.touch()
 
     def _tracadmin(self, *args):
         """Internal utility method for calling trac-admin"""
