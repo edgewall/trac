@@ -559,6 +559,21 @@ class DateFormatTestCase(unittest.TestCase):
         self.assertEqual(datefmt.format_time(t, 'iso8601', gmt01),
                          expected.split('T')[1])
 
+    def test_format_iso8601_before_1900(self):
+        t = datetime.datetime(1899, 12, 30, 23, 58, 59, 123456, datefmt.utc)
+        self.assertEqual('1899-12-30T23:58:59Z',
+                         datefmt.format_datetime(t, 'iso8601', datefmt.utc))
+        self.assertEqual('1899-12-30',
+                         datefmt.format_datetime(t, 'iso8601date',
+                                                 datefmt.utc))
+        self.assertEqual('1899-12-30',
+                         datefmt.format_date(t, 'iso8601', datefmt.utc))
+        self.assertEqual('23:58:59Z',
+                         datefmt.format_datetime(t, 'iso8601time',
+                                                 datefmt.utc))
+        self.assertEqual('23:58:59Z',
+                         datefmt.format_time(t, 'iso8601', datefmt.utc))
+
     def test_format_date_accepts_date_instances(self):
         a_date = datetime.date(2009, 8, 20)
         self.assertEqual('2009-08-20',
@@ -660,11 +675,37 @@ class ISO8601TestCase(unittest.TestCase):
                          datefmt.format_time(t, 'medium', tz, 'iso8601'))
         self.assertEqual('2010-08-28T11:45:56',
                          datefmt.format_datetime(t, 'medium', tz, 'iso8601'))
-        for f in ('long', 'full'):
-            self.assertEqual('11:45:56+02:00',
-                             datefmt.format_time(t, f, tz, 'iso8601'))
-            self.assertEqual('2010-08-28T11:45:56+02:00',
-                             datefmt.format_datetime(t, f, tz, 'iso8601'))
+        self.assertEqual('11:45:56+02:00',
+                         datefmt.format_time(t, 'long', tz, 'iso8601'))
+        self.assertEqual('2010-08-28T11:45:56+02:00',
+                         datefmt.format_datetime(t, 'long', tz, 'iso8601'))
+        self.assertEqual('11:45:56.123456+02:00',
+                         datefmt.format_time(t, 'full', tz, 'iso8601'))
+        self.assertEqual('2010-08-28T11:45:56.123456+02:00',
+                         datefmt.format_datetime(t, 'full', tz, 'iso8601'))
+
+    def test_with_babel_format_before_1900(self):
+        tz = datefmt.timezone('GMT +2:00')
+        t = datetime.datetime(1899, 8, 28, 11, 45, 56, 123456, tz)
+        for f in ('short', 'medium', 'long', 'full'):
+            self.assertEqual('1899-08-28',
+                             datefmt.format_date(t, f, tz, 'iso8601'))
+        self.assertEqual('11:45',
+                         datefmt.format_time(t, 'short', tz, 'iso8601'))
+        self.assertEqual('1899-08-28T11:45',
+                         datefmt.format_datetime(t, 'short', tz, 'iso8601'))
+        self.assertEqual('11:45:56',
+                         datefmt.format_time(t, 'medium', tz, 'iso8601'))
+        self.assertEqual('1899-08-28T11:45:56',
+                         datefmt.format_datetime(t, 'medium', tz, 'iso8601'))
+        self.assertEqual('11:45:56+02:00',
+                         datefmt.format_time(t, 'long', tz, 'iso8601'))
+        self.assertEqual('1899-08-28T11:45:56+02:00',
+                         datefmt.format_datetime(t, 'long', tz, 'iso8601'))
+        self.assertEqual('11:45:56.123456+02:00',
+                         datefmt.format_time(t, 'full', tz, 'iso8601'))
+        self.assertEqual('1899-08-28T11:45:56.123456+02:00',
+                         datefmt.format_datetime(t, 'full', tz, 'iso8601'))
 
     def test_hint(self):
         try:

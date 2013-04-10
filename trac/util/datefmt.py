@@ -158,51 +158,45 @@ _BABEL_FORMATS = {
     'date': {'short': '%x', 'medium': '%x', 'long': '%x', 'full': '%x'},
     'time': {'short': '%H:%M', 'medium': '%X', 'long': '%X', 'full': '%X'},
 }
-_ISO8601_FORMATS = {
-    'datetime': {
-        '%x %X': 'iso8601', '%x': 'iso8601date', '%X': 'iso8601time',
-        'short': '%Y-%m-%dT%H:%M', 'medium': '%Y-%m-%dT%H:%M:%S',
-        'long': 'iso8601', 'full': 'iso8601',
-        'iso8601': 'iso8601', None: 'iso8601'},
-    'date': {
-        '%x %X': 'iso8601', '%x': 'iso8601date', '%X': 'iso8601time',
-        'short': 'iso8601date', 'medium': 'iso8601date',
-        'long': 'iso8601date', 'full': 'iso8601date',
-        'iso8601': 'iso8601date', None: 'iso8601date'},
-    'time': {
-        '%x %X': 'iso8601', '%x': 'iso8601date', '%X': 'iso8601time',
-        'short': '%H:%M', 'medium': '%H:%M:%S',
-        'long': 'iso8601time', 'full': 'iso8601time',
-        'iso8601': 'iso8601time', None: 'iso8601time'},
-}
 _STRFTIME_HINTS = {'%x %X': 'datetime', '%x': 'date', '%X': 'time'}
 
 def _format_datetime_without_babel(t, format):
-    normalize_Z = False
-    if format.lower().startswith('iso8601'):
-        if 'date' in format:
-            format = '%Y-%m-%d'
-        elif 'time' in format:
-            format = '%H:%M:%S%z'
-            normalize_Z = True
-        else:
-            format = '%Y-%m-%dT%H:%M:%S%z'
-            normalize_Z = True
     text = t.strftime(str(format))
-    if normalize_Z:
-        text = text.replace('+0000', 'Z')
-        if not text.endswith('Z'):
-            text = text[:-2] + ":" + text[-2:]
     encoding = getlocale(LC_TIME)[1] or getpreferredencoding() \
                or sys.getdefaultencoding()
     return unicode(text, encoding, 'replace')
 
+def _format_datetime_iso8601(t, format, hint):
+    if format != 'full':
+        t = t.replace(microsecond=0)
+    text = t.isoformat()  # YYYY-MM-DDThh:mm:ss.SSSSSS±hh:mm
+    if format == 'short':
+        text = text[:16]  # YYYY-MM-DDThh:mm
+    elif format == 'medium':
+        text = text[:19]  # YYYY-MM-DDThh:mm:ss
+    elif text.endswith('+00:00'):
+        text = text[:-6] + 'Z'
+    if hint == 'date':
+        text = text.split('T', 1)[0]
+    elif hint == 'time':
+        text = text.split('T', 1)[1]
+    return unicode(text, 'ascii')
+
 def _format_datetime(t, format, tzinfo, locale, hint):
     t = to_datetime(t, tzinfo or localtz)
 
-    if (format in ('iso8601', 'iso8601date', 'iso8601time') or
-        locale == 'iso8601'):
-        format = _ISO8601_FORMATS[hint].get(format, format)
+    if format == 'iso8601':
+        return _format_datetime_iso8601(t, 'long', hint)
+    if format in ('iso8601date', 'iso8601time'):
+        return _format_datetime_iso8601(t, 'long', format[7:])
+    if locale == 'iso8601':
+        if format is None:
+            format = 'long'
+        elif format in _STRFTIME_HINTS:
+            hint = _STRFTIME_HINTS[format]
+            format = 'long'
+        if format in ('short', 'medium', 'long', 'full'):
+            return _format_datetime_iso8601(t, format, hint)
         return _format_datetime_without_babel(t, format)
 
     if babel and locale:
