@@ -764,19 +764,11 @@ class TracIniMacro(WikiMacroBase):
 
         def default_cell(option):
             default = option.default
-            if default is True:
-                default = 'true'
-            elif default is False:
-                default = 'false'
-            elif default == 0:
-                default = '0.0' if isinstance(default, float) else '0'
-            elif default:
-                default = ', '.join(to_unicode(val) for val in default) \
-                          if isinstance(default, (list, tuple)) \
-                          else to_unicode(default)
+            if default is not None and default != '':
+                return tag.td(tag.code(option.dumps(default)),
+                              class_='default')
             else:
                 return tag.td(_("(no default)"), class_='nodefault')
-            return tag.td(tag.code(default), class_='default')
 
         return tag.div(class_='tracini')(
             (tag.h3(tag.code('[%s]' % section), id='%s-section' % section),

@@ -103,6 +103,7 @@ table.listing .num { text-align: right; width: 1% }
 .plugin .info dd { padding: 0; margin: 0; }
 .plugin .listing { width: 100%; }
 .plugin .listing th.sel input { margin-right: 0.5em; vertical-align: bottom; }
+.plugin .listing td.trac-module { background: #fcfcfc; }
 .plugin .listing td { background: #fff; }
 .trac-heading { margin: 0; }
 .trac-name { font-family: monospace; }

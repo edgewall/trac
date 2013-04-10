@@ -188,11 +188,14 @@ class ComponentManager(object):
         """Activate the component instance for the given class, or
         return the existing instance if the component has already been
         activated.
+
+        Note that `ComponentManager` components can't be activated
+        that way.
         """
         if not self.is_enabled(cls):
             return None
         component = self.components.get(cls)
-        if not component:
+        if not component and not issubclass(cls, ComponentManager):
             if cls not in ComponentMeta._components:
                 raise TracError('Component "%s" not registered' % cls.__name__)
             try:

@@ -441,6 +441,65 @@ class ConfigurationTestCase(unittest.TestCase):
             os.remove(site1)
             os.rmdir(os.path.dirname(site1))
 
+    def test_option_with_raw_default(self):
+        class Foo(object):
+            # enclose in parentheses to avoid messages extraction
+            option_none = (Option)('a', 'none', None)
+            option_blah = (Option)('a', 'blah', u'Blàh!')
+            option_true = (BoolOption)('a', 'true', True)
+            option_false = (BoolOption)('a', 'false', False)
+            option_list = (ListOption)('a', 'list', ['#cc0', 4.2, 42L, 0, None,
+                                                     True, False, None],
+                                       sep='|')
+            option_choice = (ChoiceOption)('a', 'choice', [-42, 42])
+
+        config = self._read()
+        config.set_defaults()
+        config.save()
+        with open(self.filename, 'r') as f:
+            self.assertEquals('# -*- coding: utf-8 -*-\n',            f.next())
+            self.assertEquals('\n',                                   f.next())
+            self.assertEquals('[a]\n',                                f.next())
+            self.assertEquals('blah = Blàh!\n',                       f.next())
+            self.assertEquals('choice = -42\n',                       f.next())
+            self.assertEquals('false = disabled\n',                   f.next())
+            self.assertEquals('list = #cc0|4.2|42|0||enabled|disabled|\n',
+                              f.next())
+            self.assertEquals('# none = <inherited>\n',               f.next())
+            self.assertEquals('true = enabled\n',                     f.next())
+            self.assertEquals('\n',                                   f.next())
+            self.assertRaises(StopIteration, f.next)
+
+    def test_unicode_option_with_raw_default(self):
+        class Foo(object):
+            # enclose in parentheses to avoid messages extraction
+            option_none = (Option)(u'résumé', u'nöné', None)
+            option_blah = (Option)(u'résumé', u'bláh', u'Blàh!')
+            option_true = (BoolOption)(u'résumé', u'trüé', True)
+            option_false = (BoolOption)(u'résumé', u'fálsé', False)
+            option_list = (ListOption)(u'résumé', u'liśt',
+                                       [u'#ccö', 4.2, 42L, 0, None, True,
+                                        False, None],
+                                       sep='|')
+            option_choice = (ChoiceOption)(u'résumé', u'chöicé', [-42, 42])
+
+        config = self._read()
+        config.set_defaults()
+        config.save()
+        with open(self.filename, 'r') as f:
+            self.assertEquals('# -*- coding: utf-8 -*-\n',            f.next())
+            self.assertEquals('\n',                                   f.next())
+            self.assertEquals('[résumé]\n',                           f.next())
+            self.assertEquals('bláh = Blàh!\n',                       f.next())
+            self.assertEquals('chöicé = -42\n',                       f.next())
+            self.assertEquals('fálsé = disabled\n',                   f.next())
+            self.assertEquals('liśt = #ccö|4.2|42|0||enabled|disabled|\n',
+                              f.next())
+            self.assertEquals('# nöné = <inherited>\n',               f.next())
+            self.assertEquals('trüé = enabled\n',                     f.next())
+            self.assertEquals('\n',                                   f.next())
+            self.assertRaises(StopIteration, f.next)
+
     def _test_with_inherit(self, testcb):
         sitename = os.path.join(tempfile.gettempdir(), 'trac-site.ini')
         try:

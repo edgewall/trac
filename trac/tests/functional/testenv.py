@@ -1,6 +1,16 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
+# Copyright (C) 2003-2013 Edgewall Software
+# All rights reserved.
+#
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at http://trac.edgewall.org/wiki/TracLicense.
+#
+# This software consists of voluntary contributions made by many
+# individuals. For the exact contribution history, see the revision
+# history and logs, available at http://trac.edgewall.org/log/.
+
 """Object for creating and destroying a Trac environment for testing purposes.
 Provides some Trac environment-wide utility functions, and a way to call
 :command:`trac-admin` without it being on the path."""
@@ -18,6 +28,7 @@ from trac.test import EnvironmentStub, get_dburi
 from trac.tests.functional.compat import rmtree
 from trac.tests.functional import logfile
 from trac.tests.functional.better_twill import tc, ConnectError
+from trac.util import terminate
 from trac.util.compat import close_fds
 from trac.util.text import to_utf8
 
@@ -129,7 +140,7 @@ class FunctionalTestEnvironment(object):
                  cwd=self.command_cwd):
             raise Exception('Unable to setup admin password')
         self.adduser('user')
-        self._tracadmin('permission', 'add', 'admin', 'TRAC_ADMIN')
+        self.grant_perm('admin', 'TRAC_ADMIN')
         # Setup Trac logging
         env = self.get_trac_environment()
         env.config.set('logging', 'log_type', 'file')
@@ -147,6 +158,32 @@ class FunctionalTestEnvironment(object):
                  user, user], close_fds=close_fds, cwd=self.command_cwd):
             raise Exception('Unable to setup password for user "%s"' % user)
 
+    def grant_perm(self, user, perm):
+        """Grant permission(s) to specified user. A single permission may
+        be specified as a string, or multiple permissions may be
+        specified as a list or tuple of strings."""
+        if isinstance(perm, (list, tuple)):
+            self._tracadmin('permission', 'add', user, *perm)
+        else:
+            self._tracadmin('permission', 'add', user, perm)
+        # We need to force an environment reset, as this is necessary
+        # for the permission change to take effect: grant only
+        # invalidates the `DefaultPermissionStore._all_permissions`
+        # cache, but the `DefaultPermissionPolicy.permission_cache` is
+        # unaffected.
+        self.get_trac_environment().config.touch()
+
+    def revoke_perm(self, user, perm):
+        """Revoke permission(s) from specified user. A single permission
+        may be specified as a string, or multiple permissions may be
+        specified as a list or tuple of strings."""
+        if isinstance(perm, (list, tuple)):
+            self._tracadmin('permission', 'remove', user, *perm)
+        else:
+            self._tracadmin('permission', 'remove', user, perm)
+        # Force an environment reset (see grant_perm above)
+        self.get_trac_environment().config.touch()
+
     def _tracadmin(self, *args):
         """Internal utility method for calling trac-admin"""
         proc = Popen([sys.executable, os.path.join(self.trac_src, 'trac',
@@ -157,8 +194,9 @@ class FunctionalTestEnvironment(object):
         if proc.returncode:
             print(out)
             logfile.write(out)
-            raise Exception('Failed with exitcode %s running trac-admin ' \
-                            'with %r' % (proc.returncode, args))
+            raise Exception("Failed while running trac-admin with arguments %r.\n"
+                            "Exitcode: %s \n%s"
+                            % (args, proc.returncode, out))
 
     def start(self):
         """Starts the webserver, and waits for it to come up."""
@@ -201,17 +239,7 @@ class FunctionalTestEnvironment(object):
         FIXME: probably needs a nicer way to exit for coverage to work
         """
         if self.pid:
-            if os.name == 'nt':
-                # Untested
-                res = call(["taskkill", "/f", "/pid", str(self.pid)],
-                     stdin=PIPE, stdout=PIPE, stderr=PIPE)
-            else:
-                os.kill(self.pid, signal.SIGTERM)
-                try:
-                    os.waitpid(self.pid, 0)
-                except OSError, e:
-                    if e.errno != errno.ESRCH:
-                        raise
+            terminate(self)
 
     def restart(self):
         """Restarts the webserver"""
@@ -226,13 +254,12 @@ class FunctionalTestEnvironment(object):
         """Default to no repository"""
         return "''" # needed for Python 2.3 and 2.4 on win32
 
-    def call_in_workdir(self, args, environ=None):
+    def call_in_dir(self, dir, args, environ=None):
         proc = Popen(args, stdout=PIPE, stderr=logfile,
-                     close_fds=close_fds, cwd=self.work_dir(), env=environ)
+            close_fds=close_fds, cwd=dir, env=environ)
         (data, _) = proc.communicate()
         if proc.wait():
             raise Exception('Unable to run command %s in %s' %
-                            (args, self.work_dir()))
-
+                            (args, dir))
         logfile.write(data)
         return data

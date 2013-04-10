@@ -473,6 +473,11 @@ a.trac-diff:after { content: "∆" }
 div.compact > p:first-child { margin-top: 0 }
 div.compact > p:last-child { margin-bottom: 0 }
 
+/* Styles related to RTL support */
+.rtl { direction: rtl; }
+.rtl div.wiki-toc { float: left; }
+.rtl .wiki-toc ul ul, .wiki-toc ol ol { padding-right: 1.2em }
+
 a.missing:link, a.missing:visited, a.missing, span.missing,
 a.forbidden, span.forbidden { color: #998 }
 a.missing:hover { color: #000 }
@@ -649,7 +654,7 @@ table.listing tbody td a:hover, table.listing tbody th a:hover {
 table.listing tbody tr { border-top: 1px solid #ddd }
 table.listing tbody tr.even { background-color: #fcfcfc }
 table.listing tbody tr.odd { background-color: #f7f7f7 }
-table.listing tbody tr:hover { background: #eed !important }
+table.listing tbody tr:hover td { background: #eed !important }
 table.listing tbody tr.focus { background: #ddf !important }
 
 table.listing pre { white-space: pre-wrap }

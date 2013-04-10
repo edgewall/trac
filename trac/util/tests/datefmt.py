@@ -680,6 +680,21 @@ class DateFormatTestCase(unittest.TestCase):
         self.assertEqual(datefmt.format_time(t, 'iso8601', gmt01),
                          expected.split('T')[1])
 
+    def test_format_iso8601_before_1900(self):
+        t = datetime.datetime(1899, 12, 30, 23, 58, 59, 123456, datefmt.utc)
+        self.assertEqual('1899-12-30T23:58:59Z',
+                         datefmt.format_datetime(t, 'iso8601', datefmt.utc))
+        self.assertEqual('1899-12-30',
+                         datefmt.format_datetime(t, 'iso8601date',
+                                                 datefmt.utc))
+        self.assertEqual('1899-12-30',
+                         datefmt.format_date(t, 'iso8601', datefmt.utc))
+        self.assertEqual('23:58:59Z',
+                         datefmt.format_datetime(t, 'iso8601time',
+                                                 datefmt.utc))
+        self.assertEqual('23:58:59Z',
+                         datefmt.format_time(t, 'iso8601', datefmt.utc))
+
     def test_format_date_accepts_date_instances(self):
         a_date = datetime.date(2009, 8, 20)
         self.assertEqual('2009-08-20',
@@ -781,11 +796,37 @@ class ISO8601TestCase(unittest.TestCase):
                          datefmt.format_time(t, 'medium', tz, 'iso8601'))
         self.assertEqual('2010-08-28T11:45:56',
                          datefmt.format_datetime(t, 'medium', tz, 'iso8601'))
-        for f in ('long', 'full'):
-            self.assertEqual('11:45:56+02:00',
-                             datefmt.format_time(t, f, tz, 'iso8601'))
-            self.assertEqual('2010-08-28T11:45:56+02:00',
-                             datefmt.format_datetime(t, f, tz, 'iso8601'))
+        self.assertEqual('11:45:56+02:00',
+                         datefmt.format_time(t, 'long', tz, 'iso8601'))
+        self.assertEqual('2010-08-28T11:45:56+02:00',
+                         datefmt.format_datetime(t, 'long', tz, 'iso8601'))
+        self.assertEqual('11:45:56.123456+02:00',
+                         datefmt.format_time(t, 'full', tz, 'iso8601'))
+        self.assertEqual('2010-08-28T11:45:56.123456+02:00',
+                         datefmt.format_datetime(t, 'full', tz, 'iso8601'))
+
+    def test_with_babel_format_before_1900(self):
+        tz = datefmt.timezone('GMT +2:00')
+        t = datetime.datetime(1899, 8, 28, 11, 45, 56, 123456, tz)
+        for f in ('short', 'medium', 'long', 'full'):
+            self.assertEqual('1899-08-28',
+                             datefmt.format_date(t, f, tz, 'iso8601'))
+        self.assertEqual('11:45',
+                         datefmt.format_time(t, 'short', tz, 'iso8601'))
+        self.assertEqual('1899-08-28T11:45',
+                         datefmt.format_datetime(t, 'short', tz, 'iso8601'))
+        self.assertEqual('11:45:56',
+                         datefmt.format_time(t, 'medium', tz, 'iso8601'))
+        self.assertEqual('1899-08-28T11:45:56',
+                         datefmt.format_datetime(t, 'medium', tz, 'iso8601'))
+        self.assertEqual('11:45:56+02:00',
+                         datefmt.format_time(t, 'long', tz, 'iso8601'))
+        self.assertEqual('1899-08-28T11:45:56+02:00',
+                         datefmt.format_datetime(t, 'long', tz, 'iso8601'))
+        self.assertEqual('11:45:56.123456+02:00',
+                         datefmt.format_time(t, 'full', tz, 'iso8601'))
+        self.assertEqual('1899-08-28T11:45:56.123456+02:00',
+                         datefmt.format_datetime(t, 'full', tz, 'iso8601'))
 
     def test_hint(self):
         try:
@@ -1289,6 +1330,29 @@ class LocalTimezoneTestCase(unittest.TestCase):
         dt = datetime.datetime(2011, 10, 30, 1, 45, 42, 123456, datefmt.utc)
         self.assertEqual('2011-10-30T02:45:42.123456+01:00',
                          dt.astimezone(datefmt.localtz).isoformat())
+
+    def test_astimezone_invalid_range_on_gmt01(self):
+        self._tzset('GMT-1')
+
+        # 1899-12-30T23:59:58+00:00 is -0x83ac4e92 for time_t, out of range
+        # for 32-bit signed integer
+        dt = datetime.datetime(1899, 12, 30, 23, 59, 58, 123456, datefmt.utc)
+        self.assertEqual('1899-12-31T00:59:58.123456+01:00',
+                         dt.astimezone(datefmt.localtz).isoformat())
+        dt = datetime.datetime(1899, 12, 30, 23, 59, 58, 123456,
+                               datefmt.localtz)
+        self.assertEqual('1899-12-30T22:59:58.123456+00:00',
+                         dt.astimezone(datefmt.utc).isoformat())
+
+        # 2040-12-31T23:59:58+00:00 is 0x858c84ee for time_t, out of range for
+        # 32-bit signed integer
+        dt = datetime.datetime(2040, 12, 31, 23, 59, 58, 123456, datefmt.utc)
+        self.assertEqual('2041-01-01T00:59:58.123456+01:00',
+                         dt.astimezone(datefmt.localtz).isoformat())
+        dt = datetime.datetime(2040, 12, 31, 23, 59, 58, 123456,
+                               datefmt.localtz)
+        self.assertEqual('2040-12-31T22:59:58.123456+00:00',
+                         dt.astimezone(datefmt.utc).isoformat())
 
     def test_arithmetic_localized_non_existent_time(self):
         self._tzset('Europe/Paris')

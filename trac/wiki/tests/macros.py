@@ -6,7 +6,7 @@ import shutil
 import tempfile
 import unittest
 
-from trac.config import Option
+from trac.config import Option, ListOption, IntOption, BoolOption
 from trac.test import locale_en
 from trac.util.datefmt import format_date, utc
 from trac.wiki.model import WikiPage
@@ -425,6 +425,34 @@ TRACINI_MACRO_TEST_CASES = u"""\
 </div><p>
 </p>
 ------------------------------
+============================== TracIni, list option with sep=| (#11074)
+[[TracIni(section-list)]]
+------------------------------
+<p>
+</p><div class="tracini">\
+<h3 id="section-list-section"><code>[section-list]</code></h3>\
+<table class="wiki"><tbody>\
+<tr><td><tt>option1</tt></td><td></td><td class="default"><code>4.2|42|42||0|enabled</code></td></tr>\
+</tbody></table>\
+</div><p>
+</p>
+------------------------------
+============================== TracIni, option with "false" value as default
+[[TracIni(section-def)]]
+------------------------------
+<p>
+</p><div class="tracini">\
+<h3 id="section-def-section"><code>[section-def]</code></h3>\
+<table class="wiki"><tbody>\
+<tr><td><tt>option1</tt></td><td></td><td class="nodefault">(no default)</td></tr>\
+<tr><td><tt>option2</tt></td><td></td><td class="nodefault">(no default)</td></tr>\
+<tr><td><tt>option3</tt></td><td></td><td class="default"><code>0</code></td></tr>\
+<tr><td><tt>option4</tt></td><td></td><td class="default"><code>disabled</code></td></tr>\
+<tr><td><tt>option5</tt></td><td></td><td class="default"><code></code></td></tr>\
+</tbody></table>\
+</div><p>
+</p>
+------------------------------
 """
 
 def tracini_setup(tc):
@@ -432,6 +460,13 @@ def tracini_setup(tc):
     class Foo(object):
         option_a1 = (Option)('section-42', 'option1', 'value', doc='')
         option_a2 = (Option)('section-42', 'option2', 'value', doc='blah')
+        option_l1 = (ListOption)('section-list', 'option1',
+                                 [4.2, '42', 42, None, 0, True], sep='|')
+        option_d1 = (Option)('section-def', 'option1', None)
+        option_d2 = (Option)('section-def', 'option2', '')
+        option_d3 = (IntOption)('section-def', 'option3', 0)
+        option_d4 = (BoolOption)('section-def', 'option4', False)
+        option_d5 = (ListOption)('section-def', 'option5', [])
 
 def tracini_teardown(tc):
     Option.registry = tc._orig_registry

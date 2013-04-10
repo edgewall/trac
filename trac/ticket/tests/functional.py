@@ -1721,6 +1721,38 @@ class RegressionTestTicket9981(FunctionalTwillTestCaseSetup):
         tc.find('class="closed ticket".*ticket/%s#comment:1"' % ticketid)
 
 
+class RegressionTestTicket11028(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11028"""
+        self._tester.go_to_roadmap()
+
+        try:
+            # Check that a milestone is found on the roadmap,
+            # even for anonymous
+            tc.find('<a href="/milestone/milestone1">[ \n\t]*'
+                    'Milestone: <em>milestone1</em>[ \n\t]*</a>')
+            self._tester.logout()
+            tc.find('<a href="/milestone/milestone1">[ \n\t]*'
+                    'Milestone: <em>milestone1</em>[ \n\t]*</a>')
+
+            # Check that no milestones are found on the roadmap when
+            # MILESTONE_VIEW is revoked
+            self._testenv.revoke_perm('anonymous', 'MILESTONE_VIEW')
+            tc.reload()
+            tc.notfind('Milestone: <em>milestone\d+</em>')
+
+            # Check that roadmap can't be viewed without ROADMAP_VIEW
+
+            self._testenv.revoke_perm('anonymous', 'ROADMAP_VIEW')
+            self._tester.go_to_url(self._tester.url + '/roadmap')
+            tc.find('<h1>Error: Forbidden</h1>')
+        finally:
+            # Restore state prior to test execution
+            self._tester.login('admin')
+            self._testenv.grant_perm('anonymous',
+                                     ('ROADMAP_VIEW', 'MILESTONE_VIEW'))
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional.testcases
@@ -1820,6 +1852,7 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket8861())
     suite.addTest(RegressionTestTicket9084())
     suite.addTest(RegressionTestTicket9981())
+    suite.addTest(RegressionTestTicket11028())
 
     return suite
 

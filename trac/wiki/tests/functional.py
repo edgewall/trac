@@ -145,7 +145,6 @@ class RegressionTestTicket10274(FunctionalTwillTestCaseSetup):
 
 
 class RegressionTestTicket10850(FunctionalTwillTestCaseSetup):
-
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/10850"""
         pagename = random_unique_camel()
@@ -177,6 +176,72 @@ class RegressionTestTicket10850(FunctionalTwillTestCaseSetup):
         tc.notfind('Error: Invalid Attachment')
 
 
+class RegressionTestTicket10957(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/10957"""
+
+        try:
+            self._tester.logout()
+
+            # Check that page can't be created without WIKI_CREATE
+            page_name = random_unique_camel()
+            self._tester.go_to_wiki(page_name)
+            tc.find("Trac Error")
+            tc.find("Page %s not found" % page_name)
+            tc.notfind("Create this page")
+            tc.go(self._tester.url + '/wiki/%s?action=edit' % page_name)
+            tc.find("Error: Forbidden")
+            tc.find("WIKI_CREATE privileges are required to perform this "
+                    "operation on %s. You don't have the required permissions."
+                    % page_name)
+
+            # Check that page can be created when user has WIKI_CREATE
+            self._testenv.grant_perm('anonymous', 'WIKI_CREATE')
+            content_v1 = random_sentence()
+            self._tester.create_wiki_page(page_name, content_v1)
+            tc.find(content_v1)
+
+            # Check that page can't be edited without WIKI_MODIFY
+            tc.notfind("Edit this page")
+            tc.notfind("Attach file")
+            tc.go(self._tester.url + '/wiki/%s?action=edit' % page_name)
+            tc.find("Error: Forbidden")
+            tc.find("WIKI_MODIFY privileges are required to perform this "
+                    "operation on %s. You don't have the required permissions."
+                    % page_name)
+
+            # Check that page can be edited when user has WIKI_MODIFY
+            self._testenv.grant_perm('anonymous', 'WIKI_MODIFY')
+            self._tester.go_to_wiki(page_name)
+            tc.find("Edit this page")
+            tc.find("Attach file")
+            content_v2 = random_sentence()
+            self._tester.edit_wiki_page(page_name, content_v2)
+            tc.find(content_v2)
+
+            # Check that page can be reverted to a previous revision
+            tc.go(self._tester.url + '/wiki/%s?version=1' % page_name)
+            tc.find("Revert to this version")
+            tc.formvalue('modifypage', 'action', 'edit')
+            tc.submit()
+            tc.find(content_v1)
+
+            # Check that page can't be reverted without WIKI_MODIFY
+            self._tester.edit_wiki_page(page_name)
+            self._testenv.revoke_perm('anonymous', 'WIKI_MODIFY')
+            tc.go(self._tester.url + '/wiki/%s?version=1' % page_name)
+            tc.notfind("Revert to this version")
+            tc.go(self._tester.url + '/wiki/%s?action=edit&version=1' % page_name)
+            tc.find("WIKI_MODIFY privileges are required to perform this "
+                    "operation on %s. You don't have the required permissions."
+                    % page_name)
+
+        finally:
+            # Restore pre-test state.
+            self._tester.login('admin')
+            self._testenv.revoke_perm('anonymous', 'WIKI_CREATE')
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional.testcases
@@ -186,6 +251,7 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket4812())
     suite.addTest(RegressionTestTicket10274())
     suite.addTest(RegressionTestTicket10850())
+    suite.addTest(RegressionTestTicket10957())
     if has_docutils:
         import docutils
         if get_pkginfo(docutils):

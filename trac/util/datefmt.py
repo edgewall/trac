@@ -26,8 +26,13 @@ from locale import getlocale, LC_TIME
 
 try:
     import babel
+except ImportError:
+    babel = None
+    def get_known_locales():
+        return []
+else:
     from babel import Locale
-    from babel.core import LOCALE_ALIASES
+    from babel.core import LOCALE_ALIASES, UnknownLocaleError
     from babel.dates import (
         format_datetime as babel_format_datetime,
         format_date as babel_format_date,
@@ -36,12 +41,10 @@ try:
         get_time_format, get_month_names,
         get_period_names, get_day_names
     )
-    from babel.localedata import list as get_known_locales
-
-except ImportError:
-    babel = None
-    def get_known_locales():
-        return []
+    try:
+        from babel.localedata import list as get_known_locales
+    except ImportError:
+        from babel.localedata import locale_identifiers as get_known_locales
 
 from trac.core import TracError
 from trac.util.text import to_unicode, getpreferredencoding
@@ -158,51 +161,45 @@ _BABEL_FORMATS = {
     'date': {'short': '%x', 'medium': '%x', 'long': '%x', 'full': '%x'},
     'time': {'short': '%H:%M', 'medium': '%X', 'long': '%X', 'full': '%X'},
 }
-_ISO8601_FORMATS = {
-    'datetime': {
-        '%x %X': 'iso8601', '%x': 'iso8601date', '%X': 'iso8601time',
-        'short': '%Y-%m-%dT%H:%M', 'medium': '%Y-%m-%dT%H:%M:%S',
-        'long': 'iso8601', 'full': 'iso8601',
-        'iso8601': 'iso8601', None: 'iso8601'},
-    'date': {
-        '%x %X': 'iso8601', '%x': 'iso8601date', '%X': 'iso8601time',
-        'short': 'iso8601date', 'medium': 'iso8601date',
-        'long': 'iso8601date', 'full': 'iso8601date',
-        'iso8601': 'iso8601date', None: 'iso8601date'},
-    'time': {
-        '%x %X': 'iso8601', '%x': 'iso8601date', '%X': 'iso8601time',
-        'short': '%H:%M', 'medium': '%H:%M:%S',
-        'long': 'iso8601time', 'full': 'iso8601time',
-        'iso8601': 'iso8601time', None: 'iso8601time'},
-}
 _STRFTIME_HINTS = {'%x %X': 'datetime', '%x': 'date', '%X': 'time'}
 
 def _format_datetime_without_babel(t, format):
-    normalize_Z = False
-    if format.lower().startswith('iso8601'):
-        if 'date' in format:
-            format = '%Y-%m-%d'
-        elif 'time' in format:
-            format = '%H:%M:%S%z'
-            normalize_Z = True
-        else:
-            format = '%Y-%m-%dT%H:%M:%S%z'
-            normalize_Z = True
     text = t.strftime(str(format))
-    if normalize_Z:
-        text = text.replace('+0000', 'Z')
-        if not text.endswith('Z'):
-            text = text[:-2] + ":" + text[-2:]
     encoding = getlocale(LC_TIME)[1] or getpreferredencoding() \
                or sys.getdefaultencoding()
     return unicode(text, encoding, 'replace')
 
+def _format_datetime_iso8601(t, format, hint):
+    if format != 'full':
+        t = t.replace(microsecond=0)
+    text = t.isoformat()  # YYYY-MM-DDThh:mm:ss.SSSSSS±hh:mm
+    if format == 'short':
+        text = text[:16]  # YYYY-MM-DDThh:mm
+    elif format == 'medium':
+        text = text[:19]  # YYYY-MM-DDThh:mm:ss
+    elif text.endswith('+00:00'):
+        text = text[:-6] + 'Z'
+    if hint == 'date':
+        text = text.split('T', 1)[0]
+    elif hint == 'time':
+        text = text.split('T', 1)[1]
+    return unicode(text, 'ascii')
+
 def _format_datetime(t, format, tzinfo, locale, hint):
     t = to_datetime(t, tzinfo or localtz)
 
-    if (format in ('iso8601', 'iso8601date', 'iso8601time') or
-        locale == 'iso8601'):
-        format = _ISO8601_FORMATS[hint].get(format, format)
+    if format == 'iso8601':
+        return _format_datetime_iso8601(t, 'long', hint)
+    if format in ('iso8601date', 'iso8601time'):
+        return _format_datetime_iso8601(t, 'long', format[7:])
+    if locale == 'iso8601':
+        if format is None:
+            format = 'long'
+        elif format in _STRFTIME_HINTS:
+            hint = _STRFTIME_HINTS[format]
+            format = 'long'
+        if format in ('short', 'medium', 'long', 'full'):
+            return _format_datetime_iso8601(t, format, hint)
         return _format_datetime_without_babel(t, format)
 
     if babel and locale:
@@ -376,6 +373,19 @@ def get_first_week_day_jquery_ui(req):
     if locale == 'iso8601':
         return 1 # Monday
     if babel and locale:
+        if not locale.territory:
+            # search first locale which has the same `langauge` and territory
+            # in preferred languages
+            for l in req.languages:
+                l = l.replace('-', '_').lower()
+                if l.startswith(locale.language.lower() + '_'):
+                    try:
+                        l = Locale.parse(l)
+                        if l.territory:
+                            locale = l
+                            break
+                    except UnknownLocaleError:
+                        pass
         if not locale.territory and locale.language in LOCALE_ALIASES:
             locale = Locale.parse(LOCALE_ALIASES[locale.language])
         return (locale.first_week_day + 1) % 7
@@ -869,12 +879,15 @@ class LocalTimezone(tzinfo):
     def fromutc(self, dt):
         if dt.tzinfo is None or dt.tzinfo is not self:
             raise ValueError('fromutc: dt.tzinfo is not self')
-        tt = time.localtime(to_timestamp(dt.replace(tzinfo=utc)))
+        try:
+            tt = time.localtime(to_timestamp(dt.replace(tzinfo=utc)))
+        except ValueError:
+            return dt.replace(tzinfo=self._std_tz) + self._std_offset
         if tt.tm_isdst > 0:
             tz = self._dst_tz
         else:
             tz = self._std_tz
-        return datetime(microsecond=dt.microsecond, tzinfo=tz, *tt[0:6])
+        return datetime(*(tt[:6] + (dt.microsecond, tz)))
 
 
 utc = FixedOffset(0, 'UTC')

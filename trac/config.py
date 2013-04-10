@@ -236,8 +236,9 @@ class Configuration(object):
         try:
             with AtomicFile(self.filename, 'w') as fileobj:
                 fileobj.write('# -*- coding: utf-8 -*-\n\n')
-                for section, options in sections:
-                    fileobj.write('[%s]\n' % section)
+                for section_str, options in sections:
+                    fileobj.write('[%s]\n' % section_str)
+                    section = to_unicode(section_str)
                     for key_str, val_str in options:
                         if to_unicode(key_str) in self[section].overridden:
                             fileobj.write('# %s = <inherited>\n' % key_str)
@@ -296,14 +297,15 @@ class Configuration(object):
 
         Values already set in the configuration are not overridden.
         """
-        for section, default_options in self.defaults(compmgr).items():
-            for name, value in default_options.items():
-                if not self.parser.has_option(_to_utf8(section),
-                                              _to_utf8(name)):
-                    if any(parent[section].contains(name, defaults=False)
-                           for parent in self.parents):
-                        value = None
-                    self.set(section, name, value)
+        for (section, name), option in Option.get_registry(compmgr).items():
+            if not self.parser.has_option(_to_utf8(section), _to_utf8(name)):
+                value = option.default
+                if any(parent[section].contains(name, defaults=False)
+                       for parent in self.parents):
+                    value = None
+                if value is not None:
+                    value = option.dumps(value)
+                self.set(section, name, value)
 
 
 class Section(object):
@@ -612,6 +614,18 @@ class Option(object):
         return '<%s [%s] "%s">' % (self.__class__.__name__, self.section,
                                    self.name)
 
+    def dumps(self, value):
+        """Return the value as a string to write to a trac.ini file"""
+        if value is None:
+            return ''
+        if value is True:
+            return 'enabled'
+        if value is False:
+            return 'disabled'
+        if isinstance(value, unicode):
+            return value
+        return to_unicode(value)
+
 
 class BoolOption(Option):
     """Descriptor for boolean configuration options."""
@@ -641,6 +655,11 @@ class ListOption(Option):
 
     def accessor(self, section, name, default):
         return section.getlist(name, default, self.sep, self.keep_empty)
+
+    def dumps(self, value):
+        if isinstance(value, (list, tuple)):
+            return self.sep.join(Option.dumps(self, v) or '' for v in value)
+        return Option.dumps(self, value)
 
 
 class ChoiceOption(Option):
