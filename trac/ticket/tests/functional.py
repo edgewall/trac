@@ -1697,14 +1697,15 @@ class RegressionTestTicket11028(FunctionalTwillTestCaseSetup):
         tc.notfind('Milestone: <em>milestone\d+</em>')
 
         # Check that roadmap can't be viewed without ROADMAP_VIEW
-        self._testenv.revoke_perm('anonymous', 'ROADMAP_VIEW')
-        self._tester.go_to_url(self._tester.url + '/roadmap')
-        tc.find('<h1>Error: Forbidden</h1>')
-
-        # Restore state prior to test execution
-        self._tester.login('admin')
-        self._testenv.grant_perm('anonymous',
-                                 ('ROADMAP_VIEW', 'MILESTONE_VIEW'))
+        try:
+            self._testenv.revoke_perm('anonymous', 'ROADMAP_VIEW')
+            self._tester.go_to_url(self._tester.url + '/roadmap')
+            tc.find('<h1>Error: Forbidden</h1>')
+        finally:
+            # Restore state prior to test execution
+            self._tester.login('admin')
+            self._testenv.grant_perm('anonymous',
+                                     ('ROADMAP_VIEW', 'MILESTONE_VIEW'))
 
 
 def functionalSuite(suite=None):
