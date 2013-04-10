@@ -32,7 +32,7 @@ except ImportError:
         return []
 else:
     from babel import Locale
-    from babel.core import LOCALE_ALIASES
+    from babel.core import LOCALE_ALIASES, UnknownLocaleError
     from babel.dates import (
         format_datetime as babel_format_datetime,
         format_date as babel_format_date,
@@ -373,6 +373,19 @@ def get_first_week_day_jquery_ui(req):
     if locale == 'iso8601':
         return 1 # Monday
     if babel and locale:
+        if not locale.territory:
+            # search first locale which has the same `langauge` and territory
+            # in preferred languages
+            for l in req.languages:
+                l = l.replace('-', '_').lower()
+                if l.startswith(locale.language.lower() + '_'):
+                    try:
+                        l = Locale.parse(l)
+                        if l.territory:
+                            locale = l
+                            break
+                    except UnknownLocaleError:
+                        pass
         if not locale.territory and locale.language in LOCALE_ALIASES:
             locale = Locale.parse(LOCALE_ALIASES[locale.language])
         return (locale.first_week_day + 1) % 7
