@@ -195,29 +195,45 @@ class FunctionalTester(object):
         tc.url(self.url + "/ticket/%s" % self.ticketcount)
         return self.ticketcount
 
-    def create_wiki_page(self, page, content=None):
-        """Creates the specified wiki page, with random content if none is
-        provided.
+    def create_wiki_page(self, name=None, content=None):
+        """Creates a wiki page, with a random unique CamelCase name if none
+        is provided, and random content if none is provided.  Returns the
+        name of the wiki page.
         """
-        if content == None:
+        if name is None:
+            name = random_unique_camel()
+        if content is None:
             content = random_page()
-        page_url = self.url + "/wiki/" + page
-        tc.go(page_url)
-        tc.url(page_url)
-        tc.find("The page %s does not exist." % page)
-        tc.formvalue('modifypage', 'action', 'edit')
-        tc.submit()
-        tc.url(page_url + '\\?action=edit')
+        self.go_to_wiki(name)
+        tc.find("The page %s does not exist." % name)
 
-        tc.formvalue('edit', 'text', content)
-        tc.submit('save')
-        tc.url(page_url+'$')
+        self.edit_wiki_page(name, content)
 
         # verify the event shows up in the timeline
         self.go_to_timeline()
         tc.formvalue('prefs', 'wiki', True)
         tc.submit()
-        tc.find(page + ".*created")
+        tc.find(name + ".*created")
+
+        self.go_to_wiki(name)
+
+        return name
+
+    def edit_wiki_page(self, name, content=None):
+        """Edits a wiki page, with random content is none is provided.
+        Returns the content.
+        """
+        if content is None:
+            content = random_page()
+        self.go_to_wiki(name)
+        tc.formvalue('modifypage', 'action', 'edit')
+        tc.submit()
+        tc.formvalue('edit', 'text', content)
+        tc.submit('save')
+        page_url = self.url + '/wiki/%s' % name
+        tc.url(page_url+'$')
+
+        return content
 
     def attach_file_to_wiki(self, name, data=None, tempfilename=None):
         """Attaches a file to the given wiki page, with random content if none

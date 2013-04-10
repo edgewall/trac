@@ -488,6 +488,8 @@ class WikiModule(Component):
 
         if page.readonly:
             req.perm(page.resource).require('WIKI_ADMIN')
+        elif not page.exists:
+            req.perm(page.resource).require('WIKI_CREATE')
         else:
             req.perm(page.resource).require('WIKI_MODIFY')
         original_text = page.text

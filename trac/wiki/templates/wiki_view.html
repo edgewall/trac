@@ -6,6 +6,7 @@
       xmlns:i18n="http://genshi.edgewall.org/i18n"
       xmlns:xi="http://www.w3.org/2001/XInclude"
       py:with="modify_perm = 'WIKI_MODIFY' in perm(page.resource);
+               create_perm = 'WIKI_CREATE' in perm(page.resource);
                admin_perm = 'WIKI_ADMIN' in perm(page.resource);
                is_not_latest = page.exists and page.version != latest_version">
   <xi:include href="layout.html" />
@@ -78,21 +79,21 @@
 
       <py:with vars="delete_perm = 'WIKI_DELETE' in perm(page.resource);
                      rename_perm = 'WIKI_RENAME' in perm(page.resource)">
-        <py:if test="admin_perm or (not page.readonly and (modify_perm or delete_perm))">
+        <py:if test="admin_perm or (not page.readonly and (modify_perm or create_perm or delete_perm))">
           <div class="buttons">
-            <py:if test="modify_perm">
+            <py:if test="modify_perm or create_perm">
               <form method="get" action="${href.wiki(page.name)}" id="modifypage">
                 <div>
                   <input type="hidden" name="action" value="edit" />
                   <py:choose>
-                    <py:when test="is_not_latest">
+                    <py:when test="is_not_latest and modify_perm">
                       <input type="hidden" name="version" value="${page.version}"/>
                       <input type="submit" value="${_('Revert to this version')}"/>
                     </py:when>
-                    <py:when test="page.exists">
+                    <py:when test="page.exists and modify_perm">
                       <input type="submit" value="${_('Edit this page')}" accesskey="e" />
                     </py:when>
-                    <py:otherwise>
+                    <py:when test="not page.exists and create_perm">
                       <input type="submit" value="${_('Create this page')}" accesskey="e" />
                       <div py:if="templates" id="template">
                         <label for="template">Using the template:</label>
@@ -103,7 +104,7 @@
                                   selected="${t == default_template or None}">$t</option>
                         </select>
                       </div>
-                    </py:otherwise>
+                    </py:when>
                   </py:choose>
                 </div>
               </form>
