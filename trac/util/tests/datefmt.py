@@ -679,6 +679,29 @@ class LocalTimezoneTestCase(unittest.TestCase):
         self.assertEqual('2011-10-30T02:45:42.123456+01:00',
                          dt.astimezone(datefmt.localtz).isoformat())
 
+    def test_astimezone_invalid_range_on_gmt01(self):
+        self._tzset('GMT-1')
+
+        # 1899-12-30T23:59:58+00:00 is -0x83ac4e92 for time_t, out of range
+        # for 32-bit signed integer
+        dt = datetime.datetime(1899, 12, 30, 23, 59, 58, 123456, datefmt.utc)
+        self.assertEqual('1899-12-31T00:59:58.123456+01:00',
+                         dt.astimezone(datefmt.localtz).isoformat())
+        dt = datetime.datetime(1899, 12, 30, 23, 59, 58, 123456,
+                               datefmt.localtz)
+        self.assertEqual('1899-12-30T22:59:58.123456+00:00',
+                         dt.astimezone(datefmt.utc).isoformat())
+
+        # 2040-12-31T23:59:58+00:00 is 0x858c84ee for time_t, out of range for
+        # 32-bit signed integer
+        dt = datetime.datetime(2040, 12, 31, 23, 59, 58, 123456, datefmt.utc)
+        self.assertEqual('2041-01-01T00:59:58.123456+01:00',
+                         dt.astimezone(datefmt.localtz).isoformat())
+        dt = datetime.datetime(2040, 12, 31, 23, 59, 58, 123456,
+                               datefmt.localtz)
+        self.assertEqual('2040-12-31T22:59:58.123456+00:00',
+                         dt.astimezone(datefmt.utc).isoformat())
+
     def test_arithmetic_localized_non_existent_time(self):
         self._tzset('Europe/Paris')
         t = datetime.datetime(2012, 3, 25, 1, 15, 42, 123456)
