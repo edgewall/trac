@@ -261,7 +261,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                     owner=tag.input(type='text', id=id,
                                                     name=id, value=owner)))
                 hints.append(_("The owner will be changed from "
-                               "%(current_owner)s",
+                               "%(current_owner)s to the specified user",
                                current_owner=current_owner))
             elif len(owners) == 1:
                 owner = tag.input(type='hidden', id=id, name=id,
