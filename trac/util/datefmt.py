@@ -842,12 +842,15 @@ class LocalTimezone(tzinfo):
     def fromutc(self, dt):
         if dt.tzinfo is None or dt.tzinfo is not self:
             raise ValueError('fromutc: dt.tzinfo is not self')
-        tt = time.localtime(to_timestamp(dt.replace(tzinfo=utc)))
+        try:
+            tt = time.localtime(to_timestamp(dt.replace(tzinfo=utc)))
+        except ValueError:
+            return dt.replace(tzinfo=self._std_tz) + self._std_offset
         if tt.tm_isdst > 0:
             tz = self._dst_tz
         else:
             tz = self._std_tz
-        return datetime(microsecond=dt.microsecond, tzinfo=tz, *tt[0:6])
+        return datetime(*(tt[:6] + (dt.microsecond, tz)))
 
 
 utc = FixedOffset(0, 'UTC')
