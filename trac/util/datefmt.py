@@ -26,6 +26,11 @@ from locale import getlocale, LC_TIME
 
 try:
     import babel
+except ImportError:
+    babel = None
+    def get_known_locales():
+        return []
+else:
     from babel import Locale
     from babel.core import LOCALE_ALIASES
     from babel.dates import (
@@ -36,12 +41,10 @@ try:
         get_time_format, get_month_names,
         get_period_names, get_day_names
     )
-    from babel.localedata import list as get_known_locales
-
-except ImportError:
-    babel = None
-    def get_known_locales():
-        return []
+    try:
+        from babel.localedata import list as get_known_locales
+    except ImportError:
+        from babel.localedata import locale_identifiers as get_known_locales
 
 from trac.core import TracError
 from trac.util.text import to_unicode, getpreferredencoding
