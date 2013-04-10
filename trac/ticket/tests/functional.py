@@ -1683,21 +1683,23 @@ class RegressionTestTicket11028(FunctionalTwillTestCaseSetup):
         """Test for regression of http://trac.edgewall.org/ticket/11028"""
         self._tester.go_to_roadmap()
 
-        # Check that a milestone is found on the roadmap, even for anonymous
-        tc.find('<a href="/milestone/milestone1">[ \n\t]*'
-                'Milestone: <em>milestone1</em>[ \n\t]*</a>')
-        self._tester.logout()
-        tc.find('<a href="/milestone/milestone1">[ \n\t]*'
-                'Milestone: <em>milestone1</em>[ \n\t]*</a>')
-
-        # Check that no milestones are found on the roadmap when
-        # MILESTONE_VIEW is revoked
-        self._testenv.revoke_perm('anonymous', 'MILESTONE_VIEW')
-        tc.reload()
-        tc.notfind('Milestone: <em>milestone\d+</em>')
-
-        # Check that roadmap can't be viewed without ROADMAP_VIEW
         try:
+            # Check that a milestone is found on the roadmap,
+            # even for anonymous
+            tc.find('<a href="/milestone/milestone1">[ \n\t]*'
+                    'Milestone: <em>milestone1</em>[ \n\t]*</a>')
+            self._tester.logout()
+            tc.find('<a href="/milestone/milestone1">[ \n\t]*'
+                    'Milestone: <em>milestone1</em>[ \n\t]*</a>')
+
+            # Check that no milestones are found on the roadmap when
+            # MILESTONE_VIEW is revoked
+            self._testenv.revoke_perm('anonymous', 'MILESTONE_VIEW')
+            tc.reload()
+            tc.notfind('Milestone: <em>milestone\d+</em>')
+
+            # Check that roadmap can't be viewed without ROADMAP_VIEW
+
             self._testenv.revoke_perm('anonymous', 'ROADMAP_VIEW')
             self._tester.go_to_url(self._tester.url + '/roadmap')
             tc.find('<h1>Error: Forbidden</h1>')
