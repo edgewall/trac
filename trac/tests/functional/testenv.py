@@ -194,8 +194,9 @@ class FunctionalTestEnvironment(object):
         if proc.returncode:
             print(out)
             logfile.write(out)
-            raise Exception('Failed with exitcode %s running trac-admin ' \
-                            'with %r' % (proc.returncode, args))
+            raise Exception("Failed while running trac-admin with arguments %r.\n"
+                            "Exitcode: %s \n%s"
+                            % (args, proc.returncode, out))
 
     def start(self):
         """Starts the webserver, and waits for it to come up."""
