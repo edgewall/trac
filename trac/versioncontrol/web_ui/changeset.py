@@ -347,7 +347,7 @@ class ChangesetModule(Component):
             if format == 'diff':
                 self._render_diff(req, filename, repos, data)
             elif format == 'zip':
-                render_zip(req, filename, repos, None,
+                render_zip(req, filename + '.zip', repos, None,
                            partial(self._zip_iter_nodes, req, repos, data))
 
         # -- HTML format
