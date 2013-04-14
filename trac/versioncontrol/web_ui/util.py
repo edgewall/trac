@@ -206,8 +206,6 @@ def render_zip(req, filename, repos, root_node, iter_nodes):
             continue
         zipinfo = ZipInfo()
         path = node.path.strip('/')
-        if not path.startswith(root_path):
-            self.log.debug('path=%r, root_path=%r', path, root_path)
         assert path.startswith(root_path)
         # The general purpose bit flag 11 is used to denote
         # UTF-8 encoding for path and comment. Only set it for
