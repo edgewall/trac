@@ -146,7 +146,7 @@ try:
                 self._activate_failed = True
                 return
             t = Translations.load(locale_dir, locale or 'en_US')
-            if not t or t.__class__ is NullTranslations:
+            if not isinstance(t, Translations):
                 t = self._null_translations
             else:
                 t.add(Translations.load(locale_dir, locale or 'en_US',
