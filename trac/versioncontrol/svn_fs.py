@@ -327,7 +327,8 @@ class SubversionRepository(Repository):
         else: # note that this should usually not happen (unicode arg expected)
             path_utf8 = to_unicode(path).encode('utf-8')
 
-        path_utf8 = os.path.normpath(path_utf8).replace('\\', '/')
+        path_utf8 = core.svn_path_canonicalize(
+                                os.path.normpath(path_utf8).replace('\\', '/'))
         self.path = path_utf8.decode('utf-8')
         
         root_path_utf8 = repos.svn_repos_find_root_path(path_utf8, self.pool())

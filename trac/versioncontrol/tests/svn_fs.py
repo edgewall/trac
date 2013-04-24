@@ -558,6 +558,16 @@ class NormalTests(object):
         self.assertEqual(u'Chez moi ça marche\n', chgset.message)
         self.assertEqual(u'Jonas Borgström', chgset.author)
 
+    def test_canonical_repos_path(self):
+        # Assertion `svn_dirent_is_canonical` with leading double slashes
+        # in repository path if os.name == 'posix' (#10390)
+        DbRepositoryProvider(self.env).add_repository(
+            'canonical-path', '//' + REPOS_PATH.lstrip('/'), 'direct-svnfs')
+        repos = self.env.get_repository('canonical-path')
+        self.assertEqual(REPOS_PATH, repos.path)
+
+    if os.name != 'posix':
+        del test_canonical_repos_path
 
 
 class ScopedTests(object):
