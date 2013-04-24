@@ -459,12 +459,12 @@ class Query(object):
 
         # Join with ticket_custom table as necessary
         if any(k in custom_fields for k in cols):
-            sql.append("\n  LEFT JOIN (SELECT id")
+            sql.append("\n  LEFT JOIN (SELECT id AS ticket")
             sql.extend(",\n    (SELECT c.value FROM ticket_custom c "
                        "WHERE c.ticket=t.id AND c.name='%s') AS %s"
                        % (k, db.quote(k))
                        for k in cols if k in custom_fields)
-            sql.append("\n    FROM ticket t) AS c ON (c.id=t.id)")
+            sql.append("\n    FROM ticket t) AS c ON (c.ticket=t.id)")
 
         # Join with the enum table for proper sorting
         for col in [c for c in enum_columns
@@ -580,11 +580,11 @@ class Query(object):
                         if a == b:
                             ids.append(str(a))
                         else:
-                            id_clauses.append('id BETWEEN %s AND %s')
+                            id_clauses.append('t.id BETWEEN %s AND %s')
                             args.append(a)
                             args.append(b)
                     if ids:
-                        id_clauses.append('id IN (%s)' % (','.join(ids)))
+                        id_clauses.append('t.id IN (%s)' % (','.join(ids)))
                     if id_clauses:
                         clauses.append('%s(%s)' % ('NOT 'if neg else '',
                                                    ' OR '.join(id_clauses)))
