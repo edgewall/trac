@@ -260,9 +260,9 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': self.env.get_read_db().like()})
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value,c.%s AS %s
 FROM ticket AS t
-  LEFT JOIN (SELECT id,
+  LEFT JOIN (SELECT id AS ticket,
     (SELECT c.value FROM ticket_custom c WHERE c.ticket=t.id AND c.name='foo') AS %s
-    FROM ticket t) AS c ON (c.id=t.id)
+    FROM ticket t) AS c ON (c.ticket=t.id)
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
 WHERE ((COALESCE(c.%s,'')=%%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % ((foo,) * 4))
@@ -277,14 +277,49 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % ((foo,) * 4))
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value,c.%s AS %s
 FROM ticket AS t
-  LEFT JOIN (SELECT id,
+  LEFT JOIN (SELECT id AS ticket,
     (SELECT c.value FROM ticket_custom c WHERE c.ticket=t.id AND c.name='foo') AS %s
-    FROM ticket t) AS c ON (c.id=t.id)
+    FROM ticket t) AS c ON (c.ticket=t.id)
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
 ORDER BY COALESCE(c.%s,'')='',c.%s,COALESCE(t.id,0)=0,t.id""" %
         ((foo,) * 5))
         self.assertEqual([], args)
         tickets = query.execute(self.req)
+
+    def test_constrained_by_id_ranges(self):
+        query = Query.from_string(self.env, 'id=42,44,51-55&order=id')
+        sql, args = query.get_sql()
+        self.assertEqualSQL(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+WHERE ((t.id BETWEEN %s AND %s OR t.id IN (42,44)))
+ORDER BY COALESCE(t.id,0)=0,t.id""")
+        self.assertEqual([51, 55], args)
+
+    def test_constrained_by_id_and_custom_field(self):
+        self.env.config.set('ticket-custom', 'foo', 'text')
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'joe'
+        ticket['summary'] = 'Foo'
+        ticket['foo'] = 'blah'
+        ticket.insert()
+
+        query = Query.from_string(self.env, 'id=%d-42&foo=blah' % ticket.id)
+        tickets = query.execute(self.req)
+        self.assertEqual(1, len(tickets))
+        self.assertEqual(ticket.id, tickets[0]['id'])
+
+        query = Query.from_string(self.env, 'id=%d,42&foo=blah' % ticket.id)
+        tickets = query.execute(self.req)
+        self.assertEqual(1, len(tickets))
+        self.assertEqual(ticket.id, tickets[0]['id'])
+
+        query = Query.from_string(self.env, 'id=%d,42,43-84&foo=blah' %
+                                            ticket.id)
+        tickets = query.execute(self.req)
+        self.assertEqual(1, len(tickets))
+        self.assertEqual(ticket.id, tickets[0]['id'])
 
     def test_too_many_custom_fields(self):
         fields = ['col_%02d' % i for i in xrange(100)]
