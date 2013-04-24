@@ -230,6 +230,26 @@ class NormalTests(object):
         self.assertEqual(3, node.created_rev)
         self.assertEqual(u'tête/README.txt', node.created_path)
 
+    def test_get_annotations(self):
+        # svn_client_blame2() requires a canonical uri since Subversion 1.7.
+        # If the uri is not canonical, assertion raises (#11167).
+        node = self.repos.get_node(u'/tête/R\xe9sum\xe9.txt')
+        self.assertEqual([20], node.get_annotations())
+
+    def test_get_annotations_lower_drive_letter(self):
+        # If the drive letter in the uri is lower case on Windows, a
+        # SubversionException raises (#10514).
+        drive, tail = os.path.splitdrive(REPOS_PATH)
+        repos_path = drive.lower() + tail
+        DbRepositoryProvider(self.env).add_repository('lowercase', repos_path,
+                                                      'direct-svnfs')
+        repos = self.env.get_repository('lowercase')
+        node = repos.get_node(u'/tête/R\xe9sum\xe9.txt')
+        self.assertEqual([20], node.get_annotations())
+
+    if os.name != 'nt':
+        del test_get_annotations_lower_drive_letter
+
     # Revision Log / node history
 
     def test_get_node_history(self):
@@ -538,6 +558,16 @@ class NormalTests(object):
         self.assertEqual(u'Chez moi ça marche\n', chgset.message)
         self.assertEqual(u'Jonas Borgström', chgset.author)
 
+    def test_canonical_repos_path(self):
+        # Assertion `svn_dirent_is_canonical` with leading double slashes
+        # in repository path if os.name == 'posix' (#10390)
+        DbRepositoryProvider(self.env).add_repository(
+            'canonical-path', '//' + REPOS_PATH.lstrip('/'), 'direct-svnfs')
+        repos = self.env.get_repository('canonical-path')
+        self.assertEqual(REPOS_PATH, repos.path)
+
+    if os.name != 'posix':
+        del test_canonical_repos_path
 
 
 class ScopedTests(object):

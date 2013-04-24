@@ -68,10 +68,14 @@ application_pool = None
 
 
 def _import_svn():
-    global fs, repos, core, delta, _kindmap
+    global fs, repos, core, delta, _kindmap, _svn_uri_canonicalize
     from svn import fs, repos, core, delta
     _kindmap = {core.svn_node_dir: Node.DIRECTORY,
                 core.svn_node_file: Node.FILE}
+    try:
+        _svn_uri_canonicalize = core.svn_uri_canonicalize  # Subversion 1.7+
+    except AttributeError:
+        _svn_uri_canonicalize = lambda v: v
     # Protect svn.core methods from GC
     Pool.apr_pool_clear = staticmethod(core.apr_pool_clear)
     Pool.apr_pool_destroy = staticmethod(core.apr_pool_destroy)
@@ -328,7 +332,8 @@ class SubversionRepository(Repository):
         else: # note that this should usually not happen (unicode arg expected)
             path_utf8 = to_unicode(path).encode('utf-8')
 
-        path_utf8 = os.path.normpath(path_utf8).replace('\\', '/')
+        path_utf8 = core.svn_path_canonicalize(
+                                os.path.normpath(path_utf8).replace('\\', '/'))
         self.path = path_utf8.decode('utf-8')
 
         root_path_utf8 = repos.svn_repos_find_root_path(path_utf8, self.pool())
@@ -361,7 +366,7 @@ class SubversionRepository(Repository):
         assert self.scope[0] == '/'
         # we keep root_path_utf8 for  RA
         ra_prefix = 'file:///' if os.name == 'nt' else 'file://'
-        self.ra_url_utf8 = ra_prefix + root_path_utf8
+        self.ra_url_utf8 = _svn_uri_canonicalize(ra_prefix + root_path_utf8)
         self.clear()
 
     def clear(self, youngest_rev=None):
@@ -812,6 +817,9 @@ class SubversionNode(Node):
                 start = _svn_rev(0)
                 file_url_utf8 = posixpath.join(self.repos.ra_url_utf8,
                                                self._scoped_path_utf8)
+                # svn_client_blame2() requires a canonical uri since
+                # Subversion 1.7 (#11167)
+                file_url_utf8 = _svn_uri_canonicalize(file_url_utf8)
                 self.repos.log.info('opening ra_local session to %r',
                                     file_url_utf8)
                 from svn import client
