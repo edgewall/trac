@@ -230,6 +230,26 @@ class NormalTests(object):
         self.assertEqual(3, node.created_rev)
         self.assertEqual(u'tête/README.txt', node.created_path)
 
+    def test_get_annotations(self):
+        # svn_client_blame2() requires a canonical uri since Subversion 1.7.
+        # If the uri is not canonical, assertion raises (#11167).
+        node = self.repos.get_node(u'/tête/R\xe9sum\xe9.txt')
+        self.assertEqual([20], node.get_annotations())
+
+    def test_get_annotations_lower_drive_letter(self):
+        # If the drive letter in the uri is lower case on Windows, a
+        # SubversionException raises (#10514).
+        drive, tail = os.path.splitdrive(REPOS_PATH)
+        repos_path = drive.lower() + tail
+        DbRepositoryProvider(self.env).add_repository('lowercase', repos_path,
+                                                      'direct-svnfs')
+        repos = self.env.get_repository('lowercase')
+        node = repos.get_node(u'/tête/R\xe9sum\xe9.txt')
+        self.assertEqual([20], node.get_annotations())
+
+    if os.name != 'nt':
+        del test_get_annotations_lower_drive_letter
+
     # Revision Log / node history 
 
     def test_get_node_history(self):
