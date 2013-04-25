@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: trac 0.12.3-dev\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2013-02-17 15:58+0100\n"
-"PO-Revision-Date: 2011-11-17 11:12+0100\n"
+"PO-Revision-Date: 2013-04-25 16:54+0200\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <ca@dodds.net>\n"
 "Plural-Forms: nplurals=2; plural=n!=1\n"
@@ -315,7 +315,7 @@ msgstr "Error de configuració"
 #: trac/config.py:265
 #, python-format
 msgid "Error reading '%(file)s', make sure it is readable."
-msgstr ""
+msgstr "S'ha produït un error en llegir «%(file)s», assegureu-vos que és llegible."
 
 #: trac/config.py:420
 #, python-format
@@ -540,7 +540,7 @@ msgid "Error: %(msg)s"
 msgstr "Error: %(msg)s"
 
 #: trac/admin/console.py:131
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
@@ -551,9 +551,9 @@ msgid ""
 msgstr ""
 "Benvingut/da al trac-admin %(version)s\n"
 "Consola d'administració del Trac interactiva.\n"
-"Copyright © 2003-2011 Edgewall Software\n"
+"Copyright © 2003-2013 Edgewall Software\n"
 "\n"
-"Teclegeu: «?» o «help» per a obtenir ajuda sobre les ordres.\n"
+"Teclegeu: «?» o «help» per obtenir ajuda sobre les ordres.\n"
 "        "
 
 #: trac/admin/console.py:165
@@ -567,17 +567,17 @@ msgid "Completion error: %(err)s"
 msgstr "Error de la compleció: %(err)s"
 
 #: trac/admin/console.py:307
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "No documentation found for '%(cmd)s'. Use 'help' to see the list of "
 "commands."
-msgstr "No s'ha trobat documentació per a «%(cmd)s»"
+msgstr "No s'ha trobat documentació per a «%(cmd)s». Empreu «help» per veure la llista d'ordres."
 
 #: trac/admin/console.py:313
 msgid "Did you mean this?"
 msgid_plural "Did you mean one of these?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Volíeu dir això?"
+msgstr[1] "Volíeu dir una d'aquestes?"
 
 #: trac/admin/console.py:317
 #, python-format
@@ -653,11 +653,11 @@ msgid "Directory exists and is not empty."
 msgstr "El directori existeix i no és buit."
 
 #: trac/admin/console.py:404
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
-msgstr ""
+msgstr "El directori base «%(env)s» no existeix. Creeu-lo manualment i torneu-ho a provar."
 
 #: trac/admin/console.py:432
 msgid "Creating and Initializing Project"
@@ -1784,12 +1784,11 @@ msgstr ""
 "        [1:http://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
-#, fuzzy
 msgid ""
 "Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
 msgstr ""
-"Copyright © 2003-2011\n"
+"Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
@@ -2272,16 +2271,15 @@ msgid "View attachment"
 msgstr "Mostra l'adjunt"
 
 #: trac/templates/list_of_attachments.html:18
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "[1:%(file)s][2:​]\n"
 "       ([3:%(size)s]) -\n"
 "      added by [4:%(author)s] %(date)s ago."
 msgstr ""
-"[1:%(file)s]\n"
-"      [2:[3:]]\n"
-"       ([4:%(size)s])\n"
-"      afegit per [5:%(author)s], fa %(date)s)."
+"[1:%(file)s][2: ]\n"
+"       ([3:%(size)s])\n"
+"      afegit per [4:%(author)s], fa %(date)s)."
 
 #: trac/templates/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:39
@@ -3926,13 +3924,12 @@ msgid "Reply, quoting this description"
 msgstr "Respon, citant aquesta descripció"
 
 #: trac/ticket/templates/ticket_change.html:19
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "[1:[2:%(name)s]][3:​]\n"
 "          added"
 msgstr ""
-"[1:[2:%(name)s]]\n"
-"          [3:[4:]]\n"
+"[1:[2:%(name)s]][3: ]\n"
 "          afegit"
 
 #: trac/ticket/templates/ticket_change.html:26
