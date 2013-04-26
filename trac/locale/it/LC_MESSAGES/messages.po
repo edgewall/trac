@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
 "POT-Creation-Date: 2013-02-02 15:20+0100\n"
-"PO-Revision-Date: 2013-03-29 12:33+0100\n"
+"PO-Revision-Date: 2013-04-26 17:37+0200\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/trac/language/it/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -4528,17 +4528,17 @@ msgstr "[1:Nota:] Vedi [2:TracTickets] per un aiuto sull'uso delle segnalazioni.
 #: trac/ticket/templates/ticket_box.html:22
 #, python-format
 msgid "Opened %(created)s"
-msgstr "Aperta %(created)s fa"
+msgstr "Aperta %(created)s"
 
 #: trac/ticket/templates/ticket_box.html:23
 #, python-format
 msgid "Closed %(closed)s"
-msgstr "Chiusa %(closed)s fa"
+msgstr "Chiusa %(closed)s"
 
 #: trac/ticket/templates/ticket_box.html:24
 #, python-format
 msgid "Last modified %(modified)s"
-msgstr "Ultima modifica %(modified)s fa"
+msgstr "Ultima modifica %(modified)s"
 
 #: trac/ticket/templates/ticket_box.html:26
 msgid "(ticket not yet created)"
