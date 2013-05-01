@@ -84,7 +84,8 @@ class WikiPage(object):
         :since 1.0: the `db` parameter is no longer needed and will be removed
         in version 1.1.1
         """
-        assert self.exists, "Cannot delete non-existent page"
+        if not self.exists:
+            raise TracError(_("Cannot delete non-existent page"))
 
         with self.env.db_transaction as db:
             if version is None:
@@ -168,7 +169,8 @@ class WikiPage(object):
         Renaming a page this way will eventually leave dangling references
         to the old page - which litterally doesn't exist anymore.
         """
-        assert self.exists, "Cannot rename non-existent page"
+        if not self.exists:
+            raise TracError(_("Cannot rename non-existent page"))
 
         if not validate_page_name(new_name):
             raise TracError(_("Invalid Wiki page name '%(name)s'",
