@@ -28,6 +28,7 @@ from SocketServer import ThreadingMixIn
 
 from trac import __version__ as VERSION
 from trac.util import autoreload, daemon
+from trac.web.api import Request
 from trac.web.auth import BasicAuthentication, DigestAuthentication
 from trac.web.main import dispatch_request
 from trac.web.wsgi import WSGIServer, WSGIRequestHandler
@@ -305,6 +306,8 @@ def main():
             print 'Serving on %s' % loc
             if options.http11:
                 print 'Using HTTP/1.1 protocol version'
+            else:
+                Request.max_server_protocol = "HTTP/1.0"
             httpd.serve_forever()
     elif options.protocol in ('scgi', 'ajp', 'fcgi'):
         def serve():

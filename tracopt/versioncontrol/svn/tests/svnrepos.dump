@@ -16,10 +16,6 @@ Revision-number: 1
 Prop-content-length: 124
 Content-length: 124
 
-K 7
-svn:log
-V 25
-Initial directory layout.
 K 10
 svn:author
 V 4
@@ -28,6 +24,10 @@ K 8
 svn:date
 V 27
 2005-04-01T10:00:52.353248Z
+K 7
+svn:log
+V 25
+Initial directory layout.
 PROPS-END
 
 Node-path: branches
@@ -61,10 +61,6 @@ Revision-number: 2
 Prop-content-length: 112
 Content-length: 112
 
-K 7
-svn:log
-V 13
-Added README.
 K 10
 svn:author
 V 4
@@ -73,6 +69,10 @@ K 8
 svn:date
 V 27
 2005-04-01T13:12:18.216267Z
+K 7
+svn:log
+V 13
+Added README.
 PROPS-END
 
 Node-path: tête/README.txt
@@ -92,11 +92,6 @@ Revision-number: 3
 Prop-content-length: 113
 Content-length: 113
 
-K 7
-svn:log
-V 14
-Fixed README.
-
 K 10
 svn:author
 V 4
@@ -105,6 +100,11 @@ K 8
 svn:date
 V 27
 2005-04-01T13:24:58.234643Z
+K 7
+svn:log
+V 14
+Fixed README.
+
 PROPS-END
 
 Node-path: tête/README.txt
@@ -117,13 +117,13 @@ Text-content-sha1: 6aade8dde7d1b86b451b5d5f044a8ddcbab6b448
 Content-length: 83
 
 K 13
-svn:mime-type
-V 10
-text/plain
-K 13
 svn:eol-style
 V 6
 native
+K 13
+svn:mime-type
+V 10
+text/plain
 PROPS-END
 A test.
 
@@ -132,10 +132,6 @@ Revision-number: 4
 Prop-content-length: 116
 Content-length: 116
 
-K 7
-svn:log
-V 17
-More directories.
 K 10
 svn:author
 V 4
@@ -144,6 +140,10 @@ K 8
 svn:date
 V 27
 2005-04-01T15:42:35.450595Z
+K 7
+svn:log
+V 17
+More directories.
 PROPS-END
 
 Node-path: tête/dir1
@@ -177,10 +177,6 @@ Revision-number: 5
 Prop-content-length: 117
 Content-length: 117
 
-K 7
-svn:log
-V 18
-Moved directories.
 K 10
 svn:author
 V 4
@@ -189,6 +185,10 @@ K 8
 svn:date
 V 27
 2005-04-01T16:25:39.658099Z
+K 7
+svn:log
+V 18
+Moved directories.
 PROPS-END
 
 Node-path: tête/dir1/dir2
@@ -217,10 +217,6 @@ Revision-number: 6
 Prop-content-length: 118
 Content-length: 118
 
-K 7
-svn:log
-V 19
-More things to read
 K 10
 svn:author
 V 4
@@ -229,6 +225,10 @@ K 8
 svn:date
 V 27
 2005-04-01T18:56:46.985846Z
+K 7
+svn:log
+V 19
+More things to read
 PROPS-END
 
 Node-path: tête/README2.txt
@@ -244,10 +244,6 @@ Revision-number: 7
 Prop-content-length: 151
 Content-length: 151
 
-K 7
-svn:log
-V 42
-test the tag operation (copy of directory)
 K 10
 svn:author
 V 13
@@ -256,6 +252,10 @@ K 8
 svn:date
 V 27
 2005-04-14T15:06:20.717616Z
+K 7
+svn:log
+V 42
+test the tag operation (copy of directory)
 PROPS-END
 
 Node-path: tags/v1
@@ -269,10 +269,6 @@ Revision-number: 8
 Prop-content-length: 124
 Content-length: 124
 
-K 7
-svn:log
-V 15
-Fix stuff in v1
 K 10
 svn:author
 V 13
@@ -281,6 +277,10 @@ K 8
 svn:date
 V 27
 2005-04-22T08:57:33.499643Z
+K 7
+svn:log
+V 15
+Fix stuff in v1
 PROPS-END
 
 Node-path: branches/v1x
@@ -294,10 +294,6 @@ Revision-number: 9
 Prop-content-length: 127
 Content-length: 127
 
-K 7
-svn:log
-V 18
-Now that's the fix
 K 10
 svn:author
 V 13
@@ -306,6 +302,10 @@ K 8
 svn:date
 V 27
 2005-04-22T08:59:24.308979Z
+K 7
+svn:log
+V 18
+Now that's the fix
 PROPS-END
 
 Node-path: branches/v1x/README.txt
@@ -323,10 +323,6 @@ Revision-number: 10
 Prop-content-length: 141
 Content-length: 141
 
-K 7
-svn:log
-V 32
-Tagging v1.1 from the fix branch
 K 10
 svn:author
 V 13
@@ -335,6 +331,10 @@ K 8
 svn:date
 V 27
 2005-04-22T09:00:34.549980Z
+K 7
+svn:log
+V 32
+Tagging v1.1 from the fix branch
 PROPS-END
 
 Node-path: tags/v1.1
@@ -348,10 +348,6 @@ Revision-number: 11
 Prop-content-length: 191
 Content-length: 191
 
-K 7
-svn:log
-V 82
-''(a few months later)'' We don't need the fix branch anymore, 1.1 is super-stable
 K 10
 svn:author
 V 13
@@ -360,6 +356,10 @@ K 8
 svn:date
 V 27
 2005-04-22T09:01:38.361737Z
+K 7
+svn:log
+V 82
+''(a few months later)'' We don't need the fix branch anymore, 1.1 is super-stable
 PROPS-END
 
 Node-path: branches/v1x
@@ -370,10 +370,6 @@ Revision-number: 12
 Prop-content-length: 166
 Content-length: 166
 
-K 7
-svn:log
-V 57
-''(a few years later)'' Argh... v1.1 was buggy, after all
 K 10
 svn:author
 V 13
@@ -382,6 +378,10 @@ K 8
 svn:date
 V 27
 2005-04-22T09:06:37.011174Z
+K 7
+svn:log
+V 57
+''(a few years later)'' Argh... v1.1 was buggy, after all
 PROPS-END
 
 Node-path: branches/v1x
@@ -395,10 +395,6 @@ Revision-number: 13
 Prop-content-length: 143
 Content-length: 143
 
-K 7
-svn:log
-V 43
-Setting property on the repository_dir root
 K 10
 svn:author
 V 5
@@ -407,6 +403,10 @@ K 8
 svn:date
 V 27
 2005-11-17T15:13:16.197772Z
+K 7
+svn:log
+V 43
+Setting property on the repository_dir root
 PROPS-END
 
 Node-path: 
@@ -441,10 +441,6 @@ Revision-number: 14
 Prop-content-length: 119
 Content-length: 119
 
-K 7
-svn:log
-V 19
-Testing rename+edit
 K 10
 svn:author
 V 5
@@ -453,6 +449,10 @@ K 8
 svn:date
 V 27
 2005-11-30T08:47:03.467814Z
+K 7
+svn:log
+V 19
+Testing rename+edit
 PROPS-END
 
 Node-path: tête/README3.txt
@@ -478,10 +478,6 @@ Revision-number: 15
 Prop-content-length: 162
 Content-length: 162
 
-K 7
-svn:log
-V 62
-Removing original file, just before committing the wc->wc copy
 K 10
 svn:author
 V 5
@@ -490,6 +486,10 @@ K 8
 svn:date
 V 27
 2005-12-06T12:47:36.271020Z
+K 7
+svn:log
+V 62
+Removing original file, just before committing the wc->wc copy
 PROPS-END
 
 Node-path: tags/v1.1/README2.txt
@@ -500,10 +500,6 @@ Revision-number: 16
 Prop-content-length: 138
 Content-length: 138
 
-K 7
-svn:log
-V 38
-Committing wc->wc copy + local changes
 K 10
 svn:author
 V 5
@@ -512,6 +508,10 @@ K 8
 svn:date
 V 27
 2005-12-06T12:47:51.122376Z
+K 7
+svn:log
+V 38
+Committing wc->wc copy + local changes
 PROPS-END
 
 Node-path: branches/v2
@@ -536,10 +536,6 @@ Revision-number: 17
 Prop-content-length: 139
 Content-length: 139
 
-K 7
-svn:log
-V 39
-Test des caractères accentués (cp437)
 K 10
 svn:author
 V 5
@@ -548,6 +544,10 @@ K 8
 svn:date
 V 27
 2006-03-31T12:30:25.421875Z
+K 7
+svn:log
+V 39
+Test des caractères accentués (cp437)
 PROPS-END
 
 Node-path: tête/Résumé.txt
@@ -566,10 +566,6 @@ Revision-number: 18
 Prop-content-length: 124
 Content-length: 124
 
-K 7
-svn:log
-V 24
-Prepare for fancy rename
 K 10
 svn:author
 V 5
@@ -578,6 +574,10 @@ K 8
 svn:date
 V 27
 2006-09-27T10:40:38.671875Z
+K 7
+svn:log
+V 24
+Prepare for fancy rename
 PROPS-END
 
 Node-path: tête/Xprimary_proc
@@ -606,10 +606,6 @@ Revision-number: 19
 Prop-content-length: 145
 Content-length: 145
 
-K 7
-svn:log
-V 45
-Fancy copy+rename resulting in double delete.
 K 10
 svn:author
 V 5
@@ -618,6 +614,10 @@ K 8
 svn:date
 V 27
 2006-09-27T10:41:27.484375Z
+K 7
+svn:log
+V 45
+Fancy copy+rename resulting in double delete.
 PROPS-END
 
 Node-path: tête/mpp_proc
@@ -650,11 +650,6 @@ Revision-number: 20
 Prop-content-length: 132
 Content-length: 132
 
-K 7
-svn:log
-V 20
-Chez moi ça marche
-
 K 10
 svn:author
 V 16
@@ -663,6 +658,11 @@ K 8
 svn:date
 V 27
 2006-12-04T10:47:24.015625Z
+K 7
+svn:log
+V 20
+Chez moi ça marche
+
 PROPS-END
 
 Node-path: tête/Résumé.txt
@@ -680,10 +680,6 @@ Revision-number: 21
 Prop-content-length: 139
 Content-length: 139
 
-K 7
-svn:log
-V 39
-copy from outside of the scope + delete
 K 10
 svn:author
 V 5
@@ -692,6 +688,10 @@ K 8
 svn:date
 V 27
 2007-04-30T17:45:26.234375Z
+K 7
+svn:log
+V 39
+copy from outside of the scope + delete
 PROPS-END
 
 Node-path: tête/v2
@@ -713,10 +713,6 @@ Revision-number: 22
 Prop-content-length: 130
 Content-length: 130
 
-K 7
-svn:log
-V 30
-test delete after copy (#4900)
 K 10
 svn:author
 V 5
@@ -725,6 +721,10 @@ K 8
 svn:date
 V 27
 2010-02-26T14:48:19.377000Z
+K 7
+svn:log
+V 30
+test delete after copy (#4900)
 PROPS-END
 
 Node-path: branches/v3
@@ -744,5 +744,259 @@ Node-action: delete
 
 Node-path: branches/v3/mpp_proc
 Node-action: delete
+
+
+Revision-number: 23
+Prop-content-length: 137
+Content-length: 137
+
+K 10
+svn:author
+V 5
+cboos
+K 8
+svn:date
+V 27
+2013-04-27T13:00:34.579240Z
+K 7
+svn:log
+V 37
+Verifying keyword substitution (#717)
+PROPS-END
+
+Node-path: tête/Résumé.txt
+Node-kind: file
+Node-action: change
+Prop-content-length: 53
+Text-content-length: 421
+Text-content-md5: c9a55f49668aff4b30606a4821f13c3a
+Text-content-sha1: 1b7c636fcaed8360bbf39589655b4e5b37b4ea9a
+Content-length: 474
+
+K 12
+svn:keywords
+V 19
+Revision Author URL
+PROPS-END
+# Simple test for svn:keywords property substitution (#717)
+# $Rev$:     Revision of last commit
+# $Author$:  Author of last commit
+# $Date$:    Date of last commit (not substituted)
+
+Now with fixed width fields:
+# $URL::                                              $ the configured URL
+# $HeadURL::                                          $ same
+# $URL::                $ same, but truncated
+
+En r�sum� ... �a marche.
+
+
+Revision-number: 24
+Prop-content-length: 144
+Content-length: 144
+
+K 10
+svn:author
+V 5
+cboos
+K 8
+svn:date
+V 27
+2013-04-27T14:38:50.346459Z
+K 7
+svn:log
+V 44
+Adding Id keyword and testing Id and Header.
+PROPS-END
+
+Node-path: tête/Résumé.txt
+Node-kind: file
+Node-action: change
+Prop-content-length: 56
+Text-content-length: 523
+Text-content-md5: 2387ca7586289babae8f3714750677b6
+Text-content-sha1: 983c9d507f95133315e9a8942a1a9161e69a0644
+Content-length: 579
+
+K 12
+svn:keywords
+V 22
+Revision Author URL Id
+PROPS-END
+# Simple test for svn:keywords property substitution (#717)
+# $Rev$:     Revision of last commit
+# $Author$:  Author of last commit
+# $Date$:    Date of last commit (now substituted)
+# $Id$:      Combination
+
+Now with fixed width fields:
+# $URL::                                              $ the configured URL
+# $HeadURL::                                          $ same
+# $URL::                $ same, but truncated
+# $Header::                                           $ combination with URL
+
+En r�sum� ... �a marche.
+
+
+Revision-number: 25
+Prop-content-length: 132
+Content-length: 132
+
+K 10
+svn:author
+V 5
+cboos
+K 8
+svn:date
+V 27
+2013-04-27T14:43:15.010597Z
+K 7
+svn:log
+V 32
+Adding Header and Date keywords.
+PROPS-END
+
+Node-path: tête/Résumé.txt
+Node-kind: file
+Node-action: change
+Prop-content-length: 68
+Text-content-length: 530
+Text-content-md5: 6f322fe2e36a5340ab89a45c5e1a99ea
+Text-content-sha1: 796511deb4b792770ffa96c72665d04013e7e351
+Content-length: 598
+
+K 12
+svn:keywords
+V 34
+Revision Author URL Date Id Header
+PROPS-END
+# Simple test for svn:keywords property substitution (#717)
+# $Rev$:     Revision of last commit
+# $Author$:  Author of last commit
+# $Date$:    Date of last commit (now really substituted)
+# $Id$:      Combination
+
+Now with fixed width fields:
+# $URL::                                              $ the configured URL
+# $HeadURL::                                          $ same
+# $URL::                $ same, but truncated
+# $Header::                                           $ combination with URL
+
+En r�sum� ... �a marche.
+
+
+Revision-number: 26
+Prop-content-length: 99
+Content-length: 99
+
+K 10
+svn:author
+V 5
+jomae
+K 8
+svn:date
+V 27
+2013-04-28T05:36:06.029637Z
+K 7
+svn:log
+V 0
+
+PROPS-END
+
+Node-path: tête/Résumé.txt
+Node-kind: file
+Node-action: change
+Text-content-length: 600
+Text-content-md5: 72f0bd05783567014a5c9b5b25624bd5
+Text-content-sha1: c7c17825559c15a3ac12cfdbc25c3bfeecc33444
+Content-length: 600
+
+# Simple test for svn:keywords property substitution (#717)
+# $Rev$:     Revision of last commit
+# $Author$:  Author of last commit
+# $Date$:    Date of last commit (now really substituted)
+# $Id$:      Combination
+
+Now with fixed width fields:
+# $URL::                                              $ the configured URL
+# $HeadURL::                                          $ same
+# $URL::                $ same, but truncated
+# $Header::                                           $ combination with URL
+
+Overlapped keywords:
+# $Xxx$Rev$Xxx$
+# $Rev$Xxx$Rev$
+# $Rev$Rev$Rev$
+
+En r�sum� ... �a marche.
+
+
+Revision-number: 27
+Prop-content-length: 99
+Content-length: 99
+
+K 10
+svn:author
+V 5
+jomae
+K 8
+svn:date
+V 27
+2013-04-28T06:04:22.547569Z
+K 7
+svn:log
+V 0
+
+PROPS-END
+
+Node-path: 
+Node-kind: dir
+Node-action: change
+Prop-content-length: 40
+Content-length: 40
+
+K 10
+svn:ignore
+V 9
+*.py[co]
+
+PROPS-END
+
+
+Revision-number: 28
+Prop-content-length: 99
+Content-length: 99
+
+K 10
+svn:author
+V 5
+jomae
+K 8
+svn:date
+V 27
+2013-05-02T14:15:35.530857Z
+K 7
+svn:log
+V 0
+
+PROPS-END
+
+Node-path: branches/v4
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 27
+Node-copyfrom-path: tête
+
+
+Node-path: branches/v4/README.txt
+Node-kind: file
+Node-action: change
+Text-content-length: 57
+Text-content-md5: 59d8741096e01b80360963223f5c7394
+Text-content-sha1: f0c8bf5fedb3b2c06381e8dba6957a7d36667027
+Content-length: 57
+
+A test.
+# $Rev$ is not substituted with no svn:keywords.
 
 

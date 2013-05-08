@@ -227,7 +227,7 @@ def render_zip(req, filename, repos, root_node, iter_nodes):
         if node.isfile:
             zipinfo.compress_type = ZIP_DEFLATED
             zipinfo.external_attr = 0644 << 16L # permissions -r-wr--r--
-            data = node.get_content().read()
+            data = node.get_processed_content(eol_hint='CRLF').read()
             properties = node.get_properties()
             # Subversion specific
             if 'svn:special' in properties and \

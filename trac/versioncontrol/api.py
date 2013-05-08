@@ -998,6 +998,23 @@ class Node(object):
         """
         raise NotImplementedError
 
+    def get_processed_content(self, keyword_substitution=True, eol_hint=None):
+        """Return a stream for reading the content of the node, with some
+        standard processing applied.
+
+        :param keyword_substitution: if `True`, meta-data keywords
+            present in the content like ``$Rev$`` are substituted
+            (which keyword are substituted and how they are
+            substituted is backend specific)
+
+        :param eol_hint: which style of line ending is expected if
+            `None` was explicitly specified for the file itself in
+            the version control backend (for example in Subversion,
+            if it was set to ``'native'``).  It can be `None`,
+            ``'LF'``, ``'CR'`` or ``'CRLF'``.
+        """
+        return self.get_content()
+
     def get_entries(self):
         """Generator that yields the immediate child entries of a directory.
 
