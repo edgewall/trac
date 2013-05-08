@@ -32,7 +32,7 @@ from trac.util.datefmt import http_date, to_datetime, utc
 from trac.util.html import escape, Markup
 from trac.util.text import exception_to_unicode, shorten_line
 from trac.util.translation import _, cleandoc_
-from trac.web import IRequestHandler, RequestDone
+from trac.web.api import IRequestHandler, Request, RequestDone
 from trac.web.chrome import (INavigationContributor, add_ctxtnav, add_link,
                              add_script, add_stylesheet, prevnext_nav,
                              web_context)
@@ -652,7 +652,7 @@ class BrowserModule(Component):
         mimeview = Mimeview(self.env)
 
         # MIME type detection
-        content = node.get_content()
+        content = node.get_processed_content()
         chunk = content.read(CHUNK_SIZE)
         mime_type = node.content_type
         if not mime_type or mime_type == 'application/octet-stream':
@@ -665,7 +665,15 @@ class BrowserModule(Component):
             req.send_response(200)
             req.send_header('Content-Type',
                             'text/plain' if format == 'txt' else mime_type)
-            req.send_header('Content-Length', node.content_length)
+            # Use chunked encoding or close connection instead of
+            # Content-Length, since the content might be substituted by
+            # "svn:keywords" and/or "svn:eol-style".
+            use_chunked = req.server_protocol >= 'HTTP/1.1' and \
+                Request.max_server_protocol >= 'HTTP/1.1'
+            if use_chunked:
+                req.send_header('Transfer-Encoding', 'chunked')
+            else:
+                req.send_header('Connection', 'close')
             req.send_header('Last-Modified', http_date(node.last_modified))
             if rev is None:
                 req.send_header('Pragma', 'no-cache')
@@ -678,10 +686,17 @@ class BrowserModule(Component):
                 req.send_header('Content-Disposition', 'attachment')
             req.end_headers()
 
+            if use_chunked:
+                write_chunk = lambda chunk: req.write('%x\r\n%s\r\n' %
+                                                      (len(chunk), chunk))
+            else:
+                write_chunk = lambda chunk: req.write(chunk)
             while 1:
                 if not chunk:
+                    if use_chunked:
+                        req.write('0\r\n\r\n')
                     raise RequestDone
-                req.write(chunk)
+                write_chunk(chunk)
                 chunk = content.read(CHUNK_SIZE)
         else:
             # The changeset corresponding to the last change on `node`
@@ -712,7 +727,8 @@ class BrowserModule(Component):
             annotate = req.args.get('annotate')
             if annotate:
                 annotations.insert(0, annotate)
-            preview_data = mimeview.preview_data(context, node.get_content(),
+            preview_data = mimeview.preview_data(context,
+                                                 node.get_processed_content(),
                                                  node.get_content_length(),
                                                  mime_type, node.created_path,
                                                  raw_href,
