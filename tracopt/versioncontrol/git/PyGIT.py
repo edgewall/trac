@@ -866,6 +866,7 @@ class Storage(object):
         p = []
         change = {}
         next_path = []
+        base_path = self._fs_from_unicode(base_path)
 
         def name_status_gen():
             p[:] = [self.repo.log_pipe('--pretty=format:%n%H',
@@ -896,6 +897,7 @@ class Storage(object):
         gen = name_status_gen()
 
         def historian(path):
+            path = self._fs_from_unicode(path)
             try:
                 return change[path]
             except KeyError:

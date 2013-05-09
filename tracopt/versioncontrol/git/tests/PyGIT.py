@@ -11,6 +11,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from __future__ import with_statement
+
 import os
 import shutil
 import tempfile
@@ -218,6 +220,20 @@ class UnicodeNameTestCase(unittest.TestCase):
         self.assertEquals(unicode, type(tags[0]))
         self.assertEquals(u'täg-t10980', tags[0])
         self.assertNotEqual(None, storage.verifyrev(u'täg-t10980'))
+
+    def test_get_historian_with_unicode_path(self):
+        # regression test for #11180
+        create_file(os.path.join(self.repos_path, 'tickét.txt'))
+        self._git('add', 'tickét.txt')
+        self._git('commit', '-m', 'ticket:11180',
+                  '--date', 'Thu May 9 04:31 2013 +0900')
+        storage = self._storage()
+        rev = storage.head()
+        self.assertNotEqual(None, rev)
+        with storage.get_historian('HEAD', u'tickét.txt') as historian:
+            self.assertNotEqual(None, historian)
+            self.assertEquals(rev, storage.last_change('HEAD', u'tickét.txt',
+                                                       historian))
 
 
 #class GitPerformanceTestCase(unittest.TestCase):
