@@ -502,8 +502,8 @@ class RepositoryManager(Component):
 
         This will create and save a new id if none is found.
 
-        \note: this should probably be renamed as we're dealing
-               exclusively with *db* repository ids here.
+        Note: this should probably be renamed as we're dealing
+              exclusively with *db* repository ids here.
         """
         with self.env.db_transaction as db:
             for id, in db(
