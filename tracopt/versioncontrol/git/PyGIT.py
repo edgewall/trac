@@ -540,8 +540,12 @@ class Storage(object):
         """
 
         result = []
-        for e in self.repo.branch('-v', '--no-abbrev').splitlines():
-            bname, bsha = e[1:].strip().split()[:2]
+        for e in self.repo.branch('-v', '--no-abbrev').rstrip('\n') \
+                                                      .split('\n'):
+            tokens = e[1:].strip().split()[:2]
+            if len(tokens) != 2:
+                continue
+            bname, bsha = tokens
             if e.startswith('*'):
                 result.insert(0, (bname, bsha))
             else:
