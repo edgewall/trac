@@ -25,6 +25,25 @@ from trac.util.compat import close_fds
 from tracopt.versioncontrol.git.PyGIT import GitCore, Storage, parse_commit
 
 
+def rmtree(path):
+    import errno
+    def onerror(function, path, excinfo):
+        # `os.remove` fails for a readonly file on Windows.
+        # Then, it attempts to be writable and remove.
+        if function != os.remove:
+            raise
+        e = excinfo[1]
+        if isinstance(e, OSError) and e.errno == errno.EACCES:
+            mode = os.stat(path).st_mode
+            os.chmod(path, mode | 0666)
+            function(path)
+    if os.name == 'nt':
+        # Git repository for tests has unicode characters
+        # in the path and branch names
+        path = unicode(path, 'utf-8')
+    shutil.rmtree(path, onerror=onerror)
+
+
 class GitTestCase(unittest.TestCase):
 
     def test_is_sha(self):
@@ -146,6 +165,51 @@ signature automatically.  Yay.  The branchname was just 'dev', which is
 prettier.  I'll tell Ted to use nicer tag names for future cases.""", msg)
 
 
+class NormalTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.repos_path = tempfile.mkdtemp(prefix='trac-gitrepos')
+        self.git_bin = locate('git')
+        # create git repository and master branch
+        self._git('init', self.repos_path)
+        self._git('config', 'user.name', "Joe")
+        self._git('config', 'user.email', "joe@example.com")
+        create_file(os.path.join(self.repos_path, '.gitignore'))
+        self._git('add', '.gitignore')
+        self._git('commit', '-a', '-m', 'test')
+
+    def tearDown(self):
+        if os.path.isdir(self.repos_path):
+            rmtree(self.repos_path)
+
+    def _git(self, *args):
+        args = [self.git_bin] + list(args)
+        proc = Popen(args, stdout=PIPE, stderr=PIPE, close_fds=close_fds,
+                     cwd=self.repos_path)
+        proc.wait()
+        assert proc.returncode == 0, proc.stderr.read()
+        return proc
+
+    def _storage(self):
+        path = os.path.join(self.repos_path, '.git')
+        return Storage(path, self.env.log, self.git_bin, 'utf-8')
+
+    def test_get_branches_with_cr_in_commitlog(self):
+        # regression test for #11598
+        message = 'message with carriage return'.replace(' ', '\r')
+
+        create_file(os.path.join(self.repos_path, 'ticket11598.txt'))
+        self._git('add', 'ticket11598.txt')
+        self._git('commit', '-m', message,
+                  '--date', 'Thu May 9 20:05:21 2013 +0900')
+
+        storage = self._storage()
+        branches = sorted(storage.get_branches())
+        self.assertEquals('master', branches[0][0])
+        self.assertEquals(1, len(branches))
+
+
 class UnicodeNameTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -162,7 +226,7 @@ class UnicodeNameTestCase(unittest.TestCase):
 
     def tearDown(self):
         if os.path.isdir(self.repos_path):
-            shutil.rmtree(self.repos_path)
+            rmtree(self.repos_path)
 
     def _git(self, *args):
         args = [self.git_bin] + list(args)
@@ -390,6 +454,7 @@ def suite():
     if git:
         suite.addTest(unittest.makeSuite(GitTestCase, 'test'))
         suite.addTest(unittest.makeSuite(TestParseCommit, 'test'))
+        suite.addTest(unittest.makeSuite(NormalTestCase, 'test'))
         if os.name != 'nt':
             # Popen doesn't accept unicode path and arguments on Windows
             suite.addTest(unittest.makeSuite(UnicodeNameTestCase, 'test'))
