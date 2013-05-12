@@ -3863,7 +3863,7 @@ msgid ""
 "            may have failed."
 msgstr ""
 "Des mises en garde sont présentes [1:en haut de page].\n"
-"La validation du ticket a peut-être [1:échoué]."
+"La validation du ticket a peut-être échoué."
 
 #: trac/ticket/templates/ticket.html:220
 #, python-format
@@ -4843,7 +4843,7 @@ msgid ""
 "                %(old_path)s])"
 msgstr ""
 "(%(kind)s à partir de [1:\n"
-"                %(old_path)s)"
+"                %(old_path)s])"
 
 #: trac/versioncontrol/templates/changeset.html:119
 #: trac/versioncontrol/templates/changeset.html:122
