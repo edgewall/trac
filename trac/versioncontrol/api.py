@@ -250,11 +250,22 @@ class DbRepositoryProvider(Component):
         """Modify attributes of a repository."""
         if is_default(reponame):
             reponame = ''
+        new_reponame = changes.get('name', reponame)
+        if is_default(new_reponame):
+            new_reponame = ''
         rm = RepositoryManager(self.env)
         @self.env.with_transaction()
         def do_modify(db):
             cursor = db.cursor()
             id = rm.get_repository_id(reponame)
+            if reponame != new_reponame:
+                cursor.execute("SELECT id FROM repository "
+                               "WHERE name='name' AND value=%s",
+                               (new_reponame,))
+                if cursor.fetchone():
+                    raise TracError(_('The repository "%(name)s" already '
+                                      'exists.',
+                                      name=new_reponame or '(default)'))
             for (k, v) in changes.iteritems():
                 if k not in self.repository_attrs:
                     continue
