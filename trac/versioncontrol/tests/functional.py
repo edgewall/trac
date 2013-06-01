@@ -121,6 +121,42 @@ class RegressionTestRev5877(FunctionalTwillTestCaseSetup):
         tc.notfind(internal_error)
 
 
+class RegressionTestTicket11194(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11194
+        TracError should be raised when repository with name already exists
+        """
+        self._tester.go_to_admin()
+        tc.follow("\\bRepositories\\b")
+        tc.url(self._tester.url + '/admin/versioncontrol/repository')
+
+        word = random_word()
+        names = ['%s_%d' % (word, n) for n in xrange(3)]
+        tc.formvalue('trac-addrepos', 'name', names[0])
+        tc.formvalue('trac-addrepos', 'dir', '/var/svn/%s' % names[0])
+        tc.submit()
+        tc.notfind(internal_error)
+
+        tc.formvalue('trac-addrepos', 'name', names[1])
+        tc.formvalue('trac-addrepos', 'dir', '/var/svn/%s' % names[1])
+        tc.submit()
+        tc.notfind(internal_error)
+
+        tc.follow('\\b' + names[1] + '\\b')
+        tc.url(self._tester.url + '/admin/versioncontrol/repository/' + names[1])
+        tc.formvalue('trac-modrepos', 'name', names[2])
+        tc.submit('save')
+        tc.notfind(internal_error)
+        tc.url(self._tester.url + '/admin/versioncontrol/repository')
+
+        tc.follow('\\b' + names[2] + '\\b')
+        tc.url(self._tester.url + '/admin/versioncontrol/repository/' + names[2])
+        tc.formvalue('trac-modrepos', 'name', names[0])
+        tc.submit('save')
+        tc.find('The repository "%s" already exists.' % names[0])
+        tc.notfind(internal_error)
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional.testcases
@@ -131,6 +167,7 @@ def functionalSuite(suite=None):
         suite.addTest(TestRepoBrowse())
         suite.addTest(TestNewFileLog())
         suite.addTest(RegressionTestTicket5819())
+        suite.addTest(RegressionTestTicket11194())
         suite.addTest(RegressionTestRev5877())
     else:
         print "SKIP: versioncontrol/tests/functional.py (no svn bindings)"
