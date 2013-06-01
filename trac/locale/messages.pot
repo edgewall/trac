@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12.6\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-02-17 15:58+0100\n"
+"POT-Creation-Date: 2013-06-01 17:52+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1534,11 +1534,11 @@ msgstr ""
 msgid "Search query too short. Query must be at least %(num)s characters long."
 msgstr ""
 
-#: trac/search/web_ui.py:244 trac/ticket/query.py:774 trac/ticket/report.py:400
+#: trac/search/web_ui.py:244 trac/ticket/query.py:778 trac/ticket/report.py:400
 msgid "Next Page"
 msgstr ""
 
-#: trac/search/web_ui.py:250 trac/ticket/query.py:779 trac/ticket/report.py:403
+#: trac/search/web_ui.py:250 trac/ticket/query.py:783 trac/ticket/report.py:403
 msgid "Previous Page"
 msgstr ""
 
@@ -2470,118 +2470,118 @@ msgstr ""
 msgid "Version %(name)s does not exist."
 msgstr ""
 
-#: trac/ticket/query.py:55
+#: trac/ticket/query.py:56
 msgid "Invalid query constraint value"
 msgstr ""
 
-#: trac/ticket/query.py:89
+#: trac/ticket/query.py:90
 #, python-format
 msgid "Query page %(page)s is invalid."
 msgstr ""
 
-#: trac/ticket/query.py:104
+#: trac/ticket/query.py:105
 #, python-format
 msgid "Query max %(max)s is invalid."
 msgstr ""
 
-#: trac/ticket/query.py:163
+#: trac/ticket/query.py:164
 msgid "Query filter requires field and constraints separated by a \"=\""
 msgstr ""
 
-#: trac/ticket/query.py:176
+#: trac/ticket/query.py:177
 msgid "Query filter requires field name"
 msgstr ""
 
-#: trac/ticket/query.py:313
+#: trac/ticket/query.py:314
 #, python-format
 msgid "Page %(page)s is beyond the number of pages in the query"
 msgstr ""
 
-#: trac/ticket/query.py:571
+#: trac/ticket/query.py:575
 #, python-format
 msgid "Invalid ticket id list: %(value)s"
 msgstr ""
 
-#: trac/ticket/query.py:671 trac/ticket/query.py:679
+#: trac/ticket/query.py:675 trac/ticket/query.py:683
 msgid "contains"
 msgstr ""
 
-#: trac/ticket/query.py:672 trac/ticket/query.py:680
+#: trac/ticket/query.py:676 trac/ticket/query.py:684
 msgid "doesn't contain"
 msgstr ""
 
-#: trac/ticket/query.py:673
+#: trac/ticket/query.py:677
 msgid "begins with"
 msgstr ""
 
-#: trac/ticket/query.py:674
+#: trac/ticket/query.py:678
 msgid "ends with"
 msgstr ""
 
-#: trac/ticket/query.py:675 trac/ticket/query.py:683 trac/ticket/query.py:687
+#: trac/ticket/query.py:679 trac/ticket/query.py:687 trac/ticket/query.py:691
 msgid "is"
 msgstr ""
 
-#: trac/ticket/query.py:676 trac/ticket/query.py:684 trac/ticket/query.py:688
+#: trac/ticket/query.py:680 trac/ticket/query.py:688 trac/ticket/query.py:692
 msgid "is not"
 msgstr ""
 
-#: trac/ticket/query.py:720 trac/ticket/query.py:726
+#: trac/ticket/query.py:724 trac/ticket/query.py:730
 msgid "Ticket"
 msgstr ""
 
-#: trac/ticket/query.py:787 trac/ticket/report.py:409
+#: trac/ticket/query.py:791 trac/ticket/report.py:409
 #, python-format
 msgid "Page %(num)d"
 msgstr ""
 
-#: trac/ticket/query.py:836 trac/ticket/report.py:273 trac/ticket/report.py:571
+#: trac/ticket/query.py:840 trac/ticket/report.py:273 trac/ticket/report.py:571
 #: trac/ticket/web_ui.py:130 trac/timeline/web_ui.py:219
 #: trac/versioncontrol/web_ui/log.py:299
 msgid "RSS Feed"
 msgstr ""
 
-#: trac/ticket/query.py:838 trac/ticket/report.py:275 trac/ticket/report.py:573
+#: trac/ticket/query.py:842 trac/ticket/report.py:275 trac/ticket/report.py:573
 #: trac/ticket/web_ui.py:126
 msgid "Comma-delimited Text"
 msgstr ""
 
-#: trac/ticket/query.py:840 trac/ticket/report.py:277 trac/ticket/report.py:575
+#: trac/ticket/query.py:844 trac/ticket/report.py:277 trac/ticket/report.py:575
 #: trac/ticket/web_ui.py:128
 msgid "Tab-delimited Text"
 msgstr ""
 
-#: trac/ticket/query.py:862 trac/ticket/report.py:72
+#: trac/ticket/query.py:866 trac/ticket/report.py:72
 msgid "View Tickets"
 msgstr ""
 
-#: trac/ticket/query.py:1077 trac/ticket/query.py:1088
+#: trac/ticket/query.py:1081 trac/ticket/query.py:1092
 #: trac/ticket/report.py:133
 msgid "Custom Query"
 msgstr ""
 
-#: trac/ticket/query.py:1087 trac/ticket/report.py:123
+#: trac/ticket/query.py:1091 trac/ticket/report.py:123
 #: trac/ticket/report.py:124 trac/ticket/report.py:126
 #: trac/ticket/templates/report_list.html:10
 #: trac/ticket/templates/report_list.html:15
 msgid "Available Reports"
 msgstr ""
 
-#: trac/ticket/query.py:1178
+#: trac/ticket/query.py:1182
 #, python-format
 msgid "[Error: %(error)s]"
 msgstr ""
 
-#: trac/ticket/query.py:1313
+#: trac/ticket/query.py:1317
 msgid "No results"
 msgstr ""
 
-#: trac/ticket/query.py:1331
+#: trac/ticket/query.py:1335
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
 msgstr ""
 
-#: trac/ticket/query.py:1354
+#: trac/ticket/query.py:1358
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
 msgstr ""
@@ -3959,7 +3959,7 @@ msgstr ""
 msgid "You may have to run \"repository resync %(name)s\"."
 msgstr ""
 
-#: trac/versioncontrol/api.py:201 trac/versioncontrol/api.py:264
+#: trac/versioncontrol/api.py:201 trac/versioncontrol/api.py:275
 msgid "The repository directory must be absolute"
 msgstr ""
 
@@ -3968,88 +3968,93 @@ msgstr ""
 msgid "The repository type '%(type)s' is not supported"
 msgstr ""
 
-#: trac/versioncontrol/api.py:343
+#: trac/versioncontrol/api.py:266
+#, python-format
+msgid "The repository \"%(name)s\" already exists."
+msgstr ""
+
+#: trac/versioncontrol/api.py:354
 #, python-format
 msgid ""
 "Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the "
 "Trac log for more information."
 msgstr ""
 
-#: trac/versioncontrol/api.py:364
+#: trac/versioncontrol/api.py:375
 #, python-format
 msgid "Changeset %(rev)s in %(repo)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:366
+#: trac/versioncontrol/api.py:377
 #, python-format
 msgid "Changeset %(rev)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:376
+#: trac/versioncontrol/api.py:387
 msgid "directory"
 msgstr ""
 
-#: trac/versioncontrol/api.py:378
+#: trac/versioncontrol/api.py:389
 msgid "file"
 msgstr ""
 
-#: trac/versioncontrol/api.py:380
+#: trac/versioncontrol/api.py:391
 #, python-format
 msgid " at version %(rev)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:382
+#: trac/versioncontrol/api.py:393
 msgid "path"
 msgstr ""
 
-#: trac/versioncontrol/api.py:385
+#: trac/versioncontrol/api.py:396
 #, python-format
 msgid " in %(repo)s"
 msgstr ""
 
 #. TRANSLATOR: file /path/to/file.py at version 13 in reponame
-#: trac/versioncontrol/api.py:387
+#: trac/versioncontrol/api.py:398
 #, python-format
 msgid "%(kind)s %(id)s%(at_version)s%(in_repo)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:390
+#: trac/versioncontrol/api.py:401
 #, python-format
 msgid "Repository %(repo)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:703
+#: trac/versioncontrol/api.py:714
 #, python-format
 msgid "Unsupported version control system \"%(name)s\": %(error)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:706
+#: trac/versioncontrol/api.py:717
 #, python-format
 msgid ""
 "Unsupported version control system \"%(name)s\": Can't find an "
 "appropriate component, maybe the corresponding plugin was not enabled? "
 msgstr ""
 
-#: trac/versioncontrol/api.py:714
+#: trac/versioncontrol/api.py:725
 #, python-format
 msgid "No changeset %(rev)s in the repository"
 msgstr ""
 
-#: trac/versioncontrol/api.py:716
+#: trac/versioncontrol/api.py:727
 msgid "No such changeset"
 msgstr ""
 
-#: trac/versioncontrol/api.py:722
+#: trac/versioncontrol/api.py:733
 #, python-format
 msgid "No node %(path)s at revision %(rev)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:724
+#: trac/versioncontrol/api.py:735
 #, python-format
 msgid "%(msg)s: No node %(path)s at revision %(rev)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:726
+#: trac/versioncontrol/api.py:737
 msgid "No such node"
 msgstr ""
 
@@ -4070,29 +4075,29 @@ msgstr ""
 msgid "Line %(lineno)d: Invalid entry"
 msgstr ""
 
-#: trac/versioncontrol/svn_fs.py:277
+#: trac/versioncontrol/svn_fs.py:281
 #, python-format
 msgid "Subversion >= 1.0 required, found %(version)s"
 msgstr ""
 
-#: trac/versioncontrol/svn_fs.py:332
+#: trac/versioncontrol/svn_fs.py:337
 #, python-format
 msgid "%(path)s does not appear to be a Subversion repository."
 msgstr ""
 
-#: trac/versioncontrol/svn_fs.py:339
+#: trac/versioncontrol/svn_fs.py:344
 #, python-format
 msgid "Couldn't open Subversion repository %(path)s: %(svn_error)s"
 msgstr ""
 
-#: trac/versioncontrol/svn_fs.py:628
+#: trac/versioncontrol/svn_fs.py:633
 #, python-format
 msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
 " and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
 msgstr ""
 
-#: trac/versioncontrol/svn_fs.py:777
+#: trac/versioncontrol/svn_fs.py:785
 #, python-format
 msgid "svn blame failed on %(path)s: %(error)s"
 msgstr ""
