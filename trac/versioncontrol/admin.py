@@ -253,7 +253,12 @@ class RepositoryAdminPanel(Component):
                         add_warning(req, _('Missing arguments to add a '
                                            'repository.'))
                     elif self._check_dir(req, dir):
-                        db_provider.add_repository(name, dir, type_)
+                        try:
+                            db_provider.add_repository(name, dir, type_)
+                        except self.env.db_exc.IntegrityError:
+                            name = name or '(default)'
+                            raise TracError(_('The repository "%(name)s" '
+                                              'already exists.', name=name))
                         name = name or '(default)'
                         add_notice(req, _('The repository "%(name)s" has been '
                                           'added.', name=name))
@@ -277,7 +282,12 @@ class RepositoryAdminPanel(Component):
                     name = req.args.get('name')
                     alias = req.args.get('alias')
                     if name is not None and alias is not None:
-                        db_provider.add_alias(name, alias)
+                        try:
+                            db_provider.add_alias(name, alias)
+                        except self.env.db_exc.IntegrityError:
+                            raise TracError(_('The alias "%(name)s" already '
+                                              'exists.',
+                                              name=name or '(default)'))
                         add_notice(req, _('The alias "%(name)s" has been '
                                           'added.', name=name or '(default)'))
                         req.redirect(req.href.admin(category, page))

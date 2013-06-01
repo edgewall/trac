@@ -114,10 +114,93 @@ class RegressionTestTicket5819(FunctionalTwillTestCaseSetup):
         tc.find(components, 's')
 
 
+class RegressionTestTicket11186(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11186
+        TracError should be raised when repository with name already exists
+        """
+        self._tester.go_to_admin()
+        tc.follow("\\bRepositories\\b")
+        tc.url(self._tester.url + '/admin/versioncontrol/repository')
+        name = random_word()
+        tc.formvalue('trac-addrepos', 'name', name)
+        tc.formvalue('trac-addrepos', 'dir', '/var/svn/%s' % name)
+        tc.submit()
+        tc.find('The repository "%s" has been added.' % name)
+        tc.formvalue('trac-addrepos', 'name', name)
+        tc.formvalue('trac-addrepos', 'dir', '/var/svn/%s' % name)
+        tc.submit()
+        tc.find('The repository "%s" already exists.' % name)
+        tc.notfind(internal_error)
+
+
+class RegressionTestTicket11186Alias(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11186 alias
+        TracError should be raised when repository alias with name already
+        exists
+        """
+        self._tester.go_to_admin()
+        tc.follow("\\bRepositories\\b")
+        tc.url(self._tester.url + '/admin/versioncontrol/repository')
+        word = random_word()
+        target = '%s_repos' % word
+        name = '%s_alias' % word
+        tc.formvalue('trac-addrepos', 'name', target)
+        tc.formvalue('trac-addrepos', 'dir', '/var/svn/%s' % target)
+        tc.submit()
+        tc.find('The repository "%s" has been added.' % target)
+        tc.formvalue('trac-addalias', 'name', name)
+        tc.formvalue('trac-addalias', 'alias', target)
+        tc.submit()
+        tc.find('The alias "%s" has been added.' % name)
+        tc.formvalue('trac-addalias', 'name', name)
+        tc.formvalue('trac-addalias', 'alias', target)
+        tc.submit()
+        tc.find('The alias "%s" already exists.' % name)
+        tc.notfind(internal_error)
+
+
 class RegressionTestRev5877(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of the source browser fix in r5877"""
         tc.go(self._tester.url + '/browser?range_min_secs=1')
+        tc.notfind(internal_error)
+
+
+class RegressionTestTicket11194(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11194
+        TracError should be raised when repository with name already exists
+        """
+        self._tester.go_to_admin()
+        tc.follow("\\bRepositories\\b")
+        tc.url(self._tester.url + '/admin/versioncontrol/repository')
+
+        word = random_word()
+        names = ['%s_%d' % (word, n) for n in xrange(3)]
+        tc.formvalue('trac-addrepos', 'name', names[0])
+        tc.formvalue('trac-addrepos', 'dir', '/var/svn/%s' % names[0])
+        tc.submit()
+        tc.notfind(internal_error)
+
+        tc.formvalue('trac-addrepos', 'name', names[1])
+        tc.formvalue('trac-addrepos', 'dir', '/var/svn/%s' % names[1])
+        tc.submit()
+        tc.notfind(internal_error)
+
+        tc.follow('\\b' + names[1] + '\\b')
+        tc.url(self._tester.url + '/admin/versioncontrol/repository/' + names[1])
+        tc.formvalue('trac-modrepos', 'name', names[2])
+        tc.submit('save')
+        tc.notfind(internal_error)
+        tc.url(self._tester.url + '/admin/versioncontrol/repository')
+
+        tc.follow('\\b' + names[2] + '\\b')
+        tc.url(self._tester.url + '/admin/versioncontrol/repository/' + names[2])
+        tc.formvalue('trac-modrepos', 'name', names[0])
+        tc.submit('save')
+        tc.find('The repository "%s" already exists.' % names[0])
         tc.notfind(internal_error)
 
 
@@ -131,6 +214,9 @@ def functionalSuite(suite=None):
         suite.addTest(TestRepoBrowse())
         suite.addTest(TestNewFileLog())
         suite.addTest(RegressionTestTicket5819())
+        suite.addTest(RegressionTestTicket11186())
+        suite.addTest(RegressionTestTicket11186Alias())
+        suite.addTest(RegressionTestTicket11194())
         suite.addTest(RegressionTestRev5877())
     else:
         print "SKIP: versioncontrol/tests/functional.py (no svn bindings)"
