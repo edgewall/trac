@@ -18,12 +18,12 @@
 
 from StringIO import StringIO
 from itertools import izip
-from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED, ZIP_STORED
+from zipfile import ZipFile, ZIP_DEFLATED
 
 from genshi.builder import tag
 
 from trac.resource import ResourceNotFound
-from trac.util import content_disposition
+from trac.util import content_disposition, create_zipinfo
 from trac.util.datefmt import datetime, http_date, utc
 from trac.util.translation import tag_, _
 from trac.versioncontrol.api import Changeset, NoSuchNode, NoSuchChangeset
@@ -204,47 +204,23 @@ def render_zip(req, filename, repos, root_node, iter_nodes):
     for node in iter_nodes(root_node):
         if node is root_node:
             continue
-        zipinfo = ZipInfo()
         path = node.path.strip('/')
         assert path.startswith(root_path)
-        # The general purpose bit flag 11 is used to denote
-        # UTF-8 encoding for path and comment. Only set it for
-        # non-ascii files for increased portability.
-        # See http://www.pkware.com/documents/casestudies/APPNOTE.TXT
         path = root_name + path[root_len:]
-        for c in path:
-            if ord(c) >= 128:
-                zipinfo.flag_bits |= 0x0800
-                break
-        zipinfo.filename = path.encode('utf-8')
-        if node.last_modified: # git doesn't have it when node.isdir
-            zipinfo.date_time = node.last_modified.utctimetuple()[:6]
-
-        # external_attr is 4 bytes in size. The high order two
-        # bytes represent UNIX permission and file type bits,
-        # while the low order two contain MS-DOS FAT file
-        # attributes, most notably bit 4 marking directories.
+        kwargs = {'mtime': node.last_modified}
         if node.isfile:
-            zipinfo.compress_type = ZIP_DEFLATED
-            zipinfo.external_attr = 0644 << 16L # permissions -r-wr--r--
             data = node.get_processed_content(eol_hint='CRLF').read()
             properties = node.get_properties()
             # Subversion specific
-            if 'svn:special' in properties and \
-                   data.startswith('link '):
+            if 'svn:special' in properties and data.startswith('link '):
                 data = data[5:]
-                zipinfo.external_attr |= 0120000 << 16L # symlink file type
-                zipinfo.compress_type = ZIP_STORED
+                kwargs['symlink'] = True
             if 'svn:executable' in properties:
-                zipinfo.external_attr |= 0755 << 16L # -rwxr-xr-x
-            zipfile.writestr(zipinfo, data)
+                kwargs['executable'] = True
         elif node.isdir and path:
-            if not zipinfo.filename.endswith('/'):
-                zipinfo.filename += '/'
-            zipinfo.compress_type = ZIP_STORED
-            zipinfo.external_attr = 040755 << 16L # permissions drwxr-xr-x
-            zipinfo.external_attr |= 0x10 # MS-DOS directory flag
-            zipfile.writestr(zipinfo, '')
+            kwargs['dir'] = True
+            data = ''
+        zipfile.writestr(create_zipinfo(path, **kwargs), data)
     zipfile.close()
 
     zip_str = buf.getvalue()

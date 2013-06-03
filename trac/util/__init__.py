@@ -29,11 +29,13 @@ import random
 import re
 import shutil
 import sys
+import struct
 import tempfile
 import time
 from urllib import quote, unquote, urlencode
 
 from .compat import any, md5, sha1, sorted
+from .datefmt import to_datetime, to_timestamp, utc
 from .text import exception_to_unicode, to_unicode, getpreferredencoding
 
 # -- req, session and web utils
@@ -253,6 +255,68 @@ def create_unique_file(path):
             if idx > 100:
                 raise Exception('Failed to create unique name: ' + path)
             path = '%s.%d%s' % (parts[0], idx, parts[1])
+
+
+def create_zipinfo(filename, mtime=None, dir=False, executable=False, symlink=False,
+                   comment=None):
+    """Create a instance of `ZipInfo`.
+
+    :param filename: file name of the entry
+    :param mtime: modified time of the entry
+    :param dir: if `True`, the entry is a directory
+    :param executable: if `True`, the entry is a executable file
+    :param symlink: if `True`, the entry is a symbolic link
+    :param comment: comment of the entry
+    """
+    from zipfile import ZipInfo, ZIP_DEFLATED, ZIP_STORED
+    zipinfo = ZipInfo()
+
+    # The general purpose bit flag 11 is used to denote
+    # UTF-8 encoding for path and comment. Only set it for
+    # non-ascii files for increased portability.
+    # See http://www.pkware.com/documents/casestudies/APPNOTE.TXT
+    if any(ord(c) >= 128 for c in filename):
+        zipinfo.flag_bits |= 0x0800
+    zipinfo.filename = filename.encode('utf-8')
+
+    if mtime is not None:
+        mtime = to_datetime(mtime, utc)
+        zipinfo.date_time = mtime.utctimetuple()[:6]
+        # The "extended-timestamp" extra field is used for the
+        # modified time of the entry in unix time. It avoids
+        # extracting wrong modified time if non-GMT timezone.
+        # See http://www.opensource.apple.com/source/zip/zip-6/unzip/unzip
+        #     /proginfo/extra.fld
+        zipinfo.extra += struct.pack(
+            '<hhBl',
+            0x5455,                 # extended-timestamp extra block type
+            1 + 4,                  # size of this block
+            1,                      # modification time is present
+            to_timestamp(mtime))    # time of last modification
+
+    # external_attr is 4 bytes in size. The high order two
+    # bytes represent UNIX permission and file type bits,
+    # while the low order two contain MS-DOS FAT file
+    # attributes, most notably bit 4 marking directories.
+    if dir:
+        if not zipinfo.filename.endswith('/'):
+            zipinfo.filename += '/'
+        zipinfo.compress_type = ZIP_STORED
+        zipinfo.external_attr = 040755 << 16L       # permissions drwxr-xr-x
+        zipinfo.external_attr |= 0x10               # MS-DOS directory flag
+    else:
+        zipinfo.compress_type = ZIP_DEFLATED
+        zipinfo.external_attr = 0644 << 16L         # permissions -r-wr--r--
+        if executable:
+            zipinfo.external_attr |= 0755 << 16L    # -rwxr-xr-x
+        if symlink:
+            zipinfo.compress_type = ZIP_STORED
+            zipinfo.external_attr |= 0120000 << 16L # symlink file type
+
+    if comment:
+        zipinfo.comment = comment.encode('utf-8')
+
+    return zipinfo
 
 
 class NaivePopen:

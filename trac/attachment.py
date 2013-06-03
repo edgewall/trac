@@ -38,7 +38,7 @@ from trac.mimeview import *
 from trac.perm import PermissionError, IPermissionPolicy
 from trac.resource import *
 from trac.search import search_to_sql, shorten_result
-from trac.util import content_disposition, get_reporter_id
+from trac.util import content_disposition, create_zipinfo, get_reporter_id
 from trac.util.compat import sha1
 from trac.util.datefmt import format_datetime, from_utimestamp, \
                               to_datetime, to_utimestamp, utc
@@ -810,19 +810,14 @@ class AttachmentModule(Component):
         req.send_header('Content-Disposition',
                         content_disposition('inline', filename))
 
-        from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
+        from zipfile import ZipFile, ZIP_DEFLATED
 
         buf = StringIO()
         zipfile = ZipFile(buf, 'w', ZIP_DEFLATED)
         for attachment in attachments:
-            zipinfo = ZipInfo()
-            zipinfo.filename = attachment.filename.encode('utf-8')
-            zipinfo.flag_bits |= 0x800 # filename is encoded with utf-8
-            zipinfo.date_time = attachment.date.utctimetuple()[:6]
-            zipinfo.compress_type = ZIP_DEFLATED
-            if attachment.description:
-                zipinfo.comment = attachment.description.encode('utf-8')
-            zipinfo.external_attr = 0644 << 16L # needed since Python 2.5
+            zipinfo = create_zipinfo(attachment.filename,
+                                     mtime=attachment.date,
+                                     comment=attachment.description)
             try:
                 with attachment.open() as fd:
                     zipfile.writestr(zipinfo, fd.read())
