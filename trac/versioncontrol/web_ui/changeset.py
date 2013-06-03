@@ -22,6 +22,7 @@ from itertools import groupby
 import os
 import posixpath
 import re
+import struct
 from StringIO import StringIO
 
 from genshi.builder import tag
@@ -35,7 +36,7 @@ from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import as_bool, content_disposition, embedded_numbers, pathjoin
 from trac.util.compat import any
-from trac.util.datefmt import from_utimestamp, pretty_timedelta
+from trac.util.datefmt import from_utimestamp, pretty_timedelta, to_timestamp
 from trac.util.text import exception_to_unicode, to_unicode, \
                            unicode_urlencode, shorten_line, CRLF
 from trac.util.translation import _, ngettext
@@ -761,6 +762,20 @@ class ChangesetModule(Component):
 
         from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED as compression
 
+        def extended_timestamp(mtime):
+            # The "extended-timestamp" extra field is used for the
+            # modified time of the entry in unix time. It avoids
+            # extracting wrong modified time if non-GMT timezone.
+            # See http://www.opensource.apple.com/source/zip/zip-6/unzip
+            #     /unzip/proginfo/extra.fld
+            ts = to_timestamp(mtime)
+            return struct.pack(
+                '<hhBl',
+                0x5455,     # extended-timestamp extra block type "UT"
+                1 + 4,      # size of this block
+                1,          # modification time is present
+                ts)         # time of last modification
+
         buf = StringIO()
         zipfile = ZipFile(buf, 'w', compression)
         for old_node, new_node, kind, change in repos.get_changes(
@@ -775,6 +790,7 @@ class ChangesetModule(Component):
                 zipinfo.filename = new_node.path.strip('/').encode('utf-8')
                 zipinfo.flag_bits |= 0x800 # filename is encoded with utf-8
                 zipinfo.date_time = new_node.last_modified.utctimetuple()[:6]
+                zipinfo.extra += extended_timestamp(new_node.last_modified)
                 zipinfo.compress_type = compression
                 # setting zipinfo.external_attr is needed since Python 2.5
                 if new_node.isfile:
