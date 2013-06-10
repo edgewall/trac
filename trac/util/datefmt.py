@@ -72,6 +72,8 @@ def to_datetime(t, tzinfo=None):
                     timedelta(seconds=frac + 1)
         else:
             dt = datetime.fromtimestamp(t, tz)
+    else:
+        dt = None
     if dt:
         return tz.normalize(dt)
     raise TypeError('expecting datetime, int, long, float, or None; got %s' %
