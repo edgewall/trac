@@ -523,6 +523,10 @@ class DateFormatTestCase(unittest.TestCase):
         self.assertEqual(datefmt.to_datetime(23L, tz), expected)
         self.assertEqual(datefmt.to_datetime(23.0, tz), expected)
 
+    def test_to_datetime_typeerror(self):
+        self.assertRaises(TypeError, datefmt.to_datetime, 'blah')
+        self.assertRaises(TypeError, datefmt.to_datetime, u'bl\xe1h')
+
     def test_format_datetime_utc(self):
         t = datetime.datetime(1970, 1, 1, 1, 0, 23, 0, datefmt.utc)
         expected = '1970-01-01T01:00:23Z'
