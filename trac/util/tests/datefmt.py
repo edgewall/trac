@@ -489,7 +489,6 @@ class DateFormatTestCase(unittest.TestCase):
         self.assertEqual(datefmt.to_datetime(23.0, tz), expected)
 
     def test_to_datetime_typeerror(self):
-        datefmt.to_datetime(u'blah')
         self.assertRaises(TypeError, datefmt.to_datetime, 'blah')
         self.assertRaises(TypeError, datefmt.to_datetime, u'bl\xe1h')
 
