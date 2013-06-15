@@ -243,6 +243,10 @@ class RequestDone(Exception):
     """Marker exception that indicates whether request processing has completed
     and a response was sent.
     """
+    iterable = None
+
+    def __init__(self, iterable=None):
+        self.iterable = iterable
 
 
 class Cookie(SimpleCookie):
@@ -289,8 +293,6 @@ class Request(object):
         self._write = None
         self._status = '200 OK'
         self._response = None
-        self._use_chunked = False
-        self._connection_close = False
 
         self._outheaders = []
         self._outcharset = None
@@ -382,14 +384,6 @@ class Request(object):
         """Port number the server is bound to"""
         return int(self.environ['SERVER_PORT'])
 
-    @property
-    def server_protocol(self):
-        """Version of the protocol the client used to send the request"""
-        return self.environ['SERVER_PROTOCOL']
-
-    max_server_protocol = "HTTP/1.1"
-    """Server-side protocol level."""
-
     def add_redirect_listener(self, listener):
         """Add a callable to be called prior to executing a redirect.
 
@@ -424,10 +418,6 @@ class Request(object):
                 self._outcharset = value[ctpos + 8:].strip()
         elif lower_name == 'content-length':
             self._content_length = int(value)
-        elif lower_name == 'transfer-encoding':
-            self._use_chunked = value == 'chunked'
-        elif lower_name == 'connection':
-            self._connection_close = value == 'close'
         self._outheaders.append((name, unicode(value).encode('utf-8')))
 
     def end_headers(self):
@@ -618,25 +608,17 @@ class Request(object):
     def write(self, data):
         """Write the given data to the response body.
 
-        `data` *must* be a `str` string, encoded with the charset
-        which has been specified in the ''Content-Type'' header
-        or 'utf-8' otherwise.
+        *data* **must** be a `str` string, encoded with the charset
+        which has been specified in the ``'Content-Type'`` header
+        or UTF-8 otherwise.
 
-        Note that the ''Content-Length'' header must have been specified
-        except when ''Transfer-Encoding: chunked'' or ''Connection: close''
-        header is specified.
-
-        Its value either corresponds to the length of `data`, or, if there
-        are multiple calls to `write`, to the cumulated length of the `data`
-        arguments.
+        Note that when the ``'Content-Length'`` header is specified,
+        its value either corresponds to the length of *data*, or, if
+        there are multiple calls to `write`, to the cumulated length
+        of the *data* arguments.
         """
         if not self._write:
             self.end_headers()
-        if (not hasattr(self, '_content_length') and not self._use_chunked and
-            not self._connection_close):
-            raise RuntimeError("No Content-Length header set if "
-                               "Transfer-Encoding header isn't 'chunked' and"
-                               "Connection header isn't 'close'")
         if isinstance(data, unicode):
             raise ValueError("Can't send unicode content")
         try:

@@ -97,10 +97,6 @@ class RequestTestCase(unittest.TestCase):
         def start_response(status, headers):
             return write
         environ = self._make_environ(method='HEAD')
-        req = Request(environ, start_response)
-        req.send_header('Content-Type', 'text/plain;charset=utf-8')
-        # we didn't set Content-Length, so we get a RuntimeError for that
-        self.assertRaises(RuntimeError, req.write, u'Föö')
 
         req = Request(environ, start_response)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
