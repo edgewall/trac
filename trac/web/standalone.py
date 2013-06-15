@@ -306,8 +306,6 @@ def main():
             print 'Serving on %s' % loc
             if options.http11:
                 print 'Using HTTP/1.1 protocol version'
-            else:
-                Request.max_server_protocol = "HTTP/1.0"
             httpd.serve_forever()
     elif options.protocol in ('scgi', 'ajp', 'fcgi'):
         def serve():

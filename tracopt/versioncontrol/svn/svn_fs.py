@@ -1143,7 +1143,9 @@ class FileContentStream(object):
         self.repos = node.repos
         self.node = node
         self.fs_ptr = node.fs_ptr
-        self.pool = node.pool
+        self.pool = Pool()
+        # Note: we _must_ use a detached pool here, as the lifetime of
+        # this object can exceed those of the node or even the repository
         if keyword_substitution:
             keywords = (node._get_prop(core.SVN_PROP_KEYWORDS) or '').split()
             self.keywords = self._get_keyword_values(set(keywords) &
@@ -1163,6 +1165,9 @@ class FileContentStream(object):
     def close(self):
         self.stream = None
         self.fs_ptr = None
+        if self.pool:
+            self.pool.destroy()
+            self.pool = None
 
     def read(self, n=None):
         if self.stream is None:
@@ -1236,9 +1241,8 @@ class FileContentStream(object):
                 return translated[:n]
 
             if len(buffer) < self.KEYWORD_MAX_SIZE:
-                data = stream.read(self.CHUNK_SIZE) or ''
-                buffer += data
-                if not data and not buffer:
+                buffer += stream.read(self.CHUNK_SIZE) or ''
+                if not buffer:
                     self.buffer = buffer
                     self.translated = ''
                     return translated

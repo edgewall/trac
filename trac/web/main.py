@@ -495,9 +495,9 @@ def _dispatch_request(req, env, env_error):
         try:
             dispatcher = RequestDispatcher(env)
             dispatcher.dispatch(req)
-        except RequestDone:
-            pass
-        resp = req._response or []
+        except RequestDone, req_done:
+            resp = req_done.iterable
+        resp = resp or req._response or []
     except HTTPException, e:
         _send_user_error(req, env, e)
     except Exception, e:

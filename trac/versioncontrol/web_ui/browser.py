@@ -665,15 +665,6 @@ class BrowserModule(Component):
             req.send_response(200)
             req.send_header('Content-Type',
                             'text/plain' if format == 'txt' else mime_type)
-            # Use chunked encoding or close connection instead of
-            # Content-Length, since the content might be substituted by
-            # "svn:keywords" and/or "svn:eol-style".
-            use_chunked = req.server_protocol >= 'HTTP/1.1' and \
-                Request.max_server_protocol >= 'HTTP/1.1'
-            if use_chunked:
-                req.send_header('Transfer-Encoding', 'chunked')
-            else:
-                req.send_header('Connection', 'close')
             req.send_header('Last-Modified', http_date(node.last_modified))
             if rev is None:
                 req.send_header('Pragma', 'no-cache')
@@ -686,18 +677,12 @@ class BrowserModule(Component):
                 req.send_header('Content-Disposition', 'attachment')
             req.end_headers()
 
-            if use_chunked:
-                write_chunk = lambda chunk: req.write('%x\r\n%s\r\n' %
-                                                      (len(chunk), chunk))
-            else:
-                write_chunk = lambda chunk: req.write(chunk)
-            while 1:
-                if not chunk:
-                    if use_chunked:
-                        req.write('0\r\n\r\n')
-                    raise RequestDone
-                write_chunk(chunk)
-                chunk = content.read(CHUNK_SIZE)
+            def chunks():
+                c = chunk
+                while c:
+                    yield c
+                    c = content.read(CHUNK_SIZE)
+            raise RequestDone(chunks())
         else:
             # The changeset corresponding to the last change on `node`
             # is more interesting than the `rev` changeset.
@@ -719,7 +704,7 @@ class BrowserModule(Component):
             self.log.debug("Rendering preview of node %s@%s with mime-type %s"
                            % (node.name, str(rev), mime_type))
 
-            del content # the remainder of that content is not needed
+            content = None # the remainder of that content is not needed
 
             add_stylesheet(req, 'common/css/code.css')
 
