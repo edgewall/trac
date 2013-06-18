@@ -1710,6 +1710,43 @@ class RegressionTestTicket11028(FunctionalTwillTestCaseSetup):
                                      ('ROADMAP_VIEW', 'MILESTONE_VIEW'))
 
 
+class RegressionTestTicket11153(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11153"""
+        # Check that "View Tickets" mainnav entry links to the report page
+        self._tester.go_to_view_tickets()
+
+        # Check that "View Tickets" mainnav entry links to the query page
+        # when the user doesn't have REPORT_VIEW, and that the mainnav entry
+        # is not present when the user doesn't have TICKET_VIEW.
+        try:
+            self._tester.logout()
+            self._testenv.revoke_perm('anonymous', 'REPORT_VIEW')
+            self._tester.go_to_view_tickets('query')
+
+            self._testenv.revoke_perm('anonymous', 'TICKET_VIEW')
+            self._tester.go_to_front()
+            tc.notfind('\\bView Tickets\\b')
+        finally:
+            self._testenv.grant_perm('anonymous', 'REPORT_VIEW')
+            self._testenv.grant_perm('anonymous', 'TICKET_VIEW')
+            self._tester.login('admin')
+
+        # Disable the ReportModule component and check that "View Tickets"
+        # mainnav entry links to the `/query` page.
+        env = self._testenv.get_trac_environment()
+        env.config.set('components', 'trac.ticket.report.ReportModule',
+                       'disabled')
+        env.config.save()
+        self._testenv.restart()
+        try:
+            self._tester.go_to_view_tickets('query')
+        finally:
+            env.config.remove('components', 'trac.ticket.report.ReportModule')
+            env.config.save()
+            self._testenv.restart()
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional.testcases
@@ -1809,6 +1846,7 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket9084())
     suite.addTest(RegressionTestTicket9981())
     suite.addTest(RegressionTestTicket11028())
+    suite.addTest(RegressionTestTicket11153())
 
     return suite
 
