@@ -39,6 +39,9 @@ ${project.descr}</textarea>
                       selected="${tzname == default_timezone or None}">${tzname}</option>
             </select>
           </label>
+          <span py:if="not has_pytz" class="hint">
+            Install pytz for a complete list of timezones.
+          </span>
         </div>
         <div class="field">
           <label>Default language:<br />
