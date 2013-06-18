@@ -1728,8 +1728,8 @@ class RegressionTestTicket11153(FunctionalTwillTestCaseSetup):
             self._tester.go_to_front()
             tc.notfind('\\bView Tickets\\b')
         finally:
-            self._testenv.grant_perm('anonymous', 'REPORT_VIEW')
-            self._testenv.grant_perm('anonymous', 'TICKET_VIEW')
+            self._testenv.grant_perm('anonymous',
+                                     ('REPORT_VIEW', 'TICKET_VIEW'))
             self._tester.login('admin')
 
         # Disable the ReportModule component and check that "View Tickets"
