@@ -32,6 +32,11 @@ from trac.util import terminate
 from trac.util.compat import close_fds
 from trac.util.text import to_utf8
 
+try:
+    from configobj import ConfigObj
+except ImportError:
+    ConfigObj = None
+
 # TODO: refactor to support testing multiple frontends, backends
 #       (and maybe repositories and authentication).
 #
@@ -263,3 +268,41 @@ class FunctionalTestEnvironment(object):
                             (args, dir))
         logfile.write(data)
         return data
+
+    def enable_authz_permpolicy(self, filename, authz_content):
+        """Enables the Authz permissions policy. The `authz_content` will
+        be written to `filename`, and must be a dictionary of dictionaries
+        specifying the sections and key/value pairs of each section.
+        For example:
+            {'wiki:WikiStart@*': {'*': 'WIKI_VIEW'},
+             'wiki:PrivatePage@*': {'john': 'WIKI_VIEW', '*': '!WIKI_VIEW'},
+            }
+        """
+        if not ConfigObj:
+            raise Exception("Can't enable authz permissions policy. " +
+                            "ConfigObj not installed.")
+        env = self.get_trac_environment()
+        permission_policies = env.config.get('trac', 'permission_policies')
+        env.config.set('trac', 'permission_policies',
+                       'AuthzPolicy, ' + permission_policies)
+        authz_file = self.tracdir + '/conf/' + filename
+        authz_config = ConfigObj(authz_content, encoding='utf8',
+                                 write_empty_values=True)
+        authz_config.filename = authz_file
+        authz_config.write()
+        env.config.set('authz_policy', 'authz_file', authz_file)
+        env.config.set('components', 'tracopt.perm.authz_policy.*', 'enabled')
+        env.config.save()
+
+    def disable_authz_permpolicy(self):
+        """Disables the Authz permission policy."""
+        env = self.get_trac_environment()
+        permission_policies = env.config.get('trac', 'permission_policies')
+        pp_list = [p.strip() for p in permission_policies.split(',')]
+        if 'AuthzPolicy' in pp_list:
+            pp_list.remove('AuthzPolicy')
+        permission_policies = ', '.join(pp_list)
+        env.config.set('trac', 'permission_policies', permission_policies)
+        env.config.remove('authz_policy', 'authz_file')
+        env.config.remove('components', 'tracopt.perm.authz_policy.*')
+        env.config.save()
