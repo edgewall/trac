@@ -2,8 +2,7 @@
 
 import unittest
 
-from trac.ticket.model import Ticket
-from trac.ticket.roadmap import Milestone
+from trac.ticket.model import Milestone, Ticket
 from trac.wiki.tests import formatter
 
 TICKET_TEST_CASES = u"""
