@@ -26,11 +26,13 @@
           var retarget = $("#retarget");
           retarget.enable(checked);
           $("#target").enable(checked && retarget.checked());
+          $("#comment").enable(checked && retarget.checked());
         }
         $("#completed").click(updateCompletedDate);
         updateCompletedDate();
         $("#retarget").click(function(){
           $("#target").enable(this.checked);
+          $("#comment").enable(this.checked);
         });
         $("#name").get(0).focus()
         $("#duedate").datetimepicker();
@@ -91,6 +93,10 @@
                           value="${milestone.name}" py:content="milestone.name"></option>
                 </optgroup>
               </select>
+              <br/>
+              <label for="comment">Comment:</label>
+              <input type="text" id="comment" name="comment" class="trac-resizable"
+                     size="40" value="${_('Retargetted after milestone closed')}" />
             </py:if>
           </div>
         </fieldset>
@@ -103,8 +109,10 @@ ${milestone.description}</textarea></p>
           </fieldset>
         </div>
         <div class="buttons" py:choose="milestone.exists">
-          <input py:when="True" type="submit" value="${_('Submit changes')}" />
-          <input py:otherwise="" type="submit" value="${_('Add milestone')}" />
+          <input py:when="True" type="submit" name="save"
+                 value="${_('Submit changes')}" />
+          <input py:otherwise="" type="submit" name="add"
+                 value="${_('Add milestone')}" />
           <input type="submit" name="cancel" value="${_('Cancel')}" />
         </div>
       </form>

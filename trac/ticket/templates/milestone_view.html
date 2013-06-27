@@ -79,13 +79,13 @@
         <form py:if="'MILESTONE_MODIFY' in perm(milestone.resource)" method="get" action="" id="editmilestone">
           <div>
             <input type="hidden" name="action" value="edit" />
-            <input type="submit" value="${_('Edit milestone')}" />
+            <input type="submit" name="edit" value="${_('Edit milestone')}" />
           </div>
         </form>
         <form py:if="'MILESTONE_DELETE' in perm(milestone.resource)" method="get" action="" id="deletemilestone">
           <div>
             <input type="hidden" name="action" value="delete" />
-            <input type="submit" value="${_('Delete milestone')}" />
+            <input type="submit" name="delete" value="${_('Delete milestone')}" />
           </div>
         </form>
         <xi:include href="attach_file_form.html" py:with="alist = attachments"/>
