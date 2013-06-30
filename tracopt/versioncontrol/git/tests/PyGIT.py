@@ -22,6 +22,8 @@ from subprocess import Popen, PIPE
 from trac.test import locate, EnvironmentStub
 from trac.util import create_file
 from trac.util.compat import close_fds
+from trac.versioncontrol import DbRepositoryProvider
+from tracopt.versioncontrol.git.git_fs import GitConnector
 from tracopt.versioncontrol.git.PyGIT import GitCore, Storage, parse_commit
 
 
@@ -180,6 +182,7 @@ class NormalTestCase(unittest.TestCase):
         self._git('commit', '-a', '-m', 'test')
 
     def tearDown(self):
+        self.env.reset_db()
         if os.path.isdir(self.repos_path):
             rmtree(self.repos_path)
 
@@ -209,6 +212,29 @@ class NormalTestCase(unittest.TestCase):
         self.assertEquals('master', branches[0][0])
         self.assertEquals(1, len(branches))
 
+    def test_rev_is_anchestor_of(self):
+        # regression test for #11215
+        path = os.path.join(self.repos_path, '.git')
+        DbRepositoryProvider(self.env).add_repository('gitrepos', path, 'git')
+        repos = self.env.get_repository('gitrepos')
+        parent_rev = repos.youngest_rev
+
+        create_file(os.path.join(self.repos_path, 'ticket11215.txt'))
+        self._git('add', 'ticket11215.txt')
+        self._git('commit', '-m', 'ticket11215',
+                  '--date', 'Fri Jun 28 03:26:02 2013 +0900')
+        repos.sync()
+        rev = repos.youngest_rev
+
+        self.assertNotEqual(rev, parent_rev)
+        self.assertEquals(False, repos.rev_older_than(None, None))
+        self.assertEquals(False, repos.rev_older_than(None, rev[:7]))
+        self.assertEquals(False, repos.rev_older_than(rev[:7], None))
+        self.assertEquals(True, repos.rev_older_than(parent_rev, rev))
+        self.assertEquals(True, repos.rev_older_than(parent_rev[:7], rev[:7]))
+        self.assertEquals(False, repos.rev_older_than(rev, parent_rev))
+        self.assertEquals(False, repos.rev_older_than(rev[:7], parent_rev[:7]))
+
 
 class UnicodeNameTestCase(unittest.TestCase):
 
@@ -225,6 +251,7 @@ class UnicodeNameTestCase(unittest.TestCase):
         self._git('commit', '-a', '-m', 'test')
 
     def tearDown(self):
+        self.env.reset_db()
         if os.path.isdir(self.repos_path):
             rmtree(self.repos_path)
 
