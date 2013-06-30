@@ -940,11 +940,7 @@ class Storage(object):
     def rev_is_anchestor_of(self, rev1, rev2):
         """return True if rev2 is successor of rev1"""
 
-        rev1 = rev1.strip()
-        rev2 = rev2.strip()
-
         rev_dict = self.get_commits()
-
         return (rev2 in rev_dict and
                 rev2 in self.children_recursive(rev1, rev_dict))
 

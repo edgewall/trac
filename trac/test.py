@@ -266,7 +266,7 @@ class EnvironmentStub(Environment):
         if enable is not None:
             self.config.set('components', 'trac.*', 'disabled')
         else:
-            self.config.set('components', 'tracopt.versioncontrol.svn.*',
+            self.config.set('components', 'tracopt.versioncontrol.*',
                             'enabled')
         for name_or_class in enable or ():
             config_key = self._component_name(name_or_class)

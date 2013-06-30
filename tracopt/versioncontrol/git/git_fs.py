@@ -480,8 +480,8 @@ class GitRepository(Repository):
         return self.git.children(rev)
 
     def rev_older_than(self, rev1, rev2):
-        rc = self.git.rev_is_anchestor_of(rev1, rev2)
-        return rc
+        return self.git.rev_is_anchestor_of(self.normalize_rev(rev1),
+                                            self.normalize_rev(rev2))
 
     # def clear(self, youngest_rev=None):
     #     self.youngest = None
