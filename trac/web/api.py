@@ -626,6 +626,12 @@ class Request(object):
         except (IOError, socket.error), e:
             if e.args[0] in (errno.EPIPE, errno.ECONNRESET, 10053, 10054):
                 raise RequestDone
+            # Note that mod_wsgi raises an IOError with only a message
+            # if the client disconnects
+            if 'mod_wsgi.version' in self.environ and \
+               e.args[0] in ('failed to write data',
+                             'client connection closed'):
+                raise RequestDone
             raise
 
     # Internal methods
