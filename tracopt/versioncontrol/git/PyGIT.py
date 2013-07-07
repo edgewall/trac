@@ -73,9 +73,10 @@ def parse_commit(raw):
 class GitCore(object):
     """Low-level wrapper around git executable"""
 
-    def __init__(self, git_dir=None, git_bin='git'):
+    def __init__(self, git_dir=None, git_bin='git', log=None):
         self.__git_bin = git_bin
         self.__git_dir = git_dir
+        self.__log = log
 
     def __repr__(self):
         return '<GitCore bin="%s" dir="%s">' % (self.__git_bin,
@@ -108,7 +109,10 @@ class GitCore(object):
         p = self.__pipe(git_cmd, stdout=PIPE, stderr=PIPE, *cmd_args)
 
         stdout_data, stderr_data = p.communicate()
-        #TODO, do something with p.returncode, e.g. raise exception
+        if self.__log and (p.returncode != 0 or stderr_data):
+            self.__log.debug('%s exits with %d, dir: %r, args: %s %r, '
+                             'stderr: %r', self.__git_bin, p.returncode,
+                             self.__git_dir, git_cmd, cmd_args, stderr_data)
 
         return stdout_data
 
@@ -369,8 +373,16 @@ class Storage(object):
                                   % git_dir)
             raise GitError("GIT control files not found, maybe wrong "
                            "directory?")
+        # at least, check that the HEAD file is readable
+        head_file = os.path.join(git_dir, 'HEAD')
+        try:
+            with open(head_file, 'rb') as f:
+                pass
+        except IOError, e:
+            raise GitError("Make sure the Git repository '%s' is readable: %s"
+                           % (git_dir, unicode(e)))
 
-        self.repo = GitCore(git_dir, git_bin=git_bin)
+        self.repo = GitCore(git_dir, git_bin=git_bin, log=log)
 
         self.logger.debug("PyGIT.Storage instance %d constructed" % id(self))
 
@@ -620,8 +632,8 @@ class Storage(object):
     def get_commit_encoding(self):
         if self.commit_encoding is None:
             self.commit_encoding = \
-                self.repo.repo_config("--get", "i18n.commitEncoding") \
-                    .strip() or 'utf-8'
+                self.repo.config('--get', 'i18n.commitEncoding').strip() or \
+                'utf-8'
 
         return self.commit_encoding
 
