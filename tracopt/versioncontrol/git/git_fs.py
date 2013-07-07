@@ -24,7 +24,7 @@ from trac.config import BoolOption, IntOption, PathOption, Option
 from trac.core import *
 from trac.util import TracError, shorten_line
 from trac.util.datefmt import FixedOffset, to_timestamp, format_datetime
-from trac.util.text import to_unicode
+from trac.util.text import to_unicode, exception_to_unicode
 from trac.versioncontrol.api import Changeset, Node, Repository, \
                                     IRepositoryConnector, NoSuchChangeset, \
                                     NoSuchNode, IRepositoryProvider
@@ -381,6 +381,7 @@ class GitRepository(Repository):
                                             git_fs_encoding=git_fs_encoding) \
                             .getInstance()
         except PyGIT.GitError, e:
+            log.error(exception_to_unicode(e))
             raise TracError("%s does not appear to be a Git "
                             "repository." % path)
 

@@ -369,6 +369,14 @@ class Storage(object):
                                   % git_dir)
             raise GitError("GIT control files not found, maybe wrong "
                            "directory?")
+        # at least, check that the HEAD file is readable
+        head_file = os.path.join(git_dir, 'HEAD')
+        try:
+            with open(head_file, 'rb') as f:
+                pass
+        except IOError, e:
+            raise GitError("Make sure the Git repository '%s' is readable: %s"
+                           % (git_dir, unicode(e)))
 
         self.repo = GitCore(git_dir, git_bin=git_bin)
 
