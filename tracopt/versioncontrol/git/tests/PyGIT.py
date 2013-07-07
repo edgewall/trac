@@ -175,6 +175,7 @@ class NormalTestCase(unittest.TestCase):
         self.git_bin = locate('git')
         # create git repository and master branch
         self._git('init', self.repos_path)
+        self._git('config', 'core.quotepath', 'true')  # ticket:11198
         self._git('config', 'user.name', "Joe")
         self._git('config', 'user.email', "joe@example.com")
         create_file(os.path.join(self.repos_path, '.gitignore'))
@@ -244,6 +245,7 @@ class UnicodeNameTestCase(unittest.TestCase):
         self.git_bin = locate('git')
         # create git repository and master branch
         self._git('init', self.repos_path)
+        self._git('config', 'core.quotepath', 'true')  # ticket:11198
         self._git('config', 'user.name', u"Joé")
         self._git('config', 'user.email', "joe@example.com")
         create_file(os.path.join(self.repos_path, '.gitignore'))
