@@ -620,8 +620,8 @@ class Storage(object):
     def get_commit_encoding(self):
         if self.commit_encoding is None:
             self.commit_encoding = \
-                self.repo.repo_config("--get", "i18n.commitEncoding") \
-                    .strip() or 'utf-8'
+                self.repo.config('--get', 'i18n.commitEncoding').strip() or \
+                'utf-8'
 
         return self.commit_encoding
 
