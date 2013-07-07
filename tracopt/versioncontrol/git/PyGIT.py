@@ -86,7 +86,8 @@ class GitCore(object):
 
         cmd = [self.__git_bin]
         if self.__git_dir:
-            cmd.append('--git-dir=%s' % self.__git_dir)
+            cmd.extend(('--git-dir=%s' % self.__git_dir,
+                        '-c', 'core.quotepath=false'))
         cmd.append(gitcmd)
         cmd.extend(args)
 
