@@ -135,6 +135,14 @@ class FunctionalTester(object):
         tc.follow('Timeline')
         tc.url(self.url + '/timeline')
 
+    def go_to_view_tickets(self, href='report'):
+        """Surf to the View Tickets page. By default this will be the Reports
+        page, but 'query' can be specified for the `href` argument to support
+        non-default configurations."""
+        self.go_to_front()
+        tc.follow('View Tickets')
+        tc.url(self.url + '/' + href.lstrip('/'))
+
     def go_to_query(self):
         """Surf to the custom query page."""
         self.go_to_front()
