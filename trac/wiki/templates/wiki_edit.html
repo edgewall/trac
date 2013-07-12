@@ -96,16 +96,6 @@
         &darr;
       </div>
       <h1 i18n:msg="name">Editing ${name_of(page.resource)}</h1>
-      <div py:if="merge" class="system-message">
-        <p>Someone else has modified that page since you started your edits.</p><br />
-        <p i18n:msg=""><b>If you save right away, you risk to revert those changes</b>
-        (highlighted below as deletions).</p><br />
-        <p i18n:msg="">Please review all those changes and manually merge them with your
-        own changes. <br />
-        If you're unsure about what you're doing, please press <tt>Cancel</tt>
-        (losing your changes) and start editing the latest version of the page
-        again.</p>
-      </div>
 
       <!--!
 
@@ -131,8 +121,24 @@
       (the  #preview will float at the right of the edit form's textarea)
 
       -->
-      <py:if test="not sidebyside"><xi:include href="wiki_edit_form.html" /></py:if>
       <py:choose test="action">
+        <py:when test="'collision'">
+          <div class="system-message">
+            Sorry, this page has been modified by somebody else since you started
+            editing. Your changes cannot be saved.
+          </div>
+        </py:when>
+        <py:if test="not sidebyside"><xi:include href="wiki_edit_form.html" /></py:if>
+        <div py:if="merge" class="system-message">
+          <p>Someone else has modified that page since you started your edits.</p><br />
+          <p i18n:msg=""><b>If you save right away, you risk to revert those changes</b>
+            (highlighted below as deletions).</p><br />
+          <p i18n:msg="">Please review all those changes and manually merge them with your
+            own changes. <br />
+            If you're unsure about what you're doing, please press <tt>Cancel</tt>
+            (losing your changes) and start editing the latest version of the page
+            again.</p>
+        </div>
         <py:when test="'preview'">
           <table id="info" summary="Revision info">
             <tbody>
@@ -165,12 +171,6 @@
               <a href="#changeinfo"
                 title="Go to Save, Preview, Review or Cancel buttons">Actions</a> &uarr;
             </div>
-          </div>
-        </py:when>
-        <py:when test="'collision'">
-          <div class="system-message">
-            Sorry, this page has been modified by somebody else since you started
-            editing. Your changes cannot be saved.
           </div>
         </py:when>
       </py:choose>
