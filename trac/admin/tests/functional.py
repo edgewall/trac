@@ -120,6 +120,19 @@ class TestPluginSettings(FunctionalTwillTestCaseSetup):
         tc.find('Install Plugin')
 
 
+class RegressionTestTicket11117(FunctionalTwillTestCaseSetup):
+    """Test for regression of http://trac.edgewall.org/ticket/11117"""
+    def runTest(self):
+        self._tester.go_to_admin()
+        tc.follow("\\bBasic Settings\\b")
+        pytz_hint = "Install pytz for a complete list of timezones."
+        from trac.util.datefmt import pytz
+        if pytz is None:
+            tc.find(pytz_hint)
+        else:
+            tc.notfind(pytz_hint)
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional.testcases
@@ -133,6 +146,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestRemoveUserFromGroup())
     suite.addTest(TestRemovePermissionGroup())
     suite.addTest(TestPluginSettings())
+    suite.addTest(RegressionTestTicket11117())
     return suite
 
 

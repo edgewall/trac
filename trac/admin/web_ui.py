@@ -34,7 +34,7 @@ from trac.admin.api import IAdminPanelProvider
 from trac.core import *
 from trac.loader import get_plugin_info, get_plugins_dir
 from trac.perm import PermissionSystem, IPermissionRequestor
-from trac.util.datefmt import all_timezones
+from trac.util.datefmt import all_timezones, pytz
 from trac.util.text import exception_to_unicode, \
                             unicode_to_base64, unicode_from_base64
 from trac.util.translation import _, get_available_locales, ngettext
@@ -249,6 +249,7 @@ class BasicsAdminPanel(Component):
         data = {
             'default_timezone': default_timezone,
             'timezones': all_timezones,
+            'has_pytz': pytz is not None,
             'default_language': default_language.replace('-', '_'),
             'languages': languages,
             'default_date_format': default_date_format,
