@@ -29,6 +29,7 @@ try:
     from docutils import nodes
     from docutils.core import publish_parts
     from docutils.parsers import rst
+    from docutils.readers import standalone
     from docutils import __version__
     has_docutils = True
 except ImportError:
@@ -270,7 +271,9 @@ class ReStructuredTextRenderer(Component):
         inliner.trac = (self.env, context)
         parser = rst.Parser(inliner=inliner)
         content = content_to_unicode(self.env, content, mimetype)
+        # The default Reader is explicitly passed as a workaround for #11248 
         parts = publish_parts(content, writer=writer, parser=parser,
+                              reader=standalone.Reader(parser),
                               settings_overrides={'halt_level': 6,
                                                   'warning_stream': False,
                                                   'file_insertion_enabled': 0,
