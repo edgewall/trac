@@ -275,7 +275,6 @@ class ReStructuredTextRenderer(Component):
         parts = publish_parts(content, writer=writer, parser=parser,
                               reader=standalone.Reader(parser),
                               settings_overrides={'halt_level': 6,
-                                                  'warning_stream': False,
                                                   'file_insertion_enabled': 0,
                                                   'raw_enabled': 0,
                                                   'warning_stream': False})
