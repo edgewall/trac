@@ -6,9 +6,7 @@
     <title>${project.name}</title>
     <link>${abs_href.timeline()}</link>
     <description>Trac Timeline</description>
-    <language>${req.locale and \
-                '%s-%s' % (req.locale.language, req.locale.territory) or \
-                'en-US'}</language>
+    <language>${str(locale).replace('_', '-') if locale else 'en-US'}</language>
     <generator>Trac ${trac.version}</generator>
     <image py:if="chrome.logo.src_abs">
       <title>${project.name}</title>
