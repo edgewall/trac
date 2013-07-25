@@ -132,8 +132,9 @@
 ul.children {
  margin-top: 1.5em;
  padding-left: 2em;
- list-style-image: url(../inreply.png);
 }
+ul.children, ul.children ul.children { list-style-image: url(../inreply.png) }
+ul.children ul, ul.children ol { list-style-image: none }
 ul.children > li.child {
  padding-left: .5em;
  margin-bottom: 1.5em;
@@ -154,11 +155,6 @@ ul.children > li.child {
 @media print {
  #changelog h3, #ticketchange h3 { box-shadow: none }
 }
-
-div.comment ul { list-style: disc }
-div.comment ul ul, div.comment ol ul { list-style: circle }
-div.comment ul ul ul, div.comment ol ul ul { list-style: square }
-div.comment ul ol ul, div.comment ol ol ul { list-style: square }
 
 /* Comment editor */
 #trac-comment-editor { margin-left: 2em; margin-bottom: 1em }
