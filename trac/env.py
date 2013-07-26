@@ -275,7 +275,6 @@ class Environment(Component, ComponentManager):
 
         self.path = path
         self.systeminfo = []
-        self._href = self._abs_href = None
 
         if create:
             self.create(options)
@@ -326,17 +325,14 @@ class Environment(Component, ComponentManager):
             name = name_or_class.__module__ + '.' + name_or_class.__name__
         return name.lower()
 
-    @property
+    @lazy
     def _component_rules(self):
-        try:
-            return self._rules
-        except AttributeError:
-            self._rules = {}
-            for name, value in self.components_section.options():
-                if name.endswith('.*'):
-                    name = name[:-2]
-                self._rules[name.lower()] = value.lower() in ('enabled', 'on')
-            return self._rules
+        _rules = {}
+        for name, value in self.components_section.options():
+            if name.endswith('.*'):
+                name = name[:-2]
+            _rules[name.lower()] = value.lower() in ('enabled', 'on')
+        return _rules
 
     def is_component_enabled(self, cls):
         """Implemented to only allow activation of components that are
@@ -715,24 +711,21 @@ class Environment(Component, ComponentManager):
             DatabaseManager(self).shutdown()
         return True
 
-    @property
+    @lazy
     def href(self):
         """The application root path"""
-        if not self._href:
-            self._href = Href(urlsplit(self.abs_href.base)[2])
-        return self._href
+        return Href(urlsplit(self.abs_href.base).path)
 
-    @property
+    @lazy
     def abs_href(self):
         """The application URL"""
-        if not self._abs_href:
-            if not self.base_url:
-                self.log.warn("base_url option not set in configuration, "
-                              "generated links may be incorrect")
-                self._abs_href = Href('')
-            else:
-                self._abs_href = Href(self.base_url)
-        return self._abs_href
+        if not self.base_url:
+            self.log.warn("base_url option not set in configuration, "
+                          "generated links may be incorrect")
+            _abs_href = Href('')
+        else:
+            _abs_href = Href(self.base_url)
+        return _abs_href
 
 
 class EnvironmentSetup(Component):
