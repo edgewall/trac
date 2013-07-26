@@ -49,7 +49,7 @@ class EmptyEnvironmentTestCase(unittest.TestCase):
 
     def test_get_version(self):
         """Testing env.get_version"""
-        assert self.env.get_version() is False, self.env.get_version()
+        self.assertFalse(self.env.get_version())
 
 
 class EnvironmentTestCase(unittest.TestCase):
@@ -73,7 +73,7 @@ class EnvironmentTestCase(unittest.TestCase):
 
     def test_get_version(self):
         """Testing env.get_version"""
-        assert self.env.get_version() == db_default.db_version
+        self.assertEqual(db_default.db_version, self.env.get_version())
 
     def test_get_known_users(self):
         """Testing env.get_known_users"""
@@ -90,7 +90,7 @@ class EnvironmentTestCase(unittest.TestCase):
         for username, name, email in self.env.get_known_users():
             users[username] = (name, email)
 
-        assert not users.has_key('anonymous')
+        self.assertTrue('anonymous' not in users)
         self.assertEqual(('Tom', 'tom@example.com'), users['tom'])
         self.assertEqual((None, 'joe@example.com'), users['joe'])
         self.assertEqual(('Jane', None), users['jane'])
