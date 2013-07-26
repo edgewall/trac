@@ -714,7 +714,7 @@ class Environment(Component, ComponentManager):
     @lazy
     def href(self):
         """The application root path"""
-        return Href(urlsplit(self.abs_href.base)[2])
+        return Href(urlsplit(self.abs_href.base).path)
 
     @lazy
     def abs_href(self):
