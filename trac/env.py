@@ -275,7 +275,7 @@ class Environment(Component, ComponentManager):
 
         self.path = path
         self.systeminfo = []
-        self._href = self._abs_href = None
+        self._abs_href = None
 
         if create:
             self.create(options)
@@ -715,12 +715,10 @@ class Environment(Component, ComponentManager):
             DatabaseManager(self).shutdown()
         return True
 
-    @property
+    @lazy
     def href(self):
         """The application root path"""
-        if not self._href:
-            self._href = Href(urlsplit(self.abs_href.base)[2])
-        return self._href
+        return Href(urlsplit(self.abs_href.base)[2])
 
     @property
     def abs_href(self):
