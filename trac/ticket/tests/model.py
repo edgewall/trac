@@ -1,7 +1,6 @@
 from __future__ import with_statement
 
 from datetime import datetime, timedelta
-import os.path
 from StringIO import StringIO
 import tempfile
 import shutil
@@ -806,8 +805,7 @@ class MilestoneTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
-        self.env.path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
-        os.mkdir(self.env.path)
+        self.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
 
     def tearDown(self):
         shutil.rmtree(self.env.path)

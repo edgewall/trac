@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import os.path
+import os
 import shutil
 from StringIO import StringIO
 import tempfile
@@ -43,8 +43,7 @@ class AttachmentTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        self.env.path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
-        os.mkdir(self.env.path)
+        self.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
         self.attachments_dir = os.path.join(self.env.path, 'files',
                                             'attachments')
         self.env.config.set('trac', 'permission_policies',

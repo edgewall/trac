@@ -171,7 +171,7 @@ class NormalTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        self.repos_path = tempfile.mkdtemp(prefix='trac-gitrepos')
+        self.repos_path = tempfile.mkdtemp(prefix='trac-gitrepos-')
         self.git_bin = locate('git')
         # create git repository and master branch
         self._git('init', self.repos_path)
@@ -241,7 +241,7 @@ class UnicodeNameTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        self.repos_path = tempfile.mkdtemp(prefix='trac-gitrepos')
+        self.repos_path = tempfile.mkdtemp(prefix='trac-gitrepos-')
         self.git_bin = locate('git')
         # create git repository and master branch
         self._git('init', self.repos_path)

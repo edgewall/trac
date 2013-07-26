@@ -1,4 +1,3 @@
-import os
 import shutil
 import tempfile
 import unittest
@@ -116,8 +115,7 @@ attachment:file.txt?format=raw
 def attachment_setup(tc):
     import trac.ticket.api
     import trac.wiki.api
-    tc.env.path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
-    os.mkdir(tc.env.path)
+    tc.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
     attachment = Attachment(tc.env, 'wiki', 'WikiStart')
     attachment.insert('file.txt', tempfile.TemporaryFile(), 0)
     attachment = Attachment(tc.env, 'ticket', 123)

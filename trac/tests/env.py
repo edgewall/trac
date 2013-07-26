@@ -4,7 +4,6 @@ from trac import db_default
 from trac.core import ComponentManager
 from trac.env import Environment
 
-import os.path
 import unittest
 import tempfile
 import shutil
@@ -26,7 +25,7 @@ class EnvironmentCreatedWithoutData(Environment):
 class EmptyEnvironmentTestCase(unittest.TestCase):
 
     def setUp(self):
-        env_path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
+        env_path = tempfile.mkdtemp(prefix='trac-tempenv-')
         self.env = EnvironmentCreatedWithoutData(env_path, create=True)
 
     def tearDown(self):
@@ -41,7 +40,7 @@ class EmptyEnvironmentTestCase(unittest.TestCase):
 class EnvironmentTestCase(unittest.TestCase):
 
     def setUp(self):
-        env_path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
+        env_path = tempfile.mkdtemp(prefix='trac-tempenv-')
         self.env = Environment(env_path, create=True)
         self.env.config.set('trac', 'base_url',
                             'http://trac.edgewall.org/some/path')
