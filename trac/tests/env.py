@@ -43,10 +43,19 @@ class EnvironmentTestCase(unittest.TestCase):
     def setUp(self):
         env_path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
         self.env = Environment(env_path, create=True)
+        self.env.config.set('trac', 'base_url',
+                            'http://trac.edgewall.org/some/path')
+        self.env.config.save()
 
     def tearDown(self):
         self.env.shutdown() # really closes the db connections
         shutil.rmtree(self.env.path)
+
+    def test_abs_href(self):
+        self.assertEqual('http://trac.edgewall.org/some/path', self.env.abs_href())
+
+    def test_href(self):
+        self.assertEqual('/some/path', self.env.href())
 
     def test_get_version(self):
         """Testing env.get_version"""
