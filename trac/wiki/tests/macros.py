@@ -27,7 +27,7 @@ def add_pages(tc, names):
 def image_setup(tc):
     add_pages(tc, ['page:fr'])
     from trac.attachment import Attachment
-    tc.env.path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
+    tc.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
     attachment = Attachment(tc.env, 'wiki', 'page:fr')
     attachment.description = "image in page:fr"
     attachment.insert('img.png', StringIO(''), 0, 2)

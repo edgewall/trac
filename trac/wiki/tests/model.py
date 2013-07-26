@@ -3,7 +3,6 @@
 from __future__ import with_statement
 
 from datetime import datetime
-import os.path
 import shutil
 from StringIO import StringIO
 import tempfile
@@ -47,8 +46,7 @@ class WikiPageTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        self.env.path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
-        os.mkdir(self.env.path)
+        self.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
 
     def tearDown(self):
         shutil.rmtree(self.env.path)
