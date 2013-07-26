@@ -487,7 +487,7 @@ def _dispatch_request(req, env, env_error):
 
     # fixup env.abs_href if `[trac] base_url` was not specified
     if env and not env.abs_href.base:
-        env._abs_href = req.abs_href
+        env.abs_href = req.abs_href
 
     try:
         if not env and env_error:

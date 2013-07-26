@@ -15,7 +15,7 @@ class EnvironmentCreatedWithoutData(Environment):
 
         self.path = path
         self.systeminfo = []
-        self.href = self._abs_href = None
+        self.href = self.abs_href = None
 
         if create:
             self.create(options)

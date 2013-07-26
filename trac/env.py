@@ -275,7 +275,6 @@ class Environment(Component, ComponentManager):
 
         self.path = path
         self.systeminfo = []
-        self._abs_href = None
 
         if create:
             self.create(options)
@@ -720,17 +719,16 @@ class Environment(Component, ComponentManager):
         """The application root path"""
         return Href(urlsplit(self.abs_href.base)[2])
 
-    @property
+    @lazy
     def abs_href(self):
         """The application URL"""
-        if not self._abs_href:
-            if not self.base_url:
-                self.log.warn("base_url option not set in configuration, "
-                              "generated links may be incorrect")
-                self._abs_href = Href('')
-            else:
-                self._abs_href = Href(self.base_url)
-        return self._abs_href
+        if not self.base_url:
+            self.log.warn("base_url option not set in configuration, "
+                          "generated links may be incorrect")
+            _abs_href = Href('')
+        else:
+            _abs_href = Href(self.base_url)
+        return _abs_href
 
 
 class EnvironmentSetup(Component):
