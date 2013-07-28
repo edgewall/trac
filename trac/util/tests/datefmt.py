@@ -734,9 +734,9 @@ else:
             tz = datefmt.timezone('GMT +2:00')
             t = datetime.datetime(2010, 8, 28, 11, 45, 56, 123456, datefmt.utc)
             en_US = Locale.parse('en_US')
-            self.assertEqual('Aug 28, 2010 1:45:56 PM',
-                             datefmt.format_datetime(t, tzinfo=tz,
-                                                     locale=en_US))
+            self.assert_(datefmt.format_datetime(t, tzinfo=tz, locale=en_US)
+                         in ('Aug 28, 2010 1:45:56 PM',
+                             'Aug 28, 2010, 1:45:56 PM'))  # CLDR 23
             en_GB = Locale.parse('en_GB')
             self.assertEqual('28 Aug 2010 13:45:56',
                              datefmt.format_datetime(t, tzinfo=tz,
@@ -1022,8 +1022,9 @@ else:
             en_US = Locale.parse('en_US')
 
             # Converting default format to babel's format
-            self.assertEqual('Aug 28, 2010 1:45:56 PM',
-                             datefmt.format_datetime(t, '%x %X', tz, en_US))
+            self.assert_(datefmt.format_datetime(t, '%x %X', tz, en_US)
+                         in ('Aug 28, 2010 1:45:56 PM',
+                             'Aug 28, 2010, 1:45:56 PM'))  # CLDR 23
             self.assertEqual('Aug 28, 2010',
                              datefmt.format_datetime(t, '%x', tz, en_US))
             self.assertEqual('1:45:56 PM',
