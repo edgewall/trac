@@ -65,7 +65,7 @@ class FunctionalTester(object):
         self.go_to_front()
         tc.follow('New Ticket')
         tc.notfind(internal_error)
-        if summary == None:
+        if summary is None:
             summary = random_sentence(4)
         tc.formvalue('propertyform', 'field_summary', summary)
         tc.formvalue('propertyform', 'field_description', random_page())
@@ -278,7 +278,7 @@ class FunctionalTester(object):
         """Creates the specified milestone, with a random name if none is
         provided.  Returns the name of the milestone.
         """
-        if name == None:
+        if name is None:
             name = random_unique_camel()
         milestone_url = self.url + "/admin/ticket/milestones"
         tc.go(milestone_url)
@@ -304,16 +304,43 @@ class FunctionalTester(object):
 
         return name
 
+    def attach_file_to_milestone(self, name, data=None, tempfilename=None,
+                                 description=None):
+        """Attaches a file to the given milestone, with random content if none
+        is provided.  Assumes the milestone exists.
+        """
+        if data is None:
+            data = random_page()
+        if description is None:
+            description = random_sentence()
+        if tempfilename is None:
+            tempfilename = random_word()
+
+        self.go_to_milestone(name)
+        # set the value to what it already is, so that twill will know we
+        # want this form.
+        tc.formvalue('attachfile', 'action', 'new')
+        tc.submit()
+        tc.url(self.url + "/attachment/milestone/" \
+                          "%s/\\?action=new&attachfilebutton=Attach\\+file" % name)
+        fp = StringIO(data)
+        tc.formfile('attachment', 'attachment', tempfilename, fp=fp)
+        tc.formvalue('attachment', 'description', description)
+        tc.submit()
+        tc.url(self.url + '/attachment/milestone/%s/$' % name)
+
+        return tempfilename
+
     def create_component(self, name=None, user=None):
         """Creates the specified component, with a random camel-cased name if
         none is provided.  Returns the name."""
-        if name == None:
+        if name is None:
             name = random_unique_camel()
         component_url = self.url + "/admin/ticket/components"
         tc.go(component_url)
         tc.url(component_url)
         tc.formvalue('addcomponent', 'name', name)
-        if user != None:
+        if user is not None:
             tc.formvalue('addcomponent', 'owner', user)
         tc.submit()
         # Verify the component appears in the component list
@@ -328,7 +355,7 @@ class FunctionalTester(object):
         ``severity``, etc). If no name is given, a unique random word is used.
         The name is returned.
         """
-        if name == None:
+        if name is None:
             name = random_unique_camel()
         priority_url = self.url + "/admin/ticket/" + kind
         tc.go(priority_url)
@@ -360,12 +387,12 @@ class FunctionalTester(object):
         """Create a new version.  The name defaults to a random camel-cased
         word if not provided."""
         version_admin = self.url + "/admin/ticket/versions"
-        if name == None:
+        if name is None:
             name = random_unique_camel()
         tc.go(version_admin)
         tc.url(version_admin)
         tc.formvalue('addversion', 'name', name)
-        if releasetime != None:
+        if releasetime is not None:
             tc.formvalue('addversion', 'time', releasetime)
         tc.submit()
         tc.url(version_admin)
