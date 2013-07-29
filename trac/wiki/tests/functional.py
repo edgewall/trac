@@ -7,8 +7,7 @@ class TestWiki(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Create a wiki page and attach a file"""
         # TODO: this should be split into multiple tests
-        pagename = random_unique_camel()
-        self._tester.create_wiki_page(pagename)
+        pagename = self._tester.create_wiki_page()
         self._tester.attach_file_to_wiki(pagename)
 
 
@@ -30,8 +29,7 @@ class TestWikiHistory(FunctionalTwillTestCaseSetup):
 class TestWikiRename(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for simple wiki rename"""
-        pagename = random_unique_camel()
-        self._tester.create_wiki_page(pagename)
+        pagename = self._tester.create_wiki_page()
         attachment = self._tester.attach_file_to_wiki(pagename)
         base_url = self._tester.url
         page_url = base_url + "/wiki/" + pagename
@@ -112,8 +110,7 @@ class RegressionTestTicket4812(FunctionalTwillTestCaseSetup):
 class ReStructuredTextWikiTest(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Render reStructured text using a wikiprocessor"""
-        pagename = random_unique_camel()
-        self._tester.create_wiki_page(pagename, content="""
+        pagename = self._tester.create_wiki_page(content="""
 {{{
 #!rst
 Hello
@@ -133,8 +130,7 @@ Hello
 class ReStructuredTextCodeBlockTest(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Render reStructured code block"""
-        pagename = random_unique_camel()
-        self._tester.create_wiki_page(pagename, content="""
+        pagename = self._tester.create_wiki_page(content="""
 {{{
 #!rst
 .. code-block:: python
@@ -162,8 +158,7 @@ class RegressionTestTicket10274(FunctionalTwillTestCaseSetup):
 class RegressionTestTicket10850(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/10850"""
-        pagename = random_unique_camel()
-        self._tester.create_wiki_page(pagename)
+        pagename = self._tester.create_wiki_page()
         # colon characters
         attachment = self._tester.attach_file_to_wiki(
             pagename, tempfilename='2012-09-11_15:36:40-test.tbz2')
