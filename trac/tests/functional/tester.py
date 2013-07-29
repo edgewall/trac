@@ -173,29 +173,12 @@ class FunctionalTester(object):
         """Attaches a file to the given ticket id, with random data if none is
         provided.  Assumes the ticket exists.
         """
-        if data is None:
-            data = random_page()
-        if description is None:
-            description = random_sentence()
-        if tempfilename is None:
-            tempfilename = random_word()
+
 
         self.go_to_ticket(ticketid)
-        # set the value to what it already is, so that twill will know we
-        # want this form.
-        tc.formvalue('attachfile', 'action', 'new')
-        tc.submit()
-        tc.url(self.url + "/attachment/ticket/" \
-               "%s/\\?action=new&attachfilebutton=Attach\\+file" % ticketid)
-        fp = StringIO(data)
-        tc.formfile('attachment', 'attachment', tempfilename,
-                    content_type=content_type, fp=fp)
-        tc.formvalue('attachment', 'description', description)
-        if replace:
-            tc.formvalue('attachment', 'replace', True)
-        tc.submit()
-        tc.url(self.url + '/attachment/ticket/%s/$' % ticketid)
-        return tempfilename
+        return self._attach_file_to_resource('ticket', ticketid, data,
+                                             tempfilename, description,
+                                             replace, content_type)
 
     def clone_ticket(self, ticketid):
         """Create a clone of the given ticket id using the clone button."""
@@ -252,27 +235,17 @@ class FunctionalTester(object):
 
         return content
 
-    def attach_file_to_wiki(self, name, data=None, tempfilename=None):
+    def attach_file_to_wiki(self, name, data=None, tempfilename=None,
+                            description=None, replace=False,
+                            content_type=None):
         """Attaches a file to the given wiki page, with random content if none
         is provided.  Assumes the wiki page exists.
         """
-        if data == None:
-            data = random_page()
-        if tempfilename is None:
-            tempfilename = random_word()
+
         self.go_to_wiki(name)
-        # set the value to what it already is, so that twill will know we
-        # want this form.
-        tc.formvalue('attachfile', 'action', 'new')
-        tc.submit()
-        tc.url(self.url + "/attachment/wiki/" \
-               "%s/\\?action=new&attachfilebutton=Attach\\+file" % name)
-        fp = StringIO(data)
-        tc.formfile('attachment', 'attachment', tempfilename, fp=fp)
-        tc.formvalue('attachment', 'description', random_sentence())
-        tc.submit()
-        tc.url(self.url + '/attachment/wiki/%s/$' % name)
-        return tempfilename
+        return self._attach_file_to_resource('wiki', name, data,
+                                             tempfilename, description,
+                                             replace, content_type)
 
     def create_milestone(self, name=None, due=None):
         """Creates the specified milestone, with a random name if none is
@@ -305,31 +278,16 @@ class FunctionalTester(object):
         return name
 
     def attach_file_to_milestone(self, name, data=None, tempfilename=None,
-                                 description=None):
+                                 description=None, replace=False,
+                                 content_type=None):
         """Attaches a file to the given milestone, with random content if none
         is provided.  Assumes the milestone exists.
         """
-        if data is None:
-            data = random_page()
-        if description is None:
-            description = random_sentence()
-        if tempfilename is None:
-            tempfilename = random_word()
 
         self.go_to_milestone(name)
-        # set the value to what it already is, so that twill will know we
-        # want this form.
-        tc.formvalue('attachfile', 'action', 'new')
-        tc.submit()
-        tc.url(self.url + "/attachment/milestone/" \
-                          "%s/\\?action=new&attachfilebutton=Attach\\+file" % name)
-        fp = StringIO(data)
-        tc.formfile('attachment', 'attachment', tempfilename, fp=fp)
-        tc.formvalue('attachment', 'description', description)
-        tc.submit()
-        tc.url(self.url + '/attachment/milestone/%s/$' % name)
-
-        return tempfilename
+        return self._attach_file_to_resource('milestone', name, data,
+                                             tempfilename, description,
+                                             replace, content_type)
 
     def create_component(self, name=None, user=None):
         """Creates the specified component, with a random camel-cased name if
@@ -425,3 +383,34 @@ class FunctionalTester(object):
         tc.formvalue('propertyform', 'milestone', milestone)
         tc.submit('submit')
         # TODO: verify the change occurred.
+
+    def _attach_file_to_resource(self, realm, name, data=None,
+                                 tempfilename=None, description=None,
+                                 replace=False, content_type=None):
+        """Attaches a file to a resource. Assumes the resource exists and
+           has already been navigated to."""
+
+        if data is None:
+            data = random_page()
+        if description is None:
+            description = random_sentence()
+        if tempfilename is None:
+            tempfilename = random_word()
+
+        # set the value to what it already is, so that twill will know we
+        # want this form.
+        tc.formvalue('attachfile', 'action', 'new')
+        tc.submit()
+        tc.url(self.url + "/attachment/%s/%s/\\?action=new&" \
+                          "attachfilebutton=Attach\\+file" % (realm, name))
+        fp = StringIO(data)
+        tc.formfile('attachment', 'attachment', tempfilename,
+                    content_type=content_type, fp=fp)
+        tc.formvalue('attachment', 'description', description)
+        if replace:
+            tc.formvalue('attachment', 'replace', True)
+        tc.submit()
+        tc.url(self.url + '/attachment/%s/%s/$' % (realm, name))
+
+        return tempfilename
+
