@@ -78,7 +78,7 @@ class FunctionalTester(object):
         self.go_to_front()
         tc.follow('New Ticket')
         tc.notfind(internal_error)
-        if summary == None:
+        if summary is None:
             summary = random_sentence(4)
         tc.formvalue('propertyform', 'field_summary', summary)
         tc.formvalue('propertyform', 'field_description', random_page())
@@ -193,35 +193,18 @@ class FunctionalTester(object):
         tc.url(self.url + '/ticket/%s(?:#comment:.*)?$' % ticketid)
         return comment
 
-    def attach_file_to_ticket(self, ticketid, data=None, tempfilename=None,
+    def attach_file_to_ticket(self, ticketid, data=None, filename=None,
                               description=None, replace=False,
                               content_type=None):
         """Attaches a file to the given ticket id, with random data if none is
         provided.  Assumes the ticket exists.
         """
-        if data is None:
-            data = random_page()
-        if description is None:
-            description = random_sentence()
-        if tempfilename is None:
-            tempfilename = random_word()
+
 
         self.go_to_ticket(ticketid)
-        # set the value to what it already is, so that twill will know we
-        # want this form.
-        tc.formvalue('attachfile', 'action', 'new')
-        tc.submit()
-        tc.url(self.url + "/attachment/ticket/" \
-               "%s/\\?action=new&attachfilebutton=Attach\\+file" % ticketid)
-        fp = StringIO(data)
-        tc.formfile('attachment', 'attachment', tempfilename,
-                    content_type=content_type, fp=fp)
-        tc.formvalue('attachment', 'description', description)
-        if replace:
-            tc.formvalue('attachment', 'replace', True)
-        tc.submit()
-        tc.url(self.url + '/attachment/ticket/%s/$' % ticketid)
-        return tempfilename
+        return self._attach_file_to_resource('ticket', ticketid, data,
+                                             filename, description,
+                                             replace, content_type)
 
     def clone_ticket(self, ticketid):
         """Create a clone of the given ticket id using the clone button."""
@@ -278,33 +261,23 @@ class FunctionalTester(object):
 
         return content
 
-    def attach_file_to_wiki(self, name, data=None, tempfilename=None):
+    def attach_file_to_wiki(self, name, data=None, filename=None,
+                            description=None, replace=False,
+                            content_type=None):
         """Attaches a file to the given wiki page, with random content if none
         is provided.  Assumes the wiki page exists.
         """
-        if data == None:
-            data = random_page()
-        if tempfilename is None:
-            tempfilename = random_word()
+
         self.go_to_wiki(name)
-        # set the value to what it already is, so that twill will know we
-        # want this form.
-        tc.formvalue('attachfile', 'action', 'new')
-        tc.submit()
-        tc.url(self.url + "/attachment/wiki/" \
-               "%s/\\?action=new&attachfilebutton=Attach\\+file" % name)
-        fp = StringIO(data)
-        tc.formfile('attachment', 'attachment', tempfilename, fp=fp)
-        tc.formvalue('attachment', 'description', random_sentence())
-        tc.submit()
-        tc.url(self.url + '/attachment/wiki/%s/$' % name)
-        return tempfilename
+        return self._attach_file_to_resource('wiki', name, data,
+                                             filename, description,
+                                             replace, content_type)
 
     def create_milestone(self, name=None, due=None):
         """Creates the specified milestone, with a random name if none is
         provided.  Returns the name of the milestone.
         """
-        if name == None:
+        if name is None:
             name = random_unique_camel()
         milestone_url = self.url + "/admin/ticket/milestones"
         tc.go(milestone_url)
@@ -330,16 +303,28 @@ class FunctionalTester(object):
 
         return name
 
+    def attach_file_to_milestone(self, name, data=None, filename=None,
+                                 description=None, replace=False,
+                                 content_type=None):
+        """Attaches a file to the given milestone, with random content if none
+        is provided.  Assumes the milestone exists.
+        """
+
+        self.go_to_milestone(name)
+        return self._attach_file_to_resource('milestone', name, data,
+                                             filename, description,
+                                             replace, content_type)
+
     def create_component(self, name=None, user=None):
         """Creates the specified component, with a random camel-cased name if
         none is provided.  Returns the name."""
-        if name == None:
+        if name is None:
             name = random_unique_camel()
         component_url = self.url + "/admin/ticket/components"
         tc.go(component_url)
         tc.url(component_url)
         tc.formvalue('addcomponent', 'name', name)
-        if user != None:
+        if user is not None:
             tc.formvalue('addcomponent', 'owner', user)
         tc.submit()
         # Verify the component appears in the component list
@@ -354,7 +339,7 @@ class FunctionalTester(object):
         ``severity``, etc). If no name is given, a unique random word is used.
         The name is returned.
         """
-        if name == None:
+        if name is None:
             name = random_unique_camel()
         priority_url = self.url + "/admin/ticket/" + kind
         tc.go(priority_url)
@@ -386,12 +371,12 @@ class FunctionalTester(object):
         """Create a new version.  The name defaults to a random camel-cased
         word if not provided."""
         version_admin = self.url + "/admin/ticket/versions"
-        if name == None:
+        if name is None:
             name = random_unique_camel()
         tc.go(version_admin)
         tc.url(version_admin)
         tc.formvalue('addversion', 'name', name)
-        if releasetime != None:
+        if releasetime is not None:
             tc.formvalue('addversion', 'time', releasetime)
         tc.submit()
         tc.url(version_admin)
@@ -424,3 +409,31 @@ class FunctionalTester(object):
         tc.formvalue('propertyform', 'milestone', milestone)
         tc.submit('submit')
         # TODO: verify the change occurred.
+
+    def _attach_file_to_resource(self, realm, name, data=None,
+                                 filename=None, description=None,
+                                 replace=False, content_type=None):
+        """Attaches a file to a resource. Assumes the resource exists and
+           has already been navigated to."""
+
+        if data is None:
+            data = random_page()
+        if description is None:
+            description = random_sentence()
+        if filename is None:
+            filename = random_word()
+
+        tc.submit('attachfilebutton', 'attachfile')
+        tc.url(self.url + '/attachment/%s/%s/\\?action=new&'
+                          'attachfilebutton=Attach\\+file$' % (realm, name))
+        fp = StringIO(data)
+        tc.formfile('attachment', 'attachment', filename,
+                    content_type=content_type, fp=fp)
+        tc.formvalue('attachment', 'description', description)
+        if replace:
+            tc.formvalue('attachment', 'replace', True)
+        tc.submit()
+        tc.url(self.url + '/attachment/%s/%s/$' % (realm, name))
+
+        return filename
+
