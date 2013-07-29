@@ -7,16 +7,29 @@ class TestWiki(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Create a wiki page and attach a file"""
         # TODO: this should be split into multiple tests
-        pagename = random_unique_camel()
-        self._tester.create_wiki_page(pagename)
+        pagename = self._tester.create_wiki_page()
         self._tester.attach_file_to_wiki(pagename)
+
+
+class TestWikiHistory(FunctionalTwillTestCaseSetup):
+    """Create wiki page and navigate to page history."""
+    def runTest(self):
+        pagename = self._tester.create_wiki_page()
+        self._tester.edit_wiki_page(pagename)
+        tc.follow(r"\bHistory\b")
+        tc.url(self._tester.url + r'/wiki/%s\?action=history' % pagename)
+        version_link = '<td class="version">[ \t\n]*' \
+                       '<a href="/wiki/%(pagename)s\?version=%%(version)s" ' \
+                       'title="View this version">%%(version)s[ \t\n]*</a>' \
+                        % {'pagename': pagename}
+        tc.find(version_link % {'version': 1})
+        tc.find(version_link % {'version': 2})
 
 
 class TestWikiRename(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for simple wiki rename"""
-        pagename = random_unique_camel()
-        self._tester.create_wiki_page(pagename)
+        pagename = self._tester.create_wiki_page()
         attachment = self._tester.attach_file_to_wiki(pagename)
         base_url = self._tester.url
         page_url = base_url + "/wiki/" + pagename
@@ -97,8 +110,7 @@ class RegressionTestTicket4812(FunctionalTwillTestCaseSetup):
 class ReStructuredTextWikiTest(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Render reStructured text using a wikiprocessor"""
-        pagename = random_unique_camel()
-        self._tester.create_wiki_page(pagename, content="""
+        pagename = self._tester.create_wiki_page(content="""
 {{{
 #!rst
 Hello
@@ -118,8 +130,7 @@ Hello
 class ReStructuredTextCodeBlockTest(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Render reStructured code block"""
-        pagename = random_unique_camel()
-        self._tester.create_wiki_page(pagename, content="""
+        pagename = self._tester.create_wiki_page(content="""
 {{{
 #!rst
 .. code-block:: python
@@ -147,8 +158,7 @@ class RegressionTestTicket10274(FunctionalTwillTestCaseSetup):
 class RegressionTestTicket10850(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/10850"""
-        pagename = random_unique_camel()
-        self._tester.create_wiki_page(pagename)
+        pagename = self._tester.create_wiki_page()
         # colon characters
         attachment = self._tester.attach_file_to_wiki(
             pagename, tempfilename='2012-09-11_15:36:40-test.tbz2')
@@ -247,6 +257,7 @@ def functionalSuite(suite=None):
         import trac.tests.functional.testcases
         suite = trac.tests.functional.testcases.functionalSuite()
     suite.addTest(TestWiki())
+    suite.addTest(TestWikiHistory())
     suite.addTest(TestWikiRename())
     suite.addTest(RegressionTestTicket4812())
     suite.addTest(RegressionTestTicket10274())

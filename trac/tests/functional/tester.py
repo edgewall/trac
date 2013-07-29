@@ -235,10 +235,10 @@ class FunctionalTester(object):
         tc.url(self.url + "/ticket/%s" % self.ticketcount)
         return self.ticketcount
 
-    def create_wiki_page(self, name=None, content=None):
+    def create_wiki_page(self, name=None, content=None, comment=None):
         """Creates a wiki page, with a random unique CamelCase name if none
-        is provided, and random content if none is provided.  Returns the
-        name of the wiki page.
+        is provided, random content if none is provided and a random comment
+        if none is provided.  Returns the name of the wiki page.
         """
         if name is None:
             name = random_unique_camel()
@@ -247,7 +247,7 @@ class FunctionalTester(object):
         self.go_to_wiki(name)
         tc.find("The page %s does not exist." % name)
 
-        self.edit_wiki_page(name, content)
+        self.edit_wiki_page(name, content, comment)
 
         # verify the event shows up in the timeline
         self.go_to_timeline()
@@ -259,16 +259,19 @@ class FunctionalTester(object):
 
         return name
 
-    def edit_wiki_page(self, name, content=None):
+    def edit_wiki_page(self, name, content=None, comment=None):
         """Edits a wiki page, with random content is none is provided.
-        Returns the content.
+        and a random comment if none is provided. Returns the content.
         """
         if content is None:
             content = random_page()
+        if comment is None:
+            comment = random_sentence()
         self.go_to_wiki(name)
         tc.formvalue('modifypage', 'action', 'edit')
         tc.submit()
         tc.formvalue('edit', 'text', content)
+        tc.formvalue('edit', 'comment', comment)
         tc.submit('save')
         page_url = self.url + '/wiki/%s' % name
         tc.url(page_url+'$')
