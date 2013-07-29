@@ -126,25 +126,25 @@ class RegressionTestTicket7209(FunctionalTwillTestCaseSetup):
         ticketid = self._tester.create_ticket(summary)
         self._tester.create_ticket()
         self._tester.add_comment(ticketid)
-        self._tester.attach_file_to_ticket(ticketid, tempfilename='hello.txt',
+        self._tester.attach_file_to_ticket(ticketid, filename='hello.txt',
                                            description='Preserved Descr')
         self._tester.go_to_ticket(ticketid)
         tc.find('Preserved Descr')
         # Now replace the existing attachment, and the description should come
         # through.
-        self._tester.attach_file_to_ticket(ticketid, tempfilename='hello.txt',
+        self._tester.attach_file_to_ticket(ticketid, filename='hello.txt',
                                            description='', replace=True)
         self._tester.go_to_ticket(ticketid)
         tc.find('Preserved Descr')
 
-        self._tester.attach_file_to_ticket(ticketid, tempfilename='blah.txt',
+        self._tester.attach_file_to_ticket(ticketid, filename='blah.txt',
                                            description='Second Attachment')
         self._tester.go_to_ticket(ticketid)
         tc.find('Second Attachment')
 
         # This one should get a new description when it's replaced
         # (Second->Other)
-        self._tester.attach_file_to_ticket(ticketid, tempfilename='blah.txt',
+        self._tester.attach_file_to_ticket(ticketid, filename='blah.txt',
                                            description='Other Attachment',
                                            replace=True)
         self._tester.go_to_ticket(ticketid)
@@ -162,7 +162,7 @@ class RegressionTestTicket9880(FunctionalTwillTestCaseSetup):
         summary = random_sentence(5)
         ticketid = self._tester.create_ticket(summary)
         self._tester.create_ticket()
-        self._tester.attach_file_to_ticket(ticketid, tempfilename='hello.mht',
+        self._tester.attach_file_to_ticket(ticketid, filename='hello.mht',
                                            content_type='multipart/related',
                                            data="""
 Well, the actual content of the file doesn't matter, the problem is

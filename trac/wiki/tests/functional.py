@@ -161,26 +161,26 @@ class RegressionTestTicket10850(FunctionalTwillTestCaseSetup):
         pagename = self._tester.create_wiki_page()
         # colon characters
         attachment = self._tester.attach_file_to_wiki(
-            pagename, tempfilename='2012-09-11_15:36:40-test.tbz2')
+            pagename, filename='2012-09-11_15:36:40-test.tbz2')
         base_url = self._tester.url
         tc.go(base_url + '/attachment/wiki/' + pagename +
               '/2012-09-11_15:36:40-test.tbz2')
         tc.notfind('Error: Invalid Attachment')
         # backslash characters
         attachment = self._tester.attach_file_to_wiki(
-            pagename, tempfilename=r'/tmp/back\slash.txt')
+            pagename, filename=r'/tmp/back\slash.txt')
         base_url = self._tester.url
         tc.go(base_url + '/attachment/wiki/' + pagename + r'/back\slash.txt')
         tc.notfind('Error: Invalid Attachment')
         # Windows full path
         attachment = self._tester.attach_file_to_wiki(
-            pagename, tempfilename=r'z:\tmp\windows:path.txt')
+            pagename, filename=r'z:\tmp\windows:path.txt')
         base_url = self._tester.url
         tc.go(base_url + '/attachment/wiki/' + pagename + r'/windows:path.txt')
         tc.notfind('Error: Invalid Attachment')
         # Windows share folder path
         attachment = self._tester.attach_file_to_wiki(
-            pagename, tempfilename=r'\\server\share\file:name.txt')
+            pagename, filename=r'\\server\share\file:name.txt')
         base_url = self._tester.url
         tc.go(base_url + '/attachment/wiki/' + pagename + r'/file:name.txt')
         tc.notfind('Error: Invalid Attachment')

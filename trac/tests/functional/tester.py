@@ -167,7 +167,7 @@ class FunctionalTester(object):
         tc.url(self.url + '/ticket/%s(?:#comment:.*)?$' % ticketid)
         return comment
 
-    def attach_file_to_ticket(self, ticketid, data=None, tempfilename=None,
+    def attach_file_to_ticket(self, ticketid, data=None, filename=None,
                               description=None, replace=False,
                               content_type=None):
         """Attaches a file to the given ticket id, with random data if none is
@@ -177,7 +177,7 @@ class FunctionalTester(object):
 
         self.go_to_ticket(ticketid)
         return self._attach_file_to_resource('ticket', ticketid, data,
-                                             tempfilename, description,
+                                             filename, description,
                                              replace, content_type)
 
     def clone_ticket(self, ticketid):
@@ -235,7 +235,7 @@ class FunctionalTester(object):
 
         return content
 
-    def attach_file_to_wiki(self, name, data=None, tempfilename=None,
+    def attach_file_to_wiki(self, name, data=None, filename=None,
                             description=None, replace=False,
                             content_type=None):
         """Attaches a file to the given wiki page, with random content if none
@@ -244,7 +244,7 @@ class FunctionalTester(object):
 
         self.go_to_wiki(name)
         return self._attach_file_to_resource('wiki', name, data,
-                                             tempfilename, description,
+                                             filename, description,
                                              replace, content_type)
 
     def create_milestone(self, name=None, due=None):
@@ -277,7 +277,7 @@ class FunctionalTester(object):
 
         return name
 
-    def attach_file_to_milestone(self, name, data=None, tempfilename=None,
+    def attach_file_to_milestone(self, name, data=None, filename=None,
                                  description=None, replace=False,
                                  content_type=None):
         """Attaches a file to the given milestone, with random content if none
@@ -286,7 +286,7 @@ class FunctionalTester(object):
 
         self.go_to_milestone(name)
         return self._attach_file_to_resource('milestone', name, data,
-                                             tempfilename, description,
+                                             filename, description,
                                              replace, content_type)
 
     def create_component(self, name=None, user=None):
@@ -385,7 +385,7 @@ class FunctionalTester(object):
         # TODO: verify the change occurred.
 
     def _attach_file_to_resource(self, realm, name, data=None,
-                                 tempfilename=None, description=None,
+                                 filename=None, description=None,
                                  replace=False, content_type=None):
         """Attaches a file to a resource. Assumes the resource exists and
            has already been navigated to."""
@@ -394,14 +394,14 @@ class FunctionalTester(object):
             data = random_page()
         if description is None:
             description = random_sentence()
-        if tempfilename is None:
-            tempfilename = random_word()
+        if filename is None:
+            filename = random_word()
 
         tc.submit('attachfilebutton', 'attachfile')
         tc.url(self.url + '/attachment/%s/%s/\\?action=new&'
                           'attachfilebutton=Attach\\+file$' % (realm, name))
         fp = StringIO(data)
-        tc.formfile('attachment', 'attachment', tempfilename,
+        tc.formfile('attachment', 'attachment', filename,
                     content_type=content_type, fp=fp)
         tc.formvalue('attachment', 'description', description)
         if replace:
@@ -409,5 +409,5 @@ class FunctionalTester(object):
         tc.submit()
         tc.url(self.url + '/attachment/%s/%s/$' % (realm, name))
 
-        return tempfilename
+        return filename
 
