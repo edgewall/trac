@@ -51,6 +51,9 @@ ${project.descr}</textarea>
                       selected="${locale == default_language or None}">${language}</option>
             </select>
           </label>
+          <span py:if="not has_babel" class="hint">
+            Install Babel for extended language support.
+          </span>
         </div>
         <div class="field">
           <label>Default date format:<br />
@@ -60,6 +63,9 @@ ${project.descr}</textarea>
                       selected="${default_date_format == 'iso8601' or None}">ISO 8601 format</option>
             </select>
           </label>
+          <span py:if="not has_babel" class="hint">
+            Install Babel for localized date formats.
+          </span>
         </div>
       </fieldset>
       <div class="buttons">

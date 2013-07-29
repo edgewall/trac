@@ -253,6 +253,7 @@ class BasicsAdminPanel(Component):
             'default_language': default_language.replace('-', '_'),
             'languages': languages,
             'default_date_format': default_date_format,
+            'has_babel': Locale is not None,
         }
         Chrome(self.env).add_textarea_grips(req)
         return 'admin_basics.html', data
