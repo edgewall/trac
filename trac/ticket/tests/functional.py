@@ -1046,6 +1046,20 @@ class TestAdminVersionDefault(FunctionalTwillTestCaseSetup):
                 % (name, name))
 
 
+class TestMilestoneAttachments(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Add attachments to the milestone."""
+        milestone_name = self._tester.create_milestone()
+        filename = self._tester.attach_file_to_milestone(milestone_name)
+
+        self._tester.go_to_milestone(milestone_name)
+        tc.find('Attachments <span class="trac-count">\(1\)</span>')
+        tc.find(filename)
+        tc.find('Download all attachments as:[ \n\t]*<a rel="nofollow" '
+                'href="/zip-attachment/milestone/%s/">.zip</a>'
+                % milestone_name)
+
+
 class TestNewReport(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Create a new report"""
@@ -1837,6 +1851,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminVersionRemoveMulti())
     suite.addTest(TestAdminVersionNonRemoval())
     suite.addTest(TestAdminVersionDefault())
+    suite.addTest(TestMilestoneAttachments())
     suite.addTest(TestNewReport())
     suite.addTest(TestReportRealmDecoration())
     suite.addTest(RegressionTestRev5665())
