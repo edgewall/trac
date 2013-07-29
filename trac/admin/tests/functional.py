@@ -121,10 +121,13 @@ class TestPluginSettings(FunctionalTwillTestCaseSetup):
 
 
 class RegressionTestTicket11117(FunctionalTwillTestCaseSetup):
-    """Test for regression of http://trac.edgewall.org/ticket/11117"""
+    """Test for regression of http://trac.edgewall.org/ticket/11117
+    Hint should be shown on the Basic Settings admin panel when pytz is not
+    installed.
+    """
     def runTest(self):
         self._tester.go_to_admin()
-        tc.follow("\\bBasic Settings\\b")
+        tc.follow(r"\bBasic Settings\b")
         pytz_hint = "Install pytz for a complete list of timezones."
         from trac.util.datefmt import pytz
         if pytz is None:
