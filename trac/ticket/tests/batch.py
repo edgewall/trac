@@ -219,8 +219,6 @@ class BatchModifyTestCase(unittest.TestCase):
         batch._save_ticket_changes(self.req, selected_tickets, {}, '',
                                    'embiggen')
 
-        ticket = Ticket(self.env, int(first_ticket_id))
-        changes = ticket.get_changelog()
         self.assertFieldChanged(first_ticket_id, 'status', 'big')
         self.assertFieldChanged(second_ticket_id, 'status', 'big')
 
@@ -241,8 +239,6 @@ class BatchModifyTestCase(unittest.TestCase):
         batch._save_ticket_changes(self.req, selected_tickets, {}, '',
                                    'buckify')
 
-        ticket = Ticket(self.env, int(first_ticket_id))
-        changes = ticket.get_changelog()
         self.assertFieldChanged(first_ticket_id, 'owner', 'buck')
         self.assertFieldChanged(second_ticket_id, 'owner', 'buck')
 
