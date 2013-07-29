@@ -127,7 +127,7 @@ class RegressionTestTicket11117(FunctionalTwillTestCaseSetup):
     """
     def runTest(self):
         self._tester.go_to_admin()
-        tc.follow("\\bBasic Settings\\b")
+        tc.follow(r"\bBasic Settings\b")
         pytz_hint = "Install pytz for a complete list of timezones."
         from trac.util.datefmt import pytz
         if pytz is None:
