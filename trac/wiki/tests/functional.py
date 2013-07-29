@@ -12,6 +12,21 @@ class TestWiki(FunctionalTwillTestCaseSetup):
         self._tester.attach_file_to_wiki(pagename)
 
 
+class TestWikiHistory(FunctionalTwillTestCaseSetup):
+    """Create wiki page and navigate to page history."""
+    def runTest(self):
+        pagename = self._tester.create_wiki_page()
+        self._tester.edit_wiki_page(pagename)
+        tc.follow(r"\bHistory\b")
+        tc.url(self._tester.url + r'/wiki/%s\?action=history' % pagename)
+        version_link = '<td class="version">[ \t\n]*' \
+                       '<a href="/wiki/%(pagename)s\?version=%%(version)s" ' \
+                       'title="View this version">%%(version)s[ \t\n]*</a>' \
+                        % {'pagename': pagename}
+        tc.find(version_link % {'version': 1})
+        tc.find(version_link % {'version': 2})
+
+
 class TestWikiRename(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for simple wiki rename"""
@@ -247,6 +262,7 @@ def functionalSuite(suite=None):
         import trac.tests.functional.testcases
         suite = trac.tests.functional.testcases.functionalSuite()
     suite.addTest(TestWiki())
+    suite.addTest(TestWikiHistory())
     suite.addTest(TestWikiRename())
     suite.addTest(RegressionTestTicket4812())
     suite.addTest(RegressionTestTicket10274())
