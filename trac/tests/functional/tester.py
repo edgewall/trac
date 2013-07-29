@@ -397,12 +397,9 @@ class FunctionalTester(object):
         if tempfilename is None:
             tempfilename = random_word()
 
-        # set the value to what it already is, so that twill will know we
-        # want this form.
-        tc.formvalue('attachfile', 'action', 'new')
-        tc.submit()
-        tc.url(self.url + "/attachment/%s/%s/\\?action=new&" \
-                          "attachfilebutton=Attach\\+file" % (realm, name))
+        tc.submit('attachfilebutton', 'attachfile')
+        tc.url(self.url + '/attachment/%s/%s/\\?action=new&'
+                          'attachfilebutton=Attach\\+file$' % (realm, name))
         fp = StringIO(data)
         tc.formfile('attachment', 'attachment', tempfilename,
                     content_type=content_type, fp=fp)
