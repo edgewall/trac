@@ -133,6 +133,27 @@ class RegressionTestTicket11117(FunctionalTwillTestCaseSetup):
             tc.notfind(pytz_hint)
 
 
+class RegressionTestTicket11257(FunctionalTwillTestCaseSetup):
+    """Test for regression of http://trac.edgewall.org/ticket/11257
+    Hints should be shown on the Basic Settings admin panel when Babel is not
+    installed.
+    """
+    def runTest(self):
+        self._tester.go_to_admin()
+        tc.follow(r"\bBasic Settings\b")
+        babel_hints = ("Install Babel for extended language support.",
+                       "Install Babel for localized date formats.")
+        try:
+            import babel
+        except ImportError:
+            babel = None
+        for hint in babel_hints:
+            if babel is None:
+                tc.find(hint)
+            else:
+                tc.notfind(hint)
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional.testcases
@@ -147,6 +168,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestRemovePermissionGroup())
     suite.addTest(TestPluginSettings())
     suite.addTest(RegressionTestTicket11117())
+    suite.addTest(RegressionTestTicket11257())
     return suite
 
 
