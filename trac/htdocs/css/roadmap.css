@@ -58,7 +58,6 @@ p.percent {
 .milestone .description { margin-left: 1em }
 
 /* Styles for the milestone view */
-.milestone .date { color: #888; font-style: italic; margin: 0 }
 .milestone .description { margin: 1em 0 2em }
 #stats {
  float: right;
