@@ -161,6 +161,12 @@ class FunctionalTester(object):
         tc.follow('\\bRoadmap\\b')
         tc.url(self.url + '/roadmap')
 
+    def go_to_milestone(self, name):
+        """Surf to the specified milestone page. Assumes milestone exists."""
+        self.go_to_roadmap()
+        tc.follow('\\bMilestone: %s\\b' % name)
+        tc.url(self.url + '/milestone/%s' % name)
+
     def go_to_report(self, id, args=None):
         """Surf to the specified report.
 
