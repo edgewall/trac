@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 from trac.tests.functional import *
 from trac.mimeview.rst import has_docutils
 from trac.util import get_pkginfo
