@@ -20,7 +20,8 @@ from trac.util.text import empty, expandtabs, fix_eol, javascript_quote, \
                            unicode_quote_plus, unicode_unquote, \
                            unicode_urlencode, wrap, quote_query_string, \
                            unicode_to_base64, unicode_from_base64, \
-                           strip_line_ws, stripws, levenshtein_distance
+                           strip_line_ws, stripws, levenshtein_distance, \
+                           sub_vars
 
 
 class ToUnicodeTestCase(unittest.TestCase):
@@ -334,7 +335,6 @@ class StripwsTestCase(unittest.TestCase):
                                   leading=False, trailing=False))
 
 
-
 class LevenshteinDistanceTestCase(unittest.TestCase):
     def test_distance(self):
         self.assertEqual(5, levenshtein_distance('kitten', 'sitting'))
@@ -342,6 +342,14 @@ class LevenshteinDistanceTestCase(unittest.TestCase):
         self.assertEqual(2, levenshtein_distance('comfig', 'config'))
         self.assertEqual(5, levenshtein_distance('update', 'upgrade'))
         self.assertEqual(0, levenshtein_distance('milestone', 'milestone'))
+
+
+class SubVarsTestCase(unittest.TestCase):
+    def test_sub_vars(self):
+        subtext = sub_vars("$USER's tickets for '$COMPONENT', $MILESTONE",
+                           {'USER': 'user1', 'COMPONENT': 'component1'})
+        self.assertEqual("user1's tickets for 'component1', $MILESTONE",
+                         subtext)
 
 
 def suite():
@@ -360,6 +368,7 @@ def suite():
     suite.addTest(unittest.makeSuite(UnicodeBase64TestCase, 'test'))
     suite.addTest(unittest.makeSuite(StripwsTestCase, 'test'))
     suite.addTest(unittest.makeSuite(LevenshteinDistanceTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(SubVarsTestCase, 'test'))
     return suite
 
 if __name__ == '__main__':

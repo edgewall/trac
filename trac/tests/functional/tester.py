@@ -167,6 +167,25 @@ class FunctionalTester(object):
         tc.follow('\\bMilestone: %s\\b' % name)
         tc.url(self.url + '/milestone/%s' % name)
 
+    def go_to_report(self, id, args=None):
+        """Surf to the specified report.
+
+        Assumes the report exists. Report variables will be appended if
+        specified.
+
+        :param id: id of the report
+        :param args: may optionally specify a dictionary of arguments to
+                     be encoded as a query string
+        """
+        report_url = self.url + "/report/%s" % id
+        if args:
+            arglist = []
+            for param, value in args.items():
+                arglist.append('%s=%s' % (param.upper(), unicode_quote(value)))
+            report_url += '?' + '&'.join(arglist)
+        tc.go(report_url)
+        tc.url(report_url.encode('string-escape').replace('?', '\?'))
+
     def add_comment(self, ticketid, comment=None):
         """Adds a comment to the given ticket ID, assumes ticket exists."""
         self.go_to_ticket(ticketid)

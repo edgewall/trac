@@ -1141,6 +1141,37 @@ UNION ALL SELECT 'attachment', 'file.ext', 'wiki', 'WikiStart'
                 'file[.]ext [(]WikiStart[)]</a>')
 
 
+class TestReportDynamicVariables(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Generate a report with dynamic variables in title, summary
+        and SQL"""
+        summary = random_sentence(3)
+        fields = {'component': 'component1'}
+        ticket_id = self._tester.create_ticket(summary, fields)
+        reportnum = self._tester.create_report(
+           "$USER's tickets for component $COMPONENT",
+           """SELECT DISTINCT
+               t.id AS ticket, summary, component, version, milestone,
+               t.type AS type, priority, t.time AS created,
+               t.changetime AS _changetime, summary AS _description,
+               reporter AS _reporter
+              FROM ticket t
+              LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
+              LEFT JOIN ticket_change tc ON tc.ticket = t.id AND tc.author = $USER
+               AND tc.field = 'comment'
+              WHERE t.status <> 'closed'
+               AND component = $COMPONENT
+               AND (owner = $USER OR reporter = $USER OR author = $USER)
+            """,
+           "Tickets assigned to $USER for component $COMPONENT"
+        )
+        self._tester.go_to_report(reportnum, fields)
+        tc.find("admin's tickets for component component1")
+        tc.find("Tickets assigned to admin for component component1")
+        tc.find('<a title="View ticket" href="/ticket/%s">%s</a>' %
+                (ticket_id, summary))
+
+
 class RegressionTestRev5665(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create version without release time (r5665)"""
@@ -1404,29 +1435,6 @@ class RegressionTestTicket5602(FunctionalTwillTestCaseSetup):
         tc.find("Status:[ \t\n]+accepted")
         tc.notfind("Status:[ \t\n]+closed")
         tc.find("Status:[ \t\n]+reopened")
-
-
-class RegressionTestTicket5658(FunctionalTwillTestCaseSetup):
-    def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/5658
-        Retarget tickets when a milestone is closed"""
-        name1 = self._tester.create_milestone()
-        name2 = self._tester.create_milestone()
-        tid = self._tester.create_ticket(info={'milestone': name1})
-        self._tester.go_to_milestone(name1)
-        tc.submit('edit', formname='editmilestone')
-        tc.formvalue('edit', 'completed', True)
-        tc.formvalue('edit', 'target', name2)
-        tc.submit('save', formname='edit')
-        tc.url(self._tester.url + '/milestone/%s$' % name1)
-        tc.find("Completed")
-        tc.notfind('<table class="progress">')
-        self._tester.go_to_ticket(tid)
-        tc.find('<a class="milestone" href="/milestone/%(name)s">'
-                '%(name)s</a>' % {'name': name2})
-        tc.find('changed from <em>%s</em> to <em>%s</em>'
-                % (name1, name2))
-        tc.find("Retargetted after milestone closed<br />")
 
 
 class RegressionTestTicket5687(FunctionalTwillTestCaseSetup):
@@ -1866,6 +1874,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestMilestoneAttachments())
     suite.addTest(TestNewReport())
     suite.addTest(TestReportRealmDecoration())
+    suite.addTest(TestReportDynamicVariables())
     suite.addTest(RegressionTestRev5665())
     suite.addTest(RegressionTestRev5994())
 
@@ -1881,7 +1890,6 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket5497c())
     suite.addTest(RegressionTestTicket5497d())
     suite.addTest(RegressionTestTicket5602())
-    suite.addTest(RegressionTestTicket5658())
     suite.addTest(RegressionTestTicket5687())
     suite.addTest(RegressionTestTicket5930())
     suite.addTest(RegressionTestTicket6048())
