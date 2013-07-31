@@ -1,4 +1,3 @@
-#!/usr/bin/python
 """better_twill is a small wrapper around twill to set some sane defaults and
 monkey-patch some better versions of some of twill's methods.
 It also handles twill's absense.
