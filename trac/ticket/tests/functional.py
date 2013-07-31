@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2003-2013 Edgewall Software
@@ -1227,7 +1227,7 @@ class RegressionTestTicket4630a(FunctionalTwillTestCaseSetup):
             self._tester.logout()
             self._tester.login('user')
             self._tester.logout()
-            self._tester.login(u'joé')
+            self._tester.login('joe')
             self._tester.logout()
             self._tester.login('admin')
             ticket_id = self._tester.create_ticket()
@@ -1255,7 +1255,7 @@ class RegressionTestTicket4630b(FunctionalTestCaseSetup):
         users = perm.get_users_with_permission('TRAC_ADMIN')
         self.assertEqual(users, ['admin'])
         users = perm.get_users_with_permission('TICKET_MODIFY')
-        self.assertEqual(sorted(users), ['admin', u'joé', 'user'])
+        self.assertEqual(sorted(users), ['admin', 'joe', 'user'])
 
 
 class RegressionTestTicket5022(FunctionalTwillTestCaseSetup):
@@ -1301,7 +1301,7 @@ class RegressionTestTicket5394a(FunctionalTwillTestCaseSetup):
 
         options = 'id="action_reassign_reassign_owner">' + \
             ''.join(['<option[^>]*>%s</option>' % user for user in
-                     sorted(test_users + ['admin', u'joé', 'user'])])
+                     sorted(test_users + ['admin', 'joe', 'user'])])
         tc.find(to_utf8(options), 's')
         # We don't have a good way to fully delete a user from the Trac db.
         # Once we do, we may want to cleanup our list of users here.

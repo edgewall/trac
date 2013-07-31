@@ -145,6 +145,7 @@ class FunctionalTestEnvironment(object):
                  cwd=self.command_cwd):
             raise Exception('Unable to setup admin password')
         self.adduser('user')
+        self.adduser('joe')
         self.grant_perm('admin', 'TRAC_ADMIN')
         # Setup Trac logging
         env = self.get_trac_environment()

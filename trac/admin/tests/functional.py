@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 from trac.tests.functional import *
 from trac.util.text import unicode_to_base64, unicode_from_base64
 

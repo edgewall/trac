@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """functional_tests
 
 While unittests work well for testing facets of an implementation, they fail to

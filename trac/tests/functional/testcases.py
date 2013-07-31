@@ -1,5 +1,5 @@
+#!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-#!/usr/bin/python
 import os
 from trac.tests.functional import *
 
