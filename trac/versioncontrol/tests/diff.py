@@ -10,7 +10,7 @@
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
-s
+
 from trac.versioncontrol import diff
 
 import unittest
