@@ -147,7 +147,7 @@ class ComponentAdminPanel(TicketAdminPanel):
                         req.redirect(req.href.admin(cat, page))
 
             data = {'view': 'list',
-                    'components': model.Component.select(self.env),
+                    'components': list(model.Component.select(self.env)),
                     'default': default}
 
         if self.config.getbool('ticket', 'restrict_owner'):

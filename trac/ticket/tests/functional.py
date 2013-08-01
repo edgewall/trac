@@ -534,6 +534,29 @@ class TestAdminComponentDetail(FunctionalTwillTestCaseSetup):
         tc.notfind(desc)
 
 
+class TestAdminComponentNoneDefined(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """The table should be hidden and help text shown when there are no
+        components defined (#11103)."""
+        from trac.ticket import model
+        env = self._testenv.get_trac_environment()
+        components = model.Component.select(env)
+        self._tester.go_to_admin()
+        tc.follow(r"\bComponents\b")
+
+        try:
+            for comp in components:
+                tc.formvalue('component_table', 'sel', comp.name)
+            tc.submit('remove')
+            tc.notfind('<table class="listing" id="complist">')
+            tc.find("As long as you don't add any items to the list, this "
+                    "field[ \t\n]*will remain completely hidden from the user "
+                    "interface.")
+        finally:
+            for comp in components:
+                self._tester.create_component(comp.name, comp.owner, comp.description)
+
+
 class TestAdminMilestone(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create milestone"""
@@ -1827,6 +1850,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminComponentNonRemoval())
     suite.addTest(TestAdminComponentDefault())
     suite.addTest(TestAdminComponentDetail())
+    suite.addTest(TestAdminComponentNoneDefined())
     suite.addTest(TestAdminMilestone())
     suite.addTest(TestAdminMilestoneSpace())
     suite.addTest(TestAdminMilestoneDuplicates())
