@@ -118,7 +118,7 @@ $info.description</textarea>
           </fieldset>
         </form>
 
-        <form id="trac-repository_table" method="post" action="">
+        <form py:if="sorted_repos" id="trac-repository_table" method="post" action="">
           <table class="listing" id="trac-reposlist">
             <thead>
               <tr><th class="sel">&nbsp;</th>
