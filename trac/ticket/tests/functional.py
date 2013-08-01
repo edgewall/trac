@@ -1585,7 +1585,7 @@ class RegressionTestTicket6912a(FunctionalTwillTestCaseSetup):
         """Test for regression of http://trac.edgewall.org/ticket/6912 a"""
         try:
             self._tester.create_component(name='RegressionTestTicket6912a',
-                                          user='')
+                                          owner='')
         except twill.utils.ClientForm.ItemNotFoundError, e:
             raise twill.errors.TwillAssertionError(e)
 
@@ -1594,7 +1594,7 @@ class RegressionTestTicket6912b(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/6912 b"""
         self._tester.create_component(name='RegressionTestTicket6912b',
-                                      user='admin')
+                                      owner='admin')
         tc.follow('RegressionTestTicket6912b')
         try:
             tc.formvalue('modcomp', 'owner', '')

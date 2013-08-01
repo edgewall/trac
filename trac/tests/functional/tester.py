@@ -302,7 +302,7 @@ class FunctionalTester(object):
                                              filename, description,
                                              replace, content_type)
 
-    def create_component(self, name=None, user=None, description=None):
+    def create_component(self, name=None, owner=None, description=None):
         """Creates the specified component, with a random camel-cased name if
         none is provided.  Returns the name."""
         if name is None:
@@ -311,8 +311,8 @@ class FunctionalTester(object):
         tc.go(component_url)
         tc.url(component_url)
         tc.formvalue('addcomponent', 'name', name)
-        if user is not None:
-            tc.formvalue('addcomponent', 'owner', user)
+        if owner is not None:
+            tc.formvalue('addcomponent', 'owner', owner)
         tc.submit()
         # Verify the component appears in the component list
         tc.url(component_url)
