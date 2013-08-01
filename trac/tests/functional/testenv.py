@@ -164,6 +164,15 @@ class FunctionalTestEnvironment(object):
                  user, user], close_fds=close_fds, cwd=self.command_cwd):
             raise Exception('Unable to setup password for user "%s"' % user)
 
+    def deluser(self, user):
+        """Delete a user from the environment."""
+        user = to_utf8(user)
+        self._tracadmin('session', 'delete', user)
+        if call([sys.executable, os.path.join(self.trac_src, 'contrib',
+                 'htpasswd.py'), '-D', self.htpasswd, user],
+                close_fds=close_fds, cwd=self.command_cwd):
+            raise Exception('Unable to remove password for user "%s"' % user)
+
     def grant_perm(self, user, perm):
         """Grant permission(s) to specified user. A single permission may
         be specified as a string, or multiple permissions may be
