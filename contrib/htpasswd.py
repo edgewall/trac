@@ -71,8 +71,9 @@ class HtpasswdFile:
 
 
 def main():
-    """%prog [-c] -b filename username password
-    Create or update an htpasswd file"""
+    """
+        %prog -b[c] filename username password
+        %prog -D filename username"""
     # For now, we only care about the use cases that affect tests/functional.py
     parser = OptionParser(usage=main.__doc__)
     parser.add_option('-b', action='store_true', dest='batch', default=False,
@@ -93,8 +94,8 @@ def main():
         sys.stderr.write(parser.get_usage())
         sys.exit(1)
 
-    if not options.batch:
-        syntax_error("Only batch mode is supported\n")
+    if not (options.batch or options.delete_user):
+        syntax_error("Only batch and delete modes are supported\n")
 
     # Non-option arguments
     if len(args) < 2:
