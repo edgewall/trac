@@ -147,7 +147,7 @@ class ComponentAdminPanel(TicketAdminPanel):
                         req.redirect(req.href.admin(cat, page))
 
             data = {'view': 'list',
-                    'components': model.Component.select(self.env),
+                    'components': list(model.Component.select(self.env)),
                     'default': default}
 
         if self.config.getbool('ticket', 'restrict_owner'):
@@ -510,7 +510,7 @@ class VersionAdminPanel(TicketAdminPanel):
                         req.redirect(req.href.admin(cat, page))
 
             data = {'view': 'list',
-                    'versions': model.Version.select(self.env),
+                    'versions': list(model.Version.select(self.env)),
                     'default': default}
 
         Chrome(self.env).add_jquery_ui(req)

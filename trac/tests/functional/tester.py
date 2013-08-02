@@ -321,7 +321,7 @@ class FunctionalTester(object):
                                              filename, description,
                                              replace, content_type)
 
-    def create_component(self, name=None, user=None):
+    def create_component(self, name=None, owner=None, description=None):
         """Creates the specified component, with a random camel-cased name if
         none is provided.  Returns the name."""
         if name is None:
@@ -330,13 +330,20 @@ class FunctionalTester(object):
         tc.go(component_url)
         tc.url(component_url)
         tc.formvalue('addcomponent', 'name', name)
-        if user is not None:
-            tc.formvalue('addcomponent', 'owner', user)
+        if owner is not None:
+            tc.formvalue('addcomponent', 'owner', owner)
         tc.submit()
         # Verify the component appears in the component list
         tc.url(component_url)
         tc.find(name)
         tc.notfind(internal_error)
+        if description is not None:
+            tc.follow(r"\b%s\b" % name)
+            tc.formvalue('modcomp', 'description', description)
+            tc.submit('save')
+            tc.url(component_url)
+            tc.find("Your changes have been saved.")
+            tc.notfind(internal_error)
         # TODO: verify the component shows up in the newticket page
         return name
 
