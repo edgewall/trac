@@ -539,8 +539,9 @@ def _i18n_parse_date_pattern(locale):
     if formats[0].find('%(a)s') != -1:
         names = get_period_names(locale=locale)
         for period, name in names.iteritems():
-            name = name.lower()
-            period_names[name] = period
+            if period in ('am', 'pm'):
+                name = name.lower()
+                period_names[name] = period
     regexp.extend(period_names.iterkeys())
 
     return {
