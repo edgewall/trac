@@ -540,7 +540,7 @@ class TestAdminComponentNoneDefined(FunctionalTwillTestCaseSetup):
         components defined (#11103)."""
         from trac.ticket import model
         env = self._testenv.get_trac_environment()
-        components = model.Component.select(env)
+        components = list(model.Component.select(env))
         self._tester.go_to_admin()
         tc.follow(r"\bComponents\b")
 
