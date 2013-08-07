@@ -83,7 +83,7 @@ jQuery(document).ready(function($){
     $.ajax({ url: form.attr('action'), type: 'POST', data: {
       save_prefs: true,
       ticket_comments_order: order,
-      __FORM_TOKEN: form_token,
+      __FORM_TOKEN: form_token
     }, dataType: 'text' });
   });
 
@@ -94,7 +94,7 @@ jQuery(document).ready(function($){
     $.ajax({ url: form.attr('action'), type: 'POST', data: {
       save_prefs: true,
       ticket_comments_only: !!commentsOnly.attr('checked'),
-      __FORM_TOKEN: form_token,
+      __FORM_TOKEN: form_token
     }, dataType: 'text' });
   });
 });
