@@ -18,10 +18,10 @@ from setuptools import setup, find_packages
 
 min_python = (2, 4)
 if sys.version_info < min_python:
-    print "Trac requires Python %d.%d or later" % min_python
+    print("Trac requires Python %d.%d or later" % min_python)
     sys.exit(1)
 if sys.version_info >= (3,):
-    print "Trac doesn't support Python 3 (yet)"
+    print("Trac doesn't support Python 3 (yet)")
     sys.exit(1)
 
 extra = {}
@@ -49,7 +49,7 @@ except ImportError:
 try:
     import genshi
 except ImportError:
-    print "Genshi is needed by Trac setup, pre-installing"
+    print("Genshi is needed by Trac setup, pre-installing")
     # give some context to the warnings we might get when installing Genshi
 
 
