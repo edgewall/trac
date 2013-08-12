@@ -165,6 +165,12 @@ class TestTicketHistory(FunctionalTwillTestCaseSetup):
         ticketid = self._tester.create_ticket(summary)
         comment = self._tester.add_comment(ticketid)
         self._tester.go_to_ticket(ticketid)
+        tc.find(r'<a [^>]+>\bModify\b</a>')
+        tc.find(r"\bAttach file\b")
+        tc.find(r"\bAdd Comment\b")
+        tc.find(r"\bModify Ticket\b")
+        tc.find(r"\bPreview\b")
+        tc.find(r"\bSubmit changes\b")
         url = b.get_url()
         tc.go(url + '?version=0')
         tc.find('at <[^>]*>*Initial Version')
@@ -174,6 +180,12 @@ class TestTicketHistory(FunctionalTwillTestCaseSetup):
         tc.find('at <[^>]*>*Version 1')
         tc.find(summary)
         tc.find(comment)
+        tc.notfind(r'<a [^>]+>\bModify\b</a>')
+        tc.notfind(r"\bAttach file\b")
+        tc.notfind(r"\bAdd Comment\b")
+        tc.notfind(r"\bModify Ticket\b")
+        tc.notfind(r"\bPreview\b")
+        tc.notfind(r"\bSubmit changes\b")
 
 
 class TestTicketHistoryDiff(FunctionalTwillTestCaseSetup):
