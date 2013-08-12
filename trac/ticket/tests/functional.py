@@ -163,8 +163,7 @@ class TestTicketHistory(FunctionalTwillTestCaseSetup):
         """Test ticket history"""
         summary = random_sentence(5)
         ticketid = self._tester.create_ticket(summary)
-        comment = random_sentence(5)
-        self._tester.add_comment(ticketid, comment=comment)
+        comment = self._tester.add_comment(ticketid)
         self._tester.go_to_ticket(ticketid)
         url = b.get_url()
         tc.go(url + '?version=0')
