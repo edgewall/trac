@@ -202,10 +202,16 @@ class FunctionalTestEnvironment(object):
     def _tracadmin(self, *args):
         """Internal utility method for calling trac-admin"""
         proc = Popen([sys.executable, os.path.join(self.trac_src, 'trac',
-                      'admin', 'console.py'), self.tracdir]
-                      + list(args), stdout=PIPE, stderr=STDOUT,
+                      'admin', 'console.py'), self.tracdir],
+                      stdin=PIPE, stdout=PIPE, stderr=STDOUT,
                       close_fds=close_fds, cwd=self.command_cwd)
-        out = proc.communicate()[0]
+        if args:
+            # Don't quote first token which is sub-command name
+            input = ' '.join(('"%s"' % to_utf8(arg) if idx else arg)
+                             for idx, arg in enumerate(args))
+        else:
+            input = None
+        out = proc.communicate(input=input)[0]
         if proc.returncode:
             print(out)
             logfile.write(out)
