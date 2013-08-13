@@ -23,6 +23,7 @@ from hashlib import md5
 import new
 import mimetypes
 import os
+import re
 import socket
 from StringIO import StringIO
 import sys
@@ -479,10 +480,12 @@ class Request(object):
             scheme, host = urlparse.urlparse(self.base_url)[:2]
             url = urlparse.urlunparse((scheme, host, url, None, None, None))
 
-        # Workaround #10382, IE6+ bug when post and redirect with hash
-        if status == 303 and '#' in url and \
-                ' MSIE ' in self.environ.get('HTTP_USER_AGENT', ''):
-            url = url.replace('#', '#__msie303:')
+        # Workaround #10382, IE6-IE9 bug when post and redirect with hash
+        if status == 303 and '#' in url:
+            match = re.search(' MSIE ([0-9]+)',
+                              self.environ.get('HTTP_USER_AGENT', ''))
+            if match and int(match.group(1)) < 10:
+                url = url.replace('#', '#__msie303:')
 
         self.send_header('Location', url)
         self.send_header('Content-Type', 'text/plain')
