@@ -22,7 +22,7 @@ from trac.config import ListOption, Option
 from trac.core import *
 from trac.resource import IResourceManager, Resource, ResourceNotFound
 from trac.util.concurrency import threading
-from trac.util.text import printout, to_unicode
+from trac.util.text import printout, to_unicode, exception_to_unicode
 from trac.util.translation import _
 from trac.web.api import IRequestFilter
 
@@ -340,7 +340,26 @@ class RepositoryManager(Component):
                 try:
                     repo = self.get_repository(reponame)
                     if repo:
-                        repo.sync()
+                        try:
+                            repo.sync()
+                        except Exception, e:
+                            add_warning(req, _("Failed to sync with "
+                                "repository \"%(name)s\": %(error)s; "
+                                "repository information may be out of date.  "
+                                "Look in the Trac log for more information "
+                                "including mitigation strategies.", 
+                                name=reponame or '(default)',
+                                error=to_unicode(e.message)))
+                            self.log.error("Failed to sync with repository "
+                                "\"%s\"; You may be able to reduce the impact "
+                                "of this issue by configuring [trac] "
+                                "repository_sync_per_request; see "
+                                "http://trac.edgewall.org/wiki/"
+                                "TracRepositoryAdmin#ExplicitSync for more "
+                                "detail.  Exception: %s",
+                                reponame or '(default)',
+                                exception_to_unicode(e, traceback=True))
+                            continue
                     else:
                         self.log.warning("Unable to find repository '%s' for "
                                          "synchronization",
