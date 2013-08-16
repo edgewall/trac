@@ -324,10 +324,16 @@ class CachedRepository(Repository):
         return self.rev_db(self.metadata.get(CACHE_YOUNGEST_REV))
 
     def previous_rev(self, rev, path=''):
-        if self.has_linear_changesets:
-            return self._next_prev_rev('<', rev, path)
-        else:
-            return self.repos.previous_rev(self.normalize_rev(rev), path)
+        # Hitting the repository directly is faster than searching the
+        # database.  When there is a long stretch of inactivity on a file (in
+        # particular, when a file is added late in the history) the database
+        # query can take a very long time to determine that there is no
+        # previous revision in the node_changes table.  However, the repository
+        # will have a datastructure that will allow it to find the previous
+        # version of a node fairly directly.
+        #if self.has_linear_changesets:
+        #    return self._next_prev_rev('<', rev, path)
+        return self.repos.previous_rev(self.normalize_rev(rev), path)
 
     def next_rev(self, rev, path=''):
         if self.has_linear_changesets:
