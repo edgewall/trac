@@ -36,7 +36,7 @@ from trac.loader import get_plugin_info, get_plugins_dir
 from trac.perm import PermissionSystem, IPermissionRequestor
 from trac.util.datefmt import all_timezones, pytz
 from trac.util.text import exception_to_unicode, \
-                            unicode_to_base64, unicode_from_base64
+                           unicode_to_base64, unicode_from_base64
 from trac.util.translation import _, get_available_locales, ngettext
 from trac.web import HTTPNotFound, IRequestHandler
 from trac.web.chrome import add_notice, add_stylesheet, \
@@ -111,8 +111,8 @@ class AdminModule(Component):
         path_info = req.args.get('path_info')
         if not panel_id:
             try:
-                panel_id = filter(
-                            lambda panel: panel[0] == cat_id, panels)[0][2]
+                panel_id = \
+                    filter(lambda panel: panel[0] == cat_id, panels)[0][2]
             except IndexError:
                 raise HTTPNotFound(_('Unknown administration panel'))
 
@@ -214,7 +214,7 @@ class BasicsAdminPanel(Component):
 
         if Locale:
             locales = [Locale.parse(locale)
-                       for locale in  get_available_locales()]
+                       for locale in get_available_locales()]
             languages = sorted((str(locale), locale.display_name)
                                for locale in locales)
         else:
@@ -368,7 +368,7 @@ class PermissionAdminPanel(Component):
             group = req.args.get('group', '').strip()
 
             if subject and subject.isupper() or \
-                   group and group.isupper():
+                    group and group.isupper():
                 raise TracError(_('All upper-cased tokens are reserved for '
                                   'permission names'))
 
@@ -394,8 +394,8 @@ class PermissionAdminPanel(Component):
                 req.perm.require('PERMISSION_GRANT')
                 for action in perm.get_user_permissions(group):
                     if not action in all_actions: # plugin disabled?
-                        self.env.log.warn("Adding %s to group %s: " \
-                            "Permission %s unavailable, skipping perm check." \
+                        self.env.log.warn("Adding %s to group %s: "
+                            "Permission %s unavailable, skipping perm check."
                             % (subject, group, action))
                     else:
                         req.perm.require(action)
@@ -455,7 +455,7 @@ class PluginAdminPanel(Component):
             else:
                 self._do_update(req)
             anchor = ''
-            if req.args.has_key('plugin'):
+            if 'plugin' in req.args:
                 anchor = '#no%d' % (int(req.args.get('plugin')) + 1)
             req.redirect(req.href.admin(cat, page) + anchor)
 
@@ -465,7 +465,7 @@ class PluginAdminPanel(Component):
 
     def _do_install(self, req):
         """Install a plugin."""
-        if not req.args.has_key('plugin_file'):
+        if 'plugin_file' not in req.args:
             raise TracError(_('No file uploaded'))
         upload = req.args['plugin_file']
         if isinstance(upload, unicode) or not upload.filename:

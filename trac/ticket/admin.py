@@ -40,7 +40,6 @@ class TicketAdminPanel(Component):
     #            and don't use it whenever using them as field names (after
     #            a call to `.lower()`)
 
-
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
@@ -239,7 +238,6 @@ class MilestoneAdminPanel(TicketAdminPanel):
     def get_admin_panels(self, req):
         if 'MILESTONE_VIEW' in req.perm:
             return TicketAdminPanel.get_admin_panels(self, req)
-        return iter([])
 
     # TicketAdminPanel methods
 

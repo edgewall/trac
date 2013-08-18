@@ -154,6 +154,7 @@ class FunctionalTester(object):
         """Surf to the webadmin page."""
         self.go_to_front()
         tc.follow('\\bAdmin\\b')
+        tc.url(self.url + '/admin')
 
     def go_to_roadmap(self):
         """Surf to the roadmap page."""
