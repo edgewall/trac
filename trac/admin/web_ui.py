@@ -455,7 +455,7 @@ class PluginAdminPanel(Component):
             else:
                 self._do_update(req)
             anchor = ''
-            if req.args.has_key('plugin'):
+            if 'plugin' in req.args:
                 anchor = '#no%d' % (int(req.args.get('plugin')) + 1)
             req.redirect(req.href.admin(cat, page) + anchor)
 
@@ -465,7 +465,7 @@ class PluginAdminPanel(Component):
 
     def _do_install(self, req):
         """Install a plugin."""
-        if not req.args.has_key('plugin_file'):
+        if 'plugin_file' not in req.args:
             raise TracError(_('No file uploaded'))
         upload = req.args['plugin_file']
         if isinstance(upload, unicode) or not upload.filename:
