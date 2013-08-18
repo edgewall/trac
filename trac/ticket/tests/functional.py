@@ -27,8 +27,7 @@ class TestTickets(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Create a ticket, comment on it, and attach a file"""
         # TODO: this should be split into multiple tests
-        summary = random_sentence(5)
-        ticketid = self._tester.create_ticket(summary)
+        ticketid = self._tester.create_ticket()
         self._tester.create_ticket()
         self._tester.add_comment(ticketid)
         self._tester.attach_file_to_ticket(ticketid)
@@ -82,8 +81,7 @@ class TestTicketAltFormats(FunctionalTestCaseSetup):
 class TestTicketCSVFormat(FunctionalTestCaseSetup):
     def runTest(self):
         """Download ticket in CSV format"""
-        summary = random_sentence(5)
-        ticketid = self._tester.create_ticket(summary)
+        ticketid = self._tester.create_ticket()
         self._tester.go_to_ticket(ticketid)
         tc.follow('Comma-delimited Text')
         csv = b.get_html()
@@ -94,8 +92,7 @@ class TestTicketCSVFormat(FunctionalTestCaseSetup):
 class TestTicketTabFormat(FunctionalTestCaseSetup):
     def runTest(self):
         """Download ticket in Tab-delimitted format"""
-        summary = random_sentence(5)
-        ticketid = self._tester.create_ticket(summary)
+        ticketid = self._tester.create_ticket()
         self._tester.go_to_ticket(ticketid)
         tc.follow('Tab-delimited Text')
         tab = b.get_html()
@@ -132,7 +129,7 @@ class TestTicketSearch(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test ticket search"""
         summary = random_sentence(4)
-        ticketid = self._tester.create_ticket(summary)
+        self._tester.create_ticket(summary)
         self._tester.go_to_front()
         tc.follow('Search')
         tc.formvalue('fullsearch', 'ticket', True)
@@ -275,8 +272,7 @@ class TestTicketCustomFieldTextNoFormat(FunctionalTwillTestCaseSetup):
 
         self._testenv.restart()
         val = "%s %s" % (random_unique_camel(), random_word())
-        ticketid = self._tester.create_ticket(summary=random_sentence(3),
-                                              info={'newfield': val})
+        ticketid = self._tester.create_ticket(info={'newfield': val})
         self._tester.go_to_ticket(ticketid)
         tc.find('<td headers="h_newfield"[^>]*>\s*%s\s*</td>' % val)
 
@@ -295,8 +291,7 @@ class TestTicketCustomFieldTextAreaNoFormat(FunctionalTwillTestCaseSetup):
 
         self._testenv.restart()
         val = "%s %s" % (random_unique_camel(), random_word())
-        ticketid = self._tester.create_ticket(summary=random_sentence(3),
-                                              info={'newfield': val})
+        ticketid = self._tester.create_ticket(info={'newfield': val})
         self._tester.go_to_ticket(ticketid)
         tc.find('<td headers="h_newfield"[^>]*>\s*%s\s*</td>' % val)
 
@@ -318,8 +313,7 @@ class TestTicketCustomFieldTextWikiFormat(FunctionalTwillTestCaseSetup):
         word1 = random_unique_camel()
         word2 = random_word()
         val = "%s %s" % (word1, word2)
-        ticketid = self._tester.create_ticket(summary=random_sentence(3),
-                                              info={'newfield': val})
+        ticketid = self._tester.create_ticket(info={'newfield': val})
         self._tester.go_to_ticket(ticketid)
         wiki = '<a [^>]*>%s\??</a> %s' % (word1, word2)
         tc.find('<td headers="h_newfield"[^>]*>\s*%s\s*</td>' % wiki)
@@ -341,8 +335,7 @@ class TestTicketCustomFieldTextAreaWikiFormat(FunctionalTwillTestCaseSetup):
         word1 = random_unique_camel()
         word2 = random_word()
         val = "%s %s" % (word1, word2)
-        ticketid = self._tester.create_ticket(summary=random_sentence(3),
-                                              info={'newfield': val})
+        ticketid = self._tester.create_ticket(info={'newfield': val})
         self._tester.go_to_ticket(ticketid)
         wiki = '<p>\s*<a [^>]*>%s\??</a> %s<br />\s*</p>' % (word1, word2)
         tc.find('<td headers="h_newfield"[^>]*>\s*%s\s*</td>' % wiki)
@@ -366,8 +359,7 @@ class TestTicketCustomFieldTextReferenceFormat(FunctionalTwillTestCaseSetup):
         word1 = random_unique_camel()
         word2 = random_word()
         val = "%s %s" % (word1, word2)
-        ticketid = self._tester.create_ticket(summary=random_sentence(3),
-                                              info={'newfield': val})
+        ticketid = self._tester.create_ticket(info={'newfield': val})
         self._tester.go_to_ticket(ticketid)
         query = 'status=!closed&amp;newfield=%s\+%s' % (word1, word2)
         querylink = '<a href="/query\?%s">%s</a>' % (query, val)
@@ -392,8 +384,7 @@ class TestTicketCustomFieldTextListFormat(FunctionalTwillTestCaseSetup):
         word1 = random_unique_camel()
         word2 = random_word()
         val = "%s %s" % (word1, word2)
-        ticketid = self._tester.create_ticket(summary=random_sentence(3),
-                                              info={'newfield': val})
+        ticketid = self._tester.create_ticket(info={'newfield': val})
         self._tester.go_to_ticket(ticketid)
         query1 = 'status=!closed&amp;newfield=~%s' % word1
         query2 = 'status=!closed&amp;newfield=~%s' % word2
@@ -417,7 +408,7 @@ class RegressionTestTicket10828(FunctionalTwillTestCaseSetup):
         env.config.save()
 
         self._testenv.restart()
-        ticketid = self._tester.create_ticket(summary=random_sentence(3))
+        ticketid = self._tester.create_ticket()
         self._tester.go_to_ticket(ticketid)
 
         word1 = random_unique_camel()
