@@ -238,7 +238,6 @@ class MilestoneAdminPanel(TicketAdminPanel):
     def get_admin_panels(self, req):
         if 'MILESTONE_VIEW' in req.perm:
             return TicketAdminPanel.get_admin_panels(self, req)
-        return iter([])
 
     # TicketAdminPanel methods
 
