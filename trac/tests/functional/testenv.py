@@ -76,6 +76,8 @@ class FunctionalTestEnvironment(object):
         time.sleep(0.1) # Avoid race condition on Windows
         self.create()
         locale.setlocale(locale.LC_ALL, '')
+        if not ConfigObj:
+            print "SKIP: fine-grained permission tests. ConfigObj not installed."
 
     trac_src = '.'
 
@@ -298,8 +300,8 @@ class FunctionalTestEnvironment(object):
         "authz-".
         """
         if not ConfigObj:
-            raise Exception("Can't enable authz permissions policy. " +
-                            "ConfigObj not installed.")
+            raise ImportError("Can't enable authz permissions policy. " +
+                              "ConfigObj not installed.")
         if filename is None:
             from hashlib import md5
             filename = 'authz-' + md5(str(authz_content)).hexdigest()[0:9]
