@@ -40,7 +40,6 @@ class TicketAdminPanel(Component):
     #            and don't use it whenever using them as field names (after
     #            a call to `.lower()`)
 
-
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
