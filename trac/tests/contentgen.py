@@ -32,8 +32,10 @@ except IOError:
     ]
 
 
-def random_word():
+def random_word(min_length=1):
     word = random.choice(all_words)
+    while len(word) < min_length:
+        word = random.choice(all_words)
     # Do not return CamelCase words
     if word[0].isupper():
         word = word.lower().capitalize()
@@ -44,7 +46,7 @@ _random_unique_camels = []
 def random_unique_camel():
     """Returns a unique camelcase word pair"""
     while True:
-        camel = random_word().title() + random_word().title()
+        camel = random_word(2).title() + random_word(2).title()
         if not camel in _random_unique_camels:
             break
     _random_unique_camels.append(camel)
