@@ -12,6 +12,7 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import random
+import uuid
 
 try:
     all_words = [x.strip() for x in open('/usr/share/dict/words').readlines()
@@ -51,9 +52,15 @@ def random_unique_camel():
 
 
 def random_sentence(word_count=None):
+    """Generates a random sentence. The first word consists of the first 8
+    characters of a uuid to ensure uniqueness.
+
+    :param word_count: number of words in the sentence
+    """
     if word_count is None:
         word_count = random.randint(1, 20)
-    words = [random_word() for x in range(word_count)]
+    words = [random_word() for x in range(word_count - 1)]
+    words.insert(0, str(uuid.uuid1()).split('-')[0])
     return '%s.' % ' '.join(words)
 
 

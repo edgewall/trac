@@ -460,8 +460,9 @@ class TestTimelineTicketDetails(FunctionalTwillTestCaseSetup):
         tc.formvalue('prefs', 'ticket_details', True)
         tc.submit()
         htmltags = '(<[^>]*>)*'
-        tc.find('Ticket ' + htmltags + '#' + str(ticketid) + htmltags + ' \\(' +
-                summary + '\\) updated\\s+by\\s+' + htmltags + 'admin', 's')
+        tc.find('Ticket ' + htmltags + '#' + str(ticketid) + htmltags +
+                ' \\(' + summary.split()[0] +
+                ' [^\\)]+\\) updated\\s+by\\s+' + htmltags + 'admin', 's')
 
 
 class TestAdminComponent(FunctionalTwillTestCaseSetup):
