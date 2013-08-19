@@ -79,7 +79,7 @@ class FunctionalTester(object):
         tc.follow('New Ticket')
         tc.notfind(internal_error)
         if summary is None:
-            summary = random_sentence(4)
+            summary = random_sentence(5)
         tc.formvalue('propertyform', 'field_summary', summary)
         tc.formvalue('propertyform', 'field_description', random_page())
         if info:

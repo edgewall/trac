@@ -134,8 +134,7 @@ class RegressionTestTicket5572(FunctionalTwillTestCaseSetup):
 class RegressionTestTicket7209(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/7209"""
-        summary = random_sentence(5)
-        ticketid = self._tester.create_ticket(summary)
+        ticketid = self._tester.create_ticket()
         self._tester.create_ticket()
         self._tester.add_comment(ticketid)
         self._tester.attach_file_to_ticket(ticketid, filename='hello.txt',
@@ -171,8 +170,7 @@ class RegressionTestTicket9880(FunctionalTwillTestCaseSetup):
         Upload of a file which the browsers associates a Content-Type
         of multipart/related (e.g. an .mht file) should succeed.
         """
-        summary = random_sentence(5)
-        ticketid = self._tester.create_ticket(summary)
+        ticketid = self._tester.create_ticket()
         self._tester.create_ticket()
         self._tester.attach_file_to_ticket(ticketid, filename='hello.mht',
                                            content_type='multipart/related',
