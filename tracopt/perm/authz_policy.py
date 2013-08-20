@@ -19,15 +19,12 @@ from itertools import groupby
 import os
 
 from trac.core import *
-from trac.config import ConfigurationError, Option
+from trac.config import Option
 from trac.perm import PermissionSystem, IPermissionPolicy
-from trac.util import lazy
-from trac.util.text import to_unicode
-from trac.util.translation import _
 
 ConfigObj = None
 try:
-    from configobj import ConfigObj, ConfigObjError
+    from configobj import ConfigObj
 except ImportError:
     pass
 
@@ -146,7 +143,7 @@ class AuthzPolicy(Component):
             return None
 
         if self.authz_file and not self.authz_mtime or \
-                os.path.getmtime(self.get_authz_file) > self.authz_mtime:
+                os.path.getmtime(self.get_authz_file()) > self.authz_mtime:
             self.parse_authz()
         resource_key = self.normalise_resource(resource)
         self.log.debug('Checking %s on %s', action, resource_key)
@@ -169,31 +166,14 @@ class AuthzPolicy(Component):
 
     # Internal methods
 
-    @lazy
     def get_authz_file(self):
-        authz_file = self.authz_file if os.path.isabs(self.authz_file) \
-                                     else os.path.join(self.env.path,
-                                                       self.authz_file)
-        try:
-            os.stat(authz_file)
-        except OSError, e:
-            self.log.error("Error parsing authz permission policy file: %s",
-                           to_unicode(e.strerror + ' ' + e.filename))
-            raise ConfigurationError(_("Look in the Trac log for more "
-                                       "information."))
-        return authz_file
+        f = self.authz_file
+        return f if os.path.isabs(f) else os.path.join(self.env.path, f)
 
     def parse_authz(self):
         self.log.debug('Parsing authz security policy %s',
-                       self.get_authz_file)
-        try:
-            self.authz = ConfigObj(self.get_authz_file, encoding='utf8',
-                                   raise_errors=True)
-        except ConfigObjError, e:
-            self.log.error("Error parsing authz permission policy file: %s",
-                           to_unicode(e.message))
-            raise ConfigurationError(_("Look in the Trac log for more "
-                                       "information."))
+                       self.get_authz_file())
+        self.authz = ConfigObj(self.get_authz_file(), encoding='utf8')
         groups = {}
         for group, users in self.authz.get('groups', {}).iteritems():
             if isinstance(users, basestring):
@@ -212,7 +192,7 @@ class AuthzPolicy(Component):
         for group, users in groups.iteritems():
             add_items('@' + group, users)
 
-        self.authz_mtime = os.path.getmtime(self.get_authz_file)
+        self.authz_mtime = os.path.getmtime(self.get_authz_file())
 
     def normalise_resource(self, resource):
         def flatten(resource):
