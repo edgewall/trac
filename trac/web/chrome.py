@@ -135,8 +135,8 @@ def add_stylesheet(req, filename, mimetype='text/css', media=None):
     """Add a link to a style sheet to the chrome info so that it gets included
     in the generated HTML page.
 
-    If `filename` is a network-path reference (i.e. starts with a protocol),
-    the return value will not be modified. If `filename` is absolute
+    If `filename` is a network-path reference (i.e. starts with a protocol
+    or `//`), the return value will not be modified. If `filename` is absolute
     (i.e. starts with `/`), the generated link will be based off the
     application root path. If it is relative, the link will be based off the
     `/chrome/` path.
@@ -148,8 +148,8 @@ def add_script(req, filename, mimetype='text/javascript', charset='utf-8',
                ie_if=None):
     """Add a reference to an external javascript file to the template.
 
-    If `filename` is a network-path reference (i.e. starts with a protocol),
-    the return value will not be modified. If `filename` is absolute
+    If `filename` is a network-path reference (i.e. starts with a protocol
+    or `//`), the return value will not be modified. If `filename` is absolute
     (i.e. starts with `/`), the generated link will be based off the
     application root path. If it is relative, the link will be based off the
     `/chrome/` path.
@@ -302,13 +302,13 @@ def auth_link(req, link):
 def _chrome_resource_path(req, filename):
     """Get the path for a chrome resource given its `filename`.
 
-    If `filename` is a network-path reference (i.e. starts with a protocol),
-    the return value will not be modified. If `filename` is absolute
+    If `filename` is a network-path reference (i.e. starts with a protocol
+    or `//`), the return value will not be modified. If `filename` is absolute
     (i.e. starts with `/`), the generated link will be based off the
     application root path. If it is relative, the link will be based off the
     `/chrome/` path.
     """
-    if filename.startswith(('http://', 'https://')):
+    if filename.startswith(('http://', 'https://', '//')):
         return filename
     elif filename.startswith('common/') and 'htdocs_location' in req.chrome:
         return Href(req.chrome['htdocs_location'])(filename[7:])
