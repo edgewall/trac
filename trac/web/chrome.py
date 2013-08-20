@@ -135,42 +135,30 @@ def add_stylesheet(req, filename, mimetype='text/css', media=None):
     """Add a link to a style sheet to the chrome info so that it gets included
     in the generated HTML page.
 
-    If the filename is absolute (i.e. starts with a slash), the generated link
-    will be based off the application root path. If it is relative, the link
-    will be based off the `/chrome/` path.
+    If `filename` is a network-path reference (i.e. starts with a protocol
+    or `//`), the return value will not be modified. If `filename` is absolute
+    (i.e. starts with `/`), the generated link will be based off the
+    application root path. If it is relative, the link will be based off the
+    `/chrome/` path.
     """
-    if filename.startswith(('http://', 'https://')):
-        href = filename
-    elif filename.startswith('common/') and 'htdocs_location' in req.chrome:
-        href = Href(req.chrome['htdocs_location'])(filename[7:])
-    else:
-        href = req.href
-        if not filename.startswith('/'):
-            href = href.chrome
-        href = href(filename)
+    href = _chrome_resource_path(req, filename)
     add_link(req, 'stylesheet', href, mimetype=mimetype, media=media)
 
 def add_script(req, filename, mimetype='text/javascript', charset='utf-8',
                ie_if=None):
     """Add a reference to an external javascript file to the template.
 
-    If the filename is absolute (i.e. starts with a slash), the generated link
-    will be based off the application root path. If it is relative, the link
-    will be based off the `/chrome/` path.
+    If `filename` is a network-path reference (i.e. starts with a protocol
+    or `//`), the return value will not be modified. If `filename` is absolute
+    (i.e. starts with `/`), the generated link will be based off the
+    application root path. If it is relative, the link will be based off the
+    `/chrome/` path.
     """
     scriptset = req.chrome.setdefault('scriptset', set())
     if filename in scriptset:
         return False # Already added that script
 
-    if filename.startswith(('http://', 'https://')):
-        href = filename
-    elif filename.startswith('common/') and 'htdocs_location' in req.chrome:
-        href = Href(req.chrome['htdocs_location'])(filename[7:])
-    else:
-        href = req.href
-        if not filename.startswith('/'):
-            href = href.chrome
-        href = href(filename)
+    href = _chrome_resource_path(req, filename)
     script = {'href': href, 'type': mimetype, 'charset': charset,
               'prefix': Markup('<!--[if %s]>' % ie_if) if ie_if else None,
               'suffix': Markup('<![endif]-->') if ie_if else None}
@@ -309,6 +297,26 @@ def auth_link(req, link):
     if req.authname != 'anonymous':
         return req.href.login(referer=link)
     return link
+
+
+def _chrome_resource_path(req, filename):
+    """Get the path for a chrome resource given its `filename`.
+
+    If `filename` is a network-path reference (i.e. starts with a protocol
+    or `//`), the return value will not be modified. If `filename` is absolute
+    (i.e. starts with `/`), the generated link will be based off the
+    application root path. If it is relative, the link will be based off the
+    `/chrome/` path.
+    """
+    if filename.startswith(('http://', 'https://', '//')):
+        return filename
+    elif filename.startswith('common/') and 'htdocs_location' in req.chrome:
+        return Href(req.chrome['htdocs_location'])(filename[7:])
+    else:
+        href = req.href
+        if not filename.startswith('/'):
+            href = href.chrome
+        return href(filename)
 
 
 def _save_messages(req, url, permanent):
