@@ -179,8 +179,7 @@ class AuthzPolicy(Component):
         except OSError, e:
             self.log.error("Error parsing authz permission policy file: %s",
                            to_unicode(e.strerror + ' ' + e.filename))
-            raise ConfigurationError(_("Look in the Trac log for more "
-                                       "information."))
+            raise ConfigurationError()
         return authz_file
 
     def parse_authz(self):
@@ -192,8 +191,7 @@ class AuthzPolicy(Component):
         except ConfigObjError, e:
             self.log.error("Error parsing authz permission policy file: %s",
                            to_unicode(e.message))
-            raise ConfigurationError(_("Look in the Trac log for more "
-                                       "information."))
+            raise ConfigurationError()
         groups = {}
         for group, users in self.authz.get('groups', {}).iteritems():
             if isinstance(users, basestring):

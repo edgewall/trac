@@ -43,6 +43,12 @@ class ConfigurationError(TracError):
     """Exception raised when a value in the configuration file is not valid."""
     title = N_('Configuration Error')
 
+    def __init__(self, message=None, title=None, show_traceback=False):
+        if message is None:
+            message = _("Look in the Trac log for more information.")
+        super(ConfigurationError, self).__init__(message, title,
+                                                 show_traceback)
+
 
 class Configuration(object):
     """Thin layer over `ConfigParser` from the Python standard library.
