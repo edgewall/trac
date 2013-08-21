@@ -271,13 +271,13 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': self.env.get_read_db().like()})
         sql, args = query.get_sql()
         foo = self.env.get_read_db().quote('foo')
         self.assertEqualSQL(sql,
-"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value,c.%s AS %s
-FROM ticket AS t
-  LEFT JOIN (SELECT id AS ticket,
-    (SELECT c.value FROM ticket_custom c WHERE c.ticket=t.id AND c.name='foo') AS %s
-    FROM ticket t) AS c ON (c.ticket=t.id)
+"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value,t.%s AS %s
+FROM (
+  SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,
+  (SELECT c.value FROM ticket_custom c WHERE c.ticket=t.id AND c.name='foo') AS %s
+  FROM ticket AS t) AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE ((COALESCE(c.%s,'')=%%s))
+WHERE ((COALESCE(t.%s,'')=%%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % ((foo,) * 4))
         self.assertEqual(['something'], args)
         tickets = query.execute(self.req)
@@ -288,13 +288,13 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % ((foo,) * 4))
         sql, args = query.get_sql()
         foo = self.env.get_read_db().quote('foo')
         self.assertEqualSQL(sql,
-"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value,c.%s AS %s
-FROM ticket AS t
-  LEFT JOIN (SELECT id AS ticket,
-    (SELECT c.value FROM ticket_custom c WHERE c.ticket=t.id AND c.name='foo') AS %s
-    FROM ticket t) AS c ON (c.ticket=t.id)
+"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value,t.%s AS %s
+FROM (
+  SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,
+  (SELECT c.value FROM ticket_custom c WHERE c.ticket=t.id AND c.name='foo') AS %s
+  FROM ticket AS t) AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-ORDER BY COALESCE(c.%s,'')='',c.%s,COALESCE(t.id,0)=0,t.id""" %
+ORDER BY COALESCE(t.%s,'')='',t.%s,COALESCE(t.id,0)=0,t.id""" %
         ((foo,) * 5))
         self.assertEqual([], args)
         tickets = query.execute(self.req)

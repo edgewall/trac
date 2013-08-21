@@ -454,17 +454,20 @@ class Query(object):
                                          if c not in custom_fields]))
         sql.append(",priority.value AS priority_value")
         for k in [db.quote(k) for k in cols if k in custom_fields]:
-            sql.append(",c.%s AS %s" % (k, k))
-        sql.append("\nFROM ticket AS t")
+            sql.append(",t.%s AS %s" % (k, k))
 
-        # Join with ticket_custom table as necessary
+        # Use subquery of ticket_custom table as necessary
         if any(k in custom_fields for k in cols):
-            sql.append("\n  LEFT JOIN (SELECT id AS ticket")
-            sql.extend(",\n    (SELECT c.value FROM ticket_custom c "
+            sql.append('\nFROM (\n  SELECT ' +
+                       ','.join('t.%s AS %s' % (c, c)
+                                for c in cols if c not in custom_fields))
+            sql.extend(",\n  (SELECT c.value FROM ticket_custom c "
                        "WHERE c.ticket=t.id AND c.name='%s') AS %s"
                        % (k, db.quote(k))
                        for k in cols if k in custom_fields)
-            sql.append("\n    FROM ticket t) AS c ON (c.ticket=t.id)")
+            sql.append("\n  FROM ticket AS t) AS t")
+        else:
+            sql.append("\nFROM ticket AS t")
 
         # Join with the enum table for proper sorting
         for col in [c for c in enum_columns
@@ -491,7 +494,7 @@ class Query(object):
             if name not in custom_fields:
                 col = 't.' + name
             else:
-                col = 'c.' + db.quote(name)
+                col = 't.' + db.quote(name)
             value = value[len(mode) + neg:]
 
             if name in self.time_fields:
@@ -593,7 +596,7 @@ class Query(object):
                     if k not in custom_fields:
                         col = 't.' + k
                     else:
-                        col = 'c.' + db.quote(k)
+                        col = 't.' + db.quote(k)
                     clauses.append("COALESCE(%s,'') %sIN (%s)"
                                    % (col, 'NOT ' if neg else '',
                                       ','.join(['%s' for val in v])))
@@ -634,7 +637,7 @@ class Query(object):
             if name in enum_columns:
                 col = name + '.value'
             elif name in custom_fields:
-                col = 'c.' + db.quote(name)
+                col = 't.' + db.quote(name)
             else:
                 col = 't.' + name
             desc = ' DESC' if desc else ''
