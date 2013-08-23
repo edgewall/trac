@@ -137,7 +137,7 @@ REPORT_TEST_CASES = u"""
 ------------------------------
 <p>
 <a class="report" href="/report/1">{1}</a>, <a class="report" href="/report/2">{2}</a>
-<a class="report" href="/report/12">{12}</a>, {abc}
+<a class="missing report" title="report does not exist">{12}</a>, {abc}
 </p>
 ------------------------------
 ============================== escaping the above
@@ -185,7 +185,13 @@ trac:report:1
 """ # '
 
 def report_setup(tc):
-    pass # TBD
+    def create_report(tc, id):
+        tc.env.db_transaction("""
+            INSERT INTO report (id,title,query,description)
+            VALUES (%s,%s,'SELECT 1','')""", (id, 'Report %s' % id))
+    create_report(tc, 1)
+    create_report(tc, 2)
+
 
 
 MILESTONE_TEST_CASES = u"""
