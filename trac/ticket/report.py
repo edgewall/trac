@@ -250,27 +250,16 @@ class ReportModule(Component):
     def _render_confirm_delete(self, req, id):
         req.perm.require('REPORT_DELETE')
 
-        for title, in self.env.db_query("""
-                SELECT title FROM report WHERE id=%s
-                """, (id,)):
-            return {'title': _("Delete Report {%(num)s} %(title)s", num=id,
-                               title=title),
-                    'action': 'delete',
-                    'report': {'id': id, 'title': title}}
-        else:
-            raise TracError(_("Report {%(num)s} does not exist.", num=id),
-                            _("Invalid Report Number"))
+        title, description, sql = self.get_report(id)
+        return {'title': _("Delete Report {%(num)s} %(title)s", num=id,
+                           title=title),
+                'action': 'delete',
+                'report': {'id': id, 'title': title}}
 
     def _render_editor(self, req, id, copy):
         if id != -1:
             req.perm.require('REPORT_MODIFY')
-            for title, description, query in self.env.db_query(
-                    "SELECT title, description, query FROM report WHERE id=%s",
-                    (id,)):
-                break
-            else:
-                raise TracError(_("Report {%(num)s} does not exist.", num=id),
-                                _("Invalid Report Number"))
+            title, description, query = self.get_report(id)
         else:
             req.perm.require('REPORT_CREATE')
             title = description = query = ''
@@ -343,13 +332,7 @@ class ReportModule(Component):
 
     def _render_view(self, req, id):
         """Retrieve the report results and pre-process them for rendering."""
-        for title, sql, description in self.env.db_query("""
-                SELECT title, query, description from report WHERE id=%s
-                """, (id,)):
-            break
-        else:
-            raise ResourceNotFound(_("Report {%(num)s} does not exist.",
-                                     num=id), _("Invalid Report Number"))
+        title, description, sql = self.get_report(id)
         try:
             args = self.get_var_args(req)
         except ValueError, e:
@@ -766,6 +749,16 @@ class ReportModule(Component):
         cols = get_column_names(cursor)
         return cols, rows, num_items, missing_args, limit_offset
 
+    def get_report(self, id):
+        for title, description, sql in self.env.db_query("""
+                SELECT title, description, query from report WHERE id=%s
+                """, (id,)):
+            break
+        else:
+            raise ResourceNotFound(_("Report {%(num)s} does not exist.",
+                                     num=id), _("Invalid Report Number"))
+        return title, description, sql
+
     def get_var_args(self, req):
         # reuse somehow for #9574 (wiki vars)
         report_args = {}
@@ -908,6 +901,16 @@ class ReportModule(Component):
                                                          fullmatch)
         if intertrac:
             return intertrac
-        report, args, fragment = formatter.split_link(target)
-        return tag.a(label, href=formatter.href.report(report) + args,
-                     class_='report')
+        id, args, fragment = formatter.split_link(target)
+        try:
+            self.get_report(id)
+        except ResourceNotFound:
+            return tag.a(label, class_='missing report',
+                         title=_("report does not exist"))
+        else:
+            if 'REPORT_VIEW' in formatter.req.perm('report', id):
+                return tag.a(label, href=formatter.href.report(id) + args,
+                             class_='report')
+            else:
+                return tag.a(label, class_='forbidden report',
+                             title=_("no permission to view report"))
