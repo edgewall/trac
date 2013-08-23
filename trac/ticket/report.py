@@ -910,6 +910,9 @@ class ReportModule(Component):
             return tag.a(label, class_='missing report',
                          title=_("report does not exist"))
         else:
-            return tag.a(label, href=formatter.href.report(id) + args,
-                         class_='report')
-
+            if 'REPORT_VIEW' in formatter.req.perm('report', id):
+                return tag.a(label, href=formatter.href.report(id) + args,
+                             class_='report')
+            else:
+                return tag.a(label, class_='forbidden report',
+                             title=_("no permission to view report"))
