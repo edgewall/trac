@@ -747,7 +747,7 @@ class EnvironmentSetup(Component):
         self._update_sample_config()
 
     def environment_needs_upgrade(self, db):
-        dbver = self.env.get_version(db)
+        dbver = self.env.get_version()
         if dbver == db_default.db_version:
             return False
         elif dbver > db_default.db_version:
