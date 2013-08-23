@@ -916,7 +916,7 @@ class MilestoneModule(Component):
     def _render_link(self, context, name, label, extra=''):
         try:
             milestone = Milestone(self.env, name)
-        except TracError:
+        except ResourceNotFound:
             milestone = None
         # Note: the above should really not be needed, `Milestone.exists`
         # should simply be false if the milestone doesn't exist in the db
