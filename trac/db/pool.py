@@ -93,7 +93,7 @@ class ConnectionPoolBackend(object):
         deferred = num == 1 and isinstance(cnx, tuple)
         err = None
         if deferred:
-            # Potentially lenghty operations must be done without lock held
+            # Potentially lengthy operations must be done without lock held
             op, cnx = cnx
             try:
                 if op == 'ping':
