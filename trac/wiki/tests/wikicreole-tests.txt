@@ -240,7 +240,7 @@ Paragraph
 Some examples of markup are: {{{** <em>this</em> ** }}}
 ------------------------------
 <p>
-Some examples of markup are: <tt>** &lt;em&gt;this&lt;/em&gt; ** </tt>
+Some examples of markup are: <code>** &lt;em&gt;this&lt;/em&gt; ** </code>
 </p>
 ------------------------------
 ============================== Closing braces in nowiki (WONTFIX)
@@ -296,6 +296,6 @@ CamelCaseLink
 </ul>
 <ol>
 <li>item about a <a href="http://www.examplewiki.com/certain_page">certain page</a></li>
-<li><tt>//this// is **not** [[processed]]</tt></li>
+<li><code>//this// is **not** [[processed]]</code></li>
 </ol>
 ------------------------------

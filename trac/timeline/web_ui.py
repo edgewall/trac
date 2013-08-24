@@ -411,7 +411,7 @@ class TimelineModule(Component):
         raise TracError(tag(
             tag.p(tag_("Event provider %(name)s failed for filters "
                        "%(kinds)s: ",
-                       name=tag.tt(ep.__class__.__name__),
+                       name=tag.code(ep.__class__.__name__),
                        kinds=', '.join('"%s"' % ep_kinds[f] for f in
                                        current_filters & ep_filters)),
                   tag.b(exception_to_unicode(exc)), class_='message'),

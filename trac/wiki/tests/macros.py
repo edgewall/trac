@@ -431,8 +431,8 @@ TRACINI_MACRO_TEST_CASES = u"""\
 </p><div class="tracini">\
 <h3 id="section-42-section"><code>[section-42]</code></h3>\
 <table class="wiki"><tbody>\
-<tr><td><tt>option1</tt></td><td></td><td class="default"><code>value</code></td></tr>\
-<tr><td><tt>option2</tt></td><td>blah</td><td class="default"><code>value</code></td></tr>\
+<tr><td><code>option1</code></td><td></td><td class="default"><code>value</code></td></tr>\
+<tr><td><code>option2</code></td><td>blah</td><td class="default"><code>value</code></td></tr>\
 </tbody></table>\
 </div><p>
 </p>
@@ -444,7 +444,7 @@ TRACINI_MACRO_TEST_CASES = u"""\
 </p><div class="tracini">\
 <h3 id="section-list-section"><code>[section-list]</code></h3>\
 <table class="wiki"><tbody>\
-<tr><td><tt>option1</tt></td><td></td><td class="default"><code>4.2|42|42||0|enabled</code></td></tr>\
+<tr><td><code>option1</code></td><td></td><td class="default"><code>4.2|42|42||0|enabled</code></td></tr>\
 </tbody></table>\
 </div><p>
 </p>
@@ -456,11 +456,11 @@ TRACINI_MACRO_TEST_CASES = u"""\
 </p><div class="tracini">\
 <h3 id="section-def-section"><code>[section-def]</code></h3>\
 <table class="wiki"><tbody>\
-<tr><td><tt>option1</tt></td><td></td><td class="nodefault">(no default)</td></tr>\
-<tr><td><tt>option2</tt></td><td></td><td class="nodefault">(no default)</td></tr>\
-<tr><td><tt>option3</tt></td><td></td><td class="default"><code>0</code></td></tr>\
-<tr><td><tt>option4</tt></td><td></td><td class="default"><code>disabled</code></td></tr>\
-<tr><td><tt>option5</tt></td><td></td><td class="default"><code></code></td></tr>\
+<tr><td><code>option1</code></td><td></td><td class="nodefault">(no default)</td></tr>\
+<tr><td><code>option2</code></td><td></td><td class="nodefault">(no default)</td></tr>\
+<tr><td><code>option3</code></td><td></td><td class="default"><code>0</code></td></tr>\
+<tr><td><code>option4</code></td><td></td><td class="default"><code>disabled</code></td></tr>\
+<tr><td><code>option5</code></td><td></td><td class="default"><code></code></td></tr>\
 </tbody></table>\
 </div><p>
 </p>

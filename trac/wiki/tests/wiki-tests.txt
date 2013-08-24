@@ -141,16 +141,16 @@ __foo__ x
 `{{{this is verbatim}}}` and {{{`that` should also `be` verbatim}}}
 ------------------------------
 <p>
-<tt>verbatim</tt>
+<code>verbatim</code>
 </p>
 <pre class="wiki">{{{in `block`
 </pre><p>
-<tt>{{{this is verbatim}}}</tt> and <tt>`that` should also `be` verbatim</tt>
+<code>{{{this is verbatim}}}</code> and <code>`that` should also `be` verbatim</code>
 </p>
 ------------------------------
-<tt>verbatim</tt>
+<code>verbatim</code>
  […]
-<tt>{{{this is verbatim}}}</tt> and <tt>`that` should also `be` verbatim</tt>
+<code>{{{this is verbatim}}}</code> and <code>`that` should also `be` verbatim</code>
 ============================================================
 
         Link Resolvers
@@ -739,12 +739,12 @@ Paragraph
 <pre class="wiki">Preformatted text.
 </pre><p>
 Paragraph
-<tt>#!default</tt> just normal inline code.
+<code>#!default</code> just normal inline code.
 </p>
 ------------------------------
  […]
 Paragraph
-<tt>#!default</tt> just normal inline code.
+<code>#!default</code> just normal inline code.
 ============================== Wiki processor, prefix removal
   {{{
   Here we keep the space prefix, as there's at least one line not having it.
@@ -1702,17 +1702,17 @@ term:: definition:: text
 ============================== Verbatim term in definition list
  `term`:: definition
 ------------------------------
-<dl class="wiki"><dt><tt>term</tt></dt><dd>definition
+<dl class="wiki"><dt><code>term</code></dt><dd>definition
 </dd></dl>
 ------------------------------
-<tt>term</tt>:: definition
+<code>term</code>:: definition
 ============================== Another verbatim term in definition list
  {{{term}}}:: definition
 ------------------------------
-<dl class="wiki"><dt><tt>term</tt></dt><dd>definition
+<dl class="wiki"><dt><code>term</code></dt><dd>definition
 </dd></dl>
 ------------------------------
-<tt>term</tt>:: definition
+<code>term</code>:: definition
 ============================== Complex definition list
  complex topic:: multiline
                  ''formatted''
@@ -1741,31 +1741,31 @@ term::definition
 ------------------------------
 <blockquote>
 <p>
-<tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt>
+<code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code>
 </p>
 </blockquote>
 ------------------------------
-<tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt>
+<code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code>
 ============================== Definition list + escaped definition list
  complex topic:: multiline
                  `not:: a dl`
 ------------------------------
 <dl class="wiki"><dt>complex topic</dt><dd>multiline
-<tt>not:: a dl</tt>
+<code>not:: a dl</code>
 </dd></dl>
 ------------------------------
 complex topic:: multiline
-                 <tt>not:: a dl</tt>
+                 <code>not:: a dl</code>
 ============================== Definition list + another escaped definition list
  complex topic:: multiline
                  {{{not:: a dl}}}
 ------------------------------
 <dl class="wiki"><dt>complex topic</dt><dd>multiline
-<tt>not:: a dl</tt>
+<code>not:: a dl</code>
 </dd></dl>
 ------------------------------
 complex topic:: multiline
-                 <tt>not:: a dl</tt>
+                 <code>not:: a dl</code>
 ============================================================
 
             Tables

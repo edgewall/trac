@@ -612,7 +612,7 @@ class TicketModule(Component):
                                  "in your %(tracini)s.",
                                  section=tag.pre('[ticket]', tag.br(),
                                                  'workflow = ...'),
-                                 tracini=tag.tt('trac.ini')))
+                                 tracini=tag.code('trac.ini')))
 
             # Apply changes made by the workflow
             self._apply_ticket_changes(ticket, field_changes)

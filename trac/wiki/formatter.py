@@ -532,10 +532,10 @@ class Formatter(object):
         return self._indirect_tag_handler(match, 'MM_SUPERSCRIPT')
 
     def _inlinecode_formatter(self, match, fullmatch):
-        return tag.tt(fullmatch.group('inline'))
+        return tag.code(fullmatch.group('inline'))
 
     def _inlinecode2_formatter(self, match, fullmatch):
-        return tag.tt(fullmatch.group('inline2'))
+        return tag.code(fullmatch.group('inline2'))
 
     # pre-0.12 public API (no longer used by Trac itself but kept for plugins)
 

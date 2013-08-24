@@ -58,7 +58,7 @@
           <py:def function="render_property(prop)">
             <py:choose>
               <py:when test="prop.rendered">$prop.rendered.content</py:when>
-              <em py:when="istext(prop.value)"><tt>$prop.value</tt></em>
+              <em py:when="istext(prop.value)"><code>$prop.value</code></em>
               <py:otherwise>$prop.value</py:otherwise>
             </py:choose>
           </py:def>

@@ -214,8 +214,8 @@ class RepositoryAdminPanel(Component):
                         db_provider.modify_repository(reponame, changes)
                         add_notice(req, _('Your changes have been saved.'))
                     name = req.args.get('name')
-                    resync = tag.tt('trac-admin $ENV repository resync "%s"'
-                                    % (name or '(default)'))
+                    resync = tag.code('trac-admin $ENV repository resync "%s"'
+                                      % (name or '(default)'))
                     if 'dir' in changes:
                         msg = tag_('You should now run %(resync)s to '
                                    'synchronize Trac with the repository.',
@@ -227,9 +227,9 @@ class RepositoryAdminPanel(Component):
                                    resync=resync)
                         add_notice(req, msg)
                     if name and name != path_info and not 'alias' in info:
-                        cset_added = tag.tt('trac-admin $ENV changeset '
-                                            'added "%s" $REV'
-                                            % (name or '(default)'))
+                        cset_added = tag.code('trac-admin $ENV changeset '
+                                              'added "%s" $REV'
+                                              % (name or '(default)'))
                         msg = tag_('You will need to update your post-commit '
                                    'hook to call %(cset_added)s with the new '
                                    'repository name.', cset_added=cset_added)
@@ -262,14 +262,14 @@ class RepositoryAdminPanel(Component):
                         name = name or '(default)'
                         add_notice(req, _('The repository "%(name)s" has been '
                                           'added.', name=name))
-                        resync = tag.tt('trac-admin $ENV repository resync '
-                                        '"%s"' % name)
+                        resync = tag.code('trac-admin $ENV repository resync '
+                                          '"%s"' % name)
                         msg = tag_('You should now run %(resync)s to '
                                    'synchronize Trac with the repository.',
                                    resync=resync)
                         add_notice(req, msg)
-                        cset_added = tag.tt('trac-admin $ENV changeset '
-                                            'added "%s" $REV' % name)
+                        cset_added = tag.code('trac-admin $ENV changeset '
+                                              'added "%s" $REV' % name)
                         msg = tag_('You should also set up a post-commit hook '
                                    'on the repository to call %(cset_added)s '
                                    'for each committed changeset.',

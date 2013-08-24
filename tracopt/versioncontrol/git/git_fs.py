@@ -336,7 +336,7 @@ class CsetPropertyRenderer(Component):
                                         "correspond to the merge itself."),
                                     class_='hint'),
                            tag.br(),
-                           tag.span(tag("Use the ", tag.tt("(diff)"),
+                           tag.span(tag("Use the ", tag.code("(diff)"),
                                         " links above to see all the changes "
                                         "relative to each parent."),
                                     class_='hint'))

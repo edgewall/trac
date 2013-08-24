@@ -774,7 +774,7 @@ class TracIniMacro(WikiMacroBase):
             (tag.h3(tag.code('[%s]' % section), id='%s-section' % section),
              format_to_html(self.env, formatter.context, section_doc),
              tag.table(class_='wiki')(tag.tbody(
-                 tag.tr(tag.td(tag.tt(option.name)),
+                 tag.tr(tag.td(tag.code(option.name)),
                         tag.td(format_to_oneliner(
                             self.env, formatter.context, getdoc(option))),
                         default_cell(option))
@@ -815,7 +815,7 @@ class KnownMimeTypesMacro(WikiMacroBase):
                                  href=formatter.context.href.wiki(
                                      'WikiProcessors'))))),
                 tag.tbody(
-                    tag.tr(tag.th(tag.tt(mime_type),
+                    tag.tr(tag.th(tag.code(mime_type),
                                   style="text-align: left"),
                            tag.td(tag.code(
                                ' '.join(sorted(mime_types[mime_type])))))

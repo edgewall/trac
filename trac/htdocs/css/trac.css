@@ -506,7 +506,7 @@ pre.wiki, pre.literal-block {
  overflow: auto;
 }
 
-tt {
+code, tt {
  color: #600;
  border: 1px solid #edc;
  border-radius: .25em;

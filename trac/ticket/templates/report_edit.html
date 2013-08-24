@@ -33,7 +33,7 @@ $report.description</textarea>
             <div class="system-message" py:if="error">
               <strong>Error:</strong> $error
             </div>
-            <label for="query" i18n:msg="">Query for Report: (can be either SQL or, if starting with <tt>query:</tt>,
+            <label for="query" i18n:msg="">Query for Report: (can be either SQL or, if starting with <code>query:</code>,
               a <a tabindex="42" href="${href.wiki('TracQuery') + '#QueryLanguage'}">TracQuery</a> expression)
             </label><br />
             <textarea id="query" name="query" class="trac-resizable" cols="85" rows="20">
