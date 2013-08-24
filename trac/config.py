@@ -575,7 +575,9 @@ class Option(object):
     """Descriptor for configuration options."""
 
     registry = {}
-    accessor = Section.get
+
+    def accessor(self, section, name, default):
+        return section.get(name, default)
 
     @staticmethod
     def get_registry(compmgr=None):
@@ -635,17 +637,23 @@ class Option(object):
 
 class BoolOption(Option):
     """Descriptor for boolean configuration options."""
-    accessor = Section.getbool
+
+    def accessor(self, section, name, default):
+        return section.getbool(name, default)
 
 
 class IntOption(Option):
     """Descriptor for integer configuration options."""
-    accessor = Section.getint
+
+    def accessor(self, section, name, default):
+        return section.getint(name, default)
 
 
 class FloatOption(Option):
     """Descriptor for float configuration options."""
-    accessor = Section.getfloat
+
+    def accessor(self, section, name, default):
+        return section.getfloat(name, default)
 
 
 class ListOption(Option):
@@ -698,7 +706,9 @@ class PathOption(Option):
     Relative paths are resolved to absolute paths using the directory
     containing the configuration file as the reference.
     """
-    accessor = Section.getpath
+
+    def accessor(self, section, name, default):
+        return section.getpath(name, default)
 
 
 class ExtensionOption(Option):
