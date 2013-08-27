@@ -16,9 +16,6 @@
         <meta name="totalResults" content="$results.num_items"/>
         <meta name="itemsPerPage" content="$results.max_per_page"/>
     </py:if>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {$("#q").get(0).focus()});
-    </script>
   </head>
   <body>
     <div id="content" class="search">
@@ -26,7 +23,7 @@
       <h1><label for="q">Search</label></h1>
       <form id="fullsearch" action="${href.search()}" method="get">
         <p>
-          <input type="text" id="q" name="q" size="40" value="${query}" />
+          <input type="text" id="q" name="q" class="trac-focus" size="40" value="${query}" />
           <input type="hidden" name="noquickjump" value="1" />
           <input type="submit" value="${_('Search')}" />
         </p>

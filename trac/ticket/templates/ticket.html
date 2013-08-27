@@ -107,9 +107,6 @@
         $("#propertyform").autoSubmit({preview: '1'}, function(data, reply) {
           $('#ticket').replaceWith(reply);
         }, "#ticket .trac-loading");
-        <py:if test="not preview_mode">
-        $("#field-summary").focus();
-        </py:if>
       </py:otherwise>
       });
     </script>
@@ -222,6 +219,7 @@ ${comment}</textarea>
                   <th><label for="field-summary">Summary:</label></th>
                   <td class="fullrow" colspan="3">
                     <input type="text" id="field-summary" name="field_summary"
+                           class="${'trac-focus' if not ticket.exists and not preview_mode else None}"
                            value="$ticket.summary" size="70" />
                   </td>
                 </tr>

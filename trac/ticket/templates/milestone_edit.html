@@ -32,7 +32,6 @@
         $("#retarget").click(function(){
           $("#target").enable(this.checked);
         });
-        $("#name").get(0).focus()
         $("#duedate").datetimepicker();
         $("#completeddate").datetimepicker();
       });
@@ -51,7 +50,8 @@
           <input type="hidden" name="id" value="${milestone.name}" />
           <input type="hidden" name="action" value="edit" />
           <label>Name of the milestone:<br />
-            <input type="text" id="name" name="name" size="32" value="${milestone.name or req.args.get('name')}" />
+            <input type="text" id="name" name="name" class="trac-focus" size="32"
+                   value="${milestone.name or req.args.get('name')}" />
           </label>
         </div>
         <fieldset>
