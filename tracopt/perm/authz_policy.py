@@ -190,7 +190,7 @@ class AuthzPolicy(Component):
                                    raise_errors=True)
         except ConfigObjError, e:
             self.log.error("Error parsing authz permission policy file: %s",
-                           to_unicode(e.message))
+                           to_unicode(e))
             raise ConfigurationError()
         groups = {}
         for group, users in self.authz.get('groups', {}).iteritems():
