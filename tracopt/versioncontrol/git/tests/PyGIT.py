@@ -269,6 +269,26 @@ class UnicodeNameTestCase(unittest.TestCase):
         path = os.path.join(self.repos_path, '.git')
         return Storage(path, self.env.log, self.git_bin, 'utf-8')
 
+    def test_quotepath(self):
+        filenames = [u'control\a\b\t\n\v\f\r\x1b"\\.txt',
+                     u'unicodeáćéẃýź.txt']
+        for filename in filenames:
+            filename = filename.encode('utf-8')
+            create_file(os.path.join(self.repos_path, filename))
+            self._git('add', filename)
+        self._git('commit', '-m', 'ticket:11198',
+                  '--date', 'Wed Aug 28 23:21:27 2013 +0900')
+
+        for quotepath in ('true', 'false'):
+            storage = self._storage()
+            self._git('config', 'core.quotepath', quotepath)
+            entries = sorted(storage.ls_tree('HEAD'),
+                             key=lambda entry: entry[4])
+            self.assertEquals(3, len(entries))
+            self.assertEquals('.gitignore', entries[0][4])
+            self.assertEquals(filenames[0], entries[1][4])
+            self.assertEquals(filenames[1], entries[2][4])
+
     def test_unicode_verifyrev(self):
         storage = self._storage()
         self.assertNotEqual(None, storage.verifyrev(u'master'))
