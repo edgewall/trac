@@ -50,7 +50,7 @@ class FunctionalTester(object):
         tc.add_auth("", self.url, username, username)
         self.go_to_front()
         tc.find("Login")
-        tc.follow("Login")
+        tc.follow(r"\bLogin\b")
         # We've provided authentication info earlier, so this should
         # redirect back to the base url.
         tc.find("logged in as %s" % username)
@@ -60,7 +60,7 @@ class FunctionalTester(object):
 
     def logout(self):
         """Logout"""
-        tc.follow("Logout")
+        tc.follow(r"\bLogout\b")
         tc.notfind(internal_error)
 
     def create_ticket(self, summary=None, info=None):
@@ -76,7 +76,7 @@ class FunctionalTester(object):
         `summary` and `description` default to randomly-generated values.
         """
         self.go_to_front()
-        tc.follow('New Ticket')
+        tc.follow(r"\bNew Ticket\b")
         tc.notfind(internal_error)
         if summary is None:
             summary = random_sentence(5)
@@ -132,7 +132,7 @@ class FunctionalTester(object):
     def go_to_timeline(self):
         """Surf to the timeline page."""
         self.go_to_front()
-        tc.follow('Timeline')
+        tc.follow(r"\bTimeline\b")
         tc.url(self.url + '/timeline')
 
     def go_to_view_tickets(self, href='report'):
@@ -140,32 +140,32 @@ class FunctionalTester(object):
         page, but 'query' can be specified for the `href` argument to support
         non-default configurations."""
         self.go_to_front()
-        tc.follow('View Tickets')
+        tc.follow(r"\bView Tickets\b")
         tc.url(self.url + '/' + href.lstrip('/'))
 
     def go_to_query(self):
         """Surf to the custom query page."""
         self.go_to_front()
-        tc.follow('View Tickets')
-        tc.follow('Custom Query')
+        tc.follow(r"\bView Tickets\b")
+        tc.follow(r"\bCustom Query\b")
         tc.url(self.url + '/query')
 
     def go_to_admin(self):
         """Surf to the webadmin page."""
         self.go_to_front()
-        tc.follow('\\bAdmin\\b')
+        tc.follow(r"\bAdmin\b")
         tc.url(self.url + '/admin')
 
     def go_to_roadmap(self):
         """Surf to the roadmap page."""
         self.go_to_front()
-        tc.follow('\\bRoadmap\\b')
+        tc.follow(r"\bRoadmap\b")
         tc.url(self.url + '/roadmap')
 
     def go_to_milestone(self, name):
         """Surf to the specified milestone page. Assumes milestone exists."""
         self.go_to_roadmap()
-        tc.follow('\\bMilestone: %s\\b' % name)
+        tc.follow(r"\bMilestone: %s\b" % name)
         tc.url(self.url + '/milestone/%s' % name)
 
     def add_comment(self, ticketid, comment=None):
@@ -281,10 +281,10 @@ class FunctionalTester(object):
         tc.find(name)
 
         # Make sure it's on the roadmap.
-        tc.follow('Roadmap')
+        tc.follow(r"\bRoadmap\b")
         tc.url(self.url + "/roadmap")
         tc.find('Milestone:.*%s' % name)
-        tc.follow(name)
+        tc.follow(r"\b%s\b" % name)
         tc.url('%s/milestone/%s' % (self.url, unicode_quote(name)))
         if not due:
             tc.find('No date set')
@@ -382,7 +382,7 @@ class FunctionalTester(object):
     def create_report(self, title, query, description):
         """Create a new report with the given title, query, and description"""
         self.go_to_front()
-        tc.follow('View Tickets')
+        tc.follow(r"\bView Tickets\b")
         tc.formvalue('create_report', 'action', 'new') # select the right form
         tc.submit()
         tc.find('New Report')
