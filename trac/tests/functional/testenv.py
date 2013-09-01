@@ -289,9 +289,19 @@ class FunctionalTestEnvironment(object):
 
     def enable_authz_permpolicy(self, authz_content, filename=None):
         """Enables the Authz permissions policy. The `authz_content` will
-        be written to `filename`, and must be a dictionary of dictionaries
-        specifying the sections and key/value pairs of each section.
-        For example:
+        be written to `filename`, and may be specified in a triple-quoted
+        string.
+            '''
+            [wiki:WikiStart@*]
+            * = WIKI_VIEW
+            [wiki:PrivatePage@*]
+            john = WIKI_VIEW
+            * = !WIKI_VIEW
+            '''
+        `authz_content` may also be a dictionary of dictionaries specifying
+        the sections and key/value pairs of each section, however this form
+        should only be used when the order of the entries in the file is not
+        important, as the order cannot be known.
             {'wiki:WikiStart@*': {'*': 'WIKI_VIEW'},
              'wiki:PrivatePage@*': {'john': 'WIKI_VIEW', '*': '!WIKI_VIEW'},
             }
@@ -310,6 +320,9 @@ class FunctionalTestEnvironment(object):
         env.config.set('trac', 'permission_policies',
                        'AuthzPolicy, ' + permission_policies)
         authz_file = self.tracdir + '/conf/' + filename
+        if isinstance(authz_content, basestring):
+            authz_content = [line.strip() for line in
+                             authz_content.strip().splitlines()]
         authz_config = ConfigObj(authz_content, encoding='utf8',
                                  write_empty_values=True, indent_type='')
         authz_config.filename = authz_file
