@@ -253,7 +253,7 @@ class ReportModule(Component):
     def _render_confirm_delete(self, req, id):
         req.perm('report', id).require('REPORT_DELETE')
 
-        title, description, sql = self.get_report(id)
+        title = self.get_report(id)[0]
         return {'title': _("Delete Report {%(num)s} %(title)s", num=id,
                            title=title),
                 'action': 'delete',
