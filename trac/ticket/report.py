@@ -148,13 +148,15 @@ class ReportModule(Component):
             return True
 
     def process_request(self, req):
-        req.perm.require('REPORT_VIEW')
-
         # did the user ask for any special report?
         id = int(req.args.get('id', -1))
-        action = req.args.get('action', 'view')
+        if id != -1:
+            req.perm('report', id).require('REPORT_VIEW')
+        else:
+            req.perm.require('REPORT_VIEW')
 
         data = {}
+        action = req.args.get('action', 'view')
         if req.method == 'POST':
             if action == 'new':
                 self._do_create(req)
@@ -224,7 +226,7 @@ class ReportModule(Component):
         req.redirect(req.href.report(report_id))
 
     def _do_delete(self, req, id):
-        req.perm.require('REPORT_DELETE')
+        req.perm('report', id).require('REPORT_DELETE')
 
         if 'cancel' in req.args:
             req.redirect(req.href.report(id))
@@ -235,7 +237,7 @@ class ReportModule(Component):
 
     def _do_save(self, req, id):
         """Save report changes to the database"""
-        req.perm.require('REPORT_MODIFY')
+        req.perm('report', id).require('REPORT_MODIFY')
 
         if 'cancel' not in req.args:
             title = req.args.get('title', '')
@@ -249,7 +251,7 @@ class ReportModule(Component):
         req.redirect(req.href.report(id))
 
     def _render_confirm_delete(self, req, id):
-        req.perm.require('REPORT_DELETE')
+        req.perm('report', id).require('REPORT_DELETE')
 
         title, description, sql = self.get_report(id)
         return {'title': _("Delete Report {%(num)s} %(title)s", num=id,
@@ -259,7 +261,7 @@ class ReportModule(Component):
 
     def _render_editor(self, req, id, copy):
         if id != -1:
-            req.perm.require('REPORT_MODIFY')
+            req.perm('report', id).require('REPORT_MODIFY')
             title, description, query = self.get_report(id)
         else:
             req.perm.require('REPORT_CREATE')
@@ -295,6 +297,8 @@ class ReportModule(Component):
                 SELECT id, title, description FROM report ORDER BY %s %s
                 """ % ('title' if sort == 'title' else 'id',
                        '' if asc else 'DESC'))
+        rows = [(id, title, description) for id, title, description in rows
+                if 'REPORT_VIEW' in req.perm('report', id)]
 
         if format == 'rss':
             data = {'rows': rows}
@@ -376,7 +380,7 @@ class ReportModule(Component):
         title = '{%i} %s' % (id, title)
 
         report_resource = Resource('report', id)
-        req.perm.require('REPORT_VIEW', report_resource)
+        req.perm(report_resource).require('REPORT_VIEW')
         context = web_context(req, report_resource)
 
         page = int(req.args.get('page', '1'))
@@ -612,7 +616,7 @@ class ReportModule(Component):
                      _('Comma-delimited Text'), 'text/plain')
             add_link(req, 'alternate', report_href(format='tab', page=p),
                      _('Tab-delimited Text'), 'text/plain')
-            if 'REPORT_SQL_VIEW' in req.perm:
+            if 'REPORT_SQL_VIEW' in req.perm('report', id):
                 add_link(req, 'alternate',
                          req.href.report(id=id, format='sql'),
                          _('SQL Query'), 'text/plain')
@@ -867,7 +871,7 @@ class ReportModule(Component):
         raise RequestDone
 
     def _send_sql(self, req, id, title, description, sql):
-        req.perm.require('REPORT_SQL_VIEW')
+        req.perm('report', id).require('REPORT_SQL_VIEW')
 
         out = StringIO()
         out.write('-- ## %s: %s ## --\n\n' % (id, title.encode('utf-8')))

@@ -22,6 +22,11 @@ from trac.tests.functional import *
 from trac.util.datefmt import utc, localtz, format_date, format_datetime
 from trac.util.text import to_utf8
 
+try:
+    from configobj import ConfigObj
+except ImportError:
+    ConfigObj = None
+
 
 class TestTickets(FunctionalTwillTestCaseSetup):
     def runTest(self):
@@ -1822,6 +1827,35 @@ class RegressionTestTicket11153(FunctionalTwillTestCaseSetup):
             self._testenv.restart()
 
 
+class RegressionTestTicket11176(FunctionalTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11176
+        Fine-grained permission checks should be enforced on the Report list
+        page."""
+        self._testenv.enable_authz_permpolicy("""
+            [report:1]
+            anonymous = REPORT_VIEW
+            [report:2]
+            anonymous = REPORT_VIEW
+            [report:*]
+            anonymous =
+        """)
+        self._tester.logout()
+        self._tester.go_to_view_tickets()
+        try:
+            tc.find('<a title="View report" '
+                    'href="/report/1">[ \n\t]*<em>\{1\}</em>')
+            tc.find('<a title="View report" '
+                    'href="/report/2">[ \n\t]*<em>\{2\}</em>')
+            for report_num in range(3, 9):
+                tc.notfind('<a title="View report" '
+                           'href="/report/%(num)s">[ \n\t]*<em>\{%(num)s\}</em>'
+                           % {'num': report_num})
+        finally:
+            self._tester.login('admin')
+            self._testenv.disable_authz_permpolicy()
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional.testcases
@@ -1925,6 +1959,10 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket9981())
     suite.addTest(RegressionTestTicket11028())
     suite.addTest(RegressionTestTicket11153())
+    if ConfigObj:
+        suite.addTest(RegressionTestTicket11176())
+    else:
+        print "SKIP: RegressionTestTicket11176 (ConfigObj not installed)"
 
     return suite
 
