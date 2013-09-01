@@ -43,7 +43,6 @@ from trac.web.chrome import (INavigationContributor, Chrome,
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 
-
 SORT_COLUMN = '@SORT_COLUMN@'
 LIMIT_OFFSET = '@LIMIT_OFFSET@'
 
@@ -63,8 +62,10 @@ _sql_re = re.compile(r'''
     | \([^()]+\)                   # parenthesis group
 ''', re.MULTILINE | re.VERBOSE)
 
+
 def _expand_with_space(m):
     return ' ' * len(m.group(0))
+
 
 def sql_skeleton(sql):
     """Strip an SQL query to leave only its toplevel structure.
@@ -89,6 +90,7 @@ def sql_skeleton(sql):
 
 _order_by_re = re.compile(r'ORDER\s+BY', re.MULTILINE)
 
+
 def split_sql(sql, clause_re, skel=None):
     """Split an SQL query according to a toplevel clause regexp.
 
@@ -105,7 +107,6 @@ def split_sql(sql, clause_re, skel=None):
         return sql[:len(blocks[0])], sql[-len(blocks[1]):] # (before, after)
     else:
         return sql, '' # no single clause separator
-
 
 
 class ReportModule(Component):
@@ -166,7 +167,7 @@ class ReportModule(Component):
                 self._do_save(req, id)
         elif action in ('copy', 'edit', 'new'):
             template = 'report_edit.html'
-            data = self._render_editor(req, id, action=='copy')
+            data = self._render_editor(req, id, action == 'copy')
             Chrome(self.env).add_wiki_toolbars(req)
         elif action == 'delete':
             template = 'report_delete.html'
@@ -423,13 +424,13 @@ class ReportModule(Component):
                                                 offset)
 
         if len(res) == 2:
-             e, sql = res
-             data['message'] = \
-                 tag_("Report execution failed: %(error)s %(sql)s",
-                      error=tag.pre(exception_to_unicode(e)),
-                      sql=tag(tag.hr(),
-                              tag.pre(sql, style="white-space: pre")))
-             return 'report_view.html', data, None
+            e, sql = res
+            data['message'] = \
+                tag_("Report execution failed: %(error)s %(sql)s",
+                     error=tag.pre(exception_to_unicode(e)),
+                     sql=tag(tag.hr(),
+                             tag.pre(sql, style="white-space: pre")))
+            return 'report_view.html', data, None
 
         cols, results, num_items, missing_args, limit_offset = res
         need_paginator = limit > 0 and limit_offset
@@ -456,8 +457,8 @@ class ReportModule(Component):
             fields = ['href', 'class', 'string', 'title']
             paginator.shown_pages = [dict(zip(fields, p)) for p in pagedata]
             paginator.current_page = {'href': None, 'class': 'current',
-                                    'string': str(paginator.page + 1),
-                                    'title': None}
+                                      'string': str(paginator.page + 1),
+                                      'title': None}
             numrows = paginator.num_items
 
         # Place retrieved columns in groups, according to naming conventions
@@ -596,7 +597,7 @@ class ReportModule(Component):
         if format == 'rss':
             data['email_map'] = chrome.get_email_map()
             data['context'] = web_context(req, report_resource,
-                                                   absurls=True)
+                                          absurls=True)
             return 'report.rss', data, 'application/rss+xml'
         elif format == 'csv':
             filename = 'report_%s.csv' % id if id else 'report.csv'
@@ -711,7 +712,7 @@ class ReportModule(Component):
                 sql = sql.replace(SORT_COLUMN, sort_col or '1')
             elif sort_col:
                 # Method 2: automagically insert sort_col (and __group__
-                # before it, if __group__ was specified) as first criterions
+                # before it, if __group__ was specified) as first criteria
                 if '__group__' in cols:
                     order_by.append('__group__ ASC')
                 order_by.append(sort_col)
@@ -898,8 +899,8 @@ class ReportModule(Component):
         yield ('report', self._format_link)
 
     def get_wiki_syntax(self):
-        yield (r"!?\{(?P<it_report>%s\s*)[0-9]+\}" % \
-                                                WikiParser.INTERTRAC_SCHEME,
+        yield (r"!?\{(?P<it_report>%s\s*)[0-9]+\}" %
+                   WikiParser.INTERTRAC_SCHEME,
                lambda x, y, z: self._format_link(x, 'report', y[1:-1], y, z))
 
     def _format_link(self, formatter, ns, target, label, fullmatch=None):
