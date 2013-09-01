@@ -415,6 +415,7 @@ def suite():
     import trac.admin.tests
     import trac.db.tests
     import trac.mimeview.tests
+    import trac.timeline.tests
     import trac.ticket.tests
     import trac.util.tests
     import trac.versioncontrol.tests
@@ -434,6 +435,7 @@ def suite():
     suite.addTest(trac.db.tests.suite())
     suite.addTest(trac.mimeview.tests.suite())
     suite.addTest(trac.ticket.tests.suite())
+    suite.addTest(trac.timeline.tests.suite())
     suite.addTest(trac.util.tests.suite())
     suite.addTest(trac.versioncontrol.tests.suite())
     suite.addTest(trac.versioncontrol.web_ui.tests.suite())
