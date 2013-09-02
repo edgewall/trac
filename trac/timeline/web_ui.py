@@ -349,7 +349,7 @@ class TimelineModule(Component):
                                               parse_date(path, utc),
                                               label, precision, query, fragment)
             except TracError, e:
-                return tag.a(label, title=to_unicode(e.message),
+                return tag.a(label, title=to_unicode(e),
                              class_='timeline missing')
         yield ('timeline', link_resolver)
 
