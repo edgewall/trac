@@ -93,8 +93,9 @@ class IAttachmentManipulator(Interface):
         attachment. Therefore, a return value of ``[]`` means
         everything is OK."""
 
+
 class ILegacyAttachmentPolicyDelegate(Interface):
-    """Interface that can be used by plugins to seemlessly participate
+    """Interface that can be used by plugins to seamlessly participate
        to the legacy way of checking for attachment permissions.
 
        This should no longer be necessary once it becomes easier to
@@ -333,7 +334,6 @@ class Attachment(object):
         for listener in AttachmentModule(self.env).change_listeners:
             listener.attachment_added(self)
 
-
     @classmethod
     def select(cls, env, parent_realm, parent_id, db=None):
         """Iterator yielding all `Attachment` instances attached to
@@ -369,7 +369,8 @@ class Attachment(object):
                 os.rmdir(attachment_dir)
             except OSError, e:
                 env.log.error("Can't delete attachment directory %s: %s",
-                    attachment_dir, exception_to_unicode(e, traceback=True))
+                              attachment_dir,
+                              exception_to_unicode(e, traceback=True))
 
     @classmethod
     def reparent_all(cls, env, parent_realm, parent_id, new_realm, new_id):
@@ -385,7 +386,8 @@ class Attachment(object):
                 os.rmdir(attachment_dir)
             except OSError, e:
                 env.log.error("Can't delete attachment directory %s: %s",
-                    attachment_dir, exception_to_unicode(e, traceback=True))
+                              attachment_dir,
+                              exception_to_unicode(e, traceback=True))
 
     def open(self):
         path = self.path
@@ -750,7 +752,7 @@ class AttachmentModule(Component):
             try:
                 old_attachment = Attachment(self.env,
                                             attachment.resource(id=filename))
-                if not (req.authname and req.authname != 'anonymous' \
+                if not (req.authname and req.authname != 'anonymous'
                         and old_attachment.author == req.authname) \
                    and 'ATTACHMENT_DELETE' \
                                         not in req.perm(attachment.resource):
@@ -760,7 +762,7 @@ class AttachmentModule(Component):
                         "attachments requires ATTACHMENT_DELETE permission.",
                         name=filename))
                 if (not attachment.description.strip() and
-                    old_attachment.description):
+                        old_attachment.description):
                     attachment.description = old_attachment.description
                 old_attachment.delete()
             except TracError:
@@ -792,7 +794,7 @@ class AttachmentModule(Component):
     def _render_form(self, req, attachment):
         req.perm(attachment.resource).require('ATTACHMENT_CREATE')
         return {'mode': 'new', 'author': get_reporter_id(req),
-            'attachment': attachment, 'max_size': self.max_size}
+                'attachment': attachment, 'max_size': self.max_size}
 
     def _download_as_zip(self, req, parent, attachments=None):
         if attachments is None:
@@ -980,7 +982,7 @@ class LegacyAttachmentPolicy(Component):
         else:
             for d in self.delegates:
                 decision = d.check_attachment_permission(action, username,
-                        resource, perm)
+                                                         resource, perm)
                 if decision is not None:
                     return decision
 
@@ -1094,4 +1096,3 @@ class AttachmentAdmin(Component):
             finally:
                 if destination is not None:
                     output.close()
-
