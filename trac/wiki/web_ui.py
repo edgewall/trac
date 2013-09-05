@@ -74,7 +74,7 @@ class WikiModule(Component):
                9)
 
     def convert_content(self, req, mimetype, content, key):
-        return (content, 'text/plain;charset=utf-8')
+        return content, 'text/plain;charset=utf-8'
 
     # INavigationContributor methods
 
@@ -274,7 +274,7 @@ class WikiModule(Component):
             if version and old_version and version > old_version + 1:
                 add_notice(req, _('The versions %(from_)d to %(to)d of the '
                                   'page %(name)s have been deleted.',
-                            from_=old_version + 1, to=version, name=page.name))
+                           from_=old_version + 1, to=version, name=page.name))
             else:
                 add_notice(req, _('The version %(version)d of the page '
                                   '%(name)s has been deleted.',
@@ -500,7 +500,7 @@ class WikiModule(Component):
             template = self.PAGE_TEMPLATES_PREFIX + req.args.get('template')
             template_page = WikiPage(self.env, template)
             if template_page and template_page.exists and \
-                   'WIKI_VIEW' in req.perm(template_page.resource):
+                    'WIKI_VIEW' in req.perm(template_page.resource):
                 page.text = template_page.text
         elif 'version' in req.args:
             old_page = WikiPage(self.env, page.name,
@@ -585,7 +585,7 @@ class WikiModule(Component):
             })
         data.update({'history': history, 'resource': page.resource})
         add_ctxtnav(req, _("Back to %(wikipage)s", wikipage=page.name),
-                           req.href.wiki(page.name))
+                    req.href.wiki(page.name))
         return 'history_view.html', data, None
 
     def _render_view(self, req, page):
@@ -599,7 +599,8 @@ class WikiModule(Component):
                                                 format=conversion[0])
                 # or...
                 conversion_href = get_resource_url(self.env, page.resource,
-                                                req.href, format=conversion[0])
+                                                   req.href,
+                                                   format=conversion[0])
                 add_link(req, 'alternate', conversion_href, conversion[1],
                          conversion[3])
 
@@ -735,7 +736,7 @@ class WikiModule(Component):
 
             # Attachments
             for event in AttachmentModule(self.env).get_timeline_events(
-                req, wiki_realm, start, stop):
+                    req, wiki_realm, start, stop):
                 yield event
 
     def render_timeline_event(self, context, field, event):
@@ -786,5 +787,5 @@ class WikiModule(Component):
 
         # Attachments
         for result in AttachmentModule(self.env).get_search_results(
-            req, wiki_realm, terms):
+                req, wiki_realm, terms):
             yield result
