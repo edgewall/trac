@@ -248,7 +248,7 @@ class UnicodeNameTestCase(unittest.TestCase):
         # create git repository and master branch
         self._git('init', self.repos_path)
         self._git('config', 'core.quotepath', 'true')  # ticket:11198
-        self._git('config', 'user.name', u"Joé")
+        self._git('config', 'user.name', "Joé")  # passing utf-8 bytes
         self._git('config', 'user.email', "joe@example.com")
         create_file(os.path.join(self.repos_path, '.gitignore'))
         self._git('add', '.gitignore')
