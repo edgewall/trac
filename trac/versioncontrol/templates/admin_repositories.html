@@ -8,6 +8,11 @@
   <xi:include href="admin.html"/>
   <head>
     <title>Repositories</title>
+    <script type="text/javascript">/*<![CDATA[*/
+      jQuery(document).ready(function($) {
+        $("h2").addRowCount("table.listing");
+      });
+    /*]]>*/</script>
   </head>
 
   <body py:with="sorted_repos = sorted(repositories.iteritems(), key=lambda item: item[0].lower())">

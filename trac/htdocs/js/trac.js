@@ -11,6 +11,16 @@
     });
   }
 
+
+  $.fn.addCount = function(count) {
+    this.append(" <span class='trac-count'>(" + count + ")</span>");
+  }
+
+  $.fn.addRowCount = function(table) {
+    var count = $(table).find("tbody tr").length;
+    this.addCount(count);
+  }
+
   $.fn.checked = function(checked) {
     if (checked == undefined) { // getter
       if (!this.length) return false;
