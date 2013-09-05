@@ -71,19 +71,19 @@ def parse_commit(raw):
 
 
 _unquote_re = re.compile(r'\\(?:[abtnvfr"\\]|[0-7]{3})')
-_unquote_chars = {'a': r'\a', 'b': r'\b', 't': r'\t', 'n': r'\n', 'v': r'\v',
-                  'f': r'\f', 'r': r'\r', '"': r'\"', '\\': r'\\'}
+_unquote_chars = {'a': '\a', 'b': '\b', 't': '\t', 'n': '\n', 'v': '\v',
+                  'f': '\f', 'r': '\r', '"': '"', '\\': '\\'}
 
 
-def _unquote(path, enclosed=False):
-    def replace(match):
-        s = match.group(0)[1:]
-        if len(s) == 3:
-            return chr(int(s, 8))  # \ooo
-        return _unquote_chars[s]
-    if enclosed and path.startswith('"') and path.endswith('"'):
-        path = path[1:-1]
-    return _unquote_re.sub(replace, path)
+def _unquote(path):
+    if path.startswith('"') and path.endswith('"'):
+        def replace(match):
+            s = match.group(0)[1:]
+            if len(s) == 3:
+                return chr(int(s, 8))  # \ooo
+            return _unquote_chars[s]
+        path = _unquote_re.sub(replace, path[1:-1])
+    return path
 
 
 class GitCore(object):
@@ -796,14 +796,13 @@ class Storage(object):
 
             meta, fname = l.split('\t', 1)
             _mode, _type, _sha, _size = meta.split()
-            fname = self._fs_to_unicode(_unquote(fname))
 
             if _size == '-':
                 _size = None
             else:
                 _size = int(_size)
 
-            return _mode, _type, _sha, _size, fname
+            return _mode, _type, _sha, _size, self._fs_to_unicode(fname)
 
         return [ split_ls_tree_line(e) for e in tree if e ]
 
@@ -913,7 +912,8 @@ class Storage(object):
                     if l == '\n':
                         break
                     _, path = l.rstrip('\n').split('\t', 1)
-                    path = _unquote(path, enclosed=True)
+                    # git-log without -z option quotes each pathname
+                    path = _unquote(path)
                     while path not in change:
                         change[path] = old_sha
                         if next_path == [path]:
