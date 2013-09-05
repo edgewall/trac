@@ -191,8 +191,10 @@ class NormalTestCase(unittest.TestCase):
         args = [self.git_bin] + list(args)
         proc = Popen(args, stdout=PIPE, stderr=PIPE, close_fds=close_fds,
                      cwd=self.repos_path)
-        proc.wait()
-        assert proc.returncode == 0, proc.stderr.read()
+        stdout, stderr = proc.communicate()
+        assert proc.returncode == 0, \
+               'git exits with %r, stdout %r, stderr %r' % (proc.returncode,
+                                                            stdout, stderr)
         return proc
 
     def _storage(self):
@@ -246,7 +248,7 @@ class UnicodeNameTestCase(unittest.TestCase):
         # create git repository and master branch
         self._git('init', self.repos_path)
         self._git('config', 'core.quotepath', 'true')  # ticket:11198
-        self._git('config', 'user.name', u"Joé")
+        self._git('config', 'user.name', "Joé")  # passing utf-8 bytes
         self._git('config', 'user.email', "joe@example.com")
         create_file(os.path.join(self.repos_path, '.gitignore'))
         self._git('add', '.gitignore')
@@ -261,33 +263,15 @@ class UnicodeNameTestCase(unittest.TestCase):
         args = [self.git_bin] + list(args)
         proc = Popen(args, stdout=PIPE, stderr=PIPE, close_fds=close_fds,
                      cwd=self.repos_path)
-        proc.wait()
-        assert proc.returncode == 0, proc.stderr.read()
+        stdout, stderr = proc.communicate()
+        assert proc.returncode == 0, \
+               'git exits with %r, stdout %r, stderr %r' % (proc.returncode,
+                                                            stdout, stderr)
         return proc
 
     def _storage(self):
         path = os.path.join(self.repos_path, '.git')
         return Storage(path, self.env.log, self.git_bin, 'utf-8')
-
-    def test_quotepath(self):
-        filenames = [u'control\a\b\t\n\v\f\r\x1b"\\.txt',
-                     u'unicodeáćéẃýź.txt']
-        for filename in filenames:
-            filename = filename.encode('utf-8')
-            create_file(os.path.join(self.repos_path, filename))
-            self._git('add', filename)
-        self._git('commit', '-m', 'ticket:11198',
-                  '--date', 'Wed Aug 28 23:21:27 2013 +0900')
-
-        for quotepath in ('true', 'false'):
-            storage = self._storage()
-            self._git('config', 'core.quotepath', quotepath)
-            entries = sorted(storage.ls_tree('HEAD'),
-                             key=lambda entry: entry[4])
-            self.assertEquals(3, len(entries))
-            self.assertEquals('.gitignore', entries[0][4])
-            self.assertEquals(filenames[0], entries[1][4])
-            self.assertEquals(filenames[1], entries[2][4])
 
     def test_unicode_verifyrev(self):
         storage = self._storage()
@@ -334,19 +318,52 @@ class UnicodeNameTestCase(unittest.TestCase):
         self.assertEquals(u'täg-t10980', tags[0])
         self.assertNotEqual(None, storage.verifyrev(u'täg-t10980'))
 
-    def test_get_historian_with_unicode_path(self):
-        # regression test for #11180
-        create_file(os.path.join(self.repos_path, 'tickét.txt'))
-        self._git('add', 'tickét.txt')
-        self._git('commit', '-m', 'ticket:11180',
-                  '--date', 'Thu May 9 04:31 2013 +0900')
+    def test_ls_tree(self):
+        paths = [u'normal-path.txt',
+                 u'tickét.tx\\t',
+                 u'\a\b\t\n\v\f\r\x1b"\\.tx\\t']
+        for path in paths:
+            path_utf8 = path.encode('utf-8')
+            create_file(os.path.join(self.repos_path, path_utf8))
+            self._git('add', path_utf8)
+        self._git('commit', '-m', 'ticket:11180 and ticket:11198',
+                  '--date', 'Fri Aug 30 00:48:57 2013 +0900')
+
         storage = self._storage()
         rev = storage.head()
-        self.assertNotEqual(None, rev)
-        with storage.get_historian('HEAD', u'tickét.txt') as historian:
-            self.assertNotEqual(None, historian)
-            self.assertEquals(rev, storage.last_change('HEAD', u'tickét.txt',
-                                                       historian))
+        entries = storage.ls_tree(rev, '/')
+        self.assertEquals(4, len(entries))
+        self.assertEquals(u'\a\b\t\n\v\f\r\x1b"\\.tx\\t', entries[0][4])
+        self.assertEquals(u'.gitignore', entries[1][4])
+        self.assertEquals(u'normal-path.txt', entries[2][4])
+        self.assertEquals(u'tickét.tx\\t', entries[3][4])
+
+    def test_get_historian(self):
+        paths = [u'normal-path.txt',
+                 u'tickét.tx\\t',
+                 u'\a\b\t\n\v\f\r\x1b"\\.tx\\t']
+
+        for path in paths:
+            path_utf8 = path.encode('utf-8')
+            create_file(os.path.join(self.repos_path, path_utf8))
+            self._git('add', path_utf8)
+        self._git('commit', '-m', 'ticket:11180 and ticket:11198',
+                  '--date', 'Fri Aug 30 00:48:57 2013 +0900')
+
+        def validate(path, quotepath):
+            self._git('config', 'core.quotepath', quotepath)
+            storage = self._storage()
+            rev = storage.head()
+            with storage.get_historian('HEAD', path) as historian:
+                hrev = storage.last_change('HEAD', path, historian)
+                self.assertEquals(rev, hrev)
+
+        validate(paths[0], 'true')
+        validate(paths[0], 'false')
+        validate(paths[1], 'true')
+        validate(paths[1], 'false')
+        validate(paths[2], 'true')
+        validate(paths[2], 'false')
 
 
 #class GitPerformanceTestCase(unittest.TestCase):
