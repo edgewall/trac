@@ -26,13 +26,13 @@
           var retarget = $("#retarget");
           retarget.enable(checked);
           $("#target").enable(checked && retarget.checked());
-          $("#comment").enable(checked && retarget.checked());
+          $("#retarget-comment").enable(checked && retarget.checked());
         }
         $("#completed").click(updateCompletedDate);
         updateCompletedDate();
         $("#retarget").click(function(){
           $("#target").enable(this.checked);
-          $("#comment").enable(this.checked);
+          $("#retarget-comment").enable(this.checked);
         });
         $("#duedate").datetimepicker();
         $("#completeddate").datetimepicker();
@@ -94,8 +94,8 @@
                 </optgroup>
               </select>
               <br/>
-              <label for="comment">Comment:</label>
-              <input type="text" id="comment" name="comment" size="40"
+              <label for="retarget-comment">Comment:</label>
+              <input type="text" id="retarget-comment" name="comment" size="40"
                      value="${_('Retargetted after milestone closed')}" />
             </py:if>
           </div>
