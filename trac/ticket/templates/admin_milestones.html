@@ -14,7 +14,7 @@
     <title>Milestones</title>
     <script type="text/javascript"
             py:if="view == 'detail' and can_modify or
-                   view == 'list' and can_create">/*<![CDATA[*/
+                   view == 'list' and can_create">
       jQuery(document).ready(function($) {
         $("#duedate").datetimepicker();
         $("#completeddate").datetimepicker();
@@ -22,7 +22,7 @@
         $("h2").addRowCount("table.listing");
         </py:if>
       });
-    //]]></script>
+    </script>
   </head>
 
   <body>
