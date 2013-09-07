@@ -73,8 +73,10 @@
                 <input py:if="can_revoke" type="checkbox" name="sel"
                        value="${'%s:%s' % (unicode_to_base64(subject),
                                            unicode_to_base64(action))}"/>
-                <span py:strip="action in actions" class="missing"
-                      title="Action is no longer defined">${action}</span>
+                <span class="${'missing' if action not in actions else None}"
+                      title="${_('%(action)s is no longer defined', action=action) if action not in actions else action}">
+                  ${action}
+                </span>
               </label>
             </td>
           </tr>
