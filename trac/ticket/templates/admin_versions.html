@@ -8,12 +8,14 @@
   <xi:include href="admin.html" />
   <head>
     <title>Versions</title>
-    <script type="text/javascript">/*<![CDATA[*/
+    <script type="text/javascript">
       jQuery(document).ready(function($) {
         $("#releaseddate").datetimepicker();
+        <py:if test="view == 'list'">
         $("h2").addRowCount("table.listing");
+        </py:if>
       });
-    /*]]>*/</script>
+    </script>
   </head>
 
   <body>
