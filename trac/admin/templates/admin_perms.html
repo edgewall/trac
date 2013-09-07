@@ -22,8 +22,9 @@
           </div>
           <div class="field">
             <label>Action:
-              <select id="action" name="action">
-                <option py:for="action in sorted(actions)">$action</option>
+              <select id="action" name="action"
+                      py:with="allowed_actions = [a for a in actions if a in perm]">
+                <option py:for="action in sorted(allowed_actions)">$action</option>
               </select>
             </label>
           </div>

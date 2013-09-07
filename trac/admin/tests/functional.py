@@ -206,6 +206,33 @@ class TestPluginsAuthorization(AuthorizationTestCaseSetup):
                                 "Manage Plugins")
 
 
+class RegressionTestTicket11069(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11069
+        The permissions list should only be populated with permissions that
+        the user can grant."""
+        self._tester.logout()
+        self._tester.login('user')
+        self._testenv.grant_perm('user', 'PERMISSION_GRANT')
+        env = self._testenv.get_trac_environment()
+        from trac.perm import PermissionSystem
+        user_perms = PermissionSystem(env).get_user_permissions('user')
+        all_actions = PermissionSystem(env).get_actions()
+        try:
+            self._tester.go_to_admin()
+            tc.follow(r"\bPermissions\b")
+            for action in all_actions:
+                option = r"<option>%s</option>" % action
+                if action in user_perms and user_perms[action] is True:
+                    tc.find(option)
+                else:
+                    tc.notfind(option)
+        finally:
+            self._testenv.revoke_perm('user', 'PERMISSION_GRANT')
+            self._tester.logout()
+            self._tester.login('admin')
+
+
 class RegressionTestTicket11117(FunctionalTwillTestCaseSetup):
     """Test for regression of http://trac.edgewall.org/ticket/11117
     Hint should be shown on the Basic Settings admin panel when pytz is not
@@ -260,6 +287,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestRemovePermissionGroup())
     suite.addTest(TestPluginSettings())
     suite.addTest(TestPluginsAuthorization())
+    suite.addTest(RegressionTestTicket11069())
     suite.addTest(RegressionTestTicket11117())
     suite.addTest(RegressionTestTicket11257())
     return suite
