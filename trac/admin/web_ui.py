@@ -210,8 +210,6 @@ class BasicsAdminPanel(Component):
             yield ('general', _('General'), 'basics', _('Basic Settings'))
 
     def render_admin_panel(self, req, cat, page, path_info):
-        req.perm.require('TRAC_ADMIN')
-
         if Locale:
             locales = [Locale.parse(locale)
                        for locale in get_available_locales()]
@@ -445,8 +443,6 @@ class PluginAdminPanel(Component):
             yield ('general', _('General'), 'plugin', _('Plugins'))
 
     def render_admin_panel(self, req, cat, page, path_info):
-        req.perm.require('TRAC_ADMIN')
-
         if req.method == 'POST':
             if 'install' in req.args:
                 self._do_install(req)

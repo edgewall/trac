@@ -17,6 +17,7 @@ import re
 
 from datetime import datetime, timedelta
 
+from trac.admin.tests.functional import AuthorizationTestCaseSetup
 from trac.test import locale_en
 from trac.tests.functional import *
 from trac.util.datefmt import utc, localtz, format_date, format_datetime
@@ -476,6 +477,13 @@ class TestAdminComponent(FunctionalTwillTestCaseSetup):
         self._tester.create_component()
 
 
+class TestAdminComponentAuthorization(AuthorizationTestCaseSetup):
+    def runTest(self):
+        """Check permissions required to access the Ticket Components
+        panel."""
+        self.test_authorization('/admin/ticket/components', 'TICKET_ADMIN',
+                                "Manage Components")
+
 class TestAdminComponentDuplicates(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create duplicate component"""
@@ -569,6 +577,14 @@ class TestAdminMilestone(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create milestone"""
         self._tester.create_milestone()
+
+
+class TestAdminMilestoneAuthorization(AuthorizationTestCaseSetup):
+    def runTest(self):
+        """Check permissions required to access the Ticket Milestoness
+        panel."""
+        self.test_authorization('/admin/ticket/milestones', 'TICKET_ADMIN',
+                                "Manage Milestones")
 
 
 class TestAdminMilestoneSpace(FunctionalTwillTestCaseSetup):
@@ -761,6 +777,14 @@ class TestAdminPriority(FunctionalTwillTestCaseSetup):
         self._tester.create_priority()
 
 
+class TestAdminPriorityAuthorization(AuthorizationTestCaseSetup):
+    def runTest(self):
+        """Check permissions required to access the Ticket Priority
+        panel."""
+        self.test_authorization('/admin/ticket/priority', 'TICKET_ADMIN',
+                                "Manage Priorities")
+
+
 class TestAdminPriorityDuplicates(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create duplicate priority"""
@@ -917,6 +941,14 @@ class TestAdminResolution(FunctionalTwillTestCaseSetup):
         self._tester.create_resolution()
 
 
+class TestAdminResolutionAuthorization(AuthorizationTestCaseSetup):
+    def runTest(self):
+        """Check permissions required to access the Ticket Resolutions
+        panel."""
+        self.test_authorization('/admin/ticket/resolution', 'TICKET_ADMIN',
+                                "Manage Resolutions")
+
+
 class TestAdminResolutionDuplicates(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create duplicate resolution"""
@@ -930,6 +962,14 @@ class TestAdminSeverity(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create severity"""
         self._tester.create_severity()
+
+
+class TestAdminSeverityAuthorization(AuthorizationTestCaseSetup):
+    def runTest(self):
+        """Check permissions required to access the Ticket Severities
+        panel."""
+        self.test_authorization('/admin/ticket/severity', 'TICKET_ADMIN',
+                                "Manage Severities")
 
 
 class TestAdminSeverityDuplicates(FunctionalTwillTestCaseSetup):
@@ -947,6 +987,14 @@ class TestAdminType(FunctionalTwillTestCaseSetup):
         self._tester.create_type()
 
 
+class TestAdminTypeAuthorization(AuthorizationTestCaseSetup):
+    def runTest(self):
+        """Check permissions required to access the Ticket Types
+        panel."""
+        self.test_authorization('/admin/ticket/type', 'TICKET_ADMIN',
+                                "Manage Ticket Types")
+
+
 class TestAdminTypeDuplicates(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create duplicate type"""
@@ -960,6 +1008,13 @@ class TestAdminVersion(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create version"""
         self._tester.create_version()
+
+
+class TestAdminVersionAuthorization(AuthorizationTestCaseSetup):
+    def runTest(self):
+        """Check permissions required to access the Versions panel."""
+        self.test_authorization('/admin/ticket/versions', 'TICKET_ADMIN',
+                                "Manage Versions")
 
 
 class TestAdminVersionDuplicates(FunctionalTwillTestCaseSetup):
@@ -1882,6 +1937,7 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket10828())
     suite.addTest(TestTimelineTicketDetails())
     suite.addTest(TestAdminComponent())
+    suite.addTest(TestAdminComponentAuthorization())
     suite.addTest(TestAdminComponentDuplicates())
     suite.addTest(TestAdminComponentRemoval())
     suite.addTest(TestAdminComponentNonRemoval())
@@ -1889,6 +1945,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminComponentDetail())
     suite.addTest(TestAdminComponentNoneDefined())
     suite.addTest(TestAdminMilestone())
+    suite.addTest(TestAdminMilestoneAuthorization())
     suite.addTest(TestAdminMilestoneSpace())
     suite.addTest(TestAdminMilestoneDuplicates())
     suite.addTest(TestAdminMilestoneDetail())
@@ -1901,6 +1958,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminMilestoneNonRemoval())
     suite.addTest(TestAdminMilestoneDefault())
     suite.addTest(TestAdminPriority())
+    suite.addTest(TestAdminPriorityAuthorization())
     suite.addTest(TestAdminPriorityModify())
     suite.addTest(TestAdminPriorityRemove())
     suite.addTest(TestAdminPriorityRemoveMulti())
@@ -1910,12 +1968,16 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminPriorityRenumber())
     suite.addTest(TestAdminPriorityRenumberDup())
     suite.addTest(TestAdminResolution())
+    suite.addTest(TestAdminResolutionAuthorization())
     suite.addTest(TestAdminResolutionDuplicates())
     suite.addTest(TestAdminSeverity())
+    suite.addTest(TestAdminSeverityAuthorization())
     suite.addTest(TestAdminSeverityDuplicates())
     suite.addTest(TestAdminType())
+    suite.addTest(TestAdminTypeAuthorization())
     suite.addTest(TestAdminTypeDuplicates())
     suite.addTest(TestAdminVersion())
+    suite.addTest(TestAdminVersionAuthorization())
     suite.addTest(TestAdminVersionDuplicates())
     suite.addTest(TestAdminVersionDetail())
     suite.addTest(TestAdminVersionDetailTime())

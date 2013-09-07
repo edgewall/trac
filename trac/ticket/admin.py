@@ -48,7 +48,6 @@ class TicketAdminPanel(Component):
                    gettext(self._label[1]))
 
     def render_admin_panel(self, req, cat, page, version):
-        req.perm.require('TICKET_ADMIN')
         # Trap AssertionErrors and convert them to TracErrors
         try:
             return self._render_admin_panel(req, cat, page, version)
@@ -242,8 +241,6 @@ class MilestoneAdminPanel(TicketAdminPanel):
     # TicketAdminPanel methods
 
     def _render_admin_panel(self, req, cat, page, milestone):
-        req.perm.require('MILESTONE_VIEW')
-
         # Detail view?
         if milestone:
             mil = model.Milestone(self.env, milestone)

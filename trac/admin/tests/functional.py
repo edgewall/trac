@@ -15,6 +15,36 @@
 from trac.tests.functional import *
 from trac.util.text import unicode_to_base64, unicode_from_base64
 
+
+class AuthorizationTestCaseSetup(FunctionalTwillTestCaseSetup):
+    def test_authorization(self, href, perms, h2_text):
+        """Check permissions required to access an administration panel.
+
+        :param href: the relative href of the administration panel
+        :param perms: list or tuple of permissions required to access
+                      the administration panel
+        :param h2_text: the body of the h2 heading on the administration
+                        panel"""
+        self._tester.logout()
+        self._tester.login('user')
+        if isinstance(perms, basestring):
+            perms = (perms, )
+
+        try:
+            for perm in perms:
+                try:
+                    tc.go(href)
+                    tc.find("No administration panels available")
+                    self._testenv.grant_perm('user', perm)
+                    tc.go(href)
+                    tc.find(r"<h2>%s</h2>" % h2_text)
+                finally:
+                    self._testenv.revoke_perm('user', perm)
+        finally:
+            self._tester.logout()
+            self._tester.login('admin')
+
+
 class TestBasicSettings(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Check basic settings."""
@@ -22,6 +52,13 @@ class TestBasicSettings(FunctionalTwillTestCaseSetup):
         tc.formvalue('modbasic', 'url', 'https://my.example.com/something')
         tc.submit()
         tc.find('https://my.example.com/something')
+
+
+class TestBasicSettingsAuthorization(AuthorizationTestCaseSetup):
+    def runTest(self):
+        """Check permissions required to access Basic Settings panel."""
+        self.test_authorization('/admin/general/basics', 'TRAC_ADMIN',
+                                "Basic Settings")
 
 
 class TestLoggingNone(FunctionalTwillTestCaseSetup):
@@ -34,6 +71,13 @@ class TestLoggingNone(FunctionalTwillTestCaseSetup):
         tc.formvalue('modlog', 'log_type', 'none')
         tc.submit()
         tc.find('selected="selected">None</option')
+
+
+class TestLoggingAuthorization(AuthorizationTestCaseSetup):
+    def runTest(self):
+        """Check permissions required to access Logging panel."""
+        self.test_authorization('/admin/general/logging', 'TRAC_ADMIN',
+                                "Logging")
 
 
 class TestLoggingToFile(FunctionalTwillTestCaseSetup):
@@ -65,6 +109,14 @@ class TestLoggingToFileNormal(FunctionalTwillTestCaseSetup):
         tc.find('selected="selected">File</option')
         tc.find('id="log_file".*value="trac.log"')
         tc.find('selected="selected">DEBUG</option>')
+
+
+class TestPermissionsAuthorization(AuthorizationTestCaseSetup):
+    def runTest(self):
+        """Check permissions required to access Permissions panel."""
+        self.test_authorization('/admin/general/perm',
+                                ('PERMISSION_GRANT', 'PERMISSION_REVOKE'),
+                                "Manage Permissions and Groups")
 
 
 class TestCreatePermissionGroup(FunctionalTwillTestCaseSetup):
@@ -133,6 +185,13 @@ class TestPluginSettings(FunctionalTwillTestCaseSetup):
         tc.find('Install Plugin')
 
 
+class TestPluginsAuthorization(AuthorizationTestCaseSetup):
+    def runTest(self):
+        """Check permissions required to access Logging panel."""
+        self.test_authorization('/admin/general/plugin', 'TRAC_ADMIN',
+                                "Manage Plugins")
+
+
 class RegressionTestTicket11117(FunctionalTwillTestCaseSetup):
     """Test for regression of http://trac.edgewall.org/ticket/11117
     Hint should be shown on the Basic Settings admin panel when pytz is not
@@ -175,14 +234,18 @@ def functionalSuite(suite=None):
         import trac.tests.functional.testcases
         suite = trac.tests.functional.testcases.functionalSuite()
     suite.addTest(TestBasicSettings())
+    suite.addTest(TestBasicSettingsAuthorization())
     suite.addTest(TestLoggingNone())
+    suite.addTest(TestLoggingAuthorization())
     suite.addTest(TestLoggingToFile())
     suite.addTest(TestLoggingToFileNormal())
+    suite.addTest(TestPermissionsAuthorization())
     suite.addTest(TestCreatePermissionGroup())
     suite.addTest(TestAddUserToGroup())
     suite.addTest(TestRemoveUserFromGroup())
     suite.addTest(TestRemovePermissionGroup())
     suite.addTest(TestPluginSettings())
+    suite.addTest(TestPluginsAuthorization())
     suite.addTest(RegressionTestTicket11117())
     suite.addTest(RegressionTestTicket11257())
     return suite
