@@ -206,7 +206,7 @@ class BasicsAdminPanel(Component):
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
-        if 'TRAC_ADMIN' in req.perm:
+        if 'TRAC_ADMIN' in req.perm('admin', 'general/basics'):
             yield ('general', _('General'), 'basics', _('Basic Settings'))
 
     def render_admin_panel(self, req, cat, page, path_info):
@@ -264,7 +264,7 @@ class LoggingAdminPanel(Component):
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
-        if 'TRAC_ADMIN' in req.perm:
+        if 'TRAC_ADMIN' in req.perm('admin', 'general/logging'):
             yield ('general', _('General'), 'logging', _('Logging'))
 
     def render_admin_panel(self, req, cat, page, path_info):
@@ -352,7 +352,8 @@ class PermissionAdminPanel(Component):
 
     # IAdminPanelProvider methods
     def get_admin_panels(self, req):
-        if 'PERMISSION_GRANT' in req.perm or 'PERMISSION_REVOKE' in req.perm:
+        perm = req.perm('admin', 'general/perm')
+        if 'PERMISSION_GRANT' in perm or 'PERMISSION_REVOKE' in perm:
             yield ('general', _('General'), 'perm', _('Permissions'))
 
     def render_admin_panel(self, req, cat, page, path_info):
@@ -439,7 +440,7 @@ class PluginAdminPanel(Component):
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
-        if 'TRAC_ADMIN' in req.perm:
+        if 'TRAC_ADMIN' in req.perm('admin', 'general/plugin'):
             yield ('general', _('General'), 'plugin', _('Plugins'))
 
     def render_admin_panel(self, req, cat, page, path_info):

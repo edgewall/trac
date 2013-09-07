@@ -5,9 +5,10 @@
       xmlns:xi="http://www.w3.org/2001/XInclude"
       xmlns:py="http://genshi.edgewall.org/"
       xmlns:i18n="http://genshi.edgewall.org/i18n"
-      py:with="can_create = 'MILESTONE_CREATE' in req.perm;
-               can_modify = 'MILESTONE_MODIFY' in req.perm;
-               can_remove = 'MILESTONE_DELETE' in req.perm">
+      py:with="perm = req.perm('admin', 'ticket/milestones');
+               can_create = 'MILESTONE_CREATE' in perm;
+               can_modify = 'MILESTONE_MODIFY' in perm;
+               can_remove = 'MILESTONE_DELETE' in perm">
   <xi:include href="admin.html" />
   <head>
     <title>Milestones</title>

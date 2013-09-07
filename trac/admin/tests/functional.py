@@ -18,7 +18,9 @@ from trac.util.text import unicode_to_base64, unicode_from_base64
 
 class AuthorizationTestCaseSetup(FunctionalTwillTestCaseSetup):
     def test_authorization(self, href, perms, h2_text):
-        """Check permissions required to access an administration panel.
+        """Check permissions required to access an administration panel. A
+        fine-grained permissions test will also be executed if ConfigObj is
+        installed.
 
         :param href: the relative href of the administration panel
         :param perms: list or tuple of permissions required to access
@@ -40,6 +42,18 @@ class AuthorizationTestCaseSetup(FunctionalTwillTestCaseSetup):
                     tc.find(r"<h2>%s</h2>" % h2_text)
                 finally:
                     self._testenv.revoke_perm('user', perm)
+                try:
+                    tc.go(href)
+                    tc.find("No administration panels available")
+                    self._testenv.enable_authz_permpolicy({
+                        href.strip('/').replace('/', ':', 1): {'user': perm},
+                    })
+                    tc.go(href)
+                    tc.find(r"<h2>%s</h2>" % h2_text)
+                except ImportError:
+                    pass
+                finally:
+                    self._testenv.disable_authz_permpolicy()
         finally:
             self._tester.logout()
             self._tester.login('admin')
