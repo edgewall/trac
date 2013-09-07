@@ -150,11 +150,14 @@ class FunctionalTester(object):
         tc.follow(r"\bCustom Query\b")
         tc.url(self.url + '/query')
 
-    def go_to_admin(self):
-        """Surf to the webadmin page."""
+    def go_to_admin(self, panel_label=None):
+        """Surf to the webadmin page. Continue surfing to a specific
+        admin page if `panel_label` is specified."""
         self.go_to_front()
         tc.follow(r"\bAdmin\b")
         tc.url(self.url + '/admin')
+        if panel_label is not None:
+            tc.follow(r"\b%s\b" % panel_label)
 
     def go_to_roadmap(self):
         """Surf to the roadmap page."""

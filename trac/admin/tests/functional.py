@@ -79,8 +79,7 @@ class TestLoggingNone(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Turn off logging."""
         # For now, we just check that it shows up.
-        self._tester.go_to_admin()
-        tc.follow('Logging')
+        self._tester.go_to_admin("Logging")
         tc.find('trac.log')
         tc.formvalue('modlog', 'log_type', 'none')
         tc.submit()
@@ -98,8 +97,7 @@ class TestLoggingToFile(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Turn logging back on."""
         # For now, we just check that it shows up.
-        self._tester.go_to_admin()
-        tc.follow('Logging')
+        self._tester.go_to_admin("Logging")
         tc.find('trac.log')
         tc.formvalue('modlog', 'log_type', 'file')
         tc.formvalue('modlog', 'log_file', 'trac.log2')
@@ -114,8 +112,7 @@ class TestLoggingToFileNormal(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Setting logging back to normal."""
         # For now, we just check that it shows up.
-        self._tester.go_to_admin()
-        tc.follow('Logging')
+        self._tester.go_to_admin("Logging")
         tc.find('trac.log')
         tc.formvalue('modlog', 'log_file', 'trac.log')
         tc.formvalue('modlog', 'log_level', 'DEBUG')
@@ -136,8 +133,7 @@ class TestPermissionsAuthorization(AuthorizationTestCaseSetup):
 class TestCreatePermissionGroup(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Create a permissions group"""
-        self._tester.go_to_admin()
-        tc.follow('Permissions')
+        self._tester.go_to_admin("Permissions")
         tc.find('Manage Permissions')
         tc.formvalue('addperm', 'gp_subject', 'somegroup')
         tc.formvalue('addperm', 'action', 'REPORT_CREATE')
@@ -150,8 +146,7 @@ class TestCreatePermissionGroup(FunctionalTwillTestCaseSetup):
 class TestAddUserToGroup(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Add a user to a permissions group"""
-        self._tester.go_to_admin()
-        tc.follow('Permissions')
+        self._tester.go_to_admin("Permissions")
         tc.find('Manage Permissions')
         tc.formvalue('addsubj', 'sg_subject', 'authenticated')
         tc.formvalue('addsubj', 'sg_group', 'somegroup')
@@ -164,8 +159,7 @@ class TestAddUserToGroup(FunctionalTwillTestCaseSetup):
 class TestRemoveUserFromGroup(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Remove a user from a permissions group"""
-        self._tester.go_to_admin()
-        tc.follow('Permissions')
+        self._tester.go_to_admin("Permissions")
         tc.find('Manage Permissions')
         authenticated = unicode_to_base64('authenticated')
         somegroup = unicode_to_base64('somegroup')
@@ -178,8 +172,7 @@ class TestRemoveUserFromGroup(FunctionalTwillTestCaseSetup):
 class TestRemovePermissionGroup(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Remove a permissions group"""
-        self._tester.go_to_admin()
-        tc.follow('Permissions')
+        self._tester.go_to_admin("Permissions")
         tc.find('Manage Permissions')
         somegroup = unicode_to_base64('somegroup')
         REPORT_CREATE = unicode_to_base64('REPORT_CREATE')
@@ -193,8 +186,7 @@ class TestRemovePermissionGroup(FunctionalTwillTestCaseSetup):
 class TestPluginSettings(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Check plugin settings."""
-        self._tester.go_to_admin()
-        tc.follow('Plugins')
+        self._tester.go_to_admin("Plugins")
         tc.find('Manage Plugins')
         tc.find('Install Plugin')
 
@@ -219,8 +211,7 @@ class RegressionTestTicket11069(FunctionalTwillTestCaseSetup):
         user_perms = PermissionSystem(env).get_user_permissions('user')
         all_actions = PermissionSystem(env).get_actions()
         try:
-            self._tester.go_to_admin()
-            tc.follow(r"\bPermissions\b")
+            self._tester.go_to_admin("Permissions")
             for action in all_actions:
                 option = r"<option>%s</option>" % action
                 if action in user_perms and user_perms[action] is True:
@@ -239,8 +230,7 @@ class RegressionTestTicket11117(FunctionalTwillTestCaseSetup):
     installed.
     """
     def runTest(self):
-        self._tester.go_to_admin()
-        tc.follow(r"\bBasic Settings\b")
+        self._tester.go_to_admin("Basic Settings")
         pytz_hint = "Install pytz for a complete list of timezones."
         from trac.util.datefmt import pytz
         if pytz is None:
@@ -255,8 +245,7 @@ class RegressionTestTicket11257(FunctionalTwillTestCaseSetup):
     installed.
     """
     def runTest(self):
-        self._tester.go_to_admin()
-        tc.follow(r"\bBasic Settings\b")
+        self._tester.go_to_admin("Basic Settings")
         babel_hints = ("Install Babel for extended language support.",
                        "Install Babel for localized date formats.")
         try:
