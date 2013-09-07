@@ -176,13 +176,11 @@ class RepositoryAdminPanel(Component):
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
-        if 'VERSIONCONTROL_ADMIN' in req.perm:
+        if 'VERSIONCONTROL_ADMIN' in req.perm('admin', 'versioncontrol/repository'):
             yield ('versioncontrol', _('Version Control'), 'repository',
                    _('Repositories'))
 
     def render_admin_panel(self, req, category, page, path_info):
-        req.perm.require('VERSIONCONTROL_ADMIN')
-
         # Retrieve info for all repositories
         rm = RepositoryManager(self.env)
         all_repos = rm.get_all_repositories()

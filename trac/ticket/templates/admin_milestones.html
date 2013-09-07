@@ -4,11 +4,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:xi="http://www.w3.org/2001/XInclude"
       xmlns:py="http://genshi.edgewall.org/"
-      xmlns:i18n="http://genshi.edgewall.org/i18n">
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
+      py:with="perm = req.perm('admin', 'ticket/milestones');
+               can_create = 'MILESTONE_CREATE' in perm;
+               can_modify = 'MILESTONE_MODIFY' in perm;
+               can_remove = 'MILESTONE_DELETE' in perm">
   <xi:include href="admin.html" />
   <head>
     <title>Milestones</title>
-    <script type="text/javascript">
+    <script type="text/javascript"
+            py:if="view == 'detail' and can_modify or
+                   view == 'list' and can_create">
       jQuery(document).ready(function($) {
         $("#duedate").datetimepicker();
         $("#completeddate").datetimepicker();
@@ -24,7 +30,8 @@
 
     <py:choose test="view">
       <form py:when="'detail'" class="mod" method="post" id="modifymilestone" action=""
-            py:with="readonly = 'MILESTONE_MODIFY' not in req.perm or None">
+            py:with="disabled = 'disabled' if not can_modify else None;
+                     readonly = 'readonly' if not can_modify else None">
         <fieldset>
           <legend>Modify Milestone:</legend>
           <div class="field">
@@ -42,14 +49,14 @@
           <div class="field">
             <label>
               <input type="checkbox" id="completed" name="completed"
-                     checked="${milestone.completed or None}" disabled="${readonly}"/>
+                     checked="${milestone.completed or None}" disabled="${disabled}"/>
               Completed:<br />
             </label>
             <label>
               <input type="text" id="completeddate" name="completeddate"
                      size="${len(datetime_hint)}"
                      value="${format_datetime(milestone.completed)}" readonly="${readonly}"
-                     title="${_('Format: %(datehint)s', datehint=datetime_hint)}"/>
+                     title="${_('Format: %(datehint)s', datehint=datetime_hint)}" />
               <span class="hint" i18n:msg="datehint">Format: $datetime_hint</span>
             </label>
             <script type="text/javascript">
@@ -75,14 +82,14 @@ ${milestone.description}</textarea>
             </fieldset>
           </div>
           <div class="buttons">
-            <input type="submit" name="save" value="${_('Save')}" disabled="${readonly}"/>
+            <input type="submit" name="save" value="${_('Save')}" disabled="${disabled}"/>
             <input type="submit" name="cancel" value="${_('Cancel')}"/>
           </div>
         </fieldset>
       </form>
 
       <py:otherwise>
-        <form class="addnew" id="addmilestone" method="post" action="" py:if="'MILESTONE_CREATE' in req.perm">
+        <form class="addnew" id="addmilestone" method="post" action="" py:if="can_create">
           <fieldset>
             <legend>Add Milestone:</legend>
             <div class="field">
@@ -103,8 +110,7 @@ ${milestone.description}</textarea>
         </form>
 
         <py:choose>
-          <form id="milestone_table" method="post" action=""
-                py:when="milestones" py:with="can_remove = 'MILESTONE_DELETE' in req.perm">
+          <form id="milestone_table" method="post" action="" py:when="milestones">
             <table class="listing" id="millist">
               <thead>
                 <tr><th class="sel" py:if="can_remove">&nbsp;</th>

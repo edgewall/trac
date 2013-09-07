@@ -206,12 +206,10 @@ class BasicsAdminPanel(Component):
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
-        if 'TRAC_ADMIN' in req.perm:
+        if 'TRAC_ADMIN' in req.perm('admin', 'general/basics'):
             yield ('general', _('General'), 'basics', _('Basic Settings'))
 
     def render_admin_panel(self, req, cat, page, path_info):
-        req.perm.require('TRAC_ADMIN')
-
         if Locale:
             locales = [Locale.parse(locale)
                        for locale in get_available_locales()]
@@ -266,7 +264,7 @@ class LoggingAdminPanel(Component):
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
-        if 'TRAC_ADMIN' in req.perm:
+        if 'TRAC_ADMIN' in req.perm('admin', 'general/logging'):
             yield ('general', _('General'), 'logging', _('Logging'))
 
     def render_admin_panel(self, req, cat, page, path_info):
@@ -354,7 +352,8 @@ class PermissionAdminPanel(Component):
 
     # IAdminPanelProvider methods
     def get_admin_panels(self, req):
-        if 'PERMISSION_GRANT' in req.perm or 'PERMISSION_REVOKE' in req.perm:
+        perm = req.perm('admin', 'general/perm')
+        if 'PERMISSION_GRANT' in perm or 'PERMISSION_REVOKE' in perm:
             yield ('general', _('General'), 'perm', _('Permissions'))
 
     def render_admin_panel(self, req, cat, page, path_info):
@@ -374,7 +373,7 @@ class PermissionAdminPanel(Component):
 
             # Grant permission to subject
             if req.args.get('add') and subject and action:
-                req.perm.require('PERMISSION_GRANT')
+                req.perm('admin', 'general/perm').require('PERMISSION_GRANT')
                 if action not in all_actions:
                     raise TracError(_('Unknown action'))
                 req.perm.require(action)
@@ -391,7 +390,7 @@ class PermissionAdminPanel(Component):
 
             # Add subject to group
             elif req.args.get('add') and subject and group:
-                req.perm.require('PERMISSION_GRANT')
+                req.perm('admin', 'general/perm').require('PERMISSION_GRANT')
                 for action in perm.get_user_permissions(group):
                     if not action in all_actions: # plugin disabled?
                         self.env.log.warn("Adding %s to group %s: "
@@ -412,7 +411,7 @@ class PermissionAdminPanel(Component):
 
             # Remove permissions action
             elif req.args.get('remove') and req.args.get('sel'):
-                req.perm.require('PERMISSION_REVOKE')
+                req.perm('admin', 'general/perm').require('PERMISSION_REVOKE')
                 sel = req.args.get('sel')
                 sel = sel if isinstance(sel, list) else [sel]
                 for key in sel:
@@ -441,12 +440,10 @@ class PluginAdminPanel(Component):
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
-        if 'TRAC_ADMIN' in req.perm:
+        if 'TRAC_ADMIN' in req.perm('admin', 'general/plugin'):
             yield ('general', _('General'), 'plugin', _('Plugins'))
 
     def render_admin_panel(self, req, cat, page, path_info):
-        req.perm.require('TRAC_ADMIN')
-
         if req.method == 'POST':
             if 'install' in req.args:
                 self._do_install(req)

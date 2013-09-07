@@ -12,7 +12,16 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from trac.admin.tests.functional import AuthorizationTestCaseSetup
 from trac.tests.functional import *
+
+
+class TestAdminRepositoryAuthorization(AuthorizationTestCaseSetup):
+    def runTest(self):
+        """Check permissions required to access the Version Control
+        Repositories panel."""
+        self.test_authorization('/admin/versioncontrol/repository',
+                                'VERSIONCONTROL_ADMIN', "Manage Repositories")
 
 
 class TestEmptySvnRepo(FunctionalTwillTestCaseSetup):
@@ -221,6 +230,7 @@ def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional.testcases
         suite = trac.tests.functional.testcases.functionalSuite()
+    suite.addTest(TestAdminRepositoryAuthorization())
     if has_svn:
         suite.addTest(TestEmptySvnRepo())
         suite.addTest(TestRepoCreation())

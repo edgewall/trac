@@ -43,12 +43,11 @@ class TicketAdminPanel(Component):
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
-        if 'TICKET_ADMIN' in req.perm:
+        if 'TICKET_ADMIN' in req.perm('admin', 'ticket/' + self._type):
             yield ('ticket', _('Ticket System'), self._type,
                    gettext(self._label[1]))
 
     def render_admin_panel(self, req, cat, page, version):
-        req.perm.require('TICKET_ADMIN')
         # Trap AssertionErrors and convert them to TracErrors
         try:
             return self._render_admin_panel(req, cat, page, version)
@@ -236,20 +235,19 @@ class MilestoneAdminPanel(TicketAdminPanel):
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
-        if 'MILESTONE_VIEW' in req.perm:
+        if 'MILESTONE_VIEW' in req.perm('admin', 'ticket/' + self._type):
             return TicketAdminPanel.get_admin_panels(self, req)
 
     # TicketAdminPanel methods
 
     def _render_admin_panel(self, req, cat, page, milestone):
-        req.perm.require('MILESTONE_VIEW')
-
+        perm = req.perm('admin', 'ticket/' + self._type)
         # Detail view?
         if milestone:
             mil = model.Milestone(self.env, milestone)
             if req.method == 'POST':
                 if req.args.get('save'):
-                    req.perm.require('MILESTONE_MODIFY')
+                    perm.require('MILESTONE_MODIFY')
                     mil.name = name = req.args.get('name')
                     mil.due = mil.completed = None
                     due = req.args.get('duedate', '')
@@ -283,7 +281,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
             if req.method == 'POST':
                 # Add Milestone
                 if req.args.get('add') and req.args.get('name'):
-                    req.perm.require('MILESTONE_CREATE')
+                    perm.require('MILESTONE_CREATE')
                     name = req.args.get('name')
                     try:
                         mil = model.Milestone(self.env, name=name)
@@ -306,7 +304,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
 
                 # Remove milestone
                 elif req.args.get('remove'):
-                    req.perm.require('MILESTONE_DELETE')
+                    perm.require('MILESTONE_DELETE')
                     sel = req.args.get('sel')
                     if not sel:
                         raise TracError(_('No milestone selected'))
