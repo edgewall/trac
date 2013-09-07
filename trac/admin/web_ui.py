@@ -373,7 +373,7 @@ class PermissionAdminPanel(Component):
 
             # Grant permission to subject
             if req.args.get('add') and subject and action:
-                req.perm.require('PERMISSION_GRANT')
+                req.perm('admin', 'general/perm').require('PERMISSION_GRANT')
                 if action not in all_actions:
                     raise TracError(_('Unknown action'))
                 req.perm.require(action)
@@ -390,7 +390,7 @@ class PermissionAdminPanel(Component):
 
             # Add subject to group
             elif req.args.get('add') and subject and group:
-                req.perm.require('PERMISSION_GRANT')
+                req.perm('admin', 'general/perm').require('PERMISSION_GRANT')
                 for action in perm.get_user_permissions(group):
                     if not action in all_actions: # plugin disabled?
                         self.env.log.warn("Adding %s to group %s: "
@@ -411,7 +411,7 @@ class PermissionAdminPanel(Component):
 
             # Remove permissions action
             elif req.args.get('remove') and req.args.get('sel'):
-                req.perm.require('PERMISSION_REVOKE')
+                req.perm('admin', 'general/perm').require('PERMISSION_REVOKE')
                 sel = req.args.get('sel')
                 sel = sel if isinstance(sel, list) else [sel]
                 for key in sel:

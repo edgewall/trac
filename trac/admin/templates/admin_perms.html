@@ -13,7 +13,7 @@
   <body>
     <h2>Manage Permissions and Groups</h2>
 
-    <py:if test="'PERMISSION_GRANT' in perm">
+    <py:if test="'PERMISSION_GRANT' in perm('admin', 'general/perm')">
       <form id="addperm" class="addnew" method="post" action="">
         <fieldset>
           <legend>Grant Permission:</legend>
@@ -57,7 +57,7 @@
       </form>
     </py:if>
 
-    <form id="revokeform" method="post" action="" py:with="can_revoke = 'PERMISSION_REVOKE' in perm">
+    <form id="revokeform" method="post" action="" py:with="can_revoke = 'PERMISSION_REVOKE' in perm('admin', 'general/perm')">
       <h3>Permissions</h3>
       <table class="listing" id="permlist">
         <thead>
