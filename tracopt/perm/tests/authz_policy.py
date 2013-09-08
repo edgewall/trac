@@ -100,6 +100,20 @@ administrators = éat
         self.assertRaises(ConfigurationError, getattr, self.authz_policy,
                           'get_authz_file')
 
+    def test_get_authz_file_notdefined_raises(self):
+        """ConfigurationError exception should be raised if the option
+        `[authz_policy] authz_file` is not specified in trac.ini."""
+        self.env.config.remove('authz_policy', 'authz_file')
+        self.assertRaises(ConfigurationError, getattr, self.authz_policy,
+                          'get_authz_file')
+
+    def test_get_authz_file_empty_raises(self):
+        """ConfigurationError exception should be raised if the option
+        `[authz_policy] authz_file` is empty."""
+        self.env.config.set('authz_policy', 'authz_file', '')
+        self.assertRaises(ConfigurationError, getattr, self.authz_policy,
+                          'get_authz_file')
+
     def test_parse_authz_malformed_raises(self):
         """ConfigurationError should be raised if the file is malformed."""
         create_file(self.authz_file, """\

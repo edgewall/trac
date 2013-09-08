@@ -141,7 +141,7 @@ class AuthzPolicy(Component):
     # IPermissionPolicy methods
 
     def check_permission(self, action, username, resource, perm):
-        if self.authz_file and not self.authz_mtime or \
+        if not self.authz_mtime or \
                 os.path.getmtime(self.get_authz_file) > self.authz_mtime:
             self.parse_authz()
         resource_key = self.normalise_resource(resource)
@@ -167,6 +167,11 @@ class AuthzPolicy(Component):
 
     @lazy
     def get_authz_file(self):
+        if not self.authz_file:
+            self.log.error('The `[authz_policy] authz_file` configuration '
+                           'option in trac.ini is empty or not defined.')
+            raise ConfigurationError()
+
         authz_file = self.authz_file if os.path.isabs(self.authz_file) \
                                      else os.path.join(self.env.path,
                                                        self.authz_file)
