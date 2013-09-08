@@ -141,11 +141,7 @@ class AuthzPolicy(Component):
     # IPermissionPolicy methods
 
     def check_permission(self, action, username, resource, perm):
-        if ConfigObj is None:
-            self.log.error('configobj package not found')
-            return None
-
-        if self.authz_file and not self.authz_mtime or \
+        if not self.authz_mtime or \
                 os.path.getmtime(self.get_authz_file) > self.authz_mtime:
             self.parse_authz()
         resource_key = self.normalise_resource(resource)
@@ -171,6 +167,11 @@ class AuthzPolicy(Component):
 
     @lazy
     def get_authz_file(self):
+        if not self.authz_file:
+            self.log.error('The `[authz_policy] authz_file` configuration '
+                           'option in trac.ini is empty or not defined.')
+            raise ConfigurationError()
+
         authz_file = self.authz_file if os.path.isabs(self.authz_file) \
                                      else os.path.join(self.env.path,
                                                        self.authz_file)
@@ -183,6 +184,9 @@ class AuthzPolicy(Component):
         return authz_file
 
     def parse_authz(self):
+        if ConfigObj is None:
+            self.log.error('ConfigObj package not found.')
+            raise ConfigurationError()
         self.log.debug('Parsing authz security policy %s',
                        self.get_authz_file)
         try:
@@ -191,6 +195,9 @@ class AuthzPolicy(Component):
         except ConfigObjError, e:
             self.log.error("Error parsing authz permission policy file: %s",
                            to_unicode(e))
+            raise ConfigurationError()
+        if not self.authz:
+            self.log.error("The authz file is empty.")
             raise ConfigurationError()
         groups = {}
         for group, users in self.authz.get('groups', {}).iteritems():
