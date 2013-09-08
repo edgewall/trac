@@ -196,6 +196,9 @@ class AuthzPolicy(Component):
             self.log.error("Error parsing authz permission policy file: %s",
                            to_unicode(e))
             raise ConfigurationError()
+        if not self.authz:
+            self.log.error("The authz file is empty.")
+            raise ConfigurationError()
         groups = {}
         for group, users in self.authz.get('groups', {}).iteritems():
             if isinstance(users, basestring):

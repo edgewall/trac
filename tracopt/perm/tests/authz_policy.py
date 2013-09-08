@@ -114,6 +114,11 @@ administrators = éat
         self.assertRaises(ConfigurationError, getattr, self.authz_policy,
                           'get_authz_file')
 
+    def test_parse_authz_empty_raises(self):
+        """ConfigurationError should be raised if the file is empty."""
+        create_file(self.authz_file, "")
+        self.assertRaises(ConfigurationError, self.authz_policy.parse_authz)
+
     def test_parse_authz_malformed_raises(self):
         """ConfigurationError should be raised if the file is malformed."""
         create_file(self.authz_file, """\
