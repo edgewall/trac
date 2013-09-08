@@ -141,10 +141,6 @@ class AuthzPolicy(Component):
     # IPermissionPolicy methods
 
     def check_permission(self, action, username, resource, perm):
-        if ConfigObj is None:
-            self.log.error('configobj package not found')
-            return None
-
         if self.authz_file and not self.authz_mtime or \
                 os.path.getmtime(self.get_authz_file) > self.authz_mtime:
             self.parse_authz()
@@ -183,6 +179,9 @@ class AuthzPolicy(Component):
         return authz_file
 
     def parse_authz(self):
+        if ConfigObj is None:
+            self.log.error('ConfigObj package not found.')
+            raise ConfigurationError()
         self.log.debug('Parsing authz security policy %s',
                        self.get_authz_file)
         try:
