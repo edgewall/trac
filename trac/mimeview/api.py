@@ -290,6 +290,7 @@ KNOWN_MIME_TYPES = {
     'application/pdf':         'pdf',
     'application/postscript':  'ps',
     'application/rtf':         'rtf',
+    'application/x-dos-batch': 'bat batch cmd dos',
     'application/x-sh':        'sh',
     'application/x-csh':       'csh',
     'application/x-troff':     'nroff roff troff',
