@@ -477,21 +477,22 @@ class ImageMacro(WikiMacroBase):
 
     Examples:
     {{{
-        [[Image(photo.jpg)]]                           # simplest
-        [[Image(photo.jpg, 120px)]]                    # with image width size
-        [[Image(photo.jpg, right)]]                    # aligned by keyword
-        [[Image(photo.jpg, nolink)]]                   # without link to source
-        [[Image(photo.jpg, align=right)]]              # aligned by attribute
+    [[Image(photo.jpg)]]               # simplest
+    [[Image(photo.jpg, 120px)]]        # with image width size
+    [[Image(photo.jpg, right)]]        # aligned by keyword
+    [[Image(photo.jpg, nolink)]]       # without link to source
+    [[Image(photo.jpg, align=right)]]  # aligned by attribute
     }}}
 
-    You can use image from other page, other ticket or other module.
+    You can use an image from a wiki page, ticket or other module.
     {{{
-        [[Image(OtherPage:foo.bmp)]]    # if current module is wiki
-        [[Image(base/sub:bar.bmp)]]     # from hierarchical wiki page
-        [[Image(#3:baz.bmp)]]           # if in a ticket, point to #3
-        [[Image(ticket:36:boo.jpg)]]
-        [[Image(source:/images/bee.jpg)]] # straight from the repository!
-        [[Image(htdocs:foo/bar.png)]]   # image file in project htdocs dir.
+    [[Image(OtherPage:foo.bmp)]]    # from a wiki page
+    [[Image(base/sub:bar.bmp)]]     # from hierarchical wiki page
+    [[Image(#3:baz.bmp)]]           # from another ticket
+    [[Image(ticket:36:boo.jpg)]]    # from another ticket (long form)
+    [[Image(source:/img/bee.jpg)]]  # from the repository
+    [[Image(htdocs:foo/bar.png)]]   # from project htdocs dir
+    [[Image(shared:foo/bar.png)]]   # from shared htdocs dir (since 1.0.2)
     }}}
 
     ''Adapted from the Image.py macro created by Shun-ichi Goto
@@ -628,6 +629,9 @@ class ImageMacro(WikiMacroBase):
                     id = id[1:]
                 elif id == 'htdocs':
                     raw_url = url = formatter.href.chrome('site', filename)
+                    desc = os.path.basename(filename)
+                elif id == 'shared':
+                    raw_url = url = formatter.href.chrome('shared', filename)
                     desc = os.path.basename(filename)
                 else:
                     realm = 'wiki'
