@@ -147,6 +147,23 @@ IMAGE_MACRO_TEST_CASES = u"""
 ------------------------------
 <img src="/raw-attachment/wiki/page%3Afr/img.png" alt="image in page:fr" title="image in page:fr" />
 ------------------------------
+============================== htdocs: Image, nolink
+[[Image(htdocs:trac_logo.png, nolink)]]
+------------------------------
+<p>
+<img src="/chrome/site/trac_logo.png" alt="trac_logo.png" title="trac_logo.png" />
+</p>
+------------------------------
+<img src="/chrome/site/trac_logo.png" alt="trac_logo.png" title="trac_logo.png" />
+============================== shared: Image, nolink
+[[Image(shared:trac_logo.png, nolink)]]
+------------------------------
+<p>
+<img src="/chrome/shared/trac_logo.png" alt="trac_logo.png" title="trac_logo.png" />
+</p>
+------------------------------
+<img src="/chrome/shared/trac_logo.png" alt="trac_logo.png" title="trac_logo.png" />
+------------------------------
 """
 
 # Note: in the <img> src attribute above, the Unicode characters

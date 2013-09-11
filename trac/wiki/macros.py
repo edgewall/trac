@@ -492,6 +492,7 @@ class ImageMacro(WikiMacroBase):
         [[Image(ticket:36:boo.jpg)]]
         [[Image(source:/images/bee.jpg)]] # straight from the repository!
         [[Image(htdocs:foo/bar.png)]]   # image file in project htdocs dir.
+        [[Image(shared:foo/bar.png)]]   # image file in shared htdocs dir.
     }}}
 
     ''Adapted from the Image.py macro created by Shun-ichi Goto
@@ -628,6 +629,9 @@ class ImageMacro(WikiMacroBase):
                     id = id[1:]
                 elif id == 'htdocs':
                     raw_url = url = formatter.href.chrome('site', filename)
+                    desc = os.path.basename(filename)
+                elif id == 'shared':
+                    raw_url = url = formatter.href.chrome('shared', filename)
                     desc = os.path.basename(filename)
                 else:
                     realm = 'wiki'
