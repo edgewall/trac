@@ -20,7 +20,6 @@ from genshi.builder import Element, Fragment, tag
 
 from trac.config import ConfigSection
 from trac.core import *
-from trac.perm import PermissionError
 from trac.util.html import find_element
 from trac.util.translation import _, N_
 from trac.web.api import IRequestHandler
@@ -90,8 +89,10 @@ class InterTracDispatcher(Component):
         link_frag = extract_link(self.env, web_context(req), link)
         if isinstance(link_frag, (Element, Fragment)):
             elt = find_element(link_frag, 'href')
-            if elt is None: # most probably no permissions to view
-                raise PermissionError(_("Can't view %(link)s:", link=link))
+            if elt is None:
+                raise TracError(
+                    _("Can't view %(link)s. Resource doesn't exist or "
+                      "you don't have the required permission.", link=link))
             href = elt.attrib.get('href')
         else:
             href = req.href(link.rstrip(':'))
