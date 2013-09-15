@@ -151,7 +151,7 @@ class LoginModuleTestCase(unittest.TestCase):
         req = Mock(incookie=incookie, authname='john',
                    href=Href('/trac.cgi'), base_path='/trac.cgi',
                    remote_addr='127.0.0.1', remote_user='tom')
-        self.assertRaises(AssertionError, self.module._do_login, req)
+        self.assertRaises(TracError, self.module._do_login, req)
 
     def test_logout(self):
         self.env.db_transaction("""

@@ -11,18 +11,24 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from trac.core import Component, implements
+import os
+import shutil
+import tempfile
+import unittest
+
+from trac.core import Component, TracError, implements
 from trac.test import EnvironmentStub
 from trac.tests.contentgen import random_sentence
+from trac.util import create_file
 from trac.web.chrome import (
     Chrome, INavigationContributor, add_link, add_meta, add_notice, add_script,
     add_script_data, add_stylesheet, add_warning)
 from trac.web.href import Href
 
-import unittest
 
 class Request(object):
     locale = None
+    args = {}
     def __init__(self, **kwargs):
         self.chrome = {}
         for k, v in kwargs.items():
@@ -313,8 +319,48 @@ class ChromeTestCase(unittest.TestCase):
         self.assertEqual('test2', items[1]['name'])
 
 
+class ChromeTestCase2(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(path=tempfile.mkdtemp())
+
+    def tearDown(self):
+        shutil.rmtree(self.env.path)
+
+    def test_malicious_filename_raises(self):
+        req = Request(path_info='/chrome/site/../conf/trac.ini')
+        chrome = Chrome(self.env)
+        self.assertTrue(chrome.match_request(req))
+        self.assertRaises(TracError, chrome.process_request, req)
+
+    def test_empty_shared_htdocs_dir_raises_file_not_found(self):
+        req = Request(path_info='/chrome/shared/trac_logo.png')
+        chrome = Chrome(self.env)
+        self.assertEqual('', chrome.shared_htdocs_dir)
+        self.assertTrue(chrome.match_request(req))
+        from trac.web.api import HTTPNotFound
+        self.assertRaises(HTTPNotFound, chrome.process_request, req)
+
+    def test_shared_htdocs_dir_file_is_found(self):
+        from trac.web.api import RequestDone
+        def send_file(path, mimetype):
+            raise RequestDone
+        req = Request(path_info='/chrome/shared/trac_logo.png',
+                      send_file=send_file)
+        shared_htdocs_dir = os.path.join(self.env.path, 'chrome', 'shared')
+        os.makedirs(shared_htdocs_dir)
+        create_file(os.path.join(shared_htdocs_dir, 'trac_logo.png'))
+        self.env.config.set('inherit', 'htdocs_dir', shared_htdocs_dir)
+        chrome = Chrome(self.env)
+        self.assertTrue(chrome.match_request(req))
+        self.assertRaises(RequestDone, chrome.process_request, req)
+
+
 def suite():
-    return unittest.makeSuite(ChromeTestCase, 'test')
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(ChromeTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(ChromeTestCase2, 'test'))
+    return suite
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')

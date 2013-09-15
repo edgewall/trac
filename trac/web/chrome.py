@@ -615,11 +615,13 @@ class Chrome(Component):
         for provider in self.template_providers:
             for dir in [os.path.normpath(dir[1]) for dir
                         in provider.get_htdocs_dirs() or []
-                        if dir[0] == prefix]:
+                        if dir[0] == prefix and dir[1]]:
                 dirs.append(dir)
                 path = os.path.normpath(os.path.join(dir, filename))
-                assert os.path.commonprefix([dir, path]) == dir
-                if os.path.isfile(path):
+                if os.path.commonprefix([dir, path]) != dir:
+                    raise TracError(_("Invalid chrome path %(path)s.",
+                                      path=filename))
+                elif os.path.isfile(path):
                     req.send_file(path, get_mimetype(path))
 
         self.log.warning('File %s not found in any of %s', filename, dirs)
