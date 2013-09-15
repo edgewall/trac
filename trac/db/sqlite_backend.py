@@ -255,7 +255,8 @@ class SQLiteConnection(ConnectionWrapper):
                              and sqlite.version_info >= (2, 5, 0)
 
     def __init__(self, path, log=None, params={}):
-        assert have_pysqlite > 0
+        if have_pysqlite == 0:
+            raise TracError(_("Cannot load Python bindings for SQLite"))
         self.cnx = None
         if path != ':memory:':
             if not os.access(path, os.F_OK):

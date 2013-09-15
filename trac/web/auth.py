@@ -155,8 +155,9 @@ class LoginModule(Component):
         if self.ignore_case:
             remote_user = remote_user.lower()
 
-        assert req.authname in ('anonymous', remote_user), \
-               _('Already logged in as %(user)s.', user=req.authname)
+        if req.authname not in ('anonymous', remote_user):
+            raise TracError(_('Already logged in as %(user)s.',
+                              user=req.authname))
 
         with self.env.db_transaction as db:
             # Delete cookies older than 10 days
