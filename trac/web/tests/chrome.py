@@ -1,4 +1,4 @@
-from trac.core import Component, implements
+from trac.core import Component, TracError, implements
 from trac.test import EnvironmentStub
 from trac.web.chrome import add_link, add_meta, add_script, add_script_data, \
                             add_stylesheet, Chrome, INavigationContributor
@@ -8,6 +8,7 @@ import unittest
 
 class Request(object):
     locale = None
+    args = {}
     def __init__(self, **kwargs):
         self.chrome = {}
         for k, v in kwargs.items():
@@ -260,8 +261,23 @@ class ChromeTestCase(unittest.TestCase):
         self.assertEqual('test2', items[1]['name'])
 
 
+class ChromeTestCase2(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+
+    def test_malicious_filename_raises(self):
+        req = Request(path_info='/chrome/site/../conf/trac.ini')
+        chrome = Chrome(self.env)
+        self.assertTrue(chrome.match_request(req))
+        self.assertRaises(TracError, chrome.process_request, req)
+
+
 def suite():
-    return unittest.makeSuite(ChromeTestCase, 'test')
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(ChromeTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(ChromeTestCase2, 'test'))
+    return suite
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')
