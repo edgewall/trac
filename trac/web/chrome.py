@@ -615,7 +615,7 @@ class Chrome(Component):
         for provider in self.template_providers:
             for dir in [os.path.normpath(dir[1]) for dir
                         in provider.get_htdocs_dirs() or []
-                        if dir[0] == prefix]:
+                        if dir[0] == prefix and dir[1]]:
                 dirs.append(dir)
                 path = os.path.normpath(os.path.join(dir, filename))
                 if os.path.commonprefix([dir, path]) != dir:
