@@ -11,6 +11,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import os
 import unittest
 from StringIO import StringIO
 
@@ -26,17 +27,17 @@ from trac.util.text import empty, expandtabs, fix_eol, javascript_quote, \
 class ToUnicodeTestCase(unittest.TestCase):
     def test_explicit_charset(self):
         uc = to_unicode('\xc3\xa7', 'utf-8')
-        assert isinstance(uc, unicode)
+        self.assertTrue(isinstance(uc, unicode))
         self.assertEquals(u'\xe7', uc)
 
     def test_explicit_charset_with_replace(self):
         uc = to_unicode('\xc3', 'utf-8')
-        assert isinstance(uc, unicode)
+        self.assertTrue(isinstance(uc, unicode))
         self.assertEquals(u'\xc3', uc)
 
     def test_implicit_charset(self):
         uc = to_unicode('\xc3\xa7')
-        assert isinstance(uc, unicode)
+        self.assertTrue(isinstance(uc, unicode))
         self.assertEquals(u'\xe7', uc)
 
     def test_from_exception_using_unicode_args(self):
@@ -52,6 +53,18 @@ class ToUnicodeTestCase(unittest.TestCase):
             raise ValueError, u.encode('utf-8')
         except ValueError, e:
             self.assertEquals(u, to_unicode(e))
+
+    def test_from_windows_error(self):
+        try:
+            os.stat('non/existent/file.txt')
+        except OSError, e:
+            uc = to_unicode(e)
+            self.assertTrue(isinstance(uc, unicode), uc)
+            self.assertTrue(uc.startswith('[Error '), uc)
+            self.assertTrue(e.strerror.decode('mbcs') in uc, uc)
+
+    if os.name != 'nt':
+        del test_from_windows_error
 
 
 class ExpandtabsTestCase(unittest.TestCase):
