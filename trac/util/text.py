@@ -61,6 +61,14 @@ def to_unicode(text, charset=None):
         except UnicodeDecodeError:
             return unicode(text, 'latin1')
     elif isinstance(text, Exception):
+        from trac.util import WindowsError
+        if isinstance(text, WindowsError):
+            # the exception has a string encoded with ANSI codepage if an
+            # WindowsError
+            try:
+                return unicode(str(text), 'mbcs')
+            except UnicodeError:
+                pass
         # two possibilities for storing unicode strings in exception data:
         try:
             # custom __str__ method on the exception (e.g. PermissionError)

@@ -179,7 +179,7 @@ class AuthzPolicy(Component):
             os.stat(authz_file)
         except OSError, e:
             self.log.error("Error parsing authz permission policy file: %s",
-                           to_unicode(e.strerror + ' ' + e.filename))
+                           to_unicode(e))
             raise ConfigurationError()
         return authz_file
 
