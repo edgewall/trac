@@ -215,6 +215,9 @@ class NormalTestCase(unittest.TestCase):
         self.assertEquals('master', branches[0][0])
         self.assertEquals(1, len(branches))
 
+    if os.name == 'nt':
+        del test_get_branches_with_cr_in_commitlog
+
     def test_rev_is_anchestor_of(self):
         # regression test for #11215
         path = os.path.join(self.repos_path, '.git')
