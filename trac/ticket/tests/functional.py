@@ -1886,7 +1886,7 @@ class RegressionTestTicket11176(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/11176
         Fine-grained permission checks should be enforced on the Report list
-        page."""
+        page, the report pages and query pages."""
         self._testenv.enable_authz_permpolicy("""
             [report:1]
             anonymous = REPORT_VIEW
@@ -1898,14 +1898,37 @@ class RegressionTestTicket11176(FunctionalTestCaseSetup):
         self._tester.logout()
         self._tester.go_to_view_tickets()
         try:
-            tc.find('<a title="View report" '
-                    'href="/report/1">[ \n\t]*<em>\{1\}</em>')
-            tc.find('<a title="View report" '
-                    'href="/report/2">[ \n\t]*<em>\{2\}</em>')
+            # Check that permissions are enforced on the report list page
+            tc.find(r'<a title="View report" '
+                    r'href="/report/1">[ \n\t]*<em>\{1\}</em>')
+            tc.find(r'<a title="View report" '
+                    r'href="/report/2">[ \n\t]*<em>\{2\}</em>')
             for report_num in range(3, 9):
-                tc.notfind('<a title="View report" '
-                           'href="/report/%(num)s">[ \n\t]*<em>\{%(num)s\}</em>'
-                           % {'num': report_num})
+                tc.notfind(r'<a title="View report" '
+                           r'href="/report/%(num)s">[ \n\t]*'
+                           r'<em>\{%(num)s\}</em>' % {'num': report_num})
+            # Check that permissions are enforced on the report pages
+            tc.go(self._tester.url + '/report/1')
+            tc.find(r'<h1>\{1\} Active Tickets[ \n\t]*'
+                    r'(<span class="numrows">\(\d+ matches\)</span>)?'
+                    r'[ \n\t]*</h1>')
+            tc.go(self._tester.url + '/report/2')
+            tc.find(r'<h1>\{2\} Active Tickets by Version[ \n\t]*'
+                    r'(<span class="numrows">\(\d+ matches\)</span>)?'
+                    r'[ \n\t]*</h1>')
+            for report_num in range(3, 9):
+                tc.go(self._tester.url + '/report/%d' % report_num)
+                tc.find(r'<h1>Error: Forbidden</h1>')
+            # Check that permissions are enforced on the query pages
+            tc.go(self._tester.url + '/query?report=1')
+            tc.find(r'<h1>Active Tickets '
+                    r'<span class="numrows">\(\d+ matches\)</span></h1>')
+            tc.go(self._tester.url + '/query?report=2')
+            tc.find(r'<h1>Active Tickets by Version '
+                    r'<span class="numrows">\(\d+ matches\)</span></h1>')
+            for report_num in range(3, 9):
+                tc.go(self._tester.url + '/query?report=%d' % report_num)
+                tc.find(r'<h1>Error: Forbidden</h1>')
         finally:
             self._tester.login('admin')
             self._testenv.disable_authz_permpolicy()
