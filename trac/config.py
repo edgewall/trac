@@ -751,9 +751,20 @@ class OrderedExtensionsOption(ListOption):
             return self
         order = ListOption.__get__(self, instance, owner)
         components = []
+        implementing_classes = []
         for impl in self.xtnpt.extensions(instance):
+            implementing_classes.append(impl.__class__.__name__)
             if self.include_missing or impl.__class__.__name__ in order:
                 components.append(impl)
+        not_found = set(order) - set(implementing_classes)
+        if not_found:
+            raise ConfigurationError(
+                _('Cannot find implementation(s) of the "%(interface)s" '
+                  'interface named "%(implementation)s".  Please update '
+                  'the option %(section)s.%(name)s in trac.ini.',
+                  interface=self.xtnpt.interface.__name__,
+                  implementation=', '.join(not_found),
+                  section=self.section, name=self.name))
 
         def compare(x, y):
             x, y = x.__class__.__name__, y.__class__.__name__
