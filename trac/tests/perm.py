@@ -159,6 +159,8 @@ class PermissionCacheTestCase(unittest.TestCase):
         self.env = EnvironmentStub(enable=[perm.DefaultPermissionStore,
                                            perm.DefaultPermissionPolicy,
                                            TestPermissionRequestor])
+        self.env.config.set('trac', 'permission_policies',
+                            'DefaultPermissionPolicy')
         self.perm_system = perm.PermissionSystem(self.env)
         # by-pass DefaultPermissionPolicy cache:
         perm.DefaultPermissionPolicy.CACHE_EXPIRY = -1

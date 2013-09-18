@@ -20,7 +20,8 @@ import time
 import unittest
 
 from trac.config import *
-from trac.test import Configuration
+from trac.core import Component, Interface, implements
+from trac.test import Configuration, EnvironmentStub
 from trac.util import create_file
 
 
@@ -29,6 +30,7 @@ class ConfigurationTestCase(unittest.TestCase):
     def setUp(self):
         tmpdir = os.path.realpath(tempfile.gettempdir())
         self.filename = os.path.join(tmpdir, 'trac-test.ini')
+        self.env = EnvironmentStub()
         self._write([])
         self._orig_registry = Option.registry
         Option.registry = {}
@@ -212,6 +214,81 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEquals('1', foo.other)
         self.assertRaises(ConfigurationError, getattr, foo, 'invalid')
 
+    def test_read_and_getextensionoption(self):
+        self._write(['[a]', 'option = ImplA', 'invalid = ImplB'])
+        config = self._read()
+
+        class IDummy(Interface):
+            pass
+
+        class ImplA(Component):
+            implements(IDummy)
+
+        class Foo(Component):
+            default1 = (ExtensionOption)('a', 'default1', IDummy)
+            default2 = (ExtensionOption)('a', 'default2', IDummy, 'ImplA')
+            default3 = (ExtensionOption)('a', 'default3', IDummy, 'ImplB')
+            option = (ExtensionOption)('a', 'option', IDummy)
+            option2 = (ExtensionOption)('a', 'option', IDummy, 'ImplB')
+            invalid = (ExtensionOption)('a', 'invalid', IDummy)
+
+            def __init__(self):
+                self.config = config
+
+        foo = Foo(self.env)
+        self.assertRaises(ConfigurationError, getattr, foo, 'default1')
+        self.assertTrue(isinstance(foo.default2, ImplA))
+        self.assertRaises(ConfigurationError, getattr, foo, 'default3')
+        self.assertTrue(isinstance(foo.option, ImplA))
+        self.assertTrue(isinstance(foo.option2, ImplA))
+        self.assertRaises(ConfigurationError, getattr, foo, 'invalid')
+
+    def test_read_and_getorderedextensionsoption(self):
+        self._write(['[a]', 'option = ImplA, ImplB',
+                     'invalid = ImplB, ImplD'])
+        config = self._read()
+
+        class IDummy(Interface):
+            pass
+
+        class ImplA(Component):
+            implements(IDummy)
+
+        class ImplB(Component):
+            implements(IDummy)
+
+        class ImplC(Component):
+            implements(IDummy)
+
+        class Foo(Component):
+            # enclose in parentheses to avoid messages extraction
+            default1 = (OrderedExtensionsOption)('a', 'default1', IDummy,
+                                                 include_missing=False)
+            default2 = (OrderedExtensionsOption)('a', 'default2', IDummy)
+            default3 = (OrderedExtensionsOption)('a', 'default3', IDummy,
+                                                 'ImplB, ImplC',
+                                                 include_missing=False)
+            option = (OrderedExtensionsOption)('a', 'option', IDummy,
+                                               include_missing=False)
+            invalid = (OrderedExtensionsOption)('a', 'invalid', IDummy)
+
+            def __init__(self):
+                self.config = config
+
+        foo = Foo(self.env)
+        self.assertEqual([], foo.default1)
+        self.assertEqual(3, len(foo.default2))
+        self.assertTrue(isinstance(foo.default2[0], ImplA))
+        self.assertTrue(isinstance(foo.default2[1], ImplB))
+        self.assertTrue(isinstance(foo.default2[2], ImplC))
+        self.assertEqual(2, len(foo.default3))
+        self.assertTrue(isinstance(foo.default3[0], ImplB))
+        self.assertTrue(isinstance(foo.default3[1], ImplC))
+        self.assertEqual(2, len(foo.option))
+        self.assertTrue(isinstance(foo.option[0], ImplA))
+        self.assertTrue(isinstance(foo.option[1], ImplB))
+        self.assertRaises(ConfigurationError, getattr, foo, 'invalid')
+
     def test_getpath(self):
         base = os.path.dirname(self.filename)
         config = self._read()
@@ -224,6 +301,14 @@ class ConfigurationTestCase(unittest.TestCase):
                           config.getpath('a', 'path_b'))
         self.assertEquals(os.path.join(os.path.dirname(base), 'parentdir.txt'),
                           config.getpath('a', 'path_c'))
+
+    def test_set_raises(self):
+        class Foo(object):
+            option = Option('a', 'option', 'value')
+
+        f = Foo()
+        self.assertRaises(AttributeError, setattr, f, 'option',
+                          Option('a', 'option2', 'value2'))
 
     def test_set_and_save(self):
         config = self._read()

@@ -616,7 +616,7 @@ class Option(object):
             return value
 
     def __set__(self, instance, value):
-        raise AttributeError, 'can\'t set attribute'
+        raise AttributeError(_("Setting attribute is not allowed."))
 
     def __repr__(self):
         return '<%s [%s] "%s">' % (self.__class__.__name__, self.section,
@@ -712,6 +712,9 @@ class PathOption(Option):
 
 
 class ExtensionOption(Option):
+    """Name of a component implementing `interface`. Raises a
+    `ConfigurationError` if the component cannot be found in the list of
+    active components implementing the interface."""
 
     def __init__(self, section, name, interface, default=None, doc='',
                  doc_domain='tracini'):
@@ -725,11 +728,12 @@ class ExtensionOption(Option):
         for impl in self.xtnpt.extensions(instance):
             if impl.__class__.__name__ == value:
                 return impl
-        raise AttributeError('Cannot find an implementation of the "%s" '
-                             'interface named "%s".  Please update the option '
-                             '%s.%s in trac.ini.'
-                             % (self.xtnpt.interface.__name__, value,
-                                self.section, self.name))
+        raise ConfigurationError(
+            _('Cannot find an implementation of the "%(interface)s" '
+              'interface named "%(implementation)s".  Please update '
+              'the option %(section)s.%(name)s in trac.ini.',
+              interface=self.xtnpt.interface.__name__, implementation=value,
+              section=self.section, name=self.name))
 
 
 class OrderedExtensionsOption(ListOption):
@@ -751,9 +755,20 @@ class OrderedExtensionsOption(ListOption):
             return self
         order = ListOption.__get__(self, instance, owner)
         components = []
+        implementing_classes = []
         for impl in self.xtnpt.extensions(instance):
+            implementing_classes.append(impl.__class__.__name__)
             if self.include_missing or impl.__class__.__name__ in order:
                 components.append(impl)
+        not_found = set(order) - set(implementing_classes)
+        if not_found:
+            raise ConfigurationError(
+                _('Cannot find implementation(s) of the "%(interface)s" '
+                  'interface named "%(implementation)s".  Please update '
+                  'the option %(section)s.%(name)s in trac.ini.',
+                  interface=self.xtnpt.interface.__name__,
+                  implementation=', '.join(not_found),
+                  section=self.section, name=self.name))
 
         def compare(x, y):
             x, y = x.__class__.__name__, y.__class__.__name__

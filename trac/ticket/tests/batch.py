@@ -11,7 +11,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from trac.perm import PermissionCache
+from trac.perm import DefaultPermissionPolicy, DefaultPermissionStore,\
+                      PermissionCache
 from trac.test import Mock, EnvironmentStub
 from trac.ticket import default_workflow, web_ui
 from trac.ticket.batch import BatchModifyModule
@@ -26,7 +27,10 @@ class BatchModifyTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub(default_data=True,
             enable=[default_workflow.ConfigurableTicketWorkflow,
+                    DefaultPermissionPolicy, DefaultPermissionStore,
                     web_ui.TicketModule])
+        self.env.config.set('trac', 'permission_policies',
+                            'DefaultPermissionPolicy')
         self.req = Mock(href=self.env.href, authname='anonymous', tz=utc)
         self.req.session = {}
         self.req.perm = PermissionCache(self.env)
