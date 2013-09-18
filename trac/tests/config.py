@@ -214,6 +214,35 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEquals('1', foo.other)
         self.assertRaises(ConfigurationError, getattr, foo, 'invalid')
 
+    def test_read_and_getextensionoption(self):
+        self._write(['[a]', 'option = ImplA', 'invalid = ImplB'])
+        config = self._read()
+
+        class IDummy(Interface):
+            pass
+
+        class ImplA(Component):
+            implements(IDummy)
+
+        class Foo(Component):
+            default1 = (ExtensionOption)('a', 'default1', IDummy)
+            default2 = (ExtensionOption)('a', 'default2', IDummy, 'ImplA')
+            default3 = (ExtensionOption)('a', 'default3', IDummy, 'ImplB')
+            option = (ExtensionOption)('a', 'option', IDummy)
+            option2 = (ExtensionOption)('a', 'option', IDummy, 'ImplB')
+            invalid = (ExtensionOption)('a', 'invalid', IDummy)
+
+            def __init__(self):
+                self.config = config
+
+        foo = Foo(self.env)
+        self.assertRaises(ConfigurationError, getattr, foo, 'default1')
+        self.assertTrue(isinstance(foo.default2, ImplA))
+        self.assertRaises(ConfigurationError, getattr, foo, 'default3')
+        self.assertTrue(isinstance(foo.option, ImplA))
+        self.assertTrue(isinstance(foo.option2, ImplA))
+        self.assertRaises(ConfigurationError, getattr, foo, 'invalid')
+
     def test_read_and_getorderedextensionsoption(self):
         self._write(['[a]', 'option = ImplA, ImplB',
                      'invalid = ImplB, ImplD'])
