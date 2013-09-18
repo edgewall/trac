@@ -273,6 +273,14 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEquals(os.path.join(os.path.dirname(base), 'parentdir.txt'),
                           config.getpath('a', 'path_c'))
 
+    def test_set_raises(self):
+        class Foo(object):
+            option = Option('a', 'option', 'value')
+
+        f = Foo()
+        self.assertRaises(AttributeError, setattr, f, 'option',
+                          Option('a', 'option2', 'value2'))
+
     def test_set_and_save(self):
         config = self._read()
         config.set('b', u'öption0', 'y')

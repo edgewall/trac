@@ -616,7 +616,7 @@ class Option(object):
             return value
 
     def __set__(self, instance, value):
-        raise AttributeError, 'can\'t set attribute'
+        raise AttributeError(_("Setting attribute is not allowed."))
 
     def __repr__(self):
         return '<%s [%s] "%s">' % (self.__class__.__name__, self.section,
