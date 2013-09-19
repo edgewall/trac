@@ -57,7 +57,7 @@ class LoginModuleTestCase(unittest.TestCase):
                    href=Href('/trac.cgi'), base_path='/trac.cgi',
                    remote_addr='127.0.0.1', remote_user=None)
         self.assertEqual('john', self.module.authenticate(req))
-        self.failIf('auth_cookie' in req.outcookie)
+        self.assertFalse('auth_cookie' in req.outcookie)
 
     def test_known_cookie_ip_check_enabled(self):
         self.env.config.set('trac', 'check_auth_ip', 'yes')
@@ -72,7 +72,7 @@ class LoginModuleTestCase(unittest.TestCase):
                    remote_addr='192.168.0.100', remote_user=None,
                    base_path='/trac.cgi')
         self.assertEqual(None, self.module.authenticate(req))
-        self.failIf('trac_auth' not in req.outcookie)
+        self.assertFalse('trac_auth' not in req.outcookie)
 
     def test_known_cookie_ip_check_disabled(self):
         self.env.config.set('trac', 'check_auth_ip', 'no')
@@ -86,7 +86,7 @@ class LoginModuleTestCase(unittest.TestCase):
                    href=Href('/trac.cgi'), base_path='/trac.cgi',
                    remote_addr='192.168.0.100', remote_user=None)
         self.assertEqual('john', self.module.authenticate(req))
-        self.failIf('auth_cookie' in req.outcookie)
+        self.assertFalse('auth_cookie' in req.outcookie)
 
     def test_login(self):
         outcookie = Cookie()
@@ -165,8 +165,8 @@ class LoginModuleTestCase(unittest.TestCase):
                    remote_addr='127.0.0.1', remote_user=None, authname='john',
                    base_path='/trac.cgi')
         self.module._do_logout(req)
-        self.failIf('trac_auth' not in outcookie)
-        self.failIf(self.env.db_query(
+        self.assertFalse('trac_auth' not in outcookie)
+        self.assertFalse(self.env.db_query(
             "SELECT name, ipnr FROM auth_cookie WHERE name='john'"))
 
     def test_logout_not_logged_in(self):

@@ -89,7 +89,7 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
                     ('dev', 'REPORT_ADMIN'),
                     ('john', 'dev')]
         for res in self.store.get_all_permissions():
-            self.failIf(res not in expected)
+            self.assertFalse(res not in expected)
 
 
 class TestPermissionRequestor(Component):
@@ -143,7 +143,7 @@ class PermissionSystemTestCase(unittest.TestCase):
         expected = [('bob', 'TEST_CREATE'),
                     ('jane', 'TEST_ADMIN')]
         for res in self.perm.get_all_permissions():
-            self.failIf(res not in expected)
+            self.assertFalse(res not in expected)
 
     def test_expand_actions_iter_7467(self):
         # Check that expand_actions works with iterators (#7467)

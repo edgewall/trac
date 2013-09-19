@@ -102,7 +102,7 @@ class SessionTestCase(unittest.TestCase):
                    outcookie=outcookie)
         session = Session(self.env, req)
         self.assertEqual('123456', session.sid)
-        self.failIf(outcookie.has_key('trac_session'))
+        self.assertFalse(outcookie.has_key('trac_session'))
 
     def test_authenticated_session(self):
         """
