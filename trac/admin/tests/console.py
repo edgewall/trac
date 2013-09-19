@@ -124,7 +124,7 @@ class TracadminTestCase(unittest.TestCase):
             sys.stdout = _out
 
     def assertEqual(self, expected_results, output):
-        if not (isinstance(expected_results, basestring) and \
+        if not (isinstance(expected_results, basestring) and
                 isinstance(output, basestring)):
             return unittest.TestCase.assertEqual(self, expected_results, output)
         def diff():
@@ -449,7 +449,7 @@ class TracadminTestCase(unittest.TestCase):
         rv, output = self._execute('component chown bad_component changed_owner')
         self.assertEqual(2, rv)
         # We currently trigger a deprecation warning with py26 so we
-        # can currrently only verify that the end of the output string is
+        # can currently only verify that the end of the output string is
         # correct
         self.assertEqual(output.endswith(self.expected_results[test_name]), True)
 
@@ -993,7 +993,7 @@ class TracadminTestCase(unittest.TestCase):
         """
         test_name = sys._getframe().f_code.co_name
         self._execute(u'milestone add \xa9tat_final "%s"'  #\xc2\xa9
-                              % self._test_date)
+                      % self._test_date)
         rv, output = self._execute('milestone list')
         self.assertEqual(0, rv)
         self.assertEqual(self.expected_results[test_name], output)
@@ -1171,20 +1171,20 @@ class TracadminTestCase(unittest.TestCase):
         self.assertEqual(0, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
-    def  test_session_add_missing_sid(self):
+    def test_session_add_missing_sid(self):
         test_name = sys._getframe().f_code.co_name
         rv, output = self._execute('session add')
         self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
-    def  test_session_add_duplicate_sid(self):
+    def test_session_add_duplicate_sid(self):
         test_name = sys._getframe().f_code.co_name
         _prep_session_table(self.env)
         rv, output = self._execute('session add name00')
         self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
-    def  test_session_add_sid_all(self):
+    def test_session_add_sid_all(self):
         test_name = sys._getframe().f_code.co_name
         rv, output = self._execute('session add john John john@example.org')
         self.assertEqual(0, rv)
@@ -1193,7 +1193,7 @@ class TracadminTestCase(unittest.TestCase):
                          % {'today': format_date(None, console_date_format)},
                          output)
 
-    def  test_session_add_sid(self):
+    def test_session_add_sid(self):
         test_name = sys._getframe().f_code.co_name
         rv, output = self._execute('session add john')
         self.assertEqual(0, rv)
@@ -1202,7 +1202,7 @@ class TracadminTestCase(unittest.TestCase):
                          % {'today': format_date(None, console_date_format)},
                          output)
 
-    def  test_session_add_sid_name(self):
+    def test_session_add_sid_name(self):
         test_name = sys._getframe().f_code.co_name
         rv, output = self._execute('session add john John')
         self.assertEqual(0, rv)
@@ -1211,7 +1211,7 @@ class TracadminTestCase(unittest.TestCase):
                          % {'today': format_date(None, console_date_format)},
                          output)
 
-    def  test_session_set_attr_name(self):
+    def test_session_set_attr_name(self):
         test_name = sys._getframe().f_code.co_name
         _prep_session_table(self.env)
         rv, output = self._execute('session set name name00 JOHN')
@@ -1219,7 +1219,7 @@ class TracadminTestCase(unittest.TestCase):
         rv, output = self._execute('session list name00')
         self.assertEqual(self.expected_results[test_name], output)
 
-    def  test_session_set_attr_email(self):
+    def test_session_set_attr_email(self):
         test_name = sys._getframe().f_code.co_name
         _prep_session_table(self.env)
         rv, output = self._execute('session set email name00 JOHN@EXAMPLE.ORG')
@@ -1227,31 +1227,31 @@ class TracadminTestCase(unittest.TestCase):
         rv, output = self._execute('session list name00')
         self.assertEqual(self.expected_results[test_name], output)
 
-    def  test_session_set_attr_missing_attr(self):
+    def test_session_set_attr_missing_attr(self):
         test_name = sys._getframe().f_code.co_name
         rv, output = self._execute('session set')
         self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
-    def  test_session_set_attr_missing_value(self):
+    def test_session_set_attr_missing_value(self):
         test_name = sys._getframe().f_code.co_name
         rv, output = self._execute('session set name john')
         self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
-    def  test_session_set_attr_missing_sid(self):
+    def test_session_set_attr_missing_sid(self):
         test_name = sys._getframe().f_code.co_name
         rv, output = self._execute('session set name')
         self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
-    def  test_session_set_attr_nonexistent_sid(self):
+    def test_session_set_attr_nonexistent_sid(self):
         test_name = sys._getframe().f_code.co_name
         rv, output = self._execute('session set name john foo')
         self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
-    def  test_session_delete_sid(self):
+    def test_session_delete_sid(self):
         test_name = sys._getframe().f_code.co_name
         _prep_session_table(self.env)
         rv, output = self._execute('session delete name00')
@@ -1259,13 +1259,13 @@ class TracadminTestCase(unittest.TestCase):
         rv, output = self._execute('session list nam00')
         self.assertEqual(self.expected_results[test_name], output)
 
-    def  test_session_delete_missing_params(self):
+    def test_session_delete_missing_params(self):
         test_name = sys._getframe().f_code.co_name
         rv, output = self._execute('session delete')
         self.assertEqual(0, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
-    def  test_session_delete_anonymous(self):
+    def test_session_delete_anonymous(self):
         test_name = sys._getframe().f_code.co_name
         _prep_session_table(self.env)
         rv, output = self._execute('session delete anonymous')
@@ -1282,7 +1282,7 @@ class TracadminTestCase(unittest.TestCase):
         rv, output = self._execute('session list *')
         self.assertEqual(self.expected_results[test_name], output)
 
-    def  test_session_purge_age(self):
+    def test_session_purge_age(self):
         test_name = sys._getframe().f_code.co_name
         _prep_session_table(self.env, spread_visits=True)
         rv, output = self._execute('session purge 20100112')
