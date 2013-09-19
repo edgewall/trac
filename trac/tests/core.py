@@ -213,7 +213,7 @@ class ComponentTestCase(unittest.TestCase):
             def test(self):
                 return 'x'
         tests = iter(ComponentA(self.compmgr).tests)
-        self.assertEquals('x', tests.next().test())
+        self.assertEqual('x', tests.next().test())
         self.assertRaises(StopIteration, tests.next)
 
     def test_extension_point_with_two_extensions(self):
@@ -232,7 +232,7 @@ class ComponentTestCase(unittest.TestCase):
             def test(self):
                 return 'y'
         results = [test.test() for test in ComponentA(self.compmgr).tests]
-        self.assertEquals(['x', 'y'], sorted(results))
+        self.assertEqual(['x', 'y'], sorted(results))
 
     def test_inherited_extension_point(self):
         """
@@ -247,7 +247,7 @@ class ComponentTestCase(unittest.TestCase):
             def test(self):
                 return 'x'
         tests = iter(ConcreteComponent(self.compmgr).tests)
-        self.assertEquals('x', tests.next().test())
+        self.assertEqual('x', tests.next().test())
         self.assertRaises(StopIteration, tests.next)
 
     def test_inherited_implements(self):
@@ -298,7 +298,7 @@ class ComponentTestCase(unittest.TestCase):
         mgr = ManagerComponent('Test', 42)
         assert id(mgr) == id(mgr[ManagerComponent])
         tests = iter(mgr.tests)
-        self.assertEquals('x', tests.next().test())
+        self.assertEqual('x', tests.next().test())
         self.assertRaises(StopIteration, tests.next)
 
     def test_component_manager_component_isolation(self):
@@ -323,8 +323,8 @@ class ComponentTestCase(unittest.TestCase):
         mgrA = ManagerComponentA()
         mgrB = ManagerComponentB()
 
-        self.assertEquals([mgrA], Tester(mgrA).tests)
-        self.assertEquals([mgrB], Tester(mgrB).tests)
+        self.assertEqual([mgrA], Tester(mgrA).tests)
+        self.assertEqual([mgrB], Tester(mgrB).tests)
 
     def test_instantiation_doesnt_enable(self):
         """

@@ -101,7 +101,7 @@ class LoginModuleTestCase(unittest.TestCase):
         assert outcookie.has_key('trac_auth'), '"trac_auth" Cookie not set'
         auth_cookie = outcookie['trac_auth'].value
 
-        self.assertEquals([('john', '127.0.0.1')], self.env.db_query(
+        self.assertEqual([('john', '127.0.0.1')], self.env.db_query(
             "SELECT name, ipnr FROM auth_cookie WHERE cookie=%s",
             (auth_cookie,)))
 
@@ -121,7 +121,7 @@ class LoginModuleTestCase(unittest.TestCase):
 
         assert outcookie.has_key('trac_auth'), '"trac_auth" Cookie not set'
         auth_cookie = outcookie['trac_auth'].value
-        self.assertEquals([('john', '127.0.0.1')], self.env.db_query(
+        self.assertEqual([('john', '127.0.0.1')], self.env.db_query(
             "SELECT name, ipnr FROM auth_cookie WHERE cookie=%s",
             (auth_cookie,)))
 

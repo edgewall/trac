@@ -45,14 +45,14 @@ class ToUnicodeTestCase(unittest.TestCase):
         try:
             raise ValueError, '%s is not a number.' % u
         except ValueError, e:
-            self.assertEquals(u'\uB144 is not a number.', to_unicode(e))
+            self.assertEqual(u'\uB144 is not a number.', to_unicode(e))
 
     def test_from_exception_using_str_args(self):
         u = u'Das Ger\xe4t oder die Ressource ist belegt'
         try:
             raise ValueError, u.encode('utf-8')
         except ValueError, e:
-            self.assertEquals(u, to_unicode(e))
+            self.assertEqual(u, to_unicode(e))
 
     def test_from_windows_error(self):
         try:
@@ -70,13 +70,13 @@ class ToUnicodeTestCase(unittest.TestCase):
 class ExpandtabsTestCase(unittest.TestCase):
     def test_empty(self):
         x = expandtabs('', ignoring='\0')
-        self.assertEquals('', x)
+        self.assertEqual('', x)
     def test_ingoring(self):
         x = expandtabs('\0\t', ignoring='\0')
-        self.assertEquals('\0        ', x)
+        self.assertEqual('\0        ', x)
     def test_tabstops(self):
-        self.assertEquals('        ', expandtabs('       \t'))
-        self.assertEquals('                ', expandtabs('\t\t'))
+        self.assertEqual('        ', expandtabs('       \t'))
+        self.assertEqual('                ', expandtabs('\t\t'))
 
 
 class JavascriptQuoteTestCase(unittest.TestCase):
@@ -334,17 +334,17 @@ class UnicodeBase64TestCase(unittest.TestCase):
 
 class StripwsTestCase(unittest.TestCase):
     def test_stripws(self):
-        self.assertEquals(u'stripws',
-                          stripws(u' \u200b\t\u3000stripws \u200b\t\u2008'))
-        self.assertEquals(u'stripws \u3000\t',
-                          stripws(u'\u200b\t\u2008 stripws \u3000\t',
-                                  trailing=False))
-        self.assertEquals(u' \t\u3000stripws',
-                          stripws(u' \t\u3000stripws \u200b\t\u2008',
-                                  leading=False))
-        self.assertEquals(u' \t\u3000stripws \u200b\t\u2008',
-                          stripws(u' \t\u3000stripws \u200b\t\u2008',
-                                  leading=False, trailing=False))
+        self.assertEqual(u'stripws',
+                         stripws(u' \u200b\t\u3000stripws \u200b\t\u2008'))
+        self.assertEqual(u'stripws \u3000\t',
+                         stripws(u'\u200b\t\u2008 stripws \u3000\t',
+                                 trailing=False))
+        self.assertEqual(u' \t\u3000stripws',
+                         stripws(u' \t\u3000stripws \u200b\t\u2008',
+                                 leading=False))
+        self.assertEqual(u' \t\u3000stripws \u200b\t\u2008',
+                         stripws(u' \t\u3000stripws \u200b\t\u2008',
+                                 leading=False, trailing=False))
 
 
 

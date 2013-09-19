@@ -101,7 +101,7 @@ class SessionTestCase(unittest.TestCase):
         req = Mock(authname='anonymous', base_path='/', incookie=incookie,
                    outcookie=outcookie)
         session = Session(self.env, req)
-        self.assertEquals('123456', session.sid)
+        self.assertEqual('123456', session.sid)
         self.failIf(outcookie.has_key('trac_session'))
 
     def test_authenticated_session(self):
@@ -118,7 +118,7 @@ class SessionTestCase(unittest.TestCase):
         self.assertEqual('john', session.sid)
         session['foo'] = 'bar'
         session.save()
-        self.assertEquals(0, outcookie['trac_session']['expires'])
+        self.assertEqual(0, outcookie['trac_session']['expires'])
 
     def test_session_promotion(self):
         """

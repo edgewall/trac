@@ -34,10 +34,10 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
             [('john', 'WIKI_MODIFY'),
              ('john', 'REPORT_ADMIN'),
              ('kate', 'TICKET_CREATE')])
-        self.assertEquals(['REPORT_ADMIN', 'WIKI_MODIFY'],
-                          sorted(self.store.get_user_permissions('john')))
-        self.assertEquals(['TICKET_CREATE'],
-                          self.store.get_user_permissions('kate'))
+        self.assertEqual(['REPORT_ADMIN', 'WIKI_MODIFY'],
+                         sorted(self.store.get_user_permissions('john')))
+        self.assertEqual(['TICKET_CREATE'],
+                         self.store.get_user_permissions('kate'))
 
     def test_simple_group(self):
         self.env.db_transaction.executemany(
@@ -45,8 +45,8 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
             [('dev', 'WIKI_MODIFY'),
              ('dev', 'REPORT_ADMIN'),
              ('john', 'dev')])
-        self.assertEquals(['REPORT_ADMIN', 'WIKI_MODIFY'],
-                          sorted(self.store.get_user_permissions('john')))
+        self.assertEqual(['REPORT_ADMIN', 'WIKI_MODIFY'],
+                         sorted(self.store.get_user_permissions('john')))
 
     def test_nested_groups(self):
         self.env.db_transaction.executemany(
@@ -55,8 +55,8 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
              ('dev', 'REPORT_ADMIN'),
              ('admin', 'dev'),
              ('john', 'admin')])
-        self.assertEquals(['REPORT_ADMIN', 'WIKI_MODIFY'],
-                          sorted(self.store.get_user_permissions('john')))
+        self.assertEqual(['REPORT_ADMIN', 'WIKI_MODIFY'],
+                         sorted(self.store.get_user_permissions('john')))
 
     def test_mixed_case_group(self):
         self.env.db_transaction.executemany(
@@ -65,8 +65,8 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
              ('Dev', 'REPORT_ADMIN'),
              ('Admin', 'Dev'),
              ('john', 'Admin')])
-        self.assertEquals(['REPORT_ADMIN', 'WIKI_MODIFY'],
-                          sorted(self.store.get_user_permissions('john')))
+        self.assertEqual(['REPORT_ADMIN', 'WIKI_MODIFY'],
+                         sorted(self.store.get_user_permissions('john')))
 
     def test_builtin_groups(self):
         self.env.db_transaction.executemany(
@@ -74,10 +74,10 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
             [('authenticated', 'WIKI_MODIFY'),
              ('authenticated', 'REPORT_ADMIN'),
              ('anonymous', 'TICKET_CREATE')])
-        self.assertEquals(['REPORT_ADMIN', 'TICKET_CREATE', 'WIKI_MODIFY'],
-                          sorted(self.store.get_user_permissions('john')))
-        self.assertEquals(['TICKET_CREATE'],
-                          self.store.get_user_permissions('anonymous'))
+        self.assertEqual(['REPORT_ADMIN', 'TICKET_CREATE', 'WIKI_MODIFY'],
+                         sorted(self.store.get_user_permissions('john')))
+        self.assertEqual(['TICKET_CREATE'],
+                         self.store.get_user_permissions('anonymous'))
 
     def test_get_all_permissions(self):
         self.env.db_transaction.executemany(
