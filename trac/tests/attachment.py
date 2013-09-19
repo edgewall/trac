@@ -172,8 +172,8 @@ class AttachmentTestCase(unittest.TestCase):
         attachment1.delete()
         attachment2.delete()
 
-        assert not os.path.exists(attachment1.path)
-        assert not os.path.exists(attachment2.path)
+        self.assertFalse(os.path.exists(attachment1.path))
+        self.assertFalse(os.path.exists(attachment2.path))
 
         attachments = Attachment.select(self.env, 'wiki', 'SomePage')
         self.assertEqual(0, len(list(attachments)))
@@ -200,7 +200,7 @@ class AttachmentTestCase(unittest.TestCase):
         self.assertEqual(2, len(list(attachments)))
         attachments = Attachment.select(self.env, 'ticket', 123)
         self.assertEqual(0, len(list(attachments)))
-        assert os.path.exists(path1) and os.path.exists(attachment2.path)
+        self.assertTrue(os.path.exists(path1) and os.path.exists(attachment2.path))
 
         attachment1.reparent('ticket', 123)
         self.assertEqual('ticket', attachment1.parent_realm)
@@ -212,8 +212,8 @@ class AttachmentTestCase(unittest.TestCase):
         self.assertEqual(1, len(list(attachments)))
         attachments = Attachment.select(self.env, 'ticket', 123)
         self.assertEqual(1, len(list(attachments)))
-        assert not os.path.exists(path1) and os.path.exists(attachment1.path)
-        assert os.path.exists(attachment2.path)
+        self.assertFalse(os.path.exists(path1) and os.path.exists(attachment1.path))
+        self.assertTrue(os.path.exists(attachment2.path))
 
     def test_legacy_permission_on_parent(self):
         """Ensure that legacy action tests are done on parent.  As

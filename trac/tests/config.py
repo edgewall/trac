@@ -22,6 +22,7 @@ import unittest
 from trac.config import *
 from trac.core import Component, Interface, implements
 from trac.test import Configuration, EnvironmentStub
+from trac.tests import compat
 from trac.util import create_file
 
 
@@ -239,10 +240,10 @@ class ConfigurationTestCase(unittest.TestCase):
 
         foo = Foo(self.env)
         self.assertRaises(ConfigurationError, getattr, foo, 'default1')
-        self.assertTrue(isinstance(foo.default2, ImplA))
+        self.assertIsInstance(foo.default2, ImplA)
         self.assertRaises(ConfigurationError, getattr, foo, 'default3')
-        self.assertTrue(isinstance(foo.option, ImplA))
-        self.assertTrue(isinstance(foo.option2, ImplA))
+        self.assertIsInstance(foo.option, ImplA)
+        self.assertIsInstance(foo.option2, ImplA)
         self.assertRaises(ConfigurationError, getattr, foo, 'invalid')
 
     def test_read_and_getorderedextensionsoption(self):
@@ -280,15 +281,15 @@ class ConfigurationTestCase(unittest.TestCase):
         foo = Foo(self.env)
         self.assertEqual([], foo.default1)
         self.assertEqual(3, len(foo.default2))
-        self.assertTrue(isinstance(foo.default2[0], ImplA))
-        self.assertTrue(isinstance(foo.default2[1], ImplB))
-        self.assertTrue(isinstance(foo.default2[2], ImplC))
+        self.assertIsInstance(foo.default2[0], ImplA)
+        self.assertIsInstance(foo.default2[1], ImplB)
+        self.assertIsInstance(foo.default2[2], ImplC)
         self.assertEqual(2, len(foo.default3))
-        self.assertTrue(isinstance(foo.default3[0], ImplB))
-        self.assertTrue(isinstance(foo.default3[1], ImplC))
+        self.assertIsInstance(foo.default3[0], ImplB)
+        self.assertIsInstance(foo.default3[1], ImplC)
         self.assertEqual(2, len(foo.option))
-        self.assertTrue(isinstance(foo.option[0], ImplA))
-        self.assertTrue(isinstance(foo.option[1], ImplB))
+        self.assertIsInstance(foo.option[0], ImplA)
+        self.assertIsInstance(foo.option[1], ImplB)
         self.assertRaises(ConfigurationError, getattr, foo, 'invalid')
 
     def test_getpath(self):

@@ -15,6 +15,7 @@ import os
 import unittest
 from StringIO import StringIO
 
+from trac.tests import compat
 from trac.util.text import empty, expandtabs, fix_eol, javascript_quote, \
                            to_js_string, normalize_whitespace, to_unicode, \
                            text_width, print_table, unicode_quote, \
@@ -27,17 +28,17 @@ from trac.util.text import empty, expandtabs, fix_eol, javascript_quote, \
 class ToUnicodeTestCase(unittest.TestCase):
     def test_explicit_charset(self):
         uc = to_unicode('\xc3\xa7', 'utf-8')
-        self.assertTrue(isinstance(uc, unicode))
+        self.assertIsInstance(uc, unicode)
         self.assertEquals(u'\xe7', uc)
 
     def test_explicit_charset_with_replace(self):
         uc = to_unicode('\xc3', 'utf-8')
-        self.assertTrue(isinstance(uc, unicode))
+        self.assertIsInstance(uc, unicode)
         self.assertEquals(u'\xc3', uc)
 
     def test_implicit_charset(self):
         uc = to_unicode('\xc3\xa7')
-        self.assertTrue(isinstance(uc, unicode))
+        self.assertIsInstance(uc, unicode)
         self.assertEquals(u'\xe7', uc)
 
     def test_from_exception_using_unicode_args(self):
@@ -59,7 +60,7 @@ class ToUnicodeTestCase(unittest.TestCase):
             os.stat('non/existent/file.txt')
         except OSError, e:
             uc = to_unicode(e)
-            self.assertTrue(isinstance(uc, unicode), uc)
+            self.assertIsInstance(uc, unicode, uc)
             self.assertTrue(uc.startswith('[Error '), uc)
             self.assertTrue(e.strerror.decode('mbcs') in uc, uc)
 

@@ -20,6 +20,7 @@ import unittest
 from subprocess import Popen, PIPE
 
 from trac.test import locate, EnvironmentStub
+from trac.tests import compat
 from trac.util import create_file
 from trac.util.compat import close_fds
 from trac.versioncontrol import DbRepositoryProvider
@@ -192,9 +193,9 @@ class NormalTestCase(unittest.TestCase):
         proc = Popen(args, stdout=PIPE, stderr=PIPE, close_fds=close_fds,
                      cwd=self.repos_path)
         stdout, stderr = proc.communicate()
-        assert proc.returncode == 0, \
+        self.assertEqual(0, proc.returncode,
                'git exits with %r, stdout %r, stderr %r' % (proc.returncode,
-                                                            stdout, stderr)
+                                                            stdout, stderr))
         return proc
 
     def _storage(self):
@@ -267,9 +268,9 @@ class UnicodeNameTestCase(unittest.TestCase):
         proc = Popen(args, stdout=PIPE, stderr=PIPE, close_fds=close_fds,
                      cwd=self.repos_path)
         stdout, stderr = proc.communicate()
-        assert proc.returncode == 0, \
+        self.assertEqual(0, proc.returncode,
                'git exits with %r, stdout %r, stderr %r' % (proc.returncode,
-                                                            stdout, stderr)
+                                                            stdout, stderr))
         return proc
 
     def _storage(self):
@@ -279,7 +280,7 @@ class UnicodeNameTestCase(unittest.TestCase):
     def test_unicode_verifyrev(self):
         storage = self._storage()
         self.assertNotEqual(None, storage.verifyrev(u'master'))
-        self.assertEqual(None, storage.verifyrev(u'tété'))
+        self.assertIsNone(storage.verifyrev(u'tété'))
 
     def test_unicode_filename(self):
         create_file(os.path.join(self.repos_path, 'tickét.txt'))
@@ -415,7 +416,7 @@ class UnicodeNameTestCase(unittest.TestCase):
 #                    t = open(__proc_statm)
 #                    result = t.read().split()
 #                    t.close()
-#                    assert len(result) == 7
+#                    self.assertEqual(7, len(result))
 #                    return tuple([ __pagesize*int(p) for p in result ])
 #                except:
 #                    raise RuntimeError("failed to get memory stats")

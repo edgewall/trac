@@ -15,6 +15,7 @@ import os
 
 from trac.core import TracError
 from trac.test import EnvironmentStub, Mock
+from trac.tests import compat
 from trac.web.auth import BasicAuthentication, LoginModule
 from trac.web.href import Href
 
@@ -35,7 +36,7 @@ class LoginModuleTestCase(unittest.TestCase):
         req = Mock(incookie=Cookie(), href=Href('/trac.cgi'),
                    remote_addr='127.0.0.1', remote_user=None,
                    base_path='/trac.cgi')
-        self.assertEqual(None, self.module.authenticate(req))
+        self.assertIsNone(self.module.authenticate(req))
 
     def test_unknown_cookie_access(self):
         incookie = Cookie()
@@ -44,7 +45,7 @@ class LoginModuleTestCase(unittest.TestCase):
                    incookie=incookie, outcookie=Cookie(),
                    remote_addr='127.0.0.1', remote_user=None,
                    base_path='/trac.cgi')
-        self.assertEqual(None, self.module.authenticate(req))
+        self.assertIsNone(self.module.authenticate(req))
 
     def test_known_cookie_access(self):
         self.env.db_transaction("""
@@ -71,7 +72,7 @@ class LoginModuleTestCase(unittest.TestCase):
                    incookie=incookie, outcookie=outcookie,
                    remote_addr='192.168.0.100', remote_user=None,
                    base_path='/trac.cgi')
-        self.assertEqual(None, self.module.authenticate(req))
+        self.assertIsNone(self.module.authenticate(req))
         self.assertFalse('trac_auth' not in req.outcookie)
 
     def test_known_cookie_ip_check_disabled(self):
@@ -98,7 +99,7 @@ class LoginModuleTestCase(unittest.TestCase):
                    authname='john', base_path='/trac.cgi')
         self.module._do_login(req)
 
-        assert outcookie.has_key('trac_auth'), '"trac_auth" Cookie not set'
+        self.assertIn('trac_auth', outcookie, '"trac_auth" Cookie not set')
         auth_cookie = outcookie['trac_auth'].value
 
         self.assertEqual([('john', '127.0.0.1')], self.env.db_query(
@@ -119,7 +120,7 @@ class LoginModuleTestCase(unittest.TestCase):
                    authname='anonymous', base_path='/trac.cgi')
         self.module._do_login(req)
 
-        assert outcookie.has_key('trac_auth'), '"trac_auth" Cookie not set'
+        self.assertIn('trac_auth', outcookie, '"trac_auth" Cookie not set')
         auth_cookie = outcookie['trac_auth'].value
         self.assertEqual([('john', '127.0.0.1')], self.env.db_query(
             "SELECT name, ipnr FROM auth_cookie WHERE cookie=%s",

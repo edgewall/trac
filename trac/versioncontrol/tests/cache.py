@@ -19,6 +19,7 @@ from __future__ import with_statement
 from datetime import datetime
 
 from trac.test import EnvironmentStub, Mock
+from trac.tests import compat
 from trac.util.datefmt import to_utimestamp, utc
 from trac.versioncontrol import Repository, Changeset, Node, NoSuchChangeset
 from trac.versioncontrol.cache import CachedRepository
@@ -260,7 +261,7 @@ class CacheTestCase(unittest.TestCase):
         cache.sync()
         self.assertRaises(NoSuchChangeset, cache.get_changeset, 2)
 
-        self.assertEqual(None, cache.sync_changeset(2))
+        self.assertIsNone(cache.sync_changeset(2))
         cset = cache.get_changeset(2)
         self.assertEqual('john', cset.author)
         self.assertEqual('Created directories', cset.message)

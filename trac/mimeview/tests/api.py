@@ -18,6 +18,7 @@ import sys
 
 from trac.core import *
 from trac.test import EnvironmentStub
+from trac.tests import compat
 from trac.mimeview import api
 from trac.mimeview.api import get_mimetype, IContentConverter, Mimeview, \
                               _group_lines
@@ -113,21 +114,21 @@ class GroupLinesTestCase(unittest.TestCase):
         input = [(TEXT, "test", (None, -1, -1))]
         lines = list(_group_lines(input))
         self.assertEqual(len(lines), 1)
-        self.assertTrue(isinstance(lines[0], Stream))
+        self.assertIsInstance(lines[0], Stream)
         self.assertEqual(lines[0].events, input)
 
     def test_text_only_stream2(self):
         input = [(TEXT, "test\n", (None, -1, -1))]
         lines = list(_group_lines(input))
         self.assertEqual(len(lines), 1)
-        self.assertTrue(isinstance(lines[0], Stream))
+        self.assertIsInstance(lines[0], Stream)
         self.assertEqual(lines[0].events, [(TEXT, "test", (None, -1, -1))])
 
     def test_simplespan(self):
         input = HTMLParser(StringIO(u"<span>test</span>"), encoding=None)
         lines = list(_group_lines(input))
         self.assertEqual(len(lines), 1)
-        self.assertTrue(isinstance(lines[0], Stream))
+        self.assertIsInstance(lines[0], Stream)
         for (a, b) in zip(lines[0], input):
             self.assertEqual(a, b)
 

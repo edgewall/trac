@@ -22,6 +22,7 @@ import unittest
 from trac.attachment import Attachment
 from trac.core import *
 from trac.test import EnvironmentStub
+from trac.tests import compat
 from trac.util.datefmt import utc, to_utimestamp
 from trac.wiki import WikiPage, IWikiChangeListener
 
@@ -66,13 +67,13 @@ class WikiPageTestCase(unittest.TestCase):
     def test_new_page(self):
         page = WikiPage(self.env)
         self.assertFalse(page.exists)
-        self.assertEqual(None, page.name)
+        self.assertIsNone(page.name)
         self.assertEqual(0, page.version)
         self.assertEqual('', page.text)
         self.assertEqual(0, page.readonly)
         self.assertEqual('', page.author)
         self.assertEqual('', page.comment)
-        self.assertEqual(None, page.time)
+        self.assertIsNone(page.time)
 
     def test_existing_page(self):
         t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
@@ -85,7 +86,7 @@ class WikiPageTestCase(unittest.TestCase):
         self.assertTrue(page.exists)
         self.assertEqual('TestPage', page.name)
         self.assertEqual(1, page.version)
-        self.assertEqual(None, page.resource.version)   # FIXME: Intentional?
+        self.assertIsNone(page.resource.version)   # FIXME: Intentional?
         self.assertEqual('Bla bla', page.text)
         self.assertEqual(0, page.readonly)
         self.assertEqual('joe', page.author)

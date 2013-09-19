@@ -108,7 +108,7 @@ def hello():
         pygments when rendering empty files.
         """
         result = self.pygments.render(self.context, 'text/x-python', '')
-        self.assertEqual(None, result)
+        self.assertIsNone(result)
 
     def test_extra_mimetypes(self):
         """

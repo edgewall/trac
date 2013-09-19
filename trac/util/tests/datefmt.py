@@ -122,11 +122,11 @@ else:
         def test_to_datetime_tz_from_naive_datetime_is_localtz(self):
             t = datetime.datetime(2012, 3, 25, 2, 15)
             dt = datefmt.to_datetime(t)
-            self.assertTrue(isinstance(dt.tzinfo, datefmt.LocalTimezone))
+            self.assertIsInstance(dt.tzinfo, datefmt.LocalTimezone)
 
         def test_to_datetime_tz_from_now_is_localtz(self):
             dt = datefmt.to_datetime(None)
-            self.assertTrue(isinstance(dt.tzinfo, datefmt.LocalTimezone))
+            self.assertIsInstance(dt.tzinfo, datefmt.LocalTimezone)
 
 
 class ParseISO8601TestCase(unittest.TestCase):
@@ -206,7 +206,7 @@ class ParseISO8601TestCase(unittest.TestCase):
         t = datetime.datetime(2012, 10, 11, 2, 40, 57, 0, datefmt.localtz)
         dt = datefmt.parse_date('2012-10-11T02:40:57')
         self.assertEqual(t, dt)
-        self.assertTrue(isinstance(dt.tzinfo, datefmt.LocalTimezone))
+        self.assertIsInstance(dt.tzinfo, datefmt.LocalTimezone)
 
     def test_iso8601_naive_tz_used_tzinfo_arg(self):
         tz = datefmt.timezone('GMT +1:00')
