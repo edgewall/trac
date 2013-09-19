@@ -153,7 +153,7 @@ class AttachmentTestCase(unittest.TestCase):
                                       hashes['42'][0:3], hashes['42'],
                                       hashes['foo.2.txt'] + '.txt'),
                          attachment.path)
-        self.assert_(os.path.exists(attachment.path))
+        self.assertTrue(os.path.exists(attachment.path))
 
     def test_insert_outside_attachments_dir(self):
         attachment = Attachment(self.env, '../../../../../sth/private', 42)
@@ -220,7 +220,7 @@ class AttachmentTestCase(unittest.TestCase):
         `ATTACHMENT_VIEW` maps to `TICKET_VIEW`, the `TICKET_VIEW` is tested
         against the ticket's resource."""
         attachment = Attachment(self.env, 'ticket', 42)
-        self.assert_('ATTACHMENT_VIEW' in self.perm(attachment.resource))
+        self.assertTrue('ATTACHMENT_VIEW' in self.perm(attachment.resource))
 
     def test_resource_doesnt_exist(self):
         r = Resource('wiki', 'WikiStart').child('attachment', 'file.txt')

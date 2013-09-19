@@ -186,16 +186,16 @@ class BasicAuthenticationTestCase(unittest.TestCase):
         self.auth = None
 
     def test_crypt(self):
-        self.assert_(self.auth.test('crypt', 'crypt'))
-        self.assert_(not self.auth.test('crypt', 'other'))
+        self.assertTrue(self.auth.test('crypt', 'crypt'))
+        self.assertTrue(not self.auth.test('crypt', 'other'))
 
     def test_md5(self):
-        self.assert_(self.auth.test('md5', 'md5'))
-        self.assert_(not self.auth.test('md5', 'other'))
+        self.assertTrue(self.auth.test('md5', 'md5'))
+        self.assertTrue(not self.auth.test('md5', 'other'))
 
     def test_sha(self):
-        self.assert_(self.auth.test('sha', 'sha'))
-        self.assert_(not self.auth.test('sha', 'other'))
+        self.assertTrue(self.auth.test('sha', 'sha'))
+        self.assertTrue(not self.auth.test('sha', 'other'))
 
 
 def suite():

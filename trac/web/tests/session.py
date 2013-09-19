@@ -364,7 +364,7 @@ class SessionTestCase(unittest.TestCase):
         req = Mock(authname='anonymous', base_path='/', incookie=incookie,
                    outcookie=Cookie())
         session = Session(self.env, req)
-        self.assert_('foo' not in session)
+        self.assertTrue('foo' not in session)
         session['foo'] = 'baz'
         session.save()
 

@@ -398,7 +398,7 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEqual(['a', 'b', 'c'], config.sections())
         foo = Foo()
         foo.config = config
-        self.assert_(foo.section_c is config['c'])
+        self.assertTrue(foo.section_c is config['c'])
         self.assertEqual('value', foo.section_c.get('option'))
 
     def test_sections_unicode(self):

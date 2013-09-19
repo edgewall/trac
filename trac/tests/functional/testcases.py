@@ -120,7 +120,7 @@ class RegressionTestTicket3833c(FunctionalTestCaseSetup):
             fixup3 = traclogfile.read()
             message = 'Logging still off when it should have been on.\n' \
                       '%r\n%r' % (debug3, fixup3)
-        self.assert_(success, message)
+        self.assertTrue(success, message)
 
 
 class RegressionTestTicket5572(FunctionalTwillTestCaseSetup):
