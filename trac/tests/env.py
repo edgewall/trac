@@ -17,6 +17,7 @@ import shutil
 import tempfile
 import unittest
 
+from trac.tests import compat
 from trac import db_default
 from trac.core import ComponentManager
 from trac.env import Environment
@@ -53,12 +54,6 @@ class EmptyEnvironmentTestCase(unittest.TestCase):
 
 
 class EnvironmentTestCase(unittest.TestCase):
-
-    if not hasattr(unittest.TestCase, 'assertIs'):
-        def assertIs(self, expr1, expr2, msg=None):
-            if expr1 is not expr2:
-                raise self.failureException(msg or '%r is not %r'
-                                                   % (expr1, expr2))
 
     def setUp(self):
         env_path = tempfile.mkdtemp(prefix='trac-tempenv-')

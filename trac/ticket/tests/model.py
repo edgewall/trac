@@ -23,6 +23,7 @@ from trac import core
 from trac.attachment import Attachment
 from trac.core import TracError, implements
 from trac.resource import ResourceNotFound
+from trac.tests import compat
 from trac.ticket.model import (
     Ticket, Component, Milestone, Priority, Type, Version
 )
@@ -129,9 +130,9 @@ class TicketTestCase(unittest.TestCase):
         log = ticket3.get_changelog()
         self.assertEqual(len(log), 3)
         ok_vals = ['foo', 'summary', 'comment']
-        self.failUnless(log[0][2] in ok_vals)
-        self.failUnless(log[1][2] in ok_vals)
-        self.failUnless(log[2][2] in ok_vals)
+        self.assertIn(log[0][2], ok_vals)
+        self.assertIn(log[1][2], ok_vals)
+        self.assertIn(log[2][2], ok_vals)
 
     def test_create_ticket_5(self):
         ticket3 = self._modify_a_ticket()
@@ -168,7 +169,7 @@ class TicketTestCase(unittest.TestCase):
         ticket.save_changes()
 
         for change in ticket.get_changelog():
-            self.assertEqual(None, change[1])
+            self.assertIsNone(change[1])
 
     def test_comment_with_whitespace_only_is_not_saved(self):
         ticket = Ticket(self.env)
@@ -321,7 +322,7 @@ class TicketTestCase(unittest.TestCase):
         self.assertEqual('john', ticket['reporter'])
 
         # An unknown field
-        assert ticket['bar'] is None
+        self.assertIsNone(ticket['bar'])
 
         # Custom field
         self.assertEqual('bar', ticket['foo'])
@@ -665,8 +666,8 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
         ticket.delete_change(cnum=4, when=t)
         self.assertEqual('a, b', ticket['keywords'])
         self.assertEqual('change3', ticket['foo'])
-        self.assertEqual(None, ticket.get_change(cnum=4))
-        self.assertNotEqual(None, ticket.get_change(cnum=3))
+        self.assertIsNone(ticket.get_change(cnum=4))
+        self.assertIsNotNone(ticket.get_change(cnum=3))
         self.assertEqual(t, ticket.time_changed)
 
     def test_delete_last_comment_when_custom_field_gone(self):
@@ -684,13 +685,13 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
         ticket.delete_change(cnum=4, when=t)
         self.assertEqual('a, b', ticket['keywords'])
         # 'foo' is no longer defined for the ticket
-        self.assertEqual(None, ticket['foo'])
+        self.assertIsNone(ticket['foo'])
         # however, 'foo=change3' is still in the database
         self.assertEqual([('change3',)], self.env.db_query("""
             SELECT value FROM ticket_custom WHERE ticket=%s AND name='foo'
             """, (self.id,)))
-        self.assertEqual(None, ticket.get_change(cnum=4))
-        self.assertNotEqual(None, ticket.get_change(cnum=3))
+        self.assertIsNone(ticket.get_change(cnum=4))
+        self.assertIsNotNone(ticket.get_change(cnum=3))
         self.assertEqual(t, ticket.time_changed)
 
     def test_delete_last_comment_by_date(self):
@@ -701,8 +702,8 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
         ticket.delete_change(cdate=self.t4, when=t)
         self.assertEqual('a, b', ticket['keywords'])
         self.assertEqual('change3', ticket['foo'])
-        self.assertEqual(None, ticket.get_change(cdate=self.t4))
-        self.assertNotEqual(None, ticket.get_change(cdate=self.t3))
+        self.assertIsNone(ticket.get_change(cdate=self.t4))
+        self.assertIsNotNone(ticket.get_change(cdate=self.t3))
         self.assertEqual(t, ticket.time_changed)
 
     def test_delete_mid_comment(self):
@@ -713,7 +714,7 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
             foo=dict(author='joe', old='change3', new='change4'))
         t = datetime.now(utc)
         ticket.delete_change(cnum=3, when=t)
-        self.assertEqual(None, ticket.get_change(cnum=3))
+        self.assertIsNone(ticket.get_change(cnum=3))
         self.assertEqual('a', ticket['keywords'])
         self.assertChange(ticket, 4, self.t4, 'joe',
             comment=dict(author='joe', old='4', new='Comment 4'),
@@ -729,7 +730,7 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
             foo=dict(author='joe', old='change3', new='change4'))
         t = datetime.now(utc)
         ticket.delete_change(cdate=self.t3, when=t)
-        self.assertEqual(None, ticket.get_change(cdate=self.t3))
+        self.assertIsNone(ticket.get_change(cdate=self.t3))
         self.assertEqual('a', ticket['keywords'])
         self.assertChange(ticket, 4, self.t4, 'joe',
             comment=dict(author='joe', old='4', new='Comment 4'),
@@ -751,7 +752,7 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
             keywords=dict(author='joe', old='1, 2', new='a'),
             foo=dict(author='joe', old='change3', new='change4'))
         ticket.delete_change(3)
-        self.assertEqual(None, ticket.get_change(3))
+        self.assertIsNone(ticket.get_change(3))
         self.assertEqual('a', ticket['keywords'])
         self.assertChange(ticket, 4, self.t4, 'joe',
             comment=dict(author='joe', old='4', new='Comment 4'),
@@ -785,14 +786,14 @@ class EnumTestCase(unittest.TestCase):
         prio = Priority(self.env)
         prio.name = 'foo'
         prio.insert()
-        self.assertEqual(True, prio.exists)
+        self.assertTrue(prio.exists)
 
     def test_priority_insert_with_value(self):
         prio = Priority(self.env)
         prio.name = 'bar'
         prio.value = 100
         prio.insert()
-        self.assertEqual(True, prio.exists)
+        self.assertTrue(prio.exists)
 
     def test_priority_update(self):
         prio = Priority(self.env, 'major')
@@ -805,7 +806,7 @@ class EnumTestCase(unittest.TestCase):
         prio = Priority(self.env, 'major')
         self.assertEqual('3', prio.value)
         prio.delete()
-        self.assertEqual(False, prio.exists)
+        self.assertFalse(prio.exists)
         self.assertRaises(TracError, Priority, self.env, 'major')
         prio = Priority(self.env, 'minor')
         self.assertEqual('3', prio.value)
@@ -854,10 +855,10 @@ class MilestoneTestCase(unittest.TestCase):
 
     def test_new_milestone(self):
         milestone = Milestone(self.env)
-        self.assertEqual(False, milestone.exists)
-        self.assertEqual(None, milestone.name)
-        self.assertEqual(None, milestone.due)
-        self.assertEqual(None, milestone.completed)
+        self.assertFalse(milestone.exists)
+        self.assertIsNone(milestone.name)
+        self.assertIsNone(milestone.due)
+        self.assertIsNone(milestone.completed)
         self.assertEqual('', milestone.description)
 
     def test_new_milestone_empty_name(self):
@@ -866,20 +867,20 @@ class MilestoneTestCase(unittest.TestCase):
         milestone being correctly detected as non-existent.
         """
         milestone = Milestone(self.env, '')
-        self.assertEqual(False, milestone.exists)
-        self.assertEqual(None, milestone.name)
-        self.assertEqual(None, milestone.due)
-        self.assertEqual(None, milestone.completed)
+        self.assertFalse(milestone.exists)
+        self.assertIsNone(milestone.name)
+        self.assertIsNone(milestone.due)
+        self.assertIsNone(milestone.completed)
         self.assertEqual('', milestone.description)
 
     def test_existing_milestone(self):
         self.env.db_transaction("INSERT INTO milestone (name) VALUES ('Test')")
 
         milestone = Milestone(self.env, 'Test')
-        self.assertEqual(True, milestone.exists)
+        self.assertTrue(milestone.exists)
         self.assertEqual('Test', milestone.name)
-        self.assertEqual(None, milestone.due)
-        self.assertEqual(None, milestone.completed)
+        self.assertIsNone(milestone.due)
+        self.assertIsNone(milestone.completed)
         self.assertEqual('', milestone.description)
 
     def test_create_and_update_milestone(self):
@@ -909,7 +910,7 @@ class MilestoneTestCase(unittest.TestCase):
 
         milestone = Milestone(self.env, 'Test')
         milestone.delete()
-        self.assertEqual(False, milestone.exists)
+        self.assertFalse(milestone.exists)
         self.assertEqual([],
             self.env.db_query("SELECT * FROM milestone WHERE name='Test'"))
 
@@ -925,7 +926,7 @@ class MilestoneTestCase(unittest.TestCase):
 
         milestone = Milestone(self.env, 'Test')
         milestone.delete(retarget_to='Other')
-        self.assertEqual(False, milestone.exists)
+        self.assertFalse(milestone.exists)
 
         self.assertEqual('Other', Ticket(self.env, tkt1.id)['milestone'])
         self.assertEqual('Other', Ticket(self.env, tkt2.id)['milestone'])
@@ -997,9 +998,9 @@ class MilestoneTestCase(unittest.TestCase):
 
         milestones = list(Milestone.select(self.env))
         self.assertEqual('1.0', milestones[0].name)
-        assert milestones[0].exists
+        self.assertTrue(milestones[0].exists)
         self.assertEqual('2.0', milestones[1].name)
-        assert milestones[1].exists
+        self.assertTrue(milestones[1].exists)
 
     def test_change_listener_created(self):
         listener = TestMilestoneChangeListener(self.env)
@@ -1031,10 +1032,10 @@ class MilestoneTestCase(unittest.TestCase):
         listener = TestMilestoneChangeListener(self.env)
         milestone = self._create_milestone(name='Milestone 1')
         milestone.insert()
-        self.assertEqual(True, milestone.exists)
+        self.assertTrue(milestone.exists)
         milestone.delete()
         self.assertEqual('Milestone 1', milestone.name)
-        self.assertEqual(False, milestone.exists)
+        self.assertFalse(milestone.exists)
         self.assertEqual('deleted', listener.action)
         self.assertEqual(milestone, listener.milestone)
 

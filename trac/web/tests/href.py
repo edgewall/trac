@@ -16,6 +16,7 @@ import doctest
 import unittest
 
 import trac.web.href
+from trac.tests import compat
 
 
 class HrefTestCase(unittest.TestCase):
@@ -36,9 +37,9 @@ class HrefTestCase(unittest.TestCase):
         self.assertEqual('/base/sub/other/', href('sub', 'other', ''))
         self.assertEqual('/base/with%20special%26chars',
                          href('with special&chars'))
-        assert href('page', param='value', other='other value', more=None) in [
+        self.assertIn(href('page', param='value', other='other value', more=None), [
             '/base/page?param=value&other=other+value',
-            '/base/page?other=other+value&param=value']
+            '/base/page?other=other+value&param=value'])
         self.assertEqual('/base/page?param=multiple&param=values',
                          href('page', param=['multiple', 'values']))
 
@@ -73,9 +74,10 @@ class HrefTestCase(unittest.TestCase):
         self.assertEqual('/sub/other/', href('sub', 'other', ''))
         self.assertEqual('/with%20special%26chars',
                          href('with special&chars'))
-        assert href('page', param='value', other='other value', more=None) in [
-            '/page?param=value&other=other+value',
-            '/page?other=other+value&param=value']
+        self.assertIn(
+            href('page', param='value', other='other value', more=None),
+            ['/page?param=value&other=other+value',
+             '/page?other=other+value&param=value'])
         self.assertEqual('/page?param=multiple&param=values',
                          href('page', param=['multiple', 'values']))
 
@@ -96,9 +98,9 @@ class HrefTestCase(unittest.TestCase):
                          href(param=MyList(['test', 'other'])))
         self.assertEqual('/base?param=test&param=other',
                          href(param=MyTuple(['test', 'other'])))
-        assert href(MyDict(param='value', other='other value')) in [
+        self.assertIn(href(MyDict(param='value', other='other value')), [
             '/base?param=value&other=other+value',
-            '/base?other=other+value&param=value']
+            '/base?other=other+value&param=value'])
         self.assertEqual('/base?param=value&other=other+value',
                          href(MyList([('param', 'value'), ('other', 'other value')])))
         self.assertEqual('/base?param=value&other=other+value',

@@ -20,6 +20,7 @@ from trac.config import ListOption, Option
 from trac.env import ISystemInfoProvider
 from trac.mimeview.api import IHTMLPreviewRenderer, Mimeview
 from trac.prefs import IPreferencePanelProvider
+from trac.tests import compat
 from trac.util import get_pkginfo
 from trac.util.datefmt import http_date, localtz
 from trac.util.translation import _

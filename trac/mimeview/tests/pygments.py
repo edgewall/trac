@@ -56,8 +56,8 @@ class PygmentsRendererTestCase(unittest.TestCase):
         #print "\nR: " + repr(result)
         expected, result = expected.splitlines(), result.splitlines()
         for exp, res in zip(expected, result):
-            self.assertEquals(exp, res)
-        self.assertEquals(len(expected), len(result))
+            self.assertEqual(exp, res)
+        self.assertEqual(len(expected), len(result))
 
     def test_python_hello(self):
         """
@@ -108,7 +108,7 @@ def hello():
         pygments when rendering empty files.
         """
         result = self.pygments.render(self.context, 'text/x-python', '')
-        self.assertEqual(None, result)
+        self.assertIsNone(result)
 
     def test_extra_mimetypes(self):
         """

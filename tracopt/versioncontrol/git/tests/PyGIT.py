@@ -20,6 +20,7 @@ import unittest
 from subprocess import Popen, PIPE
 
 from trac.test import locate, EnvironmentStub
+from trac.tests import compat
 from trac.util import create_file
 from trac.util.compat import close_fds
 from trac.versioncontrol import DbRepositoryProvider
@@ -49,11 +50,11 @@ def rmtree(path):
 class GitTestCase(unittest.TestCase):
 
     def test_is_sha(self):
-        self.assertTrue(not GitCore.is_sha('123'))
+        self.assertFalse(GitCore.is_sha('123'))
         self.assertTrue(GitCore.is_sha('1a3f'))
         self.assertTrue(GitCore.is_sha('f' * 40))
-        self.assertTrue(not GitCore.is_sha('x' + 'f' * 39))
-        self.assertTrue(not GitCore.is_sha('f' * 41))
+        self.assertFalse(GitCore.is_sha('x' + 'f' * 39))
+        self.assertFalse(GitCore.is_sha('f' * 41))
 
     def test_git_version(self):
         v = Storage.git_version()
@@ -114,17 +115,17 @@ prettier.  I'll tell Ted to use nicer tag names for future cases.
         msg, props = parse_commit(self.commit2240a7b)
         self.assertTrue(msg)
         self.assertTrue(props)
-        self.assertEquals(
+        self.assertEqual(
             ['30aaca4582eac20a52ac7b2ec35bdb908133e5b1',
              '5a0dc7365c240795bf190766eba7a27600be3b3e'],
             props['parent'])
-        self.assertEquals(
+        self.assertEqual(
             ['Linus Torvalds <torvalds@linux-foundation.org> 1323915958 -0800'],
             props['author'])
-        self.assertEquals(props['author'], props['committer'])
+        self.assertEqual(props['author'], props['committer'])
 
         # Merge tag
-        self.assertEquals(['''\
+        self.assertEqual(['''\
 object 5a0dc7365c240795bf190766eba7a27600be3b3e
 type commit
 tag tytso-for-linus-20111214A
@@ -150,7 +151,7 @@ dQpo6WWG9HIJ23hOGAGR
 -----END PGP SIGNATURE-----'''], props['mergetag'])
 
         # Message
-        self.assertEquals("""Merge tag 'tytso-for-linus-20111214' of git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4
+        self.assertEqual("""Merge tag 'tytso-for-linus-20111214' of git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4
 
 * tag 'tytso-for-linus-20111214' of git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4:
   ext4: handle EOF correctly in ext4_bio_write_page()
@@ -192,9 +193,9 @@ class NormalTestCase(unittest.TestCase):
         proc = Popen(args, stdout=PIPE, stderr=PIPE, close_fds=close_fds,
                      cwd=self.repos_path)
         stdout, stderr = proc.communicate()
-        assert proc.returncode == 0, \
+        self.assertEqual(0, proc.returncode,
                'git exits with %r, stdout %r, stderr %r' % (proc.returncode,
-                                                            stdout, stderr)
+                                                            stdout, stderr))
         return proc
 
     def _storage(self):
@@ -212,8 +213,8 @@ class NormalTestCase(unittest.TestCase):
 
         storage = self._storage()
         branches = sorted(storage.get_branches())
-        self.assertEquals('master', branches[0][0])
-        self.assertEquals(1, len(branches))
+        self.assertEqual('master', branches[0][0])
+        self.assertEqual(1, len(branches))
 
     if os.name == 'nt':
         del test_get_branches_with_cr_in_commitlog
@@ -233,13 +234,13 @@ class NormalTestCase(unittest.TestCase):
         rev = repos.youngest_rev
 
         self.assertNotEqual(rev, parent_rev)
-        self.assertEquals(False, repos.rev_older_than(None, None))
-        self.assertEquals(False, repos.rev_older_than(None, rev[:7]))
-        self.assertEquals(False, repos.rev_older_than(rev[:7], None))
-        self.assertEquals(True, repos.rev_older_than(parent_rev, rev))
-        self.assertEquals(True, repos.rev_older_than(parent_rev[:7], rev[:7]))
-        self.assertEquals(False, repos.rev_older_than(rev, parent_rev))
-        self.assertEquals(False, repos.rev_older_than(rev[:7], parent_rev[:7]))
+        self.assertFalse(repos.rev_older_than(None, None))
+        self.assertFalse(repos.rev_older_than(None, rev[:7]))
+        self.assertFalse(repos.rev_older_than(rev[:7], None))
+        self.assertTrue(repos.rev_older_than(parent_rev, rev))
+        self.assertTrue(repos.rev_older_than(parent_rev[:7], rev[:7]))
+        self.assertFalse(repos.rev_older_than(rev, parent_rev))
+        self.assertFalse(repos.rev_older_than(rev[:7], parent_rev[:7]))
 
 
 class UnicodeNameTestCase(unittest.TestCase):
@@ -267,9 +268,9 @@ class UnicodeNameTestCase(unittest.TestCase):
         proc = Popen(args, stdout=PIPE, stderr=PIPE, close_fds=close_fds,
                      cwd=self.repos_path)
         stdout, stderr = proc.communicate()
-        assert proc.returncode == 0, \
+        self.assertEqual(0, proc.returncode,
                'git exits with %r, stdout %r, stderr %r' % (proc.returncode,
-                                                            stdout, stderr)
+                                                            stdout, stderr))
         return proc
 
     def _storage(self):
@@ -279,7 +280,7 @@ class UnicodeNameTestCase(unittest.TestCase):
     def test_unicode_verifyrev(self):
         storage = self._storage()
         self.assertNotEqual(None, storage.verifyrev(u'master'))
-        self.assertEquals(None, storage.verifyrev(u'tété'))
+        self.assertIsNone(storage.verifyrev(u'tété'))
 
     def test_unicode_filename(self):
         create_file(os.path.join(self.repos_path, 'tickét.txt'))
@@ -289,36 +290,36 @@ class UnicodeNameTestCase(unittest.TestCase):
         storage = self._storage()
         filenames = sorted(fname for mode, type, sha, size, fname
                                  in storage.ls_tree('HEAD'))
-        self.assertEquals(unicode, type(filenames[0]))
-        self.assertEquals(unicode, type(filenames[1]))
-        self.assertEquals(u'.gitignore', filenames[0])
-        self.assertEquals(u'tickét.txt', filenames[1])
+        self.assertEqual(unicode, type(filenames[0]))
+        self.assertEqual(unicode, type(filenames[1]))
+        self.assertEqual(u'.gitignore', filenames[0])
+        self.assertEqual(u'tickét.txt', filenames[1])
         # check commit author, for good measure
-        self.assertEquals(u'Joé <joe@example.com> 1359912600 +0100',
-                          storage.read_commit(storage.head())[1]['author'][0])
+        self.assertEqual(u'Joé <joe@example.com> 1359912600 +0100',
+                         storage.read_commit(storage.head())[1]['author'][0])
 
     def test_unicode_branches(self):
         self._git('checkout', '-b', 'tickét10980', 'master')
         storage = self._storage()
         branches = sorted(storage.get_branches())
-        self.assertEquals(unicode, type(branches[0][0]))
-        self.assertEquals(unicode, type(branches[1][0]))
-        self.assertEquals(u'master', branches[0][0])
-        self.assertEquals(u'tickét10980', branches[1][0])
+        self.assertEqual(unicode, type(branches[0][0]))
+        self.assertEqual(unicode, type(branches[1][0]))
+        self.assertEqual(u'master', branches[0][0])
+        self.assertEqual(u'tickét10980', branches[1][0])
 
         contains = sorted(storage.get_branch_contains(branches[1][1],
                                                       resolve=True))
-        self.assertEquals(unicode, type(contains[0][0]))
-        self.assertEquals(unicode, type(contains[1][0]))
-        self.assertEquals(u'master', contains[0][0])
-        self.assertEquals(u'tickét10980', contains[1][0])
+        self.assertEqual(unicode, type(contains[0][0]))
+        self.assertEqual(unicode, type(contains[1][0]))
+        self.assertEqual(u'master', contains[0][0])
+        self.assertEqual(u'tickét10980', contains[1][0])
 
     def test_unicode_tags(self):
         self._git('tag', 'täg-t10980', 'master')
         storage = self._storage()
         tags = tuple(storage.get_tags())
-        self.assertEquals(unicode, type(tags[0]))
-        self.assertEquals(u'täg-t10980', tags[0])
+        self.assertEqual(unicode, type(tags[0]))
+        self.assertEqual(u'täg-t10980', tags[0])
         self.assertNotEqual(None, storage.verifyrev(u'täg-t10980'))
 
     def test_ls_tree(self):
@@ -335,11 +336,11 @@ class UnicodeNameTestCase(unittest.TestCase):
         storage = self._storage()
         rev = storage.head()
         entries = storage.ls_tree(rev, '/')
-        self.assertEquals(4, len(entries))
-        self.assertEquals(u'\a\b\t\n\v\f\r\x1b"\\.tx\\t', entries[0][4])
-        self.assertEquals(u'.gitignore', entries[1][4])
-        self.assertEquals(u'normal-path.txt', entries[2][4])
-        self.assertEquals(u'tickét.tx\\t', entries[3][4])
+        self.assertEqual(4, len(entries))
+        self.assertEqual(u'\a\b\t\n\v\f\r\x1b"\\.tx\\t', entries[0][4])
+        self.assertEqual(u'.gitignore', entries[1][4])
+        self.assertEqual(u'normal-path.txt', entries[2][4])
+        self.assertEqual(u'tickét.tx\\t', entries[3][4])
 
     def test_get_historian(self):
         paths = [u'normal-path.txt',
@@ -387,7 +388,7 @@ class UnicodeNameTestCase(unittest.TestCase):
 #                i = str(i)
 #                s = g.shortrev(i, min_len=4)
 #                self.assertTrue(i.startswith(s))
-#                self.assertEquals(g.fullrev(s), i)
+#                self.assertEqual(g.fullrev(s), i)
 #
 #        iters = 1
 #        t = timeit.Timer("shortrev_test()",
@@ -415,7 +416,7 @@ class UnicodeNameTestCase(unittest.TestCase):
 #                    t = open(__proc_statm)
 #                    result = t.read().split()
 #                    t.close()
-#                    assert len(result) == 7
+#                    self.assertEqual(7, len(result))
 #                    return tuple([ __pagesize*int(p) for p in result ])
 #                except:
 #                    raise RuntimeError("failed to get memory stats")

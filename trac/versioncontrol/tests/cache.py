@@ -19,6 +19,7 @@ from __future__ import with_statement
 from datetime import datetime
 
 from trac.test import EnvironmentStub, Mock
+from trac.tests import compat
 from trac.util.datefmt import to_utimestamp, utc
 from trac.versioncontrol import Repository, Changeset, Node, NoSuchChangeset
 from trac.versioncontrol.cache import CachedRepository
@@ -81,9 +82,9 @@ class CacheTestCase(unittest.TestCase):
         cache.sync()
 
         with self.env.db_query as db:
-            self.assertEquals([], db(
+            self.assertEqual([], db(
                 "SELECT rev, time, author, message FROM revision"))
-            self.assertEquals(0, db("SELECT COUNT(*) FROM node_change")[0][0])
+            self.assertEqual(0, db("SELECT COUNT(*) FROM node_change")[0][0])
 
     def test_initial_sync(self):
         t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
@@ -101,17 +102,17 @@ class CacheTestCase(unittest.TestCase):
 
         with self.env.db_query as db:
             rows = db("SELECT rev, time, author, message FROM revision")
-            self.assertEquals(len(rows), 2)
-            self.assertEquals(('0', to_utimestamp(t1), '', ''), rows[0])
-            self.assertEquals(('1', to_utimestamp(t2), 'joe', 'Import'),
-                              rows[1])
+            self.assertEqual(len(rows), 2)
+            self.assertEqual(('0', to_utimestamp(t1), '', ''), rows[0])
+            self.assertEqual(('1', to_utimestamp(t2), 'joe', 'Import'),
+                             rows[1])
             rows = db("""
                 SELECT rev, path, node_type, change_type, base_path, base_rev
                 FROM node_change""")
-            self.assertEquals(len(rows), 2)
-            self.assertEquals(('1', 'trunk', 'D', 'A', None, None), rows[0])
-            self.assertEquals(('1', 'trunk/README', 'F', 'A', None, None),
-                              rows[1])
+            self.assertEqual(len(rows), 2)
+            self.assertEqual(('1', 'trunk', 'D', 'A', None, None), rows[0])
+            self.assertEqual(('1', 'trunk/README', 'F', 'A', None, None),
+                             rows[1])
 
     def test_update_sync(self):
         t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
@@ -137,10 +138,10 @@ class CacheTestCase(unittest.TestCase):
         cache.sync()
 
         with self.env.db_query as db:
-            self.assertEquals([(to_utimestamp(t3), 'joe', 'Update')],
+            self.assertEqual([(to_utimestamp(t3), 'joe', 'Update')],
                 db("SELECT time, author, message FROM revision WHERE rev='2'"))
-            self.assertEquals([('trunk/README', 'F', 'E', 'trunk/README',
-                                '1')],
+            self.assertEqual([('trunk/README', 'F', 'E', 'trunk/README',
+                               '1')],
                     db("""SELECT path, node_type, change_type, base_path,
                                  base_rev
                           FROM node_change WHERE rev='2'"""))
@@ -175,20 +176,20 @@ class CacheTestCase(unittest.TestCase):
         rows = self.env.db_query("""
             SELECT time, author, message FROM revision ORDER BY rev
             """)
-        self.assertEquals(3, len(rows))
-        self.assertEquals((to_utimestamp(t1), 'joe', '**empty**'), rows[0])
-        self.assertEquals((to_utimestamp(t2), 'joe', 'Initial Import'),
-                          rows[1])
-        self.assertEquals((to_utimestamp(t3), 'joe', 'Update'), rows[2])
+        self.assertEqual(3, len(rows))
+        self.assertEqual((to_utimestamp(t1), 'joe', '**empty**'), rows[0])
+        self.assertEqual((to_utimestamp(t2), 'joe', 'Initial Import'),
+                         rows[1])
+        self.assertEqual((to_utimestamp(t3), 'joe', 'Update'), rows[2])
 
         rows = self.env.db_query("""
             SELECT rev, path, node_type, change_type, base_path, base_rev
             FROM node_change ORDER BY rev, path""")
-        self.assertEquals(3, len(rows))
-        self.assertEquals(('1', 'trunk', 'D', 'A', None, None), rows[0])
-        self.assertEquals(('1', 'trunk/README', 'F', 'A', None, None), rows[1])
-        self.assertEquals(('2', 'trunk/README', 'F', 'E', 'trunk/README', '1'),
-                          rows[2])
+        self.assertEqual(3, len(rows))
+        self.assertEqual(('1', 'trunk', 'D', 'A', None, None), rows[0])
+        self.assertEqual(('1', 'trunk/README', 'F', 'A', None, None), rows[1])
+        self.assertEqual(('2', 'trunk/README', 'F', 'E', 'trunk/README', '1'),
+                         rows[2])
 
     def test_sync_changeset(self):
         t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
@@ -215,9 +216,9 @@ class CacheTestCase(unittest.TestCase):
 
         rows = self.env.db_query(
                 "SELECT time, author, message FROM revision ORDER BY rev")
-        self.assertEquals(2, len(rows))
-        self.assertEquals((to_utimestamp(t1), 'joe', '**empty**'), rows[0])
-        self.assertEquals((to_utimestamp(t2), 'joe', 'Import'), rows[1])
+        self.assertEqual(2, len(rows))
+        self.assertEqual((to_utimestamp(t1), 'joe', '**empty**'), rows[0])
+        self.assertEqual((to_utimestamp(t2), 'joe', 'Import'), rows[1])
 
     def test_sync_changeset_if_not_exists(self):
         t = [
@@ -260,7 +261,7 @@ class CacheTestCase(unittest.TestCase):
         cache.sync()
         self.assertRaises(NoSuchChangeset, cache.get_changeset, 2)
 
-        self.assertEqual(None, cache.sync_changeset(2))
+        self.assertIsNone(cache.sync_changeset(2))
         cset = cache.get_changeset(2)
         self.assertEqual('john', cset.author)
         self.assertEqual('Created directories', cset.message)
@@ -275,12 +276,12 @@ class CacheTestCase(unittest.TestCase):
 
         rows = self.env.db_query(
                 "SELECT time,author,message FROM revision ORDER BY rev")
-        self.assertEquals(4, len(rows))
-        self.assertEquals((to_utimestamp(t[0]), 'joe', '**empty**'), rows[0])
-        self.assertEquals((to_utimestamp(t[1]), 'joe', 'Import'), rows[1])
-        self.assertEquals((to_utimestamp(t[2]), 'john', 'Created directories'),
-                          rows[2])
-        self.assertEquals((to_utimestamp(t[3]), 'joe', 'Add COPYING'), rows[3])
+        self.assertEqual(4, len(rows))
+        self.assertEqual((to_utimestamp(t[0]), 'joe', '**empty**'), rows[0])
+        self.assertEqual((to_utimestamp(t[1]), 'joe', 'Import'), rows[1])
+        self.assertEqual((to_utimestamp(t[2]), 'john', 'Created directories'),
+                         rows[2])
+        self.assertEqual((to_utimestamp(t[3]), 'joe', 'Add COPYING'), rows[3])
 
     def test_get_changes(self):
         t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)

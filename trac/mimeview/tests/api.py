@@ -18,6 +18,7 @@ import sys
 
 from trac.core import *
 from trac.test import EnvironmentStub
+from trac.tests import compat
 from trac.mimeview import api
 from trac.mimeview.api import get_mimetype, IContentConverter, Mimeview, \
                               _group_lines
@@ -112,22 +113,22 @@ class GroupLinesTestCase(unittest.TestCase):
     def test_text_only_stream(self):
         input = [(TEXT, "test", (None, -1, -1))]
         lines = list(_group_lines(input))
-        self.assertEquals(len(lines), 1)
-        self.assertTrue(isinstance(lines[0], Stream))
-        self.assertEquals(lines[0].events, input)
+        self.assertEqual(len(lines), 1)
+        self.assertIsInstance(lines[0], Stream)
+        self.assertEqual(lines[0].events, input)
 
     def test_text_only_stream2(self):
         input = [(TEXT, "test\n", (None, -1, -1))]
         lines = list(_group_lines(input))
-        self.assertEquals(len(lines), 1)
-        self.assertTrue(isinstance(lines[0], Stream))
-        self.assertEquals(lines[0].events, [(TEXT, "test", (None, -1, -1))])
+        self.assertEqual(len(lines), 1)
+        self.assertIsInstance(lines[0], Stream)
+        self.assertEqual(lines[0].events, [(TEXT, "test", (None, -1, -1))])
 
     def test_simplespan(self):
         input = HTMLParser(StringIO(u"<span>test</span>"), encoding=None)
         lines = list(_group_lines(input))
-        self.assertEquals(len(lines), 1)
-        self.assertTrue(isinstance(lines[0], Stream))
+        self.assertEqual(len(lines), 1)
+        self.assertIsInstance(lines[0], Stream)
         for (a, b) in zip(lines[0], input):
             self.assertEqual(a, b)
 
@@ -137,17 +138,17 @@ class GroupLinesTestCase(unittest.TestCase):
         """
         input = [(TEXT, "", (None, -1, -1))]
         lines = list(_group_lines(input))
-        self.assertEquals(len(lines), 0)
+        self.assertEqual(len(lines), 0)
 
     def test_newline_stream(self):
         input = [(TEXT, "\n", (None, -1, -1))]
         lines = list(_group_lines(input))
-        self.assertEquals(len(lines), 1)
+        self.assertEqual(len(lines), 1)
 
     def test_newline_stream2(self):
         input = [(TEXT, "\n\n\n", (None, -1, -1))]
         lines = list(_group_lines(input))
-        self.assertEquals(len(lines), 3)
+        self.assertEqual(len(lines), 3)
 
     def test_empty_text_in_span(self):
         """
@@ -172,9 +173,9 @@ class GroupLinesTestCase(unittest.TestCase):
                     '<span class="c">b</span>',
                    ]
         lines = list(_group_lines(input))
-        self.assertEquals(len(lines), len(expected))
+        self.assertEqual(len(lines), len(expected))
         for a, b in zip(lines, expected):
-            self.assertEquals(a.render('html'), b)
+            self.assertEqual(a.render('html'), b)
 
     def test_newline2(self):
         """
@@ -187,9 +188,9 @@ class GroupLinesTestCase(unittest.TestCase):
                     '<span class="c">b</span>',
                    ]
         lines = list(_group_lines(input))
-        self.assertEquals(len(lines), len(expected))
+        self.assertEqual(len(lines), len(expected))
         for a, b in zip(lines, expected):
-            self.assertEquals(a.render('html'), b)
+            self.assertEqual(a.render('html'), b)
 
     def test_multinewline(self):
         """
@@ -203,9 +204,9 @@ class GroupLinesTestCase(unittest.TestCase):
                     '<span class="c">a</span>',
                    ]
         lines = list(_group_lines(input))
-        self.assertEquals(len(lines), len(expected))
+        self.assertEqual(len(lines), len(expected))
         for a, b in zip(lines, expected):
-            self.assertEquals(a.render('html'), b)
+            self.assertEqual(a.render('html'), b)
 
 
 def suite():

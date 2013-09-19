@@ -15,6 +15,7 @@ import os
 
 from trac.core import TracError
 from trac.test import EnvironmentStub, Mock
+from trac.tests import compat
 from trac.web.auth import BasicAuthentication, LoginModule
 from trac.web.href import Href
 
@@ -35,7 +36,7 @@ class LoginModuleTestCase(unittest.TestCase):
         req = Mock(incookie=Cookie(), href=Href('/trac.cgi'),
                    remote_addr='127.0.0.1', remote_user=None,
                    base_path='/trac.cgi')
-        self.assertEqual(None, self.module.authenticate(req))
+        self.assertIsNone(self.module.authenticate(req))
 
     def test_unknown_cookie_access(self):
         incookie = Cookie()
@@ -44,7 +45,7 @@ class LoginModuleTestCase(unittest.TestCase):
                    incookie=incookie, outcookie=Cookie(),
                    remote_addr='127.0.0.1', remote_user=None,
                    base_path='/trac.cgi')
-        self.assertEqual(None, self.module.authenticate(req))
+        self.assertIsNone(self.module.authenticate(req))
 
     def test_known_cookie_access(self):
         self.env.db_transaction("""
@@ -57,7 +58,7 @@ class LoginModuleTestCase(unittest.TestCase):
                    href=Href('/trac.cgi'), base_path='/trac.cgi',
                    remote_addr='127.0.0.1', remote_user=None)
         self.assertEqual('john', self.module.authenticate(req))
-        self.failIf('auth_cookie' in req.outcookie)
+        self.assertFalse('auth_cookie' in req.outcookie)
 
     def test_known_cookie_ip_check_enabled(self):
         self.env.config.set('trac', 'check_auth_ip', 'yes')
@@ -71,8 +72,8 @@ class LoginModuleTestCase(unittest.TestCase):
                    incookie=incookie, outcookie=outcookie,
                    remote_addr='192.168.0.100', remote_user=None,
                    base_path='/trac.cgi')
-        self.assertEqual(None, self.module.authenticate(req))
-        self.failIf('trac_auth' not in req.outcookie)
+        self.assertIsNone(self.module.authenticate(req))
+        self.assertFalse('trac_auth' not in req.outcookie)
 
     def test_known_cookie_ip_check_disabled(self):
         self.env.config.set('trac', 'check_auth_ip', 'no')
@@ -86,7 +87,7 @@ class LoginModuleTestCase(unittest.TestCase):
                    href=Href('/trac.cgi'), base_path='/trac.cgi',
                    remote_addr='192.168.0.100', remote_user=None)
         self.assertEqual('john', self.module.authenticate(req))
-        self.failIf('auth_cookie' in req.outcookie)
+        self.assertFalse('auth_cookie' in req.outcookie)
 
     def test_login(self):
         outcookie = Cookie()
@@ -98,10 +99,10 @@ class LoginModuleTestCase(unittest.TestCase):
                    authname='john', base_path='/trac.cgi')
         self.module._do_login(req)
 
-        assert outcookie.has_key('trac_auth'), '"trac_auth" Cookie not set'
+        self.assertIn('trac_auth', outcookie, '"trac_auth" Cookie not set')
         auth_cookie = outcookie['trac_auth'].value
 
-        self.assertEquals([('john', '127.0.0.1')], self.env.db_query(
+        self.assertEqual([('john', '127.0.0.1')], self.env.db_query(
             "SELECT name, ipnr FROM auth_cookie WHERE cookie=%s",
             (auth_cookie,)))
 
@@ -119,9 +120,9 @@ class LoginModuleTestCase(unittest.TestCase):
                    authname='anonymous', base_path='/trac.cgi')
         self.module._do_login(req)
 
-        assert outcookie.has_key('trac_auth'), '"trac_auth" Cookie not set'
+        self.assertIn('trac_auth', outcookie, '"trac_auth" Cookie not set')
         auth_cookie = outcookie['trac_auth'].value
-        self.assertEquals([('john', '127.0.0.1')], self.env.db_query(
+        self.assertEqual([('john', '127.0.0.1')], self.env.db_query(
             "SELECT name, ipnr FROM auth_cookie WHERE cookie=%s",
             (auth_cookie,)))
 
@@ -165,8 +166,8 @@ class LoginModuleTestCase(unittest.TestCase):
                    remote_addr='127.0.0.1', remote_user=None, authname='john',
                    base_path='/trac.cgi')
         self.module._do_logout(req)
-        self.failIf('trac_auth' not in outcookie)
-        self.failIf(self.env.db_query(
+        self.assertFalse('trac_auth' not in outcookie)
+        self.assertFalse(self.env.db_query(
             "SELECT name, ipnr FROM auth_cookie WHERE name='john'"))
 
     def test_logout_not_logged_in(self):
@@ -186,16 +187,16 @@ class BasicAuthenticationTestCase(unittest.TestCase):
         self.auth = None
 
     def test_crypt(self):
-        self.assert_(self.auth.test('crypt', 'crypt'))
-        self.assert_(not self.auth.test('crypt', 'other'))
+        self.assertTrue(self.auth.test('crypt', 'crypt'))
+        self.assertFalse(self.auth.test('crypt', 'other'))
 
     def test_md5(self):
-        self.assert_(self.auth.test('md5', 'md5'))
-        self.assert_(not self.auth.test('md5', 'other'))
+        self.assertTrue(self.auth.test('md5', 'md5'))
+        self.assertFalse(self.auth.test('md5', 'other'))
 
     def test_sha(self):
-        self.assert_(self.auth.test('sha', 'sha'))
-        self.assert_(not self.auth.test('sha', 'other'))
+        self.assertTrue(self.auth.test('sha', 'sha'))
+        self.assertFalse(self.auth.test('sha', 'other'))
 
 
 def suite():

@@ -19,6 +19,7 @@ import os
 import time
 import unittest
 
+from trac.tests import compat
 from trac.core import TracError
 from trac.util import datefmt, translation
 
@@ -121,11 +122,11 @@ else:
         def test_to_datetime_tz_from_naive_datetime_is_localtz(self):
             t = datetime.datetime(2012, 3, 25, 2, 15)
             dt = datefmt.to_datetime(t)
-            self.assert_(isinstance(dt.tzinfo, datefmt.LocalTimezone))
+            self.assertIsInstance(dt.tzinfo, datefmt.LocalTimezone)
 
         def test_to_datetime_tz_from_now_is_localtz(self):
             dt = datefmt.to_datetime(None)
-            self.assert_(isinstance(dt.tzinfo, datefmt.LocalTimezone))
+            self.assertIsInstance(dt.tzinfo, datefmt.LocalTimezone)
 
 
 class ParseISO8601TestCase(unittest.TestCase):
@@ -205,7 +206,7 @@ class ParseISO8601TestCase(unittest.TestCase):
         t = datetime.datetime(2012, 10, 11, 2, 40, 57, 0, datefmt.localtz)
         dt = datefmt.parse_date('2012-10-11T02:40:57')
         self.assertEqual(t, dt)
-        self.assert_(isinstance(dt.tzinfo, datefmt.LocalTimezone))
+        self.assertIsInstance(dt.tzinfo, datefmt.LocalTimezone)
 
     def test_iso8601_naive_tz_used_tzinfo_arg(self):
         tz = datefmt.timezone('GMT +1:00')
@@ -581,7 +582,7 @@ class ParseDateValidRangeTestCase(unittest.TestCase):
             datefmt.parse_date('9999-12-31T23:59:59-12:00')
             raise AssertionError('TracError not raised')
         except TracError, e:
-            self.assert_('is outside valid range' in unicode(e))
+            self.assertTrue('is outside valid range' in unicode(e))
 
     def test_min_timestamp(self):
         if os.name != 'nt':
@@ -595,7 +596,7 @@ class ParseDateValidRangeTestCase(unittest.TestCase):
             datefmt.parse_date('0001-01-01T00:00:00+14:00')
             raise AssertionError('TracError not raised')
         except TracError, e:
-            self.assert_('is outside valid range' in unicode(e))
+            self.assertTrue('is outside valid range' in unicode(e))
 
 
 class DateFormatTestCase(unittest.TestCase):
@@ -836,27 +837,21 @@ class ISO8601TestCase(unittest.TestCase):
         try:
             datefmt.parse_date('***', locale='iso8601', hint='date')
         except TracError, e:
-            self.assert_('"YYYY-MM-DD"' in unicode(e))
+            self.assertTrue('"YYYY-MM-DD"' in unicode(e))
         try:
             datefmt.parse_date('***', locale='iso8601', hint='datetime')
         except TracError, e:
-            self.assert_(u'"YYYY-MM-DDThh:mm:ss±hh:mm"' in unicode(e))
+            self.assertTrue(u'"YYYY-MM-DDThh:mm:ss±hh:mm"' in unicode(e))
         try:
             datefmt.parse_date('***', locale='iso8601', hint='foobar')
         except TracError, e:
-            self.assert_('"foobar"' in unicode(e))
+            self.assertTrue('"foobar"' in unicode(e))
 
 
 if Locale is None:
     I18nDateFormatTestCase = None
 else:
     class I18nDateFormatTestCase(unittest.TestCase):
-
-        if not hasattr(unittest.TestCase, 'assertIn'):
-            def assertIn(self, member, container, msg=None):
-                if member not in container:
-                    raise self.failureException(msg or '%r not in %r' %
-                                                       (member, container))
 
         def test_i18n_format_datetime(self):
             tz = datefmt.timezone('GMT +2:00')

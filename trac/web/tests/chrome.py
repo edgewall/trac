@@ -18,6 +18,7 @@ import unittest
 
 from trac.core import Component, TracError, implements
 from trac.test import EnvironmentStub
+from trac.tests import compat
 from trac.tests.contentgen import random_sentence
 from trac.util import create_file
 from trac.web.chrome import (
@@ -166,8 +167,8 @@ class ChromeTestCase(unittest.TestCase):
         # Verify that no logo data is put in the HDF if no logo is configured
         self.env.config.set('header_logo', 'src', '')
         info = Chrome(self.env).prepare_request(req)
-        assert 'src' not in info['logo']
-        assert 'src_abs' not in info['logo']
+        self.assertNotIn('src', info['logo'])
+        self.assertNotIn('src_abs', info['logo'])
 
         # Test with a relative path to the logo image
         self.env.config.set('header_logo', 'src', 'foo.png')
@@ -218,8 +219,8 @@ class ChromeTestCase(unittest.TestCase):
         # No icon set in config, so no icon links
         self.env.config.set('project', 'icon', '')
         links = chrome.prepare_request(req)['links']
-        assert 'icon' not in links
-        assert 'shortcut icon' not in links
+        self.assertNotIn('icon', links)
+        self.assertNotIn('shortcut icon', links)
 
         # Relative URL for icon config option
         self.env.config.set('project', 'icon', 'foo.ico')

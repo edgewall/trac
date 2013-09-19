@@ -22,6 +22,7 @@ import unittest
 from trac.attachment import Attachment
 from trac.core import *
 from trac.test import EnvironmentStub
+from trac.tests import compat
 from trac.util.datefmt import utc, to_utimestamp
 from trac.wiki import WikiPage, IWikiChangeListener
 
@@ -65,14 +66,14 @@ class WikiPageTestCase(unittest.TestCase):
 
     def test_new_page(self):
         page = WikiPage(self.env)
-        self.assertEqual(False, page.exists)
-        self.assertEqual(None, page.name)
+        self.assertFalse(page.exists)
+        self.assertIsNone(page.name)
         self.assertEqual(0, page.version)
         self.assertEqual('', page.text)
         self.assertEqual(0, page.readonly)
         self.assertEqual('', page.author)
         self.assertEqual('', page.comment)
-        self.assertEqual(None, page.time)
+        self.assertIsNone(page.time)
 
     def test_existing_page(self):
         t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
@@ -82,10 +83,10 @@ class WikiPageTestCase(unittest.TestCase):
              'Testing', 0))
 
         page = WikiPage(self.env, 'TestPage')
-        self.assertEqual(True, page.exists)
+        self.assertTrue(page.exists)
         self.assertEqual('TestPage', page.name)
         self.assertEqual(1, page.version)
-        self.assertEqual(None, page.resource.version)   # FIXME: Intentional?
+        self.assertIsNone(page.resource.version)   # FIXME: Intentional?
         self.assertEqual('Bla bla', page.text)
         self.assertEqual(0, page.readonly)
         self.assertEqual('joe', page.author)
@@ -106,7 +107,7 @@ class WikiPageTestCase(unittest.TestCase):
         t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         page.save('joe', 'Testing', '::1', t)
 
-        self.assertEqual(True, page.exists)
+        self.assertTrue(page.exists)
         self.assertEqual(1, page.version)
         self.assertEqual(1, page.resource.version)
         self.assertEqual(0, page.readonly)
@@ -173,7 +174,7 @@ class WikiPageTestCase(unittest.TestCase):
         page = WikiPage(self.env, 'TestPage')
         page.delete()
 
-        self.assertEqual(False, page.exists)
+        self.assertFalse(page.exists)
 
         self.assertEqual([], self.env.db_query("""
             SELECT version, time, author, ipnr, text, comment, readonly
@@ -192,7 +193,7 @@ class WikiPageTestCase(unittest.TestCase):
         page = WikiPage(self.env, 'TestPage')
         page.delete(version=2)
 
-        self.assertEqual(True, page.exists)
+        self.assertTrue(page.exists)
         self.assertEqual(
             [(1, 42, 'joe', '::1', 'Bla bla', 'Testing', 0)],
             self.env.db_query("""
@@ -211,7 +212,7 @@ class WikiPageTestCase(unittest.TestCase):
         page = WikiPage(self.env, 'TestPage')
         page.delete(version=1)
 
-        self.assertEqual(False, page.exists)
+        self.assertFalse(page.exists)
 
         self.assertEqual([], self.env.db_query("""
             SELECT version, time, author, ipnr, text, comment, readonly
@@ -245,8 +246,7 @@ class WikiPageTestCase(unittest.TestCase):
         Attachment.delete_all(self.env, 'wiki', 'PageRenamed')
 
         old_page = WikiPage(self.env, 'TestPage')
-        self.assertEqual(False, old_page.exists)
-
+        self.assertFalse(old_page.exists)
 
         self.assertEqual([], self.env.db_query("""
             SELECT version, time, author, ipnr, text, comment, readonly

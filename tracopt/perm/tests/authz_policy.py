@@ -19,6 +19,7 @@ try:
 except ImportError:
     ConfigObj = None
 
+from trac.tests import compat
 from trac.config import ConfigurationError
 from trac.resource import Resource
 from trac.test import EnvironmentStub
@@ -27,12 +28,6 @@ from tracopt.perm.authz_policy import AuthzPolicy
 
 
 class AuthzPolicyTestCase(unittest.TestCase):
-
-    if not hasattr(unittest.TestCase, 'assertIs'):
-        def assertIs(self, expr1, expr2, msg=None):
-            if expr1 is not expr2:
-                raise self.failureException(msg or '%r is not %r'
-                                                   % (expr1, expr2))
 
     def setUp(self):
         tmpdir = os.path.realpath(tempfile.gettempdir())

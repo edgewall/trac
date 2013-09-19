@@ -195,7 +195,7 @@ class WikiTestCase(unittest.TestCase):
         v = v.replace('\r', '').replace(u'\u200b', '') # FIXME: keep ZWSP
         v = strip_line_ws(v, leading=False)
         try:
-            self.assertEquals(self.correct, v)
+            self.assertEqual(self.correct, v)
         except AssertionError, e:
             msg = to_unicode(e)
             match = re.match(r"u?'(.*)' != u?'(.*)'", msg)

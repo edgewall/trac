@@ -22,6 +22,7 @@ import unittest
 from trac.config import *
 from trac.core import Component, Interface, implements
 from trac.test import Configuration, EnvironmentStub
+from trac.tests import compat
 from trac.util import create_file
 
 
@@ -48,79 +49,80 @@ class ConfigurationTestCase(unittest.TestCase):
 
     def test_default(self):
         config = self._read()
-        self.assertEquals('', config.get('a', 'option'))
-        self.assertEquals('value', config.get('a', 'option', 'value'))
+        self.assertEqual('', config.get('a', 'option'))
+        self.assertEqual('value', config.get('a', 'option', 'value'))
 
         class Foo(object):
             option_a = Option('a', 'option', 'value')
 
-        self.assertEquals('value', config.get('a', 'option'))
+        self.assertEqual('value', config.get('a', 'option'))
 
     def test_default_bool(self):
         config = self._read()
-        self.assertEquals(False, config.getbool('a', 'option'))
-        self.assertEquals(True, config.getbool('a', 'option', 'yes'))
-        self.assertEquals(True, config.getbool('a', 'option', 1))
+        self.assertFalse(config.getbool('a', 'option'))
+        self.assertTrue(config.getbool('a', 'option', 'yes'))
+        self.assertTrue(config.getbool('a', 'option', 1))
 
         class Foo(object):
             option_a = Option('a', 'option', 'true')
 
-        self.assertEquals(True, config.getbool('a', 'option'))
+        self.assertTrue(config.getbool('a', 'option'))
 
     def test_default_int(self):
         config = self._read()
         self.assertRaises(ConfigurationError,
                           config.getint, 'a', 'option', 'b')
-        self.assertEquals(0, config.getint('a', 'option'))
-        self.assertEquals(1, config.getint('a', 'option', '1'))
-        self.assertEquals(1, config.getint('a', 'option', 1))
+        self.assertEqual(0, config.getint('a', 'option'))
+        self.assertEqual(1, config.getint('a', 'option', '1'))
+        self.assertEqual(1, config.getint('a', 'option', 1))
 
         class Foo(object):
             option_a = Option('a', 'option', '2')
 
-        self.assertEquals(2, config.getint('a', 'option'))
+        self.assertEqual(2, config.getint('a', 'option'))
 
     def test_default_float(self):
         config = self._read()
         self.assertRaises(ConfigurationError,
                           config.getfloat, 'a', 'option', 'b')
-        self.assertEquals(0.0, config.getfloat('a', 'option'))
-        self.assertEquals(1.2, config.getfloat('a', 'option', '1.2'))
-        self.assertEquals(1.2, config.getfloat('a', 'option', 1.2))
-        self.assertEquals(1.0, config.getfloat('a', 'option', 1))
+        self.assertEqual(0.0, config.getfloat('a', 'option'))
+        self.assertEqual(1.2, config.getfloat('a', 'option', '1.2'))
+        self.assertEqual(1.2, config.getfloat('a', 'option', 1.2))
+        self.assertEqual(1.0, config.getfloat('a', 'option', 1))
 
         class Foo(object):
             option_a = Option('a', 'option', '2.5')
 
-        self.assertEquals(2.5, config.getfloat('a', 'option'))
+        self.assertEqual(2.5, config.getfloat('a', 'option'))
 
     def test_default_path(self):
         config = self._read()
         class Foo(object):
             option_a = PathOption('a', 'opt1', 'file.ini')
             option_b = PathOption('a', 'opt2', '/somewhere/file.ini')
-        self.assertEquals('file.ini', config.get('a', 'opt1'))
+        self.assertEqual('file.ini', config.get('a', 'opt1'))
         self.assertNotEquals('file.ini', config.getpath('a', 'opt1'))
         self.assertTrue(os.path.isabs(config.getpath('a', 'opt1')))
-        self.assertEquals('/somewhere/file.ini', os.path.splitdrive(
-                config.getpath('a', 'opt2'))[1].replace('\\', '/'))
-        self.assertEquals('/none.ini', os.path.splitdrive(
-                config.getpath('a', 'opt3', '/none.ini'))[1].replace('\\', '/'))
+        self.assertEqual('/somewhere/file.ini', os.path.splitdrive(
+                         config.getpath('a', 'opt2'))[1].replace('\\', '/'))
+        self.assertEqual('/none.ini', os.path.splitdrive(
+                         config.getpath('a', 'opt3',
+                                        '/none.ini'))[1].replace('\\', '/'))
         self.assertNotEquals('none.ini', config.getpath('a', 'opt3', 'none.ini'))
 
     def test_read_and_get(self):
         self._write(['[a]', 'option = x'])
         config = self._read()
-        self.assertEquals('x', config.get('a', 'option'))
-        self.assertEquals('x', config.get('a', 'option', 'y'))
-        self.assertEquals('y', config.get('b', 'option2', 'y'))
+        self.assertEqual('x', config.get('a', 'option'))
+        self.assertEqual('x', config.get('a', 'option', 'y'))
+        self.assertEqual('y', config.get('b', 'option2', 'y'))
 
     def test_read_and_get_unicode(self):
         self._write([u'[ä]', u'öption = x'])
         config = self._read()
-        self.assertEquals('x', config.get(u'ä', u'öption'))
-        self.assertEquals('x', config.get(u'ä', u'öption', 'y'))
-        self.assertEquals('y', config.get('b', u'öption2', 'y'))
+        self.assertEqual('x', config.get(u'ä', u'öption'))
+        self.assertEqual('x', config.get(u'ä', u'öption', 'y'))
+        self.assertEqual('y', config.get('b', u'öption2', 'y'))
 
     def test_read_and_getbool(self):
         self._write(['[a]', 'option = yes', 'option2 = true',
@@ -128,73 +130,74 @@ class ConfigurationTestCase(unittest.TestCase):
                      'option5 = 1', 'option6 = 123', 'option7 = 123.456',
                      'option8 = disabled', 'option9 = 0', 'option10 = 0.0'])
         config = self._read()
-        self.assertEquals(True, config.getbool('a', 'option'))
-        self.assertEquals(True, config.getbool('a', 'option', False))
-        self.assertEquals(True, config.getbool('a', 'option2'))
-        self.assertEquals(True, config.getbool('a', 'option3'))
-        self.assertEquals(True, config.getbool('a', 'option4'))
-        self.assertEquals(True, config.getbool('a', 'option5'))
-        self.assertEquals(True, config.getbool('a', 'option6'))
-        self.assertEquals(True, config.getbool('a', 'option7'))
-        self.assertEquals(False, config.getbool('a', 'option8'))
-        self.assertEquals(False, config.getbool('a', 'option9'))
-        self.assertEquals(False, config.getbool('a', 'option10'))
-        self.assertEquals(False, config.getbool('b', 'option_b'))
-        self.assertEquals(False, config.getbool('b', 'option_b', False))
-        self.assertEquals(False, config.getbool('b', 'option_b', 'disabled'))
+        self.assertTrue(config.getbool('a', 'option'))
+        self.assertTrue(config.getbool('a', 'option', False))
+        self.assertTrue(config.getbool('a', 'option2'))
+        self.assertTrue(config.getbool('a', 'option3'))
+        self.assertTrue(config.getbool('a', 'option4'))
+        self.assertTrue(config.getbool('a', 'option5'))
+        self.assertTrue(config.getbool('a', 'option6'))
+        self.assertTrue(config.getbool('a', 'option7'))
+        self.assertFalse(config.getbool('a', 'option8'))
+        self.assertFalse(config.getbool('a', 'option9'))
+        self.assertFalse(config.getbool('a', 'option10'))
+        self.assertFalse(config.getbool('b', 'option_b'))
+        self.assertFalse(config.getbool('b', 'option_b', False))
+        self.assertFalse(config.getbool('b', 'option_b', 'disabled'))
 
     def test_read_and_getint(self):
         self._write(['[a]', 'option = 42'])
         config = self._read()
-        self.assertEquals(42, config.getint('a', 'option'))
-        self.assertEquals(42, config.getint('a', 'option', 25))
-        self.assertEquals(0, config.getint('b', 'option2'))
-        self.assertEquals(25, config.getint('b', 'option2', 25))
-        self.assertEquals(25, config.getint('b', 'option2', '25'))
+        self.assertEqual(42, config.getint('a', 'option'))
+        self.assertEqual(42, config.getint('a', 'option', 25))
+        self.assertEqual(0, config.getint('b', 'option2'))
+        self.assertEqual(25, config.getint('b', 'option2', 25))
+        self.assertEqual(25, config.getint('b', 'option2', '25'))
 
     def test_read_and_getfloat(self):
         self._write(['[a]', 'option = 42.5'])
         config = self._read()
-        self.assertEquals(42.5, config.getfloat('a', 'option'))
-        self.assertEquals(42.5, config.getfloat('a', 'option', 25.3))
-        self.assertEquals(0, config.getfloat('b', 'option2'))
-        self.assertEquals(25.3, config.getfloat('b', 'option2', 25.3))
-        self.assertEquals(25.0, config.getfloat('b', 'option2', 25))
-        self.assertEquals(25.3, config.getfloat('b', 'option2', '25.3'))
+        self.assertEqual(42.5, config.getfloat('a', 'option'))
+        self.assertEqual(42.5, config.getfloat('a', 'option', 25.3))
+        self.assertEqual(0, config.getfloat('b', 'option2'))
+        self.assertEqual(25.3, config.getfloat('b', 'option2', 25.3))
+        self.assertEqual(25.0, config.getfloat('b', 'option2', 25))
+        self.assertEqual(25.3, config.getfloat('b', 'option2', '25.3'))
 
     def test_read_and_getlist(self):
         self._write(['[a]', 'option = foo, bar, baz'])
         config = self._read()
-        self.assertEquals(['foo', 'bar', 'baz'],
-                          config.getlist('a', 'option'))
-        self.assertEquals([],
-                          config.getlist('b', 'option2'))
-        self.assertEquals(['foo', 'bar', 'baz'],
-                    config.getlist('b', 'option2', ['foo', 'bar', 'baz']))
-        self.assertEquals(['foo', 'bar', 'baz'],
-                    config.getlist('b', 'option2', 'foo, bar, baz'))
+        self.assertEqual(['foo', 'bar', 'baz'],
+                         config.getlist('a', 'option'))
+        self.assertEqual([],
+                         config.getlist('b', 'option2'))
+        self.assertEqual(['foo', 'bar', 'baz'],
+                         config.getlist('b', 'option2',
+                                        ['foo', 'bar', 'baz']))
+        self.assertEqual(['foo', 'bar', 'baz'],
+                         config.getlist('b', 'option2', 'foo, bar, baz'))
 
     def test_read_and_getlist_sep(self):
         self._write(['[a]', 'option = foo | bar | baz'])
         config = self._read()
-        self.assertEquals(['foo', 'bar', 'baz'],
-                          config.getlist('a', 'option', sep='|'))
+        self.assertEqual(['foo', 'bar', 'baz'],
+                         config.getlist('a', 'option', sep='|'))
 
     def test_read_and_getlist_keep_empty(self):
         self._write(['[a]', 'option = ,bar,baz'])
         config = self._read()
-        self.assertEquals(['bar', 'baz'], config.getlist('a', 'option'))
-        self.assertEquals(['', 'bar', 'baz'],
-                          config.getlist('a', 'option', keep_empty=True))
+        self.assertEqual(['bar', 'baz'], config.getlist('a', 'option'))
+        self.assertEqual(['', 'bar', 'baz'],
+                         config.getlist('a', 'option', keep_empty=True))
 
     def test_read_and_getlist_false_values(self):
         config = self._read()
         values = [None, False, '', 'foo', u'', u'bar',
                   0, 0L, 0.0, 0j, 42, 43.0]
-        self.assertEquals([False, 'foo', u'bar', 0, 0L, 0.0, 0j, 42, 43.0],
-                          config.getlist('a', 'false', values))
-        self.assertEquals(values, config.getlist('a', 'false', values,
-                                                 keep_empty=True))
+        self.assertEqual([False, 'foo', u'bar', 0, 0L, 0.0, 0j, 42, 43.0],
+                         config.getlist('a', 'false', values))
+        self.assertEqual(values, config.getlist('a', 'false', values,
+                                                keep_empty=True))
 
     def test_read_and_choice(self):
         self._write(['[a]', 'option = 2', 'invalid = d'])
@@ -210,8 +213,8 @@ class ConfigurationTestCase(unittest.TestCase):
                 self.config = config
 
         foo = Foo()
-        self.assertEquals('2', foo.option)
-        self.assertEquals('1', foo.other)
+        self.assertEqual('2', foo.option)
+        self.assertEqual('1', foo.other)
         self.assertRaises(ConfigurationError, getattr, foo, 'invalid')
 
     def test_read_and_getextensionoption(self):
@@ -237,10 +240,10 @@ class ConfigurationTestCase(unittest.TestCase):
 
         foo = Foo(self.env)
         self.assertRaises(ConfigurationError, getattr, foo, 'default1')
-        self.assertTrue(isinstance(foo.default2, ImplA))
+        self.assertIsInstance(foo.default2, ImplA)
         self.assertRaises(ConfigurationError, getattr, foo, 'default3')
-        self.assertTrue(isinstance(foo.option, ImplA))
-        self.assertTrue(isinstance(foo.option2, ImplA))
+        self.assertIsInstance(foo.option, ImplA)
+        self.assertIsInstance(foo.option2, ImplA)
         self.assertRaises(ConfigurationError, getattr, foo, 'invalid')
 
     def test_read_and_getorderedextensionsoption(self):
@@ -278,15 +281,15 @@ class ConfigurationTestCase(unittest.TestCase):
         foo = Foo(self.env)
         self.assertEqual([], foo.default1)
         self.assertEqual(3, len(foo.default2))
-        self.assertTrue(isinstance(foo.default2[0], ImplA))
-        self.assertTrue(isinstance(foo.default2[1], ImplB))
-        self.assertTrue(isinstance(foo.default2[2], ImplC))
+        self.assertIsInstance(foo.default2[0], ImplA)
+        self.assertIsInstance(foo.default2[1], ImplB)
+        self.assertIsInstance(foo.default2[2], ImplC)
         self.assertEqual(2, len(foo.default3))
-        self.assertTrue(isinstance(foo.default3[0], ImplB))
-        self.assertTrue(isinstance(foo.default3[1], ImplC))
+        self.assertIsInstance(foo.default3[0], ImplB)
+        self.assertIsInstance(foo.default3[1], ImplC)
         self.assertEqual(2, len(foo.option))
-        self.assertTrue(isinstance(foo.option[0], ImplA))
-        self.assertTrue(isinstance(foo.option[1], ImplB))
+        self.assertIsInstance(foo.option[0], ImplA)
+        self.assertIsInstance(foo.option[1], ImplB)
         self.assertRaises(ConfigurationError, getattr, foo, 'invalid')
 
     def test_getpath(self):
@@ -295,12 +298,12 @@ class ConfigurationTestCase(unittest.TestCase):
         config.set('a', 'path_a', os.path.join(base, 'here', 'absolute.txt'))
         config.set('a', 'path_b', 'thisdir.txt')
         config.set('a', 'path_c', os.path.join(os.pardir, 'parentdir.txt'))
-        self.assertEquals(os.path.join(base, 'here', 'absolute.txt'),
-                          config.getpath('a', 'path_a'))
-        self.assertEquals(os.path.join(base, 'thisdir.txt'),
-                          config.getpath('a', 'path_b'))
-        self.assertEquals(os.path.join(os.path.dirname(base), 'parentdir.txt'),
-                          config.getpath('a', 'path_c'))
+        self.assertEqual(os.path.join(base, 'here', 'absolute.txt'),
+                         config.getpath('a', 'path_a'))
+        self.assertEqual(os.path.join(base, 'thisdir.txt'),
+                         config.getpath('a', 'path_b'))
+        self.assertEqual(os.path.join(os.path.dirname(base), 'parentdir.txt'),
+                         config.getpath('a', 'path_c'))
 
     def test_set_raises(self):
         class Foo(object):
@@ -318,57 +321,57 @@ class ConfigurationTestCase(unittest.TestCase):
         config.set(u'aä', 'option1', u"Voilà l'été") # unicode
         # Note: the following would depend on the locale.getpreferredencoding()
         # config.set('a', 'option3', "Voil\xe0 l'\xe9t\xe9") # latin-1
-        self.assertEquals('x', config.get(u'aä', u'öption0'))
-        self.assertEquals(u"Voilà l'été", config.get(u'aä', 'option1'))
-        self.assertEquals(u"Voilà l'été", config.get(u'aä', 'option2'))
+        self.assertEqual('x', config.get(u'aä', u'öption0'))
+        self.assertEqual(u"Voilà l'été", config.get(u'aä', 'option1'))
+        self.assertEqual(u"Voilà l'été", config.get(u'aä', 'option2'))
         config.save()
 
         configfile = open(self.filename, 'r')
-        self.assertEquals(['# -*- coding: utf-8 -*-\n',
-                           '\n',
-                           '[aä]\n',
-                           "option1 = Voilà l'été\n",
-                           "option2 = Voilà l'été\n",
-                           'öption0 = x\n',
-                           # "option3 = VoilÃ  l'Ã©tÃ©\n",
-                           '\n',
-                           '[b]\n',
-                           'öption0 = y\n',
-                           '\n'],
-                          configfile.readlines())
+        self.assertEqual(['# -*- coding: utf-8 -*-\n',
+                          '\n',
+                          '[aä]\n',
+                          "option1 = Voilà l'été\n",
+                          "option2 = Voilà l'été\n",
+                          'öption0 = x\n',
+                          # "option3 = VoilÃ  l'Ã©tÃ©\n",
+                          '\n',
+                          '[b]\n',
+                          'öption0 = y\n',
+                          '\n'],
+                         configfile.readlines())
         configfile.close()
         config2 = Configuration(self.filename)
-        self.assertEquals('x', config2.get(u'aä', u'öption0'))
-        self.assertEquals(u"Voilà l'été", config2.get(u'aä', 'option1'))
-        self.assertEquals(u"Voilà l'été", config2.get(u'aä', 'option2'))
-        # self.assertEquals(u"Voilà l'été", config2.get('a', 'option3'))
+        self.assertEqual('x', config2.get(u'aä', u'öption0'))
+        self.assertEqual(u"Voilà l'été", config2.get(u'aä', 'option1'))
+        self.assertEqual(u"Voilà l'été", config2.get(u'aä', 'option2'))
+        # self.assertEqual(u"Voilà l'été", config2.get('a', 'option3'))
 
     def test_set_and_save_inherit(self):
         def testcb():
             config = self._read()
             config.set('a', 'option2', "Voilà l'été")  # UTF-8
             config.set('a', 'option1', u"Voilà l'été") # unicode
-            self.assertEquals('x', config.get('a', 'option'))
-            self.assertEquals(u"Voilà l'été", config.get('a', 'option1'))
-            self.assertEquals(u"Voilà l'été", config.get('a', 'option2'))
+            self.assertEqual('x', config.get('a', 'option'))
+            self.assertEqual(u"Voilà l'été", config.get('a', 'option1'))
+            self.assertEqual(u"Voilà l'été", config.get('a', 'option2'))
             config.save()
 
             configfile = open(self.filename, 'r')
-            self.assertEquals(['# -*- coding: utf-8 -*-\n',
-                               '\n',
-                               '[a]\n',
-                               "option1 = Voilà l'été\n",
-                               "option2 = Voilà l'été\n",
-                               '\n',
-                               '[inherit]\n',
-                               "file = trac-site.ini\n",
-                               '\n'],
-                              configfile.readlines())
+            self.assertEqual(['# -*- coding: utf-8 -*-\n',
+                              '\n',
+                              '[a]\n',
+                              "option1 = Voilà l'été\n",
+                              "option2 = Voilà l'été\n",
+                              '\n',
+                              '[inherit]\n',
+                              "file = trac-site.ini\n",
+                              '\n'],
+                             configfile.readlines())
             configfile.close()
             config2 = Configuration(self.filename)
-            self.assertEquals('x', config2.get('a', 'option'))
-            self.assertEquals(u"Voilà l'été", config2.get('a', 'option1'))
-            self.assertEquals(u"Voilà l'été", config2.get('a', 'option2'))
+            self.assertEqual('x', config2.get('a', 'option'))
+            self.assertEqual(u"Voilà l'été", config2.get('a', 'option1'))
+            self.assertEqual(u"Voilà l'été", config2.get('a', 'option2'))
         self._test_with_inherit(testcb)
 
     def test_simple_remove(self):
@@ -377,106 +380,106 @@ class ConfigurationTestCase(unittest.TestCase):
         config.get('a', 'option') # populates the cache
         config.set(u'aä', u'öption', u'öne')
         config.remove('a', 'option')
-        self.assertEquals('', config.get('a', 'option'))
+        self.assertEqual('', config.get('a', 'option'))
         config.remove(u'aä', u'öption')
-        self.assertEquals('', config.get('aä', 'öption'))
+        self.assertEqual('', config.get('aä', 'öption'))
         config.remove('a', 'option2') # shouldn't fail
         config.remove('b', 'option2') # shouldn't fail
 
     def test_sections(self):
         self._write(['[a]', 'option = x', '[b]', 'option = y'])
         config = self._read()
-        self.assertEquals(['a', 'b'], config.sections())
+        self.assertEqual(['a', 'b'], config.sections())
 
         class Foo(object):
             # enclose in parentheses to avoid messages extraction
             section_c = (ConfigSection)('c', 'Doc for c')
             option_c = Option('c', 'option', 'value')
 
-        self.assertEquals(['a', 'b', 'c'], config.sections())
+        self.assertEqual(['a', 'b', 'c'], config.sections())
         foo = Foo()
         foo.config = config
-        self.assert_(foo.section_c is config['c'])
-        self.assertEquals('value', foo.section_c.get('option'))
+        self.assertTrue(foo.section_c is config['c'])
+        self.assertEqual('value', foo.section_c.get('option'))
 
     def test_sections_unicode(self):
         self._write([u'[aä]', u'öption = x', '[b]', 'option = y'])
         config = self._read()
-        self.assertEquals([u'aä', 'b'], config.sections())
+        self.assertEqual([u'aä', 'b'], config.sections())
 
         class Foo(object):
             option_c = Option(u'cä', 'option', 'value')
 
-        self.assertEquals([u'aä', 'b', u'cä'], config.sections())
+        self.assertEqual([u'aä', 'b', u'cä'], config.sections())
 
     def test_options(self):
         self._write(['[a]', 'option = x', '[b]', 'option = y'])
         config = self._read()
-        self.assertEquals(('option', 'x'), iter(config.options('a')).next())
-        self.assertEquals(('option', 'y'), iter(config.options('b')).next())
+        self.assertEqual(('option', 'x'), iter(config.options('a')).next())
+        self.assertEqual(('option', 'y'), iter(config.options('b')).next())
         self.assertRaises(StopIteration, iter(config.options('c')).next)
-        self.assertEquals('option', iter(config['a']).next())
-        self.assertEquals('option', iter(config['b']).next())
+        self.assertEqual('option', iter(config['a']).next())
+        self.assertEqual('option', iter(config['b']).next())
         self.assertRaises(StopIteration, iter(config['c']).next)
 
         class Foo(object):
             option_a = Option('a', 'b', 'c')
 
-        self.assertEquals([('option', 'x'), ('b', 'c')],
-                                list(config.options('a')))
+        self.assertEqual([('option', 'x'), ('b', 'c')],
+                         list(config.options('a')))
 
     def test_options_unicode(self):
         self._write([u'[ä]', u'öption = x', '[b]', 'option = y'])
         config = self._read()
-        self.assertEquals((u'öption', 'x'), iter(config.options(u'ä')).next())
-        self.assertEquals(('option', 'y'), iter(config.options('b')).next())
+        self.assertEqual((u'öption', 'x'), iter(config.options(u'ä')).next())
+        self.assertEqual(('option', 'y'), iter(config.options('b')).next())
         self.assertRaises(StopIteration, iter(config.options('c')).next)
-        self.assertEquals(u'öption', iter(config['ä']).next())
+        self.assertEqual(u'öption', iter(config['ä']).next())
 
         class Foo(object):
             option_a = Option(u'ä', u'öption2', 'c')
 
-        self.assertEquals([(u'öption', 'x'), (u'öption2', 'c')],
-                                list(config.options(u'ä')))
+        self.assertEqual([(u'öption', 'x'), (u'öption2', 'c')],
+                         list(config.options(u'ä')))
 
     def test_has_option(self):
         config = self._read()
-        self.assertEquals(False, config.has_option('a', 'option'))
-        self.assertEquals(False, 'option' in config['a'])
+        self.assertFalse(config.has_option('a', 'option'))
+        self.assertFalse('option' in config['a'])
         self._write(['[a]', 'option = x'])
         config = self._read()
-        self.assertEquals(True, config.has_option('a', 'option'))
-        self.assertEquals(True, 'option' in config['a'])
+        self.assertTrue(config.has_option('a', 'option'))
+        self.assertTrue('option' in config['a'])
 
         class Foo(object):
             option_a = Option('a', 'option2', 'x2')
 
-        self.assertEquals(True, config.has_option('a', 'option2'))
+        self.assertTrue(config.has_option('a', 'option2'))
 
     def test_has_option_unicode(self):
         config = self._read()
-        self.assertEquals(False, config.has_option(u'ä', u'öption'))
-        self.assertEquals(False, u'öption' in config[u'ä'])
+        self.assertFalse(config.has_option(u'ä', u'öption'))
+        self.assertFalse(u'öption' in config[u'ä'])
         self._write([u'[ä]', u'öption = x'])
         config = self._read()
-        self.assertEquals(True, config.has_option(u'ä', u'öption'))
-        self.assertEquals(True, u'öption' in config[u'ä'])
+        self.assertTrue(config.has_option(u'ä', u'öption'))
+        self.assertTrue(u'öption' in config[u'ä'])
 
         class Foo(object):
             option_a = Option(u'ä', u'öption2', 'x2')
 
-        self.assertEquals(True, config.has_option(u'ä', u'öption2'))
+        self.assertTrue(config.has_option(u'ä', u'öption2'))
 
     def test_reparse(self):
         self._write(['[a]', 'option = x'])
         config = self._read()
-        self.assertEquals('x', config.get('a', 'option'))
+        self.assertEqual('x', config.get('a', 'option'))
         time.sleep(2) # needed because of low mtime granularity,
                       # especially on fat filesystems
 
         self._write(['[a]', 'option = y'])
         config.parse_if_needed()
-        self.assertEquals('y', config.get('a', 'option'))
+        self.assertEqual('y', config.get('a', 'option'))
 
     def test_inherit_one_level(self):
         def testcb():
@@ -486,7 +489,7 @@ class ConfigurationTestCase(unittest.TestCase):
             config.remove('a', 'option') # Should *not* remove option in parent
             self.assertEqual('x', config.get('a', 'option'))
             self.assertEqual([('option', 'x')], list(config.options('a')))
-            self.assertEqual(True, 'a' in config)
+            self.assertTrue('a' in config)
         self._test_with_inherit(testcb)
 
     def test_inherit_multiple(self):
@@ -542,17 +545,17 @@ class ConfigurationTestCase(unittest.TestCase):
         config.set_defaults()
         config.save()
         with open(self.filename, 'r') as f:
-            self.assertEquals('# -*- coding: utf-8 -*-\n',            f.next())
-            self.assertEquals('\n',                                   f.next())
-            self.assertEquals('[a]\n',                                f.next())
-            self.assertEquals('blah = Blàh!\n',                       f.next())
-            self.assertEquals('choice = -42\n',                       f.next())
-            self.assertEquals('false = disabled\n',                   f.next())
-            self.assertEquals('list = #cc0|4.2|42|0||enabled|disabled|\n',
-                              f.next())
-            self.assertEquals('# none = <inherited>\n',               f.next())
-            self.assertEquals('true = enabled\n',                     f.next())
-            self.assertEquals('\n',                                   f.next())
+            self.assertEqual('# -*- coding: utf-8 -*-\n',            f.next())
+            self.assertEqual('\n',                                   f.next())
+            self.assertEqual('[a]\n',                                f.next())
+            self.assertEqual('blah = Blàh!\n',                       f.next())
+            self.assertEqual('choice = -42\n',                       f.next())
+            self.assertEqual('false = disabled\n',                   f.next())
+            self.assertEqual('list = #cc0|4.2|42|0||enabled|disabled|\n',
+                             f.next())
+            self.assertEqual('# none = <inherited>\n',               f.next())
+            self.assertEqual('true = enabled\n',                     f.next())
+            self.assertEqual('\n',                                   f.next())
             self.assertRaises(StopIteration, f.next)
 
     def test_unicode_option_with_raw_default(self):
@@ -572,17 +575,17 @@ class ConfigurationTestCase(unittest.TestCase):
         config.set_defaults()
         config.save()
         with open(self.filename, 'r') as f:
-            self.assertEquals('# -*- coding: utf-8 -*-\n',            f.next())
-            self.assertEquals('\n',                                   f.next())
-            self.assertEquals('[résumé]\n',                           f.next())
-            self.assertEquals('bláh = Blàh!\n',                       f.next())
-            self.assertEquals('chöicé = -42\n',                       f.next())
-            self.assertEquals('fálsé = disabled\n',                   f.next())
-            self.assertEquals('liśt = #ccö|4.2|42|0||enabled|disabled|\n',
-                              f.next())
-            self.assertEquals('# nöné = <inherited>\n',               f.next())
-            self.assertEquals('trüé = enabled\n',                     f.next())
-            self.assertEquals('\n',                                   f.next())
+            self.assertEqual('# -*- coding: utf-8 -*-\n',            f.next())
+            self.assertEqual('\n',                                   f.next())
+            self.assertEqual('[résumé]\n',                           f.next())
+            self.assertEqual('bláh = Blàh!\n',                       f.next())
+            self.assertEqual('chöicé = -42\n',                       f.next())
+            self.assertEqual('fálsé = disabled\n',                   f.next())
+            self.assertEqual('liśt = #ccö|4.2|42|0||enabled|disabled|\n',
+                             f.next())
+            self.assertEqual('# nöné = <inherited>\n',               f.next())
+            self.assertEqual('trüé = enabled\n',                     f.next())
+            self.assertEqual('\n',                                   f.next())
             self.assertRaises(StopIteration, f.next)
 
     def _test_with_inherit(self, testcb):

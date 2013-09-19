@@ -23,53 +23,53 @@ class TicketGroupStatsTestCase(unittest.TestCase):
         self.stats = TicketGroupStats('title', 'units')
 
     def test_init(self):
-        self.assertEquals('title', self.stats.title, 'title incorrect')
-        self.assertEquals('units', self.stats.unit, 'unit incorrect')
-        self.assertEquals(0, self.stats.count, 'count not zero')
-        self.assertEquals(0, len(self.stats.intervals), 'intervals not empty')
+        self.assertEqual('title', self.stats.title, 'title incorrect')
+        self.assertEqual('units', self.stats.unit, 'unit incorrect')
+        self.assertEqual(0, self.stats.count, 'count not zero')
+        self.assertEqual(0, len(self.stats.intervals), 'intervals not empty')
 
     def test_add_iterval(self):
         self.stats.add_interval('intTitle', 3, {'k1': 'v1'}, 'css', 0)
         self.stats.refresh_calcs()
-        self.assertEquals(3, self.stats.count, 'count not incremented')
+        self.assertEqual(3, self.stats.count, 'count not incremented')
         int = self.stats.intervals[0]
-        self.assertEquals('intTitle', int['title'], 'title incorrect')
-        self.assertEquals(3, int['count'], 'count incorrect')
-        self.assertEquals({'k1': 'v1'}, int['qry_args'], 'query args incorrect')
-        self.assertEquals('css', int['css_class'], 'css class incorrect')
-        self.assertEquals(100, int['percent'], 'percent incorrect')
+        self.assertEqual('intTitle', int['title'], 'title incorrect')
+        self.assertEqual(3, int['count'], 'count incorrect')
+        self.assertEqual({'k1': 'v1'}, int['qry_args'], 'query args incorrect')
+        self.assertEqual('css', int['css_class'], 'css class incorrect')
+        self.assertEqual(100, int['percent'], 'percent incorrect')
         self.stats.add_interval('intTitle', 3, {'k1': 'v1'}, 'css', 0)
         self.stats.refresh_calcs()
-        self.assertEquals(50, int['percent'], 'percent not being updated')
+        self.assertEqual(50, int['percent'], 'percent not being updated')
 
     def test_add_interval_no_prog(self):
         self.stats.add_interval('intTitle', 3, {'k1': 'v1'}, 'css', 0)
         self.stats.add_interval('intTitle', 5, {'k1': 'v1'}, 'css', 0)
         self.stats.refresh_calcs()
         interval = self.stats.intervals[1]
-        self.assertEquals(0, self.stats.done_count, 'count added for no prog')
-        self.assertEquals(0, self.stats.done_percent, 'percent incremented')
+        self.assertEqual(0, self.stats.done_count, 'count added for no prog')
+        self.assertEqual(0, self.stats.done_percent, 'percent incremented')
 
     def test_add_interval_prog(self):
         self.stats.add_interval('intTitle', 3, {'k1': 'v1'}, 'css', 0)
         self.stats.add_interval('intTitle', 1, {'k1': 'v1'}, 'css', 1)
         self.stats.refresh_calcs()
-        self.assertEquals(4, self.stats.count, 'count not incremented')
-        self.assertEquals(1, self.stats.done_count, 'count not added to prog')
-        self.assertEquals(25, self.stats.done_percent, 'done percent not incr')
+        self.assertEqual(4, self.stats.count, 'count not incremented')
+        self.assertEqual(1, self.stats.done_count, 'count not added to prog')
+        self.assertEqual(25, self.stats.done_percent, 'done percent not incr')
 
     def test_add_interval_fudging(self):
         self.stats.add_interval('intTitle', 3, {'k1': 'v1'}, 'css', 0)
         self.stats.add_interval('intTitle', 5, {'k1': 'v1'}, 'css', 1)
         self.stats.refresh_calcs()
-        self.assertEquals(8, self.stats.count, 'count not incremented')
-        self.assertEquals(5, self.stats.done_count, 'count not added to prog')
-        self.assertEquals(62, self.stats.done_percent,
-                          'done percnt not fudged downward')
-        self.assertEquals(62, self.stats.intervals[1]['percent'],
-                          'interval percent not fudged downward')
-        self.assertEquals(38, self.stats.intervals[0]['percent'],
-                          'interval percent not fudged upward')
+        self.assertEqual(8, self.stats.count, 'count not incremented')
+        self.assertEqual(5, self.stats.done_count, 'count not added to prog')
+        self.assertEqual(62, self.stats.done_percent,
+                         'done percnt not fudged downward')
+        self.assertEqual(62, self.stats.intervals[1]['percent'],
+                         'interval percent not fudged downward')
+        self.assertEqual(38, self.stats.intervals[0]['percent'],
+                         'interval percent not fudged upward')
 
 
 class DefaultTicketGroupStatsProviderTestCase(unittest.TestCase):
@@ -109,32 +109,32 @@ class DefaultTicketGroupStatsProviderTestCase(unittest.TestCase):
         self.env.reset_db()
 
     def test_stats(self):
-        self.assertEquals(self.stats.title, 'ticket status', 'title incorrect')
-        self.assertEquals(self.stats.unit, 'tickets', 'unit incorrect')
-        self.assertEquals(2, len(self.stats.intervals), 'more than 2 intervals')
+        self.assertEqual(self.stats.title, 'ticket status', 'title incorrect')
+        self.assertEqual(self.stats.unit, 'tickets', 'unit incorrect')
+        self.assertEqual(2, len(self.stats.intervals), 'more than 2 intervals')
 
     def test_closed_interval(self):
         closed = self.stats.intervals[0]
-        self.assertEquals('closed', closed['title'], 'closed title incorrect')
-        self.assertEquals('closed', closed['css_class'], 'closed class incorrect')
-        self.assertEquals(True, closed['overall_completion'],
-                          'closed should contribute to overall completion')
-        self.assertEquals({'status': ['closed'], 'group': ['resolution']},
-                          closed['qry_args'], 'qry_args incorrect')
-        self.assertEquals(1, closed['count'], 'closed count incorrect')
-        self.assertEquals(33, closed['percent'], 'closed percent incorrect')
+        self.assertEqual('closed', closed['title'], 'closed title incorrect')
+        self.assertEqual('closed', closed['css_class'], 'closed class incorrect')
+        self.assertTrue(closed['overall_completion'],
+                        'closed should contribute to overall completion')
+        self.assertEqual({'status': ['closed'], 'group': ['resolution']},
+                         closed['qry_args'], 'qry_args incorrect')
+        self.assertEqual(1, closed['count'], 'closed count incorrect')
+        self.assertEqual(33, closed['percent'], 'closed percent incorrect')
 
     def test_open_interval(self):
         open = self.stats.intervals[1]
-        self.assertEquals('active', open['title'], 'open title incorrect')
-        self.assertEquals('open', open['css_class'], 'open class incorrect')
-        self.assertEquals(False, open['overall_completion'],
-                          "open shouldn't contribute to overall completion")
-        self.assertEquals({'status':
-                           [u'assigned', u'new', u'accepted', u'reopened']},
-                          open['qry_args'], 'qry_args incorrect')
-        self.assertEquals(2, open['count'], 'open count incorrect')
-        self.assertEquals(67, open['percent'], 'open percent incorrect')
+        self.assertEqual('active', open['title'], 'open title incorrect')
+        self.assertEqual('open', open['css_class'], 'open class incorrect')
+        self.assertFalse(open['overall_completion'],
+                         "open shouldn't contribute to overall completion")
+        self.assertEqual({'status':
+                          [u'assigned', u'new', u'accepted', u'reopened']},
+                         open['qry_args'], 'qry_args incorrect')
+        self.assertEqual(2, open['count'], 'open count incorrect')
+        self.assertEqual(67, open['percent'], 'open percent incorrect')
 
 
 def in_tlist(ticket, list):

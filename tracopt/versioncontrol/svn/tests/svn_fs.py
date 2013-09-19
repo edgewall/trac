@@ -88,14 +88,14 @@ class NormalTests(object):
 
     def test_resource_exists(self):
         repos = Resource('repository', REPOS_NAME)
-        self.assertEqual(True, resource_exists(self.env, repos))
-        self.assertEqual(False, resource_exists(self.env, repos(id='xxx')))
+        self.assertTrue(resource_exists(self.env, repos))
+        self.assertFalse(resource_exists(self.env, repos(id='xxx')))
         node = repos.child('source', u'tête')
-        self.assertEqual(True, resource_exists(self.env, node))
-        self.assertEqual(False, resource_exists(self.env, node(id='xxx')))
+        self.assertTrue(resource_exists(self.env, node))
+        self.assertFalse(resource_exists(self.env, node(id='xxx')))
         cset = repos.child('changeset', HEAD)
-        self.assertEqual(True, resource_exists(self.env, cset))
-        self.assertEqual(False, resource_exists(self.env, cset(id=123456)))
+        self.assertTrue(resource_exists(self.env, cset))
+        self.assertFalse(resource_exists(self.env, cset(id=123456)))
 
     def test_repos_normalize_path(self):
         self.assertEqual('/', self.repos.normalize_path('/'))
@@ -118,33 +118,32 @@ class NormalTests(object):
 
     def test_rev_navigation(self):
         self.assertEqual(1, self.repos.oldest_rev)
-        self.assertEqual(None, self.repos.previous_rev(0))
-        self.assertEqual(None, self.repos.previous_rev(1))
+        self.assertIsNone(self.repos.previous_rev(0))
+        self.assertIsNone(self.repos.previous_rev(1))
         self.assertEqual(HEAD, self.repos.youngest_rev)
         self.assertEqual(6, self.repos.next_rev(5))
         self.assertEqual(7, self.repos.next_rev(6))
         # ...
-        self.assertEqual(None, self.repos.next_rev(HEAD))
+        self.assertIsNone(self.repos.next_rev(HEAD))
         self.assertRaises(NoSuchChangeset, self.repos.normalize_rev, HEAD + 1)
 
     def test_rev_path_navigation(self):
         self.assertEqual(1, self.repos.oldest_rev)
-        self.assertEqual(None, self.repos.previous_rev(0, u'tête'))
-        self.assertEqual(None, self.repos.previous_rev(1, u'tête'))
+        self.assertIsNone(self.repos.previous_rev(0, u'tête'))
+        self.assertIsNone(self.repos.previous_rev(1, u'tête'))
         self.assertEqual(HEAD, self.repos.youngest_rev)
         self.assertEqual(6, self.repos.next_rev(5, u'tête'))
         self.assertEqual(13, self.repos.next_rev(6, u'tête'))
         # ...
-        self.assertEqual(None, self.repos.next_rev(HEAD, u'tête'))
+        self.assertIsNone(self.repos.next_rev(HEAD, u'tête'))
         # test accentuated characters
-        self.assertEqual(None,
-                         self.repos.previous_rev(17, u'tête/R\xe9sum\xe9.txt'))
+        self.assertIsNone(self.repos.previous_rev(17, u'tête/R\xe9sum\xe9.txt'))
         self.assertEqual(17, self.repos.next_rev(16, u'tête/R\xe9sum\xe9.txt'))
 
     def test_has_node(self):
-        self.assertEqual(False, self.repos.has_node(u'/tête/dir1', 3))
-        self.assertEqual(True, self.repos.has_node(u'/tête/dir1', 4))
-        self.assertEqual(True, self.repos.has_node(u'/tête/dir1'))
+        self.assertFalse(self.repos.has_node(u'/tête/dir1', 3))
+        self.assertTrue(self.repos.has_node(u'/tête/dir1', 4))
+        self.assertTrue(self.repos.has_node(u'/tête/dir1'))
 
     def test_get_node(self):
         node = self.repos.get_node(u'/tête')
@@ -198,9 +197,9 @@ class NormalTests(object):
 
     def test_get_dir_content(self):
         node = self.repos.get_node(u'/tête')
-        self.assertEqual(None, node.content_length)
-        self.assertEqual(None, node.content_type)
-        self.assertEqual(None, node.get_content())
+        self.assertIsNone(node.content_length)
+        self.assertIsNone(node.content_type)
+        self.assertIsNone(node.get_content())
 
     def test_get_file_content(self):
         node = self.repos.get_node(u'/tête/README.txt')
@@ -222,7 +221,7 @@ class NormalTests(object):
     def test_get_file_content_without_native_eol_style(self):
         f = self.repos.get_node(u'/tête/README.txt', 2)
         props = f.get_properties()
-        self.assertEqual(None, props.get('svn:eol-style'))
+        self.assertIsNone(props.get('svn:eol-style'))
         self.assertEqual('A text.\n', f.get_content().read())
         self.assertEqual('A text.\n', f.get_processed_content().read())
 
@@ -255,7 +254,7 @@ class NormalTests(object):
         f = self.repos.get_node(u'/branches/v4/README.txt', 28)
         props = f.get_properties()
         self.assertEqual('native', props.get('svn:eol-style'))
-        self.assertEqual(None, props.get('svn:keywords'))
+        self.assertIsNone(props.get('svn:keywords'))
 
         self.assertEqual(
             'A test.\n' +
@@ -731,17 +730,17 @@ class ScopedTests(object):
 
     def test_rev_navigation(self):
         self.assertEqual(1, self.repos.oldest_rev)
-        self.assertEqual(None, self.repos.previous_rev(0))
+        self.assertIsNone(self.repos.previous_rev(0))
         self.assertEqual(1, self.repos.previous_rev(2))
         self.assertEqual(TETE, self.repos.youngest_rev)
         self.assertEqual(2, self.repos.next_rev(1))
         self.assertEqual(3, self.repos.next_rev(2))
         # ...
-        self.assertEqual(None, self.repos.next_rev(TETE))
+        self.assertIsNone(self.repos.next_rev(TETE))
 
     def test_has_node(self):
-        self.assertEqual(False, self.repos.has_node('/dir1', 3))
-        self.assertEqual(True, self.repos.has_node('/dir1', 4))
+        self.assertFalse(self.repos.has_node('/dir1', 3))
+        self.assertTrue(self.repos.has_node('/dir1', 4))
 
     def test_get_node(self):
         node = self.repos.get_node('/dir1')
@@ -795,9 +794,9 @@ class ScopedTests(object):
 
     def test_get_dir_content(self):
         node = self.repos.get_node('/dir1')
-        self.assertEqual(None, node.content_length)
-        self.assertEqual(None, node.content_type)
-        self.assertEqual(None, node.get_content())
+        self.assertIsNone(node.content_length)
+        self.assertIsNone(node.content_type)
+        self.assertIsNone(node.get_content())
 
     def test_get_file_content(self):
         node = self.repos.get_node('/README.txt')
@@ -978,14 +977,14 @@ class ScopedTests(object):
 class RecentPathScopedTests(object):
 
     def test_rev_navigation(self):
-        self.assertEqual(False, self.repos.has_node('/', 1))
-        self.assertEqual(False, self.repos.has_node('/', 2))
-        self.assertEqual(False, self.repos.has_node('/', 3))
-        self.assertEqual(True, self.repos.has_node('/', 4))
+        self.assertFalse(self.repos.has_node('/', 1))
+        self.assertFalse(self.repos.has_node('/', 2))
+        self.assertFalse(self.repos.has_node('/', 3))
+        self.assertTrue(self.repos.has_node('/', 4))
         # We can't make this work anymore because of #5213.
         # self.assertEqual(4, self.repos.oldest_rev)
         self.assertEqual(1, self.repos.oldest_rev) # should really be 4...
-        self.assertEqual(None, self.repos.previous_rev(4))
+        self.assertIsNone(self.repos.previous_rev(4))
 
 
 class NonSelfContainedScopedTests(object):
