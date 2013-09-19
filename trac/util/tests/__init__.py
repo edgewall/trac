@@ -38,7 +38,7 @@ class AtomicFileTestCase(unittest.TestCase):
     def test_non_existing(self):
         with util.AtomicFile(self.path) as f:
             f.write('test content')
-        self.assertEqual(True, f.closed)
+        self.assertTrue(f.closed)
         self.assertEqual('test content', util.read_file(self.path))
 
     def test_existing(self):
@@ -46,7 +46,7 @@ class AtomicFileTestCase(unittest.TestCase):
         self.assertEqual('Some content', util.read_file(self.path))
         with util.AtomicFile(self.path) as f:
             f.write('Some new content')
-        self.assertEqual(True, f.closed)
+        self.assertTrue(f.closed)
         self.assertEqual('Some new content', util.read_file(self.path))
 
     if util.can_rename_open_file:
@@ -56,8 +56,8 @@ class AtomicFileTestCase(unittest.TestCase):
             with open(self.path) as rf:
                 with util.AtomicFile(self.path) as f:
                     f.write('Replaced content')
-            self.assertEqual(True, rf.closed)
-            self.assertEqual(True, f.closed)
+            self.assertTrue(rf.closed)
+            self.assertTrue(f.closed)
             self.assertEqual('Replaced content', util.read_file(self.path))
 
     # FIXME: It is currently not possible to make this test pass on all
@@ -70,7 +70,7 @@ class AtomicFileTestCase(unittest.TestCase):
         self.path = os.path.join(tempfile.gettempdir(), u'träc-témpfilè')
         with util.AtomicFile(self.path) as f:
             f.write('test content')
-        self.assertEqual(True, f.closed)
+        self.assertTrue(f.closed)
         self.assertEqual('test content', util.read_file(self.path))
 
 

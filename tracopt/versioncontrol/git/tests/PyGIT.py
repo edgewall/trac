@@ -233,13 +233,13 @@ class NormalTestCase(unittest.TestCase):
         rev = repos.youngest_rev
 
         self.assertNotEqual(rev, parent_rev)
-        self.assertEqual(False, repos.rev_older_than(None, None))
-        self.assertEqual(False, repos.rev_older_than(None, rev[:7]))
-        self.assertEqual(False, repos.rev_older_than(rev[:7], None))
-        self.assertEqual(True, repos.rev_older_than(parent_rev, rev))
-        self.assertEqual(True, repos.rev_older_than(parent_rev[:7], rev[:7]))
-        self.assertEqual(False, repos.rev_older_than(rev, parent_rev))
-        self.assertEqual(False, repos.rev_older_than(rev[:7], parent_rev[:7]))
+        self.assertFalse(repos.rev_older_than(None, None))
+        self.assertFalse(repos.rev_older_than(None, rev[:7]))
+        self.assertFalse(repos.rev_older_than(rev[:7], None))
+        self.assertTrue(repos.rev_older_than(parent_rev, rev))
+        self.assertTrue(repos.rev_older_than(parent_rev[:7], rev[:7]))
+        self.assertFalse(repos.rev_older_than(rev, parent_rev))
+        self.assertFalse(repos.rev_older_than(rev[:7], parent_rev[:7]))
 
 
 class UnicodeNameTestCase(unittest.TestCase):

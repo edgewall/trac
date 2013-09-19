@@ -88,14 +88,14 @@ class NormalTests(object):
 
     def test_resource_exists(self):
         repos = Resource('repository', REPOS_NAME)
-        self.assertEqual(True, resource_exists(self.env, repos))
-        self.assertEqual(False, resource_exists(self.env, repos(id='xxx')))
+        self.assertTrue(resource_exists(self.env, repos))
+        self.assertFalse(resource_exists(self.env, repos(id='xxx')))
         node = repos.child('source', u'tête')
-        self.assertEqual(True, resource_exists(self.env, node))
-        self.assertEqual(False, resource_exists(self.env, node(id='xxx')))
+        self.assertTrue(resource_exists(self.env, node))
+        self.assertFalse(resource_exists(self.env, node(id='xxx')))
         cset = repos.child('changeset', HEAD)
-        self.assertEqual(True, resource_exists(self.env, cset))
-        self.assertEqual(False, resource_exists(self.env, cset(id=123456)))
+        self.assertTrue(resource_exists(self.env, cset))
+        self.assertFalse(resource_exists(self.env, cset(id=123456)))
 
     def test_repos_normalize_path(self):
         self.assertEqual('/', self.repos.normalize_path('/'))
@@ -142,9 +142,9 @@ class NormalTests(object):
         self.assertEqual(17, self.repos.next_rev(16, u'tête/R\xe9sum\xe9.txt'))
 
     def test_has_node(self):
-        self.assertEqual(False, self.repos.has_node(u'/tête/dir1', 3))
-        self.assertEqual(True, self.repos.has_node(u'/tête/dir1', 4))
-        self.assertEqual(True, self.repos.has_node(u'/tête/dir1'))
+        self.assertFalse(self.repos.has_node(u'/tête/dir1', 3))
+        self.assertTrue(self.repos.has_node(u'/tête/dir1', 4))
+        self.assertTrue(self.repos.has_node(u'/tête/dir1'))
 
     def test_get_node(self):
         node = self.repos.get_node(u'/tête')
@@ -740,8 +740,8 @@ class ScopedTests(object):
         self.assertEqual(None, self.repos.next_rev(TETE))
 
     def test_has_node(self):
-        self.assertEqual(False, self.repos.has_node('/dir1', 3))
-        self.assertEqual(True, self.repos.has_node('/dir1', 4))
+        self.assertFalse(self.repos.has_node('/dir1', 3))
+        self.assertTrue(self.repos.has_node('/dir1', 4))
 
     def test_get_node(self):
         node = self.repos.get_node('/dir1')
@@ -978,10 +978,10 @@ class ScopedTests(object):
 class RecentPathScopedTests(object):
 
     def test_rev_navigation(self):
-        self.assertEqual(False, self.repos.has_node('/', 1))
-        self.assertEqual(False, self.repos.has_node('/', 2))
-        self.assertEqual(False, self.repos.has_node('/', 3))
-        self.assertEqual(True, self.repos.has_node('/', 4))
+        self.assertFalse(self.repos.has_node('/', 1))
+        self.assertFalse(self.repos.has_node('/', 2))
+        self.assertFalse(self.repos.has_node('/', 3))
+        self.assertTrue(self.repos.has_node('/', 4))
         # We can't make this work anymore because of #5213.
         # self.assertEqual(4, self.repos.oldest_rev)
         self.assertEqual(1, self.repos.oldest_rev) # should really be 4...

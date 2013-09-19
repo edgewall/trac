@@ -172,14 +172,14 @@ class PermissionCacheTestCase(unittest.TestCase):
         self.env.reset_db()
 
     def test_contains(self):
-        self.assertEqual(True, 'TEST_MODIFY' in self.perm)
-        self.assertEqual(True, 'TEST_ADMIN' in self.perm)
-        self.assertEqual(False, 'TRAC_ADMIN' in self.perm)
+        self.assertTrue('TEST_MODIFY' in self.perm)
+        self.assertTrue('TEST_ADMIN' in self.perm)
+        self.assertFalse('TRAC_ADMIN' in self.perm)
 
     def test_has_permission(self):
-        self.assertEqual(True, self.perm.has_permission('TEST_MODIFY'))
-        self.assertEqual(True, self.perm.has_permission('TEST_ADMIN'))
-        self.assertEqual(False, self.perm.has_permission('TRAC_ADMIN'))
+        self.assertTrue(self.perm.has_permission('TEST_MODIFY'))
+        self.assertTrue(self.perm.has_permission('TEST_ADMIN'))
+        self.assertFalse(self.perm.has_permission('TRAC_ADMIN'))
 
     def test_require(self):
         self.perm.require('TEST_MODIFY')

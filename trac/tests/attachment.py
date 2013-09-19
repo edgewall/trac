@@ -224,7 +224,7 @@ class AttachmentTestCase(unittest.TestCase):
 
     def test_resource_doesnt_exist(self):
         r = Resource('wiki', 'WikiStart').child('attachment', 'file.txt')
-        self.assertEqual(False, AttachmentModule(self.env).resource_exists(r))
+        self.assertFalse(AttachmentModule(self.env).resource_exists(r))
 
     def test_resource_exists(self):
         att = Attachment(self.env, 'wiki', 'WikiStart')

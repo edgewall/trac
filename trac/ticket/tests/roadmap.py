@@ -117,8 +117,8 @@ class DefaultTicketGroupStatsProviderTestCase(unittest.TestCase):
         closed = self.stats.intervals[0]
         self.assertEqual('closed', closed['title'], 'closed title incorrect')
         self.assertEqual('closed', closed['css_class'], 'closed class incorrect')
-        self.assertEqual(True, closed['overall_completion'],
-                         'closed should contribute to overall completion')
+        self.assertTrue(closed['overall_completion'],
+                        'closed should contribute to overall completion')
         self.assertEqual({'status': ['closed'], 'group': ['resolution']},
                          closed['qry_args'], 'qry_args incorrect')
         self.assertEqual(1, closed['count'], 'closed count incorrect')
@@ -128,7 +128,7 @@ class DefaultTicketGroupStatsProviderTestCase(unittest.TestCase):
         open = self.stats.intervals[1]
         self.assertEqual('active', open['title'], 'open title incorrect')
         self.assertEqual('open', open['css_class'], 'open class incorrect')
-        self.assertEqual(False, open['overall_completion'],
+        self.assertFalse(open['overall_completion'],
                          "open shouldn't contribute to overall completion")
         self.assertEqual({'status':
                           [u'assigned', u'new', u'accepted', u'reopened']},

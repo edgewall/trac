@@ -763,14 +763,14 @@ class EnumTestCase(unittest.TestCase):
         prio = Priority(self.env)
         prio.name = 'foo'
         prio.insert()
-        self.assertEqual(True, prio.exists)
+        self.assertTrue(prio.exists)
 
     def test_priority_insert_with_value(self):
         prio = Priority(self.env)
         prio.name = 'bar'
         prio.value = 100
         prio.insert()
-        self.assertEqual(True, prio.exists)
+        self.assertTrue(prio.exists)
 
     def test_priority_update(self):
         prio = Priority(self.env, 'major')
@@ -783,7 +783,7 @@ class EnumTestCase(unittest.TestCase):
         prio = Priority(self.env, 'major')
         self.assertEqual('3', prio.value)
         prio.delete()
-        self.assertEqual(False, prio.exists)
+        self.assertFalse(prio.exists)
         self.assertRaises(TracError, Priority, self.env, 'major')
         prio = Priority(self.env, 'minor')
         self.assertEqual('3', prio.value)
@@ -832,7 +832,7 @@ class MilestoneTestCase(unittest.TestCase):
 
     def test_new_milestone(self):
         milestone = Milestone(self.env)
-        self.assertEqual(False, milestone.exists)
+        self.assertFalse(milestone.exists)
         self.assertEqual(None, milestone.name)
         self.assertEqual(None, milestone.due)
         self.assertEqual(None, milestone.completed)
@@ -844,7 +844,7 @@ class MilestoneTestCase(unittest.TestCase):
         milestone being correctly detected as non-existent.
         """
         milestone = Milestone(self.env, '')
-        self.assertEqual(False, milestone.exists)
+        self.assertFalse(milestone.exists)
         self.assertEqual(None, milestone.name)
         self.assertEqual(None, milestone.due)
         self.assertEqual(None, milestone.completed)
@@ -854,7 +854,7 @@ class MilestoneTestCase(unittest.TestCase):
         self.env.db_transaction("INSERT INTO milestone (name) VALUES ('Test')")
 
         milestone = Milestone(self.env, 'Test')
-        self.assertEqual(True, milestone.exists)
+        self.assertTrue(milestone.exists)
         self.assertEqual('Test', milestone.name)
         self.assertEqual(None, milestone.due)
         self.assertEqual(None, milestone.completed)
@@ -887,7 +887,7 @@ class MilestoneTestCase(unittest.TestCase):
 
         milestone = Milestone(self.env, 'Test')
         milestone.delete()
-        self.assertEqual(False, milestone.exists)
+        self.assertFalse(milestone.exists)
         self.assertEqual([],
             self.env.db_query("SELECT * FROM milestone WHERE name='Test'"))
 
@@ -903,7 +903,7 @@ class MilestoneTestCase(unittest.TestCase):
 
         milestone = Milestone(self.env, 'Test')
         milestone.delete(retarget_to='Other')
-        self.assertEqual(False, milestone.exists)
+        self.assertFalse(milestone.exists)
 
         self.assertEqual('Other', Ticket(self.env, tkt1.id)['milestone'])
         self.assertEqual('Other', Ticket(self.env, tkt2.id)['milestone'])
@@ -1009,10 +1009,10 @@ class MilestoneTestCase(unittest.TestCase):
         listener = TestMilestoneChangeListener(self.env)
         milestone = self._create_milestone(name='Milestone 1')
         milestone.insert()
-        self.assertEqual(True, milestone.exists)
+        self.assertTrue(milestone.exists)
         milestone.delete()
         self.assertEqual('Milestone 1', milestone.name)
-        self.assertEqual(False, milestone.exists)
+        self.assertFalse(milestone.exists)
         self.assertEqual('deleted', listener.action)
         self.assertEqual(milestone, listener.milestone)
 

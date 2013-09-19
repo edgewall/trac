@@ -58,14 +58,14 @@ class ConfigurationTestCase(unittest.TestCase):
 
     def test_default_bool(self):
         config = self._read()
-        self.assertEqual(False, config.getbool('a', 'option'))
-        self.assertEqual(True, config.getbool('a', 'option', 'yes'))
-        self.assertEqual(True, config.getbool('a', 'option', 1))
+        self.assertFalse(config.getbool('a', 'option'))
+        self.assertTrue(config.getbool('a', 'option', 'yes'))
+        self.assertTrue(config.getbool('a', 'option', 1))
 
         class Foo(object):
             option_a = Option('a', 'option', 'true')
 
-        self.assertEqual(True, config.getbool('a', 'option'))
+        self.assertTrue(config.getbool('a', 'option'))
 
     def test_default_int(self):
         config = self._read()
@@ -129,20 +129,20 @@ class ConfigurationTestCase(unittest.TestCase):
                      'option5 = 1', 'option6 = 123', 'option7 = 123.456',
                      'option8 = disabled', 'option9 = 0', 'option10 = 0.0'])
         config = self._read()
-        self.assertEqual(True, config.getbool('a', 'option'))
-        self.assertEqual(True, config.getbool('a', 'option', False))
-        self.assertEqual(True, config.getbool('a', 'option2'))
-        self.assertEqual(True, config.getbool('a', 'option3'))
-        self.assertEqual(True, config.getbool('a', 'option4'))
-        self.assertEqual(True, config.getbool('a', 'option5'))
-        self.assertEqual(True, config.getbool('a', 'option6'))
-        self.assertEqual(True, config.getbool('a', 'option7'))
-        self.assertEqual(False, config.getbool('a', 'option8'))
-        self.assertEqual(False, config.getbool('a', 'option9'))
-        self.assertEqual(False, config.getbool('a', 'option10'))
-        self.assertEqual(False, config.getbool('b', 'option_b'))
-        self.assertEqual(False, config.getbool('b', 'option_b', False))
-        self.assertEqual(False, config.getbool('b', 'option_b', 'disabled'))
+        self.assertTrue(config.getbool('a', 'option'))
+        self.assertTrue(config.getbool('a', 'option', False))
+        self.assertTrue(config.getbool('a', 'option2'))
+        self.assertTrue(config.getbool('a', 'option3'))
+        self.assertTrue(config.getbool('a', 'option4'))
+        self.assertTrue(config.getbool('a', 'option5'))
+        self.assertTrue(config.getbool('a', 'option6'))
+        self.assertTrue(config.getbool('a', 'option7'))
+        self.assertFalse(config.getbool('a', 'option8'))
+        self.assertFalse(config.getbool('a', 'option9'))
+        self.assertFalse(config.getbool('a', 'option10'))
+        self.assertFalse(config.getbool('b', 'option_b'))
+        self.assertFalse(config.getbool('b', 'option_b', False))
+        self.assertFalse(config.getbool('b', 'option_b', 'disabled'))
 
     def test_read_and_getint(self):
         self._write(['[a]', 'option = 42'])
@@ -443,31 +443,31 @@ class ConfigurationTestCase(unittest.TestCase):
 
     def test_has_option(self):
         config = self._read()
-        self.assertEqual(False, config.has_option('a', 'option'))
-        self.assertEqual(False, 'option' in config['a'])
+        self.assertFalse(config.has_option('a', 'option'))
+        self.assertFalse('option' in config['a'])
         self._write(['[a]', 'option = x'])
         config = self._read()
-        self.assertEqual(True, config.has_option('a', 'option'))
-        self.assertEqual(True, 'option' in config['a'])
+        self.assertTrue(config.has_option('a', 'option'))
+        self.assertTrue('option' in config['a'])
 
         class Foo(object):
             option_a = Option('a', 'option2', 'x2')
 
-        self.assertEqual(True, config.has_option('a', 'option2'))
+        self.assertTrue(config.has_option('a', 'option2'))
 
     def test_has_option_unicode(self):
         config = self._read()
-        self.assertEqual(False, config.has_option(u'ä', u'öption'))
-        self.assertEqual(False, u'öption' in config[u'ä'])
+        self.assertFalse(config.has_option(u'ä', u'öption'))
+        self.assertFalse(u'öption' in config[u'ä'])
         self._write([u'[ä]', u'öption = x'])
         config = self._read()
-        self.assertEqual(True, config.has_option(u'ä', u'öption'))
-        self.assertEqual(True, u'öption' in config[u'ä'])
+        self.assertTrue(config.has_option(u'ä', u'öption'))
+        self.assertTrue(u'öption' in config[u'ä'])
 
         class Foo(object):
             option_a = Option(u'ä', u'öption2', 'x2')
 
-        self.assertEqual(True, config.has_option(u'ä', u'öption2'))
+        self.assertTrue(config.has_option(u'ä', u'öption2'))
 
     def test_reparse(self):
         self._write(['[a]', 'option = x'])
@@ -488,7 +488,7 @@ class ConfigurationTestCase(unittest.TestCase):
             config.remove('a', 'option') # Should *not* remove option in parent
             self.assertEqual('x', config.get('a', 'option'))
             self.assertEqual([('option', 'x')], list(config.options('a')))
-            self.assertEqual(True, 'a' in config)
+            self.assertTrue('a' in config)
         self._test_with_inherit(testcb)
 
     def test_inherit_multiple(self):
