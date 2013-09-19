@@ -19,6 +19,7 @@ import os
 import time
 import unittest
 
+from trac.tests import compat
 from trac.core import TracError
 from trac.util import datefmt, translation
 
@@ -730,12 +731,6 @@ if Locale is None:
     I18nDateFormatTestCase = None
 else:
     class I18nDateFormatTestCase(unittest.TestCase):
-
-        if not hasattr(unittest.TestCase, 'assertIn'):
-            def assertIn(self, member, container, msg=None):
-                if member not in container:
-                    raise self.failureException(msg or '%r not in %r' %
-                                                       (member, container))
 
         def test_i18n_format_datetime(self):
             tz = datefmt.timezone('GMT +2:00')
