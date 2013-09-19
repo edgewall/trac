@@ -81,7 +81,7 @@ class PathTestCase(unittest.TestCase):
                                            parent.replace('/', os.sep)))
 
     def assert_not_below(self, path, parent):
-        self.assertTrue(not util.is_path_below(path.replace('/', os.sep),
+        self.assertFalse(util.is_path_below(path.replace('/', os.sep),
                                             parent.replace('/', os.sep)))
 
     def test_is_path_below(self):
@@ -94,7 +94,7 @@ class PathTestCase(unittest.TestCase):
         self.assert_not_below('/svn/project1/../project2/repos',
                               '/svn/project1')
         self.assertTrue(util.is_path_below('repos', os.path.join(os.getcwd())))
-        self.assertTrue(not util.is_path_below('../sub/repos',
+        self.assertFalse(util.is_path_below('../sub/repos',
                                             os.path.join(os.getcwd())))
 
 

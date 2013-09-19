@@ -49,11 +49,11 @@ def rmtree(path):
 class GitTestCase(unittest.TestCase):
 
     def test_is_sha(self):
-        self.assertTrue(not GitCore.is_sha('123'))
+        self.assertFalse(GitCore.is_sha('123'))
         self.assertTrue(GitCore.is_sha('1a3f'))
         self.assertTrue(GitCore.is_sha('f' * 40))
-        self.assertTrue(not GitCore.is_sha('x' + 'f' * 39))
-        self.assertTrue(not GitCore.is_sha('f' * 41))
+        self.assertFalse(GitCore.is_sha('x' + 'f' * 39))
+        self.assertFalse(GitCore.is_sha('f' * 41))
 
     def test_git_version(self):
         v = Storage.git_version()

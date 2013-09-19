@@ -187,15 +187,15 @@ class BasicAuthenticationTestCase(unittest.TestCase):
 
     def test_crypt(self):
         self.assertTrue(self.auth.test('crypt', 'crypt'))
-        self.assertTrue(not self.auth.test('crypt', 'other'))
+        self.assertFalse(self.auth.test('crypt', 'other'))
 
     def test_md5(self):
         self.assertTrue(self.auth.test('md5', 'md5'))
-        self.assertTrue(not self.auth.test('md5', 'other'))
+        self.assertFalse(self.auth.test('md5', 'other'))
 
     def test_sha(self):
         self.assertTrue(self.auth.test('sha', 'sha'))
-        self.assertTrue(not self.auth.test('sha', 'other'))
+        self.assertFalse(self.auth.test('sha', 'other'))
 
 
 def suite():
