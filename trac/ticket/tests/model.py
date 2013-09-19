@@ -129,9 +129,9 @@ class TicketTestCase(unittest.TestCase):
         log = ticket3.get_changelog()
         self.assertEqual(len(log), 3)
         ok_vals = ['foo', 'summary', 'comment']
-        self.failUnless(log[0][2] in ok_vals)
-        self.failUnless(log[1][2] in ok_vals)
-        self.failUnless(log[2][2] in ok_vals)
+        self.assertTrue(log[0][2] in ok_vals)
+        self.assertTrue(log[1][2] in ok_vals)
+        self.assertTrue(log[2][2] in ok_vals)
 
     def test_create_ticket_5(self):
         ticket3 = self._modify_a_ticket()
