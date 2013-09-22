@@ -230,7 +230,7 @@ sys.setdefaultencoding('latin1')
 # mapping, just return string, otherwise return value
 class FieldTranslator(dict):
     def __getitem__(self, item):
-        if not dict.has_key(self, item):
+        if item not in self:
             return item
 
         return dict.__getitem__(self, item)
@@ -335,7 +335,7 @@ class TracDatabase(object):
             if BUG_NO_RE.search(desc):
                 desc = re.sub(BUG_NO_RE, BUG_NO_REPL, desc)
 
-        if PRIORITIES_MAP.has_key(priority):
+        if priority in PRIORITIES_MAP:
             priority = PRIORITIES_MAP[priority]
 
         print "  inserting ticket %s -- %s" % (id, summary)
@@ -393,15 +393,15 @@ class TracDatabase(object):
     def addTicketChange(self, ticket, time, author, field, oldvalue, newvalue):
 
         if field == "owner":
-            if LOGIN_MAP.has_key(oldvalue):
+            if oldvalue in LOGIN_MAP:
                 oldvalue = LOGIN_MAP[oldvalue]
-            if LOGIN_MAP.has_key(newvalue):
+            if newvalue in LOGIN_MAP:
                 newvalue = LOGIN_MAP[newvalue]
 
         if field == "priority":
-            if PRIORITIES_MAP.has_key(oldvalue.lower()):
+            if oldvalue.lower() in PRIORITIES_MAP:
                 oldvalue = PRIORITIES_MAP[oldvalue.lower()]
-            if PRIORITIES_MAP.has_key(newvalue.lower()):
+            if newvalue.lower() in PRIORITIES_MAP:
                 newvalue = PRIORITIES_MAP[newvalue.lower()]
 
         # Doesn't make sense if we go from highest -> highest, for example.
@@ -895,7 +895,7 @@ def convert(_db, _host, _user, _password, _env, _force):
         users = ()
     htpasswd = file("htpasswd", 'w')
     for user in users:
-        if LOGIN_MAP.has_key(user['login_name']):
+        if user['login_name'] in LOGIN_MAP:
             login = LOGIN_MAP[user['login_name']]
         else:
             login = user['login_name']

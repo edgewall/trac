@@ -86,7 +86,7 @@ class LoginModule(Component):
         authname = None
         if req.remote_user:
             authname = req.remote_user
-        elif req.incookie.has_key('trac_auth'):
+        elif 'trac_auth' in req.incookie:
             authname = self._get_name_for_cookie(req,
                                                  req.incookie['trac_auth'])
 
@@ -430,12 +430,12 @@ class DigestAuthentication(PasswordFileAuthentication):
                          'nc', 'cnonce']
         # Invalid response?
         for key in required_keys:
-            if not auth.has_key(key):
+            if key not in auth:
                 self.send_auth_request(environ, start_response)
                 return None
         # Unknown user?
         self.check_reload()
-        if not self.hash.has_key(auth['username']):
+        if auth['username'] not in self.hash:
             self.send_auth_request(environ, start_response)
             return None
 

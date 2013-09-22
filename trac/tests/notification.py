@@ -420,7 +420,7 @@ def parse_smtp_message(msg):
                     # splits header name from value
                     (h, v) = line.split(':', 1)
                     val = decode_header(v.strip())
-                    if headers.has_key(h):
+                    if h in headers:
                         if isinstance(headers[h], tuple):
                             headers[h] += val
                         else:

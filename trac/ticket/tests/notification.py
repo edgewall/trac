@@ -20,6 +20,7 @@ from trac.util.datefmt import utc
 from trac.ticket.model import Ticket
 from trac.ticket.notification import TicketNotifyEmail
 from trac.test import EnvironmentStub, Mock, MockPerm
+from trac.tests import compat
 from trac.tests.notification import SMTPThreadedServer, parse_smtp_message, \
                                     smtp_address
 
@@ -693,7 +694,7 @@ class NotificationTestCase(unittest.TestCase):
         xlist = ['summary', 'description', 'comment', 'time', 'changetime']
         # check banner content (field exists, msg value matches ticket value)
         for p in [prop for prop in ticket.values.keys() if prop not in xlist]:
-            self.assertFalse(not props.has_key(p))
+            self.assertIn(p, props)
             # Email addresses might be obfuscated
             if '@' in ticket[p] and '@' in props[p]:
                 self.assertFalse(props[p].split('@')[0] != ticket[p].split('@')[0])

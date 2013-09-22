@@ -1029,7 +1029,7 @@ class SubversionChangeset(Changeset):
                 action = Changeset.EDIT
                 # identify the most interesting base_path/base_rev
                 # in terms of last changed information (see r2562)
-                if revroots.has_key(base_rev):
+                if base_rev in revroots:
                     b_root = revroots[base_rev]
                 else:
                     b_root = fs.revision_root(self.fs_ptr, base_rev, pool())

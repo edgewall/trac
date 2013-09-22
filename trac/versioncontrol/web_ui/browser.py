@@ -339,7 +339,7 @@ class BrowserModule(Component):
             rev = None
         format = req.args.get('format')
         order = req.args.get('order', 'name').lower()
-        desc = req.args.has_key('desc')
+        desc = 'desc' in req.args
         xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
 
         rm = RepositoryManager(self.env)

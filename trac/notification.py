@@ -155,7 +155,7 @@ class SmtpEmailSender(Component):
         # server.set_debuglevel(True)
         if self.use_tls:
             server.ehlo()
-            if not server.esmtp_features.has_key('starttls'):
+            if 'starttls' not in server.esmtp_features:
                 raise TracError(_("TLS enabled but server does not support " \
                                   "TLS"))
             server.starttls()
