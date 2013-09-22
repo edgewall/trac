@@ -29,7 +29,7 @@ timeline:2008-01-0A
 <a class="timeline" href="/timeline?from=2008-01-29T15%3A48%3A00Z&amp;precision=minutes" title="See timeline at 2008-01-29T15:48:00Z">timeline:2008-01-29T15:48</a>
 <a class="timeline" href="/timeline?from=2008-01-29T15%3A48%3A00Z&amp;precision=minutes" title="See timeline at 2008-01-29T15:48:00Z">timeline:2008-01-29T15:48Z</a>
 <a class="timeline" href="/timeline?from=2008-01-29T15%3A48%3A00Z&amp;precision=seconds" title="See timeline at 2008-01-29T15:48:00Z">timeline:2008-01-29T16:48+01</a>
-<a class="timeline missing" title="&#34;2008-01-0A&#34; is an invalid date, or the date format is not known. Try &#34;MM/DD/YY&#34; instead.">timeline:2008-01-0A</a>
+<a class="timeline missing" title="&#34;2008-01-0A&#34; is an invalid date, or the date format is not known. Try &#34;YYYY-MM-DDThh:mm:ss±hh:mm&#34; instead.">timeline:2008-01-0A</a>
 </p>
 ------------------------------
 """

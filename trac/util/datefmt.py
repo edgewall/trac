@@ -475,7 +475,8 @@ def parse_date(text, tzinfo=None, locale=None, hint='date'):
         dt = _parse_relative_time(text, tzinfo)
     if dt is None:
         hint = {'datetime': get_datetime_format_hint,
-                'date': get_date_format_hint
+                'date': get_date_format_hint,
+                'iso8601': lambda l: get_datetime_format_hint('iso8601'),
                }.get(hint, lambda(l): hint)(locale)
         raise TracError(_('"%(date)s" is an invalid date, or the date format '
                           'is not known. Try "%(hint)s" instead.',

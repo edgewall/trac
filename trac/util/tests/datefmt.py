@@ -239,6 +239,21 @@ class ParseISO8601TestCase(unittest.TestCase):
             self.assertEqual(2, dt.hour)
             self.assertEqual(datetime.timedelta(hours=1), dt.utcoffset())
 
+    def test_hint_iso8601(self):
+        def validate(locale=None):
+            try:
+                datefmt.parse_date('2001-0a-01', locale=locale, hint='iso8601')
+                raise self.failureException('TracError not raised')
+            except TracError, e:
+                msg = unicode(e)
+                self.assertTrue(u'"YYYY-MM-DDThh:mm:ss±hh:mm"' in msg,
+                                repr(msg))
+
+        validate(locale=None)
+        validate(locale='iso8601')
+        if Locale:
+            validate(locale=Locale.parse('en_US'))
+
 
 class ParseRelativeDateTestCase(unittest.TestCase):
 
@@ -459,7 +474,7 @@ class ParseDateValidRangeTestCase(unittest.TestCase):
         datefmt.parse_date('2038-01-19T03:14:07Z')
         try:
             datefmt.parse_date('9999-12-31T23:59:59-12:00')
-            raise AssertionError('TracError not raised')
+            raise self.failureException('TracError not raised')
         except TracError, e:
             self.assertTrue('is outside valid range' in unicode(e))
 
@@ -473,7 +488,7 @@ class ParseDateValidRangeTestCase(unittest.TestCase):
             datefmt.parse_date('1970-01-01T00:00:00Z')
         try:
             datefmt.parse_date('0001-01-01T00:00:00+14:00')
-            raise AssertionError('TracError not raised')
+            raise self.failureException('TracError not raised')
         except TracError, e:
             self.assertTrue('is outside valid range' in unicode(e))
 
@@ -715,14 +730,17 @@ class ISO8601TestCase(unittest.TestCase):
     def test_hint(self):
         try:
             datefmt.parse_date('***', locale='iso8601', hint='date')
+            raise self.failureException('TracError not raised')
         except TracError, e:
             self.assertTrue('"YYYY-MM-DD"' in unicode(e))
         try:
             datefmt.parse_date('***', locale='iso8601', hint='datetime')
+            raise self.failureException('TracError not raised')
         except TracError, e:
             self.assertTrue(u'"YYYY-MM-DDThh:mm:ss±hh:mm"' in unicode(e))
         try:
             datefmt.parse_date('***', locale='iso8601', hint='foobar')
+            raise self.failureException('TracError not raised')
         except TracError, e:
             self.assertTrue('"foobar"' in unicode(e))
 
