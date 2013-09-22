@@ -345,9 +345,9 @@ class TimelineModule(Component):
                 elif len(time) >= 2:
                     precision = 'hours'
             try:
-                return self.get_timeline_link(formatter.req,
-                                              parse_date(path, utc),
-                                              label, precision, query, fragment)
+                dt = parse_date(path, utc, hint='iso8601')
+                return self.get_timeline_link(formatter.req, dt, label,
+                                              precision, query, fragment)
             except TracError, e:
                 return tag.a(label, title=to_unicode(e),
                              class_='timeline missing')
