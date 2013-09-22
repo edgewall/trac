@@ -246,7 +246,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             id = 'action_%s_reassign_owner' % action
             selected_owner = req.args.get(id, req.authname)
 
-            if this_action.has_key('set_owner'):
+            if 'set_owner' in this_action:
                 owners = [x.strip() for x in
                           this_action['set_owner'].split(',')]
             elif self.config.getbool('ticket', 'restrict_owner'):
@@ -290,7 +290,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                            "to %(authname)s", current_owner=current_owner,
                            authname=req.authname))
         if 'set_resolution' in operations:
-            if this_action.has_key('set_resolution'):
+            if 'set_resolution' in this_action:
                 resolutions = [x.strip() for x in
                                this_action['set_resolution'].split(',')]
             else:

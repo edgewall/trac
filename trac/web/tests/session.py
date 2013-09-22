@@ -19,6 +19,7 @@ from datetime import datetime
 import unittest
 
 from trac.test import EnvironmentStub, Mock
+from trac.tests import compat
 from trac.web.session import DetachedSession, Session, PURGE_AGE, \
                              UPDATE_INTERVAL, SessionAdmin
 from trac.core import TracError
@@ -102,7 +103,7 @@ class SessionTestCase(unittest.TestCase):
                    outcookie=outcookie)
         session = Session(self.env, req)
         self.assertEqual('123456', session.sid)
-        self.assertFalse(outcookie.has_key('trac_session'))
+        self.assertNotIn('trac_session', outcookie)
 
     def test_authenticated_session(self):
         """

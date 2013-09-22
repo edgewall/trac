@@ -333,7 +333,7 @@ class Section(object):
         for parent in self.config.parents:
             if parent[self.name].contains(key, defaults=False):
                 return True
-        return defaults and Option.registry.has_key((self.name, key))
+        return defaults and (self.name, key) in Option.registry
 
     __contains__ = contains
 

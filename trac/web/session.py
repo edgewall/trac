@@ -198,14 +198,14 @@ class Session(DetachedSession):
         super(Session, self).__init__(env, None)
         self.req = req
         if req.authname == 'anonymous':
-            if not req.incookie.has_key(COOKIE_KEY):
+            if COOKIE_KEY not in req.incookie:
                 self.sid = hex_entropy(24)
                 self.bake_cookie()
             else:
                 sid = req.incookie[COOKIE_KEY].value
                 self.get_session(sid)
         else:
-            if req.incookie.has_key(COOKIE_KEY):
+            if COOKIE_KEY in req.incookie:
                 sid = req.incookie[COOKIE_KEY].value
                 self.promote_session(sid)
             self.get_session(req.authname, authenticated=True)

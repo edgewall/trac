@@ -819,7 +819,7 @@ class Storage(object):
             raise GitErrorSha
 
         with self.__commit_msg_lock:
-            if self.__commit_msg_cache.has_key(commit_id):
+            if commit_id in self.__commit_msg_cache:
                 # cache hit
                 result = self.__commit_msg_cache[commit_id]
                 return result[0], dict(result[1])

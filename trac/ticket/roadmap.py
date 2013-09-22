@@ -671,7 +671,7 @@ class MilestoneModule(Component):
             action = 'edit' # rather than 'new' so that it works for POST/save
 
         if req.method == 'POST':
-            if req.args.has_key('cancel'):
+            if 'cancel' in req.args:
                 if milestone.exists:
                     req.redirect(req.href.milestone(milestone.name))
                 else:
@@ -696,7 +696,7 @@ class MilestoneModule(Component):
         req.perm(milestone.resource).require('MILESTONE_DELETE')
 
         retarget_to = None
-        if req.args.has_key('retarget'):
+        if 'retarget' in req.args:
             retarget_to = req.args.get('target') or None
         milestone.delete(retarget_to, req.authname)
         add_notice(req, _('The milestone "%(name)s" has been deleted.',

@@ -610,7 +610,7 @@ def safe__import__(module_name):
         return __import__(module_name, globals(), locals(), [])
     except Exception, e:
         for modname in sys.modules.copy():
-            if not already_imported.has_key(modname):
+            if modname not in already_imported:
                 del(sys.modules[modname])
         raise e
 

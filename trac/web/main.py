@@ -306,7 +306,7 @@ class RequestDispatcher(Component):
         If the the user does not have a `trac_form_token` cookie a new
         one is generated.
         """
-        if req.incookie.has_key('trac_form_token'):
+        if 'trac_form_token' in req.incookie:
             return req.incookie['trac_form_token'].value
         else:
             req.outcookie['trac_form_token'] = hex_entropy(24)

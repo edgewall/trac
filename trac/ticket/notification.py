@@ -320,7 +320,7 @@ class TicketNotifyEmail(NotifyEmail):
         width_lr = [width_l, width_r]
         for f in [f for f in fields if f['name'] != 'description']:
             fname = f['name']
-            if not tkt.values.has_key(fname):
+            if fname not in tkt.values:
                 continue
             fval = tkt[fname] or ''
             if fname in tkt.time_fields:
