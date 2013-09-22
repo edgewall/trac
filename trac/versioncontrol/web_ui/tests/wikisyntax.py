@@ -9,25 +9,33 @@ from trac.versioncontrol.web_ui import *
 from trac.wiki.tests import formatter
 
 
+YOUNGEST_REV = 200
+
+
 def _get_changeset(rev):
     if rev == '1':
         return Mock(message="start", can_view=lambda perm: True)
     else:
         raise NoSuchChangeset(rev)
 
+
 def _normalize_rev(rev):
+    if rev is None or rev in ('', 'head'):
+        return YOUNGEST_REV
     try:
-        return int(rev)
+        nrev = int(rev)
+        if nrev <= YOUNGEST_REV:
+            return nrev
     except ValueError:
-        if rev == 'head':
-            return '200'
-        else:
-            raise NoSuchChangeset(rev)
-    
+        pass
+    raise NoSuchChangeset(rev)
+
+
 def _get_repository(reponame):
-    return Mock(reponame=reponame, youngest_rev='200',
+    return Mock(reponame=reponame, youngest_rev=YOUNGEST_REV,
                 get_changeset=_get_changeset,
                 normalize_rev=_normalize_rev)
+
 
 def repository_setup(tc):
     setattr(tc.env, 'get_repository', _get_repository)
@@ -176,7 +184,7 @@ log:trunk:12@23 (bad, but shouldn't error out)
 ------------------------------
 <p>
 <a class="source" href="/log/?rev=12">log:@12</a>
-<a class="source" href="/log/trunk">log:trunk</a>
+<a class="source" href="/log/trunk?rev=200">log:trunk</a>
 <a class="source" href="/log/trunk?rev=12">log:trunk@12</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk@12:23</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk@12-23</a>
@@ -195,9 +203,9 @@ log:trunk@12?limit=10
 [10:20/trunk?verbose=yes&format=changelog]
 ------------------------------
 <p>
-<a class="source" href="/log/?limit=10">log:?limit=10</a>
+<a class="source" href="/log/?rev=200&amp;limit=10">log:?limit=10</a>
 <a class="source" href="/log/?rev=12&amp;limit=10">log:@12?limit=10</a>
-<a class="source" href="/log/trunk?limit=10">log:trunk?limit=10</a>
+<a class="source" href="/log/trunk?rev=200&amp;limit=10">log:trunk?limit=10</a>
 <a class="source" href="/log/trunk?rev=12&amp;limit=10">log:trunk@12?limit=10</a>
 <a class="source" href="/log/?revs=10-20&amp;verbose=yes&amp;format=changelog">[10:20?verbose=yes&amp;format=changelog]</a>
 <a class="source" href="/log/trunk?revs=10-20&amp;verbose=yes&amp;format=changelog">[10:20/trunk?verbose=yes&amp;format=changelog]</a>

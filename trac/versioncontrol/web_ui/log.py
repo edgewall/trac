@@ -384,7 +384,7 @@ class LogModule(Component):
                             rev = None
                         href = formatter.href.log(repos.reponame or None,
                                                   path or '/', rev=rev)
-                    if query and (revranges or revs):
+                    if query and '?' in href:
                         query = '&' + query[1:]
                     return tag.a(label, class_='source',
                                  href=href + query + fragment)
