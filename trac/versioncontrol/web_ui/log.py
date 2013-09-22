@@ -369,9 +369,10 @@ class LogModule(Component):
 
             if repos:
                 revranges = None
-                if any(c for c in ':-,' if c in revs):
+                if any(c in revs for c in ':-,'):
                     revranges = self._normalize_ranges(repos, path, revs)
-                    revs = None
+                    if revranges:
+                        revs = None
                 if 'LOG_VIEW' in formatter.perm:
                     if revranges:
                         href = formatter.href.log(repos.reponame or None,
@@ -413,4 +414,7 @@ class LogModule(Component):
                 return None
             seps = splitted_ranges[1::2] + ['']
             ranges = ''.join([str(rev)+sep for rev, sep in zip(revs, seps)])
-            return Ranges(ranges)
+            try:
+                return Ranges(ranges)
+            except ValueError:
+                return None

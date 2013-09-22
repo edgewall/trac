@@ -211,6 +211,21 @@ log:trunk@12?limit=10
 <a class="source" href="/log/trunk?revs=10-20&amp;verbose=yes&amp;format=changelog">[10:20/trunk?verbose=yes&amp;format=changelog]</a>
 </p>
 ------------------------------
+============================== log: link resolver + invalid ranges
+log:@10-20-30
+log:@10,20-30,40-50-60
+log:@10:20:30
+[10-20-30]
+[10:20:30]
+------------------------------
+<p>
+<a class="source" href="/log/">log:@10-20-30</a>
+<a class="source" href="/log/">log:@10,20-30,40-50-60</a>
+<a class="source" href="/log/">log:@10:20:30</a>
+[10-20-30]
+[10:20:30]
+</p>
+------------------------------
 ============================== Multiple Log ranges
 r12:20,25,35:56,68,69,100-120
 [12:20,25,35:56,68,69,100-120]
