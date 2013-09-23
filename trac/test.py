@@ -429,8 +429,6 @@ def suite():
 
     suite = unittest.TestSuite()
     suite.addTest(trac.tests.basicSuite())
-    if INCLUDE_FUNCTIONAL_TESTS:
-        suite.addTest(trac.tests.functionalSuite())
     suite.addTest(trac.admin.tests.suite())
     suite.addTest(trac.db.tests.suite())
     suite.addTest(trac.mimeview.tests.suite())
@@ -446,6 +444,8 @@ def suite():
     suite.addTest(tracopt.versioncontrol.git.tests.suite())
     suite.addTest(tracopt.versioncontrol.svn.tests.suite())
     suite.addTest(doctest.DocTestSuite(sys.modules[__name__]))
+    if INCLUDE_FUNCTIONAL_TESTS:
+        suite.addTest(trac.tests.functionalSuite())
 
     return suite
 
