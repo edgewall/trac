@@ -20,7 +20,7 @@ from genshi.core import Markup
 
 from trac.core import *
 from trac.config import Option
-from trac.db.api import IDatabaseConnector, _parse_db_str
+from trac.db.api import DatabaseManager, IDatabaseConnector, _parse_db_str
 from trac.db.util import ConnectionWrapper, IterableCursor
 from trac.util import as_int, get_pkginfo
 from trac.util.compat import close_fds
@@ -109,8 +109,8 @@ class MySQLConnector(Component):
                 host=None, port=None, params={}):
         cnx = self.get_connection(path, log, user, password, host, port,
                                   params)
+        utf8_size = self._utf8_size(cnx)
         cursor = cnx.cursor()
-        utf8_size = {'utf8': 3, 'utf8mb4': 4}.get(cnx.charset)
         if schema is None:
             from trac.db_default import schema
         for table in schema:
@@ -119,7 +119,17 @@ class MySQLConnector(Component):
                 cursor.execute(stmt)
         cnx.commit()
 
-    def _collist(self, table, columns, utf8_size=3):
+    def _utf8_size(self, cnx):
+        if cnx is None:
+            connector, args = DatabaseManager(self.env).get_connector()
+            cnx = connector.get_connection(**args)
+            charset = cnx.charset
+            cnx.close()
+        else:
+            charset = cnx.charset
+        return 4 if charset == 'utf8mb4' else 3
+
+    def _collist(self, table, columns, utf8_size):
         """Take a list of columns and impose limits on each so that indexing
         works properly.
 
@@ -148,7 +158,9 @@ class MySQLConnector(Component):
             cols.append(name)
         return ','.join(cols)
 
-    def to_sql(self, table, utf8_size=3):
+    def to_sql(self, table, utf8_size=None):
+        if utf8_size is None:
+            utf8_size = self._utf8_size(None)
         sql = ['CREATE TABLE %s (' % table.name]
         coldefs = []
         for column in table.columns:
