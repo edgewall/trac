@@ -14,7 +14,8 @@
 import unittest
 
 from trac.db.mysql_backend import MySQLConnector
-from trac.test import EnvironmentStub
+from trac.db.schema import Table, Column, Index
+from trac.test import EnvironmentStub, Mock
 
 
 class MySQLTableAlterationSQLTest(unittest.TestCase):
@@ -49,6 +50,31 @@ class MySQLTableAlterationSQLTest(unittest.TestCase):
         sql = connector.alter_column_types('milestone',
                                            {'due': ('int', 'int')})
         self.assertEqual([], list(sql))
+
+    def test_utf8_size(self):
+        connector = MySQLConnector(self.env)
+        self.assertEqual(3, connector._utf8_size(Mock(charset='utf8')))
+        self.assertEqual(4, connector._utf8_size(Mock(charset='utf8mb4')))
+
+    def test_to_sql(self):
+        connector = MySQLConnector(self.env)
+        tab = Table('blah', key=('col1', 'col2'))[Column('col1'),
+                                                  Column('col2'),
+                                                  Index(['col2'])]
+
+        sql = list(connector.to_sql(tab, utf8_size=3))
+        self.assertEqual(2, len(sql))
+        self.assertTrue(' PRIMARY KEY (`col1`(166),`col2`(166))' in sql[0],
+                        repr(sql[0]))
+        self.assertTrue(' blah_col2_idx ON blah (`col2`(255))' in sql[1],
+                        repr(sql[1]))
+
+        sql = list(connector.to_sql(tab, utf8_size=4))
+        self.assertEqual(2, len(sql))
+        self.assertTrue(' PRIMARY KEY (`col1`(125),`col2`(125))' in sql[0],
+                        repr(sql[0]))
+        self.assertTrue(' blah_col2_idx ON blah (`col2`(191))' in sql[1],
+                        repr(sql[1]))
 
 
 def suite():
