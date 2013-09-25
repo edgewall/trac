@@ -203,6 +203,16 @@ class FunctionalTestEnvironment(object):
         # Force an environment reset (see grant_perm above)
         self.get_trac_environment().config.touch()
 
+    def set_config(self, *args):
+        """Calls trac-admin to get the value for the given option
+        in `trac.ini`."""
+        self._tracadmin('config', 'set', *args)
+
+    def get_config(self, *args):
+        """Calls trac-admin to set the value for the given option
+        in `trac.ini`."""
+        return self._tracadmin('config', 'get', *args)
+
     def _tracadmin(self, *args):
         """Internal utility method for calling trac-admin"""
         proc = Popen([sys.executable, os.path.join(self.trac_src, 'trac',
@@ -222,6 +232,10 @@ class FunctionalTestEnvironment(object):
             raise Exception("Failed while running trac-admin with arguments %r.\n"
                             "Exitcode: %s \n%s"
                             % (args, proc.returncode, out))
+        else:
+            # trac-admin is started in interactive mode, so we strip away
+            # everything up to the to the interactive prompt
+            return out.split(']>', 1)[1].strip()
 
     def start(self):
         """Starts the webserver, and waits for it to come up."""
