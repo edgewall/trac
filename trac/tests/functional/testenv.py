@@ -50,6 +50,7 @@ except ImportError:
 #       (those need to test search escaping, among many other things like long
 #       paths in browser and unicode chars being allowed/translating...)
 
+
 class FunctionalTestEnvironment(object):
     """Common location for convenience functions that work with the test
     environment on Trac.  Subclass this and override some methods if you are
@@ -77,7 +78,8 @@ class FunctionalTestEnvironment(object):
         self.create()
         locale.setlocale(locale.LC_ALL, '')
         if not ConfigObj:
-            print "SKIP: fine-grained permission tests. ConfigObj not installed."
+            print "SKIP: fine-grained permission tests. " \
+                  "ConfigObj not installed."
 
     trac_src = '.'
 
@@ -144,7 +146,7 @@ class FunctionalTestEnvironment(object):
         if call([sys.executable,
                  os.path.join(self.trac_src, 'contrib', 'htpasswd.py'), "-c",
                  "-b", self.htpasswd, "admin", "admin"], close_fds=close_fds,
-                 cwd=self.command_cwd):
+                cwd=self.command_cwd):
             raise Exception('Unable to setup admin password')
         self.adduser('user')
         self.adduser('joe')
@@ -205,8 +207,8 @@ class FunctionalTestEnvironment(object):
         """Internal utility method for calling trac-admin"""
         proc = Popen([sys.executable, os.path.join(self.trac_src, 'trac',
                       'admin', 'console.py'), self.tracdir],
-                      stdin=PIPE, stdout=PIPE, stderr=STDOUT,
-                      close_fds=close_fds, cwd=self.command_cwd)
+                     stdin=PIPE, stdout=PIPE, stderr=STDOUT,
+                     close_fds=close_fds, cwd=self.command_cwd)
         if args:
             # Don't quote first token which is sub-command name
             input = ' '.join(('"%s"' % to_utf8(arg) if idx else arg)
@@ -240,8 +242,7 @@ class FunctionalTestEnvironment(object):
         server = Popen(args + options + [self.tracdir],
                        stdout=logfile, stderr=logfile,
                        close_fds=close_fds,
-                       cwd=self.command_cwd,
-                      )
+                       cwd=self.command_cwd)
         self.pid = server.pid
         # Verify that the url is ok
         timeout = 30
@@ -279,7 +280,7 @@ class FunctionalTestEnvironment(object):
 
     def call_in_dir(self, dir, args, environ=None):
         proc = Popen(args, stdout=PIPE, stderr=logfile,
-            close_fds=close_fds, cwd=dir, env=environ)
+                     close_fds=close_fds, cwd=dir, env=environ)
         (data, _) = proc.communicate()
         if proc.wait():
             raise Exception('Unable to run command %s in %s' %

@@ -19,6 +19,7 @@ from testenv import FunctionalTestEnvironment
 from trac.tests.functional.compat import close_fds
 from trac.tests.functional import logfile
 
+
 class SvnFunctionalTestEnvironment(FunctionalTestEnvironment):
     def work_dir(self):
         return os.path.join(self.dirname, 'workdir')
@@ -31,14 +32,15 @@ class SvnFunctionalTestEnvironment(FunctionalTestEnvironment):
         Initialize a repo of the type :attr:`self.repotype`.
         """
         if call(["svnadmin", "create", self.repo_path_for_initenv()],
-                 stdout=logfile, stderr=logfile, close_fds=close_fds):
+                stdout=logfile, stderr=logfile, close_fds=close_fds):
             raise Exception('unable to create subversion repository')
-        if call(['svn', 'co', self.repo_url(), self.work_dir()], stdout=logfile,
-                 stderr=logfile, close_fds=close_fds):
+        if call(['svn', 'co', self.repo_url(), self.work_dir()],
+                stdout=logfile, stderr=logfile, close_fds=close_fds):
             raise Exception('Checkout from %s failed.' % self.repo_url())
 
     def destroy_repo(self):
-        """The deletion of the testenvironment will remove the repo as well."""
+        """The deletion of the test environment will remove the
+        repo as well."""
         pass
 
     def repo_url(self):
@@ -61,8 +63,9 @@ class SvnFunctionalTestEnvironment(FunctionalTestEnvironment):
             self._testenv.svn_mkdir(["abc", "def"], "Add dirs")
 
         """
-        self.call_in_workdir(['svn', '--username=%s' % username, 'mkdir', '-m', msg]
-                + [self.repo_url() + '/' + d for d in paths])
+        self.call_in_workdir(['svn', '--username=%s' % username,
+                              'mkdir', '-m', msg]
+                             + [self.repo_url() + '/' + d for d in paths])
         self.call_in_workdir(['svn', 'update'])
 
     def svn_add(self, filename, data):
@@ -80,8 +83,9 @@ class SvnFunctionalTestEnvironment(FunctionalTestEnvironment):
         self.call_in_workdir(['svn', 'add', filename])
         environ = os.environ.copy()
         environ['LC_ALL'] = 'C'     # Force English messages in svn
-        output = self.call_in_workdir(['svn', '--username=admin', 'commit', '-m',
-                        'Add %s' % filename, filename], environ=environ)
+        output = self.call_in_workdir(['svn', '--username=admin', 'commit',
+                                       '-m', 'Add %s' % filename, filename],
+                                      environ=environ)
         try:
             revision = re.search(r'Committed revision ([0-9]+)\.',
                                  output).group(1)
