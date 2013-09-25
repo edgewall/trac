@@ -13,7 +13,7 @@
   <head>
     <title py:if="title">$title</title>
     <meta py:if="version or page.author == 'trac'" name="ROBOTS" content="NOINDEX, NOFOLLOW" />
-    <link py:if="admin_perm or (not page.readonly and modify_perm)" rel="alternate" type="application/x-wiki"
+    <link py:if="modify_perm" rel="alternate" type="application/x-wiki"
           href="${href.wiki(page.name, action='edit', version=page.version if is_not_latest else None)}"
           title="${_('Revert page to this version') if is_not_latest else _('Edit this page')}"/>
     <script type="text/javascript">
@@ -79,7 +79,7 @@
 
       <py:with vars="delete_perm = 'WIKI_DELETE' in perm(page.resource);
                      rename_perm = 'WIKI_RENAME' in perm(page.resource)">
-        <py:if test="admin_perm or (not page.readonly and (modify_perm or create_perm or delete_perm))">
+        <py:if test="modify_perm or create_perm or delete_perm">
           <div class="buttons">
             <py:if test="modify_perm or create_perm">
               <form method="get" action="${href.wiki(page.name)}" id="modifypage">

@@ -52,7 +52,8 @@ $page.text</textarea>
           </label>
         </div>
       </div>
-      <div py:if="'WIKI_ADMIN' in perm(page.resource)" id="changeinfo2" class="options">
+      <div py:if="show_readonly_checkbox and 'WIKI_ADMIN' in perm(page.resource)"
+           id="changeinfo2" class="options">
         <label><input type="checkbox" name="readonly" id="readonly"
                       checked="${page.readonly or None}" />
           Page is read-only

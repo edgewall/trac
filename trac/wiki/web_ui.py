@@ -27,7 +27,7 @@ from trac.attachment import AttachmentModule
 from trac.config import IntOption
 from trac.core import *
 from trac.mimeview.api import IContentConverter, Mimeview
-from trac.perm import IPermissionRequestor
+from trac.perm import IPermissionPolicy, IPermissionRequestor
 from trac.resource import *
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.timeline.api import ITimelineEventProvider
@@ -246,10 +246,7 @@ class WikiModule(Component):
         return diff_data, changes
 
     def _do_delete(self, req, page):
-        if page.readonly:
-            req.perm(page.resource).require('WIKI_ADMIN')
-        else:
-            req.perm(page.resource).require('WIKI_DELETE')
+        req.perm(page.resource).require('WIKI_DELETE')
 
         if 'cancel' in req.args:
             req.redirect(get_resource_url(self.env, page.resource, req.href))
@@ -282,10 +279,7 @@ class WikiModule(Component):
             req.redirect(req.href.wiki(page.name))
 
     def _do_rename(self, req, page):
-        if page.readonly:
-            req.perm(page.resource).require('WIKI_ADMIN')
-        else:
-            req.perm(page.resource).require('WIKI_RENAME')
+        req.perm(page.resource).require('WIKI_RENAME')
 
         if 'cancel' in req.args:
             req.redirect(get_resource_url(self.env, page.resource, req.href))
@@ -331,9 +325,7 @@ class WikiModule(Component):
         req.redirect(req.href.wiki(old_name if redirect else new_name))
 
     def _do_save(self, req, page):
-        if page.readonly:
-            req.perm(page.resource).require('WIKI_ADMIN')
-        elif not page.exists:
+        if not page.exists:
             req.perm(page.resource).require('WIKI_CREATE')
         else:
             req.perm(page.resource).require('WIKI_MODIFY')
@@ -355,10 +347,7 @@ class WikiModule(Component):
             return self._render_view(req, page)
 
     def _render_confirm_delete(self, req, page):
-        if page.readonly:
-            req.perm(page.resource).require('WIKI_ADMIN')
-        else:
-            req.perm(page.resource).require('WIKI_DELETE')
+        req.perm(page.resource).require('WIKI_DELETE')
 
         version = None
         if 'delete_version' in req.args:
@@ -391,10 +380,7 @@ class WikiModule(Component):
         return 'wiki_delete.html', data, None
 
     def _render_confirm_rename(self, req, page, new_name=None):
-        if page.readonly:
-            req.perm(page.resource).require('WIKI_ADMIN')
-        else:
-            req.perm(page.resource).require('WIKI_RENAME')
+        req.perm(page.resource).require('WIKI_RENAME')
 
         data = self._page_data(req, page, 'rename')
         data['new_name'] = new_name if new_name is not None else page.name
@@ -486,9 +472,7 @@ class WikiModule(Component):
             else:
                 action = 'collision'
 
-        if page.readonly:
-            req.perm(page.resource).require('WIKI_ADMIN')
-        elif not page.exists:
+        if not page.exists:
             req.perm(page.resource).require('WIKI_CREATE')
         else:
             req.perm(page.resource).require('WIKI_MODIFY')
@@ -545,6 +529,9 @@ class WikiModule(Component):
             'scroll_bar_pos': req.args.get('scroll_bar_pos', ''),
             'diff': None,
             'attachments': AttachmentModule(self.env).attachment_data(context),
+            'show_readonly_checkbox': ReadonlyWikiPolicy.__name__ in
+                                      self.config.get('trac',
+                                                      'permission_policies')
         })
         if action in ('diff', 'merge'):
             old_text = original_text.splitlines() if original_text else []
@@ -789,3 +776,19 @@ class WikiModule(Component):
         for result in AttachmentModule(self.env).get_search_results(
                 req, wiki_realm, terms):
             yield result
+
+
+class ReadonlyWikiPolicy(Component):
+    """Permission policy for the wiki that enforces the read-only attribute
+    for wiki pages."""
+
+    implements(IPermissionPolicy)
+
+    # IPermissionPolicy methods
+
+    def check_permission(self, action, username, resource, perm):
+        if resource and resource.realm == 'wiki' and \
+                action in ('WIKI_DELETE', 'WIKI_MODIFY', 'WIKI_RENAME'):
+            page = WikiPage(self.env, resource)
+            if page.readonly and 'WIKI_ADMIN' not in perm(resource):
+                return False

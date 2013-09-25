@@ -39,6 +39,64 @@ class TestWikiHistory(FunctionalTwillTestCaseSetup):
         tc.find(version_link % {'version': 2})
 
 
+class TestWikiReadonlyAttribute(FunctionalTwillTestCaseSetup):
+    """Test the wiki readonly attribute, which is enforce when
+    ReadonlyWikiPolicy is in the list of active permission policies."""
+    def runTest(self):
+        self._tester.logout()
+        self._tester.login('user')
+        page_name = self._tester.create_wiki_page()
+        permission_policies = \
+            self._testenv.get_config('trac', 'permission_policies')
+        readonly_checkbox = '<input type="checkbox" name="readonly" ' + \
+                            'id="readonly" />'
+        attach_button = '<input type="submit" name="attachfilebutton" ' + \
+                        'value="Attach another file" />'
+        try:
+            # User without WIKI_ADMIN can't set a page read-only
+            tc.formvalue('modifypage', 'action', 'edit')
+            tc.submit()
+            tc.notfind(readonly_checkbox)
+
+            # User with WIKI_ADMIN can set a page read-only
+            # and still edit that page
+            self._testenv.grant_perm('user', 'WIKI_ADMIN')
+            self._tester.go_to_wiki(page_name)
+            tc.formvalue('modifypage', 'action', 'edit')
+            tc.submit()
+            tc.find(readonly_checkbox)
+            tc.formvalue('edit', 'readonly', True)
+            tc.submit('save')
+            tc.go(self._tester.url + '/attachment/wiki/' + page_name)
+            tc.find(attach_button)
+            self._tester.edit_wiki_page(page_name)
+
+            # User without WIKI_ADMIN can't edit a read-only page
+            self._testenv.revoke_perm('user', 'WIKI_ADMIN')
+            self._tester.go_to_wiki(page_name)
+            tc.notfind('<input type="submit" value="Edit this page">')
+            tc.go(self._tester.url + '/attachment/wiki/' + page_name)
+            tc.notfind(attach_button)
+
+            # Read-only checkbox is not present when ReadonlyWikiPolicy
+            # is not in the list of active permission policies
+            pp_list = [p.strip() for p in permission_policies.split(',')]
+            pp_list.remove('ReadonlyWikiPolicy')
+            self._testenv._tracadmin('trac', 'permission_policies',
+                                     ', '.join(pp_list))
+            self._testenv.grant_perm('user', 'WIKI_ADMIN')
+            self._tester.go_to_wiki(page_name)
+            tc.formvalue('modifypage', 'action', 'edit')
+            tc.submit()
+            tc.notfind(readonly_checkbox)
+        finally:
+            self._testenv.set_config('trac', 'permission_policies',
+                                     permission_policies)
+            self._testenv.revoke_perm('user', 'WIKI_ADMIN')
+            self._tester.logout()
+            self._tester.login('admin')
+
+
 class TestWikiRename(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for simple wiki rename"""
@@ -271,6 +329,7 @@ def functionalSuite(suite=None):
         suite = trac.tests.functional.testcases.functionalSuite()
     suite.addTest(TestWiki())
     suite.addTest(TestWikiHistory())
+    suite.addTest(TestWikiReadonlyAttribute())
     suite.addTest(TestWikiRename())
     suite.addTest(RegressionTestTicket4812())
     suite.addTest(RegressionTestTicket10274())
