@@ -26,6 +26,7 @@ try:
 except ImportError:
     from StringIO import StringIO
 
+
 class FunctionalTester(object):
     """Provides a library of higher-level operations for interacting with a
     test environment.
@@ -190,8 +191,6 @@ class FunctionalTester(object):
         """Attaches a file to the given ticket id, with random data if none is
         provided.  Assumes the ticket exists.
         """
-
-
         self.go_to_ticket(ticketid)
         return self._attach_file_to_resource('ticket', ticketid, data,
                                              filename, description,
@@ -434,4 +433,3 @@ class FunctionalTester(object):
         tc.url(self.url + '/attachment/%s/%s/$' % (realm, name))
 
         return filename
-

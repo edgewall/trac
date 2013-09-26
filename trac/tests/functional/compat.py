@@ -16,6 +16,7 @@ import shutil
 
 from trac.util.compat import close_fds
 
+
 # On Windows, shutil.rmtree doesn't remove files with the read-only
 # attribute set, so this function explicitly removes it on every error
 # before retrying.  Even on Linux, shutil.rmtree chokes on read-only

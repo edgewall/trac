@@ -20,10 +20,11 @@ class RegressionTestRev6017(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of the plugin reload fix in r6017"""
         # Setup the DeleteTicket plugin
-        plugin = open(os.path.join(self._testenv.command_cwd, 'sample-plugins',
-            'workflow', 'DeleteTicket.py')).read()
-        open(os.path.join(self._testenv.tracdir, 'plugins', 'DeleteTicket.py'),
-             'w').write(plugin)
+        plugin = open(os.path.join(self._testenv.command_cwd,
+                                   'sample-plugins', 'workflow',
+                                   'DeleteTicket.py')).read()
+        open(os.path.join(self._testenv.tracdir, 'plugins',
+                          'DeleteTicket.py'), 'w').write(plugin)
         env = self._testenv.get_trac_environment()
         prevconfig = env.config.get('ticket', 'workflow')
         env.config.set('ticket', 'workflow',
@@ -64,7 +65,8 @@ class RegressionTestTicket3833a(FunctionalTestCaseSetup):
         env.log.debug("RegressionTestTicket3833 debug1")
         debug1 = traclogfile.read()
         self.assertNotEqual(debug1.find("RegressionTestTicket3833 debug1"), -1,
-            'Logging off when it should have been on.\n%r' % debug1)
+                            'Logging off when it should have been on.\n%r'
+                            % debug1)
 
 
 class RegressionTestTicket3833b(FunctionalTestCaseSetup):
@@ -87,7 +89,8 @@ class RegressionTestTicket3833b(FunctionalTestCaseSetup):
         self.assertNotEqual(debug2.find("RegressionTestTicket3833 info2"), -1,
                             'Logging at info failed.\n%r' % debug2)
         self.assertEqual(debug2.find("RegressionTestTicket3833 debug2"), -1,
-            'Logging still on when it should have been off.\n%r' % debug2)
+                         'Logging still on when it should have been off.\n%r'
+                         % debug2)
 
 
 class RegressionTestTicket3833c(FunctionalTestCaseSetup):
@@ -235,6 +238,7 @@ class RegressionTestTicket6318(FunctionalTwillTestCaseSetup):
             self._tester.login('admin')
         finally:
             self._testenv.deluser(u'joé')
+
 
 def functionalSuite():
     suite = FunctionalTestSuite()
