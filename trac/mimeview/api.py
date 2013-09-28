@@ -1109,7 +1109,7 @@ class LineNumberAnnotator(Component):
     """Text annotator that adds a column with line numbers."""
     implements(IHTMLPreviewAnnotator)
 
-    # ITextAnnotator methods
+    # IHTMLPreviewAnnotator methods
 
     def get_annotation_type(self):
         return 'lineno', _('Line'), _('Line numbers')
