@@ -172,7 +172,6 @@ class WikiProcessor(object):
                         break
         if not self.processor:
             # Find a matching mimeview renderer
-            from trac.mimeview.api import Mimeview
             mimeview = Mimeview(formatter.env)
             for renderer in mimeview.renderers:
                 if renderer.get_quality_ratio(self.name) > 1:

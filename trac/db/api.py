@@ -253,7 +253,7 @@ class DatabaseManager(Component):
     def get_connection(self, readonly=False):
         """Get a database connection from the pool.
 
-        If `readonly` is `True`, the returned connection will purposedly
+        If `readonly` is `True`, the returned connection will purposely
         lack the `rollback` and `commit` methods.
         """
         if not self._cnx_pool:
