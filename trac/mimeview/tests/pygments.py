@@ -27,6 +27,7 @@ from trac.mimeview.api import Mimeview, RenderingContext
 if have_pygments:
     from trac.mimeview.pygments import PygmentsRenderer
 from trac.test import EnvironmentStub, Mock
+from trac.tests import compat
 from trac.web.chrome import Chrome, web_context
 from trac.web.href import Href
 
