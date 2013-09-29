@@ -13,6 +13,9 @@
 
 import unittest
 
+from trac.ticket.query import QueryModule
+from trac.ticket.report import ReportModule
+from trac.ticket.roadmap import RoadmapModule
 from trac.ticket.model import Milestone, Ticket
 from trac.wiki.tests import formatter
 
