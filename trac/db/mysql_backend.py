@@ -14,7 +14,10 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-import os, re, types
+import os
+import re
+import sys
+import types
 
 from genshi.core import Markup
 
@@ -263,11 +266,15 @@ class MySQLConnection(ConnectionWrapper):
             port = 3306
         opts = {}
         for name, value in params.iteritems():
-            if name in ('init_command', 'read_default_file',
-                        'read_default_group', 'unix_socket'):
-                opts[name] = value
+            key = name.encode('utf-8')
+            if name == 'read_default_group':
+                opts[key] = value
+            elif name == 'init_command':
+                opts[key] = value.encode('utf-8')
+            elif name in ('read_default_file', 'unix_socket'):
+                opts[key] = value.encode(sys.getfilesystemencoding())
             elif name in ('compress', 'named_pipe'):
-                opts[name] = as_int(value, 0)
+                opts[key] = as_int(value, 0)
             else:
                 self.log.warning("Invalid connection string parameter '%s'",
                                  name)
