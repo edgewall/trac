@@ -48,6 +48,7 @@
     <script type="text/javascript">
       jQuery(document).ready(function($) {
         $(".trac-focus").focus();
+        $(".trac-target-new").attr("target", "_blank");
       });
     </script>
     ${select("*[local-name() != 'title']|text()|comment()")}
