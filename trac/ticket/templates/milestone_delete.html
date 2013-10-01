@@ -32,6 +32,7 @@
           <optgroup py:for="(label, milestones) in milestone_groups"
                     py:if="milestones" label="${label}">
             <option py:for="milestone in milestones"
+                    selected="${retarget_to == milestone.name or None}"
                     value="${milestone.name}" py:content="milestone.name"></option>
           </optgroup>
         </select>

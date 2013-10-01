@@ -1821,6 +1821,41 @@ class RegressionTestTicket9981(FunctionalTwillTestCaseSetup):
         tc.find('class="closed ticket".*ticket/%s#comment:1"' % ticketid)
 
 
+class RegressionTestTicket10010(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/10010
+        Allow configuring the default retargeting option when closing or
+        deleting a milestone."""
+        def go_to_and_find_markup(markup, find=True):
+            self._tester.go_to_milestone("milestone1")
+            tc.formvalue('editmilestone', 'action', 'edit')
+            tc.submit()
+            if find:
+                tc.find(markup)
+            else:
+                tc.notfind(markup)
+            self._tester.go_to_milestone("milestone1")
+            tc.formvalue('editmilestone', 'action', 'delete')
+            tc.submit()
+            if find:
+                tc.find(markup)
+            else:
+                tc.notfind(markup)
+        try:
+            go_to_and_find_markup('<option selected="selected" ', False)
+            self._testenv.set_config('milestone', 'default_retarget_to',
+                                     'milestone2')
+            go_to_and_find_markup('<option selected="selected" '
+                                  'value="milestone2">milestone2</option>')
+            self._testenv.set_config('milestone', 'default_retarget_to',
+                                     'milestone1')
+            go_to_and_find_markup('<option selected="selected" ', False)
+            self._testenv.set_config('milestone', 'default_retarget_to', '')
+            go_to_and_find_markup('<option selected="selected" ', False)
+        finally:
+            self._testenv.remove_config('milestone', 'default_retarget_to')
+
+
 class RegressionTestTicket11028(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/11028"""
@@ -2050,6 +2085,7 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket8861())
     suite.addTest(RegressionTestTicket9084())
     suite.addTest(RegressionTestTicket9981())
+    suite.addTest(RegressionTestTicket10010())
     suite.addTest(RegressionTestTicket11028())
     suite.addTest(RegressionTestTicket11153())
     if ConfigObj:

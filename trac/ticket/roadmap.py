@@ -25,7 +25,7 @@ from genshi.builder import tag
 
 from trac import __version__
 from trac.attachment import AttachmentModule
-from trac.config import ConfigSection, ExtensionOption
+from trac.config import ConfigSection, ExtensionOption, Option
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.resource import *
@@ -594,6 +594,9 @@ class MilestoneModule(Component):
         which is used to collect statistics on groups of tickets for display
         in the milestone views.""")
 
+    default_retarget_to = Option('milestone', 'default_retarget_to',
+        doc="""Default milestone to which tickets are retargeted when
+            closing or deleting a milestone. (''since 1.1.2'')""")
 
     # INavigationContributor methods
 
@@ -692,6 +695,18 @@ class MilestoneModule(Component):
 
     # Internal methods
 
+    _default_retarget_to = default_retarget_to
+
+    @property
+    def default_retarget_to(self):
+        if self._default_retarget_to and \
+           not any(self._default_retarget_to == m.name
+                   for m in Milestone.select(self.env)):
+            self.log.warn('Milestone "%s" does not exist. Update the '
+                          '"default_retarget_to" option in the [milestone] '
+                          'section of trac.ini', self._default_retarget_to)
+        return self._default_retarget_to
+
     def _do_delete(self, req, milestone):
         req.perm(milestone.resource).require('MILESTONE_DELETE')
 
@@ -788,7 +803,8 @@ class MilestoneModule(Component):
         data = {
             'milestone': milestone,
             'milestone_groups': group_milestones(milestones,
-                'TICKET_ADMIN' in req.perm)
+                'TICKET_ADMIN' in req.perm),
+            'retarget_to': self.default_retarget_to
         }
         return 'milestone_delete.html', data, None
 
@@ -814,6 +830,7 @@ class MilestoneModule(Component):
                           and 'MILESTONE_VIEW' in req.perm(m.resource)]
             data['milestone_groups'] = group_milestones(milestones,
                 'TICKET_ADMIN' in req.perm)
+            data['retarget_to'] = self.default_retarget_to
         else:
             req.perm(milestone.resource).require('MILESTONE_CREATE')
 
