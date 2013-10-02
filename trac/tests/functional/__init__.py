@@ -151,6 +151,10 @@ if twill:
 
 else:
     # We're going to have to skip the functional tests
+    class FunctionalTestSuite(TestSetup):
+        def __init__(self):
+            raise ImportError("Twill not installed")
+
     class FunctionalTwillTestCaseSetup:
         pass
 
@@ -165,14 +169,11 @@ def regex_owned_by(username):
 
 
 def suite():
-    if twill:
+    try:
         from trac.tests.functional.testcases import suite
         suite = suite()
-    else:
-        diagnostic = "SKIP: functional tests"
-        if not twill:
-            diagnostic += " (no twill installed)"
-        print diagnostic
+    except ImportError, e:
+        print("SKIP: functional tests (%s)" % e)
         # No tests to run, provide an empty suite.
         suite = unittest.TestSuite()
     return suite
