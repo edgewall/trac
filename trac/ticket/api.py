@@ -498,7 +498,7 @@ class TicketSystem(Component):
             cnum = target
 
         if resource and resource.id and resource.realm == 'ticket' and \
-                (all(c.isdigit() for c in cnum) or cnum == 'description'):
+                cnum and (all(c.isdigit() for c in cnum) or cnum == 'description'):
             href = title = class_ = None
             if self.resource_exists(resource):
                 from trac.ticket.model import Ticket
@@ -511,7 +511,10 @@ class TicketSystem(Component):
                            "#comment:%s" % cnum
                     title = _("Comment %(cnum)s for Ticket #%(id)s",
                               cnum=cnum, id=resource.id)
-                    class_ = ticket['status'] + ' ticket'
+                    if resource.id != formatter.resource.id:
+                        class_ = ticket['status'] + ' ticket'
+                    else:
+                        class_ = 'ticket'
             else:
                 title = _("ticket does not exist")
                 class_ = 'missing ticket'

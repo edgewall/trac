@@ -390,7 +390,7 @@ comment:ticket:: (deprecated)
 <a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">comment:ticket:1:1</a> (deprecated)
 <a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">see above</a> (deprecated)
 <a class="new ticket" href="/ticket/1#comment:description" title="Comment description for Ticket #1">see descr</a> (deprecated)
-<a class="closed ticket" href="/ticket/2#comment:1" title="Comment 1 for Ticket #2">comment:ticket:2:1</a> (deprecated)
+<a class="ticket" href="/ticket/2#comment:1" title="Comment 1 for Ticket #2">comment:ticket:2:1</a> (deprecated)
 <a class="missing ticket" title="ticket comment does not exist">comment:ticket:2:3</a> (deprecated)
 <a class="missing ticket" title="ticket does not exist">comment:ticket:3:1</a> (deprecated)
 comment:tiket:2:1 (deprecated)
@@ -403,6 +403,25 @@ comment:ticket:: (deprecated)
 </p>
 ------------------------------
 ============================== comment: link resolver
+comment:1
+[comment:1 see above]
+comment:description
+[comment:description see descr]
+comment:
+comment:one
+comment:1a
+------------------------------
+<p>
+<a class="ticket" href="/ticket/2#comment:1" title="Comment 1 for Ticket #2">comment:1</a>
+<a class="ticket" href="/ticket/2#comment:1" title="Comment 1 for Ticket #2">see above</a>
+<a class="ticket" href="/ticket/2#comment:description" title="Comment description for Ticket #2">comment:description</a>
+<a class="ticket" href="/ticket/2#comment:description" title="Comment description for Ticket #2">see descr</a>
+comment:
+comment:one
+comment:1a
+</p>
+------------------------------
+============================== comment: link resolver with ticket number
 comment:1:ticket:1
 [comment:1:ticket:1 see above]
 [comment:description:ticket:1 see descr]
@@ -421,7 +440,7 @@ comment::ticket:
 <a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">comment:1:ticket:1</a>
 <a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">see above</a>
 <a class="new ticket" href="/ticket/1#comment:description" title="Comment description for Ticket #1">see descr</a>
-<a class="closed ticket" href="/ticket/2#comment:1" title="Comment 1 for Ticket #2">comment:1:ticket:2</a>
+<a class="ticket" href="/ticket/2#comment:1" title="Comment 1 for Ticket #2">comment:1:ticket:2</a>
 <a class="missing ticket" title="ticket comment does not exist">comment:3:ticket:2</a>
 <a class="missing ticket" title="ticket does not exist">comment:1:ticket:3</a>
 comment:2:tiket:1
@@ -474,7 +493,7 @@ def suite():
     suite.addTest(formatter.suite(QUERY2_TEST_CASES, query2_setup, __file__,
                                   query2_teardown))
     suite.addTest(formatter.suite(COMMENT_TEST_CASES, comment_setup, __file__,
-                                  comment_teardown))
+                                  comment_teardown, ('ticket', 2)))
     return suite
 
 if __name__ == '__main__':
