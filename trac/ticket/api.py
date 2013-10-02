@@ -515,24 +515,44 @@ class TicketSystem(Component):
                 cnum, realm, id = elts
                 if cnum != 'description' and cnum and not cnum[0].isdigit():
                     realm, id, cnum = elts # support old comment: style
+                id = as_int(id, None)
                 resource = formatter.resource(realm, id)
         else:
             resource = formatter.resource
             cnum = target
 
-        if resource and resource.realm == 'ticket':
-            id = as_int(resource.id, None)
-            if id is not None:
-                href = "%s#comment:%s" % (formatter.href.ticket(resource.id),
-                                          cnum)
-                title = _("Comment %(cnum)s for Ticket #%(id)s", cnum=cnum,
-                          id=resource.id)
-                if 'TICKET_VIEW' in formatter.perm(resource):
-                    for status, in self.env.db_query(
-                            "SELECT status FROM ticket WHERE id=%s", (id,)):
-                        return tag.a(label, href=href, title=title,
-                                     class_=status)
-                return tag.a(label, href=href, title=title)
+        if resource and resource.id and resource.realm == 'ticket' and \
+                cnum and (all(c.isdigit() for c in cnum) or cnum == 'description'):
+            href = title = class_ = None
+            if self.resource_exists(resource):
+                from trac.ticket.model import Ticket
+                ticket = Ticket(self.env, resource.id)
+                if cnum != 'description' and not ticket.get_change(cnum):
+                    title = _("ticket comment does not exist")
+                    class_ = 'missing ticket'
+                elif 'TICKET_VIEW' in formatter.perm(resource):
+                    href = formatter.href.ticket(resource.id) + \
+                           "#comment:%s" % cnum
+                    if resource.id != formatter.resource.id:
+                        if cnum == 'description':
+                            title = _("Description for Ticket #%(id)s",
+                                      id=resource.id)
+                        else:
+                            title = _("Comment %(cnum)s for Ticket #%(id)s",
+                                      cnum=cnum, id=resource.id)
+                        class_ = ticket['status'] + ' ticket'
+                    else:
+                        title = _("Description") if cnum == 'description' \
+                                                 else _("Comment %(cnum)s",
+                                                        cnum=cnum)
+                        class_ = 'ticket'
+                else:
+                    title = _("no permission to view ticket")
+                    class_ = 'forbidden ticket'
+            else:
+                title = _("ticket does not exist")
+                class_ = 'missing ticket'
+            return tag.a(label, class_=class_, href=href, title=title)
         return label
 
     # IResourceManager methods

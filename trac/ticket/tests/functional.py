@@ -1811,14 +1811,17 @@ class RegressionTestTicket9084(FunctionalTwillTestCaseSetup):
 class RegressionTestTicket9981(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/9981"""
-        ticketid = self._tester.create_ticket()
-        self._tester.add_comment(ticketid)
+        tid1 = self._tester.create_ticket()
+        self._tester.add_comment(tid1)
         tc.formvalue('propertyform', 'action', 'resolve')
         tc.submit('submit')
-        comment = '[ticket:%s#comment:1]' % ticketid
-        self._tester.add_comment(ticketid, comment=comment)
-        self._tester.go_to_ticket(ticketid)
-        tc.find('class="closed ticket".*ticket/%s#comment:1"' % ticketid)
+        tid2 = self._tester.create_ticket()
+        comment = '[comment:1:ticket:%s]' % tid1
+        self._tester.add_comment(tid2, comment=comment)
+        self._tester.go_to_ticket(tid2)
+        tc.find('<a class="closed ticket"[ \t\n]+'
+                'href="/ticket/%(num)s#comment:1"[ \t\n]+'
+                'title="Comment 1 for Ticket #%(num)s"' % {'num': tid1})
 
 
 class RegressionTestTicket10010(FunctionalTwillTestCaseSetup):
