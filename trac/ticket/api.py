@@ -496,7 +496,8 @@ class TicketSystem(Component):
             resource = formatter.resource
             cnum = target
 
-        if resource and resource.realm == 'ticket':
+        if resource and resource.realm == 'ticket' and \
+                (all(c.isdigit() for c in cnum) or cnum == 'description'):
             id = as_int(resource.id, None)
             if id is not None:
                 href = "%s#comment:%s" % (formatter.href.ticket(resource.id),

@@ -375,22 +375,50 @@ COMMENT_TEST_CASES = u"""
 comment:ticket:123:2 (deprecated)
 [comment:ticket:123:2 see above] (deprecated)
 [comment:ticket:123:description see descr] (deprecated)
+comment:tiket:2:1 (deprecated)
+comment:ticket:two:1 (deprecated)
+comment:ticket:2:1a (deprecated)
+comment:ticket:2:one (deprecated)
+comment:ticket:1: (deprecated)
+comment:ticket::2 (deprecated)
+comment:ticket:: (deprecated)
 ------------------------------
 <p>
 <a href="/ticket/123#comment:2" title="Comment 2 for Ticket #123">comment:ticket:123:2</a> (deprecated)
 <a href="/ticket/123#comment:2" title="Comment 2 for Ticket #123">see above</a> (deprecated)
 <a href="/ticket/123#comment:description" title="Comment description for Ticket #123">see descr</a> (deprecated)
+comment:tiket:2:1 (deprecated)
+comment:ticket:two:1 (deprecated)
+comment:ticket:2:1a (deprecated)
+comment:ticket:2:one (deprecated)
+comment:ticket:1: (deprecated)
+comment:ticket::2 (deprecated)
+comment:ticket:: (deprecated)
 </p>
 ------------------------------
 ============================== comment: link resolver
 comment:2:ticket:123
 [comment:2:ticket:123 see above]
 [comment:description:ticket:123 see descr]
+comment:2:tiket:1
+comment:1:ticket:two
+comment:one:ticket:1
+comment:1a:ticket:1
+comment:ticket:1
+comment:2:ticket:
+comment::ticket:
 ------------------------------
 <p>
 <a href="/ticket/123#comment:2" title="Comment 2 for Ticket #123">comment:2:ticket:123</a>
 <a href="/ticket/123#comment:2" title="Comment 2 for Ticket #123">see above</a>
 <a href="/ticket/123#comment:description" title="Comment description for Ticket #123">see descr</a>
+comment:2:tiket:1
+comment:1:ticket:two
+comment:one:ticket:1
+comment:1a:ticket:1
+comment:ticket:1
+comment:2:ticket:
+comment::ticket:
 </p>
 ------------------------------
 """ # "
