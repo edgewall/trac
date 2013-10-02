@@ -522,6 +522,9 @@ class TicketSystem(Component):
                                                  else _("Comment %(cnum)s",
                                                         cnum=cnum)
                         class_ = 'ticket'
+                else:
+                    title = _("no permission to view ticket")
+                    class_ = 'forbidden ticket'
             else:
                 title = _("ticket does not exist")
                 class_ = 'missing ticket'
