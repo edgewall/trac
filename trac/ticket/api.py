@@ -509,8 +509,12 @@ class TicketSystem(Component):
                 elif 'TICKET_VIEW' in formatter.perm(resource):
                     href = formatter.href.ticket(resource.id) + \
                            "#comment:%s" % cnum
-                    title = _("Comment %(cnum)s for Ticket #%(id)s",
-                              cnum=cnum, id=resource.id)
+                    if cnum == 'description':
+                        title = _("Description for Ticket #%(id)s",
+                                  id=resource.id)
+                    else:
+                        title = _("Comment %(cnum)s for Ticket #%(id)s",
+                                  cnum=cnum, id=resource.id)
                     if resource.id != formatter.resource.id:
                         class_ = ticket['status'] + ' ticket'
                     else:
