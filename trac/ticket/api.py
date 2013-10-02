@@ -491,6 +491,7 @@ class TicketSystem(Component):
                 cnum, realm, id = elts
                 if cnum != 'description' and cnum and not cnum[0].isdigit():
                     realm, id, cnum = elts # support old comment: style
+                id = as_int(id, None)
                 resource = formatter.resource(realm, id)
         else:
             resource = formatter.resource
@@ -498,15 +499,15 @@ class TicketSystem(Component):
 
         if resource and resource.realm == 'ticket' and \
                 (all(c.isdigit() for c in cnum) or cnum == 'description'):
-            id = as_int(resource.id, None)
-            if id is not None:
-                href = "%s#comment:%s" % (formatter.href.ticket(resource.id),
-                                          cnum)
+            if resource.id is not None:
+                href = formatter.href.ticket(resource.id) + \
+                       "#comment:%s" % cnum
                 title = _("Comment %(cnum)s for Ticket #%(id)s", cnum=cnum,
                           id=resource.id)
                 if 'TICKET_VIEW' in formatter.perm(resource):
                     for status, in self.env.db_query(
-                            "SELECT status FROM ticket WHERE id=%s", (id,)):
+                            "SELECT status FROM ticket WHERE id=%s",
+                            (resource.id,)):
                         return tag.a(label, href=href, title=title,
                                      class_=status)
                 return tag.a(label, href=href, title=title)
