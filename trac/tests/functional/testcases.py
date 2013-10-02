@@ -241,8 +241,7 @@ class RegressionTestTicket6318(FunctionalTwillTestCaseSetup):
 
 
 def functionalSuite():
-    if FunctionalTestSuite is not None:
-        suite = FunctionalTestSuite()
+    suite = FunctionalTestSuite()
     return suite
 
 
