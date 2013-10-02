@@ -501,15 +501,17 @@ class TicketSystem(Component):
                 (all(c.isdigit() for c in cnum) or cnum == 'description'):
             href = title = class_ = None
             if self.resource_exists(resource):
-                href = formatter.href.ticket(resource.id) + \
-                       "#comment:%s" % cnum
-                title = _("Comment %(cnum)s for Ticket #%(id)s",
-                          cnum=cnum, id=resource.id)
-                if 'TICKET_VIEW' in formatter.perm(resource):
-                    for status, in self.env.db_query(
-                            "SELECT status FROM ticket WHERE id=%s",
-                            (resource.id,)):
-                        class_ = status + ' ticket'
+                from trac.ticket.model import Ticket
+                ticket = Ticket(self.env, resource.id)
+                if cnum != 'description' and not ticket.get_change(cnum):
+                    title = _("ticket comment does not exist")
+                    class_ = 'missing ticket'
+                elif 'TICKET_VIEW' in formatter.perm(resource):
+                    href = formatter.href.ticket(resource.id) + \
+                           "#comment:%s" % cnum
+                    title = _("Comment %(cnum)s for Ticket #%(id)s",
+                              cnum=cnum, id=resource.id)
+                    class_ = ticket['status'] + ' ticket'
             else:
                 title = _("ticket does not exist")
                 class_ = 'missing ticket'

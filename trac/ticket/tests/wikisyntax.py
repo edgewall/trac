@@ -391,7 +391,7 @@ comment:ticket:: (deprecated)
 <a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">see above</a> (deprecated)
 <a class="new ticket" href="/ticket/1#comment:description" title="Comment description for Ticket #1">see descr</a> (deprecated)
 <a class="closed ticket" href="/ticket/2#comment:1" title="Comment 1 for Ticket #2">comment:ticket:2:1</a> (deprecated)
-<a class="closed ticket" href="/ticket/2#comment:3" title="Comment 3 for Ticket #2">comment:ticket:2:3</a> (deprecated)
+<a class="missing ticket" title="ticket comment does not exist">comment:ticket:2:3</a> (deprecated)
 <a class="missing ticket" title="ticket does not exist">comment:ticket:3:1</a> (deprecated)
 comment:tiket:2:1 (deprecated)
 comment:ticket:two:1 (deprecated)
@@ -422,7 +422,7 @@ comment::ticket:
 <a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">see above</a>
 <a class="new ticket" href="/ticket/1#comment:description" title="Comment description for Ticket #1">see descr</a>
 <a class="closed ticket" href="/ticket/2#comment:1" title="Comment 1 for Ticket #2">comment:1:ticket:2</a>
-<a class="closed ticket" href="/ticket/2#comment:3" title="Comment 3 for Ticket #2">comment:3:ticket:2</a>
+<a class="missing ticket" title="ticket comment does not exist">comment:3:ticket:2</a>
 <a class="missing ticket" title="ticket does not exist">comment:1:ticket:3</a>
 comment:2:tiket:1
 comment:1:ticket:two
