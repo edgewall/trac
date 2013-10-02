@@ -2177,7 +2177,7 @@ msgstr "ファイルを添付"
 #: trac/versioncontrol/templates/dir_entries.html:17
 #, python-format
 msgid "%(size)s bytes"
-msgstr "%(size)s バイト"
+msgstr "%(size)s B"
 
 #: trac/templates/attachment.html:96
 #, python-format
@@ -2328,7 +2328,7 @@ msgstr "凡例:"
 #: trac/templates/diff_view.html:67
 #: trac/versioncontrol/templates/changeset.html:200
 msgid "Unmodified"
-msgstr "未変更"
+msgstr "変更なし"
 
 #: trac/templates/diff_view.html:68
 #: trac/versioncontrol/templates/changeset.html:201
