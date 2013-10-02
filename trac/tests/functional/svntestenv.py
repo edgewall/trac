@@ -16,8 +16,8 @@ import re
 from subprocess import call
 
 from testenv import FunctionalTestEnvironment
-from trac.tests.functional.compat import close_fds
 from trac.tests.functional import logfile
+from trac.util.compat import close_fds
 
 
 class SvnFunctionalTestEnvironment(FunctionalTestEnvironment):
