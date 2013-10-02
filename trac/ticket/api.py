@@ -497,20 +497,23 @@ class TicketSystem(Component):
             resource = formatter.resource
             cnum = target
 
-        if resource and resource.realm == 'ticket' and \
+        if resource and resource.id and resource.realm == 'ticket' and \
                 (all(c.isdigit() for c in cnum) or cnum == 'description'):
-            if resource.id is not None:
+            if self.resource_exists(resource):
                 href = formatter.href.ticket(resource.id) + \
                        "#comment:%s" % cnum
-                title = _("Comment %(cnum)s for Ticket #%(id)s", cnum=cnum,
-                          id=resource.id)
+                title = _("Comment %(cnum)s for Ticket #%(id)s",
+                          cnum=cnum, id=resource.id)
                 if 'TICKET_VIEW' in formatter.perm(resource):
                     for status, in self.env.db_query(
                             "SELECT status FROM ticket WHERE id=%s",
                             (resource.id,)):
                         return tag.a(label, href=href, title=title,
-                                     class_=status)
+                                     class_=status + ' ticket')
                 return tag.a(label, href=href, title=title)
+            else:
+                return tag.a(label, title=_("ticket does not exist"),
+                             class_='missing ticket')
         return label
 
     # IResourceManager methods

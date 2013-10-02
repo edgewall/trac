@@ -372,9 +372,12 @@ def query2_teardown(tc):
 
 COMMENT_TEST_CASES = u"""
 ============================== comment: link resolver (deprecated)
-comment:ticket:123:2 (deprecated)
-[comment:ticket:123:2 see above] (deprecated)
-[comment:ticket:123:description see descr] (deprecated)
+comment:ticket:1:1 (deprecated)
+[comment:ticket:1:1 see above] (deprecated)
+[comment:ticket:1:description see descr] (deprecated)
+comment:ticket:2:1 (deprecated)
+comment:ticket:2:3 (deprecated)
+comment:ticket:3:1 (deprecated)
 comment:tiket:2:1 (deprecated)
 comment:ticket:two:1 (deprecated)
 comment:ticket:2:1a (deprecated)
@@ -384,9 +387,12 @@ comment:ticket::2 (deprecated)
 comment:ticket:: (deprecated)
 ------------------------------
 <p>
-<a href="/ticket/123#comment:2" title="Comment 2 for Ticket #123">comment:ticket:123:2</a> (deprecated)
-<a href="/ticket/123#comment:2" title="Comment 2 for Ticket #123">see above</a> (deprecated)
-<a href="/ticket/123#comment:description" title="Comment description for Ticket #123">see descr</a> (deprecated)
+<a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">comment:ticket:1:1</a> (deprecated)
+<a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">see above</a> (deprecated)
+<a class="new ticket" href="/ticket/1#comment:description" title="Comment description for Ticket #1">see descr</a> (deprecated)
+<a class="closed ticket" href="/ticket/2#comment:1" title="Comment 1 for Ticket #2">comment:ticket:2:1</a> (deprecated)
+<a class="closed ticket" href="/ticket/2#comment:3" title="Comment 3 for Ticket #2">comment:ticket:2:3</a> (deprecated)
+<a class="missing ticket" title="ticket does not exist">comment:ticket:3:1</a> (deprecated)
 comment:tiket:2:1 (deprecated)
 comment:ticket:two:1 (deprecated)
 comment:ticket:2:1a (deprecated)
@@ -397,9 +403,12 @@ comment:ticket:: (deprecated)
 </p>
 ------------------------------
 ============================== comment: link resolver
-comment:2:ticket:123
-[comment:2:ticket:123 see above]
-[comment:description:ticket:123 see descr]
+comment:1:ticket:1
+[comment:1:ticket:1 see above]
+[comment:description:ticket:1 see descr]
+comment:1:ticket:2
+comment:3:ticket:2
+comment:1:ticket:3
 comment:2:tiket:1
 comment:1:ticket:two
 comment:one:ticket:1
@@ -409,9 +418,12 @@ comment:2:ticket:
 comment::ticket:
 ------------------------------
 <p>
-<a href="/ticket/123#comment:2" title="Comment 2 for Ticket #123">comment:2:ticket:123</a>
-<a href="/ticket/123#comment:2" title="Comment 2 for Ticket #123">see above</a>
-<a href="/ticket/123#comment:description" title="Comment description for Ticket #123">see descr</a>
+<a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">comment:1:ticket:1</a>
+<a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">see above</a>
+<a class="new ticket" href="/ticket/1#comment:description" title="Comment description for Ticket #1">see descr</a>
+<a class="closed ticket" href="/ticket/2#comment:1" title="Comment 1 for Ticket #2">comment:1:ticket:2</a>
+<a class="closed ticket" href="/ticket/2#comment:3" title="Comment 3 for Ticket #2">comment:3:ticket:2</a>
+<a class="missing ticket" title="ticket does not exist">comment:1:ticket:3</a>
 comment:2:tiket:1
 comment:1:ticket:two
 comment:one:ticket:1
@@ -432,6 +444,24 @@ comment::ticket:
 # As it's a problem with a temp workaround, I think there's no need
 # to fix it for now.
 
+def comment_setup(tc):
+    ticket1 = Ticket(tc.env)
+    ticket1.values.update({'reporter': 'santa',
+                            'summary': 'This is the summary for ticket 1',
+                            'status': 'new'})
+    ticket1.insert()
+    ticket1.save_changes(comment='This is the comment for ticket 1')
+    ticket2 = Ticket(tc.env)
+    ticket2.values.update({'reporter': 'claws',
+                           'summary': 'This is the summary for ticket 2',
+                           'status': 'closed'})
+    ticket2.insert()
+    ticket2.save_changes(comment='This is the comment for ticket 2')
+
+def comment_teardown(tc):
+    tc.env.reset_db()
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(TICKET_TEST_CASES, ticket_setup, __file__,
@@ -443,7 +473,8 @@ def suite():
                                   ticket_teardown))
     suite.addTest(formatter.suite(QUERY2_TEST_CASES, query2_setup, __file__,
                                   query2_teardown))
-    suite.addTest(formatter.suite(COMMENT_TEST_CASES, file=__file__))
+    suite.addTest(formatter.suite(COMMENT_TEST_CASES, comment_setup, __file__,
+                                  comment_teardown))
     return suite
 
 if __name__ == '__main__':
