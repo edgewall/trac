@@ -499,6 +499,7 @@ class TicketSystem(Component):
 
         if resource and resource.id and resource.realm == 'ticket' and \
                 (all(c.isdigit() for c in cnum) or cnum == 'description'):
+            href = title = class_ = None
             if self.resource_exists(resource):
                 href = formatter.href.ticket(resource.id) + \
                        "#comment:%s" % cnum
@@ -508,12 +509,11 @@ class TicketSystem(Component):
                     for status, in self.env.db_query(
                             "SELECT status FROM ticket WHERE id=%s",
                             (resource.id,)):
-                        return tag.a(label, href=href, title=title,
-                                     class_=status + ' ticket')
-                return tag.a(label, href=href, title=title)
+                        class_ = status + ' ticket'
             else:
-                return tag.a(label, title=_("ticket does not exist"),
-                             class_='missing ticket')
+                title = _("ticket does not exist")
+                class_ = 'missing ticket'
+            return tag.a(label, class_=class_, href=href, title=title)
         return label
 
     # IResourceManager methods
