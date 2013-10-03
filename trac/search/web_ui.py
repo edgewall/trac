@@ -228,7 +228,7 @@ class SearchModule(Component):
                                         q=req.args.get('q'),
                                         page=shown_page, noquickjump=1)
             pagedata.append([page_href, None, str(shown_page),
-                             'page ' + str(shown_page)])
+                             _("Page %(num)d", num=shown_page)])
 
         fields = ['href', 'class', 'string', 'title']
         results.shown_pages = [dict(zip(fields, p)) for p in pagedata]
