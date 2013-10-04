@@ -23,8 +23,10 @@ from genshi.core import Markup
 
 from trac.core import *
 from trac.config import Option
-from trac.db.api import DatabaseManager, IDatabaseConnector, _parse_db_str
+from trac.db.api import DatabaseManager, IDatabaseConnector, _parse_db_str, \
+                        get_column_names
 from trac.db.util import ConnectionWrapper, IterableCursor
+from trac.env import IEnvironmentSetupParticipant
 from trac.util import as_int, get_pkginfo
 from trac.util.compat import close_fds
 from trac.util.text import exception_to_unicode, to_unicode
@@ -76,7 +78,7 @@ class MySQLConnector(Component):
      * `read_default_group`: Configuration group to use from the default file
      * `unix_socket`: Use a Unix socket at the given path to connect
     """
-    implements(IDatabaseConnector)
+    implements(IDatabaseConnector, IEnvironmentSetupParticipant)
 
     mysqldump_path = Option('trac', 'mysqldump_path', 'mysqldump',
         """Location of mysqldump for MySQL database backups""")
@@ -112,6 +114,7 @@ class MySQLConnector(Component):
                 host=None, port=None, params={}):
         cnx = self.get_connection(path, log, user, password, host, port,
                                   params)
+        self._verify_variables(cnx)
         utf8_size = self._utf8_size(cnx)
         cursor = cnx.cursor()
         if schema is None:
@@ -120,6 +123,7 @@ class MySQLConnector(Component):
             for stmt in self.to_sql(table, utf8_size=utf8_size):
                 self.log.debug(stmt)
                 cursor.execute(stmt)
+        self._verify_table_status(cnx)
         cnx.commit()
 
     def _utf8_size(self, cnx):
@@ -249,6 +253,83 @@ class MySQLConnector(Component):
         if not os.path.exists(dest_file):
             raise TracError(_("No destination file created"))
         return dest_file
+
+    # IEnvironmentSetupParticipant methods
+
+    def environment_created(self):
+        pass
+
+    def environment_needs_upgrade(self, db):
+        if getattr(self, 'required', False):
+            self._verify_table_status(db)
+            self._verify_variables(db)
+        return False
+
+    def upgrade_environment(self, db):
+        pass
+
+    UNSUPPORTED_ENGINES = ('MyISAM', 'EXAMPLE', 'ARCHIVE', 'CSV', 'ISAM')
+
+    def _verify_table_status(self, db):
+        from trac.db_default import schema
+        tables = [t.name for t in schema]
+        cursor = db.cursor()
+        cursor.execute("SHOW TABLE STATUS WHERE name IN (%s)" %
+                       ','.join(('%s',) * len(tables)),
+                       tables)
+        cols = get_column_names(cursor)
+        rows = [dict(zip(cols, row)) for row in cursor]
+
+        engines = [row['Name'] for row in rows
+                               if row['Engine'] in self.UNSUPPORTED_ENGINES]
+        if engines:
+            raise TracError(_(
+                "All tables must be created as InnoDB or NDB storage engine "
+                "to support transactions. The following tables have been "
+                "created as storage engine which doesn't support "
+                "transactions: %(tables)s", tables=', '.join(engines)))
+
+        non_utf8bin = [row['Name'] for row in rows
+                       if row['Collation'] not in ('utf8_bin', 'utf8mb4_bin',
+                                                   None)]
+        if non_utf8bin:
+            raise TracError(_("All tables must be created with utf8_bin or "
+                              "utf8mb4_bin as collation. The following tables "
+                              "don't have the collations: %(tables)s",
+                              tables=', '.join(non_utf8bin)))
+
+    SUPPORTED_COLLATIONS = (('utf8', 'utf8_bin'), ('utf8mb4', 'utf8mb4_bin'))
+
+    def _verify_variables(self, db):
+        cursor = db.cursor()
+        cursor.execute("SHOW VARIABLES WHERE variable_name IN ("
+                       "'default_storage_engine','storage_engine',"
+                       "'default_tmp_storage_engine',"
+                       "'character_set_database','collation_database')")
+        vars = dict((row[0].lower(), row[1]) for row in cursor)
+
+        engine = vars.get('default_storage_engine') or \
+                 vars.get('storage_engine')
+        if engine in self.UNSUPPORTED_ENGINES:
+            raise TracError(_("The current storage engine is %(engine)s. "
+                              "It must be InnoDB or NDB storage engine to "
+                              "support transactions.", engine=engine))
+
+        tmp_engine = vars.get('default_tmp_storage_engine')
+        if tmp_engine in self.UNSUPPORTED_ENGINES:
+            raise TracError(_("The current storage engine for TEMPORARY "
+                              "tables is %(engine)s. It must be InnoDB or NDB "
+                              "storage engine to support transactions.",
+                              engine=tmp_engine))
+
+        charset = vars['character_set_database']
+        collation = vars['collation_database']
+        if (charset, collation) not in self.SUPPORTED_COLLATIONS:
+            raise TracError(_(
+                "The charset and collation of database are '%(charset)s' and "
+                "'%(collation)s'. The database must be created with one of "
+                "%(supported)s.", charset=charset, collation=collation,
+                supported=repr(self.SUPPORTED_COLLATIONS)))
 
 
 class MySQLConnection(ConnectionWrapper):
