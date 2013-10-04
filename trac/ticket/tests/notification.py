@@ -19,6 +19,7 @@
 from trac.util.datefmt import utc
 from trac.ticket.model import Ticket
 from trac.ticket.notification import TicketNotifyEmail
+from trac.ticket.web_ui import TicketModule
 from trac.test import EnvironmentStub, Mock, MockPerm
 from trac.tests import compat
 from trac.tests.notification import SMTPThreadedServer, parse_smtp_message, \
