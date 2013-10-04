@@ -399,10 +399,7 @@ class LogModule(Component):
                                                   path or '/',
                                                   revs=str(revranges))
                     else:
-                        try:
-                            rev = repos.normalize_rev(revs)
-                        except NoSuchChangeset:
-                            rev = None
+                        rev = repos.normalize_rev(revs)
                         href = formatter.href.log(repos.reponame or None,
                                                   path or '/', rev=rev)
                     if query and '?' in href:
@@ -428,10 +425,7 @@ class LogModule(Component):
         except ValueError:
             # slow path, normalize each rev
             splitted_ranges = re.split(r'([-,])', ranges)
-            try:
-                revs = [repos.normalize_rev(r) for r in splitted_ranges[::2]]
-            except NoSuchChangeset:
-                return None
+            revs = [repos.normalize_rev(r) for r in splitted_ranges[::2]]
             seps = splitted_ranges[1::2] + ['']
             ranges = ''.join([str(rev)+sep for rev, sep in zip(revs, seps)])
             try:
