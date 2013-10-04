@@ -203,7 +203,7 @@ log:trunk@12-23
 log:trunk:12:23
 log:trunk:12-23
 log:trunk:12-head
-log:trunk:12@23 (bad, but shouldn't error out)
+log:trunk:12@23
 ------------------------------
 <p>
 <a class="source" href="/log/?rev=12">log:@12</a>
@@ -214,7 +214,26 @@ log:trunk:12@23 (bad, but shouldn't error out)
 <a class="source" href="/log/trunk?revs=12-23">log:trunk:12:23</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk:12-23</a>
 <a class="source" href="/log/trunk?revs=12-200">log:trunk:12-head</a>
-<a class="source" href="/log/trunk">log:trunk:12@23</a> (bad, but shouldn't error out)
+<a class="missing source" title="No changeset 12@23 in the repository">log:trunk:12@23</a>
+</p>
+------------------------------
+============================== log: link resolver with missing revisions
+log:@4242
+log:@4242-4243
+log:@notfound
+log:@deadbeef:deadbef0
+log:trunk@4243
+log:trunk@notfound
+[4242:4243]
+------------------------------
+<p>
+<a class="missing source" title="No changeset 4242 in the repository">log:@4242</a>
+<a class="source" href="/log/?revs=4242-4243">log:@4242-4243</a>
+<a class="missing source" title="No changeset notfound in the repository">log:@notfound</a>
+<a class="missing source" title="No changeset deadbeef in the repository">log:@deadbeef:deadbef0</a>
+<a class="missing source" title="No changeset 4243 in the repository">log:trunk@4243</a>
+<a class="missing source" title="No changeset notfound in the repository">log:trunk@notfound</a>
+<a class="source" href="/log/?revs=4242-4243">[4242:4243]</a>
 </p>
 ------------------------------
 ============================== log: link resolver + query
@@ -242,9 +261,9 @@ log:@10:20:30
 [10:20:30]
 ------------------------------
 <p>
-<a class="source" href="/log/">log:@10-20-30</a>
-<a class="source" href="/log/">log:@10,20-30,40-50-60</a>
-<a class="source" href="/log/">log:@10:20:30</a>
+<a class="missing source" title="No changeset 10-20-30 in the repository">log:@10-20-30</a>
+<a class="missing source" title="No changeset 10,20-30,40-50-60 in the repository">log:@10,20-30,40-50-60</a>
+<a class="missing source" title="No changeset 10:20:30 in the repository">log:@10:20:30</a>
 [10-20-30]
 [10:20:30]
 </p>
