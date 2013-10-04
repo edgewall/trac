@@ -157,6 +157,54 @@ class ReStructuredTextCodeBlockTest(FunctionalTwillTestCaseSetup):
         tc.find('"123"')
 
 
+class RegressionTestTicket8976(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/8976
+        Test fine grained permissions policy on wiki for specific page
+        versions."""
+        name = self._tester.create_wiki_page()
+        self._tester.edit_wiki_page(name)
+        self._tester.edit_wiki_page(name)
+        self._tester.logout()
+        self._tester.login('user')
+        try:
+            self._tester.go_to_wiki(name, 1)
+            tc.notfind(r"\bError: Forbidden\b")
+            self._tester.go_to_wiki(name, 2)
+            tc.notfind(r"\bError: Forbidden\b")
+            self._tester.go_to_wiki(name, 3)
+            tc.notfind(r"\bError: Forbidden\b")
+            self._tester.go_to_wiki(name, 4)
+            tc.find(r"\bTrac Error\b")
+            self._tester.go_to_wiki(name)
+            tc.notfind(r"\bError: Forbidden\b")
+            self._testenv.enable_authz_permpolicy("""
+                [wiki:%(name)s@1]
+                * = !WIKI_VIEW
+                [wiki:%(name)s@2]
+                * = WIKI_VIEW
+                [wiki:%(name)s@3]
+                * = !WIKI_VIEW
+                [wiki:%(name)s]
+                * = WIKI_VIEW
+            """ % {'name': name})
+            self._tester.go_to_wiki(name, 1)
+            tc.find(r"\bError: Forbidden\b")
+            self._tester.go_to_wiki(name, 2)
+            tc.notfind(r"\bError: Forbidden\b")
+            self._tester.go_to_wiki(name, 3)
+            tc.find(r"\bError: Forbidden\b")
+            self._tester.go_to_wiki(name, 4)
+            tc.find(r"\bTrac Error\b")
+            self._tester.go_to_wiki(name)
+            tc.notfind(r"\bError: Forbidden\b")
+            self._tester.edit_wiki_page(name)
+        finally:
+            self._tester.logout()
+            self._tester.login('admin')
+            self._testenv.disable_authz_permpolicy()
+
+
 class RegressionTestTicket10274(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/10274"""
@@ -273,6 +321,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestWikiHistory())
     suite.addTest(TestWikiRename())
     suite.addTest(RegressionTestTicket4812())
+    suite.addTest(RegressionTestTicket8976())
     suite.addTest(RegressionTestTicket10274())
     suite.addTest(RegressionTestTicket10850())
     suite.addTest(RegressionTestTicket10957())

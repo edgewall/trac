@@ -123,7 +123,6 @@ class WikiModule(Component):
         page = WikiPage(self.env, pagename)
         versioned_page = WikiPage(self.env, pagename, version=version)
 
-        req.perm(page.resource).require('WIKI_VIEW')
         req.perm(versioned_page.resource).require('WIKI_VIEW')
 
         if version and versioned_page.version != int(version):
@@ -635,7 +634,6 @@ class WikiModule(Component):
                        for each in related]
 
         latest_page = WikiPage(self.env, page.name, version=None)
-        req.perm(latest_page.resource).require('WIKI_VIEW')
 
         prev_version = next_version = None
         if version:
