@@ -15,6 +15,8 @@
 working with a Trac environment to make test cases more succinct.
 """
 
+import re
+
 from trac.tests.functional import internal_error
 from trac.tests.functional.better_twill import tc, b
 from trac.tests.contentgen import random_page, random_sentence, random_word, \
@@ -110,7 +112,7 @@ class FunctionalTester(object):
 
     def go_to_url(self, url):
         tc.go(url)
-        tc.url(url)
+        tc.url(re.escape(url))
         tc.notfind(internal_error)
 
     def go_to_front(self):
@@ -123,11 +125,18 @@ class FunctionalTester(object):
         ticket_url = self.url + "/ticket/%s" % ticketid
         self.go_to_url(ticket_url)
 
-    def go_to_wiki(self, name):
-        """Surf to the page for the given wiki page."""
+    def go_to_wiki(self, name, version=None):
+        """Surf to the wiki page. By default this will be the latest version
+        of the page.
+
+        :param name: name of the wiki page.
+        :param version: version of the wiki page.
+        """
         # Used to go based on a quickjump, but if the wiki pagename isn't
         # camel case, that won't work.
         wiki_url = self.url + '/wiki/%s' % name
+        if version:
+            wiki_url += '?version=%s' % version
         self.go_to_url(wiki_url)
 
     def go_to_timeline(self):
