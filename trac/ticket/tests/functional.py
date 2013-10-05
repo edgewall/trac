@@ -1296,7 +1296,8 @@ class RegressionTestTicket4447(FunctionalTwillTestCaseSetup):
         self._testenv.restart()
         self._tester.go_to_ticket(ticketid)
         self._tester.add_comment(ticketid)
-        tc.notfind('deleted')
+        tc.notfind('<strong class="trac-field-newfield">Another Custom Field'
+                   '</strong>[ \t\n]+<em></em>[ \t\n]+deleted')
         tc.notfind('set to')
 
 
