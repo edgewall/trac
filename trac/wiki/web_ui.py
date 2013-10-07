@@ -522,6 +522,7 @@ class WikiModule(Component):
         data = self._page_data(req, page, action)
         context = web_context(req, page.resource)
         data.update({
+            'context': context,
             'author': author,
             'comment': comment,
             'edit_rows': editrows, 'sidebyside': sidebyside,
