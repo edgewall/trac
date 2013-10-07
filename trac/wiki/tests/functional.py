@@ -313,6 +313,20 @@ class RegressionTestTicket10957(FunctionalTwillTestCaseSetup):
             self._testenv.revoke_perm('anonymous', 'WIKI_CREATE')
 
 
+class RegressionTestTicket11302(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11302"""
+        pagename = random_unique_camel()
+        self._tester.create_wiki_page(pagename)
+        attachment = self._tester.attach_file_to_wiki(
+            pagename, description="illustrates [./@1#point1]")
+        # self._tester.go_to_wiki(pagename + '?action=edit')
+        # tc.url has trouble with that...
+        tc.go(self._tester.url + '/wiki/' + pagename + '?action=edit')
+        tc.find(r'illustrates <a class="wiki"'
+                r' href="/wiki/%s\?version=1#point1">@1</a>' % pagename)
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional.testcases
@@ -325,6 +339,7 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket10274())
     suite.addTest(RegressionTestTicket10850())
     suite.addTest(RegressionTestTicket10957())
+    suite.addTest(RegressionTestTicket11302())
     if has_docutils:
         import docutils
         if get_pkginfo(docutils):
