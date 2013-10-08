@@ -209,7 +209,8 @@ class RegressionTestTicket10752(FunctionalTwillTestCaseSetup):
                            ('anonymous', 'MISSING_PERMISSION'))
         self._testenv.restart()
         self._tester.go_to_admin("Permissions")
-        tc.find('<span class="missing" title="Action is no longer defined">'
+        tc.find('<span class="missing" '
+                'title="MISSING_PERMISSION is no longer defined">'
                 'MISSING_PERMISSION</span>')
 
 
@@ -237,6 +238,17 @@ class RegressionTestTicket11069(FunctionalTwillTestCaseSetup):
             self._testenv.revoke_perm('user', 'PERMISSION_GRANT')
             self._tester.logout()
             self._tester.login('admin')
+
+
+class RegressionTestTicket11095(FunctionalTwillTestCaseSetup):
+    """Test for regression of http://trac.edgewall.org/ticket/11095
+    The permission is truncated if it overflows the available space (CSS)
+    and the full permission name is shown in the title on hover.
+    """
+    def runTest(self):
+        self._tester.go_to_admin("Permissions")
+        tc.find('<span title="MILESTONE_VIEW">MILESTONE_VIEW</span>')
+        tc.find('<span title="WIKI_VIEW">WIKI_VIEW</span>')
 
 
 class RegressionTestTicket11117(FunctionalTwillTestCaseSetup):
@@ -293,6 +305,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestPluginsAuthorization())
     suite.addTest(RegressionTestTicket10752())
     suite.addTest(RegressionTestTicket11069())
+    suite.addTest(RegressionTestTicket11095())
     suite.addTest(RegressionTestTicket11117())
     suite.addTest(RegressionTestTicket11257())
     return suite

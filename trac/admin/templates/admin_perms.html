@@ -69,7 +69,7 @@
             <td>$subject</td>
             <td>
               <label py:for="subject, action in perm_group"
-                     py:with="is_valid = action in actions; has_perm = action in perm">
+                     py:with="invalid = action not in actions; has_perm = action in perm">
                 <!--! base64 makes it safe to use ':' as separator when passing
                       both subject and action as one query parameter -->
                 <input py:if="can_revoke" type="checkbox" name="sel"
@@ -78,8 +78,8 @@
                        value="${'%s:%s' % (unicode_to_base64(subject),
                                            unicode_to_base64(action))}"
                        disabled="${'disabled' if not has_perm else None}" />
-                <span py:strip="is_valid" class="missing"
-                      title="Action is no longer defined">${action}</span>
+                <span class="${classes(missing=invalid)}"
+                      title="${_('%(action)s is no longer defined', action=action) if invalid else action}">${action}</span>
               </label>
             </td>
           </tr>
