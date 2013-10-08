@@ -198,6 +198,21 @@ class TestPluginsAuthorization(AuthorizationTestCaseSetup):
                                 "Manage Plugins")
 
 
+class RegressionTestTicket10752(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/10752
+        Permissions on the web admin page should be greyed out when they
+        are no longer defined.
+        """
+        env = self._testenv.get_trac_environment()
+        env.db_transaction("INSERT INTO permission VALUES (%s,%s)",
+                           ('anonymous', 'MISSING_PERMISSION'))
+        self._testenv.restart()
+        self._tester.go_to_admin("Permissions")
+        tc.find('<span class="missing" title="Action is no longer defined">'
+                'MISSING_PERMISSION</span>')
+
+
 class RegressionTestTicket11069(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/11069
@@ -276,6 +291,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestRemovePermissionGroup())
     suite.addTest(TestPluginSettings())
     suite.addTest(TestPluginsAuthorization())
+    suite.addTest(RegressionTestTicket10752())
     suite.addTest(RegressionTestTicket11069())
     suite.addTest(RegressionTestTicket11117())
     suite.addTest(RegressionTestTicket11257())
