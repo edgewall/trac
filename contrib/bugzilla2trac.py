@@ -1,4 +1,23 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2004-2013 Edgewall Software
+# Copyright (C) 2004 Dmitry Yusupov <dmitry_yus@yahoo.com>
+# Copyright (C) 2004 Mark Rowe <mrowe@bluewire.net.nz>
+# Copyright (C) 2005 Bill Soudan <bill@soudan.net>
+# Copyright (C) 2005 Florent Guillaume <fg@nuxeo.com>
+# Copyright (C) 2005 Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>
+# Copyright (C) 2010 Jeff Moreland <hou5e@hotmail.com>
+#
+# All rights reserved.
+#
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at http://trac.edgewall.com/license.html.
+#
+# This software consists of voluntary contributions made by many
+# individuals. For the exact contribution history, see the revision
+# history and logs, available at http://trac.edgewall.org/.
 
 """
 Import a Bugzilla items into a Trac database.
@@ -8,16 +27,6 @@ Requires:  Trac 0.9b1 from http://trac.edgewall.org/
            MySQL >= 3.23 from http://www.mysql.org/
            or PostGreSQL 8.4 from http://www.postgresql.org/
            or SQLite 3 from http://www.sqlite.org/
-
-Thanks:    Mark Rowe <mrowe@bluewire.net.nz>
-            for original TracDatabase class
-
-Copyright 2004, Dmitry Yusupov <dmitry_yus@yahoo.com>
-
-Many enhancements, Bill Soudan <bill@soudan.net>
-Other enhancements, Florent Guillaume <fg@nuxeo.com>
-Reworked, Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>
-Jeff Moreland <hou5e@hotmail.com>
 
 $Id$
 """
