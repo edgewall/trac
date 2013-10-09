@@ -374,13 +374,10 @@ class RegressionTestTicket10957(FunctionalTwillTestCaseSetup):
 class RegressionTestTicket11302(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/11302"""
-        pagename = random_unique_camel()
-        self._tester.create_wiki_page(pagename)
+        pagename = self._tester.create_wiki_page()
         attachment = self._tester.attach_file_to_wiki(
             pagename, description="illustrates [./@1#point1]")
-        # self._tester.go_to_wiki(pagename + '?action=edit')
-        # tc.url has trouble with that...
-        tc.go(self._tester.url + '/wiki/' + pagename + '?action=edit')
+        self._tester.go_to_wiki(pagename + '?action=edit')
         tc.find(r'illustrates <a class="wiki"'
                 r' href="/wiki/%s\?version=1#point1">@1</a>' % pagename)
 
