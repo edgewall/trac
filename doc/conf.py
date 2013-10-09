@@ -1,5 +1,17 @@
 # -*- coding: utf-8 -*-
 #
+# Copyright (C) 2008-2013 Edgewall Software
+# Copyright (C) 2008 Noah Kantrowitz <noah@coderanger.net>
+# All rights reserved.
+#
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at http://trac.edgewall.com/license.html.
+#
+# This software consists of voluntary contributions made by many
+# individuals. For the exact contribution history, see the revision
+# history and logs, available at http://trac.edgewall.org/.
+
 # Trac documentation build configuration file, created by
 # sphinx-quickstart on Wed May 14 09:05:13 2008.
 #

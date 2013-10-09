@@ -1,8 +1,19 @@
 @ECHO OFF
 ::
+:: Copyright (C) 2007-2013 Edgewall Software
+:: Copyright (C) 2007 Markus Tacker <m@tacker.org>
+:: Copyright (C) 2007 Christian Boos <cboos@edgewall.org>
+:: All rights reserved.
+::
+:: This software is licensed as described in the file COPYING, which
+:: you should have received as part of this distribution. The terms
+:: are also available at http://trac.edgewall.com/license.html.
+::
+:: This software consists of voluntary contributions made by many
+:: individuals. For the exact contribution history, see the revision
+:: history and logs, available at http://trac.edgewall.org/.
 :: Trac post-commit-hook script for Windows
 ::
-:: Contributed by markus, modified by cboos.
 :: Modified for the multirepos branch to use the `changeset` command.
 
 :: Usage:

@@ -1,3 +1,19 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2004-2013 Edgewall Software
+# Copyright (C) 2004 Dmitry Yusupov <dmitry_yus@yahoo.com>
+# Copyright (C) 2004 Mark Rowe <mrowe@bluewire.net.nz>
+# Copyright (C) 2010 Anatoly Techtonik <techtonik@php.net>
+# All rights reserved.
+#
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at http://trac.edgewall.com/license.html.
+#
+# This software consists of voluntary contributions made by many
+# individuals. For the exact contribution history, see the revision
+# history and logs, available at http://trac.edgewall.org/.
+
 """
 Import a Sourceforge project's tracker items into a Trac database.
 
@@ -10,15 +26,6 @@ Requires:
 The Sourceforge tracker items can be exported from the 'Backup' page
 of the project admin section. Substitute XXXXX with project id:
 https://sourceforge.net/export/xml_export2.php?group_id=XXXXX
-
-
-Initial version for Trac 0.7 and old artiface SF export format is
-Copyright 2004, Mark Rowe <mrowe@bluewire.net.nz>
-
-Version for Trac 0.11 and SF XML2 export format, completely rewritten
-except TracDatabase class is
-Copyright 2010, anatoly techtonik <techtonik@php.net>
-HGID: 92fd15e8398c
 
 $Id$
 

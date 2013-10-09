@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 #
+# Copyright (C) 2002-2013 Edgewall Software
 # Copyright (C) 2012 Franz Mayer <franz.mayer@gefasoft.de>
+# All rights reserved.
 #
-# "THE BEER-WARE LICENSE" (Revision 42):
-# <franz.mayer@gefasoft.de> wrote this file.  As long as you retain this
-# notice you can do whatever you want with this stuff. If we meet some day,
-# and you think this stuff is worth it, you can buy me a beer in return.
-# Franz Mayer
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at http://trac.edgewall.com/license.html.
 #
-# Author: Franz Mayer <franz.mayer@gefasoft.de>
+# This software consists of voluntary contributions made by many
+# individuals. For the exact contribution history, see the revision
+# history and logs, available at http://trac.edgewall.org/.
 
 from genshi.builder import tag
 
