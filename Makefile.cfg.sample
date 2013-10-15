@@ -1,10 +1,13 @@
 # -*- Makefile -*- configuration file sample
 #
-# Adapt to your local setting and copy to Makefile.cfg
+# Copy to Makefile.cfg and adapt to your local environment.
 #
 # ----------------------------------------------------------------------------
-# Python Installations (select with `python=` on the `make` command line)
+# Switching between different Python installations 
+#
+# (one of them can be selected with `make python=<key>`)
 
+# python.<key> = <path to Python installation>
 python.23 =
 python.24 =
 python.25 = C:/Dev/Python254
@@ -12,23 +15,48 @@ python.ap25 = C:/Dev/ActivePython254
 python.26 = C:/Dev/Python261
 python.27 =
 
-# default Python version (if not defined, pick the one from the path)
-.python =
+# And also:
+
+# pythonpath.<key> = <extension to the PYTHONPATH for that installation>
+# path.<key> = <extension to the PATH for that installation>
+
+# (both very convenient for specifying non-default Subversion bindings,
+# for example)
+
 
 # ----------------------------------------------------------------------------
-# Database Backends (select with `db=` on the `make` command line)
+# Switching between different database backends
+#
+#  (one of them can be selected with `make db=<backend>`)
 
 # db URIs
+# <backend>.uri = <db:params>
 sqlite.uri = sqlite:test.db
 mysql.uri = mysql://tracuser:tracpassword@localhost/trac
 postgres.uri = postgres://tracuser:tracpassword@localhost:5432/trac?schema=tractest
 
-# default db backend (if not defined, use in-memory sqlite)
+# db backend to use if when `db=<backend>` parameter was given to `make`
 .uri =
+# (if left undefined, use in-memory sqlite)
 
-# default Python versions to use when `db` is specified
+# Python installation to use when `db=<backend>` is specified but `python=<key>`
+# is not.
+#
+# <backend>.python = <key>  where <key> corresponds to the python.<key> vars
 mysql.python = 25
 postgres.python = 26
+.python =
+# (if db is left empty, .python will get used to select the Python
+# installation; if left undefined, the 'python' command will be used
+# instead of a fully qualified pathname)
+
+# For example, if you only have the MySqlDB Python bindings available
+# for your Python 2.7.4 installation, specify something like:
+# mysql.python = 27
+#
+# given that you also have:
+# python.27 = <path to my 2.7.4 install containing the MySqlDB bindings...>
+
 
 # ----------------------------------------------------------------------------
 # Settings for the test server
@@ -42,7 +70,7 @@ auth = *,~/tracenvs/htdigest.realm,realm
 dotpath = /usr/local/bin/dot
 
 # ----------------------------------------------------------------------------
-# Custom rules
+# Custom rules - let your imagination go wild ;-)
 
 .PHONY: bigtest
 
