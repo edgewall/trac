@@ -122,8 +122,9 @@ Makefile Makefile.cfg: ;
 
 # ----------------------------------------------------------------------------
 #
-# Copy Makefile.cfg.sample to Makefile.cfg and adapt to your local environment,
-# no customizations to the present Makefile should be necessary.
+# Copy Makefile.cfg.sample to Makefile.cfg and adapt to your local
+# environment, no customizations to the present Makefile should be
+# necessary.
 #
 #
 -include Makefile.cfg
