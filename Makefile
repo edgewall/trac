@@ -42,7 +42,7 @@ define HELP
 
  ---------------- Standalone test server
 
-  server              start tracd
+  [start-]server      start tracd
 
   [port=...]          variable for selecting the port
   [auth=...]          variable for specifying authentication
@@ -95,10 +95,17 @@ define HELP
   [epydocopts=...]    variable containing extra options for Epydoc
   [dotpath=/.../dot]  path to Graphviz dot program (not used yet)
 
+ ---------------- Miscellaneous
+
+  start-admin         start trac-admin (on `env')
+  start-python        start the Python interpreter
+
+  [adminopts=...]     variable containing extra options for trac-admin
+
 endef
 export HELP
 
-# ` (keep emacs font-lock happy)
+# ' (keep emacs font-lock happy)
 
 define HELP_CFG
  It looks like you don't have a Makefile.cfg file yet.
@@ -153,6 +160,11 @@ clean-bytecode:
 Makefile: ;
 
 # ----------------------------------------------------------------------------
+#
+# Copy Makefile.cfg.sample to Makefile.cfg and adapt to your local
+# environment, no customizations to the present Makefile should be
+# necessary.
+#
 #
 -include Makefile.cfg
 #
@@ -450,14 +462,36 @@ define server-options
  $(if $(wildcard $(env)/VERSION),$(env),-e $(env))
 endef
 
-.PHONY: server
+.PHONY: server start-server tracd start-tracd
 
-server: Trac.egg-info
+server tracd start-tracd: start-server
+
+start-server: Trac.egg-info
 ifdef env
 	python trac/web/standalone.py $(server-options)
 else
 	@echo "\`env' variable was not specified. See \`make help'."
 endif
+
+
+.PHONY: trac-admin start-admin
+
+trac-admin: start-admin
+
+start-admin:
+ifneq "$(wildcard $(env)/VERSION)" ""
+	@python trac/admin/console.py $(env) $(adminopts)
+else
+	@echo "\`env' variable was not specified or doesn't point to one env."
+endif
+
+
+.PHONY: start-python
+
+start-python:
+	@python
+# (this doesn't seem to be much, but we're taking benefit of the
+# environment setup we're doing below)
 
 
 # ----------------------------------------------------------------------------
