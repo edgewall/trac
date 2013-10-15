@@ -5634,7 +5634,7 @@ msgid ""
 "                %(old_path)s])"
 msgstr ""
 "(%(kind)s à partir de [1:\n"
-"                %(old_path)s)"
+"                %(old_path)s])"
 
 #: trac/versioncontrol/templates/changeset.html:119
 #: trac/versioncontrol/templates/changeset.html:122
