@@ -947,18 +947,18 @@ class Storage(object):
     def last_change(self, sha, path, historian=None):
         if historian is not None:
             return historian(path)
-        return self.repo.rev_list('--max-count=1',
-                                  sha, '--',
-                                  self._fs_from_unicode(path)).strip() or None
+        tmp = self.history(sha, path, limit=1)
+        return tmp[0] if tmp else None
 
     def history(self, sha, path, limit=None):
         if limit is None:
             limit = -1
 
-        tmp = self.repo.rev_list('--max-count=%d' % limit, str(sha), '--',
-                                 self._fs_from_unicode(path))
-
-        return [ rev.strip() for rev in tmp.splitlines() ]
+        args = ['--max-count=%d' % limit, str(sha)]
+        if path:
+            args.extend(('--', self._fs_from_unicode(path)))
+        tmp = self.repo.rev_list(*args)
+        return [rev.strip() for rev in tmp.splitlines()]
 
     def history_timerange(self, start, stop):
         return [ rev.strip() for rev in \

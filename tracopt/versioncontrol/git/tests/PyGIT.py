@@ -23,7 +23,7 @@ from trac.test import locate, EnvironmentStub
 from trac.tests import compat
 from trac.util import create_file
 from trac.util.compat import close_fds
-from trac.versioncontrol import DbRepositoryProvider
+from trac.versioncontrol.api import Changeset, DbRepositoryProvider
 from tracopt.versioncontrol.git.git_fs import GitConnector
 from tracopt.versioncontrol.git.PyGIT import GitCore, Storage, parse_commit
 
@@ -181,7 +181,8 @@ class NormalTestCase(unittest.TestCase):
         self._git('config', 'user.email', "joe@example.com")
         create_file(os.path.join(self.repos_path, '.gitignore'))
         self._git('add', '.gitignore')
-        self._git('commit', '-a', '-m', 'test')
+        self._git('commit', '-a', '-m', 'test',
+                  '--date', 'Tue Jan 1 18:04:56 2013 +0900')
 
     def tearDown(self):
         self.env.reset_db()
@@ -242,6 +243,29 @@ class NormalTestCase(unittest.TestCase):
         self.assertFalse(repos.rev_older_than(rev, parent_rev))
         self.assertFalse(repos.rev_older_than(rev[:7], parent_rev[:7]))
 
+    def test_node_get_history_with_empty_commit(self):
+        # regression test for #11328
+        path = os.path.join(self.repos_path, '.git')
+        DbRepositoryProvider(self.env).add_repository('gitrepos', path, 'git')
+        repos = self.env.get_repository('gitrepos')
+        parent_rev = repos.youngest_rev
+
+        self._git('commit', '-m', 'ticket:11328', '--allow-empty',
+                  '--date', 'Tue Oct 15 18:46:27 2013 +0900')
+        repos.sync()
+        rev = repos.youngest_rev
+
+        node = repos.get_node('', rev)
+        self.assertEqual(rev, repos.git.last_change(rev, ''))
+        history = list(node.get_history())
+        self.assertEqual(u'', history[0][0])
+        self.assertEqual(rev, history[0][1])
+        self.assertEqual(Changeset.EDIT, history[0][2])
+        self.assertEqual(u'', history[1][0])
+        self.assertEqual(parent_rev, history[1][1])
+        self.assertEqual(Changeset.ADD, history[1][2])
+        self.assertEqual(2, len(history))
+
 
 class UnicodeNameTestCase(unittest.TestCase):
 
@@ -256,7 +280,8 @@ class UnicodeNameTestCase(unittest.TestCase):
         self._git('config', 'user.email', "joe@example.com")
         create_file(os.path.join(self.repos_path, '.gitignore'))
         self._git('add', '.gitignore')
-        self._git('commit', '-a', '-m', 'test')
+        self._git('commit', '-a', '-m', 'test',
+                  '--date', 'Tue Jan 1 18:04:57 2013 +0900')
 
     def tearDown(self):
         self.env.reset_db()
