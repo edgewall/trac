@@ -42,8 +42,8 @@ class RegressionTestRev5883(FunctionalTwillTestCaseSetup):
 
 def functionalSuite(suite=None):
     if not suite:
-        import trac.tests.functional.testcases
-        suite = trac.tests.functional.testcases.functionalSuite()
+        import trac.tests.functional
+        suite = trac.tests.functional.functionalSuite()
     suite.addTest(RegressionTestRev5883())
     return suite
 
