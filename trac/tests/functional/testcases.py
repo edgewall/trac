@@ -240,14 +240,10 @@ class RegressionTestTicket6318(FunctionalTwillTestCaseSetup):
             self._testenv.deluser(u'joé')
 
 
-def functionalSuite():
-    suite = FunctionalTestSuite()
-    return suite
-
-
-def suite():
-    suite = functionalSuite()
-
+def functionalSuite(suite=None):
+    if not suite:
+        import trac.tests.functional
+        suite = trac.tests.functional.functionalSuite()
     suite.addTest(RegressionTestRev6017())
     suite.addTest(RegressionTestTicket3833a())
     suite.addTest(RegressionTestTicket3833b())
@@ -258,25 +254,8 @@ def suite():
     suite.addTest(ErrorPageValidation())
     suite.addTest(RegressionTestTicket3663())
     suite.addTest(RegressionTestTicket6318())
-
-    import trac.versioncontrol.tests
-    trac.versioncontrol.tests.functionalSuite(suite)
-    import trac.ticket.tests
-    trac.ticket.tests.functionalSuite(suite)
-    import trac.prefs.tests
-    trac.prefs.tests.functionalSuite(suite)
-    import trac.wiki.tests
-    trac.wiki.tests.functionalSuite(suite)
-    import trac.timeline.tests
-    trac.timeline.tests.functionalSuite(suite)
-    import trac.admin.tests
-    trac.admin.tests.functionalSuite(suite)
-    # The db tests should be last since the backup test occurs there.
-    import trac.db.tests
-    trac.db.tests.functionalSuite(suite)
-
     return suite
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='functionalSuite')

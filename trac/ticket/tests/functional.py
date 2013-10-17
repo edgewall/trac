@@ -1983,8 +1983,8 @@ class RegressionTestTicket11176(FunctionalTestCaseSetup):
 
 def functionalSuite(suite=None):
     if not suite:
-        import trac.tests.functional.testcases
-        suite = trac.tests.functional.testcases.functionalSuite()
+        import trac.tests.functional
+        suite = trac.tests.functional.functionalSuite()
     suite.addTest(TestTickets())
     suite.addTest(TestTicketPreview())
     suite.addTest(TestTicketNoSummary())

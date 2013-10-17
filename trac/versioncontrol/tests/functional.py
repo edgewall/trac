@@ -228,8 +228,8 @@ class RegressionTestTicket11194(FunctionalTwillTestCaseSetup):
 
 def functionalSuite(suite=None):
     if not suite:
-        import trac.tests.functional.testcases
-        suite = trac.tests.functional.testcases.functionalSuite()
+        import trac.tests.functional
+        suite = trac.tests.functional.functionalSuite()
     suite.addTest(TestAdminRepositoryAuthorization())
     if has_svn:
         suite.addTest(TestEmptySvnRepo())

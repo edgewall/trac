@@ -169,10 +169,31 @@ def regex_owned_by(username):
     return '(Owned by:(<[^>]*>|\\n| )*%s)' % username
 
 
+def functionalSuite():
+    suite = FunctionalTestSuite()
+    return suite
+
+
 def suite():
     try:
-        from trac.tests.functional.testcases import suite
-        suite = suite()
+        suite = functionalSuite()
+        import trac.tests.functional.testcases
+        trac.tests.functional.testcases.functionalSuite(suite)
+        import trac.versioncontrol.tests
+        trac.versioncontrol.tests.functionalSuite(suite)
+        import trac.ticket.tests
+        trac.ticket.tests.functionalSuite(suite)
+        import trac.prefs.tests
+        trac.prefs.tests.functionalSuite(suite)
+        import trac.wiki.tests
+        trac.wiki.tests.functionalSuite(suite)
+        import trac.timeline.tests
+        trac.timeline.tests.functionalSuite(suite)
+        import trac.admin.tests
+        trac.admin.tests.functionalSuite(suite)
+        # The db tests should be last since the backup test occurs there.
+        import trac.db.tests
+        trac.db.tests.functionalSuite(suite)
     except ImportError, e:
         print("SKIP: functional tests (%s)" % e)
         # No tests to run, provide an empty suite.
