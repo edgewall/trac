@@ -8,15 +8,13 @@
   <xi:include href="admin.html" />
   <head>
     <title>$label_plural</title>
-    <script type="text/javascript" py:if="view == 'list'">/*<![CDATA[*/
-      jQuery(document).ready(function($) {
-        $("h2").addRowCount("table.listing");
-      });
-    /*]]>*/</script>
   </head>
 
   <body>
-    <h2 i18n:msg="label_plural">Manage $label_plural</h2>
+    <h2>
+      <i18n:msg params="label_plural">Manage $label_plural</i18n:msg>
+      <span py:if="view == 'list'" class="trac-count">(${len(enums)})</span>
+    </h2>
 
     <py:choose test="view">
       <form py:when="'detail'" class="mod" id="modenum" method="post" action="">

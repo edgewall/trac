@@ -8,15 +8,10 @@
   <xi:include href="admin.html" />
   <head>
     <title>Components</title>
-    <script type="text/javascript" py:if="view == 'list'">/*<![CDATA[*/
-      jQuery(document).ready(function($) {
-        $("h2").addRowCount("table.listing");
-      });
-    /*]]>*/</script>
   </head>
 
   <body>
-    <h2>Manage Components</h2>
+    <h2>Manage Components <span py:if="view == 'list'" class="trac-count">(${len(components)})</span></h2>
 
     <py:def function="owner_field(default_owner='', br_after_label=False)">
       <div class="field">

@@ -32,6 +32,8 @@ class AuthorizationTestCaseSetup(FunctionalTwillTestCaseSetup):
         if isinstance(perms, basestring):
             perms = (perms, )
 
+        h2 = r'<h2>[ \t\n]*%s[ \t\n]*' \
+             r'( <span class="trac-count">\(\d+\)</span>)?[ \t\n]*</h2>'
         try:
             for perm in perms:
                 try:
@@ -39,7 +41,7 @@ class AuthorizationTestCaseSetup(FunctionalTwillTestCaseSetup):
                     tc.find("No administration panels available")
                     self._testenv.grant_perm('user', perm)
                     tc.go(href)
-                    tc.find(r"<h2>%s</h2>" % h2_text)
+                    tc.find(h2 % h2_text)
                 finally:
                     self._testenv.revoke_perm('user', perm)
                 try:
@@ -49,7 +51,7 @@ class AuthorizationTestCaseSetup(FunctionalTwillTestCaseSetup):
                         href.strip('/').replace('/', ':', 1): {'user': perm},
                     })
                     tc.go(href)
-                    tc.find(r"<h2>%s</h2>" % h2_text)
+                    tc.find(h2 % h2_text)
                 except ImportError:
                     pass
                 finally:
