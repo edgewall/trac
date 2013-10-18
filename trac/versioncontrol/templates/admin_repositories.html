@@ -8,15 +8,10 @@
   <xi:include href="admin.html"/>
   <head>
     <title>Repositories</title>
-    <script type="text/javascript" py:if="view == 'list'">/*<![CDATA[*/
-      jQuery(document).ready(function($) {
-        $("h2").addRowCount("table.listing");
-      });
-    /*]]>*/</script>
   </head>
 
   <body py:with="sorted_repos = sorted(repositories.iteritems(), key=lambda item: item[0].lower())">
-    <h2>Manage Repositories</h2>
+    <h2>Manage Repositories <span py:if="view == 'list'" class="trac-count">(${len(repositories)})</span></h2>
 
     <py:def function="type_field(editable, multiline=False, selected=None)">
       <div class="field">

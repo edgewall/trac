@@ -18,15 +18,12 @@
       jQuery(document).ready(function($) {
         $("#duedate").datetimepicker();
         $("#completeddate").datetimepicker();
-        <py:if test="view == 'list'">
-        $("h2").addRowCount("table.listing");
-        </py:if>
       });
     </script>
   </head>
 
   <body>
-    <h2>Manage Milestones</h2>
+    <h2>Manage Milestones <span py:if="view == 'list'" class="trac-count">(${len(milestones)})</span></h2>
 
     <py:choose test="view">
       <form py:when="'detail'" class="mod" method="post" id="modifymilestone" action=""

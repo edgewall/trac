@@ -11,15 +11,12 @@
     <script type="text/javascript">
       jQuery(document).ready(function($) {
         $("#releaseddate").datetimepicker();
-        <py:if test="view == 'list'">
-        $("h2").addRowCount("table.listing");
-        </py:if>
       });
     </script>
   </head>
 
   <body>
-    <h2>Manage Versions</h2>
+    <h2>Manage Versions <span py:if="view == 'list'" class="trac-count">(${len(versions)})</span></h2>
 
     <py:choose test="view">
       <form py:when="'detail'" class="mod" id="modifyversion" method="post" action="">

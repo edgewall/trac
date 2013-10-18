@@ -49,15 +49,12 @@
             return false;
           });
         });
-        // Display the number of installed plugins in the heading
-        var count = $("div.plugin").length;
-        $("h2").addCount(count);
       });
     /*]]>*/</script>
   </head>
 
   <body>
-    <h2>Manage Plugins</h2>
+    <h2>Manage Plugins <span class="trac-count">(${len(plugins)})</span></h2>
 
     <form id="addplug" class="addnew" method="post" enctype="multipart/form-data" action="">
       <fieldset>
