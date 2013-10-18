@@ -506,6 +506,10 @@ pre.wiki, pre.literal-block {
  overflow: auto;
 }
 
+div.wiki-code {
+ margin: 1em 1.75em;
+}
+
 code, tt {
  color: #600;
  border: 1px solid #edc;

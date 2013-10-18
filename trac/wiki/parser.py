@@ -61,7 +61,7 @@ class WikiParser(Component):
     XML_NAME = r"[\w:](?<!\d)[\w:.-]*?" # See http://www.w3.org/TR/REC-xml/#id
 
     PROCESSOR = r"(\s*)#\!([\w+-][\w+-/]*)"
-    PROCESSOR_PARAM = r'''(?P<proc_pname>\w+)=(?P<proc_pval>".*?"|'.*?'|\w+)'''
+    PROCESSOR_PARAM = r'''(?P<proc_pname>\w+)=(?P<proc_pval>".*?"|'.*?'|[-,\w]+)'''
 
     def _set_anchor(name, sep):
         return r'=#(?P<anchorname>%s)(?:%s(?P<anchorlabel>[^\]]*))?' % \
@@ -234,8 +234,8 @@ def parse_processor_args(processor_args):
     >>> parse_processor_args('ab="c de -f gh=ij" -')
     {'ab': 'c de -f gh=ij'}
 
-    >>> sorted(parse_processor_args('ab=c de -f gh="ij klmn"').items())
-    [('ab', 'c'), ('de', True), ('f', False), ('gh', 'ij klmn')]
+    >>> sorted(parse_processor_args('ab=c de -f gh="ij klmn" p=q-r,s').items())
+    [('ab', 'c'), ('de', True), ('f', False), ('gh', 'ij klmn'), ('p', 'q-r,s')]
     """
     args = WikiParser._processor_param_re.split(processor_args)
     keys = [str(k) for k in args[1::3]] # used as keyword parameters

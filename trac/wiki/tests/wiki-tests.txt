@@ -1118,7 +1118,7 @@ Hello World, args = hej hopp Hello World, args = hej hopp2 # Test non greedy mat
 [[None(...)]] nada
 ============================== WikiProcessor defined as a macro
 [[WikiProcessorSample(inlined content)]]
-{{{#!WikiProcessorSample arg1=this arg2="the second argument"
+{{{#!WikiProcessorSample arg1=this arg2="the second argument" arg3=1-2,6
 multiline
 content
 }}}
@@ -1126,11 +1126,80 @@ content
 <p>
 Called as a macro: inlined content
 </p>
-Called as a processor with params: <dl><dt>arg1</dt><dd>this</dd><dt>arg2</dt><dd>the second argument</dd></dl>multiline
+Called as a processor with params: <dl><dt>arg1</dt><dd>this</dd><dt>arg2</dt><dd>the second argument</dd><dt>arg3</dt><dd>1-2,6</dd></dl>multiline
 content
 ------------------------------
 [[WikiProcessorSample(...)]]
  […]
+============================== WikiProcessor code block with linenos
+{{{#!python lineno
+print 'this is a python sample'
+a = b+3
+z = "this is a string"
+print 'this is the end of the python sample'
+}}}
+Paragraph
+{{{#!python lineno=3
+print 'this is a python sample'
+a = b+3
+z = "this is a string"
+print 'this is the end of the python sample'
+}}}
+Paragraph
+------------------------------
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="a-L1"><a href="#a-L1">1</a></th><td>print 'this is a python sample'</td></tr><tr><th id="a-L2"><a href="#a-L2">2</a></th><td>a = b+3</td></tr><tr><th id="a-L3"><a href="#a-L3">3</a></th><td>z = "this is a string"</td></tr><tr><th id="a-L4"><a href="#a-L4">4</a></th><td>print 'this is the end of the python sample'</td></tr></tbody></table></div><p>
+Paragraph
+</p>
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="a1-L3"><a href="#a1-L3">3</a></th><td>print 'this is a python sample'</td></tr><tr><th id="a1-L4"><a href="#a1-L4">4</a></th><td>a = b+3</td></tr><tr><th id="a1-L5"><a href="#a1-L5">5</a></th><td>z = "this is a string"</td></tr><tr><th id="a1-L6"><a href="#a1-L6">6</a></th><td>print 'this is the end of the python sample'</td></tr></tbody></table></div><p>
+Paragraph
+</p>
+------------------------------
+============================== WikiProcessor code block with linenos, id, marks
+{{{#!python lineno=3 id=b marks=4-5
+print 'this is a python sample'
+a = b+3
+z = "this is a string"
+print 'this is the end of the python sample'
+}}}
+Paragraph
+{{{#!python lineno=3 id=c
+print 'this is a python sample'
+a = b+3
+z = "this is a string"
+print 'this is the end of the python sample'
+}}}
+Paragraph
+------------------------------
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="b-L3"><a href="#b-L3">3</a></th><td>print 'this is a python sample'</td></tr><tr class="hilite"><th id="b-L4"><a href="#b-L4">4</a></th><td>a = b+3</td></tr><tr class="hilite"><th id="b-L5"><a href="#b-L5">5</a></th><td>z = "this is a string"</td></tr><tr><th id="b-L6"><a href="#b-L6">6</a></th><td>print 'this is the end of the python sample'</td></tr></tbody></table></div><p>
+Paragraph
+</p>
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="c-L3"><a href="#c-L3">3</a></th><td>print 'this is a python sample'</td></tr><tr><th id="c-L4"><a href="#c-L4">4</a></th><td>a = b+3</td></tr><tr><th id="c-L5"><a href="#c-L5">5</a></th><td>z = "this is a string"</td></tr><tr><th id="c-L6"><a href="#c-L6">6</a></th><td>print 'this is the end of the python sample'</td></tr></tbody></table></div><p>
+Paragraph
+</p>
+============================== WikiProcessor code block with invalid arguments
+{{{#!python lineno=-10
+print 'this is a python sample'
+a = b+3
+z = "this is a string"
+print 'this is the end of the python sample'
+}}}
+Paragraph
+{{{#!python lineno=a id=d marks=a-b
+print 'this is a python sample'
+a = b+3
+z = "this is a string"
+print 'this is the end of the python sample'
+}}}
+Paragraph
+------------------------------
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="a-L1"><a href="#a-L1">1</a></th><td>print 'this is a python sample'</td></tr><tr><th id="a-L2"><a href="#a-L2">2</a></th><td>a = b+3</td></tr><tr><th id="a-L3"><a href="#a-L3">3</a></th><td>z = "this is a string"</td></tr><tr><th id="a-L4"><a href="#a-L4">4</a></th><td>print 'this is the end of the python sample'</td></tr></tbody></table></div><p>
+Paragraph
+</p>
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="d-L1"><a href="#d-L1">1</a></th><td>print 'this is a python sample'</td></tr><tr><th id="d-L2"><a href="#d-L2">2</a></th><td>a = b+3</td></tr><tr><th id="d-L3"><a href="#d-L3">3</a></th><td>z = "this is a string"</td></tr><tr><th id="d-L4"><a href="#d-L4">4</a></th><td>print 'this is the end of the python sample'</td></tr></tbody></table></div><p>
+Paragraph
+</p>
+------------------------------
+------------------------------
 ============================== Inlined HTML wiki processor
 Inline [[html(<B> Test </B>)]] text
 ------------------------------

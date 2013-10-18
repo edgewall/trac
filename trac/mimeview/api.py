@@ -789,9 +789,11 @@ class Mimeview(Component):
 
                 # Render content as source code
                 if annotations:
-                    m = context.req.args.get('marks') if context.req else None
-                    return self._render_source(context, result, annotations,
-                                               m and Ranges(m))
+                    marks = context.req.args.get('marks') if context.req \
+                            else None
+                    if marks:
+                        context.set_hints(marks=marks)
+                    return self._render_source(context, result, annotations)
                 else:
                     if isinstance(result, list):
                         result = Markup('\n').join(result)
@@ -808,7 +810,7 @@ class Mimeview(Component):
                           renderer=renderer.__class__.__name__,
                           err=exception_to_unicode(e)))
 
-    def _render_source(self, context, stream, annotations, marks=None):
+    def _render_source(self, context, stream, annotations):
         from trac.web.chrome import add_warning
         annotators, labels, titles = {}, {}, {}
         for annotator in self.annotators:
@@ -851,8 +853,6 @@ class Mimeview(Component):
         def _body_rows():
             for idx, line in enumerate(_group_lines(stream)):
                 row = tag.tr()
-                if marks and idx + 1 in marks:
-                    row(class_='hilite')
                 for annotator, data in annotator_datas:
                     if annotator:
                         annotator.annotate_row(context, row, idx+1, line, data)
@@ -1115,12 +1115,22 @@ class LineNumberAnnotator(Component):
         return 'lineno', _('Line'), _('Line numbers')
 
     def get_annotation_data(self, context):
-        return None
+        try:
+            marks = Ranges(context.get_hint('marks'))
+        except ValueError:
+            marks = None
+        return {
+            'id': context.get_hint('id', '') + 'L%s',
+            'marks': marks,
+            'offset': context.get_hint('lineno', 1) - 1
+        }
 
     def annotate_row(self, context, row, lineno, line, data):
-        row.append(tag.th(id='L%s' % lineno)(
-            tag.a(lineno, href='#L%s' % lineno)
-        ))
+        lineno += data['offset']
+        id = data['id'] % lineno
+        if data['marks'] and lineno in data['marks']:
+            row(class_='hilite')
+        row.append(tag.th(id=id)(tag.a(lineno, href='#' + id)))
 
 
 # -- Default renderers
