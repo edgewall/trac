@@ -69,7 +69,8 @@ def split_url_into_path_query_fragment(target):
     idx = target.find('?')
     if idx >= 0:
         target, query = target[:idx], target[idx:]
-    return (target, query, fragment)
+    return target, query, fragment
+
 
 def concat_path_query_fragment(path, query, fragment=None):
     """Assemble `path`, `query` and `fragment` into a proper URL.
@@ -96,6 +97,7 @@ def concat_path_query_fragment(path, query, fragment=None):
     if fragment:
         f = fragment
     return p + q + ('' if f == '#' else f)
+
 
 def _markup_to_unicode(markup):
     stream = None
@@ -150,9 +152,9 @@ class WikiProcessor(object):
                               }
 
         self.inline_check = {'html': self._html_is_inline,
-                                'htmlcomment': True, 'comment': True,
-                                'span': True, 'Span': True,
-                                }.get(name)
+                             'htmlcomment': True, 'comment': True,
+                             'span': True, 'Span': True,
+                             }.get(name)
 
         self._sanitizer = TracHTMLSanitizer(formatter.wiki.safe_schemes)
 
@@ -437,7 +439,7 @@ class Formatter(object):
         'MM_STRIKE': ('<del>', '</del>'),
         'MM_SUBSCRIPT': ('<sub>', '</sub>'),
         'MM_SUPERSCRIPT': ('<sup>', '</sup>'),
-        }
+    }
 
     def _get_open_tag(self, tag):
         """Retrieve opening tag for direct or indirect `tag`."""
@@ -476,12 +478,12 @@ class Formatter(object):
 
         If `close_tag` is not specified, it's an indirect tag (0.12)
         """
-        tmp =  ''
+        tmp = ''
         for i in xrange(len(self._open_tags) - 1, -1, -1):
             tag = self._open_tags[i]
             tmp += self._get_close_tag(tag)
             if (open_tag == tag,
-                (open_tag, close_tag) == tag)[bool(close_tag)]:
+                    (open_tag, close_tag) == tag)[bool(close_tag)]:
                 del self._open_tags[i]
                 for j in xrange(i, len(self._open_tags)):
                     tmp += self._get_open_tag(self._open_tags[j])
@@ -548,7 +550,7 @@ class Formatter(object):
 
     # -- Post- IWikiSyntaxProvider rules
 
-    # WikiCreole line brekas
+    # WikiCreole line breaks
 
     def _linebreak_wc_formatter(self, match, fullmatch):
         return '<br />'
@@ -1004,7 +1006,7 @@ class Formatter(object):
         if separator[-1] == '=':
             numpipes -= 1
             cell = 'th'
-        colspan = numpipes/2
+        colspan = numpipes / 2
         if is_last is not None:
             if is_last and is_last[-1] == '\\':
                 self.continue_table_row = 1
@@ -1504,7 +1506,7 @@ class HtmlFormatter(object):
 class InlineHtmlFormatter(object):
     """Format parsed wiki text to inline elements HTML.
 
-    Block level content will be disguarded or compacted.
+    Block level content will be discarded or compacted.
     """
 
     flavor = 'oneliner'
