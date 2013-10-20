@@ -1009,17 +1009,9 @@ class Milestone(object):
         with self.env.db_transaction as db:
             self.env.log.info("Deleting milestone %s", self.name)
             db("DELETE FROM milestone WHERE name=%s", (self.name,))
-
-            # Retarget/reset tickets associated with this milestone
-            now = datetime.now(utc)
-            tkt_ids = [int(row[0]) for row in
-                       db("SELECT id FROM ticket WHERE milestone=%s",
-                          (self.name,))]
-            for tkt_id in tkt_ids:
-                ticket = Ticket(self.env, tkt_id, db)
-                ticket['milestone'] = retarget_to
-                comment = "Milestone %s deleted" % self.name # don't translate
-                ticket.save_changes(author, comment, now)
+            # Don't translate ticket comment (comment:40:ticket:5658)
+            comment = "Ticket retargeted after milestone deleted"
+            self.move_tickets(retarget_to, author, comment)
             self._old['name'] = None
             del self.cache.milestones
             TicketSystem(self.env).reset_ticket_fields()
@@ -1087,6 +1079,28 @@ class Milestone(object):
                           if getattr(self, k) != v)
         for listener in TicketSystem(self.env).milestone_change_listeners:
             listener.milestone_changed(self, old_values)
+
+    def move_tickets(self, new_milestone, author, comment):
+        """Move tickets associated with this milestone to another
+        milestone.
+
+        :param new_milestone: milestone to which the tickets are moved
+        :param author: author of the change
+        :param comment: comment that is inserted into moved tickets. The
+                        string should not be translated.
+        """
+        now = datetime.now(utc)
+        with self.env.db_transaction as db:
+            self.env.log.info("Moving tickets associated with milestone "
+                              "'%s' to milestone '%s'", self._old['name'],
+                              new_milestone)
+            tkt_ids = [int(row[0]) for row in
+                       db("SELECT id FROM ticket WHERE milestone=%s",
+                          (self._old['name'],))]
+            for tkt_id in tkt_ids:
+                ticket = Ticket(self.env, tkt_id)
+                ticket['milestone'] = new_milestone
+                ticket.save_changes(author, comment, now)
 
     @classmethod
     def select(cls, env, include_completed=True, db=None):

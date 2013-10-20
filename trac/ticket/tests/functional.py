@@ -717,12 +717,21 @@ class TestAdminMilestoneRemove(FunctionalTwillTestCaseSetup):
         """Admin remove milestone"""
         name = "MilestoneRemove"
         self._tester.create_milestone(name)
-        milestone_url = self._tester.url + "/admin/ticket/milestones"
+        tid = self._tester.create_ticket(info={'milestone': name})
+        milestone_url = self._tester.url + '/admin/ticket/milestones'
+
         tc.go(milestone_url)
         tc.formvalue('milestone_table', 'sel', name)
         tc.submit('remove')
+
         tc.url(milestone_url + '$')
         tc.notfind(name)
+        self._tester.go_to_ticket(tid)
+        tc.find('<th id="h_milestone" class="missing">'
+                '[ \t\n]*Milestone:[ \t\n]*</th>')
+        tc.find('<strong class="trac-field-milestone">Milestone'
+                '</strong>[ \t\n]*<em>%s</em>[ \t\n]*deleted'
+                % name)
 
 
 class TestAdminMilestoneRemoveMulti(FunctionalTwillTestCaseSetup):
@@ -1144,20 +1153,6 @@ class TestAdminVersionDefault(FunctionalTwillTestCaseSetup):
                 % (name, name))
 
 
-class TestMilestoneAttachments(FunctionalTwillTestCaseSetup):
-    def runTest(self):
-        """Add attachments to the milestone."""
-        milestone_name = self._tester.create_milestone()
-        filename = self._tester.attach_file_to_milestone(milestone_name)
-
-        self._tester.go_to_milestone(milestone_name)
-        tc.find('Attachments <span class="trac-count">\(1\)</span>')
-        tc.find(filename)
-        tc.find('Download all attachments as:[ \n\t]*<a rel="nofollow" '
-                'href="/zip-attachment/milestone/%s/">.zip</a>'
-                % milestone_name)
-
-
 class TestNewReport(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Create a new report"""
@@ -1225,6 +1220,88 @@ UNION ALL SELECT 'attachment', 'file.ext', 'wiki', 'WikiStart'
         tc.find('<a title="View attachment" '
                 'href="[^"]*?/attachment/wiki/WikiStart/file[.]ext">'
                 'file[.]ext [(]WikiStart[)]</a>')
+
+
+class TestMilestone(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Create a milestone."""
+        self._tester.create_milestone()
+
+
+class TestMilestoneAddAttachment(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Add attachment to a milestone."""
+        milestone_name = self._tester.create_milestone()
+        filename = self._tester.attach_file_to_milestone(milestone_name)
+
+        self._tester.go_to_milestone(milestone_name)
+        tc.find('Attachments <span class="trac-count">\(1\)</span>')
+        tc.find(filename)
+        tc.find('Download all attachments as:[ \n\t]+<a rel="nofollow" '
+                'href="/zip-attachment/milestone/%s/">.zip</a>'
+                % milestone_name)
+
+
+class TestMilestoneDelete(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Delete a milestone and verify that tickets are retargeted
+        to the selected milestone."""
+        def delete_milestone(name, retarget_to=None):
+            tid = self._tester.create_ticket(info={'milestone': name})
+
+            self._tester.go_to_milestone(name)
+            tc.submit(formname='deletemilestone')
+            if retarget_to is not None:
+                tc.formvalue('edit', 'target', retarget_to)
+            tc.submit('delete', formname='edit')
+
+            tc.url(self._tester.url + '/roadmap')
+            tc.find('The milestone "%s" has been deleted.' % name)
+            tc.notfind('Milestone:.*%s' % name)
+            if retarget_to is not None:
+                tc.find('Milestone:.*%s' % retarget_to)
+            self._tester.go_to_ticket(tid)
+            tc.find('Changed[ \t\n]+<a.*seconds ago</a>[ \t\n]+by admin')
+            if retarget_to is not None:
+                tc.find('<a class="milestone" href="/milestone/%(name)s">'
+                        '%(name)s</a>' % {'name': retarget_to})
+                tc.find('<strong class="trac-field-milestone">Milestone'
+                        '</strong>[ \t\n]+changed from <em>%s</em> to '
+                        '<em>%s</em>' % (name, retarget_to))
+            else:
+                tc.find('<th id="h_milestone" class="missing">'
+                        '[ \t\n]*Milestone:[ \t\n]*</th>')
+                tc.find('<strong class="trac-field-milestone">Milestone'
+                        '</strong>[ \t\n]*<em>%s</em>[ \t\n]*deleted' % name)
+            tc.find("Ticket retargeted after milestone deleted<br />")
+
+        # Don't select a milestone to retarget to
+        name = self._tester.create_milestone()
+        delete_milestone(name, None)
+
+        # Select a milestone to retarget to
+        name = self._tester.create_milestone()
+        retarget_to = self._tester.create_milestone()
+        delete_milestone(name, retarget_to)
+
+        # Just navigate to the page and select cancel
+        name = self._tester.create_milestone()
+        tid = self._tester.create_ticket(info={'milestone': name})
+
+        self._tester.go_to_milestone(name)
+        tc.submit(formname='deletemilestone')
+        tc.submit('cancel', formname='edit')
+
+        tc.url(self._tester.url + '/milestone/%s' % name)
+        tc.notfind('The milestone "%s" has been deleted.' % name)
+        tc.notfind('The tickets associated with milestone "%s" '
+                   'have been retargeted to milestone' % name)
+        self._tester.go_to_ticket(tid)
+        tc.find('<a class="milestone" href="/milestone/%(name)s">'
+                '%(name)s</a>' % {'name': name})
+        tc.notfind('<strong class="trac-field-milestone">Milestone</strong>'
+                   '[ \t\n]*<em>%s</em>[ \t\n]*deleted' % name)
+        tc.notfind("Ticket retargeted after milestone deleted<br />")
 
 
 class RegressionTestRev5665(FunctionalTwillTestCaseSetup):
@@ -1513,7 +1590,7 @@ class RegressionTestTicket5658(FunctionalTwillTestCaseSetup):
                 '%(name)s</a>' % {'name': name2})
         tc.find('changed from <em>%s</em> to <em>%s</em>'
                 % (name1, name2))
-        tc.find("Retargetted after milestone closed<br />")
+        tc.find("Ticket retargeted after milestone closed<br />")
 
 
 class RegressionTestTicket5687(FunctionalTwillTestCaseSetup):
@@ -2013,9 +2090,11 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminVersionRemoveMulti())
     suite.addTest(TestAdminVersionNonRemoval())
     suite.addTest(TestAdminVersionDefault())
-    suite.addTest(TestMilestoneAttachments())
     suite.addTest(TestNewReport())
     suite.addTest(TestReportRealmDecoration())
+    suite.addTest(TestMilestone())
+    suite.addTest(TestMilestoneAddAttachment())
+    suite.addTest(TestMilestoneDelete())
     suite.addTest(RegressionTestRev5665())
     suite.addTest(RegressionTestRev5994())
 

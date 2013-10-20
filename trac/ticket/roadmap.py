@@ -37,7 +37,6 @@ from trac.util.datefmt import parse_date, utc, to_utimestamp, to_datetime, \
 from trac.util.text import CRLF
 from trac.util.translation import _, tag_
 from trac.ticket.api import TicketSystem
-from trac.ticket.batch import BatchModifyModule
 from trac.ticket.model import Milestone, MilestoneCache, Ticket, \
                               group_milestones
 from trac.timeline.api import ITimelineEventProvider
@@ -772,7 +771,12 @@ class MilestoneModule(Component):
         if milestone.exists:
             milestone.update()
             if completed and 'retarget' in req.args:
-                self._retarget_tickets(req, old_name, retarget_to)
+                comment = req.args.get('comment', '')
+                milestone.move_tickets(retarget_to, req.authname, comment)
+                add_notice(req, _('The tickets associated with milestone '
+                                  '"%(name)s" have been retargeted to '
+                                  'milestone "%(retarget)s".',
+                                  name=milestone.name, retarget=retarget_to))
         else:
             milestone.insert()
 
@@ -892,18 +896,6 @@ class MilestoneModule(Component):
                      _('Back to Roadmap'))
 
         return 'milestone_view.html', data, None
-
-    def _retarget_tickets(self, req, old_name, new_name):
-        comment = req.args.get('comment', '')
-        ids = [id for id, in self.env.db_query("""
-            SELECT id FROM ticket WHERE milestone=%s and status != 'closed'
-            """, (old_name,))]
-        new_values = {'milestone': new_name}
-        BatchModifyModule(self.env). \
-            _save_ticket_changes(req, ids, new_values, comment, None)
-        self.log.info('Tickets associated with milestone "%s" '
-                      'retargeted to "%s"' % (old_name, new_name))
-
 
     # IWikiSyntaxProvider methods
 
