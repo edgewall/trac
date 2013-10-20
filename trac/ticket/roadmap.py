@@ -786,7 +786,7 @@ class MilestoneModule(Component):
 
         # -- actually save changes
         if milestone.exists:
-            milestone.update()
+            milestone.update(author=req.authname)
             if completed and 'retarget' in req.args:
                 comment = req.args.get('comment', '')
                 retargeted_tickets = \

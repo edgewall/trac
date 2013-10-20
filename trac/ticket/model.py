@@ -1046,7 +1046,7 @@ class Milestone(object):
         for listener in TicketSystem(self.env).milestone_change_listeners:
             listener.milestone_created(self)
 
-    def update(self, db=None):
+    def update(self, db=None, author=None):
         """Update the milestone.
 
         :since 1.0: the `db` parameter is no longer needed and will be removed
@@ -1058,27 +1058,25 @@ class Milestone(object):
 
         old = self._old.copy()
         with self.env.db_transaction as db:
-            old_name = old['name']
+            if self.name != old['name']:
+                # Update milestone field in tickets
+                self.env.log.info("Updating milestone field of all tickets "
+                                  "associated with milestone '%s'", self.name)
+                self.move_tickets(self.name, author, "Milestone renamed")
+                TicketSystem(self.env).reset_ticket_fields()
+
+                # Reparent attachments
+                Attachment.reparent_all(self.env, 'milestone', old['name'],
+                                        'milestone', self.name)
+
             self.env.log.info("Updating milestone '%s'", self.name)
             db("""UPDATE milestone
                   SET name=%s, due=%s, completed=%s, description=%s
                   WHERE name=%s
                   """, (self.name, to_utimestamp(self.due),
                         to_utimestamp(self.completed),
-                        self.description, old_name))
+                        self.description, old['name']))
             self.checkin()
-
-            if self.name != old_name:
-                # Update milestone field in tickets
-                self.env.log.info("Updating milestone field of all tickets "
-                                  "associated with milestone '%s'", self.name)
-                db("UPDATE ticket SET milestone=%s WHERE milestone=%s",
-                   (self.name, old_name))
-                TicketSystem(self.env).reset_ticket_fields()
-
-                # Reparent attachments
-                Attachment.reparent_all(self.env, 'milestone', old_name,
-                                        'milestone', self.name)
 
         old_values = dict((k, v) for k, v in old.iteritems()
                           if getattr(self, k) != v)
