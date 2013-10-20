@@ -487,7 +487,7 @@ class TestAdminComponentAuthorization(AuthorizationTestCaseSetup):
 class TestAdminComponentDuplicates(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create duplicate component"""
-        name = "DuplicateMilestone"
+        name = "DuplicateComponent"
         self._tester.create_component(name)
         component_url = self._tester.url + "/admin/ticket/components"
         tc.go(component_url)
@@ -676,6 +676,32 @@ class TestAdminMilestoneDetailDue(FunctionalTwillTestCaseSetup):
         tc.find(name + '(<[^>]*>|\\s)*'+ duedate_string, 's')
 
 
+class TestAdminMilestoneDetailRename(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin rename milestone"""
+        name1 = self._tester.create_milestone()
+        name2 = random_unique_camel()
+        tid = self._tester.create_ticket(info={'milestone': name1})
+        milestone_url = self._tester.url + '/admin/ticket/milestones'
+
+        self._tester.go_to_url(milestone_url)
+        tc.follow(name1)
+        tc.url(milestone_url + '/' + name1)
+        tc.formvalue('modifymilestone', 'name', name2)
+        tc.submit('save')
+
+        tc.find(r"Your changes have been saved\.")
+        tc.find(r"\b%s\b" % name2)
+        tc.notfind(r"\b%s\b" % name1)
+        self._tester.go_to_ticket(tid)
+        tc.find('<a class="milestone" href="/milestone/%(name)s">'
+                '%(name)s</a>' % {'name': name2})
+        tc.find('<strong class="trac-field-milestone">Milestone</strong>'
+                '[ \t\n]+changed from <em>%s</em> to <em>%s</em>'
+                % (name1, name2))
+        tc.find("Milestone renamed")
+
+
 class TestAdminMilestoneCompleted(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin milestone completed"""
@@ -717,12 +743,22 @@ class TestAdminMilestoneRemove(FunctionalTwillTestCaseSetup):
         """Admin remove milestone"""
         name = "MilestoneRemove"
         self._tester.create_milestone(name)
-        milestone_url = self._tester.url + "/admin/ticket/milestones"
+        tid = self._tester.create_ticket(info={'milestone': name})
+        milestone_url = self._tester.url + '/admin/ticket/milestones'
+
         tc.go(milestone_url)
         tc.formvalue('milestone_table', 'sel', name)
         tc.submit('remove')
+
         tc.url(milestone_url + '$')
         tc.notfind(name)
+        self._tester.go_to_ticket(tid)
+        tc.find('<th id="h_milestone" class="missing">'
+                '[ \t\n]*Milestone:[ \t\n]*</th>')
+        tc.find('<strong class="trac-field-milestone">Milestone'
+                '</strong>[ \t\n]*<em>%s</em>[ \t\n]*deleted'
+                % name)
+        tc.find("Milestone deleted")
 
 
 class TestAdminMilestoneRemoveMulti(FunctionalTwillTestCaseSetup):
@@ -1144,20 +1180,6 @@ class TestAdminVersionDefault(FunctionalTwillTestCaseSetup):
                 % (name, name))
 
 
-class TestMilestoneAttachments(FunctionalTwillTestCaseSetup):
-    def runTest(self):
-        """Add attachments to the milestone."""
-        milestone_name = self._tester.create_milestone()
-        filename = self._tester.attach_file_to_milestone(milestone_name)
-
-        self._tester.go_to_milestone(milestone_name)
-        tc.find('Attachments <span class="trac-count">\(1\)</span>')
-        tc.find(filename)
-        tc.find('Download all attachments as:[ \n\t]*<a rel="nofollow" '
-                'href="/zip-attachment/milestone/%s/">.zip</a>'
-                % milestone_name)
-
-
 class TestNewReport(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Create a new report"""
@@ -1256,6 +1278,151 @@ class TestReportDynamicVariables(FunctionalTwillTestCaseSetup):
         tc.find("Tickets assigned to admin for component component1")
         tc.find('<a title="View ticket" href="/ticket/%s">%s</a>' %
                 (ticket_id, summary))
+
+
+class TestMilestone(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Create a milestone."""
+        self._tester.create_milestone()
+
+
+class TestMilestoneAddAttachment(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Add attachment to a milestone."""
+        milestone_name = self._tester.create_milestone()
+        filename = self._tester.attach_file_to_milestone(milestone_name)
+
+        self._tester.go_to_milestone(milestone_name)
+        tc.find('Attachments <span class="trac-count">\(1\)</span>')
+        tc.find(filename)
+        tc.find('Download all attachments as:[ \n\t]+<a rel="nofollow" '
+                'href="/zip-attachment/milestone/%s/">.zip</a>'
+                % milestone_name)
+
+
+class TestMilestoneClose(FunctionalTwillTestCaseSetup):
+    """Close a milestone and verify that tickets are retargeted
+    to the selected milestone"""
+    def runTest(self):
+        name = self._tester.create_milestone()
+        retarget_to = self._tester.create_milestone()
+        tid = self._tester.create_ticket(info={'milestone': name})
+
+        self._tester.go_to_milestone(name)
+        tc.submit(formname='editmilestone')
+        tc.formvalue('edit', 'completed', True)
+        tc.formvalue('edit', 'target', retarget_to)
+        tc.submit('save')
+
+        tc.url(self._tester.url + '/milestone/%s$' % name)
+        tc.find("Completed")
+        tc.notfind('<table class="progress">')
+        self._tester.go_to_ticket(tid)
+        tc.find('<a class="milestone" href="/milestone/%(name)s">'
+                '%(name)s</a>' % {'name': retarget_to})
+        tc.find('changed from <em>%s</em> to <em>%s</em>'
+                % (name, retarget_to))
+        tc.find("Ticket retargeted after milestone closed")
+
+
+class TestMilestoneDelete(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Delete a milestone and verify that tickets are retargeted
+        to the selected milestone."""
+        def delete_milestone(name, retarget_to=None, tid=None):
+            self._tester.go_to_milestone(name)
+            tc.submit(formname='deletemilestone')
+            if retarget_to is not None:
+                tc.formvalue('edit', 'target', retarget_to)
+            tc.submit('delete', formname='edit')
+
+            tc.url(self._tester.url + '/roadmap')
+            tc.find('The milestone "%s" has been deleted.' % name)
+            tc.notfind('Milestone:.*%s' % name)
+            if retarget_to is not None:
+                tc.find('Milestone:.*%s' % retarget_to)
+            retarget_notice = 'The tickets associated with milestone "%s" ' \
+                              'have been retargeted to milestone "%s".' \
+                              % (name, str(retarget_to))
+            if tid is not None:
+                tc.find(retarget_notice)
+                self._tester.go_to_ticket(tid)
+                tc.find('Changed[ \t\n]+<a.*seconds ago</a>[ \t\n]+by admin')
+                if retarget_to is not None:
+                    tc.find('<a class="milestone" href="/milestone/%(name)s">'
+                            '%(name)s</a>' % {'name': retarget_to})
+                    tc.find('<strong class="trac-field-milestone">Milestone'
+                            '</strong>[ \t\n]+changed from <em>%s</em> to '
+                            '<em>%s</em>' % (name, retarget_to))
+                else:
+                    tc.find('<th id="h_milestone" class="missing">'
+                            '[ \t\n]*Milestone:[ \t\n]*</th>')
+                    tc.find('<strong class="trac-field-milestone">Milestone'
+                            '</strong>[ \t\n]*<em>%s</em>[ \t\n]*deleted'
+                            % name)
+                tc.find("Ticket retargeted after milestone deleted")
+            else:
+                tc.notfind(retarget_notice)
+
+        # No tickets associated with milestone to be retargeted
+        name = self._tester.create_milestone()
+        delete_milestone(name)
+
+        # Don't select a milestone to retarget to
+        name = self._tester.create_milestone()
+        tid = self._tester.create_ticket(info={'milestone': name})
+        delete_milestone(name, tid=tid)
+
+        # Select a milestone to retarget to
+        name = self._tester.create_milestone()
+        retarget_to = self._tester.create_milestone()
+        tid = self._tester.create_ticket(info={'milestone': name})
+        delete_milestone(name, retarget_to, tid)
+
+        # Just navigate to the page and select cancel
+        name = self._tester.create_milestone()
+        tid = self._tester.create_ticket(info={'milestone': name})
+
+        self._tester.go_to_milestone(name)
+        tc.submit(formname='deletemilestone')
+        tc.submit('cancel', formname='edit')
+
+        tc.url(self._tester.url + '/milestone/%s' % name)
+        tc.notfind('The milestone "%s" has been deleted.' % name)
+        tc.notfind('The tickets associated with milestone "%s" '
+                   'have been retargeted to milestone' % name)
+        self._tester.go_to_ticket(tid)
+        tc.find('<a class="milestone" href="/milestone/%(name)s">'
+                '%(name)s</a>' % {'name': name})
+        tc.notfind('<strong class="trac-field-milestone">Milestone</strong>'
+                   '[ \t\n]*<em>%s</em>[ \t\n]*deleted' % name)
+        tc.notfind("Ticket retargeted after milestone deleted<br />")
+
+
+class TestMilestoneRename(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Rename a milestone and verify that the rename is shown in the
+        change history for the associated tickets."""
+        name = self._tester.create_milestone()
+        new_name = random_unique_camel()
+        tid = self._tester.create_ticket(info={'milestone': name})
+
+        self._tester.go_to_milestone(name)
+        tc.submit(formname='editmilestone')
+        tc.formvalue('edit', 'name', new_name)
+        tc.submit('save')
+
+        tc.url(self._tester.url + '/milestone/' + new_name)
+        tc.find("Your changes have been saved.")
+        tc.find(r"<h1>Milestone %s</h1>" % new_name)
+        self._tester.go_to_ticket(tid)
+        tc.find('Changed[ \t\n]+<a.*seconds ago</a>[ \t\n]+by admin')
+        tc.find('<a class="milestone" href="/milestone/%(name)s">'
+                '%(name)s</a>' % {'name': new_name})
+        tc.find('<strong class="trac-field-milestone">Milestone</strong>'
+                '[ \t\n]+changed from <em>%s</em> to <em>%s</em>'
+                % (name, new_name))
+        tc.find("Milestone renamed")
 
 
 class RegressionTestRev5665(FunctionalTwillTestCaseSetup):
@@ -2021,6 +2188,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminMilestoneDetail())
     suite.addTest(TestAdminMilestoneDue())
     suite.addTest(TestAdminMilestoneDetailDue())
+    suite.addTest(TestAdminMilestoneDetailRename())
     suite.addTest(TestAdminMilestoneCompleted())
     suite.addTest(TestAdminMilestoneCompletedFuture())
     suite.addTest(TestAdminMilestoneRemove())
@@ -2056,10 +2224,14 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminVersionRemoveMulti())
     suite.addTest(TestAdminVersionNonRemoval())
     suite.addTest(TestAdminVersionDefault())
-    suite.addTest(TestMilestoneAttachments())
     suite.addTest(TestNewReport())
     suite.addTest(TestReportRealmDecoration())
     suite.addTest(TestReportDynamicVariables())
+    suite.addTest(TestMilestone())
+    suite.addTest(TestMilestoneAddAttachment())
+    suite.addTest(TestMilestoneClose())
+    suite.addTest(TestMilestoneDelete())
+    suite.addTest(TestMilestoneRename())
     suite.addTest(RegressionTestRev5665())
     suite.addTest(RegressionTestRev5994())
 

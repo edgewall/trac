@@ -264,7 +264,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
                                             _('Invalid Completion Date'))
                     mil.description = req.args.get('description', '')
                     try:
-                        mil.update()
+                        mil.update(author=req.authname)
                     except self.env.db_exc.IntegrityError:
                         raise TracError(_('The milestone "%(name)s" already '
                                           'exists.', name=name))
@@ -404,7 +404,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
     def _do_rename(self, name, newname):
         milestone = model.Milestone(self.env, name)
         milestone.name = newname
-        milestone.update()
+        milestone.update(author=getuser())
 
     def _do_due(self, name, due):
         milestone = model.Milestone(self.env, name)
