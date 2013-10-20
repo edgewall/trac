@@ -1269,6 +1269,31 @@ class TestMilestoneAddAttachment(FunctionalTwillTestCaseSetup):
                 % milestone_name)
 
 
+class TestMilestoneClose(FunctionalTwillTestCaseSetup):
+    """Close a milestone and verify that tickets are retargeted
+    to the selected milestone"""
+    def runTest(self):
+        name = self._tester.create_milestone()
+        retarget_to = self._tester.create_milestone()
+        tid = self._tester.create_ticket(info={'milestone': name})
+
+        self._tester.go_to_milestone(name)
+        tc.submit(formname='editmilestone')
+        tc.formvalue('edit', 'completed', True)
+        tc.formvalue('edit', 'target', retarget_to)
+        tc.submit('save')
+
+        tc.url(self._tester.url + '/milestone/%s$' % name)
+        tc.find("Completed")
+        tc.notfind('<table class="progress">')
+        self._tester.go_to_ticket(tid)
+        tc.find('<a class="milestone" href="/milestone/%(name)s">'
+                '%(name)s</a>' % {'name': retarget_to})
+        tc.find('changed from <em>%s</em> to <em>%s</em>'
+                % (name, retarget_to))
+        tc.find("Ticket retargeted after milestone closed")
+
+
 class TestMilestoneDelete(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Delete a milestone and verify that tickets are retargeted
@@ -1633,29 +1658,6 @@ class RegressionTestTicket5602(FunctionalTwillTestCaseSetup):
         tc.find("Status:[ \t\n]+accepted")
         tc.notfind("Status:[ \t\n]+closed")
         tc.find("Status:[ \t\n]+reopened")
-
-
-class RegressionTestTicket5658(FunctionalTwillTestCaseSetup):
-    def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/5658
-        Retarget tickets when a milestone is closed"""
-        name1 = self._tester.create_milestone()
-        name2 = self._tester.create_milestone()
-        tid = self._tester.create_ticket(info={'milestone': name1})
-        self._tester.go_to_milestone(name1)
-        tc.submit(formname='editmilestone')
-        tc.formvalue('edit', 'completed', True)
-        tc.formvalue('edit', 'target', name2)
-        tc.submit('save')
-        tc.url(self._tester.url + '/milestone/%s$' % name1)
-        tc.find("Completed")
-        tc.notfind('<table class="progress">')
-        self._tester.go_to_ticket(tid)
-        tc.find('<a class="milestone" href="/milestone/%(name)s">'
-                '%(name)s</a>' % {'name': name2})
-        tc.find('changed from <em>%s</em> to <em>%s</em>'
-                % (name1, name2))
-        tc.find("Ticket retargeted after milestone closed<br />")
 
 
 class RegressionTestTicket5687(FunctionalTwillTestCaseSetup):
@@ -2160,6 +2162,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestReportRealmDecoration())
     suite.addTest(TestMilestone())
     suite.addTest(TestMilestoneAddAttachment())
+    suite.addTest(TestMilestoneClose())
     suite.addTest(TestMilestoneDelete())
     suite.addTest(TestMilestoneRename())
     suite.addTest(RegressionTestRev5665())
@@ -2177,7 +2180,6 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket5497c())
     suite.addTest(RegressionTestTicket5497d())
     suite.addTest(RegressionTestTicket5602())
-    suite.addTest(RegressionTestTicket5658())
     suite.addTest(RegressionTestTicket5687())
     suite.addTest(RegressionTestTicket5930())
     suite.addTest(RegressionTestTicket6048())
