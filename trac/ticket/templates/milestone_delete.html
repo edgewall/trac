@@ -10,11 +10,6 @@
     <title i18n:msg="name">Delete Milestone ${milestone.name}</title>
     <link rel="stylesheet" type="text/css"
           href="${chrome.htdocs_location}css/roadmap.css" />
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#retarget").click(function(){ $("#target").enable(this.checked) });
-      });
-    </script>
   </head>
 
   <body>
@@ -25,8 +20,7 @@
       <div>
         <input type="hidden" name="action" value="delete" />
         <p><strong>Are you sure you want to delete this milestone?</strong></p>
-        <input type="checkbox" id="retarget" name="retarget" checked="checked" />
-        <label for="retarget">Retarget associated tickets to milestone</label>
+        <label for="target">Retarget associated tickets to milestone</label>
         <select name="target" id="target">
           <option value="">None</option>
           <optgroup py:for="(label, milestones) in milestone_groups"
