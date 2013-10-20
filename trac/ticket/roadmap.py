@@ -727,7 +727,7 @@ class MilestoneModule(Component):
             milestone.due = None
 
         completed = req.args.get('completeddate', '')
-        retarget_to = req.args.get('target')
+        retarget_to = req.args.get('target') or None
 
         # Instead of raising one single error, check all the constraints and
         # let the user fix them by going back to edit mode showing the warnings
