@@ -487,7 +487,7 @@ class TestAdminComponentAuthorization(AuthorizationTestCaseSetup):
 class TestAdminComponentDuplicates(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create duplicate component"""
-        name = "DuplicateMilestone"
+        name = "DuplicateComponent"
         self._tester.create_component(name)
         component_url = self._tester.url + "/admin/ticket/components"
         tc.go(component_url)
