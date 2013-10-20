@@ -702,6 +702,11 @@ class MilestoneModule(Component):
         milestone.delete(retarget_to, req.authname)
         add_notice(req, _('The milestone "%(name)s" has been deleted.',
                           name=milestone.name))
+        if retarget_to is not None:
+            add_notice(req, _('The tickets associated with milestone '
+                              '"%(name)s" have been retargeted to milestone '
+                              '"%(retarget)s".', name=milestone.name,
+                              retarget=retarget_to))
         req.redirect(req.href.roadmap())
 
     def _do_save(self, req, milestone):
