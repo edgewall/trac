@@ -34,9 +34,10 @@ from trac.util import as_bool
 from trac.util.datefmt import parse_date, utc, to_utimestamp, to_datetime, \
                               get_datetime_format_hint, format_date, \
                               format_datetime, from_utimestamp, user_time
-from trac.util.text import CRLF
+from trac.util.text import CRLF, exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.ticket.api import TicketSystem
+from trac.ticket.batch import BatchTicketNotifyEmail
 from trac.ticket.model import Milestone, MilestoneCache, Ticket, \
                               group_milestones
 from trac.timeline.api import ITimelineEventProvider
@@ -696,13 +697,31 @@ class MilestoneModule(Component):
         req.perm(milestone.resource).require('MILESTONE_DELETE')
 
         retarget_to = req.args.get('target') or None
-        milestone.delete(retarget_to, req.authname)
+        # Don't translate ticket comment (comment:40:ticket:5658)
+        retargeted_tickets = \
+            milestone.move_tickets(retarget_to, req.authname,
+                "Ticket retargeted after milestone deleted")
+        milestone.delete(author=req.authname)
         add_notice(req, _('The milestone "%(name)s" has been deleted.',
                           name=milestone.name))
-        add_notice(req, _('The tickets associated with milestone '
-                          '"%(name)s" have been retargeted to milestone '
-                          '"%(retarget)s".', name=milestone.name,
-                          retarget=retarget_to))
+        if retargeted_tickets:
+            add_notice(req, _('The tickets associated with milestone '
+                              '"%(name)s" have been retargeted to milestone '
+                              '"%(retarget)s".', name=milestone.name,
+                              retarget=retarget_to))
+            new_values = {'milestone': retarget_to}
+            comment = _("Tickets retargeted after milestone deleted")
+            tn = BatchTicketNotifyEmail(self.env)
+            try:
+                tn.notify(retargeted_tickets, new_values, comment, None,
+                          req.authname)
+            except Exception, e:
+                self.log.error("Failure sending notification on ticket batch "
+                               "change: %s", exception_to_unicode(e))
+                add_warning(req, tag_("The changes have been saved, but an "
+                                      "error occurred while sending "
+                                      "notifications: %(message)s",
+                                      message=to_unicode(e)))
 
         req.redirect(req.href.roadmap())
 
@@ -770,11 +789,27 @@ class MilestoneModule(Component):
             milestone.update()
             if completed and 'retarget' in req.args:
                 comment = req.args.get('comment', '')
-                milestone.move_tickets(retarget_to, req.authname, comment)
+                retargeted_tickets = \
+                    milestone.move_tickets(retarget_to, req.authname, comment)
                 add_notice(req, _('The tickets associated with milestone '
                                   '"%(name)s" have been retargeted to '
                                   'milestone "%(retarget)s".',
                                   name=milestone.name, retarget=retarget_to))
+                new_values = {'milestone': retarget_to}
+                comment = comment or \
+                          _("Tickets retargeted after milestone closed")
+                tn = BatchTicketNotifyEmail(self.env)
+                try:
+                    tn.notify(retargeted_tickets, new_values, comment, None,
+                              req.authname)
+                except Exception, e:
+                    self.log.error("Failure sending notification on ticket "
+                                   "batch change: %s",
+                                   exception_to_unicode(e))
+                    add_warning(req, tag_("The changes have been saved, but "
+                                          "an error occurred while sending "
+                                          "notifications: %(message)s",
+                                          message=to_unicode(e)))
         else:
             milestone.insert()
 
