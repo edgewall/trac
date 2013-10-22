@@ -19,35 +19,28 @@ from trac.tests.functional import *
 class TestPreferences(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Set preferences for admin user"""
-        prefs_url = self._tester.url + "/prefs"
-        tc.follow('Preferences')
-        tc.url(prefs_url)
+        self._tester.go_to_preferences()
         tc.notfind('Your preferences have been saved.')
         tc.formvalue('userprefs', 'name', ' System Administrator ')
         tc.formvalue('userprefs', 'email', ' admin@example.com ')
         tc.submit()
         tc.find('Your preferences have been saved.')
-        tc.follow('Date & Time')
-        tc.url(prefs_url + '/datetime')
+        self._tester.go_to_preferences("Date & Time")
         tc.formvalue('userprefs', 'tz', 'GMT -10:00')
         tc.submit()
         tc.find('Your preferences have been saved.')
-        tc.follow('General')
-        tc.url(prefs_url)
+        self._tester.go_to_preferences()
         tc.notfind('Your preferences have been saved.')
         tc.find('value="System Administrator"')
         tc.find(r'value="admin@example\.com"')
-        tc.follow('Date & Time')
-        tc.url(prefs_url + '/datetime')
+        self._tester.go_to_preferences("Date & Time")
         tc.find('GMT -10:00')
 
 
 class RegressionTestRev5785(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of the fix in r5785"""
-        prefs_url = self._tester.url + "/prefs"
-        tc.follow('Preferences')
-        tc.url(prefs_url)
+        self._tester.go_to_preferences()
         tc.follow('Logout')
         tc.notfind(internal_error) # See [5785]
         tc.follow('Login')
@@ -58,9 +51,7 @@ class RegressionTestTicket5765(FunctionalTwillTestCaseSetup):
         """Test for regression of http://trac.edgewall.org/ticket/5765
         Unable to turn off 'Enable access keys' in Preferences
         """
-        self._tester.go_to_front()
-        tc.follow('Preferences')
-        tc.follow('Keyboard Shortcuts')
+        self._tester.go_to_preferences("Keyboard Shortcuts")
         tc.formvalue('userprefs', 'accesskeys', True)
         tc.submit()
         tc.find('name="accesskeys".*checked="checked"')
