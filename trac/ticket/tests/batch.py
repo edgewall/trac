@@ -11,6 +11,11 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from __future__ import with_statement
+
+import unittest
+from datetime import datetime, timedelta
+
 from trac.perm import DefaultPermissionPolicy, DefaultPermissionStore,\
                       PermissionCache
 from trac.test import Mock, EnvironmentStub
@@ -18,8 +23,7 @@ from trac.ticket import default_workflow, web_ui
 from trac.ticket.batch import BatchModifyModule
 from trac.ticket.model import Ticket
 from trac.util.datefmt import utc
-
-import unittest
+from trac.web.chrome import web_context
 
 
 class BatchModifyTestCase(unittest.TestCase):
@@ -258,6 +262,49 @@ class BatchModifyTestCase(unittest.TestCase):
 
         self.assertFieldChanged(first_ticket_id, 'owner', 'buck')
         self.assertFieldChanged(second_ticket_id, 'owner', 'buck')
+
+    def test_timeline_events(self):
+        """Regression test for #11288"""
+        tktmod = web_ui.TicketModule(self.env)
+        now = datetime.now(utc)
+        start = now - timedelta(hours=1)
+        stop = now + timedelta(hours=1)
+        events = tktmod.get_timeline_events(self.req, start, stop,
+                                            ['ticket_details'])
+        self.assertEqual(True, all(ev[0] != 'batchmodify' for ev in events))
+
+        ids = []
+        for i in xrange(20):
+            ticket = Ticket(self.env)
+            ticket['summary'] = 'Ticket %d' % i
+            ids.append(ticket.insert())
+        ids.sort()
+        new_values = {'summary': 'batch updated ticket',
+                      'owner': 'ticket11288', 'reporter': 'ticket11288'}
+        batch = BatchModifyModule(self.env)
+        batch._save_ticket_changes(self.req, ids, new_values, '', 'leave')
+        # shuffle ticket_change records
+        with self.env.db_transaction as db:
+            rows = db('SELECT * FROM ticket_change')
+            db.execute('DELETE FROM ticket_change')
+            rows = rows[0::4] + rows[1::4] + rows[2::4] + rows[3::4]
+            db.executemany('INSERT INTO ticket_change VALUES (%s)' %
+                           ','.join(('%s',) * len(rows[0])),
+                           rows)
+
+        events = tktmod.get_timeline_events(self.req, start, stop,
+                                            ['ticket_details'])
+        events = [ev for ev in events if ev[0] == 'batchmodify']
+        self.assertEqual(1, len(events))
+        batch_ev = events[0]
+        self.assertEqual('anonymous', batch_ev[2])
+        self.assertEqual(ids, sorted(batch_ev[3][0]))
+        self.assertEqual('updated', batch_ev[3][1])
+
+        context = web_context(self.req)
+        self.assertEqual(
+            self.req.href.query(id=','.join(str(t) for t in ids)),
+            tktmod.render_timeline_event(context, 'url', batch_ev))
 
 
 def suite():
