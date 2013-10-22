@@ -200,6 +200,15 @@ class FunctionalTester(object):
         tc.go(report_url)
         tc.url(report_url.encode('string-escape').replace('?', '\?'))
 
+    def go_to_preferences(self, panel_label=None):
+        """Surf to the preferences page. Continue surfing to a specific
+        preferences panel if `panel_label` is specified."""
+        self.go_to_front()
+        tc.follow(r"\bPreferences\b")
+        tc.url(self.url + '/prefs')
+        if panel_label is not None:
+            tc.follow(r"\b%s\b" % panel_label)
+
     def add_comment(self, ticketid, comment=None):
         """Adds a comment to the given ticket ID, assumes ticket exists."""
         self.go_to_ticket(ticketid)
