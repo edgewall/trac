@@ -211,12 +211,14 @@ class BasicsAdminPanel(Component):
 
     def render_admin_panel(self, req, cat, page, path_info):
         if Locale:
-            locales = [Locale.parse(locale)
-                       for locale in get_available_locales()]
-            languages = sorted((str(locale), locale.display_name)
-                               for locale in locales)
+            locale_ids = get_available_locales()
+            locales = [Locale.parse(locale) for locale in locale_ids]
+            # don't use str(locale) to prevent storing expanded locale
+            # identifier, see #11258
+            languages = sorted((id, locale.display_name)
+                               for id, locale in zip(locale_ids, locales))
         else:
-            locales, languages = [], []
+            locale_ids, locales, languages = [], [], []
 
         if req.method == 'POST':
             for option in ('name', 'url', 'descr'):
@@ -228,7 +230,7 @@ class BasicsAdminPanel(Component):
             self.config.set('trac', 'default_timezone', default_timezone)
 
             default_language = req.args.get('default_language')
-            if default_language not in locales:
+            if default_language not in locale_ids:
                 default_language = ''
             self.config.set('trac', 'default_language', default_language)
 
