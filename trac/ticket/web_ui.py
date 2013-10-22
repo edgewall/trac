@@ -303,7 +303,7 @@ class TicketModule(Component):
                     FROM ticket_change tc
                         INNER JOIN ticket t ON t.id = tc.ticket
                             AND tc.time>=%s AND tc.time<=%s
-                    ORDER BY tc.time
+                    ORDER BY tc.time, tc.ticket
                     """ % (ts_start, ts_stop)):
                 if not (oldvalue or newvalue):
                     # ignore empty change corresponding to custom field
