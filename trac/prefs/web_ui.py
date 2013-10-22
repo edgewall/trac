@@ -106,9 +106,14 @@ class PreferencesModule(Component):
         }
 
         if Locale:
-            locales = map(Locale.parse, get_available_locales())
-            languages = sorted([(str(locale).replace('_','-'),
-                                 locale.display_name) for locale in locales])
+            locale_ids = get_available_locales()
+            locales = [Locale.parse(locale) for locale in locale_ids]
+            # use locale identifiers from get_available_locales() instead
+            # of str(locale) to prevent storing expanded locale identifier
+            # to session, e.g. zh_Hans_CN and zh_Hant_TW, since Babel 1.0.
+            # see #11258.
+            languages = sorted((id.replace('_','-'), locale.display_name)
+                               for id, locale in zip(locale_ids, locales))
             data['locales'] = locales
             data['languages'] = languages
 
