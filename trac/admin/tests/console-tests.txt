@@ -412,6 +412,14 @@ Name           Owner
 -----------------------
 component1     somebody
 component2     somebody
+new_component
+
+===== test_component_add_optional_owner_ok =====
+
+Name           Owner
+-----------------------
+component1     somebody
+component2     somebody
 new_component  new_user
 
 ===== test_component_add_error_already_exists =====

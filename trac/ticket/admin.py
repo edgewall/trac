@@ -168,7 +168,7 @@ class ComponentAdminPanel(TicketAdminPanel):
         yield ('component list', '',
                'Show available components',
                None, self._do_list)
-        yield ('component add', '<name> <owner>',
+        yield ('component add', '<name> [owner]',
                'Add a new component',
                self._complete_add, self._do_add)
         yield ('component rename', '<name> <newname>',
@@ -207,7 +207,7 @@ class ComponentAdminPanel(TicketAdminPanel):
                      for c in model.Component.select(self.env)],
                     [_('Name'), _('Owner')])
 
-    def _do_add(self, name, owner):
+    def _do_add(self, name, owner=None):
         component = model.Component(self.env)
         component.name = name
         component.owner = owner
