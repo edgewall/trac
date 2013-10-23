@@ -381,6 +381,18 @@ class TracadminTestCase(unittest.TestCase):
         test passes valid arguments and checks for success.
         """
         test_name = sys._getframe().f_code.co_name
+        self._execute('component add new_component')
+        rv, output = self._execute('component list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def test_component_add_optional_owner_ok(self):
+        """
+        Tests the 'component add' command in trac-admin with the optional
+        'owner' argument.  This particular test passes valid arguments and
+        checks for success.
+        """
+        test_name = sys._getframe().f_code.co_name
         self._execute('component add new_component new_user')
         rv, output = self._execute('component list')
         self.assertEqual(0, rv)
