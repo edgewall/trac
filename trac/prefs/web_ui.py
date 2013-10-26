@@ -95,7 +95,7 @@ class PreferencesModule(Component):
         yield ('datetime', _('Date & Time'))
         yield ('keybindings', _('Keyboard Shortcuts'))
         yield ('userinterface', _('User Interface'))
-        if Locale:
+        if Locale or 'TRAC_ADMIN' in req.perm:
             yield ('language', _('Language'))
         if not req.authname or req.authname == 'anonymous':
             yield ('advanced', _('Advanced'))
@@ -111,7 +111,8 @@ class PreferencesModule(Component):
         data = {
             'settings': {'session': req.session, 'session_id': req.session.sid},
             'timezones': all_timezones, 'timezone': get_timezone,
-            'localtz': localtz
+            'localtz': localtz,
+            'has_babel': False
         }
 
         if Locale:
@@ -125,6 +126,7 @@ class PreferencesModule(Component):
                                for id, locale in zip(locale_ids, locales))
             data['locales'] = locales
             data['languages'] = languages
+            data['has_babel'] = True
 
         return 'prefs_%s.html' % (panel or 'general'), data
 

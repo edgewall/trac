@@ -274,18 +274,31 @@ class RegressionTestTicket11257(FunctionalTwillTestCaseSetup):
     installed.
     """
     def runTest(self):
+        from trac.util.translation import get_available_locales, has_babel
+
+        babel_hint_lang = "Install Babel for extended language support."
+        babel_hint_date = "Install Babel for localized date formats."
+        catalog_hint = "Message catalogs have not been compiled."
+        language_select = '<select name="default_language">'
+        disabled_language_select = \
+            '<select name="default_language" disabled="disabled" ' \
+            'title="Translations are currently unavailable">'
+
         self._tester.go_to_admin("Basic Settings")
-        babel_hints = ("Install Babel for extended language support.",
-                       "Install Babel for localized date formats.")
-        try:
-            import babel
-        except ImportError:
-            babel = None
-        for hint in babel_hints:
-            if babel is None:
-                tc.find(hint)
+        if has_babel:
+            tc.notfind(babel_hint_lang)
+            tc.notfind(babel_hint_date)
+            if get_available_locales():
+                tc.find(language_select)
+                tc.notfind(catalog_hint)
             else:
-                tc.notfind(hint)
+                tc.find(disabled_language_select)
+                tc.find(catalog_hint)
+        else:
+            tc.find(disabled_language_select)
+            tc.find(babel_hint_lang)
+            tc.find(babel_hint_date)
+            tc.notfind(catalog_hint)
 
 
 def functionalSuite(suite=None):
