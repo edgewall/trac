@@ -327,6 +327,13 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         _save_config(self.config, req, self.log)
                         req.redirect(req.href.admin(cat, page))
 
+                # Clear default milestone
+                elif req.args.get('clear'):
+                    self.log.info("Clearing default milestone")
+                    self.config.set('ticket', 'default_milestone', '')
+                    _save_config(self.config, req, self.log)
+                    req.redirect(req.href.admin(cat, page))
+
             # Get ticket count
             milestones = [
                 (milestone, self.env.db_query("""
@@ -504,6 +511,13 @@ class VersionAdminPanel(TicketAdminPanel):
                         self.config.set('ticket', 'default_version', name)
                         _save_config(self.config, req, self.log)
                         req.redirect(req.href.admin(cat, page))
+
+                # Clear default version
+                elif req.args.get('clear'):
+                    self.log.info("Clearing default version")
+                    self.config.set('ticket', 'default_version', '')
+                    _save_config(self.config, req, self.log)
+                    req.redirect(req.href.admin(cat, page))
 
             data = {'view': 'list',
                     'versions': list(model.Version.select(self.env)),

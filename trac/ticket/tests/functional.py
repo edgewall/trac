@@ -805,6 +805,15 @@ class TestAdminMilestoneDefault(FunctionalTwillTestCaseSetup):
         tc.go(self._tester.url + '/newticket')
         tc.find('<option selected="selected" value="%s">%s</option>'
                 % (name, name))
+        # Test the "Clear default" button
+        tc.go(milestone_url)
+        tc.submit('clear', formname='milestone_table')
+        tc.notfind('type="radio" name="default" value=".+" checked="checked"')
+        tid = self._tester.create_ticket()
+        self._tester.go_to_ticket(tid)
+        tc.find('<th id="h_milestone" class="missing">[ \t\n]+'
+                'Milestone:[ \t\n]+</th>[ \t\n]+'
+                '(?!<td headers="h_milestone">)')
 
 
 class TestAdminPriority(FunctionalTwillTestCaseSetup):
@@ -1178,6 +1187,15 @@ class TestAdminVersionDefault(FunctionalTwillTestCaseSetup):
         tc.go(self._tester.url + '/newticket')
         tc.find('<option selected="selected" value="%s">%s</option>'
                 % (name, name))
+        # Test the "Clear default" button
+        tc.go(version_url)
+        tc.submit('clear', formname='version_table')
+        tc.notfind('type="radio" name="default" value=".+" checked="checked"')
+        tid = self._tester.create_ticket()
+        self._tester.go_to_ticket(tid)
+        tc.find('<th id="h_version" class="missing">[ \t\n]+'
+                'Version:[ \t\n]+</th>[ \t\n]+'
+                '(?!<td headers="h_version">)')
 
 
 class TestNewReport(FunctionalTwillTestCaseSetup):
