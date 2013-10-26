@@ -60,6 +60,50 @@ class RegressionTestTicket5765(FunctionalTwillTestCaseSetup):
         tc.notfind('name="accesskeys".*checked="checked"')
 
 
+class RegressionTestTicket11337(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11337
+        The preferences panel will only be visible when Babel is installed
+        or for a user that has `TRAC_ADMIN`.
+        """
+        from trac.util.translation import has_babel, get_available_locales
+
+        babel_hint = "Install Babel for extended language support."
+        catalog_hint = "Message catalogs have not been compiled."
+        language_select = '<select name="language">'
+        disabled_language_select = \
+            '<select name="language" disabled="disabled" ' \
+            'title="Translations are currently unavailable">'
+
+        self._tester.go_to_preferences("Language")
+        if has_babel:
+            tc.notfind(babel_hint)
+            if get_available_locales():
+                tc.find(language_select)
+                tc.notfind(catalog_hint)
+            else:
+                tc.find(disabled_language_select)
+                tc.find(catalog_hint)
+        else:
+            tc.find(babel_hint)
+            tc.find(disabled_language_select)
+            tc.notfind(catalog_hint)
+
+        # For users without TRAC_ADMIN, the Language tab should only be
+        # present when Babel is installed
+        self._tester.go_to_preferences()
+        language_tab = '<li id="tab_language">'
+        try:
+            self._tester.logout()
+            if has_babel:
+                tc.find(language_tab)
+                tc.notfind(catalog_hint)
+            else:
+                tc.notfind(language_tab)
+        finally:
+            self._tester.login('admin')
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
@@ -67,6 +111,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestPreferences())
     suite.addTest(RegressionTestRev5785())
     suite.addTest(RegressionTestTicket5765())
+    suite.addTest(RegressionTestTicket11337())
     return suite
 
 

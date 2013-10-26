@@ -45,7 +45,8 @@ ${project.descr}</textarea>
         </div>
         <div class="field">
           <label>Default language:<br />
-            <select name="default_language">
+            <select name="default_language" disabled="${not languages or None}"
+                    title="${_('Translations are currently unavailable') if not languages else None}">
               <option value="">Browser's language</option>
               <option py:for="locale, language in languages" value="${locale}"
                       selected="${locale == default_language or None}">${language}</option>
@@ -53,6 +54,9 @@ ${project.descr}</textarea>
           </label>
           <span py:if="not has_babel" class="hint">
             Install Babel for extended language support.
+          </span>
+          <span py:if="has_babel and not languages" class="hint">
+            Message catalogs have not been compiled.
           </span>
         </div>
         <div class="field">

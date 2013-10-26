@@ -13,22 +13,31 @@
 
     <div class="field" py:with="session_language = settings.session.get('language', '').replace('-', '_')">
       <label>Language:
-        <select name="language">
+        <select name="language" disabled="${'disabled' if not languages else None}"
+                title="${_('Translations are currently unavailable') if not languages else None}">
           <option value="">Default language</option>
           <option py:for="locale, language in languages"
                   selected="${session_language == locale or None}"
                   value="$locale">$language</option>
         </select>
       </label>
-      <p class="hint">Configuring your language will result in all text
-      displayed on this site to use your language instead of that of the
-      server.</p>
+      <span py:if="not has_babel" class="hint">
+        Install Babel for extended language support.
+      </span>
+      <span py:if="'TRAC_ADMIN' in req.perm and has_babel and not languages" class="hint">
+        Message catalogs have not been compiled.
+      </span>
 
-      <p class="hint" i18n:msg="">The <strong>Default language</strong> option uses the browser's
+      <div py:if="languages">
+        <p class="hint">Configuring your language will result in all text
+        displayed on this site to use your language instead of that of the
+        server.</p>
+
+        <p class="hint" i18n:msg="">The <strong>Default language</strong> option uses the browser's
         language negotiation feature to select the appropriate language.</p>
+      </div>
 
       <p py:if="not languages" class="hint" xml:lang="en">
-        <strong>Note:</strong> Translations are currently unavailable.
         <py:choose>
           <py:when test="'TRAC_ADMIN' in req.perm">
             Trac has been localized to more than a dozen of languages but in order
