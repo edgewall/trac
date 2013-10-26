@@ -340,8 +340,6 @@ try:
                        if '.' not in dirname
                        and pkg_resources.resource_exists(
                         'trac', 'locale/%s/LC_MESSAGES/messages.mo' % dirname)]
-            if 'en_US' not in locales:
-                locales.append('en_US')
             return locales
         except Exception:
             return []
@@ -349,8 +347,11 @@ try:
     def get_negotiated_locale(preferred_locales):
         def normalize(locale_ids):
             return [id.replace('-', '_') for id in locale_ids if id]
+        locales = get_available_locales()
+        if 'en_US' not in locales:
+            locales.append('en_US')
         return Locale.negotiate(normalize(preferred_locales),
-                                normalize(get_available_locales()))
+                                normalize(locales))
 
     has_babel = True
 

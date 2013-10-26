@@ -690,7 +690,7 @@ class Chrome(Component):
            getattr(handler.__class__, 'jquery_noconflict', False):
             add_script(req, 'common/js/noconflict.js')
         add_script(req, 'common/js/babel.js')
-        if req.locale is not None:
+        if req.locale is not None and str(req.locale) != 'en_US':
             add_script(req, 'common/js/messages/%s.js' % req.locale)
         add_script(req, 'common/js/trac.js')
         add_script(req, 'common/js/search.js')
