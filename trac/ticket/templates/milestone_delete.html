@@ -20,16 +20,21 @@
       <div>
         <input type="hidden" name="action" value="delete" />
         <p><strong>Are you sure you want to delete this milestone?</strong></p>
-        <label for="target">Retarget associated tickets to milestone</label>
-        <select name="target" id="target">
-          <option value="">None</option>
-          <optgroup py:for="(label, milestones) in milestone_groups"
-                    py:if="milestones" label="${label}">
-            <option py:for="milestone in milestones"
-                    selected="${retarget_to == milestone.name or None}"
-                    value="${milestone.name}" py:content="milestone.name"></option>
-          </optgroup>
-        </select>
+        <py:if test="num_tickets != 0">
+          <label for="target">Retarget associated tickets to milestone</label>
+          <select name="target" id="target">
+            <option value="">None</option>
+            <optgroup py:for="(label, milestones) in milestone_groups"
+                      py:if="milestones" label="${label}">
+              <option py:for="milestone in milestones"
+                      selected="${retarget_to == milestone.name or None}"
+                      value="${milestone.name}" py:content="milestone.name"></option>
+            </optgroup>
+          </select>
+        </py:if>
+        <span py:if="num_tickets == 0" class="hint">
+          There are no tickets associated with this milestone.
+        </span>
       </div>
       <div class="buttons">
         <input type="submit" id="delete" value="${_('Delete milestone')}" />

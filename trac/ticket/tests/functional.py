@@ -1350,7 +1350,10 @@ class TestMilestoneDelete(FunctionalTwillTestCaseSetup):
         def delete_milestone(name, retarget_to=None, tid=None):
             self._tester.go_to_milestone(name)
             tc.submit(formname='deletemilestone')
-            if retarget_to is not None:
+            if tid is None:
+                tc.find("There are no tickets associated with this "
+                        "milestone.")
+            elif retarget_to is not None:
                 tc.formvalue('edit', 'target', retarget_to)
             tc.submit('delete', formname='edit')
 
@@ -2015,15 +2018,18 @@ class RegressionTestTicket10010(FunctionalTwillTestCaseSetup):
         """Test for regression of http://trac.edgewall.org/ticket/10010
         Allow configuring the default retargeting option when closing or
         deleting a milestone."""
+        m1 = self._tester.create_milestone()
+        m2 = self._tester.create_milestone()
+        self._tester.create_ticket(info={'milestone': m1})
         def go_to_and_find_markup(markup, find=True):
-            self._tester.go_to_milestone("milestone1")
+            self._tester.go_to_milestone(m1)
             tc.formvalue('editmilestone', 'action', 'edit')
             tc.submit()
             if find:
                 tc.find(markup)
             else:
                 tc.notfind(markup)
-            self._tester.go_to_milestone("milestone1")
+            self._tester.go_to_milestone(m1)
             tc.formvalue('editmilestone', 'action', 'delete')
             tc.submit()
             if find:
@@ -2032,12 +2038,10 @@ class RegressionTestTicket10010(FunctionalTwillTestCaseSetup):
                 tc.notfind(markup)
         try:
             go_to_and_find_markup('<option selected="selected" ', False)
-            self._testenv.set_config('milestone', 'default_retarget_to',
-                                     'milestone2')
+            self._testenv.set_config('milestone', 'default_retarget_to', m2)
             go_to_and_find_markup('<option selected="selected" '
-                                  'value="milestone2">milestone2</option>')
-            self._testenv.set_config('milestone', 'default_retarget_to',
-                                     'milestone1')
+                                  'value="%(name)s">%(name)s</option>' % {'name': m2})
+            self._testenv.set_config('milestone', 'default_retarget_to', m1)
             go_to_and_find_markup('<option selected="selected" ', False)
             self._testenv.set_config('milestone', 'default_retarget_to', '')
             go_to_and_find_markup('<option selected="selected" ', False)
