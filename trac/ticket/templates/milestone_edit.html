@@ -81,8 +81,8 @@
                      title="${_('Format: %(datehint)s', datehint=datetime_hint)}" />
               <em i18n:msg="datehint">Format: ${datetime_hint}</em>
             </label>
-            <py:if test="milestone_groups">
-              <br/>
+            <br/>
+            <py:if test="num_tickets != 0">
               <input type="checkbox" id="retarget" name="retarget" checked="${not milestone.completed or None}" />
               <label for="retarget">Retarget associated open tickets to milestone:</label>
               <select id="target" name="target">
@@ -100,6 +100,10 @@
               <input type="text" id="retarget-comment" name="comment" size="40"
                      value="Ticket retargeted after milestone closed" />
             </py:if>
+            <br/>
+            <span py:if="num_tickets == 0" class="hint">
+              There are no tickets associated with this milestone.
+            </span>
           </div>
         </fieldset>
         <div class="field">

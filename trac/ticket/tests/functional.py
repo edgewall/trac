@@ -1324,8 +1324,14 @@ class TestMilestoneClose(FunctionalTwillTestCaseSetup):
     def runTest(self):
         name = self._tester.create_milestone()
         retarget_to = self._tester.create_milestone()
-        tid = self._tester.create_ticket(info={'milestone': name})
 
+        # Check that hint is shown when there are no tickets to retarget
+        self._tester.go_to_milestone(name)
+        tc.submit(formname='editmilestone')
+        tc.find("There are no tickets associated with this milestone.")
+
+        # Add a ticket and check that it is retargeted when milestone closed
+        tid = self._tester.create_ticket(info={'milestone': name})
         self._tester.go_to_milestone(name)
         tc.submit(formname='editmilestone')
         tc.formvalue('edit', 'completed', True)

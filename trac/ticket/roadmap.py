@@ -869,8 +869,12 @@ class MilestoneModule(Component):
             milestones = [m for m in Milestone.select(self.env)
                           if m.name != milestone.name
                           and 'MILESTONE_VIEW' in req.perm(m.resource)]
+            num_tickets = self.env.db_query("""
+                SELECT COUNT(*) FROM ticket WHERE milestone=%s""",
+                (milestone.name, ))[0][0]
             data['milestone_groups'] = group_milestones(milestones,
                 'TICKET_ADMIN' in req.perm)
+            data['num_tickets'] = num_tickets
             data['retarget_to'] = self.default_retarget_to
         else:
             req.perm(milestone.resource).require('MILESTONE_CREATE')
