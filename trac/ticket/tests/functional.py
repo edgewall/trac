@@ -1353,24 +1353,16 @@ class TestMilestoneDelete(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Delete a milestone and verify that tickets are retargeted
         to the selected milestone."""
-        def delete_milestone(name, retarget_to=None, tid=None):
-            self._tester.go_to_milestone(name)
-            tc.submit(formname='deletemilestone')
-            if tid is None:
-                tc.find("There are no tickets associated with this "
-                        "milestone.")
-            elif retarget_to is not None:
-                tc.formvalue('edit', 'target', retarget_to)
+        def submit_delete(name, retarget_to=None, tid=None):
             tc.submit('delete', formname='edit')
-
             tc.url(self._tester.url + '/roadmap')
             tc.find('The milestone "%s" has been deleted.' % name)
             tc.notfind('Milestone:.*%s' % name)
-            if retarget_to is not None:
-                tc.find('Milestone:.*%s' % retarget_to)
             retarget_notice = 'The tickets associated with milestone "%s" ' \
                               'have been retargeted to milestone "%s".' \
                               % (name, str(retarget_to))
+            if retarget_to is not None:
+                tc.find('Milestone:.*%s' % retarget_to)
             if tid is not None:
                 tc.find(retarget_notice)
                 self._tester.go_to_ticket(tid)
@@ -1393,23 +1385,30 @@ class TestMilestoneDelete(FunctionalTwillTestCaseSetup):
 
         # No tickets associated with milestone to be retargeted
         name = self._tester.create_milestone()
-        delete_milestone(name)
+        self._tester.go_to_milestone(name)
+        tc.submit(formname='deletemilestone')
+        tc.find("There are no tickets associated with this milestone.")
+        submit_delete(name)
 
         # Don't select a milestone to retarget to
         name = self._tester.create_milestone()
         tid = self._tester.create_ticket(info={'milestone': name})
-        delete_milestone(name, tid=tid)
+        self._tester.go_to_milestone(name)
+        tc.submit(formname='deletemilestone')
+        submit_delete(name, tid=tid)
 
         # Select a milestone to retarget to
         name = self._tester.create_milestone()
         retarget_to = self._tester.create_milestone()
         tid = self._tester.create_ticket(info={'milestone': name})
-        delete_milestone(name, retarget_to, tid)
+        self._tester.go_to_milestone(name)
+        tc.submit(formname='deletemilestone')
+        tc.formvalue('edit', 'target', retarget_to)
+        submit_delete(name, retarget_to, tid)
 
         # Just navigate to the page and select cancel
         name = self._tester.create_milestone()
         tid = self._tester.create_ticket(info={'milestone': name})
-
         self._tester.go_to_milestone(name)
         tc.submit(formname='deletemilestone')
         tc.submit('cancel', formname='edit')
