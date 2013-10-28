@@ -1366,7 +1366,8 @@ class TestMilestoneDelete(FunctionalTwillTestCaseSetup):
             if tid is not None:
                 tc.find(retarget_notice)
                 self._tester.go_to_ticket(tid)
-                tc.find('Changed[ \t\n]+<a.*seconds ago</a>[ \t\n]+by admin')
+                tc.find('Changed[ \t\n]+<a .*>\d+ seconds? ago</a>'
+                        '[ \t\n]+by admin')
                 if retarget_to is not None:
                     tc.find('<a class="milestone" href="/milestone/%(name)s">'
                             '%(name)s</a>' % {'name': retarget_to})
@@ -1442,7 +1443,7 @@ class TestMilestoneRename(FunctionalTwillTestCaseSetup):
         tc.find("Your changes have been saved.")
         tc.find(r"<h1>Milestone %s</h1>" % new_name)
         self._tester.go_to_ticket(tid)
-        tc.find('Changed[ \t\n]+<a.*seconds ago</a>[ \t\n]+by admin')
+        tc.find('Changed[ \t\n]+<a .*>\d+ seconds? ago</a>[ \t\n]+by admin')
         tc.find('<a class="milestone" href="/milestone/%(name)s">'
                 '%(name)s</a>' % {'name': new_name})
         tc.find('<strong class="trac-field-milestone">Milestone</strong>'
