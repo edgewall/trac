@@ -157,6 +157,23 @@ class RegressionTestTicket11194(FunctionalTwillTestCaseSetup):
         tc.notfind(internal_error)
 
 
+class RegressionTestTicket11346(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11346
+        fix for log: link with revision ranges included oldest wrongly
+        showing HEAD revision
+        """
+        # create new 3 revisions
+        self._testenv.svn_mkdir(['ticket11346'], '')
+        for i in (1, 2):
+            rev = self._testenv.svn_add('ticket11346/file%d.txt' % i, '')
+        tc.go(self._tester.url + '/log?revs=1-2')
+        tc.find('@1')
+        tc.find('@2')
+        tc.notfind('@3')
+        tc.notfind('@%d' % rev)
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional.testcases
@@ -171,6 +188,7 @@ def functionalSuite(suite=None):
         else:
             suite.addTest(RegressionTestTicket5819())
         suite.addTest(RegressionTestTicket11194())
+        suite.addTest(RegressionTestTicket11346())
         suite.addTest(RegressionTestRev5877())
     else:
         print "SKIP: versioncontrol/tests/functional.py (no svn bindings)"
