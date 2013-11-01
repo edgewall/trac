@@ -147,12 +147,13 @@ class LogModule(Component):
                                 if rev != nrev: # no, we need a separator
                                     yield (np, nrev, None)
                             yield node_history[0]
-                        prevpath = node_history[-1][0] # follow copy
-                        b = repos.previous_rev(rev)
                         if len(node_history) > 1:
                             expected_next_item = node_history[-1]
+                            prevpath = expected_next_item[0]  # follow copy
+                            b = expected_next_item[1]
                         else:
                             expected_next_item = None
+                            break  # no more older revisions
                 if expected_next_item:
                     yield (expected_next_item[0], expected_next_item[1], None)
         else:
