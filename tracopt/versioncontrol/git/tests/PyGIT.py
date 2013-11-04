@@ -25,7 +25,8 @@ from trac.util import create_file
 from trac.util.compat import close_fds
 from trac.versioncontrol.api import Changeset, DbRepositoryProvider
 from tracopt.versioncontrol.git.git_fs import GitConnector
-from tracopt.versioncontrol.git.PyGIT import GitCore, Storage, parse_commit
+from tracopt.versioncontrol.git.PyGIT import GitCore, GitError, Storage, \
+                                             parse_commit
 
 
 def rmtree(path):
@@ -199,9 +200,22 @@ class NormalTestCase(unittest.TestCase):
                                                             stdout, stderr))
         return proc
 
-    def _storage(self):
-        path = os.path.join(self.repos_path, '.git')
+    def _storage(self, path=None):
+        if path is None:
+            path = os.path.join(self.repos_path, '.git')
         return Storage(path, self.env.log, self.git_bin, 'utf-8')
+
+    def test_control_files_detection(self):
+        # Exception not raised when path points to ctrl file dir
+        self.assertIsInstance(self._storage().repo, GitCore)
+        # Exception not raised when path points to parent of ctrl files dir
+        self.assertIsInstance(self._storage(self.repos_path).repo, GitCore)
+        # Exception raised when path points to dir with no ctrl files
+        path = tempfile.mkdtemp(dir=self.repos_path)
+        self.assertRaises(GitError, self._storage, path)
+        # Exception raised if a ctrl file is missing
+        os.remove(os.path.join(self.repos_path, '.git', 'HEAD'))
+        self.assertRaises(GitError, self._storage, self.repos_path)
 
     def test_get_branches_with_cr_in_commitlog(self):
         # regression test for #11598

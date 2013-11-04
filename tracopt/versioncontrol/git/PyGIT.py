@@ -378,16 +378,19 @@ class Storage(object):
 
         # simple sanity checking
         __git_file_path = partial(os.path.join, git_dir)
-        if not all(map(os.path.exists,
-                       map(__git_file_path,
-                           ['HEAD','objects','refs']))):
-            self.logger.error("GIT control files missing in '%s'" % git_dir)
-            if os.path.exists(__git_file_path('.git')):
-                self.logger.error("entry '.git' found in '%s'"
-                                  " -- maybe use that folder instead..."
+        control_files = ['HEAD', 'objects', 'refs']
+        control_files_exist = \
+            lambda p: all(map(os.path.exists, map(p, control_files)))
+        if not control_files_exist(__git_file_path):
+            __git_file_path = partial(os.path.join, git_dir, '.git')
+            if os.path.exists(__git_file_path()) and \
+                    control_files_exist(__git_file_path):
+                git_dir = __git_file_path()
+            else:
+                self.logger.error("GIT control files missing in '%s'"
                                   % git_dir)
-            raise GitError("GIT control files not found, maybe wrong "
-                           "directory?")
+                raise GitError("GIT control files not found, maybe wrong "
+                               "directory?")
         # at least, check that the HEAD file is readable
         head_file = os.path.join(git_dir, 'HEAD')
         try:
