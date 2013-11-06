@@ -334,6 +334,17 @@ class TracadminTestCase(unittest.TestCase):
         self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
+    def test_permission_remove_action_granted_through_meta_permission(self):
+        """
+        Tests the 'permission remove' command in trac-admin.  This particular
+        test tries removing WIKI_VIEW from a user. WIKI_VIEW has been granted
+        through user anonymous."""
+        test_name = sys._getframe().f_code.co_name
+        self._execute('permission add joe TICKET_VIEW')
+        rv, output = self._execute('permission remove joe WIKI_VIEW')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
     def test_permission_export_ok(self):
         """
         Tests the 'permission export' command in trac-admin.  This particular

@@ -357,9 +357,11 @@ Available actions:
  WIKI_MODIFY, WIKI_RENAME, WIKI_VIEW
 
 ===== test_permission_remove_unknown_user =====
-Error: Cannot remove permission TICKET_VIEW for user joe.
+Error: Cannot remove permission TICKET_VIEW for user joe. The user has not been granted the permission.
 ===== test_permission_remove_action_not_granted =====
-Error: Cannot remove permission TICKET_CREATE for user anonymous.
+Error: Cannot remove permission TICKET_CREATE for user anonymous. The user has not been granted the permission.
+===== test_permission_remove_action_granted_through_meta_permission =====
+Error: Cannot remove permission WIKI_VIEW for user joe. The permission is granted through a meta-permission or group.
 ===== test_permission_export_ok =====
 anonymous,BROWSER_VIEW,CHANGESET_VIEW,FILE_VIEW,LOG_VIEW,MILESTONE_VIEW,REPORT_SQL_VIEW,REPORT_VIEW,ROADMAP_VIEW,SEARCH_VIEW,TICKET_VIEW,TIMELINE_VIEW,WIKI_VIEW
 authenticated,TICKET_CREATE,TICKET_MODIFY,WIKI_CREATE,WIKI_MODIFY

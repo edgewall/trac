@@ -685,9 +685,17 @@ class PermissionAdmin(Component):
                     permsys.revoke_permission(u, a)
                     found = True
             if not found:
-                raise AdminCommandError(
-                    _("Cannot remove permission %(action)s for user %(user)s.",
-                      action=action, user=user))
+                if user in self.get_user_list() and \
+                        action in permsys.get_user_permissions(user):
+                    msg = _("Cannot remove permission %(action)s for user "
+                            "%(user)s. The permission is granted through "
+                            "a meta-permission or group.", action=action,
+                            user=user)
+                else:
+                    msg = _("Cannot remove permission %(action)s for user "
+                            "%(user)s. The user has not been granted the "
+                            "permission.", action=action, user=user)
+                raise AdminCommandError(msg)
 
     def _do_export(self, filename=None):
         try:
