@@ -12,6 +12,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import tempfile
+
 from trac.admin.tests.functional import AuthorizationTestCaseSetup
 from trac.tests.functional import *
 
@@ -243,11 +245,31 @@ class RegressionTestTicket11346(FunctionalTwillTestCaseSetup):
         tc.notfind('@%d' % rev)
 
 
+class RegressionTestTicket11355(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11355
+        Save with no changes should redirect back to the repository listing.
+        """
+        self._tester.go_to_admin("Repositories")
+        name = random_unique_camel()
+        tc.formvalue('trac-addrepos', 'name', name)
+        tc.formvalue('trac-addrepos', 'dir',
+                     os.path.join(tempfile.gettempdir(), name.lower()))
+        tc.submit('add_repos')
+        tc.find('The repository "%s" has been added.' % name)
+        tc.follow(r"\b%s\b" % name)
+        tc.url(self._tester.url + '/admin/versioncontrol/repository/' + name)
+        tc.submit('save', formname='trac-modrepos')
+        tc.url(self._tester.url + '/admin/versioncontrol/repository')
+        tc.find("Your changes have been saved.")
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
         suite = trac.tests.functional.functionalSuite()
     suite.addTest(TestAdminRepositoryAuthorization())
+    suite.addTest(RegressionTestTicket11355())
     if has_svn:
         suite.addTest(TestEmptySvnRepo())
         suite.addTest(TestRepoCreation())
