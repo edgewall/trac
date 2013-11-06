@@ -200,39 +200,42 @@ class RepositoryAdminPanel(Component):
                 elif db_provider and req.args.get('save'):
                     # Modify repository
                     changes = {}
+                    valid = True
                     for field in db_provider.repository_attrs:
                         value = normalize_whitespace(req.args.get(field))
                         if (value is not None or field == 'hidden') \
                                 and value != info.get(field):
                             changes[field] = value
-                    if 'dir' in changes \
-                            and not self._check_dir(req, changes['dir']):
-                        changes = {}
-                    if changes:
+                    if 'dir' in changes and \
+                            self._check_dir(req, changes['dir']):
+                        valid = True
+                    if valid and changes:
                         db_provider.modify_repository(reponame, changes)
                         add_notice(req, _('Your changes have been saved.'))
-                    name = req.args.get('name')
-                    resync = tag.code('trac-admin $ENV repository resync "%s"'
-                                      % (name or '(default)'))
-                    if 'dir' in changes:
-                        msg = tag_('You should now run %(resync)s to '
-                                   'synchronize Trac with the repository.',
-                                   resync=resync)
-                        add_notice(req, msg)
-                    elif 'type' in changes:
-                        msg = tag_('You may have to run %(resync)s to '
-                                   'synchronize Trac with the repository.',
-                                   resync=resync)
-                        add_notice(req, msg)
-                    if name and name != path_info and not 'alias' in info:
-                        cset_added = tag.code('trac-admin $ENV changeset '
-                                              'added "%s" $REV'
-                                              % (name or '(default)'))
-                        msg = tag_('You will need to update your post-commit '
-                                   'hook to call %(cset_added)s with the new '
-                                   'repository name.', cset_added=cset_added)
-                        add_notice(req, msg)
-                    if changes:
+                        name = req.args.get('name')
+                        resync = tag.code('trac-admin $ENV repository resync '
+                                          '"%s"' % (name or '(default)'))
+                        if 'dir' in changes:
+                            msg = tag_('You should now run %(resync)s to '
+                                       'synchronize Trac with the repository.',
+                                       resync=resync)
+                            add_notice(req, msg)
+                        elif 'type' in changes:
+                            msg = tag_('You may have to run %(resync)s to '
+                                       'synchronize Trac with the repository.',
+                                       resync=resync)
+                            add_notice(req, msg)
+                        if name and name != path_info and not 'alias' in info:
+                            cset_added = tag.code('trac-admin $ENV changeset '
+                                                  'added "%s" $REV'
+                                                  % (name or '(default)'))
+                            msg = tag_('You will need to update your '
+                                       'post-commit hook to call '
+                                       '%(cset_added)s with the new '
+                                       'repository name.',
+                                       cset_added=cset_added)
+                            add_notice(req, msg)
+                    if valid:
                         req.redirect(req.href.admin(category, page))
 
             Chrome(self.env).add_wiki_toolbars(req)
