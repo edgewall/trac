@@ -206,9 +206,9 @@ class RepositoryAdminPanel(Component):
                         if (value is not None or field == 'hidden') \
                                 and value != info.get(field):
                             changes[field] = value
-                    if 'dir' in changes and \
+                    if 'dir' in changes and not \
                             self._check_dir(req, changes['dir']):
-                        valid = True
+                        valid = False
                     if valid and changes:
                         db_provider.modify_repository(reponame, changes)
                         add_notice(req, _('Your changes have been saved.'))
