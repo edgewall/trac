@@ -250,18 +250,29 @@ class RegressionTestTicket11355(FunctionalTwillTestCaseSetup):
         """Test for regression of http://trac.edgewall.org/ticket/11355
         Save with no changes should redirect back to the repository listing.
         """
+        # Add a repository
         self._tester.go_to_admin("Repositories")
         name = random_unique_camel()
+        dir = os.path.join(tempfile.gettempdir(), name.lower())
         tc.formvalue('trac-addrepos', 'name', name)
-        tc.formvalue('trac-addrepos', 'dir',
-                     os.path.join(tempfile.gettempdir(), name.lower()))
+        tc.formvalue('trac-addrepos', 'dir', dir)
         tc.submit('add_repos')
         tc.find('The repository "%s" has been added.' % name)
+
+        # Save unmodified form and redirect back to listing page
         tc.follow(r"\b%s\b" % name)
         tc.url(self._tester.url + '/admin/versioncontrol/repository/' + name)
         tc.submit('save', formname='trac-modrepos')
         tc.url(self._tester.url + '/admin/versioncontrol/repository')
         tc.find("Your changes have been saved.")
+
+        # Warning is added when repository dir is not an absolute path
+        tc.follow(r"\b%s\b" % name)
+        tc.url(self._tester.url + '/admin/versioncontrol/repository/' + name)
+        tc.formvalue('trac-modrepos', 'dir', dir.lstrip('/'))
+        tc.submit('save')
+        tc.url(self._tester.url + '/admin/versioncontrol/repository/' + name)
+        tc.find('The repository directory must be an absolute path.')
 
 
 def functionalSuite(suite=None):
