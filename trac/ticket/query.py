@@ -722,11 +722,17 @@ class Query(object):
         cols = self.get_columns()
         labels = TicketSystem(self.env).get_ticket_field_labels()
         wikify = set(f['name'] for f in self.fields
-                     if f['type'] == 'text' and f.get('format') == 'wiki')
+                     if f['type'] == 'text' and
+                        f.get('format') == 'wiki')
+        wikifyblock = set(f['name'] for f in self.fields
+                          if f['type'] == 'textarea' and
+                             f.get('format') == 'wiki')
+        wikifyblock.add('description')
 
         headers = [{
             'name': col, 'label': labels.get(col, _('Ticket')),
             'wikify': col in wikify,
+            'wikifyblock': col in wikifyblock,
             'href': self.get_href(context.href, order=col,
                                   desc=(col == self.order and not self.desc))
         } for col in cols]

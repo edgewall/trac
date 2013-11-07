@@ -221,6 +221,8 @@ table.tickets tbody tr.fullrow th {
   text-align: center;
   font-size: 85%;
 }
+table.tickets tbody tr p:first-child { margin-top: 0 }
+table.tickets tbody tr p:last-child { margin-bottom: 0 }
 
 /* Batchmod Form */
 
