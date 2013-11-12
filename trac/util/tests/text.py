@@ -22,7 +22,8 @@ from trac.util.text import empty, expandtabs, fix_eol, javascript_quote, \
                            unicode_quote_plus, unicode_unquote, \
                            unicode_urlencode, wrap, quote_query_string, \
                            unicode_to_base64, unicode_from_base64, \
-                           strip_line_ws, stripws, levenshtein_distance
+                           strip_line_ws, stripws, levenshtein_distance, \
+                           shorten_line
 
 
 class ToUnicodeTestCase(unittest.TestCase):
@@ -358,6 +359,24 @@ class LevenshteinDistanceTestCase(unittest.TestCase):
         self.assertEqual(0, levenshtein_distance('milestone', 'milestone'))
 
 
+class ShortenLineTestCase(unittest.TestCase):
+
+    def test_less_than_maxlen(self):
+        text = '123456789'
+        self.assertEqual(text, shorten_line(text, 10))
+
+    def test_equalto_maxlen(self):
+        text = '1234567890'
+        self.assertEqual(text, shorten_line(text, 10))
+
+    def test_greater_than_maxlen(self):
+        text = 'word word word word'
+        self.assertEqual('word word ...', shorten_line(text, 15))
+        text = 'abcdefghij'
+        self.assertEqual('abcde ...', shorten_line(text, 9))
+
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ToUnicodeTestCase, 'test'))
@@ -374,6 +393,7 @@ def suite():
     suite.addTest(unittest.makeSuite(UnicodeBase64TestCase, 'test'))
     suite.addTest(unittest.makeSuite(StripwsTestCase, 'test'))
     suite.addTest(unittest.makeSuite(LevenshteinDistanceTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(ShortenLineTestCase, 'test'))
     return suite
 
 if __name__ == '__main__':
