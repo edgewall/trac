@@ -17,13 +17,13 @@ from StringIO import StringIO
 
 from trac.tests import compat
 from trac.util.text import empty, expandtabs, fix_eol, javascript_quote, \
-                           to_js_string, normalize_whitespace, to_unicode, \
-                           text_width, print_table, unicode_quote, \
-                           unicode_quote_plus, unicode_unquote, \
-                           unicode_urlencode, wrap, quote_query_string, \
-                           unicode_to_base64, unicode_from_base64, \
-                           strip_line_ws, stripws, levenshtein_distance, \
-                           shorten_line
+                           levenshtein_distance, normalize_whitespace, \
+                           print_table, quote_query_string, shorten_line, \
+                           strip_line_ws, stripws, text_width, \
+                           to_js_string, to_unicode, unicode_from_base64, \
+                           unicode_quote, unicode_quote_plus, \
+                           unicode_to_base64, unicode_unquote, \
+                           unicode_urlencode, wrap
 
 
 class ToUnicodeTestCase(unittest.TestCase):
