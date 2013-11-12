@@ -27,7 +27,8 @@ from trac.config import *
 from trac.notification import NotifyEmail
 from trac.ticket.api import TicketSystem
 from trac.util.datefmt import to_utimestamp
-from trac.util.text import obfuscate_email_address, text_width, wrap
+from trac.util.text import obfuscate_email_address, shorten_line, \
+                           text_width, wrap
 from trac.util.translation import deactivate, reactivate
 
 
@@ -475,8 +476,8 @@ class BatchTicketNotifyEmail(NotifyEmail):
             'tickets_descr': tickets_descr,
             'env': self.env,
         }
-
-        return template.generate(**data).render('text', encoding=None).strip()
+        subj = template.generate(**data).render('text', encoding=None).strip()
+        return shorten_line(subj)
 
     def get_recipients(self, tktids):
         alltorecipients = []
