@@ -28,7 +28,8 @@ from trac.notification import NotifyEmail
 from trac.ticket.api import TicketSystem
 from trac.util.datefmt import format_date_or_datetime, get_timezone, \
                               to_utimestamp
-from trac.util.text import obfuscate_email_address, text_width, wrap
+from trac.util.text import obfuscate_email_address, shorten_line, \
+                           text_width, wrap
 from trac.util.translation import deactivate, reactivate
 
 
@@ -58,7 +59,7 @@ class TicketNotificationSystem(Component):
         ''(since 0.11)''""")
 
     batch_subject_template = Option('notification', 'batch_subject_template',
-                                     '$prefix Batch modify: $tickets_descr',
+                                    '$prefix Batch modify: $tickets_descr',
         """Like ticket_subject_template but for batch modifications.
 
         By default, the template is `$prefix Batch modify: $tickets_descr`.
@@ -73,6 +74,7 @@ class TicketNotificationSystem(Component):
         expected by most users. If 'double', twice the width of
         US-ASCII characters.  This is expected by CJK users. ''(since
         0.12.2)''""")
+
 
 def get_ticket_notification_recipients(env, config, tktid, prev_cc):
     notify_reporter = config.getbool('notification', 'always_notify_reporter')
@@ -401,7 +403,7 @@ class TicketNotifyEmail(NotifyEmail):
     def get_recipients(self, tktid):
         (torecipients, ccrecipients, reporter, owner) = \
             get_ticket_notification_recipients(self.env, self.config,
-                tktid, self.prev_cc)
+                                               tktid, self.prev_cc)
         self.reporter = reporter
         self.owner = owner
         return (torecipients, ccrecipients)
@@ -441,6 +443,7 @@ class TicketNotifyEmail(NotifyEmail):
         else:
             return obfuscate_email_address(text)
 
+
 class BatchTicketNotifyEmail(NotifyEmail):
     """Notification of ticket batch modifications."""
 
@@ -459,7 +462,6 @@ class BatchTicketNotifyEmail(NotifyEmail):
 
     def _notify(self, tickets, new_values, comment, action, author):
         self.tickets = tickets
-        changes_body = ''
         self.reporter = ''
         self.owner = ''
         changes_descr = '\n'.join(['%s to %s' % (prop, val)
@@ -491,8 +493,8 @@ class BatchTicketNotifyEmail(NotifyEmail):
             'tickets_descr': tickets_descr,
             'env': self.env,
         }
-
-        return template.generate(**data).render('text', encoding=None).strip()
+        subj = template.generate(**data).render('text', encoding=None).strip()
+        return shorten_line(subj)
 
     def get_recipients(self, tktids):
         alltorecipients = []
@@ -500,7 +502,7 @@ class BatchTicketNotifyEmail(NotifyEmail):
         for t in tktids:
             (torecipients, ccrecipients, reporter, owner) = \
                 get_ticket_notification_recipients(self.env, self.config,
-                    t, [])
+                                                   t, [])
             alltorecipients.extend(torecipients)
             allccrecipients.extend(ccrecipients)
         return (list(set(alltorecipients)), list(set(allccrecipients)))

@@ -464,7 +464,7 @@ class NotificationTestCase(unittest.TestCase):
         # Discards the project name & ticket number
         subject = headers['Subject']
         summary = subject[subject.find(':')+2:]
-        self.assertFalse(ticket['summary'] != summary)
+        self.assertEqual(ticket['summary'], summary)
 
     def test_mimebody_b64(self):
         """MIME Base64/utf-8 encoding"""

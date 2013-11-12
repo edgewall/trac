@@ -17,13 +17,13 @@ from StringIO import StringIO
 
 from trac.tests import compat
 from trac.util.text import empty, expandtabs, fix_eol, javascript_quote, \
-                           to_js_string, normalize_whitespace, to_unicode, \
-                           text_width, print_table, unicode_quote, \
-                           unicode_quote_plus, unicode_unquote, \
-                           unicode_urlencode, wrap, quote_query_string, \
-                           unicode_to_base64, unicode_from_base64, \
-                           strip_line_ws, stripws, levenshtein_distance, \
-                           sub_vars
+                           levenshtein_distance, normalize_whitespace, \
+                           print_table, quote_query_string, shorten_line, \
+                           strip_line_ws, stripws, sub_vars, text_width, \
+                           to_js_string, to_unicode, unicode_from_base64, \
+                           unicode_quote, unicode_quote_plus, \
+                           unicode_to_base64, unicode_unquote, \
+                           unicode_urlencode, wrap
 
 
 class ToUnicodeTestCase(unittest.TestCase):
@@ -366,6 +366,23 @@ class SubVarsTestCase(unittest.TestCase):
                          subtext)
 
 
+class ShortenLineTestCase(unittest.TestCase):
+
+    def test_less_than_maxlen(self):
+        text = '123456789'
+        self.assertEqual(text, shorten_line(text, 10))
+
+    def test_equalto_maxlen(self):
+        text = '1234567890'
+        self.assertEqual(text, shorten_line(text, 10))
+
+    def test_greater_than_maxlen(self):
+        text = 'word word word word'
+        self.assertEqual('word word ...', shorten_line(text, 15))
+        text = 'abcdefghij'
+        self.assertEqual('abcde ...', shorten_line(text, 9))
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ToUnicodeTestCase, 'test'))
@@ -383,6 +400,7 @@ def suite():
     suite.addTest(unittest.makeSuite(StripwsTestCase, 'test'))
     suite.addTest(unittest.makeSuite(LevenshteinDistanceTestCase, 'test'))
     suite.addTest(unittest.makeSuite(SubVarsTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(ShortenLineTestCase, 'test'))
     return suite
 
 if __name__ == '__main__':

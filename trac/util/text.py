@@ -413,17 +413,19 @@ def print_table(data, headers=None, sep='  ', out=None, ambiwidth=None):
 
 
 def shorten_line(text, maxlen=75):
-    """Truncates content to at most `maxlen` characters.
+    """Truncates `text` to length less than or equal to `maxlen` characters.
 
     This tries to be (a bit) clever and attempts to find a proper word
     boundary for doing so.
     """
-    if len(text or '') < maxlen:
+    if len(text or '') <= maxlen:
         return text
-    cut = max(text.rfind(' ', 0, maxlen), text.rfind('\n', 0, maxlen))
+    suffix = ' ...'
+    maxtextlen = maxlen - len(suffix)
+    cut = max(text.rfind(' ', 0, maxtextlen), text.rfind('\n', 0, maxtextlen))
     if cut < 0:
-        cut = maxlen
-    return text[:cut] + ' ...'
+        cut = maxtextlen
+    return text[:cut] + suffix
 
 
 class UnicodeTextWrapper(textwrap.TextWrapper):
