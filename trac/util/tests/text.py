@@ -65,6 +65,8 @@ class JavascriptQuoteTestCase(unittest.TestCase):
                          javascript_quote('\x02\x1e'))
         self.assertEqual(r'\u0026\u003c\u003e',
                          javascript_quote('&<>'))
+        self.assertEqual(r'\u2028\u2029',
+                         javascript_quote(u'\u2028\u2029'))
 
 
 class ToJsStringTestCase(unittest.TestCase):
@@ -81,6 +83,8 @@ class ToJsStringTestCase(unittest.TestCase):
                          to_js_string(''))
         self.assertEqual('""',
                          to_js_string(None))
+        self.assertEqual(r'"\u2028\u2029"',
+                         to_js_string(u'\u2028\u2029'))
 
 
 class UnicodeQuoteTestCase(unittest.TestCase):
