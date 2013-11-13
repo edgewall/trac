@@ -72,6 +72,8 @@
                 ' removed' if 'removed' in result else ''}">
                 <py:for each="idx, header in enumerate(headers)" py:choose="">
                   <py:with vars="name = header.name; value = result[name];
+                                 wikitext = header.field.type == 'text'
+                                            and header.field.format == 'wiki';
                                  wikitextarea = header.field.type == 'textarea'
                                                 and header.field.format == 'wiki';">
                     <td py:when="name == 'id'" class="id"><a href="$result.href" title="View ticket"
@@ -84,9 +86,8 @@
                       <py:when test="name == 'cc'">${format_emails(ticket_context, value)}</py:when>
                       <py:when test="name == 'owner' and value">${authorinfo(value)}</py:when>
                       <py:when test="name == 'milestone'"><a py:if="value" title="View milestone" href="${href.milestone(value)}">${value}</a></py:when>
-                      <py:when test="header.field.type == 'text'
-                                     and header.field.format == 'wiki'">${wiki_to_oneliner(ticket_context, value)}</py:when>
-                      <py:when test="name == 'description' or wikitextarea">${wiki_to_html(ticket_context, value)}</py:when>
+                      <py:when test="wikitext">${wiki_to_oneliner(ticket_context, value)}</py:when>
+                      <py:when test="wikitextarea">${wiki_to_html(ticket_context, value)}</py:when>
                       <py:otherwise>$value</py:otherwise>
                     </td>
                   </py:with>

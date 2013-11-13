@@ -318,7 +318,7 @@ class TicketSystem(Component):
 
         # Description
         fields.append({'name': 'description', 'type': 'textarea',
-                       'label': N_('Description')})
+                       'format': 'wiki', 'label': N_('Description')})
 
         # Default select and radio fields
         selects = [('type', N_('Type'), model.Type),
