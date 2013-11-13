@@ -139,10 +139,10 @@ def strip_line_ws(text, leading=True, trailing=True):
 
 _js_quote = {'\\': '\\\\', '"': '\\"', '\b': '\\b', '\f': '\\f',
              '\n': '\\n', '\r': '\\r', '\t': '\\t', "'": "\\'"}
-for i in range(0x20) + [ord(c) for c in '&<>']:
-    _js_quote.setdefault(chr(i), '\\u%04x' % i)
-_js_quote_re = re.compile(r'[\x00-\x1f\\"\b\f\n\r\t\'&<>]')
-_js_string_re = re.compile(r'[\x00-\x1f\\"\b\f\n\r\t&<>]')
+for i in range(0x20) + [ord(c) for c in u'&<>\u2028\u2029']:
+    _js_quote.setdefault(unichr(i), '\\u%04x' % i)
+_js_quote_re = re.compile(ur'[\x00-\x1f\\"\b\f\n\r\t\'&<>\u2028\u2029]')
+_js_string_re = re.compile(ur'[\x00-\x1f\\"\b\f\n\r\t&<>\u2028\u2029]')
 
 
 def javascript_quote(text):
