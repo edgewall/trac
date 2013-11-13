@@ -32,16 +32,19 @@ class ToJsonTestCase(unittest.TestCase):
                          presentation.to_json("a ' single quote"))
         self.assertEqual(r'"\u003cb\u003e\u0026\u003c/b\u003e"',
                          presentation.to_json('<b>&</b>'))
+        self.assertEqual(r'"\n\r\u2028\u2029"',
+                         presentation.to_json(u'\x0a\x0d\u2028\u2029'))
 
     def test_compound_types(self):
         self.assertEqual('[1,2,[true,false]]',
                          presentation.to_json([1, 2, [True, False]]))
         self.assertEqual(r'{"one":1,"other":[null,0],'
                          r'''"three":[3,"\u0026\u003c\u003e'"],'''
-                         r'"two":2}',
+                         r'"two":2,"\u2028\n":"\u2029\r"}',
                          presentation.to_json({"one": 1, "two": 2,
                                                "other": [None, 0],
-                                               "three": [3, "&<>'"]}))
+                                               "three": [3, "&<>'"],
+                                               u"\u2028\x0a": u"\u2029\x0d"}))
 
 
 def suite():
