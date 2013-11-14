@@ -55,14 +55,15 @@ Requirements:
  - lxml for XHTML validation (optional)
 """
 
+import exceptions
 import os
+import shutil
 import signal
+import stat
 import sys
 import time
-import shutil
-import stat
 import unittest
-import exceptions
+from datetime import datetime, timedelta
 
 import trac
 from trac.tests.compat import rmtree
@@ -90,11 +91,9 @@ except ImportError:
     ConfigObj = None
     print "SKIP: fine-grained permission tests. ConfigObj not installed."
 
-from datetime import datetime, timedelta
-
+from trac.test import TestSetup, TestCaseSetup
 from trac.tests.contentgen import random_sentence, random_page, random_word, \
     random_unique_camel
-from trac.test import TestSetup, TestCaseSetup
 
 internal_error = 'Trac detected an internal error:'
 
