@@ -14,38 +14,19 @@
 from __future__ import with_statement
 
 import os
-import shutil
 import tempfile
 import unittest
 from subprocess import Popen, PIPE
 
 from trac.test import locate, EnvironmentStub
 from trac.tests import compat
+from trac.tests.compat import rmtree
 from trac.util import create_file
 from trac.util.compat import close_fds
 from trac.versioncontrol.api import Changeset, DbRepositoryProvider
 from tracopt.versioncontrol.git.git_fs import GitConnector
 from tracopt.versioncontrol.git.PyGIT import GitCore, GitError, Storage, \
                                              parse_commit
-
-
-def rmtree(path):
-    import errno
-    def onerror(function, path, excinfo):
-        # `os.remove` fails for a readonly file on Windows.
-        # Then, it attempts to be writable and remove.
-        if function != os.remove:
-            raise
-        e = excinfo[1]
-        if isinstance(e, OSError) and e.errno == errno.EACCES:
-            mode = os.stat(path).st_mode
-            os.chmod(path, mode | 0666)
-            function(path)
-    if os.name == 'nt':
-        # Git repository for tests has unicode characters
-        # in the path and branch names
-        path = unicode(path, 'utf-8')
-    shutil.rmtree(path, onerror=onerror)
 
 
 class GitTestCase(unittest.TestCase):

@@ -65,7 +65,7 @@ import unittest
 import exceptions
 
 import trac
-from trac.tests.functional.compat import rmtree
+from trac.tests.compat import rmtree
 from trac.util.compat import close_fds
 
 # Handle missing twill so we can print a useful 'SKIP'
