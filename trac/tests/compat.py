@@ -17,6 +17,7 @@ with previous versions of Python from 2.5 onward.
 
 import os
 import shutil
+import sys
 import unittest
 
 
@@ -91,8 +92,10 @@ def rmtree(path):
             mode = os.stat(path).st_mode
             os.chmod(path, mode | 0666)
             function(path)
-    if os.name == 'nt':
-        # Git repository for tests has unicode characters
-        # in the path and branch names
-        path = unicode(path, 'utf-8')
+        else:
+            raise
+    if os.name == 'nt' and isinstance(path, str):
+        # Use unicode characters in order to allow non-ansi characters
+        # on Windows.
+        path = unicode(path, sys.getfilesystemencoding())
     shutil.rmtree(path, onerror=onerror)
