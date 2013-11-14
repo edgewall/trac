@@ -269,7 +269,7 @@ class RegressionTestTicket11355(FunctionalTwillTestCaseSetup):
         # Warning is added when repository dir is not an absolute path
         tc.follow(r"\b%s\b" % name)
         tc.url(self._tester.url + '/admin/versioncontrol/repository/' + name)
-        tc.formvalue('trac-modrepos', 'dir', dir.lstrip('/'))
+        tc.formvalue('trac-modrepos', 'dir', os.path.basename(dir))
         tc.submit('save')
         tc.url(self._tester.url + '/admin/versioncontrol/repository/' + name)
         tc.find('The repository directory must be an absolute path.')
