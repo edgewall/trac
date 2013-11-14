@@ -15,17 +15,15 @@
 Provides some Trac environment-wide utility functions, and a way to call
 :command:`trac-admin` without it being on the path."""
 
-import os
-import time
-import signal
-import sys
-import errno
 import locale
+import os
+import sys
+import time
 from subprocess import call, Popen, PIPE, STDOUT
 
 from trac.env import open_environment
 from trac.test import EnvironmentStub, get_dburi
-from trac.tests.functional.compat import rmtree
+from trac.tests.compat import rmtree
 from trac.tests.functional import logfile
 from trac.tests.functional.better_twill import tc, ConnectError
 from trac.util import terminate

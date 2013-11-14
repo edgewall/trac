@@ -15,6 +15,9 @@
 with previous versions of Python from 2.5 onward.
 """
 
+import os
+import shutil
+import sys
 import unittest
 
 
@@ -75,3 +78,24 @@ if not hasattr(unittest.TestCase, 'assertNotIsInstance'):
             raise self.failureException(msg or '%r is an instance of %r' %
                                                (obj, cls))
     unittest.TestCase.assertNotIsInstance = assertNotIsInstance
+
+
+def rmtree(path):
+    import errno
+    def onerror(function, path, excinfo):
+        # `os.remove` fails for a readonly file on Windows.
+        # Then, it attempts to be writable and remove.
+        if function != os.remove:
+            raise
+        e = excinfo[1]
+        if isinstance(e, OSError) and e.errno == errno.EACCES:
+            mode = os.stat(path).st_mode
+            os.chmod(path, mode | 0666)
+            function(path)
+        else:
+            raise
+    if os.name == 'nt' and isinstance(path, str):
+        # Use unicode characters in order to allow non-ansi characters
+        # on Windows.
+        path = unicode(path, sys.getfilesystemencoding())
+    shutil.rmtree(path, onerror=onerror)
