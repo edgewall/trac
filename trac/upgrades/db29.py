@@ -11,10 +11,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-import shutil
-
-from trac.util import create_unique_file
-from trac.util.text import exception_to_unicode
+from trac.upgrades import backup_config_file
 
 
 _svn_components = [
@@ -37,15 +34,7 @@ def do_upgrade(env, version, cursor):
               not env.is_component_enabled(_new_path + c)]
     if not enable:
         return
-    try:
-        backup, f = create_unique_file(env.config.filename
-                                       + '.tracopt-svn.bak')
-        f.close()
-        shutil.copyfile(env.config.filename, backup)
-        env.log.info("Saved backup of configuration file in %s", backup)
-    except IOError, e:
-        env.log.warn("Couldn't save backup of configuration file (%s)",
-                     exception_to_unicode(e))
+    backup_config_file(env, '.tracopt-svn.bak')
     for c in enable:
         env.config.set('components', _new_path + c, 'enabled')
     env.config.save()
