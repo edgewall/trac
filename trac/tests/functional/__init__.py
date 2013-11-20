@@ -60,7 +60,7 @@ from trac.tests.functional.compat import close_fds, rmtree
 # is allowed to load first, its (unmodified) copy will always be loaded.
 import subprocess
 
-from better_twill import twill, b, tc, ConnectError
+from trac.tests.functional.better_twill import twill, b, tc, ConnectError
 
 try:
     # This is the first indicator of whether the subversion bindings are
