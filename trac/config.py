@@ -21,7 +21,7 @@ import os.path
 from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.core import *
 from trac.util import AtomicFile, as_bool
-from trac.util.compat import cleandoc
+from trac.util.compat import cleandoc, wait_for_file_mtime_change
 from trac.util.text import printout, to_unicode, CRLF
 from trac.util.translation import _, N_
 
@@ -240,6 +240,7 @@ class Configuration(object):
 
         # At this point, all the strings in `sections` are UTF-8 encoded `str`
         try:
+            wait_for_file_mtime_change(self.filename)
             with AtomicFile(self.filename, 'w') as fileobj:
                 fileobj.write('# -*- coding: utf-8 -*-\n\n')
                 for section_str, options in sections:
@@ -294,7 +295,8 @@ class Configuration(object):
 
     def touch(self):
         if self.filename and os.path.isfile(self.filename) \
-           and os.access(self.filename, os.W_OK):
+                and os.access(self.filename, os.W_OK):
+            wait_for_file_mtime_change(self.filename)
             os.utime(self.filename, None)
 
     def set_defaults(self, compmgr=None):

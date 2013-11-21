@@ -588,6 +588,30 @@ class ConfigurationTestCase(unittest.TestCase):
             self.assertEqual('\n',                                   f.next())
             self.assertRaises(StopIteration, f.next)
 
+    def test_save_changes_mtime(self):
+        """Test that each save operation changes the file modification time."""
+        class Foo(object):
+            IntOption('section', 'option', 1)
+        sconfig = self._read()
+        sconfig.set_defaults()
+        sconfig.save()
+        rconfig = self._read()
+        self.assertEqual(1, rconfig.getint('section', 'option'))
+        sconfig.set('section', 'option', 2)
+        time.sleep(1.0 - time.time() % 1.0)
+        sconfig.save()
+        rconfig.parse_if_needed()
+        self.assertEqual(2, rconfig.getint('section', 'option'))
+
+    def test_touch_changes_mtime(self):
+        """Test that each touch command changes the file modification time."""
+        config = self._read()
+        time.sleep(1.0 - time.time() % 1.0)
+        config.touch()
+        mtime = os.stat(self.filename).st_mtime
+        config.touch()
+        self.assertNotEqual(mtime, os.stat(self.filename).st_mtime)
+
     def _test_with_inherit(self, testcb):
         sitename = os.path.join(tempfile.gettempdir(), 'trac-site.ini')
         try:

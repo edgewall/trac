@@ -27,7 +27,7 @@ from trac.tests.compat import rmtree
 from trac.tests.functional import logfile
 from trac.tests.functional.better_twill import tc, ConnectError
 from trac.util import terminate
-from trac.util.compat import close_fds
+from trac.util.compat import close_fds, wait_for_file_mtime_change
 from trac.util.text import to_utf8
 
 try:
@@ -341,6 +341,7 @@ class FunctionalTestEnvironment(object):
         authz_config = ConfigObj(authz_content, encoding='utf8',
                                  write_empty_values=True, indent_type='')
         authz_config.filename = authz_file
+        wait_for_file_mtime_change(authz_file)
         authz_config.write()
         env.config.set('authz_policy', 'authz_file', authz_file)
         env.config.set('components', 'tracopt.perm.authz_policy.*', 'enabled')

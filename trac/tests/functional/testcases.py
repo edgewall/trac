@@ -213,13 +213,6 @@ class RegressionTestTicket6318(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Regression test for non-ascii usernames (#6318)
         """
-        # Add users at start of test to avoid intermittent failures on
-        # platforms with low resolution time stamps, for which the file
-        # modification time may not have changed between successive calls to
-        # `adduser`, resulting in a stale cache.
-        # http://trac.edgewall.org/ticket/11176#comment:13
-        self._testenv.adduser(u'user')
-        self._testenv.adduser(u'joé')
         # first do a logout, otherwise we might end up logged in as
         # admin again, as this is the first thing the tester does.
         # ... but even before that we need to make sure we're coming
@@ -229,9 +222,11 @@ class RegressionTestTicket6318(FunctionalTwillTestCaseSetup):
         self._tester.logout()
         try:
             # also test a regular ascii user name
+            self._testenv.adduser(u'user')
             self._tester.login(u'user')
             self._tester.logout()
             # now test utf-8 user name
+            self._testenv.adduser(u'joé')
             self._tester.login(u'joé')
             self._tester.logout()
             # finally restore expected 'admin' login
