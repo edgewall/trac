@@ -17,7 +17,9 @@
 previous versions of Python from 2.5 onward.
 """
 
+import math
 import os
+import time
 
 # Import symbols previously defined here, kept around so that plugins importing
 # them don't suddenly stop working
@@ -95,3 +97,19 @@ except ImportError:
             while lines and not lines[0]:
                 lines.pop(0)
             return '\n'.join(lines)
+
+
+def wait_for_file_mtime_change(filename):
+    """This function is typically called before a file save operation,
+     waiting if necessary for the file modification time to change. The
+     purpose is to avoid successive file updates going undetected by the
+     caching mechanism that depends on a change in the file modification
+     time to know when the file should be reparsed."""
+    try:
+        mtime = os.stat(filename).st_mtime
+        os.utime(filename, None)
+        while mtime == os.stat(filename).st_mtime:
+            time.sleep(1e-3)
+            os.utime(filename, None)
+    except OSError:
+        pass  # file doesn't exist (yet)

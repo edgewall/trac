@@ -20,6 +20,8 @@ import sys
 import random
 from optparse import OptionParser
 
+from trac.util.compat import wait_for_file_mtime_change
+
 # We need a crypt module, but Windows doesn't have one by default.  Try to find
 # one, and tell the user if we can't.
 try:
@@ -64,6 +66,7 @@ class HtpasswdFile:
 
     def save(self):
         """Write the htpasswd file to disk"""
+        wait_for_file_mtime_change(self.filename)
         open(self.filename, 'w').writelines(["%s:%s\n" % (entry[0], entry[1])
                                              for entry in self.entries])
 
