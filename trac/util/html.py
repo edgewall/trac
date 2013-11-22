@@ -299,18 +299,20 @@ def plaintext(text, keeplinebreaks=True):
     return text
 
 
-def find_element(frag, attr=None, cls=None):
-    """Return the first element in the fragment having the given attribute or
-    class, using a preorder depth-first search.
+def find_element(frag, attr=None, cls=None, tag=None):
+    """Return the first element in the fragment having the given attribute,
+    class or tag, using a preorder depth-first search.
     """
     if isinstance(frag, Element):
         if attr is not None and attr in frag.attrib:
             return frag
         if cls is not None and cls in frag.attrib.get('class', '').split():
             return frag
+        if tag is not None and tag == frag.tag:
+            return frag
     if isinstance(frag, Fragment):
         for child in frag.children:
-            elt = find_element(child, attr, cls)
+            elt = find_element(child, attr, cls, tag)
             if elt is not None:
                 return elt
 
