@@ -805,14 +805,15 @@ class MilestoneModule(Component):
             if completed and 'retarget' in req.args:
                 comment = req.args.get('comment', '')
                 retargeted_tickets = \
-                    milestone.move_tickets(retarget_to, req.authname, comment)
-                add_notice(req, _('The tickets associated with milestone '
-                                  '"%(name)s" have been retargeted to '
-                                  'milestone "%(retarget)s".',
+                    milestone.move_tickets(retarget_to, req.authname,
+                                           comment, exclude_closed=True)
+                add_notice(req, _('The open tickets associated with '
+                                  'milestone "%(name)s" have been retargeted '
+                                  'to milestone "%(retarget)s".',
                                   name=milestone.name, retarget=retarget_to))
                 new_values = {'milestone': retarget_to}
                 comment = comment or \
-                          _("Tickets retargeted after milestone closed")
+                          _("Open tickets retargeted after milestone closed")
                 tn = BatchTicketNotifyEmail(self.env)
                 try:
                     tn.notify(retargeted_tickets, new_values, comment, None,

@@ -1392,12 +1392,20 @@ class TestMilestoneClose(FunctionalTwillTestCaseSetup):
     to the selected milestone"""
     def runTest(self):
         name = self._tester.create_milestone()
-        retarget_to = self._tester.create_milestone()
 
         # Check that hint is shown when there are no tickets to retarget
         self._tester.go_to_milestone(name)
         tc.submit(formname='editmilestone')
         tc.find("There are no tickets associated with this milestone.")
+
+        retarget_to = self._tester.create_milestone()
+        tid1 = self._tester.create_ticket(info={'milestone': name})
+        tid2 = self._tester.create_ticket(info={'milestone': name})
+        self._tester.go_to_ticket(tid2)
+        tc.formvalue('propertyform', 'action', 'resolve')
+        tc.formvalue('propertyform',
+                     'action_resolve_resolve_resolution', 'fixed')
+        tc.submit('submit')
 
         # Add a ticket and check that it is retargeted when milestone closed
         tid = self._tester.create_ticket(info={'milestone': name})
@@ -1408,14 +1416,22 @@ class TestMilestoneClose(FunctionalTwillTestCaseSetup):
         tc.submit('save')
 
         tc.url(self._tester.url + '/milestone/%s$' % name)
+        tc.find('The open tickets associated with milestone "%s" '
+                'have been retargeted to milestone "%s".'
+                % (name, retarget_to))
         tc.find("Completed")
-        tc.notfind('<table class="progress">')
-        self._tester.go_to_ticket(tid)
+        self._tester.go_to_ticket(tid1)
         tc.find('<a class="milestone" href="/milestone/%(name)s">'
                 '%(name)s</a>' % {'name': retarget_to})
         tc.find('changed from <em>%s</em> to <em>%s</em>'
                 % (name, retarget_to))
         tc.find("Ticket retargeted after milestone closed")
+        self._tester.go_to_ticket(tid2)
+        tc.find('<a class="closed milestone" href="/milestone/%(name)s">'
+                '%(name)s</a>' % {'name': name})
+        tc.notfind('changed from <em>%s</em> to <em>%s</em>'
+                   % (name, retarget_to))
+        tc.notfind("Ticket retargeted after milestone closed")
 
 
 class TestMilestoneDelete(FunctionalTwillTestCaseSetup):
@@ -1738,8 +1754,8 @@ class RegressionTestTicket5602(FunctionalTwillTestCaseSetup):
         """Test for regression of http://trac.edgewall.org/ticket/5602"""
         # Create a set of tickets, and assign them all to a milestone
         milestone = self._tester.create_milestone()
-        ids = [self._tester.create_ticket() for x in range(5)]
-        [self._tester.ticket_set_milestone(x, milestone) for x in ids]
+        ids = [self._tester.create_ticket(info={'milestone': milestone})
+               for x in range(5)]
         # Need a ticket in each state: new, assigned, accepted, closed,
         # reopened
         # leave ids[0] as new

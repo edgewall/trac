@@ -1109,16 +1109,13 @@ class Milestone(object):
         with self.env.db_transaction as db:
             if self.name != old['name']:
                 # Update milestone field in tickets
-                self.env.log.info("Updating milestone field of all tickets "
-                                  "associated with milestone '%s'", self.name)
                 self.move_tickets(self.name, author, "Milestone renamed")
                 TicketSystem(self.env).reset_ticket_fields()
-
                 # Reparent attachments
                 Attachment.reparent_all(self.env, 'milestone', old['name'],
                                         'milestone', self.name)
 
-            self.env.log.info("Updating milestone '%s'", self.name)
+            self.env.log.info("Updating milestone '%s'", old['name'])
             db("""UPDATE milestone
                   SET name=%s, due=%s, completed=%s, description=%s
                   WHERE name=%s
@@ -1132,7 +1129,8 @@ class Milestone(object):
         for listener in TicketSystem(self.env).milestone_change_listeners:
             listener.milestone_changed(self, old_values)
 
-    def move_tickets(self, new_milestone, author, comment):
+    def move_tickets(self, new_milestone, author, comment=None,
+                     exclude_closed=False):
         """Move tickets associated with this milestone to another
         milestone.
 
@@ -1140,14 +1138,24 @@ class Milestone(object):
         :param author: author of the change
         :param comment: comment that is inserted into moved tickets. The
                         string should not be translated.
+        :param exclude_closed: whether tickets with status closed should be
+                               excluded
 
         :return: a list of ids of tickets that were moved
         """
+        # Check if milestone exists, but if the milestone is being renamed
+        # the new milestone won't exist in the cache yet so skip the test
+        if new_milestone and new_milestone != self.name:
+            if not self.cache.fetchone(new_milestone):
+                raise ResourceNotFound(
+                    _("Milestone %(name)s does not exist.",
+                      name=new_milestone), _("Invalid milestone name"))
         now = datetime.now(utc)
         with self.env.db_transaction as db:
-            tkt_ids = [int(row[0]) for row in
-                       db("SELECT id FROM ticket WHERE milestone=%s",
-                          (self._old['name'],))]
+            sql = "SELECT id FROM ticket WHERE milestone=%s"
+            if exclude_closed:
+                sql += " AND status != 'closed'"
+            tkt_ids = [int(row[0]) for row in db(sql, (self._old['name'],))]
             if tkt_ids:
                 self.env.log.info("Moving tickets associated with milestone "
                                   "'%s' to milestone '%s'", self._old['name'],
