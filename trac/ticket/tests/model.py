@@ -892,7 +892,9 @@ class MilestoneTestCase(unittest.TestCase):
             """))
 
     def test_move_tickets(self):
-        self.env.db_transaction("INSERT INTO milestone (name) VALUES ('Test')")
+        self.env.db_transaction.executemany(
+            "INSERT INTO milestone (name) VALUES (%s)",
+            [('Test',), ('Testing',)])
         tkt1 = self._insert_ticket(status='new', summary='Foo',
                                    milestone='Test')
         tkt2 = self._insert_ticket(status='new', summary='Bar',
@@ -911,7 +913,9 @@ class MilestoneTestCase(unittest.TestCase):
         self.assertTrue(now <= tkt1['changetime'])
 
     def test_move_tickets_exclude_closed(self):
-        self.env.db_transaction("INSERT INTO milestone (name) VALUES ('Test')")
+        self.env.db_transaction.executemany(
+            "INSERT INTO milestone (name) VALUES (%s)",
+            [('Test',), ('Testing',)])
         tkt1 = self._insert_ticket(status='new', summary='Foo',
                                    milestone='Test')
         tkt2 = self._insert_ticket(status='new', summary='Bar',
@@ -928,6 +932,25 @@ class MilestoneTestCase(unittest.TestCase):
         self.assertEqual('Testing', tkt1['milestone'])
         self.assertEqual('Test', tkt2['milestone'])
         self.assertTrue(now <= tkt1['changetime'])
+        self.assertTrue(tkt2['changetime'] <= now)
+
+    def test_move_tickets_target_doesnt_exist(self):
+        self.env.db_transaction("INSERT INTO milestone (name) VALUES ('Test')")
+        tkt1 = self._insert_ticket(status='new', summary='Foo',
+                                   milestone='Test')
+        tkt2 = self._insert_ticket(status='new', summary='Bar',
+                                   milestone='Test')
+
+        now = datetime.now(utc)
+        milestone = Milestone(self.env, 'Test')
+        self.assertRaises(ResourceNotFound, milestone.move_tickets,
+                          'Testing', 'anonymous')
+
+        tkt1 = Ticket(self.env, tkt1.id)
+        tkt2 = Ticket(self.env, tkt2.id)
+        self.assertEqual('Test', tkt1['milestone'])
+        self.assertEqual('Test', tkt2['milestone'])
+        self.assertTrue(tkt1['changetime'] <= now)
         self.assertTrue(tkt2['changetime'] <= now)
 
     def test_create_milestone_without_name(self):
@@ -957,7 +980,9 @@ class MilestoneTestCase(unittest.TestCase):
         self.assertTrue(now <= tkt1['changetime'])
 
     def test_delete_milestone_retarget_tickets(self):
-        self.env.db_transaction("INSERT INTO milestone (name) VALUES ('Test')")
+        self.env.db_transaction.executemany(
+            "INSERT INTO milestone (name) VALUES (%s)",
+            [('Test',), ('Other',)])
         tkt1 = self._insert_ticket(status='new', summary='Foo',
                                    milestone='Test')
         tkt2 = self._insert_ticket(status='new', summary='Bar',
