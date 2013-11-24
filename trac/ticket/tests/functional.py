@@ -1612,8 +1612,8 @@ class RegressionTestTicket5602(FunctionalTwillTestCaseSetup):
         """Test for regression of http://trac.edgewall.org/ticket/5602"""
         # Create a set of tickets, and assign them all to a milestone
         milestone = self._tester.create_milestone()
-        ids = [self._tester.create_ticket() for x in range(5)]
-        [self._tester.ticket_set_milestone(x, milestone) for x in ids]
+        ids = [self._tester.create_ticket(info={'milestone': milestone})
+               for x in range(5)]
         # Need a ticket in each state: new, assigned, accepted, closed,
         # reopened
         # leave ids[0] as new
