@@ -790,30 +790,99 @@ class TestAdminMilestoneNonRemoval(FunctionalTwillTestCaseSetup):
         tc.find('No milestone selected')
 
 
-class TestAdminMilestoneDefault(FunctionalTwillTestCaseSetup):
+class TestAdminMilestoneDefaults(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Admin set default milestone"""
-        name = "DefaultMilestone"
-        self._tester.create_milestone(name)
+        """Admin set default ticket milestone, default retarget milestone
+        and clear defaults."""
+        def clear_defaults():
+            # Test the "Clear default" button
+            tc.go(milestone_url)
+            tc.submit('clear', formname='milestone_table')
+            tc.notfind('type="radio" name="ticket_default" '
+                       'value=".+" checked="checked"')
+            tc.notfind('type="radio" name="retarget_default" '
+                       'value=".+" checked="checked"')
+            self._tester.go_to_ticket(tid)
+            tc.find('<th id="h_milestone" class="missing">[ \t\n]+'
+                    'Milestone:[ \t\n]+</th>[ \t\n]+'
+                    '(?!<td headers="h_milestone">)')
+            self._tester.go_to_milestone(mid2)
+            tc.submit(formname='deletemilestone')
+            tc.notfind('<option selected="selected" value="%s">%s</option>'
+                       % (mid1, mid1))
+
         milestone_url = self._tester.url + "/admin/ticket/milestones"
+        tid = self._tester.create_ticket()
+        mid1 = self._tester.create_milestone()
+        mid2 = self._tester.create_milestone()
+        self._tester.create_ticket(info={'milestone': mid2})
+
+        # Set default ticket milestone
         tc.go(milestone_url)
-        tc.formvalue('milestone_table', 'default', name)
+        tc.formvalue('milestone_table', 'ticket_default', mid1)
         tc.submit('apply')
-        tc.find('type="radio" name="default" value="%s" checked="checked"' % \
-                name)
+        tc.find('type="radio" name="ticket_default" value="%s" '
+                'checked="checked"' % mid1)
+        tc.notfind('type="radio" name="retarget_default" value=".+" '
+                   'checked="checked"')
         # verify it is the default on the newticket page.
         tc.go(self._tester.url + '/newticket')
         tc.find('<option selected="selected" value="%s">%s</option>'
-                % (name, name))
-        # Test the "Clear default" button
+                % (mid1, mid1))
+        clear_defaults()
+
+        # Set default retarget to milestone
         tc.go(milestone_url)
-        tc.submit('clear', formname='milestone_table')
-        tc.notfind('type="radio" name="default" value=".+" checked="checked"')
-        tid = self._tester.create_ticket()
-        self._tester.go_to_ticket(tid)
+        tc.formvalue('milestone_table', 'retarget_default', mid1)
+        tc.submit('apply')
+        tc.find('type="radio" name="retarget_default" value="%s" '
+                'checked="checked"' % mid1)
+        tc.notfind('type="radio" name="ticket_default" value=".+" '
+                   'checked="checked"')
+        # verify it is the default on the confirm delete page.
+        self._tester.go_to_milestone(mid2)
+        tc.submit(formname='deletemilestone')
+        tc.find('<option selected="selected" value="%s">%s</option>'
+                % (mid1, mid1))
+        clear_defaults()
+
+        # Set both
+        tc.go(milestone_url)
+        tc.formvalue('milestone_table', 'ticket_default', mid1)
+        tc.formvalue('milestone_table', 'retarget_default', mid1)
+        tc.submit('apply')
+        tc.find('type="radio" name="ticket_default" value="%s" '
+                'checked="checked"' % mid1)
+        tc.find('type="radio" name="retarget_default" value="%s" '
+                'checked="checked"' % mid1)
+        # verify it is the default on the newticket page.
+        tc.go(self._tester.url + '/newticket')
+        tc.find('<option selected="selected" value="%s">%s</option>'
+                % (mid1, mid1))
+        # verify it is the default on the confirm delete page.
+        self._tester.go_to_milestone(mid2)
+        tc.submit(formname='deletemilestone')
+        tc.find('<option selected="selected" value="%s">%s</option>'
+                % (mid1, mid1))
+        clear_defaults()
+
+        #Set neither
+        tc.go(milestone_url)
+        tc.submit('apply', formname='milestone_table')
+        tc.notfind('type="radio" name="retarget_default" value=".+" '
+                   'checked="checked"')
+        tc.notfind('type="radio" name="ticket_default" value=".+" '
+                   'checked="checked"')
+        # verify no default on the newticket page.
+        tc.go(self._tester.url + '/newticket')
         tc.find('<th id="h_milestone" class="missing">[ \t\n]+'
                 'Milestone:[ \t\n]+</th>[ \t\n]+'
                 '(?!<td headers="h_milestone">)')
+        # verify none selected on the confirm delete page.
+        self._tester.go_to_milestone(mid2)
+        tc.submit(formname='deletemilestone')
+        tc.notfind('<option selected="selected" value="%s">%s</option>'
+                   % (mid1, mid1))
 
 
 class TestAdminPriority(FunctionalTwillTestCaseSetup):
@@ -2222,7 +2291,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminMilestoneRemove())
     suite.addTest(TestAdminMilestoneRemoveMulti())
     suite.addTest(TestAdminMilestoneNonRemoval())
-    suite.addTest(TestAdminMilestoneDefault())
+    suite.addTest(TestAdminMilestoneDefaults())
     suite.addTest(TestAdminPriority())
     suite.addTest(TestAdminPriorityAuthorization())
     suite.addTest(TestAdminPriorityModify())

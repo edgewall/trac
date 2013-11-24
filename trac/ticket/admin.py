@@ -277,7 +277,9 @@ class MilestoneAdminPanel(TicketAdminPanel):
             data = {'view': 'detail', 'milestone': mil}
 
         else:
-            default = self.config.get('ticket', 'default_milestone')
+            ticket_default = self.config.get('ticket', 'default_milestone')
+            retarget_default = self.config.get('milestone',
+                                               'default_retarget_to')
             if req.method == 'POST':
                 # Add Milestone
                 if req.args.get('add') and req.args.get('name'):
@@ -320,17 +322,30 @@ class MilestoneAdminPanel(TicketAdminPanel):
 
                 # Set default milestone
                 elif req.args.get('apply'):
-                    name = req.args.get('default')
-                    if name and name != default:
-                        self.log.info("Setting default milestone to %s", name)
+                    save = False
+                    name = req.args.get('ticket_default')
+                    if name and name != ticket_default:
+                        self.log.info("Setting default ticket "
+                                      "milestone to %s", name)
                         self.config.set('ticket', 'default_milestone', name)
+                        save = True
+                    retarget = req.args.get('retarget_default')
+                    if retarget and retarget != retarget_default:
+                        self.log.info("Setting default retargeting "
+                                      "milestone to %s", retarget)
+                        self.config.set('milestone', 'default_retarget_to',
+                                        retarget)
+                        save = True
+                    if save:
                         _save_config(self.config, req, self.log)
                         req.redirect(req.href.admin(cat, page))
 
-                # Clear default milestone
+                # Clear defaults
                 elif req.args.get('clear'):
-                    self.log.info("Clearing default milestone")
+                    self.log.info("Clearing default ticket milestone "
+                                  "and default retarget milestone")
                     self.config.set('ticket', 'default_milestone', '')
+                    self.config.set('milestone', 'default_retarget_to', '')
                     _save_config(self.config, req, self.log)
                     req.redirect(req.href.admin(cat, page))
 
@@ -343,7 +358,8 @@ class MilestoneAdminPanel(TicketAdminPanel):
 
             data = {'view': 'list',
                     'milestones': milestones,
-                    'default': default}
+                    'ticket_default': ticket_default,
+                    'retarget_default': retarget_default}
 
         Chrome(self.env).add_jquery_ui(req)
 
