@@ -18,6 +18,7 @@ import datetime
 import os
 import time
 import unittest
+from locale import LC_ALL, LC_TIME, getlocale, setlocale
 
 from trac.tests import compat
 from trac.core import TracError
@@ -251,6 +252,104 @@ class ParseISO8601TestCase(unittest.TestCase):
         validate(locale='iso8601')
         if Locale:
             validate(locale=Locale.parse('en_US'))
+
+
+class ParseDateWithoutBabelTestCase(unittest.TestCase):
+
+    if os.name != 'nt':
+        locales = {'en_US': 'en_US.UTF8', 'en_GB': 'en_GB.UTF8',
+                   'fr': 'fr_FR.UTF8', 'ja': 'ja_JP.UTF8',
+                   'zh_CN': 'zh_CN.UTF8'}
+    else:
+        # http://msdn.microsoft.com/en-us/goglobal/bb964664.aspx
+        locales = {'en_US': 'English_United States',
+                   'en_GB': 'English_United Kingdom',
+                   'fr': 'French_France',
+                   'ja': 'Japanese_Japan',
+                   'zh_CN': "Chinese_People's Republic of China"}
+
+    def setUp(self):
+        locale = getlocale(LC_TIME)
+        self._orig_locale = locale if locale[0] else 'C'
+
+    def tearDown(self):
+        setlocale(LC_ALL, self._orig_locale)
+
+    def _setlocale(self, locale):
+        setlocale(LC_ALL, self.locales.get(locale, locale))
+
+    def test_parse_date_libc(self):
+        tz = datefmt.timezone('GMT +2:00')
+        expected = datetime.datetime(2010, 8, 28, 13, 45, 56, 0, tz)
+        expected_minute = datetime.datetime(2010, 8, 28, 13, 45, 0, 0, tz)
+        expected_date = datetime.datetime(2010, 8, 28, 0, 0, 0, 0, tz)
+
+        self._setlocale('C')
+        self.assertEqual(expected,
+                         datefmt.parse_date('08/28/10 13:45:56', tz))
+        self.assertEqual(expected_minute,
+                         datefmt.parse_date('08/28/10 13:45', tz))
+        self.assertEqual(expected_date, datefmt.parse_date('08/28/10', tz))
+        self.assertEqual(expected_minute,
+                         datefmt.parse_date('28 Aug 2010 1:45 pm', tz))
+
+        self._setlocale('en_US')
+        self.assertEqual(expected,
+                         datefmt.parse_date('Aug 28, 2010 1:45:56 PM', tz))
+        self.assertEqual(expected,
+                         datefmt.parse_date('8 28, 2010 1:45:56 PM', tz))
+        self.assertEqual(expected,
+                         datefmt.parse_date('28 Aug 2010 1:45:56 PM', tz))
+        self.assertEqual(expected,
+                         datefmt.parse_date('28 Aug 2010 PM 1:45:56', tz))
+        self.assertEqual(expected,
+                         datefmt.parse_date('28 Aug 2010 13:45:56', tz))
+        self.assertEqual(expected_minute,
+                         datefmt.parse_date('28 Aug 2010 PM 1:45', tz))
+        self.assertEqual(expected_date, datefmt.parse_date('28 Aug 2010', tz))
+
+        self._setlocale('en_GB')
+        self.assertEqual(expected,
+                         datefmt.parse_date('28 Aug 2010 13:45:56', tz))
+        self.assertEqual(expected_minute,
+                         datefmt.parse_date('28 Aug 2010 PM 1:45', tz))
+        self.assertEqual(expected_date, datefmt.parse_date('28 Aug 2010', tz))
+
+        self._setlocale('fr')
+        self.assertEqual(expected,
+                         datefmt.parse_date(u'28 août 2010 13:45:56', tz))
+        self.assertEqual(expected,
+                         datefmt.parse_date(u'août 28 2010 13:45:56', tz))
+        self.assertEqual(expected_minute,
+                         datefmt.parse_date(u'août 28 2010 13:45', tz))
+        self.assertEqual(expected_date,
+                         datefmt.parse_date(u'août 28 2010', tz))
+        self.assertEqual(expected_minute,
+                         datefmt.parse_date('Aug 28 2010 1:45 pm', tz))
+
+        self._setlocale('ja')
+        self.assertEqual(expected,
+                         datefmt.parse_date('2010/08/28 13:45:56', tz))
+        self.assertEqual(expected_minute,
+                         datefmt.parse_date('2010/08/28 13:45', tz))
+        self.assertEqual(expected_date, datefmt.parse_date('2010/08/28', tz))
+        self.assertEqual(expected_minute,
+                         datefmt.parse_date('2010/Aug/28 1:45 pm', tz))
+
+        self._setlocale('zh_CN')
+        self.assertEqual(expected,
+                         datefmt.parse_date(u'2010-8-28 下午01:45:56',
+                                            tz))
+        self.assertEqual(expected,
+                         datefmt.parse_date(u'2010-8-28 01:45:56下午',
+                                            tz))
+        self.assertEqual(expected_minute,
+                         datefmt.parse_date(u'2010-8-28 下午01:45', tz))
+        self.assertEqual(expected_minute,
+                         datefmt.parse_date(u'2010-8-28 01:45下午', tz))
+        self.assertEqual(expected_date, datefmt.parse_date('2010-8-28', tz))
+        self.assertEqual(expected_minute,
+                         datefmt.parse_date('2010-Aug-28 01:45 pm', tz))
 
 
 class ParseRelativeDateTestCase(unittest.TestCase):
@@ -928,16 +1027,22 @@ else:
             self.assertEqual(expected_minute,
                              datefmt.parse_date(u'août 28 2010 13:45', tz,
                                                 fr))
+            self.assertEqual(expected_minute,
+                             datefmt.parse_date('Aug 28 2010 1:45 PM', tz, fr))
 
             self.assertEqual(expected,
                              datefmt.parse_date('2010/08/28 13:45:56', tz, ja))
             self.assertEqual(expected_minute,
                              datefmt.parse_date('2010/08/28 13:45', tz, ja))
+            self.assertEqual(expected_minute,
+                             datefmt.parse_date('2010/Aug/28 1:45 PM', tz, ja))
 
             self.assertEqual(expected,
                              datefmt.parse_date('13:45:56 28-08-2010', tz, vi))
             self.assertEqual(expected_minute,
                              datefmt.parse_date('13:45 28-08-2010', tz, vi))
+            self.assertEqual(expected_minute,
+                             datefmt.parse_date('1:45PM 28-Aug-2010', tz, vi))
 
             self.assertEqual(expected,
                              datefmt.parse_date(u'2010-8-28 下午01:45:56',
@@ -950,6 +1055,9 @@ else:
                                                 zh_CN))
             self.assertEqual(expected_minute,
                              datefmt.parse_date(u'2010-8-28 01:45下午', tz,
+                                                zh_CN))
+            self.assertEqual(expected_minute,
+                             datefmt.parse_date('2010-Aug-28 01:45PM', tz,
                                                 zh_CN))
 
         def test_i18n_parse_date_datetime_meridiem(self):
@@ -1388,6 +1496,7 @@ def suite():
     else:
         print "SKIP: utils/tests/datefmt.py (no babel installed)"
     suite.addTest(unittest.makeSuite(ParseISO8601TestCase))
+    suite.addTest(unittest.makeSuite(ParseDateWithoutBabelTestCase))
     suite.addTest(unittest.makeSuite(ParseRelativeDateTestCase))
     suite.addTest(unittest.makeSuite(ParseDateValidRangeTestCase))
     suite.addTest(unittest.makeSuite(HttpDateTestCase))
