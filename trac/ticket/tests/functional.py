@@ -20,7 +20,8 @@ from datetime import datetime, timedelta
 from trac.admin.tests.functional import AuthorizationTestCaseSetup
 from trac.test import locale_en
 from trac.tests.functional import *
-from trac.util.datefmt import utc, localtz, format_date, format_datetime
+from trac.util.datefmt import utc, localtz, format_date, format_datetime, \
+                              pretty_timedelta
 from trac.util.text import to_utf8
 
 try:
@@ -694,8 +695,8 @@ class TestAdminMilestoneDetailRename(FunctionalTwillTestCaseSetup):
         tc.find(r"\b%s\b" % name2)
         tc.notfind(r"\b%s\b" % name1)
         self._tester.go_to_ticket(tid)
-        tc.find('<a class="milestone" href="/milestone/%(name)s">'
-                '%(name)s</a>' % {'name': name2})
+        tc.find('<a class="milestone" href="/milestone/%(name)s" '
+                'title="No date set">%(name)s</a>' % {'name': name2})
         tc.find('<strong class="trac-field-milestone">Milestone</strong>'
                 '[ \t\n]+changed from <em>%s</em> to <em>%s</em>'
                 % (name1, name2))
@@ -1252,7 +1253,15 @@ UNION ALL SELECT 'attachment', 'file.ext', 'wiki', 'WikiStart'
 class TestMilestone(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Create a milestone."""
-        self._tester.create_milestone()
+        due = format_datetime(datetime.now(tz=utc) + timedelta(hours=1),
+                              tzinfo=localtz, locale=locale_en)
+        name = self._tester.create_milestone(due=due)
+        tc.find(due)
+        tid = self._tester.create_ticket(info={'milestone': name})
+        self._tester.go_to_ticket(tid)
+        tc.find('<a class="milestone" href="/milestone/%(name)s" '
+                'title="Due in .+ (.+)">%(name)s</a>'
+                % {'name': name})
 
 
 class TestMilestoneAddAttachment(FunctionalTwillTestCaseSetup):
@@ -1284,8 +1293,11 @@ class TestMilestoneClose(FunctionalTwillTestCaseSetup):
         tc.submit('submit')
 
         self._tester.go_to_milestone(name)
+        completed = format_datetime(datetime.now(tz=utc) - timedelta(hours=1),
+                                    tzinfo=localtz, locale=locale_en)
         tc.submit(formname='editmilestone')
         tc.formvalue('edit', 'completed', True)
+        tc.formvalue('edit', 'completeddate', completed)
         tc.formvalue('edit', 'target', retarget_to)
         tc.submit('save')
 
@@ -1295,14 +1307,15 @@ class TestMilestoneClose(FunctionalTwillTestCaseSetup):
                 % (name, retarget_to))
         tc.find("Completed")
         self._tester.go_to_ticket(tid1)
-        tc.find('<a class="milestone" href="/milestone/%(name)s">'
-                '%(name)s</a>' % {'name': retarget_to})
+        tc.find('<a class="milestone" href="/milestone/%(name)s" '
+                'title="No date set">%(name)s</a>' % {'name': retarget_to})
         tc.find('changed from <em>%s</em> to <em>%s</em>'
                 % (name, retarget_to))
         tc.find("Ticket retargeted after milestone closed")
         self._tester.go_to_ticket(tid2)
-        tc.find('<a class="closed milestone" href="/milestone/%(name)s">'
-                '%(name)s</a>' % {'name': name})
+        tc.find('<a class="closed milestone" href="/milestone/%(name)s" '
+                'title="Completed .+ ago (.+)">%(name)s</a>'
+                % {'name': name})
         tc.notfind('changed from <em>%s</em> to <em>%s</em>'
                    % (name, retarget_to))
         tc.notfind("Ticket retargeted after milestone closed")
@@ -1333,8 +1346,9 @@ class TestMilestoneDelete(FunctionalTwillTestCaseSetup):
                 tc.find('Changed[ \t\n]+<a .*>\d+ seconds? ago</a>'
                         '[ \t\n]+by admin')
                 if retarget_to is not None:
-                    tc.find('<a class="milestone" href="/milestone/%(name)s">'
-                            '%(name)s</a>' % {'name': retarget_to})
+                    tc.find('<a class="milestone" href="/milestone/%(name)s" '
+                            'title="No date set">%(name)s</a>'
+                            % {'name': retarget_to})
                     tc.find('<strong class="trac-field-milestone">Milestone'
                             '</strong>[ \t\n]+changed from <em>%s</em> to '
                             '<em>%s</em>' % (name, retarget_to))
@@ -1376,8 +1390,8 @@ class TestMilestoneDelete(FunctionalTwillTestCaseSetup):
         tc.notfind('The tickets associated with milestone "%s" '
                    'have been retargeted to milestone' % name)
         self._tester.go_to_ticket(tid)
-        tc.find('<a class="milestone" href="/milestone/%(name)s">'
-                '%(name)s</a>' % {'name': name})
+        tc.find('<a class="milestone" href="/milestone/%(name)s" '
+                'title="No date set">%(name)s</a>' % {'name': name})
         tc.notfind('<strong class="trac-field-milestone">Milestone</strong>'
                    '[ \t\n]*<em>%s</em>[ \t\n]*deleted' % name)
         tc.notfind("Ticket retargeted after milestone deleted<br />")
@@ -1401,8 +1415,8 @@ class TestMilestoneRename(FunctionalTwillTestCaseSetup):
         tc.find(r"<h1>Milestone %s</h1>" % new_name)
         self._tester.go_to_ticket(tid)
         tc.find('Changed[ \t\n]+<a .*>\d+ seconds? ago</a>[ \t\n]+by admin')
-        tc.find('<a class="milestone" href="/milestone/%(name)s">'
-                '%(name)s</a>' % {'name': new_name})
+        tc.find('<a class="milestone" href="/milestone/%(name)s" '
+                'title="No date set">%(name)s</a>' % {'name': new_name})
         tc.find('<strong class="trac-field-milestone">Milestone</strong>'
                 '[ \t\n]+changed from <em>%s</em> to <em>%s</em>'
                 % (name, new_name))

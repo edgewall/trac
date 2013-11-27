@@ -31,7 +31,7 @@ from trac.perm import IPermissionRequestor
 from trac.resource import *
 from trac.search import ISearchSource, search_to_regexps, shorten_result
 from trac.util import as_bool
-from trac.util.datefmt import parse_date, utc, to_utimestamp, to_datetime, \
+from trac.util.datefmt import parse_date, utc, pretty_timedelta, to_datetime, \
                               get_datetime_format_hint, format_date, \
                               format_datetime, from_utimestamp, user_time
 from trac.util.text import CRLF, exception_to_unicode, to_unicode
@@ -955,9 +955,29 @@ class MilestoneModule(Component):
         href = context.href.milestone(name)
         if milestone and milestone.exists:
             if 'MILESTONE_VIEW' in context.perm(milestone.resource):
+                title = None
+                if hasattr(context, 'req'):
+                    if milestone.is_completed:
+                        title = _(
+                            'Completed %(duration)s ago (%(date)s)',
+                            duration=pretty_timedelta(milestone.completed),
+                            date=user_time(context.req, format_datetime,
+                                           milestone.completed))
+                    elif milestone.is_late:
+                        title = _('%(duration)s late (%(date)s)',
+                                  duration=pretty_timedelta(milestone.due),
+                                  date=user_time(context.req, format_datetime,
+                                                 milestone.due))
+                    elif milestone.due:
+                        title = _('Due in %(duration)s (%(date)s)',
+                                  duration=pretty_timedelta(milestone.due),
+                                  date=user_time(context.req, format_datetime,
+                                                 milestone.due))
+                    else:
+                        title = _('No date set')
                 closed = 'closed ' if milestone.is_completed else ''
                 return tag.a(label, class_='%smilestone' % closed,
-                             href=href + extra)
+                             href=href + extra, title=title)
         elif 'MILESTONE_CREATE' in context.perm('milestone', name):
             return tag.a(label, class_='missing milestone', href=href + extra,
                          rel='nofollow')
