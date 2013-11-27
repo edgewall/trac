@@ -1253,9 +1253,18 @@ UNION ALL SELECT 'attachment', 'file.ext', 'wiki', 'WikiStart'
 class TestMilestone(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Create a milestone."""
+        self._tester.go_to_roadmap()
+        tc.submit(formname='add')
+        tc.url(self._tester.url + '/milestone\?action=new')
+        name = random_unique_camel()
         due = format_datetime(datetime.now(tz=utc) + timedelta(hours=1),
                               tzinfo=localtz, locale=locale_en)
-        name = self._tester.create_milestone(due=due)
+        tc.formvalue('edit', 'name', name)
+        tc.formvalue('edit', 'due', True)
+        tc.formvalue('edit', 'duedate', due)
+        tc.submit('add')
+        tc.url(self._tester.url + '/milestone/' + name + '$')
+        tc.find(r'<h1>Milestone %s</h1>' % name)
         tc.find(due)
         tid = self._tester.create_ticket(info={'milestone': name})
         self._tester.go_to_ticket(tid)

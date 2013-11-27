@@ -71,7 +71,7 @@
       </div>
 
       <div py:if="'MILESTONE_CREATE' in perm" class="buttons">
-       <form method="get" action="${href.milestone()}"><div>
+       <form id="add" method="get" action="${href.milestone()}"><div>
         <input type="hidden" name="action" value="new" />
         <input type="submit" value="${_('Add new milestone')}" />
        </div></form>
