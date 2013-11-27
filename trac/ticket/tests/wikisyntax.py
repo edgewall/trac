@@ -12,12 +12,14 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import unittest
+from datetime import datetime
 
 from trac.ticket.query import QueryModule
 from trac.ticket.report import ReportModule
 from trac.ticket.roadmap import RoadmapModule
 from trac.ticket.model import Milestone, Ticket
 from trac.wiki.tests import formatter
+
 
 TICKET_TEST_CASES = u"""
 ============================== ticket: link resolver
@@ -197,16 +199,35 @@ def report_setup(tc):
 
 
 
+try:
+    import babel
+except ImportError:
+    babel = None
+from trac.util.datefmt import pretty_timedelta, utc
+dt_past = datetime(2013, 11, 01, 11, 59, 58, 0, tzinfo=utc)
+dt_future = datetime(2030, 11, 01, 11, 59, 58, 0, tzinfo=utc)
+if babel:
+    datestr_past = 'Nov 1, 2013 11:59:58 AM'
+    datestr_future = 'Nov 1, 2030 11:59:58 AM'
+else:
+    datestr_past = '11/01/13 11:59:58'
+    datestr_future = '11/01/30 11:59:58'
+
+
 MILESTONE_TEST_CASES = u"""
 ============================== milestone: link resolver
 milestone:foo
 [milestone:boo Milestone Boo]
 [milestone:roo Milestone Roo]
+[milestone:woo Milestone Woo]
+[milestone:zoo Milestone Zoo]
 ------------------------------
 <p>
 <a class="missing milestone" href="/milestone/foo" rel="nofollow">milestone:foo</a>
-<a class="milestone" href="/milestone/boo">Milestone Boo</a>
-<a class="closed milestone" href="/milestone/roo">Milestone Roo</a>
+<a class="milestone" href="/milestone/boo" title="No date set">Milestone Boo</a>
+<a class="closed milestone" href="/milestone/roo" title="Completed %(dt_past)s ago (%(datestr_past)s)">Milestone Roo</a>
+<a class="milestone" href="/milestone/woo" title="Due in %(dt_future)s (%(datestr_future)s)">Milestone Woo</a>
+<a class="milestone" href="/milestone/zoo" title="%(dt_past)s late (%(datestr_past)s)">Milestone Zoo</a>
 </p>
 ------------------------------
 ============================== milestone: link resolver + arguments
@@ -215,23 +236,35 @@ milestone:?action=new
 ------------------------------
 <p>
 <a class="missing milestone" href="/milestone/?action=new" rel="nofollow">milestone:?action=new</a>
-<a class="milestone" href="/milestone/boo#KnownIssues">Known Issues for 1.0</a>
+<a class="milestone" href="/milestone/boo#KnownIssues" title="No date set">Known Issues for 1.0</a>
 </p>
 ------------------------------
-""" #"
+""" % {'dt_past': pretty_timedelta(dt_past),
+       'dt_future': pretty_timedelta(dt_future),
+       'dt_past': pretty_timedelta(dt_past),
+       'datestr_past': datestr_past,
+       'datestr_future': datestr_future} #"
 
 def milestone_setup(tc):
-    from datetime import datetime
-    from trac.util.datefmt import utc
     boo = Milestone(tc.env)
     boo.name = 'boo'
     boo.completed = boo.due = None
     boo.insert()
     roo = Milestone(tc.env)
     roo.name = 'roo'
-    roo.completed = datetime.now(utc)
+    roo.completed = dt_past
     roo.due = None
     roo.insert()
+    woo = Milestone(tc.env)
+    woo.name = 'woo'
+    woo.completed = None
+    woo.due = dt_future
+    woo.insert()
+    zoo = Milestone(tc.env)
+    zoo.name = 'zoo'
+    zoo.completed = None
+    zoo.due = dt_past
+    zoo.insert()
 
 def milestone_teardown(tc):
     tc.env.reset_db()
