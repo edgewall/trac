@@ -23,18 +23,19 @@ from __future__ import with_statement
 import sys
 import time
 
-from trac.admin.api import console_date_format
+from trac.admin.api import console_date_format, get_console_locale
 from trac.core import TracError, Component, implements
 from trac.util import hex_entropy
 from trac.util.text import print_table
 from trac.util.translation import _
-from trac.util.datefmt import format_date, parse_date, to_datetime, \
-                              to_timestamp
+from trac.util.datefmt import get_datetime_format_hint, format_date, \
+                              parse_date, to_datetime, to_timestamp
 from trac.admin.api import IAdminCommandProvider, AdminCommandError
 
 UPDATE_INTERVAL = 3600 * 24 # Update session last_visit time stamp after 1 day
 PURGE_AGE = 3600 * 24 * 90 # Purge session after 90 days idle
 COOKIE_KEY = 'trac_session'
+
 
 # Note: as we often manipulate both the `session` and the
 #       `session_attribute` tables, there's a possibility of table
@@ -313,6 +314,10 @@ class SessionAdmin(Component):
     implements(IAdminCommandProvider)
 
     def get_admin_commands(self):
+        hints = {
+           'datetime': get_datetime_format_hint(get_console_locale(self.env)),
+           'iso8601': get_datetime_format_hint('iso8601'),
+        }
         yield ('session list', '[sid[:0|1]] [...]',
                """List the name and email for the given sids
 
@@ -353,10 +358,12 @@ class SessionAdmin(Component):
                self._complete_delete, self._do_delete)
 
         yield ('session purge', '<age>',
-               """Purge all anonymous sessions older than the given age
+               """Purge all anonymous sessions older than the given age or
+               date
 
                Age may be specified as a relative time like "90 days ago", or
-               in YYYYMMDD format.""",
+               as a date in the "%(datetime)s" or "%(iso8601)s" (ISO 8601)
+               format.""" % hints,
                None, self._do_purge)
 
     def _split_sid(self, sid):
@@ -469,7 +476,8 @@ class SessionAdmin(Component):
                         """, (sid, authenticated))
 
     def _do_purge(self, age):
-        when = parse_date(age)
+        when = parse_date(age, hint='datetime',
+                          locale=get_console_locale(self.env))
         with self.env.db_transaction as db:
             ts = to_timestamp(when)
             db("""

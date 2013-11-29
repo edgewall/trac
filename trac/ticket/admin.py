@@ -15,7 +15,9 @@ from __future__ import with_statement
 
 from datetime import datetime
 
-from trac.admin import *
+from trac.admin.api import AdminCommandError, IAdminCommandProvider, \
+                           IAdminPanelProvider, console_date_format, \
+                           console_datetime_format, get_console_locale
 from trac.core import *
 from trac.perm import PermissionSystem
 from trac.resource import ResourceNotFound
@@ -348,6 +350,10 @@ class MilestoneAdminPanel(TicketAdminPanel):
     # IAdminCommandProvider methods
 
     def get_admin_commands(self):
+        hints = {
+           'datetime': get_datetime_format_hint(get_console_locale(self.env)),
+           'iso8601': get_datetime_format_hint('iso8601'),
+        }
         yield ('milestone list', '',
                "Show milestones",
                None, self._do_list)
@@ -360,20 +366,22 @@ class MilestoneAdminPanel(TicketAdminPanel):
         yield ('milestone due', '<name> <due>',
                """Set milestone due date
 
-               The <due> date must be specified in the "%s" format.
+               The <due> date must be specified in the "%(datetime)s"
+               or "%(iso8601)s" (ISO 8601) format.
                Alternatively, "now" can be used to set the due date to the
                current time. To remove the due date from a milestone, specify
                an empty string ("").
-               """ % console_date_format_hint,
+               """ % hints,
                self._complete_name, self._do_due)
         yield ('milestone completed', '<name> <completed>',
                """Set milestone complete date
 
-               The <completed> date must be specified in the "%s" format.
+               The <completed> date must be specified in the "%(datetime)s"
+               or "%(iso8601)s" (ISO 8601) format.
                Alternatively, "now" can be used to set the completion date to
                the current time. To remove the completion date from a
                milestone, specify an empty string ("").
-               """ % console_date_format_hint,
+               """ % hints,
                self._complete_name, self._do_completed)
         yield ('milestone remove', '<name>',
                "Remove milestone",
@@ -398,7 +406,8 @@ class MilestoneAdminPanel(TicketAdminPanel):
         milestone = model.Milestone(self.env)
         milestone.name = name
         if due is not None:
-            milestone.due = parse_date(due, hint='datetime')
+            milestone.due = parse_date(due, hint='datetime',
+                                       locale=get_console_locale(self.env))
         milestone.insert()
 
     def _do_rename(self, name, newname):
@@ -408,13 +417,15 @@ class MilestoneAdminPanel(TicketAdminPanel):
 
     def _do_due(self, name, due):
         milestone = model.Milestone(self.env, name)
-        milestone.due = due and parse_date(due, hint='datetime')
+        milestone.due = due and parse_date(due, hint='datetime',
+                                           locale=get_console_locale(self.env))
         milestone.update()
 
     def _do_completed(self, name, completed):
         milestone = model.Milestone(self.env, name)
-        milestone.completed = completed and parse_date(completed,
-                                                       hint='datetime')
+        milestone.completed = completed and \
+                              parse_date(completed, hint='datetime',
+                                         locale=get_console_locale(self.env))
         milestone.update()
 
     def _do_remove(self, name):
@@ -519,6 +530,10 @@ class VersionAdminPanel(TicketAdminPanel):
     # IAdminCommandProvider methods
 
     def get_admin_commands(self):
+        hints = {
+           'datetime': get_datetime_format_hint(get_console_locale(self.env)),
+           'iso8601': get_datetime_format_hint('iso8601'),
+        }
         yield ('version list', '',
                "Show versions",
                None, self._do_list)
@@ -531,11 +546,12 @@ class VersionAdminPanel(TicketAdminPanel):
         yield ('version time', '<name> <time>',
                """Set version date
 
-               The <time> must be specified in the "%s" format. Alternatively,
-               "now" can be used to set the version date to the current time.
-               To remove the date from a version, specify an empty string
-               ("").
-               """ % console_date_format_hint,
+               The <time> must be specified in the "%(datetime)s"
+               or "%(iso8601)s" (ISO 8601) format.
+               Alternatively, "now" can be used to set the version date to
+               the current time. To remove the date from a version, specify
+               an empty string ("").
+               """ % hints,
                self._complete_name, self._do_time)
         yield ('version remove', '<name>',
                "Remove version",
@@ -558,7 +574,9 @@ class VersionAdminPanel(TicketAdminPanel):
         version = model.Version(self.env)
         version.name = name
         if time is not None:
-            version.time = time and parse_date(time, hint='datetime')
+            version.time = time and \
+                           parse_date(time, hint='datetime',
+                                      locale=get_console_locale(self.env))
         version.insert()
 
     def _do_rename(self, name, newname):
@@ -568,7 +586,9 @@ class VersionAdminPanel(TicketAdminPanel):
 
     def _do_time(self, name, time):
         version = model.Version(self.env, name)
-        version.time = time and parse_date(time, hint='datetime')
+        version.time = time and \
+                       parse_date(time, hint='datetime',
+                                  locale=get_console_locale(self.env))
         version.update()
 
     def _do_remove(self, name):
