@@ -11,14 +11,17 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import os
 import os.path
 import sys
 import traceback
 
 from trac.core import *
 from trac.util.text import levenshtein_distance
-from trac.util.translation import _
+from trac.util.translation import _, get_negotiated_locale, has_babel
 
+
+LANG = os.environ.get('LANG')
 
 console_date_format = '%Y-%m-%d'
 console_datetime_format = '%Y-%m-%d %H:%M:%S'
@@ -192,3 +195,21 @@ def get_dir_list(path, dirs_only=False):
         except OSError:
             pass
     return result
+
+
+def get_console_locale(env=None, lang=LANG):
+    """Return negotiated locale for console by LANG environment and
+    [trac] default_language."""
+    if has_babel:
+        from babel.core import Locale, UnknownLocaleError, parse_locale
+        try:
+            lang = '_'.join(filter(None, parse_locale(lang)))
+        except:
+            lang = None
+        default = env.config.get('trac', 'default_language', '') \
+                  if env else None
+        try:
+            return get_negotiated_locale([lang, default]) or Locale.default()
+        except UnknownLocaleError:
+            pass
+    return None

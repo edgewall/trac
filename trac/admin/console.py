@@ -15,7 +15,6 @@
 from __future__ import with_statement
 
 import cmd
-import locale
 import os.path
 import pkg_resources
 from shlex import shlex
@@ -24,7 +23,8 @@ import sys
 import traceback
 
 from trac import __version__ as VERSION
-from trac.admin import AdminCommandError, AdminCommandManager
+from trac.admin.api import AdminCommandError, AdminCommandManager, \
+                           get_console_locale
 from trac.core import TracError
 from trac.env import Environment
 from trac.ticket.model import *
@@ -33,15 +33,15 @@ from trac.util.html import html
 from trac.util.text import console_print, exception_to_unicode, printout, \
                            printerr, raw_input, to_unicode, \
                            getpreferredencoding
-from trac.util.translation import _, ngettext, get_negotiated_locale, \
-                                  has_babel, cleandoc_
+from trac.util.translation import _, ngettext, has_babel, cleandoc_
 from trac.versioncontrol.api import RepositoryManager
 from trac.wiki.admin import WikiAdmin
 from trac.wiki.macros import WikiMacroBase
 
+
 TRAC_VERSION = pkg_resources.get_distribution('Trac').version
 rl_completion_suppress_append = None
-LANG = os.environ.get('LANG')
+
 
 def find_readline_lib():
     """Return the name (and possibly the full path) of the readline library
@@ -67,6 +67,7 @@ class TracAdmin(cmd.Cmd):
     envname = None
     __env = None
     needs_upgrade = None
+    cmd_mgr = None
 
     def __init__(self, envdir=None):
         cmd.Cmd.__init__(self)
@@ -146,6 +147,7 @@ Type:  '?' or 'help' for help on commands.
         self.prompt = "Trac [%s]> " % self.envname
         if env is not None:
             self.__env = env
+            self.cmd_mgr = AdminCommandManager(env)
 
     def env_check(self):
         if not self.__env:
@@ -168,12 +170,13 @@ Type:  '?' or 'help' for help on commands.
 
     def _init_env(self):
         self.__env = env = Environment(self.envname)
+        negotiated = None
         # fixup language according to env settings
         if has_babel:
-            default = env.config.get('trac', 'default_language', '')
-            negotiated = get_negotiated_locale([LANG, default])
+            negotiated = get_console_locale(env)
             if negotiated:
                 translation.activate(negotiated)
+        self.cmd_mgr = AdminCommandManager(env)
 
     ##
     ## Utility methods
@@ -240,9 +243,8 @@ Type:  '?' or 'help' for help on commands.
         if line and line[-1] == ' ':    # Space starts new argument
             args.append('')
         if self.env_check():
-            cmd_mgr = AdminCommandManager(self.env)
             try:
-                comp = cmd_mgr.complete_command(args, cmd_only)
+                comp = self.cmd_mgr.complete_command(args, cmd_only)
             except Exception, e:
                 printerr()
                 printerr(_('Completion error: %(err)s',
@@ -281,8 +283,7 @@ Type:  '?' or 'help' for help on commands.
             raise TracError(_('The Trac Environment needs to be upgraded.\n\n'
                               'Run "trac-admin %(path)s upgrade"',
                               path=self.envname))
-        cmd_mgr = AdminCommandManager(self.env)
-        return cmd_mgr.execute_command(*args)
+        return self.cmd_mgr.execute_command(*args)
 
     ##
     ## Available Commands
@@ -306,15 +307,14 @@ Type:  '?' or 'help' for help on commands.
         if arg[0]:
             doc = getattr(self, "_help_" + arg[0], None)
             if doc is None and self.env_check():
-                cmd_mgr = AdminCommandManager(self.env)
-                doc = cmd_mgr.get_command_help(arg)
+                doc = self.cmd_mgr.get_command_help(arg)
             if doc:
                 self.print_doc(doc)
             else:
                 printerr(_("No documentation found for '%(cmd)s'."
                            " Use 'help' to see the list of commands.",
                            cmd=' '.join(arg)))
-                cmds = cmd_mgr.get_similar_commands(arg[0])
+                cmds = self.cmd_mgr.get_similar_commands(arg[0])
                 if cmds:
                     printout('')
                     printout(ngettext("Did you mean this?",
@@ -557,14 +557,8 @@ def run(args=None):
     """Main entry point."""
     if args is None:
         args = sys.argv[1:]
-    locale = None
     if has_babel:
-        import babel
-        try:
-            locale = get_negotiated_locale([LANG]) or babel.Locale.default()
-        except babel.UnknownLocaleError:
-            pass
-        translation.activate(locale)
+        translation.activate(get_console_locale())
     admin = TracAdmin()
     if len(args) > 0:
         if args[0] in ('-h', '--help', 'help'):

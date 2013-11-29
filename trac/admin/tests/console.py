@@ -42,9 +42,13 @@ import trac.search.web_ui
 import trac.timeline.web_ui
 import trac.wiki.web_ui
 
-from trac.admin import console, console_date_format
+from trac.admin import console
+from trac.admin.api import AdminCommandManager, console_date_format, \
+                           get_console_locale
 from trac.test import EnvironmentStub
-from trac.util.datefmt import format_date, get_date_format_hint
+from trac.util.datefmt import format_date, get_date_format_hint, \
+                              get_datetime_format_hint
+from trac.util.translation import get_available_locales, has_babel
 from trac.web.tests.session import _prep_session_table
 
 STRIP_TRAILING_SPACE = re.compile(r'( +)$', re.MULTILINE)
@@ -123,6 +127,15 @@ class TracadminTestCase(unittest.TestCase):
             sys.stderr = _err
             sys.stdout = _out
 
+    @property
+    def _datetime_format_hint(self):
+        return get_datetime_format_hint(get_console_locale(self.env))
+
+    def _get_command_help(self, *args):
+        docs = AdminCommandManager(self.env).get_command_help(list(args))
+        self.assertEqual(1, len(docs))
+        return docs[0][2]
+
     def assertEqual(self, expected_results, output):
         if not (isinstance(expected_results, basestring) and
                 isinstance(output, basestring)):
@@ -160,6 +173,59 @@ class TracadminTestCase(unittest.TestCase):
         rv, output = self._execute('help')
         self.assertEqual(0, rv)
         self.assertEqual(expected_results, output)
+
+    # Locale test
+
+    def _test_get_console_locale_with_babel(self):
+        from babel.core import Locale
+        locales = get_available_locales()
+        en_US = Locale.parse('en_US')
+        de = Locale.parse('de')
+        de_DE = Locale.parse('de_DE')
+
+        language = self.env.config.get('trac', 'default_language')
+        try:
+            self.assertEqual(Locale.default(), get_console_locale(None, None))
+            self.env.config.set('trac', 'default_language', '')
+            if 'de' in locales:
+                self.assertEqual(de, get_console_locale(None, 'de_DE.UTF8'))
+                self.env.config.set('trac', 'default_language', 'de')
+                self.assertEqual(de, get_console_locale(self.env, None))
+                self.assertEqual(de, get_console_locale(self.env, 'C'))
+                self.env.config.set('trac', 'default_language', 'en_US')
+                self.assertEqual(en_US, get_console_locale(self.env, None))
+                self.assertEqual(en_US, get_console_locale(self.env, 'C'))
+                self.assertEqual(de, get_console_locale(self.env,
+                                                        'de_DE.UTF8'))
+            if not locales:  # compiled catalog is missing
+                self.assertEqual(Locale.default(),
+                                 get_console_locale(None, 'de_DE.UTF8'))
+                self.env.config.set('trac', 'default_language', 'de')
+                self.assertEqual(Locale.default(),
+                                 get_console_locale(self.env, None))
+                self.assertEqual(Locale.default(),
+                                 get_console_locale(self.env, 'C'))
+                self.env.config.set('trac', 'default_language', 'en_US')
+                self.assertEqual(en_US, get_console_locale(self.env, None))
+                self.assertEqual(en_US, get_console_locale(self.env, 'C'))
+                self.assertEqual(en_US, get_console_locale(self.env,
+                                                           'de_DE.UTF8'))
+        finally:
+            self.env.config.set('trac', 'default_language', language)
+
+    def _test_get_console_locale_without_babel(self):
+        self.assertEqual(None, get_console_locale(None, 'en_US.UTF8'))
+        language = self.env.config.get('trac', 'default_language')
+        try:
+            self.env.config.set('trac', 'default_language', 'en_US')
+            self.assertEqual(None, get_console_locale(self.env, 'en_US.UTF8'))
+        finally:
+            self.env.config.set('trac', 'default_language', language)
+
+    if has_babel:
+        test_get_console_locale = _test_get_console_locale_with_babel
+    else:
+        test_get_console_locale = _test_get_console_locale_without_babel
 
     # Attachment tests
 
@@ -1033,6 +1099,15 @@ class TracadminTestCase(unittest.TestCase):
         self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
+    def test_milestone_add_invalid_date(self):
+        test_name = sys._getframe().f_code.co_name
+        rv, output = self._execute('milestone add new_milestone <add>')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name] %
+                         {'hint': self._datetime_format_hint,
+                          'isohint': get_datetime_format_hint('iso8601')},
+                         output)
+
     def test_milestone_rename_ok(self):
         """
         Tests the 'milestone rename' command in trac-admin.  This particular
@@ -1088,6 +1163,15 @@ class TracadminTestCase(unittest.TestCase):
         self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
+    def test_milestone_due_invalid_date(self):
+        test_name = sys._getframe().f_code.co_name
+        rv, output = self._execute('milestone due milestone1 <due>')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name] %
+                         {'hint': self._datetime_format_hint,
+                          'isohint': get_datetime_format_hint('iso8601')},
+                         output)
+
     def test_milestone_completed_ok(self):
         """
         Tests the 'milestone completed' command in trac-admin.  This particular
@@ -1111,6 +1195,15 @@ class TracadminTestCase(unittest.TestCase):
                                    % self._test_date)
         self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
+
+    def test_milestone_completed_invalid_date(self):
+        test_name = sys._getframe().f_code.co_name
+        rv, output = self._execute('milestone completed milestone1 <com>')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name] %
+                         {'hint': self._datetime_format_hint,
+                          'isohint': get_datetime_format_hint('iso8601')},
+                         output)
 
     def test_milestone_remove_ok(self):
         """
@@ -1312,6 +1405,34 @@ class TracadminTestCase(unittest.TestCase):
         self.assertEqual(0, rv)
         rv, output = self._execute('session list *')
         self.assertEqual(self.expected_results[test_name], output)
+
+    def test_session_purge_invalid_date(self):
+        test_name = sys._getframe().f_code.co_name
+        rv, output = self._execute('session purge <purge>')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name] %
+                         {'hint': self._datetime_format_hint,
+                          'isohint': get_datetime_format_hint('iso8601')},
+                         output)
+
+    def test_help_milestone_due(self):
+        doc = self._get_command_help('milestone', 'due')
+        self.assertIn(self._datetime_format_hint, doc)
+        self.assertIn(u'"YYYY-MM-DDThh:mm:ss±hh:mm"', doc)
+
+    def test_help_milestone_completed(self):
+        doc = self._get_command_help('milestone', 'completed')
+        self.assertIn(self._datetime_format_hint, doc)
+        self.assertIn(u'"YYYY-MM-DDThh:mm:ss±hh:mm"', doc)
+
+    def test_help_version_time(self):
+        doc = self._get_command_help('version', 'time')
+        self.assertIn(self._datetime_format_hint, doc)
+        self.assertIn(u'"YYYY-MM-DDThh:mm:ss±hh:mm"', doc)
+
+    def test_help_session_purge(self):
+        doc = self._get_command_help('session', 'purge')
+        self.assertIn(u'"YYYY-MM-DDThh:mm:ss±hh:mm"', doc)
 
 
 def suite():
