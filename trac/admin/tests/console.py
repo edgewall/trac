@@ -1104,7 +1104,8 @@ class TracadminTestCase(unittest.TestCase):
         rv, output = self._execute('milestone add new_milestone <add>')
         self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name] %
-                         {'hint': self._datetime_format_hint},
+                         {'hint': self._datetime_format_hint,
+                          'isohint': get_datetime_format_hint('iso8601')},
                          output)
 
     def test_milestone_rename_ok(self):
@@ -1167,7 +1168,8 @@ class TracadminTestCase(unittest.TestCase):
         rv, output = self._execute('milestone due milestone1 <due>')
         self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name] %
-                         {'hint': self._datetime_format_hint},
+                         {'hint': self._datetime_format_hint,
+                          'isohint': get_datetime_format_hint('iso8601')},
                          output)
 
     def test_milestone_completed_ok(self):
@@ -1199,7 +1201,8 @@ class TracadminTestCase(unittest.TestCase):
         rv, output = self._execute('milestone completed milestone1 <com>')
         self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name] %
-                         {'hint': self._datetime_format_hint},
+                         {'hint': self._datetime_format_hint,
+                          'isohint': get_datetime_format_hint('iso8601')},
                          output)
 
     def test_milestone_remove_ok(self):
@@ -1408,7 +1411,8 @@ class TracadminTestCase(unittest.TestCase):
         rv, output = self._execute('session purge <purge>')
         self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name] %
-                         {'hint': self._datetime_format_hint},
+                         {'hint': self._datetime_format_hint,
+                          'isohint': get_datetime_format_hint('iso8601')},
                          output)
 
     def test_help_milestone_due(self):

@@ -276,7 +276,6 @@ class ParseDateWithoutBabelTestCase(unittest.TestCase):
         setlocale(LC_ALL, self._orig_locale)
 
     def _setlocale(self, locale):
-        print self.locales
         setlocale(LC_ALL, self.locales.get(locale, locale))
 
     def test_parse_date_libc(self):
