@@ -22,7 +22,7 @@ import unittest
 
 from trac.tests import compat
 from trac.core import TracError
-from trac.util import datefmt, translation
+from trac.util import datefmt
 
 try:
     import pytz
@@ -100,19 +100,6 @@ else:
             t = datetime.datetime(2012, 3, 25, 2, 15)
             dt = datefmt.to_datetime(t, tz)
             self.assertEqual(datetime.timedelta(0, 7200), dt.utcoffset())
-
-        def test_parse_date_across_dst_boundary(self):
-            tz = datefmt.get_timezone('Europe/Zurich')
-            # DST start - 31 March, 02:00
-            format = '%Y-%m-%d %H:%M:%S %Z%z'
-            expected = '2002-03-31 03:30:00 CEST+0200'
-            # iso8601
-            t = datefmt.parse_date('2002-03-31T02:30:00', tz)
-            self.assertEqual(expected, t.strftime(format))
-            # strptime
-            t = datetime.datetime(2002, 3, 31, 2, 30)
-            t = datefmt.parse_date(t.strftime('%x %X'), tz)
-            self.assertEqual(expected, t.strftime(format))
 
         def test_to_datetime_astimezone(self):
             tz = datefmt.get_timezone('Europe/Paris')
@@ -1150,7 +1137,6 @@ else:
         def test_format_compatibility(self):
             tz = datefmt.timezone('GMT +2:00')
             t = datetime.datetime(2010, 8, 28, 11, 45, 56, 123456, datefmt.utc)
-            tz_t = datetime.datetime(2010, 8, 28, 13, 45, 56, 123456, tz)
             en_US = Locale.parse('en_US')
 
             # Converting default format to babel's format
@@ -1439,7 +1425,6 @@ class LocalTimezoneTestCase(unittest.TestCase):
     def test_arithmetic_not_localized_normalized_non_existent_time(self):
         self._tzset('Europe/Paris')
         t = datetime.datetime(2012, 3, 25, 1, 15, 42, 123456, datefmt.localtz)
-        t_utc = t.replace(tzinfo=datefmt.utc)
         t1 = t
         self.assertEqual('2012-03-25T01:15:42.123456+01:00', t1.isoformat())
         t2 = datefmt.localtz.normalize(t1 + datetime.timedelta(hours=1))
@@ -1453,7 +1438,6 @@ class LocalTimezoneTestCase(unittest.TestCase):
     def test_arithmetic_not_localized_normalized_ambiguous_time(self):
         self._tzset('Europe/Paris')
         t = datetime.datetime(2011, 10, 30, 1, 45, 42, 123456, datefmt.localtz)
-        t_utc = t.replace(tzinfo=datefmt.utc)
         t1 = t
         self.assertEqual('2011-10-30T01:45:42.123456+02:00', t1.isoformat())
         t2 = datefmt.localtz.normalize(t1 + datetime.timedelta(hours=1))
