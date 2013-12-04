@@ -177,15 +177,19 @@ class TracadminTestCase(unittest.TestCase):
     # Locale test
 
     def _test_get_console_locale_with_babel(self):
-        from babel.core import Locale
+        from babel.core import Locale, UnknownLocaleError
         locales = get_available_locales()
         en_US = Locale.parse('en_US')
         de = Locale.parse('de')
         de_DE = Locale.parse('de_DE')
+        try:
+            default = Locale.default()
+        except UnknownLocaleError:
+            default = None
 
         language = self.env.config.get('trac', 'default_language')
         try:
-            self.assertEqual(Locale.default(), get_console_locale(None, None))
+            self.assertEqual(default, get_console_locale(None, None))
             self.env.config.set('trac', 'default_language', '')
             if 'de' in locales:
                 self.assertEqual(de, get_console_locale(None, 'de_DE.UTF8'))
@@ -198,13 +202,11 @@ class TracadminTestCase(unittest.TestCase):
                 self.assertEqual(de, get_console_locale(self.env,
                                                         'de_DE.UTF8'))
             if not locales:  # compiled catalog is missing
-                self.assertEqual(Locale.default(),
-                                 get_console_locale(None, 'de_DE.UTF8'))
+                self.assertEqual(default, get_console_locale(None,
+                                                             'de_DE.UTF8'))
                 self.env.config.set('trac', 'default_language', 'de')
-                self.assertEqual(Locale.default(),
-                                 get_console_locale(self.env, None))
-                self.assertEqual(Locale.default(),
-                                 get_console_locale(self.env, 'C'))
+                self.assertEqual(default, get_console_locale(self.env, None))
+                self.assertEqual(default, get_console_locale(self.env, 'C'))
                 self.env.config.set('trac', 'default_language', 'en_US')
                 self.assertEqual(en_US, get_console_locale(self.env, None))
                 self.assertEqual(en_US, get_console_locale(self.env, 'C'))
