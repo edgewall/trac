@@ -285,7 +285,7 @@ class EnvironmentStub(Environment):
 
         init_global = False
         if self.global_databasemanager:
-            self.components[DatabaseManager] = global_databasemanager
+            self.components[DatabaseManager] = self.global_databasemanager
         else:
             self.config.set('trac', 'database', self.dburi)
             self.global_databasemanager = DatabaseManager(self)
