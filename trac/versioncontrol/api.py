@@ -659,8 +659,8 @@ class RepositoryManager(Component):
         The supported events are the names of the methods defined in the
         `IRepositoryChangeListener` interface.
         """
-        self.log.debug("Event %s on %s for changesets %r",
-                       event, reponame, revs)
+        self.log.debug("Event %s on repository '%s' for changesets %r",
+                       event, reponame or '(default)', revs)
 
         # Notify a repository by name, and all repositories with the same
         # base, or all repositories by base or by repository dir
@@ -695,8 +695,12 @@ class RepositoryManager(Component):
                         repos.sync_changeset(rev)
                         changeset = repos.get_changeset(rev)
                     except NoSuchChangeset:
+                        self.log.debug(
+                            "No changeset '%s' found in repository '%s'. "
+                            "Skipping subscribers for event %s",
+                            rev, repos.reponame or '(default)', event)
                         continue
-                self.log.debug("Event %s on %s for revision %s",
+                self.log.debug("Event %s on repository '%s' for revision '%s'",
                                event, repos.reponame or '(default)', rev)
                 for listener in self.change_listeners:
                     getattr(listener, event)(repos, changeset, *args)
