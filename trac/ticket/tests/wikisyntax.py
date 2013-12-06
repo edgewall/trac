@@ -12,12 +12,14 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta
 
+from trac.test import locale_en
 from trac.ticket.query import QueryModule
 from trac.ticket.report import ReportModule
 from trac.ticket.roadmap import RoadmapModule
 from trac.ticket.model import Milestone, Ticket
+from trac.util.datefmt import format_datetime, pretty_timedelta, utc
 from trac.wiki.tests import formatter
 
 
@@ -198,20 +200,8 @@ def report_setup(tc):
     create_report(tc, 2)
 
 
-
-try:
-    import babel
-except ImportError:
-    babel = None
-from trac.util.datefmt import pretty_timedelta, utc
-dt_past = datetime(2013, 11, 01, 11, 59, 58, 0, tzinfo=utc)
-dt_future = datetime(2030, 11, 01, 11, 59, 58, 0, tzinfo=utc)
-if babel:
-    datestr_past = 'Nov 1, 2013 11:59:58 AM'
-    datestr_future = 'Nov 1, 2030 11:59:58 AM'
-else:
-    datestr_past = '11/01/13 11:59:58'
-    datestr_future = '11/01/30 11:59:58'
+dt_past = datetime.now(utc) - timedelta(days=1)
+dt_future = datetime.now(utc) + timedelta(days=1)
 
 
 MILESTONE_TEST_CASES = u"""
@@ -241,9 +231,9 @@ milestone:?action=new
 ------------------------------
 """ % {'dt_past': pretty_timedelta(dt_past),
        'dt_future': pretty_timedelta(dt_future),
-       'dt_past': pretty_timedelta(dt_past),
-       'datestr_past': datestr_past,
-       'datestr_future': datestr_future} #"
+       'datestr_past': format_datetime(dt_past, locale=locale_en, tzinfo=utc),
+       'datestr_future': format_datetime(dt_future, locale=locale_en,
+                                         tzinfo=utc)} #"
 
 def milestone_setup(tc):
     boo = Milestone(tc.env)
