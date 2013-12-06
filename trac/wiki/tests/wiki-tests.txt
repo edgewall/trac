@@ -1175,6 +1175,27 @@ Inline  comment
 </p>
 ------------------------------
 Inline  comment
+============================== Exception with ascii bytes
+[[ValueErrorWithUtf8(error)]]
+------------------------------
+<p>
+<div class="system-message"><strong>Error: Macro ValueErrorWithUtf8(error) failed</strong><pre>error</pre></div>
+</p>
+------------------------------
+============================== Exception with utf-8 bytes
+[[ValueErrorWithUtf8(érrör)]]
+------------------------------
+<p>
+<div class="system-message"><strong>Error: Macro ValueErrorWithUtf8(érrör) failed</strong><pre>érrör</pre></div>
+</p>
+------------------------------
+============================== TracError with unicode
+[[TracErrorWithUnicode(érrör)]]
+------------------------------
+<p>
+<div class="system-message"><strong>Error: Macro TracErrorWithUnicode(érrör) failed</strong><pre>érrör</pre></div>
+</p>
+------------------------------
 ============================================================
 
            Headings
