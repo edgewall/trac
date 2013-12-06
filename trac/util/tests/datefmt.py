@@ -244,15 +244,19 @@ class ParseISO8601TestCase(unittest.TestCase):
 class ParseDateWithoutBabelTestCase(unittest.TestCase):
 
     if os.name != 'nt':
-        locales = {'en_US': 'en_US.UTF8', 'en_GB': 'en_GB.UTF8',
-                   'fr': 'fr_FR.UTF8', 'ja': 'ja_JP.UTF8',
-                   'zh_CN': 'zh_CN.UTF8'}
+        locales = {}
     else:
-        # http://msdn.microsoft.com/en-us/goglobal/bb964664.aspx
-        locales = {'en_US': 'English_United States',
-                   'en_GB': 'English_United Kingdom',
-                   'fr': 'French_France', 'ja': 'Japanese_Japan',
-                   'zh_CN': "Chinese_People's Republic of China"}
+        # LCID: http://msdn.microsoft.com/en-us/goglobal/bb964664.aspx
+        # NLS: http://msdn.microsoft.com/en-us/goglobal/bb896001.aspx
+        ref_time = time.gmtime(123456)
+        locales = {
+            'en_US.UTF8': ('English_United States', '1/2/1970 10:17:36 AM'),
+            'en_GB.UTF8': ('English_United Kingdom', '02/01/1970 10:17:36'),
+            'fr_FR.UTF8': ('French_France', '02/01/1970 10:17:36'),
+            'ja_JP.UTF8': ('Japanese_Japan', '1970/01/02 10:17:36'),
+            'zh_CN.UTF8': ("Chinese_People's Republic of China",
+                           '1970/1/2 10:17:36')
+        }
 
     def setUp(self):
         rv = locale.getlocale(locale.LC_TIME)
@@ -261,10 +265,12 @@ class ParseDateWithoutBabelTestCase(unittest.TestCase):
     def tearDown(self):
         locale.setlocale(locale.LC_ALL, self._orig_locale)
 
-    def _setlocale(self, value):
+    def _setlocale(self, id):
         try:
-            locale.setlocale(locale.LC_ALL, self.locales.get(value, value))
-            return True
+            mapped, ref_strftime = self.locales.get(id, (id, None))
+            locale.setlocale(locale.LC_ALL, mapped)
+            return (ref_strftime is None or
+                    ref_strftime == time.strftime('%x %X', self.ref_time))
         except locale.Error:
             return False
 
@@ -283,7 +289,7 @@ class ParseDateWithoutBabelTestCase(unittest.TestCase):
         self.assertEqual(expected_minute,
                          datefmt.parse_date('28 Aug 2010 1:45 pm', tz))
 
-        if self._setlocale('en_US'):
+        if self._setlocale('en_US.UTF8'):
             self.assertEqual(expected,
                              datefmt.parse_date('Aug 28, 2010 1:45:56 PM', tz))
             self.assertEqual(expected,
@@ -299,7 +305,7 @@ class ParseDateWithoutBabelTestCase(unittest.TestCase):
             self.assertEqual(expected_date,
                              datefmt.parse_date('28 Aug 2010', tz))
 
-        if self._setlocale('en_GB'):
+        if self._setlocale('en_GB.UTF8'):
             self.assertEqual(expected,
                              datefmt.parse_date('28 Aug 2010 13:45:56', tz))
             self.assertEqual(expected_minute,
@@ -307,7 +313,7 @@ class ParseDateWithoutBabelTestCase(unittest.TestCase):
             self.assertEqual(expected_date,
                              datefmt.parse_date('28 Aug 2010', tz))
 
-        if self._setlocale('fr'):
+        if self._setlocale('fr_FR.UTF8'):
             self.assertEqual(expected,
                              datefmt.parse_date(u'28 août 2010 13:45:56', tz))
             self.assertEqual(expected,
@@ -319,7 +325,7 @@ class ParseDateWithoutBabelTestCase(unittest.TestCase):
             self.assertEqual(expected_minute,
                              datefmt.parse_date('Aug 28 2010 1:45 pm', tz))
 
-        if self._setlocale('ja'):
+        if self._setlocale('ja_JP.UTF8'):
             self.assertEqual(expected,
                              datefmt.parse_date('2010/08/28 13:45:56', tz))
             self.assertEqual(expected_minute,
@@ -329,7 +335,7 @@ class ParseDateWithoutBabelTestCase(unittest.TestCase):
             self.assertEqual(expected_minute,
                              datefmt.parse_date('2010/Aug/28 1:45 pm', tz))
 
-        if self._setlocale('zh_CN'):
+        if self._setlocale('zh_CN.UTF8'):
             self.assertEqual(expected,
                              datefmt.parse_date(u'2010-8-28 下午01:45:56', tz))
             self.assertEqual(expected,
