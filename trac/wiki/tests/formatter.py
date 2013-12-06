@@ -4,7 +4,7 @@ import re
 import unittest
 from datetime import datetime
 
-from trac.core import *
+from trac.core import Component, TracError, implements
 from trac.mimeview import Context
 from trac.test import Mock, MockPerm, EnvironmentStub
 from trac.util.datefmt import utc
@@ -75,6 +75,14 @@ class WikiProcessorSampleMacro(WikiMacroBase):
             return 'Called as a processor with params: <dl>%s</dl>' % \
                 ''.join('<dt>%s</dt><dd>%s</dd>' % kv for kv in args.items()) \
                 + content
+
+class ValueErrorWithUtf8Macro(WikiMacroBase):
+    def expand_macro(self, formatter, name, content, args):
+        raise ValueError(content.encode('utf-8'))
+
+class TracErrorWithUnicodeMacro(WikiMacroBase):
+    def expand_macro(self, formatter, name, content, args):
+        raise TracError(unicode(content))
 
 class SampleResolver(Component):
     """A dummy macro returning a div block, used by the unit test."""

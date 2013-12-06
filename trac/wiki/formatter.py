@@ -719,10 +719,10 @@ class Formatter(object):
         try:
             return macro.process(args, in_paragraph=True)
         except Exception, e:
-            self.env.log.error('Macro %s(%s) failed: %s' % 
-                    (name, args, exception_to_unicode(e, traceback=True)))
+            self.env.log.error('Macro %s(%s) failed:%s', name, args,
+                               exception_to_unicode(e, traceback=True))
             return system_message('Error: Macro %s(%s) failed' % (name, args),
-                                  e)
+                                  to_unicode(e))
 
     # Headings
 
