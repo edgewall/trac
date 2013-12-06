@@ -89,7 +89,7 @@ try:
     from configobj import ConfigObj
 except ImportError:
     ConfigObj = None
-    print "SKIP: fine-grained permission tests. ConfigObj not installed."
+    print "SKIP: fine-grained permission tests (ConfigObj not installed)"
 
 from trac.test import TestSetup, TestCaseSetup
 from trac.tests.contentgen import random_sentence, random_page, random_word, \
