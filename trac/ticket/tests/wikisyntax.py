@@ -126,6 +126,9 @@ trac:#2041
 """ # "
 
 def ticket_setup(tc):
+    config = tc.env.config
+    config.set('ticket-custom', 'custom1', 'text')
+    config.save()
     ticket = Ticket(tc.env)
     ticket.values.update({'reporter': 'santa',
                           'summary': 'This is the summary',
@@ -133,6 +136,9 @@ def ticket_setup(tc):
     ticket.insert()
 
 def ticket_teardown(tc):
+    config = tc.env.config
+    config.remove('ticket-custom', 'custom1')
+    config.save()
     tc.env.reset_db()
 
 
@@ -346,6 +352,20 @@ New tickets: <span class="query_count" title="1 tickets for which status=new&amp
 ------------------------------
 ============================== TicketQuery macro: one result, compact form
 New tickets: [[TicketQuery(status=new, format=compact)]]
+------------------------------
+<p>
+New tickets: <span><a class="new" href="/ticket/1" title="This is the summary">#1</a></span>
+</p>
+------------------------------
+============================== TicketQuery macro: duplicated fields
+New tickets: [[TicketQuery(status=new, format=compact, col=summary|status|status)]]
+------------------------------
+<p>
+New tickets: <span><a class="new" href="/ticket/1" title="This is the summary">#1</a></span>
+</p>
+------------------------------
+============================== TicketQuery macro: duplicated custom fields
+New tickets: [[TicketQuery(status=new, format=compact, col=summary|custom1|custom1)]]
 ------------------------------
 <p>
 New tickets: <span><a class="new" href="/ticket/1" title="This is the summary">#1</a></span>

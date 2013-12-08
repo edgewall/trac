@@ -434,11 +434,12 @@ class Query(object):
 
         enum_columns = ('resolution', 'priority', 'severity')
         # Build the list of actual columns to query
-        cols = self.cols[:]
+        cols = []
         def add_cols(*args):
             for col in args:
                 if not col in cols:
                     cols.append(col)
+        add_cols(*self.cols)  # remove duplicated cols
         if self.group and not self.group in cols:
             add_cols(self.group)
         if self.rows:
