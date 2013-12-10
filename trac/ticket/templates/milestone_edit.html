@@ -82,7 +82,7 @@
               <em i18n:msg="datehint">Format: ${datetime_hint}</em>
             </label>
             <br/>
-            <py:if test="num_tickets != 0">
+            <py:if test="num_tickets and num_tickets != 0">
               <input type="checkbox" id="retarget" name="retarget" checked="${not milestone.completed or None}" />
               <label for="retarget">Retarget associated open tickets to milestone:</label>
               <select id="target" name="target">

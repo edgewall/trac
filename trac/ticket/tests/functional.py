@@ -1380,6 +1380,7 @@ class TestMilestone(FunctionalTwillTestCaseSetup):
         tc.formvalue('edit', 'name', name)
         tc.formvalue('edit', 'due', True)
         tc.formvalue('edit', 'duedate', due)
+        tc.notfind("Retarget associated open tickets to milestone:")
         tc.submit('add')
         tc.url(self._tester.url + '/milestone/' + name + '$')
         tc.find(r'<h1>Milestone %s</h1>' % name)
