@@ -29,6 +29,7 @@ import time
 import weakref
 
 from trac.util import terminate
+from trac.util.text import to_unicode
 
 __all__ = ['GitError', 'GitErrorSha', 'Storage', 'StorageFactory']
 
@@ -398,7 +399,7 @@ class Storage(object):
                 pass
         except IOError, e:
             raise GitError("Make sure the Git repository '%s' is readable: %s"
-                           % (git_dir, unicode(e)))
+                           % (git_dir, to_unicode(e)))
 
         self.repo = GitCore(git_dir, git_bin=git_bin, log=log)
 
