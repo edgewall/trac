@@ -132,9 +132,15 @@ class RequestDispatcher(Component):
 
     def authenticate(self, req):
         for authenticator in self.authenticators:
-            authname = authenticator.authenticate(req)
-            if authname:
-                return authname
+            try:
+                authname = authenticator.authenticate(req)
+            except TracError, e:
+                self.log.error("Can't authenticate using %s: %s",
+                               authenticator.__class__.__name__,
+                               exception_to_unicode(e))
+            else:
+                if authname:
+                    return authname
         else:
             return 'anonymous'
 
