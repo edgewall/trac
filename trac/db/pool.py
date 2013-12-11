@@ -26,7 +26,7 @@ from trac.util.text import exception_to_unicode
 from trac.util.translation import _
 
 
-class TimeoutError(Exception):
+class TimeoutError(TracError):
     """Exception raised by the connection pool when no connection has become
     available after a given timeout."""
 
