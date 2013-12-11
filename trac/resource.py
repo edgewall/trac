@@ -17,6 +17,7 @@
 #         Alec Thomas <alec@swapoff.org>
 
 from trac.core import *
+from trac.util.presentation import classes
 from trac.util.translation import _
 
 
@@ -431,7 +432,11 @@ def render_resource_link(env, context, resource, format='default'):
     from genshi.builder import Element, tag
     link = get_resource_description(env, resource, format, context=context)
     if not isinstance(link, Element):
-        link = tag.a(link, href=get_resource_url(env, resource, context.href))
+        missing = resource_exists(env, resource) is False
+        link = tag.a(link, class_=classes(resource.realm, missing=missing),
+                     href=get_resource_url(env, resource, context.href),
+                     rel='nofollow' if missing else None)
+
     return link
 
 def resource_exists(env, resource):
