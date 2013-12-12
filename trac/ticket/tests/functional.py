@@ -242,6 +242,57 @@ class TestTicketQueryLinks(FunctionalTwillTestCaseSetup):
         tc.find('class="missing">Next Ticket &rarr;')
 
 
+class TestTicketQueryLinksQueryModuleDisabled(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Ticket query links should not be present when the QueryModule
+        is disabled."""
+        def enable_query_module(enable):
+            self._tester.go_to_admin('Plugins')
+            tc.formvalue('edit-plugin-trac', 'component',
+                         'trac.ticket.query.QueryModule')
+            tc.formvalue('edit-plugin-trac', 'enable',
+                         '%strac.ticket.query.QueryModule'
+                         % ('+' if enable else '-'))
+            tc.submit()
+            tc.find("The following component has been %s:"
+                    ".*QueryModule.*\(trac\.ticket\.query\.\*\)"
+                    % ("enabled" if enable else "disabled"))
+        props = {'cc': 'user1, user2',
+                 'component': 'component1',
+                 'keywords': 'kw1, kw2',
+                 'milestone': 'milestone1',
+                 'owner': 'user',
+                 'priority': 'major',
+                 'reporter': 'admin',
+                 'version': '2.0'}
+        tid = self._tester.create_ticket(info=props)
+        milestone_cell = \
+            r'<td headers="h_milestone">\s*' \
+            r'<a class="milestone" href="/milestone/%(milestone)s" ' \
+            r'title=".*">\s*%(milestone)s\s*</a>\s*</td>'\
+            % {'milestone': props['milestone']}
+        try:
+            self._tester.go_to_ticket(tid)
+            for field, value in props.iteritems():
+                if field != 'milestone':
+                    links = r', '.join(r'<a href="/query.*>%s</a>'
+                                       % v.strip() for v in value.split(','))
+                    tc.find(r'<td headers="h_%s"( class="searchable")?>'
+                            r'\s*%s\s*</td>' % (field, links))
+                else:
+                    tc.find(milestone_cell)
+            enable_query_module(False)
+            self._tester.go_to_ticket(tid)
+            for field, value in props.iteritems():
+                if field != 'milestone':
+                    tc.find(r'<td headers="h_%s"( class="searchable")?>'
+                            r'\s*%s\s*</td>' % (field, value))
+                else:
+                    tc.find(milestone_cell)
+        finally:
+            enable_query_module(True)
+
+
 class TestTicketQueryOrClause(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test ticket query with an or clauses"""
@@ -2301,6 +2352,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestTicketHistory())
     suite.addTest(TestTicketHistoryDiff())
     suite.addTest(TestTicketQueryLinks())
+    suite.addTest(TestTicketQueryLinksQueryModuleDisabled())
     suite.addTest(TestTicketQueryOrClause())
     suite.addTest(TestTicketCustomFieldTextNoFormat())
     suite.addTest(TestTicketCustomFieldTextWikiFormat())
