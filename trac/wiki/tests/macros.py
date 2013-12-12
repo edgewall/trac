@@ -130,13 +130,13 @@ IMAGE_MACRO_TEST_CASES = u"""
 ------------------------------
 <a style="padding:0; border:none" href="/wiki/WikiStart"><img src="/browser/%C2%AB%20test%C2%A0%C2%BB?format=raw" alt="/browser/« test »" title="/browser/« test »" /></a>
 ============================== Strip unicode white-spaces and ZWSPs (#10668)
-[[Image(  ​source:« test ».png　 ​, nolink)]]
+[[Image(  ​source:« test ».png　 ​, nolink, 100%　 ​)]]
 ------------------------------
 <p>
-<img src="/browser/%C2%AB%20test%C2%A0%C2%BB.png?format=raw" alt="source:« test ».png" title="source:« test ».png" />
+<img width="100%" alt="source:« test ».png" title="source:« test ».png" src="/browser/%C2%AB%20test%C2%A0%C2%BB.png?format=raw" />
 </p>
 ------------------------------
-<img src="/browser/%C2%AB%20test%C2%A0%C2%BB.png?format=raw" alt="source:« test ».png" title="source:« test ».png" />
+<img width="100%" alt="source:« test ».png" title="source:« test ».png" src="/browser/%C2%AB%20test%C2%A0%C2%BB.png?format=raw" />
 ------------------------------
 ============================== Attachments on page with ':' characters (#10562)
 [[Image("page:fr":img.png​,nolink)]]
