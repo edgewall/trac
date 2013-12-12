@@ -349,7 +349,7 @@ class RepositoryManager(Component):
                                 "Look in the Trac log for more information "
                                 "including mitigation strategies.", 
                                 name=reponame or '(default)',
-                                error=to_unicode(e.message)))
+                                error=to_unicode(e)))
                             self.log.error("Failed to sync with repository "
                                 "\"%s\"; You may be able to reduce the impact "
                                 "of this issue by configuring [trac] "
@@ -370,7 +370,7 @@ class RepositoryManager(Component):
                         _("Can't synchronize with repository \"%(name)s\" "
                           "(%(error)s). Look in the Trac log for more "
                           "information.", name=reponame or '(default)',
-                          error=to_unicode(e.message)))
+                          error=to_unicode(e)))
                 self.log.info("Synchronized '%s' repository in %0.2f seconds",
                               reponame or '(default)', time.time() - start)
         return handler
