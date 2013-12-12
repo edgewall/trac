@@ -48,7 +48,7 @@ from trac.util.text import exception_to_unicode, shorten_line, to_unicode
 from trac.util.translation import _, get_negotiated_locale, has_babel, \
                                   safefmt, tag_
 from trac.web.api import *
-from trac.web.chrome import Chrome
+from trac.web.chrome import Chrome, add_warning
 from trac.web.href import Href
 from trac.web.session import Session
 
@@ -137,12 +137,13 @@ class RequestDispatcher(Component):
             except TracError, e:
                 self.log.error("Can't authenticate using %s: %s",
                                authenticator.__class__.__name__,
-                               exception_to_unicode(e))
-            else:
-                if authname:
-                    return authname
-        else:
-            return 'anonymous'
+                               exception_to_unicode(e, traceback=True))
+                add_warning(req, _("Authentication error. "
+                                   "Please contact your administrator."))
+                break  # don't fallback to other authenticators
+            if authname:
+                return authname
+        return 'anonymous'
 
     def dispatch(self, req):
         """Find a registered handler that matches the request and let
