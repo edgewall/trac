@@ -340,26 +340,7 @@ class RepositoryManager(Component):
                 try:
                     repo = self.get_repository(reponame)
                     if repo:
-                        try:
-                            repo.sync()
-                        except Exception, e:
-                            add_warning(req, _("Failed to sync with "
-                                "repository \"%(name)s\": %(error)s; "
-                                "repository information may be out of date.  "
-                                "Look in the Trac log for more information "
-                                "including mitigation strategies.", 
-                                name=reponame or '(default)',
-                                error=to_unicode(e)))
-                            self.log.error("Failed to sync with repository "
-                                "\"%s\"; You may be able to reduce the impact "
-                                "of this issue by configuring [trac] "
-                                "repository_sync_per_request; see "
-                                "http://trac.edgewall.org/wiki/"
-                                "TracRepositoryAdmin#ExplicitSync for more "
-                                "detail.  Exception: %s",
-                                reponame or '(default)',
-                                exception_to_unicode(e, traceback=True))
-                            continue
+                        repo.sync()
                     else:
                         self.log.warning("Unable to find repository '%s' for "
                                          "synchronization",
@@ -371,6 +352,21 @@ class RepositoryManager(Component):
                           "(%(error)s). Look in the Trac log for more "
                           "information.", name=reponame or '(default)',
                           error=to_unicode(e)))
+                except Exception, e:
+                    add_warning(req,
+                        _("Failed to sync with repository \"%(name)s\": "
+                          "%(error)s; repository information may be out of "
+                          "date. Look in the Trac log for more information "
+                          "including mitigation strategies.",
+                          name=reponame or '(default)', error=to_unicode(e)))
+                    self.log.error(
+                        "Failed to sync with repository \"%s\"; You may be "
+                        "able to reduce the impact of this issue by "
+                        "configuring [trac] repository_sync_per_request; see "
+                        "http://trac.edgewall.org/wiki/TracRepositoryAdmin"
+                        "#ExplicitSync for more detail: %s",
+                        reponame or '(default)',
+                        exception_to_unicode(e, traceback=True))
                 self.log.info("Synchronized '%s' repository in %0.2f seconds",
                               reponame or '(default)', time.time() - start)
         return handler
