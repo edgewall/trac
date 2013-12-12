@@ -125,6 +125,8 @@ class ComponentMeta(type):
             return self
 
         # The normal case where the component is not also the component manager
+        assert len(args) >= 1 and isinstance(args[0], ComponentManager), \
+               "First argument must be a ComponentManager instance"
         compmgr = args[0]
         self = compmgr.components.get(cls)
         # Note that this check is racy, we intentionally don't use a

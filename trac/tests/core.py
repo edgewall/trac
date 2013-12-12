@@ -341,6 +341,15 @@ class ComponentTestCase(unittest.TestCase):
         instance = ComponentA(mgr)
         self.assertIsNone(mgr[ComponentA])
 
+    def test_invalid_argument_raises(self):
+        """
+        AssertionError is raised when first argument to initializer is not a
+        ComponentManager instance.
+        """
+        class ComponentA(Component):
+            pass
+        self.assertRaises(AssertionError, Component)
+
 
 def suite():
     return unittest.makeSuite(ComponentTestCase, 'test')
