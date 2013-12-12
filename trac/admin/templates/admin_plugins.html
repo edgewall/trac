@@ -80,7 +80,7 @@
       </fieldset>
     </form>
 
-    <form py:for="idx, plugin in enumerate(plugins)" method="post" action="">
+    <form py:for="idx, plugin in enumerate(plugins)" id="edit-plugin-${plugin.name.lower()}" method="post" action="">
       <div class="plugin" id="trac-plugin-${plugin.name}">
         <h3 class="foldable">${plugin.name} ${plugin.version}</h3>
         <!--! FIXME: Plugin uninstall disabled as it is unreliable (#3545)

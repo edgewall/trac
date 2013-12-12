@@ -1401,6 +1401,9 @@ class TicketModule(Component):
 
     def _query_link(self, req, name, value, text=None):
         """Return a link to /query with the appropriate name and value"""
+        from trac.ticket.query import QueryModule
+        if not self.env.is_component_enabled(QueryModule):
+            return text or value
         default_query = self.ticketlink_query.lstrip('?')
         args = arg_list_to_args(parse_arg_list(default_query))
         args[name] = value
@@ -1410,7 +1413,9 @@ class TicketModule(Component):
 
     def _query_link_words(self, context, name, value):
         """Splits a list of words and makes a query link to each separately"""
-        if not isinstance(value, basestring): # None or other non-splitable
+        from trac.ticket.query import QueryModule
+        if not (isinstance(value, basestring) and  # None or other non-splitable
+                self.env.is_component_enabled(QueryModule)):
             return value
         default_query = self.ticketlink_query.startswith('?') and \
                         self.ticketlink_query[1:] or self.ticketlink_query
