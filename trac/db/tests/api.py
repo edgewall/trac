@@ -39,7 +39,8 @@ class Error(Exception):
 
 
 def make_env(get_cnx):
-    return Mock(components={DatabaseManager:
+    from trac.core import ComponentManager
+    return Mock(ComponentManager, components={DatabaseManager:
              Mock(get_connection=get_cnx,
                   _transaction_local=ThreadLocal(wdb=None, rdb=None))})
 
