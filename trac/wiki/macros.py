@@ -537,7 +537,7 @@ class ImageMacro(WikiMacroBase):
         except Exception:
             browser_links = []
         while args:
-            arg = args.pop(0).strip()
+            arg = stripws(args.pop(0))
             if size_re.match(arg):
                 # 'width' keyword
                 attr['width'] = arg
