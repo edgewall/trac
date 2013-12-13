@@ -38,6 +38,7 @@ from trac.util import as_bool, get_reporter_id
 from trac.util.compat import any
 from trac.util.datefmt import format_datetime, from_utimestamp, \
                               to_utimestamp, utc
+from trac.util.html import to_fragment
 from trac.util.text import exception_to_unicode, obfuscate_email_address, \
                            shorten_line, to_unicode
 from trac.util.presentation import separated
@@ -1199,9 +1200,9 @@ class TicketModule(Component):
         except Exception, e:
             self.log.error("Failure sending notification on creation of "
                     "ticket #%s: %s", ticket.id, exception_to_unicode(e))
-            add_warning(req, _("The ticket has been created, but an error "
-                               "occurred while sending notifications: "
-                               "%(message)s", message=to_unicode(e)))
+            add_warning(req, tag_("The ticket has been created, but an error "
+                                  "occurred while sending notifications: "
+                                  "%(message)s", message=to_fragment(e)))
 
         # Redirect the user to the newly created ticket or add attachment
         ticketref=tag.a('#', ticket.id, href=req.href.ticket(ticket.id))
@@ -1250,7 +1251,7 @@ class TicketModule(Component):
                 add_warning(req, tag_("The %(change)s has been saved, but an "
                                       "error occurred while sending "
                                       "notifications: %(message)s",
-                                      change=change, message=to_unicode(e)))
+                                      change=change, message=to_fragment(e)))
                 fragment = ''
 
         # After saving the changes, apply the side-effects.

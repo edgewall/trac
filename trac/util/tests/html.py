@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+from genshi.builder import Element, Fragment, tag
 from genshi.input import HTML
 
-from trac.util.html import TracHTMLSanitizer
+from trac.core import TracError
+from trac.util.html import TracHTMLSanitizer, to_fragment
+from trac.util.translation import gettext, tgettext
 
 
 class TracHTMLSanitizerTestCase(unittest.TestCase):
@@ -124,9 +127,82 @@ class TracHTMLSanitizerTestCase(unittest.TestCase):
         self.assertEqual('<div>XSS</div>', unicode(html | TracHTMLSanitizer()))
 
 
+class ToFragmentTestCase(unittest.TestCase):
+
+    def test_unicode(self):
+        rv = to_fragment('blah')
+        self.assertEqual(Fragment, type(rv))
+        self.assertEqual('blah', unicode(rv))
+
+    def test_fragment(self):
+        rv = to_fragment(tag('blah'))
+        self.assertEqual(Fragment, type(rv))
+        self.assertEqual('blah', unicode(rv))
+
+    def test_element(self):
+        rv = to_fragment(tag.p('blah'))
+        self.assertEqual(Element, type(rv))
+        self.assertEqual('<p>blah</p>', unicode(rv))
+
+    def test_tracerror(self):
+        rv = to_fragment(TracError('blah'))
+        self.assertEqual(Fragment, type(rv))
+        self.assertEqual('blah', unicode(rv))
+
+    def test_tracerror_with_fragment(self):
+        message = tag('Powered by ',
+                      tag.a('Trac', href='http://trac.edgewall.org/'))
+        rv = to_fragment(TracError(message))
+        self.assertEqual(Fragment, type(rv))
+        self.assertEqual('Powered by <a href="http://trac.edgewall.org/">Trac'
+                         '</a>', unicode(rv))
+
+    def test_tracerror_with_element(self):
+        message = tag.p('Powered by ',
+                        tag.a('Trac', href='http://trac.edgewall.org/'))
+        rv = to_fragment(TracError(message))
+        self.assertEqual(Element, type(rv))
+        self.assertEqual('<p>Powered by <a href="http://trac.edgewall.org/">'
+                         'Trac</a></p>', unicode(rv))
+
+    def test_error(self):
+        rv = to_fragment(ValueError('invalid literal for int(): blah'))
+        self.assertEqual(Fragment, type(rv))
+        self.assertEqual('invalid literal for int(): blah', unicode(rv))
+
+    def test_gettext(self):
+        rv = to_fragment(gettext('%(size)s bytes', size=0))
+        self.assertEqual(Fragment, type(rv))
+        self.assertEqual('0 bytes', unicode(rv))
+
+    def test_tgettext(self):
+        rv = to_fragment(tgettext('Back to %(parent)s',
+                                  parent=tag.a('WikiStart',
+                                               href='http://localhost/')))
+        self.assertEqual(Fragment, type(rv))
+        self.assertEqual('Back to <a href="http://localhost/">WikiStart</a>',
+                         unicode(rv))
+
+    def test_tracerror_with_gettext(self):
+        e = TracError(gettext('%(size)s bytes', size=0))
+        rv = to_fragment(e)
+        self.assertEqual(Fragment, type(rv))
+        self.assertEqual('0 bytes', unicode(rv))
+
+    def test_tracerror_with_tgettext(self):
+        e = TracError(tgettext('Back to %(parent)s',
+                               parent=tag.a('WikiStart',
+                                            href='http://localhost/')))
+        rv = to_fragment(e)
+        self.assertEqual(Fragment, type(rv))
+        self.assertEqual('Back to <a href="http://localhost/">WikiStart</a>',
+                         unicode(rv))
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TracHTMLSanitizerTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(ToFragmentTestCase, 'test'))
     return suite
 
 if __name__ == '__main__':

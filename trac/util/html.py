@@ -15,12 +15,19 @@ import re
 
 from genshi import Markup, HTML, escape, unescape
 from genshi.core import stripentities, striptags, START, END
-from genshi.builder import Element, ElementFactory, Fragment
+from genshi.builder import Element, ElementFactory, Fragment, tag
 from genshi.filters.html import HTMLSanitizer
 from genshi.input import ParseError
+try:
+    from babel.support import LazyProxy
+except ImportError:
+    LazyProxy = None
 
-__all__ = ['escape', 'unescape', 'html', 'plaintext', 'find_element',
-           'TracHTMLSanitizer']
+from trac.core import TracError
+from trac.util.text import to_unicode
+
+__all__ = ['TracHTMLSanitizer', 'escape', 'find_element', 'html', 'plaintext',
+           'to_fragment', 'unescape']
 
 
 class TracHTMLSanitizer(HTMLSanitizer):
@@ -256,6 +263,18 @@ def expand_markup(stream, ctxt=None):
                 yield event
         else:
             yield event
+
+
+def to_fragment(input):
+    """Convert input to a `Fragment` object."""
+
+    if isinstance(input, TracError):
+        input = input.message
+    if LazyProxy and isinstance(input, LazyProxy):
+        input = input.value
+    if isinstance(input, Fragment):
+        return input
+    return tag(to_unicode(input))
 
 
 html = TransposingElementFactory(str.lower)
