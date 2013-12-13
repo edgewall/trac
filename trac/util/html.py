@@ -351,6 +351,3 @@ def to_fragment(input):
     if isinstance(input, Fragment):
         return input
     return tag(to_unicode(input))
-
-
-html = TransposingElementFactory(str.lower)
