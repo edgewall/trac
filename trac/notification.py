@@ -25,8 +25,9 @@ from trac import __version__
 from trac.config import BoolOption, ExtensionOption, IntOption, Option
 from trac.core import *
 from trac.util.compat import close_fds
+from trac.util.html import to_fragment
 from trac.util.text import CRLF, fix_eol
-from trac.util.translation import _, deactivate, reactivate
+from trac.util.translation import _, deactivate, reactivate, tag_
 
 MAXHEADERLEN = 76
 EMAIL_LOOKALIKE_PATTERN = (
@@ -333,13 +334,15 @@ class NotifyEmail(Notify):
         self.from_email = from_email or self.replyto_email
         self.from_name = from_name
         if not self.from_email and not self.replyto_email:
-            raise TracError(tag(
-                    tag.p(_('Unable to send email due to identity crisis.')),
-                    tag.p(_('Neither %(from_)s nor %(reply_to)s are specified '
-                            'in the configuration.',
-                            from_=tag.b('notification.from'),
-                            reply_to=tag.b('notification.reply_to')))),
-                _('SMTP Notification Error'))
+            message = tag(
+                tag.p(_('Unable to send email due to identity crisis.')),
+                # convert explicitly to `Fragment` to avoid breaking message
+                # when passing `LazyProxy` object to `Fragment`
+                tag.p(to_fragment(tag_(
+                    "Neither %(from_)s nor %(reply_to)s are specified in the "
+                    "configuration.", from_=tag.b('[notification] smtp_from'),
+                    reply_to=tag.b('[notification] smtp_replyto')))))
+            raise TracError(message, _('SMTP Notification Error'))
 
         Notify.notify(self, resid)
 
