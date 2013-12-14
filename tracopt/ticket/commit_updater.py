@@ -182,10 +182,11 @@ class CommitTicketUpdater(Component):
 
     def _parse_message(self, message):
         """Parse the commit message and return the ticket references."""
-        cmd_groups = self.command_re.findall(message)
+        cmd_groups = self.command_re.finditer(message)
         functions = self._get_functions()
         tickets = {}
-        for cmd, tkts in cmd_groups:
+        for m in cmd_groups:
+            cmd, tkts = m.group('action', 'ticket')
             func = functions.get(cmd.lower())
             if not func and self.commands_refs.strip() == '<ALL>':
                 func = self.cmd_refs
