@@ -35,6 +35,7 @@ class Request(object):
         for k, v in kwargs.items():
             setattr(self, k, v)
 
+
 class ChromeTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -324,23 +325,22 @@ class ChromeTestCase2(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(path=tempfile.mkdtemp())
+        self.chrome = Chrome(self.env)
 
     def tearDown(self):
         shutil.rmtree(self.env.path)
 
     def test_malicious_filename_raises(self):
         req = Request(path_info='/chrome/site/../conf/trac.ini')
-        chrome = Chrome(self.env)
-        self.assertTrue(chrome.match_request(req))
-        self.assertRaises(TracError, chrome.process_request, req)
+        self.assertTrue(self.chrome.match_request(req))
+        self.assertRaises(TracError, self.chrome.process_request, req)
 
     def test_empty_shared_htdocs_dir_raises_file_not_found(self):
         req = Request(path_info='/chrome/shared/trac_logo.png')
-        chrome = Chrome(self.env)
-        self.assertEqual('', chrome.shared_htdocs_dir)
-        self.assertTrue(chrome.match_request(req))
+        self.assertEqual('', self.chrome.shared_htdocs_dir)
+        self.assertTrue(self.chrome.match_request(req))
         from trac.web.api import HTTPNotFound
-        self.assertRaises(HTTPNotFound, chrome.process_request, req)
+        self.assertRaises(HTTPNotFound, self.chrome.process_request, req)
 
     def test_shared_htdocs_dir_file_is_found(self):
         from trac.web.api import RequestDone
@@ -352,9 +352,8 @@ class ChromeTestCase2(unittest.TestCase):
         os.makedirs(shared_htdocs_dir)
         create_file(os.path.join(shared_htdocs_dir, 'trac_logo.png'))
         self.env.config.set('inherit', 'htdocs_dir', shared_htdocs_dir)
-        chrome = Chrome(self.env)
-        self.assertTrue(chrome.match_request(req))
-        self.assertRaises(RequestDone, chrome.process_request, req)
+        self.assertTrue(self.chrome.match_request(req))
+        self.assertRaises(RequestDone, self.chrome.process_request, req)
 
 
 def suite():
