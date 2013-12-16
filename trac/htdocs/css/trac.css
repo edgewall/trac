@@ -82,6 +82,8 @@ span:target {
 
 /* Forms */
 input, textarea, select { margin: 2px }
+/* Avoid to inherit white-space of its parent element for IE 11, #11376 */
+textarea { white-space: pre-wrap }
 input, select { vertical-align: middle }
 input[type=button], input[type=submit], input[type=reset], button {
  *overflow: visible; /* Workaround too much margin on button in IE7 */
