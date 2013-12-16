@@ -722,6 +722,8 @@ nolink          http://noweb
     w.text = '--'
     w.save('joe', 'other third level of hierarchy', '::1', now)
 
+    tc.env.db_transaction("INSERT INTO ticket (id) VALUES ('123')")
+
 
 def wiki_teardown(tc):
     tc.env.reset_db()

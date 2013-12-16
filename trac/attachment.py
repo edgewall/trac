@@ -304,6 +304,12 @@ class Attachment(object):
             t = to_datetime(t, utc)
         self.date = t
 
+        parent_resource = self.resource.parent
+        if not resource_exists(self.env, parent_resource):
+            raise ResourceNotFound(
+                _("%(parent)s doesn't exist, can't create attachment",
+                  parent=get_resource_name(self.env, parent_resource)))
+
         # Make sure the path to the attachment is inside the environment
         # attachments directory
         attachments_dir = os.path.join(os.path.normpath(self.env.path),
@@ -492,6 +498,10 @@ class AttachmentModule(Component):
                 parent_id, filename = path[:last_slash], path[last_slash + 1:]
 
         parent = parent_realm(id=parent_id)
+        if not resource_exists(self.env, parent):
+            raise ResourceNotFound(
+                _("Parent resource %(parent)s doesn't exist",
+                  parent=get_resource_name(self.env, parent)))
 
         # Link the attachment page to parent resource
         parent_name = get_resource_name(self.env, parent)
@@ -683,10 +693,6 @@ class AttachmentModule(Component):
     def _do_save(self, req, attachment):
         req.perm(attachment.resource).require('ATTACHMENT_CREATE')
         parent_resource = attachment.resource.parent
-        if not resource_exists(self.env, parent_resource):
-            raise ResourceNotFound(
-                _("%(parent)s doesn't exist, can't create attachment",
-                  parent=get_resource_name(self.env, parent_resource)))
 
         if 'cancel' in req.args:
             req.redirect(get_resource_url(self.env, parent_resource, req.href))

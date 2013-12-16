@@ -87,6 +87,8 @@ wiki upgrade         Upgrade default wiki pages to current version
 Name  Size  Author  Date  Description
 -------------------------------------
 
+===== test_attachment_add_nonexistent_resource =====
+ResourceNotFound: NonExistentPage doesn't exist, can't create attachment
 ===== test_config_get =====
 Test project
 ===== test_config_set =====

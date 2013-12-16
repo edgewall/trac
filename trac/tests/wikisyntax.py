@@ -129,9 +129,12 @@ def attachment_setup(tc):
     import trac.ticket.api
     import trac.wiki.api
     tc.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
-    attachment = Attachment(tc.env, 'wiki', 'WikiStart')
-    attachment.insert('file.txt', tempfile.TemporaryFile(), 0)
+    tc.env.db_transaction("INSERT INTO ticket (id) VALUES ('123')")
+    tc.env.db_transaction("INSERT INTO wiki (name) VALUES ('WikiStart')")
+    tc.env.db_transaction("INSERT INTO wiki (name) VALUES ('SomePage/SubPage')")
     attachment = Attachment(tc.env, 'ticket', 123)
+    attachment.insert('file.txt', tempfile.TemporaryFile(), 0)
+    attachment = Attachment(tc.env, 'wiki', 'WikiStart')
     attachment.insert('file.txt', tempfile.TemporaryFile(), 0)
     attachment = Attachment(tc.env, 'wiki', 'SomePage/SubPage')
     attachment.insert('foo.txt', tempfile.TemporaryFile(), 0)

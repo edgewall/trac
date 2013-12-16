@@ -62,6 +62,9 @@ class AttachmentTestCase(unittest.TestCase):
         self.env.config.set('attachment', 'max_size', 512)
 
         self.perm = PermissionCache(self.env)
+        self.env.db_transaction("INSERT INTO wiki (name) VALUES ('WikiStart')")
+        self.env.db_transaction("INSERT INTO wiki (name) VALUES ('SomePage')")
+        self.env.db_transaction("INSERT INTO ticket (id) VALUES ('42')")
 
     def tearDown(self):
         shutil.rmtree(self.env.path)

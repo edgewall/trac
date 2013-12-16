@@ -17,6 +17,7 @@ import difflib
 import os
 import re
 import sys
+import tempfile
 import unittest
 from StringIO import StringIO
 
@@ -243,6 +244,16 @@ class TracadminTestCase(unittest.TestCase):
         test_name = sys._getframe().f_code.co_name
         rv, output = self._execute('attachment list wiki:WikiStart')
         self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def test_attachment_add_nonexistent_resource(self):
+        """Tests the 'attachment add' command in trac-admin, on a non-existent
+        resource."""
+        test_name = sys._getframe().f_code.co_name
+        file = tempfile.NamedTemporaryFile()
+        rv, output = self._execute('attachment add wiki:NonExistentPage %s'
+                                   % file.name)
+        self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
     # Config tests

@@ -16,6 +16,20 @@ import os
 from trac.tests.functional import *
 
 
+class TestAttachmentNonexistentParent(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """TracError should be raised when navigating to the attachment
+        page for a nonexistent resource."""
+        self._tester.go_to_wiki('NonexistentPage')
+        tc.find("The page NonexistentPage does not exist. "
+                "You can create it here.")
+        tc.find(r"\bCreate this page\b")
+
+        tc.go(self._tester.url + '/attachment/wiki/NonexistentPage')
+        tc.find('<h1>Trac Error</h1>\s+<p class="message">'
+                'Parent resource NonexistentPage doesn\'t exist</p>')
+
+
 class RegressionTestRev6017(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of the plugin reload fix in r6017"""
@@ -239,6 +253,7 @@ def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
         suite = trac.tests.functional.functionalSuite()
+    suite.addTest(TestAttachmentNonexistentParent())
     suite.addTest(RegressionTestRev6017())
     suite.addTest(RegressionTestTicket3833a())
     suite.addTest(RegressionTestTicket3833b())
