@@ -380,13 +380,15 @@
 
     // Add a checkbox at the top of the column
     // to select every ticket in the group.
-    $("table.listing tr th.id").each(function() {
-      $(this).before(
-        $('<th class="batchmod_selector sel">').append(
-          $('<input type="checkbox" name="batchmod_toggleGroup" />').attr({
-            title: _("Toggle selection of all tickets shown in this group")
-          })));
-    });
+    if ($("table.listing tr td.id").length) {
+        $("table.listing tr th.id").each(function() {
+          $(this).before(
+            $('<th class="batchmod_selector sel">').append(
+              $('<input type="checkbox" name="batchmod_toggleGroup" />').attr({
+                title: _("Toggle selection of all tickets shown in this group")
+              })));
+        });
+    }
 
     // Add the click behavior for the group toggle.
     $("input[name='batchmod_toggleGroup']").click(function() {
