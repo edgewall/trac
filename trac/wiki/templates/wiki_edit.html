@@ -39,9 +39,6 @@
         $("#sidebyside").change(function() {
           $("#edit input[type=submit][name=preview]").click();
         });
-        <py:if test="not sidebyside and (action == 'preview' or diff)">
-          $("#info").scrollToTop();
-        </py:if>
         <py:if test="sidebyside">/*<![CDATA[*/
           function editorHeight() {
             return $("#text").closest("fieldset").innerHeight();
@@ -140,7 +137,7 @@
             again.</p>
         </div>
         <py:when test="'preview'">
-          <table id="info" summary="Revision info">
+          <table id="info" summary="Revision info" class="${'trac-scroll' if not sidebyside else None}">
             <tbody>
               <tr><th scope="col" i18n:msg="version, author">
                 Change information for future version ${page.version+1} (modified by $author):

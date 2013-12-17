@@ -99,9 +99,6 @@
           comment.toggle(comment.children().length != 0);
         }, "#changelog .trac-loading");
         /*]]>*/
-        <py:if test="preview_mode">
-        $("#trac-add-comment").scrollToTop();
-        </py:if>
       </py:when>
       <py:otherwise>
         $("#propertyform").autoSubmit({preview: '1'}, function(data, reply) {
@@ -181,7 +178,8 @@
             action="${href.ticket(ticket.id) + '#trac-add-comment' if ticket.exists
                       else href.newticket() + '#ticket'}">
         <!--! Add comment -->
-        <div py:if="ticket.exists and can_append" id="trac-add-comment" class="field">
+        <div py:if="ticket.exists and can_append" id="trac-add-comment"
+             class="${classes('field', 'trac-scroll' if preview_mode else None)}">
           <h3 class="foldable" id="edit">Add Comment</h3>
           <div>
             <div id="trac-edit-warning" class="warning system-message"
@@ -219,7 +217,7 @@ ${comment}</textarea>
                   <th><label for="field-summary">Summary:</label></th>
                   <td class="fullrow" colspan="3">
                     <input type="text" id="field-summary" name="field_summary"
-                           class="${'trac-focus' if not ticket.exists and not preview_mode else None}"
+                           class="${'trac-autofocus' if not ticket.exists and not preview_mode else None}"
                            value="$ticket.summary" size="70" />
                   </td>
                 </tr>
