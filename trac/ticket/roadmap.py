@@ -970,6 +970,8 @@ class MilestoneModule(Component):
                                  query + fragment)
 
     def _render_link(self, context, name, label, extra=''):
+        if not (name or extra):
+            return tag()
         try:
             milestone = Milestone(self.env, name)
         except ResourceNotFound:

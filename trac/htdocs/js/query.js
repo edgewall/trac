@@ -210,8 +210,8 @@
         // Add the selector or text input for the actual filter value
         td = $("<td>").addClass("filter");
         if (property.type == "select") {
-          focusElement = createSelect(propertyName, property.options, true,
-                                      property.optgroups);
+          focusElement = createSelect(propertyName, property.options,
+                                      property.optional, property.optgroups);
         } else if ((property.type == "text") || (property.type == "id")
                    || (property.type == "textarea")) {
           focusElement = createText(propertyName, 42);
@@ -295,8 +295,8 @@
       var focusElement = null;
       switch (property.type) {
         case 'select':
-          focusElement = createSelect(inputName, property.options, true,
-                                      property.optgroups)
+          focusElement = createSelect(inputName, property.options,
+                                      property.optional, property.optgroups)
           td.append(focusElement);
           break;
         case 'radio':

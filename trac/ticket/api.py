@@ -20,7 +20,9 @@ import re
 from genshi.builder import tag
 
 from trac.cache import cached
-from trac.config import *
+from trac.config import (
+    BoolOption, ConfigSection, ListOption, Option, OrderedExtensionsOption
+)
 from trac.core import *
 from trac.perm import IPermissionRequestor, PermissionCache, PermissionSystem
 from trac.resource import IResourceManager
@@ -243,6 +245,11 @@ class TicketSystem(Component):
         """Default resolution for resolving (closing) tickets
         (''since 0.11'').""")
 
+    optional_fields = ListOption('ticket', 'optional_fields',
+                                 'milestone, version', doc=
+         """Comma-separated list of `select` fields that can have
+         an empty value. //(since 1.1.2)//.""")
+
     def __init__(self):
         self.log.debug('action controllers for ticket workflow: %r' %
                 [c.__class__.__name__ for c in self.action_controllers])
@@ -341,7 +348,7 @@ class TicketSystem(Component):
             if name in ('status', 'resolution'):
                 field['type'] = 'radio'
                 field['optional'] = True
-            elif name in ('milestone', 'version'):
+            elif name in self.optional_fields:
                 field['optional'] = True
             fields.append(field)
 
@@ -398,9 +405,11 @@ class TicketSystem(Component):
             }
             if field['type'] == 'select' or field['type'] == 'radio':
                 field['options'] = config.getlist(name + '.options', sep='|')
-                if '' in field['options']:
+                if '' in field['options'] or \
+                        field['name'] in self.optional_fields:
                     field['optional'] = True
-                    field['options'].remove('')
+                    if '' in field['options']:
+                        field['options'].remove('')
             elif field['type'] == 'text':
                 field['format'] = config.get(name + '.format', 'plain')
             elif field['type'] == 'textarea':
@@ -437,7 +446,7 @@ class TicketSystem(Component):
             possible_owners.sort()
             possible_owners.insert(0, '< default >')
             field['options'] = possible_owners
-            field['optional'] = True
+            field['optional'] = 'owner' in self.optional_fields
 
     # IPermissionRequestor methods
 

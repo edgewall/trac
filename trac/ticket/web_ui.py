@@ -1453,7 +1453,8 @@ class TicketModule(Component):
         args[name] = value
         if name == 'resolution':
             args['status'] = 'closed'
-        return tag.a(text or value, href=req.href.query(args))
+        if text or value:
+            return tag.a(text or value, href=req.href.query(args))
 
     def _query_link_words(self, context, name, value):
         """Splits a list of words and makes a query link to each separately"""

@@ -146,6 +146,13 @@ class ComponentAdminPanel(TicketAdminPanel):
                         _save_config(self.config, req, self.log)
                         req.redirect(req.href.admin(cat, page))
 
+                # Clear default component
+                elif req.args.get('clear'):
+                    self.log.info("Clearing default component")
+                    self.config.set('ticket', 'default_component', '')
+                    _save_config(self.config, req, self.log)
+                    req.redirect(req.href.admin(cat, page))
+
             data = {'view': 'list',
                     'components': list(model.Component.select(self.env)),
                     'default': default}
@@ -734,6 +741,13 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
 
                     if changed:
                         add_notice(req, _("Your changes have been saved."))
+                    req.redirect(req.href.admin(cat, page))
+
+                # Clear default
+                elif req.args.get('clear'):
+                    self.log.info("Clearing default %s" % self._type)
+                    self.config.set('ticket', 'default_%s'  % self._type, '')
+                    _save_config(self.config, req, self.log)
                     req.redirect(req.href.admin(cat, page))
 
             data.update(dict(enums=list(self._enum_cls.select(self.env)),
