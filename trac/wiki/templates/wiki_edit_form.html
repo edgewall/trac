@@ -26,7 +26,8 @@
         </label>
         <input type="checkbox" name="sidebyside" id="sidebyside" checked="$sidebyside" />
       </div>
-      <p><textarea id="text" class="wikitext${' trac-resizable' if not sidebyside else None} trac-focus"
+      <p><textarea id="text" class="${classes('wikitext', 'trac-autofocus',
+                                              'trac-resizable' if not sidebyside else None)}"
                    name="text" cols="80" rows="$edit_rows">
 $page.text</textarea>
       </p>

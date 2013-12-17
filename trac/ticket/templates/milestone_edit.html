@@ -52,7 +52,7 @@
           <input type="hidden" name="id" value="${milestone.name}" />
           <input type="hidden" name="action" value="edit" />
           <label>Name of the milestone:<br />
-            <input type="text" id="name" name="name" class="trac-focus" size="32"
+            <input type="text" id="name" name="name" class="trac-autofocus" size="32"
                    value="${milestone.name or req.args.get('name')}" />
           </label>
         </div>
