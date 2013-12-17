@@ -119,11 +119,16 @@ class FunctionalTester(object):
         """Go to the Trac front page"""
         self.go_to_url(self.url)
 
-    def go_to_ticket(self, ticketid):
-        """Surf to the page for the given ticket ID.  Assumes ticket
-        exists."""
-        ticket_url = self.url + "/ticket/%s" % ticketid
+    def go_to_ticket(self, ticketid=None):
+        """Surf to the page for the given ticket ID, or to the NewTicket page
+        if `ticketid` is not specified or is `None`. If `ticketid` is
+        specified, it assumes the ticket exists."""
+        if ticketid is not None:
+            ticket_url = self.url + '/ticket/%s' % ticketid
+        else:
+            ticket_url = self.url + '/newticket'
         self.go_to_url(ticket_url)
+        tc.url(ticket_url + '$')
 
     def go_to_wiki(self, name, version=None):
         """Surf to the wiki page. By default this will be the latest version
