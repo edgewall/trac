@@ -46,8 +46,8 @@
             <dt class="${classes(event.kind, highlight=highlight, unread=unread)}">
               <a href="${event.render('url', context)}" py:choose="">
                 <py:when test="event.author"><i18n:msg params="time, title, author">
-                  <span class="time">${format_time(event.date, 'short')}</span> ${event.render('title', context)}
-                  by <span class="author">${format_author(event.author)}</span>
+                  <span class="time">${format_time(event.date, 'short')}</span> ${event.render('title', context)
+                    } by ${authorinfo(event.author)}
                 </i18n:msg></py:when>
                 <py:otherwise>
                   <span class="time">${format_time(event.date, 'short')}</span> ${event.render('title', context)}

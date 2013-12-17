@@ -52,10 +52,12 @@
             <py:for each="result in results">
               <dt><a href="${result.href}" class="searchable">${result.title}</a></dt>
               <dd class="searchable">${result.excerpt}</dd>
-              <dd>
-                <py:if test="result.author"><span class="author" i18n:msg="author">By ${format_author(result.author)}</span> &mdash;</py:if>
-                <span class="date">${result.date}</span>
-              </dd>
+              <py:choose>
+                <dd py:when="result.author" i18n:msg="author,date">
+                  By ${authorinfo(result.author)} &mdash; <span class="date">${result.date}</span>
+                </dd>
+                <dd py:otherwise=""><span class="date">${result.date}</span></dd>
+              </py:choose>
             </py:for>
           </dl>
         </div>

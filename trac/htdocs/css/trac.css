@@ -614,6 +614,7 @@ div.trac-grip {
  float: right;
  margin: .4em 0;
 }
+#attachments span.trac-author { font-style: italic; }
 
 /* Styles for tabular listings such as those used for displaying directory
    contents and report results. */

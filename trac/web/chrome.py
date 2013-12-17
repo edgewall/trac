@@ -1081,9 +1081,9 @@ class Chrome(Component):
         return sep.join(all_cc)
 
     def authorinfo(self, req, author, email_map=None):
-        return self.format_author(req,
-                                  email_map and '@' not in author and
-                                  email_map.get(author) or author)
+        if email_map and '@' not in author and email_map.get(author):
+            author = email_map.get(author)
+        return tag.span(self.format_author(req, author), class_='trac-author')
 
     def get_email_map(self):
         """Get the email addresses of all known users."""
@@ -1097,12 +1097,14 @@ class Chrome(Component):
     _long_author_re = re.compile(r'.*<([^@]+)@[^@]+>\s*|([^@]+)@[^@]+')
 
     def authorinfo_short(self, author):
+        shortened = author
         if not author or author == 'anonymous':
-            return _("anonymous")
-        match = self._long_author_re.match(author)
-        if match:
-            return match.group(1) or match.group(2)
-        return author
+            shortened = _("anonymous")
+        else:
+            match = self._long_author_re.match(author)
+            if match:
+                shortened = match.group(1) or match.group(2)
+        return tag.span(shortened, class_='trac-author')
 
     def format_author(self, req, author):
         if not author or author == 'anonymous':
