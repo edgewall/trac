@@ -753,7 +753,7 @@ Resolution:  fixed                   |   Keywords:"""
       Type:  defect                              |     Status:  new
   Priority:  major                               |  Milestone:  milestone1
  Component:  Lorem ipsum dolor sit amet,         |    Version:  2.0
-  consectetur adipisicing elit, sed do eiusmod   |   Keywords:
+  consectetur adipisicing elit, sed do eiusmod   |
   tempor incididunt ut labore et dolore magna    |
   aliqua. Ut enim ad minim veniam, quis nostrud  |
   exercitation ullamco laboris nisi ut aliquip   |
@@ -763,7 +763,7 @@ Resolution:  fixed                   |   Keywords:"""
   Excepteur sint occaecat cupidatat non          |
   proident, sunt in culpa qui officia deserunt   |
   mollit anim id est laborum.                    |
-Resolution:  fixed                               |"""
+Resolution:  fixed                               |   Keywords:"""
         self._validate_props_format(formatted, ticket)
 
     def test_props_format_wrap_leftside_unicode(self):
@@ -791,10 +791,10 @@ Resolution:  fixed                               |"""
       Type:  defect                              |     Status:  new
   Priority:  major                               |  Milestone:  milestone1
  Component:  Trac は BSD ライセンスのもとで配布  |    Version:  2.0
-  されています。[1:]このライセンスの全文は、配   |   Keywords:
+  されています。[1:]このライセンスの全文は、配   |
   布ファイルに含まれている [3:COPYING] ファイル  |
   と同じものが[2:オンライン]で参照できます。     |
-Resolution:  fixed                               |"""
+Resolution:  fixed                               |   Keywords:"""
         self._validate_props_format(formatted, ticket)
 
     def test_props_format_wrap_rightside(self):
@@ -819,7 +819,7 @@ Resolution:  fixed                               |"""
                               u'culpa qui officia deserunt mollit anim id ' \
                               u'est laborum.'
         ticket['component'] = u'component1'
-        ticket['version'] = u'2.0'
+        ticket['version'] = u'2.0 Standard and International Edition'
         ticket['resolution'] = u'fixed'
         ticket['keywords'] = u''
         ticket.insert()
@@ -827,8 +827,8 @@ Resolution:  fixed                               |"""
   Reporter:  anonymous   |      Owner:  somebody
       Type:  defect      |     Status:  new
   Priority:  major       |  Milestone:  Lorem ipsum dolor sit amet,
- Component:  component1  |  consectetur adipisicing elit, sed do eiusmod
-Resolution:  fixed       |  tempor incididunt ut labore et dolore magna
+                         |  consectetur adipisicing elit, sed do eiusmod
+                         |  tempor incididunt ut labore et dolore magna
                          |  aliqua. Ut enim ad minim veniam, quis nostrud
                          |  exercitation ullamco laboris nisi ut aliquip ex
                          |  ea commodo consequat. Duis aute irure dolor in
@@ -837,8 +837,9 @@ Resolution:  fixed       |  tempor incididunt ut labore et dolore magna
                          |  occaecat cupidatat non proident, sunt in culpa
                          |  qui officia deserunt mollit anim id est
                          |  laborum.
-                         |    Version:  2.0
-                         |   Keywords:"""
+ Component:  component1  |    Version:  2.0 Standard and International
+                         |  Edition
+Resolution:  fixed       |   Keywords:"""
         self._validate_props_format(formatted, ticket)
 
     def test_props_format_wrap_rightside_unicode(self):
@@ -863,10 +864,10 @@ Resolution:  fixed       |  tempor incididunt ut labore et dolore magna
   Reporter:  anonymous   |      Owner:  somebody
       Type:  defect      |     Status:  new
   Priority:  major       |  Milestone:  Trac 在经过修改的BSD协议下发布。
- Component:  component1  |  [1:]协议的完整文本可以[2:在线查看]也可在发布版
-Resolution:  fixed       |  的 [3:COPYING] 文件中找到。
-                         |    Version:  2.0
-                         |   Keywords:"""
+                         |  [1:]协议的完整文本可以[2:在线查看]也可在发布版
+                         |  的 [3:COPYING] 文件中找到。
+ Component:  component1  |    Version:  2.0
+Resolution:  fixed       |   Keywords:"""
         self._validate_props_format(formatted, ticket)
 
     def test_props_format_wrap_bothsides(self):
@@ -890,31 +891,33 @@ Resolution:  fixed       |  的 [3:COPYING] 文件中找到。
                               u'occaecat cupidatat non proident, sunt in ' \
                               u'culpa qui officia deserunt mollit anim id ' \
                               u'est laborum.'
-        ticket['component'] = ticket['milestone']
+        ticket['component'] = (u'Lorem ipsum dolor sit amet, consectetur '
+                               u'adipisicing elit, sed do eiusmod tempor '
+                               u'incididunt ut labore et dolore magna aliqua.')
         ticket['version'] = u'2.0'
         ticket['resolution'] = u'fixed'
-        ticket['keywords'] = u''
+        ticket['keywords'] = u'Ut enim ad minim veniam, ....'
         ticket.insert()
         formatted = """\
   Reporter:  anonymous               |      Owner:  somebody
       Type:  defect                  |     Status:  new
   Priority:  major                   |  Milestone:  Lorem ipsum dolor sit
- Component:  Lorem ipsum dolor sit   |  amet, consectetur adipisicing elit,
-  amet, consectetur adipisicing      |  sed do eiusmod tempor incididunt ut
-  elit, sed do eiusmod tempor        |  labore et dolore magna aliqua. Ut
-  incididunt ut labore et dolore     |  enim ad minim veniam, quis nostrud
-  magna aliqua. Ut enim ad minim     |  exercitation ullamco laboris nisi
-  veniam, quis nostrud exercitation  |  ut aliquip ex ea commodo consequat.
-  ullamco laboris nisi ut aliquip    |  Duis aute irure dolor in
-  ex ea commodo consequat. Duis      |  reprehenderit in voluptate velit
-  aute irure dolor in reprehenderit  |  esse cillum dolore eu fugiat nulla
-  in voluptate velit esse cillum     |  pariatur. Excepteur sint occaecat
-  dolore eu fugiat nulla pariatur.   |  cupidatat non proident, sunt in
-  Excepteur sint occaecat cupidatat  |  culpa qui officia deserunt mollit
-  non proident, sunt in culpa qui    |  anim id est laborum.
-  officia deserunt mollit anim id    |    Version:  2.0
-  est laborum.                       |   Keywords:
-Resolution:  fixed                   |"""
+                                     |  amet, consectetur adipisicing elit,
+                                     |  sed do eiusmod tempor incididunt ut
+                                     |  labore et dolore magna aliqua. Ut
+                                     |  enim ad minim veniam, quis nostrud
+                                     |  exercitation ullamco laboris nisi
+                                     |  ut aliquip ex ea commodo consequat.
+                                     |  Duis aute irure dolor in
+                                     |  reprehenderit in voluptate velit
+                                     |  esse cillum dolore eu fugiat nulla
+ Component:  Lorem ipsum dolor sit   |  pariatur. Excepteur sint occaecat
+  amet, consectetur adipisicing      |  cupidatat non proident, sunt in
+  elit, sed do eiusmod tempor        |  culpa qui officia deserunt mollit
+  incididunt ut labore et dolore     |  anim id est laborum.
+  magna aliqua.                      |    Version:  2.0
+Resolution:  fixed                   |   Keywords:  Ut enim ad minim
+                                     |  veniam, ...."""
         self._validate_props_format(formatted, ticket)
 
     def test_props_format_wrap_bothsides_unicode(self):
@@ -937,7 +940,7 @@ Resolution:  fixed                   |"""
                               u'に含まれている[3:CОPYING]ファイ' \
                               u'ルと同じものが[2:オンライン]で' \
                               u'参照できます。'
-        ticket['version'] = u'2.0'
+        ticket['version'] = u'2.0 International Edition'
         ticket['resolution'] = u'fixed'
         ticket['keywords'] = u''
         ticket.insert()
@@ -948,10 +951,67 @@ Resolution:  fixed                   |"""
  Component:  Trac は BSD ライセンス  |  议下发布。[1:]协议的完整文本可以[2:
   のもとで配布されています。[1:]こ   |  在线查看]也可在发布版的 [3:COPYING]
   のライセンスの全文は、※配布ファ   |  文件中找到。
-  イルに含まれている[3:CОPYING]フ   |    Version:  2.0
-  ァイルと同じものが[2:オンライン]   |   Keywords:
+  イルに含まれている[3:CОPYING]フ   |    Version:  2.0 International
+  ァイルと同じものが[2:オンライン]   |  Edition
   で参照できます。                   |
-Resolution:  fixed                   |"""
+Resolution:  fixed                   |   Keywords:"""
+        self._validate_props_format(formatted, ticket)
+
+    def test_props_format_wrap_ticket_10283(self):
+        self.env.config.set('notification', 'mime_encoding', 'none')
+        for name, value in (('blockedby', 'text'),
+                            ('blockedby.label', 'Blocked by'),
+                            ('blockedby.order', '6'),
+                            ('blocking', 'text'),
+                            ('blocking.label', 'Blocking'),
+                            ('blocking.order', '5'),
+                            ('deployment', 'text'),
+                            ('deployment.label', 'Deployment state'),
+                            ('deployment.order', '1'),
+                            ('nodes', 'text'),
+                            ('nodes.label', 'Related nodes'),
+                            ('nodes.order', '3'),
+                            ('privacy', 'text'),
+                            ('privacy.label', 'Privacy sensitive'),
+                            ('privacy.order', '2'),
+                            ('sensitive', 'text'),
+                            ('sensitive.label', 'Security sensitive'),
+                            ('sensitive.order', '4')):
+            self.env.config.set('ticket-custom', name, value)
+
+        ticket = Ticket(self.env)
+        ticket['summary'] = u'This is a summary'
+        ticket['reporter'] = u'anonymous'
+        ticket['owner'] = u'somebody'
+        ticket['type'] = u'defect'
+        ticket['status'] = u'closed'
+        ticket['priority'] = u'normal'
+        ticket['milestone'] = u'iter_01'
+        ticket['component'] = u'XXXXXXXXXXXXXXXXXXXXXXXXXX'
+        ticket['resolution'] = u'fixed'
+        ticket['keywords'] = u''
+        ticket['deployment'] = ''
+        ticket['privacy'] = '0'
+        ticket['nodes'] = 'XXXXXXXXXX'
+        ticket['sensitive'] = '0'
+        ticket['blocking'] = ''
+        ticket['blockedby'] = ''
+        ticket.insert()
+
+        formatted = """\
+          Reporter:  anonymous                   |             Owner:
+                                                 |  somebody
+              Type:  defect                      |            Status:
+                                                 |  closed
+          Priority:  normal                      |         Milestone:
+                                                 |  iter_01
+         Component:  XXXXXXXXXXXXXXXXXXXXXXXXXX  |        Resolution:
+                                                 |  fixed
+          Keywords:                              |  Deployment state:
+ Privacy sensitive:  0                           |     Related nodes:
+                                                 |  XXXXXXXXXX
+Security sensitive:  0                           |          Blocking:
+        Blocked by:                              |"""
         self._validate_props_format(formatted, ticket)
 
     def _validate_props_format(self, expected, ticket):
