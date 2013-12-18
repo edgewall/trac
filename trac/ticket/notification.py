@@ -308,7 +308,7 @@ class TicketNotifyEmail(NotifyEmail):
                 width_l = self.COLS - width_r - 1
         sep = width_l * '-' + '+' + width_r * '-'
         txt = sep + '\n'
-        cell_tmp = [u'', u'']
+        vals_lr = ([], [])
         big = []
         i = 0
         width_lr = [width_l, width_r]
@@ -326,15 +326,36 @@ class TicketNotifyEmail(NotifyEmail):
                 # __str__ method won't be called.
                 str_tmp = u'%s:  %s' % (f['label'], unicode(fval))
                 idx = i % 2
-                cell_tmp[idx] += wrap(str_tmp, width_lr[idx] - 2 + 2 * idx,
-                                      (width[2 * idx]
-                                       - self.get_text_width(f['label'])
-                                       + 2 * idx) * ' ',
-                                      2 * ' ', '\n', self.ambiwidth)
-                cell_tmp[idx] += '\n'
+                initial_indent = ' ' * (width[2 * idx] -
+                                        self.get_text_width(f['label']) +
+                                        2 * idx)
+                wrapped = wrap(str_tmp, width_lr[idx] - 2 + 2 * idx,
+                               initial_indent, '  ', '\n', self.ambiwidth)
+                vals_lr[idx].append(wrapped.splitlines())
                 i += 1
-        cell_l = cell_tmp[0].splitlines()
-        cell_r = cell_tmp[1].splitlines()
+        if len(vals_lr[0]) > len(vals_lr[1]):
+            vals_lr[1].append([])
+
+        cell_l = []
+        cell_r = []
+        for i in xrange(len(vals_lr[0])):
+            vals_l = vals_lr[0][i]
+            vals_r = vals_lr[1][i]
+            vals_diff = len(vals_l) - len(vals_r)
+            diff = len(cell_l) - len(cell_r)
+            if diff > 0:
+                # add padding to right side if needed
+                if vals_diff < 0:
+                    diff += vals_diff
+                cell_r.extend([''] * max(diff, 0))
+            elif diff < 0:
+                # add padding to left side if needed
+                if vals_diff > 0:
+                    diff += vals_diff
+                cell_l.extend([''] * max(-diff, 0))
+            cell_l.extend(vals_l)
+            cell_r.extend(vals_r)
+
         for i in range(max(len(cell_l), len(cell_r))):
             if i >= len(cell_l):
                 cell_l.append(width_l * ' ')
