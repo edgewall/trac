@@ -1,5 +1,5 @@
 /* Changeset overview */
-#overview .files { padding-top: 1em }
+#overview .files { padding: 1px 0 }
 #overview .files ul { margin: 0; padding: 0 }
 #overview .files li { list-style-type: none }
 #overview .files li .comment { display: none }
@@ -22,7 +22,6 @@
  margin-bottom: 0;
  margin-top: 0;
 }
-#overview .files { padding: 1px 0 }
 
 .diff ul.props {
  font-size: 90%;
