@@ -141,6 +141,8 @@ class PygmentsRenderer(Component):
                 add_notice(req, _('Your preferences have been saved.'))
             req.redirect(req.href.prefs(panel or None))
 
+        for style in sorted(styles):
+            add_stylesheet(req, '/pygments/%s.css' % style, title=style.title())
         output = self._generate('html', self.EXAMPLE)
         return 'prefs_pygments.html', {
             'output': output,

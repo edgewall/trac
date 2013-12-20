@@ -131,7 +131,7 @@ def add_link(req, rel, href, title=None, mimetype=None, classname=None,
     links.setdefault(rel, []).append(link)
     linkset.add(linkid)
 
-def add_stylesheet(req, filename, mimetype='text/css', media=None):
+def add_stylesheet(req, filename, mimetype='text/css', **attrs):
     """Add a link to a style sheet to the chrome info so that it gets included
     in the generated HTML page.
 
@@ -142,7 +142,7 @@ def add_stylesheet(req, filename, mimetype='text/css', media=None):
     `/chrome/` path.
     """
     href = _chrome_resource_path(req, filename)
-    add_link(req, 'stylesheet', href, mimetype=mimetype, media=media)
+    add_link(req, 'stylesheet', href, mimetype=mimetype, **attrs)
 
 def add_script(req, filename, mimetype='text/javascript', charset='utf-8',
                ie_if=None):

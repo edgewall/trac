@@ -26,7 +26,7 @@ from trac.loader import get_plugin_info
 from trac.perm import IPermissionRequestor
 from trac.util.translation import _
 from trac.web import IRequestHandler
-from trac.web.chrome import INavigationContributor
+from trac.web.chrome import INavigationContributor, add_stylesheet
 
 
 class AboutModule(Component):
@@ -85,4 +85,5 @@ class AboutModule(Component):
             sections.sort(key=lambda s: s['name'])
             data['config'] = sections
 
+        add_stylesheet(req, 'common/css/about.css')
         return 'about.html', data, None

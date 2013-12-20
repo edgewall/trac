@@ -848,6 +848,7 @@ class MilestoneModule(Component):
             'num_tickets': num_tickets,
             'retarget_to': self.default_retarget_to
         }
+        add_stylesheet(req, 'common/css/roadmap.css')
         return 'milestone_delete.html', data, None
 
     def _render_editor(self, req, milestone):
@@ -883,6 +884,7 @@ class MilestoneModule(Component):
         chrome = Chrome(self.env)
         chrome.add_jquery_ui(req)
         chrome.add_wiki_toolbars(req)
+        add_stylesheet(req, 'common/css/roadmap.css')
         return 'milestone_edit.html', data, None
 
     def _render_view(self, req, milestone):

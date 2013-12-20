@@ -513,7 +513,8 @@ class Request(object):
         try:
             if template.endswith('.html'):
                 if env:
-                    from trac.web.chrome import Chrome
+                    from trac.web.chrome import Chrome, add_stylesheet
+                    add_stylesheet(self, 'common/css/code.css')
                     try:
                         data = Chrome(env).render_template(self, template,
                                                            data, 'text/html')
