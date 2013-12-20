@@ -1,4 +1,7 @@
 /* About page */
+#content.about a.logo { border: none; float: right; margin-left: 2em; }
+#content.about a.logo img { display: block; }
+#content.about #python-logo img { width: 140px; height: 56px; }
 #content.about p.copyright { color: #999; font-size: 90%; }
 #content.about h2 { margin-top: 2em; }
 #content.about table { margin-top: 0; width: auto; }
