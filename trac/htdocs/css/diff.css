@@ -131,6 +131,18 @@
  padding: 1px 2px;
  vertical-align: top;
 }
+.diff table.trac-diff tbody tr:hover td {
+ background: #eed;
+}
+.diff table.trac-diff tbody.mod tr:hover td,
+.diff table.trac-diff tbody.add tr:hover td,
+.diff table.trac-diff tbody.rem tr:hover td {
+ background: #ddc;
+}
+.diff table.trac-diff tbody.mod tr:hover td del,
+.diff table.trac-diff tbody.mod tr:hover td ins {
+ background: #bb9;
+}
 .diff table.trac-diff tbody.skipped td, .diff table.trac-diff thead td {
  background: #f7f7f7;
  border: 1px solid #d7d7d7;

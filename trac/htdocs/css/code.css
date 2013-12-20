@@ -66,6 +66,9 @@ table.code tbody th :link, table.code tbody th :visited {
 table.code tbody th :link:hover, table.code tbody th :visited:hover {
  color: #000;
 }
+table.code tbody tr:hover td {
+ background: #eed;
+}
 table.code td {
  font: normal 11px monospace;
  overflow: hidden;
