@@ -10,12 +10,6 @@
  overflow: hidden;
  width: .8em; height: .8em;
 }
-#overview div.add div, #overview div.cp div, #overview div.mv div {
- border: 0;
- margin: 0;
- float: right;
- width: .35em;
-}
 
 #overview .changeset { padding: 0 0 1px }
 #overview dd.changeset p {
@@ -30,12 +24,3 @@
  padding: 0 .5em 1em 2em;
 }
 .diff ul.props li { margin: 0; padding: 0 }
-
-#title dl { display: inline; font-size: 110% }
-#title dt {
- display: inline;
- font-size: 110%;
- font-weight: bold;
- margin-left: 3em;
-}
-#title dd { display: inline; margin-left: 0.4em }
