@@ -348,9 +348,19 @@ try:
     def get_negotiated_locale(preferred_locales):
         def normalize(locale_ids):
             return [id.replace('_', '-') for id in locale_ids if id]
-        return Locale.negotiate(normalize(preferred_locales),
-                                normalize(get_available_locales()), sep='-')
-        
+        available_locales = get_available_locales()
+        locale = Locale.negotiate(normalize(preferred_locales),
+                                  normalize(available_locales), sep='-')
+        if locale and str(locale) not in available_locales:
+            # The list of get_available_locales() must include locale
+            # identifier from str(locale), but zh_* don't be included after
+            # Babel 1.0. Avoid expanding zh_* to zh_Hans_CN and zh_Hant_TW
+            # to clear "script" property of Locale instance. See #11258.
+            locale._data  # load localedata before clear script property
+            locale.script = None
+            assert str(locale) in available_locales
+        return locale
+
     has_babel = True
 
 except ImportError: # fall back on 0.11 behavior, i18n functions are no-ops
