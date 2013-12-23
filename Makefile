@@ -186,7 +186,7 @@ ifdef locale
 compile: $(addprefix compile-,$(locale))
 else
 compile:
-	python setup.py compile_catalog compile_catalog_js
+	python setup.py compile_catalog compile_catalog_js generate_messages_js
 endif
 
 
