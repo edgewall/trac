@@ -232,7 +232,7 @@ compile: $(addprefix compile-,$(locale))
 else
 compile:
 	python setup.py $(foreach catalog,$(catalogs), \
-	    compile_catalog$(_catalog))
+	    compile_catalog$(_catalog)) generate_messages_js
 endif
 
 
