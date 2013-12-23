@@ -261,6 +261,24 @@ class NormalTestCase(unittest.TestCase):
         self.assertEqual(Changeset.ADD, history[1][2])
         self.assertEqual(2, len(history))
 
+    def test_sync_after_removing_branch(self):
+        self._git('checkout', '-b', 'b1', 'master')
+        self._git('checkout', 'master')
+        create_file(os.path.join(self.repos_path, 'newfile.txt'))
+        self._git('add', 'newfile.txt')
+        self._git('commit', '-m', 'added newfile.txt to master',
+                  '--date', 'Mon Dec 23 15:52:23 2013 +0900')
+
+        storage = self._storage()
+        storage.sync()
+        self.assertEqual(['b1', 'master'],
+                         sorted(b[0] for b in storage.get_branches()))
+        self._git('branch', '-D', 'b1')
+        self.assertEqual(True, storage.sync())
+        self.assertEqual(['master'],
+                         sorted(b[0] for b in storage.get_branches()))
+        self.assertEqual(False, storage.sync())
+
 
 class UnicodeNameTestCase(unittest.TestCase):
 
