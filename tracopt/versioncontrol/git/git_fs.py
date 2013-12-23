@@ -20,6 +20,7 @@ import sys
 
 from genshi.builder import tag
 
+from trac.cache import cached
 from trac.config import BoolOption, IntOption, PathOption, Option
 from trac.core import *
 from trac.util import TracError, shorten_line
@@ -250,7 +251,7 @@ class GitConnector(Component):
             def rlookup_uid(_):
                 return None
 
-        repos = GitRepository(dir, params, self.log,
+        repos = GitRepository(self.env, dir, params, self.log,
                               persistent_cache=self.persistent_cache,
                               git_bin=self.git_bin,
                               git_fs_encoding=self.git_fs_encoding,
@@ -357,7 +358,7 @@ class CsetPropertyRenderer(Component):
 class GitRepository(Repository):
     """Git repository"""
 
-    def __init__(self, path, params, log,
+    def __init__(self, env, path, params, log,
                  persistent_cache=False,
                  git_bin='git',
                  git_fs_encoding='utf-8',
@@ -367,9 +368,11 @@ class GitRepository(Repository):
                  use_committer_time=False,
                  ):
 
+        self.env = env
         self.logger = log
         self.gitrepo = path
         self.params = params
+        self.persistent_cache = persistent_cache
         self.shortrev_len = max(4, min(shortrev_len, 40))
         self.rlookup_uid = rlookup_uid
         self.use_committer_time = use_committer_time
@@ -386,12 +389,19 @@ class GitRepository(Repository):
                             "repository." % path)
 
         Repository.__init__(self, 'git:'+path, self.params, log)
+        self._rev_cache_id = str(self.id)
 
     def close(self):
         self.git = None
 
+    @cached('_rev_cache_id')
+    def _rev_cache(self):
+        if self.persistent_cache:
+            self.git.invalidate_rev_cache()
+        return self.git
+
     def get_youngest_rev(self):
-        return self.git.youngest_rev()
+        return self._rev_cache.youngest_rev()
 
     def get_oldest_rev(self):
         return self.git.oldest_rev()
@@ -418,9 +428,10 @@ class GitRepository(Repository):
         return GitNode(self, path, rev, self.log, None, historian)
 
     def get_quickjump_entries(self, rev):
-        for bname, bsha in self.git.get_branches():
+        rev_cache = self._rev_cache
+        for bname, bsha in rev_cache.get_branches():
             yield 'branches', bname, '/', bsha
-        for t in self.git.get_tags():
+        for t in rev_cache.get_tags():
             yield 'tags', t, '/', t
 
     def get_path_url(self, path, rev):
@@ -497,7 +508,9 @@ class GitRepository(Repository):
         if rev_callback:
             revs = set(self.git.all_revs())
 
-        if not self.git.sync():
+        if self.persistent_cache:
+            del self._rev_cache  # invalidate persistent cache
+        if not self._rev_cache.sync():
             return None # nothing expected to change
 
         if rev_callback:

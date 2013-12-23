@@ -436,6 +436,11 @@ class Storage(object):
 
             return need_update
 
+    def invalidate_rev_cache(self):
+        with self.__rev_cache_lock:
+            self.__rev_cache = None
+            self.logger.debug('invalidated caches for %d', id(self))
+
     def get_rev_cache(self):
         """Retrieve revision cache
 
