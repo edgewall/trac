@@ -351,9 +351,9 @@ def get_date_format_jquery_ui(locale):
 def get_time_format_jquery_ui(locale):
     """Get the time format for the jQuery UI timepicker addon."""
     if locale == 'iso8601':
-        return 'hh:mm:ssz'  # XXX timepicker doesn't support 'ISO_8601'
+        return 'HH:mm:ssz'  # XXX timepicker doesn't support 'ISO_8601'
     if babel and locale:
-        values = {'h': 'h', 'hh': 'hh', 'H': 'h', 'HH': 'hh',
+        values = {'h': 'h', 'hh': 'hh', 'H': 'H', 'HH': 'HH',
                   'm': 'm', 'mm': 'mm', 's': 's', 'ss': 'ss',
                   'a': 'TT'}
         return get_time_format('medium', locale=locale).format % values
@@ -363,7 +363,7 @@ def get_time_format_jquery_ui(locale):
     ampm = format_time(t, '%p', tzinfo=utc)
     if ampm:
         tmpl = tmpl.replace(ampm, 'TT', 1)
-    return tmpl.replace('23', 'hh', 1).replace('11', 'hh', 1) \
+    return tmpl.replace('23', 'HH', 1).replace('11', 'hh', 1) \
                .replace('59', 'mm', 1).replace('58', 'ss', 1)
 
 def get_timezone_list_jquery_ui(t=None):
