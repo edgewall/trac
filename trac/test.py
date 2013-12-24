@@ -242,7 +242,14 @@ class EnvironmentStub(Environment):
                              defaults.
         :param enable: A list of component classes or name globs to
                        activate in the stub environment.
+        :param disable: A list of component classes or name globs to
+                        deactivate in the stub environment.
         """
+        if enable is not None and not isinstance(enable, (list, tuple)):
+            raise TypeError('Keyword argument "enable" must be a list')
+        if disable is not None and not isinstance(disable, (list, tuple)):
+            raise TypeError('Keyword argument "disable" must be a list')
+
         ComponentManager.__init__(self)
         Component.__init__(self)
 
