@@ -11,15 +11,15 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import os.path
+import tempfile
+import unittest
+
 from trac.core import Component, ComponentMeta, TracError, implements
 from trac.test import EnvironmentStub, Mock
 from trac.util import create_file
 from trac.web.auth import IAuthenticator
 from trac.web.main import RequestDispatcher, get_environments
-
-import tempfile
-import unittest
-import os.path
 
 
 class AuthenticateTestCase(unittest.TestCase):
