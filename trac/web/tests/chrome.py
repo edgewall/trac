@@ -17,7 +17,7 @@ import tempfile
 import unittest
 
 from trac.core import Component, TracError, implements
-from trac.test import EnvironmentStub
+from trac.test import EnvironmentStub, locale_en
 from trac.tests import compat
 from trac.tests.contentgen import random_sentence
 from trac.util import create_file
@@ -319,6 +319,19 @@ class ChromeTestCase(unittest.TestCase):
         items = chrome.prepare_request(req)['nav']['metanav']
         self.assertEqual('test1', items[0]['name'])
         self.assertEqual('test2', items[1]['name'])
+
+    def test_add_jquery_ui_timezone_list_has_z(self):
+        chrome = Chrome(self.env)
+
+        req = Request(href=Href('/trac.cgi'), lc_time='iso8601')
+        chrome.add_jquery_ui(req)
+        self.assertIn({'value': 'Z', 'label': '+00:00'},
+                      req.chrome['script_data']['jquery_ui']['timezone_list'])
+
+        req = Request(href=Href('/trac.cgi'), lc_time=locale_en)
+        chrome.add_jquery_ui(req)
+        self.assertIn({'value': 'Z', 'label': '+00:00'},
+                      req.chrome['script_data']['jquery_ui']['timezone_list'])
 
 
 class ChromeTestCase2(unittest.TestCase):
