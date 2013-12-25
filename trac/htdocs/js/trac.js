@@ -22,6 +22,27 @@
     }
   }
 
+  // Conditionally disable the submit button
+  $.fn.disableSubmit = function(determinant) {
+    determinant = $(determinant);
+    var button = $(this);
+    var disable;
+    if (determinant.is("input:checkbox")) {
+      disable = function () {
+          return determinant.filter(":checked").length === 0;
+      }
+    } else if (determinant.is("input:file")) {
+      disable = function () {
+          return !determinant.val();
+      }
+    }
+    function toggleDisabled() {
+      button.prop("disabled", disable);
+    }
+    determinant.change(toggleDisabled);
+    toggleDisabled();
+  }
+
   $.fn.enable = function(enabled) {
     if (enabled == undefined) enabled = true;
     return this.each(function() {

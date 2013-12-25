@@ -31,7 +31,7 @@
           <div class="field">
             <label>File<py:if test="max_size >= 0">
               <i18n:msg params="value">(size limit ${pretty_size(max_size)})</i18n:msg></py:if>:<br />
-              <input type="file" name="attachment" /></label>
+              <input type="file" name="attachment" class="trac-disable-determinant" /></label>
           </div>
           <fieldset>
             <legend>Attachment Info</legend>
@@ -59,7 +59,7 @@
             <input type="hidden" name="action" value="new" />
             <input type="hidden" name="realm" value="$parent.realm" />
             <input type="hidden" name="id" value="$parent.id" />
-            <input type="submit" value="${_('Add attachment')}" />
+            <input type="submit" class="trac-disable" value="${_('Add attachment')}" />
             <input type="submit" name="cancel" value="${_('Cancel')}" />
           </div>
         </form>

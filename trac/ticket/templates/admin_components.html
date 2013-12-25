@@ -82,7 +82,10 @@ $component.description</textarea>
               </thead>
               <tbody>
                 <tr py:for="comp in components">
-                  <td class="sel"><input type="checkbox" name="sel" value="$comp.name" /></td>
+                  <td class="sel">
+                    <input type="checkbox" class="trac-disable-determinant"
+                           name="sel" value="$comp.name" />
+                  </td>
                   <td class="name">
                     <a href="${panel_href(comp.name)}">$comp.name</a>
                   </td>
@@ -96,7 +99,7 @@ $component.description</textarea>
             </table>
             <div class="buttons">
               <input type="submit" name="apply" value="${_('Apply changes')}" />
-              <input type="submit" name="remove" value="${_('Remove selected items')}" />
+              <input type="submit" name="remove" class="trac-disable" value="${_('Remove selected items')}" />
               <input type="submit" name="clear" value="${_('Clear default')}" />
             </div>
             <p class="help">

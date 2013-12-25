@@ -128,7 +128,10 @@ $info.description</textarea>
             </thead>
             <tbody>
               <tr py:for="(reponame, info) in sorted_repos">
-                <td class="sel"><input py:if="info.editable" type="checkbox" name="sel" value="$info.name"/></td>
+                <td class="sel">
+                  <input py:if="info.editable" type="checkbox" class="trac-disable-determinant"
+                         name="sel" value="$info.name"/>
+                </td>
                 <td class="name">
                   <a href="${panel_href(info.name or '(default)')}">${info.name or _('(default)')}</a>
                 </td>
@@ -143,7 +146,7 @@ $info.description</textarea>
           </table>
           <div class="buttons">
             <input type="submit" name="refresh" value="${_('Refresh')}"/>
-            <input type="submit" name="remove" value="${_('Remove selected items')}"/>
+            <input type="submit" name="remove" class="trac-disable" value="${_('Remove selected items')}"/>
           </div>
         </form>
       </py:otherwise>

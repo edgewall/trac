@@ -407,7 +407,7 @@
     $("input[name='batchmod_toggleGroup']").click(function() {
       $("tr td.batchmod_selector input",
         $(this).closest("table.listing thead, table.listing tbody").next())
-        .prop("checked", this.checked);
+          .prop("checked", this.checked).change();
     });
     $("input[name='selected_ticket']").click(function() {
       var tbody = $(this).closest("table.listing tbody");
@@ -420,7 +420,9 @@
                "indeterminate": !(noneSelected || allSelected)});
     });
 
-    // At least one ticket must be selected to submit the batch.
+    // At least one ticket must be selected to submit the batch
+    $("#batchmod_submit").disableSubmit("input[name='selected_ticket']");
+
     $("form#batchmod_form").submit(function() {
       // First remove all existing validation messages.
       $(".batchmod_required").remove();
@@ -431,14 +433,6 @@
         selectedTix.push(this.value);
       });
       $("input[name=selected_tickets]").val(selectedTix);
-
-      // At least one ticket must be selected.
-      if (selectedTix.length === 0) {
-        $("#batchmod_submit")
-          .after('<span class="batchmod_required">' +
-                 'You must select at least one ticket.</span>');
-        valid = false;
-      }
 
       // Check that each radio property has something selected.
       getDisabledBatchOptions().each(function() {

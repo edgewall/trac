@@ -82,7 +82,10 @@ $version.description</textarea>
               </thead>
               <tbody>
                 <tr py:for="version in versions">
-                  <td><input type="checkbox" name="sel" value="${version.name}"/></td>
+                  <td class="sel">
+                    <input type="checkbox" class="trac-disable-determinant"
+                           name="sel" value="${version.name}"/>
+                  </td>
                   <td><a href="${panel_href(version.name)}">${version.name}</a></td>
                   <td>${version.time and format_datetime(version.time)}</td>
                   <td class="default">
@@ -94,7 +97,7 @@ $version.description</textarea>
             </table>
             <div class="buttons">
               <input type="submit" name="apply" value="${_('Apply changes')}" />
-              <input type="submit" name="remove" value="${_('Remove selected items')}" />
+              <input type="submit" name="remove" class="trac-disable" value="${_('Remove selected items')}" />
               <input type="submit" name="clear" value="${_('Clear default')}" />
             </div>
             <p class="help">

@@ -53,7 +53,10 @@
               </thead>
               <tbody>
                 <tr py:for="enum in enums">
-                  <td><input type="checkbox" name="sel" value="${enum.name}" /></td>
+                  <td class="sel">
+                    <input type="checkbox" class="trac-disable-determinant"
+                           name="sel" value="${enum.name}" />
+                  </td>
                   <td><a href="${panel_href(enum.name)}">${enum.name}</a></td>
                   <td class="default">
                     <input type="radio" name="default" value="${enum.name}"
@@ -70,7 +73,7 @@
             </table>
             <div class="buttons">
               <input type="submit" name="apply" value="${_('Apply changes')}" />
-              <input type="submit" name="remove" value="${_('Remove selected items')}" />
+              <input type="submit" name="remove" class="trac-disable" value="${_('Remove selected items')}" />
               <input type="submit" name="clear" value="${_('Clear default')}" />
             </div>
             <p class="help">

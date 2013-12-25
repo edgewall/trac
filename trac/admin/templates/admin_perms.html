@@ -73,6 +73,7 @@
                 <!--! base64 makes it safe to use ':' as separator when passing
                       both subject and action as one query parameter -->
                 <input py:if="can_revoke" type="checkbox" name="sel"
+                       class="trac-disable-determinant"
                        title="${_('You don\'t have permission to revoke this action')
                                 if not has_perm else None}"
                        value="${'%s:%s' % (unicode_to_base64(subject),
@@ -102,6 +103,7 @@
                 <!--! base64 makes it safe to use ':' as separator when passing
                       both subject and action as one query parameter -->
                 <input py:if="can_revoke" type="checkbox" name="sel"
+                       class="trac-disable-determinant"
                        value="${'%s:%s' % (unicode_to_base64(subject),
                                            unicode_to_base64(action))}"/> $subject
               </label>
@@ -111,7 +113,7 @@
         </tbody>
       </table>
       <div class="buttons" py:if="can_revoke">
-        <input type="submit" name="remove" value="${_('Remove selected items')}" />
+        <input type="submit" name="remove" class="trac-disable" value="${_('Remove selected items')}" />
       </div>
     </form>
 

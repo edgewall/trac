@@ -61,12 +61,12 @@
         <legend>Install Plugin:</legend>
         <div class="field">
           <label i18n:msg="">
-            File: <input type="file" name="plugin_file" disabled="${readonly or None}" />
+            File: <input type="file" name="plugin_file" class="trac-disable-determinant" disabled="${readonly or None}" />
           </label>
         </div>
         <div class="buttons">
-          <input type="submit" name="install" value="${_('Install')}"
-                 disabled="${readonly or None}" />
+          <input type="submit" name="install" class="trac-disable"
+                 value="${_('Install')}" disabled="${readonly or None}" />
         </div>
         <p class="help" py:choose="readonly">
           <py:when test="True">

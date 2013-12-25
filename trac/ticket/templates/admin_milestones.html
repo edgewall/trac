@@ -112,8 +112,9 @@ ${milestone.description}</textarea>
                 </tr>
               </thead>
               <tbody><tr py:for="(milestone, ticket_count) in milestones">
-                <td py:if="can_remove">
-                  <input type="checkbox" name="sel" value="$milestone.name" />
+                <td class="sel" py:if="can_remove">
+                  <input type="checkbox" class="trac-disable-determinant"
+                         name="sel" value="$milestone.name" />
                 </td>
                 <td>
                   <a href="${panel_href(milestone.name)}">${milestone.name}</a>
@@ -137,7 +138,7 @@ ${milestone.description}</textarea>
             </table>
             <div class="buttons">
               <input type="submit" name="apply" value="${_('Apply changes')}" />
-              <input type="submit" name="remove" value="${_('Remove selected items')}" py:if="can_remove" />
+              <input type="submit" name="remove" class="trac-disable" value="${_('Remove selected items')}" py:if="can_remove" />
               <input type="submit" title="Clear default ticket milestone and default retargeting milestone"
                      name="clear" value="${_('Clear defaults')}" />
             </div>
