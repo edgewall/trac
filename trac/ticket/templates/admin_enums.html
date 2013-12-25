@@ -19,7 +19,7 @@
     <py:choose test="view">
       <form py:when="'detail'" class="mod" id="modenum" method="post" action="">
         <fieldset>
-          <legend i18n:msg="label_singular">Modify $label_singular</legend>
+          <legend i18n:msg="label_singular">Modify $label_singular:</legend>
           <div class="field">
             <label>Name: <input type="text" name="name" class="trac-autofocus" value="${enum.name}" /></label>
           </div>
@@ -33,7 +33,7 @@
       <py:otherwise>
         <form class="addnew" id="addenum" method="post" action="">
           <fieldset>
-            <legend i18n:msg="label_singular">Add $label_singular</legend>
+            <legend i18n:msg="label_singular">Add $label_singular:</legend>
             <div class="field">
               <label>Name: <input type="text" name="name" id="name"/></label>
             </div>
