@@ -32,8 +32,6 @@
           $("#target").enable(this.checked);
           $("#retarget-comment").enable(this.checked);
         });
-        $("#duedate").datetimepicker();
-        $("#completeddate").datetimepicker();
       });
     /*]]>*/</script>
   </head>
@@ -62,7 +60,8 @@
               Due:<br />
             </label>
             <label>
-              <input type="text" id="duedate" name="duedate" size="${len(datetime_hint)}"
+              <input type="text" id="duedate" name="duedate"
+                     class="trac-datetimepicker" size="${len(datetime_hint)}"
                      value="${format_datetime(milestone.due or default_due)}"
                      title="${_('Format: %(datehint)s', datehint=datetime_hint)}" />
               <em i18n:msg="datehint">Format: ${datetime_hint}</em>
@@ -74,7 +73,8 @@
               Completed:<br />
             </label>
             <label>
-              <input type="text" id="completeddate" name="completeddate" size="${len(datetime_hint)}"
+              <input type="text" id="completeddate" name="completeddate"
+                     class="trac-datetimepicker" size="${len(datetime_hint)}"
                      value="${format_datetime(milestone.completed)}"
                      title="${_('Format: %(datehint)s', datehint=datetime_hint)}" />
               <em i18n:msg="datehint">Format: ${datetime_hint}</em>

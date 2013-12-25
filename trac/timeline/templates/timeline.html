@@ -8,11 +8,6 @@
   <xi:include href="layout.html" />
   <head>
     <title>Timeline</title>
-    <script type="text/javascript">/*<![CDATA[*/
-      jQuery(document).ready(function($) {
-        $("#fromdate").datepicker();
-      });
-    /*]]>*/</script>
   </head>
 
   <body>
@@ -22,7 +17,7 @@
 
       <form id="prefs" method="get" action="">
        <div i18n:msg="">
-        <label>View changes from <input type="text" id="fromdate" size="10" name="from" value="${format_date(fromdate)}" /></label> <br />
+        <label>View changes from <input type="text" id="fromdate" class="trac-datepicker" size="10" name="from" value="${format_date(fromdate)}" /></label> <br />
         and <label><input type="text" size="3" name="daysback" value="$daysback" /> days back</label><br />
         <label>done by <input type="text" size="16" name="authors" value="$authors" /></label>
        </div>

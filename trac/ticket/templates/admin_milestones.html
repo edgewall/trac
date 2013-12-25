@@ -12,14 +12,6 @@
   <xi:include href="admin.html" />
   <head>
     <title>Milestones</title>
-    <script type="text/javascript"
-            py:if="view == 'detail' and can_modify or
-                   view == 'list' and can_create">
-      jQuery(document).ready(function($) {
-        $("#duedate").datetimepicker();
-        $("#completeddate").datetimepicker();
-      });
-    </script>
   </head>
 
   <body>
@@ -37,7 +29,8 @@
           </div>
           <div class="field">
             <label>Due:<br />
-              <input type="text" id="duedate" name="duedate" size="${len(datetime_hint)}"
+              <input type="text" id="duedate" class="${'trac-datetimepicker' if not readonly else None}"
+                     name="duedate" size="${len(datetime_hint)}"
                      value="${milestone.due and format_datetime(milestone.due)}" readonly="${readonly}"
                      title="${_('Format: %(datehint)s', datehint=datetime_hint)}"/>
               <span class="hint" i18n:msg="datehint">Format: $datetime_hint</span>
@@ -50,8 +43,8 @@
               Completed:<br />
             </label>
             <label>
-              <input type="text" id="completeddate" name="completeddate"
-                     size="${len(datetime_hint)}"
+              <input type="text" id="completeddate" class="${'trac-datetimepicker' if not readonly else None}"
+                     name="completeddate" size="${len(datetime_hint)}"
                      value="${format_datetime(milestone.completed)}" readonly="${readonly}"
                      title="${_('Format: %(datehint)s', datehint=datetime_hint)}" />
               <span class="hint" i18n:msg="datehint">Format: $datetime_hint</span>
@@ -95,7 +88,8 @@ ${milestone.description}</textarea>
             <div class="field">
               <label>
                 Due:
-                <input type="text" id="duedate" name="duedate" size="${len(datetime_hint)}"
+                <input type="text" id="duedate" class="trac-datetimepicker"
+                       name="duedate" size="${len(datetime_hint)}"
                        title="${_('Format: %(datehint)s', datehint=datetime_hint)}"/>
                 <span class="hint" i18n:msg="datetimehint">Format: $datetime_hint</span>
               </label>

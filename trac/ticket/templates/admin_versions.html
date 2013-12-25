@@ -8,11 +8,6 @@
   <xi:include href="admin.html" />
   <head>
     <title>Versions</title>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#releaseddate").datetimepicker();
-      });
-    </script>
   </head>
 
   <body>
@@ -29,7 +24,8 @@
           </div>
           <div class="field">
             <label>Released:<br />
-              <input type="text" id="releaseddate" name="time" size="${len(datetime_hint)}"
+              <input type="text" id="releaseddate" class="trac-datetimepicker"
+                     name="time" size="${len(datetime_hint)}"
                      value="${format_datetime(version.time)}"
                      title="${_('Format: %(datehint)s', datehint=datetime_hint)}" />
               <span class="hint" i18n:msg="datehint">Format: $datetime_hint</span>
@@ -63,7 +59,8 @@ $version.description</textarea>
             <div class="field">
               <label>
                 Released:
-                <input type="text" id="releaseddate" name="time" size="${len(datetime_hint)}"
+                <input type="text" id="releaseddate" class="trac-datetimepicker"
+                       name="time" size="${len(datetime_hint)}"
                        title="${_('Format: %(datehint)s', datehint=datetime_hint)}"
                        value="${format_datetime()}"/>
                 <span class="hint" i18n:msg="datehint">Format: $datetime_hint</span>

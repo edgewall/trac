@@ -49,6 +49,10 @@
         </py:if>
         $(".trac-autofocus").focus();
         $(".trac-target-new").attr("target", "_blank");
+        if ($.ui) { /* is jquery-ui added? */
+          $(".trac-datepicker").datepicker();
+          $(".trac-datetimepicker").datetimepicker();
+        }
         setTimeout(function() { $(".trac-scroll").scrollToTop() }, 1);
       });
     </script>

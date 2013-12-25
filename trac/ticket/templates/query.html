@@ -26,8 +26,6 @@
       /*]]>*/
         /* Hide the columns by default. */
         $("#columns").toggleClass("collapsed");
-        $(".datepicker").datepicker();
-        $(".datetimepicker").datetimepicker();
       });
     </script>
   </head>
@@ -129,9 +127,9 @@
                                           date_or_datetime = field.get('format', 'datetime')">
                           <i18n:msg>
                             <label>between</label>
-                            <input type="text" name="${n_field_name}" value="$start" size="14" class="${date_or_datetime}picker" />
+                            <input type="text" name="${n_field_name}" value="$start" size="14" class="trac-${date_or_datetime}picker" />
                             <label>and</label>
-                            <input type="text" name="${n_field_name}_end" value="$end" size="14" class="${date_or_datetime}picker" />
+                            <input type="text" name="${n_field_name}_end" value="$end" size="14" class="trac-${date_or_datetime}picker" />
                           </i18n:msg>
                         </py:when>
                       </td>
