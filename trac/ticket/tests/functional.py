@@ -1538,8 +1538,10 @@ class RegressionTestTicket4630a(FunctionalTwillTestCaseSetup):
             self._tester.go_to_front()
             self._tester.logout()
             self._tester.login('user')
+            self._tester.go_to_front()
             self._tester.logout()
             self._tester.login('joe')
+            self._tester.go_to_front()
             self._tester.logout()
             self._tester.login('admin')
             ticket_id = self._tester.create_ticket()
@@ -1604,6 +1606,7 @@ class RegressionTestTicket5394a(FunctionalTwillTestCaseSetup):
             self._testenv.adduser(user)
         for user in test_users:
             self._tester.login(user)
+            self._tester.go_to_front()
             self._tester.logout()
 
         self._tester.login('admin')
@@ -1752,6 +1755,7 @@ class RegressionTestTicket5602(FunctionalTwillTestCaseSetup):
 class RegressionTestTicket5687(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/5687"""
+        self._tester.go_to_front()
         self._tester.logout()
         self._tester.login('user')
         ticketid = self._tester.create_ticket()
@@ -2132,6 +2136,7 @@ class RegressionTestTicket11176(FunctionalTestCaseSetup):
             [report:*]
             anonymous =
         """)
+        self._tester.go_to_front()
         self._tester.logout()
         self._tester.go_to_view_tickets()
         try:

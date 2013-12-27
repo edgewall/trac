@@ -27,6 +27,7 @@ class AuthorizationTestCaseSetup(FunctionalTwillTestCaseSetup):
                       the administration panel
         :param h2_text: the body of the h2 heading on the administration
                         panel"""
+        self._tester.go_to_front()
         self._tester.logout()
         self._tester.login('user')
         if isinstance(perms, basestring):
@@ -57,6 +58,7 @@ class AuthorizationTestCaseSetup(FunctionalTwillTestCaseSetup):
                 finally:
                     self._testenv.disable_authz_permpolicy()
         finally:
+            self._tester.go_to_front()
             self._tester.logout()
             self._tester.login('admin')
 
@@ -221,6 +223,7 @@ class RegressionTestTicket11069(FunctionalTwillTestCaseSetup):
         """Test for regression of http://trac.edgewall.org/ticket/11069
         The permissions list should only be populated with permissions that
         the user can grant."""
+        self._tester.go_to_front()
         self._tester.logout()
         self._tester.login('user')
         self._testenv.grant_perm('user', 'PERMISSION_GRANT')
@@ -238,6 +241,7 @@ class RegressionTestTicket11069(FunctionalTwillTestCaseSetup):
                     tc.notfind(option)
         finally:
             self._testenv.revoke_perm('user', 'PERMISSION_GRANT')
+            self._tester.go_to_front()
             self._tester.logout()
             self._tester.login('admin')
 

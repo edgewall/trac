@@ -63,8 +63,9 @@ class FunctionalTester(object):
 
     def logout(self):
         """Logout"""
-        tc.follow(r"\bLogout\b")
+        tc.submit('logout', 'logout')
         tc.notfind(internal_error)
+        tc.notfind('logged in as')
 
     def create_ticket(self, summary=None, info=None):
         """Create a new (random) ticket in the test environment.  Returns
