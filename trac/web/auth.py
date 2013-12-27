@@ -108,7 +108,10 @@ class LoginModule(Component):
             yield ('metanav', 'login', _('logged in as %(user)s',
                                          user=req.authname))
             yield ('metanav', 'logout',
-                   tag.a(_('Logout'), href=req.href.logout()))
+                   tag.form(tag.div(tag.button(_('Logout'),
+                                               name='logout', type='submit')),
+                            action=req.href.logout(), method='post',
+                            id='logout', class_='trac-logout'))
         else:
             yield ('metanav', 'login',
                    tag.a(_('Login'), href=req.href.login()))
@@ -193,6 +196,8 @@ class LoginModule(Component):
         Simply deletes the corresponding record from the auth_cookie
         table.
         """
+        if req.method != 'POST':
+            return
         if req.authname == 'anonymous':
             # Not logged in
             return

@@ -238,10 +238,12 @@ class RegressionTestTicket6318(FunctionalTwillTestCaseSetup):
             # also test a regular ascii user name
             self._testenv.adduser(u'user')
             self._tester.login(u'user')
+            self._tester.go_to_front()
             self._tester.logout()
             # now test utf-8 user name
             self._testenv.adduser(u'joé')
             self._tester.login(u'joé')
+            self._tester.go_to_front()
             self._tester.logout()
             # finally restore expected 'admin' login
             self._tester.login('admin')

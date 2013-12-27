@@ -41,7 +41,7 @@ class RegressionTestRev5785(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of the fix in r5785"""
         self._tester.go_to_preferences()
-        tc.follow('Logout')
+        tc.submit('logout', 'logout')
         tc.notfind(internal_error) # See [5785]
         tc.follow('Login')
 

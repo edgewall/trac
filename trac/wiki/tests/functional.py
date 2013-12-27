@@ -315,6 +315,7 @@ class RegressionTestTicket10957(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/10957"""
 
+        self._tester.go_to_front()
         try:
             self._tester.logout()
 

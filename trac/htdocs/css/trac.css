@@ -227,6 +227,26 @@ input[type=submit].trac-delete:hover {
 #metanav {
  padding-top: .3em;
 }
+#metanav form.trac-logout {
+ display: inline;
+ margin: 0;
+ padding: 0;
+}
+#metanav form.trac-logout button {
+ margin: 0;
+ padding: 0;
+ border: 0;
+ outline: 0;
+ background: transparent;
+ font-family: inherit;
+ font-size: inherit;
+ color: #b00;
+ border-bottom: 1px dotted #bbb;
+ cursor: pointer;
+}
+#metanav form.trac-logout button::-moz-focus-inner { border: 0; padding: 0 }
+#metanav form.trac-logout button:hover { background-color: #eee; color: #555 }
+#metanav form.trac-logout button:active { position: static }
 
 /* Main navigation bar */
 #mainnav {
