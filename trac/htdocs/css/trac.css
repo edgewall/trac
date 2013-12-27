@@ -539,6 +539,8 @@ table.wiki th {
  padding: .1em .25em;
  background-color: #f7f7f7;
 }
+table.wiki tbody tr.even { background-color: #fcfcfc }
+table.wiki tbody tr.odd { background-color: #f7f7f7 }
 
 .wikitoolbar {
  margin-top: 0.3em;
