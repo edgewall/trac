@@ -77,9 +77,14 @@ class TicketNotificationSystem(Component):
 
 
 def get_ticket_notification_recipients(env, config, tktid, prev_cc):
-    notify_reporter = config.getbool('notification', 'always_notify_reporter')
-    notify_owner = config.getbool('notification', 'always_notify_owner')
-    notify_updater = config.getbool('notification', 'always_notify_updater')
+    """Returns the notifications recipients.
+
+    :since 1.0.3: the `config` parameter is no longer used.
+    """
+    section = env.config['notification']
+    notify_reporter = section.getbool('always_notify_reporter')
+    notify_owner = section.getbool('always_notify_owner')
+    notify_updater = section.getbool('always_notify_updater')
 
     ccrecipients = prev_cc
     torecipients = []
