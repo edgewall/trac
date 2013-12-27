@@ -781,9 +781,11 @@ class TracIniMacro(WikiMacroBase):
                  tag.tr(tag.td(tag.code(option.name)),
                         tag.td(format_to_oneliner(
                             self.env, formatter.context, getdoc(option))),
-                        default_cell(option))
-                 for option in sorted(options.get(section, {}).itervalues(),
-                                      key=lambda o: o.name)
+                        default_cell(option),
+                        class_='odd' if idx % 2 else 'even')
+                 for idx, option in \
+                    enumerate(sorted(options.get(section, {}).itervalues(),
+                                     key=lambda o: o.name))
                  if option.name.startswith(key_filter))))
             for section, section_doc in sorted(sections.iteritems()))
 
