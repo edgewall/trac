@@ -16,21 +16,21 @@
 # (lsmithson@open-networks.co.uk) extensible Python SMTP Server
 #
 
-from trac.util.datefmt import utc
-from trac.ticket.model import Ticket
-from trac.ticket.notification import TicketNotifyEmail
-from trac.ticket.web_ui import TicketModule
-from trac.test import EnvironmentStub, Mock, MockPerm
-from trac.tests import compat
-from trac.tests.notification import SMTPThreadedServer, parse_smtp_message, \
-                                    smtp_address
-
 import base64
-from datetime import datetime
 import os
 import quopri
 import re
 import unittest
+from datetime import datetime
+
+from trac.test import EnvironmentStub, Mock, MockPerm
+from trac.tests import compat
+from trac.tests.notification import SMTPThreadedServer, parse_smtp_message, \
+                                    smtp_address
+from trac.ticket.model import Ticket
+from trac.ticket.notification import TicketNotifyEmail
+from trac.ticket.web_ui import TicketModule
+from trac.util.datefmt import utc
 
 SMTP_TEST_PORT = 7000 + os.getpid() % 1000
 MAXBODYWIDTH = 76
@@ -50,7 +50,7 @@ class NotificationTestCase(unittest.TestCase):
                             'joe.user@example.net, joe.bar@example.net')
         self.env.config.set('notification', 'use_public_cc', 'true')
         self.env.config.set('notification', 'smtp_port', str(SMTP_TEST_PORT))
-        self.env.config.set('notification', 'smtp_server','localhost')
+        self.env.config.set('notification', 'smtp_server', 'localhost')
         self.req = Mock(href=self.env.href, abs_href=self.env.abs_href, tz=utc,
                         perm=MockPerm())
 
@@ -63,9 +63,9 @@ class NotificationTestCase(unittest.TestCase):
         """To/Cc recipients"""
         ticket = Ticket(self.env)
         ticket['reporter'] = '"Joe User" < joe.user@example.org >'
-        ticket['owner']    = 'joe.user@example.net'
-        ticket['cc']       = 'joe.user@example.com, joe.bar@example.org, ' \
-                             'joe.bar@example.net'
+        ticket['owner'] = 'joe.user@example.net'
+        ticket['cc'] = 'joe.user@example.com, joe.bar@example.org, ' \
+                       'joe.bar@example.net'
         ticket['summary'] = 'Foo'
         ticket.insert()
         tn = TicketNotifyEmail(self.env)
@@ -120,18 +120,18 @@ class NotificationTestCase(unittest.TestCase):
         """Basic SMTP message structure (headers, body)"""
         ticket = Ticket(self.env)
         ticket['reporter'] = '"Joe User" <joe.user@example.org>'
-        ticket['owner']    = 'joe.user@example.net'
-        ticket['cc']       = 'joe.user@example.com, joe.bar@example.org, ' \
-                             'joe.bar@example.net'
+        ticket['owner'] = 'joe.user@example.net'
+        ticket['cc'] = 'joe.user@example.com, joe.bar@example.org, ' \
+                       'joe.bar@example.net'
         ticket['summary'] = 'This is a summary'
         ticket.insert()
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=True)
         message = notifysuite.smtpd.get_message()
-        (headers, body) = parse_smtp_message(message)
+        headers, body = parse_smtp_message(message)
         # checks for header existence
         self.assertFalse(not headers)
-        # checks for body existance
+        # checks for body existence
         self.assertFalse(not body)
         # checks for expected headers
         self.assertFalse('Date' not in headers)
@@ -150,7 +150,7 @@ class NotificationTestCase(unittest.TestCase):
         date_re = re.compile(date_str)
         # python time module does not detect incorrect time values
         days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', \
+        months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         tz = ['UT', 'GMT', 'EST', 'EDT', 'CST', 'CDT', 'MST', 'MDT',
               'PST', 'PDT']
@@ -161,7 +161,7 @@ class NotificationTestCase(unittest.TestCase):
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=True)
         message = notifysuite.smtpd.get_message()
-        (headers, body) = parse_smtp_message(message)
+        headers, body = parse_smtp_message(message)
         self.assertFalse('Date' not in headers)
         mo = date_re.match(headers['Date'])
         self.assertFalse(not mo)
@@ -188,7 +188,7 @@ class NotificationTestCase(unittest.TestCase):
             tn = TicketNotifyEmail(self.env)
             tn.notify(ticket, newticket=True)
             message = notifysuite.smtpd.get_message()
-            (headers, body) = parse_smtp_message(message)
+            headers, body = parse_smtp_message(message)
             if public:
                 # Msg should have a To list
                 self.assertFalse('To' not in headers)
@@ -240,7 +240,7 @@ class NotificationTestCase(unittest.TestCase):
             tn = TicketNotifyEmail(self.env)
             tn.notify(ticket, newticket=True)
             message = notifysuite.smtpd.get_message()
-            (headers, body) = parse_smtp_message(message)
+            headers, body = parse_smtp_message(message)
             # Msg should not have a 'To' header
             if not enabled:
                 self.assertFalse('To' in headers)
@@ -256,10 +256,11 @@ class NotificationTestCase(unittest.TestCase):
                 # Msg should not be delivered to joeuser
                 self.assertFalse(ticket['reporter'] in cclist)
             # Msg should still be delivered to the always_cc list
-            self.assertFalse(self.env.config.get('notification',
-                        'smtp_always_cc') not in cclist)
+            self.assertFalse(
+                self.env.config.get('notification', 'smtp_always_cc')
+                not in cclist)
         # Validate with and without the short addr option enabled
-        for enable in [False, True]:
+        for enable in False, True:
             _test_short_login(enable)
 
     def test_default_domain(self):
@@ -284,7 +285,7 @@ class NotificationTestCase(unittest.TestCase):
             tn = TicketNotifyEmail(self.env)
             tn.notify(ticket, newticket=True)
             message = notifysuite.smtpd.get_message()
-            (headers, body) = parse_smtp_message(message)
+            headers, body = parse_smtp_message(message)
             # Msg should always have a 'Cc' field
             self.assertFalse('Cc' not in headers)
             cclist = [addr.strip() for addr in headers['Cc'].split(',')]
@@ -298,7 +299,7 @@ class NotificationTestCase(unittest.TestCase):
                 self.assertFalse('joenodom@example.org' not in cclist)
 
         # Validate with and without a default domain
-        for enable in [False, True]:
+        for enable in False, True:
             _test_default_domain(enable)
 
     def test_email_map(self):
@@ -319,7 +320,7 @@ class NotificationTestCase(unittest.TestCase):
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=True)
         message = notifysuite.smtpd.get_message()
-        (headers, body) = parse_smtp_message(message)
+        headers, body = parse_smtp_message(message)
         # Msg should always have a 'To' field
         self.assertFalse('To' not in headers)
         tolist = [addr.strip() for addr in headers['To'].split(',')]
@@ -348,7 +349,7 @@ class NotificationTestCase(unittest.TestCase):
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=True)
         message = notifysuite.smtpd.get_message()
-        (headers, body) = parse_smtp_message(message)
+        headers, body = parse_smtp_message(message)
         self.assertEqual('"Joe User" <user-joe@example.com>', headers['From'])
         # Ticket change uses the change author
         ticket['summary'] = 'Modified summary'
@@ -356,7 +357,7 @@ class NotificationTestCase(unittest.TestCase):
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=False, modtime=ticket['changetime'])
         message = notifysuite.smtpd.get_message()
-        (headers, body) = parse_smtp_message(message)
+        headers, body = parse_smtp_message(message)
         self.assertEqual('"Jim User" <user-jim@example.com>', headers['From'])
         # Known author without name uses e-mail address only
         ticket['summary'] = 'Final summary'
@@ -364,7 +365,7 @@ class NotificationTestCase(unittest.TestCase):
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=False, modtime=ticket['changetime'])
         message = notifysuite.smtpd.get_message()
-        (headers, body) = parse_smtp_message(message)
+        headers, body = parse_smtp_message(message)
         self.assertEqual('user-noname@example.com', headers['From'])
         # Known author without e-mail uses smtp_from and smtp_from_name
         ticket['summary'] = 'Other summary'
@@ -372,7 +373,7 @@ class NotificationTestCase(unittest.TestCase):
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=False, modtime=ticket['changetime'])
         message = notifysuite.smtpd.get_message()
-        (headers, body) = parse_smtp_message(message)
+        headers, body = parse_smtp_message(message)
         self.assertEqual('"My Trac" <trac@example.com>', headers['From'])
         # Unknown author with name and e-mail address
         ticket['summary'] = 'Some summary'
@@ -380,7 +381,7 @@ class NotificationTestCase(unittest.TestCase):
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=False, modtime=ticket['changetime'])
         message = notifysuite.smtpd.get_message()
-        (headers, body) = parse_smtp_message(message)
+        headers, body = parse_smtp_message(message)
         self.assertEqual('"Test User" <test@example.com>', headers['From'])
         # Unknown author with e-mail address only
         ticket['summary'] = 'Some summary'
@@ -388,7 +389,7 @@ class NotificationTestCase(unittest.TestCase):
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=False, modtime=ticket['changetime'])
         message = notifysuite.smtpd.get_message()
-        (headers, body) = parse_smtp_message(message)
+        headers, body = parse_smtp_message(message)
         self.assertEqual('test@example.com', headers['From'])
         # Unknown author uses smtp_from and smtp_from_name
         ticket['summary'] = 'Better summary'
@@ -396,7 +397,7 @@ class NotificationTestCase(unittest.TestCase):
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=False, modtime=ticket['changetime'])
         message = notifysuite.smtpd.get_message()
-        (headers, body) = parse_smtp_message(message)
+        headers, body = parse_smtp_message(message)
         self.assertEqual('"My Trac" <trac@example.com>', headers['From'])
 
     def test_ignore_domains(self):
@@ -414,7 +415,7 @@ class NotificationTestCase(unittest.TestCase):
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=True)
         message = notifysuite.smtpd.get_message()
-        (headers, body) = parse_smtp_message(message)
+        headers, body = parse_smtp_message(message)
         # Msg should always have a 'To' field
         self.assertFalse('To' not in headers)
         tolist = [addr.strip() for addr in headers['To'].split(',')]
@@ -438,7 +439,7 @@ class NotificationTestCase(unittest.TestCase):
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=True)
         message = notifysuite.smtpd.get_message()
-        (headers, body) = parse_smtp_message(message)
+        headers, body = parse_smtp_message(message)
         # Msg should always have a 'To' field
         self.assertFalse('Cc' not in headers)
         cclist = [addr.strip() for addr in headers['Cc'].split(',')]
@@ -460,7 +461,7 @@ class NotificationTestCase(unittest.TestCase):
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=True)
         message = notifysuite.smtpd.get_message()
-        (headers, body) = parse_smtp_message(message)
+        headers, body = parse_smtp_message(message)
         # Discards the project name & ticket number
         subject = headers['Subject']
         summary = subject[subject.find(':')+2:]
@@ -474,8 +475,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['summary'] = u'This is a long enough summary to cause Trac ' \
                             u'to generate a multi-line (2 lines) súmmäry'
         ticket.insert()
-        self._validate_mimebody((base64, 'base64', 'utf-8'), \
-                                ticket, True)
+        self._validate_mimebody((base64, 'base64', 'utf-8'), ticket, True)
 
     def test_mimebody_qp(self):
         """MIME QP/utf-8 encoding"""
@@ -495,8 +495,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['reporter'] = 'joe.user'
         ticket['summary'] = u'This is a summary'
         ticket.insert()
-        self._validate_mimebody((None, '7bit', 'utf-8'), \
-                                ticket, True)
+        self._validate_mimebody((None, '7bit', 'utf-8'), ticket, True)
 
     def test_mimebody_none_8bit(self):
         """MIME None encoding resulting in 8bit"""
@@ -505,8 +504,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['reporter'] = 'joe.user'
         ticket['summary'] = u'This is a summary for Jöe Usèr'
         ticket.insert()
-        self._validate_mimebody((None, '8bit', 'utf-8'), \
-                                ticket, True)
+        self._validate_mimebody((None, '8bit', 'utf-8'), ticket, True)
 
     def test_md5_digest(self):
         """MD5 digest w/ non-ASCII recipient address (#3491)"""
@@ -520,12 +518,12 @@ class NotificationTestCase(unittest.TestCase):
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=True)
         message = notifysuite.smtpd.get_message()
-        (headers, body) = parse_smtp_message(message)
+        headers, body = parse_smtp_message(message)
 
     def test_updater(self):
         """No-self-notification option"""
-        def _test_updater(disable):
-            if disable:
+        def _test_updater(disabled):
+            if disabled:
                 self.env.config.set('notification', 'always_notify_updater',
                                     'false')
             ticket = Ticket(self.env)
@@ -540,19 +538,19 @@ class NotificationTestCase(unittest.TestCase):
             tn = TicketNotifyEmail(self.env)
             tn.notify(ticket, newticket=False, modtime=now)
             message = notifysuite.smtpd.get_message()
-            (headers, body) = parse_smtp_message(message)
+            headers, body = parse_smtp_message(message)
             # checks for header existence
             self.assertFalse(not headers)
             # checks for updater in the 'To' recipient list
             self.assertFalse('To' not in headers)
             tolist = [addr.strip() for addr in headers['To'].split(',')]
-            if disable:
+            if disabled:
                 self.assertFalse('joe.bar2@example.com' in tolist)
             else:
                 self.assertFalse('joe.bar2@example.com' not in tolist)
 
         # Validate with and without a default domain
-        for disable in [False, True]:
+        for disable in False, True:
             _test_updater(disable)
 
     def test_updater_only(self):
@@ -606,11 +604,11 @@ class NotificationTestCase(unittest.TestCase):
 
     def _validate_mimebody(self, mime, ticket, newtk):
         """Body of a ticket notification message"""
-        (mime_decoder, mime_name, mime_charset) = mime
+        mime_decoder, mime_name, mime_charset = mime
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=newtk)
         message = notifysuite.smtpd.get_message()
-        (headers, body) = parse_smtp_message(message)
+        headers, body = parse_smtp_message(message)
         self.assertFalse('MIME-Version' not in headers)
         self.assertFalse('Content-Type' not in headers)
         self.assertFalse('Content-Transfer-Encoding' not in headers)
@@ -624,14 +622,14 @@ class NotificationTestCase(unittest.TestCase):
         # checks the width of each body line
         for line in body.splitlines():
             self.assertFalse(len(line) > MAXBODYWIDTH)
-        # attempts to decode the body, following the specified MIME endoding
+        # attempts to decode the body, following the specified MIME encoding
         # and charset
         try:
             if mime_decoder:
                 body = mime_decoder.decodestring(body)
             body = unicode(body, charset)
         except Exception, e:
-            raise AssertionError, e
+            raise AssertionError(e)
         # now processes each line of the body
         bodylines = body.splitlines()
         # body starts with one of more summary lines, first line is prefixed
@@ -639,20 +637,20 @@ class NotificationTestCase(unittest.TestCase):
         # finds the banner after the summary
         banner_delim_re = re.compile(r'^\-+\+\-+$')
         bodyheader = []
-        while ( not banner_delim_re.match(bodylines[0]) ):
+        while not banner_delim_re.match(bodylines[0]):
             bodyheader.append(bodylines.pop(0))
         # summary should be present
         self.assertFalse(not bodyheader)
         # banner should not be empty
         self.assertFalse(not bodylines)
         # extracts the ticket ID from the first line
-        (tknum, bodyheader[0]) = bodyheader[0].split(' ', 1)
+        tknum, bodyheader[0] = bodyheader[0].split(' ', 1)
         self.assertEqual(tknum[0], '#')
         try:
             tkid = int(tknum[1:-1])
             self.assertEqual(tkid, 1)
         except ValueError:
-            raise AssertionError, "invalid ticket number"
+            raise AssertionError("invalid ticket number")
         self.assertEqual(tknum[-1], ':')
         summary = ' '.join(bodyheader)
         self.assertEqual(summary, ticket['summary'])
@@ -673,7 +671,7 @@ class NotificationTestCase(unittest.TestCase):
                 for prop in properties:
                     if prop.strip() == '':
                         continue
-                    (k, v) = prop.split(':')
+                    k, v = prop.split(':')
                     props[k.strip().lower()] = v.strip()
             # detect footer marker (weak detection)
             if not footer:
@@ -681,7 +679,7 @@ class NotificationTestCase(unittest.TestCase):
                     footer = 0
                     continue
             # check footer
-            if footer != None:
+            if footer is not None:
                 footer += 1
                 # invalid footer detection
                 self.assertFalse(footer > 3)
@@ -698,7 +696,8 @@ class NotificationTestCase(unittest.TestCase):
             self.assertIn(p, props)
             # Email addresses might be obfuscated
             if '@' in ticket[p] and '@' in props[p]:
-                self.assertFalse(props[p].split('@')[0] != ticket[p].split('@')[0])
+                self.assertFalse(props[p].split('@')[0] !=
+                                 ticket[p].split('@')[0])
             else:
                 self.assertFalse(props[p] != ticket[p])
 
@@ -1094,7 +1093,7 @@ Security sensitive:  0                           |          Blocking:
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=True)
         message = notifysuite.smtpd.get_message()
-        (headers, body) = parse_smtp_message(message)
+        headers, body = parse_smtp_message(message)
         bodylines = body.splitlines()
         # Extract ticket properties
         delim_re = re.compile(r'^\-+\+\-+$')
@@ -1132,7 +1131,6 @@ Security sensitive:  0                           |          Blocking:
         tn.get_message_id('foo')
 
 
-
 class NotificationTestSuite(unittest.TestSuite):
     """Thin test suite wrapper to start and stop the SMTP test server"""
 
@@ -1147,11 +1145,12 @@ class NotificationTestSuite(unittest.TestSuite):
     def tear_down(self):
         """Reset the local SMTP test server"""
         self.smtpd.cleanup()
-        self.remaining = self.remaining-1
+        self.remaining -= 1
         if self.remaining > 0:
             return
         # stop the SMTP test server when all tests have been completed
         self.smtpd.stop()
+
 
 def suite():
     global notifysuite
