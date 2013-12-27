@@ -74,17 +74,17 @@ class NotificationTestCase(unittest.TestCase):
         # checks there is no duplicate in the recipient list
         rcpts = []
         for r in recipients:
-            self.assertFalse(r in rcpts)
+            self.assertNotIn(r, rcpts)
             rcpts.append(r)
         # checks that all cc recipients have been notified
         cc_list = self.env.config.get('notification', 'smtp_always_cc')
         cc_list = "%s, %s" % (cc_list, ticket['cc'])
         for r in cc_list.replace(',', ' ').split():
-            self.assertFalse(r not in recipients)
+            self.assertIn(r, recipients)
         # checks that owner has been notified
-        self.assertFalse(smtp_address(ticket['owner']) not in recipients)
+        self.assertIn(smtp_address(ticket['owner']), recipients)
         # checks that reporter has been notified
-        self.assertFalse(smtp_address(ticket['reporter']) not in recipients)
+        self.assertIn(smtp_address(ticket['reporter']), recipients)
 
     def test_no_recipient(self):
         """No recipient case"""
@@ -99,9 +99,9 @@ class NotificationTestCase(unittest.TestCase):
         recipients = notifysuite.smtpd.get_recipients()
         message = notifysuite.smtpd.get_message()
         # checks that no message has been sent
-        self.assertFalse(recipients)
-        self.assertFalse(sender)
-        self.assertFalse(message)
+        self.assertEqual([], recipients)
+        self.assertIsNone(sender)
+        self.assertIsNone(message)
 
     def test_cc_only(self):
         """Notification w/o explicit recipients but Cc: (#3101)"""
@@ -114,7 +114,7 @@ class NotificationTestCase(unittest.TestCase):
         # checks that all cc recipients have been notified
         cc_list = self.env.config.get('notification', 'smtp_always_cc')
         for r in cc_list.replace(',', ' ').split():
-            self.assertFalse(r not in recipients)
+            self.assertIn(r, recipients)
 
     def test_structure(self):
         """Basic SMTP message structure (headers, body)"""
@@ -130,14 +130,14 @@ class NotificationTestCase(unittest.TestCase):
         message = notifysuite.smtpd.get_message()
         headers, body = parse_smtp_message(message)
         # checks for header existence
-        self.assertFalse(not headers)
+        self.assertTrue(headers)
         # checks for body existence
-        self.assertFalse(not body)
+        self.assertTrue(body)
         # checks for expected headers
-        self.assertFalse('Date' not in headers)
-        self.assertFalse('Subject' not in headers)
-        self.assertFalse('Message-ID' not in headers)
-        self.assertFalse('From' not in headers)
+        self.assertIn('Date', headers)
+        self.assertIn('Subject', headers)
+        self.assertIn('Message-ID', headers)
+        self.assertIn('From', headers)
 
     def test_date(self):
         """Date format compliance (RFC822)
@@ -162,16 +162,16 @@ class NotificationTestCase(unittest.TestCase):
         tn.notify(ticket, newticket=True)
         message = notifysuite.smtpd.get_message()
         headers, body = parse_smtp_message(message)
-        self.assertFalse('Date' not in headers)
+        self.assertIn('Date', headers)
         mo = date_re.match(headers['Date'])
-        self.assertFalse(not mo)
+        self.assertTrue(mo)
         if mo.group('day'):
-            self.assertFalse(mo.group('day') not in days)
-        self.assertFalse(int(mo.group('dm')) not in range(1, 32))
-        self.assertFalse(mo.group('month') not in months)
-        self.assertFalse(int(mo.group('hour')) not in range(0, 24))
+            self.assertIn(mo.group('day'), days)
+        self.assertIn(int(mo.group('dm')), range(1, 32))
+        self.assertIn(mo.group('month'), months)
+        self.assertIn(int(mo.group('hour')), range(0, 24))
         if mo.group('tz'):
-            self.assertFalse(mo.group('tz') not in tz)
+            self.assertIn(mo.group('tz'), tz)
 
     def test_bcc_privacy(self):
         """Visibility of recipients"""
@@ -191,12 +191,12 @@ class NotificationTestCase(unittest.TestCase):
             headers, body = parse_smtp_message(message)
             if public:
                 # Msg should have a To list
-                self.assertFalse('To' not in headers)
+                self.assertIn('To', headers)
                 # Extract the list of 'To' recipients from the message
                 to = [rcpt.strip() for rcpt in headers['To'].split(',')]
             else:
                 # Msg should not have a To list
-                self.assertFalse('To' in headers)
+                self.assertNotIn('To', headers)
                 # Extract the list of 'To' recipients from the message
                 to = []
             # Extract the list of 'Cc' recipients from the message
@@ -209,18 +209,18 @@ class NotificationTestCase(unittest.TestCase):
             for rcpt in cclist:
                 # Each recipient of the 'Cc' list should appear
                 # in the 'Cc' header
-                self.assertFalse(rcpt not in cc)
+                self.assertIn(rcpt, cc)
                 # Check the message has actually been sent to the recipients
-                self.assertFalse(rcpt not in rcptlist)
+                self.assertIn(rcpt, rcptlist)
             # Build the list of the expected 'Bcc' recipients
             bccrcpt = self.env.config.get('notification', 'smtp_always_bcc')
             bcclist = [bccr.strip() for bccr in bccrcpt.split(',')]
             for rcpt in bcclist:
                 # Check none of the 'Bcc' recipients appears
                 # in the 'To' header
-                self.assertFalse(rcpt in to)
+                self.assertNotIn(rcpt, to)
                 # Check the message has actually been sent to the recipients
-                self.assertFalse(rcpt not in rcptlist)
+                self.assertIn(rcpt, rcptlist)
         run_bcc_feature(True)
         run_bcc_feature(False)
 
@@ -243,22 +243,21 @@ class NotificationTestCase(unittest.TestCase):
             headers, body = parse_smtp_message(message)
             # Msg should not have a 'To' header
             if not enabled:
-                self.assertFalse('To' in headers)
+                self.assertNotIn('To', headers)
             else:
                 tolist = [addr.strip() for addr in headers['To'].split(',')]
             # Msg should have a 'Cc' field
-            self.assertFalse('Cc' not in headers)
+            self.assertIn('Cc', headers)
             cclist = [addr.strip() for addr in headers['Cc'].split(',')]
             if enabled:
                 # Msg should be delivered to the reporter
-                self.assertFalse(ticket['reporter'] not in tolist)
+                self.assertIn(ticket['reporter'], tolist)
             else:
                 # Msg should not be delivered to joeuser
-                self.assertFalse(ticket['reporter'] in cclist)
+                self.assertNotIn(ticket['reporter'], cclist)
             # Msg should still be delivered to the always_cc list
-            self.assertFalse(
-                self.env.config.get('notification', 'smtp_always_cc')
-                not in cclist)
+            self.assertIn(self.env.config.get('notification',
+                                              'smtp_always_cc'), cclist)
         # Validate with and without the short addr option enabled
         for enable in False, True:
             _test_short_login(enable)
@@ -287,16 +286,16 @@ class NotificationTestCase(unittest.TestCase):
             message = notifysuite.smtpd.get_message()
             headers, body = parse_smtp_message(message)
             # Msg should always have a 'Cc' field
-            self.assertFalse('Cc' not in headers)
+            self.assertIn('Cc', headers)
             cclist = [addr.strip() for addr in headers['Cc'].split(',')]
-            self.assertFalse('joewithdom@example.com' not in cclist)
-            self.assertFalse('joe.bar@example.net' not in cclist)
+            self.assertIn('joewithdom@example.com', cclist)
+            self.assertIn('joe.bar@example.net', cclist)
             if not enabled:
-                self.assertFalse(len(cclist) != 2)
-                self.assertFalse('joenodom' in cclist)
+                self.assertEqual(2, len(cclist))
+                self.assertNotIn('joenodom', cclist)
             else:
-                self.assertFalse(len(cclist) != 3)
-                self.assertFalse('joenodom@example.org' not in cclist)
+                self.assertEqual(3, len(cclist))
+                self.assertIn('joenodom@example.org', cclist)
 
         # Validate with and without a default domain
         for enable in False, True:
@@ -322,13 +321,13 @@ class NotificationTestCase(unittest.TestCase):
         message = notifysuite.smtpd.get_message()
         headers, body = parse_smtp_message(message)
         # Msg should always have a 'To' field
-        self.assertFalse('To' not in headers)
+        self.assertIn('To', headers)
         tolist = [addr.strip() for addr in headers['To'].split(',')]
         # 'To' list should have been resolved to the real email address
-        self.assertFalse('user-joe@example.com' not in tolist)
-        self.assertFalse('user-jim@example.com' not in tolist)
-        self.assertFalse('joeuser' in tolist)
-        self.assertFalse('jim@domain' in tolist)
+        self.assertIn('user-joe@example.com', tolist)
+        self.assertIn('user-jim@example.com', tolist)
+        self.assertNotIn('joeuser', tolist)
+        self.assertNotIn('jim@domain', tolist)
 
     def test_from_author(self):
         """Using the reporter or change author as the notification sender"""
@@ -417,14 +416,14 @@ class NotificationTestCase(unittest.TestCase):
         message = notifysuite.smtpd.get_message()
         headers, body = parse_smtp_message(message)
         # Msg should always have a 'To' field
-        self.assertFalse('To' not in headers)
+        self.assertIn('To', headers)
         tolist = [addr.strip() for addr in headers['To'].split(',')]
         # 'To' list should not contain addresses with non-SMTP domains
-        self.assertFalse('kerberos@example.com' in tolist)
-        self.assertFalse('kerberos@example.org' in tolist)
+        self.assertNotIn('kerberos@example.com', tolist)
+        self.assertNotIn('kerberos@example.org', tolist)
         # 'To' list should have been resolved to the actual email address
-        self.assertFalse('kerb@example.net' not in tolist)
-        self.assertFalse(len(tolist) != 1)
+        self.assertIn('kerb@example.net', tolist)
+        self.assertEqual(1, len(tolist))
 
     def test_admit_domains(self):
         """SMTP domain inclusion"""
@@ -441,14 +440,14 @@ class NotificationTestCase(unittest.TestCase):
         message = notifysuite.smtpd.get_message()
         headers, body = parse_smtp_message(message)
         # Msg should always have a 'To' field
-        self.assertFalse('Cc' not in headers)
+        self.assertIn('Cc', headers)
         cclist = [addr.strip() for addr in headers['Cc'].split(',')]
         # 'Cc' list should contain addresses with SMTP included domains
-        self.assertFalse('joe.user@localdomain' not in cclist)
-        self.assertFalse('joe.user@server' not in cclist)
+        self.assertIn('joe.user@localdomain', cclist)
+        self.assertIn('joe.user@server', cclist)
         # 'Cc' list should not contain non-FQDN domains
-        self.assertFalse('joe.user@unknown' in cclist)
-        self.assertFalse(len(cclist) != 2+2)
+        self.assertNotIn('joe.user@unknown', cclist)
+        self.assertEqual(4, len(cclist))
 
     def test_multiline_header(self):
         """Encoded headers split into multiple lines"""
@@ -540,14 +539,14 @@ class NotificationTestCase(unittest.TestCase):
             message = notifysuite.smtpd.get_message()
             headers, body = parse_smtp_message(message)
             # checks for header existence
-            self.assertFalse(not headers)
+            self.assertTrue(headers)
             # checks for updater in the 'To' recipient list
-            self.assertFalse('To' not in headers)
+            self.assertIn('To', headers)
             tolist = [addr.strip() for addr in headers['To'].split(',')]
             if disabled:
-                self.assertFalse('joe.bar2@example.com' in tolist)
+                self.assertNotIn('joe.bar2@example.com', tolist)
             else:
-                self.assertFalse('joe.bar2@example.com' not in tolist)
+                self.assertIn('joe.bar2@example.com', tolist)
 
         # Validate with and without a default domain
         for disable in False, True:
@@ -573,9 +572,9 @@ class NotificationTestCase(unittest.TestCase):
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=True)
         recipients = notifysuite.smtpd.get_recipients()
-        self.assertFalse(recipients is None)
-        self.assertFalse(len(recipients) != 1)
-        self.assertFalse(recipients[0] != 'joe@example.com')
+        self.assertIsNotNone(recipients)
+        self.assertEqual(1, len(recipients))
+        self.assertEqual(recipients[0], 'joe@example.com')
 
     def test_updater_is_reporter(self):
         """Notification to reporter w/ updater option disabled (#3780)"""
@@ -598,9 +597,9 @@ class NotificationTestCase(unittest.TestCase):
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=True)
         recipients = notifysuite.smtpd.get_recipients()
-        self.assertFalse(recipients is None)
-        self.assertFalse(len(recipients) != 1)
-        self.assertFalse(recipients[0] != 'joe@example.org')
+        self.assertIsNotNone(recipients)
+        self.assertEqual(1, len(recipients))
+        self.assertEqual('joe@example.org', recipients[0])
 
     def _validate_mimebody(self, mime, ticket, newtk):
         """Body of a ticket notification message"""
@@ -609,19 +608,19 @@ class NotificationTestCase(unittest.TestCase):
         tn.notify(ticket, newticket=newtk)
         message = notifysuite.smtpd.get_message()
         headers, body = parse_smtp_message(message)
-        self.assertFalse('MIME-Version' not in headers)
-        self.assertFalse('Content-Type' not in headers)
-        self.assertFalse('Content-Transfer-Encoding' not in headers)
-        self.assertFalse(not re.compile(r"1.\d").match(headers['MIME-Version']))
+        self.assertIn('MIME-Version', headers)
+        self.assertIn('Content-Type', headers)
+        self.assertIn('Content-Transfer-Encoding', headers)
+        self.assertTrue(re.compile(r"1.\d").match(headers['MIME-Version']))
         type_re = re.compile(r'^text/plain;\scharset="([\w\-\d]+)"$')
         charset = type_re.match(headers['Content-Type'])
-        self.assertFalse(not charset)
+        self.assertTrue(charset)
         charset = charset.group(1)
-        self.assertEqual(charset, mime_charset)
+        self.assertEqual(mime_charset, charset)
         self.assertEqual(headers['Content-Transfer-Encoding'], mime_name)
         # checks the width of each body line
         for line in body.splitlines():
-            self.assertFalse(len(line) > MAXBODYWIDTH)
+            self.assertTrue(len(line) <= MAXBODYWIDTH)
         # attempts to decode the body, following the specified MIME encoding
         # and charset
         try:
@@ -640,22 +639,22 @@ class NotificationTestCase(unittest.TestCase):
         while not banner_delim_re.match(bodylines[0]):
             bodyheader.append(bodylines.pop(0))
         # summary should be present
-        self.assertFalse(not bodyheader)
+        self.assertTrue(bodyheader)
         # banner should not be empty
-        self.assertFalse(not bodylines)
+        self.assertTrue(bodylines)
         # extracts the ticket ID from the first line
         tknum, bodyheader[0] = bodyheader[0].split(' ', 1)
-        self.assertEqual(tknum[0], '#')
+        self.assertEqual('#', tknum[0])
         try:
             tkid = int(tknum[1:-1])
-            self.assertEqual(tkid, 1)
+            self.assertEqual(1, tkid)
         except ValueError:
             raise AssertionError("invalid ticket number")
-        self.assertEqual(tknum[-1], ':')
+        self.assertEqual(':', tknum[-1])
         summary = ' '.join(bodyheader)
         self.assertEqual(summary, ticket['summary'])
         # now checks the banner contents
-        self.assertFalse(not banner_delim_re.match(bodylines[0]))
+        self.assertTrue(banner_delim_re.match(bodylines[0]))
         banner = True
         footer = None
         props = {}
@@ -667,7 +666,7 @@ class NotificationTestCase(unittest.TestCase):
             if banner:
                 # parse banner and fill in a property dict
                 properties = line.split('|')
-                self.assertEqual(len(properties), 2)
+                self.assertEqual(2, len(properties))
                 for prop in properties:
                     if prop.strip() == '':
                         continue
@@ -682,7 +681,7 @@ class NotificationTestCase(unittest.TestCase):
             if footer is not None:
                 footer += 1
                 # invalid footer detection
-                self.assertFalse(footer > 3)
+                self.assertTrue(footer <= 3)
                 # check ticket link
                 if line[:11] == 'Ticket URL:':
                     ticket_link = self.env.abs_href.ticket(ticket.id)
@@ -696,10 +695,10 @@ class NotificationTestCase(unittest.TestCase):
             self.assertIn(p, props)
             # Email addresses might be obfuscated
             if '@' in ticket[p] and '@' in props[p]:
-                self.assertFalse(props[p].split('@')[0] !=
+                self.assertEqual(props[p].split('@')[0],
                                  ticket[p].split('@')[0])
             else:
-                self.assertFalse(props[p] != ticket[p])
+                self.assertEqual(props[p], ticket[p])
 
     def test_props_format_ambiwidth_single(self):
         self.env.config.set('notification', 'mime_encoding', 'none')
@@ -1113,7 +1112,7 @@ Security sensitive:  0                           |          Blocking:
         ticket.insert()
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=True)
-        self.assertNotEqual(None, notifysuite.smtpd.get_message())
+        self.assertIsNotNone(notifysuite.smtpd.get_message())
         self.assertEqual('My Summary', ticket['summary'])
         self.assertEqual('Some description', ticket['description'])
         valid_fieldnames = set([f['name'] for f in ticket.fields])
