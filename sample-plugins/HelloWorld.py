@@ -26,6 +26,7 @@ url = "$URL$"
 # ---- (ignore in your own macro) ----
 # --
 from trac.util import escape
+from trac.util.translation import cleandoc_
 
 def execute(hdf, txt, env):
     # Currently hdf is set only when the macro is called
