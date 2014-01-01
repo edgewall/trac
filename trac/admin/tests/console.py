@@ -17,7 +17,6 @@ import difflib
 import os
 import re
 import sys
-import tempfile
 import unittest
 from StringIO import StringIO
 
@@ -250,9 +249,8 @@ class TracadminTestCase(unittest.TestCase):
         """Tests the 'attachment add' command in trac-admin, on a non-existent
         resource."""
         test_name = sys._getframe().f_code.co_name
-        file = tempfile.NamedTemporaryFile()
         rv, output = self._execute('attachment add wiki:NonExistentPage %s'
-                                   % file.name)
+                                   % __file__)
         self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
