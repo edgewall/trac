@@ -17,7 +17,6 @@ import difflib
 import os
 import re
 import sys
-import tempfile
 import unittest
 from StringIO import StringIO
 
