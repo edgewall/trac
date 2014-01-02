@@ -160,8 +160,8 @@ class SmtpEmailSender(Component):
                 tag_("SMTP server connection error (%(error)s). Please modify"
                      "%(option1)s or %(option2)s in your configuration.",
                      error=to_unicode(e),
-                     option1=tag.tt("[notification] smtp_server"),
-                     option2=tag.tt("[notification] smtp_port")))
+                     option1=tag.code("[notification] smtp_server"),
+                     option2=tag.code("[notification] smtp_port")))
         # server.set_debuglevel(True)
         if self.use_tls:
             server.ehlo()
@@ -219,7 +219,7 @@ class SendmailEmailSender(Component):
                 tag_("Sendmail error (%(error)s). Please modify %(option)s "
                      "in your configuration.",
                      error=to_unicode(e),
-                     option=tag.tt("[notification] sendmail_path")))
+                     option=tag.code("[notification] sendmail_path")))
         out, err = child.communicate(message)
         if child.returncode or err:
             raise Exception("Sendmail failed with (%s, %s), command: '%s'"
