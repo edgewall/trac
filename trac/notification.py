@@ -157,8 +157,9 @@ class SmtpEmailSender(Component):
             server = smtplib.SMTP(self.smtp_server, self.smtp_port)
         except smtplib.socket.error, e:
             raise ConfigurationError(
-                tag_("SMTP server connection error (%(error)s). Please modify"
-                     "%(option1)s or %(option2)s in your configuration.",
+                tag_("SMTP server connection error (%(error)s). Please "
+                     "modify %(option1)s or %(option2)s in your "
+                     "configuration.",
                      error=to_unicode(e),
                      option1=tag.code("[notification] smtp_server"),
                      option2=tag.code("[notification] smtp_port")))

@@ -14,7 +14,7 @@
 import unittest
 
 from trac.tests import attachment, config, core, env, perm, notification, \
-                       resource,wikisyntax, functional
+                       resource, wikisyntax, functional
 
 def suite():
     suite = unittest.TestSuite()
