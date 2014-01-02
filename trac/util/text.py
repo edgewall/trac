@@ -61,10 +61,9 @@ def to_unicode(text, charset=None):
         except UnicodeDecodeError:
             return unicode(text, 'latin1')
     elif isinstance(text, Exception):
-        from trac.util import WindowsError
-        if isinstance(text, WindowsError):
-            # the exception has a string encoded with ANSI codepage if an
-            # WindowsError
+        if os.name == 'nt' and isinstance(text, (OSError, IOError)):
+            # the exception might have a localized error string encoded with
+            # ANSI codepage if OSError and IOError on Windows
             try:
                 return unicode(str(text), 'mbcs')
             except UnicodeError:

@@ -25,14 +25,13 @@ from datetime import datetime
 
 from trac.test import EnvironmentStub, Mock, MockPerm
 from trac.tests import compat
-from trac.tests.notification import SMTPThreadedServer, parse_smtp_message, \
-                                    smtp_address
+from trac.tests.notification import SMTP_TEST_PORT, SMTPThreadedServer,\
+                                    parse_smtp_message, smtp_address
 from trac.ticket.model import Ticket
 from trac.ticket.notification import TicketNotifyEmail
 from trac.ticket.web_ui import TicketModule
 from trac.util.datefmt import utc
 
-SMTP_TEST_PORT = 7000 + os.getpid() % 1000
 MAXBODYWIDTH = 76
 notifysuite = None
 

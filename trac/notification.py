@@ -22,11 +22,12 @@ import time
 from genshi.builder import tag
 
 from trac import __version__
-from trac.config import BoolOption, ExtensionOption, IntOption, Option
+from trac.config import BoolOption, ConfigurationError, ExtensionOption, \
+                        IntOption, Option
 from trac.core import *
 from trac.util.compat import close_fds
 from trac.util.html import to_fragment
-from trac.util.text import CRLF, fix_eol
+from trac.util.text import CRLF, fix_eol, to_unicode
 from trac.util.translation import _, deactivate, reactivate, tag_
 
 MAXHEADERLEN = 76
@@ -152,7 +153,15 @@ class SmtpEmailSender(Component):
 
         self.log.info("Sending notification through SMTP at %s:%d to %s"
                       % (self.smtp_server, self.smtp_port, recipients))
-        server = smtplib.SMTP(self.smtp_server, self.smtp_port)
+        try:
+            server = smtplib.SMTP(self.smtp_server, self.smtp_port)
+        except smtplib.socket.error, e:
+            raise ConfigurationError(
+                tag_("SMTP server connection error (%(error)s). Please modify"
+                     "%(option1)s or %(option2)s in your configuration.",
+                     error=to_unicode(e),
+                     option1=tag.tt("[notification] smtp_server"),
+                     option2=tag.tt("[notification] smtp_port")))
         # server.set_debuglevel(True)
         if self.use_tls:
             server.ehlo()
@@ -202,8 +211,15 @@ class SendmailEmailSender(Component):
         cmdline = [self.sendmail_path, "-i", "-f", from_addr]
         cmdline.extend(recipients)
         self.log.debug("Sendmail command line: %s" % cmdline)
-        child = Popen(cmdline, bufsize=-1, stdin=PIPE, stdout=PIPE,
-                      stderr=PIPE, close_fds=close_fds)
+        try:
+            child = Popen(cmdline, bufsize=-1, stdin=PIPE, stdout=PIPE,
+                          stderr=PIPE, close_fds=close_fds)
+        except OSError, e:
+            raise ConfigurationError(
+                tag_("Sendmail error (%(error)s). Please modify %(option)s "
+                     "in your configuration.",
+                     error=to_unicode(e),
+                     option=tag.tt("[notification] sendmail_path")))
         out, err = child.communicate(message)
         if child.returncode or err:
             raise Exception("Sendmail failed with (%s, %s), command: '%s'"

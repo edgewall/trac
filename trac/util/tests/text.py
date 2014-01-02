@@ -12,6 +12,7 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import os
+import socket
 import unittest
 from StringIO import StringIO
 
@@ -63,10 +64,23 @@ class ToUnicodeTestCase(unittest.TestCase):
             uc = to_unicode(e)
             self.assertIsInstance(uc, unicode, uc)
             self.assertTrue(uc.startswith('[Error '), uc)
-            self.assertTrue(e.strerror.decode('mbcs') in uc, uc)
+            self.assertIn(e.strerror.decode('mbcs'), uc)
+
+    def test_from_socket_error(self):
+        for res in socket.getaddrinfo('127.0.0.1', 65536, 0,
+                                      socket.SOCK_STREAM):
+            af, socktype, proto, canonname, sa = res
+            s = socket.socket(af, socktype, proto)
+            try:
+                s.connect(sa)
+            except socket.error, e:
+                uc = to_unicode(e)
+                self.assertIsInstance(uc, unicode, uc)
+                self.assertIn(e.strerror.decode('mbcs'), uc)
 
     if os.name != 'nt':
         del test_from_windows_error
+        del test_from_socket_error
 
 
 class ExpandtabsTestCase(unittest.TestCase):
