@@ -1448,8 +1448,7 @@ class TicketModule(Component):
         from trac.ticket.query import QueryModule
         if not self.env.is_component_enabled(QueryModule):
             return text or value
-        default_query = self.ticketlink_query.lstrip('?')
-        args = arg_list_to_args(parse_arg_list(default_query))
+        args = arg_list_to_args(parse_arg_list(self.ticketlink_query))
         args[name] = value
         if name == 'resolution':
             args['status'] = 'closed'
@@ -1462,9 +1461,7 @@ class TicketModule(Component):
         if not (isinstance(value, basestring) and  # None or other non-splitable
                 self.env.is_component_enabled(QueryModule)):
             return value
-        default_query = self.ticketlink_query.startswith('?') and \
-                        self.ticketlink_query[1:] or self.ticketlink_query
-        args = arg_list_to_args(parse_arg_list(default_query))
+        args = arg_list_to_args(parse_arg_list(self.ticketlink_query))
         items = []
         for i, word in enumerate(re.split(r'([;,\s]+)', value)):
             if i % 2:

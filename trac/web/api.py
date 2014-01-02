@@ -206,10 +206,13 @@ class _RequestArgs(dict):
 
 
 def parse_arg_list(query_string):
-    """Parse a query string into a list of `(name, value)` tuples."""
+    """Parse a query string into a list of `(name, value)` tuples.
+
+    :Since 1.1.2: a leading `?` is stripped from `query_string`."""
     args = []
     if not query_string:
         return args
+    query_string = query_string.lstrip('?')
     for arg in query_string.split('&'):
         nv = arg.split('=', 1)
         if len(nv) == 2:

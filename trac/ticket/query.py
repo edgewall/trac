@@ -903,7 +903,7 @@ class QueryModule(Component):
 
             self.log.debug('QueryModule: Using default query: %s', str(qstring))
             if qstring.startswith('?'):
-                arg_list = parse_arg_list(qstring[1:])
+                arg_list = parse_arg_list(qstring)
                 args = arg_list_to_args(arg_list)
                 constraints = self._get_constraints(arg_list=arg_list)
             else:
