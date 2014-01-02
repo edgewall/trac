@@ -29,11 +29,12 @@ import threading
 import unittest
 
 from trac.config import ConfigurationError
-from trac.notification import SendmailEmailSender
+from trac.notification import SendmailEmailSender, SmtpEmailSender
 from trac.test import EnvironmentStub
 
 LF = '\n'
 CR = '\r'
+SMTP_TEST_PORT = 7000 + os.getpid() % 1000
 email_re = re.compile(r'([\w\d_\.\-])+\@(([\w\d\-])+\.)+([\w\d]{2,4})+')
 header_re = re.compile(r'^=\?(?P<charset>[\w\d\-]+)\?(?P<code>[qb])\?(?P<value>.*)\?=$')
 
