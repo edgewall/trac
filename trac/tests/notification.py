@@ -20,11 +20,17 @@
 #
 
 import base64
+import os
 import quopri
 import re
 import socket
 import string
 import threading
+import unittest
+
+from trac.config import ConfigurationError
+from trac.notification import SendmailEmailSender
+from trac.test import EnvironmentStub
 
 LF = '\n'
 CR = '\r'
@@ -431,3 +437,41 @@ def parse_smtp_message(msg):
                     lh = h
     # returns the headers and the message body
     return headers, body
+
+
+class SendmailEmailSenderTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+
+    def test_sendmail_path_not_found_raises(self):
+        sender = SendmailEmailSender(self.env)
+        self.env.config.set('notification', 'sendmail_path',
+                            os.path.join(os.path.dirname(__file__),
+                                         'sendmail'))
+        self.assertRaises(ConfigurationError, sender.send,
+                          'admin@domain.com', ['foo@domain.com'], "")
+
+
+class SmtpEmailSenderTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+
+    def test_smtp_server_not_found_raises(self):
+        sender = SmtpEmailSender(self.env)
+        self.env.config.set('notification', 'smtp_server', 'localhost')
+        self.env.config.set('notification', 'smtp_port', '65536')
+        self.assertRaises(ConfigurationError, sender.send,
+                          'admin@domain.com', ['foo@domain.com'], "")
+
+
+def suite():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(SendmailEmailSenderTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(SmtpEmailSenderTestCase, 'test'))
+    return suite
+
+
+if __name__ == '__main__':
+    unittest.main(defaultTest='suite')
