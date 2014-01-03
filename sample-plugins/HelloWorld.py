@@ -53,11 +53,11 @@ class HelloWorldMacro(WikiMacroBase):
 
         `name` is the actual name of the macro (no surprise, here it'll be
         `'HelloWorld'`),
-        `args` is the text enclosed in parenthesis at the call of the macro.
-          Note that if there are ''no'' parenthesis (like in, e.g.
-          [[HelloWorld]]), then `args` is `None`.
+        `content` is the text enclosed in parenthesis at the call of the
+          macro. Note that if there are ''no'' parenthesis (like in, e.g.
+          [[HelloWorld]]), then `content` is `None`.
         """
-        return 'Hello World, args = ' + unicode(content)
+        return 'Hello World, content = ' + unicode(content)
     
     # Note that there's no need to HTML escape the returned data,
     # as the template engine (Genshi) will do it for us.
