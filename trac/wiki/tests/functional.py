@@ -24,10 +24,27 @@ except ImportError:
 
 class TestWiki(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Create a wiki page and attach a file"""
-        # TODO: this should be split into multiple tests
-        pagename = self._tester.create_wiki_page()
-        self._tester.attach_file_to_wiki(pagename)
+        """Create a wiki page."""
+        self._tester.create_wiki_page()
+
+
+class TestWikiAddAttachment(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Add attachment to a wiki page. Test that the attachment
+        button reads 'Attach file' when no files have been attached, and
+        'Attach another file' when there are existing attachments.
+        Feature added in http://trac.edgewall.org/ticket/10281"""
+        name = self._tester.create_wiki_page()
+        self._tester.go_to_wiki(name)
+        tc.find("Attach file")
+        filename = self._tester.attach_file_to_wiki(name)
+
+        self._tester.go_to_wiki(name)
+        tc.find("Attach another file")
+        tc.find('Attachments <span class="trac-count">\(1\)</span>')
+        tc.find(filename)
+        tc.find('Download all attachments as:\s+<a rel="nofollow" '
+                'href="/zip-attachment/wiki/%s/">.zip</a>' % name)
 
 
 class TestWikiHistory(FunctionalTwillTestCaseSetup):
@@ -56,8 +73,8 @@ class TestWikiReadonlyAttribute(FunctionalTwillTestCaseSetup):
             self._testenv.get_config('trac', 'permission_policies')
         readonly_checkbox = '<input type="checkbox" name="readonly" ' + \
                             'id="readonly" />'
-        attach_button = '<input type="submit" name="attachfilebutton" ' + \
-                        'value="Attach another file" />'
+        attach_button = '<input type="submit" id="attachfilebutton" ' + \
+                        'value="Attach.+file" />'
         try:
             # User without WIKI_ADMIN can't set a page read-only
             tc.formvalue('modifypage', 'action', 'edit')
@@ -394,6 +411,7 @@ def functionalSuite(suite=None):
         import trac.tests.functional
         suite = trac.tests.functional.functionalSuite()
     suite.addTest(TestWiki())
+    suite.addTest(TestWikiAddAttachment())
     suite.addTest(TestWikiHistory())
     suite.addTest(TestWikiReadonlyAttribute())
     suite.addTest(TestWikiRename())

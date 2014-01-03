@@ -464,8 +464,7 @@ class FunctionalTester(object):
             filename = random_word()
 
         tc.submit('attachfilebutton', 'attachfile')
-        tc.url(self.url + '/attachment/%s/%s/\\?action=new&'
-                          'attachfilebutton=Attach\\+file$' % (realm, name))
+        tc.url(self.url + r'/attachment/%s/%s/\?action=new$' % (realm, name))
         fp = StringIO(data)
         tc.formfile('attachment', 'attachment', filename,
                     content_type=content_type, fp=fp)
@@ -473,6 +472,6 @@ class FunctionalTester(object):
         if replace:
             tc.formvalue('attachment', 'replace', True)
         tc.submit()
-        tc.url(self.url + '/attachment/%s/%s/$' % (realm, name))
+        tc.url(self.url + r'/attachment/%s/%s/$' % (realm, name))
 
         return filename
