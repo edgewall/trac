@@ -32,12 +32,29 @@ except ImportError:
 
 class TestTickets(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Create a ticket, comment on it, and attach a file"""
+        """Create a ticket and comment on it."""
         # TODO: this should be split into multiple tests
-        ticketid = self._tester.create_ticket()
-        self._tester.create_ticket()
-        self._tester.add_comment(ticketid)
-        self._tester.attach_file_to_ticket(ticketid)
+        id = self._tester.create_ticket()
+        self._tester.add_comment(id)
+
+
+class TestTicketAddAttachment(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Add attachment to a ticket. Test that the attachment button
+        reads 'Attach file' when no files have been attached, and 'Attach
+        another file' when there are existing attachments.
+        Feature added in http://trac.edgewall.org/ticket/10281"""
+        id = self._tester.create_ticket()
+        self._tester.go_to_ticket(id)
+        tc.find("Attach file")
+        filename = self._tester.attach_file_to_ticket(id)
+
+        self._tester.go_to_ticket(id)
+        tc.find("Attach another file")
+        tc.find('Attachments <span class="trac-count">\(1\)</span>')
+        tc.find(filename)
+        tc.find('Download all attachments as:\s+<a rel="nofollow" '
+                'href="/zip-attachment/ticket/%s/">.zip</a>' % id)
 
 
 class TestTicketPreview(FunctionalTwillTestCaseSetup):
@@ -1326,16 +1343,21 @@ class TestMilestone(FunctionalTwillTestCaseSetup):
 
 class TestMilestoneAddAttachment(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Add attachment to a milestone."""
-        milestone_name = self._tester.create_milestone()
-        filename = self._tester.attach_file_to_milestone(milestone_name)
+        """Add attachment to a milestone. Test that the attachment
+        button reads 'Attach file' when no files have been attached, and
+        'Attach another file' when there are existing attachments.
+        Feature added in http://trac.edgewall.org/ticket/10281."""
+        name = self._tester.create_milestone()
+        self._tester.go_to_milestone(name)
+        tc.find("Attach file")
+        filename = self._tester.attach_file_to_milestone(name)
 
-        self._tester.go_to_milestone(milestone_name)
+        self._tester.go_to_milestone(name)
+        tc.find("Attach another file")
         tc.find('Attachments <span class="trac-count">\(1\)</span>')
         tc.find(filename)
-        tc.find('Download all attachments as:[ \n\t]+<a rel="nofollow" '
-                'href="/zip-attachment/milestone/%s/">.zip</a>'
-                % milestone_name)
+        tc.find('Download all attachments as:\s+<a rel="nofollow" '
+                'href="/zip-attachment/milestone/%s/">.zip</a>' % name)
 
 
 class TestMilestoneClose(FunctionalTwillTestCaseSetup):
@@ -2181,6 +2203,7 @@ def functionalSuite(suite=None):
         import trac.tests.functional
         suite = trac.tests.functional.functionalSuite()
     suite.addTest(TestTickets())
+    suite.addTest(TestTicketAddAttachment())
     suite.addTest(TestTicketPreview())
     suite.addTest(TestTicketNoSummary())
     suite.addTest(TestTicketAltFormats())
