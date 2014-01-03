@@ -71,7 +71,7 @@ class WikiMacroBase(Component):
     def parse_macro(self, parser, name, content):
         raise NotImplementedError
 
-    def expand_macro(self, formatter, name, content):
+    def expand_macro(self, formatter, name, content, args=None):
         raise NotImplementedError(
             "pre-0.11 Wiki macro %s by provider %s no longer supported" %
             (name, self.__class__))
@@ -739,10 +739,10 @@ class TracIniMacro(WikiMacroBase):
     options whose section and name start with the filters are output.
     """)
 
-    def expand_macro(self, formatter, name, args):
+    def expand_macro(self, formatter, name, content):
         from trac.config import ConfigSection, Option
         section_filter = key_filter = ''
-        args, kw = parse_args(args)
+        args, kw = parse_args(content)
         if args:
             section_filter = args.pop(0).strip()
         if args:
@@ -799,11 +799,11 @@ class KnownMimeTypesMacro(WikiMacroBase):
     Can be given an optional argument which is interpreted as mime-type filter.
     """)
 
-    def expand_macro(self, formatter, name, args):
+    def expand_macro(self, formatter, name, content):
         from trac.mimeview.api import Mimeview
         mime_map = Mimeview(self.env).mime_map
         mime_type_filter = ''
-        args, kw = parse_args(args)
+        args, kw = parse_args(content)
         if args:
             mime_type_filter = args.pop(0).strip().rstrip('*')
 
@@ -866,7 +866,7 @@ class TracGuideTocMacro(WikiMacroBase):
            ('TracNotification',             'Notification'),
           ]
 
-    def expand_macro(self, formatter, name, args):
+    def expand_macro(self, formatter, name, content):
         curpage = formatter.resource.id
 
         # scoped TOC (e.g. TranslateRu/TracGuide or 0.11/TracGuide ...)

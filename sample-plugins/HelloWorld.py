@@ -64,7 +64,7 @@ class HelloWorldMacro(WikiMacroBase):
     the !MacroList macro (usually used in the TracWikiMacros page).
     """)
 
-    def expand_macro(self, formatter, name, args):
+    def expand_macro(self, formatter, name, content):
         """Return some output that will be displayed in the Wiki content.
 
         `name` is the actual name of the macro (no surprise, here it'll be
@@ -73,7 +73,7 @@ class HelloWorldMacro(WikiMacroBase):
           Note that if there are ''no'' parenthesis (like in, e.g.
           [[HelloWorld]]), then `args` is `None`.
         """
-        return 'Hello World, args = ' + unicode(args)
+        return 'Hello World, args = ' + unicode(content)
 
     # Note that there's no need to HTML escape the returned data,
     # as the template engine (Genshi) will do it for us.
