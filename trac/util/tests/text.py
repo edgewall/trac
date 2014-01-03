@@ -76,7 +76,8 @@ class ToUnicodeTestCase(unittest.TestCase):
             except socket.error, e:
                 uc = to_unicode(e)
                 self.assertIsInstance(uc, unicode, uc)
-                self.assertIn(e.strerror.decode('mbcs'), uc)
+                if hasattr(e, 'strerror'):
+                    self.assertIn(e.strerror.decode('mbcs'), uc)
 
     if os.name != 'nt':
         del test_from_windows_error
