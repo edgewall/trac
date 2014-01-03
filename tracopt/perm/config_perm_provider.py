@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2009 Edgewall Software
+# Copyright (C) 2009-2013 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -17,7 +17,10 @@ from trac.perm import IPermissionRequestor
 
 
 class ExtraPermissionsProvider(Component):
-    """Extra permission provider."""
+    """Define arbitrary permissions.
+
+    Documentation can be found on the [wiki:TracIni#extra-permissions-section]
+    page after enabling the component."""
 
     implements(IPermissionRequestor)
 
