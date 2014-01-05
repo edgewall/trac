@@ -981,6 +981,7 @@ class Chrome(Component):
         if content_type is None:
             content_type = 'text/html'
         method = {'text/html': 'xhtml',
+                  'text/css':  'text',
                   'text/plain': 'text'}.get(content_type, 'xml')
 
         if method == "xhtml":
