@@ -22,6 +22,7 @@ jQuery(function($){
     dateFormat: jquery_ui.date_format,
     firstDay: jquery_ui.first_week_day,
     isRTL: false,
+    showButtonPanel: true,
     showMonthAfterYear: formatMonth.indexOf('$month') >
                         formatMonth.indexOf('$year')
   });
