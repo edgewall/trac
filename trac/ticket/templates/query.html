@@ -124,7 +124,8 @@
                         <py:when test="field.type == 'time'"
                                  py:with="(start, end) = '..' in constraint_value and constraint_value.split('..', 1)
                                                          or (constraint_value, '');
-                                          date_or_datetime = field.get('format', 'datetime')">
+                                          format = field.get('format', 'datetime');
+                                          date_or_datetime = 'date' if format == 'relative' else format;">
                           <i18n:msg>
                             <label>between</label>
                             <input type="text" name="${n_field_name}" value="$start" size="14" class="trac-${date_or_datetime}picker" />
