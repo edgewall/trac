@@ -295,11 +295,6 @@ class RaiseExceptionPlugin(Component):
             env.config.set('components', 'RaiseExceptionPlugin.*', 'disabled')
 
 
-def functionalSuite():
-    suite = FunctionalTestSuite()
-    return suite
-
-
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
