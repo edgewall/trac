@@ -333,8 +333,7 @@
           focusElement = createText(inputName, 42).addClass("time");
           if (property.format == "datetime") {
             focusElement.datetimepicker();
-          } else if (property.format == "date" ||
-                     property.format == "relative") {
+          } else if (property.format == "date") {
             focusElement.datepicker();
           }
           td.append(focusElement);
