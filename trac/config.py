@@ -736,9 +736,9 @@ class ExtensionOption(Option):
                  "interface named %(implementation)s. Please check "
                  "that the Component is enabled or update the option "
                  "%(option)s in trac.ini.",
-                 interface=tag.tt(self.xtnpt.interface.__name__),
-                 implementation=tag.tt(value),
-                 option=tag.tt("[%s] %s" % (self.section, self.name))))
+                 interface=tag.code(self.xtnpt.interface.__name__),
+                 implementation=tag.code(value),
+                 option=tag.code("[%s] %s" % (self.section, self.name))))
 
 
 class OrderedExtensionsOption(ListOption):
@@ -772,11 +772,11 @@ class OrderedExtensionsOption(ListOption):
                      "interface named %(implementation)s. Please check "
                      "that the Component is enabled or update the option "
                      "%(option)s in trac.ini.",
-                     interface=tag.tt(self.xtnpt.interface.__name__),
+                     interface=tag.code(self.xtnpt.interface.__name__),
                      implementation=tag(
-                         (', ' if idx != 0 else None, tag.tt(impl))
+                         (', ' if idx != 0 else None, tag.code(impl))
                          for idx, impl in enumerate(not_found)),
-                     option=tag.tt("[%s] %s" % (self.section, self.name))))
+                     option=tag.code("[%s] %s" % (self.section, self.name))))
 
         def compare(x, y):
             x, y = x.__class__.__name__, y.__class__.__name__
