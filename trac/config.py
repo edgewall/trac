@@ -18,12 +18,13 @@ from ConfigParser import ConfigParser
 from copy import deepcopy
 import os.path
 
+from genshi.builder import tag
 from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.core import *
 from trac.util import AtomicFile, as_bool
 from trac.util.compat import cleandoc, wait_for_file_mtime_change
 from trac.util.text import printout, to_unicode, CRLF
-from trac.util.translation import _, N_
+from trac.util.translation import _, N_, tag_
 
 __all__ = ['Configuration', 'ConfigSection', 'Option', 'BoolOption',
            'IntOption', 'FloatOption', 'ListOption', 'ChoiceOption',
@@ -731,11 +732,13 @@ class ExtensionOption(Option):
             if impl.__class__.__name__ == value:
                 return impl
         raise ConfigurationError(
-            _('Cannot find an implementation of the "%(interface)s" '
-              'interface named "%(implementation)s".  Please update '
-              'the option %(section)s.%(name)s in trac.ini.',
-              interface=self.xtnpt.interface.__name__, implementation=value,
-              section=self.section, name=self.name))
+            tag_("Cannot find an implementation of the %(interface)s "
+                 "interface named %(implementation)s. Please check "
+                 "that the Component is enabled or update the option "
+                 "%(option)s in trac.ini.",
+                 interface=tag.tt(self.xtnpt.interface.__name__),
+                 implementation=tag.tt(value),
+                 option=tag.tt("[%s] %s" % (self.section, self.name))))
 
 
 class OrderedExtensionsOption(ListOption):
@@ -762,15 +765,18 @@ class OrderedExtensionsOption(ListOption):
             implementing_classes.append(impl.__class__.__name__)
             if self.include_missing or impl.__class__.__name__ in order:
                 components.append(impl)
-        not_found = set(order) - set(implementing_classes)
+        not_found = sorted(set(order) - set(implementing_classes))
         if not_found:
             raise ConfigurationError(
-                _('Cannot find implementation(s) of the "%(interface)s" '
-                  'interface named "%(implementation)s".  Please update '
-                  'the option %(section)s.%(name)s in trac.ini.',
-                  interface=self.xtnpt.interface.__name__,
-                  implementation=', '.join(not_found),
-                  section=self.section, name=self.name))
+                tag_("Cannot find implementation(s) of the %(interface)s "
+                     "interface named %(implementation)s. Please check "
+                     "that the Component is enabled or update the option "
+                     "%(option)s in trac.ini.",
+                     interface=tag.tt(self.xtnpt.interface.__name__),
+                     implementation=tag(
+                         (', ' if idx != 0 else None, tag.tt(impl))
+                         for idx, impl in enumerate(not_found)),
+                     option=tag.tt("[%s] %s" % (self.section, self.name))))
 
         def compare(x, y):
             x, y = x.__class__.__name__, y.__class__.__name__
