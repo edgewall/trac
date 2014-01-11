@@ -2,6 +2,7 @@
 #!/usr/bin/python
 import os
 from trac.tests.functional import *
+from trac.util import create_file
 
 
 class RegressionTestRev6017(FunctionalTwillTestCaseSetup):
@@ -178,6 +179,8 @@ class ErrorPageValidation(FunctionalTwillTestCaseSetup):
         tc.go(url + '?version=bug')
         tc.url(url)
         tc.find(internal_error)
+        tc.find('<form class="newticket" method="get" '
+                'action="http://trac.edgewall.org/newticket">')
 
 
 class RegressionTestTicket3663(FunctionalTwillTestCaseSetup):
@@ -194,6 +197,46 @@ class RegressionTestTicket3663(FunctionalTwillTestCaseSetup):
         tc.go(u'été'.encode('latin1'))
         tc.code(404)
         tc.find('Invalid URL encoding')
+
+
+class RegressionTestTicket11434(FunctionalTwillTestCaseSetup):
+    """Test for regression of http://trac.edgewall.org/ticket/11434
+    Defects reported to trac-hacks should use the Component defined in the
+    plugin's URL.
+    """
+    def runTest(self):
+        env = self._testenv.get_trac_environment()
+        env.config.set('components', 'RaiseExceptionPlugin.*', 'enabled')
+        env.config.save()
+        create_file(os.path.join(env.path, 'plugins', 'RaiseExceptionPlugin.py'),
+"""\
+from trac.core import Component, implements
+from trac.web.api import IRequestHandler
+
+url = 'http://trac-hacks.org/wiki/HelloWorldMacro'
+
+class RaiseExceptionPlugin(Component):
+    implements(IRequestHandler)
+
+    def match_request(self, req):
+        if req.path_info == '/raise-exception':
+            return True
+
+    def process_request(self, req):
+        raise Exception
+
+""")
+        self._testenv.restart()
+
+        try:
+            tc.go(self._tester.url + '/raise-exception')
+            tc.find(internal_error)
+            tc.find('<form class="newticket" method="get" '
+                    'action="http://trac-hacks.org/newticket">')
+            tc.find('<input type="hidden" name="component" '
+                    'value="HelloWorldMacro" />')
+        finally:
+            env.config.set('components', 'RaiseExceptionPlugin.*', 'disabled')
 
 
 def functionalSuite():
@@ -213,6 +256,7 @@ def suite():
     suite.addTest(RegressionTestTicket9880())
     suite.addTest(ErrorPageValidation())
     suite.addTest(RegressionTestTicket3663())
+    suite.addTest(RegressionTestTicket11434())
 
     import trac.versioncontrol.tests
     trac.versioncontrol.tests.functionalSuite(suite)

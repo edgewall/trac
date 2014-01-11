@@ -58,6 +58,7 @@
     <input type="hidden" name="reporter" value="${get_reporter_id(req)}" />
     <input py:if="url == trac.homepage.strip('/')" type="hidden" name="version"
            value="${'dev' in trac.version and trac.version.split('-', 1)[0] or trac.version}" />
+    <input type="hidden" name="$arg" value="$value" py:for="arg, value in tracker_args.iteritems()" />
     <input type="hidden" name="summary" value="$message" />
     <textarea name="description" rows="3" cols="10">
 ${url and description_en or description}</textarea>

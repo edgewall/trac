@@ -584,6 +584,7 @@ def send_internal_error(env, req, exc_info):
         pass
 
     tracker = default_tracker
+    tracker_args = {}
     if has_admin and not isinstance(exc_info[1], MemoryError):
         # Collect frame and plugin information
         frames = get_frame_info(exc_info[2])
@@ -603,6 +604,9 @@ def send_internal_error(env, req, exc_info):
                     tracker = info['trac']
                 elif info.get('home_page', '').startswith(th):
                     tracker = th
+                    plugin_name = info.get('home_page', '').rstrip('/') \
+                                                           .split('/')[-1]
+                    tracker_args = {'component': plugin_name}
 
     def get_description(_):
         if env and has_admin:
@@ -653,7 +657,7 @@ User agent: `#USER_AGENT#`
             'traceback': traceback, 'frames': frames,
             'shorten_line': shorten_line,
             'plugins': plugins, 'faulty_plugins': faulty_plugins,
-            'tracker': tracker,
+            'tracker': tracker, 'tracker_args': tracker_args,
             'description': description, 'description_en': description_en}
 
     try:
