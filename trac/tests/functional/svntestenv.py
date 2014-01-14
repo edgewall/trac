@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2009-2013 Edgewall Software
+# Copyright (C) 2009-2014 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -68,7 +68,7 @@ class SvnFunctionalTestEnvironment(FunctionalTestEnvironment):
                              + [self.repo_url() + '/' + d for d in paths])
         self.call_in_workdir(['svn', 'update'])
 
-    def svn_add(self, filename, data):
+    def svn_add(self, filename, data, msg=None, username='admin'):
         """Subversion helper to add a file to the given path within the main
         repository.
 
@@ -83,8 +83,9 @@ class SvnFunctionalTestEnvironment(FunctionalTestEnvironment):
         self.call_in_workdir(['svn', 'add', filename])
         environ = os.environ.copy()
         environ['LC_ALL'] = 'C'     # Force English messages in svn
-        output = self.call_in_workdir(['svn', '--username=admin', 'commit',
-                                       '-m', 'Add %s' % filename, filename],
+        msg = 'Add %s' % filename if msg is None else msg
+        output = self.call_in_workdir(['svn', '--username=%s' % username,
+                                       'commit', '-m', msg, filename],
                                       environ=environ)
         try:
             revision = re.search(r'Committed revision ([0-9]+)\.',
