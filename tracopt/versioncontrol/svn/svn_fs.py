@@ -47,6 +47,8 @@ Warning:
   those properties...
 """
 
+from __future__ import with_statement
+
 import os.path
 import re
 import weakref
@@ -60,12 +62,14 @@ from trac.versioncontrol import Changeset, Node, Repository, \
                                 NoSuchChangeset, NoSuchNode
 from trac.versioncontrol.cache import CachedRepository
 from trac.util import embedded_numbers
+from trac.util.concurrency import threading
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _
 from trac.util.datefmt import from_utimestamp, to_datetime, utc
 
 
 application_pool = None
+application_pool_lock = threading.Lock()
 
 
 def _import_svn():
@@ -155,19 +159,21 @@ class Pool(object):
         """Create a new memory pool"""
 
         global application_pool
-        self._parent_pool = parent_pool or application_pool
 
-        # Create pool
-        if self._parent_pool:
-            self._pool = core.svn_pool_create(self._parent_pool())
-        else:
-            # If we are an application-level pool,
-            # then initialize APR and set this pool
-            # to be the application-level pool
-            core.apr_initialize()
-            application_pool = self
+        with application_pool_lock:
+            self._parent_pool = parent_pool or application_pool
 
-            self._pool = core.svn_pool_create(None)
+            # Create pool
+            if self._parent_pool:
+                self._pool = core.svn_pool_create(self._parent_pool())
+            else:
+                # If we are an application-level pool,
+                # then initialize APR and set this pool
+                # to be the application-level pool
+                core.apr_initialize()
+                self._pool = core.svn_pool_create(None)
+                application_pool = self
+
         self._mark_valid()
 
     def __call__(self):
