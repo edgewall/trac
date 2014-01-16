@@ -21,6 +21,7 @@ from trac.tests import compat
 from trac import db_default
 from trac.core import ComponentManager
 from trac.env import Environment
+from trac.test import EnvironmentStub
 
 
 class EnvironmentCreatedWithoutData(Environment):
@@ -104,6 +105,12 @@ class EnvironmentTestCase(unittest.TestCase):
         self.assertEqual(('Tom', 'tom@example.com'), users['tom'])
         self.assertEqual((None, 'joe@example.com'), users['joe'])
         self.assertEqual(('Jane', None), users['jane'])
+
+    def test_is_component_enabled(self):
+        self.assertEqual(True, Environment.required)
+        self.assertEqual(True, self.env.is_component_enabled(Environment))
+        self.assertEqual(False, EnvironmentStub.required)
+        self.assertEqual(None, self.env.is_component_enabled(EnvironmentStub))
 
 
 def suite():

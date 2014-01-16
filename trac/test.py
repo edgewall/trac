@@ -233,6 +233,7 @@ class EnvironmentStub(Environment):
 
     href = abs_href = None
     global_databasemanager = None
+    required = False
 
     def __init__(self, default_data=False, enable=None, disable=None,
                  path=None, destroying=False):
