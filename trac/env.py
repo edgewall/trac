@@ -369,8 +369,10 @@ class Environment(Component, ComponentManager):
                 break
             cname = cname[:idx]
 
-        # By default, all components in the trac package are enabled
-        return component_name.startswith('trac.') or None
+        # By default, all components in the trac package except
+        # trac.test are enabled
+        return component_name.startswith('trac.') and \
+               not component_name.startswith('trac.test.') or None
 
     def enable_component(self, cls):
         """Enable a component or module."""
