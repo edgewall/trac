@@ -241,6 +241,7 @@ class EnvironmentStub(Environment):
 
     href = abs_href = None
     dbenv = db = None
+    required = False
 
     def __init__(self, default_data=False, enable=None):
         """Construct a new Environment stub object.
