@@ -239,7 +239,7 @@ def match_plugins_to_frames(plugins, frames):
                 pass    # Metadata not found
     
     for plugin in plugins:
-        base, ext = os.path.splitext(plugin['path'])
+        base, ext = os.path.splitext(plugin['path'].replace('\\', '/'))
         if ext == '.egg' and egg_frames:
             find_egg_frame_index(plugin)
         else:
