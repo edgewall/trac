@@ -421,39 +421,39 @@
                "indeterminate": !(noneSelected || allSelected)});
     });
 
-    // At least one ticket must be selected to submit the batch
-    $("#batchmod_submit").disableSubmit("input[name='selected_ticket']");
+    // Prevent submit of form if required items are not selected.
+    $("#batchmod_submit").disableSubmit("input[name='selected_ticket']")
+      .click(function() {
+        var valid = true;
+        // Remove existing validation messages.
+        $(".batchmod_required").remove();
+        // Check that each radio property has something selected.
+        getDisabledBatchOptions().each(function() {
+          var propertyName = $(this).val();
+          if (properties[propertyName].type == "radio") {
+            var isChecked = false;
+            var inputName = getBatchInputName(propertyName);
+            $("[name=" + inputName + "]").each(function() {
+              isChecked = isChecked || $(this).is(':checked');
+            });
+            if (!isChecked) {
+              // Select the last label in the row to add the error message.
+              $("[name=" + inputName + "] ~ label:last")
+                .after('<span class="batchmod_required">Required</span>');
+              valid = false;
+            }
+          }
+        });
+        return valid;
+      });
 
+    // Create an array of selected items on form submit.
     $("form#batchmod_form").submit(function() {
-      // First remove all existing validation messages.
-      $(".batchmod_required").remove();
-
-      var valid = true;
       var selectedTix = [];
       $("input[name=selected_ticket]:checked").each(function() {
         selectedTix.push(this.value);
       });
       $("input[name=selected_tickets]").val(selectedTix);
-
-      // Check that each radio property has something selected.
-      getDisabledBatchOptions().each(function() {
-        var propertyName = $(this).val();
-        if (properties[propertyName].type == "radio") {
-          var isChecked = false;
-          var inputName = getBatchInputName(propertyName);
-          $("[name=" + inputName + "]").each(function() {
-            isChecked = isChecked || $(this).is(':checked');
-          });
-          if (!isChecked) {
-            // Select the last label in the row to add the error message
-            $("[name=" + inputName + "] ~ label:last")
-              .after('<span class="batchmod_required">Required</span>');
-            valid = false;
-          }
-        }
-      });
-
-      return valid;
     });
 
     // Collapse the form by default
