@@ -560,12 +560,12 @@ def suite():
     suite = unittest.TestSuite()
     git = locate("git")
     if git:
-        suite.addTest(unittest.makeSuite(GitTestCase, 'test'))
-        suite.addTest(unittest.makeSuite(TestParseCommit, 'test'))
-        suite.addTest(unittest.makeSuite(NormalTestCase, 'test'))
+        suite.addTest(unittest.makeSuite(GitTestCase))
+        suite.addTest(unittest.makeSuite(TestParseCommit))
+        suite.addTest(unittest.makeSuite(NormalTestCase))
         if os.name != 'nt':
             # Popen doesn't accept unicode path and arguments on Windows
-            suite.addTest(unittest.makeSuite(UnicodeNameTestCase, 'test'))
+            suite.addTest(unittest.makeSuite(UnicodeNameTestCase))
     else:
         print("SKIP: tracopt/versioncontrol/git/tests/PyGIT.py (git cli "
               "binary, 'git', not found)")

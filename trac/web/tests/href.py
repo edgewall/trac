@@ -110,7 +110,7 @@ class HrefTestCase(unittest.TestCase):
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(trac.web.href))
-    suite.addTest(unittest.makeSuite(HrefTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(HrefTestCase))
     return suite
 
 if __name__ == '__main__':

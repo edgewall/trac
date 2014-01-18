@@ -309,7 +309,7 @@ class BatchModifyTestCase(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(BatchModifyTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(BatchModifyTestCase))
     return suite
 
 if __name__ == '__main__':

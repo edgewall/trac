@@ -160,8 +160,8 @@ class PostgresTableAlterationSQLTest(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(PostgresTableCreationSQLTest, 'test'))
-    suite.addTest(unittest.makeSuite(PostgresTableAlterationSQLTest, 'test'))
+    suite.addTest(unittest.makeSuite(PostgresTableCreationSQLTest))
+    suite.addTest(unittest.makeSuite(PostgresTableAlterationSQLTest))
     return suite
 
 

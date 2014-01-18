@@ -59,7 +59,6 @@ class RegressionTestRev6017(FunctionalTwillTestCaseSetup):
             # Remove the DeleteTicket plugin
             env.config.set('ticket', 'workflow', prevconfig)
             env.config.save()
-            self._testenv.restart()
             for ext in ('py', 'pyc', 'pyo'):
                 filename = os.path.join(self._testenv.tracdir, 'plugins',
                                         'DeleteTicket.%s' % ext)
@@ -134,7 +133,6 @@ class RegressionTestTicket3833c(FunctionalTestCaseSetup):
         success = debug3.find("RegressionTestTicket3833 debug3") != -1
         if not success:
             # Ok, the testcase failed, but we really need logging enabled.
-            self._testenv.restart()
             env.log.debug("RegressionTestTicket3833 fixup3")
             fixup3 = traclogfile.read()
             message = 'Logging still off when it should have been on.\n' \
@@ -282,7 +280,6 @@ class RaiseExceptionPlugin(Component):
         raise Exception
 
 """)
-        self._testenv.restart()
 
         try:
             tc.go(self._tester.url + '/raise-exception')

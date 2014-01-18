@@ -469,8 +469,8 @@ class SmtpEmailSenderTestCase(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(SendmailEmailSenderTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(SmtpEmailSenderTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(SendmailEmailSenderTestCase))
+    suite.addTest(unittest.makeSuite(SmtpEmailSenderTestCase))
     return suite
 
 

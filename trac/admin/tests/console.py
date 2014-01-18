@@ -1447,7 +1447,8 @@ class TracadminTestCase(unittest.TestCase):
 
 
 def suite():
-    return unittest.makeSuite(TracadminTestCase, 'test')
+    return unittest.makeSuite(TracadminTestCase)
+
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='suite')

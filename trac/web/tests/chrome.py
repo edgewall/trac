@@ -371,8 +371,8 @@ class ChromeTestCase2(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ChromeTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(ChromeTestCase2, 'test'))
+    suite.addTest(unittest.makeSuite(ChromeTestCase))
+    suite.addTest(unittest.makeSuite(ChromeTestCase2))
     return suite
 
 if __name__ == '__main__':

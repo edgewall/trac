@@ -1137,7 +1137,7 @@ class NotificationTestSuite(unittest.TestSuite):
         unittest.TestSuite.__init__(self)
         self.smtpd = SMTPThreadedServer(SMTP_TEST_PORT)
         self.smtpd.start()
-        self.addTest(unittest.makeSuite(NotificationTestCase, 'test'))
+        self.addTest(unittest.makeSuite(NotificationTestCase))
         self.remaining = self.countTestCases()
 
     def tear_down(self):
@@ -1157,4 +1157,4 @@ def suite():
     return notifysuite
 
 if __name__ == '__main__':
-    unittest.TextTestRunner(verbosity=2).run(suite())
+    unittest.main(defaultTest='suite')

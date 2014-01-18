@@ -85,7 +85,7 @@ This is the first comment after an edit. Refs #1, #2.
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(CommitTicketUpdaterTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(CommitTicketUpdaterTestCase))
     return suite
 
 

@@ -242,9 +242,9 @@ class ToFragmentTestCase(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TracHTMLSanitizerTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(FindElementTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(ToFragmentTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(TracHTMLSanitizerTestCase))
+    suite.addTest(unittest.makeSuite(FindElementTestCase))
+    suite.addTest(unittest.makeSuite(ToFragmentTestCase))
     return suite
 
 

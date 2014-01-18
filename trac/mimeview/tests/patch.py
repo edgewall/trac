@@ -125,7 +125,7 @@ class PatchRendererTestCase(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(PatchRendererTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(PatchRendererTestCase))
     return suite
 
 if __name__ == '__main__':

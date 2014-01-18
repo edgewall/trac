@@ -107,7 +107,8 @@ Bar
 
 
 def suite():
-    return unittest.makeSuite(TicketConversionTestCase, 'test')
+    return unittest.makeSuite(TicketConversionTestCase)
+
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='suite')

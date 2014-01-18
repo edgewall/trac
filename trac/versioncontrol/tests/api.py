@@ -114,10 +114,10 @@ class ResourceManagerTestCase(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ApiTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(ResourceManagerTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(ApiTestCase))
+    suite.addTest(unittest.makeSuite(ResourceManagerTestCase))
     return suite
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='suite')

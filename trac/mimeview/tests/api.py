@@ -212,9 +212,9 @@ class GroupLinesTestCase(unittest.TestCase):
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(api))
-    suite.addTest(unittest.makeSuite(GetMimeTypeTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(MimeviewTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(GroupLinesTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(GetMimeTypeTestCase))
+    suite.addTest(unittest.makeSuite(MimeviewTestCase))
+    suite.addTest(unittest.makeSuite(GroupLinesTestCase))
     return suite
 
 if __name__ == '__main__':

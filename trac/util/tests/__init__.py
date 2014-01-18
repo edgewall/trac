@@ -172,11 +172,11 @@ class SafeReprTestCase(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(AtomicFileTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(PathTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(RandomTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(ContentDispositionTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(SafeReprTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(AtomicFileTestCase))
+    suite.addTest(unittest.makeSuite(PathTestCase))
+    suite.addTest(unittest.makeSuite(RandomTestCase))
+    suite.addTest(unittest.makeSuite(ContentDispositionTestCase))
+    suite.addTest(unittest.makeSuite(SafeReprTestCase))
     suite.addTest(concurrency.suite())
     suite.addTest(datefmt.suite())
     suite.addTest(presentation.suite())

@@ -390,12 +390,10 @@ unknown = r
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(AuthzParserTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(AuthzSourcePolicyTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(AuthzParserTestCase))
+    suite.addTest(unittest.makeSuite(AuthzSourcePolicyTestCase))
     return suite
 
 
 if __name__ == '__main__':
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
-
+    unittest.main(defaultTest='suite')

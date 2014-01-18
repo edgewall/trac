@@ -139,7 +139,7 @@ wiki:WikiStart]
 def suite():
     suite = unittest.TestSuite()
     if ConfigObj:
-        suite.addTest(unittest.makeSuite(AuthzPolicyTestCase, 'test'))
+        suite.addTest(unittest.makeSuite(AuthzPolicyTestCase))
     else:
         print "SKIP: tracopt/perm/tests/authz_policy.py (no configobj " + \
               "installed)"

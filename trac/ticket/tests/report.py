@@ -114,7 +114,7 @@ class ReportTestCase(unittest.TestCase):
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(trac.ticket.report))
-    suite.addTest(unittest.makeSuite(ReportTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(ReportTestCase))
     return suite
 
 if __name__ == '__main__':

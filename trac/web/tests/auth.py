@@ -219,9 +219,10 @@ class BasicAuthenticationTestCase(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(LoginModuleTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(BasicAuthenticationTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(LoginModuleTestCase))
+    suite.addTest(unittest.makeSuite(BasicAuthenticationTestCase))
     return suite
 
+
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='suite')

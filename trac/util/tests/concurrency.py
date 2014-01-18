@@ -37,7 +37,7 @@ class ThreadLocalTestCase(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ThreadLocalTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(ThreadLocalTestCase))
     return suite
 
 if __name__ == '__main__':

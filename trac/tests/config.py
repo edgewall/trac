@@ -625,7 +625,7 @@ class ConfigurationTestCase(unittest.TestCase):
 
 
 def suite():
-    return unittest.makeSuite(ConfigurationTestCase, 'test')
+    return unittest.makeSuite(ConfigurationTestCase)
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')
