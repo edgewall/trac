@@ -22,25 +22,33 @@
     }
   }
 
-  // Conditionally disable the submit button
+  // Conditionally disable the submit button. Returns a jQuery object.
   $.fn.disableSubmit = function(determinant) {
     determinant = $(determinant);
-    var button = $(this);
-    var disable;
+    var subject = $(this);
+    var isDisabled;
     if (determinant.is("input:checkbox")) {
-      disable = function () {
+      isDisabled = function () {
           return determinant.filter(":checked").length === 0;
       }
     } else if (determinant.is("input:file")) {
-      disable = function () {
+      isDisabled = function () {
           return !determinant.val();
       }
+    } else {
+      return subject;
     }
     function toggleDisabled() {
-      button.prop("disabled", disable);
+      subject.prop("disabled", isDisabled);
+      if (subject.prop("disabled")) {
+        subject.attr("title", _("At least one item must be selected"))
+      } else {
+        subject.removeAttr("title");
+      }
     }
     determinant.change(toggleDisabled);
     toggleDisabled();
+    return subject;
   }
 
   $.fn.enable = function(enabled) {
