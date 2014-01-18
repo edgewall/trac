@@ -142,9 +142,8 @@ def in_tlist(ticket, list):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TicketGroupStatsTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(DefaultTicketGroupStatsProviderTestCase,
-                                      'test'))
+    suite.addTest(unittest.makeSuite(TicketGroupStatsTestCase))
+    suite.addTest(unittest.makeSuite(DefaultTicketGroupStatsProviderTestCase))
     return suite
 
 if __name__ == '__main__':

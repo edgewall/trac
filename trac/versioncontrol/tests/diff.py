@@ -220,7 +220,7 @@ class DiffTestCase(unittest.TestCase):
                          'aa<ins>x</ins>b')
 
 def suite():
-    return unittest.makeSuite(DiffTestCase, 'test')
+    return unittest.makeSuite(DiffTestCase)
 
 if __name__ == '__main__':
     unittest.main()

@@ -356,10 +356,10 @@ class ConnectionTestCase(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ParseConnectionStringTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(StringsTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(ConnectionTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(WithTransactionTest, 'test'))
+    suite.addTest(unittest.makeSuite(ParseConnectionStringTestCase))
+    suite.addTest(unittest.makeSuite(StringsTestCase))
+    suite.addTest(unittest.makeSuite(ConnectionTestCase))
+    suite.addTest(unittest.makeSuite(WithTransactionTest))
     return suite
 
 

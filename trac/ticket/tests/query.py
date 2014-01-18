@@ -657,9 +657,9 @@ class TicketQueryMacroTestCase(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(QueryTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(QueryLinksTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(TicketQueryMacroTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(QueryTestCase))
+    suite.addTest(unittest.makeSuite(QueryLinksTestCase))
+    suite.addTest(unittest.makeSuite(TicketQueryMacroTestCase))
     return suite
 
 if __name__ == '__main__':

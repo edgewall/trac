@@ -147,7 +147,8 @@ class TicketSystemTestCase(unittest.TestCase):
 
 
 def suite():
-    return unittest.makeSuite(TicketSystemTestCase, 'test')
+    return unittest.makeSuite(TicketSystemTestCase)
+
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='suite')

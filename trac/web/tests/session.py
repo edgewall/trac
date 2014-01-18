@@ -586,8 +586,8 @@ class SessionTestCase(unittest.TestCase):
 
 
 def suite():
-    return unittest.makeSuite(SessionTestCase, 'test')
+    return unittest.makeSuite(SessionTestCase)
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='suite')

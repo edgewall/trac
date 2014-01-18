@@ -1601,14 +1601,14 @@ class LocalTimezoneStrTestCase(unittest.TestCase):
 def suite():
     suite = unittest.TestSuite()
     if PytzTestCase:
-        suite.addTest(unittest.makeSuite(PytzTestCase, 'test'))
+        suite.addTest(unittest.makeSuite(PytzTestCase))
     else:
         print "SKIP: utils/tests/datefmt.py (no pytz installed)"
     suite.addTest(unittest.makeSuite(DateFormatTestCase))
     suite.addTest(unittest.makeSuite(UTimestampTestCase))
     suite.addTest(unittest.makeSuite(ISO8601TestCase))
     if I18nDateFormatTestCase:
-        suite.addTest(unittest.makeSuite(I18nDateFormatTestCase, 'test'))
+        suite.addTest(unittest.makeSuite(I18nDateFormatTestCase))
     else:
         print "SKIP: utils/tests/datefmt.py (no babel installed)"
     suite.addTest(unittest.makeSuite(ParseISO8601TestCase))

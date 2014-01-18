@@ -274,13 +274,16 @@ class PermissionPolicyTestCase(unittest.TestCase):
         self.assertEqual(self.policy.results,
                          {('testuser', 'TEST_MODIFY'): True,
                           ('testuser', 'TEST_ADMIN'): None})
+
+
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(DefaultPermissionStoreTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(PermissionSystemTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(PermissionCacheTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(PermissionPolicyTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(DefaultPermissionStoreTestCase))
+    suite.addTest(unittest.makeSuite(PermissionSystemTestCase))
+    suite.addTest(unittest.makeSuite(PermissionCacheTestCase))
+    suite.addTest(unittest.makeSuite(PermissionPolicyTestCase))
     return suite
 
+
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='suite')

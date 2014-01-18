@@ -21,7 +21,8 @@ class CGIRequestTestCase(unittest.TestCase):
 
 
 def suite():
-    return unittest.makeSuite(CGIRequestTestCase, 'test')
+    return unittest.makeSuite(CGIRequestTestCase)
+
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='suite')

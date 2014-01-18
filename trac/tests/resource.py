@@ -115,7 +115,7 @@ class RenderResourceLinkTestCase(unittest.TestCase):
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(resource))
-    suite.addTest(unittest.makeSuite(ResourceTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(ResourceTestCase))
     suite.addTest(unittest.makeSuite(RenderResourceLinkTestCase, 'test'))
     return suite
 

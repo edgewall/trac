@@ -147,8 +147,8 @@ class EnvironmentsTestCase(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(AuthenticateTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(EnvironmentsTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(AuthenticateTestCase))
+    suite.addTest(unittest.makeSuite(EnvironmentsTestCase))
     return suite
 
 

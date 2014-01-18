@@ -115,8 +115,8 @@ class EnvironmentTestCase(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(EnvironmentTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(EmptyEnvironmentTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(EnvironmentTestCase))
+    suite.addTest(unittest.makeSuite(EmptyEnvironmentTestCase))
     return suite
 
 if __name__ == '__main__':

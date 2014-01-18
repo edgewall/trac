@@ -278,7 +278,7 @@ class WikiPageTestCase(unittest.TestCase):
 
 
 def suite():
-    return unittest.makeSuite(WikiPageTestCase, 'test')
+    return unittest.makeSuite(WikiPageTestCase)
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')

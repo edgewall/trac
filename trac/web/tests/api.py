@@ -186,9 +186,10 @@ class ParseArgListTestCase(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(RequestTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(ParseArgListTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(RequestTestCase))
+    suite.addTest(unittest.makeSuite(ParseArgListTestCase))
     return suite
 
+
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='suite')

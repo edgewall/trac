@@ -211,7 +211,8 @@ class RegressionTestTicket10752(FunctionalTwillTestCaseSetup):
         env = self._testenv.get_trac_environment()
         env.db_transaction("INSERT INTO permission VALUES (%s,%s)",
                            ('anonymous', 'MISSING_PERMISSION'))
-        self._testenv.restart()
+        env.config.touch()
+
         self._tester.go_to_admin("Permissions")
         tc.find('<span class="missing" '
                 'title="MISSING_PERMISSION is no longer defined">'

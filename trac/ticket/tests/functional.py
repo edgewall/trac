@@ -361,7 +361,6 @@ class TestTicketCustomFieldTextNoFormat(FunctionalTwillTestCaseSetup):
         env.config.set('ticket-custom', 'newfield.format', '')
         env.config.save()
 
-        self._testenv.restart()
         val = "%s %s" % (random_unique_camel(), random_word())
         ticketid = self._tester.create_ticket(info={'newfield': val})
         self._tester.go_to_ticket(ticketid)
@@ -380,7 +379,6 @@ class TestTicketCustomFieldTextAreaNoFormat(FunctionalTwillTestCaseSetup):
         env.config.set('ticket-custom', 'newfield.format', '')
         env.config.save()
 
-        self._testenv.restart()
         val = "%s %s" % (random_unique_camel(), random_word())
         ticketid = self._tester.create_ticket(info={'newfield': val})
         self._tester.go_to_ticket(ticketid)
@@ -400,7 +398,6 @@ class TestTicketCustomFieldTextWikiFormat(FunctionalTwillTestCaseSetup):
         env.config.set('ticket-custom', 'newfield.format', 'wiki')
         env.config.save()
 
-        self._testenv.restart()
         word1 = random_unique_camel()
         word2 = random_word()
         val = "%s %s" % (word1, word2)
@@ -422,7 +419,6 @@ class TestTicketCustomFieldTextAreaWikiFormat(FunctionalTwillTestCaseSetup):
         env.config.set('ticket-custom', 'newfield.format', 'wiki')
         env.config.save()
 
-        self._testenv.restart()
         word1 = random_unique_camel()
         word2 = random_word()
         val = "%s %s" % (word1, word2)
@@ -446,7 +442,6 @@ class TestTicketCustomFieldTextReferenceFormat(FunctionalTwillTestCaseSetup):
         env.config.set('ticket-custom', 'newfield.format', 'reference')
         env.config.save()
 
-        self._testenv.restart()
         word1 = random_unique_camel()
         word2 = random_word()
         val = "%s %s" % (word1, word2)
@@ -471,7 +466,6 @@ class TestTicketCustomFieldTextListFormat(FunctionalTwillTestCaseSetup):
         env.config.set('ticket-custom', 'newfield.format', 'list')
         env.config.save()
 
-        self._testenv.restart()
         word1 = random_unique_camel()
         word2 = random_word()
         val = "%s %s" % (word1, word2)
@@ -498,7 +492,6 @@ class RegressionTestTicket10828(FunctionalTwillTestCaseSetup):
         env.config.set('ticket-custom', 'newfield.format', 'list')
         env.config.save()
 
-        self._testenv.restart()
         ticketid = self._tester.create_ticket()
         self._tester.go_to_ticket(ticketid)
 
@@ -1688,7 +1681,6 @@ class RegressionTestRev5994(FunctionalTwillTestCaseSetup):
         env.config.set('ticket-custom', 'custfield.label', 'Custom Field')
         env.config.save()
         try:
-            self._testenv.restart()
             self._tester.go_to_query()
             tc.find('<label>( |\\n)*<input[^<]*value="custfield"'
                     '[^<]*/>( |\\n)*Custom Field( |\\n)*</label>', 's')
@@ -1696,7 +1688,6 @@ class RegressionTestRev5994(FunctionalTwillTestCaseSetup):
             pass
             #env.config.set('ticket', 'restrict_owner', 'no')
             #env.config.save()
-            #self._testenv.restart()
 
 
 class RegressionTestTicket4447(FunctionalTwillTestCaseSetup):
@@ -1709,7 +1700,7 @@ class RegressionTestTicket4447(FunctionalTwillTestCaseSetup):
         env.config.set('ticket-custom', 'newfield.label',
                        'Another Custom Field')
         env.config.save()
-        self._testenv.restart()
+
         self._tester.go_to_ticket(ticketid)
         self._tester.add_comment(ticketid)
         tc.notfind('<strong class="trac-field-newfield">Another Custom Field'
@@ -1724,7 +1715,6 @@ class RegressionTestTicket4630a(FunctionalTwillTestCaseSetup):
         env.config.set('ticket', 'restrict_owner', 'yes')
         env.config.save()
         try:
-            self._testenv.restart()
             # Make sure 'user' has logged in.
             self._tester.go_to_front()
             self._tester.logout()
@@ -1746,7 +1736,6 @@ class RegressionTestTicket4630a(FunctionalTwillTestCaseSetup):
             # regression test causes problems for later tests.
             env.config.set('ticket', 'restrict_owner', 'no')
             env.config.save()
-            self._testenv.restart()
 
 
 class RegressionTestTicket4630b(FunctionalTestCaseSetup):
@@ -1782,7 +1771,6 @@ class RegressionTestTicket5394a(FunctionalTwillTestCaseSetup):
         env = self._testenv.get_trac_environment()
         env.config.set('ticket', 'restrict_owner', 'yes')
         env.config.save()
-        self._testenv.restart()
 
         self._tester.go_to_front()
         self._tester.logout()
@@ -2021,8 +2009,6 @@ class RegressionTestTicket6747(FunctionalTwillTestCaseSetup):
         env.config.save()
 
         try:
-            self._testenv.restart()
-
             ticket_id = self._tester.create_ticket("RegressionTestTicket6747")
             self._tester.go_to_ticket(ticket_id)
             tc.find("a_specified_owner")
@@ -2035,7 +2021,6 @@ class RegressionTestTicket6747(FunctionalTwillTestCaseSetup):
                            'set_resolution')
             env.config.remove('ticket-workflow', 'resolve.set_owner')
             env.config.save()
-            self._testenv.restart()
 
 
 class RegressionTestTicket6879a(FunctionalTwillTestCaseSetup):
@@ -2108,7 +2093,6 @@ class RegressionTestTicket7821group(FunctionalTwillTestCaseSetup):
         env.config.set('query', 'default_query', default_query)
         env.config.save()
         try:
-            self._testenv.restart()
             self._tester.create_ticket('RegressionTestTicket7821 group')
             self._tester.go_to_query()
             # $USER
@@ -2140,7 +2124,6 @@ class RegressionTestTicket7821group(FunctionalTwillTestCaseSetup):
         finally:
             env.config.set('query', 'default_query', saved_default_query)
             env.config.save()
-            self._testenv.restart()
 
 
 class RegressionTestTicket7821var(FunctionalTwillTestCaseSetup):
@@ -2154,7 +2137,6 @@ class RegressionTestTicket7821var(FunctionalTwillTestCaseSetup):
         env.config.set('ticket', 'restrict_owner', 'no')
         env.config.save()
         try:
-            self._testenv.restart()
             self._tester.create_ticket('RegressionTestTicket7821 var')
             self._tester.go_to_query()
             # $USER in default_query
@@ -2173,7 +2155,6 @@ class RegressionTestTicket7821var(FunctionalTwillTestCaseSetup):
             env.config.set('query', 'default_query', saved_default_query)
             env.config.set('ticket', 'restrict_owner', saved_restrict_owner)
             env.config.save()
-            self._testenv.restart()
 
 
 class RegressionTestTicket8247(FunctionalTwillTestCaseSetup):
@@ -2420,13 +2401,12 @@ class RegressionTestTicket11153(FunctionalTwillTestCaseSetup):
         env.config.set('components', 'trac.ticket.report.ReportModule',
                        'disabled')
         env.config.save()
-        self._testenv.restart()
+
         try:
             self._tester.go_to_view_tickets('query')
         finally:
             env.config.remove('components', 'trac.ticket.report.ReportModule')
             env.config.save()
-            self._testenv.restart()
 
 
 class RegressionTestTicket11176(FunctionalTestCaseSetup):

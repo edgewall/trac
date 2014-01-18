@@ -76,7 +76,7 @@ class TranslationsProxyTestCase(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TranslationsProxyTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(TranslationsProxyTestCase))
     return suite
 
 if __name__ == '__main__':

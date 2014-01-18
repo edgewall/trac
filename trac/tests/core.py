@@ -352,7 +352,8 @@ class ComponentTestCase(unittest.TestCase):
 
 
 def suite():
-    return unittest.makeSuite(ComponentTestCase, 'test')
+    return unittest.makeSuite(ComponentTestCase)
+
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='suite')

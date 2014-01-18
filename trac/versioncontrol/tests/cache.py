@@ -308,7 +308,8 @@ class CacheTestCase(unittest.TestCase):
 
 
 def suite():
-    return unittest.makeSuite(CacheTestCase, 'test')
+    return unittest.makeSuite(CacheTestCase)
+
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='suite')

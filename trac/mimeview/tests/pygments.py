@@ -127,7 +127,7 @@ def hello():
 def suite():
     suite = unittest.TestSuite()
     if have_pygments:
-        suite.addTest(unittest.makeSuite(PygmentsRendererTestCase, 'test'))
+        suite.addTest(unittest.makeSuite(PygmentsRendererTestCase))
     else:
         print 'SKIP: mimeview/tests/pygments (no pygments installed)'
     return suite

@@ -76,7 +76,7 @@ class MySQLTableAlterationSQLTest(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(MySQLTableAlterationSQLTest, 'test'))
+    suite.addTest(unittest.makeSuite(MySQLTableAlterationSQLTest))
     return suite
 
 

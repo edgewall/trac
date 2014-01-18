@@ -237,7 +237,7 @@ class AttachmentTestCase(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(AttachmentTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(AttachmentTestCase))
     return suite
 
 if __name__ == '__main__':

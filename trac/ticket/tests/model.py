@@ -1198,13 +1198,13 @@ class VersionTestCase(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TicketTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(TicketCommentEditTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(TicketCommentDeleteTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(EnumTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(MilestoneTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(ComponentTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(VersionTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(TicketTestCase))
+    suite.addTest(unittest.makeSuite(TicketCommentEditTestCase))
+    suite.addTest(unittest.makeSuite(TicketCommentDeleteTestCase))
+    suite.addTest(unittest.makeSuite(EnumTestCase))
+    suite.addTest(unittest.makeSuite(MilestoneTestCase))
+    suite.addTest(unittest.makeSuite(ComponentTestCase))
+    suite.addTest(unittest.makeSuite(VersionTestCase))
     return suite
 
 if __name__ == '__main__':
