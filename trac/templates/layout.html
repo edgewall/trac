@@ -55,6 +55,7 @@
         }
         $(".trac-disable").disableSubmit(".trac-disable-determinant");
         setTimeout(function() { $(".trac-scroll").scrollToTop() }, 1);
+        $(".trac-disable-on-submit").disableOnSubmit();
       });
     </script>
     ${select("*[local-name() != 'title']|text()|comment()")}

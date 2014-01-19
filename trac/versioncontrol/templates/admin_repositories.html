@@ -82,7 +82,7 @@ $info.description</textarea>
             </fieldset>
           </div>
           <div class="buttons">
-            <input py:if="info.editable" type="submit" name="save" value="${_('Save')}"/>
+            <input py:if="info.editable" type="submit" name="save" class="trac-disable-on-submit" value="${_('Save')}"/>
             <input type="submit" name="cancel" value="${_('Cancel')}"/>
           </div>
         </fieldset>
@@ -100,7 +100,7 @@ $info.description</textarea>
               <label>Directory: <input type="text" name="dir"/></label>
             </div>
             <div class="buttons">
-              <input type="submit" name="add_repos" value="${_('Add')}"/>
+              <input type="submit" name="add_repos" class="trac-disable-on-submit" value="${_('Add')}"/>
             </div>
           </fieldset>
         </form>
@@ -114,7 +114,7 @@ $info.description</textarea>
             </div>
             ${alias_field(True)}
             <div class="buttons">
-              <input type="submit" name="add_alias" value="${_('Add')}"/>
+              <input type="submit" name="add_alias" class="trac-disable-on-submit" value="${_('Add')}"/>
             </div>
           </fieldset>
         </form>
@@ -146,7 +146,7 @@ $info.description</textarea>
           </table>
           <div class="buttons">
             <input type="submit" name="refresh" value="${_('Refresh')}"/>
-            <input type="submit" name="remove" class="trac-disable" value="${_('Remove selected items')}"/>
+            <input type="submit" name="remove" class="trac-disable trac-disable-on-submit" value="${_('Remove selected items')}"/>
           </div>
         </form>
       </py:otherwise>

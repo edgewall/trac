@@ -383,7 +383,7 @@ ${value}</textarea>
             <input type="hidden" name="replyto" value="${replyto}" />
           </py:if>
           <input type="submit" name="preview" value="${_('Preview')}" accesskey="r" />&nbsp;
-          <input type="submit" name="submit" value="${_('Submit changes') if ticket.exists else _('Create ticket')}" />
+          <input type="submit" name="submit" value="${_('Submit changes') if ticket.exists else _('Create ticket')}" class="trac-disable-on-submit" />
         </div>
 
       </form>

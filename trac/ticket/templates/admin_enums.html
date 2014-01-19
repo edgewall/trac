@@ -24,7 +24,7 @@
             <label>Name: <input type="text" name="name" class="trac-autofocus" value="${enum.name}" /></label>
           </div>
           <div class="buttons">
-            <input type="submit" name="save" value="${_('Save')}"/>
+            <input type="submit" name="save" class="trac-disable-on-submit" value="${_('Save')}"/>
             <input type="submit" name="cancel" value="${_('Cancel')}"/>
           </div>
         </fieldset>
@@ -38,7 +38,7 @@
               <label>Name: <input type="text" name="name" id="name"/></label>
             </div>
             <div class="buttons">
-              <input type="submit" name="add" value="${_('Add')}"/>
+              <input type="submit" name="add" class="trac-disable-on-submit" value="${_('Add')}"/>
             </div>
           </fieldset>
         </form>
@@ -73,7 +73,7 @@
             </table>
             <div class="buttons">
               <input type="submit" name="apply" value="${_('Apply changes')}" />
-              <input type="submit" name="remove" class="trac-disable" value="${_('Remove selected items')}" />
+              <input type="submit" name="remove" class="trac-disable trac-disable-on-submit" value="${_('Remove selected items')}" />
               <input type="submit" name="clear" value="${_('Clear default')}" />
             </div>
             <p class="help">

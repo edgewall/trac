@@ -72,7 +72,7 @@ ${milestone.description}</textarea>
             </fieldset>
           </div>
           <div class="buttons">
-            <input type="submit" name="save" value="${_('Save')}" disabled="${disabled}"/>
+            <input type="submit" name="save" value="${_('Save')}" class="trac-disable-on-submit" disabled="${disabled}"/>
             <input type="submit" name="cancel" value="${_('Cancel')}"/>
           </div>
         </fieldset>
@@ -95,7 +95,7 @@ ${milestone.description}</textarea>
               </label>
             </div>
             <div class="buttons">
-              <input type="submit" name="add" value="${_('Add')}" />
+              <input type="submit" name="add" class="trac-disable-on-submit" value="${_('Add')}"/>
             </div>
           </fieldset>
         </form>
@@ -138,7 +138,7 @@ ${milestone.description}</textarea>
             </table>
             <div class="buttons">
               <input type="submit" name="apply" value="${_('Apply changes')}" />
-              <input type="submit" name="remove" class="trac-disable" value="${_('Remove selected items')}" py:if="can_remove" />
+              <input type="submit" name="remove" class="trac-disable trac-disable-on-submit" value="${_('Remove selected items')}" py:if="can_remove" />
               <input type="submit" title="Clear default ticket milestone and default retargeting milestone"
                      name="clear" value="${_('Clear defaults')}" />
             </div>

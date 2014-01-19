@@ -116,7 +116,7 @@ ${milestone.description}</textarea></p>
         </div>
         <div class="buttons" py:choose="milestone.exists">
           <input py:when="True" type="submit" name="save"
-                 value="${_('Submit changes')}" />
+                 value="${_('Submit changes')}" class="trac-disable-on-submit" />
           <input py:otherwise="" type="submit" name="add"
                  value="${_('Add milestone')}" />
           <input type="submit" name="cancel" value="${_('Cancel')}" />

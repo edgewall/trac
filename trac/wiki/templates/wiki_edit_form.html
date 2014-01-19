@@ -70,7 +70,7 @@ $page.text</textarea>
       <py:otherwise>
         <input type="submit" name="preview" value="${_('Preview Page')}" accesskey="p" />&nbsp;
         <input type="submit" name="diff" value="${_('Review Changes')}" accesskey="r" />&nbsp;
-        <input type="submit" id="save" name="save" value="${_('Submit changes')}" />&nbsp;
+        <input type="submit" id="save" name="save" class="trac-disable-on-submit" value="${_('Submit changes')}" />&nbsp;
       </py:otherwise>
       <input type="submit" name="cancel" value="${_('Cancel')}" />
     </div>

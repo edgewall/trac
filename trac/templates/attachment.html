@@ -59,7 +59,7 @@
             <input type="hidden" name="action" value="new" />
             <input type="hidden" name="realm" value="$parent.realm" />
             <input type="hidden" name="id" value="$parent.id" />
-            <input type="submit" class="trac-disable" value="${_('Add attachment')}" />
+            <input type="submit" class="trac-disable trac-disable-on-submit" value="${_('Add attachment')}" />
             <input type="submit" name="cancel" value="${_('Cancel')}" />
           </div>
         </form>
@@ -73,7 +73,7 @@
           <form method="post" action="">
             <div id="delete">
               <input type="hidden" name="action" value="delete" />
-              <input type="submit" value="${_('Delete attachment')}" />
+              <input type="submit" class="trac-disable-on-submit" value="${_('Delete attachment')}" />
               <input type="submit" name="cancel" value="${_('Cancel')}" />
             </div>
           </form>
