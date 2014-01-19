@@ -48,6 +48,7 @@
         $(".trac-autofocus").focus();
         $(".trac-target-new").attr("target", "_blank");
         setTimeout(function() { $(".trac-scroll").scrollToTop() }, 1);
+        $(".trac-disable-on-submit").disableOnSubmit();
       });
     </script>
     ${select("*[local-name() != 'title']|text()|comment()")}

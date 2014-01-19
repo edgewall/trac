@@ -445,6 +445,13 @@
         }
       });
 
+      // Remove handler and class that prevent multi-submit
+      if (!valid) {
+        var form = $(this);
+        form.removeClass("trac-submit-is-disabled");
+        form.unbind("submit.prevent-submit");
+      }
+
       return valid;
     });
 

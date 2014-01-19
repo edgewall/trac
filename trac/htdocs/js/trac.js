@@ -59,6 +59,29 @@
     });
   }
 
+  // Disable the form's submit action after the submit button is pressed by
+  // replacing it with a handler that cancels the action. The handler is
+  // removed when navigating away from the page so that the action will
+  // be enabled when using the back button to return to the page.
+  $.fn.disableOnSubmit = function() {
+    this.click(function() {
+      var form = $(this).closest("form");
+      if (form.hasClass("trac-submit-is-disabled")) {
+        form.bind("submit.prevent-submit", function() {
+          return false;
+        });
+        $(window).on("unload", function() {
+          form.unbind("submit.prevent-submit");
+        });
+      } else {
+        form.addClass("trac-submit-is-disabled");
+        $(window).on("unload", function() {
+          form.removeClass("trac-submit-is-disabled");
+        })
+      }
+    });
+  }
+
   $.loadStyleSheet = function(href, type) {
     type = type || "text/css";
     $(document).ready(function() {
