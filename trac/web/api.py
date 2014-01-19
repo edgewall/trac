@@ -37,6 +37,7 @@ from trac.util.translation import _
 from trac.web.href import Href
 from trac.web.wsgi import _FileWrapper
 
+
 class IAuthenticator(Interface):
     """Extension point interface for components that can provide the name
     of the remote user."""
@@ -450,7 +451,7 @@ class Request(object):
             extra = m.hexdigest()
         etag = 'W/"%s/%s/%s"' % (self.authname, http_date(datetime), extra)
         inm = self.get_header('If-None-Match')
-        if (not inm or inm != etag):
+        if not inm or inm != etag:
             self.send_header('ETag', etag)
         else:
             self.send_response(304)
@@ -617,7 +618,7 @@ class Request(object):
 
         Note that when the ``'Content-Length'`` header is specified,
         its value either corresponds to the length of *data*, or, if
-        there are multiple calls to `write`, to the cumulated length
+        there are multiple calls to `write`, to the cumulative length
         of the *data* arguments.
         """
         if not self._write:
@@ -714,7 +715,7 @@ class Request(object):
             # server name and port
             default_port = {'http': 80, 'https': 443}
             if self.server_port and self.server_port != \
-                   default_port[self.scheme]:
+                    default_port[self.scheme]:
                 host = '%s:%d' % (self.server_name, self.server_port)
             else:
                 host = self.server_name
