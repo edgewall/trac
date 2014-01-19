@@ -182,8 +182,8 @@ class RequestDispatcher(Component):
                             chosen_handler = self.default_handler
                     # pre-process any incoming request, whether a handler
                     # was found or not
-                    chosen_handler = self._pre_process_request(req,
-                                                            chosen_handler)
+                    chosen_handler = \
+                        self._pre_process_request(req, chosen_handler)
                 except TracError, e:
                     raise HTTPInternalError(e)
                 if not chosen_handler:
@@ -284,7 +284,8 @@ class RequestDispatcher(Component):
             default = self.env.config.get('trac', 'default_language', '')
             negotiated = get_negotiated_locale([preferred, default] +
                                                req.languages)
-            self.log.debug("Negotiated locale: %s -> %s", preferred, negotiated)
+            self.log.debug("Negotiated locale: %s -> %s", preferred,
+                           negotiated)
             return negotiated
 
     def _get_lc_time(self, req):
@@ -346,6 +347,7 @@ class RequestDispatcher(Component):
             elif nbargs == 0:
                 f.post_process_request(req, *(None,)*extra_arg_count)
         return resp
+
 
 _slashes_re = re.compile(r'/+')
 
@@ -507,7 +509,7 @@ def _dispatch_request(req, env, env_error):
         resp = resp or req._response or []
     except HTTPException, e:
         _send_user_error(req, env, e)
-    except Exception, e:
+    except Exception:
         send_internal_error(env, req, sys.exc_info())
     return resp
 
@@ -549,6 +551,7 @@ def _send_user_error(req, env, e):
         req.send_error(sys.exc_info(), status=e.code, env=env, data=data)
     except RequestDone:
         pass
+
 
 def send_internal_error(env, req, exc_info):
     if env:
@@ -733,7 +736,7 @@ def get_environments(environ, warn=False):
         paths = [path[:-1] for path in paths if path[-1] == '/'
                  and not any(fnmatch.fnmatch(path[:-1], pattern)
                              for pattern in ignore_patterns)]
-        env_paths.extend(os.path.join(env_parent_dir, project) \
+        env_paths.extend(os.path.join(env_parent_dir, project)
                          for project in paths)
     envs = {}
     for env_path in env_paths:
