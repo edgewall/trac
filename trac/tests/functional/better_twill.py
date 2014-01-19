@@ -132,11 +132,19 @@ if twill:
         """Write the current html to a file.  Name the file based on the
         current testcase.
         """
+        import unittest
+
         frame = sys._getframe()
         while frame:
             if frame.f_code.co_name in ('runTest', 'setUp', 'tearDown'):
                 testcase = frame.f_locals['self']
                 testname = testcase.__class__.__name__
+                tracdir = testcase._testenv.tracdir
+                break
+            elif isinstance(frame.f_locals.get('self'), unittest.TestCase):
+                testcase = frame.f_locals['self']
+                testname = '%s.%s' % (testcase.__class__.__name__,
+                                      testcase._testMethodName)
                 tracdir = testcase._testenv.tracdir
                 break
             frame = frame.f_back
