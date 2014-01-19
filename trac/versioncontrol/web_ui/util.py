@@ -208,6 +208,7 @@ def render_zip(req, filename, repos, root_node, iter_nodes):
         assert path.startswith(root_path)
         path = root_name + path[root_len:]
         kwargs = {'mtime': node.last_modified}
+        data = None
         if node.isfile:
             data = node.get_processed_content(eol_hint='CRLF').read()
             properties = node.get_properties()
@@ -220,7 +221,8 @@ def render_zip(req, filename, repos, root_node, iter_nodes):
         elif node.isdir and path:
             kwargs['dir'] = True
             data = ''
-        zipfile.writestr(create_zipinfo(path, **kwargs), data)
+        if data is not None:
+            zipfile.writestr(create_zipinfo(path, **kwargs), data)
     zipfile.close()
 
     zip_str = buf.getvalue()
