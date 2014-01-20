@@ -197,23 +197,27 @@ LOG_TEST_CASES = u"""
 ============================== log: link resolver
 log:@12
 log:trunk
+log:trunk@head
 log:trunk@12
 log:trunk@12:23
 log:trunk@12-23
 log:trunk:12:23
 log:trunk:12-23
+log:trunk@12:head
 log:trunk:12-head
 log:trunk:12@23
 ------------------------------
 <p>
 <a class="source" href="/log/?rev=12">log:@12</a>
-<a class="source" href="/log/trunk?rev=200">log:trunk</a>
+<a class="source" href="/log/trunk">log:trunk</a>
+<a class="source" href="/log/trunk?rev=head">log:trunk@head</a>
 <a class="source" href="/log/trunk?rev=12">log:trunk@12</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk@12:23</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk@12-23</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk:12:23</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk:12-23</a>
-<a class="source" href="/log/trunk?revs=12-200">log:trunk:12-head</a>
+<a class="source" href="/log/trunk?revs=12%3Ahead">log:trunk@12:head</a>
+<a class="source" href="/log/trunk?revs=12-head">log:trunk:12-head</a>
 <a class="missing source" title="No changeset 12@23 in the repository">log:trunk:12@23</a>
 </p>
 ------------------------------
@@ -245,9 +249,9 @@ log:trunk@12?limit=10
 [10:20/trunk?verbose=yes&format=changelog]
 ------------------------------
 <p>
-<a class="source" href="/log/?rev=200&amp;limit=10">log:?limit=10</a>
+<a class="source" href="/log/?limit=10">log:?limit=10</a>
 <a class="source" href="/log/?rev=12&amp;limit=10">log:@12?limit=10</a>
-<a class="source" href="/log/trunk?rev=200&amp;limit=10">log:trunk?limit=10</a>
+<a class="source" href="/log/trunk?limit=10">log:trunk?limit=10</a>
 <a class="source" href="/log/trunk?rev=12&amp;limit=10">log:trunk@12?limit=10</a>
 <a class="source" href="/log/?revs=10-20&amp;verbose=yes&amp;format=changelog">[10:20?verbose=yes&amp;format=changelog]</a>
 <a class="source" href="/log/trunk?revs=10-20&amp;verbose=yes&amp;format=changelog">[10:20/trunk?verbose=yes&amp;format=changelog]</a>
@@ -262,7 +266,7 @@ log:@10:20:30
 ------------------------------
 <p>
 <a class="missing source" title="No changeset 10-20-30 in the repository">log:@10-20-30</a>
-<a class="missing source" title="No changeset 10,20-30,40-50-60 in the repository">log:@10,20-30,40-50-60</a>
+<a class="missing source" title="No changeset 40-50-60 in the repository">log:@10,20-30,40-50-60</a>
 <a class="missing source" title="No changeset 10:20:30 in the repository">log:@10:20:30</a>
 [10-20-30]
 [10:20:30]
