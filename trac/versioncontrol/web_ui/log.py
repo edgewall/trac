@@ -106,7 +106,7 @@ class LogModule(Component):
         revranges = None
         if revs:
             try:
-                revranges = Ranges(revs)
+                revranges = self._normalize_ranges(repos, path, revs)
                 rev = revranges.b
             except ValueError:
                 pass
@@ -389,20 +389,26 @@ class LogModule(Component):
                     repos = rm.get_repository(reponame)
 
             if repos:
-                revranges = None
-                if any(c in revs for c in ':-,'):
-                    revranges = self._normalize_ranges(repos, path, revs)
-                    if revranges:
-                        revs = None
                 if 'LOG_VIEW' in formatter.perm:
+                    revranges = None
+                    if any(c in revs for c in ':-,'):
+                        try:
+                            # try to parse into integer rev ranges
+                            revranges = Ranges(revs.replace(':', '-'),
+                                               reorder=True)
+                            revs = str(revranges)
+                        except ValueError:
+                            revranges = self._normalize_ranges(repos, path,
+                                                               revs)
                     if revranges:
                         href = formatter.href.log(repos.reponame or None,
                                                   path or '/',
-                                                  revs=str(revranges))
+                                                  revs=revs)
                     else:
-                        rev = repos.normalize_rev(revs)
+                        repos.normalize_rev(revs)  # verify revision
                         href = formatter.href.log(repos.reponame or None,
-                                                  path or '/', rev=rev)
+                                                  path or '/',
+                                                  rev=revs or None)
                     if query and '?' in href:
                         query = '&' + query[1:]
                     return tag.a(label, class_='source',
@@ -419,16 +425,21 @@ class LogModule(Component):
     LOG_LINK_RE = re.compile(r"([^@:]*)[@:]%s?" % REV_RANGE)
 
     def _normalize_ranges(self, repos, path, revs):
-        ranges = revs.replace(':', '-')
         try:
             # fast path; only numbers
-            return Ranges(ranges, reorder=True)
+            return Ranges(revs.replace(':', '-'), reorder=True)
         except ValueError:
             # slow path, normalize each rev
-            splitted_ranges = re.split(r'([-,])', ranges)
-            revs = [repos.normalize_rev(r) for r in splitted_ranges[::2]]
-            seps = splitted_ranges[1::2] + ['']
-            ranges = ''.join([str(rev)+sep for rev, sep in zip(revs, seps)])
+            ranges = []
+            for range in revs.split(','):
+                try:
+                    a, b = range.replace(':', '-').split('-')
+                    range = (a, b)
+                except ValueError:
+                    range = (range,)
+                ranges.append('-'.join(str(repos.normalize_rev(r))
+                                       for r in range))
+            ranges = ','.join(ranges)
             try:
                 return Ranges(ranges)
             except ValueError:

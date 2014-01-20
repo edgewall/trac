@@ -275,6 +275,22 @@ class RegressionTestTicket11355(FunctionalTwillTestCaseSetup):
         tc.find('The repository directory must be an absolute path.')
 
 
+class RegressionTestTicket11438(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11438
+        fix for log: link with revision ranges included "head" keyword
+        """
+        rev = self._testenv.svn_mkdir(['ticket11438'], '')
+        rev = self._testenv.svn_add('ticket11438/file1.txt', '')
+        rev = self._testenv.svn_add('ticket11438/file2.txt', '')
+        tc.go(self._tester.url + '/intertrac/log:@%d:head' % (rev - 1))
+        tc.url(self._tester.url + r'/log/\?revs=' + str(rev - 1) + '%3Ahead')
+        tc.notfind('@%d' % (rev + 1))
+        tc.find('@%d' % rev)
+        tc.find('@%d' % (rev - 1))
+        tc.notfind('@%d' % (rev - 2))
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
@@ -291,6 +307,7 @@ def functionalSuite(suite=None):
         suite.addTest(RegressionTestTicket11186Alias())
         suite.addTest(RegressionTestTicket11194())
         suite.addTest(RegressionTestTicket11346())
+        suite.addTest(RegressionTestTicket11438())
         suite.addTest(RegressionTestRev5877())
     else:
         print "SKIP: versioncontrol/tests/functional.py (no svn bindings)"
