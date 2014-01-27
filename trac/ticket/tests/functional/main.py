@@ -602,8 +602,7 @@ class TestAdminComponentDefault(FunctionalTwillTestCaseSetup):
         tc.go(component_url)
         tc.submit('clear', formname='component_table')
         tc.notfind('type="radio" name="default" value=".+" checked="checked"')
-        tid = self._tester.create_ticket()
-        self._tester.go_to_ticket(tid)
+        self._tester.create_ticket()
         tc.find('<th id="h_component" class="missing">\s*Component:\s*</th>'
                 '\s*<td headers="h_component">\s*</td>')
         self._testenv.remove_config('ticket', 'optional_fields')
@@ -1354,8 +1353,7 @@ class TestAdminVersionDefault(FunctionalTwillTestCaseSetup):
         tc.go(version_url)
         tc.submit('clear', formname='version_table')
         tc.notfind('type="radio" name="default" value=".+" checked="checked"')
-        tid = self._tester.create_ticket()
-        self._tester.go_to_ticket(tid)
+        self._tester.create_ticket()
         tc.find('<th id="h_version" class="missing">[ \t\n]+'
                 'Version:[ \t\n]+</th>[ \t\n]+'
                 '(?!<td headers="h_version">)')
