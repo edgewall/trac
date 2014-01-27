@@ -514,7 +514,7 @@ class RegressionTestTicket10828(FunctionalTwillTestCaseSetup):
         tc.find('<td headers="h_newfield"[^>]*>\s*%s\s*</td>' % querylinks)
 
 
-class TestTimelineTicketDetails(FunctionalTwillTestCaseSetup):
+class TestTicketTimeline(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test ticket details on timeline"""
         env = self._testenv.get_trac_environment()
@@ -524,7 +524,11 @@ class TestTimelineTicketDetails(FunctionalTwillTestCaseSetup):
         ticketid = self._tester.create_ticket(summary)
         self._tester.go_to_ticket(ticketid)
         self._tester.add_comment(ticketid)
+
         self._tester.go_to_timeline()
+        tc.formvalue('prefs', 'ticket', True)
+        tc.submit()
+        tc.find('Ticket.*#%s.*created' % ticketid)
         tc.formvalue('prefs', 'ticket_details', True)
         tc.submit()
         htmltags = '(<[^>]*>)*'
@@ -2204,7 +2208,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestTicketCustomFieldTextReferenceFormat())
     suite.addTest(TestTicketCustomFieldTextListFormat())
     suite.addTest(RegressionTestTicket10828())
-    suite.addTest(TestTimelineTicketDetails())
+    suite.addTest(TestTicketTimeline())
     suite.addTest(TestAdminComponent())
     suite.addTest(TestAdminComponentAuthorization())
     suite.addTest(TestAdminComponentDuplicates())
