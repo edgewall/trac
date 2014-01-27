@@ -92,6 +92,7 @@ class FunctionalTester(object):
         tc.submit('submit')
         # we should be looking at the newly created ticket
         tc.url(self.url + '/ticket/%s' % (self.ticketcount + 1))
+        tc.notfind(internal_error)
         # Increment self.ticketcount /after/ we've verified that the ticket
         # was created so a failure does not trigger spurious later
         # failures.
