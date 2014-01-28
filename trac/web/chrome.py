@@ -876,7 +876,14 @@ class Chrome(Component):
                 format = req.session.get('dateinfo',
                                          self.default_dateinfo_format)
             if format == 'absolute':
-                label = absolute
+                if dateonly:
+                    label = absolute
+                elif req.lc_time == 'iso8601':
+                    label = _("at %(iso8601)s", iso8601=absolute)
+                else:
+                    label = _("on %(date)s at %(time)s",
+                              date=user_time(req, format_date, date),
+                              time=user_time(req, format_time, date))
                 title = _("%(relativetime)s ago", relativetime=relative)
             else:
                 label = _("%(relativetime)s ago", relativetime=relative) \
