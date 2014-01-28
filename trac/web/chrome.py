@@ -888,7 +888,14 @@ class Chrome(Component):
                 label = in_or_ago if not dateonly else relative
                 title = absolute
             else:
-                label = absolute
+                if dateonly:
+                    label = absolute
+                elif req.lc_time == 'iso8601':
+                    label = _("at %(iso8601)s", iso8601=absolute)
+                else:
+                    label = _("on %(date)s at %(time)s",
+                              date=user_time(req, format_date, date),
+                              time=user_time(req, format_time, date))
                 title = in_or_ago
             return tag.span(label, title=title)
 
