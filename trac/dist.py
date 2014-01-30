@@ -85,8 +85,8 @@ try:
         in_def = in_translator_comments = False
         comment_tag = None
 
-        encoding = parse_encoding(fileobj) \
-                   or options.get('encoding', 'iso-8859-1')
+        encoding = str(parse_encoding(fileobj) or
+                       options.get('encoding', 'iso-8859-1'))
         kwargs_maps = _DEFAULT_KWARGS_MAPS.copy()
         if 'kwargs_maps' in options:
             kwargs_maps.update(options['kwargs_maps'])
