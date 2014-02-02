@@ -13,12 +13,13 @@
 
 import unittest
 
-from tracopt.versioncontrol.git.tests import PyGIT
+from tracopt.versioncontrol.git.tests import PyGIT, git_fs
 
 
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(PyGIT.suite())
+    suite.addTest(git_fs.suite())
     return suite
 
 

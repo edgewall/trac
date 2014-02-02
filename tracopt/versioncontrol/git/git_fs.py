@@ -396,14 +396,18 @@ class GitRepository(Repository):
 
     @cached('_rev_cache_id')
     def _rev_cache(self):
+        self.git.invalidate_rev_cache()
+
+    def _check_rev_cache(self):
         if self.persistent_cache:
-            self.git.invalidate_rev_cache()
-        return self.git
+            self._rev_cache
 
     def get_youngest_rev(self):
-        return self._rev_cache.youngest_rev()
+        self._check_rev_cache()
+        return self.git.youngest_rev()
 
     def get_oldest_rev(self):
+        self._check_rev_cache()
         return self.git.oldest_rev()
 
     def normalize_path(self, path):
@@ -428,10 +432,10 @@ class GitRepository(Repository):
         return GitNode(self, path, rev, self.log, None, historian)
 
     def get_quickjump_entries(self, rev):
-        rev_cache = self._rev_cache
-        for bname, bsha in rev_cache.get_branches():
+        self._check_rev_cache()
+        for bname, bsha in self.git.get_branches():
             yield 'branches', bname, '/', bsha
-        for t in rev_cache.get_tags():
+        for t in self.git.get_tags():
             yield 'tags', t, '/', t
 
     def get_path_url(self, path, rev):
@@ -510,7 +514,7 @@ class GitRepository(Repository):
 
         if self.persistent_cache:
             del self._rev_cache  # invalidate persistent cache
-        if not self._rev_cache.sync():
+        if not self.git.sync():
             return None # nothing expected to change
 
         if rev_callback:

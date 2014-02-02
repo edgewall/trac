@@ -26,7 +26,7 @@ from trac.util.compat import close_fds
 from trac.versioncontrol.api import Changeset, DbRepositoryProvider
 from tracopt.versioncontrol.git.git_fs import GitConnector
 from tracopt.versioncontrol.git.PyGIT import GitCore, GitError, Storage, \
-                                             parse_commit
+                                             StorageFactory, parse_commit
 
 
 class GitTestCase(unittest.TestCase):
@@ -181,6 +181,11 @@ class NormalTestCase(unittest.TestCase):
                                                             stdout, stderr))
         return proc
 
+    def _factory(self, weak, path=None):
+        if path is None:
+            path = os.path.join(self.repos_path, '.git')
+        return StorageFactory(path, self.env.log, weak)
+
     def _storage(self, path=None):
         if path is None:
             path = os.path.join(self.repos_path, '.git')
@@ -278,6 +283,19 @@ class NormalTestCase(unittest.TestCase):
         self.assertEqual(['master'],
                          sorted(b[0] for b in storage.get_branches()))
         self.assertEqual(False, storage.sync())
+
+    def test_turn_off_persistent_cache(self):
+        # persistent_cache is enabled
+        parent_rev = self._factory(False).getInstance().youngest_rev()
+
+        create_file(os.path.join(self.repos_path, 'newfile.txt'))
+        self._git('add', 'newfile.txt')
+        self._git('commit', '-m', 'test_turn_off_persistent_cache',
+                  '--date', 'Wed, 29 Jan 2014 22:13:25 +0900')
+
+        # persistent_cache is disabled
+        rev = self._factory(True).getInstance().youngest_rev()
+        self.assertNotEqual(rev, parent_rev)
 
 
 class UnicodeNameTestCase(unittest.TestCase):
