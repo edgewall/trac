@@ -197,21 +197,23 @@ class StorageFactory(object):
         self.logger = log
 
         with StorageFactory.__dict_lock:
+            if weak:
+                # remove additional reference which is created
+                # with non-weak argument
+                try:
+                    del StorageFactory.__dict_nonweak[repo]
+                except KeyError:
+                    pass
+
             try:
                 i = StorageFactory.__dict[repo]
             except KeyError:
                 i = Storage(repo, log, git_bin, git_fs_encoding)
                 StorageFactory.__dict[repo] = i
 
-                # create or remove additional reference depending on 'weak'
-                # argument
-                if weak:
-                    try:
-                        del StorageFactory.__dict_nonweak[repo]
-                    except KeyError:
-                        pass
-                else:
-                    StorageFactory.__dict_nonweak[repo] = i
+            # create additional reference depending on 'weak' argument
+            if not weak:
+                StorageFactory.__dict_nonweak[repo] = i
 
         self.__inst = i
         self.__repo = repo
