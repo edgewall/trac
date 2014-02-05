@@ -62,7 +62,7 @@ class WikiModule(Component):
     page_manipulators = ExtensionPoint(IWikiPageManipulator)
 
     max_size = IntOption('wiki', 'max_size', 262144,
-        """Maximum allowed wiki page size in bytes. (''since 0.11.2'')""")
+        """Maximum allowed wiki page size in characters. (''since 0.11.2'')""")
 
     PAGE_TEMPLATES_PREFIX = 'PageTemplates/'
     DEFAULT_PAGE_TEMPLATE = 'DefaultPage'
