@@ -84,16 +84,14 @@ class TicketModule(Component):
         (''since 1.1.1'').""")
 
     max_description_size = IntOption('ticket', 'max_description_size', 262144,
-        """Don't accept tickets with a too big description.
-        (''since 0.11'').""")
+        """Maximum allowed description size in characters.
+        (//since 0.11//).""")
 
     max_comment_size = IntOption('ticket', 'max_comment_size', 262144,
-        """Don't accept tickets with a too big comment.
-        (''since 0.11.2'')""")
+        """Maximum allowed comment size in characters. (//since 0.11.2//).""")
 
     max_summary_size = IntOption('ticket', 'max_summary_size', 262144,
-        """Don't accept tickets with a too big summary.
-        (''since 1.0.2'')""")
+        """Maximum allowed summary size in chracters. (//since 1.0.2//).""")
 
     timeline_newticket_formatter = Option('timeline', 'newticket_formatter',
                                           'oneliner',
