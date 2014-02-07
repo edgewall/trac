@@ -221,6 +221,10 @@ class FunctionalTestEnvironment(object):
                      stdin=PIPE, stdout=PIPE, stderr=STDOUT,
                      close_fds=close_fds, cwd=self.command_cwd)
         if args:
+            if any('\n' in arg for arg in args):
+                raise Exception(
+                    "trac-admin in interactive mode doesn't support "
+                    "arguments with newline characters: %r" % (args,))
             # Don't quote first token which is sub-command name
             input = ' '.join(('"%s"' % to_utf8(arg) if idx else arg)
                              for idx, arg in enumerate(args))
