@@ -91,7 +91,7 @@ class TicketModule(Component):
         """Maximum allowed comment size in characters. (//since 0.11.2//).""")
 
     max_summary_size = IntOption('ticket', 'max_summary_size', 262144,
-        """Maximum allowed summary size in chracters. (//since 1.0.2//).""")
+        """Maximum allowed summary size in characters. (//since 1.0.2//).""")
 
     timeline_newticket_formatter = Option('timeline', 'newticket_formatter',
                                           'oneliner',
