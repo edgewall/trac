@@ -17,6 +17,7 @@ Provides some Trac environment-wide utility functions, and a way to call
 
 import locale
 import os
+import re
 import sys
 import time
 from subprocess import call, Popen, PIPE, STDOUT
@@ -235,7 +236,7 @@ class FunctionalTestEnvironment(object):
         else:
             # trac-admin is started in interactive mode, so we strip away
             # everything up to the to the interactive prompt
-            return out.split(']>', 1)[1].strip()
+            return re.split(r'\r?\nTrac \[[^]]+\]> ', out, 2)[1]
 
     def start(self):
         """Starts the webserver, and waits for it to come up."""
