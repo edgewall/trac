@@ -54,6 +54,36 @@ class TestTickets(FunctionalTwillTestCaseSetup):
         self._tester.add_comment(id)
 
 
+class TestTicketMaxSummarySize(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test `[ticket] max_summary_size` option.
+        http://trac.edgewall.org/ticket/11472"""
+        prev_max_summary_size = \
+            self._testenv.get_config('ticket', 'max_summary_size')
+        short_summary = "abcdefghijklmnopqrstuvwxyz"
+        long_summary = short_summary + "."
+        max_summary_size = len(short_summary)
+        warning_message = r"Ticket summary is too long \(must be less " \
+                          r"than %s characters\)" % max_summary_size
+        self._testenv.set_config('ticket', 'max_summary_size',
+                                 str(max_summary_size))
+        try:
+            self._tester.create_ticket(short_summary)
+            tc.find(short_summary)
+            tc.notfind(warning_message)
+            self._tester.go_to_front()
+            tc.follow(r"\bNew Ticket\b")
+            tc.notfind(internal_error)
+            tc.url(self._tester.url + '/newticket')
+            tc.formvalue('propertyform', 'field_summary', long_summary)
+            tc.submit('submit')
+            tc.url(self._tester.url + '/newticket')
+            tc.find(warning_message)
+        finally:
+            self._testenv.set_config('ticket', 'max_summary_size',
+                                     prev_max_summary_size)
+
+
 class TestTicketAddAttachment(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Add attachment to a ticket. Test that the attachment button
@@ -2454,6 +2484,7 @@ def functionalSuite(suite=None):
         import trac.tests.functional
         suite = trac.tests.functional.functionalSuite()
     suite.addTest(TestTickets())
+    suite.addTest(TestTicketMaxSummarySize())
     suite.addTest(TestTicketAddAttachment())
     suite.addTest(TestTicketPreview())
     suite.addTest(TestTicketNoSummary())
