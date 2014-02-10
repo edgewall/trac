@@ -11,6 +11,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from __future__ import with_statement
+
 import shutil
 import tempfile
 import unittest
@@ -129,9 +131,9 @@ def attachment_setup(tc):
     import trac.ticket.api
     import trac.wiki.api
     tc.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
-    tc.env.db_transaction("INSERT INTO ticket (id) VALUES ('123')")
-    tc.env.db_transaction("INSERT INTO wiki (name) VALUES ('WikiStart')")
-    tc.env.db_transaction("INSERT INTO wiki (name) VALUES ('SomePage/SubPage')")
+    with tc.env.db_transaction as db:
+        db("INSERT INTO wiki (name,version) VALUES ('SomePage/SubPage',1)")
+        db("INSERT INTO ticket (id) VALUES (123)")
     attachment = Attachment(tc.env, 'ticket', 123)
     attachment.insert('file.txt', tempfile.TemporaryFile(), 0)
     attachment = Attachment(tc.env, 'wiki', 'WikiStart')
