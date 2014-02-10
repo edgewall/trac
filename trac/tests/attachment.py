@@ -11,6 +11,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from __future__ import with_statement
+
 import os
 import shutil
 from StringIO import StringIO
@@ -62,9 +64,10 @@ class AttachmentTestCase(unittest.TestCase):
         self.env.config.set('attachment', 'max_size', 512)
 
         self.perm = PermissionCache(self.env)
-        self.env.db_transaction("INSERT INTO wiki (name) VALUES ('WikiStart')")
-        self.env.db_transaction("INSERT INTO wiki (name) VALUES ('SomePage')")
-        self.env.db_transaction("INSERT INTO ticket (id) VALUES ('42')")
+        with self.env.db_transaction as db:
+            db("INSERT INTO wiki (name,version) VALUES ('WikiStart',1)")
+            db("INSERT INTO wiki (name,version) VALUES ('SomePage',1)")
+            db("INSERT INTO ticket (id) VALUES (42)")
 
     def tearDown(self):
         shutil.rmtree(self.env.path)
