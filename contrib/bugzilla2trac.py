@@ -386,7 +386,7 @@ class TracDatabase(object):
         comment = value
 
         if PREFORMAT_COMMENTS:
-          comment = '{{{\n%s\n}}}' % comment
+            comment = '{{{\n%s\n}}}' % comment
 
         if REPLACE_BUG_NO:
             if BUG_NO_RE.search(comment):
@@ -729,7 +729,7 @@ def convert(_db, _host, _user, _password, _env, _force):
                     ignore = True
 
             if ignore:
-                    continue
+                continue
 
             trac.addTicketComment(ticket=bugid,
                 time = desc['bug_when'],
@@ -833,19 +833,19 @@ def convert(_db, _host, _user, _password, _env, _force):
 
             # Bugzilla splits large summary changes into two records.
             for oldChange in ticketChanges:
-              if (field_name == "summary"
-                  and oldChange['field'] == ticketChange['field']
-                  and oldChange['time'] == ticketChange['time']
-                  and oldChange['author'] == ticketChange['author']):
-                  oldChange['oldvalue'] += " " + ticketChange['oldvalue']
-                  oldChange['newvalue'] += " " + ticketChange['newvalue']
-                  break
-              # cc and attachments.isobsolete sometime appear
-              # in different activities with same time
-              if ((field_name == "cc" or field_name == "attachments.isobsolete") \
-                  and oldChange['time'] == ticketChange['time']):
-                  oldChange['newvalue'] += ", " + ticketChange['newvalue']
-                  break
+                if (field_name == "summary"
+                    and oldChange['field'] == ticketChange['field']
+                    and oldChange['time'] == ticketChange['time']
+                    and oldChange['author'] == ticketChange['author']):
+                    oldChange['oldvalue'] += " " + ticketChange['oldvalue']
+                    oldChange['newvalue'] += " " + ticketChange['newvalue']
+                    break
+                # cc and attachments.isobsolete sometime appear
+                # in different activities with same time
+                if ((field_name == "cc" or field_name == "attachments.isobsolete") \
+                    and oldChange['time'] == ticketChange['time']):
+                    oldChange['newvalue'] += ", " + ticketChange['newvalue']
+                    break
             else:
                 ticketChanges.append (ticketChange)
 

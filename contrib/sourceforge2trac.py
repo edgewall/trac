@@ -130,9 +130,9 @@ class FlatXML(object):
         for c in el:
             if len(c.getchildren()) == 0:
                 if c.text != None and len(c.text.strip()) != 0:
-                   self.__setattr__(c.tag, c.text)
+                    self.__setattr__(c.tag, c.text)
                 else:
-                   self.__setattr__(c.tag, [])
+                    self.__setattr__(c.tag, [])
             else: #if c.getchildren()[0].tag == c.tag[:-1]:
                 # c is a set of elements
                 self.__setattr__(c.tag, [FlatXML(x) for x in c.getchildren()])
@@ -559,137 +559,137 @@ def importData(f, env, opt):
     trac.setMilestoneList([])
 
     for tracker in project.trackers:
-      # id 100 means no component selected
-      component_lookup = dict(project.get_categories(noowner=True) +
-                              [("100", None)])
-      for t in tracker.tracker_items:
-        i = trac.addTicket(type=tracker.name,
-                           time=int(t.submit_date),
-                           changetime=int(t.submit_date),
-                           component=component_lookup[t.category_id],
-                           priority=t.priority,
-                           owner=t.assignee \
-                                   if t.assignee not in user_map \
-                                   else user_map[t.assignee],
-                           reporter=t.submitter \
-                                   if t.submitter not in user_map \
-                                   else user_map[t.submitter],
-                           cc=None,
-                           # 100 means no group selected
-                           version=dict(project.groups +
-                                        [("100", None)])[t.group_id],
-                           milestone=None,
-                           status=dict(project.statuses)[t.status_id],
-                           resolution=dict(resolutions)[t.resolution_id] \
-                                   if hasattr(t, "resolution_id") else None,
-                           summary=t.summary,
-                           description=t.details,
-                           keywords='sf' + t.id)
+        # id 100 means no component selected
+        component_lookup = dict(project.get_categories(noowner=True) +
+                                [("100", None)])
+        for t in tracker.tracker_items:
+            i = trac.addTicket(type=tracker.name,
+                               time=int(t.submit_date),
+                               changetime=int(t.submit_date),
+                               component=component_lookup[t.category_id],
+                               priority=t.priority,
+                               owner=t.assignee \
+                                       if t.assignee not in user_map \
+                                       else user_map[t.assignee],
+                               reporter=t.submitter \
+                                       if t.submitter not in user_map \
+                                       else user_map[t.submitter],
+                               cc=None,
+                               # 100 means no group selected
+                               version=dict(project.groups +
+                                            [("100", None)])[t.group_id],
+                               milestone=None,
+                               status=dict(project.statuses)[t.status_id],
+                               resolution=dict(resolutions)[t.resolution_id] \
+                                       if hasattr(t, "resolution_id") else None,
+                               summary=t.summary,
+                               description=t.details,
+                               keywords='sf' + t.id)
 
-        print 'Imported %s as #%d' % (t.id, i)
+            print 'Imported %s as #%d' % (t.id, i)
 
-        if len(t.attachments):
-            attmsg = "SourceForge attachments:\n"
-            for a in t.attachments:
-                attmsg = attmsg + " * [%s %s] (%s) - added by '%s' %s [[BR]] "\
-                         % (a.url+t.id, a.filename, a.filesize+" bytes",
-                            user_map.get(a.submitter, a.submitter),
-                            time.strftime("%Y-%m-%d %H:%M:%S",
-                                          time.localtime(int(a.date))))
-                attmsg = attmsg + "''%s ''\n" % (a.description or '')
-                # empty description is as empty list
-            trac.addTicketComment(ticket=i,
-                                  time=time.strftime("%Y-%m-%d %H:%M:%S",
-                                          time.localtime(int(t.submit_date))),
-                                  author=None, value=attmsg)
-            print '    added information about %d attachments for #%d' % \
-                    (len(t.attachments), i)
+            if len(t.attachments):
+                attmsg = "SourceForge attachments:\n"
+                for a in t.attachments:
+                    attmsg = attmsg + " * [%s %s] (%s) - added by '%s' %s [[BR]] "\
+                             % (a.url+t.id, a.filename, a.filesize+" bytes",
+                                user_map.get(a.submitter, a.submitter),
+                                time.strftime("%Y-%m-%d %H:%M:%S",
+                                              time.localtime(int(a.date))))
+                    attmsg = attmsg + "''%s ''\n" % (a.description or '')
+                    # empty description is as empty list
+                trac.addTicketComment(ticket=i,
+                                      time=time.strftime("%Y-%m-%d %H:%M:%S",
+                                              time.localtime(int(t.submit_date))),
+                                      author=None, value=attmsg)
+                print '    added information about %d attachments for #%d' % \
+                        (len(t.attachments), i)
 
-        for msg in t.followups:
+            for msg in t.followups:
+                """
+                <followup>
+                <id>3280792</id>
+                <submitter>goblinhack</submitter>
+                <date>1231087739</date>
+                <details>done</details>
+                </followup>
+                """
+                trac.addTicketComment(ticket=i,
+                                      time=msg.date,
+                                      author=msg.submitter,
+                                      value=msg.details)
+            if t.followups:
+                print '    imported %d messages for #%d' % (len(t.followups), i)
+
+            # Import history
             """
-            <followup>
-            <id>3280792</id>
-            <submitter>goblinhack</submitter>
-            <date>1231087739</date>
-            <details>done</details>
-            </followup>
+            <history_entry>
+            <id>4452195</id>
+            <field_name>resolution_id</field_name>
+            <old_value>100</old_value>
+            <date>1176043865</date>
+            <updator>goblinhack</updator>
+            </history_entry>
             """
-            trac.addTicketComment(ticket=i,
-                                  time=msg.date,
-                                  author=msg.submitter,
-                                  value=msg.details)
-        if t.followups:
-            print '    imported %d messages for #%d' % (len(t.followups), i)
+            revision = t.__dict__.copy()
 
-        # Import history
-        """
-        <history_entry>
-        <id>4452195</id>
-        <field_name>resolution_id</field_name>
-        <old_value>100</old_value>
-        <date>1176043865</date>
-        <updator>goblinhack</updator>
-        </history_entry>
-        """
-        revision = t.__dict__.copy()
+            # iterate the history in reverse order and update ticket revision from
+            # current (last) to initial
+            changes = 0
+            for h in sorted(t.history_entries, reverse=True):
+                """
+                 Processed fields (field - notes):
+                IP         - no target field, just skip
+                summary
+                priority
+                close_date
+                assigned_to
 
-        # iterate the history in reverse order and update ticket revision from
-        # current (last) to initial
-        changes = 0
-        for h in sorted(t.history_entries, reverse=True):
-            """
-             Processed fields (field - notes):
-            IP         - no target field, just skip
-            summary
-            priority
-            close_date
-            assigned_to
+                 Fields not processed (field: explanation):
+                File Added - TODO
+                resolution_id - need to update used_resolutions
+                status_id
+                artifact_group_id
+                category_id
+                group_id
+                """
+                f = None
+                if h.field_name in ("IP",):
+                    changes += 1
+                    continue
+                elif h.field_name in ("summary", "priority"):
+                    f = h.field_name
+                    oldvalue = h.old_value
+                    newvalue = revision.get(h.field_name, None)
+                elif h.field_name == 'assigned_to':
+                    f = "owner"
+                    newvalue = revision['assignee']
+                    if h.old_value == '100': # was not assigned
+                        revision['assignee'] = None
+                        oldvalue = None
+                    else:
+                        username = project.users[h.old_value]
+                        if username in user_map: username = user_map[username]
+                        revision['assignee'] = oldvalue = username
+                elif h.field_name == 'close_date' and revision['close_date'] != 0:
+                    f = 'status'
+                    oldvalue = 'assigned'
+                    newvalue = 'closed'
 
-             Fields not processed (field: explanation):
-            File Added - TODO
-            resolution_id - need to update used_resolutions
-            status_id
-            artifact_group_id
-            category_id
-            group_id
-            """
-            f = None
-            if h.field_name in ("IP",):
-                changes += 1
-                continue
-            elif h.field_name in ("summary", "priority"):
-                f = h.field_name
-                oldvalue = h.old_value
-                newvalue = revision.get(h.field_name, None)
-            elif h.field_name == 'assigned_to':
-                f = "owner"
-                newvalue = revision['assignee']
-                if h.old_value == '100': # was not assigned
-                    revision['assignee'] = None
-                    oldvalue = None
-                else:
-                    username = project.users[h.old_value]
-                    if username in user_map: username = user_map[username]
-                    revision['assignee'] = oldvalue = username
-            elif h.field_name == 'close_date' and revision['close_date'] != 0:
-                f = 'status'
-                oldvalue = 'assigned'
-                newvalue = 'closed'
+                if f:
+                    changes += 1
+                    trac.addTicketChange(ticket=i,
+                                         time=h.date,
+                                         author=h.updator,
+                                         field=f,
+                                         oldvalue=oldvalue,
+                                         newvalue=newvalue)
 
-            if f:
-                changes += 1
-                trac.addTicketChange(ticket=i,
-                                     time=h.date,
-                                     author=h.updator,
-                                     field=f,
-                                     oldvalue=oldvalue,
-                                     newvalue=newvalue)
-
-            if h.field_name != 'assigned_to':
-                revision[h.field_name] = h.old_value
-        if changes:
-            print '    processed %d out of %d history items for #%d' % \
-                    (changes, len(t.history_entries), i)
+                if h.field_name != 'assigned_to':
+                    revision[h.field_name] = h.old_value
+            if changes:
+                print '    processed %d out of %d history items for #%d' % \
+                        (changes, len(t.history_entries), i)
 
 
 def main():

@@ -69,5 +69,3 @@ class ITimelineEventProvider(Interface):
                       the 'url'
         :param event: the event tuple, as returned by `get_timeline_events`
         """
-
-

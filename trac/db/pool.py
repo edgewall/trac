@@ -214,4 +214,3 @@ class ConnectionPool(object):
 
     def shutdown(self, tid=None):
         _backend.shutdown(tid)
-

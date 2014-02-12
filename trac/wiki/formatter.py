@@ -742,7 +742,7 @@ class Formatter(object):
         if label:
             label = format_to_oneliner(self.env, self.context, label)
         return '<span class="wikianchor" id="%s">%s</span>' % (anchor, label)
-    
+
     def _unique_anchor(self, anchor):
         i = 1
         anchor_base = anchor
