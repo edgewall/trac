@@ -271,7 +271,7 @@ class ReStructuredTextRenderer(Component):
         inliner.trac = (self.env, context)
         parser = rst.Parser(inliner=inliner)
         content = content_to_unicode(self.env, content, mimetype)
-        # The default Reader is explicitly passed as a workaround for #11248 
+        # The default Reader is explicitly passed as a workaround for #11248
         parts = publish_parts(content, writer=writer, parser=parser,
                               reader=standalone.Reader(parser),
                               settings_overrides={'halt_level': 6,

@@ -260,4 +260,3 @@ class PostgreSQLConnection(ConnectionWrapper):
 
     def cursor(self):
         return IterableCursor(self.cnx.cursor(), self.log)
-

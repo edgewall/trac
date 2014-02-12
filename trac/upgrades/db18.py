@@ -74,4 +74,3 @@ def do_upgrade(env, ver, cursor):
 
     cursor.execute("DROP TABLE session_old")
     cursor.execute("DROP TABLE ticket_change_old")
-

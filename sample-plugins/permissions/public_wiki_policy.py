@@ -74,4 +74,3 @@ class PublicWikiPolicy(Component):
             if action.startswith('WIKI_'):
                 return True
                 # this policy ''may'' grant permissions on some wiki pages
-

@@ -310,7 +310,7 @@ class TicketModule(Component):
                         ev = produce_event(data, status, fields, comment,
                                            cid)
                         if ev:
-                             yield (ev, data[1])
+                            yield (ev, data[1])
                     status, fields, comment, cid = 'edit', {}, '', None
                     data = (id, t, author, type, summary, None)
                 if field == 'comment':
