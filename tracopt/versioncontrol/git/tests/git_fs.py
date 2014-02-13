@@ -14,6 +14,7 @@
 import os
 import tempfile
 import unittest
+from datetime import datetime, timedelta
 from subprocess import Popen, PIPE
 
 from trac.core import TracError
@@ -21,6 +22,7 @@ from trac.test import EnvironmentStub, locate
 from trac.tests.compat import rmtree
 from trac.util import create_file
 from trac.util.compat import close_fds
+from trac.util.datefmt import utc
 from trac.versioncontrol.api import DbRepositoryProvider, RepositoryManager
 from tracopt.versioncontrol.git.git_fs import GitConnector
 
@@ -63,13 +65,15 @@ class BaseTestCase(unittest.TestCase):
             self._git('config', 'user.email', 'joe@example.com')
             create_file(os.path.join(self.repos_path, '.gitignore'))
             self._git('add', '.gitignore')
-            self._git('commit', '-a', '-m', 'test',
-                      '--date', 'Wed Jan 29 16:39:56 2001 +0900')
+            env = os.environ.copy()
+            env['GIT_COMMITTER_DATE'] = '2001-01-29T16:39:56+00:00'
+            env['GIT_AUTHOR_DATE'] = '2001-01-29T16:39:56+00:00'
+            self._git('commit', '-a', '-m', 'test', env=env)
 
-    def _git(self, *args):
+    def _git(self, *args, **kwargs):
         args = (git_bin,) + args
         proc = Popen(args, stdout=PIPE, stderr=PIPE, close_fds=close_fds,
-                     cwd=self.repos_path)
+                     cwd=self.repos_path, **kwargs)
         stdout, stderr = proc.communicate()
         self.assertEqual(0, proc.returncode,
                'git exits with %r, stdout %r, stderr %r' % (proc.returncode,
@@ -150,6 +154,47 @@ class PersistentCacheTestCase(BaseTestCase):
         return self._repomgr.get_repository('gitrepos')
 
 
+class HistoryTimeRangeTestCase(BaseTestCase):
+
+    def test_without_cache(self):
+        self._test_timerange('disabled')
+
+    def test_with_cache(self):
+        self._test_timerange('enabled')
+
+    def _test_timerange(self, cached_repository):
+        self.env.config.set('git', 'cached_repository', cached_repository)
+
+        self._git_init()
+        filename = os.path.join(self.repos_path, '.gitignore')
+        start = datetime(2000, 1, 1, 0, 0, 0, 0, utc)
+        ts = datetime(2014, 2, 5, 15, 24, 6, 0, utc)
+        env = os.environ.copy()
+        env['GIT_COMMITTER_DATE'] = ts.isoformat()
+        env['GIT_AUTHOR_DATE'] = ts.isoformat()
+        for idx in xrange(3):
+            create_file(filename, 'commit-%d.txt' % idx)
+            self._git('commit', '-a', '-m', 'commit %d' % idx, env=env)
+        self._add_repository()
+        repos = self._repomgr.get_repository('gitrepos')
+        repos.sync()
+
+        revs = [repos.youngest_rev]
+        while True:
+            parents = repos.parent_revs(revs[-1])
+            if not parents:
+                break
+            revs.extend(parents)
+        self.assertEqual(4, len(revs))
+
+        csets = list(repos.get_changesets(start, ts))
+        self.assertEqual(1, len(csets))
+        self.assertEqual(revs[-1], csets[0].rev)  # is oldest rev
+
+        csets = list(repos.get_changesets(start, ts + timedelta(seconds=1)))
+        self.assertEqual(revs, [cset.rev for cset in csets])
+
+
 def suite():
     global git_bin
     suite = unittest.TestSuite()
@@ -157,6 +202,7 @@ def suite():
     if git_bin:
         suite.addTest(unittest.makeSuite(SanityCheckingTestCase))
         suite.addTest(unittest.makeSuite(PersistentCacheTestCase))
+        suite.addTest(unittest.makeSuite(HistoryTimeRangeTestCase))
     else:
         print("SKIP: tracopt/versioncontrol/git/tests/git_fs.py (git cli "
               "binary, 'git', not found)")

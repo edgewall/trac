@@ -15,6 +15,7 @@
 from __future__ import with_statement
 
 from datetime import datetime
+import itertools
 import os
 import sys
 
@@ -56,6 +57,22 @@ class GitCachedRepository(CachedRepository):
         if normrev is None:
             raise NoSuchChangeset(rev)
         return normrev
+
+    def get_changesets(self, start, stop):
+        for key, csets in itertools.groupby(
+                CachedRepository.get_changesets(self, start, stop),
+                key=lambda cset: cset.date):
+            csets = list(csets)
+            if len(csets) == 1:
+                yield csets[0]
+                continue
+            rev_csets = dict((cset.rev, cset) for cset in csets)
+            while rev_csets:
+                revs = [rev for rev in rev_csets
+                            if not any(r in rev_csets
+                                       for r in self.repos.child_revs(rev))]
+                for rev in sorted(revs):
+                    yield rev_csets.pop(rev)
 
     def get_changeset(self, rev):
         return GitCachedChangeset(self, self.normalize_rev(rev), self.env)
