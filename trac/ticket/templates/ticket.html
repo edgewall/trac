@@ -220,30 +220,26 @@ ${comment}</textarea>
                            value="$ticket.summary" />
                   </td>
                 </tr>
-                <py:if test="only_for_admin">
-                  <tr>
-                    <th><label for="field-reporter">Reporter:</label></th>
-                    <td class="fullrow" colspan="3">
-                      <input type="text" id="field-reporter" name="field_reporter"
-                             value="${ticket.reporter}" />
-                    </td>
-                  </tr>
-                </py:if>
-                <py:if test="can_edit or can_create">
-                  <tr>
-                    <th><label for="field-description">Description:</label></th>
-                    <td class="fullrow" colspan="3">
-                      <fieldset>
-                        <label for="field-description" id="field-description-help" i18n:msg="">You may use
-                          <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here.
-                        </label>
-                        <textarea id="field-description" name="field_description"
-                                  class="wikitext trac-resizable" rows="10" cols="68">
+                <tr py:if="only_for_admin">
+                  <th><label for="field-reporter">Reporter:</label></th>
+                  <td class="fullrow" colspan="3">
+                    <input type="text" id="field-reporter" name="field_reporter"
+                           value="${ticket.reporter}" />
+                  </td>
+                </tr>
+                <tr py:if="can_edit or can_create">
+                  <th><label for="field-description">Description:</label></th>
+                  <td class="fullrow" colspan="3">
+                    <fieldset>
+                      <label for="field-description" id="field-description-help" i18n:msg="">You may use
+                        <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here.
+                      </label>
+                      <textarea id="field-description" name="field_description"
+                                class="wikitext trac-resizable" rows="10" cols="68">
 ${ticket.description}</textarea>
-                      </fieldset>
-                    </td>
-                  </tr>
-                </py:if>
+                    </fieldset>
+                  </td>
+                </tr>
                 <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
                     py:if="can_modify or can_create"
                     py:with="fullrow = len(row) == 1">
