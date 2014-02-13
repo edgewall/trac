@@ -25,7 +25,7 @@ from subprocess import call, Popen, PIPE, STDOUT
 from trac.env import open_environment
 from trac.test import EnvironmentStub, get_dburi
 from trac.tests.compat import rmtree
-from trac.tests.functional import logfile
+from trac.tests.functional import logfile, trac_source_tree
 from trac.tests.functional.better_twill import tc, ConnectError
 from trac.util import terminate
 from trac.util.compat import close_fds, wait_for_file_mtime_change
@@ -64,6 +64,7 @@ class FunctionalTestEnvironment(object):
     def __init__(self, dirname, port, url):
         """Create a :class:`FunctionalTestEnvironment`, see the class itself
         for parameter information."""
+        self.trac_src = trac_source_tree
         self.url = url
         self.command_cwd = os.path.normpath(os.path.join(dirname, '..'))
         self.dirname = os.path.abspath(dirname)
@@ -76,8 +77,6 @@ class FunctionalTestEnvironment(object):
         time.sleep(0.1) # Avoid race condition on Windows
         self.create()
         locale.setlocale(locale.LC_ALL, '')
-
-    trac_src = '.'
 
     @property
     def dburi(self):

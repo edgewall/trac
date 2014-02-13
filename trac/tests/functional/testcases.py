@@ -36,7 +36,7 @@ class RegressionTestRev6017(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of the plugin reload fix in r6017"""
         # Setup the DeleteTicket plugin
-        plugin = open(os.path.join(self._testenv.command_cwd,
+        plugin = open(os.path.join(self._testenv.trac_src,
                                    'sample-plugins', 'workflow',
                                    'DeleteTicket.py')).read()
         open(os.path.join(self._testenv.tracdir, 'plugins',

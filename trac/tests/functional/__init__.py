@@ -129,14 +129,23 @@ if twill:
             subdirectory 'testenv<portnum>'.
             """
             if port is None:
-                port = 8000 + os.getpid() % 1000
-                dirname = "testenv"
+                try:
+                    port = int(os.getenv('TRAC_TEST_PORT'))
+                except (TypeError, ValueError):
+                    pass
+
+            env_path = os.getenv('TRAC_TEST_ENV_PATH')
+            if not env_path:
+                env_name = 'testenv%s' % (port or '')
+                env_path = os.path.join(trac_source_tree, env_name)
             else:
-                dirname = "testenv%s" % port
-            dirname = os.path.join(trac_source_tree, dirname)
+                env_path += str(port or '')
+
+            if port is None:
+                port = 8000 + os.getpid() % 1000
 
             baseurl = "http://127.0.0.1:%s" % port
-            self._testenv = self.env_class(dirname, port, baseurl)
+            self._testenv = self.env_class(env_path, port, baseurl)
             self._testenv.start()
             self._tester = FunctionalTester(baseurl)
             self.fixture = (self._testenv, self._tester)
