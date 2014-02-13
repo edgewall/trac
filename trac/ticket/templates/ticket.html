@@ -211,12 +211,13 @@ ${comment}</textarea>
                   <py:otherwise>Properties</py:otherwise>
               </legend>
               <table>
+                <col class="th" /><col class="td" /><col class="th" /><col class="td" />
                 <tr py:if="can_modify or can_create">
                   <th><label for="field-summary">Summary:</label></th>
                   <td class="fullrow" colspan="3">
                     <input type="text" id="field-summary" name="field_summary"
                            class="${'trac-autofocus' if not ticket.exists and not preview_mode else None}"
-                           value="$ticket.summary" size="70" />
+                           value="$ticket.summary" />
                   </td>
                 </tr>
                 <py:if test="only_for_admin">
@@ -224,7 +225,7 @@ ${comment}</textarea>
                     <th><label for="field-reporter">Reporter:</label></th>
                     <td class="fullrow" colspan="3">
                       <input type="text" id="field-reporter" name="field_reporter"
-                             value="${ticket.reporter}" size="70" />
+                             value="${ticket.reporter}" />
                     </td>
                   </tr>
                 </py:if>

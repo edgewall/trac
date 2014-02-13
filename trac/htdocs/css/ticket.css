@@ -214,16 +214,36 @@ form .field div.trac-resizable { width: 100% }
 
 #propertyform { margin-bottom: 2em; }
 #properties { white-space: nowrap; line-height: 160%; padding: .5em }
-#properties table { border-spacing: 0; width: 100%; padding: 0 .5em }
-#properties table th {
+#properties table {
+ border-spacing: 0;
+ padding: 0 .5em;
+ table-layout: fixed;
+ width: 100%;
+}
+#properties table th,
+#properties table col.th {
  padding: .4em;
  text-align: right;
- width: 20%;
  vertical-align: top;
+ width: 17%;
 }
 #properties table th.col2 { border-left: 1px dotted #d7d7d7 }
-#properties table td { vertical-align: middle; width: 30% }
-#properties table td.fullrow { vertical-align: middle; width: 80% }
+#properties table th { white-space: normal; }
+#properties table td,
+#properties table col.td {
+ padding-right: 0.6em;
+ vertical-align: middle;
+ width: 33%
+}
+#properties table td.fullrow { width: 83% }
+#properties table td input[type="text"] {
+ -moz-box-sizing: border-box;
+ box-sizing: border-box;
+ width: 100%;
+}
+#properties table td.col1 label,
+#properties table td.col2 label { float: left; margin-right: 0.5em; }
+#properties table td select { max-width: 100% }
 
 #action { line-height: 2em }
 
