@@ -1128,6 +1128,53 @@ Security sensitive:  0                           |          Blocking:
         tn.ticket = ticket
         tn.get_message_id('foo')
 
+    def test_mime_meta_characters_in_from_header(self):
+        """MIME encoding with meta characters in From header"""
+
+        self.env.config.set('notification', 'smtp_from', 'trac@example.com')
+        self.env.config.set('notification', 'mime_encoding', 'base64')
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'joeuser'
+        ticket['summary'] = 'This is a summary'
+        ticket.insert()
+        tn = TicketNotifyEmail(self.env)
+
+        def notify(from_name):
+            self.env.config.set('notification', 'smtp_from_name', from_name)
+            tn.notify(ticket, newticket=True)
+            message = notifysuite.smtpd.get_message()
+            headers, body = parse_smtp_message(message)
+            return message, headers, body
+
+        message, headers, body = notify(u'Träc')
+        self.assertEqual(r'"=?utf-8?b?VHLDpGM=?=" <trac@example.com>',
+                         headers['From'])
+        message, headers, body = notify(u'Trac\\')
+        self.assertEqual(r'"Trac\\" <trac@example.com>', headers['From'])
+        message, headers, body = notify(u'Trac"')
+        self.assertEqual(r'"Trac\"" <trac@example.com>', headers['From'])
+        message, headers, body = notify(u'=?utf-8?b?****?=')
+        self.assertEqual('"=?utf-8?b?PT91dGYtOD9iPyoqKio/PQ==?=" '
+                         '<trac@example.com>', headers['From'])
+
+    def test_mime_meta_characters_in_subject_header(self):
+        """MIME encoding with meta characters in Subject header"""
+
+        self.env.config.set('notification', 'smtp_from', 'trac@example.com')
+        self.env.config.set('notification', 'mime_encoding', 'base64')
+        summary = u'=?utf-8?q?****?='
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'joeuser'
+        ticket['summary'] = summary
+        ticket.insert()
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=True)
+        message = notifysuite.smtpd.get_message()
+        headers, body = parse_smtp_message(message)
+        self.assertIn('\nSubject: =?utf-8?b?', message)  # is mime-encoded
+        self.assertEqual(summary,
+                         re.split(r' #[0-9]+: ', headers['Subject'], 1)[1])
+
 
 class NotificationTestSuite(unittest.TestSuite):
     """Thin test suite wrapper to start and stop the SMTP test server"""
