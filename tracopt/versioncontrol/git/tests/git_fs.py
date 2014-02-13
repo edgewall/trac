@@ -22,12 +22,20 @@ from trac.test import EnvironmentStub, locate
 from trac.tests.compat import rmtree
 from trac.util import create_file
 from trac.util.compat import close_fds
-from trac.util.datefmt import utc
+from trac.util.datefmt import to_timestamp, utc
 from trac.versioncontrol.api import DbRepositoryProvider, RepositoryManager
 from tracopt.versioncontrol.git.git_fs import GitConnector
 
 
 git_bin = None
+
+
+def git_date_format(dt):
+    offset = dt.utcoffset()
+    secs = offset.days * 3600 * 24 + offset.seconds
+    hours, rem = divmod(abs(secs), 3600)
+    return '%d %c%02d:%02d' % (to_timestamp(dt), '-' if secs < 0 else '+',
+                               hours, rem / 60)
 
 
 class BaseTestCase(unittest.TestCase):
@@ -66,8 +74,9 @@ class BaseTestCase(unittest.TestCase):
             create_file(os.path.join(self.repos_path, '.gitignore'))
             self._git('add', '.gitignore')
             env = os.environ.copy()
-            env['GIT_COMMITTER_DATE'] = '2001-01-29T16:39:56+00:00'
-            env['GIT_AUTHOR_DATE'] = '2001-01-29T16:39:56+00:00'
+            committer_date = datetime(2001, 1, 29, 16, 39, 56, 0, utc)
+            env['GIT_COMMITTER_DATE'] = git_date_format(committer_date)
+            env['GIT_AUTHOR_DATE'] = git_date_format(committer_date)
             self._git('commit', '-a', '-m', 'test', env=env)
 
     def _git(self, *args, **kwargs):
@@ -125,7 +134,7 @@ class PersistentCacheTestCase(BaseTestCase):
         youngest = self._repository.youngest_rev
         self._repomgr.reload_repositories()  # clear repository cache
 
-        self._commit('2014-01-29T16:44:54+09:00')
+        self._commit(datetime(2014, 1, 29, 16, 44, 54, 0, utc))
         self.assertEqual(youngest, self._repository.youngest_rev)
         self._repository.sync()
         self.assertNotEqual(youngest, self._repository.youngest_rev)
@@ -137,7 +146,7 @@ class PersistentCacheTestCase(BaseTestCase):
         youngest = self._repository.youngest_rev
         self._repomgr.reload_repositories()  # clear repository cache
 
-        self._commit('2014-01-29T16:44:54+09:00')
+        self._commit(datetime(2014, 1, 29, 16, 44, 54, 0, utc))
         youngest_2 = self._repository.youngest_rev
         self.assertNotEqual(youngest, youngest_2)
         self._repository.sync()
@@ -146,8 +155,11 @@ class PersistentCacheTestCase(BaseTestCase):
 
     def _commit(self, date):
         gitignore = os.path.join(self.repos_path, '.gitignore')
-        create_file(gitignore, date)
-        self._git('commit', '-a', '-m', date, '--date', date)
+        create_file(gitignore, date.isoformat())
+        env = os.environ.copy()
+        env['GIT_COMMITTER_DATE'] = git_date_format(date)
+        env['GIT_AUTHOR_DATE'] = git_date_format(date)
+        self._git('commit', '-a', '-m', date.isoformat(), env=env)
 
     @property
     def _repository(self):
@@ -170,8 +182,8 @@ class HistoryTimeRangeTestCase(BaseTestCase):
         start = datetime(2000, 1, 1, 0, 0, 0, 0, utc)
         ts = datetime(2014, 2, 5, 15, 24, 6, 0, utc)
         env = os.environ.copy()
-        env['GIT_COMMITTER_DATE'] = ts.isoformat()
-        env['GIT_AUTHOR_DATE'] = ts.isoformat()
+        env['GIT_COMMITTER_DATE'] = git_date_format(ts)
+        env['GIT_AUTHOR_DATE'] = git_date_format(ts)
         for idx in xrange(3):
             create_file(filename, 'commit-%d.txt' % idx)
             self._git('commit', '-a', '-m', 'commit %d' % idx, env=env)
