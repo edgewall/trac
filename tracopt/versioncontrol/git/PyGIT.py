@@ -969,10 +969,12 @@ class Storage(object):
         return [rev.strip() for rev in tmp.splitlines()]
 
     def history_timerange(self, start, stop):
+        # retrieve start <= committer-time < stop,
+        # see CachedRepository.get_changesets()
         return [ rev.strip() for rev in \
-                     self.repo.rev_list('--reverse',
+                     self.repo.rev_list('--date-order',
                                         '--max-age=%d' % start,
-                                        '--min-age=%d' % stop,
+                                        '--min-age=%d' % (stop - 1),
                                         '--all').splitlines() ]
 
     def rev_is_anchestor_of(self, rev1, rev2):
