@@ -99,14 +99,7 @@ internal_error = 'Trac detected an internal error:'
 
 trac_source_tree = os.path.normpath(os.path.join(trac.__file__, '..', '..'))
 
-# testing.log gets any unused output from subprocesses
-logfile = open(os.path.join(trac_source_tree, 'testing.log'), 'w')
-
 if twill:
-    # functional-testing.log gets the twill output
-    twill.set_output(open(os.path.join(trac_source_tree,
-                                       'functional-testing.log'), 'w'))
-
     from trac.tests.functional.testenv import FunctionalTestEnvironment
     from trac.tests.functional.svntestenv import SvnFunctionalTestEnvironment
 
@@ -146,6 +139,12 @@ if twill:
 
             baseurl = "http://127.0.0.1:%s" % port
             self._testenv = self.env_class(env_path, port, baseurl)
+
+            # functional-testing.log gets the twill output
+            self.functional_test_log = \
+                os.path.join(env_path, 'functional-testing.log')
+            twill.set_output(open(self.functional_test_log, 'w'))
+
             self._testenv.start()
             self._tester = FunctionalTester(baseurl)
             self.fixture = (self._testenv, self._tester)

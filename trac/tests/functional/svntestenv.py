@@ -16,7 +16,6 @@ import re
 from subprocess import call
 
 from testenv import FunctionalTestEnvironment
-from trac.tests.functional import logfile
 from trac.util.compat import close_fds
 
 
@@ -32,10 +31,12 @@ class SvnFunctionalTestEnvironment(FunctionalTestEnvironment):
         Initialize a repo of the type :attr:`self.repotype`.
         """
         if call(["svnadmin", "create", self.repo_path_for_initenv()],
-                stdout=logfile, stderr=logfile, close_fds=close_fds):
+                stdout=self.logfile, stderr=self.logfile,
+                close_fds=close_fds):
             raise Exception('unable to create subversion repository')
         if call(['svn', 'co', self.repo_url(), self.work_dir()],
-                stdout=logfile, stderr=logfile, close_fds=close_fds):
+                stdout=self.logfile, stderr=self.logfile,
+                close_fds=close_fds):
             raise Exception('Checkout from %s failed.' % self.repo_url())
 
     def destroy_repo(self):

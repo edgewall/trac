@@ -25,7 +25,7 @@ from subprocess import call, Popen, PIPE, STDOUT
 from trac.env import open_environment
 from trac.test import EnvironmentStub, get_dburi
 from trac.tests.compat import rmtree
-from trac.tests.functional import logfile, trac_source_tree
+from trac.tests.functional import trac_source_tree
 from trac.tests.functional.better_twill import tc, ConnectError
 from trac.util import terminate
 from trac.util.compat import close_fds, wait_for_file_mtime_change
@@ -134,6 +134,8 @@ class FunctionalTestEnvironment(object):
         authentication.
         """
         os.mkdir(self.dirname)
+        # testing.log gets any unused output from subprocesses
+        self.logfile = open(os.path.join(self.dirname, 'testing.log'), 'w')
         self.create_repo()
 
         self._tracadmin('initenv', self.tracdir, self.dburi, self.repotype,
@@ -232,7 +234,7 @@ class FunctionalTestEnvironment(object):
         out = proc.communicate(input=input)[0]
         if proc.returncode:
             print(out)
-            logfile.write(out)
+            self.logfile.write(out)
             raise Exception("Failed while running trac-admin with arguments %r.\n"
                             "Exitcode: %s \n%s"
                             % (args, proc.returncode, out))
@@ -258,7 +260,7 @@ class FunctionalTestEnvironment(object):
         args.append(os.path.join(self.trac_src, 'trac', 'web',
                                  'standalone.py'))
         server = Popen(args + options + [self.tracdir],
-                       stdout=logfile, stderr=logfile,
+                       stdout=self.logfile, stderr=self.logfile,
                        close_fds=close_fds,
                        cwd=self.command_cwd)
         self.pid = server.pid
@@ -297,13 +299,13 @@ class FunctionalTestEnvironment(object):
         return "''" # needed for Python 2.3 and 2.4 on win32
 
     def call_in_dir(self, dir, args, environ=None):
-        proc = Popen(args, stdout=PIPE, stderr=logfile,
+        proc = Popen(args, stdout=PIPE, stderr=self.logfile,
                      close_fds=close_fds, cwd=dir, env=environ)
         (data, _) = proc.communicate()
         if proc.wait():
             raise Exception('Unable to run command %s in %s' %
                             (args, dir))
-        logfile.write(data)
+        self.logfile.write(data)
         return data
 
     def enable_authz_permpolicy(self, authz_content, filename=None):
