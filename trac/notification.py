@@ -328,20 +328,31 @@ class NotifyEmail(Notify):
 
         Notify.notify(self, resid)
 
+    _mime_encoding_re = re.compile(r'=\?[^?]+\?[bq]\?[^?]+\?=', re.IGNORECASE)
+
     def format_header(self, key, name, email=None):
         from email.Header import Header
         maxlength = MAXHEADERLEN-(len(key)+2)
         # Do not sent ridiculous short headers
         if maxlength < 10:
             raise TracError(_("Header length is too short"))
-        try:
-            tmp = name.encode('ascii')
-            header = Header(tmp, 'ascii', maxlinelen=maxlength)
-        except UnicodeEncodeError:
-            header = Header(name, self._charset, maxlinelen=maxlength)
+        # when it matches mime-encoding, encode as mime even if only
+        # ascii characters
+        header = None
+        if not self._mime_encoding_re.search(name):
+            try:
+                tmp = name.encode('ascii')
+                header = Header(tmp, 'ascii', maxlinelen=maxlength)
+            except UnicodeEncodeError:
+                pass
+        if not header:
+            header = Header(name.encode(self._charset.output_codec),
+                            self._charset, maxlinelen=maxlength)
         if not email:
             return header
         else:
+            header = str(header).replace('\\', r'\\') \
+                                .replace('"', r'\"')
             return '"%s" <%s>' % (header, email)
 
     def add_headers(self, msg, headers):
