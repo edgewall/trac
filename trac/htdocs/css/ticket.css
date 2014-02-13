@@ -224,6 +224,11 @@ form .field div.trac-resizable { width: 100% }
 #properties table th.col2 { border-left: 1px dotted #d7d7d7 }
 #properties table td { vertical-align: middle; width: 30% }
 #properties table td.fullrow { vertical-align: middle; width: 80% }
+#properties table td textarea {
+ -moz-box-sizing: border-box;
+ box-sizing: border-box;
+ width: 100%;
+}
 
 #action { line-height: 2em }
 

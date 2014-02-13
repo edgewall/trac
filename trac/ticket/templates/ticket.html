@@ -253,7 +253,8 @@ ${ticket.description}</textarea>
                              py:strip="field.type == 'radio'" i18n:msg="field">${
                         field.edit_label or field.label or field.name}:</label>
                     </th>
-                    <td class="col${idx + 1}" py:if="idx == 0 or not fullrow"
+                    <td class="${classes('col' + str(idx + 1), fullrow=fullrow)}"
+                        py:if="idx == 0 or not fullrow"
                         colspan="${3 if fullrow else None}">
                       <py:choose test="field.type" py:if="field">
                         <select py:when="'select'" id="field-${field.name}" name="field_${field.name}">
@@ -270,7 +271,7 @@ ${ticket.description}</textarea>
                           </optgroup>
                         </select>
                         <textarea py:when="'textarea'" id="field-${field.name}" name="field_${field.name}"
-                                  cols="${field.width}" rows="${field.height}"
+                                  cols="60" rows="${field.height}"
                                   class="${'wikitext ' if field.format == 'wiki' else None}trac-resizable">
 ${value}</textarea>
                         <span py:when="'checkbox'">

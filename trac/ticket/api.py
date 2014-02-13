@@ -414,7 +414,6 @@ class TicketSystem(Component):
                 field['format'] = config.get(name + '.format', 'plain')
             elif field['type'] == 'textarea':
                 field['format'] = config.get(name + '.format', 'plain')
-                field['width'] = config.getint(name + '.cols')
                 field['height'] = config.getint(name + '.rows')
             elif field['type'] == 'time':
                 field['format'] = config.get(name + '.format', 'datetime')
