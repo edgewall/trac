@@ -42,6 +42,14 @@ database.  See :ref:`Using an alternate database backend
 Provide additional options to the standalone
 :command:`tracd` server used for the functional tests.
 
+.. envvar:: TRAC_TEST_ENV_PATH
+
+Use the specified path for the test environment directory.
+
+.. envvar:: TRAC_TEST_PORT
+
+Use the specified port for running the standalone :command:`tracd` server.
+
 The :file:`Makefile` is actually written in a way that allow you to
 get more control, if you want.
 
