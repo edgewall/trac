@@ -225,10 +225,10 @@ form .field div.trac-resizable { width: 100% }
  padding: .4em;
  text-align: right;
  vertical-align: top;
+ white-space: normal;
  width: 17%;
 }
 #properties table th.col2 { border-left: 1px dotted #d7d7d7 }
-#properties table th { white-space: normal; }
 #properties table td,
 #properties table col.td {
  padding-right: 0.6em;
