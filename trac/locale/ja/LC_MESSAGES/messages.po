@@ -1858,7 +1858,7 @@ msgstr "差分"
 
 #: trac/templates/diff_options.html:10
 msgid "View differences"
-msgstr "更新内容の表示方法"
+msgstr "差分の表示"
 
 #: trac/templates/diff_options.html:13
 msgid "inline"
@@ -3170,7 +3170,7 @@ msgstr "更新"
 #: trac/ticket/web_ui.py:1611 trac/ticket/templates/ticket.html:180
 #: trac/ticket/templates/ticket_box.html:64 trac/wiki/web_ui.py:726
 msgid "diff"
-msgstr "差分表示"
+msgstr "差分"
 
 #: trac/ticket/web_ui.py:1612
 #, python-format
@@ -4606,7 +4606,7 @@ msgstr "差分を表示する"
 
 #: trac/versioncontrol/templates/changeset.html:119
 msgid "view diffs"
-msgstr "差分を表示する"
+msgstr "差分表示"
 
 #: trac/versioncontrol/templates/changeset.html:122
 #, python-format
