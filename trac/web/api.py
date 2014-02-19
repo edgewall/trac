@@ -65,6 +65,11 @@ class IRequestHandler(Interface):
         simply send the response itself and not return anything.
 
         :Since 1.0: Clearsilver templates are no longer supported.
+
+        :Since 1.1.2: the rendering `method` (xml, xhtml or text) may be
+           returned as a fourth parameter in the tuple, but if not specified
+           it will be inferred from the `content_type` when rendering the
+           template.
         """
 
 
@@ -80,7 +85,7 @@ class IRequestFilter(Interface):
         Always returns the request handler, even if unchanged.
         """
 
-    def post_process_request(req, template, data, content_type):
+    def post_process_request(req, template, data, content_type, method=None):
         """Do any post-processing the request might need; typically adding
         values to the template `data` dictionary, or changing the Genshi
         template or mime type.
@@ -101,6 +106,11 @@ class IRequestFilter(Interface):
            templates.
 
         :Since 1.0: Clearsilver templates are no longer supported.
+
+        :Since 1.1.2: the rendering `method` will be passed if it is returned
+           by the request handler, otherwise `method` will be `None`. For
+           backward compatibility, the parameter is optional in the
+           implementation's signature.
         """
 
 

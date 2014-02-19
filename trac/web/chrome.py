@@ -974,7 +974,7 @@ class Chrome(Component):
         return self.templates.load(filename, cls=cls)
 
     def render_template(self, req, filename, data, content_type=None,
-                        fragment=False):
+                        fragment=False, method=None):
         """Render the `filename` using the `data` for the context.
 
         The `content_type` argument is used to choose the kind of template
@@ -982,13 +982,18 @@ class Chrome(Component):
         and tweak the rendering process (use of XHTML Strict doctype if
         `'text/html'` is given).
 
+        The rendering `method` (xml, xhtml or text) may be specified and is
+        inferred from the `content_type` if not specified.
+
         When `fragment` is specified, the (filtered) Genshi stream is
         returned.
         """
         if content_type is None:
             content_type = 'text/html'
-        method = {'text/html': 'xhtml',
-                  'text/plain': 'text'}.get(content_type, 'xml')
+
+        if method is None:
+            method = {'text/html': 'xhtml',
+                      'text/plain': 'text'}.get(content_type, 'xml')
 
         if method == "xhtml":
             # Retrieve post-redirect messages saved in session

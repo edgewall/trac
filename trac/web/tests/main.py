@@ -15,9 +15,11 @@ import os.path
 import tempfile
 import unittest
 
-from trac.core import Component, ComponentMeta, TracError, implements
+from trac.core import Component, ComponentManager, ComponentMeta, TracError, \
+                      implements
 from trac.test import EnvironmentStub, Mock
 from trac.util import create_file
+from trac.web.api import IRequestFilter
 from trac.web.auth import IAuthenticator
 from trac.web.main import RequestDispatcher, get_environments
 
@@ -145,10 +147,150 @@ class EnvironmentsTestCase(unittest.TestCase):
                          get_environments(self.environ))
 
 
+class PostProcessRequestTestCase(unittest.TestCase):
+    """Test cases for handling of the optional `method` argument in
+    RequestDispatcher._post_process_request."""
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.req = Mock()
+        self.request_dispatcher = RequestDispatcher(self.env)
+        self.compmgr = ComponentManager()
+        # Make sure we have no external components hanging around in the
+        # component registry
+        self.old_registry = ComponentMeta._registry
+        ComponentMeta._registry = {}
+
+    def tearDown(self):
+        # Restore the original component registry
+        ComponentMeta._registry = self.old_registry
+
+    def test_no_request_filters_request_handler_returns_method_false(self):
+        """IRequestHandler doesn't return `method` and no IRequestFilters
+        are registered. The `method` is set to `None`.
+        """
+        args = ('template.html', {}, 'text/html')
+        resp = self.request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(0, len(self.request_dispatcher.filters))
+        self.assertEqual(4, len(resp))
+        self.assertEqual(args + (None,), resp)
+
+    def test_no_request_filters_request_handler_returns_method_true(self):
+        """IRequestHandler returns `method` and no IRequestFilters
+        are registered. The `method` is forwarded.
+        """
+        args = ('template.html', {}, 'text/html', 'xhtml')
+        resp = self.request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(0, len(self.request_dispatcher.filters))
+        self.assertEqual(4, len(resp))
+        self.assertEqual(args, resp)
+
+    def test_4arg_post_process_request_request_handler_returns_method_false(self):
+        """IRequestHandler doesn't return `method` and IRequestFilter doesn't
+        accept `method` as an argument. The `method` is set to `None`.
+        """
+        class RequestFilter(Component):
+            implements(IRequestFilter)
+            def pre_process_request(self, handler):
+                return handler
+            def post_process_request(self, req, template, data, content_type):
+                return template, data, content_type
+        args = ('template.html', {}, 'text/html')
+        resp = self.request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(self.request_dispatcher.filters))
+        self.assertEqual(4, len(resp))
+        self.assertEqual(args + (None,), resp)
+
+    def test_4arg_post_process_request_request_handler_returns_method_true(self):
+        """IRequestHandler returns `method` and IRequestFilter doesn't accept
+        the argument. The `method` argument is forwarded over IRequestFilter
+        implementations that don't accept the argument.
+        """
+        class RequestFilter(Component):
+            implements(IRequestFilter)
+            def pre_process_request(self, handler):
+                return handler
+            def post_process_request(self, req, template, data, content_type):
+                return template, data, content_type
+        args = ('template.html', {}, 'text/html', 'xhtml')
+        resp = self.request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(self.request_dispatcher.filters))
+        self.assertEqual(4, len(resp))
+        self.assertEqual(args, resp)
+
+    def test_5arg_post_process_request_request_handler_returns_method_false(self):
+        """IRequestHandler doesn't return `method` and IRequestFilter accepts
+        `method` as an argument. The `method` is set to `None`.
+        """
+        class RequestFilter(Component):
+            implements(IRequestFilter)
+            def pre_process_request(self, handler):
+                return handler
+            def post_process_request(self, req, template, data,
+                                     content_type, method=None):
+                return template, data, content_type, method
+        args = ('template.html', {}, 'text/html')
+        resp = self.request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(self.request_dispatcher.filters))
+        self.assertEqual(4, len(resp))
+        self.assertEqual(args[:3] + (None,), resp)
+
+    def test_5arg_post_process_request_request_handler_returns_method_true(self):
+        """IRequestHandler returns `method` and IRequestFilter accepts
+        the argument. The `method` argument is passed through IRequestFilter
+        implementations.
+        """
+        class RequestFilter(Component):
+            implements(IRequestFilter)
+            def pre_process_request(self, handler):
+                return handler
+            def post_process_request(self, req, template, data,
+                                     content_type, method=None):
+                return template, data, content_type, method
+        args = ('template.html', {}, 'text/html', 'xhtml')
+        resp = self.request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(self.request_dispatcher.filters))
+        self.assertEqual(4, len(resp))
+        self.assertEqual(args, resp)
+
+    def test_5arg_post_process_request_request_handler_adds_method(self):
+        """IRequestFilter adds `method` not returned by IRequestHandler.
+        """
+        class RequestFilter(Component):
+            implements(IRequestFilter)
+            def pre_process_request(self, handler):
+                return handler
+            def post_process_request(self, req, template, data,
+                                     content_type, method=None):
+                return template, data, content_type, 'xml'
+        args = ('template.html', {}, 'text/html')
+        resp = self.request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(self.request_dispatcher.filters))
+        self.assertEqual(4, len(resp))
+        self.assertEqual(args[:3] + ('xml',), resp)
+
+    def test_5arg_post_process_request_request_handler_modifies_method(self):
+        """IRequestFilter modifies `method` returned by IRequestHandler.
+        """
+        class RequestFilter(Component):
+            implements(IRequestFilter)
+            def pre_process_request(self, handler):
+                return handler
+            def post_process_request(self, req, template, data,
+                                     content_type, method=None):
+                return template, data, content_type, 'xml'
+        args = ('template.html', {}, 'text/html', 'xhtml')
+        resp = self.request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(self.request_dispatcher.filters))
+        self.assertEqual(4, len(resp))
+        self.assertEqual(args[:3] + ('xml',), resp)
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AuthenticateTestCase))
     suite.addTest(unittest.makeSuite(EnvironmentsTestCase))
+    suite.addTest(unittest.makeSuite(PostProcessRequestTestCase))
     return suite
 
 

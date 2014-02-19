@@ -227,8 +227,8 @@ class RequestDispatcher(Component):
                             _("Clearsilver templates are no longer supported, "
                               "please contact your Trac administrator."))
                     # Genshi
-                    template, data, content_type = \
-                              self._post_process_request(req, *resp)
+                    template, data, content_type, method = \
+                        self._post_process_request(req, *resp)
                     if 'hdfdump' in req.args:
                         req.perm.require('TRAC_ADMIN')
                         # debugging helper - no need to render first
@@ -237,7 +237,8 @@ class RequestDispatcher(Component):
                         req.send(out.getvalue(), 'text/plain')
 
                     output = chrome.render_template(req, template, data,
-                                                    content_type)
+                                                    content_type,
+                                                    method=method)
                     req.send(output, content_type or 'text/html')
                 else:
                     self._post_process_request(req)
@@ -334,8 +335,12 @@ class RequestDispatcher(Component):
         return chosen_handler
 
     def _post_process_request(self, req, *args):
-        nbargs = len(args)
         resp = args
+        # `method` is optional in IRequestHandler's response. If not
+        # specified, the default value is appended to response.
+        if len(resp) == 3:
+            resp += (None,)
+        nbargs = len(resp)
         for f in reversed(self.filters):
             # As the arity of `post_process_request` has changed since
             # Trac 0.10, only filters with same arity gets passed real values.
@@ -344,6 +349,12 @@ class RequestDispatcher(Component):
             extra_arg_count = arity(f.post_process_request) - 1
             if extra_arg_count == nbargs:
                 resp = f.post_process_request(req, *resp)
+            elif extra_arg_count == nbargs - 1:
+                # IRequestFilters may modify the `method`, but the `method`
+                # is forwarded when not accepted by the IRequestFilter.
+                method = resp[-1]
+                resp = f.post_process_request(req, *resp[:-1])
+                resp += (method,)
             elif nbargs == 0:
                 f.post_process_request(req, *(None,)*extra_arg_count)
         return resp
