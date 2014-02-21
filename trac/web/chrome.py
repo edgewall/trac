@@ -178,7 +178,7 @@ def add_script_data(req, data={}, **kwargs):
     script_data.update(kwargs)
 
 def add_javascript(req, filename):
-    """:deprecated: use `add_script` instead."""
+    """:deprecated: since 0.10, use `add_script` instead."""
     add_script(req, filename, mimetype='text/javascript')
 
 def add_warning(req, msg, *args):
@@ -274,6 +274,8 @@ def web_context(req, resource=None, id=False, version=False, parent=False,
                      name)
     :return: a new rendering context
     :rtype: `RenderingContext`
+
+    :since: version 1.0
     """
     if req:
         href = req.abs_href if absurls else req.href
