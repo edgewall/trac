@@ -107,7 +107,7 @@ class RenderingContext(object):
     set up nested contexts for each matching ticket that will be used for
     rendering the ticket descriptions.
 
-    :since: version 0.11
+    :since: version 1.0
     """
 
     def __init__(self, resource, href=None, perm=None):
@@ -279,7 +279,11 @@ class RenderingContext(object):
 
 
 class Context(RenderingContext):
-    """:deprecated: old name kept for compatibility, use `RenderingContext`."""
+    """
+    :deprecated: since 1.0, use `RenderingContext` instead. `Context` is
+                 kept for compatibility and will be removed in a future
+                 release.
+    """
 
 
 # Some common MIME types and their associated keywords and/or file extensions
@@ -867,7 +871,8 @@ class Mimeview(Component):
         )
 
     def get_max_preview_size(self):
-        """:deprecated: use `max_preview_size` attribute directly."""
+        """:deprecated: since 0.10, use `max_preview_size` attribute directly.
+        """
         return self.max_preview_size
 
     def get_charset(self, content='', mimetype=None):

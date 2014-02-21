@@ -55,12 +55,14 @@ def to_datetime(t, tzinfo=None):
 
     ``t`` is converted using the following rules:
 
-     - If ``t`` is already a `datetime` object,
-       - if it is timezone-"naive", it is localized to ``tzinfo``
-       - if it is already timezone-aware, ``t`` is mapped to the given
-         timezone (`datetime.datetime.astimezone`)
-     - If ``t`` is None, the current time will be used.
-     - If ``t`` is a number, it is interpreted as a timestamp.
+    * If ``t`` is already a `datetime` object,
+
+     * if it is timezone-"naive", it is localized to ``tzinfo``
+     * if it is already timezone-aware, ``t`` is mapped to the given
+       timezone (`datetime.datetime.astimezone`)
+
+    * If ``t`` is None, the current time will be used.
+    * If ``t`` is a number, it is interpreted as a timestamp.
 
     Any other input will trigger a `TypeError`.
 
