@@ -205,13 +205,19 @@ def reset_mysql_db(db, db_prop):
     dbname = os.path.basename(db_prop['path'])
     if dbname:
         cursor = db.cursor()
-        cursor.execute('SELECT table_name FROM information_schema.tables '
+        cursor.execute('SELECT table_name, auto_increment '
+                       'FROM information_schema.tables '
                        'WHERE table_schema=%s', (dbname,))
         tables = cursor.fetchall()
-        for table in tables:
-            # TRUNCATE TABLE is prefered to DELETE FROM, as we need to reset
-            # the auto_increment in MySQL.
-            cursor.execute('TRUNCATE TABLE %s' % table)
+        for table, auto_increment in tables:
+            if auto_increment is None or auto_increment == 1:
+                # DELETE FROM is prefered to TRUNCATE TABLE, as the
+                # auto_increment is not used or it is 1.
+                cursor.execute('DELETE FROM %s' % table)
+            else:
+                # TRUNCATE TABLE is prefered to DELETE FROM, as we need to
+                # reset the auto_increment in MySQL.
+                cursor.execute('TRUNCATE TABLE %s' % table)
         db.commit()
         return tables
 
