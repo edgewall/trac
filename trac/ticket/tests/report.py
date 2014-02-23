@@ -11,12 +11,19 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from __future__ import with_statement
+
 import doctest
+from datetime import datetime, timedelta
 
 from trac.db.mysql_backend import MySQLConnection
+from trac.ticket.model import Ticket
 from trac.ticket.report import ReportModule
-from trac.test import EnvironmentStub, Mock
+from trac.test import EnvironmentStub, Mock, MockPerm
+from trac.tests import compat
+from trac.util.datefmt import utc
 from trac.web.api import Request, RequestDone
+from trac.web.href import Href
 import trac
 
 import unittest
@@ -111,10 +118,390 @@ class ReportTestCase(unittest.TestCase):
                          headers_sent['Location'])
 
 
+class ExecuteReportTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True)
+        self.req = Mock(base_path='', chrome={}, args={}, session={},
+                        abs_href=Href('/'), href=Href('/'), locale='',
+                        perm=MockPerm(), authname=None, tz=None)
+        self.report_module = ReportModule(self.env)
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def _insert_ticket(self, when=None, **kwargs):
+        ticket = Ticket(self.env)
+        for name, value in kwargs.iteritems():
+            ticket[name] = value
+        ticket['status'] = 'new'
+        ticket.insert(when=when)
+        return ticket
+
+    def _save_ticket(self, ticket, author=None, comment=None, when=None,
+                     **kwargs):
+        for name, value in kwargs.iteritems():
+            ticket[name] = value
+        return ticket.save_changes(author=author, comment=comment, when=when)
+
+    def _execute_report(self, id, args=None):
+        mod = self.report_module
+        req = self.req
+        with self.env.db_query as db:
+            title, description, sql = mod.get_report(id)
+            return mod.execute_paginated_report(req, db, id, sql, args or {})
+
+    def _generate_tickets(self, columns, data, attrs):
+        with self.env.db_transaction as db:
+            tickets = []
+            when = datetime(2014, 1, 1, 0, 0, 0, 0, utc)
+            for idx, line in enumerate(data.splitlines()):
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+                values = line.split()
+                assert len(columns) == len(values), 'Line %d' % (idx + 1)
+                summary = ' '.join(values)
+                values = map(lambda v: None if v == 'None' else v, values)
+                d = attrs.copy()
+                d['summary'] = summary
+                d.update(zip(columns, values))
+
+                status = None
+                if 'status' in d:
+                    status = d.pop('status')
+                ticket = self._insert_ticket(when=when, status='new', **d)
+                if status != 'new':
+                    self._save_ticket(ticket, status=status,
+                                      when=when + timedelta(microseconds=1))
+                tickets.append(ticket)
+                when += timedelta(seconds=1)
+            return tickets
+
+    REPORT_1_DATA = """\
+        # status    priority
+        new         minor
+        new         major
+        new         critical
+        closed      minor
+        closed      major
+        closed      critical"""
+
+    def test_report_1_active_tickets(self):
+        attrs = dict(reporter='joe', component='component1', version='1.0',
+                     milestone='milestone1', type='defect', owner='joe')
+        self._generate_tickets(('status', 'priority'), self.REPORT_1_DATA,
+                               attrs)
+
+        rv = self._execute_report(1)
+        cols, results, num_items, missing_args, limit_offset = rv
+
+        idx_summary = cols.index('summary')
+        self.assertEqual(['new critical',
+                          'new major',
+                          'new minor'],
+                         [r[idx_summary] for r in results])
+        idx_color = cols.index('__color__')
+        self.assertEqual(set(('2', '3', '4')),
+                         set(r[idx_color] for r in results))
+
+    REPORT_2_DATA = """\
+        # status    version     priority
+        new         2.0         minor
+        new         2.0         critical
+        new         1.0         minor
+        new         1.0         critical
+        new         None        minor
+        new         None        critical
+        closed      2.0         minor
+        closed      2.0         critical
+        closed      1.0         minor
+        closed      1.0         critical
+        closed      None        minor
+        closed      None        critical"""
+
+    def test_report_2_active_tickets_by_version(self):
+        attrs = dict(reporter='joe', component='component1',
+                     milestone='milestone1', type='defect', owner='joe')
+        self._generate_tickets(('status', 'version', 'priority'),
+                                self.REPORT_2_DATA, attrs)
+
+        rv = self._execute_report(2)
+        cols, results, num_items, missing_args, limit_offset = rv
+
+        idx_summary = cols.index('summary')
+        self.assertEqual(['new 1.0 critical',
+                          'new 1.0 minor',
+                          'new 2.0 critical',
+                          'new 2.0 minor',
+                          'new None critical',
+                          'new None minor'],
+                         [r[idx_summary] for r in results])
+        idx_color = cols.index('__color__')
+        self.assertEqual(set(('2', '4')),
+                         set(r[idx_color] for r in results))
+        idx_group = cols.index('__group__')
+        self.assertEqual(set(('1.0', '2.0', None)),
+                         set(r[idx_group] for r in results))
+
+    REPORT_3_DATA = """\
+        # status    milestone   priority
+        new         milestone3  minor
+        new         milestone3  major
+        new         milestone1  minor
+        new         milestone1  major
+        new         None        minor
+        new         None        major
+        closed      milestone3  minor
+        closed      milestone3  major
+        closed      milestone1  minor
+        closed      milestone1  major
+        closed      None        minor
+        closed      None        major"""
+
+    def test_report_3_active_tickets_by_milestone(self):
+        attrs = dict(reporter='joe', component='component1', version='1.0',
+                     type='defect', owner='joe')
+        self._generate_tickets(('status', 'milestone', 'priority'),
+                                self.REPORT_3_DATA, attrs)
+
+        rv = self._execute_report(3)
+        cols, results, num_items, missing_args, limit_offset = rv
+
+        idx_summary = cols.index('summary')
+        self.assertEqual(['new milestone1 major',
+                          'new milestone1 minor',
+                          'new milestone3 major',
+                          'new milestone3 minor',
+                          'new None major',
+                          'new None minor'],
+                         [r[idx_summary] for r in results])
+        idx_color = cols.index('__color__')
+        self.assertEqual(set(('3', '4')),
+                         set(r[idx_color] for r in results))
+        idx_group = cols.index('__group__')
+        self.assertEqual(set(('Milestone milestone1', 'Milestone milestone3',
+                              None)),
+                         set(r[idx_group] for r in results))
+
+    REPORT_4_DATA = """\
+        # status    owner   priority
+        new         john    trivial
+        new         john    blocker
+        new         jack    trivial
+        new         jack    blocker
+        new         foo     trivial
+        new         foo     blocker
+        accepted    john    trivial
+        accepted    john    blocker
+        accepted    jack    trivial
+        accepted    jack    blocker
+        accepted    foo     trivial
+        accepted    foo     blocker
+        closed      john    trivial
+        closed      john    blocker
+        closed      jack    trivial
+        closed      jack    blocker
+        closed      foo     trivial
+        closed      foo     blocker"""
+
+    def _test_active_tickets_by_owner(self, report_id, full_description=False):
+        attrs = dict(reporter='joe', component='component1',
+                     milestone='milestone1', version='1.0', type='defect')
+        self._generate_tickets(('status', 'owner', 'priority'),
+                                self.REPORT_4_DATA, attrs)
+
+        rv = self._execute_report(report_id)
+        cols, results, num_items, missing_args, limit_offset = rv
+
+        idx_summary = cols.index('summary')
+        self.assertEqual(['accepted foo blocker',
+                          'accepted foo trivial',
+                          'accepted jack blocker',
+                          'accepted jack trivial',
+                          'accepted john blocker',
+                          'accepted john trivial'],
+                         [r[idx_summary] for r in results])
+        idx_color = cols.index('__color__')
+        self.assertEqual(set(('1', '5')),
+                         set(r[idx_color] for r in results))
+        idx_group = cols.index('__group__')
+        self.assertEqual(set(('jack', 'john', 'foo')),
+                         set(r[idx_group] for r in results))
+        if full_description:
+            self.assertNotIn('_description', cols)
+            self.assertIn('_description_', cols)
+        else:
+            self.assertNotIn('_description_', cols)
+            self.assertIn('_description', cols)
+
+    def test_report_4_active_tickets_by_owner(self):
+        self._test_active_tickets_by_owner(4, full_description=False)
+
+    def test_report_5_active_tickets_by_owner_full_description(self):
+        self._test_active_tickets_by_owner(5, full_description=True)
+
+    REPORT_6_DATA = """\
+        # status    milestone  priority owner
+        new         milestone4 trivial  john
+        new         milestone4 critical jack
+        new         milestone2 trivial  jack
+        new         milestone2 critical john
+        new         None       trivial  john
+        new         None       critical jack
+        closed      milestone4 trivial  jack
+        closed      milestone4 critical john
+        closed      milestone2 trivial  john
+        closed      milestone2 critical jack
+        closed      None       trivial  jack
+        closed      None       critical john"""
+
+    def test_report_6_all_tickets_by_milestone(self):
+        attrs = dict(reporter='joe', component='component1', version='1.0',
+                     type='defect')
+        self._generate_tickets(('status', 'milestone', 'priority', 'owner'),
+                                self.REPORT_6_DATA, attrs)
+
+        rv = self._execute_report(6, {'USER': 'john'})
+        cols, results, num_items, missing_args, limit_offset = rv
+
+        idx_summary = cols.index('summary')
+        self.assertEqual(['new milestone4 critical jack',
+                          'new milestone4 trivial john',
+                          'closed milestone4 critical john',
+                          'closed milestone4 trivial jack',
+                          'new milestone2 critical john',
+                          'new milestone2 trivial jack',
+                          'closed milestone2 critical jack',
+                          'closed milestone2 trivial john',
+                          'new None critical jack',
+                          'new None trivial john',
+                          'closed None critical john',
+                          'closed None trivial jack'],
+                         [r[idx_summary] for r in results])
+        idx_style = cols.index('__style__')
+        self.assertEqual('color: #777; background: #ddd; border-color: #ccc;',
+                         results[2][idx_style])  # closed and owned
+        self.assertEqual('color: #777; background: #ddd; border-color: #ccc;',
+                         results[3][idx_style])  # closed and not owned
+        self.assertEqual('font-weight: bold',
+                         results[1][idx_style])  # not closed and owned
+        self.assertEqual(None,
+                         results[0][idx_style])  # not closed and not owned
+        idx_color = cols.index('__color__')
+        self.assertEqual(set(('2', '5')),
+                         set(r[idx_color] for r in results))
+        idx_group = cols.index('__group__')
+        self.assertEqual(set(('milestone2', 'milestone4', None)),
+                         set(r[idx_group] for r in results))
+
+    REPORT_7_DATA = """\
+        # status    owner   reporter    priority
+        accepted    john    foo         minor
+        accepted    john    foo         critical
+        accepted    foo     foo         major
+        new         john    foo         minor
+        new         john    foo         blocker
+        new         foo     foo         major
+        closed      john    foo         major
+        closed      foo     foo         major
+        new         foo     foo         major
+        new         foo     john        trivial
+        new         foo     john        major
+        closed      foo     foo         major
+        closed      foo     john        major
+        new         foo     bar         major
+        new         bar     foo         major"""
+
+    def test_report_7_my_tickets(self):
+        attrs = dict(component='component1', milestone='milestone1',
+                     version='1.0', type='defect')
+        tickets = self._generate_tickets(
+            ('status', 'owner', 'reporter', 'priority'), self.REPORT_7_DATA,
+            attrs)
+
+        rv = self._execute_report(7, {'USER': 'john'})
+        cols, results, num_items, missing_args, limit_offset = rv
+
+        idx_summary = cols.index('summary')
+        self.assertEqual(['accepted john foo critical',
+                          'accepted john foo minor',
+                          'new john foo blocker',
+                          'new john foo minor',
+                          'new foo john major',
+                          'new foo john trivial'],
+                         [r[idx_summary] for r in results])
+        idx_group = cols.index('__group__')
+        self.assertEqual(set(('Accepted', 'Owned', 'Reported')),
+                         set(r[idx_group] for r in results))
+
+        self._save_ticket(tickets[-1], author='john', comment='commented')
+        rv = self._execute_report(7, {'USER': 'john'})
+        cols, results, num_items, missing_args, limit_offset = rv
+
+        self.assertEqual(7, len(results))
+        self.assertEqual('new bar foo major', results[-1][idx_summary])
+        self.assertEqual(set(('Accepted', 'Owned', 'Reported', 'Commented')),
+                         set(r[idx_group] for r in results))
+
+        rv = self._execute_report(7, {'USER': 'blah <blah@example.org>'})
+        cols, results, num_items, missing_args, limit_offset = rv
+        self.assertEqual(0, len(results))
+
+        self._save_ticket(tickets[-1], author='blah <blah@example.org>',
+                          comment='from anonymous')
+        rv = self._execute_report(7, {'USER': 'blah <blah@example.org>'})
+        cols, results, num_items, missing_args, limit_offset = rv
+        self.assertEqual(1, len(results))
+        self.assertEqual('new bar foo major', results[0][idx_summary])
+        self.assertEqual('Commented', results[0][idx_group])
+
+    REPORT_8_DATA = """\
+        # status    owner   priority
+        new         foo     minor
+        new         foo     critical
+        new         john    minor
+        new         john    critical
+        closed      john    major
+        closed      foo     major"""
+
+    def test_report_8_active_tickets_mine_first(self):
+        attrs = dict(component='component1', milestone='milestone1',
+                     version='1.0', type='defect')
+        tickets = self._generate_tickets(('status', 'owner', 'priority'),
+                                         self.REPORT_8_DATA, attrs)
+
+        rv = self._execute_report(8, {'USER': 'john'})
+        cols, results, num_items, missing_args, limit_offset = rv
+
+        idx_summary = cols.index('summary')
+        self.assertEqual(['new john critical',
+                          'new john minor',
+                          'new foo critical',
+                          'new foo minor'],
+                         [r[idx_summary] for r in results])
+        idx_group = cols.index('__group__')
+        self.assertEqual('My Tickets', results[1][idx_group])
+        self.assertEqual('Active Tickets', results[2][idx_group])
+
+        rv = self._execute_report(8, {'USER': 'anonymous'})
+        cols, results, num_items, missing_args, limit_offset = rv
+
+        self.assertEqual(['new foo critical',
+                          'new john critical',
+                          'new foo minor',
+                          'new john minor'],
+                         [r[idx_summary] for r in results])
+        idx_group = cols.index('__group__')
+        self.assertEqual(['Active Tickets'],
+                         sorted(set(r[idx_group] for r in results)))
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(trac.ticket.report))
     suite.addTest(unittest.makeSuite(ReportTestCase))
+    suite.addTest(unittest.makeSuite(ExecuteReportTestCase))
     return suite
 
 if __name__ == '__main__':
