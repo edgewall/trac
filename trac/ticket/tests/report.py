@@ -140,6 +140,8 @@ class ExecuteReportTestCase(unittest.TestCase):
 
     def _save_ticket(self, ticket, author=None, comment=None, when=None,
                      **kwargs):
+        if when is None:
+            when = ticket['changetime'] + timedelta(microseconds=1)
         for name, value in kwargs.iteritems():
             ticket[name] = value
         return ticket.save_changes(author=author, comment=comment, when=when)
