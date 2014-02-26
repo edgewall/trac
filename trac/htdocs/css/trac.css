@@ -135,6 +135,7 @@ fieldset {
 p.hint, span.hint { color: #666; font-size: 85%; font-style: italic; margin: .5em 0;
   padding-left: 1em;
 }
+p.help { color: #666; font-size: 90%; margin: 1em .5em .5em; }
 legend {
  color: #999;
  margin-left: .6em;
