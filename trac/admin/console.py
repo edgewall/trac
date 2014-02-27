@@ -305,16 +305,20 @@ Type:  '?' or 'help' for help on commands.
     def do_help(self, line=None):
         arg = self.arg_tokenize(line)
         if arg[0]:
+            cmd_mgr = None
             doc = getattr(self, "_help_" + arg[0], None)
             if doc is None and self.env_check():
-                doc = self.cmd_mgr.get_command_help(arg)
+                cmd_mgr = self.cmd_mgr
+                doc = cmd_mgr.get_command_help(arg)
             if doc:
                 self.print_doc(doc)
             else:
                 printerr(_("No documentation found for '%(cmd)s'."
                            " Use 'help' to see the list of commands.",
                            cmd=' '.join(arg)))
-                cmds = self.cmd_mgr.get_similar_commands(arg[0])
+                cmds = None
+                if cmd_mgr:
+                    cmds = cmd_mgr.get_similar_commands(arg[0])
                 if cmds:
                     printout('')
                     printout(ngettext("Did you mean this?",
