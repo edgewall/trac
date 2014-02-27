@@ -76,6 +76,34 @@ def load_expected_results(file, pattern):
     return expected
 
 
+def execute_cmd(tracadmin, cmd, strip_trailing_space=True, input=None):
+    _in = sys.stdin
+    _err = sys.stderr
+    _out = sys.stdout
+    try:
+        if input:
+            sys.stdin = StringIO(input.encode('utf-8'))
+            sys.stdin.encoding = 'utf-8' # fake input encoding
+        sys.stderr = sys.stdout = out = StringIO()
+        out.encoding = 'utf-8' # fake output encoding
+        retval = None
+        try:
+            retval = tracadmin.onecmd(cmd)
+        except SystemExit:
+            pass
+        value = out.getvalue()
+        if isinstance(value, str): # reverse what print_listing did
+            value = value.decode('utf-8')
+        if strip_trailing_space:
+            return retval, STRIP_TRAILING_SPACE.sub('', value)
+        else:
+            return retval, value
+    finally:
+        sys.stdin = _in
+        sys.stderr = _err
+        sys.stdout = _out
+
+
 class TracadminTestCase(unittest.TestCase):
     """
     Tests the output of trac-admin and is meant to be used with
@@ -101,31 +129,9 @@ class TracadminTestCase(unittest.TestCase):
         self.env = None
 
     def _execute(self, cmd, strip_trailing_space=True, input=None):
-        _in = sys.stdin
-        _err = sys.stderr
-        _out = sys.stdout
-        try:
-            if input:
-                sys.stdin = StringIO(input.encode('utf-8'))
-                sys.stdin.encoding = 'utf-8' # fake input encoding
-            sys.stderr = sys.stdout = out = StringIO()
-            out.encoding = 'utf-8' # fake output encoding
-            retval = None
-            try:
-                retval = self._admin.onecmd(cmd)
-            except SystemExit:
-                pass
-            value = out.getvalue()
-            if isinstance(value, str): # reverse what print_listing did
-                value = value.decode('utf-8')
-            if strip_trailing_space:
-                return retval, STRIP_TRAILING_SPACE.sub('', value)
-            else:
-                return retval, value
-        finally:
-            sys.stdin = _in
-            sys.stderr = _err
-            sys.stdout = _out
+        return execute_cmd(self._admin, cmd,
+                           strip_trailing_space=strip_trailing_space,
+                           input=input)
 
     @property
     def _datetime_format_hint(self):
@@ -1336,8 +1342,40 @@ class TracadminTestCase(unittest.TestCase):
         self.assertIn(u'"YYYY-MM-DDThh:mm:ss±hh:mm"', doc)
 
 
+class TracadminNoEnvTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self._admin = console.TracAdmin()
+
+    def tearDown(self):
+        self._admin = None
+
+    def _execute(self, cmd, strip_trailing_space=True, input=None):
+        return execute_cmd(self._admin, cmd,
+                           strip_trailing_space=strip_trailing_space,
+                           input=input)
+
+    def test_help(self):
+        rv, output = self._execute('help')
+        output = output.splitlines()
+        self.assertEqual('', output[-3])
+        self.assertEqual('help     Show documentation', output[-2])
+        self.assertEqual('initenv  Create and initialize a new environment',
+                         output[-1])
+
+    def test_help_with_nocmd(self):
+        rv, output = self._execute('help nocmd')
+        output = output.splitlines()
+        self.assertEqual(["No documentation found for 'nocmd'. Use 'help' to "
+                          "see the list of commands."],
+                          output)
+
+
 def suite():
-    return unittest.makeSuite(TracadminTestCase)
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(TracadminTestCase))
+    suite.addTest(unittest.makeSuite(TracadminNoEnvTestCase))
+    return suite
 
 
 if __name__ == '__main__':
