@@ -18,16 +18,16 @@
         <py:when test="old_version"><i18n:msg params="old, new, name">Changes between
           <a href="${old_url or url_of(resource, version=old_version)}">Version $old_version</a> and
           <a href="${new_url or url_of(resource, version=new_version)}">Version $new_version</a> of
-          <a href="${url or url_of(resource)}">${name or name_of(resource)}</a>
+          <a href="${url or url_of(resource, version=None)}">${name or name_of(resource)}</a>
         </i18n:msg></py:when>
         <py:when test="old_version == 0"><i18n:msg params="new, name">Changes between
           <a href="${old_url or url_of(resource, version=0)}">Initial Version</a> and
           <a href="${new_url or url_of(resource, version=new_version)}">Version $new_version</a> of
-          <a href="${url or url_of(resource)}">${name or name_of(resource)}</a>
+          <a href="${url or url_of(resource, version=None)}">${name or name_of(resource)}</a>
         </i18n:msg></py:when>
         <py:otherwise><i18n:msg params="new, name">Changes from
           <a href="${new_url or url_of(resource, version=new_version)}">Version $new_version</a> of
-          <a href="${url or url_of(resource)}">${name or name_of(resource)}</a>
+          <a href="${url or url_of(resource, version=None)}">${name or name_of(resource)}</a>
         </i18n:msg></py:otherwise>
       </h1>
       <form method="post" id="prefs" action="${diff_url or url_of(resource)}">

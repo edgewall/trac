@@ -60,6 +60,14 @@ class TestWikiHistory(FunctionalTwillTestCaseSetup):
                         % {'pagename': pagename}
         tc.find(version_link % {'version': 1})
         tc.find(version_link % {'version': 2})
+        tc.formvalue('history', 'old_version', '1')
+        tc.formvalue('history', 'version', '2')
+        tc.submit()
+        tc.url(r'%s/wiki/%s\?action=diff&version=2&old_version=1'
+               % (self._tester.url, pagename))
+        tc.find(r'<a href="/wiki/%s\?version=1">Version 1</a>' % pagename)
+        tc.find(r'<a href="/wiki/%s\?version=2">Version 2</a>' % pagename)
+        tc.find(r'<a href="/wiki/%(name)s">%(name)s</a>' % {'name': pagename})
 
 
 class TestWikiRename(FunctionalTwillTestCaseSetup):
