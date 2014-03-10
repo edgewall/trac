@@ -54,7 +54,10 @@
         return true;
       }
       
-      $(this).keydown(trigger).keypress(trigger).blur(trigger);
+      // "input" event to detect editing using IMEs on Firefox,
+      // "cut" and "paste" events to detect editing using context
+      // menu on Internet Explorer (#11510)
+      $(this).bind('input cut paste keydown keypress blur', trigger);
     });
   }
 })(jQuery);
