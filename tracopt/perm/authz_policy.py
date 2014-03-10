@@ -21,6 +21,7 @@ import os
 from trac.core import *
 from trac.config import Option
 from trac.perm import PermissionSystem, IPermissionPolicy
+from trac.util.text import to_unicode
 
 ConfigObj = None
 try:
@@ -178,7 +179,7 @@ class AuthzPolicy(Component):
         for group, users in self.authz.get('groups', {}).iteritems():
             if isinstance(users, basestring):
                 users = [users]
-            groups[group] = users
+            groups[group] = map(to_unicode, users)
         
         self.groups_by_user = {}
         
@@ -227,14 +228,15 @@ class AuthzPolicy(Component):
         else:
             valid_users = ['*', 'anonymous']
         for resource_section in [a for a in self.authz.sections
-                                 if a != 'groups']:
-            resource_glob = resource_section
+                                   if a != 'groups']:
+            resource_glob = to_unicode(resource_section)
             if '@' not in resource_glob:
                 resource_glob += '@*'
 
             if fnmatch(resource_key, resource_glob):
                 section = self.authz[resource_section]
                 for who, permissions in section.iteritems():
+                    who = to_unicode(who)
                     if who in valid_users or \
                             who in self.groups_by_user.get(username, []):
                         self.log.debug('%s matched section %s for user %s',
