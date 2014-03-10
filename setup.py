@@ -101,6 +101,7 @@ facilities.
     ],
     extras_require = {
         'Babel': ['Babel>=0.9.5'],
+        'ConfigObj': ['ConfigObj'],
         'Pygments': ['Pygments>=0.6'],
         'reST': ['docutils>=0.3'],
         'SilverCity': ['SilverCity>=0.9.4'],
@@ -147,7 +148,7 @@ facilities.
         trac.wiki.web_api = trac.wiki.web_api
         tracopt.mimeview.enscript = tracopt.mimeview.enscript
         tracopt.mimeview.php = tracopt.mimeview.php
-        tracopt.perm.authz_policy = tracopt.perm.authz_policy
+        tracopt.perm.authz_policy = tracopt.perm.authz_policy[ConfigObj]
         tracopt.perm.config_perm_provider = tracopt.perm.config_perm_provider
         tracopt.ticket.commit_updater = tracopt.ticket.commit_updater
         tracopt.ticket.deleter = tracopt.ticket.deleter
