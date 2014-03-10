@@ -71,8 +71,8 @@ class AdminModule(Component):
         # admin panel is available
         panels, providers = self._get_panels(req)
         if panels:
-            yield 'mainnav', 'admin', tag.a(_('Admin'), href=req.href.admin(),
-                                            title=_('Administration'))
+            yield 'mainnav', 'admin', tag.a(_("Admin"), href=req.href.admin(),
+                                            title=_("Administration"))
 
     # IRequestHandler methods
 
@@ -88,7 +88,7 @@ class AdminModule(Component):
     def process_request(self, req):
         panels, providers = self._get_panels(req)
         if not panels:
-            raise HTTPNotFound(_('No administration panels available'))
+            raise HTTPNotFound(_("No administration panels available"))
 
         def _panel_order(p1, p2):
             if p1[::2] == ('general', 'basics'):
@@ -114,11 +114,11 @@ class AdminModule(Component):
                 panel_id = \
                     filter(lambda panel: panel[0] == cat_id, panels)[0][2]
             except IndexError:
-                raise HTTPNotFound(_('Unknown administration panel'))
+                raise HTTPNotFound(_("Unknown administration panel"))
 
         provider = providers.get((cat_id, panel_id), None)
         if not provider:
-            raise HTTPNotFound(_('Unknown administration panel'))
+            raise HTTPNotFound(_("Unknown administration panel"))
 
         if hasattr(provider, 'render_admin_panel'):
             template, data = provider.render_admin_panel(req, cat_id, panel_id,
@@ -189,14 +189,14 @@ def _save_config(config, req, log, notices=None):
     try:
         config.save()
         if notices is None:
-            notices = [_('Your changes have been saved.')]
+            notices = [_("Your changes have been saved.")]
         for notice in notices:
             add_notice(req, notice)
     except Exception, e:
-        log.error('Error writing to trac.ini: %s', exception_to_unicode(e))
-        add_warning(req, _('Error writing to trac.ini, make sure it is '
-                           'writable by the web server. Your changes have '
-                           'not been saved.'))
+        log.error("Error writing to trac.ini: %s", exception_to_unicode(e))
+        add_warning(req, _("Error writing to trac.ini, make sure it is "
+                           "writable by the web server. Your changes have "
+                           "not been saved."))
 
 
 class BasicsAdminPanel(Component):
@@ -207,7 +207,7 @@ class BasicsAdminPanel(Component):
 
     def get_admin_panels(self, req):
         if 'TRAC_ADMIN' in req.perm('admin', 'general/basics'):
-            yield ('general', _('General'), 'basics', _('Basic Settings'))
+            yield ('general', _("General"), 'basics', _("Basic Settings"))
 
     def render_admin_panel(self, req, cat, page, path_info):
         if Locale:
@@ -267,7 +267,7 @@ class LoggingAdminPanel(Component):
 
     def get_admin_panels(self, req):
         if 'TRAC_ADMIN' in req.perm('admin', 'general/logging'):
-            yield ('general', _('General'), 'logging', _('Logging'))
+            yield ('general', _("General"), 'logging', _("Logging"))
 
     def render_admin_panel(self, req, cat, page, path_info):
         log_type = self.env.log_type
@@ -276,14 +276,14 @@ class LoggingAdminPanel(Component):
         log_dir = os.path.join(self.env.path, 'log')
 
         log_types = [
-            dict(name='none', label=_('None'), selected=log_type == 'none', disabled=False),
-            dict(name='stderr', label=_('Console'),
+            dict(name='none', label=_("None"), selected=log_type == 'none', disabled=False),
+            dict(name='stderr', label=_("Console"),
                  selected=log_type == 'stderr', disabled=False),
-            dict(name='file', label=_('File'), selected=log_type == 'file',
+            dict(name='file', label=_("File"), selected=log_type == 'file',
                  disabled=False),
-            dict(name='syslog', label=_('Syslog'), disabled=os.name != 'posix',
+            dict(name='syslog', label=_("Syslog"), disabled=os.name != 'posix',
                  selected=log_type in ('unix', 'syslog')),
-            dict(name='eventlog', label=_('Windows event log'),
+            dict(name='eventlog', label=_("Windows event log"),
                  disabled=os.name != 'nt',
                  selected=log_type in ('winlog', 'eventlog', 'nteventlog')),
         ]
@@ -296,8 +296,8 @@ class LoggingAdminPanel(Component):
             new_type = req.args.get('log_type')
             if new_type not in [t['name'] for t in log_types]:
                 raise TracError(
-                    _('Unknown log type %(type)s', type=new_type),
-                    _('Invalid log type')
+                    _("Unknown log type %(type)s", type=new_type),
+                    _("Invalid log type")
                 )
             if new_type != log_type:
                 self.config.set('logging', 'log_type', new_type)
@@ -311,8 +311,8 @@ class LoggingAdminPanel(Component):
                 new_level = req.args.get('log_level')
                 if new_level not in log_levels:
                     raise TracError(
-                        _('Unknown log level %(level)s', level=new_level),
-                        _('Invalid log level'))
+                        _("Unknown log level %(level)s", level=new_level),
+                        _("Invalid log level"))
                 if new_level != log_level:
                     self.config.set('logging', 'log_level', new_level)
                     changed = True
@@ -325,8 +325,8 @@ class LoggingAdminPanel(Component):
                     changed = True
                     log_file = new_file
                 if not log_file:
-                    raise TracError(_('You must specify a log file'),
-                                    _('Missing field'))
+                    raise TracError(_("You must specify a log file"),
+                                    _("Missing field"))
             else:
                 self.config.remove('logging', 'log_file')
                 changed = True
@@ -356,7 +356,7 @@ class PermissionAdminPanel(Component):
     def get_admin_panels(self, req):
         perm = req.perm('admin', 'general/perm')
         if 'PERMISSION_GRANT' in perm or 'PERMISSION_REVOKE' in perm:
-            yield ('general', _('General'), 'perm', _('Permissions'))
+            yield ('general', _("General"), 'perm', _("Permissions"))
 
     def render_admin_panel(self, req, cat, page, path_info):
         perm = PermissionSystem(self.env)
@@ -370,24 +370,24 @@ class PermissionAdminPanel(Component):
 
             if subject and subject.isupper() or \
                     group and group.isupper():
-                raise TracError(_('All upper-cased tokens are reserved for '
-                                  'permission names'))
+                raise TracError(_("All upper-cased tokens are reserved for "
+                                  "permission names"))
 
             # Grant permission to subject
             if req.args.get('add') and subject and action:
                 req.perm('admin', 'general/perm').require('PERMISSION_GRANT')
                 if action not in all_actions:
-                    raise TracError(_('Unknown action'))
+                    raise TracError(_("Unknown action"))
                 req.perm.require(action)
                 if (subject, action) not in all_permissions:
                     perm.grant_permission(subject, action)
-                    add_notice(req, _('The subject %(subject)s has been '
-                                      'granted the permission %(action)s.',
+                    add_notice(req, _("The subject %(subject)s has been "
+                                      "granted the permission %(action)s.",
                                       subject=subject, action=action))
                     req.redirect(req.href.admin(cat, page))
                 else:
-                    add_warning(req, _('The permission %(action)s was already '
-                                       'granted to %(subject)s.',
+                    add_warning(req, _("The permission %(action)s was already "
+                                       "granted to %(subject)s.",
                                        action=action, subject=subject))
 
             # Add subject to group
@@ -396,19 +396,19 @@ class PermissionAdminPanel(Component):
                 for action in perm.get_user_permissions(group):
                     if not action in all_actions: # plugin disabled?
                         self.env.log.warn("Adding %s to group %s: "
-                            "Permission %s unavailable, skipping perm check."
-                            % (subject, group, action))
+                            "Permission %s unavailable, skipping perm check.",
+                            subject, group, action)
                     else:
                         req.perm.require(action)
                 if (subject, group) not in all_permissions:
                     perm.grant_permission(subject, group)
-                    add_notice(req, _('The subject %(subject)s has been added '
-                                      'to the group %(group)s.',
+                    add_notice(req, _("The subject %(subject)s has been added "
+                                      "to the group %(group)s.",
                                       subject=subject, group=group))
                     req.redirect(req.href.admin(cat, page))
                 else:
-                    add_warning(req, _('The subject %(subject)s was already '
-                                       'added to the group %(group)s.',
+                    add_warning(req, _("The subject %(subject)s was already "
+                                       "added to the group %(group)s.",
                                        subject=subject, group=group))
 
             # Remove permissions action
@@ -422,8 +422,8 @@ class PermissionAdminPanel(Component):
                     action = unicode_from_base64(action)
                     if (subject, action) in perm.get_all_permissions():
                         perm.revoke_permission(subject, action)
-                add_notice(req, _('The selected permissions have been '
-                                  'revoked.'))
+                add_notice(req, _("The selected permissions have been "
+                                  "revoked."))
                 req.redirect(req.href.admin(cat, page))
 
         perms = [perm for perm in all_permissions if perm[1].isupper()]
@@ -443,7 +443,7 @@ class PluginAdminPanel(Component):
 
     def get_admin_panels(self, req):
         if 'TRAC_ADMIN' in req.perm('admin', 'general/plugin'):
-            yield ('general', _('General'), 'plugin', _('Plugins'))
+            yield ('general', _("General"), 'plugin', _("Plugins"))
 
     def render_admin_panel(self, req, cat, page, path_info):
         if req.method == 'POST':
@@ -465,25 +465,25 @@ class PluginAdminPanel(Component):
     def _do_install(self, req):
         """Install a plugin."""
         if 'plugin_file' not in req.args:
-            raise TracError(_('No file uploaded'))
+            raise TracError(_("No file uploaded"))
         upload = req.args['plugin_file']
         if isinstance(upload, unicode) or not upload.filename:
-            raise TracError(_('No file uploaded'))
+            raise TracError(_("No file uploaded"))
         plugin_filename = upload.filename.replace('\\', '/').replace(':', '/')
         plugin_filename = os.path.basename(plugin_filename)
         if not plugin_filename:
-            raise TracError(_('No file uploaded'))
+            raise TracError(_("No file uploaded"))
         if not plugin_filename.endswith('.egg') and \
                 not plugin_filename.endswith('.py'):
-            raise TracError(_('Uploaded file is not a Python source file or '
-                              'egg'))
+            raise TracError(_("Uploaded file is not a Python source file or "
+                              "egg"))
 
         target_path = os.path.join(self.env.path, 'plugins', plugin_filename)
         if os.path.isfile(target_path):
-            raise TracError(_('Plugin %(name)s already installed',
+            raise TracError(_("Plugin %(name)s already installed",
                               name=plugin_filename))
 
-        self.log.info('Installing plugin %s', plugin_filename)
+        self.log.info("Installing plugin %s", plugin_filename)
         flags = os.O_CREAT + os.O_WRONLY + os.O_EXCL
         try:
             flags += os.O_BINARY
@@ -492,7 +492,7 @@ class PluginAdminPanel(Component):
             pass
         with os.fdopen(os.open(target_path, flags, 0666), 'w') as target_file:
             shutil.copyfileobj(upload.file, target_file)
-            self.log.info('Plugin %s installed to %s', plugin_filename,
+            self.log.info("Plugin %s installed to %s", plugin_filename,
                           target_path)
         # TODO: Validate that the uploaded file is actually a valid Trac plugin
 
@@ -507,7 +507,7 @@ class PluginAdminPanel(Component):
         plugin_path = os.path.join(self.env.path, 'plugins', plugin_filename)
         if not os.path.isfile(plugin_path):
             return
-        self.log.info('Uninstalling plugin %s', plugin_filename)
+        self.log.info("Uninstalling plugin %s", plugin_filename)
         os.remove(plugin_path)
 
         # Make the environment reset itself on the next request
@@ -528,8 +528,8 @@ class PluginAdminPanel(Component):
             if is_enabled != must_enable:
                 self.config.set('components', component,
                                 'disabled' if is_enabled else 'enabled')
-                self.log.info('%sabling component %s',
-                              'Dis' if is_enabled else 'En', component)
+                self.log.info("%sabling component %s",
+                              "Dis" if is_enabled else "En", component)
                 if must_enable:
                     added.append(component)
                 else:
@@ -547,13 +547,13 @@ class PluginAdminPanel(Component):
             removed.sort()
             notices = []
             if removed:
-                msg = ngettext('The following component has been disabled:',
-                               'The following components have been disabled:',
+                msg = ngettext("The following component has been disabled:",
+                               "The following components have been disabled:",
                                len(removed))
                 notices.append(tag(msg, make_list(removed)))
             if added:
-                msg = ngettext('The following component has been enabled:',
-                               'The following components have been enabled:',
+                msg = ngettext("The following component has been enabled:",
+                               "The following components have been enabled:",
                                len(added))
                 notices.append(tag(msg, make_list(added)))
 
@@ -566,7 +566,7 @@ class PluginAdminPanel(Component):
             try:
                 return format_to_html(self.env, context, text)
             except Exception, e:
-                self.log.error('Unable to render component documentation: %s',
+                self.log.error("Unable to render component documentation: %s",
                                exception_to_unicode(e, traceback=True))
                 return tag.pre(text)
 
