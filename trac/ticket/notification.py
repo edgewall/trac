@@ -88,6 +88,7 @@ def get_ticket_notification_recipients(env, config, tktid, prev_cc):
 
     ccrecipients = prev_cc
     torecipients = []
+    reporter = owner = None
     with env.db_query as db:
         # Harvest email addresses from the cc, reporter, and owner fields
         for row in db("SELECT cc, reporter, owner FROM ticket WHERE id=%s",
