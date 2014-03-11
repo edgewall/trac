@@ -38,6 +38,25 @@
         </fieldset>
       </form>
 
+      <form id="copyperm" class="addnew" method="post" action="">
+        <fieldset>
+          <legend>Copy Permissions:</legend>
+          <div class="field">
+            <label>Subject: <input id="cp_subject" type="text" name="subject" /></label>
+          </div>
+          <div class="field">
+            <label>Target: <input id="cp_target" type="text" name="target" /></label>
+          </div>
+          <div class="buttons">
+            <input type="submit" name="copy" value="${_('Add')}"/>
+          </div>
+          <p class="help">
+            Copy all of subject's permissions to target.
+            Subject and target can be either users or groups.
+          </p>
+        </fieldset>
+      </form>
+
       <form id="addsubj" class="addnew" method="post" action="">
         <fieldset>
           <legend>Add Subject to Group:</legend>

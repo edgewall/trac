@@ -365,13 +365,15 @@ class PermissionAdminPanel(Component):
 
         if req.method == 'POST':
             subject = req.args.get('subject', '').strip()
+            target = req.args.get('target', '').strip()
             action = req.args.get('action')
             group = req.args.get('group', '').strip()
 
             if subject and subject.isupper() or \
-                    group and group.isupper():
+                    group and group.isupper() or \
+                    target and target.isupper():
                 raise TracError(_("All upper-cased tokens are reserved for "
-                                  "permission names"))
+                                  "permission names."))
 
             # Grant permission to subject
             if req.args.get('add') and subject and action:
@@ -410,6 +412,41 @@ class PermissionAdminPanel(Component):
                     add_warning(req, _("The subject %(subject)s was already "
                                        "added to the group %(group)s.",
                                        subject=subject, group=group))
+
+            # Copy permissions to subject
+            elif req.args.get('copy') and subject and target:
+                req.perm.require('PERMISSION_GRANT')
+
+                subject_permissions = [i[1] for i in all_permissions
+                                            if i[0] == subject and
+                                               i[1].isupper()]
+                if not subject_permissions:
+                    add_warning(req,_("The subject %(subject)s does not "
+                                      "have any permissions.",
+                                      subject=subject))
+
+                for action in subject_permissions:
+                    if (target, action) in all_permissions:
+                        continue
+                    if not action in all_actions: # plugin disabled?
+                        self.env.log.warn("Skipped granting %s to %s: "
+                                          "permission unavailable.",
+                                          action, target)
+                    else:
+                        if action not in req.perm:
+                            add_warning(req,
+                                        _("The permission %(action)s was "
+                                          "not granted to %(subject)s "
+                                          "because users cannot grant "
+                                          "permissions they don't possess.",
+                                          action=action, subject=subject))
+                            continue
+                        perm.grant_permission(target, action)
+                        add_notice(req, _("The subject %(subject)s has "
+                                          "been granted the permission "
+                                          "%(action)s.",
+                                          subject=target, action=action))
+                req.redirect(req.href.admin(cat, page))
 
             # Remove permissions action
             elif req.args.get('remove') and req.args.get('sel'):
