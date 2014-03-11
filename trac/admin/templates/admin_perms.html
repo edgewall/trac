@@ -18,15 +18,15 @@
         <fieldset>
           <legend>Grant Permission:</legend>
           <div class="field">
-            <label>Subject: <input id="gp_subject" type="text" name="subject" /></label>
-          </div>
-          <div class="field">
             <label>Action:
               <select id="action" name="action"
                       py:with="allowed_actions = [a for a in actions if a in perm]">
                 <option py:for="action in sorted(allowed_actions)">$action</option>
               </select>
             </label>
+          </div>
+          <div class="field">
+            <label>Subject: <input id="gp_subject" type="text" name="subject" /></label>
           </div>
           <div class="buttons">
             <input type="submit" name="add" class="trac-disable-on-submit" value="${_('Add')}" />
