@@ -104,6 +104,32 @@ class RegressionTestTicket11337(FunctionalTwillTestCaseSetup):
             self._tester.login('admin')
 
 
+class RegressionTestTicket11515(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11515
+        Show a notice message with new language setting after it is changed.
+        """
+        from trac.util.translation import has_babel, get_available_locales
+
+        if not has_babel:
+            return
+        for second_locale in (locale for locale in get_available_locales()
+                                     if not locale.startswith('en_')):
+            break
+        else:
+            return
+
+        try:
+            self._tester.go_to_preferences('Language')
+            tc.formvalue('userprefs', 'language', second_locale)
+            tc.submit()
+            tc.notfind('Your preferences have been saved')
+        finally:
+            tc.formvalue('userprefs', 'language', '')  # revert to default
+            tc.submit()
+            tc.find('Your preferences have been saved')
+
+
 class RegressionTestTicket11531(FunctionalTwillTestCaseSetup):
     """Test for regression of http://trac.edgewall.org/ticket/11531
     PreferencesModule can be set as the default_handler."""
@@ -131,6 +157,7 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestRev5785())
     suite.addTest(RegressionTestTicket5765())
     suite.addTest(RegressionTestTicket11337())
+    suite.addTest(RegressionTestTicket11515())
     suite.addTest(RegressionTestTicket11531())
     return suite
 

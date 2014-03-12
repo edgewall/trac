@@ -27,8 +27,9 @@ from genshi.builder import tag
 from trac.core import *
 from trac.prefs.api import IPreferencePanelProvider
 from trac.util.datefmt import all_timezones, get_timezone, localtz
-from trac.util.translation import _, get_available_locales
-from trac.web import HTTPNotFound, IRequestHandler
+from trac.util.translation import _, deactivate, get_available_locales, \
+                                  make_activable
+from trac.web.api import HTTPNotFound, IRequestHandler
 from trac.web.chrome import add_notice, add_stylesheet, \
                             INavigationContributor, ITemplateProvider
 
@@ -148,6 +149,7 @@ class PreferencesModule(Component):
         req.send_no_content()
 
     def _do_save(self, req):
+        language = req.session.get('language')
         for field in self._form_fields:
             val = req.args.get(field, '').strip()
             if val:
@@ -163,6 +165,11 @@ class PreferencesModule(Component):
             elif field in req.session and (field in req.args or
                                            field + '_cb' in req.args):
                 del req.session[field]
+        if Locale and req.session.get('language') != language:
+            # reactivate translations with new language setting when changed
+            del req.locale  # for re-negotiating locale
+            deactivate()
+            make_activable(lambda: req.locale, self.env.path)
         add_notice(req, _('Your preferences have been saved.'))
 
     def _do_load(self, req):
