@@ -68,7 +68,7 @@ class PreferencesModule(Component):
         if xhr and req.method == 'POST' and 'save_prefs' in req.args:
             self._do_save_xhr(req)
 
-        panel_id = req.args['panel_id']
+        panel_id = req.args.get('panel_id')
 
         panels = []
         chosen_provider = None

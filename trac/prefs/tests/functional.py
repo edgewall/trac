@@ -104,6 +104,25 @@ class RegressionTestTicket11337(FunctionalTwillTestCaseSetup):
             self._tester.login('admin')
 
 
+class RegressionTestTicket11531(FunctionalTwillTestCaseSetup):
+    """Test for regression of http://trac.edgewall.org/ticket/11531
+    PreferencesModule can be set as the default_handler."""
+    def runTest(self):
+        # Remove after change in #11520 is committed
+        self._testenv.set_config('trac', 'default_handler',
+                                 'WikiModule')
+        default_handler = self._testenv.get_config('trac', 'default_handler')
+        self._testenv.set_config('trac', 'default_handler',
+                                 'PreferencesModule')
+        try:
+            tc.go(self._tester.url)
+            tc.notfind(internal_error)
+            tc.find(r"\bPreferences\b")
+        finally:
+            self._testenv.set_config('trac', 'default_handler',
+                                     default_handler)
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
@@ -112,6 +131,7 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestRev5785())
     suite.addTest(RegressionTestTicket5765())
     suite.addTest(RegressionTestTicket11337())
+    suite.addTest(RegressionTestTicket11531())
     return suite
 
 
