@@ -85,12 +85,12 @@ def get_ticket_notification_recipients(env, config, tktid, prev_cc=None,
     :since 1.0.2: the `prev_cc` parameter is deprecated.
     """
     section = env.config['notification']
-    notify_reporter = section.getbool('always_notify_reporter')
-    notify_owner = section.getbool('always_notify_owner')
-    notify_updater = section.getbool('always_notify_updater')
+    always_notify_reporter = section.getbool('always_notify_reporter')
+    always_notify_owner = section.getbool('always_notify_owner')
+    always_notify_updater = section.getbool('always_notify_updater')
 
-    ccrecipients = set(prev_cc or [])
-    torecipients = set()
+    cc_recipients = set(prev_cc or [])
+    to_recipients = set()
     tkt = Ticket(env, tktid)
 
     # CC field is stored as comma-separated string. Parse to list.
@@ -102,44 +102,43 @@ def get_ticket_notification_recipients(env, config, tktid, prev_cc=None,
 
     # Harvest email addresses from the cc, reporter, and owner fields
     if tkt['cc']:
-        ccrecipients.update(to_list(tkt['cc']))
-    if notify_reporter:
-        torecipients.add(tkt['reporter'])
-    if notify_owner:
-        torecipients.add(tkt['owner'])
+        cc_recipients.update(to_list(tkt['cc']))
+    if always_notify_reporter:
+        to_recipients.add(tkt['reporter'])
+    if always_notify_owner:
+        to_recipients.add(tkt['owner'])
 
     # Harvest email addresses from the author field of ticket_change(s)
-    if notify_updater:
+    if always_notify_updater:
         for author, ticket in env.db_query("""
                 SELECT DISTINCT author, ticket FROM ticket_change
                 WHERE ticket=%s
                 """, (tktid, )):
-            torecipients.add(author)
+            to_recipients.add(author)
 
     # Harvest previous owner and cc list
     author = None
     for changelog in tkt.get_changelog(modtime):
         author, field, old = changelog[1:4]
-        if field == 'owner' and notify_owner:
-            torecipients.add(old)
+        if field == 'owner' and always_notify_owner:
+            to_recipients.add(old)
         elif field == 'cc':
-            ccrecipients.update(to_list(old))
-
+            cc_recipients.update(to_list(old))
 
     # Suppress the updater from the recipients if necessary
     updater = author or tkt['reporter']
-    if not notify_updater:
+    if not always_notify_updater:
         filter_out = True
-        if notify_reporter and updater == tkt['reporter']:
+        if always_notify_reporter and updater == tkt['reporter']:
             filter_out = False
-        if notify_owner and updater == tkt['owner']:
+        if always_notify_owner and updater == tkt['owner']:
             filter_out = False
         if filter_out:
-            torecipients.discard(updater)
+            to_recipients.discard(updater)
     elif updater:
-        torecipients.add(updater)
+        to_recipients.add(updater)
 
-    return list(torecipients), list(ccrecipients), \
+    return list(to_recipients), list(cc_recipients), \
            tkt['reporter'], tkt['owner']
 
 
@@ -527,11 +526,11 @@ class BatchTicketNotifyEmail(NotifyEmail):
         return shorten_line(subj)
 
     def get_recipients(self, tktids):
-        alltorecipients = []
-        allccrecipients = []
+        alltorecipients = set()
+        allccrecipients = set()
         for t in tktids:
-            (torecipients, ccrecipients, reporter, owner) = \
+            torecipients, ccrecipients, reporter, owner = \
                 get_ticket_notification_recipients(self.env, self.config, t)
-            alltorecipients.extend(torecipients)
-            allccrecipients.extend(ccrecipients)
-        return (list(set(alltorecipients)), list(set(allccrecipients)))
+            alltorecipients.update(torecipients)
+            allccrecipients.update(ccrecipients)
+        return list(alltorecipients), list(allccrecipients)
