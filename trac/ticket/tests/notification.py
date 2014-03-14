@@ -634,6 +634,46 @@ class NotificationTestCase(unittest.TestCase):
         headers, body = parse_smtp_message(message)
         self.assertEqual('joe.user@example.org', headers['To'])
 
+    def test_previous_cc_list(self):
+        """Members removed from CC list receive notifications"""
+        ticket = Ticket(self.env)
+        ticket['summary'] = 'Foo'
+        ticket['cc'] = 'joe.user1@example.net'
+        ticket.insert()
+        ticket['cc'] = 'joe.user2@example.net'
+        now = datetime.now(utc)
+        ticket.save_changes('joe.bar@example.com', 'Removed from cc', now)
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=False, modtime=now)
+        recipients = notifysuite.smtpd.get_recipients()
+        self.assertIn('joe.user1@example.net', recipients)
+        self.assertIn('joe.user2@example.net', recipients)
+
+    def test_previous_owner(self):
+        """Previous owner is notified when ticket is reassigned (#2311)
+           if always_notify_owner is set to True"""
+        def _test_owner(enabled):
+            self.env.config.set('notification', 'always_notify_owner', enabled)
+            ticket = Ticket(self.env)
+            ticket['summary'] = 'Foo'
+            ticket['owner'] = prev_owner = 'joe.user1@example.net'
+            ticket.insert()
+            ticket['owner'] = new_owner = 'joe.user2@example.net'
+            now = datetime.now(utc)
+            ticket.save_changes('joe.bar@example.com', 'Changed owner', now)
+            tn = TicketNotifyEmail(self.env)
+            tn.notify(ticket, newticket=False, modtime=now)
+            recipients = notifysuite.smtpd.get_recipients()
+            if enabled:
+                self.assertIn(prev_owner, recipients)
+                self.assertIn(new_owner, recipients)
+            else:
+                self.assertNotIn(prev_owner, recipients)
+                self.assertNotIn(new_owner, recipients)
+
+        for enable in False, True:
+            _test_owner(enable)
+
     def _validate_mimebody(self, mime, ticket, newtk):
         """Body of a ticket notification message"""
         mime_decoder, mime_name, mime_charset = mime
