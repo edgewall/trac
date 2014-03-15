@@ -305,6 +305,12 @@ class WikiSystem(Component):
         """Whether a page with the specified name exists."""
         return pagename.rstrip('/') in self.pages
 
+    def resolve_relative_name(self, pagename, referrer):
+        """Resolves a pagename relative to a referrer pagename."""
+        if pagename.startswith(('./', '../')) or pagename in ('.', '..'):
+            return self._resolve_relative_name(pagename, referrer)
+        return pagename
+
     # IWikiSyntaxProvider methods
 
     XML_NAME = r"[\w:](?<!\d)(?:[\w:.-]*[\w-])?"
@@ -437,7 +443,7 @@ class WikiSystem(Component):
             if comp == '..':
                 if base:
                     base.pop()
-            elif comp and comp != '.':
+            elif comp != '.':
                 base.extend(components[i:])
                 break
         return '/'.join(base)

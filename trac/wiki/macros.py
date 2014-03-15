@@ -120,7 +120,6 @@ class TitleIndexMacro(WikiMacroBase):
         minsize = max(int(kw.get('min', 1)), 1)
         minsize_group = max(minsize, 2)
         depth = int(kw.get('depth', -1))
-        start = prefix.count('/') if prefix else 0
         format = kw.get('format', '')
 
         def parse_list(name):
@@ -130,12 +129,17 @@ class TitleIndexMacro(WikiMacroBase):
         includes = parse_list('include') or ['*']
         excludes = parse_list('exclude')
 
+        wiki = formatter.wiki
+        resource = formatter.resource
+        if prefix and resource and resource.realm == 'wiki':
+            prefix = wiki.resolve_relative_name(prefix, resource.id)
+
+        start = prefix.count('/') if prefix else 0
+
         if hideprefix:
             omitprefix = lambda page: page[len(prefix):]
         else:
             omitprefix = lambda page: page
-
-        wiki = formatter.wiki
 
         pages = sorted(page for page in wiki.get_pages(prefix)
                        if (depth < 0 or depth >= page.count('/') - start)

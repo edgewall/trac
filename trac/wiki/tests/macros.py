@@ -283,6 +283,55 @@ TITLEINDEX3_MACRO_TEST_CASES = u"""
 </p><div class="titleindex"><ul><li><a href="/wiki/WikiStart/First">First</a></li><li><a href="/wiki/WikiStart/Second">Second</a></li><li><a href="/wiki/WikiStart/Third">Third</a></li></ul></div><p>
 </p>
 ------------------------------
+============================== TitleIndex, relative prefix
+[[TitleIndex(../../WikiStart)]]
+------------------------------
+<p>
+</p><div class="titleindex"><ul><li><a href="/wiki/WikiStart">WikiStart</a></li><li><a href="/wiki/WikiStart/First">WikiStart/First</a></li><li><a href="/wiki/WikiStart/Second">WikiStart/Second</a></li><li><a href="/wiki/WikiStart/Third">WikiStart/Third</a></li></ul></div><p>
+</p>
+------------------------------
+============================== TitleIndex, relative prefix with trailing slash
+[[TitleIndex(../../WikiStart/)]]
+------------------------------
+<p>
+</p><div class="titleindex"><ul><li><a href="/wiki/WikiStart/First">WikiStart/First</a></li><li><a href="/wiki/WikiStart/Second">WikiStart/Second</a></li><li><a href="/wiki/WikiStart/Third">WikiStart/Third</a></li></ul></div><p>
+</p>
+------------------------------
+============================== TitleIndex, relative prefix ..
+[[TitleIndex(..)]]
+------------------------------
+<p>
+</p><div class="titleindex"><ul><li><a href="/wiki/WikiStart">WikiStart</a></li><li><a href="/wiki/WikiStart/First">WikiStart/First</a></li><li><a href="/wiki/WikiStart/Second">WikiStart/Second</a></li><li><a href="/wiki/WikiStart/Third">WikiStart/Third</a></li></ul></div><p>
+</p>
+------------------------------
+============================== TitleIndex, relative prefix ../
+[[TitleIndex(../)]]
+------------------------------
+<p>
+</p><div class="titleindex"><ul><li><a href="/wiki/WikiStart/First">WikiStart/First</a></li><li><a href="/wiki/WikiStart/Second">WikiStart/Second</a></li><li><a href="/wiki/WikiStart/Third">WikiStart/Third</a></li></ul></div><p>
+</p>
+------------------------------
+============================== TitleIndex, relative prefix .
+[[TitleIndex(.)]]
+------------------------------
+<p>
+</p><div class="titleindex"><ul><li><a href="/wiki/WikiStart/Second">WikiStart/Second</a></li></ul></div><p>
+</p>
+------------------------------
+============================== TitleIndex, relative prefix ./
+[[TitleIndex(./)]]
+------------------------------
+<p>
+</p><div class="titleindex"><ul></ul></div><p>
+</p>
+------------------------------
+============================== TitleIndex, relative hidden prefix ../
+[[TitleIndex(../,hideprefix)]]
+------------------------------
+<p>
+</p><div class="titleindex"><ul><li><a href="/wiki/WikiStart/First">First</a></li><li><a href="/wiki/WikiStart/Second">Second</a></li><li><a href="/wiki/WikiStart/Third">Third</a></li></ul></div><p>
+</p>
+------------------------------
 """
 
 def titleindex3_setup(tc):
@@ -512,7 +561,8 @@ def suite():
                                   teardown=titleindex_teardown))
     suite.addTest(formatter.suite(TITLEINDEX3_MACRO_TEST_CASES, file=__file__,
                                   setup=titleindex3_setup,
-                                  teardown=titleindex_teardown))
+                                  teardown=titleindex_teardown,
+                                  context=('wiki', 'WikiStart/Second')))
     suite.addTest(formatter.suite(TITLEINDEX4_MACRO_TEST_CASES, file=__file__,
                                   setup=titleindex4_setup,
                                   teardown=titleindex_teardown))
