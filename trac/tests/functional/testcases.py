@@ -32,6 +32,56 @@ class TestAttachmentNonexistentParent(FunctionalTwillTestCaseSetup):
                 'Parent resource NonexistentPage doesn\'t exist</p>')
 
 
+class ErrorPageValidation(FunctionalTwillTestCaseSetup):
+    """Validate the error page.
+    Defects reported to trac-hacks should use the Component defined in the
+    plugin's URL (#11434).
+    """
+    def runTest(self):
+        env = self._testenv.get_trac_environment()
+        env.config.set('components', 'RaiseExceptionPlugin.*', 'enabled')
+        env.config.save()
+        create_file(os.path.join(env.path, 'plugins',
+                                 'RaiseExceptionPlugin.py'),
+"""\
+from trac.core import Component, implements
+from trac.web.api import IRequestHandler
+
+url = None
+
+class RaiseExceptionPlugin(Component):
+    implements(IRequestHandler)
+
+    def match_request(self, req):
+        if req.path_info.startswith('/raise-exception'):
+            return True
+
+    def process_request(self, req):
+        print 'maybe?'
+        if req.args.get('report') == 'tho':
+            global url
+            url = 'http://trac-hacks.org/wiki/HelloWorldMacro'
+        raise Exception
+
+""")
+        self._testenv.restart()
+
+        try:
+            tc.go(self._tester.url + '/raise-exception')
+            tc.find(internal_error)
+            tc.find('<form class="newticket" method="get" '
+                    'action="http://trac.edgewall.org/newticket">')
+
+            tc.go(self._tester.url + '/raise-exception?report=tho')
+            tc.find(internal_error)
+            tc.find('<form class="newticket" method="get" '
+                    'action="http://trac-hacks.org/newticket">')
+            tc.find('<input type="hidden" name="component" '
+                    'value="HelloWorldMacro" />')
+        finally:
+            env.config.set('components', 'RaiseExceptionPlugin.*', 'disabled')
+
+
 class RegressionTestRev6017(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of the plugin reload fix in r6017"""
@@ -198,17 +248,6 @@ See also http://bugs.python.org/issue15564.
 """)
 
 
-class ErrorPageValidation(FunctionalTwillTestCaseSetup):
-    def runTest(self):
-        """Validate the error page"""
-        url = self._tester.url + '/wiki/WikiStart'
-        tc.go(url + '?version=bug')
-        tc.url(url)
-        tc.find(internal_error)
-        tc.find('<form class="newticket" method="get" '
-                'action="http://trac.edgewall.org/newticket">')
-
-
 class RegressionTestTicket3663(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Regression test for non-UTF-8 PATH_INFO (#3663)
@@ -297,6 +336,7 @@ def functionalSuite(suite=None):
         import trac.tests.functional
         suite = trac.tests.functional.functionalSuite()
     suite.addTest(TestAttachmentNonexistentParent())
+    suite.addTest(ErrorPageValidation())
     suite.addTest(RegressionTestRev6017())
     suite.addTest(RegressionTestTicket3833a())
     suite.addTest(RegressionTestTicket3833b())
@@ -304,7 +344,6 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket5572())
     suite.addTest(RegressionTestTicket7209())
     suite.addTest(RegressionTestTicket9880())
-    suite.addTest(ErrorPageValidation())
     suite.addTest(RegressionTestTicket3663())
     suite.addTest(RegressionTestTicket6318())
     suite.addTest(RegressionTestTicket11434())
