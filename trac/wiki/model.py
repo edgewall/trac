@@ -19,7 +19,7 @@
 from datetime import datetime
 
 from trac.core import *
-from trac.resource import Resource
+from trac.resource import Resource, ResourceNotFound
 from trac.util.datefmt import from_utimestamp, to_utimestamp, utc
 from trac.util.translation import _
 from trac.wiki.api import WikiSystem, validate_page_name
@@ -32,12 +32,17 @@ class WikiPage(object):
 
     def __init__(self, env, name=None, version=None, db=None):
         self.env = env
+        if version:
+            try:
+                version = int(version)  # must be a number or None
+            except ValueError:
+               raise ResourceNotFound(
+                    _('No version "%(num)s" for Wiki page "%(name)s"',
+                      num=version, name=name))
         if isinstance(name, Resource):
             self.resource = name
             name = self.resource.id
         else:
-            if version:
-                version = int(version) # must be a number or None
             self.resource = Resource('wiki', name, version)
         self.name = name
         if name:

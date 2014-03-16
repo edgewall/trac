@@ -171,6 +171,16 @@ class RegressionTestTicket10850(FunctionalTwillTestCaseSetup):
         tc.notfind('Error: Invalid Attachment')
 
 
+class RegressionTestTicket11518(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11518
+        ResourceNotFound should be raised when version is invalid.
+        """
+        tc.go(self._tester.url + '/wiki/WikiStart?version=1abc')
+        tc.find(r"<h1>Trac Error</h1>")
+        tc.find('No version "1abc" for Wiki page "WikiStart')
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional.testcases
@@ -180,6 +190,7 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket4812())
     suite.addTest(RegressionTestTicket10274())
     suite.addTest(RegressionTestTicket10850())
+    suite.addTest(RegressionTestTicket11518())
     if has_docutils:
         import docutils
         if get_pkginfo(docutils):

@@ -10,6 +10,7 @@ import unittest
 from trac.attachment import Attachment
 from trac.core import *
 from trac.test import EnvironmentStub
+from trac.resource import Resource, ResourceNotFound
 from trac.util.datefmt import utc, to_utimestamp
 from trac.wiki import WikiPage, IWikiChangeListener
 
@@ -88,6 +89,11 @@ class WikiPageTestCase(unittest.TestCase):
 
         page = WikiPage(self.env, 'TestPage', 1)
         self.assertEqual(1, page.resource.version)
+        self.assertEqual(1, page.version)
+
+        resource = Resource('wiki', 'TestPage')
+        page = WikiPage(self.env, resource, 1)
+        self.assertEqual(1, page.version)
 
     def test_create_page(self):
         page = WikiPage(self.env)
@@ -262,6 +268,18 @@ class WikiPageTestCase(unittest.TestCase):
         for name in invalid_names:
             page = WikiPage(self.env, 'TestPage')
             self.assertRaises(TracError, page.rename, name)
+
+    def test_invalid_version(self):
+        self.assertRaises(ResourceNotFound, WikiPage, self.env,
+                          'WikiStart', '1abc')
+
+        resource = Resource('wiki', 'WikiStart')
+        self.assertRaises(ResourceNotFound, WikiPage, self.env,
+                          resource, '1abc')
+
+        resource = Resource('wiki', 'WikiStart', '1abc')
+        page = WikiPage(self.env, resource)
+        self.assertEqual(0, page.version)
 
 
 def suite():
