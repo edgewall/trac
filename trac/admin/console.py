@@ -542,7 +542,7 @@ class TracAdminHelpMacro(WikiMacroBase):
             doc = TracAdmin.all_docs(self.env)
         buf = StringIO.StringIO()
         TracAdmin.print_doc(doc, buf, long=True)
-        return html.PRE(buf.getvalue(), class_='wiki')
+        return html.PRE(buf.getvalue().decode('utf-8'), class_='wiki')
 
 
 def run(args=None):
