@@ -11,12 +11,13 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import unittest
+
+from trac.core import ComponentManager
 from trac.test import EnvironmentStub, Mock, MockPerm
 from trac.tests.contentgen import random_sentence, random_word
 from trac.ticket.roadmap import *
-from trac.core import ComponentManager
 
-import unittest
 
 class TicketGroupStatsTestCase(unittest.TestCase):
 
@@ -185,12 +186,14 @@ class MilestoneModuleTestCase(unittest.TestCase):
 def in_tlist(ticket, list):
     return len([t for t in list if t['id'] == ticket.id]) > 0
 
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TicketGroupStatsTestCase))
     suite.addTest(unittest.makeSuite(DefaultTicketGroupStatsProviderTestCase))
     suite.addTest(unittest.makeSuite(MilestoneModuleTestCase))
     return suite
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')
