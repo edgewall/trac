@@ -1027,7 +1027,7 @@ class MilestoneModule(Component):
         milestone_realm = Resource('milestone')
         for name, due, completed, description \
                 in MilestoneCache(self.env).milestones.itervalues():
-            if any(r.search(description) or r.search(name)
+            if all(r.search(description) or r.search(name)
                    for r in term_regexps):
                 milestone = milestone_realm(id=name)
                 if 'MILESTONE_VIEW' in req.perm(milestone):
