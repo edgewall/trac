@@ -32,7 +32,7 @@ class TestAttachmentNonexistentParent(FunctionalTwillTestCaseSetup):
                 'Parent resource NonexistentPage doesn\'t exist</p>')
 
 
-class ErrorPageValidation(FunctionalTwillTestCaseSetup):
+class TestErrorPage(FunctionalTwillTestCaseSetup):
     """Validate the error page.
     Defects reported to trac-hacks should use the Component defined in the
     plugin's URL (#11434).
@@ -336,7 +336,7 @@ def functionalSuite(suite=None):
         import trac.tests.functional
         suite = trac.tests.functional.functionalSuite()
     suite.addTest(TestAttachmentNonexistentParent())
-    suite.addTest(ErrorPageValidation())
+    suite.addTest(TestErrorPage())
     suite.addTest(RegressionTestRev6017())
     suite.addTest(RegressionTestTicket3833a())
     suite.addTest(RegressionTestTicket3833b())
