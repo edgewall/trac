@@ -194,9 +194,15 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
 
     def finish(self):
         """We need to help the garbage collector a little."""
-        BaseHTTPRequestHandler.finish(self)
-        self.wfile = None
-        self.rfile = None
+        try:
+            BaseHTTPRequestHandler.finish(self)
+        except (IOError, socket.error), e:
+            # ignore an exception if client disconnects
+            if e.args[0] not in (errno.EPIPE, errno.ECONNRESET, 10053, 10054):
+                raise
+        finally:
+            self.wfile = None
+            self.rfile = None
 
 
 class WSGIServerGateway(WSGIGateway):
