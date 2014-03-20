@@ -145,7 +145,7 @@ class MilestoneModuleTestCase(unittest.TestCase):
         self.env = EnvironmentStub()
         self.req = Mock(href=self.env.href, perm=MockPerm())
         self.mmodule = MilestoneModule(self.env)
-        self.terms = [random_word() for i in range(0, 3)]
+        self.terms = ['MilestoneAlpha', 'MilestoneBeta', 'MilestoneGamma']
         self.milestones = []
         for term in self.terms + [' '.join(self.terms)]:
             m = Milestone(self.env)
