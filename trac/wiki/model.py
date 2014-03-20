@@ -32,17 +32,12 @@ class WikiPage(object):
 
     def __init__(self, env, name=None, version=None, db=None):
         self.env = env
-        if version:
-            try:
-                version = int(version)  # must be a number or None
-            except ValueError:
-               raise ResourceNotFound(
-                    _('No version "%(num)s" for Wiki page "%(name)s"',
-                      num=version, name=name))
         if isinstance(name, Resource):
             self.resource = name
             name = self.resource.id
         else:
+            if version:
+                version = int(version) # must be a number or None
             self.resource = Resource('wiki', name, version)
         self.name = name
         if name:

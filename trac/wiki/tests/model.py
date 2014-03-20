@@ -270,16 +270,21 @@ class WikiPageTestCase(unittest.TestCase):
             self.assertRaises(TracError, page.rename, name)
 
     def test_invalid_version(self):
-        self.assertRaises(ResourceNotFound, WikiPage, self.env,
-                          'WikiStart', '1abc')
+        cursor = self.db.cursor()
+        data = (1, 42, 'joe', '::1', 'Bla bla', 'Testing', 0)
+        cursor.execute("INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
+                       ('TestPage',) + data)
 
-        resource = Resource('wiki', 'WikiStart')
-        self.assertRaises(ResourceNotFound, WikiPage, self.env,
+        self.assertRaises(ValueError, WikiPage, self.env,
+                          'TestPage', '1abc')
+
+        resource = Resource('wiki', 'TestPage')
+        self.assertRaises(ValueError, WikiPage, self.env,
                           resource, '1abc')
 
-        resource = Resource('wiki', 'WikiStart', '1abc')
+        resource = Resource('wiki', 'TestPage', '1abc')
         page = WikiPage(self.env, resource)
-        self.assertEqual(0, page.version)
+        self.assertEqual(1, page.version)
 
 
 def suite():

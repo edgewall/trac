@@ -179,6 +179,9 @@ class RegressionTestTicket11518(FunctionalTwillTestCaseSetup):
         tc.go(self._tester.url + '/wiki/WikiStart?version=1abc')
         tc.find(r"<h1>Trac Error</h1>")
         tc.find('No version "1abc" for Wiki page "WikiStart')
+        tc.go(self._tester.url + '/wiki/WikiStart?version=')
+        tc.find(r"<h1>Trac Error</h1>")
+        tc.find('No version "" for Wiki page "WikiStart')
 
 
 def functionalSuite(suite=None):

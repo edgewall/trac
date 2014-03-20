@@ -5,7 +5,7 @@ from trac.tests.functional import *
 from trac.util import create_file
 
 
-class ErrorPageValidation(FunctionalTwillTestCaseSetup):
+class TestErrorPage(FunctionalTwillTestCaseSetup):
     """Validate the error page.
     Defects reported to trac-hacks should use the Component defined in the
     plugin's URL (#11434).
@@ -246,7 +246,7 @@ def functionalSuite():
 def suite():
     suite = functionalSuite()
 
-    suite.addTest(ErrorPageValidation())
+    suite.addTest(TestErrorPage())
     suite.addTest(RegressionTestRev6017())
     suite.addTest(RegressionTestTicket3833a())
     suite.addTest(RegressionTestTicket3833b())
