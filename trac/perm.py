@@ -579,14 +579,6 @@ class PermissionCache(object):
             raise PermissionError(action, resource, self.env)
     assert_permission = require
 
-    def permissions(self):
-        """Deprecated (but still used by the HDF compatibility layer)"""
-        self.env.log.warning("perm.permissions() is deprecated and "
-                             "is only present for HDF compatibility")
-        perm = PermissionSystem(self.env)
-        actions = perm.get_user_permissions(self.username)
-        return [action for action in actions if action in self]
-
 
 class PermissionAdmin(Component):
     """trac-admin command provider for permission system administration."""

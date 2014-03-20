@@ -870,11 +870,6 @@ class Mimeview(Component):
             tag.tbody(_body_rows())
         )
 
-    def get_max_preview_size(self):
-        """:deprecated: since 0.10, use `max_preview_size` attribute directly.
-        """
-        return self.max_preview_size
-
     def get_charset(self, content='', mimetype=None):
         """Infer the character encoding from the `content` or the `mimetype`.
 
@@ -961,13 +956,6 @@ class Mimeview(Component):
         if content is not None and is_binary(content):
             return True
         return False
-
-    def to_utf8(self, content, mimetype=None):
-        """Convert an encoded `content` to utf-8.
-
-        :deprecated: since 0.10, you should use `unicode` strings only.
-        """
-        return to_utf8(content, self.get_charset(content, mimetype))
 
     def to_unicode(self, content, mimetype=None, charset=None):
         """Convert `content` (an encoded `str` object) to an `unicode` object.

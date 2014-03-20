@@ -104,9 +104,6 @@ class IWikiMacroProvider(Interface):
            description.
         """
 
-    def render_macro(req, name, content):
-        """Return the HTML output of the macro :deprecated:"""
-
     def is_inline(content):
         """Return `True` if the content generated is an inline XHTML element.
 
@@ -117,10 +114,7 @@ class IWikiMacroProvider(Interface):
         """Called by the formatter when rendering the parsed wiki text.
 
         .. versionadded:: 0.11
-          This form is preferred over `render_macro`, as
-          you get the `formatter`, which knows the current `.context`
-          (and the `.req`, but ideally you shouldn't use it in your
-          macros).
+
         .. versionchanged:: 0.12
            added the `args` parameter
 

@@ -35,7 +35,7 @@ from trac.util import arity, as_int
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode, \
                            unicode_quote, unicode_quote_plus, unquote_label
 from trac.util.html import TracHTMLSanitizer
-from trac.util.translation import _
+from trac.util.translation import _, tag_
 from trac.wiki.api import WikiSystem, parse_args
 from trac.wiki.parser import WikiParser, parse_processor_args
 
@@ -167,7 +167,10 @@ class WikiProcessor(object):
                         if hasattr(macro_provider, 'expand_macro'):
                             self.processor = self._macro_processor
                         else:
-                            self.processor = self._legacy_macro_processor
+                            raise TracError(
+                                tag_("Pre-0.11 macros with the %(method)s "
+                                     "method are no longer supported.",
+                                     method=tag.code("render_macro")))
                         self.macro_provider = macro_provider
                         self.inline_check = getattr(macro_provider, 'is_inline',
                                                     False)
@@ -331,12 +334,6 @@ class WikiProcessor(object):
         return text
 
     # generic processors
-
-    def _legacy_macro_processor(self, text): # TODO: remove in 0.12
-        self.env.log.warning('Executing pre-0.11 Wiki macro %s by provider %s'
-                             % (self.name, self.macro_provider))
-        return self.macro_provider.render_macro(self.formatter.req, self.name,
-                                                text)
 
     def _macro_processor(self, text):
         self.env.log.debug('Executing Wiki macro %s by provider %s'

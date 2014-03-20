@@ -176,10 +176,6 @@ def filter_ignorable_lines(hunks, fromlines, tolines, context,
             yield hunk
 
 
-def hdf_diff(*args, **kwargs):
-    """:deprecated: use `diff_blocks` (will be removed in 1.1.1)"""
-    return diff_blocks(*args, **kwargs)
-
 def diff_blocks(fromlines, tolines, context=None, tabwidth=8,
                 ignore_blank_lines=0, ignore_case=0, ignore_space_changes=0):
     """Return an array that is adequate for adding to the data dictionary

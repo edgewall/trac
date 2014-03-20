@@ -46,13 +46,6 @@ from trac.wiki.formatter import format_to, OneLinerFormatter
 from trac.wiki.model import WikiPage
 
 
-class InvalidWikiPage(TracError):
-    """Exception raised when a Wiki page fails validation.
-
-    :deprecated: Not used anymore since 0.11
-    """
-
-
 class WikiModule(Component):
 
     implements(IContentConverter, INavigationContributor, IPermissionRequestor,

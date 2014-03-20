@@ -1103,21 +1103,6 @@ def embedded_numbers(s):
     pieces[1::2] = map(int, pieces[1::2])
     return pieces
 
-def pairwise(iterable):
-    """
-    >>> list(pairwise([0, 1, 2, 3]))
-    [(0, 1), (1, 2), (2, 3)]
-
-    .. deprecated :: 0.11
-       if this really needs to be used, rewrite it without izip
-    """
-    a, b = tee(iterable)
-    try:
-        b.next()
-    except StopIteration:
-        pass
-    return izip(a, b)
-
 def partition(iterable, order=None):
     """
     >>> partition([(1, "a"), (2, "b"), (3, "a")])

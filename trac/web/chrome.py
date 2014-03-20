@@ -177,10 +177,6 @@ def add_script_data(req, data={}, **kwargs):
     script_data.update(data)
     script_data.update(kwargs)
 
-def add_javascript(req, filename):
-    """:deprecated: since 0.10, use `add_script` instead."""
-    add_script(req, filename, mimetype='text/javascript')
-
 def add_warning(req, msg, *args):
     """Add a non-fatal warning to the request object.
 
