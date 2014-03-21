@@ -15,7 +15,7 @@ import unittest
 
 from trac.core import ComponentManager
 from trac.test import EnvironmentStub, Mock, MockPerm
-from trac.tests.contentgen import random_sentence, random_word
+from trac.tests.contentgen import random_sentence
 from trac.ticket.roadmap import *
 
 
@@ -146,14 +146,15 @@ class MilestoneModuleTestCase(unittest.TestCase):
         self.req = Mock(href=self.env.href, perm=MockPerm())
         self.mmodule = MilestoneModule(self.env)
         self.terms = ['MilestoneAlpha', 'MilestoneBeta', 'MilestoneGamma']
-        self.milestones = []
         for term in self.terms + [' '.join(self.terms)]:
             m = Milestone(self.env)
             m.name = term
             m.due = datetime.now(utc)
             m.description = random_sentence()
             m.insert()
-            self.milestones.append(m)
+
+    def tearDown(self):
+        self.env.reset_db()
 
     def test_get_search_filters(self):
         filters = self.mmodule.get_search_filters(self.req)
@@ -168,19 +169,19 @@ class MilestoneModuleTestCase(unittest.TestCase):
         self.assertEqual([], list(results))
 
     def test_get_search_results_matches_all_terms(self):
+        milestone = Milestone(self.env, ' '.join(self.terms))
         results = self.mmodule.get_search_results(self.req, self.terms,
                                                   ['milestone'])
         results = list(results)
         self.assertEqual(1, len(results))
         self.assertEqual(5, len(results[0]))
         self.assertEqual('/trac.cgi/milestone/' +
-                         self.milestones[3].name.replace(' ', '%20'),
+                         milestone.name.replace(' ', '%20'),
                          results[0][0])
-        self.assertEqual('Milestone ' + self.milestones[3].name,
-                         results[0][1])
-        self.assertEqual(self.milestones[3].due, results[0][2])
+        self.assertEqual('Milestone ' + milestone.name, results[0][1])
+        self.assertEqual(milestone.due, results[0][2])
         self.assertEqual('', results[0][3])
-        self.assertEqual(self.milestones[3].description, results[0][4])
+        self.assertEqual(milestone.description, results[0][4])
 
 
 def in_tlist(ticket, list):
