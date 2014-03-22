@@ -2142,6 +2142,19 @@ class RegressionTestTicket11153(FunctionalTwillTestCaseSetup):
             env.config.remove('components', 'trac.ticket.report.ReportModule')
             env.config.save()
 
+        # Disable the QueryModule component and check that "View Tickets"
+        # mainnav entry links to the `/report` page
+        env.config.set('components', 'trac.ticket.query.QueryModule',
+                       'disabled')
+        env.config.save()
+
+        try:
+            self._tester.go_to_view_tickets('report')
+            tc.notfind('<li class="last first">Available Reports</li>')
+        finally:
+            env.config.remove('components', 'trac.ticket.query.QueryModule')
+            env.config.save()
+
 
 class RegressionTestTicket11176(FunctionalTestCaseSetup):
     def runTest(self):
