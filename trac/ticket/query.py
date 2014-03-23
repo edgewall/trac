@@ -1353,14 +1353,21 @@ class TicketQueryMacro(WikiMacroBase):
             add_stylesheet(req, 'common/css/roadmap.css')
 
             def query_href(extra_args, group_value = None):
-                q = Query.from_string(self.env, query_string)
+                q = query_string + ''.join('&%s=%s' % (kw, v)
+                                           for kw in extra_args
+                                           if kw not in ['group', 'status']
+                                           for v in extra_args[kw])
+                q = Query.from_string(self.env, q)
+                args = {}
                 if q.group:
-                    extra_args[q.group] = group_value
-                    q.group = None
+                    args[q.group] = group_value
+                q.group = extra_args.get('group')
+                if 'status' in extra_args:
+                    args['status'] = extra_args['status']
                 for constraint in q.constraints:
-                    constraint.update(extra_args)
+                    constraint.update(args)
                 if not q.constraints:
-                    q.constraints.append(extra_args)
+                    q.constraints.append(args)
                 return q.get_href(formatter.context)
             chrome = Chrome(self.env)
             tickets = apply_ticket_permissions(self.env, req, tickets)

@@ -14,10 +14,12 @@
 from trac.test import Mock, EnvironmentStub, MockPerm, locale_en
 from trac.ticket.model import Ticket
 from trac.ticket.query import Query, QueryModule, TicketQueryMacro
+from trac.ticket.model import Ticket
 from trac.util.datefmt import utc
 from trac.web.chrome import web_context
 from trac.web.href import Href
 from trac.wiki.formatter import LinkFormatter
+from trac.wiki.tests import formatter
 
 import unittest
 import difflib
@@ -654,12 +656,135 @@ class TicketQueryMacroTestCase(unittest.TestCase):
                            dict(col='status|summary', max='0', order='id'),
                            'list')
 
+QUERY_TEST_CASES = u"""
+============================== TicketQuery(format=progress)
+[[TicketQuery(format=progress)]]
+------------------------------
+<p>
+</p><div class="trac-progress">
+
+  <table xmlns="http://www.w3.org/1999/xhtml" class="progress">
+    <tr>
+      <td class="closed" style="width: 33%">
+        <a href="/query?status=closed&amp;group=resolution&amp;max=0&amp;order=time" title="1/3 closed"></a>
+      </td><td class="open" style="width: 67%">
+        <a href="/query?status=assigned&amp;status=new&amp;status=accepted&amp;status=reopened&amp;max=0&amp;order=id" title="2/3 active"></a>
+      </td>
+    </tr>
+  </table>
+
+  <p class="percent">33%</p>
+
+  <p class="legend">
+    <span class="first interval">
+      <a href="/query?max=0&amp;order=id">Total number of tickets: 3</a>
+    </span>
+    <span class="interval">
+      - <a href="/query?status=closed&amp;group=resolution&amp;max=0&amp;order=time">closed: 1</a>
+    </span><span class="interval">
+      - <a href="/query?status=assigned&amp;status=new&amp;status=accepted&amp;status=reopened&amp;max=0&amp;order=id">active: 2</a>
+    </span>
+  </p>
+</div><p>
+</p>
+------------------------------
+============================== TicketQuery(reporter=santa, format=progress)
+[[TicketQuery(reporter=santa, format=progress)]]
+------------------------------
+<p>
+</p><div class="trac-progress">
+
+  <table xmlns="http://www.w3.org/1999/xhtml" class="progress">
+    <tr>
+      <td class="closed" style="display: none">
+        <a href="/query?status=closed&amp;reporter=santa&amp;group=resolution&amp;max=0&amp;order=time" title="0/1 closed"></a>
+      </td><td class="open" style="width: 100%">
+        <a href="/query?status=assigned&amp;status=new&amp;status=accepted&amp;status=reopened&amp;reporter=santa&amp;max=0&amp;order=id" title="1/1 active"></a>
+      </td>
+    </tr>
+  </table>
+
+  <p class="percent">0%</p>
+
+  <p class="legend">
+    <span class="first interval">
+      <a href="/query?reporter=santa&amp;max=0&amp;order=id">Total number of tickets: 1</a>
+    </span>
+    <span class="interval">
+      - <a href="/query?status=closed&amp;reporter=santa&amp;group=resolution&amp;max=0&amp;order=time">closed: 0</a>
+    </span><span class="interval">
+      - <a href="/query?status=assigned&amp;status=new&amp;status=accepted&amp;status=reopened&amp;reporter=santa&amp;max=0&amp;order=id">active: 1</a>
+    </span>
+  </p>
+</div><p>
+</p>
+------------------------------
+============================== TicketQuery(reporter=santa&or&owner=santa, format=progress)
+[[TicketQuery(reporter=santa&or&owner=santa, format=progress)]]
+------------------------------
+<p>
+</p><div class="trac-progress">
+
+  <table xmlns="http://www.w3.org/1999/xhtml" class="progress">
+    <tr>
+      <td class="closed" style="width: 50%">
+        <a href="/query?status=closed&amp;reporter=santa&amp;or&amp;owner=santa&amp;status=closed&amp;group=resolution&amp;max=0&amp;order=time" title="1/2 closed"></a>
+      </td><td class="open" style="width: 50%">
+        <a href="/query?status=assigned&amp;status=new&amp;status=accepted&amp;status=reopened&amp;reporter=santa&amp;or&amp;owner=santa&amp;status=assigned&amp;status=new&amp;status=accepted&amp;status=reopened&amp;max=0&amp;order=id" title="1/2 active"></a>
+      </td>
+    </tr>
+  </table>
+
+  <p class="percent">50%</p>
+
+  <p class="legend">
+    <span class="first interval">
+      <a href="/query?reporter=santa&amp;or&amp;owner=santa&amp;max=0&amp;order=id">Total number of tickets: 2</a>
+    </span>
+    <span class="interval">
+      - <a href="/query?status=closed&amp;reporter=santa&amp;or&amp;owner=santa&amp;status=closed&amp;group=resolution&amp;max=0&amp;order=time">closed: 1</a>
+    </span><span class="interval">
+      - <a href="/query?status=assigned&amp;status=new&amp;status=accepted&amp;status=reopened&amp;reporter=santa&amp;or&amp;owner=santa&amp;status=assigned&amp;status=new&amp;status=accepted&amp;status=reopened&amp;max=0&amp;order=id">active: 1</a>
+    </span>
+  </p>
+</div><p>
+</p>
+------------------------------
+"""
+
+def ticket_setup(tc):
+    ticket = Ticket(tc.env)
+    ticket.values.update({'reporter': 'santa',
+                          'summary': 'This is the summary',
+                          'status': 'new'})
+    ticket.insert()
+    ticket = Ticket(tc.env)
+    ticket.values.update({'owner': 'elf',
+                          'summary': 'This is another summary',
+                          'status': 'assigned'})
+    ticket.insert()
+    ticket = Ticket(tc.env)
+    ticket.values.update({'owner': 'santa',
+                          'summary': 'This is th third summary',
+                          'status': 'closed'})
+    ticket.insert()
+
+    tc.env.config.set('milestone-groups', 'closed.status', 'closed')
+    tc.env.config.set('milestone-groups', 'closed.query_args', 'group=resolution,order=time')
+    tc.env.config.set('milestone-groups', 'closed.overall_completion', 'true')
+    tc.env.config.set('milestone-groups', 'active.status', '*')
+    tc.env.config.set('milestone-groups', 'active.css_class', 'open')
+
+def ticket_teardown(tc):
+    tc.env.reset_db()
 
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(QueryTestCase))
     suite.addTest(unittest.makeSuite(QueryLinksTestCase))
     suite.addTest(unittest.makeSuite(TicketQueryMacroTestCase))
+    suite.addTest(formatter.suite(QUERY_TEST_CASES, ticket_setup, __file__,
+                                  ticket_teardown))
     return suite
 
 if __name__ == '__main__':
