@@ -350,6 +350,13 @@ def grouped_stats_data(env, stats_provider, tickets, by, per_group_stats_data):
                 group_names = field['options']
                 if field.get('optional'):
                     group_names.insert(0, '')
+            elif field.get('custom'):
+                group_names = [name for name, in env.db_query("""
+                    SELECT DISTINCT COALESCE(c.value, '') FROM ticket_custom c
+                    WHERE c.name=%s ORDER BY COALESCE(c.value, '')
+                    """, (by, ))]
+                if '' not in group_names:
+                    group_names.insert(0, '')
             else:
                 group_names = [name for name, in env.db_query("""
                     SELECT DISTINCT COALESCE(%s, '') FROM ticket
