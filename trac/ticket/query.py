@@ -1267,6 +1267,9 @@ class TicketQueryMacro(WikiMacroBase):
     The `rows` parameter can be used to specify which field(s) should
     be viewed as a row, e.g. `rows=description|summary`
 
+    The `col` parameter can be used to specify which fields should
+    be viewed as columns. For '''table''' format only.
+
     For compatibility with Trac 0.10, if there's a last positional parameter
     given to the macro, it will be used to specify the `format`.
     Also, using "&" as a field separator still works (except for `order`)
