@@ -1132,14 +1132,14 @@ content
 [[WikiProcessorSample(...)]]
  […]
 ============================== WikiProcessor code block with linenos
-{{{#!python lineno
+{{{#!default lineno
 print 'this is a python sample'
 a = b+3
 z = "this is a string"
 print 'this is the end of the python sample'
 }}}
 Paragraph
-{{{#!python lineno=3
+{{{#!default lineno=3
 print 'this is a python sample'
 a = b+3
 z = "this is a string"
@@ -1155,14 +1155,14 @@ Paragraph
 </p>
 ------------------------------
 ============================== WikiProcessor code block with linenos, id, marks
-{{{#!python lineno=3 id=b marks=4-5
+{{{#!default lineno=3 id=b marks=4-5
 print 'this is a python sample'
 a = b+3
 z = "this is a string"
 print 'this is the end of the python sample'
 }}}
 Paragraph
-{{{#!python lineno=3 id=c
+{{{#!default lineno=3 id=c
 print 'this is a python sample'
 a = b+3
 z = "this is a string"
@@ -1177,14 +1177,14 @@ Paragraph
 Paragraph
 </p>
 ============================== WikiProcessor code block with invalid arguments
-{{{#!python lineno=-10
+{{{#!default lineno=-10
 print 'this is a python sample'
 a = b+3
 z = "this is a string"
 print 'this is the end of the python sample'
 }}}
 Paragraph
-{{{#!python lineno=a id=d marks=a-b
+{{{#!default lineno=a id=d marks=a-b
 print 'this is a python sample'
 a = b+3
 z = "this is a string"
