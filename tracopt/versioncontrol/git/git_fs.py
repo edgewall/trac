@@ -549,7 +549,11 @@ class GitNode(Node):
         self.fs_sha = None # points to either tree or blobs
         self.fs_perm = None
         self.fs_size = None
-        rev = rev and str(rev) or 'HEAD'
+        rev = unicode(rev) if rev else 'HEAD'
+        try:
+            rev = repos.normalize_rev(rev)
+        except NoSuchChangeset:
+            raise NoSuchNode(path, rev)
 
         kind = Node.DIRECTORY
         p = path.strip('/')
