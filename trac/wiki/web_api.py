@@ -24,6 +24,8 @@ class WikiRenderer(Component):
 
     implements(IRequestHandler)
 
+    is_valid_default_handler = False
+
     # IRequestHandler methods
 
     def match_request(self, req):

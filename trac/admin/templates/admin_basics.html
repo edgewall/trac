@@ -3,7 +3,8 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:xi="http://www.w3.org/2001/XInclude"
-      xmlns:py="http://genshi.edgewall.org/">
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:i18n="http://genshi.edgewall.org/i18n">
   <xi:include href="admin.html" />
   <head>
     <title>Basics</title>
@@ -30,6 +31,19 @@
             <textarea name="descr" class="trac-resizable" rows="3" cols="50">
 ${project.descr}</textarea>
           </label>
+        </div>
+        <div class="field">
+          <label>Default handler:<br />
+            <select name="default_handler">
+              <option py:if="default_handler not in handlers"
+                      value="$default_handler">$default_handler</option>
+              <option py:for="handler in handlers" value="$handler"
+                      selected="${handler == default_handler or None}">$handler</option>
+            </select>
+          </label>
+          <span py:if="default_handler not in handlers" class="hint" i18n:msg="default_handler">
+            $default_handler is not a valid IRequestHandler or is not enabled.
+          </span>
         </div>
         <div class="field">
           <label>Default timezone:<br />

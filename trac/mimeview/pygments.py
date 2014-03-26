@@ -47,6 +47,8 @@ class PygmentsRenderer(Component):
     implements(ISystemInfoProvider, IHTMLPreviewRenderer,
                IPreferencePanelProvider, IRequestHandler)
 
+    is_valid_default_handler = False
+
     default_style = Option('mimeviewer', 'pygments_default_style', 'trac',
         """The default style to use for Pygments syntax highlighting.""")
 

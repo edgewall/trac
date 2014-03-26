@@ -430,6 +430,8 @@ class AttachmentModule(Component):
     implements(IRequestHandler, INavigationContributor, IWikiSyntaxProvider,
                IResourceManager)
 
+    is_valid_default_handler = False
+
     change_listeners = ExtensionPoint(IAttachmentChangeListener)
     manipulators = ExtensionPoint(IAttachmentManipulator)
 

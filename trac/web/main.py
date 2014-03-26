@@ -33,8 +33,8 @@ from genshi.output import DocType
 from genshi.template import TemplateLoader
 
 from trac import __version__ as TRAC_VERSION
-from trac.config import BoolOption, ExtensionOption, Option, \
-                        OrderedExtensionsOption
+from trac.config import BoolOption, ConfigurationError, ExtensionOption, \
+                        Option, OrderedExtensionsOption
 from trac.core import *
 from trac.env import open_environment
 from trac.loader import get_plugin_info, match_plugins_to_frames
@@ -177,9 +177,9 @@ class RequestDispatcher(Component):
                         if handler.match_request(req):
                             chosen_handler = handler
                             break
-                    if not chosen_handler:
-                        if not req.path_info or req.path_info == '/':
-                            chosen_handler = self.default_handler
+                    if not chosen_handler and \
+                            (not req.path_info or req.path_info == '/'):
+                        chosen_handler = self.get_valid_default_handler(req)
                     # pre-process any incoming request, whether a handler
                     # was found or not
                     chosen_handler = \
@@ -264,6 +264,20 @@ class RequestDispatcher(Component):
             raise HTTPInternalError(e)
 
     # Internal methods
+
+    def get_valid_default_handler(self, req):
+        handler = self.default_handler
+        if not handler or \
+                not getattr(handler, 'is_valid_default_handler', True):
+            raise ConfigurationError(
+                tag_("%(handler)s is not a valid default handler. Please "
+                     "update %(option)s through the %(page)s page or by "
+                     "directly editing trac.ini.",
+                     handler=tag.code(handler.__class__.__name__),
+                     option=tag.code("[trac] default_handler"),
+                     page=tag.a(_("Basic Settings"),
+                                href=req.href.admin('general/basics'))))
+        return handler
 
     def _get_perm(self, req):
         if isinstance(req.session, FakeSession):

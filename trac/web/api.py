@@ -48,7 +48,19 @@ class IAuthenticator(Interface):
 
 
 class IRequestHandler(Interface):
-    """Decide which `trac.core.Component` handles which `Request`, and how."""
+    """Decide which `trac.core.Component` handles which `Request`, and how.
+
+    The boolean property `is_valid_default_handler` determines whether the
+    `IRequestFilter` can be used as a `default_handler` and defaults to
+    `True`. To be suitable as a `default_handler`, an `IRequestFilter` must
+    return an HTML document and `data` dictionary for rendering the document,
+    and must not require that `match_request` be called prior to
+    `process_request`.
+
+    The boolean property `jquery_noconflict` determines whether jQuery's
+    `noConflict` mode will be activated by the handler, and defaults to
+    `False`.
+    """
 
     def match_request(req):
         """Return whether the handler wants to process the given request."""

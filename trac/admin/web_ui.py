@@ -203,6 +203,8 @@ class BasicsAdminPanel(Component):
 
     implements(IAdminPanelProvider)
 
+    handlers = ExtensionPoint(IRequestHandler)
+
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
@@ -210,6 +212,8 @@ class BasicsAdminPanel(Component):
             yield ('general', _("General"), 'basics', _("Basic Settings"))
 
     def render_admin_panel(self, req, cat, page, path_info):
+        valid_handlers = [h.__class__.__name__ for h in self.handlers
+                          if getattr(h, 'is_valid_default_handler', True)]
         if Locale:
             locale_ids = get_available_locales()
             locales = [Locale.parse(locale) for locale in locale_ids]
@@ -223,6 +227,11 @@ class BasicsAdminPanel(Component):
         if req.method == 'POST':
             for option in ('name', 'url', 'descr'):
                 self.config.set('project', option, req.args.get(option))
+
+            default_handler = req.args.get('default_handler')
+            if default_handler not in valid_handlers:
+                default_handler = ''
+            self.config.set('trac', 'default_handler', default_handler)
 
             default_timezone = req.args.get('default_timezone')
             if default_timezone not in all_timezones:
@@ -242,11 +251,14 @@ class BasicsAdminPanel(Component):
             _save_config(self.config, req, self.log)
             req.redirect(req.href.admin(cat, page))
 
+        default_handler = self.config.get('trac', 'default_handler')
         default_timezone = self.config.get('trac', 'default_timezone')
         default_language = self.config.get('trac', 'default_language')
         default_date_format = self.config.get('trac', 'default_date_format')
 
         data = {
+            'default_handler': default_handler,
+            'handlers': sorted(valid_handlers),
             'default_timezone': default_timezone,
             'timezones': all_timezones,
             'has_pytz': pytz is not None,

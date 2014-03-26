@@ -41,6 +41,8 @@ class BatchModifyModule(Component):
 
     implements(IRequestHandler)
 
+    is_valid_default_handler = False
+
     list_separator_re =  re.compile(r'[;\s,]+')
     list_connector_string = ', '
 

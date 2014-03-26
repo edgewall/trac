@@ -32,6 +32,8 @@ class InterTracDispatcher(Component):
 
     implements(IRequestHandler, IWikiMacroProvider)
 
+    is_valid_default_handler = False
+
     intertrac_section = ConfigSection('intertrac',
         """This section configures InterTrac prefixes. Options in this section
         whose name contain a "." define aspects of the InterTrac prefix

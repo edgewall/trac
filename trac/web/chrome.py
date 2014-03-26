@@ -334,10 +334,12 @@ class Chrome(Component):
 
     Chrome is everything that is not actual page content.
     """
-    required = True
 
     implements(ISystemInfoProvider, IEnvironmentSetupParticipant,
                IRequestHandler, ITemplateProvider, IWikiSyntaxProvider)
+
+    required = True
+    is_valid_default_handler = False
 
     navigation_contributors = ExtensionPoint(INavigationContributor)
     template_providers = ExtensionPoint(ITemplateProvider)
