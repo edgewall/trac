@@ -1436,7 +1436,7 @@ class RegressionTestTicket8247(FunctionalTwillTestCaseSetup):
         tc.go(ticket_url)
         tc.find('<strong>Milestone</strong>[ \n\t]*<em>%s</em> deleted' % name)
         tc.find('Changed <a.*</a> ago by admin')
-        tc.notfind('anonymous')
+        tc.notfind('</a> ago by anonymous')
 
 
 class RegressionTestTicket8861(FunctionalTwillTestCaseSetup):
