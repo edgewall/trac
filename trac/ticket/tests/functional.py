@@ -2024,7 +2024,7 @@ class RegressionTestTicket8247(FunctionalTwillTestCaseSetup):
         tc.find('<strong class="trac-field-milestone">Milestone</strong>'
                 '[ \n\t]*<em>%s</em> deleted' % name)
         tc.find('Changed <a.* ago</a> by admin')
-        tc.notfind('anonymous')
+        tc.notfind('</a> ago by anonymous')
 
 
 class RegressionTestTicket8861(FunctionalTwillTestCaseSetup):
