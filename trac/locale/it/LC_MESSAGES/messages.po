@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
 "POT-Creation-Date: 2014-03-05 19:09+0100\n"
-"PO-Revision-Date: 2014-03-05 23:22+0100\n"
+"PO-Revision-Date: 2014-03-27 09:01+0100\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
 "Language-Team: Italian "
 "(http://www.transifex.com/projects/p/trac/language/it/)\n"
@@ -3182,9 +3182,7 @@ msgstr ""
 
 #: trac/ticket/default_workflow.py:516
 msgid "Enable JavaScript to display the workflow graph."
-msgstr ""
-"Abilita il JavaScript per visualizzare il grafo \"\n"
-"\"del flusso di lavoro."
+msgstr "Abilita il JavaScript per visualizzare il grafo del flusso di lavoro."
 
 #: trac/ticket/model.py:155
 #, python-format
