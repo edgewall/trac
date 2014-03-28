@@ -598,7 +598,9 @@ def send_internal_error(env, req, exc_info):
             sys_info = "".join("|| '''`%s`''' || `%s` ||\n"
                                % (k, v.replace('\n', '` [[br]] `'))
                                for k, v in env.get_systeminfo())
-            sys_info += "|| '''`jQuery`''' || `#JQUERY#` ||\n"
+            sys_info += "|| '''`jQuery`''' || `#JQUERY#` ||\n" \
+                        "|| '''`jQuery UI`''' || `#JQUERYUI#` ||\n" \
+                        "|| '''`jQuery Timepicker`''' || `#JQUERYTP#` ||\n"
             enabled_plugins = "".join("|| '''`%s`''' || `%s` ||\n"
                                       % (p['name'], p['version'] or _('N/A'))
                                       for p in plugins)
@@ -645,6 +647,7 @@ User agent: `#USER_AGENT#`
             'tracker': tracker, 'tracker_args': tracker_args,
             'description': description, 'description_en': description_en}
 
+    Chrome(env).add_jquery_ui(req)
     try:
         req.send_error(exc_info, status=500, env=env, data=data)
     except RequestDone:
