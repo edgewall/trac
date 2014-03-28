@@ -11,7 +11,9 @@
     <script type="text/javascript">
       //<![CDATA[
       jQuery(document).ready(function ($) {
-        $("#systeminfo table").append("<tr><th>jQuery</th><td>"+$().jquery+"</td></tr>");
+        $("#systeminfo table").append("<tr><th>jQuery</th><td>"+$().jquery+"</td></tr>" +
+                                      "<tr><th>jQuery UI</th><td>"+$.ui.version+"</td></tr>" +
+                                      "<tr><th>jQuery Timepicker</th><td>"+$.timepicker.version+"</td></tr>");
       });
       //]]>
     </script>
