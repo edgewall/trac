@@ -39,7 +39,6 @@ Web resources
 ~~~~~~~~~~~~~
 
 .. autofunction :: trac.web.chrome.add_stylesheet
-.. autofunction :: trac.web.chrome.add_javascript
 .. autofunction :: trac.web.chrome.add_script
 .. autofunction :: trac.web.chrome.add_script_data
 

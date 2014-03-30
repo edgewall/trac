@@ -33,8 +33,6 @@ Function Reference
 
 .. autofunction :: get_hunks
 
-.. autofunction :: hdf_diff
-
 .. autofunction :: diff_blocks
 
 .. autofunction :: unified_diff
