@@ -803,6 +803,235 @@ class LocalTimezoneTestCase(unittest.TestCase):
         self.assertEqual(datetime.timedelta(hours=1), t3 - t2)
         self.assertEqual(datetime.timedelta(hours=1), t4 - t3)
 
+    def test_london_between_1968_and_1971(self):
+        self._tzset('Europe/London')
+        # -1:00 (DST end) at 1967-10-29 03:00
+        ts = datefmt.to_timestamp(datetime.datetime(1967, 10, 30,
+                                                    tzinfo=datefmt.utc))
+        self.assertEqual('1967-10-30T00:00:00+00:00',
+                         datefmt.to_datetime(ts, datefmt.localtz).isoformat())
+        # +1:00 (DST start) at 1968-02-18 02:00
+        ts = datefmt.to_timestamp(datetime.datetime(1968, 2, 19,
+                                                    tzinfo=datefmt.utc))
+        self.assertEqual('1968-02-19T01:00:00+01:00',
+                         datefmt.to_datetime(ts, datefmt.localtz).isoformat())
+        # No DST between 1968-02-18 02:00 and 1971-10-31 03:00
+        ts = datefmt.to_timestamp(datetime.datetime(1970, 1, 1, 0, 0, 23,
+                                                    tzinfo=datefmt.utc))
+        self.assertEqual('1970-01-01T01:00:23+01:00',
+                         datefmt.to_datetime(ts, datefmt.localtz).isoformat())
+        # -1:00 (TZ change) at 1971-10-31 03:00
+        t = datefmt.to_datetime(datetime.datetime(1971, 10, 31, 1, 30),
+                                datefmt.localtz)
+        delta = datetime.timedelta(hours=1)
+        self.assertEqual('1971-10-31T01:30:00+01:00', t.isoformat())
+        t = datefmt.to_datetime(t + delta, datefmt.localtz)
+        self.assertEqual('1971-10-31T02:30:00+01:00', t.isoformat())
+        t = datefmt.to_datetime(t + delta, datefmt.localtz)
+        self.assertEqual('1971-10-31T02:30:00+00:00', t.isoformat())
+        t = datefmt.to_datetime(t + delta, datefmt.localtz)
+        self.assertEqual('1971-10-31T03:30:00+00:00', t.isoformat())
+
+        ts = datefmt.to_timestamp(datetime.datetime(1971, 11, 1,
+                                                    tzinfo=datefmt.utc))
+        self.assertEqual('1971-11-01T00:00:00+00:00',
+                         datefmt.to_datetime(ts, datefmt.localtz).isoformat())
+
+    def test_guatemala_dst_in_2006(self):
+        self._tzset('America/Guatemala')
+        # No DST before 2006-04-30 00:00
+        ts = datefmt.to_timestamp(datetime.datetime(2006, 4, 29,
+                                                    tzinfo=datefmt.utc))
+        self.assertEqual('2006-04-28T18:00:00-06:00',
+                         datefmt.to_datetime(ts, datefmt.localtz).isoformat())
+        # +1:00 (DST start) at 2006-04-30 00:00
+        ts = datefmt.to_timestamp(datetime.datetime(2006, 8, 1,
+                                                    tzinfo=datefmt.utc))
+        self.assertEqual('2006-07-31T19:00:00-05:00',
+                         datefmt.to_datetime(ts, datefmt.localtz).isoformat())
+        # -1:00 (DST end) at 2006-10-01 00:00
+        ts = datefmt.to_timestamp(datetime.datetime(2006, 10, 2,
+                                                    tzinfo=datefmt.utc))
+        self.assertEqual('2006-10-01T18:00:00-06:00',
+                         datefmt.to_datetime(ts, datefmt.localtz).isoformat())
+        # No DST after 2006-10-01 00:00
+
+    def test_venezuela_in_2007(self):
+        self._tzset('America/Caracas')
+        ts = datefmt.to_timestamp(datetime.datetime(2007, 12, 8,
+                                                    tzinfo=datefmt.utc))
+        self.assertEqual('2007-12-07T20:00:00-04:00',
+                         datefmt.to_datetime(ts, datefmt.localtz).isoformat())
+        # -0:30 (TZ change) at 2007-12-09 03:00
+        ts = datefmt.to_timestamp(datetime.datetime(2007, 12, 10,
+                                                    tzinfo=datefmt.utc))
+        self.assertEqual('2007-12-09T19:30:00-04:30',
+                         datefmt.to_datetime(ts, datefmt.localtz).isoformat())
+
+    def test_lord_howe_island_in_198x(self):
+        self._tzset('Australia/Lord_Howe')
+        ts = datefmt.to_timestamp(datetime.datetime(1985, 3, 1,
+                                                    tzinfo=datefmt.utc))
+        self.assertEqual('1985-03-01T11:30:00+11:30',
+                         datefmt.to_datetime(ts, datefmt.localtz).isoformat())
+        # -1:00 (DST end) at 1985-03-03 02:00
+        ts = datefmt.to_timestamp(datetime.datetime(1985, 8, 1,
+                                                    tzinfo=datefmt.utc))
+        self.assertEqual('1985-08-01T10:30:00+10:30',
+                         datefmt.to_datetime(ts, datefmt.localtz).isoformat())
+        ts = datefmt.to_timestamp(datetime.datetime(1985, 11, 1,
+                                                    tzinfo=datefmt.utc))
+        # +0:30 (DST start) at 1985-10-27 02:00
+        self.assertEqual('1985-11-01T11:00:00+11:00',
+                         datefmt.to_datetime(ts, datefmt.localtz).isoformat())
+
+    def _compare_pytz_arithmetic(self, tz, dt_naive):
+        """Compare arithmetic timezone-aware datetime between localtz and
+        pytz's timezone"""
+        localtz = datefmt.localtz
+        delta = datetime.timedelta(minutes=20)
+        n = datetime.timedelta(hours=3).seconds / delta.seconds
+        # create timezone-aware datetime instances
+        dt_localtz = datefmt.to_datetime(dt_naive - delta * n, localtz)
+        dt_tz = datefmt.to_datetime(dt_naive - delta * n, tz)
+        # compare datetime instances between -3 hours and +3 hours
+        for i in xrange(n * 2 + 1):
+            self.assertEqual(dt_tz, dt_localtz)
+            self.assertEqual(dt_tz.isoformat(), dt_localtz.isoformat())
+            dt_localtz = datefmt.to_datetime(dt_localtz + delta, localtz)
+            dt_tz = datefmt.to_datetime(dt_tz + delta, tz)
+
+    def _compare_pytz_localize_and_normalize(self, tz, dt_naive):
+        """Compare localize() and normalize() of LocalTimezone and pytz's
+        timezone"""
+        localtz = datefmt.localtz
+        delta = datetime.timedelta(minutes=20)
+        n = datetime.timedelta(hours=3).seconds / delta.seconds
+        dt_naive -= delta * n
+        # compare localize and normalize with naive datetime
+        # between -3 hours and +3 hours
+        for i in xrange(n * 2 + 1):
+            dt_localtz = localtz.localize(dt_naive)
+            dt_tz = tz.localize(dt_naive)
+            self.assertEqual(dt_tz, dt_localtz,
+                             '%r != %r (%r)' % (dt_tz, dt_localtz, dt_naive))
+            self.assertEqual(dt_tz.isoformat(), dt_localtz.isoformat(),
+                             '%r != %r (%r)' % (dt_tz.isoformat(),
+                                                dt_localtz.isoformat(),
+                                                dt_naive))
+            dt_localtz = localtz.normalize(localtz.localize(dt_naive))
+            dt_tz = tz.normalize(tz.localize(dt_naive))
+            self.assertEqual(dt_tz, dt_localtz,
+                             '%r != %r (%r)' % (dt_tz, dt_localtz, dt_naive))
+            self.assertEqual(dt_tz.isoformat(), dt_localtz.isoformat(),
+                             '%r != %r (%r)' % (dt_tz.isoformat(),
+                                                dt_localtz.isoformat(),
+                                                dt_naive))
+            dt_naive += delta
+
+    def _compare_pytz(self, tz, value, localize=True):
+        if isinstance(value, basestring):
+            value = datefmt.parse_date(value + 'Z', datefmt.utc)
+        dt_naive = value.replace(tzinfo=None)
+        self._compare_pytz_arithmetic(tz, dt_naive)
+        # `localize()` differs one of pytz's timezone when backward timezone
+        # change
+        if localize:
+            self._compare_pytz_localize_and_normalize(tz, dt_naive)
+
+    if pytz:
+        def test_pytz_choibalsan(self):
+            tz = datefmt.timezone('Asia/Choibalsan')
+            self._tzset('Asia/Choibalsan')
+            self._compare_pytz(tz, '1977-01-01T00:00')  # No DST
+            self._compare_pytz(tz, '1978-01-01T01:00')  # +1:00 (TZ change)
+            self._compare_pytz(tz, '1978-01-01T02:00')  #       (TZ change)
+            self._compare_pytz(tz, '1982-04-01T00:00')  # No DST
+            self._compare_pytz(tz, '1983-04-01T00:00')  # +2:00 (TZ change)
+            self._compare_pytz(tz, '1983-04-01T02:00')  #       (TZ change)
+            self._compare_pytz(tz, '1983-10-01T00:00')  # -1:00 (DST end)
+            self._compare_pytz(tz, '2006-03-25T02:00')  # +1:00 (DST start)
+            self._compare_pytz(tz, '2006-09-30T02:00')  # -1:00 (DST end)
+            self._compare_pytz(tz, '2007-07-01T00:00')  # No DST in 2007
+            self._compare_pytz(tz, '2008-03-30T23:00',  #       (TZ change)
+                               localize=False)
+            self._compare_pytz(tz, '2008-03-31T00:00',  # -1:00 (TZ change)
+                               localize=False)
+            self._compare_pytz(tz, '2009-07-01T00:00')  # No DST
+
+        def test_pytz_guatemala(self):
+            tz = datefmt.timezone('America/Guatemala')
+            self._tzset('America/Guatemala')
+            self._compare_pytz(tz, '2005-07-01T00:00')  # No DST
+            self._compare_pytz(tz, '2006-04-30T00:00')  # +1:00 (DST start)
+            self._compare_pytz(tz, '2006-10-01T00:00')  # -1:00 (DST end)
+            self._compare_pytz(tz, '2007-07-01T00:00')  # No DST
+
+        def test_pytz_london(self):
+            tz = datefmt.timezone('Europe/London')
+            self._tzset('Europe/London')
+            self._compare_pytz(tz, '1968-02-18T02:00')  # +1:00 (DST start)
+            self._compare_pytz(tz, '1971-10-31T02:00',  #       (TZ change)
+                               localize=False)
+            self._compare_pytz(tz, '1971-10-31T03:00',  # -1:00 (TZ change)
+                               localize=False)
+            self._compare_pytz(tz, '1972-03-19T02:00')  # +1:00 (DST start)
+            self._compare_pytz(tz, '1972-10-29T03:00')  # -1:00 (DST end)
+
+        def test_pytz_lord_howe_island(self):
+            tz = datefmt.timezone('Australia/Lord_Howe')
+            self._tzset('Australia/Lord_Howe')
+            self._compare_pytz(tz, '1980-07-01T00:00')  # No DST
+            self._compare_pytz(tz, '1981-03-01T00:00')  # +0:30 (TZ change)
+            self._compare_pytz(tz, '1981-03-01T00:30')  #       (TZ change)
+            self._compare_pytz(tz, '1981-10-25T02:00')  # +1:00 (DST start)
+            self._compare_pytz(tz, '1985-03-03T02:00')  # -1:00 (DST end)
+            self._compare_pytz(tz, '1985-10-27T02:00')  # +0:30 (DST start)
+            self._compare_pytz(tz, '1986-03-16T02:00')  # -0:30 (DST end)
+
+        def test_pytz_moscow(self):
+            tz = datefmt.timezone('Europe/Moscow')
+            self._tzset('Europe/Moscow')
+            self._compare_pytz(tz, '1991-09-29T03:00')  # -1:00 (DST end)
+            self._compare_pytz(tz, '1992-01-19T02:00')  # +1:00 (TZ change)
+            self._compare_pytz(tz, '1992-01-19T03:00')  #       (TZ change)
+            self._compare_pytz(tz, '1992-03-28T23:00')  # +1:00 (DST start)
+            self._compare_pytz(tz, '1992-09-26T23:00')  # -1:00 (DST end)
+            self._compare_pytz(tz, '2010-03-28T02:00')  # +1:00 (DST start)
+            self._compare_pytz(tz, '2010-10-31T03:00')  # -1:00 (DST end)
+            self._compare_pytz(tz, '2011-03-27T02:00')  # +1:00 (TZ change)
+            self._compare_pytz(tz, '2011-03-27T03:00')  #       (TZ change)
+            self._compare_pytz(tz, '2011-10-31T03:00')  # No DST
+
+        def test_pytz_paris(self):
+            tz = datefmt.timezone('Europe/Paris')
+            self._tzset('Europe/Paris')
+            self._compare_pytz(tz, '1975-07-01T01:00')  # No DST
+            self._compare_pytz(tz, '1976-03-28T01:00')  # +1:00 (DST start)
+            self._compare_pytz(tz, '1976-09-26T01:00')  # -1:00 (DST end)
+            self._compare_pytz(tz, '2009-03-29T02:00')  # +1:00 (DST start)
+            self._compare_pytz(tz, '2009-10-25T03:00')  # -1:00 (DST end)
+
+        def test_pytz_tokyo(self):
+            tz = datefmt.timezone('Asia/Tokyo')
+            self._tzset('Asia/Tokyo')
+            self._compare_pytz(tz, '1947-07-01T02:00')  # No DST
+            self._compare_pytz(tz, '1948-05-02T02:00')  # +1:00 (DST start)
+            self._compare_pytz(tz, '1948-09-11T02:00')  # -1:00 (DST end)
+            self._compare_pytz(tz, '1949-04-03T02:00')  # +1:00 (DST start)
+            self._compare_pytz(tz, '1949-09-10T02:00')  # -1:00 (DST end)
+            self._compare_pytz(tz, '1950-07-01T02:00')  # No DST
+
+        def test_pytz_venezuela(self):
+            tz = datefmt.timezone('America/Caracas')
+            self._tzset('America/Caracas')
+            self._compare_pytz(tz, '2006-07-01T00:00')  # No DST
+            self._compare_pytz(tz, '2007-12-09T02:30',  #       (TZ change)
+                               localize=False)
+            self._compare_pytz(tz, '2007-12-09T03:00',  # -0:30 (TZ change)
+                               localize=False)
+            self._compare_pytz(tz, '2008-07-01T00:00')  # No DST
+
 
 class LocalTimezoneStrTestCase(unittest.TestCase):
 
