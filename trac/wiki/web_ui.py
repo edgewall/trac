@@ -120,14 +120,6 @@ class WikiModule(Component):
             raise TracError(_("Invalid Wiki page name '%(name)s'",
                               name=pagename))
 
-        if version is not None:
-            try:
-                version = int(version)
-            except (ValueError, TypeError):
-               raise ResourceNotFound(
-                    _('No version "%(num)s" for Wiki page "%(name)s"',
-                      num=version, name=pagename))
-
         page = WikiPage(self.env, pagename)
         versioned_page = WikiPage(self.env, pagename, version=version)
 

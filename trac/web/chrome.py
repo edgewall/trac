@@ -315,7 +315,9 @@ def _chrome_resource_path(req, filename):
     elif filename.startswith('common/') and 'htdocs_location' in req.chrome:
         return Href(req.chrome['htdocs_location'])(filename[7:])
     else:
-        href = req.href if filename.startswith('/') else req.href.chrome
+        href = req.href
+        if not filename.startswith('/'):
+            href = href.chrome
         return href(filename)
 
 

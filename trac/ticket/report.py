@@ -186,19 +186,17 @@ class ReportModule(Component):
             if content_type: # i.e. alternate format
                 return template, data, content_type
 
-        from trac.ticket.query import QueryModule
-        show_query_link = 'TICKET_VIEW' in req.perm and \
-                          self.env.is_component_enabled(QueryModule)
-
         if id != -1 or action == 'new':
             add_ctxtnav(req, _('Available Reports'), href=req.href.report())
             add_link(req, 'up', req.href.report(), _('Available Reports'))
-        elif show_query_link:
+        else:
             add_ctxtnav(req, _('Available Reports'))
 
         # Kludge: only show link to custom query if the query module
         # is actually enabled
-        if show_query_link:
+        from trac.ticket.query import QueryModule
+        if 'TICKET_VIEW' in req.perm and \
+                self.env.is_component_enabled(QueryModule):
             add_ctxtnav(req, _('Custom Query'), href=req.href.query())
             data['query_href'] = req.href.query()
             data['saved_query_href'] = req.session.get('query_href')

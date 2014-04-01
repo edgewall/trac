@@ -664,6 +664,14 @@ class SubversionRepository(Repository):
 
         (wraps ``repos.svn_repos_dir_delta``)
         """
+        def key(value):
+            return value[1].path if value[1] is not None else value[0].path
+        return iter(sorted(self._get_changes(old_path, old_rev, new_path,
+                                             new_rev, ignore_ancestry),
+                           key=key))
+
+    def _get_changes(self, old_path, old_rev, new_path, new_rev,
+                     ignore_ancestry):
         old_node = new_node = None
         old_rev = self.normalize_rev(old_rev)
         new_rev = self.normalize_rev(new_rev)
@@ -704,12 +712,8 @@ class SubversionRepository(Repository):
                                       entry_props,
                                       ignore_ancestry,
                                       subpool())
-            # sort deltas by path before creating `SubversionNode`s to reduce
-            # memory usage (#10978)
-            deltas = sorted(((_from_svn(path), kind, change)
-                             for path, kind, change in editor.deltas),
-                            key=lambda entry: entry[0])
-            for path, kind, change in deltas:
+            for path, kind, change in editor.deltas:
+                path = _from_svn(path)
                 old_node = new_node = None
                 if change != Changeset.ADD:
                     old_node = self.get_node(posixpath.join(old_path, path),

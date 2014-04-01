@@ -39,9 +39,7 @@
        $("#traceback pre").hide();
        $("#tbtoggle").parent().show();
 
-       $("#systeminfo").append("<tr><th>jQuery</th><td>"+$().jquery+"</td></tr>" +
-                               "<tr><th>jQuery UI</th><td>"+$.ui.version+"</td></tr>" +
-                               "<tr><th>jQuery Timepicker</th><td>"+$.timepicker.version+"</td></tr>");
+       $("#systeminfo").append("<tr><th>jQuery</th><td>" + $().jquery + "</td></tr>");
        $("#systeminfo").before("<p>User Agent: <tt>" + navigator.userAgent + "</tt></p>");
       });
     /*]]>*/</script>
@@ -50,9 +48,7 @@
         $("form.newticket textarea").each(function() {
           $(this).val($(this).val()
                              .replace(/#USER_AGENT#/m, navigator.userAgent)
-                             .replace(/#JQUERY#/m, $().jquery)
-                             .replace(/#JQUERYUI#/m, $.ui.version)
-                             .replace(/#JQUERYTP#/m, $.timepicker.version));
+                             .replace(/#JQUERY#/m, $().jquery));
         });
       });
     /*]]>*/</script>

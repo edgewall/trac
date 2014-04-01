@@ -92,9 +92,9 @@
     }
 
     var values = form.serializeArray();
-    // See #11510
-    return inputs.bind('input cut paste keydown keypress change blur',
-                       trigger);
+    return inputs.each(function() {
+      $(this).keydown(trigger).keypress(trigger).change(trigger).blur(trigger);
+    });
   };
 
   // Enable automatic previewing to <textarea> elements.
@@ -150,10 +150,7 @@
         return true;
       }
 
-      // "input" event to detect editing using IMEs on Firefox,
-      // "cut" and "paste" events to detect editing using context
-      // menu on Internet Explorer (#11510)
-      $(this).bind('input cut paste keydown keypress blur', trigger);
+      $(this).keydown(trigger).keypress(trigger).blur(trigger);
     });
   };
 })(jQuery);

@@ -251,12 +251,6 @@ class EnvironmentStub(Environment):
                        activate in the stub environment.
         :param disable: A list of component classes or name globs to
                         deactivate in the stub environment.
-        :param path: The location of the environment in the file system.
-                     No files or directories are created when specifying
-                     this parameter.
-        :param destroying: If True, the database will not be reset. This is
-                           useful for cases when the object is being
-                           constructed in order to call `destroy_db`.
         """
         if enable is not None and not isinstance(enable, (list, tuple)):
             raise TypeError('Keyword argument "enable" must be a list')

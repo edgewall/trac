@@ -492,42 +492,21 @@ class Formatter(object):
 
     def _indirect_tag_handler(self, match, tag):
         """Handle binary inline style tags (indirect way, 0.12)"""
-        if self._list_stack and not self.in_list_item:
-            self.close_list()
-
         if self.tag_open_p(tag):
             return self.close_tag(tag)
         else:
             return self.open_tag(tag)
 
     def _bolditalic_formatter(self, match, fullmatch):
-        if self._list_stack and not self.in_list_item:
-            self.close_list()
-
-        bold_open = self.tag_open_p('MM_BOLD')
         italic_open = self.tag_open_p('MM_ITALIC')
-        if bold_open and italic_open:
-            bold_idx = self._open_tags.index('MM_BOLD')
-            italic_idx = self._open_tags.index('MM_ITALIC')
-            if italic_idx < bold_idx:
-                close_tags = ('MM_BOLD', 'MM_ITALIC')
-            else:
-                close_tags = ('MM_ITALIC', 'MM_BOLD')
-            open_tags = ()
-        elif bold_open:
-            close_tags = ('MM_BOLD',)
-            open_tags = ('MM_ITALIC',)
-        elif italic_open:
-            close_tags = ('MM_ITALIC',)
-            open_tags = ('MM_BOLD',)
-        else:
-            close_tags = ()
-            open_tags = ('MM_BOLD', 'MM_ITALIC')
-
-        tmp = []
-        tmp.extend(self.close_tag(tag) for tag in close_tags)
-        tmp.extend(self.open_tag(tag) for tag in open_tags)
-        return ''.join(tmp)
+        tmp = ''
+        if italic_open:
+            tmp += self._get_close_tag('MM_ITALIC')
+            self.close_tag('MM_ITALIC')
+        tmp += self._bold_formatter(match, fullmatch)
+        if not italic_open:
+            tmp += self.open_tag('MM_ITALIC')
+        return tmp
 
     def _bold_formatter(self, match, fullmatch):
         return self._indirect_tag_handler(match, 'MM_BOLD')

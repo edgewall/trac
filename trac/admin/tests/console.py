@@ -43,11 +43,9 @@ import trac.search.web_ui
 import trac.timeline.web_ui
 import trac.wiki.web_ui
 
-from trac.admin import console, console_date_format
-from trac.admin.api import AdminCommandManager, IAdminCommandProvider, \
-                           console_date_format, get_console_locale
-from trac.admin.console import TracAdminHelpMacro
-from trac.core import Component, implements
+from trac.admin import console
+from trac.admin.api import AdminCommandManager, console_date_format, \
+                           get_console_locale
 from trac.test import EnvironmentStub
 from trac.util.datefmt import format_date, get_date_format_hint, \
                               get_datetime_format_hint
@@ -1373,36 +1371,10 @@ class TracadminNoEnvTestCase(unittest.TestCase):
                           output)
 
 
-class TracAdminHelpMacroTestCase(unittest.TestCase):
-
-    def setUp(self):
-        self.env = EnvironmentStub(enable=['%s.UnicodeHelpCommand' %
-                                           self.__module__])
-
-    def tearDown(self):
-        self.env.reset_db()
-
-    def test_unicode_help(self):
-        unicode_help = u'Hélp text with unicöde charàcters'
-
-        class UnicodeHelpCommand(Component):
-            implements(IAdminCommandProvider)
-            def get_admin_commands(self):
-                yield ('unicode-help', '', unicode_help,
-                       None, self._cmd)
-            def _cmd(self):
-                pass
-
-        macro = TracAdminHelpMacro(self.env)
-        help = unicode(macro.expand_macro(None, None, 'unicode-help'))
-        self.assertTrue(unicode_help in help)
-
-
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TracadminTestCase))
     suite.addTest(unittest.makeSuite(TracadminNoEnvTestCase))
-    suite.addTest(unittest.makeSuite(TracAdminHelpMacroTestCase))
     return suite
 
 

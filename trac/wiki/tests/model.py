@@ -21,7 +21,6 @@ import unittest
 
 from trac.attachment import Attachment
 from trac.core import *
-from trac.resource import Resource, ResourceNotFound
 from trac.test import EnvironmentStub
 from trac.tests import compat
 from trac.util.datefmt import utc, to_utimestamp
@@ -100,11 +99,6 @@ class WikiPageTestCase(unittest.TestCase):
 
         page = WikiPage(self.env, 'TestPage', 1)
         self.assertEqual(1, page.resource.version)
-        self.assertEqual(1, page.version)
-
-        resource = Resource('wiki', 'TestPage')
-        page = WikiPage(self.env, resource, 1)
-        self.assertEqual(1, page.version)
 
     def test_create_page(self):
         page = WikiPage(self.env)
@@ -281,23 +275,6 @@ class WikiPageTestCase(unittest.TestCase):
         for name in invalid_names:
             page = WikiPage(self.env, 'TestPage')
             self.assertRaises(TracError, page.rename, name)
-
-    def test_invalid_version(self):
-        data = (1, 42, 'joe', '::1', 'Bla bla', 'Testing', 0)
-        self.env.db_transaction(
-            "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
-            ('TestPage',) + data)
-
-        self.assertRaises(ValueError, WikiPage, self.env,
-                          'TestPage', '1abc')
-
-        resource = Resource('wiki', 'TestPage')
-        self.assertRaises(ValueError, WikiPage, self.env,
-                          resource, '1abc')
-
-        resource = Resource('wiki', 'TestPage', '1abc')
-        page = WikiPage(self.env, resource)
-        self.assertEqual(1, page.version)
 
 
 def suite():

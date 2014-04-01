@@ -60,7 +60,7 @@
             </py:choose>
             <xi:include href="progress_bar.html" py:if="mstats.stats.count"
                         py:with="stats = mstats.stats; interval_hrefs = mstats.interval_hrefs;
-                                 stats_href = mstats.stats_href" />
+                                 stats_href = mstats.stats_href"/>
           </div>
 
           <div class="description" xml:space="preserve">
@@ -71,10 +71,10 @@
       </div>
 
       <div py:if="'MILESTONE_CREATE' in perm" class="buttons">
-        <form id="add" method="get" action="${href.milestone()}"><div>
-          <input type="hidden" name="action" value="new" />
-          <input type="submit" value="${_('Add new milestone')}" />
-        </div></form>
+       <form id="add" method="get" action="${href.milestone()}"><div>
+        <input type="hidden" name="action" value="new" />
+        <input type="submit" value="${_('Add new milestone')}" />
+       </div></form>
       </div>
 
       <div id="help" i18n:msg=""><strong>Note:</strong> See

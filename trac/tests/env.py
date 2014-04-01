@@ -13,7 +13,6 @@
 
 from __future__ import with_statement
 
-from ConfigParser import RawConfigParser
 import shutil
 import tempfile
 import unittest
@@ -23,7 +22,6 @@ from trac import db_default
 from trac.core import ComponentManager
 from trac.env import Environment
 from trac.test import EnvironmentStub
-from trac.util import read_file
 
 
 class EnvironmentCreatedWithoutData(Environment):
@@ -113,24 +111,6 @@ class EnvironmentTestCase(unittest.TestCase):
         self.assertEqual(True, self.env.is_component_enabled(Environment))
         self.assertEqual(False, EnvironmentStub.required)
         self.assertEqual(None, self.env.is_component_enabled(EnvironmentStub))
-
-    def test_dumped_values_in_tracini(self):
-        parser = RawConfigParser()
-        filename = self.env.config.filename
-        self.assertEqual([filename], parser.read(filename))
-        self.assertEqual('#cc0,#0c0,#0cc,#00c,#c0c,#c00',
-                         parser.get('revisionlog', 'graph_colors'))
-        self.assertEqual('disabled', parser.get('trac', 'secure_cookies'))
-
-    def test_dumped_values_in_tracini_sample(self):
-        parser = RawConfigParser()
-        filename = self.env.config.filename + '.sample'
-        self.assertEqual([filename], parser.read(filename))
-        self.assertEqual('#cc0,#0c0,#0cc,#00c,#c0c,#c00',
-                         parser.get('revisionlog', 'graph_colors'))
-        self.assertEqual('disabled', parser.get('trac', 'secure_cookies'))
-        self.assertTrue(parser.has_option('logging', 'log_format'))
-        self.assertEqual('', parser.get('logging', 'log_format'))
 
 
 def suite():

@@ -60,14 +60,6 @@ class TestWikiHistory(FunctionalTwillTestCaseSetup):
                         % {'pagename': pagename}
         tc.find(version_link % {'version': 1})
         tc.find(version_link % {'version': 2})
-        tc.formvalue('history', 'old_version', '1')
-        tc.formvalue('history', 'version', '2')
-        tc.submit()
-        tc.url(r'%s/wiki/%s\?action=diff&version=2&old_version=1'
-               % (self._tester.url, pagename))
-        tc.find(r'<a href="/wiki/%s\?version=1">Version 1</a>' % pagename)
-        tc.find(r'<a href="/wiki/%s\?version=2">Version 2</a>' % pagename)
-        tc.find(r'<a href="/wiki/%(name)s">%(name)s</a>' % {'name': pagename})
 
 
 class TestWikiRename(FunctionalTwillTestCaseSetup):
@@ -356,19 +348,6 @@ class RegressionTestTicket11302(FunctionalTwillTestCaseSetup):
                 r' href="/wiki/%s\?version=1#point1">@1</a>' % pagename)
 
 
-class RegressionTestTicket11518(FunctionalTwillTestCaseSetup):
-    def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11518
-        ResourceNotFound should be raised when version is invalid.
-        """
-        tc.go(self._tester.url + '/wiki/WikiStart?version=1abc')
-        tc.find(r"<h1>Trac Error</h1>")
-        tc.find('No version "1abc" for Wiki page "WikiStart')
-        tc.go(self._tester.url + '/wiki/WikiStart?version=')
-        tc.find(r"<h1>Trac Error</h1>")
-        tc.find('No version "" for Wiki page "WikiStart')
-
-
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
@@ -382,7 +361,6 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket10850())
     suite.addTest(RegressionTestTicket10957())
     suite.addTest(RegressionTestTicket11302())
-    suite.addTest(RegressionTestTicket11518())
     if has_docutils:
         import docutils
         if get_pkginfo(docutils):

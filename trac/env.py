@@ -26,8 +26,7 @@ from urlparse import urlsplit
 from trac import db_default
 from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.cache import CacheManager
-from trac.config import BoolOption, ConfigSection, Configuration, Option, \
-                        PathOption
+from trac.config import *
 from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
 from trac.db.api import (DatabaseManager, QueryContextManager,
@@ -788,8 +787,9 @@ class EnvironmentSetup(Component):
         if not os.path.isfile(filename):
             return
         config = Configuration(filename)
-        for (section, name), option in Option.get_registry().iteritems():
-            config.set(section, name, option.dumps(option.default))
+        for section, default_options in config.defaults().iteritems():
+            for name, value in default_options.iteritems():
+                config.set(section, name, value)
         try:
             config.save()
             self.log.info("Wrote sample configuration file with the new "
