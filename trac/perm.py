@@ -570,10 +570,14 @@ class PermissionCache(object):
 
     __contains__ = has_permission
 
-    def require(self, action, realm_or_resource=None, id=False, version=False):
+    def require(self, action, realm_or_resource=None, id=False, version=False,
+                message=None):
         resource = self._normalize_resource(realm_or_resource, id, version)
         if not self._has_permission(action, resource):
-            raise PermissionError(action, resource, self.env)
+            if message is None:
+                raise PermissionError(action, resource, self.env)
+            else:
+                raise PermissionError(msg=message)
     assert_permission = require
 
 
