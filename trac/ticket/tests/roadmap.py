@@ -11,11 +11,13 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from trac.test import EnvironmentStub
-from trac.ticket.roadmap import *
-from trac.core import ComponentManager
-
 import unittest
+
+from trac.core import ComponentManager
+from trac.test import EnvironmentStub, Mock, MockPerm
+from trac.tests.contentgen import random_sentence
+from trac.ticket.roadmap import *
+
 
 class TicketGroupStatsTestCase(unittest.TestCase):
 
@@ -137,14 +139,62 @@ class DefaultTicketGroupStatsProviderTestCase(unittest.TestCase):
         self.assertEqual(67, open['percent'], 'open percent incorrect')
 
 
+class MilestoneModuleTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.req = Mock(href=self.env.href, perm=MockPerm())
+        self.mmodule = MilestoneModule(self.env)
+        self.terms = ['MilestoneAlpha', 'MilestoneBeta', 'MilestoneGamma']
+        for term in self.terms + [' '.join(self.terms)]:
+            m = Milestone(self.env)
+            m.name = term
+            m.due = datetime.now(utc)
+            m.description = random_sentence()
+            m.insert()
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def test_get_search_filters(self):
+        filters = self.mmodule.get_search_filters(self.req)
+        filters = list(filters)
+        self.assertEqual(1, len(filters))
+        self.assertEqual(2, len(filters[0]))
+        self.assertEqual('milestone', filters[0][0])
+        self.assertEqual('Milestones', filters[0][1])
+
+    def test_get_search_results_milestone_not_in_filters(self):
+        results = self.mmodule.get_search_results(self.req, self.terms, [])
+        self.assertEqual([], list(results))
+
+    def test_get_search_results_matches_all_terms(self):
+        milestone = Milestone(self.env, ' '.join(self.terms))
+        results = self.mmodule.get_search_results(self.req, self.terms,
+                                                  ['milestone'])
+        results = list(results)
+        self.assertEqual(1, len(results))
+        self.assertEqual(5, len(results[0]))
+        self.assertEqual('/trac.cgi/milestone/' +
+                         milestone.name.replace(' ', '%20'),
+                         results[0][0])
+        self.assertEqual('Milestone ' + milestone.name, results[0][1])
+        self.assertEqual(milestone.due, results[0][2])
+        self.assertEqual('', results[0][3])
+        self.assertEqual(milestone.description, results[0][4])
+
+
 def in_tlist(ticket, list):
     return len([t for t in list if t['id'] == ticket.id]) > 0
+
 
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TicketGroupStatsTestCase))
     suite.addTest(unittest.makeSuite(DefaultTicketGroupStatsProviderTestCase))
+    suite.addTest(unittest.makeSuite(MilestoneModuleTestCase))
     return suite
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')

@@ -23,7 +23,8 @@ from trac.tests.compat import rmtree
 from trac.util import create_file
 from trac.util.compat import close_fds
 from trac.util.datefmt import to_timestamp, utc
-from trac.versioncontrol.api import DbRepositoryProvider, RepositoryManager
+from trac.versioncontrol.api import DbRepositoryProvider, NoSuchNode, \
+                                    RepositoryManager
 from tracopt.versioncontrol.git.git_fs import GitConnector
 
 
@@ -207,6 +208,39 @@ class HistoryTimeRangeTestCase(BaseTestCase):
         self.assertEqual(revs, [cset.rev for cset in csets])
 
 
+class GitNormalTestCase(BaseTestCase):
+
+    def test_get_node(self):
+        self.env.config.set('git', 'persistent_cache', 'false')
+        self.env.config.set('git', 'cached_repository', 'false')
+
+        self._git_init()
+        self._add_repository()
+        repos = self._repomgr.get_repository('gitrepos')
+        rev = repos.youngest_rev
+        self.assertEqual(40, len(rev))
+
+        self.assertEqual(rev, repos.get_node('/').rev)
+        self.assertEqual(rev, repos.get_node('/', rev[:7]).rev)
+        self.assertEqual(rev, repos.get_node('/.gitignore').rev)
+        self.assertEqual(rev, repos.get_node('/.gitignore', rev[:7]).rev)
+
+        self.assertRaises(NoSuchNode, repos.get_node, '/', 'invalid-revision')
+        self.assertRaises(NoSuchNode, repos.get_node, '/.gitignore',
+                          'invalid-revision')
+        self.assertRaises(NoSuchNode, repos.get_node, '/non-existent', rev)
+        self.assertRaises(NoSuchNode, repos.get_node, '/non-existent',
+                          'invalid-revision')
+
+        # git_fs doesn't support non-ANSI strings on Windows
+        if os.name != 'nt':
+            self._git('branch', u'tïckét10605', 'master')
+            repos.sync()
+            self.assertEqual(rev, repos.get_node('/', u'tïckét10605').rev)
+            self.assertEqual(rev, repos.get_node('/.gitignore',
+                                                 u'tïckét10605').rev)
+
+
 def suite():
     global git_bin
     suite = unittest.TestSuite()
@@ -215,6 +249,7 @@ def suite():
         suite.addTest(unittest.makeSuite(SanityCheckingTestCase))
         suite.addTest(unittest.makeSuite(PersistentCacheTestCase))
         suite.addTest(unittest.makeSuite(HistoryTimeRangeTestCase))
+        suite.addTest(unittest.makeSuite(GitNormalTestCase))
     else:
         print("SKIP: tracopt/versioncontrol/git/tests/git_fs.py (git cli "
               "binary, 'git', not found)")

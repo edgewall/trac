@@ -350,6 +350,13 @@ def grouped_stats_data(env, stats_provider, tickets, by, per_group_stats_data):
                 group_names = field['options']
                 if field.get('optional'):
                     group_names.insert(0, '')
+            elif field.get('custom'):
+                group_names = [name for name, in env.db_query("""
+                    SELECT DISTINCT COALESCE(c.value, '') FROM ticket_custom c
+                    WHERE c.name=%s ORDER BY COALESCE(c.value, '')
+                    """, (by, ))]
+                if '' not in group_names:
+                    group_names.insert(0, '')
             else:
                 group_names = [name for name, in env.db_query("""
                     SELECT DISTINCT COALESCE(%s, '') FROM ticket
@@ -1027,7 +1034,7 @@ class MilestoneModule(Component):
         milestone_realm = Resource('milestone')
         for name, due, completed, description \
                 in MilestoneCache(self.env).milestones.itervalues():
-            if any(r.search(description) or r.search(name)
+            if all(r.search(description) or r.search(name)
                    for r in term_regexps):
                 milestone = milestone_realm(id=name)
                 if 'MILESTONE_VIEW' in req.perm(milestone):

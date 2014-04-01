@@ -2024,7 +2024,7 @@ class RegressionTestTicket8247(FunctionalTwillTestCaseSetup):
         tc.find('<strong class="trac-field-milestone">Milestone</strong>'
                 '[ \n\t]*<em>%s</em> deleted' % name)
         tc.find('Changed <a.* ago</a> by admin')
-        tc.notfind('anonymous')
+        tc.notfind('</a> ago by anonymous')
 
 
 class RegressionTestTicket8861(FunctionalTwillTestCaseSetup):
@@ -2140,6 +2140,19 @@ class RegressionTestTicket11153(FunctionalTwillTestCaseSetup):
             self._tester.go_to_view_tickets('query')
         finally:
             env.config.remove('components', 'trac.ticket.report.ReportModule')
+            env.config.save()
+
+        # Disable the QueryModule component and check that "View Tickets"
+        # mainnav entry links to the `/report` page
+        env.config.set('components', 'trac.ticket.query.QueryModule',
+                       'disabled')
+        env.config.save()
+
+        try:
+            self._tester.go_to_view_tickets('report')
+            tc.notfind('<li class="last first">Available Reports</li>')
+        finally:
+            env.config.remove('components', 'trac.ticket.query.QueryModule')
             env.config.save()
 
 

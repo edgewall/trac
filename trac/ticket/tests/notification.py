@@ -26,7 +26,7 @@ from datetime import datetime
 from trac.test import EnvironmentStub, Mock, MockPerm
 from trac.tests import compat
 from trac.tests.notification import SMTP_TEST_PORT, SMTPThreadedServer,\
-                                    parse_smtp_message, smtp_address
+                                    parse_smtp_message
 from trac.ticket.model import Ticket
 from trac.ticket.notification import TicketNotifyEmail
 from trac.ticket.web_ui import TicketModule
@@ -34,6 +34,180 @@ from trac.util.datefmt import utc
 
 MAXBODYWIDTH = 76
 notifysuite = None
+
+
+class RecipientTestCase(unittest.TestCase):
+    """Notification test cases for email recipients."""
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True)
+        self.env.config.set('project', 'name', 'TracTest')
+        self.env.config.set('notification', 'smtp_enabled', 'true')
+        self.env.config.set('notification', 'smtp_port', str(SMTP_TEST_PORT))
+
+    def tearDown(self):
+        notifysuite.tear_down()
+        self.env.reset_db()
+
+    def test_no_recipients(self):
+        """No recipient case"""
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'anonymous'
+        ticket['summary'] = 'Foo'
+        ticket.insert()
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=True)
+        recipients = notifysuite.smtpd.get_recipients()
+        sender = notifysuite.smtpd.get_sender()
+        message = notifysuite.smtpd.get_message()
+        self.assertEqual(0, len(recipients))
+        self.assertIsNone(sender)
+        self.assertIsNone(message)
+
+    def test_new_ticket_recipients(self):
+        """Report and CC list should be in recipient list for new tickets."""
+        always_cc = ('joe.user@example.net', 'joe.bar@example.net')
+        ticket_cc = ('joe.user@example.com', 'joe.bar@example.org')
+        self.env.config.set('notification', 'smtp_always_cc',
+                            ', '.join(always_cc))
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'joe.bar@example.org'
+        ticket['owner'] = 'joe.user@example.net'
+        ticket['cc'] = ' '.join(ticket_cc)
+        ticket['summary'] = 'New ticket recipients'
+        ticket.insert()
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=True)
+        recipients = notifysuite.smtpd.get_recipients()
+        for r in always_cc + ticket_cc + \
+                (ticket['owner'], ticket['reporter']):
+            self.assertIn(r, recipients)
+
+    def test_cc_only(self):
+        """Notification w/o explicit recipients but Cc: (#3101)"""
+        always_cc = ('joe.user@example.net', 'joe.bar@example.net')
+        self.env.config.set('notification', 'smtp_always_cc',
+                            ', '.join(always_cc))
+        ticket = Ticket(self.env)
+        ticket['summary'] = 'Foo'
+        ticket.insert()
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=True)
+        recipients = notifysuite.smtpd.get_recipients()
+        for r in always_cc:
+            self.assertIn(r, recipients)
+
+    def test_always_notify_updater(self):
+        """The `always_notify_updater` option."""
+        def _test_updater(enabled):
+            self.env.config.set('notification', 'always_notify_updater',
+                                enabled)
+            ticket = Ticket(self.env)
+            ticket['reporter'] = 'joe.user@example.org'
+            ticket['summary'] = u'This is a súmmäry'
+            ticket.insert()
+            now = datetime.now(utc)
+            ticket.save_changes('joe.bar2@example.com', 'This is a change',
+                                when=now)
+            tn = TicketNotifyEmail(self.env)
+            tn.notify(ticket, newticket=False, modtime=now)
+            recipients = notifysuite.smtpd.get_recipients()
+            if enabled:
+                self.assertEqual(1, len(recipients))
+                self.assertIn('joe.bar2@example.com', recipients)
+            else:
+                self.assertEqual(0, len(recipients))
+                self.assertNotIn('joe.bar2@example.com', recipients)
+
+        # Validate with and without a default domain
+        for enable in False, True:
+            _test_updater(enable)
+
+    def test_always_notify_owner(self):
+        """The `always_notify_owner` option."""
+        def _test_reporter(enabled):
+            self.env.config.set('notification', 'always_notify_owner',
+                                enabled)
+            self.env.config.set('notification', 'always_notify_updater',
+                                'false')
+            ticket = Ticket(self.env)
+            ticket['summary'] = 'Foo'
+            ticket['reporter'] = u'joe@example.org'
+            ticket['owner'] = u'jim@example.org'
+            ticket.insert()
+            now = datetime.now(utc)
+            ticket.save_changes('joe@example.org', 'this is my comment',
+                                when=now)
+            tn = TicketNotifyEmail(self.env)
+            tn.notify(ticket, newticket=True, modtime=now)
+            recipients = notifysuite.smtpd.get_recipients()
+            if enabled:
+                self.assertEqual(1, len(recipients))
+                self.assertEqual('jim@example.org', recipients[0])
+            else:
+                self.assertEqual(0, len(recipients))
+
+        for enable in False, True:
+            _test_reporter(enable)
+
+    def test_always_notify_reporter(self):
+        """Notification to reporter w/ updater option disabled (#3780)"""
+        def _test_reporter(enabled):
+            self.env.config.set('notification', 'always_notify_updater',
+                                'false')
+            self.env.config.set('notification', 'always_notify_reporter',
+                                enabled)
+            ticket = Ticket(self.env)
+            ticket['summary'] = 'Foo'
+            ticket['reporter'] = u'joe@example.org'
+            ticket.insert()
+            now = datetime.now(utc)
+            ticket.save_changes('joe@example.org', 'this is my comment',
+                                when=now)
+            tn = TicketNotifyEmail(self.env)
+            tn.notify(ticket, newticket=True, modtime=now)
+            recipients = notifysuite.smtpd.get_recipients()
+            if enabled:
+                self.assertEqual(1, len(recipients))
+                self.assertEqual('joe@example.org', recipients[0])
+            else:
+                self.assertEqual(0, len(recipients))
+
+        for enable in False, True:
+            _test_reporter(enable)
+
+    def test_no_duplicates(self):
+        """Email addresses should be found only once in the recipient list."""
+        self.env.config.set('notification', 'smtp_always_cc',
+                            'joe.user@example.com')
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'joe.user@example.com'
+        ticket['owner'] = 'joe.user@example.com'
+        ticket['cc'] = 'joe.user@example.com'
+        ticket['summary'] = 'No duplicates'
+        ticket.insert()
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=True)
+        recipients = notifysuite.smtpd.get_recipients()
+        self.assertEqual(1, len(recipients))
+        self.assertIn('joe.user@example.com', recipients)
+
+    def test_long_forms(self):
+        """Long forms of SMTP email addresses 'Display Name <address>'"""
+        self.env.config.set('notification', 'always_notify_owner', True)
+        ticket = Ticket(self.env)
+        ticket['reporter'] = '"Joe" <joe.user@example.com>'
+        ticket['owner'] = 'Joe <joe.user@example.net>'
+        ticket['cc'] = 'Joe < joe.user@example.org >'
+        ticket['summary'] = 'Long form'
+        ticket.insert()
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=True)
+        recipients = notifysuite.smtpd.get_recipients()
+        self.assertEqual(3, len(recipients))
+        self.assertIn('joe.user@example.com', recipients)
+        self.assertIn('joe.user@example.net', recipients)
+        self.assertIn('joe.user@example.org', recipients)
 
 
 class NotificationTestCase(unittest.TestCase):
@@ -57,63 +231,6 @@ class NotificationTestCase(unittest.TestCase):
         """Signal the notification test suite that a test is over"""
         notifysuite.tear_down()
         self.env.reset_db()
-
-    def test_recipients(self):
-        """To/Cc recipients"""
-        ticket = Ticket(self.env)
-        ticket['reporter'] = '"Joe User" < joe.user@example.org >'
-        ticket['owner'] = 'joe.user@example.net'
-        ticket['cc'] = 'joe.user@example.com, joe.bar@example.org, ' \
-                       'joe.bar@example.net'
-        ticket['summary'] = 'Foo'
-        ticket.insert()
-        tn = TicketNotifyEmail(self.env)
-        tn.notify(ticket, newticket=True)
-        recipients = notifysuite.smtpd.get_recipients()
-        # checks there is no duplicate in the recipient list
-        rcpts = []
-        for r in recipients:
-            self.assertNotIn(r, rcpts)
-            rcpts.append(r)
-        # checks that all cc recipients have been notified
-        cc_list = self.env.config.get('notification', 'smtp_always_cc')
-        cc_list = "%s, %s" % (cc_list, ticket['cc'])
-        for r in cc_list.replace(',', ' ').split():
-            self.assertIn(r, recipients)
-        # checks that owner has been notified
-        self.assertIn(smtp_address(ticket['owner']), recipients)
-        # checks that reporter has been notified
-        self.assertIn(smtp_address(ticket['reporter']), recipients)
-
-    def test_no_recipient(self):
-        """No recipient case"""
-        self.env.config.set('notification', 'smtp_always_cc', '')
-        ticket = Ticket(self.env)
-        ticket['reporter'] = 'anonymous'
-        ticket['summary'] = 'Foo'
-        ticket.insert()
-        tn = TicketNotifyEmail(self.env)
-        tn.notify(ticket, newticket=True)
-        sender = notifysuite.smtpd.get_sender()
-        recipients = notifysuite.smtpd.get_recipients()
-        message = notifysuite.smtpd.get_message()
-        # checks that no message has been sent
-        self.assertEqual([], recipients)
-        self.assertIsNone(sender)
-        self.assertIsNone(message)
-
-    def test_cc_only(self):
-        """Notification w/o explicit recipients but Cc: (#3101)"""
-        ticket = Ticket(self.env)
-        ticket['summary'] = 'Foo'
-        ticket.insert()
-        tn = TicketNotifyEmail(self.env)
-        tn.notify(ticket, newticket=True)
-        recipients = notifysuite.smtpd.get_recipients()
-        # checks that all cc recipients have been notified
-        cc_list = self.env.config.get('notification', 'smtp_always_cc')
-        for r in cc_list.replace(',', ' ').split():
-            self.assertIn(r, recipients)
 
     def test_structure(self):
         """Basic SMTP message structure (headers, body)"""
@@ -174,10 +291,9 @@ class NotificationTestCase(unittest.TestCase):
 
     def test_bcc_privacy(self):
         """Visibility of recipients"""
-        def run_bcc_feature(public):
+        def run_bcc_feature(public_cc):
             # CC list should be private
-            self.env.config.set('notification', 'use_public_cc',
-                                'true' if public else 'false')
+            self.env.config.set('notification', 'use_public_cc', public_cc)
             self.env.config.set('notification', 'smtp_always_bcc',
                                 'joe.foobar@example.net')
             ticket = Ticket(self.env)
@@ -188,7 +304,7 @@ class NotificationTestCase(unittest.TestCase):
             tn.notify(ticket, newticket=True)
             message = notifysuite.smtpd.get_message()
             headers, body = parse_smtp_message(message)
-            if public:
+            if public_cc:
                 # Msg should have a To list
                 self.assertIn('To', headers)
                 # Extract the list of 'To' recipients from the message
@@ -220,8 +336,8 @@ class NotificationTestCase(unittest.TestCase):
                 self.assertNotIn(rcpt, to)
                 # Check the message has actually been sent to the recipients
                 self.assertIn(rcpt, rcptlist)
-        run_bcc_feature(True)
-        run_bcc_feature(False)
+        for public in False, True:
+            run_bcc_feature(public)
 
     def test_short_login(self):
         """Email addresses without a FQDN"""
@@ -234,8 +350,7 @@ class NotificationTestCase(unittest.TestCase):
             # send a notification even if other addresses are not valid
             self.env.config.set('notification', 'smtp_always_cc',
                                 'joe.bar@example.net')
-            if enabled:
-                self.env.config.set('notification', 'use_short_addr', 'true')
+            self.env.config.set('notification', 'use_short_addr', enabled)
             tn = TicketNotifyEmail(self.env)
             tn.notify(ticket, newticket=True)
             message = notifysuite.smtpd.get_message()
@@ -289,12 +404,12 @@ class NotificationTestCase(unittest.TestCase):
             cclist = [addr.strip() for addr in headers['Cc'].split(',')]
             self.assertIn('joewithdom@example.com', cclist)
             self.assertIn('joe.bar@example.net', cclist)
-            if not enabled:
-                self.assertEqual(2, len(cclist))
-                self.assertNotIn('joenodom', cclist)
-            else:
+            if enabled:
                 self.assertEqual(3, len(cclist))
                 self.assertIn('joenodom@example.org', cclist)
+            else:
+                self.assertEqual(2, len(cclist))
+                self.assertNotIn('joenodom', cclist)
 
         # Validate with and without a default domain
         for enable in False, True:
@@ -517,88 +632,47 @@ class NotificationTestCase(unittest.TestCase):
         tn.notify(ticket, newticket=True)
         message = notifysuite.smtpd.get_message()
         headers, body = parse_smtp_message(message)
+        self.assertEqual('joe.user@example.org', headers['To'])
 
-    def test_updater(self):
-        """No-self-notification option"""
-        def _test_updater(disabled):
-            if disabled:
-                self.env.config.set('notification', 'always_notify_updater',
-                                    'false')
+    def test_previous_cc_list(self):
+        """Members removed from CC list receive notifications"""
+        ticket = Ticket(self.env)
+        ticket['summary'] = 'Foo'
+        ticket['cc'] = 'joe.user1@example.net'
+        ticket.insert()
+        ticket['cc'] = 'joe.user2@example.net'
+        now = datetime.now(utc)
+        ticket.save_changes('joe.bar@example.com', 'Removed from cc', now)
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=False, modtime=now)
+        recipients = notifysuite.smtpd.get_recipients()
+        self.assertIn('joe.user1@example.net', recipients)
+        self.assertIn('joe.user2@example.net', recipients)
+
+    def test_previous_owner(self):
+        """Previous owner is notified when ticket is reassigned (#2311)
+           if always_notify_owner is set to True"""
+        def _test_owner(enabled):
+            self.env.config.set('notification', 'always_notify_owner', enabled)
             ticket = Ticket(self.env)
-            ticket['reporter'] = 'joe.user@example.org'
-            ticket['summary'] = u'This is a súmmäry'
-            ticket['cc'] = 'joe.bar@example.com'
+            ticket['summary'] = 'Foo'
+            ticket['owner'] = prev_owner = 'joe.user1@example.net'
             ticket.insert()
-            ticket['component'] = 'dummy'
+            ticket['owner'] = new_owner = 'joe.user2@example.net'
             now = datetime.now(utc)
-            ticket.save_changes('joe.bar2@example.com', 'This is a change',
-                                when=now)
+            ticket.save_changes('joe.bar@example.com', 'Changed owner', now)
             tn = TicketNotifyEmail(self.env)
             tn.notify(ticket, newticket=False, modtime=now)
-            message = notifysuite.smtpd.get_message()
-            headers, body = parse_smtp_message(message)
-            # checks for header existence
-            self.assertTrue(headers)
-            # checks for updater in the 'To' recipient list
-            self.assertIn('To', headers)
-            tolist = [addr.strip() for addr in headers['To'].split(',')]
-            if disabled:
-                self.assertNotIn('joe.bar2@example.com', tolist)
+            recipients = notifysuite.smtpd.get_recipients()
+            if enabled:
+                self.assertIn(prev_owner, recipients)
+                self.assertIn(new_owner, recipients)
             else:
-                self.assertIn('joe.bar2@example.com', tolist)
+                self.assertNotIn(prev_owner, recipients)
+                self.assertNotIn(new_owner, recipients)
 
-        # Validate with and without a default domain
-        for disable in False, True:
-            _test_updater(disable)
-
-    def test_updater_only(self):
-        """Notification w/ updater, w/o any other recipient (#4188)"""
-        self.env.config.set('notification', 'always_notify_owner', 'false')
-        self.env.config.set('notification', 'always_notify_reporter', 'false')
-        self.env.config.set('notification', 'always_notify_updater', 'true')
-        self.env.config.set('notification', 'smtp_always_cc', '')
-        self.env.config.set('notification', 'smtp_always_bcc', '')
-        self.env.config.set('notification', 'use_public_cc', 'false')
-        self.env.config.set('notification', 'use_short_addr', 'false')
-        self.env.config.set('notification', 'smtp_replyto',
-                            'joeuser@example.net')
-        ticket = Ticket(self.env)
-        ticket['summary'] = 'Foo'
-        ticket.insert()
-        ticket['summary'] = 'Bar'
-        ticket['component'] = 'New value'
-        ticket.save_changes('joe@example.com', 'this is my comment')
-        tn = TicketNotifyEmail(self.env)
-        tn.notify(ticket, newticket=True)
-        recipients = notifysuite.smtpd.get_recipients()
-        self.assertIsNotNone(recipients)
-        self.assertEqual(1, len(recipients))
-        self.assertEqual(recipients[0], 'joe@example.com')
-
-    def test_updater_is_reporter(self):
-        """Notification to reporter w/ updater option disabled (#3780)"""
-        self.env.config.set('notification', 'always_notify_owner', 'false')
-        self.env.config.set('notification', 'always_notify_reporter', 'true')
-        self.env.config.set('notification', 'always_notify_updater', 'false')
-        self.env.config.set('notification', 'smtp_always_cc', '')
-        self.env.config.set('notification', 'smtp_always_bcc', '')
-        self.env.config.set('notification', 'use_public_cc', 'false')
-        self.env.config.set('notification', 'use_short_addr', 'false')
-        self.env.config.set('notification', 'smtp_replyto',
-                            'joeuser@example.net')
-        ticket = Ticket(self.env)
-        ticket['summary'] = 'Foo'
-        ticket['reporter'] = u'joe@example.org'
-        ticket.insert()
-        ticket['summary'] = 'Bar'
-        ticket['component'] = 'New value'
-        ticket.save_changes('joe@example.org', 'this is my comment')
-        tn = TicketNotifyEmail(self.env)
-        tn.notify(ticket, newticket=True)
-        recipients = notifysuite.smtpd.get_recipients()
-        self.assertIsNotNone(recipients)
-        self.assertEqual(1, len(recipients))
-        self.assertEqual('joe@example.org', recipients[0])
+        for enable in False, True:
+            _test_owner(enable)
 
     def _validate_mimebody(self, mime, ticket, newtk):
         """Body of a ticket notification message"""
@@ -1184,6 +1258,7 @@ class NotificationTestSuite(unittest.TestSuite):
         unittest.TestSuite.__init__(self)
         self.smtpd = SMTPThreadedServer(SMTP_TEST_PORT)
         self.smtpd.start()
+        self.addTest(unittest.makeSuite(RecipientTestCase))
         self.addTest(unittest.makeSuite(NotificationTestCase))
         self.remaining = self.countTestCases()
 

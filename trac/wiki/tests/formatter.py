@@ -147,6 +147,7 @@ class WikiTestCase(unittest.TestCase):
         self._teardown = teardown
 
         req = Mock(href=Href('/'), abs_href=Href('http://www.example.com/'),
+                   chrome={}, session={},
                    authname='anonymous', perm=MockPerm(), tz=utc, args={},
                    locale=locale_en, lc_time=locale_en)
         if context:

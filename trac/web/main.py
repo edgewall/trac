@@ -48,7 +48,7 @@ from trac.util.text import exception_to_unicode, shorten_line, to_unicode
 from trac.util.translation import _, get_negotiated_locale, has_babel, \
                                   safefmt, tag_
 from trac.web.api import *
-from trac.web.chrome import Chrome, add_notice, add_warning
+from trac.web.chrome import Chrome, add_warning
 from trac.web.href import Href
 from trac.web.session import Session
 
@@ -544,8 +544,9 @@ def _send_user_error(req, env, e):
     if e.code == 403 and req.authname == 'anonymous':
         # TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
         do_so = tag.a(_("do so"), href=req.href.login())
-        add_notice(req, tag_("You are currently not logged in. You may want "
-                             "to %(do_so)s now.", do_so=do_so))
+        req.chrome['notices'].append(
+            tag_("You are currently not logged in. You may want to "
+                 "%(do_so)s now.", do_so=do_so))
     try:
         req.send_error(sys.exc_info(), status=e.code, env=env, data=data)
     except RequestDone:
@@ -597,7 +598,9 @@ def send_internal_error(env, req, exc_info):
             sys_info = "".join("|| '''`%s`''' || `%s` ||\n"
                                % (k, v.replace('\n', '` [[br]] `'))
                                for k, v in env.get_systeminfo())
-            sys_info += "|| '''`jQuery`''' || `#JQUERY#` ||\n"
+            sys_info += "|| '''`jQuery`''' || `#JQUERY#` ||\n" \
+                        "|| '''`jQuery UI`''' || `#JQUERYUI#` ||\n" \
+                        "|| '''`jQuery Timepicker`''' || `#JQUERYTP#` ||\n"
             enabled_plugins = "".join("|| '''`%s`''' || `%s` ||\n"
                                       % (p['name'], p['version'] or _('N/A'))
                                       for p in plugins)
@@ -644,6 +647,7 @@ User agent: `#USER_AGENT#`
             'tracker': tracker, 'tracker_args': tracker_args,
             'description': description, 'description_en': description_en}
 
+    Chrome(env).add_jquery_ui(req)
     try:
         req.send_error(exc_info, status=500, env=env, data=data)
     except RequestDone:
