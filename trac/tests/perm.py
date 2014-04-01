@@ -11,18 +11,19 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import unittest
+
 from trac import perm
 from trac.core import *
 from trac.test import EnvironmentStub
-
-import unittest
 
 
 class DefaultPermissionStoreTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub(enable=[perm.DefaultPermissionStore,
-                                           perm.DefaultPermissionGroupProvider])
+        self.env = \
+            EnvironmentStub(enable=[perm.DefaultPermissionStore,
+                                    perm.DefaultPermissionGroupProvider])
         self.store = perm.DefaultPermissionStore(self.env)
 
     def tearDown(self):
@@ -184,7 +185,8 @@ class PermissionCacheTestCase(unittest.TestCase):
     def test_require(self):
         self.perm.require('TEST_MODIFY')
         self.perm.require('TEST_ADMIN')
-        self.assertRaises(perm.PermissionError, self.perm.require, 'TRAC_ADMIN')
+        self.assertRaises(perm.PermissionError,
+                          self.perm.require, 'TRAC_ADMIN')
 
     def test_assert_permission(self):
         self.perm.assert_permission('TEST_MODIFY')
@@ -231,12 +233,14 @@ class TestPermissionPolicy(Component):
 
 
 class PermissionPolicyTestCase(unittest.TestCase):
+
     def setUp(self):
         self.env = EnvironmentStub(enable=[perm.DefaultPermissionStore,
                                            perm.DefaultPermissionPolicy,
                                            TestPermissionPolicy,
                                            TestPermissionRequestor])
-        self.env.config.set('trac', 'permission_policies', 'TestPermissionPolicy')
+        self.env.config.set('trac', 'permission_policies',
+                            'TestPermissionPolicy')
         self.policy = TestPermissionPolicy(self.env)
         self.perm = perm.PermissionCache(self.env, 'testuser')
 
@@ -261,7 +265,8 @@ class PermissionPolicyTestCase(unittest.TestCase):
                           ('testuser', 'TEST_ADMIN'): True})
 
     def test_policy_chaining(self):
-        self.env.config.set('trac', 'permission_policies', 'TestPermissionPolicy,DefaultPermissionPolicy')
+        self.env.config.set('trac', 'permission_policies',
+                            'TestPermissionPolicy,DefaultPermissionPolicy')
         self.policy.grant('testuser', ['TEST_MODIFY'])
         system = perm.PermissionSystem(self.env)
         system.grant_permission('testuser', 'TEST_ADMIN')
