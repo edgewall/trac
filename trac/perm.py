@@ -30,7 +30,7 @@ from trac.resource import Resource, get_resource_name
 from trac.util import file_or_std
 from trac.util.text import path_to_unicode, print_table, printout, \
                            stream_encoding, to_unicode, wrap
-from trac.util.translation import _
+from trac.util.translation import _, N_
 
 __all__ = ['IPermissionRequestor', 'IPermissionStore', 'IPermissionPolicy',
            'IPermissionGroupProvider', 'PermissionError', 'PermissionSystem']
@@ -39,29 +39,27 @@ __all__ = ['IPermissionRequestor', 'IPermissionStore', 'IPermissionPolicy',
 class PermissionError(StandardError):
     """Insufficient permissions to complete the operation"""
 
+    title = N_("Forbidden")
+
     def __init__ (self, action=None, resource=None, env=None, msg=None):
-        StandardError.__init__(self)
         self.action = action
         self.resource = resource
         self.env = env
-        self.msg = msg
-
-    def __unicode__ (self):
         if self.action:
             if self.resource:
-                return _("%(perm)s privileges are required to perform "
-                         "this operation on %(resource)s. You don't have the "
-                         "required permissions.",
-                         perm=self.action,
-                         resource=get_resource_name(self.env, self.resource))
+                msg = _("%(perm)s privileges are required to perform "
+                        "this operation on %(resource)s. You don't have the "
+                        "required permissions.",
+                        perm=self.action,
+                        resource=get_resource_name(self.env, self.resource))
             else:
-                return _("%(perm)s privileges are required to perform this "
-                         "operation. You don't have the required "
-                         "permissions.", perm=self.action)
-        elif self.msg:
-            return self.msg
-        else:
-            return _("Insufficient privileges to perform this operation.")
+                msg = _("%(perm)s privileges are required to perform this "
+                        "operation. You don't have the required "
+                        "permissions.", perm=self.action)
+        elif msg is None:
+            msg = _("Insufficient privileges to perform this operation.")
+        self.msg = msg
+        StandardError.__init__(self, msg)
 
 
 class IPermissionRequestor(Interface):
