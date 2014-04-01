@@ -29,11 +29,12 @@ from StringIO import StringIO
 import sys
 import urlparse
 
+from genshi.builder import Fragment
 from trac.core import Interface, TracError
 from trac.perm import PermissionError
 from trac.util import get_last_traceback, unquote
 from trac.util.datefmt import http_date, localtz
-from trac.util.text import empty, to_unicode
+from trac.util.text import empty, exception_to_unicode, to_unicode
 from trac.util.translation import _
 from trac.web.href import Href
 from trac.web.wsgi import _FileWrapper
@@ -163,6 +164,35 @@ class HTTPException(Exception):
             self.detail = self.detail % args
         Exception.__init__(self, '%s %s (%s)' % (self.code, self.reason,
                                                  self.detail))
+
+    @property
+    def message(self):
+        # The message is based on the e.detail, which can be an Exception
+        # object, but not a TracError one: when creating HTTPException,
+        # a TracError.message is directly assigned to e.detail
+        if isinstance(self.detail, Exception): # not a TracError or PermissionError
+            message = exception_to_unicode(self.detail)
+        elif isinstance(self.detail, Fragment): # TracError or PermissionError markup
+            message = self.detail
+        else:
+            message = to_unicode(self.detail)
+        return message
+
+    @property
+    def title(self):
+        try:
+            # We first try to get localized error messages here, but we
+            # should ignore secondary errors if the main error was also
+            # due to i18n issues
+            title = _("Error")
+            if self.reason:
+                if title.lower() in self.reason.lower():
+                    title = self.reason
+                else:
+                    title = _("Error: %(message)s", message=self.reason)
+        except Exception:
+            title = "Error"
+        return title
 
     @classmethod
     def subclass(cls, name, code):
