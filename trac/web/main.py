@@ -28,7 +28,7 @@ from pprint import pformat, pprint
 import re
 import sys
 
-from genshi.builder import Fragment, tag
+from genshi.builder import tag
 from genshi.output import DocType
 from genshi.template import TemplateLoader
 
@@ -518,28 +518,7 @@ def _send_user_error(req, env, e):
     # See trac/web/api.py for the definition of HTTPException subclasses.
     if env:
         env.log.warn('[%s] %s' % (req.remote_addr, exception_to_unicode(e)))
-    try:
-        # We first try to get localized error messages here, but we
-        # should ignore secondary errors if the main error was also
-        # due to i18n issues
-        title = _('Error')
-        if e.reason:
-            if title.lower() in e.reason.lower():
-                title = e.reason
-            else:
-                title = _('Error: %(message)s', message=e.reason)
-    except Exception:
-        title = 'Error'
-    # The message is based on the e.detail, which can be an Exception
-    # object, but not a TracError one: when creating HTTPException,
-    # a TracError.message is directly assigned to e.detail
-    if isinstance(e.detail, Exception): # not a TracError or PermissionError
-        message = exception_to_unicode(e.detail)
-    elif isinstance(e.detail, Fragment): # TracError or PermissionError markup
-        message = e.detail
-    else:
-        message = to_unicode(e.detail)
-    data = {'title': title, 'type': 'TracError', 'message': message,
+    data = {'title': e.title, 'type': 'TracError', 'message': e.message,
             'frames': [], 'traceback': None}
     if e.code == 403 and req.authname == 'anonymous':
         # TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
