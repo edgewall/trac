@@ -183,7 +183,7 @@ class Environment(Component, ComponentManager):
         force Trac to use the `base_url` setting also for
         redirects. This introduces the obvious limitation that this
         environment will only be usable when accessible from that URL,
-        as redirects are frequently used. ''(since 0.10.5)''""")
+        as redirects are frequently used. (''since 0.10.5'')""")
 
     secure_cookies = BoolOption('trac', 'secure_cookies', False,
         """Restrict cookies to HTTPS connections.
@@ -260,7 +260,7 @@ class Environment(Component, ComponentManager):
         Example:
         `($(thread)d) Trac[$(basename)s:$(module)s] $(levelname)s: $(message)s`
 
-        ''(since 0.10.5)''""")
+        (''since 0.10.5'')""")
 
     def __init__(self, path, create=False, options=[]):
         """Initialize the Trac environment.

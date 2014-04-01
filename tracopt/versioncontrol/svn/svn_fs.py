@@ -281,9 +281,9 @@ class SubversionConnector(Component):
         """End-of-Line character sequences when `svn:eol-style` property is
         `native`.
 
-        If `native` (the default), substitute with the native EOL marker on
-        the server. Otherwise, if `LF`, `CRLF` or `CR`, substitute with the
-        specified EOL marker.
+        If `native`, substitute with the native EOL marker on the server.
+        Otherwise, if `LF`, `CRLF` or `CR`, substitute with the specified
+        EOL marker.
 
         (''since 1.0.2'')""")
 

@@ -330,8 +330,7 @@ class RepositoryManager(Component):
         (recommended). Otherwise, set it to a comma-separated list of
         repository names. Note that this will negatively affect performance,
         and will prevent changeset listeners from receiving events from the
-        repositories specified here. The default is to synchronize the default
-        repository, for backward compatibility. (''since 0.12'')""")
+        repositories specified here. (''since 0.12'')""")
 
     def __init__(self):
         self._cache = {}

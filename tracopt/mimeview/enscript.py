@@ -114,8 +114,8 @@ class EnscriptRenderer(Component):
         for the conversion and `quality` is the quality ratio
         associated to this conversion.
         That can also be used to override the default
-        quality ratio used by the Enscript render, which is 2
-        (''since 0.10'').""")
+        quality ratio used by the Enscript render, which is 2.
+        (''since 0.10'')""")
 
     def __init__(self):
         self._types = None

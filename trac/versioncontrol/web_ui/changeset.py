@@ -132,7 +132,7 @@ class ChangesetModule(Component):
         """Number of files to show (`-1` for unlimited, `0` to disable).
 
         This can also be `location`, for showing the common prefix for the
-        changed files. (since 0.11).
+        changed files. (''since 0.11'')
         """)
 
     timeline_long_messages = BoolOption('timeline', 'changeset_long_messages',
@@ -153,12 +153,12 @@ class ChangesetModule(Component):
 
     max_diff_files = IntOption('changeset', 'max_diff_files', 0,
         """Maximum number of modified files for which the changeset view will
-        attempt to show the diffs inlined (''since 0.10'').""")
+        attempt to show the diffs inlined. (''since 0.10'')""")
 
     max_diff_bytes = IntOption('changeset', 'max_diff_bytes', 10000000,
         """Maximum total size in bytes of the modified files (their old size
         plus their new size) for which the changeset view will attempt to show
-        the diffs inlined (''since 0.10'').""")
+        the diffs inlined. (''since 0.10'')""")
 
     wiki_format_messages = BoolOption('changeset', 'wiki_format_messages',
                                       'true',

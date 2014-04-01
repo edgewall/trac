@@ -105,7 +105,7 @@ class NotificationSystem(Component):
     use_public_cc = BoolOption('notification', 'use_public_cc', 'false',
         """Recipients can see email addresses of other CC'ed recipients.
 
-        If this option is disabled (the default), recipients are put on BCC.
+        If this option is disabled, recipients are put on BCC.
         (''since 0.10'')""")
 
     use_short_addr = BoolOption('notification', 'use_short_addr', 'false',
@@ -118,8 +118,8 @@ class NotificationSystem(Component):
                                  '__default__',
         """Text to prepend to subject line of notification emails.
 
-        If the setting is not defined, then the [$project_name] prefix.
-        If no prefix is desired, then specifying an empty option
+        If the setting is not defined, then `[$project_name]` is used as the
+        prefix. If no prefix is desired, then specifying an empty option
         will disable it. (''since 0.10.1'')""")
 
     def send_email(self, from_addr, recipients, message):

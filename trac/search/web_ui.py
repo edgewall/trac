@@ -59,7 +59,7 @@ class SearchModule(Component):
                the `get_search_filters()` method, the first member of
                returned tuple. Once disabled, search filters can still
                be manually enabled by the user on the search page.
-               (since 0.12)""")
+               (''since 0.12'')""")
 
     # INavigationContributor methods
 

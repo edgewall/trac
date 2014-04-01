@@ -97,7 +97,7 @@ class Configuration(object):
 
         Valid default input is a string or a bool. Returns a bool.
 
-        (since Trac 0.9.3, "enabled" added in 0.11)
+        (''since 0.9.3'', "enabled" added in 0.11)
         """
         return self[section].getbool(key, default)
 
@@ -109,7 +109,7 @@ class Configuration(object):
 
         Valid default input is a string or an int. Returns an int.
 
-        (since Trac 0.10)
+        (''since 0.10'')
         """
         return self[section].getint(key, default)
 
@@ -121,7 +121,7 @@ class Configuration(object):
 
         Valid default input is a string, float or int. Returns a float.
 
-        (since Trac 0.12)
+        (''since 0.12'')
         """
         return self[section].getfloat(key, default)
 
@@ -135,7 +135,7 @@ class Configuration(object):
 
         Valid default input is a string or a list. Returns a string.
 
-        (since Trac 0.10)
+        (''since 0.10'')
         """
         return self[section].getlist(key, default, sep, keep_empty)
 
@@ -147,7 +147,7 @@ class Configuration(object):
 
         Valid default input is a string. Returns a normalized path.
 
-        (enabled since Trac 0.11.5)
+        (''since 0.11.5'')
         """
         return self[section].getpath(key, default)
 
@@ -203,7 +203,7 @@ class Configuration(object):
         trac.ini or one of the parents, or is available through the Option
         registry.
 
-        (since Trac 0.11)
+        (''since 0.11'')
         """
         section_str = _to_utf8(section)
         if self.parser.has_section(section_str):

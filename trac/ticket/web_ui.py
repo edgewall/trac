@@ -76,36 +76,36 @@ class TicketModule(Component):
 
     timeline_details = BoolOption('timeline', 'ticket_show_details', 'false',
         """Enable the display of all ticket changes in the timeline, not only
-        open / close operations (''since 0.9'').""")
+        open / close operations. (''since 0.9'')""")
 
     timeline_component = BoolOption('timeline', 'ticket_show_component',
                                     'false',
-        """Enable the display of component of tickets in the timeline
-        (''since 1.1.1'').""")
+        """Enable the display of component of tickets in the timeline.
+        (''since 1.1.1'')""")
 
     max_description_size = IntOption('ticket', 'max_description_size', 262144,
         """Maximum allowed description size in characters.
-        (//since 0.11//).""")
+        (//since 0.11//)""")
 
     max_comment_size = IntOption('ticket', 'max_comment_size', 262144,
-        """Maximum allowed comment size in characters. (//since 0.11.2//).""")
+        """Maximum allowed comment size in characters. (//since 0.11.2//)""")
 
     max_summary_size = IntOption('ticket', 'max_summary_size', 262144,
-        """Maximum allowed summary size in characters. (//since 1.0.2//).""")
+        """Maximum allowed summary size in characters. (//since 1.0.2//)""")
 
     timeline_newticket_formatter = Option('timeline', 'newticket_formatter',
                                           'oneliner',
         """Which formatter flavor (e.g. 'html' or 'oneliner') should be
         used when presenting the description for new tickets.
         If 'oneliner', the [timeline] abbreviated_messages option applies.
-        (''since 0.11'').""")
+        (''since 0.11'')""")
 
     preserve_newlines = Option('ticket', 'preserve_newlines', 'default',
         """Whether Wiki formatter should respect the new lines present
         in the Wiki text.
         If set to 'default', this is equivalent to 'yes' for new environments
         but keeps the old behavior for upgraded environments (i.e. 'no').
-        (''since 0.11'').""")
+        (''since 0.11'')""")
 
     ticketlink_query = Option('query', 'ticketlink_query',
         default='?status=!closed',

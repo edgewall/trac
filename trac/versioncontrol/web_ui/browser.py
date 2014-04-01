@@ -241,7 +241,7 @@ class BrowserModule(Component):
         scripting attacks.
 
         For open repositories where anyone can check-in a file, it is
-        recommended to leave this option disabled (which is the default).""")
+        recommended to leave this option disabled.""")
 
     hidden_properties = ListOption('browser', 'hide_properties', 'svk:merge',
         doc="""Comma-separated list of version control properties to hide from

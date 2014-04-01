@@ -65,7 +65,7 @@ class PHPRenderer(Component):
     implements(IHTMLPreviewRenderer)
 
     path = Option('mimeviewer', 'php_path', 'php',
-        """Path to the PHP executable (''since 0.9'').""")
+        """Path to the PHP executable. (''since 0.9'')""")
 
     returns_source = True
 

@@ -318,12 +318,9 @@ class PermissionSystem(Component):
         IPermissionPolicy,
         'ReadonlyWikiPolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy',
         False,
-        """List of components implementing `IPermissionPolicy`, in the order in
-        which they will be applied. These components manage fine-grained access
-        control to Trac resources.
-        Defaults to the DefaultPermissionPolicy (pre-0.11 behavior) and
-        LegacyAttachmentPolicy (map ATTACHMENT_* permissions to realm specific
-        ones)""")
+        """List of components implementing `IPermissionPolicy`, in the order
+        in which they will be applied. These components manage fine-grained
+        access control to Trac resources.""")
 
     # Number of seconds a cached user permission set is valid for.
     CACHE_EXPIRY = 5

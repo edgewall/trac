@@ -107,8 +107,8 @@ class CommitTicketUpdater(Component):
     envelope = Option('ticket', 'commit_ticket_update_envelope', '',
         """Require commands to be enclosed in an envelope.
 
-        Must be empty or contain two characters. For example, if set to "[]",
-        then commands must be in the form of [closes #4].""")
+        Must be empty or contain two characters. For example, if set to `[]`,
+        then commands must be in the form of `[closes #4]`.""")
 
     commands_close = Option('ticket', 'commit_ticket_update_commands.close',
         'close closed closes fix fixed fixes',
@@ -118,7 +118,7 @@ class CommitTicketUpdater(Component):
         'addresses re references refs see',
         """Commands that add a reference, as a space-separated list.
 
-        If set to the special value <ALL>, all tickets referenced by the
+        If set to the special value `<ALL>`, all tickets referenced by the
         message will get a reference to the changeset.""")
 
     check_perms = BoolOption('ticket', 'commit_ticket_update_check_perms',

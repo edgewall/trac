@@ -369,10 +369,9 @@ class Chrome(Component):
 
     genshi_cache_size = IntOption('trac', 'genshi_cache_size', 128,
         """The maximum number of templates that the template loader will cache
-        in memory. The default value is 128. You may want to choose a higher
-        value if your site uses a larger number of templates, and you have
-        enough memory to spare, or you can reduce it if you are short on
-        memory.""")
+        in memory. You may want to choose a higher value if your site uses a
+        larger number of templates, and you have enough memory to spare, or
+        you can reduce it if you are short on memory.""")
 
     htdocs_location = Option('trac', 'htdocs_location', '',
         """Base URL for serving the core static resources below
@@ -470,8 +469,8 @@ class Chrome(Component):
     never_obfuscate_mailto = BoolOption('trac', 'never_obfuscate_mailto',
         'false',
         """Never obfuscate `mailto:` links explicitly written in the wiki,
-        even if `show_email_addresses` is false or the user has not the
-        EMAIL_VIEW permission (''since 0.11.6'').""")
+        even if `show_email_addresses` is false or the user doesn't have
+        EMAIL_VIEW permission. (''since 0.11.6'')""")
 
     show_ip_addresses = BoolOption('trac', 'show_ip_addresses', 'false',
         """Show IP addresses for resource edits (e.g. wiki).
@@ -489,8 +488,7 @@ class Chrome(Component):
         """Inactivity timeout in seconds after which the automatic wiki preview
         triggers an update. This option can contain floating-point values. The
         lower the setting, the more requests will be made to the server. Set
-        this to 0 to disable automatic preview. The default is 2.0 seconds.
-        (''since 0.12'')""")
+        this to 0 to disable automatic preview. (''since 0.12'')""")
 
     default_dateinfo_format = Option('trac', 'default_dateinfo_format',
         'relative',

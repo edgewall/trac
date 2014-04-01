@@ -127,7 +127,7 @@ class WikiProcessor(object):
         :param name: the name of the processor
         :param args: extra parameters for the processor
 
-        (since 0.11)
+        (''since 0.11'')
         """
         self.formatter = formatter
         self.env = formatter.env

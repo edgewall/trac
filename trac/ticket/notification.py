@@ -38,7 +38,7 @@ class TicketNotificationSystem(Component):
 
     always_notify_owner = BoolOption('notification', 'always_notify_owner',
                                      'false',
-        """Always send notifications to the ticket owner (''since 0.9'').""")
+        """Always send notifications to the ticket owner. (''since 0.9'')""")
 
     always_notify_reporter = BoolOption('notification',
                                         'always_notify_reporter',
@@ -53,18 +53,15 @@ class TicketNotificationSystem(Component):
 
     ticket_subject_template = Option('notification', 'ticket_subject_template',
                                      '$prefix #$ticket.id: $summary',
-        """A Genshi text template snippet used to get the notification subject.
-
-        By default, the subject template is `$prefix #$ticket.id: $summary`.
-        `$prefix` being the value of the `smtp_subject_prefix` option.
-        ''(since 0.11)''""")
+        """A Genshi text template snippet used to get the notification
+        subject. The template variables are documented on the
+        [TracNotification#Customizingthee-mailsubject TracNotification] page.
+        (''since 0.11'')""")
 
     batch_subject_template = Option('notification', 'batch_subject_template',
                                     '$prefix Batch modify: $tickets_descr',
-        """Like ticket_subject_template but for batch modifications.
-
-        By default, the template is `$prefix Batch modify: $tickets_descr`.
-        ''(since 1.0)''""")
+        """Like `ticket_subject_template` but for batch modifications.
+        (''since 1.0'')""")
 
     ambiguous_char_width = Option('notification', 'ambiguous_char_width',
                                   'single',
@@ -73,8 +70,8 @@ class TicketNotificationSystem(Component):
 
         If 'single', the same width as characters in US-ASCII. This is
         expected by most users. If 'double', twice the width of
-        US-ASCII characters.  This is expected by CJK users. ''(since
-        0.12.2)''""")
+        US-ASCII characters.  This is expected by CJK users. (''since
+        0.12.2'')""")
 
 
 def get_ticket_notification_recipients(env, config, tktid, prev_cc=None,

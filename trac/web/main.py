@@ -94,8 +94,8 @@ class RequestDispatcher(Component):
 
     filters = OrderedExtensionsOption('trac', 'request_filters',
                                       IRequestFilter,
-        doc="""Ordered list of filters to apply to all requests
-            (''since 0.10'').""")
+        doc="""Ordered list of filters to apply to all requests.
+            (''since 0.10'')""")
 
     default_handler = ExtensionOption('trac', 'default_handler',
                                       IRequestHandler, 'WikiModule',
@@ -104,7 +104,7 @@ class RequestDispatcher(Component):
 
         Options include `TimelineModule`, `RoadmapModule`,
         `BrowserModule`, `QueryModule`, `ReportModule`, `TicketModule`
-        and `WikiModule`. The default is `WikiModule`. (''since 0.9'')""")
+        and `WikiModule`. (''since 0.9'')""")
 
     default_timezone = Option('trac', 'default_timezone', '',
         """The default timezone to use""")

@@ -255,20 +255,21 @@ class WikiSystem(Component):
     syntax_providers = ExtensionPoint(IWikiSyntaxProvider)
 
     ignore_missing_pages = BoolOption('wiki', 'ignore_missing_pages', 'false',
-        """Enable/disable highlighting CamelCase links to missing pages
-        (''since 0.9'').""")
+        """Enable/disable highlighting CamelCase links to missing pages.
+        (''since 0.9'')""")
 
     split_page_names = BoolOption('wiki', 'split_page_names', 'false',
-        """Enable/disable splitting the WikiPageNames with space characters
-        (''since 0.10'').""")
+        """Enable/disable splitting the WikiPageNames with space characters.
+        (''since 0.10'')""")
 
     render_unsafe_content = BoolOption('wiki', 'render_unsafe_content', 'false',
         """Enable/disable the use of unsafe HTML tags such as `<script>` or
-        `<embed>` with the HTML [wiki:WikiProcessors WikiProcessor]
-        (''since 0.10.4'').
+        `<embed>` with the HTML [wiki:WikiProcessors WikiProcessor].
 
         For public sites where anonymous users can edit the wiki it is
-        recommended to leave this option disabled (which is the default).""")
+        recommended to leave this option disabled.
+
+        (''since 0.10.4'')""")
 
     safe_schemes = ListOption('wiki', 'safe_schemes',
         'cvs, file, ftp, git, irc, http, https, news, sftp, smb, ssh, svn, '

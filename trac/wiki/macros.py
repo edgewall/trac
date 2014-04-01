@@ -496,7 +496,7 @@ class ImageMacro(WikiMacroBase):
     [[Image(ticket:36:boo.jpg)]]    # from another ticket (long form)
     [[Image(source:/img/bee.jpg)]]  # from the repository
     [[Image(htdocs:foo/bar.png)]]   # from project htdocs dir
-    [[Image(shared:foo/bar.png)]]   # from shared htdocs dir (since 1.0.2)
+    [[Image(shared:foo/bar.png)]]   # from shared htdocs dir (''since 1.0.2'')
     }}}
 
     ''Adapted from the Image.py macro created by Shun-ichi Goto

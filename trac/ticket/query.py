@@ -1234,7 +1234,7 @@ class TicketQueryMacro(WikiMacroBase):
        list of ticket IDs.
      - '''count''' -- only the count of matching tickets is displayed
      - '''rawcount''' -- only the count of matching tickets is displayed,
-       not even with a link to the corresponding query //(since 1.1.1)//
+       not even with a link to the corresponding query (//since 1.1.1//)
      - '''table'''  -- a view similar to the custom query view (but without
        the controls)
      - '''progress''' -- a view similar to the milestone progress bars
