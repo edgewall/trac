@@ -159,6 +159,30 @@ class TestAddUserToGroup(FunctionalTwillTestCaseSetup):
         somegroup = unicode_to_base64('somegroup')
         tc.find('%s:%s' % (authenticated, somegroup))
 
+        revoke_checkbox = '%s:%s' % (unicode_to_base64('anonymous'),
+                                     unicode_to_base64('PERMISSION_GRANT'))
+        tc.formvalue('addperm', 'gp_subject', 'anonymous')
+        tc.formvalue('addperm', 'action', 'PERMISSION_GRANT')
+        tc.submit()
+        tc.find(revoke_checkbox)
+        self._testenv.get_trac_environment().config.touch()
+        self._tester.logout()
+        self._tester.go_to_admin("Permissions")
+        try:
+            tc.formvalue('addsubj', 'sg_subject', 'someuser')
+            tc.formvalue('addsubj', 'sg_group', 'authenticated')
+            tc.submit()
+            tc.find("The subject someuser was not added to the "
+                    "group authenticated because the group has "
+                    "TICKET_CHGPROP permission and users cannot "
+                    "grant permissions they don't possess.")
+        finally:
+            self._tester.login('admin')
+            self._tester.go_to_admin("Permissions")
+            tc.formvalue('revokeform', 'sel', revoke_checkbox)
+            tc.submit()
+            tc.notfind(revoke_checkbox)
+
 
 class TestRemoveUserFromGroup(FunctionalTwillTestCaseSetup):
     def runTest(self):

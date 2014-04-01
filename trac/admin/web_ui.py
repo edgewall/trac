@@ -399,7 +399,13 @@ class PermissionAdminPanel(Component):
                             "Permission %s unavailable, skipping perm check.",
                             subject, group, action)
                     else:
-                        req.perm.require(action)
+                        req.perm.require(action,
+                            message=_("The subject %(subject)s was not added "
+                                      "to the group %(group)s because the "
+                                      "group has %(perm)s permission and "
+                                      "users cannot grant permissions they "
+                                      "don't possess.", subject=subject,
+                                      group=group, perm=action))
                 if (subject, group) not in all_permissions:
                     perm.grant_permission(subject, group)
                     add_notice(req, _("The subject %(subject)s has been added "
