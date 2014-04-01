@@ -48,7 +48,7 @@ from trac.util.text import exception_to_unicode, shorten_line, to_unicode
 from trac.util.translation import _, get_negotiated_locale, has_babel, \
                                   safefmt, tag_
 from trac.web.api import *
-from trac.web.chrome import Chrome, add_warning
+from trac.web.chrome import Chrome, add_notice, add_warning
 from trac.web.href import Href
 from trac.web.session import Session
 
@@ -544,9 +544,8 @@ def _send_user_error(req, env, e):
     if e.code == 403 and req.authname == 'anonymous':
         # TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
         do_so = tag.a(_("do so"), href=req.href.login())
-        req.chrome['notices'].append(
-            tag_("You are currently not logged in. You may want to "
-                 "%(do_so)s now.", do_so=do_so))
+        add_notice(req, tag_("You are currently not logged in. You may want "
+                             "to %(do_so)s now.", do_so=do_so))
     try:
         req.send_error(sys.exc_info(), status=e.code, env=env, data=data)
     except RequestDone:
