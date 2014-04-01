@@ -256,7 +256,7 @@ class RequestDispatcher(Component):
                                    exception_to_unicode(e, traceback=True))
                 raise err[0], err[1], err[2]
         except PermissionError, e:
-            raise HTTPForbidden(to_unicode(e))
+            raise HTTPForbidden(e)
         except ResourceNotFound, e:
             raise HTTPNotFound(e)
         except TracError, e:
@@ -533,9 +533,9 @@ def _send_user_error(req, env, e):
     # The message is based on the e.detail, which can be an Exception
     # object, but not a TracError one: when creating HTTPException,
     # a TracError.message is directly assigned to e.detail
-    if isinstance(e.detail, Exception): # not a TracError
+    if isinstance(e.detail, Exception): # not a TracError or PermissionError
         message = exception_to_unicode(e.detail)
-    elif isinstance(e.detail, Fragment): # markup coming from a TracError
+    elif isinstance(e.detail, Fragment): # TracError or PermissionError markup
         message = e.detail
     else:
         message = to_unicode(e.detail)

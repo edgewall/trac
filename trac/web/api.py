@@ -30,6 +30,7 @@ import sys
 import urlparse
 
 from trac.core import Interface, TracError
+from trac.perm import PermissionError
 from trac.util import get_last_traceback, unquote
 from trac.util.datefmt import http_date, localtz
 from trac.util.text import empty, to_unicode
@@ -131,7 +132,7 @@ HTTP_STATUS = dict([(code, reason.title()) for code, (reason, description)
 class HTTPException(Exception):
 
     def __init__(self, detail, *args):
-        if isinstance(detail, TracError):
+        if isinstance(detail, (TracError, PermissionError)):
             self.detail = detail.message
             self.reason = detail.title
         else:
