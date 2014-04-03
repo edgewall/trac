@@ -290,18 +290,6 @@ class Environment(Component, ComponentManager):
     def get_systeminfo(self):
         """Return a list of `(name, version)` tuples describing the name
         and version information of external packages used by Trac and plugins.
-
-        :deprecated: since 1.1.2 and will be removed in 1.4. The
-                     `system_info` property should be accessed instead.
-        """
-        return self.system_info
-
-    @property
-    def system_info(self):
-        """List of `(name, version)` tuples describing the name and version
-        information of external packages used by Trac and plugins.
-
-        :since: version 1.1.2
         """
         info = self.systeminfo[:]
         for provider in self.system_info_providers:
@@ -309,10 +297,9 @@ class Environment(Component, ComponentManager):
         info.sort(key=lambda (name, version): (name != 'Trac', name.lower()))
         return info
 
-    @property
-    def config_info(self):
-        """List of dictionaries containing the `name` and `options` of each
-        configuration section. The value of `options` is a list of
+    def get_configinfo(self):
+        """Returns a list of dictionaries containing the `name` and `options`
+        of each configuration section. The value of `options` is a list of
         dictionaries containing the `name`, `value` and `modified` state of
         each configuration option. The `modified` value is True if the value
         differs from its default.

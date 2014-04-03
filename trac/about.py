@@ -61,7 +61,7 @@ class AboutModule(Component):
 
         if 'CONFIG_VIEW' in req.perm('config', 'systeminfo'):
             # Collect system information
-            data['systeminfo'] = self.env.system_info
+            data['systeminfo'] = self.env.get_systeminfo()
             Chrome(self.env).add_jquery_ui(req)
 
         if 'CONFIG_VIEW' in req.perm('config', 'plugins'):
@@ -70,6 +70,6 @@ class AboutModule(Component):
 
         if 'CONFIG_VIEW' in req.perm('config', 'ini'):
             # Collect config information
-            data['config'] = self.env.config_info
+            data['config'] = self.env.get_configinfo()
 
         return 'about.html', data, None
