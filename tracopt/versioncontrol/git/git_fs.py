@@ -550,10 +550,7 @@ class GitNode(Node):
         self.fs_perm = None
         self.fs_size = None
         rev = unicode(rev) if rev else 'HEAD'
-        try:
-            rev = repos.normalize_rev(rev)
-        except NoSuchChangeset:
-            raise NoSuchNode(path, rev)
+        rev = repos.normalize_rev(rev)
 
         kind = Node.DIRECTORY
         p = path.strip('/')

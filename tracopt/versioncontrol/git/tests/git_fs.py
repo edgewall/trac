@@ -23,8 +23,8 @@ from trac.tests.compat import rmtree
 from trac.util import create_file
 from trac.util.compat import close_fds
 from trac.util.datefmt import to_timestamp, utc
-from trac.versioncontrol.api import DbRepositoryProvider, NoSuchNode, \
-                                    RepositoryManager
+from trac.versioncontrol.api import DbRepositoryProvider, NoSuchChangeset, \
+                                    NoSuchNode, RepositoryManager
 from tracopt.versioncontrol.git.git_fs import GitConnector
 
 
@@ -225,12 +225,15 @@ class GitNormalTestCase(BaseTestCase):
         self.assertEqual(rev, repos.get_node('/.gitignore').rev)
         self.assertEqual(rev, repos.get_node('/.gitignore', rev[:7]).rev)
 
-        self.assertRaises(NoSuchNode, repos.get_node, '/', 'invalid-revision')
-        self.assertRaises(NoSuchNode, repos.get_node, '/.gitignore',
-                          'invalid-revision')
+        self.assertRaises(NoSuchNode, repos.get_node, '/non-existent')
+        self.assertRaises(NoSuchNode, repos.get_node, '/non-existent', rev[:7])
         self.assertRaises(NoSuchNode, repos.get_node, '/non-existent', rev)
-        self.assertRaises(NoSuchNode, repos.get_node, '/non-existent',
-                          'invalid-revision')
+        self.assertRaises(NoSuchChangeset,
+                          repos.get_node, '/', 'invalid-revision')
+        self.assertRaises(NoSuchChangeset,
+                          repos.get_node, '/.gitignore', 'invalid-revision')
+        self.assertRaises(NoSuchChangeset,
+                          repos.get_node, '/non-existent', 'invalid-revision')
 
         # git_fs doesn't support non-ANSI strings on Windows
         if os.name != 'nt':
