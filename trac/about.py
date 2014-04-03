@@ -25,7 +25,7 @@ from trac.core import *
 from trac.loader import get_plugin_info
 from trac.perm import IPermissionRequestor
 from trac.util.translation import _
-from trac.web import IRequestHandler
+from trac.web.api import IRequestHandler
 from trac.web.chrome import Chrome, INavigationContributor
 
 
@@ -44,7 +44,7 @@ class AboutModule(Component):
 
     def get_navigation_items(self, req):
         yield ('metanav', 'about',
-               tag.a(_('About Trac'), href=req.href.about()))
+               tag.a(_("About Trac"), href=req.href.about()))
 
     # IPermissionRequestor methods
 
