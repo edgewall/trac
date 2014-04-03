@@ -37,11 +37,6 @@
        $("#traceback ul").show();
        $("#traceback pre").hide();
        $("#tbtoggle").parent().show();
-
-       $("#systeminfo").append("<tr><th>jQuery</th><td>"+$().jquery+"</td></tr>" +
-                               "<tr><th>jQuery UI</th><td>"+$.ui.version+"</td></tr>" +
-                               "<tr><th>jQuery Timepicker</th><td>"+$.timepicker.version+"</td></tr>");
-       $("#systeminfo").before("<p>User Agent: <code>" + navigator.userAgent + "</code></p>");
       });
     /*]]>*/</script>
     <script type="text/javascript">/*<![CDATA[*/
@@ -179,25 +174,7 @@ ${description_en if url else description}</textarea>
                   <p style="display: none"><input type="button" id="tbtoggle" value="${_('Switch to plain text view')}" /></p>
                 </div>
               </py:if>
-              <h2>System Information:</h2>
-              <table class="listing" id="systeminfo">
-                <tr py:for="name, value in get_systeminfo()">
-                  <th>$name</th>
-                  <td>$value</td>
-                </tr>
-              </table>
-              <py:if test="plugins">
-                <h2>Enabled Plugins:</h2>
-                <table class="listing" id="plugins">
-                  <tr py:for="plugin in plugins">
-                    <th py:with="url = plugin.info.home_page or plugin.info.author_email and 'mailto:' + plugin.info.author_email">
-                      <a py:strip="not url" href="$url">$plugin.name</a>
-                    </th>
-                    <td>${plugin.version or _('N/A')}</td>
-                    <td class="file"><a py:strip="'frame_idx' not in plugin" href="#frame$plugin.frame_idx">$plugin.path</a></td>
-                  </tr>
-                </table>
-              </py:if>
+              <xi:include href="environment_info.html" py:with="systeminfo = get_systeminfo()"/>
             </py:otherwise>
           </py:choose>
         </py:when>

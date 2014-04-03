@@ -288,15 +288,52 @@ class Environment(Component, ComponentManager):
                 setup_participant.environment_created()
 
     def get_systeminfo(self):
-        """Return a list of `(name, version)` tuples describing the
-        name and version information of external packages used by Trac
-        and plugins.
+        """Return a list of `(name, version)` tuples describing the name
+        and version information of external packages used by Trac and plugins.
+
+        :deprecated: since 1.1.2 and will be removed in 1.4. The
+                     `system_info` property should be accessed instead.
+        """
+        return self.system_info
+
+    @property
+    def system_info(self):
+        """List of `(name, version)` tuples describing the name and version
+        information of external packages used by Trac and plugins.
+
+        :since: version 1.1.2
         """
         info = self.systeminfo[:]
         for provider in self.system_info_providers:
             info.extend(provider.get_system_info() or [])
         info.sort(key=lambda (name, version): (name != 'Trac', name.lower()))
         return info
+
+    @property
+    def config_info(self):
+        """List of dictionaries containing the `name` and `options` of each
+        configuration section. The value of `options` is a list of
+        dictionaries containing the `name`, `value` and `modified` state of
+        each configuration option. The `modified` value is True if the value
+        differs from its default.
+
+        :since: version 1.1.2
+        """
+        defaults = self.config.defaults(self.compmgr)
+        sections = []
+        for section in self.config.sections(self.compmgr):
+            options = []
+            default_options = defaults.get(section, {})
+            for name, value in self.config.options(section, self.compmgr):
+                default = default_options.get(name) or ''
+                options.append({
+                    'name': name, 'value': value,
+                    'modified': unicode(value) != unicode(default)
+                })
+            options.sort(key=lambda o: o['name'])
+            sections.append({'name': section, 'options': options})
+        sections.sort(key=lambda s: s['name'])
+        return sections
 
     # ISystemInfoProvider methods
 

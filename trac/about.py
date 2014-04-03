@@ -26,7 +26,7 @@ from trac.loader import get_plugin_info
 from trac.perm import IPermissionRequestor
 from trac.util.translation import _
 from trac.web import IRequestHandler
-from trac.web.chrome import Chrome, INavigationContributor, add_stylesheet
+from trac.web.chrome import Chrome, INavigationContributor
 
 
 class AboutModule(Component):
@@ -61,7 +61,7 @@ class AboutModule(Component):
 
         if 'CONFIG_VIEW' in req.perm('config', 'systeminfo'):
             # Collect system information
-            data['systeminfo'] = self.env.get_systeminfo()
+            data['systeminfo'] = self.env.system_info
             Chrome(self.env).add_jquery_ui(req)
 
         if 'CONFIG_VIEW' in req.perm('config', 'plugins'):
@@ -70,21 +70,6 @@ class AboutModule(Component):
 
         if 'CONFIG_VIEW' in req.perm('config', 'ini'):
             # Collect config information
-            defaults = self.config.defaults(self.compmgr)
-            sections = []
-            for section in self.config.sections(self.compmgr):
-                options = []
-                default_options = defaults.get(section, {})
-                for name, value in self.config.options(section, self.compmgr):
-                    default = default_options.get(name) or ''
-                    options.append({
-                        'name': name, 'value': value,
-                        'modified': unicode(value) != unicode(default)
-                    })
-                options.sort(key=lambda o: o['name'])
-                sections.append({'name': section, 'options': options})
-            sections.sort(key=lambda s: s['name'])
-            data['config'] = sections
+            data['config'] = self.env.config_info
 
-        add_stylesheet(req, 'common/css/about.css')
         return 'about.html', data, None

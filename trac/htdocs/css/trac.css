@@ -796,11 +796,6 @@ div.system-message .trac-close-msg:hover {
 #content.error form.newticket { display: inline; }
 #content.error form.newticket textarea { display: none; }
 
-#content.error #systeminfo, #content.error #plugins { margin: 1em; width: auto; }
-#content.error #systeminfo th, #content.error #systeminfo td,
-#content.error #plugins th, #content.error #plugins td { font-size: 90%; }
-#content.error #systeminfo th, #content.error #plugins th { background: #f7f7f7; font-weight: bold; }
-
 #content.error #traceback { margin-left: 1em; }
 #content.error #traceback :link, #content.error #traceback :visited {
   border: none;
@@ -827,8 +822,6 @@ div.system-message .trac-close-msg:hover {
 }
 #content.error #traceback td code { white-space: pre; }
 #content.error #traceback pre { font-size: 95%; }
-
-#content.error #plugins td.file { color: #666; }
 
 #content .paging { margin: 0 0 2em; padding: .5em 0 0;
   font-size: 85%; line-height: 2em; text-align: center;
@@ -857,6 +850,25 @@ div.system-message .trac-close-msg:hover {
 }
 
 #content h2 .numresults { color: #666; font-size: 90%; }
+
+/* Styles for the About page */
+#content.about a.logo { border: none; float: right; margin-left: 2em; }
+#content.about a.logo img { display: block; }
+#content.about #python-logo img { width: 140px; height: 56px; }
+#content.about p.copyright { color: #999; font-size: 90%; }
+
+/* Styles for environment info (error and about pages) */
+#environmentinfo h2 { margin-top: 2em; }
+#environmentinfo table { margin: 1em; width: auto; }
+#environmentinfo table th, #environmentinfo table td { border: 1px solid #ddd; font-size: 90%; }
+#environmentinfo table th { background: #f7f7f7; font-weight: bold; white-space: nowrap; }
+#environmentinfo table td.file { color: #666; }
+#environmentinfo table tr.disabled th,
+#environmentinfo table tr.disabled td { color: #999; }
+#environmentinfo #config th, #content.about #config td { padding: 3px; }
+#environmentinfo #config tr.modified { background: #ffd; }
+#environmentinfo #config tr.modified td.value { font-style: italic; }
+#environmentinfo #config td.doc { padding: 3px 1em; }
 
 /* Styles for search word highlighting */
 @media screen {
