@@ -29,7 +29,7 @@ from trac.cache import CacheManager
 from trac.config import BoolOption, ConfigSection, Configuration, Option, \
                         PathOption
 from trac.core import Component, ComponentManager, implements, Interface, \
-                      ExtensionPoint, TracError
+                      ExtensionPoint, TracBaseError, TracError
 from trac.db.api import (DatabaseManager, QueryContextManager,
                          TransactionContextManager, with_transaction)
 from trac.util import copytree, create_file, get_pkginfo, lazy, makedirs, \
@@ -96,7 +96,7 @@ class IEnvironmentSetupParticipant(Interface):
         """
 
 
-class BackupError(RuntimeError):
+class BackupError(TracBaseError, RuntimeError):
     """Exception raised during an upgrade when the DB backup fails."""
 
 

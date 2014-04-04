@@ -17,7 +17,7 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 
 __all__ = ['Component', 'ExtensionPoint', 'implements', 'Interface',
-           'TracError']
+           'TracBaseError', 'TracError']
 
 
 def N_(string):
@@ -27,10 +27,14 @@ def N_(string):
     return string
 
 
-class TracError(Exception):
-    """Exception base class for errors in Trac."""
+class TracBaseError(Exception):
+    """Base class for all exceptions defined in Trac."""
 
     title = N_('Trac Error')
+
+
+class TracError(TracBaseError):
+    """Standard exception for errors in Trac."""
 
     def __init__(self, message, title=None, show_traceback=False):
         """If message is a genshi.builder.tag object, everything up to

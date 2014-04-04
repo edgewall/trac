@@ -28,13 +28,14 @@ from threading import Lock
 import time
 import weakref
 
+from trac.core import TracBaseError
 from trac.util import terminate
 from trac.util.text import to_unicode
 
 __all__ = ['GitError', 'GitErrorSha', 'Storage', 'StorageFactory']
 
 
-class GitError(Exception):
+class GitError(TracBaseError):
     pass
 
 class GitErrorSha(GitError):

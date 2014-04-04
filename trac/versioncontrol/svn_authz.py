@@ -43,7 +43,7 @@ def join(*args):
     return '/'.join(arg for arg in args if arg)
 
 
-class ParseError(Exception):
+class ParseError(TracBaseError):
     """Exception thrown for parse errors in authz files"""
 
 

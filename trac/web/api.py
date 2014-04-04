@@ -30,7 +30,7 @@ import sys
 import urlparse
 
 from genshi.builder import Fragment
-from trac.core import Interface, TracError
+from trac.core import Interface, TracBaseError, TracError
 from trac.perm import PermissionError
 from trac.util import get_last_traceback, unquote
 from trac.util.datefmt import http_date, localtz
@@ -152,10 +152,10 @@ HTTP_STATUS = dict([(code, reason.title()) for code, (reason, description)
                     in BaseHTTPRequestHandler.responses.items()])
 
 
-class HTTPException(Exception):
+class HTTPException(TracBaseError):
 
     def __init__(self, detail, *args):
-        if isinstance(detail, (TracError, PermissionError)):
+        if isinstance(detail, TracBaseError):
             self.detail = detail.message
             self.reason = detail.title
         else:
@@ -170,9 +170,9 @@ class HTTPException(Exception):
         # The message is based on the e.detail, which can be an Exception
         # object, but not a TracError one: when creating HTTPException,
         # a TracError.message is directly assigned to e.detail
-        if isinstance(self.detail, Exception): # not a TracError or PermissionError
+        if isinstance(self.detail, Exception): # not a TracBaseError
             message = exception_to_unicode(self.detail)
-        elif isinstance(self.detail, Fragment): # TracError or PermissionError markup
+        elif isinstance(self.detail, Fragment): # TracBaseError markup
             message = self.detail
         else:
             message = to_unicode(self.detail)
@@ -297,7 +297,7 @@ def arg_list_to_args(arg_list):
     return args
 
 
-class RequestDone(Exception):
+class RequestDone(TracBaseError):
     """Marker exception that indicates whether request processing has completed
     and a response was sent.
     """

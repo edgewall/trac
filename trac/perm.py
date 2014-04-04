@@ -36,7 +36,7 @@ __all__ = ['IPermissionRequestor', 'IPermissionStore', 'IPermissionPolicy',
            'IPermissionGroupProvider', 'PermissionError', 'PermissionSystem']
 
 
-class PermissionError(StandardError):
+class PermissionError(TracBaseError, StandardError):
     """Insufficient permissions to complete the operation"""
 
     title = N_("Forbidden")
