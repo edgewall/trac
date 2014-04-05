@@ -288,16 +288,18 @@ class LoggingAdminPanel(Component):
         log_dir = os.path.join(self.env.path, 'log')
 
         log_types = [
-            dict(name='none', label=_("None"), selected=log_type == 'none', disabled=False),
+            dict(name='none', label=_("None"),
+                 selected=log_type == 'none', disabled=False),
             dict(name='stderr', label=_("Console"),
                  selected=log_type == 'stderr', disabled=False),
-            dict(name='file', label=_("File"), selected=log_type == 'file',
-                 disabled=False),
-            dict(name='syslog', label=_("Syslog"), disabled=os.name != 'posix',
-                 selected=log_type in ('unix', 'syslog')),
+            dict(name='file', label=_("File"),
+                 selected=log_type == 'file', disabled=False),
+            dict(name='syslog', label=_("Syslog"),
+                 selected=log_type in ('unix', 'syslog'),
+                 disabled=os.name != 'posix'),
             dict(name='eventlog', label=_("Windows event log"),
-                 disabled=os.name != 'nt',
-                 selected=log_type in ('winlog', 'eventlog', 'nteventlog')),
+                 selected=log_type in ('winlog', 'eventlog', 'nteventlog'),
+                 disabled=os.name != 'nt'),
         ]
 
         log_levels = ['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG']
