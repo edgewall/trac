@@ -283,20 +283,30 @@ class WikiPageTestCase(unittest.TestCase):
             self.assertRaises(TracError, page.rename, name)
 
     def test_invalid_version(self):
-        data = (1, 42, 'joe', '::1', 'Bla bla', 'Testing', 0)
-        self.env.db_transaction(
-            "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
-            ('TestPage',) + data)
+        data = [(1, 42, 'joe', '::1', 'First revision', 'Rev1', 0),
+                (2, 42, 'joe', '::1', 'Second revision', 'Rev2', 0)]
+        with self.env.db_transaction as db:
+            for d in data:
+                db("INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
+                   ('TestPage',) + d)
 
-        self.assertRaises(ValueError, WikiPage, self.env,
-                          'TestPage', '1abc')
+        page = WikiPage(self.env, 'TestPage', '1abc')
+        self.assertEqual(2, page.version)
 
         resource = Resource('wiki', 'TestPage')
-        self.assertRaises(ValueError, WikiPage, self.env,
-                          resource, '1abc')
+        page = WikiPage(self.env, resource, '1abc')
+        self.assertEqual(2, page.version)
 
         resource = Resource('wiki', 'TestPage', '1abc')
         page = WikiPage(self.env, resource)
+        self.assertEqual(2, page.version)
+
+        resource = Resource('wiki', 'TestPage', 1)
+        page = WikiPage(self.env, resource)
+        self.assertEqual(1, page.version)
+
+        resource = Resource('wiki', 'TestPage', 2)
+        page = WikiPage(self.env, resource, 1)
         self.assertEqual(1, page.version)
 
 

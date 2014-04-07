@@ -33,14 +33,34 @@ class WikiPage(object):
     realm = 'wiki'
 
     def __init__(self, env, name=None, version=None, db=None):
+        """Create a new page object or retrieves an existing page.
+
+        :param env: an `Environment` object.
+        :param name: the page name or a `Resource` object.
+        :param version: the page version. The value takes precedence over the
+                        `Resource` version when both are specified.
+
+        :since 1.0: the `db` parameter is no longer needed and will be removed
+        in version 1.1.1
+        """
         self.env = env
+        if version:
+            try:
+                version = int(version)
+            except ValueError:
+                version = None
+
         if isinstance(name, Resource):
             self.resource = name
             name = self.resource.id
+            if version is None and self.resource.version is not None:
+                try:
+                    version = int(self.resource.version)
+                except ValueError:
+                    version = None
         else:
-            if version:
-                version = int(version) # must be a number or None
             self.resource = Resource('wiki', name, version)
+
         self.name = name
         if name:
             self._fetch(name, version, db)
