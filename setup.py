@@ -141,6 +141,7 @@ facilities.
         trac.versioncontrol.svn_authz = trac.versioncontrol.svn_authz
         trac.versioncontrol.web_ui = trac.versioncontrol.web_ui
         trac.web.auth = trac.web.auth
+        trac.web.main = trac.web.main
         trac.web.session = trac.web.session
         trac.wiki.admin = trac.wiki.admin
         trac.wiki.interwiki = trac.wiki.interwiki
