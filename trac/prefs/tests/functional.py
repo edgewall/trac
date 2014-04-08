@@ -134,9 +134,6 @@ class RegressionTestTicket11531(FunctionalTwillTestCaseSetup):
     """Test for regression of http://trac.edgewall.org/ticket/11531
     PreferencesModule can be set as the default_handler."""
     def runTest(self):
-        # Remove after change in #11520 is committed
-        self._testenv.set_config('trac', 'default_handler',
-                                 'WikiModule')
         default_handler = self._testenv.get_config('trac', 'default_handler')
         self._testenv.set_config('trac', 'default_handler',
                                  'PreferencesModule')
