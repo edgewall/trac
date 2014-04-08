@@ -1,39 +1,48 @@
-<!--!
-       changes   - a list of diff items, each being a dict containing information about
-                   changes for one file:
-                     .href         - link for the title (optional)
-                     .title        - tooltip for the title link (optional)
-                     .comments     - annotation for the change (optional)
-                     .new and .old - information about the files being diffed
-                       .path         - path of the file
-                       .rev          - rev of the file (for 'sidebyside')
-                       .shortrev     - abbreviated form of rev of the file (for 'inline')
-                       .href         - link to the full file (optional)
-                     .props        - a list of property changes
-                       .name         - name of the property
-                       .diff         - rendered difference
-                       .old          - old value of the property
-                       .new          - new value for the property
-                       (both .old and .new have .name, .value and .rendered properties)
-                     .diffs        - a sequence of list of blocks
+<!--!  Copyright (C) 2006-2014 Edgewall Software
 
-                       Each block being a dict:
-                       .type         - one of 'unmod', 'add', 'rem' or 'mod'
-                       .base and .changed - information about lines from old and new content
-                         .lines              - the lines
-                         .offset             - position within the file
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at http://trac.edgewall.com/license.html.
 
-                     .diffs_title  - a sequence of titles for the list of blocks
-                                     Note: integrate this into .diffs for 0.12 or 1.0.
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at http://trac.edgewall.org/.
 
-       diff      - dict specifying diff style and options
-                     .style     - can be 'sidebyside' (4 columns) or 'inline' (3 columns)
-                     .options   - contexlines, various ignore...
+Arguments:
+ - changes   - a list of diff items, each being a dict containing information about
+              changes for one file:
+                .href         - link for the title (optional)
+                .title        - tooltip for the title link (optional)
+                .comments     - annotation for the change (optional)
+                .new and .old - information about the files being diffed
+                  .path         - path of the file
+                  .rev          - rev of the file (for 'sidebyside')
+                  .shortrev     - abbreviated form of rev of the file (for 'inline')
+                  .href         - link to the full file (optional)
+                .props        - a list of property changes
+                  .name         - name of the property
+                  .diff         - rendered difference
+                  .old          - old value of the property
+                  .new          - new value for the property
+                  (both .old and .new have .name, .value and .rendered properties)
+                .diffs        - a sequence of list of blocks
 
-       longcol  - "long" column header; e.g. 'Revision' or 'File' or '' (for 'sidebyside')
-       shortcol - "short" column header: e.g. 'r' or '' (for 'inline')
-       no_id    - skip generation of id attributes in h2 headings
+                  Each block being a dict:
+                  .type         - one of 'unmod', 'add', 'rem' or 'mod'
+                  .base and .changed - information about lines from old and new content
+                    .lines              - the lines
+                    .offset             - position within the file
 
+                .diffs_title  - a sequence of titles for the list of blocks
+                                Note: integrate this into .diffs for 0.12 or 1.0.
+
+ - diff      - dict specifying diff style and options
+                .style     - can be 'sidebyside' (4 columns) or 'inline' (3 columns)
+                .options   - contexlines, various ignore...
+
+ - longcol  - "long" column header; e.g. 'Revision' or 'File' or '' (for 'sidebyside')
+ - shortcol - "short" column header: e.g. 'r' or '' (for 'inline')
+ - no_id    - skip generation of id attributes in h2 headings
 -->
 <div xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
