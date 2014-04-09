@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2005-2013 Edgewall Software
+# Copyright (C) 2005-2014 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -14,11 +14,10 @@
 import unittest
 
 from trac.db.tests import api, mysql_test, postgres_test, util
-
 from trac.db.tests.functional import functionalSuite
 
-def suite():
 
+def suite():
     suite = unittest.TestSuite()
     suite.addTest(api.suite())
     suite.addTest(mysql_test.suite())

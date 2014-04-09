@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2013 Edgewall Software
+# Copyright (C) 2010-2014 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -30,6 +30,37 @@ class SQLEscapeTestCase(unittest.TestCase):
         self.assertEqual("'%%s'", sql_escape_percent("'%s'"))
         self.assertEqual("'%% %%'", sql_escape_percent("'% %'"))
         self.assertEqual("'%%s %%i'", sql_escape_percent("'%s %i'"))
+
+        self.assertEqual("%", sql_escape_percent("%"))
+        self.assertEqual("`%%`", sql_escape_percent("`%`"))
+        self.assertEqual("``%``", sql_escape_percent("``%``"))
+        self.assertEqual("```%%```", sql_escape_percent("```%```"))
+        self.assertEqual("```%%`", sql_escape_percent("```%`"))
+        self.assertEqual("%s", sql_escape_percent("%s"))
+        self.assertEqual("% %", sql_escape_percent("% %"))
+        self.assertEqual("%s %i", sql_escape_percent("%s %i"))
+        self.assertEqual("`%%s`", sql_escape_percent("`%s`"))
+        self.assertEqual("`%% %%`", sql_escape_percent("`% %`"))
+        self.assertEqual("`%%s %%i`", sql_escape_percent("`%s %i`"))
+
+        self.assertEqual('%', sql_escape_percent('%'))
+        self.assertEqual('"%%"', sql_escape_percent('"%"'))
+        self.assertEqual('""%""', sql_escape_percent('""%""'))
+        self.assertEqual('"""%%"""', sql_escape_percent('"""%"""'))
+        self.assertEqual('"""%%"', sql_escape_percent('"""%"'))
+        self.assertEqual('%s', sql_escape_percent('%s'))
+        self.assertEqual('% %', sql_escape_percent('% %'))
+        self.assertEqual('%s %i', sql_escape_percent('%s %i'))
+        self.assertEqual('"%%s"', sql_escape_percent('"%s"'))
+        self.assertEqual('"%% %%"', sql_escape_percent('"% %"'))
+        self.assertEqual('"%%s %%i"', sql_escape_percent('"%s %i"'))
+
+        self.assertEqual("""'%%?''"%%s`%%i`%%%%"%%S'""",
+                         sql_escape_percent("""'%?''"%s`%i`%%"%S'"""))
+        self.assertEqual("""`%%?``'%%s"%%i"%%%%'%%S`""",
+                         sql_escape_percent("""`%?``'%s"%i"%%'%S`"""))
+        self.assertEqual('''"%%?""`%%s'%%i'%%%%`%%S"''',
+                         sql_escape_percent('''"%?""`%s'%i'%%`%S"'''))
 
 
 def suite():
