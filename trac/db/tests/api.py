@@ -321,6 +321,29 @@ class StringsTestCase(unittest.TestCase):
         self.assertEqual(r'alpha\`\"\'\\beta``gamma""delta',
                          get_column_names(cursor)[0])
 
+    def test_quoted_id_with_percent(self):
+        db = self.env.get_read_db()
+        name = """%?`%s"%'%%"""
+
+        def test(db, logging=False):
+            cursor = db.cursor()
+            if logging:
+                cursor.log = self.env.log
+
+            cursor.execute('SELECT 1 AS ' + db.quote(name))
+            self.assertEqual(name, get_column_names(cursor)[0])
+            cursor.execute('SELECT %s AS ' + db.quote(name), (42,))
+            self.assertEqual(name, get_column_names(cursor)[0])
+            cursor.executemany("UPDATE system SET value=%s WHERE "
+                               "1=(SELECT 0 AS " + db.quote(name) + ")",
+                               [])
+            cursor.executemany("UPDATE system SET value=%s WHERE "
+                               "1=(SELECT 0 AS " + db.quote(name) + ")",
+                               [('42',), ('43',)])
+
+        test(db)
+        test(db, logging=True)
+
 
 class ConnectionTestCase(unittest.TestCase):
     def setUp(self):

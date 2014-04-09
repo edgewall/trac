@@ -32,7 +32,7 @@ from trac.ticket.api import TicketSystem
 from trac.util import as_int, content_disposition
 from trac.util.datefmt import format_datetime, format_time, from_utimestamp
 from trac.util.presentation import Paginator
-from trac.util.text import to_unicode, quote_query_string
+from trac.util.text import exception_to_unicode, to_unicode, quote_query_string
 from trac.util.translation import _, tag_
 from trac.web.api import IRequestHandler, RequestDone
 from trac.web.chrome import add_ctxtnav, add_link, add_notice, add_script, \
@@ -386,6 +386,9 @@ class ReportModule(Component):
             numrows = len(results)
 
         except Exception, e:
+            self.log.warn('Exception caught while executing report: %r, args '
+                          '%r%s',
+                          sql, args, exception_to_unicode(e, traceback=True))
             db.rollback()
             data['message'] = tag_('Report execution failed: %(error)s',
                                    error=tag.pre(to_unicode(e)))

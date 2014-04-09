@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from trac.db.mysql_backend import MySQLConnection
-from trac.ticket.report import ReportModule
-from trac.test import EnvironmentStub, Mock
-from trac.web.api import Request, RequestDone
-
 import unittest
 from StringIO import StringIO
+
+from trac.db.mysql_backend import MySQLConnection
+from trac.ticket.report import ReportModule
+from trac.test import EnvironmentStub, Mock, MockPerm
+from trac.web.api import Request, RequestDone
+from trac.web.href import Href
+
 
 class MockMySQLConnection(MySQLConnection):
     def __init__(self):
@@ -105,6 +107,20 @@ class ReportTestCase(unittest.TestCase):
         self.assertEqual('http://example.org/trac/query?' + \
                          'type=r%C3%A9sum%C3%A9&report=' + str(id),
                          headers_sent['Location'])
+
+    def test_quoted_id_with_var(self):
+        req = Mock(base_path='', chrome={}, args={}, session={},
+                   abs_href=Href('/'), href=Href('/'), locale='',
+                   perm=MockPerm(), authname=None, tz=None)
+        db = self.env.get_read_db()
+        name = """%s"`'%%%?"""
+        sql = 'SELECT 1 AS %s, $USER AS user' % db.quote(name)
+        cols, results, num_items, missing_args = \
+            self.report_module.execute_paginated_report(req, db, 1, sql,
+                                                        {'USER': 'joe'})
+        self.assertEqual([name, 'user'], cols)
+        self.assertEqual([(1, 'joe')], results)
+        self.assertEqual([], missing_args)
 
 
 def suite():
