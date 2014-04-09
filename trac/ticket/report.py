@@ -684,6 +684,9 @@ class ReportModule(Component):
             try:
                 cursor.execute(count_sql, args)
             except Exception, e:
+                self.log.warn('Exception caught while executing report: %r, '
+                              'args %r%s', count_sql, args,
+                              exception_to_unicode(e, traceback=True))
                 return e, count_sql
             num_items = cursor.fetchone()[0]
 
@@ -693,6 +696,9 @@ class ReportModule(Component):
             try:
                 cursor.execute(colnames_sql, args)
             except Exception, e:
+                self.log.warn('Exception caught while executing report: %r, '
+                              'args %r%s', colnames_sql, args,
+                              exception_to_unicode(e, traceback=True))
                 return e, colnames_sql
             cols = get_column_names(cursor)
 
@@ -744,6 +750,9 @@ class ReportModule(Component):
         try:
             cursor.execute(sql, args)
         except Exception, e:
+            self.log.warn('Exception caught while executing report: %r, args '
+                          '%r%s',
+                          sql, args, exception_to_unicode(e, traceback=True))
             if order_by or limit_offset:
                 add_notice(req, _("Hint: if the report failed due to automatic"
                                   " modification of the ORDER BY clause or the"
