@@ -141,11 +141,11 @@ Arguments:
                                      clines = block.changed.lines">
                       <py:choose test="diff.style">
                         <py:when test="'sidebyside'">
-                          <th>$from_n</th><td class="l"><span>$line</span>&nbsp;</td>
-                          <th>$to_n</th><td class="r"><span>${clines[idx] if idx &lt; len(clines) else None}</span>&nbsp;</td>
+                          <th>$from_n</th><td class="l"><span>$line</span></td>
+                          <th>$to_n</th><td class="r"><span>${clines[idx] if idx &lt; len(clines) else None}</span></td>
                         </py:when>
                         <py:when test="'inline'">
-                          <th>$from_n</th><th>$to_n</th><td class="l"><span>$line</span>&nbsp;</td>
+                          <th>$from_n</th><th>$to_n</th><td class="l"><span>$line</span></td>
                         </py:when>
                       </py:choose>
                     </py:with>
@@ -158,11 +158,11 @@ Arguments:
                     <py:with vars="to_n = block.changed.offset+idx+1">
                       <py:choose test="diff.style">
                         <py:when test="'sidebyside'">
-                          <th>&nbsp;</th><td class="l">&nbsp;</td>
-                          <th>$to_n</th><td class="r"><ins>$line</ins>&nbsp;</td>
+                          <th>&nbsp;</th><td class="l"></td>
+                          <th>$to_n</th><td class="r"><ins>$line</ins></td>
                         </py:when>
                         <py:when test="'inline'">
-                          <th>&nbsp;</th><th>$to_n</th><td class="r"><ins>$line</ins>&nbsp;</td>
+                          <th>&nbsp;</th><th>$to_n</th><td class="r"><ins>$line</ins></td>
                         </py:when>
                       </py:choose>
                     </py:with>
@@ -175,11 +175,11 @@ Arguments:
                     <py:with vars="from_n = block.base.offset+idx+1">
                       <py:choose test="diff.style">
                         <py:when test="'sidebyside'">
-                          <th>$from_n</th><td class="l"><del>$line</del>&nbsp;</td>
-                          <th>&nbsp;</th><td class="r">&nbsp;</td>
+                          <th>$from_n</th><td class="l"><del>$line</del></td>
+                          <th>&nbsp;</th><td class="r"></td>
                         </py:when>
                         <py:when test="'inline'">
-                          <th>$from_n</th><th>&nbsp;</th><td class="l"><del>$line</del>&nbsp;</td>
+                          <th>$from_n</th><th>&nbsp;</th><td class="l"><del>$line</del></td>
                         </py:when>
                       </py:choose>
                     </py:with>
@@ -193,10 +193,10 @@ Arguments:
                         <py:when test="len(block.base.lines) &gt;= len(block.changed.lines)">
                           <tr py:for="idx, line in enumerate(block.base.lines)">
                             <th>${block.base.offset+idx+1}</th>
-                            <td class="l"><span>$line</span>&nbsp;</td>
+                            <td class="l"><span>$line</span></td>
                             <py:with vars="within_change = idx &lt; len(block.changed.lines)">
                               <th>${block.changed.offset + idx + 1 if within_change else '&nbsp;'}</th>
-                              <td class="r"><span py:if="within_change">${block.changed.lines[idx]}</span>&nbsp;</td>
+                              <td class="r"><span py:if="within_change">${block.changed.lines[idx]}</span></td>
                             </py:with>
                           </tr>
                         </py:when>
@@ -204,10 +204,10 @@ Arguments:
                           <tr py:for="idx, line in enumerate(block.changed.lines)">
                             <py:with vars="within_change = idx &lt; len(block.base.lines)">
                               <th>${block.base.offset + idx + 1 if within_change else '&nbsp;'}</th>
-                              <td class="l"><span py:if="within_change">${block.base.lines[idx]}</span>&nbsp;</td>
+                              <td class="l"><span py:if="within_change">${block.base.lines[idx]}</span></td>
                             </py:with>
                             <th>${block.changed.offset + idx + 1}</th>
-                            <td class="r"><span>$line</span>&nbsp;</td>
+                            <td class="r"><span>$line</span></td>
                           </tr>
                         </py:otherwise>
                       </py:choose>
@@ -216,12 +216,12 @@ Arguments:
                       <!--! First show the "old" lines -->
                       <tr py:for="idx, line in enumerate(block.base.lines)"
                         class="${'first' if idx == 0 else None}">
-                        <th>${block.base.offset + idx + 1}</th><th>&nbsp;</th><td class="l"><span>$line</span>&nbsp;</td>
+                        <th>${block.base.offset + idx + 1}</th><th>&nbsp;</th><td class="l"><span>$line</span></td>
                       </tr>
                       <!--! Then show the "new" lines -->
                       <tr py:for="idx, line in enumerate(block.changed.lines)"
                         class="${'last' if idx + 1 == len(block.changed.lines) else None}">
-                        <th>&nbsp;</th><th>${block.changed.offset + idx + 1}</th><td class="r"><span>$line</span>&nbsp;</td>
+                        <th>&nbsp;</th><th>${block.changed.offset + idx + 1}</th><td class="r"><span>$line</span></td>
                       </tr>
                     </py:when>
                   </py:choose>
