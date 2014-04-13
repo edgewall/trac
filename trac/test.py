@@ -338,10 +338,7 @@ class EnvironmentStub(Environment):
             with self.db_transaction as db:
                 db.rollback()  # make sure there's no transaction in progress
                 # check the database version
-                database_version = db(
-                    "SELECT value FROM system WHERE name='database_version'")
-                if database_version:
-                    database_version = int(database_version[0][0])
+                database_version = self.get_version()
                 if database_version == db_default.db_version:
                     # same version, simply clear the tables (faster)
                     m = sys.modules[__name__]
