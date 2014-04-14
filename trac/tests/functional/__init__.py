@@ -116,6 +116,8 @@ if twill:
         else:
             env_class = FunctionalTestEnvironment
 
+        tester_class = FunctionalTester
+
         def setUp(self, port=None):
             """If no port is specified, use a semi-random port and subdirectory
             'testenv'; but if a port is specified, use that port and
@@ -146,7 +148,7 @@ if twill:
             twill.set_output(open(self.functional_test_log, 'w'))
 
             self._testenv.start()
-            self._tester = FunctionalTester(baseurl)
+            self._tester = self.tester_class(baseurl)
             self.fixture = (self._testenv, self._tester)
 
         def tearDown(self):
