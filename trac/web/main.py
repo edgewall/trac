@@ -267,8 +267,7 @@ class RequestDispatcher(Component):
 
     def get_valid_default_handler(self, req):
         handler = self.default_handler
-        if not handler or \
-                not getattr(handler, 'is_valid_default_handler', True):
+        if not is_valid_default_handler(handler):
             raise ConfigurationError(
                 tag_("%(handler)s is not a valid default handler. Please "
                      "update %(option)s through the %(page)s page or by "

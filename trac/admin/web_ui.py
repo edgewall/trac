@@ -42,6 +42,7 @@ from trac.web import HTTPNotFound, IRequestHandler
 from trac.web.chrome import add_notice, add_stylesheet, \
                             add_warning, Chrome, INavigationContributor, \
                             ITemplateProvider
+from trac.web.api import is_valid_default_handler
 from trac.wiki.formatter import format_to_html
 
 try:
@@ -212,8 +213,8 @@ class BasicsAdminPanel(Component):
             yield ('general', _("General"), 'basics', _("Basic Settings"))
 
     def render_admin_panel(self, req, cat, page, path_info):
-        valid_handlers = [h.__class__.__name__ for h in self.handlers
-                          if getattr(h, 'is_valid_default_handler', True)]
+        valid_handlers = [hdlr.__class__.__name__ for hdlr in self.handlers
+                          if is_valid_default_handler(hdlr)]
         if Locale:
             locale_ids = get_available_locales()
             locales = [Locale.parse(locale) for locale in locale_ids]

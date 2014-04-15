@@ -87,6 +87,13 @@ class IRequestHandler(Interface):
         """
 
 
+def is_valid_default_handler(handler):
+    """Returns `True` if the `handler` is a valid default handler, as
+    described in the `IRequestHandler` interface documentation.
+    """
+    return handler and getattr(handler, 'is_valid_default_handler', True)
+
+
 class IRequestFilter(Interface):
     """Enable components to interfere with the processing done by the
     main handler, either before and/or after it enters in action.
