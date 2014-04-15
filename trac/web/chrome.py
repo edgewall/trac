@@ -499,6 +499,9 @@ class Chrome(Component):
 
     templates = None
 
+    # DocType for 'text/html' output
+    html_doctype = DocType.XHTML_STRICT
+
     # A dictionary of default context data for templates
     _default_context_data = {
         '_': translation.gettext,
@@ -974,9 +977,10 @@ class Chrome(Component):
         """Render the `filename` using the `data` for the context.
 
         The `content_type` argument is used to choose the kind of template
-        used (`NewTextTemplate` if `'text/plain'`, `MarkupTemplate` otherwise),
-        and tweak the rendering process (use of XHTML Strict doctype if
-        `'text/html'` is given).
+        used (`NewTextTemplate` if `'text/plain'`, `MarkupTemplate`
+        otherwise), and tweak the rendering process. Doctype for `'text/html'`
+        can be specified by setting the `html_doctype` attribute (default
+        is `XHTML_STRICT`)
 
         The rendering `method` (xml, xhtml or text) may be specified and is
         inferred from the `content_type` if not specified.
@@ -1021,8 +1025,9 @@ class Chrome(Component):
             stream.render('text', out=buffer, encoding='utf-8')
             return buffer.getvalue()
 
-        doctype = {'text/html': DocType.XHTML_STRICT}.get(content_type)
-        if doctype:
+        doctype = None
+        if content_type == 'text/html':
+            doctype = self.html_doctype
             if req.form_token:
                 stream |= self._add_form_token(req.form_token)
             if not int(req.session.get('accesskeys', 0)):
