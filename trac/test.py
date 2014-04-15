@@ -334,11 +334,16 @@ class EnvironmentStub(Environment):
         scheme, db_prop = _parse_db_str(self.dburi)
         tables = []
         remove_sqlite_db = False
-        try:
-            with self.db_transaction as db:
+        with self.db_transaction as db:
+            try:
                 db.rollback()  # make sure there's no transaction in progress
                 # check the database version
                 database_version = self.get_version()
+            except Exception:
+                # "Database not found ...",
+                # "OperationalError: no such table: system" or the like
+                pass
+            else:
                 if database_version == db_default.db_version:
                     # same version, simply clear the tables (faster)
                     m = sys.modules[__name__]
@@ -349,10 +354,6 @@ class EnvironmentStub(Environment):
                     # different version or version unknown, drop the tables
                     remove_sqlite_db = True
                     self.destroy_db(scheme, db_prop)
-        except Exception:
-            # "Database not found ...",
-            # "OperationalError: no such table: system" or the like
-            pass
 
         db = None  # as we might shutdown the pool    FIXME no longer needed!
 
