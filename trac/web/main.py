@@ -179,7 +179,7 @@ class RequestDispatcher(Component):
                             break
                     if not chosen_handler and \
                             (not req.path_info or req.path_info == '/'):
-                        chosen_handler = self.get_valid_default_handler(req)
+                        chosen_handler = self._get_valid_default_handler(req)
                     # pre-process any incoming request, whether a handler
                     # was found or not
                     chosen_handler = \
@@ -265,7 +265,7 @@ class RequestDispatcher(Component):
 
     # Internal methods
 
-    def get_valid_default_handler(self, req):
+    def _get_valid_default_handler(self, req):
         handler = self.default_handler
         if not is_valid_default_handler(handler):
             raise ConfigurationError(
