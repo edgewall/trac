@@ -1,7 +1,4 @@
-
-
 (function($){
-
 
   window.addWikiFormattingToolbar = function(textarea) {
     if ((document.selection == undefined)
@@ -84,10 +81,9 @@
     $(textarea).before(toolbar);
   }
 
-})(jQuery);
+  // Add toolbar to all <textarea> elements on the page with the class 'wikitext'.
+  $(document).ready(function() {
+    $("textarea.wikitext").each(function() { addWikiFormattingToolbar(this) });
+  });
 
-// Add the toolbar to all <textarea> elements on the page with the class
-// 'wikitext'.
-jQuery(document).ready(function($) {
-  $("textarea.wikitext").each(function() { addWikiFormattingToolbar(this) });
-});
+})(jQuery);
