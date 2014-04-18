@@ -373,6 +373,9 @@ class EnvironmentStub(Environment):
                 self.global_databasemanager.shutdown()
 
         with self.db_transaction as db:
+            if scheme == 'sqlite':
+                # Speed-up tests with SQLite database
+                db("PRAGMA synchronous = OFF")
             if default_data:
                 for table, cols, vals in db_default.get_data(db):
                     db.executemany("INSERT INTO %s (%s) VALUES (%s)"
