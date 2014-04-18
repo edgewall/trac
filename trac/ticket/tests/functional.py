@@ -2209,6 +2209,17 @@ class RegressionTestTicket11176(FunctionalTestCaseSetup):
             self._testenv.disable_authz_permpolicy()
 
 
+class RegressionTestTicket11590(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11590"""
+        report_id = self._tester.create_report('#11590', 'SELECT 1',
+                                               '[./ this report]')
+        self._tester.go_to_view_tickets()
+        tc.notfind(internal_error)
+        tc.find('<a class="report" href="[^>"]*?/report/%s">this report</a>' %
+                report_id)
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
@@ -2326,6 +2337,7 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket9981())
     suite.addTest(RegressionTestTicket11028())
     suite.addTest(RegressionTestTicket11153())
+    suite.addTest(RegressionTestTicket11590())
     if ConfigObj:
         suite.addTest(RegressionTestTicket11176())
     else:
