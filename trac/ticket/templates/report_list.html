@@ -106,7 +106,7 @@
               </a></h3>
             <span class="foldable" />
             <div py:if="description" class="description" xml:space="preserve">
-              ${wiki_to_html(context, description)}
+              ${wiki_to_html(context.child('report', id), description)}
             </div>
           </div>
         </py:when>
