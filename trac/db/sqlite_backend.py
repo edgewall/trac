@@ -338,6 +338,17 @@ class SQLiteConnection(ConnectionWrapper):
         # http://www.sqlite.org/autoinc.html
         pass
 
+    def get_table_names(self):
+        rows = self.execute("""
+            SELECT name FROM sqlite_master WHERE type='table'""")
+        return [row[0] for row in rows]
+
+    def get_column_names(self, tablename):
+        cursor = self.cnx.cursor()
+        rows = cursor.execute("PRAGMA table_info(%s)"
+                              % self.quote(tablename))
+        return [row[1] for row in rows]
+
     def drop_table(self, table):
         cursor = self.cursor()
         cursor.execute("DROP TABLE IF EXISTS " + self.quote(table))

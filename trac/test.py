@@ -179,7 +179,7 @@ def get_dburi():
 
 def reset_sqlite_db(env, db_prop):
     with env.db_transaction as db:
-        tables = db("SELECT name FROM sqlite_master WHERE type='table'")
+        tables = db.get_table_names()
         for table in tables:
             db("DELETE FROM %s" % table)
         return tables
@@ -205,9 +205,8 @@ def reset_postgres_db(env, db_prop):
                 for seq in filter(None, seqs):
                     db("ALTER SEQUENCE %s RESTART WITH 1" % seq)
             # clear tables
-            tables = db("""SELECT table_name FROM information_schema.tables
-                           WHERE table_schema=%s""", (dbname,))
-            for table, in tables:
+            tables = db.get_table_names()
+            for table in tables:
                 db("DELETE FROM %s" % db.quote(table))
             # PostgreSQL supports TRUNCATE TABLE as well
             # (see http://www.postgresql.org/docs/8.1/static/sql-truncate.html)
@@ -394,10 +393,7 @@ class EnvironmentStub(Environment):
                 if scheme == 'postgres' and db.schema:
                     db('DROP SCHEMA %s CASCADE' % db.quote(db.schema))
                 elif scheme == 'mysql':
-                    dbname = os.path.basename(db_prop['path'])
-                    for table in db("""
-                          SELECT table_name FROM information_schema.tables
-                          WHERE table_schema=%s""", (dbname,)):
+                    for table in db.get_table_names():
                         db("DROP TABLE IF EXISTS `%s`" % table)
         except Exception:
             # "TracError: Database not found...",

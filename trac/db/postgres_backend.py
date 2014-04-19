@@ -259,6 +259,19 @@ class PostgreSQLConnection(ConnectionWrapper):
                        % (self.quote(column), self.quote(table)),
                        (self.quote(self._sequence_name(table, column)),))
 
+    def get_table_names(self):
+        rows = self.execute("""
+            SELECT table_name FROM information_schema.tables
+            WHERE table_schema=%s""", (self.schema,))
+        return [row[0] for row in rows]
+
+    def get_column_names(self, tablename):
+        rows = self.execute("""
+            SELECT column_name FROM information_schema.columns
+            WHERE table_schema=%s AND table_name=%s
+            """, (self.schema, tablename))
+        return [row[0] for row in rows]
+
     def cursor(self):
         return IterableCursor(self.cnx.cursor(), self.log)
 
