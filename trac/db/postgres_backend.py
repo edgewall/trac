@@ -22,7 +22,7 @@ from trac.core import *
 from trac.config import Option
 from trac.db.api import IDatabaseConnector, _parse_db_str
 from trac.db.util import ConnectionWrapper, IterableCursor
-from trac.util import get_pkginfo
+from trac.util import get_pkginfo, lazy
 from trac.util.compat import close_fds
 from trac.util.text import empty, exception_to_unicode, to_unicode
 from trac.util.translation import _
@@ -260,3 +260,25 @@ class PostgreSQLConnection(ConnectionWrapper):
 
     def cursor(self):
         return IterableCursor(self.cnx.cursor(), self.log)
+
+    def drop_table(self, table):
+        if (self._version or '').startswith(('8.0.', '8.1.')):
+            cursor = self.cursor()
+            cursor.execute("""SELECT table_name FROM information_schema.tables
+                              WHERE table_schema=current_schema()
+                              AND table_name=%s""", (table,))
+            for row in cursor:
+                if row[0] == table:
+                    self.execute("DROP TABLE " + self.quote(table))
+                    break
+        else:
+            self.execute("DROP TABLE IF EXISTS " + self.quote(table))
+
+    @lazy
+    def _version(self):
+        cursor = self.cursor()
+        cursor.execute('SELECT version()')
+        for version, in cursor:
+            # retrieve "8.1.23" from "PostgreSQL 8.1.23 on ...."
+            if version.startswith('PostgreSQL '):
+                return version.split(' ', 2)[1]
