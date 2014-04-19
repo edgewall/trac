@@ -288,6 +288,9 @@ class StringsTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub()
 
+    def tearDown(self):
+        self.env.reset_db()
+
     def test_insert_unicode(self):
         self.env.db_transaction(
                 "INSERT INTO system (name,value) VALUES (%s,%s)",

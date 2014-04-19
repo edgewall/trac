@@ -125,7 +125,7 @@ class ConnectionWrapper(object):
         """
         dql = self.check_select(query)
         cursor = self.cnx.cursor()
-        cursor.execute(query, params)
+        cursor.execute(query, params if params is not None else [])
         rows = cursor.fetchall() if dql else None
         cursor.close()
         return rows
