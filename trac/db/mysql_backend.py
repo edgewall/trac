@@ -361,6 +361,7 @@ class MySQLConnection(ConnectionWrapper):
                                  name)
         cnx = MySQLdb.connect(db=path, user=user, passwd=password, host=host,
                               port=port, charset='utf8', **opts)
+        self.schema = path
         if hasattr(cnx, 'encoders'):
             # 'encoders' undocumented but present since 1.2.1 (r422)
             cnx.encoders[Markup] = cnx.encoders[types.UnicodeType]
@@ -401,6 +402,19 @@ class MySQLConnection(ConnectionWrapper):
     def update_sequence(self, cursor, table, column='id'):
         # MySQL handles sequence updates automagically
         pass
+
+    def get_table_names(self):
+        rows = self.execute("""
+            SELECT table_name FROM information_schema.tables
+            WHERE table_schema=%s""", (self.schema,))
+        return [row[0] for row in rows]
+
+    def get_column_names(self, tablename):
+        rows = self.execute("""
+            SELECT column_name FROM information_schema.columns
+            WHERE table_schema=%s AND table_name=%s
+            """, (self.schema, tablename))
+        return [row[0] for row in rows]
 
     def rollback(self):
         self.cnx.ping()
