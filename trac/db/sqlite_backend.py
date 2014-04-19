@@ -337,3 +337,7 @@ class SQLiteConnection(ConnectionWrapper):
         # SQLite handles sequence updates automagically
         # http://www.sqlite.org/autoinc.html
         pass
+
+    def drop_table(self, table):
+        cursor = self.cursor()
+        cursor.execute("DROP TABLE IF EXISTS " + self.quote(table))
