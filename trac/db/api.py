@@ -255,6 +255,8 @@ class DatabaseManager(Component):
         """Create the specified tables.
 
         :param schema: an iterable of table objects.
+
+        :since: version 1.0.2
         """
         connector = self.get_connector()[0]
         with self.env.db_transaction as db:
@@ -266,6 +268,8 @@ class DatabaseManager(Component):
         """Drop the specified tables.
 
         :param schema: an iterable of `Table` objects or table names.
+
+        :since: version 1.0.2
         """
         with self.env.db_transaction as db:
             for table in schema:
