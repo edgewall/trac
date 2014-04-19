@@ -363,29 +363,30 @@ class ConnectionTestCase(unittest.TestCase):
         self.env.reset_db()
 
     def test_get_last_id(self):
-        id1 = id2 = None
         q = "INSERT INTO report (author) VALUES ('anonymous')"
         with self.env.db_transaction as db:
             cursor = db.cursor()
             cursor.execute(q)
             # Row ID correct before...
             id1 = db.get_last_id(cursor, 'report')
-            self.assertNotEqual(0, id1)
             db.commit()
             cursor.execute(q)
             # ... and after commit()
             db.commit()
             id2 = db.get_last_id(cursor, 'report')
-            self.assertEqual(id1 + 1, id2)
+
+        self.assertNotEqual(0, id1)
+        self.assertEqual(id1 + 1, id2)
 
     def test_update_sequence_default_column(self):
-        self.env.db_transaction(
-            "INSERT INTO report (id, author) VALUES (42, 'anonymous')")
         with self.env.db_transaction as db:
+            db("INSERT INTO report (id, author) VALUES (42, 'anonymous')")
             cursor = db.cursor()
             db.update_sequence(cursor, 'report', 'id')
+
         self.env.db_transaction(
             "INSERT INTO report (author) VALUES ('next-id')")
+
         self.assertEqual(43, self.env.db_query(
                 "SELECT id FROM report WHERE author='next-id'")[0][0])
 
