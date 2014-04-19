@@ -250,13 +250,14 @@ class PostgreSQLConnection(ConnectionWrapper):
         return '"%s"' % identifier.replace('"', '""')
 
     def get_last_id(self, cursor, table, column='id'):
-        cursor.execute("""SELECT CURRVAL('"%s_%s_seq"')""" % (table, column))
+        cursor.execute("SELECT CURRVAL(%s)",
+                       (self.quote(self._sequence_name(table, column)),))
         return cursor.fetchone()[0]
 
     def update_sequence(self, cursor, table, column='id'):
-        cursor.execute("""
-            SELECT setval('"%s_%s_seq"', (SELECT MAX(id) FROM %s))
-            """ % (table, column, table))
+        cursor.execute("SELECT SETVAL(%%s, (SELECT MAX(%s) FROM %s))"
+                       % (self.quote(column), self.quote(table)),
+                       (self.quote(self._sequence_name(table, column)),))
 
     def cursor(self):
         return IterableCursor(self.cnx.cursor(), self.log)
@@ -273,6 +274,9 @@ class PostgreSQLConnection(ConnectionWrapper):
                     break
         else:
             self.execute("DROP TABLE IF EXISTS " + self.quote(table))
+
+    def _sequence_name(self, table, column):
+        return '%s_%s_seq' % (table, column)
 
     @lazy
     def _version(self):
