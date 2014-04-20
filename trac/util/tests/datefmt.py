@@ -25,15 +25,11 @@ from trac.core import TracError
 from trac.util import datefmt
 
 try:
-    import pytz
-except ImportError:
-    pytz = None
-try:
     from babel import Locale
 except ImportError:
     Locale = None
 
-if pytz is None:
+if datefmt.pytz is None:
     PytzTestCase = None
 else:
     class PytzTestCase(unittest.TestCase):
@@ -210,7 +206,7 @@ class ParseISO8601TestCase(unittest.TestCase):
         self.assertEqual(datetime.timedelta(hours=-9, minutes=-30),
                          dt.utcoffset())
 
-    if pytz:
+    if datefmt.pytz:
         def test_iso8601_naive_tz_normalize_non_existent_time(self):
             t = datetime.datetime(2012, 3, 25, 1, 15, 57, 0, datefmt.utc)
             tz = datefmt.timezone('Europe/Paris')
@@ -628,7 +624,7 @@ class ParseRelativeDateTestCase(unittest.TestCase):
         self.assertEqual(datetime.datetime(2012, 3, 25, 3, 15, 1, tzinfo=tz),
                          datefmt._parse_relative_time('next second', tz, now))
 
-    if pytz:
+    if datefmt.pytz:
         def test_time_past_interval_across_dst(self):
             tz = datefmt.timezone('Europe/Paris')
             now = datefmt.to_datetime(datetime.datetime(2012, 3, 25, 3, 0, 41),
@@ -1714,7 +1710,7 @@ class LocalTimezoneTestCase(unittest.TestCase):
         if localize:
             self._compare_pytz_localize_and_normalize(tz, dt_naive)
 
-    if pytz:
+    if datefmt.pytz:
         def test_pytz_choibalsan(self):
             tz = datefmt.timezone('Asia/Choibalsan')
             self._tzset('Asia/Choibalsan')
