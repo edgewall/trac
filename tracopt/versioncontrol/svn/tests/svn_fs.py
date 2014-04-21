@@ -36,8 +36,8 @@ from trac.core import TracError
 from trac.resource import Resource, resource_exists
 from trac.util.concurrency import get_thread_id
 from trac.util.datefmt import utc
-from trac.versioncontrol import DbRepositoryProvider, Changeset, Node, \
-                                NoSuchChangeset
+from trac.versioncontrol.api import DbRepositoryProvider, Changeset, Node, \
+                                    NoSuchChangeset, RepositoryManager
 from tracopt.versioncontrol.svn import svn_fs
 
 REPOS_PATH = os.path.join(tempfile.gettempdir(), 'trac-svnrepos')
@@ -1024,6 +1024,10 @@ class SubversionRepositoryTestCase(unittest.TestCase):
 
 
     def tearDown(self):
+        self.repos.close()
+        self.repos = None
+        # clear cached repositories to avoid TypeError on termination (#11505)
+        RepositoryManager(self.env).reload_repositories()
         self.env.reset_db()
         # needed to avoid issue with 'WindowsError: The process cannot access
         # the file ... being used by another process: ...\rep-cache.db'
@@ -1046,6 +1050,8 @@ class SvnCachedRepositoryTestCase(unittest.TestCase):
         self.env.reset_db()
         self.repos.close()
         self.repos = None
+        # clear cached repositories to avoid TypeError on termination (#11505)
+        RepositoryManager(self.env).reload_repositories()
 
 
 def suite():
