@@ -40,7 +40,7 @@ from trac.versioncontrol.api import DbRepositoryProvider, Changeset, Node, \
                                     NoSuchChangeset, RepositoryManager
 from tracopt.versioncontrol.svn import svn_fs
 
-REPOS_PATH = os.path.join(tempfile.gettempdir(), 'trac-svnrepos')
+REPOS_PATH = None
 REPOS_NAME = 'repo'
 URL = 'svn://test'
 
@@ -1055,8 +1055,11 @@ class SvnCachedRepositoryTestCase(unittest.TestCase):
 
 
 def suite():
+    global REPOS_PATH
     suite = unittest.TestSuite()
     if has_svn:
+        REPOS_PATH = tempfile.mkdtemp(prefix='trac-svnrepos-')
+        os.rmdir(REPOS_PATH)
         tests = [(NormalTests, ''),
                  (ScopedTests, u'/tête'),
                  (RecentPathScopedTests, u'/tête/dir1'),
