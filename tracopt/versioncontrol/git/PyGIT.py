@@ -477,7 +477,7 @@ class Storage(object):
                                 for k, v in self._get_branches()]
                 head_revs = set(v for _, v in new_branches)
 
-                rev = ord_rev = 0
+                rev = ord_rev = None
                 for ord_rev, revs in enumerate(
                                         self.repo.rev_list('--parents',
                                                            '--topo-order',

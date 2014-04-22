@@ -106,7 +106,7 @@
           </form>
         </div>
 
-        <div class="trac-tags" py:with="changeset = repos.get_changeset(repos.normalize_rev(stickyrev))">
+        <div class="trac-tags" py:if="changeset">
           <span py:for="branch, head in changeset.get_branches()" py:if="branch not in ('default', 'master')"
                 class="branch${' head' if head else ''}"
                 title="${_('Branch head') if head else _('Branch')}">${branch}</span>

@@ -366,6 +366,7 @@ class BrowserModule(Component):
         # Find node for the requested path/rev
         context = web_context(req)
         node = None
+        changeset = None
         display_rev = lambda rev: rev
         if repos:
             try:
@@ -378,6 +379,12 @@ class BrowserModule(Component):
             except NoSuchChangeset, e:
                 raise ResourceNotFound(e.message,
                                        _('Invalid changeset number'))
+            if node:
+                try:
+                    # use changeset instance to retrieve branches and tags
+                    changeset = repos.get_changeset(node.rev)
+                except NoSuchChangeset:
+                    pass
 
             context = context.child(repos.resource.child('source', path,
                                                    version=rev_or_latest))
@@ -413,7 +420,7 @@ class BrowserModule(Component):
             'context': context, 'reponame': reponame, 'repos': repos,
             'repoinfo': all_repositories.get(reponame or ''),
             'path': path, 'rev': node and node.rev, 'stickyrev': rev,
-            'display_rev': display_rev,
+            'display_rev': display_rev, 'changeset': changeset,
             'created_path': node and node.created_path,
             'created_rev': node and node.created_rev,
             'properties': properties_data,

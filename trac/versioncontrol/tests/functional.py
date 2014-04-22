@@ -291,6 +291,29 @@ class RegressionTestTicket11438(FunctionalTwillTestCaseSetup):
         tc.notfind('@%d' % (rev - 2))
 
 
+class RegressionTestTicket11584(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11584
+        don't raise NoSuchChangeset for empty repository if no "rev" parameter
+        """
+        repo_path = self._testenv.svnadmin_create('repo-t11584')
+
+        self._tester.go_to_admin()
+        tc.follow("\\bRepositories\\b")
+        tc.url(self._tester.url + '/admin/versioncontrol/repository')
+
+        tc.formvalue('trac-addrepos', 'name', 't11584')
+        tc.formvalue('trac-addrepos', 'dir', repo_path)
+        tc.submit()
+        tc.notfind(internal_error)
+        self._testenv._tracadmin('repository', 'sync', 't11584')
+
+        browser_url = self._tester.url + '/browser/t11584'
+        tc.go(browser_url)
+        tc.url(browser_url)
+        tc.notfind('Error: No such changeset')
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
@@ -308,6 +331,7 @@ def functionalSuite(suite=None):
         suite.addTest(RegressionTestTicket11194())
         suite.addTest(RegressionTestTicket11346())
         suite.addTest(RegressionTestTicket11438())
+        suite.addTest(RegressionTestTicket11584())
         suite.addTest(RegressionTestRev5877())
     else:
         print "SKIP: versioncontrol/tests/functional.py (no svn bindings)"
