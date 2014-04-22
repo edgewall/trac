@@ -24,16 +24,17 @@ class SvnFunctionalTestEnvironment(FunctionalTestEnvironment):
     def work_dir(self):
         return os.path.join(self.dirname, 'workdir')
 
+    def repo_path(self, filename):
+        return os.path.join(self.dirname, filename)
+
     def repo_path_for_initenv(self):
-        return os.path.join(self.dirname, 'repo')
+        return self.repo_path('repo')
 
     def create_repo(self):
         """
         Initialize a repo of the type :attr:`self.repotype`.
         """
-        if call(["svnadmin", "create", self.repo_path_for_initenv()],
-                stdout=logfile, stderr=logfile, close_fds=close_fds):
-            raise Exception('unable to create subversion repository')
+        self.svnadmin_create()
         if call(['svn', 'co', self.repo_url(), self.work_dir()],
                 stdout=logfile, stderr=logfile, close_fds=close_fds):
             raise Exception('Checkout from %s failed.' % self.repo_url())
@@ -52,6 +53,18 @@ class SvnFunctionalTestEnvironment(FunctionalTestEnvironment):
             return 'file:///' + repodir.replace("\\", "/")
         else:
             return 'file://' + repodir
+
+    def svnadmin_create(self, filename=None):
+        """Subversion helper to create a new repository."""
+        if filename is None:
+            path = self.repo_path_for_initenv()
+        else:
+            path = self.repo_path(filename)
+        if call(["svnadmin", "create", path],
+                stdout=logfile, stderr=logfile, close_fds=close_fds):
+            raise Exception('unable to create subversion repository: %r' %
+                            path)
+        return path
 
     def svn_mkdir(self, paths, msg, username='admin'):
         """Subversion helper to create a new directory within the main
