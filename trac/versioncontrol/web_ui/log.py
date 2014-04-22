@@ -110,7 +110,7 @@ class LogModule(Component):
                 rev = revranges.b
             except ValueError:
                 pass
-        rev = unicode(repos.normalize_rev(rev))
+        rev = repos.normalize_rev(rev)
         display_rev = repos.display_rev
 
         # The `history()` method depends on the mode:

@@ -18,13 +18,16 @@ from datetime import datetime, timedelta
 from subprocess import Popen, PIPE
 
 from trac.core import TracError
-from trac.test import EnvironmentStub, locate
+from trac.test import EnvironmentStub, Mock, MockPerm, locate
 from trac.tests.compat import rmtree
 from trac.util import create_file
 from trac.util.compat import close_fds
 from trac.util.datefmt import to_timestamp, utc
 from trac.versioncontrol.api import DbRepositoryProvider, NoSuchChangeset, \
                                     NoSuchNode, RepositoryManager
+from trac.versioncontrol.web_ui.browser import BrowserModule
+from trac.versioncontrol.web_ui.log import LogModule
+from trac.web.href import Href
 from tracopt.versioncontrol.git.git_fs import GitConnector
 
 
@@ -60,8 +63,9 @@ class BaseTestCase(unittest.TestCase):
     def _dbrepoprov(self):
         return DbRepositoryProvider(self.env)
 
-    def _add_repository(self, reponame='gitrepos'):
-        path = os.path.join(self.repos_path, '.git')
+    def _add_repository(self, reponame='gitrepos', bare=False):
+        path = self.repos_path \
+               if bare else os.path.join(self.repos_path, '.git')
         self._dbrepoprov.add_repository(reponame, path, 'git')
 
     def _git_init(self, data=True, bare=False):
@@ -210,6 +214,12 @@ class HistoryTimeRangeTestCase(BaseTestCase):
 
 class GitNormalTestCase(BaseTestCase):
 
+    def _create_req(self, **kwargs):
+        data = dict(args={}, perm=MockPerm(), href=Href('/'), chrome={},
+                    authname='trac', tz=utc, get_header=lambda name: None)
+        data.update(kwargs)
+        return Mock(**data)
+
     def test_get_node(self):
         self.env.config.set('git', 'persistent_cache', 'false')
         self.env.config.set('git', 'cached_repository', 'false')
@@ -218,6 +228,7 @@ class GitNormalTestCase(BaseTestCase):
         self._add_repository()
         repos = self._repomgr.get_repository('gitrepos')
         rev = repos.youngest_rev
+        self.assertNotEqual(None, rev)
         self.assertEqual(40, len(rev))
 
         self.assertEqual(rev, repos.get_node('/').rev)
@@ -242,6 +253,45 @@ class GitNormalTestCase(BaseTestCase):
             self.assertEqual(rev, repos.get_node('/', u'tïckét10605').rev)
             self.assertEqual(rev, repos.get_node('/.gitignore',
                                                  u'tïckét10605').rev)
+
+    def _test_on_empty_repos(self, cached_repository):
+        self.env.config.set('git', 'persistent_cache', 'false')
+        self.env.config.set('git', 'cached_repository', cached_repository)
+
+        self._git_init(data=False, bare=True)
+        self._add_repository(bare=True)
+        repos = self._repomgr.get_repository('gitrepos')
+        repos.sync()
+        youngest_rev = repos.youngest_rev
+        self.assertEqual(None, youngest_rev)
+        self.assertEqual(None, repos.oldest_rev)
+        self.assertEqual(None, repos.normalize_rev(''))
+        self.assertEqual(None, repos.normalize_rev(None))
+
+        node = repos.get_node('/', youngest_rev)
+        self.assertEqual([], list(node.get_entries()))
+        self.assertEqual([], list(node.get_history()))
+        self.assertRaises(NoSuchNode, repos.get_node, '/path', youngest_rev)
+
+        req = self._create_req(path_info='/browser/gitrepos')
+        browser_mod = BrowserModule(self.env)
+        self.assertTrue(browser_mod.match_request(req))
+        rv = browser_mod.process_request(req)
+        self.assertEqual('browser.html', rv[0])
+        self.assertEqual(None, rv[1]['rev'])
+
+        req = self._create_req(path_info='/log/gitrepos')
+        log_mod = LogModule(self.env)
+        self.assertTrue(log_mod.match_request(req))
+        rv = log_mod.process_request(req)
+        self.assertEqual('revisionlog.html', rv[0])
+        self.assertEqual([], rv[1]['items'])
+
+    def test_on_empty_and_cached_repos(self):
+        self._test_on_empty_repos('true')
+
+    def test_on_empty_and_non_cached_repos(self):
+        self._test_on_empty_repos('false')
 
 
 def suite():
