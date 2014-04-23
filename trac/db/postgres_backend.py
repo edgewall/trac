@@ -23,7 +23,7 @@ from trac.config import Option
 from trac.db.api import IDatabaseConnector, _parse_db_str
 from trac.db.util import ConnectionWrapper, IterableCursor
 from trac.util import get_pkginfo
-from trac.util.compat import close_fds
+from trac.util.compat import any, close_fds
 from trac.util.text import empty, exception_to_unicode, to_unicode
 from trac.util.translation import _
 
@@ -227,6 +227,8 @@ class PostgreSQLConnection(ConnectionWrapper):
             cnx.rollback()
         ConnectionWrapper.__init__(self, cnx, log)
 
+        self._version = self._get_version()
+
     def cast(self, column, type):
         # Temporary hack needed for the union of selects in the search module
         return 'CAST(%s AS %s)' % (column, _type_map.get(type, type))
@@ -257,3 +259,24 @@ class PostgreSQLConnection(ConnectionWrapper):
     def cursor(self):
         return IterableCursor(self.cnx.cursor(), self.log)
 
+    def drop_table(self, table):
+        cursor = self.cursor()
+        if self._version and any(self._version.startswith(version)
+                                 for version in ('8.0.', '8.1.')):
+            cursor.execute("""SELECT table_name FROM information_schema.tables
+                              WHERE table_schema=current_schema()
+                              AND table_name=%s""", (table,))
+            for row in cursor:
+                if row[0] == table:
+                    cursor.execute("DROP TABLE " + self.quote(table))
+                    break
+        else:
+            cursor.execute("DROP TABLE IF EXISTS " + self.quote(table))
+
+    def _get_version(self):
+        cursor = self.cursor()
+        cursor.execute('SELECT version()')
+        for version, in cursor:
+            # retrieve "8.1.23" from "PostgreSQL 8.1.23 on ...."
+            if version.startswith('PostgreSQL '):
+                return version.split(' ', 2)[1]

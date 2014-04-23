@@ -297,3 +297,8 @@ class MySQLConnection(ConnectionWrapper):
 
     def cursor(self):
         return IterableCursor(MySQLUnicodeCursor(self.cnx), self.log)
+
+    def drop_table(self, table):
+        cursor = MySQLdb.cursors.Cursor(self.cnx)
+        cursor._defer_warnings = True  # ignore "Warning: Unknown table ..."
+        cursor.execute("DROP TABLE IF EXISTS " + self.quote(table))
