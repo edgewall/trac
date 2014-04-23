@@ -29,6 +29,7 @@ from trac.util.translation import _, tag_
 from trac.web import IRequestHandler
 from trac.web.chrome import add_warning, add_script_data
 
+
 class BatchModifyModule(Component):
     """Ticket batch modification module.
 

@@ -14,7 +14,6 @@
 import unittest
 
 from trac.test import Mock
-from trac.versioncontrol import NoSuchChangeset, NoSuchNode
 from trac.versioncontrol.api import *
 from trac.versioncontrol.web_ui import *
 from trac.wiki.tests import formatter

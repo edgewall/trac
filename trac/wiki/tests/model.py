@@ -21,7 +21,7 @@ import unittest
 
 from trac.attachment import Attachment
 from trac.core import *
-from trac.resource import Resource, ResourceNotFound
+from trac.resource import Resource
 from trac.test import EnvironmentStub
 from trac.tests import compat
 from trac.util.datefmt import utc, to_utimestamp

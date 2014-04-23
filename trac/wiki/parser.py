@@ -23,6 +23,7 @@ import re
 from trac.core import *
 from trac.notification import EMAIL_LOOKALIKE_PATTERN
 
+
 class WikiParser(Component):
     """Wiki text parser."""
 

@@ -14,7 +14,6 @@
 import doctest
 import unittest
 from StringIO import StringIO
-import sys
 
 from trac.core import *
 from trac.test import EnvironmentStub

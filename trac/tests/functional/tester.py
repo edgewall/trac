@@ -20,7 +20,7 @@ import re
 from trac.tests.functional import internal_error
 from trac.tests.functional.better_twill import tc, b
 from trac.tests.contentgen import random_page, random_sentence, random_word, \
-    random_unique_camel
+                                  random_unique_camel
 from trac.util.text import to_utf8, unicode_quote
 
 try:

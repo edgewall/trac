@@ -18,6 +18,7 @@ import sys
 import trac.env
 from trac.ticket.default_workflow import load_workflow_config_snippet
 
+
 def main():
     """Rewrite the ticket-workflow section of the config; and change all
     'assigned' tickets to 'accepted'.

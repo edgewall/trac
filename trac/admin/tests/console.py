@@ -43,10 +43,9 @@ import trac.search.web_ui
 import trac.timeline.web_ui
 import trac.wiki.web_ui
 
-from trac.admin import console, console_date_format
 from trac.admin.api import AdminCommandManager, IAdminCommandProvider, \
                            console_date_format, get_console_locale
-from trac.admin.console import TracAdminHelpMacro
+from trac.admin.console import TracAdmin, TracAdminHelpMacro
 from trac.core import Component, implements
 from trac.test import EnvironmentStub
 from trac.util.datefmt import format_date, get_date_format_hint, \
@@ -121,7 +120,7 @@ class TracadminTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub(default_data=True, enable=('trac.*',),
                                    disable=('trac.tests.*',))
-        self._admin = console.TracAdmin()
+        self._admin = TracAdmin()
         self._admin.env_set('', self.env)
 
         # Set test date to 11th Jan 2004
@@ -1347,7 +1346,7 @@ class TracadminTestCase(unittest.TestCase):
 class TracadminNoEnvTestCase(unittest.TestCase):
 
     def setUp(self):
-        self._admin = console.TracAdmin()
+        self._admin = TracAdmin()
 
     def tearDown(self):
         self._admin = None

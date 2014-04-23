@@ -11,5 +11,5 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from trac.util.compat import close_fds
 from trac.tests.compat import rmtree
+from trac.util.compat import close_fds

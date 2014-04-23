@@ -23,6 +23,7 @@ from trac import core
 from trac.attachment import Attachment
 from trac.core import TracError, implements
 from trac.resource import ResourceNotFound
+from trac.test import EnvironmentStub
 from trac.tests import compat
 from trac.ticket.model import (
     Ticket, Component, Milestone, Priority, Type, Version
@@ -30,7 +31,6 @@ from trac.ticket.model import (
 from trac.ticket.api import (
     IMilestoneChangeListener, ITicketChangeListener, TicketSystem
 )
-from trac.test import EnvironmentStub
 from trac.util.datefmt import from_utimestamp, to_utimestamp, utc
 
 

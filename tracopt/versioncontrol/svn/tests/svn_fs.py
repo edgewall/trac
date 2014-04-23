@@ -17,8 +17,6 @@
 from datetime import datetime
 import new
 import os.path
-import stat
-import shutil
 import tempfile
 import unittest
 

@@ -21,7 +21,6 @@ from genshi.builder import tag
 
 from trac.config import IntOption, ListOption
 from trac.core import *
-from trac.mimeview import RenderingContext
 from trac.perm import IPermissionRequestor
 from trac.search.api import ISearchSource
 from trac.util.datefmt import format_datetime, user_time
@@ -29,7 +28,7 @@ from trac.util.html import find_element
 from trac.util.presentation import Paginator
 from trac.util.text import quote_query_string
 from trac.util.translation import _
-from trac.web import IRequestHandler
+from trac.web.api import IRequestHandler
 from trac.web.chrome import (INavigationContributor, ITemplateProvider,
                              add_link, add_stylesheet, add_warning,
                              web_context)

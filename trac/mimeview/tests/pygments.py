@@ -23,7 +23,7 @@ try:
 except ImportError:
     have_pygments = False
 
-from trac.mimeview.api import Mimeview, RenderingContext
+from trac.mimeview.api import Mimeview
 if have_pygments:
     from trac.mimeview.pygments import PygmentsRenderer
 from trac.test import EnvironmentStub, Mock

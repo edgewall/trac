@@ -18,6 +18,7 @@ from trac.util.datefmt import utc
 from trac.wiki.model import WikiPage
 from trac.wiki.tests import formatter
 
+
 TEST_CASES = u"""
 ============================== wiki: link resolver
 wiki:TestPage

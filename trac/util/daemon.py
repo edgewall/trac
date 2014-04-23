@@ -19,6 +19,7 @@ import os
 import signal
 import sys
 
+
 def daemonize(pidfile=None, progname=None, stdin='/dev/null',
               stdout='/dev/null', stderr='/dev/null', umask=022):
     """Fork a daemon process."""
