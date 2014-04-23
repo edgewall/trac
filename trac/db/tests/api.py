@@ -5,6 +5,7 @@ import unittest
 
 from trac.db.api import DatabaseManager, _parse_db_str, get_column_names, \
                         with_transaction
+from trac.db.schema import Column, Table
 from trac.test import EnvironmentStub, Mock
 from trac.util.concurrency import ThreadLocal
 
@@ -349,9 +350,36 @@ class ConnectionTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub()
         self.db = self.env.get_db_cnx()
+        self.tables = [
+            Table('HOURS', key='ID')[
+                Column('ID', auto_increment=True),
+                Column('AUTHOR')],
+            Table('blog', key='bid')[
+                Column('bid', auto_increment=True),
+                Column('author')
+            ]
+        ]
+        self._drop_tables(self.tables)
+        self._create_tables(self.tables)
 
     def tearDown(self):
+        self._drop_tables(self.tables)
         self.env.reset_db()
+
+    def _create_tables(self, tables):
+        @self.env.with_transaction()
+        def do_create(db):
+            connector = DatabaseManager(self.env).get_connector()[0]
+            cursor = self.db.cursor()
+            for table in tables:
+                for sql in connector.to_sql(table):
+                    cursor.execute(sql)
+
+    def _drop_tables(self, tables):
+        @self.env.with_transaction()
+        def do_drop(db):
+            for table in tables:
+                self.db.drop_table(table.name)
 
     def test_get_last_id(self):
         c = self.db.cursor()
@@ -367,7 +395,7 @@ class ConnectionTestCase(unittest.TestCase):
         id2 = self.db.get_last_id(c, 'report')
         self.assertEqual(id1 + 1, id2)
 
-    def test_update_sequence(self):
+    def test_update_sequence_default_column(self):
         cursor = self.db.cursor()
         cursor.execute("""
             INSERT INTO report (id, author) VALUES (42, 'anonymous')
@@ -379,6 +407,40 @@ class ConnectionTestCase(unittest.TestCase):
         self.db.commit()
         cursor.execute("SELECT id FROM report WHERE author='next-id'")
         self.assertEqual(43, cursor.fetchall()[0][0])
+
+    def test_update_sequence_nondefault_column(self):
+        db = self.db
+        cursor = db.cursor()
+        cursor.execute(
+            "INSERT INTO blog (bid, author) VALUES (42, 'anonymous')")
+        db.commit()
+
+        db.update_sequence(cursor, 'blog', 'bid')
+        db.commit()
+        cursor.execute("INSERT INTO blog (author) VALUES ('next-id')")
+        db.commit()
+
+        cursor.execute("SELECT bid FROM blog WHERE author='next-id'")
+        self.assertEqual(43, cursor.fetchall()[0][0])
+
+    def test_identifiers_need_quoting(self):
+        """Test for regression described in comment:4:ticket:11512."""
+        db = self.db
+        cursor = db.cursor()
+        cursor.execute(
+            "INSERT INTO %s (%s, %s) VALUES (42, 'anonymous')"
+            % (db.quote('HOURS'), db.quote('ID'), db.quote('AUTHOR')))
+        db.commit()
+        db.update_sequence(cursor, 'HOURS', 'ID')
+        db.commit()
+
+        cursor.execute(
+            "INSERT INTO %s (%s) VALUES ('next-id')"
+            % (db.quote('HOURS'), db.quote('AUTHOR')))
+        db.commit()
+        last_id = db.get_last_id(cursor, 'HOURS', 'ID')
+
+        self.assertEqual(43, last_id)
 
 
 def suite():
