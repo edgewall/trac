@@ -45,15 +45,12 @@ from trac.util.datefmt import (
 )
 from trac.util.html import to_fragment
 from trac.util.text import (
-    exception_to_unicode, empty, obfuscate_email_address, shorten_line,
-    to_unicode
+    exception_to_unicode, empty, obfuscate_email_address, shorten_line
 )
 from trac.util.presentation import separated
-from trac.util.translation import _, tag_, tagn_, N_, gettext, ngettext
+from trac.util.translation import _, tag_, tagn_, N_, ngettext
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
-from trac.web import (
-    IRequestHandler, RequestDone, arg_list_to_args, parse_arg_list
-)
+from trac.web import IRequestHandler, arg_list_to_args, parse_arg_list
 from trac.web.chrome import (
     Chrome, INavigationContributor, ITemplateProvider,
     add_ctxtnav, add_link, add_notice, add_script, add_script_data,

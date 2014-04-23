@@ -28,7 +28,6 @@ from SocketServer import ThreadingMixIn
 
 from trac import __version__ as VERSION
 from trac.util import autoreload, daemon
-from trac.web.api import Request
 from trac.web.auth import BasicAuthentication, DigestAuthentication
 from trac.web.main import dispatch_request
 from trac.web.wsgi import WSGIServer, WSGIRequestHandler

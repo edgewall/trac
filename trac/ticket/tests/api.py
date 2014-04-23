@@ -12,9 +12,9 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 from trac.perm import PermissionCache, PermissionSystem
+from trac.test import EnvironmentStub, Mock
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Ticket
-from trac.test import EnvironmentStub, Mock
 
 import unittest
 

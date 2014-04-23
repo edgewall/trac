@@ -14,7 +14,7 @@
 
 from trac.perm import PermissionSystem
 from trac.tests.functional import *
-from trac.util.text import unicode_to_base64, unicode_from_base64
+from trac.util.text import unicode_to_base64
 
 
 class AuthorizationTestCaseSetup(FunctionalTwillTestCaseSetup):

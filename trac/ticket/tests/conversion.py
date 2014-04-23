@@ -15,10 +15,10 @@ import os
 import unittest
 
 from trac import __version__ as TRAC_VERSION
+from trac.mimeview.api import Mimeview
 from trac.test import EnvironmentStub, Mock
 from trac.ticket.model import Ticket
 from trac.ticket.web_ui import TicketModule
-from trac.mimeview.api import Mimeview
 from trac.web.href import Href
 
 

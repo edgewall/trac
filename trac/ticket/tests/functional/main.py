@@ -20,8 +20,7 @@ from datetime import datetime, timedelta
 from trac.admin.tests.functional import AuthorizationTestCaseSetup
 from trac.test import locale_en
 from trac.tests.functional import *
-from trac.util.datefmt import utc, localtz, format_date, format_datetime, \
-                              pretty_timedelta
+from trac.util.datefmt import utc, localtz, format_date, format_datetime
 from trac.util.text import to_utf8
 
 try:

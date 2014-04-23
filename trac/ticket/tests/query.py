@@ -14,7 +14,6 @@
 from trac.test import Mock, EnvironmentStub, MockPerm, locale_en
 from trac.ticket.model import Ticket
 from trac.ticket.query import Query, QueryModule, TicketQueryMacro
-from trac.ticket.model import Ticket
 from trac.util.datefmt import utc
 from trac.web.chrome import web_context
 from trac.web.href import Href

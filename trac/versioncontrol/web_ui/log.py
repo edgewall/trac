@@ -28,8 +28,7 @@ from trac.resource import ResourceNotFound
 from trac.util import Ranges
 from trac.util.text import to_unicode, wrap
 from trac.util.translation import _
-from trac.versioncontrol.api import (RepositoryManager, Changeset,
-                                     NoSuchChangeset)
+from trac.versioncontrol.api import Changeset, RepositoryManager
 from trac.versioncontrol.web_ui.changeset import ChangesetModule
 from trac.versioncontrol.web_ui.util import *
 from trac.web import IRequestHandler

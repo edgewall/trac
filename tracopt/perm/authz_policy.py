@@ -23,7 +23,6 @@ from trac.config import ConfigurationError, Option
 from trac.perm import PermissionSystem, IPermissionPolicy
 from trac.util import lazy
 from trac.util.text import to_unicode
-from trac.util.translation import _
 
 ConfigObj = None
 try:

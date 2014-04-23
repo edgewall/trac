@@ -25,6 +25,7 @@ from trac.test import MockPerm
 from trac.web.href import Href
 from trac.wiki.tests import formatter
 
+
 SEARCH_TEST_CASES = u"""
 ============================== search: link resolver
 search:foo
