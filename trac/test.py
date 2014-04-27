@@ -193,17 +193,17 @@ def reset_postgres_db(env, db_prop):
             # information_schema.sequences view is available in
             # PostgreSQL 8.2+ however Trac supports PostgreSQL 8.0+, uses
             # pg_get_serial_sequence()
-            columns = db("""SELECT table_name, column_name
-                            FROM information_schema.columns
-                            WHERE table_schema=%s""", (dbname,))
-            serials = ','.join(['pg_get_serial_sequence(%s,%s)'] *
-                               len(columns))
-            args = []
-            for table, column in columns:
-                args.extend((db.quote(dbname) + '.' + db.quote(table), column))
-            for seqs in db("SELECT " + serials, args):
-                for seq in filter(None, seqs):
-                    db("ALTER SEQUENCE %s RESTART WITH 1" % seq)
+            seqs = [seq for seq, in db("""
+                SELECT sequence_name
+                FROM (
+                    SELECT pg_get_serial_sequence(
+                        quote_ident(table_schema) || '.' ||
+                        quote_ident(table_name), column_name) AS sequence_name
+                    FROM information_schema.columns
+                    WHERE table_schema=%s) AS tab
+                WHERE sequence_name IS NOT NULL""", (dbname,))]
+            for seq in seqs:
+                db("ALTER SEQUENCE %s RESTART WITH 1" % seq)
             # clear tables
             tables = db.get_table_names()
             for table in tables:
