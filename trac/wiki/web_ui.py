@@ -210,12 +210,12 @@ class WikiModule(Component):
             for field, message in manipulator.validate_wiki_page(req, page):
                 valid = False
                 if field:
-                    add_warning(req, _("The Wiki page field '%(field)s' is "
-                                       "invalid: %(message)s",
-                                       field=field, message=message))
+                    add_warning(req, tag_("The Wiki page field '%(field)s'"
+                                          " is invalid: %(message)s",
+                                          field=field, message=message))
                 else:
-                    add_warning(req, _("Invalid Wiki page: %(message)s",
-                                       message=message))
+                    add_warning(req, tag_("Invalid Wiki page: %(message)s",
+                                          message=message))
         return valid
 
     def _page_data(self, req, page, action=''):

@@ -14,7 +14,7 @@
 
 from trac.tests.functional import *
 from trac.mimeview.rst import has_docutils
-from trac.util import get_pkginfo
+from trac.util import create_file, get_pkginfo
 
 try:
     from configobj import ConfigObj
@@ -45,6 +45,51 @@ class TestWikiAddAttachment(FunctionalTwillTestCaseSetup):
         tc.find(filename)
         tc.find('Download all attachments as:\s+<a rel="nofollow" '
                 'href="/zip-attachment/wiki/%s/">.zip</a>' % name)
+
+
+class TestWikiPageManipulator(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        plugin_name = self.__class__.__name__
+        env = self._testenv.get_trac_environment()
+        env.config.set('components', plugin_name + '.*', 'enabled')
+        env.config.save()
+        create_file(os.path.join(env.path, 'plugins', plugin_name + '.py'),
+"""\
+from genshi.builder import tag
+from trac.core import Component, implements
+from trac.util.translation import tag_
+from trac.wiki.api import IWikiPageManipulator
+
+
+class WikiPageManipulator(Component):
+    implements(IWikiPageManipulator)
+
+    def prepare_wiki_page(self, req, page, fields):
+        pass
+
+    def validate_wiki_page(self, req, page):
+        field = 'comment'
+        yield None, tag_("The page contains invalid markup at"
+                         " line %(number)s.", number=tag.strong('10'))
+        yield field, tag_("The field %(field)s cannot be empty.",
+                          field=tag.strong(field))
+""")
+        self._testenv.restart()
+
+        try:
+            self._tester.go_to_front()
+            tc.follow("Wiki")
+            tc.formvalue('modifypage', 'action', 'edit')
+            tc.submit()
+            tc.submit('save', 'edit')
+            tc.url(self._tester.url + '/wiki/WikiStart$')
+            tc.find("Invalid Wiki page: The page contains invalid markup at"
+                    " line <strong>10</strong>.")
+            tc.find("The Wiki page field 'comment' is invalid:"
+                    " The field <strong>comment</strong> cannot be empty.")
+        finally:
+            env.config.set('components', plugin_name + '.*', 'disabled')
+            env.config.save()
 
 
 class TestWikiHistory(FunctionalTwillTestCaseSetup):
@@ -375,6 +420,7 @@ def functionalSuite(suite=None):
         suite = trac.tests.functional.functionalSuite()
     suite.addTest(TestWiki())
     suite.addTest(TestWikiAddAttachment())
+    suite.addTest(TestWikiPageManipulator())
     suite.addTest(TestWikiHistory())
     suite.addTest(TestWikiRename())
     suite.addTest(RegressionTestTicket4812())
