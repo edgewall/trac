@@ -85,7 +85,7 @@ class WikiPageManipulator(Component):
             tc.url(self._tester.url + '/wiki/WikiStart$')
             tc.find("Invalid Wiki page: The page contains invalid markup at"
                     " line <strong>10</strong>.")
-            tc.find("The Wiki page field 'comment' is invalid:"
+            tc.find("The Wiki page field <strong>comment</strong> is invalid:"
                     " The field <strong>comment</strong> cannot be empty.")
         finally:
             env.config.set('components', plugin_name + '.*', 'disabled')

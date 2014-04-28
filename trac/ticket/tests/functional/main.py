@@ -172,8 +172,8 @@ class TicketManipulator(Component):
             tc.url(self._tester.url + '/newticket$')
             tc.find("A ticket with the summary <em>Testing ticket "
                     "manipulator</em> already exists.")
-            tc.find("The ticket field 'reporter' is invalid: The"
-                    " ticket <strong>reporter</strong> is <em>invalid</em>.")
+            tc.find("The ticket field <strong>reporter</strong> is invalid:"
+                    " The ticket <strong>reporter</strong> is <em>invalid</em>.")
         finally:
             env.config.set('components', plugin_name + '.*', 'disabled')
             env.config.save()
