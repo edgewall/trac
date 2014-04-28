@@ -1328,9 +1328,9 @@ class TicketModule(Component):
             for field, message in manipulator.validate_ticket(req, ticket):
                 valid = False
                 if field:
-                    add_warning(req, _("The ticket field '%(field)s' is "
-                                       "invalid: %(message)s",
-                                       field=field, message=message))
+                    add_warning(req, tag_("The ticket field '%(field)s'"
+                                          " is invalid: %(message)s",
+                                          field=field, message=message))
                 else:
                     add_warning(req, message)
         return valid
