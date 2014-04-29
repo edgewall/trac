@@ -209,7 +209,8 @@ In [changeset:"%s"]:
 
     def _update_tickets(self, tickets, changeset, comment, date):
         """Update the tickets with the given comment."""
-        perm = PermissionCache(self.env, changeset.author)
+        authname = self._authname(changeset)
+        perm = PermissionCache(self.env, authname)
         for tkt_id, cmds in tickets.iteritems():
             try:
                 self.log.debug("Updating ticket #%d", tkt_id)
@@ -221,7 +222,7 @@ In [changeset:"%s"]:
                         if cmd(ticket, changeset, ticket_perm) is not False:
                             save = True
                     if save:
-                        ticket.save_changes(changeset.author, comment, date)
+                        ticket.save_changes(authname, comment, date)
                 if save:
                     self._notify(ticket, date)
             except Exception, e:
@@ -251,23 +252,29 @@ In [changeset:"%s"]:
                 functions[cmd] = func
         return functions
 
+    def _authname(self, changeset):
+        return changeset.author.lower() \
+               if self.env.config.getbool('trac', 'ignore_auth_case') \
+               else changeset.author
+
     # Command-specific behavior
     # The ticket isn't updated if all extracted commands return False.
 
     def cmd_close(self, ticket, changeset, perm):
+        authname = self._authname(changeset)
         if self.check_perms and not 'TICKET_MODIFY' in perm:
             self.log.info("%s doesn't have TICKET_MODIFY permission for #%d",
-                          changeset.author, ticket.id)
+                          authname, ticket.id)
             return False
         ticket['status'] = 'closed'
         ticket['resolution'] = 'fixed'
         if not ticket['owner']:
-            ticket['owner'] = changeset.author
+            ticket['owner'] = authname
 
     def cmd_refs(self, ticket, changeset, perm):
         if self.check_perms and not 'TICKET_APPEND' in perm:
             self.log.info("%s doesn't have TICKET_APPEND permission for #%d",
-                          changeset.author, ticket.id)
+                          self._authname(changeset), ticket.id)
             return False
 
 
