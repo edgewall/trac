@@ -138,12 +138,12 @@ class LogModule(Component):
                         node_history = list(node.get_history(2))
                         p, rev, chg = node_history[0]
                         if repos.rev_older_than(rev, a):
-                            break # simply skip, no separator
+                            break  # simply skip, no separator
                         if 'CHANGESET_VIEW' in req.perm(cset_resource(id=rev)):
                             if expected_next_item:
                                 # check whether we're continuing previous range
                                 np, nrev, nchg = expected_next_item
-                                if rev != nrev: # no, we need a separator
+                                if rev != nrev:  # no, we need a separator
                                     yield (np, nrev, None)
                             yield node_history[0]
                         if len(node_history) > 1:
@@ -158,6 +158,7 @@ class LogModule(Component):
         else:
             show_graph = path == '/' and not verbose \
                          and not repos.has_linear_changesets
+
             def history():
                 node = get_existing_node(req, repos, path, rev)
                 for h in node.get_history():
@@ -192,7 +193,7 @@ class LogModule(Component):
                     break
                 elif mode == 'path_history':
                     depth -= 1
-            if old_chg is None: # separator entry
+            if old_chg is None:  # separator entry
                 stop_limit = limit
             else:
                 count += 1
@@ -200,13 +201,15 @@ class LogModule(Component):
             if count >= stop_limit:
                 break
             previous_path = old_path
-        if info == []:
+        if not info:
             node = get_existing_node(req, repos, path, rev)
             if repos.rev_older_than(stop_rev, node.created_rev):
                 # FIXME: we should send a 404 error here
                 raise TracError(_("The file or directory '%(path)s' doesn't "
-                    "exist at revision %(rev)s or at any previous revision.",
-                    path=path, rev=display_rev(rev)), _('Nonexistent path'))
+                                  "exist at revision %(rev)s or at any "
+                                  "previous revision.", path=path,
+                                  rev=display_rev(rev)),
+                                _('Nonexistent path'))
 
         # Generate graph data
         graph = {}
@@ -231,7 +234,7 @@ class LogModule(Component):
             return req.href.log(repos.reponame or None, path, **params)
 
         if format in ('rss', 'changelog'):
-            info = [i for i in info if i['change']] # drop separators
+            info = [i for i in info if i['change']]  # drop separators
             if info and count > limit:
                 del info[-1]
         elif info and count >= limit:
@@ -245,8 +248,9 @@ class LogModule(Component):
                 older_revisions_href = make_log_href(next_path, rev=next_rev,
                                                      revs=next_revranges)
                 add_link(req, 'next', older_revisions_href,
-                    _('Revision Log (restarting at %(path)s, rev. %(rev)s)',
-                    path=next_path, rev=display_rev(next_rev)))
+                         _('Revision Log (restarting at %(path)s, rev. '
+                           '%(rev)s)', path=next_path,
+                           rev=display_rev(next_rev)))
             # only show fully 'limit' results, use `change == None` as a marker
             info[-1]['change'] = None
 
@@ -275,11 +279,11 @@ class LogModule(Component):
             'reponame': repos.reponame or None, 'repos': repos,
             'path': path, 'rev': rev, 'stop_rev': stop_rev,
             'display_rev': display_rev, 'revranges': revranges,
-            'mode': mode, 'verbose': verbose, 'limit' : limit,
+            'mode': mode, 'verbose': verbose, 'limit': limit,
             'items': info, 'changes': changes, 'extra_changes': extra_changes,
             'graph': graph,
-            'wiki_format_messages':
-            self.config['changeset'].getbool('wiki_format_messages')
+            'wiki_format_messages': self.config['changeset']
+                                    .getbool('wiki_format_messages')
         }
 
         if format == 'changelog':
@@ -294,8 +298,8 @@ class LogModule(Component):
         item_ranges = []
         range = []
         for item in info:
-            if item['change'] is None: # separator
-                if range: # start new range
+            if item['change'] is None:  # separator
+                if range:  # start new range
                     range.append(item)
                     item_ranges.append(range)
                     range = []
@@ -320,7 +324,8 @@ class LogModule(Component):
                  'application/rss+xml', 'rss')
         changelog_href = make_log_href(path, format='changelog', revs=revs,
                                        stop_rev=stop_rev)
-        add_link(req, 'alternate', changelog_href, _('ChangeLog'), 'text/plain')
+        add_link(req, 'alternate', changelog_href, _('ChangeLog'),
+                 'text/plain')
 
         add_ctxtnav(req, _('View Latest Revision'),
                     href=req.href.browser(repos.reponame or None, path))
