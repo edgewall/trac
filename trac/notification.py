@@ -357,8 +357,9 @@ class NotifyEmail(Notify):
                 # when passing `LazyProxy` object to `Fragment`
                 tag.p(to_fragment(tag_(
                     "Neither %(from_)s nor %(reply_to)s are specified in the "
-                    "configuration.", from_=tag.b('[notification] smtp_from'),
-                    reply_to=tag.b('[notification] smtp_replyto')))))
+                    "configuration.",
+                    from_=tag.strong('[notification] smtp_from'),
+                    reply_to=tag.strong('[notification] smtp_replyto')))))
             raise TracError(message, _('SMTP Notification Error'))
 
         Notify.notify(self, resid)
