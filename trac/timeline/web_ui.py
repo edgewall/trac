@@ -414,7 +414,7 @@ class TimelineModule(Component):
                        name=tag.code(ep.__class__.__name__),
                        kinds=', '.join('"%s"' % ep_kinds[f] for f in
                                        current_filters & ep_filters)),
-                  tag.b(exception_to_unicode(exc)), class_='message'),
+                  tag.strong(exception_to_unicode(exc)), class_='message'),
             tag.p(tag_("You may want to see the %(other_events)s from the "
                        "Timeline or notify your Trac administrator about the "
                        "error (detailed information was written to the log).",

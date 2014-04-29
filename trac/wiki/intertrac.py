@@ -125,13 +125,13 @@ class InterTracDispatcher(Component):
         def generate_prefix(prefix):
             intertrac = intertracs[prefix]
             if isinstance(intertrac, basestring):
-                yield tag.tr(tag.td(tag.b(prefix)),
-                             tag.td('Alias for ', tag.b(intertrac)))
+                yield tag.tr(tag.td(tag.strong(prefix)),
+                             tag.td('Alias for ', tag.strong(intertrac)))
             else:
                 url = intertrac.get('url', '')
                 if url:
                     title = intertrac.get('title', url)
-                    yield tag.tr(tag.td(tag.a(tag.b(prefix),
+                    yield tag.tr(tag.td(tag.a(tag.strong(prefix),
                                               href=url + '/timeline')),
                                  tag.td(tag.a(title, href=url)))
 

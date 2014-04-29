@@ -1175,7 +1175,7 @@ class AnyDiffModule(Component):
                                if repos.is_viewable(req.perm))
 
             elem = tag.ul(
-                [tag.li(tag.b(path) if isdir else path)
+                [tag.li(tag.strong(path) if isdir else path)
                  for (isdir, name, path) in sorted(entries, key=kind_order)
                  if name.lower().startswith(prefix)])
 
