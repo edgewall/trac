@@ -4948,7 +4948,7 @@ msgstr "Repositorys"
 #, python-format
 msgid "You should now run %(resync)s to synchronize Trac with the repository."
 msgstr ""
-"Sie sollten jetzt %(resync)s ausführen, um Trac mit dem Reposiory zu "
+"Sie sollten jetzt %(resync)s ausführen, um Trac mit dem Repository zu "
 "synchronisieren."
 
 #: trac/versioncontrol/admin.py:225
