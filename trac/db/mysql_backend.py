@@ -375,46 +375,8 @@ class MySQLConnection(ConnectionWrapper):
         ConnectionWrapper.__init__(self, cnx, log)
         self._is_closed = False
 
-    def cast(self, column, type):
-        if type == 'int' or type == 'int64':
-            type = 'signed'
-        elif type == 'text':
-            type = 'char'
-        return 'CAST(%s AS %s)' % (column, type)
-
-    def concat(self, *args):
-        return 'concat(%s)' % ', '.join(args)
-
-    def like(self):
-        """Return a case-insensitive LIKE clause."""
-        return "LIKE %%s COLLATE %s_general_ci ESCAPE '/'" % self.charset
-
-    def like_escape(self, text):
-        return _like_escape_re.sub(r'/\1', text)
-
-    def quote(self, identifier):
-        """Return the quoted identifier."""
-        return "`%s`" % identifier.replace('`', '``')
-
-    def get_last_id(self, cursor, table, column='id'):
-        return cursor.lastrowid
-
-    def update_sequence(self, cursor, table, column='id'):
-        # MySQL handles sequence updates automagically
-        pass
-
-    def get_table_names(self):
-        rows = self.execute("""
-            SELECT table_name FROM information_schema.tables
-            WHERE table_schema=%s""", (self.schema,))
-        return [row[0] for row in rows]
-
-    def get_column_names(self, tablename):
-        rows = self.execute("""
-            SELECT column_name FROM information_schema.columns
-            WHERE table_schema=%s AND table_name=%s
-            """, (self.schema, tablename))
-        return [row[0] for row in rows]
+    def cursor(self):
+        return IterableCursor(MySQLUnicodeCursor(self.cnx), self.log)
 
     def rollback(self):
         self.cnx.ping()
@@ -431,10 +393,48 @@ class MySQLConnection(ConnectionWrapper):
                 pass # this error would mean it's already closed.  So, ignore
             self._is_closed = True
 
-    def cursor(self):
-        return IterableCursor(MySQLUnicodeCursor(self.cnx), self.log)
+    def cast(self, column, type):
+        if type == 'int' or type == 'int64':
+            type = 'signed'
+        elif type == 'text':
+            type = 'char'
+        return 'CAST(%s AS %s)' % (column, type)
+
+    def concat(self, *args):
+        return 'concat(%s)' % ', '.join(args)
 
     def drop_table(self, table):
         cursor = MySQLdb.cursors.Cursor(self.cnx)
         cursor._defer_warnings = True  # ignore "Warning: Unknown table ..."
         cursor.execute("DROP TABLE IF EXISTS " + self.quote(table))
+
+    def get_column_names(self, tablename):
+        rows = self.execute("""
+            SELECT column_name FROM information_schema.columns
+            WHERE table_schema=%s AND table_name=%s
+            """, (self.schema, tablename))
+        return [row[0] for row in rows]
+
+    def get_last_id(self, cursor, table, column='id'):
+        return cursor.lastrowid
+
+    def get_table_names(self):
+        rows = self.execute("""
+            SELECT table_name FROM information_schema.tables
+            WHERE table_schema=%s""", (self.schema,))
+        return [row[0] for row in rows]
+
+    def like(self):
+        """Return a case-insensitive LIKE clause."""
+        return "LIKE %%s COLLATE %s_general_ci ESCAPE '/'" % self.charset
+
+    def like_escape(self, text):
+        return _like_escape_re.sub(r'/\1', text)
+
+    def quote(self, identifier):
+        """Return the quoted identifier."""
+        return "`%s`" % identifier.replace('`', '``')
+
+    def update_sequence(self, cursor, table, column='id'):
+        # MySQL handles sequence updates automagically
+        pass
