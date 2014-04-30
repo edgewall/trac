@@ -202,7 +202,7 @@ class BasicsAdminPanel(Component):
 
     implements(IAdminPanelProvider)
 
-    handlers = ExtensionPoint(IRequestHandler)
+    request_handlers = ExtensionPoint(IRequestHandler)
 
     # IAdminPanelProvider methods
 
@@ -211,7 +211,8 @@ class BasicsAdminPanel(Component):
             yield ('general', _("General"), 'basics', _("Basic Settings"))
 
     def render_admin_panel(self, req, cat, page, path_info):
-        valid_handlers = [hdlr.__class__.__name__ for hdlr in self.handlers
+        valid_handlers = [hdlr.__class__.__name__
+                          for hdlr in self.request_handlers
                           if is_valid_default_handler(hdlr)]
         if Locale:
             locale_ids = get_available_locales()
