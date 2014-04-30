@@ -18,11 +18,11 @@ import shutil
 import tempfile
 import unittest
 
+import trac.tests.compat
 from trac import db_default
 from trac.core import ComponentManager
 from trac.env import Environment
 from trac.test import EnvironmentStub
-from trac.tests import compat
 
 
 class EnvironmentCreatedWithoutData(Environment):

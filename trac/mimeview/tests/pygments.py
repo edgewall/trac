@@ -23,11 +23,11 @@ try:
 except ImportError:
     have_pygments = False
 
+import trac.tests.compat
 from trac.mimeview.api import LineNumberAnnotator, Mimeview
 if have_pygments:
     from trac.mimeview.pygments import PygmentsRenderer
 from trac.test import EnvironmentStub, Mock
-from trac.tests import compat
 from trac.web.chrome import Chrome, web_context
 from trac.web.href import Href
 from trac.wiki.formatter import format_to_html

@@ -18,8 +18,8 @@ import time
 from datetime import datetime
 import unittest
 
+import trac.tests.compat
 from trac.test import EnvironmentStub, Mock
-from trac.tests import compat
 from trac.web.session import DetachedSession, Session, PURGE_AGE, \
                              UPDATE_INTERVAL, SessionAdmin
 from trac.core import TracError

@@ -16,9 +16,9 @@ import shutil
 import tempfile
 import unittest
 
+import trac.tests.compat
 from trac.core import Component, TracError, implements
 from trac.test import EnvironmentStub, locale_en
-from trac.tests import compat
 from trac.tests.contentgen import random_sentence
 from trac.util import create_file
 from trac.web.chrome import (

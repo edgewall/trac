@@ -13,9 +13,9 @@
 
 import unittest
 
+import trac.tests.compat
 from trac.perm import DefaultPermissionStore, PermissionCache
 from trac.test import EnvironmentStub
-from trac.tests import compat
 from trac.wiki.model import WikiPage
 from trac.wiki.web_ui import ReadonlyWikiPolicy
 

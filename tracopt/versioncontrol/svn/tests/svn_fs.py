@@ -28,8 +28,8 @@ try:
 except ImportError:
     has_svn = False
 
+import trac.tests.compat
 from trac.test import EnvironmentStub, TestSetup
-from trac.tests import compat
 from trac.core import TracError
 from trac.resource import Resource, resource_exists
 from trac.util.concurrency import get_thread_id

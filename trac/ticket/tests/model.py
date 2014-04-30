@@ -19,12 +19,12 @@ import tempfile
 import shutil
 import unittest
 
+import trac.tests.compat
 from trac import core
 from trac.attachment import Attachment
 from trac.core import TracError, implements
 from trac.resource import ResourceNotFound
 from trac.test import EnvironmentStub
-from trac.tests import compat
 from trac.ticket.model import (
     Ticket, Component, Milestone, Priority, Type, Version
 )
