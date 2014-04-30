@@ -211,9 +211,9 @@ class BasicsAdminPanel(Component):
             yield ('general', _("General"), 'basics', _("Basic Settings"))
 
     def render_admin_panel(self, req, cat, page, path_info):
-        valid_handlers = [hdlr.__class__.__name__
-                          for hdlr in self.request_handlers
-                          if is_valid_default_handler(hdlr)]
+        valid_handlers = [handler.__class__.__name__
+                          for handler in self.request_handlers
+                          if is_valid_default_handler(handler)]
         if Locale:
             locale_ids = get_available_locales()
             locales = [Locale.parse(locale) for locale in locale_ids]
