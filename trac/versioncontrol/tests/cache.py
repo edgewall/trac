@@ -14,8 +14,6 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from __future__ import with_statement
-
 from datetime import datetime
 
 import trac.tests.compat

@@ -16,7 +16,7 @@ import sys
 
 from setuptools import setup, find_packages
 
-min_python = (2, 5)
+min_python = (2, 6)
 if sys.version_info < min_python:
     print("Trac requires Python %d.%d or later" % min_python)
     sys.exit(1)

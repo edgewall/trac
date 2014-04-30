@@ -31,8 +31,6 @@ Requires:  Trac 0.9b1 from http://trac.edgewall.org/
 $Id$
 """
 
-from __future__ import with_statement
-
 import re
 
 ###

@@ -18,8 +18,6 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 #         Christian Boos <cboos@edgewall.org>
 
-from __future__ import with_statement
-
 from functools import partial
 from itertools import groupby
 import os

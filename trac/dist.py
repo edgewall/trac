@@ -19,8 +19,6 @@ we also modify the standard `distutils.command.build` and
 for compiling catalogs are issued upon install.
 """
 
-from __future__ import with_statement
-
 from StringIO import StringIO
 from itertools import izip
 import os

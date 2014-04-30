@@ -16,8 +16,6 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 #         Matthew Good <trac@matt-good.net>
 
-from __future__ import with_statement
-
 import os
 import pkg_resources
 import sys

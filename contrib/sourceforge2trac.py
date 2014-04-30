@@ -97,8 +97,6 @@ You may want to login into Trac to verify names for ticket owners. You may
 also want to rename ticket types and priorities to default.
 """
 
-from __future__ import with_statement
-
 from xml.etree.ElementTree import ElementTree
 import time
 import sys

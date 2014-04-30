@@ -16,8 +16,6 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from __future__ import with_statement
-
 import csv
 import re
 from StringIO import StringIO

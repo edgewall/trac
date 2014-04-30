@@ -15,8 +15,6 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from __future__ import with_statement
-
 import csv
 from itertools import groupby
 from math import ceil

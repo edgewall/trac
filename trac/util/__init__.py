@@ -17,8 +17,6 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Matthew Good <trac@matt-good.net>
 
-from __future__ import with_statement
-
 import errno
 import inspect
 from itertools import izip, tee

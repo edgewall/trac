@@ -13,8 +13,6 @@
 
 """Utilities for text translation with gettext."""
 
-from __future__ import with_statement
-
 import pkg_resources
 import re
 

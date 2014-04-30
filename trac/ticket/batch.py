@@ -13,8 +13,6 @@
 #
 # Author: Brian Meeker <meeker.brian@gmail.com>
 
-from __future__ import with_statement
-
 import re
 from datetime import datetime
 

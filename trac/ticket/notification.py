@@ -16,8 +16,6 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 #
 
-from __future__ import with_statement
-
 from hashlib import md5
 
 from genshi.template.text import NewTextTemplate

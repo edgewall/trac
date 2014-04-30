@@ -21,8 +21,6 @@ mostly targeting (X)HTML generation but not exclusively, RSS or other forms of
 web content are also using facilities provided here.
 """
 
-from __future__ import with_statement
-
 import datetime
 from functools import partial
 import itertools
