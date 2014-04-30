@@ -148,7 +148,7 @@ ${description_en if url else description}</textarea>
                     <li class="frame" py:for="idx, frame in enumerate(frames)">
                       <a href="#frame${idx}" id="frame${idx}"><span i18n:msg="file, line, function" py:strip="">
                         <span class="file">File "${frame.filename}",
-                        line <b>${frame.lineno + 1}</b>, in</span>
+                        line <strong>${frame.lineno + 1}</strong>, in</span>
                         <var>${frame.function}</var></span>
                       </a>
                       <div py:if="frame.line" class="source" style="display: none">
