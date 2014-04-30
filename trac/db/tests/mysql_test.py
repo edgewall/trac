@@ -13,10 +13,10 @@
 
 import unittest
 
+import trac.tests.compat
 from trac.db.mysql_backend import MySQLConnector
 from trac.db.schema import Table, Column, Index
 from trac.test import EnvironmentStub, Mock
-from trac.tests import compat
 
 
 class MySQLTableAlterationSQLTest(unittest.TestCase):

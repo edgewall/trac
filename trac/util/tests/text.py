@@ -16,7 +16,7 @@ import socket
 import unittest
 from StringIO import StringIO
 
-from trac.tests import compat
+import trac.tests.compat
 from trac.util.text import empty, expandtabs, fix_eol, javascript_quote, \
                            levenshtein_distance, normalize_whitespace, \
                            print_table, quote_query_string, shorten_line, \

@@ -18,8 +18,8 @@ from __future__ import with_statement
 
 from datetime import datetime
 
+import trac.tests.compat
 from trac.test import EnvironmentStub, Mock
-from trac.tests import compat
 from trac.util.datefmt import to_utimestamp, utc
 from trac.versioncontrol import Repository, Changeset, Node, NoSuchChangeset
 from trac.versioncontrol.cache import CachedRepository

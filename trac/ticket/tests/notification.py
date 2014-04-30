@@ -23,8 +23,8 @@ import re
 import unittest
 from datetime import datetime
 
+import trac.tests.compat
 from trac.test import EnvironmentStub, Mock, MockPerm
-from trac.tests import compat
 from trac.tests.notification import SMTP_TEST_PORT, SMTPThreadedServer,\
                                     parse_smtp_message
 from trac.ticket.model import Ticket

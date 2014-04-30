@@ -20,7 +20,7 @@ import os
 import time
 import unittest
 
-from trac.tests import compat
+import trac.tests.compat
 from trac.core import TracError
 from trac.util import datefmt
 

@@ -13,9 +13,9 @@
 
 import os
 
+import trac.tests.compat
 from trac.core import TracError
 from trac.test import EnvironmentStub, Mock
-from trac.tests import compat
 from trac.web.auth import BasicAuthentication, LoginModule
 from trac.web.href import Href
 

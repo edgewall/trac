@@ -19,7 +19,7 @@ try:
 except ImportError:
     ConfigObj = None
 
-from trac.tests import compat
+import trac.tests.compat
 from trac.config import ConfigurationError
 from trac.resource import Resource
 from trac.test import EnvironmentStub

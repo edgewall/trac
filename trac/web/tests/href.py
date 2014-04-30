@@ -15,8 +15,8 @@
 import doctest
 import unittest
 
+import trac.tests.compat
 import trac.web.href
-from trac.tests import compat
 
 
 class HrefTestCase(unittest.TestCase):
