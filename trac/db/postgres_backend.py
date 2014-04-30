@@ -231,49 +231,15 @@ class PostgreSQLConnection(ConnectionWrapper):
             cnx.rollback()
         ConnectionWrapper.__init__(self, cnx, log)
 
+    def cursor(self):
+        return IterableCursor(self.cnx.cursor(), self.log)
+
     def cast(self, column, type):
         # Temporary hack needed for the union of selects in the search module
         return 'CAST(%s AS %s)' % (column, _type_map.get(type, type))
 
     def concat(self, *args):
         return '||'.join(args)
-
-    def like(self):
-        """Return a case-insensitive LIKE clause."""
-        return "ILIKE %s ESCAPE '/'"
-
-    def like_escape(self, text):
-        return _like_escape_re.sub(r'/\1', text)
-
-    def quote(self, identifier):
-        """Return the quoted identifier."""
-        return '"%s"' % identifier.replace('"', '""')
-
-    def get_last_id(self, cursor, table, column='id'):
-        cursor.execute("SELECT CURRVAL(%s)",
-                       (self.quote(self._sequence_name(table, column)),))
-        return cursor.fetchone()[0]
-
-    def update_sequence(self, cursor, table, column='id'):
-        cursor.execute("SELECT SETVAL(%%s, (SELECT MAX(%s) FROM %s))"
-                       % (self.quote(column), self.quote(table)),
-                       (self.quote(self._sequence_name(table, column)),))
-
-    def get_table_names(self):
-        rows = self.execute("""
-            SELECT table_name FROM information_schema.tables
-            WHERE table_schema=%s""", (self.schema,))
-        return [row[0] for row in rows]
-
-    def get_column_names(self, tablename):
-        rows = self.execute("""
-            SELECT column_name FROM information_schema.columns
-            WHERE table_schema=%s AND table_name=%s
-            """, (self.schema, tablename))
-        return [row[0] for row in rows]
-
-    def cursor(self):
-        return IterableCursor(self.cnx.cursor(), self.log)
 
     def drop_table(self, table):
         if (self._version or '').startswith(('8.0.', '8.1.')):
@@ -287,6 +253,40 @@ class PostgreSQLConnection(ConnectionWrapper):
                     break
         else:
             self.execute("DROP TABLE IF EXISTS " + self.quote(table))
+
+    def get_column_names(self, tablename):
+        rows = self.execute("""
+            SELECT column_name FROM information_schema.columns
+            WHERE table_schema=%s AND table_name=%s
+            """, (self.schema, tablename))
+        return [row[0] for row in rows]
+
+    def get_last_id(self, cursor, table, column='id'):
+        cursor.execute("SELECT CURRVAL(%s)",
+                       (self.quote(self._sequence_name(table, column)),))
+        return cursor.fetchone()[0]
+
+    def get_table_names(self):
+        rows = self.execute("""
+            SELECT table_name FROM information_schema.tables
+            WHERE table_schema=%s""", (self.schema,))
+        return [row[0] for row in rows]
+
+    def like(self):
+        """Return a case-insensitive LIKE clause."""
+        return "ILIKE %s ESCAPE '/'"
+
+    def like_escape(self, text):
+        return _like_escape_re.sub(r'/\1', text)
+
+    def quote(self, identifier):
+        """Return the quoted identifier."""
+        return '"%s"' % identifier.replace('"', '""')
+
+    def update_sequence(self, cursor, table, column='id'):
+        cursor.execute("SELECT SETVAL(%%s, (SELECT MAX(%s) FROM %s))"
+                       % (self.quote(column), self.quote(table)),
+                       (self.quote(self._sequence_name(table, column)),))
 
     def _sequence_name(self, table, column):
         return '%s_%s_seq' % (table, column)
