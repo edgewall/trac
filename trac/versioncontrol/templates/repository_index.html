@@ -22,11 +22,11 @@ Template snippet for a table of repositories
         <tr class="${'odd' if idx % 2 else 'even'}">
           <td class="name">
             <em py:strip="not err">
-              <b py:strip="repoinfo.alias != ''">
+              <strong py:strip="repoinfo.alias != ''">
                 <a class="dir" title="View Root Directory"
                    href="${href.browser(repos.reponame if repos else reponame,
                                         order=order if order != 'name' else None, desc=desc)}">$reponame</a>
-              </b>
+              </strong>
             </em>
           </td>
           <td class="size">
