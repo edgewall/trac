@@ -254,11 +254,11 @@ class PostgreSQLConnection(ConnectionWrapper):
         else:
             self.execute("DROP TABLE IF EXISTS " + self.quote(table))
 
-    def get_column_names(self, tablename):
+    def get_column_names(self, table):
         rows = self.execute("""
             SELECT column_name FROM information_schema.columns
             WHERE table_schema=%s AND table_name=%s
-            """, (self.schema, tablename))
+            """, (self.schema, table))
         return [row[0] for row in rows]
 
     def get_last_id(self, cursor, table, column='id'):
