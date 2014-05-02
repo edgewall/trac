@@ -17,6 +17,7 @@
 import os
 import time
 import urllib
+from abc import ABCMeta, abstractmethod
 
 from trac.config import BoolOption, IntOption, Option
 from trac.core import *
@@ -179,6 +180,66 @@ class QueryContextManager(DbContextManager):
             self.dbmgr._transaction_local.rdb = None
             if not self.dbmgr._transaction_local.wdb:
                 self.db.close()
+
+
+class Connection(object):
+    """Abstract base class for database connection classes."""
+
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def cast(self, column, type):
+        """Returns a clause casting `column` as `type`."""
+        pass
+
+    @abstractmethod
+    def concat(self, *args):
+        """Returns a clause concatenating the sequence `args`."""
+        pass
+
+    @abstractmethod
+    def drop_table(self, table):
+        """Drops the `table`."""
+        pass
+
+    @abstractmethod
+    def get_column_names(self, table):
+        """Returns the list of the column names in `table`."""
+        pass
+
+    @abstractmethod
+    def get_last_id(self, cursor, table, column='id'):
+        """Returns the current value of the primary key sequence for `table`.
+        The `column` of the primary key may be specified, which defaults
+        to `id`."""
+        pass
+
+    @abstractmethod
+    def get_table_names(self):
+        """Returns a list of the table names."""
+        pass
+
+    @abstractmethod
+    def like(self):
+        """Returns a case-insensitive `LIKE` clause."""
+        pass
+
+    @abstractmethod
+    def like_escape(self, text):
+        """Returns `text` escaped for use in a `LIKE` clause."""
+        pass
+
+    @abstractmethod
+    def quote(self, identifier):
+        """Returns the quoted `identifier`."""
+        pass
+
+    @abstractmethod
+    def update_sequence(self, cursor, table, column='id'):
+        """Updates the current value of the primary key sequence for `table`.
+        The `column` of the primary key may be specified, which defaults
+        to `id`."""
+        pass
 
 
 class IDatabaseConnector(Interface):

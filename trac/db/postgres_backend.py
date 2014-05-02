@@ -20,7 +20,7 @@ from genshi import Markup
 
 from trac.core import *
 from trac.config import Option
-from trac.db.api import IDatabaseConnector, _parse_db_str
+from trac.db.api import Connection, IDatabaseConnector, _parse_db_str
 from trac.db.util import ConnectionWrapper, IterableCursor
 from trac.util import get_pkginfo, lazy
 from trac.util.compat import close_fds
@@ -205,7 +205,7 @@ class PostgreSQLConnector(Component):
         return dest_file
 
 
-class PostgreSQLConnection(ConnectionWrapper):
+class PostgreSQLConnection(Connection, ConnectionWrapper):
     """Connection wrapper for PostgreSQL."""
 
     poolable = True
@@ -273,14 +273,12 @@ class PostgreSQLConnection(ConnectionWrapper):
         return [row[0] for row in rows]
 
     def like(self):
-        """Return a case-insensitive LIKE clause."""
         return "ILIKE %s ESCAPE '/'"
 
     def like_escape(self, text):
         return _like_escape_re.sub(r'/\1', text)
 
     def quote(self, identifier):
-        """Return the quoted identifier."""
         return '"%s"' % identifier.replace('"', '""')
 
     def update_sequence(self, cursor, table, column='id'):

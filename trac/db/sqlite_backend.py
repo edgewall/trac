@@ -20,7 +20,7 @@ import weakref
 
 from trac.config import ListOption
 from trac.core import *
-from trac.db.api import IDatabaseConnector
+from trac.db.api import Connection, IDatabaseConnector
 from trac.db.util import ConnectionWrapper, IterableCursor
 from trac.util import get_pkginfo, getuser
 from trac.util.translation import _
@@ -246,7 +246,7 @@ class SQLiteConnector(Component):
         return dest_file
 
 
-class SQLiteConnection(ConnectionWrapper):
+class SQLiteConnection(Connection, ConnectionWrapper):
     """Connection wrapper for SQLite."""
 
     __slots__ = ['_active_cursors', '_eager']
@@ -332,7 +332,6 @@ class SQLiteConnection(ConnectionWrapper):
         return [row[0] for row in rows]
 
     def like(self):
-        """Return a case-insensitive LIKE clause."""
         if sqlite_version >= (3, 1, 0):
             return "LIKE %s ESCAPE '/'"
         else:
@@ -345,7 +344,6 @@ class SQLiteConnection(ConnectionWrapper):
             return text
 
     def quote(self, identifier):
-        """Return the quoted identifier."""
         return "`%s`" % identifier.replace('`', '``')
 
     def update_sequence(self, cursor, table, column='id'):

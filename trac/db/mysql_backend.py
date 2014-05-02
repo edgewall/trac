@@ -23,8 +23,8 @@ from genshi.core import Markup
 
 from trac.core import *
 from trac.config import Option
-from trac.db.api import DatabaseManager, IDatabaseConnector, _parse_db_str, \
-                        get_column_names
+from trac.db.api import Connection, DatabaseManager, IDatabaseConnector, \
+                        _parse_db_str, get_column_names
 from trac.db.util import ConnectionWrapper, IterableCursor
 from trac.env import IEnvironmentSetupParticipant
 from trac.util import as_int, get_pkginfo
@@ -332,7 +332,7 @@ class MySQLConnector(Component):
                 supported=repr(self.SUPPORTED_COLLATIONS)))
 
 
-class MySQLConnection(ConnectionWrapper):
+class MySQLConnection(Connection, ConnectionWrapper):
     """Connection wrapper for MySQL."""
 
     poolable = True
@@ -425,14 +425,12 @@ class MySQLConnection(ConnectionWrapper):
         return [row[0] for row in rows]
 
     def like(self):
-        """Return a case-insensitive LIKE clause."""
         return "LIKE %%s COLLATE %s_general_ci ESCAPE '/'" % self.charset
 
     def like_escape(self, text):
         return _like_escape_re.sub(r'/\1', text)
 
     def quote(self, identifier):
-        """Return the quoted identifier."""
         return "`%s`" % identifier.replace('`', '``')
 
     def update_sequence(self, cursor, table, column='id'):
