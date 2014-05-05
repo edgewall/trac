@@ -71,7 +71,7 @@ try:
         `cleandoc_keywords` option: a list of keywords to clean up the
         extracted messages with `cleandoc`.
         """
-        from trac.util.compat import cleandoc
+        from inspect import cleandoc
 
         funcname = lineno = message_lineno = None
         kwargs_maps = func_kwargs_map = None

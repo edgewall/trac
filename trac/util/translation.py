@@ -15,11 +15,11 @@
 
 import pkg_resources
 import re
+from inspect import cleandoc
 
 from genshi.builder import tag
 
 from trac.util.concurrency import ThreadLocal, threading
-from trac.util.compat import cleandoc
 
 
 __all__ = ['gettext', 'ngettext', 'gettext_noop', 'ngettext_noop',
