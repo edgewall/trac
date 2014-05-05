@@ -1154,7 +1154,7 @@ class TicketModule(Component):
         for f in fields:
             name = f['name']
             value = ticket.values.get(name, '')
-            if name in ('cc', 'reporter'):
+            if name in ('cc', 'owner', 'reporter'):
                 value = Chrome(self.env).format_emails(context, value, ' ')
             elif name in ticket.time_fields:
                 format = ticket.fields.by_name(name).get('format')
