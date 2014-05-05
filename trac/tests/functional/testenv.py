@@ -285,7 +285,7 @@ class FunctionalTestEnvironment(object):
         FIXME: probably needs a nicer way to exit for coverage to work
         """
         if self.pid:
-            terminate(self)
+            terminate(self.pid)
 
     def restart(self):
         """Restarts the webserver"""

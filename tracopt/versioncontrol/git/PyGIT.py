@@ -27,7 +27,6 @@ import time
 import weakref
 
 from trac.core import TracBaseError
-from trac.util import terminate
 from trac.util.text import to_unicode
 
 __all__ = ['GitError', 'GitErrorSha', 'Storage', 'StorageFactory']
@@ -410,7 +409,7 @@ class Storage(object):
         with self.__cat_file_pipe_lock:
             if self.__cat_file_pipe is not None:
                 self.__cat_file_pipe.stdin.close()
-                terminate(self.__cat_file_pipe)
+                self.__cat_file_pipe.terminate()
                 self.__cat_file_pipe.wait()
 
     #
@@ -695,7 +694,7 @@ class Storage(object):
                 # call cat_file we get payload from previous call)
                 self.logger.debug("closing cat_file pipe")
                 self.__cat_file_pipe.stdin.close()
-                terminate(self.__cat_file_pipe)
+                self.__cat_file_pipe.terminate()
                 self.__cat_file_pipe.wait()
                 self.__cat_file_pipe = None
 
@@ -930,7 +929,7 @@ class Storage(object):
                         except ValueError:
                             break
             f.close()
-            terminate(p[0])
+            p[0].terminate()
             p[0].wait()
             p[:] = []
             while True:
@@ -948,7 +947,7 @@ class Storage(object):
 
         if p:
             p[0].stdout.close()
-            terminate(p[0])
+            p[0].terminate()
             p[0].wait()
 
     def last_change(self, sha, path, historian=None):
