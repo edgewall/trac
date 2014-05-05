@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from trac.mimeview import Context
 from trac.test import Mock, EnvironmentStub, MockPerm
 from trac.ticket.model import Ticket
@@ -567,6 +569,31 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
                                 query)
         self.assertEqual('col1\r\n"value, needs escaped"\r\n',
                          content)
+
+    def test_csv_obfuscation(self):
+        class NoEmailView(MockPerm):
+            def has_permission(self, action, realm_or_resource=None, id=False,
+                               version=False):
+                return action != 'EMAIL_VIEW'
+            __contains__ = has_permission
+
+        query = Mock(get_columns=lambda: ['owner', 'reporter', 'cc'],
+                     execute=lambda r,c: [{'id': 1,
+                                           'owner': 'joe@example.org',
+                                           'reporter': 'foo@example.org',
+                                           'cc': 'cc1@example.org, cc2'}],
+                     time_fields=['time', 'changetime'])
+        req = Mock(href=self.env.href, perm=NoEmailView())
+        content, mimetype = QueryModule(self.env).export_csv(req, query)
+        self.assertEqual(u'owner,reporter,cc\r\n'
+                         u'joe@…,foo@…,"cc1@…, cc2"\r\n',
+                         content.decode('utf-8'))
+        req = Mock(href=self.env.href, perm=MockPerm())
+        content, mimetype = QueryModule(self.env).export_csv(req, query)
+        self.assertEqual(
+            'owner,reporter,cc\r\n'
+            'joe@example.org,foo@example.org,"cc1@example.org, cc2"\r\n',
+            content.decode('utf-8'))
 
     def test_template_data(self):
         req = Mock(href=self.env.href, perm=MockPerm(), authname='anonymous',
