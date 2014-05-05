@@ -1165,7 +1165,7 @@ class QueryModule(Component):
                 values = []
                 for col in cols:
                     value = result[col]
-                    if col in ('cc', 'reporter'):
+                    if col in ('cc', 'owner', 'reporter'):
                         value = Chrome(self.env).format_emails(
                                     context.child(ticket), value)
                     elif col in query.time_fields:
