@@ -82,6 +82,11 @@ span:target {
 
 /* Forms */
 input, textarea, select { margin: 2px }
+/* Avoid respect to system font settings for controls on Firefox, #11607 */
+input, select, button {
+ font-family: Arial,Verdana,'Bitstream Vera Sans',Helvetica,sans-serif;
+ font-size: 100%;
+}
 /* Avoid to inherit white-space of its parent element for IE 11, #11376 */
 textarea { white-space: pre-wrap }
 input, select { vertical-align: middle }
@@ -240,7 +245,7 @@ input[type=submit].trac-delete:hover {
  outline: 0;
  background: transparent;
  font-family: inherit;
- font-size: inherit;
+ font-size: 100%;
  color: #b00;
  border-bottom: 1px dotted #bbb;
  cursor: pointer;
