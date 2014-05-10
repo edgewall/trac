@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
 "POT-Creation-Date: 2014-03-05 19:09+0100\n"
-"PO-Revision-Date: 2014-03-27 09:01+0100\n"
+"PO-Revision-Date: 2014-05-10 18:54+0200\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
 "Language-Team: Italian "
 "(http://www.transifex.com/projects/p/trac/language/it/)\n"
@@ -3736,7 +3736,7 @@ msgstr "Segnalazioni aperte e chiuse"
 
 #: trac/ticket/web_ui.py:253
 msgid "Ticket updates"
-msgstr "Aggiornamenti alla segnalazione"
+msgstr "Aggiornamenti alle segnalazioni"
 
 #: trac/ticket/web_ui.py:283 trac/ticket/web_ui.py:1196
 #, python-format
