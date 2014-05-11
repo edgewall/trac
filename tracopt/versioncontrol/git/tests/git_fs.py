@@ -28,6 +28,7 @@ from trac.versioncontrol.api import DbRepositoryProvider, NoSuchChangeset, \
 from trac.versioncontrol.web_ui.browser import BrowserModule
 from trac.versioncontrol.web_ui.log import LogModule
 from trac.web.href import Href
+from tracopt.versioncontrol.git.PyGIT import StorageFactory
 from tracopt.versioncontrol.git.git_fs import GitConnector
 
 
@@ -51,6 +52,8 @@ class BaseTestCase(unittest.TestCase):
             self.env.config.set('git', 'git_bin', git_bin)
 
     def tearDown(self):
+        self._repomgr.reload_repositories()
+        StorageFactory._clean()
         self.env.reset_db()
         if os.path.isdir(self.repos_path):
             rmtree(self.repos_path)
