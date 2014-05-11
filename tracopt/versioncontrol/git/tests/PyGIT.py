@@ -23,7 +23,8 @@ from trac.test import locate, EnvironmentStub
 from trac.tests.compat import rmtree
 from trac.util import create_file
 from trac.util.compat import close_fds
-from trac.versioncontrol.api import Changeset, DbRepositoryProvider
+from trac.versioncontrol.api import Changeset, DbRepositoryProvider, \
+                                    RepositoryManager
 from tracopt.versioncontrol.git.git_fs import GitConnector
 from tracopt.versioncontrol.git.PyGIT import GitCore, GitError, Storage, \
                                              StorageFactory, parse_commit
@@ -167,6 +168,8 @@ class NormalTestCase(unittest.TestCase):
                   '--date', 'Tue Jan 1 18:04:56 2013 +0900')
 
     def tearDown(self):
+        RepositoryManager(self.env).reload_repositories()
+        StorageFactory._clean()
         self.env.reset_db()
         if os.path.isdir(self.repos_path):
             rmtree(self.repos_path)

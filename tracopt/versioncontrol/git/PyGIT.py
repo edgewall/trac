@@ -225,12 +225,18 @@ class StorageFactory(object):
                              self.__repo))
         return self.__inst
 
+    @classmethod
+    def _clean(cls):
+        """For testing purpose only"""
+        with StorageFactory.__dict_lock:
+            cls.__dict.clear()
+            cls.__dict_nonweak.clear()
+
 
 class Storage(object):
     """High-level wrapper around GitCore with in-memory caching"""
 
     __SREV_MIN = 4 # minimum short-rev length
-
 
     class RevCache(tuple):
         """RevCache(youngest_rev, oldest_rev, rev_dict, tag_set, srev_dict,
