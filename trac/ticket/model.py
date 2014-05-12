@@ -72,6 +72,8 @@ def _datetime_to_db_str(dt, is_custom_field):
 
 class Ticket(object):
 
+    realm = 'ticket'
+
     # Fields that must not be modified directly by the user
     protected_fields = ('resolution', 'status', 'time', 'changetime')
 
@@ -91,7 +93,7 @@ class Ticket(object):
         self.env = env
         if tkt_id is not None:
             tkt_id = int(tkt_id)
-        self.resource = Resource('ticket', tkt_id, version)
+        self.resource = Resource(self.realm, tkt_id, version)
         self.fields = TicketSystem(self.env).get_ticket_fields()
         self.std_fields, self.custom_fields, self.time_fields = [], [], []
         for f in self.fields:
@@ -467,7 +469,7 @@ class Ticket(object):
         in version 1.1.1
         """
         with self.env.db_transaction as db:
-            Attachment.delete_all(self.env, 'ticket', self.id, db)
+            Attachment.delete_all(self.env, self.realm, self.id, db)
             db("DELETE FROM ticket WHERE id=%s", (self.id,))
             db("DELETE FROM ticket_change WHERE ticket=%s", (self.id,))
             db("DELETE FROM ticket_custom WHERE ticket=%s", (self.id,))
@@ -1009,6 +1011,9 @@ class MilestoneCache(core.Component):
 
 
 class Milestone(object):
+
+    realm = 'milestone'
+
     def __init__(self, env, name=None, db=None):
         """Create an undefined milestone or fetch one from the database,
         if `name` is given.
@@ -1031,7 +1036,7 @@ class Milestone(object):
 
     @property
     def resource(self):
-        return Resource('milestone', self.name) ### .version !!!
+        return Resource(self.realm, self.name) ### .version !!!
 
     exists = property(lambda self: self._old['name'] is not None)
     is_completed = property(lambda self: self.completed is not None)
@@ -1110,8 +1115,8 @@ class Milestone(object):
                 self.move_tickets(self.name, author, "Milestone renamed")
                 TicketSystem(self.env).reset_ticket_fields()
                 # Reparent attachments
-                Attachment.reparent_all(self.env, 'milestone', old['name'],
-                                        'milestone', self.name)
+                Attachment.reparent_all(self.env, self.realm, old['name'],
+                                        self.realm, self.name)
 
             self.env.log.info("Updating milestone '%s'", old['name'])
             db("""UPDATE milestone

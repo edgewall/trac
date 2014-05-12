@@ -766,6 +766,8 @@ class Repository(object):
 
     scope = '/'
 
+    realm = 'repository'
+
     def __init__(self, name, params, log):
         """Initialize a repository.
 
@@ -783,7 +785,7 @@ class Repository(object):
         self.reponame = params['name']
         self.id = params['id']
         self.log = log
-        self.resource = Resource('repository', self.reponame)
+        self.resource = Resource(self.realm, self.reponame)
 
     def close(self):
         """Close the connection to the repository."""
@@ -995,7 +997,9 @@ class Node(object):
     DIRECTORY = "dir"
     FILE = "file"
 
-    resource = property(lambda self: Resource('source', self.path,
+    realm = 'source'
+
+    resource = property(lambda self: Resource(self.realm, self.path,
                                               version=self.rev,
                                               parent=self.repos.resource))
 
@@ -1139,7 +1143,9 @@ class Changeset(object):
     OTHER_CHANGES = (ADD, DELETE)
     ALL_CHANGES = DIFF_CHANGES + OTHER_CHANGES
 
-    resource = property(lambda self: Resource('changeset', self.rev,
+    realm = 'changeset'
+
+    resource = property(lambda self: Resource(self.realm, self.rev,
                                               parent=self.repos.resource))
 
     def __init__(self, repos, rev, message, author, date):

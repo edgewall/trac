@@ -57,7 +57,7 @@ class WikiPage(object):
                 except ValueError:
                     version = None
         else:
-            self.resource = Resource('wiki', name, version)
+            self.resource = Resource(self.realm, name, version)
 
         self.name = name
         if name:
@@ -125,7 +125,7 @@ class WikiPage(object):
                 del WikiSystem(self.env).pages
                 # Delete orphaned attachments
                 from trac.attachment import Attachment
-                Attachment.delete_all(self.env, 'wiki', self.name)
+                Attachment.delete_all(self.env, self.realm, self.name)
 
         # Let change listeners know about the deletion
         if not self.exists:
@@ -206,8 +206,8 @@ class WikiPage(object):
             del WikiSystem(self.env).pages
             # Reparent attachments
             from trac.attachment import Attachment
-            Attachment.reparent_all(self.env, 'wiki', old_name, 'wiki',
-                                    new_name)
+            Attachment.reparent_all(self.env, self.realm, old_name,
+                                    self.realm, new_name)
 
         self.name = self.resource.id = new_name
         self.env.log.info('Renamed page %s to %s', old_name, new_name)
