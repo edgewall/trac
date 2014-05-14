@@ -649,16 +649,6 @@ class ReportModule(Component):
                     args=", ".join(missing_args)))
             return 'report_view.html', data, None
 
-    def execute_report(self, req, db, id, sql, args):
-        """Execute given sql report (0.10 backward compatibility method)
-
-        :see: ``execute_paginated_report``
-        """
-        res = self.execute_paginated_report(req, db, id, sql, args)
-        if len(res) == 2:
-            raise res[0]
-        return res[:5]
-
     def execute_paginated_report(self, req, db, id, sql, args,
                                  limit=0, offset=0):
         sql, args, missing_args = self.sql_sub_vars(sql, args, db)
