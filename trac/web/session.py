@@ -216,8 +216,7 @@ class Session(DetachedSession):
         self.req.outcookie[COOKIE_KEY]['expires'] = expires
         if self.env.secure_cookies:
             self.req.outcookie[COOKIE_KEY]['secure'] = True
-        if sys.version_info >= (2, 6):
-            self.req.outcookie[COOKIE_KEY]['httponly'] = True
+        self.req.outcookie[COOKIE_KEY]['httponly'] = True
 
     def get_session(self, sid, authenticated=False):
         refresh_cookie = False
