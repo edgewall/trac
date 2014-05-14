@@ -364,12 +364,11 @@ class NaivePopen:
 def terminate(process):
     """Terminate the process.
 
-    :param process: the integer id (`pid`) of the process.
+    If the process has already finished and has not been waited for,
+    the function does not raise OSError and WindowsError exceptions unlike
+    a terminate method of `subprocess.Popen`.
 
-    :Since 1.1.2: Deprecated for use as a Python 2.5 compatibility function.
-    Prior to Python 2.6, `subprocess.Popen` did not have a terminate method
-    and this function could be called with a `subprocess.Popen` instance
-    as the argument.
+    :param process: the integer id (`pid`) of the process.
     """
 
     pid = process if isinstance(process, int) else process.pid
