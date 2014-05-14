@@ -100,13 +100,6 @@ class TracHTTPServer(ThreadingMixIn, WSGIServer):
         WSGIServer.__init__(self, server_address, application,
                             request_handler=request_handlers[bool(use_http_11)])
 
-    if sys.version_info < (2, 6):
-        def serve_forever(self, poll_interval=0.5):
-            while True:
-                r, w, e = select.select([self], [], [], poll_interval)
-                if self in r:
-                    self.handle_request()
-
 
 class TracHTTPRequestHandler(WSGIRequestHandler):
 
