@@ -14,6 +14,7 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from abc import ABCMeta, abstractmethod
 try:
     from base64 import b64decode, b64encode
 except ImportError:
@@ -276,8 +277,11 @@ class LoginModule(Component):
 
 class HTTPAuthentication(object):
 
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
     def do_auth(self, environ, start_response):
-        raise NotImplementedError
+        pass
 
 
 class PasswordFileAuthentication(HTTPAuthentication):

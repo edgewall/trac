@@ -18,50 +18,25 @@ import unittest
 
 from trac.resource import Resource, get_resource_description, get_resource_url
 from trac.test import EnvironmentStub
-from trac.versioncontrol.api import Repository
+from trac.versioncontrol.api import Changeset, Node, Repository
 
 
 class ApiTestCase(unittest.TestCase):
 
-    def setUp(self):
-        self.repo_base = Repository('testrepo', {'name': 'testrepo', 'id': 1},
-                                    None)
+    def test_changeset_raises(self):
+        """Abstract base class raises a TypeError when instantiated
+        directly."""
+        self.assertRaises(TypeError, Node)
 
-    def test_raise_NotImplementedError_close(self):
-        self.assertRaises(NotImplementedError, self.repo_base.close)
+    def test_node_raises(self):
+        """Abstract base class raises a TypeError when instantiated
+        directly."""
+        self.assertRaises(TypeError, Changeset)
 
-    def test_raise_NotImplementedError_get_changeset(self):
-        self.assertRaises(NotImplementedError, self.repo_base.get_changeset, 1)
-
-    def test_raise_NotImplementedError_get_node(self):
-        self.assertRaises(NotImplementedError, self.repo_base.get_node, 'path')
-
-    def test_raise_NotImplementedError_get_oldest_rev(self):
-        self.assertRaises(NotImplementedError, self.repo_base.get_oldest_rev)
-
-    def test_raise_NotImplementedError_get_youngest_rev(self):
-        self.assertRaises(NotImplementedError, self.repo_base.get_youngest_rev)
-
-    def test_raise_NotImplementedError_previous_rev(self):
-        self.assertRaises(NotImplementedError, self.repo_base.previous_rev, 1)
-
-    def test_raise_NotImplementedError_next_rev(self):
-        self.assertRaises(NotImplementedError, self.repo_base.next_rev, 1)
-
-    def test_raise_NotImplementedError_rev_older_than(self):
-        self.assertRaises(NotImplementedError, self.repo_base.rev_older_than, 1, 2)
-
-    def test_raise_NotImplementedError_get_path_history(self):
-        self.assertRaises(NotImplementedError, self.repo_base.get_path_history, 'path')
-
-    def test_raise_NotImplementedError_normalize_path(self):
-        self.assertRaises(NotImplementedError, self.repo_base.normalize_path, 'path')
-
-    def test_raise_NotImplementedError_normalize_rev(self):
-        self.assertRaises(NotImplementedError, self.repo_base.normalize_rev, 1)
-
-    def test_raise_NotImplementedError_get_changes(self):
-        self.assertRaises(NotImplementedError, self.repo_base.get_changes, 'path', 1, 'path', 2)
+    def test_repository_raises(self):
+        """Abstract base class raises a TypeError when instantiated
+        directly."""
+        self.assertRaises(TypeError, Repository)
 
 
 class ResourceManagerTestCase(unittest.TestCase):

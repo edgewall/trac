@@ -425,6 +425,9 @@ class GitRepository(Repository):
         self._check_rev_cache()
         return self.git.youngest_rev()
 
+    def get_path_history(self, path, rev=None, limit=None):
+        raise TracError(_("Unsupported \"Show only adds and deletes\""))
+
     def get_oldest_rev(self):
         self._check_rev_cache()
         return self.git.oldest_rev()

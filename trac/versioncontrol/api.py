@@ -16,6 +16,7 @@
 
 import os.path
 import time
+from abc import ABCMeta, abstractmethod
 
 from trac.admin import AdminCommandError, IAdminCommandProvider, get_dir_list
 from trac.config import ConfigSection, ListOption, Option
@@ -762,6 +763,8 @@ class NoSuchNode(ResourceNotFound):
 class Repository(object):
     """Base class for a repository provided by a version control system."""
 
+    __metaclass__ = ABCMeta
+
     has_linear_changesets = False
 
     scope = '/'
@@ -787,9 +790,10 @@ class Repository(object):
         self.log = log
         self.resource = Resource(self.realm, self.reponame)
 
+    @abstractmethod
     def close(self):
         """Close the connection to the repository."""
-        raise NotImplementedError
+        pass
 
     def get_base(self):
         """Return the name of the base repository for this repository.
@@ -846,9 +850,10 @@ class Repository(object):
         """
         return None
 
+    @abstractmethod
     def get_changeset(self, rev):
         """Retrieve a Changeset corresponding to the given revision `rev`."""
-        raise NotImplementedError
+        pass
 
     def get_changeset_uid(self, rev):
         """Return a globally unique identifier for the ''rev'' changeset.
@@ -880,6 +885,7 @@ class Repository(object):
         except TracError:
             return False
 
+    @abstractmethod
     def get_node(self, path, rev=None):
         """Retrieve a Node from the repository at the given path.
 
@@ -889,18 +895,21 @@ class Repository(object):
         revision is returned, otherwise the Node corresponding to the youngest
         revision is returned.
         """
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def get_oldest_rev(self):
         """Return the oldest revision stored in the repository."""
-        raise NotImplementedError
+        pass
     oldest_rev = property(lambda self: self.get_oldest_rev())
 
+    @abstractmethod
     def get_youngest_rev(self):
         """Return the youngest revision in the repository."""
-        raise NotImplementedError
+        pass
     youngest_rev = property(lambda self: self.get_youngest_rev())
 
+    @abstractmethod
     def previous_rev(self, rev, path=''):
         """Return the revision immediately preceding the specified revision.
 
@@ -909,8 +918,9 @@ class Repository(object):
 
         In presence of multiple parents, this follows the first parent.
         """
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def next_rev(self, rev, path=''):
         """Return the revision immediately following the specified revision.
 
@@ -919,20 +929,22 @@ class Repository(object):
 
         In presence of multiple children, this follows the first child.
         """
-        raise NotImplementedError
+        pass
 
     def parent_revs(self, rev):
         """Return a list of parents of the specified revision."""
         parent = self.previous_rev(rev)
         return [parent] if parent is not None else []
 
+    @abstractmethod
     def rev_older_than(self, rev1, rev2):
         """Provides a total order over revisions.
 
         Return `True` if `rev1` is an ancestor of `rev2`.
         """
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def get_path_history(self, path, rev=None, limit=None):
         """Retrieve all the revisions containing this path.
 
@@ -940,12 +952,14 @@ class Repository(object):
         ''newer'' than `rev` should be returned).
         The result format should be the same as the one of Node.get_history()
         """
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def normalize_path(self, path):
         """Return a canonical representation of path in the repos."""
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def normalize_rev(self, rev):
         """Return a (unique) canonical representation of a revision.
 
@@ -957,7 +971,7 @@ class Repository(object):
         In addition, if `rev` is `None` or '', the youngest revision should
         be returned.
         """
-        raise NotImplementedError
+        pass
 
     def short_rev(self, rev):
         """Return a compact representation of a revision in the repos."""
@@ -972,6 +986,7 @@ class Repository(object):
         """
         return self.normalize_rev(rev)
 
+    @abstractmethod
     def get_changes(self, old_path, old_rev, new_path, new_rev,
                     ignore_ancestry=1):
         """Generates changes corresponding to generalized diffs.
@@ -982,7 +997,7 @@ class Repository(object):
         The old_node is assumed to be None when the change is an ADD,
         the new_node is assumed to be None when the change is a DELETE.
         """
-        raise NotImplementedError
+        pass
 
     def is_viewable(self, perm):
         """Return True if view permission is granted on the repository."""
@@ -993,6 +1008,8 @@ class Repository(object):
 
 class Node(object):
     """Represents a directory or file in the repository at a given revision."""
+
+    __metaclass__ = ABCMeta
 
     DIRECTORY = "dir"
     FILE = "file"
@@ -1019,13 +1036,14 @@ class Node(object):
         self.rev = rev
         self.kind = kind
 
+    @abstractmethod
     def get_content(self):
         """Return a stream for reading the content of the node.
 
         This method will return `None` for directories.
         The returned object must support a `read([len])` method.
         """
-        raise NotImplementedError
+        pass
 
     def get_processed_content(self, keyword_substitution=True, eol_hint=None):
         """Return a stream for reading the content of the node, with some
@@ -1044,14 +1062,16 @@ class Node(object):
         """
         return self.get_content()
 
+    @abstractmethod
     def get_entries(self):
         """Generator that yields the immediate child entries of a directory.
 
         The entries are returned in no particular order.
         If the node is a file, this method returns `None`.
         """
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def get_history(self, limit=None):
         """Provide backward history for this Node.
 
@@ -1064,7 +1084,7 @@ class Node(object):
 
         :param limit: if given, yield at most ``limit`` results.
         """
-        raise NotImplementedError
+        pass
 
     def get_previous(self):
         """Return the change event corresponding to the previous revision.
@@ -1078,6 +1098,7 @@ class Node(object):
             else:
                 return p
 
+    @abstractmethod
     def get_annotations(self):
         """Provide detailed backward history for the content of this Node.
 
@@ -1085,37 +1106,41 @@ class Node(object):
         for that node.
         Only expected to work on (text) FILE nodes, of course.
         """
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def get_properties(self):
         """Returns the properties (meta-data) of the node, as a dictionary.
 
         The set of properties depends on the version control system.
         """
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def get_content_length(self):
         """The length in bytes of the content.
 
         Will be `None` for a directory.
         """
-        raise NotImplementedError
+        pass
     content_length = property(lambda self: self.get_content_length())
 
+    @abstractmethod
     def get_content_type(self):
         """The MIME type corresponding to the content, if known.
 
         Will be `None` for a directory.
         """
-        raise NotImplementedError
+        pass
     content_type = property(lambda self: self.get_content_type())
 
     def get_name(self):
         return self.path.split('/')[-1]
     name = property(lambda self: self.get_name())
 
+    @abstractmethod
     def get_last_modified(self):
-        raise NotImplementedError
+        pass
     last_modified = property(lambda self: self.get_last_modified())
 
     isdir = property(lambda self: self.kind == Node.DIRECTORY)
@@ -1131,6 +1156,8 @@ class Node(object):
 
 class Changeset(object):
     """Represents a set of changes committed at once in a repository."""
+
+    __metaclass__ = ABCMeta
 
     ADD = 'add'
     COPY = 'copy'
@@ -1166,6 +1193,7 @@ class Changeset(object):
         """
         return []
 
+    @abstractmethod
     def get_changes(self):
         """Generator that produces a tuple for every change in the changeset.
 
@@ -1178,7 +1206,7 @@ class Changeset(object):
         The `base_path` and `base_rev` are the source path and rev for the
         action (`None` and `-1` in the case of an ADD change).
         """
-        raise NotImplementedError
+        pass
 
     def get_branches(self):
         """Yield branches to which this changeset belong.

@@ -14,6 +14,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from abc import ABCMeta, abstractmethod
 import errno
 import socket
 import sys
@@ -59,6 +60,8 @@ class _FileWrapper(object):
 
 class WSGIGateway(object):
     """Abstract base class for WSGI servers or gateways."""
+
+    __metaclass__ = ABCMeta
 
     wsgi_version = (1, 0)
     wsgi_multithread = True
@@ -119,11 +122,12 @@ class WSGIGateway(object):
         self.headers_set = [status, headers]
         return self._write
 
+    @abstractmethod
     def _write(self, data):
         """Callback for writing data to the response.
 
         Concrete subclasses must implement this method."""
-        raise NotImplementedError
+        pass
 
 
 class WSGIRequestHandler(BaseHTTPRequestHandler):
