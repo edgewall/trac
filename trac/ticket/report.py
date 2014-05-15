@@ -766,14 +766,18 @@ class ReportModule(Component):
         return cols, rows, num_items, missing_args, limit_offset
 
     def get_report(self, id):
-        for title, description, sql in self.env.db_query("""
-                SELECT title, description, query from report WHERE id=%s
-                """, (id,)):
-            break
+        try:
+            number = int(id)
+        except (ValueError, TypeError):
+            pass
         else:
-            raise ResourceNotFound(_("Report {%(num)s} does not exist.",
-                                     num=id), _("Invalid Report Number"))
-        return title, description, sql
+            for title, description, sql in self.env.db_query("""
+                    SELECT title, description, query from report WHERE id=%s
+                    """, (number,)):
+                return title, description, sql
+
+        raise ResourceNotFound(_("Report {%(num)s} does not exist.", num=id),
+                               _("Invalid Report Number"))
 
     def get_var_args(self, req):
         # reuse somehow for #9574 (wiki vars)
