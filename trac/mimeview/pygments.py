@@ -10,9 +10,12 @@
 #
 # Author: Matthew Good <matt@matt-good.net>
 
+from __future__ import absolute_import
+
 from datetime import datetime
 import os
 from pkg_resources import resource_filename
+import pygments
 import re
 
 from trac.core import *
@@ -29,9 +32,6 @@ from trac.web.chrome import add_notice, add_stylesheet
 from genshi import QName, Stream
 from genshi.core import Attrs, START, END, TEXT
 
-# Kludge to workaround the lack of absolute imports in Python version prior to
-# 2.5
-pygments = __import__('pygments', {}, {}, ['lexers', 'styles', 'formatters'])
 get_all_lexers = pygments.lexers.get_all_lexers
 get_lexer_by_name = pygments.lexers.get_lexer_by_name
 HtmlFormatter = pygments.formatters.html.HtmlFormatter

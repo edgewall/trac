@@ -11,6 +11,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from __future__ import absolute_import
+
 import os
 import unittest
 
@@ -18,7 +20,7 @@ from genshi.core import Stream, TEXT
 from genshi.input import HTMLParser
 
 try:
-    pygments = __import__('pygments', {}, {}, [])
+    import pygments
     have_pygments = True
 except ImportError:
     have_pygments = False
