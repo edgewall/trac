@@ -219,19 +219,19 @@ def _parse_user_time(s):
     return user, time
 
 
-_file_type_mask = 0170000
+_file_type_mask = 0o170000
 
 
 def _is_dir(mode):
     if mode is None:
         return False
-    return (mode & _file_type_mask) in (0040000, 0160000)
+    return (mode & _file_type_mask) in (0o040000, 0o160000)
 
 
 def _is_submodule(mode):
     if mode is None:
         return False
-    return (mode & _file_type_mask) == 0160000
+    return (mode & _file_type_mask) == 0o160000
 
 
 class GitConnector(Component):
