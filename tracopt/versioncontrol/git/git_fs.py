@@ -25,6 +25,7 @@ from trac.core import *
 from trac.util import TracError, shorten_line
 from trac.util.datefmt import FixedOffset, to_timestamp, format_datetime
 from trac.util.text import to_unicode, exception_to_unicode
+from trac.util.translation import _
 from trac.versioncontrol.api import Changeset, Node, Repository, \
                                     IRepositoryConnector, NoSuchChangeset, \
                                     NoSuchNode, IRepositoryProvider
