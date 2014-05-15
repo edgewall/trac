@@ -289,7 +289,7 @@ def main():
                 httpd = TracHTTPServer(server_address, wsgi_app,
                                        options.env_parent_dir, args,
                                        use_http_11=options.http11)
-            except socket.error, e:
+            except socket.error as e:
                 print 'Error starting Trac server on %s' % loc
                 print '[Errno %s] %s' % e.args
                 sys.exit(1)
@@ -327,7 +327,7 @@ def main():
         else:
             serve()
 
-    except OSError, e:
+    except OSError as e:
         print >> sys.stderr, '%s: %s' % (e.__class__.__name__, e)
         sys.exit(1)
     except KeyboardInterrupt:

@@ -228,7 +228,7 @@ class ParseISO8601TestCase(unittest.TestCase):
             try:
                 datefmt.parse_date('2001-0a-01', locale=locale, hint='iso8601')
                 raise self.failureException('TracError not raised')
-            except TracError, e:
+            except TracError as e:
                 self.assertIn(u'"YYYY-MM-DDThh:mm:ss±hh:mm"', unicode(e))
 
         validate(locale=None)
@@ -687,7 +687,7 @@ class ParseDateValidRangeTestCase(unittest.TestCase):
         try:
             datefmt.parse_date('9999-12-31T23:59:59-12:00')
             raise self.failureException('TracError not raised')
-        except TracError, e:
+        except TracError as e:
             self.assertIn('is outside valid range', unicode(e))
 
     def test_min_timestamp(self):
@@ -701,7 +701,7 @@ class ParseDateValidRangeTestCase(unittest.TestCase):
         try:
             datefmt.parse_date('0001-01-01T00:00:00+14:00')
             raise self.failureException('TracError not raised')
-        except TracError, e:
+        except TracError as e:
             self.assertIn('is outside valid range', unicode(e))
 
 
@@ -943,17 +943,17 @@ class ISO8601TestCase(unittest.TestCase):
         try:
             datefmt.parse_date('***', locale='iso8601', hint='date')
             raise self.failureException('TracError not raised')
-        except TracError, e:
+        except TracError as e:
             self.assertIn('"YYYY-MM-DD"', unicode(e))
         try:
             datefmt.parse_date('***', locale='iso8601', hint='datetime')
             raise self.failureException('TracError not raised')
-        except TracError, e:
+        except TracError as e:
             self.assertIn(u'"YYYY-MM-DDThh:mm:ss±hh:mm"', unicode(e))
         try:
             datefmt.parse_date('***', locale='iso8601', hint='foobar')
             raise self.failureException('TracError not raised')
-        except TracError, e:
+        except TracError as e:
             self.assertIn('"foobar"', unicode(e))
 
 
@@ -1374,7 +1374,7 @@ class LocalTimezoneTestCase(unittest.TestCase):
         try:
             datefmt.localtz.localize(dt, is_dst=None)
             raise AssertionError('ValueError not raised')
-        except ValueError, e:
+        except ValueError as e:
             self.assertEqual('Non existent time "2012-03-25 02:15:42.123456"',
                              unicode(e))
 
@@ -1386,7 +1386,7 @@ class LocalTimezoneTestCase(unittest.TestCase):
         try:
             datefmt.localtz.localize(dt, is_dst=None)
             raise AssertionError('ValueError not raised')
-        except ValueError, e:
+        except ValueError as e:
             self.assertEqual('Ambiguous time "2011-10-30 02:45:42.123456"',
                              unicode(e))
 

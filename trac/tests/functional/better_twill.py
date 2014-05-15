@@ -119,7 +119,7 @@ if twill:
                 if isinstance(url, str):
                     url = unicode(url, 'latin1')
                 etree.parse(StringIO(page), base_url=url)
-            except etree.XMLSyntaxError, e:
+            except etree.XMLSyntaxError as e:
                 raise twill.errors.TwillAssertionError(
                     _format_error_log(page, e.error_log))
 
@@ -168,7 +168,7 @@ if twill:
         try:
             fv(form, field, value)
         except (twill.errors.TwillAssertionError,
-                twill.utils.ClientForm.ItemNotFoundError), e:
+                twill.utils.ClientForm.ItemNotFoundError) as e:
             filename = twill_write_html()
             args = e.args + (filename,)
             raise twill.errors.TwillAssertionError(*args)
@@ -219,7 +219,7 @@ if twill:
     def better_find(what, flags='', tcfind=tc.find):
         try:
             tcfind(what, flags)
-        except twill.errors.TwillAssertionError, e:
+        except twill.errors.TwillAssertionError as e:
             filename = twill_write_html()
             args = e.args + (filename,)
             raise twill.errors.TwillAssertionError(*args)
@@ -228,7 +228,7 @@ if twill:
     def better_notfind(what, flags='', tcnotfind=tc.notfind):
         try:
             tcnotfind(what, flags)
-        except twill.errors.TwillAssertionError, e:
+        except twill.errors.TwillAssertionError as e:
             filename = twill_write_html()
             args = e.args + (filename,)
             raise twill.errors.TwillAssertionError(*args)
@@ -238,7 +238,7 @@ if twill:
     def better_url(should_be, tcurl=tc.url):
         try:
             tcurl(should_be)
-        except twill.errors.TwillAssertionError, e:
+        except twill.errors.TwillAssertionError as e:
             filename = twill_write_html()
             args = e.args + (filename,)
             raise twill.errors.TwillAssertionError(*args)

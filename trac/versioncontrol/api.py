@@ -355,13 +355,13 @@ class RepositoryManager(Component):
                                          "synchronization",
                                          reponame or '(default)')
                         continue
-                except TracError, e:
+                except TracError as e:
                     add_warning(req,
                         _("Can't synchronize with repository \"%(name)s\" "
                           "(%(error)s). Look in the Trac log for more "
                           "information.", name=reponame or '(default)',
                           error=to_unicode(e)))
-                except Exception, e:
+                except Exception as e:
                     add_warning(req,
                         _("Failed to sync with repository \"%(name)s\": "
                           "%(error)s; repository information may be out of "

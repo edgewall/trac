@@ -103,7 +103,7 @@ class SvnFunctionalTestEnvironment(FunctionalTestEnvironment):
         try:
             revision = re.search(r'Committed revision ([0-9]+)\.',
                                  output).group(1)
-        except Exception, e:
+        except Exception as e:
             args = e.args + (output, )
             raise Exception(*args)
         return int(revision)

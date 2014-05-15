@@ -422,7 +422,7 @@ class LogModule(Component):
                 errmsg = _("Repository '%(repo)s' not found", repo=reponame)
             else:
                 errmsg = _("No default repository defined")
-        except TracError, e:
+        except TracError as e:
             errmsg = to_unicode(e)
         return tag.a(label, class_='missing source', title=errmsg)
 

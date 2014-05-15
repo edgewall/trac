@@ -223,7 +223,7 @@ In [changeset:"%s"]:
                         ticket.save_changes(authname, comment, date)
                 if save:
                     self._notify(ticket, date)
-            except Exception, e:
+            except Exception as e:
                 self.log.error("Unexpected error while processing ticket "
                                "#%s: %s", tkt_id, exception_to_unicode(e))
 
@@ -234,7 +234,7 @@ In [changeset:"%s"]:
         try:
             tn = TicketNotifyEmail(self.env)
             tn.notify(ticket, newticket=False, modtime=date)
-        except Exception, e:
+        except Exception as e:
             self.log.error("Failure sending notification on change to "
                            "ticket #%s: %s", ticket.id,
                            exception_to_unicode(e))

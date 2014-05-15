@@ -206,7 +206,7 @@ class ComponentManager(object):
                 raise TracError('Component "%s" not registered' % cls.__name__)
             try:
                 component = cls(self)
-            except TypeError, e:
+            except TypeError as e:
                 raise TracError('Unable to instantiate component %r (%s)' %
                                 (cls, e))
         return component

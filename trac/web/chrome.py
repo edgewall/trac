@@ -735,7 +735,7 @@ class Chrome(Component):
                         allitems.setdefault(category, {})[name] = item
                 if contributor is handler:
                     active = contributor.get_active_navigation_item(req)
-            except Exception, e:
+            except Exception as e:
                 name = contributor.__class__.__name__
                 if isinstance(e, TracError):
                     self.log.warning("Error with navigation contributor %s",
@@ -859,7 +859,7 @@ class Chrome(Component):
         try:
             show_email_addresses = (self.show_email_addresses or not req or \
                                 'EMAIL_VIEW' in req.perm)
-        except Exception, e:
+        except Exception as e:
             # simply log the exception here, as we might already be rendering
             # the error page
             self.log.error("Error during check of EMAIL_VIEW: %s",
@@ -1049,7 +1049,7 @@ class Chrome(Component):
                           encoding='utf-8')
             return buffer.getvalue().translate(_translate_nop,
                                                _invalid_control_chars)
-        except Exception, e:
+        except Exception as e:
             # restore what may be needed by the error template
             req.chrome['links'] = links
             req.chrome['scripts'] = scripts

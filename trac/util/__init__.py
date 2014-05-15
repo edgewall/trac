@@ -141,7 +141,7 @@ if os.name == 'nt':
         # Fall back to "move away and replace"
         try:
             os.rename(src, dst)
-        except OSError, e:
+        except OSError as e:
             if e.errno != errno.EEXIST:
                 raise
             old = "%s-%08x" % (dst, random.randint(0, sys.maxint))
@@ -245,7 +245,7 @@ def create_unique_file(path):
             if hasattr(os, 'O_BINARY'):
                 flags += os.O_BINARY
             return path, os.fdopen(os.open(path, flags, 0666), 'w')
-        except OSError, e:
+        except OSError as e:
             if e.errno != errno.EEXIST:
                 raise
             idx += 1
@@ -386,7 +386,7 @@ def terminate(process):
         import signal
         try:
             os.kill(pid, signal.SIGTERM)
-        except OSError, e:
+        except OSError as e:
             # If the process has already finished and has not been
             # waited for, killing it raises an ESRCH error on Cygwin
             import errno
@@ -446,17 +446,17 @@ def copytree(src, dst, symlinks=False, skip=[], overwrite=False):
                     remove_if_overwriting(dstname)
                     shutil.copy2(srcname, dstname)
                 # XXX What about devices, sockets etc.?
-            except (IOError, OSError), why:
+            except (IOError, OSError) as why:
                 errors.append((srcname, dstname, str(why)))
             # catch the Error from the recursive copytree so that we can
             # continue with other files
-            except shutil.Error, err:
+            except shutil.Error as err:
                 errors.extend(err.args[0])
         try:
             shutil.copystat(src, dst)
-        except WindowsError, why:
+        except WindowsError as why:
             pass # Ignore errors due to limited Windows copystat support
-        except OSError, why:
+        except OSError as why:
             errors.append((src, dst, str(why)))
         if errors:
             raise shutil.Error(errors)
@@ -610,7 +610,7 @@ def safe__import__(module_name):
     already_imported = sys.modules.copy()
     try:
         return __import__(module_name, globals(), locals(), [])
-    except Exception, e:
+    except Exception as e:
         for modname in sys.modules.copy():
             if modname not in already_imported:
                 del(sys.modules[modname])
@@ -628,7 +628,7 @@ def safe_repr(x):
     """
     try:
         return to_unicode(repr(x))
-    except Exception, e:
+    except Exception as e:
         return "<%s object at 0x%X (repr() error: %s)>" % (
             fq_class_name(x), id(x), exception_to_unicode(e))
 
@@ -728,11 +728,11 @@ def get_pkginfo(dist):
         pkginfo = email.message_from_string(dist.get_metadata('PKG-INFO'))
         for attr in [key for key in attrs if key in pkginfo]:
             info[normalize(attr)] = pkginfo[attr]
-    except IOError, e:
+    except IOError as e:
         err = 'Failed to read PKG-INFO file for %s: %s' % (dist, e)
         for attr in attrs:
             info[normalize(attr)] = err
-    except email.Errors.MessageError, e:
+    except email.Errors.MessageError as e:
         err = 'Failed to parse PKG-INFO file for %s: %s' % (dist, e)
         for attr in attrs:
             info[normalize(attr)] = err

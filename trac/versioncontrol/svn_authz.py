@@ -208,7 +208,7 @@ class AuthzSourcePolicy(Component):
     def _get_authz_info(self):
         try:
             mtime = os.path.getmtime(self.authz_file)
-        except OSError, e:
+        except OSError as e:
             if self._authz is not None:
                 self.log.error('Error accessing authz file: %s',
                                exception_to_unicode(e))
@@ -230,7 +230,7 @@ class AuthzSourcePolicy(Component):
                                   for path in paths.itervalues()
                                   for user, result in path.iteritems()
                                   if result)
-            except Exception, e:
+            except Exception as e:
                 self._authz = None
                 self._users = set()
                 self.log.error('Error parsing authz file: %s',

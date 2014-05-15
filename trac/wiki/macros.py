@@ -652,7 +652,7 @@ class ImageMacro(WikiMacroBase):
                                        format='raw')
             try:
                 desc = get_resource_summary(self.env, attachment)
-            except ResourceNotFound, e:
+            except ResourceNotFound as e:
                 raw_url = formatter.href.chrome('common/attachment.png')
                 desc = _('No image "%(id)s" attached to %(parent)s',
                          id=attachment.id,
@@ -699,7 +699,7 @@ class MacroListMacro(WikiMacroBase):
                     name_descriptions = [
                         (name, macro_provider.get_macro_description(name))
                         for name in names]
-                except Exception, e:
+                except Exception as e:
                     yield system_message(
                         _("Error: Can't get description for macro %(name)s",
                           name=names[0]), e), names

@@ -700,7 +700,7 @@ class NotificationTestCase(unittest.TestCase):
             if mime_decoder:
                 body = mime_decoder.decodestring(body)
             body = unicode(body, charset)
-        except Exception, e:
+        except Exception as e:
             raise AssertionError(e)
         # now processes each line of the body
         bodylines = body.splitlines()

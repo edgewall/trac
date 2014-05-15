@@ -53,7 +53,7 @@ def do_upgrade(env, version, cursor):
     try:
         for dir, dirs, files in os.walk(old_dir, topdown=False):
             os.rmdir(dir)
-    except OSError, e:
+    except OSError as e:
         env.log.warning("Can't delete old attachments directory %s: %s",
                          old_dir, exception_to_unicode(e))
         # TRANSLATOR: Wrap message to 80 columns

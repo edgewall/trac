@@ -58,7 +58,7 @@ class BatchModifyModule(Component):
 
         try:
             new_values = self._get_new_ticket_values(req)
-        except TracError, e:
+        except TracError as e:
             new_values = None
             add_warning(req, tag_("The changes could not be saved: "
                                   "%(message)s", message=to_unicode(e)))
@@ -183,7 +183,7 @@ class BatchModifyModule(Component):
             tn = BatchTicketNotifyEmail(self.env)
             tn.notify(selected_tickets, new_values, comment, action,
                       req.authname)
-        except Exception, e:
+        except Exception as e:
             self.log.error("Failure sending notification on ticket batch"
                     "change: %s", exception_to_unicode(e))
             add_warning(req, tag_("The changes have been saved, but an "

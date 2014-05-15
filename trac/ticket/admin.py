@@ -51,7 +51,7 @@ class TicketAdminPanel(Component):
         # Trap AssertionErrors and convert them to TracErrors
         try:
             return self._render_admin_panel(req, cat, page, version)
-        except AssertionError, e:
+        except AssertionError as e:
             raise TracError(e)
 
 
@@ -62,7 +62,7 @@ def _save_config(config, req, log):
     try:
         config.save()
         add_notice(req, _('Your changes have been saved.'))
-    except Exception, e:
+    except Exception as e:
         log.error('Error writing to trac.ini: %s', exception_to_unicode(e))
         add_warning(req, _('Error writing to trac.ini, make sure it is '
                            'writable by the web server. Your changes have not '
@@ -712,7 +712,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                         try:
                             self.config.save()
                             changed = True
-                        except Exception, e:
+                        except Exception as e:
                             self.log.error("Error writing to trac.ini: %s",
                                            exception_to_unicode(e))
                             add_warning(req,

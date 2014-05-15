@@ -205,7 +205,7 @@ class WikiTestCase(unittest.TestCase):
         v = strip_line_ws(v, leading=False)
         try:
             self.assertEqual(self.correct, v)
-        except AssertionError, e:
+        except AssertionError as e:
             msg = to_unicode(e)
             match = re.match(r"u?'(.*)' != u?'(.*)'", msg)
             if match:

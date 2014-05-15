@@ -375,7 +375,7 @@ class BrowserModule(Component):
                 # as a special shortcut to the latest revision.
                 rev_or_latest = rev or repos.youngest_rev
                 node = get_existing_node(req, repos, path, rev_or_latest)
-            except NoSuchChangeset, e:
+            except NoSuchChangeset as e:
                 raise ResourceNotFound(e.message,
                                        _('Invalid changeset number'))
             if node:
@@ -528,7 +528,7 @@ class BrowserModule(Component):
                              raw_href)
                 else:
                     entry = (reponame, repoinfo, None, None, u"\u2013", None)
-            except TracError, err:
+            except TracError as err:
                 entry = (reponame, repoinfo, None, None,
                          exception_to_unicode(err), None)
             if entry[-1] is not None:   # Check permission in case of error
@@ -777,7 +777,7 @@ class BrowserModule(Component):
                     rendered = None
                 prop = {'name': name, 'value': value, 'rendered': rendered}
                 return prop
-            except Exception, e:
+            except Exception as e:
                 self.log.warning('Rendering failed for property %s with '
                                  'renderer %s: %s', name,
                                  renderer.__class__.__name__,

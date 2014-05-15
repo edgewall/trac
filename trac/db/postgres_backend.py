@@ -173,7 +173,7 @@ class PostgreSQLConnector(Component):
             try:
                 p = Popen([self.pg_dump_path, '--version'], stdout=PIPE,
                           close_fds=close_fds)
-            except OSError, e:
+            except OSError as e:
                 raise TracError(_("Unable to run %(path)s: %(msg)s",
                                   path=self.pg_dump_path,
                                   msg=exception_to_unicode(e)))
@@ -192,7 +192,7 @@ class PostgreSQLConnector(Component):
             environ['PGPASSWORD'] = str(db_prop['password'])
         try:
             p = Popen(args, env=environ, stderr=PIPE, close_fds=close_fds)
-        except OSError, e:
+        except OSError as e:
             raise TracError(_("Unable to run %(path)s: %(msg)s",
                               path=self.pg_dump_path,
                               msg=exception_to_unicode(e)))

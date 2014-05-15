@@ -32,7 +32,7 @@ try:
     cgi_frontend.run()
 except SystemExit:
     raise
-except Exception, e:
+except Exception as e:
     import sys
     import traceback
 

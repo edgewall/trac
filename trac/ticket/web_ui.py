@@ -796,7 +796,7 @@ class TicketModule(Component):
                 try:
                     fields[field] = user_time(req, parse_date, value) \
                                     if value else None
-                except TracError, e:
+                except TracError as e:
                     # Handle bad user input for custom time fields gracefully.
                     if field in ticket.custom_fields:
                         # Leave it to _validate_ticket() to complain.
@@ -1315,7 +1315,7 @@ class TicketModule(Component):
                     ticket.values[field] = user_time(req, parse_date, value,
                                                      hint=format) \
                                           if value else None
-                except TracError, e:
+                except TracError as e:
                     # Degrade TracError to warning.
                     add_warning(req, e)
                     ticket.values[field] = value
@@ -1341,7 +1341,7 @@ class TicketModule(Component):
         try:
             tn = TicketNotifyEmail(self.env)
             tn.notify(ticket, newticket=True)
-        except Exception, e:
+        except Exception as e:
             self.log.error("Failure sending notification on creation of "
                     "ticket #%s: %s", ticket.id, exception_to_unicode(e))
             add_warning(req, tag_("The ticket has been created, but an error "
@@ -1380,7 +1380,7 @@ class TicketModule(Component):
             try:
                 tn = TicketNotifyEmail(self.env)
                 tn.notify(ticket, newticket=False, modtime=now)
-            except Exception, e:
+            except Exception as e:
                 self.log.error("Failure sending notification on change to "
                         "ticket #%s: %s", ticket.id, exception_to_unicode(e))
                 # TRANSLATOR: The 'change' has been saved... (link)

@@ -164,7 +164,7 @@ class PygmentsRenderer(Component):
         style = req.args['style']
         try:
             style_cls = get_style_by_name(style)
-        except ValueError, e:
+        except ValueError as e:
             raise HTTPNotFound(e)
 
         parts = style_cls.__module__.split('.')

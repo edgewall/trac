@@ -66,7 +66,7 @@ def load_eggs(entry_point_name):
             env.log.debug('Loading %s from %s', entry.name, entry.dist.location)
             try:
                 entry.load(require=True)
-            except Exception, e:
+            except Exception as e:
                 _log_error(entry, e)
             else:
                 if os.path.dirname(entry.dist.location) == auto_enable:
@@ -90,7 +90,7 @@ def load_py_files():
                         module = imp.load_source(plugin_name, plugin_file)
                     if path == auto_enable:
                         _enable_plugin(env, plugin_name)
-                except Exception, e:
+                except Exception as e:
                     env.log.error('Failed to load plugin from %s: %s',
                                   plugin_file,
                                   exception_to_unicode(e, traceback=True))

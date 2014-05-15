@@ -374,7 +374,7 @@ def decode_header(header):
         else:
             raise AssertionError("unsupported encoding: %s" % encoding)
         header = unicode(val, mo.group('charset'))
-    except Exception, e:
+    except Exception as e:
         raise AssertionError(e)
     return header
 

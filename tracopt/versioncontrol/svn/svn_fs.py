@@ -292,7 +292,7 @@ class SubversionConnector(Component):
         try:
             _import_svn()
             self.log.debug('Subversion bindings imported')
-        except ImportError, e:
+        except ImportError as e:
             self.error = e
             self.log.info('Failed to load Subversion bindings', exc_info=True)
         else:
@@ -360,7 +360,7 @@ class SubversionRepository(Repository):
 
         try:
             self.repos = repos.svn_repos_open(root_path_utf8, self.pool())
-        except core.SubversionException, e:
+        except core.SubversionException as e:
             raise TracError(_("Couldn't open Subversion repository %(path)s: "
                               "%(svn_error)s", path=to_unicode(path_utf8),
                               svn_error=exception_to_unicode(e)))
@@ -840,7 +840,7 @@ class SubversionNode(Node):
                 from svn import client
                 client.blame2(file_url_utf8, rev, start, rev, blame_receiver,
                               client.create_context(), self.pool())
-            except (core.SubversionException, AttributeError), e:
+            except (core.SubversionException, AttributeError) as e:
                 # svn thinks file is a binary or blame not supported
                 raise TracError(_('svn blame failed on %(path)s: %(error)s',
                                   path=self.path, error=to_unicode(e)))

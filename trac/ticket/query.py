@@ -485,7 +485,7 @@ class Query(object):
             if date:
                 try:
                     return to_utimestamp(user_time(req, parse_date, date))
-                except TracError, e:
+                except TracError as e:
                     errors.append(unicode(e))
             return None
 
@@ -1074,7 +1074,7 @@ class QueryModule(Component):
                              in req.session.get('query_tickets', '').split()]
                 tickets = query.execute(req, cached_ids=orig_list)
                 orig_time = query_time
-        except QueryValueError, e:
+        except QueryValueError as e:
             tickets = []
             for error in e.errors:
                 add_warning(req, error)
@@ -1199,7 +1199,7 @@ class QueryModule(Component):
                 return tag.a(label,
                              href=query.get_href(formatter.context.href),
                              class_='query')
-            except QuerySyntaxError, e:
+            except QuerySyntaxError as e:
                 return tag.em(_('[Error: %(error)s]', error=unicode(e)),
                               class_='error')
 

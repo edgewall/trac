@@ -191,7 +191,7 @@ def _save_config(config, req, log, notices=None):
             notices = [_("Your changes have been saved.")]
         for notice in notices:
             add_notice(req, notice)
-    except Exception, e:
+    except Exception as e:
         log.error("Error writing to trac.ini: %s", exception_to_unicode(e))
         add_warning(req, _("Error writing to trac.ini, make sure it is "
                            "writable by the web server. Your changes have "
@@ -622,7 +622,7 @@ class PluginAdminPanel(Component):
         def safe_wiki_to_html(context, text):
             try:
                 return format_to_html(self.env, context, text)
-            except Exception, e:
+            except Exception as e:
                 self.log.error("Unable to render component documentation: %s",
                                exception_to_unicode(e, traceback=True))
                 return tag.pre(text)

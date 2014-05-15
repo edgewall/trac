@@ -156,7 +156,7 @@ class SmtpEmailSender(Component):
                       % (self.smtp_server, self.smtp_port, recipients))
         try:
             server = smtplib.SMTP(self.smtp_server, self.smtp_port)
-        except smtplib.socket.error, e:
+        except smtplib.socket.error as e:
             raise ConfigurationError(
                 tag_("SMTP server connection error (%(error)s). Please "
                      "modify %(option1)s or %(option2)s in your "
@@ -216,7 +216,7 @@ class SendmailEmailSender(Component):
         try:
             child = Popen(cmdline, bufsize=-1, stdin=PIPE, stdout=PIPE,
                           stderr=PIPE, close_fds=close_fds)
-        except OSError, e:
+        except OSError as e:
             raise ConfigurationError(
                 tag_("Sendmail error (%(error)s). Please modify %(option)s "
                      "in your configuration.",

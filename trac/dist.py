@@ -371,7 +371,7 @@ try:
             errors = [e for e in message.check(catalog)]
             try:
                 check_genshi_markup(catalog, message)
-            except TranslationError, e:
+            except TranslationError as e:
                 errors.append(e)
             return errors
 
@@ -409,7 +409,7 @@ try:
         try:
             return set([idx for idx, text in parse_msg(message)
                             if idx > 0])
-        except Exception, e:
+        except Exception as e:
             raise TranslationError('cannot parse message (%s: %s)' % \
                                    (e.__class__.__name__, unicode(e)))
 

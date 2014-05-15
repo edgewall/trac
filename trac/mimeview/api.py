@@ -803,7 +803,7 @@ class Mimeview(Component):
                         result = Markup('\n').join(result)
                     return tag.div(class_='code')(tag.pre(result)).generate()
 
-            except Exception, e:
+            except Exception as e:
                 self.log.warning('HTML preview using %s failed: %s',
                                  renderer.__class__.__name__,
                                  exception_to_unicode(e, traceback=True))
@@ -839,7 +839,7 @@ class Mimeview(Component):
             annotator = annotators[a]
             try:
                 data = (annotator, annotator.get_annotation_data(context))
-            except TracError, e:
+            except TracError as e:
                 self.log.warning("Can't use annotator '%s': %s", a, e.message)
                 add_warning(context.req, tag.strong(
                     tag_("Can't use %(annotator)s annotator: %(error)s",
@@ -939,7 +939,7 @@ class Mimeview(Component):
                     mimetype, regexp = mapping.split(':', 1)
                 try:
                     self._mime_map_patterns[mimetype] = re.compile(regexp)
-                except re.error, e:
+                except re.error as e:
                     self.log.warning("mime_map_patterns contains invalid "
                                      "regexp '%s' for mimetype '%s' (%s)",
                                      regexp, mimetype, exception_to_unicode(e))

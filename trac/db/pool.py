@@ -100,10 +100,10 @@ class ConnectionPoolBackend(object):
                     cnx.close()
                 if op in ('close', 'create'):
                     cnx = connector.get_connection(**kwargs)
-            except TracError, e:
+            except TracError as e:
                 err = e
                 cnx = None
-            except Exception, e:
+            except Exception as e:
                 if log:
                     log.error('Exception caught on %s', op, exc_info=True)
                 err = e

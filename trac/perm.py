@@ -697,7 +697,7 @@ class PermissionAdmin(Component):
                     actions = sorted(self.get_user_perms(user))
                     writer.writerow([s.encode(encoding, 'replace')
                                      for s in [user] + actions])
-        except IOError, e:
+        except IOError as e:
             raise AdminCommandError(
                 _("Cannot export to %(filename)s: %(error)s",
                   filename=path_to_unicode(filename or 'stdout'),
@@ -727,12 +727,12 @@ class PermissionAdmin(Component):
                     old_actions = self.get_user_perms(user)
                     for action in set(actions) - set(old_actions):
                         permsys.grant_permission(user, action)
-        except csv.Error, e:
+        except csv.Error as e:
             raise AdminCommandError(
                 _("Cannot import from %(filename)s line %(line)d: %(error)s ",
                   filename=path_to_unicode(filename or 'stdin'),
                   line=reader.line_num, error=e))
-        except IOError, e:
+        except IOError as e:
             raise AdminCommandError(
                 _("Cannot import from %(filename)s: %(error)s",
                   filename=path_to_unicode(filename or 'stdin'),

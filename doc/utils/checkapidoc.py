@@ -73,7 +73,7 @@ def check_api_doc(basename, verbose, only_documented, has_submodules):
     module_name = basename.replace('_', '.')
     try:
         module = __import__(module_name, globals(), {}, ['__all__'])
-    except ImportError, e:
+    except ImportError as e:
         print "Skipping %s (%s)" % (basename, e)
         return
     all = getattr(module, '__all__', None)

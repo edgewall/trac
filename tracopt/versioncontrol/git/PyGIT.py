@@ -336,7 +336,7 @@ class Storage(object):
             result['v_compatible'] = split_version >= GIT_VERSION_MIN_REQUIRED
             return result
 
-        except Exception, e:
+        except Exception as e:
             raise GitError("Could not retrieve GIT version (tried to "
                            "execute/parse '%s --version' but got %s)"
                            % (git_bin, repr(e)))
@@ -404,7 +404,7 @@ class Storage(object):
         try:
             with open(head_file, 'rb') as f:
                 pass
-        except IOError, e:
+        except IOError as e:
             raise GitError("Make sure the Git repository '%s' is readable: %s"
                            % (git_dir, to_unicode(e)))
 

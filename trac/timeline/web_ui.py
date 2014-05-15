@@ -197,7 +197,7 @@ class TimelineModule(Component):
                     if (not include or author in include) \
                        and not author in exclude:
                         events.append(self._event_data(provider, event))
-            except Exception, e: # cope with a failure of that provider
+            except Exception as e: # cope with a failure of that provider
                 self._provider_failure(e, req, provider, filters,
                                        [f[0] for f in available_filters])
 
@@ -348,7 +348,7 @@ class TimelineModule(Component):
                 dt = parse_date(path, utc, locale='iso8601', hint='iso8601')
                 return self.get_timeline_link(formatter.req, dt, label,
                                               precision, query, fragment)
-            except TracError, e:
+            except TracError as e:
                 return tag.a(label, title=to_unicode(e),
                              class_='timeline missing')
         yield ('timeline', link_resolver)

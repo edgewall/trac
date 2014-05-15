@@ -184,7 +184,7 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
     def handle_one_request(self):
         try:
             environ = self.setup_environ()
-        except (IOError, socket.error), e:
+        except (IOError, socket.error) as e:
             environ = None
             if e.args[0] in (errno.EPIPE, errno.ECONNRESET, 10053, 10054):
                 # client disconnect
@@ -200,7 +200,7 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
         """We need to help the garbage collector a little."""
         try:
             BaseHTTPRequestHandler.finish(self)
-        except (IOError, socket.error), e:
+        except (IOError, socket.error) as e:
             # ignore an exception if client disconnects
             if e.args[0] not in (errno.EPIPE, errno.ECONNRESET, 10053, 10054):
                 raise
@@ -244,7 +244,7 @@ class WSGIServerGateway(WSGIGateway):
                 self.handler.wfile.write('%x\r\n%s\r\n' % (len(data), data))
             else:
                 self.handler.wfile.write(data)
-        except (IOError, socket.error), e:
+        except (IOError, socket.error) as e:
             if e.args[0] in (errno.EPIPE, errno.ECONNRESET, 10053, 10054):
                 # client disconnect
                 self.handler.close_connection = 1

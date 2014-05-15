@@ -232,7 +232,7 @@ class CachedRepository(Repository):
                     try:
                         # steps 1. and 2.
                         self._insert_changeset(db, next_youngest, cset)
-                    except Exception, e: # *another* 1.1. resync attempt won
+                    except Exception as e: # *another* 1.1. resync attempt won
                         self.log.warning('Revision %s already cached: %r',
                                          next_youngest, e)
                         # the other resync attempts is also

@@ -134,7 +134,7 @@ class GitConnector(Component):
 
         try:
             self._version = PyGIT.Storage.git_version(git_bin=self.git_bin)
-        except PyGIT.GitError, e:
+        except PyGIT.GitError as e:
             self.log.error("GitError: " + str(e))
 
         if self._version:
@@ -171,7 +171,7 @@ class GitConnector(Component):
             return tag.a(label, class_='changeset',
                          title=shorten_line(changeset.message),
                          href=formatter.href.changeset(sha, repos.reponame))
-        except Exception, e:
+        except Exception as e:
             return tag.a(label, class_='missing changeset',
                          title=to_unicode(e), rel='nofollow')
 
@@ -319,7 +319,7 @@ class CsetPropertyRenderer(Component):
                              title=shorten_line(cset.message),
                              href=context.href.changeset(sha, repos.reponame))
 
-            except Exception, e:
+            except Exception as e:
                 return tag.a(sha, class_='missing changeset',
                              title=to_unicode(e), rel='nofollow')
 
@@ -403,7 +403,7 @@ class GitRepository(Repository):
                                             git_bin=git_bin,
                                             git_fs_encoding=git_fs_encoding) \
                             .getInstance()
-        except PyGIT.GitError, e:
+        except PyGIT.GitError as e:
             log.error(exception_to_unicode(e))
             raise TracError("%s does not appear to be a Git "
                             "repository." % path)

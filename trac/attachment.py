@@ -227,7 +227,7 @@ class Attachment(object):
             if os.path.isfile(path):
                 try:
                     os.unlink(path)
-                except OSError, e:
+                except OSError as e:
                     self.env.log.error("Failed to delete attachment "
                                        "file %s: %s",
                                        path,
@@ -271,7 +271,7 @@ class Attachment(object):
             if os.path.isfile(path):
                 try:
                     os.rename(path, new_path)
-                except OSError, e:
+                except OSError as e:
                     self.env.log.error("Failed to move attachment file %s: %s",
                                        path,
                                        exception_to_unicode(e, traceback=True))
@@ -373,7 +373,7 @@ class Attachment(object):
         if attachment_dir:
             try:
                 os.rmdir(attachment_dir)
-            except OSError, e:
+            except OSError as e:
                 env.log.error("Can't delete attachment directory %s: %s",
                               attachment_dir,
                               exception_to_unicode(e, traceback=True))
@@ -390,7 +390,7 @@ class Attachment(object):
         if attachment_dir:
             try:
                 os.rmdir(attachment_dir)
-            except OSError, e:
+            except OSError as e:
                 env.log.error("Can't delete attachment directory %s: %s",
                               attachment_dir,
                               exception_to_unicode(e, traceback=True))
@@ -415,7 +415,7 @@ class Attachment(object):
             path = os.path.join(dir, self._get_hashed_filename(filename))
             try:
                 return filename, os.fdopen(os.open(path, flags, 0666), 'w')
-            except OSError, e:
+            except OSError as e:
                 if e.errno != errno.EEXIST:
                     raise
                 idx += 1

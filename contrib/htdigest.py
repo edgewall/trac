@@ -62,7 +62,7 @@ prefix = '%s:%s:' % (username, realm)
 if opts.create:
     try:
         f = open(filename, 'w')
-    except EnvironmentError, e:
+    except EnvironmentError as e:
         if e.errno == errno.EACCES:
             print >>sys.stderr, 'Unable to update file', filename
             sys.exit(1)
@@ -88,7 +88,7 @@ else:
                 print >>f, get_digest(prefix, password)
             finally:
                 f.close()
-    except EnvironmentError, e:
+    except EnvironmentError as e:
         if e.errno == errno.ENOENT:
             print >>sys.stderr, 'Could not open passwd file %s for reading.' \
                                 % filename

@@ -72,7 +72,7 @@ def get_path_links(href, reponame, path, rev, order=None, desc=None):
 def get_existing_node(req, repos, path, rev):
     try:
         return repos.get_node(path, rev)
-    except NoSuchNode, e:
+    except NoSuchNode as e:
         # TRANSLATOR: You can 'search' in the repository history... (link)
         search_a = tag.a(_("search"),
                          href=req.href.log(repos.reponame or None, path,

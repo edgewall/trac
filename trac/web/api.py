@@ -690,7 +690,7 @@ class Request(object):
             raise ValueError("Can't send unicode content")
         try:
             self._write(data)
-        except (IOError, socket.error), e:
+        except (IOError, socket.error) as e:
             if e.args[0] in (errno.EPIPE, errno.ECONNRESET, 10053, 10054):
                 raise RequestDone
             # Note that mod_wsgi raises an IOError with only a message

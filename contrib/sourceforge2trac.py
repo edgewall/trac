@@ -700,7 +700,7 @@ def main():
 
     try:
         importData(open(args[0]), args[1], opt)
-    except DBNotEmpty, e:
+    except DBNotEmpty as e:
         print 'Error:', e
         sys.exit(1)
 

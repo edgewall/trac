@@ -735,7 +735,7 @@ class MilestoneModule(Component):
             try:
                 tn.notify(retargeted_tickets, new_values, comment, None,
                           req.authname)
-            except Exception, e:
+            except Exception as e:
                 self.log.error("Failure sending notification on ticket batch "
                                "change: %s", exception_to_unicode(e))
                 add_warning(req, tag_("The changes have been saved, but an "
@@ -823,7 +823,7 @@ class MilestoneModule(Component):
                 try:
                     tn.notify(retargeted_tickets, new_values, comment, None,
                               req.authname)
-                except Exception, e:
+                except Exception as e:
                     self.log.error("Failure sending notification on ticket "
                                    "batch change: %s",
                                    exception_to_unicode(e))

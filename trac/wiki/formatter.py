@@ -224,7 +224,7 @@ class WikiProcessor(object):
         try:
             stream = Stream(HTMLParser(StringIO(text)))
             return (stream | self._sanitizer).render('xhtml', encoding=None)
-        except ParseError, e:
+        except ParseError as e:
             self.env.log.warn(e)
             line = unicode(text).splitlines()[e.lineno - 1].strip()
             return system_message(_('HTML parsing error: %(message)s',
@@ -278,7 +278,7 @@ class WikiProcessor(object):
             elt = self._elt_processor('tr', self._format_row, text)
             self.formatter.open_table()
             return elt
-        except ProcessorError, e:
+        except ProcessorError as e:
             return system_message(e)
 
     def _table_processor(self, text):
@@ -287,7 +287,7 @@ class WikiProcessor(object):
         self.args.setdefault('class', 'wiki')
         try:
             return self._elt_processor('table', self._format_table, text)
-        except ProcessorError, e:
+        except ProcessorError as e:
             return system_message(e)
 
     def _tablecell_processor(self, eltname, text):
@@ -808,7 +808,7 @@ class Formatter(object):
             args = fullmatch.group('macroargs')
         try:
             return macro.ensure_inline(macro.process(args))
-        except Exception, e:
+        except Exception as e:
             self.env.log.error('Macro %s(%s) failed:%s', name, args,
                                exception_to_unicode(e, traceback=True))
             return system_message('Error: Macro %s(%s) failed' % (name, args),

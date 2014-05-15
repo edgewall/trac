@@ -65,7 +65,7 @@ class IterableCursor(object):
                 if rows is not None:
                     self.log.debug("prefetch: %d rows", len(rows))
                 return r
-            except Exception, e:
+            except Exception as e:
                 self.log.debug('execute exception: %r', e)
                 raise
         if args:
@@ -83,7 +83,7 @@ class IterableCursor(object):
                     return self.cursor.executemany(sql_escape_percent(sql),
                                                    args)
                 return self.cursor.executemany(sql, args)
-            except Exception, e:
+            except Exception as e:
                 self.log.debug('executemany exception: %r', e)
                 raise
         if not args:

@@ -32,7 +32,7 @@ try:
     fcgi_frontend.run()
 except SystemExit:
     raise
-except Exception, e:
+except Exception as e:
     print 'Content-Type: text/plain\r\n\r\n',
     print 'Oops...'
     print

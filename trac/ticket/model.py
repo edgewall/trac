@@ -136,7 +136,7 @@ class Ticket(object):
                     try:
                         default = parse_date(default,
                                              hint=field.get('format'))
-                    except TracError, e:
+                    except TracError as e:
                         self.env.log.warning('Invalid default value "%s" '
                                              'for custom field "%s": %s'
                                              % (default, field['name'], e))

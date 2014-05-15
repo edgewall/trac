@@ -258,7 +258,7 @@ class ChangesetModule(Component):
             old_path = repos.normalize_path(old_path or new_path)
             old = repos.normalize_rev(old or new)
             full_old_path = '/' + pathjoin(repos.reponame, old_path)
-        except NoSuchChangeset, e:
+        except NoSuchChangeset as e:
             raise ResourceNotFound(e.message, _('Invalid Changeset Number'))
 
         if old_path == new_path and old == new: # revert to Changeset
@@ -797,7 +797,7 @@ class ChangesetModule(Component):
                 return renderer.render_property_diff(name, old_node, old_props,
                                                      new_node, new_props,
                                                      options)
-            except Exception, e:
+            except Exception as e:
                 self.log.warning('Diff rendering failed for property %s with '
                                  'renderer %s: %s', name,
                                  renderer.__class__.__name__,
@@ -904,7 +904,7 @@ class ChangesetModule(Component):
                     try:
                         for event in generate_changesets(repos):
                             yield event
-                    except TracError, e:
+                    except TracError as e:
                         self.log.error("Timeline event provider for repository"
                                        " '%s' failed: %r",
                                        repos.reponame, exception_to_unicode(e))
@@ -1072,7 +1072,7 @@ class ChangesetModule(Component):
                 errmsg = _("Repository '%(repo)s' not found", repo=reponame)
             else:
                 errmsg = _("No default repository defined")
-        except TracError, e:
+        except TracError as e:
             errmsg = to_unicode(e)
         return tag.a(label, class_="missing changeset", title=errmsg)
 

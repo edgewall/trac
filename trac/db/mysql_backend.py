@@ -242,7 +242,7 @@ class MySQLConnector(Component):
             environ['MYSQL_PWD'] = str(db_prop['password'])
         try:
             p = Popen(args, env=environ, stderr=PIPE, close_fds=close_fds)
-        except OSError, e:
+        except OSError as e:
             raise TracError(_("Unable to run %(path)s: %(msg)s",
                               path=self.mysqldump_path,
                               msg=exception_to_unicode(e)))

@@ -408,7 +408,7 @@ class Environment(Component, ComponentManager):
             tag = read_file(os.path.join(self.path, 'VERSION')).splitlines()[0]
             if tag != _VERSION:
                 raise Exception("Unknown Trac environment type '%s'" % tag)
-        except Exception, e:
+        except Exception as e:
             raise TracError("No Trac environment found at %s\n%s"
                             % (self.path, e))
 
@@ -450,7 +450,7 @@ class Environment(Component, ComponentManager):
             try:
                 with env.db_transaction as db:
                     ...
-            except env.db_exc.IntegrityError, e:
+            except env.db_exc.IntegrityError as e:
                 ...
         """
         return DatabaseManager(self).get_exceptions()
@@ -724,7 +724,7 @@ class Environment(Component, ComponentManager):
         if backup:
             try:
                 self.backup(backup_dest)
-            except Exception, e:
+            except Exception as e:
                 raise BackupError(e)
 
         for participant in upgraders:
@@ -817,7 +817,7 @@ class EnvironmentSetup(Component):
             self.log.info("Wrote sample configuration file with the new "
                           "settings and their default values: %s",
                           filename)
-        except IOError, e:
+        except IOError as e:
             self.log.warn("Couldn't write sample configuration file (%s)", e,
                           exc_info=True)
 
@@ -864,7 +864,7 @@ def open_environment(env_path=None, use_cache=False):
         needs_upgrade = False
         try:
             needs_upgrade = env.needs_upgrade()
-        except Exception, e: # e.g. no database connection
+        except Exception as e: # e.g. no database connection
             env.log.error("Exception caught while checking for upgrade: %s",
                           exception_to_unicode(e, traceback=True))
         if needs_upgrade:
@@ -966,7 +966,7 @@ class EnvironmentAdmin(Component):
             try:
                 copytree(self.env.path, dest, symlinks=1, skip=skip)
                 retval = 0
-            except shutil.Error, e:
+            except shutil.Error as e:
                 retval = 1
                 printerr(_("The following errors happened while copying "
                            "the environment:"))
@@ -997,11 +997,11 @@ class EnvironmentAdmin(Component):
 
         try:
             self.env.upgrade(backup=no_backup is None)
-        except BackupError, e:
+        except BackupError as e:
             printerr(_("The pre-upgrade backup failed.\nUse '--no-backup' to "
                        "upgrade without doing a backup.\n"))
             raise e.args[0]
-        except Exception, e:
+        except Exception as e:
             printerr(_("The upgrade failed. Please fix the issue and try "
                        "again.\n"))
             raise
@@ -1021,7 +1021,7 @@ class EnvironmentAdmin(Component):
             else:
                 try:
                     os.rmdir(wiki_macros)
-                except OSError, e:
+                except OSError as e:
                     printerr(_("Error while removing wiki-macros: %(err)s\n"
                                "Trac doesn't load plugins from wiki-macros "
                                "anymore. Please remove it by hand.",
