@@ -102,10 +102,10 @@ class TicketTestCase(unittest.TestCase):
         self.assertEqual(Ticket.id_is_valid(-1), False)
         self.assertEqual(Ticket.id_is_valid(0), False)
         self.assertEqual(Ticket.id_is_valid(1), True)
-        self.assertEqual(Ticket.id_is_valid(1L << 31), True)
-        self.assertEqual(Ticket.id_is_valid(1L << 32), False)
+        self.assertEqual(Ticket.id_is_valid(1 << 31), True)
+        self.assertEqual(Ticket.id_is_valid(1 << 32), False)
         self.assertRaises(ResourceNotFound, Ticket, self.env, -1)
-        self.assertRaises(ResourceNotFound, Ticket, self.env, 1L << 32)
+        self.assertRaises(ResourceNotFound, Ticket, self.env, 1 << 32)
 
     def test_repr(self):
         ticket = self._create_a_ticket()
@@ -1242,8 +1242,8 @@ class MilestoneTestCase(unittest.TestCase):
         self.env.db_transaction("INSERT INTO milestone (name) VALUES ('Test')")
 
         milestone = Milestone(self.env, 'Test')
-        t1 = datetime(2001, 01, 01, tzinfo=utc)
-        t2 = datetime(2002, 02, 02, tzinfo=utc)
+        t1 = datetime(2001, 1, 1, tzinfo=utc)
+        t2 = datetime(2002, 2, 2, tzinfo=utc)
         milestone.due = t1
         milestone.completed = t2
         milestone.description = 'Foo bar'
@@ -1325,12 +1325,12 @@ class MilestoneTestCase(unittest.TestCase):
         listener = ts.milestone_change_listeners[0]
         milestone = self._create_milestone(
             name='Milestone 1',
-            due=datetime(2001, 01, 01, tzinfo=utc),
+            due=datetime(2001, 1, 1, tzinfo=utc),
             description='The milestone description')
         milestone.insert()
 
         milestone.name = 'Milestone 2'
-        milestone.completed = datetime(2001, 02, 03, tzinfo=utc)
+        milestone.completed = datetime(2001, 2, 3, tzinfo=utc)
         milestone.description = 'The changed description'
         milestone.update()
 

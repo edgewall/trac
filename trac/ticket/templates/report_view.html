@@ -244,7 +244,7 @@ history and logs, available at http://trac.edgewall.org/.
             #       elif col == 'time':
             #         do td_attrs['class'].append('date')
             <td${td_attrs|htmlattr}>${
-              format_time(from_utimestamp(long(cell.value))) if cell.value != ''
+              format_time(from_utimestamp(int(cell.value))) if cell.value != ''
               else '--'}
               {% if fullrow %}<hr />{% endif %}
             </td>
@@ -260,7 +260,7 @@ history and logs, available at http://trac.edgewall.org/.
             #       elif col == 'datetime':
             #         do td_attrs['class'].append('date')
             <td${td_attrs|htmlattr}>${
-              format_datetime(from_utimestamp(long(cell.value)))
+              format_datetime(from_utimestamp(int(cell.value)))
                 if cell.value != ''
                 else '--'}
               {% if fullrow %}<hr />{% endif %}

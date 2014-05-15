@@ -19,7 +19,7 @@ import sys
 
 
 def daemonize(pidfile=None, progname=None, stdin='/dev/null',
-              stdout='/dev/null', stderr='/dev/null', umask=022):
+              stdout='/dev/null', stderr='/dev/null', umask=0o22):
     """Fork a daemon process."""
     if pidfile:
         # Check whether the pid file already exists and refers to a still

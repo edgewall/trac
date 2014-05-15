@@ -101,7 +101,7 @@ class TicketDeleter(Component):
                 req.redirect(redirect_to)
 
             elif action == 'delete-comment':
-                cdate = from_utimestamp(long(req.args.get('cdate')))
+                cdate = from_utimestamp(int(req.args.get('cdate')))
                 ticket.delete_change(cdate=cdate)
                 add_notice(req, _("The ticket comment %(num)s on ticket "
                                   "#%(id)s has been deleted.",
@@ -116,7 +116,7 @@ class TicketDeleter(Component):
 
         if action == 'delete-comment':
             data['cdate'] = req.args.get('cdate')
-            cdate = from_utimestamp(long(data['cdate']))
+            cdate = from_utimestamp(int(data['cdate']))
             for change in data['changes']:
                 if change.get('date') == cdate:
                     data['change'] = change

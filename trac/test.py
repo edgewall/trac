@@ -566,7 +566,7 @@ def rmtree(path):
         e = excinfo[1]
         if isinstance(e, OSError) and e.errno == errno.EACCES:
             mode = os.stat(path).st_mode
-            os.chmod(path, mode | 0666)
+            os.chmod(path, mode | 0o666)
             try:
                 function(path)
             except Exception:
