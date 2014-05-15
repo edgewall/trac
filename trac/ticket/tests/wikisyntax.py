@@ -169,6 +169,14 @@ REPORT_TEST_CASES = u"""
 </p>
 ------------------------------
 &amp;#1; &amp;#23;
+============================== report link with non-digits
+report:blah
+------------------------------
+<p>
+<a class="missing report" title="report does not exist">report:blah</a>
+</p>
+------------------------------
+<a class="missing report" title="report does not exist">report:blah</a>
 ============================== InterTrac for reports
 trac:report:1
 [trac:report:1 Trac r1]
