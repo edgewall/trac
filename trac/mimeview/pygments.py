@@ -12,11 +12,14 @@
 
 from __future__ import absolute_import
 
-from datetime import datetime
 import os
-from pkg_resources import resource_filename
 import pygments
 import re
+from datetime import datetime
+from pkg_resources import resource_filename
+from pygments.formatters.html import HtmlFormatter
+from pygments.lexers import get_all_lexers, get_lexer_by_name
+from pygments.styles import get_all_styles, get_style_by_name
 
 from trac.core import *
 from trac.config import ListOption, Option
@@ -31,12 +34,6 @@ from trac.web.chrome import add_notice, add_stylesheet
 
 from genshi import QName, Stream
 from genshi.core import Attrs, START, END, TEXT
-
-get_all_lexers = pygments.lexers.get_all_lexers
-get_lexer_by_name = pygments.lexers.get_lexer_by_name
-HtmlFormatter = pygments.formatters.html.HtmlFormatter
-get_all_styles = pygments.styles.get_all_styles
-get_style_by_name = pygments.styles.get_style_by_name
 
 __all__ = ['PygmentsRenderer']
 
