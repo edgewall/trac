@@ -57,7 +57,7 @@ class RaiseExceptionPlugin(Component):
             return True
 
     def process_request(self, req):
-        print 'maybe?'
+        print('maybe?')
         if req.args.get('report') == 'tho':
             global url
             url = 'http://trac-hacks.org/wiki/HelloWorldMacro'

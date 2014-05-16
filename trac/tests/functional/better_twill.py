@@ -73,14 +73,14 @@ if twill:
     try:
         from lxml import etree
     except ImportError:
-        print "SKIP: validation of XHTML output in functional tests " \
-              "(no lxml installed)"
+        print("SKIP: validation of XHTML output in functional tests"
+              " (no lxml installed)")
         etree = None
 
     if etree and pv(etree.__version__) < pv('2.0.0'):
         # 2.0.7 and 2.1.x are known to work.
-        print "SKIP: validation of XHTML output in functional tests " \
-              "(lxml < 2.0, api incompatibility)"
+        print("SKIP: validation of XHTML output in functional tests"
+              " (lxml < 2.0, api incompatibility)")
         etree = None
 
     if etree:

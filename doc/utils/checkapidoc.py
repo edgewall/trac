@@ -29,10 +29,10 @@ excluded_docs = ['index.rst']
 api_doc = 'doc/api'
 
 def usage(cmd):
-    print "Usage: %s [FILE...]" % (cmd,)
-    print
-    print "FILE is a %s file and can be a glob pattern." % (api_doc,)
-    print "If no files are given, check all."
+    print("Usage: %s [FILE...]" % cmd)
+    print()
+    print("FILE is a %s file and can be a glob pattern." % api_doc)
+    print("If no files are given, check all.")
     exit(0)
 
 def main(argv):
@@ -63,7 +63,7 @@ def main(argv):
     for rst in api_files:
         basename = rst.replace('.rst', '')
         if verbose or len(api_files) > 1:
-            print "== Checking %s ... " % (rst,)
+            print("== Checking %s ... " % rst)
         check_api_doc(basename, verbose, only_documented,
                       any(f.startswith(basename) and f != basename
                           for f in rst_basenames))
@@ -74,12 +74,12 @@ def check_api_doc(basename, verbose, only_documented, has_submodules):
     try:
         module = __import__(module_name, globals(), {}, ['__all__'])
     except ImportError as e:
-        print "Skipping %s (%s)" % (basename, e)
+        print("Skipping %s (%s)" % (basename, e))
         return
     all = getattr(module, '__all__', None)
     if not all:
-        print "Warning: %s doesn't define __all__, using exported symbols." % (
-            module_name,)
+        print("Warning: %s doesn't define __all__, using exported symbols."
+              % module_name)
         all = get_default_symbols(module, only_documented, has_submodules)
     no_apidoc = getattr(module, '__no_apidoc__', None)
     if no_apidoc:
@@ -90,8 +90,8 @@ def check_api_doc(basename, verbose, only_documented, has_submodules):
     for symbol in sorted(all):
         if symbol in symbols:
             if verbose:
-                print " - OK %14s :: %s" % (
-                    keywords[symbols.index(symbol)], symbol)
+                print(" - OK %14s :: %s"
+                      % (keywords[symbols.index(symbol)], symbol))
         else:
             value = getattr(module, symbol)
             cls = getattr(value, '__class__', None)
@@ -102,7 +102,7 @@ def check_api_doc(basename, verbose, only_documented, has_submodules):
                 keyword = 'module'
             else:
                 keyword = 'class'
-            print " * .. %14s :: %s" % ('auto' + keyword, symbol)
+            print(" * .. %14s :: %s" % ('auto' + keyword, symbol))
 
 
 sphinx_doc_re = re.compile(r'''
@@ -167,8 +167,8 @@ def get_imported_symbols(module, has_submodules):
                 symbols = set(getattr(imported_module, '__all__', None) or
                               get_public_symbols(imported_module))
             except ImportError:
-                print "Warning: 'from %s import *' couldn't be resolved" % (
-                    mod,)
+                print("Warning: 'from %s import *' couldn't be resolved"
+                      % mod)
                 continue
         else:
             if symbol_list and symbol_list[0] == '(' and symbol_list[-1] == ')':

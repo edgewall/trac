@@ -19,6 +19,8 @@
 #         Matthew Good <trac@matt-good.net>
 #         Christopher Lenz <cmlenz@gmx.de>
 
+from __future__ import print_function
+
 import pkg_resources
 import os
 import socket
@@ -128,8 +130,8 @@ def main():
 
         env_name, filename, realm = info
         if env_name in auths:
-            print >> sys.stderr, 'Ignoring duplicate authentication option ' \
-                                 'for project: %s' % env_name
+            print('Ignoring duplicate authentication option for project: %s'
+                  % env_name, file=sys.stderr)
         else:
             auths[env_name] = cls(os.path.abspath(filename), realm)
 
@@ -290,14 +292,14 @@ def main():
                                        options.env_parent_dir, args,
                                        use_http_11=options.http11)
             except socket.error as e:
-                print 'Error starting Trac server on %s' % loc
-                print '[Errno %s] %s' % e.args
+                print("Error starting Trac server on %s" % loc)
+                print("[Errno %s] %s" % e.args)
                 sys.exit(1)
 
-            print 'Server starting in PID %i.' % os.getpid()
-            print 'Serving on %s' % loc
+            print("Server starting in PID %s." % os.getpid())
+            print("Serving on %s" % loc)
             if options.http11:
-                print 'Using HTTP/1.1 protocol version'
+                print("Using HTTP/1.1 protocol version")
             httpd.serve_forever()
     elif options.protocol in ('scgi', 'ajp', 'fcgi'):
         def serve():
@@ -321,14 +323,14 @@ def main():
 
         if options.autoreload:
             def modification_callback(file):
-                print >> sys.stderr, 'Detected modification of %s, ' \
-                                     'restarting.' % file
+                print("Detected modification of %s, restarting." % file,
+                      file=sys.stderr)
             autoreload.main(serve, modification_callback)
         else:
             serve()
 
     except OSError as e:
-        print >> sys.stderr, '%s: %s' % (e.__class__.__name__, e)
+        print("%s: %s" % (e.__class__.__name__, e), file=sys.stderr)
         sys.exit(1)
     except KeyboardInterrupt:
         pass

@@ -282,7 +282,7 @@ class ReStructuredTextCodeBlockTest(FunctionalTwillTestCaseSetup):
 #!rst
 .. code-block:: python
 
-    print "123"
+    print("123")
 }}}
 """)
         self._tester.go_to_wiki(pagename)
@@ -494,13 +494,14 @@ def functionalSuite(suite=None):
             suite.addTest(ReStructuredTextWikiTest())
             suite.addTest(ReStructuredTextCodeBlockTest())
         else:
-            print "SKIP: reST wiki tests (docutils has no setuptools metadata)"
+            print("SKIP: reST wiki tests (docutils has no setuptools"
+                  " metadata)")
     else:
-        print "SKIP: reST wiki tests (no docutils)"
+        print("SKIP: reST wiki tests (no docutils)")
     if ConfigObj:
         suite.addTest(RegressionTestTicket8976())
     else:
-        print "SKIP: RegressionTestTicket8976 (ConfigObj not installed)"
+        print("SKIP: RegressionTestTicket8976 (ConfigObj not installed)")
     return suite
 
 

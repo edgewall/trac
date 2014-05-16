@@ -119,7 +119,7 @@ class GitCore(object):
     def __execute(self, git_cmd, *cmd_args):
         """execute git command and return file-like object of stdout"""
 
-        #print >>sys.stderr, "DEBUG:", git_cmd, cmd_args
+        #print("DEBUG:", git_cmd, cmd_args, file=sys.stderr)
 
         p = self.__pipe(git_cmd, stdout=PIPE, stderr=PIPE, *cmd_args)
 

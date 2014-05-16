@@ -28,7 +28,7 @@ def do_upgrade(env, ver, cursor):
             row = cursor.fetchone()
             youngest = row and row[0] or ''
         else:
-            print 'Please perform a "repository resync" after this upgrade.'
+            print('Please perform a "repository resync" after this upgrade.')
 
     # deleting first, for the 0.11dev and 0.10.4dev users
     cursor.execute("DELETE FROM system WHERE name=%s",

@@ -141,8 +141,8 @@ def suite():
     if ConfigObj:
         suite.addTest(unittest.makeSuite(AuthzPolicyTestCase))
     else:
-        print "SKIP: tracopt/perm/tests/authz_policy.py (no configobj " + \
-              "installed)"
+        print("SKIP: tracopt/perm/tests/authz_policy.py (no configobj"
+              " installed)")
     return suite
 
 

@@ -267,7 +267,7 @@ class TracDatabase(object):
         with self.env.db_transaction as db:
             db("DELETE FROM enum WHERE type='severity'")
             for value, i in s:
-                print "  inserting severity '%s' - '%s'" % (value, i)
+                print("  inserting severity '%s' - '%s'" % (value, i))
                 db("""INSERT INTO enum (type, name, value)
                       VALUES (%s, %s, %s)""",
                    ("severity", value, i))
@@ -279,7 +279,7 @@ class TracDatabase(object):
         with self.env.db_transaction as db:
             db("DELETE FROM enum WHERE type='priority'")
             for value, i in s:
-                print "  inserting priority '%s' - '%s'" % (value, i)
+                print("  inserting priority '%s' - '%s'" % (value, i))
                 db("INSERT INTO enum (type, name, value) VALUES (%s, %s, %s)",
                    ("priority", value, i))
 
@@ -290,8 +290,8 @@ class TracDatabase(object):
         with self.env.db_transaction as db:
             db("DELETE FROM component")
             for comp in l:
-                print "  inserting component '%s', owner '%s'" % \
-                                (comp[key], comp['owner'])
+                print("  inserting component '%s', owner '%s'"
+                      % (comp[key], comp['owner']))
                 db("INSERT INTO component (name, owner) VALUES (%s, %s)",
                    (comp[key], comp['owner']))
 
@@ -302,7 +302,7 @@ class TracDatabase(object):
         with self.env.db_transaction as db:
             db("DELETE FROM version")
             for vers in v:
-                print "  inserting version '%s'" % (vers[key])
+                print("  inserting version '%s'" % vers[key])
                 db("INSERT INTO version (name) VALUES (%s)",
                    (vers[key],))
 
@@ -314,7 +314,7 @@ class TracDatabase(object):
             db("DELETE FROM milestone")
             for ms in m:
                 milestone = ms[key]
-                print "  inserting milestone '%s'" % (milestone)
+                print("  inserting milestone '%s'" % milestone)
                 db("INSERT INTO milestone (name) VALUES (%s)",
                    (milestone,))
 
@@ -345,7 +345,7 @@ class TracDatabase(object):
         if priority in PRIORITIES_MAP:
             priority = PRIORITIES_MAP[priority]
 
-        print "  inserting ticket %s -- %s" % (id, summary)
+        print("  inserting ticket %s -- %s" % (id, summary))
 
         with self.env.db_transaction as db:
             db("""INSERT INTO ticket (id, type, time, changetime, component,
@@ -430,8 +430,8 @@ class TracDatabase(object):
             filedata = StringIO.StringIO(a['thedata'])
             filesize = len(filedata.getvalue())
             time = a['creation_ts']
-            print "    ->inserting attachment '%s' for ticket %s -- %s" % \
-                    (filename, id, description)
+            print("    ->inserting attachment '%s' for ticket %s -- %s"
+                  % (filename, id, description))
             attachment = Attachment(self.env, 'ticket', id)
             attachment.author = author
             attachment.description = description
@@ -447,8 +447,8 @@ class TracDatabase(object):
             if loginName:
                 loginName = loginName[0]['login_name']
             else:
-                print """WARNING: unknown bugzilla userid %d, recording as
-                         anonymous""" % (userid)
+                print("WARNING: unknown bugzilla userid %d, recording as"
+                      "         anonymous" % userid)
                 loginName = "anonymous"
 
             loginName = LOGIN_MAP.get(loginName, loginName)
@@ -472,8 +472,8 @@ class TracDatabase(object):
             if fieldName:
                 fieldName = fieldName[0]['name'].lower()
             else:
-                print "WARNING: unknown bugzilla fieldid %d, \
-                                recording as unknown" % (userid)
+                print("WARNING: unknown bugzilla fieldid %d, "
+                      "         recording as unknown" % userid)
                 fieldName = "unknown"
 
             self.fieldNameCache[fieldid] = fieldName
@@ -495,14 +495,14 @@ def convert(_db, _host, _user, _password, _env, _force):
     activityFields = FieldTranslator()
 
     # account for older versions of bugzilla
-    print "Using Bugzilla v%s schema." % BZ_VERSION
+    print("Using Bugzilla v%s schema." % BZ_VERSION)
     if BZ_VERSION == 2110:
         activityFields['removed'] = "oldvalue"
         activityFields['added'] = "newvalue"
 
     # init Bugzilla environment
-    print "Bugzilla MySQL('%s':'%s':'%s':'%s'): connecting..." % \
-            (_db, _host, _user, ("*" * len(_password)))
+    print("Bugzilla MySQL('%s':'%s':'%s':'%s'): connecting..."
+          % (_db, _host, _user, ("*" * len(_password))))
     mysql_con = MySQLdb.connect(host=_host,
                 user=_user, passwd=_password, db=_db, compress=1,
                 cursorclass=MySQLdb.cursors.DictCursor,
@@ -510,12 +510,12 @@ def convert(_db, _host, _user, _password, _env, _force):
     mysql_cur = mysql_con.cursor()
 
     # init Trac environment
-    print "Trac SQLite('%s'): connecting..." % (_env)
+    print("Trac SQLite('%s'): connecting..." % _env)
     trac = TracDatabase(_env)
 
     # force mode...
     if _force == 1:
-        print "\nCleaning all tickets..."
+        print("\nCleaning all tickets...")
         with trac.env.db_transaction as db:
             db("DELETE FROM ticket_change")
             db("DELETE FROM ticket")
@@ -531,10 +531,10 @@ def convert(_db, _host, _user, _password, _env, _force):
                 os.rmdir(os.path.join(root, name))
         if not os.stat(attachments_dir):
             os.mkdir(attachments_dir)
-        print "All tickets cleaned..."
+        print("All tickets cleaned...")
 
 
-    print "\n0. Filtering products..."
+    print("\n0. Filtering products...")
     if BZ_VERSION >= 2180:
         mysql_cur.execute("SELECT name FROM products")
     else:
@@ -548,12 +548,12 @@ def convert(_db, _host, _user, _password, _env, _force):
             continue
         products.append(product)
     PRODUCTS[:] = products
-    print "  Using products", " ".join(PRODUCTS)
+    print("  Using products", " ".join(PRODUCTS))
 
-    print "\n1. Import severities..."
+    print("\n1. Import severities...")
     trac.setSeverityList(SEVERITIES)
 
-    print "\n2. Import components..."
+    print("\n2. Import components...")
     if not COMPONENTS_FROM_PRODUCTS:
         if BZ_VERSION >= 2180:
             sql = """SELECT DISTINCT c.name AS name, c.initialowner AS owner
@@ -606,10 +606,10 @@ def convert(_db, _host, _user, _password, _env, _force):
             component_list.append({'product': product, 'owner': owner_name})
         trac.setComponentList(component_list, 'product')
 
-    print "\n3. Import priorities..."
+    print("\n3. Import priorities...")
     trac.setPriorityList(PRIORITIES)
 
-    print "\n4. Import versions..."
+    print("\n4. Import versions...")
     if BZ_VERSION >= 2180:
         sql = """SELECT DISTINCTROW v.value AS value
                                FROM products p, versions v"""
@@ -622,14 +622,14 @@ def convert(_db, _host, _user, _password, _env, _force):
     versions = mysql_cur.fetchall()
     trac.setVersionList(versions, 'value')
 
-    print "\n5. Import milestones..."
+    print("\n5. Import milestones...")
     sql = "SELECT DISTINCT value FROM milestones"
     sql += " WHERE" + makeWhereClause('value', IGNORE_MILESTONES, negative=True)
     mysql_cur.execute(sql)
     milestones = mysql_cur.fetchall()
     trac.setMilestoneList(milestones, 'value')
 
-    print "\n6. Retrieving bugs..."
+    print("\n6. Retrieving bugs...")
     if BZ_VERSION >= 2180:
         sql = """SELECT DISTINCT b.*, c.name AS component, p.name AS product
                             FROM bugs AS b, components AS c, products AS p """
@@ -648,7 +648,7 @@ def convert(_db, _host, _user, _password, _env, _force):
     bugs = mysql_cur.fetchall()
 
 
-    print "\n7. Import bugs and bug activity..."
+    print("\n7. Import bugs and bug activity...")
     for bug in bugs:
 
         bugid = bug['bug_id']
@@ -891,7 +891,7 @@ def convert(_db, _host, _user, _password, _env, _force):
             author = trac.getLoginName(mysql_cur, a['submitter_id'])
             trac.addAttachment(author, a)
 
-    print "\n8. Importing users and passwords..."
+    print("\n8. Importing users and passwords...")
     if BZ_VERSION >= 2164:
         selectlogins = "SELECT login_name, cryptpassword FROM profiles";
         if IGNORE_DISABLED_USERS:
@@ -910,19 +910,19 @@ def convert(_db, _host, _user, _password, _env, _force):
         htpasswd.write(login + ":" + user['cryptpassword'] + "\n")
 
     htpasswd.close()
-    print "  Bugzilla users converted to htpasswd format, see 'htpasswd'."
+    print("  Bugzilla users converted to htpasswd format, see 'htpasswd'.")
 
-    print "\nAll tickets converted."
+    print("\nAll tickets converted.")
 
 def log(msg):
-    print "DEBUG: %s" % (msg)
+    print("DEBUG: %s" % msg)
 
 def datetime2epoch(dt) :
     import time
     return time.mktime(dt.timetuple()) * 1000000
 
 def usage():
-    print """bugzilla2trac - Imports a bug database from Bugzilla into Trac.
+    print("""bugzilla2trac - Imports a bug database from Bugzilla into Trac.
 
 Usage: bugzilla2trac.py [options]
 
@@ -939,7 +939,7 @@ Available Options:
   --help | help                    - This help info
 
 Additional configuration options can be defined directly in the script.
-"""
+""")
     sys.exit(0)
 
 def main():
@@ -973,7 +973,7 @@ def main():
                 SEVERITIES = []
                 PRIORITIES_MAP = {}
             else:
-                print "Error: unknown parameter: " + sys.argv[iter]
+                print("Error: unknown parameter: " + sys.argv[iter])
                 sys.exit(0)
             iter = iter + 1
 

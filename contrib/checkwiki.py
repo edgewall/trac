@@ -20,6 +20,8 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
+from __future__ import print_function
+
 import httplib
 import re
 import sys
@@ -92,7 +94,7 @@ def get_page_from_file(prefix, pname):
         d = f.read()
         f.close()
     except Exception:
-        print "Missing page: %s" % pname
+        print("Missing page: %s" % pname)
     return d
 
 def get_page_from_web(prefix, pname):
@@ -100,7 +102,7 @@ def get_page_from_web(prefix, pname):
     rfile = "/wiki/%s%s?format=txt" % (prefix, pname)
     c = httplib.HTTPConnection(host)
     c.request("GET", rfile)
-    print "Getting", rfile
+    print("Getting", rfile)
     r = c.getresponse()
     d = r.read()
     if r.status == 200 and d:
@@ -108,7 +110,7 @@ def get_page_from_web(prefix, pname):
         f.write(d.replace('\r\n', '\n'))
         f.close()
     else:
-        print "Missing or empty page"
+        print("Missing or empty page")
     c.close()
     return d
 
@@ -131,17 +133,18 @@ def check_links(data):
         links = get_refs(data[p], [])
         for l in links:
             if l not in data.keys():
-                print "Broken link:  %s -> %s" % (p, l)
+                print("Broken link:  %s -> %s" % (p, l))
 
 if __name__ == '__main__':
     try:
         opts, args = getopt.getopt(sys.argv[1:], "dCp:")
     except getopt.GetoptError:
         # print help information and exit:
-        print "%s [-d] [-C] [-p prefix] [PAGE ...]" % sys.argv[0]
-        print "\t-d        -- Download pages from the main project wiki."
-        print "\t-C        -- Try to check links (currently broken)"
-        print "\t-p prefix -- When downloading, prepend 'prefix/' to the page."
+        print("%s [-d] [-C] [-p prefix] [PAGE ...]" % sys.argv[0])
+        print("\t-d        -- Download pages from the main project wiki.")
+        print("\t-C        -- Try to check links (currently broken)")
+        print("\t-p prefix -- When downloading, prepend 'prefix/' to the"
+              " page.")
         sys.exit()
     get_page = get_page_from_file
     prefix = ''

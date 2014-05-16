@@ -328,7 +328,7 @@ class NaivePopen:
 
     Example::
 
-      print Popen3('grep spam','\\n\\nhere spam\\n\\n').out
+      print(Popen3('grep spam','\\n\\nhere spam\\n\\n').out)
     """
     def __init__(self, command, input=None, capturestderr=None):
         outfile = tempfile.mktemp()

@@ -24,7 +24,7 @@ def main():
     'assigned' tickets to 'accepted'.
     """
     if len(sys.argv) != 2:
-        print "Usage: %s path_to_trac_environment" % sys.argv[0]
+        print("Usage: %s path_to_trac_environment" % sys.argv[0])
         sys.exit(1)
     tracdir = sys.argv[1]
     trac_env = trac.env.open_environment(tracdir)

@@ -22,6 +22,8 @@
 #
 # Make sure to make a backup of the Trac environment before running this!
 
+from __future__ import print_function
+
 import os
 import sys
 
@@ -38,8 +40,8 @@ priority_mapping = {
 
 def main():
     if len(sys.argv) < 2:
-        print >> sys.stderr, 'usage: %s /path/to/projenv' \
-                             % os.path.basename(sys.argv[0])
+        print("usage: %s /path/to/projenv" % os.path.basename(sys.argv[0]),
+              file=sys.stderr)
         sys.exit(2)
 
     env = open_environment(sys.argv[1])

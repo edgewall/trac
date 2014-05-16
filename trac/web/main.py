@@ -16,6 +16,8 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 #         Matthew Good <trac@matt-good.net>
 
+from __future__ import print_function
+
 import cgi
 import dircache
 import fnmatch
@@ -750,9 +752,9 @@ def get_environments(environ, warn=False):
         env_name = os.path.split(env_path)[1]
         if env_name in envs:
             if warn:
-                print >> sys.stderr, ('Warning: Ignoring project "%s" since '
-                                      'it conflicts with project "%s"'
-                                      % (env_path, envs[env_name]))
+                print('Warning: Ignoring project "%s" since it conflicts with'
+                      ' project "%s"' % (env_path, envs[env_name]),
+                      file=sys.stderr)
         else:
             envs[env_name] = env_path
     return envs

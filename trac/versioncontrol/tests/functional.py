@@ -334,7 +334,7 @@ def functionalSuite(suite=None):
         suite.addTest(RegressionTestTicket11584())
         suite.addTest(RegressionTestRev5877())
     else:
-        print "SKIP: versioncontrol/tests/functional.py (no svn bindings)"
+        print("SKIP: versioncontrol/tests/functional.py (no svn bindings)")
 
     return suite
 

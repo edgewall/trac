@@ -451,7 +451,7 @@ class UnicodeNameTestCase(unittest.TestCase):
 #        t = timeit.Timer("shortrev_test()",
 #                         "from __main__ import shortrev_test")
 #        usec_per_rev = (1000000 * t.timeit(number=iters)/len(revs))
-#        print "%.2f usec/rev" % usec_per_rev # Print instead of testing
+#        print("%.2f usec/rev" % usec_per_rev) # Print instead of testing
 
 #class GitMemoryUsageTestCase(unittest.TestCase):
 #    """Memory test. Not really a unit test.
@@ -479,18 +479,18 @@ class UnicodeNameTestCase(unittest.TestCase):
 #                    raise RuntimeError("failed to get memory stats")
 #
 #        else: # not linux2
-#            print "WARNING - meminfo.proc_statm() not available"
+#            print("WARNING - meminfo.proc_statm() not available")
 #            def proc_statm():
 #                return (0,)*7
 #
-#        print "statm =", proc_statm()
+#        print("statm =", proc_statm())
 #        __data_size = proc_statm()[5]
 #        __data_size_last = [__data_size]
 #
 #        def print_data_usage():
 #            __tmp = proc_statm()[5]
-#            print "DATA: %6d %+6d" % (__tmp - __data_size,
-#                                    __tmp - __data_size_last[0])
+#            print("DATA: %6d %+6d" % (__tmp - __data_size,
+#                                      __tmp - __data_size_last[0]))
 #            __data_size_last[0] = __tmp
 #
 #        print_data_usage()
@@ -499,46 +499,46 @@ class UnicodeNameTestCase(unittest.TestCase):
 #
 #        print_data_usage()
 #
-#        print "[%s]" % g.head()
-#        print g.ls_tree(g.head())
-#        print "--------------"
+#        print("[%s]" % g.head())
+#        print(g.ls_tree(g.head()))
+#        print("--------------")
 #        print_data_usage()
-#        print g.read_commit(g.head())
-#        print "--------------"
+#        print(g.read_commit(g.head()))
+#        print("--------------")
 #        print_data_usage()
 #        p = g.parents(g.head())
-#        print list(p)
-#        print "--------------"
-#        print list(g.children(list(p)[0]))
-#        print list(g.children(list(p)[0]))
-#        print "--------------"
-#        print g.get_commit_encoding()
-#        print "--------------"
-#        print g.get_branches()
-#        print "--------------"
-#        print g.hist_prev_revision(g.oldest_rev()), g.oldest_rev(), \
-#                                g.hist_next_revision(g.oldest_rev())
+#        print(list(p))
+#        print("--------------")
+#        print(list(g.children(list(p)[0])))
+#        print(list(g.children(list(p)[0])))
+#        print("--------------")
+#        print(g.get_commit_encoding())
+#        print("--------------")
+#        print(g.get_branches())
+#        print("--------------")
+#        print(g.hist_prev_revision(g.oldest_rev()), g.oldest_rev(),
+#                                   g.hist_next_revision(g.oldest_rev()))
 #        print_data_usage()
-#        print "--------------"
+#        print("--------------")
 #        p = g.youngest_rev()
-#        print g.hist_prev_revision(p), p, g.hist_next_revision(p)
-#        print "--------------"
+#        print(g.hist_prev_revision(p), p, g.hist_next_revision(p))
+#        print("--------------")
 #
 #        p = g.head()
 #        for i in range(-5, 5):
-#            print i, g.history_relative_rev(p, i)
+#            print(i, g.history_relative_rev(p, i))
 #
 #        # check for loops
 #        def check4loops(head):
-#            print "check4loops", head
+#            print("check4loops", head)
 #            seen = set([head])
 #            for _sha in g.children_recursive(head):
 #                if _sha in seen:
-#                    print "dupe detected :-/", _sha, len(seen)
+#                    print("dupe detected :-/", _sha, len(seen))
 #                seen.add(_sha)
 #            return seen
 #
-#        print len(check4loops(g.parents(g.head())[0]))
+#        print(len(check4loops(g.parents(g.head())[0])))
 #
 #        #p = g.head()
 #        #revs = [ g.history_relative_rev(p, i) for i in range(0,10) ]
@@ -546,30 +546,30 @@ class UnicodeNameTestCase(unittest.TestCase):
 #        revs = g.get_commits().keys()
 #        print_data_usage()
 #
-#        #print len(check4loops(g.oldest_rev()))
-#        #print len(list(g.children_recursive(g.oldest_rev())))
+#        #print(len(check4loops(g.oldest_rev())))
+#        #print(len(list(g.children_recursive(g.oldest_rev()))))
 #
 #        print_data_usage()
 #
 #        # perform typical trac operations:
 #
 #        if 1:
-#            print "--------------"
+#            print("--------------")
 #            rev = g.head()
 #            for mode, _type, sha, _size, name in g.ls_tree(rev):
 #                [last_rev] = g.history(rev, name, limit=1)
 #                s = g.get_obj_size(sha) if _type == 'blob' else 0
 #                msg = g.read_commit(last_rev)
 #
-#                print "%s %s %10d [%s]" % (_type, last_rev, s, name)
+#                print("%s %s %10d [%s]" % (_type, last_rev, s, name))
 #
-#        print "allocating 2nd instance"
+#        print("allocating 2nd instance")
 #        print_data_usage()
 #        g2 = Storage(path_to_repo, logging) # Need a git repository path here
 #        g2.head()
 #        print_data_usage()
 #
-#        print "allocating 3rd instance"
+#        print("allocating 3rd instance")
 #        g3 = Storage(path_to_repo, logging) # Need a git repository path here
 #        g3.head()
 #        print_data_usage()

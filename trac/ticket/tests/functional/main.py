@@ -2677,7 +2677,7 @@ def functionalSuite(suite=None):
     if ConfigObj:
         suite.addTest(RegressionTestTicket11176())
     else:
-        print "SKIP: RegressionTestTicket11176 (ConfigObj not installed)"
+        print("SKIP: RegressionTestTicket11176 (ConfigObj not installed)")
 
     return suite
 

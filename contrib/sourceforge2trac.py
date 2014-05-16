@@ -339,7 +339,8 @@ class ExportedProjectData(object):
 
             # tickets
             for tck in tr.tracker_items:
-                if type(tck) == str: print repr(tck)
+                if type(tck) == str:
+                    print(repr(tck))
                 self.tickets.append(tck)
                 if int(tck.priority) not in self.priorities:
                     self.priorities.append(int(tck.priority))
@@ -526,24 +527,25 @@ def importData(f, env, opt):
     components = dict(project.get_categories(noid=True)).items()
     components.sort()
     components = [x for x in components if x[0] in used_cat_names]
-    print "%d out of %d categories are used and will be converted to the following components:\n  %s" \
-        % (len(components), len(project.get_categories()), components)
-    print "..renaming component owners:"
+    print("%d out of %d categories are used and will be converted to the"
+          " following components:\n  %s"
+          % (len(components), len(project.get_categories()), components))
+    print("..renaming component owners:")
     for i,c in enumerate(components):
         if c[1] in user_map:
             components[i] = (c[0], user_map[c[1]])
-    print "  %s" % components
+    print("  %s" % components)
 
-    print "%d groups which will be converted to the following versions:\n  %s" \
-        % (len(project.groups), project.groups)
-    print "%d resolutions found :\n  %s" \
-        % (len(project.resolutions), project.resolutions)
+    print("%d groups which will be converted to the following versions:\n"
+          "  %s" % (len(project.groups), project.groups))
+    print("%d resolutions found :\n  %s"
+          % (len(project.resolutions), project.resolutions))
     resolutions = [(k,project.used_resolutions[k])
                    for k in project.used_resolutions]
     resolutions.sort(key=lambda x:int(x[0]))
-    print ".. only %d used will be imported:\n  %s" \
-        % (len(resolutions), resolutions)
-    print "Priorities used so far: %s" % project.priorities
+    print(".. only %d used will be imported:\n  %s"
+          % (len(resolutions), resolutions))
+    print("Priorities used so far: %s" % project.priorities)
     if not(raw_input("Continue [y/N]?").lower() == 'y'):
         sys.exit()
 
@@ -584,7 +586,7 @@ def importData(f, env, opt):
                                description=t.details,
                                keywords='sf' + t.id)
 
-            print 'Imported %s as #%d' % (t.id, i)
+            print("Imported %s as #%d" % (t.id, i))
 
             if len(t.attachments):
                 attmsg = "SourceForge attachments:\n"
@@ -600,8 +602,8 @@ def importData(f, env, opt):
                                       time=time.strftime("%Y-%m-%d %H:%M:%S",
                                               time.localtime(int(t.submit_date))),
                                       author=None, value=attmsg)
-                print '    added information about %d attachments for #%d' % \
-                        (len(t.attachments), i)
+                print("    added information about %d attachments for #%d"
+                      % (len(t.attachments), i))
 
             for msg in t.followups:
                 """
@@ -617,7 +619,8 @@ def importData(f, env, opt):
                                       author=msg.submitter,
                                       value=msg.details)
             if t.followups:
-                print '    imported %d messages for #%d' % (len(t.followups), i)
+                print("    imported %d messages for #%d"
+                      % (len(t.followups), i))
 
             # Import history
             """
@@ -686,8 +689,8 @@ def importData(f, env, opt):
                 if h.field_name != 'assigned_to':
                     revision[h.field_name] = h.old_value
             if changes:
-                print '    processed %d out of %d history items for #%d' % \
-                        (changes, len(t.history_entries), i)
+                print("    processed %d out of %d history items for #%d"
+                      % (changes, len(t.history_entries), i))
 
 
 def main():
@@ -701,10 +704,10 @@ def main():
     try:
         importData(open(args[0]), args[1], opt)
     except DBNotEmpty as e:
-        print 'Error:', e
+        print("Error: " + e)
         sys.exit(1)
 
-    print complete_msg
+    print(complete_msg)
 
 
 if __name__ == '__main__':

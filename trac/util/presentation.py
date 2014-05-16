@@ -70,7 +70,7 @@ def group(iterable, num, predicate=None):
 
     >>> items = [1, 2, 3, 4]
     >>> for item in group(items, 2):
-    ...     print item
+    ...     print(item)
     (1, 2)
     (3, 4)
 
@@ -79,7 +79,7 @@ def group(iterable, num, predicate=None):
 
     >>> items = [1, 2, 3, 4, 5]
     >>> for item in group(items, 2):
-    ...     print item
+    ...     print(item)
     (1, 2)
     (3, 4)
     (5, None)
@@ -91,7 +91,7 @@ def group(iterable, num, predicate=None):
 
     >>> items = [1, 2, 3, 4]
     >>> for item in group(items, 2, lambda x: x != 3):
-    ...     print item
+    ...     print(item)
     (1, 2)
     (3,)
     (4, None)

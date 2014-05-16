@@ -36,4 +36,4 @@ sql = [
 def do_upgrade(env, ver, cursor):
     for s in sql:
         cursor.execute(s)
-    print 'Please perform a "resync" after this upgrade.'
+    print('Please perform a "resync" after this upgrade.')

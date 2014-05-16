@@ -57,8 +57,8 @@ class PygmentsRendererTestCase(unittest.TestCase):
     def _test(self, expected_id, result):
         expected = unicode(self._expected(expected_id))
         result = unicode(result)
-        #print "\nE: " + repr(expected)
-        #print "\nR: " + repr(result)
+        #print("\nE: " + repr(expected))
+        #print("\nR: " + repr(result))
         expected, result = expected.splitlines(), result.splitlines()
         for exp, res in zip(expected, result):
             self.assertEqual(exp, res)
@@ -193,7 +193,7 @@ def suite():
     if have_pygments:
         suite.addTest(unittest.makeSuite(PygmentsRendererTestCase))
     else:
-        print 'SKIP: mimeview/tests/pygments (no pygments installed)'
+        print('SKIP: mimeview/tests/pygments (no pygments installed)')
     return suite
 
 if __name__ == '__main__':
