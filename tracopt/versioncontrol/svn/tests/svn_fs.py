@@ -1076,14 +1076,14 @@ def suite():
                               (SubversionRepositoryTestCase, test),
                               {'path': REPOS_PATH + scope})
             suite.addTest(unittest.makeSuite(
-                tc, 'test', suiteClass=SubversionRepositoryTestSetup))
+                tc, suiteClass=SubversionRepositoryTestSetup))
             tc = new.classobj('SvnCachedRepository' + test.__name__,
                               (SvnCachedRepositoryTestCase, test),
                               {'path': REPOS_PATH + scope})
             for skip in skipped.get(tc.__name__, []):
                 setattr(tc, skip, lambda self: None) # no skip, so we cheat...
             suite.addTest(unittest.makeSuite(
-                tc, 'test', suiteClass=SubversionRepositoryTestSetup))
+                tc, suiteClass=SubversionRepositoryTestSetup))
     else:
         print("SKIP: tracopt/versioncontrol/svn/tests/svn_fs.py (no svn "
               "bindings)")
