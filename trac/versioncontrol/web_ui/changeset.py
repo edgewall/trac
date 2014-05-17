@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2009 Edgewall Software
+# Copyright (C) 2003-2014 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2004-2006 Christopher Lenz <cmlenz@gmx.de>
 # Copyright (C) 2005-2006 Christian Boos <cboos@edgewall.org>
@@ -27,7 +27,7 @@ from StringIO import StringIO
 
 from genshi.builder import tag
 
-from trac.config import Option, BoolOption, IntOption
+from trac.config import BoolOption, IntOption, Option
 from trac.core import *
 from trac.mimeview.api import Mimeview
 from trac.perm import IPermissionRequestor
@@ -36,12 +36,12 @@ from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import as_bool, content_disposition, embedded_numbers, pathjoin
 from trac.util.datefmt import from_utimestamp, pretty_timedelta
-from trac.util.text import exception_to_unicode, to_unicode, \
-                           unicode_urlencode, shorten_line, CRLF
+from trac.util.text import CRLF, exception_to_unicode, shorten_line, \
+                           to_unicode, unicode_urlencode
 from trac.util.translation import _, ngettext
-from trac.versioncontrol.api import RepositoryManager, Changeset, Node, \
-                                    NoSuchChangeset
-from trac.versioncontrol.diff import get_diff_options, diff_blocks, \
+from trac.versioncontrol.api import Changeset, NoSuchChangeset, Node, \
+                                    RepositoryManager
+from trac.versioncontrol.diff import diff_blocks, get_diff_options, \
                                      unified_diff
 from trac.versioncontrol.web_ui.browser import BrowserModule
 from trac.versioncontrol.web_ui.util import render_zip
@@ -49,7 +49,7 @@ from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import (Chrome, INavigationContributor, add_ctxtnav,
                              add_link, add_script, add_stylesheet,
                              prevnext_nav, web_context)
-from trac.wiki import IWikiSyntaxProvider, WikiParser
+from trac.wiki.api import IWikiSyntaxProvider, WikiParser
 from trac.wiki.formatter import format_to
 
 
@@ -261,7 +261,7 @@ class ChangesetModule(Component):
         except NoSuchChangeset as e:
             raise ResourceNotFound(e.message, _('Invalid Changeset Number'))
 
-        if old_path == new_path and old == new: # revert to Changeset
+        if old_path == new_path and old == new:  # revert to Changeset
             old_path = old = None
 
         style, options, diff_data = get_diff_options(req)
@@ -270,9 +270,9 @@ class ChangesetModule(Component):
         # -- setup the `chgset` and `restricted` flags, see docstring above.
         chgset = not old and old_path is None
         if chgset:
-            restricted = new_path not in ('', '/') # (subset or not)
+            restricted = new_path not in ('', '/')  # (subset or not)
         else:
-            restricted = old_path == new_path # (same path or not)
+            restricted = old_path == new_path  # (same path or not)
 
         # -- redirect if changing the diff options or alias requested
         if 'update' in req.args or reponame != repos.reponame:
@@ -329,7 +329,7 @@ class ChangesetModule(Component):
 
         if format in ['diff', 'zip']:
             # choosing an appropriate filename
-            rpath = new_path.replace('/','_')
+            rpath = new_path.replace('/', '_')
             if chgset:
                 if restricted:
                     filename = 'changeset_%s_%s' % (rpath, new)
@@ -337,11 +337,10 @@ class ChangesetModule(Component):
                     filename = 'changeset_%s' % new
             else:
                 if restricted:
-                    filename = 'diff-%s-from-%s-to-%s' \
-                                  % (rpath, old, new)
+                    filename = 'diff-%s-from-%s-to-%s' % (rpath, old, new)
                 else:
                     filename = 'diff-from-%s-%s-to-%s-%s' \
-                               % (old_path.replace('/','_'), old, rpath, new)
+                               % (old_path.replace('/', '_'), old, rpath, new)
             if format == 'diff':
                 self._render_diff(req, filename, repos, data)
             elif format == 'zip':
@@ -387,7 +386,7 @@ class ChangesetModule(Component):
         browser = BrowserModule(self.env)
         reponame = repos.reponame or None
 
-        if chgset: # Changeset Mode (possibly restricted on a path)
+        if chgset:  # Changeset Mode (possibly restricted on a path)
             path, rev = data['new_path'], data['new_rev']
 
             # -- getting the change summary from the Changeset.get_changes
@@ -395,9 +394,9 @@ class ChangesetModule(Component):
                 for npath, kind, change, opath, orev in chgset.get_changes():
                     old_node = new_node = None
                     if (restricted and
-                        not (npath == path or                # same path
-                             npath.startswith(path + '/') or # npath is below
-                             path.startswith(npath + '/'))): # npath is above
+                        not (npath == path or                 # same path
+                             npath.startswith(path + '/') or  # npath is below
+                             path.startswith(npath + '/'))):  # npath is above
                         continue
                     if change != Changeset.ADD:
                         old_node = repos.get_node(opath, orev)
@@ -456,7 +455,7 @@ class ChangesetModule(Component):
                         if repos.has_node(path, next_rev):
                             next_href = req.href.changeset(next_rev, reponame,
                                                            path)
-                        else: # must be a 'D'elete or 'R'ename, show full cset
+                        else:  # must be 'D'elete or 'R'ename, show full cset
                             next_href = req.href.changeset(next_rev, reponame)
                 else:
                     add_link(req, 'last',
@@ -469,7 +468,7 @@ class ChangesetModule(Component):
                 if next_rev:
                     add_link(req, 'next', next_href,
                              _changeset_title(next_rev))
-        else: # Diff Mode
+        else:  # Diff Mode
             # -- getting the change summary from the Repository.get_changes
             def get_changes():
                 for d in repos.get_changes(
@@ -488,7 +487,7 @@ class ChangesetModule(Component):
             href = req.href.browser(
                 reponame, node.created_path, rev=node.created_rev,
                 annotate='blame' if annotated else None)
-            title = _('Show revision %(rev)s of this file in browser',
+            title = _("Show revision %(rev)s of this file in browser",
                       rev=display_rev(node.rev))
             return {'path': node.path, 'rev': node.rev,
                     'shortrev': repos.short_rev(node.rev),
@@ -510,7 +509,7 @@ class ChangesetModule(Component):
                 for k, v in sorted(old_props.items()):
                     new = old = diff = None
                     if not k in new_props:
-                        old = v # won't be displayed, no need to render it
+                        old = v  # won't be displayed, no need to render it
                     elif v != new_props[k]:
                         diff = self.render_property_diff(
                             k, old_ctx, old_props, new_ctx, new_props, options)
@@ -584,10 +583,10 @@ class ChangesetModule(Component):
                         and new_node.is_viewable(req.perm):
                     diff_files += 1
                     diff_bytes += _estimate_changes(old_node, new_node)
-        show_diffs = (not self.max_diff_files or \
+        show_diffs = (not self.max_diff_files or
                       0 < diff_files <= self.max_diff_files) and \
-                     (not self.max_diff_bytes or \
-                      diff_bytes <= self.max_diff_bytes or \
+                     (not self.max_diff_bytes or
+                      diff_bytes <= self.max_diff_bytes or
                       diff_files == 1)
 
         # XHR is used for blame support: display the changeset view without
@@ -627,7 +626,7 @@ class ChangesetModule(Component):
                         'new': new_node and node_info(new_node, annotated),
                         'props': props,
                         'diffs': diffs}
-                files.append(new_node.path if new_node else \
+                files.append(new_node.path if new_node else
                              old_node.path if old_node else '')
                 filestats[change] += 1
                 if change in Changeset.DIFF_CHANGES:
@@ -655,7 +654,7 @@ class ChangesetModule(Component):
                     info['hide_diff'] = True
             else:
                 info = None
-            changes.append(info) # the sequence should be immutable
+            changes.append(info)  # the sequence should be immutable
 
         data.update({'has_diffs': has_diffs, 'changes': changes, 'xhr': xhr,
                      'filestats': filestats, 'annotated': annotated,
@@ -663,7 +662,7 @@ class ChangesetModule(Component):
                      'location': self._get_parent_location(files),
                      'longcol': 'Revision', 'shortcol': 'r'})
 
-        if xhr: # render and return the content only
+        if xhr:  # render and return the content only
             stream = Chrome(self.env).render_template(req, 'changeset.html',
                                                       data, fragment=True)
             content = stream.select('//div[@id="content"]')
@@ -694,7 +693,7 @@ class ChangesetModule(Component):
                 continue
 
             new_content = old_content = ''
-            new_node_info = old_node_info = ('','')
+            new_node_info = old_node_info = ('', '')
 
             if old_node:
                 if not old_node.is_viewable(req.perm):
@@ -729,12 +728,12 @@ class ChangesetModule(Component):
                 options = data['diff']['options']
                 context = options.get('contextlines', 3)
                 if context < 0 or options.get('contextall'):
-                    context = 3 # FIXME: unified_diff bugs with context=None
+                    context = 3  # FIXME: unified_diff bugs with context=None
                 ignore_blank_lines = options.get('ignoreblanklines')
                 ignore_case = options.get('ignorecase')
                 ignore_space = options.get('ignorewhitespace')
                 if not old_node_info[0]:
-                    old_node_info = new_node_info # support for 'A'dd changes
+                    old_node_info = new_node_info  # support for 'A'dd changes
                 buf.write('Index: ' + new_path + CRLF)
                 buf.write('=' * 67 + CRLF)
                 buf.write('--- %s\t(revision %s)' % old_node_info + CRLF)
@@ -761,7 +760,6 @@ class ChangesetModule(Component):
                     change != Changeset.DELETE \
                     and new_node.is_viewable(req.perm):
                 yield new_node
-
 
     def title_for_diff(self, data):
         # TRANSLATOR: 'latest' (revision)
@@ -811,6 +809,7 @@ class ChangesetModule(Component):
         else:
             return '/'.join(os.path.commonprefix([f.split('/')
                                                   for f in files]))
+
     def _get_parent_location(self, files):
         """Only get a location when there are different files,
            otherwise return the empty string."""
@@ -865,7 +864,7 @@ class ChangesetModule(Component):
             elif show_files.isdigit():
                 show_files = int(show_files)
             else:
-                show_files = 0 # disabled
+                show_files = 0  # disabled
 
             if self.timeline_collapse:
                 collapse_changesets = lambda c: (c.author, c.message)
@@ -887,7 +886,7 @@ class ChangesetModule(Component):
                                 # uid can be seen in multiple repositories
                                 if uid in uids_seen:
                                     uids_seen[uid].append(repos.reponame)
-                                    continue # already viewable, simply append
+                                    continue  # already viewable, just append
                                 uids_seen[uid] = repos_for_uid
                             viewable_changesets.append((cset, cset_resource,
                                                         repos_for_uid))
@@ -927,7 +926,7 @@ class ChangesetModule(Component):
         elif field == 'description':
             if self.wiki_format_messages:
                 markup = ''
-                if self.timeline_long_messages: # override default flavor
+                if self.timeline_long_messages:  # override default flavor
                     context = context.child()
                     context.set_hints(wiki_flavor='html',
                                       preserve_newlines=True)
@@ -941,7 +940,8 @@ class ChangesetModule(Component):
                     for c, r, repos_for_c in changesets:
                         for chg in c.get_changes():
                             resource = c.resource.parent.child('source',
-                                                        chg[0] or '/', r.id)
+                                                               chg[0] or '/',
+                                                               r.id)
                             if not 'FILE_VIEW' in context.perm(resource):
                                 continue
                             filestats[chg[2]] += 1
@@ -962,15 +962,16 @@ class ChangesetModule(Component):
                     for c, r, repos_for_c in changesets:
                         for chg in c.get_changes():
                             resource = c.resource.parent.child('source',
-                                                        chg[0] or '/', r.id)
+                                                               chg[0] or '/',
+                                                               r.id)
                             if not 'FILE_VIEW' in context.perm(resource):
                                 continue
-                            if show_files > 0 and len(files) > show_files:
+                            if 0 < show_files < len(files):
                                 break
                             unique_files.add((chg[0], chg[2]))
                     files = [tag.li(tag.div(class_=mod), path or '/')
                              for path, mod in sorted(unique_files)]
-                    if show_files > 0 and len(files) > show_files:
+                    if 0 < show_files < len(files):
                         files = files[:show_files] + [tag.li(u'\u2026')]
                     markup = tag(tag.ul(files, class_="changes"), markup)
             if message:
@@ -1011,7 +1012,7 @@ class ChangesetModule(Component):
 
     # IWikiSyntaxProvider methods
 
-    CHANGESET_ID = r"(?:[0-9]+|[a-fA-F0-9]{8,})" # only "long enough" hexa ids
+    CHANGESET_ID = r"(?:[0-9]+|[a-fA-F0-9]{8,})"  # only "long enough" hex ids
 
     def get_wiki_syntax(self):
         yield (
@@ -1082,7 +1083,7 @@ class ChangesetModule(Component):
             if '@' in path:
                 return path.split('@', 1)
             else:
-                return (path, None)
+                return path, None
         if '//' in params:
             p1, p2 = params.split('//', 1)
             old, new = pathrev(p1), pathrev(p2)
@@ -1124,15 +1125,14 @@ class ChangesetModule(Component):
             sql, args = search_to_sql(db, ['rev', 'message', 'author'], terms)
             for id, rev, ts, author, log in db("""
                     SELECT repos, rev, time, author, message
-                    FROM revision WHERE """ + sql,
-                    args):
+                    FROM revision WHERE """ + sql, args):
                 try:
                     rev = int(rev)
                 except ValueError:
                     pass
                 repos = repositories.get(id)
                 if not repos:
-                    continue # revisions for a no longer active repository
+                    continue  # revisions for a no longer active repository
                 cset = repos.resource.child('changeset', rev)
                 if 'CHANGESET_VIEW' in req.perm(cset):
                     yield (req.href.changeset(rev, repos.reponame or None),

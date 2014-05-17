@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2006-2013 Edgewall Software
+# Copyright (C) 2006-2014 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -15,10 +15,12 @@ import unittest
 
 from trac.versioncontrol.web_ui.tests import wikisyntax
 
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(wikisyntax.suite())
     return suite
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2006-2013 Edgewall Software
+# Copyright (C) 2006-2014 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -418,7 +418,6 @@ export:/foo/bar.html#header
 """ # " (be Emacs friendly...)
 
 
-
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(CHANGESET_TEST_CASES, repository_setup,
@@ -429,6 +428,7 @@ def suite():
     suite.addTest(formatter.suite(SOURCE_TEST_CASES, repository_setup,
                                   file=__file__))
     return suite
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')
