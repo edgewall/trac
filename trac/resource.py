@@ -455,6 +455,7 @@ def resource_exists(env, resource):
         False
     """
     manager = ResourceSystem(env).get_resource_manager(resource.realm)
+    print manager
     if manager and hasattr(manager, 'resource_exists'):
         return manager.resource_exists(resource)
     elif resource.id is None:
