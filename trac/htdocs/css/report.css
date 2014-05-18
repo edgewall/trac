@@ -81,6 +81,18 @@ h2.report-result {
 }
 #report-descr { margin: 0 2em; font-size: 90% }
 #report-notfound { margin: 2em; font-size: 110% }
+
+#content.report input#title, #content.report textarea.trac-resizable {
+ -moz-box-sizing: border-box;
+ box-sizing: border-box;
+}
+#content.report input#title, #content.report div.trac-resizable,
+#content.report textarea.trac-resizable {
+ width: 100%;
+}
+#content.report.edit form {
+ max-width: 54em;
+}
 #content.report .field { margin: 1em 0; }
 #content.report .field label { padding-bottom: .3em; }
 

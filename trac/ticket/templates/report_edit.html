@@ -21,7 +21,7 @@
   </head>
 
   <body>
-    <div id="content" class="report">
+    <div id="content" class="report edit">
 
       <h1>${_('New Report') if action == 'new' else report.title}</h1>
       <form action="${href.report(report.id)}" method="post" id="edit_report">
@@ -46,7 +46,7 @@ $report.description</textarea>
             <label for="query" i18n:msg="">Query for Report: (can be either SQL or, if starting with <code>query:</code>,
               a <a tabindex="42" href="${href.wiki('TracQuery') + '#QueryLanguage'}">TracQuery</a> expression)
             </label><br />
-            <textarea id="query" name="query" class="trac-resizable" cols="85" rows="20">
+            <textarea id="query" name="query" class="trac-resizable" cols="78" rows="20">
 $report.sql</textarea>
           </div>
           <div class="buttons">
