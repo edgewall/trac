@@ -89,8 +89,12 @@ class LogModule(Component):
         reponame, repos, path = rm.get_repository_by_path(path)
 
         if not repos:
-            raise ResourceNotFound(_("Repository '%(repo)s' not found",
-                                   repo=reponame))
+            if path == '/':
+                raise TracError(_("No repository specified and no default"
+                                  " repository configured."))
+            else:
+                raise ResourceNotFound(_("Repository '%(repo)s' not found",
+                                       repo=reponame or path.strip('/')))
 
         if reponame != repos.reponame:  # Redirect alias
             qs = req.query_string
