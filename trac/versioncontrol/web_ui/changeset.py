@@ -252,13 +252,13 @@ class ChangesetModule(Component):
 
         # -- normalize and check for special case
         try:
-            new_path = repos.normalize_path(new_path)
-            old_path = repos.normalize_path(old_path or new_path)
+            new = repos.normalize_rev(new)
+            old = repos.normalize_rev(old or new)
         except NoSuchChangeset as e:
             raise ResourceNotFound(e.message, _("Invalid Changeset Number"))
-        new = repos.normalize_rev(new)
+        new_path = repos.normalize_path(new_path)
+        old_path = repos.normalize_path(old_path or new_path)
         full_new_path = '/' + pathjoin(repos.reponame, new_path)
-        old = repos.normalize_rev(old or new)
         full_old_path = '/' + pathjoin(repos.reponame, old_path)
 
         if old_path == new_path and old == new:  # revert to Changeset
