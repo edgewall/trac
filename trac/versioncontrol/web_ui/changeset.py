@@ -215,9 +215,9 @@ class ChangesetModule(Component):
         req.perm.require('CHANGESET_VIEW')
 
         # -- retrieve arguments
-        full_new_path = new_path = req.args.get('new_path')
+        new_path = req.args.get('new_path')
         new = req.args.get('new')
-        full_old_path = old_path = req.args.get('old_path')
+        old_path = req.args.get('old_path')
         old = req.args.get('old')
         reponame = req.args.get('reponame')
 
@@ -255,13 +255,13 @@ class ChangesetModule(Component):
         # -- normalize and check for special case
         try:
             new_path = repos.normalize_path(new_path)
-            new = repos.normalize_rev(new)
-            full_new_path = '/' + pathjoin(repos.reponame, new_path)
             old_path = repos.normalize_path(old_path or new_path)
-            old = repos.normalize_rev(old or new)
-            full_old_path = '/' + pathjoin(repos.reponame, old_path)
         except NoSuchChangeset, e:
-            raise ResourceNotFound(e.message, _('Invalid Changeset Number'))
+            raise ResourceNotFound(e.message, _("Invalid Changeset Number"))
+        new = repos.normalize_rev(new)
+        full_new_path = '/' + pathjoin(repos.reponame, new_path)
+        old = repos.normalize_rev(old or new)
+        full_old_path = '/' + pathjoin(repos.reponame, old_path)
 
         if old_path == new_path and old == new: # revert to Changeset
             old_path = old = None
