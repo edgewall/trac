@@ -94,7 +94,7 @@ class LogModule(Component):
                                   " repository configured."))
             else:
                 raise ResourceNotFound(_("Repository '%(repo)s' not found",
-                                       repo=reponame or path.strip('/')))
+                                         repo=reponame or path.strip('/')))
 
         if reponame != repos.reponame:  # Redirect alias
             qs = req.query_string
