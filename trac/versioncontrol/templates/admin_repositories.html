@@ -39,7 +39,8 @@
 
     <py:choose test="view">
       <form py:when="'detail'" py:with="info = repositories[reponame]" class="mod" id="trac-modrepos" method="post" action="">
-        <fieldset py:choose="" py:with="readonly = not info.editable or None">
+        <fieldset py:choose="" py:with="disabled = not info.editable and 'disabled' or None;
+                                        readonly = not info.editable and 'readonly' or None">
           <legend py:when="info.editable">Modify Repository:</legend>
           <legend py:otherwise="">View Repository:</legend>
           <p py:if="not info.editable" class="hint" i18n:msg=""><strong>Note:</strong>
@@ -64,7 +65,8 @@
             </py:otherwise>
           </py:choose>
           <div class="field">
-            <label><input type="checkbox" name="hidden" value="1" checked="${info.hidden or None}" disabled="$readonly"/>
+            <label><input type="checkbox" name="hidden" value="1" checked="${info.hidden or None}"
+                          disabled="${not info.editable or None}"/>
               Hide from repository index
             </label>
           </div>

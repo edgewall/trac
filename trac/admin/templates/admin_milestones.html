@@ -15,16 +15,17 @@
 
     <py:choose test="view">
       <form py:when="'detail'" class="mod" method="post" id="modifymilestone" action=""
-            py:with="readonly = 'MILESTONE_MODIFY' not in req.perm or None">
+            py:with="disabled = 'MILESTONE_MODIFY' not in req.perm and 'disabled' or None;
+                     readonly = 'MILESTONE_MODIFY' not in req.perm and 'readonly' or None">
         <fieldset>
           <legend>Modify Milestone:</legend>
           <div class="field">
-            <label>Name:<br /> <input type="text" name="name" value="$milestone.name" readonly="${readonly}"/></label>
+            <label>Name:<br /> <input type="text" name="name" value="$milestone.name" readonly="$readonly"/></label>
           </div>
           <div class="field">
             <label>Due:<br />
               <input type="text" id="duedate" name="duedate" size="${len(datetime_hint)}"
-                     value="${milestone.due and format_datetime(milestone.due)}" readonly="${readonly}"
+                     value="${milestone.due and format_datetime(milestone.due)}" readonly="$readonly"
                      title="${_('Format: %(datehint)s', datehint=datetime_hint)}"/>
               <em i18n:msg="datehint">Format: $datetime_hint</em>
             </label>
@@ -32,13 +33,13 @@
           <div class="field">
             <label>
               <input type="checkbox" id="completed" name="completed"
-                     checked="${milestone.completed or None}" disabled="${readonly}"/>
+                     checked="${milestone.completed or None}" disabled="$disabled" />
               Completed:<br />
             </label>
             <label>
               <input type="text" id="completeddate" name="completeddate"
                      size="${len(datetime_hint)}"
-                     value="${format_datetime(milestone.completed)}" readonly="${readonly}"
+                     value="${format_datetime(milestone.completed)}" readonly="$readonly"
                      title="${_('Format: %(datehint)s', datehint=datetime_hint)}"/>
               <em i18n:msg="datehint">Format: $datetime_hint</em>
             </label>
@@ -59,14 +60,14 @@
               </label>
               <p>
               <textarea id="description" name="description" class="wikitext trac-resizable"
-                        rows="6" cols="60" readonly="${readonly}">
+                        rows="6" cols="60" readonly="$readonly">
 ${milestone.description}</textarea>
               </p>
             </fieldset>
           </div>
           <div class="buttons">
             <input type="submit" name="cancel" value="${_('Cancel')}"/>
-            <input type="submit" name="save" value="${_('Save')}" disabled="${readonly}"/>
+            <input type="submit" name="save" value="${_('Save')}" disabled="$disabled"/>
           </div>
         </fieldset>
       </form>

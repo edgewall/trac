@@ -174,6 +174,28 @@ class RegressionTestTicket11346(FunctionalTwillTestCaseSetup):
         tc.notfind('@%d' % rev)
 
 
+class RegressionTestTicket11618(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11618
+        fix for malformed `readonly="True"` attribute in repository admin.
+        """
+        env = self._testenv.get_trac_environment()
+        env.config.set('repositories', 't11618.dir',
+                       self._testenv.repo_path_for_initenv())
+        env.config.save()
+        try:
+            self._tester.go_to_admin()
+            tc.follow(r'\bRepositories\b')
+            tc.url(self._tester.url + '/admin/versioncontrol/repository')
+            tc.follow(r'\bt11618\b')
+            tc.url(self._tester.url + '/admin/versioncontrol/repository/t11618')
+            tc.notfind(' readonly="True"')
+            tc.find(' readonly="readonly"')
+        finally:
+            env.config.remove('repositories', 't11618.dir')
+            env.config.save()
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional.testcases
@@ -189,6 +211,7 @@ def functionalSuite(suite=None):
             suite.addTest(RegressionTestTicket5819())
         suite.addTest(RegressionTestTicket11194())
         suite.addTest(RegressionTestTicket11346())
+        suite.addTest(RegressionTestTicket11618())
         suite.addTest(RegressionTestRev5877())
     else:
         print "SKIP: versioncontrol/tests/functional.py (no svn bindings)"
