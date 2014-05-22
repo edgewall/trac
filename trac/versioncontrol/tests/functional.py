@@ -183,6 +183,7 @@ class RegressionTestTicket11618(FunctionalTwillTestCaseSetup):
         env.config.set('repositories', 't11618.dir',
                        self._testenv.repo_path_for_initenv())
         env.config.save()
+        self._testenv.restart()
         try:
             self._tester.go_to_admin()
             tc.follow(r'\bRepositories\b')
@@ -194,6 +195,7 @@ class RegressionTestTicket11618(FunctionalTwillTestCaseSetup):
         finally:
             env.config.remove('repositories', 't11618.dir')
             env.config.save()
+            self._testenv.restart()
 
 
 def functionalSuite(suite=None):

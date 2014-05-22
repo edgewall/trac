@@ -1484,13 +1484,17 @@ class RegressionTestTicket11618(FunctionalTwillTestCaseSetup):
         self._tester.create_milestone(name)
         try:
             perm.grant_permission('user', 'TICKET_ADMIN')
+            env.config.touch()  # for permission change to take effect
+            self._tester.go_to_front()
             self._tester.logout()
             self._tester.login('user')
             tc.go(self._tester.url + "/admin/ticket/milestones/" + name)
+            tc.notfind('No administration panels available')
             tc.find(' readonly="readonly"')
             tc.notfind(' readonly="True"')
         finally:
             perm.revoke_permission('user', 'TICKET_ADMIN')
+            env.config.touch()
             self._tester.go_to_front()
             self._tester.logout()
             self._tester.login('admin')
