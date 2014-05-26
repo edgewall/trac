@@ -24,7 +24,7 @@ from genshi.builder import tag
 from trac.config import BoolOption, ListOption, Option
 from trac.core import *
 from trac.mimeview.api import IHTMLPreviewAnnotator, Mimeview, is_binary
-from trac.perm import IPermissionRequestor
+from trac.perm import IPermissionRequestor, PermissionError
 from trac.resource import Resource, ResourceNotFound
 from trac.util import as_bool, embedded_numbers
 from trac.util.datefmt import http_date, to_datetime, utc
@@ -295,7 +295,8 @@ class BrowserModule(Component):
 
     def get_navigation_items(self, req):
         rm = RepositoryManager(self.env)
-        if 'BROWSER_VIEW' in req.perm and rm.get_real_repositories():
+        if any(repos.is_viewable(req.perm) for repos
+                                           in rm.get_real_repositories()):
             yield ('mainnav', 'browser',
                    tag.a(_('Browse Source'), href=req.href.browser()))
 
@@ -326,8 +327,6 @@ class BrowserModule(Component):
             return True
 
     def process_request(self, req):
-        req.perm.require('BROWSER_VIEW')
-
         presel = req.args.get('preselected')
         if presel and (presel + '/').startswith(req.href.browser() + '/'):
             req.redirect(presel)
@@ -355,6 +354,8 @@ class BrowserModule(Component):
         if not repos and reponame:
             raise ResourceNotFound(_("Repository '%(repo)s' not found",
                                      repo=reponame))
+        if repos and not repos.is_viewable(req.perm):
+            raise PermissionError('BROWSER_VIEW', repos.resource, self.env)
 
         if reponame and reponame != repos.reponame: # Redirect alias
             qs = req.query_string
@@ -398,6 +399,9 @@ class BrowserModule(Component):
             repo_data = self._render_repository_index(
                                         context, all_repositories, order, desc)
         if node:
+            if not node.is_viewable(req.perm):
+                raise PermissionError('BROWSER_VIEW' if node.isdir else
+                                      'FILE_VIEW', node.resource, self.env)
             if node.isdir:
                 if format in ('zip',): # extension point here...
                     self._render_zip(req, context, repos, node, rev)
