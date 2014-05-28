@@ -1000,3 +1000,41 @@ A test.
 # $Rev$ is not substituted with no svn:keywords.
 
 
+Revision-number: 29
+Prop-content-length: 134
+Content-length: 134
+
+K 10
+svn:author
+V 5
+jomae
+K 8
+svn:date
+V 27
+2014-04-14T16:49:44.990695Z
+K 7
+svn:log
+V 34
+blame with urlencoded percent sign
+PROPS-END
+
+Node-path: branches/t10386
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 28
+Node-copyfrom-path: tête
+
+
+Node-path: branches/t10386/READ%25ME.txt
+Node-kind: file
+Node-action: add
+Node-copyfrom-rev: 28
+Node-copyfrom-path: tête/README3.txt
+Text-copy-source-md5: 211b820b566541dd49a1283d6476d89f
+Text-copy-source-sha1: 7e9f46800519d6ae305f44cc07bd7568be3c9d5c
+
+
+Node-path: branches/t10386/README3.txt
+Node-action: delete
+
+

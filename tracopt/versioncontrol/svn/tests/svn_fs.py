@@ -42,7 +42,7 @@ REPOS_PATH = None
 REPOS_NAME = 'repo'
 URL = 'svn://test'
 
-HEAD = 28
+HEAD = 29
 TETE = 26
 
 NATIVE_EOL = '\r\n' if os.name == 'nt' else '\n'
@@ -385,6 +385,10 @@ En r\xe9sum\xe9 ... \xe7a marche.
 
     if os.name != 'nt':
         del test_get_annotations_lower_drive_letter
+
+    def test_get_annotations_with_urlencoded_percent_sign(self):
+        node = self.repos.get_node(u'/branches/t10386/READ%25ME.txt')
+        self.assertEqual([14], node.get_annotations())
 
     # Revision Log / node history
 
