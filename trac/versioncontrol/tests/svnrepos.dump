@@ -16,10 +16,6 @@ Revision-number: 1
 Prop-content-length: 124
 Content-length: 124
 
-K 7
-svn:log
-V 25
-Initial directory layout.
 K 10
 svn:author
 V 4
@@ -28,6 +24,10 @@ K 8
 svn:date
 V 27
 2005-04-01T10:00:52.353248Z
+K 7
+svn:log
+V 25
+Initial directory layout.
 PROPS-END
 
 Node-path: branches
@@ -61,10 +61,6 @@ Revision-number: 2
 Prop-content-length: 112
 Content-length: 112
 
-K 7
-svn:log
-V 13
-Added README.
 K 10
 svn:author
 V 4
@@ -73,6 +69,10 @@ K 8
 svn:date
 V 27
 2005-04-01T13:12:18.216267Z
+K 7
+svn:log
+V 13
+Added README.
 PROPS-END
 
 Node-path: tête/README.txt
@@ -92,11 +92,6 @@ Revision-number: 3
 Prop-content-length: 113
 Content-length: 113
 
-K 7
-svn:log
-V 14
-Fixed README.
-
 K 10
 svn:author
 V 4
@@ -105,6 +100,11 @@ K 8
 svn:date
 V 27
 2005-04-01T13:24:58.234643Z
+K 7
+svn:log
+V 14
+Fixed README.
+
 PROPS-END
 
 Node-path: tête/README.txt
@@ -117,13 +117,13 @@ Text-content-sha1: 6aade8dde7d1b86b451b5d5f044a8ddcbab6b448
 Content-length: 83
 
 K 13
-svn:mime-type
-V 10
-text/plain
-K 13
 svn:eol-style
 V 6
 native
+K 13
+svn:mime-type
+V 10
+text/plain
 PROPS-END
 A test.
 
@@ -132,10 +132,6 @@ Revision-number: 4
 Prop-content-length: 116
 Content-length: 116
 
-K 7
-svn:log
-V 17
-More directories.
 K 10
 svn:author
 V 4
@@ -144,6 +140,10 @@ K 8
 svn:date
 V 27
 2005-04-01T15:42:35.450595Z
+K 7
+svn:log
+V 17
+More directories.
 PROPS-END
 
 Node-path: tête/dir1
@@ -177,10 +177,6 @@ Revision-number: 5
 Prop-content-length: 117
 Content-length: 117
 
-K 7
-svn:log
-V 18
-Moved directories.
 K 10
 svn:author
 V 4
@@ -189,6 +185,10 @@ K 8
 svn:date
 V 27
 2005-04-01T16:25:39.658099Z
+K 7
+svn:log
+V 18
+Moved directories.
 PROPS-END
 
 Node-path: tête/dir1/dir2
@@ -217,10 +217,6 @@ Revision-number: 6
 Prop-content-length: 118
 Content-length: 118
 
-K 7
-svn:log
-V 19
-More things to read
 K 10
 svn:author
 V 4
@@ -229,6 +225,10 @@ K 8
 svn:date
 V 27
 2005-04-01T18:56:46.985846Z
+K 7
+svn:log
+V 19
+More things to read
 PROPS-END
 
 Node-path: tête/README2.txt
@@ -244,10 +244,6 @@ Revision-number: 7
 Prop-content-length: 151
 Content-length: 151
 
-K 7
-svn:log
-V 42
-test the tag operation (copy of directory)
 K 10
 svn:author
 V 13
@@ -256,6 +252,10 @@ K 8
 svn:date
 V 27
 2005-04-14T15:06:20.717616Z
+K 7
+svn:log
+V 42
+test the tag operation (copy of directory)
 PROPS-END
 
 Node-path: tags/v1
@@ -269,10 +269,6 @@ Revision-number: 8
 Prop-content-length: 124
 Content-length: 124
 
-K 7
-svn:log
-V 15
-Fix stuff in v1
 K 10
 svn:author
 V 13
@@ -281,6 +277,10 @@ K 8
 svn:date
 V 27
 2005-04-22T08:57:33.499643Z
+K 7
+svn:log
+V 15
+Fix stuff in v1
 PROPS-END
 
 Node-path: branches/v1x
@@ -294,10 +294,6 @@ Revision-number: 9
 Prop-content-length: 127
 Content-length: 127
 
-K 7
-svn:log
-V 18
-Now that's the fix
 K 10
 svn:author
 V 13
@@ -306,6 +302,10 @@ K 8
 svn:date
 V 27
 2005-04-22T08:59:24.308979Z
+K 7
+svn:log
+V 18
+Now that's the fix
 PROPS-END
 
 Node-path: branches/v1x/README.txt
@@ -323,10 +323,6 @@ Revision-number: 10
 Prop-content-length: 141
 Content-length: 141
 
-K 7
-svn:log
-V 32
-Tagging v1.1 from the fix branch
 K 10
 svn:author
 V 13
@@ -335,6 +331,10 @@ K 8
 svn:date
 V 27
 2005-04-22T09:00:34.549980Z
+K 7
+svn:log
+V 32
+Tagging v1.1 from the fix branch
 PROPS-END
 
 Node-path: tags/v1.1
@@ -348,10 +348,6 @@ Revision-number: 11
 Prop-content-length: 191
 Content-length: 191
 
-K 7
-svn:log
-V 82
-''(a few months later)'' We don't need the fix branch anymore, 1.1 is super-stable
 K 10
 svn:author
 V 13
@@ -360,6 +356,10 @@ K 8
 svn:date
 V 27
 2005-04-22T09:01:38.361737Z
+K 7
+svn:log
+V 82
+''(a few months later)'' We don't need the fix branch anymore, 1.1 is super-stable
 PROPS-END
 
 Node-path: branches/v1x
@@ -370,10 +370,6 @@ Revision-number: 12
 Prop-content-length: 166
 Content-length: 166
 
-K 7
-svn:log
-V 57
-''(a few years later)'' Argh... v1.1 was buggy, after all
 K 10
 svn:author
 V 13
@@ -382,6 +378,10 @@ K 8
 svn:date
 V 27
 2005-04-22T09:06:37.011174Z
+K 7
+svn:log
+V 57
+''(a few years later)'' Argh... v1.1 was buggy, after all
 PROPS-END
 
 Node-path: branches/v1x
@@ -395,10 +395,6 @@ Revision-number: 13
 Prop-content-length: 143
 Content-length: 143
 
-K 7
-svn:log
-V 43
-Setting property on the repository_dir root
 K 10
 svn:author
 V 5
@@ -407,6 +403,10 @@ K 8
 svn:date
 V 27
 2005-11-17T15:13:16.197772Z
+K 7
+svn:log
+V 43
+Setting property on the repository_dir root
 PROPS-END
 
 Node-path: 
@@ -441,10 +441,6 @@ Revision-number: 14
 Prop-content-length: 119
 Content-length: 119
 
-K 7
-svn:log
-V 19
-Testing rename+edit
 K 10
 svn:author
 V 5
@@ -453,6 +449,10 @@ K 8
 svn:date
 V 27
 2005-11-30T08:47:03.467814Z
+K 7
+svn:log
+V 19
+Testing rename+edit
 PROPS-END
 
 Node-path: tête/README3.txt
@@ -478,10 +478,6 @@ Revision-number: 15
 Prop-content-length: 162
 Content-length: 162
 
-K 7
-svn:log
-V 62
-Removing original file, just before committing the wc->wc copy
 K 10
 svn:author
 V 5
@@ -490,6 +486,10 @@ K 8
 svn:date
 V 27
 2005-12-06T12:47:36.271020Z
+K 7
+svn:log
+V 62
+Removing original file, just before committing the wc->wc copy
 PROPS-END
 
 Node-path: tags/v1.1/README2.txt
@@ -500,10 +500,6 @@ Revision-number: 16
 Prop-content-length: 138
 Content-length: 138
 
-K 7
-svn:log
-V 38
-Committing wc->wc copy + local changes
 K 10
 svn:author
 V 5
@@ -512,6 +508,10 @@ K 8
 svn:date
 V 27
 2005-12-06T12:47:51.122376Z
+K 7
+svn:log
+V 38
+Committing wc->wc copy + local changes
 PROPS-END
 
 Node-path: branches/v2
@@ -536,10 +536,6 @@ Revision-number: 17
 Prop-content-length: 139
 Content-length: 139
 
-K 7
-svn:log
-V 39
-Test des caractères accentués (cp437)
 K 10
 svn:author
 V 5
@@ -548,6 +544,10 @@ K 8
 svn:date
 V 27
 2006-03-31T12:30:25.421875Z
+K 7
+svn:log
+V 39
+Test des caractères accentués (cp437)
 PROPS-END
 
 Node-path: tête/Résumé.txt
@@ -566,10 +566,6 @@ Revision-number: 18
 Prop-content-length: 124
 Content-length: 124
 
-K 7
-svn:log
-V 24
-Prepare for fancy rename
 K 10
 svn:author
 V 5
@@ -578,6 +574,10 @@ K 8
 svn:date
 V 27
 2006-09-27T10:40:38.671875Z
+K 7
+svn:log
+V 24
+Prepare for fancy rename
 PROPS-END
 
 Node-path: tête/Xprimary_proc
@@ -606,10 +606,6 @@ Revision-number: 19
 Prop-content-length: 145
 Content-length: 145
 
-K 7
-svn:log
-V 45
-Fancy copy+rename resulting in double delete.
 K 10
 svn:author
 V 5
@@ -618,6 +614,10 @@ K 8
 svn:date
 V 27
 2006-09-27T10:41:27.484375Z
+K 7
+svn:log
+V 45
+Fancy copy+rename resulting in double delete.
 PROPS-END
 
 Node-path: tête/mpp_proc
@@ -650,11 +650,6 @@ Revision-number: 20
 Prop-content-length: 132
 Content-length: 132
 
-K 7
-svn:log
-V 20
-Chez moi ça marche
-
 K 10
 svn:author
 V 16
@@ -663,6 +658,11 @@ K 8
 svn:date
 V 27
 2006-12-04T10:47:24.015625Z
+K 7
+svn:log
+V 20
+Chez moi ça marche
+
 PROPS-END
 
 Node-path: tête/Résumé.txt
@@ -680,10 +680,6 @@ Revision-number: 21
 Prop-content-length: 139
 Content-length: 139
 
-K 7
-svn:log
-V 39
-copy from outside of the scope + delete
 K 10
 svn:author
 V 5
@@ -692,6 +688,10 @@ K 8
 svn:date
 V 27
 2007-04-30T17:45:26.234375Z
+K 7
+svn:log
+V 39
+copy from outside of the scope + delete
 PROPS-END
 
 Node-path: tête/v2
@@ -713,10 +713,6 @@ Revision-number: 22
 Prop-content-length: 130
 Content-length: 130
 
-K 7
-svn:log
-V 30
-test delete after copy (#4900)
 K 10
 svn:author
 V 5
@@ -725,6 +721,10 @@ K 8
 svn:date
 V 27
 2010-02-26T14:48:19.377000Z
+K 7
+svn:log
+V 30
+test delete after copy (#4900)
 PROPS-END
 
 Node-path: branches/v3
@@ -743,6 +743,44 @@ Node-action: delete
 
 
 Node-path: branches/v3/mpp_proc
+Node-action: delete
+
+
+Revision-number: 23
+Prop-content-length: 134
+Content-length: 134
+
+K 10
+svn:author
+V 5
+jomae
+K 8
+svn:date
+V 27
+2014-04-14T16:49:44.983454Z
+K 7
+svn:log
+V 34
+blame with urlencoded percent sign
+PROPS-END
+
+Node-path: branches/t10386
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 22
+Node-copyfrom-path: tête
+
+
+Node-path: branches/t10386/READ%25ME.txt
+Node-kind: file
+Node-action: add
+Node-copyfrom-rev: 22
+Node-copyfrom-path: tête/README3.txt
+Text-copy-source-md5: 211b820b566541dd49a1283d6476d89f
+Text-copy-source-sha1: 7e9f46800519d6ae305f44cc07bd7568be3c9d5c
+
+
+Node-path: branches/t10386/README3.txt
 Node-action: delete
 
 

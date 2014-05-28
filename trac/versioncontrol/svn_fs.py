@@ -46,6 +46,7 @@ Warning:
 import os.path
 import weakref
 import posixpath
+from urllib import quote
 
 from trac.config import ListOption
 from trac.core import *
@@ -368,7 +369,8 @@ class SubversionRepository(Repository):
         assert self.scope[0] == '/'
         # we keep root_path_utf8 for  RA 
         ra_prefix = os.name == 'nt' and 'file:///' or 'file://'
-        self.ra_url_utf8 = _svn_uri_canonicalize(ra_prefix + root_path_utf8)
+        self.ra_url_utf8 = _svn_uri_canonicalize(ra_prefix +
+                                                 quote(root_path_utf8))
         self.clear()
 
     def clear(self, youngest_rev=None):
@@ -773,7 +775,7 @@ class SubversionNode(Node):
                 rev = _svn_rev(self.rev)
                 start = _svn_rev(0)
                 file_url_utf8 = posixpath.join(self.repos.ra_url_utf8,
-                                               self._scoped_path_utf8)
+                                               quote(self._scoped_path_utf8))
                 # svn_client_blame2() requires a canonical uri since
                 # Subversion 1.7 (#11167)
                 file_url_utf8 = _svn_uri_canonicalize(file_url_utf8)

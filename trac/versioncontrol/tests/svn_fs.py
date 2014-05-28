@@ -42,7 +42,7 @@ from trac.versioncontrol import svn_fs
 REPOS_PATH = os.path.join(tempfile.gettempdir(), 'trac-svnrepos')
 REPOS_NAME = 'repo'
 
-HEAD = 22
+HEAD = 23
 TETE = 21
 
 
@@ -249,6 +249,10 @@ class NormalTests(object):
 
     if os.name != 'nt':
         del test_get_annotations_lower_drive_letter
+
+    def test_get_annotations_with_urlencoded_percent_sign(self):
+        node = self.repos.get_node(u'/branches/t10386/READ%25ME.txt')
+        self.assertEqual([14], node.get_annotations())
 
     # Revision Log / node history 
 
