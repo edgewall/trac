@@ -1054,6 +1054,45 @@ class SvnCachedRepositoryTestCase(unittest.TestCase):
         RepositoryManager(self.env).reload_repositories()
 
 
+class SubversionConnectorTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.repos_path = tempfile.mkdtemp(prefix='trac-svnrepos-')
+        self.dbprovider = DbRepositoryProvider(self.env)
+        pool = core.svn_pool_create(None)
+        repos.svn_repos_create(self.repos_path, '', '', None, None, pool)
+        self.dbprovider.add_repository(REPOS_NAME, self.repos_path, 'svn')
+
+    def tearDown(self):
+        self.env.reset_db()
+        # clear cached repositories to avoid TypeError on termination (#11505)
+        RepositoryManager(self.env).reload_repositories()
+
+    def _svn_version_from_system_info(self):
+        svn_version = None
+        for name, version in self.env.get_systeminfo():
+            if name == 'Subversion':
+                svn_version = version
+        return svn_version
+
+    def test_get_system_info_repository_not_initialized(self):
+        # SubversionConnector is not a required component when there are no
+        # Subversion repositories configured, and the Subversion version is
+        # not returned in system info.
+        self.assertFalse(svn_fs.SubversionConnector(self.env).required)
+        self.assertIsNone(self._svn_version_from_system_info())
+
+    def test_get_system_info_repository_initialized(self):
+        # SubversionConnector is a required component when there are
+        # Subversion repositories configured, and the Subversion version is
+        # returned in system info.
+        RepositoryManager(self.env).get_repository(REPOS_NAME)
+
+        self.assertTrue(svn_fs.SubversionConnector(self.env).required)
+        self.assertIsNotNone(self._svn_version_from_system_info())
+
+
 def suite():
     global REPOS_PATH
     suite = unittest.TestSuite()
@@ -1088,6 +1127,7 @@ def suite():
                 setattr(tc, skip, lambda self: None) # no skip, so we cheat...
             suite.addTest(unittest.makeSuite(
                 tc, suiteClass=SubversionRepositoryTestSetup))
+        suite.addTest(unittest.makeSuite(SubversionConnectorTestCase))
     else:
         print("SKIP: tracopt/versioncontrol/svn/tests/svn_fs.py (no svn "
               "bindings)")

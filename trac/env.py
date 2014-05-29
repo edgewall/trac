@@ -330,6 +330,8 @@ class Environment(Component, ComponentManager):
         from trac.util.datefmt import pytz
         if pytz is not None:
             yield 'pytz', pytz.__version__
+        if hasattr(self, 'webfrontend_version'):
+            yield self.webfrontend, self.webfrontend_version
 
     def component_activated(self, component):
         """Initialize additional member variables for components.

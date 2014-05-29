@@ -22,6 +22,7 @@ from genshi.builder import tag
 from trac.cache import cached
 from trac.config import BoolOption, IntOption, PathOption, Option
 from trac.core import *
+from trac.env import ISystemInfoProvider
 from trac.util import TracError, shorten_line
 from trac.util.datefmt import FixedOffset, to_timestamp, format_datetime
 from trac.util.text import to_unicode, exception_to_unicode
@@ -127,7 +128,9 @@ def _parse_user_time(s):
 
 class GitConnector(Component):
 
-    implements(IRepositoryConnector, IWikiSyntaxProvider)
+    implements(IRepositoryConnector, ISystemInfoProvider, IWikiSyntaxProvider)
+
+    required = False
 
     def __init__(self):
         self._version = None
@@ -139,12 +142,17 @@ class GitConnector(Component):
 
         if self._version:
             self.log.info("detected GIT version %s" % self._version['v_str'])
-            self.env.systeminfo.append(('GIT', self._version['v_str']))
             if not self._version['v_compatible']:
                 self.log.error("GIT version %s installed not compatible"
                                "(need >= %s)" %
                                (self._version['v_str'],
                                 self._version['v_min_str']))
+
+    # ISystemInfoProvider methods
+
+    def get_system_info(self):
+        if self.required:
+            yield 'GIT', self._version['v_str']
 
     # IWikiSyntaxProvider methods
 
@@ -287,6 +295,7 @@ class GitConnector(Component):
         else:
             self.log.debug("disabled CachedRepository for '%s'" % dir)
 
+        self.required = True
         return repos
 
 

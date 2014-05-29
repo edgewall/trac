@@ -22,6 +22,7 @@ from trac.core import *
 from trac.config import Option
 from trac.db.api import Connection, IDatabaseConnector, _parse_db_str
 from trac.db.util import ConnectionWrapper, IterableCursor
+from trac.env import ISystemInfoProvider
 from trac.util import get_pkginfo, lazy
 from trac.util.compat import close_fds
 from trac.util.text import empty, exception_to_unicode, to_unicode
@@ -67,14 +68,26 @@ class PostgreSQLConnector(Component):
     postgres://user[:password]@host[:port]/database[?schema=my_schema]
     }}}
     """
-    implements(IDatabaseConnector)
+    implements(IDatabaseConnector, ISystemInfoProvider)
+
+    required = False
 
     pg_dump_path = Option('trac', 'pg_dump_path', 'pg_dump',
         """Location of pg_dump for Postgres database backups""")
 
     def __init__(self):
-        self._version = None
+        self._version = has_psycopg and \
+                        get_pkginfo(psycopg).get('version',
+                                                 psycopg.__version__)
         self.error = None
+
+    # ISystemInfoProvider methods
+
+    def get_system_info(self):
+        if self.required:
+            yield 'psycopg2', self._version
+
+    # IDatabaseConnector methods
 
     def get_supported_schemes(self):
         if not has_psycopg:
@@ -83,14 +96,9 @@ class PostgreSQLConnector(Component):
 
     def get_connection(self, path, log=None, user=None, password=None,
                        host=None, port=None, params={}):
-        cnx = PostgreSQLConnection(path, log, user, password, host, port,
-                                   params)
-        if not self._version:
-            self._version = get_pkginfo(psycopg).get('version',
-                                                     psycopg.__version__)
-            self.env.systeminfo.append(('psycopg2', self._version))
-            self.required = True
-        return cnx
+        self.required = True
+        return PostgreSQLConnection(path, log, user, password, host, port,
+                                    params)
 
     def get_exceptions(self):
         return psycopg

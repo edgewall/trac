@@ -488,8 +488,7 @@ def dispatch_request(environ, start_response):
                     'trac.web.version': mod_wsgi_version})
             env.webfrontend = environ.get('trac.web.frontend')
             if env.webfrontend:
-                env.systeminfo.append((env.webfrontend,
-                                       environ['trac.web.version']))
+                env.webfrontend_version = environ['trac.web.version']
     except Exception as e:
         env_error = e
 

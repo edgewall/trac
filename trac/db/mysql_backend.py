@@ -26,7 +26,7 @@ from trac.config import Option
 from trac.db.api import Connection, DatabaseManager, IDatabaseConnector, \
                         _parse_db_str, get_column_names
 from trac.db.util import ConnectionWrapper, IterableCursor
-from trac.env import IEnvironmentSetupParticipant
+from trac.env import IEnvironmentSetupParticipant, ISystemInfoProvider
 from trac.util import as_int, get_pkginfo
 from trac.util.compat import close_fds
 from trac.util.text import exception_to_unicode, to_unicode
@@ -78,14 +78,29 @@ class MySQLConnector(Component):
      * `read_default_group`: Configuration group to use from the default file
      * `unix_socket`: Use a Unix socket at the given path to connect
     """
-    implements(IDatabaseConnector, IEnvironmentSetupParticipant)
+    implements(IDatabaseConnector, IEnvironmentSetupParticipant,
+               ISystemInfoProvider)
+
+    required = False
 
     mysqldump_path = Option('trac', 'mysqldump_path', 'mysqldump',
         """Location of mysqldump for MySQL database backups""")
 
     def __init__(self):
-        self._version = None
+        self._mysql_version = None
+        self._mysqldb_version = has_mysqldb and \
+                                get_pkginfo(MySQLdb).get('version',
+                                                         MySQLdb.__version__)
         self.error = None
+
+    # ISystemInfoProvider methods
+
+    def get_system_info(self):
+        if self.required:
+            yield 'MySQL', self._mysql_version
+            yield 'MySQLdb', self._mysqldb_version
+
+    # IDatabaseConnector methods
 
     def get_supported_schemes(self):
         if not has_mysqldb:
@@ -95,15 +110,11 @@ class MySQLConnector(Component):
     def get_connection(self, path, log=None, user=None, password=None,
                        host=None, port=None, params={}):
         cnx = MySQLConnection(path, log, user, password, host, port, params)
-        if not self._version:
-            self._version = get_pkginfo(MySQLdb).get('version',
-                                                     MySQLdb.__version__)
-            mysql_info = 'server: "%s", client: "%s", thread-safe: %s' % \
-                         (cnx.cnx.get_server_info(),
-                          MySQLdb.get_client_info(),
-                          MySQLdb.thread_safe())
-            self.env.systeminfo.extend([('MySQL', mysql_info),
-                                        ('MySQLdb', self._version)])
+        if not self.required:
+            self._mysql_version = \
+                'server: "%s", client: "%s", thread-safe: %s' \
+                % (cnx.cnx.get_server_info(), MySQLdb.get_client_info(),
+                   MySQLdb.thread_safe())
             self.required = True
         return cnx
 
