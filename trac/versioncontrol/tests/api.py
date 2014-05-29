@@ -111,6 +111,12 @@ class ResourceManagerTestCase(unittest.TestCase):
         self.assertEqual('/trac.cgi/browser/testrepo',
                          get_resource_url(self.env, res, self.env.href))
 
+        res = Resource('repository', '')  # default repository
+        self.assertEqual('Default repository',
+                         get_resource_description(self.env, res))
+        self.assertEqual('/trac.cgi/browser',
+                         get_resource_url(self.env, res, self.env.href))
+
 
 def suite():
     suite = unittest.TestSuite()

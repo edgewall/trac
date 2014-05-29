@@ -424,6 +424,8 @@ class RepositoryManager(Component):
             return _('%(kind)s %(id)s%(at_version)s%(in_repo)s',
                      kind=kind, id=id, at_version=version, in_repo=in_repo)
         elif resource.realm == 'repository':
+            if not resource.id:
+                return _("Default repository")
             return _("Repository %(repo)s", repo=resource.id)
 
     def get_resource_url(self, resource, href, **kwargs):
