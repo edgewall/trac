@@ -273,6 +273,9 @@ class Environment(Component, ComponentManager):
         ComponentManager.__init__(self)
 
         self.path = path
+        # System info should be provided through ISystemInfoProvider rather
+        # than appending to systeminfo, which may be a private in a future
+        # release.
         self.systeminfo = []
 
         if create:
