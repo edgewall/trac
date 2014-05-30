@@ -76,6 +76,13 @@ class CommitTicketUpdater(Component):
     command ticket:1 and ticket:2
     }}}
 
+    Using the long-form syntax allows a comment to be included in the
+    reference, e.g.:
+    {{{
+    command ticket:1#comment:1
+    command ticket:1#comment:description
+    }}}
+
     In addition, the ':' character can be omitted and issue or bug can be used
     instead of ticket.
 
@@ -131,7 +138,8 @@ class CommitTicketUpdater(Component):
         """Send ticket change notification when updating a ticket.""")
 
     ticket_prefix = '(?:#|(?:ticket|issue|bug)[: ]?)'
-    ticket_reference = ticket_prefix + '[0-9]+'
+    ticket_reference = ticket_prefix + \
+                       '[0-9]+(?:#comment:([0-9]+|description))?'
     ticket_command = (r'(?P<action>[A-Za-z]*)\s*.?\s*'
                       r'(?P<ticket>%s(?:(?:[, &]*|[ ]?and[ ]?)%s)*)' %
                       (ticket_reference, ticket_reference))

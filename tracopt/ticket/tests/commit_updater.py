@@ -82,6 +82,28 @@ In [changeset:"1/repos1"]:
 This is the first comment after an edit. Refs #1, #2.
 }}}""", self.tickets[1].get_change(cnum=1)['fields']['comment']['new'])
 
+    def test_commands_refs(self):
+        commands ={(1,): 'Refs #1', (2,): 'refs #2',
+                   (3,): 'refs ticket:3#comment:1',
+                   (4,5): 'refs ticket:4#comment:description and '
+                          'ticket:5#comment:1'}
+        self._make_tickets(5)
+        rev = 0
+
+        for tkts, cmd in commands.items():
+            rev += 1
+            message = "This is the first comment. %s." % cmd
+            chgset = Mock(repos=self.repos, rev=rev,
+                          message=message, author='joe',
+                          date=datetime(2001, 1, 1, 1, 1, 1, 0, utc))
+
+            self.updater.changeset_added(self.repos, chgset)
+            comment = self.updater.make_ticket_comment(self.repos, chgset)
+
+            for tkt in tkts:
+                change = self.tickets[tkt-1].get_change(cnum=1)
+                self.assertEqual(comment, change['fields']['comment']['new'])
+
 
 def suite():
     suite = unittest.TestSuite()
