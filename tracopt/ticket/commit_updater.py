@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2009 Edgewall Software
+# Copyright (C) 2009-2014 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -138,8 +138,8 @@ class CommitTicketUpdater(Component):
 
     @property
     def command_re(self):
-        (begin, end) = (re.escape(self.envelope[0:1]),
-                        re.escape(self.envelope[1:2]))
+        begin, end = (re.escape(self.envelope[0:1]),
+                      re.escape(self.envelope[1:2]))
         return re.compile(begin + self.ticket_command + end)
 
     ticket_re = re.compile(ticket_prefix + '([0-9]+)')
@@ -153,8 +153,7 @@ class CommitTicketUpdater(Component):
             return
         tickets = self._parse_message(changeset.message)
         comment = self.make_ticket_comment(repos, changeset)
-        self._update_tickets(tickets, changeset, comment,
-                             datetime.now(utc))
+        self._update_tickets(tickets, changeset, comment, datetime.now(utc))
 
     def changeset_modified(self, repos, changeset, old_changeset):
         if self._is_duplicate(changeset):
@@ -166,8 +165,7 @@ class CommitTicketUpdater(Component):
         tickets = dict(each for each in tickets.iteritems()
                        if each[0] not in old_tickets)
         comment = self.make_ticket_comment(repos, changeset)
-        self._update_tickets(tickets, changeset, comment,
-                             datetime.now(utc))
+        self._update_tickets(tickets, changeset, comment, datetime.now(utc))
 
     def _is_duplicate(self, changeset):
         # Avoid duplicate changes with multiple scoped repositories
@@ -251,6 +249,8 @@ In [changeset:"%s"]:
         return functions
 
     def _authname(self, changeset):
+        """Returns the author of the changeset, normalizing the casing if
+        [trac] ignore_author_case is true."""
         return changeset.author.lower() \
                if self.env.config.getbool('trac', 'ignore_auth_case') \
                else changeset.author
