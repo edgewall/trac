@@ -420,10 +420,7 @@ class ReportModule(Component):
                 'report_href': report_href,
                 }
 
-        res = None
-        with self.env.db_query as db:
-            res = self.execute_paginated_report(req, db, id, sql, args, limit,
-                                                offset)
+        res = self.execute_paginated_report(req, id, sql, args, limit, offset)
 
         if len(res) == 2:
             e, sql = res
@@ -649,20 +646,41 @@ class ReportModule(Component):
                     args=", ".join(missing_args)))
             return 'report_view.html', data, None
 
-    def execute_paginated_report(self, req, db, id, sql, args,
-                                 limit=0, offset=0):
+    def execute_paginated_report(self, req, *largs, **kwargs):
+        """
+        :param req: `Request` object.
+        :param db: Database connection object (optional and deprecated).
+        :param id: Integer id of the report.
+        :param sql: SQL query that generates the report.
+        :param args: SQL query arguments.
+        :param limit: Maximum number of results to return (optional).
+        :param offset: Offset to start of results (optional).
+
+        :deprecated: since 1.1.2, the `db` positional argument is deprecated
+                     and will be removed in 1.3.1.
+        """
+        from trac.db.util import ConnectionWrapper
+        if isinstance(largs[0], ConnectionWrapper):
+            return self._execute_paginated_report(req, *largs, **kwargs)
+        with self.env.db_query as db:
+            return self._execute_paginated_report(req, db, *largs, **kwargs)
+
+    def _execute_paginated_report(self, req, db, id, sql, args,
+                                  limit=0, offset=0):
+        """Deprecated and will be removed in Trac 1.3.1. Call
+        `execute_paginated_report` instead."""
         sql, args, missing_args = self.sql_sub_vars(sql, args)
         if not sql:
             raise TracError(_("Report {%(num)s} has no SQL query.", num=id))
         self.log.debug('Report {%d} with SQL "%s"', id, sql)
         self.log.debug('Request args: %r', req.args)
 
-        cursor = db.cursor()
-
         num_items = 0
         order_by = []
         limit_offset = None
         base_sql = sql.replace(SORT_COLUMN, '1').replace(LIMIT_OFFSET, '')
+
+        cursor = db.cursor()
         if id == -1 or limit == 0:
             sql = base_sql
         else:
