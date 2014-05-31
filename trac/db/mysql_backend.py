@@ -270,13 +270,14 @@ class MySQLConnector(Component):
     def environment_created(self):
         pass
 
-    def environment_needs_upgrade(self, db):
+    def environment_needs_upgrade(self):
         if getattr(self, 'required', False):
-            self._verify_table_status(db)
-            self._verify_variables(db)
+            with self.env.db_query as db:
+                self._verify_table_status(db)
+                self._verify_variables(db)
         return False
 
-    def upgrade_environment(self, db):
+    def upgrade_environment(self):
         pass
 
     UNSUPPORTED_ENGINES = ('MyISAM', 'EXAMPLE', 'ARCHIVE', 'CSV', 'ISAM')

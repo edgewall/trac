@@ -145,13 +145,13 @@ class ConfigurableTicketWorkflow(Component):
             self.config.save()
             self.actions = get_workflow_config(self.config)
 
-    def environment_needs_upgrade(self, db):
+    def environment_needs_upgrade(self):
         """The environment needs an upgrade if there is no [ticket-workflow]
         section in the config.
         """
         return not list(self.config.options('ticket-workflow'))
 
-    def upgrade_environment(self, db):
+    def upgrade_environment(self):
         """Insert a [ticket-workflow] section using the original-workflow"""
         load_workflow_config_snippet(self.config, 'original-workflow.ini')
         self.config.save()

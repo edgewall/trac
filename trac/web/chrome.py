@@ -589,10 +589,10 @@ class Chrome(Component):
 </html>
 """)
 
-    def environment_needs_upgrade(self, db):
+    def environment_needs_upgrade(self):
         return False
 
-    def upgrade_environment(self, db):
+    def upgrade_environment(self):
         pass
 
     # IRequestHandler methods
