@@ -651,7 +651,7 @@ class ReportModule(Component):
 
     def execute_paginated_report(self, req, db, id, sql, args,
                                  limit=0, offset=0):
-        sql, args, missing_args = self.sql_sub_vars(sql, args, db)
+        sql, args, missing_args = self.sql_sub_vars(sql, args)
         if not sql:
             raise TracError(_("Report {%(num)s} has no SQL query.", num=id))
         self.log.debug('Report {%d} with SQL "%s"', id, sql)
