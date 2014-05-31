@@ -97,7 +97,7 @@ class CachedRepository(Repository):
                       """, (to_utimestamp(cset.date), cset.author,
                             cset.message, self.id, srev))
             else:
-                self._insert_changeset(db, rev, cset)
+                self.insert_changeset(rev, cset)
         return old_cset
 
     @cached('_metadata_id')
@@ -231,7 +231,7 @@ class CachedRepository(Repository):
                     cset = self.repos.get_changeset(next_youngest)
                     try:
                         # steps 1. and 2.
-                        self._insert_changeset(db, next_youngest, cset)
+                        self.insert_changeset(next_youngest, cset)
                     except Exception as e: # *another* 1.1. resync attempt won
                         self.log.warning('Revision %s already cached: %r',
                                          next_youngest, e)
@@ -259,7 +259,16 @@ class CachedRepository(Repository):
                 if feedback:
                     feedback(youngest)
 
+    def insert_changeset(self, rev, cset):
+        """Create revision and node_change records for the given changeset
+        instance."""
+        with self.env.db_transaction as db:
+            self._insert_changeset(db, rev, cset)
+
     def _insert_changeset(self, db, rev, cset):
+        """:deprecated: since 1.1.2, use `insert_changeset` instead. Will
+                        be removed in 1.3.1.
+        """
         srev = self.db_rev(rev)
         # 1. Attempt to resync the 'revision' table.  In case of
         # concurrent syncs, only such insert into the `revision` table
