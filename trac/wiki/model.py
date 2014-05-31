@@ -30,16 +30,13 @@ class WikiPage(object):
 
     realm = 'wiki'
 
-    def __init__(self, env, name=None, version=None, db=None):
+    def __init__(self, env, name=None, version=None):
         """Create a new page object or retrieves an existing page.
 
         :param env: an `Environment` object.
         :param name: the page name or a `Resource` object.
         :param version: the page version. The value takes precedence over the
                         `Resource` version when both are specified.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         self.env = env
         if version:
@@ -61,7 +58,7 @@ class WikiPage(object):
 
         self.name = name
         if name:
-            self._fetch(name, version, db)
+            self._fetch(name, version)
         else:
             self.version = 0
             self.text = self.comment = self.author = ''
@@ -70,7 +67,7 @@ class WikiPage(object):
         self.old_text = self.text
         self.old_readonly = self.readonly
 
-    def _fetch(self, name, version=None, db=None):
+    def _fetch(self, name, version=None):
         if version is not None:
             sql = """SELECT version, time, author, text, comment, readonly
                      FROM wiki WHERE name=%s AND version=%s"""
@@ -96,11 +93,8 @@ class WikiPage(object):
 
     exists = property(lambda self: self.version > 0)
 
-    def delete(self, version=None, db=None):
+    def delete(self, version=None):
         """Delete one or all versions of a page.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         if not self.exists:
             raise TracError(_("Cannot delete non-existent page"))
@@ -136,11 +130,8 @@ class WikiPage(object):
                 if hasattr(listener, 'wiki_page_version_deleted'):
                     listener.wiki_page_version_deleted(self)
 
-    def save(self, author, comment, remote_addr, t=None, db=None):
+    def save(self, author, comment, remote_addr, t=None):
         """Save a new version of a page.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         if not validate_page_name(self.name):
             raise TracError(_("Invalid Wiki page name '%(name)s'",
@@ -216,11 +207,8 @@ class WikiPage(object):
             if hasattr(listener, 'wiki_page_renamed'):
                 listener.wiki_page_renamed(self, old_name)
 
-    def get_history(self, db=None):
+    def get_history(self):
         """Retrieve the edit history of a wiki page.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         for version, ts, author, comment, ipnr in self.env.db_query("""
                 SELECT version, time, author, comment, ipnr FROM wiki

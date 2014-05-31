@@ -257,10 +257,10 @@ class WikiModule(Component):
             if version and old_version and version > old_version:
                 # delete from `old_version` exclusive to `version` inclusive:
                 for v in range(old_version, version):
-                    page.delete(v + 1, db)
+                    page.delete(v + 1)
             else:
                 # only delete that `version`, or the whole page if `None`
-                page.delete(version, db)
+                page.delete(version)
 
         if not page.exists:
             add_notice(req, _("The page %(name)s has been deleted.",
@@ -306,7 +306,7 @@ class WikiModule(Component):
         with self.env.db_transaction as db:
             page.rename(new_name)
             if redirect:
-                redirection = WikiPage(self.env, old_name, db=db)
+                redirection = WikiPage(self.env, old_name)
                 redirection.text = _('See [wiki:"%(name)s"].', name=new_name)
                 author = get_reporter_id(req)
                 comment = u'[wiki:"%s@%d" %s] \u2192 [wiki:"%s"].' % (

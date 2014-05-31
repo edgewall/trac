@@ -124,13 +124,13 @@ class InterWikiMap(Component):
             del self.interwiki_map
 
     @cached
-    def interwiki_map(self, db):
+    def interwiki_map(self):
         """Map from upper-cased namespaces to (namespace, prefix, title)
         values.
         """
         from trac.wiki.model import WikiPage
         map = {}
-        content = WikiPage(self.env, InterWikiMap._page_name, db=db).text
+        content = WikiPage(self.env, InterWikiMap._page_name).text
         in_map = False
         for line in content.split('\n'):
             if in_map:

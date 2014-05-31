@@ -121,7 +121,7 @@ class Attachment(object):
     realm = 'attachment'
 
     def __init__(self, env, parent_realm_or_attachment_resource,
-                 parent_id=None, filename=None, db=None):
+                 parent_id=None, filename=None):
         if isinstance(parent_realm_or_attachment_resource, Resource):
             self.resource = parent_realm_or_attachment_resource
         else:
@@ -209,13 +209,9 @@ class Attachment(object):
     def title(self):
         return '%s:%s: %s' % (self.parent_realm, self.parent_id, self.filename)
 
-    def delete(self, db=None):
+    def delete(self):
         """Delete the attachment, both the record in the database and
         the file itself.
-
-        .. versionchanged :: 1.0
-           the `db` parameter is no longer needed
-           (will be removed in version 1.1.1)
         """
         assert self.filename, "Cannot delete non-existent attachment"
 
@@ -289,12 +285,8 @@ class Attachment(object):
             if hasattr(listener, 'attachment_reparented'):
                 listener.attachment_reparented(self, old_realm, old_id)
 
-    def insert(self, filename, fileobj, size, t=None, db=None):
+    def insert(self, filename, fileobj, size, t=None):
         """Create a new Attachment record and save the file content.
-
-        .. versionchanged :: 1.0
-           the `db` parameter is no longer needed
-           (will be removed in version 1.1.1)
         """
         self.size = int(size) if size else 0
         self.filename = None
@@ -341,13 +333,9 @@ class Attachment(object):
             listener.attachment_added(self)
 
     @classmethod
-    def select(cls, env, parent_realm, parent_id, db=None):
+    def select(cls, env, parent_realm, parent_id):
         """Iterator yielding all `Attachment` instances attached to
         resource identified by `parent_realm` and `parent_id`.
-
-        .. versionchanged :: 1.0
-           the `db` parameter is no longer needed
-           (will be removed in version 1.1.1)
         """
         for row in env.db_query("""
                 SELECT filename, description, size, time, author, ipnr
@@ -358,16 +346,12 @@ class Attachment(object):
             yield attachment
 
     @classmethod
-    def delete_all(cls, env, parent_realm, parent_id, db=None):
+    def delete_all(cls, env, parent_realm, parent_id):
         """Delete all attachments of a given resource.
-
-        .. versionchanged :: 1.0
-           the `db` parameter is no longer needed
-           (will be removed in version 1.1.1)
         """
         attachment_dir = None
         with env.db_transaction as db:
-            for attachment in cls.select(env, parent_realm, parent_id, db):
+            for attachment in cls.select(env, parent_realm, parent_id):
                 attachment_dir = os.path.dirname(attachment.path)
                 attachment.delete()
         if attachment_dir:
@@ -383,8 +367,7 @@ class Attachment(object):
         """Reparent all attachments of a given resource to another resource."""
         attachment_dir = None
         with env.db_transaction as db:
-            for attachment in list(cls.select(env, parent_realm, parent_id,
-                                              db)):
+            for attachment in list(cls.select(env, parent_realm, parent_id)):
                 attachment_dir = os.path.dirname(attachment.path)
                 attachment.reparent(new_realm, new_id)
         if attachment_dir:

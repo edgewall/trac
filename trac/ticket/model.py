@@ -85,11 +85,7 @@ class Ticket(object):
     time_created = property(lambda self: self.values.get('time'))
     time_changed = property(lambda self: self.values.get('changetime'))
 
-    def __init__(self, env, tkt_id=None, db=None, version=None):
-        """
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
-        """
+    def __init__(self, env, tkt_id=None, version=None):
         self.env = env
         if tkt_id is not None:
             tkt_id = int(tkt_id)
@@ -221,11 +217,8 @@ class Ticket(object):
             if name[9:] not in values:
                 self[name[9:]] = '0'
 
-    def insert(self, when=None, db=None):
+    def insert(self, when=None):
         """Add ticket to database.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         assert not self.exists, 'Cannot insert an existing ticket'
 
@@ -289,15 +282,13 @@ class Ticket(object):
 
         return self.id
 
-    def save_changes(self, author=None, comment=None, when=None, db=None,
-                     cnum='', replyto=None):
+    def save_changes(self, author=None, comment=None, when=None, cnum='',
+                     replyto=None):
         """
         Store ticket changes in the database. The ticket must already exist in
         the database.  Returns False if there were no changes to save, True
         otherwise.
 
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         :since 1.0: the `cnum` parameter is deprecated, and threading should
         be controlled with the `replyto` argument
         """
@@ -409,16 +400,13 @@ class Ticket(object):
                 values[field] = _datetime_to_db_str(value, is_custom_field)
         return values
 
-    def get_changelog(self, when=None, db=None):
+    def get_changelog(self, when=None):
         """Return the changelog as a list of tuples of the form
         (time, author, field, oldvalue, newvalue, permanent).
 
         While the other tuple elements are quite self-explanatory,
         the `permanent` flag is used to distinguish collateral changes
         that are not yet immutable (like attachments, currently).
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         sid = str(self.id)
         when_ts = to_utimestamp(when)
@@ -462,14 +450,11 @@ class Ticket(object):
                         oldvalue or '', newvalue or '', permanent))
         return log
 
-    def delete(self, db=None):
+    def delete(self):
         """Delete the ticket.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         with self.env.db_transaction as db:
-            Attachment.delete_all(self.env, self.realm, self.id, db)
+            Attachment.delete_all(self.env, self.realm, self.id)
             db("DELETE FROM ticket WHERE id=%s", (self.id,))
             db("DELETE FROM ticket_change WHERE ticket=%s", (self.id,))
             db("DELETE FROM ticket_custom WHERE ticket=%s", (self.id,))
@@ -477,11 +462,8 @@ class Ticket(object):
         for listener in TicketSystem(self.env).change_listeners:
             listener.ticket_deleted(self)
 
-    def get_change(self, cnum=None, cdate=None, db=None):
+    def get_change(self, cnum=None, cdate=None):
         """Return a ticket change by its number or date.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         if cdate is None:
             row = self._find_change(cnum)
@@ -612,12 +594,9 @@ class Ticket(object):
 
         self.values['changetime'] = when
 
-    def get_comment_history(self, cnum=None, cdate=None, db=None):
+    def get_comment_history(self, cnum=None, cdate=None):
         """Retrieve the edit history of a comment identified by its number or
         date.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         if cdate is None:
             row = self._find_change(cnum)
@@ -719,7 +698,7 @@ class AbstractEnum(object):
     type = None
     ticket_col = None
 
-    def __init__(self, env, name=None, db=None):
+    def __init__(self, env, name=None):
         if not self.ticket_col:
             self.ticket_col = self.type
         self.env = env
@@ -739,11 +718,8 @@ class AbstractEnum(object):
 
     exists = property(lambda self: self._old_value is not None)
 
-    def delete(self, db=None):
+    def delete(self):
         """Delete the enum value.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         assert self.exists, "Cannot delete non-existent %s" % self.type
 
@@ -764,11 +740,8 @@ class AbstractEnum(object):
         self.value = self._old_value = None
         self.name = self._old_name = None
 
-    def insert(self, db=None):
+    def insert(self):
         """Add a new enum value.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         assert not self.exists, "Cannot insert existing %s" % self.type
         self.name = simplify_whitespace(self.name)
@@ -789,11 +762,8 @@ class AbstractEnum(object):
         self._old_name = self.name
         self._old_value = self.value
 
-    def update(self, db=None):
+    def update(self):
         """Update the enum value.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         assert self.exists, "Cannot update non-existent %s" % self.type
         self.name = simplify_whitespace(self.name)
@@ -815,11 +785,7 @@ class AbstractEnum(object):
         self._old_value = self.value
 
     @classmethod
-    def select(cls, env, db=None):
-        """
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
-        """
+    def select(cls, env):
         with env.db_query as db:
             for name, value in db("""
                     SELECT name, value FROM enum WHERE type=%s ORDER BY
@@ -841,7 +807,7 @@ class Status(object):
         self.env = env
 
     @classmethod
-    def select(cls, env, db=None):
+    def select(cls, env):
         for state in TicketSystem(env).get_all_status():
             status = cls(env)
             status.name = state
@@ -861,11 +827,7 @@ class Severity(AbstractEnum):
 
 
 class Component(object):
-    def __init__(self, env, name=None, db=None):
-        """
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
-        """
+    def __init__(self, env, name=None):
         self.env = env
         self.name = self._old_name = self.owner = self.description = None
         if name:
@@ -882,11 +844,8 @@ class Component(object):
 
     exists = property(lambda self: self._old_name is not None)
 
-    def delete(self, db=None):
+    def delete(self):
         """Delete the component.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         assert self.exists, "Cannot delete non-existent component"
 
@@ -896,11 +855,8 @@ class Component(object):
             self.name = self._old_name = None
             TicketSystem(self.env).reset_ticket_fields()
 
-    def insert(self, db=None):
+    def insert(self):
         """Insert a new component.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         assert not self.exists, "Cannot insert existing component"
         self.name = simplify_whitespace(self.name)
@@ -915,11 +871,8 @@ class Component(object):
             self._old_name = self.name
             TicketSystem(self.env).reset_ticket_fields()
 
-    def update(self, db=None):
+    def update(self):
         """Update the component.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         assert self.exists, "Cannot update non-existent component"
         self.name = simplify_whitespace(self.name)
@@ -940,11 +893,7 @@ class Component(object):
             TicketSystem(self.env).reset_ticket_fields()
 
     @classmethod
-    def select(cls, env, db=None):
-        """
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
-        """
+    def select(cls, env):
         for name, owner, description in env.db_query("""
                 SELECT name, owner, description FROM component ORDER BY name
             """):
@@ -1014,7 +963,7 @@ class Milestone(object):
 
     realm = 'milestone'
 
-    def __init__(self, env, name=None, db=None):
+    def __init__(self, env, name=None):
         """Create an undefined milestone or fetch one from the database,
         if `name` is given.
 
@@ -1052,7 +1001,7 @@ class Milestone(object):
 
     _to_old = checkin #: compatibility with hacks < 0.12.5 (remove in 1.1.1)
 
-    def delete(self, retarget_to=None, author=None, db=None):
+    def delete(self, retarget_to=None, author=None):
         """Delete the milestone.
 
         :param author: the author of the change
@@ -1060,9 +1009,6 @@ class Milestone(object):
         :since 1.0.2: the `retarget_to` parameter is deprecated and tickets
         should moved to another milestone by calling `move_tickets` before
         `delete`.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         with self.env.db_transaction as db:
             self.env.log.info("Deleting milestone %s", self.name)
@@ -1076,11 +1022,8 @@ class Milestone(object):
         for listener in TicketSystem(self.env).milestone_change_listeners:
             listener.milestone_deleted(self)
 
-    def insert(self, db=None):
+    def insert(self):
         """Insert a new milestone.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         self.name = simplify_whitespace(self.name)
         if not self.name:
@@ -1098,11 +1041,8 @@ class Milestone(object):
         for listener in TicketSystem(self.env).milestone_change_listeners:
             listener.milestone_created(self)
 
-    def update(self, db=None, author=None):
+    def update(self, author=None):
         """Update the milestone.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         self.name = simplify_whitespace(self.name)
         if not self.name:
@@ -1170,11 +1110,7 @@ class Milestone(object):
         return tkt_ids
 
     @classmethod
-    def select(cls, env, include_completed=True, db=None):
-        """
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
-        """
+    def select(cls, env, include_completed=True):
         milestones = MilestoneCache(env).fetchall()
         if not include_completed:
             milestones = [m for m in milestones if m.completed is None]
@@ -1203,7 +1139,7 @@ def group_milestones(milestones, include_completed):
 
 
 class Version(object):
-    def __init__(self, env, name=None, db=None):
+    def __init__(self, env, name=None):
         self.env = env
         self.name = self._old_name = self.time = self.description = None
         if name:
@@ -1220,11 +1156,8 @@ class Version(object):
 
     exists = property(lambda self: self._old_name is not None)
 
-    def delete(self, db=None):
+    def delete(self):
         """Delete the version.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         assert self.exists, "Cannot delete non-existent version"
 
@@ -1234,11 +1167,8 @@ class Version(object):
             self.name = self._old_name = None
             TicketSystem(self.env).reset_ticket_fields()
 
-    def insert(self, db=None):
+    def insert(self):
         """Insert a new version.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         assert not self.exists, "Cannot insert existing version"
         self.name = simplify_whitespace(self.name)
@@ -1252,11 +1182,8 @@ class Version(object):
             self._old_name = self.name
             TicketSystem(self.env).reset_ticket_fields()
 
-    def update(self, db=None):
+    def update(self):
         """Update the version.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         assert self.exists, "Cannot update non-existent version"
         self.name = simplify_whitespace(self.name)
@@ -1277,11 +1204,7 @@ class Version(object):
             TicketSystem(self.env).reset_ticket_fields()
 
     @classmethod
-    def select(cls, env, db=None):
-        """
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
-        """
+    def select(cls, env):
         versions = []
         for name, time, description in env.db_query("""
                 SELECT name, time, description FROM version"""):

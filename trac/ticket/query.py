@@ -267,12 +267,9 @@ class Query(object):
             cols[-1] = self.order
         return cols
 
-    def count(self, req=None, db=None, cached_ids=None, authname=None,
-              tzinfo=None, locale=None):
+    def count(self, req=None, cached_ids=None, authname=None, tzinfo=None,
+              locale=None):
         """Get the number of matching tickets for the present query.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         sql, args = self.get_sql(req, cached_ids, authname, tzinfo, locale)
         return self._count(sql, args)
@@ -284,12 +281,9 @@ class Query(object):
         self.env.log.debug("Count results in Query: %d", cnt)
         return cnt
 
-    def execute(self, req=None, db=None, cached_ids=None, authname=None,
-                tzinfo=None, href=None, locale=None):
+    def execute(self, req=None, cached_ids=None, authname=None, tzinfo=None,
+                href=None, locale=None):
         """Retrieve the list of matching tickets.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         if req is not None:
             href = req.href

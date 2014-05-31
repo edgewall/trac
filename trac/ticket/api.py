@@ -305,7 +305,7 @@ class TicketSystem(Component):
         del self.fields
 
     @cached
-    def fields(self, db):
+    def fields(self):
         """Return the list of fields available for tickets."""
         from trac.ticket import model
 
@@ -337,7 +337,7 @@ class TicketSystem(Component):
                    ('severity', N_('Severity'), model.Severity),
                    ('resolution', N_('Resolution'), model.Resolution)]
         for name, label, cls in selects:
-            options = [val.name for val in cls.select(self.env, db=db)]
+            options = [val.name for val in cls.select(self.env)]
             if not options:
                 # Fields without possible values are treated as if they didn't
                 # exist
@@ -389,7 +389,7 @@ class TicketSystem(Component):
         return copy.deepcopy(self.custom_fields)
 
     @cached
-    def custom_fields(self, db):
+    def custom_fields(self):
         """Return the list of custom ticket fields available for tickets."""
         fields = TicketFieldList()
         config = self.ticket_custom_section

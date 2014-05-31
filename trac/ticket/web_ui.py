@@ -1835,12 +1835,9 @@ class TicketModule(Component):
                                 old=tag.em(old), new=tag.em(new))
         return rendered
 
-    def grouped_changelog_entries(self, ticket, db=None, when=None):
+    def grouped_changelog_entries(self, ticket, when=None):
         """Iterate on changelog entries, consolidating related changes
         in a `dict` object.
-
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
         """
         field_labels = TicketSystem(self.env).get_ticket_field_labels()
         changelog = ticket.get_changelog(when=when)

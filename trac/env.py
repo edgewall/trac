@@ -609,7 +609,7 @@ class Environment(Component, ComponentManager):
         # Create the database
         DatabaseManager(self).init_db()
 
-    def get_version(self, db=None, initial=False):
+    def get_version(self, initial=False):
         """Return the current version of the database.  If the
         optional argument `initial` is set to `True`, the version of
         the database used at the time of creation will be returned.
@@ -618,9 +618,6 @@ class Environment(Component, ComponentManager):
         return `False` which is "older" than any db version number.
 
         :since: 0.11
-
-        :since 1.0: deprecation warning: the `db` parameter is no
-                    longer used and will be removed in version 1.1.1
         """
         rows = self.db_query("""
                 SELECT value FROM system WHERE name='%sdatabase_version'
