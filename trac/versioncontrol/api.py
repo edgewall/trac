@@ -946,15 +946,20 @@ class Repository(object):
         """
         pass
 
-    @abstractmethod
+    # @abstractmethod
     def get_path_history(self, path, rev=None, limit=None):
         """Retrieve all the revisions containing this path.
 
         If given, `rev` is used as a starting point (i.e. no revision
         ''newer'' than `rev` should be returned).
         The result format should be the same as the one of Node.get_history()
+
+        :since 1.1.2: The method should be implemented in subclasses since
+                      it will be made abstract in Trac 1.3.1. A `TypeError`
+                      will result when instantiating classes that don't
+                      implement the method.
         """
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def normalize_path(self, path):
