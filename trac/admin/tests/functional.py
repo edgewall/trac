@@ -86,7 +86,7 @@ class TestDefaultHandler(FunctionalTwillTestCaseSetup):
 
         # Confirm default value.
         self._tester.go_to_admin("Basic Settings")
-        tc.find(r'<option value="WikiModule" selected="selected">'
+        tc.find(r'<option selected="selected" value="WikiModule">'
                 r'WikiModule</option>')
         tc.go(self._tester.url)
         tc.find("Welcome to Trac")
@@ -96,7 +96,7 @@ class TestDefaultHandler(FunctionalTwillTestCaseSetup):
         tc.formvalue('modbasic', 'default_handler', 'TimelineModule')
         tc.submit()
         tc.find("Your changes have been saved.")
-        tc.find(r'<option value="TimelineModule" selected="selected">'
+        tc.find(r'<option selected="selected" value="TimelineModule">'
                 r'TimelineModule</option>')
         tc.go(self._tester.url)
         tc.find(r'<h1>Timeline</h1>')

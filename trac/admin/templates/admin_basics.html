@@ -45,13 +45,15 @@ ${project.descr}</textarea>
         <div class="field">
           <label>Default handler:<br />
             <select name="default_handler">
-              <option py:if="default_handler not in handlers"
+              <option py:if="default_handler not in valid_default_handlers"
                       value="$default_handler">$default_handler</option>
-              <option py:for="handler in handlers" value="$handler"
-                      selected="${handler == default_handler or None}">$handler</option>
+              <option py:for="handler in valid_default_handlers"
+                      selected="${handler == default_handler or None}"
+                      value="$handler">$handler</option>
             </select>
           </label>
-          <span py:if="default_handler not in handlers" class="hint" i18n:msg="default_handler">
+          <span py:if="default_handler not in valid_default_handlers"
+                class="hint" i18n:msg="default_handler">
             $default_handler is not a valid IRequestHandler or is not enabled.
           </span>
         </div>
@@ -59,8 +61,9 @@ ${project.descr}</textarea>
           <label>Default timezone:<br />
             <select name="default_timezone">
               <option value="">Server's local time zone</option>
-              <option py:for="tzname in timezones" value="${tzname}"
-                      selected="${tzname == default_timezone or None}">${tzname}</option>
+              <option py:for="tzname in timezones"
+                      selected="${tzname == default_timezone or None}"
+                      value="${tzname}">${tzname}</option>
             </select>
           </label>
           <span py:if="not has_pytz" class="hint">
@@ -70,10 +73,12 @@ ${project.descr}</textarea>
         <div class="field">
           <label>Default language:<br />
             <select name="default_language" disabled="${not languages or None}"
-                    title="${_('Translations are currently unavailable') if not languages else None}">
+                    title="${_('Translations are currently unavailable')
+                             if not languages else None}">
               <option value="">Browser's language</option>
-              <option py:for="locale, language in languages" value="${locale}"
-                      selected="${locale == default_language or None}">${language}</option>
+              <option py:for="locale, language in languages"
+                      selected="${locale == default_language or None}"
+                      value="${locale}">${language}</option>
             </select>
           </label>
           <span py:if="not has_babel" class="hint">
@@ -87,8 +92,8 @@ ${project.descr}</textarea>
           <label>Default date format:<br />
             <select name="default_date_format">
               <option value="">Browser's language</option>
-              <option value="iso8601"
-                      selected="${default_date_format == 'iso8601' or None}">ISO 8601 format</option>
+              <option selected="${default_date_format == 'iso8601' or None}"
+                      value="iso8601">ISO 8601 format</option>
             </select>
           </label>
           <span py:if="not has_babel" class="hint">

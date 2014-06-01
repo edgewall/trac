@@ -211,9 +211,9 @@ class BasicsAdminPanel(Component):
             yield ('general', _("General"), 'basics', _("Basic Settings"))
 
     def render_admin_panel(self, req, cat, page, path_info):
-        valid_handlers = [handler.__class__.__name__
-                          for handler in self.request_handlers
-                          if is_valid_default_handler(handler)]
+        valid_default_handlers = [handler.__class__.__name__
+                                  for handler in self.request_handlers
+                                  if is_valid_default_handler(handler)]
         if Locale:
             locale_ids = get_available_locales()
             locales = [Locale.parse(locale) for locale in locale_ids]
@@ -229,7 +229,7 @@ class BasicsAdminPanel(Component):
                 self.config.set('project', option, req.args.get(option))
 
             default_handler = req.args.get('default_handler')
-            if default_handler not in valid_handlers:
+            if default_handler not in valid_default_handlers:
                 default_handler = ''
             self.config.set('trac', 'default_handler', default_handler)
 
@@ -258,7 +258,7 @@ class BasicsAdminPanel(Component):
 
         data = {
             'default_handler': default_handler,
-            'handlers': sorted(valid_handlers),
+            'valid_default_handlers': sorted(valid_default_handlers),
             'default_timezone': default_timezone,
             'timezones': all_timezones,
             'has_pytz': pytz is not None,
