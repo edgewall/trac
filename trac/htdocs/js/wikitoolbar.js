@@ -14,7 +14,13 @@
       a.href = "#";
       a.id = id;
       a.title = title;
-      a.onclick = function() { try { fn() } catch (e) { } return false };
+      a.onclick = function() {
+        if ($(textarea).prop("disabled") === false &&
+            $(textarea).prop("readonly") === false) {
+          try { fn() } catch (e) { }
+        }
+        return false;
+      };
       a.tabIndex = 400;
       toolbar.appendChild(a);
     }
