@@ -11,9 +11,9 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-from .core import Component
-from .util import arity
-from .util.concurrency import ThreadLocal, threading
+from trac.core import Component
+from trac.util import arity
+from trac.util.concurrency import ThreadLocal, threading
 
 __all__ = ['CacheManager', 'cached']
 

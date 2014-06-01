@@ -21,13 +21,12 @@ from abc import ABCMeta, abstractmethod
 
 from trac.config import BoolOption, IntOption, Option
 from trac.core import *
+from trac.db.pool import ConnectionPool
 from trac.db.schema import Table
+from trac.db.util import ConnectionWrapper
 from trac.util.concurrency import ThreadLocal
 from trac.util.text import unicode_passwd
 from trac.util.translation import _
-
-from .pool import ConnectionPool
-from .util import ConnectionWrapper
 
 
 def with_transaction(env, db=None):

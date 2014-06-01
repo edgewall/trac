@@ -31,15 +31,14 @@ from trac.util.datefmt import http_date, to_datetime, utc
 from trac.util.html import Markup, escape
 from trac.util.text import exception_to_unicode, shorten_line
 from trac.util.translation import _, cleandoc_
+from trac.versioncontrol.api import NoSuchChangeset, RepositoryManager
+from trac.versioncontrol.web_ui.util import *
 from trac.web.api import IRequestHandler, RequestDone
 from trac.web.chrome import (INavigationContributor, add_ctxtnav, add_link,
                              add_script, add_stylesheet, prevnext_nav,
                              web_context)
 from trac.wiki.api import IWikiMacroProvider, IWikiSyntaxProvider, parse_args
 from trac.wiki.formatter import format_to_html, format_to_oneliner
-
-from ..api import NoSuchChangeset, RepositoryManager
-from trac.versioncontrol.web_ui.util import * # `from .util import *` FIXME 2.6
 
 
 CHUNK_SIZE = 4096

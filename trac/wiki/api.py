@@ -26,8 +26,8 @@ from trac.core import *
 from trac.resource import IResourceManager
 from trac.util.text import unquote_label
 from trac.util.translation import _
+from trac.wiki.parser import WikiParser
 
-from .parser import WikiParser
 
 
 class IWikiChangeListener(Interface):

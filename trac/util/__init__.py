@@ -32,9 +32,10 @@ import tempfile
 import time
 from urllib import quote, unquote, urlencode
 
-from .compat import any, md5, sha1, sorted
-from .datefmt import to_datetime, to_timestamp, utc
-from .text import exception_to_unicode, to_unicode, getpreferredencoding
+from trac.util.compat import any, md5, sha1, sorted
+from trac.util.datefmt import to_datetime, to_timestamp, utc
+from trac.util.text import exception_to_unicode, to_unicode, \
+                           getpreferredencoding
 
 # -- req, session and web utils
 
