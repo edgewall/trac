@@ -13,11 +13,15 @@
 
 import doctest
 import os.path
+import pkg_resources
 import random
 import re
+import sys
 import tempfile
 import unittest
 
+import trac
+import trac.tests.compat
 from trac import util
 from trac.util.tests import concurrency, datefmt, presentation, text, \
                             translation, html
@@ -167,6 +171,77 @@ class SafeReprTestCase(unittest.TestCase):
                          "type(s) for +: 'int' and 'str')>", sr)
 
 
+class SetuptoolsUtilsTestCase(unittest.TestCase):
+
+    def test_get_module_path(self):
+        self.assertEqual(util.get_module_path(trac),
+                         util.get_module_path(util))
+
+    def test_get_pkginfo_trac(self):
+        pkginfo = util.get_pkginfo(trac)
+        self.assertEqual(trac.__version__, pkginfo.get('version'))
+        self.assertNotEqual({}, pkginfo)
+
+    def test_get_pkginfo_non_toplevel(self):
+        from trac import core
+        import tracopt
+        pkginfo = util.get_pkginfo(trac)
+        self.assertEqual(pkginfo, util.get_pkginfo(util))
+        self.assertEqual(pkginfo, util.get_pkginfo(core))
+        self.assertEqual(pkginfo, util.get_pkginfo(tracopt))
+
+    def test_get_pkginfo_genshi(self):
+        try:
+            import genshi
+            import genshi.core
+            dist = pkg_resources.get_distribution('Genshi')
+        except:
+            pass
+        else:
+            pkginfo = util.get_pkginfo(genshi)
+            self.assertNotEqual({}, pkginfo)
+            self.assertEqual(pkginfo, util.get_pkginfo(genshi.core))
+
+    def test_get_pkginfo_babel(self):
+        try:
+            import babel
+            import babel.core
+            dist = pkg_resources.get_distribution('Babel')
+        except:
+            pass
+        else:
+            pkginfo = util.get_pkginfo(babel)
+            self.assertNotEqual({}, pkginfo)
+            self.assertEqual(pkginfo, util.get_pkginfo(babel.core))
+
+    def test_get_pkginfo_mysqldb(self):
+        # MySQLdb's package name is "MySQL-Python"
+        try:
+            import MySQLdb
+            import MySQLdb.cursors
+            dist = pkg_resources.get_distribution('MySQL-Python')
+            dist.get_metadata('top_level.txt')
+        except:
+            pass
+        else:
+            pkginfo = util.get_pkginfo(MySQLdb)
+            self.assertNotEqual({}, pkginfo)
+            self.assertEqual(pkginfo, util.get_pkginfo(MySQLdb.cursors))
+
+    def test_get_pkginfo_psycopg2(self):
+        # python-psycopg2 deb package doesn't provide SOURCES.txt and
+        # top_level.txt
+        try:
+            import psycopg2
+            import psycopg2.extensions
+            dist = pkg_resources.get_distribution('psycopg2')
+        except:
+            pass
+        else:
+            pkginfo = util.get_pkginfo(psycopg2)
+            self.assertNotEqual({}, pkginfo)
+            self.assertEqual(pkginfo, util.get_pkginfo(psycopg2.extensions))
+
 
 def suite():
     suite = unittest.TestSuite()
@@ -175,6 +250,7 @@ def suite():
     suite.addTest(unittest.makeSuite(RandomTestCase))
     suite.addTest(unittest.makeSuite(ContentDispositionTestCase))
     suite.addTest(unittest.makeSuite(SafeReprTestCase))
+    suite.addTest(unittest.makeSuite(SetuptoolsUtilsTestCase))
     suite.addTest(concurrency.suite())
     suite.addTest(datefmt.suite())
     suite.addTest(presentation.suite())

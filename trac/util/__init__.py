@@ -711,11 +711,33 @@ def get_pkginfo(dist):
     """
     import types
     if isinstance(dist, types.ModuleType):
+        def has_resource(dist, resource_name):
+            if dist.location.endswith('.egg'):  # installed by easy_install
+                return dist.has_resource(resource_name)
+            if dist.has_metadata('installed-files.txt'):  # installed by pip
+                resource_name = os.path.normpath('../' + resource_name)
+                return any(resource_name == os.path.normpath(name)
+                           for name
+                           in dist.get_metadata_lines('installed-files.txt'))
+            if dist.has_metadata('SOURCES.txt'):
+                resource_name = os.path.normpath(resource_name)
+                return any(resource_name == os.path.normpath(name)
+                           for name in dist.get_metadata_lines('SOURCES.txt'))
+            toplevel = resource_name.split('/')[0]
+            if dist.has_metadata('top_level.txt'):
+                return toplevel in dist.get_metadata_lines('top_level.txt')
+            return dist.key == toplevel.lower()
         module = dist
         module_path = get_module_path(module)
+        resource_name = module.__name__.replace('.', '/')
+        if os.path.basename(module.__file__) in ('__init__.py', '__init__.pyc',
+                                                 '__init__.pyo'):
+            resource_name += '/__init__.py'
+        else:
+            resource_name += '.py'
         for dist in find_distributions(module_path, only=True):
             if os.path.isfile(module_path) or \
-                   dist.key == module.__name__.lower():
+                    has_resource(dist, resource_name):
                 break
         else:
             return {}
