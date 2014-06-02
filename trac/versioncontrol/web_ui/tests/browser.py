@@ -11,6 +11,9 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
+import os.path
+import shutil
+import tempfile
 import unittest
 from datetime import datetime
 from cStringIO import StringIO
@@ -21,11 +24,13 @@ from trac.perm import (
     IPermissionPolicy, PermissionCache, PermissionError, PermissionSystem)
 from trac.resource import ResourceNotFound
 from trac.test import EnvironmentStub, Mock, MockPerm
+from trac.util import create_file
 from trac.util.datefmt import utc
 from trac.versioncontrol.api import (
-    Changeset, DbRepositoryProvider, IRepositoryConnector, Node, Repository,
-    RepositoryManager)
+    Changeset, DbRepositoryProvider, IRepositoryConnector, Node, NoSuchNode,
+    Repository, RepositoryManager)
 from trac.versioncontrol.web_ui.browser import BrowserModule
+from tracopt.perm.authz_policy import AuthzPolicy
 
 
 class MockRepositoryConnector(Component):
@@ -41,6 +46,8 @@ class MockRepositoryConnector(Component):
                         datetime(2001, 1, 1, tzinfo=utc))
 
         def get_node(path, rev):
+            if 'missing' in path:
+                raise NoSuchNode(path, rev)
             kind = Node.FILE if 'file' in path else Node.DIRECTORY
             node = Mock(Node, repos, path, rev, kind,
                         created_path=path, created_rev=rev,
@@ -60,29 +67,30 @@ class MockRepositoryConnector(Component):
         return repos
 
 
-class MockRepositoryPolicy(Component):
-
-    implements(IPermissionPolicy)
-
-    def check_permission(self, action, username, resource, perm):
-        if not resource:
-            return
-        if resource.parent and resource.parent.realm == 'repository' and \
-                resource.realm == 'source' and resource.id == '/':
-            resource = resource.parent
-        if resource.realm in ('repository', 'source'):
-            if 'allow' in resource.id:
-                return True
-            if 'deny' in resource.id:
-                return False
-
-
 class BrowserModulePermissionsTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub()
+        self.path = tempfile.mkdtemp(prefix='trac-')
+        self.authz_file = os.path.join(self.path, 'authz_policy.conf')
+        create_file(self.authz_file, """\
+[repository:*allow*@*/source:*deny*]
+anonymous = !BROWSER_VIEW, !FILE_VIEW
+
+[repository:*deny*@*/source:*allow*]
+anonymous = BROWSER_VIEW, FILE_VIEW
+
+[repository:*allow*@*]
+anonymous = BROWSER_VIEW, FILE_VIEW
+
+[repository:*deny*@*]
+anonymous = !BROWSER_VIEW, !FILE_VIEW
+
+""")
+        self.env = EnvironmentStub(enable=['trac.*', AuthzPolicy],
+                                   path=self.path)
+        self.env.config.set('authz_policy', 'authz_file', self.authz_file)
         self.env.config.set('trac', 'permission_policies',
-                            'MockRepositoryPolicy, DefaultPermissionPolicy')
+                            'AuthzPolicy, DefaultPermissionPolicy')
         provider = DbRepositoryProvider(self.env)
         provider.add_repository('(default)', '/', 'mock')
         provider.add_repository('allow', '/', 'mock')
@@ -92,6 +100,7 @@ class BrowserModulePermissionsTestCase(unittest.TestCase):
     def tearDown(self):
         RepositoryManager(self.env).reload_repositories()
         self.env.reset_db()
+        shutil.rmtree(self.path)
 
     def create_request(self, authname='anonymous', **kwargs):
         kw = {'perm': PermissionCache(self.env, authname), 'args': {},
@@ -159,8 +168,10 @@ class BrowserModulePermissionsTestCase(unittest.TestCase):
             self.fail('PermissionError not raised')
         except PermissionError as e:
             self.assertEqual('BROWSER_VIEW', e.action)
-            self.assertEqual('repository', e.resource.realm)
-            self.assertEqual('deny', e.resource.id)
+            self.assertEqual('source', e.resource.realm)
+            self.assertEqual('/', e.resource.id)
+            self.assertEqual('repository', e.resource.parent.realm)
+            self.assertEqual('deny', e.resource.parent.id)
 
         DbRepositoryProvider(self.env).remove_repository('(default)')
         req = self.create_request(path_info='/browser/')
@@ -186,8 +197,10 @@ class BrowserModulePermissionsTestCase(unittest.TestCase):
             self.fail('PermissionError not raised')
         except PermissionError as e:
             self.assertEqual('BROWSER_VIEW', e.action)
-            self.assertEqual('repository', e.resource.realm)
-            self.assertEqual('deny', e.resource.id)
+            self.assertEqual('source', e.resource.realm)
+            self.assertEqual('/', e.resource.id)
+            self.assertEqual('repository', e.resource.parent.realm)
+            self.assertEqual('deny', e.resource.parent.id)
 
         DbRepositoryProvider(self.env).remove_repository('(default)')
         req = self.create_request(path_info='/browser/')
@@ -195,7 +208,12 @@ class BrowserModulePermissionsTestCase(unittest.TestCase):
         self.assertEqual(None, rv[1]['repos'])
 
         req = self.create_request(path_info='/browser/blah-blah-file')
-        self.assertRaises(ResourceNotFound, self.process_request, req)
+        try:
+            self.process_request(req)
+            self.fail('PermissionError not raised')
+        except PermissionError as e:
+            self.assertEqual('BROWSER_VIEW', e.action)
+            self.assertEqual(None, e.resource)
 
     def test_node_with_file_view(self):
         self.grant_perm('anonymous', 'BROWSER_VIEW', 'FILE_VIEW')
@@ -248,15 +266,76 @@ class BrowserModulePermissionsTestCase(unittest.TestCase):
     def test_node_in_denied_repos_with_file_view(self):
         self.grant_perm('anonymous', 'BROWSER_VIEW', 'FILE_VIEW')
 
-        for path in ('file', 'allow-file', 'deny-file'):
+        req = self.create_request(path_info='/browser/deny/allow-file')
+        rv = self.process_request(req)
+        self.assertEqual('deny', rv[1]['repos'].name)
+        self.assertEqual('allow-file', rv[1]['path'])
+
+        for path in ('file', 'deny-file'):
             req = self.create_request(path_info='/browser/deny/' + path)
             try:
                 self.process_request(req)
                 self.fail('PermissionError not raised (path: %r)' % path)
             except PermissionError as e:
-                self.assertEqual('BROWSER_VIEW', e.action)
-                self.assertEqual('repository', e.resource.realm)
-                self.assertEqual('deny', e.resource.id)
+                self.assertEqual('FILE_VIEW', e.action)
+                self.assertEqual('source', e.resource.realm)
+                self.assertEqual(path, e.resource.id)
+                self.assertEqual('repository', e.resource.parent.realm)
+                self.assertEqual('deny', e.resource.parent.id)
+
+    def test_missing_node_with_browser_view(self):
+        self.grant_perm('anonymous', 'BROWSER_VIEW')
+        req = self.create_request(path_info='/browser/allow/missing')
+        self.assertRaises(ResourceNotFound, self.process_request, req)
+        req = self.create_request(path_info='/browser/deny/missing')
+        self.assertRaises(ResourceNotFound, self.process_request, req)
+        req = self.create_request(path_info='/browser/missing')
+        self.assertRaises(ResourceNotFound, self.process_request, req)
+
+    def test_missing_node_without_browser_view(self):
+        req = self.create_request(path_info='/browser/allow/missing')
+        self.assertRaises(ResourceNotFound, self.process_request, req)
+        req = self.create_request(path_info='/browser/deny/missing')
+        self.assertRaises(ResourceNotFound, self.process_request, req)
+        req = self.create_request(path_info='/browser/missing')
+        self.assertRaises(ResourceNotFound, self.process_request, req)
+
+    def test_no_viewable_repositories_with_browser_view(self):
+        self.grant_perm('anonymous', 'BROWSER_VIEW')
+        provider = DbRepositoryProvider(self.env)
+
+        provider.remove_repository('allow')
+        provider.remove_repository('(default)')
+        req = self.create_request(path_info='/browser/')
+        self.assertRaises(ResourceNotFound, self.process_request, req)
+        req = self.create_request(path_info='/browser/allow/')
+        self.assertRaises(ResourceNotFound, self.process_request, req)
+        req = self.create_request(path_info='/browser/deny/')
+        self.assertRaises(PermissionError, self.process_request, req)
+
+        provider.remove_repository('deny')
+        req = self.create_request(path_info='/browser/deny/')
+        self.assertRaises(ResourceNotFound, self.process_request, req)
+
+    def test_no_viewable_repositories_without_browser_view(self):
+        provider = DbRepositoryProvider(self.env)
+        provider.remove_repository('allow')
+        req = self.create_request(path_info='/browser/')
+        try:
+            self.process_request(req)
+            self.fail('PermissionError not raised')
+        except PermissionError as e:
+            self.assertEqual('BROWSER_VIEW', e.action)
+            self.assertEqual(None, e.resource)
+        provider.remove_repository('deny')
+        provider.remove_repository('(default)')
+        req = self.create_request(path_info='/browser/')
+        try:
+            self.process_request(req)
+            self.fail('PermissionError not raised')
+        except PermissionError as e:
+            self.assertEqual('BROWSER_VIEW', e.action)
+            self.assertEqual(None, e.resource)
 
 
 def suite():
