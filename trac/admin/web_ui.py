@@ -229,8 +229,6 @@ class BasicsAdminPanel(Component):
                 self.config.set('project', option, req.args.get(option))
 
             default_handler = req.args.get('default_handler')
-            if default_handler not in valid_default_handlers:
-                default_handler = ''
             self.config.set('trac', 'default_handler', default_handler)
 
             default_timezone = req.args.get('default_timezone')

@@ -128,6 +128,12 @@ class TestDefaultHandler(FunctionalTwillTestCaseSetup):
                     r'</option>')
             tc.find(r'<span class="hint">BatchModifyModule is not a valid '
                     r'IRequestHandler or is not enabled.</span>')
+            tc.formvalue('modbasic', 'default_handler', 'BatchModifyModule')
+            tc.submit()  # Invalid value should not be replaced on submit
+            tc.find(r'<option value="BatchModifyModule">BatchModifyModule'
+                    r'</option>')
+            tc.find(r'<span class="hint">BatchModifyModule is not a valid '
+                    r'IRequestHandler or is not enabled.</span>')
             tc.go(self._tester.url)
             tc.find(r'<h1>Configuration Error</h1>')
             tc.find(r'<code>BatchModifyModule</code> is not a valid default '
