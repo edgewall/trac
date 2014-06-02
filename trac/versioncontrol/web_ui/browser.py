@@ -354,8 +354,6 @@ class BrowserModule(Component):
         if not repos and reponame:
             raise ResourceNotFound(_("Repository '%(repo)s' not found",
                                      repo=reponame))
-        if repos and not repos.is_viewable(req.perm):
-            raise PermissionError('BROWSER_VIEW', repos.resource, self.env)
 
         if reponame and reponame != repos.reponame: # Redirect alias
             qs = req.query_string
@@ -411,6 +409,9 @@ class BrowserModule(Component):
                 file_data = self._render_file(req, context, repos, node, rev)
 
         if not repos and not (repo_data and repo_data['repositories']):
+            # If no viewable repositories, check permission instead of
+            # repos.is_viewable()
+            req.perm.require('BROWSER_VIEW')
             raise ResourceNotFound(_("No node %(path)s", path=path))
 
         quickjump_data = properties_data = None
