@@ -673,19 +673,13 @@ class Environment(Component, ComponentManager):
         self.log.info('-' * 32 + ' environment startup [Trac %s] ' + '-' * 32,
                       get_pkginfo(core).get('version', VERSION))
 
-    def get_known_users(self, cnx=None):
+    def get_known_users(self):
         """Generator that yields information about all known users,
         i.e. users that have logged in to this Trac environment and
         possibly set their name and email.
 
         This function generates one tuple for every user, of the form
         (username, name, email) ordered alpha-numerically by username.
-
-        :param cnx: the database connection; if ommitted, a new
-                    connection is retrieved
-
-        :since 1.0: deprecation warning: the `cnx` parameter is no
-                    longer used and will be removed in version 1.1.1
         """
         for username, name, email in self.db_query("""
                 SELECT DISTINCT s.sid, n.value, e.value
