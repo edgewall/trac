@@ -39,7 +39,7 @@ class PermissionError(TracBaseError, StandardError):
 
     title = N_("Forbidden")
 
-    def __init__ (self, action=None, resource=None, env=None, msg=None):
+    def __init__(self, action=None, resource=None, env=None, msg=None):
         self.action = action
         self.resource = resource
         self.env = env
@@ -219,7 +219,6 @@ class DefaultPermissionStore(Component):
         formatted tuples."""
         return self._all_permissions
 
-
     @cached
     def _all_permissions(self):
         return [(username, action) for username, action in
@@ -295,7 +294,6 @@ class DefaultPermissionPolicy(Component):
         return action in permissions or None
 
 
-
 class PermissionSystem(Component):
     """Permission management sub-system."""
 
@@ -330,15 +328,16 @@ class PermissionSystem(Component):
     # Public API
 
     def grant_permission(self, username, action):
-        """Grant the user with the given name permission to perform to specified
-        action."""
+        """Grant the user with the given name permission to perform to
+        specified action."""
         if action.isupper() and action not in self.get_actions():
             raise TracError(_('%(name)s is not a valid action.', name=action))
 
         self.store.grant_permission(username, action)
 
     def revoke_permission(self, username, action):
-        """Revokes the permission of the specified user to perform an action."""
+        """Revokes the permission of the specified user to perform an
+        action."""
         self.store.revoke_permission(username, action)
 
     def get_actions_dict(self):
@@ -443,7 +442,8 @@ class PermissionSystem(Component):
             expand_action(a)
         return expanded_actions
 
-    def check_permission(self, action, username=None, resource=None, perm=None):
+    def check_permission(self, action, username=None, resource=None,
+                         perm=None):
         """Return True if permission to perform action for the given resource
         is allowed."""
         if username is None:
