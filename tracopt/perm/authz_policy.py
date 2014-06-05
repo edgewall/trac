@@ -14,7 +14,7 @@
 #
 # Author: Alec Thomas <alec@swapoff.org>
 
-from fnmatch import fnmatch
+from fnmatch import fnmatchcase
 from itertools import groupby
 import os
 
@@ -253,7 +253,7 @@ class AuthzPolicy(Component):
             if '@' not in resource_glob:
                 resource_glob += '@*'
 
-            if fnmatch(resource_key, resource_glob):
+            if fnmatchcase(resource_key, resource_glob):
                 section = self.authz[resource_section]
                 for who, permissions in section.iteritems():
                     who = to_unicode(who)

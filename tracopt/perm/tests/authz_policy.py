@@ -80,6 +80,15 @@ administrators = éat
             True,
             self.check_permission('WIKI_VIEW', u'éat', resource, None))
 
+    def test_case_sensitive_resource(self):
+        resource = Resource('WIKI', 'wikistart')
+        self.assertEqual(
+            None,
+            self.check_permission('WIKI_VIEW', 'anonymous', resource, None))
+        self.assertEqual(
+            None,
+            self.check_permission('WIKI_VIEW', u'änon', resource, None))
+
     def test_get_authz_file(self):
         """get_authz_file should resolve a relative path and lazily compute.
         """
