@@ -180,7 +180,7 @@ class Environment(Component, ComponentManager):
         resources in notification e-mails.""")
 
     base_url_for_redirect = BoolOption('trac', 'use_base_url_for_redirect',
-            False,
+                                        False,
         """Optionally use `[trac] base_url` for redirects.
 
         In some configurations, usually involving running Trac behind
@@ -281,6 +281,8 @@ class Environment(Component, ComponentManager):
         ComponentManager.__init__(self)
 
         self.path = path
+        self.log = None
+        self.config = None
         # System info should be provided through ISystemInfoProvider rather
         # than appending to systeminfo, which may be a private in a future
         # release.
@@ -634,7 +636,8 @@ class Environment(Component, ComponentManager):
 
     def setup_config(self):
         """Load the configuration file."""
-        self.config = Configuration(os.path.join(self.path, 'conf', 'trac.ini'),
+        self.config = Configuration(os.path.join(self.path, 'conf',
+                                                 'trac.ini'),
                                     {'envname': os.path.basename(self.path)})
         self.setup_log()
         from trac.loader import load_components
@@ -780,8 +783,8 @@ class EnvironmentSetup(Component):
         with self.env.db_transaction as db:
             for table, cols, vals in db_default.get_data(db):
                 db.executemany("INSERT INTO %s (%s) VALUES (%s)"
-                   % (table, ','.join(cols), ','.join(['%s' for c in cols])),
-                   vals)
+                               % (table, ','.join(cols),
+                                  ','.join(['%s'] * len(cols))), vals)
         self._update_sample_config()
 
     def environment_needs_upgrade(self):
@@ -802,7 +805,7 @@ class EnvironmentSetup(Component):
         with self.env.db_transaction as db:
             cursor = db.cursor()
             for i in range(dbver + 1, db_default.db_version + 1):
-                name  = 'db%i' % i
+                name = 'db%i' % i
                 try:
                     upgrades = __import__('upgrades', globals(), locals(),
                                           [name])
@@ -842,12 +845,13 @@ class EnvironmentSetup(Component):
 env_cache = {}
 env_cache_lock = threading.Lock()
 
+
 def open_environment(env_path=None, use_cache=False):
     """Open an existing environment object, and verify that the database is up
     to date.
 
     :param env_path: absolute path to the environment directory; if
-                     ommitted, the value of the `TRAC_ENV` environment
+                     omitted, the value of the `TRAC_ENV` environment
                      variable is used
     :param use_cache: whether the environment should be cached for
                       subsequent invocations of this function
@@ -873,7 +877,8 @@ def open_environment(env_path=None, use_cache=False):
                 del env_cache[env_path]
                 env = None
             if env is None:
-                env = env_cache.setdefault(env_path, open_environment(env_path))
+                env = env_cache.setdefault(env_path,
+                                           open_environment(env_path))
             else:
                 CacheManager(env).reset_metadata()
     else:
@@ -881,7 +886,7 @@ def open_environment(env_path=None, use_cache=False):
         needs_upgrade = False
         try:
             needs_upgrade = env.needs_upgrade()
-        except Exception as e: # e.g. no database connection
+        except Exception as e:  # e.g. no database connection
             env.log.error("Exception caught while checking for upgrade: %s",
                           exception_to_unicode(e, traceback=True))
         if needs_upgrade:
@@ -974,7 +979,8 @@ class EnvironmentAdmin(Component):
             skip = []
 
             if prefix == 'sqlite':
-                db_path = os.path.join(self.env.path, os.path.normpath(db_path))
+                db_path = os.path.join(self.env.path,
+                                       os.path.normpath(db_path))
                 # don't copy the journal (also, this would fail on Windows)
                 skip = [db_path + '-journal', db_path + '-stmtjrnl']
                 if no_db:
@@ -992,7 +998,6 @@ class EnvironmentAdmin(Component):
                         printerr('  %s' % err)
                     else:
                         printerr("  %s: '%s'" % (err, path_to_unicode(src)))
-
 
             # db backup for non-sqlite
             if prefix != 'sqlite' and not no_db:
@@ -1018,7 +1023,7 @@ class EnvironmentAdmin(Component):
             printerr(_("The pre-upgrade backup failed.\nUse '--no-backup' to "
                        "upgrade without doing a backup.\n"))
             raise e.args[0]
-        except Exception as e:
+        except Exception:
             printerr(_("The upgrade failed. Please fix the issue and try "
                        "again.\n"))
             raise
