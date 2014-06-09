@@ -17,8 +17,8 @@ from trac.util.concurrency import ThreadLocal, threading
 
 __all__ = ['CacheManager', 'cached']
 
-
 _id_to_key = {}
+
 
 def key_to_id(s):
     """Return a hash of the given property key."""
@@ -81,7 +81,7 @@ class CachedProperty(CachedPropertyBase):
     multiple instances associated to a single `~trac.env.Environment`
     instance.
 
-    As we'll have potentiall many different caches to monitor for this
+    As we'll have potential many different caches to monitor for this
     kind of cache, the key needs to be augmented by a string unique to
     each instance of the owner class.  As the resulting id will be
     different for each instance of the owner class, we can't store it
