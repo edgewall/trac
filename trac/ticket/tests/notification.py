@@ -319,18 +319,17 @@ class NotificationTestCase(unittest.TestCase):
             # Extract the list of the actual SMTP recipients
             rcptlist = notifysuite.smtpd.get_recipients()
             # Build the list of the expected 'Cc' recipients
-            ccrcpt = self.env.config.get('notification', 'smtp_always_cc')
-            cclist = [ccr.strip() for ccr in ccrcpt.split(',')]
-            for rcpt in cclist:
+            ccrcpt = self.env.config.getlist('notification', 'smtp_always_cc')
+            for rcpt in ccrcpt:
                 # Each recipient of the 'Cc' list should appear
                 # in the 'Cc' header
                 self.assertIn(rcpt, cc)
                 # Check the message has actually been sent to the recipients
                 self.assertIn(rcpt, rcptlist)
             # Build the list of the expected 'Bcc' recipients
-            bccrcpt = self.env.config.get('notification', 'smtp_always_bcc')
-            bcclist = [bccr.strip() for bccr in bccrcpt.split(',')]
-            for rcpt in bcclist:
+            bccrcpt = self.env.config.getlist('notification',
+                                              'smtp_always_bcc')
+            for rcpt in bccrcpt:
                 # Check none of the 'Bcc' recipients appears
                 # in the 'To' header
                 self.assertNotIn(rcpt, to)

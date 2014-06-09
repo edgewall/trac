@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2009 Edgewall Software
+# Copyright (C) 2003-2014 Edgewall Software
 # Copyright (C) 2003-2005 Daniel Lundin <daniel@edgewall.com>
 # Copyright (C) 2005-2006 Emmanuel Blot <emmanuel.blot@free.fr>
 # All rights reserved.
@@ -33,12 +33,12 @@ from trac.util.translation import _, deactivate, reactivate, tag_
 
 MAXHEADERLEN = 76
 EMAIL_LOOKALIKE_PATTERN = (
-        # the local part
-        r"[a-zA-Z0-9.'+_-]+" '@'
-        # the domain name part (RFC:1035)
-        '(?:[a-zA-Z0-9_-]+\.)+' # labels (but also allow '_')
-        '[a-zA-Z](?:[-a-zA-Z\d]*[a-zA-Z\d])?' # TLD
-        )
+    # the local part
+    r"[a-zA-Z0-9.'+_-]+" '@'
+    # the domain name part (RFC:1035)
+    '(?:[a-zA-Z0-9_-]+\.)+'  # labels (but also allow '_')
+    '[a-zA-Z](?:[-a-zA-Z\d]*[a-zA-Z\d])?'  # TLD
+)
 
 
 class IEmailSender(Interface):
@@ -152,8 +152,8 @@ class SmtpEmailSender(Component):
         # Ensure the message complies with RFC2822: use CRLF line endings
         message = fix_eol(message, CRLF)
 
-        self.log.info("Sending notification through SMTP at %s:%d to %s"
-                      % (self.smtp_server, self.smtp_port, recipients))
+        self.log.info("Sending notification through SMTP at %s:%d to %s",
+                      self.smtp_server, self.smtp_port, recipients)
         try:
             server = smtplib.SMTP(self.smtp_server, self.smtp_port)
         except smtplib.socket.error as e:
@@ -168,8 +168,8 @@ class SmtpEmailSender(Component):
         if self.use_tls:
             server.ehlo()
             if 'starttls' not in server.esmtp_features:
-                raise TracError(_("TLS enabled but server does not support " \
-                                  "TLS"))
+                raise TracError(_("TLS enabled but server does not support"
+                                  " TLS"))
             server.starttls()
             server.ehlo()
         if self.smtp_user:
@@ -179,8 +179,8 @@ class SmtpEmailSender(Component):
         server.sendmail(from_addr, recipients, message)
         t = time.time() - start
         if t > 5:
-            self.log.warning('Slow mail submission (%.2f s), '
-                             'check your mail setup' % t)
+            self.log.warning("Slow mail submission (%.2f s), "
+                             "check your mail setup", t)
         if self.use_tls:
             # avoid false failure detection when the server closes
             # the SMTP connection with TLS enabled
@@ -208,11 +208,10 @@ class SendmailEmailSender(Component):
         # Use native line endings in message
         message = fix_eol(message, os.linesep)
 
-        self.log.info("Sending notification through sendmail at %s to %s"
-                      % (self.sendmail_path, recipients))
-        cmdline = [self.sendmail_path, "-i", "-f", from_addr]
-        cmdline.extend(recipients)
-        self.log.debug("Sendmail command line: %s" % cmdline)
+        self.log.info("Sending notification through sendmail at %s to %s",
+                      self.sendmail_path, recipients)
+        cmdline = [self.sendmail_path, '-i', '-f', from_addr] + recipients
+        self.log.debug("Sendmail command line: %s", cmdline)
         try:
             child = Popen(cmdline, bufsize=-1, stdin=PIPE, stdout=PIPE,
                           stderr=PIPE, close_fds=close_fds)
@@ -289,21 +288,19 @@ class NotifyEmail(Notify):
     addrsep_re = re.compile(r'[;\s,]+')
 
     def __init__(self, env):
-        Notify.__init__(self, env)
+        super(NotifyEmail, self).__init__(env)
 
         addrfmt = EMAIL_LOOKALIKE_PATTERN
-        admit_domains = self.env.config.get('notification', 'admit_domains')
+        admit_domains = self.config.getlist('notification', 'admit_domains')
         if admit_domains:
-            pos = addrfmt.find('@')
-            domains = '|'.join([x.strip() for x in \
-                                admit_domains.replace('.','\.').split(',')])
-            addrfmt = r'%s@(?:(?:%s)|%s)' % (addrfmt[:pos], addrfmt[pos+1:],
-                                              domains)
+            localfmt, domainfmt = addrfmt.split('@')
+            domains = '|'.join(re.escape(x) for x in admit_domains)
+            addrfmt = r'%s@(?:(?:%s)|%s)' % (localfmt, domainfmt, domains)
         self.shortaddr_re = re.compile(r'\s*(%s)\s*$' % addrfmt)
         self.longaddr_re = re.compile(r'^\s*(.*)\s+<\s*(%s)\s*>\s*$' % addrfmt)
         self._init_pref_encoding()
-        domains = self.env.config.get('notification', 'ignore_domains', '')
-        self._ignore_domains = [x.strip() for x in domains.lower().split(',')]
+        domains = self.config.getlist('notification', 'ignore_domains')
+        self._ignore_domains = [x.lower() for x in domains]
         # Get the name and email addresses of all known users
         self.name_map = {}
         self.email_map = {}
@@ -314,24 +311,24 @@ class NotifyEmail(Notify):
                 self.email_map[username] = email
 
     def _init_pref_encoding(self):
-        from email.Charset import Charset, QP, BASE64, SHORTEST
+        from email.Charset import BASE64, QP, SHORTEST, Charset
         self._charset = Charset()
         self._charset.input_charset = 'utf-8'
         self._charset.output_charset = 'utf-8'
         self._charset.input_codec = 'utf-8'
         self._charset.output_codec = 'utf-8'
-        pref = self.env.config.get('notification', 'mime_encoding').lower()
+        pref = self.config.get('notification', 'mime_encoding').lower()
         if pref == 'base64':
             self._charset.header_encoding = BASE64
             self._charset.body_encoding = BASE64
-        elif pref in ['qp', 'quoted-printable']:
+        elif pref in ('qp', 'quoted-printable'):
             self._charset.header_encoding = QP
             self._charset.body_encoding = QP
         elif pref == 'none':
             self._charset.header_encoding = SHORTEST
             self._charset.body_encoding = None
         else:
-            raise TracError(_('Invalid email encoding setting: %(pref)s',
+            raise TracError(_("Invalid email encoding setting: %(pref)s",
                               pref=pref))
 
     def notify(self, resid, subject, author=None):
@@ -362,9 +359,9 @@ class NotifyEmail(Notify):
                 tag.p(to_fragment(tag_(
                     "Neither %(from_)s nor %(reply_to)s are specified in the "
                     "configuration.",
-                    from_=tag.strong('[notification] smtp_from'),
-                    reply_to=tag.strong('[notification] smtp_replyto')))))
-            raise TracError(message, _('SMTP Notification Error'))
+                    from_=tag.strong("[notification] smtp_from"),
+                    reply_to=tag.strong("[notification] smtp_replyto")))))
+            raise TracError(message, _("SMTP Notification Error"))
 
         Notify.notify(self, resid)
 
@@ -422,7 +419,7 @@ class NotifyEmail(Notify):
             if domain:
                 address = "%s@%s" % (address, domain)
             else:
-                self.env.log.info("Email address w/o domain: %s" % address)
+                self.env.log.info("Email address w/o domain: %s", address)
                 return None
 
         mo = self.shortaddr_re.search(address)
@@ -431,7 +428,7 @@ class NotifyEmail(Notify):
         mo = self.longaddr_re.search(address)
         if mo:
             return mo.group(2)
-        self.env.log.info("Invalid email address: %s" % address)
+        self.env.log.info("Invalid email address: %s", address)
         return None
 
     def encode_header(self, key, value):
@@ -453,21 +450,22 @@ class NotifyEmail(Notify):
         finally:
             reactivate(t)
         public_cc = self.config.getbool('notification', 'use_public_cc')
-        headers = {}
-        headers['X-Mailer'] = 'Trac %s, by Edgewall Software' % __version__
-        headers['X-Trac-Version'] =  __version__
-        headers['X-Trac-Project'] =  self.env.project_name
-        headers['X-URL'] = self.env.project_url
-        headers['Precedence'] = 'bulk'
-        headers['Auto-Submitted'] = 'auto-generated'
-        headers['Subject'] = self.subject
-        headers['From'] = (self.from_name, self.from_email) if self.from_name \
-                          else self.from_email
-        headers['Reply-To'] = self.replyto_email
+        headers = {
+            'X-Mailer': 'Trac %s, by Edgewall Software' % __version__,
+            'X-Trac-Version': __version__,
+            'X-Trac-Project': self.env.project_name,
+            'X-URL': self.env.project_url,
+            'Precedence': 'bulk',
+            'Auto-Submitted': 'auto-generated',
+            'Subject': self.subject,
+            'From': (self.from_name, self.from_email) if self.from_name
+                                                      else self.from_email,
+            'Reply-To': self.replyto_email
+        }
 
         def build_addresses(rcpts):
             """Format and remove invalid addresses"""
-            return filter(lambda x: x, \
+            return filter(lambda x: x,
                           [self.get_smtp_address(addr) for addr in rcpts])
 
         def remove_dup(rcpts, all):
@@ -477,26 +475,24 @@ class NotifyEmail(Notify):
                 if not rcpt in all:
                     tmp.append(rcpt)
                     all.append(rcpt)
-            return (tmp, all)
+            return tmp, all
 
         toaddrs = build_addresses(torcpts)
         ccaddrs = build_addresses(ccrcpts)
-        accparam = self.config.get('notification', 'smtp_always_cc')
-        accaddrs = accparam and \
-                   build_addresses(accparam.replace(',', ' ').split()) or []
-        bccparam = self.config.get('notification', 'smtp_always_bcc')
-        bccaddrs = bccparam and \
-                   build_addresses(bccparam.replace(',', ' ').split()) or []
+        accaddrs = build_addresses(self.config.getlist('notification',
+                                                       'smtp_always_cc'))
+        bccaddrs = build_addresses(self.config.getlist('notification',
+                                                       'smtp_always_bcc'))
 
         recipients = []
-        (toaddrs, recipients) = remove_dup(toaddrs, recipients)
-        (ccaddrs, recipients) = remove_dup(ccaddrs, recipients)
-        (accaddrs, recipients) = remove_dup(accaddrs, recipients)
-        (bccaddrs, recipients) = remove_dup(bccaddrs, recipients)
+        toaddrs, recipients = remove_dup(toaddrs, recipients)
+        ccaddrs, recipients = remove_dup(ccaddrs, recipients)
+        accaddrs, recipients = remove_dup(accaddrs, recipients)
+        bccaddrs, recipients = remove_dup(bccaddrs, recipients)
 
         # if there is not valid recipient, leave immediately
         if len(recipients) < 1:
-            self.env.log.info('no recipient for a ticket notification')
+            self.env.log.info("no recipient for a ticket notification")
             return
 
         pcc = accaddrs
