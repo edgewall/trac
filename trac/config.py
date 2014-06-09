@@ -130,7 +130,7 @@ class Configuration(object):
         comma-separated option.
 
         A different separator can be specified using the `sep` parameter. The
-        `sep` parameter can be specified multiple values by a list or a tuple.
+        `sep` parameter can specify multiple values using a list or a tuple.
         If the `keep_empty` parameter is set to `True`, empty elements are
         included in the list.
 
@@ -454,7 +454,7 @@ class Section(object):
         comma-separated option.
 
         A different separator can be specified using the `sep` parameter. The
-        `sep` parameter can be specified multiple values by a list or a tuple.
+        `sep` parameter can specify multiple values using a list or a tuple.
         If the `keep_empty` parameter is set to `True`, empty elements are
         included in the list.
 
