@@ -111,7 +111,7 @@ class Resource(object):
         while r:
             name = r.realm
             if r.id:
-                name += ':' + unicode(r.id) # id can be numerical
+                name += ':' + unicode(r.id)  # id can be numerical
             if r.version is not None:
                 name += '@' + unicode(r.version)
             path.append(name or '')
@@ -160,7 +160,7 @@ class Resource(object):
         >>> repr(main0)
         "<Resource u'wiki:WikiStart@0'>"
 
-        In a copy, if `id` is overriden, then the original `version` value
+        In a copy, if `id` is overridden, then the original `version` value
         will not be reused.
 
         >>> repr(Resource(main3, id="WikiEnd"))
@@ -173,13 +173,13 @@ class Resource(object):
         if isinstance(resource_or_realm, Resource):
             if id is False and version is False and parent is False:
                 return resource_or_realm
-            else: # copy and override
+            else:  # copy and override
                 realm = resource_or_realm.realm
             if id is False:
                 id = resource_or_realm.id
             if version is False:
                 if id == resource_or_realm.id:
-                    version = resource_or_realm.version # could be 0...
+                    version = resource_or_realm.version  # could be 0...
                 else:
                     version = None
             if parent is False:
@@ -270,7 +270,8 @@ def get_resource_url(env, resource, href, **kwargs):
     :param resource: the `Resource` object specifying the Trac resource
     :param href: an `Href` object used for building the URL
 
-    Additional keyword arguments are translated as query paramaters in the URL.
+    Additional keyword arguments are translated as query parameters in
+    the URL.
 
     >>> from trac.test import EnvironmentStub
     >>> from trac.web.href import Href
@@ -299,6 +300,7 @@ def get_resource_url(env, resource, href, **kwargs):
     args = {'version': resource.version}
     args.update(kwargs)
     return href(resource.realm, resource.id, **args)
+
 
 def get_resource_description(env, resource, format='default', **kwargs):
     """Retrieve a standardized description for the given resource.
@@ -338,14 +340,18 @@ def get_resource_description(env, resource, format='default', **kwargs):
                  name=name, version=resource.version)
     return name
 
+
 def get_resource_name(env, resource):
     return get_resource_description(env, resource)
+
 
 def get_resource_shortname(env, resource):
     return get_resource_description(env, resource, 'compact')
 
+
 def get_resource_summary(env, resource):
     return get_resource_description(env, resource, 'summary')
+
 
 def get_relative_resource(resource, path=''):
     """Build a Resource relative to a reference resource.
@@ -363,6 +369,7 @@ def get_relative_resource(resource, path=''):
             elif comp and comp != '.':
                 base.append(comp)
         return resource(id='/'.join(base) if base else None)
+
 
 def get_relative_url(env, resource, href, path='', **kwargs):
     """Build an URL relative to a resource given as reference.
@@ -422,6 +429,7 @@ def get_relative_url(env, resource, href, path='', **kwargs):
     return get_resource_url(env, get_relative_resource(resource, path),
                             href, **kwargs)
 
+
 def render_resource_link(env, context, resource, format='default'):
     """Utility for generating a link `Element` to the given resource.
 
@@ -438,6 +446,7 @@ def render_resource_link(env, context, resource, format='default'):
                      rel='nofollow' if missing else None)
 
     return link
+
 
 def resource_exists(env, resource):
     """Checks for resource existence without actually instantiating a model.
