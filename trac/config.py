@@ -16,6 +16,7 @@ from ConfigParser import ConfigParser
 from copy import deepcopy
 from inspect import cleandoc
 import os.path
+import re
 
 from genshi.builder import tag
 from trac.admin import AdminCommandError, IAdminCommandProvider
@@ -128,8 +129,9 @@ class Configuration(object):
         """Return a list of values that have been specified as a single
         comma-separated option.
 
-        A different separator can be specified using the `sep` parameter. If
-        the `keep_empty` parameter is set to `True`, empty elements are
+        A different separator can be specified using the `sep` parameter. The
+        `sep` parameter can be specified multiple values by a list or a tuple.
+        If the `keep_empty` parameter is set to `True`, empty elements are
         included in the list.
 
         Valid default input is a string or a list. Returns a string.
@@ -451,9 +453,10 @@ class Section(object):
         """Return a list of values that have been specified as a single
         comma-separated option.
 
-        A different separator can be specified using the `sep` parameter. If
-        the `keep_empty` parameter is set to `False`, empty elements are omitted
-        from the list.
+        A different separator can be specified using the `sep` parameter. The
+        `sep` parameter can be specified multiple values by a list or a tuple.
+        If the `keep_empty` parameter is set to `True`, empty elements are
+        included in the list.
 
         Valid default input is a string or a list. Returns a list.
         """
@@ -461,7 +464,11 @@ class Section(object):
         if not value:
             return []
         if isinstance(value, basestring):
-            items = [item.strip() for item in value.split(sep)]
+            if isinstance(sep, (list, tuple)):
+                splitted = re.split('|'.join(map(re.escape, sep)), value)
+            else:
+                splitted = value.split(sep)
+            items = [item.strip() for item in splitted]
         else:
             items = list(value)
         if not keep_empty:
@@ -674,7 +681,10 @@ class ListOption(Option):
 
     def dumps(self, value):
         if isinstance(value, (list, tuple)):
-            return self.sep.join(Option.dumps(self, v) or '' for v in value)
+            sep = self.sep
+            if isinstance(sep, (list, tuple)):
+                sep = sep[0]
+            return sep.join(Option.dumps(self, v) or '' for v in value)
         return Option.dumps(self, value)
 
 

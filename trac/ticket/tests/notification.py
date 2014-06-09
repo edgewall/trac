@@ -49,6 +49,18 @@ class RecipientTestCase(unittest.TestCase):
         notifysuite.tear_down()
         self.env.reset_db()
 
+    def _create_ticket(self, props):
+        ticket = Ticket(self.env)
+        for k, v in props.iteritems():
+            ticket[k] = v
+        ticket.insert()
+        return ticket
+
+    def _notify(self, ticket):
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=True)
+        return notifysuite.smtpd.get_recipients()
+
     def test_no_recipients(self):
         """No recipient case"""
         ticket = Ticket(self.env)
@@ -63,6 +75,34 @@ class RecipientTestCase(unittest.TestCase):
         self.assertEqual(0, len(recipients))
         self.assertIsNone(sender)
         self.assertIsNone(message)
+
+    def _test_smtp_always_cc(self, key, sep):
+        cc_list = ('joe.user@example.net', 'joe.bar@example.net')
+        self.env.config.set('notification', key, sep.join(cc_list))
+        self.env.config.set('notification', 'always_notify_reporter', False)
+        self.env.config.set('notification', 'always_notify_owner', False)
+        self.env.config.set('notification', 'always_notify_updater', False)
+        ticket = self._create_ticket({'reporter': 'joe.bar@example.org',
+                                      'owner': 'joe.user@example.net',
+                                      'summary': 'New ticket recipients'})
+
+        recipients = self._notify(ticket)
+
+        self.assertEqual(2, len(recipients))
+        for r in cc_list:
+            self.assertIn(r, recipients)
+
+    def test_smtp_always_cc_comma_separator(self):
+        self._test_smtp_always_cc('smtp_always_cc', ', ')
+
+    def test_smtp_always_cc_space_separator(self):
+        self._test_smtp_always_cc('smtp_always_cc', ' ')
+
+    def test_smtp_always_bcc_comma_separator(self):
+        self._test_smtp_always_cc('smtp_always_bcc', ', ')
+
+    def test_smtp_always_bcc_space_separator(self):
+        self._test_smtp_always_cc('smtp_always_bcc', ' ')
 
     def test_new_ticket_recipients(self):
         """Report and CC list should be in recipient list for new tickets."""

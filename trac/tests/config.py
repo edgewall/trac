@@ -197,6 +197,26 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEqual(values, config.getlist('a', 'false', values,
                                                 keep_empty=True))
 
+    def test_read_and_getlist_multi_seps(self):
+        self._write(['[a]', 'option = 42 foo,bar||baz,||blah'])
+        config = self._read()
+
+        expected = ['42', 'foo', 'bar', 'baz', 'blah']
+        self.assertEqual(expected, config.getlist('a', 'option', '',
+                                                  sep=(' ', ',', '||')))
+        self.assertEqual(expected, config.getlist('a', 'option', '',
+                                                  sep=[' ', ',', '||']))
+
+        self.assertEqual(['42', 'foo', 'bar', 'baz', '', 'blah'],
+                         config.getlist('a', 'option', '',
+                                        sep=(' ', ',', '||'),
+                                        keep_empty=True))
+
+        expected = ['42 foo,bar', 'baz,', 'blah']
+        self.assertEqual(expected, config.getlist('a', 'option', '',
+                                                  sep=['||']))
+        self.assertEqual(expected, config.getlist('a', 'option', '', sep='||'))
+
     def test_read_and_choice(self):
         self._write(['[a]', 'option = 2', 'invalid = d'])
         config = self._read()
@@ -537,6 +557,10 @@ class ConfigurationTestCase(unittest.TestCase):
             option_list = (ListOption)('a', 'list', ['#cc0', 4.2, 42L, 0, None,
                                                      True, False, None],
                                        sep='|')
+            option_list = (ListOption)('a', 'list-seps',
+                                       ['#cc0', 4.2, 42L, 0, None, True, False,
+                                        None],
+                                       sep=(',', '|'))
             option_choice = (ChoiceOption)('a', 'choice', [-42, 42])
 
         config = self._read()
@@ -550,6 +574,8 @@ class ConfigurationTestCase(unittest.TestCase):
             self.assertEqual('choice = -42\n',                       f.next())
             self.assertEqual('false = disabled\n',                   f.next())
             self.assertEqual('list = #cc0|4.2|42|0||enabled|disabled|\n',
+                             f.next())
+            self.assertEqual('list-seps = #cc0,4.2,42,0,,enabled,disabled,\n',
                              f.next())
             self.assertEqual('# none = <inherited>\n',               f.next())
             self.assertEqual('true = enabled\n',                     f.next())

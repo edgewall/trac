@@ -24,7 +24,7 @@ from genshi.builder import tag
 
 from trac import __version__
 from trac.config import BoolOption, ConfigurationError, ExtensionOption, \
-                        IntOption, Option
+                        IntOption, ListOption, Option
 from trac.core import *
 from trac.util.compat import close_fds
 from trac.util.html import to_fragment
@@ -75,24 +75,27 @@ class NotificationSystem(Component):
     smtp_replyto = Option('notification', 'smtp_replyto', 'trac@localhost',
         """Reply-To address to use in notification emails.""")
 
-    smtp_always_cc = Option('notification', 'smtp_always_cc', '',
-        """Email address(es) to always send notifications to,
-           addresses can be seen by all recipients (Cc:).""")
+    smtp_always_cc_list = ListOption(
+        'notification', 'smtp_always_cc', '', sep=(',', ' '),
+        doc="""Comma-separated list of email address(es) to always send
+        notifications to, addresses can be seen by all recipients (Cc:).""")
 
-    smtp_always_bcc = Option('notification', 'smtp_always_bcc', '',
-        """Email address(es) to always send notifications to,
-           addresses do not appear publicly (Bcc:). (''since 0.10'')""")
+    smtp_always_bcc_list = ListOption(
+        'notification', 'smtp_always_bcc', '', sep=(',', ' '),
+        doc="""Comma-separated list of email address(es) to always send
+        notifications to, addresses do not appear publicly (Bcc:).
+        (''since 0.10'')""")
 
     smtp_default_domain = Option('notification', 'smtp_default_domain', '',
         """Default host/domain to append to address that do not specify
            one.""")
 
-    ignore_domains = Option('notification', 'ignore_domains', '',
-        """Comma-separated list of domains that should not be considered
+    ignore_domains_list = ListOption('notification', 'ignore_domains', '',
+        doc="""Comma-separated list of domains that should not be considered
            part of email addresses (for usernames with Kerberos domains).""")
 
-    admit_domains = Option('notification', 'admit_domains', '',
-        """Comma-separated list of domains that should be considered as
+    admit_domains_list = ListOption('notification', 'admit_domains', '',
+        doc="""Comma-separated list of domains that should be considered as
         valid for email addresses (such as localdomain).""")
 
     mime_encoding = Option('notification', 'mime_encoding', 'none',
@@ -122,6 +125,22 @@ class NotificationSystem(Component):
         If the setting is not defined, then `[$project_name]` is used as the
         prefix. If no prefix is desired, then specifying an empty option
         will disable it. (''since 0.10.1'')""")
+
+    @property
+    def smtp_always_cc(self):  # For backward compatibility
+        return self.config.get('notification', 'smtp_always_cc')
+
+    @property
+    def smtp_always_bcc(self):  # For backward compatibility
+        return self.config.get('notification', 'smtp_always_bcc')
+
+    @property
+    def ignore_domains(self):  # For backward compatibility
+        return self.config.get('notification', 'ignore_domains')
+
+    @property
+    def admit_domains(self):  # For backward compatibility
+        return self.config.get('notification', 'admit_domains')
 
     def send_email(self, from_addr, recipients, message):
         """Send message to recipients via e-mail."""
@@ -290,8 +309,9 @@ class NotifyEmail(Notify):
     def __init__(self, env):
         super(NotifyEmail, self).__init__(env)
 
+        notify_sys = NotificationSystem(self.env)
         addrfmt = EMAIL_LOOKALIKE_PATTERN
-        admit_domains = self.config.getlist('notification', 'admit_domains')
+        admit_domains = notify_sys.admit_domains_list
         if admit_domains:
             localfmt, domainfmt = addrfmt.split('@')
             domains = '|'.join(re.escape(x) for x in admit_domains)
@@ -299,8 +319,8 @@ class NotifyEmail(Notify):
         self.shortaddr_re = re.compile(r'\s*(%s)\s*$' % addrfmt)
         self.longaddr_re = re.compile(r'^\s*(.*)\s+<\s*(%s)\s*>\s*$' % addrfmt)
         self._init_pref_encoding()
-        domains = self.config.getlist('notification', 'ignore_domains')
-        self._ignore_domains = [x.lower() for x in domains]
+        self._ignore_domains = [x.lower()
+                                for x in notify_sys.ignore_domains_list]
         # Get the name and email addresses of all known users
         self.name_map = {}
         self.email_map = {}
@@ -477,12 +497,11 @@ class NotifyEmail(Notify):
                     all.append(rcpt)
             return tmp, all
 
+        notify_sys = NotificationSystem(self.env)
         toaddrs = build_addresses(torcpts)
         ccaddrs = build_addresses(ccrcpts)
-        accaddrs = build_addresses(self.config.getlist('notification',
-                                                       'smtp_always_cc'))
-        bccaddrs = build_addresses(self.config.getlist('notification',
-                                                       'smtp_always_bcc'))
+        accaddrs = notify_sys.smtp_always_cc_list
+        bccaddrs = notify_sys.smtp_always_bcc_list
 
         recipients = []
         toaddrs, recipients = remove_dup(toaddrs, recipients)
