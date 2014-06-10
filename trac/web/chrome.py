@@ -113,6 +113,7 @@ def add_meta(req, content, http_equiv=None, name=None, scheme=None, lang=None):
             'scheme': scheme, 'lang': lang, 'xml:lang': lang}
     req.chrome.setdefault('metas', []).append(meta)
 
+
 def add_link(req, rel, href, title=None, mimetype=None, classname=None,
              **attrs):
     """Add a link to the chrome info that will be inserted as <link> element in
@@ -121,13 +122,14 @@ def add_link(req, rel, href, title=None, mimetype=None, classname=None,
     linkid = '%s:%s' % (rel, href)
     linkset = req.chrome.setdefault('linkset', set())
     if linkid in linkset:
-        return # Already added that link
+        return  # Already added that link
 
     link = {'href': href, 'title': title, 'type': mimetype, 'class': classname}
     link.update(attrs)
     links = req.chrome.setdefault('links', {})
     links.setdefault(rel, []).append(link)
     linkset.add(linkid)
+
 
 def add_stylesheet(req, filename, mimetype='text/css', **attrs):
     """Add a link to a style sheet to the chrome info so that it gets included
@@ -142,6 +144,7 @@ def add_stylesheet(req, filename, mimetype='text/css', **attrs):
     href = _chrome_resource_path(req, filename)
     add_link(req, 'stylesheet', href, mimetype=mimetype, **attrs)
 
+
 def add_script(req, filename, mimetype='text/javascript', charset='utf-8',
                ie_if=None):
     """Add a reference to an external javascript file to the template.
@@ -154,7 +157,7 @@ def add_script(req, filename, mimetype='text/javascript', charset='utf-8',
     """
     scriptset = req.chrome.setdefault('scriptset', set())
     if filename in scriptset:
-        return False # Already added that script
+        return False  # Already added that script
 
     href = _chrome_resource_path(req, filename)
     script = {'href': href, 'type': mimetype, 'charset': charset,
@@ -163,6 +166,7 @@ def add_script(req, filename, mimetype='text/javascript', charset='utf-8',
 
     req.chrome.setdefault('scripts', []).append(script)
     scriptset.add(filename)
+
 
 def add_script_data(req, data={}, **kwargs):
     """Add data to be made available in javascript scripts as global variables.
@@ -174,6 +178,7 @@ def add_script_data(req, data={}, **kwargs):
     script_data = req.chrome.setdefault('script_data', {})
     script_data.update(data)
     script_data.update(kwargs)
+
 
 def add_warning(req, msg, *args):
     """Add a non-fatal warning to the request object.
@@ -188,6 +193,7 @@ def add_warning(req, msg, *args):
     if msg not in req.chrome['warnings']:
         req.chrome['warnings'].append(msg)
 
+
 def add_notice(req, msg, *args):
     """Add an informational notice to the request object.
 
@@ -201,6 +207,7 @@ def add_notice(req, msg, *args):
     if msg not in req.chrome['notices']:
         req.chrome['notices'].append(msg)
 
+
 def add_ctxtnav(req, elm_or_label, href=None, title=None):
     """Add an entry to the current page's ctxtnav bar."""
     if href:
@@ -208,6 +215,7 @@ def add_ctxtnav(req, elm_or_label, href=None, title=None):
     else:
         elm = elm_or_label
     req.chrome.setdefault('ctxtnav', []).append(elm)
+
 
 def prevnext_nav(req, prev_label, next_label, up_label=None):
     """Add Previous/Up/Next navigation links.
@@ -492,8 +500,7 @@ class Chrome(Component):
         'relative',
         """The date information format. Valid options are 'relative' for
         displaying relative format and 'absolute' for displaying absolute
-        format. (''since 1.0'')
-        """)
+        format. (''since 1.0'')""")
 
     templates = None
 
@@ -515,7 +522,7 @@ class Chrome(Component):
         'get_reporter_id': get_reporter_id,
         'gettext': translation.gettext,
         'group': presentation.group,
-        'groupby': compat.py_groupby, # http://bugs.python.org/issue2246
+        'groupby': compat.py_groupby,  # http://bugs.python.org/issue2246
         'http_date': http_date,
         'istext': presentation.istext,
         'javascript_quote': javascript_quote,
@@ -556,7 +563,7 @@ class Chrome(Component):
         if babel is not None:
             info = get_pkginfo(babel).get('version')
             if not get_available_locales():
-                info += " (translations unavailable)" # No i18n on purpose
+                info += " (translations unavailable)"  # No i18n on purpose
                 self.log.warning("Locale data is missing")
             yield 'Babel', info
 
@@ -685,7 +692,7 @@ class Chrome(Component):
         add_script(req, self.jquery_location or 'common/js/jquery.js')
         # Only activate noConflict mode if requested to by the handler
         if handler is not None and \
-           getattr(handler.__class__, 'jquery_noconflict', False):
+                getattr(handler.__class__, 'jquery_noconflict', False):
             add_script(req, 'common/js/noconflict.js')
         add_script(req, 'common/js/babel.js')
         if req.locale is not None and str(req.locale) != 'en_US':
@@ -724,13 +731,13 @@ class Chrome(Component):
                             if href.startswith('/'):
                                 href = req.href + href
                             if label:
-                                item = tag.a(label) # create new label
+                                item = tag.a(label)  # create new label
                             elif not item:
-                                item = tag.a(text) # wrap old text
-                            item = item(href=href) # use new href
-                        elif label and item: # create new label, use old href
+                                item = tag.a(text)  # wrap old text
+                            item = item(href=href)  # use new href
+                        elif label and item:  # create new label, use old href
                             item = tag.a(label, href=item.attrib.get('href'))
-                        elif not item: # use old text
+                        elif not item:  # use old text
                             item = text
                         allitems.setdefault(category, {})[name] = item
                 if contributor is handler:
@@ -825,7 +832,7 @@ class Chrome(Component):
         d = self._default_context_data.copy()
         d['trac'] = {
             'version': VERSION,
-            'homepage': 'http://trac.edgewall.org/', # FIXME: use setup data
+            'homepage': 'http://trac.edgewall.org/',  # FIXME: use setup data
         }
 
         href = req and req.href
@@ -857,8 +864,8 @@ class Chrome(Component):
             })
 
         try:
-            show_email_addresses = (self.show_email_addresses or not req or \
-                                'EMAIL_VIEW' in req.perm)
+            show_email_addresses = (self.show_email_addresses or not req or
+                                    'EMAIL_VIEW' in req.perm)
         except Exception as e:
             # simply log the exception here, as we might already be rendering
             # the error page
@@ -1163,8 +1170,8 @@ class Chrome(Component):
             'timepicker_separator': 'T' if is_iso8601 else ' ',
             'show_timezone': is_iso8601,
             # default timezone must be included
-            'timezone_list': get_timezone_list_jquery_ui() \
-                             if is_iso8601 \
+            'timezone_list': get_timezone_list_jquery_ui()
+                             if is_iso8601
                              else [{'value': 'Z', 'label': '+00:00'}],
             'timezone_iso8601': is_iso8601,
         })
@@ -1179,7 +1186,7 @@ class Chrome(Component):
         def _generate(stream, ctxt=None):
             for kind, data, pos in stream:
                 if kind is START and data[0].localname == 'form' \
-                                 and data[1].get('method', '').lower() == 'post':
+                        and data[1].get('method', '').lower() == 'post':
                     yield kind, data, pos
                     for event in elem.generate():
                         yield event

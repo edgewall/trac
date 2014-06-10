@@ -29,7 +29,6 @@ from trac.util.translation import _
 from trac.wiki.parser import WikiParser
 
 
-
 class IWikiChangeListener(Interface):
     """Components that want to get notified about the creation,
     deletion and modification of wiki pages should implement that
