@@ -89,11 +89,8 @@ class WikiAdmin(Component):
     def get_wiki_list(self):
         return list(WikiSystem(self.env).get_pages())
 
-    def export_page(self, page, filename, cursor=None):
-        """
-        :since 1.0: the `cursor` parameter is no longer needed and will be
-        removed in version 1.1.1
-        """
+    def export_page(self, page, filename):
+
         for text, in self.env.db_query("""
                 SELECT text FROM wiki WHERE name=%s
                 ORDER BY version DESC LIMIT 1
