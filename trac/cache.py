@@ -167,8 +167,7 @@ def cached(fn_or_attr=None):
         connection.  This is the same connection that can be retrieved
         via the normal `~trac.env.Environment.db_query` or
         `~trac.env.Environment.db_transaction`, so this is no longer
-        needed, though methods supporting that argument are still
-        supported (but will be removed in version 1.1.1).
+        needed and is not supported.
     """
     if hasattr(fn_or_attr, '__call__'):
         return CachedSingletonProperty(fn_or_attr)
@@ -235,11 +234,7 @@ class CacheManager(Component):
                 if db_generation == generation:
                     return data
 
-                # Retrieve data from the database
-                if arity(retriever) == 2:
-                    data = retriever(instance, db)
-                else:
-                    data = retriever(instance)
+                data = retriever(instance)
                 local_cache[id] = self._cache[id] = (data, db_generation)
                 local_meta[id] = db_generation
                 return data
