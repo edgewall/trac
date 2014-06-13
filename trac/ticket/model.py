@@ -81,7 +81,7 @@ class Ticket(object):
     def id_is_valid(num):
         return 0 < int(num) <= 1L << 31
 
-    # 0.11 compatibility
+    # 0.11 compatibility. Will be removed in 1.3.1.
     time_created = property(lambda self: self.values.get('time'))
     time_changed = property(lambda self: self.values.get('changetime'))
 
@@ -998,8 +998,6 @@ class Milestone(object):
                      'description': self.description}
         if invalidate:
             del self.cache.milestones
-
-    _to_old = checkin #: compatibility with hacks < 0.12.5 (remove in 1.1.1)
 
     def delete(self, retarget_to=None, author=None):
         """Delete the milestone.
