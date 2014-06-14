@@ -234,6 +234,7 @@ class CacheManager(Component):
                 if db_generation == generation:
                     return data
 
+                # Retrieve data from the database
                 data = retriever(instance)
                 local_cache[id] = self._cache[id] = (data, db_generation)
                 local_meta[id] = db_generation
