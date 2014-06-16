@@ -28,65 +28,8 @@
     <h2>Manage Milestones <span py:if="view == 'list'" class="trac-count">(${len(milestones)})</span></h2>
 
     <py:choose test="view">
-      <form py:when="'detail'" class="mod" method="post" id="modifymilestone" action=""
-            py:with="disabled = 'disabled' if not can_modify else None;
-                     readonly = 'readonly' if not can_modify else None">
-        <fieldset>
-          <legend>Modify Milestone:</legend>
-          <div class="field">
-            <label>Name:<br /> <input type="text" name="name" class="trac-autofocus"
-                                      value="$milestone.name" readonly="${readonly}" /></label>
-          </div>
-          <div class="field">
-            <label>Due:<br />
-              <input type="text" id="duedate" class="${'trac-datetimepicker' if not readonly else None}"
-                     name="duedate" size="${len(datetime_hint)}"
-                     value="${milestone.due and format_datetime(milestone.due)}" readonly="${readonly}"
-                     title="${_('Format: %(datehint)s', datehint=datetime_hint)}"/>
-              <span class="hint" i18n:msg="datehint">Format: $datetime_hint</span>
-            </label>
-          </div>
-          <div class="field">
-            <label>
-              <input type="checkbox" id="completed" name="completed"
-                     checked="${milestone.completed or None}" disabled="${disabled}"/>
-              Completed:<br />
-            </label>
-            <label>
-              <input type="text" id="completeddate" class="${'trac-datetimepicker' if not readonly else None}"
-                     name="completeddate" size="${len(datetime_hint)}"
-                     value="${format_datetime(milestone.completed)}" readonly="${readonly}"
-                     title="${_('Format: %(datehint)s', datehint=datetime_hint)}" />
-              <span class="hint" i18n:msg="datehint">Format: $datetime_hint</span>
-            </label>
-            <script type="text/javascript">
-              jQuery(document).ready(function($) {
-                function updateCompletedDate() {
-                  $("#completeddate").enable($("#completed").checked());
-                }
-                $("#completed").click(updateCompletedDate);
-                updateCompletedDate();
-              });
-            </script>
-          </div>
-          <div class="field">
-            <fieldset>
-              <label for="description" i18n:msg="">
-                Description (you may use <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here):
-              </label>
-              <p>
-              <textarea id="description" name="description" class="wikitext trac-resizable"
-                        rows="6" cols="60" readonly="${readonly}">
-${milestone.description}</textarea>
-              </p>
-            </fieldset>
-          </div>
-          <div class="buttons">
-            <input type="submit" name="save" value="${_('Save')}" class="trac-disable-on-submit" disabled="${disabled}"/>
-            <input type="submit" name="cancel" value="${_('Cancel')}"/>
-          </div>
-        </fieldset>
-      </form>
+      <xi:include py:when="'detail'" href="milestone_edit_form.html"
+                  py:with="compact = True;" />
 
       <py:otherwise>
         <form class="addnew" id="addmilestone" method="post" action="" py:if="can_create">

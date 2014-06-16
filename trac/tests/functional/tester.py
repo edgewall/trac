@@ -361,7 +361,7 @@ class FunctionalTester(object):
         tc.notfind(internal_error)
         if description is not None:
             tc.follow(r"\b%s\b" % name)
-            tc.formvalue('modcomp', 'description', description)
+            tc.formvalue('edit', 'description', description)
             tc.submit('save')
             tc.url(component_url)
             tc.find("Your changes have been saved.")

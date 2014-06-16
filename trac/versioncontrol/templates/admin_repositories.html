@@ -48,7 +48,8 @@
     </py:def>
 
     <py:choose test="view">
-      <form py:when="'detail'" py:with="info = repositories[reponame]" class="mod" id="trac-modrepos" method="post" action="">
+      <form py:when="'detail'" py:with="info = repositories[reponame]"
+            id="edit" class="mod" method="post" action="">
         <fieldset py:choose="" py:with="disabled = 'disabled' if not info.editable else None;
                                         readonly = 'readonly' if not info.editable else None">
           <legend py:when="info.editable">Modify Repository:</legend>
@@ -88,7 +89,7 @@
               </label>
               <p>
                 <textarea id="description" name="description" class="wikitext trac-resizable"
-                          rows="6" cols="60" readonly="$readonly">
+                          rows="8" cols="78" readonly="$readonly">
 $info.description</textarea>
               </p>
             </fieldset>

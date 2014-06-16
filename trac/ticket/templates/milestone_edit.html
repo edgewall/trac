@@ -21,29 +21,6 @@
       <title py:when="True" i18n:msg="name">Edit Milestone ${milestone.name}</title>
       <title py:otherwise="">New Milestone</title>
     </py:choose>
-    <script type="text/javascript">/*<![CDATA[*/
-      jQuery(document).ready(function($) {
-        function updateDueDate() {
-          $("#duedate").enable($("#due").checked());
-        }
-        $("#due").click(updateDueDate);
-        updateDueDate();
-        function updateCompletedDate() {
-          var checked = $("#completed").checked();
-          $("#completeddate").enable(checked);
-          var retarget = $("#retarget");
-          retarget.enable(checked);
-          $("#target").enable(checked && retarget.checked());
-          $("#retarget-comment").enable(checked && retarget.checked());
-        }
-        $("#completed").click(updateCompletedDate);
-        updateCompletedDate();
-        $("#retarget").click(function(){
-          $("#target").enable(this.checked);
-          $("#retarget-comment").enable(this.checked);
-        });
-      });
-    /*]]>*/</script>
   </head>
 
   <body>
@@ -53,85 +30,7 @@
         <h1 py:otherwise="">New Milestone</h1>
       </py:choose>
 
-      <form id="edit" action="" method="post">
-        <div class="field">
-          <input type="hidden" name="id" value="${milestone.name}" />
-          <input type="hidden" name="action" value="edit" />
-          <label>Name of the milestone:<br />
-            <input type="text" id="name" name="name" class="trac-autofocus" size="32"
-                   value="${milestone.name or req.args.get('name')}" />
-          </label>
-        </div>
-        <fieldset>
-          <legend>Schedule</legend>
-          <div class="field">
-            <label>
-              <input type="checkbox" id="due" name="due" checked="${milestone.due or None}" />
-              Due:<br />
-            </label>
-            <label>
-              <input type="text" id="duedate" name="duedate"
-                     class="trac-datetimepicker" size="${len(datetime_hint)}"
-                     value="${format_datetime(milestone.due or default_due)}"
-                     title="${_('Format: %(datehint)s', datehint=datetime_hint)}" />
-              <em i18n:msg="datehint">Format: ${datetime_hint}</em>
-            </label>
-          </div>
-          <div class="field">
-            <label>
-              <input type="checkbox" id="completed" name="completed" checked="${milestone.completed or None}" />
-              Completed:<br />
-            </label>
-            <label>
-              <input type="text" id="completeddate" name="completeddate"
-                     class="trac-datetimepicker" size="${len(datetime_hint)}"
-                     value="${format_datetime(milestone.completed)}"
-                     title="${_('Format: %(datehint)s', datehint=datetime_hint)}" />
-              <em i18n:msg="datehint">Format: ${datetime_hint}</em>
-            </label>
-          </div>
-          <div class="field">
-            <py:if test="num_tickets and num_tickets != 0">
-              <label>
-                <input type="checkbox" id="retarget" name="retarget" checked="${not milestone.completed or None}" />
-                Retarget associated open tickets to milestone:
-              </label>
-              <select id="target" name="target">
-                <option value="">None</option>
-                <optgroup py:for="(label, milestones) in milestone_groups"
-                          py:if="milestones" label="${label}">
-                  <option py:for="milestone in milestones"
-                          selected="${retarget_to == milestone.name or None}"
-                          value="${milestone.name}" py:content="milestone.name"></option>
-                </optgroup>
-              </select>
-              <br/>
-              <label for="retarget-comment">Comment:</label>
-              <!--! Don't translate ticket comment (comment:40:ticket:5658) -->
-              <input type="text" id="retarget-comment" name="comment" size="40"
-                     value="Ticket retargeted after milestone closed" />
-            </py:if>
-            <p py:if="num_tickets == 0" class="help">
-              There are no tickets associated with this milestone.
-            </p>
-          </div>
-        </fieldset>
-        <div class="field">
-          <fieldset>
-            <label for="description" i18n:msg="">Description (you may use <a tabindex="42"
-                   href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here):</label>
-            <p><textarea id="description" name="description" class="wikitext trac-resizable" rows="10" cols="78">
-${milestone.description}</textarea></p>
-          </fieldset>
-        </div>
-        <div class="buttons" py:choose="milestone.exists">
-          <input py:when="True" type="submit" name="save"
-                 value="${_('Submit changes')}" class="trac-disable-on-submit" />
-          <input py:otherwise="" type="submit" name="add"
-                 value="${_('Add milestone')}" />
-          <input type="submit" name="cancel" value="${_('Cancel')}" />
-        </div>
-      </form>
+      <xi:include href="milestone_edit_form.html" />
 
       <div id="help" i18n:msg=""><strong>Note:</strong> See
         <a href="${href.wiki('TracRoadmap')}">TracRoadmap</a> for help on using

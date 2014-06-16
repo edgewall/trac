@@ -68,7 +68,13 @@ form.addnew span.hint {
 form.addnew p.help { margin-top: 0.5em; }
 form.addnew br { display: none; }
 form.mod { margin-top: 1em; }
-form.mod fieldset { margin: 0 }
+form.mod fieldset textarea#description {
+ margin-left: -1px;
+ margin-right: -1px;
+ padding: 0;
+ width: 100%;
+}
+form.mod fieldset div.trac-resizable { width: 100%; }
 form.mod .field { margin: .5em 0; }
 form .field em { color: #888; font-size: smaller }
 form .field .disabled em { color: #d7d7d7 }

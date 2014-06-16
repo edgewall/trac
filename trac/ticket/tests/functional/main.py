@@ -694,7 +694,7 @@ class TestAdminComponentDetail(FunctionalTwillTestCaseSetup):
         tc.go(component_url)
         tc.follow(name)
         desc = 'Some component description'
-        tc.formvalue('modcomp', 'description', desc)
+        tc.formvalue('edit', 'description', desc)
         tc.submit('cancel')
         tc.url(component_url + '$')
         tc.follow(name)
@@ -773,7 +773,7 @@ class TestAdminMilestoneDetail(FunctionalTwillTestCaseSetup):
         tc.url(milestone_url)
         tc.follow(name)
         tc.url(milestone_url + '/' + name)
-        tc.formvalue('modifymilestone', 'description', 'Some description.')
+        tc.formvalue('edit', 'description', 'Some description.')
         tc.submit('save')
         tc.url(milestone_url)
 
@@ -785,8 +785,7 @@ class TestAdminMilestoneDetail(FunctionalTwillTestCaseSetup):
         tc.go(milestone_url)
         tc.url(milestone_url)
         tc.follow(name)
-        tc.formvalue('modifymilestone', 'description',
-                     '~~Some other description.~~')
+        tc.formvalue('edit', 'description', '~~Some other description.~~')
         tc.submit('cancel')
         tc.url(milestone_url)
 
@@ -824,7 +823,8 @@ class TestAdminMilestoneDetailDue(FunctionalTwillTestCaseSetup):
         duedate = datetime.now(tz=utc)
         duedate_string = format_datetime(duedate, tzinfo=utc,
                                          locale=locale_en)
-        tc.formvalue('modifymilestone', 'due', duedate_string)
+        tc.formvalue('edit', 'due', True)
+        tc.formvalue('edit', 'duedate', duedate_string)
         tc.submit('save')
         tc.url(milestone_url + '$')
         tc.find(name + '(<[^>]*>|\\s)*'+ duedate_string, 's')
@@ -841,7 +841,7 @@ class TestAdminMilestoneDetailRename(FunctionalTwillTestCaseSetup):
         self._tester.go_to_url(milestone_url)
         tc.follow(name1)
         tc.url(milestone_url + '/' + name1)
-        tc.formvalue('modifymilestone', 'name', name2)
+        tc.formvalue('edit', 'name', name2)
         tc.submit('save')
 
         tc.find(r"Your changes have been saved\.")
@@ -866,7 +866,7 @@ class TestAdminMilestoneCompleted(FunctionalTwillTestCaseSetup):
         tc.url(milestone_url)
         tc.follow(name)
         tc.url(milestone_url + '/' + name)
-        tc.formvalue('modifymilestone', 'completed', True)
+        tc.formvalue('edit', 'completed', True)
         tc.submit('save')
         tc.url(milestone_url + "$")
 
@@ -881,10 +881,10 @@ class TestAdminMilestoneCompletedFuture(FunctionalTwillTestCaseSetup):
         tc.url(milestone_url)
         tc.follow(name)
         tc.url(milestone_url + '/' + name)
-        tc.formvalue('modifymilestone', 'completed', True)
+        tc.formvalue('edit', 'completed', True)
         cdate = datetime.now(tz=utc) + timedelta(days=2)
         cdate_string = format_date(cdate, tzinfo=localtz, locale=locale_en)
-        tc.formvalue('modifymilestone', 'completeddate', cdate_string)
+        tc.formvalue('edit', 'completeddate', cdate_string)
         tc.submit('save')
         tc.find('Completion date may not be in the future')
         # And make sure it wasn't marked as completed.
@@ -1072,7 +1072,7 @@ class TestAdminPriorityModify(FunctionalTwillTestCaseSetup):
         tc.url(priority_url + '$')
         tc.find(name)
         tc.follow(name)
-        tc.formvalue('modenum', 'name', name * 2)
+        tc.formvalue('edit', 'name', name * 2)
         tc.submit('save')
         tc.url(priority_url + '$')
         tc.find(name * 2)
@@ -1142,14 +1142,14 @@ class TestAdminPriorityDetail(FunctionalTwillTestCaseSetup):
         tc.url(priority_url + '$')
         tc.follow(name + '1')
         tc.url(priority_url + '/' + name + '1')
-        tc.formvalue('modenum', 'name', name + '2')
+        tc.formvalue('edit', 'name', name + '2')
         tc.submit('save')
         tc.url(priority_url + '$')
 
         # Cancel more modifications
         tc.go(priority_url)
         tc.follow(name)
-        tc.formvalue('modenum', 'name', name + '3')
+        tc.formvalue('edit', 'name', name + '3')
         tc.submit('cancel')
         tc.url(priority_url + '$')
 
@@ -1327,7 +1327,7 @@ class TestAdminVersionDetail(FunctionalTwillTestCaseSetup):
         tc.follow(name)
 
         desc = 'Some version description.'
-        tc.formvalue('modifyversion', 'description', desc)
+        tc.formvalue('edit', 'description', desc)
         tc.submit('save')
         tc.url(version_admin)
         tc.follow(name)
@@ -1344,7 +1344,7 @@ class TestAdminVersionDetailTime(FunctionalTwillTestCaseSetup):
         tc.url(version_admin)
         tc.follow(name)
 
-        tc.formvalue('modifyversion', 'time', '')
+        tc.formvalue('edit', 'time', '')
         tc.submit('save')
         tc.url(version_admin + '$')
         tc.find(name + '(<[^>]*>|\\s)*<[^>]* name="default" value="%s"'
@@ -1362,7 +1362,7 @@ class TestAdminVersionDetailCancel(FunctionalTwillTestCaseSetup):
         tc.follow(name)
 
         desc = 'Some other version description.'
-        tc.formvalue('modifyversion', 'description', desc)
+        tc.formvalue('edit', 'description', desc)
         tc.submit('cancel')
         tc.url(version_admin)
         tc.follow(name)
@@ -2136,10 +2136,10 @@ class RegressionTestTicket6912b(FunctionalTwillTestCaseSetup):
                                       owner='admin')
         tc.follow('RegressionTestTicket6912b')
         try:
-            tc.formvalue('modcomp', 'owner', '')
+            tc.formvalue('edit', 'owner', '')
         except twill.utils.ClientForm.ItemNotFoundError as e:
             raise twill.errors.TwillAssertionError(e)
-        tc.submit('save', formname='modcomp')
+        tc.submit('save', formname='edit')
         tc.find('RegressionTestTicket6912b</a>[ \n\t]*</td>[ \n\t]*'
                 '<td class="owner"></td>', 's')
 

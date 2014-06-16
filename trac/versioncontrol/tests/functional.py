@@ -215,14 +215,14 @@ class RegressionTestTicket11194(FunctionalTwillTestCaseSetup):
 
         tc.follow('\\b' + names[1] + '\\b')
         tc.url(self._tester.url + '/admin/versioncontrol/repository/' + names[1])
-        tc.formvalue('trac-modrepos', 'name', names[2])
+        tc.formvalue('edit', 'name', names[2])
         tc.submit('save')
         tc.notfind(internal_error)
         tc.url(self._tester.url + '/admin/versioncontrol/repository')
 
         tc.follow('\\b' + names[2] + '\\b')
         tc.url(self._tester.url + '/admin/versioncontrol/repository/' + names[2])
-        tc.formvalue('trac-modrepos', 'name', names[0])
+        tc.formvalue('edit', 'name', names[0])
         tc.submit('save')
         tc.find('The repository "%s" already exists.' % names[0])
         tc.notfind(internal_error)
@@ -262,14 +262,14 @@ class RegressionTestTicket11355(FunctionalTwillTestCaseSetup):
         # Save unmodified form and redirect back to listing page
         tc.follow(r"\b%s\b" % name)
         tc.url(self._tester.url + '/admin/versioncontrol/repository/' + name)
-        tc.submit('save', formname='trac-modrepos')
+        tc.submit('save', formname='edit')
         tc.url(self._tester.url + '/admin/versioncontrol/repository')
         tc.find("Your changes have been saved.")
 
         # Warning is added when repository dir is not an absolute path
         tc.follow(r"\b%s\b" % name)
         tc.url(self._tester.url + '/admin/versioncontrol/repository/' + name)
-        tc.formvalue('trac-modrepos', 'dir', os.path.basename(dir))
+        tc.formvalue('edit', 'dir', os.path.basename(dir))
         tc.submit('save')
         tc.url(self._tester.url + '/admin/versioncontrol/repository/' + name)
         tc.find('The repository directory must be an absolute path.')

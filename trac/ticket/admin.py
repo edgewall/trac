@@ -11,7 +11,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from trac.admin.api import AdminCommandError, IAdminCommandProvider, \
                            IAdminPanelProvider, console_date_format, \
@@ -22,7 +22,7 @@ from trac.resource import ResourceNotFound
 from trac.ticket import model
 from trac.util import getuser
 from trac.util.datefmt import utc, parse_date, format_date, format_datetime, \
-                              get_datetime_format_hint, user_time
+                              get_datetime_format_hint, to_datetime, user_time
 from trac.util.text import print_table, printout, exception_to_unicode
 from trac.util.translation import _, N_, gettext
 from trac.web.chrome import Chrome, add_notice, add_warning
@@ -257,10 +257,11 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     perm.require('MILESTONE_MODIFY')
                     mil.name = name = req.args.get('name')
                     mil.due = mil.completed = None
-                    due = req.args.get('duedate', '')
-                    if due:
-                        mil.due = user_time(req, parse_date, due,
-                                            hint='datetime')
+                    if 'due' in req.args:
+                        duedate = req.args.get('duedate')
+                        mil.due = user_time(req, parse_date, duedate,
+                                            hint='datetime') \
+                                  if duedate else None
                     if req.args.get('completed', False):
                         completed = req.args.get('completeddate', '')
                         mil.completed = user_time(req, parse_date, completed,
@@ -280,8 +281,16 @@ class MilestoneAdminPanel(TicketAdminPanel):
                 elif req.args.get('cancel'):
                     req.redirect(req.href.admin(cat, page))
 
+            now = datetime.now(req.tz)
+            default_due = datetime(now.year, now.month, now.day, 18)
+            if now.hour > 18:
+                default_due += timedelta(days=1)
+            default_due = to_datetime(default_due, req.tz)
             Chrome(self.env).add_wiki_toolbars(req)
-            data = {'view': 'detail', 'milestone': mil}
+            data = {'view': 'detail',
+                    'milestone': mil,
+                    'default_due': default_due
+            }
 
         else:
             ticket_default = self.config.get('ticket', 'default_milestone')

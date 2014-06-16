@@ -24,7 +24,7 @@
     <h2>Manage Versions <span py:if="view == 'list'" class="trac-count">(${len(versions)})</span></h2>
 
     <py:choose test="view">
-      <form py:when="'detail'" class="mod" id="modifyversion" method="post" action="">
+      <form py:when="'detail'" id="edit" class="mod" method="post" action="">
         <fieldset>
           <legend>Modify Version:</legend>
           <div class="field">
@@ -47,7 +47,7 @@
                 Description (you may use <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here):
               </label>
               <p>
-                <textarea id="description" name="description" class="wikitext trac-resizable" rows="6" cols="60">
+                <textarea id="description" name="description" class="wikitext trac-resizable" rows="8" cols="78">
 $version.description</textarea>
               </p>
             </fieldset>

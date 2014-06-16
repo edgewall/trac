@@ -752,9 +752,10 @@ class MilestoneModule(Component):
         milestone.description = req.args.get('description', '')
 
         if 'due' in req.args:
-            due = req.args.get('duedate', '')
-            milestone.due = user_time(req, parse_date, due, hint='datetime') \
-                            if due else None
+            duedate = req.args.get('duedate')
+            milestone.due = user_time(req, parse_date, duedate,
+                                      hint='datetime') \
+                            if duedate else None
         else:
             milestone.due = None
 
