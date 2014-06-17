@@ -416,11 +416,6 @@ class Formatter(object):
 
     flavor = 'default'
 
-    # 0.10 compatibility
-    INTERTRAC_SCHEME = WikiParser.INTERTRAC_SCHEME
-    QUOTED_STRING = WikiParser.QUOTED_STRING
-    LINK_SCHEME = WikiParser.LINK_SCHEME
-
     def __init__(self, env, context):
         """Note: `req` is still temporarily used."""
         self.env = env
