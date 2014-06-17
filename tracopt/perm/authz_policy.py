@@ -216,28 +216,29 @@ class AuthzPolicy(Component):
         self.authz_mtime = os.path.getmtime(self.get_authz_file)
 
     def normalise_resource(self, resource):
+        def to_descriptor(resource):
+            id = resource.id
+            return '%s:%s@%s' % (resource.realm or '*',
+                                 id if id is not None else '*',
+                                 resource.version or '*')
+
         def flatten(resource):
             if not resource:
                 return ['*:*@*']
-            if not (resource.realm or resource.id):
-                return ['%s:%s@%s' % (resource.realm or '*',
-                                      resource.id or '*',
-                                      resource.version or '*')]
+            descriptor = to_descriptor(resource)
+            if not resource.realm and resource.id is None:
+                return [descriptor]
             # XXX Due to the mixed functionality in resource we can end up with
             # ticket, ticket:1, ticket:1@10. This code naively collapses all
             # subsets of the parent resource into one. eg. ticket:1@10
             parent = resource.parent
-            while parent and (resource.realm == parent.realm or
-                              (resource.realm == parent.realm and
-                               resource.id == parent.id)):
+            while parent and resource.realm == parent.realm:
                 parent = parent.parent
             if parent:
-                parent = flatten(parent)
+                return flatten(parent) + [descriptor]
             else:
-                parent = []
-            return parent + ['%s:%s@%s' % (resource.realm or '*',
-                                           resource.id or '*',
-                                           resource.version or '*')]
+                return [descriptor]
+
         return '/'.join(flatten(resource))
 
     def authz_permissions(self, resource_key, username):
