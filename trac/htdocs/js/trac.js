@@ -164,22 +164,4 @@
     textarea.rows = rows;
   }
 
-  // The following are defined for backwards compatibility with releases prior
-  // to Trac 0.11
-
-  window.addEvent = function(elem, type, func) {
-    $(elem).bind(type, func);
-  }
-  window.addHeadingLinks = function(container, title) {
-    $.each(["h1", "h2", "h3", "h4", "h5", "h6"], function() {
-      $(this, container).addAnchor(title);
-    });
-  }
-  window.enableControl = function(id, enabled) {
-    $("#" + id).enable(enabled);
-  }
-  window.getAncestorByTagName = function(elem, tagName) {
-    return $(elem).parents(tagName).get(0);
-  }
-
 })(jQuery);
