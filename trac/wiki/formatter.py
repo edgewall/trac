@@ -417,11 +417,10 @@ class Formatter(object):
     flavor = 'default'
 
     def __init__(self, env, context):
-        """Note: `req` is still temporarily used."""
         self.env = env
         self.context = context.child()
         self.context.set_hints(disable_warnings=True)
-        self.req = context.req
+        self.req = context.req  # Deprecated and will be removed in 1.3.1
         self.href = context.href
         self.resource = context.resource
         self.perm = context.perm
@@ -735,8 +734,7 @@ class Formatter(object):
             return self._make_ext_link(url, label, title)
 
     def _make_ext_link(self, url, text, title=''):
-        local_url = self.env.project_url or \
-                    (self.req or self.env).abs_href.base
+        local_url = self.env.project_url or self.env.abs_href.base
         if not url.startswith(local_url):
             return tag.a(tag.span(u'\u200b', class_="icon"), text,
                          class_="ext-link", href=url, title=title or None)
