@@ -372,8 +372,12 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     """, (milestone.name,))[0][0])
                 for milestone in model.Milestone.select(self.env)]
 
+            query_href = lambda name: req.href.query({'groupby': 'status',
+                                                      'milestone': name})
+
             data = {'view': 'list',
                     'milestones': milestones,
+                    'query_href': query_href,
                     'ticket_default': ticket_default,
                     'retarget_default': retarget_default}
 

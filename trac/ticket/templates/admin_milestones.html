@@ -86,7 +86,9 @@
                   <input type="radio" name="retarget_default" value="$milestone.name"
                          checked="${milestone.name==retarget_default or None}" />
                 </td>
-                <td class="num">${ticket_count}</td>
+                <td class="num">
+                  <a href="${query_href(milestone.name)}">${ticket_count}</a>
+                </td>
               </tr></tbody>
             </table>
             <div class="buttons">
