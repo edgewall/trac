@@ -43,7 +43,7 @@
         py:with="disabled = 'disabled' if can_modify is False else None;
                  readonly = 'readonly' if can_modify is False else None">
     <fieldset py:strip="not compact">
-      <legend py:if="compact">Modify Milestone:</legend>
+      <legend py:if="compact" py:content="'Modify Milestone:' if can_modify else 'View Milestone:'"></legend>
       <div class="field">
         <input type="hidden" name="id" value="$milestone.name" />
         <input type="hidden" name="action" value="edit" />
