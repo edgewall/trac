@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2004-2009 Edgewall Software
+# Copyright (C) 2004-2014 Edgewall Software
 # Copyright (C) 2004 Daniel Lundin <daniel@edgewall.com>
 # Copyright (C) 2004-2006 Christopher Lenz <cmlenz@gmx.de>
 # Copyright (C) 2006 Jonas Borgström <jonas@edgewall.com>
@@ -18,7 +18,6 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
-import sys
 import time
 
 from trac.admin.api import console_date_format, get_console_locale
@@ -365,11 +364,11 @@ class SessionAdmin(Component):
 
     def _split_sid(self, sid):
         if sid.endswith(':0'):
-            return (sid[:-2], 0)
+            return sid[:-2], 0
         elif sid.endswith(':1'):
-            return (sid[:-2], 1)
+            return sid[:-2], 1
         else:
-            return (sid, 1)
+            return sid, 1
 
     def _get_sids(self):
         rows = self.env.db_query("SELECT sid, authenticated FROM session")
@@ -395,7 +394,7 @@ class SessionAdmin(Component):
         for sid, authenticated, last_visit, name, email in rows:
             if all_anon and not authenticated or all_auth and authenticated \
                     or (sid, authenticated) in sids:
-                yield (sid, authenticated, last_visit, name, email)
+                yield sid, authenticated, last_visit, name, email
 
     def _complete_list(self, args):
         all_sids = self._get_sids() + ['*', 'anonymous', 'authenticated']

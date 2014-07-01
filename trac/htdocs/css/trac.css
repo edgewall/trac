@@ -137,8 +137,12 @@ fieldset {
  box-shadow: .1em .1em 1em 0 #E7E7E7 inset;
  padding: 1em;
 }
-p.hint, span.hint { color: #666; font-size: 85%; font-style: italic; margin: .5em 0;
-  padding-left: 1em;
+p.hint, span.hint {
+ color: #666;
+ font-size: 85%;
+ font-style: italic;
+ margin: .5em 0;
+ padding-left: 1em;
 }
 p.help { color: #666; font-size: 90%; margin: 1em .5em .5em; }
 legend {
@@ -366,11 +370,11 @@ input[type=submit].trac-delete:hover {
 
 /* Footer */
 #footer {
-  clear: both;
-  color: #bbb;
-  font-size: 10px;
-  height: 31px;
-  padding: .25em 0;
+ clear: both;
+ color: #bbb;
+ font-size: 10px;
+ height: 31px;
+ padding: .25em 0;
 }
 #footer :link, #footer :visited { color: #bbb; }
 #footer hr { display: none }
@@ -378,15 +382,15 @@ input[type=submit].trac-delete:hover {
 #footer #tracpowered:hover { background: transparent }
 #footer p { margin: 0 }
 #footer p.left {
-  float: left;
-  margin-left: 1em;
-  padding: 0 1em;
-  border-left: 1px solid #d7d7d7;
-  border-right: 1px solid #d7d7d7;
+ float: left;
+ margin-left: 1em;
+ padding: 0 1em;
+ border-left: 1px solid #d7d7d7;
+ border-right: 1px solid #d7d7d7;
 }
 #footer p.right {
-  float: right;
-  text-align: right;
+ float: right;
+ text-align: right;
 }
 
 /* Container for all the elements in the page, usually single child of the body element */
@@ -707,14 +711,14 @@ table.listing pre { white-space: pre-wrap }
 /* Auto-completion interface */
 .suggestions { background: #fff; border: 1px solid #886; color: #222; }
 .suggestions ul {
-  font-family: sans-serif;
-  max-height: 20em;
-  min-height: 3em;
-  list-style: none;
-  margin: 0;
-  overflow: auto;
-  padding: 0;
-  width: 440px;
+ font-family: sans-serif;
+ max-height: 20em;
+ min-height: 3em;
+ list-style: none;
+ margin: 0;
+ overflow: auto;
+ padding: 0;
+ width: 440px;
 }
 * html .suggestions ul { height: 10em; }
 .suggestions li { background: #fff; cursor: pointer; padding: 2px 5px }
@@ -729,9 +733,9 @@ table.listing pre { white-space: pre-wrap }
  margin: 1em 0;
 }
 #content.error div.message pre, div.system-message pre {
-  margin-left: 1em;
-  overflow: hidden;
-  white-space: normal;
+ margin-left: 1em;
+ overflow: hidden;
+ white-space: normal;
 }
 
 div.system-message p { margin: 0 }
@@ -889,7 +893,7 @@ div.system-message .trac-close-msg:hover {
  .nav, form, .buttons form, form .buttons, form .inlinebuttons,
  .noprint, .trac-nav, .trac-topnav,
  #attachments > div.attachments > p {
-   display: none;
+  display: none;
  }
  form.printableform { display: block }
  div.code pre { white-space: pre-wrap }

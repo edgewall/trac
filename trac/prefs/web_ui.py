@@ -83,7 +83,8 @@ class PreferencesModule(Component):
             self.log.warn("Unknown preference panel %r", panel_id)
             raise HTTPNotFound(_("Unknown preference panel"))
 
-        template, data = chosen_provider.render_preference_panel(req, panel_id)
+        template, data = chosen_provider.render_preference_panel(req,
+                                                                 panel_id)
         data.update({'active_panel': panel_id, 'panels': panels})
 
         add_stylesheet(req, 'common/css/prefs.css')
@@ -92,14 +93,14 @@ class PreferencesModule(Component):
     # IPreferencePanelProvider methods
 
     def get_preference_panels(self, req):
-        yield (None, _("General"))
-        yield ('datetime', _("Date & Time"))
-        yield ('keybindings', _("Keyboard Shortcuts"))
-        yield ('userinterface', _("User Interface"))
+        yield None, _("General")
+        yield 'datetime', _("Date & Time")
+        yield 'keybindings', _("Keyboard Shortcuts")
+        yield 'userinterface', _("User Interface")
         if Locale or 'TRAC_ADMIN' in req.perm:
-            yield ('language', _("Language"))
+            yield 'language', _("Language")
         if not req.authname or req.authname == 'anonymous':
-            yield ('advanced', _("Advanced"))
+            yield 'advanced', _("Advanced")
 
     def render_preference_panel(self, req, panel):
         if req.method == 'POST':
