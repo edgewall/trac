@@ -62,8 +62,7 @@
           </label>
           <label>
             <input type="text" id="duedate" name="duedate"
-                   class="${'trac-datetimepicker' if not readonly else None}"
-                   size="${len(datetime_hint)}"
+                   class="trac-datetimepicker" size="${len(datetime_hint)}"
                    value="${format_datetime(milestone.due or default_due)}"
                    readonly="$readonly"
                    title="${_('Format: %(datehint)s', datehint=datetime_hint)}" />
@@ -78,8 +77,7 @@
           </label>
           <label>
             <input type="text" id="completeddate" name="completeddate"
-                   class="${'trac-datetimepicker' if not readonly else None}"
-                   size="${len(datetime_hint)}"
+                   class="trac-datetimepicker" size="${len(datetime_hint)}"
                    value="${format_datetime(milestone.completed)}"
                    readonly="$readonly"
                    title="${_('Format: %(datehint)s', datehint=datetime_hint)}" />
