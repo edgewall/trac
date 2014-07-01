@@ -77,7 +77,8 @@ form.mod fieldset textarea#description {
 form.mod fieldset div.trac-resizable { width: 100%; }
 form.mod .field { margin: .5em 0; }
 form .field em { color: #888; font-size: smaller }
-form .field .disabled em { color: #d7d7d7 }
+form .field .disabled em,
+form .field input[readonly] + span.hint { color: #d7d7d7 }
 
 table.listing { clear: none; }
 table.listing .default { text-align: center; width: 1% }
