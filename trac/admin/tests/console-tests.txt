@@ -54,7 +54,7 @@ resolution remove    Remove a resolution value
 session add          Create a session for the given sid
 session delete       Delete the session of the specified sid
 session list         List the name and email for the given sids
-session purge        Purge all anonymous sessions older than the given age or date
+session purge        Purge anonymous sessions older than the given age or date
 session set          Set the name or email attribute of the given sid
 severity add         Add a severity value option
 severity change      Change a severity value

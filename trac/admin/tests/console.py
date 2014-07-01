@@ -188,6 +188,8 @@ class TracadminTestCase(unittest.TestCase):
             'version': __version__,
             'date_format_hint': get_date_format_hint()
         })
+        self.assertTrue(all(len(line) < 80 for line in output.split('\n')),
+                        "Lines should be less than 80 characters in length.")
 
     # Locale test
 

@@ -358,8 +358,7 @@ class SessionAdmin(Component):
                self._complete_delete, self._do_delete)
 
         yield ('session purge', '<age>',
-               """Purge all anonymous sessions older than the given age or
-               date
+               """Purge anonymous sessions older than the given age or date
 
                Age may be specified as a relative time like "90 days ago", or
                as a date in the "%(datetime)s" or "%(iso8601)s" (ISO 8601)
