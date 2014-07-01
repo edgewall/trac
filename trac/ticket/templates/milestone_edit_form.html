@@ -56,8 +56,8 @@
         <legend py:if="not compact">Schedule</legend>
         <div class="field">
           <label>
-            <input type="checkbox" id="due" name="due" checked="${milestone.due or None}"
-                   disabled="$disabled" />
+            <input type="checkbox" id="due" name="due"
+                   checked="${milestone.due or None}" disabled="$disabled" />
             Due:<br />
           </label>
           <label>
@@ -87,7 +87,8 @@
         <div class="field">
           <py:if test="num_tickets and num_tickets != 0">
             <label>
-              <input type="checkbox" id="retarget" name="retarget" checked="${not milestone.completed or None}" />
+              <input type="checkbox" id="retarget" name="retarget"
+                     checked="${not milestone.completed or None}" />
               Retarget associated open tickets to milestone:
             </label>
             <select id="target" name="target">
