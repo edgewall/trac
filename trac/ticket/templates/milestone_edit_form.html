@@ -118,14 +118,14 @@
             <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here):
           </label>
           <p>
-            <textarea id="description" name="description"
+            <textarea id="description" name="description" readonly="$readonly"
                       class="wikitext trac-resizable" rows="8" cols="78">
 $milestone.description</textarea>
           </p>
         </fieldset>
       </div>
       <div class="buttons" py:choose="milestone.exists">
-        <input py:when="True" type="submit" name="save"
+        <input py:when="True" type="submit" name="save" disabled="$disabled"
                class="trac-disable-on-submit" value="${_('Submit changes')}" />
         <input py:otherwise="" type="submit" name="add"
                value="${_('Add milestone')}" />

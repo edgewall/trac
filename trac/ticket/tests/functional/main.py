@@ -778,38 +778,55 @@ class TestAdminMilestoneListing(FunctionalTwillTestCaseSetup):
 class TestAdminMilestoneDetail(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin modify milestone details"""
-        name = "DetailMilestone"
-        # Create a milestone
-        self._tester.create_milestone(name)
+        name = self._tester.create_milestone()
+
+        milestone_url = self._tester.url + '/admin/ticket/milestones'
+        def go_to_milestone_detail():
+            tc.go(milestone_url)
+            tc.url(milestone_url)
+            tc.follow(name)
+            tc.url(milestone_url + '/' + name)
 
         # Modify the details of the milestone
-        milestone_url = self._tester.url + "/admin/ticket/milestones"
-        tc.go(milestone_url)
-        tc.url(milestone_url)
-        tc.follow(name)
-        tc.url(milestone_url + '/' + name)
+        go_to_milestone_detail()
+        tc.formvalue('edit', 'due', True)
         tc.formvalue('edit', 'description', 'Some description.')
         tc.submit('save')
         tc.url(milestone_url)
 
-        # Make sure the milestone isn't closed
+        # Milestone is not closed
         self._tester.go_to_roadmap()
         tc.find(name)
 
-        # Cancel more modifications
-        tc.go(milestone_url)
-        tc.url(milestone_url)
-        tc.follow(name)
+        # Cancel more modifications and modification are not saved
+        go_to_milestone_detail()
         tc.formvalue('edit', 'description', '~~Some other description.~~')
         tc.submit('cancel')
         tc.url(milestone_url)
-
-        # Verify the correct modifications show up
         self._tester.go_to_roadmap()
         tc.find('Some description.')
         tc.follow(name)
         tc.find('Some description.')
 
+        # Milestone is readonly when user doesn't have MILESTONE_MODIFY
+        self._tester.logout()
+        self._testenv.grant_perm('user', 'TICKET_ADMIN')
+        self._tester.login('user')
+        go_to_milestone_detail()
+        try:
+            tc.find(r'<input[^>]+id="name"[^>]+readonly="readonly"')
+            tc.find(r'<input[^>]+id="due"[^>]+disabled="disabled"')
+            tc.find(r'<input[^>]+id="duedate"[^>]+readonly="readonly"')
+            tc.find(r'<input[^>]+id="completed"[^>]+disabled="disabled"')
+            tc.find(r'<input[^>]+id="completeddate"[^>]+readonly="readonly"')
+            tc.find(r'<textarea[^>]+id="description"[^>]+readonly="readonly"')
+            tc.find(r'<input[^>]+name="save"[^>]+disabled="disabled"')
+            tc.submit('cancel', 'edit')
+            tc.url(milestone_url)
+        finally:
+            self._tester.logout()
+            self._testenv.revoke_perm('user', 'TICKET_ADMIN')
+            self._tester.login('admin')
 
 class TestAdminMilestoneDue(FunctionalTwillTestCaseSetup):
     def runTest(self):
