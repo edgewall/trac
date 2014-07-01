@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 #
 # Copyright (C)2005-2009 Edgewall Software
@@ -181,7 +182,7 @@ class QueryContextManager(DbContextManager):
                 self.db.close()
 
 
-class Connection(object):
+class ConnectionBase(object):
     """Abstract base class for database connection classes."""
 
     __metaclass__ = ABCMeta

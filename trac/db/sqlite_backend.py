@@ -20,7 +20,7 @@ import weakref
 
 from trac.config import ListOption
 from trac.core import *
-from trac.db.api import Connection, IDatabaseConnector
+from trac.db.api import ConnectionBase, IDatabaseConnector
 from trac.db.util import ConnectionWrapper, IterableCursor
 from trac.env import ISystemInfoProvider
 from trac.util import get_pkginfo, getuser
@@ -256,7 +256,7 @@ class SQLiteConnector(Component):
         return dest_file
 
 
-class SQLiteConnection(Connection, ConnectionWrapper):
+class SQLiteConnection(ConnectionBase, ConnectionWrapper):
     """Connection wrapper for SQLite."""
 
     __slots__ = ['_active_cursors', '_eager']

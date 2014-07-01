@@ -20,7 +20,7 @@ from genshi import Markup
 
 from trac.core import *
 from trac.config import Option
-from trac.db.api import Connection, IDatabaseConnector, _parse_db_str
+from trac.db.api import ConnectionBase, IDatabaseConnector, _parse_db_str
 from trac.db.util import ConnectionWrapper, IterableCursor
 from trac.env import ISystemInfoProvider
 from trac.util import get_pkginfo, lazy
@@ -213,7 +213,7 @@ class PostgreSQLConnector(Component):
         return dest_file
 
 
-class PostgreSQLConnection(Connection, ConnectionWrapper):
+class PostgreSQLConnection(ConnectionBase, ConnectionWrapper):
     """Connection wrapper for PostgreSQL."""
 
     poolable = True
