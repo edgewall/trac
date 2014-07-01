@@ -87,7 +87,8 @@
                          checked="${milestone.name==retarget_default or None}" />
                 </td>
                 <td class="num">
-                  <a href="${query_href(milestone.name)}">${ticket_count}</a>
+                  <a py:strip="ticket_count == 0"
+                     href="${query_href(milestone.name)}">${ticket_count}</a>
                 </td>
               </tr></tbody>
             </table>

@@ -763,16 +763,21 @@ class TestAdminMilestoneDuplicates(FunctionalTwillTestCaseSetup):
 class TestAdminMilestoneListing(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin milestone listing."""
-        name = self._tester.create_milestone()
-        self._tester.create_ticket(info={'milestone': name})
+        name1 = self._tester.create_milestone()
+        self._tester.create_ticket(info={'milestone': name1})
+        name2 = self._tester.create_milestone()
 
         milestone_url = self._tester.url + '/admin/ticket/milestones'
         tc.go(milestone_url)
         tc.url(milestone_url)
         tc.find(r'<a href="/admin/ticket/milestones/%(name)s">%(name)s</a>'
-                % {'name': name})
+                % {'name': name1})
         tc.find(r'<a href="/query\?groupby=status&amp;milestone=%(name)s">'
-                r'1</a>' % {'name': name})
+                r'1</a>' % {'name': name1})
+        tc.find(r'<a href="/admin/ticket/milestones/%(name)s">%(name)s</a>'
+                % {'name': name2})
+        tc.notfind(r'<a href="/query\?groupby=status&amp;milestone=%(name)s">'
+                   r'0</a>' % {'name': name2})
 
 
 class TestAdminMilestoneDetail(FunctionalTwillTestCaseSetup):
