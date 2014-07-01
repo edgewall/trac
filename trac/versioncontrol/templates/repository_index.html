@@ -17,37 +17,38 @@ Template snippet for a table of repositories
     <xi:include href="dirlist_thead.html" />
     <tbody>
       <py:for each="idx, (reponame, repoinfo, repos, change, err, raw_href) in enumerate(repo.repositories)"
-              py:with="chgset_context = change and context.child('changeset', change.rev, parent=repos.resource);
-                       chgset_view = change and change.is_viewable(perm)">
+              py:with="chgset_context = entry.change and context.child('changeset', entry.change.rev, parent=repos.resource);
+                       chgset_view = entry.change and entry.change.is_viewable(perm)">
         <tr class="${'odd' if idx % 2 else 'even'}">
           <td class="name">
-            <em py:strip="not err">
+            <em py:strip="not entry.error">
               <strong py:strip="repoinfo.alias != ''">
                 <a class="dir" title="View Root Directory"
-                   href="${href.browser(repos.reponame if repos else reponame,
+                   href="${href.browser(entry.repos.reponame if entry.repos else entry.reponame,
                                         order=order if order != 'name' else None, desc=desc)}">$reponame</a>
               </strong>
             </em>
           </td>
           <td class="size">
-            <a py:if="raw_href" class="trac-ziplink" href="$raw_href" title="Download as Zip archive">&#8203;</a>
+            <a py:if="entry.raw_href" class="trac-ziplink" href="$entry.raw_href"
+               title="Download as Zip archive">&#8203;</a>
           </td>
           <td class="rev">
-            <py:if test="change and not err">
-              <a title="View Revision Log" href="${href.log(repos.reponame)}">${repos.display_rev(change.rev)}</a>
+            <py:if test="entry.change and not entry.error">
+              <a title="View Revision Log" href="${href.log(repos.reponame)}">${repos.display_rev(entry.change.rev)}</a>
               <a title="View Changeset" class="chgset" href="${href.changeset(change.rev, repos.reponame)}">&nbsp;</a>
             </py:if>
           </td>
-          <td class="age" style="${chgset_view and change and repo.timerange and 'border-color: rgb(%s,%s,%s)' %
-                                   repo.colorize_age(repo.timerange.relative(change.date)) or None}">
-            ${pretty_dateinfo(change.date, dateonly=True) if chgset_view else '&ndash;'}
+          <td class="age" style="${chgset_view and entry.change and repo.timerange and 'border-color: rgb(%s,%s,%s)' %
+                                   repo.colorize_age(repo.timerange.relative(entry.change.date)) or None}">
+            ${pretty_dateinfo(entry.change.date, dateonly=True) if chgset_view else '&ndash;'}
           </td>
-          <td class="author">${authorinfo_short(change.author) if chgset_view else '&ndash;'}</td>
-          <td class="change" py:choose="">
-            <py:when test="err"><em py:content="err"></em></py:when>
+          <td class="author">${authorinfo_short(entry.change.author) if chgset_view else '&ndash;'}</td>
+          <td class="entry.change" py:choose="">
+            <py:when test="entry.error"><em py:content="entry.error"></em></py:when>
             <py:when test="chgset_view" py:choose="">
-              <py:when test="wiki_format_messages">${wiki_to_oneliner(chgset_context, change.message, shorten=True)}</py:when>
-              <py:otherwise>${shorten_line(change.message)}</py:otherwise>
+              <py:when test="wiki_format_messages">${wiki_to_oneliner(chgset_context, entry.change.message, shorten=True)}</py:when>
+              <py:otherwise>${shorten_line(entry.change.message)}</py:otherwise>
             </py:when>
             <py:otherwise>&ndash;</py:otherwise>
           </td>
