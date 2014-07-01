@@ -20,14 +20,14 @@
 
 import time
 
-from trac.admin.api import console_date_format, get_console_locale
-from trac.core import TracError, Component, implements
+from trac.admin.api import AdminCommandError, IAdminCommandProvider, \
+                           console_date_format, get_console_locale
+from trac.core import Component, TracError, implements
 from trac.util import hex_entropy
-from trac.util.text import print_table
-from trac.util.translation import _
 from trac.util.datefmt import get_datetime_format_hint, format_date, \
                               parse_date, to_datetime, to_timestamp
-from trac.admin.api import IAdminCommandProvider, AdminCommandError
+from trac.util.text import print_table
+from trac.util.translation import _
 
 UPDATE_INTERVAL = 3600 * 24 # Update session last_visit time stamp after 1 day
 PURGE_AGE = 3600 * 24 * 90 # Purge session after 90 days idle
@@ -275,7 +275,7 @@ class Session(DetachedSession):
                       """, (sid,))
             elif len(authenticated_flags) == 1:
                 if not authenticated_flags[0]:
-                    # Update the anomymous session records so the session ID
+                    # Update the anonymous session records so the session ID
                     # becomes the user name, and set the authenticated flag.
                     self.env.log.debug("Promoting anonymous session %s to "
                                        "authenticated session for user %s",
@@ -301,7 +301,7 @@ class Session(DetachedSession):
         self._new = False
 
         self.sid = sid
-        self.bake_cookie(0) # expire the cookie
+        self.bake_cookie(0)  # expire the cookie
 
 
 class SessionAdmin(Component):
@@ -311,8 +311,8 @@ class SessionAdmin(Component):
 
     def get_admin_commands(self):
         hints = {
-           'datetime': get_datetime_format_hint(get_console_locale(self.env)),
-           'iso8601': get_datetime_format_hint('iso8601'),
+            'datetime': get_datetime_format_hint(get_console_locale(self.env)),
+            'iso8601': get_datetime_format_hint('iso8601'),
         }
         yield ('session list', '[sid[:0|1]] [...]',
                """List the name and email for the given sids

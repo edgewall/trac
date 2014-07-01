@@ -17,9 +17,9 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
-from datetime import datetime, timedelta
 import pkg_resources
 import re
+from datetime import datetime, timedelta
 
 from genshi.builder import tag
 
@@ -29,14 +29,14 @@ from trac.perm import IPermissionRequestor
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import as_int
 from trac.util.datefmt import format_date, format_datetime, format_time, \
-                              parse_date, to_utimestamp, to_datetime, utc, \
-                              pretty_timedelta, user_time, localtz
+                              localtz, parse_date, pretty_timedelta, \
+                              to_datetime, to_utimestamp, user_time, utc
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.web import IRequestHandler, IRequestFilter
-from trac.web.chrome import (Chrome, INavigationContributor, ITemplateProvider,
-                             add_link, add_stylesheet, auth_link, prevnext_nav,
-                             web_context)
+from trac.web.chrome import (Chrome, INavigationContributor,
+                             ITemplateProvider, add_link, add_stylesheet,
+                             auth_link, prevnext_nav, web_context)
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import concat_path_query_fragment, \
                                 split_url_into_path_query_fragment
@@ -95,8 +95,8 @@ class TimelineModule(Component):
         lastvisit = int(req.session.get('timeline.lastvisit', '0'))
 
         # indication of new events is unchanged when form is updated by user
-        revisit = any(a in req.args for a in ['update', 'from', 'daysback',
-                                              'author'])
+        revisit = any(a in req.args
+                      for a in ['update', 'from', 'daysback', 'author'])
         if revisit:
             lastvisit = int(req.session.get('timeline.nextlastvisit',
                                             lastvisit))
@@ -197,7 +197,7 @@ class TimelineModule(Component):
                     if (not include or author in include) \
                        and not author in exclude:
                         events.append(self._event_data(provider, event))
-            except Exception as e: # cope with a failure of that provider
+            except Exception as e:  # cope with a failure of that provider
                 self._provider_failure(e, req, provider, filters,
                                        [f[0] for f in available_filters])
 
@@ -369,17 +369,17 @@ class TimelineModule(Component):
     def _event_data(self, provider, event):
         """Compose the timeline event date from the event tuple and prepared
         provider methods"""
-        if len(event) == 6: # 0.10 events
+        if len(event) == 6:  # 0.10 events
             kind, url, title, date, author, markup = event
             data = {'url': url, 'title': title, 'description': markup}
             render = lambda field, context: data.get(field)
-        else: # 0.11 events
-            if len(event) == 5: # with special provider
+        else:  # 0.11 events
+            if len(event) == 5:  # with special provider
                 kind, date, author, data, provider = event
             else:
                 kind, date, author, data = event
             render = lambda field, context: \
-                    provider.render_timeline_event(context, field, event)
+                     provider.render_timeline_event(context, field, event)
         if not isinstance(date, datetime):
             date = datetime.fromtimestamp(date, utc)
         dateuid = to_utimestamp(date)
@@ -402,7 +402,7 @@ class TimelineModule(Component):
         current_filters = set(current_filters)
         other_filters = set(current_filters) - ep_filters
         if not other_filters:
-            other_filters = set(all_filters) -  ep_filters
+            other_filters = set(all_filters) - ep_filters
         args = [(a, req.args.get(a)) for a in ('from', 'format', 'max',
                                                'daysback')]
         href = req.href.timeline(args + [(f, 'on') for f in other_filters])

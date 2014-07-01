@@ -36,6 +36,7 @@ _TRUE_VALUES = ('yes', 'true', 'enabled', 'on', 'aye', '1', 1, True)
 
 _use_default = object()
 
+
 def _to_utf8(basestr):
     return to_unicode(basestr).encode('utf-8')
 
@@ -177,7 +178,8 @@ class Configuration(object):
 
         This includes options that have default values that haven't been
         overridden. If `compmgr` is specified, only return default option
-        values for components that are enabled in the given `ComponentManager`.
+        values for components that are enabled in the given
+        `ComponentManager`.
         """
         return self[section].options(compmgr)
 
@@ -405,9 +407,9 @@ class Section(object):
     def getbool(self, key, default=''):
         """Return the value of the specified option as boolean.
 
-        This method returns `True` if the option value is one of "yes", "true",
-        "enabled", "on", or non-zero numbers, ignoring case. Otherwise `False`
-        is returned.
+        This method returns `True` if the option value is one of "yes",
+        "true", "enabled", "on", or non-zero numbers, ignoring case.
+        Otherwise `False` is returned.
 
         Valid default input is a string or a bool. Returns a bool.
         """
@@ -428,8 +430,9 @@ class Section(object):
             return int(value)
         except ValueError:
             raise ConfigurationError(
-                    _('[%(section)s] %(entry)s: expected integer, got %(value)s',
-                      section=self.name, entry=key, value=repr(value)))
+                    _('[%(section)s] %(entry)s: expected integer,'
+                      ' got %(value)s', section=self.name, entry=key,
+                      value=repr(value)))
 
     def getfloat(self, key, default=''):
         """Return the value of the specified option as float.
@@ -446,8 +449,9 @@ class Section(object):
             return float(value)
         except ValueError:
             raise ConfigurationError(
-                    _('[%(section)s] %(entry)s: expected float, got %(value)s',
-                      section=self.name, entry=key, value=repr(value)))
+                    _('[%(section)s] %(entry)s: expected float,'
+                      ' got %(value)s', section=self.name, entry=key,
+                      value=repr(value)))
 
     def getlist(self, key, default='', sep=',', keep_empty=True):
         """Return a list of values that have been specified as a single
@@ -518,12 +522,14 @@ class Section(object):
     def remove(self, key):
         """Delete a key from this section.
 
-        Like for `set()`, the changes won't persist until `save()` gets called.
+        Like for `set()`, the changes won't persist until `save()` gets
+        called.
         """
         name_str = _to_utf8(self.name)
         if self.config.parser.has_section(name_str):
             self._cache.pop(key, None)
-            self.config.parser.remove_option(_to_utf8(self.name), _to_utf8(key))
+            self.config.parser.remove_option(_to_utf8(self.name),
+                                             _to_utf8(key))
 
 
 def _get_registry(cls, compmgr=None):
@@ -557,8 +563,8 @@ class ConfigSection(object):
         """Return the section registry, as a `dict` mapping section names to
         `ConfigSection` objects.
 
-        If `compmgr` is specified, only return sections for components that are
-        enabled in the given `ComponentManager`.
+        If `compmgr` is specified, only return sections for components that
+        are enabled in the given `ComponentManager`.
         """
         return _get_registry(ConfigSection, compmgr)
 
@@ -751,11 +757,12 @@ class ExtensionOption(Option):
 
 
 class OrderedExtensionsOption(ListOption):
-    """A comma separated, ordered, list of components implementing `interface`.
-    Can be empty.
+    """A comma separated, ordered, list of components implementing
+    `interface`. Can be empty.
 
     If `include_missing` is true (the default) all components implementing the
-    interface are returned, with those specified by the option ordered first."""
+    interface are returned, with those specified by the option ordered first.
+    """
 
     def __init__(self, section, name, interface, default=None,
                  include_missing=True, doc='', doc_domain='tracini'):
@@ -825,22 +832,22 @@ class ConfigurationAdmin(Component):
     def _do_get(self, section, option):
         if not self.config.has_option(section, option):
             raise AdminCommandError(
-                _("Option '%(option)s' doesn't exist in section '%(section)s'",
-                  option=option, section=section))
+                _("Option '%(option)s' doesn't exist in section"
+                  " '%(section)s'", option=option, section=section))
         printout(self.config.get(section, option))
 
     def _do_set(self, section, option, value):
         self.config.set(section, option, value)
         self.config.save()
         if section == 'inherit' and option == 'file':
-            self.config.parse_if_needed(force=True) # Full reload
+            self.config.parse_if_needed(force=True)  # Full reload
 
     def _do_remove(self, section, option):
         if not self.config.has_option(section, option):
             raise AdminCommandError(
-                _("Option '%(option)s' doesn't exist in section '%(section)s'",
-                  option=option, section=section))
+                _("Option '%(option)s' doesn't exist in section"
+                  " '%(section)s'", option=option, section=section))
         self.config.remove(section, option)
         self.config.save()
         if section == 'inherit' and option == 'file':
-            self.config.parse_if_needed(force=True) # Full reload
+            self.config.parse_if_needed(force=True)  # Full reload
