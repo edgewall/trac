@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2008-2013 Edgewall Software
+# Copyright (C) 2008-2014 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -17,8 +17,10 @@ It also handles twill's absense.
 """
 
 import os
-from os.path import abspath, dirname, join
 import sys
+import urllib
+import urlparse
+from os.path import abspath, dirname, join
 from pkg_resources import parse_version as pv
 try:
     from cStringIO import StringIO
@@ -160,7 +162,7 @@ if twill:
         html_file.write(b.get_html())
         html_file.close()
 
-        return filename
+        return urlparse.urljoin('file:', urllib.pathname2url(filename))
 
     # Twill isn't as helpful with errors as I'd like it to be, so we replace
     # the formvalue function.  This would be better done as a patch to Twill.
@@ -170,8 +172,8 @@ if twill:
         except (twill.errors.TwillAssertionError,
                 twill.utils.ClientForm.ItemNotFoundError) as e:
             filename = twill_write_html()
-            args = e.args + (filename,)
-            raise twill.errors.TwillAssertionError(*args)
+            raise twill.errors.TwillAssertionError('%s at %s' %
+                                                   (unicode(e), filename))
     tc.formvalue = better_formvalue
     tc.fv = better_formvalue
 
@@ -221,8 +223,8 @@ if twill:
             tcfind(what, flags)
         except twill.errors.TwillAssertionError as e:
             filename = twill_write_html()
-            args = e.args + (filename,)
-            raise twill.errors.TwillAssertionError(*args)
+            raise twill.errors.TwillAssertionError('%s at %s' %
+                                                   (unicode(e), filename))
     tc.find = better_find
 
     def better_notfind(what, flags='', tcnotfind=tc.notfind):
@@ -230,8 +232,8 @@ if twill:
             tcnotfind(what, flags)
         except twill.errors.TwillAssertionError as e:
             filename = twill_write_html()
-            args = e.args + (filename,)
-            raise twill.errors.TwillAssertionError(*args)
+            raise twill.errors.TwillAssertionError('%s at %s' %
+                                                   (unicode(e), filename))
     tc.notfind = better_notfind
 
     # Same for tc.url - no hint about what went wrong!
@@ -240,8 +242,8 @@ if twill:
             tcurl(should_be)
         except twill.errors.TwillAssertionError as e:
             filename = twill_write_html()
-            args = e.args + (filename,)
-            raise twill.errors.TwillAssertionError(*args)
+            raise twill.errors.TwillAssertionError('%s at %s' %
+                                                   (unicode(e), filename))
     tc.url = better_url
 else:
     b = tc = None
