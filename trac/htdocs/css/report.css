@@ -25,7 +25,6 @@
 
 .report div.reports { clear: both }
 
-
 .report div.reports h2 {
  /* taken from .wikipage h2 */
  border-bottom: 1px solid #ddd;
@@ -191,9 +190,9 @@ h2.report-result {
 .tickets tr.color2-even { background: #ffd; border-color: #dd8; color: #880 }
 .tickets tr.color3-odd  { background: #fbfbfb; border-color: #ddd; color: #444 }
 .tickets tr.color3-even { background: #f6f6f6; border-color: #ccc; color: #333 }
-.tickets tr.color4-odd { background: #e7ffff; border-color: #cee; color: #099 }
+.tickets tr.color4-odd  { background: #e7ffff; border-color: #cee; color: #099 }
 .tickets tr.color4-even { background: #dff; border-color: #bee; color: #099 }
-.tickets tr.color5-odd { background: #e7eeff; border-color: #cde; color: #469 }
+.tickets tr.color5-odd  { background: #e7eeff; border-color: #cde; color: #469 }
 .tickets tr.color5-even { background: #dde7ff; border-color: #cde; color: #469 }
 .tickets tr.color6-odd  { background: #f0f0f0; border-color: #ddd; color: #888 }
 .tickets tr.color6-even { background: #f7f7f7; border-color: #ddd; color: #888 }
@@ -219,7 +218,7 @@ table.tickets tbody tr.prio1 { background: #fdc; border-color: #e88 }
 table.tickets tbody tr.even.prio1 { background: #fed; border-color: #e99 }
 table.tickets tbody tr.prio2 { background: #ffb; border-color: #eea }
 table.tickets tbody tr.even.prio2 { background: #ffd; border-color: #dd8 }
-table.tickets tbody tr.prio3  { background: #fbfbfb; border-color: #ddd }
+table.tickets tbody tr.prio3 { background: #fbfbfb; border-color: #ddd }
 table.tickets tbody tr.even.prio3 { background: #f6f6f6; border-color: #ccc }
 table.tickets tbody tr.prio4 { background: #e7ffff; border-color: #cee }
 table.tickets tbody tr.even.prio4 { background: #dff; border-color: #bee }
@@ -228,10 +227,10 @@ table.tickets tbody tr.even.prio5 { background: #dde7ff }
 table.tickets tbody tr.prio6 { background: #f0f0f0; border-color: #ddd }
 table.tickets tbody tr.even.prio6 { background: #f7f7f7 }
 table.tickets tbody tr.fullrow th {
-  border: none;
-  vertical-align: middle;
-  text-align: center;
-  font-size: 85%;
+ border: none;
+ vertical-align: middle;
+ text-align: center;
+ font-size: 85%;
 }
 table.tickets tbody tr p:first-child { margin-top: 0 }
 table.tickets tbody tr p:last-child { margin-bottom: 0 }
@@ -250,10 +249,8 @@ table.tickets tbody tr p:last-child { margin-bottom: 0 }
 .batchmod_property { width: 100%; }
 .batchmod_required:before { content: " * "; }
 #batchmod_form fieldset input,
-#batchmod_form fieldset select,
-.batchmod_property,
-.batchmod_label {
-    font-size: 11px;
+#batchmod_form fieldset select, .batchmod_property, .batchmod_label {
+ font-size: 11px;
 }
 #batchmod_action { margin-top: 0; line-height: 2em; }
 #batchmod_form th {
