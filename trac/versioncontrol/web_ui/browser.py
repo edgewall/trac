@@ -514,6 +514,10 @@ class BrowserModule(Component):
                 continue
             try:
                 repos = rm.get_repository(reponame)
+            except TracError as err:
+                entry = (reponame, repoinfo, None, None,
+                         exception_to_unicode(err), None)
+            else:
                 if repos:
                     if not repos.is_viewable(context.perm):
                         continue
@@ -532,10 +536,7 @@ class BrowserModule(Component):
                              raw_href)
                 else:
                     entry = (reponame, repoinfo, None, None, u"\u2013", None)
-            except TracError as err:
-                entry = (reponame, repoinfo, None, None,
-                         exception_to_unicode(err), None)
-            if entry[4] is not None:   # Check permission in case of error
+            if entry[4] is not None:  # Check permission in case of error
                 root = Resource('repository', reponame).child('source', '/')
                 if 'BROWSER_VIEW' not in context.perm(root):
                     continue
