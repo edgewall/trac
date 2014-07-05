@@ -281,6 +281,40 @@ class CacheTestCase(unittest.TestCase):
                          rows[2])
         self.assertEqual((to_utimestamp(t[3]), 'joe', 'Add COPYING'), rows[3])
 
+    def test_sync_changeset_with_string_rev(self):  # ticket:11660
+
+        class MockCachedRepository(CachedRepository):
+            def db_rev(self, rev):
+                return '%010d' % rev
+
+        t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
+        t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)
+        repos = self.get_repos(get_changeset=lambda x: changesets[int(x)],
+                               youngest_rev=1)
+        changesets = [
+            Mock(Changeset, repos, 0, 'empty', 'joe', t1,
+                 get_changes=lambda: []),
+            Mock(Changeset, repos, 1, 'first', 'joe', t2,
+                 get_changes=lambda: []),
+            ]
+        cache = MockCachedRepository(self.env, repos, self.log)
+
+        cache.sync_changeset('0')   # not cached yet
+        cache.sync_changeset(u'1')  # not cached yet
+        rows = self.env.db_query(
+            "SELECT rev,author FROM revision ORDER BY rev")
+        self.assertEqual(2, len(rows))
+        self.assertEquals(('0000000000', 'joe'), rows[0])
+        self.assertEquals(('0000000001', 'joe'), rows[1])
+
+        cache.sync_changeset(u'0')  # cached
+        cache.sync_changeset('1')   # cached
+        rows = self.env.db_query(
+            "SELECT rev,author FROM revision ORDER BY rev")
+        self.assertEqual(2, len(rows))
+        self.assertEquals(('0000000000', 'joe'), rows[0])
+        self.assertEquals(('0000000001', 'joe'), rows[1])
+
     def test_get_changes(self):
         t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)
