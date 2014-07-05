@@ -58,12 +58,15 @@ class MockRepositoryConnector(Component):
                         get_content_type=lambda: 'application/octet-stream')
             return node
 
-        repos = Mock(Repository, params['name'], params, self.log,
-                     get_youngest_rev=lambda: 1,
-                     get_changeset=get_changeset,
-                     get_node=get_node,
-                     previous_rev=lambda rev, path='': None,
-                     next_rev=lambda rev, path='': None)
+        if params['name'] == 'raise':
+            raise TracError("")
+        else:
+            repos = Mock(Repository, params['name'], params, self.log,
+                         get_youngest_rev=lambda: 1,
+                         get_changeset=get_changeset,
+                         get_node=get_node,
+                         previous_rev=lambda rev, path='': None,
+                         next_rev=lambda rev, path='': None)
         return repos
 
 
@@ -95,6 +98,7 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
         provider.add_repository('(default)', '/', 'mock')
         provider.add_repository('allow', '/', 'mock')
         provider.add_repository('deny', '/', 'mock')
+        provider.add_repository('raise', '/', 'mock')
         self.bm = BrowserModule(self.env)
 
     def tearDown(self):
@@ -306,9 +310,12 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
 
         provider.remove_repository('allow')
         provider.remove_repository('(default)')
+        provider.remove_repository('raise')
         req = self.create_request(path_info='/browser/')
         self.assertRaises(ResourceNotFound, self.process_request, req)
         req = self.create_request(path_info='/browser/allow/')
+        self.assertRaises(ResourceNotFound, self.process_request, req)
+        req = self.create_request(path_info='/browser/raise')
         self.assertRaises(ResourceNotFound, self.process_request, req)
         req = self.create_request(path_info='/browser/deny/')
         self.assertRaises(PermissionError, self.process_request, req)

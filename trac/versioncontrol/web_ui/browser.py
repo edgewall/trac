@@ -535,7 +535,7 @@ class BrowserModule(Component):
             except TracError as err:
                 entry = (reponame, repoinfo, None, None,
                          exception_to_unicode(err), None)
-            if entry[-1] is not None:   # Check permission in case of error
+            if entry[4] is not None:   # Check permission in case of error
                 root = Resource('repository', reponame).child('source', '/')
                 if 'BROWSER_VIEW' not in context.perm(root):
                     continue
