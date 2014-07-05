@@ -101,7 +101,7 @@ class CachedRepository(Repository):
                       """, (to_utimestamp(cset.date), cset.author,
                             cset.message, self.id, srev))
             else:
-                self._insert_changeset(db, rev, cset)
+                self._insert_changeset(db, cset.rev, cset)
         return old_cset
 
     @cached('_metadata_id')
