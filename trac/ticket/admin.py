@@ -34,9 +34,9 @@ class TicketAdminPanel(Component):
 
     abstract = True
 
-    _label = (N_('(Undefined)'), N_('(Undefined)'))
+    _label = N_("(Undefined)"), N_("(Undefined)")
 
-    # i18n note: use gettext() whenever refering to the above as text labels,
+    # i18n note: use gettext() whenever referring to the above as text labels,
     #            and don't use it whenever using them as field names (after
     #            a call to `.lower()`)
 
@@ -72,7 +72,7 @@ def _save_config(config, req, log):
 class ComponentAdminPanel(TicketAdminPanel):
 
     _type = 'components'
-    _label = (N_('Component'), N_('Components'))
+    _label = N_("Component"), N_("Components")
 
     # TicketAdminPanel methods
 
@@ -90,7 +90,7 @@ class ComponentAdminPanel(TicketAdminPanel):
                     except self.env.db_exc.IntegrityError:
                         raise TracError(_('The component "%(name)s" already '
                                           'exists.', name=name))
-                    add_notice(req, _('Your changes have been saved.'))
+                    add_notice(req, _("Your changes have been saved."))
                     req.redirect(req.href.admin(cat, page))
                 elif req.args.get('cancel'):
                     req.redirect(req.href.admin(cat, page))
@@ -125,7 +125,7 @@ class ComponentAdminPanel(TicketAdminPanel):
                 elif req.args.get('remove'):
                     sel = req.args.get('sel')
                     if not sel:
-                        raise TracError(_('No component selected'))
+                        raise TracError(_("No component selected"))
                     if not isinstance(sel, list):
                         sel = [sel]
                     with self.env.db_transaction:
@@ -237,7 +237,7 @@ class ComponentAdminPanel(TicketAdminPanel):
 class MilestoneAdminPanel(TicketAdminPanel):
 
     _type = 'milestones'
-    _label = (N_('Milestone'), N_('Milestones'))
+    _label = N_("Milestone"), N_("Milestones")
 
     # IAdminPanelProvider methods
 
@@ -267,9 +267,9 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         mil.completed = user_time(req, parse_date, completed,
                                                   hint='datetime')
                         if mil.completed > datetime.now(utc):
-                            raise TracError(_('Completion date may not be in '
-                                              'the future'),
-                                            _('Invalid Completion Date'))
+                            raise TracError(_("Completion date may not be in "
+                                              "the future"),
+                                            _("Invalid Completion Date"))
                     mil.description = req.args.get('description', '')
                     try:
                         mil.update(author=req.authname)
@@ -289,8 +289,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
             Chrome(self.env).add_wiki_toolbars(req)
             data = {'view': 'detail',
                     'milestone': mil,
-                    'default_due': default_due
-            }
+                    'default_due': default_due}
 
         else:
             ticket_default = self.config.get('ticket', 'default_milestone')
@@ -476,7 +475,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
 class VersionAdminPanel(TicketAdminPanel):
 
     _type = 'versions'
-    _label = (N_('Version'), N_('Versions'))
+    _label = N_("Version"), N_("Versions")
 
     # TicketAdminPanel methods
 
@@ -492,7 +491,7 @@ class VersionAdminPanel(TicketAdminPanel):
                                              req.args.get('time'),
                                              hint='datetime')
                     else:
-                        ver.time = None # unset
+                        ver.time = None  # unset
                     ver.description = req.args.get('description')
                     try:
                         ver.update()
@@ -500,7 +499,7 @@ class VersionAdminPanel(TicketAdminPanel):
                         raise TracError(_('The version "%(name)s" already '
                                           'exists.', name=name))
 
-                    add_notice(req, _('Your changes have been saved.'))
+                    add_notice(req, _("Your changes have been saved."))
                     req.redirect(req.href.admin(cat, page))
                 elif req.args.get('cancel'):
                     req.redirect(req.href.admin(cat, page))
@@ -686,8 +685,8 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                         enum = self._enum_cls(self.env)
                         enum.name = name
                         enum.insert()
-                        add_notice(req, _('The %(field)s value "%(name)s" has '
-                                          'been added.',
+                        add_notice(req, _('The %(field)s value "%(name)s" '
+                                          'has been added.',
                                           field=label[0], name=name))
                         req.redirect(req.href.admin(cat, page))
                     else:
@@ -757,7 +756,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                 # Clear default
                 elif req.args.get('clear'):
                     self.log.info("Clearing default %s" % self._type)
-                    self.config.set('ticket', 'default_%s'  % self._type, '')
+                    self.config.set('ticket', 'default_%s' % self._type, '')
                     _save_config(self.config, req, self.log)
                     req.redirect(req.href.admin(cat, page))
 
@@ -768,11 +767,11 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
     # IAdminCommandProvider methods
 
     _command_help = {
-        'list': 'Show possible ticket %s',
-        'add': 'Add a %s value option',
-        'change': 'Change a %s value',
-        'remove': 'Remove a %s value',
-        'order': 'Move a %s value up or down in the list',
+        'list': "Show possible ticket %s",
+        'add': "Add a %s value option",
+        'change': "Change a %s value",
+        'remove': "Remove a %s value",
+        'order': "Move a %s value up or down in the list",
     }
 
     def get_admin_commands(self):
@@ -809,7 +808,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
 
     def _do_list(self):
         print_table([(e.name,) for e in self._enum_cls.select(self.env)],
-                    [_('Possible Values')])
+                    [_("Possible Values")])
 
     def _do_add(self, name):
         enum = self._enum_cls(self.env)
@@ -845,25 +844,25 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
 class PriorityAdminPanel(AbstractEnumAdminPanel):
     _type = 'priority'
     _enum_cls = model.Priority
-    _label = (N_('Priority'), N_('Priorities'))
+    _label = N_("Priority"), N_("Priorities")
 
 
 class ResolutionAdminPanel(AbstractEnumAdminPanel):
     _type = 'resolution'
     _enum_cls = model.Resolution
-    _label = (N_('Resolution'), N_('Resolutions'))
+    _label = N_("Resolution"), N_("Resolutions")
 
 
 class SeverityAdminPanel(AbstractEnumAdminPanel):
     _type = 'severity'
     _enum_cls = model.Severity
-    _label = (N_('Severity'), N_('Severities'))
+    _label = N_("Severity"), N_("Severities")
 
 
 class TicketTypeAdminPanel(AbstractEnumAdminPanel):
     _type = 'type'
     _enum_cls = model.Type
-    _label = (N_('Ticket Type'), N_('Ticket Types'))
+    _label = N_("Ticket Type"), N_("Ticket Types")
 
     _command_type = 'ticket_type'
     _command_help = {
@@ -883,16 +882,15 @@ class TicketAdmin(Component):
     # IAdminCommandProvider methods
 
     def get_admin_commands(self):
-        yield ('ticket remove', '<number>',
-               'Remove ticket',
+        yield ('ticket remove', '<number>', 'Remove ticket',
                None, self._do_remove)
 
     def _do_remove(self, number):
         try:
             number = int(number)
         except ValueError:
-            raise AdminCommandError(_('<number> must be a number'))
+            raise AdminCommandError(_("<number> must be a number"))
         with self.env.db_transaction:
             model.Ticket(self.env, number).delete()
-        printout(_('Ticket #%(num)s and all associated data removed.',
+        printout(_("Ticket #%(num)s and all associated data removed.",
                    num=number))
