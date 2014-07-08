@@ -1376,7 +1376,7 @@ msgstr "グループ:"
 
 #: trac/admin/templates/admin_perms.html:63
 msgid "Add a user or group to an existing permission group."
-msgstr "対象(ユーザやグループ)に権限グループを追加します。"
+msgstr "ユーザやグループを既存の権限グループに追加します。"
 
 #: trac/admin/templates/admin_perms.html:74
 #: trac/admin/templates/admin_perms.html:103
@@ -1385,7 +1385,7 @@ msgstr "対象"
 
 #: trac/admin/templates/admin_perms.html:85
 msgid "You don't have permission to revoke this action"
-msgstr "このアクションを無効にする権限を持っていません。"
+msgstr "このアクションを無効にする権限を持っていません"
 
 #: trac/admin/templates/admin_perms.html:91
 #, python-format

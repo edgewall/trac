@@ -650,13 +650,15 @@ msgstr "通知メールに使用する返信先アドレスを指定します。
 msgid ""
 "Email address(es) to always send notifications to,\n"
 "addresses can be seen by all recipients (Cc:)."
-msgstr "メールアドレスがすべての受信者から見えるように常に通知を送信するかどうかを指定します (Cc:)。"
+msgstr "通知を常に送信するメールアドレスを指定します。メールアドレスはすべての受信者が見ることができます (Cc:)。"
 
 #: trac/notification.py:81
 msgid ""
 "Email address(es) to always send notifications to,\n"
 "addresses do not appear publicly (Bcc:). (''since 0.10'')"
-msgstr "メールアドレスが公開状態で現れないように常に通知を送信するかどうかを指定します (Bcc:)。(''0.10 以降'')"
+msgstr ""
+"通知を常に送信するメールアドレスを指定します。メールアドレスは見えないようになります (Bcc:)。\n"
+"(''0.10 以降'')"
 
 #: trac/notification.py:85
 msgid ""
