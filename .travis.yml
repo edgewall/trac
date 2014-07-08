@@ -1,0 +1,26 @@
+language: python
+python:
+  - "2.6"
+  - "2.7_with_system_site_packages"
+env:
+  - "TRAC_TEST_DB_URI="
+  - "TRAC_TEST_DB_URI=sqlite:test.db"
+  - "TRAC_TEST_DB_URI=postgres://tracuser:password@localhost/trac?schema=tractest"
+  - "TRAC_TEST_DB_URI=mysql://tracuser:password@localhost/trac"
+before_install:
+  - sudo apt-get install -qq python-subversion
+  - psql -U postgres -c "CREATE USER tracuser NOSUPERUSER NOCREATEDB CREATEROLE PASSWORD 'password';"
+  - psql -U postgres -c "CREATE DATABASE trac OWNER tracuser;"
+  - mysql -u root -e "CREATE DATABASE trac DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;"
+  - mysql -u root -e "CREATE USER tracuser@localhost IDENTIFIED BY 'password';"
+  - mysql -u root -e "GRANT ALL ON trac.* TO tracuser@localhost; FLUSH PRIVILEGES;"
+install:
+  - pip install -q Genshi==0.7 Babel configobj Pygments docutils lxml pytz twill==0.9.1 psycopg2 MySQL-python
+  - echo ".uri = $TRAC_TEST_DB_URI" >Makefile.cfg
+script:
+  - make Trac.egg-info unit-test functional-test
+notifications:
+  email:
+    recipients:
+      - rjollos@gmail.com
+      - jun66j5@gmail.com
