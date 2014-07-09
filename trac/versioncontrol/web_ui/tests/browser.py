@@ -11,26 +11,21 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-import os.path
-import shutil
-import tempfile
 import unittest
 from datetime import datetime
 from cStringIO import StringIO
 
 import trac.tests.compat
 from trac.core import Component, TracError, implements
-from trac.perm import (
-    IPermissionPolicy, PermissionCache, PermissionError, PermissionSystem)
+from trac.perm import PermissionError
 from trac.resource import ResourceNotFound
 from trac.test import EnvironmentStub, Mock, MockPerm
-from trac.util import create_file
 from trac.util.datefmt import utc
 from trac.versioncontrol.api import (
     Changeset, DbRepositoryProvider, IRepositoryConnector, Node, NoSuchNode,
     Repository, RepositoryManager)
 from trac.versioncontrol.web_ui.browser import BrowserModule
-from tracopt.perm.authz_policy import AuthzPolicy
+from trac.web.tests.api import RequestHandlerPermissionsTestCaseBase
 
 
 class MockRepositoryConnector(Component):
@@ -70,12 +65,9 @@ class MockRepositoryConnector(Component):
         return repos
 
 
-class BrowserModulePermissionsTestCase(unittest.TestCase):
+class BrowserModulePermissionsTestCase(RequestHandlerPermissionsTestCaseBase):
 
-    def setUp(self):
-        self.path = tempfile.mkdtemp(prefix='trac-')
-        self.authz_file = os.path.join(self.path, 'authz_policy.conf')
-        create_file(self.authz_file, """\
+    authz_policy = """\
 [repository:*allow*@*/source:*deny*]
 anonymous = !BROWSER_VIEW, !FILE_VIEW
 
@@ -88,43 +80,19 @@ anonymous = BROWSER_VIEW, FILE_VIEW
 [repository:*deny*@*]
 anonymous = !BROWSER_VIEW, !FILE_VIEW
 
-""")
-        self.env = EnvironmentStub(enable=['trac.*', AuthzPolicy],
-                                   path=self.path)
-        self.env.config.set('authz_policy', 'authz_file', self.authz_file)
-        self.env.config.set('trac', 'permission_policies',
-                            'AuthzPolicy, DefaultPermissionPolicy')
+"""
+
+    def setUp(self):
+        super(BrowserModulePermissionsTestCase, self).setUp(BrowserModule)
         provider = DbRepositoryProvider(self.env)
         provider.add_repository('(default)', '/', 'mock')
         provider.add_repository('allow', '/', 'mock')
         provider.add_repository('deny', '/', 'mock')
         provider.add_repository('raise', '/', 'mock')
-        self.bm = BrowserModule(self.env)
 
     def tearDown(self):
         RepositoryManager(self.env).reload_repositories()
-        self.env.reset_db()
-        shutil.rmtree(self.path)
-
-    def create_request(self, authname='anonymous', **kwargs):
-        kw = {'perm': PermissionCache(self.env, authname), 'args': {},
-              'href': self.env.href, 'abs_href': self.env.abs_href,
-              'tz': utc, 'locale': None, 'chrome': {},
-              'get_header': lambda v: None}
-        kw.update(kwargs)
-        return Mock(**kw)
-
-    def grant_perm(self, username, *actions):
-        permsys = PermissionSystem(self.env)
-        for action in actions:
-            permsys.grant_permission(username, action)
-
-    def get_navigation_items(self, req):
-        return self.bm.get_navigation_items(req)
-
-    def process_request(self, req):
-        self.assertTrue(self.bm.match_request(req))
-        return self.bm.process_request(req)
+        super(BrowserModulePermissionsTestCase, self).tearDown()
 
     def test_get_navigation_items_with_browser_view(self):
         self.grant_perm('anonymous', 'BROWSER_VIEW')
