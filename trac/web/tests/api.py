@@ -11,11 +11,62 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from trac.test import Mock
-from trac.web.api import Request, RequestDone, parse_arg_list
-
-from StringIO import StringIO
+import os.path
+import shutil
+import tempfile
 import unittest
+from StringIO import StringIO
+
+from trac import perm
+from trac.test import EnvironmentStub, Mock, locale_en
+from trac.util import create_file
+from trac.util.datefmt import utc
+from trac.web.api import Request, RequestDone, parse_arg_list
+from tracopt.perm.authz_policy import AuthzPolicy
+
+
+class RequestHandlerPermissionsTestCaseBase(unittest.TestCase):
+
+    authz_policy = None
+
+    def setUp(self, module_class):
+        self.path = tempfile.mkdtemp(prefix='trac-')
+        if self.authz_policy is not None:
+            self.authz_file = os.path.join(self.path, 'authz_policy.conf')
+            create_file(self.authz_file, self.authz_policy)
+            self.env = EnvironmentStub(enable=['trac.*', AuthzPolicy],
+                                       path=self.path)
+            self.env.config.set('authz_policy', 'authz_file', self.authz_file)
+            self.env.config.set('trac', 'permission_policies',
+                                'AuthzPolicy, DefaultPermissionPolicy')
+        else:
+            self.env = EnvironmentStub(path=self.path)
+        self.req_handler = module_class(self.env)
+
+    def tearDown(self):
+        self.env.reset_db()
+        shutil.rmtree(self.path)
+
+    def create_request(self, authname='anonymous', **kwargs):
+        kw = {'perm': perm.PermissionCache(self.env, authname), 'args': {},
+              'href': self.env.href, 'abs_href': self.env.abs_href,
+              'tz': utc, 'locale': None, 'lc_time': locale_en,
+              'chrome': {'notices': [], 'warnings': []},
+              'method': None, 'get_header': lambda v: None}
+        kw.update(kwargs)
+        return Mock(**kw)
+
+    def get_navigation_items(self, req):
+        return self.req_handler.get_navigation_items(req)
+
+    def grant_perm(self, username, *actions):
+        permsys = perm.PermissionSystem(self.env)
+        for action in actions:
+            permsys.grant_permission(username, action)
+
+    def process_request(self, req):
+        self.assertTrue(self.req_handler.match_request(req))
+        return self.req_handler.process_request(req)
 
 
 class RequestTestCase(unittest.TestCase):

@@ -14,10 +14,10 @@
 import unittest
 
 from trac.core import ComponentManager
-from trac.perm import PermissionCache, PermissionSystem
-from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
+from trac.test import EnvironmentStub, Mock, MockPerm
 from trac.tests.contentgen import random_sentence
 from trac.ticket.roadmap import *
+from trac.web.tests.api import RequestHandlerPermissionsTestCaseBase
 
 
 class TicketGroupStatsTestCase(unittest.TestCase):
@@ -185,35 +185,10 @@ class MilestoneModuleTestCase(unittest.TestCase):
         self.assertEqual(milestone.description, results[0][4])
 
 
-class MilestoneModulePermissionsTestCase(unittest.TestCase):
+class MilestoneModulePermissionsTestCase(RequestHandlerPermissionsTestCaseBase):
 
     def setUp(self):
-        self.env = EnvironmentStub()
-        self.mm = MilestoneModule(self.env)
-
-    def tearDown(self):
-        self.env.reset_db()
-
-    def create_request(self, authname='anonymous', **kwargs):
-        kw = {'perm': PermissionCache(self.env, authname), 'args': {},
-              'href': self.env.href, 'abs_href': self.env.abs_href,
-              'tz': utc, 'locale': None, 'lc_time': locale_en,
-              'chrome': {'notices': [], 'warnings': []},
-              'method': None, 'get_header': lambda v: None}
-        kw.update(kwargs)
-        return Mock(**kw)
-
-    def grant_perm(self, username, *actions):
-        permsys = PermissionSystem(self.env)
-        for action in actions:
-            permsys.grant_permission(username, action)
-
-    def get_navigation_items(self, req):
-        return self.mm.get_navigation_items(req)
-
-    def process_request(self, req):
-        self.assertTrue(self.mm.match_request(req))
-        return self.mm.process_request(req)
+        super(MilestoneModulePermissionsTestCase, self).setUp(MilestoneModule)
 
     def test_milestone_notfound_with_milestone_create(self):
         self.grant_perm('anonymous', 'MILESTONE_VIEW')
