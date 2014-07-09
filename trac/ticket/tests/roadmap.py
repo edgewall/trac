@@ -14,7 +14,8 @@
 import unittest
 
 from trac.core import ComponentManager
-from trac.test import EnvironmentStub, Mock, MockPerm
+from trac.perm import PermissionCache, PermissionSystem
+from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
 from trac.tests.contentgen import random_sentence
 from trac.ticket.roadmap import *
 
@@ -184,6 +185,56 @@ class MilestoneModuleTestCase(unittest.TestCase):
         self.assertEqual(milestone.description, results[0][4])
 
 
+class MilestoneModulePermissionsTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.mm = MilestoneModule(self.env)
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def create_request(self, authname='anonymous', **kwargs):
+        kw = {'perm': PermissionCache(self.env, authname), 'args': {},
+              'href': self.env.href, 'abs_href': self.env.abs_href,
+              'tz': utc, 'locale': None, 'lc_time': locale_en,
+              'chrome': {'notices': [], 'warnings': []},
+              'method': None, 'get_header': lambda v: None}
+        kw.update(kwargs)
+        return Mock(**kw)
+
+    def grant_perm(self, username, *actions):
+        permsys = PermissionSystem(self.env)
+        for action in actions:
+            permsys.grant_permission(username, action)
+
+    def get_navigation_items(self, req):
+        return self.mm.get_navigation_items(req)
+
+    def process_request(self, req):
+        self.assertTrue(self.mm.match_request(req))
+        return self.mm.process_request(req)
+
+    def test_milestone_notfound_with_milestone_create(self):
+        self.grant_perm('anonymous', 'MILESTONE_VIEW')
+        self.grant_perm('anonymous', 'MILESTONE_CREATE')
+
+        req = self.create_request(path_info='/milestone/milestone5')
+        res = self.process_request(req)
+
+        self.assertEqual('milestone_edit.html', res[0])
+        self.assertEqual('milestone5', res[1]['milestone'].name)
+        self.assertEqual("Milestone milestone5 does not exist. You can"
+                         " create it here.", req.chrome['notices'][0])
+
+    def test_milestone_notfound_without_milestone_create(self):
+        self.grant_perm('anonymous', 'MILESTONE_VIEW')
+
+        req = self.create_request(path_info='/milestone/milestone5')
+
+        self.assertRaises(ResourceNotFound, self.process_request, req)
+
+
 def in_tlist(ticket, list):
     return len([t for t in list if t['id'] == ticket.id]) > 0
 
@@ -193,6 +244,7 @@ def suite():
     suite.addTest(unittest.makeSuite(TicketGroupStatsTestCase))
     suite.addTest(unittest.makeSuite(DefaultTicketGroupStatsProviderTestCase))
     suite.addTest(unittest.makeSuite(MilestoneModuleTestCase))
+    suite.addTest(unittest.makeSuite(MilestoneModulePermissionsTestCase))
     return suite
 
 
