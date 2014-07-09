@@ -94,11 +94,11 @@ $info.description</textarea>
               </p>
             </fieldset>
           </div>
-          <div class="buttons">
-            <input py:if="info.editable" type="submit" name="save" class="trac-disable-on-submit" value="${_('Submit changes')}"/>
-            <input type="submit" name="cancel" value="${_('Cancel')}"/>
-          </div>
         </fieldset>
+        <div class="buttons">
+          <input py:if="info.editable" type="submit" name="save" class="trac-disable-on-submit" value="${_('Submit changes')}" />
+          <input type="submit" name="cancel" value="${_('Cancel')}" />
+        </div>
       </form>
 
       <py:otherwise>
