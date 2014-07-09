@@ -861,6 +861,9 @@ class MilestoneModule(Component):
                 'TICKET_ADMIN' in req.perm)
         else:
             req.perm(milestone.resource).require('MILESTONE_CREATE')
+            if milestone.name:
+                add_notice(req, _("Milestone %(name)s does not exist. You can"
+                                  " create it here.", name=milestone.name))
 
         chrome = Chrome(self.env)
         chrome.add_jquery_ui(req)
