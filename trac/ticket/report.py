@@ -276,13 +276,10 @@ class ReportModule(Component):
             title += ' (copy)'
 
         if copy or id == -1:
-            data = {'title': _('Create New Report'),
-                    'action': 'new',
+            data = {'action': 'new',
                     'error': None}
         else:
-            data = {'title': _('Edit Report {%(num)d} %(title)s', num=id,
-                               title=title),
-                    'action': 'edit',
+            data = {'action': 'edit',
                     'error': req.args.get('error')}
 
         data['report'] = {'id': id, 'title': title,
