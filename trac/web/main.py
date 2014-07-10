@@ -43,7 +43,7 @@ from trac.loader import get_plugin_info, match_plugins_to_frames
 from trac.perm import PermissionCache, PermissionError
 from trac.resource import ResourceNotFound
 from trac.util import arity, get_frame_info, get_last_traceback, hex_entropy, \
-                      read_file, safe_repr, translation
+                      lazy, read_file, safe_repr, translation
 from trac.util.concurrency import threading
 from trac.util.datefmt import format_datetime, localtz, timezone, user_time
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode
@@ -175,7 +175,7 @@ class RequestDispatcher(Component):
                 # Select the component that should handle the request
                 chosen_handler = None
                 try:
-                    for handler in self.handlers:
+                    for handler in self._request_handlers.values():
                         if handler.match_request(req):
                             chosen_handler = handler
                             break
@@ -267,17 +267,30 @@ class RequestDispatcher(Component):
 
     # Internal methods
 
+    @lazy
+    def _request_handlers(self):
+        return dict((handler.__class__.__name__, handler)
+                    for handler in self.handlers)
+
     def _get_valid_default_handler(self, req):
-        handler = self.default_handler
-        if not is_valid_default_handler(handler):
-            raise ConfigurationError(
-                tag_("%(handler)s is not a valid default handler. Please "
-                     "update %(option)s through the %(page)s page or by "
-                     "directly editing trac.ini.",
-                     handler=tag.code(handler.__class__.__name__),
-                     option=tag.code("[trac] default_handler"),
-                     page=tag.a(_("Basic Settings"),
-                                href=req.href.admin('general/basics'))))
+        # Use default_handler from the Session if it is a valid value.
+        name = req.session.get('default_handler')
+        handler = self._request_handlers.get(name)
+        if handler and not is_valid_default_handler(handler):
+            handler = None
+
+        if not handler:
+            # Use default_handler from project configuration.
+            handler = self.default_handler
+            if not is_valid_default_handler(handler):
+                raise ConfigurationError(
+                    tag_("%(handler)s is not a valid default handler. Please "
+                         "update %(option)s through the %(page)s page or by "
+                         "directly editing trac.ini.",
+                         handler=tag.code(handler.__class__.__name__),
+                         option=tag.code("[trac] default_handler"),
+                         page=tag.a(_("Basic Settings"),
+                                    href=req.href.admin('general/basics'))))
         return handler
 
     def _get_perm(self, req):

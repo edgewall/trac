@@ -144,6 +144,7 @@ p.hint, span.hint {
  margin: .5em 0;
  padding-left: 1em;
 }
+span.hint { vertical-align: middle; }
 p.help { color: #666; font-size: 90%; margin: 1em .5em .5em; }
 legend {
  color: #999;

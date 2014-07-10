@@ -22,12 +22,13 @@ import time
 
 from trac.admin.api import AdminCommandError, IAdminCommandProvider, \
                            console_date_format, get_console_locale
-from trac.core import Component, TracError, implements
-from trac.util import hex_entropy
+from trac.core import Component, ExtensionPoint, TracError, implements
+from trac.util import hex_entropy, lazy
 from trac.util.datefmt import get_datetime_format_hint, format_date, \
                               parse_date, to_datetime, to_timestamp
 from trac.util.text import print_table
 from trac.util.translation import _
+from trac.web.api import IRequestHandler, is_valid_default_handler
 
 UPDATE_INTERVAL = 3600 * 24 # Update session last_visit time stamp after 1 day
 PURGE_AGE = 3600 * 24 * 90 # Purge session after 90 days idle
@@ -309,6 +310,8 @@ class SessionAdmin(Component):
 
     implements(IAdminCommandProvider)
 
+    request_handlers = ExtensionPoint(IRequestHandler)
+
     def get_admin_commands(self):
         hints = {
             'datetime': get_datetime_format_hint(get_console_locale(self.env)),
@@ -336,7 +339,8 @@ class SessionAdmin(Component):
                default if no suffix is specified).""",
                None, self._do_add)
 
-        yield ('session set', '<name|email> <sid[:0|1]> <value>',
+        yield ('session set', '<name|email|default_handler> '
+                              '<sid[:0|1]> <value>',
                """Set the name or email attribute of the given sid
 
                An sid suffix ':0' operates on an unauthenticated session with
@@ -361,6 +365,12 @@ class SessionAdmin(Component):
                format.""" % hints,
                None, self._do_purge)
 
+    @lazy
+    def _valid_default_handlers(self):
+        return sorted(handler.__class__.__name__
+                      for handler in self.request_handlers
+                      if is_valid_default_handler(handler))
+
     def _split_sid(self, sid):
         if sid.endswith(':0'):
             return sid[:-2], 0
@@ -380,7 +390,7 @@ class SessionAdmin(Component):
                    if sid not in ('anonymous', 'authenticated', '*'))
         rows = self.env.db_query("""
             SELECT DISTINCT s.sid, s.authenticated, s.last_visit,
-                            n.value, e.value
+                            n.value, e.value, h.value
             FROM session AS s
               LEFT JOIN session_attribute AS n
                 ON (n.sid=s.sid AND n.authenticated=s.authenticated
@@ -388,12 +398,18 @@ class SessionAdmin(Component):
               LEFT JOIN session_attribute AS e
                 ON (e.sid=s.sid AND e.authenticated=s.authenticated
                     AND e.name='email')
+              LEFT JOIN session_attribute AS h
+                ON (h.sid=s.sid AND h.authenticated=s.authenticated
+                    AND h.name='default_handler')
             ORDER BY s.sid, s.authenticated
             """)
-        for sid, authenticated, last_visit, name, email in rows:
+        for sid, authenticated, last_visit, name, email, handler in rows:
             if all_anon and not authenticated or all_auth and authenticated \
                     or (sid, authenticated) in sids:
-                yield sid, authenticated, last_visit, name, email
+                yield (sid, authenticated,
+                       format_date(to_datetime(last_visit),
+                                   console_date_format),
+                       name, email, handler)
 
     def _complete_list(self, args):
         all_sids = self._get_sids() + ['*', 'anonymous', 'authenticated']
@@ -412,12 +428,9 @@ class SessionAdmin(Component):
     def _do_list(self, *sids):
         if not sids:
             sids = ['*']
-        print_table([(r[0], r[1], format_date(to_datetime(r[2]),
-                                              console_date_format),
-                      r[3], r[4])
-                     for r in self._get_list(sids)],
-                    [_('SID'), _('Auth'), _('Last Visit'), _('Name'),
-                     _('Email')])
+        headers = (_("SID"), _("Auth"), _("Last Visit"), _("Name"),
+                   _("Email"), _("Default Handler"))
+        print_table(self._get_list(sids), headers)
 
     def _do_add(self, sid, name=None, email=None):
         sid, authenticated = self._split_sid(sid)
@@ -436,9 +449,13 @@ class SessionAdmin(Component):
                     (sid, authenticated, email))
 
     def _do_set(self, attr, sid, val):
-        if attr not in ('name', 'email'):
+        if attr not in ('name', 'email', 'default_handler'):
             raise AdminCommandError(_("Invalid attribute '%(attr)s'",
                                       attr=attr))
+        if attr == 'default_handler':
+            if val and val not in self._valid_default_handlers:
+                raise AdminCommandError(_('Invalid default_handler "%(val)s"',
+                                          val=val))
         sid, authenticated = self._split_sid(sid)
         with self.env.db_transaction as db:
             if not db("""SELECT sid FROM session

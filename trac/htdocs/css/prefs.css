@@ -44,3 +44,4 @@
  vertical-align: middle;
  white-space: nowrap;
 }
+#content.prefs tr.field { height: 30px; }

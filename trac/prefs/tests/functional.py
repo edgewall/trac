@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2008-2013 Edgewall Software
+# Copyright (C) 2008-2014 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -35,6 +35,56 @@ class TestPreferences(FunctionalTwillTestCaseSetup):
         tc.find(r'value="admin@example\.com"')
         self._tester.go_to_preferences("Date & Time")
         tc.find('GMT -10:00')
+
+
+class TestDefaultHandler(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Set default handler."""
+
+        # Project default_handler is selected.
+        self._tester.go_to_preferences()
+        tc.notfind(r'<option[^>]+selected="selected"')
+        tc.find("Default \(WikiModule\)")
+
+        try:
+            # Project default handler still selected after value is changed.
+            hint = "SearchModule is not a valid IRequestHandler or is not" \
+                   " enabled\."
+            self._testenv.set_config('trac', 'default_handler',
+                                     'SearchModule')
+            self._tester.go_to_preferences()
+            tc.notfind('<option[^>]+selected="selected"')
+            tc.find("Default \(SearchModule\)")
+            tc.notfind(hint)
+
+            # Project default handler still selected after module is disabled.
+            component = 'trac.search.web_ui.*'
+            self._testenv.set_config('components', component, 'disabled')
+            self._tester.go_to_preferences()
+            try:
+                tc.notfind('<option[^>]+selected="selected"')
+                tc.find(r"Default \(SearchModule\)")
+                tc.find(hint)
+            finally:
+                self._testenv.remove_config('components', component)
+        finally:
+            self._testenv.set_config('trac', 'default_handler', 'WikiModule')
+
+        # Set session default handler and navigate to base URL.
+        tc.formvalue('userprefs', 'default_handler', 'TimelineModule')
+        tc.submit()
+        tc.find("Your preferences have been saved\.")
+        tc.find('<option[^>]+selected="selected"[^>]+TimelineModule')
+        self._tester.go_to_front()
+        tc.find("<h1>Timeline</h1>")
+
+        # Clear session default handler.
+        self._tester.go_to_preferences()
+        tc.formvalue('userprefs', 'default_handler', '')
+        tc.submit()
+        tc.find("Your preferences have been saved\.")
+        tc.notfind(r'<option[^>]+selected="selected"')
+        tc.find("Default \(WikiModule\)")
 
 
 class RegressionTestRev5785(FunctionalTwillTestCaseSetup):
@@ -151,6 +201,7 @@ def functionalSuite(suite=None):
         import trac.tests.functional
         suite = trac.tests.functional.functionalSuite()
     suite.addTest(TestPreferences())
+    suite.addTest(TestDefaultHandler())
     suite.addTest(RegressionTestRev5785())
     suite.addTest(RegressionTestTicket5765())
     suite.addTest(RegressionTestTicket11337())

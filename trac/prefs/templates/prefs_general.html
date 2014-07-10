@@ -13,6 +13,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
       xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="prefs.html" />
   <head>
@@ -20,18 +21,6 @@
   </head>
   <body>
 
-    <table>
-      <tr class="field">
-        <th><label for="name">Full name:</label></th>
-        <td><input type="text" id="name" name="name" size="30"
-            value="${settings.session.get('name')}" /></td>
-      </tr>
-      <tr class="field">
-        <th><label for="email">Email address:</label></th>
-        <td><input type="text" id="email" name="email" size="30"
-            value="${settings.session.get('email')}" /></td>
-      </tr>
-    </table>
     <p py:choose="" class="hint">
       <py:when test="req.authname == 'anonymous'">
         This information is used to automatically populate some forms
@@ -43,6 +32,38 @@
         notification and RSS feeds, for example.
       </py:otherwise>
     </p>
+    <table>
+      <tr class="field">
+        <th><label for="name">Full name:</label></th>
+        <td><input type="text" id="name" name="name" size="30"
+            value="${settings.session.get('name')}" /></td>
+      </tr>
+      <tr class="field">
+        <th><label for="email">Email address:</label></th>
+        <td><input type="text" id="email" name="email" size="30"
+            value="${settings.session.get('email')}" /></td>
+      </tr>
+      <tr class="field">
+        <th><label for="default_handler">Default handler:</label></th>
+        <td py:with="session_default_handler = settings.session.get('default_handler');
+                     default_handler = session_default_handler or project_default_handler">
+          <select id="default_handler" name="default_handler">
+            <option value="">Default ($project_default_handler)</option>
+            <option py:if="session_default_handler and
+                           session_default_handler not in valid_default_handlers"
+                    selected="True"
+                    value="$session_default_handler">$session_default_handler</option>
+            <option py:for="handler in valid_default_handlers"
+                    selected="${handler == session_default_handler or None}"
+                    value="$handler">$handler</option>
+          </select>
+          <span py:if="default_handler not in valid_default_handlers"
+                class="hint" i18n:msg="session_default_handler">
+            $default_handler is not a valid IRequestHandler or is not enabled.
+          </span>
+        </td>
+      </tr>
+    </table>
 
   </body>
 </html>

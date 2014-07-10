@@ -1263,6 +1263,21 @@ class TracadminTestCase(unittest.TestCase):
         rv, output = self._execute('session list name00')
         self.assertExpectedResult(output)
 
+    def test_session_set_attr_default_handler(self):
+        _prep_session_table(self.env)
+        rv, output = \
+            self._execute('session set default_handler name00 SearchModule')
+        self.assertEqual(0, rv, output)
+        rv, output = self._execute('session list name00')
+        self.assertExpectedResult(output)
+
+    def test_session_set_attr_default_handler_invalid(self):
+        _prep_session_table(self.env)
+        rv, output = \
+            self._execute('session set default_handler name00 InvalidModule')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
     def test_session_set_attr_missing_attr(self):
         rv, output = self._execute('session set')
         self.assertEqual(2, rv, output)

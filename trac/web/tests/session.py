@@ -17,7 +17,9 @@ from datetime import datetime
 import unittest
 
 import trac.tests.compat
+from trac.admin.api import console_date_format
 from trac.test import EnvironmentStub, Mock
+from trac.util.datefmt import format_date, to_datetime
 from trac.web.session import DetachedSession, Session, PURGE_AGE, \
                              UPDATE_INTERVAL, SessionAdmin
 from trac.core import TracError
@@ -41,7 +43,9 @@ def _prep_session_table(env, spread_visits=False):
             authenticated = int(x < 10)
             last_visit = last_visit_base + (visit_delta * x)
             val = 'val%02d' % x
-            data = (sid, authenticated, last_visit, val, val)
+            data = (sid, authenticated,
+                    format_date(to_datetime(last_visit), console_date_format),
+                    val, val, None)
             if authenticated:
                 auth_list.append(data)
             else:
@@ -56,16 +60,23 @@ def _prep_session_table(env, spread_visits=False):
     return (auth_list, anon_list, all_list)
 
 def get_session_info(env, sid):
-    """:since 1.0: changed `db` input parameter to `env`"""
+    """
+    :since 1.0: changed `db` input parameter to `env`
+    :since 1.1.2: returns `default_handler` as the fourth entry in the tuple.
+    """
     for row in env.db_query("""
-            SELECT DISTINCT s.sid, n.value, e.value FROM session AS s
-            LEFT JOIN session_attribute AS n ON (n.sid=s.sid AND n.name='name')
-            LEFT JOIN session_attribute AS e ON (e.sid=s.sid AND e.name='email')
+            SELECT DISTINCT s.sid, n.value, e.value, h.value FROM session AS s
+            LEFT JOIN session_attribute AS n
+              ON (n.sid=s.sid AND n.name='name')
+            LEFT JOIN session_attribute AS e
+              ON (e.sid=s.sid AND e.name='email')
+            LEFT JOIN session_attribute AS h
+              ON (h.sid=s.sid AND h.name='default_handler')
             WHERE s.sid=%s
             """, (sid,)):
         return row
     else:
-        return (None, None, None)
+        return None, None, None, None
 
 
 class SessionTestCase(unittest.TestCase):
@@ -523,13 +534,14 @@ class SessionTestCase(unittest.TestCase):
         self.assertRaises(Exception, sess_admin._do_add, 'name00')
         sess_admin._do_add('john')
         result = get_session_info(self.env, 'john')
-        self.assertEqual(result, ('john', None, None))
+        self.assertEqual(result, ('john', None, None, None))
         sess_admin._do_add('john1', 'John1')
         result = get_session_info(self.env, 'john1')
-        self.assertEqual(result, ('john1', 'John1', None))
+        self.assertEqual(result, ('john1', 'John1', None, None))
         sess_admin._do_add('john2', 'John2', 'john2@example.org')
         result = get_session_info(self.env, 'john2')
-        self.assertEqual(result, ('john2', 'John2', 'john2@example.org'))
+        self.assertEqual(result,
+                         ('john2', 'John2', 'john2@example.org',None))
 
     def test_session_admin_set(self):
         auth_list, anon_list, all_list = _prep_session_table(self.env)
@@ -538,20 +550,24 @@ class SessionTestCase(unittest.TestCase):
                           'foo')
         sess_admin._do_set('name', 'name00', 'john')
         result = get_session_info(self.env, 'name00')
-        self.assertEqual(result, ('name00', 'john', 'val00'))
+        self.assertEqual(result, ('name00', 'john', 'val00', None))
         sess_admin._do_set('email', 'name00', 'john@example.org')
         result = get_session_info(self.env, 'name00')
-        self.assertEqual(result, ('name00', 'john', 'john@example.org'))
+        self.assertEqual(result, ('name00', 'john', 'john@example.org', None))
+        sess_admin._do_set('default_handler', 'name00', 'SearchModule')
+        result = get_session_info(self.env, 'name00')
+        self.assertEqual(result, ('name00', 'john', 'john@example.org',
+                                  'SearchModule'))
 
     def test_session_admin_delete(self):
         auth_list, anon_list, all_list = _prep_session_table(self.env)
         sess_admin = SessionAdmin(self.env)
         sess_admin._do_delete('name00')
         result = get_session_info(self.env, 'name00')
-        self.assertEqual(result, (None, None, None))
+        self.assertEqual(result, (None, None, None, None))
         sess_admin._do_delete('nothere')
         result = get_session_info(self.env, 'nothere')
-        self.assertEqual(result, (None, None, None))
+        self.assertEqual(result, (None, None, None, None))
         auth_list, anon_list, all_list = _prep_session_table(self.env)
         sess_admin._do_delete('anonymous')
         result = [i for i in sess_admin._get_list(['*'])]
@@ -566,9 +582,9 @@ class SessionTestCase(unittest.TestCase):
         result = [i for i in sess_admin._get_list(['*'])]
         self.assertEqual(result, auth_list + anon_list)
         result = get_session_info(self.env, anon_list[0][0])
-        self.assertEqual(result, ('name10', 'val10', 'val10'))
+        self.assertEqual(result, ('name10', 'val10', 'val10', None))
         result = get_session_info(self.env, anon_list[1][0])
-        self.assertEqual(result, ('name11', 'val11', 'val11'))
+        self.assertEqual(result, ('name11', 'val11', 'val11', None))
 
         auth_list, anon_list, all_list = \
             _prep_session_table(self.env, spread_visits=True)
@@ -580,7 +596,7 @@ class SessionTestCase(unittest.TestCase):
             """, (anon_list[0][0],))
         self.assertEqual([], rows)
         result = get_session_info(self.env, anon_list[1][0])
-        self.assertEqual(result, ('name11', 'val11', 'val11'))
+        self.assertEqual(result, ('name11', 'val11', 'val11', None))
 
 
 def suite():
