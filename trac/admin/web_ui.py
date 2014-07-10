@@ -20,11 +20,6 @@ import pkg_resources
 import re
 import shutil
 
-try:
-    from babel.core import Locale
-except ImportError:
-    Locale = None
-
 from genshi import HTML
 from genshi.builder import tag
 
@@ -35,7 +30,7 @@ from trac.perm import PermissionSystem, IPermissionRequestor
 from trac.util.datefmt import all_timezones, pytz
 from trac.util.text import exception_to_unicode, \
                            unicode_to_base64, unicode_from_base64
-from trac.util.translation import _, get_available_locales, ngettext
+from trac.util.translation import _, Locale, get_available_locales, ngettext
 from trac.web import HTTPNotFound, IRequestHandler
 from trac.web.chrome import add_notice, add_stylesheet, \
                             add_warning, Chrome, INavigationContributor, \

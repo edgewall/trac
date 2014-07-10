@@ -370,6 +370,7 @@ try:
     has_babel = True
 
 except ImportError: # fall back on 0.11 behavior, i18n functions are no-ops
+    Locale = None
     gettext = _ = gettext_noop
     dgettext = dgettext_noop
     ngettext = ngettext_noop
