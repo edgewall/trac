@@ -17,18 +17,13 @@
 import pkg_resources
 import re
 
-try:
-    from babel.core import Locale
-except ImportError:
-    Locale = None
-
 from genshi.builder import tag
 
 from trac.core import *
 from trac.prefs.api import IPreferencePanelProvider
 from trac.util.datefmt import all_timezones, get_timezone, localtz
-from trac.util.translation import _, deactivate, get_available_locales, \
-                                  make_activable
+from trac.util.translation import _, Locale, deactivate,\
+                                  get_available_locales, make_activable
 from trac.web.api import HTTPNotFound, IRequestHandler
 from trac.web.chrome import INavigationContributor, ITemplateProvider, \
                             add_notice, add_stylesheet
