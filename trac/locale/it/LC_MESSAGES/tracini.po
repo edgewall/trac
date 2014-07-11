@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
 "POT-Creation-Date: 2014-07-06 21:42+0900\n"
-"PO-Revision-Date: 2014-07-07 11:43+0200\n"
+"PO-Revision-Date: 2014-07-11 08:35+0200\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
 "Language-Team: Italian "
 "(http://www.transifex.com/projects/p/trac/language/it/)\n"
@@ -72,7 +72,8 @@ msgstr ""
 "di qualità associato alla conversione.\n"
 "È possibile in questo modo modificare il grado di\n"
 "qualità usato di default dal render di SilverCity,\n"
-"che è 3. (''dalla 0.10'')<"
+"che è 3.\n"
+"(''dalla 0.10'')<"
 
 #: tracopt/perm/authz_policy.py:134
 msgid "Location of authz policy configuration file."
@@ -400,7 +401,8 @@ msgid ""
 msgstr ""
 "Dimensione massima consentita (in byte) della lista di allegati\n"
 "per essere scaricabile come `.zip`. Imposta a -1 per disabilitare\n"
-"lo scaricamento come `.zip`. (''dalla 1.0'')"
+"lo scaricamento come `.zip`.\n"
+"(''dalla 1.0'')"
 
 #: trac/attachment.py:431
 msgid ""
@@ -544,7 +546,8 @@ msgstr ""
 "`base_url` anche per le redirezioni. Questo ovviamente implica\n"
 "che l'ambiente potrà essere usato solo quando vi si accede da\n"
 "quella URL, dal momento che le redirezioni vengono usate di\n"
-"frequente. (''dalla 0.10.5'')"
+"frequente.\n"
+"(''dalla 0.10.5'')"
 
 #: trac/env.py:194
 msgid ""
@@ -560,7 +563,8 @@ msgstr ""
 "Quando impostato a `true`, abilita la flag `secure` su tutti i cookie\n"
 "in modo tale che vengano spediti al server solo tramite connessioni\n"
 "HTTPS. Usa questa opzione solo quando l'istanza Trac sia accessibile\n"
-"solo tramite HTTPS. (''dalla 0.11.2'')"
+"solo tramite HTTPS.\n"
+"(''dalla 0.11.2'')"
 
 #: trac/env.py:202
 msgid "Name of the project."
@@ -598,7 +602,8 @@ msgstr ""
 "\n"
 "Può essere un URL assoluto o relativo, oppure '.' per riferirsi\n"
 "a questa istanza Trac. Specificare un valore vuoto per disabilitare\n"
-"i pulsanti relativi. (''dalla 0.11.3'')"
+"i pulsanti relativi.\n"
+"(''dalla 0.11.3'')"
 
 #: trac/env.py:225
 msgid "Page footer text (right-aligned)."
@@ -700,7 +705,8 @@ msgstr ""
 "i messaggi email.\n"
 "Attualmente Trac fornisce `SmtpEmailSender` per connettersi a un\n"
 "server SMTP e `SendmailEmailSender` per lanciare un eseguibile\n"
-"compatibile con `sendmail`. (''dalla 0.12'')"
+"compatibile con `sendmail`.\n"
+"(''dalla 0.12'')"
 
 #: trac/notification.py:62
 msgid "Enable email notification."
@@ -810,7 +816,8 @@ msgstr ""
 "Consenti indirizzi email senza un host/domain (cioè, solo nome utente).\n"
 "\n"
 "Il server SMTP dovrà accettare questi indirizzi, aggiungendovi\n"
-"un FQDN oppure usando la spedizione locale. (''dalla 0.10'')"
+"un FQDN oppure usando la spedizione locale.\n"
+"(''dalla 0.10'')"
 
 #: trac/notification.py:121
 msgid ""
@@ -856,7 +863,7 @@ msgstr ""
 "Percorso dell'eseguibile sendmail.\n"
 "\n"
 "Il programma sendmail deve accettare le opzioni `-i` e `-f`.\n"
-"(''dalla 0.10'')"
+"(''dalla 0.12'')"
 
 #: trac/perm.py:306
 msgid ""
@@ -922,7 +929,8 @@ msgid ""
 "directory or absolute. (''since 0.12'')"
 msgstr ""
 "Percorsi alle estensioni sqlite, sia relativi alla directory\n"
-"dell'ambiente Trac oppure assoluti. (''dalla 0.12'')"
+"dell'ambiente Trac oppure assoluti.\n"
+"(''dalla 0.12'')"
 
 #: trac/mimeview/api.py:618
 msgid "Charset to be used when in doubt."
@@ -930,11 +938,15 @@ msgstr "Codifica da usare in caso di ambiguità."
 
 #: trac/mimeview/api.py:621
 msgid "Displayed tab width in file preview. (''since 0.9'')"
-msgstr "Larghezza del tab nella visualizzazione dei file. (''dalla 0.9'')"
+msgstr ""
+"Larghezza del tab nella visualizzazione dei file.\n"
+"(''dalla 0.9'')"
 
 #: trac/mimeview/api.py:624
 msgid "Maximum file size for HTML preview. (''since 0.9'')"
-msgstr "Dimensione massima del file per la visualizzazione HTML. (''dalla 0.9'')"
+msgstr ""
+"Dimensione massima del file per la visualizzazione HTML.\n"
+"(''dalla 0.9'')"
 
 #: trac/mimeview/api.py:627
 msgid ""
@@ -947,7 +959,8 @@ msgstr ""
 "\n"
 "Le mappature sono separate da virgole e per ciascun tipo MIME viene\n"
 "specificata una lista di parole chiave o di estensioni di file\n"
-"separate dal carattere due punti (`:`). (''dalla 0.10'')"
+"separate dal carattere due punti (`:`).\n"
+"(''dalla 0.10'')"
 
 #: trac/mimeview/api.py:634
 msgid ""
@@ -968,7 +981,8 @@ msgid ""
 "binary data. (''since 0.11.5'')"
 msgstr ""
 "Lista di tipi MIME separati da virgole che devono essere considerati\n"
-"come dati binari. (''dalla 0.11.5'')"
+"come dati binari.\n"
+"(''dalla 0.11.5'')"
 
 #: trac/mimeview/pygments.py:49
 msgid "The default style to use for Pygments syntax highlighting."
@@ -1250,7 +1264,8 @@ msgid ""
 "by default (''since 0.11'')"
 msgstr ""
 "Numero di segnalazioni per pagina mostrate di default nelle ricerce\n"
-"sulle segnalazioni. (''dalla 0.11'')"
+"sulle segnalazioni.\n"
+"(''dalla 0.11'')"
 
 #: trac/ticket/report.py:116
 msgid ""
@@ -1421,7 +1436,8 @@ msgid ""
 "closing or deleting a milestone. (''since 1.1.2'')"
 msgstr ""
 "Obiettivo di default dove spostare le segnalazioni quando l'obiettivo "
-"viene chiuso o cancellato. (''dalla 1.1.2'')"
+"viene chiuso o cancellato.\n"
+"(''dalla 1.1.2'')"
 
 #: trac/ticket/web_ui.py:72
 msgid ""
@@ -1516,7 +1532,8 @@ msgid ""
 "Timeline. (''since 0.11'')"
 msgstr ""
 "Numero massimo di giorni (-1 per illimitato) visualizzabile nella\n"
-"cronologia. (''dalla 0.11'')"
+"cronologia.\n"
+"(''dalla 0.11'')"
 
 #: trac/timeline/web_ui.py:60
 msgid ""
@@ -1542,7 +1559,8 @@ msgstr ""
 "Lista di prefissi consentiti per le directory dei repository,\n"
 "separati da virgole, quando si aggiunge o si modificano i repository\n"
 "nel pannello di amministrazione. Se la lista è vuota, tutte le\n"
-"directory sono consentite. (''dalla 0.12.1'')"
+"directory sono consentite.\n"
+"(''dalla 0.12.1'')"
 
 #: trac/versioncontrol/api.py:292
 msgid ""
@@ -1884,7 +1902,8 @@ msgid ""
 "graph display. (''since 1.0'')"
 msgstr ""
 "Lista di colori, separati da virgole, usata nel grafo visualizzato\n"
-"nel TracRevisionLog. (''dalla 1.0'')"
+"nel TracRevisionLog.\n"
+"(''dalla 1.0'')"
 
 #: trac/web/auth.py:62
 msgid ""
@@ -1931,7 +1950,8 @@ msgstr ""
 "Percorso del cookie di autenticazione.\n"
 "\n"
 "Imposta questo al percorso di base comune a diverse istanze Trac\n"
-"se vuoi che condividano il medesimo cookie. (''dalla 0.12'')"
+"se vuoi che condividano il medesimo cookie.\n"
+"(''dalla 0.12'')"
 
 #: trac/web/chrome.py:354
 msgid ""
@@ -2160,7 +2180,8 @@ msgid ""
 "email addresses. (''since 0.11'')"
 msgstr ""
 "Mostra gli indirizzi email invece che i nomi utente. Se ''false'',\n"
-"l'indirizzo email viene offuscato. (''dalla 0.11'')"
+"l'indirizzo email viene offuscato.\n"
+"(''dalla 0.11'')"
 
 #: trac/web/chrome.py:475
 msgid ""
@@ -2219,7 +2240,8 @@ msgid ""
 msgstr ""
 "Formato dei valori temporali. Le opzioni possibili sono\n"
 "'relative' per visualizzarli in un formato relativo oppure\n"
-"'absolute' per mostrarli in formato assoluto. (''dalla 1.0'')"
+"'absolute' per mostrarli in formato assoluto.\n"
+"(''dalla 1.0'')"
 
 #: trac/web/main.py:97
 msgid ""
@@ -2242,7 +2264,8 @@ msgstr ""
 "\n"
 "Le opzioni possibili sono `TimelineModule`, `RoadmapModule`,\n"
 "`BrowserModule`, `QueryModule`, `ReportModule`, `TicketModule`\n"
-"e `WikiModule`. (''dalla 0.9'')"
+"e `WikiModule`.\n"
+"(''dalla 0.9'')"
 
 #: trac/web/main.py:111
 msgid "The default timezone to use"
@@ -2254,7 +2277,8 @@ msgid ""
 "been set. (''since 0.12.1'')"
 msgstr ""
 "La lingua di da utilizzare quando non sia stata impostata quella\n"
-"preferita dell'utente. (''dalla 0.12.1'')"
+"preferita dell'utente.\n"
+"(''dalla 0.12.1'')"
 
 #: trac/web/main.py:119
 msgid ""
@@ -2279,7 +2303,8 @@ msgstr ""
 "senza alcun contenuto quando viene richiesto un file dal filesystem,\n"
 "in modo tale che sia il web server a gestire il contenuto stesso.\n"
 "Questo richiede un web server che sappia gestire questa intestazione,\n"
-"come Apache con `mod_xsendfile` oppure lighttpd. (''dalla 1.0'')"
+"come Apache con `mod_xsendfile` oppure lighttpd.\n"
+"(''dalla 1.0'')"
 
 #: trac/wiki/api.py:256
 msgid ""
@@ -2325,7 +2350,8 @@ msgid ""
 msgstr ""
 "Lista di schemi URI considerati \"sicuri\", che verranno resi come\n"
 "collegamenti esterni anche quando `[wiki] render_unsafe_content` è\n"
-"`false`. (''dalla 0.11.8'')"
+"`false`.\n"
+"(''dalla 0.11.8'')"
 
 #: trac/wiki/intertrac.py:37
 msgid ""
@@ -2435,6 +2461,6 @@ msgstr ""
 #: trac/wiki/web_ui.py:55
 msgid "Maximum allowed wiki page size in characters. (''since 0.11.2'')"
 msgstr ""
-"Dimensione massima consentita di una pagina wiki, in caratteri. (''dalla "
-"0.11.2'')."
+"Dimensione massima consentita di una pagina wiki, in caratteri.\n"
+"(''dalla 0.11.2'')."
 
