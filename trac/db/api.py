@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 #
 # Copyright (C)2005-2009 Edgewall Software
