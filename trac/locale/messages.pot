@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.1.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-07-12 15:32-0700\n"
+"POT-Creation-Date: 2014-07-12 16:06-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -124,7 +124,7 @@ msgstr ""
 #: tracopt/ticket/templates/ticket_delete.html:52
 #: tracopt/ticket/templates/ticket_delete.html:76
 #: trac/templates/attachment.html:73 trac/templates/attachment.html:87
-#: trac/ticket/templates/admin_components.html:67
+#: trac/ticket/templates/admin_components.html:65
 #: trac/ticket/templates/admin_enums.html:39
 #: trac/ticket/templates/admin_versions.html:58
 #: trac/ticket/templates/milestone_delete.html:49
@@ -420,8 +420,8 @@ msgstr ""
 
 #: trac/attachment.py:1057 trac/templates/environment_info.html:53
 #: trac/templates/environment_info.html:74 trac/templates/error.html:169
-#: trac/ticket/admin.py:215 trac/ticket/admin.py:443 trac/ticket/admin.py:618
-#: trac/ticket/templates/admin_components.html:90
+#: trac/ticket/admin.py:215 trac/ticket/admin.py:444 trac/ticket/admin.py:621
+#: trac/ticket/templates/admin_components.html:88
 #: trac/ticket/templates/admin_enums.html:61
 #: trac/ticket/templates/admin_milestones.html:61
 #: trac/ticket/templates/admin_versions.html:90
@@ -967,8 +967,8 @@ msgid "Untitled"
 msgstr ""
 
 #: trac/admin/web_ui.py:186 trac/ticket/admin.py:64 trac/ticket/admin.py:93
-#: trac/ticket/admin.py:279 trac/ticket/admin.py:502 trac/ticket/admin.py:670
-#: trac/ticket/admin.py:753 trac/ticket/report.py:252
+#: trac/ticket/admin.py:279 trac/ticket/admin.py:504 trac/ticket/admin.py:673
+#: trac/ticket/admin.py:756 trac/ticket/report.py:252
 #: trac/ticket/roadmap.py:833 trac/versioncontrol/admin.py:214
 msgid "Your changes have been saved."
 msgstr ""
@@ -1137,7 +1137,7 @@ msgstr ""
 
 #: trac/admin/templates/admin_basics.html:30
 #: trac/ticket/templates/admin_components.html:47
-#: trac/ticket/templates/admin_components.html:76
+#: trac/ticket/templates/admin_components.html:74
 #: trac/ticket/templates/admin_enums.html:34
 #: trac/ticket/templates/admin_enums.html:48
 #: trac/ticket/templates/admin_milestones.html:39
@@ -1222,7 +1222,7 @@ msgstr ""
 #: trac/admin/templates/admin_basics.html:105
 #: trac/admin/templates/admin_logging.html:65
 #: trac/admin/templates/admin_plugins.html:190
-#: trac/ticket/templates/admin_components.html:111
+#: trac/ticket/templates/admin_components.html:109
 #: trac/ticket/templates/admin_enums.html:85
 #: trac/ticket/templates/admin_milestones.html:96
 #: trac/ticket/templates/admin_versions.html:109
@@ -1275,7 +1275,7 @@ msgstr ""
 #: trac/admin/templates/admin_perms.html:42
 #: trac/admin/templates/admin_perms.html:61
 #: trac/admin/templates/admin_perms.html:80
-#: trac/ticket/templates/admin_components.html:80
+#: trac/ticket/templates/admin_components.html:78
 #: trac/ticket/templates/admin_enums.html:51
 #: trac/ticket/templates/admin_milestones.html:51
 #: trac/ticket/templates/admin_versions.html:80
@@ -1347,7 +1347,7 @@ msgid "No group memberships"
 msgstr ""
 
 #: trac/admin/templates/admin_perms.html:145
-#: trac/ticket/templates/admin_components.html:112
+#: trac/ticket/templates/admin_components.html:110
 #: trac/ticket/templates/admin_enums.html:86
 #: trac/ticket/templates/admin_milestones.html:97
 #: trac/ticket/templates/admin_versions.html:110
@@ -2190,7 +2190,7 @@ msgstr ""
 
 #: trac/templates/environment_info.html:40
 #: trac/templates/environment_info.html:53 trac/templates/history_view.html:38
-#: trac/ticket/admin.py:478 trac/ticket/api.py:336
+#: trac/ticket/admin.py:480 trac/ticket/api.py:336
 msgid "Version"
 msgstr ""
 
@@ -2518,7 +2518,7 @@ msgid "The selected components have been removed."
 msgstr ""
 
 #: trac/ticket/admin.py:215 trac/ticket/api.py:322 trac/ticket/web_ui.py:1507
-#: trac/ticket/templates/admin_components.html:90
+#: trac/ticket/templates/admin_components.html:88
 msgid "Owner"
 msgstr ""
 
@@ -2566,130 +2566,130 @@ msgstr ""
 msgid "The selected milestones have been removed."
 msgstr ""
 
-#: trac/ticket/admin.py:443 trac/ticket/templates/admin_milestones.html:61
+#: trac/ticket/admin.py:444 trac/ticket/templates/admin_milestones.html:61
 msgid "Due"
 msgstr ""
 
-#: trac/ticket/admin.py:443 trac/ticket/templates/admin_milestones.html:61
+#: trac/ticket/admin.py:444 trac/ticket/templates/admin_milestones.html:61
 msgid "Completed"
 msgstr ""
 
-#: trac/ticket/admin.py:478 trac/ticket/templates/admin_versions.html:20
+#: trac/ticket/admin.py:480 trac/ticket/templates/admin_versions.html:20
 msgid "Versions"
 msgstr ""
 
-#: trac/ticket/admin.py:499
+#: trac/ticket/admin.py:501
 #, python-format
 msgid "The version \"%(name)s\" already exists."
 msgstr ""
 
-#: trac/ticket/admin.py:526
+#: trac/ticket/admin.py:528
 #, python-format
 msgid "The version \"%(name)s\" has been added."
 msgstr ""
 
-#: trac/ticket/admin.py:531 trac/ticket/model.py:1175 trac/ticket/model.py:1190
+#: trac/ticket/admin.py:533 trac/ticket/model.py:1175 trac/ticket/model.py:1190
 msgid "Invalid version name."
 msgstr ""
 
-#: trac/ticket/admin.py:532
+#: trac/ticket/admin.py:534
 #, python-format
 msgid "Version %(name)s already exists."
 msgstr ""
 
-#: trac/ticket/admin.py:539
+#: trac/ticket/admin.py:541
 msgid "No version selected"
 msgstr ""
 
-#: trac/ticket/admin.py:546
+#: trac/ticket/admin.py:548
 msgid "The selected versions have been removed."
 msgstr ""
 
-#: trac/ticket/admin.py:618
+#: trac/ticket/admin.py:621
 msgid "Time"
 msgstr ""
 
-#: trac/ticket/admin.py:668 trac/ticket/admin.py:696
+#: trac/ticket/admin.py:671 trac/ticket/admin.py:699
 #, python-format
 msgid "%(type)s value \"%(name)s\" already exists"
 msgstr ""
 
-#: trac/ticket/admin.py:688
+#: trac/ticket/admin.py:691
 #, python-format
 msgid "The %(field)s value \"%(name)s\" has been added."
 msgstr ""
 
-#: trac/ticket/admin.py:694
+#: trac/ticket/admin.py:697
 #, python-format
 msgid "Invalid %(type)s value."
 msgstr ""
 
-#: trac/ticket/admin.py:703
+#: trac/ticket/admin.py:706
 #, python-format
 msgid "No %s selected"
 msgstr ""
 
-#: trac/ticket/admin.py:709
+#: trac/ticket/admin.py:712
 #, python-format
 msgid "The selected %(field)s values have been removed."
 msgstr ""
 
-#: trac/ticket/admin.py:731
+#: trac/ticket/admin.py:734
 msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "The default value has not been saved."
 msgstr ""
 
-#: trac/ticket/admin.py:743
+#: trac/ticket/admin.py:746
 msgid "Order numbers must be unique"
 msgstr ""
 
-#: trac/ticket/admin.py:811
+#: trac/ticket/admin.py:814
 msgid "Possible Values"
 msgstr ""
 
-#: trac/ticket/admin.py:828
+#: trac/ticket/admin.py:831
 #, python-format
 msgid "Invalid up/down value: %(value)s"
 msgstr ""
 
-#: trac/ticket/admin.py:847 trac/ticket/api.py:333
+#: trac/ticket/admin.py:850 trac/ticket/api.py:333
 msgid "Priority"
 msgstr ""
 
-#: trac/ticket/admin.py:847
+#: trac/ticket/admin.py:850
 msgid "Priorities"
 msgstr ""
 
-#: trac/ticket/admin.py:853 trac/ticket/api.py:338
+#: trac/ticket/admin.py:856 trac/ticket/api.py:338
 msgid "Resolution"
 msgstr ""
 
-#: trac/ticket/admin.py:853
+#: trac/ticket/admin.py:856
 msgid "Resolutions"
 msgstr ""
 
-#: trac/ticket/admin.py:859 trac/ticket/api.py:337
+#: trac/ticket/admin.py:862 trac/ticket/api.py:337
 msgid "Severity"
 msgstr ""
 
-#: trac/ticket/admin.py:859
+#: trac/ticket/admin.py:862
 msgid "Severities"
 msgstr ""
 
-#: trac/ticket/admin.py:865
+#: trac/ticket/admin.py:868
 msgid "Ticket Type"
 msgstr ""
 
-#: trac/ticket/admin.py:865
+#: trac/ticket/admin.py:868
 msgid "Ticket Types"
 msgstr ""
 
-#: trac/ticket/admin.py:892
+#: trac/ticket/admin.py:895
 msgid "<number> must be a number"
 msgstr ""
 
-#: trac/ticket/admin.py:895
+#: trac/ticket/admin.py:898
 #, python-format
 msgid "Ticket #%(num)s and all associated data removed."
 msgstr ""
@@ -3734,13 +3734,14 @@ msgid "Modify Component:"
 msgstr ""
 
 #: trac/ticket/templates/admin_components.html:52
-msgid ""
-"Description (you may use\n"
-"                [1:WikiFormatting]\n"
-"                here):"
+#: trac/ticket/templates/admin_versions.html:46
+#: trac/ticket/templates/milestone_edit_form.html:122
+#: trac/ticket/templates/report_edit.html:44
+#: trac/versioncontrol/templates/admin_repositories.html:87
+msgid "Description: (you may use [1:WikiFormatting] here)"
 msgstr ""
 
-#: trac/ticket/templates/admin_components.html:66
+#: trac/ticket/templates/admin_components.html:64
 #: trac/ticket/templates/admin_enums.html:38
 #: trac/ticket/templates/admin_versions.html:57
 #: trac/ticket/templates/milestone_edit_form.html:134
@@ -3752,24 +3753,24 @@ msgstr ""
 msgid "Submit changes"
 msgstr ""
 
-#: trac/ticket/templates/admin_components.html:74
+#: trac/ticket/templates/admin_components.html:72
 msgid "Add Component:"
 msgstr ""
 
-#: trac/ticket/templates/admin_components.html:90
+#: trac/ticket/templates/admin_components.html:88
 #: trac/ticket/templates/admin_enums.html:61
 #: trac/ticket/templates/admin_milestones.html:62
 #: trac/ticket/templates/admin_versions.html:90
 msgid "Default"
 msgstr ""
 
-#: trac/ticket/templates/admin_components.html:113
+#: trac/ticket/templates/admin_components.html:111
 #: trac/ticket/templates/admin_enums.html:87
 #: trac/ticket/templates/admin_versions.html:111
 msgid "Clear default"
 msgstr ""
 
-#: trac/ticket/templates/admin_components.html:115
+#: trac/ticket/templates/admin_components.html:113
 #: trac/ticket/templates/admin_enums.html:89
 #: trac/ticket/templates/admin_milestones.html:101
 #: trac/ticket/templates/admin_versions.html:113
@@ -3778,7 +3779,7 @@ msgid ""
 "              field from the user interface."
 msgstr ""
 
-#: trac/ticket/templates/admin_components.html:121
+#: trac/ticket/templates/admin_components.html:119
 #: trac/ticket/templates/admin_enums.html:99
 #: trac/ticket/templates/admin_milestones.html:107
 #: trac/ticket/templates/admin_versions.html:119
@@ -3878,11 +3879,6 @@ msgstr ""
 #: trac/ticket/templates/admin_versions.html:36
 #: trac/ticket/templates/admin_versions.html:70
 msgid "Released:"
-msgstr ""
-
-#: trac/ticket/templates/admin_versions.html:46
-#: trac/versioncontrol/templates/admin_repositories.html:87
-msgid "Description (you may use [1:WikiFormatting] here):"
 msgstr ""
 
 #: trac/ticket/templates/admin_versions.html:65
@@ -4001,12 +3997,6 @@ msgstr ""
 
 #: trac/ticket/templates/milestone_edit_form.html:95
 msgid "Retarget associated open tickets to milestone:"
-msgstr ""
-
-#: trac/ticket/templates/milestone_edit_form.html:122
-msgid ""
-"Description (you may use\n"
-"            [1:WikiFormatting] here):"
 msgstr ""
 
 #: trac/ticket/templates/milestone_edit_form.html:136
@@ -4210,10 +4200,6 @@ msgstr ""
 
 #: trac/ticket/templates/report_edit.html:40
 msgid "Title:"
-msgstr ""
-
-#: trac/ticket/templates/report_edit.html:44
-msgid "Description: (you may use [1:WikiFormatting] here)"
 msgstr ""
 
 #: trac/ticket/templates/report_edit.html:52
