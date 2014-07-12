@@ -995,6 +995,20 @@ class MilestoneTestCase(unittest.TestCase):
         self.assertEqual(tkt1['changetime'], tkt2['changetime'])
         self.assertNotEqual(self.updated_at, tkt1['changetime'])
 
+    def test_delete_milestone_with_attachment(self):
+        milestone = Milestone(self.env)
+        milestone.name = 'MilestoneWithAttachment'
+        milestone.insert()
+        
+        attachment = Attachment(self.env, 'milestone', milestone.name)
+        attachment.insert('foo.txt', StringIO(), 0, 1)
+
+        milestone.delete()
+        self.assertEqual(False, milestone.exists)
+
+        attachments = Attachment.select(self.env, 'milestone', milestone.name)
+        self.assertRaises(StopIteration, attachments.next)
+
     def test_delete_milestone_retarget_tickets(self):
         self.env.db_transaction.executemany(
             "INSERT INTO milestone (name) VALUES (%s)",

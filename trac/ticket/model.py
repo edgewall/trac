@@ -1011,6 +1011,7 @@ class Milestone(object):
         with self.env.db_transaction as db:
             self.env.log.info("Deleting milestone %s", self.name)
             db("DELETE FROM milestone WHERE name=%s", (self.name,))
+            Attachment.delete_all(self.env, self.realm, self.name)
             # Don't translate ticket comment (comment:40:ticket:5658)
             self.move_tickets(retarget_to, author, "Milestone deleted")
             self._old['name'] = None
