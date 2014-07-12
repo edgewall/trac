@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.1.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-07-09 23:48-0700\n"
+"POT-Creation-Date: 2014-07-12 15:16-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -343,8 +343,8 @@ msgstr ""
 msgid "Attachments of %(parent)s"
 msgstr ""
 
-#: trac/attachment.py:687 trac/attachment.py:714 trac/admin/web_ui.py:523
-#: trac/admin/web_ui.py:526 trac/admin/web_ui.py:530
+#: trac/attachment.py:687 trac/attachment.py:714 trac/admin/web_ui.py:518
+#: trac/admin/web_ui.py:521 trac/admin/web_ui.py:525
 msgid "No file uploaded"
 msgstr ""
 
@@ -427,7 +427,7 @@ msgstr ""
 #: trac/ticket/templates/admin_versions.html:90
 #: trac/versioncontrol/admin.py:113
 #: trac/versioncontrol/templates/admin_repositories.html:139
-#: trac/web/session.py:419
+#: trac/web/session.py:431
 msgid "Name"
 msgstr ""
 
@@ -688,66 +688,66 @@ msgstr ""
 msgid "%(name)s is not a valid action."
 msgstr ""
 
-#: trac/perm.py:645
+#: trac/perm.py:640
 msgid "User"
 msgstr ""
 
-#: trac/perm.py:645 trac/admin/templates/admin_perms.html:93
+#: trac/perm.py:640 trac/admin/templates/admin_perms.html:93
 #: trac/ticket/templates/batch_modify.html:47
 #: trac/ticket/templates/ticket.html:327
 msgid "Action"
 msgstr ""
 
-#: trac/perm.py:647
+#: trac/perm.py:642
 msgid "Available actions:"
 msgstr ""
 
-#: trac/perm.py:658
+#: trac/perm.py:653
 msgid "All upper-cased tokens are reserved for permission names"
 msgstr ""
 
-#: trac/perm.py:664
+#: trac/perm.py:659
 #, python-format
 msgid "The user %(user)s already has permission %(action)s."
 msgstr ""
 
-#: trac/perm.py:679
+#: trac/perm.py:674
 #, python-format
 msgid ""
 "Cannot remove permission %(action)s for user %(user)s. The permission is "
 "granted through a meta-permission or group."
 msgstr ""
 
-#: trac/perm.py:684
+#: trac/perm.py:679
 #, python-format
 msgid ""
 "Cannot remove permission %(action)s for user %(user)s. The user has not "
 "been granted the permission."
 msgstr ""
 
-#: trac/perm.py:703
+#: trac/perm.py:698
 #, python-format
 msgid "Cannot export to %(filename)s: %(error)s"
 msgstr ""
 
-#: trac/perm.py:716
+#: trac/perm.py:711
 #, python-format
 msgid "Invalid row %(line)d. Expected <user>, <action>, [action], [...]"
 msgstr ""
 
-#: trac/perm.py:724
+#: trac/perm.py:719
 #, python-format
 msgid ""
 "Invalid user %(user)s on line %(line)d: All upper-cased tokens are "
 "reserved for permission names."
 msgstr ""
 
-#: trac/perm.py:733
+#: trac/perm.py:728
 #, python-format
 msgid "Cannot import from %(filename)s line %(line)d: %(error)s "
 msgstr ""
 
-#: trac/perm.py:738
+#: trac/perm.py:733
 #, python-format
 msgid "Cannot import from %(filename)s: %(error)s"
 msgstr ""
@@ -946,125 +946,125 @@ msgstr ""
 msgid "Non-ascii environment path '%(path)s' not supported."
 msgstr ""
 
-#: trac/admin/web_ui.py:73
+#: trac/admin/web_ui.py:68
 msgid "Admin"
 msgstr ""
 
-#: trac/admin/web_ui.py:74 trac/admin/templates/admin.html:26
+#: trac/admin/web_ui.py:69 trac/admin/templates/admin.html:26
 msgid "Administration"
 msgstr ""
 
-#: trac/admin/web_ui.py:90
+#: trac/admin/web_ui.py:85
 msgid "No administration panels available"
 msgstr ""
 
-#: trac/admin/web_ui.py:116 trac/admin/web_ui.py:120
+#: trac/admin/web_ui.py:111 trac/admin/web_ui.py:115
 msgid "Unknown administration panel"
 msgstr ""
 
-#: trac/admin/web_ui.py:132
+#: trac/admin/web_ui.py:127
 msgid "Untitled"
 msgstr ""
 
-#: trac/admin/web_ui.py:191 trac/ticket/admin.py:64 trac/ticket/admin.py:93
+#: trac/admin/web_ui.py:186 trac/ticket/admin.py:64 trac/ticket/admin.py:93
 #: trac/ticket/admin.py:279 trac/ticket/admin.py:502 trac/ticket/admin.py:670
 #: trac/ticket/admin.py:753 trac/ticket/report.py:252
 #: trac/ticket/roadmap.py:833 trac/versioncontrol/admin.py:214
 msgid "Your changes have been saved."
 msgstr ""
 
-#: trac/admin/web_ui.py:196 trac/ticket/admin.py:67
+#: trac/admin/web_ui.py:191 trac/ticket/admin.py:67
 msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "Your changes have not been saved."
 msgstr ""
 
-#: trac/admin/web_ui.py:211 trac/admin/web_ui.py:280 trac/admin/web_ui.py:371
-#: trac/admin/web_ui.py:501 trac/prefs/web_ui.py:96
-#: trac/prefs/templates/prefs_general.html:19
+#: trac/admin/web_ui.py:206 trac/admin/web_ui.py:275 trac/admin/web_ui.py:366
+#: trac/admin/web_ui.py:496 trac/prefs/web_ui.py:94
+#: trac/prefs/templates/prefs_general.html:20
 msgid "General"
 msgstr ""
 
-#: trac/admin/web_ui.py:211 trac/admin/templates/admin_basics.html:24
+#: trac/admin/web_ui.py:206 trac/admin/templates/admin_basics.html:24
 msgid "Basic Settings"
 msgstr ""
 
-#: trac/admin/web_ui.py:280 trac/admin/templates/admin_logging.html:20
+#: trac/admin/web_ui.py:275 trac/admin/templates/admin_logging.html:20
 #: trac/admin/templates/admin_logging.html:32
 msgid "Logging"
 msgstr ""
 
-#: trac/admin/web_ui.py:289 trac/ticket/templates/milestone_delete.html:34
+#: trac/admin/web_ui.py:284 trac/ticket/templates/milestone_delete.html:34
 #: trac/ticket/templates/milestone_edit_form.html:95
 msgid "None"
 msgstr ""
 
-#: trac/admin/web_ui.py:291
+#: trac/admin/web_ui.py:286
 msgid "Console"
 msgstr ""
 
-#: trac/admin/web_ui.py:293 trac/templates/attachment.html:42
+#: trac/admin/web_ui.py:288 trac/templates/attachment.html:42
 msgid "File"
 msgstr ""
 
-#: trac/admin/web_ui.py:295
+#: trac/admin/web_ui.py:290
 msgid "Syslog"
 msgstr ""
 
-#: trac/admin/web_ui.py:298
+#: trac/admin/web_ui.py:293
 msgid "Windows event log"
 msgstr ""
 
-#: trac/admin/web_ui.py:311
+#: trac/admin/web_ui.py:306
 #, python-format
 msgid "Unknown log type %(type)s"
 msgstr ""
 
-#: trac/admin/web_ui.py:312
+#: trac/admin/web_ui.py:307
 msgid "Invalid log type"
 msgstr ""
 
-#: trac/admin/web_ui.py:326
+#: trac/admin/web_ui.py:321
 #, python-format
 msgid "Unknown log level %(level)s"
 msgstr ""
 
-#: trac/admin/web_ui.py:327
+#: trac/admin/web_ui.py:322
 msgid "Invalid log level"
 msgstr ""
 
-#: trac/admin/web_ui.py:340
+#: trac/admin/web_ui.py:335
 msgid "You must specify a log file"
 msgstr ""
 
-#: trac/admin/web_ui.py:341
+#: trac/admin/web_ui.py:336
 msgid "Missing field"
 msgstr ""
 
-#: trac/admin/web_ui.py:371 trac/admin/templates/admin_perms.html:20
+#: trac/admin/web_ui.py:366 trac/admin/templates/admin_perms.html:20
 #: trac/admin/templates/admin_perms.html:90
 msgid "Permissions"
 msgstr ""
 
-#: trac/admin/web_ui.py:387
+#: trac/admin/web_ui.py:382
 msgid "All upper-cased tokens are reserved for permission names."
 msgstr ""
 
-#: trac/admin/web_ui.py:394
+#: trac/admin/web_ui.py:389
 msgid "Unknown action"
 msgstr ""
 
-#: trac/admin/web_ui.py:398 trac/admin/web_ui.py:463
+#: trac/admin/web_ui.py:393 trac/admin/web_ui.py:458
 #, python-format
 msgid "The subject %(subject)s has been granted the permission %(action)s."
 msgstr ""
 
-#: trac/admin/web_ui.py:403
+#: trac/admin/web_ui.py:398
 #, python-format
 msgid "The permission %(action)s was already granted to %(subject)s."
 msgstr ""
 
-#: trac/admin/web_ui.py:417
+#: trac/admin/web_ui.py:412
 #, python-format
 msgid ""
 "The subject %(subject)s was not added to the group %(group)s because the "
@@ -1072,52 +1072,52 @@ msgid ""
 "don't possess."
 msgstr ""
 
-#: trac/admin/web_ui.py:425
+#: trac/admin/web_ui.py:420
 #, python-format
 msgid "The subject %(subject)s has been added to the group %(group)s."
 msgstr ""
 
-#: trac/admin/web_ui.py:430
+#: trac/admin/web_ui.py:425
 #, python-format
 msgid "The subject %(subject)s was already added to the group %(group)s."
 msgstr ""
 
-#: trac/admin/web_ui.py:442
+#: trac/admin/web_ui.py:437
 #, python-format
 msgid "The subject %(subject)s does not have any permissions."
 msgstr ""
 
-#: trac/admin/web_ui.py:456
+#: trac/admin/web_ui.py:451
 #, python-format
 msgid ""
 "The permission %(action)s was not granted to %(subject)s because users "
 "cannot grant permissions they don't possess."
 msgstr ""
 
-#: trac/admin/web_ui.py:480
+#: trac/admin/web_ui.py:475
 msgid "The selected permissions have been revoked."
 msgstr ""
 
-#: trac/admin/web_ui.py:501 trac/admin/templates/admin_plugins.html:20
+#: trac/admin/web_ui.py:496 trac/admin/templates/admin_plugins.html:20
 msgid "Plugins"
 msgstr ""
 
-#: trac/admin/web_ui.py:533
+#: trac/admin/web_ui.py:528
 msgid "Uploaded file is not a Python source file or egg"
 msgstr ""
 
-#: trac/admin/web_ui.py:538
+#: trac/admin/web_ui.py:533
 #, python-format
 msgid "Plugin %(name)s already installed"
 msgstr ""
 
-#: trac/admin/web_ui.py:607
+#: trac/admin/web_ui.py:602
 msgid "The following component has been disabled:"
 msgid_plural "The following components have been disabled:"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/admin/web_ui.py:612
+#: trac/admin/web_ui.py:607
 msgid "The following component has been enabled:"
 msgid_plural "The following components have been enabled:"
 msgstr[0] ""
@@ -1161,6 +1161,7 @@ msgid "Description:"
 msgstr ""
 
 #: trac/admin/templates/admin_basics.html:46
+#: trac/prefs/templates/prefs_general.html:47
 msgid "Default handler:"
 msgstr ""
 
@@ -1416,12 +1417,12 @@ msgstr ""
 msgid "Enabled"
 msgstr ""
 
-#: trac/db/api.py:393
+#: trac/db/api.py:392
 #, python-format
 msgid "Unsupported database type \"%(scheme)s\""
 msgstr ""
 
-#: trac/db/api.py:432
+#: trac/db/api.py:431
 #, python-format
 msgid ""
 "Unknown scheme \"%(scheme)s\"; database connection string must start with"
@@ -1569,7 +1570,7 @@ msgstr ""
 msgid "Syntax Highlighting"
 msgstr ""
 
-#: trac/mimeview/pygments.py:140 trac/prefs/web_ui.py:176
+#: trac/mimeview/pygments.py:140 trac/prefs/web_ui.py:183
 msgid "Your preferences have been saved."
 msgstr ""
 
@@ -1578,35 +1579,35 @@ msgstr ""
 msgid "%(link)s is not a valid TracLink"
 msgstr ""
 
-#: trac/prefs/web_ui.py:56 trac/prefs/templates/prefs.html:26
+#: trac/prefs/web_ui.py:54 trac/prefs/templates/prefs.html:26
 msgid "Preferences"
 msgstr ""
 
-#: trac/prefs/web_ui.py:84
+#: trac/prefs/web_ui.py:82
 msgid "Unknown preference panel"
 msgstr ""
 
-#: trac/prefs/web_ui.py:97 trac/prefs/templates/prefs_datetime.html:20
+#: trac/prefs/web_ui.py:95 trac/prefs/templates/prefs_datetime.html:20
 msgid "Date & Time"
 msgstr ""
 
-#: trac/prefs/web_ui.py:98 trac/prefs/templates/prefs_keybindings.html:20
+#: trac/prefs/web_ui.py:96 trac/prefs/templates/prefs_keybindings.html:20
 msgid "Keyboard Shortcuts"
 msgstr ""
 
-#: trac/prefs/web_ui.py:99 trac/prefs/templates/prefs_userinterface.html:20
+#: trac/prefs/web_ui.py:97 trac/prefs/templates/prefs_userinterface.html:20
 msgid "User Interface"
 msgstr ""
 
-#: trac/prefs/web_ui.py:101 trac/prefs/templates/prefs_language.html:20
+#: trac/prefs/web_ui.py:99 trac/prefs/templates/prefs_language.html:20
 msgid "Language"
 msgstr ""
 
-#: trac/prefs/web_ui.py:103 trac/prefs/templates/prefs_advanced.html:19
+#: trac/prefs/web_ui.py:101 trac/prefs/templates/prefs_advanced.html:19
 msgid "Advanced"
 msgstr ""
 
-#: trac/prefs/web_ui.py:183
+#: trac/prefs/web_ui.py:190
 msgid "The session has been loaded."
 msgstr ""
 
@@ -1746,24 +1747,35 @@ msgid ""
 msgstr ""
 
 #: trac/prefs/templates/prefs_general.html:25
-msgid "Full name:"
-msgstr ""
-
-#: trac/prefs/templates/prefs_general.html:30
-msgid "Email address:"
-msgstr ""
-
-#: trac/prefs/templates/prefs_general.html:36
 msgid ""
 "This information is used to automatically populate some forms\n"
 "        on this site with your contact details."
 msgstr ""
 
-#: trac/prefs/templates/prefs_general.html:40
+#: trac/prefs/templates/prefs_general.html:29
 msgid ""
 "This information is used to associate your login name with your\n"
 "        email address and full name, which is used for email\n"
 "        notification and RSS feeds, for example."
+msgstr ""
+
+#: trac/prefs/templates/prefs_general.html:37
+msgid "Full name:"
+msgstr ""
+
+#: trac/prefs/templates/prefs_general.html:42
+msgid "Email address:"
+msgstr ""
+
+#: trac/prefs/templates/prefs_general.html:51
+msgid "Default ("
+msgstr ""
+
+#: trac/prefs/templates/prefs_general.html:60
+#, python-format
+msgid ""
+"%(session_default_handler)s is not a valid IRequestHandler or is not "
+"enabled."
 msgstr ""
 
 #: trac/prefs/templates/prefs_keybindings.html:28
@@ -2190,7 +2202,7 @@ msgstr ""
 msgid "Location"
 msgstr ""
 
-#: trac/templates/environment_info.html:61 trac/web/main.py:607
+#: trac/templates/environment_info.html:61 trac/web/main.py:620
 msgid "N/A"
 msgstr ""
 
@@ -2537,7 +2549,7 @@ msgstr ""
 msgid "The milestone \"%(name)s\" has been added."
 msgstr ""
 
-#: trac/ticket/admin.py:318 trac/ticket/model.py:1028 trac/ticket/model.py:1047
+#: trac/ticket/admin.py:318 trac/ticket/model.py:1029 trac/ticket/model.py:1048
 msgid "Invalid milestone name."
 msgstr ""
 
@@ -2576,7 +2588,7 @@ msgstr ""
 msgid "The version \"%(name)s\" has been added."
 msgstr ""
 
-#: trac/ticket/admin.py:531 trac/ticket/model.py:1174 trac/ticket/model.py:1189
+#: trac/ticket/admin.py:531 trac/ticket/model.py:1175 trac/ticket/model.py:1190
 msgid "Invalid version name."
 msgstr ""
 
@@ -2936,28 +2948,28 @@ msgstr ""
 msgid "Component %(name)s does not exist."
 msgstr ""
 
-#: trac/ticket/model.py:977 trac/ticket/model.py:1092
+#: trac/ticket/model.py:977 trac/ticket/model.py:1093
 #, python-format
 msgid "Milestone %(name)s does not exist."
 msgstr ""
 
-#: trac/ticket/model.py:978 trac/ticket/model.py:1093
+#: trac/ticket/model.py:978 trac/ticket/model.py:1094
 msgid "Invalid milestone name"
 msgstr ""
 
-#: trac/ticket/model.py:1131
+#: trac/ticket/model.py:1132
 msgid "Open (by due date)"
 msgstr ""
 
-#: trac/ticket/model.py:1132
+#: trac/ticket/model.py:1133
 msgid "Open (no due date)"
 msgstr ""
 
-#: trac/ticket/model.py:1135
+#: trac/ticket/model.py:1136
 msgid "Closed"
 msgstr ""
 
-#: trac/ticket/model.py:1152
+#: trac/ticket/model.py:1153
 #, python-format
 msgid "Version %(name)s does not exist."
 msgstr ""
@@ -4620,18 +4632,18 @@ msgid "Next Period"
 msgstr ""
 
 #: trac/timeline/web_ui.py:294 trac/timeline/web_ui.py:317
-#: trac/web/chrome.py:888
+#: trac/web/chrome.py:897
 #, python-format
 msgid "in %(relative)s"
 msgstr ""
 
 #: trac/timeline/web_ui.py:298 trac/timeline/web_ui.py:315
-#: trac/web/chrome.py:902
+#: trac/web/chrome.py:911
 #, python-format
 msgid "on %(date)s at %(time)s"
 msgstr ""
 
-#: trac/timeline/web_ui.py:301 trac/web/chrome.py:890
+#: trac/timeline/web_ui.py:301 trac/web/chrome.py:899
 #, python-format
 msgid "%(relative)s ago"
 msgstr ""
@@ -4641,7 +4653,7 @@ msgstr ""
 msgid "See timeline at %(absolutetime)s"
 msgstr ""
 
-#: trac/timeline/web_ui.py:309 trac/web/chrome.py:898
+#: trac/timeline/web_ui.py:309 trac/web/chrome.py:907
 #, python-format
 msgid "at %(iso8601)s"
 msgstr ""
@@ -6021,26 +6033,26 @@ msgstr ""
 msgid "Already logged in as %(user)s."
 msgstr ""
 
-#: trac/web/chrome.py:627
+#: trac/web/chrome.py:629
 #, python-format
 msgid "Invalid chrome path %(path)s."
 msgstr ""
 
-#: trac/web/chrome.py:753
+#: trac/web/chrome.py:762
 #, python-format
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr ""
 
-#: trac/web/chrome.py:1070
+#: trac/web/chrome.py:1079
 msgid "(unknown template location)"
 msgstr ""
 
-#: trac/web/chrome.py:1071
+#: trac/web/chrome.py:1080
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr ""
 
-#: trac/web/chrome.py:1120 trac/web/chrome.py:1129
+#: trac/web/chrome.py:1129 trac/web/chrome.py:1138
 msgid "anonymous"
 msgstr ""
 
@@ -6067,7 +6079,7 @@ msgid ""
 "administrator."
 msgstr ""
 
-#: trac/web/main.py:280
+#: trac/web/main.py:293
 #, python-format
 msgid ""
 "%(handler)s is not a valid default handler. Please update %(option)s "
@@ -6075,24 +6087,24 @@ msgid ""
 msgstr ""
 
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
-#: trac/web/main.py:549
+#: trac/web/main.py:562
 msgid "do so"
 msgstr ""
 
-#: trac/web/main.py:550
+#: trac/web/main.py:563
 #, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr ""
 
-#: trac/web/main.py:610
+#: trac/web/main.py:623
 msgid "''System information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:611
+#: trac/web/main.py:624
 msgid "''Plugin information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:635
+#: trac/web/main.py:648
 #, python-format
 msgid ""
 "==== How to Reproduce ====\n"
@@ -6118,42 +6130,51 @@ msgid ""
 "%(traceback)s}}}"
 msgstr ""
 
-#: trac/web/session.py:242
+#: trac/web/session.py:243
 #, python-format
 msgid "Session '%(id)s' already exists. Please choose a different session ID."
 msgstr ""
 
-#: trac/web/session.py:245
+#: trac/web/session.py:246
 msgid "Error renaming session"
 msgstr ""
 
-#: trac/web/session.py:419
+#: trac/web/session.py:431
 msgid "SID"
 msgstr ""
 
-#: trac/web/session.py:419
+#: trac/web/session.py:431
 msgid "Auth"
 msgstr ""
 
-#: trac/web/session.py:419
+#: trac/web/session.py:431
 msgid "Last Visit"
 msgstr ""
 
-#: trac/web/session.py:420
+#: trac/web/session.py:432
 msgid "Email"
 msgstr ""
 
-#: trac/web/session.py:429
+#: trac/web/session.py:432
+msgid "Default Handler"
+msgstr ""
+
+#: trac/web/session.py:442
 #, python-format
 msgid "Session '%(sid)s' already exists"
 msgstr ""
 
-#: trac/web/session.py:440
+#: trac/web/session.py:453
 #, python-format
 msgid "Invalid attribute '%(attr)s'"
 msgstr ""
 
-#: trac/web/session.py:447
+#: trac/web/session.py:457
+#, python-format
+msgid "Invalid default_handler \"%(val)s\""
+msgstr ""
+
+#: trac/web/session.py:464
 #, python-format
 msgid "Session '%(sid)s' not found"
 msgstr ""
