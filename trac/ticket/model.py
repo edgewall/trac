@@ -961,6 +961,7 @@ class Milestone(object):
             cursor = db.cursor()
             self.env.log.info('Deleting milestone %s' % self.name)
             cursor.execute("DELETE FROM milestone WHERE name=%s", (self.name,))
+            Attachment.delete_all(self.env, 'milestone', self.name, db)
 
             # Retarget/reset tickets associated with this milestone
             now = datetime.now(utc)

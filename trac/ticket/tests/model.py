@@ -848,6 +848,20 @@ class MilestoneTestCase(unittest.TestCase):
         cursor.execute("SELECT * FROM milestone WHERE name='Test'")
         self.assertEqual(None, cursor.fetchone())
 
+    def test_delete_milestone_with_attachment(self):
+        milestone = Milestone(self.env)
+        milestone.name = 'MilestoneWithAttachment'
+        milestone.insert()
+        
+        attachment = Attachment(self.env, 'milestone', milestone.name)
+        attachment.insert('foo.txt', StringIO(), 0, 1)
+
+        milestone.delete()
+        self.assertEqual(False, milestone.exists)
+
+        attachments = Attachment.select(self.env, 'milestone', milestone.name)
+        self.assertRaises(StopIteration, attachments.next)
+
     def test_delete_milestone_retarget_tickets(self):
         cursor = self.db.cursor()
         cursor.execute("INSERT INTO milestone (name) VALUES ('Test')")
