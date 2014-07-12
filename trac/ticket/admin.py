@@ -54,19 +54,19 @@ class TicketAdminPanel(Component):
         except AssertionError as e:
             raise TracError(e)
 
-
-def _save_config(config, req, log):
-    """Try to save the config, and display either a success notice or a
-    failure warning.
-    """
-    try:
-        config.save()
-        add_notice(req, _('Your changes have been saved.'))
-    except Exception as e:
-        log.error('Error writing to trac.ini: %s', exception_to_unicode(e))
-        add_warning(req, _('Error writing to trac.ini, make sure it is '
-                           'writable by the web server. Your changes have not '
-                           'been saved.'))
+    def _save_config(self, req):
+        """Try to save the config, and display either a success notice or a
+        failure warning.
+        """
+        try:
+            self.config.save()
+            add_notice(req, _('Your changes have been saved.'))
+        except Exception as e:
+            self.log.error('Error writing to trac.ini: %s',
+                           exception_to_unicode(e))
+            add_warning(req, _('Error writing to trac.ini, make sure it is '
+                               'writable by the web server. Your changes '
+                               'have not been saved.'))
 
 
 class ComponentAdminPanel(TicketAdminPanel):
@@ -141,14 +141,14 @@ class ComponentAdminPanel(TicketAdminPanel):
                     if name and name != default:
                         self.log.info("Setting default component to %s", name)
                         self.config.set('ticket', 'default_component', name)
-                        _save_config(self.config, req, self.log)
+                        self._save_config(req)
                         req.redirect(req.href.admin(cat, page))
 
                 # Clear default component
                 elif req.args.get('clear'):
                     self.log.info("Clearing default component")
                     self.config.set('ticket', 'default_component', '')
-                    _save_config(self.config, req, self.log)
+                    self._save_config(req)
                     req.redirect(req.href.admin(cat, page))
 
             data = {'view': 'list',
@@ -352,7 +352,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
                                         retarget)
                         save = True
                     if save:
-                        _save_config(self.config, req, self.log)
+                        self._save_config(req)
                         req.redirect(req.href.admin(cat, page))
 
                 # Clear defaults
@@ -361,7 +361,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
                                   "and default retarget milestone")
                     self.config.set('ticket', 'default_milestone', '')
                     self.config.set('milestone', 'default_retarget_to', '')
-                    _save_config(self.config, req, self.log)
+                    self._save_config(req)
                     req.redirect(req.href.admin(cat, page))
 
             # Get ticket count
@@ -555,14 +555,14 @@ class VersionAdminPanel(TicketAdminPanel):
                     if name and name != default:
                         self.log.info("Setting default version to %s", name)
                         self.config.set('ticket', 'default_version', name)
-                        _save_config(self.config, req, self.log)
+                        self._save_config(req)
                         req.redirect(req.href.admin(cat, page))
 
                 # Clear default version
                 elif req.args.get('clear'):
                     self.log.info("Clearing default version")
                     self.config.set('ticket', 'default_version', '')
-                    _save_config(self.config, req, self.log)
+                    self._save_config(req)
                     req.redirect(req.href.admin(cat, page))
 
             data = {'view': 'list',
@@ -760,7 +760,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                 elif req.args.get('clear'):
                     self.log.info("Clearing default %s" % self._type)
                     self.config.set('ticket', 'default_%s' % self._type, '')
-                    _save_config(self.config, req, self.log)
+                    self._save_config(req)
                     req.redirect(req.href.admin(cat, page))
 
             data.update(dict(enums=list(self._enum_cls.select(self.env)),
