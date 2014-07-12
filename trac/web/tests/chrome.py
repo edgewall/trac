@@ -18,6 +18,7 @@ import unittest
 
 import trac.tests.compat
 from trac.core import Component, TracError, implements
+from trac.perm import PermissionSystem
 from trac.test import EnvironmentStub, locale_en
 from trac.tests.contentgen import random_sentence
 from trac.util import create_file
@@ -354,6 +355,9 @@ class ChromeTestCase2(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.env.path)
+
+    def test_permission_requestor(self):
+        self.assertIn('EMAIL_VIEW', PermissionSystem(self.env).get_actions())
 
     def test_malicious_filename_raises(self):
         req = Request(path_info='/chrome/site/../conf/trac.ini')

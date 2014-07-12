@@ -158,9 +158,9 @@ class PermissionSystemTestCase(unittest.TestCase):
         self.env.reset_db()
 
     def test_all_permissions(self):
-        self.assertEqual({'EMAIL_VIEW': True, 'TRAC_ADMIN': True,
-                          'TEST_CREATE': True, 'TEST_DELETE': True,
-                          'TEST_MODIFY': True,  'TEST_ADMIN': True},
+        self.assertEqual({'TRAC_ADMIN': True, 'TEST_CREATE': True,
+                          'TEST_DELETE': True, 'TEST_MODIFY': True,
+                          'TEST_ADMIN': True},
                          self.perm.get_user_permissions())
 
     def test_simple_permissions(self):
@@ -191,7 +191,7 @@ class PermissionSystemTestCase(unittest.TestCase):
 
     def test_expand_actions_iter_7467(self):
         # Check that expand_actions works with iterators (#7467)
-        perms = set(['EMAIL_VIEW', 'TRAC_ADMIN', 'TEST_DELETE', 'TEST_MODIFY',
+        perms = set(['TRAC_ADMIN', 'TEST_DELETE', 'TEST_MODIFY',
                      'TEST_CREATE', 'TEST_ADMIN'])
         self.assertEqual(perms, self.perm.expand_actions(['TRAC_ADMIN']))
         self.assertEqual(perms, self.perm.expand_actions(iter(['TRAC_ADMIN'])))

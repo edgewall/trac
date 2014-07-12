@@ -45,6 +45,7 @@ from trac.config import *
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant, ISystemInfoProvider
 from trac.mimeview.api import RenderingContext, get_mimetype
+from trac.perm import IPermissionRequestor
 from trac.resource import *
 from trac.util import compat, get_reporter_id, html, presentation, \
                       get_pkginfo, pathjoin, translation
@@ -342,7 +343,8 @@ class Chrome(Component):
     """
 
     implements(ISystemInfoProvider, IEnvironmentSetupParticipant,
-               IRequestHandler, ITemplateProvider, IWikiSyntaxProvider)
+               IPermissionRequestor, IRequestHandler, ITemplateProvider,
+               IWikiSyntaxProvider)
 
     required = True
     is_valid_default_handler = False
@@ -631,6 +633,13 @@ class Chrome(Component):
 
         self.log.warning('File %s not found in any of %s', filename, dirs)
         raise HTTPNotFound('File %s not found', filename)
+
+    # IPermissionRequestor methods
+
+    def get_permission_actions(self):
+        """`EMAIL_VIEW` permission allows for showing email addresses even
+        if `[trac] show_email_addresses` is `false`."""
+        return ['EMAIL_VIEW']
 
     # ITemplateProvider methods
 

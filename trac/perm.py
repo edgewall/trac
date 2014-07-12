@@ -467,14 +467,9 @@ class PermissionSystem(Component):
 
     def get_permission_actions(self):
         """Implement the global `TRAC_ADMIN` meta permission.
-
-        Implements also the `EMAIL_VIEW` permission which allows for
-        showing email addresses even if `[trac] show_email_addresses`
-        is `false`.
         """
         actions = self.get_actions(skip=self)
-        actions.append('EMAIL_VIEW')
-        return [('TRAC_ADMIN', actions), 'EMAIL_VIEW']
+        return [('TRAC_ADMIN', actions)]
 
 
 class PermissionCache(object):
