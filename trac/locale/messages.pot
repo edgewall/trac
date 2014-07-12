@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.1.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-07-12 15:16-0700\n"
+"POT-Creation-Date: 2014-07-12 15:32-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -128,7 +128,7 @@ msgstr ""
 #: trac/ticket/templates/admin_enums.html:39
 #: trac/ticket/templates/admin_versions.html:58
 #: trac/ticket/templates/milestone_delete.html:49
-#: trac/ticket/templates/milestone_edit_form.html:134
+#: trac/ticket/templates/milestone_edit_form.html:138
 #: trac/ticket/templates/report_delete.html:32
 #: trac/ticket/templates/report_edit.html:63
 #: trac/ticket/templates/ticket_change.html:127
@@ -995,7 +995,7 @@ msgid "Logging"
 msgstr ""
 
 #: trac/admin/web_ui.py:284 trac/ticket/templates/milestone_delete.html:34
-#: trac/ticket/templates/milestone_edit_form.html:95
+#: trac/ticket/templates/milestone_edit_form.html:99
 msgid "None"
 msgstr ""
 
@@ -1143,7 +1143,7 @@ msgstr ""
 #: trac/ticket/templates/admin_milestones.html:39
 #: trac/ticket/templates/admin_versions.html:31
 #: trac/ticket/templates/admin_versions.html:67
-#: trac/ticket/templates/milestone_edit_form.html:50
+#: trac/ticket/templates/milestone_edit_form.html:54
 #: trac/versioncontrol/templates/admin_repositories.html:62
 #: trac/versioncontrol/templates/admin_repositories.html:109
 #: trac/versioncontrol/templates/admin_repositories.html:126
@@ -2146,7 +2146,7 @@ msgstr ""
 
 #: trac/templates/diff_view.html:66 trac/ticket/templates/batch_modify.html:22
 #: trac/ticket/templates/batch_ticket_notify_email.txt:9
-#: trac/ticket/templates/milestone_edit_form.html:104
+#: trac/ticket/templates/milestone_edit_form.html:108
 #: trac/ticket/templates/ticket_notify_email.txt:21
 msgid "Comment:"
 msgstr ""
@@ -3743,7 +3743,7 @@ msgstr ""
 #: trac/ticket/templates/admin_components.html:66
 #: trac/ticket/templates/admin_enums.html:38
 #: trac/ticket/templates/admin_versions.html:57
-#: trac/ticket/templates/milestone_edit_form.html:130
+#: trac/ticket/templates/milestone_edit_form.html:134
 #: trac/ticket/templates/ticket.html:394
 #: trac/ticket/templates/ticket_change.html:125
 #: trac/versioncontrol/templates/admin_repositories.html:99
@@ -3821,7 +3821,7 @@ msgid "Add Milestone:"
 msgstr ""
 
 #: trac/ticket/templates/admin_milestones.html:42
-#: trac/ticket/templates/milestone_edit_form.html:60
+#: trac/ticket/templates/milestone_edit_form.html:64
 msgid "Due:"
 msgstr ""
 
@@ -3830,10 +3830,10 @@ msgstr ""
 #: trac/ticket/templates/admin_versions.html:41
 #: trac/ticket/templates/admin_versions.html:72
 #: trac/ticket/templates/admin_versions.html:76
-#: trac/ticket/templates/milestone_edit_form.html:64
-#: trac/ticket/templates/milestone_edit_form.html:69
-#: trac/ticket/templates/milestone_edit_form.html:79
-#: trac/ticket/templates/milestone_edit_form.html:84
+#: trac/ticket/templates/milestone_edit_form.html:68
+#: trac/ticket/templates/milestone_edit_form.html:73
+#: trac/ticket/templates/milestone_edit_form.html:83
+#: trac/ticket/templates/milestone_edit_form.html:88
 #, python-format
 msgid "Format: %(datehint)s"
 msgstr ""
@@ -3943,7 +3943,7 @@ msgid "Retarget associated tickets to milestone"
 msgstr ""
 
 #: trac/ticket/templates/milestone_delete.html:43
-#: trac/ticket/templates/milestone_edit_form.html:110
+#: trac/ticket/templates/milestone_edit_form.html:114
 msgid "There are no tickets associated with this milestone."
 msgstr ""
 
@@ -3979,25 +3979,37 @@ msgid ""
 "        the roadmap."
 msgstr ""
 
-#: trac/ticket/templates/milestone_edit_form.html:56
+#: trac/ticket/templates/milestone_edit_form.html:47
+msgid "View Milestone:"
+msgstr ""
+
+#: trac/ticket/templates/milestone_edit_form.html:48
+msgid "Modify Milestone:"
+msgstr ""
+
+#: trac/ticket/templates/milestone_edit_form.html:49
+msgid "Create Milestone:"
+msgstr ""
+
+#: trac/ticket/templates/milestone_edit_form.html:60
 msgid "Schedule"
 msgstr ""
 
-#: trac/ticket/templates/milestone_edit_form.html:75
+#: trac/ticket/templates/milestone_edit_form.html:79
 msgid "Completed:"
 msgstr ""
 
-#: trac/ticket/templates/milestone_edit_form.html:91
+#: trac/ticket/templates/milestone_edit_form.html:95
 msgid "Retarget associated open tickets to milestone:"
 msgstr ""
 
-#: trac/ticket/templates/milestone_edit_form.html:118
+#: trac/ticket/templates/milestone_edit_form.html:122
 msgid ""
 "Description (you may use\n"
 "            [1:WikiFormatting] here):"
 msgstr ""
 
-#: trac/ticket/templates/milestone_edit_form.html:132
+#: trac/ticket/templates/milestone_edit_form.html:136
 msgid "Add milestone"
 msgstr ""
 
