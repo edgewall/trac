@@ -395,10 +395,11 @@ class MilestoneAdminPanel(TicketAdminPanel):
             return self.get_milestone_list()
 
     def _do_list(self):
-        print_table([(m.name, m.due and
-                        format_date(m.due, console_date_format),
-                      m.completed and
-                        format_datetime(m.completed, console_datetime_format))
+        print_table([(m.name,
+                      format_date(m.due, console_date_format)
+                      if m.due else None,
+                      format_datetime(m.completed, console_datetime_format)
+                      if m.completed else None)
                      for m in model.Milestone.select(self.env)],
                     [_("Name"), _("Due"), _("Completed")])
 
@@ -417,15 +418,16 @@ class MilestoneAdminPanel(TicketAdminPanel):
 
     def _do_due(self, name, due):
         milestone = model.Milestone(self.env, name)
-        milestone.due = due and parse_date(due, hint='datetime',
-                                           locale=get_console_locale(self.env))
+        milestone.due = parse_date(due, hint='datetime',
+                                   locale=get_console_locale(self.env)) \
+                        if due else None
         milestone.update()
 
     def _do_completed(self, name, completed):
         milestone = model.Milestone(self.env, name)
-        milestone.completed = completed and \
-                              parse_date(completed, hint='datetime',
-                                         locale=get_console_locale(self.env))
+        milestone.completed = parse_date(completed, hint='datetime',
+                                         locale=get_console_locale(self.env)) \
+                              if completed else None
         milestone.update()
 
     def _do_remove(self, name):
@@ -566,17 +568,18 @@ class VersionAdminPanel(TicketAdminPanel):
 
     def _do_list(self):
         print_table([(v.name,
-                      v.time and format_date(v.time, console_date_format))
-                     for v in model.Version.select(self.env)],
+                      format_date(v.time, console_date_format)
+                      if v.time else None)
+                    for v in model.Version.select(self.env)],
                     [_("Name"), _("Time")])
 
     def _do_add(self, name, time=None):
         version = model.Version(self.env)
         version.name = name
         if time is not None:
-            version.time = time and \
-                           parse_date(time, hint='datetime',
-                                      locale=get_console_locale(self.env))
+            version.time = parse_date(time, hint='datetime',
+                                      locale=get_console_locale(self.env)) \
+                           if time else None
         version.insert()
 
     def _do_rename(self, name, newname):
@@ -586,9 +589,9 @@ class VersionAdminPanel(TicketAdminPanel):
 
     def _do_time(self, name, time):
         version = model.Version(self.env, name)
-        version.time = time and \
-                       parse_date(time, hint='datetime',
-                                  locale=get_console_locale(self.env))
+        version.time = parse_date(time, hint='datetime',
+                                  locale=get_console_locale(self.env)) \
+                       if time else None
         version.update()
 
     def _do_remove(self, name):
