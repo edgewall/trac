@@ -346,7 +346,7 @@ class RegressionTestTicket10274(FunctionalTwillTestCaseSetup):
         tc.find('Invalid Wiki page name "WikiStart/.."')
         self._tester.go_to_wiki('../WikiStart')
         tc.find('Invalid Wiki page name "../WikiStart"')
-        self._tester.go_to_wiki('WikiStart/./SubPage"')
+        self._tester.go_to_wiki('WikiStart/./SubPage')
         tc.find('Invalid Wiki page name "WikiStart/./SubPage"')
 
 
