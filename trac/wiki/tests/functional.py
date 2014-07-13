@@ -285,11 +285,11 @@ class RegressionTestTicket10274(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/10274"""
         self._tester.go_to_wiki('WikiStart/..')
-        tc.find("Invalid Wiki page name 'WikiStart/..'")
+        tc.find('Invalid Wiki page name "WikiStart/.."')
         self._tester.go_to_wiki('../WikiStart')
-        tc.find("Invalid Wiki page name '../WikiStart'")
-        self._tester.go_to_wiki('WikiStart/./SubPage')
-        tc.find("Invalid Wiki page name 'WikiStart/./SubPage'")
+        tc.find('Invalid Wiki page name "../WikiStart"')
+        self._tester.go_to_wiki('WikiStart/./SubPage"')
+        tc.find('Invalid Wiki page name "WikiStart/./SubPage"')
 
 
 class RegressionTestTicket10850(FunctionalTwillTestCaseSetup):
