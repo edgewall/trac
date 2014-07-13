@@ -502,7 +502,7 @@ class SubversionRepository(Repository):
         specifications. No revision given means use the latest.
         """
         path = path or ''
-        if path and path[-1] == '/':
+        if path and path != '/' and path[-1] == '/':
             path = path[:-1]
         rev = self.normalize_rev(rev) or self.youngest_rev
         return SubversionNode(path, rev, self, self.pool)
