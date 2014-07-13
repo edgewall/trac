@@ -25,22 +25,22 @@
       <h1 i18n:msg="name">Rename <a href="$current_href">$page.name</a></h1>
       <form id="rename-form" action="$current_href" method="post">
         <p>
-          <input type="hidden" name="action" value="rename"/>
-          <strong>Renaming the page will rename all existing versions of the page in place.</strong><br/>
+          <input type="hidden" name="action" value="rename" />
+          <strong>Renaming the page will rename all existing versions of the page in place.</strong><br />
           The complete history of the page will be moved to the new location.
         </p>
         <div class="field">
-          <label>New name: <input type="text" name="new_name" class="trac-autofocus" size="40" value="$new_name"/></label>
+          <label>New name: <input type="text" name="new_name" class="trac-autofocus" size="40" value="$new_name" /></label>
         </div>
         <div class="field">
           <label>
-            <input type="checkbox" id="redirect" name="redirect"/>
+            <input type="checkbox" id="redirect" name="redirect" />
             Leave a redirection page at the old location
           </label>
         </div>
         <div class="buttons">
-          <input type="submit" name="submit" class="trac-disable-on-submit" value="${_('Rename page')}"/>
-          <input type="submit" name="cancel" value="${_('Cancel')}"/>
+          <input type="submit" name="submit" class="trac-disable-on-submit" value="${_('Rename page')}" />
+          <input type="submit" name="cancel" value="${_('Cancel')}" />
         </div>
       </form>
     </div>

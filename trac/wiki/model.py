@@ -176,7 +176,7 @@ class WikiPage(object):
     def rename(self, new_name):
         """Rename wiki page in-place, keeping the history intact.
         Renaming a page this way will eventually leave dangling references
-        to the old page - which litterally doesn't exist anymore.
+        to the old page - which literally doesn't exist anymore.
         """
         if not self.exists:
             raise TracError(_("Cannot rename non-existent page"))
@@ -201,7 +201,7 @@ class WikiPage(object):
                                     self.realm, new_name)
 
         self.name = self.resource.id = new_name
-        self.env.log.info('Renamed page %s to %s', old_name, new_name)
+        self.env.log.info("Renamed page %s to %s", old_name, new_name)
 
         for listener in WikiSystem(self.env).change_listeners:
             if hasattr(listener, 'wiki_page_renamed'):

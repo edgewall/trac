@@ -35,10 +35,10 @@ from trac.util.text import shorten_line
 from trac.util.translation import _, tag_
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web.api import IRequestHandler
-from trac.web.chrome import (Chrome, INavigationContributor, ITemplateProvider,
-                             add_ctxtnav, add_link, add_notice, add_script,
-                             add_stylesheet, add_warning, prevnext_nav,
-                             web_context)
+from trac.web.chrome import (Chrome, INavigationContributor,
+                             ITemplateProvider, add_ctxtnav, add_link,
+                             add_notice, add_script, add_stylesheet,
+                             add_warning, prevnext_nav, web_context)
 from trac.wiki.api import IWikiPageManipulator, WikiSystem, validate_page_name
 from trac.wiki.formatter import format_to, OneLinerFormatter
 from trac.wiki.model import WikiPage
@@ -46,14 +46,15 @@ from trac.wiki.model import WikiPage
 
 class WikiModule(Component):
 
-    implements(IContentConverter, INavigationContributor, IPermissionRequestor,
-               IRequestHandler, ITimelineEventProvider, ISearchSource,
-               ITemplateProvider)
+    implements(IContentConverter, INavigationContributor,
+               IPermissionRequestor, IRequestHandler, ITimelineEventProvider,
+               ISearchSource, ITemplateProvider)
 
     page_manipulators = ExtensionPoint(IWikiPageManipulator)
 
     max_size = IntOption('wiki', 'max_size', 262144,
-        """Maximum allowed wiki page size in characters. (''since 0.11.2'')""")
+        """Maximum allowed wiki page size in characters.
+        (''since 0.11.2'')""")
 
     PAGE_TEMPLATES_PREFIX = 'PageTemplates/'
     DEFAULT_PAGE_TEMPLATE = 'DefaultPage'
@@ -61,8 +62,8 @@ class WikiModule(Component):
     # IContentConverter methods
 
     def get_supported_conversions(self):
-        yield ('txt', _('Plain Text'), 'txt', 'text/x-trac-wiki', 'text/plain',
-               9)
+        yield ('txt', _("Plain Text"), 'txt', 'text/x-trac-wiki',
+               'text/plain', 9)
 
     def convert_content(self, req, mimetype, content, key):
         return content, 'text/plain;charset=utf-8'
@@ -108,14 +109,14 @@ class WikiModule(Component):
             pagename = re.sub(r'/{2,}', '/', pagename.strip('/'))
             req.redirect(req.href.wiki(pagename))
         if not validate_page_name(pagename):
-            raise TracError(_("Invalid Wiki page name '%(name)s'",
+            raise TracError(_('Invalid Wiki page name "%(name)s"',
                               name=pagename))
 
         if version is not None:
             try:
                 version = int(version)
             except (ValueError, TypeError):
-               raise ResourceNotFound(
+                raise ResourceNotFound(
                     _('No version "%(num)s" for Wiki page "%(name)s"',
                       num=version, name=pagename))
 
@@ -146,7 +147,8 @@ class WikiModule(Component):
                 if action == 'edit' and not has_collision and valid:
                     return self._do_save(req, versioned_page)
                 else:
-                    return self._render_editor(req, page, action, has_collision)
+                    return self._render_editor(req, page, action,
+                                               has_collision)
             elif action == 'delete':
                 self._do_delete(req, versioned_page)
             elif action == 'rename':
@@ -191,8 +193,8 @@ class WikiModule(Component):
 
         # Validate page size
         if len(req.args.get('text', '')) > self.max_size:
-            add_warning(req, _('The wiki page is too long (must be less '
-                               'than %(num)s characters)',
+            add_warning(req, _("The wiki page is too long (must be less "
+                               "than %(num)s characters)",
                                num=self.max_size))
             valid = False
 
@@ -233,9 +235,10 @@ class WikiModule(Component):
         def version_info(v, last=0):
             return {'path': get_resource_name(self.env, page.resource),
                     # TRANSLATOR: wiki page
-                    'rev': v or _('currently edited'),
+                    'rev': v or _("currently edited"),
                     'shortrev': v or last + 1,
-                    'href': req.href.wiki(page.name, version=v) if v else None}
+                    'href': req.href.wiki(page.name, version=v)
+                            if v else None}
         changes = [{'diffs': diffs, 'props': [],
                     'new': version_info(new_version, old_version),
                     'old': version_info(old_version)}]
@@ -268,12 +271,12 @@ class WikiModule(Component):
             req.redirect(req.href.wiki())
         else:
             if version and old_version and version > old_version + 1:
-                add_notice(req, _('The versions %(from_)d to %(to)d of the '
-                                  'page %(name)s have been deleted.',
+                add_notice(req, _("The versions %(from_)d to %(to)d of the "
+                                  "page %(name)s have been deleted.",
                            from_=old_version + 1, to=version, name=page.name))
             else:
-                add_notice(req, _('The version %(version)d of the page '
-                                  '%(name)s has been deleted.',
+                add_notice(req, _("The version %(version)d of the page "
+                                  "%(name)s has been deleted.",
                                   version=version, name=page.name))
             req.redirect(req.href.wiki(page.name))
 
@@ -388,8 +391,8 @@ class WikiModule(Component):
 
     def _render_diff(self, req, page):
         if not page.exists:
-            raise TracError(_('Version %(num)s of page "%(name)s" does not '
-                              'exist',
+            raise TracError(_("Version %(num)s of page \"%(name)s\" does not "
+                              "exist",
                               num=req.args.get('version'), name=page.name))
 
         old_version = req.args.get('old_version')
@@ -440,13 +443,13 @@ class WikiModule(Component):
         if prev_version:
             add_link(req, 'prev', req.href.wiki(page.name, action='diff',
                                                 version=prev_version),
-                     _('Version %(num)s', num=prev_version))
+                     _("Version %(num)s", num=prev_version))
         add_link(req, 'up', req.href.wiki(page.name, action='history'),
                  _('Page history'))
         if next_version:
             add_link(req, 'next', req.href.wiki(page.name, action='diff',
                                                 version=next_version),
-                     _('Version %(num)s', num=next_version))
+                     _("Version %(num)s", num=next_version))
 
         data = self._page_data(req, page, 'diff')
         data.update({
@@ -459,8 +462,8 @@ class WikiModule(Component):
             'changes': changes,
             'diff': diff_data,
         })
-        prevnext_nav(req, _('Previous Change'), _('Next Change'),
-                     _('Wiki History'))
+        prevnext_nav(req, _("Previous Change"), _("Next Change"),
+                     _("Wiki History"))
         return 'wiki_diff.html', data, None
 
     def _render_editor(self, req, page, action='edit', has_collision=False):
@@ -525,7 +528,8 @@ class WikiModule(Component):
             'context': context,
             'author': author,
             'comment': comment,
-            'edit_rows': editrows, 'sidebyside': sidebyside,
+            'edit_rows': editrows,
+            'sidebyside': sidebyside,
             'scroll_bar_pos': req.args.get('scroll_bar_pos', ''),
             'diff': None,
             'attachments': AttachmentModule(self.env).attachment_data(context),
@@ -580,8 +584,8 @@ class WikiModule(Component):
 
         # Add registered converters
         if page.exists:
-            for conversion in Mimeview(self.env).get_supported_conversions(
-                                                 'text/x-trac-wiki'):
+            for conversion in Mimeview(self.env) \
+                              .get_supported_conversions('text/x-trac-wiki'):
                 conversion_href = req.href.wiki(page.name, version=version,
                                                 format=conversion[0])
                 # or...
@@ -600,7 +604,7 @@ class WikiModule(Component):
         higher, related = [], []
         if not page.exists:
             if 'WIKI_CREATE' not in req.perm(page.resource):
-                raise ResourceNotFound(_('Page %(name)s not found',
+                raise ResourceNotFound(_("Page %(name)s not found",
                                          name=page.name))
             formatter = OneLinerFormatter(self.env, context)
             if '/' in page.name:
@@ -609,7 +613,7 @@ class WikiModule(Component):
                     name = '/'.join(parts[:i] + [parts[-1]])
                     if not ws.has_page(name):
                         higher.append(ws._format_link(formatter, 'wiki',
-                                                    '/' + name, name, False))
+                                                      '/' + name, name, False))
             else:
                 name = page.name
             name = name.lower()
@@ -648,12 +652,12 @@ class WikiModule(Component):
         if prev_version:
             add_link(req, 'prev',
                      req.href.wiki(page.name, version=prev_version),
-                     _('Version %(num)s', num=prev_version))
+                     _("Version %(num)s", num=prev_version))
 
         parent = None
         if version:
             add_link(req, 'up', req.href.wiki(page.name, version=None),
-                     _('View latest version'))
+                     _("View latest version"))
         elif '/' in page.name:
             parent = page.name[:page.name.rindex('/')]
             add_link(req, 'up', req.href.wiki(parent, version=None),
@@ -666,8 +670,8 @@ class WikiModule(Component):
 
         # Add ctxtnav entries
         if version:
-            prevnext_nav(req, _('Previous Version'), _('Next Version'),
-                         _('View Latest Version'))
+            prevnext_nav(req, _("Previous Version"), _("Next Version"),
+                         _("View Latest Version"))
         else:
             if parent:
                 add_ctxtnav(req, _('Up'), req.href.wiki(parent))
@@ -695,10 +699,10 @@ class WikiModule(Component):
 
     def _wiki_ctxtnav(self, req, page):
         """Add the normal wiki ctxtnav entries."""
-        add_ctxtnav(req, _('Start Page'), req.href.wiki('WikiStart'))
-        add_ctxtnav(req, _('Index'), req.href.wiki('TitleIndex'))
+        add_ctxtnav(req, _("Start Page"), req.href.wiki('WikiStart'))
+        add_ctxtnav(req, _("Index"), req.href.wiki('TitleIndex'))
         if page.exists:
-            add_ctxtnav(req, _('History'), req.href.wiki(page.name,
+            add_ctxtnav(req, _("History"), req.href.wiki(page.name,
                                                          action='history'))
 
     # ITimelineEventProvider methods
@@ -732,9 +736,9 @@ class WikiModule(Component):
         elif field == 'title':
             name = tag.em(get_resource_name(self.env, wiki_page))
             if wiki_page.version > 1:
-                return tag_('%(page)s edited', page=name)
+                return tag_("%(page)s edited", page=name)
             else:
-                return tag_('%(page)s created', page=name)
+                return tag_("%(page)s created", page=name)
         elif field == 'description':
             markup = format_to(self.env, None,
                                context.child(resource=wiki_page), comment)
@@ -742,7 +746,7 @@ class WikiModule(Component):
                 diff_href = context.href.wiki(
                     wiki_page.id, version=wiki_page.version, action='diff')
                 markup = tag(markup,
-                             ' (', tag.a(_('diff'), href=diff_href), ')')
+                             " (", tag.a(_("diff"), href=diff_href), ")")
             return markup
 
     # ISearchSource methods
