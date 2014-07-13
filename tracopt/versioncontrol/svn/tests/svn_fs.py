@@ -143,6 +143,14 @@ class NormalTests(object):
         self.assertTrue(self.repos.has_node(u'/tête/dir1'))
 
     def test_get_node(self):
+        node = self.repos.get_node(u'/')
+        self.assertEqual(u'', node.name)
+        self.assertEqual(u'/', node.path)
+        self.assertEqual(Node.DIRECTORY, node.kind)
+        self.assertEqual(HEAD, node.rev)
+        self.assertEqual(HEAD, node.created_rev)
+        self.assertEqual(datetime(2014, 4, 14, 16, 49, 44, 990695, utc),
+                         node.last_modified)
         node = self.repos.get_node(u'/tête')
         self.assertEqual(u'tête', node.name)
         self.assertEqual(u'/tête', node.path)
