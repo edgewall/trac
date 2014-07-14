@@ -48,7 +48,7 @@
         <td py:with="session_default_handler = settings.session.get('default_handler');
                      default_handler = session_default_handler or project_default_handler">
           <select id="default_handler" name="default_handler">
-            <option value="">Default ($project_default_handler)</option>
+            <option value="" i18n:msg="handler">Default ($project_default_handler)</option>
             <option py:if="session_default_handler and
                            session_default_handler not in valid_default_handlers"
                     selected="True"
