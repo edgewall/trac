@@ -507,6 +507,12 @@ class Ticket(object):
 
         self._fetch_ticket(self.id)
 
+        changes = dict((field, (oldvalue, newvalue))
+                       for field, oldvalue, newvalue in fields)
+        for listener in TicketSystem(self.env).change_listeners:
+            if hasattr(listener, 'ticket_change_deleted'):
+                listener.ticket_change_deleted(self, cdate, changes)
+
     def modify_comment(self, cdate, author, comment, when=None):
         """Modify a ticket comment specified by its date, while keeping a
         history of edits.
@@ -562,6 +568,12 @@ class Ticket(object):
                (when_ts, self.id))
 
         self.values['changetime'] = when
+
+        old_comment = old_comment or ''
+        for listener in TicketSystem(self.env).change_listeners:
+            if hasattr(listener, 'ticket_comment_modified'):
+                listener.ticket_comment_modified(self, cdate, author, comment,
+                                                 old_comment)
 
     def get_comment_history(self, cnum=None, cdate=None, db=None):
         """Retrieve the edit history of a comment identified by its number or

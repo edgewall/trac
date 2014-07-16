@@ -122,6 +122,15 @@ class ITicketChangeListener(Interface):
     def ticket_deleted(ticket):
         """Called when a ticket is deleted."""
 
+    def ticket_comment_modified(ticket, cdate, author, comment, old_comment):
+        """Called when a ticket comment is modified."""
+
+    def ticket_change_deleted(ticket, cdate, changes):
+        """Called when a ticket change is deleted.
+
+        `changes` is a dictionary of tuple `(oldvalue, newvalue)`
+        containing the ticket change of the fields that have changed."""
+
 
 class ITicketManipulator(Interface):
     """Miscellaneous manipulation of ticket workflow features."""
