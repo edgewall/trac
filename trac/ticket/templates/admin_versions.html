@@ -18,6 +18,11 @@
   <xi:include href="admin.html" />
   <head>
     <title>Versions</title>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#verlist").addSelectAllTogglers();
+      });
+    </script>
   </head>
 
   <body>
@@ -86,7 +91,7 @@ $version.description</textarea>
           <form py:when="versions" id="version_table" method="post" action="">
             <table class="listing" id="verlist">
               <thead>
-                <tr><th class="sel">&nbsp;</th>
+                <tr><th class="sel"></th>
                   <th>Name</th><th>Released</th><th>Default</th>
                 </tr>
               </thead>

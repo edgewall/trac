@@ -22,6 +22,11 @@
   <xi:include href="admin.html" />
   <head>
     <title>Milestones</title>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#millist").addSelectAllTogglers();
+      });
+    </script>
   </head>
 
   <body>
@@ -57,7 +62,7 @@
           <form id="milestone_table" method="post" action="" py:when="milestones">
             <table class="listing" id="millist">
               <thead>
-                <tr><th class="sel" py:if="can_remove">&nbsp;</th>
+                <tr><th class="sel" py:if="can_remove"></th>
                   <th>Name</th><th>Due</th><th>Completed</th>
                   <th title="Default milestone for new tickets">Default</th>
                   <th title="Default milestone for retargeting tickets">Retarget</th>

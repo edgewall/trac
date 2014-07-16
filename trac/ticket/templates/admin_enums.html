@@ -18,6 +18,11 @@
   <xi:include href="admin.html" />
   <head>
     <title>$label_plural</title>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#enumlist").addSelectAllTogglers();
+      });
+    </script>
   </head>
 
   <body>
@@ -57,7 +62,7 @@
           <form py:when="enums" id="enumtable" method="post" action="">
             <table class="listing" id="enumlist">
               <thead>
-                <tr><th class="sel">&nbsp;</th>
+                <tr><th class="sel"></th>
                   <th>Name</th><th>Default</th><th>Order</th>
                 </tr>
               </thead>
