@@ -36,23 +36,25 @@ class TicketNotificationSystem(Component):
 
     always_notify_owner = BoolOption('notification', 'always_notify_owner',
                                      'false',
-        """Always send notifications to the ticket owner. (''since 0.9'')""")
+        """Always send notifications to the ticket ''owner''.
+        (''since 0.9'')""")
 
     always_notify_reporter = BoolOption('notification',
                                         'always_notify_reporter',
                                         'false',
-        """Always send notifications to any address in the ''reporter''
-        field.""")
+        """Always send notifications to the ticket ''reporter''.""")
 
     always_notify_updater = BoolOption('notification', 'always_notify_updater',
                                        'true',
-        """Always send notifications to the person who causes the ticket
-        property change and to any previous updater of that ticket.""")
+        """Always send notifications to the user who causes the ticket
+        change and to any previous updater of the ticket.""")
 
     ticket_subject_template = Option('notification', 'ticket_subject_template',
                                      '$prefix #$ticket.id: $summary',
         """A Genshi text template snippet used to get the notification
-        subject. The template variables are documented on the
+        subject.
+
+        The template variables are documented on the
         [TracNotification#Customizingthee-mailsubject TracNotification] page.
         (''since 0.11'')""")
 
@@ -63,11 +65,11 @@ class TicketNotificationSystem(Component):
 
     ambiguous_char_width = Option('notification', 'ambiguous_char_width',
                                   'single',
-        """Which width of ambiguous characters (e.g. 'single' or
-        'double') should be used in the table of notification mail.
+        """Width of ambiguous characters that should be used in the table
+        of the notification mail.
 
-        If 'single', the same width as characters in US-ASCII. This is
-        expected by most users. If 'double', twice the width of
+        If `single`, the same width as characters in US-ASCII. This is
+        expected by most users. If `double`, twice the width of
         US-ASCII characters.  This is expected by CJK users. (''since
         0.12.2'')""")
 

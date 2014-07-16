@@ -63,32 +63,44 @@ class NotificationSystem(Component):
         """Enable email notification.""")
 
     smtp_from = Option('notification', 'smtp_from', 'trac@localhost',
-        """Sender address to use in notification emails.""")
+        """Sender address to use in notification emails.
+
+        At least one of `smtp_from` and `smtp_replyto` must be set, otherwise
+        Trac refuses to send notification mails.""")
 
     smtp_from_name = Option('notification', 'smtp_from_name', '',
         """Sender name to use in notification emails.""")
 
     smtp_from_author = BoolOption('notification', 'smtp_from_author', 'false',
-        """Use the action author as the sender of notification emails.
+        """Use the author of the change as the sender in notification emails
+           (e.g. reporter of a new ticket, author of a comment). If the
+           author hasn't set an email address, `smtp_from` and
+           `smtp_from_name` are used instead.
            (''since 1.0'')""")
 
     smtp_replyto = Option('notification', 'smtp_replyto', 'trac@localhost',
-        """Reply-To address to use in notification emails.""")
+        """Reply-To address to use in notification emails.
+
+        At least one of `smtp_from` and `smtp_replyto` must be set, otherwise
+        Trac refuses to send notification mails.""")
 
     smtp_always_cc_list = ListOption(
         'notification', 'smtp_always_cc', '', sep=(',', ' '),
-        doc="""Comma-separated list of email address(es) to always send
-        notifications to, addresses can be seen by all recipients (Cc:).""")
+        doc="""Comma-separated list of email addresses to always send
+               notifications to. Addresses can be seen by all recipients
+               (Cc:).""")
 
     smtp_always_bcc_list = ListOption(
         'notification', 'smtp_always_bcc', '', sep=(',', ' '),
-        doc="""Comma-separated list of email address(es) to always send
-        notifications to, addresses do not appear publicly (Bcc:).
-        (''since 0.10'')""")
+        doc="""Comma-separated list of email addresses to always send
+               notifications to. Addresses are not public (Bcc:).
+               (''since 0.10'')""")
 
     smtp_default_domain = Option('notification', 'smtp_default_domain', '',
-        """Default host/domain to append to address that do not specify
-           one.""")
+        """Default host/domain to append to addresses that do not specify
+           one. Fully qualified addresses are not modified. The default
+           domain is appended to all username/login for which an email
+           address cannot be found in the user settings.""")
 
     ignore_domains_list = ListOption('notification', 'ignore_domains', '',
         doc="""Comma-separated list of domains that should not be considered
@@ -101,22 +113,26 @@ class NotificationSystem(Component):
     mime_encoding = Option('notification', 'mime_encoding', 'none',
         """Specifies the MIME encoding scheme for emails.
 
-        Valid options are 'base64' for Base64 encoding, 'qp' for
-        Quoted-Printable, and 'none' for no encoding, in which case mails will
-        be sent as 7bit if the content is all ASCII, or 8bit otherwise.
+        Supported values are: `none`, the default value which uses 7-bit
+        encoding if the text is plain ASCII or 8-bit otherwise. `base64`,
+        which works with any kind of content but may cause some issues with
+        touchy anti-spam/anti-virus engine. `qp` or `quoted-printable`,
+        which works best for european languages (more compact than base64) if
+        8-bit encoding cannot be used.
         (''since 0.10'')""")
 
     use_public_cc = BoolOption('notification', 'use_public_cc', 'false',
-        """Recipients can see email addresses of other CC'ed recipients.
+        """Addresses in the To and Cc fields are visible to all recipients.
 
-        If this option is disabled, recipients are put on BCC.
+        If this option is disabled, recipients are put in the Bcc list.
         (''since 0.10'')""")
 
     use_short_addr = BoolOption('notification', 'use_short_addr', 'false',
         """Permit email address without a host/domain (i.e. username only).
 
         The SMTP server should accept those addresses, and either append
-        a FQDN or use local delivery. (''since 0.10'')""")
+        a FQDN or use local delivery. See also `smtp_default_domain`. Do not
+        use this option with a public SMTP server. (''since 0.10'')""")
 
     smtp_subject_prefix = Option('notification', 'smtp_subject_prefix',
                                  '__default__',
@@ -159,10 +175,10 @@ class SmtpEmailSender(Component):
         """SMTP server port to use for email notification.""")
 
     smtp_user = Option('notification', 'smtp_user', '',
-        """Username for SMTP server. (''since 0.9'')""")
+        """Username for authenticating with SMTP server. (''since 0.9'')""")
 
     smtp_password = Option('notification', 'smtp_password', '',
-        """Password for SMTP server. (''since 0.9'')""")
+        """Password for authenticating with SMTP server. (''since 0.9'')""")
 
     use_tls = BoolOption('notification', 'use_tls', 'false',
         """Use SSL/TLS to send notifications over SMTP. (''since 0.10'')""")
