@@ -380,46 +380,27 @@
       return $("#add_batchmod_field option:disabled");
     }
 
+    var $table = $("table.listing");
+
     // Add a new column with checkboxes for each ticket.
     // Selecting a ticket marks it for inclusion in the batch.
-    $("table.listing tr td.id").each(function() {
-      var tId = $(this).text().substring(1);
-      $(this).before(
-        $('<td class="batchmod_selector sel">').append(
-          $('<input type="checkbox" name="selected_ticket" />').attr({
-            title: babel.format(_("Select ticket %(id)s for modification"), {id: tId}),
-            value: tId
-          })));
-    });
-
-    // Add a checkbox at the top of the column
-    // to select every ticket in the group.
-    if ($("table.listing tr td.id").length) {
-        $("table.listing tr th.id").each(function() {
-          $(this).before(
-            $('<th class="batchmod_selector sel">').append(
-              $('<input type="checkbox" name="batchmod_toggleGroup" />').attr({
-                title: _("Toggle selection of all tickets shown in this group")
-              })));
-        });
+    if ($("tr td.id", $table).length > 0) {
+      $("tr th.id", $table).before($('<th class="sel">'));
+      $("tr td.id", $table).each(function() {
+        var tId = $(this).text().substring(1);
+        $(this).before(
+          $('<td class="sel">').append(
+            $('<input type="checkbox" name="selected_ticket" />').attr({
+              title: babel.format(_("Select ticket #%(id)s for modification"), {id: tId}),
+              value: tId
+            })
+          )
+        );
+      });
     }
 
-    // Add the click behavior for the group toggle.
-    $("input[name='batchmod_toggleGroup']").click(function() {
-      $("tr td.batchmod_selector input",
-        $(this).closest("table.listing thead, table.listing tbody").next())
-          .prop("checked", this.checked).change();
-    });
-    $("input[name='selected_ticket']").click(function() {
-      var tbody = $(this).closest("table.listing tbody");
-      var checkboxes = $("tr td.batchmod_selector input", tbody);
-      var numSelected = checkboxes.filter(":checked").length;
-      var noneSelected = numSelected === 0;
-      var allSelected = numSelected === checkboxes.length;
-      $("tr th.batchmod_selector input", tbody.prev())
-        .prop({"checked": allSelected,
-               "indeterminate": !(noneSelected || allSelected)});
-    });
+    // Add a Select All checkbox at the top of the column.
+    $table.addSelectAllTogglers();
 
     // Prevent submit of form if required items are not selected.
     $("#batchmod_submit").disableSubmit("input[name='selected_ticket']")

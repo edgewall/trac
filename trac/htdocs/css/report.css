@@ -273,5 +273,5 @@ table.tickets tbody tr p:last-child { margin-bottom: 0 }
 #batchmod_help :link, #batchmod_help :visited { cursor: help; }
 
 @media print {
- .batchmod_selector { display: none }
+ .sel { display: none }
 }

@@ -22,6 +22,32 @@
     }
   }
 
+  // Add a Select All group toggler to each thead in the table.
+  $.fn.addSelectAllTogglers = function() {
+    var $table = $(this);
+    if ($("tr td.sel", $table).length > 0) {
+      $("tr th.sel", $table).append(
+        $('<input type="checkbox" name="toggle_group" />').attr({
+          title: _("Toggle selection")
+        }).click(function() {
+          $("tr td.sel input",
+            $(this).closest("thead, tbody").next())
+              .prop("checked", this.checked).change();
+        })
+      );
+      $("tr td.sel", $table).click(function() {
+        var tbody = $(this).closest("tbody");
+        var checkboxes = $("tr td.sel input", tbody);
+        var numSelected = checkboxes.filter(":checked").length;
+        var noneSelected = numSelected === 0;
+        var allSelected = numSelected === checkboxes.length;
+        $("tr th.sel input", tbody.prev())
+          .prop({"checked": allSelected,
+                 "indeterminate": !(noneSelected || allSelected)});
+      });
+    }
+  }
+
   // Conditionally disable the submit button. Returns a jQuery object.
   $.fn.disableSubmit = function(determinant) {
     determinant = $(determinant);
