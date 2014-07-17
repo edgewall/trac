@@ -113,20 +113,6 @@ class TicketModule(Component):
     def __init__(self):
         self._warn_for_default_attr = set()
 
-    def __getattr__(self, name):
-        """Delegate access to ticket default Options which were move to
-        TicketSystem.
-
-        .. todo:: remove in 1.0
-        """
-        if name.startswith('default_'):
-            if name not in self._warn_for_default_attr:
-                self.log.warning("%s option should be accessed via "
-                                 "TicketSystem component", name)
-                self._warn_for_default_attr.add(name)
-            return getattr(TicketSystem(self.env), name)
-        raise AttributeError("TicketModule has no attribute '%s'" % name)
-
     @property
     def must_preserve_newlines(self):
         preserve_newlines = self.preserve_newlines
