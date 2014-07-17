@@ -362,16 +362,17 @@ class SubversionMergePropertyDiffRenderer(Component):
             removed = old_revs - new_revs
             added_ni = new_revs_ni - old_revs_ni
             removed_ni = old_revs_ni - new_revs_ni
-            try:
-                all_revs = set(repos._get_node_revs(spath))
-                # TODO: also pass first_rev here, for getting smaller a set
-                #       (this is an optmization fix, result is already correct)
-                added &= all_revs
-                removed &= all_revs
-                added_ni &= all_revs
-                removed_ni &= all_revs
-            except NoSuchNode:
-                pass
+            if added or removed:  # if new revisions differ from old revisions
+                revs = sorted(added | removed | added_ni | removed_ni)
+                try:
+                    all_revs = set(repos._get_node_revs(spath, revs[-1],
+                                                        revs[0]))
+                    added &= all_revs
+                    removed &= all_revs
+                    added_ni &= all_revs
+                    removed_ni &= all_revs
+                except NoSuchNode:
+                    pass
             if added or removed:
                 modified_sources.append((
                     spath, [_get_source_link(spath, new_context), status],
