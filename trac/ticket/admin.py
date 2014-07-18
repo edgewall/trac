@@ -11,8 +11,6 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-from datetime import datetime, timedelta
-
 from trac.admin.api import AdminCommandError, IAdminCommandProvider, \
                            IAdminPanelProvider, console_date_format, \
                            console_datetime_format, get_console_locale
@@ -20,9 +18,10 @@ from trac.core import *
 from trac.perm import PermissionSystem
 from trac.resource import ResourceNotFound
 from trac.ticket import model
+from trac.ticket.roadmap import MilestoneModule
 from trac.util import getuser
-from trac.util.datefmt import utc, parse_date, format_date, format_datetime, \
-                              get_datetime_format_hint, to_datetime, user_time
+from trac.util.datefmt import parse_date, format_date, format_datetime, \
+                              get_datetime_format_hint, user_time
 from trac.util.text import print_table, printout, exception_to_unicode
 from trac.util.translation import _, N_, gettext
 from trac.web.chrome import Chrome, add_notice, add_warning
@@ -47,10 +46,10 @@ class TicketAdminPanel(Component):
             yield ('ticket', _('Ticket System'), self._type,
                    gettext(self._label[1]))
 
-    def render_admin_panel(self, req, cat, page, version):
+    def render_admin_panel(self, req, cat, page, path_info):
         # Trap AssertionErrors and convert them to TracErrors
         try:
-            return self._render_admin_panel(req, cat, page, version)
+            return self._render_admin_panel(req, cat, page, path_info)
         except AssertionError as e:
             raise TracError(e)
 
@@ -247,49 +246,24 @@ class MilestoneAdminPanel(TicketAdminPanel):
 
     # TicketAdminPanel methods
 
-    def _render_admin_panel(self, req, cat, page, milestone):
+    def _render_admin_panel(self, req, cat, page, milestone_name):
         perm = req.perm('admin', 'ticket/' + self._type)
         # Detail view?
-        if milestone:
-            mil = model.Milestone(self.env, milestone)
+        if milestone_name:
+            milestone = model.Milestone(self.env, milestone_name)
+            milestone_module = MilestoneModule(self.env)
             if req.method == 'POST':
                 if req.args.get('save'):
                     perm.require('MILESTONE_MODIFY')
-                    mil.name = name = req.args.get('name')
-                    mil.due = mil.completed = None
-                    if 'due' in req.args:
-                        duedate = req.args.get('duedate')
-                        mil.due = user_time(req, parse_date, duedate,
-                                            hint='datetime') \
-                                  if duedate else None
-                    if req.args.get('completed', False):
-                        completed = req.args.get('completeddate', '')
-                        mil.completed = user_time(req, parse_date, completed,
-                                                  hint='datetime')
-                        if mil.completed > datetime.now(utc):
-                            raise TracError(_("Completion date may not be in "
-                                              "the future"),
-                                            _("Invalid Completion Date"))
-                    mil.description = req.args.get('description', '')
-                    try:
-                        mil.update(author=req.authname)
-                    except self.env.db_exc.IntegrityError:
-                        raise TracError(_('The milestone "%(name)s" already '
-                                          'exists.', name=name))
-                    add_notice(req, _('Your changes have been saved.'))
-                    req.redirect(req.href.admin(cat, page))
+                    if milestone_module.save_milestone(req, milestone):
+                        req.redirect(req.href.admin(cat, page))
                 elif req.args.get('cancel'):
                     req.redirect(req.href.admin(cat, page))
 
-            now = datetime.now(req.tz)
-            default_due = datetime(now.year, now.month, now.day, 18)
-            if now.hour > 18:
-                default_due += timedelta(days=1)
-            default_due = to_datetime(default_due, req.tz)
             Chrome(self.env).add_wiki_toolbars(req)
             data = {'view': 'detail',
-                    'milestone': mil,
-                    'default_due': default_due}
+                    'milestone': milestone,
+                    'default_due': milestone_module.get_default_due(req)}
 
         else:
             ticket_default = self.config.get('ticket', 'default_milestone')
@@ -301,23 +275,17 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     perm.require('MILESTONE_CREATE')
                     name = req.args.get('name')
                     try:
-                        mil = model.Milestone(self.env, name=name)
+                        model.Milestone(self.env, name=name)
                     except ResourceNotFound:
-                        mil = model.Milestone(self.env)
-                        mil.name = name
-                        if req.args.get('duedate'):
-                            mil.due = user_time(req, parse_date,
-                                                req.args.get('duedate'),
-                                                hint='datetime')
-                        mil.insert()
-                        add_notice(req, _('The milestone "%(name)s" has been '
-                                          'added.', name=name))
+                        milestone = model.Milestone(self.env)
+                        milestone.name = name
+                        MilestoneModule(self.env).save_milestone(req,
+                                                                 milestone)
                         req.redirect(req.href.admin(cat, page))
                     else:
-                        if mil.name is None:
-                            raise TracError(_('Invalid milestone name.'))
-                        raise TracError(_("Milestone %(name)s already exists.",
-                                          name=name))
+                        add_warning(req, _('Milestone "%(name)s" already '
+                                           'exists, please choose another '
+                                           'name.', name=name))
 
                 # Remove milestone
                 elif req.args.get('remove'):
@@ -329,8 +297,8 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         sel = [sel]
                     with self.env.db_transaction:
                         for name in sel:
-                            mil = model.Milestone(self.env, name)
-                            mil.delete(author=req.authname)
+                            milestone = model.Milestone(self.env, name)
+                            milestone.delete(author=req.authname)
                     add_notice(req, _("The selected milestones have been "
                                       "removed."))
                     req.redirect(req.href.admin(cat, page))
@@ -364,18 +332,11 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     self._save_config(req)
                     req.redirect(req.href.admin(cat, page))
 
-            # Get ticket count
-            milestones = [
-                (milestone, self.env.db_query("""
-                    SELECT COUNT(*) FROM ticket WHERE milestone=%s
-                    """, (milestone.name,))[0][0])
-                for milestone in model.Milestone.select(self.env)]
-
             query_href = lambda name: req.href.query({'groupby': 'status',
                                                       'milestone': name})
 
             data = {'view': 'list',
-                    'milestones': milestones,
+                    'milestones': model.Milestone.select(self.env),
                     'query_href': query_href,
                     'ticket_default': ticket_default,
                     'retarget_default': retarget_default}

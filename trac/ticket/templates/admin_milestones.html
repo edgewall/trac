@@ -44,8 +44,8 @@
               <label>Name: <input type="text" name="name" id="name" size="22"/></label>
             </div>
             <div class="field">
-              <label>
-                Due:
+              <input type="hidden" name="due" value="1" />
+                <label>Due:
                 <input type="text" id="duedate" class="trac-datetimepicker"
                        name="duedate" size="${len(datetime_hint)}"
                        title="${_('Format: %(datehint)s', datehint=datetime_hint)}"/>
@@ -69,7 +69,7 @@
                   <th title="Number of tickets associated with milestone">Tickets</th>
                 </tr>
               </thead>
-              <tbody><tr py:for="(milestone, ticket_count) in milestones">
+              <tbody><tr py:for="milestone in milestones">
                 <td class="sel" py:if="can_remove">
                   <input type="checkbox" class="trac-disable-determinant"
                          name="sel" value="$milestone.name" />
@@ -91,9 +91,9 @@
                   <input type="radio" name="retarget_default" value="$milestone.name"
                          checked="${milestone.name==retarget_default or None}" />
                 </td>
-                <td class="num">
+                <td class="num" py:with="ticket_count = milestone.get_num_tickets()">
                   <a py:strip="ticket_count == 0"
-                     href="${query_href(milestone.name)}">${ticket_count}</a>
+                     href="${query_href(milestone.name)}">$ticket_count</a>
                 </td>
               </tr></tbody>
             </table>

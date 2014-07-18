@@ -1120,6 +1120,13 @@ class Milestone(object):
                     ticket.save_changes(author, comment, now)
         return tkt_ids
 
+    def get_num_tickets(self):
+        """Returns the number of tickets associated with the milestone.
+        """
+        return self.env.db_query("""
+            SELECT COUNT(*) FROM ticket WHERE milestone=%s
+            """, (self.name,))[0][0]
+
     @classmethod
     def select(cls, env, include_completed=True):
         milestones = MilestoneCache(env).fetchall()

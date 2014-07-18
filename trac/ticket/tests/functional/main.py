@@ -756,7 +756,8 @@ class TestAdminMilestoneDuplicates(FunctionalTwillTestCaseSetup):
         tc.formvalue('addmilestone', 'name', name)
         tc.submit()
         tc.notfind(internal_error)
-        tc.find('Milestone %s already exists' % name)
+        tc.find('Milestone "%s" already exists, please choose '
+                'another name.' % name)
         tc.notfind('%s')
 
 

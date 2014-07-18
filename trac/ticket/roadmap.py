@@ -670,7 +670,7 @@ class MilestoneModule(Component):
         except ResourceNotFound:
             if 'MILESTONE_CREATE' not in req.perm('milestone', milestone_id):
                 raise
-            milestone = Milestone(self.env, None)
+            milestone = Milestone(self.env)
             milestone.name = milestone_id
             action = 'edit' # rather than 'new' so that it works for POST/save
 
@@ -693,6 +693,19 @@ class MilestoneModule(Component):
             req.redirect(req.href.roadmap())
 
         return self._render_view(req, milestone)
+
+    # Public methods
+
+    def get_default_due(self, req):
+        """Returns a `datetime` object representing the default due date in
+        the user's timezone. The default due time is 18:00 in the user's
+        time zone.
+        """
+        now = datetime.now(req.tz)
+        default_due = datetime(now.year, now.month, now.day, 18)
+        if now.hour > 18:
+            default_due += timedelta(days=1)
+        return to_datetime(default_due, req.tz)
 
     # Internal methods
 
@@ -746,8 +759,18 @@ class MilestoneModule(Component):
         else:
             req.perm(milestone.resource).require('MILESTONE_CREATE')
 
-        old_name = milestone.name
-        new_name = req.args.get('name')
+        if self.save_milestone(req, milestone):
+            req.redirect(req.href.milestone(milestone.name))
+
+        return self._render_editor(req, milestone)
+
+    def save_milestone(self, req, milestone):
+        # Instead of raising one single error, check all the constraints and
+        # let the user fix them by going back to edit mode showing the warnings
+        warnings = []
+        def warn(msg):
+            add_warning(req, msg)
+            warnings.append(msg)
 
         milestone.description = req.args.get('description', '')
 
@@ -759,36 +782,9 @@ class MilestoneModule(Component):
         else:
             milestone.due = None
 
-        completed = req.args.get('completeddate', '')
-        retarget_to = req.args.get('target') or None
-
-        # Instead of raising one single error, check all the constraints and
-        # let the user fix them by going back to edit mode showing the warnings
-        warnings = []
-        def warn(msg):
-            add_warning(req, msg)
-            warnings.append(msg)
-
-        # -- check the name
-        # If the name has changed, check that the milestone doesn't already
-        # exist
-        # FIXME: the whole .exists business needs to be clarified
-        #        (#4130) and should behave like a WikiPage does in
-        #        this respect.
-        try:
-            new_milestone = Milestone(self.env, new_name)
-            if new_milestone.name == old_name:
-                pass        # Creation or no name change
-            elif new_milestone.name:
-                warn(_('Milestone "%(name)s" already exists, please '
-                       'choose another name.', name=new_milestone.name))
-            else:
-                warn(_('You must provide a name for the milestone.'))
-        except ResourceNotFound:
-            milestone.name = new_name
-
         # -- check completed date
         if 'completed' in req.args:
+            completed = req.args.get('completeddate', '')
             completed = user_time(req, parse_date, completed,
                                   hint='datetime') if completed else None
             if completed and completed > datetime.now(utc):
@@ -797,14 +793,34 @@ class MilestoneModule(Component):
             completed = None
         milestone.completed = completed
 
+        # -- check the name
+        # If the name has changed, check that the milestone doesn't already
+        # exist
+        # FIXME: the whole .exists business needs to be clarified
+        #        (#4130) and should behave like a WikiPage does in
+        #        this respect.
+        new_name = req.args.get('name')
+        try:
+            new_milestone = Milestone(self.env, new_name)
+        except ResourceNotFound:
+            milestone.name = new_name
+        else:
+            if new_milestone.name != milestone.name:
+                if new_milestone.name:
+                    warn(_('Milestone "%(name)s" already exists, please '
+                           'choose another name.', name=new_milestone.name))
+                else:
+                    warn(_('You must provide a name for the milestone.'))
+
         if warnings:
-            return self._render_editor(req, milestone)
+            return False
 
         # -- actually save changes
         if milestone.exists:
             milestone.update(author=req.authname)
             if completed and 'retarget' in req.args:
                 comment = req.args.get('comment', '')
+                retarget_to = req.args.get('target') or None
                 retargeted_tickets = \
                     milestone.move_tickets(retarget_to, req.authname,
                                            comment, exclude_closed=True)
@@ -827,11 +843,13 @@ class MilestoneModule(Component):
                                           "an error occurred while sending "
                                           "notifications: %(message)s",
                                           message=to_unicode(e)))
+            add_notice(req, _("Your changes have been saved."))
         else:
             milestone.insert()
+            add_notice(req, _('The milestone "%(name)s" has been added.',
+                              name=milestone.name))
 
-        add_notice(req, _("Your changes have been saved."))
-        req.redirect(req.href.milestone(milestone.name))
+        return True
 
     def _render_confirm(self, req, milestone):
         req.perm(milestone.resource).require('MILESTONE_DELETE')
@@ -839,31 +857,21 @@ class MilestoneModule(Component):
         milestones = [m for m in Milestone.select(self.env)
                       if m.name != milestone.name
                       and 'MILESTONE_VIEW' in req.perm(m.resource)]
-        num_tickets = self.env.db_query("""
-            SELECT COUNT(*) FROM ticket WHERE milestone=%s""",
-            (milestone.name, ))[0][0]
         data = {
             'milestone': milestone,
             'milestone_groups': group_milestones(milestones,
                 'TICKET_ADMIN' in req.perm),
-            'num_tickets': num_tickets,
+            'num_tickets': milestone.get_num_tickets(),
             'retarget_to': self.default_retarget_to
         }
         add_stylesheet(req, 'common/css/roadmap.css')
         return 'milestone_delete.html', data, None
 
     def _render_editor(self, req, milestone):
-        # Suggest a default due time of 18:00 in the user's timezone
-        now = datetime.now(req.tz)
-        default_due = datetime(now.year, now.month, now.day, 18)
-        if now.hour > 18:
-            default_due += timedelta(days=1)
-        default_due = to_datetime(default_due, req.tz)
-
         data = {
             'milestone': milestone,
             'datetime_hint': get_datetime_format_hint(req.lc_time),
-            'default_due': default_due,
+            'default_due': self.get_default_due(req),
             'milestone_groups': [],
         }
 
@@ -872,12 +880,9 @@ class MilestoneModule(Component):
             milestones = [m for m in Milestone.select(self.env)
                           if m.name != milestone.name
                           and 'MILESTONE_VIEW' in req.perm(m.resource)]
-            num_tickets = self.env.db_query("""
-                SELECT COUNT(*) FROM ticket WHERE milestone=%s""",
-                (milestone.name, ))[0][0]
             data['milestone_groups'] = group_milestones(milestones,
                 'TICKET_ADMIN' in req.perm)
-            data['num_tickets'] = num_tickets
+            data['num_tickets'] = milestone.get_num_tickets()
             data['retarget_to'] = self.default_retarget_to
         else:
             req.perm(milestone.resource).require('MILESTONE_CREATE')
