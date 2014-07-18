@@ -33,8 +33,7 @@
     <h2>Manage Milestones <span py:if="view == 'list'" class="trac-count">(${len(milestones)})</span></h2>
 
     <py:choose test="view">
-      <xi:include py:when="'detail'" href="milestone_edit_form.html"
-                  py:with="compact = True;" />
+      <xi:include py:when="'detail'" href="milestone_edit_form.html" />
 
       <py:otherwise>
         <form class="addnew" id="addmilestone" method="post" action="" py:if="can_create">

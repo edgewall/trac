@@ -87,17 +87,12 @@
               Hide from repository index
             </label>
           </div>
-          <div class="field">
-            <fieldset>
-              <label for="description" i18n:msg="">
-                Description: (you may use <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here)
-              </label>
-              <p>
-                <textarea id="description" name="description" class="wikitext trac-resizable"
-                          rows="8" cols="78" readonly="$readonly">
-$info.description</textarea>
-              </p>
-            </fieldset>
+          <div class="field description">
+            <label for="description" i18n:msg="">
+              Description: (you may use <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here)
+            </label>
+            <textarea id="description" name="description" class="wikitext trac-resizable"
+                      rows="8" cols="78" readonly="$readonly">$info.description</textarea>
           </div>
         </fieldset>
         <div class="buttons">

@@ -153,7 +153,10 @@ legend {
  font-size: 90%;
  font-weight: bold;
 }
-label.disabled { color: #d7d7d7 }
+label.disabled, .disabled span.hint, .disabled p.help, .disabled legend,
+.disabled input, .disabled select, .readonly span.hint, .readonly p.help {
+ color: #d7d7d7
+}
 .buttons { margin: .5em .5em .5em 0 }
 .buttons form, .buttons form div { display: inline }
 .buttons input { margin: 1em .5em .1em 0 }
@@ -189,6 +192,13 @@ input[type=button].trac-delete:hover,
 input[type=submit].trac-delete:hover {
  color: #e31313;
 }
+/* Resource edit forms (detailed view) */
+form.mod { margin: 1em 0 }
+form.mod .field { margin: .5em 0; }
+form.mod .field.description { margin-top: 1em; }
+form.mod .field label { padding-left: .2em }
+form.mod .field textarea#description { padding: 0; width: 100%; }
+form.mod .field div.trac-resizable { width: 100%; }
 
 /* Header */
 #header hr { display: none }

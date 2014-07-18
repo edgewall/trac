@@ -46,16 +46,12 @@
               <span class="hint" i18n:msg="datehint">Format: $datetime_hint</span>
             </label>
           </div>
-          <div class="field">
-            <fieldset>
-              <label for="description" i18n:msg="">
-                Description: (you may use <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here)
-              </label>
-              <p>
-                <textarea id="description" name="description" class="wikitext trac-resizable" rows="8" cols="78">
-$version.description</textarea>
-              </p>
-            </fieldset>
+          <div class="field description">
+            <label for="description" i18n:msg="">
+              Description: (you may use <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here)
+            </label>
+            <textarea id="description" name="description" class="wikitext trac-resizable"
+                      rows="8" cols="78">$version.description</textarea>
           </div>
         </fieldset>
         <div class="buttons">

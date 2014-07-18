@@ -87,15 +87,3 @@ p.percent {
 }
 .trac-groupprogress table.progress td  { padding: 0 }
 .trac-groupprogress p.percent { margin-top: 3px; white-space: nowrap }
-
-/* Styles for the milestone edit form */
-#edit fieldset { margin: 1em 0 }
-#edit em { color: #888; font-size: smaller }
-#edit .disabled span.hint,
-#edit .disabled p.help { color: #d7d7d7 }
-#edit .field { margin: 0.5em 0 }
-#edit label { padding-left: .2em }
-#edit fieldset { margin-left: 1px; margin-right: 1px }
-#edit textarea#description { margin-left: -1px; margin-right: -1px; padding: 0; width: 100% }
-#edit .wikitoolbar { margin-left: -1px }
-#edit div.trac-resizable { width: 100% }
