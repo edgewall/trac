@@ -707,63 +707,6 @@ class MilestoneModule(Component):
             default_due += timedelta(days=1)
         return to_datetime(default_due, req.tz)
 
-    # Internal methods
-
-    _default_retarget_to = default_retarget_to
-
-    @property
-    def default_retarget_to(self):
-        if self._default_retarget_to and \
-           not any(self._default_retarget_to == m.name
-                   for m in Milestone.select(self.env)):
-            self.log.warn('Milestone "%s" does not exist. Update the '
-                          '"default_retarget_to" option in the [milestone] '
-                          'section of trac.ini', self._default_retarget_to)
-        return self._default_retarget_to
-
-    def _do_delete(self, req, milestone):
-        req.perm(milestone.resource).require('MILESTONE_DELETE')
-
-        retarget_to = req.args.get('target') or None
-        # Don't translate ticket comment (comment:40:ticket:5658)
-        retargeted_tickets = \
-            milestone.move_tickets(retarget_to, req.authname,
-                "Ticket retargeted after milestone deleted")
-        milestone.delete(author=req.authname)
-        add_notice(req, _('The milestone "%(name)s" has been deleted.',
-                          name=milestone.name))
-        if retargeted_tickets:
-            add_notice(req, _('The tickets associated with milestone '
-                              '"%(name)s" have been retargeted to milestone '
-                              '"%(retarget)s".', name=milestone.name,
-                              retarget=retarget_to))
-            new_values = {'milestone': retarget_to}
-            comment = _("Tickets retargeted after milestone deleted")
-            tn = BatchTicketNotifyEmail(self.env)
-            try:
-                tn.notify(retargeted_tickets, new_values, comment, None,
-                          req.authname)
-            except Exception as e:
-                self.log.error("Failure sending notification on ticket batch "
-                               "change: %s", exception_to_unicode(e))
-                add_warning(req, tag_("The changes have been saved, but an "
-                                      "error occurred while sending "
-                                      "notifications: %(message)s",
-                                      message=to_unicode(e)))
-
-        req.redirect(req.href.roadmap())
-
-    def _do_save(self, req, milestone):
-        if milestone.exists:
-            req.perm(milestone.resource).require('MILESTONE_MODIFY')
-        else:
-            req.perm(milestone.resource).require('MILESTONE_CREATE')
-
-        if self.save_milestone(req, milestone):
-            req.redirect(req.href.milestone(milestone.name))
-
-        return self._render_editor(req, milestone)
-
     def save_milestone(self, req, milestone):
         # Instead of raising one single error, check all the constraints and
         # let the user fix them by going back to edit mode showing the warnings
@@ -850,6 +793,63 @@ class MilestoneModule(Component):
                               name=milestone.name))
 
         return True
+
+    # Internal methods
+
+    _default_retarget_to = default_retarget_to
+
+    @property
+    def default_retarget_to(self):
+        if self._default_retarget_to and \
+           not any(self._default_retarget_to == m.name
+                   for m in Milestone.select(self.env)):
+            self.log.warn('Milestone "%s" does not exist. Update the '
+                          '"default_retarget_to" option in the [milestone] '
+                          'section of trac.ini', self._default_retarget_to)
+        return self._default_retarget_to
+
+    def _do_delete(self, req, milestone):
+        req.perm(milestone.resource).require('MILESTONE_DELETE')
+
+        retarget_to = req.args.get('target') or None
+        # Don't translate ticket comment (comment:40:ticket:5658)
+        retargeted_tickets = \
+            milestone.move_tickets(retarget_to, req.authname,
+                "Ticket retargeted after milestone deleted")
+        milestone.delete(author=req.authname)
+        add_notice(req, _('The milestone "%(name)s" has been deleted.',
+                          name=milestone.name))
+        if retargeted_tickets:
+            add_notice(req, _('The tickets associated with milestone '
+                              '"%(name)s" have been retargeted to milestone '
+                              '"%(retarget)s".', name=milestone.name,
+                              retarget=retarget_to))
+            new_values = {'milestone': retarget_to}
+            comment = _("Tickets retargeted after milestone deleted")
+            tn = BatchTicketNotifyEmail(self.env)
+            try:
+                tn.notify(retargeted_tickets, new_values, comment, None,
+                          req.authname)
+            except Exception as e:
+                self.log.error("Failure sending notification on ticket batch "
+                               "change: %s", exception_to_unicode(e))
+                add_warning(req, tag_("The changes have been saved, but an "
+                                      "error occurred while sending "
+                                      "notifications: %(message)s",
+                                      message=to_unicode(e)))
+
+        req.redirect(req.href.roadmap())
+
+    def _do_save(self, req, milestone):
+        if milestone.exists:
+            req.perm(milestone.resource).require('MILESTONE_MODIFY')
+        else:
+            req.perm(milestone.resource).require('MILESTONE_CREATE')
+
+        if self.save_milestone(req, milestone):
+            req.redirect(req.href.milestone(milestone.name))
+
+        return self._render_editor(req, milestone)
 
     def _render_confirm(self, req, milestone):
         req.perm(milestone.resource).require('MILESTONE_DELETE')
