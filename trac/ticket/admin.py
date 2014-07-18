@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2005-2009 Edgewall Software
+# Copyright (C) 2005-2014 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -20,9 +20,9 @@ from trac.resource import ResourceNotFound
 from trac.ticket import model
 from trac.ticket.roadmap import MilestoneModule
 from trac.util import getuser
-from trac.util.datefmt import parse_date, format_date, format_datetime, \
-                              get_datetime_format_hint, user_time
-from trac.util.text import print_table, printout, exception_to_unicode
+from trac.util.datefmt import format_date, format_datetime, \
+                              get_datetime_format_hint, parse_date, user_time
+from trac.util.text import exception_to_unicode, print_table, printout
 from trac.util.translation import _, N_, gettext
 from trac.web.chrome import Chrome, add_notice, add_warning
 
@@ -32,7 +32,8 @@ class TicketAdminPanel(Component):
     implements(IAdminPanelProvider, IAdminCommandProvider)
 
     abstract = True
-
+    
+    _type = 'undefined'
     _label = N_("(Undefined)"), N_("(Undefined)")
 
     # i18n note: use gettext() whenever referring to the above as text labels,
@@ -59,13 +60,13 @@ class TicketAdminPanel(Component):
         """
         try:
             self.config.save()
-            add_notice(req, _('Your changes have been saved.'))
+            add_notice(req, _("Your changes have been saved."))
         except Exception as e:
-            self.log.error('Error writing to trac.ini: %s',
+            self.log.error("Error writing to trac.ini: %s",
                            exception_to_unicode(e))
-            add_warning(req, _('Error writing to trac.ini, make sure it is '
-                               'writable by the web server. Your changes '
-                               'have not been saved.'))
+            add_warning(req, _("Error writing to trac.ini, make sure it is "
+                               "writable by the web server. Your changes "
+                               "have not been saved."))
 
 
 class ComponentAdminPanel(TicketAdminPanel):
@@ -157,7 +158,8 @@ class ComponentAdminPanel(TicketAdminPanel):
         if self.config.getbool('ticket', 'restrict_owner'):
             perm = PermissionSystem(self.env)
             def valid_owner(username):
-                return perm.get_user_permissions(username).get('TICKET_MODIFY')
+                return perm.get_user_permissions(username) \
+                           .get('TICKET_MODIFY')
             data['owners'] = [username for username, name, email
                               in self.env.get_known_users()
                               if valid_owner(username)]
@@ -247,17 +249,19 @@ class MilestoneAdminPanel(TicketAdminPanel):
     # TicketAdminPanel methods
 
     def _render_admin_panel(self, req, cat, page, milestone_name):
-        perm = req.perm('admin', 'ticket/' + self._type)
-        # Detail view?
+        perm_cache = req.perm('admin', 'ticket/' + self._type)
+
+        # Detail view
         if milestone_name:
             milestone = model.Milestone(self.env, milestone_name)
             milestone_module = MilestoneModule(self.env)
             if req.method == 'POST':
-                if req.args.get('save'):
-                    perm.require('MILESTONE_MODIFY')
+                if 'save' in req.args:
+                    perm_cache.require('MILESTONE_MODIFY')
                     if milestone_module.save_milestone(req, milestone):
                         req.redirect(req.href.admin(cat, page))
-                elif req.args.get('cancel'):
+
+                elif 'cancel' in req.args:
                     req.redirect(req.href.admin(cat, page))
 
             Chrome(self.env).add_wiki_toolbars(req)
@@ -265,14 +269,16 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     'milestone': milestone,
                     'default_due': milestone_module.get_default_due(req)}
 
+        # List view
         else:
             ticket_default = self.config.get('ticket', 'default_milestone')
             retarget_default = self.config.get('milestone',
                                                'default_retarget_to')
             if req.method == 'POST':
-                # Add Milestone
-                if req.args.get('add') and req.args.get('name'):
-                    perm.require('MILESTONE_CREATE')
+
+                # Add milestone
+                if 'add' in req.args and req.args.get('name'):
+                    perm_cache.require('MILESTONE_CREATE')
                     name = req.args.get('name')
                     try:
                         model.Milestone(self.env, name=name)
@@ -288,11 +294,11 @@ class MilestoneAdminPanel(TicketAdminPanel):
                                            'name.', name=name))
 
                 # Remove milestone
-                elif req.args.get('remove'):
-                    perm.require('MILESTONE_DELETE')
+                elif 'remove' in req.args:
+                    perm_cache.require('MILESTONE_DELETE')
                     sel = req.args.get('sel')
                     if not sel:
-                        raise TracError(_('No milestone selected'))
+                        raise TracError(_("No milestone selected"))
                     if not isinstance(sel, list):
                         sel = [sel]
                     with self.env.db_transaction:
@@ -304,7 +310,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     req.redirect(req.href.admin(cat, page))
 
                 # Set default milestone
-                elif req.args.get('apply'):
+                elif 'apply' in req.args:
                     save = False
                     name = req.args.get('ticket_default')
                     if name and name != ticket_default:
@@ -323,8 +329,8 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         self._save_config(req)
                         req.redirect(req.href.admin(cat, page))
 
-                # Clear defaults
-                elif req.args.get('clear'):
+                # Clear default milestone
+                elif 'clear' in req.args:
                     self.log.info("Clearing default ticket milestone "
                                   "and default retarget milestone")
                     self.config.set('ticket', 'default_milestone', '')
@@ -351,9 +357,10 @@ class MilestoneAdminPanel(TicketAdminPanel):
     # IAdminCommandProvider methods
 
     def get_admin_commands(self):
+        locale = get_console_locale(self.env)
         hints = {
-           'datetime': get_datetime_format_hint(get_console_locale(self.env)),
-           'iso8601': get_datetime_format_hint('iso8601'),
+            'datetime': get_datetime_format_hint(locale),
+            'iso8601': get_datetime_format_hint('iso8601'),
         }
         yield ('milestone list', '',
                "Show milestones",
@@ -540,9 +547,10 @@ class VersionAdminPanel(TicketAdminPanel):
     # IAdminCommandProvider methods
 
     def get_admin_commands(self):
+        locale = get_console_locale(self.env)
         hints = {
-           'datetime': get_datetime_format_hint(get_console_locale(self.env)),
-           'iso8601': get_datetime_format_hint('iso8601'),
+            'datetime': get_datetime_format_hint(locale),
+            'iso8601': get_datetime_format_hint('iso8601'),
         }
         yield ('version list', '',
                "Show versions",

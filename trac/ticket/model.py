@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2009 Edgewall Software
+# Copyright (C) 2003-2014 Edgewall Software
 # Copyright (C) 2003-2006 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
 # Copyright (C) 2006 Christian Boos <cboos@edgewall.org>
@@ -20,16 +20,16 @@
 import re
 from datetime import datetime
 
-from trac.attachment import Attachment
 from trac import core
+from trac.attachment import Attachment
 from trac.cache import cached
 from trac.core import TracError
 from trac.resource import Resource, ResourceNotFound
 from trac.ticket.api import TicketSystem
 from trac.util import embedded_numbers, partition
-from trac.util.text import empty
 from trac.util.datefmt import from_utimestamp, parse_date, to_utimestamp, \
                               utc, utcmax
+from trac.util.text import empty
 from trac.util.translation import _
 
 __all__ = ['Ticket', 'Type', 'Status', 'Resolution', 'Priority', 'Severity',
@@ -181,9 +181,9 @@ class Ticket(object):
         """
         if name in self.values and self.values[name] == value:
             return
-        if name not in self._old: # Changed field
+        if name not in self._old:  # Changed field
             self._old[name] = self.values.get(name)
-        elif self._old[name] == value: # Change of field reverted
+        elif self._old[name] == value:  # Change of field reverted
             del self._old[name]
         if value and name not in self.time_fields:
             if isinstance(value, list):
@@ -236,7 +236,7 @@ class Ticket(object):
             if self.values.get('component'):
                 try:
                     component = Component(self.env, self['component'])
-                    default_to_owner = component.owner # even if it's empty
+                    default_to_owner = component.owner  # even if it's empty
                 except ResourceNotFound:
                     # No such component exists
                     pass
@@ -300,7 +300,7 @@ class Ticket(object):
         props_unchanged = all(self.values.get(k) == v
                               for k, v in self._old.iteritems())
         if (not comment or not comment.strip()) and props_unchanged:
-            return False # Not modified
+            return False  # Not modified
 
         if when is None:
             when = datetime.now(utc)
@@ -579,7 +579,6 @@ class Ticket(object):
             if old_comment is False:
                 # There was no comment field, add one, find the
                 # original author in one of the other changed fields
-                old_author = None
                 for old_author, in db("""
                         SELECT author FROM ticket_change
                         WHERE ticket=%%s AND time=%%s AND NOT field %s LIMIT 1
@@ -696,7 +695,7 @@ class Ticket(object):
                         """ % db.like(),
                         (self.id, ts, db.like_escape('_') + '%')):
                     break
-            return (ts, author, comment)
+            return ts, author, comment
 
 
 def simplify_whitespace(name):
@@ -747,7 +746,7 @@ class AbstractEnum(object):
                         enum.value = unicode(int(enum.value) - 1)
                         enum.update()
                 except ValueError:
-                    pass # Ignore cast error for this non-essential operation
+                    pass  # Ignore cast error for this non-essential operation
             TicketSystem(self.env).reset_ticket_fields()
         self.value = self._old_value = None
         self.name = self._old_name = None
@@ -997,7 +996,7 @@ class Milestone(object):
 
     @property
     def resource(self):
-        return Resource(self.realm, self.name) ### .version !!!
+        return Resource(self.realm, self.name)  ### .version !!!
 
     exists = property(lambda self: self._old['name'] is not None)
     is_completed = property(lambda self: self.completed is not None)
@@ -1146,7 +1145,7 @@ def group_milestones(milestones, include_completed):
         return 1 if m.is_completed else 2 if m.due else 3
     open_due_milestones, open_not_due_milestones, \
         closed_milestones = partition([(m, category(m))
-            for m in milestones], (2, 3, 1))
+                                       for m in milestones], (2, 3, 1))
     groups = [
         (_('Open (by due date)'), open_due_milestones),
         (_('Open (no due date)'), open_not_due_milestones),
@@ -1232,5 +1231,5 @@ class Version(object):
             version.description = description or ''
             versions.append(version)
         def version_order(v):
-            return (v.time or utcmax, embedded_numbers(v.name))
+            return v.time or utcmax, embedded_numbers(v.name)
         return sorted(versions, key=version_order, reverse=True)

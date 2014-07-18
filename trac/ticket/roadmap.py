@@ -585,8 +585,8 @@ class MilestoneModule(Component):
     """View and edit individual milestones."""
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
-               ITimelineEventProvider, IWikiSyntaxProvider, IResourceManager,
-               ISearchSource)
+               IResourceManager, ISearchSource, ITimelineEventProvider,
+               IWikiSyntaxProvider)
 
     stats_provider = ExtensionOption('milestone', 'stats_provider',
                                      ITicketGroupStatsProvider,
@@ -753,7 +753,7 @@ class MilestoneModule(Component):
                     warn(_('Milestone "%(name)s" already exists, please '
                            'choose another name.', name=new_milestone.name))
                 else:
-                    warn(_('You must provide a name for the milestone.'))
+                    warn(_("You must provide a name for the milestone."))
 
         if warnings:
             return False
