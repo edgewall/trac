@@ -18,6 +18,7 @@
 #         Matthew Good <trac@matt-good.net>
 
 import errno
+import functools
 import inspect
 from itertools import izip, tee
 import locale
@@ -1109,6 +1110,7 @@ class lazy(object):
 
     def __init__(self, fn):
         self.fn = fn
+        functools.update_wrapper(self, fn)
 
     def __get__(self, instance, owner):
         if instance is None:
