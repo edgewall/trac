@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C)2005-2009 Edgewall Software
+# Copyright (C)2005-2014 Edgewall Software
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
 # All rights reserved.
 #
@@ -62,9 +62,9 @@ def with_transaction(env, db=None):
 
     :deprecated: This decorator is in turn deprecated in favor of
                  context managers now that python 2.4 support has been
-                 dropped. Use instead the new context manager,
-                 `QueryContextManager` and
-                 `TransactionContextManager`, which makes for much
+                 dropped. It will be removed in Trac 1.3.1. Use instead
+                 the new context managers, `QueryContextManager` and
+                 `TransactionContextManager`, which make for much
                  simpler to write code:
 
     >>> def api_method(p1, p2):
