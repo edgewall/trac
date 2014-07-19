@@ -30,7 +30,8 @@ from trac.util.text import to_unicode, exception_to_unicode
 from trac.versioncontrol.api import Changeset, Node, Repository, \
                                     IRepositoryConnector, NoSuchChangeset, \
                                     NoSuchNode, IRepositoryProvider
-from trac.versioncontrol.cache import CachedRepository, CachedChangeset
+from trac.versioncontrol.cache import CACHE_YOUNGEST_REV, CachedRepository, \
+                                      CachedChangeset
 from trac.versioncontrol.web_ui import IPropertyRenderer
 from trac.web.chrome import Chrome
 from trac.wiki import IWikiSyntaxProvider
@@ -80,6 +81,81 @@ class GitCachedRepository(CachedRepository):
 
     def get_changeset(self, rev):
         return GitCachedChangeset(self, self.normalize_rev(rev), self.env)
+
+    def sync(self, feedback=None, clean=False):
+        if clean:
+            self.remove_cache()
+
+        metadata = self.metadata
+        self.save_metadata(metadata)
+        meta_youngest = metadata.get(CACHE_YOUNGEST_REV)
+        repos = self.repos
+
+        def is_synced(rev):
+            for count, in self.env.db_query("""
+                    SELECT COUNT(*) FROM revision WHERE repos=%s AND rev=%s
+                    """, (self.id, rev)):
+                return count > 0
+            return False
+
+        def traverse(rev, seen, revs=None):
+            if revs is None:
+                revs = []
+            while True:
+                if rev in seen:
+                    return revs
+                seen.add(rev)
+                if is_synced(rev):
+                    return revs
+                revs.append(rev)
+                parent_revs = repos.parent_revs(rev)
+                if not parent_revs:
+                    return revs
+                if len(parent_revs) == 1:
+                    rev = parent_revs[0]
+                    continue
+                idx = len(revs)
+                traverse(parent_revs.pop(), seen, revs)
+                for parent in parent_revs:
+                    revs[idx:idx] = traverse(parent, seen)
+
+        while True:
+            repos.sync()
+            repos_youngest = repos.youngest_rev
+            updated = False
+            seen = set()
+
+            for rev in repos.git.all_revs():
+                if repos.child_revs(rev):
+                    continue
+                revs = traverse(rev, seen)  # topology ordered
+                while revs:
+                    # sync revision from older revision to newer revision
+                    rev = revs.pop()
+                    self.log.info("Trying to sync revision [%s]", rev)
+                    cset = repos.get_changeset(rev)
+                    with self.env.db_transaction as db:
+                        try:
+                            self._insert_changeset(db, rev, cset)
+                            updated = True
+                        except self.env.db_exc.IntegrityError, e:
+                            self.log.info('Revision %s already cached: %r',
+                                          rev, e)
+                            db.rollback()
+                            continue
+                    if feedback:
+                        feedback(rev)
+
+            if updated:
+                continue  # sync again
+
+            if meta_youngest != repos_youngest:
+                with self.env.db_transaction as db:
+                    db("""
+                        UPDATE repository SET value=%s WHERE id=%s AND name=%s
+                        """, (repos_youngest, self.id, CACHE_YOUNGEST_REV))
+                    del self.metadata
+            return
 
 
 class GitCachedChangeset(CachedChangeset):

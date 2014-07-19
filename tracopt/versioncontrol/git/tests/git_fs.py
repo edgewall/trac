@@ -23,13 +23,15 @@ from trac.tests.compat import rmtree
 from trac.util import create_file
 from trac.util.compat import close_fds
 from trac.util.datefmt import to_timestamp, utc
-from trac.versioncontrol.api import DbRepositoryProvider, NoSuchChangeset, \
-                                    NoSuchNode, RepositoryManager
+from trac.versioncontrol.api import Changeset, DbRepositoryProvider, \
+                                    NoSuchChangeset, NoSuchNode, \
+                                    RepositoryManager
 from trac.versioncontrol.web_ui.browser import BrowserModule
 from trac.versioncontrol.web_ui.log import LogModule
 from trac.web.href import Href
 from tracopt.versioncontrol.git.PyGIT import StorageFactory
-from tracopt.versioncontrol.git.git_fs import GitConnector
+from tracopt.versioncontrol.git.git_fs import GitCachedRepository, \
+                                              GitConnector, GitRepository
 
 
 git_bin = None
@@ -46,7 +48,7 @@ def git_date_format(dt):
 class BaseTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub(enable=['trac.*','tracopt.versioncontrol.git.*'])
+        self.env = EnvironmentStub()
         self.repos_path = tempfile.mkdtemp(prefix='trac-gitrepos-')
         if git_bin:
             self.env.config.set('git', 'git_bin', git_bin)
@@ -297,6 +299,166 @@ class GitNormalTestCase(BaseTestCase):
         self._test_on_empty_repos('false')
 
 
+class GitRepositoryTestCase(BaseTestCase):
+
+    cached_repository = 'disabled'
+
+    def setUp(self):
+        BaseTestCase.setUp(self)
+        self.env.config.set('git', 'cached_repository', self.cached_repository)
+
+    def test_repository_instance(self):
+        self._git_init()
+        self._add_repository('gitrepos')
+        self.assertEqual(GitRepository,
+                         type(self._repomgr.get_repository('gitrepos')))
+
+    def test_reset_head(self):
+        self._git_init()
+        create_file(os.path.join(self.repos_path, 'file.txt'), 'text')
+        self._git('add', 'file.txt')
+        self._git('commit', '-a', '-m', 'test',
+                  '--date', '2014-02-03T02:12:18+09:00')
+        self._add_repository('gitrepos')
+        repos = self._repomgr.get_repository('gitrepos')
+        repos.sync()
+        youngest_rev = repos.youngest_rev
+        entries = list(repos.get_node('').get_history())
+        self.assertEqual(2, len(entries))
+        self.assertEqual('', entries[0][0])
+        self.assertEqual(Changeset.EDIT, entries[0][2])
+        self.assertEqual('', entries[1][0])
+        self.assertEqual(Changeset.ADD, entries[1][2])
+
+        self._git('reset', '--hard', 'HEAD~')
+        repos.sync()
+        new_entries = list(repos.get_node('').get_history())
+        self.assertEqual(1, len(new_entries))
+        self.assertEqual(new_entries[0], entries[1])
+        self.assertNotEqual(youngest_rev, repos.youngest_rev)
+
+    def test_tags(self):
+        self._git_init()
+        self._add_repository('gitrepos')
+        repos = self._repomgr.get_repository('gitrepos')
+        repos.sync()
+        self.assertEqual(['master'], self._get_quickjump_names(repos))
+        self._git('tag', 'v1.0', 'master')  # add tag
+        repos.sync()
+        self.assertEqual(['master', 'v1.0'], self._get_quickjump_names(repos))
+        self._git('tag', '-d', 'v1.0')  # delete tag
+        repos.sync()
+        self.assertEqual(['master'], self._get_quickjump_names(repos))
+
+    def test_branchs(self):
+        self._git_init()
+        self._add_repository('gitrepos')
+        repos = self._repomgr.get_repository('gitrepos')
+        repos.sync()
+        self.assertEqual(['master'], self._get_quickjump_names(repos))
+        self._git('branch', 'alpha', 'master')  # add branch
+        repos.sync()
+        self.assertEqual(['alpha', 'master'], self._get_quickjump_names(repos))
+        self._git('branch', '-m', 'alpha', 'beta')  # rename branch
+        repos.sync()
+        self.assertEqual(['beta', 'master'], self._get_quickjump_names(repos))
+        self._git('branch', '-D', 'beta')  # delete branch
+        repos.sync()
+        self.assertEqual(['master'], self._get_quickjump_names(repos))
+
+    def _get_quickjump_names(self, repos):
+        return sorted(name for type, name, path, rev
+                           in repos.get_quickjump_entries('HEAD'))
+
+
+class GitCachedRepositoryTestCase(GitRepositoryTestCase):
+
+    cached_repository = 'enabled'
+
+    def test_repository_instance(self):
+        self._git_init()
+        self._add_repository('gitrepos')
+        self.assertEqual(GitCachedRepository,
+                         type(self._repomgr.get_repository('gitrepos')))
+
+    def test_sync(self):
+        self._git_init()
+        for idx in xrange(3):
+            filename = 'file%d.txt' % idx
+            create_file(os.path.join(self.repos_path, filename))
+            self._git('add', filename)
+            self._git('commit', '-a', '-m', filename,
+                      '--date', '2014-02-03T02:12:%02d+09:00' % idx)
+        self._add_repository('gitrepos')
+        repos = self._repomgr.get_repository('gitrepos')
+        revs = [entry[1] for entry in repos.repos.get_node('').get_history()]
+        revs.reverse()
+        revs2 = []
+        def feedback(rev):
+            revs2.append(rev)
+        repos.sync(feedback=feedback)
+        self.assertEqual(revs, revs2)
+        self.assertEqual(4, len(revs2))
+
+        revs2 = []
+        def feedback_1(rev):
+            revs2.append(rev)
+            if len(revs2) == 2:
+                raise StopSync
+        def feedback_2(rev):
+            revs2.append(rev)
+        try:
+            repos.sync(feedback=feedback_1, clean=True)
+        except StopSync:
+            self.assertEqual(revs[:2], revs2)
+            repos.sync(feedback=feedback_2)  # restart sync
+        self.assertEqual(revs, revs2)
+
+    def test_sync_merge(self):
+        self._git_init()
+        for idx, branch in enumerate(('alpha', 'beta')):
+            self._git('checkout', '-b', branch, 'master')
+            for n in xrange(2):
+                filename = 'file-%s-%d.txt' % (branch, n)
+                create_file(os.path.join(self.repos_path, filename))
+                self._git('add', filename)
+                self._git('commit', '-a', '-m', filename, '--date',
+                          '2014-02-03T02:12:%02d+09:00' % (n * 2 + idx))
+        self._git('checkout', 'alpha')
+        self._git('merge', '-m', 'Merge branch "beta" to "alpha"', 'beta')
+
+        self._add_repository('gitrepos')
+        repos = self._repomgr.get_repository('gitrepos')
+        youngest_rev = repos.repos.youngest_rev
+        oldest_rev = repos.repos.oldest_rev
+
+        revs = []
+        def feedback(rev):
+            revs.append(rev)
+        repos.sync(feedback=feedback)
+        self.assertEqual(6, len(revs))
+        self.assertEqual(youngest_rev, revs[-1])
+        self.assertEqual(oldest_rev, revs[0])
+
+        revs2 = []
+        def feedback_1(rev):
+            revs2.append(rev)
+            if len(revs2) == 3:
+                raise StopSync
+        def feedback_2(rev):
+            revs2.append(rev)
+        try:
+            repos.sync(feedback=feedback_1, clean=True)
+        except StopSync:
+            self.assertEqual(revs[:3], revs2)
+            repos.sync(feedback=feedback_2)  # restart sync
+        self.assertEqual(revs, revs2)
+
+
+class StopSync(Exception):
+    pass
+
+
 def suite():
     global git_bin
     suite = unittest.TestSuite()
@@ -306,6 +468,8 @@ def suite():
         suite.addTest(unittest.makeSuite(PersistentCacheTestCase))
         suite.addTest(unittest.makeSuite(HistoryTimeRangeTestCase))
         suite.addTest(unittest.makeSuite(GitNormalTestCase))
+        suite.addTest(unittest.makeSuite(GitRepositoryTestCase))
+        suite.addTest(unittest.makeSuite(GitCachedRepositoryTestCase))
     else:
         print("SKIP: tracopt/versioncontrol/git/tests/git_fs.py (git cli "
               "binary, 'git', not found)")
