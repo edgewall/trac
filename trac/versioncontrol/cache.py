@@ -111,62 +111,10 @@ class CachedRepository(Repository):
 
     def sync(self, feedback=None, clean=False):
         if clean:
-            self.log.info("Cleaning cache")
-            with self.env.db_transaction as db:
-                db("DELETE FROM revision WHERE repos=%s",
-                   (self.id,))
-                db("DELETE FROM node_change WHERE repos=%s",
-                   (self.id,))
-                db.executemany("DELETE FROM repository WHERE id=%s AND name=%s",
-                               [(self.id, k) for k in CACHE_METADATA_KEYS])
-                db.executemany("""
-                      INSERT INTO repository (id, name, value)
-                      VALUES (%s, %s, %s)
-                      """, [(self.id, k, '') for k in CACHE_METADATA_KEYS])
-                del self.metadata
+            self.remove_cache()
 
         metadata = self.metadata
-
-        with self.env.db_transaction as db:
-            invalidate = False
-
-            # -- check that we're populating the cache for the correct
-            #    repository
-            repository_dir = metadata.get(CACHE_REPOSITORY_DIR)
-            if repository_dir:
-                # directory part of the repo name can vary on case insensitive
-                # fs
-                if os.path.normcase(repository_dir) \
-                        != os.path.normcase(self.name):
-                    self.log.info("'repository_dir' has changed from %r to %r",
-                                  repository_dir, self.name)
-                    raise TracError(_("The repository directory has changed, "
-                                      "you should resynchronize the "
-                                      "repository with: trac-admin $ENV "
-                                      "repository resync '%(reponame)s'",
-                                      reponame=self.reponame or '(default)'))
-            elif repository_dir is None: #
-                self.log.info('Storing initial "repository_dir": %s',
-                              self.name)
-                db("""INSERT INTO repository (id, name, value)
-                      VALUES (%s, %s, %s)
-                      """, (self.id, CACHE_REPOSITORY_DIR, self.name))
-                invalidate = True
-            else: # 'repository_dir' cleared by a resync
-                self.log.info('Resetting "repository_dir": %s', self.name)
-                db("UPDATE repository SET value=%s WHERE id=%s AND name=%s",
-                   (self.name, self.id, CACHE_REPOSITORY_DIR))
-                invalidate = True
-
-            # -- insert a 'youngeset_rev' for the repository if necessary
-            if metadata.get(CACHE_YOUNGEST_REV) is None:
-                db("""INSERT INTO repository (id, name, value)
-                      VALUES (%s, %s, %s)
-                      """, (self.id, CACHE_YOUNGEST_REV, ''))
-                invalidate = True
-
-            if invalidate:
-                del self.metadata
+        self.save_metadata(metadata)
 
         # -- retrieve the youngest revision in the repository and the youngest
         #    revision cached so far
@@ -258,6 +206,65 @@ class CachedRepository(Repository):
                 # 5. provide some feedback
                 if feedback:
                     feedback(youngest)
+
+    def remove_cache(self):
+        """Remove the repository cache."""
+        self.log.info("Cleaning cache")
+        with self.env.db_transaction as db:
+            db("DELETE FROM revision WHERE repos=%s",
+               (self.id,))
+            db("DELETE FROM node_change WHERE repos=%s",
+               (self.id,))
+            db.executemany("DELETE FROM repository WHERE id=%s AND name=%s",
+                           [(self.id, k) for k in CACHE_METADATA_KEYS])
+            db.executemany("""
+                  INSERT INTO repository (id, name, value)
+                  VALUES (%s, %s, %s)
+                  """, [(self.id, k, '') for k in CACHE_METADATA_KEYS])
+            del self.metadata
+
+    def save_metadata(self, metadata):
+        """Save the repository metadata."""
+        with self.env.db_transaction as db:
+            invalidate = False
+
+            # -- check that we're populating the cache for the correct
+            #    repository
+            repository_dir = metadata.get(CACHE_REPOSITORY_DIR)
+            if repository_dir:
+                # directory part of the repo name can vary on case insensitive
+                # fs
+                if os.path.normcase(repository_dir) \
+                        != os.path.normcase(self.name):
+                    self.log.info("'repository_dir' has changed from %r to %r",
+                                  repository_dir, self.name)
+                    raise TracError(_("The repository directory has changed, "
+                                      "you should resynchronize the "
+                                      "repository with: trac-admin $ENV "
+                                      "repository resync '%(reponame)s'",
+                                      reponame=self.reponame or '(default)'))
+            elif repository_dir is None: #
+                self.log.info('Storing initial "repository_dir": %s',
+                              self.name)
+                db("""INSERT INTO repository (id, name, value)
+                      VALUES (%s, %s, %s)
+                      """, (self.id, CACHE_REPOSITORY_DIR, self.name))
+                invalidate = True
+            else: # 'repository_dir' cleared by a resync
+                self.log.info('Resetting "repository_dir": %s', self.name)
+                db("UPDATE repository SET value=%s WHERE id=%s AND name=%s",
+                   (self.name, self.id, CACHE_REPOSITORY_DIR))
+                invalidate = True
+
+            # -- insert a 'youngeset_rev' for the repository if necessary
+            if metadata.get(CACHE_YOUNGEST_REV) is None:
+                db("""INSERT INTO repository (id, name, value)
+                      VALUES (%s, %s, %s)
+                      """, (self.id, CACHE_YOUNGEST_REV, ''))
+                invalidate = True
+
+            if invalidate:
+                del self.metadata
 
     def insert_changeset(self, rev, cset):
         """Create revision and node_change records for the given changeset
