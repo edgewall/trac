@@ -308,6 +308,18 @@ class GitRepositoryTestCase(BaseTestCase):
         BaseTestCase.setUp(self)
         self.env.config.set('git', 'cached_repository', self.cached_repository)
 
+    def _create_merge_commit(self):
+        for idx, branch in enumerate(('alpha', 'beta')):
+            self._git('checkout', '-b', branch, 'master')
+            for n in xrange(2):
+                filename = 'file-%s-%d.txt' % (branch, n)
+                create_file(os.path.join(self.repos_path, filename))
+                self._git('add', filename)
+                self._git('commit', '-a', '-m', filename, '--date',
+                          '2014-02-03T02:12:%02d+09:00' % (n * 2 + idx))
+        self._git('checkout', 'alpha')
+        self._git('merge', '-m', 'Merge branch "beta" to "alpha"', 'beta')
+
     def test_repository_instance(self):
         self._git_init()
         self._add_repository('gitrepos')
@@ -367,6 +379,32 @@ class GitRepositoryTestCase(BaseTestCase):
         repos.sync()
         self.assertEqual(['master'], self._get_quickjump_names(repos))
 
+    def test_parent_child_revs(self):
+        self._git_init()
+        self._git('branch', 'initial')
+        self._create_merge_commit()
+        self._git('branch', 'latest')
+
+        self._add_repository('gitrepos')
+        repos = self._repomgr.get_repository('gitrepos')
+        repos.sync()
+
+        rev = repos.normalize_rev('initial')
+        children = repos.child_revs(rev)
+        self.assertEqual(2, len(children), 'child_revs: %r' % children)
+        parents = repos.parent_revs(rev)
+        self.assertEqual(0, len(parents), 'parent_revs: %r' % parents)
+        self.assertEqual(1, len(repos.child_revs(children[0])))
+        self.assertEqual(1, len(repos.child_revs(children[1])))
+
+        rev = repos.normalize_rev('latest')
+        children = repos.child_revs(rev)
+        self.assertEqual(0, len(children), 'child_revs: %r' % children)
+        parents = repos.parent_revs(rev)
+        self.assertEqual(2, len(parents), 'parent_revs: %r' % parents)
+        self.assertEqual(1, len(repos.parent_revs(parents[0])))
+        self.assertEqual(1, len(repos.parent_revs(parents[1])))
+
     def _get_quickjump_names(self, repos):
         return sorted(name for type, name, path, rev
                            in repos.get_quickjump_entries('HEAD'))
@@ -417,16 +455,7 @@ class GitCachedRepositoryTestCase(GitRepositoryTestCase):
 
     def test_sync_merge(self):
         self._git_init()
-        for idx, branch in enumerate(('alpha', 'beta')):
-            self._git('checkout', '-b', branch, 'master')
-            for n in xrange(2):
-                filename = 'file-%s-%d.txt' % (branch, n)
-                create_file(os.path.join(self.repos_path, filename))
-                self._git('add', filename)
-                self._git('commit', '-a', '-m', filename, '--date',
-                          '2014-02-03T02:12:%02d+09:00' % (n * 2 + idx))
-        self._git('checkout', 'alpha')
-        self._git('merge', '-m', 'Merge branch "beta" to "alpha"', 'beta')
+        self._create_merge_commit()
 
         self._add_repository('gitrepos')
         repos = self._repomgr.get_repository('gitrepos')

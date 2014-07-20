@@ -379,6 +379,12 @@ class CachedRepository(Repository):
             for rev, in db(sql, args):
                 return int(rev)
 
+    def parent_revs(self, rev):
+        if self.has_linear_changesets:
+            return Repository.parent_revs(self, rev)
+        else:
+            return self.repos.parent_revs(rev)
+
     def rev_older_than(self, rev1, rev2):
         return self.repos.rev_older_than(self.normalize_rev(rev1),
                                          self.normalize_rev(rev2))
