@@ -40,10 +40,7 @@ from tracopt.versioncontrol.git import PyGIT
 
 
 class GitCachedRepository(CachedRepository):
-    """Git-specific cached repository.
-
-    Passes through {display,short,normalize}_rev
-    """
+    """Git-specific cached repository."""
 
     def display_rev(self, rev):
         return self.short_rev(rev)
@@ -62,6 +59,9 @@ class GitCachedRepository(CachedRepository):
     def get_youngest_rev(self):
         # return None if repository is empty
         return CachedRepository.get_youngest_rev(self) or None
+
+    def child_revs(self, rev):
+        return self.repos.child_revs(rev)
 
     def get_changesets(self, start, stop):
         for key, csets in itertools.groupby(
