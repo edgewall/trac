@@ -464,6 +464,17 @@ try:
                 self.run_command('compile_catalog')
             def run(self):
                 self.l10n_run()
+                # When bdist_egg is called on distribute 0.6.29 and later, the
+                # egg file includes no *.mo and *.js files which are generated
+                # in l10n_run() method.
+                # We remove build_py.data_files property to re-compute in order
+                # to avoid the issue (#11640).
+                build_py = self.get_finalized_command('build_py')
+                if 'data_files' in build_py.__dict__ and \
+                   not any(any(name.endswith('.mo') for name in filenames)
+                           for pkg, src_dir, build_dir, filenames
+                           in build_py.data_files):
+                    del build_py.__dict__['data_files']
                 _install_lib.run(self)
         return build, install_lib
 
