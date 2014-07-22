@@ -95,6 +95,3 @@ p.percent {
 #edit .field { margin: 0.5em 0 }
 #edit label { padding-left: .2em }
 #edit fieldset { margin-left: 1px; margin-right: 1px }
-#edit textarea#description { margin-left: -1px; margin-right: -1px; padding: 0; width: 100% }
-#edit .wikitoolbar { margin-left: -1px }
-#edit div.trac-resizable { width: 100% }

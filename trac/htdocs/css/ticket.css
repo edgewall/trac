@@ -8,7 +8,6 @@
 }
 
 #field-description-help { float: right }
-#properties div.trac-resizable, #field-description { width: 100% }
 
 #content.ticket .trac-topnav {
  float: none;
@@ -158,14 +157,7 @@ ul.children > li.child {
 
 /* Comment editor */
 #trac-comment-editor { margin-left: 2em; margin-bottom: 1em }
-#trac-comment-editor div.trac-resizable { width: 100% }
-#trac-comment-editor textarea {
- background: #ffffe0;
- margin-left: -1px;
- margin-right: -1px;
- width: 100%;
-}
-#trac-comment-editor .wikitoolbar { margin-left: -1px }
+#trac-comment-editor textarea { background: #ffffe0; }
 .trac-new { border-left: 0.31em solid #c0f0c0; padding-left: 0.31em; }
 
 .trac-loading {
@@ -208,9 +200,6 @@ button.trac-revert div { display: none; }
 form .field { margin-top: .75em; width: 100% }
 form .field fieldset { margin-left: 1px; margin-right: 1px }
 label[for=comment] { float: right }
-#comment { margin-left: -1px; margin-right: -1px; padding: 0; width: 100% }
-form .field .wikitoolbar { margin-left: -1px }
-form .field div.trac-resizable { width: 100% }
 
 #propertyform { margin-bottom: 2em; }
 #properties { white-space: nowrap; line-height: 160%; padding: .5em }
