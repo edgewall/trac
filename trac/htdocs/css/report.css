@@ -86,7 +86,7 @@ h2.report-result {
  max-width: 54em;
 }
 #content.report .field { margin: 1em 0; }
-#content.report .field label { padding-bottom: .3em; }
+#content.report .field label { display: block; padding-bottom: .3em; }
 
 #query { clear: right }
 #query fieldset, #query fieldset input, #query fieldset select {

@@ -37,13 +37,13 @@
           </legend>
           <input type="hidden" name="action" value="$action" />
           <div class="field">
-            <label for="title">Title:</label><br />
+            <label for="title">Title:</label>
             <input type="text" id="title" name="title" class="trac-fullwidth trac-autofocus" value="$report.title" />
           </div>
           <div class="field">
             <label for="description" i18n:msg="">
               Description: (you may use <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here)
-            </label><br />
+            </label>
             <textarea id="description" name="description" class="wikitext trac-fullwidth trac-resizable" rows="10" cols="78">
 $report.description</textarea>
           </div>
@@ -53,7 +53,7 @@ $report.description</textarea>
             </div>
             <label for="query" i18n:msg="">Query: (can be either SQL or, if starting with <code>query:</code>,
               a <a tabindex="42" href="${href.wiki('TracQuery') + '#QueryLanguage'}">TracQuery</a> expression)
-            </label><br />
+            </label>
             <textarea id="query" name="query" class="trac-fullwidth trac-resizable" rows="20" cols="78">
 $report.sql</textarea>
           </div>
