@@ -36,7 +36,7 @@
         </label>
         <input type="checkbox" name="sidebyside" id="sidebyside" checked="$sidebyside" />
       </div>
-      <p><textarea id="text" class="${classes('wikitext', 'trac-autofocus',
+      <p><textarea id="text" class="${classes('wikitext', 'trac-autofocus', 'trac-fullwidth',
                                               'trac-resizable' if not sidebyside else None)}"
                    name="text" cols="80" rows="$edit_rows">
 $page.text</textarea>

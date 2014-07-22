@@ -51,15 +51,11 @@
 #edit fieldset { margin-left: 1px; margin-right: 1px }
 #edit #text {
  clear: both;
- margin-left: -1px;
- margin-right: -1px;
- padding: 0;
- width: 100%;
  min-height: 10em;
  resize: vertical;
 }
-#edit .wikitoolbar { float: left; margin-left: -1px }
-#edit div.trac-resizable { clear: both; width: 100% }
+#edit .wikitoolbar { float: left }
+#edit div.trac-resizable { clear: both }
 #edit + #info { margin-top: 1em }
 #edit + #attachments { margin-top: 1.5em }
 #changeinfo { padding: .5em }

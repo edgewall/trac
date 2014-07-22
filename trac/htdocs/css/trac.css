@@ -192,13 +192,19 @@ input[type=button].trac-delete:hover,
 input[type=submit].trac-delete:hover {
  color: #e31313;
 }
+textarea.trac-fullwidth, input.trac-fullwidth {
+ -moz-box-sizing: border-box;
+ box-sizing: border-box;
+ margin-left: 0;
+ margin-right: 0;
+ width: 100%;
+}
+textarea.trac-fullwidth { padding: 2px; }
 /* Resource edit forms (detailed view) */
 form.mod { margin: 1em 0 }
 form.mod .field { margin: .5em 0; }
 form.mod .field.description { margin-top: 1em; }
 form.mod .field label { padding-left: .2em }
-form.mod .field textarea#description { padding: 0; width: 100%; }
-form.mod .field div.trac-resizable { width: 100%; }
 
 /* Header */
 #header hr { display: none }
@@ -589,7 +595,6 @@ table.wiki tbody tr.odd { background-color: #f7f7f7 }
 
 .wikitoolbar {
  margin-top: 0.3em;
- margin-left: 2px;
  border: solid #d7d7d7;
  border-width: 1px 1px 1px 0;
  height: 18px;
@@ -620,7 +625,7 @@ table.wiki tbody tr.odd { background-color: #f7f7f7 }
 .wikitoolbar a#img { background-position: 0 -128px }
 
 /* Textarea resizer */
-div.trac-resizable { display: table; width: 1px }
+div.trac-resizable { display: table; width: 100% }
 div.trac-resizable > div { display: table-cell }
 div.trac-resizable textarea { display: block; margin-bottom: 0 }
 div.trac-grip {
