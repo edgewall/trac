@@ -13,7 +13,7 @@
 
 import unittest
 
-from trac.versioncontrol.web_ui.tests import browser, changeset, log, \
+from trac.versioncontrol.web_ui.tests import browser, changeset, log, util, \
                                              wikisyntax
 
 
@@ -22,6 +22,7 @@ def suite():
     suite.addTest(browser.suite())
     suite.addTest(changeset.suite())
     suite.addTest(log.suite())
+    suite.addTest(util.suite())
     suite.addTest(wikisyntax.suite())
     return suite
 

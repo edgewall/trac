@@ -17,12 +17,14 @@
 import os.path
 import time
 from abc import ABCMeta, abstractmethod
+from datetime import datetime
 
 from trac.admin import AdminCommandError, IAdminCommandProvider, get_dir_list
 from trac.config import ConfigSection, ListOption, Option
 from trac.core import *
 from trac.resource import IResourceManager, Resource, ResourceNotFound
 from trac.util.concurrency import threading
+from trac.util.datefmt import utc
 from trac.util.text import printout, to_unicode, exception_to_unicode
 from trac.util.translation import _
 from trac.web.api import IRequestFilter
@@ -1235,6 +1237,20 @@ class Changeset(object):
         return 'CHANGESET_VIEW' in perm(self.resource)
 
     can_view = is_viewable  # 0.12 compatibility
+
+
+class EmptyChangeset(Changeset):
+    """Changeset that contains no changes. This is typically used when the
+    changeset can't be retrieved."""
+
+    def __init__(self, repos, rev, message=None, author=None, date=None):
+        if date is None:
+            date = datetime(1970, 1, 1, tzinfo=utc)
+        super(EmptyChangeset, self).__init__(repos, rev, message, author,
+                                             date)
+
+    def get_changes(self):
+        return iter([])
 
 
 # Note: Since Trac 0.12, Exception PermissionDenied class is gone,

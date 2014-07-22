@@ -15,10 +15,13 @@
 # Author: Eli Carter <eli.carter@commprove.com>
 
 import unittest
+from datetime import datetime
 
 from trac.resource import Resource, get_resource_description, get_resource_url
-from trac.test import EnvironmentStub
-from trac.versioncontrol.api import Changeset, Node, Repository
+from trac.test import EnvironmentStub, Mock
+from trac.util.datefmt import utc
+from trac.versioncontrol.api import Changeset, EmptyChangeset, Node,\
+                                    Repository
 
 
 class ApiTestCase(unittest.TestCase):
@@ -37,6 +40,17 @@ class ApiTestCase(unittest.TestCase):
         """Abstract base class raises a TypeError when instantiated
         directly."""
         self.assertRaises(TypeError, Repository)
+
+    def test_empty_changeset(self):
+        repos = Mock()
+        changeset = EmptyChangeset(repos, 1)
+
+        self.assertEqual(repos, changeset.repos)
+        self.assertEqual(1, changeset.rev)
+        self.assertEqual('', changeset.author)
+        self.assertEqual('', changeset.message)
+        self.assertEqual(datetime(1970, 1, 1, tzinfo=utc), changeset.date)
+        self.assertEqual([], list(changeset.get_changes()))
 
 
 class ResourceManagerTestCase(unittest.TestCase):

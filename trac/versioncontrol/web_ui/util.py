@@ -26,7 +26,8 @@ from trac.resource import ResourceNotFound
 from trac.util import content_disposition, create_zipinfo
 from trac.util.datefmt import datetime, http_date, utc
 from trac.util.translation import tag_, _
-from trac.versioncontrol.api import Changeset, NoSuchNode, NoSuchChangeset
+from trac.versioncontrol.api import Changeset,EmptyChangeset, \
+                                    NoSuchChangeset, NoSuchNode
 from trac.web.api import RequestDone
 
 __all__ = ['get_changes', 'get_path_links', 'get_existing_node',
@@ -41,8 +42,7 @@ def get_changes(repos, revs, log=None):
         try:
             changeset = repos.get_changeset(rev)
         except NoSuchChangeset:
-            changeset = Changeset(repos, rev, '', '',
-                                  datetime(1970, 1, 1, tzinfo=utc))
+            changeset = EmptyChangeset(repos, rev)
             if log is not None:
                 log.warning("Unable to get changeset [%s]", rev)
         changes[rev] = changeset
