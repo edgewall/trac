@@ -1085,6 +1085,23 @@ class Chrome(Component):
 
     # E-mail formatting utilities
 
+    def authorinfo(self, req, author, email_map=None):
+        if email_map and '@' not in author and email_map.get(author):
+            author = email_map.get(author)
+        return tag.span(self.format_author(req, author), class_='trac-author')
+
+    _long_author_re = re.compile(r'.*<([^@]+)@[^@]+>\s*|([^@]+)@[^@]+')
+
+    def authorinfo_short(self, author):
+        shortened = author
+        if not author or author == 'anonymous':
+            shortened = _("anonymous")
+        else:
+            match = self._long_author_re.match(author)
+            if match:
+                shortened = match.group(1) or match.group(2)
+        return tag.span(shortened, class_='trac-author')
+
     def cc_list(self, cc_field):
         """Split a CC: value in a list of addresses."""
         ccs = []
@@ -1093,6 +1110,13 @@ class Chrome(Component):
             if cc:
                 ccs.append(cc)
         return ccs
+
+    def format_author(self, req, author):
+        if not author or author == 'anonymous':
+            return _("anonymous")
+        if self.show_email_addresses or not req or 'EMAIL_VIEW' in req.perm:
+            return author
+        return obfuscate_email_address(author)
 
     def format_emails(self, context, value, sep=', '):
         """Normalize a list of e-mails and obfuscate them if needed.
@@ -1107,11 +1131,6 @@ class Chrome(Component):
             all_cc = [obfuscate_email_address(cc) for cc in all_cc]
         return sep.join(all_cc)
 
-    def authorinfo(self, req, author, email_map=None):
-        if email_map and '@' not in author and email_map.get(author):
-            author = email_map.get(author)
-        return tag.span(self.format_author(req, author), class_='trac-author')
-
     def get_email_map(self):
         """Get the email addresses of all known users."""
         email_map = {}
@@ -1120,25 +1139,6 @@ class Chrome(Component):
                 if email:
                     email_map[username] = email
         return email_map
-
-    _long_author_re = re.compile(r'.*<([^@]+)@[^@]+>\s*|([^@]+)@[^@]+')
-
-    def authorinfo_short(self, author):
-        shortened = author
-        if not author or author == 'anonymous':
-            shortened = _("anonymous")
-        else:
-            match = self._long_author_re.match(author)
-            if match:
-                shortened = match.group(1) or match.group(2)
-        return tag.span(shortened, class_='trac-author')
-
-    def format_author(self, req, author):
-        if not author or author == 'anonymous':
-            return _("anonymous")
-        if self.show_email_addresses or not req or 'EMAIL_VIEW' in req.perm:
-            return author
-        return obfuscate_email_address(author)
 
     # Element modifiers
 
