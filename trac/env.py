@@ -591,6 +591,25 @@ class Environment(Component, ComponentManager):
         # Create the database
         DatabaseManager(self).init_db()
 
+    @lazy
+    def database_version(self):
+        """Returns the current version of the database.
+
+        :since 1.0.2:
+        """
+        return self.get_version()
+
+    @lazy
+    def database_initial_version(self):
+        """Returns the version of the database at the time of creation.
+
+        In practice, for database created before 0.11, this will
+        return `False` which is "older" than any db version number.
+
+        :since 1.0.2:
+        """
+        return self.get_version(initial=True)
+
     def get_version(self, db=None, initial=False):
         """Return the current version of the database.  If the
         optional argument `initial` is set to `True`, the version of
@@ -603,6 +622,11 @@ class Environment(Component, ComponentManager):
 
         :since 1.0: deprecation warning: the `db` parameter is no
                     longer used and will be removed in version 1.1.1
+
+        :since 1.0.2: The lazily-evaluated attributes `database_version` and
+                      `database_initial_version` should be used instead. This
+                      method will be renamed to a private method in
+                      release 1.3.1.
         """
         rows = self.db_query("""
                 SELECT value FROM system WHERE name='%sdatabase_version'
@@ -721,6 +745,7 @@ class Environment(Component, ComponentManager):
                 participant.upgrade_environment(db)
             # Database schema may have changed, so close all connections
             DatabaseManager(self).shutdown()
+        del self.database_version
         return True
 
     @lazy
@@ -759,7 +784,7 @@ class EnvironmentSetup(Component):
         self._update_sample_config()
 
     def environment_needs_upgrade(self, db):
-        dbver = self.env.get_version()
+        dbver = self.env.database_version
         if dbver == db_default.db_version:
             return False
         elif dbver > db_default.db_version:
@@ -773,7 +798,7 @@ class EnvironmentSetup(Component):
         upgrades/dbN.py, where 'N' is the version number (int).
         """
         cursor = db.cursor()
-        dbver = self.env.get_version()
+        dbver = self.env.database_version
         for i in range(dbver + 1, db_default.db_version + 1):
             name  = 'db%i' % i
             try:

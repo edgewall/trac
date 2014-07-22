@@ -38,7 +38,7 @@ from trac.ticket.api import TicketSystem, ITicketManipulator
 from trac.ticket.model import Milestone, Ticket, group_milestones
 from trac.ticket.notification import TicketNotifyEmail
 from trac.timeline.api import ITimelineEventProvider
-from trac.util import as_bool, as_int, get_reporter_id
+from trac.util import as_bool, as_int, get_reporter_id, lazy
 from trac.util.datefmt import (
     format_datetime, from_utimestamp, to_utimestamp, utc
 )
@@ -123,11 +123,11 @@ class TicketModule(Component):
             return getattr(TicketSystem(self.env), name)
         raise AttributeError("TicketModule has no attribute '%s'" % name)
 
-    @property
+    @lazy
     def must_preserve_newlines(self):
         preserve_newlines = self.preserve_newlines
         if preserve_newlines == 'default':
-            preserve_newlines = self.env.get_version(initial=True) >= 21 # 0.11
+            preserve_newlines = self.env.database_initial_version >= 21 # 0.11
         return as_bool(preserve_newlines)
 
     # IContentConverter methods

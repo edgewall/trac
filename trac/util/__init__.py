@@ -1103,7 +1103,10 @@ def to_ranges(revs):
 
 
 class lazy(object):
-    """A lazily-evaluated attribute"""
+    """A lazily-evaluated attribute.
+
+    :since: 1.0
+    """
 
     def __init__(self, fn):
         self.fn = fn
