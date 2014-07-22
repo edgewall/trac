@@ -84,6 +84,8 @@ class EnvironmentTestCase(unittest.TestCase):
     def test_get_version(self):
         """Testing env.get_version"""
         self.assertEqual(db_default.db_version, self.env.get_version())
+        self.assertEqual(db_default.db_version, self.env.database_version)
+        self.assertEqual(db_default.db_version, self.env.database_initial_version)
 
     def test_get_known_users(self):
         """Testing env.get_known_users"""
