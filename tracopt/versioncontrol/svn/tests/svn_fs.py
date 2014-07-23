@@ -28,15 +28,19 @@ try:
 except ImportError:
     has_svn = False
 
+from genshi.core import Stream
+
 import trac.tests.compat
-from trac.test import EnvironmentStub, TestSetup
+from trac.test import EnvironmentStub, Mock, MockPerm, TestSetup
 from trac.core import TracError
+from trac.mimeview.api import Context
 from trac.resource import Resource, resource_exists
 from trac.util.concurrency import get_thread_id
 from trac.util.datefmt import utc
 from trac.versioncontrol.api import DbRepositoryProvider, Changeset, Node, \
                                     NoSuchChangeset, RepositoryManager
-from tracopt.versioncontrol.svn import svn_fs
+from trac.versioncontrol import svn_fs, svn_prop
+from trac.web.href import Href
 
 REPOS_PATH = None
 REPOS_NAME = 'repo'
@@ -46,6 +50,13 @@ HEAD = 29
 TETE = 26
 
 NATIVE_EOL = '\r\n' if os.name == 'nt' else '\n'
+
+
+def _create_context():
+    req = Mock(base_path='', chrome={}, args={}, session={},
+               abs_href=Href('/'), href=Href('/'), locale=None,
+               perm=MockPerm(), authname='anonymous', tz=utc)
+    return Context.from_request(req)
 
 
 class SubversionRepositoryTestSetup(TestSetup):
@@ -716,6 +727,112 @@ En r\xe9sum\xe9 ... \xe7a marche.
 
     if os.name != 'posix':
         del test_canonical_repos_path
+
+    def test_merge_prop_renderer_without_deleted_branches(self):
+        context = _create_context()
+        context = context(self.repos.get_node('branches/v1x', HEAD).resource)
+        renderer = svn_prop.SubversionMergePropertyRenderer(self.env)
+        props = {'svn:mergeinfo': u"""\
+/tête:1-20,23-26
+/branches/v3:22
+/branches/v2:16
+"""}
+        result = Stream(renderer.render_property('svn:mergeinfo', 'browser',
+                                                 context, props))
+
+        node = unicode(result.select('//tr[1]//td[1]'))
+        self.assertIn(' href="/browser/repo/branches/v2?rev=%d"' % HEAD, node)
+        self.assertIn('>/branches/v2</a>', node)
+        node = unicode(result.select('//tr[1]//td[2]'))
+        self.assertIn(' title="16"', node)
+        self.assertIn('>merged</a>', node)
+        node = unicode(result.select('//tr[1]//td[3]'))
+        self.assertIn(' title="No revisions"', node)
+        self.assertIn('>eligible</span>', node)
+
+        node = unicode(result.select('//tr[3]//td[1]'))
+        self.assertIn(' href="/browser/repo/%s?rev=%d"' % ('t%C3%AAte', HEAD),
+                      node)
+        self.assertIn(u'>/tête</a>', node)
+        node = unicode(result.select('//tr[3]//td[2]'))
+        self.assertIn(' title="1-20, 23-26"', node)
+        self.assertIn(' href="/log/repo/t%C3%AAte?revs=1-20%2C23-26"', node)
+        self.assertIn('>merged</a>', node)
+        node = unicode(result.select('//tr[3]//td[3]'))
+        self.assertIn(' title="21"', node)
+        self.assertIn(' href="/changeset/21/repo/t%C3%AAte"', node)
+        self.assertIn('>eligible</a>', node)
+
+        self.assertNotIn('(toggle deleted branches)', unicode(result))
+
+    def test_merge_prop_renderer_with_deleted_branches(self):
+        context = _create_context()
+        context = context(self.repos.get_node('branches/v1x', HEAD).resource)
+        renderer = svn_prop.SubversionMergePropertyRenderer(self.env)
+        props = {'svn:mergeinfo': u"""\
+/tête:19
+/branches/v3:22
+/branches/deleted:1,3-5,22
+"""}
+        result = Stream(renderer.render_property('svn:mergeinfo', 'browser',
+                                                 context, props))
+
+        node = unicode(result.select('//tr[1]//td[1]'))
+        self.assertIn(' href="/browser/repo/branches/v3?rev=%d"' % HEAD, node)
+        self.assertIn('>/branches/v3</a>', node)
+        node = unicode(result.select('//tr[1]//td[2]'))
+        self.assertIn(' title="22"', node)
+        self.assertIn('>merged</a>', node)
+        node = unicode(result.select('//tr[1]//td[3]'))
+        self.assertIn(' title="No revisions"', node)
+        self.assertIn('>eligible</span>', node)
+
+        node = unicode(result.select('//tr[2]//td[1]'))
+        self.assertIn(' href="/browser/repo/%s?rev=%d"' % ('t%C3%AAte', HEAD),
+                      node)
+        self.assertIn(u'>/tête</a>', node)
+        node = unicode(result.select('//tr[2]//td[2]'))
+        self.assertIn(' title="19"', node)
+        self.assertIn(' href="/changeset/19/repo/t%C3%AAte"', node)
+        self.assertIn('>merged</a>', node)
+        node = unicode(result.select('//tr[2]//td[3]'))
+        self.assertIn(' title="13-14, 17-18, 20-21, 23-26"', node)
+        self.assertIn(' href="/log/repo/t%C3%AAte?revs='
+                      '13-14%2C17-18%2C20-21%2C23-26"', node)
+        self.assertIn('>eligible</a>', node)
+
+        self.assertIn('(toggle deleted branches)', unicode(result))
+        self.assertIn('<td>/branches/deleted</td>',
+                      unicode(result.select('//tr[3]//td[1]')))
+        self.assertIn(u'<td colspan="2">1,\u200b3-5,\u200b22</td>',
+                      unicode(result.select('//tr[3]//td[2]')))
+
+    def test_merge_prop_diff_renderer_added(self):
+        context = _create_context()
+        old_context = context(self.repos.get_node(u'tête', 20).resource)
+        old_props = {'svn:mergeinfo': u"""\
+/branches/v2:1,8-9,12-15
+/branches/v1x:12
+/branches/deleted:1,3-5,22
+"""}
+        new_context = context(self.repos.get_node(u'tête', 21).resource)
+        new_props = {'svn:mergeinfo': u"""\
+/branches/v2:1,8-9,12-16
+/branches/v1x:12
+/branches/deleted:1,3-5,22
+"""}
+        options = {}
+        renderer = svn_prop.SubversionMergePropertyDiffRenderer(self.env)
+        result = Stream(renderer.render_property_diff(
+                'svn:mergeinfo', old_context, old_props, new_context,
+                new_props, options))
+
+        node = unicode(result.select('//tr[1]//td[1]'))
+        self.assertIn(' href="/browser/repo/branches/v2?rev=21"', node)
+        self.assertIn('>/branches/v2</a>', node)
+        node = unicode(result.select('//tr[1]//td[2]'))
+        self.assertIn(' title="16"', node)
+        self.assertIn(' href="/changeset/16/repo/branches/v2"', node)
 
 
 class ScopedTests(object):
