@@ -591,7 +591,6 @@ class ReportModule(Component):
                      'numrows': numrows})
 
         if format == 'rss':
-            data['email_map'] = chrome.get_email_map()
             data['context'] = web_context(req, report_resource,
                                           absurls=True)
             return 'report.rss', data, 'application/rss+xml'

@@ -293,7 +293,6 @@ class LogModule(Component):
         if format == 'changelog':
             return 'revisionlog.txt', data, 'text/plain'
         elif format == 'rss':
-            data['email_map'] = Chrome(self.env).get_email_map()
             data['context'] = web_context(req, 'source',
                                           path, parent=repos.resource,
                                           absurls=True)

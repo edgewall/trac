@@ -937,6 +937,8 @@ class Chrome(Component):
             'locale': req and req.locale,
             'show_email_addresses': show_email_addresses,
             'show_ip_addresses': self.show_ip_addresses,
+            'author_email': partial(self.author_email,
+                                    email_map=self.get_email_map()),
             'authorinfo': partial(self.authorinfo, req),
             'authorinfo_short': self.authorinfo_short,
             'format_author': partial(self.format_author, req),
@@ -1085,9 +1087,15 @@ class Chrome(Component):
 
     # E-mail formatting utilities
 
-    def authorinfo(self, req, author, email_map=None):
+    def author_email(self, author, email_map):
+        """Returns the author email from the `email_map` if `author`
+        doesn't look like an email address."""
         if email_map and '@' not in author and email_map.get(author):
             author = email_map.get(author)
+        return author
+
+    def authorinfo(self, req, author, email_map=None):
+        author = self.author_email(author, email_map)
         return tag.span(self.format_author(req, author), class_='trac-author')
 
     _long_author_re = re.compile(r'.*<([^@]+)@[^@]+>\s*|([^@]+)@[^@]+')

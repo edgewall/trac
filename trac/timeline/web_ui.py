@@ -209,7 +209,6 @@ class TimelineModule(Component):
         data['events'] = events
 
         if format == 'rss':
-            data['email_map'] = Chrome(self.env).get_email_map()
             rss_context = web_context(req, absurls=True)
             rss_context.set_hints(wiki_flavor='html', shorten_lines=False)
             data['context'] = rss_context
