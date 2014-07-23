@@ -30,20 +30,31 @@ try:
 except:
     has_svn = False
 
-from trac.test import EnvironmentStub, TestSetup
+from genshi.core import Stream
+
+from trac.test import EnvironmentStub, Mock, MockPerm, TestSetup
 from trac.core import TracError
+from trac.mimeview.api import Context
 from trac.resource import Resource, resource_exists
 from trac.util.concurrency import get_thread_id
 from trac.util.datefmt import utc
 from trac.versioncontrol import DbRepositoryProvider, Changeset, Node, \
                                 NoSuchChangeset
-from trac.versioncontrol import svn_fs
+from trac.versioncontrol import svn_fs, svn_prop
+from trac.web.href import Href
 
 REPOS_PATH = os.path.join(tempfile.gettempdir(), 'trac-svnrepos')
 REPOS_NAME = 'repo'
 
 HEAD = 23
 TETE = 21
+
+
+def _create_context():
+    req = Mock(base_path='', chrome={}, args={}, session={},
+               abs_href=Href('/'), href=Href('/'), locale=None,
+               perm=MockPerm(), authname='anonymous', tz=utc)
+    return Context.from_request(req)
 
 
 class SubversionRepositoryTestSetup(TestSetup):
@@ -572,6 +583,122 @@ class NormalTests(object):
 
     if os.name != 'posix':
         del test_canonical_repos_path
+
+    def test_merge_prop_renderer_without_deleted_branches(self):
+        context = _create_context()
+        context = context(self.repos.get_node('branches/v1x', HEAD).resource)
+        renderer = svn_prop.SubversionMergePropertyRenderer(self.env)
+        props = {'svn:mergeinfo': u"""\
+/tête:1-20
+/branches/v3:22
+/branches/v2:16
+"""}
+        result = Stream(renderer.render_property('svn:mergeinfo', 'browser',
+                                                 context, props))
+
+        node = unicode(result.select('//tr[1]//td[1]'))
+        self.assertTrue(' href="/browser/repo/%s?rev=%d"' %
+                        ('branches/v2', HEAD) in node, repr(node))
+        self.assertTrue('>/branches/v2</a>' in node, repr(node))
+        node = unicode(result.select('//tr[1]//td[2]'))
+        self.assertTrue(' title="16"' in node, repr(node))
+        self.assertTrue('>merged</a>' in node, repr(node))
+        node = unicode(result.select('//tr[1]//td[3]'))
+        self.assertTrue(' title="No revisions"' in node, repr(node))
+        self.assertTrue('>eligible</span>' in node, repr(node))
+
+        node = unicode(result.select('//tr[3]//td[1]'))
+        self.assertTrue(u' href="/browser/repo/%s?rev=%d"' %
+                        ('t%C3%AAte', HEAD) in node, repr(node))
+        self.assertTrue(u'>/tête</a>' in node, repr(node))
+        node = unicode(result.select('//tr[3]//td[2]'))
+        self.assertTrue(' title="1-20"' in node, repr(node))
+        self.assertTrue(u' href="/log/repo/t%C3%AAte?revs=1-20"' in node,
+                        repr(node))
+        self.assertTrue('>merged</a>' in node, repr(node))
+        node = unicode(result.select('//tr[3]//td[3]'))
+        self.assertTrue(' title="21"' in node, repr(node))
+        self.assertTrue(u' href="/changeset/21/repo/t%C3%AAte"' in node,
+                        repr(node))
+        self.assertTrue('>eligible</a>' in node, repr(node))
+
+        self.assertFalse('(toggle deleted branches)' in unicode(result),
+                         repr(unicode(result)))
+
+    def test_merge_prop_renderer_with_deleted_branches(self):
+        context = _create_context()
+        context = context(self.repos.get_node('branches/v1x', HEAD).resource)
+        renderer = svn_prop.SubversionMergePropertyRenderer(self.env)
+        props = {'svn:mergeinfo': u"""\
+/tête:19
+/branches/v3:22
+/branches/deleted:1,3-5,22
+"""}
+        result = Stream(renderer.render_property('svn:mergeinfo', 'browser',
+                                                 context, props))
+
+        node = unicode(result.select('//tr[1]//td[1]'))
+        self.assertTrue(' href="/browser/repo/%s?rev=%d"' %
+                        ('branches/v3', HEAD) in node, repr(node))
+        self.assertTrue('>/branches/v3</a>' in node, repr(node))
+        node = unicode(result.select('//tr[1]//td[2]'))
+        self.assertTrue(' title="22"' in node, repr(node))
+        self.assertTrue('>merged</a>' in node, repr(node))
+        node = unicode(result.select('//tr[1]//td[3]'))
+        self.assertTrue(' title="No revisions"' in node, repr(node))
+        self.assertTrue('>eligible</span>' in node, repr(node))
+
+        node = unicode(result.select('//tr[2]//td[1]'))
+        self.assertTrue(u' href="/browser/repo/%s?rev=%d"' %
+                        ('t%C3%AAte', HEAD) in node, repr(node))
+        self.assertTrue(u'>/tête</a>' in node, repr(node))
+        node = unicode(result.select('//tr[2]//td[2]'))
+        self.assertTrue(' title="19"' in node, repr(node))
+        self.assertTrue(u' href="/changeset/19/repo/t%C3%AAte"' in node,
+                        repr(node))
+        self.assertTrue('>merged</a>' in node, repr(node))
+        node = unicode(result.select('//tr[2]//td[3]'))
+        self.assertTrue(' title="13-14, 17-18, 20-21"' in node, repr(node))
+        self.assertTrue(u' href="/log/repo/t%C3%AAte?'
+                        u'revs=13-14%2C17-18%2C20-21"' in node, repr(node))
+        self.assertTrue('>eligible</a>' in node, repr(node))
+
+        self.assertTrue('(toggle deleted branches)' in unicode(result),
+                        repr(unicode(result)))
+        node = unicode(result.select('//tr[3]//td[1]'))
+        self.assertTrue('<td>/branches/deleted</td>' in node, repr(node))
+        node = unicode(result.select('//tr[3]//td[2]'))
+        self.assertTrue(u'<td colspan="2">1,\u200b3-5,\u200b22</td>' in node,
+                        repr(node))
+
+    def test_merge_prop_diff_renderer_added(self):
+        context = _create_context()
+        old_context = context(self.repos.get_node(u'tête', 20).resource)
+        old_props = {'svn:mergeinfo': u"""\
+/branches/v2:1,8-9,12-15
+/branches/v1x:12
+/branches/deleted:1,3-5,22
+"""}
+        new_context = context(self.repos.get_node(u'tête', 21).resource)
+        new_props = {'svn:mergeinfo': u"""\
+/branches/v2:1,8-9,12-16
+/branches/v1x:12
+/branches/deleted:1,3-5,22
+"""}
+        options = {}
+        renderer = svn_prop.SubversionMergePropertyDiffRenderer(self.env)
+        result = Stream(renderer.render_property_diff(
+                'svn:mergeinfo', old_context, old_props, new_context,
+                new_props, options))
+
+        node = unicode(result.select('//tr[1]//td[1]'))
+        self.assertTrue(' href="/browser/repo/%s?rev=%d"' %
+                        ('branches/v2', 21) in node, repr(node))
+        self.assertTrue('>/branches/v2</a>' in node, repr(node))
+        node = unicode(result.select('//tr[1]//td[2]'))
+        self.assertTrue(' title="16"' in node, repr(node))
+        self.assertTrue(' href="/changeset/16/repo/branches/v2"' in node,
+                        repr(node))
 
 
 class ScopedTests(object):
