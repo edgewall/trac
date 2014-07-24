@@ -986,7 +986,7 @@ class Milestone(object):
             if not self.cache.fetchone(name, self):
                 raise ResourceNotFound(
                     _("Milestone %(name)s does not exist.",
-                      name=name), _("Invalid milestone name"))
+                      name=name), _("Invalid milestone name."))
         else:
             self.cache.factory((None, None, None, ''), self)
 
@@ -1102,7 +1102,7 @@ class Milestone(object):
             if not self.cache.fetchone(new_milestone):
                 raise ResourceNotFound(
                     _("Milestone %(name)s does not exist.",
-                      name=new_milestone), _("Invalid milestone name"))
+                      name=new_milestone), _("Invalid milestone name."))
         now = datetime.now(utc)
         with self.env.db_transaction as db:
             sql = "SELECT id FROM ticket WHERE milestone=%s"
