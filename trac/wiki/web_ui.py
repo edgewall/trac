@@ -62,8 +62,7 @@ class WikiModule(Component):
     page_manipulators = ExtensionPoint(IWikiPageManipulator)
 
     max_size = IntOption('wiki', 'max_size', 262144,
-        """Maximum allowed wiki page size in characters.
-        (''since 0.11.2'')""")
+        """Maximum allowed wiki page size in characters. (''since 0.11.2'')""")
 
     PAGE_TEMPLATES_PREFIX = 'PageTemplates/'
     DEFAULT_PAGE_TEMPLATE = 'DefaultPage'
@@ -118,7 +117,7 @@ class WikiModule(Component):
             pagename = re.sub(r'/{2,}', '/', pagename.strip('/'))
             req.redirect(req.href.wiki(pagename))
         if not validate_page_name(pagename):
-            raise TracError(_('Invalid Wiki page name "%(name)s"',
+            raise TracError(_("Invalid Wiki page name '%(name)s'",
                               name=pagename))
 
         if version is not None:
