@@ -120,7 +120,7 @@ class WikiModule(Component):
                       num=version, name=pagename))
 
         page = WikiPage(self.env, pagename)
-        versioned_page = WikiPage(self.env, pagename, version=version)
+        versioned_page = WikiPage(self.env, pagename, version)
 
         req.perm(versioned_page.resource).require('WIKI_VIEW')
 
@@ -402,9 +402,9 @@ class WikiModule(Component):
             elif old_version > page.version:
                 # FIXME: what about reverse diffs?
                 old_version = page.resource.version
-                page = WikiPage(self.env, page.name, version=old_version)
+                page = WikiPage(self.env, page.name, old_version)
                 req.perm(page.resource).require('WIKI_VIEW')
-        latest_page = WikiPage(self.env, page.name, version=None)
+        latest_page = WikiPage(self.env, page.name)
         req.perm(latest_page.resource).require('WIKI_VIEW')
         new_version = int(page.version)
 
@@ -468,7 +468,7 @@ class WikiModule(Component):
     def _render_editor(self, req, page, action='edit', has_collision=False):
         if has_collision:
             if action == 'merge':
-                page = WikiPage(self.env, page.name, version=None)
+                page = WikiPage(self.env, page.name)
                 req.perm(page.resource).require('WIKI_VIEW')
             else:
                 action = 'collision'
@@ -488,8 +488,7 @@ class WikiModule(Component):
                     'WIKI_VIEW' in req.perm(template_page.resource):
                 page.text = template_page.text
         elif 'version' in req.args:
-            old_page = WikiPage(self.env, page.name,
-                                version=int(req.args['version']))
+            old_page = WikiPage(self.env, page.name, int(req.args['version']))
             req.perm(page.resource).require('WIKI_VIEW')
             page.text = old_page.text
             comment = _("Reverted to version %(version)s.",
@@ -624,7 +623,7 @@ class WikiModule(Component):
                                        False)
                        for each in related]
 
-        latest_page = WikiPage(self.env, page.name, version=None)
+        latest_page = WikiPage(self.env, page.name)
 
         prev_version = next_version = None
         if version:
