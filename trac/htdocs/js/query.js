@@ -400,7 +400,7 @@
     }
 
     // Add a Select All checkbox at the top of the column.
-    $table.addSelectAllTogglers();
+    $table.addSelectAllCheckboxes();
 
     // Prevent submit of form if required items are not selected.
     $("#batchmod_submit").disableSubmit("input[name='selected_ticket']")

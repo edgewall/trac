@@ -22,8 +22,8 @@
     }
   }
 
-  // Add a Select All group toggler to each thead in the table.
-  $.fn.addSelectAllTogglers = function() {
+  // Add a Select All checkbox to each thead in the table.
+  $.fn.addSelectAllCheckboxes = function() {
     var $table = this;
     if ($("tr td.sel", $table).length > 0) {
       $("tr th.sel", $table).append(
