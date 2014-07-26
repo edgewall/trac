@@ -28,6 +28,8 @@ from trac.util.translation import _
 
 _like_escape_re = re.compile(r'([/_%])')
 
+_glob_escape_re = re.compile(r'[*?\[]')
+
 try:
     import pysqlite2.dbapi2 as sqlite
     have_pysqlite = 2
@@ -352,6 +354,12 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
             return _like_escape_re.sub(r'/\1', text)
         else:
             return text
+
+    def prefix_match(self):
+        return 'GLOB %s'
+
+    def prefix_match_value(self, prefix):
+        return _glob_escape_re.sub(lambda m: '[%s]' % m.group(0), prefix) + '*'
 
     def quote(self, identifier):
         return "`%s`" % identifier.replace('`', '``')

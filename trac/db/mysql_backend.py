@@ -442,6 +442,12 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
     def like_escape(self, text):
         return _like_escape_re.sub(r'/\1', text)
 
+    def prefix_match(self):
+        return "LIKE %s ESCAPE '/'"
+
+    def prefix_match_value(self, prefix):
+        return self.like_escape(prefix) + '%'
+
     def quote(self, identifier):
         return "`%s`" % identifier.replace('`', '``')
 

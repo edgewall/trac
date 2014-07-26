@@ -229,6 +229,16 @@ class ConnectionBase(object):
         pass
 
     @abstractmethod
+    def prefix_match(self):
+        """Return a case sensitive prefix-matching operator."""
+        pass
+
+    @abstractmethod
+    def prefix_match_value(self, prefix):
+        """Return a value for case sensitive prefix-matching operator."""
+        pass
+
+    @abstractmethod
     def quote(self, identifier):
         """Returns the quoted `identifier`."""
         pass
