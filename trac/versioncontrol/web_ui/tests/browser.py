@@ -152,7 +152,11 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
         self.assertEqual(None, rv[1]['repos'])
 
         req = self.create_request(path_info='/browser/blah-blah-file')
-        self.assertRaises(ResourceNotFound, self.process_request, req)
+        try:
+            self.process_request(req)
+            self.fail('ResourceNotFound not raised')
+        except ResourceNotFound, e:
+            self.assertEqual('No node blah-blah-file', unicode(e))
 
     def test_repository_without_browser_view(self):
         req = self.create_request(path_info='/browser/')
@@ -273,6 +277,27 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
         req = self.create_request(path_info='/browser/missing')
         self.assertRaises(ResourceNotFound, self.process_request, req)
 
+    def test_repository_index_with_hidden_default_repos(self):
+        self.grant_perm('anonymous', 'BROWSER_VIEW', 'FILE_VIEW')
+        provider = DbRepositoryProvider(self.env)
+        provider.modify_repository('(default)', {'hidden': 'enabled'})
+        req = self.create_request(path_info='/browser/')
+        template, data, content_type = self.process_request(req)
+        self.assertEqual(None, data['repos'])
+        repo_data = data['repo']  # for repository index
+        self.assertEqual('allow', repo_data['repositories'][0][0])
+        self.assertEqual('raise', repo_data['repositories'][1][0])
+        self.assertEqual(2, len(repo_data['repositories']))
+
+    def test_node_in_hidden_default_repos(self):
+        self.grant_perm('anonymous', 'BROWSER_VIEW', 'FILE_VIEW')
+        provider = DbRepositoryProvider(self.env)
+        provider.modify_repository('(default)', {'hidden': 'enabled'})
+        req = self.create_request(path_info='/browser/blah-blah-file')
+        template, data, content_type = self.process_request(req)
+        self.assertEqual('', data['reponame'])
+        self.assertEqual('blah-blah-file', data['path'])
+
     def test_no_viewable_repositories_with_browser_view(self):
         self.grant_perm('anonymous', 'BROWSER_VIEW')
         provider = DbRepositoryProvider(self.env)
@@ -280,18 +305,43 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
         provider.remove_repository('allow')
         provider.remove_repository('(default)')
         provider.remove_repository('raise')
+
         req = self.create_request(path_info='/browser/')
-        self.assertRaises(ResourceNotFound, self.process_request, req)
+        try:
+            self.process_request(req)
+            self.fail('ResourceNotFound not raised')
+        except ResourceNotFound, e:
+            self.assertEqual('No viewable repositories', unicode(e))
         req = self.create_request(path_info='/browser/allow/')
-        self.assertRaises(ResourceNotFound, self.process_request, req)
-        req = self.create_request(path_info='/browser/raise')
-        self.assertRaises(ResourceNotFound, self.process_request, req)
+        try:
+            self.process_request(req)
+            self.fail('ResourceNotFound not raised')
+        except ResourceNotFound, e:
+            self.assertEqual('No node allow', unicode(e))
         req = self.create_request(path_info='/browser/deny/')
-        self.assertRaises(PermissionError, self.process_request, req)
+        try:
+            self.process_request(req)
+            self.fail('PermissionError not raised')
+        except PermissionError, e:
+            self.assertEqual('BROWSER_VIEW', e.action)
+            self.assertEqual('source', e.resource.realm)
+            self.assertEqual('/', e.resource.id)
+            self.assertEqual('repository', e.resource.parent.realm)
+            self.assertEqual('deny', e.resource.parent.id)
 
         provider.remove_repository('deny')
+        req = self.create_request(path_info='/browser/')
+        try:
+            self.process_request(req)
+            self.fail('ResourceNotFound not raised')
+        except ResourceNotFound, e:
+            self.assertEqual('No viewable repositories', unicode(e))
         req = self.create_request(path_info='/browser/deny/')
-        self.assertRaises(ResourceNotFound, self.process_request, req)
+        try:
+            self.process_request(req)
+            self.fail('ResourceNotFound not raised')
+        except ResourceNotFound, e:
+            self.assertEqual('No node deny', unicode(e))
 
     def test_no_viewable_repositories_without_browser_view(self):
         provider = DbRepositoryProvider(self.env)

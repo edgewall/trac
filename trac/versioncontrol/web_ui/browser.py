@@ -412,7 +412,10 @@ class BrowserModule(Component):
             # If no viewable repositories, check permission instead of
             # repos.is_viewable()
             req.perm.require('BROWSER_VIEW')
-            raise ResourceNotFound(_("No node %(path)s", path=path))
+            if show_index:
+                raise ResourceNotFound(_("No viewable repositories"))
+            else:
+                raise ResourceNotFound(_("No node %(path)s", path=path))
 
         quickjump_data = properties_data = None
         if node and not xhr:
