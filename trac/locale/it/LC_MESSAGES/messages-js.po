@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
-"POT-Creation-Date: 2014-07-06 21:42+0900\n"
-"PO-Revision-Date: 2014-03-05 19:10+0100\n"
+"POT-Creation-Date: 2014-07-24 16:49-0700\n"
+"PO-Revision-Date: 2014-07-26 22:00+0200\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
 "Language-Team: Italian "
 "(http://www.transifex.com/projects/p/trac/language/it/)\n"
@@ -166,20 +166,20 @@ msgstr " rimuovi:"
 msgid " add:"
 msgstr " aggiungi:"
 
-#: trac/htdocs/js/query.js:390
+#: trac/htdocs/js/query.js:394
 #, python-format
-msgid "Select ticket %(id)s for modification"
-msgstr "Seleziona la segnalazione %(id)s per la modifica"
-
-#: trac/htdocs/js/query.js:402
-msgid "Toggle selection of all tickets shown in this group"
-msgstr "Inverte la selezione di tutte le segnalazioni in questo gruppo"
+msgid "Select ticket #%(id)s for modification"
+msgstr "Seleziona la segnalazione #%(id)s per la modifica"
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
 msgstr "Collega qui"
 
-#: trac/htdocs/js/trac.js:44
+#: trac/htdocs/js/trac.js:31
+msgid "Toggle group"
+msgstr "Inverti la selezione del gruppo"
+
+#: trac/htdocs/js/trac.js:70
 msgid "At least one item must be selected"
 msgstr "Devi selezionare almeno una voce"
 
