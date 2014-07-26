@@ -279,6 +279,14 @@ class PostgreSQLConnection(ConnectionWrapper):
     def like_escape(self, text):
         return _like_escape_re.sub(r'/\1', text)
 
+    def prefix_match(self):
+        """Return a case sensitive prefix-matching operator."""
+        return "LIKE %s ESCAPE '/'"
+
+    def prefix_match_value(self, prefix):
+        """Return a value for case sensitive prefix-matching operator."""
+        return self.like_escape(prefix) + '%'
+
     def quote(self, identifier):
         """Return the quoted identifier."""
         return '"%s"' % identifier.replace('"', '""')

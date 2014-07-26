@@ -14,6 +14,8 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from __future__ import with_statement
+
 from fnmatch import fnmatchcase
 from itertools import groupby
 import inspect
@@ -327,8 +329,9 @@ class RecentChangesMacro(WikiMacroBase):
                         max(time) AS max_time FROM wiki"""
         args = []
         if prefix:
-            sql += " WHERE name LIKE %s"
-            args.append(prefix + '%')
+            with self.env.db_query as db:
+                sql += " WHERE name %s" % db.prefix_match()
+                args.append(db.prefix_match_value(prefix))
         sql += " GROUP BY name ORDER BY max_time DESC"
         if limit:
             sql += " LIMIT %s"
