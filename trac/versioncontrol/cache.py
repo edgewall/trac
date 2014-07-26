@@ -334,9 +334,9 @@ class CachedRepository(Repository):
         sfirst = self.db_rev(first)
         cursor.execute("SELECT DISTINCT rev FROM node_change "
                        "WHERE repos=%%s AND rev>=%%s AND rev<=%%s "
-                       " AND (path=%%s OR path %s)" % db.like(),
+                       " AND (path=%%s OR path %s)" % db.prefix_match(),
                        (self.id, sfirst, slast, path,
-                        db.like_escape(path + '/') + '%'))
+                        db.prefix_match_value(path + '/')))
         return [int(row[0]) for row in cursor]
 
     def has_node(self, path, rev=None):
@@ -377,8 +377,8 @@ class CachedRepository(Repository):
         if path:
             path = path.lstrip('/')
             # changes on path itself or its children
-            sql += " AND (path=%s OR path " + db.like()
-            args.extend((path, db.like_escape(path + '/') + '%'))
+            sql += " AND (path=%s OR path " + db.prefix_match()
+            args.extend((path, db.prefix_match_value(path + '/')))
             # deletion of path ancestors
             components = path.lstrip('/').split('/')
             parents = ','.join(('%s',) * len(components))

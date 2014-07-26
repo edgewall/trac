@@ -533,8 +533,8 @@ class Ticket(object):
             cursor.execute("""
                 SELECT field FROM ticket_change 
                 WHERE ticket=%%s AND time=%%s AND field %s
-                """ % db.like(), (self.id, ts,
-                                  db.like_escape('_comment') + '%'))
+                """ % db.prefix_match(),
+                (self.id, ts, db.prefix_match_value('_comment')))
             fields = list(cursor)
             rev = fields and max(int(field[8:]) for field, in fields) + 1 or 0
             cursor.execute("""
@@ -550,7 +550,8 @@ class Ticket(object):
                     SELECT author FROM ticket_change 
                     WHERE ticket=%%s AND time=%%s AND NOT field %s
                     LIMIT 1
-                    """ % db.like(), (self.id, ts, db.like_escape('_') + '%'))
+                    """ % db.prefix_match(),
+                    (self.id, ts, db.prefix_match_value('_')))
                 old_author = None
                 for old_author, in cursor:
                     break
@@ -584,8 +585,8 @@ class Ticket(object):
                 SELECT field,author,oldvalue,newvalue 
                 FROM ticket_change 
                 WHERE ticket=%%s AND time=%%s AND field %s
-                """ % db.like(), (self.id, ts0,
-                                  db.like_escape('_comment') + '%'))
+                """ % db.prefix_match(),
+                (self.id, ts0, db.prefix_match_value('_comment')))
             rows = sorted((int(field[8:]), author, old, new)
                           for field, author, old, new in cursor)
             for rev, author, comment, ts in rows:
@@ -638,7 +639,8 @@ class Ticket(object):
                 SELECT author FROM ticket_change 
                 WHERE ticket=%%s AND time=%%s AND NOT field %s 
                 LIMIT 1
-                """ % db.like(), (self.id, ts, db.like_escape('_') + '%'))
+                """ % db.prefix_match(),
+                (self.id, ts, db.prefix_match_value('_')))
             for author, in cursor:
                 break
         return (ts, author, comment)

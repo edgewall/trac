@@ -286,7 +286,8 @@ class RecentChangesMacro(WikiMacroBase):
                 if len(argv) > 1:
                     limit = int(argv[1])
 
-        cursor = formatter.db.cursor()
+        db = formatter.db
+        cursor = db.cursor()
 
         sql = 'SELECT name, ' \
               '  max(version) AS max_version, ' \
@@ -294,8 +295,8 @@ class RecentChangesMacro(WikiMacroBase):
               'FROM wiki'
         args = []
         if prefix:
-            sql += ' WHERE name LIKE %s'
-            args.append(prefix + '%')
+            sql += ' WHERE name %s' % db.prefix_match()
+            args.append(db.prefix_match_value(prefix))
         sql += ' GROUP BY name ORDER BY max_time DESC'
         if limit:
             sql += ' LIMIT %s'
