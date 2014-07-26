@@ -519,6 +519,18 @@ class SubversionRepository(Repository):
             revs.append(r)
         return revs
 
+    def _get_changed_revs(self, node_infos):
+        path_revs = {}
+        for node, first in node_infos:
+            path = node.path
+            revs = []
+            for p, r, chg in node.get_history():
+                if p != path or r < first:
+                    break
+                revs.append(r)
+            path_revs[path] = revs
+        return path_revs
+
     def _history(self, path, start, end, pool):
         """`path` is a unicode path in the scope.
 
