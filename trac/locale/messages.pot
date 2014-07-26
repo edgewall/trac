@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.1.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-07-24 16:49-0700\n"
+"POT-Creation-Date: 2014-07-26 10:23+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -397,19 +397,19 @@ msgstr ""
 msgid "Download failed"
 msgstr ""
 
-#: trac/attachment.py:879 trac/versioncontrol/web_ui/browser.py:706
+#: trac/attachment.py:879 trac/versioncontrol/web_ui/browser.py:709
 #: trac/wiki/web_ui.py:64
 msgid "Plain Text"
 msgstr ""
 
-#: trac/attachment.py:885 trac/versioncontrol/web_ui/browser.py:712
+#: trac/attachment.py:885 trac/versioncontrol/web_ui/browser.py:715
 msgid "Original Format"
 msgstr ""
 
 #: trac/attachment.py:927 trac/templates/list_of_attachments.html:29
 #: trac/ticket/templates/ticket_change.html:92
 #: trac/versioncontrol/templates/dir_entries.html:29
-#: trac/versioncontrol/web_ui/browser.py:861
+#: trac/versioncontrol/web_ui/browser.py:864
 msgid "Download"
 msgstr ""
 
@@ -3466,8 +3466,8 @@ msgstr ""
 #: trac/ticket/web_ui.py:911 trac/ticket/web_ui.py:968
 #: trac/ticket/web_ui.py:976 trac/ticket/web_ui.py:1047
 #: trac/ticket/web_ui.py:1092 trac/ticket/web_ui.py:1099
-#: trac/wiki/web_ui.py:445 trac/wiki/web_ui.py:451 trac/wiki/web_ui.py:654
-#: trac/wiki/web_ui.py:668
+#: trac/wiki/web_ui.py:445 trac/wiki/web_ui.py:451 trac/wiki/web_ui.py:653
+#: trac/wiki/web_ui.py:667
 #, python-format
 msgid "Version %(num)s"
 msgstr ""
@@ -3668,7 +3668,7 @@ msgstr ""
 
 #. TRANSLATOR: modified ('diff') (link)
 #: trac/ticket/web_ui.py:1786 trac/ticket/templates/ticket_change.html:164
-#: trac/wiki/web_ui.py:748
+#: trac/wiki/web_ui.py:747
 msgid "diff"
 msgstr ""
 
@@ -4946,7 +4946,7 @@ msgstr ""
 #: trac/versioncontrol/templates/admin_repositories.html:48
 #: trac/versioncontrol/templates/admin_repositories.html:149
 #: trac/versioncontrol/templates/admin_repositories.html:151
-#: trac/versioncontrol/web_ui/browser.py:950
+#: trac/versioncontrol/web_ui/browser.py:953
 #: trac/versioncontrol/web_ui/changeset.py:842
 #: trac/versioncontrol/web_ui/changeset.py:984
 msgid "(default)"
@@ -5537,7 +5537,7 @@ msgstr ""
 
 #: trac/versioncontrol/templates/dir_entries.html:29
 #: trac/versioncontrol/templates/repository_index.html:33
-#: trac/versioncontrol/web_ui/browser.py:862
+#: trac/versioncontrol/web_ui/browser.py:865
 msgid "Download as Zip archive"
 msgstr ""
 
@@ -5553,12 +5553,12 @@ msgstr ""
 
 #: trac/versioncontrol/templates/dirlist_thead.html:20
 #: trac/versioncontrol/templates/revisionlog.html:120
-#: trac/versioncontrol/web_ui/browser.py:870
+#: trac/versioncontrol/web_ui/browser.py:873
 msgid "Rev"
 msgstr ""
 
 #: trac/versioncontrol/templates/dirlist_thead.html:23
-#: trac/versioncontrol/web_ui/browser.py:471
+#: trac/versioncontrol/web_ui/browser.py:474
 msgid "Last Change"
 msgstr ""
 
@@ -5720,74 +5720,78 @@ msgstr ""
 msgid "Invalid changeset number"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:414
+#: trac/versioncontrol/web_ui/browser.py:415
+msgid "No viewable repositories"
+msgstr ""
+
+#: trac/versioncontrol/web_ui/browser.py:417
 #, python-format
 msgid "No node %(path)s"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:454
-#: trac/versioncontrol/web_ui/browser.py:464
+#: trac/versioncontrol/web_ui/browser.py:457
+#: trac/versioncontrol/web_ui/browser.py:467
 #, python-format
 msgid "Revision %(num)s"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:465
+#: trac/versioncontrol/web_ui/browser.py:468
 msgid "Previous Revision"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:465
+#: trac/versioncontrol/web_ui/browser.py:468
 msgid "Next Revision"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:466
+#: trac/versioncontrol/web_ui/browser.py:469
 msgid "Latest Revision"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:470
+#: trac/versioncontrol/web_ui/browser.py:473
 #: trac/versioncontrol/web_ui/log.py:322
 msgid "Parent directory"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:477
+#: trac/versioncontrol/web_ui/browser.py:480
 msgid "Normal"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:478
+#: trac/versioncontrol/web_ui/browser.py:481
 msgid "View file without annotations"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:483
+#: trac/versioncontrol/web_ui/browser.py:486
 msgid "Blame"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:484
+#: trac/versioncontrol/web_ui/browser.py:487
 msgid ""
 "Annotate each line with the last changed revision (this can be time "
 "consuming...)"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:491
+#: trac/versioncontrol/web_ui/browser.py:494
 msgid "Revision Log"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:497
+#: trac/versioncontrol/web_ui/browser.py:500
 msgid "Repository URL"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:627
+#: trac/versioncontrol/web_ui/browser.py:630
 #: trac/versioncontrol/web_ui/changeset.py:362
 msgid "Zip Archive"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:650
+#: trac/versioncontrol/web_ui/browser.py:653
 msgid "Path not available for download"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:870
+#: trac/versioncontrol/web_ui/browser.py:873
 msgid "Revision in which the line changed"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:885
+#: trac/versioncontrol/web_ui/browser.py:888
 msgid ""
 "Display the list of available repositories.\n"
 "\n"
@@ -5811,7 +5815,7 @@ msgid ""
 "(''since 0.12'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:952
+#: trac/versioncontrol/web_ui/browser.py:955
 #, python-format
 msgid "View repository %(repo)s"
 msgstr ""
@@ -6523,7 +6527,7 @@ msgstr ""
 msgid "Can't rename to existing %(name)s page."
 msgstr ""
 
-#: trac/wiki/web_ui.py:78 trac/wiki/web_ui.py:755
+#: trac/wiki/web_ui.py:78 trac/wiki/web_ui.py:754
 msgid "Wiki"
 msgstr ""
 
@@ -6618,72 +6622,72 @@ msgstr ""
 msgid "Wiki History"
 msgstr ""
 
-#: trac/wiki/web_ui.py:495
+#: trac/wiki/web_ui.py:494
 #, python-format
 msgid "Reverted to version %(version)s."
 msgstr ""
 
-#: trac/wiki/web_ui.py:563
+#: trac/wiki/web_ui.py:562
 #, python-format
 msgid "Page %(name)s does not exist"
 msgstr ""
 
-#: trac/wiki/web_ui.py:577
+#: trac/wiki/web_ui.py:576
 #, python-format
 msgid "Back to %(wikipage)s"
 msgstr ""
 
-#: trac/wiki/web_ui.py:606
+#: trac/wiki/web_ui.py:605
 #, python-format
 msgid "Page %(name)s not found"
 msgstr ""
 
-#: trac/wiki/web_ui.py:659
+#: trac/wiki/web_ui.py:658
 msgid "View latest version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:663
+#: trac/wiki/web_ui.py:662
 msgid "View parent page"
 msgstr ""
 
-#: trac/wiki/web_ui.py:672
+#: trac/wiki/web_ui.py:671
 msgid "Previous Version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:672
+#: trac/wiki/web_ui.py:671
 msgid "Next Version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:673
+#: trac/wiki/web_ui.py:672
 msgid "View Latest Version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:676
+#: trac/wiki/web_ui.py:675
 msgid "Up"
 msgstr ""
 
-#: trac/wiki/web_ui.py:701
+#: trac/wiki/web_ui.py:700
 msgid "Start Page"
 msgstr ""
 
-#: trac/wiki/web_ui.py:702
+#: trac/wiki/web_ui.py:701
 msgid "Index"
 msgstr ""
 
-#: trac/wiki/web_ui.py:704
+#: trac/wiki/web_ui.py:703
 msgid "History"
 msgstr ""
 
-#: trac/wiki/web_ui.py:711
+#: trac/wiki/web_ui.py:710
 msgid "Wiki changes"
 msgstr ""
 
-#: trac/wiki/web_ui.py:738
+#: trac/wiki/web_ui.py:737
 #, python-format
 msgid "%(page)s edited"
 msgstr ""
 
-#: trac/wiki/web_ui.py:740
+#: trac/wiki/web_ui.py:739
 #, python-format
 msgid "%(page)s created"
 msgstr ""
