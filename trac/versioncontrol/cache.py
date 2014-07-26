@@ -339,6 +339,61 @@ class CachedRepository(Repository):
                         db.prefix_match_value(path + '/')))
         return [int(row[0]) for row in cursor]
 
+    def _get_changed_revs(self, node_infos):
+        if not node_infos:
+            return {}
+
+        node_infos = [(node, self.normalize_rev(first)) for node, first
+                                                        in node_infos]
+        sfirst = self.db_rev(min(first for node, first in node_infos))
+        slast = self.db_rev(max(node.rev for node, first in node_infos))
+        path_infos = dict((node.path, (node, first)) for node, first
+                                                     in node_infos)
+        path_revs = dict((node.path, []) for node, first in node_infos)
+
+        db = self.env.get_read_db()
+        cursor = db.cursor()
+        prefix_match = db.prefix_match()
+
+        # Prevent "too many SQL variables" since max number of parameters is
+        # 999 on SQLite. No limitation on PostgreSQL and MySQL.
+        idx = 0
+        delta = (999 - 3) // 5
+        while idx < len(node_infos):
+            subset = node_infos[idx:idx + delta]
+            idx += delta
+            count = len(subset)
+
+            holders = ','.join(('%s',) * count)
+            query = """\
+                SELECT DISTINCT
+                  rev, (CASE WHEN path IN (%s) THEN path %s END) AS path
+                FROM node_change
+                WHERE repos=%%s AND rev>=%%s AND rev<=%%s AND (path IN (%s) %s)
+                """ % \
+                (holders,
+                 ' '.join(('WHEN path ' + prefix_match + ' THEN %s',) * count),
+                 holders,
+                 ' '.join(('OR path ' + prefix_match,) * count))
+            args = []
+            args.extend(node.path for node, first in subset)
+            for node, first in subset:
+                args.append(db.prefix_match_value(node.path + '/'))
+                args.append(node.path)
+            args.extend((self.id, sfirst, slast))
+            args.extend(node.path for node, first in subset)
+            args.extend(db.prefix_match_value(node.path + '/')
+                        for node, first in subset)
+            cursor.execute(query, args)
+
+            for srev, path in cursor:
+                rev = self.rev_db(srev)
+                node, first = path_infos[path]
+                if first <= rev <= node.rev:
+                    path_revs[path].append(rev)
+
+        return path_revs
+
     def has_node(self, path, rev=None):
         return self.repos.has_node(path, self.normalize_rev(rev))
 
