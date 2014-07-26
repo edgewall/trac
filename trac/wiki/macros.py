@@ -85,9 +85,14 @@ class TitleIndexMacro(WikiMacroBase):
 
     Accepts a prefix string as parameter: if provided, only pages with names
     that start with the prefix are included in the resulting list. If this
-    parameter is omitted, all pages are listed.
-    If the prefix is specified, a second argument of value `hideprefix`
-    can be given as well, in order to remove that prefix from the output.
+    parameter is omitted, all pages are listed. If the prefix is specified,
+    a second argument of value `hideprefix` can be given as well, in order
+    to remove that prefix from the output.
+
+    The prefix string supports the standard relative-path notation ''when
+    using the macro in a wiki page''. A prefix string starting with `./` will
+    be relative to the current page, and parent pages can be specified
+    using `../`.
 
     Alternate `format` and `depth` named parameters can be specified:
      - `format=compact`: The pages are displayed as comma-separated links.
