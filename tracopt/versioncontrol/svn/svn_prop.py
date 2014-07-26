@@ -197,6 +197,7 @@ class SubversionMergePropertyRenderer(Component):
                 if path not in branch_starts:
                     branch_starts[path] = rev + 1
         rows = []
+        eligible_infos = []
         if name.startswith('svnmerge-'):
             sources = props[name].split()
         else:
@@ -232,9 +233,9 @@ class SubversionMergePropertyRenderer(Component):
                         if blocked:
                             eligible -= set(Ranges(blocked))
                         if eligible:
-                            nrevs = repos._get_node_revs(spath, max(eligible),
-                                                         min(eligible))
-                            eligible &= set(nrevs)
+                            node = repos.get_node(spath, max(eligible))
+                            eligible_infos.append((spath, node, eligible, row))
+                            continue
                         eligible = to_ranges(eligible)
                         row.append(_get_revs_link(_('eligible'), context,
                                                   spath, eligible))
@@ -246,6 +247,22 @@ class SubversionMergePropertyRenderer(Component):
             rows.append((deleted, spath,
                          [tag.td('/' + spath),
                           tag.td(revs, colspan=revs_cols)]))
+
+        # fetch eligible revisions for each path at a time
+        changed_revs = {}
+        changed_nodes = [(node, min(eligible))
+                         for spath, node, eligible, row in eligible_infos]
+        if changed_nodes:
+            changed_revs = repos._get_changed_revs(changed_nodes)
+        for spath, node, eligible, row in eligible_infos:
+            if spath in changed_revs:
+                eligible &= set(changed_revs[spath])
+            else:
+                eligible.clear()
+            row.append(_get_revs_link(_("eligible"), context, spath,
+                                      to_ranges(eligible)))
+            rows.append((False, spath, [tag.td(each) for each in row]))
+
         if not rows:
             return None
         rows.sort()
@@ -346,34 +363,52 @@ class SubversionMergePropertyDiffRenderer(Component):
         removed_label = [_("reverse-merged: "), _("un-blocked: ")][blocked]
         added_ni_label = _("marked as non-inheritable: ")
         removed_ni_label = _("unmarked as non-inheritable: ")
+
+        sources = []
+        changed_revs = {}
+        changed_nodes = []
+        for spath, (new_revs, new_revs_ni) in new_sources.iteritems():
+            new_spath = spath not in old_sources
+            if new_spath:
+                old_revs = old_revs_ni = set()
+            else:
+                old_revs, old_revs_ni = old_sources.pop(spath)
+            added = new_revs - old_revs
+            removed = old_revs - new_revs
+            # unless new revisions differ from old revisions
+            if not added and not removed:
+                continue
+            added_ni = new_revs_ni - old_revs_ni
+            removed_ni = old_revs_ni - new_revs_ni
+            revs = sorted(added | removed | added_ni | removed_ni)
+            try:
+                node = repos.get_node(spath, revs[-1])
+                changed_nodes.append((node, revs[0]))
+            except NoSuchNode:
+                pass
+            sources.append((spath, new_spath, added, removed, added_ni,
+                            removed_ni))
+        if changed_nodes:
+            changed_revs = repos._get_changed_revs(changed_nodes)
+
         def revs_link(revs, context):
             if revs:
                 revs = to_ranges(revs)
                 return _get_revs_link(revs.replace(',', u',\u200b'),
                                       context, spath, revs)
         modified_sources = []
-        for spath, (new_revs, new_revs_ni) in new_sources.iteritems():
-            if spath in old_sources:
-                (old_revs, old_revs_ni), status = old_sources.pop(spath), None
-            else:
-                old_revs = old_revs_ni = set()
-                status = _(' (added)')
-            added = new_revs - old_revs
-            removed = old_revs - new_revs
-            added_ni = new_revs_ni - old_revs_ni
-            removed_ni = old_revs_ni - new_revs_ni
-            if added or removed:  # if new revisions differ from old revisions
-                revs = sorted(added | removed | added_ni | removed_ni)
-                try:
-                    all_revs = set(repos._get_node_revs(spath, revs[-1],
-                                                        revs[0]))
-                    added &= all_revs
-                    removed &= all_revs
-                    added_ni &= all_revs
-                    removed_ni &= all_revs
-                except NoSuchNode:
-                    pass
+        for spath, new_spath, added, removed, added_ni, removed_ni in sources:
+            if spath in changed_revs:
+                revs = set(changed_revs[spath])
+                added &= revs
+                removed &= revs
             if added or removed:
+                added_ni &= revs
+                removed_ni &= revs
+                if new_spath:
+                    status = _(" (added)")
+                else:
+                    status = None
                 modified_sources.append((
                     spath, [_get_source_link(spath, new_context), status],
                     added and tag(added_label, revs_link(added, new_context)),
