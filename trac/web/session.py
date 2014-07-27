@@ -454,7 +454,7 @@ class SessionAdmin(Component):
                                       attr=attr))
         if attr == 'default_handler':
             if val and val not in self._valid_default_handlers:
-                raise AdminCommandError(_('Invalid default_handler "%(val)s"',
+                raise AdminCommandError(_("Invalid default_handler '%(val)s'",
                                           val=val))
         sid, authenticated = self._split_sid(sid)
         with self.env.db_transaction as db:

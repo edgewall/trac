@@ -925,7 +925,7 @@ SID     Auth  Last Visit  Name   Email  Default Handler
 name00  1     2010-01-01  val00  val00  SearchModule
 
 ===== test_session_set_attr_default_handler_invalid =====
-Error: Invalid default_handler "InvalidModule"
+Error: Invalid default_handler 'InvalidModule'
 ===== test_session_set_attr_missing_attr =====
 Error: Invalid arguments
 

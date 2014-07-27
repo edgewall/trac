@@ -90,9 +90,9 @@ class TitleIndexMacro(WikiMacroBase):
     to remove that prefix from the output.
 
     The prefix string supports the standard relative-path notation ''when
-    using the macro in a wiki page''. A prefix string starting with `./` will
-    be relative to the current page, and parent pages can be specified
-    using `../`.
+    using the macro in a wiki page''. A prefix string starting with `./`
+    will be relative to the current page, and parent pages can be
+    specified using `../`.
 
     Alternate `format` and `depth` named parameters can be specified:
      - `format=compact`: The pages are displayed as comma-separated links.
