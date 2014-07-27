@@ -11,6 +11,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
+import functools
+
 from trac.core import Component
 from trac.util import arity
 from trac.util.concurrency import ThreadLocal, threading
@@ -32,12 +34,15 @@ def key_to_id(s):
     return result
 
 
-class CachedPropertyBase(object):
-    """Base class for cached property descriptors"""
+class CachedPropertyBase(property):
+    """Base class for cached property descriptors.
+
+    :since 1.0.2: inherits from `property`.
+    """
 
     def __init__(self, retriever):
         self.retriever = retriever
-        self.__doc__ = retriever.__doc__
+        functools.update_wrapper(self, retriever)
 
     def make_key(self, cls):
         attr = self.retriever.__name__
