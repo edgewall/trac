@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.1.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-07-26 10:23+0900\n"
+"POT-Creation-Date: 2014-07-27 12:08-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -166,14 +166,14 @@ msgstr ""
 msgid "Couldn't open Subversion repository %(path)s: %(svn_error)s"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_fs.py:683
+#: tracopt/versioncontrol/svn/svn_fs.py:695
 #, python-format
 msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
 " and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_fs.py:851
+#: tracopt/versioncontrol/svn/svn_fs.py:863
 #, python-format
 msgid "svn blame failed on %(path)s: %(error)s"
 msgstr ""
@@ -190,72 +190,73 @@ msgstr ""
 msgid "merged"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:221
+#: tracopt/versioncontrol/svn/svn_prop.py:222
 msgid "non-inheritable"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:223
+#: tracopt/versioncontrol/svn/svn_prop.py:224
 msgid "merged on the directory itself but not below"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:239
+#: tracopt/versioncontrol/svn/svn_prop.py:240
+#: tracopt/versioncontrol/svn/svn_prop.py:262
 msgid "eligible"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:253
+#: tracopt/versioncontrol/svn/svn_prop.py:270
 msgid "(toggle deleted branches)"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:291
+#: tracopt/versioncontrol/svn/svn_prop.py:308
 msgid "View merge source"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:302
+#: tracopt/versioncontrol/svn/svn_prop.py:319
 msgid "No revisions"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:309
+#: tracopt/versioncontrol/svn/svn_prop.py:326
 #, python-format
 msgid "%(title)s: %(revs)s"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:345
+#: tracopt/versioncontrol/svn/svn_prop.py:362
 msgid "merged: "
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:345
+#: tracopt/versioncontrol/svn/svn_prop.py:362
 msgid "blocked: "
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:346
+#: tracopt/versioncontrol/svn/svn_prop.py:363
 msgid "reverse-merged: "
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:346
+#: tracopt/versioncontrol/svn/svn_prop.py:363
 msgid "un-blocked: "
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:347
+#: tracopt/versioncontrol/svn/svn_prop.py:364
 msgid "marked as non-inheritable: "
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:348
+#: tracopt/versioncontrol/svn/svn_prop.py:365
 msgid "unmarked as non-inheritable: "
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:360
+#: tracopt/versioncontrol/svn/svn_prop.py:409
 msgid " (added)"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:398
+#: tracopt/versioncontrol/svn/svn_prop.py:433
 msgid "removed"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:401
+#: tracopt/versioncontrol/svn/svn_prop.py:436
 msgid " (with no actual effect on merging)"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:402
+#: tracopt/versioncontrol/svn/svn_prop.py:437
 #, python-format
 msgid "Property %(prop)s changed"
 msgstr ""
@@ -1166,8 +1167,9 @@ msgid "Default handler:"
 msgstr ""
 
 #: trac/admin/templates/admin_basics.html:55
+#: trac/prefs/templates/prefs_general.html:60
 #, python-format
-msgid "%(default_handler)s is not a valid IRequestHandler or is not enabled."
+msgid "%(handler)s is not a valid IRequestHandler or is not enabled."
 msgstr ""
 
 #: trac/admin/templates/admin_basics.html:61
@@ -1417,12 +1419,12 @@ msgstr ""
 msgid "Enabled"
 msgstr ""
 
-#: trac/db/api.py:392
+#: trac/db/api.py:402
 #, python-format
 msgid "Unsupported database type \"%(scheme)s\""
 msgstr ""
 
-#: trac/db/api.py:431
+#: trac/db/api.py:441
 #, python-format
 msgid ""
 "Unknown scheme \"%(scheme)s\"; database connection string must start with"
@@ -1445,7 +1447,7 @@ msgid "mysqldump failed: %(msg)s"
 msgstr ""
 
 #: trac/db/mysql_backend.py:265 trac/db/postgres_backend.py:212
-#: trac/db/sqlite_backend.py:255
+#: trac/db/sqlite_backend.py:257
 msgid "No destination file created"
 msgstr ""
 
@@ -1499,30 +1501,30 @@ msgstr ""
 msgid "pg_dump failed: %(msg)s"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:171 trac/db/sqlite_backend.py:269
+#: trac/db/sqlite_backend.py:173 trac/db/sqlite_backend.py:271
 msgid "Cannot load Python bindings for SQLite"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:174
+#: trac/db/sqlite_backend.py:176
 #, python-format
 msgid "Need at least PySqlite %(version)s or higher"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:177
+#: trac/db/sqlite_backend.py:179
 msgid "PySqlite 2.5.2 - 2.5.4 break Trac, please use 2.5.5 or higher"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:205
+#: trac/db/sqlite_backend.py:207
 #, python-format
 msgid "Database already exists at %(path)s"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:273
+#: trac/db/sqlite_backend.py:275
 #, python-format
 msgid "Database \"%(path)s\" not found."
 msgstr ""
 
-#: trac/db/sqlite_backend.py:282
+#: trac/db/sqlite_backend.py:284
 #, python-format
 msgid ""
 "The user %(user)s requires read _and_ write permissions to the database "
@@ -1770,13 +1772,6 @@ msgstr ""
 #: trac/prefs/templates/prefs_general.html:51
 #, python-format
 msgid "Default (%(handler)s)"
-msgstr ""
-
-#: trac/prefs/templates/prefs_general.html:60
-#, python-format
-msgid ""
-"%(session_default_handler)s is not a valid IRequestHandler or is not "
-"enabled."
 msgstr ""
 
 #: trac/prefs/templates/prefs_keybindings.html:28
@@ -3466,8 +3461,8 @@ msgstr ""
 #: trac/ticket/web_ui.py:911 trac/ticket/web_ui.py:968
 #: trac/ticket/web_ui.py:976 trac/ticket/web_ui.py:1047
 #: trac/ticket/web_ui.py:1092 trac/ticket/web_ui.py:1099
-#: trac/wiki/web_ui.py:445 trac/wiki/web_ui.py:451 trac/wiki/web_ui.py:653
-#: trac/wiki/web_ui.py:667
+#: trac/wiki/web_ui.py:445 trac/wiki/web_ui.py:451 trac/wiki/web_ui.py:649
+#: trac/wiki/web_ui.py:663
 #, python-format
 msgid "Version %(num)s"
 msgstr ""
@@ -3668,7 +3663,7 @@ msgstr ""
 
 #. TRANSLATOR: modified ('diff') (link)
 #: trac/ticket/web_ui.py:1786 trac/ticket/templates/ticket_change.html:164
-#: trac/wiki/web_ui.py:747
+#: trac/wiki/web_ui.py:743
 msgid "diff"
 msgstr ""
 
@@ -6158,7 +6153,7 @@ msgstr ""
 
 #: trac/web/session.py:457
 #, python-format
-msgid "Invalid default_handler \"%(val)s\""
+msgid "Invalid default_handler '%(val)s'"
 msgstr ""
 
 #: trac/web/session.py:464
@@ -6281,9 +6276,14 @@ msgid ""
 "\n"
 "Accepts a prefix string as parameter: if provided, only pages with names\n"
 "that start with the prefix are included in the resulting list. If this\n"
-"parameter is omitted, all pages are listed.\n"
-"If the prefix is specified, a second argument of value `hideprefix`\n"
-"can be given as well, in order to remove that prefix from the output.\n"
+"parameter is omitted, all pages are listed. If the prefix is specified,\n"
+"a second argument of value `hideprefix` can be given as well, in order\n"
+"to remove that prefix from the output.\n"
+"\n"
+"The prefix string supports the standard relative-path notation ''when\n"
+"using the macro in a wiki page''. A prefix string starting with `./`\n"
+"will be relative to the current page, and parent pages can be\n"
+"specified using `../`.\n"
 "\n"
 "Alternate `format` and `depth` named parameters can be specified:\n"
 " - `format=compact`: The pages are displayed as comma-separated links.\n"
@@ -6308,7 +6308,7 @@ msgid ""
 "The `include` and `exclude` lists accept shell-style patterns."
 msgstr ""
 
-#: trac/wiki/macros.py:300
+#: trac/wiki/macros.py:305
 msgid ""
 "List all pages that have recently been modified, ordered by the\n"
 "time they were last modified.\n"
@@ -6334,7 +6334,7 @@ msgid ""
 "e.g. `[[RecentChanges(,10,group=none)]]`."
 msgstr ""
 
-#: trac/wiki/macros.py:378
+#: trac/wiki/macros.py:384
 msgid ""
 "Display a structural outline of the current wiki page, each item in the\n"
 "outline being a link to the corresponding heading.\n"
@@ -6367,7 +6367,7 @@ msgid ""
 "   default). This parameter only has an effect in `inline` style."
 msgstr ""
 
-#: trac/wiki/macros.py:444
+#: trac/wiki/macros.py:450
 msgid ""
 "Embed an image in wiki-formatted text.\n"
 "\n"
@@ -6439,12 +6439,12 @@ msgid ""
 "<gotoh@taiyo.co.jp>''"
 msgstr ""
 
-#: trac/wiki/macros.py:659
+#: trac/wiki/macros.py:665
 #, python-format
 msgid "No image \"%(id)s\" attached to %(parent)s"
 msgstr ""
 
-#: trac/wiki/macros.py:675
+#: trac/wiki/macros.py:681
 msgid ""
 "Display a list of all installed Wiki macros, including documentation if\n"
 "available.\n"
@@ -6457,20 +6457,20 @@ msgid ""
 "macros if the `PythonOptimize` option is enabled for mod_python!"
 msgstr ""
 
-#: trac/wiki/macros.py:704
+#: trac/wiki/macros.py:710
 #, python-format
 msgid "Error: Can't get description for macro %(name)s"
 msgstr ""
 
-#: trac/wiki/macros.py:727
+#: trac/wiki/macros.py:733
 msgid "Aliases:"
 msgstr ""
 
-#: trac/wiki/macros.py:730
+#: trac/wiki/macros.py:736
 msgid "Sorry, no documentation found"
 msgstr ""
 
-#: trac/wiki/macros.py:737
+#: trac/wiki/macros.py:743
 msgid ""
 "Produce documentation for the Trac configuration file.\n"
 "\n"
@@ -6480,11 +6480,11 @@ msgid ""
 "options whose section and name start with the filters are output."
 msgstr ""
 
-#: trac/wiki/macros.py:779
+#: trac/wiki/macros.py:785
 msgid "(no default)"
 msgstr ""
 
-#: trac/wiki/macros.py:800
+#: trac/wiki/macros.py:806
 msgid ""
 "List all known mime-types which can be used as WikiProcessors.\n"
 "\n"
@@ -6492,11 +6492,11 @@ msgid ""
 "filter."
 msgstr ""
 
-#: trac/wiki/macros.py:823
+#: trac/wiki/macros.py:829
 msgid "MIME Types"
 msgstr ""
 
-#: trac/wiki/macros.py:838
+#: trac/wiki/macros.py:844
 msgid ""
 "Display a table of content for the Trac guide.\n"
 "\n"
@@ -6506,7 +6506,7 @@ msgid ""
 "a more customizable table of contents."
 msgstr ""
 
-#: trac/wiki/macros.py:884
+#: trac/wiki/macros.py:890
 msgid "Table of Contents"
 msgstr ""
 
@@ -6527,7 +6527,7 @@ msgstr ""
 msgid "Can't rename to existing %(name)s page."
 msgstr ""
 
-#: trac/wiki/web_ui.py:78 trac/wiki/web_ui.py:754
+#: trac/wiki/web_ui.py:78 trac/wiki/web_ui.py:750
 msgid "Wiki"
 msgstr ""
 
@@ -6637,57 +6637,57 @@ msgstr ""
 msgid "Back to %(wikipage)s"
 msgstr ""
 
-#: trac/wiki/web_ui.py:605
+#: trac/wiki/web_ui.py:601
 #, python-format
 msgid "Page %(name)s not found"
 msgstr ""
 
-#: trac/wiki/web_ui.py:658
+#: trac/wiki/web_ui.py:654
 msgid "View latest version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:662
+#: trac/wiki/web_ui.py:658
 msgid "View parent page"
 msgstr ""
 
-#: trac/wiki/web_ui.py:671
+#: trac/wiki/web_ui.py:667
 msgid "Previous Version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:671
+#: trac/wiki/web_ui.py:667
 msgid "Next Version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:672
+#: trac/wiki/web_ui.py:668
 msgid "View Latest Version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:675
+#: trac/wiki/web_ui.py:671
 msgid "Up"
 msgstr ""
 
-#: trac/wiki/web_ui.py:700
+#: trac/wiki/web_ui.py:696
 msgid "Start Page"
 msgstr ""
 
-#: trac/wiki/web_ui.py:701
+#: trac/wiki/web_ui.py:697
 msgid "Index"
 msgstr ""
 
-#: trac/wiki/web_ui.py:703
+#: trac/wiki/web_ui.py:699
 msgid "History"
 msgstr ""
 
-#: trac/wiki/web_ui.py:710
+#: trac/wiki/web_ui.py:706
 msgid "Wiki changes"
 msgstr ""
 
-#: trac/wiki/web_ui.py:737
+#: trac/wiki/web_ui.py:733
 #, python-format
 msgid "%(page)s edited"
 msgstr ""
 
-#: trac/wiki/web_ui.py:739
+#: trac/wiki/web_ui.py:735
 #, python-format
 msgid "%(page)s created"
 msgstr ""
