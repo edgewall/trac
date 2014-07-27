@@ -13,6 +13,8 @@
 
 from __future__ import with_statement
 
+import functools
+
 from .core import Component
 from .util import arity
 from .util.concurrency import ThreadLocal, threading
@@ -34,12 +36,15 @@ def key_to_id(s):
     return result
 
 
-class CachedPropertyBase(object):
-    """Base class for cached property descriptors"""
+class CachedPropertyBase(property):
+    """Base class for cached property descriptors.
+
+    :since 1.0.2: inherits from `property`.
+    """
 
     def __init__(self, retriever):
         self.retriever = retriever
-        self.__doc__ = retriever.__doc__
+        functools.update_wrapper(self, retriever)
 
     def make_key(self, cls):
         attr = self.retriever.__name__
