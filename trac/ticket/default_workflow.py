@@ -288,7 +288,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                    selected_owner=formatted_new_owner))
             else:
                 control.append(tag_("to %(owner)s", owner=tag.select(
-                    [tag.option(x if x is not None else '(none)',
+                    [tag.option(x if x is not None else _("(none)"),
                                 value=x if x is not None else '',
                                 selected=(x == selected_owner or None))
                      for x in owners],
