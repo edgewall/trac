@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-07-28 23:41-0700\n"
+"POT-Creation-Date: 2014-07-29 01:01-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2767,7 +2767,8 @@ msgstr ""
 msgid "The ticket will be disowned"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:258 trac/ticket/default_workflow.py:277
+#: trac/ticket/default_workflow.py:258 trac/ticket/default_workflow.py:268
+#: trac/ticket/default_workflow.py:277
 #, python-format
 msgid "to %(owner)s"
 msgstr ""
@@ -2775,11 +2776,6 @@ msgstr ""
 #: trac/ticket/default_workflow.py:260
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to the specified user"
-msgstr ""
-
-#: trac/ticket/default_workflow.py:268
-#, python-format
-msgid "to %(owner)s "
 msgstr ""
 
 #: trac/ticket/default_workflow.py:270
@@ -2823,7 +2819,7 @@ msgstr ""
 
 #: trac/ticket/default_workflow.py:322
 #, python-format
-msgid "as %(status)s "
+msgid "as %(status)s"
 msgstr ""
 
 #: trac/ticket/default_workflow.py:325
@@ -2840,7 +2836,7 @@ msgstr ""
 msgid "Next status will be '%(name)s'"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:422
+#: trac/ticket/default_workflow.py:423
 msgid ""
 "Render a workflow graph.\n"
 "\n"
@@ -2882,7 +2878,7 @@ msgid ""
 "}}}"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:497
+#: trac/ticket/default_workflow.py:498
 msgid "Enable JavaScript to display the workflow graph."
 msgstr ""
 
