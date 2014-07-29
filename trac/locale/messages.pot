@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-07-26 10:03+0900\n"
+"POT-Creation-Date: 2014-07-28 23:41-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -163,14 +163,14 @@ msgstr ""
 msgid "Couldn't open Subversion repository %(path)s: %(svn_error)s"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_fs.py:682
+#: tracopt/versioncontrol/svn/svn_fs.py:694
 #, python-format
 msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
 " and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_fs.py:850
+#: tracopt/versioncontrol/svn/svn_fs.py:862
 #, python-format
 msgid "svn blame failed on %(path)s: %(error)s"
 msgstr ""
@@ -187,72 +187,73 @@ msgstr ""
 msgid "merged"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:221
+#: tracopt/versioncontrol/svn/svn_prop.py:222
 msgid "non-inheritable"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:223
+#: tracopt/versioncontrol/svn/svn_prop.py:224
 msgid "merged on the directory itself but not below"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:239
+#: tracopt/versioncontrol/svn/svn_prop.py:240
+#: tracopt/versioncontrol/svn/svn_prop.py:262
 msgid "eligible"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:253
+#: tracopt/versioncontrol/svn/svn_prop.py:270
 msgid "(toggle deleted branches)"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:291
+#: tracopt/versioncontrol/svn/svn_prop.py:308
 msgid "View merge source"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:302
+#: tracopt/versioncontrol/svn/svn_prop.py:319
 msgid "No revisions"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:309
+#: tracopt/versioncontrol/svn/svn_prop.py:326
 #, python-format
 msgid "%(title)s: %(revs)s"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:345
+#: tracopt/versioncontrol/svn/svn_prop.py:362
 msgid "merged: "
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:345
+#: tracopt/versioncontrol/svn/svn_prop.py:362
 msgid "blocked: "
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:346
+#: tracopt/versioncontrol/svn/svn_prop.py:363
 msgid "reverse-merged: "
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:346
+#: tracopt/versioncontrol/svn/svn_prop.py:363
 msgid "un-blocked: "
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:347
+#: tracopt/versioncontrol/svn/svn_prop.py:364
 msgid "marked as non-inheritable: "
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:348
+#: tracopt/versioncontrol/svn/svn_prop.py:365
 msgid "unmarked as non-inheritable: "
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:360
+#: tracopt/versioncontrol/svn/svn_prop.py:409
 msgid " (added)"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:398
+#: tracopt/versioncontrol/svn/svn_prop.py:433
 msgid "removed"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:401
+#: tracopt/versioncontrol/svn/svn_prop.py:436
 msgid " (with no actual effect on merging)"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_prop.py:402
+#: tracopt/versioncontrol/svn/svn_prop.py:437
 #, python-format
 msgid "Property %(prop)s changed"
 msgstr ""
@@ -1399,7 +1400,7 @@ msgid "mysqldump failed: %(msg)s"
 msgstr ""
 
 #: trac/db/mysql_backend.py:254 trac/db/postgres_backend.py:204
-#: trac/db/sqlite_backend.py:245
+#: trac/db/sqlite_backend.py:247
 msgid "No destination file created"
 msgstr ""
 
@@ -1453,30 +1454,30 @@ msgstr ""
 msgid "pg_dump failed: %(msg)s"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:156 trac/db/sqlite_backend.py:259
+#: trac/db/sqlite_backend.py:158 trac/db/sqlite_backend.py:261
 msgid "Cannot load Python bindings for SQLite"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:159
+#: trac/db/sqlite_backend.py:161
 #, python-format
 msgid "Need at least PySqlite %(version)s or higher"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:162
+#: trac/db/sqlite_backend.py:164
 msgid "PySqlite 2.5.2 - 2.5.4 break Trac, please use 2.5.5 or higher"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:195
+#: trac/db/sqlite_backend.py:197
 #, python-format
 msgid "Database already exists at %(path)s"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:263
+#: trac/db/sqlite_backend.py:265
 #, python-format
 msgid "Database \"%(path)s\" not found."
 msgstr ""
 
-#: trac/db/sqlite_backend.py:272
+#: trac/db/sqlite_backend.py:274
 #, python-format
 msgid ""
 "The user %(user)s requires read _and_ write permissions to the database "
@@ -2754,6 +2755,10 @@ msgid ""
 "notifications: %(message)s"
 msgstr ""
 
+#: trac/ticket/default_workflow.py:237
+msgid "from invalid state"
+msgstr ""
+
 #: trac/ticket/default_workflow.py:238
 msgid "Current state no longer exists"
 msgstr ""
@@ -3442,8 +3447,8 @@ msgstr ""
 #: trac/ticket/web_ui.py:901 trac/ticket/web_ui.py:958
 #: trac/ticket/web_ui.py:966 trac/ticket/web_ui.py:1037
 #: trac/ticket/web_ui.py:1082 trac/ticket/web_ui.py:1089
-#: trac/wiki/web_ui.py:467 trac/wiki/web_ui.py:473 trac/wiki/web_ui.py:675
-#: trac/wiki/web_ui.py:689
+#: trac/wiki/web_ui.py:467 trac/wiki/web_ui.py:473 trac/wiki/web_ui.py:671
+#: trac/wiki/web_ui.py:685
 #, python-format
 msgid "Version %(num)s"
 msgstr ""
@@ -3644,7 +3649,7 @@ msgstr ""
 
 #. TRANSLATOR: modified ('diff') (link)
 #: trac/ticket/web_ui.py:1744 trac/ticket/templates/ticket_change.html:164
-#: trac/wiki/web_ui.py:769
+#: trac/wiki/web_ui.py:765
 msgid "diff"
 msgstr ""
 
@@ -6174,7 +6179,7 @@ msgstr ""
 msgid "Provide a description list for the known InterWiki prefixes."
 msgstr ""
 
-#: trac/wiki/macros.py:83
+#: trac/wiki/macros.py:85
 msgid ""
 "Insert an alphabetic list of all wiki pages into the output.\n"
 "\n"
@@ -6207,7 +6212,7 @@ msgid ""
 "The `include` and `exclude` lists accept shell-style patterns."
 msgstr ""
 
-#: trac/wiki/macros.py:296
+#: trac/wiki/macros.py:298
 msgid ""
 "List all pages that have recently been modified, ordered by the\n"
 "time they were last modified.\n"
@@ -6233,7 +6238,7 @@ msgid ""
 "e.g. `[[RecentChanges(,10,group=none)]]`."
 msgstr ""
 
-#: trac/wiki/macros.py:374
+#: trac/wiki/macros.py:377
 msgid ""
 "Display a structural outline of the current wiki page, each item in the\n"
 "outline being a link to the corresponding heading.\n"
@@ -6266,7 +6271,7 @@ msgid ""
 "   default). This parameter only has an effect in `inline` style."
 msgstr ""
 
-#: trac/wiki/macros.py:440
+#: trac/wiki/macros.py:443
 msgid ""
 "Embed an image in wiki-formatted text.\n"
 "\n"
@@ -6337,12 +6342,12 @@ msgid ""
 "<gotoh@taiyo.co.jp>''"
 msgstr ""
 
-#: trac/wiki/macros.py:655
+#: trac/wiki/macros.py:658
 #, python-format
 msgid "No image \"%(id)s\" attached to %(parent)s"
 msgstr ""
 
-#: trac/wiki/macros.py:671
+#: trac/wiki/macros.py:674
 msgid ""
 "Display a list of all installed Wiki macros, including documentation if\n"
 "available.\n"
@@ -6355,20 +6360,20 @@ msgid ""
 "macros if the `PythonOptimize` option is enabled for mod_python!"
 msgstr ""
 
-#: trac/wiki/macros.py:700
+#: trac/wiki/macros.py:703
 #, python-format
 msgid "Error: Can't get description for macro %(name)s"
 msgstr ""
 
-#: trac/wiki/macros.py:723
+#: trac/wiki/macros.py:726
 msgid "Aliases:"
 msgstr ""
 
-#: trac/wiki/macros.py:726
+#: trac/wiki/macros.py:729
 msgid "Sorry, no documentation found"
 msgstr ""
 
-#: trac/wiki/macros.py:733
+#: trac/wiki/macros.py:736
 msgid ""
 "Produce documentation for the Trac configuration file.\n"
 "\n"
@@ -6378,11 +6383,11 @@ msgid ""
 "options whose section and name start with the filters are output."
 msgstr ""
 
-#: trac/wiki/macros.py:775
+#: trac/wiki/macros.py:778
 msgid "(no default)"
 msgstr ""
 
-#: trac/wiki/macros.py:796
+#: trac/wiki/macros.py:799
 msgid ""
 "List all known mime-types which can be used as WikiProcessors.\n"
 "\n"
@@ -6390,11 +6395,11 @@ msgid ""
 "filter."
 msgstr ""
 
-#: trac/wiki/macros.py:819
+#: trac/wiki/macros.py:822
 msgid "MIME Types"
 msgstr ""
 
-#: trac/wiki/macros.py:834
+#: trac/wiki/macros.py:837
 msgid ""
 "Display a table of content for the Trac guide.\n"
 "\n"
@@ -6404,7 +6409,7 @@ msgid ""
 "a more customizable table of contents."
 msgstr ""
 
-#: trac/wiki/macros.py:880
+#: trac/wiki/macros.py:883
 msgid "Table of Contents"
 msgstr ""
 
@@ -6425,7 +6430,7 @@ msgstr ""
 msgid "Can't rename to existing %(name)s page."
 msgstr ""
 
-#: trac/wiki/web_ui.py:87 trac/wiki/web_ui.py:776
+#: trac/wiki/web_ui.py:87 trac/wiki/web_ui.py:772
 msgid "Wiki"
 msgstr ""
 
@@ -6535,57 +6540,57 @@ msgstr ""
 msgid "Back to %(wikipage)s"
 msgstr ""
 
-#: trac/wiki/web_ui.py:627
+#: trac/wiki/web_ui.py:623
 #, python-format
 msgid "Page %(name)s not found"
 msgstr ""
 
-#: trac/wiki/web_ui.py:680
+#: trac/wiki/web_ui.py:676
 msgid "View latest version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:684
+#: trac/wiki/web_ui.py:680
 msgid "View parent page"
 msgstr ""
 
-#: trac/wiki/web_ui.py:693
+#: trac/wiki/web_ui.py:689
 msgid "Previous Version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:693
+#: trac/wiki/web_ui.py:689
 msgid "Next Version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:694
+#: trac/wiki/web_ui.py:690
 msgid "View Latest Version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:697
+#: trac/wiki/web_ui.py:693
 msgid "Up"
 msgstr ""
 
-#: trac/wiki/web_ui.py:722
+#: trac/wiki/web_ui.py:718
 msgid "Start Page"
 msgstr ""
 
-#: trac/wiki/web_ui.py:723
+#: trac/wiki/web_ui.py:719
 msgid "Index"
 msgstr ""
 
-#: trac/wiki/web_ui.py:725
+#: trac/wiki/web_ui.py:721
 msgid "History"
 msgstr ""
 
-#: trac/wiki/web_ui.py:732
+#: trac/wiki/web_ui.py:728
 msgid "Wiki changes"
 msgstr ""
 
-#: trac/wiki/web_ui.py:759
+#: trac/wiki/web_ui.py:755
 #, python-format
 msgid "%(page)s edited"
 msgstr ""
 
-#: trac/wiki/web_ui.py:761
+#: trac/wiki/web_ui.py:757
 #, python-format
 msgid "%(page)s created"
 msgstr ""
