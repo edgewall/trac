@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.1.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-07-27 12:08-0700\n"
+"POT-Creation-Date: 2014-07-29 00:00-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2766,6 +2766,10 @@ msgstr ""
 msgid ""
 "The changes have been saved, but an error occurred while sending "
 "notifications: %(message)s"
+msgstr ""
+
+#: trac/ticket/default_workflow.py:240
+msgid "from invalid state"
 msgstr ""
 
 #: trac/ticket/default_workflow.py:241
