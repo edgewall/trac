@@ -234,7 +234,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         control = [] # default to nothing
         hints = []
         if 'reset_workflow' in operations:
-            control.append(tag(_("from invalid state")))
+            control.append(_("from invalid state"))
             hints.append(_("Current state no longer exists"))
         if 'del_owner' in operations:
             hints.append(_("The ticket will be disowned"))
@@ -264,7 +264,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 owner = tag.input(type='hidden', id=id, name=id,
                                   value=owners[0])
                 formatted_new_owner = format_author(owners[0])
-                control.append(tag_("to %(owner)s ",
+                control.append(tag_("to %(owner)s",
                                     owner=tag(formatted_new_owner, owner)))
                 if ticket['owner'] != owners[0]:
                     hints.append(_("The owner will be changed from "
@@ -318,7 +318,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         if 'del_resolution' in operations:
             hints.append(_("The resolution will be deleted"))
         if 'leave_status' in operations:
-            control.append(_("as %(status)s ",
+            control.append(_("as %(status)s",
                              status= ticket._old.get('status',
                                                      ticket['status'])))
             if len(operations) == 1:
@@ -329,8 +329,9 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         else:
             if status != '*':
                 hints.append(_("Next status will be '%(name)s'", name=status))
-        return (this_action['name'], tag(*control), '. '.join(hints) + '.'
-                if hints else '')
+        return (this_action['name'],
+                tag((' ' if i else None, c) for i, c in enumerate(control)),
+                '. '.join(hints) + '.' if hints else '')
 
     def get_ticket_changes(self, req, ticket, action):
         this_action = self.actions[action]
