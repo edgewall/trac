@@ -237,7 +237,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         control = [] # default to nothing
         hints = []
         if 'reset_workflow' in operations:
-            control.append(tag("from invalid state "))
+            control.append(tag(_("from invalid state")))
             hints.append(_("Current state no longer exists"))
         if 'del_owner' in operations:
             hints.append(_("The ticket will be disowned"))
