@@ -106,6 +106,8 @@ class ConfigurableTicketWorkflow(Component):
     [wiki:TracIni#ticket-workflow-section trac.ini] configuration file.
     """
 
+    implements(IEnvironmentSetupParticipant, ITicketActionController)
+
     ticket_workflow_section = ConfigSection('ticket-workflow',
         """The workflow for tickets is controlled by plugins. By default,
         there's only a `ConfigurableTicketWorkflow` component in charge.
@@ -133,7 +135,6 @@ class ConfigurableTicketWorkflow(Component):
                 self.log.warning("Ticket workflow action '%s' doesn't define "
                                  "any transitions", name)
 
-    implements(ITicketActionController, IEnvironmentSetupParticipant)
 
     # IEnvironmentSetupParticipant methods
 
