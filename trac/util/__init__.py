@@ -1118,9 +1118,17 @@ class lazy(object):
     def __get__(self, instance, owner):
         if instance is None:
             return self
+        if self.fn.__name__ in instance.__dict__:
+            return instance.__dict__[self.fn.__name__]
         result = self.fn(instance)
-        setattr(instance, self.fn.__name__, result)
+        instance.__dict__[self.fn.__name__] = result
         return result
+
+    def __set__(self, instance, value):
+        instance.__dict__[self.fn.__name__] = value
+
+    def __delete__(self, instance):
+        del instance.__dict__[self.fn.__name__]
 
 
 # -- algorithmic utilities
