@@ -99,9 +99,11 @@ class ConfigurableTicketWorkflow(Component):
     """Ticket action controller which provides actions according to a
     workflow defined in trac.ini.
 
-    The workflow is idefined in the `[ticket-workflow]` section of the
+    The workflow is defined in the `[ticket-workflow]` section of the
     [wiki:TracIni#ticket-workflow-section trac.ini] configuration file.
     """
+
+    implements(IEnvironmentSetupParticipant, ITicketActionController)
 
     ticket_workflow_section = ConfigSection('ticket-workflow',
         """The workflow for tickets is controlled by plugins. By default,
@@ -130,7 +132,6 @@ class ConfigurableTicketWorkflow(Component):
                 self.log.warning("Ticket workflow action '%s' doesn't define "
                                  "any transitions", name)
 
-    implements(ITicketActionController, IEnvironmentSetupParticipant)
 
     # IEnvironmentSetupParticipant methods
 
@@ -252,7 +253,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             else:
                 owners = None
 
-            if owners == None:
+            if owners is None:
                 owner = req.args.get(id, req.authname)
                 control.append(tag_("to %(owner)s",
                                     owner=tag.input(type='text', id=id,
