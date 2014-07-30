@@ -172,8 +172,8 @@ class InterWikiMap(Component):
                 'rc_url': self._expand_or_append(url, ['RecentChanges']),
                 'description': url if title == prefix else title})
 
-        return tag.table(tag.tr(tag.th(tag.em("Prefix")),
-                                tag.th(tag.em("Site"))),
+        return tag.table(tag.tr(tag.th(tag.em(_("Prefix"))),
+                                tag.th(tag.em(_("Site")))),
                          [tag.tr(tag.td(tag.a(w['prefix'], href=w['rc_url'])),
                                  tag.td(tag.a(w['description'],
                                               href=w['url'])))

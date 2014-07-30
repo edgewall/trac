@@ -154,7 +154,7 @@ class SubversionPropertyRenderer(Component):
 
     def _render_needslock(self, context):
         return tag.img(src=context.href.chrome('common/lock-locked.png'),
-                       alt="needs lock", title="needs lock")
+                       alt=_("needs lock"), title=_("needs lock"))
 
     def _render_mergeinfo(self, name, mode, context, props):
         rows = []

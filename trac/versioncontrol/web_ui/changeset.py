@@ -38,7 +38,7 @@ from trac.util import as_bool, content_disposition, embedded_numbers, pathjoin
 from trac.util.datefmt import from_utimestamp, pretty_timedelta
 from trac.util.text import CRLF, exception_to_unicode, shorten_line, \
                            to_unicode, unicode_urlencode
-from trac.util.translation import _, ngettext
+from trac.util.translation import _, ngettext, tag_
 from trac.versioncontrol.api import Changeset, NoSuchChangeset, Node, \
                                     RepositoryManager
 from trac.versioncontrol.diff import diff_blocks, get_diff_options, \
@@ -100,7 +100,7 @@ class DefaultPropertyDiffRenderer(Component):
         unidiff = '--- \n+++ \n' + \
                   '\n'.join(unified_diff(old.splitlines(), new.splitlines(),
                                          options.get('contextlines', 3)))
-        return tag.li('Property ', tag.strong(name),
+        return tag.li(tag_("Property %(name)s", name=tag.strong(name)),
                       Mimeview(self.env).render(old_context, 'text/x-diff',
                                                 unidiff))
 

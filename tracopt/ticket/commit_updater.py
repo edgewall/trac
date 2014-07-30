@@ -48,7 +48,7 @@ from trac.ticket import Ticket
 from trac.ticket.notification import TicketNotifyEmail
 from trac.util.datefmt import utc
 from trac.util.text import exception_to_unicode
-from trac.util.translation import cleandoc_
+from trac.util.translation import _, cleandoc_
 from trac.versioncontrol import IRepositoryChangeListener, RepositoryManager
 from trac.versioncontrol.web_ui.changeset import ChangesetModule
 from trac.wiki.formatter import format_to_html
@@ -316,8 +316,8 @@ class CommitTicketReferenceMacro(WikiMacroBase):
             ticket_re = CommitTicketUpdater.ticket_re
             if not any(int(tkt_id) == int(formatter.context.resource.id)
                        for tkt_id in ticket_re.findall(message)):
-                return tag.p("(The changeset message doesn't reference this "
-                             "ticket)", class_='hint')
+                return tag.p(_("(The changeset message doesn't reference this "
+                               "ticket)"), class_='hint')
         if ChangesetModule(self.env).wiki_format_messages:
             return tag.div(format_to_html(self.env,
                 formatter.context.child('changeset', rev, parent=resource),

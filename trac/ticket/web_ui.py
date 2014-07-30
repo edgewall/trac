@@ -1252,8 +1252,9 @@ class TicketModule(Component):
                 value = ticket[name]
                 if value:
                     if value not in field['options']:
-                        add_warning(req, '"%s" is not a valid value for '
-                                    'the %s field.' % (value, name))
+                        add_warning(req, _('"%(value)s" is not a valid value '
+                                           'for the %(name)s field.',
+                                           value=value, name=name))
                         valid = False
                 elif not field.get('optional', False):
                     add_warning(req, _("field %(name)s must be set",
