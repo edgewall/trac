@@ -141,7 +141,7 @@ class ReportModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        match = re.match(r'/report(?:/(?:([0-9]+)|-1))?$', req.path_info)
+        match = re.match(r'/report(?:/(?:([0-9]+)))?$', req.path_info)
         if match:
             if match.group(1):
                 req.args['id'] = match.group(1)
@@ -149,11 +149,13 @@ class ReportModule(Component):
 
     def process_request(self, req):
         # did the user ask for any special report?
-        id = int(req.args.get('id', -1))
-        if id != -1:
-            req.perm('report', id).require('REPORT_VIEW')
-        else:
+        try:
+            id = int(req.args.get('id'))
+        except TypeError:
+            id = None
             req.perm.require('REPORT_VIEW')
+        else:
+            req.perm('report', id).require('REPORT_VIEW')
 
         data = {}
         action = req.args.get('action', 'view')
@@ -171,7 +173,7 @@ class ReportModule(Component):
         elif action == 'delete':
             template = 'report_delete.html'
             data = self._render_confirm_delete(req, id)
-        elif id == -1:
+        elif id is None:
             template, data, content_type = self._render_list(req)
             if content_type: # i.e. alternate format
                 return template, data, content_type
@@ -189,7 +191,7 @@ class ReportModule(Component):
         show_query_link = 'TICKET_VIEW' in req.perm and \
                           self.env.is_component_enabled(QueryModule)
 
-        if id != -1 or action == 'new':
+        if id is not None or action == 'new':
             add_ctxtnav(req, _('Available Reports'), href=req.href.report())
             add_link(req, 'up', req.href.report(), _('Available Reports'))
         elif show_query_link:
@@ -262,7 +264,7 @@ class ReportModule(Component):
                 'report': {'id': id, 'title': title}}
 
     def _render_editor(self, req, id, copy):
-        if id != -1:
+        if id is not None:
             req.perm('report', id).require('REPORT_MODIFY')
             title, description, query = self.get_report(id)
         else:
@@ -275,7 +277,7 @@ class ReportModule(Component):
         if copy:
             title += ' (copy)'
 
-        if copy or id == -1:
+        if copy or id is None:
             data = {'action': 'new',
                     'error': None}
         else:
@@ -677,7 +679,7 @@ class ReportModule(Component):
         base_sql = sql.replace(SORT_COLUMN, '1').replace(LIMIT_OFFSET, '')
 
         cursor = db.cursor()
-        if id == -1 or limit == 0:
+        if id is None or limit == 0:
             sql = base_sql
         else:
             # The number of tickets is obtained
