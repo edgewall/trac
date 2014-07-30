@@ -35,7 +35,7 @@ from trac.util import arity
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode, \
                            unicode_quote, unicode_quote_plus, unquote_label
 from trac.util.html import TracHTMLSanitizer
-from trac.util.translation import _
+from trac.util.translation import _, tag_
 from trac.wiki.api import WikiSystem, parse_args
 from trac.wiki.parser import WikiParser, parse_processor_args
 
@@ -186,7 +186,8 @@ class WikiProcessor(object):
                     self.processor = self._mimeview_processor
         if not self.processor:
             self.processor = self._default_processor
-            self.error = "No macro or processor named '%s' found" % name
+            self.error = _("No macro or processor named '%(name)s' found",
+                           name=name)
 
     # inline checks
 
@@ -350,8 +351,8 @@ class WikiProcessor(object):
 
     def process(self, text, in_paragraph=False):
         if self.error:
-            text = system_message(tag('Error: Failed to load processor ',
-                                      tag.code(self.name)),
+            text = system_message(tag_("Error: Failed to load processor "
+                                       "%(name)s", name=tag.code(self.name)),
                                   self.error)
         else:
             text = self.processor(text)

@@ -355,7 +355,7 @@ New tickets: </p><div><dl class="wiki compact"><dt><a class="new" href="/ticket/
 New tickets: [[TicketQuery(status=new, format=count)]]
 ------------------------------
 <p>
-New tickets: <span class="query_count" title="1 tickets for which status=new&amp;max=0&amp;order=id">1</span>
+New tickets: <span class="query_count" title="1 ticket for which status=new&amp;max=0&amp;order=id">1</span>
 </p>
 ------------------------------
 ============================== TicketQuery macro: one result, compact form

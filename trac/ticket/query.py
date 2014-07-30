@@ -39,7 +39,7 @@ from trac.util.datefmt import format_datetime, from_utimestamp, parse_date, \
                               to_timestamp, to_utimestamp, utc, user_time
 from trac.util.presentation import Paginator
 from trac.util.text import empty, shorten_line, quote_query_string
-from trac.util.translation import _, tag_, cleandoc_
+from trac.util.translation import _, tag_, cleandoc_, ngettext
 from trac.web import arg_list_to_args, parse_arg_list, IRequestHandler
 from trac.web.href import Href
 from trac.web.chrome import (INavigationContributor, Chrome,
@@ -1330,8 +1330,10 @@ class TicketQueryMacro(WikiMacroBase):
 
         if format == 'count':
             cnt = query.count(req)
-            return tag.span(cnt, title='%d tickets for which %s' %
-                            (cnt, query_string), class_='query_count')
+            title = ngettext("%(num)d ticket for which %(query)s",
+                             "%(num)d tickets for which %(query)s",
+                             cnt, query=query_string)
+            return tag.span(cnt, title=title, class_='query_count')
 
         tickets = query.execute(req)
 

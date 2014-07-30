@@ -20,6 +20,7 @@ import os
 import sys
 
 from genshi.builder import tag
+from genshi.core import Markup
 
 from trac.cache import cached
 from trac.config import BoolOption, IntOption, PathOption, Option
@@ -27,6 +28,7 @@ from trac.core import *
 from trac.util import TracError, shorten_line
 from trac.util.datefmt import FixedOffset, to_timestamp, format_datetime
 from trac.util.text import to_unicode, exception_to_unicode
+from trac.util.translation import _
 from trac.versioncontrol.api import Changeset, Node, Repository, \
                                     IRepositoryConnector, NoSuchChangeset, \
                                     NoSuchNode, IRepositoryProvider
@@ -418,9 +420,9 @@ class CsetPropertyRenderer(Component):
                 parent_links = intersperse(', ', \
                     ((sha_link(rev),
                       ' (',
-                      tag.a('diff',
-                            title="Diff against this parent (show the " \
-                                  "changes merged from the other parents)",
+                      tag.a(_("diff"),
+                            title=_("Diff against this parent (show the "
+                                    "changes merged from the other parents)"),
                             href=context.href.changeset(current_sha, reponame,
                                                         old=rev)),
                       ')')
@@ -428,15 +430,16 @@ class CsetPropertyRenderer(Component):
 
                 return tag(list(parent_links),
                            tag.br(),
-                           tag.span(tag("Note: this is a ",
-                                        tag.strong("merge"), " changeset, "
-                                        "the changes displayed below "
-                                        "correspond to the merge itself."),
+                           tag.span(Markup(_("Note: this is a <strong>merge"
+                                             "</strong> changeset, the "
+                                             "changes displayed below "
+                                             "correspond to the merge "
+                                             "itself.")),
                                     class_='hint'),
                            tag.br(),
-                           tag.span(tag("Use the ", tag.tt("(diff)"),
-                                        " links above to see all the changes "
-                                        "relative to each parent."),
+                           tag.span(Markup(_("Use the <tt>(diff)</tt> links "
+                                             "above to see all the changes "
+                                             "relative to each parent.")),
                                     class_='hint'))
 
             # simple non-merge commit

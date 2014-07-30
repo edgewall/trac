@@ -358,8 +358,9 @@ class RecentChangesMacro(WikiMacroBase):
 
         items_per_date = (
             (date, (tag.li(tag.a(page, href=formatter.href.wiki(name)),
-                           tag.small(' (', tag.a('diff', href=diff_href), ')')
-                           if diff_href else None, '\n')
+                           tag.small(' (', tag.a(_("diff"), href=diff_href),
+                                     ')') if diff_href else None,
+                           '\n')
                     for page, name, version, diff_href in entries))
             for date, entries in entries_per_date)
 
