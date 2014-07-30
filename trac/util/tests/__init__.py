@@ -245,6 +245,31 @@ class SetuptoolsUtilsTestCase(unittest.TestCase):
             self.assertEqual(pkginfo, util.get_pkginfo(psycopg2.extensions))
 
 
+class LazyClass(object):
+    @util.lazy
+    def f(self):
+        return object()
+
+
+class LazyTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.obj = LazyClass()
+
+    def test_lazy_get(self):
+        f = self.obj.f
+        self.assertTrue(self.obj.f is f)
+
+    def test_lazy_set(self):
+        self.obj.f = 2
+        self.assertEqual(2, self.obj.f)
+
+    def test_lazy_del(self):
+        f = self.obj.f
+        del self.obj.f
+        self.assertFalse(self.obj.f is f)
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AtomicFileTestCase))
@@ -253,6 +278,7 @@ def suite():
     suite.addTest(unittest.makeSuite(ContentDispositionTestCase))
     suite.addTest(unittest.makeSuite(SafeReprTestCase))
     suite.addTest(unittest.makeSuite(SetuptoolsUtilsTestCase))
+    suite.addTest(unittest.makeSuite(LazyTestCase))
     suite.addTest(concurrency.suite())
     suite.addTest(datefmt.suite())
     suite.addTest(presentation.suite())
