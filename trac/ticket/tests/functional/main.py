@@ -2474,9 +2474,9 @@ class RegressionTestTicket11028(FunctionalTwillTestCaseSetup):
                                      ('ROADMAP_VIEW', 'MILESTONE_VIEW'))
 
 
-class RegressionTestTicket11153(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket11152(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11153"""
+        """Test for regression of http://trac.edgewall.org/ticket/11152"""
         # Check that "View Tickets" mainnav entry links to the report page
         self._tester.go_to_view_tickets()
 
@@ -2734,7 +2734,7 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket10010())
     suite.addTest(RegressionTestTicket10772())
     suite.addTest(RegressionTestTicket11028())
-    suite.addTest(RegressionTestTicket11153())
+    suite.addTest(RegressionTestTicket11152())
     suite.addTest(RegressionTestTicket11590())
     suite.addTest(RegressionTestTicket11618())
     if ConfigObj:
