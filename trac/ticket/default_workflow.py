@@ -243,32 +243,32 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         if 'del_owner' in operations:
             hints.append(_("The ticket will be disowned"))
         if 'set_owner' in operations or 'may_set_owner' in operations:
+            if 'set_owner' in this_action:
+                owners = [x.strip() for x in
+                          this_action['set_owner'].strip().split(',') if x]
+            elif self.config.getbool('ticket', 'restrict_owner'):
+                perm = PermissionSystem(self.env)
+                owners = perm.get_users_with_permission('TICKET_MODIFY')
+                owners = sorted(owners)
+            else:
+                owners = None
+
             if 'set_owner' in operations:
                 default_owner = req.authname
             elif 'may_set_owner' in operations:
                 default_owner = \
                     ticket._old.get('owner', ticket['owner'] or None)
+                if owners is not None and default_owner not in owners:
+                    owners.insert(0, default_owner)
             else:
                 # Protect against future modification for case that another
                 # operation is added to the outer conditional
                 raise AssertionError(operations)
 
-            if 'set_owner' in this_action:
-                owners = [x.strip() for x in
-                          this_action['set_owner'].split(',')]
-            elif self.config.getbool('ticket', 'restrict_owner'):
-                perm = PermissionSystem(self.env)
-                owners = perm.get_users_with_permission('TICKET_MODIFY')
-                owners.sort()
-            else:
-                owners = None
-            if owners is not None and default_owner not in owners:
-                owners.insert(0, default_owner)
-
             id = 'action_%s_reassign_owner' % action
             selected_owner = req.args.get(id, default_owner)
 
-            if owners is None:
+            if not owners:
                 control.append(
                     tag_("to %(owner)s",
                          owner=tag.input(type='text', id=id, name=id,

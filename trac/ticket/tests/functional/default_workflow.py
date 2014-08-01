@@ -69,6 +69,69 @@ class SetOwnerOperation(FunctionalTwillTestCaseSetup):
             self._testenv.revoke_perm('anonymous', 'TICKET_ADMIN')
             self._tester.login('admin')
 
+    def test_set_owner(self):
+        """When using the workflow operation `set_owner` with
+        a specific list of available owners, the assign-to field
+        will only contain that list of owners.  The requesting user
+        will not be added to the list, and the current ticket owner
+        will not be added to the list.
+        """
+        try:
+            ticket_id = self._tester.create_ticket(self.__class__.__name__,
+                                                   info={'owner': 'lammy'})
+            self.env.config.set('ticket-workflow', 'reassign.set_owner', 
+                                "alice,bill")
+            self.env.config.save()
+
+            self._tester.go_to_ticket(ticket_id)
+            tc.find("The owner will be changed from lammy")
+
+            tc.notfind('<input type="text" name="action_reassign_reassign_owner" '
+                       'value="admin" id="action_reassign_reassign_owner" />')
+            tc.notfind('<option selected="selected" value="admin">admin</option>')
+            tc.notfind('<option value="admin">admin</option>')
+
+            tc.notfind('<input type="text" name="action_reassign_reassign_owner" '
+                       'value="lammy" id="action_reassign_reassign_owner" />')
+            tc.notfind('<option selected="selected" value="lammy">lammy</option>')
+            tc.notfind('<option value="lammy">lammy</option>')
+
+        finally:
+            self.env.config.remove('ticket-workflow', 'reassign.set_owner')
+
+    def test_set_owner_one_choice(self):
+        """When using the workflow operation `set_owner` with
+        a specific single-element list of available owners, the assign-to field
+        will not give the end user any choices at all.
+        """
+        try:
+            ticket_id = self._tester.create_ticket(self.__class__.__name__,
+                                                   info={'owner': 'lammy'})
+            self.env.config.set('ticket-workflow', 'reassign.set_owner', 
+                                "alice")
+            self.env.config.save()
+
+            self._tester.go_to_ticket(ticket_id)
+
+            tc.notfind('<select name="action_reassign_reassign_owner"')
+            tc.find('<input type="hidden" '
+                    'name="action_reassign_reassign_owner" '
+                    'value="alice" id="action_reassign_reassign_owner" />')
+            tc.find('The owner will be changed from lammy to alice')
+
+            tc.notfind('<input type="text" name="action_reassign_reassign_owner" '
+                       'value="admin" id="action_reassign_reassign_owner" />')
+            tc.notfind('<option selected="selected" value="admin">admin</option>')
+            tc.notfind('<option value="admin">admin</option>')
+
+            tc.notfind('<input type="text" name="action_reassign_reassign_owner" '
+                       'value="lammy" id="action_reassign_reassign_owner" />')
+            tc.notfind('<option selected="selected" value="lammy">lammy</option>')
+            tc.notfind('<option value="lammy">lammy</option>')
+
+        finally:
+            self.env.config.remove('ticket-workflow', 'reassign.set_owner')
+
 
 class MaySetOwnerOperationRestrictOwnerFalse(FunctionalTestCaseSetup):
     """Test cases for may_set_owner operation with
@@ -130,6 +193,80 @@ class MaySetOwnerOperationRestrictOwnerFalse(FunctionalTestCaseSetup):
 
         known_usernames = [u[0] for u in self.env.get_known_users()]
         self.assertNotIn('lammy', known_usernames)
+
+    def test_set_owner(self):
+        """When using the workflow operation `may_set_owner` with
+        a specific list of available owners, the assign-to field
+        will only contain that list of owners.  The requesting user
+        will not be added to the list.  But the current ticket owner
+        will be added to the list, and will be the default choice.
+        """
+        try:
+            ticket_id = self._tester.create_ticket(self.__class__.__name__,
+                                                   info={'owner': 'lammy'})
+            self.env.config.set('ticket-workflow', 'reassign.set_owner', 
+                                "alice,bill")
+            self.env.config.save()
+
+            self._tester.go_to_ticket(ticket_id)
+            tc.find("The owner will be changed from lammy")
+
+            tc.notfind('<input type="text" name="action_reassign_reassign_owner" '
+                       'value="admin" id="action_reassign_reassign_owner" />')
+            tc.find('<option selected="selected" value="lammy">lammy</option>')
+            tc.find('<option value="alice">alice</option>')
+            tc.find('<option value="bill">bill</option>')
+
+            tc.notfind('<input type="text" name="action_reassign_reassign_owner" '
+                       'value="admin" id="action_reassign_reassign_owner" />')
+            tc.notfind('<option selected="selected" value="admin">admin</option>')
+            tc.notfind('<option value="admin">admin</option>')
+
+        finally:
+            self.env.config.remove('ticket-workflow', 'reassign.set_owner')
+
+    def test_set_owner_one_choice(self):
+        """When using the workflow operation `may_set_owner` with
+        a specific single-element list of available owners, the assign-to field
+        will become a dropdown with two options if the current owner is not
+        the single specified option.  It will be a text field, and will not give
+        the end user any choices at all, if and only if the current owner
+        is the single specified option.
+        """
+        try:
+            ticket_id = self._tester.create_ticket(self.__class__.__name__,
+                                                   info={'owner': 'lammy'})
+            self.env.config.set('ticket-workflow', 'reassign.set_owner', 
+                                "alice")
+            self.env.config.save()
+
+            self._tester.go_to_ticket(ticket_id)
+            tc.find("The owner will be changed from lammy")
+
+            tc.find('<select name="action_reassign_reassign_owner"')
+            tc.notfind('<input type="hidden" '
+                    'name="action_reassign_reassign_owner" '
+                    'value="alice" id="action_reassign_reassign_owner" />')
+            tc.notfind('The owner will be changed from lammy to alice')
+            tc.find('<option selected="selected" value="lammy">lammy</option>')
+            tc.find('<option value="alice">alice</option>')
+
+            self.env.config.set('ticket-workflow', 'reassign.set_owner', 
+                                "lammy")
+            self.env.config.save()
+
+            self._tester.go_to_ticket(ticket_id)
+
+            tc.notfind('<select name="action_reassign_reassign_owner"')
+            tc.find('<input type="hidden" '
+                    'name="action_reassign_reassign_owner" '
+                    'value="lammy" id="action_reassign_reassign_owner" />')
+            tc.find('The owner will remain lammy')
+            tc.notfind('<option selected="selected" value="lammy">lammy</option>')
+
+
+        finally:
+            self.env.config.remove('ticket-workflow', 'reassign.set_owner')
 
 
 
