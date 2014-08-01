@@ -2529,6 +2529,10 @@ class RegressionTestTicket11176(FunctionalTestCaseSetup):
         Fine-grained permission checks should be enforced on the Report list
         page, the report pages and query pages."""
         self._testenv.enable_authz_permpolicy("""
+            [ticket:*]
+            anonymous = TICKET_VIEW
+            [report:-1]
+            anonymous = REPORT_VIEW
             [report:1]
             anonymous = REPORT_VIEW
             [report:2]

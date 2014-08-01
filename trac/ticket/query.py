@@ -863,9 +863,10 @@ class QueryModule(Component):
 
     def get_navigation_items(self, req):
         from trac.ticket.report import ReportModule
-        if 'TICKET_VIEW' in req.perm and \
+        if 'TICKET_VIEW' in req.perm('ticket') and \
                 not (self.env.is_component_enabled(ReportModule) and
-                     'REPORT_VIEW' in req.perm):
+                     'REPORT_VIEW' in req.perm('report',
+                                               ReportModule.REPORT_LIST_ID)):
             yield ('mainnav', 'tickets',
                    tag.a(_('View Tickets'), href=req.href.query()))
 
@@ -875,7 +876,7 @@ class QueryModule(Component):
         return req.path_info == '/query'
 
     def process_request(self, req):
-        req.perm.assert_permission('TICKET_VIEW')
+        req.perm('ticket').assert_permission('TICKET_VIEW')
         report_id = req.args.get('report')
         if report_id:
             req.perm('report', report_id).assert_permission('REPORT_VIEW')
@@ -1090,7 +1091,8 @@ class QueryModule(Component):
         # Note that with saved custom queries, there will be some convergence
         # between the report module and the query module.
         from trac.ticket.report import ReportModule
-        if 'REPORT_VIEW' in req.perm and \
+        report_resource = Resource('report', query.id)
+        if 'REPORT_VIEW' in req.perm(report_resource) and \
                self.env.is_component_enabled(ReportModule):
             data['report_href'] = req.href.report()
             add_ctxtnav(req, _('Available Reports'), req.href.report())
@@ -1099,14 +1101,14 @@ class QueryModule(Component):
                 for title, description in self.env.db_query("""
                         SELECT title, description FROM report WHERE id=%s
                         """, (query.id,)):
-                    data['report_resource'] = Resource('report', query.id)
+                    data['report_resource'] = report_resource
                     data['description'] = description
         else:
             data['report_href'] = None
 
         # Only interact with the batch modify module it it is enabled
         from trac.ticket.batch import BatchModifyModule
-        if 'TICKET_BATCH_MODIFY' in req.perm and \
+        if 'TICKET_BATCH_MODIFY' in req.perm('ticket') and \
                 self.env.is_component_enabled(BatchModifyModule):
             self.env[BatchModifyModule].add_template_data(req, data, tickets)
 

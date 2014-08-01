@@ -239,7 +239,7 @@
 
       <div id="trac-report-buttons" class="buttons"
            py:with="edit = report_resource and 'REPORT_MODIFY' in perm(report_resource);
-                    new = 'REPORT_CREATE' in perm;
+                    new = 'REPORT_CREATE' in perm('report');
                     delete = report_resource and 'REPORT_DELETE' in perm(report_resource)">
         <form py:if="edit" method="get" action="${url_of(report_resource)}">
           <div>
