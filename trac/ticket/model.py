@@ -1013,11 +1013,10 @@ class Milestone(object):
     def delete(self, retarget_to=None, author=None):
         """Delete the milestone.
 
-        :param author: the author of the change
-
-        :since 1.0.2: the `retarget_to` parameter is deprecated and tickets
-        should moved to another milestone by calling `move_tickets` before
-        `delete`.
+        :since 1.0.2: the `retarget_to` and `author` parameters are
+                      deprecated and will be removed in Trac 1.3.1. Tickets
+                      should be moved to another milestone by calling
+                      `move_tickets` before `delete`.
         """
         with self.env.db_transaction as db:
             self.env.log.info("Deleting milestone %s", self.name)
