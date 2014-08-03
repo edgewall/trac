@@ -22,5 +22,5 @@ script:
 notifications:
   email:
     recipients:
-      - rjollos@gmail.com
+      - ryan.j.ollos@gmail.com
       - jun66j5@gmail.com
