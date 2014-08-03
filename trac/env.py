@@ -427,33 +427,6 @@ class Environment(Component, ComponentManager):
             raise TracError("No Trac environment found at %s\n%s"
                             % (self.path, e))
 
-    def get_db_cnx(self):
-        """Return a database connection from the connection pool
-
-        :deprecated: Use :meth:`db_transaction` or :meth:`db_query` instead.
-                     Will be removed in Trac 1.3.1.
-
-        `db_transaction` for obtaining the `db` database connection
-        which can be used for performing any query
-        (SELECT/INSERT/UPDATE/DELETE)::
-
-           with env.db_transaction as db:
-               ...
-
-        Note that within the block, you don't need to (and shouldn't)
-        call ``commit()`` yourself, the context manager will take care
-        of it (if it's the outermost such context manager on the
-        stack).
-
-
-        `db_query` for obtaining a `db` database connection which can
-        be used for performing SELECT queries only::
-
-           with env.db_query as db:
-               ...
-        """
-        return DatabaseManager(self).get_connection()
-
     @lazy
     def db_exc(self):
         """Return an object (typically a module) containing all the

@@ -315,12 +315,12 @@ class StringsTestCase(unittest.TestCase):
             "SELECT value FROM system WHERE name='test-markup'"))
 
     def test_quote(self):
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        cursor.execute('SELECT 1 AS %s' % \
-                       db.quote(r'alpha\`\"\'\\beta``gamma""delta'))
-        self.assertEqual(r'alpha\`\"\'\\beta``gamma""delta',
-                         get_column_names(cursor)[0])
+        with self.env.db_query as db:
+            cursor = db.cursor()
+            cursor.execute('SELECT 1 AS %s' % \
+                           db.quote(r'alpha\`\"\'\\beta``gamma""delta'))
+            self.assertEqual(r'alpha\`\"\'\\beta``gamma""delta',
+                             get_column_names(cursor)[0])
 
     def test_quoted_id_with_percent(self):
         db = self.env.get_read_db()

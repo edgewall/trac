@@ -96,12 +96,11 @@ class ReportTestCase(unittest.TestCase):
 
     def test_saved_custom_query_redirect(self):
         query = u'query:?type=résumé'
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        cursor.execute("INSERT INTO report (title,query,description) "
-                       "VALUES (%s,%s,%s)", ('redirect', query, ''))
-        id = db.get_last_id(cursor, 'report')
-        db.commit()
+        with self.env.db_transaction as db:
+            cursor = db.cursor()
+            cursor.execute("INSERT INTO report (title,query,description) "
+                           "VALUES (%s,%s,%s)", ('redirect', query, ''))
+            id = db.get_last_id(cursor, 'report')
 
         headers_sent = {}
         def start_response(status, headers):
