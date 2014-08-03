@@ -394,7 +394,7 @@ class Environment(Component, ComponentManager):
         """Return a database connection from the connection pool
 
         :deprecated: Use :meth:`db_transaction` or :meth:`db_query` instead.
-                     Will be removed in Trac 1.3.1.
+                     Removed in Trac 1.1.2.
 
         `db_transaction` for obtaining the `db` database connection
         which can be used for performing any query
