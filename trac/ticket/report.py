@@ -186,7 +186,7 @@ class ReportModule(Component):
                 return template, data, content_type
 
         from trac.ticket.query import QueryModule
-        show_query_link = 'TICKET_VIEW' in req.perm('query') and \
+        show_query_link = 'TICKET_VIEW' in req.perm('ticket') and \
                           self.env.is_component_enabled(QueryModule)
 
         if  (id != self.REPORT_LIST_ID or action == 'new') and \
