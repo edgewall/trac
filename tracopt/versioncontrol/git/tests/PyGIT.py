@@ -14,6 +14,7 @@
 import os
 import tempfile
 import unittest
+from datetime import datetime
 from subprocess import Popen, PIPE
 
 import trac.tests.compat
@@ -26,6 +27,10 @@ from trac.versioncontrol.api import Changeset, DbRepositoryProvider, \
 from tracopt.versioncontrol.git.git_fs import GitConnector
 from tracopt.versioncontrol.git.PyGIT import GitCore, GitError, Storage, \
                                              StorageFactory, parse_commit
+from tracopt.versioncontrol.git.tests.git_fs import GitCommandMixin
+
+
+git_bin = None
 
 
 class GitTestCase(unittest.TestCase):
@@ -149,21 +154,20 @@ signature automatically.  Yay.  The branchname was just 'dev', which is
 prettier.  I'll tell Ted to use nicer tag names for future cases.""", msg)
 
 
-class NormalTestCase(unittest.TestCase):
+class NormalTestCase(unittest.TestCase, GitCommandMixin):
 
     def setUp(self):
         self.env = EnvironmentStub()
         self.repos_path = tempfile.mkdtemp(prefix='trac-gitrepos-')
-        self.git_bin = locate('git')
         # create git repository and master branch
-        self._git('init', self.repos_path)
+        self._git('init')
         self._git('config', 'core.quotepath', 'true')  # ticket:11198
         self._git('config', 'user.name', "Joe")
         self._git('config', 'user.email', "joe@example.com")
         create_file(os.path.join(self.repos_path, '.gitignore'))
         self._git('add', '.gitignore')
-        self._git('commit', '-a', '-m', 'test',
-                  '--date', 'Tue Jan 1 18:04:56 2013 +0900')
+        self._git_commit('-a', '-m', 'test',
+                         date=datetime(2013, 1, 1, 9, 4, 56))
 
     def tearDown(self):
         RepositoryManager(self.env).reload_repositories()
@@ -171,16 +175,6 @@ class NormalTestCase(unittest.TestCase):
         self.env.reset_db()
         if os.path.isdir(self.repos_path):
             rmtree(self.repos_path)
-
-    def _git(self, *args):
-        args = [self.git_bin] + list(args)
-        proc = Popen(args, stdout=PIPE, stderr=PIPE, close_fds=close_fds,
-                     cwd=self.repos_path)
-        stdout, stderr = proc.communicate()
-        self.assertEqual(0, proc.returncode,
-               'git exits with %r, stdout %r, stderr %r' % (proc.returncode,
-                                                            stdout, stderr))
-        return proc
 
     def _factory(self, weak, path=None):
         if path is None:
@@ -190,7 +184,7 @@ class NormalTestCase(unittest.TestCase):
     def _storage(self, path=None):
         if path is None:
             path = os.path.join(self.repos_path, '.git')
-        return Storage(path, self.env.log, self.git_bin, 'utf-8')
+        return Storage(path, self.env.log, git_bin, 'utf-8')
 
     def test_control_files_detection(self):
         # Exception not raised when path points to ctrl file dir
@@ -210,8 +204,8 @@ class NormalTestCase(unittest.TestCase):
 
         create_file(os.path.join(self.repos_path, 'ticket11598.txt'))
         self._git('add', 'ticket11598.txt')
-        self._git('commit', '-m', message,
-                  '--date', 'Thu May 9 20:05:21 2013 +0900')
+        self._git_commit('-m', message,
+                         date=datetime(2013, 5, 9, 11, 5, 21))
 
         storage = self._storage()
         branches = sorted(storage.get_branches())
@@ -230,8 +224,8 @@ class NormalTestCase(unittest.TestCase):
 
         create_file(os.path.join(self.repos_path, 'ticket11215.txt'))
         self._git('add', 'ticket11215.txt')
-        self._git('commit', '-m', 'ticket11215',
-                  '--date', 'Fri Jun 28 03:26:02 2013 +0900')
+        self._git_commit('-m', 'ticket11215',
+                         date=datetime(2013, 6, 27, 18, 26, 2))
         repos.sync()
         rev = repos.youngest_rev
 
@@ -251,8 +245,8 @@ class NormalTestCase(unittest.TestCase):
         repos = self.env.get_repository('gitrepos')
         parent_rev = repos.youngest_rev
 
-        self._git('commit', '-m', 'ticket:11328', '--allow-empty',
-                  '--date', 'Tue Oct 15 18:46:27 2013 +0900')
+        self._git_commit('-m', 'ticket:11328', '--allow-empty',
+                         date=datetime(2013, 10, 15, 9, 46, 27))
         repos.sync()
         rev = repos.youngest_rev
 
@@ -272,8 +266,8 @@ class NormalTestCase(unittest.TestCase):
         self._git('checkout', 'master')
         create_file(os.path.join(self.repos_path, 'newfile.txt'))
         self._git('add', 'newfile.txt')
-        self._git('commit', '-m', 'added newfile.txt to master',
-                  '--date', 'Mon Dec 23 15:52:23 2013 +0900')
+        self._git_commit('-m', 'added newfile.txt to master',
+                         date=datetime(2013, 12, 23, 6, 52, 23))
 
         storage = self._storage()
         storage.sync()
@@ -291,48 +285,37 @@ class NormalTestCase(unittest.TestCase):
 
         create_file(os.path.join(self.repos_path, 'newfile.txt'))
         self._git('add', 'newfile.txt')
-        self._git('commit', '-m', 'test_turn_off_persistent_cache',
-                  '--date', 'Wed, 29 Jan 2014 22:13:25 +0900')
+        self._git_commit('-m', 'test_turn_off_persistent_cache',
+                         date=datetime(2014, 1, 29, 13, 13, 25))
 
         # persistent_cache is disabled
         rev = self._factory(True).getInstance().youngest_rev()
         self.assertNotEqual(rev, parent_rev)
 
 
-class UnicodeNameTestCase(unittest.TestCase):
+class UnicodeNameTestCase(unittest.TestCase, GitCommandMixin):
 
     def setUp(self):
         self.env = EnvironmentStub()
         self.repos_path = tempfile.mkdtemp(prefix='trac-gitrepos-')
-        self.git_bin = locate('git')
         # create git repository and master branch
-        self._git('init', self.repos_path)
+        self._git('init')
         self._git('config', 'core.quotepath', 'true')  # ticket:11198
         self._git('config', 'user.name', "Joé")  # passing utf-8 bytes
         self._git('config', 'user.email', "joe@example.com")
         create_file(os.path.join(self.repos_path, '.gitignore'))
         self._git('add', '.gitignore')
-        self._git('commit', '-a', '-m', 'test',
-                  '--date', 'Tue Jan 1 18:04:57 2013 +0900')
+        self._git_commit('-a', '-m', 'test',
+                         date=datetime(2013, 1, 1, 9, 4, 57))
 
     def tearDown(self):
         self.env.reset_db()
         if os.path.isdir(self.repos_path):
             rmtree(self.repos_path)
 
-    def _git(self, *args):
-        args = [self.git_bin] + list(args)
-        proc = Popen(args, stdout=PIPE, stderr=PIPE, close_fds=close_fds,
-                     cwd=self.repos_path)
-        stdout, stderr = proc.communicate()
-        self.assertEqual(0, proc.returncode,
-               'git exits with %r, stdout %r, stderr %r' % (proc.returncode,
-                                                            stdout, stderr))
-        return proc
-
     def _storage(self):
         path = os.path.join(self.repos_path, '.git')
-        return Storage(path, self.env.log, self.git_bin, 'utf-8')
+        return Storage(path, self.env.log, git_bin, 'utf-8')
 
     def test_unicode_verifyrev(self):
         storage = self._storage()
@@ -342,8 +325,7 @@ class UnicodeNameTestCase(unittest.TestCase):
     def test_unicode_filename(self):
         create_file(os.path.join(self.repos_path, 'tickét.txt'))
         self._git('add', 'tickét.txt')
-        self._git('commit', '-m', 'unicode-filename',
-                  '--date', 'Sun Feb 3 18:30 2013 +0100')
+        self._git_commit('-m', 'unicode-filename', date='1359912600 +0100')
         storage = self._storage()
         filenames = sorted(fname for mode, type, sha, size, fname
                                  in storage.ls_tree('HEAD'))
@@ -387,8 +369,8 @@ class UnicodeNameTestCase(unittest.TestCase):
             path_utf8 = path.encode('utf-8')
             create_file(os.path.join(self.repos_path, path_utf8))
             self._git('add', path_utf8)
-        self._git('commit', '-m', 'ticket:11180 and ticket:11198',
-                  '--date', 'Fri Aug 30 00:48:57 2013 +0900')
+        self._git_commit('-m', 'ticket:11180 and ticket:11198',
+                         date=datetime(2013, 4, 30, 13, 48, 57))
 
         storage = self._storage()
         rev = storage.head()
@@ -408,8 +390,8 @@ class UnicodeNameTestCase(unittest.TestCase):
             path_utf8 = path.encode('utf-8')
             create_file(os.path.join(self.repos_path, path_utf8))
             self._git('add', path_utf8)
-        self._git('commit', '-m', 'ticket:11180 and ticket:11198',
-                  '--date', 'Fri Aug 30 00:48:57 2013 +0900')
+        self._git_commit('-m', 'ticket:11180 and ticket:11198',
+                         date=datetime(2013, 4, 30, 17, 48, 57))
 
         def validate(path, quotepath):
             self._git('config', 'core.quotepath', quotepath)
@@ -576,9 +558,10 @@ class UnicodeNameTestCase(unittest.TestCase):
 
 
 def suite():
+    global git_bin
     suite = unittest.TestSuite()
-    git = locate("git")
-    if git:
+    git_bin = locate('git')
+    if git_bin:
         suite.addTest(unittest.makeSuite(GitTestCase))
         suite.addTest(unittest.makeSuite(TestParseCommit))
         suite.addTest(unittest.makeSuite(NormalTestCase))

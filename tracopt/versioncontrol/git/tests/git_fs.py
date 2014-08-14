@@ -38,15 +38,45 @@ from tracopt.versioncontrol.git.git_fs import GitCachedRepository, \
 git_bin = None
 
 
-def git_date_format(dt):
-    offset = dt.utcoffset()
-    secs = offset.days * 3600 * 24 + offset.seconds
-    hours, rem = divmod(abs(secs), 3600)
-    return '%d %c%02d:%02d' % (to_timestamp(dt), '-' if secs < 0 else '+',
-                               hours, rem / 60)
+class GitCommandMixin(object):
+
+    def _git_commit(self, *args, **kwargs):
+        env = kwargs.get('env') or os.environ.copy()
+        if 'date' in kwargs:
+            self._set_committer_date(env, kwargs.pop('date'))
+        args = ('commit',) + args
+        kwargs['env'] = env
+        return self._git(*args, **kwargs)
+
+    def _git(self, *args, **kwargs):
+        args = (git_bin,) + args
+        proc = Popen(args, stdout=PIPE, stderr=PIPE, close_fds=close_fds,
+                     cwd=self.repos_path, **kwargs)
+        stdout, stderr = proc.communicate()
+        self.assertEqual(0, proc.returncode,
+                         'git exits with %r, args %r, stdout %r, stderr %r' %
+                         (proc.returncode, args, stdout, stderr))
+        return proc
+
+    def _git_date_format(self, dt):
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=utc)
+        offset = dt.utcoffset()
+        secs = offset.days * 3600 * 24 + offset.seconds
+        hours, rem = divmod(abs(secs), 3600)
+        return '%d %c%02d:%02d' % (to_timestamp(dt), '-' if secs < 0 else '+',
+                                   hours, rem / 60)
+
+    def _set_committer_date(self, env, dt):
+        if not isinstance(dt, basestring):
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=utc)
+            dt = self._git_date_format(dt)
+        env['GIT_COMMITTER_DATE'] = dt
+        env['GIT_AUTHOR_DATE'] = dt
 
 
-class BaseTestCase(unittest.TestCase):
+class BaseTestCase(unittest.TestCase, GitCommandMixin):
 
     def setUp(self):
         self.env = EnvironmentStub()
@@ -76,29 +106,16 @@ class BaseTestCase(unittest.TestCase):
 
     def _git_init(self, data=True, bare=False):
         if bare:
-            self._git('init', '--bare', self.repos_path)
+            self._git('init', '--bare')
         else:
-            self._git('init', self.repos_path)
+            self._git('init')
         if not bare and data:
             self._git('config', 'user.name', 'Joe')
             self._git('config', 'user.email', 'joe@example.com')
             create_file(os.path.join(self.repos_path, '.gitignore'))
             self._git('add', '.gitignore')
-            env = os.environ.copy()
-            committer_date = datetime(2001, 1, 29, 16, 39, 56, 0, utc)
-            env['GIT_COMMITTER_DATE'] = git_date_format(committer_date)
-            env['GIT_AUTHOR_DATE'] = git_date_format(committer_date)
-            self._git('commit', '-a', '-m', 'test', env=env)
-
-    def _git(self, *args, **kwargs):
-        args = (git_bin,) + args
-        proc = Popen(args, stdout=PIPE, stderr=PIPE, close_fds=close_fds,
-                     cwd=self.repos_path, **kwargs)
-        stdout, stderr = proc.communicate()
-        self.assertEqual(0, proc.returncode,
-               'git exits with %r, stdout %r, stderr %r' % (proc.returncode,
-                                                            stdout, stderr))
-        return proc
+            self._git_commit('-a', '-m', 'test',
+                             date=datetime(2001, 1, 29, 16, 39, 56))
 
 
 class SanityCheckingTestCase(BaseTestCase):
@@ -167,10 +184,7 @@ class PersistentCacheTestCase(BaseTestCase):
     def _commit(self, date):
         gitignore = os.path.join(self.repos_path, '.gitignore')
         create_file(gitignore, date.isoformat())
-        env = os.environ.copy()
-        env['GIT_COMMITTER_DATE'] = git_date_format(date)
-        env['GIT_AUTHOR_DATE'] = git_date_format(date)
-        self._git('commit', '-a', '-m', date.isoformat(), env=env)
+        self._git_commit('-a', '-m', date.isoformat(), date=date)
 
     @property
     def _repository(self):
@@ -192,12 +206,9 @@ class HistoryTimeRangeTestCase(BaseTestCase):
         filename = os.path.join(self.repos_path, '.gitignore')
         start = datetime(2000, 1, 1, 0, 0, 0, 0, utc)
         ts = datetime(2014, 2, 5, 15, 24, 6, 0, utc)
-        env = os.environ.copy()
-        env['GIT_COMMITTER_DATE'] = git_date_format(ts)
-        env['GIT_AUTHOR_DATE'] = git_date_format(ts)
         for idx in xrange(3):
             create_file(filename, 'commit-%d.txt' % idx)
-            self._git('commit', '-a', '-m', 'commit %d' % idx, env=env)
+            self._git_commit('-a', '-m', 'commit %d' % idx, date=ts)
         self._add_repository()
         repos = self._repomgr.get_repository('gitrepos')
         repos.sync()
@@ -315,8 +326,9 @@ class GitRepositoryTestCase(BaseTestCase):
                 filename = 'file-%s-%d.txt' % (branch, n)
                 create_file(os.path.join(self.repos_path, filename))
                 self._git('add', filename)
-                self._git('commit', '-a', '-m', filename, '--date',
-                          '2014-02-03T02:12:%02d+09:00' % (n * 2 + idx))
+                self._git_commit('-a', '-m', filename,
+                                 date=datetime(2014, 2, 2, 17, 12,
+                                               n * 2 + idx))
         self._git('checkout', 'alpha')
         self._git('merge', '-m', 'Merge branch "beta" to "alpha"', 'beta')
 
@@ -330,8 +342,8 @@ class GitRepositoryTestCase(BaseTestCase):
         self._git_init()
         create_file(os.path.join(self.repos_path, 'file.txt'), 'text')
         self._git('add', 'file.txt')
-        self._git('commit', '-a', '-m', 'test',
-                  '--date', '2014-02-03T02:12:18+09:00')
+        self._git_commit('-a', '-m', 'test',
+                         date=datetime(2014, 2, 2, 17, 12, 18))
         self._add_repository('gitrepos')
         repos = self._repomgr.get_repository('gitrepos')
         repos.sync()
@@ -426,8 +438,8 @@ class GitCachedRepositoryTestCase(GitRepositoryTestCase):
             filename = 'file%d.txt' % idx
             create_file(os.path.join(self.repos_path, filename))
             self._git('add', filename)
-            self._git('commit', '-a', '-m', filename,
-                      '--date', '2014-02-03T02:12:%02d+09:00' % idx)
+            self._git_commit('-a', '-m', filename,
+                             date=datetime(2014, 2, 2, 17, 12, idx))
         self._add_repository('gitrepos')
         repos = self._repomgr.get_repository('gitrepos')
         revs = [entry[1] for entry in repos.repos.get_node('').get_history()]
