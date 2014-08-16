@@ -59,6 +59,8 @@ new features and a few not-so-disruptive changes.
  - Dropped support for Python 2.5, either Python 2.6 or Python 2.7 is
    required
 
+-----------------------------------------------------------------------------
+
 Trac 1.0.2 (TBD)
 
 Trac 1.0.2 is a maintenance release containing numerous fixes and minor
