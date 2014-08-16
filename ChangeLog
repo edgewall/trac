@@ -1,3 +1,34 @@
+Trac 1.0.2 (TBD)
+
+Trac 1.0.2 is a maintenance release containing numerous fixes and minor
+enhancements. The following are a few of the highlights:
+
+ - Subversion keywords are expanded and EOL substitutions made when viewing
+   a file in the repository browser and when downloading a file (#717). 
+ - Notification email is sent to the old owner when a ticket is reassigned
+   (#2311).
+ - Ticket change history is updated when renaming and deleting a milestone,
+   and when retargeting tickets to another milestone (#4582, #5658).
+ - Numerous fixes for the Authz permissions policy in the browser/repository
+   (#10961, #11646), wiki (#8976, #11067), admin (#11069) and report (#11176)
+   realms.
+ - Multiple forms submits are disallowed (#10138).
+ - `ConfigurationError` is raised if any of the `permission_policies` can't
+   be loaded, preventing possible information leakage due to internal and
+   installation errors (#10285).
+ - Wiki toolbars can be disabled through a configuration setting (#10837)
+ - The number of entries in a table is shown next to heading on applicable
+   admin pages (#11027).
+ - //Cancel// buttons are consistently located on all pages (#11076).
+ - Focus is placed on a text element when an edit page is loaded (#11084).
+ - The //Edit conflict// and //Merge// warning messages are always visible
+   in side-by-side edit mode (#11102).
+ - Improvements to the layout of the Report (#11106, #11664) and Ticket pages
+   (#11471).
+ - Genshi 0.7 compatibility (#11218).
+ - Numerous minor fixes for Git repository support.
+ - … and more than a hundred more fixes!
+
 Trac 1.0.1 (February 1, 2013)
 http://svn.edgewall.org/repos/trac/tags/trac-1.0.1
 
