@@ -1,3 +1,43 @@
+Trac 1.1.2 (TBD)
+
+Trac 1.1.2 continues development of the 1.1.x line leading to 1.2, with several new features and API changes:
+
+ - Dropped support for Python 2.5. Trac can no longer be run on Python 2.5 as
+   incompatible changes have been made in the source code (#11600).
+ - The new ticket workflow action `may_set_owner` is similar to `set_owner`
+   but the owner defaults to the existing ticket owner rather than the current
+   user (#10018).
+ - The new option `[ticket]` `optional_fields` specifies ticket select fields
+   that are treated as optional (i.e. an empty value is allowed) (#10772).
+ - Line number and row highlighting annotations can be specified for
+   WikiProcessor code blocks (#10834).
+ - The //default handler// can be set as a session preference (#11597), and
+   the default value for all users can be set from the //Basic Settings//
+   admin page (#11519).
+ - Attachments can't be added to read-only wiki pages (#11244).
+ - Tables on the admin pages have a //Select all// checkbox in the header
+   (#10994).
+ - Submit buttons are disabled if the required items are not selected (#11056).
+ - The Admin //Permissions// page has a //Copy Permissions// form for
+   copying permissions between users and groups (#11099).
+ - The new option `[milestone]` `default_retarget_to` determines the default
+   milestone for retargeting tickets when a milestone is deleted or closed,
+   and can be specified from the //Milestone// admin page (#10010).
+ - The //retarget// select is not shown when closing or deleting a milestone
+   which has no tickets associated with it (#11366).
+ - //Clear default// buttons allow the ticket system default values
+   (e.g. `default_milestone`, `default_version`) to be cleared through the
+   corresponding admin pages (#10772, #11300).
+ - The `TitleIndex` macro supports relative path prefixes when used on wiki
+   pages (#11455).
+ - CommitTicketUpdater will recognize a ticket reference that includes a
+   trailing `#comment:N` or `#comment:desccription` (#11622).
+ - The //Tickets// column of the milestone table on the //Milestone// admin
+   page contains links to the query page showing all tickets associated with
+   the milestone, grouped by status (#11661).
+ - Authz policy can be used to restrict access to the //Report List// page
+   using the resource id `-1` (#11697).
+
 Trac 1.1.1 (February 3, 2013)
 http://svn.edgewall.org/repos/trac/tags/trac-1.1.1
 
