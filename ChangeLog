@@ -19,7 +19,36 @@ new features and a few not-so-disruptive changes.
  - Dropped support for Python 2.5, either Python 2.6 or Python 2.7 is
    required
 
------------------------------------------------------------------------------
+Trac 1.0.2 (TBD)
+
+Trac 1.0.2 is a maintenance release containing numerous fixes and minor
+enhancements. The following are a few of the highlights:
+
+ - Subversion keywords are expanded and EOL substitutions made when viewing
+   a file in the repository browser and when downloading a file (#717). 
+ - Notification email is sent to the old owner when a ticket is reassigned
+   (#2311).
+ - Ticket change history is updated when renaming and deleting a milestone,
+   and when retargeting tickets to another milestone (#4582, #5658).
+ - Numerous fixes for the Authz permissions policy in the browser/repository
+   (#10961, #11646), wiki (#8976, #11067), admin (#11069) and report (#11176)
+   realms.
+ - Multiple forms submits are disallowed (#10138).
+ - `ConfigurationError` is raised if any of the `permission_policies` can't
+   be loaded, preventing possible information leakage due to internal and
+   installation errors (#10285).
+ - Wiki toolbars can be disabled through a configuration setting (#10837)
+ - The number of entries in a table is shown next to heading on applicable
+   admin pages (#11027).
+ - //Cancel// buttons are consistently located on all pages (#11076).
+ - Focus is placed on a text element when an edit page is loaded (#11084).
+ - The //Edit conflict// and //Merge// warning messages are always visible
+   in side-by-side edit mode (#11102).
+ - Improvements to the layout of the Report (#11106, #11664) and Ticket pages
+   (#11471).
+ - Genshi 0.7 compatibility (#11218).
+ - Numerous minor fixes for Git repository support.
+ - … and more than a hundred more fixes!
 
 Trac 1.0.1 (February 1, 2013)
 http://svn.edgewall.org/repos/trac/tags/trac-1.0.1
@@ -79,6 +108,27 @@ http://svn.edgewall.org/repos/trac/tags/trac-1.0b1
  See 1.0-rc1
 
 -----------------------------------------------------------------------------
+
+Trac 0.12.6 (TBD)
+
+Trac 0.12.6 is a maintenance release that contains fixes for a few issues:
+ - Subversion blame would fail for a path with URL-encoded characters (#10386),
+   a lower-case drive letter on Windows (#10514), or a non-ascii filename with
+   Subversion 1.7 (#11167).
+ - Improved performance rendering `svn:mergeinfo` properties in browser view
+   (#8459) and changeset view (#11219).
+ - Query with many custom fields would fail (#11140).
+ - Zip archive had a timestamp with no timezone information (#11162).
+ - Failure or incorrect ranges rendering log TracLinks (#11308, #11346).
+ - Textareas in ticket view did not wrap correctly in IE 11 (#11376).
+ - Emails were not being obfuscated in owner field on CSV export from ticket
+   and query pages (#11594).
+ - Locale data was not being included in egg in Distribute 0.6.29 and later
+   (#11640).
+ - Deleting a milestone would not delete its attachments (#11672).
+ - Added support for Babel 1.0 and later (#11258, #11345).
+ - Added support for `ConfigObj` 5.0 and later (#11498).
+ - … and dozens more fixes!
 
 Trac 0.12.5 (January 15, 2013)
 http://svn.edgewall.org/repos/trac/tags/trac-0.12.5
