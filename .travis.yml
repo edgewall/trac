@@ -22,5 +22,4 @@ script:
 notifications:
   email:
     recipients:
-      - ryan.j.ollos@gmail.com
-      - jun66j5@gmail.com
+      - trac-builds@googlegroups.com
