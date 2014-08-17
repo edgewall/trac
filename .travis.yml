@@ -8,6 +8,7 @@ env:
   - "TRAC_TEST_DB_URI=postgres://tracuser:password@localhost/trac?schema=tractest"
   - "TRAC_TEST_DB_URI=mysql://tracuser:password@localhost/trac"
 before_install:
+  - sudo apt-get update -qq
   - sudo apt-get install -qq python-subversion
   - psql -U postgres -c "CREATE USER tracuser NOSUPERUSER NOCREATEDB CREATEROLE PASSWORD 'password';"
   - psql -U postgres -c "CREATE DATABASE trac OWNER tracuser;"
