@@ -21,7 +21,7 @@ To install Trac, the following software packages must be installed:
  * Python, version >= 2.6.
  * setuptools, version >= 0.6, or the "distribute" package
  * Genshi, version >= 0.6
- * Optionally, Babel, version >= 0.9.6.
+ * Optionally, Babel, version >= 0.9.5.
  * Optionally, Subversion, version >= 1.6 and the Subversion SWIG
    Python bindings (not PySVN, that's something different).
  * Optionally, Git, version >= 1.5.6.
