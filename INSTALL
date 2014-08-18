@@ -18,15 +18,17 @@ Requirements
 
 To install Trac, the following software packages must be installed:
 
- * Python, version >= 2.5.
+ * Python, version >= 2.6.
  * setuptools, version >= 0.6, or the "distribute" package
  * Genshi, version >= 0.6
- * Optionally, Subversion, version >= 1.1.x and the Subversion SWIG
+ * Optionally, Babel, version >= 0.9.6.
+ * Optionally, Subversion, version >= 1.6 and the Subversion SWIG
    Python bindings (not PySVN, that's something different).
+ * Optionally, Git, version >= 1.5.6.
  * One of the following Python bindings, depending on the database used:
-    * pysqlite version 2.x for SQLite 3.x
-    * psycopg2 version 2.0.x for the PostgreSQL database
-    * MySQLdb, version 1.2.2 for the MySQL database
+    * pysqlite version 2.x for SQLite (SQLite 3.x and later supported)
+    * psycopg2 version 2.x for PostgreSQL (PostgreSQL 8.0 and later supported)
+    * MySQLdb, version 1.2.2 for MySQL (MySQL 5.0 and later supported)
  * A web server capable of executing CGI/FastCGI scripts, or Apache
    HTTPD with mod_python or mod_wsgi. (Trac also comes with a
    standalone server, tracd)
