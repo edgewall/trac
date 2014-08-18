@@ -72,6 +72,17 @@ server (note this is not necessary for CGI).
 The following sections discuss any extra actions that may need to be
 taken to upgrade to specific versions of Trac.
 
+From 1.0 to 1.1.2
+-----------------
+
+The upgrade step will be required, but the changes are minor and it is
+unlikely you will encounter any difficulties.
+
+For this upgrade, the detailed information can be found either online
+at http://trac.edgewall.org/wiki/TracUpgrade or within the set of
+default wiki pages, part of this source distribution in
+trac/wiki/default-pages/TracUpgrade.
+
 From 0.12.x to 1.0
 ------------------
 
