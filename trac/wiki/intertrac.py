@@ -52,7 +52,7 @@ class InterTracDispatcher(Component):
            it doesn't know how to dispatch an InterTrac link, and it's up to
            the local Trac to prepare the correct link. Not all links will work
            that way, but the most common do. This is called the compatibility
-           mode, and is `true` by default.
+           mode, and is `false` by default.
          * If you know that the remote Trac knows how to dispatch InterTrac
            links, you can explicitly disable this compatibility mode and then
            ''any'' TracLinks can become InterTrac links.
