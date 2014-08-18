@@ -99,7 +99,7 @@ facilities.
         'Genshi>=0.6',
     ],
     install_requires = [
-        'setuptools>=0.6b1',
+        'setuptools>=0.6',
         'Genshi>=0.6',
     ],
     extras_require = {
