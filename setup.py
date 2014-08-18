@@ -103,7 +103,7 @@ facilities.
         'Babel': ['Babel>=0.9.5'],
         'ConfigObj': ['ConfigObj'],
         'Pygments': ['Pygments>=0.6'],
-        'reST': ['docutils>=0.3'],
+        'reST': ['docutils>=0.3.9'],
         'SilverCity': ['SilverCity>=0.9.4'],
         'Textile': ['textile>=2.0'],
     },
