@@ -38,22 +38,52 @@ Also note that !InterWiki prefixes are case insensitive.
 == Prefix Definitions ==
 
 {{{
-PEP     http://www.python.org/peps/pep-$1.html    # Python Enhancement Proposal 
+PEP     http://www.python.org/dev/peps/pep-$1/    # Python Enhancement Proposal 
 PythonBug    http://bugs.python.org/issue$1       # Python Issue #$1
 Python-issue http://bugs.python.org/issue$1       # Python Issue #$1
 
 Trac-ML  http://thread.gmane.org/gmane.comp.version-control.subversion.trac.general/ # Message $1 in Trac Mailing List
 trac-dev http://thread.gmane.org/gmane.comp.version-control.subversion.trac.devel/   # Message $1 in Trac Development Mailing List
 
+apidoc http://www.edgewall.org/docs/trac-trunk/html/$1.html # $1 in the API documentation for Trac
+apiref http://www.edgewall.org/docs/trac-trunk/epydoc/$1.html # $1 in the Epydoc API reference for Trac
+
+bitten   http://bitten.edgewall.org/intertrac/    # Bitten's Trac
+
 Mercurial http://www.selenic.com/mercurial/wiki/index.cgi/ # the wiki for the Mercurial distributed SCM
+hg        http://www.selenic.com/hg/rev/$1?rev=$2          # Changeset $1 $2 in Mercurial repository
+hg-issue  http://mercurial.selenic.com/bts/issue           # Issue $1 in Mercurial BTS
 
 RFC       http://tools.ietf.org/html/rfc$1          # IETF's RFC $1
 ISO       http://en.wikipedia.org/wiki/ISO_         # ISO Standard $1 in Wikipedia
 kb        http://support.microsoft.com/kb/$1/en-us/ # Article $1 in Microsoft's Knowledge Base
 
+pypi        http://pypi.python.org/pypi/   # $1 package in the Python Package Index
+CheeseShop  http://pypi.python.org/pypi/           # $1 package in the Python Package Index
+peak        http://peak.telecommunity.com/DevCenter/     # $1 in Python Enterprise Application Kit's Wiki
+setuptools-issue http://bugs.python.org/setuptools/issue # issue$1 in Setuptools tracker
+
+SQLite      http://www.sqlite.org/cvstrac/wiki?p=$1     # $1 page in the CvsTrac for SQLite
+SQLiteTkt   http://www.sqlite.org/cvstrac/tktview?tn=$1 # Ticket $1 in the CvsTrac for SQLite
+
+mysql-bugs  http://bugs.mysql.com/bug.php?id=  # Bug #$1 in MySQL's bug database
+mysql-issue http://bugs.mysql.com/bug.php?id=  # Bug #$1 in MySQL's bug database
+
+MODPYTHON          http://issues.apache.org/jira/browse/MODPYTHON- # Issue $1 in mod_python's JIRA instance
+mod-python-issue   http://issues.apache.org/jira/browse/MODPYTHON- # Issue $1 in mod_python's JIRA instance
+
+SvnWiki     http://www.orcaware.com/svn/wiki/                        # Subversion Wiki
+svnissue    http://subversion.tigris.org/issues/show_bug.cgi?id=     # Subversion issue #$1
+svn-issue   http://subversion.tigris.org/issues/show_bug.cgi?id=     # Subversion issue #$1
+svncset     http://svn.collab.net/viewvc/svn?view=revision&revision= # Subversion [$1]
+
+mod-wsgi    http://code.google.com/p/modwsgi/wiki/                 # mod_wsgi Wiki on Google Code
+mod-wsgi-issue  http://code.google.com/p/modwsgi/issues/detail?id= # mod_wsgi Issue Tracker on Google Code
+
 chromium-issue  http://code.google.com/p/chromium/issues/detail?id=
 
 Django      http://code.djangoproject.com/intertrac/ # Django's Trac
+AgileTrac   http://www.agile-trac.org/intertrac/     # Plugin adding Iterations to Trac
 
 CreoleWiki   http://wikicreole.org/wiki/
 Creole1Wiki  http://wikicreole.org/wiki/

@@ -83,7 +83,7 @@ A more compact representation without the ticket summaries is also available:
 This is displayed as:
   [[TicketQuery(version=0.6|0.7&resolution=duplicate, compact)]]
 
-Finally, if you wish to receive only the number of defects that match the query, use the ``count`` parameter.
+Finally, if you wish to receive only the number of defects that match the query, use the `count` parameter.
 
 {{{
 [[TicketQuery(version=0.6|0.7&resolution=duplicate, count)]]

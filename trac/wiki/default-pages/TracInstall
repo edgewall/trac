@@ -1,11 +1,17 @@
+{{{
+#!div style="margin-top: .5em; padding: 0 1em; background-color: #ffd; border:1px outset #ddc; text-align: center"
+
+ '''NOTE: the information in this page applies to Trac 1.0, the current version of Trac. \\
+ For installing previous Trac versions, please refer to [[wiki:0.12/TracInstall]] (for Trac 0.12)''' 
+}}}
 = Trac Installation Guide for 1.0 = 
 [[TracGuideToc]]
 
 Trac is written in the Python programming language and needs a database, [http://sqlite.org/ SQLite], [http://www.postgresql.org/ PostgreSQL], or [http://mysql.com/ MySQL]. For HTML rendering, Trac uses the [http://genshi.edgewall.org Genshi] templating system.
 
-Since version 0.12, Trac can also be localized, and there's probably a translation available for your language. If you want to be able to use the Trac interface in other languages, then make sure you have installed the optional package [#OtherPythonPackages Babel]. Pay attention to the extra steps for localization support in the [#InstallingTrac Installing Trac] section below. Lacking Babel, you will only get the default english version, as usual.
+Since version 0.12, Trac can also be localized, and there's probably a translation available for your language. If you want to be able to use the Trac interface in other languages, then make sure you have installed the optional package [#OtherPythonPackages Babel]. Pay attention to the extra steps for localization support in the [#InstallingTrac Installing Trac] section below. Lacking Babel, you will only get the default English version, as usual.
 
-If you're interested in contributing new translations for other languages or enhance the existing translations, then please have a look at [[trac:TracL10N]].
+If you're interested in contributing new translations for other languages or enhance the existing translations, then please have a look at [trac:wiki:TracL10N TracL10N].
 
 What follows are generic instructions for installing and setting up Trac and its requirements. While you may find instructions for installing Trac on specific systems at [trac:TracInstallPlatforms TracInstallPlatforms] on the main Trac site, please be sure to '''first read through these general instructions''' to get a good understanding of the tasks involved.
 
@@ -17,8 +23,8 @@ To install Trac, the following software packages must be installed:
 
  * [http://www.python.org/ Python], version >= 2.5 and < 3.0
    (note that we dropped the support for Python 2.4 in this release)
- * [http://peak.telecommunity.com/DevCenter/setuptools setuptools], version >= 0.6, or better yet, [http://pypi.python.org/pypi/distribute distribute]
- * [http://genshi.edgewall.org/wiki/Download Genshi], version >= 0.6 (unreleased version 0.7dev should work as well)
+ * [http://peak.telecommunity.com/DevCenter/setuptools setuptools], version >= 0.6
+ * [http://genshi.edgewall.org/wiki/Download Genshi], version >= 0.6
 
 You also need a database system and the corresponding python bindings.
 The database can be either SQLite, PostgreSQL or MySQL.
@@ -27,7 +33,7 @@ The database can be either SQLite, PostgreSQL or MySQL.
 
 As you must be using Python 2.5, 2.6 or 2.7, you already have the SQLite database bindings bundled with the standard distribution of Python (the `sqlite3` module).
 
-However, if you'd like, you can download the latest and greatest version of [[trac:Pysqlite]] from 
+However, if you'd like, you can download the latest and greatest version of [[trac:PySqlite]] from 
 [http://code.google.com/p/pysqlite/downloads/list google code], where you'll find the Windows
 installers or the `tar.gz` archive for building from source: 
 {{{
@@ -40,7 +46,7 @@ This will download the latest SQLite code and build the bindings.
 
 SQLite 2.x is no longer supported.
 
-A known bug PySqlite versions 2.5.2-4 prohibits upgrade of trac databases
+A known bug in PySqlite versions 2.5.2-4 prohibits upgrades of Trac databases
 from 0.11.x to 0.12. Please use versions 2.5.5 and newer or 2.5.1 and
 older. See #9434 for more detail.
 
@@ -50,7 +56,7 @@ See additional information in [trac:PySqlite PySqlite].
 
 You need to install the database and its Python bindings:
  * [http://www.postgresql.org/ PostgreSQL], version 8.0 or later
- * [http://pypi.python.org/pypi/psycopg2 psycopg2]
+ * [http://pypi.python.org/pypi/psycopg2 psycopg2], version 2.0 or later
 
 See [trac:DatabaseBackend#Postgresql DatabaseBackend] for details.
 
@@ -86,11 +92,11 @@ Support for other version control systems is provided via third-parties. See [tr
 ==== Web Server ====
 A web server is optional because Trac is shipped with a server included, see the [#RunningtheStandaloneServer Running the Standalone Server ] section below.
 
-Alternatively you configure Trac to run in any of the following environments.
+Alternatively you can configure Trac to run in any of the following environments.
  * [http://httpd.apache.org/ Apache] with 
    - [http://code.google.com/p/modwsgi/ mod_wsgi], see [wiki:TracModWSGI] and 
      http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac
-   - [http://modpython.org/ mod_python 3.3.1], deprecated: see TracModPython)
+   - [http://modpython.org/ mod_python 3.3.1], (deprecated: see TracModPython)
  * a [http://www.fastcgi.com/ FastCGI]-capable web server (see TracFastCgi)
  * an [http://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html AJP]-capable web
    server (see [trac:TracOnWindowsIisAjp TracOnWindowsIisAjp])
@@ -104,7 +110,7 @@ Alternatively you configure Trac to run in any of the following environments.
    needed for localization support (unreleased version 1.0dev should work as well)
  * [http://docutils.sourceforge.net/ docutils], version >= 0.3.9 
    for WikiRestructuredText.
- * [http://pygments.pocoo.org Pygments] for 
+ * [http://pygments.org Pygments] for 
    [wiki:TracSyntaxColoring syntax highlighting].
    [http://silvercity.sourceforge.net/ SilverCity] and/or 
    [http://gnu.org/software/enscript/enscript.html Enscript] may still be used
@@ -113,7 +119,7 @@ Alternatively you configure Trac to run in any of the following environments.
    otherwise Trac will fall back on a shorter list from 
    an internal time zone implementation.
 
-'''Attention''': The various available versions of these dependencies are not necessarily interchangable, so please pay attention to the version numbers above. If you are having trouble getting Trac to work please double-check all the dependencies before asking for help on the [trac:MailingList] or [trac:IrcChannel].
+'''Attention''': The various available versions of these dependencies are not necessarily interchangeable, so please pay attention to the version numbers above. If you are having trouble getting Trac to work please double-check all the dependencies before asking for help on the [trac:MailingList] or [trac:IrcChannel].
 
 Please refer to the documentation of these packages to find out how they are best installed. In addition, most of the [trac:TracInstallPlatforms platform-specific instructions] also describe the installation of the dependencies. Keep in mind however that the information there ''probably concern older versions of Trac than the one you're installing'' (there are even some pages that are still talking about Trac 0.8!).
 
@@ -121,16 +127,15 @@ Please refer to the documentation of these packages to find out how they are bes
 == Installing Trac ==
 === Using `easy_install`
 One way to install Trac is using [http://pypi.python.org/pypi/setuptools setuptools].
-With setuptools you can install Trac from the subversion repository; 
+With setuptools you can install Trac from the Subversion repository; 
 
 A few examples:
 
- - install Trac 1.0:
+ - Install Trac 1.0:
    {{{
    easy_install Trac==1.0
    }}}
-   (NOT YET ENABLED)
- - install latest development version 1.0dev:
+ - Install latest development version:
    {{{
    easy_install Trac==dev
    }}}
@@ -139,34 +144,34 @@ A few examples:
 
 === Using `pip`
 'pip' is an easy_install replacement that is very useful to quickly install python packages.
-To get a trac installation up and running in less than 5 minutes:
+To get a Trac installation up and running in less than 5 minutes:
 
 Assuming you want to have your entire pip installation in `/opt/user/trac`
 
  - 
 {{{
-pip -E /opt/user/trac install trac psycopg2 
+pip install trac psycopg2 
 }}}
 or
  - 
 {{{
-pip -E /opt/user/trac install trac mysql-python 
+pip install trac mysql-python 
 }}}
 
-Make sure your OS specific headers are available for pip to automatically build PostgreSQL (libpq-dev) or MySQL (libmysqlclient-dev) bindings.
+Make sure your OS specific headers are available for pip to automatically build PostgreSQL (`libpq-dev`) or MySQL (`libmysqlclient-dev`) bindings.
 
 pip will automatically resolve all dependencies (like Genshi, pygments, etc.) and download the latest packages on pypi.python.org and create a self contained installation in `/opt/user/trac`.
 
 All commands (`tracd`, `trac-admin`) are available in `/opt/user/trac/bin`. This can also be leveraged for `mod_python` (using `PythonHandler` directive) and `mod_wsgi` (using `WSGIDaemonProcess` directive)
 
-Additionally, you can install several trac plugins (listed [http://pypi.python.org/pypi?:action=search&term=trac&submit=search here]) through pip.
+Additionally, you can install several Trac plugins (listed [http://pypi.python.org/pypi?:action=search&term=trac&submit=search here]) through pip.
 
 
 
 === From source
 Of course, using the python-typical setup at the top of the source directory also works.
 
-You can obtain the source for a .tar.gz or .zip file corresponding to a release (e.g. Trac-1.0.tar.gz), or you can get the source directly from the repository (see Trac:SubversionRepository for details).
+You can obtain the source for a .tar.gz or .zip file corresponding to a release (e.g. `Trac-1.0.tar.gz`), or you can get the source directly from the repository (see [trac:SubversionRepository] for details).
 
 {{{
 $ python ./setup.py install
@@ -174,16 +179,16 @@ $ python ./setup.py install
 
 ''You'll need root permissions or equivalent for this step.''
 
-This will byte-compile the python source code and install it as an .egg file or folder in the `site-packages` directory
-of your Python installation. The .egg will also contain all other resources needed by standard Trac, such as htdocs and templates.
+This will byte-compile the Python source code and install it as an .egg file or folder in the `site-packages` directory
+of your Python installation. The .egg will also contain all other resources needed by standard Trac, such as `htdocs` and `templates`.
 
 The script will also install the [wiki:TracAdmin trac-admin] command-line tool, used to create and maintain [wiki:TracEnvironment project environments], as well as the [wiki:TracStandalone tracd] standalone server.
 
-If you install from source and want to make Trac available in other languages, make sure  Babel is installed. Only then, perform the `install` (or simply redo the `install` once again afterwards if you realize Babel was not yet installed):
+If you install from source and want to make Trac available in other languages, make sure Babel is installed. Only then, perform the `install` (or simply redo the `install` once again afterwards if you realize Babel was not yet installed):
 {{{
 $ python ./setup.py install
 }}}
-Alternatively, you can do a `bdist_egg` and copy the .egg from dist/ to the place of your choice, or you can create a Windows installer (`bdist_wininst`).
+Alternatively, you can run `bdist_egg` and copy the .egg from `dist/` to the place of your choice, or you can create a Windows installer (`bdist_wininst`).
 
 === Advanced Options ===
 
@@ -192,17 +197,17 @@ To install Trac to a custom location, or find out about other advanced installat
 easy_install --help
 }}}
 
-Also see [http://docs.python.org/inst/inst.html Installing Python Modules] for detailed information.
+Also see [http://docs.python.org/2/install/index.html Installing Python Modules] for detailed information.
 
 Specifically, you might be interested in:
 {{{
 easy_install --prefix=/path/to/installdir
 }}}
-or, if installing Trac to a Mac OS X system:
+or, if installing Trac on a Mac OS X system:
 {{{
 easy_install --prefix=/usr/local --install-dir=/Library/Python/2.5/site-packages
 }}}
-Note: If installing on Mac OS X 10.6 running {{{ easy_install http://svn.edgewall.org/repos/trac/trunk }}} will install into {{{ /usr/local }}} and {{{ /Library/Python/2.6/site-packages }}} by default
+Note: If installing on Mac OS X 10.6 running {{{ easy_install http://svn.edgewall.org/repos/trac/trunk }}} will install into {{{ /usr/local }}} and {{{ /Library/Python/2.6/site-packages }}} by default.
 
 The above will place your `tracd` and `trac-admin` commands into `/usr/local/bin` and will install the Trac libraries and dependencies into `/Library/Python/2.5/site-packages`, which is Apple's preferred location for third-party Python application installations.
 
@@ -221,14 +226,18 @@ $ trac-admin /path/to/myproject initenv
 Using the default database connection string in particular will always work as long as you have SQLite installed.
 For the other [DatabaseBackend database backends] you should plan ahead and already have a database ready to use at this point.
 
-Since 0.12, Trac doesn't ask for a [TracEnvironment#SourceCodeRepository source code repository] anymore when creating an environment. Repositories can be [TracRepositoryAdmin added] afterward, or the version control support can be disabled completely if you don't need it.
+Since 0.12, Trac doesn't ask for a [TracEnvironment#SourceCodeRepository source code repository] anymore when creating an environment. Repositories can be [TracRepositoryAdmin added] afterwards, and support for specific version control systems is disabled by default.
 
 Also note that the values you specify here can be changed later by directly editing the [TracIni conf/trac.ini] configuration file.
 
+When selecting the location of your environment, make sure that the filesystem on which the environment directory resides supports sub-second timestamps (i.e. **not** `ext2` or `ext3` on Linux), as the modification time of the `conf/trac.ini` file will be monitored to decide whether an environment restart is needed or not. A too coarse-grained timestamp resolution may result in inconsistencies in Trac < 1.0.2 (though the best advice is to opt for a platform with sub-second timestamp resolution when possible regardless of the version of Trac you are running).
+
 Finally, make sure the user account under which the web front-end runs will have '''write permissions''' to the environment directory and all the files inside. This will be the case if you run `trac-admin ... initenv` as this user. If not, you should set the correct user afterwards. For example on Linux, with the web server running as user `apache` and group `apache`, enter:
 {{{
-# chown -R apache.apache /path/to/myproject
+$ chown -R apache.apache /path/to/myproject
 }}}
+
+The actual username and groupname of the apache server may not be exactly `apache`, and are specified in the Apache configuration file by the directives `User` and `Group` (if Apache `httpd` is what you use).
 
 {{{#!div class=important
 '''Warning:''' Please only use ASCII-characters for account name and project path, unicode characters are not supported there.
@@ -270,6 +279,7 @@ trac-admin /usr/share/trac/projects/my-project initenv
 trac-admin /usr/share/trac/projects/my-project deploy /tmp/deploy
 mv /tmp/deploy/* /usr/share/trac
 }}}
+Don't forget to check that the web server has the execution right on scripts in the `/usr/share/trac/cgi-bin` directory.
 
 
 ==== Mapping Static Resources ====
@@ -340,11 +350,11 @@ $ ln -s /path/to/trac/htdocs/common /var/www/static.example.org/trac-common
 
 ==== Setting up the Plugin Cache ====
 
-Some Python plugins need to be extracted to a cache directory. By default the cache resides in the home directory of the current user. When running Trac on a Web Server as a dedicated user (which is highly recommended) who has no home directory, this might prevent the plugins from starting. To override the cache location you can set the PYTHON_EGG_CACHE environment variable. Refer to your server documentation for detailed instructions on how to set environment variables.
+Some Python plugins need to be extracted to a cache directory. By default the cache resides in the home directory of the current user. When running Trac on a Web Server as a dedicated user (which is highly recommended) who has no home directory, this might prevent the plugins from starting. To override the cache location you can set the `PYTHON_EGG_CACHE` environment variable. Refer to your server documentation for detailed instructions on how to set environment variables.
 
 == Configuring Authentication ==
 
-Trac uses HTTP authentication. You'll need to configure your webserver to request authentication when the `.../login` URL is hit (the virtual path of the "login" button). Trac will automatically pick the REMOTE_USER variable up after you provide your credentials. Therefore, all user management goes through your web server configuration. Please consult the documentation of your web server for more info.
+Trac uses HTTP authentication. You'll need to configure your webserver to request authentication when the `.../login` URL is hit (the virtual path of the "login" button). Trac will automatically pick the `REMOTE_USER` variable up after you provide your credentials. Therefore, all user management goes through your web server configuration. Please consult the documentation of your web server for more info.
 
 The process of adding, removing, and configuring user accounts for authentication depends on the specific way you run Trac. 
 
@@ -353,14 +363,32 @@ Please refer to one of the following sections:
  * [wiki:TracModWSGI#ConfiguringAuthentication TracModWSGI#ConfiguringAuthentication] if you use the Apache web server, with any of its front end: `mod_wsgi` of course, but the same instructions applies also for `mod_python`, `mod_fcgi` or `mod_fastcgi`.
  * TracFastCgi if you're using another web server with FCGI support (Cherokee, Lighttpd, !LiteSpeed, nginx)
 
+The following document also constains some useful information for beginners: [trac:TracAuthenticationIntroduction].
+
 == Granting admin rights to the admin user
 Grant admin rights to user admin:
 {{{
 $ trac-admin /path/to/myproject permission add admin TRAC_ADMIN
 }}}
-This user will have an "Admin" entry menu that will allow you to admin your trac project.
+This user will have an "Admin" entry menu that will allow you to administrate your Trac project.
 
 == Finishing the install
+
+=== Enable version control components
+
+Support for version control systems is provided by optional components in Trac and the components are disabled by default //(since 1.0)//. Subversion and Git must be explicitly enabled if you wish to use them. See TracRepositoryAdmin for more details.
+
+The components can be enabled by adding the following to the `[components]` section of your [TracIni#components-section trac.ini], or enabling the components in the "Plugins" admin panel.
+
+{{{
+tracopt.versioncontrol.svn.* = enabled
+}}}
+
+{{{
+tracopt.versioncontrol.git.* = enabled
+}}}
+
+After enabling the components, repositories can be configured through the "Repositories" admin panel or by editing [TracIni#repositories-section trac.ini].
 
 === Automatic reference to the SVN changesets in Trac tickets ===
 

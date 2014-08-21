@@ -27,41 +27,7 @@ When using apache and mod_kerb for authentication against Kerberos / Active Dire
 === Configuration Options ===
 These are the available options for the `[notification]` section in trac.ini.
 
- * '''`smtp_enabled`''': Enable email notification.
- * '''`smtp_from`''': Email address to use for ''Sender''-headers in notification emails.
- * '''`smtp_from_name`''': Sender name to use for ''Sender''-headers in notification emails.
- * '''`smtp_from_author`''': (''since 1.0'') Use the author of a change (the reporter of a new ticket, or the author of a comment) as the `From:` header value in notification e-mails (default: false). If the author hasn't set an e-mail address, `smtp_from` and `smtp_from_name` are used instead.
- * '''`smtp_replyto`''': Email address to use for ''Reply-To''-headers in notification emails.
- * '''`smtp_default_domain`''': (''since 0.10'') Append the specified domain to addresses that do not contain one. Fully qualified addresses are not modified. The default domain is appended to all username/login for which an email address cannot be found from the user settings.
- * '''`smtp_always_cc`''': List of email addresses to always send notifications to. ''Typically used to post ticket changes to a dedicated mailing list.''
- * '''`smtp_always_bcc`''': (''since 0.10'') List of email addresses to always send notifications to, but keeps addresses not visible from other recipients of the notification email 
- * '''`smtp_subject_prefix`''': (''since 0.10.1'') Text that is inserted before the subject of the email. Set to "!__default!__" by default.
- * '''`always_notify_reporter`''':  Always send notifications to any address in the reporter field (default: false).
- * '''`always_notify_owner`''': (''since 0.9'') Always send notifications to the address in the owner field (default: false).
- * '''`always_notify_updater`''': (''since 0.10'') Always send a notification to the updater of a ticket (default: true).
- * '''`use_public_cc`''': (''since 0.10'') Addresses in To: (owner, reporter) and Cc: lists are visible by all recipients (default is ''Bcc:'' - hidden copy).
- * '''`use_short_addr`''': (''since 0.10'') Enable delivery of notifications to addresses that do not contain a domain (i.e. do not end with ''@<domain.com>'').This option is useful for intranets, where the SMTP server can handle local addresses and map the username/login to a local mailbox. See also `smtp_default_domain`. Do not use this option with a public SMTP server. 
- * '''`ignore_domains`''': Comma-separated list of domains that should not be considered part of email addresses (for usernames with Kerberos domains).
- * '''`mime_encoding`''': (''since 0.10'') This option allows selecting the MIME encoding scheme. Supported values:
-   * `none`: default value, uses 7bit encoding if the text is plain ASCII, or 8bit otherwise. 
-   * `base64`: works with any kind of content. May cause some issues with touchy anti-spam/anti-virus engines.
-   * `qp` or `quoted-printable`: best for european languages (more compact than base64) if 8bit encoding cannot be used.
- * '''`ticket_subject_template`''': (''since 0.11'') A [http://genshi.edgewall.org/wiki/Documentation/text-templates.html Genshi text template] snippet used to get the notification subject.
- * '''`email_sender`''': (''since 0.12'') Name of the component implementing `IEmailSender`. This component is used by the notification system to send emails. Trac currently provides the following components:
-   * `SmtpEmailSender`: connects to an SMTP server (default).
-   * `SendmailEmailSender`: runs a `sendmail`-compatible executable.
-
-Either '''`smtp_from`''' or '''`smtp_replyto`''' (or both) ''must'' be set, otherwise Trac refuses to send notification mails.
-
-The following options are specific to email delivery through SMTP.
- * '''`smtp_server`''': SMTP server used for notification messages.
- * '''`smtp_port`''': (''since 0.9'') Port used to contact the SMTP server.
- * '''`smtp_user`''': (''since 0.9'') User name for authentication SMTP account.
- * '''`smtp_password`''': (''since 0.9'') Password for authentication SMTP account.
- * '''`use_tls`''': (''since 0.10'') Toggle to send notifications via a SMTP server using [http://en.wikipedia.org/wiki/Transport_Layer_Security TLS], such as GMail.
-
-The following option is specific to email delivery through a `sendmail`-compatible executable.
- * '''`sendmail_path`''': (''since 0.12'') Path to the sendmail executable. The sendmail program must accept the `-i` and `-f` options.
+[[TracIni(notification)]]
 
 === Example Configuration (SMTP) ===
 {{{
@@ -98,7 +64,7 @@ The following variables are available in the template:
 
 === Customizing the e-mail content ===
 
-The notification e-mail content is generated based on `ticket_notify_email.txt` in `trac/templates`.  You can add your own version of this template by adding a `ticket_notify_email.txt` to the templates directory of your environment. The default looks like this:
+The notification e-mail content is generated based on `ticket_notify_email.txt` in `trac/ticket/templates`.  You can add your own version of this template by adding a `ticket_notify_email.txt` to the templates directory of your environment. The default looks like this:
 
 {{{
 $ticket_body_hdr
@@ -245,16 +211,11 @@ smtp_password = password
 where ''user'' and ''password'' match an existing GMail account, ''i.e.'' the ones you use to log in on [http://gmail.com]
 
 Alternatively, you can use `smtp_port = 25`.[[br]]
-You should not use `smtp_port = 465`. It will not work and your ticket submission may deadlock. Port 465 is reserved for the SMTPS protocol, which is not supported by Trac. See [comment:ticket:7107:2 #7107] for details.
+You should not use `smtp_port = 465`. It will not work and your ticket submission may deadlock. Port 465 is reserved for the SMTPS protocol, which is not supported by Trac. See [trac:comment:2:ticket:7107 #7107] for details.
  
-== Filtering notifications for one's own changes ==
+== Filtering notifications for one's own changes and comments ==
 In Gmail, use the filter:
 
-{{{
-from:(<smtp_from>) (("Reporter: <username>" -Changes) OR "Changes (by <username>)")
-}}}
-
-For Trac .10, use the filter:
 {{{
 from:(<smtp_from>) (("Reporter: <username>" -Changes -Comment) OR "Changes (by <username>)" OR "Comment (by <username>)")
 }}}
@@ -264,11 +225,8 @@ to delete these notifications.
 In Thunderbird, there is no such solution if you use IMAP
 (see http://kb.mozillazine.org/Filters_(Thunderbird)#Filtering_the_message_body).
 
-The best you can do is to set "always_notify_updater" in conf/trac.ini to false.
-You will however still get an email if you comment a ticket that you own or have reported.
-
 You can also add this plugin:
-http://trac-hacks.org/wiki/NeverNotifyUpdaterPlugin
+http://trac-hacks.org/wiki/NeverNotifyUpdaterPlugin, or vote for [trac:#2247] to be fixed.
 
 == Troubleshooting ==
 

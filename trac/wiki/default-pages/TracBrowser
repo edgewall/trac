@@ -52,20 +52,15 @@ for more advanced cases.
 If you're using a Javascript enabled browser, you'll be able to expand and 
 collapse directories in-place by clicking on the arrow head at the right side of a 
 directory. Alternatively, the [trac:TracKeys keyboard] can also be used for this: 
- - use `'j'` and `'k'` to select the next or previous entry, starting with the first
- - `'o'` (open) to toggle between expanded and collapsed state of the selected 
+ - use `j` and `k` to select the next or previous entry, starting with the first
+ - `o` ('''o'''pen) to toggle between expanded and collapsed state of the selected 
    directory or for visiting the selected file 
- - `'v'` (view, visit) and `'<Enter>'`, same as above
- - `'r'` can be used to force the reload of an already expanded directory
- - `'A'` can be used to directly visit a file in annotate (blame) mode
- - `'L'` to view the log for the selected entry
-If no row has been selected using `'j'` or `'k'` these keys will operate on the entry under the mouse.
+ - `v` ('''v'''iew, '''v'''isit) and `<Enter>`, same as above
+ - `r` can be used to force the '''r'''eload of an already expanded directory
+ - `a` can be used to directly visit a file in '''a'''nnotate (blame) mode
+ - `l` to view the '''l'''og for the selected entry
+If no row has been selected using `j` or `k` these keys will operate on the entry under the mouse.
 
-{{{#!comment
-MMM: I guess that some keys are upper case and some lower to avoid conflicts with browser defined keys.
-I find for example in Firefox and IE on windows that 'a' works as well as 'A' but 'l' does not work for 'L'.
- cboos: 'l' is reserved for Vim like behavior, see #7867
-}}}
 
 For the Subversion backend, some advanced additional features are available:
  - The `svn:needs-lock` property will be displayed

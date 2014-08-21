@@ -135,7 +135,6 @@ Example:
  http://trac.edgewall.org/reports/14?PRIORITY=high&SEVERITY=critical
 }}}
 
-Dynamic variables can also be used in the report title and description (since 1.1.1).
 
 === !Special/Constant Variables ===
 There is one dynamic variable whose value is set automatically (the URL does not have to be changed) to allow practical reports. 
@@ -163,6 +162,7 @@ final report.
  * '''ticket''' — Ticket ID number. Becomes a hyperlink to that ticket. 
  * '''id''' — same as '''ticket''' above when '''realm''' is not set
  * '''realm''' — together with '''id''', can be used to create links to other resources than tickets (e.g. a realm of ''wiki'' and an ''id'' to a page name will create a link to that wiki page)
+   - for some kind of resources, it may be necessary to specify their ''parent'' resources (e.g. for ''changeset'', which ''repos'') and this can be achieved using the '''parent_realm''' and '''parent_id''' columns
  * '''created, modified, date, time''' — Format cell as a date and/or time.
  * '''description''' — Ticket description field, parsed through the wiki engine.
 

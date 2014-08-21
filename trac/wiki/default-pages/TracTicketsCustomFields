@@ -39,10 +39,12 @@ The example below should help to explain the syntax.
  * '''textarea''': Multi-line text area.
    * label: Descriptive label.
    * value: Default text.
-   * cols: Width in columns.
+   * cols: Width in columns
    * rows: Height in lines.
    * order: Sort order placement.
    * format: Either `plain` for plain text or `wiki` to interpret the content as WikiFormatting. (''since 0.11.3'')
+
+Macros will be expanded when rendering `textarea` fields with format `wiki`, but not when rendering `text` fields with format `wiki`.
 
 === Sample Config ===
 {{{
@@ -112,6 +114,14 @@ SELECT p.value AS __color__,
 }}}
 
 Note in particular the `LEFT OUTER JOIN` statement here.
+
+Note that if your config file uses an uppercase name, e.g.,
+{{{
+[ticket-custom]
+
+Progress_Type = text
+}}}
+you would use lowercase in the SQL:  `AND c.name = 'progress_type'`
 
 === Updating the database ===
 

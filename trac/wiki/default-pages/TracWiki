@@ -14,7 +14,7 @@ As contributing to a wiki is essentially building hypertext,
 general advice regarding HTML authoring apply here as well.
 For example, the ''[http://www.w3.org/Provider/Style Style Guide for online hypertext]'' explains how to think about the
 [http://www.w3.org/Provider/Style/Structure.html overall structure of a work] 
-and how to organize information [http://www.w3.org/Provider/Style/WithinDocument.html within each document]. One of the most important tip is “make your HTML page such that you can read it even if you don't follow any links.”
+and how to organize information [http://www.w3.org/Provider/Style/WithinDocument.html within each document]. One of the most important tips is “make your HTML page such that you can read it even if you don't follow any links.”
 
 Learn more about:
  * WikiFormatting rules, including advanced topics like WikiMacros and WikiProcessors

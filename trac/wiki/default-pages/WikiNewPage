@@ -3,13 +3,13 @@
 
 Note: make sure you actually have the rights to edit wiki pages. If you don't see the **Edit this page** button, read the information relative to the editing policy for your Trac installation (usually on the front page WikiStart), or contact your local Trac administrator.
 
+You can create a new wiki page by typing the CamelCase name of the page in the quick-search field at the top of the page, or by trying to view a wiki page of that name (That is by visiting http://trac.edgewall.org/wiki/MyNewWikiPage for example). But note that the page will effectively be "orphaned" unless you link to it from somewhere else. Alternatively:
+
  1. Choose a name for your new page. See WikiPageNames for naming conventions.
  2. Edit an existing page (or any other resources that support WikiFormatting and add a [TracLinks link] to your new page. Save your changes.
  3. Follow the link you created to take you to the new page. Trac will display a "describe !PageName here" message.
  4. Click the "Edit this page" button to edit and add content to your new page. Save your changes.
  5. All done. Your new page is published.
-
-You can skip the second step by entering the CamelCase name of the page in the quick-search field at the top of the page. But note that the page will effectively be "orphaned" unless you link to it from somewhere else.
 
 == Rename a page #renaming
 

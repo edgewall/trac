@@ -89,7 +89,7 @@ There is also new functionality in the form of a repository listener extension p
 Please note that at the time of writing, no initial resynchronization or any hooks are necessary for Mercurial repositories - see [trac:#9485] for more information. 
 
 === Explicit synchronization === #ExplicitSync
-This is the preferred method of repository synchronization. It requires setting the `[trac]  repository_sync_per_request` option in [wiki:TracIni#trac-section trac.ini] to an empty value, and adding a call to `trac-admin` in the post-commit hook of each repository. Additionally, if a repository allows changing revision metadata, a call to `trac-admin` must be added to the post-revprop-change hook as well.
+This is the preferred method of repository synchronization. It requires setting the `[trac]  repository_sync_per_request` option in [wiki:TracIni#trac-section trac.ini] to an empty value, and adding a call to `trac-admin` in the `post-commit` hook of each repository. Additionally, if a repository allows changing revision metadata, a call to `trac-admin` must be added to the `post-revprop-change` hook as well.
 
  `changeset added <repos> <rev> [...]`::
    Notify Trac that one or more changesets have been added to a repository.
@@ -99,7 +99,9 @@ This is the preferred method of repository synchronization. It requires setting 
 
 The `<repos>` argument can be either a repository name (use "`(default)`" for the default repository) or the path to the repository.
 
-Note that you may have to set the environment variable PYTHON_EGG_CACHE to the same value as was used for the web server configuration before calling trac-admin, if you changed it from its default location. See [wiki:TracPlugins Trac Plugins] for more information.
+Note that you may have to set the environment variable `PYTHON_EGG_CACHE` to the same value as was used for the web server configuration before calling `trac-admin`, if you changed it from its default location. See [wiki:TracPlugins Trac Plugins] for more information.
+
+==== Subversion ====
 
 The following examples are complete post-commit and post-revprop-change scripts for Subversion. They should be edited for the specific environment, marked executable (where applicable) and placed in the `hooks` directory of each repository. On Unix (`post-commit`):
 {{{#!sh
@@ -107,14 +109,9 @@ The following examples are complete post-commit and post-revprop-change scripts 
 export PYTHON_EGG_CACHE="/path/to/dir"
 /usr/bin/trac-admin /path/to/env changeset added "$1" "$2"
 }}}
-Note: Ubuntu doesn't seem to like /usr/bin/trac-admin, so just use:
-{{{#!sh
-#!/bin/sh
-export PYTHON_EGG_CACHE="/path/to/dir"
-trac-admin /path/to/env/ changeset added "$1" "$2"
-}}}
+Note: Check with `whereis trac-admin`, whether `trac-admin` is really installed under `/usr/bin/` or maybe under `/usr/local/bin/` and adapt the path.
 On Windows (`post-commit.cmd`):
-{{{#!application/x-dos-batch
+{{{#!bat
 @C:\Python26\Scripts\trac-admin.exe C:\path\to\env changeset added "%1" "%2"
 }}}
 
@@ -125,7 +122,7 @@ export PYTHON_EGG_CACHE="/path/to/dir"
 /usr/bin/trac-admin /path/to/env changeset modified "$1" "$2"
 }}}
 On Windows (`post-revprop-change.cmd`):
-{{{#!application/x-dos-batch
+{{{#!bat
 @C:\Python26\Scripts\trac-admin.exe C:\path\to\env changeset modified "%1" "%2"
 }}}
 
@@ -135,11 +132,29 @@ Note that calling `trac-admin` in your Subversion hooks can slow down the commit
 
 See the [http://svnbook.red-bean.com/en/1.5/svn.reposadmin.create.html#svn.reposadmin.create.hooks section about hooks] in the Subversion book for more information. Other repository types will require different hook setups.
 
-Git hooks can be used in the same way for explicit syncing of git repositories. Add the following to `.git/hooks/post-commit`:
+==== Git ====
+
+Git hooks can be used in the same way for explicit syncing of Git repositories.  If your git repository is one that gets committed to directly on the machine that hosts trac, add the following to the `hooks/post-receive` file in your git repo (note: this will do nothing if you only update the repo by pushing to it):
 {{{#!sh
-REV=$(git rev-parse HEAD)
-trac-admin /path/to/env changeset added <my-repository> $REV
+#!/bin/sh 
+REV=$(git rev-parse HEAD) 
+trac-admin /path/to/env changeset added <repos> $REV 
 }}}
+
+Alternately, if your repository is one that only gets pushed to, add the following to the `hooks/post-receive` file in the repo:
+{{{#!sh
+#!/bin/sh
+while read oldrev newrev refname; do
+        git rev-list --reverse $newrev ^$oldrev  | \
+        while read rev; do
+                trac-admin /path/to/env changeset added <repos> $rev
+        done
+done
+}}}
+
+The `<repos>` argument can be either a repository name (use "`(default)`" for the default repository) or the path to the repository.
+
+==== Mercurial ====
 
 For Mercurial, add the following entries to the `.hgrc` file of each repository accessed by Trac (if [trac:TracMercurial] is installed in a Trac `plugins` directory, download [trac:source:mercurial-plugin/tracext/hg/hooks.py hooks.py] and place it somewhere accessible):
 {{{#!ini

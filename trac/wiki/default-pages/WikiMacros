@@ -101,7 +101,7 @@ class TimeStampMacro(WikiMacroBase):
 
     def expand_macro(self, formatter, name, text):
         t = datetime.now(utc)
-        return tag.b(format_datetime(t, '%c'))
+        return tag.strong(format_datetime(t, '%c'))
 }}}
 
 === Macro with arguments ===

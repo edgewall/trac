@@ -27,7 +27,7 @@ A  ticket contains the following information attributes:
  * '''Assigned to/Owner''' — Principal person responsible for handling the issue.
  * '''Cc''' — A comma-separated list of other users or E-Mail addresses to notify. ''Note that this does not imply responsiblity or any other policy.''
  * '''Resolution''' — Reason for why a ticket was closed. One of {{{fixed}}}, {{{invalid}}}, {{{wontfix}}}, {{{duplicate}}}, {{{worksforme}}}.
- * '''Status''' — What is the current status? One of {{{new}}}, {{{assigned}}}, {{{closed}}}, {{{reopened}}}.
+ * '''Status''' — What is the current status? One of {{{new}}}, {{{assigned}}}, {{{accepted}}}, {{{closed}}}, {{{reopened}}}.
  * '''Summary''' — A brief description summarizing the problem or issue. Simple text without WikiFormatting.
  * '''Description''' — The body of the ticket. A good description should be specific, descriptive and to the point. Accepts WikiFormatting.
 
