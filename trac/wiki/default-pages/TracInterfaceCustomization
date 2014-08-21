@@ -33,7 +33,7 @@ Icons should be a 32x32 image in `.gif` or `.ico` format.  Change the `icon` set
 icon = site/my_icon.ico
 }}}
 
-Note though that this icon is ignored by Internet Explorer, which only accepts a file named ``favicon.ico`` at the root of the host. To make the project icon work in both IE and other browsers, you can store the icon in the document root of the host, and reference it from ``trac.ini`` as follows:
+Note though that this icon is ignored by Internet Explorer, which only accepts a file named `favicon.ico` at the root of the host. To make the project icon work in both IE and other browsers, you can store the icon in the document root of the host, and reference it from `trac.ini` as follows:
 
 {{{
 [project]
