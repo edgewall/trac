@@ -33,7 +33,7 @@ Icons should be a 32x32 image in `.gif` or `.ico` format.  Change the `icon` set
 icon = site/my_icon.ico
 }}}
 
-Note though that this icon is ignored by Internet Explorer, which only accepts a file named ``favicon.ico`` at the root of the host. To make the project icon work in both IE and other browsers, you can store the icon in the document root of the host, and reference it from ``trac.ini`` as follows:
+Note though that this icon is ignored by Internet Explorer, which only accepts a file named `favicon.ico` at the root of the host. To make the project icon work in both IE and other browsers, you can store the icon in the document root of the host, and reference it from `trac.ini` as follows:
 
 {{{
 [project]
@@ -98,7 +98,7 @@ header and footer. Save the following content as `site.html` inside your project
 </html>
 }}}
 
-Those who are familiar with XSLT may notice that Genshi templates bear some similarities. However, there are some Trac specific features - for example `${href.chrome('site/style.css')}` attribute references a CSS file placed into environment's `htdocs/` directory. In a similar fashion `${chrome.htdocs_location}` is used to specify the common `htdocs/` directory belonging to a Trac installation. That latter location can however be overriden using the [[TracIni#trac-config|[trac] htdocs_location]] configuration setting.
+Those who are familiar with XSLT may notice that Genshi templates bear some similarities. However, there are some Trac specific features - for example `${href.chrome('site/style.css')}` attribute references a CSS file placed into environment's `htdocs/` directory. In a similar fashion `${chrome.htdocs_location}` is used to specify the common `htdocs/` directory belonging to a Trac installation. That latter location can however be overriden using the [[TracIni#trac-section|[trac] htdocs_location]] configuration setting.
 
 `site.html` is one file to contain all your modifications. It usually works using the `py:match` directive (element or attribute), and it allows you to modify the page as it renders - the matches hook onto specific sections depending on what it tries to find
 and modify them.
@@ -135,7 +135,7 @@ If the environment is upgraded from 0.10 and a `site_newticket.cs` file already 
 </form>
 }}}
 
-Also note that the `site.html` (despite its name) can be put in a common templates directory - see the [[TracIni#inherit-section|[inherit] templates_dir]] option. This could provide easier maintainence (and a migration path from 0.10 for larger installations) as one new global `site.html` file can be made to include any existing header, footer and newticket snippets.
+Also note that the `site.html` (despite its name) can be put in a shared templates directory - see the [[TracIni#inherit-section|[inherit] templates_dir]] option. This could provide easier maintainence (and a migration path from 0.10 for larger installations) as one new global `site.html` file can be made to include any existing header, footer and newticket snippets.
 
 == Project List == #ProjectList
 

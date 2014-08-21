@@ -53,7 +53,7 @@ Or to use multiple projects you can specify their common parent directory using 
     os.environ['TRAC_ENV_PARENT_DIR'] = "/path/to/project/parent/dir"
 }}}
 
-If you are using the [http://httpd.apache.org/docs/suexec.html Apache suEXEC] feature please see [http://trac.edgewall.org/wiki/ApacheSuexec].
+If you are using the [http://httpd.apache.org/docs/suexec.html Apache suEXEC] feature please see [trac:ApacheSuexec].
 
 On some systems, you ''may'' need to edit the shebang line in the `trac.cgi` file to point to your real Python installation path. On a Windows system you may need to configure Windows to know how to execute a .cgi file (Explorer -> Tools -> Folder Options -> File Types -> CGI).
 

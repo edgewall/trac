@@ -42,8 +42,7 @@ It is necessary to setup a configuration for the InterTrac facility.
 This configuration has to be done in the TracIni file, `[intertrac]` section.
 
 Example configuration:
-{{{
-...
+{{{#!ini
 [intertrac]
 # -- Example of setting up an alias:
 t = trac
@@ -66,7 +65,7 @@ a ''compatibility'' mode:
    ([trac:r3526 r3526] to be precise), then it doesn't know how to dispatch an InterTrac 
    link, and it's up to the local Trac to prepare the correct link. 
    Not all links will work that way, but the most common do. 
-   This is called the compatibility mode, and is `true` by default. 
+   This is called the compatibility mode, and is `false` by default. 
  * If you know that the remote Trac knows how to dispatch InterTrac links, 
    you can explicitly disable this compatibility mode and then ''any'' 
    TracLinks can become an InterTrac link.

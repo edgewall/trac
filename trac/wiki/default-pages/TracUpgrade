@@ -14,10 +14,10 @@ It is not a good idea to update a running server: the server processes may have 
 
 Get the new version as described in TracInstall, or your operating system specific procedure.
 
-If you already have a 0.11 version of Trac installed via `easy_install`, it might be easiest to also use `easy_install` to upgrade your Trac installation:
+If you already have a 0.12 version of Trac installed via `easy_install`, it might be easiest to also use `easy_install` to upgrade your Trac installation:
 
 {{{
-# easy_install --upgrade Trac==0.12
+# easy_install --upgrade Trac==1.0
 }}}
 
 If you do a manual (not operating system-specific) upgrade, you should also stop any running Trac servers before the installation. Doing "hot" upgrades is not advised, especially on Windows ([trac:#7265]).
@@ -73,8 +73,13 @@ Remove above note once #9936 is fixed.
 }}}
 
 === 6. Steps specific to a given Trac version  ===
+
 ==== Upgrading from Trac 0.12 to Trac 1.0 ==== #to1.0
 
+===== Python 2.4 no longer supported =====
+The minimum supported version of python is now 2.5
+
+===== Subversion components not enabled by default for new installations
 The Trac components for Subversion support are no longer enabled by default. To enable the svn support, you need to make sure the `tracopt.versioncontrol.svn` components are enabled, for example by setting the following in the TracIni:
 {{{
 [components]
@@ -82,7 +87,12 @@ tracopt.versioncontrol.svn.* = enabled
 }}}
 The upgrade procedure should take care of this and change the TracIni appropriately, unless you already had the svn components explicitly disabled.
 
+
+===== Attachments migrated to new location
 Another step in the automatic upgrade will change the way the attachments are stored. If you're a bit paranoid, you might want to take a backup of the `attachments` directory before upgrading (but if you are, you already did a full copy of the environment, no?). In case the `attachments` directory contains some files which are //not// attachments, the last step of the migration to the new layout will fail: the deletion of the now unused `attachments` directory can't be done if there are still files and folders in it. You may ignore this error, but better go have a look to these files, move them elsewhere and remove the `attachments` directory manually to cleanup the environment. The attachments themselves are now all located in your environment below the `files/attachments` directory.
+
+===== Behavior of `[ticket] default_owner` changed
+Prior to 1.0, the owner field of new tickets always defaulted to `[ticket] default_owner` when the value was not empty. If the value was empty, the owner field defaulted to to the Component's owner. In 1.0 and later, the `default_owner` must be set to `< default >` to make new tickets default to the Component's owner. This change allows the `default_owner` to be set to an empty value if no default owner is desired.
 
 
 ==== Upgrading from Trac 0.11 to Trac 0.12 ====
@@ -103,7 +113,7 @@ This may be of interest to users with only one repository, since there's now a w
 
 ===== Resynchronize the Trac Environment Against the Source Code Repository =====
 
-Each [TracEnvironment Trac environment] must be resynchronized against the source code repository in order to avoid errors such as "[http://trac.edgewall.org/ticket/6120 No changeset ??? in the repository]" while browsing the source through the Trac interface:
+Each [TracEnvironment Trac environment] must be resynchronized against the source code repository in order to avoid errors such as "[trac:#6120 No changeset ??? in the repository]" while browsing the source through the Trac interface:
 
 {{{
 trac-admin /path/to/projenv repository resync '*'
@@ -182,9 +192,8 @@ Upgrading Python to a newer version will require reinstallation of Python packag
 If you've been using !CollabNet's Subversion package, you may need to uninstall that in favor of [http://alagazam.net/ Alagazam], which has the Python bindings readily available (see TracSubversion).  The good news is, that works with no tweaking.
 
 === Changing Database Backend ===
-==== SQLite to PostgreSQL ====
 
-The [http://trac-hacks.org/wiki/SqliteToPgScript sqlite2pg] script on [http://trac-hacks.org trac-hacks.org] has been written to assist in migrating a SQLite database to a PostgreSQL database
+The [http://trac-hacks.org/wiki/TracMigratePlugin TracMigratePlugin] on [http://trac-hacks.org trac-hacks.org] has been written to assist in migrating between SQLite, MySQL and PostgreSQL databases.
 
 === Upgrading from older versions of Trac === #OlderVersions
 

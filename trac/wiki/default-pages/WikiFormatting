@@ -263,6 +263,7 @@ The Trac wiki supports the following font styles:
    * ,,subscript,,
    * **also bold**, //italic as well//, 
      and **'' bold italic **'' //(since 0.12)//
+   * [[span(style=color: #FF0000, a red text )]]
   }}}
 }}}
 {{{#!td
@@ -280,6 +281,7 @@ The Trac wiki supports the following font styles:
  * ,,subscript,,
  * **also bold**, //italic as well//, 
    and **'' bold italic **'' //(since 0.12)//
+ * [[span(style=color: #FF0000, a red text )]]
 }}}
 
 Notes:
@@ -736,9 +738,9 @@ You may avoid making hyperlinks out of TracLinks by preceding an expression with
   }}}
   {{{
 Various forms of escaping for list markup:
- `-` escaped minus sign \\
- ``1. escaped number  \\
- {{{*}}} escaped asterisk sign
+ ^^- escaped minus sign \\
+ ^^1. escaped number  \\
+ ^^* escaped asterisk sign
   }}}
 }}}
 {{{#!td
@@ -746,9 +748,9 @@ Various forms of escaping for list markup:
  !#42 is not a link
 
 Various forms of escaping for list markup:
- `-` escaped minus sign \\
- ``1. escaped number  \\
- {{{*}}} escaped asterisk sign
+ ^^- escaped minus sign \\
+ ^^1. escaped number  \\
+ ^^* escaped asterisk sign
 }}}
 
 == Images ==
@@ -1004,4 +1006,3 @@ See?
 {{{#!td
 !WikiCreole style \\ line\\break
 }}}
-

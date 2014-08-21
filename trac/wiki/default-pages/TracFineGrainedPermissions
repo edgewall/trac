@@ -16,9 +16,9 @@ Which policies are currently active is determined by a configuration setting in 
 e.g.
 {{{
 [trac]
-permission_policies = AuthzSourcePolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy
+permission_policies = ReadonlyWikiPolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy
 }}}
-This lists the [#AuthzSourcePolicy] described below as the first policy, followed by the !DefaultPermissionPolicy which checks for the traditional coarse grained style permissions described in TracPermissions, and the !LegacyAttachmentPolicy which knows how to use the coarse grained permissions for checking the permissions available on attachments.
+This lists the [#ReadonlyWikiPolicy] which controls readonly access to wiki pages, followed by the !DefaultPermissionPolicy which checks for the traditional coarse grained style permissions described in TracPermissions, and the !LegacyAttachmentPolicy which knows how to use the coarse grained permissions for checking the permissions available on attachments.
 
 Among the possible optional choices, there is [#AuthzPolicy], a very generic permission policy, based on an Authz-style system. See
 [trac:source:branches/0.12-stable/tracopt/perm/authz_policy.py authz_policy.py] for details. 
@@ -30,15 +30,15 @@ See also [trac:source:branches/0.12-stable/sample-plugins/permissions sample-plu
 
 === !AuthzPolicy === 
 ==== Configuration ====
-* Install [http://www.voidspace.org.uk/python/configobj.html ConfigObj] (still needed for 0.12).
-* Copy authz_policy.py into your plugins directory (only for Trac 0.11).
+* Install [http://www.voidspace.org.uk/python/configobj.html ConfigObj] (still needed for 0.12 and later).
+* Copy [browser:/trunk/tracopt/perm/authz_policy.py /tracopt/perm/authz_policy.py] to your environment's plugins directory (only for Trac 0.11).
 * Put a [http://swapoff.org/files/authzpolicy.conf authzpolicy.conf] file somewhere, preferably on a secured location on the server, not readable for others than the webuser. If the  file contains non-ASCII characters, the UTF-8 encoding should be used.
 * Update your `trac.ini`:
   1. modify the [TracIni#trac-section permission_policies] entry in the `[trac]` section
 {{{
 [trac]
 ...
-permission_policies = AuthzPolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy
+permission_policies = AuthzPolicy, ReadonlyWikiPolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy
 }}}
   1. add a new `[authz_policy]` section
 {{{
@@ -90,14 +90,14 @@ jack = WIKI_VIEW
 [wiki:WikiStart]
 }}}
 
-  Example: Match the attachment `wiki:WikiStart@117/attachment/FOO.JPG@*`
+  Example: Match the attachment `wiki:WikiStart@117/attachment:FOO.JPG@*`
   on WikiStart
 {{{
 [wiki:*]
 [wiki:WikiStart*]
 [wiki:WikiStart@*]
-[wiki:WikiStart@*/attachment/*]
-[wiki:WikiStart@117/attachment/FOO.JPG]
+[wiki:WikiStart@*/attachment:*]
+[wiki:WikiStart@117/attachment:FOO.JPG]
 }}}
 
 * Sections are checked against the current Trac resource descriptor '''IN ORDER''' of
@@ -160,10 +160,15 @@ Some repository examples (Browse Source specific):
 john = BROWSER_VIEW, FILE_VIEW
 # John has BROWSER_VIEW and FILE_VIEW for the entire test_repo
 
+# The default repository (requires Trac 1.0.2 or later):
+[repository:@*]
+john = BROWSER_VIEW, FILE_VIEW
+# John has BROWSER_VIEW and FILE_VIEW for the entire default repository
+
 # All repositories:
 [repository:*@*]
 jack = BROWSER_VIEW, FILE_VIEW
-# John has BROWSER_VIEW and FILE_VIEW for all repositories
+# Jack has BROWSER_VIEW and FILE_VIEW for all repositories
 }}}
 
 Very fine grain repository access:
@@ -271,7 +276,7 @@ As of version 0.12, make sure you have ''!AuthzSourcePolicy'' included in the pe
 
 {{{ 
 [trac]
-permission_policies = AuthzSourcePolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy
+permission_policies = AuthzSourcePolicy, ReadonlyWikiPolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy
 }}}
 
 ==== Subversion Configuration ====
@@ -289,6 +294,35 @@ The same access file is typically applied to the corresponding Subversion reposi
 
 For information about how to restrict access to entire projects in a multiple project environment see [trac:wiki:TracMultipleProjectsSVNAccess]
 
+=== ReadonlyWikiPolicy
+
+Since 1.1.2, the read-only attribute of wiki pages is enabled and enforced when `ReadonlyWikiPolicy` is in the list of active permission policies. The default for new Trac installations in 1.1.2 and later is:
+{{{
+[trac]
+permission_policies = ReadonlyWikiPolicy,
+ DefaultPermissionPolicy,
+ LegacyAttachmentPolicy
+}}}
+
+When upgrading from earlier versions of Trac, `ReadonlyWikiPolicy` will be appended to the list of `permission_policies` when upgrading the environment, provided that `permission_policies` has the default value. If any non-default `permission_polices` are active, `ReadonlyWikiPolicy` **will need to be manually added** to the list. A message will be echoed to the console when upgrading the environment, indicating if any action needs to be taken.
+
+**!ReadonlyWikiPolicy must be listed //before// !DefaultPermissionPolicy**. The latter returns `True` to allow modify, delete or rename actions when the user has the respective `WIKI_*` permission, without consideration for the read-only attribute.
+
+The `ReadonlyWikiPolicy` returns `False` to deny modify, delete and rename actions on wiki pages when the page has the read-only attribute set and the user does not have `WIKI_ADMIN`, regardless of `WIKI_MODIFY`, `WIKI_DELETE` and `WIKI_RENAME` permissions. It returns `None` for all other cases.
+
+When active, the [#AuthzPolicy] should therefore come before `ReadonlyWikiPolicy`, allowing it to grant or deny the actions on individual resources, which is the usual ordering for `AuthzPolicy` in the `permission_policies` list.
+{{{
+[trac]
+permission_policies = AuthzPolicy,
+ ReadonlyWikiPolicy,
+ DefaultPermissionPolicy,
+ LegacyAttachmentPolicy
+}}}
+
+The placement of [#AuthzSourcePolicy] relative to `ReadonlyWikiPolicy` does not matter since they don't perform checks on the same realms.
+
+For all other permission policies, the user will need to decide the proper ordering. Generally, if the permission policy should be capable of overriding the check performed by `ReadonlyWikiPolicy`, it should come before `ReadonlyWikiPolicy` in the list. If the `ReadonlyWikiPolicy` should override the check performed by another permission policy, as is the case for `DefaultPermissionPolicy`, then `ReadonlyWikiPolicy` should come first.
+
 == Debugging permissions
 In trac.ini set:
 {{{
@@ -304,7 +338,6 @@ tail -n 0 -f log/trac.log | egrep '\[perm\]|\[authz_policy\]'
 }}}
 
 to understand what checks are being performed. See the sourced documentation of the plugin for more info.
-
 
 ----
 See also: TracPermissions,

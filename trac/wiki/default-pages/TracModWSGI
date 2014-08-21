@@ -1,7 +1,7 @@
 = Trac and mod_wsgi =
 
 
-[http://code.google.com/p/modwsgi/ mod_wsgi] is an Apache module for running WSGI-compatible Python applications directly on top of the Apache webserver. The mod_wsgi adapter is written completely in C and provides very good performances.
+[http://code.google.com/p/modwsgi/ mod_wsgi] is an Apache module for running WSGI-compatible Python applications directly on top of the Apache webserver. The mod_wsgi adapter is written completely in C and provides very good performance.
 
 [[PageOutline(2-3,Overview,inline)]]
 
@@ -23,6 +23,16 @@ application = trac.web.main.dispatch_request
 }}}
 
 The `TRAC_ENV` variable should naturally be the directory for your Trac environment (if you have several Trac environments in a directory, you can also use `TRAC_ENV_PARENT_DIR` instead), while the `PYTHON_EGG_CACHE` should be a directory where Python can temporarily extract Python eggs.
+
+On Windows:
+ - If run under the user's session, the Python Egg cache can be found in `%AppData%\Roaming`, for example:
+{{{#!python
+os.environ['PYTHON_EGG_CACHE'] = r'C:\Users\Administrator\AppData\Roaming\Python-Eggs'
+}}}
+ - If run under a Window service, you should create a directory for Python Egg cache.
+{{{#!python
+os.environ['PYTHON_EGG_CACHE'] = r'C:\Trac-Python-Eggs'
+}}}
 
 === A more elaborate script
 
@@ -72,7 +82,7 @@ WSGIScriptAlias /trac /usr/local/trac/mysite/apache/mysite.wsgi
 
 Here, the script is in a subdirectory of the Trac environment.
 
-If you followed the directions [http://trac.edgewall.org/wiki/TracInstall#cgi-bin Generating the Trac cgi-bin directory], your Apache configuration file should look like following:
+If you followed the directions [TracInstall#cgi-bin Generating the Trac cgi-bin directory], your Apache configuration file should look like following:
 
 {{{
 WSGIScriptAlias /trac /usr/share/trac/cgi-bin/trac.wsgi
@@ -170,6 +180,8 @@ The "trac" parameter above is the "realm", and will have to be reused in the Apa
 }}}
 
 For multiple environments, you can use the same `LocationMatch` as described with the previous method.
+
+'''Note: `Location` cannot be used inside .htaccess files, but must instead live within the main httpd.conf file. If you are on a shared server, you therefore will not be able to provide this level of granularity. '''
 
 Don't forget to activate the mod_auth_digest. For example, on a Debian 4.0r1 (etch) system:
 {{{
@@ -307,7 +319,7 @@ This will generally be matched with an Apache config like:
    Require valid-user
 </Location>
 }}}
-Note that '''authFile''' need not exist. See the !HttpAuthStore link above for examples where multiple Trac projects are hosted on a server.
+Note that '''authFile''' need not exist (unless you are using Account Manager older than 0.4). See the !HttpAuthStore link above for examples where multiple Trac projects are hosted on a server.
 
 === Example: Apache/mod_wsgi with Basic Authentication, Trac being at the root of a virtual host
 
@@ -387,14 +399,14 @@ A somewhat brutal workaround is to disabled connection pooling in Trac. This is 
 
 But it's not necessary to edit the source of Trac, the following lines in `trac.wsgi` will also work:
 
-{{{
+{{{#!python
 import trac.db.postgres_backend
 trac.db.postgres_backend.PostgreSQLConnection.poolable = False
 }}}
 
 or
 
-{{{
+{{{#!python
 import trac.db.mysql_backend
 trac.db.mysql_backend.MySQLConnection.poolable = False
 }}}

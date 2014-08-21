@@ -13,7 +13,7 @@ It can be used in a variety of situations, from a test or development server to 
 
  * Fewer features: Tracd implements a very simple web-server and is not as configurable or as scalable as Apache httpd.
  * No native HTTPS support: [http://www.rickk.com/sslwrap/ sslwrap] can be used instead,
-   or [http://trac.edgewall.org/wiki/STunnelTracd stunnel -- a tutorial on how to use stunnel with tracd] or Apache with mod_proxy.
+   or [trac:wiki:STunnelTracd stunnel -- a tutorial on how to use stunnel with tracd] or Apache with mod_proxy.
 
 == Usage examples ==
 
@@ -21,7 +21,7 @@ A single project on port 8080. (http://localhost:8080/)
 {{{
  $ tracd -p 8080 /path/to/project
 }}}
-Stricly speaking this will make your Trac accessible to everybody from your network rather than ''localhost only''. To truly limit it use ''--hostname'' option.
+Strictly speaking this will make your Trac accessible to everybody from your network rather than ''localhost only''. To truly limit it use ''--hostname'' option.
 {{{
  $ tracd --hostname=localhost -p 8080 /path/to/project
 }}}
@@ -94,6 +94,8 @@ $ net start tracd
 == Using Authentication ==
 
 Tracd allows you to run Trac without the need for Apache, but you can take advantage of Apache's password tools (htpasswd and htdigest) to easily create a password file in the proper format for tracd to use in authentication. (It is also possible to create the password file without htpasswd or htdigest; see below for alternatives)
+
+Make sure you place the generated password files on a filesystem which supports sub-second timestamps, as Trac will monitor their modified time and changes happening on a filesystem with too coarse-grained timestamp resolution (like `ext2` or `ext3` on Linux) may go undetected.
 
 Tracd provides support for both Basic and Digest authentication. Digest is considered more secure. The examples below use Digest; to use Basic authentication, replace `--auth` with `--basic-auth` in the command line.
 

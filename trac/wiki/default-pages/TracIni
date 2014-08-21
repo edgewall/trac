@@ -11,7 +11,7 @@ The `trac.ini` configuration file and its parent directory should be writable by
 
 == Global Configuration ==
 
-In versions prior to 0.11, the global configuration was by default located in `$prefix/share/trac/conf/trac.ini` or /etc/trac/trac.ini, depending on the distribution. If you're upgrading, you may want to specify that file to inherit from.  Literally, when you're upgrading to 0.11, you have to add an `[inherit]` section to your project's `trac.ini` file. Additionally, you have to move your customized templates and common images from `$prefix/share/trac/...` to the new location.
+In versions prior to 0.11, the global configuration was by default located in `$prefix/share/trac/conf/trac.ini` or `/etc/trac/trac.ini`, depending on the distribution. If you're upgrading, you may want to specify that file to inherit from.  Literally, when you're upgrading to 0.11, you have to add an `[inherit]` section to your project's `trac.ini` file. Additionally, you have to move your customized templates and common images from `$prefix/share/trac/...` to the new location.
 
 Global options will be merged with the environment-specific options, where local options override global options. The options file is specified as follows:
 {{{
@@ -30,7 +30,21 @@ Note that the templates found in the `templates/` directory of the TracEnvironme
 
 This is a brief reference of available configuration options, and their default settings.
 
+ ''Note that the [hg], [spam-filter], [translatedpages], [vote], [wikiextras] and [wikiextras-symbols] sections below are added by plugins enabled on this Trac, and therefore won't be part of a default installation.''
+
+{{{ 
+#!comment 
+Suggest your documentation fixes in the Discussion section at  
+the bottom of the page, or better send us patches against 
+the corresponding docstrings you'll find in the code!
+
+Please don't waste your time by editing the HTML code below, changes won't be picked up. 
+}}}
 [[TracIni]]
+
+== Discussion == 
+''Please discuss documentation changes here. Even better, send us documentation patches against the code, either on Trac-dev or on new tickets.'' 
+
 
 ----
 See also: TracGuide, TracAdmin, TracEnvironment

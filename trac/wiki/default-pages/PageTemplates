@@ -1,6 +1,6 @@
 = Wiki Page Templates = 
 
-  ''(since [http://trac.edgewall.org/milestone/0.11 0.11])''
+  ''(since [trac:milestone:0.11 0.11])''
 
 The default content for a new wiki page can be chosen from a list of page templates. 
 

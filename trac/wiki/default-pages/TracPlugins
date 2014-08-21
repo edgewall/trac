@@ -168,6 +168,7 @@ If you install a plugin globally (i.e., ''not'' inside the `plugins` directory o
  * ...you actually added the necessary line(s) to the `[components]` section.
  * ...the package/module names are correct.
  * ...the value is "enabled", not "enable" or "Enable".
+ * ...the section name is "components", not "component".
 
 === Check the permissions on the .egg file ===
 

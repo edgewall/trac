@@ -8,17 +8,15 @@ Since Trac uses a database backend, some extra care is required to safely create
 == Creating a Backup ==
 
 To create a backup of a live TracEnvironment, simply run:
-{{{
-
-  $ trac-admin /path/to/projenv hotcopy /path/to/backupdir
-
+ {{{#!sh
+$ trac-admin /path/to/projenv hotcopy /path/to/backupdir
 }}}
 
 [wiki:TracAdmin trac-admin] will lock the database while copying.''
 
 The resulting backup directory is safe to handle using standard file-based backup tools like `tar` or `dump`/`restore`.
 
-Please, note, that hotcopy command does not overwrite target directory and when such exists, hotcopy ends with error: `Command failed: [Errno 17] File exists:` This is discussed in [trac:ticket:3198 #3198].
+Please note, the `hotcopy` command will not overwrite a target directory and when such exists the operation ends with error: `Command failed: [Errno 17] File exists:` This is discussed in [trac:ticket:3198 #3198].
 
 === Restoring a Backup ===
 

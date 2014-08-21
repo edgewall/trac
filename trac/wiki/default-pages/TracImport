@@ -18,7 +18,7 @@ Below, follows a collection of some of those.
 
  [http://trac-hacks.org/wiki/BugzillaIssueTrackingPlugin BugzillaIssueTrackingPlugin] :: integrates Bugzilla into Trac keeping TracLinks
 
-Ticket data can be imported from Bugzilla using the [http://trac.edgewall.org/browser/trunk/contrib/bugzilla2trac.py bugzilla2trac.py] script, available in the contrib/ directory of the Trac distribution.
+Ticket data can be imported from Bugzilla using the [trac:browser:trunk/contrib/bugzilla2trac.py bugzilla2trac.py] script, available in the contrib/ directory of the Trac distribution.
 
 {{{
 $ bugzilla2trac.py
@@ -83,14 +83,14 @@ For more details on the available options, see the configuration section at the 
 
  [http://trac-hacks.org/wiki/SfnToTracScript SfnToTracScript] :: importer of !SourceForge's new backup file (originated from #Trac3521)
 
-Also, ticket data can be imported from Sourceforge using the [http://trac.edgewall.org/browser/trunk/contrib/sourceforge2trac.py sourceforge2trac.py] script, available in the contrib/ directory of the Trac distribution.
+Also, ticket data can be imported from Sourceforge using the [trac:browser:trunk/contrib/sourceforge2trac.py sourceforge2trac.py] script, available in the contrib/ directory of the Trac distribution.
 
 == Other ==
 
 Since trac uses a SQL database to store the data, you can import from other systems by examining the database tables. Just go into [http://www.sqlite.org/sqlite.html sqlite] command line to look at the tables and import into them from your application.
 
 === Comma delimited file - CSV ===
-See [http://trac.edgewall.org/attachment/wiki/TracSynchronize/csv2trac.2.py csv2trac.2.py] for details.  This approach is particularly useful if one needs to enter a large number of tickets by hand. (note that the ticket type type field, (task etc...) is also needed for this script to work with more recent Trac releases)
+See [trac:attachment:csv2trac.2.py:wiki:TracSynchronize csv2trac.2.py] for details.  This approach is particularly useful if one needs to enter a large number of tickets by hand. (note that the ticket type type field, (task etc...) is also needed for this script to work with more recent Trac releases)
 Comments on script: The script has an error on line 168, ('Ticket' needs to be 'ticket').  Also, the listed values for severity and priority are swapped. 
 
 ----

@@ -6,8 +6,8 @@ To do this, Trac uses external libraries with support for a great number of prog
 Currently Trac supports syntax coloring using one or more of the following packages:
 
  * [http://pygments.pocoo.org/ Pygments], by far the preferred system, as it covers a wide range of programming languages and other structured texts and is actively supported
- * [http://www.codento.com/people/mtr/genscript/ GNU Enscript], commonly available on Unix but somewhat unsupported on Windows
- * [http://silvercity.sourceforge.net/ SilverCity], legacy system, some versions can be [http://trac.edgewall.org/wiki/TracFaq#why-is-my-css-code-not-being-highlighted-even-though-i-have-silvercity-installed problematic]
+ * [http://www.codento.com/people/mtr/genscript/ GNU Enscript], commonly available on Unix but somewhat unsupported on Windows //(use is deprecated)//
+ * [http://silvercity.sourceforge.net/ SilverCity], legacy system, some versions can be problematic //(use is deprecated)//
 
 
 To activate syntax coloring, simply install either one (or more) of these packages (see [#ExtraSoftware] section below).
@@ -16,7 +16,7 @@ If none of these packages is available, Trac will display the data as plain text
 
 === About Pygments ===
 
-Starting with trac 0.11 [http://pygments.org/ pygments] will be the new default highlighter. It's a highlighting library implemented in pure python, very fast, easy to extend and [http://pygments.org/docs/ well documented].
+Since Trac 0.11 [http://pygments.org/ pygments] is the new default highlighter. It's a highlighting library implemented in pure python, very fast, easy to extend and [http://pygments.org/docs/ well documented].
 
 The Pygments default style can specified in the [TracIni#mimeviewer-section mime-viewer] section of trac.ini. The default style can be overridden by setting a Style preference on the [/prefs/pygments preferences page]. 
 
@@ -35,7 +35,7 @@ In a similar way, a document with the mimetype `text/x-trac-wiki` is rendered us
 
 HTML documents are directly rendered only if the `render_unsafe_html` settings are enabled in the TracIni (those settings are present in multiple sections, as there are different security concerns depending where the document comes from). If you want to ensure that an HTML document gets syntax highlighted and not rendered, use the `text/xml` mimetype.
 
-If mimetype such as 'svn:mime-type' is set to 'text/plain', there is no coloring even if file is known type like 'java'.
+If a mimetype property such as 'svn:mime-type' is set to 'text/plain', there is no coloring even if file is known type like 'java'.
 
 === List of Languages Supported, by Highlighter #language-supported
 

@@ -60,4 +60,4 @@ Trac allows wiki markup in issue descriptions and commit messages, creating link
  * [trac:TracDev] and [trac:TracDev/ApiDocs API docs] — Trac Developer documentation
  * TracSupport — How to get more information
 
-If you are looking for a good place to ask a question about Trac, look no further than the [http://trac.edgewall.org/wiki/MailingList MailingList]. It provides a friendly environment to discuss openly among Trac users and developers.
+If you are looking for a good place to ask a question about Trac, look no further than the [trac:MailingList MailingList]. It provides a friendly environment to discuss openly among Trac users and developers.

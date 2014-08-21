@@ -370,7 +370,7 @@ http://yourdomain.com/trac/
 Nginx is able to communicate with FastCGI processes, but can not spawn them. So you need to start FastCGI server for Trac separately.
 
  1. Nginx configuration with basic authentication handled by Nginx - confirmed to work on 0.6.32
-{{{
+ {{{
     server {
         listen       10.9.8.7:443;
         server_name  trac.example;
@@ -414,7 +414,7 @@ Nginx is able to communicate with FastCGI processes, but can not spawn them. So 
             # WSGI application name - trac instance prefix.
 	    # (Or ``fastcgi_param  SCRIPT_NAME  /some/prefix``.)
             fastcgi_param  SCRIPT_NAME        "";
-            fastcgi_param  PATH_INFO          $path_info;
+            fastcgi_param  PATH_INFO           $fastcgi_script_name;
 
             ## WSGI NEEDED VARIABLES - trac warns about them
             fastcgi_param  REQUEST_METHOD     $request_method;
@@ -437,10 +437,8 @@ Nginx is able to communicate with FastCGI processes, but can not spawn them. So 
         }
     }
 }}}
-
- 2. Modified trac.fcgi:
-
-{{{
+ 1. Modified trac.fcgi:
+ {{{
 #!/usr/bin/env python
 import os
 sockaddr = '/home/trac/run/instance.sock'
@@ -471,10 +469,8 @@ except Exception, e:
     print tb.getvalue()
 
 }}}
-
- 3. reload nginx and launch trac.fcgi like that:
-
-{{{
+ 1. reload nginx and launch trac.fcgi like that: 
+ {{{#!sh
 trac@trac.example ~ $ ./trac-standalone-fcgi.py 
 }}}
 

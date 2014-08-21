@@ -13,6 +13,9 @@ $ trac-admin /path/to/myproject initenv
 database connection string (explained below).
 
 === Some Useful Tips
+
+ - Place your environment's directory on a filesystem which supports sub-second timestamps, as Trac monitors the timestamp of its configuration files and changes happening on a filesystem with too coarse-grained timestamp resolution may go undetected in Trac < 1.0.2 (this is also true for the location of authentication files when using TracStandalone).
+
  - The user under which the web server runs will require file system write permission to 
  the environment directory and all the files inside. Please remember to set
  the appropriate permissions. The same applies to the source code repository, 
@@ -35,6 +38,8 @@ to use SQLite, which is probably sufficient for most projects. The database
 file is then stored in the environment directory, and can easily be 
 [wiki:TracBackup backed up] together with the rest of the environment.
 
+Note that if the username or password of the connection string (if applicable) contains the `:`, `/` or `@` characters, they need to be URL encoded.
+
 === SQLite Connection String ===
 The connection string for an SQLite database is:
 {{{
@@ -50,7 +55,6 @@ user `johndoe` with the password `letmein`, use:
 {{{
 postgres://johndoe:letmein@localhost/trac
 }}}
-''Note that due to the way the above string is parsed, the "/" and "@" characters cannot be part of the password.''
 
 If PostgreSQL is running on a non-standard port (for example 9342), use:
 {{{
@@ -91,9 +95,8 @@ postgres://user:pass@server/database?schema=yourschemaname
 
 === MySQL Connection String ===
 
-If you want to use MySQL instead, you'll have to use a
-different connection string. For example, to connect to a MySQL
-database on the same machine called `trac`, that allows access to the
+The format of the MySQL connection string is similar to the examples presented for PostgreSQL, with the `postgres` schema being replaced by `mysql`. For example, to connect to a MySQL
+database on the same machine called `trac`, allowing access to the
 user `johndoe` with the password `letmein`, the mysql connection string is:
 {{{
 mysql://johndoe:letmein@localhost:3306/trac

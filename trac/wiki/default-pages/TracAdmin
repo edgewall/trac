@@ -1,3 +1,4 @@
+** Note: this page documents the version 1.0 of Trac, see [[0.12/TracAdmin]] if you need the previous version **
 = TracAdmin =
 [[TracGuideToc]]
 
@@ -32,7 +33,7 @@ This subcommand is very important as it's the one used to create a TracEnvironme
 
 [[TracAdminHelp(initenv)]]
 
-It supports an extra `--inherit` option, which can be used to specify a global configuration file which can be used share settings between several environments. You can also inherit from a shared configuration afterwards, by setting the `[inherit] file` option in the `conf/trac.ini` file in your newly created environment, but the advantage of specifying the inherited configuration file at environment creation time is that only the options ''not'' already specified in the global configuration file will be written in the created environment's `conf/trac.ini` file.
+It supports an extra `--inherit` option, which can be used to specify a global configuration file which can be used to share settings between several environments. You can also inherit from a shared configuration afterwards, by setting the `[inherit] file` option in the `conf/trac.ini` file in your newly created environment, but the advantage of specifying the inherited configuration file at environment creation time is that only the options ''not'' already specified in the global configuration file will be written in the created environment's `conf/trac.ini` file.
 See TracIni#GlobalConfiguration.
 
 Note that in version 0.11 of Trac, `initenv` lost an extra last argument `<templatepath>`, which was used in previous versions to point to the `templates` folder. If you are using the one-liner '`trac-admin /path/to/trac/ initenv <projectname> <db> <repostype> <repospath>`' in the above and getting an error that reads ''''`Wrong number of arguments to initenv: 4`'''', then this is because you're using a `trac-admin` script from an '''older''' version of Trac.
