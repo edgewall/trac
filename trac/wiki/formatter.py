@@ -805,8 +805,8 @@ class Formatter(object):
         except Exception as e:
             self.env.log.error('Macro %s(%s) failed:%s', name, args,
                                exception_to_unicode(e, traceback=True))
-            return system_message('Error: Macro %s(%s) failed' % (name, args),
-                                  to_unicode(e))
+            return system_message(_("Error: Macro %(name)s(%(args)s) failed",
+                                    name=name, args=args), to_unicode(e))
 
     # Headings
 
@@ -1165,7 +1165,8 @@ class Formatter(object):
                                          for l in self.code_buf]
                     self.code_buf.append('')
                 code_text = os.linesep.join(self.code_buf)
-                processed = self.code_processor.process(code_text)
+                processed = self._exec_processor(self.code_processor,
+                                                 code_text)
                 self.out.write(_markup_to_unicode(processed))
             else:
                 self.code_buf.append(line)
@@ -1185,6 +1186,15 @@ class Formatter(object):
     def close_code_blocks(self):
         while self.in_code_block > 0:
             self.handle_code_block(WikiParser.ENDBLOCK)
+
+    def _exec_processor(self, processor, text):
+        try:
+            return processor.process(text)
+        except Exception, e:
+            self.env.log.error('Processor %s failed:%s', processor.name,
+                               exception_to_unicode(e, traceback=True))
+            return system_message(_("Error: Processor %(name)s failed",
+                                    name=processor.name), to_unicode(e))
 
     # > quotes
 
