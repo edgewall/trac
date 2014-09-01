@@ -112,13 +112,17 @@ ${description_en if url else description}</textarea>
               <p>The action that triggered the error was:</p>
               <pre>${req.method}: ${req.path_info}</pre>
             </py:when>
-            <py:otherwise>
-              <form class="newticket" method="get" action="${project.admin_href.newticket()}#">
+            <py:otherwise py:choose="">
+              <p py:when="not project.admin_href or project.admin_trac_url == '.'">
+                This is probably a local installation issue.
+              </p>
+              <form py:otherwise=""
+                    class="newticket" method="get" action="${project.admin_href.newticket()}#">
                 <p>This is probably a local installation issue.
-                  <py:if test="project.admin_href and project.admin_trac_url != '.'"><i18n:msg params="create">
+                  <i18n:msg params="create">
                     You should ${create_ticket()} a ticket at the admin Trac to report
                     the issue.
-                  </i18n:msg></py:if>
+                  </i18n:msg>
                 </p>
               </form>
               <h2>Found a bug in Trac?</h2>
