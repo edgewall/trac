@@ -2014,17 +2014,12 @@ msgid ""
 "                [1:\n"
 "                    Trac administrator] with the information needed to\n"
 "                reproduce the issue."
-msgstr ""
-"内部エラーが発生しました。\n"
-"               サイトの\n"
-"               [1:\n"
-"                  Trac 管理者]に連絡し、不具合の再現方法等を\n"
-"               伝えることをお勧めします。"
+msgstr "内部エラーが発生しました。このサイトの [1:Trac 管理者]に連絡し、不具合の再現方法等を伝えることをお勧めします。"
 
 #: trac/templates/error.html:96
 #, python-format
 msgid "To that end, you could %(create)s a ticket."
-msgstr "これを受けて、チケットを %(create)s します。"
+msgstr "それにはチケットを %(create)s します。"
 
 #: trac/templates/error.html:98
 msgid "The action that triggered the error was:"
@@ -2039,7 +2034,7 @@ msgstr "おそらくローカルインストールに問題があります。"
 msgid ""
 "You should %(create)s a ticket at the admin Trac to report\n"
 "                    the issue."
-msgstr "Trac プロジェクトページでこの問題のチケットを %(create)s してください。"
+msgstr "管理用の Trac でこの問題についてチケットを %(create)s してください。"
 
 #: trac/templates/error.html:110
 msgid "Found a bug in Trac?"
