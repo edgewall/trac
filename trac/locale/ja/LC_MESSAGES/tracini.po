@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.1.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-07-24 16:49-0700\n"
+"POT-Creation-Date: 2014-09-01 12:45+0000\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <LL@li.org>\n"
@@ -156,39 +156,39 @@ msgstr ""
 msgid "Send ticket change notification when updating a ticket."
 msgstr "チケットの更新時にチケットの変更通知を送信するかどうかを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:271
+#: tracopt/versioncontrol/git/git_fs.py:272
 msgid "Enable persistent caching of commit tree."
 msgstr "コミットツリーの永続的なキャッシュを有効にするかどうかを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:274
+#: tracopt/versioncontrol/git/git_fs.py:275
 msgid "Wrap `GitRepository` in `CachedRepository`."
 msgstr "`GitRepository` を `CachedRepository` でラップするかを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:277
+#: tracopt/versioncontrol/git/git_fs.py:278
 msgid ""
 "The length at which a sha1 should be abbreviated to (must\n"
 "be >= 4 and <= 40)."
 msgstr "sha1 ハッシュを省略する際の長さを指定します (4～40であること)。"
 
-#: tracopt/versioncontrol/git/git_fs.py:282
+#: tracopt/versioncontrol/git/git_fs.py:283
 msgid ""
 "The minimum length of an hex-string for which\n"
 "auto-detection as sha1 is performed (must be >= 4 and <= 40)."
 msgstr "sha1 ハッシュを自動的に検出する際における16進文字列の最小長を指定します (4～40であること)。"
 
-#: tracopt/versioncontrol/git/git_fs.py:287
+#: tracopt/versioncontrol/git/git_fs.py:288
 msgid ""
 "Enable reverse mapping of git email addresses to trac user ids\n"
 "(costly if you have many users)."
 msgstr "git のメールアドレスから Trac ユーザ名への逆マッピングを有効にするかを指定します (ユーザが多い場合には高コストになります)。"
 
-#: tracopt/versioncontrol/git/git_fs.py:291
+#: tracopt/versioncontrol/git/git_fs.py:292
 msgid ""
 "Use git-committer id instead of git-author id for the\n"
 "changeset ''Author'' field."
 msgstr "チェンジセットの''更新者''項目として git-author id の代わりに git-committer id を使うかどうかを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:296
+#: tracopt/versioncontrol/git/git_fs.py:297
 msgid ""
 "Use git-committer timestamp instead of git-author timestamp\n"
 "for the changeset ''Timestamp'' field."
@@ -196,23 +196,23 @@ msgstr ""
 "チェンジセットの''日時''項目として git-author timestamp の代わりに git-committer timestamp "
 "を使うかどうかを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:301
+#: tracopt/versioncontrol/git/git_fs.py:302
 msgid "Define charset encoding of paths within git repositories."
 msgstr "git リポジトリ中のパスに対する文字エンコーディングを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:304
+#: tracopt/versioncontrol/git/git_fs.py:305
 msgid "Path to the git executable."
 msgstr "git 実行ファイルへのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:884
+#: tracopt/versioncontrol/git/git_fs.py:887
 msgid "Path to a gitweb-formatted projects.list"
 msgstr "gitweb 形式の projects.list ファイルへのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:887
+#: tracopt/versioncontrol/git/git_fs.py:890
 msgid "Path to the base of your git projects"
 msgstr "git プロジェクトのベースディレクトリのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:890
+#: tracopt/versioncontrol/git/git_fs.py:893
 #, python-format
 msgid ""
 "Template for project URLs. %s will be replaced with the repo\n"
@@ -810,7 +810,7 @@ msgstr ""
 "適用する順番で `IPermissionPolicy` を実装しているコンポーネントのリストを指定します。それらのコンポーネントは Trac "
 "のソリースに対して細かい粒度のアクセス制御を行います。"
 
-#: trac/db/api.py:286
+#: trac/db/api.py:296
 msgid ""
 "Database connection\n"
 "[wiki:TracEnvironment#DatabaseConnectionStrings string] for this\n"
@@ -819,11 +819,11 @@ msgstr ""
 "このプロジェクトのデータベース接続[wiki:TracEnvironment#DatabaseConnectionStrings "
 "文字列]を指定します。"
 
-#: trac/db/api.py:291
+#: trac/db/api.py:301
 msgid "Database backup location"
 msgstr "データベースバックアップの場所を指定します。"
 
-#: trac/db/api.py:294
+#: trac/db/api.py:304
 msgid ""
 "Timeout value for database connection, in seconds.\n"
 "Use '0' to specify ''no timeout''. (''since 0.11'')"
@@ -831,7 +831,7 @@ msgstr ""
 "データベース接続のタイムアウトを秒単位で指定します。\n"
 "''タイムアウトなし''を指定するには '0' を使います。(''0.11 以降'')"
 
-#: trac/db/api.py:298
+#: trac/db/api.py:308
 msgid ""
 "Show the SQL queries in the Trac log, at DEBUG level.\n"
 "(''since 0.11.5'')"
@@ -847,7 +847,7 @@ msgstr "MySQL データベースのバックアップに使う mysqldump の場�
 msgid "Location of pg_dump for Postgres database backups"
 msgstr "Postgres データベースのバックアップに使う pg_dump の場所を指定します。"
 
-#: trac/db/sqlite_backend.py:146
+#: trac/db/sqlite_backend.py:148
 msgid ""
 "Paths to sqlite extensions, relative to Trac environment's\n"
 "directory or absolute. (''since 0.12'')"
@@ -1033,7 +1033,7 @@ msgid ""
 "an empty value. (//since 1.1.2//)"
 msgstr "空の値にできるようにする `select` フィールドをカンマ区切りで指定します。(//1.1.2 以降//)"
 
-#: trac/ticket/default_workflow.py:109
+#: trac/ticket/default_workflow.py:111
 msgid ""
 "The workflow for tickets is controlled by plugins. By default,\n"
 "there's only a `ConfigurableTicketWorkflow` component in charge.\n"
@@ -2087,7 +2087,7 @@ msgid ""
 "   it doesn't know how to dispatch an InterTrac link, and it's up to\n"
 "   the local Trac to prepare the correct link. Not all links will work\n"
 "   that way, but the most common do. This is called the compatibility\n"
-"   mode, and is `true` by default.\n"
+"   mode, and is `false` by default.\n"
 " * If you know that the remote Trac knows how to dispatch InterTrac\n"
 "   links, you can explicitly disable this compatibility mode and then\n"
 "   ''any'' TracLinks can become InterTrac links.\n"
@@ -2114,7 +2114,7 @@ msgstr ""
 "`.compat` は''互換''モードを有効または無効にするのに使います。\n"
 " * 対象の Trac が [trac:milestone:0.10 0.10] 以下のバージョン (正確には [trac:r3526 "
 "r3526]) で動作している場合、InterTrac リンクを処理する方法を知らないのでローカルの Trac "
-"が正しいリンクを用意します。すべてのリンクが機能するとは限らないが、大抵は動作します。これを互換モードと呼んでいて `true` "
+"が正しいリンクを用意します。すべてのリンクが機能するとは限らないが、大抵は動作します。これを互換モードと呼んでいて `false` "
 "を設定します。これがデフォルトです。\n"
 " * リモートの Trac が InterTrac "
 "リンクを処理する方法を知っている場合は、明示的にこの互換モードを無効にすることができ、そのときは ''any'' を設定して TracLinks "
