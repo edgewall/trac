@@ -1153,16 +1153,24 @@ Inline  comment
 </p>
 ------------------------------
 ============================== Exception with utf-8 bytes
+{{{#!ValueErrorWithUtf8
+Érrör
+}}}
 [[ValueErrorWithUtf8(érrör)]]
 ------------------------------
-<p>
+<div class="system-message"><strong>Error: Processor ValueErrorWithUtf8 failed</strong><pre>Érrör
+</pre></div><p>
 <div class="system-message"><strong>Error: Macro ValueErrorWithUtf8(érrör) failed</strong><pre>érrör</pre></div>
 </p>
 ------------------------------
 ============================== TracError with unicode
+{{{#!TracErrorWithUnicode
+Érrör
+}}}
 [[TracErrorWithUnicode(érrör)]]
 ------------------------------
-<p>
+<div class="system-message"><strong>Error: Processor TracErrorWithUnicode failed</strong><pre>Érrör
+</pre></div><p>
 <div class="system-message"><strong>Error: Macro TracErrorWithUnicode(érrör) failed</strong><pre>érrör</pre></div>
 </p>
 ------------------------------
