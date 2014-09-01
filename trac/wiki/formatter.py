@@ -1154,7 +1154,8 @@ class Formatter(object):
                                          for l in self.code_buf]
                     self.code_buf.append('')
                 code_text = os.linesep.join(self.code_buf)
-                processed = self.code_processor.process(code_text)
+                processed = self._exec_processor(self.code_processor,
+                                                 code_text)
                 self.out.write(_markup_to_unicode(processed))
             else:
                 self.code_buf.append(line)
@@ -1174,6 +1175,15 @@ class Formatter(object):
     def close_code_blocks(self):
         while self.in_code_block > 0:
             self.handle_code_block(WikiParser.ENDBLOCK)
+
+    def _exec_processor(self, processor, text):
+        try:
+            return processor.process(text)
+        except Exception, e:
+            self.env.log.error('Processor %s failed:%s', processor.name,
+                               exception_to_unicode(e, traceback=True))
+            return system_message('Error: Processor %s failed' %
+                                  processor.name, to_unicode(e))
 
     # > quotes
 
