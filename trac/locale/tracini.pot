@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-07-06 21:24+0900\n"
+"POT-Creation-Date: 2014-09-01 12:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -117,61 +117,61 @@ msgstr ""
 msgid "Send ticket change notification when updating a ticket."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:191
+#: tracopt/versioncontrol/git/git_fs.py:269
 msgid "Enable persistent caching of commit tree."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:194
+#: tracopt/versioncontrol/git/git_fs.py:272
 msgid "Wrap `GitRepository` in `CachedRepository`."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:197
+#: tracopt/versioncontrol/git/git_fs.py:275
 msgid ""
 "The length at which a sha1 should be abbreviated to (must\n"
 "be >= 4 and <= 40)."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:202
+#: tracopt/versioncontrol/git/git_fs.py:280
 msgid ""
 "The minimum length of an hex-string for which\n"
 "auto-detection as sha1 is performed (must be >= 4 and <= 40)."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:207
+#: tracopt/versioncontrol/git/git_fs.py:285
 msgid ""
 "Enable reverse mapping of git email addresses to trac user ids\n"
 "(costly if you have many users)."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:211
+#: tracopt/versioncontrol/git/git_fs.py:289
 msgid ""
 "Use git-committer id instead of git-author id for the\n"
 "changeset ''Author'' field."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:216
+#: tracopt/versioncontrol/git/git_fs.py:294
 msgid ""
 "Use git-committer timestamp instead of git-author timestamp\n"
 "for the changeset ''Timestamp'' field."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:221
+#: tracopt/versioncontrol/git/git_fs.py:299
 msgid "Define charset encoding of paths within git repositories."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:224
+#: tracopt/versioncontrol/git/git_fs.py:302
 msgid "Path to the git executable."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:800
+#: tracopt/versioncontrol/git/git_fs.py:879
 msgid "Path to a gitweb-formatted projects.list"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:803
+#: tracopt/versioncontrol/git/git_fs.py:882
 msgid "Path to the base of your git projects"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:806
+#: tracopt/versioncontrol/git/git_fs.py:885
 #, python-format
 msgid ""
 "Template for project URLs. %s will be replaced with the repo\n"
@@ -611,25 +611,25 @@ msgstr ""
 msgid "Location of pg_dump for Postgres database backups"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:143
+#: trac/db/sqlite_backend.py:145
 msgid ""
 "Paths to sqlite extensions, relative to Trac environment's\n"
 "directory or absolute. (''since 0.12'')"
 msgstr ""
 
-#: trac/mimeview/api.py:618
+#: trac/mimeview/api.py:619
 msgid "Charset to be used when in doubt."
 msgstr ""
 
-#: trac/mimeview/api.py:621
+#: trac/mimeview/api.py:622
 msgid "Displayed tab width in file preview. (''since 0.9'')"
 msgstr ""
 
-#: trac/mimeview/api.py:624
+#: trac/mimeview/api.py:625
 msgid "Maximum file size for HTML preview. (''since 0.9'')"
 msgstr ""
 
-#: trac/mimeview/api.py:627
+#: trac/mimeview/api.py:628
 msgid ""
 "List of additional MIME types and keyword mappings.\n"
 "Mappings are comma-separated, and for each MIME type,\n"
@@ -637,7 +637,7 @@ msgid ""
 "or file extensions. (''since 0.10'')"
 msgstr ""
 
-#: trac/mimeview/api.py:634
+#: trac/mimeview/api.py:635
 msgid ""
 "List of additional MIME types associated to filename patterns.\n"
 "Mappings are comma-separated, and each mapping consists of a MIME type\n"
@@ -645,7 +645,7 @@ msgid ""
 "(\":\"). (''since 1.0'')"
 msgstr ""
 
-#: trac/mimeview/api.py:641
+#: trac/mimeview/api.py:642
 msgid ""
 "Comma-separated list of MIME types that should be treated as\n"
 "binary data. (''since 0.11.5'')"
@@ -686,19 +686,19 @@ msgid ""
 "(since 0.12)"
 msgstr ""
 
-#: trac/ticket/api.py:166
+#: trac/ticket/api.py:175
 msgid ""
 "In this section, you can define additional fields for tickets. See\n"
 "TracTicketsCustomFields for more details."
 msgstr ""
 
-#: trac/ticket/api.py:170
+#: trac/ticket/api.py:179
 msgid ""
 "Ordered list of workflow controllers to use for ticket actions\n"
 "(''since 0.11'')."
 msgstr ""
 
-#: trac/ticket/api.py:176
+#: trac/ticket/api.py:185
 msgid ""
 "Make the owner field of tickets use a drop-down menu.\n"
 "Be sure to understand the performance implications before activating\n"
@@ -711,57 +711,57 @@ msgid ""
 "(''since 0.9'')"
 msgstr ""
 
-#: trac/ticket/api.py:187
+#: trac/ticket/api.py:196
 msgid "Default version for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:190
+#: trac/ticket/api.py:199
 msgid "Default type for newly created tickets (''since 0.9'')."
 msgstr ""
 
-#: trac/ticket/api.py:193
+#: trac/ticket/api.py:202
 msgid "Default priority for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:196
+#: trac/ticket/api.py:205
 msgid "Default milestone for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:199
+#: trac/ticket/api.py:208
 msgid "Default component for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:202
+#: trac/ticket/api.py:211
 msgid "Default severity for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:205
+#: trac/ticket/api.py:214
 msgid "Default summary (title) for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:208
+#: trac/ticket/api.py:217
 msgid "Default description for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:211
+#: trac/ticket/api.py:220
 msgid "Default keywords for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:214
+#: trac/ticket/api.py:223
 msgid "Default owner for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:217
+#: trac/ticket/api.py:226
 msgid "Default cc: list for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:220
+#: trac/ticket/api.py:229
 msgid ""
 "Default resolution for resolving (closing) tickets\n"
 "(''since 0.11'')."
 msgstr ""
 
-#: trac/ticket/default_workflow.py:105
+#: trac/ticket/default_workflow.py:108
 msgid ""
 "The workflow for tickets is controlled by plugins. By default,\n"
 "there's only a `ConfigurableTicketWorkflow` component in charge.\n"
@@ -1530,7 +1530,7 @@ msgid ""
 "   it doesn't know how to dispatch an InterTrac link, and it's up to\n"
 "   the local Trac to prepare the correct link. Not all links will work\n"
 "   that way, but the most common do. This is called the compatibility\n"
-"   mode, and is `true` by default.\n"
+"   mode, and is `false` by default.\n"
 " * If you know that the remote Trac knows how to dispatch InterTrac\n"
 "   links, you can explicitly disable this compatibility mode and then\n"
 "   ''any'' TracLinks can become InterTrac links.\n"
