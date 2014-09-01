@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-07-30 07:51+0000\n"
+"POT-Creation-Date: 2014-09-01 12:43+0000\n"
 "PO-Revision-Date: 2011-07-14 21:38+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <trac-dev@googlegroups.com>\n"
@@ -472,7 +472,7 @@ msgid "Invalid resource identifier '%(id)s'"
 msgstr "'%(id)s' は正しい識別子ではありません"
 
 #: trac/attachment.py:1072 trac/templates/about.html:81
-#: trac/templates/about.html:102 trac/templates/error.html:175
+#: trac/templates/about.html:102 trac/templates/error.html:179
 #: trac/ticket/admin.py:210 trac/ticket/admin.py:404 trac/ticket/admin.py:574
 #: trac/ticket/templates/admin_components.html:88
 #: trac/ticket/templates/admin_enums.html:61
@@ -1649,7 +1649,7 @@ msgstr "(%(err)s) のため、%(renderer)s を使った HTML プレビューに�
 msgid "Can't use %(annotator)s annotator: %(error)s"
 msgstr "%(annotator)s が使えません: %(error)s"
 
-#: trac/mimeview/api.py:1121 trac/templates/error.html:163
+#: trac/mimeview/api.py:1121 trac/templates/error.html:167
 msgid "Line"
 msgstr "行"
 
@@ -2092,7 +2092,7 @@ msgstr "インストールしているプラグイン"
 msgid "Location"
 msgstr "場所"
 
-#: trac/templates/about.html:89 trac/templates/error.html:207
+#: trac/templates/about.html:89 trac/templates/error.html:211
 #: trac/web/main.py:583
 msgid "N/A"
 msgstr "該当なし"
@@ -2101,7 +2101,7 @@ msgstr "該当なし"
 msgid "Section"
 msgstr "セクション"
 
-#: trac/templates/about.html:103 trac/templates/error.html:175
+#: trac/templates/about.html:103 trac/templates/error.html:179
 msgid "Value"
 msgstr "値"
 
@@ -2368,33 +2368,33 @@ msgid ""
 "                [1:\n"
 "                    Trac administrator] with the information needed to\n"
 "                reproduce the issue."
-msgstr "内部エラーが発生しました。サイトの [1:Trac 管理者]に連絡し、不具合の再現方法等を伝えることをお勧めします。"
+msgstr "内部エラーが発生しました。このサイトの [1:Trac 管理者]に連絡し、不具合の再現方法等を伝えることをお勧めします。"
 
 #: trac/templates/error.html:110
 #, python-format
 msgid "To that end, you could %(create)s a ticket."
-msgstr "これを受けて、チケットを %(create)s します。"
+msgstr "それにはチケットを %(create)s します。"
 
 #: trac/templates/error.html:112
 msgid "The action that triggered the error was:"
 msgstr "エラーを発生させた操作:"
 
-#: trac/templates/error.html:117
+#: trac/templates/error.html:116 trac/templates/error.html:121
 msgid "This is probably a local installation issue."
 msgstr "おそらくローカルインストールに問題があります。"
 
-#: trac/templates/error.html:118
+#: trac/templates/error.html:122
 #, python-format
 msgid ""
 "You should %(create)s a ticket at the admin Trac to report\n"
 "                    the issue."
-msgstr "Trac プロジェクトページでこの問題のチケットを %(create)s してください。"
+msgstr "管理用の Trac でこの問題についてチケットを %(create)s してください。"
 
-#: trac/templates/error.html:124
+#: trac/templates/error.html:128
 msgid "Found a bug in Trac?"
 msgstr "Trac のバグを見つけましたか?"
 
-#: trac/templates/error.html:125
+#: trac/templates/error.html:129
 msgid ""
 "If you think this should work and you can reproduce the problem,\n"
 "              you should consider creating a bug report."
@@ -2402,20 +2402,20 @@ msgstr ""
 "この不具合が再現可能でありきちんと動作すべきものであるようならば、\n"
 "Trac チームに報告することを検討してください。"
 
-#: trac/templates/error.html:128
+#: trac/templates/error.html:132
 #, python-format
 msgid "Note that the %(name)s plugin seems to be involved."
 msgstr "%(name)s プラグインに関係しているようです。"
 
-#: trac/templates/error.html:131
+#: trac/templates/error.html:135
 msgid "Note that the following plugins seem to be involved:"
 msgstr "次のプラグインに関係しているようです。"
 
-#: trac/templates/error.html:135
+#: trac/templates/error.html:139
 msgid "Please report this issue to the plugin maintainer."
 msgstr "プラグインのメンテナにこの問題を報告してください。"
 
-#: trac/templates/error.html:137
+#: trac/templates/error.html:141
 msgid ""
 "Before you do that, though, please first try\n"
 "                [1:[2:searching]\n"
@@ -2432,22 +2432,22 @@ msgstr ""
 "また Trac のインストールや設定に関する質問は、\n"
 "チケットを作成するのではなく[3:メーリングリスト]に投稿するのがよいでしょう。"
 
-#: trac/templates/error.html:146
+#: trac/templates/error.html:150
 #, python-format
 msgid ""
 "Otherwise, please %(create)s a new bug report\n"
 "                describing the problem and explain how to reproduce it."
 msgstr "そうでなければ、Trac プロジェクトのサイトにて不具合の詳細と再現手順を書き添えた新しいチケットを %(create)s してください。"
 
-#: trac/templates/error.html:150
+#: trac/templates/error.html:154
 msgid "Python Traceback"
 msgstr "Python トレースバック"
 
-#: trac/templates/error.html:151
+#: trac/templates/error.html:155
 msgid "Most recent call last:"
 msgstr "後方のものほど最近の呼出となります:"
 
-#: trac/templates/error.html:155
+#: trac/templates/error.html:159
 #, python-format
 msgid ""
 "[1:File \"%(file)s\",\n"
@@ -2458,36 +2458,36 @@ msgstr ""
 "                        行 [2:%(line)s], 関数]\n"
 "                        [3:%(function)s]"
 
-#: trac/templates/error.html:161
+#: trac/templates/error.html:165
 msgid "Code fragment:"
 msgstr "近辺のコード:"
 
-#: trac/templates/error.html:173
+#: trac/templates/error.html:177
 msgid "Local variables:"
 msgstr "ローカル変数:"
 
-#: trac/templates/error.html:187
+#: trac/templates/error.html:191
 #, python-format
 msgid "File \"%(file)s\", line %(line)s, in %(function)s"
 msgstr "ファイル \"%(file)s\"、行 %(line)s、関数 %(function)s"
 
-#: trac/templates/error.html:190
+#: trac/templates/error.html:194
 msgid "Switch to plain text view"
 msgstr "プレーンテキストで表示"
 
-#: trac/templates/error.html:193
+#: trac/templates/error.html:197
 msgid "System Information:"
 msgstr "システム情報:"
 
-#: trac/templates/error.html:201
+#: trac/templates/error.html:205
 msgid "Enabled Plugins:"
 msgstr "有効にしているプラグイン:"
 
-#: trac/templates/error.html:217
+#: trac/templates/error.html:221
 msgid "TracGuide"
 msgstr "TracGuide"
 
-#: trac/templates/error.html:217
+#: trac/templates/error.html:221
 msgid "— The Trac User and Administration Guide"
 msgstr "— Trac ユーザ/管理者ガイド"
 
@@ -2715,7 +2715,7 @@ msgstr "マイルストーン \"%(name)s\" はすでに存在しています。"
 msgid "The milestone \"%(name)s\" has been added."
 msgstr "マイルストーン \"%(name)s\" を追加しました。"
 
-#: trac/ticket/admin.py:303 trac/ticket/model.py:1048 trac/ticket/model.py:1070
+#: trac/ticket/admin.py:303 trac/ticket/model.py:1047 trac/ticket/model.py:1069
 msgid "Invalid milestone name."
 msgstr "マイルストーンの名称が不正です。"
 
@@ -2754,7 +2754,7 @@ msgstr "バージョン \"%(name)s\" はすでに存在しています。"
 msgid "The version \"%(name)s\" has been added."
 msgstr "バージョン \"%(name)s\" を追加しました。"
 
-#: trac/ticket/admin.py:493 trac/ticket/model.py:1207 trac/ticket/model.py:1225
+#: trac/ticket/admin.py:493 trac/ticket/model.py:1206 trac/ticket/model.py:1224
 msgid "Invalid version name."
 msgstr "バージョンの名称が不正です。"
 
@@ -3147,28 +3147,28 @@ msgstr "%(type)s の名称が不正です。"
 msgid "Component %(name)s does not exist."
 msgstr "コンポーネント %(name)s は存在しません。 "
 
-#: trac/ticket/model.py:988 trac/ticket/model.py:1115
+#: trac/ticket/model.py:988 trac/ticket/model.py:1114
 #, python-format
 msgid "Milestone %(name)s does not exist."
 msgstr "マイルストーン %(name)s は存在しません。"
 
-#: trac/ticket/model.py:989 trac/ticket/model.py:1116
+#: trac/ticket/model.py:989 trac/ticket/model.py:1115
 msgid "Invalid milestone name"
 msgstr "マイルストーンの名称が不正です。"
 
-#: trac/ticket/model.py:1158
+#: trac/ticket/model.py:1157
 msgid "Open (by due date)"
 msgstr "進行中 (期日あり)"
 
-#: trac/ticket/model.py:1159
+#: trac/ticket/model.py:1158
 msgid "Open (no due date)"
 msgstr "進行中 (期日なし)"
 
-#: trac/ticket/model.py:1162
+#: trac/ticket/model.py:1161
 msgid "Closed"
 msgstr "完了済"
 
-#: trac/ticket/model.py:1179
+#: trac/ticket/model.py:1178
 #, python-format
 msgid "Version %(name)s does not exist."
 msgstr "バージョン %(name)s は存在しません。"
@@ -6526,12 +6526,22 @@ msgstr "!#%(name)s には少なくとも1つテーブルのセルがないとい
 #: trac/wiki/formatter.py:355
 #, python-format
 msgid "Error: Failed to load processor %(name)s"
-msgstr "エラー: %(name)s プロセッサのロードに失敗しました"
+msgstr "エラー: プロセッサ %(name)s のロードに失敗しました"
 
 #: trac/wiki/formatter.py:707 trac/wiki/interwiki.py:104
 #, python-format
 msgid "%(target)s in %(name)s"
 msgstr "%(name)s の %(target)s"
+
+#: trac/wiki/formatter.py:792
+#, python-format
+msgid "Error: Macro %(name)s(%(args)s) failed"
+msgstr "エラー: マクロ %(name)s(%(args)s) が失敗しました"
+
+#: trac/wiki/formatter.py:1185
+#, python-format
+msgid "Error: Processor %(name)s failed"
+msgstr "エラー: プロセッサ %(name)s が失敗しました"
 
 #: trac/wiki/intertrac.py:94
 #, python-format
