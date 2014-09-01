@@ -789,8 +789,8 @@ class Formatter(object):
         except Exception, e:
             self.env.log.error('Macro %s(%s) failed:%s', name, args,
                                exception_to_unicode(e, traceback=True))
-            return system_message('Error: Macro %s(%s) failed' % (name, args),
-                                  to_unicode(e))
+            return system_message(_("Error: Macro %(name)s(%(args)s) failed",
+                                    name=name, args=args), to_unicode(e))
 
     # Headings
 
@@ -1182,8 +1182,8 @@ class Formatter(object):
         except Exception, e:
             self.env.log.error('Processor %s failed:%s', processor.name,
                                exception_to_unicode(e, traceback=True))
-            return system_message('Error: Processor %s failed' %
-                                  processor.name, to_unicode(e))
+            return system_message(_("Error: Processor %(name)s failed",
+                                    name=processor.name), to_unicode(e))
 
     # > quotes
 
