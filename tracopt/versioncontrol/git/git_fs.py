@@ -479,35 +479,37 @@ class GitRepository(Repository):
         self.use_committer_id = use_committer_id
 
         try:
-            self.git = PyGIT.StorageFactory(path, log, not persistent_cache,
-                                            git_bin=git_bin,
-                                            git_fs_encoding=git_fs_encoding) \
-                            .getInstance()
+            factory = PyGIT.StorageFactory(path, log, not persistent_cache,
+                                           git_bin=git_bin,
+                                           git_fs_encoding=git_fs_encoding)
+            self._git = factory.getInstance()
         except PyGIT.GitError, e:
             log.error(exception_to_unicode(e))
             raise TracError("%s does not appear to be a Git "
                             "repository." % path)
 
-        Repository.__init__(self, 'git:'+path, self.params, log)
-        self._rev_cache_id = str(self.id)
+        Repository.__init__(self, 'git:' + path, self.params, log)
+        self._cached_git_id = str(self.id)
 
     def close(self):
-        self.git = None
+        self._git = None
 
-    @cached('_rev_cache_id')
-    def _rev_cache(self):
-        self.git.invalidate_rev_cache()
-
-    def _check_rev_cache(self):
+    @property
+    def git(self):
         if self.persistent_cache:
-            self._rev_cache
+            return self._cached_git
+        else:
+            return self._git
+
+    @cached('_cached_git_id')
+    def _cached_git(self):
+        self._git.invalidate_rev_cache()
+        return self._git
 
     def get_youngest_rev(self):
-        self._check_rev_cache()
         return self.git.youngest_rev()
 
     def get_oldest_rev(self):
-        self._check_rev_cache()
         return self.git.oldest_rev()
 
     def normalize_path(self, path):
@@ -532,7 +534,6 @@ class GitRepository(Repository):
         return GitNode(self, path, rev, self.log, None, historian)
 
     def get_quickjump_entries(self, rev):
-        self._check_rev_cache()
         for bname, bsha in self.git.get_branches():
             yield 'branches', bname, '/', bsha
         for t in self.git.get_tags():
@@ -613,7 +614,7 @@ class GitRepository(Repository):
             revs = set(self.git.all_revs())
 
         if self.persistent_cache:
-            del self._rev_cache  # invalidate persistent cache
+            del self._cached_git  # invalidate persistent cache
         if not self.git.sync():
             return None # nothing expected to change
 
