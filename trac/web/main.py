@@ -40,7 +40,7 @@ from trac.loader import get_plugin_info, match_plugins_to_frames
 from trac.perm import PermissionCache, PermissionError
 from trac.resource import ResourceNotFound
 from trac.util import arity, get_frame_info, get_last_traceback, hex_entropy, \
-                      read_file, translation
+                      read_file, translation, warn_setuptools_issue
 from trac.util.compat import any, partial
 from trac.util.concurrency import threading
 from trac.util.datefmt import format_datetime, http_date, localtz, timezone
@@ -365,6 +365,8 @@ class RequestDispatcher(Component):
                 f.post_process_request(req, *(None,)*extra_arg_count)
         return resp
 
+
+_warn_setuptools = False
 _slashes_re = re.compile(r'/+')
 
 def dispatch_request(environ, start_response):
@@ -373,6 +375,11 @@ def dispatch_request(environ, start_response):
     @param environ: the WSGI environment dict
     @param start_response: the WSGI callback for starting the response
     """
+
+    global _warn_setuptools
+    if _warn_setuptools is False:
+        _warn_setuptools = True
+        warn_setuptools_issue(out=environ.get('wsgi.errors'))
 
     # SCRIPT_URL is an Apache var containing the URL before URL rewriting
     # has been applied, so we can use it to reconstruct logical SCRIPT_NAME

@@ -26,7 +26,7 @@ from trac.admin import AdminCommandError, AdminCommandManager
 from trac.core import TracError
 from trac.env import Environment
 from trac.ticket.model import *
-from trac.util import translation
+from trac.util import translation, warn_setuptools_issue
 from trac.util.html import html
 from trac.util.text import console_print, exception_to_unicode, printout, \
                            printerr, raw_input, to_unicode, \
@@ -557,6 +557,7 @@ def run(args=None):
         except babel.UnknownLocaleError:
             pass
         translation.activate(locale)
+    warn_setuptools_issue()
     admin = TracAdmin()
     if len(args) > 0:
         if args[0] in ('-h', '--help', 'help'):
