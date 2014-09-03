@@ -28,7 +28,7 @@ from trac.admin.api import AdminCommandError, AdminCommandManager, \
 from trac.core import TracError
 from trac.env import Environment
 from trac.ticket.model import *
-from trac.util import translation
+from trac.util import translation, warn_setuptools_issue
 from trac.util.html import html
 from trac.util.text import console_print, exception_to_unicode, printout, \
                            printerr, raw_input, to_unicode, \
@@ -563,6 +563,7 @@ def run(args=None):
         args = sys.argv[1:]
     if has_babel:
         translation.activate(get_console_locale())
+    warn_setuptools_issue()
     admin = TracAdmin()
     if len(args) > 0:
         if args[0] in ('-h', '--help', 'help'):
