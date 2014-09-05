@@ -152,6 +152,10 @@ A few examples:
 
 For upgrades, reading the TracUpgrade page is mandatory, of course.
 
+{{{#!div style="border: 1pt dotted; margin: 1em"
+**Setuptools Warning:** If the version of your setuptools is in the range 5.4 through 5.6, the environment variable `PKG_RESOURCES_CACHE_ZIP_MANIFESTS` must be set in order to avoid significant performance degradation. More information may be found in the sections on [#RunningtheStandaloneServer Running The Standalone Server] and [#RunningTraconaWebServer Running Trac on a Web Server]. 
+}}}
+
 === From source
 If you want more control, you can download the source in archive form, or do a checkout from one of the official [[Trac:TracRepositories|source code repositories]].
 
@@ -264,6 +268,20 @@ $ tracd --port 8000 /path/to/myproject
 Then, fire up a browser and visit `http://localhost:8000/`. You should get a simple listing of all environments that `tracd` knows about. Follow the link to the environment you just created, and you should see Trac in action. If you only plan on managing a single project with Trac you can have the standalone server skip the environment list by starting it like this:
 {{{
 $ tracd -s --port 8000 /path/to/myproject
+}}}
+
+{{{#!div style="border: 1pt dotted; margin: 1em"
+**Setuptools Warning:** If the version of your setuptools is in the range 5.4 through 5.6, the environment variable `PKG_RESOURCES_CACHE_ZIP_MANIFESTS` must be set in order to avoid significant performance degradation. The environment variable can be set system-wide, or for just the user that runs the `tracd` process. There are several ways to accomplish this in addition to what is discussed here, and depending on the distribution of your OS.
+
+To be effective system-wide a shell script with the `export` statement may be added to `/etc/profile.d`. To be effective for a user session the `export` statement may be added to `~/.profile`.
+{{{#!sh
+export PKG_RESOURCES_CACHE_ZIP_MANIFESTS=1
+}}}
+
+Alternatively, the variable can be set in the shell before executing `tracd`:
+{{{#!sh
+$ PKG_RESOURCES_CACHE_ZIP_MANIFESTS=1 tracd --port 8000 /path/to/myproject
+}}}
 }}}
 
 === Running Trac on a Web Server ===
