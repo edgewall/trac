@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
-"POT-Creation-Date: 2014-07-24 16:49-0700\n"
-"PO-Revision-Date: 2014-07-26 19:46+0200\n"
+"POT-Creation-Date: 2014-09-01 12:45+0000\n"
+"PO-Revision-Date: 2014-09-05 12:05+0200\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
 "Language-Team: Italian "
 "(http://www.transifex.com/projects/p/trac/language/it/)\n"
@@ -182,21 +182,21 @@ msgstr ""
 msgid "Send ticket change notification when updating a ticket."
 msgstr "Invia una notifica di modifica della segnalazione quando viene aggiornata."
 
-#: tracopt/versioncontrol/git/git_fs.py:271
+#: tracopt/versioncontrol/git/git_fs.py:272
 msgid "Enable persistent caching of commit tree."
 msgstr "Abilita una cache persistente del contenuto del repository."
 
-#: tracopt/versioncontrol/git/git_fs.py:274
+#: tracopt/versioncontrol/git/git_fs.py:275
 msgid "Wrap `GitRepository` in `CachedRepository`."
 msgstr "Accedi al `GitRepository` usando un `CachedRepository`."
 
-#: tracopt/versioncontrol/git/git_fs.py:277
+#: tracopt/versioncontrol/git/git_fs.py:278
 msgid ""
 "The length at which a sha1 should be abbreviated to (must\n"
 "be >= 4 and <= 40)."
 msgstr "La lunghezza a cui troncare i codici sha1 (deve essere >= 4 e <= 40)."
 
-#: tracopt/versioncontrol/git/git_fs.py:282
+#: tracopt/versioncontrol/git/git_fs.py:283
 msgid ""
 "The minimum length of an hex-string for which\n"
 "auto-detection as sha1 is performed (must be >= 4 and <= 40)."
@@ -204,7 +204,7 @@ msgstr ""
 "La lunghezza minima di una stringa esadecimale perché venga\n"
 "riconosciuta come un codice sha1 (deve essere >= 4 e <= 40)."
 
-#: tracopt/versioncontrol/git/git_fs.py:287
+#: tracopt/versioncontrol/git/git_fs.py:288
 msgid ""
 "Enable reverse mapping of git email addresses to trac user ids\n"
 "(costly if you have many users)."
@@ -212,7 +212,7 @@ msgstr ""
 "Abilita la mappatura inversa tra gli indirizzi email di git\n"
 "e gli ID degli utenti Trac (onerosa se gli utenti sono tanti)."
 
-#: tracopt/versioncontrol/git/git_fs.py:291
+#: tracopt/versioncontrol/git/git_fs.py:292
 msgid ""
 "Use git-committer id instead of git-author id for the\n"
 "changeset ''Author'' field."
@@ -220,7 +220,7 @@ msgstr ""
 "Usa il valore di git-committer invece che di git-author\n"
 "per il campo ''Author'' dei changeset."
 
-#: tracopt/versioncontrol/git/git_fs.py:296
+#: tracopt/versioncontrol/git/git_fs.py:297
 msgid ""
 "Use git-committer timestamp instead of git-author timestamp\n"
 "for the changeset ''Timestamp'' field."
@@ -228,23 +228,23 @@ msgstr ""
 "Usa l'istante specificato da git-committer invece che quello\n"
 "specificato da git-author per il campo ''Timestamp'' dei changeset."
 
-#: tracopt/versioncontrol/git/git_fs.py:301
+#: tracopt/versioncontrol/git/git_fs.py:302
 msgid "Define charset encoding of paths within git repositories."
 msgstr "Specifica la codifica dei percorsi dei repository git."
 
-#: tracopt/versioncontrol/git/git_fs.py:304
+#: tracopt/versioncontrol/git/git_fs.py:305
 msgid "Path to the git executable."
 msgstr "Percorso dell'eseguibile git."
 
-#: tracopt/versioncontrol/git/git_fs.py:884
+#: tracopt/versioncontrol/git/git_fs.py:887
 msgid "Path to a gitweb-formatted projects.list"
 msgstr "Percorso del file projects.list nel formato gitweb."
 
-#: tracopt/versioncontrol/git/git_fs.py:887
+#: tracopt/versioncontrol/git/git_fs.py:890
 msgid "Path to the base of your git projects"
 msgstr "Percorso base dei tuoi repository git."
 
-#: tracopt/versioncontrol/git/git_fs.py:890
+#: tracopt/versioncontrol/git/git_fs.py:893
 #, python-format
 msgid ""
 "Template for project URLs. %s will be replaced with the repo\n"
@@ -922,7 +922,7 @@ msgstr ""
 "in cui verranno applicati. Questi componenti gestiscono il controllo\n"
 "di accesso fine alle risorse di Trac."
 
-#: trac/db/api.py:286
+#: trac/db/api.py:296
 msgid ""
 "Database connection\n"
 "[wiki:TracEnvironment#DatabaseConnectionStrings string] for this\n"
@@ -933,11 +933,11 @@ msgstr ""
 "[wiki:TracEnvironment#DatabaseConnectionStrings Stringa] di connessione\n"
 "al database per questo progetto."
 
-#: trac/db/api.py:291
+#: trac/db/api.py:301
 msgid "Database backup location"
 msgstr "Posizione del backup del database."
 
-#: trac/db/api.py:294
+#: trac/db/api.py:304
 msgid ""
 "Timeout value for database connection, in seconds.\n"
 "Use '0' to specify ''no timeout''. (''since 0.11'')"
@@ -946,7 +946,7 @@ msgstr ""
 "Usare '0' per specificare ''nessun timeout''.\n"
 "(''dalla 0.11'')"
 
-#: trac/db/api.py:298
+#: trac/db/api.py:308
 msgid ""
 "Show the SQL queries in the Trac log, at DEBUG level.\n"
 "(''since 0.11.5'')"
@@ -962,7 +962,7 @@ msgstr "Percorso di mysqldump per effettuare i backup dei database MySQL."
 msgid "Location of pg_dump for Postgres database backups"
 msgstr "Percorso di pg_dump per effettuare i backup dei database PostgreSQL."
 
-#: trac/db/sqlite_backend.py:146
+#: trac/db/sqlite_backend.py:148
 msgid ""
 "Paths to sqlite extensions, relative to Trac environment's\n"
 "directory or absolute. (''since 0.12'')"
@@ -1188,7 +1188,7 @@ msgstr ""
 "vuoto.\n"
 "(''dalla 1.1.2'')"
 
-#: trac/ticket/default_workflow.py:109
+#: trac/ticket/default_workflow.py:111
 msgid ""
 "The workflow for tickets is controlled by plugins. By default,\n"
 "there's only a `ConfigurableTicketWorkflow` component in charge.\n"
@@ -2416,7 +2416,7 @@ msgid ""
 "   it doesn't know how to dispatch an InterTrac link, and it's up to\n"
 "   the local Trac to prepare the correct link. Not all links will work\n"
 "   that way, but the most common do. This is called the compatibility\n"
-"   mode, and is `true` by default.\n"
+"   mode, and is `false` by default.\n"
 " * If you know that the remote Trac knows how to dispatch InterTrac\n"
 "   links, you can explicitly disable this compatibility mode and then\n"
 "   ''any'' TracLinks can become InterTrac links.\n"
@@ -2451,7 +2451,7 @@ msgstr ""
 "   allora non è in grado di gestire il collegamento InterTrac e è\n"
 "   compito del Trac locale preparare un collegamento corretto. Non\n"
 "   tutti i collegamenti potranno funzionare, ma i più comuni sì.\n"
-"   Questa viene chiamata ''modalità compatibile'', ed è attivata di\n"
+"   Questa viene chiamata ''modalità compatibile'', ed è disattivata di\n"
 "   default.\n"
 " * Se sei sicuro che il Trac remoto è in grado di gestire i link\n"
 "   InterTrac, puoi disattivare esplicitamente questa modalità per\n"
