@@ -30,7 +30,7 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.perm import PermissionSystem
 from trac.ticket.api import ITicketActionController, TicketSystem
 from trac.ticket.model import Resolution
-from trac.util.text import obfuscate_email_address
+from trac.util.presentation import separated
 from trac.util.translation import _, tag_, cleandoc_
 from trac.web.chrome import Chrome, add_script, add_script_data
 from trac.wiki.macros import WikiMacroBase
@@ -346,8 +346,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         else:
             if status != '*':
                 hints.append(_("Next status will be '%(name)s'", name=status))
-        return (this_action['name'],
-                tag((' ' if i else None, c) for i, c in enumerate(control)),
+        return (this_action['name'], tag(separated(control, ' ')),
                 '. '.join(hints) + '.' if hints else '')
 
     def get_ticket_changes(self, req, ticket, action):
