@@ -116,7 +116,7 @@ class ConfigurableTicketWorkflow(Component):
 
         (''since 0.11'')""")
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         self.actions = get_workflow_config(self.config)
         if not '_reset' in self.actions:
             # Special action that gets enabled if the current status no longer
