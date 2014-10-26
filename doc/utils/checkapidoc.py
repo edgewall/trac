@@ -111,7 +111,8 @@ sphinx_doc_re = re.compile(r'''
 ''', re.MULTILINE | re.VERBOSE)
 
 def get_sphinx_documented_symbols(rst):
-    doc = file(os.path.join(api_doc, rst)).read()
+    with open(os.path.join(api_doc, rst)) as f:
+        doc = f.read()
     symbols, keywords = [], []
     for k, s in sphinx_doc_re.findall(doc):
         symbols.append(s.split('.')[-1])
@@ -157,7 +158,8 @@ def get_imported_symbols(module, has_submodules):
     src_filename = module.__file__.replace('\\', '/').replace('.pyc', '.py')
     if src_filename.endswith('/__init__.py') and not has_submodules:
         return set()
-    src = file(src_filename).read()
+    with open(src_filename) as f:
+        src = f.read()
     imported = set()
     for mod, symbol_list in import_from_re.findall(src):
         symbol_list = symbol_list.strip()

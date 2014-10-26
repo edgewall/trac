@@ -85,11 +85,12 @@ def index_diffs(path, diffs):
     return index
 
 def write_index_for(path):
-    diffs = unicode(file(path, 'rb').read(), 'utf-8')
+    with open(path, 'rb') as f:
+        diffs = unicode(f.read(), 'utf-8')
     changes = index_diffs(path, diffs)
     if changes:
         index = path + '.index'
-        with file(index, 'wb') as idx:
+        with open(index, 'wb') as idx:
             for n, line in changes:
                 print>>idx, (u"%s:%s: %s" % (path, n, line)).encode('utf-8')
         print("%s: %d changes indexed in %s" % (path, len(changes), index))
