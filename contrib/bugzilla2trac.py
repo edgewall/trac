@@ -902,16 +902,14 @@ def convert(_db, _host, _user, _password, _env, _force):
         users = mysql_cur.fetchall()
     else:
         users = ()
-    htpasswd = file("htpasswd", 'w')
-    for user in users:
-        if user['login_name'] in LOGIN_MAP:
-            login = LOGIN_MAP[user['login_name']]
-        else:
-            login = user['login_name']
+    with open('htpasswd', 'w') as f:
+        for user in users:
+            if user['login_name'] in LOGIN_MAP:
+                login = LOGIN_MAP[user['login_name']]
+            else:
+                login = user['login_name']
+            f.write(login + ':' + user['cryptpassword'] + '\n')
 
-        htpasswd.write(login + ":" + user['cryptpassword'] + "\n")
-
-    htpasswd.close()
     print "  Bugzilla users converted to htpasswd format, see 'htpasswd'."
 
     print "\nAll tickets converted."

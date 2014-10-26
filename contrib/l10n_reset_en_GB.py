@@ -39,7 +39,7 @@ msgid_msgstr_re = re.compile(r'''
     ''', re.MULTILINE | re.VERBOSE)
 
 def reset_file(path):
-    with file(path, 'rb+') as f:
+    with open(path, 'rb+') as f:
         eol = '\r\n'
         content = f.read()
         if eol not in content:

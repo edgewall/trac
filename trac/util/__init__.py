@@ -348,13 +348,9 @@ class NaivePopen:
         try:
             self.err = None
             self.errorlevel = os.system(command) >> 8
-            outfd = file(outfile, 'r')
-            self.out = outfd.read()
-            outfd.close()
+            self.out = read_file(outfile)
             if capturestderr:
-                errfd = file(errfile,'r')
-                self.err = errfd.read()
-                errfd.close()
+                self.err = read_file(errfile)
         finally:
             if os.path.isfile(outfile):
                 os.remove(outfile)
