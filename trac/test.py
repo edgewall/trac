@@ -238,7 +238,6 @@ def reset_mysql_db(env, db_prop):
 class EnvironmentStub(Environment):
     """A stub of the trac.env.Environment object for testing."""
 
-    href = abs_href = None
     global_databasemanager = None
     required = False
 
@@ -318,9 +317,7 @@ class EnvironmentStub(Environment):
         if default_data or init_global:
             self.reset_db(default_data)
 
-        from trac.web.href import Href
-        self.href = Href('/trac.cgi')
-        self.abs_href = Href('http://example.org/trac.cgi')
+        self.config.set('trac', 'base_url', 'http://example.org/trac.cgi')
 
         self.known_users = []
         translation.activate(locale_en)
