@@ -759,10 +759,7 @@ class Environment(Component, ComponentManager):
         if not self.base_url:
             self.log.warn("base_url option not set in configuration, "
                           "generated links may be incorrect")
-            _abs_href = Href('')
-        else:
-            _abs_href = Href(self.base_url)
-        return _abs_href
+        return Href(self.base_url)
 
 
 class EnvironmentSetup(Component):
