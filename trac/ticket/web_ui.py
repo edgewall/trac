@@ -152,9 +152,9 @@ class TicketModule(Component):
     # INavigationContributor methods
 
     def get_active_navigation_item(self, req):
-        if re.match(r'/newticket/?', req.path_info):
-            return 'newticket'
-        return 'tickets'
+        if re.match(r'/ticket/([0-9]+)$', req.path_info):
+            return 'tickets'
+        return 'newticket'
 
     def get_navigation_items(self, req):
         if 'TICKET_CREATE' in req.perm:

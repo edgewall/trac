@@ -16,7 +16,7 @@ import unittest
 
 import trac.ticket
 from trac.ticket.tests import api, model, query, wikisyntax, notification, \
-                              conversion, report, roadmap, batch
+                              conversion, report, roadmap, batch, web_ui
 from trac.ticket.tests.functional import functionalSuite
 
 def suite():
@@ -30,6 +30,7 @@ def suite():
     suite.addTest(report.suite())
     suite.addTest(roadmap.suite())
     suite.addTest(batch.suite())
+    suite.addTest(web_ui.suite())
     suite.addTest(doctest.DocTestSuite(trac.ticket.api))
     suite.addTest(doctest.DocTestSuite(trac.ticket.report))
     suite.addTest(doctest.DocTestSuite(trac.ticket.roadmap))
