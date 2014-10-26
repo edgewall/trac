@@ -110,6 +110,8 @@ class TicketModule(Component):
             [TracQuery#UsingTracLinks Trac links].
             (''since 0.12'')""")
 
+    ticket_path_re = re.compile(r'/ticket/([0-9]+)$')
+
     def __init__(self):
         self._warn_for_default_attr = set()
 
@@ -142,9 +144,9 @@ class TicketModule(Component):
     # INavigationContributor methods
 
     def get_active_navigation_item(self, req):
-        if re.match(r'/newticket/?', req.path_info):
-            return 'newticket'
-        return 'tickets'
+        if self.ticket_path_re.match(req.path_info):
+            return 'tickets'
+        return 'newticket'
 
     def get_navigation_items(self, req):
         if 'TICKET_CREATE' in req.perm:
@@ -155,11 +157,11 @@ class TicketModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        if req.path_info == "/newticket":
-            return True
-        match = re.match(r'/ticket/([0-9]+)$', req.path_info)
+        match = self.ticket_path_re.match(req.path_info)
         if match:
             req.args['id'] = match.group(1)
+            return True
+        if req.path_info == '/newticket':
             return True
 
     def process_request(self, req):
