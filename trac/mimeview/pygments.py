@@ -193,7 +193,7 @@ class PygmentsRenderer(Component):
             for mimetype in mimetypes:
                 self._types[mimetype] = (name, self.QUALITY_RATIO)
 
-        # Pygments currently doesn't know application/javascript
+        # Pygments < 1.4 doesn't know application/javascript
         if 'application/javascript' not in self._types:
             js_entry = self._types.get('text/javascript')
             if js_entry:
