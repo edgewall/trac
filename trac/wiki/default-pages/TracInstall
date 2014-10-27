@@ -1,9 +1,3 @@
-{{{
-#!div style="margin-top: .5em; padding: 0 1em; background-color: #ffd; border:1px outset #ddc; text-align: center"
-
- '''NOTE: the information in this page applies to Trac 1.0, the current version of Trac. \\
- For installing previous Trac versions, please refer to [[wiki:0.12/TracInstall]] (for Trac 0.12)''' 
-}}}
 = Trac Installation Guide for 1.0 = 
 [[TracGuideToc]]
 
