@@ -548,7 +548,7 @@ class Environment(Component, ComponentManager):
             self._log_handler.close()
             del self._log_handler
 
-    def get_repository(self, reponame=None, authname=None):
+    def get_repository(self, reponame=None):
         """Return the version control repository with the given name,
         or the default repository if `None`.
 
@@ -557,9 +557,6 @@ class Environment(Component, ComponentManager):
         for backward compatibility.
 
         :param reponame: the name of the repository
-        :param authname: the user name for authorization (not used
-                         anymore, left here for compatibility with
-                         0.11)
         """
         return RepositoryManager(self).get_repository(reponame)
 
