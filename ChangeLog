@@ -61,7 +61,8 @@ new features and a few not-so-disruptive changes.
 
 -----------------------------------------------------------------------------
 
-Trac 1.0.2 (TBD)
+Trac 1.0.2 (October 23, 2014)
+http://svn.edgewall.org/repos/trac/tags/trac-1.0.2
 
 Trac 1.0.2 is a maintenance release containing numerous fixes and minor
 enhancements. The following are a few of the highlights:
@@ -151,7 +152,8 @@ http://svn.edgewall.org/repos/trac/tags/trac-1.0b1
 
 -----------------------------------------------------------------------------
 
-Trac 0.12.6 (TBD)
+Trac 0.12.6 (October 23, 2014)
+http://svn.edgewall.org/repos/trac/tags/trac-0.12.6
 
 Trac 0.12.6 is a maintenance release that contains fixes for a few issues:
  - Subversion blame would fail for a path with URL-encoded characters (#10386),
