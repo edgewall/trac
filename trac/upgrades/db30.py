@@ -11,8 +11,6 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-import shutil
-
 from trac.upgrades import backup_config_file
 from trac.util.text import printout
 from trac.util.translation import _
