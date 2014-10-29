@@ -207,6 +207,25 @@ class WikiPage(object):
             if hasattr(listener, 'wiki_page_renamed'):
                 listener.wiki_page_renamed(self, old_name)
 
+    def edit_comment(self, new_comment):
+        """Edit comment of wiki page version in-place."""
+        if not self.exists:
+            raise TracError(_("Cannot edit comment of non-existent page"))
+
+        old_comment = self.comment
+
+        with self.env.db_transaction as db:
+            db("UPDATE wiki SET comment=%s WHERE name=%s AND version=%s",
+               (new_comment, self.name, self.version))
+
+        self.comment = new_comment
+        self.env.log.info("Changed comment on page %s version %s to %s",
+                          self.name, self.version, new_comment)
+
+        for listener in WikiSystem(self.env).change_listeners:
+            if hasattr(listener, 'wiki_page_comment_modified'):
+                listener.wiki_page_comment_modified(self, old_comment)
+
     def get_history(self):
         """Retrieve the edit history of a wiki page.
         """

@@ -50,6 +50,9 @@ class IWikiChangeListener(Interface):
     def wiki_page_renamed(page, old_name):
         """Called when a page has been renamed."""
 
+    def wiki_page_comment_modified(page, old_comment):
+        """Called when a page comment has been modified."""
+
 
 class IWikiPageManipulator(Interface):
     """Components that need to do specific pre- and post- processing of

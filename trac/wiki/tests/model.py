@@ -36,6 +36,7 @@ class TestWikiChangeListener(Component):
         self.deleted = []
         self.deleted_version = []
         self.renamed = []
+        self.comment_modified = []
 
     def wiki_page_added(self, page):
         self.added.append(page)
@@ -51,6 +52,9 @@ class TestWikiChangeListener(Component):
 
     def wiki_page_renamed(self, page, old_name):
         self.renamed.append((page, old_name))
+
+    def wiki_page_comment_modified(self, page, old_comment):
+        self.comment_modified.append((page, old_comment))
 
 
 class WikiPageTestCase(unittest.TestCase):
@@ -259,6 +263,33 @@ class WikiPageTestCase(unittest.TestCase):
 
         listener = TestWikiChangeListener(self.env)
         self.assertEqual((page, 'TestPage'), listener.renamed[0])
+
+    def test_edit_comment_of_page_version(self):
+        self.env.db_transaction.executemany(
+            "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
+            [('TestPage', 1, 42, 'joe', '::1', 'Bla bla', 'old 1', 0),
+             ('TestPage', 2, 43, 'kate', '::11', 'Bla', 'old 2', 0)])
+
+        page = WikiPage(self.env, 'TestPage')
+        page.edit_comment('edited comment two')
+
+        old_page = WikiPage(self.env, 'TestPage', 1)
+        old_page.edit_comment('new comment one')
+
+        self.assertEqual('edited comment two', page.comment)
+        self.assertEqual('new comment one', old_page.comment)
+        self.assertEqual(
+            [(1, 42, 'joe', '::1', 'Bla bla', 'new comment one', 0),
+             (2, 43, 'kate', '::11', 'Bla', 'edited comment two', 0)],
+            self.env.db_query("""
+                SELECT version, time, author, ipnr, text, comment, readonly
+                FROM wiki WHERE name=%s
+                ORDER BY version
+                """, ('TestPage',)))
+
+        listener = TestWikiChangeListener(self.env)
+        self.assertEqual((page, 'old 2'), listener.comment_modified[0])
+        self.assertEqual((old_page, 'old 1'), listener.comment_modified[1])
 
     def test_invalid_page_name(self):
         invalid_names = ('../Page', 'Page/..', 'Page/////SubPage',

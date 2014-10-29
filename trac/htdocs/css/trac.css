@@ -109,7 +109,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
  text-shadow: .1em .1em #fcfcfc;
 }
 input[type=button]:active, input[type=submit]:active,
-input[type=reset]:active {
+input[type=reset]:active, .inlinebuttons a:active {
  position: relative;
  top: .1em;
  left: .1em;
@@ -161,7 +161,8 @@ label.disabled, .disabled span.hint, .disabled p.help, .disabled legend,
 .buttons form, .buttons form div { display: inline }
 .buttons input { margin: 1em .5em .1em 0 }
 
-.inlinebuttons input {
+.inlinebuttons input,
+.inlinebuttons a {
  border: 1px solid #ddd;
  border-radius: 1em;
  height: 1.6em;
@@ -174,11 +175,13 @@ label.disabled, .disabled span.hint, .disabled p.help, .disabled legend,
  cursor: pointer;
 }
 .uisymbols .inlinebuttons input[type=button],
-.uisymbols .inlinebuttons input[type=submit] {
+.uisymbols .inlinebuttons input[type=submit],
+.uisymbols .inlinebuttons a {
  font-size: 100%;
 }
 .inlinebuttons input[type=button]:hover,
-.inlinebuttons input[type=submit]:hover {
+.inlinebuttons input[type=submit]:hover,
+.inlinebuttons a:hover {
  background: #f6f6f6;
  color: #333;
  text-shadow: .1em .1em #fcfcfc;

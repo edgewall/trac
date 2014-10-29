@@ -148,6 +148,8 @@ class WikiModule(Component):
                 else:
                     return self._render_editor(req, page, action,
                                                has_collision)
+            elif action == 'edit_comment':
+                self._do_edit_comment(req, versioned_page)
             elif action == 'delete':
                 self._do_delete(req, versioned_page)
             elif action == 'rename':
@@ -165,6 +167,8 @@ class WikiModule(Component):
             return self._render_confirm_rename(req, page)
         elif action == 'edit':
             return self._render_editor(req, page)
+        elif action == 'edit_comment':
+            return self._render_edit_comment(req, versioned_page)
         elif action == 'diff':
             return self._render_diff(req, versioned_page)
         elif action == 'history':
@@ -245,6 +249,20 @@ class WikiModule(Component):
         add_stylesheet(req, 'common/css/diff.css')
         add_script(req, 'common/js/diff.js')
         return diff_data, changes
+
+    def _do_edit_comment(self, req, page):
+        req.perm(page.resource).require('WIKI_ADMIN')
+        
+        if 'cancel' in req.args:
+            req.redirect(req.href.wiki(page.name, action='history'))
+        
+        new_comment = req.args.get('new_comment')
+
+        page.edit_comment(new_comment)
+        add_notice(req, _("The comment of version %(version)s of the page "
+                          "%(name)s has been updated.",
+                          version=page.version, name=page.name))
+        req.redirect(req.href.wiki(page.name, action='history'))
 
     def _do_delete(self, req, page):
         req.perm(page.resource).require('WIKI_DELETE')
@@ -552,6 +570,12 @@ class WikiModule(Component):
         add_script(req, 'common/js/folding.js')
         return 'wiki_edit.html', data, None
 
+    def _render_edit_comment(self, req, page):
+        req.perm(page.resource).require('WIKI_ADMIN')
+        data = self._page_data(req, page, 'edit_comment')
+        self._wiki_ctxtnav(req, page)
+        return 'wiki_edit_comment.html', data, None
+
     def _render_history(self, req, page):
         """Extract the complete history for a given page.
 
@@ -572,7 +596,11 @@ class WikiModule(Component):
                 'comment': comment,
                 'ipnr': ipnr
             })
-        data.update({'history': history, 'resource': page.resource})
+        data.update({
+            'history': history,
+            'resource': page.resource,
+            'can_edit_comment': 'WIKI_ADMIN' in req.perm(page.resource)
+        })
         add_ctxtnav(req, _("Back to %(wikipage)s", wikipage=page.name),
                     req.href.wiki(page.name))
         return 'history_view.html', data, None
