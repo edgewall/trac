@@ -29,10 +29,6 @@ HTML clean-up and sanitization
 .. autoclass :: TracHTMLSanitizer
 .. autoclass :: Deuglifier
 
-   See some usage examples in
-   `tracopt.mimeview.enscript.EnscriptDeuglifier` and
-   `tracopt.mimeview.php.PhpDeuglifier`.
-
 .. autofunction :: escape
 .. autofunction :: unescape
 

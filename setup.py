@@ -107,7 +107,6 @@ facilities.
         'ConfigObj': ['ConfigObj'],
         'Pygments': ['Pygments>=0.6'],
         'reST': ['docutils>=0.3.9'],
-        'SilverCity': ['SilverCity>=0.9.4'],
         'Textile': ['textile>=2.0'],
     },
 
@@ -148,9 +147,6 @@ facilities.
         trac.wiki.macros = trac.wiki.macros
         trac.wiki.web_ui = trac.wiki.web_ui
         trac.wiki.web_api = trac.wiki.web_api
-        tracopt.mimeview.enscript = tracopt.mimeview.enscript
-        tracopt.mimeview.php = tracopt.mimeview.php
-        tracopt.mimeview.silvercity = tracopt.mimeview.silvercity[SilverCity]
         tracopt.perm.authz_policy = tracopt.perm.authz_policy[ConfigObj]
         tracopt.perm.config_perm_provider = tracopt.perm.config_perm_provider
         tracopt.ticket.clone = tracopt.ticket.clone
