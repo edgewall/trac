@@ -19,7 +19,7 @@ import unittest
 import trac.tests.compat
 from trac.core import Component, TracError, implements
 from trac.perm import PermissionSystem
-from trac.test import EnvironmentStub, locale_en
+from trac.test import EnvironmentStub, MockPerm, locale_en
 from trac.tests.contentgen import random_sentence
 from trac.util import create_file
 from trac.web.chrome import (
@@ -30,6 +30,7 @@ from trac.web.href import Href
 
 class Request(object):
     locale = None
+    perm = MockPerm()
     args = {}
     def __init__(self, **kwargs):
         self.chrome = {}
@@ -345,6 +346,39 @@ class ChromeTestCase(unittest.TestCase):
         chrome.add_jquery_ui(req)
         self.assertIn({'value': 'Z', 'label': '+00:00'},
                       req.chrome['script_data']['jquery_ui']['timezone_list'])
+
+    def test_authorinfo(self):
+        chrome = Chrome(self.env)
+        req = Request()
+
+        self.assertEqual('<span class="trac-author">anonymous</span>',
+                         str(chrome.authorinfo(req, 'anonymous')))
+        self.assertEqual('<span class="trac-author">(none)</span>',
+                         str(chrome.authorinfo(req, '(none)')))
+        self.assertEqual('<span class="trac-author">anonymous</span>',
+                         str(chrome.authorinfo(req, None)))
+        self.assertEqual('<span class="trac-author">anonymous</span>',
+                         str(chrome.authorinfo(req, '')))
+        self.assertEqual('<span class="trac-author">user@example.org</span>',
+                         str(chrome.authorinfo(req, 'user@example.org')))
+        self.assertEqual('<span class="trac-author">User One &lt;user@example.org&gt;</span>',
+                         str(chrome.authorinfo(req, 'User One <user@example.org>')))
+
+    def test_authorinfo_short(self):
+        chrome = Chrome(self.env)
+
+        self.assertEqual('<span class="trac-author">anonymous</span>',
+                         str(chrome.authorinfo_short('anonymous')))
+        self.assertEqual('<span class="trac-author">(none)</span>',
+                         str(chrome.authorinfo_short('(none)')))
+        self.assertEqual('<span class="trac-author">anonymous</span>',
+                         str(chrome.authorinfo_short(None)))
+        self.assertEqual('<span class="trac-author">anonymous</span>',
+                         str(chrome.authorinfo_short('')))
+        self.assertEqual('<span class="trac-author">user</span>',
+                         str(chrome.authorinfo_short('User One <user@example.org>')))
+        self.assertEqual('<span class="trac-author">user</span>',
+                         str(chrome.authorinfo_short('user@example.org')))
 
 
 class ChromeTestCase2(unittest.TestCase):

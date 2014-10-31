@@ -1101,14 +1101,11 @@ class Chrome(Component):
     _long_author_re = re.compile(r'.*<([^@]+)@[^@]+>\s*|([^@]+)@[^@]+')
 
     def authorinfo_short(self, author):
-        shortened = author
-        if not author or author == 'anonymous':
-            shortened = _("anonymous")
-        else:
-            match = self._long_author_re.match(author)
-            if match:
-                shortened = match.group(1) or match.group(2)
-        return tag.span(shortened, class_='trac-author')
+        shortened = None
+        match = self._long_author_re.match(author or '')
+        if match:
+            shortened = match.group(1) or match.group(2)
+        return self.authorinfo(None, shortened or author)
 
     def cc_list(self, cc_field):
         """Split a CC: value in a list of addresses."""
