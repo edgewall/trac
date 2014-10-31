@@ -351,13 +351,13 @@ class ChromeTestCase(unittest.TestCase):
         chrome = Chrome(self.env)
         req = Request()
 
-        self.assertEqual('<span class="trac-author">anonymous</span>',
+        self.assertEqual('<span class="trac-author-anonymous">anonymous</span>',
                          str(chrome.authorinfo(req, 'anonymous')))
         self.assertEqual('<span class="trac-author">(none)</span>',
                          str(chrome.authorinfo(req, '(none)')))
-        self.assertEqual('<span class="trac-author">anonymous</span>',
+        self.assertEqual('<span class="trac-author-none">(none)</span>',
                          str(chrome.authorinfo(req, None)))
-        self.assertEqual('<span class="trac-author">anonymous</span>',
+        self.assertEqual('<span class="trac-author-none">(none)</span>',
                          str(chrome.authorinfo(req, '')))
         self.assertEqual('<span class="trac-author">user@example.org</span>',
                          str(chrome.authorinfo(req, 'user@example.org')))
@@ -367,13 +367,13 @@ class ChromeTestCase(unittest.TestCase):
     def test_authorinfo_short(self):
         chrome = Chrome(self.env)
 
-        self.assertEqual('<span class="trac-author">anonymous</span>',
+        self.assertEqual('<span class="trac-author-anonymous">anonymous</span>',
                          str(chrome.authorinfo_short('anonymous')))
         self.assertEqual('<span class="trac-author">(none)</span>',
                          str(chrome.authorinfo_short('(none)')))
-        self.assertEqual('<span class="trac-author">anonymous</span>',
+        self.assertEqual('<span class="trac-author-none">(none)</span>',
                          str(chrome.authorinfo_short(None)))
-        self.assertEqual('<span class="trac-author">anonymous</span>',
+        self.assertEqual('<span class="trac-author-none">(none)</span>',
                          str(chrome.authorinfo_short('')))
         self.assertEqual('<span class="trac-author">user</span>',
                          str(chrome.authorinfo_short('User One <user@example.org>')))

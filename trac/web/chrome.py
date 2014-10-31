@@ -1096,7 +1096,13 @@ class Chrome(Component):
 
     def authorinfo(self, req, author, email_map=None):
         author = self.author_email(author, email_map)
-        return tag.span(self.format_author(req, author), class_='trac-author')
+        suffix = ''
+        if author == 'anonymous':
+            suffix = '-anonymous'
+        elif not author:
+            suffix = '-none'
+        return tag.span(self.format_author(req, author),
+                        class_='trac-author' + suffix)
 
     _long_author_re = re.compile(r'.*<([^@]+)@[^@]+>\s*|([^@]+)@[^@]+')
 
@@ -1117,8 +1123,10 @@ class Chrome(Component):
         return ccs
 
     def format_author(self, req, author):
-        if not author or author == 'anonymous':
+        if author == 'anonymous':
             return _("anonymous")
+        if not author:
+            return _("(none)")
         if self.show_email_addresses or not req or 'EMAIL_VIEW' in req.perm:
             return author
         return obfuscate_email_address(author)

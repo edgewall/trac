@@ -269,10 +269,11 @@ class Paginator(object):
                     start=self.span[0] + 1, stop=self.span[1], total=total)
 
 
-def separated(items, sep=','):
+def separated(items, sep=',', last=None):
     """Yield `(item, sep)` tuples, one for each element in `items`.
 
-    `sep` will be `None` for the last item.
+    The separator after the last item is specified by the `last` parameter,
+    which defaults to `None`. (Since 1.1.3)
 
     >>> list(separated([1, 2]))
     [(1, ','), (2, None)]
@@ -280,15 +281,18 @@ def separated(items, sep=','):
     >>> list(separated([1]))
     [(1, None)]
 
-    >>> list(separated("abc", ':'))
+    >>> list(separated('abc', ':'))
     [('a', ':'), ('b', ':'), ('c', None)]
+
+    >>> list(separated((1, 2, 3), sep=';', last='.'))
+    [(1, ';'), (2, ';'), (3, '.')]
     """
     items = iter(items)
-    last = items.next()
+    next = items.next()
     for i in items:
-        yield last, sep
-        last = i
-    yield last, None
+        yield next, sep
+        next = i
+    yield next, last
 
 
 _js_quote = dict((c, '\\u%04x' % ord(c)) for c in '&<>')

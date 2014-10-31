@@ -43,7 +43,8 @@ class SetOwnerOperation(FunctionalTwillTestCaseSetup):
         ticket_id = self._tester.create_ticket(self.__class__.__name__,
                                                info={'owner': 'lammy'})
         self._tester.go_to_ticket(ticket_id)
-        tc.find("The owner will be changed from lammy")
+        tc.find('The owner will be changed from '
+                '<span class="trac-author">lammy</span>')
         tc.find('<input type="text" name="action_reassign_reassign_owner" '
                 'value="admin" id="action_reassign_reassign_owner" />')
 
@@ -61,7 +62,8 @@ class SetOwnerOperation(FunctionalTwillTestCaseSetup):
             self._testenv.grant_perm('anonymous', 'TICKET_ADMIN')
 
             self._tester.go_to_ticket(ticket_id)
-            tc.find("The owner will be changed from lammy")
+            tc.find('The owner will be changed from '
+                    '<span class="trac-author">lammy</span>')
             tc.notfind('<option value="anonymous" selected="selected">'
                        'anonymous</option>')
 
@@ -84,7 +86,8 @@ class SetOwnerOperation(FunctionalTwillTestCaseSetup):
             self.env.config.save()
 
             self._tester.go_to_ticket(ticket_id)
-            tc.find("The owner will be changed from lammy")
+            tc.find('The owner will be changed from '
+                    '<span class="trac-author">lammy</span>')
 
             tc.notfind('<input type="text" name="action_reassign_reassign_owner" '
                        'value="admin" id="action_reassign_reassign_owner" />')
@@ -117,7 +120,9 @@ class SetOwnerOperation(FunctionalTwillTestCaseSetup):
             tc.find('<input type="hidden" '
                     'name="action_reassign_reassign_owner" '
                     'value="alice" id="action_reassign_reassign_owner" />')
-            tc.find('The owner will be changed from lammy to alice')
+            tc.find('The owner will be changed from '
+                    '<span class="trac-author">lammy</span> to '
+                    '<span class="trac-author">alice</span>')
 
             tc.notfind('<input type="text" name="action_reassign_reassign_owner" '
                        'value="admin" id="action_reassign_reassign_owner" />')
@@ -162,7 +167,8 @@ class MaySetOwnerOperationRestrictOwnerFalse(FunctionalTestCaseSetup):
         ticket_id = self._tester.create_ticket(self.__class__.__name__,
                                                info={'owner': 'lammy'})
         self._tester.go_to_ticket(ticket_id)
-        tc.find("The owner will be changed from lammy")
+        tc.find('The owner will be changed from '
+                '<span class="trac-author">lammy</span>')
         tc.find('<input type="text" name="action_reassign_reassign_owner"'
                 ' value="lammy" id="action_reassign_reassign_owner" />')
 
@@ -174,7 +180,8 @@ class MaySetOwnerOperationRestrictOwnerFalse(FunctionalTestCaseSetup):
                                                info={'owner': ''})
         self._tester.go_to_ticket(ticket_id)
         tc.find("The ticket will remain with no owner.")
-        tc.find("The owner will be changed from \(none\)")
+        tc.find('The owner will be changed from '
+                '<span class="trac-author-none">\(none\)</span>')
         tc.find('<input type="text" name="action_reassign_reassign_owner"'
                 ' id="action_reassign_reassign_owner" />')
 
@@ -187,7 +194,8 @@ class MaySetOwnerOperationRestrictOwnerFalse(FunctionalTestCaseSetup):
         self.env.config.set('ticket', 'restrict_owner', True)
         self.env.config.save()
         self._tester.go_to_ticket(ticket_id)
-        tc.find("The owner will be changed from lammy")
+        tc.find('The owner will be changed from '
+                '<span class="trac-author">lammy</span>')
         tc.find('<option selected="selected" value="lammy">'
                 'lammy</option>')
 
@@ -209,7 +217,8 @@ class MaySetOwnerOperationRestrictOwnerFalse(FunctionalTestCaseSetup):
             self.env.config.save()
 
             self._tester.go_to_ticket(ticket_id)
-            tc.find("The owner will be changed from lammy")
+            tc.find('The owner will be changed from '
+                    '<span class="trac-author">lammy</span>')
 
             tc.notfind('<input type="text" name="action_reassign_reassign_owner" '
                        'value="admin" id="action_reassign_reassign_owner" />')
@@ -241,13 +250,16 @@ class MaySetOwnerOperationRestrictOwnerFalse(FunctionalTestCaseSetup):
             self.env.config.save()
 
             self._tester.go_to_ticket(ticket_id)
-            tc.find("The owner will be changed from lammy")
+            tc.find('The owner will be changed from '
+                    '<span class="trac-author">lammy</span>')
 
             tc.find('<select name="action_reassign_reassign_owner"')
             tc.notfind('<input type="hidden" '
                     'name="action_reassign_reassign_owner" '
                     'value="alice" id="action_reassign_reassign_owner" />')
-            tc.notfind('The owner will be changed from lammy to alice')
+            tc.notfind('The owner will be changed from '
+                       '<span class="trac-author">lammy<span> to '
+                       '<span class="trac-author">alice</span>')
             tc.find('<option selected="selected" value="lammy">lammy</option>')
             tc.find('<option value="alice">alice</option>')
 
@@ -261,7 +273,8 @@ class MaySetOwnerOperationRestrictOwnerFalse(FunctionalTestCaseSetup):
             tc.find('<input type="hidden" '
                     'name="action_reassign_reassign_owner" '
                     'value="lammy" id="action_reassign_reassign_owner" />')
-            tc.find('The owner will remain lammy')
+            tc.find('The owner will remain '
+                    '<span class="trac-author">lammy</span>')
             tc.notfind('<option selected="selected" value="lammy">lammy</option>')
 
 
@@ -292,7 +305,8 @@ class MaySetOwnerOperationDefaultRestrictOwnerNone(FunctionalTwillTestCaseSetup)
 
             self._tester.go_to_ticket(ticket_id)
             tc.find("The ticket will remain with no owner.")
-            tc.find("The owner will be changed from \(none\)")
+            tc.find('The owner will be changed from '
+                    '<span class="trac-author-none">\(none\)</span>')
             tc.find('<option selected="selected" value="">\(none\)</option>')
         finally:
             env.config.set('ticket-workflow', 'reassign.operations',
@@ -326,7 +340,8 @@ class MaySetOwnerOperationDefaultRestrictOwnerAnonymous(FunctionalTwillTestCaseS
             self._testenv.grant_perm('anonymous', 'TICKET_ADMIN')
 
             self._tester.go_to_ticket(ticket_id)
-            tc.find("The owner will be changed from anonymous")
+            tc.find('The owner will be changed from '
+                    '<span class="trac-author-anonymous">anonymous</span>')
             tc.find('<option selected="selected" value="anonymous">'
                     'anonymous</option>')
 
