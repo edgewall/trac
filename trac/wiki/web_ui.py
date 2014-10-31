@@ -522,7 +522,7 @@ class WikiModule(Component):
             page.readonly = 'readonly' in req.args
 
         author = get_reporter_id(req, 'author')
-        defaults = {'editrows': 20}
+        defaults = {'editrows': '20'}
         prefs = dict((key, req.session.get('wiki_%s' % key, defaults.get(key)))
                      for key in ('editrows', 'sidebyside'))
 
