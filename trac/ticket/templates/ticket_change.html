@@ -39,10 +39,10 @@ Arguments:
   <py:def function="commentref(prefix, cnum, cls=None)">
     <a href="#comment:$cnum" class="$cls">$prefix$cnum</a>
   </py:def>
-  <h3 class="change">
+  <h3 class="change" id="${'comment:%s' % cnum if 'cnum' in change else None}">
     <span class="threading"
           py:with="change_replies = replies.get(str(cnum), []) if 'cnum' in change else []">
-      <span py:if="'cnum' in change" id="comment:$cnum" class="cnum">${commentref('comment:', cnum)}</span>
+      <span py:if="'cnum' in change" class="cnum">${commentref('comment:', cnum)}</span>
       <py:if test="'replyto' in change">
         in reply to: ${commentref('&uarr;&nbsp;', change.replyto)}
         <py:if test="change_replies">; </py:if>
