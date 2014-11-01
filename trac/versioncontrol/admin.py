@@ -279,8 +279,9 @@ class RepositoryAdminPanel(Component):
                                          + '#Synchronization')
                         msg = tag_('You should also set up a post-commit hook '
                                    'on the repository to call %(cset_added)s '
-                                   'for each committed changeset.',
-                                   cset_added=cset_added)
+                                   'for each committed changeset. See the '
+                                   '%(doc)s for more information.',
+                                   cset_added=cset_added, doc=doc)
                         add_notice(req, msg)
                         req.redirect(req.href.admin(category, page))
 
