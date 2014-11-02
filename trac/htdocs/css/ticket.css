@@ -199,16 +199,24 @@ button.trac-revert div { display: none; }
 
 form .field { margin-top: .75em; width: 100% }
 form .field fieldset { margin-left: 1px; margin-right: 1px }
+#trac-add-comment .author { margin-bottom: 1em; }
+#trac-add-comment table th { text-align: left; width: 22%; }
+#trac-add-comment table td { width: 78%; }
 label[for=comment] { float: right }
 
 #propertyform { margin-bottom: 2em; }
-#properties { white-space: nowrap; line-height: 160%; padding: .5em }
-#properties table {
+#propertyform table {
  border-spacing: 0;
- padding: 0 .5em;
  table-layout: fixed;
  width: 100%;
 }
+#propertyform table td input[type="text"],
+#propertyform table td textarea {
+ -moz-box-sizing: border-box;
+ box-sizing: border-box;
+ width: 100%;
+}
+#properties { white-space: nowrap; line-height: 160%; padding: 1em }
 #properties table th,
 #properties table col.th {
  padding: .4em;
@@ -225,12 +233,6 @@ label[for=comment] { float: right }
  width: 33%
 }
 #properties table td.fullrow { width: 83% }
-#properties table td input[type="text"],
-#properties table td textarea {
- -moz-box-sizing: border-box;
- box-sizing: border-box;
- width: 100%;
-}
 #properties table td.col1 label,
 #properties table td.col2 label { float: left; margin-right: 0.5em; }
 #properties table td select { max-width: 100% }

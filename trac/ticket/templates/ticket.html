@@ -98,9 +98,6 @@
           var show_preview = preview.children().length != 0;
           $("#ticketchange").toggle(show_preview);
           setRevertHandler();
-          // Collapse property form if comment editor has focus
-          if (show_preview && comment_focused)
-            $("#modify").parent().addClass("collapsed");
         }, "#ticketchange .trac-loading");
         $("#trac-comment-editor").autoSubmit({preview_comment: '1'}, function(data, reply) {
           var comment = $("#trac-comment-editor").next("div.comment").html(reply);
@@ -185,31 +182,6 @@
       <form py:if="has_property_editor" method="post" id="propertyform"
             action="${href.ticket(ticket.id) + '#trac-add-comment' if ticket.exists
                       else href.newticket() + '#ticket'}">
-        <!--! Add comment -->
-        <div py:if="ticket.exists and can_append" id="trac-add-comment"
-             class="${classes('field', 'trac-scroll' if preview_mode else None)}">
-          <h3 class="foldable" id="edit">Add Comment</h3>
-          <div>
-            <div id="trac-edit-warning" class="warning system-message"
-                 style="${'display: none' if start_time == ticket['changetime'] else None}"
-                 i18n:msg="">
-              This ticket has been modified since you started editing. You should review the
-              <em class="trac-new">other modifications</em> which have been appended above,
-              and any <em class="trac-conflict">conflicts</em> shown in the preview below.
-              You can nevertheless proceed and submit your changes if you wish so.
-            </div>
-            <!--! Comment field -->
-            <fieldset>
-              <label for="comment" i18n:msg="">You may use
-                <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a>
-                here.
-              </label>
-              <textarea id="comment" name="comment" class="wikitext trac-fullwidth trac-resizable" rows="10" cols="78">
-${comment}</textarea>
-            </fieldset>
-          </div>
-        </div>
-
         <div>
           <h3 py:if="ticket.exists" class="foldable">Modify Ticket</h3>
           <div id="modify">
@@ -230,11 +202,21 @@ ${comment}</textarea>
                            value="$ticket.summary" />
                   </td>
                 </tr>
-                <tr py:if="only_for_admin">
-                  <th><label for="field-reporter">Reporter:</label></th>
+                <!--! Reporter field -->
+                <tr py:if="only_for_admin or (not ticket.exists and authname == 'anonymous')">
+                  <th>
+                    <label for="field-reporter" py:choose="">
+                      <py:when test="only_for_admin">Reporter:</py:when>
+                      <py:otherwise>Your email or username:</py:otherwise>
+                    </label>
+                  </th>
                   <td class="fullrow" colspan="3">
                     <input type="text" id="field-reporter" name="field_reporter"
                            value="${ticket.reporter}" />
+                    <p py:if="not only_for_admin" class="hint">
+                      <i18n:msg>E-mail address and user name can be saved in the
+                        <a href="${href.prefs()}" class="trac-target-new">Preferences</a>.</i18n:msg>
+                    </p>
                   </td>
                 </tr>
                 <tr py:if="can_edit or can_create">
@@ -343,33 +325,44 @@ ${value}</textarea>
           </div>
         </div>
 
-        <!--! Preview of ticket changes -->
-        <div py:if="ticket.exists and can_append" id="ticketchange" class="ticketdraft"
-             style="${'display: none' if not (change_preview.fields or change_preview.comment)
-                                         or cnum_edit is not None else None}">
-          <xi:include href="ticket_change.html" py:with="change = change_preview; preview = True"/>
-        </div>
-
-        <!--! Author or Reporter -->
-        <div py:if="authname == 'anonymous'" class="field">
-          <fieldset py:choose="">
-            <legend py:when="ticket.exists">Author</legend>
-            <legend py:otherwise="">Reporter</legend>
-            <table>
-              <tr>
-                <th>
-                  <label for="author">Your email or username:</label><br />
-                </th>
-                <td>
-                  <input type="text" id="author" name="author" size="40" value="$author_id" />
-                  <br />
-                </td>
-              </tr>
-            </table>
-            <p py:if="author_id == 'anonymous'" class="hint">
-              <i18n:msg>E-mail address and user name can be saved in the <a href="${href.prefs()}" class="trac-target-new">Preferences</a>.</i18n:msg>
-            </p>
-          </fieldset>
+        <!--! Add comment -->
+        <div py:if="ticket.exists and can_append" id="trac-add-comment"
+             class="${classes('field', 'trac-scroll' if preview_mode else None)}">
+          <h3 class="foldable" id="edit">Add Comment</h3>
+          <div>
+            <div id="trac-edit-warning" class="warning system-message"
+                 style="${'display: none' if start_time == ticket['changetime'] else None}"
+                 i18n:msg="">
+              This ticket has been modified since you started editing. You should review the
+              <em class="trac-new">other modifications</em> which have been appended above,
+              and any <em class="trac-conflict">conflicts</em> shown in the preview below.
+              You can nevertheless proceed and submit your changes if you wish so.
+            </div>
+            <!--! Comment field -->
+            <fieldset>
+              <div py:if="authname == 'anonymous'" class="author">
+                <table>
+                  <tr>
+                    <th>
+                      <label for="author">Your email or username:</label><br />
+                    </th>
+                    <td>
+                      <input type="text" id="author" name="author" value="$author_id" />
+                    </td>
+                  </tr>
+                </table>
+                <p py:if="author_id == 'anonymous'" class="hint">
+                  <i18n:msg>E-mail address and user name can be saved in the <a href="${href.prefs()}" class="trac-target-new">Preferences</a>.</i18n:msg>
+                </p>
+              </div>
+              <label for="comment" i18n:msg="">You may use
+                <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a>
+                here.
+              </label>
+              <textarea id="comment" name="comment" class="wikitext trac-fullwidth trac-resizable" rows="10" cols="78">
+${comment}</textarea>
+            </fieldset>
+          </div>
         </div>
 
         <!--! Attachment on creation checkbox -->
@@ -392,6 +385,13 @@ ${value}</textarea>
           </py:if>
           <input type="submit" name="preview" value="${_('Preview')}" accesskey="r" />&nbsp;
           <input type="submit" name="submit" value="${_('Submit changes') if ticket.exists else _('Create ticket')}" class="trac-disable-on-submit" />
+        </div>
+
+        <!--! Preview of ticket changes -->
+        <div py:if="ticket.exists and can_append" id="ticketchange" class="ticketdraft"
+             style="${'display: none' if not (change_preview.fields or change_preview.comment)
+                                         or cnum_edit is not None else None}">
+          <xi:include href="ticket_change.html" py:with="change = change_preview; preview = True"/>
         </div>
 
       </form>
