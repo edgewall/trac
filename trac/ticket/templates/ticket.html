@@ -213,8 +213,8 @@
                   <td class="fullrow" colspan="3">
                     <input type="text" id="field-reporter" name="field_reporter"
                            value="${ticket.reporter}" />
-                    <p py:if="not only_for_admin" class="hint">
-                      <i18n:msg>E-mail address and user name can be saved in the
+                    <p py:if="not only_for_admin and ticket.reporter == 'anonymous'" class="hint">
+                      <i18n:msg>E-mail address and name can be saved in the
                         <a href="${href.prefs()}" class="trac-target-new">Preferences</a>.</i18n:msg>
                     </p>
                   </td>
@@ -352,7 +352,8 @@ ${value}</textarea>
                   </tr>
                 </table>
                 <p py:if="author_id == 'anonymous'" class="hint">
-                  <i18n:msg>E-mail address and user name can be saved in the <a href="${href.prefs()}" class="trac-target-new">Preferences</a>.</i18n:msg>
+                  <i18n:msg>E-mail address and name can be saved in the
+                            <a href="${href.prefs()}" class="trac-target-new">Preferences</a>.</i18n:msg>
                 </p>
               </div>
               <label for="comment" i18n:msg="">You may use
