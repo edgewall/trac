@@ -30,6 +30,7 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.perm import PermissionSystem
 from trac.ticket.api import ITicketActionController, TicketSystem
 from trac.ticket.model import Resolution
+from trac.util import get_reporter_id
 from trac.util.presentation import separated
 from trac.util.translation import _, tag_, cleandoc_
 from trac.web.chrome import Chrome, add_script, add_script_data
@@ -232,6 +233,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         status = this_action['newstate']
         operations = this_action['operations']
         current_owner = ticket._old.get('owner', ticket['owner'])
+        author = get_reporter_id(req, 'author')
         author_info = partial(Chrome(self.env).authorinfo, req)
         formatted_current_owner = author_info(current_owner)
 
@@ -298,11 +300,11 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                   "%(current_owner)s to the selected user",
                                   current_owner=formatted_current_owner))
         elif 'set_owner_to_self' in operations and \
-                ticket._old.get('owner', ticket['owner']) != req.authname:
+                ticket._old.get('owner', ticket['owner']) != author:
             hints.append(tag_("The owner will be changed from "
                               "%(current_owner)s to %(new_owner)s",
                               current_owner=formatted_current_owner,
-                              new_owner=author_info(req.authname)))
+                              new_owner=author_info(author)))
         if 'set_resolution' in operations:
             if 'set_resolution' in this_action:
                 resolutions = [x.strip() for x in
@@ -380,7 +382,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                     newowner = newowner[0]
                 updated['owner'] = newowner
             elif operation == 'set_owner_to_self':
-                updated['owner'] = req.authname
+                updated['owner'] = get_reporter_id(req, 'author')
             elif operation == 'del_resolution':
                 updated['resolution'] = ''
             elif operation == 'set_resolution':
