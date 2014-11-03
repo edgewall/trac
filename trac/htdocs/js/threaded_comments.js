@@ -19,22 +19,22 @@ jQuery(document).ready(function($){
   var order = null;
   var form = $("#prefs");
 
-  var commentsOnly = $("#trac-comments-only-toggle");
-  var applyCommentsOnly = function() {
-    if (commentsOnly.attr('checked')) {
-      $("div.change:not(.trac-new):not(:has(.trac-field-attachment)) ul.changes").hide();
-      $("div.change:not(.trac-new):not(:has(.trac-field-attachment)):not(:has(.comment))").hide();
-    } else {
+  var showPropertyChanges = $("#trac-show-property-changes-toggle");
+  var applyShowPropertyChanges = function() {
+    if (showPropertyChanges.attr('checked')) {
       $("div.change ul.changes").show();
       $("div.change").show();
+    } else {
+      $("div.change:not(.trac-new):not(:has(.trac-field-attachment)) ul.changes").hide();
+      $("div.change:not(.trac-new):not(:has(.trac-field-attachment)):not(:has(.comment))").hide();
     }
   };
 
   var applyOrder = function() {
-    var commentsOnlyChecked = commentsOnly.attr('checked');
-    if (commentsOnlyChecked) {
-      commentsOnly.attr("checked", false);
-      applyCommentsOnly();
+    var showPropertyChangesChecked = showPropertyChanges.attr('checked');
+    if (showPropertyChangesChecked) {
+      showPropertyChanges.attr("checked", false);
+      applyShowPropertyChanges();
     }
     order = $("input[name='trac-comments-order']:checked").val();
     if (order == 'newest') {
@@ -52,9 +52,9 @@ jQuery(document).ready(function($){
         }
       });
     }
-    if (commentsOnlyChecked) {
-      commentsOnly.attr("checked", true);
-      applyCommentsOnly();
+    if (showPropertyChangesChecked) {
+      showPropertyChanges.attr("checked", true);
+      applyShowPropertyChanges();
     }
   };
   var unapplyOrder = function() {
@@ -87,13 +87,13 @@ jQuery(document).ready(function($){
     }, dataType: 'text' });
   });
 
-  commentsOnly.attr('checked', comments_prefs.comments_only != 'false');
-  applyCommentsOnly();
-  commentsOnly.click(function() {
-    applyCommentsOnly();
+  showPropertyChanges.attr('checked', comments_prefs.comments_only == 'false');
+  applyShowPropertyChanges();
+  showPropertyChanges.click(function() {
+    applyShowPropertyChanges();
     $.ajax({ url: form.attr('action'), type: 'POST', data: {
       save_prefs: true,
-      ticket_comments_only: !!commentsOnly.attr('checked'),
+      ticket_comments_only: !showPropertyChanges.attr('checked'),
       __FORM_TOKEN: form_token
     }, dataType: 'text' });
   });
