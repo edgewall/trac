@@ -284,10 +284,9 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                     owner=tag(formatted_new_owner, owner)))
                 if ticket['owner'] != owners[0]:
                     hints.append(tag_("The owner will be changed from "
-                                      "%(current_owner)s to "
-                                      "%(selected_owner)s",
+                                      "%(current_owner)s to %(new_owner)s",
                                       current_owner=formatted_current_owner,
-                                      selected_owner=formatted_new_owner))
+                                      new_owner=formatted_new_owner))
             else:
                 control.append(tag_("to %(owner)s", owner=tag.select(
                     [tag.option(x if x is not None else _("(none)"),
@@ -301,9 +300,9 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         elif 'set_owner_to_self' in operations and \
                 ticket._old.get('owner', ticket['owner']) != req.authname:
             hints.append(tag_("The owner will be changed from "
-                              "%(current_owner)s to %(authname)s",
+                              "%(current_owner)s to %(new_owner)s",
                               current_owner=formatted_current_owner,
-                              authname=author_info(req.authname)))
+                              new_owner=author_info(req.authname)))
         if 'set_resolution' in operations:
             if 'set_resolution' in this_action:
                 resolutions = [x.strip() for x in
