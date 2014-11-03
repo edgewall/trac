@@ -256,7 +256,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 owners = None
 
             if 'set_owner' in operations:
-                default_owner = req.authname
+                default_owner = author
             elif 'may_set_owner' in operations:
                 default_owner = \
                     ticket._old.get('owner', ticket['owner'] or None)
@@ -268,13 +268,14 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 raise AssertionError(operations)
 
             id = 'action_%s_reassign_owner' % action
-            selected_owner = req.args.get(id, default_owner)
 
             if not owners:
+                print default_owner
+                owner = req.args.get(id, default_owner)
                 control.append(
                     tag_("to %(owner)s",
                          owner=tag.input(type='text', id=id, name=id,
-                                         value=selected_owner)))
+                                         value=owner)))
                 hints.append(tag_("The owner will be changed from "
                                   "%(current_owner)s to the specified user",
                                   current_owner=formatted_current_owner))
@@ -290,6 +291,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                       current_owner=formatted_current_owner,
                                       new_owner=formatted_new_owner))
             else:
+                selected_owner = req.args.get(id, default_owner)
                 control.append(tag_("to %(owner)s", owner=tag.select(
                     [tag.option(x if x is not None else _("(none)"),
                                 value=x if x is not None else '',
