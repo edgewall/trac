@@ -243,7 +243,6 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             hints.append(_("The ticket will be disowned"))
         if 'set_owner' in operations:
             id = 'action_%s_reassign_owner' % action
-            selected_owner = req.args.get(id, req.authname)
 
             if 'set_owner' in this_action:
                 owners = [x.strip() for x in
@@ -256,7 +255,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 owners = None
 
             if owners is None:
-                owner = req.args.get(id, req.authname)
+                owner = req.args.get(id, author)
                 control.append(tag_("to %(owner)s",
                                     owner=tag.input(type='text', id=id,
                                                     name=id, value=owner)))
@@ -275,6 +274,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                    current_owner=formatted_current_owner,
                                    selected_owner=formatted_new_owner))
             else:
+                selected_owner = req.args.get(id, req.authname)
                 control.append(tag_("to %(owner)s", owner=tag.select(
                     [tag.option(x, value=x,
                                 selected=(x == selected_owner or None))
