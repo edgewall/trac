@@ -173,7 +173,6 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
 
 """
         self.log.info(info_message.replace('\n', ' ').replace('==', ''))
-        print(info_message)
 
     # ITicketActionController methods
 
