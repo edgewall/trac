@@ -18,8 +18,8 @@ from trac.core import Component, implements
 from trac.web.api import IRequestFilter
 
 NOTICE_TEMPLATE = """\
-{{{#!box
-**Note:** this page documents the %(release)s (%(desc)s) release.
+{{{#!box note
+This page documents the %(release)s (%(desc)s) release.
 See [[%(alt_page)s]] if you need the %(alt_desc)s version.
 }}}
 """
