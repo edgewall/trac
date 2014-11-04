@@ -294,7 +294,7 @@ class SubversionConnector(Component):
         self._version = None
         try:
             _import_svn()
-            self.log.debug('Subversion bindings imported')
+            self.log.debug("Subversion bindings imported")
         except ImportError, e:
             self.error = e
             self.log.info('Failed to load Subversion bindings', exc_info=True)

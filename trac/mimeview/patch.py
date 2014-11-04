@@ -141,7 +141,7 @@ class PatchRenderer(Component):
                     # Changed filename/version from '+++ <file> [rev]'
                     line = lines.next()
                     if not line.startswith('+++ '):
-                        self.log.debug('expected +++ after ---, got ' + line)
+                        self.log.debug('expected +++ after ---, got %s', line)
                         return None
 
                     newinfo = line.split(None, 2)
@@ -248,7 +248,8 @@ class PatchRenderer(Component):
                             line = '@'+line
                             break
                         else:
-                            self.log.debug('expected +, - or \\, got '+command)
+                            self.log.debug('expected +, - or \\, got %s',
+                                           command)
                             return None
                         for side in sides:
                             if side == 'base':

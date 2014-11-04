@@ -716,8 +716,8 @@ class BrowserModule(Component):
             add_link(req, 'alternate', raw_href, _('Original Format'),
                      mime_type)
 
-            self.log.debug("Rendering preview of node %s@%s with mime-type %s"
-                           % (node.name, str(rev), mime_type))
+            self.log.debug("Rendering preview of node %s@%s with mime-type %s",
+                           node.name, rev, mime_type)
 
             content = None # the remainder of that content is not needed
 

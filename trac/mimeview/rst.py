@@ -226,7 +226,7 @@ class ReStructuredTextRenderer(Component):
         if has_docutils:
             if StrictVersion(__version__) < StrictVersion('0.3.9'):
                 self.log.warning('Docutils version >= %s required, '
-                                 '%s found' % ('0.3.9', __version__))
+                                 '%s found', '0.3.9', __version__)
             else:
                 self.can_render = True
 

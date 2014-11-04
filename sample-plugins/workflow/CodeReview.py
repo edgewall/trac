@@ -67,7 +67,7 @@ class CodeReviewActionController(Component):
             controller = ConfigurableTicketWorkflow(self.env)
             actions_we_handle = controller.get_actions_by_operation_for_req(
                 req, ticket, 'code_review')
-        self.log.debug('code review handles actions: %r' % actions_we_handle)
+        self.log.debug('code review handles actions: %r', actions_we_handle)
         return actions_we_handle
 
     def get_all_status(self):

@@ -126,8 +126,8 @@ class ConfigurableTicketWorkflow(Component):
                 'oldstates': [],  # Will not be invoked unless needed
                 'operations': ['reset_workflow'],
                 'permissions': []}
-        self.log.debug('Workflow actions at initialization: %s\n' %
-                       str(self.actions))
+        self.log.debug('Workflow actions at initialization: %s\n',
+                       self.actions)
         for name, info in self.actions.iteritems():
             if not info['newstate']:
                 self.log.warning("Ticket workflow action '%s' doesn't define "
@@ -224,7 +224,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
 
     def render_ticket_action_control(self, req, ticket, action):
 
-        self.log.debug('render_ticket_action_control: action "%s"' % action)
+        self.log.debug('render_ticket_action_control: action "%s"', action)
 
         this_action = self.actions[action]
         status = this_action['newstate']

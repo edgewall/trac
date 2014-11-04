@@ -231,8 +231,8 @@ class TicketSystem(Component):
         (''since 0.11'').""")
 
     def __init__(self):
-        self.log.debug('action controllers for ticket workflow: %r' %
-                [c.__class__.__name__ for c in self.action_controllers])
+        self.log.debug('action controllers for ticket workflow: %r',
+                       [c.__class__.__name__ for c in self.action_controllers])
 
     # Public API
 

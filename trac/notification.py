@@ -151,8 +151,8 @@ class SmtpEmailSender(Component):
         # Ensure the message complies with RFC2822: use CRLF line endings
         message = fix_eol(message, CRLF)
 
-        self.log.info("Sending notification through SMTP at %s:%d to %s"
-                      % (self.smtp_server, self.smtp_port, recipients))
+        self.log.info("Sending notification through SMTP at %s:%d to %s",
+                      self.smtp_server, self.smtp_port, recipients)
         try:
             server = smtplib.SMTP(self.smtp_server, self.smtp_port)
         except smtplib.socket.error, e:
@@ -167,7 +167,7 @@ class SmtpEmailSender(Component):
         if self.use_tls:
             server.ehlo()
             if 'starttls' not in server.esmtp_features:
-                raise TracError(_("TLS enabled but server does not support " \
+                raise TracError(_("TLS enabled but server does not support "
                                   "TLS"))
             server.starttls()
             server.ehlo()
@@ -179,7 +179,7 @@ class SmtpEmailSender(Component):
         t = time.time() - start
         if t > 5:
             self.log.warning('Slow mail submission (%.2f s), '
-                             'check your mail setup' % t)
+                             'check your mail setup', t)
         if self.use_tls:
             # avoid false failure detection when the server closes
             # the SMTP connection with TLS enabled
@@ -207,11 +207,11 @@ class SendmailEmailSender(Component):
         # Use native line endings in message
         message = fix_eol(message, os.linesep)
 
-        self.log.info("Sending notification through sendmail at %s to %s"
-                      % (self.sendmail_path, recipients))
+        self.log.info("Sending notification through sendmail at %s to %s",
+                      self.sendmail_path, recipients)
         cmdline = [self.sendmail_path, "-i", "-f", from_addr]
         cmdline.extend(recipients)
-        self.log.debug("Sendmail command line: %s" % cmdline)
+        self.log.debug("Sendmail command line: %s", cmdline)
         try:
             child = Popen(cmdline, bufsize=-1, stdin=PIPE, stdout=PIPE,
                           stderr=PIPE, close_fds=close_fds)
@@ -418,7 +418,7 @@ class NotifyEmail(Notify):
             if domain:
                 address = "%s@%s" % (address, domain)
             else:
-                self.env.log.info("Email address w/o domain: %s" % address)
+                self.env.log.info("Email address w/o domain: %s", address)
                 return None
 
         mo = self.shortaddr_re.search(address)
@@ -427,7 +427,7 @@ class NotifyEmail(Notify):
         mo = self.longaddr_re.search(address)
         if mo:
             return mo.group(2)
-        self.env.log.info("Invalid email address: %s" % address)
+        self.env.log.info("Invalid email address: %s", address)
         return None
 
     def encode_header(self, key, value):
@@ -492,7 +492,7 @@ class NotifyEmail(Notify):
 
         # if there is not valid recipient, leave immediately
         if len(recipients) < 1:
-            self.env.log.info('no recipient for a ticket notification')
+            self.env.log.info("no recipient for a ticket notification")
             return
 
         pcc = accaddrs

@@ -329,14 +329,14 @@ class WikiProcessor(object):
     # generic processors
 
     def _legacy_macro_processor(self, text): # TODO: remove in 0.12
-        self.env.log.warning('Executing pre-0.11 Wiki macro %s by provider %s'
-                             % (self.name, self.macro_provider))
+        self.env.log.warning('Executing pre-0.11 Wiki macro %s by '
+                             'provider %s', self.name, self.macro_provider)
         return self.macro_provider.render_macro(self.formatter.req, self.name,
                                                 text)
 
     def _macro_processor(self, text):
-        self.env.log.debug('Executing Wiki macro %s by provider %s'
-                           % (self.name, self.macro_provider))
+        self.env.log.debug('Executing Wiki macro %s by provider %s',
+                           self.name, self.macro_provider)
         if arity(self.macro_provider.expand_macro) == 4:
             return self.macro_provider.expand_macro(self.formatter, self.name,
                                                     text, self.args)

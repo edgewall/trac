@@ -60,7 +60,7 @@ workflow = ConfigurableTicketWorkflow,MilestoneOperation
             controller = ConfigurableTicketWorkflow(self.env)
             actions_we_handle = controller.get_actions_by_operation_for_req(
                 req, ticket, 'set_milestone')
-        self.log.debug('set_milestone handles actions: %r' % actions_we_handle)
+        self.log.debug('set_milestone handles actions: %r', actions_we_handle)
         return actions_we_handle
 
     def get_all_status(self):
@@ -98,8 +98,8 @@ workflow = ConfigurableTicketWorkflow,MilestoneOperation
                 if new_milestone is not None or user_milestone is None:
                     try:
                         milestone = Milestone(self.env, new_milestone)
-                        self.log.info('changed milestone from %s to %s' %
-                                      (old_milestone, new_milestone) )
+                        self.log.info('changed milestone from %s to %s',
+                                      old_milestone, new_milestone)
                         return {'milestone': new_milestone}
                     except ResourceNotFound:
                         add_warning(req, _("Milestone %(name)s does not exist.",

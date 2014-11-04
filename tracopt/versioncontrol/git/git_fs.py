@@ -214,16 +214,15 @@ class GitConnector(Component):
         try:
             self._version = PyGIT.Storage.git_version(git_bin=self.git_bin)
         except PyGIT.GitError, e:
-            self.log.error("GitError: " + str(e))
+            self.log.error("GitError: %s", e)
 
         if self._version:
-            self.log.info("detected GIT version %s" % self._version['v_str'])
+            self.log.info("detected GIT version %s", self._version['v_str'])
             self.env.systeminfo.append(('GIT', self._version['v_str']))
             if not self._version['v_compatible']:
                 self.log.error("GIT version %s installed not compatible"
-                               "(need >= %s)" %
-                               (self._version['v_str'],
-                                self._version['v_min_str']))
+                               "(need >= %s)", self._version['v_str'],
+                               self._version['v_min_str'])
 
     # IWikiSyntaxProvider methods
 
@@ -362,9 +361,9 @@ class GitConnector(Component):
 
         if self.cached_repository:
             repos = GitCachedRepository(self.env, repos, self.log)
-            self.log.debug("enabled CachedRepository for '%s'" % dir)
+            self.log.debug("enabled CachedRepository for '%s'", dir)
         else:
-            self.log.debug("disabled CachedRepository for '%s'" % dir)
+            self.log.debug("disabled CachedRepository for '%s'", dir)
 
         return repos
 
@@ -745,7 +744,7 @@ class GitNode(Node):
             user, ts = _parse_user_time(props['committer'][0])
         except:
             self.log.error("internal error (could not get timestamp from "
-                           "commit '%s')" % self.rev)
+                           "commit '%s')", self.rev)
             return None
 
         return ts

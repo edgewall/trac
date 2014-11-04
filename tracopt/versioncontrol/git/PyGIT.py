@@ -411,7 +411,7 @@ class Storage(object):
 
         self.repo = GitCore(git_dir, git_bin=git_bin, log=log)
 
-        self.logger.debug("PyGIT.Storage instance %d constructed" % id(self))
+        self.logger.debug("PyGIT.Storage instance %d constructed", id(self))
 
     def __del__(self):
         with self.__cat_file_pipe_lock:
@@ -830,8 +830,8 @@ class Storage(object):
 
         db = self.get_commits()
         if commit_id not in db:
-            self.logger.info("read_commit failed for '%s' ('%s')" %
-                             (commit_id, commit_id_orig))
+            self.logger.info("read_commit failed for '%s' ('%s')",
+                             commit_id, commit_id_orig)
             raise GitErrorSha
 
         with self.__commit_msg_lock:

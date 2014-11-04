@@ -184,9 +184,9 @@ class AuthzPolicy(Component):
 
     def parse_authz(self):
         if ConfigObj is None:
-            self.log.error('ConfigObj package not found.')
+            self.log.error("ConfigObj package not found.")
             raise ConfigurationError()
-        self.log.debug('Parsing authz security policy %s',
+        self.log.debug("Parsing authz security policy %s",
                        self.get_authz_file)
         try:
             self.authz = ConfigObj(self.get_authz_file, encoding='utf8',

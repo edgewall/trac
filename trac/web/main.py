@@ -523,7 +523,7 @@ def _dispatch_request(req, env, env_error):
 def _send_user_error(req, env, e):
     # See trac/web/api.py for the definition of HTTPException subclasses.
     if env:
-        env.log.warn('[%s] %s' % (req.remote_addr, exception_to_unicode(e)))
+        env.log.warn('[%s] %s', req.remote_addr, exception_to_unicode(e))
     data = {'title': e.title, 'type': 'TracError', 'message': e.message,
             'frames': [], 'traceback': None}
     if e.code == 403 and req.authname == 'anonymous':
