@@ -337,8 +337,8 @@ class WikiProcessor(object):
     # generic processors
 
     def _macro_processor(self, text):
-        self.env.log.debug('Executing Wiki macro %s by provider %s'
-                           % (self.name, self.macro_provider))
+        self.env.log.debug('Executing Wiki macro %s by provider %s',
+                           self.name, self.macro_provider)
         if arity(self.macro_provider.expand_macro) == 4:
             return self.macro_provider.expand_macro(self.formatter, self.name,
                                                     text, self.args)

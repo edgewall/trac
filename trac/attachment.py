@@ -230,7 +230,7 @@ class Attachment(object):
                                        exception_to_unicode(e, traceback=True))
                     raise TracError(_("Could not delete attachment"))
 
-        self.env.log.info("Attachment removed: %s" % self.title)
+        self.env.log.info("Attachment removed: %s", self.title)
 
         for listener in AttachmentModule(self.env).change_listeners:
             listener.attachment_deleted(self)
@@ -279,7 +279,7 @@ class Attachment(object):
         self.resource = Resource(new_realm, new_id).child(self.realm,
                                                           self.filename)
 
-        self.env.log.info("Attachment reparented: %s" % self.title)
+        self.env.log.info("Attachment reparented: %s", self.title)
 
         for listener in AttachmentModule(self.env).change_listeners:
             if hasattr(listener, 'attachment_reparented'):
@@ -885,8 +885,8 @@ class AttachmentModule(Component):
             add_link(req, 'alternate', raw_href, _('Original Format'),
                      mime_type)
 
-            self.log.debug("Rendering preview of file %s with mime-type %s"
-                           % (attachment.filename, mime_type))
+            self.log.debug("Rendering preview of file %s with mime-type %s",
+                           attachment.filename, mime_type)
 
             data['preview'] = mimeview.preview_data(
                 web_context(req, attachment.resource), fd,
@@ -967,8 +967,8 @@ class LegacyAttachmentPolicy(Component):
             decision = legacy_action in perm(resource.parent)
             if not decision:
                 self.log.debug('LegacyAttachmentPolicy denied %s access to '
-                               '%s. User needs %s' %
-                               (username, resource, legacy_action))
+                               '%s. User needs %s',
+                               username, resource, legacy_action)
             return decision
         else:
             for d in self.delegates:

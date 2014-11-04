@@ -84,8 +84,8 @@ def load_py_files():
             for plugin_file in plugin_files:
                 try:
                     plugin_name = os.path.basename(plugin_file[:-3])
-                    env.log.debug('Loading file plugin %s from %s' % \
-                                  (plugin_name, plugin_file))
+                    env.log.debug('Loading file plugin %s from %s',
+                                  plugin_name, plugin_file)
                     if plugin_name not in sys.modules:
                         module = imp.load_source(plugin_name, plugin_file)
                     if path == auto_enable:

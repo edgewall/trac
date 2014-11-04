@@ -60,19 +60,19 @@ class MilestoneToVersion(Component):
                 version.time = milestone.completed
                 version.update()
                 self.log.info('Existing version "%s" updated with completion '
-                              'time from milestone "%s"' %
-                              (version.name, milestone.name))
+                              'time from milestone "%s"', version.name,
+                              milestone.name)
             else:
                 self.log.info('Version "%s" already exists.  No new version '
-                              'created from milestone "%s"' %
-                              (version.name, milestone.name))
+                              'created from milestone "%s"', version.name,
+                              milestone.name)
         except ResourceNotFound:
             version = Version(self.env)
             version.name = version_name
             version.time = milestone.completed
             version.insert()
-            self.log.info('New version "%s" created from completed milstone '
-                          '"%s".' % (version.name, milestone.name))
+            self.log.info('New version "%s" created from completed milestone '
+                          '"%s".', version.name, milestone.name)
 
     def milestone_deleted(self, milestone):
         pass

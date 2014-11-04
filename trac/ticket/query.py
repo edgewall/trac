@@ -307,7 +307,6 @@ class Query(object):
                     raise TracError(_("Page %(page)s is beyond the number of "
                                       "pages in the query", page=self.page))
 
-            # self.env.log.debug("SQL: " + sql % tuple([repr(a) for a in args]))
             cursor.execute(sql, args)
             columns = get_column_names(cursor)
             fields = [self.fields.by_name(column, None) for column in columns]
@@ -894,7 +893,7 @@ class QueryModule(Component):
                 qstring = self.default_anonymous_query
                 user = email or name or None
 
-            self.log.debug('QueryModule: Using default query: %s', str(qstring))
+            self.log.debug('QueryModule: Using default query: %s', qstring)
             if qstring.startswith('?'):
                 arg_list = parse_arg_list(qstring)
                 args = arg_list_to_args(arg_list)

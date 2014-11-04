@@ -223,7 +223,7 @@ class AuthzSourcePolicy(Component):
             if '' in modules and self.authz_module_name:
                 modules.add(self.authz_module_name)
             modules.add('')
-            self.log.info('Parsing authz file: %s' % self.authz_file)
+            self.log.info('Parsing authz file: %s', self.authz_file)
             try:
                 self._authz = parse(read_file(self.authz_file), modules)
                 self._users = set(user for paths in self._authz.itervalues()

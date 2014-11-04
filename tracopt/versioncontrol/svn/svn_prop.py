@@ -96,8 +96,8 @@ class SubversionPropertyRenderer(Component):
                 value = value.split()
                 if len(value) != 2:
                     self.log.warn("svn:externals entry %s doesn't contain "
-                            "a space-separated key value pair, skipping.",
-                            dummykey)
+                                  "a space-separated key value pair, "
+                                  "skipping.", dummykey)
                     continue
                 key, value = value
                 self._externals_map[key] = value.replace('%', '%%') \
