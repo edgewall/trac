@@ -863,8 +863,8 @@ class QueryModule(Component):
     def get_navigation_items(self, req):
         from trac.ticket.report import ReportModule
         if 'TICKET_VIEW' in req.perm('ticket') and \
-                not (self.env.is_component_enabled(ReportModule) and
-                     'REPORT_VIEW' in req.perm('report',
+                (not self.env.is_component_enabled(ReportModule) or
+                 'REPORT_VIEW' not in req.perm('report',
                                                ReportModule.REPORT_LIST_ID)):
             yield ('mainnav', 'tickets',
                    tag.a(_('View Tickets'), href=req.href.query()))
