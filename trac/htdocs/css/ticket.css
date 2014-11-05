@@ -233,6 +233,7 @@ label[for=comment] { float: right }
 #properties table td.col1 label,
 #properties table td.col2 label { float: left; margin-right: 0.5em; }
 #properties table td select { max-width: 100% }
+#properties table td span.hint { padding-left: 0 }
 
 #action { line-height: 2em }
 

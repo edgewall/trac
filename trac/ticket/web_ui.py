@@ -756,7 +756,7 @@ class TicketModule(Component):
                 remove.append(entry)
             else:
                 add.append(entry)
-        action = entry = ''
+        action = entry = None
         if remove:
             action, entry = ('remove', remove[0])
         elif add:
@@ -1496,9 +1496,10 @@ class TicketModule(Component):
                     field['edit_label'] = {
                             'add': _("Add to Cc"),
                             'remove': _("Remove from Cc"),
-                            '': _("Add/Remove from Cc")}[cc_action]
-                    field['cc_entry'] = cc_entry or _("<Author field>")
-                    field['cc_update'] = cc_update or None
+                            None: _("Cc")}[cc_action]
+                    field['cc_action'] = cc_action
+                    field['cc_entry'] = cc_entry
+                    field['cc_update'] = cc_update
                     if cc_changed:
                         field_changes['cc']['cc_update'] = cc_update
                 if cc_changed:
