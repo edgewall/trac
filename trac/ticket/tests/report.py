@@ -21,11 +21,14 @@ from StringIO import StringIO
 
 import trac.tests.compat
 from trac.db.mysql_backend import MySQLConnection
+from trac.perm import PermissionCache, PermissionSystem
 from trac.ticket.model import Ticket
+from trac.ticket.query import QueryModule
 from trac.ticket.report import ReportModule
 from trac.test import EnvironmentStub, Mock, MockPerm
 from trac.util.datefmt import utc
 from trac.web.api import Request, RequestDone
+from trac.web.chrome import Chrome
 from trac.web.href import Href
 import trac
 
@@ -516,11 +519,144 @@ class ExecuteReportTestCase(unittest.TestCase):
                          sorted(set(r[idx_group] for r in results)))
 
 
+class NavigationContributorTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.report_module = ReportModule(self.env)
+        self.query_module = QueryModule(self.env)
+        self.chrome_module = Chrome(self.env)
+
+        self.perm_sys = PermissionSystem(self.env)
+        if self.env.is_component_enabled(ReportModule):
+            self.perm_sys.grant_permission('has_report_view',
+                                           'REPORT_VIEW')
+            self.perm_sys.grant_permission('has_both', 'REPORT_VIEW')
+        self.perm_sys.grant_permission('has_ticket_view', 'TICKET_VIEW')
+        self.perm_sys.grant_permission('has_both', 'TICKET_VIEW')
+
+        self.tickets_link = lambda href: '<a href="%s">View Tickets</a>' \
+                                         % href
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def get_navigation_items(self, req, module):
+        """Return navigation items for `module` in a list."""
+        for contributor in self.chrome_module.navigation_contributors:
+            if contributor is module:
+                return list(contributor.get_navigation_items(req))
+        return []
+
+    def assertNavItem(self, href, navigation_items):
+        """Asserts that `navigation_items` contains only one entry and
+        directs to `href`.
+        """
+        self.assertEqual(1, len(navigation_items))
+        item = navigation_items[0]
+        self.assertEqual(('mainnav', 'tickets'), item[0:2])
+        self.assertEqual(self.tickets_link(href), str(item[2]))
+
+
+class NavContribReportModuleEnabledTestCase(NavigationContributorTestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        super(NavContribReportModuleEnabledTestCase, self).setUp()
+
+    def test_user_has_no_perms(self):
+        """No navigation item when user has neither REPORT_VIEW or
+        TICKET_VIEW.
+        """
+        req = Mock(href=Href('/'),
+                   perm=PermissionCache(self.env, 'anonymous'))
+
+        navigation_items = self.get_navigation_items(req, self.report_module)
+        self.assertEqual(0, len(navigation_items))
+
+        navigation_items = self.get_navigation_items(req, self.query_module)
+        self.assertEqual(0, len(navigation_items))
+
+    def test_user_has_report_view(self):
+        """Navigation item directs to ReportModule when ReportModule is
+        enabled
+        and the user has REPORT_VIEW.
+        """
+        req = Mock(href=Href('/'),
+                   perm=PermissionCache(self.env, 'has_report_view'))
+
+        navigation_items = self.get_navigation_items(req, self.report_module)
+        self.assertNavItem('/report', navigation_items)
+
+        navigation_items = self.get_navigation_items(req, self.query_module)
+        self.assertEqual(0, len(navigation_items))
+
+    def test_user_has_ticket_view(self):
+        """Navigation item directs to QueryModule when ReportModule is
+        enabled and the user has TICKET_VIEW but not REPORT_VIEW.
+        """
+        req = Mock(href=Href('/'),
+                   perm=PermissionCache(self.env, 'has_ticket_view'))
+
+        navigation_items = self.get_navigation_items(req, self.report_module)
+        self.assertEqual(0, len(navigation_items))
+
+        navigation_items = self.get_navigation_items(req, self.query_module)
+        self.assertNavItem('/query', navigation_items)
+
+    def test_user_has_report_view_and_ticket_view(self):
+        """Navigation item directs to ReportModule when ReportModule is
+         enabled and the user has REPORT_VIEW and TICKET_VIEW.
+        """
+        req = Mock(href=Href('/'),
+                   perm=PermissionCache(self.env, 'has_both'))
+
+        navigation_items = self.get_navigation_items(req, self.report_module)
+        self.assertNavItem('/report', navigation_items)
+
+        navigation_items = self.get_navigation_items(req, self.query_module)
+        self.assertEqual(0, len(navigation_items))
+
+
+class NavContribReportModuleDisabledTestCase(NavigationContributorTestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(disable=['trac.ticket.report.*'])
+        super(NavContribReportModuleDisabledTestCase, self).setUp()
+
+    def test_user_has_ticket_view(self):
+        """Navigation item directs to QueryModule when ReportModule is
+        disabled and the user has TICKET_VIEW.
+        """
+        req = Mock(href=Href('/'),
+                   perm=PermissionCache(self.env, 'has_ticket_view'))
+
+        navigation_items = self.get_navigation_items(req, self.report_module)
+        self.assertEqual(0, len(navigation_items))
+
+        navigation_items = self.get_navigation_items(req, self.query_module)
+        self.assertNavItem('/query', navigation_items)
+
+    def test_user_no_ticket_view(self):
+        """No Navigation item when ReportModule is disabled and the user
+        has only REPORT_VIEW.
+        """
+        req = Mock(href=Href('/'),
+                   perm=PermissionCache(self.env, 'has_report_view'))
+
+        navigation_items = self.get_navigation_items(req, self.report_module)
+        self.assertEqual(0, len(navigation_items))
+
+        navigation_items = self.get_navigation_items(req, self.query_module)
+        self.assertEqual(0, len(navigation_items))
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(trac.ticket.report))
     suite.addTest(unittest.makeSuite(ReportTestCase))
     suite.addTest(unittest.makeSuite(ExecuteReportTestCase))
+    suite.addTest(unittest.makeSuite(NavContribReportModuleEnabledTestCase))
+    suite.addTest(unittest.makeSuite(NavContribReportModuleDisabledTestCase))
     return suite
 
 if __name__ == '__main__':

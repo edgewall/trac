@@ -2154,55 +2154,6 @@ class RegressionTestTicket11028(FunctionalTwillTestCaseSetup):
                                      ('ROADMAP_VIEW', 'MILESTONE_VIEW'))
 
 
-class RegressionTestTicket11152(FunctionalTwillTestCaseSetup):
-    def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11152"""
-        # Check that "View Tickets" mainnav entry links to the report page
-        self._tester.go_to_view_tickets()
-
-        # Check that "View Tickets" mainnav entry links to the query page
-        # when the user doesn't have REPORT_VIEW, and that the mainnav entry
-        # is not present when the user doesn't have TICKET_VIEW.
-        try:
-            self._tester.logout()
-            self._testenv.revoke_perm('anonymous', 'REPORT_VIEW')
-            self._tester.go_to_view_tickets('query')
-
-            self._testenv.revoke_perm('anonymous', 'TICKET_VIEW')
-            self._tester.go_to_front()
-            tc.notfind('\\bView Tickets\\b')
-        finally:
-            self._testenv.grant_perm('anonymous',
-                                     ('REPORT_VIEW', 'TICKET_VIEW'))
-            self._tester.login('admin')
-
-        # Disable the ReportModule component and check that "View Tickets"
-        # mainnav entry links to the `/query` page.
-        env = self._testenv.get_trac_environment()
-        env.config.set('components', 'trac.ticket.report.ReportModule',
-                       'disabled')
-        env.config.save()
-
-        try:
-            self._tester.go_to_view_tickets('query')
-        finally:
-            env.config.remove('components', 'trac.ticket.report.ReportModule')
-            env.config.save()
-
-        # Disable the QueryModule component and check that "View Tickets"
-        # mainnav entry links to the `/report` page
-        env.config.set('components', 'trac.ticket.query.QueryModule',
-                       'disabled')
-        env.config.save()
-
-        try:
-            self._tester.go_to_view_tickets('report')
-            tc.notfind('<li class="last first">Available Reports</li>')
-        finally:
-            env.config.remove('components', 'trac.ticket.query.QueryModule')
-            env.config.save()
-
-
 class RegressionTestTicket11176(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/11176
@@ -2407,7 +2358,6 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket9084())
     suite.addTest(RegressionTestTicket9981())
     suite.addTest(RegressionTestTicket11028())
-    suite.addTest(RegressionTestTicket11152())
     suite.addTest(RegressionTestTicket11590())
     suite.addTest(RegressionTestTicket11618())
     if ConfigObj:
