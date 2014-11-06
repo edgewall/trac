@@ -84,8 +84,8 @@
           if (!$('#trac-comments-oldest').checked())
             $('#trac-comments-oldest').click().change();
           $("#changelog").replaceWith(items.filter("#changelog"));
-          if ($('#trac-show-property-changes-toggle').attr('checked'))
-            $('#trac-show-property-changes-toggle').click().attr('checked', true);
+          if (!$('#trac-show-property-changes-toggle').attr('checked'))
+            $('#trac-show-property-changes-toggle').click().attr('checked', false);
           // Show warning
           var new_changes = $("#changelog .trac-new");
           $("#trac-edit-warning").toggle(new_changes.length != 0);
