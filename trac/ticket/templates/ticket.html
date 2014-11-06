@@ -304,9 +304,11 @@ ${value}</textarea>
                                          checked="${field.cc_update or None}" />
                                 </py:when>
                                 <!--! Unauthenticated user without TICKET_EDIT_CC and no email set in prefs -->
-                                <i18n:msg py:when="'cc_entry' in field">
-                                  <span class="hint">Set your email in <a href="${href.prefs()}" class="trac-target-new">Preferences</a></span>
-                                </i18n:msg>
+                                <py:when test="'cc_entry' in field">
+                                  <span  class="hint" i18n:msg="">
+                                    Set your email in <a href="${href.prefs()}" class="trac-target-new">Preferences</a>
+                                  </span>
+                                </py:when>
                                 <!--! TICKET_EDIT_CC is allowed -->
                                 <py:otherwise>
                                   <input type="text" id="field-${field.name}"
