@@ -13,12 +13,16 @@ python.24 =
 python.25 = C:/Dev/Python254
 python.ap25 = C:/Dev/ActivePython254
 python.26 = C:/Dev/Python261
-python.27 =
+python.27 = C:/Dev/Python278
 
 # And also:
 
 # pythonpath.<key> = <extension to the PYTHONPATH for that installation>
 # path.<key> = <extension to the PATH for that installation>
+pythonpath.26 = C:/Dev/svn-win32-1.6.21/python
+path.26 = C:/Dev/svn-win32-1.6.21/bin
+pythonpath.27 = C:/Dev/svn-win32-1.8.10/python
+path.27 = C:/Dev/svn-win32-1.8.10/bin
 
 # (both very convenient for specifying non-default Subversion bindings,
 # for example)
