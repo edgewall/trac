@@ -139,15 +139,25 @@ Makefile.cfg:
 	@echo "$$HELP_CFG"
 
 status:
-	@echo -n "Python version: "
-	@python -V
-	@echo -n "figleaf: "
-	@-which figleaf 2>/dev/null || echo
-	@echo -n "coverage: "
-	@-which coverage 2>/dev/null || echo
-	@echo "PYTHONPATH=$$PYTHONPATH"
-	@echo "TRAC_TEST_DB_URI=$$TRAC_TEST_DB_URI"
-	@echo "server-options=$(server-options)"
+	@echo
+	@echo -n "Python: "
+	@which python
+	@python contrib/make_status.py
+	@echo
+	@echo -n "  figleaf: "
+	@which figleaf 2>/dev/null || echo "not installed"
+	@echo -n "  coverage: "
+	@which coverage 2>/dev/null || echo "not installed"
+	@echo
+	@echo "Variables:"
+	@echo "  PATH=$(PATH-extension)$(SEP)\$$PATH"
+	@echo "  PYTHONPATH=$(PYTHONPATH-extension)$(SEP)\$$PYTHONPATH"
+	@echo "  TRAC_TEST_DB_URI=$$TRAC_TEST_DB_URI"
+	@echo "  server-options=$(server-options)"
+	@echo
+	@echo "External dependencies:"
+	@echo -n "  Git version: "
+	@git --version 2>/dev/null || echo "not installed"
 
 Trac.egg-info: status
 	python setup.py egg_info
@@ -543,7 +553,7 @@ clean-doc:
 #
 # Setup environment variables
 
-python-home := $(python.$(if $(python),$(python),$($(db).python)))
+python-home := $(python.$(or $(python),$($(db).python)))
 
 ifeq "$(OS)" "Windows_NT"
     ifndef python-home
@@ -557,10 +567,11 @@ else
     SEP = :
 endif
 
-ifdef python-bin
-    export PATH := $(python-bin)$(SEP)$(PATH)
-endif
-export PYTHONPATH := .$(SEP)$(PYTHONPATH)
+PATH-extension = $(python-bin)$(SEP)$(path.$(python))
+PYTHONPATH-extension = .$(SEP)$(pythonpath.$(python))
+
+export PATH := $(PATH-extension)$(SEP)$(PATH)
+export PYTHONPATH := $(PYTHONPATH-extension)$(SEP)$(PYTHONPATH)
 export TRAC_TEST_DB_URI = $($(db).uri)
 
 # Misc.
