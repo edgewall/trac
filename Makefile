@@ -100,39 +100,22 @@ help:
 	@echo "$$HELP"
 
 status:
+	@echo
 	@echo -n "Python: "
 	@which python
-	@echo -n "  Python version: "
-	@python -V
-	@echo -n "  Setuptools version: "
-	@python -c "import setuptools as s; print s.__version__" 2>/dev/null \
-	 || echo "not installed"
-	@echo -n "  Genshi version: "
-	@python -c "import genshi; print genshi.__version__" 2>/dev/null \
-	 || echo "not installed"
-	@echo -n "  Babel version: "
-	@python -c "import babel; print babel.__version__" 2>/dev/null \
-	 || echo "not installed"
-	@echo -n "  SVN bindings version: "
-	@python -c "from svn import core; print core.SVN_VERSION" 2>/dev/null \
-	 || echo "not installed"
-	@echo -n "  Mercurial version: "
-	@python -c "import mercurial.util as u; print u.version()" 2>/dev/null \
-	 || echo "not installed"
-	@echo -n "  Pygments version: "
-	@python -c "import pygments; print pygments.__version__" 2>/dev/null \
-	 || echo "not installed"
+	@python contrib/make_status.py
+	@echo
 	@echo -n "  figleaf: "
 	@which figleaf 2>/dev/null || echo "not installed"
 	@echo -n "  coverage: "
 	@which coverage 2>/dev/null || echo "not installed"
-#
+	@echo
 	@echo "Variables:"
 	@echo "  PATH=$(PATH-extension)$(SEP)\$$PATH"
 	@echo "  PYTHONPATH=$(PYTHONPATH-extension)$(SEP)\$$PYTHONPATH"
 	@echo "  TRAC_TEST_DB_URI=$$TRAC_TEST_DB_URI"
 	@echo "  server-options=$(server-options)"
-#
+	@echo
 	@echo "External dependencies:"
 	@echo -n "  Git version: "
 	@git --version 2>/dev/null || echo "not installed"
