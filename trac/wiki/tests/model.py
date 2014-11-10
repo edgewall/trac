@@ -153,7 +153,7 @@ class WikiPageTestCase(unittest.TestCase):
         with self.env.db_query as db:
             rows = db("""
                SELECT version, time, author, ipnr, text, comment, readonly
-               FROM wiki WHERE name=%s
+               FROM wiki WHERE name=%s ORDER BY version
                """, ('TestPage',))
             self.assertEqual(2, len(rows))
             self.assertEqual((1, to_utimestamp(t), 'joe', '::1', 'Bla bla',
