@@ -67,7 +67,6 @@ class TracAdmin(cmd.Cmd):
     envname = None
     __env = None
     needs_upgrade = None
-    cmd_mgr = None
 
     def __init__(self, envdir=None):
         cmd.Cmd.__init__(self)
@@ -147,7 +146,6 @@ Type:  '?' or 'help' for help on commands.
         self.prompt = "Trac [%s]> " % self.envname
         if env is not None:
             self.__env = env
-            self.cmd_mgr = AdminCommandManager(env)
 
     def env_check(self):
         if not self.__env:
@@ -176,11 +174,14 @@ Type:  '?' or 'help' for help on commands.
             negotiated = get_console_locale(env)
             if negotiated:
                 translation.activate(negotiated)
-        self.cmd_mgr = AdminCommandManager(env)
 
     ##
     ## Utility methods
     ##
+
+    @property
+    def cmd_mgr(self):
+        return AdminCommandManager(self.env)
 
     def arg_tokenize(self, argstr):
         """`argstr` is an `unicode` string
