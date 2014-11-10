@@ -140,7 +140,7 @@ class PreferencesModule(Component):
 
     def _do_save_xhr(self, req):
         for key in req.args:
-            if not key in ['save_prefs', 'panel_id']:
+            if not key in ['save_prefs', 'panel_id', '__FORM_TOKEN']:
                 req.session[key] = req.args[key]
         req.session.save()
         req.send_no_content()
