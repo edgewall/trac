@@ -70,7 +70,7 @@ class RegressionTestTicket11337(FunctionalTwillTestCaseSetup):
 
         babel_hint = "Install Babel for extended language support."
         catalog_hint = "Message catalogs have not been compiled."
-        language_select = '<select name="language">'
+        language_select = '<select id="language" name="language">'
         disabled_language_select = \
             '<select id="language" name="language" disabled="disabled" ' \
             'title="Translations are currently unavailable">'
