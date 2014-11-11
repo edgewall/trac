@@ -21,81 +21,89 @@
   </head>
   <body>
 
-    <div class="field" py:with="session_tzname = settings.session.get('tz');
-                                selected_tz = timezone(session_tzname) or utc">
-      <label>Time zone:
-      <select name="tz">
-        <option value="">Default time zone</option>
-        <option py:for="tzname in timezones" value="$tzname"
-                selected="${session_tzname != None and
-                            session_tzname.startswith('Etc/') and
-                            selected_tz == timezone(tzname) or
-                            session_tzname == tzname or None}">$tzname</option>
-      </select></label>
-      <p class="hint">Configuring your time zone will result in all
-      dates and times displayed on this site to use your time zone
-      instead of that of the server.</p>
+    <table py:with="session_tzname = settings.session.get('tz');
+                    selected_tz = timezone(session_tzname) or utc">
+      <tr class="field">
+        <th><label for="tz">Time zone:</label></th>
+        <td><select id="tz" name="tz">
+          <option value="">Default time zone</option>
+          <option py:for="tzname in timezones" value="$tzname"
+                  selected="${session_tzname != None and
+                              session_tzname.startswith('Etc/') and
+                              selected_tz == timezone(tzname) or
+                              session_tzname == tzname or None}">$tzname</option>
+        </select></td>
+      </tr>
+      <tr>
+        <th></th>
+        <td>
+          <p class="hint">Configuring your time zone will result in all
+          dates and times displayed on this site to use your time zone
+          instead of that of the server.</p>
+          <!-- This currently crashes Genshi's extractor if you add i18n:msg -->
+          <p class="hint" py:with="now = datetime.now(utc);
+                                   nowtz = selected_tz.normalize(now.astimezone(selected_tz));
+                                   formatted = format_time(now, 'iso8601', tzinfo=req.tz)"
+                          py:choose="">
+            <i18n:msg params="time">
+              Example: The current time is <strong>${format_time(now, 'iso8601', tzinfo=utc)}</strong> (UTC).
+            </i18n:msg>
+            <br />
+            <py:when test="session_tzname">
+              <i18n:msg params="tz, formatted">
+                In your time zone ${nowtz.tzname()}, this would be displayed as
+                <strong>$formatted</strong>.
+              </i18n:msg>
+            </py:when>
+            <py:otherwise>
+              <i18n:msg params="formatted">
+                In the default time zone, this would be displayed as <strong>$formatted</strong>.
+              </i18n:msg>
+            </py:otherwise>
+          </p>
+          <p class="hint" i18n:msg="">
+            Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean Time (GMT).<br />
+            A positive offset is used to indicate a timezone at the east of Greenwich, i.e. ahead of Universal Time.
+          </p>
+        </td>
+      </tr>
 
-      <!-- This currently crashes Genshi's extractor if you add i18n:msg -->
-      <p class="hint" py:with="now = datetime.now(utc);
-                               nowtz = selected_tz.normalize(now.astimezone(selected_tz));
-                               formatted = format_time(now, 'iso8601', tzinfo=req.tz)"
-                      py:choose="">
-        <i18n:msg params="time">
-          Example: The current time is <strong>${format_time(now, 'iso8601', tzinfo=utc)}</strong> (UTC).
-        </i18n:msg>
-        <br />
-        <py:when test="session_tzname">
-          <i18n:msg params="tz, formatted">
-            In your time zone ${nowtz.tzname()}, this would be displayed as
-            <strong>$formatted</strong>.
-          </i18n:msg>
-        </py:when>
-        <py:otherwise>
-          <i18n:msg params="formatted">
-            In the default time zone, this would be displayed as <strong>$formatted</strong>.
-          </i18n:msg>
-        </py:otherwise>
-      </p>
-
-      <p class="hint" i18n:msg="">
-        Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean Time (GMT).<br />
-        A positive offset is used to indicate a timezone at the east of Greenwich, i.e. ahead of Universal Time.
-      </p>
-
-    </div>
-
-    <div class="field" py:with="session_lc_time = settings.session.get('lc_time')">
-      <label>Date format:
-        <select name="lc_time">
+      <tr class="field" py:with="session_lc_time = settings.session.get('lc_time')">
+        <th><label for="lc_time">Date format:</label></th>
+        <td><select id="lc_time" name="lc_time">
           <option value="">Default date format</option>
           <option value="locale" py:if="locales and languages"
                   selected="${session_lc_time == 'locale' or None}">Your language setting</option>
           <option value="iso8601"
                   selected="${session_lc_time == 'iso8601' or None}">ISO 8601 format</option>
-        </select>
-      </label>
+        </select></td>
+      </tr>
+      <tr>
+        <th></th>
+        <td><p class="hint">Configuring your date format will result in formatting
+            and parsing datetime displayed on this site to use your date format
+            instead of that of the server.</p>
+        </td>
+      </tr>
 
-      <p class="hint">Configuring your date format will result in formatting
-      and parsing datetime displayed on this site to use your date format
-      instead of that of the server.</p>
-    </div>
-
-    <div class="field" py:with="session_dateinfo = settings.session.get('dateinfo')">
-      <label>Date relative/absolute format:
-        <select name="dateinfo">
-          <option value="">Default format</option>
-          <option value="relative"
-                  selected="${session_dateinfo == 'relative' or None}">Relative format</option>
-          <option value="absolute"
-                  selected="${session_dateinfo == 'absolute' or None}">Absolute format</option>
-        </select>
-      </label>
-
-      <p class="hint">Configuring your relative/absolute format will result in
-      formatting datetime displayed on this site to use your format instead of
-      that of the server.</p>
-    </div>
+      <tr class="field" py:with="session_dateinfo = settings.session.get('dateinfo')">
+        <th><label for="dateinfo">Date relative/absolute format:</label></th>
+        <td><select id="dateinfo" name="dateinfo">
+            <option value="">Default format</option>
+            <option value="relative"
+                    selected="${session_dateinfo == 'relative' or None}">Relative format</option>
+            <option value="absolute"
+                    selected="${session_dateinfo == 'absolute' or None}">Absolute format</option>
+        </select></td>
+      </tr>
+      <tr>
+        <th></th>
+        <td><p class="hint">Configuring your relative/absolute format will result in
+            formatting datetime displayed on this site to use your format instead of
+            that of the server.</p>
+        </td>
+      </tr>
+    </table>
 
   </body>
 </html>
