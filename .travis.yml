@@ -19,7 +19,7 @@ install:
   - pip install -q Genshi==0.6.1 Babel configobj Pygments docutils lxml pytz twill==0.9.1 psycopg2 MySQL-python
   - echo ".uri = $TRAC_TEST_DB_URI" >Makefile.cfg
 script:
-  - make Trac.egg-info unit-test functional-test
+  - make Trac.egg-info compile unit-test functional-test
 notifications:
   email:
     recipients:
