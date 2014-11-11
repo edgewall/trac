@@ -100,20 +100,18 @@
       <py:otherwise> <!--! 'render' mode -->
         <h1><a href="${url_of(parent)}">${name_of(parent)}</a>: $attachment.filename</h1>
         <table id="info" summary="Description">
-          <tbody>
-            <tr>
-              <th scope="col" i18n:msg="file,size,author,date">
-                File $attachment.filename,
-                <span title="${_('%(size)s bytes', size=attachment.size)}">${pretty_size(attachment.size)}</span>
-                (added by ${authorinfo(attachment.author)}, ${pretty_dateinfo(attachment.date)})
-              </th>
-            </tr>
-            <tr>
-              <td class="message searchable" xml:space="preserve">
-                ${wiki_to_html(context.child(parent), attachment.description)}
-              </td>
-            </tr>
-          </tbody>
+          <tr>
+            <th scope="col" i18n:msg="file,size,author,date">
+              File $attachment.filename,
+              <span title="${_('%(size)s bytes', size=attachment.size)}">${pretty_size(attachment.size)}</span>
+              (added by ${authorinfo(attachment.author)}, ${pretty_dateinfo(attachment.date)})
+            </th>
+          </tr>
+          <tr>
+            <td class="message searchable" xml:space="preserve">
+              ${wiki_to_html(context.child(parent), attachment.description)}
+            </td>
+          </tr>
         </table>
 
         <div py:if="preview" id="preview" class="searchable">
