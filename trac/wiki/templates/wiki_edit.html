@@ -148,14 +148,12 @@
         </div>
         <py:when test="'preview'">
           <table id="info" summary="Revision info" class="${'trac-scroll' if not sidebyside else None}">
-            <tbody>
-              <tr><th scope="col" i18n:msg="version, author">
-                Change information for future version ${page.version+1} (modified by $author):
-              </th></tr>
-              <tr><td class="message" xml:space="preserve">
-                ${wiki_to_html(context.child(page.resource(version=None)), comment)}
-              </td></tr>
-            </tbody>
+            <tr><th scope="col" i18n:msg="version, author">
+              Change information for future version ${page.version+1} (modified by $author):
+            </th></tr>
+            <tr><td class="message" xml:space="preserve">
+              ${wiki_to_html(context.child(page.resource(version=None)), comment)}
+            </td></tr>
           </table>
           <div class="${sidebyside and 'sidebyside preview-right'}" py:choose="">
             <div class="trac-nav" py:if="not sidebyside and preview_or_review">
