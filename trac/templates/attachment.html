@@ -102,9 +102,10 @@
         <table id="info" summary="Description">
           <tr>
             <th scope="col" i18n:msg="file,size,author,date">
-              File $attachment.filename,
-              <span title="${_('%(size)s bytes', size=attachment.size)}">${pretty_size(attachment.size)}</span>
-              (added by ${authorinfo(attachment.author)}, ${pretty_dateinfo(attachment.date)})
+              File $attachment.filename, <!--!
+              --><span title="${_('%(size)s bytes', size=attachment.size)}"><!--!
+              -->${pretty_size(attachment.size)}</span> <!--!
+              -->(added by ${authorinfo(attachment.author)}, ${pretty_dateinfo(attachment.date)})
             </th>
           </tr>
           <tr>

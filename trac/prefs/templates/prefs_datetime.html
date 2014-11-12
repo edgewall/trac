@@ -37,9 +37,9 @@
       <tr>
         <th></th>
         <td>
-          <p class="hint">Configuring your time zone will result in all
-          dates and times displayed on this site to use your time zone
-          instead of that of the server.</p>
+          <p class="hint" i18n:msg="">Configuring your time zone will <!--!
+          -->result in all dates and times displayed on this site to <!--!
+          -->use your time zone instead of that of the server.</p>
           <!-- This currently crashes Genshi's extractor if you add i18n:msg -->
           <p class="hint" py:with="now = datetime.now(utc);
                                    nowtz = selected_tz.normalize(now.astimezone(selected_tz));
@@ -51,8 +51,8 @@
             <br />
             <py:when test="session_tzname">
               <i18n:msg params="tz, formatted">
-                In your time zone ${nowtz.tzname()}, this would be displayed as
-                <strong>$formatted</strong>.
+                In your time zone ${nowtz.tzname()}, this would be displayed as <!--!
+                --><strong>$formatted</strong>.
               </i18n:msg>
             </py:when>
             <py:otherwise>
@@ -62,8 +62,10 @@
             </py:otherwise>
           </p>
           <p class="hint" i18n:msg="">
-            Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean Time (GMT).<br />
-            A positive offset is used to indicate a timezone at the east of Greenwich, i.e. ahead of Universal Time.
+            Note: Universal Co-ordinated Time (UTC) is also known as <!--!
+            -->Greenwich Mean Time (GMT).<br />A positive offset is <!--!
+            -->used to indicate a timezone at the east of Greenwich, <!--!
+            -->i.e. ahead of Universal Time.
           </p>
         </td>
       </tr>
@@ -80,9 +82,9 @@
       </tr>
       <tr>
         <th></th>
-        <td><p class="hint">Configuring your date format will result in formatting
-            and parsing datetime displayed on this site to use your date format
-            instead of that of the server.</p>
+        <td><p class="hint" i18n:msg="">Configuring your date format will <!--!
+            -->result in formatting and parsing datetime displayed on this <!--!
+            -->site to use your date format instead of that of the server.</p>
         </td>
       </tr>
 
@@ -98,9 +100,9 @@
       </tr>
       <tr>
         <th></th>
-        <td><p class="hint">Configuring your relative/absolute format will result in
-            formatting datetime displayed on this site to use your format instead of
-            that of the server.</p>
+        <td><p class="hint" i18n:msg="">Configuring your relative/absolute <!--!
+            -->format will result in formatting datetime displayed on this <!--!
+            -->site to use your format instead of that of the server.</p>
         </td>
       </tr>
     </table>
