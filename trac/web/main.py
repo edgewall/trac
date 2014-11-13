@@ -35,8 +35,8 @@ from genshi.output import DocType
 from genshi.template import TemplateLoader
 
 from trac import __version__ as TRAC_VERSION
-from trac.config import BoolOption, ConfigurationError, ExtensionOption, \
-                        Option, OrderedExtensionsOption
+from trac.config import BoolOption, ChoiceOption, ConfigurationError, \
+                        ExtensionOption, Option, OrderedExtensionsOption
 from trac.core import *
 from trac.env import open_environment
 from trac.loader import get_plugin_info, match_plugins_to_frames
@@ -117,7 +117,8 @@ class RequestDispatcher(Component):
         been set. (''since 0.12.1'')
         """)
 
-    default_date_format = Option('trac', 'default_date_format', '',
+    default_date_format = ChoiceOption('trac', 'default_date_format',
+                                       ('', 'iso8601'),
         """The date format. Valid options are 'iso8601' for selecting
         ISO 8601 format, or leave it empty which means the default
         date format will be inferred from the browser's default

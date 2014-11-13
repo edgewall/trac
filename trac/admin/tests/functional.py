@@ -80,9 +80,9 @@ class TestBasicSettings(FunctionalTwillTestCaseSetup):
             tc.submit()
             tc.find(r'<option selected="selected" value="relative">')
         finally:
-            self._testenv.set_config('trac', 'default_dateinfo_format', '')
+            self._testenv.remove_config('trac', 'default_dateinfo_format')
             self._tester.go_to_admin()
-            tc.find(r'<option value="relative">')
+            tc.find(r'<option selected="selected" value="relative">')
             tc.find(r'<option value="absolute">')
 
 

@@ -498,8 +498,8 @@ class Chrome(Component):
         lower the setting, the more requests will be made to the server. Set
         this to 0 to disable automatic preview. (''since 0.12'')""")
 
-    default_dateinfo_format = Option('trac', 'default_dateinfo_format',
-        'relative',
+    default_dateinfo_format = ChoiceOption('trac', 'default_dateinfo_format',
+                                           ('relative', 'absolute'),
         """The date information format. Valid options are 'relative' for
         displaying relative format and 'absolute' for displaying absolute
         format. (''since 1.0'')""")

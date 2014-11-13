@@ -17,6 +17,7 @@ import tempfile
 import unittest
 
 import trac.tests.compat
+from trac.config import ConfigurationError
 from trac.core import Component, TracError, implements
 from trac.perm import PermissionSystem
 from trac.test import EnvironmentStub, MockPerm, locale_en
@@ -346,6 +347,14 @@ class ChromeTestCase(unittest.TestCase):
         chrome.add_jquery_ui(req)
         self.assertIn({'value': 'Z', 'label': '+00:00'},
                       req.chrome['script_data']['jquery_ui']['timezone_list'])
+
+    def test_invalid_default_dateinfo_format_raises_exception(self):
+        self.env.config.set('trac', 'default_dateinfo_format', u'ābšolute')
+
+        self.assertEqual(u'ābšolute',
+                         self.env.config.get('trac', 'default_dateinfo_format'))
+        self.assertRaises(ConfigurationError, getattr, Chrome(self.env),
+                          'default_dateinfo_format')
 
     def test_authorinfo(self):
         chrome = Chrome(self.env)

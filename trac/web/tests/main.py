@@ -15,6 +15,7 @@ import os.path
 import tempfile
 import unittest
 
+from trac.config import ConfigurationError
 from trac.core import Component, ComponentManager, ComponentMeta, TracError, \
                       implements
 from trac.test import EnvironmentStub, Mock
@@ -286,11 +287,26 @@ class PostProcessRequestTestCase(unittest.TestCase):
         self.assertEqual(args[:3] + ('xml',), resp)
 
 
+class RequestDispatcherTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+
+    def test_invalid_default_date_format_raises_exception(self):
+        self.env.config.set('trac', 'default_date_format', u'ĭšo8601')
+
+        self.assertEqual(u'ĭšo8601',
+                         self.env.config.get('trac', 'default_date_format'))
+        self.assertRaises(ConfigurationError, getattr,
+                          RequestDispatcher(self.env), 'default_date_format')
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AuthenticateTestCase))
     suite.addTest(unittest.makeSuite(EnvironmentsTestCase))
     suite.addTest(unittest.makeSuite(PostProcessRequestTestCase))
+    suite.addTest(unittest.makeSuite(RequestDispatcherTestCase))
     return suite
 
 
