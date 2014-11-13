@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-11-05 00:41-0800\n"
+"POT-Creation-Date: 2014-11-12 17:00-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -153,7 +153,7 @@ msgid "Delete comment"
 msgstr ""
 
 #. TRANSLATOR: modified ('diff') (link)
-#: tracopt/versioncontrol/git/git_fs.py:422 trac/ticket/web_ui.py:1747
+#: tracopt/versioncontrol/git/git_fs.py:422 trac/ticket/web_ui.py:1748
 #: trac/ticket/templates/ticket_change.html:164 trac/wiki/macros.py:361
 #: trac/wiki/web_ui.py:765
 msgid "diff"
@@ -426,19 +426,19 @@ msgstr ""
 msgid "Download failed"
 msgstr ""
 
-#: trac/attachment.py:894 trac/versioncontrol/web_ui/browser.py:710
+#: trac/attachment.py:894 trac/versioncontrol/web_ui/browser.py:709
 #: trac/wiki/web_ui.py:73
 msgid "Plain Text"
 msgstr ""
 
-#: trac/attachment.py:900 trac/versioncontrol/web_ui/browser.py:716
+#: trac/attachment.py:900 trac/versioncontrol/web_ui/browser.py:715
 msgid "Original Format"
 msgstr ""
 
 #: trac/attachment.py:942 trac/templates/list_of_attachments.html:29
 #: trac/ticket/templates/ticket_change.html:92
 #: trac/versioncontrol/templates/dir_entries.html:29
-#: trac/versioncontrol/web_ui/browser.py:865
+#: trac/versioncontrol/web_ui/browser.py:864
 msgid "Download"
 msgstr ""
 
@@ -465,7 +465,7 @@ msgid "Size"
 msgstr ""
 
 #: trac/attachment.py:1072 trac/templates/history_view.html:40
-#: trac/ticket/templates/ticket.html:353
+#: trac/ticket/templates/ticket.html:365
 #: trac/versioncontrol/templates/revisionlog.html:122
 msgid "Author"
 msgstr ""
@@ -476,7 +476,7 @@ msgstr ""
 
 #: trac/attachment.py:1073 trac/templates/attachment.html:102
 #: trac/ticket/api.py:308 trac/ticket/api.py:530
-#: trac/ticket/templates/ticket.html:382
+#: trac/ticket/templates/ticket.html:394
 #: trac/ticket/templates/ticket_box.html:101
 msgid "Description"
 msgstr ""
@@ -564,7 +564,7 @@ msgid ""
 " point to a valid Trac environment."
 msgstr ""
 
-#: trac/env.py:880 trac/admin/console.py:283
+#: trac/env.py:880 trac/admin/console.py:284
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
@@ -723,7 +723,7 @@ msgstr ""
 
 #: trac/perm.py:658 trac/admin/templates/admin_perms.html:74
 #: trac/ticket/templates/batch_modify.html:47
-#: trac/ticket/templates/ticket.html:324
+#: trac/ticket/templates/ticket.html:336
 msgid "Action"
 msgstr ""
 
@@ -790,12 +790,12 @@ msgstr ""
 msgid "Command not found"
 msgstr ""
 
-#: trac/admin/console.py:114
+#: trac/admin/console.py:113
 #, python-format
 msgid "Error: %(msg)s"
 msgstr ""
 
-#: trac/admin/console.py:133
+#: trac/admin/console.py:132
 #, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
@@ -806,48 +806,48 @@ msgid ""
 "        "
 msgstr ""
 
-#: trac/admin/console.py:168
+#: trac/admin/console.py:166
 #, python-format
 msgid "Failed to open environment: %(err)s"
 msgstr ""
 
-#: trac/admin/console.py:251
+#: trac/admin/console.py:252
 #, python-format
 msgid "Completion error: %(err)s"
 msgstr ""
 
-#: trac/admin/console.py:318
+#: trac/admin/console.py:319
 #, python-format
 msgid ""
 "No documentation found for '%(cmd)s'. Use 'help' to see the list of "
 "commands."
 msgstr ""
 
-#: trac/admin/console.py:326
+#: trac/admin/console.py:327
 msgid "Did you mean this?"
 msgid_plural "Did you mean one of these?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/admin/console.py:330
+#: trac/admin/console.py:331
 #, python-format
 msgid "trac-admin - The Trac Administration Console %(version)s"
 msgstr ""
 
-#: trac/admin/console.py:334
+#: trac/admin/console.py:335
 msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
 msgstr ""
 
-#: trac/admin/console.py:337
+#: trac/admin/console.py:338
 msgid "Invoking trac-admin without command starts interactive mode.\n"
 msgstr ""
 
-#: trac/admin/console.py:377
+#: trac/admin/console.py:378
 #, python-format
 msgid "Creating a new Trac environment at %(envname)s"
 msgstr ""
 
-#: trac/admin/console.py:379
+#: trac/admin/console.py:380
 msgid ""
 "\n"
 "Trac will first ask a few questions about your environment\n"
@@ -857,12 +857,12 @@ msgid ""
 " This name will be used in page titles and descriptions.\n"
 msgstr ""
 
-#: trac/admin/console.py:387
+#: trac/admin/console.py:388
 #, python-format
 msgid "Project Name [%(default)s]> "
 msgstr ""
 
-#: trac/admin/console.py:389
+#: trac/admin/console.py:390
 msgid ""
 "\n"
 " Please specify the connection string for the database to use.\n"
@@ -872,48 +872,48 @@ msgid ""
 " connection string syntax).\n"
 msgstr ""
 
-#: trac/admin/console.py:397
+#: trac/admin/console.py:398
 #, python-format
 msgid "Database connection string [%(default)s]> "
 msgstr ""
 
-#: trac/admin/console.py:404
+#: trac/admin/console.py:405
 #, python-format
 msgid "Initenv for '%(env)s' failed."
 msgstr ""
 
-#: trac/admin/console.py:407
+#: trac/admin/console.py:408
 msgid "Does an environment already exist?"
 msgstr ""
 
-#: trac/admin/console.py:411
+#: trac/admin/console.py:412
 msgid "Directory exists and is not empty."
 msgstr ""
 
-#: trac/admin/console.py:417
+#: trac/admin/console.py:418
 #, python-format
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
 "retry."
 msgstr ""
 
-#: trac/admin/console.py:445
+#: trac/admin/console.py:446
 msgid "Creating and Initializing Project"
 msgstr ""
 
-#: trac/admin/console.py:462
+#: trac/admin/console.py:463
 msgid "Failed to create environment."
 msgstr ""
 
-#: trac/admin/console.py:468
+#: trac/admin/console.py:469
 msgid " Installing default wiki pages"
 msgstr ""
 
-#: trac/admin/console.py:477
+#: trac/admin/console.py:478
 msgid " Indexing default repository"
 msgstr ""
 
-#: trac/admin/console.py:480
+#: trac/admin/console.py:481
 msgid ""
 "\n"
 "---------------------------------------------------------------------\n"
@@ -928,7 +928,7 @@ msgid ""
 "repository_type and repository_path settings.\n"
 msgstr ""
 
-#: trac/admin/console.py:523
+#: trac/admin/console.py:524
 #, python-format
 msgid ""
 "\n"
@@ -957,7 +957,7 @@ msgid ""
 "Congratulations!\n"
 msgstr ""
 
-#: trac/admin/console.py:532
+#: trac/admin/console.py:533
 msgid ""
 "Display help for trac-admin commands.\n"
 "\n"
@@ -970,7 +970,7 @@ msgid ""
 "}}}"
 msgstr ""
 
-#: trac/admin/console.py:579
+#: trac/admin/console.py:580
 #, python-format
 msgid "Non-ascii environment path '%(path)s' not supported."
 msgstr ""
@@ -1190,7 +1190,7 @@ msgid "Default language:"
 msgstr ""
 
 #: trac/admin/templates/admin_basics.html:58
-#: trac/prefs/templates/prefs_language.html:26
+#: trac/prefs/templates/prefs_language.html:28
 msgid "Translations are currently unavailable"
 msgstr ""
 
@@ -1200,12 +1200,12 @@ msgid "Browser's language"
 msgstr ""
 
 #: trac/admin/templates/admin_basics.html:65
-#: trac/prefs/templates/prefs_language.html:34
+#: trac/prefs/templates/prefs_language.html:35
 msgid "Install Babel for extended language support."
 msgstr ""
 
 #: trac/admin/templates/admin_basics.html:68
-#: trac/prefs/templates/prefs_language.html:37
+#: trac/prefs/templates/prefs_language.html:38
 msgid "Message catalogs have not been compiled."
 msgstr ""
 
@@ -1214,7 +1214,7 @@ msgid "Default date format:"
 msgstr ""
 
 #: trac/admin/templates/admin_basics.html:77
-#: trac/prefs/templates/prefs_datetime.html:75
+#: trac/prefs/templates/prefs_datetime.html:80
 msgid "ISO 8601 format"
 msgstr ""
 
@@ -1552,11 +1552,11 @@ msgstr ""
 msgid "this hunk was shorter than expected"
 msgstr ""
 
-#: trac/mimeview/pygments.py:131 trac/prefs/templates/prefs_pygments.html:19
+#: trac/mimeview/pygments.py:128 trac/prefs/templates/prefs_pygments.html:19
 msgid "Syntax Highlighting"
 msgstr ""
 
-#: trac/mimeview/pygments.py:140 trac/prefs/web_ui.py:170
+#: trac/mimeview/pygments.py:137 trac/prefs/web_ui.py:170
 msgid "Your preferences have been saved."
 msgstr ""
 
@@ -1589,7 +1589,7 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
-#: trac/prefs/web_ui.py:97 trac/prefs/templates/prefs_advanced.html:19
+#: trac/prefs/web_ui.py:97 trac/prefs/templates/prefs_advanced.html:20
 msgid "Advanced"
 msgstr ""
 
@@ -1615,121 +1615,113 @@ msgstr ""
 msgid "Save changes"
 msgstr ""
 
-#: trac/prefs/templates/prefs_advanced.html:24
+#: trac/prefs/templates/prefs_advanced.html:27
 msgid "Session key:"
 msgstr ""
 
-#: trac/prefs/templates/prefs_advanced.html:27
+#: trac/prefs/templates/prefs_advanced.html:30
 msgid "Change"
 msgstr ""
 
-#: trac/prefs/templates/prefs_advanced.html:28
+#: trac/prefs/templates/prefs_advanced.html:36
 msgid ""
-"The session key is used to identify stored custom\n"
-"      settings and session data on the server. Although it is\n"
-"      automatically generated by default, you may change it to something\n"
-"      easier to remember at any time if you wish to load your settings\n"
-"      in a different web browser."
+"The session key is used to identify stored custom settings and session "
+"data on the server. Although it is automatically generated by default, "
+"you may change it to something easier to remember at any time if you wish"
+" to load your settings in a different web browser."
 msgstr ""
 
-#: trac/prefs/templates/prefs_advanced.html:36
+#: trac/prefs/templates/prefs_advanced.html:45
 msgid "Restore session:"
 msgstr ""
 
-#: trac/prefs/templates/prefs_advanced.html:39
+#: trac/prefs/templates/prefs_advanced.html:48
 msgid "Load"
 msgstr ""
 
-#: trac/prefs/templates/prefs_advanced.html:40
+#: trac/prefs/templates/prefs_advanced.html:54
 msgid ""
-"You may load a previously created session by entering the\n"
-"      corresponding session key below. This lets you share settings "
-"between\n"
-"      multiple computers and web browsers."
+"You may load a previously created session by entering the corresponding "
+"session key below. This lets you share settings between multiple "
+"computers and web browsers."
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:26
+#: trac/prefs/templates/prefs_datetime.html:27
 msgid "Time zone:"
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:28
+#: trac/prefs/templates/prefs_datetime.html:29
 msgid "Default time zone"
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:35
+#: trac/prefs/templates/prefs_datetime.html:40
 msgid ""
-"Configuring your time zone will result in all\n"
-"      dates and times displayed on this site to use your time zone\n"
-"      instead of that of the server."
+"Configuring your time zone will result in all dates and times displayed "
+"on this site to use your time zone instead of that of the server."
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:44
+#: trac/prefs/templates/prefs_datetime.html:48
 #, python-format
 msgid "Example: The current time is [1:%(time)s] (UTC)."
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:49
+#: trac/prefs/templates/prefs_datetime.html:53
 #, python-format
-msgid ""
-"In your time zone %(tz)s, this would be displayed as\n"
-"            [1:%(formatted)s]."
+msgid "In your time zone %(tz)s, this would be displayed as [1:%(formatted)s]."
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:55
+#: trac/prefs/templates/prefs_datetime.html:59
 #, python-format
 msgid "In the default time zone, this would be displayed as [1:%(formatted)s]."
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:61
+#: trac/prefs/templates/prefs_datetime.html:64
 msgid ""
 "Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean "
-"Time (GMT).[1:]\n"
-"        A positive offset is used to indicate a timezone at the east of "
-"Greenwich, i.e. ahead of Universal Time."
+"Time (GMT).[1:]A positive offset is used to indicate a timezone at the "
+"east of Greenwich, i.e. ahead of Universal Time."
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:69
+#: trac/prefs/templates/prefs_datetime.html:74
 msgid "Date format:"
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:71
+#: trac/prefs/templates/prefs_datetime.html:76
 msgid "Default date format"
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:73
+#: trac/prefs/templates/prefs_datetime.html:78
 msgid "Your language setting"
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:79
+#: trac/prefs/templates/prefs_datetime.html:85
 msgid ""
-"Configuring your date format will result in formatting\n"
-"      and parsing datetime displayed on this site to use your date format"
-"\n"
-"      instead of that of the server."
+"Configuring your date format will result in formatting and parsing "
+"datetime displayed on this site to use your date format instead of that "
+"of the server."
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:85
+#: trac/prefs/templates/prefs_datetime.html:92
 msgid "Date relative/absolute format:"
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:87
+#: trac/prefs/templates/prefs_datetime.html:94
 msgid "Default format"
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:89
+#: trac/prefs/templates/prefs_datetime.html:96
 msgid "Relative format"
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:91
+#: trac/prefs/templates/prefs_datetime.html:98
 msgid "Absolute format"
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:95
+#: trac/prefs/templates/prefs_datetime.html:103
 msgid ""
-"Configuring your relative/absolute format will result in\n"
-"      formatting datetime displayed on this site to use your format "
-"instead of\n"
-"      that of the server."
+"Configuring your relative/absolute format will result in formatting "
+"datetime displayed on this site to use your format instead of that of the"
+" server."
 msgstr ""
 
 #: trac/prefs/templates/prefs_general.html:25
@@ -1768,26 +1760,24 @@ msgid ""
 "      for more information on access keys."
 msgstr ""
 
-#: trac/prefs/templates/prefs_language.html:25
+#: trac/prefs/templates/prefs_language.html:26
 msgid "Language:"
 msgstr ""
 
-#: trac/prefs/templates/prefs_language.html:28
+#: trac/prefs/templates/prefs_language.html:30
 msgid "Default language"
-msgstr ""
-
-#: trac/prefs/templates/prefs_language.html:42
-msgid ""
-"Configuring your language will result in all text\n"
-"        displayed on this site to use your language instead of that of "
-"the\n"
-"        server."
 msgstr ""
 
 #: trac/prefs/templates/prefs_language.html:46
 msgid ""
-"The [1:Default language] option uses the browser's\n"
-"        language negotiation feature to select the appropriate language."
+"Configuring your language will result in all text displayed on this site "
+"to use your language instead of that of the server."
+msgstr ""
+
+#: trac/prefs/templates/prefs_language.html:49
+msgid ""
+"The [1:Default language] option uses the browser's language negotiation "
+"feature to select the appropriate language."
 msgstr ""
 
 #: trac/prefs/templates/prefs_pygments.html:47
@@ -1993,7 +1983,7 @@ msgstr ""
 msgid "Attachment Info"
 msgstr ""
 
-#: trac/templates/attachment.html:50 trac/ticket/templates/ticket.html:358
+#: trac/templates/attachment.html:50 trac/ticket/templates/ticket.html:370
 #: trac/wiki/templates/wiki_edit_form.html:53
 msgid "Your email or username:"
 msgstr ""
@@ -2014,11 +2004,11 @@ msgstr ""
 msgid "Are you sure you want to delete this attachment?"
 msgstr ""
 
-#: trac/templates/attachment.html:86 trac/templates/attachment.html:128
+#: trac/templates/attachment.html:86 trac/templates/attachment.html:127
 msgid "Delete attachment"
 msgstr ""
 
-#: trac/templates/attachment.html:107
+#: trac/templates/attachment.html:106
 #: trac/templates/list_of_attachments.html:30 trac/templates/macros.html:29
 #: trac/util/text.py:633 trac/util/tests/html.py:215
 #: trac/util/tests/html.py:228 trac/versioncontrol/templates/browser.html:199
@@ -2027,12 +2017,9 @@ msgstr ""
 msgid "%(size)s bytes"
 msgstr ""
 
-#: trac/templates/attachment.html:105
+#: trac/templates/attachment.html:104
 #, python-format
-msgid ""
-"File %(file)s,\n"
-"                [1:%(size)s]\n"
-"                (added by %(author)s, %(date)s)"
+msgid "File %(file)s, [1:%(size)s] (added by %(author)s, %(date)s)"
 msgstr ""
 
 #: trac/templates/diff_div.html:81
@@ -2384,7 +2371,7 @@ msgstr ""
 
 #: trac/templates/list_of_attachments.html:37
 #: trac/templates/list_of_attachments.html:53
-#: trac/ticket/templates/ticket.html:381
+#: trac/ticket/templates/ticket.html:393
 msgid "Attachments"
 msgstr ""
 
@@ -2700,7 +2687,7 @@ msgstr ""
 msgid "Summary"
 msgstr ""
 
-#: trac/ticket/api.py:298 trac/ticket/templates/ticket.html:354
+#: trac/ticket/api.py:298 trac/ticket/templates/ticket.html:366
 msgid "Reporter"
 msgstr ""
 
@@ -2717,7 +2704,7 @@ msgstr ""
 msgid "Keywords"
 msgstr ""
 
-#: trac/ticket/api.py:339
+#: trac/ticket/api.py:339 trac/ticket/web_ui.py:1499
 msgid "Cc"
 msgstr ""
 
@@ -3552,7 +3539,7 @@ msgid_plural "%(labels)s deleted"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/ticket/web_ui.py:1177 trac/ticket/web_ui.py:1770
+#: trac/ticket/web_ui.py:1177 trac/ticket/web_ui.py:1771
 msgid "; "
 msgstr ""
 
@@ -3657,65 +3644,57 @@ msgstr ""
 msgid "Remove from Cc"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1499
-msgid "Add/Remove from Cc"
-msgstr ""
-
-#: trac/ticket/web_ui.py:1500
-msgid "<Author field>"
-msgstr ""
-
-#: trac/ticket/web_ui.py:1533 trac/ticket/templates/query.html:124
+#: trac/ticket/web_ui.py:1534 trac/ticket/templates/query.html:124
 msgid "yes"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1533 trac/ticket/templates/query.html:127
+#: trac/ticket/web_ui.py:1534 trac/ticket/templates/query.html:127
 msgid "no"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1739
+#: trac/ticket/web_ui.py:1740
 msgid "set"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1739
+#: trac/ticket/web_ui.py:1740
 msgid "unset"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1742 trac/versioncontrol/templates/changeset.html:199
+#: trac/ticket/web_ui.py:1743 trac/versioncontrol/templates/changeset.html:199
 #: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "modified"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1748
+#: trac/ticket/web_ui.py:1749
 #, python-format
 msgid "modified (%(diff)s)"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1766
+#: trac/ticket/web_ui.py:1767
 #, python-format
 msgid "%(items)s added"
 msgid_plural "%(items)s added"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/ticket/web_ui.py:1768
+#: trac/ticket/web_ui.py:1769
 #, python-format
 msgid "%(items)s removed"
 msgid_plural "%(items)s removed"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/ticket/web_ui.py:1777
+#: trac/ticket/web_ui.py:1778
 #, python-format
 msgid "%(value)s deleted"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1779
+#: trac/ticket/web_ui.py:1780
 #, python-format
 msgid "set to %(value)s"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1782
+#: trac/ticket/web_ui.py:1783
 #, python-format
 msgid "changed from %(old)s to %(new)s"
 msgstr ""
@@ -3954,7 +3933,7 @@ msgid "Retarget associated open tickets to milestone:"
 msgstr ""
 
 #: trac/ticket/templates/milestone_edit.html:124
-#: trac/ticket/templates/ticket.html:391
+#: trac/ticket/templates/ticket.html:403
 #: trac/ticket/templates/ticket_change.html:125
 #: trac/wiki/templates/wiki_edit_form.html:77
 #: trac/wiki/templates/wiki_edit_form.html:82
@@ -4222,7 +4201,7 @@ msgstr ""
 
 #: trac/ticket/templates/report_list.html:99
 #: trac/ticket/templates/ticket_change.html:74
-#: trac/wiki/templates/wiki_edit.html:162
+#: trac/wiki/templates/wiki_edit.html:160
 msgid "Edit"
 msgstr ""
 
@@ -4367,44 +4346,48 @@ msgstr ""
 msgid "%(field)s:"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:298
+#: trac/ticket/templates/ticket.html:302
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:304
+#: trac/ticket/templates/ticket.html:308
+msgid "Set your email in [1:Preferences]"
+msgstr ""
+
+#: trac/ticket/templates/ticket.html:314
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:367
+#: trac/ticket/templates/ticket.html:379
 #: trac/wiki/templates/wiki_edit_form.html:57
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:375
+#: trac/ticket/templates/ticket.html:387
 msgid "I have files to attach to this ticket"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:381
+#: trac/ticket/templates/ticket.html:393
 msgid "Go to the list of attachments"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:382
+#: trac/ticket/templates/ticket.html:394
 msgid "View the ticket description"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:390
+#: trac/ticket/templates/ticket.html:402
 #: trac/ticket/templates/ticket_change.html:123
 #: trac/wiki/templates/wiki_edit.html:102
-#: trac/wiki/templates/wiki_edit.html:166
+#: trac/wiki/templates/wiki_edit.html:164
 #: trac/wiki/templates/wiki_edit_form.html:75
 msgid "Preview"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:391
+#: trac/ticket/templates/ticket.html:403
 msgid "Create ticket"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:399
+#: trac/ticket/templates/ticket.html:411
 msgid ""
 "[1:Note:] See\n"
 "        [2:TracTickets] for help on using\n"
@@ -4909,7 +4892,7 @@ msgstr ""
 #: trac/versioncontrol/templates/admin_repositories.html:43
 #: trac/versioncontrol/templates/admin_repositories.html:145
 #: trac/versioncontrol/templates/admin_repositories.html:147
-#: trac/versioncontrol/web_ui/browser.py:954
+#: trac/versioncontrol/web_ui/browser.py:953
 #: trac/versioncontrol/web_ui/changeset.py:845
 #: trac/versioncontrol/web_ui/changeset.py:985
 msgid "(default)"
@@ -5500,7 +5483,7 @@ msgstr ""
 
 #: trac/versioncontrol/templates/dir_entries.html:29
 #: trac/versioncontrol/templates/repository_index.html:33
-#: trac/versioncontrol/web_ui/browser.py:866
+#: trac/versioncontrol/web_ui/browser.py:865
 msgid "Download as Zip archive"
 msgstr ""
 
@@ -5516,7 +5499,7 @@ msgstr ""
 
 #: trac/versioncontrol/templates/dirlist_thead.html:20
 #: trac/versioncontrol/templates/revisionlog.html:120
-#: trac/versioncontrol/web_ui/browser.py:874
+#: trac/versioncontrol/web_ui/browser.py:873
 msgid "Rev"
 msgstr ""
 
@@ -5750,11 +5733,11 @@ msgstr ""
 msgid "Path not available for download"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:874
+#: trac/versioncontrol/web_ui/browser.py:873
 msgid "Revision in which the line changed"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:889
+#: trac/versioncontrol/web_ui/browser.py:888
 msgid ""
 "Display the list of available repositories.\n"
 "\n"
@@ -5778,7 +5761,7 @@ msgid ""
 "(''since 0.12'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:956
+#: trac/versioncontrol/web_ui/browser.py:955
 #, python-format
 msgid "View repository %(repo)s"
 msgstr ""
@@ -6749,12 +6732,12 @@ msgid "Delete those versions"
 msgstr ""
 
 #: trac/wiki/templates/wiki_delete.html:108
-#: trac/wiki/templates/wiki_view.html:136
+#: trac/wiki/templates/wiki_view.html:134
 msgid "Delete this version"
 msgstr ""
 
 #: trac/wiki/templates/wiki_delete.html:108
-#: trac/wiki/templates/wiki_view.html:138
+#: trac/wiki/templates/wiki_view.html:136
 msgid "Delete page"
 msgstr ""
 
@@ -6812,31 +6795,31 @@ msgid ""
 "            again."
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:152
+#: trac/wiki/templates/wiki_edit.html:151
 #, python-format
 msgid ""
 "Change information for future version %(version)s (modified by "
 "%(author)s):"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:162
+#: trac/wiki/templates/wiki_edit.html:160
 msgid "Go to the editor"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:165
+#: trac/wiki/templates/wiki_edit.html:163
 #: trac/wiki/templates/wiki_edit_form.html:81
 msgid "Review Changes"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:167
+#: trac/wiki/templates/wiki_edit.html:165
 msgid "No changes"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:178
+#: trac/wiki/templates/wiki_edit.html:176
 msgid "Go to Save, Preview, Review or Cancel buttons"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:179
+#: trac/wiki/templates/wiki_edit.html:177
 msgid "Actions"
 msgstr ""
 
@@ -6913,7 +6896,7 @@ msgid "Leave a redirection page at the old location"
 msgstr ""
 
 #: trac/wiki/templates/wiki_rename.html:42
-#: trac/wiki/templates/wiki_view.html:128
+#: trac/wiki/templates/wiki_view.html:126
 msgid "Rename page"
 msgstr ""
 
@@ -6921,63 +6904,63 @@ msgstr ""
 msgid "Revert page to this version"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:26 trac/wiki/templates/wiki_view.html:104
+#: trac/wiki/templates/wiki_view.html:26 trac/wiki/templates/wiki_view.html:102
 msgid "Edit this page"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:47
+#: trac/wiki/templates/wiki_view.html:46
 #, python-format
 msgid ""
 "Version %(version)s (modified by %(author)s, %(date)s)\n"
-"               ([1:diff])"
+"             ([1:diff])"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:61
+#: trac/wiki/templates/wiki_view.html:59
 #, python-format
 msgid "Version %(version)s by %(author)s: %(comment)s"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:61
+#: trac/wiki/templates/wiki_view.html:59
 #, python-format
 msgid "Version %(version)s by %(author)s"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:69
+#: trac/wiki/templates/wiki_view.html:67
 #, python-format
 msgid "[1:Last modified] %(reldate)s"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:73
+#: trac/wiki/templates/wiki_view.html:71
 #, python-format
 msgid "Last modified on %(date)s"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:77
+#: trac/wiki/templates/wiki_view.html:75
 #, python-format
 msgid "The page %(name)s does not exist. You can create it here."
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:79
+#: trac/wiki/templates/wiki_view.html:77
 msgid "You could also create the same page higher in the hierarchy:"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:101
+#: trac/wiki/templates/wiki_view.html:99
 msgid "Revert to this version"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:107
+#: trac/wiki/templates/wiki_view.html:105
 msgid "Create this page"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:109
+#: trac/wiki/templates/wiki_view.html:107
 msgid "Using the template:"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:112
+#: trac/wiki/templates/wiki_view.html:110
 msgid "(blank page)"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:146
+#: trac/wiki/templates/wiki_view.html:144
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr ""
 
