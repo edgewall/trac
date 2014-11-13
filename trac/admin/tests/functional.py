@@ -71,6 +71,19 @@ class TestBasicSettings(FunctionalTwillTestCaseSetup):
         tc.submit()
         tc.find('https://my.example.com/something')
 
+        try:
+            tc.formvalue('modbasic', 'default_dateinfo_format', 'absolute')
+            tc.submit()
+            tc.find(r'<option selected="selected" value="absolute">')
+            tc.formvalue('modbasic', 'default_dateinfo_format', 'relative')
+            tc.submit()
+            tc.find(r'<option selected="selected" value="relative">')
+        finally:
+            self._testenv.set_config('trac', 'default_dateinfo_format', '')
+            self._tester.go_to_admin()
+            tc.find(r'<option value="relative">')
+            tc.find(r'<option value="absolute">')
+
 
 class TestBasicSettingsAuthorization(AuthorizationTestCaseSetup):
     def runTest(self):

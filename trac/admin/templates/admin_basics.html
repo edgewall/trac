@@ -81,6 +81,16 @@ ${project.descr}</textarea>
             Install Babel for localized date formats.
           </span>
         </div>
+        <div class="field">
+          <label>Default date relative/absolute format:<br />
+            <select name="default_dateinfo_format">
+              <option selected="${default_dateinfo_format == 'relative' or None}"
+                      value="relative">Relative format</option>
+              <option selected="${default_dateinfo_format == 'absolute' or None}"
+                      value="absolute">Absolute format</option>
+            </select>
+          </label>
+        </div>
       </fieldset>
       <div class="buttons">
         <input type="submit" value="${_('Apply changes')}" />

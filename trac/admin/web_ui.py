@@ -234,12 +234,20 @@ class BasicsAdminPanel(Component):
                 default_date_format = ''
             self.config.set('trac', 'default_date_format', default_date_format)
 
+            default_dateinfo_format = req.args.get('default_dateinfo_format')
+            if default_dateinfo_format not in ('relative', 'absolute'):
+                default_dateinfo_format = 'relative'
+            self.config.set('trac', 'default_dateinfo_format',
+                            default_dateinfo_format)
+
             _save_config(self.config, req, self.log)
             req.redirect(req.href.admin(cat, page))
 
         default_timezone = self.config.get('trac', 'default_timezone')
         default_language = self.config.get('trac', 'default_language')
         default_date_format = self.config.get('trac', 'default_date_format')
+        default_dateinfo_format = self.config.get('trac',
+                                                  'default_dateinfo_format')
 
         data = {
             'default_timezone': default_timezone,
@@ -248,6 +256,7 @@ class BasicsAdminPanel(Component):
             'default_language': default_language.replace('-', '_'),
             'languages': languages,
             'default_date_format': default_date_format,
+            'default_dateinfo_format': default_dateinfo_format,
             'has_babel': Locale is not None,
         }
         Chrome(self.env).add_textarea_grips(req)
