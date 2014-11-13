@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.1.2\n"
+"Project-Id-Version: Trac 1.1.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-09-01 12:45+0000\n"
+"POT-Creation-Date: 2014-11-12 17:07-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,40 +16,6 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
-
-#: tracopt/mimeview/enscript.py:105
-msgid "Path to the Enscript executable."
-msgstr ""
-
-#: tracopt/mimeview/enscript.py:108
-msgid ""
-"List of additional MIME types known by Enscript.\n"
-"For each, a tuple `mimetype:mode:quality` has to be\n"
-"specified, where `mimetype` is the MIME type,\n"
-"`mode` is the corresponding Enscript mode to be used\n"
-"for the conversion and `quality` is the quality ratio\n"
-"associated to this conversion.\n"
-"That can also be used to override the default\n"
-"quality ratio used by the Enscript render, which is 2.\n"
-"(''since 0.10'')"
-msgstr ""
-
-#: tracopt/mimeview/php.py:67
-msgid "Path to the PHP executable. (''since 0.9'')"
-msgstr ""
-
-#: tracopt/mimeview/silvercity.py:81
-msgid ""
-"List of additional MIME types known by SilverCity.\n"
-"For each, a tuple `mimetype:mode:quality` has to be\n"
-"specified, where `mimetype` is the MIME type,\n"
-"`mode` is the corresponding SilverCity mode to be used\n"
-"for the conversion and `quality` is the quality ratio\n"
-"associated to this conversion.\n"
-"That can also be used to override the default\n"
-"quality ratio used by the SilverCity render, which is 3\n"
-"(''since 0.10'')."
-msgstr ""
 
 #: tracopt/perm/authz_policy.py:134
 msgid "Location of authz policy configuration file."
@@ -117,49 +83,49 @@ msgstr ""
 msgid "Send ticket change notification when updating a ticket."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:272
+#: tracopt/versioncontrol/git/git_fs.py:271
 msgid "Enable persistent caching of commit tree."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:275
+#: tracopt/versioncontrol/git/git_fs.py:274
 msgid "Wrap `GitRepository` in `CachedRepository`."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:278
+#: tracopt/versioncontrol/git/git_fs.py:277
 msgid ""
 "The length at which a sha1 should be abbreviated to (must\n"
 "be >= 4 and <= 40)."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:283
+#: tracopt/versioncontrol/git/git_fs.py:282
 msgid ""
 "The minimum length of an hex-string for which\n"
 "auto-detection as sha1 is performed (must be >= 4 and <= 40)."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:288
+#: tracopt/versioncontrol/git/git_fs.py:287
 msgid ""
 "Enable reverse mapping of git email addresses to trac user ids\n"
 "(costly if you have many users)."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:292
+#: tracopt/versioncontrol/git/git_fs.py:291
 msgid ""
 "Use git-committer id instead of git-author id for the\n"
 "changeset ''Author'' field."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:297
+#: tracopt/versioncontrol/git/git_fs.py:296
 msgid ""
 "Use git-committer timestamp instead of git-author timestamp\n"
 "for the changeset ''Timestamp'' field."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:302
+#: tracopt/versioncontrol/git/git_fs.py:301
 msgid "Define charset encoding of paths within git repositories."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:305
+#: tracopt/versioncontrol/git/git_fs.py:304
 msgid "Path to the git executable."
 msgstr ""
 
@@ -785,7 +751,7 @@ msgid ""
 "an empty value. (//since 1.1.2//)"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:111
+#: trac/ticket/default_workflow.py:112
 msgid ""
 "The workflow for tickets is controlled by plugins. By default,\n"
 "there's only a `ConfigurableTicketWorkflow` component in charge.\n"
@@ -838,7 +804,7 @@ msgid ""
 "0.12.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:820
+#: trac/ticket/query.py:819
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -847,7 +813,7 @@ msgid ""
 "(''since 0.11.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:828
+#: trac/ticket/query.py:827
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -856,7 +822,7 @@ msgid ""
 "(''since 0.11.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:836
+#: trac/ticket/query.py:835
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default (''since 0.11'')"
@@ -1470,13 +1436,13 @@ msgid ""
 "format. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/main.py:97
+#: trac/web/main.py:98
 msgid ""
 "Ordered list of filters to apply to all requests.\n"
 "(''since 0.10'')"
 msgstr ""
 
-#: trac/web/main.py:102
+#: trac/web/main.py:103
 msgid ""
 "Name of the component that handles requests to the base\n"
 "URL.\n"
@@ -1486,17 +1452,17 @@ msgid ""
 "and `WikiModule`. (''since 0.9'')"
 msgstr ""
 
-#: trac/web/main.py:111
+#: trac/web/main.py:112
 msgid "The default timezone to use"
 msgstr ""
 
-#: trac/web/main.py:114
+#: trac/web/main.py:115
 msgid ""
 "The preferred language to use if no user preference has\n"
 "been set. (''since 0.12.1'')"
 msgstr ""
 
-#: trac/web/main.py:119
+#: trac/web/main.py:120
 msgid ""
 "The date format. Valid options are 'iso8601' for selecting\n"
 "ISO 8601 format, or leave it empty which means the default\n"
@@ -1504,7 +1470,7 @@ msgid ""
 "language. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/main.py:126
+#: trac/web/main.py:127
 msgid ""
 "When true, send a `X-Sendfile` header and no content when sending\n"
 "files from the filesystem, so that the web server handles the content.\n"
@@ -1512,19 +1478,19 @@ msgid ""
 "like Apache with `mod_xsendfile` or lighttpd. (''since 1.0'')"
 msgstr ""
 
-#: trac/wiki/api.py:256
+#: trac/wiki/api.py:259
 msgid ""
 "Enable/disable highlighting CamelCase links to missing pages.\n"
 "(''since 0.9'')"
 msgstr ""
 
-#: trac/wiki/api.py:260
+#: trac/wiki/api.py:263
 msgid ""
 "Enable/disable splitting the WikiPageNames with space characters.\n"
 "(''since 0.10'')"
 msgstr ""
 
-#: trac/wiki/api.py:264
+#: trac/wiki/api.py:267
 msgid ""
 "Enable/disable the use of unsafe HTML tags such as `<script>` or\n"
 "`<embed>` with the HTML [wiki:WikiProcessors WikiProcessor].\n"
@@ -1535,7 +1501,7 @@ msgid ""
 "(''since 0.10.4'')"
 msgstr ""
 
-#: trac/wiki/api.py:273
+#: trac/wiki/api.py:276
 msgid ""
 "List of URI schemes considered \"safe\", that will be rendered as\n"
 "external links even if `[wiki] render_unsafe_content` is `false`.\n"
