@@ -12,6 +12,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import re
+
 from trac.tests.functional import *
 
 
@@ -110,12 +112,21 @@ class RegressionTestTicket11515(FunctionalTwillTestCaseSetup):
         Show a notice message with new language setting after it is changed.
         """
         from trac.util.translation import has_babel, get_available_locales
+        from pkg_resources import resource_exists, resource_filename
 
         if not has_babel:
             return
-        for second_locale in (locale for locale in get_available_locales()
-                                     if not locale.startswith('en_')):
-            break
+        if not resource_exists('trac', 'locale'):
+            return
+        locale_dir = resource_filename('trac', 'locale')
+        from babel.support import Translations
+        string = 'Your preferences have been saved.'
+        translated = None
+        for second_locale in get_available_locales():
+            tx = Translations.load(locale_dir, second_locale)
+            translated = tx.dgettext('messages', string)
+            if string != translated:
+                break  # the locale has a translation
         else:
             return
 
@@ -123,7 +134,7 @@ class RegressionTestTicket11515(FunctionalTwillTestCaseSetup):
             self._tester.go_to_preferences('Language')
             tc.formvalue('userprefs', 'language', second_locale)
             tc.submit()
-            tc.notfind('Your preferences have been saved')
+            tc.find(re.escape(translated))
         finally:
             tc.formvalue('userprefs', 'language', '')  # revert to default
             tc.submit()
