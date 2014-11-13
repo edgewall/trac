@@ -93,8 +93,8 @@ class NotificationSystem(Component):
     smtp_always_bcc_list = ListOption(
         'notification', 'smtp_always_bcc', '', sep=(',', ' '),
         doc="""Comma-separated list of email addresses to always send
-               notifications to. Addresses are not public (Bcc:).
-               (''since 0.10'')""")
+            notifications to. Addresses are not public (Bcc:).
+            """)
 
     smtp_default_domain = Option('notification', 'smtp_default_domain', '',
         """Default host/domain to append to addresses that do not specify
@@ -119,20 +119,21 @@ class NotificationSystem(Component):
         touchy anti-spam/anti-virus engine. `qp` or `quoted-printable`,
         which works best for european languages (more compact than base64) if
         8-bit encoding cannot be used.
-        (''since 0.10'')""")
+        """)
 
     use_public_cc = BoolOption('notification', 'use_public_cc', 'false',
         """Addresses in the To and Cc fields are visible to all recipients.
 
         If this option is disabled, recipients are put in the Bcc list.
-        (''since 0.10'')""")
+        """)
 
     use_short_addr = BoolOption('notification', 'use_short_addr', 'false',
         """Permit email address without a host/domain (i.e. username only).
 
         The SMTP server should accept those addresses, and either append
         a FQDN or use local delivery. See also `smtp_default_domain`. Do not
-        use this option with a public SMTP server. (''since 0.10'')""")
+        use this option with a public SMTP server.
+        """)
 
     smtp_subject_prefix = Option('notification', 'smtp_subject_prefix',
                                  '__default__',
@@ -140,7 +141,8 @@ class NotificationSystem(Component):
 
         If the setting is not defined, then `[$project_name]` is used as the
         prefix. If no prefix is desired, then specifying an empty option
-        will disable it. (''since 0.10.1'')""")
+        will disable it.
+        """)
 
     @property
     def smtp_always_cc(self):  # For backward compatibility
@@ -175,13 +177,13 @@ class SmtpEmailSender(Component):
         """SMTP server port to use for email notification.""")
 
     smtp_user = Option('notification', 'smtp_user', '',
-        """Username for authenticating with SMTP server. (''since 0.9'')""")
+        """Username for authenticating with SMTP server.""")
 
     smtp_password = Option('notification', 'smtp_password', '',
-        """Password for authenticating with SMTP server. (''since 0.9'')""")
+        """Password for authenticating with SMTP server.""")
 
     use_tls = BoolOption('notification', 'use_tls', 'false',
-        """Use SSL/TLS to send notifications over SMTP. (''since 0.10'')""")
+        """Use SSL/TLS to send notifications over SMTP.""")
 
     def send(self, from_addr, recipients, message):
         # Ensure the message complies with RFC2822: use CRLF line endings

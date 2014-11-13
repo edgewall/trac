@@ -822,7 +822,7 @@ class QueryModule(Component):
             in [TracQuery#QueryLanguage query language] syntax, or a URL query
             string starting with `?` as used in `query:`
             [TracQuery#UsingTracLinks Trac links].
-            (''since 0.11.2'')""")
+            """)
 
     default_anonymous_query = Option('query', 'default_anonymous_query',
         default='status!=closed&cc~=$USER',
@@ -830,11 +830,12 @@ class QueryModule(Component):
             in [TracQuery#QueryLanguage query language] syntax, or a URL query
             string starting with `?` as used in `query:`
             [TracQuery#UsingTracLinks Trac links].
-            (''since 0.11.2'')""")
+            """)
 
     items_per_page = IntOption('query', 'items_per_page', 100,
         """Number of tickets displayed per page in ticket queries,
-        by default (''since 0.11'')""")
+        by default.
+        """)
 
     # IContentConverter methods
 

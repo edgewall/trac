@@ -358,8 +358,7 @@ class Chrome(Component):
 
         Templates in that directory are loaded in addition to those in the
         environments `templates` directory, but the latter take precedence.
-
-        (''since 0.11'')""")
+        """)
 
     shared_htdocs_dir = PathOption('inherit', 'htdocs_dir', '',
         """Path to the //shared htdocs directory//.
@@ -472,17 +471,19 @@ class Chrome(Component):
 
     show_email_addresses = BoolOption('trac', 'show_email_addresses', 'false',
         """Show email addresses instead of usernames. If false, we obfuscate
-        email addresses. (''since 0.11'')""")
+        email addresses.
+        """)
 
     never_obfuscate_mailto = BoolOption('trac', 'never_obfuscate_mailto',
         'false',
         """Never obfuscate `mailto:` links explicitly written in the wiki,
         even if `show_email_addresses` is false or the user doesn't have
-        EMAIL_VIEW permission. (''since 0.11.6'')""")
+        EMAIL_VIEW permission.
+        """)
 
     show_ip_addresses = BoolOption('trac', 'show_ip_addresses', 'false',
         """Show IP addresses for resource edits (e.g. wiki).
-        (''since 0.11.3'')""")
+        """)
 
     resizable_textareas = BoolOption('trac', 'resizable_textareas', 'true',
         """Make `<textarea>` fields resizable. Requires !JavaScript.

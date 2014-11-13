@@ -306,7 +306,7 @@ class RepositoryManager(Component):
         (''since 0.12'')""")
 
     repository_type = Option('trac', 'repository_type', 'svn',
-        """Default repository connector type. (''since 0.10'')
+        """Default repository connector type.
 
         This is also used as the default repository type for repositories
         defined in [[TracIni#repositories-section repositories]] or using the
@@ -314,8 +314,7 @@ class RepositoryManager(Component):
         """)
 
     repository_dir = Option('trac', 'repository_dir', '',
-        """Path to the default repository. This can also be a relative path
-        (''since 0.11'').
+        """Path to the default repository. This can also be a relative path.
 
         This option is deprecated, and repositories should be defined in the
         [TracIni#repositories-section repositories] section, or using the

@@ -115,11 +115,12 @@ class ReportModule(Component):
 
     items_per_page = IntOption('report', 'items_per_page', 100,
         """Number of tickets displayed per page in ticket reports,
-        by default. (''since 0.11'')""")
+        by default.
+        """)
 
     items_per_page_rss = IntOption('report', 'items_per_page_rss', 0,
         """Number of tickets displayed in the rss feeds for reports.
-        (''since 0.11'')""")
+        """)
 
     REPORT_LIST_ID = -1  # Resource id of the report list page
 

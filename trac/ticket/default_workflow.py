@@ -114,8 +114,7 @@ class ConfigurableTicketWorkflow(Component):
         there's only a `ConfigurableTicketWorkflow` component in charge.
         That component allows the workflow to be configured via this section
         in the `trac.ini` file. See TracWorkflow for more details.
-
-        (''since 0.11'')""")
+        """)
 
     def __init__(self):
         self.actions = get_workflow_config(self.config)

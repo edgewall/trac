@@ -45,7 +45,7 @@ class LogModule(Component):
 
     default_log_limit = IntOption('revisionlog', 'default_log_limit', 100,
         """Default value for the limit argument in the TracRevisionLog.
-        (''since 0.11'')""")
+        """)
 
     graph_colors = ListOption('revisionlog', 'graph_colors',
         ['#cc0', '#0c0', '#0cc', '#00c', '#c0c', '#c00'],

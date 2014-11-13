@@ -197,8 +197,7 @@ class DefaultTicketGroupStatsProvider(Component):
         CSS rule: `table.progress td.<class> { background: <color> }`
         to a [TracInterfaceCustomization#SiteAppearance site/style.css] file
         for example.
-
-        (''since 0.11'')""")
+        """)
 
     default_milestone_groups =  [
         {'name': 'closed', 'status': 'closed',

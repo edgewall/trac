@@ -204,7 +204,7 @@ class TicketSystem(Component):
         ITicketActionController, default='ConfigurableTicketWorkflow',
         include_missing=False,
         doc="""Ordered list of workflow controllers to use for ticket actions.
-            (''since 0.11'')""")
+            """)
 
     restrict_owner = BoolOption('ticket', 'restrict_owner', 'false',
         """Make the owner field of tickets use a drop-down menu.
@@ -215,13 +215,13 @@ class TicketSystem(Component):
         Please note that e-mail addresses are '''not''' obfuscated in the
         resulting drop-down menu, so this option should not be used if
         e-mail addresses must remain protected.
-        (''since 0.9'')""")
+        """)
 
     default_version = Option('ticket', 'default_version', '',
         """Default version for newly created tickets.""")
 
     default_type = Option('ticket', 'default_type', 'defect',
-        """Default type for newly created tickets. (''since 0.9'')""")
+        """Default type for newly created tickets.""")
 
     default_priority = Option('ticket', 'default_priority', 'major',
         """Default priority for newly created tickets.""")
@@ -251,8 +251,7 @@ class TicketSystem(Component):
         """Default cc: list for newly created tickets.""")
 
     default_resolution = Option('ticket', 'default_resolution', 'fixed',
-        """Default resolution for resolving (closing) tickets.
-        (''since 0.11'')""")
+        """Default resolution for resolving (closing) tickets.""")
 
     optional_fields = ListOption('ticket', 'optional_fields',
                                  'milestone, version', doc=

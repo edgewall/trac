@@ -168,8 +168,7 @@ class Environment(Component, ComponentManager):
         Plugins in that directory are loaded in addition to those in
         the directory of the environment `plugins`, with this one
         taking precedence.
-
-        (''since 0.11'')""")
+        """)
 
     base_url = Option('trac', 'base_url', '',
         """Reference URL for the Trac deployment.
@@ -189,15 +188,16 @@ class Environment(Component, ComponentManager):
         force Trac to use the `base_url` setting also for
         redirects. This introduces the obvious limitation that this
         environment will only be usable when accessible from that URL,
-        as redirects are frequently used. (''since 0.10.5'')""")
+        as redirects are frequently used.
+        """)
 
     secure_cookies = BoolOption('trac', 'secure_cookies', False,
         """Restrict cookies to HTTPS connections.
 
         When true, set the `secure` flag on all cookies so that they
         are only sent to the server on HTTPS connections. Use this if
-        your Trac instance is only accessible through HTTPS. (''since
-        0.11.2'')""")
+        your Trac instance is only accessible through HTTPS.
+        """)
 
     project_name = Option('project', 'name', 'My Project',
         """Name of the project.""")
@@ -219,7 +219,8 @@ class Environment(Component, ComponentManager):
 
         This can be an absolute or relative URL, or '.' to reference
         this Trac instance. An empty value will disable the reporting
-        buttons.  (''since 0.11.3'')""")
+        buttons.
+        """)
 
     project_footer = Option('project', 'footer',
                             N_('Visit the Trac open source project at<br />'
@@ -265,8 +266,7 @@ class Environment(Component, ComponentManager):
 
         Example:
         `($(thread)d) Trac[$(basename)s:$(module)s] $(levelname)s: $(message)s`
-
-        (''since 0.10.5'')""")
+        """)
 
     def __init__(self, path, create=False, options=[]):
         """Initialize the Trac environment.

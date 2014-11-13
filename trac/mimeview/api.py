@@ -620,17 +620,17 @@ class Mimeview(Component):
         """Charset to be used when in doubt.""")
 
     tab_width = IntOption('mimeviewer', 'tab_width', 8,
-        """Displayed tab width in file preview. (''since 0.9'')""")
+        """Displayed tab width in file preview.""")
 
     max_preview_size = IntOption('mimeviewer', 'max_preview_size', 262144,
-        """Maximum file size for HTML preview. (''since 0.9'')""")
+        """Maximum file size for HTML preview.""")
 
     mime_map = ListOption('mimeviewer', 'mime_map',
         'text/x-dylan:dylan, text/x-idl:ice, text/x-ada:ads:adb',
         doc="""List of additional MIME types and keyword mappings.
         Mappings are comma-separated, and for each MIME type,
         there's a colon (":") separated list of associated keywords
-        or file extensions. (''since 0.10'')""")
+        or file extensions.""")
 
     mime_map_patterns = ListOption('mimeviewer', 'mime_map_patterns',
         'text/plain:README|INSTALL|COPYING.*',
@@ -643,7 +643,8 @@ class Mimeview(Component):
         'application/octet-stream, application/pdf, application/postscript, '
         'application/msword,application/rtf,',
         doc="""Comma-separated list of MIME types that should be treated as
-        binary data. (''since 0.11.5'')""")
+        binary data.
+        """)
 
     def __init__(self):
         self._mime_map = None

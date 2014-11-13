@@ -37,7 +37,7 @@ class TicketNotificationSystem(Component):
     always_notify_owner = BoolOption('notification', 'always_notify_owner',
                                      'false',
         """Always send notifications to the ticket ''owner''.
-        (''since 0.9'')""")
+        """)
 
     always_notify_reporter = BoolOption('notification',
                                         'always_notify_reporter',
@@ -56,7 +56,7 @@ class TicketNotificationSystem(Component):
 
         The template variables are documented on the
         [TracNotification#Customizingthee-mailsubject TracNotification] page.
-        (''since 0.11'')""")
+        """)
 
     batch_subject_template = Option('notification', 'batch_subject_template',
                                     '$prefix Batch modify: $tickets_descr',

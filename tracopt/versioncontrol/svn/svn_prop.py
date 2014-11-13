@@ -68,8 +68,7 @@ class SubversionPropertyRenderer(Component):
         Finally, the relative URLs introduced in
         [http://subversion.apache.org/docs/release-notes/1.5.html#externals Subversion 1.5]
         are not yet supported.
-
-        (''since 0.11'')""")
+        """)
 
     def __init__(self):
         self._externals_map = {}

@@ -51,11 +51,12 @@ class TimelineModule(Component):
 
     default_daysback = IntOption('timeline', 'default_daysback', 30,
         """Default number of days displayed in the Timeline, in days.
-        (''since 0.9'')""")
+        """)
 
     max_daysback = IntOption('timeline', 'max_daysback', 90,
         """Maximum number of days (-1 for unlimited) displayable in the
-        Timeline. (''since 0.11'')""")
+        Timeline.
+        """)
 
     abbreviated_messages = BoolOption('timeline', 'abbreviated_messages',
                                       True,
@@ -63,7 +64,7 @@ class TimelineModule(Component):
 
         This only affects the default rendering, and can be overriden by
         specific event providers, see their own documentation.
-        (''since 0.11'')""")
+        """)
 
     _authors_pattern = re.compile(r'(-)?(?:"([^"]*)"|\'([^\']*)\'|([^\s]+))')
 

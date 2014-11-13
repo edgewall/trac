@@ -303,11 +303,11 @@ class DatabaseManager(Component):
 
     timeout = IntOption('trac', 'timeout', '20',
         """Timeout value for database connection, in seconds.
-        Use '0' to specify ''no timeout''. (''since 0.11'')""")
+        Use '0' to specify ''no timeout''.""")
 
     debug_sql = BoolOption('trac', 'debug_sql', False,
         """Show the SQL queries in the Trac log, at DEBUG level.
-        (''since 0.11.5'')""")
+        """)
 
     def __init__(self):
         self._cnx_pool = None

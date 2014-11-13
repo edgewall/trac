@@ -61,11 +61,10 @@ class LoginModule(Component):
 
     check_ip = BoolOption('trac', 'check_auth_ip', 'false',
          """Whether the IP address of the user should be checked for
-         authentication. (''since 0.9'')""")
+         authentication.""")
 
     ignore_case = BoolOption('trac', 'ignore_auth_case', 'false',
-        """Whether login names should be converted to lower case
-        (''since 0.9'').""")
+        """Whether login names should be converted to lower case.""")
 
     auth_cookie_lifetime = IntOption('trac', 'auth_cookie_lifetime', 0,
         """Lifetime of the authentication cookie, in seconds.
