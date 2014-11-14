@@ -34,7 +34,6 @@ from trac.resource import Resource
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Milestone, group_milestones
 from trac.util import Ranges, as_bool
-from trac.util.compat import any
 from trac.util.datefmt import format_datetime, from_utimestamp, parse_date, \
                               to_timestamp, to_utimestamp, utc, user_time
 from trac.util.presentation import Paginator
