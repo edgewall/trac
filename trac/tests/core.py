@@ -34,7 +34,7 @@ class IOtherTest(Interface):
 class ComponentTestCase(unittest.TestCase):
 
     def setUp(self):
-        from trac.core import ComponentManager, ComponentMeta
+        from trac.core import ComponentMeta
         self.compmgr = ComponentManager()
 
         # Make sure we have no external components hanging around in the
@@ -286,7 +286,6 @@ class ComponentTestCase(unittest.TestCase):
         Verify that a component manager can itself be a component with its own
         extension points.
         """
-        from trac.core import ComponentManager
         class ManagerComponent(ComponentManager, Component):
             tests = ExtensionPoint(ITest)
             def __init__(self, foo, bar):
