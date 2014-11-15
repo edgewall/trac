@@ -57,6 +57,7 @@ class AttachmentTestCase(unittest.TestCase):
         self.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
         self.attachments_dir = os.path.join(self.env.path, 'files',
                                             'attachments')
+        self.env.enable_component(TicketOnlyViewsTicket)
         self.env.config.set('trac', 'permission_policies',
                             'TicketOnlyViewsTicket, LegacyAttachmentPolicy')
         self.env.config.set('attachment', 'max_size', 512)

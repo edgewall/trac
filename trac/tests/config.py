@@ -256,6 +256,9 @@ class ConfigurationTestCase(unittest.TestCase):
             def __init__(self):
                 self.config = config
 
+        self.env.enable_component(ImplA)
+        self.env.enable_component(Foo)
+
         foo = Foo(self.env)
         self.assertRaises(ConfigurationError, getattr, foo, 'default1')
         self.assertIsInstance(foo.default2, ImplA)
@@ -295,6 +298,11 @@ class ConfigurationTestCase(unittest.TestCase):
 
             def __init__(self):
                 self.config = config
+
+        self.env.enable_component(ImplA)
+        self.env.enable_component(ImplB)
+        self.env.enable_component(ImplC)
+        self.env.enable_component(Foo)
 
         foo = Foo(self.env)
         self.assertEqual([], foo.default1)

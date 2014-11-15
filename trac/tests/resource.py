@@ -61,6 +61,7 @@ class RenderResourceLinkTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
+        self.env.enable_component(self.FakeResourceManager)
         self.req = Mock(perm=MockPerm(), href=Href('/trac.cgi'))
         self.context = web_context(self.req)
 
