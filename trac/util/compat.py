@@ -20,7 +20,8 @@ previous versions of Python from 2.5 onward.
 import math
 import os
 import time
-from inspect import cleandoc
+
+from trac.util.translation import cleandoc
 
 # Import symbols previously defined here, kept around so that plugins importing
 # them don't suddenly stop working

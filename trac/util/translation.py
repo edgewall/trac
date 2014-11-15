@@ -15,7 +15,6 @@
 
 import pkg_resources
 import re
-from inspect import cleandoc
 
 from genshi.builder import tag
 
@@ -24,6 +23,13 @@ from trac.util.concurrency import ThreadLocal, threading
 
 __all__ = ['gettext', 'ngettext', 'gettext_noop', 'ngettext_noop',
            'tgettext', 'tgettext_noop', 'tngettext', 'tngettext_noop']
+
+
+def cleandoc(message):
+    """Removes uniform indentation and leading/trailing whitespace."""
+    from inspect import cleandoc
+    return cleandoc(message).strip()
+
 
 def safefmt(string, kwargs):
     if kwargs:

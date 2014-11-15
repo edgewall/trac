@@ -1213,5 +1213,6 @@ from trac.util.datefmt import pretty_timedelta, format_datetime, \
                               get_date_format_hint, \
                               get_datetime_format_hint, http_date, \
                               parse_date
+from trac.util.translation import cleandoc
 
 __no_apidoc__ = 'compat presentation translation'

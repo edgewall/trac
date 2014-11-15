@@ -14,14 +14,13 @@
 
 from ConfigParser import ConfigParser
 from copy import deepcopy
-from inspect import cleandoc
 import os.path
 import re
 
 from genshi.builder import tag
 from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.core import *
-from trac.util import AtomicFile, as_bool
+from trac.util import AtomicFile, as_bool, cleandoc
 from trac.util.compat import wait_for_file_mtime_change
 from trac.util.text import printout, to_unicode, CRLF
 from trac.util.translation import _, N_, tag_
