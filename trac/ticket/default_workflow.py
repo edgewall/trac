@@ -172,6 +172,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
 
 """
         self.log.info(info_message.replace('\n', ' ').replace('==', ''))
+        print(info_message)
 
     # ITicketActionController methods
 
@@ -268,7 +269,6 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             id = 'action_%s_reassign_owner' % action
 
             if not owners:
-                print default_owner
                 owner = req.args.get(id, default_owner)
                 control.append(
                     tag_("to %(owner)s",
