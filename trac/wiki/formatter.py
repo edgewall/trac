@@ -700,17 +700,7 @@ class Formatter(object):
             url = 'http://trac.edgewall.org'
         if url:
             name = intertrac.get(ns + '.title', 'Trac project %s' % ns)
-            compat = intertrac.getbool(ns + '.compat', 'false')
-            # set `compat` default to False now that 0.10 is widely used
-            # TODO: remove compatibility code completely for 1.0 release
-            if compat:
-                sep = target.find(':')
-                if sep != -1:
-                    url = '%s/%s/%s' % (url, target[:sep], target[sep + 1:])
-                else:
-                    url = '%s/search?q=%s' % (url, unicode_quote_plus(target))
-            else:
-                url = '%s/intertrac/%s' % (url, unicode_quote(target))
+            url = '%s/intertrac/%s' % (url, unicode_quote(target))
             if target:
                 title = _('%(target)s in %(name)s', target=target, name=name)
             else:
