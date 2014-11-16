@@ -76,6 +76,16 @@ def parse_workflow_config(rawactions):
         attributes['permissions'] = as_list('permissions')
         # Normalize the oldstates
         attributes['oldstates'] = as_list('oldstates')
+        # set_owner and set_resolution are optional and only applicable when
+        # the operation bearing their name is defined by the action
+        if 'set_owner' in attributes:
+            set_owner = attributes.get('set_owner', '')
+            attributes['set_owner'] = \
+                [x.strip() for x in set_owner.strip().split(',') if x]
+        if 'set_resolution' in attributes:
+            set_resolution = attributes.get('set_resolution', '')
+            attributes['set_resolution'] = \
+                [x.strip() for x in set_resolution.split(',')]
     return actions
 
 
@@ -245,8 +255,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             hints.append(_("The ticket will be disowned"))
         if 'set_owner' in operations or 'may_set_owner' in operations:
             if 'set_owner' in this_action:
-                owners = [x.strip() for x in
-                          this_action['set_owner'].strip().split(',') if x]
+                owners = this_action['set_owner']
             elif self.config.getbool('ticket', 'restrict_owner'):
                 perm = PermissionSystem(self.env)
                 owners = perm.get_users_with_permission('TICKET_MODIFY')
@@ -307,8 +316,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                               new_owner=author_info(author)))
         if 'set_resolution' in operations:
             if 'set_resolution' in this_action:
-                resolutions = [x.strip() for x in
-                               this_action['set_resolution'].split(',')]
+                resolutions = this_action['set_resolution']
             else:
                 resolutions = [val.name for val in Resolution.select(self.env)]
             if not resolutions:
@@ -373,9 +381,9 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             elif operation == 'del_owner':
                 updated['owner'] = ''
             elif operation in ('set_owner', 'may_set_owner'):
-                newowner = \
-                    req.args.get('action_%s_reassign_owner' % action,
-                                 this_action.get('set_owner', '').strip())
+                set_owner = this_action.get('set_owner')
+                newowner = req.args.get('action_%s_reassign_owner' % action,
+                                        set_owner[0] if set_owner else '')
                 # If there was already an owner, we get a list, [new, old],
                 # but if there wasn't we just get new.
                 if type(newowner) == list:
@@ -386,9 +394,11 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             elif operation == 'del_resolution':
                 updated['resolution'] = ''
             elif operation == 'set_resolution':
-                newresolution = req.args.get('action_%s_resolve_resolution' %
-                                             action,
-                                this_action.get('set_resolution', '').strip())
+                set_resolution = this_action.get('set_resolution')
+                newresolution = req.args.get('action_%s_resolve_resolution'
+                                             % action,
+                                             set_resolution[0]
+                                             if set_resolution else '')
                 updated['resolution'] = newresolution
 
             # leave_status is just a no-op here, so we don't look for it.
