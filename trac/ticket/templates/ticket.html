@@ -322,17 +322,15 @@ ${value}</textarea>
                 <fieldset py:when="can_append or can_modify" id="action">
                   <legend>Action</legend>
                   <div py:for="key, label, controls, hints in action_controls">
-                      <input type="radio" id="action_$key" name="action" value="$key"
-                             checked="${key == action or None}" />
-                      <label for="action_$key">$label</label>
-                      $controls
-                      <span class="hint" py:for="hint in hints">$hint</span>
+                    <input type="radio" id="action_$key" name="action" value="$key"
+                           checked="${key == action or None}" />
+                    <label for="action_$key">$label</label>
+                    $controls
+                    <span class="hint" py:for="hint in hints">$hint</span>
                   </div>
                 </fieldset>
-                <py:otherwise>
-                  <py:for each="key, label, controls, hints in action_controls">
-                    <input py:if="key == action" type="hidden" name="action" value="$action" />
-                  </py:for>
+                <py:otherwise py:for="key, label, controls, hints in action_controls">
+                  <input py:if="key == action" type="hidden" name="action" value="$action" />
                 </py:otherwise>
               </py:choose>
             </py:if>
