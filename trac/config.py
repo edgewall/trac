@@ -20,9 +20,9 @@ import re
 from genshi.builder import tag
 from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.core import *
-from trac.util import AtomicFile, as_bool, cleandoc
+from trac.util import AtomicFile, as_bool
 from trac.util.compat import wait_for_file_mtime_change
-from trac.util.text import printout, to_unicode, CRLF
+from trac.util.text import CRLF, cleandoc, printout, to_unicode
 from trac.util.translation import _, N_, tag_
 
 __all__ = ['Configuration', 'ConfigSection', 'Option', 'BoolOption',

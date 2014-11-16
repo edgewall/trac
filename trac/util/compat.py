@@ -21,7 +21,7 @@ import math
 import os
 import time
 
-from trac.util.translation import cleandoc
+from trac.util.text import cleandoc
 
 # Import symbols previously defined here, kept around so that plugins importing
 # them don't suddenly stop working

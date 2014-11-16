@@ -27,9 +27,6 @@ import textwrap
 from urllib import quote, quote_plus, unquote
 from unicodedata import east_asian_width
 
-from trac.util.translation import _
-
-
 CRLF = '\r\n'
 
 class Empty(unicode):
@@ -618,6 +615,13 @@ def unquote_label(txt):
     """
     return txt[1:-1] if txt and txt[0] in "'\"" and txt[0] == txt[-1] else txt
 
+
+def cleandoc(message):
+    """Removes uniform indentation and leading/trailing whitespace."""
+    from inspect import cleandoc
+    return cleandoc(message).strip()
+
+
 # -- Conversion
 
 def pretty_size(size, format='%.1f'):
@@ -631,6 +635,7 @@ def pretty_size(size, format='%.1f'):
 
     jump = 1024
     if size < jump:
+        from trac.util.translation import _
         return _('%(size)s bytes', size=size)
 
     units = ['KB', 'MB', 'GB', 'TB']
