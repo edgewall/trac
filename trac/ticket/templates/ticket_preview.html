@@ -17,7 +17,7 @@ Render data relevant to automatic ticket preview.
       py:with="can_append = 'TICKET_APPEND' in perm(ticket.resource);
                has_edit_comment = 'TICKET_EDIT_COMMENT' in perm(ticket.resource);"
       py:strip="">
-  <xi:include href="ticket_box.html"/>
+  <xi:include href="ticket_box.html" py:with="chrome_info_script = None" />
   <div id="changelog">
     <div py:for="change in changes"
          class="change${' trac-new' if change.date > start_time and 'attachment' not in change.fields else None}"
@@ -28,4 +28,5 @@ Render data relevant to automatic ticket preview.
   <input type="hidden" name="view_time" value="${to_utimestamp(ticket['changetime'])}"/>
   <div id="preview"><xi:include py:if="change_preview.fields or change_preview.comment"
                                 href="ticket_change.html" py:with="change = change_preview; preview = True"/></div>
+  <py:if test="chrome_info_script">${chrome_info_script(req)}</py:if>
 </html>

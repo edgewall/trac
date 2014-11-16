@@ -98,6 +98,8 @@
           var show_preview = preview.children().length != 0;
           $("#ticketchange").toggle(show_preview);
           setRevertHandler();
+          // Execute scripts to load stylesheets
+          items.filter("script").appendTo("head");
         }, "#ticketchange .trac-loading");
         $("#trac-comment-editor").autoSubmit({preview_comment: '1'}, function(data, reply) {
           var comment = $("#trac-comment-editor").next("div.comment").html(reply);
