@@ -34,6 +34,7 @@
         <link rel="${rel}" py:for="link in links" py:attrs="link" />
       </py:for>
     </py:if>
+    <style id="trac-noscript" type="text/css">.trac-noscript { display: none !important }</style>
     <py:if test="not defined('trac_error_rendering') and 'SEARCH_VIEW' in perm" id="search">
       <link type="application/opensearchdescription+xml" rel="search"
             href="${href.search('opensearch')}"
@@ -48,6 +49,7 @@
       ${script.prefix}<script type="${script.type}" charset="${script.charset}" src="${script.href}"></script>${script.suffix}
     </py:for>
     <script type="text/javascript">
+      jQuery("#trac-noscript").remove();
       jQuery(document).ready(function($) {
         <py:if test="chrome.warnings or chrome.notices">
         $(".trac-close-msg").show().click(function () {

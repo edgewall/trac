@@ -489,14 +489,20 @@ class WorkflowMacro(WikiMacroBase):
                 edges.append((old_index, new_index, name_index))
 
         args = args or {}
+        width = args.get('width', 800)
+        height = args.get('height', 600)
         graph = {'nodes': states, 'actions': action_names, 'edges': edges,
-                 'width': args.get('width', 800),
-                 'height': args.get('height', 600)}
+                 'width': width, 'height': height}
         graph_id = '%012x' % id(graph)
         req = formatter.req
         add_script(req, 'common/js/excanvas.js', ie_if='IE')
         add_script(req, 'common/js/workflow_graph.js')
         add_script_data(req, {'graph_%s' % graph_id: graph})
-        return tag.div(_("Enable JavaScript to display the workflow graph."),
-                       class_='trac-workflow-graph system-message',
-                       id='trac-workflow-graph-%s' % graph_id)
+        return tag(
+            tag.div('', class_='trac-workflow-graph trac-noscript',
+                    id='trac-workflow-graph-%s' % graph_id,
+                    style="display:inline-block;width:%spx;height:%spx" %
+                          (width, height)),
+            tag.noscript(
+                tag.div(_("Enable JavaScript to display the workflow graph."),
+                        class_='system-message')))
