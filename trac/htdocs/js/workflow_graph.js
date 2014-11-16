@@ -228,7 +228,7 @@
       canvas.height = $(canvas).height();
       if (typeof(G_vmlCanvasManager) != 'undefined')
         canvas = G_vmlCanvasManager.initElement(canvas);
-      $(this).replaceWith(canvas);
+      $(this).empty().append(canvas);
       var ctx = canvas.getContext('2d');
 
       if (nodes.length == 0)
