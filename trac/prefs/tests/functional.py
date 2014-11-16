@@ -44,7 +44,7 @@ class TestDefaultHandler(FunctionalTwillTestCaseSetup):
         """Set default handler."""
 
         # Project default_handler is selected.
-        self._tester.go_to_preferences()
+        self._tester.go_to_preferences("User Interface")
         tc.notfind(r'<option[^>]+selected="selected"')
         tc.find("Default \(WikiModule\)")
 
@@ -54,7 +54,7 @@ class TestDefaultHandler(FunctionalTwillTestCaseSetup):
                    " enabled\."
             self._testenv.set_config('trac', 'default_handler',
                                      'SearchModule')
-            self._tester.go_to_preferences()
+            self._tester.go_to_preferences("User Interface")
             tc.notfind('<option[^>]+selected="selected"')
             tc.find("Default \(SearchModule\)")
             tc.notfind(hint)
@@ -62,7 +62,7 @@ class TestDefaultHandler(FunctionalTwillTestCaseSetup):
             # Project default handler still selected after module is disabled.
             component = 'trac.search.web_ui.*'
             self._testenv.set_config('components', component, 'disabled')
-            self._tester.go_to_preferences()
+            self._tester.go_to_preferences("User Interface")
             try:
                 tc.notfind('<option[^>]+selected="selected"')
                 tc.find(r"Default \(SearchModule\)")
@@ -81,7 +81,7 @@ class TestDefaultHandler(FunctionalTwillTestCaseSetup):
         tc.find("<h1>Timeline</h1>")
 
         # Clear session default handler.
-        self._tester.go_to_preferences()
+        self._tester.go_to_preferences("User Interface")
         tc.formvalue('userprefs', 'default_handler', '')
         tc.submit()
         tc.find("Your preferences have been saved\.")
