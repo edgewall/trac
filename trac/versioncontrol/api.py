@@ -681,6 +681,11 @@ class RepositoryManager(Component):
                           base or reponame)
             return
         for repos in sorted(repositories, key=lambda r: r.reponame):
+            reponame = repos.reponame or '(default)'
+            if reponame in self.repository_sync_per_request:
+                self.log.warn("Repository '%s' should be removed from [trac] "
+                              "repository_sync_per_request for explicit "
+                              "synchronization", reponame)
             repos.sync()
             for rev in revs:
                 args = []
@@ -696,10 +701,10 @@ class RepositoryManager(Component):
                         self.log.debug(
                             "No changeset '%s' found in repository '%s'. "
                             "Skipping subscribers for event %s",
-                            rev, repos.reponame or '(default)', event)
+                            rev, reponame, event)
                         continue
                 self.log.debug("Event %s on repository '%s' for revision '%s'",
-                               event, repos.reponame or '(default)', rev)
+                               event, reponame, rev)
                 for listener in self.change_listeners:
                     getattr(listener, event)(repos, changeset, *args)
 
