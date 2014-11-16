@@ -698,7 +698,7 @@ class RepositoryManager(Component):
                         repos.sync_changeset(rev)
                         changeset = repos.get_changeset(rev)
                     except NoSuchChangeset:
-                        self.log.debug(
+                        self.log.warn(
                             "No changeset '%s' found in repository '%s'. "
                             "Skipping subscribers for event %s",
                             rev, reponame, event)
