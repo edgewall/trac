@@ -15,7 +15,7 @@ from trac.core import *
 from trac.resource import Resource
 from trac.util import as_int
 from trac.web.api import IRequestHandler
-from trac.web.chrome import web_context
+from trac.web.chrome import chrome_info_script, web_context
 from trac.wiki.formatter import format_to
 
 
@@ -49,5 +49,6 @@ class WikiRenderer(Component):
 
         resource = Resource(realm, id=id, version=version)
         context = web_context(req, resource)
-        rendered = format_to(self.env, flavor, context, text, **options)
+        rendered = format_to(self.env, flavor, context, text, **options) + \
+                   chrome_info_script(req)
         req.send(rendered.encode('utf-8'))

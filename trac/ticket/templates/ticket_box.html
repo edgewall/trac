@@ -119,4 +119,5 @@ Arguments:
     </div>
     <br py:if="not ticket.description" style="clear: both" />
   </div>
+  <py:if test="chrome_info_script">${chrome_info_script(req)}</py:if>
 </div>

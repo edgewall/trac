@@ -101,6 +101,8 @@
           // Collapse property form if comment editor has focus
           if (show_preview && comment_focused)
             $("#modify").parent().addClass("collapsed");
+          // Execute scripts to load stylesheets
+          items.filter("script").appendTo("head");
         }, "#ticketchange .trac-loading");
         $("#trac-comment-editor").autoSubmit({preview_comment: '1'}, function(data, reply) {
           var comment = $("#trac-comment-editor").next("div.comment").html(reply);

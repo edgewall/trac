@@ -53,7 +53,7 @@ from trac.util import compat, get_reporter_id, html, presentation, \
 from trac.util.html import escape, plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
                            shorten_line, unicode_quote_plus, to_unicode, \
-                           javascript_quote, exception_to_unicode
+                           javascript_quote, exception_to_unicode, to_js_string
 from trac.util.datefmt import (
     pretty_timedelta, format_datetime, format_date, format_time,
     from_utimestamp, http_date, utc, get_date_format_jquery_ui, is_24_hours,
@@ -299,6 +299,30 @@ def auth_link(req, link):
     if req.authname != 'anonymous':
         return req.href.login(referer=link)
     return link
+
+
+def chrome_info_script(req, use_late=None):
+    """Get script elements from chrome info of the request object during
+    rendering template or after rendering.
+
+    :param      req: the HTTP request object.
+    :param use_late: if True, `late_links` will be used instead of `links`.
+    """
+    if use_late:
+        links = req.chrome.get('late_links')
+    else:
+        links = req.chrome.get('links')
+    if links:
+        links = links.get('stylesheet')
+
+    content = []
+    content.extend('jQuery.loadStyleSheet(%s, %s);' %
+                   (to_js_string(link['href']), to_js_string(link['type']))
+                   for link in links or ())
+    if content:
+        return tag.script('\n'.join(content), type='text/javascript')
+    else:
+        return ''
 
 
 def _chrome_resource_path(req, filename):

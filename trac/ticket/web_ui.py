@@ -49,11 +49,12 @@ from trac.util.text import (
 from trac.util.presentation import separated
 from trac.util.translation import _, tag_, tagn_, N_, ngettext
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
-from trac.web import IRequestHandler, arg_list_to_args, parse_arg_list
+from trac.web.api import IRequestHandler, arg_list_to_args, parse_arg_list
 from trac.web.chrome import (
     Chrome, INavigationContributor, ITemplateProvider,
     add_ctxtnav, add_link, add_notice, add_script, add_script_data,
-    add_stylesheet, add_warning, auth_link, prevnext_nav, web_context
+    add_stylesheet, add_warning, auth_link, chrome_info_script, prevnext_nav,
+    web_context
 )
 from trac.wiki.formatter import format_to, format_to_html, format_to_oneliner
 
@@ -505,6 +506,7 @@ class TicketModule(Component):
 
         if req.get_header('X-Requested-With') == 'XMLHttpRequest':
             data['preview_mode'] = True
+            data['chrome_info_script'] = chrome_info_script
             return 'ticket_box.html', data, None
 
         add_stylesheet(req, 'common/css/ticket.css')
@@ -523,7 +525,8 @@ class TicketModule(Component):
             escape_newlines = self.must_preserve_newlines
             rendered = format_to_html(self.env, context,
                                       req.args.get('edited_comment', ''),
-                                      escape_newlines=escape_newlines)
+                                      escape_newlines=escape_newlines) + \
+                       chrome_info_script(req)
             req.send(rendered.encode('utf-8'))
 
         req.perm('ticket', id, version).require('TICKET_VIEW')
@@ -645,6 +648,7 @@ class TicketModule(Component):
 
         if xhr:
             data['preview_mode'] = bool(data['change_preview']['fields'])
+            data['chrome_info_script'] = chrome_info_script
             return 'ticket_preview.html', data, None
 
         mime = Mimeview(self.env)

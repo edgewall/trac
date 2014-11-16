@@ -85,6 +85,17 @@
   $.loadStyleSheet = function(href, type) {
     type = type || "text/css";
     $(document).ready(function() {
+      var link;
+      $("link[rel=stylesheet]").each(function() {
+        if (this.getAttribute("href") === href) {
+          if (this.disabled)
+            this.disabled = false;
+          link = this;
+          return false;
+        }
+      });
+      if (link !== undefined)
+        return;
       if (document.createStyleSheet) { // MSIE
         document.createStyleSheet(href);
       } else {
