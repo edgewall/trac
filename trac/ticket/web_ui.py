@@ -506,9 +506,10 @@ class TicketModule(Component):
 
         add_stylesheet(req, 'common/css/ticket.css')
         add_script(req, 'common/js/folding.js')
-        Chrome(self.env).add_wiki_toolbars(req)
-        Chrome(self.env).add_auto_preview(req)
-        Chrome(self.env).add_jquery_ui(req)
+        chrome = Chrome(self.env)
+        chrome.add_wiki_toolbars(req)
+        chrome.add_auto_preview(req)
+        chrome.add_jquery_ui(req)
         return 'ticket.html', data, None
 
     def _process_ticket_request(self, req):
@@ -699,9 +700,10 @@ class TicketModule(Component):
         add_script_data(req, {'comments_prefs': self._get_prefs(req)})
         add_stylesheet(req, 'common/css/ticket.css')
         add_script(req, 'common/js/folding.js')
-        Chrome(self.env).add_wiki_toolbars(req)
-        Chrome(self.env).add_auto_preview(req)
-        Chrome(self.env).add_jquery_ui(req)
+        chrome = Chrome(self.env)
+        chrome.add_wiki_toolbars(req)
+        chrome.add_auto_preview(req)
+        chrome.add_jquery_ui(req)
 
         # Add registered converters
         for conversion in mime.get_supported_conversions('trac.ticket.Ticket'):
