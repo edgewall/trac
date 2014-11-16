@@ -92,11 +92,9 @@ class PreferencesModule(Component):
 
     def get_preference_panels(self, req):
         yield None, _("General")
-        yield 'datetime', _("Date & Time")
+        yield 'localization', _("Localization")
         yield 'keybindings', _("Keyboard Shortcuts")
         yield 'userinterface', _("User Interface")
-        if Locale or 'TRAC_ADMIN' in req.perm:
-            yield 'language', _("Language")
         if not req.authname or req.authname == 'anonymous':
             yield 'advanced', _("Advanced")
 

@@ -27,7 +27,7 @@ class TestPreferences(FunctionalTwillTestCaseSetup):
         tc.formvalue('userprefs', 'email', ' admin@example.com ')
         tc.submit()
         tc.find('Your preferences have been saved.')
-        self._tester.go_to_preferences("Date & Time")
+        self._tester.go_to_preferences("Localization")
         tc.formvalue('userprefs', 'tz', 'GMT -10:00')
         tc.submit()
         tc.find('Your preferences have been saved.')
@@ -35,7 +35,7 @@ class TestPreferences(FunctionalTwillTestCaseSetup):
         tc.notfind('Your preferences have been saved.')
         tc.find('value="System Administrator"')
         tc.find(r'value="admin@example\.com"')
-        self._tester.go_to_preferences("Date & Time")
+        self._tester.go_to_preferences("Localization")
         tc.find('GMT -10:00')
 
 
@@ -127,7 +127,7 @@ class RegressionTestTicket11337(FunctionalTwillTestCaseSetup):
             '<select id="language" name="language" disabled="disabled" ' \
             'title="Translations are currently unavailable">'
 
-        self._tester.go_to_preferences("Language")
+        self._tester.go_to_preferences("Localization")
         if has_babel:
             tc.notfind(babel_hint)
             if get_available_locales():
@@ -144,7 +144,7 @@ class RegressionTestTicket11337(FunctionalTwillTestCaseSetup):
         # For users without TRAC_ADMIN, the Language tab should only be
         # present when Babel is installed
         self._tester.go_to_preferences()
-        language_tab = '<li id="tab_language">'
+        language_tab = '<li id="tab_localization">'
         try:
             self._tester.logout()
             if has_babel:
@@ -181,7 +181,7 @@ class RegressionTestTicket11515(FunctionalTwillTestCaseSetup):
             return
 
         try:
-            self._tester.go_to_preferences('Language')
+            self._tester.go_to_preferences('Localization')
             tc.formvalue('userprefs', 'language', second_locale)
             tc.submit()
             tc.find(re.escape(translated))
