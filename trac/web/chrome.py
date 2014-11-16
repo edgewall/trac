@@ -309,20 +309,37 @@ def chrome_info_script(req, use_late=None):
     :param use_late: if True, `late_links` will be used instead of `links`.
     """
     if use_late:
-        links = req.chrome.get('late_links')
+        links = 'late_links'
+        scripts = 'late_scripts'
+        script_data = 'late_script_data'
     else:
-        links = req.chrome.get('links')
+        links = 'links'
+        scripts = 'scripts'
+        script_data = 'script_data'
+
+    links = req.chrome.get(links)
     if links:
         links = links.get('stylesheet')
+    scripts = req.chrome.get(scripts)
+    script_data = req.chrome.get(script_data)
 
     content = []
     content.extend('jQuery.loadStyleSheet(%s, %s);' %
                    (to_js_string(link['href']), to_js_string(link['type']))
                    for link in links or ())
+    content.extend('var %s=%s;' % (name, presentation.to_json(value))
+                   for name, value in (script_data or {}).iteritems())
+
+    fragment = tag()
     if content:
-        return tag.script('\n'.join(content), type='text/javascript')
-    else:
-        return ''
+        fragment.append(tag.script('\n'.join(content), type='text/javascript'))
+    for script in scripts:
+        fragment.append(script['prefix'])
+        fragment.append(tag.script(src=script['href'], type=script['type'],
+                                   charset=script['charset']))
+        fragment.append(script['suffix'])
+
+    return fragment
 
 
 def _chrome_resource_path(req, filename):
