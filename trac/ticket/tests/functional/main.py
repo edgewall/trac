@@ -313,8 +313,7 @@ class TestTicketQueryLinks(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test ticket query links"""
         count = 3
-        ticket_ids = [self._tester.create_ticket(
-                        summary='TestTicketQueryLinks%s' % i)
+        ticket_ids = [self._tester.create_ticket('TestTicketQueryLinks%s' % i)
                       for i in range(count)]
         self._tester.go_to_query()
         # We don't have the luxury of javascript, so this is a multi-step
@@ -1803,7 +1802,7 @@ class RegressionTestTicket4447(FunctionalTwillTestCaseSetup):
                        'Another Custom Field')
         env.config.save()
 
-        ticketid = self._tester.create_ticket(summary="Hello World")
+        ticketid = self._tester.create_ticket("Hello World")
         self._tester.add_comment(ticketid)
         tc.notfind('<strong class="trac-field-newfield">Another Custom Field'
                    '</strong>[ \t\n]+<em></em>[ \t\n]+deleted')
@@ -1859,7 +1858,7 @@ class RegressionTestTicket5022(FunctionalTwillTestCaseSetup):
         """Test for regression of http://trac.edgewall.org/ticket/5022
         """
         summary = 'RegressionTestTicket5022'
-        ticket_id = self._tester.create_ticket(summary=summary)
+        ticket_id = self._tester.create_ticket(summary)
         tc.go(self._tester.url + '/newticket?id=%s' % ticket_id)
         tc.notfind(summary)
 
@@ -2072,13 +2071,13 @@ class RegressionTestTicket6048(FunctionalTwillTestCaseSetup):
         env.config.set('ticket', 'workflow',
                        prevconfig + ',DeleteTicketActionController')
         env.config.save()
-        env = self._testenv.get_trac_environment() # reload environment
+        env = self._testenv.get_trac_environment()  # reload environment
 
         # Create a ticket and delete it
         ticket_id = self._tester.create_ticket('RegressionTestTicket6048')
         # (Create a second ticket so that the ticket id does not get reused
         # and confuse the tester object.)
-        self._tester.create_ticket(summary='RegressionTestTicket6048b')
+        self._tester.create_ticket('RegressionTestTicket6048b')
         self._tester.go_to_ticket(ticket_id)
         tc.find('delete ticket')
         tc.formvalue('propertyform', 'action', 'delete')
@@ -2091,7 +2090,7 @@ class RegressionTestTicket6048(FunctionalTwillTestCaseSetup):
         # Remove the DeleteTicket plugin
         env.config.set('ticket', 'workflow', prevconfig)
         env.config.save()
-        env = self._testenv.get_trac_environment() # reload environment
+        self._testenv.get_trac_environment()  # reload environment
         for ext in ('py', 'pyc', 'pyo'):
             filename = os.path.join(self._testenv.tracdir, 'plugins',
                                     'DeleteTicket.%s' % ext)
@@ -2402,9 +2401,7 @@ class RegressionTestTicket10772(FunctionalTestCaseSetup):
             tc.formvalue('enumtable', 'default', 'major')
             tc.submit('apply')
 
-            self._tester.go_to_ticket()
-            tc.formvalue('propertyform', 'field-summary', 'ticket summary')
-            tc.submit('submit')
+            self._tester.create_ticket('ticket summary')
 
             find_prop('component')
             find_prop('milestone')
@@ -2424,14 +2421,11 @@ class RegressionTestTicket10772(FunctionalTestCaseSetup):
             self._tester.go_to_admin("Versions")
             tc.formvalue('version_table', 'default', '2.0')
             tc.submit('apply')
-            self._tester.go_to_ticket()
             self._tester.go_to_admin("Ticket Types")
             tc.formvalue('enumtable', 'default', 'task')
             tc.submit('apply')
 
-            self._tester.go_to_ticket()
-            tc.formvalue('propertyform', 'field-summary', 'ticket summary')
-            tc.submit('submit')
+            self._tester.create_ticket('ticket summary')
 
             find_prop('component', 'component2')
             find_prop('milestone', 'milestone2')

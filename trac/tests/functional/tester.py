@@ -79,6 +79,7 @@ class FunctionalTester(object):
 
         `summary` and `description` default to randomly-generated values.
         """
+        info = info or {}
         self.go_to_front()
         tc.follow(r"\bNew Ticket\b")
         tc.notfind(internal_error)
@@ -86,13 +87,12 @@ class FunctionalTester(object):
             summary = random_sentence(5)
         tc.formvalue('propertyform', 'field_summary', summary)
         tc.formvalue('propertyform', 'field_description', random_page())
-        if info:
-            for field, value in info.items():
-                tc.formvalue('propertyform', 'field_%s' % field, value)
+        for field, value in info.items():
+            tc.formvalue('propertyform', 'field_%s' % field, value)
         tc.submit('submit')
+        tc.notfind(internal_error)
         # we should be looking at the newly created ticket
         tc.url(self.url + '/ticket/%s' % (self.ticketcount + 1))
-        tc.notfind(internal_error)
         # Increment self.ticketcount /after/ we've verified that the ticket
         # was created so a failure does not trigger spurious later
         # failures.
