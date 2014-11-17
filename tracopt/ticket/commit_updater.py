@@ -197,15 +197,18 @@ class CommitTicketUpdater(Component):
 
     def make_ticket_comment(self, repos, changeset):
         """Create the ticket comment from the changeset data."""
-        revstring = str(changeset.rev)
+        rev = changeset.rev
+        revstring = str(rev)
+        drev = str(repos.display_rev(rev))
         if repos.reponame:
             revstring += '/' + repos.reponame
+            drev += '/' + repos.reponame
         return """\
-In [changeset:"%s"]:
+In [changeset:"%s" %s]:
 {{{
 #!CommitTicketReference repository="%s" revision="%s"
 %s
-}}}""" % (revstring, repos.reponame, changeset.rev, changeset.message.strip())
+}}}""" % (revstring, drev, repos.reponame, rev, changeset.message.strip())
 
     def _update_tickets(self, tickets, changeset, comment, date):
         """Update the tickets with the given comment."""

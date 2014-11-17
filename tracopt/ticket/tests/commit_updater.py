@@ -29,7 +29,7 @@ class CommitTicketUpdaterTestCase(unittest.TestCase):
                                            'tracopt.ticket.commit_updater.*'])
         self.env.config.set('ticket', 'commit_ticket_update_check_perms', False)
         self.repos = Mock(Repository, 'repos1', {'name': 'repos1', 'id': 1},
-                          self.env.log)
+                          self.env.log, normalize_rev=lambda rev: 1)
         self.updater = CommitTicketUpdater(self.env)
 
     def tearDown(self):
@@ -51,7 +51,7 @@ class CommitTicketUpdaterTestCase(unittest.TestCase):
                       date=datetime(2001, 1, 1, 1, 1, 1, 0, utc))
         self.updater.changeset_added(self.repos, chgset)
         self.assertEqual("""\
-In [changeset:"1/repos1"]:
+In [changeset:"1/repos1" 1/repos1]:
 {{{
 #!CommitTicketReference repository="repos1" revision="1"
 This is the first comment. Refs #1.
@@ -70,13 +70,13 @@ This is the first comment. Refs #1.
         self.updater.changeset_added(self.repos, old_chgset)
         self.updater.changeset_modified(self.repos, new_chgset, old_chgset)
         self.assertEqual("""\
-In [changeset:"1/repos1"]:
+In [changeset:"1/repos1" 1/repos1]:
 {{{
 #!CommitTicketReference repository="repos1" revision="1"
 This is the first comment. Refs #1.
 }}}""", self.tickets[0].get_change(cnum=1)['fields']['comment']['new'])
         self.assertEqual("""\
-In [changeset:"1/repos1"]:
+In [changeset:"1/repos1" 1/repos1]:
 {{{
 #!CommitTicketReference repository="repos1" revision="1"
 This is the first comment after an edit. Refs #1, #2.
