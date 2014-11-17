@@ -93,13 +93,17 @@ class VersionControlAdmin(Component):
         if is_default(reponame):
             reponame = ''
         rm = RepositoryManager(self.env)
-        rm.notify('changeset_added', reponame, revs)
+        errors = rm.notify('changeset_added', reponame, revs)
+        for error in errors:
+            printout(error)
 
     def _do_changeset_modified(self, reponame, *revs):
         if is_default(reponame):
             reponame = ''
         rm = RepositoryManager(self.env)
-        rm.notify('changeset_modified', reponame, revs)
+        errors = rm.notify('changeset_modified', reponame, revs)
+        for error in errors:
+            printout(error)
 
     def _do_list(self):
         rm = RepositoryManager(self.env)

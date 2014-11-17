@@ -680,6 +680,8 @@ class RepositoryManager(Component):
             self.log.warn("Found no repositories matching '%s' base.",
                           base or reponame)
             return
+
+        errors = []
         for repos in sorted(repositories, key=lambda r: r.reponame):
             reponame = repos.reponame or '(default)'
             if reponame in self.repository_sync_per_request:
@@ -690,14 +692,25 @@ class RepositoryManager(Component):
             for rev in revs:
                 args = []
                 if event == 'changeset_modified':
-                    args.append(repos.sync_changeset(rev))
+                    try:
+                        old_changeset = repos.sync_changeset(rev)
+                    except NoSuchChangeset, e:
+                        errors.append(exception_to_unicode(e))
+                        self.log.warn(
+                            "No changeset '%s' found in repository '%s'. "
+                            "Skipping subscribers for event %s",
+                            rev, reponame, event)
+                        continue
+                    else:
+                        args.append(old_changeset)
                 try:
                     changeset = repos.get_changeset(rev)
                 except NoSuchChangeset:
                     try:
                         repos.sync_changeset(rev)
                         changeset = repos.get_changeset(rev)
-                    except NoSuchChangeset:
+                    except NoSuchChangeset, e:
+                        errors.append(exception_to_unicode(e))
                         self.log.warn(
                             "No changeset '%s' found in repository '%s'. "
                             "Skipping subscribers for event %s",
@@ -707,6 +720,7 @@ class RepositoryManager(Component):
                                event, reponame, rev)
                 for listener in self.change_listeners:
                     getattr(listener, event)(repos, changeset, *args)
+        return errors
 
     def shutdown(self, tid=None):
         """Free `Repository` instances bound to a given thread identifier"""
