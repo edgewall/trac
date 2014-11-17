@@ -443,7 +443,7 @@ class TicketModule(Component):
                 yield controller
 
     def _process_newticket_request(self, req):
-        req.perm.require('TICKET_CREATE')
+        req.perm('ticket').require('TICKET_CREATE')
         ticket = Ticket(self.env)
 
         plain_fields = True # support for /newticket?version=0.11 GETs
