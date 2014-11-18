@@ -726,11 +726,11 @@ table.listing pre { white-space: pre-wrap }
 }
 #fieldhist td.version { text-align: center }
 #fieldhist td.comment { width: 100% }
-
 #fieldhist .inlinebuttons {
  display: none;
  float: right;
 }
+.uisymbols #fieldhist .inlinebuttons a { font-size: 85% }
 
 /* Auto-completion interface */
 .suggestions { background: #fff; border: 1px solid #886; color: #222; }
