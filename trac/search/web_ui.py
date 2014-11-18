@@ -175,7 +175,7 @@ class SearchModule(Component):
             if not quickjump_href.startswith(req.base_path or '/'):
                 noquickjump = True
             if noquickjump:
-                return {'href': quickjump_href, 'name': tag.EM(name),
+                return {'href': quickjump_href, 'name': tag.em(name),
                         'description': description}
             else:
                 req.redirect(quickjump_href)
@@ -235,7 +235,7 @@ class SearchModule(Component):
 
         results.current_page = {'href': None, 'class': 'current',
                                 'string': str(results.page + 1),
-                                'title':None}
+                                'title': None}
 
         if results.has_next_page:
             next_href = req.href.search(zip(filters, ['on'] * len(filters)),

@@ -70,7 +70,7 @@ def shorten_result(text='', keywords=[], maxlen=240, fuzz=60):
     beg = -1
     for k in keywords:
         i = text_low.find(k.lower())
-        if (i > -1 and i < beg) or beg == -1:
+        if (-1 < i < beg) or beg == -1:
             beg = i
     excerpt_beg = 0
     if beg > fuzz:
@@ -88,5 +88,5 @@ def shorten_result(text='', keywords=[], maxlen=240, fuzz=60):
     if beg > fuzz:
         msg = '... ' + msg
     if beg < len(text)-maxlen:
-        msg = msg + ' ...'
+        msg += ' ...'
     return msg
