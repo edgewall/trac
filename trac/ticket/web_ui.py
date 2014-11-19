@@ -1458,6 +1458,12 @@ class TicketModule(Component):
             name = field['name']
             type_ = field['type']
 
+            # ensure sane defaults
+            field.setdefault('optional', False)
+            field.setdefault('options', [])
+            field.setdefault('skip', False)
+            field.setdefault('editable', True)
+
             # enable a link to custom query for all choice fields
             if type_ not in ['text', 'textarea']:
                 field['rendered'] = self._query_link(req, name, ticket[name])
@@ -1480,6 +1486,7 @@ class TicketModule(Component):
                               for opt in field['options']]
                 milestones = [m for m in milestones
                               if 'MILESTONE_VIEW' in req.perm(m.resource)]
+                field['editable'] = milestones != []
                 groups = group_milestones(milestones, ticket.exists
                     and 'TICKET_ADMIN' in req.perm(ticket.resource))
                 field['options'] = []
@@ -1519,7 +1526,7 @@ class TicketModule(Component):
 
             # per type settings
             if type_ in ('radio', 'select'):
-                if ticket.exists:
+                if ticket.exists and field['editable']:
                     value = ticket.values.get(name)
                     options = field['options']
                     optgroups = []
@@ -1552,10 +1559,6 @@ class TicketModule(Component):
                         format_to_html(self.env, context, ticket[name],
                                 escape_newlines=self.must_preserve_newlines)
 
-            # ensure sane defaults
-            field.setdefault('optional', False)
-            field.setdefault('options', [])
-            field.setdefault('skip', False)
             fields.append(field)
 
         # Move owner field to end when shown

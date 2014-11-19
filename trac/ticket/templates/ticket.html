@@ -217,7 +217,7 @@ ${comment}</textarea>
           <div id="modify">
             <!--! Properties -->
             <fieldset id="properties" py:if="can_modify or can_edit or can_create"
-                      py:with="fields = [f for f in fields if not f.skip]">
+                      py:with="fields = [f for f in fields if not f.skip and f.editable]">
               <legend py:choose="">
                   <py:when test="ticket.exists">Change Properties</py:when>
                   <py:otherwise>Properties</py:otherwise>

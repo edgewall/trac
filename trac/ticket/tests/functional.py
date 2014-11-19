@@ -2122,6 +2122,39 @@ class RegressionTestTicket9981(FunctionalTwillTestCaseSetup):
                 'title="Comment 1 for Ticket #%(num)s"' % {'num': tid1})
 
 
+class RegressionTestTicket10984(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/10984
+        The milestone field should be hidden from the newticket, ticket
+        and query forms when the user doesn't have MILESTONE_VIEW.
+        """
+        # Check that user with MILESTONE_VIEW can set and view the field
+        self._tester.go_to_ticket()
+        tc.find('<label for="field-milestone">Milestone:</label>')
+        ticketid = self._tester.create_ticket(info={'milestone': 'milestone1'})
+        self._tester.go_to_ticket(ticketid)
+        tc.find(r'<label for="field-milestone">Milestone:</label>')
+        tc.find(r'<option selected="selected" value="milestone1">')
+
+        # Check that anonymous user w/o MILESTONE_VIEW doesn't see the field
+        self._testenv.revoke_perm('anonymous', 'MILESTONE_VIEW')
+        self._testenv.grant_perm('anonymous', 'TICKET_CREATE')
+        self._testenv.grant_perm('anonymous', 'TICKET_MODIFY')
+        self._tester.logout()
+        try:
+            self._tester.go_to_ticket()
+            tc.notfind(r'<label for="field-milestone">Milestone:</label>')
+            tc.notfind(r'<select id="field-milestone"')
+            self._tester.go_to_ticket(ticketid)
+            tc.notfind(r'<label for="field-milestone">Milestone:</label>')
+            tc.notfind(r'<select id="field-milestone"')
+        finally:
+            self._tester.login('admin')
+            self._testenv.revoke_perm('anonymous', 'TICKET_CREATE')
+            self._testenv.revoke_perm('anonymous', 'TICKET_MODIFY')
+            self._testenv.grant_perm('anonymous', 'MILESTONE_VIEW')
+
+
 class RegressionTestTicket11028(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/11028"""
@@ -2357,6 +2390,7 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket8861())
     suite.addTest(RegressionTestTicket9084())
     suite.addTest(RegressionTestTicket9981())
+    suite.addTest(RegressionTestTicket10984())
     suite.addTest(RegressionTestTicket11028())
     suite.addTest(RegressionTestTicket11590())
     suite.addTest(RegressionTestTicket11618())
