@@ -26,6 +26,7 @@ from genshi.builder import tag
 from trac.admin.api import IAdminPanelProvider
 from trac.core import *
 from trac.loader import get_plugin_info, get_plugins_dir
+from trac.log import LOG_LEVELS
 from trac.perm import PermissionSystem, IPermissionRequestor
 from trac.util.datefmt import all_timezones, pytz
 from trac.util.text import exception_to_unicode, \
@@ -304,8 +305,6 @@ class LoggingAdminPanel(Component):
                  disabled=os.name != 'nt'),
         ]
 
-        log_levels = ['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG']
-
         if req.method == 'POST':
             changed = False
 
@@ -325,7 +324,7 @@ class LoggingAdminPanel(Component):
                 changed = True
             else:
                 new_level = req.args.get('log_level')
-                if new_level not in log_levels:
+                if new_level not in LOG_LEVELS:
                     raise TracError(
                         _("Unknown log level %(level)s", level=new_level),
                         _("Invalid log level"))
@@ -353,7 +352,7 @@ class LoggingAdminPanel(Component):
 
         data = {
             'type': log_type, 'types': log_types,
-            'level': log_level, 'levels': log_levels,
+            'level': log_level, 'levels': LOG_LEVELS,
             'file': log_file, 'dir': log_dir
         }
         return 'admin_logging.html', {'log': data}

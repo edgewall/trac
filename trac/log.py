@@ -19,6 +19,9 @@ import logging
 import logging.handlers
 import sys
 
+LOG_LEVELS = ('CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG')
+
+
 def logger_handler_factory(logtype='syslog', logfile=None, level='WARNING',
                            logid='Trac', format=None):
     logger = logging.getLogger(logid)
