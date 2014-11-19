@@ -466,7 +466,7 @@ class TicketModule(Component):
 
         # don't validate for new tickets and don't validate twice
         if valid is None and 'preview' in req.args:
-            valid = self._validate_ticket(req, ticket)
+            self._validate_ticket(req, ticket)
 
         # Preview a new ticket
         data = self._prepare_data(req, ticket)
@@ -475,7 +475,6 @@ class TicketModule(Component):
             'actions': [],
             'version': None,
             'description_change': None,
-            'valid': valid
         })
 
         fields = self._prepare_fields(req, ticket)
@@ -624,8 +623,7 @@ class TicketModule(Component):
                 'reassign_owner': (req.args.get('reassign_choice')
                                    or req.authname),
                 'resolve_resolution': req.args.get('resolve_choice'),
-                'valid': valid
-                })
+            })
         else: # simply 'View'ing the ticket
             field_changes = {}
             data.update({'action': None,
