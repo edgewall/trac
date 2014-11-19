@@ -251,18 +251,18 @@ class Environment(Component, ComponentManager):
 
         If nothing is set, the following will be used:
 
-        Trac[$(module)s] $(levelname)s: $(message)s
+        `Trac[$(module)s] $(levelname)s: $(message)s`
 
-        In addition to regular key names supported by the Python
-        logger library (see
-        http://docs.python.org/library/logging.html), one could use:
+        In addition to regular key names supported by the
+        [http://docs.python.org/library/logging.html Python logger library]
+        one could use:
 
-        - $(path)s     the path for the current environment
-        - $(basename)s the last path component of the current environment
-        - $(project)s  the project name
+        - `$(path)s`     the path for the current environment
+        - `$(basename)s` the last path component of the current environment
+        - `$(project)s`  the project name
 
         Note the usage of `$(...)s` instead of `%(...)s` as the latter form
-        would be interpreted by the ConfigParser itself.
+        would be interpreted by the !ConfigParser itself.
 
         Example:
         `($(thread)d) Trac[$(basename)s:$(module)s] $(levelname)s: $(message)s`

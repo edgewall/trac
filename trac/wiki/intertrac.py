@@ -36,9 +36,9 @@ class InterTracDispatcher(Component):
 
     intertrac_section = ConfigSection('intertrac',
         """This section configures InterTrac prefixes. Options in this section
-        whose name contain a "." define aspects of the InterTrac prefix
-        corresponding to the option name up to the ".". Options whose name
-        don't contain a "." define an alias.
+        whose name contain a `.` define aspects of the InterTrac prefix
+        corresponding to the option name up to the `.`. Options whose name
+        don't contain a `.` define an alias.
 
         The `.url` is mandatory and is used for locating the other Trac.
         This can be a relative URL in case that Trac environment is located
