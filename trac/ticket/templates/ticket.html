@@ -299,17 +299,18 @@ ${value}</textarea>
                             <span py:when="field.name == 'cc'">
                               <py:choose>
                                 <!--! Unauthenticated user without TICKET_EDIT_CC and with email set in prefs -->
-                                <py:when test="'cc_entry' in field and field.cc_action is not None">
-                                  <em>$field.cc_entry</em>
+                                <py:when test="'cc_entry' in field" py:choose="">
+                                  <em py:when="field.cc_action is None" i18n:msg="">
+                                    Set your email in <a href="${href.prefs()}" class="trac-target-new">Preferences</a>
+                                  </em>
+                                  <em py:otherwise="">$field.cc_entry</em>
                                   <input type="checkbox" id="field-cc" name="cc_update"
                                          title="This checkbox allows you to add or remove yourself from the CC list."
-                                         checked="${field.cc_update or None}" />
+                                         disabled="${field.cc_action is None or None}" checked="${field.cc_update or None}" />
                                 </py:when>
                                 <!--! Unauthenticated user without TICKET_EDIT_CC and no email set in prefs -->
-                                <py:when test="'cc_entry' in field">
-                                  <span  class="hint" i18n:msg="">
-                                    Set your email in <a href="${href.prefs()}" class="trac-target-new">Preferences</a>
-                                  </span>
+                                <py:when test="field.cc_action is None">
+
                                 </py:when>
                                 <!--! TICKET_EDIT_CC is allowed -->
                                 <py:otherwise>
