@@ -34,20 +34,13 @@ def logger_handler_factory(logtype='syslog', logfile=None, level='WARNING',
                                                   logtype='Application')
     elif logtype in ('syslog', 'unix'):
         hdlr = logging.handlers.SysLogHandler('/dev/log')
-    elif logtype in ('stderr'):
+    elif logtype in ('stderr',):
         hdlr = logging.StreamHandler(sys.stderr)
     else:
         hdlr = logging.handlers.BufferingHandler(0)
         # Note: this _really_ throws away log events, as a `MemoryHandler`
         # would keep _all_ records in case there's no target handler (a bug?)
 
-    if not format:
-        format = 'Trac[%(module)s] %(levelname)s: %(message)s'
-        if logtype in ('file', 'stderr'):
-            format = '%(asctime)s ' + format
-    datefmt = ''
-    if logtype == 'stderr':
-        datefmt = '%X'
     level = level.upper()
     if level in ('DEBUG', 'ALL'):
         logger.setLevel(logging.DEBUG)
@@ -59,6 +52,12 @@ def logger_handler_factory(logtype='syslog', logfile=None, level='WARNING',
         logger.setLevel(logging.CRITICAL)
     else:
         logger.setLevel(logging.WARNING)
+
+    if not format:
+        format = 'Trac[%(module)s] %(levelname)s: %(message)s'
+        if logtype in ('file', 'stderr'):
+            format = '%(asctime)s ' + format
+    datefmt = '%X' if logtype == 'stderr' else ''
     formatter = logging.Formatter(format, datefmt)
     hdlr.setFormatter(formatter)
     logger.addHandler(hdlr)
