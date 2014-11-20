@@ -38,7 +38,7 @@
   </head>
 
   <body>
-    <div id="content" class="wiki">
+    <div id="content" class="${classes('wiki', create=not page.exists)}">
 
       <py:if test="version">
         <br />
@@ -72,13 +72,7 @@
           </div>
         </py:when>
         <py:otherwise>
-          <p i18n:msg="name">The page ${name_of(page.resource)} does not exist. You can create it here.</p>
-          <py:if test="higher">
-            <p>You could also create the same page higher in the hierarchy:</p>
-            <ul>
-              <li py:for="markup in higher">${markup}</li>
-            </ul>
-          </py:if>
+          <p i18n:msg="name">The page <strong>${name_of(page.resource)}</strong> does not exist. You can create it here.</p>
         </py:otherwise>
       </div>
 
@@ -104,7 +98,7 @@
                     <py:when test="not page.exists and create_perm">
                       <input type="submit" value="${_('Create this page')}" accesskey="e" />
                       <div py:if="templates" id="template">
-                        <label for="template">Using the template:</label>
+                        <label for="template">using the template:</label>
                         <select name="template">
                           <option selected="${not default_template in templates or None}"
                                   value="">(blank page)</option>
@@ -139,6 +133,13 @@
           </div>
         </py:if>
       </py:with>
+
+      <div class="wikipage searchable" py:if="not page.exists and higher">
+        <p>You could also create the same page higher in the hierarchy:</p>
+        <ul>
+          <li py:for="markup in higher">${markup}</li>
+        </ul>
+      </div>
 
       <div class="wikipage searchable" py:if="not page.exists and related">
         <p>The following pages have a name similar to this page, and may be related:</p>
