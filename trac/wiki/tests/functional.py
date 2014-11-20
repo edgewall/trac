@@ -12,6 +12,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from genshi.builder import tag
 from trac.tests.functional import *
 from trac.mimeview.rst import has_docutils
 from trac.util import create_file, get_pkginfo
@@ -242,7 +243,7 @@ class TestWikiRename(FunctionalTwillTestCaseSetup):
         # this time, the original page is gone
         tc.go(page_url)
         tc.url(page_url)
-        tc.find("The page %s does not exist" % pagename)
+        tc.find("The page %s does not exist" % tag.strong(pagename))
 
 
 class RegressionTestTicket4812(FunctionalTwillTestCaseSetup):

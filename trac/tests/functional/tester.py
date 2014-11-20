@@ -17,6 +17,7 @@ working with a Trac environment to make test cases more succinct.
 
 import re
 
+from genshi.builder import tag
 from trac.tests.functional import internal_error
 from trac.tests.functional.better_twill import tc, b
 from trac.tests.contentgen import random_page, random_sentence, random_word, \
@@ -256,7 +257,7 @@ class FunctionalTester(object):
         if content is None:
             content = random_page()
         self.go_to_wiki(name)
-        tc.find("The page %s does not exist." % name)
+        tc.find("The page %s does not exist." % tag.strong(name))
 
         self.edit_wiki_page(name, content, comment)
 
