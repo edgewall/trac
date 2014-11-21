@@ -145,9 +145,6 @@ class TicketNotifyEmail(NotifyEmail):
     """Notification of ticket changes."""
 
     template_name = "ticket_notify_email.txt"
-    ticket = None
-    newticket = None
-    modtime = 0
     from_email = 'trac+ticket@localhost'
     COLS = 75
 
@@ -157,6 +154,9 @@ class TicketNotifyEmail(NotifyEmail):
                                               'ambiguous_char_width',
                                               'single')
         self.ambiwidth = 2 if ambiguous_char_width == 'double' else 1
+        self.ticket = None
+        self.modtime = 0
+        self.newticket = None
 
     def notify(self, ticket, newticket=True, modtime=None):
         """Send ticket change notification e-mail (untranslated)"""
