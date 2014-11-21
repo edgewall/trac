@@ -149,7 +149,7 @@ class TicketNotifyEmail(NotifyEmail):
     COLS = 75
 
     def __init__(self, env):
-        NotifyEmail.__init__(self, env)
+        super(TicketNotifyEmail, self).__init__(env)
         ambiguous_char_width = env.config.get('notification',
                                               'ambiguous_char_width',
                                               'single')
@@ -279,7 +279,7 @@ class TicketNotifyEmail(NotifyEmail):
             'changes_descr': changes_descr,
             'change': change_data
             })
-        NotifyEmail.notify(self, ticket.id, subject, author)
+        super(TicketNotifyEmail, self).notify(ticket.id, subject, author)
 
     def format_props(self):
         tkt = self.ticket
@@ -444,7 +444,7 @@ class TicketNotifyEmail(NotifyEmail):
             msgid = self.get_message_id(dest)
             hdrs['In-Reply-To'] = msgid
             hdrs['References'] = msgid
-        NotifyEmail.send(self, torcpts, ccrcpts, hdrs)
+        super(TicketNotifyEmail, self).send(torcpts, ccrcpts, hdrs)
 
     def get_text_width(self, text):
         return text_width(text, ambiwidth=self.ambiwidth)
@@ -466,7 +466,7 @@ class BatchTicketNotifyEmail(NotifyEmail):
     template_name = "batch_ticket_notify_email.txt"
 
     def __init__(self, env):
-        NotifyEmail.__init__(self, env)
+        super(BatchTicketNotifyEmail, self).__init__(env)
 
     def notify(self, tickets, new_values, comment, action, author):
         """Send batch ticket change notification e-mail (untranslated)"""
@@ -494,7 +494,7 @@ class BatchTicketNotifyEmail(NotifyEmail):
             'subject': subject,
             'ticket_query_link': link,
         })
-        NotifyEmail.notify(self, tickets, subject, author)
+        super(BatchTicketNotifyEmail, self).notify(tickets, subject, author)
 
     def format_subj(self, tickets_descr):
         template = self.config.get('notification', 'batch_subject_template')
