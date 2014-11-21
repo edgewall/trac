@@ -94,7 +94,7 @@ Arguments:
                       <py:when test="name == 'reporter'">${authorinfo(value)}</py:when>
                       <py:when test="name == 'cc'">${format_emails(ticket_context, value)}</py:when>
                       <py:when test="name == 'owner' and value">${authorinfo(value)}</py:when>
-                      <py:when test="name == 'milestone'"><a py:if="value" title="View milestone" href="${href.milestone(value)}">${value}</a></py:when>
+                      <py:when test="name == 'milestone'" py:if="value">${resource_link(context, Resource('milestone', value), 'compact')}</py:when>
                       <py:when test="wikitext">${wiki_to_oneliner(ticket_context, value)}</py:when>
                       <py:when test="wikitextarea">${wiki_to_html(ticket_context, value)}</py:when>
                       <py:otherwise>$value</py:otherwise>
