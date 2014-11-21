@@ -157,13 +157,15 @@ class TicketNotifyEmail(NotifyEmail):
         self.ticket = None
         self.modtime = 0
         self.newticket = None
+        self.reporter = None
+        self.owner = None
 
     def notify(self, ticket, newticket=True, modtime=None):
         """Send ticket change notification e-mail (untranslated)"""
         t = deactivate()
         translated_fields = ticket.fields
+        ticket.fields = TicketSystem(self.env).get_ticket_fields()
         try:
-            ticket.fields = TicketSystem(self.env).get_ticket_fields()
             self._notify(ticket, newticket, modtime)
         finally:
             ticket.fields = translated_fields
@@ -185,9 +187,9 @@ class TicketNotifyEmail(NotifyEmail):
 
         if not self.newticket and modtime:  # Ticket change
             from trac.ticket.web_ui import TicketModule
-            for change in TicketModule(self.env).grouped_changelog_entries(
-                                                ticket, when=modtime):
-                if not change['permanent']: # attachment with same time...
+            for change in TicketModule(self.env) \
+                          .grouped_changelog_entries(ticket, when=modtime):
+                if not change['permanent']:  # attachment with same time...
                     continue
                 author = change['author']
                 change_data.update({
@@ -205,7 +207,7 @@ class TicketNotifyEmail(NotifyEmail):
                                          self.ambiwidth)
                         old_descr = wrap(old, self.COLS, '> ', '> ', '\n',
                                          self.ambiwidth)
-                        old_descr = old_descr.replace(2 * '\n', '\n' + '>' + \
+                        old_descr = old_descr.replace(2 * '\n', '\n' + '>' +
                                                       '\n')
                         cdescr = '\n'
                         cdescr += 'Old description:' + 2 * '\n' + old_descr + \
@@ -289,7 +291,7 @@ class TicketNotifyEmail(NotifyEmail):
             if f['type'] == 'textarea':
                 continue
             fname = f['name']
-            if not fname in tkt.values:
+            if fname not in tkt.values:
                 continue
             fval = tkt[fname] or ''
             if fval.find('\n') != -1:
@@ -385,11 +387,11 @@ class TicketNotifyEmail(NotifyEmail):
     def diff_cc(self, old, new):
         oldcc = NotifyEmail.addrsep_re.split(old)
         newcc = NotifyEmail.addrsep_re.split(new)
-        added = [self.obfuscate_email(x) \
-                                for x in newcc if x and x not in oldcc]
-        removed = [self.obfuscate_email(x) \
-                                for x in oldcc if x and x not in newcc]
-        return (added, removed)
+        added = [self.obfuscate_email(x)
+                 for x in newcc if x and x not in oldcc]
+        removed = [self.obfuscate_email(x)
+                   for x in oldcc if x and x not in newcc]
+        return added, removed
 
     def format_hdr(self):
         return '#%s: %s' % (self.ticket.id, wrap(self.ticket['summary'],
@@ -397,7 +399,7 @@ class TicketNotifyEmail(NotifyEmail):
                                                  ambiwidth=self.ambiwidth))
 
     def format_subj(self, summary):
-        template = self.config.get('notification','ticket_subject_template')
+        template = self.config.get('notification', 'ticket_subject_template')
         template = NewTextTemplate(template.encode('utf8'))
 
         prefix = self.config.get('notification', 'smtp_subject_prefix')
@@ -414,12 +416,12 @@ class TicketNotifyEmail(NotifyEmail):
         return template.generate(**data).render('text', encoding=None).strip()
 
     def get_recipients(self, tktid):
-        torecipients, ccrecipients, reporter, owner = \
+        to_recipients, cc_recipients, reporter, owner = \
             get_ticket_notification_recipients(self.env, self.config, tktid,
                                                modtime=self.modtime)
         self.reporter = reporter
         self.owner = owner
-        return (torecipients, ccrecipients)
+        return to_recipients, cc_recipients
 
     def get_message_id(self, rcpt, modtime=None):
         """Generate a predictable, but sufficiently unique message ID."""
@@ -433,10 +435,11 @@ class TicketNotifyEmail(NotifyEmail):
 
     def send(self, torcpts, ccrcpts):
         dest = self.reporter or 'anonymous'
-        hdrs = {}
-        hdrs['Message-ID'] = self.get_message_id(dest, self.modtime)
-        hdrs['X-Trac-Ticket-ID'] = str(self.ticket.id)
-        hdrs['X-Trac-Ticket-URL'] = self.data['ticket']['link']
+        hdrs = {
+            'Message-ID': self.get_message_id(dest, self.modtime),
+            'X-Trac-Ticket-ID': str(self.ticket.id),
+            'X-Trac-Ticket-URL': self.data['ticket']['link']
+        }
         if not self.newticket:
             msgid = self.get_message_id(dest)
             hdrs['In-Reply-To'] = msgid
@@ -478,7 +481,7 @@ class BatchTicketNotifyEmail(NotifyEmail):
         self.reporter = ''
         self.owner = ''
         changes_descr = '\n'.join(['%s to %s' % (prop, val)
-                                  for (prop, val) in new_values.iteritems()])
+                                   for (prop, val) in new_values.iteritems()])
         tickets_descr = ', '.join(['#%s' % t for t in tickets])
         subject = self.format_subj(tickets_descr)
         link = self.env.abs_href.query(id=','.join([str(t) for t in tickets]))
@@ -490,11 +493,11 @@ class BatchTicketNotifyEmail(NotifyEmail):
             'author': author,
             'subject': subject,
             'ticket_query_link': link,
-            })
+        })
         NotifyEmail.notify(self, tickets, subject, author)
 
     def format_subj(self, tickets_descr):
-        template = self.config.get('notification','batch_subject_template')
+        template = self.config.get('notification', 'batch_subject_template')
         template = NewTextTemplate(template.encode('utf8'))
 
         prefix = self.config.get('notification', 'smtp_subject_prefix')
@@ -510,11 +513,11 @@ class BatchTicketNotifyEmail(NotifyEmail):
         return shorten_line(subj)
 
     def get_recipients(self, tktids):
-        alltorecipients = set()
-        allccrecipients = set()
+        all_to_recipients = set()
+        all_cc_recipients = set()
         for t in tktids:
-            torecipients, ccrecipients, reporter, owner = \
+            to_recipients, cc_recipients, reporter, owner = \
                 get_ticket_notification_recipients(self.env, self.config, t)
-            alltorecipients.update(torecipients)
-            allccrecipients.update(ccrecipients)
-        return list(alltorecipients), list(allccrecipients)
+            all_to_recipients.update(to_recipients)
+            all_cc_recipients.update(cc_recipients)
+        return list(all_to_recipients), list(all_cc_recipients)
