@@ -952,6 +952,7 @@ class Chrome(Component):
             'name_of': partial(get_resource_name, self.env),
             'shortname_of': partial(get_resource_shortname, self.env),
             'summary_of': partial(get_resource_summary, self.env),
+            'resource_link': partial(render_resource_link, self.env),
             'req': req,
             'abs_href': abs_href,
             'href': href,
