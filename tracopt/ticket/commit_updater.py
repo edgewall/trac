@@ -236,8 +236,8 @@ In [changeset:"%s" %s]:
         """Send a ticket update notification."""
         if not self.notify:
             return
+        tn = TicketNotifyEmail(self.env)
         try:
-            tn = TicketNotifyEmail(self.env)
             tn.notify(ticket, newticket=False, modtime=date)
         except Exception, e:
             self.log.error("Failure sending notification on change to "

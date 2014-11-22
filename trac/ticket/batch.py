@@ -168,8 +168,8 @@ class BatchModifyModule(Component):
                 t.save_changes(req.authname, comment, when=when)
                 for controller in controllers:
                     controller.apply_action_side_effects(req, t, action)
+        tn = BatchTicketNotifyEmail(self.env)
         try:
-            tn = BatchTicketNotifyEmail(self.env)
             tn.notify(selected_tickets, new_values, comment, action,
                       req.authname)
         except Exception, e:

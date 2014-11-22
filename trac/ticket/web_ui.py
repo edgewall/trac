@@ -1303,8 +1303,8 @@ class TicketModule(Component):
         ticket.insert()
 
         # Notify
+        tn = TicketNotifyEmail(self.env)
         try:
-            tn = TicketNotifyEmail(self.env)
             tn.notify(ticket, newticket=True)
         except Exception, e:
             self.log.error("Failure sending notification on creation of "
@@ -1342,8 +1342,8 @@ class TicketModule(Component):
                                    replyto=req.args.get('replyto'))
         if cnum:
             fragment = '#comment:%d' % cnum
+            tn = TicketNotifyEmail(self.env)
             try:
-                tn = TicketNotifyEmail(self.env)
                 tn.notify(ticket, newticket=False, modtime=now)
             except Exception, e:
                 self.log.error("Failure sending notification on change to "
