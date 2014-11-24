@@ -261,9 +261,7 @@ class TicketNotifyEmail(NotifyEmail):
         ticket_values['new'] = self.newticket
         ticket_values['link'] = link
 
-        subject = self.format_subj(summary)
-        if not self.newticket:
-            subject = 'Re: ' + subject
+        subject = self.format_subj(summary, newticket)
 
         with _translation_deactivated(ticket):
             self.data.update({
@@ -306,7 +304,7 @@ class TicketNotifyEmail(NotifyEmail):
             ambiwidth=self.ambiwidth)
         ticket_values['new'] = self.newticket
         ticket_values['link'] = link
-        subject = 'Re: ' + self.format_subj(summary)
+        subject = self.format_subj(summary, False)
         with _translation_deactivated(ticket):
             self.data.update({
                 'ticket_props': self.format_props(),
@@ -442,7 +440,7 @@ class TicketNotifyEmail(NotifyEmail):
                                                  self.COLS, linesep='\n',
                                                  ambiwidth=self.ambiwidth))
 
-    def format_subj(self, summary):
+    def format_subj(self, summary, newticket=True):
         template = self.config.get('notification', 'ticket_subject_template')
         template = NewTextTemplate(template.encode('utf8'))
 
@@ -457,7 +455,10 @@ class TicketNotifyEmail(NotifyEmail):
             'env': self.env,
         }
 
-        return template.generate(**data).render('text', encoding=None).strip()
+        subj = template.generate(**data).render('text', encoding=None).strip()
+        if not newticket:
+            subj = "Re: " + subj
+        return subj
 
     def format_time_field(self, value, format):
         tzinfo = get_timezone(self.config.get('trac', 'default_timezone'))
