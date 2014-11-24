@@ -18,6 +18,7 @@
 
 from __future__ import with_statement
 
+from contextlib import contextmanager
 from datetime import datetime
 from hashlib import md5
 
@@ -164,9 +165,6 @@ class TicketNotifyEmail(NotifyEmail):
 
     def notify(self, ticket, newticket=True, modtime=None):
         """Send ticket change notification e-mail (untranslated)"""
-        t = deactivate()
-        translated_fields = ticket.fields
-        ticket.fields = TicketSystem(self.env).get_ticket_fields()
         self.ticket = ticket
         self.modtime = modtime
         self.newticket = newticket
@@ -264,26 +262,21 @@ class TicketNotifyEmail(NotifyEmail):
         subject = self.format_subj(summary)
         if not self.newticket:
             subject = 'Re: ' + subject
-        self.data.update({
-            'ticket_props': self.format_props(),
-            'ticket_body_hdr': self.format_hdr(),
-            'subject': subject,
-            'ticket': ticket_values,
-            'changes_body': changes_body,
-            'changes_descr': changes_descr,
-            'change': change_data
-        })
-        try:
+
+        with _translation_deactivated(ticket):
+            self.data.update({
+                'ticket_props': self.format_props(),
+                'ticket_body_hdr': self.format_hdr(),
+                'subject': subject,
+                'ticket': ticket_values,
+                'changes_body': changes_body,
+                'changes_descr': changes_descr,
+                'change': change_data
+            })
             super(TicketNotifyEmail, self).notify(ticket.id, subject, author)
-        finally:
-            ticket.fields = translated_fields
-            reactivate(t)
 
     def notify_attachment(self, ticket, attachment, added=True):
         """Send ticket attachment notification (untranslated)"""
-        t = deactivate()
-        translated_fields = ticket.fields
-        ticket.fields = TicketSystem(self.env).get_ticket_fields()
         self.ticket = ticket
         self.modtime = attachment.date or datetime.now(utc)
         self.newticket = False
@@ -312,20 +305,17 @@ class TicketNotifyEmail(NotifyEmail):
         ticket_values['new'] = self.newticket
         ticket_values['link'] = link
         subject = 'Re: ' + self.format_subj(summary)
-        self.data.update({
-            'ticket_props': self.format_props(),
-            'ticket_body_hdr': self.format_hdr(),
-            'subject': subject,
-            'ticket': ticket_values,
-            'changes_body': changes_body,
-            'changes_descr': '',
-            'change': {'author': self.obfuscate_email(author)},
-        })
-        try:
+        with _translation_deactivated(ticket):
+            self.data.update({
+                'ticket_props': self.format_props(),
+                'ticket_body_hdr': self.format_hdr(),
+                'subject': subject,
+                'ticket': ticket_values,
+                'changes_body': changes_body,
+                'changes_descr': '',
+                'change': {'author': self.obfuscate_email(author)},
+            })
             super(TicketNotifyEmail, self).notify(ticket.id, subject, author)
-        finally:
-            ticket.fields = translated_fields
-            reactivate(t)
 
     def format_props(self):
         tkt = self.ticket
@@ -556,11 +546,8 @@ class BatchTicketNotifyEmail(NotifyEmail):
 
     def notify(self, tickets, new_values, comment, action, author):
         """Send batch ticket change notification e-mail (untranslated)"""
-        t = deactivate()
-        try:
+        with _translation_deactivated():
             self._notify(tickets, new_values, comment, action, author)
-        finally:
-            reactivate(t)
 
     def _notify(self, tickets, new_values, comment, action, author):
         self.tickets = tickets
@@ -607,3 +594,18 @@ class BatchTicketNotifyEmail(NotifyEmail):
             all_to_recipients.update(to_recipients)
             all_cc_recipients.update(cc_recipients)
         return list(all_to_recipients), list(all_cc_recipients)
+
+
+@contextmanager
+def _translation_deactivated(ticket=None):
+    t = deactivate()
+    if ticket is not None:
+        ts = TicketSystem(ticket.env)
+        translated_fields = ticket.fields
+        ticket.fields = ts.get_ticket_fields()
+    try:
+        yield
+    finally:
+        if ticket is not None:
+            ticket.fields = translated_fields
+        reactivate(t)
