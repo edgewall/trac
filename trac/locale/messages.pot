@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.1.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-11-20 21:11-0800\n"
+"POT-Creation-Date: 2014-11-23 21:29-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2462,7 +2462,7 @@ msgstr ""
 msgid "%(title)s: %(count)s"
 msgstr ""
 
-#: trac/templates/progress_bar_grouped.html:26 trac/web/chrome.py:1171
+#: trac/templates/progress_bar_grouped.html:26 trac/web/chrome.py:1172
 msgid "(none)"
 msgstr ""
 
@@ -4134,11 +4134,6 @@ msgstr ""
 msgid "View ticket"
 msgstr ""
 
-#: trac/ticket/templates/query_results.html:97
-#: trac/ticket/templates/report_view.html:195
-msgid "View milestone"
-msgstr ""
-
 #: trac/ticket/templates/query_results.html:110
 msgid "(this ticket)"
 msgstr ""
@@ -4285,6 +4280,10 @@ msgstr ""
 #: trac/ticket/templates/report_view.html:161
 #, python-format
 msgid "View %(realm)s"
+msgstr ""
+
+#: trac/ticket/templates/report_view.html:195
+msgid "View milestone"
 msgstr ""
 
 #: trac/ticket/templates/roadmap.html:30
@@ -4718,6 +4717,7 @@ msgid ""
 "  %(new_path)s\n"
 msgstr ""
 
+#. TRANSLATOR: Wrap message to 80 columns
 #: trac/upgrades/db30.py:38
 msgid ""
 "Notice: To enable the readonly wiki attribute, trac.ini must be manually\n"
@@ -6033,16 +6033,16 @@ msgstr ""
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr ""
 
-#: trac/web/chrome.py:1123
+#: trac/web/chrome.py:1124
 msgid "(unknown template location)"
 msgstr ""
 
-#: trac/web/chrome.py:1124
+#: trac/web/chrome.py:1125
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr ""
 
-#: trac/web/chrome.py:1169
+#: trac/web/chrome.py:1170
 msgid "anonymous"
 msgstr ""
 
