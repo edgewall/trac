@@ -19,11 +19,15 @@
 import base64
 import os
 import quopri
+import shutil
+import tempfile
 import re
 import unittest
 from datetime import datetime
+from StringIO import StringIO
 
 import trac.tests.compat
+from trac.attachment import Attachment
 from trac.test import EnvironmentStub, Mock, MockPerm
 from trac.tests.notification import SMTP_TEST_PORT, SMTPThreadedServer,\
                                     parse_smtp_message
@@ -1250,6 +1254,92 @@ Security sensitive:  0                           |          Blocking:
                          re.split(r' #[0-9]+: ', headers['Subject'], 1)[1])
 
 
+class AttachmentNotificationTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True,
+                                   path=tempfile.mkdtemp(prefix='trac-tempenv-'))
+        self.env.config.set('project', 'name', 'TracTest')
+        self.env.config.set('notification', 'smtp_enabled', 'true')
+        self.env.config.set('notification', 'smtp_port', str(SMTP_TEST_PORT))
+
+        ticket = Ticket(self.env)
+        ticket['summary'] = 'Ticket summary'
+        ticket['reporter'] = 'user@domain.org'
+        ticket.insert()
+        self.attachment = Attachment(self.env, 'ticket', ticket.id)
+        self.attachment.description = "The attachment description"
+        self.attachment.author = 'user@example.com'
+
+    def tearDown(self):
+        """Signal the notification test suite that a test is over"""
+        notifysuite.tear_down()
+        self.env.reset_db()
+        shutil.rmtree(self.env.path)
+
+    def test_ticket_notify_attachment_enabled_attachment_added(self):
+        self.attachment.insert('foo.txt', StringIO(''), 1)
+
+        message = notifysuite.smtpd.get_message()
+        headers, body = parse_smtp_message(message)
+
+        self.assertIn("Re: [TracTest] #1: Ticket summary", headers['Subject'])
+        self.assertIn(" * Attachment \"foo.txt\" added", body)
+        self.assertIn("The attachment description", body)
+
+    def test_ticket_notify_attachment_disabled_attachment_added(self):
+        self.env.config.set('notification', 'ticket_notify_attachment', False)
+        self.attachment.insert('foo.txt', StringIO(''), 1)
+
+        recipients = notifysuite.smtpd.get_recipients()
+        sender = notifysuite.smtpd.get_sender()
+        message = notifysuite.smtpd.get_message()
+
+        self.assertEqual(0, len(recipients))
+        self.assertIsNone(sender)
+        self.assertIsNone(message)
+
+    def test_ticket_notify_attachment_enabled_attachment_removed(self):
+        self.attachment.insert('foo.txt', StringIO(''), 1)
+        self.attachment.delete()
+
+        message = notifysuite.smtpd.get_message()
+        headers, body = parse_smtp_message(message)
+
+        self.assertIn("Re: [TracTest] #1: Ticket summary", headers['Subject'])
+        self.assertIn(" * Attachment \"foo.txt\" removed", body)
+        self.assertIn("The attachment description", body)
+
+    def test_ticket_notify_attachment_disabled_attachment_removed(self):
+        self.env.config.set('notification', 'ticket_notify_attachment', False)
+        self.attachment.insert('foo.txt', StringIO(''), 1)
+        self.attachment.delete()
+
+        recipients = notifysuite.smtpd.get_recipients()
+        sender = notifysuite.smtpd.get_sender()
+        message = notifysuite.smtpd.get_message()
+
+        self.assertEqual(0, len(recipients))
+        self.assertIsNone(sender)
+        self.assertIsNone(message)
+
+    def test_author_is_obfuscated(self):
+        self.env.config.set('trac', 'show_email_addresses', False)
+        self.attachment.insert('foo.txt', StringIO(''), 1)
+
+        message = notifysuite.smtpd.get_message()
+
+        self.assertIn('Changes (by user@…)', message)
+
+    def test_author_is_not_obfuscated(self):
+        self.env.config.set('trac', 'show_email_addresses', True)
+        self.attachment.insert('foo.txt', StringIO(''), 1)
+
+        message = notifysuite.smtpd.get_message()
+
+        self.assertIn('Changes (by user@example.com)', message)
+
+
 class NotificationTestSuite(unittest.TestSuite):
     """Thin test suite wrapper to start and stop the SMTP test server"""
 
@@ -1260,6 +1350,7 @@ class NotificationTestSuite(unittest.TestSuite):
         self.smtpd.start()
         self.addTest(unittest.makeSuite(RecipientTestCase))
         self.addTest(unittest.makeSuite(NotificationTestCase))
+        self.addTest(unittest.makeSuite(AttachmentNotificationTestCase))
         self.remaining = self.countTestCases()
 
     def tear_down(self):
