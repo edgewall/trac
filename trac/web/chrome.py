@@ -308,20 +308,18 @@ def chrome_info_script(req, use_late=None):
     :param      req: the HTTP request object.
     :param use_late: if True, `late_links` will be used instead of `links`.
     """
+    chrome = req.chrome
     if use_late:
-        links = 'late_links'
-        scripts = 'late_scripts'
-        script_data = 'late_script_data'
+        links = chrome.get('late_links', {}).get('stylesheet', [])
+        scripts = chrome.get('late_scripts', [])
+        script_data = chrome.get('late_script_data', {})
     else:
-        links = 'links'
-        scripts = 'scripts'
-        script_data = 'script_data'
-
-    links = req.chrome.get(links)
-    if links:
-        links = links.get('stylesheet')
-    scripts = req.chrome.get(scripts)
-    script_data = req.chrome.get(script_data)
+        links = chrome.get('early_links', {}).get('stylesheet', []) + \
+                chrome.get('links', {}).get('stylesheet', [])
+        scripts = chrome.get('early_scripts', []) + chrome.get('scripts', [])
+        script_data = {}
+        script_data.update(chrome.get('early_script_data', {}))
+        script_data.update(chrome.get('script_data', {}))
 
     content = []
     content.extend('jQuery.loadStyleSheet(%s, %s);' %
@@ -1071,9 +1069,9 @@ class Chrome(Component):
         links = req.chrome.get('links')
         scripts = req.chrome.get('scripts')
         script_data = req.chrome.get('script_data')
-        req.chrome['links'] = {}
-        req.chrome['scripts'] = []
-        req.chrome['script_data'] = {}
+        req.chrome.update({'early_links': links, 'early_scripts': scripts,
+                           'early_script_data': script_data,
+                           'links': {}, 'scripts': [], 'script_data': {}})
         data.setdefault('chrome', {}).update({
             'late_links': req.chrome['links'],
             'late_scripts': req.chrome['scripts'],
@@ -1088,9 +1086,9 @@ class Chrome(Component):
                                                _invalid_control_chars)
         except Exception, e:
             # restore what may be needed by the error template
-            req.chrome['links'] = links
-            req.chrome['scripts'] = scripts
-            req.chrome['script_data'] = script_data
+            req.chrome.update({'early_links': None, 'early_scripts': None,
+                               'early_script_data': None, 'links': links,
+                               'scripts': scripts, 'script_data': script_data})
             # give some hints when hitting a Genshi unicode error
             if isinstance(e, UnicodeError):
                 pos = self._stream_location(stream)
