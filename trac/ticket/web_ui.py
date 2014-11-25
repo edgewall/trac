@@ -56,7 +56,7 @@ from trac.web.chrome import (
     add_stylesheet, add_warning, auth_link, chrome_info_script, prevnext_nav,
     web_context
 )
-from trac.wiki.formatter import format_to, format_to_html, format_to_oneliner
+from trac.wiki.formatter import format_to, format_to_html
 
 
 class InvalidTicket(TracError):
@@ -1544,20 +1544,12 @@ class TicketModule(Component):
                     field['rendered'] = self._query_link(req, name, value,
                                 _("yes") if value == '1' else _("no"))
             elif type_ == 'text':
-                if field.get('format') == 'wiki':
-                    field['rendered'] = format_to_oneliner(self.env, context,
-                                                           ticket[name])
-                elif field.get('format') == 'reference':
+                if field.get('format') == 'reference':
                     field['rendered'] = self._query_link(req, name,
                                                          ticket[name])
                 elif field.get('format') == 'list':
                     field['rendered'] = self._query_link_words(context, name,
                                                                ticket[name])
-            elif type_ == 'textarea':
-                if field.get('format') == 'wiki':
-                    field['rendered'] = \
-                        format_to_html(self.env, context, ticket[name],
-                                escape_newlines=self.must_preserve_newlines)
 
             fields.append(field)
 

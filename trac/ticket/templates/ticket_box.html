@@ -88,9 +88,15 @@ Arguments:
             class="${'searchable' if field and field.name in ('cc', 'keywords') else None}"
             colspan="${3 if fullrow else None}">
           <py:if test="field">
-            <py:choose test="">
+            <py:choose py:with="value = ticket[field.name]">
               <py:when test="'rendered' in field">${field.rendered}</py:when>
-              <py:otherwise>${ticket[field.name]}</py:otherwise>
+              <py:when test="field.type == 'text' and field.format == 'wiki'">
+                ${wiki_to_oneliner(context, value) if value else None}
+              </py:when>
+              <py:when test="field.type == 'textarea' and field.format == 'wiki'">
+                ${wiki_to_html(context, value, escape_newlines=preserve_newlines) if value else None}
+              </py:when>
+              <py:otherwise>${value}</py:otherwise>
             </py:choose>
           </py:if>
         </td>
