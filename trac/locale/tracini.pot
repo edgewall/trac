@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.1.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-11-24 22:15-0800\n"
+"POT-Creation-Date: 2014-11-25 17:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -972,7 +972,7 @@ msgid ""
 "allowed. (''since 0.12.1'')"
 msgstr ""
 
-#: trac/versioncontrol/api.py:294
+#: trac/versioncontrol/api.py:297
 msgid ""
 "One of the alternatives for registering new repositories is to\n"
 "populate the `[repositories]` section of the `trac.ini`.\n"
@@ -988,26 +988,13 @@ msgid ""
 "(''since 0.12'')"
 msgstr ""
 
-#: trac/versioncontrol/api.py:308
+#: trac/versioncontrol/api.py:311
 msgid ""
 "Default repository connector type.\n"
 "\n"
 "This is used as the default repository type for repositories defined\n"
 "in the [[TracIni#repositories-section repositories]] section or using\n"
 "the \"Repositories\" admin panel. (''since 0.12'')"
-msgstr ""
-
-#: trac/versioncontrol/api.py:316
-msgid ""
-"List of repositories that should be synchronized on every page\n"
-"request.\n"
-"\n"
-"Leave this option empty if you have set up post-commit hooks calling\n"
-"`trac-admin $ENV changeset added` on all your repositories\n"
-"(recommended). Otherwise, set it to a comma-separated list of\n"
-"repository names. Note that this will negatively affect performance,\n"
-"and will prevent changeset listeners from receiving events from the\n"
-"repositories specified here. (''since 0.12'')"
 msgstr ""
 
 #: trac/versioncontrol/svn_authz.py:124

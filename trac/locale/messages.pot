@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.1.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-11-23 21:29-0800\n"
+"POT-Creation-Date: 2014-11-25 17:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -130,7 +130,7 @@ msgstr ""
 #: trac/ticket/templates/report_delete.html:32
 #: trac/ticket/templates/report_edit.html:63
 #: trac/ticket/templates/ticket_change.html:127
-#: trac/versioncontrol/templates/admin_repositories.html:100
+#: trac/versioncontrol/templates/admin_repositories.html:107
 #: trac/wiki/templates/wiki_delete.html:112
 #: trac/wiki/templates/wiki_edit_comment.html:33
 #: trac/wiki/templates/wiki_edit_form.html:86
@@ -147,7 +147,7 @@ msgid "Delete comment"
 msgstr ""
 
 #. TRANSLATOR: modified ('diff') (link)
-#: tracopt/versioncontrol/git/git_fs.py:426 trac/ticket/web_ui.py:1796
+#: tracopt/versioncontrol/git/git_fs.py:426 trac/ticket/web_ui.py:1788
 #: trac/ticket/templates/ticket_change.html:164 trac/wiki/macros.py:368
 #: trac/wiki/web_ui.py:771
 msgid "diff"
@@ -453,8 +453,8 @@ msgstr ""
 #: trac/ticket/templates/admin_milestones.html:65
 #: trac/ticket/templates/admin_versions.html:91
 #: trac/versioncontrol/admin.py:117
-#: trac/versioncontrol/templates/admin_repositories.html:139
-#: trac/web/session.py:431
+#: trac/versioncontrol/templates/admin_repositories.html:146
+#: trac/web/session.py:434
 msgid "Name"
 msgstr ""
 
@@ -472,9 +472,9 @@ msgid "Date"
 msgstr ""
 
 #: trac/attachment.py:1058 trac/templates/attachment.html:102
-#: trac/ticket/api.py:336 trac/ticket/api.py:561
+#: trac/ticket/api.py:335 trac/ticket/api.py:560
 #: trac/ticket/templates/ticket.html:391
-#: trac/ticket/templates/ticket_box.html:102
+#: trac/ticket/templates/ticket_box.html:108
 msgid "Description"
 msgstr ""
 
@@ -995,7 +995,7 @@ msgstr ""
 #: trac/admin/web_ui.py:187 trac/ticket/admin.py:63 trac/ticket/admin.py:93
 #: trac/ticket/admin.py:472 trac/ticket/admin.py:642 trac/ticket/admin.py:725
 #: trac/ticket/report.py:254 trac/ticket/roadmap.py:788
-#: trac/versioncontrol/admin.py:218
+#: trac/versioncontrol/admin.py:219
 msgid "Your changes have been saved."
 msgstr ""
 
@@ -1171,8 +1171,8 @@ msgstr ""
 #: trac/ticket/templates/admin_versions.html:68
 #: trac/ticket/templates/milestone_edit_form.html:52
 #: trac/versioncontrol/templates/admin_repositories.html:67
-#: trac/versioncontrol/templates/admin_repositories.html:109
-#: trac/versioncontrol/templates/admin_repositories.html:126
+#: trac/versioncontrol/templates/admin_repositories.html:116
+#: trac/versioncontrol/templates/admin_repositories.html:133
 msgid "Name:"
 msgstr ""
 
@@ -1325,8 +1325,8 @@ msgstr ""
 #: trac/ticket/templates/admin_enums.html:56
 #: trac/ticket/templates/admin_milestones.html:55
 #: trac/ticket/templates/admin_versions.html:81
-#: trac/versioncontrol/templates/admin_repositories.html:116
-#: trac/versioncontrol/templates/admin_repositories.html:130
+#: trac/versioncontrol/templates/admin_repositories.html:123
+#: trac/versioncontrol/templates/admin_repositories.html:137
 msgid "Add"
 msgstr ""
 
@@ -1397,7 +1397,7 @@ msgstr ""
 #: trac/ticket/templates/admin_enums.html:91
 #: trac/ticket/templates/admin_milestones.html:101
 #: trac/ticket/templates/admin_versions.html:111
-#: trac/versioncontrol/templates/admin_repositories.html:162
+#: trac/versioncontrol/templates/admin_repositories.html:169
 msgid "Remove selected items"
 msgstr ""
 
@@ -1447,7 +1447,7 @@ msgid "License:"
 msgstr ""
 
 #: trac/admin/templates/admin_plugins.html:134 trac/ticket/admin.py:75
-#: trac/ticket/api.py:343
+#: trac/ticket/api.py:342
 msgid "Component"
 msgstr ""
 
@@ -2186,7 +2186,7 @@ msgstr ""
 msgid "Removed"
 msgstr ""
 
-#: trac/templates/diff_view.html:79 trac/ticket/api.py:373
+#: trac/templates/diff_view.html:79 trac/ticket/api.py:372
 #: trac/versioncontrol/templates/changeset.html:214
 #: trac/versioncontrol/templates/revisionlog.html:102 trac/wiki/admin.py:192
 msgid "Modified"
@@ -2202,7 +2202,7 @@ msgstr ""
 
 #: trac/templates/environment_info.html:40
 #: trac/templates/environment_info.html:53 trac/templates/history_view.html:45
-#: trac/ticket/admin.py:448 trac/ticket/api.py:344
+#: trac/ticket/admin.py:448 trac/ticket/api.py:343
 msgid "Version"
 msgstr ""
 
@@ -2536,12 +2536,12 @@ msgstr ""
 msgid "The selected components have been removed."
 msgstr ""
 
-#: trac/ticket/admin.py:216 trac/ticket/api.py:330 trac/ticket/web_ui.py:1505
+#: trac/ticket/admin.py:216 trac/ticket/api.py:331 trac/ticket/web_ui.py:1505
 #: trac/ticket/templates/admin_components.html:88
 msgid "Owner"
 msgstr ""
 
-#: trac/ticket/admin.py:241 trac/ticket/api.py:342
+#: trac/ticket/admin.py:241 trac/ticket/api.py:341
 msgid "Milestone"
 msgstr ""
 
@@ -2650,7 +2650,7 @@ msgstr ""
 msgid "Invalid up/down value: %(value)s"
 msgstr ""
 
-#: trac/ticket/admin.py:819 trac/ticket/api.py:341
+#: trac/ticket/admin.py:819 trac/ticket/api.py:340
 msgid "Priority"
 msgstr ""
 
@@ -2658,7 +2658,7 @@ msgstr ""
 msgid "Priorities"
 msgstr ""
 
-#: trac/ticket/admin.py:825 trac/ticket/api.py:346
+#: trac/ticket/admin.py:825 trac/ticket/api.py:345
 msgid "Resolution"
 msgstr ""
 
@@ -2666,7 +2666,7 @@ msgstr ""
 msgid "Resolutions"
 msgstr ""
 
-#: trac/ticket/admin.py:831 trac/ticket/api.py:345
+#: trac/ticket/admin.py:831 trac/ticket/api.py:344
 msgid "Severity"
 msgstr ""
 
@@ -2703,60 +2703,60 @@ msgstr ""
 msgid "Reporter"
 msgstr ""
 
-#: trac/ticket/api.py:339 trac/versioncontrol/admin.py:117
-#: trac/versioncontrol/templates/admin_repositories.html:139
+#: trac/ticket/api.py:338 trac/versioncontrol/admin.py:117
+#: trac/versioncontrol/templates/admin_repositories.html:146
 msgid "Type"
 msgstr ""
 
-#: trac/ticket/api.py:340
+#: trac/ticket/api.py:339
 msgid "Status"
 msgstr ""
 
-#: trac/ticket/api.py:365
+#: trac/ticket/api.py:364
 msgid "Keywords"
 msgstr ""
 
-#: trac/ticket/api.py:367 trac/ticket/web_ui.py:1535
+#: trac/ticket/api.py:366 trac/ticket/web_ui.py:1535
 msgid "Cc"
 msgstr ""
 
-#: trac/ticket/api.py:371
+#: trac/ticket/api.py:370
 msgid "Created"
 msgstr ""
 
-#: trac/ticket/api.py:520
+#: trac/ticket/api.py:519
 #, python-format
 msgid "Tickets %(ranges)s"
 msgstr ""
 
-#: trac/ticket/api.py:547
+#: trac/ticket/api.py:546
 msgid "ticket comment does not exist"
 msgstr ""
 
-#: trac/ticket/api.py:554
+#: trac/ticket/api.py:553
 #, python-format
 msgid "Description for Ticket #%(id)s"
 msgstr ""
 
-#: trac/ticket/api.py:557
+#: trac/ticket/api.py:556
 #, python-format
 msgid "Comment %(cnum)s for Ticket #%(id)s"
 msgstr ""
 
-#: trac/ticket/api.py:562
+#: trac/ticket/api.py:561
 #, python-format
 msgid "Comment %(cnum)s"
 msgstr ""
 
-#: trac/ticket/api.py:566
+#: trac/ticket/api.py:565
 msgid "no permission to view ticket"
 msgstr ""
 
-#: trac/ticket/api.py:569
+#: trac/ticket/api.py:568
 msgid "ticket does not exist"
 msgstr ""
 
-#: trac/ticket/api.py:589
+#: trac/ticket/api.py:588
 #, python-format
 msgid "Ticket #%(shortname)s"
 msgstr ""
@@ -3549,7 +3549,7 @@ msgid_plural "%(labels)s deleted"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/ticket/web_ui.py:1191 trac/ticket/web_ui.py:1819
+#: trac/ticket/web_ui.py:1191 trac/ticket/web_ui.py:1811
 msgid "; "
 msgstr ""
 
@@ -3662,49 +3662,49 @@ msgstr ""
 msgid "no"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1788
+#: trac/ticket/web_ui.py:1780
 msgid "set"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1788
+#: trac/ticket/web_ui.py:1780
 msgid "unset"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1791 trac/versioncontrol/templates/changeset.html:199
+#: trac/ticket/web_ui.py:1783 trac/versioncontrol/templates/changeset.html:199
 #: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "modified"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1797
+#: trac/ticket/web_ui.py:1789
 #, python-format
 msgid "modified (%(diff)s)"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1815
+#: trac/ticket/web_ui.py:1807
 #, python-format
 msgid "%(items)s added"
 msgid_plural "%(items)s added"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/ticket/web_ui.py:1817
+#: trac/ticket/web_ui.py:1809
 #, python-format
 msgid "%(items)s removed"
 msgid_plural "%(items)s removed"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/ticket/web_ui.py:1826
+#: trac/ticket/web_ui.py:1818
 #, python-format
 msgid "%(value)s deleted"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1828
+#: trac/ticket/web_ui.py:1820
 #, python-format
 msgid "set to %(value)s"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1831
+#: trac/ticket/web_ui.py:1823
 #, python-format
 msgid "changed from %(old)s to %(new)s"
 msgstr ""
@@ -3725,7 +3725,7 @@ msgstr ""
 #: trac/ticket/templates/admin_versions.html:50
 #: trac/ticket/templates/milestone_edit_form.html:115
 #: trac/ticket/templates/report_edit.html:44
-#: trac/versioncontrol/templates/admin_repositories.html:91
+#: trac/versioncontrol/templates/admin_repositories.html:98
 msgid "Description: (you may use [1:WikiFormatting] here)"
 msgstr ""
 
@@ -3735,7 +3735,7 @@ msgstr ""
 #: trac/ticket/templates/milestone_edit_form.html:124
 #: trac/ticket/templates/ticket.html:400
 #: trac/ticket/templates/ticket_change.html:125
-#: trac/versioncontrol/templates/admin_repositories.html:99
+#: trac/versioncontrol/templates/admin_repositories.html:106
 #: trac/wiki/templates/wiki_edit_comment.html:32
 #: trac/wiki/templates/wiki_edit_form.html:79
 #: trac/wiki/templates/wiki_edit_form.html:84
@@ -4462,17 +4462,17 @@ msgstr ""
 msgid "Owned by:"
 msgstr ""
 
-#: trac/ticket/templates/ticket_box.html:106
+#: trac/ticket/templates/ticket_box.html:112
 #, python-format
 msgid "(last modified by %(author)s)"
 msgstr ""
 
-#: trac/ticket/templates/ticket_box.html:115
+#: trac/ticket/templates/ticket_box.html:121
 #: trac/ticket/templates/ticket_change.html:81
 msgid "Reply"
 msgstr ""
 
-#: trac/ticket/templates/ticket_box.html:115
+#: trac/ticket/templates/ticket_box.html:121
 msgid "Reply, quoting this description"
 msgstr ""
 
@@ -4816,7 +4816,7 @@ msgid "Alias"
 msgstr ""
 
 #: trac/versioncontrol/admin.py:117
-#: trac/versioncontrol/templates/admin_repositories.html:139
+#: trac/versioncontrol/templates/admin_repositories.html:146
 msgid "Directory"
 msgstr ""
 
@@ -4863,42 +4863,42 @@ msgstr ""
 msgid "Repositories"
 msgstr ""
 
-#: trac/versioncontrol/admin.py:224 trac/versioncontrol/admin.py:274
+#: trac/versioncontrol/admin.py:225 trac/versioncontrol/admin.py:275
 #, python-format
 msgid "You should now run %(resync)s to synchronize Trac with the repository."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:229
+#: trac/versioncontrol/admin.py:230
 #, python-format
 msgid "You may have to run %(resync)s to synchronize Trac with the repository."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:238
+#: trac/versioncontrol/admin.py:239
 #, python-format
 msgid ""
 "You will need to update your post-commit hook to call %(cset_added)s with"
 " the new repository name."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:260
+#: trac/versioncontrol/admin.py:261
 msgid "Missing arguments to add a repository."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:267 trac/versioncontrol/api.py:263
+#: trac/versioncontrol/admin.py:268 trac/versioncontrol/api.py:266
 #, python-format
 msgid "The repository \"%(name)s\" already exists."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:270
+#: trac/versioncontrol/admin.py:271
 #, python-format
 msgid "The repository \"%(name)s\" has been added."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:281
+#: trac/versioncontrol/admin.py:282
 msgid "documentation"
 msgstr ""
 
-#: trac/versioncontrol/admin.py:284
+#: trac/versioncontrol/admin.py:285
 #, python-format
 msgid ""
 "You should also set up a post-commit hook on the repository to call "
@@ -4906,82 +4906,82 @@ msgid ""
 "information."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:300
+#: trac/versioncontrol/admin.py:301
 #, python-format
 msgid "The alias \"%(name)s\" already exists."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:303
+#: trac/versioncontrol/admin.py:304
 #, python-format
 msgid "The alias \"%(name)s\" has been added."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:306
+#: trac/versioncontrol/admin.py:307
 msgid "Missing arguments to add an alias."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:319
+#: trac/versioncontrol/admin.py:320
 msgid "The selected repositories have been removed."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:322
+#: trac/versioncontrol/admin.py:323
 msgid "No repositories were selected."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:363
+#: trac/versioncontrol/admin.py:365
 msgid "The repository directory must be an absolute path."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:372
+#: trac/versioncontrol/admin.py:374
 #, python-format
 msgid ""
 "The repository directory must be located below one of the following "
 "directories: %(dirs)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:35
+#: trac/versioncontrol/api.py:36
 #: trac/versioncontrol/templates/admin_repositories.html:35
 #: trac/versioncontrol/templates/admin_repositories.html:48
-#: trac/versioncontrol/templates/admin_repositories.html:149
-#: trac/versioncontrol/templates/admin_repositories.html:151
+#: trac/versioncontrol/templates/admin_repositories.html:156
+#: trac/versioncontrol/templates/admin_repositories.html:158
 #: trac/versioncontrol/web_ui/browser.py:950
 #: trac/versioncontrol/web_ui/changeset.py:842
 #: trac/versioncontrol/web_ui/changeset.py:984
 msgid "(default)"
 msgstr ""
 
-#: trac/versioncontrol/api.py:190
+#: trac/versioncontrol/api.py:191
 #, python-format
 msgid "Invalid key \"%(key)s\""
 msgstr ""
 
-#: trac/versioncontrol/api.py:197
+#: trac/versioncontrol/api.py:200
 #, python-format
 msgid "You should now run \"repository resync %(name)s\"."
 msgstr ""
 
-#: trac/versioncontrol/api.py:200
+#: trac/versioncontrol/api.py:203
 #, python-format
 msgid "You may have to run \"repository resync %(name)s\"."
 msgstr ""
 
-#: trac/versioncontrol/api.py:208 trac/versioncontrol/api.py:272
+#: trac/versioncontrol/api.py:211 trac/versioncontrol/api.py:275
 msgid "The repository directory must be absolute"
 msgstr ""
 
-#: trac/versioncontrol/api.py:213
+#: trac/versioncontrol/api.py:216
 #, python-format
 msgid "The repository type '%(type)s' is not supported"
 msgstr ""
 
-#: trac/versioncontrol/api.py:364
+#: trac/versioncontrol/api.py:343
 #, python-format
 msgid ""
 "Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the "
 "Trac log for more information."
 msgstr ""
 
-#: trac/versioncontrol/api.py:371
+#: trac/versioncontrol/api.py:350
 #, python-format
 msgid ""
 "Failed to sync with repository \"%(name)s\": %(error)s; repository "
@@ -4989,85 +4989,85 @@ msgid ""
 " including mitigation strategies."
 msgstr ""
 
-#: trac/versioncontrol/api.py:400
+#: trac/versioncontrol/api.py:378
 #, python-format
 msgid "Changeset %(rev)s in %(repo)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:402
+#: trac/versioncontrol/api.py:380
 #, python-format
 msgid "Changeset %(rev)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:412
+#: trac/versioncontrol/api.py:390
 msgid "directory"
 msgstr ""
 
-#: trac/versioncontrol/api.py:414
+#: trac/versioncontrol/api.py:392
 msgid "file"
 msgstr ""
 
-#: trac/versioncontrol/api.py:416
+#: trac/versioncontrol/api.py:394
 #, python-format
 msgid " at version %(rev)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:418
+#: trac/versioncontrol/api.py:396
 msgid "path"
 msgstr ""
 
-#: trac/versioncontrol/api.py:421
+#: trac/versioncontrol/api.py:399
 #, python-format
 msgid " in %(repo)s"
 msgstr ""
 
 #. TRANSLATOR: file /path/to/file.py at version 13 in reponame
-#: trac/versioncontrol/api.py:423
+#: trac/versioncontrol/api.py:401
 #, python-format
 msgid "%(kind)s %(id)s%(at_version)s%(in_repo)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:427
+#: trac/versioncontrol/api.py:405
 msgid "Default repository"
 msgstr ""
 
-#: trac/versioncontrol/api.py:428
+#: trac/versioncontrol/api.py:406
 #, python-format
 msgid "Repository %(repo)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:759
+#: trac/versioncontrol/api.py:734
 #, python-format
 msgid "Unsupported version control system \"%(name)s\": %(error)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:762
+#: trac/versioncontrol/api.py:737
 #, python-format
 msgid ""
 "Unsupported version control system \"%(name)s\": Can't find an "
 "appropriate component, maybe the corresponding plugin was not enabled? "
 msgstr ""
 
-#: trac/versioncontrol/api.py:770
+#: trac/versioncontrol/api.py:745
 #, python-format
 msgid "No changeset %(rev)s in the repository"
 msgstr ""
 
-#: trac/versioncontrol/api.py:772
+#: trac/versioncontrol/api.py:747
 msgid "No such changeset"
 msgstr ""
 
-#: trac/versioncontrol/api.py:778
+#: trac/versioncontrol/api.py:753
 #, python-format
 msgid "No node %(path)s at revision %(rev)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:780
+#: trac/versioncontrol/api.py:755
 #, python-format
 msgid "%(msg)s: No node %(path)s at revision %(rev)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:782
+#: trac/versioncontrol/api.py:757
 msgid "No such node"
 msgstr ""
 
@@ -5116,32 +5116,40 @@ msgid ""
 msgstr ""
 
 #: trac/versioncontrol/templates/admin_repositories.html:77
-#: trac/versioncontrol/templates/admin_repositories.html:113
+#: trac/versioncontrol/templates/admin_repositories.html:120
 msgid "Directory:"
 msgstr ""
 
 #: trac/versioncontrol/templates/admin_repositories.html:86
+msgid "Sync on every request"
+msgstr ""
+
+#: trac/versioncontrol/templates/admin_repositories.html:89
+msgid "Not recommended. See [1:explicit synchronization] for more info."
+msgstr ""
+
+#: trac/versioncontrol/templates/admin_repositories.html:93
 msgid "Hide from repository index"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:107
+#: trac/versioncontrol/templates/admin_repositories.html:114
 msgid "Add Repository:"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:124
+#: trac/versioncontrol/templates/admin_repositories.html:131
 msgid "Add Alias:"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:139
+#: trac/versioncontrol/templates/admin_repositories.html:146
 msgid "Revision"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:154
+#: trac/versioncontrol/templates/admin_repositories.html:161
 #, python-format
 msgid "Alias of %(repo)s"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:161
+#: trac/versioncontrol/templates/admin_repositories.html:168
 msgid "Refresh"
 msgstr ""
 
@@ -6120,51 +6128,55 @@ msgid ""
 "%(traceback)s}}}"
 msgstr ""
 
-#: trac/web/session.py:243
+#: trac/web/session.py:242
+msgid "Session ID must be alphanumeric."
+msgstr ""
+
+#: trac/web/session.py:243 trac/web/session.py:249
+msgid "Error renaming session"
+msgstr ""
+
+#: trac/web/session.py:246
 #, python-format
 msgid "Session '%(id)s' already exists. Please choose a different session ID."
 msgstr ""
 
-#: trac/web/session.py:246
-msgid "Error renaming session"
-msgstr ""
-
-#: trac/web/session.py:431
+#: trac/web/session.py:434
 msgid "SID"
 msgstr ""
 
-#: trac/web/session.py:431
+#: trac/web/session.py:434
 msgid "Auth"
 msgstr ""
 
-#: trac/web/session.py:431
+#: trac/web/session.py:434
 msgid "Last Visit"
 msgstr ""
 
-#: trac/web/session.py:432
+#: trac/web/session.py:435
 msgid "Email"
 msgstr ""
 
-#: trac/web/session.py:432
+#: trac/web/session.py:435
 msgid "Default Handler"
 msgstr ""
 
-#: trac/web/session.py:442
+#: trac/web/session.py:445
 #, python-format
 msgid "Session '%(sid)s' already exists"
 msgstr ""
 
-#: trac/web/session.py:453
+#: trac/web/session.py:456
 #, python-format
 msgid "Invalid attribute '%(attr)s'"
 msgstr ""
 
-#: trac/web/session.py:457
+#: trac/web/session.py:460
 #, python-format
 msgid "Invalid default_handler '%(val)s'"
 msgstr ""
 
-#: trac/web/session.py:464
+#: trac/web/session.py:467
 #, python-format
 msgid "Session '%(sid)s' not found"
 msgstr ""
