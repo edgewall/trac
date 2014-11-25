@@ -109,7 +109,7 @@
         }
   }
 
-  $(document).ready(function($) {
+  $.documentReady(function($) {
     $("div.diff h2").each(function() {
       var switcher = $("<span class='switch'></span>").prependTo(this);
       var name = $.trim($(this).text());
