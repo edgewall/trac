@@ -16,11 +16,10 @@
 #
 # Author: Eli Carter
 
-import pkg_resources
-
 from ConfigParser import RawConfigParser
 from StringIO import StringIO
 from functools import partial
+from pkg_resources import resource_filename
 
 from genshi.builder import tag
 
@@ -51,7 +50,7 @@ def parse_workflow_config(rawactions):
             try:
                 oldstates, newstate = [x.strip() for x in value.split('->')]
             except ValueError:
-                continue # Syntax error, a warning will be logged later
+                continue  # Syntax error, a warning will be logged later
             actions[action]['newstate'] = newstate
             actions[action]['oldstates'] = oldstates
         else:
@@ -89,8 +88,7 @@ def load_workflow_config_snippet(config, filename):
     """Loads the ticket-workflow section from the given file (expected to be in
     the 'workflows' tree) into the provided config.
     """
-    filename = pkg_resources.resource_filename('trac.ticket',
-                    'workflows/%s' % filename)
+    filename = resource_filename('trac.ticket', 'workflows/%s' % filename)
     new_config = Configuration(filename)
     for name, value in new_config.options('ticket-workflow'):
         config.set('ticket-workflow', name, value)
@@ -116,7 +114,7 @@ class ConfigurableTicketWorkflow(Component):
 
     def __init__(self, *args, **kwargs):
         self.actions = get_workflow_config(self.config)
-        if not '_reset' in self.actions:
+        if '_reset' not in self.actions:
             # Special action that gets enabled if the current status no longer
             # exists, as no other action can then change its state. (#5307)
             self.actions['_reset'] = {
@@ -133,14 +131,13 @@ class ConfigurableTicketWorkflow(Component):
                 self.log.warning("Ticket workflow action '%s' doesn't define "
                                  "any transitions", name)
 
-
     # IEnvironmentSetupParticipant methods
 
     def environment_created(self):
         """When an environment is created, we provide the basic-workflow,
         unless a ticket-workflow section already exists.
         """
-        if not 'ticket-workflow' in self.config.sections():
+        if 'ticket-workflow' not in self.config.sections():
             load_workflow_config_snippet(self.config, 'basic-workflow.ini')
             self.config.save()
             self.actions = get_workflow_config(self.config)
@@ -195,7 +192,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 if self._is_action_allowed(ticket_perm, required_perms):
                     allowed_actions.append((action_info['default'],
                                             action_name))
-        if not (status in ['new', 'closed'] or \
+        if not (status in ['new', 'closed'] or
                     status in TicketSystem(self.env).get_all_status()) \
                 and 'TICKET_ADMIN' in ticket_perm:
             # State no longer exists - add a 'reset' action if admin.
@@ -234,7 +231,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         format_author = partial(Chrome(self.env).format_author, req)
         formatted_current_owner = format_author(current_owner or _("(none)"))
 
-        control = [] # default to nothing
+        control = []  # default to nothing
         hints = []
         if 'reset_workflow' in operations:
             control.append(_("from invalid state"))
@@ -294,7 +291,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 resolutions = [x.strip() for x in
                                this_action['set_resolution'].split(',')]
             else:
-                resolutions = [val.name for val in Resolution.select(self.env)]
+                resolutions = [r.name for r in Resolution.select(self.env)]
             if not resolutions:
                 raise TracError(_("Your workflow attempts to set a resolution "
                                   "but none is defined (configuration issue, "
@@ -411,8 +408,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         """
         # Be sure to look at the original status.
         status = ticket._old.get('status', ticket['status'])
-        actions = [(info['default'], action) for action, info
-                   in self.actions.items()
+        actions = [(info['default'], action)
+                   for action, info in self.actions.items()
                    if operation in info['operations'] and
                       ('*' in info['oldstates'] or
                        status in info['oldstates']) and
@@ -469,7 +466,7 @@ class WorkflowMacro(WikiMacroBase):
         else:
             if args is None:
                 text = '\n'.join([line.lstrip() for line in text.split(';')])
-            if not '[ticket-workflow]' in text:
+            if '[ticket-workflow]' not in text:
                 text = '[ticket-workflow]\n' + text
             parser = RawConfigParser()
             parser.readfp(StringIO(text))
