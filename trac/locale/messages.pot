@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-11-20 21:24-0800\n"
+"POT-Creation-Date: 2014-11-25 17:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -153,7 +153,7 @@ msgid "Delete comment"
 msgstr ""
 
 #. TRANSLATOR: modified ('diff') (link)
-#: tracopt/versioncontrol/git/git_fs.py:422 trac/ticket/web_ui.py:1755
+#: tracopt/versioncontrol/git/git_fs.py:422 trac/ticket/web_ui.py:1747
 #: trac/ticket/templates/ticket_change.html:164 trac/wiki/macros.py:361
 #: trac/wiki/web_ui.py:765
 msgid "diff"
@@ -456,7 +456,7 @@ msgstr ""
 #: trac/ticket/templates/admin_versions.html:93
 #: trac/versioncontrol/admin.py:117
 #: trac/versioncontrol/templates/admin_repositories.html:138
-#: trac/web/session.py:423
+#: trac/web/session.py:426
 msgid "Name"
 msgstr ""
 
@@ -475,9 +475,9 @@ msgid "Date"
 msgstr ""
 
 #: trac/attachment.py:1073 trac/templates/attachment.html:102
-#: trac/ticket/api.py:308 trac/ticket/api.py:530
+#: trac/ticket/api.py:307 trac/ticket/api.py:529
 #: trac/ticket/templates/ticket.html:397
-#: trac/ticket/templates/ticket_box.html:101
+#: trac/ticket/templates/ticket_box.html:107
 msgid "Description"
 msgstr ""
 
@@ -1401,7 +1401,7 @@ msgid "License:"
 msgstr ""
 
 #: trac/admin/templates/admin_plugins.html:134 trac/ticket/admin.py:77
-#: trac/ticket/api.py:315
+#: trac/ticket/api.py:314
 msgid "Component"
 msgstr ""
 
@@ -1929,7 +1929,7 @@ msgstr ""
 
 #: trac/templates/about.html:68 trac/templates/about.html:81
 #: trac/templates/history_view.html:38 trac/ticket/admin.py:440
-#: trac/ticket/api.py:316
+#: trac/ticket/api.py:315
 msgid "Version"
 msgstr ""
 
@@ -2177,7 +2177,7 @@ msgstr ""
 msgid "Removed"
 msgstr ""
 
-#: trac/templates/diff_view.html:80 trac/ticket/api.py:345
+#: trac/templates/diff_view.html:80 trac/ticket/api.py:344
 #: trac/versioncontrol/templates/changeset.html:214
 #: trac/versioncontrol/templates/revisionlog.html:102 trac/wiki/admin.py:197
 msgid "Modified"
@@ -2508,12 +2508,12 @@ msgstr ""
 msgid "The selected components have been removed."
 msgstr ""
 
-#: trac/ticket/admin.py:210 trac/ticket/api.py:302 trac/ticket/web_ui.py:1480
+#: trac/ticket/admin.py:210 trac/ticket/api.py:303 trac/ticket/web_ui.py:1480
 #: trac/ticket/templates/admin_components.html:88
 msgid "Owner"
 msgstr ""
 
-#: trac/ticket/admin.py:235 trac/ticket/api.py:314
+#: trac/ticket/admin.py:235 trac/ticket/api.py:313
 msgid "Milestone"
 msgstr ""
 
@@ -2644,7 +2644,7 @@ msgstr ""
 msgid "Invalid up/down value: %(value)s"
 msgstr ""
 
-#: trac/ticket/admin.py:796 trac/ticket/api.py:313
+#: trac/ticket/admin.py:796 trac/ticket/api.py:312
 msgid "Priority"
 msgstr ""
 
@@ -2652,7 +2652,7 @@ msgstr ""
 msgid "Priorities"
 msgstr ""
 
-#: trac/ticket/admin.py:802 trac/ticket/api.py:318
+#: trac/ticket/admin.py:802 trac/ticket/api.py:317
 msgid "Resolution"
 msgstr ""
 
@@ -2660,7 +2660,7 @@ msgstr ""
 msgid "Resolutions"
 msgstr ""
 
-#: trac/ticket/admin.py:808 trac/ticket/api.py:317
+#: trac/ticket/admin.py:808 trac/ticket/api.py:316
 msgid "Severity"
 msgstr ""
 
@@ -2697,60 +2697,60 @@ msgstr ""
 msgid "Reporter"
 msgstr ""
 
-#: trac/ticket/api.py:311 trac/versioncontrol/admin.py:117
+#: trac/ticket/api.py:310 trac/versioncontrol/admin.py:117
 #: trac/versioncontrol/templates/admin_repositories.html:138
 msgid "Type"
 msgstr ""
 
-#: trac/ticket/api.py:312
+#: trac/ticket/api.py:311
 msgid "Status"
 msgstr ""
 
-#: trac/ticket/api.py:337
+#: trac/ticket/api.py:336
 msgid "Keywords"
 msgstr ""
 
-#: trac/ticket/api.py:339 trac/ticket/web_ui.py:1510
+#: trac/ticket/api.py:338 trac/ticket/web_ui.py:1510
 msgid "Cc"
 msgstr ""
 
-#: trac/ticket/api.py:343
+#: trac/ticket/api.py:342
 msgid "Created"
 msgstr ""
 
-#: trac/ticket/api.py:489
+#: trac/ticket/api.py:488
 #, python-format
 msgid "Tickets %(ranges)s"
 msgstr ""
 
-#: trac/ticket/api.py:516
+#: trac/ticket/api.py:515
 msgid "ticket comment does not exist"
 msgstr ""
 
-#: trac/ticket/api.py:523
+#: trac/ticket/api.py:522
 #, python-format
 msgid "Description for Ticket #%(id)s"
 msgstr ""
 
-#: trac/ticket/api.py:526
+#: trac/ticket/api.py:525
 #, python-format
 msgid "Comment %(cnum)s for Ticket #%(id)s"
 msgstr ""
 
-#: trac/ticket/api.py:531
+#: trac/ticket/api.py:530
 #, python-format
 msgid "Comment %(cnum)s"
 msgstr ""
 
-#: trac/ticket/api.py:535
+#: trac/ticket/api.py:534
 msgid "no permission to view ticket"
 msgstr ""
 
-#: trac/ticket/api.py:538
+#: trac/ticket/api.py:537
 msgid "ticket does not exist"
 msgstr ""
 
-#: trac/ticket/api.py:558
+#: trac/ticket/api.py:557
 #, python-format
 msgid "Ticket #%(shortname)s"
 msgstr ""
@@ -3545,7 +3545,7 @@ msgid_plural "%(labels)s deleted"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/ticket/web_ui.py:1181 trac/ticket/web_ui.py:1778
+#: trac/ticket/web_ui.py:1181 trac/ticket/web_ui.py:1770
 msgid "; "
 msgstr ""
 
@@ -3658,49 +3658,49 @@ msgstr ""
 msgid "no"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1747
+#: trac/ticket/web_ui.py:1739
 msgid "set"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1747
+#: trac/ticket/web_ui.py:1739
 msgid "unset"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1750 trac/versioncontrol/templates/changeset.html:199
+#: trac/ticket/web_ui.py:1742 trac/versioncontrol/templates/changeset.html:199
 #: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "modified"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1756
+#: trac/ticket/web_ui.py:1748
 #, python-format
 msgid "modified (%(diff)s)"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1774
+#: trac/ticket/web_ui.py:1766
 #, python-format
 msgid "%(items)s added"
 msgid_plural "%(items)s added"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/ticket/web_ui.py:1776
+#: trac/ticket/web_ui.py:1768
 #, python-format
 msgid "%(items)s removed"
 msgid_plural "%(items)s removed"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/ticket/web_ui.py:1785
+#: trac/ticket/web_ui.py:1777
 #, python-format
 msgid "%(value)s deleted"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1787
+#: trac/ticket/web_ui.py:1779
 #, python-format
 msgid "set to %(value)s"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1790
+#: trac/ticket/web_ui.py:1782
 #, python-format
 msgid "changed from %(old)s to %(new)s"
 msgstr ""
@@ -4101,11 +4101,6 @@ msgstr ""
 msgid "View ticket"
 msgstr ""
 
-#: trac/ticket/templates/query_results.html:93
-#: trac/ticket/templates/report_view.html:195
-msgid "View milestone"
-msgstr ""
-
 #: trac/ticket/templates/query_results.html:106
 msgid "(this ticket)"
 msgstr ""
@@ -4249,6 +4244,10 @@ msgstr ""
 #: trac/ticket/templates/report_view.html:161
 #, python-format
 msgid "View %(realm)s"
+msgstr ""
+
+#: trac/ticket/templates/report_view.html:195
+msgid "View milestone"
 msgstr ""
 
 #: trac/ticket/templates/roadmap.html:30
@@ -4436,17 +4435,17 @@ msgstr ""
 msgid "Owned by:"
 msgstr ""
 
-#: trac/ticket/templates/ticket_box.html:105
+#: trac/ticket/templates/ticket_box.html:111
 #, python-format
 msgid "(last modified by %(author)s)"
 msgstr ""
 
-#: trac/ticket/templates/ticket_box.html:114
+#: trac/ticket/templates/ticket_box.html:120
 #: trac/ticket/templates/ticket_change.html:81
 msgid "Reply"
 msgstr ""
 
-#: trac/ticket/templates/ticket_box.html:114
+#: trac/ticket/templates/ticket_box.html:120
 msgid "Reply, quoting this description"
 msgstr ""
 
@@ -5987,16 +5986,16 @@ msgstr ""
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr ""
 
-#: trac/web/chrome.py:1097
+#: trac/web/chrome.py:1098
 msgid "(unknown template location)"
 msgstr ""
 
-#: trac/web/chrome.py:1098
+#: trac/web/chrome.py:1099
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr ""
 
-#: trac/web/chrome.py:1146 trac/web/chrome.py:1154
+#: trac/web/chrome.py:1147 trac/web/chrome.py:1155
 msgid "anonymous"
 msgstr ""
 
@@ -6067,42 +6066,46 @@ msgid ""
 "%(traceback)s}}}"
 msgstr ""
 
-#: trac/web/session.py:246
+#: trac/web/session.py:245
+msgid "Session ID must be alphanumeric."
+msgstr ""
+
+#: trac/web/session.py:246 trac/web/session.py:252
+msgid "Error renaming session"
+msgstr ""
+
+#: trac/web/session.py:249
 #, python-format
 msgid "Session '%(id)s' already exists. Please choose a different session ID."
 msgstr ""
 
-#: trac/web/session.py:249
-msgid "Error renaming session"
-msgstr ""
-
-#: trac/web/session.py:423
+#: trac/web/session.py:426
 msgid "SID"
 msgstr ""
 
-#: trac/web/session.py:423
+#: trac/web/session.py:426
 msgid "Auth"
 msgstr ""
 
-#: trac/web/session.py:423
+#: trac/web/session.py:426
 msgid "Last Visit"
 msgstr ""
 
-#: trac/web/session.py:424
+#: trac/web/session.py:427
 msgid "Email"
 msgstr ""
 
-#: trac/web/session.py:433
+#: trac/web/session.py:436
 #, python-format
 msgid "Session '%(sid)s' already exists"
 msgstr ""
 
-#: trac/web/session.py:444
+#: trac/web/session.py:447
 #, python-format
 msgid "Invalid attribute '%(attr)s'"
 msgstr ""
 
-#: trac/web/session.py:451
+#: trac/web/session.py:454
 #, python-format
 msgid "Session '%(sid)s' not found"
 msgstr ""

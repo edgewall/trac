@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.0.2\n"
+"Project-Id-Version: Trac 1.0.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-09-01 12:43+0000\n"
+"POT-Creation-Date: 2014-11-25 17:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -117,49 +117,49 @@ msgstr ""
 msgid "Send ticket change notification when updating a ticket."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:269
+#: tracopt/versioncontrol/git/git_fs.py:268
 msgid "Enable persistent caching of commit tree."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:272
+#: tracopt/versioncontrol/git/git_fs.py:271
 msgid "Wrap `GitRepository` in `CachedRepository`."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:275
+#: tracopt/versioncontrol/git/git_fs.py:274
 msgid ""
 "The length at which a sha1 should be abbreviated to (must\n"
 "be >= 4 and <= 40)."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:280
+#: tracopt/versioncontrol/git/git_fs.py:279
 msgid ""
 "The minimum length of an hex-string for which\n"
 "auto-detection as sha1 is performed (must be >= 4 and <= 40)."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:285
+#: tracopt/versioncontrol/git/git_fs.py:284
 msgid ""
 "Enable reverse mapping of git email addresses to trac user ids\n"
 "(costly if you have many users)."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:289
+#: tracopt/versioncontrol/git/git_fs.py:288
 msgid ""
 "Use git-committer id instead of git-author id for the\n"
 "changeset ''Author'' field."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:294
+#: tracopt/versioncontrol/git/git_fs.py:293
 msgid ""
 "Use git-committer timestamp instead of git-author timestamp\n"
 "for the changeset ''Timestamp'' field."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:299
+#: tracopt/versioncontrol/git/git_fs.py:298
 msgid "Define charset encoding of paths within git repositories."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:302
+#: tracopt/versioncontrol/git/git_fs.py:301
 msgid "Path to the git executable."
 msgstr ""
 
@@ -651,11 +651,11 @@ msgid ""
 "binary data. (''since 0.11.5'')"
 msgstr ""
 
-#: trac/mimeview/pygments.py:50
+#: trac/mimeview/pygments.py:47
 msgid "The default style to use for Pygments syntax highlighting."
 msgstr ""
 
-#: trac/mimeview/pygments.py:53
+#: trac/mimeview/pygments.py:50
 msgid ""
 "List of additional MIME types known by Pygments.\n"
 "\n"
@@ -761,7 +761,7 @@ msgid ""
 "(''since 0.11'')."
 msgstr ""
 
-#: trac/ticket/default_workflow.py:108
+#: trac/ticket/default_workflow.py:109
 msgid ""
 "The workflow for tickets is controlled by plugins. By default,\n"
 "there's only a `ConfigurableTicketWorkflow` component in charge.\n"
@@ -771,23 +771,23 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/ticket/notification.py:38
+#: trac/ticket/notification.py:41
 msgid "Always send notifications to the ticket owner (''since 0.9'')."
 msgstr ""
 
-#: trac/ticket/notification.py:42
+#: trac/ticket/notification.py:45
 msgid ""
 "Always send notifications to any address in the ''reporter''\n"
 "field."
 msgstr ""
 
-#: trac/ticket/notification.py:48
+#: trac/ticket/notification.py:51
 msgid ""
 "Always send notifications to the person who causes the ticket\n"
 "property change and to any previous updater of that ticket."
 msgstr ""
 
-#: trac/ticket/notification.py:53
+#: trac/ticket/notification.py:56
 msgid ""
 "A Genshi text template snippet used to get the notification subject.\n"
 "\n"
@@ -796,7 +796,7 @@ msgid ""
 "''(since 0.11)''"
 msgstr ""
 
-#: trac/ticket/notification.py:61
+#: trac/ticket/notification.py:64
 msgid ""
 "Like ticket_subject_template but for batch modifications.\n"
 "\n"
@@ -804,7 +804,7 @@ msgid ""
 "''(since 1.0)''"
 msgstr ""
 
-#: trac/ticket/notification.py:68
+#: trac/ticket/notification.py:71
 msgid ""
 "Which width of ambiguous characters (e.g. 'single' or\n"
 "'double') should be used in the table of notification mail.\n"
@@ -815,7 +815,11 @@ msgid ""
 "0.12.2)''"
 msgstr ""
 
-#: trac/ticket/query.py:838
+#: trac/ticket/notification.py:505
+msgid "Always send notifications on ticket attachment events."
+msgstr ""
+
+#: trac/ticket/query.py:836
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -824,7 +828,7 @@ msgid ""
 "(''since 0.11.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:846
+#: trac/ticket/query.py:844
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -833,7 +837,7 @@ msgid ""
 "(''since 0.11.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:854
+#: trac/ticket/query.py:852
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default (''since 0.11'')"
@@ -929,27 +933,27 @@ msgid ""
 "in the milestone views."
 msgstr ""
 
-#: trac/ticket/web_ui.py:73
+#: trac/ticket/web_ui.py:74
 msgid ""
 "Enable the display of all ticket changes in the timeline, not only\n"
 "open / close operations (''since 0.9'')."
 msgstr ""
 
-#: trac/ticket/web_ui.py:77
+#: trac/ticket/web_ui.py:78
 msgid ""
 "Maximum allowed description size in characters.\n"
 "(//since 0.11//)."
 msgstr ""
 
-#: trac/ticket/web_ui.py:81
+#: trac/ticket/web_ui.py:82
 msgid "Maximum allowed comment size in characters. (//since 0.11.2//)."
 msgstr ""
 
-#: trac/ticket/web_ui.py:84
+#: trac/ticket/web_ui.py:85
 msgid "Maximum allowed summary size in characters. (//since 1.0.2//)."
 msgstr ""
 
-#: trac/ticket/web_ui.py:87
+#: trac/ticket/web_ui.py:88
 msgid ""
 "Which formatter flavor (e.g. 'html' or 'oneliner') should be\n"
 "used when presenting the description for new tickets.\n"
@@ -957,7 +961,7 @@ msgid ""
 "(''since 0.11'')."
 msgstr ""
 
-#: trac/ticket/web_ui.py:94
+#: trac/ticket/web_ui.py:95
 msgid ""
 "Whether Wiki formatter should respect the new lines present\n"
 "in the Wiki text.\n"
@@ -966,7 +970,7 @@ msgid ""
 "(''since 0.11'')."
 msgstr ""
 
-#: trac/ticket/web_ui.py:101
+#: trac/ticket/web_ui.py:102
 msgid ""
 "The base query to be used when linkifying values of ticket\n"
 "fields. The query is a URL query\n"
@@ -996,7 +1000,7 @@ msgid ""
 "(''Since 0.11'')"
 msgstr ""
 
-#: trac/versioncontrol/admin.py:169
+#: trac/versioncontrol/admin.py:173
 msgid ""
 "Comma-separated list of allowed prefixes for repository\n"
 "directories when adding and editing repositories in the repository\n"
@@ -1250,7 +1254,7 @@ msgid ""
 "the cookie.  (''since 0.12'')"
 msgstr ""
 
-#: trac/web/chrome.py:350
+#: trac/web/chrome.py:391
 msgid ""
 "Path to the //shared templates directory//.\n"
 "\n"
@@ -1260,7 +1264,7 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/web/chrome.py:358
+#: trac/web/chrome.py:399
 msgid ""
 "Path to the //shared htdocs directory//.\n"
 "\n"
@@ -1273,11 +1277,11 @@ msgid ""
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/web/chrome.py:369
+#: trac/web/chrome.py:410
 msgid "Automatically reload template files after modification."
 msgstr ""
 
-#: trac/web/chrome.py:372
+#: trac/web/chrome.py:413
 msgid ""
 "The maximum number of templates that the template loader will cache\n"
 "in memory. The default value is 128. You may want to choose a higher\n"
@@ -1286,7 +1290,7 @@ msgid ""
 "memory."
 msgstr ""
 
-#: trac/web/chrome.py:379
+#: trac/web/chrome.py:420
 msgid ""
 "Base URL for serving the core static resources below\n"
 "`/chrome/common/`.\n"
@@ -1303,7 +1307,7 @@ msgid ""
 "rules will be needed in the web server."
 msgstr ""
 
-#: trac/web/chrome.py:394
+#: trac/web/chrome.py:435
 msgid ""
 "Location of the jQuery !JavaScript library (version 1.7.2).\n"
 "\n"
@@ -1317,7 +1321,7 @@ msgid ""
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/web/chrome.py:406
+#: trac/web/chrome.py:447
 msgid ""
 "Location of the jQuery UI !JavaScript library (version 1.8.21).\n"
 "\n"
@@ -1331,7 +1335,7 @@ msgid ""
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/web/chrome.py:418
+#: trac/web/chrome.py:459
 msgid ""
 "Location of the theme to be used with the jQuery UI !JavaScript\n"
 "library (version 1.8.21).\n"
@@ -1350,23 +1354,23 @@ msgid ""
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/web/chrome.py:433
+#: trac/web/chrome.py:474
 msgid ""
 "Order of the items to display in the `metanav` navigation bar,\n"
 "listed by IDs. See also TracNavigation."
 msgstr ""
 
-#: trac/web/chrome.py:438
+#: trac/web/chrome.py:479
 msgid ""
 "Order of the items to display in the `mainnav` navigation bar,\n"
 "listed by IDs. See also TracNavigation."
 msgstr ""
 
-#: trac/web/chrome.py:444
+#: trac/web/chrome.py:485
 msgid "URL to link to, from the header logo."
 msgstr ""
 
-#: trac/web/chrome.py:447
+#: trac/web/chrome.py:488
 msgid ""
 "URL of the image to use as header logo.\n"
 "It can be absolute, server relative or relative.\n"
@@ -1379,50 +1383,50 @@ msgid ""
 "Only specifying `your-logo.png` is equivalent to the latter."
 msgstr ""
 
-#: trac/web/chrome.py:458
+#: trac/web/chrome.py:499
 msgid "Alternative text for the header logo."
 msgstr ""
 
-#: trac/web/chrome.py:462
+#: trac/web/chrome.py:503
 msgid "Width of the header logo image in pixels."
 msgstr ""
 
-#: trac/web/chrome.py:465
+#: trac/web/chrome.py:506
 msgid "Height of the header logo image in pixels."
 msgstr ""
 
-#: trac/web/chrome.py:468
+#: trac/web/chrome.py:509
 msgid ""
 "Show email addresses instead of usernames. If false, we obfuscate\n"
 "email addresses. (''since 0.11'')"
 msgstr ""
 
-#: trac/web/chrome.py:472
+#: trac/web/chrome.py:513
 msgid ""
 "Never obfuscate `mailto:` links explicitly written in the wiki,\n"
 "even if `show_email_addresses` is false or the user has not the\n"
 "EMAIL_VIEW permission (''since 0.11.6'')."
 msgstr ""
 
-#: trac/web/chrome.py:478
+#: trac/web/chrome.py:519
 msgid ""
 "Show IP addresses for resource edits (e.g. wiki).\n"
 "(''since 0.11.3'')"
 msgstr ""
 
-#: trac/web/chrome.py:482
+#: trac/web/chrome.py:523
 msgid ""
 "Make `<textarea>` fields resizable. Requires !JavaScript.\n"
 "(''since 0.12'')"
 msgstr ""
 
-#: trac/web/chrome.py:486
+#: trac/web/chrome.py:527
 msgid ""
 "Add a simple toolbar on top of Wiki `<textarea>`s.\n"
 "(''since 1.0.2'')"
 msgstr ""
 
-#: trac/web/chrome.py:490
+#: trac/web/chrome.py:531
 msgid ""
 "Inactivity timeout in seconds after which the automatic wiki preview\n"
 "triggers an update. This option can contain floating-point values. The\n"
@@ -1431,7 +1435,7 @@ msgid ""
 "(''since 0.12'')"
 msgstr ""
 
-#: trac/web/chrome.py:497
+#: trac/web/chrome.py:538
 msgid ""
 "The date information format. Valid options are 'relative' for\n"
 "displaying relative format and 'absolute' for displaying absolute\n"
