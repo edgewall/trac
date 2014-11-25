@@ -103,7 +103,50 @@
           .appendTo("head");
       }
     });
-  }
+  };
+
+  // {script.src: [listener1, listener2, ...]}
+  var readyListeners = {};
+
+  $.documentReady = function(listener) {
+    var script = document.currentScript;
+    if (script === undefined) {
+      script = $("head script");
+      script = script[script.length - 1];
+    }
+    if (script) {
+      var href = script.getAttribute("src");
+      if (!(href in readyListeners))
+        readyListeners[href] = [];
+      var listeners = readyListeners[href];
+      listeners.push(listener);
+    }
+    $(document).ready(listener);
+  };
+
+  $.loadScript = function(href, type, charset) {
+    var script;
+    $("head script").each(function() {
+      if (this.getAttribute("src") === href) {
+        script = this;
+        return false;
+      }
+    });
+    if (script !== undefined) {
+      // Call registered ready listeners
+      $.each(readyListeners[href] || [], function(idx, listener) {
+        listener.call(document, $);
+      });
+    } else {
+      // Don't use $("<script>").appendTo("head") to avoid adding
+      // "_=<timestamp>" parameter to url.
+      script = document.createElement("script");
+      script.src = href;
+      script.type = type || "text/javascript";
+      script.charset = charset || "utf-8";
+      $("head")[0].appendChild(script);
+    }
+  };
 
   // Escape special HTML characters (&<>")
   var quote = {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"};

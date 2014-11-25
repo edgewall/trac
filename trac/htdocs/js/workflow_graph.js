@@ -205,7 +205,7 @@
     });
   }
 
-  $(document).ready(function() {
+  $.documentReady(function() {
     $('.trac-workflow-graph').each(function (index) {
       var data = window['graph_' + this.id.slice(-12)];
       var width = data.width, height = data.height;

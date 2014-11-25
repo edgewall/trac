@@ -80,7 +80,7 @@
       </py:for>
     </script>
     <py:for each="script in chrome.late_scripts">
-      ${script.prefix}<script type="${script.type}" charset="${script.charset}" src="${script.href}"></script>${script.suffix}
+      ${script.prefix}<script type="text/javascript">jQuery.loadScript("${script.href}", "${script.type}", "${script.charset}");</script>${script.suffix}
     </py:for>
 
     <div id="altlinks" py:if="'alternate' in chrome.links">
