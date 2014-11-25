@@ -17,7 +17,7 @@
 from trac.db import Table, Column, Index
 
 # Database version identifier. Used for automatic upgrades.
-db_version = 30
+db_version = 31
 
 def __mkreports(reports):
     """Utility function used to create report data in same syntax as the

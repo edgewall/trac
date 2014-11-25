@@ -448,8 +448,8 @@ in order to initialize and prepare the project database.
             ]
             if repository_dir:
                 options.extend([
-                    ('trac', 'repository_type', repository_type),
-                    ('trac', 'repository_dir', repository_dir),
+                    ('repositories', '.type', repository_type),
+                    ('repositories', '.dir', repository_dir),
                 ])
             if inherit_paths:
                 options.append(('inherit', 'file',
