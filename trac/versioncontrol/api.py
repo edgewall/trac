@@ -23,6 +23,7 @@ from trac.admin import AdminCommandError, IAdminCommandProvider, get_dir_list
 from trac.config import ConfigSection, ListOption, Option
 from trac.core import *
 from trac.resource import IResourceManager, Resource, ResourceNotFound
+from trac.util import as_bool
 from trac.util.concurrency import threading
 from trac.util.datefmt import utc
 from trac.util.text import printout, to_unicode, exception_to_unicode
@@ -113,7 +114,7 @@ class DbRepositoryProvider(Component):
     implements(IRepositoryProvider, IAdminCommandProvider)
 
     repository_attrs = ('alias', 'description', 'dir', 'hidden', 'name',
-                        'type', 'url')
+                        'sync_per_request', 'type', 'url')
 
     # IRepositoryProvider methods
 
@@ -190,6 +191,8 @@ class DbRepositoryProvider(Component):
             raise AdminCommandError(_('Invalid key "%(key)s"', key=key))
         if key == 'dir':
             value = os.path.abspath(value)
+        if key in ('hidden', 'sync_per_request'):
+            value = '1' if as_bool(value) else None
         self.modify_repository(reponame, {key: value})
         if not reponame:
             reponame = '(default)'
@@ -313,18 +316,6 @@ class RepositoryManager(Component):
         the "Repositories" admin panel. (''since 0.12'')
         """)
 
-    repository_sync_per_request = ListOption('trac',
-        'repository_sync_per_request', '(default)',
-        doc="""List of repositories that should be synchronized on every page
-        request.
-
-        Leave this option empty if you have set up post-commit hooks calling
-        `trac-admin $ENV changeset added` on all your repositories
-        (recommended). Otherwise, set it to a comma-separated list of
-        repository names. Note that this will negatively affect performance,
-        and will prevent changeset listeners from receiving events from the
-        repositories specified here. (''since 0.12'')""")
-
     def __init__(self):
         self._cache = {}
         self._lock = threading.Lock()
@@ -336,24 +327,19 @@ class RepositoryManager(Component):
     def pre_process_request(self, req, handler):
         from trac.web.chrome import Chrome, add_warning
         if handler is not Chrome(self.env):
-            for reponame in self.repository_sync_per_request:
+            for repo_info in self.get_all_repositories().values():
+                if not as_bool(repo_info.get('sync_per_request')):
+                    continue
                 start = time.time()
-                if is_default(reponame):
-                    reponame = ''
+                repo_name = repo_info['name'] or '(default)'
                 try:
-                    repo = self.get_repository(reponame)
-                    if repo:
-                        repo.sync()
-                    else:
-                        self.log.warning("Unable to find repository '%s' for "
-                                         "synchronization",
-                                         reponame or '(default)')
-                        continue
+                    repo = self.get_repository(repo_info['name'])
+                    repo.sync()
                 except TracError as e:
                     add_warning(req,
                         _("Can't synchronize with repository \"%(name)s\" "
                           "(%(error)s). Look in the Trac log for more "
-                          "information.", name=reponame or '(default)',
+                          "information.", name=repo_name,
                           error=to_unicode(e)))
                 except Exception as e:
                     add_warning(req,
@@ -361,17 +347,16 @@ class RepositoryManager(Component):
                           "%(error)s; repository information may be out of "
                           "date. Look in the Trac log for more information "
                           "including mitigation strategies.",
-                          name=reponame or '(default)', error=to_unicode(e)))
+                          name=repo_name, error=to_unicode(e)))
                     self.log.error(
                         "Failed to sync with repository \"%s\"; You may be "
                         "able to reduce the impact of this issue by "
-                        "configuring [trac] repository_sync_per_request; see "
+                        "configuring the sync_per_request option; see "
                         "http://trac.edgewall.org/wiki/TracRepositoryAdmin"
-                        "#ExplicitSync for more detail: %s",
-                        reponame or '(default)',
+                        "#ExplicitSync for more detail: %s", repo_name,
                         exception_to_unicode(e, traceback=True))
                 self.log.info("Synchronized '%s' repository in %0.2f seconds",
-                              reponame or '(default)', time.time() - start)
+                              repo_name, time.time() - start)
         return handler
 
     def post_process_request(self, req, template, data, content_type):
@@ -467,7 +452,7 @@ class RepositoryManager(Component):
         # first pass to gather the <name>.dir entries
         for option in repositories:
             if option.endswith('.dir'):
-                reponames[option[:-4]] = {}
+                reponames[option[:-4]] = {'sync_per_request': False}
         # second pass to gather aliases
         for option in repositories:
             alias = repositories.get(option)

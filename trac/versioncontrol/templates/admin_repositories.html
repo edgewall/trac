@@ -82,6 +82,13 @@
             </py:otherwise>
           </py:choose>
           <div class="field">
+            <label><input type="checkbox" name="sync_per_request" value="1" checked="${info.sync_per_request or None}"
+                          disabled="${not info.editable or None}" />
+              Sync on every request
+            </label>
+            <span class="hint" i18n:msg="">Not recommended. See <a href="${href.wiki('TracRepositoryAdmin') + '#ExplicitSync'}">explicit synchronization</a> for more info.</span>
+          </div>
+          <div class="field">
             <label><input type="checkbox" name="hidden" value="1" checked="${info.hidden or None}"
                           disabled="${not info.editable or None}"/>
               Hide from repository index

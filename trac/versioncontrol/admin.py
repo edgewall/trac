@@ -207,7 +207,8 @@ class RepositoryAdminPanel(Component):
                     valid = True
                     for field in db_provider.repository_attrs:
                         value = normalize_whitespace(req.args.get(field))
-                        if (value is not None or field == 'hidden') \
+                        if (value is not None
+                            or field in ('hidden', 'sync_per_request')) \
                                 and value != info.get(field):
                             changes[field] = value
                     if 'dir' in changes and not \
@@ -344,6 +345,7 @@ class RepositoryAdminPanel(Component):
         if info.get('dir') is not None:
             info['prettydir'] = breakable_path(info['dir']) or ''
         info['hidden'] = as_bool(info.get('hidden'))
+        info['sync_per_request'] = as_bool(info.get('sync_per_request'))
         info['editable'] = editable
         if not info.get('alias'):
             try:
