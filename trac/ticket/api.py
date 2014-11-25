@@ -299,9 +299,8 @@ class TicketSystem(Component):
 
         # Owner field, by default text but can be changed dynamically
         # into a drop-down depending on configuration (restrict_owner=true)
-        field = {'name': 'owner', 'label': N_('Owner')}
-        field['type'] = 'text'
-        fields.append(field)
+        fields.append({'name': 'owner', 'type': 'text',
+                       'label': N_('Owner')})
 
         # Description
         fields.append({'name': 'description', 'type': 'textarea',
