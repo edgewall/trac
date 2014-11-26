@@ -256,6 +256,8 @@ class WikiSystem(Component):
     macro_providers = ExtensionPoint(IWikiMacroProvider)
     syntax_providers = ExtensionPoint(IWikiSyntaxProvider)
 
+    realm = 'wiki'
+
     ignore_missing_pages = BoolOption('wiki', 'ignore_missing_pages', 'false',
         """Enable/disable highlighting CamelCase links to missing pages.
         """)
@@ -404,7 +406,7 @@ class WikiSystem(Component):
             query = '&' + query[1:]
         pagename = pagename.rstrip('/') or 'WikiStart'
         referrer = ''
-        if formatter.resource and formatter.resource.realm == 'wiki':
+        if formatter.resource and formatter.resource.realm == self.realm:
             referrer = formatter.resource.id
         if pagename.startswith('/'):
             pagename = pagename.lstrip('/')
@@ -413,7 +415,7 @@ class WikiSystem(Component):
         else:
             pagename = self._resolve_scoped_name(pagename, referrer)
         label = unquote_label(label)
-        if 'WIKI_VIEW' in formatter.perm('wiki', pagename, version):
+        if 'WIKI_VIEW' in formatter.perm(self.realm, pagename, version):
             href = formatter.href.wiki(pagename, version=version) + query \
                    + fragment
             if self.has_page(pagename):
@@ -421,7 +423,8 @@ class WikiSystem(Component):
             else:
                 if ignore_missing:
                     return original_label or label
-                if 'WIKI_CREATE' in formatter.perm('wiki', pagename, version):
+                if 'WIKI_CREATE' in \
+                        formatter.perm(self.realm, pagename, version):
                     return tag.a(label + '?', class_='missing wiki',
                                  href=href, rel='nofollow')
                 else:
@@ -471,7 +474,7 @@ class WikiSystem(Component):
     # IResourceManager methods
 
     def get_resource_realms(self):
-        yield 'wiki'
+        yield self.realm
 
     def get_resource_description(self, resource, format, **kwargs):
         """

@@ -70,6 +70,8 @@ class TicketModule(Component):
 
     ticket_manipulators = ExtensionPoint(ITicketManipulator)
 
+    realm = TicketSystem.realm
+
     timeline_details = BoolOption('timeline', 'ticket_show_details', 'false',
         """Enable the display of all ticket changes in the timeline, not only
         open / close operations.""")
@@ -188,7 +190,7 @@ class TicketModule(Component):
     def get_search_results(self, req, terms, filters):
         if not 'ticket' in filters:
             return
-        ticket_realm = Resource('ticket')
+        ticket_realm = Resource(self.realm)
         with self.env.db_query as db:
             sql, args = search_to_sql(db, ['summary', 'keywords',
                                            'description', 'reporter', 'cc',
@@ -244,7 +246,7 @@ class TicketModule(Component):
                       'closed': ('closedticket', 'closed'),
                       'edit': ('editedticket', 'updated')}
 
-        ticket_realm = Resource('ticket')
+        ticket_realm = Resource(self.realm)
 
         field_labels = TicketSystem(self.env).get_ticket_field_labels()
 
@@ -438,7 +440,7 @@ class TicketModule(Component):
                 yield controller
 
     def _process_newticket_request(self, req):
-        req.perm('ticket').require('TICKET_CREATE')
+        req.perm(self.realm).require('TICKET_CREATE')
         ticket = Ticket(self.env)
 
         plain_fields = True # support for /newticket?version=0.11 GETs
@@ -517,7 +519,7 @@ class TicketModule(Component):
         xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
 
         if xhr and 'preview_comment' in req.args:
-            context = web_context(req, 'ticket', id, version)
+            context = web_context(req, self.realm, id, version)
             escape_newlines = self.must_preserve_newlines
             rendered = format_to_html(self.env, context,
                                       req.args.get('edited_comment', ''),
@@ -525,7 +527,7 @@ class TicketModule(Component):
                        chrome_info_script(req)
             req.send(rendered.encode('utf-8'))
 
-        req.perm('ticket', id, version).require('TICKET_VIEW')
+        req.perm(self.realm, id, version).require('TICKET_VIEW')
         ticket = Ticket(self.env, id, version=version)
         action = req.args.get('action', ('history' in req.args and 'history' or
                                          'view'))
@@ -1346,9 +1348,9 @@ class TicketModule(Component):
             add_notice(req, tag_("The ticket %(ticketref)s has been created. "
                                  "You can now attach the desired files.",
                                  ticketref=ticketref))
-            req.redirect(req.href.attachment('ticket', ticket.id,
+            req.redirect(req.href.attachment(ticket.realm, ticket.id,
                                              action='new'))
-        if 'TICKET_VIEW' not in req.perm('ticket', ticket.id):
+        if 'TICKET_VIEW' not in req.perm(ticket.resource):
             add_notice(req, tag_("The ticket %(ticketref)s has been created, "
                                  "but you don't have permission to view it.",
                                  ticketref=ticketref))

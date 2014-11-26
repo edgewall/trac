@@ -28,7 +28,7 @@ from trac.wiki.api import WikiSystem, validate_page_name
 class WikiPage(object):
     """Represents a wiki page (new or existing)."""
 
-    realm = 'wiki'
+    realm = WikiSystem.realm
 
     def __init__(self, env, name=None, version=None):
         """Create a new page object or retrieves an existing page.

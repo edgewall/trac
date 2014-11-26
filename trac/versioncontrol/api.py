@@ -290,6 +290,10 @@ class RepositoryManager(Component):
 
     implements(IRequestFilter, IResourceManager, IRepositoryProvider)
 
+    changeset_realm = 'changeset'
+    source_realm = 'source'
+    repository_realm = 'repository'
+
     connectors = ExtensionPoint(IRepositoryConnector)
     providers = ExtensionPoint(IRepositoryProvider)
     change_listeners = ExtensionPoint(IRepositoryChangeListener)
@@ -365,12 +369,12 @@ class RepositoryManager(Component):
     # IResourceManager methods
 
     def get_resource_realms(self):
-        yield 'changeset'
-        yield 'source'
-        yield 'repository'
+        yield self.changeset_realm
+        yield self.source_realm
+        yield self.repository_realm
 
     def get_resource_description(self, resource, format=None, **kwargs):
-        if resource.realm == 'changeset':
+        if resource.realm == self.changeset_realm:
             parent = resource.parent
             reponame = parent and parent.id
             id = resource.id
@@ -378,7 +382,7 @@ class RepositoryManager(Component):
                 return _("Changeset %(rev)s in %(repo)s", rev=id, repo=reponame)
             else:
                 return _("Changeset %(rev)s", rev=id)
-        elif resource.realm == 'source':
+        elif resource.realm == self.source_realm:
             parent = resource.parent
             reponame = parent and parent.id
             id = resource.id
@@ -400,43 +404,43 @@ class RepositoryManager(Component):
             # TRANSLATOR: file /path/to/file.py at version 13 in reponame
             return _('%(kind)s %(id)s%(at_version)s%(in_repo)s',
                      kind=kind, id=id, at_version=version, in_repo=in_repo)
-        elif resource.realm == 'repository':
+        elif resource.realm == self.repository_realm:
             if not resource.id:
                 return _("Default repository")
             return _("Repository %(repo)s", repo=resource.id)
 
     def get_resource_url(self, resource, href, **kwargs):
-        if resource.realm == 'changeset':
+        if resource.realm == self.changeset_realm:
             parent = resource.parent
             return href.changeset(resource.id, parent and parent.id or None)
-        elif resource.realm == 'source':
+        elif resource.realm == self.source_realm:
             parent = resource.parent
             return href.browser(parent and parent.id or None, resource.id,
                                 rev=resource.version or None)
-        elif resource.realm == 'repository':
+        elif resource.realm == self.repository_realm:
             return href.browser(resource.id or None)
 
     def resource_exists(self, resource):
-        if resource.realm == 'repository':
+        if resource.realm == self.repository_realm:
             reponame = resource.id
         else:
             reponame = resource.parent.id
         repos = self.env.get_repository(reponame)
         if not repos:
             return False
-        if resource.realm == 'changeset':
+        if resource.realm == self.changeset_realm:
             try:
                 repos.get_changeset(resource.id)
                 return True
             except NoSuchChangeset:
                 return False
-        elif resource.realm == 'source':
+        elif resource.realm == self.source_realm:
             try:
                 repos.get_node(resource.id, resource.version)
                 return True
             except NoSuchNode:
                 return False
-        elif resource.realm == 'repository':
+        elif resource.realm == self.repository_realm:
             return True
 
     # IRepositoryProvider methods
@@ -584,7 +588,8 @@ class RepositoryManager(Component):
         hierarchy and return the name of its associated repository.
         """
         while context:
-            if context.resource.realm in ('source', 'changeset'):
+            if context.resource.realm in (self.source_realm,
+                                          self.changeset_realm):
                 return context.resource.parent.id
             context = context.parent
 
@@ -766,7 +771,7 @@ class Repository(object):
 
     scope = '/'
 
-    realm = 'repository'
+    realm = RepositoryManager.repository_realm
 
     def __init__(self, name, params, log):
         """Initialize a repository.
@@ -1016,7 +1021,7 @@ class Node(object):
     DIRECTORY = "dir"
     FILE = "file"
 
-    realm = 'source'
+    realm = RepositoryManager.source_realm
 
     resource = property(lambda self: Resource(self.realm, self.path,
                                               version=self.rev,
@@ -1172,7 +1177,7 @@ class Changeset(object):
     OTHER_CHANGES = (ADD, DELETE)
     ALL_CHANGES = DIFF_CHANGES + OTHER_CHANGES
 
-    realm = 'changeset'
+    realm = RepositoryManager.changeset_realm
 
     resource = property(lambda self: Resource(self.realm, self.rev,
                                               parent=self.repos.resource))

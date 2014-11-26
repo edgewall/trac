@@ -52,6 +52,8 @@ class WikiModule(Component):
 
     page_manipulators = ExtensionPoint(IWikiPageManipulator)
 
+    realm = WikiSystem.realm
+
     max_size = IntOption('wiki', 'max_size', 262144,
         """Maximum allowed wiki page size in characters.""")
 
@@ -73,10 +75,10 @@ class WikiModule(Component):
         return 'wiki'
 
     def get_navigation_items(self, req):
-        if 'WIKI_VIEW' in req.perm('wiki', 'WikiStart'):
+        if 'WIKI_VIEW' in req.perm(self.realm, 'WikiStart'):
             yield ('mainnav', 'wiki',
                    tag.a(_("Wiki"), href=req.href.wiki(), accesskey=1))
-        if 'WIKI_VIEW' in req.perm('wiki', 'TracGuide'):
+        if 'WIKI_VIEW' in req.perm(self.realm, 'TracGuide'):
             yield ('metanav', 'help',
                    tag.a(_("Help/Guide"), href=req.href.wiki('TracGuide'),
                          accesskey=6))
@@ -641,7 +643,7 @@ class WikiModule(Component):
             name = name.lower()
             related = [each for each in ws.pages
                        if name in each.lower()
-                          and 'WIKI_VIEW' in req.perm('wiki', each)]
+                          and 'WIKI_VIEW' in req.perm(self.realm, each)]
             related.sort()
             related = [ws._format_link(formatter, 'wiki', '/' + each, each,
                                        False)
@@ -668,7 +670,7 @@ class WikiModule(Component):
         prefix = self.PAGE_TEMPLATES_PREFIX
         templates = [template[len(prefix):]
                      for template in ws.get_pages(prefix)
-                     if 'WIKI_VIEW' in req.perm('wiki', template)]
+                     if 'WIKI_VIEW' in req.perm(self.realm, template)]
 
         # -- prev/up/next links
         if prev_version:
@@ -735,7 +737,7 @@ class WikiModule(Component):
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'wiki' in filters:
-            wiki_realm = Resource('wiki')
+            wiki_realm = Resource(self.realm)
             for ts, name, comment, author, version in self.env.db_query("""
                     SELECT time, name, comment, author, version FROM wiki
                     WHERE time>=%s AND time<=%s
@@ -783,7 +785,7 @@ class WikiModule(Component):
         with self.env.db_query as db:
             sql_query, args = search_to_sql(db, ['w1.name', 'w1.author',
                                                  'w1.text'], terms)
-            wiki_realm = Resource('wiki')
+            wiki_realm = Resource(self.realm)
             for name, ts, author, text in db("""
                     SELECT w1.name, w1.time, w1.author, w1.text
                     FROM wiki w1,(SELECT name, max(version) AS ver
@@ -809,10 +811,12 @@ class ReadonlyWikiPolicy(Component):
 
     implements(IPermissionPolicy)
 
+    realm = WikiSystem.realm
+
     # IPermissionPolicy methods
 
     def check_permission(self, action, username, resource, perm):
-        if resource and resource.realm == 'wiki' and \
+        if resource and resource.realm == self.realm and \
                 action in ('WIKI_DELETE', 'WIKI_MODIFY', 'WIKI_RENAME'):
             page = WikiPage(self.env, resource)
             if page.readonly and 'WIKI_ADMIN' not in perm(resource):

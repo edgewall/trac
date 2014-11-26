@@ -116,9 +116,543 @@ class ILegacyAttachmentPolicyDelegate(Interface):
             """
 
 
-class Attachment(object):
+class AttachmentModule(Component):
+
+    implements(IRequestHandler, INavigationContributor, IWikiSyntaxProvider,
+               IResourceManager)
 
     realm = 'attachment'
+    is_valid_default_handler = False
+
+    change_listeners = ExtensionPoint(IAttachmentChangeListener)
+    manipulators = ExtensionPoint(IAttachmentManipulator)
+
+    CHUNK_SIZE = 4096
+
+    max_size = IntOption('attachment', 'max_size', 262144,
+        """Maximum allowed file size (in bytes) for attachments.""")
+
+    max_zip_size = IntOption('attachment', 'max_zip_size', 2097152,
+        """Maximum allowed total size (in bytes) for an attachment list to be
+        downloadable as a `.zip`. Set this to -1 to disable download as `.zip`.
+        (''since 1.0'')""")
+
+    render_unsafe_content = BoolOption('attachment', 'render_unsafe_content',
+                                       'false',
+        """Whether attachments should be rendered in the browser, or
+        only made downloadable.
+
+        Pretty much any file may be interpreted as HTML by the browser,
+        which allows a malicious user to attach a file containing cross-site
+        scripting attacks.
+
+        For public sites where anonymous users can create attachments it is
+        recommended to leave this option disabled.""")
+
+    # INavigationContributor methods
+
+    def get_active_navigation_item(self, req):
+        return req.args.get('realm')
+
+    def get_navigation_items(self, req):
+        return []
+
+    # IRequestHandler methods
+
+    def match_request(self, req):
+        match = re.match(r'/(raw-|zip-)?attachment/([^/]+)(?:/(.*))?$',
+                         req.path_info)
+        if match:
+            format, realm, path = match.groups()
+            if format:
+                req.args['format'] = format[:-1]
+            req.args['realm'] = realm
+            if path:
+                req.args['path'] = path
+            return True
+
+    def process_request(self, req):
+        parent_id = None
+        parent_realm = req.args.get('realm')
+        path = req.args.get('path')
+        filename = None
+
+        if not parent_realm or not path:
+            raise HTTPBadRequest(_('Bad request'))
+
+        parent_realm = Resource(parent_realm)
+        action = req.args.get('action', 'view')
+        if action == 'new':
+            parent_id = path.rstrip('/')
+        else:
+            last_slash = path.rfind('/')
+            if last_slash == -1:
+                parent_id, filename = path, ''
+            else:
+                parent_id, filename = path[:last_slash], path[last_slash + 1:]
+
+        parent = parent_realm(id=parent_id)
+        if not resource_exists(self.env, parent):
+            raise ResourceNotFound(
+                _("Parent resource %(parent)s doesn't exist",
+                  parent=get_resource_name(self.env, parent)))
+
+        # Link the attachment page to parent resource
+        parent_name = get_resource_name(self.env, parent)
+        parent_url = get_resource_url(self.env, parent, req.href)
+        add_link(req, 'up', parent_url, parent_name)
+        add_ctxtnav(req, _('Back to %(parent)s', parent=parent_name),
+                    parent_url)
+
+        if not filename: # there's a trailing '/'
+            if req.args.get('format') == 'zip':
+                self._download_as_zip(req, parent)
+            elif action != 'new':
+                return self._render_list(req, parent)
+
+        attachment = Attachment(self.env, parent.child(self.realm, filename))
+
+        if req.method == 'POST':
+            if action == 'new':
+                data = self._do_save(req, attachment)
+            elif action == 'delete':
+                self._do_delete(req, attachment)
+        elif action == 'delete':
+            data = self._render_confirm_delete(req, attachment)
+        elif action == 'new':
+            data = self._render_form(req, attachment)
+        else:
+            data = self._render_view(req, attachment)
+
+        add_stylesheet(req, 'common/css/code.css')
+        return 'attachment.html', data, None
+
+    # IWikiSyntaxProvider methods
+
+    def get_wiki_syntax(self):
+        return []
+
+    def get_link_resolvers(self):
+        yield ('raw-attachment', self._format_link)
+        yield ('attachment', self._format_link)
+
+    # Public methods
+
+    def viewable_attachments(self, context):
+        """Return the list of viewable attachments in the given context.
+
+        :param context: the `~trac.mimeview.api.RenderingContext`
+                        corresponding to the parent
+                        `~trac.resource.Resource` for the attachments
+        """
+        parent = context.resource
+        attachments = []
+        for attachment in Attachment.select(self.env, parent.realm, parent.id):
+            if 'ATTACHMENT_VIEW' in context.perm(attachment.resource):
+                attachments.append(attachment)
+        return attachments
+
+    def attachment_data(self, context):
+        """Return a data dictionary describing the list of viewable
+        attachments in the current context.
+        """
+        attachments = self.viewable_attachments(context)
+        parent = context.resource
+        total_size = sum(attachment.size for attachment in attachments)
+        new_att = parent.child(self.realm)
+        return {'attach_href': get_resource_url(self.env, new_att,
+                                                context.href),
+                'download_href': get_resource_url(self.env, new_att,
+                                                  context.href, format='zip')
+                                 if total_size <= self.max_zip_size else None,
+                'can_create': 'ATTACHMENT_CREATE' in context.perm(new_att),
+                'attachments': attachments,
+                'parent': context.resource}
+
+    def get_history(self, start, stop, realm):
+        """Return an iterable of tuples describing changes to attachments on
+        a particular object realm.
+
+        The tuples are in the form (change, realm, id, filename, time,
+        description, author). `change` can currently only be `created`.
+
+        FIXME: no iterator
+        """
+        for realm, id, filename, ts, description, author in \
+                self.env.db_query("""
+                SELECT type, id, filename, time, description, author
+                FROM attachment WHERE time > %s AND time < %s AND type = %s
+                """, (to_utimestamp(start), to_utimestamp(stop), realm)):
+            time = from_utimestamp(ts or 0)
+            yield ('created', realm, id, filename, time, description, author)
+
+    def get_timeline_events(self, req, resource_realm, start, stop):
+        """Return an event generator suitable for ITimelineEventProvider.
+
+        Events are changes to attachments on resources of the given
+        `resource_realm.realm`.
+        """
+        for change, realm, id, filename, time, descr, author in \
+                self.get_history(start, stop, resource_realm.realm):
+            attachment = resource_realm(id=id).child(self.realm, filename)
+            if 'ATTACHMENT_VIEW' in req.perm(attachment):
+                yield ('attachment', time, author, (attachment, descr), self)
+
+    def render_timeline_event(self, context, field, event):
+        attachment, descr = event[3]
+        if field == 'url':
+            return self.get_resource_url(attachment, context.href)
+        elif field == 'title':
+            name = get_resource_name(self.env, attachment.parent)
+            title = get_resource_summary(self.env, attachment.parent)
+            return tag_("%(attachment)s attached to %(resource)s",
+                        attachment=tag.em(os.path.basename(attachment.id)),
+                        resource=tag.em(name, title=title))
+        elif field == 'description':
+            return format_to(self.env, None, context.child(attachment.parent),
+                             descr)
+
+    def get_search_results(self, req, resource_realm, terms):
+        """Return a search result generator suitable for ISearchSource.
+
+        Search results are attachments on resources of the given
+        `resource_realm.realm` whose filename, description or author match
+        the given terms.
+        """
+        with self.env.db_query as db:
+            sql_query, args = search_to_sql(
+                    db, ['filename', 'description', 'author'], terms)
+            for id, time, filename, desc, author in db("""
+                    SELECT id, time, filename, description, author
+                    FROM attachment WHERE type = %s AND """ + sql_query,
+                    (resource_realm.realm,) + args):
+                attachment = resource_realm(id=id).child(self.realm, filename)
+                if 'ATTACHMENT_VIEW' in req.perm(attachment):
+                    yield (get_resource_url(self.env, attachment, req.href),
+                           get_resource_shortname(self.env, attachment),
+                           from_utimestamp(time), author,
+                           shorten_result(desc, terms))
+
+    # IResourceManager methods
+
+    def get_resource_realms(self):
+        yield self.realm
+
+    def get_resource_url(self, resource, href, **kwargs):
+        """Return an URL to the attachment itself.
+
+        A `format` keyword argument equal to `'raw'` will be converted
+        to the raw-attachment prefix.
+        """
+        if not resource.parent:
+            return None
+        format = kwargs.get('format')
+        prefix = 'attachment'
+        if format in ('raw', 'zip'):
+            kwargs.pop('format')
+            prefix = format + '-attachment'
+        parent_href = unicode_unquote(get_resource_url(self.env,
+                            resource.parent(version=None), Href('')))
+        if not resource.id:
+            # link to list of attachments, which must end with a trailing '/'
+            # (see process_request)
+            return href(prefix, parent_href, '', **kwargs)
+        else:
+            return href(prefix, parent_href, resource.id, **kwargs)
+
+    def get_resource_description(self, resource, format=None, **kwargs):
+        if not resource.parent:
+            return _("Unparented attachment %(id)s", id=resource.id)
+        if format == 'compact':
+            return '%s (%s)' % (resource.id,
+                    get_resource_name(self.env, resource.parent))
+        elif format == 'summary':
+            return Attachment(self.env, resource).description
+        if resource.id:
+            return _("Attachment '%(id)s' in %(parent)s", id=resource.id,
+                     parent=get_resource_name(self.env, resource.parent))
+        else:
+            return _("Attachments of %(parent)s",
+                     parent=get_resource_name(self.env, resource.parent))
+
+    def resource_exists(self, resource):
+        try:
+            attachment = Attachment(self.env, resource)
+            return os.path.exists(attachment.path)
+        except ResourceNotFound:
+            return False
+
+    # Internal methods
+
+    def _do_save(self, req, attachment):
+        req.perm(attachment.resource).require('ATTACHMENT_CREATE')
+        parent_resource = attachment.resource.parent
+
+        if 'cancel' in req.args:
+            req.redirect(get_resource_url(self.env, parent_resource, req.href))
+
+        upload = req.args['attachment']
+        if not hasattr(upload, 'filename') or not upload.filename:
+            raise TracError(_('No file uploaded'))
+        if hasattr(upload.file, 'fileno'):
+            size = os.fstat(upload.file.fileno())[6]
+        else:
+            upload.file.seek(0, 2) # seek to end of file
+            size = upload.file.tell()
+            upload.file.seek(0)
+        if size == 0:
+            raise TracError(_("Can't upload empty file"))
+
+        # Maximum attachment size (in bytes)
+        max_size = self.max_size
+        if max_size >= 0 and size > max_size:
+            raise TracError(_('Maximum attachment size: %(num)s',
+                              num=pretty_size(max_size)), _('Upload failed'))
+
+        # We try to normalize the filename to unicode NFC if we can.
+        # Files uploaded from OS X might be in NFD.
+        filename = unicodedata.normalize('NFC', unicode(upload.filename,
+                                                        'utf-8'))
+        filename = filename.strip()
+        # Replace backslashes with slashes if filename is Windows full path
+        if filename.startswith('\\') or re.match(r'[A-Za-z]:\\', filename):
+            filename = filename.replace('\\', '/')
+        # We want basename to be delimited by only slashes on all platforms
+        filename = posixpath.basename(filename)
+        if not filename:
+            raise TracError(_('No file uploaded'))
+        # Now the filename is known, update the attachment resource
+        attachment.filename = filename
+        attachment.description = req.args.get('description', '')
+        attachment.author = get_reporter_id(req, 'author')
+        attachment.ipnr = req.remote_addr
+
+        # Validate attachment
+        valid = True
+        for manipulator in self.manipulators:
+            for field, message in manipulator.validate_attachment(req,
+                                                                  attachment):
+                valid = False
+                if field:
+                    add_warning(req,
+                        _('Attachment field %(field)s is invalid: %(message)s',
+                          field=field, message=message))
+                else:
+                    add_warning(req,
+                        _('Invalid attachment: %(message)s', message=message))
+        if not valid:
+            # Display the attach form with pre-existing data
+            # NOTE: Local file path not known, file field cannot be repopulated
+            add_warning(req, _('Note: File must be selected again.'))
+            data = self._render_form(req, attachment)
+            data['is_replace'] = req.args.get('replace')
+            return data
+
+        if req.args.get('replace'):
+            try:
+                old_attachment = Attachment(self.env,
+                                            attachment.resource(id=filename))
+                if not (req.authname and req.authname != 'anonymous'
+                        and old_attachment.author == req.authname) \
+                   and 'ATTACHMENT_DELETE' \
+                                        not in req.perm(attachment.resource):
+                    raise PermissionError(msg=_("You don't have permission to "
+                        "replace the attachment %(name)s. You can only "
+                        "replace your own attachments. Replacing other's "
+                        "attachments requires ATTACHMENT_DELETE permission.",
+                        name=filename))
+                if (not attachment.description.strip() and
+                        old_attachment.description):
+                    attachment.description = old_attachment.description
+                old_attachment.delete()
+            except TracError:
+                pass # don't worry if there's nothing to replace
+        attachment.insert(filename, upload.file, size)
+
+        req.redirect(get_resource_url(self.env, attachment.resource(id=None),
+                                      req.href))
+
+    def _do_delete(self, req, attachment):
+        req.perm(attachment.resource).require('ATTACHMENT_DELETE')
+
+        parent_href = get_resource_url(self.env, attachment.resource.parent,
+                                       req.href)
+        if 'cancel' in req.args:
+            req.redirect(parent_href)
+
+        attachment.delete()
+        req.redirect(parent_href)
+
+    def _render_confirm_delete(self, req, attachment):
+        req.perm(attachment.resource).require('ATTACHMENT_DELETE')
+        return {'mode': 'delete',
+                'title': _('%(attachment)s (delete)',
+                           attachment=get_resource_name(self.env,
+                                                        attachment.resource)),
+                'attachment': attachment}
+
+    def _render_form(self, req, attachment):
+        req.perm(attachment.resource).require('ATTACHMENT_CREATE')
+        return {'mode': 'new', 'author': get_reporter_id(req),
+                'attachment': attachment, 'max_size': self.max_size}
+
+    def _download_as_zip(self, req, parent, attachments=None):
+        if attachments is None:
+            attachments = self.viewable_attachments(web_context(req, parent))
+        total_size = sum(attachment.size for attachment in attachments)
+        if total_size > self.max_zip_size:
+            raise TracError(_("Maximum total attachment size: %(num)s",
+                              num=pretty_size(self.max_zip_size)), _("Download failed"))
+
+        req.send_response(200)
+        req.send_header('Content-Type', 'application/zip')
+        filename = 'attachments-%s-%s.zip' % \
+                   (parent.realm, re.sub(r'[/\\:]', '-', unicode(parent.id)))
+        req.send_header('Content-Disposition',
+                        content_disposition('inline', filename))
+
+        from zipfile import ZipFile, ZIP_DEFLATED
+
+        buf = StringIO()
+        zipfile = ZipFile(buf, 'w', ZIP_DEFLATED)
+        for attachment in attachments:
+            zipinfo = create_zipinfo(attachment.filename,
+                                     mtime=attachment.date,
+                                     comment=attachment.description)
+            try:
+                with attachment.open() as fd:
+                    zipfile.writestr(zipinfo, fd.read())
+            except ResourceNotFound:
+                pass # skip missing files
+        zipfile.close()
+
+        zip_str = buf.getvalue()
+        req.send_header("Content-Length", len(zip_str))
+        req.end_headers()
+        req.write(zip_str)
+        raise RequestDone()
+
+    def _render_list(self, req, parent):
+        data = {
+            'mode': 'list',
+            'attachment': None, # no specific attachment
+            'attachments': self.attachment_data(web_context(req, parent))
+        }
+
+        return 'attachment.html', data, None
+
+    def _render_view(self, req, attachment):
+        req.perm(attachment.resource).require('ATTACHMENT_VIEW')
+        can_delete = 'ATTACHMENT_DELETE' in req.perm(attachment.resource)
+        req.check_modified(attachment.date, str(can_delete))
+
+        data = {'mode': 'view',
+                'title': get_resource_name(self.env, attachment.resource),
+                'attachment': attachment}
+
+        with attachment.open() as fd:
+            mimeview = Mimeview(self.env)
+
+            # MIME type detection
+            str_data = fd.read(1000)
+            fd.seek(0)
+
+            mime_type = mimeview.get_mimetype(attachment.filename, str_data)
+
+            # Eventually send the file directly
+            format = req.args.get('format')
+            if format == 'zip':
+                self._download_as_zip(req, attachment.resource.parent,
+                                      [attachment])
+            elif format in ('raw', 'txt'):
+                if not self.render_unsafe_content:
+                    # Force browser to download files instead of rendering
+                    # them, since they might contain malicious code enabling
+                    # XSS attacks
+                    req.send_header('Content-Disposition', 'attachment')
+                if format == 'txt':
+                    mime_type = 'text/plain'
+                elif not mime_type:
+                    mime_type = 'application/octet-stream'
+                if 'charset=' not in mime_type:
+                    charset = mimeview.get_charset(str_data, mime_type)
+                    mime_type = mime_type + '; charset=' + charset
+                req.send_file(attachment.path, mime_type)
+
+            # add ''Plain Text'' alternate link if needed
+            if (self.render_unsafe_content and
+                mime_type and not mime_type.startswith('text/plain')):
+                plaintext_href = get_resource_url(self.env,
+                                                  attachment.resource,
+                                                  req.href, format='txt')
+                add_link(req, 'alternate', plaintext_href, _('Plain Text'),
+                         mime_type)
+
+            # add ''Original Format'' alternate link (always)
+            raw_href = get_resource_url(self.env, attachment.resource,
+                                        req.href, format='raw')
+            add_link(req, 'alternate', raw_href, _('Original Format'),
+                     mime_type)
+
+            self.log.debug("Rendering preview of file %s with mime-type %s",
+                           attachment.filename, mime_type)
+
+            data['preview'] = mimeview.preview_data(
+                web_context(req, attachment.resource), fd,
+                os.fstat(fd.fileno()).st_size, mime_type,
+                attachment.filename, raw_href, annotations=['lineno'])
+            return data
+
+    def _format_link(self, formatter, ns, target, label):
+        link, params, fragment = formatter.split_link(target)
+        ids = link.split(':', 2)
+        attachment = None
+        if len(ids) == 3:
+            known_realms = ResourceSystem(self.env).get_known_realms()
+            # new-style attachment: TracLinks (filename:realm:id)
+            if ids[1] in known_realms:
+                attachment = Resource(ids[1], ids[2]).child(self.realm,
+                                                            ids[0])
+            else: # try old-style attachment: TracLinks (realm:id:filename)
+                if ids[0] in known_realms:
+                    attachment = Resource(ids[0], ids[1]).child(self.realm,
+                                                                ids[2])
+        else: # local attachment: TracLinks (filename)
+            attachment = formatter.resource.child(self.realm, link)
+        if attachment and 'ATTACHMENT_VIEW' in formatter.perm(attachment):
+            try:
+                model = Attachment(self.env, attachment)
+                raw_href = get_resource_url(self.env, attachment,
+                                            formatter.href, format='raw')
+                if ns.startswith('raw'):
+                    return tag.a(label, class_='attachment',
+                                 href=raw_href + params,
+                                 title=get_resource_name(self.env, attachment))
+                href = get_resource_url(self.env, attachment, formatter.href)
+                title = get_resource_name(self.env, attachment)
+                return tag(tag.a(label, class_='attachment', title=title,
+                                 href=href + params),
+                           tag.a(u'\u200b', class_='trac-rawlink',
+                                 href=raw_href + params, title=_("Download")))
+            except ResourceNotFound:
+                pass
+            # FIXME: should be either:
+            #
+            # model = Attachment(self.env, attachment)
+            # if model.exists:
+            #     ...
+            #
+            # or directly:
+            #
+            # if attachment.exists:
+            #
+            # (related to #4130)
+        return tag.a(label, class_='missing attachment')
+
+
+class Attachment(object):
+
+    realm = AttachmentModule.realm
 
     def __init__(self, env, parent_realm_or_attachment_resource,
                  parent_id=None, filename=None):
@@ -408,544 +942,13 @@ class Attachment(object):
                 filename = '%s.%d%s' % (parts[0], idx, parts[1])
 
 
-class AttachmentModule(Component):
-
-    implements(IRequestHandler, INavigationContributor, IWikiSyntaxProvider,
-               IResourceManager)
-
-    is_valid_default_handler = False
-
-    change_listeners = ExtensionPoint(IAttachmentChangeListener)
-    manipulators = ExtensionPoint(IAttachmentManipulator)
-
-    CHUNK_SIZE = 4096
-
-    max_size = IntOption('attachment', 'max_size', 262144,
-        """Maximum allowed file size (in bytes) for attachments.""")
-
-    max_zip_size = IntOption('attachment', 'max_zip_size', 2097152,
-        """Maximum allowed total size (in bytes) for an attachment list to be
-        downloadable as a `.zip`. Set this to -1 to disable download as `.zip`.
-        (''since 1.0'')""")
-
-    render_unsafe_content = BoolOption('attachment', 'render_unsafe_content',
-                                       'false',
-        """Whether attachments should be rendered in the browser, or
-        only made downloadable.
-
-        Pretty much any file may be interpreted as HTML by the browser,
-        which allows a malicious user to attach a file containing cross-site
-        scripting attacks.
-
-        For public sites where anonymous users can create attachments it is
-        recommended to leave this option disabled.""")
-
-    # INavigationContributor methods
-
-    def get_active_navigation_item(self, req):
-        return req.args.get('realm')
-
-    def get_navigation_items(self, req):
-        return []
-
-    # IRequestHandler methods
-
-    def match_request(self, req):
-        match = re.match(r'/(raw-|zip-)?attachment/([^/]+)(?:/(.*))?$',
-                         req.path_info)
-        if match:
-            format, realm, path = match.groups()
-            if format:
-                req.args['format'] = format[:-1]
-            req.args['realm'] = realm
-            if path:
-                req.args['path'] = path
-            return True
-
-    def process_request(self, req):
-        parent_id = None
-        parent_realm = req.args.get('realm')
-        path = req.args.get('path')
-        filename = None
-
-        if not parent_realm or not path:
-            raise HTTPBadRequest(_('Bad request'))
-
-        parent_realm = Resource(parent_realm)
-        action = req.args.get('action', 'view')
-        if action == 'new':
-            parent_id = path.rstrip('/')
-        else:
-            last_slash = path.rfind('/')
-            if last_slash == -1:
-                parent_id, filename = path, ''
-            else:
-                parent_id, filename = path[:last_slash], path[last_slash + 1:]
-
-        parent = parent_realm(id=parent_id)
-        if not resource_exists(self.env, parent):
-            raise ResourceNotFound(
-                _("Parent resource %(parent)s doesn't exist",
-                  parent=get_resource_name(self.env, parent)))
-
-        # Link the attachment page to parent resource
-        parent_name = get_resource_name(self.env, parent)
-        parent_url = get_resource_url(self.env, parent, req.href)
-        add_link(req, 'up', parent_url, parent_name)
-        add_ctxtnav(req, _('Back to %(parent)s', parent=parent_name),
-                    parent_url)
-
-        if not filename: # there's a trailing '/'
-            if req.args.get('format') == 'zip':
-                self._download_as_zip(req, parent)
-            elif action != 'new':
-                return self._render_list(req, parent)
-
-        attachment = Attachment(self.env, parent.child('attachment', filename))
-
-        if req.method == 'POST':
-            if action == 'new':
-                data = self._do_save(req, attachment)
-            elif action == 'delete':
-                self._do_delete(req, attachment)
-        elif action == 'delete':
-            data = self._render_confirm_delete(req, attachment)
-        elif action == 'new':
-            data = self._render_form(req, attachment)
-        else:
-            data = self._render_view(req, attachment)
-
-        add_stylesheet(req, 'common/css/code.css')
-        return 'attachment.html', data, None
-
-    # IWikiSyntaxProvider methods
-
-    def get_wiki_syntax(self):
-        return []
-
-    def get_link_resolvers(self):
-        yield ('raw-attachment', self._format_link)
-        yield ('attachment', self._format_link)
-
-    # Public methods
-
-    def viewable_attachments(self, context):
-        """Return the list of viewable attachments in the given context.
-
-        :param context: the `~trac.mimeview.api.RenderingContext`
-                        corresponding to the parent
-                        `~trac.resource.Resource` for the attachments
-        """
-        parent = context.resource
-        attachments = []
-        for attachment in Attachment.select(self.env, parent.realm, parent.id):
-            if 'ATTACHMENT_VIEW' in context.perm(attachment.resource):
-                attachments.append(attachment)
-        return attachments
-
-    def attachment_data(self, context):
-        """Return a data dictionary describing the list of viewable
-        attachments in the current context.
-        """
-        attachments = self.viewable_attachments(context)
-        parent = context.resource
-        total_size = sum(attachment.size for attachment in attachments)
-        new_att = parent.child('attachment')
-        return {'attach_href': get_resource_url(self.env, new_att,
-                                                context.href),
-                'download_href': get_resource_url(self.env, new_att,
-                                                  context.href, format='zip')
-                                 if total_size <= self.max_zip_size else None,
-                'can_create': 'ATTACHMENT_CREATE' in context.perm(new_att),
-                'attachments': attachments,
-                'parent': context.resource}
-
-    def get_history(self, start, stop, realm):
-        """Return an iterable of tuples describing changes to attachments on
-        a particular object realm.
-
-        The tuples are in the form (change, realm, id, filename, time,
-        description, author). `change` can currently only be `created`.
-
-        FIXME: no iterator
-        """
-        for realm, id, filename, ts, description, author in \
-                self.env.db_query("""
-                SELECT type, id, filename, time, description, author
-                FROM attachment WHERE time > %s AND time < %s AND type = %s
-                """, (to_utimestamp(start), to_utimestamp(stop), realm)):
-            time = from_utimestamp(ts or 0)
-            yield ('created', realm, id, filename, time, description, author)
-
-    def get_timeline_events(self, req, resource_realm, start, stop):
-        """Return an event generator suitable for ITimelineEventProvider.
-
-        Events are changes to attachments on resources of the given
-        `resource_realm.realm`.
-        """
-        for change, realm, id, filename, time, descr, author in \
-                self.get_history(start, stop, resource_realm.realm):
-            attachment = resource_realm(id=id).child('attachment', filename)
-            if 'ATTACHMENT_VIEW' in req.perm(attachment):
-                yield ('attachment', time, author, (attachment, descr), self)
-
-    def render_timeline_event(self, context, field, event):
-        attachment, descr = event[3]
-        if field == 'url':
-            return self.get_resource_url(attachment, context.href)
-        elif field == 'title':
-            name = get_resource_name(self.env, attachment.parent)
-            title = get_resource_summary(self.env, attachment.parent)
-            return tag_("%(attachment)s attached to %(resource)s",
-                        attachment=tag.em(os.path.basename(attachment.id)),
-                        resource=tag.em(name, title=title))
-        elif field == 'description':
-            return format_to(self.env, None, context.child(attachment.parent),
-                             descr)
-
-    def get_search_results(self, req, resource_realm, terms):
-        """Return a search result generator suitable for ISearchSource.
-
-        Search results are attachments on resources of the given
-        `resource_realm.realm` whose filename, description or author match
-        the given terms.
-        """
-        with self.env.db_query as db:
-            sql_query, args = search_to_sql(
-                    db, ['filename', 'description', 'author'], terms)
-            for id, time, filename, desc, author in db("""
-                    SELECT id, time, filename, description, author
-                    FROM attachment WHERE type = %s AND """ + sql_query,
-                    (resource_realm.realm,) + args):
-                attachment = resource_realm(id=id).child('attachment', filename)
-                if 'ATTACHMENT_VIEW' in req.perm(attachment):
-                    yield (get_resource_url(self.env, attachment, req.href),
-                           get_resource_shortname(self.env, attachment),
-                           from_utimestamp(time), author,
-                           shorten_result(desc, terms))
-
-    # IResourceManager methods
-
-    def get_resource_realms(self):
-        yield 'attachment'
-
-    def get_resource_url(self, resource, href, **kwargs):
-        """Return an URL to the attachment itself.
-
-        A `format` keyword argument equal to `'raw'` will be converted
-        to the raw-attachment prefix.
-        """
-        if not resource.parent:
-            return None
-        format = kwargs.get('format')
-        prefix = 'attachment'
-        if format in ('raw', 'zip'):
-            kwargs.pop('format')
-            prefix = format + '-attachment'
-        parent_href = unicode_unquote(get_resource_url(self.env,
-                            resource.parent(version=None), Href('')))
-        if not resource.id:
-            # link to list of attachments, which must end with a trailing '/'
-            # (see process_request)
-            return href(prefix, parent_href, '', **kwargs)
-        else:
-            return href(prefix, parent_href, resource.id, **kwargs)
-
-    def get_resource_description(self, resource, format=None, **kwargs):
-        if not resource.parent:
-            return _("Unparented attachment %(id)s", id=resource.id)
-        if format == 'compact':
-            return '%s (%s)' % (resource.id,
-                    get_resource_name(self.env, resource.parent))
-        elif format == 'summary':
-            return Attachment(self.env, resource).description
-        if resource.id:
-            return _("Attachment '%(id)s' in %(parent)s", id=resource.id,
-                     parent=get_resource_name(self.env, resource.parent))
-        else:
-            return _("Attachments of %(parent)s",
-                     parent=get_resource_name(self.env, resource.parent))
-
-    def resource_exists(self, resource):
-        try:
-            attachment = Attachment(self.env, resource)
-            return os.path.exists(attachment.path)
-        except ResourceNotFound:
-            return False
-
-    # Internal methods
-
-    def _do_save(self, req, attachment):
-        req.perm(attachment.resource).require('ATTACHMENT_CREATE')
-        parent_resource = attachment.resource.parent
-
-        if 'cancel' in req.args:
-            req.redirect(get_resource_url(self.env, parent_resource, req.href))
-
-        upload = req.args['attachment']
-        if not hasattr(upload, 'filename') or not upload.filename:
-            raise TracError(_('No file uploaded'))
-        if hasattr(upload.file, 'fileno'):
-            size = os.fstat(upload.file.fileno())[6]
-        else:
-            upload.file.seek(0, 2) # seek to end of file
-            size = upload.file.tell()
-            upload.file.seek(0)
-        if size == 0:
-            raise TracError(_("Can't upload empty file"))
-
-        # Maximum attachment size (in bytes)
-        max_size = self.max_size
-        if max_size >= 0 and size > max_size:
-            raise TracError(_('Maximum attachment size: %(num)s',
-                              num=pretty_size(max_size)), _('Upload failed'))
-
-        # We try to normalize the filename to unicode NFC if we can.
-        # Files uploaded from OS X might be in NFD.
-        filename = unicodedata.normalize('NFC', unicode(upload.filename,
-                                                        'utf-8'))
-        filename = filename.strip()
-        # Replace backslashes with slashes if filename is Windows full path
-        if filename.startswith('\\') or re.match(r'[A-Za-z]:\\', filename):
-            filename = filename.replace('\\', '/')
-        # We want basename to be delimited by only slashes on all platforms
-        filename = posixpath.basename(filename)
-        if not filename:
-            raise TracError(_('No file uploaded'))
-        # Now the filename is known, update the attachment resource
-        attachment.filename = filename
-        attachment.description = req.args.get('description', '')
-        attachment.author = get_reporter_id(req, 'author')
-        attachment.ipnr = req.remote_addr
-
-        # Validate attachment
-        valid = True
-        for manipulator in self.manipulators:
-            for field, message in manipulator.validate_attachment(req,
-                                                                  attachment):
-                valid = False
-                if field:
-                    add_warning(req,
-                        _('Attachment field %(field)s is invalid: %(message)s',
-                          field=field, message=message))
-                else:
-                    add_warning(req,
-                        _('Invalid attachment: %(message)s', message=message))
-        if not valid:
-            # Display the attach form with pre-existing data
-            # NOTE: Local file path not known, file field cannot be repopulated
-            add_warning(req, _('Note: File must be selected again.'))
-            data = self._render_form(req, attachment)
-            data['is_replace'] = req.args.get('replace')
-            return data
-
-        if req.args.get('replace'):
-            try:
-                old_attachment = Attachment(self.env,
-                                            attachment.resource(id=filename))
-                if not (req.authname and req.authname != 'anonymous'
-                        and old_attachment.author == req.authname) \
-                   and 'ATTACHMENT_DELETE' \
-                                        not in req.perm(attachment.resource):
-                    raise PermissionError(msg=_("You don't have permission to "
-                        "replace the attachment %(name)s. You can only "
-                        "replace your own attachments. Replacing other's "
-                        "attachments requires ATTACHMENT_DELETE permission.",
-                        name=filename))
-                if (not attachment.description.strip() and
-                        old_attachment.description):
-                    attachment.description = old_attachment.description
-                old_attachment.delete()
-            except TracError:
-                pass # don't worry if there's nothing to replace
-        attachment.insert(filename, upload.file, size)
-
-        req.redirect(get_resource_url(self.env, attachment.resource(id=None),
-                                      req.href))
-
-    def _do_delete(self, req, attachment):
-        req.perm(attachment.resource).require('ATTACHMENT_DELETE')
-
-        parent_href = get_resource_url(self.env, attachment.resource.parent,
-                                       req.href)
-        if 'cancel' in req.args:
-            req.redirect(parent_href)
-
-        attachment.delete()
-        req.redirect(parent_href)
-
-    def _render_confirm_delete(self, req, attachment):
-        req.perm(attachment.resource).require('ATTACHMENT_DELETE')
-        return {'mode': 'delete',
-                'title': _('%(attachment)s (delete)',
-                           attachment=get_resource_name(self.env,
-                                                        attachment.resource)),
-                'attachment': attachment}
-
-    def _render_form(self, req, attachment):
-        req.perm(attachment.resource).require('ATTACHMENT_CREATE')
-        return {'mode': 'new', 'author': get_reporter_id(req),
-                'attachment': attachment, 'max_size': self.max_size}
-
-    def _download_as_zip(self, req, parent, attachments=None):
-        if attachments is None:
-            attachments = self.viewable_attachments(web_context(req, parent))
-        total_size = sum(attachment.size for attachment in attachments)
-        if total_size > self.max_zip_size:
-            raise TracError(_("Maximum total attachment size: %(num)s",
-                              num=pretty_size(self.max_zip_size)), _("Download failed"))
-
-        req.send_response(200)
-        req.send_header('Content-Type', 'application/zip')
-        filename = 'attachments-%s-%s.zip' % \
-                   (parent.realm, re.sub(r'[/\\:]', '-', unicode(parent.id)))
-        req.send_header('Content-Disposition',
-                        content_disposition('inline', filename))
-
-        from zipfile import ZipFile, ZIP_DEFLATED
-
-        buf = StringIO()
-        zipfile = ZipFile(buf, 'w', ZIP_DEFLATED)
-        for attachment in attachments:
-            zipinfo = create_zipinfo(attachment.filename,
-                                     mtime=attachment.date,
-                                     comment=attachment.description)
-            try:
-                with attachment.open() as fd:
-                    zipfile.writestr(zipinfo, fd.read())
-            except ResourceNotFound:
-                pass # skip missing files
-        zipfile.close()
-
-        zip_str = buf.getvalue()
-        req.send_header("Content-Length", len(zip_str))
-        req.end_headers()
-        req.write(zip_str)
-        raise RequestDone()
-
-    def _render_list(self, req, parent):
-        data = {
-            'mode': 'list',
-            'attachment': None, # no specific attachment
-            'attachments': self.attachment_data(web_context(req, parent))
-        }
-
-        return 'attachment.html', data, None
-
-    def _render_view(self, req, attachment):
-        req.perm(attachment.resource).require('ATTACHMENT_VIEW')
-        can_delete = 'ATTACHMENT_DELETE' in req.perm(attachment.resource)
-        req.check_modified(attachment.date, str(can_delete))
-
-        data = {'mode': 'view',
-                'title': get_resource_name(self.env, attachment.resource),
-                'attachment': attachment}
-
-        with attachment.open() as fd:
-            mimeview = Mimeview(self.env)
-
-            # MIME type detection
-            str_data = fd.read(1000)
-            fd.seek(0)
-
-            mime_type = mimeview.get_mimetype(attachment.filename, str_data)
-
-            # Eventually send the file directly
-            format = req.args.get('format')
-            if format == 'zip':
-                self._download_as_zip(req, attachment.resource.parent,
-                                      [attachment])
-            elif format in ('raw', 'txt'):
-                if not self.render_unsafe_content:
-                    # Force browser to download files instead of rendering
-                    # them, since they might contain malicious code enabling
-                    # XSS attacks
-                    req.send_header('Content-Disposition', 'attachment')
-                if format == 'txt':
-                    mime_type = 'text/plain'
-                elif not mime_type:
-                    mime_type = 'application/octet-stream'
-                if 'charset=' not in mime_type:
-                    charset = mimeview.get_charset(str_data, mime_type)
-                    mime_type = mime_type + '; charset=' + charset
-                req.send_file(attachment.path, mime_type)
-
-            # add ''Plain Text'' alternate link if needed
-            if (self.render_unsafe_content and
-                mime_type and not mime_type.startswith('text/plain')):
-                plaintext_href = get_resource_url(self.env,
-                                                  attachment.resource,
-                                                  req.href, format='txt')
-                add_link(req, 'alternate', plaintext_href, _('Plain Text'),
-                         mime_type)
-
-            # add ''Original Format'' alternate link (always)
-            raw_href = get_resource_url(self.env, attachment.resource,
-                                        req.href, format='raw')
-            add_link(req, 'alternate', raw_href, _('Original Format'),
-                     mime_type)
-
-            self.log.debug("Rendering preview of file %s with mime-type %s",
-                           attachment.filename, mime_type)
-
-            data['preview'] = mimeview.preview_data(
-                web_context(req, attachment.resource), fd,
-                os.fstat(fd.fileno()).st_size, mime_type,
-                attachment.filename, raw_href, annotations=['lineno'])
-            return data
-
-    def _format_link(self, formatter, ns, target, label):
-        link, params, fragment = formatter.split_link(target)
-        ids = link.split(':', 2)
-        attachment = None
-        if len(ids) == 3:
-            known_realms = ResourceSystem(self.env).get_known_realms()
-            # new-style attachment: TracLinks (filename:realm:id)
-            if ids[1] in known_realms:
-                attachment = Resource(ids[1], ids[2]).child('attachment',
-                                                            ids[0])
-            else: # try old-style attachment: TracLinks (realm:id:filename)
-                if ids[0] in known_realms:
-                    attachment = Resource(ids[0], ids[1]).child('attachment',
-                                                                ids[2])
-        else: # local attachment: TracLinks (filename)
-            attachment = formatter.resource.child('attachment', link)
-        if attachment and 'ATTACHMENT_VIEW' in formatter.perm(attachment):
-            try:
-                model = Attachment(self.env, attachment)
-                raw_href = get_resource_url(self.env, attachment,
-                                            formatter.href, format='raw')
-                if ns.startswith('raw'):
-                    return tag.a(label, class_='attachment',
-                                 href=raw_href + params,
-                                 title=get_resource_name(self.env, attachment))
-                href = get_resource_url(self.env, attachment, formatter.href)
-                title = get_resource_name(self.env, attachment)
-                return tag(tag.a(label, class_='attachment', title=title,
-                                 href=href + params),
-                           tag.a(u'\u200b', class_='trac-rawlink',
-                                 href=raw_href + params, title=_("Download")))
-            except ResourceNotFound:
-                pass
-            # FIXME: should be either:
-            #
-            # model = Attachment(self.env, attachment)
-            # if model.exists:
-            #     ...
-            #
-            # or directly:
-            #
-            # if attachment.exists:
-            #
-            # (related to #4130)
-        return tag.a(label, class_='missing attachment')
-
-
 class LegacyAttachmentPolicy(Component):
 
     implements(IPermissionPolicy)
 
     delegates = ExtensionPoint(ILegacyAttachmentPolicyDelegate)
+
+    realm = AttachmentModule.realm
 
     # IPermissionPolicy methods
 
@@ -960,7 +963,7 @@ class LegacyAttachmentPolicy(Component):
 
     def check_permission(self, action, username, resource, perm):
         perm_map = self._perm_maps.get(action)
-        if not perm_map or not resource or resource.realm != 'attachment':
+        if not perm_map or not resource or resource.realm != self.realm:
             return
         legacy_action = perm_map.get(resource.parent.realm)
         if legacy_action:

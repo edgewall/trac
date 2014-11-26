@@ -587,6 +587,8 @@ class MilestoneModule(Component):
                IResourceManager, ISearchSource, ITimelineEventProvider,
                IWikiSyntaxProvider)
 
+    realm = 'milestone'
+
     stats_provider = ExtensionOption('milestone', 'stats_provider',
                                      ITicketGroupStatsProvider,
                                      'DefaultTicketGroupStatsProvider',
@@ -621,7 +623,7 @@ class MilestoneModule(Component):
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'milestone' in filters:
-            milestone_realm = Resource('milestone')
+            milestone_realm = Resource(self.realm)
             for name, due, completed, description \
                     in MilestoneCache(self.env).milestones.itervalues():
                 if completed and start <= completed <= stop:
@@ -659,7 +661,7 @@ class MilestoneModule(Component):
 
     def process_request(self, req):
         milestone_id = req.args.get('id')
-        req.perm('milestone', milestone_id).require('MILESTONE_VIEW')
+        req.perm(self.realm, milestone_id).require('MILESTONE_VIEW')
 
         add_link(req, 'up', req.href.roadmap(), _('Roadmap'))
 
@@ -667,7 +669,7 @@ class MilestoneModule(Component):
         try:
             milestone = Milestone(self.env, milestone_id)
         except ResourceNotFound:
-            if 'MILESTONE_CREATE' not in req.perm('milestone', milestone_id):
+            if 'MILESTONE_CREATE' not in req.perm(self.realm, milestone_id):
                 raise
             milestone = Milestone(self.env)
             milestone.name = milestone_id
@@ -1015,7 +1017,7 @@ class MilestoneModule(Component):
                 closed = 'closed ' if milestone.is_completed else ''
                 return tag.a(label, class_='%smilestone' % closed,
                              href=href + extra, title=title)
-        elif 'MILESTONE_CREATE' in context.perm('milestone', name):
+        elif 'MILESTONE_CREATE' in context.perm(self.realm, name):
             return tag.a(label, class_='missing milestone', href=href + extra,
                          rel='nofollow')
         return tag.a(label, class_='missing milestone')
@@ -1023,7 +1025,7 @@ class MilestoneModule(Component):
     # IResourceManager methods
 
     def get_resource_realms(self):
-        yield 'milestone'
+        yield self.realm
 
     def get_resource_description(self, resource, format=None, context=None,
                                  **kwargs):
@@ -1061,7 +1063,7 @@ class MilestoneModule(Component):
         if not 'milestone' in filters:
             return
         term_regexps = search_to_regexps(terms)
-        milestone_realm = Resource('milestone')
+        milestone_realm = Resource(self.realm)
         for name, due, completed, description \
                 in MilestoneCache(self.env).milestones.itervalues():
             if all(r.search(description) or r.search(name)

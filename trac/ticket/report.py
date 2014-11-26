@@ -113,6 +113,8 @@ class ReportModule(Component):
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
                IWikiSyntaxProvider)
 
+    realm = TicketSystem.realm
+
     items_per_page = IntOption('report', 'items_per_page', 100,
         """Number of tickets displayed per page in ticket reports,
         by default.
@@ -187,7 +189,7 @@ class ReportModule(Component):
                 return template, data, content_type
 
         from trac.ticket.query import QueryModule
-        show_query_link = 'TICKET_VIEW' in req.perm('ticket') and \
+        show_query_link = 'TICKET_VIEW' in req.perm(self.realm) and \
                           self.env.is_component_enabled(QueryModule)
 
         if  (id != self.REPORT_LIST_ID or action == 'new') and \
@@ -531,7 +533,7 @@ class ReportModule(Component):
             col_idx = 0
             cell_groups = []
             row = {'cell_groups': cell_groups}
-            realm = 'ticket'
+            realm = self.realm
             parent_realm = ''
             parent_id = ''
             email_cells = []

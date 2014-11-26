@@ -177,6 +177,8 @@ class BrowserModule(Component):
 
     property_renderers = ExtensionPoint(IPropertyRenderer)
 
+    realm = RepositoryManager.source_realm
+
     downloadable_paths = ListOption('browser', 'downloadable_paths',
                                     '/trunk, /branches/*, /tags/*',
         doc="""List of repository paths that can be downloaded.
@@ -381,7 +383,7 @@ class BrowserModule(Component):
                 except NoSuchChangeset:
                     pass
 
-            context = context.child(repos.resource.child('source', path,
+            context = context.child(repos.resource.child(self.realm, path,
                                                    version=rev_or_latest))
             display_rev = repos.display_rev
 
@@ -538,7 +540,7 @@ class BrowserModule(Component):
                 else:
                     entry = (reponame, repoinfo, None, None, u"\u2013", None)
             if entry[4] is not None:  # Check permission in case of error
-                root = Resource('repository', reponame).child('source', '/')
+                root = Resource('repository', reponame).child(self.realm, '/')
                 if 'BROWSER_VIEW' not in context.perm(root):
                     continue
             repositories.append(entry)

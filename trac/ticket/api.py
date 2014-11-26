@@ -196,6 +196,8 @@ class TicketSystem(Component):
     change_listeners = ExtensionPoint(ITicketChangeListener)
     milestone_change_listeners = ExtensionPoint(IMilestoneChangeListener)
 
+    realm = 'ticket'
+
     ticket_custom_section = ConfigSection('ticket-custom',
         """In this section, you can define additional fields for tickets. See
         TracTicketsCustomFields for more details.""")
@@ -493,7 +495,7 @@ class TicketSystem(Component):
             r = Ranges(link)
             if len(r) == 1:
                 num = r.a
-                ticket = formatter.resource('ticket', num)
+                ticket = formatter.resource(self.realm, num)
                 from trac.ticket.model import Ticket
                 if Ticket.id_is_valid(num) and \
                         'TICKET_VIEW' in formatter.perm(ticket):
@@ -536,7 +538,7 @@ class TicketSystem(Component):
             resource = formatter.resource
             cnum = target
 
-        if resource and resource.id and resource.realm == 'ticket' and \
+        if resource and resource.id and resource.realm == self.realm and \
                 cnum and (all(c.isdigit() for c in cnum) or cnum == 'description'):
             href = title = class_ = None
             if self.resource_exists(resource):
@@ -573,7 +575,7 @@ class TicketSystem(Component):
     # IResourceManager methods
 
     def get_resource_realms(self):
-        yield 'ticket'
+        yield self.realm
 
     def get_resource_description(self, resource, format=None, context=None,
                                  **kwargs):

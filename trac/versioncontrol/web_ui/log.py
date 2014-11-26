@@ -43,6 +43,8 @@ class LogModule(Component):
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
                IWikiSyntaxProvider)
 
+    realm = RepositoryManager.changeset_realm
+
     default_log_limit = IntOption('revisionlog', 'default_log_limit', 100,
         """Default value for the limit argument in the TracRevisionLog.
         """)
@@ -121,7 +123,7 @@ class LogModule(Component):
         #    unless explicit ranges have been specified
         #  * for ''show only add, delete'' we're using
         #   `Repository.get_path_history()`
-        cset_resource = repos.resource.child('changeset')
+        cset_resource = repos.resource.child(self.realm)
         show_graph = False
         if mode == 'path_history':
             def history():

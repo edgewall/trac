@@ -126,6 +126,8 @@ class ChangesetModule(Component):
 
     property_diff_renderers = ExtensionPoint(IPropertyDiffRenderer)
 
+    realm = RepositoryManager.changeset_realm
+
     timeline_show_files = Option('timeline', 'changeset_show_files', '0',
         """Number of files to show (`-1` for unlimited, `0` to disable).
 
@@ -419,7 +421,7 @@ class ChangesetModule(Component):
             title = _changeset_title(rev)
 
             # Support for revision properties (#2545)
-            context = web_context(req, 'changeset', chgset.rev,
+            context = web_context(req, self.realm, chgset.rev,
                                   parent=repos.resource)
             data['context'] = context
             revprops = chgset.get_properties()
@@ -877,7 +879,7 @@ class ChangesetModule(Component):
                                              key=collapse_changesets):
                     viewable_changesets = []
                     for cset in changesets:
-                        cset_resource = Resource('changeset', cset.rev,
+                        cset_resource = Resource(self.realm, cset.rev,
                                                  parent=repos.resource)
                         if cset.is_viewable(req.perm):
                             repos_for_uid = [repos.reponame]
@@ -1133,7 +1135,7 @@ class ChangesetModule(Component):
                 repos = repositories.get(id)
                 if not repos:
                     continue  # revisions for a no longer active repository
-                cset = repos.resource.child('changeset', rev)
+                cset = repos.resource.child(self.realm, rev)
                 if 'CHANGESET_VIEW' in req.perm(cset):
                     yield (req.href.changeset(rev, repos.reponame or None),
                            '[%s]: %s' % (rev, shorten_line(log)),

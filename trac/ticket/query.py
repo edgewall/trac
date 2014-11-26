@@ -815,6 +815,8 @@ class QueryModule(Component):
     implements(IRequestHandler, INavigationContributor, IWikiSyntaxProvider,
                IContentConverter)
 
+    realm = TicketSystem.realm
+
     default_query = Option('query', 'default_query',
         default='status!=closed&owner=$USER',
         doc="""The default query for authenticated users. The query is either
@@ -862,7 +864,7 @@ class QueryModule(Component):
 
     def get_navigation_items(self, req):
         from trac.ticket.report import ReportModule
-        if 'TICKET_VIEW' in req.perm('ticket') and \
+        if 'TICKET_VIEW' in req.perm(self.realm) and \
                 (not self.env.is_component_enabled(ReportModule) or
                  'REPORT_VIEW' not in req.perm('report',
                                                ReportModule.REPORT_LIST_ID)):
@@ -875,7 +877,7 @@ class QueryModule(Component):
         return req.path_info == '/query'
 
     def process_request(self, req):
-        req.perm('ticket').assert_permission('TICKET_VIEW')
+        req.perm(self.realm).assert_permission('TICKET_VIEW')
         report_id = req.args.get('report')
         if report_id:
             req.perm('report', report_id).assert_permission('REPORT_VIEW')
@@ -1107,7 +1109,7 @@ class QueryModule(Component):
 
         # Only interact with the batch modify module it it is enabled
         from trac.ticket.batch import BatchModifyModule
-        if 'TICKET_BATCH_MODIFY' in req.perm('ticket') and \
+        if 'TICKET_BATCH_MODIFY' in req.perm(self.realm) and \
                 self.env.is_component_enabled(BatchModifyModule):
             self.env[BatchModifyModule].add_template_data(req, data, tickets)
 
@@ -1144,7 +1146,7 @@ class QueryModule(Component):
         context = web_context(req)
         results = query.execute(req)
         for result in results:
-            ticket = Resource('ticket', result['id'])
+            ticket = Resource(self.realm, result['id'])
             if 'TICKET_VIEW' in req.perm(ticket):
                 values = []
                 for col in cols:
@@ -1264,6 +1266,8 @@ class TicketQueryMacro(WikiMacroBase):
     """)
 
     _comma_splitter = re.compile(r'(?<!\\),')
+
+    realm = TicketSystem.realm
 
     @staticmethod
     def parse_args(content):
@@ -1408,7 +1412,7 @@ class TicketQueryMacro(WikiMacroBase):
         # do it explicitly:
 
         tickets = [t for t in tickets
-                   if 'TICKET_VIEW' in req.perm('ticket', t['id'])]
+                   if 'TICKET_VIEW' in req.perm(self.realm, t['id'])]
 
         if not tickets:
             return tag.span(_("No results"), class_='query_no_results')
