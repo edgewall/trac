@@ -6,6 +6,12 @@ import warnings
 
 from trac.util.text import print_table, printout
 
+def _svn_version():
+    from svn import core
+    version = (core.SVN_VER_MAJOR, core.SVN_VER_MINOR,
+               core.SVN_VER_MICRO)
+    return '%d.%d.%d' % version + core.SVN_VER_TAG
+
 PACKAGES = [
     ("Python",            'sys.version'),
     ("Setuptools",        'setuptools.__version__'),
@@ -15,7 +21,7 @@ PACKAGES = [
     ("PySqlite",          'pysqlite2.dbapi2.version'),
     ("MySQLdb",           'MySQLdb.__version__'),
     ("Psycopg2",          'psycopg2.__version__'),
-    ("SVN bindings",      'svn.core.SVN_VERSION'),
+    ("SVN bindings",      _svn_version),
     ("Mercurial",         'mercurial.util.version()'),
     ("Pygments",          'pygments.__version__'),
     ("Pytz",              'pytz.__version__'),
@@ -28,16 +34,25 @@ PACKAGES = [
 def package_versions(packages, out=None):
     name_version_pairs = []
     for name, accessor in packages:
-        module, attr = accessor.rsplit('.', 1)
-        version = attr.replace('()', '')
-        try:
+        version = resolve_accessor(accessor)
+        name_version_pairs.append((name, version))
+    print_table(name_version_pairs, ("", "Version"), ' : ', out)
+
+def resolve_accessor(accessor):
+    if isinstance(accessor, basestring):
+        def fn():
+            module, attr = accessor.rsplit('.', 1)
+            version = attr.replace('()', '')
             version = getattr(__import__(module, {}, {}, [version]), version)
             if attr.endswith('()'):
                 version = version()
-        except Exception:
-            version = "not installed"
-        name_version_pairs.append((name, version))
-    print_table(name_version_pairs, ("", "Version"), ' : ', out)
+            return version
+    else:
+        fn = accessor
+    try:
+        return fn()
+    except Exception:
+        return "not installed"
 
 def shift(prefix, block):
     return '\n'.join(prefix + line for line in block.split('\n') if line)
