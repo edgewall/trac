@@ -43,6 +43,11 @@ class SvnFunctionalTestEnvironment(FunctionalTestEnvironment):
         """The deletion of the test environment will remove the
         repo as well."""
         pass
+    
+    def post_create(self, env):
+        """Hook for modifying the environment after creation."""
+        self._tracadmin('config', 'set', 'repositories',
+                        '.sync_per_request', '1')
 
     def repo_url(self):
         """Returns the url of the Subversion repository for this test
