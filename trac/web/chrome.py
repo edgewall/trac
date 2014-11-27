@@ -761,24 +761,23 @@ class Chrome(Component):
                     category_section = self.config[category]
                     if category_section.getbool(name, True):
                         # the navigation item is enabled (this is the default)
-                        item = None
-                        if isinstance(text, Element) and \
-                                text.tag.localname == 'a':
-                            item = text
+                        item = text if isinstance(text, Element) and \
+                                       text.tag.localname == 'a' \
+                                    else None
                         label = category_section.get(name + '.label')
                         href = category_section.get(name + '.href')
-                        if href:
-                            if href.startswith('/'):
-                                href = req.href + href
+                        if href and href.startswith('/'):
+                            href = req.href + href
+                        if item:
                             if label:
-                                item = tag.a(label) # create new label
-                            elif not item:
-                                item = tag.a(text) # wrap old text
-                            item = item(href=href) # use new href
-                        elif label and item: # create new label, use old href
-                            item = tag.a(label, href=item.attrib.get('href'))
-                        elif not item: # use old text
-                            item = text
+                                item.children[0] = label
+                            if href:
+                                item = item(href=href)
+                        else:
+                            if href or label:
+                                item = tag.a(label or text, href=href)
+                            else:
+                                item = text
                         allitems.setdefault(category, {})[name] = item
                 if contributor is handler:
                     active = contributor.get_active_navigation_item(req)
