@@ -861,12 +861,12 @@ class Formatter(object):
         else:
             type_ = 'ol'
             lstart = fullmatch.group('lstart')
-            start = None
-            idx = '0iI'.find(listid)
-            if idx > -1:
-                class_ = ('arabiczero', 'lowerroman', 'upperroman')[idx]
-            elif listid.isdigit():
-                start = lstart != '1' and int(lstart)
+            if listid == 'i':
+                class_ = 'lowerroman'
+            elif listid == 'I':
+                class_ = 'upperroman'
+            elif listid.isdigit() and lstart != '1':
+                start = int(lstart)
             elif listid.islower():
                 class_ = 'loweralpha'
                 if len(lstart) == 1 and lstart != 'a':
@@ -892,7 +892,7 @@ class Formatter(object):
             self._list_stack.append((new_type, depth))
             self._set_tab(depth)
             class_attr = ' class="%s"' % lclass if lclass else ''
-            start_attr = ' start="%s"' % start if start else ''
+            start_attr = ' start="%s"' % start if start is not None else ''
             self.out.write('<' + new_type + class_attr + start_attr + '><li>')
         def close_item():
             self.flush_tags()
