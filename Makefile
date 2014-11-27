@@ -103,12 +103,8 @@ status:
 	@echo
 	@echo -n "Python: "
 	@which python
-	@python contrib/make_status.py
 	@echo
-	@echo -n "  figleaf: "
-	@which figleaf 2>/dev/null || echo "not installed"
-	@echo -n "  coverage: "
-	@which coverage 2>/dev/null || echo "not installed"
+	@python contrib/make_status.py
 	@echo
 	@echo "Variables:"
 	@echo "  PATH=$(PATH-extension)$(SEP)\$$PATH"
@@ -119,6 +115,7 @@ status:
 	@echo "External dependencies:"
 	@echo -n "  Git version: "
 	@git --version 2>/dev/null || echo "not installed"
+	@echo
 
 Trac.egg-info: status
 	python setup.py egg_info

@@ -29,6 +29,8 @@ PACKAGES = [
     ("Docutils",          'docutils.__version__'),
     ("Twill",             'twill.__version__'),
     ("LXML",              'lxml.etree.__version__'),
+    ("coverage",          'coverage.__version__'),
+    ("figleaf",           'figleaf.__version__'),
 ]
 
 def package_versions(packages, out=None):
@@ -36,7 +38,7 @@ def package_versions(packages, out=None):
     for name, accessor in packages:
         version = resolve_accessor(accessor)
         name_version_pairs.append((name, version))
-    print_table(name_version_pairs, ("", "Version"), ' : ', out)
+    print_table(name_version_pairs, ("Package", "Version"), ' : ', out)
 
 def resolve_accessor(accessor):
     if isinstance(accessor, basestring):
