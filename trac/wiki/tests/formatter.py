@@ -131,8 +131,8 @@ class WikiTestCase(unittest.TestCase):
         self.context = context
 
         all_test_components = [
-                HelloWorldMacro, DivHelloWorldMacro, TableHelloWorldMacro, 
-                DivCodeMacro, DivCodeElementMacro, DivCodeStreamMacro, 
+                HelloWorldMacro, DivHelloWorldMacro, TableHelloWorldMacro,
+                DivCodeMacro, DivCodeElementMacro, DivCodeStreamMacro,
                 NoneMacro, WikiProcessorSampleMacro, SampleResolver]
         self.env = EnvironmentStub(enable=['trac.*'] + all_test_components)
         # -- macros support
@@ -188,7 +188,7 @@ class WikiTestCase(unittest.TestCase):
                 wiki = repr(self.input).replace(r'\n', '\n')
                 diff = ''.join(list(difflib.unified_diff(g1, g2, 'expected',
                                                          'actual')))
-                # Tip: sometimes, 'expected' and 'actual' differ only by 
+                # Tip: sometimes, 'expected' and 'actual' differ only by
                 #      whitespace, so it can be useful to visualize them, e.g.
                 # expected = expected.replace(' ', '.')
                 # actual = actual.replace(' ', '.')
@@ -226,7 +226,7 @@ def suite(data=None, setup=None, file=__file__, teardown=None, context=None):
         next_line = 1
         line = 0
         for title, test in zip(tests[1::2], tests[2::2]):
-            title = title.lstrip('=').strip()            
+            title = title.lstrip('=').strip()
             if line != next_line:
                 line = next_line
             if not test or test == '\n':
@@ -266,5 +266,5 @@ def suite(data=None, setup=None, file=__file__, teardown=None, context=None):
                 print 'no ', testfile
     return suite
 
-if __name__ == '__main__':
+if __name__ == '__main__': # pragma: no cover
     unittest.main(defaultTest='suite')
