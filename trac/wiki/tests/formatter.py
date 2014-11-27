@@ -311,5 +311,5 @@ def suite(data=None, setup=None, file=__file__, teardown=None, context=None):
                 print 'no ', testfile
     return suite
 
-if __name__ == '__main__':
+if __name__ == '__main__': # pragma: no cover
     unittest.main(defaultTest='suite')
