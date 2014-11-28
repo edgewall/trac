@@ -18,6 +18,7 @@
 
 from ConfigParser import RawConfigParser
 from StringIO import StringIO
+from collections import defaultdict
 from functools import partial
 from pkg_resources import resource_filename
 
@@ -39,42 +40,52 @@ from trac.wiki.macros import WikiMacroBase
 
 def parse_workflow_config(rawactions):
     """Given a list of options from [ticket-workflow]"""
-    actions = {}
+
+    class ActionDict(dict):
+        """Dictionary that returns a default value for a known key
+        and raises a KeyError for an unknown key. The `setdefault`
+        method can be called to override the default value for a
+        known key.
+        """
+        def __missing__(self, key):
+            defaults = {
+                'oldstates': [],
+                'newstate': '',
+                'name': name,
+                'default': 0,
+                'operations': [],
+                'permissions': []
+            }
+            if key not in defaults:
+                raise KeyError(key)
+            return defaults.get(key)
+
+    def to_list(value):
+        return [item for item in (x.strip() for x in value.split(','))
+                     if item]
+
+    actions = defaultdict(ActionDict)
     for option, value in rawactions:
         parts = option.split('.')
-        action = parts[0]
-        if action not in actions:
-            actions[action] = {'oldstates': '', 'newstate': ''}
+        name = parts[0]
         if len(parts) == 1:
             # Base name, of the syntax: old,states,here -> newstate
             try:
                 oldstates, newstate = [x.strip() for x in value.split('->')]
             except ValueError:
                 continue  # Syntax error, a warning will be logged later
-            actions[action]['newstate'] = newstate
-            actions[action]['oldstates'] = oldstates
+            actions[name]['oldstates'] = to_list(oldstates)
+            actions[name]['newstate'] = newstate
         else:
-            action, attribute = option.split('.')
-            actions[action][attribute] = value
-    # Fill in the defaults for every action, and normalize them to the desired
-    # types
-    def as_list(key):
-        value = attributes.get(key, '')
-        return [item for item in (x.strip() for x in value.split(',')) if item]
-
-    for action, attributes in actions.items():
-        # Default the 'name' attribute to the name used in the ini file
-        if 'name' not in attributes:
-            attributes['name'] = action
-        # If not specified, an action is not the default.
-        attributes['default'] = int(attributes.get('default', 0))
-        # If operations are not specified, that means no operations
-        attributes['operations'] = as_list('operations')
-        # If no permissions are specified, then no permissions are needed
-        attributes['permissions'] = as_list('permissions')
-        # Normalize the oldstates
-        attributes['oldstates'] = as_list('oldstates')
+            attribute = parts[1]
+            if attribute == 'default':
+                actions[name][attribute] = int(value)
+            elif attribute in ('operations', 'permissions'):
+                actions[name][attribute] = to_list(value)
+            else:
+                actions[name][attribute] = value
     return actions
+
 
 def get_workflow_config(config):
     """Usually passed self.config, this will return the parsed ticket-workflow
@@ -113,23 +124,9 @@ class ConfigurableTicketWorkflow(Component):
         (''since 0.11'')""")
 
     def __init__(self, *args, **kwargs):
-        self.actions = get_workflow_config(self.config)
-        if '_reset' not in self.actions:
-            # Special action that gets enabled if the current status no longer
-            # exists, as no other action can then change its state. (#5307)
-            self.actions['_reset'] = {
-                'default': 0,
-                'name': 'reset',
-                'newstate': 'new',
-                'oldstates': [],  # Will not be invoked unless needed
-                'operations': ['reset_workflow'],
-                'permissions': []}
+        self.actions = self.get_all_actions()
         self.log.debug('Workflow actions at initialization: %s\n',
                        self.actions)
-        for name, info in self.actions.iteritems():
-            if not info['newstate']:
-                self.log.warning("Ticket workflow action '%s' doesn't define "
-                                 "any transitions", name)
 
     # IEnvironmentSetupParticipant methods
 
@@ -140,7 +137,7 @@ class ConfigurableTicketWorkflow(Component):
         if 'ticket-workflow' not in self.config.sections():
             load_workflow_config_snippet(self.config, 'basic-workflow.ini')
             self.config.save()
-            self.actions = get_workflow_config(self.config)
+            self.actions = self.get_all_actions()
 
     def environment_needs_upgrade(self, db):
         """The environment needs an upgrade if there is no [ticket-workflow]
@@ -152,7 +149,7 @@ class ConfigurableTicketWorkflow(Component):
         """Insert a [ticket-workflow] section using the original-workflow"""
         load_workflow_config_snippet(self.config, 'original-workflow.ini')
         self.config.save()
-        self.actions = get_workflow_config(self.config)
+        self.actions = self.get_all_actions()
         info_message = """
 
 ==== Upgrade Notice ====
@@ -192,11 +189,13 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 if self._is_action_allowed(ticket_perm, required_perms):
                     allowed_actions.append((action_info['default'],
                                             action_name))
-        if not (status in ['new', 'closed'] or
-                    status in TicketSystem(self.env).get_all_status()) \
-                and 'TICKET_ADMIN' in ticket_perm:
-            # State no longer exists - add a 'reset' action if admin.
-            allowed_actions.append((0, '_reset'))
+        # Append special `_reset` action if status is invalid.
+        if status not in TicketSystem(self.env).get_all_status() + \
+                         ['new', 'closed']:
+            required_perms = self.actions['_reset'].get('permissions')
+            if self._is_action_allowed(ticket_perm, required_perms):
+                default = self.actions['_reset'].get('default')
+                allowed_actions.append((default, '_reset'))
         return allowed_actions
 
     def _is_action_allowed(self, ticket_perm, required_perms):
@@ -348,9 +347,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             updated['status'] = status
 
         for operation in this_action['operations']:
-            if operation == 'reset_workflow':
-                updated['status'] = 'new'
-            elif operation == 'del_owner':
+            if operation == 'del_owner':
                 updated['owner'] = ''
             elif operation == 'set_owner':
                 newowner = req.args.get('action_%s_reassign_owner' % action,
@@ -370,6 +367,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                 this_action.get('set_resolution', '').strip())
                 updated['resolution'] = newresolution
 
+            # reset_workflow is just a no-op here, so we don't look for it.
             # leave_status is just a no-op here, so we don't look for it.
         return updated
 
@@ -389,6 +387,28 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
 
     # Public methods (for other ITicketActionControllers that want to use
     #                 our config file and provide an operation for an action)
+
+    def get_all_actions(self):
+        actions = parse_workflow_config(self.ticket_workflow_section.options())
+
+        # Special action that gets enabled if the current status no longer
+        # exists, as no other action can then change its state. (#5307/#11850)
+        reset = {
+            'default': 0,
+            'name': 'reset',
+            'newstate': 'new',
+            'oldstates': [],  # Will not be invoked unless needed
+            'operations': ['reset_workflow'],
+            'permissions': ['TICKET_ADMIN']
+        }
+        for key, val in reset.items():
+            actions['_reset'].setdefault(key, val)
+
+        for name, info in actions.iteritems():
+            if not info['newstate']:
+                self.log.warning("Ticket workflow action '%s' doesn't define "
+                                 "any transitions", name)
+        return actions
 
     def get_actions_by_operation(self, operation):
         """Return a list of all actions with a given operation
