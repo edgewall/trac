@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
-"POT-Creation-Date: 2014-09-01 12:45+0000\n"
-"PO-Revision-Date: 2014-11-15 17:09+0100\n"
+"POT-Creation-Date: 2014-11-17 23:23-0800\n"
+"PO-Revision-Date: 2014-11-28 08:53+0100\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
 "Language-Team: Italian "
 "(http://www.transifex.com/projects/p/trac/language/it/)\n"
@@ -184,16 +184,16 @@ msgid "At least one item must be selected"
 msgstr "Devi selezionare almeno una voce"
 
 #: trac/htdocs/js/wikitoolbar.js:59
-msgid "Bold text: '''Example'''"
-msgstr "Testo in grassetto: '''Esempio'''"
+msgid "Bold text: **Example**"
+msgstr "Testo in grassetto: **Esempio**"
 
 #: trac/htdocs/js/wikitoolbar.js:62
 msgid "Italic text: ''Example''"
 msgstr "Testo in italico: ''Esempio''"
 
 #: trac/htdocs/js/wikitoolbar.js:65
-msgid "Heading: == Example =="
-msgstr "Intestazione: == Esempio =="
+msgid "Heading: == Example"
+msgstr "Intestazione: == Esempio"
 
 #: trac/htdocs/js/wikitoolbar.js:68
 msgid "Link: [http://www.example.com/ Example]"
@@ -212,8 +212,8 @@ msgid "New paragraph"
 msgstr "Nuovo paragrafo"
 
 #: trac/htdocs/js/wikitoolbar.js:80
-msgid "Line break: [[BR]]"
-msgstr "A capo: [[BR]]"
+msgid "Line break: \\\\"
+msgstr "A capo: \\\\"
 
 #: trac/htdocs/js/wikitoolbar.js:83
 msgid "Image: [[Image()]]"
