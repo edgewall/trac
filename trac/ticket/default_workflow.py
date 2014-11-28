@@ -55,7 +55,9 @@ def parse_workflow_config(rawactions):
                 'name': name,
                 'default': 0,
                 'operations': [],
-                'permissions': []
+                'permissions': [],
+                'set_owner': [],
+                'set_resolution': []
             }
             if key not in defaults:
                 raise KeyError(key)
@@ -83,18 +85,16 @@ def parse_workflow_config(rawactions):
                 actions[name][attribute] = int(value)
             elif attribute in ('operations', 'permissions'):
                 actions[name][attribute] = to_list(value)
+            # set_owner and set_resolution are optional and only applicable when
+            # the operation bearing their name is defined by the action
+            elif attribute == 'set_owner':
+                actions[name][attribute] = \
+                    [x.strip() for x in value.strip().split(',') if x]
+            elif attribute == 'set_resolution':
+                actions[name][attribute] = \
+                    [x.strip() for x in value.split(',')]
             else:
                 actions[name][attribute] = value
-        # set_owner and set_resolution are optional and only applicable when
-        # the operation bearing their name is defined by the action
-        if 'set_owner' in attributes:
-            set_owner = attributes.get('set_owner', '')
-            attributes['set_owner'] = \
-                [x.strip() for x in set_owner.strip().split(',') if x]
-        if 'set_resolution' in attributes:
-            set_resolution = attributes.get('set_resolution', '')
-            attributes['set_resolution'] = \
-                [x.strip() for x in set_resolution.split(',')]
     return actions
 
 
@@ -374,7 +374,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             if operation == 'del_owner':
                 updated['owner'] = ''
             elif operation in ('set_owner', 'may_set_owner'):
-                set_owner = this_action.get('set_owner')
+                set_owner = this_action['set_owner']
                 newowner = req.args.get('action_%s_reassign_owner' % action,
                                         set_owner[0] if set_owner else '')
                 # If there was already an owner, we get a list, [new, old],
@@ -387,7 +387,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             elif operation == 'del_resolution':
                 updated['resolution'] = ''
             elif operation == 'set_resolution':
-                set_resolution = this_action.get('set_resolution')
+                set_resolution = this_action['set_resolution']
                 newresolution = req.args.get('action_%s_resolve_resolution'
                                              % action,
                                              set_resolution[0]
