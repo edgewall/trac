@@ -52,7 +52,7 @@ def parse_workflow_config(rawactions):
             defaults = {
                 'oldstates': [],
                 'newstate': '',
-                'name': name,
+                'name': '',
                 'default': 0,
                 'operations': [],
                 'permissions': [],
@@ -352,7 +352,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             if status != '*':
                 hints.append(tag_("Next status will be '%(name)s'",
                                   name=status))
-        return (this_action['name'], tag(separated(control, ' ')),
+        return (this_action.get('name', action), tag(separated(control, ' ')),
                 tag(separated(hints, '. ', '.') if hints else ''))
 
     def get_ticket_changes(self, req, ticket, action):
