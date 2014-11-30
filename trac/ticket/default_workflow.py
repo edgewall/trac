@@ -211,9 +211,9 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
 
         """
         all_status = set()
-        for action_name, action_info in self.actions.items():
-            all_status.update(action_info['oldstates'])
-            all_status.add(action_info['newstate'])
+        for attributes in self.actions.values():
+            all_status.update(attributes['oldstates'])
+            all_status.add(attributes['newstate'])
         all_status.discard('*')
         all_status.discard('')
         return all_status

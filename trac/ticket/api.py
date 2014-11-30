@@ -40,9 +40,9 @@ class ITicketActionController(Interface):
 
     def get_ticket_actions(req, ticket):
         """Return an iterable of `(weight, action)` tuples corresponding to
-        the actions that are contributed by this component.
-        That list may vary given the current state of the ticket and the
-        actual request parameter.
+        the actions that are contributed by this component. The list is
+        dependent on the current state of the ticket and the actual request
+        parameter.
 
         `action` is a key used to identify that particular action.
         (note that 'history' and 'diff' are reserved and should not be used
@@ -52,7 +52,8 @@ class ITicketActionController(Interface):
         integer weight. The first action in the list is used as the default
         action.
 
-        When in doubt, use a weight of 0."""
+        When in doubt, use a weight of 0.
+        """
 
     def get_all_status():
         """Returns an iterable of all the possible values for the ''status''
