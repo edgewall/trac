@@ -74,13 +74,19 @@ h1 { color: #555 }
 h2 { border-bottom: 1px solid #ddd }
 
 div.body a { text-decoration: none }
-a, a tt { color: #b00 }
-a:visited, a:visited tt { color: #800 }
+a { color: #b00 }
+a code, a tt { color: #d50 }
+a:visited { color: #800 }
+a:visited code, a:visited tt { color: #b30 }
 
-:link:hover, :visited:hover,
-a:link:hover tt, a:visited:hover tt {
+:link:hover, :visited:hover {
     background-color: #eee;
-    color: #555;
+    color: #400;
+}
+a code:hover, a:visited code:hover, 
+a tt:hover, a:visited tt:hover {
+    background-color: #eee;
+    color: #600;
 }
 
 a.headerlink, a.headerlink:hover {
