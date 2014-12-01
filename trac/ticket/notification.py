@@ -18,7 +18,6 @@
 
 from contextlib import contextmanager
 from datetime import datetime
-from hashlib import md5
 
 from genshi.template.text import NewTextTemplate
 
@@ -26,10 +25,10 @@ from trac.attachment import IAttachmentChangeListener
 from trac.core import *
 from trac.config import *
 from trac.notification import NotifyEmail
+from trac.notification.mail import create_message_id
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Ticket
-from trac.util.datefmt import format_date_or_datetime, get_timezone, \
-                              to_utimestamp, utc
+from trac.util.datefmt import format_date_or_datetime, get_timezone, utc
 from trac.util.text import exception_to_unicode, obfuscate_email_address, \
                            shorten_line, text_width, wrap
 from trac.util.translation import deactivate, reactivate
@@ -475,13 +474,9 @@ class TicketNotifyEmail(NotifyEmail):
 
     def get_message_id(self, rcpt, modtime=None):
         """Generate a predictable, but sufficiently unique message ID."""
-        s = '%s.%08d.%d.%s' % (self.env.project_url.encode('utf-8'),
-                               int(self.ticket.id), to_utimestamp(modtime),
-                               rcpt.encode('ascii', 'ignore'))
-        dig = md5(s).hexdigest()
-        host = self.from_email[self.from_email.find('@') + 1:]
-        msgid = '<%03d.%s@%s>' % (len(s), dig, host)
-        return msgid
+        targetid = '%08d' % int(self.ticket.id)
+        return create_message_id(self.env, targetid, self.from_email,
+                                 modtime, rcpt)
 
     def send(self, torcpts, ccrcpts):
         dest = self.reporter or 'anonymous'

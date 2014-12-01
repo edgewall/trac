@@ -127,6 +127,9 @@ facilities.
         trac.mimeview.pygments = trac.mimeview.pygments[Pygments]
         trac.mimeview.rst = trac.mimeview.rst[reST]
         trac.mimeview.txtl = trac.mimeview.txtl[Textile]
+        trac.notification.api = trac.notification.api
+        trac.notification.compat = trac.notification.compat
+        trac.notification.mail = trac.notification.mail
         trac.prefs = trac.prefs.web_ui
         trac.search = trac.search.web_ui
         trac.ticket.admin = trac.ticket.admin

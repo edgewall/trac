@@ -35,7 +35,7 @@ from trac.util.datefmt import parse_date, utc, pretty_timedelta, to_datetime, \
 from trac.util.text import CRLF, exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.ticket.api import TicketSystem
-from trac.ticket.batch import BatchTicketNotifyEmail
+from trac.ticket.notification import BatchTicketNotifyEmail
 from trac.ticket.model import Milestone, MilestoneCache, Ticket, \
                               group_milestones
 from trac.timeline.api import ITimelineEventProvider
