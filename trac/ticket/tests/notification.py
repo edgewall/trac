@@ -1287,18 +1287,6 @@ class AttachmentNotificationTestCase(unittest.TestCase):
         self.assertIn(" * Attachment \"foo.txt\" added", body)
         self.assertIn("The attachment description", body)
 
-    def test_ticket_notify_attachment_disabled_attachment_added(self):
-        self.env.config.set('notification', 'ticket_notify_attachment', False)
-        self.attachment.insert('foo.txt', StringIO(''), 1)
-
-        recipients = notifysuite.smtpd.get_recipients()
-        sender = notifysuite.smtpd.get_sender()
-        message = notifysuite.smtpd.get_message()
-
-        self.assertEqual(0, len(recipients))
-        self.assertIsNone(sender)
-        self.assertIsNone(message)
-
     def test_ticket_notify_attachment_enabled_attachment_removed(self):
         self.attachment.insert('foo.txt', StringIO(''), 1)
         self.attachment.delete()
@@ -1309,19 +1297,6 @@ class AttachmentNotificationTestCase(unittest.TestCase):
         self.assertIn("Re: [TracTest] #1: Ticket summary", headers['Subject'])
         self.assertIn(" * Attachment \"foo.txt\" removed", body)
         self.assertIn("The attachment description", body)
-
-    def test_ticket_notify_attachment_disabled_attachment_removed(self):
-        self.env.config.set('notification', 'ticket_notify_attachment', False)
-        self.attachment.insert('foo.txt', StringIO(''), 1)
-        self.attachment.delete()
-
-        recipients = notifysuite.smtpd.get_recipients()
-        sender = notifysuite.smtpd.get_sender()
-        message = notifysuite.smtpd.get_message()
-
-        self.assertEqual(0, len(recipients))
-        self.assertIsNone(sender)
-        self.assertIsNone(message)
 
     def test_author_is_obfuscated(self):
         self.env.config.set('trac', 'show_email_addresses', False)

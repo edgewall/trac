@@ -502,19 +502,13 @@ class TicketAttachmentNotifier(Component):
 
     implements(IAttachmentChangeListener)
 
-    ticket_notify_attachment = BoolOption('notification',
-                                          'ticket_notify_attachment', True,
-        """Always send notifications on ticket attachment events.""")
-
     # IAttachmentChangeListener methods
 
     def attachment_added(self, attachment):
-        if self.ticket_notify_attachment:
-            self._notify_attachment(attachment, True)
+        self._notify_attachment(attachment, True)
 
     def attachment_deleted(self, attachment):
-        if self.ticket_notify_attachment:
-            self._notify_attachment(attachment, False)
+        self._notify_attachment(attachment, False)
 
     def attachment_reparented(self, attachment, old_parent_realm,
                               old_parent_id):
