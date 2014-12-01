@@ -90,7 +90,7 @@ class GitCachedRepository(CachedRepository):
 
         metadata = self.metadata
         self.save_metadata(metadata)
-        meta_youngest = metadata.get(CACHE_YOUNGEST_REV)
+        meta_youngest = metadata.get(CACHE_YOUNGEST_REV, '')
         repos = self.repos
 
         def is_synced(rev):
@@ -123,7 +123,7 @@ class GitCachedRepository(CachedRepository):
 
         while True:
             repos.sync()
-            repos_youngest = repos.youngest_rev
+            repos_youngest = repos.youngest_rev or ''
             updated = False
             seen = set()
 

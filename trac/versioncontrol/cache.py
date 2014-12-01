@@ -261,7 +261,7 @@ class CachedRepository(Repository):
                 invalidate = True
 
             # -- insert a 'youngeset_rev' for the repository if necessary
-            if metadata.get(CACHE_YOUNGEST_REV) is None:
+            if CACHE_YOUNGEST_REV not in metadata:
                 db("""INSERT INTO repository (id, name, value)
                       VALUES (%s, %s, %s)
                       """, (self.id, CACHE_YOUNGEST_REV, ''))

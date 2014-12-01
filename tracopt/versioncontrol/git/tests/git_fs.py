@@ -272,12 +272,22 @@ class GitNormalTestCase(BaseTestCase):
 
     def _test_on_empty_repos(self, cached_repository):
         self.env.config.set('git', 'persistent_cache', 'false')
-        self.env.config.set('git', 'cached_repository', cached_repository)
+        self.env.config.set('git', 'cached_repository',
+                            'true' if cached_repository else 'false')
 
         self._git_init(data=False, bare=True)
         self._add_repository(bare=True)
         repos = self._repomgr.get_repository('gitrepos')
-        repos.sync()
+        if cached_repository:
+            # call sync() thrice with empty repository (#11851)
+            for i in xrange(3):
+                repos.sync()
+                rows = self.env.db_query("SELECT value FROM repository "
+                                         "WHERE id=%s AND name=%s",
+                                         (repos.id, 'youngest_rev'))
+                self.assertEqual('', rows[0][0])
+        else:
+            repos.sync()
         youngest_rev = repos.youngest_rev
         self.assertEqual(None, youngest_rev)
         self.assertEqual(None, repos.oldest_rev)
@@ -304,10 +314,10 @@ class GitNormalTestCase(BaseTestCase):
         self.assertEqual([], rv[1]['items'])
 
     def test_on_empty_and_cached_repos(self):
-        self._test_on_empty_repos('true')
+        self._test_on_empty_repos(True)
 
     def test_on_empty_and_non_cached_repos(self):
-        self._test_on_empty_repos('false')
+        self._test_on_empty_repos(False)
 
 
 class GitRepositoryTestCase(BaseTestCase):
