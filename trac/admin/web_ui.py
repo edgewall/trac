@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2005-2009 Edgewall Software
+# Copyright (C) 2005-2014 Edgewall Software
 # Copyright (C) 2005 Jonas Borgström <jonas@edgewall.com>
 # All rights reserved.
 #
@@ -20,7 +20,6 @@ import pkg_resources
 import re
 import shutil
 
-from genshi import HTML
 from genshi.builder import tag
 
 from trac.admin.api import IAdminPanelProvider
@@ -39,11 +38,6 @@ from trac.web.chrome import add_notice, add_stylesheet, \
 from trac.web.api import is_valid_default_handler
 from trac.wiki.formatter import format_to_html
 
-try:
-    from webadmin import IAdminPageProvider
-except ImportError:
-    IAdminPageProvider = None
-
 
 class AdminModule(Component):
     """Web administration interface provider and panel manager."""
@@ -51,10 +45,6 @@ class AdminModule(Component):
     implements(INavigationContributor, IRequestHandler, ITemplateProvider)
 
     panel_providers = ExtensionPoint(IAdminPanelProvider)
-    if IAdminPageProvider:
-        old_providers = ExtensionPoint(IAdminPageProvider)
-    else:
-        old_providers = None
 
     # INavigationContributor methods
 
@@ -115,23 +105,8 @@ class AdminModule(Component):
         if not provider:
             raise HTTPNotFound(_("Unknown administration panel"))
 
-        if hasattr(provider, 'render_admin_panel'):
-            template, data = provider.render_admin_panel(req, cat_id, panel_id,
-                                                         path_info)
-
-        else: # support for legacy WebAdmin panels
-            data = {}
-            cstmpl, ct = provider.process_admin_request(req, cat_id, panel_id,
-                                                        path_info)
-            output = cstmpl.render()
-
-            title = _("Untitled")
-            for panel in panels:
-                if (panel[0], panel[2]) == (cat_id, panel_id):
-                    title = panel[3]
-
-            data.update({'page_title': title, 'page_body': HTML(output)})
-            template = 'admin_legacy.html'
+        template, data = \
+            provider.render_admin_panel(req, cat_id, panel_id, path_info)
 
         data.update({
             'active_cat': cat_id, 'active_panel': panel_id,
@@ -165,14 +140,6 @@ class AdminModule(Component):
             for panel in p:
                 providers[(panel[0], panel[2])] = provider
             panels += p
-
-        # Add panels contributed by legacy WebAdmin plugins
-        if IAdminPageProvider:
-            for provider in self.old_providers:
-                p = list(provider.get_admin_pages(req))
-                for page in p:
-                    providers[(page[0], page[2])] = provider
-                panels += p
 
         return panels, providers
 
