@@ -410,7 +410,8 @@ class TicketSystem(Component):
                 'custom': True,
                 'type': config.get(name),
                 'order': config.getint(name + '.order', 0),
-                'label': config.get(name + '.label') or name.capitalize(),
+                'label': config.get(name + '.label') or
+                         name.replace("_", " ").strip().capitalize(),
                 'value': config.get(name + '.value', '')
             }
             if field['type'] == 'select' or field['type'] == 'radio':

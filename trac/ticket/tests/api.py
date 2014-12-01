@@ -101,6 +101,14 @@ class TicketSystemTestCase(unittest.TestCase):
         self.assertEqual('test2', fields[0]['name'])
         self.assertEqual('test1', fields[1]['name'])
 
+    def test_custom_field_label(self):
+        self.env.config.set('ticket-custom', '_test_one', 'text')
+        self.env.config.set('ticket-custom', 'test_two', 'text')
+        self.env.config.set('ticket-custom', 'test_two.label', 'test_2')
+        fields = TicketSystem(self.env).get_custom_fields()
+        self.assertEqual('Test one', fields[0]['label'])
+        self.assertEqual('test_2', fields[1]['label'])
+
     def test_available_actions_full_perms(self):
         self.perm.grant_permission('anonymous', 'TICKET_CREATE')
         self.perm.grant_permission('anonymous', 'TICKET_MODIFY')
