@@ -85,7 +85,7 @@ class ResetActionTestCase(unittest.TestCase):
 
         _reset = self.ctlr.actions['_reset']
         self.assertEqual(0, _reset['default'])
-        self.assertEqual('reset', _reset['name'])
+        self.assertEqual('reset', _reset['label'])
         self.assertEqual('review', _reset['newstate'])
         self.assertEqual([], _reset['oldstates'])
         self.assertEqual(['reset_workflow'], _reset['operations'])

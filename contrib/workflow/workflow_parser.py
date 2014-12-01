@@ -75,7 +75,7 @@ digraph G {
   { rank=sink; closed [ shape=trapezium ] }
     """]
     for action, attributes in actions.items():
-        label = [attributes['name'], ]
+        label = [attributes['label']]
         if show_ops:
             label += attributes['operations']
         if show_perms:
@@ -83,7 +83,7 @@ digraph G {
         if 'set_resolution' in attributes:
             label += ['(' + attributes['set_resolution'] + ')']
         for oldstate in attributes['oldstates']:
-            color = color_scheme.get_color(attributes['name'])
+            color = color_scheme.get_color(attributes['label'])
             digraph_lines.append(
                 '  "%s" -> "%s" [label="%s" color=%s fontcolor=%s]' %
                 (oldstate, attributes['newstate'], '\\n'.join(label), color,

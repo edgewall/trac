@@ -68,7 +68,7 @@ workflow = ConfigurableTicketWorkflow,MilestoneOperation
 
     def render_ticket_action_control(self, req, ticket, action):
         actions = ConfigurableTicketWorkflow(self.env).actions
-        label = actions[action]['name']
+        label = actions[action]['label']
         res_ms = self.__get_resolution_milestone_dict(ticket, action)
         resolutions = ''
         milestone = None

@@ -53,6 +53,7 @@ def parse_workflow_config(rawactions):
                 'oldstates': [],
                 'newstate': '',
                 'name': '',
+                'label': '',
                 'default': 0,
                 'operations': [],
                 'permissions': [],
@@ -95,6 +96,14 @@ def parse_workflow_config(rawactions):
                     [x.strip() for x in value.split(',')]
             else:
                 actions[name][attribute] = value
+
+    for action, attributes in actions.items():
+        if 'label' not in attributes:
+            if 'name' in attributes:  # backwards-compatibility, #11828
+                attributes['label'] = attributes['name']
+            else:
+                attributes['label'] = action.replace("_", " ").strip()
+
     return actions
 
 
@@ -352,7 +361,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             if status != '*':
                 hints.append(tag_("Next status will be '%(name)s'",
                                   name=status))
-        return (this_action.get('name', action), tag(separated(control, ' ')),
+        return (this_action['label'], tag(separated(control, ' ')),
                 tag(separated(hints, '. ', '.') if hints else ''))
 
     def get_ticket_changes(self, req, ticket, action):
@@ -422,7 +431,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         # exists, as no other action can then change its state. (#5307/#11850)
         reset = {
             'default': 0,
-            'name': 'reset',
+            'label': 'reset',
             'newstate': 'new',
             'oldstates': [],  # Will not be invoked unless needed
             'operations': ['reset_workflow'],
