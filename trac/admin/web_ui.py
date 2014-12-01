@@ -31,11 +31,11 @@ from trac.util.datefmt import all_timezones, pytz
 from trac.util.text import exception_to_unicode, \
                            unicode_to_base64, unicode_from_base64
 from trac.util.translation import _, Locale, get_available_locales, ngettext
-from trac.web import HTTPNotFound, IRequestHandler
+from trac.web.api import HTTPNotFound, IRequestHandler, \
+                         is_valid_default_handler
 from trac.web.chrome import add_notice, add_stylesheet, \
                             add_warning, Chrome, INavigationContributor, \
                             ITemplateProvider
-from trac.web.api import is_valid_default_handler
 from trac.wiki.formatter import format_to_html
 
 
