@@ -115,13 +115,16 @@ class RegressionTestTicket5765(FunctionalTwillTestCaseSetup):
 class RegressionTestTicket11337(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/11337
-        The preferences panel will only be visible when Babel is installed
-        or for a user that has `TRAC_ADMIN`.
+        The language select will be disabled if Babel is not installed and a
+        hint will be shown. The text of the hint is dependent on whether the
+        user has TRAC_ADMIN and the message catalogs have been compiled.
         """
         from trac.util.translation import has_babel, get_available_locales
 
         babel_hint = "Install Babel for extended language support."
         catalog_hint = "Message catalogs have not been compiled."
+        nonadmin_hint = r"Please contact your\s+Trac administrator\s+" \
+                        r"to enable existing translations."
         language_select = '<select id="language" name="language">'
         disabled_language_select = \
             '<select id="language" name="language" disabled="disabled" ' \
@@ -132,26 +135,34 @@ class RegressionTestTicket11337(FunctionalTwillTestCaseSetup):
             tc.notfind(babel_hint)
             if get_available_locales():
                 tc.find(language_select)
+                tc.notfind(babel_hint)
                 tc.notfind(catalog_hint)
             else:
                 tc.find(disabled_language_select)
                 tc.find(catalog_hint)
+                tc.notfind(babel_hint)
         else:
-            tc.find(babel_hint)
             tc.find(disabled_language_select)
+            tc.find(babel_hint)
             tc.notfind(catalog_hint)
+        tc.notfind(nonadmin_hint)
 
         # For users without TRAC_ADMIN, the Language tab should only be
         # present when Babel is installed
-        self._tester.go_to_preferences()
-        language_tab = '<li id="tab_localization">'
+        self._tester.logout()
+        self._tester.go_to_preferences("Localization")
         try:
-            self._tester.logout()
-            if has_babel:
-                tc.find(language_tab)
-                tc.notfind(catalog_hint)
+            if has_babel and get_available_locales():
+                tc.find(language_select)
+                tc.notfind(nonadmin_hint)
+            elif has_babel:
+                tc.find(disabled_language_select)
+                tc.find(nonadmin_hint)
             else:
-                tc.notfind(language_tab)
+                tc.find(disabled_language_select)
+                tc.find(nonadmin_hint)
+            tc.notfind(catalog_hint)
+            tc.notfind(babel_hint)
         finally:
             self._tester.login('admin')
 

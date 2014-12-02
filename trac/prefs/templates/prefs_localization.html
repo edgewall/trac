@@ -34,12 +34,14 @@
                     selected="${session_language == locale or None}"
                     value="$locale">$language</option>
           </select>
-          <span py:if="not has_babel" class="hint">
-            Install Babel for extended language support.
-          </span>
-          <span py:if="'TRAC_ADMIN' in req.perm and has_babel and not languages" class="hint">
-            Message catalogs have not been compiled.
-          </span>
+          <py:if test="'TRAC_ADMIN' in req.perm">
+            <span py:if="not has_babel" class="hint">
+              Install Babel for extended language support.
+            </span>
+            <span py:if="has_babel and not languages" class="hint">
+              Message catalogs have not been compiled.
+            </span>
+          </py:if>
         </td>
       </tr>
       <tr>
