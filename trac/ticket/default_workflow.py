@@ -42,35 +42,29 @@ from trac.wiki.macros import WikiMacroBase
 def parse_workflow_config(rawactions):
     """Given a list of options from [ticket-workflow]"""
 
-    class ActionDict(dict):
-        """Dictionary that returns a default value for a known key
-        and raises a KeyError for an unknown key. The `setdefault`
-        method can be called to override the default value for a
-        known key.
-        """
-        def __missing__(self, key):
-            defaults = {
-                'oldstates': [],
-                'newstate': '',
-                'name': '',
-                'label': '',
-                'default': 0,
-                'operations': [],
-                'permissions': [],
-                'set_owner': [],
-                'set_resolution': []
-            }
-            if key not in defaults:
-                raise KeyError(key)
-            return defaults.get(key)
+    required_attrs = {
+        'oldstates': [],
+        'newstate': '',
+        'name': '',
+        'label': '',
+        'default': 0,
+        'operations': [],
+        'permissions': [],
+    }
+    optional_attrs = {
+        'set_owner': [],
+        'set_resolution': [],
+    }
+    allowed_attrs = required_attrs.copy()
+    allowed_attrs.update(optional_attrs)
 
-    actions = defaultdict(ActionDict)
+    actions = defaultdict(dict)
     for option, value in rawactions:
         parts = option.split('.')
         name = parts[0]
         if len(parts) == 1:
-            # Base name, of the syntax: old,states,here -> newstate
             try:
+                # Base name, of the syntax: old,states,here -> newstate
                 oldstates, newstate = [x.strip() for x in value.split('->')]
             except ValueError:
                 continue  # Syntax error, a warning will be logged later
@@ -78,12 +72,11 @@ def parse_workflow_config(rawactions):
             actions[name]['newstate'] = newstate
         else:
             attribute = parts[1]
-            if attribute == 'default':
+            if isinstance(allowed_attrs[attribute], int):
                 actions[name][attribute] = int(value)
-            elif attribute in ('operations', 'permissions',
-                               'set_owner', 'set_resolution'):
+            elif isinstance(allowed_attrs[attribute], list):
                 actions[name][attribute] = to_list(value)
-            else:
+            elif isinstance(allowed_attrs[attribute], str):
                 actions[name][attribute] = value
 
     for action, attributes in actions.items():
@@ -92,6 +85,8 @@ def parse_workflow_config(rawactions):
                 attributes['label'] = attributes['name']
             else:
                 attributes['label'] = action.replace("_", " ").strip()
+        for key, val in required_attrs.items():
+            attributes.setdefault(key, val)
 
     return actions
 
@@ -372,7 +367,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             if operation == 'del_owner':
                 updated['owner'] = ''
             elif operation in ('set_owner', 'may_set_owner'):
-                set_owner = this_action['set_owner']
+                set_owner = this_action.get('set_owner')
                 newowner = req.args.get('action_%s_reassign_owner' % action,
                                         set_owner[0] if set_owner else '')
                 # If there was already an owner, we get a list, [new, old],
@@ -385,7 +380,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             elif operation == 'del_resolution':
                 updated['resolution'] = ''
             elif operation == 'set_resolution':
-                set_resolution = this_action['set_resolution']
+                set_resolution = this_action.get('set_resolution')
                 newresolution = req.args.get('action_%s_resolve_resolution'
                                              % action,
                                              set_resolution[0]
@@ -422,7 +417,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             'default': 0,
             'label': 'reset',
             'newstate': 'new',
-            'oldstates': [],  # Will not be invoked unless needed
+            'oldstates': [],
             'operations': ['reset_workflow'],
             'permissions': ['TICKET_ADMIN']
         }
