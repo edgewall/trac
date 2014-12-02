@@ -80,16 +80,9 @@ def parse_workflow_config(rawactions):
             attribute = parts[1]
             if attribute == 'default':
                 actions[name][attribute] = int(value)
-            elif attribute in ('operations', 'permissions'):
+            elif attribute in ('operations', 'permissions',
+                               'set_owner', 'set_resolution'):
                 actions[name][attribute] = to_list(value)
-            # set_owner and set_resolution are optional and only applicable when
-            # the operation bearing their name is defined by the action
-            elif attribute == 'set_owner':
-                actions[name][attribute] = \
-                    [x.strip() for x in value.strip().split(',') if x]
-            elif attribute == 'set_resolution':
-                actions[name][attribute] = \
-                    [x.strip() for x in value.split(',')]
             else:
                 actions[name][attribute] = value
 
