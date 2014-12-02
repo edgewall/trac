@@ -30,7 +30,7 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.perm import PermissionSystem
 from trac.ticket.api import ITicketActionController, TicketSystem
 from trac.ticket.model import Resolution
-from trac.util import get_reporter_id
+from trac.util import get_reporter_id, to_list
 from trac.util.presentation import separated
 from trac.util.translation import _, tag_, cleandoc_
 from trac.web.chrome import Chrome, add_script, add_script_data
@@ -59,10 +59,6 @@ def parse_workflow_config(rawactions):
             if key not in defaults:
                 raise KeyError(key)
             return defaults.get(key)
-
-    def to_list(value):
-        return [item for item in (x.strip() for x in value.split(','))
-                     if item]
 
     actions = defaultdict(ActionDict)
     for option, value in rawactions:

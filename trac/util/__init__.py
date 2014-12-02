@@ -1215,6 +1215,13 @@ def pathjoin(*args):
     return '/'.join(filter(None, (each.strip('/') for each in args if each)))
 
 
+def to_list(splittable, sep=','):
+    """Split a string at `sep` and return a list without any empty items.
+    """
+    split = [x.strip() for x in splittable.split(sep)]
+    return [item for item in split if item]
+
+
 # Imports for backward compatibility (at bottom to avoid circular dependencies)
 from trac.core import TracError
 from trac.util.compat import reversed
