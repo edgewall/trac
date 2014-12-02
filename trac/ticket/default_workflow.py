@@ -41,26 +41,16 @@ from trac.wiki.macros import WikiMacroBase
 def parse_workflow_config(rawactions):
     """Given a list of options from [ticket-workflow]"""
 
-    class ActionDict(dict):
-        """Dictionary that returns a default value for a known key
-        and raises a KeyError for an unknown key. The `setdefault`
-        method can be called to override the default value for a
-        known key.
-        """
-        def __missing__(self, key):
-            defaults = {
-                'oldstates': [],
-                'newstate': '',
-                'name': '',
-                'default': 0,
-                'operations': [],
-                'permissions': []
-            }
-            if key not in defaults:
-                raise KeyError(key)
-            return defaults.get(key)
+    default = {
+        'oldstates': [],
+        'newstate': '',
+        'name': '',
+        'default': 0,
+        'operations': [],
+        'permissions': []
+    }
 
-    actions = defaultdict(ActionDict)
+    actions = defaultdict(lambda: default.copy())
     for option, value in rawactions:
         parts = option.split('.')
         name = parts[0]
@@ -389,16 +379,17 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
 
         # Special action that gets enabled if the current status no longer
         # exists, as no other action can then change its state. (#5307/#11850)
-        reset = {
-            'default': 0,
-            'name': 'reset',
-            'newstate': 'new',
-            'oldstates': [],  # Will not be invoked unless needed
-            'operations': ['reset_workflow'],
-            'permissions': ['TICKET_ADMIN']
-        }
-        for key, val in reset.items():
-            actions['_reset'].setdefault(key, val)
+        if '_reset' not in actions:
+            reset = {
+                'default': 0,
+                'name': 'reset',
+                'newstate': 'new',
+                'oldstates': [],
+                'operations': ['reset_workflow'],
+                'permissions': ['TICKET_ADMIN']
+            }
+            for key, val in reset.items():
+                actions['_reset'][key] = val
 
         for name, info in actions.iteritems():
             if not info['newstate']:

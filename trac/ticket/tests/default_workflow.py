@@ -75,22 +75,6 @@ class ResetActionTestCase(unittest.TestCase):
         self.assertIn((2, '_reset'), actions2)
         self.assertEqual('review', chgs2['status'])
 
-    def test_custom_reset_action_retains_defaults(self):
-        """The attributes of the default _reset action apply even when the
-        action is customized in trac.ini."""
-        config = self.env.config['ticket-workflow']
-        config.set('_reset', '-> review')
-        config.set('_reset.permissions', 'TICKET_MODIFY')
-        self._reload_workflow()
-
-        _reset = self.ctlr.actions['_reset']
-        self.assertEqual(0, _reset['default'])
-        self.assertEqual('reset', _reset['name'])
-        self.assertEqual('review', _reset['newstate'])
-        self.assertEqual([], _reset['oldstates'])
-        self.assertEqual(['reset_workflow'], _reset['operations'])
-        self.assertEqual(['TICKET_MODIFY'], _reset['permissions'])
-
 
 def suite():
     return unittest.makeSuite(ResetActionTestCase)
