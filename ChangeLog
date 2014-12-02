@@ -1,7 +1,8 @@
 Trac 1.1.2 (October 23, 2014)
 http://svn.edgewall.org/repos/trac/tags/trac-1.1.2
 
-Trac 1.1.2 continues development of the 1.1.x line leading to 1.2, with several new features and API changes:
+Trac 1.1.2 continues development of the 1.1.x line leading to 1.2, with
+several new features and API changes:
 
  - Dropped support for Python 2.5. Trac can no longer be run on Python 2.5 as
    incompatible changes have been made in the source code (#11600).
@@ -18,7 +19,8 @@ Trac 1.1.2 continues development of the 1.1.x line leading to 1.2, with several 
  - Attachments can't be added to read-only wiki pages (#11244).
  - Tables on the admin pages have a //Select all// checkbox in the header
    (#10994).
- - Submit buttons are disabled if the required items are not selected (#11056).
+ - Submit buttons are disabled if the required items are not selected
+   (#11056).
  - The Admin //Permissions// page has a //Copy Permissions// form for
    copying permissions between users and groups (#11099).
  - The new option `[milestone]` `default_retarget_to` determines the default
@@ -32,7 +34,7 @@ Trac 1.1.2 continues development of the 1.1.x line leading to 1.2, with several 
  - The `TitleIndex` macro supports relative path prefixes when used on wiki
    pages (#11455).
  - CommitTicketUpdater will recognize a ticket reference that includes a
-   trailing `#comment:N` or `#comment:desccription` (#11622).
+   trailing `#comment:N` or `#comment:description` (#11622).
  - The //Tickets// column of the milestone table on the //Milestone// admin
    page contains links to the query page showing all tickets associated with
    the milestone, grouped by status (#11661).
