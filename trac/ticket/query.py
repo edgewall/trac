@@ -892,7 +892,7 @@ class QueryModule(Component):
 
     def process_request(self, req):
         req.perm.assert_permission('TICKET_VIEW')
-        report_id = req.args.get('report')
+        report_id = req.args.getfirst('report')
         if report_id:
             req.perm('report', report_id).assert_permission('REPORT_VIEW')
 
@@ -949,8 +949,11 @@ class QueryModule(Component):
         max = args.get('max')
         if max is None and format in ('csv', 'tab'):
             max = 0 # unlimited unless specified explicitly
+        order = args.get('order')
+        if isinstance(order, (list, tuple)):
+            order = order[0] if order else None
         query = Query(self.env, report_id,
-                      constraints, cols, args.get('order'),
+                      constraints, cols, order,
                       'desc' in args, args.get('group'),
                       'groupdesc' in args, 'verbose' in args,
                       rows,
