@@ -1210,18 +1210,6 @@ def to_list(splittable, sep=','):
     return [item for item in split if item]
 
 
-def sub_val(the_list, item_to_remove, item_to_add):
-    """Substitute an item if the item is found in a list, otherwise leave
-    the list unmodified.
-    """
-    try:
-        index = the_list.index(item_to_remove)
-    except ValueError:
-        pass
-    else:
-        the_list[index] = item_to_add
-
-
 # Imports for backward compatibility (at bottom to avoid circular dependencies)
 from trac.core import TracError
 from trac.util.compat import reversed

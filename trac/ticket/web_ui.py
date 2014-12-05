@@ -431,34 +431,6 @@ class TicketModule(Component):
 
     # Internal methods
 
-    def _get_action_controls(self, req, ticket):
-        # action_controls is an ordered list of "renders" tuples, where
-        # renders is a list of (action_key, label, widgets, hints) representing
-        # the user interface for each action
-        action_controls = []
-        sorted_actions = TicketSystem(self.env).get_available_actions(req,
-                                                                      ticket)
-        for action in sorted_actions:
-            first_label = None
-            hints = []
-            widgets = []
-            for controller in self._get_action_controllers(req, ticket,
-                                                           action):
-                label, widget, hint = controller.render_ticket_action_control(
-                    req, ticket, action)
-                if not first_label:
-                    first_label = label
-                widgets.append(widget)
-                hints.append(hint)
-            action_controls.append((action, first_label, tag(widgets), hints))
-
-        # The default action is the first in the action_controls list.
-        selected_action = req.args.get('action')
-        if not selected_action and action_controls:
-            selected_action = action_controls[0][0]
-
-        return action_controls, selected_action
-
     def _get_action_controllers(self, req, ticket, action):
         """Generator yielding the controllers handling the given `action`"""
         for controller in TicketSystem(self.env).action_controllers:
@@ -477,52 +449,26 @@ class TicketModule(Component):
         if req.method == 'POST':
             plain_fields = False
             field_reporter = 'field_reporter'
+            if 'field_owner' in req.args and 'TICKET_MODIFY' not in req.perm:
+                del req.args['field_owner']
 
         self._populate(req, ticket, plain_fields)
-
+        ticket.values['status'] = 'new'     # Force initial status
         reporter_id = req.args.get(field_reporter) or \
                       get_reporter_id(req, 'author')
         ticket.values['reporter'] = reporter_id
 
-        preview = 'preview' in req.args
-        if preview or req.method == 'POST':
-            action = req.args.get('action')
-            valid = True
-            # Do any action on the ticket?
-            actions = \
-                TicketSystem(self.env).get_available_actions(req, ticket)
-            if action not in actions:
-                valid = False
-                add_warning(req, _('The action "%(name)s" is not available.',
-                                   name=action))
+        valid = None
+        if req.method == 'POST' and not 'preview' in req.args:
+            valid = self._validate_ticket(req, ticket)
+            if valid:
+                self._do_create(req, ticket) # (redirected if successful)
+            # else fall through in a preview
+            req.args['preview'] = True
 
-            field_changes, problems = self.get_ticket_changes(req, ticket,
-                                                              action)
-            if problems:
-                valid = False
-                for problem in problems:
-                    add_warning(req, problem)
-                add_warning(req,
-                            tag_("Please review your configuration, "
-                                 "probably starting with %(section)s "
-                                 "in your %(tracini)s.",
-                                 section=tag.pre('[ticket]', tag.br(),
-                                                 'workflow = ...'),
-                                 tracini=tag.code('trac.ini')))
-
-            # Apply changes made by the workflow
-            self._apply_ticket_changes(ticket, field_changes)
-
-            valid = valid and self._validate_ticket(req, ticket)
-            if not preview and req.method == 'POST':
-                if valid:
-                    # redirects on success
-                    self._do_create(req, ticket, action)
-                # else fall through in a preview
-                req.args['preview'] = True
-
-        action_controls, selected_action = \
-            self._get_action_controls(req, ticket)
+        # don't validate for new tickets and don't validate twice
+        if valid is None and 'preview' in req.args:
+            self._validate_ticket(req, ticket)
 
         # Preview a new ticket
         data = self._prepare_data(req, ticket)
@@ -531,11 +477,24 @@ class TicketModule(Component):
             'actions': [],
             'version': None,
             'description_change': None,
-            'action_controls': action_controls,
-            'action': selected_action,
         })
 
         fields = self._prepare_fields(req, ticket)
+
+        # position 'owner' immediately before 'cc',
+        # if not already positioned after (?)
+
+        field_names = [field['name'] for field in ticket.fields
+                       if not field.get('custom')]
+        if 'owner' in field_names:
+            curr_idx = field_names.index('owner')
+            if 'cc' in field_names:
+                insert_idx = field_names.index('cc')
+            else:
+                insert_idx = len(field_names)
+            if curr_idx < insert_idx:
+                ticket.fields.insert(insert_idx, ticket.fields[curr_idx])
+                del ticket.fields[curr_idx]
 
         data['fields'] = fields
         data['fields_map'] = dict((field['name'], i)
@@ -1369,18 +1328,8 @@ class TicketModule(Component):
                     add_warning(req, message)
         return valid
 
-    def _do_create(self, req, ticket, action):
-        # Save the action controllers we need to call side-effects for before
-        # we save the changes to the ticket.
-        controllers = list(self._get_action_controllers(req, ticket, action))
-
+    def _do_create(self, req, ticket):
         ticket.insert()
-
-        # After saving the changes, apply the side-effects.
-        for controller in controllers:
-            self.log.debug("Side effect for %s",
-                           controller.__class__.__name__)
-            controller.apply_action_side_effects(req, ticket, action)
 
         # Notify
         tn = TicketNotifyEmail(self.env)
@@ -1476,11 +1425,9 @@ class TicketModule(Component):
                     last_new = field_changes[key]['new']
                     last_by = field_changes[key]['by']
                     if last_new != new and last_by:
-                        problems.append(
-                            _('%(controller1)s changed "%(key)s" to '
-                              '"%(val1)s", but %(controller2)s changed '
-                              'it to "%(val2)s".', controller1=cname, key=key,
-                              val1=new, controller2=last_by, val2=last_new))
+                        problems.append('%s changed "%s" to "%s", '
+                                        'but %s changed it to "%s".' %
+                                        (cname, key, new, last_by, last_new))
                 store_change(key, old, new, cname)
 
         # Detect non-changes
@@ -1533,6 +1480,7 @@ class TicketModule(Component):
     def _prepare_fields(self, req, ticket, field_changes=None):
         context = web_context(req, ticket.resource)
         fields = []
+        owner_field = None
         for field in ticket.fields:
             name = field['name']
             type_ = field['type']
@@ -1548,9 +1496,18 @@ class TicketModule(Component):
                 field['rendered'] = self._query_link(req, name, ticket[name])
 
             # per field settings
-            if name in ('summary', 'reporter', 'description', 'owner',
-                        'status', 'resolution', 'time', 'changetime'):
+            if name in ('summary', 'reporter', 'description', 'status',
+                        'resolution', 'time', 'changetime'):
                 field['skip'] = True
+            elif name == 'owner':
+                TicketSystem(self.env).eventually_restrict_owner(field, ticket)
+                type_ = field['type']
+                field['skip'] = True
+                if not ticket.exists:
+                    field['label'] = _("Owner")
+                    if 'TICKET_MODIFY' in req.perm(ticket.resource):
+                        field['skip'] = False
+                        owner_field = field
             elif name == 'milestone':
                 milestones = [Milestone(self.env, opt)
                               for opt in field['options']]
@@ -1637,6 +1594,10 @@ class TicketModule(Component):
 
             fields.append(field)
 
+        # Move owner field to end when shown
+        if owner_field is not None:
+            fields.remove(owner_field)
+            fields.append(owner_field)
         return fields
 
     def _insert_ticket_data(self, req, ticket, data, author_id, field_changes):
@@ -1706,6 +1667,10 @@ class TicketModule(Component):
         if ticket.resource.version is not None:
             ticket.values.update(values)
 
+        # -- Workflow support
+
+        selected_action = req.args.get('action')
+
         # retrieve close time from changes
         closetime = None
         for c in changes:
@@ -1713,9 +1678,30 @@ class TicketModule(Component):
             if s:
                 closetime = c['date'] if s['new'] == 'closed' else None
 
-        # Workflow support
-        action_controls, selected_action = \
-            self._get_action_controls(req, ticket)
+        # action_controls is an ordered list of "renders" tuples, where
+        # renders is a list of (action_key, label, widgets, hints) representing
+        # the user interface for each action
+        action_controls = []
+        sorted_actions = TicketSystem(self.env).get_available_actions(req,
+                                                                      ticket)
+        for action in sorted_actions:
+            first_label = None
+            hints = []
+            widgets = []
+            for controller in self._get_action_controllers(req, ticket,
+                                                           action):
+                label, widget, hint = controller.render_ticket_action_control(
+                    req, ticket, action)
+                if not first_label:
+                    first_label = label
+                widgets.append(widget)
+                hints.append(hint)
+            action_controls.append((action, first_label, tag(widgets), hints))
+
+        # The default action is the first in the action_controls list.
+        if not selected_action:
+            if action_controls:
+                selected_action = action_controls[0][0]
 
         # Insert change preview
         change_preview = {

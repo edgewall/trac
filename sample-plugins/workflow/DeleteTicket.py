@@ -43,8 +43,7 @@ class DeleteTicketActionController(Component):
 
     def get_ticket_actions(self, req, ticket):
         actions = []
-        if 'TICKET_DELETE' in req.perm(ticket.resource) \
-                and ticket.exists:
+        if 'TICKET_DELETE' in req.perm(ticket.resource):
             actions.append((0,'delete'))
         return actions
 

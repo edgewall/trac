@@ -88,11 +88,6 @@ class FunctionalTester(object):
             summary = random_sentence(5)
         tc.formvalue('propertyform', 'field_summary', summary)
         tc.formvalue('propertyform', 'field_description', random_page())
-        if 'owner' in info:
-            tc.formvalue('propertyform', 'action', 'assign')
-            tc.formvalue('propertyform',
-                         'action_create_and_assign_reassign_owner',
-                         info.pop('owner'))
         for field, value in info.items():
             tc.formvalue('propertyform', 'field_%s' % field, value)
         tc.submit('submit')

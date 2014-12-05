@@ -30,7 +30,7 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.perm import PermissionSystem
 from trac.ticket.api import ITicketActionController, TicketSystem
 from trac.ticket.model import Resolution
-from trac.util import get_reporter_id, sub_val, to_list
+from trac.util import get_reporter_id, to_list
 from trac.util.presentation import separated
 from trac.util.translation import _, tag_, cleandoc_
 from trac.web.chrome import Chrome, add_script, add_script_data
@@ -181,25 +181,25 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         # the process of being modified, we need to base our information on the
         # pre-modified state so that we don't try to do two (or more!) steps at
         # once and get really confused.
-        status = ticket._old.get('status', ticket['status'])
-        exists = status is not None
+        status = ticket._old.get('status', ticket['status']) or 'new'
 
         ticket_perm = req.perm(ticket.resource)
         allowed_actions = []
         for action_name, action_info in self.actions.items():
             oldstates = action_info['oldstates']
-            if exists and oldstates == ['*'] or status in oldstates:
+            if oldstates == ['*'] or status in oldstates:
                 # This action is valid in this state.  Check permissions.
                 required_perms = action_info['permissions']
                 if self._is_action_allowed(ticket_perm, required_perms):
                     allowed_actions.append((action_info['default'],
                                             action_name))
         # Append special `_reset` action if status is invalid.
-        if exists and status not in TicketSystem(self.env).get_all_status():
-            reset = self.actions['_reset']
-            required_perms = reset['permissions']
+        if status not in TicketSystem(self.env).get_all_status() + \
+                         ['new', 'closed']:
+            required_perms = self.actions['_reset'].get('permissions')
             if self._is_action_allowed(ticket_perm, required_perms):
-                allowed_actions.append((reset['default'], '_reset'))
+                default = self.actions['_reset'].get('default')
+                allowed_actions.append((default, '_reset'))
         return allowed_actions
 
     def _is_action_allowed(self, ticket_perm, required_perms):
@@ -220,7 +220,6 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             all_status.add(attributes['newstate'])
         all_status.discard('*')
         all_status.discard('')
-        all_status.discard(None)
         return all_status
 
     def render_ticket_action_control(self, req, ticket, action):
@@ -234,7 +233,6 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         author = get_reporter_id(req, 'author')
         author_info = partial(Chrome(self.env).authorinfo, req)
         formatted_current_owner = author_info(current_owner)
-        exists = ticket._old.get('status', ticket['status']) is not None
 
         control = []  # default to nothing
         hints = []
@@ -256,11 +254,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             if 'set_owner' in operations:
                 default_owner = author
             elif 'may_set_owner' in operations:
-                if not exists:
-                    default_owner = TicketSystem(self.env).default_owner
-                else:
-                    default_owner = ticket._old.get('owner',
-                                                    ticket['owner'] or None)
+                default_owner = \
+                    ticket._old.get('owner', ticket['owner'] or None)
                 if owners is not None and default_owner not in owners:
                     owners.insert(0, default_owner)
             else:
@@ -276,23 +271,16 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                     tag_("to %(owner)s",
                          owner=tag.input(type='text', id=id, name=id,
                                          value=owner)))
-                if not exists or current_owner is None:
-                    hints.append(_("The owner will be the specified user"))
-                else:
-                    hints.append(tag_("The owner will be changed from "
-                                      "%(current_owner)s to the specified "
-                                      "user",
-                                      current_owner=formatted_current_owner))
+                hints.append(tag_("The owner will be changed from "
+                                  "%(current_owner)s to the specified user",
+                                  current_owner=formatted_current_owner))
             elif len(owners) == 1:
                 owner = tag.input(type='hidden', id=id, name=id,
                                   value=owners[0])
                 formatted_new_owner = author_info(owners[0])
                 control.append(tag_("to %(owner)s",
                                     owner=tag(formatted_new_owner, owner)))
-                if not exists or current_owner is None:
-                    hints.append(tag_("The owner will be %(new_owner)s",
-                                      new_owner=formatted_new_owner))
-                elif ticket['owner'] != owners[0]:
+                if ticket['owner'] != owners[0]:
                     hints.append(tag_("The owner will be changed from "
                                       "%(current_owner)s to %(new_owner)s",
                                       current_owner=formatted_current_owner,
@@ -305,12 +293,9 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                 selected=(x == selected_owner or None))
                      for x in owners],
                     id=id, name=id)))
-                if not exists or current_owner is None:
-                    hints.append(_("The owner will be the selected user"))
-                else:
-                    hints.append(tag_("The owner will be changed from "
-                                      "%(current_owner)s to the selected user",
-                                      current_owner=formatted_current_owner))
+                hints.append(tag_("The owner will be changed from "
+                                  "%(current_owner)s to the selected user",
+                                  current_owner=formatted_current_owner))
         elif 'set_owner_to_self' in operations and \
                 ticket._old.get('owner', ticket['owner']) != author:
             hints.append(tag_("The owner will be changed from "
@@ -357,10 +342,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                              if current_owner else
                              _("The ticket will remain with no owner"))
         else:
-            if ticket['status'] is None:
-                hints.append(tag_("The status will be '%(name)s'",
-                                  name=status))
-            elif status != '*':
+            if status != '*':
                 hints.append(tag_("Next status will be '%(name)s'",
                                   name=status))
         return (this_action['label'], tag(separated(control, ' ')),
@@ -443,8 +425,6 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             actions['_reset'].setdefault(key, val)
 
         for name, info in actions.iteritems():
-            for val in ('<none>', '< none >'):
-                sub_val(actions[name]['oldstates'], val, None)
             if not info['newstate']:
                 self.log.warning("Ticket workflow action '%s' doesn't define "
                                  "any transitions", name)
@@ -500,14 +480,6 @@ class WorkflowMacro(WikiMacroBase):
         leave = * -> *
         leave.operations = leave_status
         leave.default = 1
-
-        create = <none> -> new
-        create.default = 1
-
-        create_and_assign = <none> -> assigned
-        create_and_assign.label = assign
-        create_and_assign.permissions = TICKET_MODIFY
-        create_and_assign.operations = may_set_owner
 
         accept = new,assigned,accepted,reopened -> accepted
         accept.permissions = TICKET_MODIFY

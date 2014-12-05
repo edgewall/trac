@@ -28,6 +28,15 @@
       jQuery(document).ready(function($) {
         $("div.description").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
         $(".foldable").enableFolding(false, true);
+      <py:when test="ticket.exists">/*<![CDATA[*/
+        $("#attachments").toggleClass("collapsed");
+        $("#trac-up-attachments").click(function () {
+          $("#attachments").removeClass("collapsed");
+          return true;
+        });
+        $("#modify").parent().toggleClass("collapsed");
+        $(".trac-topnav a").click(function() { $("#modify").parent().removeClass("collapsed"); });
+
         /* only enable control elements for the currently selected action */
         var actions = $("#action input[name='action']");
 
@@ -39,14 +48,6 @@
         }
         actions.click(updateActionFields);
         updateActionFields();
-      <py:when test="ticket.exists">/*<![CDATA[*/
-        $("#attachments").toggleClass("collapsed");
-        $("#trac-up-attachments").click(function () {
-          $("#attachments").removeClass("collapsed");
-          return true;
-        });
-        $("#modify").parent().toggleClass("collapsed");
-        $(".trac-topnav a").click(function() { $("#modify").parent().removeClass("collapsed"); });
 
         function setRevertHandler() {
           $("button.trac-revert").click(function() {
@@ -317,21 +318,23 @@ ${value}</textarea>
             </fieldset>
 
             <!--! Workflow support -->
-            <py:choose>
-              <fieldset py:when="can_append or can_modify" id="action">
-                <legend>Action</legend>
-                <div py:for="key, label, controls, hints in action_controls">
-                  <input type="radio" id="action_$key" name="action" value="$key"
-                         checked="${key == action or None}" />
-                  <label for="action_$key">$label</label>
-                  $controls
-                  <span class="hint" py:for="hint in hints">$hint</span>
-                </div>
-              </fieldset>
-              <py:otherwise py:for="key, label, controls, hints in action_controls">
-                <input py:if="key == action" type="hidden" name="action" value="$action" />
-              </py:otherwise>
-            </py:choose>
+            <py:if test="ticket.exists"> <!--! do not display the actions for New tickets -->
+              <py:choose>
+                <fieldset py:when="can_append or can_modify" id="action">
+                  <legend>Action</legend>
+                  <div py:for="key, label, controls, hints in action_controls">
+                    <input type="radio" id="action_$key" name="action" value="$key"
+                           checked="${key == action or None}" />
+                    <label for="action_$key">$label</label>
+                    $controls
+                    <span class="hint" py:for="hint in hints">$hint</span>
+                  </div>
+                </fieldset>
+                <py:otherwise py:for="key, label, controls, hints in action_controls">
+                  <input py:if="key == action" type="hidden" name="action" value="$action" />
+                </py:otherwise>
+              </py:choose>
+            </py:if>
           </div>
         </div>
 
