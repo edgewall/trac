@@ -75,6 +75,7 @@ class Ticket(object):
     realm = 'ticket'
 
     # Fields that must not be modified directly by the user
+    # 'owner' should eventually be a protected field (#2045)
     protected_fields = ('resolution', 'status', 'time', 'changetime')
 
     @staticmethod
