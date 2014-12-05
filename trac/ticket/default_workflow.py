@@ -313,10 +313,15 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                       current_owner=formatted_current_owner))
         elif 'set_owner_to_self' in operations and \
                 ticket._old.get('owner', ticket['owner']) != author:
-            hints.append(tag_("The owner will be changed from "
-                              "%(current_owner)s to %(new_owner)s",
-                              current_owner=formatted_current_owner,
-                              new_owner=author_info(author)))
+            formatted_author = author_info(author)
+            if not exists or current_owner is None:
+                hints.append(tag_("The owner will be %(new_owner)s",
+                                  new_owner=formatted_author))
+            else:
+                hints.append(tag_("The owner will be changed from "
+                                  "%(current_owner)s to %(new_owner)s",
+                                  current_owner=formatted_current_owner,
+                                  new_owner=formatted_author))
         if 'set_resolution' in operations:
             if 'set_resolution' in this_action:
                 resolutions = this_action['set_resolution']
