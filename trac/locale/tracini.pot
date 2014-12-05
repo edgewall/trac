@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.1.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-12-03 23:25-0800\n"
+"POT-Creation-Date: 2014-11-25 17:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -216,18 +216,18 @@ msgid ""
 "are not yet supported."
 msgstr ""
 
-#: trac/attachment.py:132
+#: trac/attachment.py:423
 msgid "Maximum allowed file size (in bytes) for attachments."
 msgstr ""
 
-#: trac/attachment.py:135
+#: trac/attachment.py:426
 msgid ""
 "Maximum allowed total size (in bytes) for an attachment list to be\n"
 "downloadable as a `.zip`. Set this to -1 to disable download as `.zip`.\n"
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/attachment.py:140
+#: trac/attachment.py:431
 msgid ""
 "Whether attachments should be rendered in the browser, or\n"
 "only made downloadable.\n"
@@ -398,6 +398,147 @@ msgid ""
 "`($(thread)d) Trac[$(basename)s:$(module)s] $(levelname)s: $(message)s`"
 msgstr ""
 
+#: trac/notification.py:53
+msgid ""
+"Name of the component implementing `IEmailSender`.\n"
+"\n"
+"This component is used by the notification system to send emails.\n"
+"Trac currently provides `SmtpEmailSender` for connecting to an SMTP\n"
+"server, and `SendmailEmailSender` for running a `sendmail`-compatible\n"
+"executable. (''since 0.12'')"
+msgstr ""
+
+#: trac/notification.py:62
+msgid "Enable email notification."
+msgstr ""
+
+#: trac/notification.py:65
+msgid ""
+"Sender address to use in notification emails.\n"
+"\n"
+"At least one of `smtp_from` and `smtp_replyto` must be set, otherwise\n"
+"Trac refuses to send notification mails."
+msgstr ""
+
+#: trac/notification.py:71
+msgid "Sender name to use in notification emails."
+msgstr ""
+
+#: trac/notification.py:74
+msgid ""
+"Use the author of the change as the sender in notification emails\n"
+"(e.g. reporter of a new ticket, author of a comment). If the\n"
+"author hasn't set an email address, `smtp_from` and\n"
+"`smtp_from_name` are used instead.\n"
+"(''since 1.0'')"
+msgstr ""
+
+#: trac/notification.py:81
+msgid ""
+"Reply-To address to use in notification emails.\n"
+"\n"
+"At least one of `smtp_from` and `smtp_replyto` must be set, otherwise\n"
+"Trac refuses to send notification mails."
+msgstr ""
+
+#: trac/notification.py:88
+msgid ""
+"Comma-separated list of email addresses to always send\n"
+"notifications to. Addresses can be seen by all recipients\n"
+"(Cc:)."
+msgstr ""
+
+#: trac/notification.py:94
+msgid ""
+"Comma-separated list of email addresses to always send\n"
+"notifications to. Addresses are not public (Bcc:)."
+msgstr ""
+
+#: trac/notification.py:99
+msgid ""
+"Default host/domain to append to addresses that do not specify\n"
+"one. Fully qualified addresses are not modified. The default\n"
+"domain is appended to all username/login for which an email\n"
+"address cannot be found in the user settings."
+msgstr ""
+
+#: trac/notification.py:105
+msgid ""
+"Comma-separated list of domains that should not be considered\n"
+"part of email addresses (for usernames with Kerberos domains)."
+msgstr ""
+
+#: trac/notification.py:109
+msgid ""
+"Comma-separated list of domains that should be considered as\n"
+"valid for email addresses (such as localdomain)."
+msgstr ""
+
+#: trac/notification.py:113
+msgid ""
+"Specifies the MIME encoding scheme for emails.\n"
+"\n"
+"Supported values are: `none`, the default value which uses 7-bit\n"
+"encoding if the text is plain ASCII or 8-bit otherwise. `base64`,\n"
+"which works with any kind of content but may cause some issues with\n"
+"touchy anti-spam/anti-virus engine. `qp` or `quoted-printable`,\n"
+"which works best for european languages (more compact than base64) if\n"
+"8-bit encoding cannot be used."
+msgstr ""
+
+#: trac/notification.py:124
+msgid ""
+"Addresses in the To and Cc fields are visible to all recipients.\n"
+"\n"
+"If this option is disabled, recipients are put in the Bcc list."
+msgstr ""
+
+#: trac/notification.py:130
+msgid ""
+"Permit email address without a host/domain (i.e. username only).\n"
+"\n"
+"The SMTP server should accept those addresses, and either append\n"
+"a FQDN or use local delivery. See also `smtp_default_domain`. Do not\n"
+"use this option with a public SMTP server."
+msgstr ""
+
+#: trac/notification.py:138
+msgid ""
+"Text to prepend to subject line of notification emails.\n"
+"\n"
+"If the setting is not defined, then `[$project_name]` is used as the\n"
+"prefix. If no prefix is desired, then specifying an empty option\n"
+"will disable it."
+msgstr ""
+
+#: trac/notification.py:173
+msgid "SMTP server hostname to use for email notifications."
+msgstr ""
+
+#: trac/notification.py:176
+msgid "SMTP server port to use for email notification."
+msgstr ""
+
+#: trac/notification.py:179
+msgid "Username for authenticating with SMTP server."
+msgstr ""
+
+#: trac/notification.py:182
+msgid "Password for authenticating with SMTP server."
+msgstr ""
+
+#: trac/notification.py:185
+msgid "Use SSL/TLS to send notifications over SMTP."
+msgstr ""
+
+#: trac/notification.py:238
+msgid ""
+"Path to the sendmail executable.\n"
+"\n"
+"The sendmail program must accept the `-i` and `-f` options.\n"
+" (''since 0.12'')"
+msgstr ""
+
 #: trac/perm.py:306
 msgid ""
 "Name of the component implementing `IPermissionStore`, which is used\n"
@@ -497,147 +638,6 @@ msgid ""
 "Pygments render."
 msgstr ""
 
-#: trac/notification/api.py:32
-msgid ""
-"Name of the component implementing `IEmailSender`.\n"
-"\n"
-"This component is used by the notification system to send emails.\n"
-"Trac currently provides `SmtpEmailSender` for connecting to an SMTP\n"
-"server, and `SendmailEmailSender` for running a `sendmail`-compatible\n"
-"executable. (''since 0.12'')"
-msgstr ""
-
-#: trac/notification/api.py:41
-msgid "Enable email notification."
-msgstr ""
-
-#: trac/notification/api.py:44
-msgid ""
-"Sender address to use in notification emails.\n"
-"\n"
-"At least one of `smtp_from` and `smtp_replyto` must be set, otherwise\n"
-"Trac refuses to send notification mails."
-msgstr ""
-
-#: trac/notification/api.py:50
-msgid "Sender name to use in notification emails."
-msgstr ""
-
-#: trac/notification/api.py:53
-msgid ""
-"Use the author of the change as the sender in notification emails\n"
-"(e.g. reporter of a new ticket, author of a comment). If the\n"
-"author hasn't set an email address, `smtp_from` and\n"
-"`smtp_from_name` are used instead.\n"
-"(''since 1.0'')"
-msgstr ""
-
-#: trac/notification/api.py:60
-msgid ""
-"Reply-To address to use in notification emails.\n"
-"\n"
-"At least one of `smtp_from` and `smtp_replyto` must be set, otherwise\n"
-"Trac refuses to send notification mails."
-msgstr ""
-
-#: trac/notification/api.py:67
-msgid ""
-"Comma-separated list of email addresses to always send\n"
-"notifications to. Addresses can be seen by all recipients\n"
-"(Cc:)."
-msgstr ""
-
-#: trac/notification/api.py:73
-msgid ""
-"Comma-separated list of email addresses to always send\n"
-"notifications to. Addresses are not public (Bcc:)."
-msgstr ""
-
-#: trac/notification/api.py:78
-msgid ""
-"Default host/domain to append to addresses that do not specify\n"
-"one. Fully qualified addresses are not modified. The default\n"
-"domain is appended to all username/login for which an email\n"
-"address cannot be found in the user settings."
-msgstr ""
-
-#: trac/notification/api.py:84
-msgid ""
-"Comma-separated list of domains that should not be considered\n"
-"part of email addresses (for usernames with Kerberos domains)."
-msgstr ""
-
-#: trac/notification/api.py:88
-msgid ""
-"Comma-separated list of domains that should be considered as\n"
-"valid for email addresses (such as localdomain)."
-msgstr ""
-
-#: trac/notification/api.py:92
-msgid ""
-"Specifies the MIME encoding scheme for emails.\n"
-"\n"
-"Supported values are: `none`, the default value which uses 7-bit\n"
-"encoding if the text is plain ASCII or 8-bit otherwise. `base64`,\n"
-"which works with any kind of content but may cause some issues with\n"
-"touchy anti-spam/anti-virus engine. `qp` or `quoted-printable`,\n"
-"which works best for european languages (more compact than base64) if\n"
-"8-bit encoding cannot be used."
-msgstr ""
-
-#: trac/notification/api.py:103
-msgid ""
-"Addresses in the To and Cc fields are visible to all recipients.\n"
-"\n"
-"If this option is disabled, recipients are put in the Bcc list."
-msgstr ""
-
-#: trac/notification/api.py:109
-msgid ""
-"Permit email address without a host/domain (i.e. username only).\n"
-"\n"
-"The SMTP server should accept those addresses, and either append\n"
-"a FQDN or use local delivery. See also `smtp_default_domain`. Do not\n"
-"use this option with a public SMTP server."
-msgstr ""
-
-#: trac/notification/api.py:117
-msgid ""
-"Text to prepend to subject line of notification emails.\n"
-"\n"
-"If the setting is not defined, then `[$project_name]` is used as the\n"
-"prefix. If no prefix is desired, then specifying an empty option\n"
-"will disable it."
-msgstr ""
-
-#: trac/notification/mail.py:195
-msgid "SMTP server hostname to use for email notifications."
-msgstr ""
-
-#: trac/notification/mail.py:198
-msgid "SMTP server port to use for email notification."
-msgstr ""
-
-#: trac/notification/mail.py:201
-msgid "Username for authenticating with SMTP server."
-msgstr ""
-
-#: trac/notification/mail.py:204
-msgid "Password for authenticating with SMTP server."
-msgstr ""
-
-#: trac/notification/mail.py:207
-msgid "Use SSL/TLS to send notifications over SMTP."
-msgstr ""
-
-#: trac/notification/mail.py:260
-msgid ""
-"Path to the sendmail executable.\n"
-"\n"
-"The sendmail program must accept the `-i` and `-f` options.\n"
-" (''since 0.12'')"
-msgstr ""
-
 #: trac/search/web_ui.py:48
 msgid "Minimum length of query string allowed when performing a search."
 msgstr ""
@@ -656,17 +656,17 @@ msgid ""
 "(''since 0.12'')"
 msgstr ""
 
-#: trac/ticket/api.py:202
+#: trac/ticket/api.py:199
 msgid ""
 "In this section, you can define additional fields for tickets. See\n"
 "TracTicketsCustomFields for more details."
 msgstr ""
 
-#: trac/ticket/api.py:206
+#: trac/ticket/api.py:203
 msgid "Ordered list of workflow controllers to use for ticket actions."
 msgstr ""
 
-#: trac/ticket/api.py:212
+#: trac/ticket/api.py:209
 msgid ""
 "Make the owner field of tickets use a drop-down menu.\n"
 "Be sure to understand the performance implications before activating\n"
@@ -678,61 +678,61 @@ msgid ""
 "e-mail addresses must remain protected."
 msgstr ""
 
-#: trac/ticket/api.py:223
+#: trac/ticket/api.py:220
 msgid "Default version for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:226
+#: trac/ticket/api.py:223
 msgid "Default type for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:229
+#: trac/ticket/api.py:226
 msgid "Default priority for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:232
+#: trac/ticket/api.py:229
 msgid "Default milestone for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:235
+#: trac/ticket/api.py:232
 msgid "Default component for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:238
+#: trac/ticket/api.py:235
 msgid "Default severity for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:241
+#: trac/ticket/api.py:238
 msgid "Default summary (title) for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:244
+#: trac/ticket/api.py:241
 msgid "Default description for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:247
+#: trac/ticket/api.py:244
 msgid "Default keywords for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:250
+#: trac/ticket/api.py:247
 msgid "Default owner for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:253
+#: trac/ticket/api.py:250
 msgid "Default cc: list for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:256
+#: trac/ticket/api.py:253
 msgid "Default resolution for resolving (closing) tickets."
 msgstr ""
 
-#: trac/ticket/api.py:259
+#: trac/ticket/api.py:256
 msgid ""
 "Comma-separated list of `select` fields that can have\n"
 "an empty value. (//since 1.1.2//)"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:123
+#: trac/ticket/default_workflow.py:122
 msgid ""
 "The workflow for tickets is controlled by plugins. By default,\n"
 "there's only a `ConfigurableTicketWorkflow` component in charge.\n"
@@ -740,21 +740,21 @@ msgid ""
 "in the `trac.ini` file. See TracWorkflow for more details."
 msgstr ""
 
-#: trac/ticket/notification.py:39
+#: trac/ticket/notification.py:40
 msgid "Always send notifications to the ticket ''owner''."
 msgstr ""
 
-#: trac/ticket/notification.py:44
+#: trac/ticket/notification.py:45
 msgid "Always send notifications to the ticket ''reporter''."
 msgstr ""
 
-#: trac/ticket/notification.py:49
+#: trac/ticket/notification.py:50
 msgid ""
 "Always send notifications to the user who causes the ticket\n"
 "change and to any previous updater of the ticket."
 msgstr ""
 
-#: trac/ticket/notification.py:54
+#: trac/ticket/notification.py:55
 msgid ""
 "A Genshi text template snippet used to get the notification\n"
 "subject.\n"
@@ -763,13 +763,13 @@ msgid ""
 "[TracNotification#Customizingthee-mailsubject TracNotification] page."
 msgstr ""
 
-#: trac/ticket/notification.py:63
+#: trac/ticket/notification.py:64
 msgid ""
 "Like `ticket_subject_template` but for batch modifications.\n"
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/ticket/notification.py:68
+#: trac/ticket/notification.py:69
 msgid ""
 "Width of ambiguous characters that should be used in the table\n"
 "of the notification mail.\n"
@@ -780,7 +780,11 @@ msgid ""
 "0.12.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:820
+#: trac/ticket/notification.py:518
+msgid "Always send notifications on ticket attachment events."
+msgstr ""
+
+#: trac/ticket/query.py:818
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -788,7 +792,7 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 
-#: trac/ticket/query.py:828
+#: trac/ticket/query.py:826
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -796,19 +800,19 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 
-#: trac/ticket/query.py:836
+#: trac/ticket/query.py:834
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default."
 msgstr ""
 
-#: trac/ticket/report.py:118
+#: trac/ticket/report.py:116
 msgid ""
 "Number of tickets displayed per page in ticket reports,\n"
 "by default."
 msgstr ""
 
-#: trac/ticket/report.py:123
+#: trac/ticket/report.py:121
 msgid "Number of tickets displayed in the rss feeds for reports."
 msgstr ""
 
@@ -881,51 +885,51 @@ msgid ""
 "in the roadmap views."
 msgstr ""
 
-#: trac/ticket/roadmap.py:592
+#: trac/ticket/roadmap.py:590
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
 "in the milestone views."
 msgstr ""
 
-#: trac/ticket/roadmap.py:599
+#: trac/ticket/roadmap.py:597
 msgid ""
 "Default milestone to which tickets are retargeted when\n"
 "closing or deleting a milestone. (''since 1.1.2'')"
 msgstr ""
 
-#: trac/ticket/web_ui.py:75
+#: trac/ticket/web_ui.py:73
 msgid ""
 "Enable the display of all ticket changes in the timeline, not only\n"
 "open / close operations."
 msgstr ""
 
-#: trac/ticket/web_ui.py:79
+#: trac/ticket/web_ui.py:77
 msgid ""
 "Enable the display of component of tickets in the timeline.\n"
 "(''since 1.1.1'')"
 msgstr ""
 
-#: trac/ticket/web_ui.py:84
+#: trac/ticket/web_ui.py:82
 msgid "Maximum allowed description size in characters."
 msgstr ""
 
-#: trac/ticket/web_ui.py:87
+#: trac/ticket/web_ui.py:85
 msgid "Maximum allowed comment size in characters."
 msgstr ""
 
-#: trac/ticket/web_ui.py:90
+#: trac/ticket/web_ui.py:88
 msgid "Maximum allowed summary size in characters. (//since 1.0.2//)"
 msgstr ""
 
-#: trac/ticket/web_ui.py:93
+#: trac/ticket/web_ui.py:91
 msgid ""
 "Which formatter flavor (e.g. 'html' or 'oneliner') should be\n"
 "used when presenting the description for new tickets.\n"
 "If 'oneliner', the [timeline] abbreviated_messages option applies."
 msgstr ""
 
-#: trac/ticket/web_ui.py:100
+#: trac/ticket/web_ui.py:98
 msgid ""
 "Whether Wiki formatter should respect the new lines present\n"
 "in the Wiki text.\n"
@@ -933,7 +937,7 @@ msgid ""
 "but keeps the old behavior for upgraded environments (i.e. 'no')."
 msgstr ""
 
-#: trac/ticket/web_ui.py:107
+#: trac/ticket/web_ui.py:105
 msgid ""
 "The base query to be used when linkifying values of ticket\n"
 "fields. The query is a URL query\n"
@@ -968,7 +972,7 @@ msgid ""
 "allowed. (''since 0.12.1'')"
 msgstr ""
 
-#: trac/versioncontrol/api.py:301
+#: trac/versioncontrol/api.py:297
 msgid ""
 "One of the alternatives for registering new repositories is to\n"
 "populate the `[repositories]` section of the `trac.ini`.\n"
@@ -984,7 +988,7 @@ msgid ""
 "(''since 0.12'')"
 msgstr ""
 
-#: trac/versioncontrol/api.py:315
+#: trac/versioncontrol/api.py:311
 msgid ""
 "Default repository connector type.\n"
 "\n"
@@ -1020,7 +1024,7 @@ msgid ""
 "as oneliner wiki content in the repository browser."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:182
+#: trac/versioncontrol/web_ui/browser.py:180
 msgid ""
 "List of repository paths that can be downloaded.\n"
 "\n"
@@ -1033,7 +1037,7 @@ msgid ""
 "performed on the paths, so aliases won't get automatically resolved."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:195
+#: trac/versioncontrol/web_ui/browser.py:193
 msgid ""
 "Enable colorization of the ''age'' column.\n"
 "\n"
@@ -1041,28 +1045,28 @@ msgid ""
 "blue is older, red is newer."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:204
+#: trac/versioncontrol/web_ui/browser.py:202
 msgid ""
 "(r,g,b) color triple to use for the color corresponding\n"
 "to the newest color, for the color scale used in ''blame'' or\n"
 "the browser ''age'' column if `color_scale` is enabled."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:212
+#: trac/versioncontrol/web_ui/browser.py:210
 msgid ""
 "(r,g,b) color triple to use for the color corresponding\n"
 "to the oldest color, for the color scale used in ''blame'' or\n"
 "the browser ''age'' column if `color_scale` is enabled."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:218
+#: trac/versioncontrol/web_ui/browser.py:216
 msgid ""
 "If set to a value between 0 and 1 (exclusive), this will be the\n"
 "point chosen to set the `intermediate_color` for interpolating\n"
 "the color value."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:224
+#: trac/versioncontrol/web_ui/browser.py:222
 msgid ""
 "(r,g,b) color triple to use for the color corresponding\n"
 "to the intermediate color, if two linear interpolations are used\n"
@@ -1071,7 +1075,7 @@ msgid ""
 "`newest_color` will be used."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:232
+#: trac/versioncontrol/web_ui/browser.py:230
 msgid ""
 "Whether raw files should be rendered in the browser, or only made\n"
 "downloadable.\n"
@@ -1084,13 +1088,13 @@ msgid ""
 "recommended to leave this option disabled."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:244
+#: trac/versioncontrol/web_ui/browser.py:242
 msgid ""
 "Comma-separated list of version control properties to hide from\n"
 "the repository browser."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:131
+#: trac/versioncontrol/web_ui/changeset.py:129
 msgid ""
 "Number of files to show (`-1` for unlimited, `0` to disable).\n"
 "\n"
@@ -1098,7 +1102,7 @@ msgid ""
 "changed files."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:138
+#: trac/versioncontrol/web_ui/changeset.py:136
 msgid ""
 "Whether wiki-formatted changeset messages should be multiline or\n"
 "not.\n"
@@ -1108,27 +1112,27 @@ msgid ""
 "some formatting (bullet points, etc)."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:147
+#: trac/versioncontrol/web_ui/changeset.py:145
 msgid ""
 "Whether consecutive changesets from the same author having\n"
 "exactly the same message should be presented as one event.\n"
 "That event will link to the range of changesets in the log view."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:154
+#: trac/versioncontrol/web_ui/changeset.py:152
 msgid ""
 "Maximum number of modified files for which the changeset view will\n"
 "attempt to show the diffs inlined."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:158
+#: trac/versioncontrol/web_ui/changeset.py:156
 msgid ""
 "Maximum total size in bytes of the modified files (their old size\n"
 "plus their new size) for which the changeset view will attempt to show\n"
 "the diffs inlined."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:163
+#: trac/versioncontrol/web_ui/changeset.py:161
 msgid ""
 "Whether wiki formatting should be applied to changeset messages.\n"
 "\n"
@@ -1136,11 +1140,11 @@ msgid ""
 "pre-formatted text."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/log.py:48
+#: trac/versioncontrol/web_ui/log.py:46
 msgid "Default value for the limit argument in the TracRevisionLog."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/log.py:52
+#: trac/versioncontrol/web_ui/log.py:50
 msgid ""
 "Comma-separated list of colors to use for the TracRevisionLog\n"
 "graph display. (''since 1.0'')"
@@ -1396,15 +1400,15 @@ msgid ""
 "like Apache with `mod_xsendfile` or lighttpd. (''since 1.0'')"
 msgstr ""
 
-#: trac/wiki/api.py:261
+#: trac/wiki/api.py:259
 msgid "Enable/disable highlighting CamelCase links to missing pages."
 msgstr ""
 
-#: trac/wiki/api.py:265
+#: trac/wiki/api.py:263
 msgid "Enable/disable splitting the WikiPageNames with space characters."
 msgstr ""
 
-#: trac/wiki/api.py:269
+#: trac/wiki/api.py:267
 msgid ""
 "Enable/disable the use of unsafe HTML tags such as `<script>` or\n"
 "`<embed>` with the HTML [wiki:WikiProcessors WikiProcessor].\n"
@@ -1413,7 +1417,7 @@ msgid ""
 "recommended to leave this option disabled."
 msgstr ""
 
-#: trac/wiki/api.py:277
+#: trac/wiki/api.py:275
 msgid ""
 "List of URI schemes considered \"safe\", that will be rendered as\n"
 "external links even if `[wiki] render_unsafe_content` is `false`."
@@ -1462,7 +1466,7 @@ msgid ""
 "}}}"
 msgstr ""
 
-#: trac/wiki/web_ui.py:57
+#: trac/wiki/web_ui.py:55
 msgid "Maximum allowed wiki page size in characters."
 msgstr ""
 
