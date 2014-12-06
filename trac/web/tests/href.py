@@ -84,6 +84,7 @@ class HrefTestCase(unittest.TestCase):
         self.assertEqual('/path/to/file/', href + '/path/to/file/')
         self.assertEqual('/path/to/file', href + 'path/to/file')
         self.assertEqual('/', href + '')
+        self.assertEqual('/?name=val', href + '?name=val')
 
     def test_params_subclasses(self):
         """Parameters passed using subclasses of dict, list and tuple."""
@@ -105,6 +106,21 @@ class HrefTestCase(unittest.TestCase):
                          href(MyList([('param', 'value'), ('other', 'other value')])))
         self.assertEqual('/base?param=value&other=other+value',
                          href(MyTuple([('param', 'value'), ('other', 'other value')])))
+
+    def test_add_unicode(self):
+        href = trac.web.href.Href('/base')
+        self.assertEqual('/base/p%C3%A4th/to/%20/file/',
+                         href + u'/päth/to/ /file/')
+        self.assertEqual('/base/p%C3%A4th/to/%20/file',
+                         href + u'päth/to/ /file')
+        self.assertEqual('/base?type=def%C3%A9ct&or&type=abc%20def',
+                         href + u'?type=deféct&or&type=abc def')
+        self.assertEqual('/base/p%C3%A4th/to/file/'
+                         '?type=def%C3%A9ct&or&type=abc%20def',
+                         href + u'/päth/to/file/?type=deféct&or&type=abc def')
+        self.assertEqual('/base/p%C3%A4th/to/file'
+                         '?type=def%C3%A9ct&or&type=abc%20def',
+                         href + u'päth/to/file?type=deféct&or&type=abc def')
 
 
 def suite():
