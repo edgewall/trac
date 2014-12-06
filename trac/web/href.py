@@ -187,12 +187,17 @@ class Href(object):
             self._derived[name] = lambda *args, **kw: self(name, *args, **kw)
         return self._derived[name]
 
+    _printable_safe = ''.join(map(chr, xrange(0x21, 0x7f)))
+
     def __add__(self, rhs):
-        if rhs.startswith('/'):
-            return self.base + rhs
-        if rhs:
-            return self.base + '/' + rhs
-        return self.base or '/'
+        if not rhs:
+            return self.base or '/'
+        if rhs.startswith('?'):
+            return (self.base or '/') + \
+                   unicode_quote(rhs, self._printable_safe)
+        if not rhs.startswith('/'):
+            rhs = '/' + rhs
+        return self.base + unicode_quote(rhs, self._printable_safe)
 
 
 if __name__ == '__main__':

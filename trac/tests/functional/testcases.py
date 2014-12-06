@@ -13,6 +13,7 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import os
+import re
 
 from trac.tests.functional import *
 from trac.util import create_file
@@ -331,6 +332,45 @@ class RaiseExceptionPlugin(Component):
             env.config.set('components', 'RaiseExceptionPlugin.*', 'disabled')
 
 
+class RegressionTestTicket11503a(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11503 a"""
+        base = self._tester.url
+
+        tc.go(base + '/notf%C5%91und/')
+        tc.notfind(internal_error)
+        tc.url(re.escape(base + '/notf%C5%91und') + r'\Z')
+
+        tc.go(base + '/notf%C5%91und/?type=def%C3%A9ct')
+        tc.notfind(internal_error)
+        tc.url(re.escape(base + '/notf%C5%91und?type=def%C3%A9ct') + r'\Z')
+
+        tc.go(base + '/notf%C5%91und/%252F/?type=%252F')
+        tc.notfind(internal_error)
+        tc.url(re.escape(base + '/notf%C5%91und/%252F?type=%252F') + r'\Z')
+
+
+class RegressionTestTicket11503b(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11503 b"""
+        env = self._testenv.get_trac_environment()
+        try:
+            env.config.set('mainnav', 'wiki.href',
+                           u'/wiki/SändBõx?action=history&blah=%252F')
+            env.config.save()
+            # reloads the environment
+            env = self._testenv.get_trac_environment()
+
+            self._tester.go_to_front()
+            tc.notfind(internal_error)
+            tc.find(' href="/wiki/S%C3%A4ndB%C3%B5x\?'
+                    'action=history&amp;blah=%252F"')
+        finally:
+            env.config.remove('mainnav', 'wiki.href')
+            env.config.save()
+
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
@@ -347,6 +387,8 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket3663())
     suite.addTest(RegressionTestTicket6318())
     suite.addTest(RegressionTestTicket11434())
+    suite.addTest(RegressionTestTicket11503a())
+    suite.addTest(RegressionTestTicket11503b())
     return suite
 
 
