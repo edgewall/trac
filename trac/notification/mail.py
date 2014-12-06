@@ -3,6 +3,9 @@
 # Copyright (C) 2003-2014 Edgewall Software
 # Copyright (C) 2003-2005 Daniel Lundin <daniel@edgewall.com>
 # Copyright (C) 2005-2006 Emmanuel Blot <emmanuel.blot@free.fr>
+# Copyright (C) 2008 Stephen Hansen
+# Copyright (C) 2009 Robert Corsaro
+# Copyright (C) 2010-2012 Steffen Hoffmann
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -17,24 +20,33 @@ import os
 import re
 import smtplib
 import time
+from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
+from email.Utils import formatdate, parseaddr, getaddresses
 from hashlib import md5
 from subprocess import Popen, PIPE
 
 from genshi.builder import tag
 
-from trac.config import BoolOption, ConfigurationError, IntOption, Option
+from trac import __version__
+from trac.config import (BoolOption, ConfigurationError, IntOption, Option,
+                         OrderedExtensionsOption)
 from trac.core import *
-from trac.notification.api import IEmailSender, NotificationSystem
-from trac.util.compat import close_fds
+from trac.notification.api import (get_target_id, IEmailAddressResolver,
+                                   IEmailDecorator, IEmailSender,
+                                   INotificationDistributor,
+                                   INotificationFormatter, NotificationSystem)
+from trac.util.compat import close_fds, set
 from trac.util.datefmt import to_utimestamp
 from trac.util.text import CRLF, fix_eol, to_unicode
 from trac.util.translation import _, tag_
 
 
-__all__ = ['EMAIL_LOOKALIKE_PATTERN', 'MAXHEADERLEN', 'RecipientMatcher',
-           'SendmailEmailSender', 'SmtpEmailSender', 'create_charset',
-           'create_header', 'create_message_id', 'create_mime_text']
+__all__ = ['AlwaysEmailDecorator', 'EMAIL_LOOKALIKE_PATTERN',
+           'EmailDistributor', 'MAXHEADERLEN', 'RecipientMatcher',
+           'SendmailEmailSender', 'SessionEmailResolver', 'SmtpEmailSender',
+           'create_charset', 'create_header', 'create_message_id',
+           'create_mime_text', 'set_header']
 
 
 MAXHEADERLEN = 76
@@ -96,6 +108,20 @@ def create_header(key, name, charset):
             pass
     return Header(name.encode(charset.output_codec), charset,
                   maxlinelen=maxlength)
+
+
+def set_header(message, key, value, charset):
+    """Create and add or replace a header."""
+    email = None
+    if isinstance(value, (tuple, list)):
+        value, email = value
+    header = create_header(key, value, charset)
+    if email:
+        header = '"%s" <%s>' % (header, email)
+    if message.has_key(key):
+        message.replace_header(key, header)
+    else:
+        message[key] = header
 
 
 def create_mime_text(body, format, charset):
@@ -185,6 +211,133 @@ class RecipientMatcher(object):
             return (sid, auth, mo.group(2))
         self.env.log.info("Invalid email address: %s", address)
         return None
+
+
+class EmailDistributor(Component):
+    """Distributes notification events as emails."""
+
+    implements(INotificationDistributor)
+
+    formatters = ExtensionPoint(INotificationFormatter)
+    decorators = ExtensionPoint(IEmailDecorator)
+
+    resolvers = OrderedExtensionsOption('notification',
+        'email_address_resolvers', IEmailAddressResolver,
+        'SessionEmailResolver',
+        """Comma seperated list of email resolver components in the order
+        they will be called.  If an email address is resolved, the remaining
+        resolvers will not be called.
+        """)
+
+    def __init__(self):
+        self._charset = create_charset(self.config.get('notification',
+                                                       'mime_encoding'))
+
+    # INotificationDistributor
+    def transports(self):
+        yield 'email'
+
+    def distribute(self, transport, recipients, event):
+        if transport != 'email':
+            return
+        if not self.config.getbool('notification', 'smtp_enabled'):
+            self.log.debug("EmailDistributor smtp_enabled set to false")
+            return
+
+        formats = {}
+        for f in self.formatters:
+            for style, realm in f.get_supported_styles(transport):
+                if realm == event.realm:
+                    formats[style] = f
+        if not formats:
+            self.log.error("EmailDistributor No formats found for %s %s",
+                           transport, event.realm)
+            return
+        self.log.debug("EmailDistributor has found the following formats "
+                       "capable of handling '%s' of '%s': %s", transport,
+                       event.realm, ', '.join(formats.keys()))
+
+        msgdict = {}
+        for sid, authed, addr, fmt in recipients:
+            if fmt not in formats:
+                self.log.debug("EmailDistributor format %s not available for "
+                               "%s %s", fmt, transport, event.realm)
+                continue
+
+            if sid and not addr:
+                for resolver in self.resolvers:
+                    addr = resolver.get_address_for_session(sid, authed)
+                    if addr:
+                        status = 'authenticated' if authed else \
+                                 'not authenticated'
+                        self.log.debug("EmailDistributor found the address "
+                                       "'%s' for '%s (%s)' via %s", addr, sid,
+                                       status, resolver.__class__.__name__)
+                        break
+            if addr:
+                msgdict.setdefault(fmt, set()).add(addr)
+            else:
+                status = 'authenticated' if authed else 'not authenticated'
+                self.log.debug("EmailDistributor was unable to find an "
+                               "address for: %s (%s)", sid, status)
+
+        for fmt, addrs in msgdict.iteritems():
+            self.log.debug("EmailDistributor is sending event as '%s' to: %s",
+                           fmt, ', '.join(addrs))
+            self._do_send(transport, event, fmt, addrs, formats[fmt])
+
+    def _do_send(self, transport, event, format, recipients, formatter):
+        output = formatter.format(transport, format, event)
+
+        config = self.config['notification']
+        smtp_from = config.get('smtp_from')
+        smtp_from_name = config.get('smtp_from_name') or self.env.project_name
+        smtp_reply_to = config.get('smtp_replyto')
+        use_public_cc = config.getbool('use_public_cc')
+
+        headers = dict()
+        headers['X-Mailer'] = 'Trac %s, by Edgewall Software' % __version__
+        headers['X-Trac-Version'] = __version__
+        headers['X-Trac-Project'] = self.env.project_name
+        headers['X-URL'] = self.env.project_url
+        headers['X-Trac-Realm'] = event.realm
+        headers['Precedence'] = 'bulk'
+        headers['Auto-Submitted'] = 'auto-generated'
+        targetid = get_target_id(event.target)
+        rootid = create_message_id(self.env, targetid, smtp_from, None,
+                                   more=event.realm)
+        if event.category == 'created':
+            headers['Message-ID'] = rootid
+        else:
+            headers['Message-ID'] = create_message_id(self.env, targetid,
+                                                      smtp_from, event.time,
+                                                      more=event.realm)
+            headers['In-Reply-To'] = rootid
+            headers['References'] = rootid
+        headers['Date'] = formatdate()
+        headers['From'] = (smtp_from_name, smtp_from) \
+                          if smtp_from_name else smtp_from
+        headers['To'] = 'undisclosed-recipients: ;'
+        if use_public_cc:
+            headers['Cc'] = ', '.join(recipients)
+        else:
+            headers['Bcc'] = ', '.join(recipients)
+        headers['Reply-To'] = smtp_reply_to
+
+        rootMessage = create_mime_text(output, 'plain', self._charset)
+        for k, v in headers.iteritems():
+            set_header(rootMessage, k, v, self._charset)
+        for decorator in self.decorators:
+            decorator.decorate_message(event, rootMessage, self._charset)
+
+        from_name, from_addr = parseaddr(str(rootMessage['From']))
+        to_addrs = [addr for name, addr in getaddresses(str(h) for h in
+                                            (rootMessage.get_all('To', []) +
+                                             rootMessage.get_all('Cc', []) +
+                                             rootMessage.get_all('Bcc', [])))]
+        del rootMessage['Bcc']
+        NotificationSystem(self.env).send_email(from_addr, to_addrs,
+                                                rootMessage.as_string())
 
 
 class SmtpEmailSender(Component):
@@ -284,3 +437,47 @@ class SendmailEmailSender(Component):
         if child.returncode or err:
             raise Exception("Sendmail failed with (%s, %s), command: '%s'"
                             % (child.returncode, err.strip(), cmdline))
+
+
+class SessionEmailResolver(Component):
+    """Gets the email address from the user preferences / session."""
+
+    implements(IEmailAddressResolver)
+
+    def get_address_for_session(self, sid, authenticated):
+        with self.env.db_query as db:
+            cursor = db.cursor()
+            cursor.execute("""
+                SELECT value
+                  FROM session_attribute
+                 WHERE sid=%s
+                   AND authenticated=%s
+                   AND name=%s
+            """, (sid, 1 if authenticated else 0, 'email'))
+            result = cursor.fetchone()
+            if result:
+                return result[0]
+            return None
+
+
+class AlwaysEmailDecorator(Component):
+    """Implement a policy to -always- send an email to a certain address.
+
+    Controlled via the smtp_always_cc and smtp_always_bcc option in the
+    notification section of trac.ini.
+    """
+
+    implements(IEmailDecorator)
+
+    def decorate_message(self, event, message, charset):
+        always_cc = self.config.get('notification', 'smtp_always_cc')
+        always_bcc = self.config.get('notification', 'smtp_always_bcc')
+        for k, v in {'Cc': always_cc, 'Bcc': always_bcc}.items():
+            if v:
+                self.log.debug("AlwaysEmailDecorator added '%s' because "
+                               "of rule: smtp_always_%s", v, k.lower())
+                if message[k] and len(str(message[k]).split(',')) > 0:
+                    recips = ', '.join([str(message[k]), v])
+                else:
+                    recips = v
+                set_header(message, k, recips, charset)

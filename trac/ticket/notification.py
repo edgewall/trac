@@ -24,8 +24,11 @@ from genshi.template.text import NewTextTemplate
 from trac.attachment import IAttachmentChangeListener
 from trac.core import *
 from trac.config import *
-from trac.notification import NotifyEmail
-from trac.notification.mail import create_message_id
+from trac.notification.api import (IEmailDecorator, INotificationFormatter,
+                                   NotificationEvent, NotificationSystem)
+from trac.notification.compat import NotifyEmail
+from trac.notification.mail import (RecipientMatcher, create_message_id,
+                                    set_header)
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Ticket
 from trac.util.datefmt import format_date_or_datetime, get_timezone, utc
@@ -74,6 +77,19 @@ class TicketNotificationSystem(Component):
         expected by most users. If `double`, twice the width of
         US-ASCII characters.  This is expected by CJK users. (''since
         0.12.2'')""")
+
+
+def send_ticket_event(env, config, event):
+    if event.category == 'batchmodify':
+        notify = BatchTicketNotifyEmail(env)
+        to, cc = notify.get_recipients(event.target)
+    else:
+        to, cc, r, o = get_ticket_notification_recipients(env, config,
+                                                          event.target.id, [])
+    matcher = RecipientMatcher(env)
+    recipients = [matcher.match_recipient(addr) for addr in to + cc]
+    subscriptions = [r + ('email', 'text/plain') for r in recipients if r]
+    NotificationSystem(env).distribute_event(event, subscriptions)
 
 
 def get_ticket_notification_recipients(env, config, tktid, prev_cc=None,
@@ -141,6 +157,78 @@ def get_ticket_notification_recipients(env, config, tktid, prev_cc=None,
            tkt['reporter'], tkt['owner']
 
 
+class TicketChangeEvent(NotificationEvent):
+    """Represent a ticket change `NotificationEvent`."""
+
+    def __init__(self, category, target, time, author, comment=None,
+                 changes={}, attachment=None):
+        super(TicketChangeEvent, self).__init__('ticket', category, target,
+                                                time, author)
+        self.comment = comment
+        self.changes = changes
+        self.attachment = attachment
+
+
+class BatchTicketChangeEvent(NotificationEvent):
+    """Represent a ticket batch modify `NotificationEvent`."""
+
+    def __init__(self, targets, time, author, comment, new_values, action):
+        super(BatchTicketChangeEvent, self).__init__('ticket', 'batchmodify',
+                                                     targets, time, author)
+        self.comment = comment
+        self.new_values = new_values
+        self.action = action
+
+
+class TicketFormatter(Component):
+    """Format `TicketChangeEvent` notifications."""
+
+    implements(INotificationFormatter, IEmailDecorator)
+
+    def get_supported_styles(self, transport):
+        yield ('text/plain', 'ticket')
+
+    def format(self, transport, style, event):
+        if event.realm != 'ticket':
+            return
+        if event.category == 'batchmodify':
+            return self._format_plaintext_batchmodify(event)
+        if event.category in ('attachment added', 'attachment deleted'):
+            return self._format_plaintext_attachment(event)
+        else:
+            return self._format_plaintext(event)
+
+    def _format_plaintext(self, event):
+        notify = TicketNotifyEmail(self.env)
+        return notify.format(event.target, event.category == 'created',
+                             event.time)
+
+    def _format_plaintext_attachment(self, event):
+        notify = TicketNotifyEmail(self.env)
+        return notify.format_attachment(event.target, event.attachment,
+                                        event.category == 'attachment added')
+
+    def _format_plaintext_batchmodify(self, event):
+        notify = BatchTicketNotifyEmail(self.env)
+        return notify.format(event.target, event.new_values, event.comment,
+                             event.action, event.author)
+
+    def decorate_message(self, event, message, charset):
+        if event.realm != 'ticket':
+            return
+        if event.category == 'batchmodify':
+            notify = BatchTicketNotifyEmail(self.env)
+            tickets = event.target
+            tickets_descr = ', '.join(['#%s' % t for t in tickets])
+            subject = notify.format_subj(tickets_descr)
+        else:
+            notify = TicketNotifyEmail(self.env)
+            notify.ticket = event.target
+            summary = event.target['summary']
+            subject = notify.format_subj(summary, event.category == 'created')
+        set_header(message, 'Subject', subject, charset)
+
+
 class TicketNotifyEmail(NotifyEmail):
     """Notification of ticket changes."""
 
@@ -162,6 +250,32 @@ class TicketNotifyEmail(NotifyEmail):
 
     def notify(self, ticket, newticket=True, modtime=None):
         """Send ticket change notification e-mail (untranslated)"""
+        with _translation_deactivated(ticket):
+            author = self._prepare_body(ticket, newticket, modtime)
+            subject = self.data['subject']
+            super(TicketNotifyEmail, self).notify(ticket.id, subject, author)
+
+    def notify_attachment(self, ticket, attachment, added=True):
+        """Send ticket attachment notification (untranslated)"""
+        with _translation_deactivated(ticket):
+            self._prepare_body_attachment(ticket, attachment, added)
+            author = attachment.author
+            subject = self.data['subject']
+            super(TicketNotifyEmail, self).notify(ticket.id, subject, author)
+
+    def format(self, ticket, newticket=True, modtime=None):
+        """Format ticket change notification e-mail (untranslated)"""
+        with _translation_deactivated(ticket):
+            self._prepare_body(ticket, newticket, modtime)
+            return self._format_body()
+
+    def format_attachment(self, ticket, attachment, added=True):
+        """Format ticket attachment notification e-mail (untranslated)"""
+        with _translation_deactivated(ticket):
+            self._prepare_body_attachment(ticket, attachment, added)
+            return self._format_body()
+
+    def _prepare_body(self, ticket, newticket, modtime):
         self.ticket = ticket
         self.modtime = modtime
         self.newticket = newticket
@@ -262,20 +376,18 @@ class TicketNotifyEmail(NotifyEmail):
 
         subject = self.format_subj(summary, newticket)
 
-        with _translation_deactivated(ticket):
-            self.data.update({
-                'ticket_props': self.format_props(),
-                'ticket_body_hdr': self.format_hdr(),
-                'subject': subject,
-                'ticket': ticket_values,
-                'changes_body': changes_body,
-                'changes_descr': changes_descr,
-                'change': change_data
-            })
-            super(TicketNotifyEmail, self).notify(ticket.id, subject, author)
+        self.data.update({
+            'ticket_props': self.format_props(),
+            'ticket_body_hdr': self.format_hdr(),
+            'subject': subject,
+            'ticket': ticket_values,
+            'changes_body': changes_body,
+            'changes_descr': changes_descr,
+            'change': change_data
+        })
+        return author
 
-    def notify_attachment(self, ticket, attachment, added=True):
-        """Send ticket attachment notification (untranslated)"""
+    def _prepare_body_attachment(self, ticket, attachment, added):
         self.ticket = ticket
         self.modtime = attachment.date or datetime.now(utc)
         self.newticket = False
@@ -304,17 +416,16 @@ class TicketNotifyEmail(NotifyEmail):
         ticket_values['new'] = self.newticket
         ticket_values['link'] = link
         subject = self.format_subj(summary, False)
-        with _translation_deactivated(ticket):
-            self.data.update({
-                'ticket_props': self.format_props(),
-                'ticket_body_hdr': self.format_hdr(),
-                'subject': subject,
-                'ticket': ticket_values,
-                'changes_body': changes_body,
-                'changes_descr': '',
-                'change': {'author': self.obfuscate_email(author)},
-            })
-            super(TicketNotifyEmail, self).notify(ticket.id, subject, author)
+
+        self.data.update({
+            'ticket_props': self.format_props(),
+            'ticket_body_hdr': self.format_hdr(),
+            'subject': subject,
+            'ticket': ticket_values,
+            'changes_body': changes_body,
+            'changes_descr': '',
+            'change': {'author': self.obfuscate_email(author)},
+        })
 
     def format_props(self):
         tkt = self.ticket
@@ -513,10 +624,10 @@ class TicketAttachmentNotifier(Component):
     # IAttachmentChangeListener methods
 
     def attachment_added(self, attachment):
-        self._notify_attachment(attachment, True)
+        self._notify_attachment(attachment, 'attachment added')
 
     def attachment_deleted(self, attachment):
-        self._notify_attachment(attachment, False)
+        self._notify_attachment(attachment, 'attachment deleted')
 
     def attachment_reparented(self, attachment, old_parent_realm,
                               old_parent_id):
@@ -524,14 +635,15 @@ class TicketAttachmentNotifier(Component):
 
     # Internal methods
 
-    def _notify_attachment(self, attachment, added):
+    def _notify_attachment(self, attachment, category):
         resource = attachment.resource.parent
         if resource.realm != 'ticket':
             return
         ticket = Ticket(self.env, resource.id)
-        tn = TicketNotifyEmail(self.env)
+        event = TicketChangeEvent(category, ticket, None, ticket['reporter'],
+                                  attachment=attachment)
         try:
-            tn.notify_attachment(ticket, attachment, added)
+            send_ticket_event(self.env, self.config, event)
         except Exception, e:
             self.log.error("Failure sending notification when adding "
                            "attachment %s to ticket #%s: %s",
@@ -553,6 +665,20 @@ class BatchTicketNotifyEmail(NotifyEmail):
             self._notify(tickets, new_values, comment, action, author)
 
     def _notify(self, tickets, new_values, comment, action, author):
+        self._prepare_body(tickets, new_values, comment, action, author)
+        subject = self.data['subject']
+        super(BatchTicketNotifyEmail, self).notify(tickets, subject, author)
+
+    def format(self, tickets, new_values, comment, action, author):
+        """Format batch ticket change notification e-mail (untranslated)"""
+        t = deactivate()
+        try:
+            self._prepare_body(tickets, new_values, comment, action, author)
+            return self._format_body()
+        finally:
+            reactivate(t)
+
+    def _prepare_body(self, tickets, new_values, comment, action, author):
         self.tickets = tickets
         self.reporter = ''
         self.owner = ''
@@ -570,7 +696,6 @@ class BatchTicketNotifyEmail(NotifyEmail):
             'subject': subject,
             'ticket_query_link': link,
         })
-        super(BatchTicketNotifyEmail, self).notify(tickets, subject, author)
 
     def format_subj(self, tickets_descr):
         template = self.config.get('notification', 'batch_subject_template')

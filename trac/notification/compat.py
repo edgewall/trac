@@ -165,15 +165,18 @@ class NotifyEmail(Notify):
             return self.format_header(key, mo.group(1), mo.group(2))
         return self.format_header(key, value)
 
-    def send(self, torcpts, ccrcpts, mime_headers={}):
-        from email.Utils import formatdate
+    def _format_body(self):
         stream = self.template.generate(**self.data)
         # don't translate the e-mail stream
         t = deactivate()
         try:
-            body = stream.render('text', encoding='utf-8')
+            return stream.render('text', encoding='utf-8')
         finally:
             reactivate(t)
+
+    def send(self, torcpts, ccrcpts, mime_headers={}):
+        from email.Utils import formatdate
+        body = self._format_body()
         public_cc = self.config.getbool('notification', 'use_public_cc')
         headers = {
             'X-Mailer': 'Trac %s, by Edgewall Software' % __version__,

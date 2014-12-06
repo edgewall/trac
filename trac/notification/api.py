@@ -3,6 +3,9 @@
 # Copyright (C) 2003-2014 Edgewall Software
 # Copyright (C) 2003-2005 Daniel Lundin <daniel@edgewall.com>
 # Copyright (C) 2005-2006 Emmanuel Blot <emmanuel.blot@free.fr>
+# Copyright (C) 2008 Stephen Hansen
+# Copyright (C) 2009 Robert Corsaro
+# Copyright (C) 2010-2012 Steffen Hoffmann
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -15,9 +18,72 @@
 
 from trac.config import BoolOption, ExtensionOption, ListOption, Option
 from trac.core import *
+from trac.util.compat import set
 
 
-__all__ = ['IEmailSender', 'NotificationSystem']
+__all__ = ['IEmailAddressResolver', 'IEmailDecorator', 'IEmailSender',
+           'INotificationDistributor', 'INotificationFormatter',
+           'NotificationEvent', 'NotificationSystem', 'get_target_id']
+
+
+class INotificationDistributor(Interface):
+    """Deliver events over some transport (i.e. messaging protocol)."""
+
+    def transports(self):
+        """Return a list of supported transport names."""
+
+    def distribute(self, transport, recipients, event):
+        """Distribute the notification event.
+
+        :param transport: the name of a supported transport
+        :param recipients: a list of (sid, authenticated, address, format)
+                           tuples, where either `sid` or `address` can be
+                           `None`
+        :param event: a `NotificationEvent`
+        """
+
+
+class INotificationFormatter(Interface):
+    """Convert events into messages appropriate for a given transport."""
+
+    def get_supported_styles(self, transport):
+        """Return a list of supported styles.
+
+        :param transport: the name of a transport
+        :return: a list of tuples (style, realm)
+        """
+
+    def format(self, transport, style, event):
+        """Convert the event to an appropriate message.
+
+        :param transport: the name of a transport
+        :param style: the name of a supported style
+        :return: The return type of this method depends on transport and must
+                 be compatible with the `INotificationDistributor` that
+                 handles messages for this transport.
+        """
+
+
+class IEmailAddressResolver(Interface):
+    """Map sessions to email addresses."""
+
+    def get_address_for_session(self, sid, authenticated):
+        """Map a session id and authenticated flag to an e-mail address.
+
+        :param sid: the session id
+        :param authenticated: 1 for authenticated sessions, 0 otherwise
+        :return: an email address or `None`
+        """
+
+
+class IEmailDecorator(Interface):
+    def decorate_message(self, event, message, charset):
+        """Manipulate the message before it is sent on it's way.
+
+        :param event: a `NotificationEvent`
+        :param message: an `email.message.Message` to manipulate
+        :param charset: the `email.charset.Charset` to use
+        """
 
 
 class IEmailSender(Interface):
@@ -25,6 +91,40 @@ class IEmailSender(Interface):
 
     def send(self, from_addr, recipients, message):
         """Send message to recipients."""
+
+
+def get_target_id(target):
+    """Extract the resource ID from event targets.
+
+    :param target: a resource model (e.g. `Ticket` or `WikiPage`)
+    :return: the resource ID
+    """
+    # Common Trac resource.
+    if hasattr(target, 'id'):
+        return str(target.id)
+    # Wiki page special case.
+    elif hasattr(target, 'name'):
+        return target.name
+    # Last resort: just stringify.
+    return str(target)
+
+
+class NotificationEvent(object):
+    """All data related to a particular notification event.
+
+    :param realm: the resource realm (e.g. 'ticket' or 'wiki')
+    :param category: the kind of event that happened to the resource
+                     (e.g. 'created', 'changed' or 'deleted')
+    :param target: the resource model (e.g. Ticket or WikiPage) or `None`
+    :param time: the `datetime` when the event happened
+    """
+
+    def __init__(self, realm, category, target, time, author=""):
+        self.realm = realm
+        self.category = category
+        self.target = target
+        self.time = time
+        self.author = author
 
 
 class NotificationSystem(Component):
@@ -123,6 +223,8 @@ class NotificationSystem(Component):
         will disable it.
         """)
 
+    distributors = ExtensionPoint(INotificationDistributor)
+
     @property
     def smtp_always_cc(self):  # For backward compatibility
         return self.config.get('notification', 'smtp_always_cc')
@@ -142,3 +244,22 @@ class NotificationSystem(Component):
     def send_email(self, from_addr, recipients, message):
         """Send message to recipients via e-mail."""
         self.email_sender.send(from_addr, recipients, message)
+
+    def distribute_event(self, event, subscriptions):
+        """Distribute a event to all subscriptions.
+
+        :param event: a `NotificationEvent`
+        :param subscriptions: a list of tuples (sid, authenticated, address,
+                              transport, format) where either sid or
+                              address can be `None`
+        """
+        packages = {}
+        for sid, authenticated, address, transport, format in subscriptions:
+            package = packages.setdefault(transport, set())
+            package.add((sid, authenticated, address, format))
+        for distributor in self.distributors:
+            for transport in distributor.transports():
+                if transport in packages:
+                    recipients = list(packages[transport])
+                    distributor.distribute(transport, recipients, event)
+

@@ -45,7 +45,7 @@ from trac.core import Component, implements
 from trac.perm import PermissionCache
 from trac.resource import Resource
 from trac.ticket import Ticket
-from trac.ticket.notification import TicketNotifyEmail
+from trac.ticket.notification import send_ticket_event, TicketChangeEvent
 from trac.util.datefmt import utc
 from trac.util.text import exception_to_unicode
 from trac.util.translation import _, cleandoc_
@@ -231,18 +231,18 @@ In [changeset:"%s" %s]:
                     if save:
                         ticket.save_changes(authname, comment, date)
                 if save:
-                    self._notify(ticket, date)
+                    self._notify(ticket, date, changeset.author, comment)
             except Exception as e:
                 self.log.error("Unexpected error while processing ticket "
                                "#%s: %s", tkt_id, exception_to_unicode(e))
 
-    def _notify(self, ticket, date):
+    def _notify(self, ticket, date, author, comment):
         """Send a ticket update notification."""
         if not self.notify:
             return
-        tn = TicketNotifyEmail(self.env)
+        event = TicketChangeEvent('changed', ticket, date, author, comment)
         try:
-            tn.notify(ticket, newticket=False, modtime=date)
+            send_ticket_event(self.env, self.config, event)
         except Exception as e:
             self.log.error("Failure sending notification on change to "
                            "ticket #%s: %s", ticket.id,
