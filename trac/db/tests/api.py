@@ -513,6 +513,11 @@ class DatabaseManagerTestCase(unittest.TestCase):
         self.dbm.set_database_version(new_db_version)
         self.assertEqual(new_db_version, self.dbm.get_database_version())
 
+        # Restore the previous version to avoid destroying the database
+        # on teardown
+        self.dbm.set_database_version(default_db_version)
+        self.assertEqual(default_db_version, self.dbm.get_database_version())
+
     def test_set_get_plugin_database_version(self):
         """Get and set database version for an entry with an
         arbitrary name.
