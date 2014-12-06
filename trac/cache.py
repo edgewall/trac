@@ -14,7 +14,6 @@
 import functools
 
 from trac.core import Component
-from trac.util import arity
 from trac.util.concurrency import ThreadLocal, threading
 
 __all__ = ['CacheManager', 'cached']
