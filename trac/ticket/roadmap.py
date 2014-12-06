@@ -35,7 +35,7 @@ from trac.util.datefmt import parse_date, utc, pretty_timedelta, to_datetime, \
 from trac.util.text import CRLF, exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.ticket.api import TicketSystem
-from trac.ticket.notification import BatchTicketNotifyEmail
+from trac.ticket.notification import send_ticket_event, BatchTicketChangeEvent
 from trac.ticket.model import Milestone, MilestoneCache, Ticket, \
                               group_milestones
 from trac.timeline.api import ITimelineEventProvider
@@ -775,10 +775,11 @@ class MilestoneModule(Component):
                 new_values = {'milestone': retarget_to}
                 comment = comment or \
                           _("Open tickets retargeted after milestone closed")
-                tn = BatchTicketNotifyEmail(self.env)
+                event = BatchTicketChangeEvent(retargeted_tickets, None,
+                                               req.authname, comment,
+                                               new_values, None)
                 try:
-                    tn.notify(retargeted_tickets, new_values, comment, None,
-                              req.authname)
+                    send_ticket_event(self.env, self.config, event)
                 except Exception as e:
                     self.log.error("Failure sending notification on ticket "
                                    "batch change: %s",
@@ -827,10 +828,11 @@ class MilestoneModule(Component):
                               retarget=retarget_to))
             new_values = {'milestone': retarget_to}
             comment = _("Tickets retargeted after milestone deleted")
-            tn = BatchTicketNotifyEmail(self.env)
+            event = BatchTicketChangeEvent(retargeted_tickets, None,
+                                           req.authname, comment, new_values,
+                                           None)
             try:
-                tn.notify(retargeted_tickets, new_values, comment, None,
-                          req.authname)
+                send_ticket_event(self.env, self.config, event)
             except Exception as e:
                 self.log.error("Failure sending notification on ticket batch "
                                "change: %s", exception_to_unicode(e))
