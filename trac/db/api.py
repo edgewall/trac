@@ -358,8 +358,41 @@ class DatabaseManager(Component):
             db = ConnectionWrapper(db, readonly=True)
         return db
 
+    def get_database_version(self, name='database_version'):
+        """Returns the database version from the SYSTEM table as an int,
+        or `False` if the entry is not found.
+
+        :param name: The name of the entry that contains the database version
+                     in the SYSTEM table. Defaults to `database_version`,
+                     which contains the database version for Trac.
+        """
+        rows = self.env.db_query("""
+                SELECT value FROM system WHERE name=%s
+                """, (name,))
+        return int(rows[0][0]) if rows else False
+
     def get_exceptions(self):
         return self.get_connector()[0].get_exceptions()
+
+    def set_database_version(self, version, name='database_version'):
+        """Sets the database version in the SYSTEM table.
+
+        :param version: an integer database version.
+        :param name: The name of the entry that contains the database version
+                     in the SYSTEM table. Defaults to `database_version`,
+                     which contains the database version for Trac.
+        """
+        current_database_version = self.get_database_version(name)
+        if current_database_version is False:
+            self.env.db_transaction("""
+                    INSERT INTO system (name, value) VALUES (%s, %s)
+                    """, (name, version))
+        else:
+            self.env.db_transaction("""
+                    UPDATE system SET value=%s WHERE name=%s
+                    """, (version, name))
+            self.log.info("Upgraded %s from %d to %d",
+                          name, current_database_version, version)
 
     def shutdown(self, tid=None):
         if self._cnx_pool:

@@ -605,7 +605,8 @@ class Environment(Component, ComponentManager):
 
         :since 1.0.2:
         """
-        return self.get_version()
+        return DatabaseManager(self)\
+               .get_database_version('database_version')
 
     @lazy
     def database_initial_version(self):
@@ -616,7 +617,8 @@ class Environment(Component, ComponentManager):
 
         :since 1.0.2:
         """
-        return self.get_version(initial=True)
+        return DatabaseManager(self) \
+               .get_database_version('initial_database_version')
 
     def get_version(self, initial=False):
         """Return the current version of the database.  If the
@@ -630,13 +632,11 @@ class Environment(Component, ComponentManager):
 
         :since 1.0.2: The lazily-evaluated attributes `database_version` and
                       `database_initial_version` should be used instead. This
-                      method will be renamed to a private method in
-                      release 1.3.1.
+                      method will be removed in release 1.3.1.
         """
-        rows = self.db_query("""
-                SELECT value FROM system WHERE name='%sdatabase_version'
-                """ % ('initial_' if initial else ''))
-        return int(rows[0][0]) if rows else False
+        dbm = DatabaseManager(self)
+        return dbm.get_database_version(
+            '{0}database_version'.format('initial_' if initial else ''))
 
     def setup_config(self):
         """Load the configuration file."""
@@ -803,6 +803,7 @@ class EnvironmentSetup(Component):
         """Each db version should have its own upgrade module, named
         upgrades/dbN.py, where 'N' is the version number (int).
         """
+        dbm = DatabaseManager(self)
         dbver = self.env.database_version
         with self.env.db_transaction as db:
             cursor = db.cursor()
@@ -817,11 +818,7 @@ class EnvironmentSetup(Component):
                                       "(%(version)s.py)", num=i,
                                       version=name))
                 script.do_upgrade(self.env, i, cursor)
-                cursor.execute("""
-                    UPDATE system SET value=%s WHERE name='database_version'
-                    """, (i,))
-                self.log.info("Upgraded database version from %d to %d",
-                              i - 1, i)
+                dbm.set_database_version(i)
                 db.commit()
         self._update_sample_config()
 

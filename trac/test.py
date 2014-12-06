@@ -398,8 +398,8 @@ class EnvironmentStub(Environment):
                                    % (table, ','.join(cols),
                                       ','.join(['%s'] * len(cols))), vals)
             else:
-                db("INSERT INTO system (name, value) VALUES (%s, %s)",
-                   ('database_version', str(db_default.db_version)))
+                dbm = DatabaseManager(self)
+                dbm.set_database_version(db_default.db_version)
 
     def destroy_db(self, scheme=None, db_prop=None):
         if not (scheme and db_prop):

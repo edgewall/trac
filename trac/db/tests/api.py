@@ -17,7 +17,8 @@ import unittest
 import trac.tests.compat
 from trac.db.api import DatabaseManager, _parse_db_str, get_column_names, \
                         with_transaction
-from trac.db_default import schema as default_schema
+from trac.db_default import (schema as default_schema,
+                             db_version as default_db_version)
 from trac.db.schema import Column, Table
 from trac.test import EnvironmentStub, Mock
 from trac.util.concurrency import ThreadLocal
@@ -489,12 +490,48 @@ class ConnectionTestCase(unittest.TestCase):
                     self.assertIn(column.name, db_columns)
 
 
+class DatabaseManagerTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True)
+        self.dbm = DatabaseManager(self.env)
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def test_get_default_database_version(self):
+        """Get database version for the default entry named
+        `database_version`.
+        """
+        self.assertEqual(default_db_version, self.dbm.get_database_version())
+
+    def test_set_default_database_version(self):
+        """Set database version for the default entry named
+        `database_version`.
+        """
+        new_db_version = default_db_version + 1
+        self.dbm.set_database_version(new_db_version)
+        self.assertEqual(new_db_version, self.dbm.get_database_version())
+
+    def test_set_get_plugin_database_version(self):
+        """Get and set database version for an entry with an
+        arbitrary name.
+        """
+        name = 'a_trac_plugin_version'
+        db_ver = 1
+
+        self.assertFalse(self.dbm.get_database_version(name))
+        self.dbm.set_database_version(db_ver, name)
+        self.assertEqual(db_ver, self.dbm.get_database_version(name))
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ParseConnectionStringTestCase))
     suite.addTest(unittest.makeSuite(StringsTestCase))
     suite.addTest(unittest.makeSuite(ConnectionTestCase))
     suite.addTest(unittest.makeSuite(WithTransactionTest))
+    suite.addTest(unittest.makeSuite(DatabaseManagerTestCase))
     return suite
 
 
