@@ -803,7 +803,7 @@ class EnvironmentSetup(Component):
         """Each db version should have its own upgrade module, named
         upgrades/dbN.py, where 'N' is the version number (int).
         """
-        dbm = DatabaseManager(self)
+        dbm = DatabaseManager(self.env)
         dbver = self.env.database_version
         with self.env.db_transaction as db:
             cursor = db.cursor()
