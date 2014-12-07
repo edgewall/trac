@@ -85,7 +85,7 @@ class CachedProperty(CachedPropertyBase):
     multiple instances associated to a single `~trac.env.Environment`
     instance.
 
-    As we'll have potential many different caches to monitor for this
+    As we'll have potentially many different caches to monitor for this
     kind of cache, the key needs to be augmented by a string unique to
     each instance of the owner class.  As the resulting id will be
     different for each instance of the owner class, we can't store it
@@ -212,7 +212,7 @@ class CacheManager(Component):
 
         # Try the thread-local copy first
         try:
-            (data, generation) = local_cache[id]
+            data, generation = local_cache[id]
             if generation == db_generation:
                 return data
         except KeyError:
@@ -222,7 +222,7 @@ class CacheManager(Component):
             with self._lock:
                 # Get data from the process cache
                 try:
-                    (data, generation) = local_cache[id] = self._cache[id]
+                    data, generation = local_cache[id] = self._cache[id]
                     if generation == db_generation:
                         return data
                 except KeyError:
@@ -240,7 +240,7 @@ class CacheManager(Component):
 
                 # Retrieve data from the database
                 data = retriever(instance)
-                local_cache[id] = self._cache[id] = (data, db_generation)
+                local_cache[id] = self._cache[id] = data, db_generation
                 local_meta[id] = db_generation
                 return data
 
