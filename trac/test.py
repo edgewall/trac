@@ -424,7 +424,7 @@ class EnvironmentStub(Environment):
             return True
         return Environment.is_component_enabled(self, cls)
 
-    def get_known_users(self, cnx=None):
+    def get_known_users(self):
         return self.known_users
 
 
