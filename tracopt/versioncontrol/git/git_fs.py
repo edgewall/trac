@@ -282,8 +282,13 @@ class GitConnector(Component):
         """)
 
     trac_user_rlookup = BoolOption('git', 'trac_user_rlookup', 'false',
-        """Enable reverse mapping of git email addresses to trac user ids
-        (costly if you have many users).""")
+        """Enable reverse mapping of git email addresses to trac user ids.
+        Performance will be reduced if there are many users and the
+        `cached_repository` option is `disabled`.
+
+        A repository resync is required after changing the value of this
+        option.
+        """)
 
     use_committer_id = BoolOption('git', 'use_committer_id', 'true',
         """Use git-committer id instead of git-author id for the
