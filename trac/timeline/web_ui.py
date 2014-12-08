@@ -193,8 +193,7 @@ class TimelineModule(Component):
             try:
                 for event in provider.get_timeline_events(req, start, stop,
                                                           filters) or []:
-                    # Check for 0.10 events
-                    author = (event[2 if len(event) < 6 else 4] or '').lower()
+                    author = (event[2] or '').lower()
                     if (not include or author in include) \
                        and not author in exclude:
                         events.append(self._event_data(provider, event))
@@ -369,17 +368,12 @@ class TimelineModule(Component):
     def _event_data(self, provider, event):
         """Compose the timeline event date from the event tuple and prepared
         provider methods"""
-        if len(event) == 6:  # 0.10 events
-            kind, url, title, date, author, markup = event
-            data = {'url': url, 'title': title, 'description': markup}
-            render = lambda field, context: data.get(field)
-        else:  # 0.11 events
-            if len(event) == 5:  # with special provider
-                kind, date, author, data, provider = event
-            else:
-                kind, date, author, data = event
-            render = lambda field, context: \
-                     provider.render_timeline_event(context, field, event)
+        if len(event) == 5:  # with special provider
+            kind, date, author, data, provider = event
+        else:
+            kind, date, author, data = event
+        render = lambda field, context: \
+                 provider.render_timeline_event(context, field, event)
         if not isinstance(date, datetime):
             date = datetime.fromtimestamp(date, utc)
         dateuid = to_utimestamp(date)
