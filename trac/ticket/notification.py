@@ -16,6 +16,7 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 #
 
+import re
 from contextlib import contextmanager
 from datetime import datetime
 
@@ -25,16 +26,18 @@ from trac.attachment import IAttachmentChangeListener
 from trac.core import *
 from trac.config import *
 from trac.notification.api import (IEmailDecorator, INotificationFormatter,
+                                   INotificationSubscriber,
                                    NotificationEvent, NotificationSystem)
 from trac.notification.compat import NotifyEmail
 from trac.notification.mail import (RecipientMatcher, create_message_id,
                                     set_header)
+from trac.notification.model import Subscription
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Ticket
 from trac.util.datefmt import format_date_or_datetime, get_timezone, utc
 from trac.util.text import exception_to_unicode, obfuscate_email_address, \
                            shorten_line, text_width, wrap
-from trac.util.translation import deactivate, reactivate
+from trac.util.translation import _, deactivate, reactivate
 
 
 class TicketNotificationSystem(Component):
@@ -77,19 +80,6 @@ class TicketNotificationSystem(Component):
         expected by most users. If `double`, twice the width of
         US-ASCII characters.  This is expected by CJK users. (''since
         0.12.2'')""")
-
-
-def send_ticket_event(env, config, event):
-    if event.category == 'batchmodify':
-        notify = BatchTicketNotifyEmail(env)
-        to, cc = notify.get_recipients(event.target)
-    else:
-        to, cc, r, o = get_ticket_notification_recipients(env, config,
-                                                          event.target.id, [])
-    matcher = RecipientMatcher(env)
-    recipients = [matcher.match_recipient(addr) for addr in to + cc]
-    subscriptions = [r + ('email', 'text/plain') for r in recipients if r]
-    NotificationSystem(env).distribute_event(event, subscriptions)
 
 
 def get_ticket_notification_recipients(env, config, tktid, prev_cc=None,
@@ -179,6 +169,12 @@ class BatchTicketChangeEvent(NotificationEvent):
         self.new_values = new_values
         self.action = action
 
+    def get_ticket_change_events(self, env):
+        for id in self.target:
+            model = Ticket(env, id)
+            yield TicketChangeEvent('changed', model, self.time, self.author,
+                                    self.comment)
+
 
 class TicketFormatter(Component):
     """Format `TicketChangeEvent` notifications."""
@@ -227,6 +223,244 @@ class TicketFormatter(Component):
             summary = event.target['summary']
             subject = notify.format_subj(summary, event.category == 'created')
         set_header(message, 'Subject', subject, charset)
+
+
+class TicketOwnerSubscriber(Component):
+    """Allows ticket owners to subscribe to their tickets."""
+
+    implements(INotificationSubscriber)
+
+    def matches(self, event):
+        if event.realm != 'ticket':
+            return
+        if event.category == 'batchmodify':
+            for ticket_event in event.get_ticket_change_events(self.env):
+                for m in self.matches(ticket_event):
+                    yield m
+            return
+        if event.category not in ('created', 'changed', 'attachment added',
+                                  'attachment deleted'):
+            return
+        ticket = event.target
+
+        matcher = RecipientMatcher(self.env)
+        recipient = matcher.match_recipient(ticket['owner'])
+        if not recipient:
+            return
+        sid, auth, addr = recipient
+
+        # Default subscription
+        for s in self.default_subscriptions():
+            yield (s[0], s[1], sid, auth, addr, 'text/plain', s[2], s[3])
+
+        if sid:
+            klass = self.__class__.__name__
+            for s in Subscription.find_by_sids_and_class(self.env,
+                    ((sid,auth),), klass):
+                yield s.subscription_tuple()
+
+
+    def description(self):
+        return _("Ticket that I own is created or modified")
+
+    def default_subscriptions(self):
+        if self.config.getbool('notification', 'always_notify_owner'):
+            yield (self.__class__.__name__, 'email', 100, 'always')
+
+    def requires_authentication(self):
+        return True
+
+
+class TicketUpdaterSubscriber(Component):
+    """Allows updaters to subscribe to their own updates."""
+
+    implements(INotificationSubscriber)
+
+    def matches(self, event):
+        if event.realm != 'ticket':
+            return
+        if event.category == 'batchmodify':
+            for ticket_event in event.get_ticket_change_events(self.env):
+                for m in self.matches(ticket_event):
+                    yield m
+            return
+        if event.category not in ('created', 'changed', 'attachment added',
+                                  'attachment deleted'):
+            return
+
+        matcher = RecipientMatcher(self.env)
+        recipient = matcher.match_recipient(event.author)
+        if not recipient:
+            return
+        sid, auth, addr = recipient
+
+        # Default subscription
+        for s in self.default_subscriptions():
+            yield (s[0], s[1], sid, auth, addr, 'text/plain', s[2], s[3])
+
+        if sid:
+            klass = self.__class__.__name__
+            for s in Subscription.find_by_sids_and_class(self.env,
+                    ((sid,auth),), klass):
+                yield s.subscription_tuple()
+
+    def description(self):
+        return _("I update a ticket")
+
+    def default_subscriptions(self):
+        if self.config.getbool('notification', 'always_notify_updater'):
+            yield (self.__class__.__name__, 'email', 100, 'always')
+
+    def requires_authentication(self):
+        return True
+
+
+class TicketPreviousUpdatersSubscriber(Component):
+    """Allows subscribing to future changes simply by updating a ticket."""
+
+    implements(INotificationSubscriber)
+
+    def matches(self, event):
+        if event.realm != 'ticket':
+            return
+        if event.category == 'batchmodify':
+            for ticket_event in event.get_ticket_change_events(self.env):
+                for m in self.matches(ticket_event):
+                    yield m
+            return
+        if event.category not in ('created', 'changed', 'attachment added',
+                                  'attachment deleted'):
+            return
+
+        updaters = [row[0] for row in self.env.db_query("""
+            SELECT DISTINCT author FROM ticket_change
+            WHERE ticket=%s
+            """, (event.target.id, ))]
+
+        matcher = RecipientMatcher(self.env)
+        klass = self.__class__.__name__
+        sids = set()
+        for previous_updater in updaters:
+            if previous_updater == event.author:
+                continue
+
+            recipient = matcher.match_recipient(previous_updater)
+            if not recipient:
+                continue
+            sid, auth, addr = recipient
+
+            # Default subscription
+            for s in self.default_subscriptions():
+                yield (s[0], s[1], sid, auth, addr, 'text/plain', s[2], s[3])
+            if sid:
+                sids.add((sid,auth))
+
+        for s in Subscription.find_by_sids_and_class(self.env, sids, klass):
+            yield s.subscription_tuple()
+
+    def description(self):
+        return _("Ticket that I previously updated is modified")
+
+    def default_subscriptions(self):
+        if self.config.getbool('notification', 'always_notify_updater'):
+            yield (self.__class__.__name__, 'email', 100, 'always')
+
+    def requires_authentication(self):
+        return True
+
+
+class TicketReporterSubscriber(Component):
+    """Allows the users to subscribe to tickets that they report."""
+
+    implements(INotificationSubscriber)
+
+    def matches(self, event):
+        if event.realm != 'ticket':
+            return
+        if event.category == 'batchmodify':
+            for ticket_event in event.get_ticket_change_events(self.env):
+                for m in self.matches(ticket_event):
+                    yield m
+            return
+        if event.category not in ('created', 'changed', 'attachment added',
+                                  'attachment deleted'):
+            return
+
+        ticket = event.target
+
+        matcher = RecipientMatcher(self.env)
+        recipient = matcher.match_recipient(ticket['reporter'])
+        if not recipient:
+            return
+        sid, auth, addr = recipient
+
+        # Default subscription
+        for s in self.default_subscriptions():
+            yield (s[0], s[1], sid, auth, addr, 'text/plain', s[2], s[3])
+
+        if sid:
+            klass = self.__class__.__name__
+            for s in Subscription.find_by_sids_and_class(self.env,
+                    ((sid,auth),), klass):
+                yield s.subscription_tuple()
+
+    def description(self):
+        return _("Ticket that I reported is modified")
+
+    def default_subscriptions(self):
+        if self.config.getbool('notification', 'always_notify_reporter'):
+            yield (self.__class__.__name__, 'email', 100, 'always')
+
+    def requires_authentication(self):
+        return True
+
+
+class CarbonCopySubscriber(Component):
+    """Carbon copy subscriber for cc ticket field."""
+
+    implements(INotificationSubscriber)
+
+    def matches(self, event):
+        if event.realm != 'ticket':
+            return
+        if event.category == 'batchmodify':
+            for ticket_event in event.get_ticket_change_events(self.env):
+                for m in self.matches(ticket_event):
+                    yield m
+            return
+        if event.category not in ('created', 'changed', 'attachment added',
+                                  'attachment deleted'):
+            return
+
+        matcher = RecipientMatcher(self.env)
+        klass = self.__class__.__name__
+        cc = event.target['cc'] or ''
+        sids = set()
+        for chunk in re.split('\s|,', cc):
+            chunk = chunk.strip()
+
+            recipient = matcher.match_recipient(chunk)
+            if not recipient:
+                continue
+            sid, auth, addr = recipient
+
+            # Default subscription
+            for s in self.default_subscriptions():
+                yield (s[0], s[1], sid, auth, addr, 'text/plain', s[2], s[3])
+            if sid:
+                sids.add((sid,auth))
+
+        for s in Subscription.find_by_sids_and_class(self.env, sids, klass):
+            yield s.subscription_tuple()
+
+    def description(self):
+        return _("Ticket that I'm listed in the CC field is modified")
+
+    def default_subscriptions(self):
+        yield (self.__class__.__name__, 'email', 100, 'always')
+
+    def requires_authentication(self):
+        return True
 
 
 class TicketNotifyEmail(NotifyEmail):
@@ -643,7 +877,7 @@ class TicketAttachmentNotifier(Component):
         event = TicketChangeEvent(category, ticket, None, ticket['reporter'],
                                   attachment=attachment)
         try:
-            send_ticket_event(self.env, self.config, event)
+            NotificationSystem(self.env).notify(event)
         except Exception, e:
             self.log.error("Failure sending notification when adding "
                            "attachment %s to ticket #%s: %s",

@@ -27,6 +27,7 @@ from trac.attachment import AttachmentModule
 from trac.config import BoolOption, Option, IntOption
 from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter
+from trac.notification.api import NotificationSystem
 from trac.resource import (
     Resource, ResourceNotFound, get_resource_url, render_resource_link,
     get_resource_shortname
@@ -34,7 +35,7 @@ from trac.resource import (
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.ticket.api import TicketSystem, ITicketManipulator
 from trac.ticket.model import Milestone, Ticket, group_milestones
-from trac.ticket.notification import send_ticket_event, TicketChangeEvent
+from trac.ticket.notification import TicketChangeEvent
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import as_bool, as_int, get_reporter_id, lazy
 from trac.util.datefmt import (
@@ -1385,7 +1386,7 @@ class TicketModule(Component):
         # Notify
         event = TicketChangeEvent('created', ticket, None, ticket['reporter'])
         try:
-            send_ticket_event(self.env, self.config, event)
+            NotificationSystem(self.env).notify(event)
         except Exception as e:
             self.log.error("Failure sending notification on creation of "
                     "ticket #%s: %s", ticket.id, exception_to_unicode(e))
@@ -1425,7 +1426,7 @@ class TicketModule(Component):
             fragment = '#comment:%d' % cnum
             event = TicketChangeEvent('changed', ticket, now, author, comment)
             try:
-                send_ticket_event(self.env, self.config, event)
+                NotificationSystem(self.env).notify(event)
             except Exception as e:
                 self.log.error("Failure sending notification on change to "
                         "ticket #%s: %s", ticket.id, exception_to_unicode(e))

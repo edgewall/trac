@@ -16,6 +16,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from operator import itemgetter
+
 from trac.config import BoolOption, ExtensionOption, ListOption, Option
 from trac.core import *
 from trac.util.compat import set
@@ -23,7 +25,8 @@ from trac.util.compat import set
 
 __all__ = ['IEmailAddressResolver', 'IEmailDecorator', 'IEmailSender',
            'INotificationDistributor', 'INotificationFormatter',
-           'NotificationEvent', 'NotificationSystem', 'get_target_id']
+           'INotificationSubscriber', 'NotificationEvent',
+           'NotificationSystem', 'get_target_id']
 
 
 class INotificationDistributor(Interface):
@@ -61,6 +64,40 @@ class INotificationFormatter(Interface):
         :return: The return type of this method depends on transport and must
                  be compatible with the `INotificationDistributor` that
                  handles messages for this transport.
+        """
+
+
+class INotificationSubscriber(Interface):
+    """Subscribe to notification events."""
+
+    def matches(event):
+        """Return a list of subscriptions that match the given event.
+
+        :param event: a `NotificationEvent`
+        :return: a list of tuples (class, distributor, sid, authenticated,
+                 address, format, priority, adverb), where small `priority`
+                 values override larger ones and `adverb` is either
+                 'always' or 'never'.
+        """
+
+    def description():
+        """Description of the subscription shown in the preferences UI."""
+
+    def requires_authentication():
+        """Can only authenticated users subscribe?"""
+
+    def default_subscriptions():
+        """Optionally return a list of default subscriptions.
+
+        Default subscriptions that the module will automatically generate.
+        This should only be used in reasonable situations, where users can be
+        determined by the event itself.  For instance, ticket author has a
+        default subscription that is controlled via trac.ini.  This is because
+        we can lookup the ticket author during the event and create a
+        subscription for them.  Default subscriptions should be low priority
+        so that the user can easily override them.
+
+        :return: a list of tuples (class, distributor, priority, adverb)
         """
 
 
@@ -224,6 +261,7 @@ class NotificationSystem(Component):
         """)
 
     distributors = ExtensionPoint(INotificationDistributor)
+    subscribers = ExtensionPoint(INotificationSubscriber)
 
     @property
     def smtp_always_cc(self):  # For backward compatibility
@@ -245,6 +283,13 @@ class NotificationSystem(Component):
         """Send message to recipients via e-mail."""
         self.email_sender.send(from_addr, recipients, message)
 
+    def notify(self, event):
+        """Distribute an event to all subscriptions.
+
+        :param event: a `NotificationEvent`
+        """
+        self.distribute_event(event, self.subscriptions(event))
+
     def distribute_event(self, event, subscriptions):
         """Distribute a event to all subscriptions.
 
@@ -263,3 +308,32 @@ class NotificationSystem(Component):
                     recipients = list(packages[transport])
                     distributor.distribute(transport, recipients, event)
 
+    def subscriptions(self, event):
+        """Return all subscriptions for a given event.
+
+        :return: a list of (sid, authenticated, address, transport, format)
+        """
+        subscriptions = []
+        for subscriber in self.subscribers:
+            subscriptions.extend(x for x in subscriber.matches(event) if x)
+
+        # For each (transport, sid, authenticated) combination check the
+        # subscription with the highest priority:
+        # If it is "always" keep it. If it is "never" drop it.
+
+        # sort by (transport, sid, authenticated, priority)
+        ordered = sorted(subscriptions, key=itemgetter(1,2,3,6))
+        previous_combination = None
+        for rule, transport, sid, auth, addr, fmt, prio, adverb in ordered:
+            if (transport, sid, auth) == previous_combination:
+                continue
+            if adverb == 'always':
+                self.log.debug("Adding (%s [%s]) for 'always' on rule (%s) "
+                               "for (%s)", sid, auth, rule, transport)
+                yield (sid, auth, addr, transport, fmt)
+            else:
+                self.log.debug("Ignoring (%s [%s]) for 'never' on rule (%s) "
+                               "for (%s)", sid, auth, rule, transport)
+            # Also keep subscriptions without sid (raw email subscription)
+            if sid:
+                previous_combination = (transport, sid, auth)

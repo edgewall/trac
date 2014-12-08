@@ -42,10 +42,11 @@ from genshi.builder import tag
 
 from trac.config import BoolOption, Option
 from trac.core import Component, implements
+from trac.notification.api import NotificationSystem
 from trac.perm import PermissionCache
 from trac.resource import Resource
 from trac.ticket import Ticket
-from trac.ticket.notification import send_ticket_event, TicketChangeEvent
+from trac.ticket.notification import TicketChangeEvent
 from trac.util.datefmt import utc
 from trac.util.text import exception_to_unicode
 from trac.util.translation import _, cleandoc_
@@ -242,7 +243,7 @@ In [changeset:"%s" %s]:
             return
         event = TicketChangeEvent('changed', ticket, date, author, comment)
         try:
-            send_ticket_event(self.env, self.config, event)
+            NotificationSystem(env).notify(event)
         except Exception as e:
             self.log.error("Failure sending notification on change to "
                            "ticket #%s: %s", ticket.id,

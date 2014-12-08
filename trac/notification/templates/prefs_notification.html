@@ -1,0 +1,133 @@
+<!--!  Copyright (C) 2014 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at http://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at http://trac.edgewall.org/log/.
+-->
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:i18n="http://genshi.edgewall.org/i18n">
+  <xi:include href="prefs.html" />
+  <head>
+    <title>Notifications</title>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+      });
+    </script>
+  </head>
+  <body>
+    <h2 id="subscriptions">Subscriptions</h2>
+    <div py:for="distributor, rules in data['rules'].iteritems()" class="ruleset">
+      <h3>${distributor}</h3>
+      <div>
+        <div class="field">
+          <form action="" method="post">
+            <table>
+              <th><label for="format-${distributor}">Format:</label></th>
+              <td>
+                <select name="format-${distributor}">
+                  <option py:for="f in data['formatters'][distributor]"
+                          value="${f}"
+                          selected="${(f == data['selected_format'][distributor]) or None}">${f}</option>
+                </select>
+              </td>
+              <td>
+                <input type="hidden" name="action" value="set-format_${distributor}" />
+                <input type="submit" title="Save format" value="${_('Save')}" />
+              </td>
+            </table>
+          </form>
+          <p class="hint" i18n:msg="distributor">
+            Configure the format of your ${distributor} notifications.
+          </p>
+        </div>
+        <div class="field">
+          <label>Subscription rules:</label>
+          <table py:if="rules" summary="Subscription rules">
+            <tr py:for="rule in rules" class="rule">
+              <td>
+                <form action="" method="post">
+                  <div class="inlinebuttons">
+                    <input type="hidden" name="action" value="move-rule_${rule['id']}-${rule['priority']-1}" />
+                    <input type="submit" title="Move rule up" value="↑" />
+                  </div>
+                </form>
+              </td>
+              <td>
+                <form action="" method="post">
+                  <div class="inlinebuttons">
+                    <input type="hidden" name="action" value="move-rule_${rule['id']}-${rule['priority']+1}" />
+                    <input type="submit" title="Move rule down" value="↓" />
+                  </div>
+                </form>
+              </td>
+              <td>
+                <form action="" method="post">
+                  <div class="inlinebuttons">
+                    <input type="hidden" name="action" value="delete-rule_${rule['id']}" />
+                    <input type="submit" title="Delete rule" value="–" />
+                  </div>
+                </form>
+              </td>
+              <td>${data.adverb_labels[rule.adverb]}: ${rule.description}</td>
+            </tr>
+          </table>
+          <form action="" method="post">
+            <table>
+              <tr>
+                <td>
+                  <select name="new-adverb-${distributor}">
+                    <option py:for="a in data['adverbs']" value="${a}">${data.adverb_labels[a]}:</option>
+                  </select>
+                </td>
+                <td>
+                  <select name="new-rule-${distributor}">
+                    <option py:for="s in data['subscribers']"
+                            value="${s['class']}">${s['description']}</option>
+                  </select>
+                </td>
+                <td>
+                  <input type="hidden" name="action" value="add-rule_${distributor}" />
+                  <input type="hidden" name="format-${distributor}"
+                         value="${data['selected_format'][distributor]}" />
+                  <input type="submit" title="Add rule" value="${_('Add')}" />
+                </td>
+              </tr>
+            </table>
+          </form>
+          <p class="hint" i18n:msg="distributor">
+            Add, remove or reorder subscription rules to ${distributor} notifications. Only the first matching rule is applied.
+          </p>
+          <p class="hint" i18n:msg="">
+            Example: The rule <strong>"Never notify: I update a ticket"</strong> should be above <strong>"Notify: Any ticket changes"</strong> to get notifications of any ticket changes except when you update a ticket.
+          </p>
+        </div>
+        <py:if test="data['default_rules'][distributor]">
+          <div class="field">
+            <label>Default rules:</label>
+            <ul>
+              <li py:for="rule in data['default_rules'][distributor]" class="default_rule">
+                ${data.adverb_labels[rule.adverb]}: ${rule.description}
+              </li>
+            </ul>
+            <p class="hint">
+              These default rules have been configured by the site administrator. Configure subscription rules to override them.
+            </p>
+            <p class="hint" i18n:msg="">
+              Example: The subscription rule <strong>"Notify: Any ticket changes"</strong> overrides the default rule <strong>"Never notify: I update a ticket"</strong>.
+            </p>
+          </div>
+        </py:if>
+      </div>
+    </div>
+  </body>
+</html>

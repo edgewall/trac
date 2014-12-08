@@ -19,8 +19,9 @@ from datetime import datetime
 from genshi.builder import tag
 
 from trac.core import *
+from trac.notification.api import NotificationSystem
 from trac.ticket import TicketSystem, Ticket
-from trac.ticket.notification import BatchTicketChangeEvent, send_ticket_event
+from trac.ticket.notification import BatchTicketChangeEvent
 from trac.util.datefmt import parse_date, user_time, utc
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
@@ -183,7 +184,7 @@ class BatchModifyModule(Component):
                                        req.authname, comment, new_values,
                                        action)
         try:
-            send_ticket_event(self.env, self.config, event)
+            NotificationSystem(self.env).notify(event)
         except Exception as e:
             self.log.error("Failure sending notification on ticket batch"
                     "change: %s", exception_to_unicode(e))

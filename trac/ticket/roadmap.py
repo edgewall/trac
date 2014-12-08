@@ -25,6 +25,7 @@ from trac import __version__
 from trac.attachment import AttachmentModule
 from trac.config import ConfigSection, ExtensionOption, Option
 from trac.core import *
+from trac.notification.api import NotificationSystem
 from trac.perm import IPermissionRequestor
 from trac.resource import *
 from trac.search import ISearchSource, search_to_regexps, shorten_result
@@ -35,7 +36,7 @@ from trac.util.datefmt import parse_date, utc, pretty_timedelta, to_datetime, \
 from trac.util.text import CRLF, exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.ticket.api import TicketSystem
-from trac.ticket.notification import send_ticket_event, BatchTicketChangeEvent
+from trac.ticket.notification import BatchTicketChangeEvent
 from trac.ticket.model import Milestone, MilestoneCache, Ticket, \
                               group_milestones
 from trac.timeline.api import ITimelineEventProvider
@@ -779,7 +780,7 @@ class MilestoneModule(Component):
                                                req.authname, comment,
                                                new_values, None)
                 try:
-                    send_ticket_event(self.env, self.config, event)
+                    NotificationSystem(self.env).notify(event)
                 except Exception as e:
                     self.log.error("Failure sending notification on ticket "
                                    "batch change: %s",
@@ -832,7 +833,7 @@ class MilestoneModule(Component):
                                            req.authname, comment, new_values,
                                            None)
             try:
-                send_ticket_event(self.env, self.config, event)
+                NotificationSystem(self.env).notify(event)
             except Exception as e:
                 self.log.error("Failure sending notification on ticket batch "
                                "change: %s", exception_to_unicode(e))

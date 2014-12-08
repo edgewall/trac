@@ -130,6 +130,7 @@ facilities.
         trac.notification.api = trac.notification.api
         trac.notification.compat = trac.notification.compat
         trac.notification.mail = trac.notification.mail
+        trac.notification.prefs = trac.notification.prefs
         trac.prefs = trac.prefs.web_ui
         trac.search = trac.search.web_ui
         trac.ticket.admin = trac.ticket.admin
