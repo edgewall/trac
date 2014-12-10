@@ -287,6 +287,14 @@ class Environment(Component, ComponentManager):
             for setup_participant in self.setup_participants:
                 setup_participant.environment_created()
 
+    @property
+    def env(self):
+        """Property returning the `Environment` object, which is often
+        required for functions and methods that take a `Component` instance.
+        """
+        # The cached decorator requires the object have an `env` attribute.
+        return self
+
     def get_systeminfo(self):
         """Return a list of `(name, version)` tuples describing the
         name and version information of external packages used by Trac
