@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.1.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-12-03 23:25-0800\n"
+"POT-Creation-Date: 2014-12-10 04:42-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,7 +50,7 @@ msgid ""
 "}}}"
 msgstr ""
 
-#: tracopt/ticket/commit_updater.py:112
+#: tracopt/ticket/commit_updater.py:113
 msgid ""
 "Require commands to be enclosed in an envelope.\n"
 "\n"
@@ -58,11 +58,11 @@ msgid ""
 "then commands must be in the form of `[closes #4]`."
 msgstr ""
 
-#: tracopt/ticket/commit_updater.py:118
+#: tracopt/ticket/commit_updater.py:119
 msgid "Commands that close tickets, as a space-separated list."
 msgstr ""
 
-#: tracopt/ticket/commit_updater.py:122
+#: tracopt/ticket/commit_updater.py:123
 msgid ""
 "Commands that add a reference, as a space-separated list.\n"
 "\n"
@@ -70,7 +70,7 @@ msgid ""
 "message will get a reference to the changeset."
 msgstr ""
 
-#: tracopt/ticket/commit_updater.py:129
+#: tracopt/ticket/commit_updater.py:130
 msgid ""
 "Check that the committer has permission to perform the requested\n"
 "operations on the referenced tickets.\n"
@@ -79,7 +79,7 @@ msgid ""
 "operations."
 msgstr ""
 
-#: tracopt/ticket/commit_updater.py:137
+#: tracopt/ticket/commit_updater.py:138
 msgid "Send ticket change notification when updating a ticket."
 msgstr ""
 
@@ -105,39 +105,43 @@ msgstr ""
 
 #: tracopt/versioncontrol/git/git_fs.py:287
 msgid ""
-"Enable reverse mapping of git email addresses to trac user ids\n"
-"(costly if you have many users)."
+"Enable reverse mapping of git email addresses to trac user ids.\n"
+"Performance will be reduced if there are many users and the\n"
+"`cached_repository` option is `disabled`.\n"
+"\n"
+"A repository resync is required after changing the value of this\n"
+"option."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:291
+#: tracopt/versioncontrol/git/git_fs.py:296
 msgid ""
 "Use git-committer id instead of git-author id for the\n"
 "changeset ''Author'' field."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:296
+#: tracopt/versioncontrol/git/git_fs.py:301
 msgid ""
 "Use git-committer timestamp instead of git-author timestamp\n"
 "for the changeset ''Timestamp'' field."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:301
+#: tracopt/versioncontrol/git/git_fs.py:306
 msgid "Define charset encoding of paths within git repositories."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:304
+#: tracopt/versioncontrol/git/git_fs.py:309
 msgid "Path to the git executable."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:887
+#: tracopt/versioncontrol/git/git_fs.py:892
 msgid "Path to a gitweb-formatted projects.list"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:890
+#: tracopt/versioncontrol/git/git_fs.py:895
 msgid "Path to the base of your git projects"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:893
+#: tracopt/versioncontrol/git/git_fs.py:898
 #, python-format
 msgid ""
 "Template for project URLs. %s will be replaced with the repo\n"
@@ -497,7 +501,7 @@ msgid ""
 "Pygments render."
 msgstr ""
 
-#: trac/notification/api.py:32
+#: trac/notification/api.py:169
 msgid ""
 "Name of the component implementing `IEmailSender`.\n"
 "\n"
@@ -507,11 +511,11 @@ msgid ""
 "executable. (''since 0.12'')"
 msgstr ""
 
-#: trac/notification/api.py:41
+#: trac/notification/api.py:178
 msgid "Enable email notification."
 msgstr ""
 
-#: trac/notification/api.py:44
+#: trac/notification/api.py:181
 msgid ""
 "Sender address to use in notification emails.\n"
 "\n"
@@ -519,11 +523,11 @@ msgid ""
 "Trac refuses to send notification mails."
 msgstr ""
 
-#: trac/notification/api.py:50
+#: trac/notification/api.py:187
 msgid "Sender name to use in notification emails."
 msgstr ""
 
-#: trac/notification/api.py:53
+#: trac/notification/api.py:190
 msgid ""
 "Use the author of the change as the sender in notification emails\n"
 "(e.g. reporter of a new ticket, author of a comment). If the\n"
@@ -532,7 +536,7 @@ msgid ""
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/notification/api.py:60
+#: trac/notification/api.py:197
 msgid ""
 "Reply-To address to use in notification emails.\n"
 "\n"
@@ -540,20 +544,20 @@ msgid ""
 "Trac refuses to send notification mails."
 msgstr ""
 
-#: trac/notification/api.py:67
+#: trac/notification/api.py:204
 msgid ""
 "Comma-separated list of email addresses to always send\n"
 "notifications to. Addresses can be seen by all recipients\n"
 "(Cc:)."
 msgstr ""
 
-#: trac/notification/api.py:73
+#: trac/notification/api.py:210
 msgid ""
 "Comma-separated list of email addresses to always send\n"
 "notifications to. Addresses are not public (Bcc:)."
 msgstr ""
 
-#: trac/notification/api.py:78
+#: trac/notification/api.py:215
 msgid ""
 "Default host/domain to append to addresses that do not specify\n"
 "one. Fully qualified addresses are not modified. The default\n"
@@ -561,19 +565,19 @@ msgid ""
 "address cannot be found in the user settings."
 msgstr ""
 
-#: trac/notification/api.py:84
+#: trac/notification/api.py:221
 msgid ""
 "Comma-separated list of domains that should not be considered\n"
 "part of email addresses (for usernames with Kerberos domains)."
 msgstr ""
 
-#: trac/notification/api.py:88
+#: trac/notification/api.py:225
 msgid ""
 "Comma-separated list of domains that should be considered as\n"
 "valid for email addresses (such as localdomain)."
 msgstr ""
 
-#: trac/notification/api.py:92
+#: trac/notification/api.py:229
 msgid ""
 "Specifies the MIME encoding scheme for emails.\n"
 "\n"
@@ -585,14 +589,14 @@ msgid ""
 "8-bit encoding cannot be used."
 msgstr ""
 
-#: trac/notification/api.py:103
+#: trac/notification/api.py:240
 msgid ""
 "Addresses in the To and Cc fields are visible to all recipients.\n"
 "\n"
 "If this option is disabled, recipients are put in the Bcc list."
 msgstr ""
 
-#: trac/notification/api.py:109
+#: trac/notification/api.py:246
 msgid ""
 "Permit email address without a host/domain (i.e. username only).\n"
 "\n"
@@ -601,7 +605,7 @@ msgid ""
 "use this option with a public SMTP server."
 msgstr ""
 
-#: trac/notification/api.py:117
+#: trac/notification/api.py:254
 msgid ""
 "Text to prepend to subject line of notification emails.\n"
 "\n"
@@ -610,27 +614,27 @@ msgid ""
 "will disable it."
 msgstr ""
 
-#: trac/notification/mail.py:195
+#: trac/notification/mail.py:348
 msgid "SMTP server hostname to use for email notifications."
 msgstr ""
 
-#: trac/notification/mail.py:198
+#: trac/notification/mail.py:351
 msgid "SMTP server port to use for email notification."
 msgstr ""
 
-#: trac/notification/mail.py:201
+#: trac/notification/mail.py:354
 msgid "Username for authenticating with SMTP server."
 msgstr ""
 
-#: trac/notification/mail.py:204
+#: trac/notification/mail.py:357
 msgid "Password for authenticating with SMTP server."
 msgstr ""
 
-#: trac/notification/mail.py:207
+#: trac/notification/mail.py:360
 msgid "Use SSL/TLS to send notifications over SMTP."
 msgstr ""
 
-#: trac/notification/mail.py:260
+#: trac/notification/mail.py:413
 msgid ""
 "Path to the sendmail executable.\n"
 "\n"
@@ -740,21 +744,21 @@ msgid ""
 "in the `trac.ini` file. See TracWorkflow for more details."
 msgstr ""
 
-#: trac/ticket/notification.py:39
+#: trac/ticket/notification.py:45
 msgid "Always send notifications to the ticket ''owner''."
 msgstr ""
 
-#: trac/ticket/notification.py:44
+#: trac/ticket/notification.py:50
 msgid "Always send notifications to the ticket ''reporter''."
 msgstr ""
 
-#: trac/ticket/notification.py:49
+#: trac/ticket/notification.py:55
 msgid ""
 "Always send notifications to the user who causes the ticket\n"
 "change and to any previous updater of the ticket."
 msgstr ""
 
-#: trac/ticket/notification.py:54
+#: trac/ticket/notification.py:60
 msgid ""
 "A Genshi text template snippet used to get the notification\n"
 "subject.\n"
@@ -763,13 +767,13 @@ msgid ""
 "[TracNotification#Customizingthee-mailsubject TracNotification] page."
 msgstr ""
 
-#: trac/ticket/notification.py:63
+#: trac/ticket/notification.py:69
 msgid ""
 "Like `ticket_subject_template` but for batch modifications.\n"
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/ticket/notification.py:68
+#: trac/ticket/notification.py:74
 msgid ""
 "Width of ambiguous characters that should be used in the table\n"
 "of the notification mail.\n"
@@ -812,7 +816,7 @@ msgstr ""
 msgid "Number of tickets displayed in the rss feeds for reports."
 msgstr ""
 
-#: trac/ticket/roadmap.py:143
+#: trac/ticket/roadmap.py:144
 msgid ""
 "As the workflow for tickets is now configurable, there can\n"
 "be many ticket states, and simply displaying closed tickets\n"
@@ -874,58 +878,58 @@ msgid ""
 "for example."
 msgstr ""
 
-#: trac/ticket/roadmap.py:388
+#: trac/ticket/roadmap.py:389
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
 "in the roadmap views."
 msgstr ""
 
-#: trac/ticket/roadmap.py:592
+#: trac/ticket/roadmap.py:593
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
 "in the milestone views."
 msgstr ""
 
-#: trac/ticket/roadmap.py:599
+#: trac/ticket/roadmap.py:600
 msgid ""
 "Default milestone to which tickets are retargeted when\n"
 "closing or deleting a milestone. (''since 1.1.2'')"
 msgstr ""
 
-#: trac/ticket/web_ui.py:75
+#: trac/ticket/web_ui.py:76
 msgid ""
 "Enable the display of all ticket changes in the timeline, not only\n"
 "open / close operations."
 msgstr ""
 
-#: trac/ticket/web_ui.py:79
+#: trac/ticket/web_ui.py:80
 msgid ""
 "Enable the display of component of tickets in the timeline.\n"
 "(''since 1.1.1'')"
 msgstr ""
 
-#: trac/ticket/web_ui.py:84
+#: trac/ticket/web_ui.py:85
 msgid "Maximum allowed description size in characters."
 msgstr ""
 
-#: trac/ticket/web_ui.py:87
+#: trac/ticket/web_ui.py:88
 msgid "Maximum allowed comment size in characters."
 msgstr ""
 
-#: trac/ticket/web_ui.py:90
+#: trac/ticket/web_ui.py:91
 msgid "Maximum allowed summary size in characters. (//since 1.0.2//)"
 msgstr ""
 
-#: trac/ticket/web_ui.py:93
+#: trac/ticket/web_ui.py:94
 msgid ""
 "Which formatter flavor (e.g. 'html' or 'oneliner') should be\n"
 "used when presenting the description for new tickets.\n"
 "If 'oneliner', the [timeline] abbreviated_messages option applies."
 msgstr ""
 
-#: trac/ticket/web_ui.py:100
+#: trac/ticket/web_ui.py:101
 msgid ""
 "Whether Wiki formatter should respect the new lines present\n"
 "in the Wiki text.\n"
@@ -933,7 +937,7 @@ msgid ""
 "but keeps the old behavior for upgraded environments (i.e. 'no')."
 msgstr ""
 
-#: trac/ticket/web_ui.py:107
+#: trac/ticket/web_ui.py:108
 msgid ""
 "The base query to be used when linkifying values of ticket\n"
 "fields. The query is a URL query\n"
@@ -1356,11 +1360,11 @@ msgid ""
 "format. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/main.py:98
+#: trac/web/main.py:99
 msgid "Ordered list of filters to apply to all requests."
 msgstr ""
 
-#: trac/web/main.py:102
+#: trac/web/main.py:103
 msgid ""
 "Name of the component that handles requests to the base\n"
 "URL.\n"
@@ -1370,17 +1374,17 @@ msgid ""
 "and `WikiModule`."
 msgstr ""
 
-#: trac/web/main.py:111
+#: trac/web/main.py:112
 msgid "The default timezone to use"
 msgstr ""
 
-#: trac/web/main.py:114
+#: trac/web/main.py:115
 msgid ""
 "The preferred language to use if no user preference has\n"
 "been set. (''since 0.12.1'')"
 msgstr ""
 
-#: trac/web/main.py:120
+#: trac/web/main.py:121
 msgid ""
 "The date format. Valid options are 'iso8601' for selecting\n"
 "ISO 8601 format, or leave it empty which means the default\n"
@@ -1388,7 +1392,7 @@ msgid ""
 "language. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/main.py:127
+#: trac/web/main.py:128
 msgid ""
 "When true, send a `X-Sendfile` header and no content when sending\n"
 "files from the filesystem, so that the web server handles the content.\n"
