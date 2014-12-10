@@ -71,7 +71,7 @@ from trac.config import IntOption, ListOption, Option
 from trac.core import *
 from trac.resource import Resource
 from trac.util import Ranges, content_disposition
-from trac.util.text import exception_to_unicode, to_utf8, to_unicode
+from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 
 
