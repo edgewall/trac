@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-11-25 17:25+0000\n"
+"POT-Creation-Date: 2014-12-10 04:21-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -686,19 +686,19 @@ msgid ""
 "(since 0.12)"
 msgstr ""
 
-#: trac/ticket/api.py:175
+#: trac/ticket/api.py:176
 msgid ""
 "In this section, you can define additional fields for tickets. See\n"
 "TracTicketsCustomFields for more details."
 msgstr ""
 
-#: trac/ticket/api.py:179
+#: trac/ticket/api.py:180
 msgid ""
 "Ordered list of workflow controllers to use for ticket actions\n"
 "(''since 0.11'')."
 msgstr ""
 
-#: trac/ticket/api.py:185
+#: trac/ticket/api.py:186
 msgid ""
 "Make the owner field of tickets use a drop-down menu.\n"
 "Be sure to understand the performance implications before activating\n"
@@ -711,57 +711,57 @@ msgid ""
 "(''since 0.9'')"
 msgstr ""
 
-#: trac/ticket/api.py:196
+#: trac/ticket/api.py:197
 msgid "Default version for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:199
+#: trac/ticket/api.py:200
 msgid "Default type for newly created tickets (''since 0.9'')."
 msgstr ""
 
-#: trac/ticket/api.py:202
+#: trac/ticket/api.py:203
 msgid "Default priority for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:205
+#: trac/ticket/api.py:206
 msgid "Default milestone for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:208
+#: trac/ticket/api.py:209
 msgid "Default component for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:211
+#: trac/ticket/api.py:212
 msgid "Default severity for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:214
+#: trac/ticket/api.py:215
 msgid "Default summary (title) for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:217
+#: trac/ticket/api.py:218
 msgid "Default description for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:220
+#: trac/ticket/api.py:221
 msgid "Default keywords for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:223
+#: trac/ticket/api.py:224
 msgid "Default owner for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:226
+#: trac/ticket/api.py:227
 msgid "Default cc: list for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:229
+#: trac/ticket/api.py:230
 msgid ""
 "Default resolution for resolving (closing) tickets\n"
 "(''since 0.11'')."
 msgstr ""
 
-#: trac/ticket/default_workflow.py:109
+#: trac/ticket/default_workflow.py:104
 msgid ""
 "The workflow for tickets is controlled by plugins. By default,\n"
 "there's only a `ConfigurableTicketWorkflow` component in charge.\n"
@@ -813,10 +813,6 @@ msgid ""
 "expected by most users. If 'double', twice the width of\n"
 "US-ASCII characters.  This is expected by CJK users. ''(since\n"
 "0.12.2)''"
-msgstr ""
-
-#: trac/ticket/notification.py:505
-msgid "Always send notifications on ticket attachment events."
 msgstr ""
 
 #: trac/ticket/query.py:836
@@ -1442,13 +1438,13 @@ msgid ""
 "format. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/main.py:95
+#: trac/web/main.py:96
 msgid ""
 "Ordered list of filters to apply to all requests\n"
 "(''since 0.10'')."
 msgstr ""
 
-#: trac/web/main.py:100
+#: trac/web/main.py:101
 msgid ""
 "Name of the component that handles requests to the base\n"
 "URL.\n"
@@ -1458,17 +1454,17 @@ msgid ""
 "and `WikiModule`. The default is `WikiModule`. (''since 0.9'')"
 msgstr ""
 
-#: trac/web/main.py:109
+#: trac/web/main.py:110
 msgid "The default timezone to use"
 msgstr ""
 
-#: trac/web/main.py:112
+#: trac/web/main.py:113
 msgid ""
 "The preferred language to use if no user preference has\n"
 "been set. (''since 0.12.1'')"
 msgstr ""
 
-#: trac/web/main.py:117
+#: trac/web/main.py:118
 msgid ""
 "The date format. Valid options are 'iso8601' for selecting\n"
 "ISO 8601 format, or leave it empty which means the default\n"
@@ -1476,7 +1472,7 @@ msgid ""
 "language. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/main.py:124
+#: trac/web/main.py:125
 msgid ""
 "When true, send a `X-Sendfile` header and no content when sending\n"
 "files from the filesystem, so that the web server handles the content.\n"
