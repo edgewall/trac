@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2004-2010 Edgewall Software
+# Copyright (C) 2004-2014 Edgewall Software
 # Copyright (C) 2004 Daniel Lundin <daniel@edgewall.com>
 # Copyright (C) 2005-2006 Christopher Lenz <cmlenz@gmx.de>
 # Copyright (C) 2006-2007 Christian Boos <cboos@edgewall.org>
@@ -78,6 +78,7 @@ from trac.util.translation import _, tag_
 __all__ = ['Context', 'Mimeview', 'RenderingContext', 'get_mimetype',
            'is_binary', 'detect_unicode', 'content_to_unicode', 'ct_mimetype']
 
+
 class RenderingContext(object):
     """
     A rendering context specifies ''how'' the content should be rendered.
@@ -123,7 +124,7 @@ class RenderingContext(object):
         to the given `resource` so that fine-grained permission checks will
         apply to that.
         """
-        self.parent = None #: The parent context, if any
+        self.parent = None  #: The parent context, if any
         self.resource = resource
         self.href = href
         self.perm = perm(resource) if perm and resource else perm
@@ -141,7 +142,7 @@ class RenderingContext(object):
         path = []
         context = self
         while context:
-            if context.resource.realm: # skip toplevel resource
+            if context.resource.realm:  # skip toplevel resource
                 path.append(repr(context.resource))
             context = context.parent
         return '<%s %s>' % (type(self).__name__, ' - '.join(reversed(path)))
@@ -213,7 +214,7 @@ class RenderingContext(object):
     # The keys are strings, but the values could be anything.
     #
     # In nested contexts, the hints are inherited from their parent context,
-    # unless overriden locally.
+    # unless overridden locally.
 
     def set_hints(self, **keyvalues):
         """Set rendering hints for this rendering context.
@@ -374,6 +375,7 @@ MODE_RE = re.compile(r"""
     | vim:.*?(?:syntax|filetype|ft)=(\w+)   # 4. look for VIM's syntax=<n>
     """, re.VERBOSE)
 
+
 def get_mimetype(filename, content=None, mime_map=MIME_MAP,
                  mime_map_patterns={}):
     """Guess the most probable MIME type of a file with the given name.
@@ -413,9 +415,11 @@ def get_mimetype(filename, content=None, mime_map=MIME_MAP,
                     return 'application/octet-stream'
         return mimetype
 
+
 def ct_mimetype(content_type):
     """Return the mimetype part of a content type."""
     return (content_type or '').split(';')[0].strip()
+
 
 def is_binary(data):
     """Detect binary content by checking the first thousand bytes for zeroes.
@@ -425,6 +429,7 @@ def is_binary(data):
     if isinstance(data, str) and detect_unicode(data):
         return False
     return '\0' in data[:1000]
+
 
 def detect_unicode(data):
     """Detect different unicode charsets by looking for BOMs (Byte Order Mark).
@@ -439,6 +444,7 @@ def detect_unicode(data):
         return 'utf-8'
     else:
         return None
+
 
 def content_to_unicode(env, content, mimetype):
     """Retrieve an `unicode` object from a `content` to be previewed.
@@ -630,14 +636,16 @@ class Mimeview(Component):
         doc="""List of additional MIME types and keyword mappings.
         Mappings are comma-separated, and for each MIME type,
         there's a colon (":") separated list of associated keywords
-        or file extensions. (''since 0.10'')""")
+        or file extensions. (''since 0.10'')
+        """)
 
     mime_map_patterns = ListOption('mimeviewer', 'mime_map_patterns',
         'text/plain:README|INSTALL|COPYING.*',
         doc="""List of additional MIME types associated to filename patterns.
         Mappings are comma-separated, and each mapping consists of a MIME type
         and a Python regexp used for matching filenames, separated by a colon
-        (":"). (''since 1.0'')""")
+        (":"). (''since 1.0'')
+        """)
 
     treat_as_binary = ListOption('mimeviewer', 'treat_as_binary',
         'application/octet-stream, application/pdf, application/postscript, '
@@ -670,7 +678,7 @@ class Mimeview(Component):
         `key`, which can be either a MIME type or a key. Returns a tuple of
         (content, output_mime_type, extension)."""
         if not content:
-            return ('', 'text/plain;charset=utf-8', '.txt')
+            return '', 'text/plain;charset=utf-8', '.txt'
 
         # Ensure we have a MIME type for this content
         full_mimetype = mimetype
@@ -679,9 +687,9 @@ class Mimeview(Component):
                 content = content.read(self.max_preview_size)
             full_mimetype = self.get_mimetype(filename, content)
         if full_mimetype:
-            mimetype = ct_mimetype(full_mimetype)   # split off charset
+            mimetype = ct_mimetype(full_mimetype)  # split off charset
         else:
-            mimetype = full_mimetype = 'text/plain' # fallback if not binary
+            mimetype = full_mimetype = 'text/plain'  # fallback if not binary
 
         # Choose best converter
         candidates = list(self.get_supported_conversions(mimetype) or [])
@@ -696,7 +704,7 @@ class Mimeview(Component):
                 converter in candidates:
             output = converter.convert_content(req, mimetype, content, ck)
             if output:
-                return (output[0], output[1], ext)
+                return output[0], output[1], ext
         raise TracError(
             _("No available MIME conversions from %(old)s to %(new)s",
               old=mimetype, new=key))
@@ -757,7 +765,7 @@ class Mimeview(Component):
         expanded_content = None
         for qr, renderer in candidates:
             if force_source and not getattr(renderer, 'returns_source', False):
-                continue # skip non-source renderers in force_source mode
+                continue  # skip non-source renderers in force_source mode
             if isinstance(content, Content):
                 content.reset()
             try:
@@ -843,7 +851,7 @@ class Mimeview(Component):
                 add_warning(context.req, tag.strong(
                     tag_("Can't use %(annotator)s annotator: %(error)s",
                          annotator=tag.em(a), error=tag.pre(e.message))))
-                data = (None, None)
+                data = None, None
             annotator_datas.append(data)
 
         def _head_row():
@@ -1036,6 +1044,7 @@ class Mimeview(Component):
 
 def _group_lines(stream):
     space_re = re.compile('(?P<spaces> (?: +))|^(?P<tag><\w+.*?>)?( )')
+
     def pad_spaces(match):
         m = match.group('spaces')
         if m:
