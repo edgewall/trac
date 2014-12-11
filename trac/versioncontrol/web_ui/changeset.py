@@ -1122,6 +1122,7 @@ class ChangesetModule(Component):
         rm = RepositoryManager(self.env)
         repositories = dict((repos.params['id'], repos)
                             for repos in rm.get_real_repositories())
+        uids_seen = set()
         with self.env.db_query as db:
             sql, args = search_to_sql(db, ['rev', 'message', 'author'], terms)
             for id, rev, ts, author, log in db("""
@@ -1136,8 +1137,12 @@ class ChangesetModule(Component):
                     drev = repos.display_rev(rev)
                 except NoSuchChangeset:
                     continue
+                uid = repos.get_changeset_uid(rev)
+                if uid in uids_seen:
+                    continue
                 cset = repos.resource.child('changeset', rev)
                 if 'CHANGESET_VIEW' in req.perm(cset):
+                    uids_seen.add(uid)
                     yield (req.href.changeset(rev, repos.reponame or None),
                            '[%s]: %s' % (drev, shorten_line(log)),
                            from_utimestamp(ts), author,
