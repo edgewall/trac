@@ -338,7 +338,6 @@ class EnvironmentStub(Environment):
 
         self.config.set('trac', 'base_url', 'http://example.org/trac.cgi')
 
-        self.known_users = []
         translation.activate(locale_en)
 
     def reset_db(self, default_data=None):
@@ -423,9 +422,6 @@ class EnvironmentStub(Environment):
         if self._component_name(cls).startswith('__main__.'):
             return True
         return Environment.is_component_enabled(self, cls)
-
-    def get_known_users(self):
-        return self.known_users
 
 
 def locate(fn):
