@@ -21,7 +21,7 @@ import trac.tests.compat
 from trac import core
 from trac.attachment import Attachment
 from trac.core import TracError, implements
-from trac.resource import ResourceNotFound
+from trac.resource import Resource, ResourceNotFound
 from trac.test import EnvironmentStub
 from trac.ticket.model import (
     Ticket, Component, Milestone, Priority, Type, Version
@@ -108,6 +108,15 @@ class TicketTestCase(unittest.TestCase):
         ticket['summary'] = 'Foo'
         ticket['foo'] = 'This is a custom field'
         return ticket
+
+    def test_resource_id_is_none(self):
+        ticket = Ticket(self.env)
+        self.assertEqual(Resource('ticket'), ticket.resource)
+
+    def test_resource_exists(self):
+        ticket_id = self._insert_ticket('Foo')
+        ticket = Ticket(self.env, ticket_id)
+        self.assertEqual(Resource('ticket', 1), ticket.resource)
 
     def test_invalid_ticket_id(self):
         self.assertEqual(Ticket.id_is_valid(-1), False)

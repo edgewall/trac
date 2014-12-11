@@ -773,6 +773,10 @@ class Repository(object):
 
     realm = RepositoryManager.repository_realm
 
+    @property
+    def resource(self):
+        return Resource(self.realm, self.reponame)
+
     def __init__(self, name, params, log):
         """Initialize a repository.
 
@@ -790,7 +794,6 @@ class Repository(object):
         self.reponame = params['name']
         self.id = params['id']
         self.log = log
-        self.resource = Resource(self.realm, self.reponame)
 
     @abstractmethod
     def close(self):
@@ -1030,9 +1033,9 @@ class Node(object):
 
     realm = RepositoryManager.source_realm
 
-    resource = property(lambda self: Resource(self.realm, self.path,
-                                              version=self.rev,
-                                              parent=self.repos.resource))
+    @property
+    def resource(self):
+        return Resource(self.realm, self.path, self.rev, self.repos.resource)
 
     # created_path and created_rev properties refer to the Node "creation"
     # in the Subversion meaning of a Node in a versioned tree (see #3340).
@@ -1186,8 +1189,9 @@ class Changeset(object):
 
     realm = RepositoryManager.changeset_realm
 
-    resource = property(lambda self: Resource(self.realm, self.rev,
-                                              parent=self.repos.resource))
+    @property
+    def resource(self):
+        return Resource(self.realm, self.rev, parent=self.repos.resource)
 
     def __init__(self, repos, rev, message, author, date):
         self.repos = repos

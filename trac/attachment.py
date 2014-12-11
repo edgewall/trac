@@ -654,18 +654,26 @@ class Attachment(object):
 
     realm = AttachmentModule.realm
 
+    @property
+    def resource(self):
+        return Resource(self.parent_realm, self.parent_id) \
+               .child(self.realm, self.filename)
+
     def __init__(self, env, parent_realm_or_attachment_resource,
                  parent_id=None, filename=None):
         if isinstance(parent_realm_or_attachment_resource, Resource):
-            self.resource = parent_realm_or_attachment_resource
+            resource = parent_realm_or_attachment_resource
+            self.parent_realm = resource.parent.realm
+            self.parent_id = unicode(resource.parent.id)
+            self.filename = resource.id
         else:
-            self.resource = Resource(parent_realm_or_attachment_resource,
-                                     parent_id).child(self.realm, filename)
+            self.parent_realm = parent_realm_or_attachment_resource
+            self.parent_id = unicode(parent_id)
+            self.filename = filename
+
         self.env = env
-        self.parent_realm = self.resource.parent.realm
-        self.parent_id = unicode(self.resource.parent.id)
-        if self.resource.id:
-            self._fetch(self.resource.id)
+        if self.filename:
+            self._fetch(self.filename)
         else:
             self.filename = None
             self.description = None
@@ -673,11 +681,6 @@ class Attachment(object):
             self.date = None
             self.author = None
             self.ipnr = None
-
-    def _set_filename(self, val):
-        self.resource.id = val
-
-    filename = property(lambda self: self.resource.id, _set_filename)
 
     def _from_database(self, filename, description, size, time, author, ipnr):
         self.filename = filename
@@ -810,8 +813,6 @@ class Attachment(object):
 
         old_realm, old_id = self.parent_realm, self.parent_id
         self.parent_realm, self.parent_id = new_realm, new_id
-        self.resource = Resource(new_realm, new_id).child(self.realm,
-                                                          self.filename)
 
         self.env.log.info("Attachment reparented: %s", self.title)
 
@@ -830,7 +831,7 @@ class Attachment(object):
             t = to_datetime(t, utc)
         self.date = t
 
-        parent_resource = self.resource.parent
+        parent_resource = Resource(self.parent_realm, self.parent_id)
         if not resource_exists(self.env, parent_resource):
             raise ResourceNotFound(
                 _("%(parent)s doesn't exist, can't create attachment",
@@ -858,7 +859,7 @@ class Attachment(object):
                     to_utimestamp(t), self.description, self.author,
                     self.ipnr))
                 shutil.copyfileobj(fileobj, targetfile)
-                self.resource.id = self.filename = filename
+                self.filename = filename
 
                 self.env.log.info("New attachment: %s by %s", self.title,
                                   self.author)

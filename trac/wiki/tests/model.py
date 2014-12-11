@@ -89,7 +89,7 @@ class WikiPageTestCase(unittest.TestCase):
         self.assertTrue(page.exists)
         self.assertEqual('TestPage', page.name)
         self.assertEqual(1, page.version)
-        self.assertIsNone(page.resource.version)   # FIXME: Intentional?
+        self.assertIsNone(page.resource.version)
         self.assertEqual('Bla bla', page.text)
         self.assertEqual(0, page.readonly)
         self.assertEqual('joe', page.author)
@@ -117,7 +117,7 @@ class WikiPageTestCase(unittest.TestCase):
 
         self.assertTrue(page.exists)
         self.assertEqual(1, page.version)
-        self.assertEqual(1, page.resource.version)
+        self.assertIsNone(page.resource.version)
         self.assertEqual(0, page.readonly)
         self.assertEqual('joe', page.author)
         self.assertEqual('Testing', page.comment)
@@ -146,7 +146,7 @@ class WikiPageTestCase(unittest.TestCase):
         page.save('kate', 'Changing', '192.168.0.101', t2)
 
         self.assertEqual(2, page.version)
-        self.assertEqual(2, page.resource.version)
+        self.assertIsNone(page.resource.version)
         self.assertEqual(0, page.readonly)
         self.assertEqual('kate', page.author)
         self.assertEqual('Changing', page.comment)

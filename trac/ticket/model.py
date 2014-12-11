@@ -82,6 +82,10 @@ class Ticket(object):
     def id_is_valid(num):
         return 0 < int(num) <= 1L << 31
 
+    @property
+    def resource(self):
+        return Resource(self.realm, self.id, self.version)
+
     # 0.11 compatibility. Will be removed in 1.3.1.
     time_created = property(lambda self: self.values.get('time'))
     time_changed = property(lambda self: self.values.get('changetime'))
@@ -90,7 +94,6 @@ class Ticket(object):
         self.env = env
         if tkt_id is not None:
             tkt_id = int(tkt_id)
-        self.resource = Resource(self.realm, tkt_id, version)
         self.fields = TicketSystem(self.env).get_ticket_fields()
         self.std_fields, self.custom_fields, self.time_fields = [], [], []
         for f in self.fields:
@@ -106,6 +109,7 @@ class Ticket(object):
         else:
             self._init_defaults()
             self.id = None
+        self.version = version
         self._old = {}
 
     exists = property(lambda self: self.id is not None)
@@ -275,7 +279,6 @@ class Ticket(object):
                              for c in custom_fields])
 
         self.id = tkt_id
-        self.resource = self.resource(id=tkt_id)
         self._old = {}
 
         for listener in TicketSystem(self.env).change_listeners:
@@ -975,6 +978,10 @@ class Milestone(object):
 
     realm = 'milestone'
 
+    @property
+    def resource(self):
+        return Resource(self.realm, self.name)  ### .version !!!
+
     def __init__(self, env, name=None):
         """Create an undefined milestone or fetch one from the database,
         if `name` is given.
@@ -994,10 +1001,6 @@ class Milestone(object):
     @property
     def cache(self):
         return MilestoneCache(self.env)
-
-    @property
-    def resource(self):
-        return Resource(self.realm, self.name)  ### .version !!!
 
     exists = property(lambda self: self._old['name'] is not None)
     is_completed = property(lambda self: self.completed is not None)
