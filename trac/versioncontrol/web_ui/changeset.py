@@ -1128,17 +1128,18 @@ class ChangesetModule(Component):
                     SELECT repos, rev, time, author, message
                     FROM revision WHERE """ + sql,
                     args):
-                try:
-                    rev = int(rev)
-                except ValueError:
-                    pass
                 repos = repositories.get(id)
                 if not repos:
                     continue # revisions for a no longer active repository
+                try:
+                    rev = repos.normalize_rev(rev)
+                    drev = repos.display_rev(rev)
+                except NoSuchChangeset:
+                    continue
                 cset = repos.resource.child('changeset', rev)
                 if 'CHANGESET_VIEW' in req.perm(cset):
                     yield (req.href.changeset(rev, repos.reponame or None),
-                           '[%s]: %s' % (rev, shorten_line(log)),
+                           '[%s]: %s' % (drev, shorten_line(log)),
                            from_utimestamp(ts), author,
                            shorten_result(log, terms))
 

@@ -336,6 +336,21 @@ class RegressionTestTicket11618(FunctionalTwillTestCaseSetup):
             env.config.save()
 
 
+class RegressionTestTicket11777(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11777
+        fix for raw revisions in search results.
+        """
+        self._testenv.svn_mkdir(['ticket11777'], '')
+        rev = self._testenv.svn_add('ticket11777/file1.txt', 'data',
+                                    'ticket-11777')
+        tc.go(self._tester.url +
+              '/search?q=ticket-11777&noquickjump=1&changeset=on')
+        tc.notfind(r'\[%010d\]: ticket-11777' % rev)
+        tc.find(r'\[%d\]: ticket-11777' % rev)
+        tc.find(' href="/changeset/%d"' % rev)
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
@@ -355,6 +370,7 @@ def functionalSuite(suite=None):
         suite.addTest(RegressionTestTicket11438())
         suite.addTest(RegressionTestTicket11584())
         suite.addTest(RegressionTestTicket11618())
+        suite.addTest(RegressionTestTicket11777())
         suite.addTest(RegressionTestRev5877())
     else:
         print "SKIP: versioncontrol/tests/functional.py (no svn bindings)"
