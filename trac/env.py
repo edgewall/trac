@@ -25,7 +25,7 @@ from urlparse import urlsplit
 
 from trac import db_default
 from trac.admin import AdminCommandError, IAdminCommandProvider
-from trac.cache import CacheManager
+from trac.cache import CacheManager, cached
 from trac.config import BoolOption, ConfigSection, Configuration, Option, \
                         PathOption
 from trac.core import Component, ComponentManager, implements, Interface, \
@@ -696,16 +696,23 @@ class Environment(Component, ComponentManager):
         :since 1.0: deprecation warning: the `cnx` parameter is no
                     longer used and will be removed in version 1.1.1
         """
-        for username, name, email in self.db_query("""
+        return iter(self._known_users)
+
+    @cached
+    def _known_users(self):
+        return self.db_query("""
                 SELECT DISTINCT s.sid, n.value, e.value
                 FROM session AS s
                  LEFT JOIN session_attribute AS n ON (n.sid=s.sid
-                  and n.authenticated=1 AND n.name = 'name')
+                  AND n.authenticated=1 AND n.name = 'name')
                  LEFT JOIN session_attribute AS e ON (e.sid=s.sid
                   AND e.authenticated=1 AND e.name = 'email')
                 WHERE s.authenticated=1 ORDER BY s.sid
-                """):
-            yield username, name, email
+        """)
+
+    def invalidate_known_users_cache(self):
+        """Clear the known_users cache."""
+        del self._known_users
 
     def backup(self, dest=None):
         """Create a backup of the database.
