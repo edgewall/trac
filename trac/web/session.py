@@ -450,6 +450,7 @@ class SessionAdmin(Component):
             if email is not None:
                 db("INSERT INTO session_attribute VALUES (%s,%s,'email',%s)",
                     (sid, authenticated, email))
+        self.env.invalidate_known_users_cache()
 
     def _do_set(self, attr, sid, val):
         if attr not in ('name', 'email', 'default_handler'):
@@ -472,6 +473,7 @@ class SessionAdmin(Component):
                 """, (sid, authenticated, attr))
             db("INSERT INTO session_attribute VALUES (%s, %s, %s, %s)",
                (sid, authenticated, attr, val))
+        self.env.invalidate_known_users_cache()
 
     def _do_delete(self, *sids):
         with self.env.db_transaction as db:
@@ -489,6 +491,7 @@ class SessionAdmin(Component):
                         DELETE FROM session_attribute
                         WHERE sid=%s AND authenticated=%s
                         """, (sid, authenticated))
+        self.env.invalidate_known_users_cache()
 
     def _do_purge(self, age):
         when = parse_date(age, hint='datetime',
