@@ -978,11 +978,16 @@ class Repository(object):
 
         In addition, if `rev` is `None` or '', the youngest revision should
         be returned.
+
+        :raise NoSuchChangeset: If the given `rev` isn't found.
         """
         raise NotImplementedError
 
     def short_rev(self, rev):
-        """Return a compact representation of a revision in the repos."""
+        """Return a compact representation of a revision in the repos.
+
+        :raise NoSuchChangeset: If the given `rev` isn't found.
+        """
         return self.normalize_rev(rev)
 
     def display_rev(self, rev):
@@ -991,6 +996,8 @@ class Repository(object):
 
         This can be a shortened revision string, e.g. for repositories using
         long hashes.
+
+        :raise NoSuchChangeset: If the given `rev` isn't found.
         """
         return self.normalize_rev(rev)
 
