@@ -23,6 +23,7 @@ from trac.tests.compat import rmtree
 from trac.util import create_file
 from trac.util.compat import close_fds
 from trac.util.datefmt import to_timestamp, utc
+from trac.util.text import to_utf8
 from trac.versioncontrol.api import Changeset, DbRepositoryProvider, \
                                     NoSuchChangeset, NoSuchNode, \
                                     RepositoryManager
@@ -48,7 +49,7 @@ class GitCommandMixin(object):
         return self._git(*args, **kwargs)
 
     def _git(self, *args, **kwargs):
-        args = (git_bin,) + args
+        args = map(to_utf8, (git_bin,) + args)
         proc = Popen(args, stdout=PIPE, stderr=PIPE, close_fds=close_fds,
                      cwd=self.repos_path, **kwargs)
         stdout, stderr = proc.communicate()
