@@ -93,6 +93,28 @@
           </table>
         </div>
 
+        <div py:if="interface" id="interface">
+          <h2>Interface Customization</h2>
+          <table class="listing">
+            <tr>
+              <th class="section">Site templates</th>
+              <td class="file">${' '.join(interface['site-templates'])}</td>
+            </tr>
+            <tr>
+              <th class="section">Shared templates</th>
+              <td class="file">${' '.join(interface['shared-templates'])}</td>
+            </tr>
+            <tr>
+              <th class="section">Site static resources</th>
+              <td class="file">${' '.join(interface['site-htdocs'])}</td>
+            </tr>
+            <tr>
+              <th class="section">Shared static resources</th>
+              <td class="file">${' '.join(interface['shared-htdocs'])}</td>
+            </tr>
+          </table>
+        </div>
+
         <div py:if="config" id="config">
           <h2>Configuration</h2>
           <table class="listing">

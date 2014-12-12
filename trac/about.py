@@ -17,6 +17,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
+import os
 import re
 
 from genshi.builder import tag
@@ -57,7 +58,8 @@ class AboutModule(Component):
         return re.match(r'/about(?:_trac)?(?:/.+)?$', req.path_info)
 
     def process_request(self, req):
-        data = {'systeminfo': None, 'plugins': None, 'config': None}
+        data = {'systeminfo': None, 'plugins': None,
+                'config': None, 'interface': None}
 
         if 'CONFIG_VIEW' in req.perm('config', 'systeminfo'):
             # Collect system information
@@ -67,6 +69,25 @@ class AboutModule(Component):
         if 'CONFIG_VIEW' in req.perm('config', 'plugins'):
             # Collect plugin information
             data['plugins'] = get_plugin_info(self.env)
+
+        if 'CONFIG_VIEW' in req.perm('config', 'interface'):
+            data['interface'] = {}
+            # Collect templates list
+            site_templates = sorted(os.listdir(self.env.get_templates_dir()))
+            data['interface']['site-templates'] = \
+                [t for t in site_templates if t.endswith('.html')]
+            shared_templates_dir = Chrome(self.env).shared_templates_dir
+            if os.path.exists(shared_templates_dir):
+                shared_templates = sorted(os.listdir(shared_templates_dir))
+                data['interface']['shared-templates'] = \
+                    [t for t in shared_templates if t.endswith('.html')]
+            # Collect static resources list
+            data['interface']['site-htdocs'] = \
+                sorted(os.listdir(self.env.get_htdocs_dir()))
+            shared_htdocs_dir = Chrome(self.env).shared_htdocs_dir
+            if os.path.exists(shared_htdocs_dir):
+                data['interface']['shared-htdocs'] = \
+                    sorted(os.listdir(shared_htdocs_dir))
 
         if 'CONFIG_VIEW' in req.perm('config', 'ini'):
             # Collect config information
