@@ -508,6 +508,32 @@ class SessionTestCase(unittest.TestCase):
             WHERE sid='john' AND name='foo'
             """)[0][0])
 
+    def test_session_set_email(self):
+        """Setting session email invalidates known_users cache."""
+        session = DetachedSession(self.env, 'user')
+        session['email'] = 'user@domain.org'
+
+        self.assertEqual([], list(self.env.get_known_users()))
+        session.save()
+        email = None
+        for sid, name, email in self.env.get_known_users():
+            if sid == 'user':
+                break
+        self.assertEqual(session['email'], email)
+
+    def test_session_set_name(self):
+        """Setting session name invalidates known_users cache."""
+        session = DetachedSession(self.env, 'user')
+        session['name'] = 'The User'
+
+        self.assertEqual([], list(self.env.get_known_users()))
+        session.save()
+        name = None
+        for sid, name, email in self.env.get_known_users():
+            if sid == 'user':
+                break
+        self.assertEqual(session['name'], name)
+
     def test_session_admin_list(self):
         auth_list, anon_list, all_list = _prep_session_table(self.env)
         sess_admin = SessionAdmin(self.env)
