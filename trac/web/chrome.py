@@ -507,14 +507,17 @@ class Chrome(Component):
         """Height of the header logo image in pixels.""")
 
     show_email_addresses = BoolOption('trac', 'show_email_addresses', 'false',
-        """Show email addresses instead of usernames. If false, we obfuscate
-        email addresses. (''since 0.11'')""")
+        """Show email addresses instead of usernames. If false, email
+        addresses are obfuscated for users that don't have EMAIL_VIEW
+        permission. (''since 0.11'')
+        """)
 
     never_obfuscate_mailto = BoolOption('trac', 'never_obfuscate_mailto',
         'false',
         """Never obfuscate `mailto:` links explicitly written in the wiki,
-        even if `show_email_addresses` is false or the user has not the
-        EMAIL_VIEW permission (''since 0.11.6'').""")
+        even if `show_email_addresses` is false or the user doesn't have
+        EMAIL_VIEW permission (''since 0.11.6'').
+        """)
 
     show_ip_addresses = BoolOption('trac', 'show_ip_addresses', 'false',
         """Show IP addresses for resource edits (e.g. wiki).
