@@ -137,6 +137,9 @@ class DetachedSession(dict):
             # new ones. The last concurrent request to do so "wins".
 
             if self._old != self:
+                if self._old.get('name') != self.get('name') or \
+                        self._old.get('email') != self.get('email'):
+                    self.env.invalidate_known_users_cache()
                 if not items and not authenticated:
                     # No need to keep around empty unauthenticated sessions
                     db("DELETE FROM session WHERE sid=%s AND authenticated=0",
