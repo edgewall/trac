@@ -511,8 +511,9 @@ class Chrome(Component):
         """Height of the header logo image in pixels.""")
 
     show_email_addresses = BoolOption('trac', 'show_email_addresses', 'false',
-        """Show email addresses instead of usernames. If false, we obfuscate
-        email addresses.
+        """Show email addresses instead of usernames. If false, email
+        addresses are obfuscated for users that don't have EMAIL_VIEW
+        permission.
         """)
 
     never_obfuscate_mailto = BoolOption('trac', 'never_obfuscate_mailto',
