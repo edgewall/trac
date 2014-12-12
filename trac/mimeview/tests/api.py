@@ -98,9 +98,9 @@ class MimeviewTestCase(unittest.TestCase):
 
         mimeview = Mimeview(self.env)
         conversions = mimeview.get_supported_conversions('text/x-sample')
-        self.assertEqual(Converter0(self.env), conversions[0][-1])
-        self.assertEqual(Converter1(self.env), conversions[1][-1])
-        self.assertEqual(Converter2(self.env), conversions[2][-1])
+        self.assertEqual(Converter0(self.env), conversions[0].converter)
+        self.assertEqual(Converter1(self.env), conversions[1].converter)
+        self.assertEqual(Converter2(self.env), conversions[2].converter)
 
 class GroupLinesTestCase(unittest.TestCase):
 

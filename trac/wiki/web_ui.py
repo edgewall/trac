@@ -615,9 +615,9 @@ class WikiModule(Component):
             for conversion in Mimeview(self.env) \
                               .get_supported_conversions('text/x-trac-wiki'):
                 conversion_href = req.href.wiki(page.name, version=version,
-                                                format=conversion[0])
-                add_link(req, 'alternate', conversion_href, conversion[1],
-                         conversion[3])
+                                                format=conversion.key)
+                add_link(req, 'alternate', conversion_href, conversion.name,
+                         conversion.in_mimetype)
 
         data = self._page_data(req, page)
         if page.name == 'WikiStart':

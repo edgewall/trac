@@ -954,11 +954,11 @@ class QueryModule(Component):
             req.redirect(query.get_href(req.href))
 
         # Add registered converters
-        for conversion in Mimeview(self.env).get_supported_conversions(
-                                             'trac.ticket.Query'):
+        for conversion in Mimeview(self.env) \
+                          .get_supported_conversions('trac.ticket.Query'):
             add_link(req, 'alternate',
-                     query.get_href(req.href, format=conversion[0]),
-                     conversion[1], conversion[4], conversion[0])
+                     query.get_href(req.href, format=conversion.key),
+                     conversion.name, conversion.out_mimetype, conversion.key)
 
         if format:
             filename = 'query' if format != 'rss' else None

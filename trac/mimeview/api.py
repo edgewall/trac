@@ -61,6 +61,7 @@ that can be `read()`.
 
 import re
 from StringIO import StringIO
+from collections import namedtuple
 
 from genshi import Markup, Stream
 from genshi.core import TEXT, START, END, START_NS, END_NS
@@ -661,16 +662,21 @@ class Mimeview(Component):
     # Public API
 
     def get_supported_conversions(self, mimetype):
-        """Return a list of target MIME types in same form as
-        `IContentConverter.get_supported_conversions()`, but with the converter
-        component appended. Output is ordered from best to worst quality."""
+        """Return a list of target MIME types as instances of the `namedtuple`
+        `MimeConversion`. Output is ordered from best to worst quality.
+
+        The `MimeConversion` `namedtuple` has fields: key, name, extension,
+        in_mimetype, out_mimetype, quality, converter.
+        """
+        fields = ('key', 'name', 'extension', 'in_mimetype',
+                  'out_mimetype', 'quality', 'converter')
+        _MimeConversion = namedtuple('MimeConversion', fields)
         converters = []
-        for converter in self.converters:
-            conversions = converter.get_supported_conversions() or []
-            for k, n, e, im, om, q in conversions:
+        for c in self.converters:
+            for k, n, e, im, om, q in c.get_supported_conversions() or []:
                 if im == mimetype and q > 0:
-                    converters.append((k, n, e, im, om, q, converter))
-        converters = sorted(converters, key=lambda i: i[-2], reverse=True)
+                    converters.append(_MimeConversion(k, n, e, im, om, q, c))
+        converters = sorted(converters, key=lambda i: i.quality, reverse=True)
         return converters
 
     def convert_content(self, req, mimetype, content, key, filename=None,
@@ -693,19 +699,20 @@ class Mimeview(Component):
             mimetype = full_mimetype = 'text/plain'  # fallback if not binary
 
         # Choose best converter
-        candidates = self.get_supported_conversions(mimetype)
-        candidates = [c for c in candidates if key in (c[0], c[4])]
+        candidates = [c for c in self.get_supported_conversions(mimetype)
+                        if key in (c.key, c.out_mimetype)]
         if not candidates:
             raise TracError(
                 _("No available MIME conversions from %(old)s to %(new)s",
                   old=mimetype, new=key))
 
         # First successful conversion wins
-        for ck, name, ext, input_mimettype, output_mimetype, quality, \
-                converter in candidates:
-            output = converter.convert_content(req, mimetype, content, ck)
+        for conversion in candidates:
+            output = conversion.converter.convert_content(req, mimetype,
+                                                          content,
+                                                          conversion.key)
             if output:
-                return output[0], output[1], ext
+                return output[0], output[1], conversion.extension
         raise TracError(
             _("No available MIME conversions from %(old)s to %(new)s",
               old=mimetype, new=key))

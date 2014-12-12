@@ -749,13 +749,13 @@ class TicketModule(Component):
 
         # Add registered converters
         for conversion in mime.get_supported_conversions('trac.ticket.Ticket'):
-            format = conversion[0]
+            format = conversion.key
             conversion_href = get_resource_url(self.env, ticket.resource,
                                                req.href, format=format)
             if format == 'rss':
                 conversion_href = auth_link(req, conversion_href)
-            add_link(req, 'alternate', conversion_href, conversion[1],
-                     conversion[4], format)
+            add_link(req, 'alternate', conversion_href, conversion.name,
+                     conversion.out_mimetype, format)
 
         prevnext_nav(req, _("Previous Ticket"), _("Next Ticket"),
                      _("Back to Query"))
