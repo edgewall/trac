@@ -197,6 +197,7 @@
       // "_=<timestamp>" parameter to url.
       script = document.createElement("script");
       script.src = href;
+      script.async = false;
       script.type = type || "text/javascript";
       script.charset = charset || "utf-8";
       $("head")[0].appendChild(script);
