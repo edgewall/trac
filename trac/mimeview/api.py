@@ -693,7 +693,7 @@ class Mimeview(Component):
             mimetype = full_mimetype = 'text/plain'  # fallback if not binary
 
         # Choose best converter
-        candidates = list(self.get_supported_conversions(mimetype) or [])
+        candidates = self.get_supported_conversions(mimetype)
         candidates = [c for c in candidates if key in (c[0], c[4])]
         if not candidates:
             raise TracError(
