@@ -20,7 +20,7 @@ class IPreferencePanelProvider(Interface):
         """Return a list of available preference panels.
 
         The items returned by this function must be tuple of the form
-        `(panel, label)`.
+        `(panel, label)`, or `(panel, label, parent_panel)` for child panels.
         """
 
     def render_preference_panel(req, panel):

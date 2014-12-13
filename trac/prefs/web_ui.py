@@ -27,8 +27,8 @@ from trac.util.translation import _, Locale, deactivate,\
                                   get_available_locales, make_activable
 from trac.web.api import HTTPNotFound, IRequestHandler, \
                          is_valid_default_handler
-from trac.web.chrome import INavigationContributor, ITemplateProvider, \
-                            add_notice, add_stylesheet
+from trac.web.chrome import Chrome, INavigationContributor, \
+                            ITemplateProvider, add_notice, add_stylesheet
 
 
 class PreferencesModule(Component):
@@ -70,20 +70,35 @@ class PreferencesModule(Component):
         panel_id = req.args.get('panel_id')
 
         panels = []
+        child_panels = []
         chosen_provider = None
 
+        chrome = Chrome(self.env)
+
         for provider in self.panel_providers:
-            for name, label in provider.get_preference_panels(req) or []:
-                if name == panel_id or None:
-                    chosen_provider = provider
-                panels.append((name, label))
+            for panel in provider.get_preference_panels(req) or []:
+                if len(panel) == 3:
+                    name, label, parent = panel
+                    if parent == panel_id:
+                        template, data = \
+                            provider.render_preference_panel(req, name)
+                        child_panels.append((name, label,
+                            chrome.render_template(req, template, data,
+                                                   fragment=True)))
+                else:
+                    name, label = panel
+                    if name == panel_id or None:
+                        chosen_provider = provider
+                    panels.append(panel)
         if not chosen_provider:
             self.log.warn("Unknown preference panel %r", panel_id)
             raise HTTPNotFound(_("Unknown preference panel"))
 
         template, data = chosen_provider.render_preference_panel(req,
                                                                  panel_id)
-        data.update({'active_panel': panel_id, 'panels': panels})
+        data.update({'active_panel': panel_id,
+                     'panels': panels,
+                     'child_panels': child_panels})
 
         add_stylesheet(req, 'common/css/prefs.css')
         return template, data, None

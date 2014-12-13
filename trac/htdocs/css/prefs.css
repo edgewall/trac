@@ -44,4 +44,15 @@
  vertical-align: middle;
  white-space: nowrap;
 }
-#content.prefs tr.field { height: 30px; }
+
+#content.prefs div.prefs_child {
+ margin-bottom: 4em;
+ margin-top: 4em;
+}
+#content.prefs div.prefs_child  h2 {
+ background: #f7f7f7;
+ border-bottom: 1px solid #d7d7d7;
+ box-shadow: 1px 1px .5em 0 #ccc;
+ border-radius: .1em;
+ padding: .2em .4em;
+}#content.prefs tr.field { height: 30px; }

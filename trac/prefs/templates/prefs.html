@@ -38,6 +38,12 @@
       <div id="tabcontent" py:with="has_forms = list(select('.//form'))">
         <form id="userprefs" action="" method="post" py:strip="has_forms">
           ${select("*|text()")}
+          <div py:for="(name, title, child) in child_panels">
+            <div class="prefs_child">
+              <h2 id="${name}">${title}</h2>
+              ${child}
+            </div>
+          </div>
           <div class="buttons" py:if="not has_forms">
             <input type="hidden" name="action" value="save" />
             <input type="submit" value="${_('Save changes')}" />
