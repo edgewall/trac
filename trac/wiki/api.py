@@ -40,7 +40,11 @@ class IWikiChangeListener(Interface):
         """Called whenever a new Wiki page is added."""
 
     def wiki_page_changed(page, version, t, comment, author, ipnr):
-        """Called when a page has been modified."""
+        """Called when a page has been modified.
+
+        :since 1.0.3: `ipnr` is optional and deprecated, and will
+                      be removed in 1.3.1
+        """
 
     def wiki_page_deleted(page):
         """Called when a page has been deleted."""

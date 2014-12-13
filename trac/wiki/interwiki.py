@@ -111,7 +111,7 @@ class InterWikiMap(Component):
         if page.name == InterWikiMap._page_name:
             del self.interwiki_map
 
-    def wiki_page_changed(self, page, version, t, comment, author, ipnr):
+    def wiki_page_changed(self, page, version, t, comment, author):
         if page.name == InterWikiMap._page_name:
             del self.interwiki_map
 
