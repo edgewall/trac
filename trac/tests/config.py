@@ -45,6 +45,12 @@ class ConfigurationTestCase(unittest.TestCase):
         with open(self.filename, 'w') as fileobj:
             fileobj.write(('\n'.join(lines + [''])).encode('utf-8'))
 
+    def test_repr(self):
+        self.assertEquals('<Configuration None>', repr(Configuration(None)))
+        config = self._read()
+        self.assertEquals("<Configuration '%s'>" % self.filename,
+                          repr(config))
+
     def test_default(self):
         config = self._read()
         self.assertEqual('', config.get('a', 'option'))

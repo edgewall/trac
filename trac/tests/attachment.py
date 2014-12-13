@@ -13,15 +13,17 @@
 
 import os
 import shutil
-from StringIO import StringIO
 import tempfile
 import unittest
+from datetime import datetime
+from StringIO import StringIO
 
 from trac.attachment import Attachment, AttachmentModule
 from trac.core import Component, implements, TracError
 from trac.perm import IPermissionPolicy, PermissionCache
 from trac.resource import Resource, resource_exists
 from trac.test import EnvironmentStub
+from trac.util.datefmt import utc, to_utimestamp
 
 
 hashes = {
@@ -63,14 +65,50 @@ class AttachmentTestCase(unittest.TestCase):
         self.env.config.set('attachment', 'max_size', 512)
 
         self.perm = PermissionCache(self.env)
+        self.datetime = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         with self.env.db_transaction as db:
             db("INSERT INTO wiki (name,version) VALUES ('WikiStart',1)")
             db("INSERT INTO wiki (name,version) VALUES ('SomePage',1)")
             db("INSERT INTO ticket (id) VALUES (42)")
+            db("INSERT INTO ticket (id) VALUES (43)")
+            db("INSERT INTO attachment VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+               ('ticket', '43', 'foo.txt', 8, to_utimestamp(self.datetime),
+                'A comment', 'joe', '::1'))
 
     def tearDown(self):
         shutil.rmtree(self.env.path)
         self.env.reset_db()
+
+    def test_new_attachment(self):
+        attachment = Attachment(self.env, 'ticket', 42)
+        self.assertEqual(None, attachment.filename)
+        self.assertEqual(None, attachment.description)
+        self.assertEqual(None, attachment.size)
+        self.assertEqual(None, attachment.date)
+        self.assertEqual(None, attachment.author)
+        self.assertEqual(None, attachment.ipnr)
+        self.assertEqual('<Attachment None>', repr(attachment))
+
+    def test_existing_attachment(self):
+        attachment = Attachment(self.env, 'ticket', 43, 'foo.txt')
+        self.assertEqual('foo.txt', attachment.filename)
+        self.assertEqual('A comment', attachment.description)
+        self.assertEqual(8, attachment.size)
+        self.assertEqual(self.datetime, attachment.date)
+        self.assertEqual('joe', attachment.author)
+        self.assertEqual('::1', attachment.ipnr)
+        self.assertEqual("<Attachment u'foo.txt'>", repr(attachment))
+
+    def test_existing_attachment_from_resource(self):
+        resource = Resource('ticket', 43).child('attachment', 'foo.txt')
+        attachment = Attachment(self.env, resource)
+        self.assertEqual('foo.txt', attachment.filename)
+        self.assertEqual('A comment', attachment.description)
+        self.assertEqual(8, attachment.size)
+        self.assertEqual(self.datetime, attachment.date)
+        self.assertEqual('joe', attachment.author)
+        self.assertEqual('::1', attachment.ipnr)
+        self.assertEqual("<Attachment u'foo.txt'>", repr(attachment))
 
     def test_get_path(self):
         attachment = Attachment(self.env, 'ticket', 42)

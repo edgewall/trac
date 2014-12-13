@@ -77,6 +77,7 @@ class WikiPageTestCase(unittest.TestCase):
         self.assertEqual('', page.author)
         self.assertEqual('', page.comment)
         self.assertIsNone(page.time)
+        self.assertEqual('<WikiPage None>', repr(page))
 
     def test_existing_page(self):
         t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
@@ -95,6 +96,7 @@ class WikiPageTestCase(unittest.TestCase):
         self.assertEqual('joe', page.author)
         self.assertEqual('Testing', page.comment)
         self.assertEqual(t, page.time)
+        self.assertEqual("<WikiPage u'TestPage@1'>", repr(page))
 
         history = list(page.get_history())
         self.assertEqual(1, len(history))

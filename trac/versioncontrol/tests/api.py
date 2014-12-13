@@ -52,6 +52,26 @@ class ApiTestCase(unittest.TestCase):
         self.assertEqual(datetime(1970, 1, 1, tzinfo=utc), changeset.date)
         self.assertEqual([], list(changeset.get_changes()))
 
+    def test_repository_repr(self):
+        repos = Mock(Repository, 'testrepo',
+                     {'name': 'testrepo', 'id': 1}, None)
+        self.assertEqual("<Mock 1 'testrepo' '/'>", repr(repos))
+
+    def test_node_repr(self):
+        repos = Mock(Repository, 'testrepo',
+                     {'name': 'testrepo', 'id': 1}, None)
+        node1 = Mock(Node, repos, '/trunk', None, Node.DIRECTORY)
+        node2 = Mock(Node, repos, '/trunk', 1, Node.DIRECTORY)
+        self.assertEqual("<Mock u'testrepo:/trunk'>", repr(node1))
+        self.assertEqual("<Mock u'testrepo:/trunk@1'>", repr(node2))
+
+    def test_changeset_repr(self):
+        repo = Mock(Repository, 'testrepo',
+                    {'name': 'testrepo', 'id': 1}, None)
+        changeset = Mock(Changeset, repo, 1, 'Test commit',
+                         'user@example.com', None)
+        self.assertEqual("<Mock u'testrepo@1'>", repr(changeset))
+
 
 class ResourceManagerTestCase(unittest.TestCase):
 

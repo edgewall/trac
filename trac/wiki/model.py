@@ -99,6 +99,13 @@ class WikiPage(object):
             self.text = self.comment = self.author = ''
             self.time = None
             self.readonly = 0
+            
+    def __repr__(self):
+        if self.name is None:
+            name = self.name
+        else:
+            name = u'%s@%s' % (self.name, self.version)
+        return '<%s %r>' % (self.__class__.__name__, name)
 
     exists = property(lambda self: self.version > 0)
 

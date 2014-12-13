@@ -112,6 +112,9 @@ class Ticket(object):
         self.version = version
         self._old = {}
 
+    def __repr__(self):
+        return '<%s %r>' % (self.__class__.__name__, self.id)
+
     exists = property(lambda self: self.id is not None)
 
     def _init_defaults(self):
@@ -278,7 +281,7 @@ class Ticket(object):
                        """, [(tkt_id, c, db_values.get(c, ''))
                              for c in custom_fields])
 
-        self.id = tkt_id
+        self.id = int(tkt_id)
         self._old = {}
 
         for listener in TicketSystem(self.env).change_listeners:
@@ -731,6 +734,9 @@ class AbstractEnum(object):
             self.value = self._old_value = None
             self.name = self._old_name = None
 
+    def __repr__(self):
+        return '<%s %r %r>' % (self.__class__.__name__, self.name, self.value)
+
     exists = property(lambda self: self._old_value is not None)
 
     def delete(self):
@@ -828,6 +834,9 @@ class Status(object):
             status.name = state
             yield status
 
+    def __repr__(self):
+        return '<%s %r>' % (self.__class__.__name__, self.name)
+
 
 class Resolution(AbstractEnum):
     type = 'resolution'
@@ -856,6 +865,9 @@ class Component(object):
             else:
                 raise ResourceNotFound(_("Component %(name)s does not exist.",
                                          name=name))
+
+    def __repr__(self):
+        return '<%s %r>' % (self.__class__.__name__, self.name)
 
     exists = property(lambda self: self._old_name is not None)
 
@@ -998,9 +1010,16 @@ class Milestone(object):
         else:
             self.cache.factory((None, None, None, ''), self)
 
+    def __repr__(self):
+        return '<%s %r>' % (self.__class__.__name__, self.name)
+
     @property
     def cache(self):
         return MilestoneCache(self.env)
+
+    @property
+    def resource(self):
+        return Resource(self.realm, self.name)  ### .version !!!
 
     exists = property(lambda self: self._old['name'] is not None)
     is_completed = property(lambda self: self.completed is not None)
@@ -1173,6 +1192,9 @@ class Version(object):
             else:
                 raise ResourceNotFound(_("Version %(name)s does not exist.",
                                          name=name))
+
+    def __repr__(self):
+        return '<%s %r>' % (self.__class__.__name__, self.name)
 
     exists = property(lambda self: self._old_name is not None)
 

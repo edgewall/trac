@@ -67,6 +67,9 @@ class Configuration(object):
         self._sections = {}
         self.parse_if_needed(force=True)
 
+    def __repr__(self):
+        return '<%s %r>' % (self.__class__.__name__, self.filename)
+
     def __contains__(self, name):
         """Return whether the configuration contains a section of the given
         name.
@@ -78,9 +81,6 @@ class Configuration(object):
         if name not in self._sections:
             self._sections[name] = Section(self, name)
         return self._sections[name]
-
-    def __repr__(self):
-        return '<%s %r>' % (self.__class__.__name__, self.filename)
 
     def get(self, section, key, default=''):
         """Return the value of the specified option.
@@ -332,6 +332,9 @@ class Section(object):
         self.overridden = {}
         self._cache = {}
 
+    def __repr__(self):
+        return '<%s [%s]>' % (self.__class__.__name__, self.name)
+
     def contains(self, key, defaults=True):
         if self.config.parser.has_option(_to_utf8(self.name), _to_utf8(key)):
             return True
@@ -367,9 +370,6 @@ class Section(object):
                     yield option
 
     __iter__ = iterate
-
-    def __repr__(self):
-        return '<%s [%s]>' % (self.__class__.__name__, self.name)
 
     def get(self, key, default=''):
         """Return the value of the specified option.
@@ -633,8 +633,8 @@ class Option(object):
         raise AttributeError(_("Setting attribute is not allowed."))
 
     def __repr__(self):
-        return '<%s [%s] "%s">' % (self.__class__.__name__, self.section,
-                                   self.name)
+        return '<%s [%s] %r>' % (self.__class__.__name__, self.section,
+                                 self.name)
 
     def dumps(self, value):
         """Return the value as a string to write to a trac.ini file"""

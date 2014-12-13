@@ -682,6 +682,9 @@ class Attachment(object):
             self.author = None
             self.ipnr = None
 
+    def __repr__(self):
+        return '<%s %r>' % (self.__class__.__name__, self.filename)
+
     def _from_database(self, filename, description, size, time, author, ipnr):
         self.filename = filename
         self.description = description

@@ -74,6 +74,12 @@ class CacheTestCase(unittest.TestCase):
 
     # Tests
 
+    def test_repr(self):
+        repos = self.get_repos()
+        cache = CachedRepository(self.env, repos, self.log)
+        self.assertEqual("<CachedRepository 1 'test-repos' '/'>",
+                         repr(cache))
+
     def test_initial_sync_with_empty_repos(self):
         repos = self.get_repos()
         cache = CachedRepository(self.env, repos, self.log)

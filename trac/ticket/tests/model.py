@@ -127,6 +127,12 @@ class TicketTestCase(unittest.TestCase):
         self.assertRaises(ResourceNotFound, Ticket, self.env, -1)
         self.assertRaises(ResourceNotFound, Ticket, self.env, 1L << 32)
 
+    def test_repr(self):
+        ticket = self._create_a_ticket()
+        self.assertEqual("<Ticket None>", repr(ticket))
+        ticket.insert()
+        self.assertEqual("<Ticket 1>", repr(ticket))
+
     def test_create_ticket_1(self):
         ticket = self._create_a_ticket()
         self.assertEqual('santa', ticket['reporter'])
@@ -847,6 +853,11 @@ class EnumTestCase(unittest.TestCase):
     def tearDown(self):
         self.env.reset_db()
 
+    def test_repr(self):
+        self.assertEqual("<Priority None None>", repr(Priority(self.env)))
+        self.assertEqual("<Priority 'major' u'3'>",
+                         repr(Priority(self.env, 'major')))
+
     def test_priority_fetch(self):
         prio = Priority(self.env, 'major')
         self.assertEqual(prio.name, 'major')
@@ -945,6 +956,7 @@ class MilestoneTestCase(unittest.TestCase):
         self.assertIsNone(milestone.due)
         self.assertIsNone(milestone.completed)
         self.assertEqual('', milestone.description)
+        self.assertEqual("<Milestone None>", repr(milestone))
 
     def test_new_milestone_empty_name(self):
         """
@@ -957,6 +969,7 @@ class MilestoneTestCase(unittest.TestCase):
         self.assertIsNone(milestone.due)
         self.assertIsNone(milestone.completed)
         self.assertEqual('', milestone.description)
+        self.assertEqual("<Milestone None>", repr(milestone))
 
     def test_existing_milestone(self):
         self.env.db_transaction("INSERT INTO milestone (name) VALUES ('Test')")
@@ -967,6 +980,7 @@ class MilestoneTestCase(unittest.TestCase):
         self.assertIsNone(milestone.due)
         self.assertIsNone(milestone.completed)
         self.assertEqual('', milestone.description)
+        self.assertEqual("<Milestone u'Test'>", repr(milestone))
 
     def test_create_and_update_milestone(self):
         milestone = Milestone(self.env)
@@ -1230,6 +1244,11 @@ class ComponentTestCase(unittest.TestCase):
         for c in Component.select(self.env):
             self.assertEqual(c.exists, True)
 
+    def test_repr(self):
+        self.assertEqual('<Component None>', repr(Component(self.env)))
+        self.assertEqual("<Component 'component1'>",
+                         repr(Component(self.env, 'component1')))
+        
     def test_create_and_update(self):
         component = Component(self.env)
         component.name = 'Test'
@@ -1264,6 +1283,10 @@ class VersionTestCase(unittest.TestCase):
         """
         for v in Version.select(self.env):
             self.assertEqual(v.exists, True)
+
+    def test_repr(self):
+        self.assertEqual('<Version None>', repr(Version(self.env)))
+        self.assertEqual("<Version '1.0'>", repr(Version(self.env, '1.0')))
 
     def test_create_and_update(self):
         version = Version(self.env)

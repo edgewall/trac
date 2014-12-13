@@ -795,6 +795,10 @@ class Repository(object):
         self.id = params['id']
         self.log = log
 
+    def __repr__(self):
+        return '<%s %r %r %r>' % (self.__class__.__name__,
+                                  self.id, self.name, self.scope)
+
     @abstractmethod
     def close(self):
         """Close the connection to the repository."""
@@ -1053,6 +1057,12 @@ class Node(object):
         self.rev = rev
         self.kind = kind
 
+    def __repr__(self):
+        name = u'%s:%s' % (self.repos.name, self.path)
+        if self.rev is not None:
+            name += '@' + unicode(self.rev)
+        return '<%s %r>' % (self.__class__.__name__, name)
+
     @abstractmethod
     def get_content(self):
         """Return a stream for reading the content of the node.
@@ -1199,6 +1209,10 @@ class Changeset(object):
         self.message = message or ''
         self.author = author or ''
         self.date = date
+
+    def __repr__(self):
+        name = u'%s@%s' % (self.repos.name, self.rev)
+        return '<%s %r>' % (self.__class__.__name__, name)
 
     def get_properties(self):
         """Returns the properties (meta-data) of the node, as a dictionary.
