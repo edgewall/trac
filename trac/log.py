@@ -19,7 +19,10 @@ import logging
 import logging.handlers
 import sys
 
+LOG_TYPES = ('none', 'stderr', 'file', 'syslog', 'eventlog')
+LOG_TYPE_ALIASES = ('winlog', 'nteventlog', 'unix')
 LOG_LEVELS = ('CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG')
+LOG_LEVEL_ALIASES = ('WARN', 'ALL')
 
 
 def logger_handler_factory(logtype='syslog', logfile=None, level='WARNING',
@@ -28,13 +31,13 @@ def logger_handler_factory(logtype='syslog', logfile=None, level='WARNING',
     logtype = logtype.lower()
     if logtype == 'file':
         hdlr = logging.FileHandler(logfile)
-    elif logtype in ('winlog', 'eventlog', 'nteventlog'):
+    elif logtype in ('eventlog', 'winlog', 'nteventlog'):
         # Requires win32 extensions
         hdlr = logging.handlers.NTEventLogHandler(logid,
                                                   logtype='Application')
     elif logtype in ('syslog', 'unix'):
         hdlr = logging.handlers.SysLogHandler('/dev/log')
-    elif logtype in ('stderr',):
+    elif logtype == 'stderr':
         hdlr = logging.StreamHandler(sys.stderr)
     else:
         hdlr = logging.handlers.BufferingHandler(0)
@@ -46,12 +49,16 @@ def logger_handler_factory(logtype='syslog', logfile=None, level='WARNING',
         logger.setLevel(logging.DEBUG)
     elif level == 'INFO':
         logger.setLevel(logging.INFO)
+    elif level in ('WARNING', 'WARN'):
+        logger.setLevel(logging.WARNING)
     elif level == 'ERROR':
         logger.setLevel(logging.ERROR)
     elif level == 'CRITICAL':
         logger.setLevel(logging.CRITICAL)
     else:
-        logger.setLevel(logging.WARNING)
+        # Should never be reached because level is restricted through
+        # ChoiceOption, therefore message is intentionally left untranslated
+        raise AssertionError("Unrecognized log level '%(level)s'", level)
 
     if not format:
         format = 'Trac[%(module)s] %(levelname)s: %(message)s'

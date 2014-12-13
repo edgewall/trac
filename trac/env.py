@@ -21,11 +21,11 @@ import setuptools
 import sys
 from urlparse import urlsplit
 
-from trac import db_default
+from trac import db_default, log
 from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.cache import CacheManager, cached
-from trac.config import BoolOption, ConfigSection, Configuration, Option, \
-                        PathOption
+from trac.config import BoolOption, ChoiceOption, ConfigSection, \
+                        Configuration, Option, PathOption
 from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracBaseError, TracError
 from trac.db.api import (DatabaseManager, QueryContextManager,
@@ -231,7 +231,8 @@ class Environment(Component, ComponentManager):
     project_icon = Option('project', 'icon', 'common/trac.ico',
         """URL of the icon of the project.""")
 
-    log_type = Option('logging', 'log_type', 'none',
+    log_type = ChoiceOption('logging', 'log_type',
+                            log.LOG_TYPES + log.LOG_TYPE_ALIASES,
         """Logging facility to use.
 
         Should be one of (`none`, `file`, `stderr`, `syslog`, `winlog`).""")
@@ -241,10 +242,13 @@ class Environment(Component, ComponentManager):
         log-file.  Relative paths are resolved relative to the `log`
         directory of the environment.""")
 
-    log_level = Option('logging', 'log_level', 'DEBUG',
+    log_level = ChoiceOption('logging', 'log_level',
+                             tuple(reversed(log.LOG_LEVELS)) +
+                             log.LOG_LEVEL_ALIASES,
         """Level of verbosity in log.
 
-        Should be one of (`CRITICAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`).""")
+        Should be one of (`CRITICAL`, `ERROR`, `WARNING`, `INFO`, `DEBUG`).
+        """)
 
     log_format = Option('logging', 'log_format', None,
         """Custom logging format.

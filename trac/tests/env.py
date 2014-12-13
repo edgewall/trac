@@ -18,8 +18,10 @@ import unittest
 
 import trac.tests.compat
 from trac import db_default
+from trac.config import ConfigurationError
 from trac.core import Component, ComponentManager, implements
-from trac.env import Environment, IEnvironmentSetupParticipant
+from trac.env import Environment, IEnvironmentSetupParticipant, \
+                     open_environment
 from trac.test import EnvironmentStub
 
 
@@ -173,6 +175,25 @@ class EnvironmentTestCase(unittest.TestCase):
                          len(self.env.setup_participants))
         self.assertTrue(self.env.needs_upgrade())
         self.assertTrue(self.env.upgrade())
+
+    def test_invalid_log_level_raises_exception(self):
+        self.env.config.set('logging', 'log_level', 'invalid')
+        self.env.config.save()
+
+        self.assertEqual('invalid',
+                         self.env.config.get('logging', 'log_level'))
+        self.assertRaises(ConfigurationError, open_environment,
+                          self.env.path, True)
+
+    def test_invalid_log_type_raises_exception(self):
+        self.env.config.set('logging', 'log_type', 'invalid')
+        self.env.config.save()
+
+        self.assertEqual('invalid',
+                         self.env.config.get('logging', 'log_type'))
+        self.assertRaises(ConfigurationError, open_environment,
+                          self.env.path, True)
+
 
 def suite():
     suite = unittest.TestSuite()
