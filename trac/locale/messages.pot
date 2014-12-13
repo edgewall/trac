@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.1.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-12-10 04:42-0800\n"
+"POT-Creation-Date: 2014-12-12 18:40-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -287,7 +287,7 @@ msgstr ""
 msgid "Property %(prop)s changed"
 msgstr ""
 
-#: trac/about.py:47 trac/templates/about.html:20 trac/templates/about.html:30
+#: trac/about.py:48 trac/templates/about.html:20 trac/templates/about.html:30
 msgid "About Trac"
 msgstr ""
 
@@ -395,58 +395,58 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
-#: trac/attachment.py:700
+#: trac/attachment.py:706
 #, python-format
 msgid "Attachment '%(title)s' does not exist."
 msgstr ""
 
-#: trac/attachment.py:702
+#: trac/attachment.py:708
 msgid "Invalid Attachment"
 msgstr ""
 
-#: trac/attachment.py:765
+#: trac/attachment.py:771
 msgid "Could not delete attachment"
 msgstr ""
 
-#: trac/attachment.py:784
+#: trac/attachment.py:790
 #, python-format
 msgid "Cannot reparent attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
 msgstr ""
 
-#: trac/attachment.py:789
+#: trac/attachment.py:795
 #, python-format
 msgid ""
 "Cannot reparent attachment \"%(att)s\" as it already exists in "
 "%(realm)s:%(id)s"
 msgstr ""
 
-#: trac/attachment.py:808
+#: trac/attachment.py:814
 #, python-format
 msgid "Could not reparent attachment %(name)s"
 msgstr ""
 
-#: trac/attachment.py:837
+#: trac/attachment.py:841
 #, python-format
 msgid "%(parent)s doesn't exist, can't create attachment"
 msgstr ""
 
-#: trac/attachment.py:846
+#: trac/attachment.py:850
 #, python-format
 msgid "Cannot create attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
 msgstr ""
 
-#: trac/attachment.py:921
+#: trac/attachment.py:925
 #, python-format
 msgid "Attachment '%(filename)s' not found"
 msgstr ""
 
-#: trac/attachment.py:1024
+#: trac/attachment.py:1028
 #, python-format
 msgid "Invalid resource identifier '%(id)s'"
 msgstr ""
 
-#: trac/attachment.py:1060 trac/templates/environment_info.html:53
-#: trac/templates/environment_info.html:74 trac/templates/error.html:173
+#: trac/attachment.py:1064 trac/templates/environment_info.html:53
+#: trac/templates/environment_info.html:96 trac/templates/error.html:173
 #: trac/ticket/admin.py:216 trac/ticket/admin.py:412 trac/ticket/admin.py:590
 #: trac/ticket/templates/admin_components.html:88
 #: trac/ticket/templates/admin_enums.html:66
@@ -454,31 +454,31 @@ msgstr ""
 #: trac/ticket/templates/admin_versions.html:91
 #: trac/versioncontrol/admin.py:117
 #: trac/versioncontrol/templates/admin_repositories.html:146
-#: trac/web/session.py:434
+#: trac/web/session.py:437
 msgid "Name"
 msgstr ""
 
-#: trac/attachment.py:1060
+#: trac/attachment.py:1064
 msgid "Size"
 msgstr ""
 
-#: trac/attachment.py:1060 trac/templates/history_view.html:47
+#: trac/attachment.py:1064 trac/templates/history_view.html:47
 #: trac/versioncontrol/templates/revisionlog.html:122
 msgid "Author"
 msgstr ""
 
-#: trac/attachment.py:1060 trac/templates/history_view.html:46
+#: trac/attachment.py:1064 trac/templates/history_view.html:46
 msgid "Date"
 msgstr ""
 
-#: trac/attachment.py:1061 trac/templates/attachment.html:102
+#: trac/attachment.py:1065 trac/templates/attachment.html:102
 #: trac/ticket/api.py:338 trac/ticket/api.py:564
 #: trac/ticket/templates/ticket.html:388
 #: trac/ticket/templates/ticket_box.html:108
 msgid "Description"
 msgstr ""
 
-#: trac/attachment.py:1084 trac/wiki/admin.py:103
+#: trac/attachment.py:1088 trac/wiki/admin.py:103
 #, python-format
 msgid "File '%(name)s' exists"
 msgstr ""
@@ -546,22 +546,22 @@ msgid ""
 "href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
 msgstr ""
 
-#: trac/env.py:797
+#: trac/env.py:819
 msgid "Database newer than Trac version"
 msgstr ""
 
-#: trac/env.py:817
+#: trac/env.py:839
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
 msgstr ""
 
-#: trac/env.py:862
+#: trac/env.py:884
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
 msgstr ""
 
-#: trac/env.py:892 trac/admin/console.py:282
+#: trac/env.py:914 trac/admin/console.py:282
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
@@ -569,67 +569,67 @@ msgid ""
 "Run \"trac-admin %(path)s upgrade\""
 msgstr ""
 
-#: trac/env.py:931
+#: trac/env.py:953
 msgid "Copying resources from:"
 msgstr ""
 
-#: trac/env.py:949
+#: trac/env.py:971
 msgid "Creating scripts."
 msgstr ""
 
-#: trac/env.py:961
+#: trac/env.py:983
 #, python-format
 msgid "Invalid argument '%(arg)s'"
 msgstr ""
 
-#: trac/env.py:966
+#: trac/env.py:988
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr ""
 
-#: trac/env.py:975
+#: trac/env.py:997
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr ""
 
-#: trac/env.py:993
+#: trac/env.py:1015
 msgid "The following errors happened while copying the environment:"
 msgstr ""
 
-#: trac/env.py:1003
+#: trac/env.py:1025
 msgid "Backing up database ..."
 msgstr ""
 
-#: trac/env.py:1008
+#: trac/env.py:1030
 msgid "Hotcopy done."
 msgstr ""
 
-#: trac/env.py:1013 trac/admin/api.py:134
+#: trac/env.py:1035 trac/admin/api.py:134
 msgid "Invalid arguments"
 msgstr ""
 
-#: trac/env.py:1016
+#: trac/env.py:1038
 msgid "Database is up to date, no upgrade necessary."
 msgstr ""
 
-#: trac/env.py:1022
+#: trac/env.py:1044
 msgid ""
 "The pre-upgrade backup failed.\n"
 "Use '--no-backup' to upgrade without doing a backup.\n"
 msgstr ""
 
-#: trac/env.py:1026
+#: trac/env.py:1048
 msgid "The upgrade failed. Please fix the issue and try again.\n"
 msgstr ""
 
-#: trac/env.py:1038
+#: trac/env.py:1060
 msgid ""
 "Warning: the wiki-macros directory in the environment is non-empty, but "
 "Trac\n"
 "doesn't load plugins from there anymore. Please remove it by hand."
 msgstr ""
 
-#: trac/env.py:1049
+#: trac/env.py:1071
 #, python-format
 msgid ""
 "Error while removing wiki-macros: %(err)s\n"
@@ -637,7 +637,7 @@ msgid ""
 "hand."
 msgstr ""
 
-#: trac/env.py:1054
+#: trac/env.py:1076
 #, python-format
 msgid ""
 "Upgrade done.\n"
@@ -1232,7 +1232,7 @@ msgid "Apply changes"
 msgstr ""
 
 #: trac/admin/templates/admin_logging.html:36
-#: trac/templates/environment_info.html:69
+#: trac/templates/environment_info.html:91
 msgid "Configuration"
 msgstr ""
 
@@ -1532,26 +1532,26 @@ msgid ""
 "file %(path)s and the directory it is located in."
 msgstr ""
 
-#: trac/mimeview/api.py:692 trac/mimeview/api.py:702
+#: trac/mimeview/api.py:706 trac/mimeview/api.py:717
 #, python-format
 msgid "No available MIME conversions from %(old)s to %(new)s"
 msgstr ""
 
-#: trac/mimeview/api.py:817
+#: trac/mimeview/api.py:832
 #, python-format
 msgid "HTML preview using %(renderer)s failed (%(err)s)"
 msgstr ""
 
-#: trac/mimeview/api.py:848
+#: trac/mimeview/api.py:863
 #, python-format
 msgid "Can't use %(annotator)s annotator: %(error)s"
 msgstr ""
 
-#: trac/mimeview/api.py:1110 trac/templates/error.html:161
+#: trac/mimeview/api.py:1126 trac/templates/error.html:161
 msgid "Line"
 msgstr ""
 
-#: trac/mimeview/api.py:1110
+#: trac/mimeview/api.py:1126
 msgid "Line numbers"
 msgstr ""
 
@@ -2303,11 +2303,31 @@ msgstr ""
 msgid "N/A"
 msgstr ""
 
-#: trac/templates/environment_info.html:73
+#: trac/templates/environment_info.html:69
+msgid "Interface Customization"
+msgstr ""
+
+#: trac/templates/environment_info.html:72
+msgid "Site templates"
+msgstr ""
+
+#: trac/templates/environment_info.html:76
+msgid "Shared templates"
+msgstr ""
+
+#: trac/templates/environment_info.html:80
+msgid "Site static resources"
+msgstr ""
+
+#: trac/templates/environment_info.html:84
+msgid "Shared static resources"
+msgstr ""
+
+#: trac/templates/environment_info.html:95
 msgid "Section"
 msgstr ""
 
-#: trac/templates/environment_info.html:75 trac/templates/error.html:173
+#: trac/templates/environment_info.html:97 trac/templates/error.html:173
 msgid "Value"
 msgstr ""
 
@@ -2547,7 +2567,7 @@ msgstr ""
 msgid "%(title)s: %(count)s"
 msgstr ""
 
-#: trac/templates/progress_bar_grouped.html:26 trac/web/chrome.py:1171
+#: trac/templates/progress_bar_grouped.html:26 trac/web/chrome.py:1172
 msgid "(none)"
 msgstr ""
 
@@ -2604,7 +2624,7 @@ msgstr ""
 msgid "The component \"%(name)s\" has been added."
 msgstr ""
 
-#: trac/ticket/admin.py:120 trac/ticket/model.py:876 trac/ticket/model.py:892
+#: trac/ticket/admin.py:120 trac/ticket/model.py:891 trac/ticket/model.py:907
 msgid "Invalid component name."
 msgstr ""
 
@@ -2670,7 +2690,7 @@ msgstr ""
 msgid "The version \"%(name)s\" has been added."
 msgstr ""
 
-#: trac/ticket/admin.py:501 trac/ticket/model.py:1193 trac/ticket/model.py:1208
+#: trac/ticket/admin.py:501 trac/ticket/model.py:1218 trac/ticket/model.py:1233
 msgid "Invalid version name."
 msgstr ""
 
@@ -3023,57 +3043,57 @@ msgstr ""
 msgid "Enable JavaScript to display the workflow graph."
 msgstr ""
 
-#: trac/ticket/model.py:152
+#: trac/ticket/model.py:159
 #, python-format
 msgid "Ticket %(id)s does not exist."
 msgstr ""
 
-#: trac/ticket/model.py:153
+#: trac/ticket/model.py:160
 msgid "Invalid ticket number"
 msgstr ""
 
-#: trac/ticket/model.py:191
+#: trac/ticket/model.py:198
 msgid "Multi-values fields not supported yet"
 msgstr ""
 
-#: trac/ticket/model.py:725
+#: trac/ticket/model.py:731
 #, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr ""
 
-#: trac/ticket/model.py:761 trac/ticket/model.py:783
+#: trac/ticket/model.py:770 trac/ticket/model.py:792
 #, python-format
 msgid "Invalid %(type)s name."
 msgstr ""
 
-#: trac/ticket/model.py:854
+#: trac/ticket/model.py:866
 #, python-format
 msgid "Component %(name)s does not exist."
 msgstr ""
 
-#: trac/ticket/model.py:989 trac/ticket/model.py:1104
+#: trac/ticket/model.py:1008 trac/ticket/model.py:1126
 #, python-format
 msgid "Milestone %(name)s does not exist."
 msgstr ""
 
-#: trac/ticket/model.py:990 trac/ticket/model.py:1040 trac/ticket/model.py:1059
-#: trac/ticket/model.py:1105
+#: trac/ticket/model.py:1009 trac/ticket/model.py:1062
+#: trac/ticket/model.py:1081 trac/ticket/model.py:1127
 msgid "Invalid milestone name."
 msgstr ""
 
-#: trac/ticket/model.py:1150
+#: trac/ticket/model.py:1172
 msgid "Open (by due date)"
 msgstr ""
 
-#: trac/ticket/model.py:1151
+#: trac/ticket/model.py:1173
 msgid "Open (no due date)"
 msgstr ""
 
-#: trac/ticket/model.py:1154
+#: trac/ticket/model.py:1176
 msgid "Closed"
 msgstr ""
 
-#: trac/ticket/model.py:1171
+#: trac/ticket/model.py:1193
 #, python-format
 msgid "Version %(name)s does not exist."
 msgstr ""
@@ -4745,18 +4765,18 @@ msgid "Next Period"
 msgstr ""
 
 #: trac/timeline/web_ui.py:293 trac/timeline/web_ui.py:316
-#: trac/web/chrome.py:938
+#: trac/web/chrome.py:939
 #, python-format
 msgid "in %(relative)s"
 msgstr ""
 
 #: trac/timeline/web_ui.py:297 trac/timeline/web_ui.py:314
-#: trac/web/chrome.py:952
+#: trac/web/chrome.py:953
 #, python-format
 msgid "on %(date)s at %(time)s"
 msgstr ""
 
-#: trac/timeline/web_ui.py:300 trac/web/chrome.py:940
+#: trac/timeline/web_ui.py:300 trac/web/chrome.py:941
 #, python-format
 msgid "%(relative)s ago"
 msgstr ""
@@ -4766,7 +4786,7 @@ msgstr ""
 msgid "See timeline at %(absolutetime)s"
 msgstr ""
 
-#: trac/timeline/web_ui.py:308 trac/web/chrome.py:948
+#: trac/timeline/web_ui.py:308 trac/web/chrome.py:949
 #, python-format
 msgid "at %(iso8601)s"
 msgstr ""
@@ -6169,26 +6189,26 @@ msgstr ""
 msgid "Already logged in as %(user)s."
 msgstr ""
 
-#: trac/web/chrome.py:671
+#: trac/web/chrome.py:672
 #, python-format
 msgid "Invalid chrome path %(path)s."
 msgstr ""
 
-#: trac/web/chrome.py:803
+#: trac/web/chrome.py:804
 #, python-format
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr ""
 
-#: trac/web/chrome.py:1123
+#: trac/web/chrome.py:1124
 msgid "(unknown template location)"
 msgstr ""
 
-#: trac/web/chrome.py:1124
+#: trac/web/chrome.py:1125
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr ""
 
-#: trac/web/chrome.py:1169
+#: trac/web/chrome.py:1170
 msgid "anonymous"
 msgstr ""
 
@@ -6266,55 +6286,55 @@ msgid ""
 "%(traceback)s}}}"
 msgstr ""
 
-#: trac/web/session.py:242
+#: trac/web/session.py:245
 msgid "Session ID must be alphanumeric."
 msgstr ""
 
-#: trac/web/session.py:243 trac/web/session.py:249
+#: trac/web/session.py:246 trac/web/session.py:252
 msgid "Error renaming session"
 msgstr ""
 
-#: trac/web/session.py:246
+#: trac/web/session.py:249
 #, python-format
 msgid "Session '%(id)s' already exists. Please choose a different session ID."
 msgstr ""
 
-#: trac/web/session.py:434
+#: trac/web/session.py:437
 msgid "SID"
 msgstr ""
 
-#: trac/web/session.py:434
+#: trac/web/session.py:437
 msgid "Auth"
 msgstr ""
 
-#: trac/web/session.py:434
+#: trac/web/session.py:437
 msgid "Last Visit"
 msgstr ""
 
-#: trac/web/session.py:435
+#: trac/web/session.py:438
 msgid "Email"
 msgstr ""
 
-#: trac/web/session.py:435
+#: trac/web/session.py:438
 msgid "Default Handler"
 msgstr ""
 
-#: trac/web/session.py:445
+#: trac/web/session.py:448
 #, python-format
 msgid "Session '%(sid)s' already exists"
 msgstr ""
 
-#: trac/web/session.py:456
+#: trac/web/session.py:460
 #, python-format
 msgid "Invalid attribute '%(attr)s'"
 msgstr ""
 
-#: trac/web/session.py:460
+#: trac/web/session.py:464
 #, python-format
 msgid "Invalid default_handler '%(val)s'"
 msgstr ""
 
-#: trac/web/session.py:467
+#: trac/web/session.py:471
 #, python-format
 msgid "Session '%(sid)s' not found"
 msgstr ""
@@ -6324,7 +6344,7 @@ msgstr ""
 msgid "Page '%(page)s' not found"
 msgstr ""
 
-#: trac/wiki/admin.py:113 trac/wiki/model.py:137 trac/wiki/model.py:185
+#: trac/wiki/admin.py:113 trac/wiki/model.py:153 trac/wiki/model.py:200
 #: trac/wiki/web_ui.py:113
 #, python-format
 msgid "Invalid Wiki page name '%(name)s'"
@@ -6705,24 +6725,24 @@ msgstr ""
 msgid "Table of Contents"
 msgstr ""
 
-#: trac/wiki/model.py:100
+#: trac/wiki/model.py:116
 msgid "Cannot delete non-existent page"
 msgstr ""
 
-#: trac/wiki/model.py:142
+#: trac/wiki/model.py:158
 msgid "Page not modified"
 msgstr ""
 
-#: trac/wiki/model.py:182
+#: trac/wiki/model.py:197
 msgid "Cannot rename non-existent page"
 msgstr ""
 
-#: trac/wiki/model.py:192
+#: trac/wiki/model.py:207
 #, python-format
 msgid "Can't rename to existing %(name)s page."
 msgstr ""
 
-#: trac/wiki/model.py:213
+#: trac/wiki/model.py:228
 msgid "Cannot edit comment of non-existent page"
 msgstr ""
 
