@@ -483,6 +483,8 @@ class WorkflowMacro(WikiMacroBase):
             [state for action in actions.itervalues()
                    for state in action['oldstates']] +
             [action['newstate'] for action in actions.itervalues()]))
+        action_labels = [attrs.get('name') or name
+                         for name, attrs in actions.items()]
         action_names = actions.keys()
         edges = []
         for name, action in actions.items():
@@ -495,7 +497,7 @@ class WorkflowMacro(WikiMacroBase):
         args = args or {}
         width = args.get('width', 800)
         height = args.get('height', 600)
-        graph = {'nodes': states, 'actions': action_names, 'edges': edges,
+        graph = {'nodes': states, 'actions': action_labels, 'edges': edges,
                  'width': width, 'height': height}
         graph_id = '%012x' % id(graph)
         req = formatter.req
