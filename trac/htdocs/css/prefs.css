@@ -44,6 +44,7 @@
  vertical-align: middle;
  white-space: nowrap;
 }
+#content.prefs tr.field { height: 30px; }
 
 #content.prefs div.prefs_child {
  margin-bottom: 4em;
@@ -55,4 +56,4 @@
  box-shadow: 1px 1px .5em 0 #ccc;
  border-radius: .1em;
  padding: .2em .4em;
-}#content.prefs tr.field { height: 30px; }
+}
