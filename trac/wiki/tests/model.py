@@ -41,8 +41,8 @@ class TestWikiChangeListener(Component):
     def wiki_page_added(self, page):
         self.added.append(page)
 
-    def wiki_page_changed(self, page, version, t, comment, author, ipnr):
-        self.changed.append((page, version, t, comment, author, ipnr))
+    def wiki_page_changed(self, page, version, t, comment, author):
+        self.changed.append((page, version, t, comment, author))
 
     def wiki_page_deleted(self, page):
         self.deleted.append(page)
@@ -55,6 +55,12 @@ class TestWikiChangeListener(Component):
 
     def wiki_page_comment_modified(self, page, old_comment):
         self.comment_modified.append((page, old_comment))
+
+
+class TestLegacyWikiChangeListener(TestWikiChangeListener):
+
+    def wiki_page_changed(self, page, version, t, comment, author, ipnr):
+        self.changed.append((page, version, t, comment, author, ipnr))
 
 
 class WikiPageTestCase(unittest.TestCase):
@@ -165,8 +171,11 @@ class WikiPageTestCase(unittest.TestCase):
             self.assertEqual((2, to_utimestamp(t2), 'kate', '192.168.0.101',
                               'Bla', 'Changing', 0), rows[1])
 
-        listener = TestWikiChangeListener(self.env)
+        listener = TestLegacyWikiChangeListener(self.env)
         self.assertEqual((page, 2, t2, 'Changing', 'kate', '192.168.0.101'),
+                         listener.changed[0])
+        listener = TestWikiChangeListener(self.env)
+        self.assertEqual((page, 2, t2, 'Changing', 'kate'),
                          listener.changed[0])
 
         page = WikiPage(self.env, 'TestPage')

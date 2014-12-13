@@ -26,7 +26,10 @@ from trac.wiki.api import WikiSystem, validate_page_name
 
 
 class WikiPage(object):
-    """Represents a wiki page (new or existing)."""
+    """Represents a wiki page (new or existing).
+
+    :since 1.0.3: the `ipnr` is deprecated and will be removed in 1.3.1
+    """
 
     realm = WikiSystem.realm
 
@@ -146,8 +149,11 @@ class WikiPage(object):
                 if hasattr(listener, 'wiki_page_version_deleted'):
                     listener.wiki_page_version_deleted(self)
 
-    def save(self, author, comment, remote_addr, t=None):
+    def save(self, author, comment, remote_addr=None, t=None):
         """Save a new version of a page.
+
+        :since 1.0.3: `remote_addr` is optional and deprecated, and will be
+                      removed in 1.3.1
         """
         if not validate_page_name(self.name):
             raise TracError(_("Invalid Wiki page name '%(name)s'",
@@ -182,8 +188,13 @@ class WikiPage(object):
             if self.version == 1:
                 listener.wiki_page_added(self)
             else:
-                listener.wiki_page_changed(self, self.version, t, comment,
-                                           author, remote_addr)
+                from trac.util import arity
+                if arity(listener.wiki_page_changed) == 6:
+                    listener.wiki_page_changed(self, self.version, t,
+                                               comment, author, remote_addr)
+                else:
+                    listener.wiki_page_changed(self, self.version, t,
+                                               comment, author)
 
         self.old_readonly = self.readonly
         self.old_text = self.text
@@ -243,6 +254,10 @@ class WikiPage(object):
 
     def get_history(self):
         """Retrieve the edit history of a wiki page.
+
+        :returns: a tuple containing the `version`, `datetime`, `author`,
+                  `comment` and `ipnr`.
+        :since 1.0.3: use of `ipnr` is deprecated and will be removed in 1.3.1
         """
         for version, ts, author, comment, ipnr in self.env.db_query("""
                 SELECT version, time, author, comment, ipnr FROM wiki
