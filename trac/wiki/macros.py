@@ -697,7 +697,7 @@ class MacroListMacro(WikiMacroBase):
                     name_descriptions = [
                         (name, macro_provider.get_macro_description(name))
                         for name in names]
-                except Exception    , e:
+                except Exception, e:
                     yield system_message(
                         _("Error: Can't get description for macro %(name)s",
                           name=names[0]), e), names
