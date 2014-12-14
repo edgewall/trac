@@ -48,8 +48,7 @@ class ConfigurationTestCase(unittest.TestCase):
     def test_repr(self):
         self.assertEquals('<Configuration None>', repr(Configuration(None)))
         config = self._read()
-        self.assertEquals("<Configuration '%s'>" % self.filename,
-                          repr(config))
+        self.assertEquals("<Configuration %r>" % self.filename, repr(config))
 
     def test_default(self):
         config = self._read()
