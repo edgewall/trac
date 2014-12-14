@@ -522,8 +522,6 @@ class ImageMacro(WikiMacroBase):
         # parse arguments
         # we expect the 1st argument to be a filename (filespec)
         args = content.split(',')
-        if len(args) == 0:
-            raise Exception("No argument.")
         # strip unicode white-spaces and ZWSPs are copied from attachments
         # section (#10668)
         filespec = stripws(args.pop(0))
@@ -652,7 +650,7 @@ class ImageMacro(WikiMacroBase):
         elif len(parts) == 1: # it's an attachment of the current resource
             attachment = formatter.resource.child('attachment', filespec)
         else:
-            raise TracError('No filespec given')
+            raise TracError(_("No filespec given"))
         if attachment and 'ATTACHMENT_VIEW' in formatter.perm(attachment):
             url = get_resource_url(self.env, attachment, formatter.href)
             raw_url = get_resource_url(self.env, attachment, formatter.href,
