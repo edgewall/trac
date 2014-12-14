@@ -11,6 +11,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import os
+import tempfile
 import unittest
 
 import trac.tests.compat
@@ -18,6 +20,8 @@ from trac.perm import PermissionCache, PermissionSystem
 from trac.test import EnvironmentStub, Mock
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Ticket
+from trac.util import create_file
+from tracopt.perm.authz_policy import AuthzPolicy
 
 
 class ResetActionTestCase(unittest.TestCase):
@@ -76,8 +80,77 @@ class ResetActionTestCase(unittest.TestCase):
         self.assertEqual('review', chgs2['status'])
 
 
+class RestrictOwnerTestCase(unittest.TestCase):
+
+    def setUp(self):
+        tmpdir = os.path.realpath(tempfile.gettempdir())
+        self.env = EnvironmentStub(enable=['trac.*', AuthzPolicy], path=tmpdir)
+        self.env.config.set('trac', 'permission_policies',
+                            'AuthzPolicy, DefaultPermissionPolicy')
+        self.env.config.set('ticket', 'restrict_owner', True)
+
+        self.perm_sys = PermissionSystem(self.env)
+        self.env.insert_known_users([
+            ('user1', '', ''), ('user2', '', ''),
+            ('user3', '', ''), ('user4', '', '')
+        ])
+        self.perm_sys.grant_permission('user1', 'TICKET_MODIFY')
+        self.perm_sys.grant_permission('user2', 'TICKET_VIEW')
+        self.perm_sys.grant_permission('user3', 'TICKET_MODIFY')
+        self.perm_sys.grant_permission('user4', 'TICKET_MODIFY')
+        self.authz_file = os.path.join(tmpdir, 'trac-authz-policy')
+        create_file(self.authz_file)
+        self.env.config.set('authz_policy', 'authz_file', self.authz_file)
+        self.ctlr = TicketSystem(self.env).action_controllers[0]
+        self.req1 = Mock(authname='user1', args={},
+                         perm=PermissionCache(self.env, 'user1'))
+        self.ticket = Ticket(self.env)
+        self.ticket['status'] = 'new'
+        self.ticket.insert()
+
+    def tearDown(self):
+        self.env.reset_db()
+        os.remove(self.authz_file)
+
+    def _reload_workflow(self):
+        self.ctlr.actions = self.ctlr.get_all_actions()
+
+    def test_set_owner(self):
+        """Restricted owners list contains users with TICKET_MODIFY.
+        """
+        ctrl = self.ctlr.render_ticket_action_control(self.req1, self.ticket,
+                                                      'reassign')
+
+        self.assertEqual('reassign', ctrl[0])
+        self.assertIn('value="user1">user1</option>', str(ctrl[1]))
+        self.assertNotIn('value="user2">user2</option>', str(ctrl[1]))
+        self.assertIn('value="user3">user3</option>', str(ctrl[1]))
+        self.assertIn('value="user4">user4</option>', str(ctrl[1]))
+
+    def test_set_owner_fine_grained_permissions(self):
+        """Fine-grained permission checks when populating the restricted
+        owners list (#10833).
+        """
+        create_file(self.authz_file, """\
+[ticket:1]
+user4 = !TICKET_MODIFY
+""")
+
+        ctrl = self.ctlr.render_ticket_action_control(self.req1, self.ticket,
+                                                      'reassign')
+
+        self.assertEqual('reassign', ctrl[0])
+        self.assertIn('value="user1">user1</option>', str(ctrl[1]))
+        self.assertNotIn('value="user2">user2</option>', str(ctrl[1]))
+        self.assertIn('value="user3">user3</option>', str(ctrl[1]))
+        self.assertNotIn('value="user4">user4</option>', str(ctrl[1]))
+
+
 def suite():
-    return unittest.makeSuite(ResetActionTestCase)
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(ResetActionTestCase))
+    suite.addTest(unittest.makeSuite(RestrictOwnerTestCase))
+    return suite
 
 
 if __name__ == '__main__':

@@ -22,6 +22,7 @@ import doctest
 import inspect
 import os
 import sys
+import time
 import types
 import unittest
 
@@ -415,6 +416,16 @@ class EnvironmentStub(Environment):
             # psycopg2.ProgrammingError: schema "tractest" does not exist
             pass
         return False
+
+    def insert_known_users(self, users):
+        with self.env.db_transaction as db:
+            for username, name, email in users:
+                db("INSERT INTO session VALUES (%s, %s, %s)",
+                   (username, 1, int(time.time())))
+                db("INSERT INTO session_attribute VALUES (%s,%s,'name',%s)",
+                   (username, 1, name))
+                db("INSERT INTO session_attribute VALUES (%s,%s,'email',%s)",
+                   (username, 1, email))
 
     # overridden
 

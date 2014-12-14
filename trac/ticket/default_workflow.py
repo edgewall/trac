@@ -27,7 +27,7 @@ from genshi.builder import tag
 from trac.config import Configuration, ConfigSection
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
-from trac.perm import PermissionSystem
+from trac.perm import PermissionCache, PermissionSystem
 from trac.ticket.api import ITicketActionController, TicketSystem
 from trac.ticket.model import Resolution
 from trac.util import get_reporter_id, sub_val, to_list
@@ -249,6 +249,10 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             elif self.config.getbool('ticket', 'restrict_owner'):
                 perm = PermissionSystem(self.env)
                 owners = perm.get_users_with_permission('TICKET_MODIFY')
+                owners = [user for user in owners
+                               if 'TICKET_MODIFY'
+                               in PermissionCache(self.env, user,
+                                                  ticket.resource)]
                 owners = sorted(owners)
             else:
                 owners = None

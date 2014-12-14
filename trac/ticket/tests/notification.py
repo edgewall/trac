@@ -17,11 +17,9 @@
 #
 
 import base64
-import os
 import quopri
 import shutil
 import tempfile
-import time
 import re
 import unittest
 from datetime import datetime
@@ -277,16 +275,6 @@ class NotificationTestCase(unittest.TestCase):
         notifysuite.tear_down()
         self.env.reset_db()
 
-    def _insert_known_users(self, users):
-        with self.env.db_transaction as db:
-            for username, name, email in users:
-                db("INSERT INTO session VALUES (%s, %s, %s)",
-                   (username, 1, int(time.time())))
-                db("INSERT INTO session_attribute VALUES (%s,%s,'name',%s)",
-                   (username, 1, name))
-                db("INSERT INTO session_attribute VALUES (%s,%s,'email',%s)",
-                   (username, 1, email))
-
     def test_structure(self):
         """Basic SMTP message structure (headers, body)"""
         ticket = Ticket(self.env)
@@ -475,7 +463,7 @@ class NotificationTestCase(unittest.TestCase):
         self.env.config.set('notification', 'always_notify_reporter', 'true')
         self.env.config.set('notification', 'smtp_always_cc',
                             'joe@example.com')
-        self._insert_known_users(
+        self.env.insert_known_users(
             [('joeuser', 'Joe User', 'user-joe@example.com'),
              ('jim@domain', 'Jim User', 'user-jim@example.com')])
         ticket = Ticket(self.env)
@@ -501,7 +489,7 @@ class NotificationTestCase(unittest.TestCase):
         self.env.config.set('notification', 'smtp_from', 'trac@example.com')
         self.env.config.set('notification', 'smtp_from_name', 'My Trac')
         self.env.config.set('notification', 'smtp_from_author', 'true')
-        self._insert_known_users(
+        self.env.insert_known_users(
             [('joeuser', 'Joe User', 'user-joe@example.com'),
              ('jim@domain', 'Jim User', 'user-jim@example.com'),
              ('noemail', 'No e-mail', ''),
@@ -569,7 +557,7 @@ class NotificationTestCase(unittest.TestCase):
         """Non-SMTP domain exclusion"""
         self.env.config.set('notification', 'ignore_domains',
                             'example.com, example.org')
-        self._insert_known_users(
+        self.env.insert_known_users(
             [('kerberos@example.com', 'No Email', ''),
              ('kerberos@example.org', 'With Email', 'kerb@example.net')])
         ticket = Ticket(self.env)
