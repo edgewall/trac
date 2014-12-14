@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.1.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-12-12 18:40-0800\n"
+"POT-Creation-Date: 2014-12-14 09:44-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -146,31 +146,65 @@ msgstr ""
 msgid "Delete comment"
 msgstr ""
 
+#: tracopt/versioncontrol/git/git_fs.py:320
+#: tracopt/versioncontrol/git/git_fs.py:324
+#, python-format
+msgid "%(option)s must be in the range [4..40]"
+msgstr ""
+
+#: tracopt/versioncontrol/git/git_fs.py:328
+msgid "GIT backend not available"
+msgstr ""
+
+#: tracopt/versioncontrol/git/git_fs.py:330
+#, python-format
+msgid "GIT version %(hasver)s installed not compatible (need >= %(needsver)s)"
+msgstr ""
+
 #. TRANSLATOR: modified ('diff') (link)
-#: tracopt/versioncontrol/git/git_fs.py:431 trac/ticket/web_ui.py:1806
+#: tracopt/versioncontrol/git/git_fs.py:432 trac/ticket/web_ui.py:1806
 #: trac/ticket/templates/ticket_change.html:164 trac/wiki/macros.py:368
 #: trac/wiki/web_ui.py:773
 msgid "diff"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:432
+#: tracopt/versioncontrol/git/git_fs.py:433
 msgid "Diff against this parent (show the changes merged from the other parents)"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:441
+#: tracopt/versioncontrol/git/git_fs.py:442
 msgid ""
 "Note: this is a <strong>merge</strong> changeset, the changes displayed "
 "below correspond to the merge itself."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:448
+#: tracopt/versioncontrol/git/git_fs.py:449
 msgid ""
 "Use the <code>(diff)</code> links above to see all the changes relative "
 "to each parent."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:522
+#: tracopt/versioncontrol/git/git_fs.py:465
+#: tracopt/versioncontrol/git/git_fs.py:698
+msgid "Internal error"
+msgstr ""
+
+#: tracopt/versioncontrol/git/git_fs.py:498
+#, python-format
+msgid "%(path)s does not appear to be a Git repository."
+msgstr ""
+
+#: tracopt/versioncontrol/git/git_fs.py:523
 msgid "Unsupported \"Show only adds and deletes\""
+msgstr ""
+
+#: tracopt/versioncontrol/git/git_fs.py:574
+msgid "Not supported in git_fs"
+msgstr ""
+
+#: tracopt/versioncontrol/git/git_fs.py:681
+#, python-format
+msgid "Internal error (got unexpected object kind '%(kind)s')"
 msgstr ""
 
 #: tracopt/versioncontrol/svn/svn_fs.py:306
@@ -546,22 +580,34 @@ msgid ""
 "href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
 msgstr ""
 
-#: trac/env.py:819
+#: trac/env.py:441
+#, python-format
+msgid "Unknown Trac environment type '%(type)s'"
+msgstr ""
+
+#: trac/env.py:444
+#, python-format
+msgid ""
+"No Trac environment found at %(path)s\n"
+"%(e)s"
+msgstr ""
+
+#: trac/env.py:820
 msgid "Database newer than Trac version"
 msgstr ""
 
-#: trac/env.py:839
+#: trac/env.py:840
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
 msgstr ""
 
-#: trac/env.py:884
+#: trac/env.py:885
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
 msgstr ""
 
-#: trac/env.py:914 trac/admin/console.py:282
+#: trac/env.py:915 trac/admin/console.py:282
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
@@ -569,67 +615,67 @@ msgid ""
 "Run \"trac-admin %(path)s upgrade\""
 msgstr ""
 
-#: trac/env.py:953
+#: trac/env.py:954
 msgid "Copying resources from:"
 msgstr ""
 
-#: trac/env.py:971
+#: trac/env.py:972
 msgid "Creating scripts."
 msgstr ""
 
-#: trac/env.py:983
+#: trac/env.py:984
 #, python-format
 msgid "Invalid argument '%(arg)s'"
 msgstr ""
 
-#: trac/env.py:988
+#: trac/env.py:989
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr ""
 
-#: trac/env.py:997
+#: trac/env.py:998
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr ""
 
-#: trac/env.py:1015
+#: trac/env.py:1016
 msgid "The following errors happened while copying the environment:"
 msgstr ""
 
-#: trac/env.py:1025
+#: trac/env.py:1026
 msgid "Backing up database ..."
 msgstr ""
 
-#: trac/env.py:1030
+#: trac/env.py:1031
 msgid "Hotcopy done."
 msgstr ""
 
-#: trac/env.py:1035 trac/admin/api.py:134
+#: trac/env.py:1036 trac/admin/api.py:134
 msgid "Invalid arguments"
 msgstr ""
 
-#: trac/env.py:1038
+#: trac/env.py:1039
 msgid "Database is up to date, no upgrade necessary."
 msgstr ""
 
-#: trac/env.py:1044
+#: trac/env.py:1045
 msgid ""
 "The pre-upgrade backup failed.\n"
 "Use '--no-backup' to upgrade without doing a backup.\n"
 msgstr ""
 
-#: trac/env.py:1048
+#: trac/env.py:1049
 msgid "The upgrade failed. Please fix the issue and try again.\n"
 msgstr ""
 
-#: trac/env.py:1060
+#: trac/env.py:1061
 msgid ""
 "Warning: the wiki-macros directory in the environment is non-empty, but "
 "Trac\n"
 "doesn't load plugins from there anymore. Please remove it by hand."
 msgstr ""
 
-#: trac/env.py:1071
+#: trac/env.py:1072
 #, python-format
 msgid ""
 "Error while removing wiki-macros: %(err)s\n"
@@ -637,7 +683,7 @@ msgid ""
 "hand."
 msgstr ""
 
-#: trac/env.py:1076
+#: trac/env.py:1077
 #, python-format
 msgid ""
 "Upgrade done.\n"
@@ -927,7 +973,12 @@ msgid ""
 "}}}"
 msgstr ""
 
-#: trac/admin/console.py:578
+#: trac/admin/console.py:551
+#, python-format
+msgid "Unknown trac-admin command \"%(command)s\""
+msgstr ""
+
+#: trac/admin/console.py:579
 #, python-format
 msgid "Non-ascii environment path '%(path)s' not supported."
 msgstr ""
@@ -962,7 +1013,7 @@ msgid ""
 msgstr ""
 
 #: trac/admin/web_ui.py:174 trac/admin/web_ui.py:252 trac/admin/web_ui.py:341
-#: trac/admin/web_ui.py:471 trac/prefs/web_ui.py:94
+#: trac/admin/web_ui.py:471 trac/prefs/web_ui.py:109
 #: trac/prefs/templates/prefs_general.html:20
 msgid "General"
 msgstr ""
@@ -1153,7 +1204,7 @@ msgstr ""
 msgid "%(handler)s is not a valid IRequestHandler or is not enabled."
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:62 trac/prefs/web_ui.py:95
+#: trac/admin/templates/admin_basics.html:62 trac/prefs/web_ui.py:110
 #: trac/prefs/templates/prefs_localization.html:20
 msgid "Localization"
 msgstr ""
@@ -1573,7 +1624,7 @@ msgstr ""
 msgid "Syntax Highlighting"
 msgstr ""
 
-#: trac/mimeview/pygments.py:139 trac/prefs/web_ui.py:181
+#: trac/mimeview/pygments.py:139 trac/prefs/web_ui.py:196
 msgid "Your preferences have been saved."
 msgstr ""
 
@@ -1714,23 +1765,23 @@ msgstr ""
 msgid "Preferences"
 msgstr ""
 
-#: trac/prefs/web_ui.py:82
+#: trac/prefs/web_ui.py:95
 msgid "Unknown preference panel"
 msgstr ""
 
-#: trac/prefs/web_ui.py:96 trac/prefs/templates/prefs_keybindings.html:20
+#: trac/prefs/web_ui.py:111 trac/prefs/templates/prefs_keybindings.html:20
 msgid "Keyboard Shortcuts"
 msgstr ""
 
-#: trac/prefs/web_ui.py:97 trac/prefs/templates/prefs_userinterface.html:20
+#: trac/prefs/web_ui.py:112 trac/prefs/templates/prefs_userinterface.html:20
 msgid "User Interface"
 msgstr ""
 
-#: trac/prefs/web_ui.py:99 trac/prefs/templates/prefs_advanced.html:20
+#: trac/prefs/web_ui.py:114 trac/prefs/templates/prefs_advanced.html:20
 msgid "Advanced"
 msgstr ""
 
-#: trac/prefs/web_ui.py:188
+#: trac/prefs/web_ui.py:203
 msgid "The session has been loaded."
 msgstr ""
 
@@ -1748,7 +1799,7 @@ msgid ""
 "      restored on subsequent visits."
 msgstr ""
 
-#: trac/prefs/templates/prefs.html:43
+#: trac/prefs/templates/prefs.html:49
 msgid "Save changes"
 msgstr ""
 
@@ -2907,89 +2958,89 @@ msgstr ""
 msgid "The ticket will be disowned"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:277 trac/ticket/default_workflow.py:291
-#: trac/ticket/default_workflow.py:305
+#: trac/ticket/default_workflow.py:281 trac/ticket/default_workflow.py:295
+#: trac/ticket/default_workflow.py:309
 #, python-format
 msgid "to %(owner)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:280
+#: trac/ticket/default_workflow.py:284
 msgid "The owner will be the specified user"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:282
+#: trac/ticket/default_workflow.py:286
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to the specified user"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:293 trac/ticket/default_workflow.py:318
+#: trac/ticket/default_workflow.py:297 trac/ticket/default_workflow.py:322
 #, python-format
 msgid "The owner will be %(new_owner)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:296 trac/ticket/default_workflow.py:321
+#: trac/ticket/default_workflow.py:300 trac/ticket/default_workflow.py:325
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(new_owner)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:309
+#: trac/ticket/default_workflow.py:313
 msgid "The owner will be the selected user"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:311
+#: trac/ticket/default_workflow.py:315
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to the selected user"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:331
+#: trac/ticket/default_workflow.py:335
 msgid ""
 "Your workflow attempts to set a resolution but none is defined "
 "(configuration issue, please contact your Trac admin)."
 msgstr ""
 
-#: trac/ticket/default_workflow.py:339 trac/ticket/default_workflow.py:349
+#: trac/ticket/default_workflow.py:343 trac/ticket/default_workflow.py:353
 #, python-format
 msgid "as %(resolution)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:341
+#: trac/ticket/default_workflow.py:345
 #, python-format
 msgid "The resolution will be set to %(name)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:352
+#: trac/ticket/default_workflow.py:356
 msgid "The resolution will be set"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:354
+#: trac/ticket/default_workflow.py:358
 msgid "The resolution will be deleted"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:357
+#: trac/ticket/default_workflow.py:361
 #, python-format
 msgid "as %(status)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:360
+#: trac/ticket/default_workflow.py:364
 #, python-format
 msgid "The owner will remain %(current_owner)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:363
+#: trac/ticket/default_workflow.py:367
 msgid "The ticket will remain with no owner"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:366
+#: trac/ticket/default_workflow.py:370
 #, python-format
 msgid "The status will be '%(name)s'"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:369
+#: trac/ticket/default_workflow.py:373
 #, python-format
 msgid "Next status will be '%(name)s'"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:487
+#: trac/ticket/default_workflow.py:491
 msgid ""
 "Render a workflow graph.\n"
 "\n"
@@ -3039,7 +3090,7 @@ msgid ""
 "}}}"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:577
+#: trac/ticket/default_workflow.py:582
 msgid "Enable JavaScript to display the workflow graph."
 msgstr ""
 
@@ -6344,7 +6395,7 @@ msgstr ""
 msgid "Page '%(page)s' not found"
 msgstr ""
 
-#: trac/wiki/admin.py:113 trac/wiki/model.py:153 trac/wiki/model.py:200
+#: trac/wiki/admin.py:113 trac/wiki/model.py:159 trac/wiki/model.py:211
 #: trac/wiki/web_ui.py:113
 #, python-format
 msgid "Invalid Wiki page name '%(name)s'"
@@ -6396,7 +6447,7 @@ msgstr ""
 msgid "'%(name)s' is not a directory"
 msgstr ""
 
-#: trac/wiki/api.py:436
+#: trac/wiki/api.py:440
 msgid "no permission to view this wiki page"
 msgstr ""
 
@@ -6654,12 +6705,16 @@ msgid ""
 "<gotoh@taiyo.co.jp>''"
 msgstr ""
 
-#: trac/wiki/macros.py:666
+#: trac/wiki/macros.py:653
+msgid "No filespec given"
+msgstr ""
+
+#: trac/wiki/macros.py:664
 #, python-format
 msgid "No image \"%(id)s\" attached to %(parent)s"
 msgstr ""
 
-#: trac/wiki/macros.py:682
+#: trac/wiki/macros.py:680
 msgid ""
 "Display a list of all installed Wiki macros, including documentation if\n"
 "available.\n"
@@ -6672,20 +6727,20 @@ msgid ""
 "macros if the `PythonOptimize` option is enabled for mod_python!"
 msgstr ""
 
-#: trac/wiki/macros.py:711
+#: trac/wiki/macros.py:709
 #, python-format
 msgid "Error: Can't get description for macro %(name)s"
 msgstr ""
 
-#: trac/wiki/macros.py:734
+#: trac/wiki/macros.py:732
 msgid "Aliases:"
 msgstr ""
 
-#: trac/wiki/macros.py:737
+#: trac/wiki/macros.py:735
 msgid "Sorry, no documentation found"
 msgstr ""
 
-#: trac/wiki/macros.py:744
+#: trac/wiki/macros.py:742
 msgid ""
 "Produce documentation for the Trac configuration file.\n"
 "\n"
@@ -6695,11 +6750,11 @@ msgid ""
 "options whose section and name start with the filters are output."
 msgstr ""
 
-#: trac/wiki/macros.py:786
+#: trac/wiki/macros.py:784
 msgid "(no default)"
 msgstr ""
 
-#: trac/wiki/macros.py:807
+#: trac/wiki/macros.py:805
 msgid ""
 "List all known mime-types which can be used as WikiProcessors.\n"
 "\n"
@@ -6707,11 +6762,11 @@ msgid ""
 "filter."
 msgstr ""
 
-#: trac/wiki/macros.py:830
+#: trac/wiki/macros.py:828
 msgid "MIME Types"
 msgstr ""
 
-#: trac/wiki/macros.py:845
+#: trac/wiki/macros.py:843
 msgid ""
 "Display a table of content for the Trac guide.\n"
 "\n"
@@ -6721,28 +6776,28 @@ msgid ""
 "a more customizable table of contents."
 msgstr ""
 
-#: trac/wiki/macros.py:891
+#: trac/wiki/macros.py:889
 msgid "Table of Contents"
 msgstr ""
 
-#: trac/wiki/model.py:116
+#: trac/wiki/model.py:119
 msgid "Cannot delete non-existent page"
 msgstr ""
 
-#: trac/wiki/model.py:158
+#: trac/wiki/model.py:164
 msgid "Page not modified"
 msgstr ""
 
-#: trac/wiki/model.py:197
+#: trac/wiki/model.py:208
 msgid "Cannot rename non-existent page"
 msgstr ""
 
-#: trac/wiki/model.py:207
+#: trac/wiki/model.py:218
 #, python-format
 msgid "Can't rename to existing %(name)s page."
 msgstr ""
 
-#: trac/wiki/model.py:228
+#: trac/wiki/model.py:239
 msgid "Cannot edit comment of non-existent page"
 msgstr ""
 
