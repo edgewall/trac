@@ -550,7 +550,8 @@ class TracAdminHelpMacro(WikiMacroBase):
                 cmd_mgr = AdminCommandManager(self.env)
                 doc = cmd_mgr.get_command_help(arg)
             if not doc:
-                raise TracError('Unknown trac-admin command "%s"' % content)
+                raise TracError(_('Unknown trac-admin command "%(command)s"',
+                                  command=content))
         else:
             doc = TracAdmin.all_docs(self.env)
         buf = StringIO.StringIO()

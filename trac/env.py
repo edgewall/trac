@@ -393,10 +393,11 @@ class Environment(Component, ComponentManager):
         try:
             tag = read_file(os.path.join(self.path, 'VERSION')).splitlines()[0]
             if tag != _VERSION:
-                raise Exception("Unknown Trac environment type '%s'" % tag)
+                raise Exception(_("Unknown Trac environment type '%(type)s'",
+                                  type=tag))
         except Exception, e:
-            raise TracError("No Trac environment found at %s\n%s"
-                            % (self.path, e))
+            raise TracError(_("No Trac environment found at %(path)s\n"
+                              "%(e)s", path=self.path, e=e))
 
     def get_db_cnx(self):
         """Return a database connection from the connection pool

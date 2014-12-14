@@ -17,7 +17,6 @@ from __future__ import with_statement
 from datetime import datetime
 import itertools
 import os
-import sys
 
 from genshi.builder import tag
 from genshi.core import Markup
@@ -315,18 +314,20 @@ class GitConnector(Component):
         assert type == 'git'
 
         if not (4 <= self.shortrev_len <= 40):
-            raise TracError("[git] shortrev_len setting must be within [4..40]")
+            raise TracError(_("%(option)s must be in the range [4..40]",
+                              option="[git] shortrev_len"))
 
         if not (4 <= self.wiki_shortrev_len <= 40):
-            raise TracError("[git] wikishortrev_len must be within [4..40]")
+            raise TracError(_("%(option)s must be in the range [4..40]",
+                              option="[git] wikishortrev_len"))
 
         if not self._version:
-            raise TracError("GIT backend not available")
+            raise TracError(_("GIT backend not available"))
         elif not self._version['v_compatible']:
-            raise TracError("GIT version %s installed not compatible"
-                            "(need >= %s)" %
-                            (self._version['v_str'],
-                             self._version['v_min_str']))
+            raise TracError(_("GIT version %(hasver)s installed not "
+                              "compatible (need >= %(needsver)s)",
+                              hasver=self._version['v_str'],
+                              needsver=self._version['v_min_str']))
 
         if self.trac_user_rlookup:
             def rlookup_uid(email):
@@ -456,7 +457,7 @@ class CsetPropertyRenderer(Component):
                 format_datetime(time_, tzinfo=context.req.tz))
             return unicode(_str)
 
-        raise TracError("Internal error")
+        raise TracError(_("Internal error"))
 
 
 class GitRepository(Repository):
@@ -489,8 +490,8 @@ class GitRepository(Repository):
             self._git = factory.getInstance()
         except PyGIT.GitError, e:
             log.error(exception_to_unicode(e))
-            raise TracError("%s does not appear to be a Git "
-                            "repository." % path)
+            raise TracError(_("%(path)s does not appear to be a Git "
+                              "repository.", path=path))
 
         Repository.__init__(self, 'git:' + path, self.params, log)
         self._cached_git_id = str(self.id)
@@ -562,7 +563,7 @@ class GitRepository(Repository):
                     ignore_ancestry=0):
         # TODO: handle renames/copies, ignore_ancestry
         if old_path != new_path:
-            raise TracError("not supported in git_fs")
+            raise TracError(_("Not supported in git_fs"))
 
         with self.git.get_historian(old_rev,
                                     old_path.strip('/')) as old_historian:
@@ -669,8 +670,8 @@ class GitNode(Node):
             elif k == 'blob':
                 kind = Node.FILE
             else:
-                raise TracError("Internal error (got unexpected object " \
-                                "kind '%s')" % k)
+                raise TracError(_("Internal error (got unexpected object "
+                                  "kind '%(kind)s')", kind=k))
 
         self.created_path = path
         self.created_rev = rev
@@ -686,7 +687,7 @@ class GitNode(Node):
         if self.isdir:
             return p and (p + '/')
 
-        raise TracError("internal error")
+        raise TracError(_("Internal error"))
 
     def get_content(self):
         if not self.isfile:
