@@ -165,17 +165,16 @@ class TimelineModule(Component):
 
         # save the results of submitting the timeline form to the session
         if 'update' in req.args:
-            for filter in available_filters:
-                key = 'timeline.filter.%s' % filter[0]
-                if filter[0] in req.args:
+            for filter_ in available_filters:
+                key = 'timeline.filter.%s' % filter_[0]
+                if filter_[0] in req.args:
                     req.session[key] = '1'
                 elif key in req.session:
                     del req.session[key]
 
         stop = fromdate
-        start = to_datetime(stop.replace(tzinfo=None) - \
-                                timedelta(days=daysback + 1),
-                            req.tz)
+        start = to_datetime(stop.replace(tzinfo=None) -
+                            timedelta(days=daysback + 1), req.tz)
 
         # create author include and exclude sets
         include = set()
@@ -195,7 +194,7 @@ class TimelineModule(Component):
                                                           filters) or []:
                     author = (event[2] or '').lower()
                     if (not include or author in include) \
-                       and not author in exclude:
+                            and author not in exclude:
                         events.append(self._event_data(provider, event))
             except Exception as e:  # cope with a failure of that provider
                 self._provider_failure(e, req, provider, filters,
@@ -241,23 +240,23 @@ class TimelineModule(Component):
 
         # Navigation to the previous/next period of 'daysback' days
         previous_start = fromdate.replace(tzinfo=None) - \
-                            timedelta(days=daysback + 1)
+                         timedelta(days=daysback + 1)
         previous_start = format_date(to_datetime(previous_start, req.tz),
                                      format='%Y-%m-%d', tzinfo=req.tz)
         add_link(req, 'prev', req.href.timeline(from_=previous_start,
                                                 authors=authors,
                                                 daysback=daysback),
-                 _('Previous Period'))
+                 _("Previous Period"))
         if today - fromdate > timedelta(days=0):
             next_start = fromdate.replace(tzinfo=None) + \
-                            timedelta(days=daysback + 1)
+                         timedelta(days=daysback + 1)
             next_start = format_date(to_datetime(next_start, req.tz),
                                      format='%Y-%m-%d', tzinfo=req.tz)
             add_link(req, 'next', req.href.timeline(from_=next_start,
                                                     authors=authors,
                                                     daysback=daysback),
-                     _('Next Period'))
-        prevnext_nav(req, _('Previous Period'), _('Next Period'))
+                     _("Next Period"))
+        prevnext_nav(req, _("Previous Period"), _("Next Period"))
 
         return 'timeline.html', data, None
 
@@ -350,7 +349,7 @@ class TimelineModule(Component):
             except TracError as e:
                 return tag.a(label, title=to_unicode(e),
                              class_='timeline missing')
-        yield ('timeline', link_resolver)
+        yield 'timeline', link_resolver
 
     # Public methods
 
@@ -387,7 +386,7 @@ class TimelineModule(Component):
         At the same time, the message will contain a link to the timeline
         without the filters corresponding to the guilty event provider `ep`.
         """
-        self.log.error('Timeline event provider failed: %s',
+        self.log.error("Timeline event provider failed: %s",
                        exception_to_unicode(exc, traceback=True))
 
         ep_kinds = dict((f[0], f[1])
@@ -397,8 +396,8 @@ class TimelineModule(Component):
         other_filters = set(current_filters) - ep_filters
         if not other_filters:
             other_filters = set(all_filters) - ep_filters
-        args = [(a, req.args.get(a)) for a in ('from', 'format', 'max',
-                                               'daysback')]
+        args = [(a, req.args.get(a))
+                for a in ('from', 'format', 'max', 'daysback')]
         href = req.href.timeline(args + [(f, 'on') for f in other_filters])
         # TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
         other_events = tag.a(_('other kinds of events'), href=href)
