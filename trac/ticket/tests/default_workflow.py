@@ -11,9 +11,15 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from __future__ import print_function
+
 import os
 import tempfile
 import unittest
+try:
+    from configobj import ConfigObj
+except ImportError:
+    ConfigObj = None
 
 import trac.tests.compat
 from trac.perm import PermissionCache, PermissionSystem
@@ -149,7 +155,10 @@ user4 = !TICKET_MODIFY
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ResetActionTestCase))
-    suite.addTest(unittest.makeSuite(RestrictOwnerTestCase))
+    if ConfigObj:
+        suite.addTest(unittest.makeSuite(RestrictOwnerTestCase))
+    else:
+        print("SKIP:", __file__, "(no configobj installed)")
     return suite
 
 
