@@ -38,12 +38,10 @@ Arguments:
         <h3 class="${'foldable' if foldable else None}">Attachments <span class="trac-count">(${len(alist.attachments)})</span></h3>
         <div>
           <ul>
-            <py:for each="attachment in alist.attachments">
-              <li>
-                ${show_one_attachment(attachment)}
-                <q py:if="compact and attachment.description">${wiki_to_oneliner(context, attachment.description)}</q>
-              </li>
-            </py:for>
+            <li py:for="attachment in alist.attachments">
+              ${show_one_attachment(attachment)}
+              <q py:if="compact and attachment.description">${wiki_to_oneliner(context, attachment.description)}</q>
+            </li>
           </ul>
           <p py:if="alist.download_href">
             Download all attachments as: <a rel="nofollow" href="$alist.download_href">.zip</a>
