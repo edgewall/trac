@@ -90,7 +90,7 @@ class ComponentAdminPanel(TicketAdminPanel):
                     try:
                         comp.update()
                     except self.env.db_exc.IntegrityError:
-                        raise TracError(_('The component "%(name)s" already '
+                        raise TracError(_('Component "%(name)s" already '
                                           'exists.', name=name))
                     add_notice(req, _('Your changes have been saved.'))
                     req.redirect(req.href.admin(cat, page))
@@ -120,8 +120,8 @@ class ComponentAdminPanel(TicketAdminPanel):
                     else:
                         if comp.name is None:
                             raise TracError(_("Invalid component name."))
-                        raise TracError(_("Component %(name)s already exists.",
-                                          name=name))
+                        raise TracError(_('Component "%(name)s" already '
+                                          'exists.', name=name))
 
                 # Remove components
                 elif req.args.get('remove'):
@@ -268,7 +268,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     try:
                         mil.update(author=req.authname)
                     except self.env.db_exc.IntegrityError:
-                        raise TracError(_('The milestone "%(name)s" already '
+                        raise TracError(_('Milestone "%(name)s" already '
                                           'exists.', name=name))
                     add_notice(req, _('Your changes have been saved.'))
                     req.redirect(req.href.admin(cat, page))
@@ -301,8 +301,8 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     else:
                         if mil.name is None:
                             raise TracError(_('Invalid milestone name.'))
-                        raise TracError(_("Milestone %(name)s already exists.",
-                                          name=name))
+                        raise TracError(_('Milestone "%(name)s" already '
+                                          'exists.', name=name))
 
                 # Remove milestone
                 elif req.args.get('remove'):
@@ -458,7 +458,7 @@ class VersionAdminPanel(TicketAdminPanel):
                     try:
                         ver.update()
                     except self.env.db_exc.IntegrityError:
-                        raise TracError(_('The version "%(name)s" already '
+                        raise TracError(_('Version "%(name)s" already '
                                           'exists.', name=name))
 
                     add_notice(req, _('Your changes have been saved.'))
@@ -491,8 +491,8 @@ class VersionAdminPanel(TicketAdminPanel):
                     else:
                         if ver.name is None:
                             raise TracError(_("Invalid version name."))
-                        raise TracError(_("Version %(name)s already exists.",
-                                          name=name))
+                        raise TracError(_('Version "%(name)s" already '
+                                          'exists.', name=name))
 
                 # Remove versions
                 elif req.args.get('remove'):
