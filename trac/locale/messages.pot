@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-12-14 09:40-0800\n"
+"POT-Creation-Date: 2014-12-15 18:43-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2552,9 +2552,9 @@ msgstr ""
 msgid "Components"
 msgstr ""
 
-#: trac/ticket/admin.py:93
+#: trac/ticket/admin.py:93 trac/ticket/admin.py:123
 #, python-format
-msgid "The component \"%(name)s\" already exists."
+msgid "Component \"%(name)s\" already exists."
 msgstr ""
 
 #: trac/ticket/admin.py:117
@@ -2564,11 +2564,6 @@ msgstr ""
 
 #: trac/ticket/admin.py:122 trac/ticket/model.py:871 trac/ticket/model.py:890
 msgid "Invalid component name."
-msgstr ""
-
-#: trac/ticket/admin.py:123
-#, python-format
-msgid "Component %(name)s already exists."
 msgstr ""
 
 #: trac/ticket/admin.py:130
@@ -2601,9 +2596,9 @@ msgstr ""
 msgid "Invalid Completion Date"
 msgstr ""
 
-#: trac/ticket/admin.py:271
+#: trac/ticket/admin.py:271 trac/ticket/admin.py:304
 #, python-format
-msgid "The milestone \"%(name)s\" already exists."
+msgid "Milestone \"%(name)s\" already exists."
 msgstr ""
 
 #: trac/ticket/admin.py:298
@@ -2613,11 +2608,6 @@ msgstr ""
 
 #: trac/ticket/admin.py:303 trac/ticket/model.py:1047 trac/ticket/model.py:1069
 msgid "Invalid milestone name."
-msgstr ""
-
-#: trac/ticket/admin.py:304
-#, python-format
-msgid "Milestone %(name)s already exists."
 msgstr ""
 
 #: trac/ticket/admin.py:312
@@ -2640,9 +2630,9 @@ msgstr ""
 msgid "Versions"
 msgstr ""
 
-#: trac/ticket/admin.py:461
+#: trac/ticket/admin.py:461 trac/ticket/admin.py:494
 #, python-format
-msgid "The version \"%(name)s\" already exists."
+msgid "Version \"%(name)s\" already exists."
 msgstr ""
 
 #: trac/ticket/admin.py:488
@@ -2652,11 +2642,6 @@ msgstr ""
 
 #: trac/ticket/admin.py:493 trac/ticket/model.py:1206 trac/ticket/model.py:1224
 msgid "Invalid version name."
-msgstr ""
-
-#: trac/ticket/admin.py:494
-#, python-format
-msgid "Version %(name)s already exists."
 msgstr ""
 
 #: trac/ticket/admin.py:501
@@ -3092,7 +3077,7 @@ msgid "Ticket"
 msgstr ""
 
 #: trac/ticket/query.py:859 trac/ticket/report.py:324 trac/ticket/report.py:617
-#: trac/ticket/web_ui.py:143 trac/timeline/web_ui.py:235
+#: trac/ticket/web_ui.py:143 trac/timeline/web_ui.py:234
 #: trac/versioncontrol/web_ui/log.py:327
 msgid "RSS Feed"
 msgstr ""
@@ -4642,50 +4627,50 @@ msgstr ""
 msgid "Timeline"
 msgstr ""
 
-#: trac/timeline/web_ui.py:251 trac/timeline/web_ui.py:261
+#: trac/timeline/web_ui.py:250 trac/timeline/web_ui.py:260
 msgid "Previous Period"
 msgstr ""
 
-#: trac/timeline/web_ui.py:260 trac/timeline/web_ui.py:261
+#: trac/timeline/web_ui.py:259 trac/timeline/web_ui.py:260
 msgid "Next Period"
 msgstr ""
 
-#: trac/timeline/web_ui.py:290 trac/web/chrome.py:928
+#: trac/timeline/web_ui.py:289 trac/web/chrome.py:928
 #, python-format
 msgid "at %(iso8601)s"
 msgstr ""
 
-#: trac/timeline/web_ui.py:294 trac/web/chrome.py:932
+#: trac/timeline/web_ui.py:293 trac/web/chrome.py:932
 #, python-format
 msgid "on %(date)s at %(time)s"
 msgstr ""
 
-#: trac/timeline/web_ui.py:295
+#: trac/timeline/web_ui.py:294
 #, python-format
 msgid "See timeline %(relativetime)s ago"
 msgstr ""
 
-#: trac/timeline/web_ui.py:298 trac/web/chrome.py:933 trac/web/chrome.py:935
+#: trac/timeline/web_ui.py:297 trac/web/chrome.py:933 trac/web/chrome.py:935
 #, python-format
 msgid "%(relativetime)s ago"
 msgstr ""
 
-#: trac/timeline/web_ui.py:300 trac/timeline/web_ui.py:344
+#: trac/timeline/web_ui.py:299 trac/timeline/web_ui.py:343
 #, python-format
 msgid "See timeline at %(absolutetime)s"
 msgstr ""
 
 #. TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
-#: trac/timeline/web_ui.py:391
+#: trac/timeline/web_ui.py:390
 msgid "other kinds of events"
 msgstr ""
 
-#: trac/timeline/web_ui.py:396
+#: trac/timeline/web_ui.py:395
 #, python-format
 msgid "Event provider %(name)s failed for filters %(kinds)s: "
 msgstr ""
 
-#: trac/timeline/web_ui.py:399
+#: trac/timeline/web_ui.py:398
 #, python-format
 msgid ""
 "You may want to see the %(other_events)s from the Timeline or notify your"
