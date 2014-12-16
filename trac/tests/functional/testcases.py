@@ -39,7 +39,6 @@ class TestAboutPage(FunctionalTwillTestCaseSetup):
         tc.follow(r"\bAbout Trac\b")
         tc.find(r"<h1>About Trac</h1>")
         tc.find(r"<h2>System Information</h2>")
-        tc.find(r"<h2>Interface Customization</h2>")
         tc.find(r"<h2>Configuration</h2>")
 
 
