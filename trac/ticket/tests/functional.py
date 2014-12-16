@@ -731,7 +731,7 @@ class TestAdminMilestoneDuplicates(FunctionalTwillTestCaseSetup):
         tc.formvalue('addmilestone', 'name', name)
         tc.submit()
         tc.notfind(internal_error)
-        tc.find('Milestone %s already exists' % name)
+        tc.find('Milestone "%s" already exists' % name)
         tc.notfind('%s')
 
 
@@ -1195,7 +1195,7 @@ class TestAdminVersionDuplicates(FunctionalTwillTestCaseSetup):
         tc.formvalue('addversion', 'name', name)
         tc.submit()
         tc.notfind(internal_error)
-        tc.find("Version %s already exists." % name)
+        tc.find('Version "%s" already exists.' % name)
 
 
 class TestAdminVersionDetail(FunctionalTwillTestCaseSetup):
