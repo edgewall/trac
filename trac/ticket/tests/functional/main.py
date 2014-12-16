@@ -1348,7 +1348,7 @@ class TestAdminVersionDuplicates(FunctionalTwillTestCaseSetup):
         tc.formvalue('addversion', 'name', name)
         tc.submit()
         tc.notfind(internal_error)
-        tc.find("Version %s already exists." % name)
+        tc.find('Version "%s" already exists.' % name)
 
 
 class TestAdminVersionDetail(FunctionalTwillTestCaseSetup):
