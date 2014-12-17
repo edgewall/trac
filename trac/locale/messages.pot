@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-12-15 18:43-0800\n"
+"POT-Creation-Date: 2014-12-17 16:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4734,6 +4734,16 @@ msgid ""
 "to:\n"
 "\n"
 "  %(new_path)s\n"
+msgstr ""
+
+#: trac/util/__init__.py:757
+#, python-format
+msgid "Failed to read %(metadata)s file for %(dist)s: %(err)s"
+msgstr ""
+
+#: trac/util/__init__.py:762
+#, python-format
+msgid "Failed to parse %(metadata)s file for %(dist)s: %(err)s"
 msgstr ""
 
 #: trac/util/datefmt.py:123
