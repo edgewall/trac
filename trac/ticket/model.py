@@ -76,7 +76,7 @@ class Ticket(object):
 
     # Fields that must not be modified directly by the user
     # 'owner' should eventually be a protected field (#2045)
-    protected_fields = ('resolution', 'status', 'time', 'changetime')
+    protected_fields = 'resolution', 'status', 'time', 'changetime'
 
     @staticmethod
     def id_is_valid(num):
@@ -92,8 +92,6 @@ class Ticket(object):
 
     def __init__(self, env, tkt_id=None, version=None):
         self.env = env
-        if tkt_id is not None:
-            tkt_id = int(tkt_id)
         self.fields = TicketSystem(self.env).get_ticket_fields()
         self.std_fields, self.custom_fields, self.time_fields = [], [], []
         for f in self.fields:
@@ -105,6 +103,7 @@ class Ticket(object):
                 self.time_fields.append(f['name'])
         self.values = {}
         if tkt_id is not None:
+            tkt_id = int(tkt_id)
             self._fetch_ticket(tkt_id)
         else:
             self._init_defaults()
