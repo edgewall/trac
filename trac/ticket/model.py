@@ -142,8 +142,8 @@ class Ticket(object):
                                              hint=field.get('format'))
                     except TracError as e:
                         self.env.log.warning('Invalid default value "%s" '
-                                             'for custom field "%s": %s'
-                                             % (default, field['name'], e))
+                                             'for custom field "%s": %s',
+                                             default, field['name'], e)
                         default = None
             if default:
                 self.values.setdefault(field['name'], default)
