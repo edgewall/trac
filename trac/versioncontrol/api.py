@@ -663,10 +663,6 @@ class RepositoryManager(Component):
         errors = []
         for repos in sorted(repositories, key=lambda r: r.reponame):
             reponame = repos.reponame or '(default)'
-            if reponame in self.repository_sync_per_request:
-                self.log.warn("Repository '%s' should be removed from [trac] "
-                              "repository_sync_per_request for explicit "
-                              "synchronization", reponame)
             repos.sync()
             for rev in revs:
                 args = []
