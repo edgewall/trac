@@ -173,6 +173,49 @@ class TicketTestCase(unittest.TestCase):
         self.assertEqual(len(log), 0)
         self.assertRaises(TracError, Ticket, self.env, 1)
 
+    def _test_empty_strings_stored_as_null(self, ticket):
+        """Ticket fields that contain empty strings are stored as NULLs
+        in the database. NULLs are cast to empty strings on fetch.
+        """
+        std_fields = [name for name in ticket.std_fields
+                           if name not in ticket.protected_fields]
+        cst_fields = [name for name in ticket.custom_fields
+                           if name not in ticket.protected_fields]
+
+        # Values are stored as NULL in the database
+        self.assertEqual([(None,) * len(std_fields)],
+                         self.env.db_query("""
+                            SELECT %s FROM ticket WHERE id=%%s
+                            """ % ','.join(std_fields), (ticket.id,)))
+        self.assertEqual([(None,)] * len(cst_fields),
+                         self.env.db_query("""
+                            SELECT value FROM ticket_custom
+                            WHERE ticket=%%s AND name IN (%s)
+                            """ % ','.join(['%s'] * len(cst_fields)),
+                            [ticket.id] + cst_fields))
+        # Values are returned from the model as empty strings
+        for name in ticket.editable_fields:
+            self.assertEqual('', ticket[name], name)
+
+    def test_create_empty_strings_stored_as_null(self):
+        """Ticket fields with empty strings are NULL when creating ticket.
+        """
+        ticket = Ticket(self.env)
+        ticket.populate(dict((name, '') for name in ticket.editable_fields))
+        ticket.insert()
+
+        self._test_empty_strings_stored_as_null(ticket)
+
+    def test_change_empty_strings_stored_as_null(self):
+        """Ticket fields with empty strings are NULL when changing ticket.
+        """
+        ticket = Ticket(self.env)
+        ticket.insert()
+        ticket.populate(dict((name, '') for name in ticket.editable_fields))
+        ticket.save_changes()
+
+        self._test_empty_strings_stored_as_null(ticket)
+
     def test_ticket_id_is_always_int(self):
         ticket_id = self._insert_ticket('Foo')
         self.assertEqual(ticket_id, int(ticket_id))
