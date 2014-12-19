@@ -93,6 +93,9 @@ class Ticket(object):
     def __init__(self, env, tkt_id=None, version=None):
         self.env = env
         self.fields = TicketSystem(self.env).get_ticket_fields()
+        self.editable_fields = \
+            set(f['name'] for f in self.fields
+                          if f['name'] not in self.protected_fields)
         self.std_fields, self.custom_fields, self.time_fields = [], [], []
         for f in self.fields:
             if f.get('custom'):
@@ -269,7 +272,7 @@ class Ticket(object):
             cursor.execute("INSERT INTO ticket (%s) VALUES (%s)"
                            % (','.join(std_fields),
                               ','.join(['%s'] * len(std_fields))),
-                           [db_values[name] for name in std_fields])
+                           [db_values.get(name) for name in std_fields])
             tkt_id = db.get_last_id(cursor, 'ticket')
 
             # Insert custom fields
@@ -277,8 +280,8 @@ class Ticket(object):
                 db.executemany(
                     """INSERT INTO ticket_custom (ticket, name, value)
                        VALUES (%s, %s, %s)
-                       """, [(tkt_id, c, db_values.get(c, ''))
-                             for c in custom_fields])
+                    """, [(tkt_id, c, db_values.get(c))
+                          for c in custom_fields])
 
         self.id = int(tkt_id)
         self._old = {}
@@ -368,20 +371,20 @@ class Ticket(object):
                                      """, (self.id, name)):
                         db("""UPDATE ticket_custom SET value=%s
                               WHERE ticket=%s AND name=%s
-                              """, (db_values.get(name, ''), self.id, name))
+                              """, (db_values.get(name), self.id, name))
                         break
                     else:
                         db("""INSERT INTO ticket_custom (ticket,name,value)
                               VALUES(%s,%s,%s)
-                              """, (self.id, name, db_values.get(name, '')))
+                              """, (self.id, name, db_values.get(name)))
                 else:
                     db("UPDATE ticket SET %s=%%s WHERE id=%%s"
-                       % name, (db_values.get(name, ''), self.id))
+                       % name, (db_values.get(name), self.id))
                 db("""INSERT INTO ticket_change
                         (ticket,time,author,field,oldvalue,newvalue)
                       VALUES (%s, %s, %s, %s, %s, %s)
                       """, (self.id, when_ts, author, name,
-                            old_db_values[name], db_values.get(name, '')))
+                            old_db_values.get(name), db_values.get(name)))
 
             # always save comment, even if empty
             # (numbering support for timeline)
@@ -404,6 +407,8 @@ class Ticket(object):
             if field in self.time_fields:
                 is_custom_field = field in self.custom_fields
                 values[field] = _datetime_to_db_str(value, is_custom_field)
+            else:
+                values[field] = value if value else None
         return values
 
     def get_changelog(self, when=None):
