@@ -25,7 +25,7 @@ from trac.util.compat import close_fds
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.text import to_utf8
 from trac.versioncontrol.api import Changeset, DbRepositoryProvider, \
-                                    NoSuchChangeset, NoSuchNode, \
+                                    Node, NoSuchChangeset, NoSuchNode, \
                                     RepositoryManager
 from trac.versioncontrol.web_ui.browser import BrowserModule
 from trac.versioncontrol.web_ui.log import LogModule
@@ -403,7 +403,7 @@ class GitRepositoryTestCase(BaseTestCase):
 
     def test_parent_child_revs(self):
         self._git_init()
-        self._git('branch', 'initial')
+        self._git('branch', 'initial')  # root commit
         self._create_merge_commit()
         self._git('branch', 'latest')
 
@@ -418,14 +418,31 @@ class GitRepositoryTestCase(BaseTestCase):
         self.assertEqual(0, len(parents), 'parent_revs: %r' % parents)
         self.assertEqual(1, len(repos.child_revs(children[0])))
         self.assertEqual(1, len(repos.child_revs(children[1])))
+        self.assertEqual([('.gitignore', Node.FILE, Changeset.ADD, None,
+                           None)],
+                         sorted(repos.get_changeset(rev).get_changes()))
 
         rev = repos.normalize_rev('latest')
+        cset = repos.get_changeset(rev)
         children = repos.child_revs(rev)
         self.assertEqual(0, len(children), 'child_revs: %r' % children)
         parents = repos.parent_revs(rev)
         self.assertEqual(2, len(parents), 'parent_revs: %r' % parents)
         self.assertEqual(1, len(repos.parent_revs(parents[0])))
         self.assertEqual(1, len(repos.parent_revs(parents[1])))
+
+        # check the differences against the first parent
+        def fn_repos_changes(entry):
+            old_node, new_node, kind, change = entry
+            if old_node:
+                old_path, old_rev = old_node.path, old_node.rev
+            else:
+                old_path, old_rev = None, None
+            return new_node.path, kind, change, old_path, old_rev
+        self.assertEqual(sorted(map(fn_repos_changes,
+                                    repos.get_changes('/', parents[0], '/',
+                                                      rev))),
+                         sorted(cset.get_changes()))
 
     def _get_quickjump_names(self, repos):
         return sorted(name for type, name, path, rev

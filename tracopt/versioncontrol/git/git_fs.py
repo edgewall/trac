@@ -841,34 +841,24 @@ class GitChangeset(Changeset):
         return properties
 
     def get_changes(self):
-        paths_seen = set()
-        for parent in self.props.get('parent', [None]):
-            for mode1, mode2, obj1, obj2, action, path1, path2 in \
-                    self.repos.git.diff_tree(parent, self.rev,
-                                             find_renames=True):
-                path = path2 or path1
-                p_path, p_rev = path1, parent
+        # Returns the differences against the first parent
+        parent = self.props.get('parent')
+        parent = parent[0] if parent else None
+        for mode1, mode2, obj1, obj2, action, path1, path2 in \
+                self.repos.git.diff_tree(parent, self.rev, find_renames=True):
+            path = path2 or path1
+            p_path, p_rev = path1, parent
 
-                kind = Node.FILE
-                if mode2.startswith('04') or mode1.startswith('04'):
-                    kind = Node.DIRECTORY
+            kind = Node.DIRECTORY \
+                   if mode2.startswith('04') or mode1.startswith('04') \
+                   else Node.FILE
 
-                action = GitChangeset.action_map[action[0]]
+            action = GitChangeset.action_map[action[0]]
 
-                if action == Changeset.ADD:
-                    p_path = ''
-                    p_rev = None
+            if action == Changeset.ADD:
+                p_path = p_rev = None
 
-                # CachedRepository expects unique (rev, path, change_type) key
-                # this is only an issue in case of merges where files required
-                # editing
-                if path in paths_seen:
-                    continue
-
-                paths_seen.add(path)
-
-                yield path, kind, action, p_path, p_rev
-
+            yield path, kind, action, p_path, p_rev
 
     def get_branches(self):
         _rev = self.rev
