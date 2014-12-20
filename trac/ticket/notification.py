@@ -251,7 +251,7 @@ class TicketOwnerSubscriber(Component):
 
         # Default subscription
         for s in self.default_subscriptions():
-            yield (s[0], s[1], sid, auth, addr, 'text/plain', s[2], s[3])
+            yield (s[0], s[1], sid, auth, addr, s[2], s[3], s[4])
 
         if sid:
             klass = self.__class__.__name__
@@ -265,7 +265,8 @@ class TicketOwnerSubscriber(Component):
 
     def default_subscriptions(self):
         if self.config.getbool('notification', 'always_notify_owner'):
-            yield (self.__class__.__name__, 'email', 100, 'always')
+            yield (self.__class__.__name__, 'email', 'text/plain', 100,
+                   'always')
 
     def requires_authentication(self):
         return True
@@ -296,7 +297,7 @@ class TicketUpdaterSubscriber(Component):
 
         # Default subscription
         for s in self.default_subscriptions():
-            yield (s[0], s[1], sid, auth, addr, 'text/plain', s[2], s[3])
+            yield (s[0], s[1], sid, auth, addr, s[2], s[3], s[4])
 
         if sid:
             klass = self.__class__.__name__
@@ -309,7 +310,8 @@ class TicketUpdaterSubscriber(Component):
 
     def default_subscriptions(self):
         if self.config.getbool('notification', 'always_notify_updater'):
-            yield (self.__class__.__name__, 'email', 100, 'always')
+            yield (self.__class__.__name__, 'email', 'text/plain', 100,
+                   'always')
 
     def requires_authentication(self):
         return True
@@ -351,7 +353,7 @@ class TicketPreviousUpdatersSubscriber(Component):
 
             # Default subscription
             for s in self.default_subscriptions():
-                yield (s[0], s[1], sid, auth, addr, 'text/plain', s[2], s[3])
+                yield (s[0], s[1], sid, auth, addr, s[2], s[3], s[4])
             if sid:
                 sids.add((sid,auth))
 
@@ -363,7 +365,8 @@ class TicketPreviousUpdatersSubscriber(Component):
 
     def default_subscriptions(self):
         if self.config.getbool('notification', 'always_notify_updater'):
-            yield (self.__class__.__name__, 'email', 100, 'always')
+            yield (self.__class__.__name__, 'email', 'text/plain', 100,
+                   'always')
 
     def requires_authentication(self):
         return True
@@ -396,7 +399,7 @@ class TicketReporterSubscriber(Component):
 
         # Default subscription
         for s in self.default_subscriptions():
-            yield (s[0], s[1], sid, auth, addr, 'text/plain', s[2], s[3])
+            yield (s[0], s[1], sid, auth, addr, s[2], s[3], s[4])
 
         if sid:
             klass = self.__class__.__name__
@@ -409,7 +412,8 @@ class TicketReporterSubscriber(Component):
 
     def default_subscriptions(self):
         if self.config.getbool('notification', 'always_notify_reporter'):
-            yield (self.__class__.__name__, 'email', 100, 'always')
+            yield (self.__class__.__name__, 'email', 'text/plain', 100,
+                   'always')
 
     def requires_authentication(self):
         return True
@@ -446,7 +450,7 @@ class CarbonCopySubscriber(Component):
 
             # Default subscription
             for s in self.default_subscriptions():
-                yield (s[0], s[1], sid, auth, addr, 'text/plain', s[2], s[3])
+                yield (s[0], s[1], sid, auth, addr, s[2], s[3], s[4])
             if sid:
                 sids.add((sid,auth))
 
@@ -457,7 +461,7 @@ class CarbonCopySubscriber(Component):
         return _("Ticket that I'm listed in the CC field is modified")
 
     def default_subscriptions(self):
-        yield (self.__class__.__name__, 'email', 100, 'always')
+        yield (self.__class__.__name__, 'email', 'text/plain', 100, 'always')
 
     def requires_authentication(self):
         return True

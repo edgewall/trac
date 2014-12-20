@@ -97,7 +97,8 @@ class INotificationSubscriber(Interface):
         subscription for them.  Default subscriptions should be low priority
         so that the user can easily override them.
 
-        :return: a list of tuples (class, distributor, priority, adverb)
+        :return: a list of tuples (class, distributor, format, priority,
+                 adverb)
         """
 
 

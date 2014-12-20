@@ -100,8 +100,8 @@ class NotificationPreferences(Component):
                         data['selected_format'][t] = r['format']
 
         data['default_rules'] = {}
-        for r in sorted(defaults, key=itemgetter(2)):
-            klass, dist, priority, adverb = r
+        for r in sorted(defaults, key=itemgetter(3)):
+            klass, dist, format, priority, adverb = r
             if not data['default_rules'].get(dist):
                 data['default_rules'][dist] = []
             if desc_map.get(klass):
