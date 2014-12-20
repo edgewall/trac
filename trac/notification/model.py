@@ -15,8 +15,7 @@
 from datetime import datetime
 from trac.util.datefmt import utc, to_utimestamp
 
-__all__ = ['Subscription']
-
+__all__ = ['Subscription', 'Watch']
 
 
 class Subscription(object):
@@ -194,3 +193,108 @@ class Subscription(object):
                    SET changetime=%s, priority=%s
                  WHERE id=%s
             """, (now, int(self.values['priority']), self.values['id']))
+
+
+class Watch(object):
+
+    __slots__ = ('env', 'values')
+
+    fields = ('id', 'sid', 'authenticated', 'class', 'realm', 'target')
+
+    def __init__(self, env):
+        self.env = env
+        self.values = {}
+
+    def __getitem__(self, name):
+        if name not in self.fields:
+            raise KeyError(name)
+        return self.values.get(name)
+
+    def __setitem__(self, name, value):
+        if name not in self.fields:
+            raise KeyError(name)
+        self.values[name] = value
+
+    def _from_database(self, id, sid, authenticated, class_, realm, target):
+        self['id'] = id
+        self['sid'] = sid
+        self['authenticated'] = int(authenticated)
+        self['class'] = class_
+        self['realm'] = realm
+        self['target'] = target
+
+    @classmethod
+    def add(cls, env, sid, authenticated, klass, realm, targets):
+        with env.db_transaction as db:
+            for target in targets:
+                db("""
+                    INSERT INTO notify_watch (sid, authenticated, class,
+                                              realm, target)
+                    VALUES (%s, %s, %s, %s, %s)
+                """, (sid, int(authenticated), klass, realm, target))
+
+    @classmethod
+    def delete(cls, env, watch_id):
+        with env.db_transaction as db:
+            db("DELETE FROM notify_watch WHERE id = %s", (watch_id,))
+
+    @classmethod
+    def delete_by_sid_and_class(cls, env, sid, authenticated, klass):
+        with env.db_transaction as db:
+            db("""
+                DELETE FROM notify_watch
+                WHERE sid = %s AND authenticated = %s AND class = %s
+            """, (sid, int(authenticated), klass))
+
+    @classmethod
+    def delete_by_class_realm_and_target(cls, env, klass, realm, target):
+        with env.db_transaction as db:
+            db("""
+                DELETE FROM notify_watch
+                WHERE class = %s AND realm = %s AND target = %s
+            """, (realm, klass, target))
+
+    @classmethod
+    def _find(cls, env, order=None, **kwargs):
+        with env.db_query as db:
+            conditions = []
+            args = []
+            for name, value in sorted(kwargs.iteritems()):
+                if name.endswith('_'):
+                    name = name[:-1]
+                conditions.append(db.quote(name) + '=%s')
+                args.append(value)
+            query = 'SELECT id, sid, authenticated, class, realm, target ' \
+                    'FROM notify_watch'
+            if conditions:
+                query += ' WHERE ' + ' AND '.join(conditions)
+            if order:
+                if not isinstance(order, (tuple, list)):
+                    order = (order,)
+                query += ' ORDER BY ' + \
+                         ', '.join(db.quote(name) for name in order)
+            cursor = db.cursor()
+            cursor.execute(query, args)
+            for row in cursor:
+                watch = Watch(env)
+                watch._from_database(*row)
+                yield watch
+
+    @classmethod
+    def find_by_sid_and_class(cls, env, sid, authenticated, klass):
+        return list(cls._find(env, sid=sid, authenticated=int(authenticated),
+                              class_=klass, order='target'))
+
+    @classmethod
+    def find_by_sid_class_realm_and_target(cls, env, sid, authenticated,
+                                           klass, realm, target):
+        return list(cls._find(env, sid=sid, authenticated=int(authenticated),
+                              class_=klass, realm=realm, order='target'))
+
+    @classmethod
+    def find_by_class_realm_and_target(cls, env, klass, realm, target):
+        return list(cls._find(env, class_=klass, realm=realm, target=target))
+
+    @classmethod
+    def find_by_class_and_realm(cls, env, klass, realm):
+        return list(cls._find(env, class_=klass, realm=realm))
