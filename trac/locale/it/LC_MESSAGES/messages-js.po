@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
-"POT-Creation-Date: 2014-11-17 23:23-0800\n"
+"POT-Creation-Date: 2014-12-10 04:42-0800\n"
 "PO-Revision-Date: 2014-11-28 08:53+0100\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
 "Language-Team: Italian "
@@ -219,6 +219,7 @@ msgstr "A capo: \\\\"
 msgid "Image: [[Image()]]"
 msgstr "Immagine: [[Image()]]"
 
+#: trac/notification/templates/prefs_notification.html:3
 #: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
 msgid "Link to this section"
 msgstr "Collegamento a questa sezione"
