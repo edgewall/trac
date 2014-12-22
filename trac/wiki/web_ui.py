@@ -21,7 +21,7 @@ import re
 
 from genshi.builder import tag
 
-from trac.attachment import AttachmentModule
+from trac.attachment import AttachmentModule, Attachment
 from trac.config import IntOption
 from trac.core import *
 from trac.mimeview.api import IContentConverter, Mimeview
@@ -392,9 +392,12 @@ class WikiModule(Component):
             old_date = t
 
         data = self._page_data(req, page, 'delete')
-        data.update({'what': what, 'new_version': None, 'old_version': None,
-                     'num_versions': num_versions, 'new_date': new_date,
-                     'old_date': old_date})
+        attachments = Attachment.select(self.env, self.realm, page.name)
+        data.update({
+            'what': what, 'new_version': None, 'old_version': None,
+            'num_versions': num_versions, 'new_date': new_date,
+            'old_date': old_date, 'attachments': list(attachments),
+        })
         if version is not None:
             data.update({'new_version': version, 'old_version': old_version})
         self._wiki_ctxtnav(req, page)

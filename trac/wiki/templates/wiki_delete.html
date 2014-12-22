@@ -33,7 +33,7 @@
           Delete <a href="$current_href">$page.name</a>
         </i18n:msg>
       </h1>
-      <form py:choose="what" action="$current_href" method="post">
+      <form py:choose="what" id="delete-confirm" action="$current_href" method="post">
         <input type="hidden" name="action" value="delete" />
         <p py:when="'multiple'" i18n:msg="from, to, versions, first_modified, last_modified">
           <strong>
@@ -79,6 +79,14 @@
               </i18n:msg>
             </py:otherwise>
           </py:choose>
+        </p>
+        <p py:if="what == 'page' or num_versions == 1 and attachments" id="attachments">
+          The page attachments will also be deleted:
+          <ul>
+            <li py:for="attachment in attachments">
+              <a href="${url_of(attachment.resource)}" title="View attachment">$attachment.filename</a>
+            </li>
+          </ul>
         </p>
         <p><strong>This is an irreversible operation.</strong></p>
         <input py:if="new_version" type="hidden" name="version" value="$new_version" />
