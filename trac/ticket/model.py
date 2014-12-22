@@ -189,17 +189,17 @@ class Ticket(object):
     def __setitem__(self, name, value):
         """Log ticket modifications so the table ticket_change can be updated
         """
+        if value and name not in self.time_fields:
+            if isinstance(value, list):
+                raise TracError(_("Multi-values fields not supported yet"))
+            if self.fields.by_name(name, {}).get('type') != 'textarea':
+                value = value.strip()
         if name in self.values and self.values[name] == value:
             return
         if name not in self._old:  # Changed field
             self._old[name] = self.values.get(name)
         elif self._old[name] == value:  # Change of field reverted
             del self._old[name]
-        if value and name not in self.time_fields:
-            if isinstance(value, list):
-                raise TracError(_("Multi-values fields not supported yet"))
-            if self.fields.by_name(name, {}).get('type') != 'textarea':
-                value = value.strip()
         self.values[name] = value
 
     def get_value_or_default(self, name):
