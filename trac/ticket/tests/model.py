@@ -216,6 +216,25 @@ class TicketTestCase(unittest.TestCase):
 
         self._test_empty_strings_stored_as_null(ticket)
 
+    def test_whitespace_stripped_from_text_field(self):
+        """Whitespace is stripped from text fields.
+        Test for regression of #11891.
+        """
+        ticket = Ticket(self.env)
+        ticket['keywords'] = 'kw1'
+        ticket['milestone'] = 'milestone1'
+        ticket.insert()
+        ticket['keywords'] = '  kw1'
+        ticket['milestone'] = 'milestone2'
+        ticket.save_changes()
+
+        self.assertEqual('kw1', ticket['keywords'])
+        self.assertEqual('milestone2', ticket['milestone'])
+        self.assertEqual([('milestone1', 'milestone2'), ('1', None)],
+                         self.env.db_query(
+                             """SELECT oldvalue, newvalue FROM ticket_change
+                             """))
+
     def test_ticket_id_is_always_int(self):
         ticket_id = self._insert_ticket('Foo')
         self.assertEqual(ticket_id, int(ticket_id))
