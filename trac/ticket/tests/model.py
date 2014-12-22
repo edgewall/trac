@@ -224,16 +224,19 @@ class TicketTestCase(unittest.TestCase):
         ticket['keywords'] = 'kw1'
         ticket['milestone'] = 'milestone1'
         ticket.insert()
+        
         ticket['keywords'] = '  kw1'
         ticket['milestone'] = 'milestone2'
         ticket.save_changes()
+        changes = self.env.db_query("""
+            SELECT oldvalue, newvalue FROM ticket_change
+            """)
 
         self.assertEqual('kw1', ticket['keywords'])
         self.assertEqual('milestone2', ticket['milestone'])
-        self.assertEqual([('milestone1', 'milestone2'), ('1', None)],
-                         self.env.db_query(
-                             """SELECT oldvalue, newvalue FROM ticket_change
-                             """))
+        self.assertEqual(2, len(changes))
+        self.assertIn(('milestone1', 'milestone2'), changes)
+        self.assertIn(('1', None), changes)
 
     def test_ticket_id_is_always_int(self):
         ticket_id = self._insert_ticket('Foo')
