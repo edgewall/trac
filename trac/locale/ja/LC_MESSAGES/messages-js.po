@@ -102,7 +102,7 @@ msgstr "太字: '''例'''"
 
 #: trac/htdocs/js/wikitoolbar.js:59
 msgid "Italic text: ''Example''"
-msgstr "斜体: '''例'''"
+msgstr "斜体: ''例''"
 
 #: trac/htdocs/js/wikitoolbar.js:62
 msgid "Heading: == Example =="
