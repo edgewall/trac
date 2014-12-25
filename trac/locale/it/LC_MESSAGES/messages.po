@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
-"POT-Creation-Date: 2014-12-17 16:20+0000\n"
-"PO-Revision-Date: 2014-12-20 14:51+0100\n"
+"POT-Creation-Date: 2014-12-21 23:09-0800\n"
+"PO-Revision-Date: 2014-12-25 12:47+0100\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
 "Language-Team: Italian "
 "(http://www.transifex.com/projects/p/trac/language/it/)\n"
@@ -134,7 +134,7 @@ msgstr "(commenti: %(comments)s, allegati: %(attachments)s)"
 
 #: tracopt/ticket/templates/ticket_delete.html:46
 #: tracopt/ticket/templates/ticket_delete.html:71
-#: trac/templates/attachment.html:80 trac/wiki/templates/wiki_delete.html:83
+#: trac/templates/attachment.html:80 trac/wiki/templates/wiki_delete.html:92
 msgid "This is an irreversible operation."
 msgstr "Questa è una operazione irreversibile."
 
@@ -150,7 +150,7 @@ msgstr "Questa è una operazione irreversibile."
 #: trac/ticket/templates/report_edit.html:63
 #: trac/ticket/templates/ticket_change.html:127
 #: trac/versioncontrol/templates/admin_repositories.html:107
-#: trac/wiki/templates/wiki_delete.html:91
+#: trac/wiki/templates/wiki_delete.html:100
 #: trac/wiki/templates/wiki_edit_comment.html:33
 #: trac/wiki/templates/wiki_edit_form.html:86
 #: trac/wiki/templates/wiki_rename.html:43
@@ -185,7 +185,7 @@ msgstr ""
 #. TRANSLATOR: modified ('diff') (link)
 #: tracopt/versioncontrol/git/git_fs.py:432 trac/ticket/web_ui.py:1806
 #: trac/ticket/templates/ticket_change.html:164 trac/wiki/macros.py:368
-#: trac/wiki/web_ui.py:773
+#: trac/wiki/web_ui.py:776
 msgid "diff"
 msgstr "diff"
 
@@ -2841,6 +2841,7 @@ msgid "Download in other formats:"
 msgstr "Scarica in altri formati:"
 
 #: trac/templates/list_of_attachments.html:28
+#: trac/wiki/templates/wiki_delete.html:88
 msgid "View attachment"
 msgstr "Mostra allegato"
 
@@ -2960,7 +2961,7 @@ msgstr "Il componente \"%(name)s\" esiste già."
 msgid "The component \"%(name)s\" has been added."
 msgstr "Il componente \"%(name)s\" è stato aggiunto."
 
-#: trac/ticket/admin.py:120 trac/ticket/model.py:891 trac/ticket/model.py:907
+#: trac/ticket/admin.py:120 trac/ticket/model.py:895 trac/ticket/model.py:911
 msgid "Invalid component name."
 msgstr "Nome del componente non valido."
 
@@ -3021,7 +3022,7 @@ msgstr "La versione \"%(name)s\" esiste già."
 msgid "The version \"%(name)s\" has been added."
 msgstr "La versione \"%(name)s\" è stata aggiunta."
 
-#: trac/ticket/admin.py:501 trac/ticket/model.py:1218 trac/ticket/model.py:1233
+#: trac/ticket/admin.py:501 trac/ticket/model.py:1222 trac/ticket/model.py:1237
 msgid "Invalid version name."
 msgstr "Nome di versione non valido."
 
@@ -3425,57 +3426,57 @@ msgstr ""
 msgid "Enable JavaScript to display the workflow graph."
 msgstr "Abilita il JavaScript per visualizzare il grafo del flusso di lavoro."
 
-#: trac/ticket/model.py:159
+#: trac/ticket/model.py:161
 #, python-format
 msgid "Ticket %(id)s does not exist."
 msgstr "La segnalazione %(id)s non esiste."
 
-#: trac/ticket/model.py:160
+#: trac/ticket/model.py:162
 msgid "Invalid ticket number"
 msgstr "Numero della segnalazione non valido"
 
-#: trac/ticket/model.py:198
+#: trac/ticket/model.py:194
 msgid "Multi-values fields not supported yet"
 msgstr "I campi multi-valore non sono ancora supportati"
 
-#: trac/ticket/model.py:731
+#: trac/ticket/model.py:735
 #, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr "%(type)s \"%(name)s\" non esiste."
 
-#: trac/ticket/model.py:770 trac/ticket/model.py:792
+#: trac/ticket/model.py:774 trac/ticket/model.py:796
 #, python-format
 msgid "Invalid %(type)s name."
 msgstr "Nome di %(type)s non valido."
 
-#: trac/ticket/model.py:866
+#: trac/ticket/model.py:870
 #, python-format
 msgid "Component %(name)s does not exist."
 msgstr "Il componente \"%(name)s\" non esiste."
 
-#: trac/ticket/model.py:1008 trac/ticket/model.py:1126
+#: trac/ticket/model.py:1012 trac/ticket/model.py:1130
 #, python-format
 msgid "Milestone %(name)s does not exist."
 msgstr "L'obiettivo \"%(name)s\" non esiste."
 
-#: trac/ticket/model.py:1009 trac/ticket/model.py:1062
-#: trac/ticket/model.py:1081 trac/ticket/model.py:1127
+#: trac/ticket/model.py:1013 trac/ticket/model.py:1066
+#: trac/ticket/model.py:1085 trac/ticket/model.py:1131
 msgid "Invalid milestone name."
 msgstr "Nome dell'obiettivo non valido."
 
-#: trac/ticket/model.py:1172
+#: trac/ticket/model.py:1176
 msgid "Open (by due date)"
 msgstr "Aperti (per data prevista)"
 
-#: trac/ticket/model.py:1173
+#: trac/ticket/model.py:1177
 msgid "Open (no due date)"
 msgstr "Aperti (nessuna data prevista)"
 
-#: trac/ticket/model.py:1176
+#: trac/ticket/model.py:1180
 msgid "Closed"
 msgstr "Chiusa"
 
-#: trac/ticket/model.py:1193
+#: trac/ticket/model.py:1197
 #, python-format
 msgid "Version %(name)s does not exist."
 msgstr "La versione \"%(name)s\" non esiste."
@@ -3484,19 +3485,19 @@ msgstr "La versione \"%(name)s\" non esiste."
 msgid "Ticket that I own is created or modified"
 msgstr "Segnalazione in carico a me viene creata o modificata"
 
-#: trac/ticket/notification.py:308
+#: trac/ticket/notification.py:309
 msgid "I update a ticket"
 msgstr "Segnalazione modificata da me"
 
-#: trac/ticket/notification.py:362
+#: trac/ticket/notification.py:364
 msgid "Ticket that I previously updated is modified"
 msgstr "Segnalazione che ho aggiornato in precedenza viene modificata"
 
-#: trac/ticket/notification.py:408
+#: trac/ticket/notification.py:411
 msgid "Ticket that I reported is modified"
 msgstr "Segnalazione che ho creato viene modificata"
 
-#: trac/ticket/notification.py:457
+#: trac/ticket/notification.py:461
 msgid "Ticket that I'm listed in the CC field is modified"
 msgstr "Segnalazione dove sono elencato nel campo CC viene modificata"
 
@@ -4091,8 +4092,8 @@ msgstr "Nessuna differenza da mostrare"
 #: trac/ticket/web_ui.py:960 trac/ticket/web_ui.py:1017
 #: trac/ticket/web_ui.py:1025 trac/ticket/web_ui.py:1096
 #: trac/ticket/web_ui.py:1141 trac/ticket/web_ui.py:1148
-#: trac/wiki/web_ui.py:465 trac/wiki/web_ui.py:471 trac/wiki/web_ui.py:679
-#: trac/wiki/web_ui.py:693
+#: trac/wiki/web_ui.py:468 trac/wiki/web_ui.py:474 trac/wiki/web_ui.py:682
+#: trac/wiki/web_ui.py:696
 #, python-format
 msgid "Version %(num)s"
 msgstr "Versione %(num)s"
@@ -4111,12 +4112,12 @@ msgid "Property %(label)s %(rendered)s"
 msgstr "Proprietà \"%(label)s\" %(rendered)s"
 
 #: trac/ticket/web_ui.py:1027 trac/ticket/web_ui.py:1150
-#: trac/versioncontrol/web_ui/changeset.py:371 trac/wiki/web_ui.py:484
+#: trac/versioncontrol/web_ui/changeset.py:371 trac/wiki/web_ui.py:487
 msgid "Previous Change"
 msgstr "Modifica precedente"
 
 #: trac/ticket/web_ui.py:1027 trac/ticket/web_ui.py:1150
-#: trac/versioncontrol/web_ui/changeset.py:371 trac/wiki/web_ui.py:484
+#: trac/versioncontrol/web_ui/changeset.py:371 trac/wiki/web_ui.py:487
 msgid "Next Change"
 msgstr "Modifica successiva"
 
@@ -5780,12 +5781,12 @@ msgstr "Repository di default"
 msgid "Repository %(repo)s"
 msgstr "Repository %(repo)s"
 
-#: trac/versioncontrol/api.py:739
+#: trac/versioncontrol/api.py:735
 #, python-format
 msgid "Unsupported version control system \"%(name)s\": %(error)s"
 msgstr "Sistema di controllo versioni \"%(name)s\" non supportato: %(error)s"
 
-#: trac/versioncontrol/api.py:742
+#: trac/versioncontrol/api.py:738
 #, python-format
 msgid ""
 "Unsupported version control system \"%(name)s\": Can't find an "
@@ -5795,26 +5796,26 @@ msgstr ""
 "appropriato non è stato trovato, forse il plugin corrispondente non è "
 "abilitato? "
 
-#: trac/versioncontrol/api.py:750
+#: trac/versioncontrol/api.py:746
 #, python-format
 msgid "No changeset %(rev)s in the repository"
 msgstr "Nel repository non esiste il changeset %(rev)s"
 
-#: trac/versioncontrol/api.py:752
+#: trac/versioncontrol/api.py:748
 msgid "No such changeset"
 msgstr "Questo changeset non esiste"
 
-#: trac/versioncontrol/api.py:758
+#: trac/versioncontrol/api.py:754
 #, python-format
 msgid "No node %(path)s at revision %(rev)s"
 msgstr "Non esiste il nodo \"%(path)s\" revisione %(rev)s"
 
-#: trac/versioncontrol/api.py:760
+#: trac/versioncontrol/api.py:756
 #, python-format
 msgid "%(msg)s: No node %(path)s at revision %(rev)s"
 msgstr "%(msg)s: non esiste il nodo \"%(path)s\" alla revisione %(rev)s"
 
-#: trac/versioncontrol/api.py:762
+#: trac/versioncontrol/api.py:758
 msgid "No such node"
 msgstr "Questo nodo non esiste"
 
@@ -7644,7 +7645,7 @@ msgstr "Impossibile rinominare la pagina, \"%(name)s\" esiste già."
 msgid "Cannot edit comment of non-existent page"
 msgstr "Impossibile modificare il commento di una pagina non esistente"
 
-#: trac/wiki/web_ui.py:80 trac/wiki/web_ui.py:780
+#: trac/wiki/web_ui.py:80 trac/wiki/web_ui.py:783
 msgid "Wiki"
 msgstr "Wiki"
 
@@ -7739,85 +7740,85 @@ msgstr "Le tue modifiche sono state memorizzate nella versione %(version)s."
 msgid "Page not modified, showing latest version."
 msgstr "Pagina non modificata, visualizzo l'ultima versione."
 
-#: trac/wiki/web_ui.py:415
+#: trac/wiki/web_ui.py:418
 #, python-format
 msgid "Version %(num)s of page \"%(name)s\" does not exist"
 msgstr "La versione %(num)s della pagina \"%(name)s\" non esiste"
 
-#: trac/wiki/web_ui.py:467
+#: trac/wiki/web_ui.py:470
 msgid "Page history"
 msgstr "Cronologia delle modifiche alla pagina"
 
-#: trac/wiki/web_ui.py:485
+#: trac/wiki/web_ui.py:488
 msgid "Wiki History"
 msgstr "Cronologia delle modifiche al wiki"
 
-#: trac/wiki/web_ui.py:514
+#: trac/wiki/web_ui.py:517
 #, python-format
 msgid "Reverted to version %(version)s."
 msgstr "Ripristinata la versione %(version)s."
 
-#: trac/wiki/web_ui.py:588
+#: trac/wiki/web_ui.py:591
 #, python-format
 msgid "Page %(name)s does not exist"
 msgstr "La pagina \"%(name)s\" non esiste"
 
-#: trac/wiki/web_ui.py:606
+#: trac/wiki/web_ui.py:609
 #, python-format
 msgid "Back to %(wikipage)s"
 msgstr "Torna a %(wikipage)s"
 
-#: trac/wiki/web_ui.py:631
+#: trac/wiki/web_ui.py:634
 #, python-format
 msgid "Page %(name)s not found"
 msgstr "La pagina \"%(name)s\" non è stata trovata"
 
-#: trac/wiki/web_ui.py:684
+#: trac/wiki/web_ui.py:687
 msgid "View latest version"
 msgstr "Mostra la versione più recente"
 
-#: trac/wiki/web_ui.py:688
+#: trac/wiki/web_ui.py:691
 msgid "View parent page"
 msgstr "Mostra la pagina superiore"
 
-#: trac/wiki/web_ui.py:697
+#: trac/wiki/web_ui.py:700
 msgid "Previous Version"
 msgstr "Versione precedente"
 
-#: trac/wiki/web_ui.py:697
+#: trac/wiki/web_ui.py:700
 msgid "Next Version"
 msgstr "Versione successiva"
 
-#: trac/wiki/web_ui.py:698
+#: trac/wiki/web_ui.py:701
 msgid "View Latest Version"
 msgstr "Mostra la versione più recente"
 
-#: trac/wiki/web_ui.py:701
+#: trac/wiki/web_ui.py:704
 msgid "Up"
 msgstr "Su"
 
-#: trac/wiki/web_ui.py:726
+#: trac/wiki/web_ui.py:729
 msgid "Start Page"
 msgstr "Pagina iniziale"
 
-#: trac/wiki/web_ui.py:727
+#: trac/wiki/web_ui.py:730
 msgid "Index"
 msgstr "Indice"
 
-#: trac/wiki/web_ui.py:729
+#: trac/wiki/web_ui.py:732
 msgid "History"
 msgstr "Cronologia"
 
-#: trac/wiki/web_ui.py:736
+#: trac/wiki/web_ui.py:739
 msgid "Wiki changes"
 msgstr "Modifiche wiki"
 
-#: trac/wiki/web_ui.py:763
+#: trac/wiki/web_ui.py:766
 #, python-format
 msgid "%(page)s edited"
 msgstr "%(page)s modificata"
 
-#: trac/wiki/web_ui.py:765
+#: trac/wiki/web_ui.py:768
 #, python-format
 msgid "%(page)s created"
 msgstr "%(page)s creata"
@@ -7837,79 +7838,77 @@ msgstr "Elimina versione %(version)s di [1:%(name)s]"
 msgid "Delete [1:%(name)s]"
 msgstr "Elimina [1:%(name)s]"
 
-#: trac/wiki/templates/wiki_delete.html:38
+#: trac/wiki/templates/wiki_delete.html:39
+#, python-format
+msgid "Are you sure you want to delete versions %(from)s to %(to)s of this page?"
+msgstr ""
+"Confermi l'eliminazione delle versioni dalla %(from)s alla %(to)s di "
+"questa pagina?"
+
+#: trac/wiki/templates/wiki_delete.html:43
 #, python-format
 msgid ""
-"[1:\n"
-"            Are you sure you want to delete versions %(from)s to %(to)s "
-"of this page?\n"
-"          ]\n"
-"          [2:]\n"
-"          Removing [3:\n"
-"            %(versions)s versions] of the page,\n"
-"          which was first modified %(first_modified)s and last modified "
-"%(last_modified)s."
+"Removing [1:%(versions)s versions] of the page, which was first modified "
+"%(first_modified)s and last modified %(last_modified)s."
 msgstr ""
-"[1:Confermi di voler eliminare le versioni dalla %(from)s alla %(to)s di "
-"questa pagina?]\n"
-"[2:]\n"
-"Eliminazione di [3:%(versions)s versioni] della pagina, modificata la "
-"prima volta %(first_modified)s e l'ultima %(last_modified)s."
+"Eliminazione delle [1:%(versions)s versioni] della pagina, modificata la "
+"prima volta %(first_modified)s e l'ultima volta %(last_modified)s."
 
-#: trac/wiki/templates/wiki_delete.html:48
+#: trac/wiki/templates/wiki_delete.html:49
 #, python-format
 msgid "Are you sure you want to delete version %(version)s of this page?"
 msgstr "Confermi l'eliminazione della versione %(version)s di questa pagina?"
 
-#: trac/wiki/templates/wiki_delete.html:53
+#: trac/wiki/templates/wiki_delete.html:54
 #, python-format
 msgid ""
-"This is the only [1:version]\n"
-"                of the page, created %(created)s, so the page will be "
-"removed completely!"
+"This is the only [1:version] of the page, created %(created)s, so the "
+"page will be removed completely!"
 msgstr ""
-"Questa è l'unica [1:versione] della pagina,\n"
-"creata %(created)s, quindi la pagina verrà rimossa completamente!"
+"Questa è l'unica [1:versione] della pagina, creata %(created)s, quindi la"
+" pagina verrà rimossa completamente!"
 
-#: trac/wiki/templates/wiki_delete.html:57
+#: trac/wiki/templates/wiki_delete.html:58
 #, python-format
 msgid "Modified %(modified)s."
 msgstr "Ultima modifica %(modified)s fa."
 
-#: trac/wiki/templates/wiki_delete.html:63
+#: trac/wiki/templates/wiki_delete.html:64
 msgid "Are you sure you want to completely delete this page?"
 msgstr "Confermi l'eliminazione completa di questa pagina?"
 
-#: trac/wiki/templates/wiki_delete.html:69
+#: trac/wiki/templates/wiki_delete.html:70
 #, python-format
 msgid ""
-"Removing the one and only [1:\n"
-"                    version] of the page, which was created %(created)s."
+"Removing the one and only [1:version] of the page, which was created "
+"%(created)s."
 msgstr ""
 "Eliminazione della sola ed unica [1:versione] della pagina, che è stata "
 "creata %(created)s."
 
-#: trac/wiki/templates/wiki_delete.html:75
+#: trac/wiki/templates/wiki_delete.html:76
 #, python-format
 msgid ""
-"Removing all [1:\n"
-"                    %(versions)s versions] of the page,\n"
-"                  which was created %(created)s and last modified "
-"%(modified)s."
+"Removing all [1:%(versions)s versions] of the page, which was created "
+"%(created)s and last modified %(modified)s."
 msgstr ""
 "Eliminazione di tutte le [1:%(versions)s versioni] della pagina,\n"
 "creata %(created)s e modificata l'ultima volta %(modified)s."
 
-#: trac/wiki/templates/wiki_delete.html:87
+#: trac/wiki/templates/wiki_delete.html:84
+msgid "The page attachments will also be deleted:"
+msgstr "Verranno eliminati anche gli allegati alla pagina:"
+
+#: trac/wiki/templates/wiki_delete.html:96
 msgid "Delete those versions"
 msgstr "Elimina le versioni"
 
-#: trac/wiki/templates/wiki_delete.html:87
+#: trac/wiki/templates/wiki_delete.html:96
 #: trac/wiki/templates/wiki_view.html:128
 msgid "Delete this version"
 msgstr "Elimina questa versione"
 
-#: trac/wiki/templates/wiki_delete.html:87
+#: trac/wiki/templates/wiki_delete.html:96
 #: trac/wiki/templates/wiki_view.html:130
 msgid "Delete page"
 msgstr "Elimina la pagina"
