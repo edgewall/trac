@@ -2502,7 +2502,7 @@ msgstr "該当なし"
 
 #: trac/templates/environment_info.html:69
 msgid "Interface Customization"
-msgstr "インタフェイスのカスタマイズ"
+msgstr "インターフェイスのカスタマイズ"
 
 #: trac/templates/environment_info.html:72
 msgid "Site templates"
@@ -6462,9 +6462,7 @@ msgstr "チェンジセット"
 msgid ""
 "The file or directory '%(path)s' doesn't exist at revision %(rev)s or at "
 "any previous revision."
-msgstr ""
-"ファイルまたはディレクトリ '%(path)s' はリビジョン %(rev)s あるいは\"\n"
-"\"それ以前のリビジョンにおいて存在しません。"
+msgstr "ファイルまたはディレクトリ '%(path)s' は、リビジョン %(rev)s やそれ以前のリビジョン上に存在しません。"
 
 #: trac/versioncontrol/web_ui/log.py:218
 msgid "Nonexistent path"
