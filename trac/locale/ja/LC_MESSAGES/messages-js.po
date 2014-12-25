@@ -5,9 +5,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.1.2\n"
+"Project-Id-Version: Trac 1.1.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-09-01 12:45+0000\n"
+"POT-Creation-Date: 2014-12-10 04:42-0800\n"
 "PO-Revision-Date: 2010-05-25 18:45+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <LL@li.org>\n"
@@ -182,16 +182,16 @@ msgid "At least one item must be selected"
 msgstr "最低1つは選択してください"
 
 #: trac/htdocs/js/wikitoolbar.js:59
-msgid "Bold text: '''Example'''"
-msgstr "太字: '''例'''"
+msgid "Bold text: **Example**"
+msgstr "太字: **例**"
 
 #: trac/htdocs/js/wikitoolbar.js:62
 msgid "Italic text: ''Example''"
 msgstr "斜体: '''例'''"
 
 #: trac/htdocs/js/wikitoolbar.js:65
-msgid "Heading: == Example =="
-msgstr "ヘッダ: == 例 =="
+msgid "Heading: == Example"
+msgstr "ヘッダ: == 例"
 
 #: trac/htdocs/js/wikitoolbar.js:68
 msgid "Link: [http://www.example.com/ Example]"
@@ -210,13 +210,14 @@ msgid "New paragraph"
 msgstr "段落"
 
 #: trac/htdocs/js/wikitoolbar.js:80
-msgid "Line break: [[BR]]"
-msgstr "改行: [[BR]]"
+msgid "Line break: \\\\"
+msgstr "改行: \\\\"
 
 #: trac/htdocs/js/wikitoolbar.js:83
 msgid "Image: [[Image()]]"
 msgstr "画像: [[Image()]]"
 
+#: trac/notification/templates/prefs_notification.html:3
 #: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
 msgid "Link to this section"
 msgstr "このセクションににリンクする"
