@@ -1021,10 +1021,6 @@ class Milestone(object):
     def cache(self):
         return MilestoneCache(self.env)
 
-    @property
-    def resource(self):
-        return Resource(self.realm, self.name)  ### .version !!!
-
     exists = property(lambda self: self._old['name'] is not None)
     is_completed = property(lambda self: self.completed is not None)
     is_late = property(lambda self: self.due and
