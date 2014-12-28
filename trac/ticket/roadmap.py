@@ -29,7 +29,7 @@ from trac.notification.api import NotificationSystem
 from trac.perm import IPermissionRequestor
 from trac.resource import *
 from trac.search import ISearchSource, search_to_regexps, shorten_result
-from trac.util import as_bool
+from trac.util import as_bool, partition
 from trac.util.datefmt import parse_date, utc, pretty_timedelta, to_datetime, \
                               get_datetime_format_hint, format_date, \
                               format_datetime, from_utimestamp, user_time
@@ -37,8 +37,7 @@ from trac.util.text import CRLF, exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.ticket.api import TicketSystem
 from trac.ticket.notification import BatchTicketChangeEvent
-from trac.ticket.model import Milestone, MilestoneCache, Ticket, \
-                              group_milestones
+from trac.ticket.model import Milestone, MilestoneCache, Ticket
 from trac.timeline.api import ITimelineEventProvider
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import (Chrome, INavigationContributor,
@@ -379,6 +378,23 @@ def grouped_stats_data(env, stats_provider, tickets, by, per_group_stats_data):
             percent = float(gstat.count) / float(max_count) * 100
         gs_dict['percent_of_max_total'] = percent
     return data
+
+
+def group_milestones(milestones, include_completed):
+    """Group milestones into "open with due date", "open with no due date",
+    and possibly "completed". Return a list of (label, milestones) tuples."""
+    def category(m):
+        return 1 if m.is_completed else 2 if m.due else 3
+    open_due_milestones, open_not_due_milestones, \
+        closed_milestones = partition([(m, category(m))
+                                       for m in milestones], (2, 3, 1))
+    groups = [
+        (_("Open (by due date)"), open_due_milestones),
+        (_("Open (no due date)"), open_not_due_milestones),
+    ]
+    if include_completed:
+        groups.append((_('Closed'), closed_milestones))
+    return groups
 
 
 class RoadmapModule(Component):

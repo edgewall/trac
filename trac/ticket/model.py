@@ -26,7 +26,7 @@ from trac.cache import cached
 from trac.core import TracError
 from trac.resource import Resource, ResourceNotFound
 from trac.ticket.api import TicketSystem
-from trac.util import embedded_numbers, partition
+from trac.util import embedded_numbers
 from trac.util.datefmt import from_utimestamp, parse_date, to_utimestamp, \
                               utc, utcmax
 from trac.util.text import empty
@@ -1162,19 +1162,13 @@ class Milestone(object):
 
 def group_milestones(milestones, include_completed):
     """Group milestones into "open with due date", "open with no due date",
-    and possibly "completed". Return a list of (label, milestones) tuples."""
-    def category(m):
-        return 1 if m.is_completed else 2 if m.due else 3
-    open_due_milestones, open_not_due_milestones, \
-        closed_milestones = partition([(m, category(m))
-                                       for m in milestones], (2, 3, 1))
-    groups = [
-        (_('Open (by due date)'), open_due_milestones),
-        (_('Open (no due date)'), open_not_due_milestones),
-    ]
-    if include_completed:
-        groups.append((_('Closed'), closed_milestones))
-    return groups
+    and possibly "completed". Return a list of (label, milestones) tuples.
+
+    :since 1.1.3: the function has been moved to `trac.ticket.roadmap`. It
+                  will be removed from `trac.ticket.model` in 1.3.1.
+    """
+    from trac.ticket.roadmap import group_milestones
+    return group_milestones(milestones, include_completed)
 
 
 class Version(object):

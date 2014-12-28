@@ -30,7 +30,8 @@ from trac.db import get_column_names
 from trac.mimeview.api import IContentConverter, Mimeview
 from trac.resource import Resource
 from trac.ticket.api import TicketSystem
-from trac.ticket.model import Milestone, group_milestones
+from trac.ticket.model import Milestone
+from trac.ticket.roadmap import group_milestones
 from trac.util import Ranges, as_bool
 from trac.util.datefmt import from_utimestamp, format_date_or_datetime, \
                               parse_date, to_timestamp, to_utimestamp, utc, \

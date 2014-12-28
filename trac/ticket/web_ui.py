@@ -34,8 +34,9 @@ from trac.resource import (
 )
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.ticket.api import TicketSystem, ITicketManipulator
-from trac.ticket.model import Milestone, Ticket, group_milestones
+from trac.ticket.model import Milestone, Ticket
 from trac.ticket.notification import TicketChangeEvent
+from trac.ticket.roadmap import group_milestones
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import as_bool, as_int, get_reporter_id, lazy
 from trac.util.datefmt import (
