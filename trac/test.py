@@ -35,7 +35,6 @@ from trac.core import Component, ComponentManager
 from trac.env import Environment
 from trac.db.api import _parse_db_str, DatabaseManager
 from trac.db.sqlite_backend import SQLiteConnection
-from trac.db.util import ConnectionWrapper
 import trac.db.postgres_backend
 import trac.db.mysql_backend
 from trac.ticket.default_workflow import load_workflow_config_snippet
