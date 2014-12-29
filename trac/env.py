@@ -146,13 +146,13 @@ class Environment(Component, ComponentManager):
         {{{
         [components]
         trac.ticket.report.ReportModule = disabled
-        webadmin.* = enabled
+        acct_mgr.* = enabled
         }}}
 
         The first option tells Trac to disable the
         [wiki:TracReports report module].
         The second option instructs Trac to enable all components in
-        the `webadmin` package. Note that the trailing wildcard is
+        the `acct_mgr` package. Note that the trailing wildcard is
         required for module/package matching.
 
         To view the list of active components, go to the ''Plugins''
@@ -398,18 +398,6 @@ class Environment(Component, ComponentManager):
         the `plugins` directory of the environment.
         """
         component_name = self._component_name(cls)
-
-        # Disable the pre-0.11 WebAdmin plugin
-        # Please note that there's no recommendation to uninstall the
-        # plugin because doing so would obviously break the backwards
-        # compatibility that the new integration administration
-        # interface tries to provide for old WebAdmin extensions
-        if component_name.startswith('webadmin.'):
-            self.log.info("The legacy TracWebAdmin plugin has been "
-                          "automatically disabled, and the integrated "
-                          "administration interface will be used "
-                          "instead.")
-            return False
 
         rules = self._component_rules
         cname = component_name
