@@ -351,8 +351,6 @@ class EnvironmentStub(Environment):
                 remove_sqlite_db = True
                 self.destroy_db(scheme, db_prop)
 
-        db = None  # as we might shutdown the pool    FIXME no longer needed!
-
         if scheme == 'sqlite' and remove_sqlite_db:
             path = db_prop['path']
             if path != ':memory:':
