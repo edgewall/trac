@@ -228,8 +228,8 @@ class PermissionCacheTestCase(unittest.TestCase):
     def test_require(self):
         self.perm.require('TEST_MODIFY')
         self.perm.require('TEST_ADMIN')
-        self.assertRaises(perm.PermissionError,
-                          self.perm.require, 'TRAC_ADMIN')
+        self.assertRaises(perm.PermissionError, self.perm.require,
+                          'TRAC_ADMIN')
 
     def test_assert_permission(self):
         self.perm.assert_permission('TEST_MODIFY')

@@ -115,6 +115,7 @@ def add_meta(req, content, http_equiv=None, name=None, scheme=None, lang=None):
             'scheme': scheme, 'lang': lang, 'xml:lang': lang}
     req.chrome.setdefault('metas', []).append(meta)
 
+
 def add_link(req, rel, href, title=None, mimetype=None, classname=None,
              **attrs):
     """Add a link to the chrome info that will be inserted as <link> element in
@@ -131,6 +132,7 @@ def add_link(req, rel, href, title=None, mimetype=None, classname=None,
     links.setdefault(rel, []).append(link)
     linkset.add(linkid)
 
+
 def add_stylesheet(req, filename, mimetype='text/css', media=None):
     """Add a link to a style sheet to the chrome info so that it gets included
     in the generated HTML page.
@@ -143,6 +145,7 @@ def add_stylesheet(req, filename, mimetype='text/css', media=None):
     """
     href = _chrome_resource_path(req, filename)
     add_link(req, 'stylesheet', href, mimetype=mimetype, media=media)
+
 
 def add_script(req, filename, mimetype='text/javascript', charset='utf-8',
                ie_if=None):
@@ -166,6 +169,7 @@ def add_script(req, filename, mimetype='text/javascript', charset='utf-8',
     req.chrome.setdefault('scripts', []).append(script)
     scriptset.add(filename)
 
+
 def add_script_data(req, data={}, **kwargs):
     """Add data to be made available in javascript scripts as global variables.
 
@@ -177,9 +181,11 @@ def add_script_data(req, data={}, **kwargs):
     script_data.update(data)
     script_data.update(kwargs)
 
+
 def add_javascript(req, filename):
     """:deprecated: since 0.10, use `add_script` instead."""
     add_script(req, filename, mimetype='text/javascript')
+
 
 def add_warning(req, msg, *args):
     """Add a non-fatal warning to the request object.
@@ -194,6 +200,7 @@ def add_warning(req, msg, *args):
     if msg not in req.chrome['warnings']:
         req.chrome['warnings'].append(msg)
 
+
 def add_notice(req, msg, *args):
     """Add an informational notice to the request object.
 
@@ -207,6 +214,7 @@ def add_notice(req, msg, *args):
     if msg not in req.chrome['notices']:
         req.chrome['notices'].append(msg)
 
+
 def add_ctxtnav(req, elm_or_label, href=None, title=None):
     """Add an entry to the current page's ctxtnav bar."""
     if href:
@@ -214,6 +222,7 @@ def add_ctxtnav(req, elm_or_label, href=None, title=None):
     else:
         elm = elm_or_label
     req.chrome.setdefault('ctxtnav', []).append(elm)
+
 
 def prevnext_nav(req, prev_label, next_label, up_label=None):
     """Add Previous/Up/Next navigation links.
@@ -735,7 +744,7 @@ class Chrome(Component):
         add_script(req, self.jquery_location or 'common/js/jquery.js')
         # Only activate noConflict mode if requested to by the handler
         if handler is not None and \
-           getattr(handler.__class__, 'jquery_noconflict', False):
+                getattr(handler.__class__, 'jquery_noconflict', False):
             add_script(req, 'common/js/noconflict.js')
         add_script(req, 'common/js/babel.js')
         if req.locale is not None and str(req.locale) != 'en_US':
@@ -906,8 +915,8 @@ class Chrome(Component):
             })
 
         try:
-            show_email_addresses = (self.show_email_addresses or not req or \
-                                'EMAIL_VIEW' in req.perm)
+            show_email_addresses = self.show_email_addresses or \
+                                   not req or 'EMAIL_VIEW' in req.perm
         except Exception, e:
             # simply log the exception here, as we might already be rendering
             # the error page
@@ -1214,7 +1223,7 @@ class Chrome(Component):
         def _generate(stream, ctxt=None):
             for kind, data, pos in stream:
                 if kind is START and data[0].localname == 'form' \
-                                 and data[1].get('method', '').lower() == 'post':
+                        and data[1].get('method', '').lower() == 'post':
                     yield kind, data, pos
                     for event in elem.generate():
                         yield event

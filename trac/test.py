@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2009 Edgewall Software
+# Copyright (C) 2003-2014 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
 # All rights reserved.
@@ -21,8 +21,8 @@ from __future__ import with_statement
 
 import doctest
 import os
-import unittest
 import sys
+import unittest
 
 try:
     from babel import Locale
@@ -30,13 +30,13 @@ try:
 except ImportError:
     locale_en = None
 
+import trac.db.mysql_backend
+import trac.db.postgres_backend
+import trac.db.sqlite_backend
 from trac.config import Configuration
 from trac.core import Component, ComponentManager
+from trac.db.api import DatabaseManager, _parse_db_str
 from trac.env import Environment
-from trac.db.api import _parse_db_str, DatabaseManager
-from trac.db.sqlite_backend import SQLiteConnection
-import trac.db.postgres_backend
-import trac.db.mysql_backend
 from trac.ticket.default_workflow import load_workflow_config_snippet
 from trac.util import translation
 
@@ -463,11 +463,11 @@ def suite():
     suite.addTest(doctest.DocTestSuite(sys.modules[__name__]))
     if INCLUDE_FUNCTIONAL_TESTS:
         suite.addTest(trac.tests.functionalSuite())
-
     return suite
 
+
 if __name__ == '__main__':
-    #FIXME: this is a bit inelegant
+    # FIXME: this is a bit inelegant
     if '--skip-functional-tests' in sys.argv:
         sys.argv.remove('--skip-functional-tests')
         INCLUDE_FUNCTIONAL_TESTS = False
