@@ -468,7 +468,10 @@ class CarbonCopySubscriber(Component):
 
 
 class TicketNotifyEmail(NotifyEmail):
-    """Notification of ticket changes."""
+    """Notification of ticket changes.
+
+    :since 1.1.3: deprecated and will be removed in 1.3.1
+    """
 
     template_name = "ticket_notify_email.txt"
     from_email = 'trac+ticket@localhost'
@@ -890,7 +893,10 @@ class TicketAttachmentNotifier(Component):
 
 
 class BatchTicketNotifyEmail(NotifyEmail):
-    """Notification of ticket batch modifications."""
+    """Notification of ticket batch modifications.
+
+    :since 1.1.3: deprecated and will be removed in 1.3.1
+    """
 
     template_name = "batch_ticket_notify_email.txt"
 

@@ -36,6 +36,8 @@ class Notify(object):
     """Generic notification class for Trac.
 
     Subclass this to implement different methods.
+
+    :since 1.1.3: deprecated and will be removed in 1.3.1
     """
     __metaclass__ = ABCMeta
 
@@ -84,7 +86,10 @@ class Notify(object):
 
 
 class NotifyEmail(Notify):
-    """Baseclass for notification by email."""
+    """Baseclass for notification by email.
+
+    :since 1.1.3: deprecated and will be removed in 1.3.1
+    """
 
     from_email = 'trac+tickets@localhost'
     subject = ''
