@@ -609,7 +609,7 @@ class Environment(Component, ComponentManager):
 
         :since 1.0.2:
         """
-        return DatabaseManager(self)\
+        return DatabaseManager(self) \
                .get_database_version('database_version')
 
     @lazy
