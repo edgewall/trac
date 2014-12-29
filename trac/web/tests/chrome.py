@@ -196,16 +196,18 @@ class ChromeTestCase(unittest.TestCase):
         # Test with a relative path to the logo image
         self.env.config.set('header_logo', 'src', 'foo.png')
         info = Chrome(self.env).prepare_request(req)
-        self.assertEqual('/trac.cgi/chrome/common/foo.png', info['logo']['src'])
+        self.assertEqual('/trac.cgi/chrome/common/foo.png',
+                         info['logo']['src'])
         self.assertEqual('http://example.org/trac.cgi/chrome/common/foo.png',
-                    info['logo']['src_abs'])
+                         info['logo']['src_abs'])
 
         # Test with a location in project htdocs
         self.env.config.set('header_logo', 'src', 'site/foo.png')
         info = Chrome(self.env).prepare_request(req)
-        self.assertEqual('/trac.cgi/chrome/site/foo.png', info['logo']['src'])
+        self.assertEqual('/trac.cgi/chrome/site/foo.png',
+                         info['logo']['src'])
         self.assertEqual('http://example.org/trac.cgi/chrome/site/foo.png',
-                    info['logo']['src_abs'])
+                         info['logo']['src_abs'])
 
         # Test with a server-relative path to the logo image
         self.env.config.set('header_logo', 'src', '/img/foo.png')
@@ -217,8 +219,10 @@ class ChromeTestCase(unittest.TestCase):
         self.env.config.set('header_logo', 'src',
                             'http://www.example.org/foo.png')
         info = Chrome(self.env).prepare_request(req)
-        self.assertEqual('http://www.example.org/foo.png', info['logo']['src'])
-        self.assertEqual('http://www.example.org/foo.png', info['logo']['src_abs'])
+        self.assertEqual('http://www.example.org/foo.png',
+                         info['logo']['src'])
+        self.assertEqual('http://www.example.org/foo.png',
+                         info['logo']['src_abs'])
 
     def test_default_links(self):
         req = Request(abs_href=Href('http://example.org/trac.cgi'),
@@ -260,7 +264,8 @@ class ChromeTestCase(unittest.TestCase):
         self.assertEqual('/favicon.ico', links['shortcut icon'][0]['href'])
 
         # Absolute URL for icon config option
-        self.env.config.set('project', 'icon', 'http://example.com/favicon.ico')
+        self.env.config.set('project', 'icon',
+                            'http://example.com/favicon.ico')
         links = chrome.prepare_request(req)['links']
         self.assertEqual('http://example.com/favicon.ico',
                          links['icon'][0]['href'])
@@ -513,6 +518,7 @@ def suite():
     suite.addTest(unittest.makeSuite(ChromeTestCase))
     suite.addTest(unittest.makeSuite(ChromeTestCase2))
     return suite
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')

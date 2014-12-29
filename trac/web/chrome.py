@@ -915,8 +915,8 @@ class Chrome(Component):
             })
 
         try:
-            show_email_addresses = (self.show_email_addresses or not req or
-                                    'EMAIL_VIEW' in req.perm)
+            show_email_addresses = self.show_email_addresses or \
+                                   not req or 'EMAIL_VIEW' in req.perm
         except Exception as e:
             # simply log the exception here, as we might already be rendering
             # the error page
