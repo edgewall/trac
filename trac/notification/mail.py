@@ -20,9 +20,11 @@ import os
 import re
 import smtplib
 import time
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEText import MIMEText
-from email.Utils import formatdate, parseaddr, getaddresses
+from email.charset import BASE64, QP, SHORTEST, Charset
+from email.header import Header
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.utils import formatdate, parseaddr, getaddresses
 from hashlib import md5
 from subprocess import Popen, PIPE
 
@@ -69,7 +71,6 @@ def create_charset(mime_encoding):
     Quoted-Printable, and 'none' for no encoding, in which case mails will
     be sent as 7bit if the content is all ASCII, or 8bit otherwise.
     """
-    from email.Charset import BASE64, QP, SHORTEST, Charset
     charset = Charset()
     charset.input_charset = 'utf-8'
     charset.output_charset = 'utf-8'
@@ -93,7 +94,6 @@ def create_charset(mime_encoding):
 
 def create_header(key, name, charset):
     """Create an appropriate email Header."""
-    from email.Header import Header
     maxlength = MAXHEADERLEN-(len(key)+2)
     # Do not sent ridiculous short headers
     if maxlength < 10:

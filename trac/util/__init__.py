@@ -744,6 +744,7 @@ def get_pkginfo(dist):
         else:
             return {}
     import email
+    import email.errors
     from trac.util.translation import _
     attrs = ('author', 'author-email', 'license', 'home-page', 'summary',
              'description', 'version')
@@ -760,7 +761,7 @@ def get_pkginfo(dist):
                 metadata=metadata, dist=dist, err=to_unicode(e))
         for attr in attrs:
             info[normalize(attr)] = err
-    except email.Errors.MessageError as e:
+    except email.errors.MessageError as e:
         err = _("Failed to parse %(metadata)s file for %(dist)s: %(err)s",
                 metadata=metadata, dist=dist, err=to_unicode(e))
         for attr in attrs:

@@ -15,6 +15,7 @@
 
 import re
 from abc import ABCMeta, abstractmethod
+from email.utils import formatdate
 
 from genshi.builder import tag
 
@@ -175,7 +176,6 @@ class NotifyEmail(Notify):
             reactivate(t)
 
     def send(self, torcpts, ccrcpts, mime_headers={}):
-        from email.Utils import formatdate
         body = self._format_body()
         public_cc = self.config.getbool('notification', 'use_public_cc')
         headers = {
