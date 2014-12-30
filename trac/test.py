@@ -308,8 +308,6 @@ class EnvironmentStub(Environment):
             self.config.set('trac', 'database', self.dburi)
             self.global_databasemanager = DatabaseManager(self)
             self.config.set('trac', 'debug_sql', True)
-            self.config.set('logging', 'log_type', 'stderr')
-            self.config.set('logging', 'log_level', 'DEBUG')
             init_global = not destroying
 
         if default_data or init_global:
