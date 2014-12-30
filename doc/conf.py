@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2008-2013 Edgewall Software
+# Copyright (C) 2008-2014 Edgewall Software
 # Copyright (C) 2008 Noah Kantrowitz <noah@coderanger.net>
 # All rights reserved.
 #
@@ -29,16 +29,16 @@ import sys, os
 
 # General substitutions.
 project = 'Trac'
-copyright = '2012, Edgewall Software'
+copyright = '2014, Edgewall Software'
 url = 'http://trac.edgewall.org'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = '1.0.2'
+version = '1.0.3'
 # The full version, including alpha/beta/rc tags.
-release = '1.0.2'
+release = '1.0.3'
 
 # Devel or Release mode for the documentation (if devel, include TODOs,
 # can also be used in conditionals: .. ifconfig :: devel)
