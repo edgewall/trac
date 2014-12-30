@@ -49,6 +49,8 @@ Functions
 
 .. autofunction :: with_transaction
 
+.. autofunction :: parse_connection_uri
+
 
 See also
 --------

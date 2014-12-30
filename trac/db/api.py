@@ -424,7 +424,7 @@ class DatabaseManager(Component):
         return connector.backup(dest)
 
     def get_connector(self):
-        scheme, args = _parse_db_str(self.connection_uri)
+        scheme, args = parse_connection_uri(self.connection_uri)
         candidates = [
             (priority, connector)
             for connector in self.connectors
@@ -462,7 +462,16 @@ def get_column_names(cursor):
             for d in cursor.description] if cursor.description else []
 
 
-def _parse_db_str(db_str):
+def parse_connection_uri(db_str):
+    """Parse the database connection string.
+
+    The database connection string for an environment is specified through
+    the `database` option in the `[trac]` section of trac.ini.
+
+    :return: a tuple containing the scheme and a dictionary of attributes:
+             `user`, `password`, `host`, `port`, `path`, `params`.
+    :since: 1.1.3
+    """
     scheme, rest = db_str.split(':', 1)
 
     if not rest.startswith('/'):
@@ -527,3 +536,7 @@ def _parse_db_str(db_str):
     args = zip(('user', 'password', 'host', 'port', 'path', 'params'),
                (user, password, host, port, path, params))
     return scheme, dict([(key, value) for key, value in args if value])
+
+
+# Compatibility for Trac < 1.1.3. Will be removed in 1.3.1.
+_parse_db_str = parse_connection_uri

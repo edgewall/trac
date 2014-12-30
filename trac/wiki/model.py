@@ -255,7 +255,7 @@ class WikiPage(object):
     def get_history(self):
         """Retrieve the edit history of a wiki page.
 
-        :returns: a tuple containing the `version`, `datetime`, `author`,
+        :return: a tuple containing the `version`, `datetime`, `author`,
                   `comment` and `ipnr`.
         :since 1.0.3: use of `ipnr` is deprecated and will be removed in 1.3.1
         """

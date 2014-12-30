@@ -15,8 +15,8 @@ import os
 import unittest
 
 import trac.tests.compat
-from trac.db.api import DatabaseManager, _parse_db_str, get_column_names, \
-                        with_transaction
+from trac.db.api import DatabaseManager, get_column_names, \
+                        parse_connection_uri, with_transaction
 from trac.db_default import (schema as default_schema,
                              db_version as default_db_version)
 from trac.db.schema import Column, Table
@@ -227,21 +227,21 @@ class ParseConnectionStringTestCase(unittest.TestCase):
         # Default syntax for specifying DB path relative to the environment
         # directory
         self.assertEqual(('sqlite', {'path': 'db/trac.db'}),
-                         _parse_db_str('sqlite:db/trac.db'))
+                         parse_connection_uri('sqlite:db/trac.db'))
 
     def test_sqlite_absolute(self):
         # Standard syntax
         self.assertEqual(('sqlite', {'path': '/var/db/trac.db'}),
-                         _parse_db_str('sqlite:///var/db/trac.db'))
+                         parse_connection_uri('sqlite:///var/db/trac.db'))
         # Legacy syntax
         self.assertEqual(('sqlite', {'path': '/var/db/trac.db'}),
-                         _parse_db_str('sqlite:/var/db/trac.db'))
+                         parse_connection_uri('sqlite:/var/db/trac.db'))
 
     def test_sqlite_with_timeout_param(self):
         # In-memory database
         self.assertEqual(('sqlite', {'path': 'db/trac.db',
                                      'params': {'timeout': '10000'}}),
-                         _parse_db_str('sqlite:db/trac.db?timeout=10000'))
+                         parse_connection_uri('sqlite:db/trac.db?timeout=10000'))
 
     def test_sqlite_windows_path(self):
         # In-memory database
@@ -249,39 +249,39 @@ class ParseConnectionStringTestCase(unittest.TestCase):
         try:
             os.name = 'nt'
             self.assertEqual(('sqlite', {'path': 'C:/project/db/trac.db'}),
-                             _parse_db_str('sqlite:C|/project/db/trac.db'))
+                             parse_connection_uri('sqlite:C|/project/db/trac.db'))
         finally:
             os.name = os_name
 
     def test_postgres_simple(self):
         self.assertEqual(('postgres', {'host': 'localhost', 'path': '/trac'}),
-                         _parse_db_str('postgres://localhost/trac'))
+                         parse_connection_uri('postgres://localhost/trac'))
 
     def test_postgres_with_port(self):
         self.assertEqual(('postgres', {'host': 'localhost', 'port': 9431,
                                        'path': '/trac'}),
-                         _parse_db_str('postgres://localhost:9431/trac'))
+                         parse_connection_uri('postgres://localhost:9431/trac'))
 
     def test_postgres_with_creds(self):
         self.assertEqual(('postgres', {'user': 'john', 'password': 'letmein',
                                        'host': 'localhost', 'port': 9431,
                                        'path': '/trac'}),
-                 _parse_db_str('postgres://john:letmein@localhost:9431/trac'))
+                 parse_connection_uri('postgres://john:letmein@localhost:9431/trac'))
 
     def test_postgres_with_quoted_password(self):
         self.assertEqual(('postgres', {'user': 'john', 'password': ':@/',
                                        'host': 'localhost', 'path': '/trac'}),
-                     _parse_db_str('postgres://john:%3a%40%2f@localhost/trac'))
+                     parse_connection_uri('postgres://john:%3a%40%2f@localhost/trac'))
 
     def test_mysql_simple(self):
         self.assertEqual(('mysql', {'host': 'localhost', 'path': '/trac'}),
-                     _parse_db_str('mysql://localhost/trac'))
+                     parse_connection_uri('mysql://localhost/trac'))
 
     def test_mysql_with_creds(self):
         self.assertEqual(('mysql', {'user': 'john', 'password': 'letmein',
                                     'host': 'localhost', 'port': 3306,
                                     'path': '/trac'}),
-                     _parse_db_str('mysql://john:letmein@localhost:3306/trac'))
+                     parse_connection_uri('mysql://john:letmein@localhost:3306/trac'))
 
 
 class StringsTestCase(unittest.TestCase):

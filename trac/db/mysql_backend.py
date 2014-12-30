@@ -24,7 +24,7 @@ from genshi.core import Markup
 from trac.core import *
 from trac.config import Option
 from trac.db.api import ConnectionBase, DatabaseManager, IDatabaseConnector, \
-                        _parse_db_str, get_column_names
+                        get_column_names, parse_connection_uri
 from trac.db.util import ConnectionWrapper, IterableCursor
 from trac.env import IEnvironmentSetupParticipant, ISystemInfoProvider
 from trac.util import as_int, get_pkginfo
@@ -223,7 +223,7 @@ class MySQLConnector(Component):
     def backup(self, dest_file):
         from subprocess import Popen, PIPE
         db_url = self.env.config.get('trac', 'database')
-        scheme, db_prop = _parse_db_str(db_url)
+        scheme, db_prop = parse_connection_uri(db_url)
         db_params = db_prop.setdefault('params', {})
         db_name = os.path.basename(db_prop['path'])
 

@@ -37,7 +37,7 @@ import trac.db.postgres_backend
 import trac.db.sqlite_backend
 from trac.config import Configuration
 from trac.core import ComponentManager
-from trac.db.api import DatabaseManager, _parse_db_str
+from trac.db.api import DatabaseManager, parse_connection_uri
 from trac.env import Environment
 from trac.ticket.default_workflow import load_workflow_config_snippet
 from trac.util import translation
@@ -184,7 +184,7 @@ class TestCaseSetup(unittest.TestCase):
 def get_dburi():
     dburi = os.environ.get('TRAC_TEST_DB_URI')
     if dburi:
-        scheme, db_prop = _parse_db_str(dburi)
+        scheme, db_prop = parse_connection_uri(dburi)
         # Assume the schema 'tractest' for PostgreSQL
         if scheme == 'postgres' and \
                 not db_prop.get('params', {}).get('schema'):
@@ -345,7 +345,7 @@ class EnvironmentStub(Environment):
         :return: True upon success
         """
         from trac import db_default
-        scheme, db_prop = _parse_db_str(self.dburi)
+        scheme, db_prop = parse_connection_uri(self.dburi)
         tables = []
         remove_sqlite_db = False
         try:
@@ -399,7 +399,7 @@ class EnvironmentStub(Environment):
 
     def destroy_db(self, scheme=None, db_prop=None):
         if not (scheme and db_prop):
-            scheme, db_prop = _parse_db_str(self.dburi)
+            scheme, db_prop = parse_connection_uri(self.dburi)
         try:
             with self.db_transaction as db:
                 if scheme == 'postgres' and db.schema:
