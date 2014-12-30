@@ -34,7 +34,7 @@ import trac.db.mysql_backend
 import trac.db.postgres_backend
 import trac.db.sqlite_backend
 from trac.config import Configuration
-from trac.core import Component, ComponentManager
+from trac.core import ComponentManager
 from trac.db.api import DatabaseManager, _parse_db_str
 from trac.env import Environment
 from trac.ticket.default_workflow import load_workflow_config_snippet
@@ -263,7 +263,6 @@ class EnvironmentStub(Environment):
             raise TypeError('Keyword argument "disable" must be a list')
 
         ComponentManager.__init__(self)
-        Component.__init__(self)
 
         self.systeminfo = []
 
