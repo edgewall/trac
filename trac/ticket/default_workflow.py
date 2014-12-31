@@ -245,7 +245,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             hints.append(_("The ticket will be disowned"))
         if 'set_owner' in operations or 'may_set_owner' in operations:
             if 'set_owner' in this_action:
-                owners = this_action['set_owner']
+                owners = self._to_users(this_action['set_owner'], ticket)
             elif self.config.getbool('ticket', 'restrict_owner'):
                 perm = PermissionSystem(self.env)
                 owners = perm.get_users_with_permission('TICKET_MODIFY')
@@ -484,6 +484,35 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                        status in info['oldstates']) and
                       self._has_perms_for_action(req, info, ticket.resource)]
         return actions
+
+    # Internal methods
+
+    def _to_users(self, users_perms_and_groups, ticket):
+        """Finds all users contained in the list of `users_perms_and_groups`
+        by recursive lookup of users when a `group` is encountered.
+        """
+        ps = PermissionSystem(self.env)
+        groups = ps.get_groups_dict()
+
+        def append_owners(users_perms_and_groups):
+            for user_perm_or_group in users_perms_and_groups:
+                if user_perm_or_group == 'authenticated':
+                    owners.update(set(u[0] for u in self.env.get_known_users()))
+                elif user_perm_or_group.isupper():
+                    perm = user_perm_or_group
+                    for user in ps.get_users_with_permission(perm):
+                        if perm in PermissionCache(self.env, user,
+                                                   ticket.resource):
+                            owners.add(user)
+                elif user_perm_or_group not in groups:
+                    owners.add(user_perm_or_group)
+                else:
+                    append_owners(groups[user_perm_or_group])
+
+        owners = set()
+        append_owners(users_perms_and_groups)
+
+        return sorted(owners)
 
 
 class WorkflowMacro(WikiMacroBase):

@@ -86,6 +86,77 @@ class ResetActionTestCase(unittest.TestCase):
         self.assertEqual('review', chgs2['status'])
 
 
+class SetOwnerAttributeTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True)
+        self.perm_sys = PermissionSystem(self.env)
+        self.ctlr = TicketSystem(self.env).action_controllers[0]
+        self.ticket = Ticket(self.env)
+        self.ticket['status'] = 'new'
+        self.ticket.insert()
+        with self.env.db_transaction as db:
+            for user in ('user1', 'user2', 'user3', 'user4'):
+                db("INSERT INTO session VALUES (%s, %s, %s)", (user, 1, 0))
+        permissions = [
+            ('user1', 'TICKET_EDIT_CC'),
+            ('user2', 'TICKET_EDIT_CC'),
+            ('user2', 'TICKET_BATCH_MODIFY'),
+            ('user3', 'TICKET_ADMIN'),
+            ('user4', 'TICKET_VIEW'),
+            ('user1', 'group1'),
+            ('user2', 'group1'),
+            ('user2', 'group2'),
+            ('user3', 'group2'),
+            ('user4', 'group3')
+        ]
+        for perm in permissions:
+            self.perm_sys.grant_permission(*perm)
+        self.req = Mock(authname='user1', args={},
+                        perm=PermissionCache(self.env, 'user0'))
+        self.expected = """\
+to <select name="action_reassign_reassign_owner" \
+id="action_reassign_reassign_owner"><option selected="True" \
+value="user1">user1</option><option value="user2">user2</option>\
+<option value="user3">user3</option></select>"""
+
+    def _reload_workflow(self):
+        self.ctlr.actions = self.ctlr.get_all_actions()
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def test_users(self):
+        self.env.config.set('ticket-workflow', 'reassign.set_owner',
+                            'user1, user2, user3')
+        self._reload_workflow()
+
+        args = self.req, self.ticket, 'reassign'
+        label, control, hints = self.ctlr.render_ticket_action_control(*args)
+
+        self.assertEqual(self.expected, str(control))
+
+    def test_groups(self):
+        self.env.config.set('ticket-workflow', 'reassign.set_owner',
+                            'group1, group2')
+        self._reload_workflow()
+
+        args = self.req, self.ticket, 'reassign'
+        label, control, hints = self.ctlr.render_ticket_action_control(*args)
+
+        self.assertEqual(self.expected, str(control))
+
+    def test_permission(self):
+        self.env.config.set('ticket-workflow', 'reassign.set_owner',
+                            'TICKET_EDIT_CC, TICKET_BATCH_MODIFY')
+        self._reload_workflow()
+
+        args = self.req, self.ticket, 'reassign'
+        label, control, hints = self.ctlr.render_ticket_action_control(*args)
+
+        self.assertEqual(self.expected, str(control))
+
+
 class RestrictOwnerTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -155,6 +226,7 @@ user4 = !TICKET_MODIFY
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ResetActionTestCase))
+    suite.addTest(unittest.makeSuite(SetOwnerAttributeTestCase))
     if ConfigObj:
         suite.addTest(unittest.makeSuite(RestrictOwnerTestCase))
     else:
