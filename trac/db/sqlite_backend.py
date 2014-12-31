@@ -364,6 +364,13 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
     def quote(self, identifier):
         return "`%s`" % identifier.replace('`', '``')
 
+    def reset_tables(self):
+        cursor = self.cursor()
+        table_names = self.get_table_names()
+        for name in table_names:
+            cursor.execute("DELETE FROM %s" % name)
+        return table_names
+
     def update_sequence(self, cursor, table, column='id'):
         # SQLite handles sequence updates automagically
         # http://www.sqlite.org/autoinc.html

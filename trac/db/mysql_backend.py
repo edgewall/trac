@@ -442,6 +442,27 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
     def like_escape(self, text):
         return _like_escape_re.sub(r'/\1', text)
 
+    def reset_tables(self):
+        table_names = []
+        if not self.schema:
+            return table_names
+        cursor = self.cursor()
+        cursor.execute("""
+            SELECT table_name, auto_increment
+            FROM information_schema.tables
+            WHERE table_schema=%s""", (self.schema,))
+        for table, auto_increment in cursor.fetchall():
+            table_names.append(table)
+            if auto_increment is None or auto_increment == 1:
+                # DELETE FROM is preferred to TRUNCATE TABLE, as the
+                # auto_increment is not used or it is 1.
+                cursor.execute("DELETE FROM %s" % table)
+            else:
+                # TRUNCATE TABLE is preferred to DELETE FROM, as we
+                # need to reset the auto_increment in MySQL.
+                cursor.execute("TRUNCATE TABLE %s" % table)
+        return table_names
+
     def prefix_match(self):
         return "LIKE %s ESCAPE '/'"
 

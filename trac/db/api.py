@@ -244,6 +244,14 @@ class ConnectionBase(object):
         pass
 
     @abstractmethod
+    def reset_tables(self):
+        """Deletes all data from the tables and resets autoincrement indexes.
+
+        :return: list of names of the tables that were reset.
+        """
+        pass
+
+    @abstractmethod
     def update_sequence(self, cursor, table, column='id'):
         """Updates the current value of the primary key sequence for `table`.
         The `column` of the primary key may be specified, which defaults
@@ -343,6 +351,16 @@ class DatabaseManager(Component):
             for table in schema:
                 table_name = table.name if isinstance(table, Table) else table
                 db.drop_table(table_name)
+
+    def reset_tables(self):
+        """Deletes all data from the tables and resets autoincrement indexes.
+
+        :return: list of names of the tables that were reset.
+
+        :since: version 1.1.3
+        """
+        with self.env.db_transaction as db:
+            return db.reset_tables()
 
     def get_connection(self, readonly=False):
         """Get a database connection from the pool.
