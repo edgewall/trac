@@ -373,8 +373,6 @@ class TimelineModule(Component):
             kind, date, author, data = event
         render = lambda field, context: \
                  provider.render_timeline_event(context, field, event)
-        if not isinstance(date, datetime):
-            date = datetime.fromtimestamp(date, utc)
         dateuid = to_utimestamp(date)
         return {'kind': kind, 'author': author, 'date': date,
                 'dateuid': dateuid, 'render': render, 'event': event,
