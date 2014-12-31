@@ -189,6 +189,37 @@ class PermissionSystemTestCase(unittest.TestCase):
         for res in self.perm.get_all_permissions():
             self.assertFalse(res not in expected)
 
+    def test_get_groups_dict(self):
+        permissions = [
+            ('user2', 'group1'),
+            ('user1', 'group1'),
+            ('user3', 'group1'),
+            ('user3', 'group2')
+        ]
+        for perm_ in permissions:
+            self.perm.grant_permission(*perm_)
+
+        groups = self.perm.get_groups_dict()
+        self.assertEqual(2, len(groups))
+        self.assertEqual(['user1', 'user2', 'user3'], groups['group1'])
+        self.assertEqual(['user3'], groups['group2'])
+
+    def test_get_users_dict(self):
+        permissions = [
+            ('user2', 'TEST_CREATE'),
+            ('user1', 'TEST_DELETE'),
+            ('user1', 'TEST_ADMIN'),
+            ('user1', 'TEST_CREATE')
+        ]
+        for perm_ in permissions:
+            self.perm.grant_permission(*perm_)
+
+        users = self.perm.get_users_dict()
+        self.assertEqual(2, len(users))
+        self.assertEqual(['TEST_ADMIN', 'TEST_CREATE', 'TEST_DELETE'],
+                         users['user1'])
+        self.assertEqual(['TEST_CREATE'], users['user2'])
+
     def test_expand_actions_iter_7467(self):
         # Check that expand_actions works with iterators (#7467)
         perms = set(['TRAC_ADMIN', 'TEST_DELETE', 'TEST_MODIFY',

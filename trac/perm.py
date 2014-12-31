@@ -18,6 +18,7 @@
 
 import csv
 import os
+from itertools import groupby
 from time import time
 
 from trac.admin import AdminCommandError, IAdminCommandProvider, get_dir_list
@@ -368,6 +369,33 @@ class PermissionSystem(Component):
                 else:
                     actions.add(action)
         return list(actions)
+
+    def get_groups_dict(self):
+        """Get all groups as a `dict`.
+
+        The keys are the group names. The values are the group members.
+
+        :since: 1.1.3
+        """
+        groups = sorted((p for p in self.get_all_permissions()
+                           if not p[1].isupper()), key=lambda p: p[1])
+
+        return dict((k, sorted(i[0] for i in list(g)))
+                    for k, g in groupby(groups, key=lambda p: p[1]))
+
+    def get_users_dict(self):
+        """Get all users as a `dict`.
+
+        The keys are the user names. The values are the actions possessed
+        by the user.
+
+        :since: 1.1.3
+        """
+        perms = sorted((p for p in self.get_all_permissions()
+                          if p[1].isupper()), key=lambda p: p[0])
+
+        return dict((k, sorted(i[1] for i in list(g)))
+                    for k, g in groupby(perms, key=lambda p: p[0]))
 
     def get_user_permissions(self, username=None):
         """Return the permissions of the specified user.
