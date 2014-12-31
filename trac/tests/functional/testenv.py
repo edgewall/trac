@@ -162,6 +162,7 @@ class FunctionalTestEnvironment(object):
         """Add a user to the environment.  The password will be set to the
         same as username."""
         user = to_utf8(user)
+        self._tracadmin('session', 'add', user)
         if call([sys.executable, os.path.join(self.trac_src, 'contrib',
                  'htpasswd.py'), '-b', self.htpasswd,
                  user, user], close_fds=close_fds, cwd=self.command_cwd):
