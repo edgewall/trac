@@ -40,6 +40,7 @@ from trac.wiki.formatter import (
 )
 
 
+# TODO: should be moved in .api
 class WikiMacroBase(Component):
     """Abstract base class for wiki macros."""
 

@@ -46,7 +46,7 @@ from trac.web.chrome import (INavigationContributor, Chrome,
                              add_script_data, add_stylesheet, add_warning,
                              web_context)
 from trac.wiki.api import IWikiSyntaxProvider
-from trac.wiki.macros import WikiMacroBase # TODO: should be moved in .api
+from trac.wiki.macros import WikiMacroBase
 
 
 class QuerySyntaxError(TracError):
