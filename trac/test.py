@@ -223,8 +223,6 @@ def reset_mysql_db(env, db_prop):
     return DatabaseManager(env).reset_tables()
 
 
-# -- Environment stub
-
 class EnvironmentStub(Environment):
     """A stub of the trac.env.Environment object for testing."""
 
@@ -359,8 +357,8 @@ class EnvironmentStub(Environment):
                 if scheme == 'postgres' and db.schema:
                     db('DROP SCHEMA %s CASCADE' % db.quote(db.schema))
                 elif scheme == 'mysql':
-                    for table in db.get_table_names():
-                        db("DROP TABLE IF EXISTS `%s`" % table)
+                    for table_name in db.get_table_names():
+                        db.drop_table(table_name)
                 elif scheme == 'sqlite':
                     path = db_prop['path']
                     if path != ':memory:':
