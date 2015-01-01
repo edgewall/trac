@@ -355,10 +355,8 @@ class EnvironmentStub(Environment):
                 # Speed-up tests with SQLite database
                 db("PRAGMA synchronous = OFF")
             if default_data:
-                for table, cols, vals in db_default.get_data(db):
-                    db.executemany("INSERT INTO %s (%s) VALUES (%s)"
-                                   % (table, ','.join(cols),
-                                      ','.join(['%s'] * len(cols))), vals)
+                self.global_databasemanager \
+                    .insert_into_tables(db_default.get_data)
             else:
                 self.global_databasemanager \
                     .set_database_version(db_default.db_version)

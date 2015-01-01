@@ -352,6 +352,28 @@ class DatabaseManager(Component):
                 table_name = table.name if isinstance(table, Table) else table
                 db.drop_table(table_name)
 
+    def insert_into_tables(self, data_or_callable):
+        """Insert data into existing tables.
+
+        :param data_or_callable: Nested tuples of table names, column names
+                                 and row data:
+                                 (table1,
+                                  (column1, column2),
+                                  ((row1col1, row1col2), (row2col1, row2col2)),
+                                  table2, ...)
+                                or a callable that takes a single parameter
+                                `db` and returns the aforementioned nested
+                                tuple.
+        :since: version 1.1.3
+        """
+        with self.env.db_transaction as db:
+            data = data_or_callable(db) if callable(data_or_callable) \
+                                        else data_or_callable
+            for table, cols, vals in data:
+                db.executemany("INSERT INTO %s (%s) VALUES (%s)"
+                               % (table, ','.join(cols),
+                                  ','.join(['%s'] * len(cols))), vals)
+
     def reset_tables(self):
         """Deletes all data from the tables and resets autoincrement indexes.
 
