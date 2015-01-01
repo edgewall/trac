@@ -316,7 +316,6 @@ class EnvironmentStub(Environment):
         from trac import db_default
         scheme, db_prop = parse_connection_uri(self.dburi)
         tables = []
-        remove_sqlite_db = False
         try:
             with self.db_transaction as db:
                 db.rollback()  # make sure there's no transaction in progress
@@ -332,16 +331,7 @@ class EnvironmentStub(Environment):
                 tables = self.global_databasemanager.reset_tables()
             else:
                 # different version or version unknown, drop the tables
-                remove_sqlite_db = True
                 self.destroy_db(scheme, db_prop)
-
-        if scheme == 'sqlite' and remove_sqlite_db:
-            path = db_prop['path']
-            if path != ':memory:':
-                if not os.path.isabs(path):
-                    path = os.path.join(self.path, path)
-                self.global_databasemanager.shutdown()
-                os.remove(path)
 
         if not tables:
             self.global_databasemanager.init_db()
@@ -371,6 +361,13 @@ class EnvironmentStub(Environment):
                 elif scheme == 'mysql':
                     for table in db.get_table_names():
                         db("DROP TABLE IF EXISTS `%s`" % table)
+                elif scheme == 'sqlite':
+                    path = db_prop['path']
+                    if path != ':memory:':
+                        if not os.path.isabs(path):
+                            path = os.path.join(self.path, path)
+                        self.global_databasemanager.shutdown()
+                        os.remove(path)
         except Exception:
             # "TracError: Database not found...",
             # psycopg2.ProgrammingError: schema "tractest" does not exist
