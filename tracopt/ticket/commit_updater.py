@@ -243,7 +243,7 @@ In [changeset:"%s" %s]:
             return
         event = TicketChangeEvent('changed', ticket, date, author, comment)
         try:
-            NotificationSystem(env).notify(event)
+            NotificationSystem(self.env).notify(event)
         except Exception as e:
             self.log.error("Failure sending notification on change to "
                            "ticket #%s: %s", ticket.id,
