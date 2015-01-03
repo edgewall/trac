@@ -29,6 +29,29 @@ class TestWiki(FunctionalTwillTestCaseSetup):
         self._tester.create_wiki_page()
 
 
+class TestWikiDelete(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Delete a wiki page."""
+        name = self._tester.create_wiki_page()
+        self._tester.go_to_wiki(name)
+        tc.formvalue('delete', 'action', 'delete')
+        tc.submit()
+        tc.notfind("The following attachments will also be deleted:")
+        tc.submit('delete', 'delete-confirm')
+        tc.find("The page %s has been deleted." % name)
+        tc.url(self._tester.url)
+
+        name = self._tester.create_wiki_page()
+        filename = self._tester.attach_file_to_wiki(name)
+        self._tester.go_to_wiki(name)
+        tc.formvalue('delete', 'action', 'delete')
+        tc.submit()
+        tc.find("The following attachments will also be deleted:")
+        tc.find(filename)
+        tc.submit('delete', 'delete-confirm')
+        tc.find("The page %s has been deleted." % name)
+        tc.url(self._tester.url)
+
 class TestWikiAddAttachment(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Add attachment to a wiki page. Test that the attachment
@@ -478,6 +501,7 @@ def functionalSuite(suite=None):
         import trac.tests.functional
         suite = trac.tests.functional.functionalSuite()
     suite.addTest(TestWiki())
+    suite.addTest(TestWikiDelete())
     suite.addTest(TestWikiAddAttachment())
     suite.addTest(TestWikiPageManipulator())
     suite.addTest(TestWikiHistory())

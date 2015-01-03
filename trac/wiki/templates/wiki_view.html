@@ -120,8 +120,8 @@
                 <input type="submit" value="${_('Rename page')}" />
               </div>
             </form>
-            <form method="get" action="${href.wiki(page.name)}" py:if="page.exists and delete_perm">
-              <div id="delete">
+            <form method="get" action="${href.wiki(page.name)}" id="delete" py:if="page.exists and delete_perm">
+              <div>
                 <input type="hidden" name="action" value="delete" />
                 <input type="hidden" name="version" value="$page.version" />
                 <py:if test="page.version == latest_version">

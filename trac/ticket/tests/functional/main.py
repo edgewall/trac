@@ -1670,7 +1670,7 @@ class TestMilestoneDelete(FunctionalTwillTestCaseSetup):
         """Delete a milestone and verify that tickets are retargeted
         to the selected milestone."""
         def submit_delete(name, retarget_to=None, tid=None):
-            tc.submit('delete', formname='edit')
+            tc.submit('delete', 'delete-confirm')
             tc.url(self._tester.url + '/roadmap')
             tc.find('The milestone "%s" has been deleted.' % name)
             tc.notfind('Milestone:.*%s' % name)
@@ -1721,7 +1721,7 @@ class TestMilestoneDelete(FunctionalTwillTestCaseSetup):
         tid = self._tester.create_ticket(info={'milestone': name})
         self._tester.go_to_milestone(name)
         tc.submit(formname='deletemilestone')
-        tc.formvalue('edit', 'target', retarget_to)
+        tc.formvalue('delete-confirm', 'target', retarget_to)
         submit_delete(name, retarget_to, tid)
 
         # Just navigate to the page and select cancel
@@ -1729,7 +1729,7 @@ class TestMilestoneDelete(FunctionalTwillTestCaseSetup):
         tid = self._tester.create_ticket(info={'milestone': name})
         self._tester.go_to_milestone(name)
         tc.submit(formname='deletemilestone')
-        tc.submit('cancel', formname='edit')
+        tc.submit('cancel', 'delete-confirm')
 
         tc.url(self._tester.url + '/milestone/%s' % name)
         tc.notfind('The milestone "%s" has been deleted.' % name)
@@ -1741,6 +1741,28 @@ class TestMilestoneDelete(FunctionalTwillTestCaseSetup):
         tc.notfind('<strong class="trac-field-milestone">Milestone</strong>'
                    '[ \t\n]*<em>%s</em>[ \t\n]*deleted' % name)
         tc.notfind("Ticket retargeted after milestone deleted<br />")
+
+        # No attachments associated with milestone
+        name = self._tester.create_milestone()
+        self._tester.go_to_milestone(name)
+        tc.formvalue('deletemilestone', 'action', 'delete')
+        tc.submit()
+        tc.notfind("The following attachments will also be deleted:")
+        tc.submit('delete', 'delete-confirm')
+        tc.find('The milestone "%s" has been deleted.' % name)
+        tc.url(self._tester.url)
+
+        # Attachments associated with milestone
+        name = self._tester.create_milestone()
+        filename = self._tester.attach_file_to_milestone(name)
+        self._tester.go_to_milestone(name)
+        tc.formvalue('deletemilestone', 'action', 'delete')
+        tc.submit()
+        tc.find("The following attachments will also be deleted:")
+        tc.find(filename)
+        tc.submit('delete', 'delete-confirm')
+        tc.find('The milestone "%s" has been deleted.' % name)
+        tc.url(self._tester.url)
 
 
 class TestMilestoneRename(FunctionalTwillTestCaseSetup):

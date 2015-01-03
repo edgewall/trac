@@ -35,7 +35,7 @@
 
         <xi:include href="ticket_box.html" py:with="can_append = False; preview_mode = False"/>
 
-        <form id="edit" action="" method="post">
+        <form id="delete-confirm" action="" method="post">
           <div>
             <input type="hidden" name="action" value="delete"/>
             <p>
@@ -44,8 +44,16 @@
                 (comments: ${sum(1 for change in changes if 'cnum' in change)},
                  attachments: ${sum(1 for change in changes if 'cnum' not in change)})
               </i18n:msg><br/>
-              <p><strong>This is an irreversible operation.</strong></p>
             </p>
+            <py:if test="attachments">
+              <p>The following attachments will also be deleted:</p>
+              <ul>
+                <li py:for="attachment in attachments">
+                  <a href="${url_of(attachment.resource)}" title="View attachment">$attachment.filename</a>
+                </li>
+              </ul>
+            </py:if>
+            <p><strong>This is an irreversible operation.</strong></p>
           </div>
           <div class="buttons">
             <input type="submit" class="trac-disable-on-submit" value="${_('Delete ticket')}"/>

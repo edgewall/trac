@@ -22,7 +22,7 @@ import re
 from genshi.builder import tag
 
 from trac import __version__
-from trac.attachment import AttachmentModule
+from trac.attachment import Attachment, AttachmentModule
 from trac.config import ConfigSection, ExtensionOption, Option
 from trac.core import *
 from trac.notification.api import NotificationSystem
@@ -877,12 +877,14 @@ class MilestoneModule(Component):
         milestones = [m for m in Milestone.select(self.env)
                       if m.name != milestone.name
                       and 'MILESTONE_VIEW' in req.perm(m.resource)]
+        attachments = Attachment.select(self.env, self.realm, milestone.name)
         data = {
             'milestone': milestone,
             'milestone_groups': group_milestones(milestones,
                 'TICKET_ADMIN' in req.perm),
             'num_tickets': milestone.get_num_tickets(),
-            'retarget_to': self.default_retarget_to
+            'retarget_to': self.default_retarget_to,
+            'attachments': list(attachments)
         }
         add_stylesheet(req, 'common/css/roadmap.css')
         return 'milestone_delete.html', data, None

@@ -15,6 +15,7 @@ from genshi.builder import tag
 from genshi.filters import Transformer
 from genshi.filters.transform import StreamBuffer
 
+from trac.attachment import Attachment
 from trac.core import Component, TracError, implements
 from trac.ticket.model import Ticket
 from trac.ticket.web_ui import TicketModule
@@ -165,6 +166,9 @@ class TicketDeleter(Component):
                     break
             else:
                 raise TracError(_('Comment %(num)s not found', num=cnum))
+        elif action == 'delete':
+            attachments = Attachment.select(self.env, ticket.realm, ticket.id)
+            data.update(attachments=list(attachments))
 
         add_stylesheet(req, 'common/css/ticket.css')
         return 'ticket_delete.html', data, None
