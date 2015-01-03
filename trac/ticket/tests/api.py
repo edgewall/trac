@@ -152,6 +152,21 @@ class TicketSystemTestCase(unittest.TestCase):
         self.assertEqual(['leave'], self._get_actions({'status': 'reopened'}))
         self.assertEqual(['leave'], self._get_actions({'status': 'closed'}))
 
+    def test_get_allowed_owners_restrict_owner_false(self):
+        self.env.config.set('ticket', 'restrict_owner', False)
+        self.assertIsNone(self.ticket_system.get_allowed_owners())
+
+    def test_get_allowed_owners_restrict_owner_true(self):
+        self.env.config.set('ticket', 'restrict_owner', True)
+        self.env.insert_known_users([('user3', None, None),
+                                     ('user1', None, None)])
+        self.perm.grant_permission('user4', 'TICKET_MODIFY')
+        self.perm.grant_permission('user3', 'TICKET_MODIFY')
+        self.perm.grant_permission('user2', 'TICKET_VIEW')
+        self.perm.grant_permission('user1', 'TICKET_MODIFY')
+        self.assertEqual(['user1', 'user3'],
+                         self.ticket_system.get_allowed_owners())
+
 
 def suite():
     return unittest.makeSuite(TicketSystemTestCase)
