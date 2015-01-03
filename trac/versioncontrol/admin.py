@@ -350,8 +350,10 @@ class RepositoryAdminPanel(Component):
         if not info.get('alias'):
             try:
                 repos = RepositoryManager(self.env).get_repository(reponame)
-            except InvalidRepository, e:
+            except InvalidRepository as e:
                 info['error'] = e
+            except TracError:
+                pass  # Probably "unsupported connector"
             else:
                 youngest_rev = repos.get_youngest_rev()
                 info['rev'] = youngest_rev
