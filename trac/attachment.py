@@ -41,7 +41,7 @@ from trac.util.compat import sha1
 from trac.util.datefmt import format_datetime, from_utimestamp, \
                               to_datetime, to_utimestamp, utc
 from trac.util.text import exception_to_unicode, path_to_unicode, \
-                           pretty_size, print_table, unicode_unquote
+                           pretty_size, print_table, stripws, unicode_unquote
 from trac.util.translation import _, tag_
 from trac.web import HTTPBadRequest, IRequestHandler, RequestDone
 from trac.web.chrome import (INavigationContributor, add_ctxtnav, add_link,
@@ -409,16 +409,7 @@ class AttachmentModule(Component):
             raise TracError(_('Maximum attachment size: %(num)s',
                               num=pretty_size(max_size)), _('Upload failed'))
 
-        # We try to normalize the filename to unicode NFC if we can.
-        # Files uploaded from OS X might be in NFD.
-        filename = unicodedata.normalize('NFC', unicode(upload.filename,
-                                                        'utf-8'))
-        filename = filename.strip()
-        # Replace backslashes with slashes if filename is Windows full path
-        if filename.startswith('\\') or re.match(r'[A-Za-z]:\\', filename):
-            filename = filename.replace('\\', '/')
-        # We want basename to be delimited by only slashes on all platforms
-        filename = posixpath.basename(filename)
+        filename = _normalized_filename(upload.filename)
         if not filename:
             raise TracError(_('No file uploaded'))
         # Now the filename is known, update the attachment resource
@@ -1069,8 +1060,9 @@ class AttachmentAdmin(Component):
         attachment = Attachment(self.env, realm, id)
         attachment.author = author
         attachment.description = description
+        filename = _normalized_filename(path)
         with open(path, 'rb') as f:
-            attachment.insert(os.path.basename(path), f, os.path.getsize(path))
+            attachment.insert(filename, f, os.path.getsize(path))
 
     def _do_remove(self, resource, name):
         (realm, id) = self.split_resource(resource)
@@ -1094,3 +1086,26 @@ class AttachmentAdmin(Component):
             finally:
                 if destination is not None:
                     output.close()
+
+
+_control_codes_re = re.compile(
+    '[' +
+    ''.join(filter(lambda c: unicodedata.category(c) == 'Cc',
+                   map(unichr, xrange(0x10000)))) +
+    ']')
+
+def _normalized_filename(filepath):
+    # We try to normalize the filename to unicode NFC if we can.
+    # Files uploaded from OS X might be in NFD.
+    if not isinstance(filepath, unicode):
+        filepath = unicode(filepath, 'utf-8')
+    filepath = unicodedata.normalize('NFC', filepath)
+    # Replace control codes with spaces, e.g. NUL, LF, DEL, U+009F
+    filepath = _control_codes_re.sub(' ', filepath)
+    # Replace backslashes with slashes if filename is Windows full path
+    if filepath.startswith('\\') or re.match(r'[A-Za-z]:\\', filepath):
+        filepath = filepath.replace('\\', '/')
+    # We want basename to be delimited by only slashes on all platforms
+    filename = posixpath.basename(filepath)
+    filename = stripws(filename)
+    return filename
