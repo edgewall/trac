@@ -59,7 +59,7 @@ from trac.config import ListOption, ChoiceOption
 from trac.core import *
 from trac.env import ISystemInfoProvider
 from trac.versioncontrol import Changeset, Node, Repository, \
-                                IRepositoryConnector, \
+                                IRepositoryConnector, InvalidRepository, \
                                 NoSuchChangeset, NoSuchNode
 from trac.versioncontrol.cache import CachedRepository
 from trac.util import embedded_numbers
@@ -358,15 +358,17 @@ class SubversionRepository(Repository):
 
         root_path_utf8 = repos.svn_repos_find_root_path(path_utf8, self.pool())
         if root_path_utf8 is None:
-            raise TracError(_("%(path)s does not appear to be a Subversion "
-                              "repository.", path=to_unicode(path_utf8)))
+            raise InvalidRepository(
+                _("%(path)s does not appear to be a Subversion repository.",
+                  path=to_unicode(path_utf8)))
 
         try:
             self.repos = repos.svn_repos_open(root_path_utf8, self.pool())
         except core.SubversionException, e:
-            raise TracError(_("Couldn't open Subversion repository %(path)s: "
-                              "%(svn_error)s", path=to_unicode(path_utf8),
-                              svn_error=exception_to_unicode(e)))
+            raise InvalidRepository(
+                _("Couldn't open Subversion repository %(path)s: "
+                  "%(svn_error)s", path=to_unicode(path_utf8),
+                  svn_error=exception_to_unicode(e)))
         self.fs_ptr = repos.svn_repos_fs(self.repos)
 
         self.uuid = fs.get_uuid(self.fs_ptr, self.pool())

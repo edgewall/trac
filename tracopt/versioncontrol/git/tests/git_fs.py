@@ -25,7 +25,8 @@ from trac.util.compat import close_fds
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.text import to_utf8
 from trac.versioncontrol.api import Changeset, DbRepositoryProvider, \
-                                    Node, NoSuchChangeset, NoSuchNode, \
+                                    InvalidRepository, Node, \
+                                    NoSuchChangeset, NoSuchNode, \
                                     RepositoryManager
 from trac.versioncontrol.web_ui.browser import BrowserModule
 from trac.versioncontrol.web_ui.log import LogModule
@@ -341,6 +342,10 @@ class GitRepositoryTestCase(BaseTestCase):
                                                n * 2 + idx))
         self._git('checkout', 'alpha')
         self._git('merge', '-m', 'Merge branch "beta" to "alpha"', 'beta')
+
+    def test_invalid_path_raises(self):
+        self.assertRaises(InvalidRepository, GitRepository, self.env,
+                          '/the/invalid/path', [], self.env.log)
 
     def test_repository_instance(self):
         self._git_init()

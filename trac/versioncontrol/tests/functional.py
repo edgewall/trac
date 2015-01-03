@@ -26,6 +26,20 @@ class TestAdminRepositoryAuthorization(AuthorizationTestCaseSetup):
                                 'VERSIONCONTROL_ADMIN', "Manage Repositories")
 
 
+class TestAdminInvalidRepository(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Repository with an invalid path is rendered with an error
+        message on the repository admin page.
+        """
+        self._tester.go_to_admin("Repositories")
+        tc.formvalue('trac-addrepos', 'name', 'InvalidRepos')
+        tc.formvalue('trac-addrepos', 'dir', '/the/invalid/path')
+        tc.submit()
+        tc.find('<span class="missing" title="/the/invalid/path does not '
+                'appear to be a Subversion repository.">/the/​invalid/​path'
+                '</span>')
+
+
 class TestEmptySvnRepo(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Check empty repository"""
@@ -356,6 +370,7 @@ def functionalSuite(suite=None):
         import trac.tests.functional
         suite = trac.tests.functional.functionalSuite()
     suite.addTest(TestAdminRepositoryAuthorization())
+    suite.addTest(TestAdminInvalidRepository())
     suite.addTest(RegressionTestTicket11355())
     if has_svn:
         suite.addTest(TestEmptySvnRepo())

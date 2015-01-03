@@ -29,8 +29,9 @@ from trac.util.datefmt import FixedOffset, to_timestamp, format_datetime
 from trac.util.text import to_unicode, exception_to_unicode
 from trac.util.translation import _
 from trac.versioncontrol.api import Changeset, Node, Repository, \
-                                    IRepositoryConnector, NoSuchChangeset, \
-                                    NoSuchNode, IRepositoryProvider
+                                    IRepositoryConnector, InvalidRepository,\
+                                    NoSuchChangeset, NoSuchNode, \
+                                    IRepositoryProvider
 from trac.versioncontrol.cache import CACHE_YOUNGEST_REV, CachedRepository, \
                                       CachedChangeset
 from trac.versioncontrol.web_ui import IPropertyRenderer
@@ -490,8 +491,9 @@ class GitRepository(Repository):
             self._git = factory.getInstance()
         except PyGIT.GitError, e:
             log.error(exception_to_unicode(e))
-            raise TracError(_("%(path)s does not appear to be a Git "
-                              "repository.", path=path))
+            raise InvalidRepository(
+                _("%(path)s does not appear to be a Git repository.",
+                  path=path))
 
         Repository.__init__(self, 'git:' + path, self.params, log)
         self._cached_git_id = str(self.id)

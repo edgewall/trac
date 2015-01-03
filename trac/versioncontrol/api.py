@@ -34,6 +34,10 @@ def is_default(reponame):
     return not reponame or reponame in ('(default)', _('(default)'))
 
 
+class InvalidRepository(TracError):
+    """Exception raised when a repository is invalid."""
+
+
 class IRepositoryConnector(Interface):
     """Provide support for a specific version control system."""
 
@@ -546,11 +550,13 @@ class RepositoryManager(Component):
         """Retrieve the appropriate `Repository` for the given
         repository name.
 
-           :param reponame: the key for specifying the repository.
-                            If no name is given, take the default
-                            repository.
-           :return: if no corresponding repository was defined,
-                    simply return `None`.
+        :param reponame: the key for specifying the repository.
+                         If no name is given, take the default
+                         repository.
+        :return: if no corresponding repository was defined,
+                 simply return `None`.
+
+        :raises InvalidRepository: if the repository cannot be opened.
         """
         reponame = reponame or ''
         repoinfo = self.get_all_repositories().get(reponame, {})
@@ -801,6 +807,8 @@ class Repository(object):
                           the surrogate key that identifies the repository in
                           the database under the key "id".
            :param log: a logger instance.
+
+           :raises InvalidRepository: if the repository cannot be opened.
         """
         self.name = name
         self.params = params

@@ -37,10 +37,12 @@ from trac.mimeview.api import Context
 from trac.resource import Resource, resource_exists
 from trac.util.concurrency import get_thread_id
 from trac.util.datefmt import utc
-from trac.versioncontrol.api import DbRepositoryProvider, Changeset, Node, \
+from trac.versioncontrol.api import DbRepositoryProvider, Changeset, \
+                                    InvalidRepository, Node, \
                                     NoSuchChangeset, RepositoryManager
 from trac.versioncontrol import svn_fs, svn_prop
 from trac.web.href import Href
+from tracopt.versioncontrol.svn.svn_fs import SubversionRepository
 
 REPOS_PATH = None
 REPOS_NAME = 'repo'
@@ -93,6 +95,10 @@ class SubversionRepositoryTestSetup(TestSetup):
 # -- Re-usable test mixins
 
 class NormalTests(object):
+
+    def test_invalid_path_raises(self):
+        self.assertRaises(InvalidRepository, SubversionRepository,
+                          '/the/invalid/path', [], self.env.log)
 
     def test_resource_exists(self):
         repos = Resource('repository', REPOS_NAME)

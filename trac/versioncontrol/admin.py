@@ -25,8 +25,8 @@ from trac.util.compat import any
 from trac.util.text import breakable_path, normalize_whitespace, print_table, \
                            printout
 from trac.util.translation import _, ngettext, tag_
-from trac.versioncontrol import DbRepositoryProvider, RepositoryManager, \
-                                is_default
+from trac.versioncontrol import DbRepositoryProvider, InvalidRepository, \
+                                NoSuchChangeset, RepositoryManager, is_default
 from trac.web.chrome import Chrome, add_notice, add_warning
 
 
@@ -348,11 +348,15 @@ class RepositoryAdminPanel(Component):
         if not info.get('alias'):
             try:
                 repos = RepositoryManager(self.env).get_repository(reponame)
+            except InvalidRepository, e:
+                info['error'] = e
+            else:
                 youngest_rev = repos.get_youngest_rev()
                 info['rev'] = youngest_rev
-                info['display_rev'] = repos.display_rev(youngest_rev)
-            except Exception:
-                pass
+                try:
+                    info['display_rev'] = repos.display_rev(youngest_rev)
+                except NoSuchChangeset:
+                    pass
         return info
 
     def _check_dir(self, req, dir):
