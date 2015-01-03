@@ -1060,7 +1060,7 @@ class AttachmentAdmin(Component):
         attachment = Attachment(self.env, realm, id)
         attachment.author = author
         attachment.description = description
-        filename = _normalized_filename(path)
+        filename = _normalized_filename(os.path.basename(path))
         with open(path, 'rb') as f:
             attachment.insert(filename, f, os.path.getsize(path))
 
