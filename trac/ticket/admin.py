@@ -180,8 +180,7 @@ class ComponentAdminPanel(TicketAdminPanel):
         return [c.name for c in model.Component.select(self.env)]
 
     def get_user_list(self):
-        return [username for username, in
-                self.env.db_query("SELECT DISTINCT username FROM permission")]
+        return TicketSystem(self.env).get_allowed_owners()
 
     def _complete_add(self, args):
         if len(args) == 2:
