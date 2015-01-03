@@ -88,6 +88,7 @@ def get_ticket_notification_recipients(env, config, tktid, prev_cc=None,
 
     :since 1.0.2: the `config` parameter is no longer used.
     :since 1.0.2: the `prev_cc` parameter is deprecated.
+    :since 1.1.3: deprecated and will be removed in 1.3.1.
     """
     section = env.config['notification']
     always_notify_reporter = section.getbool('always_notify_reporter')
