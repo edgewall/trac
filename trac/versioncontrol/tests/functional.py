@@ -35,9 +35,8 @@ class TestAdminInvalidRepository(FunctionalTwillTestCaseSetup):
         tc.formvalue('trac-addrepos', 'name', 'InvalidRepos')
         tc.formvalue('trac-addrepos', 'dir', '/the/invalid/path')
         tc.submit()
-        tc.find('<span class="missing" title="/the/invalid/path does not '
-                'appear to be a Subversion repository.">/the/​invalid/​path'
-                '</span>')
+        tc.find((u'<span class="missing" title="[^"]*">'
+                 u'/the/\u200binvalid/\u200bpath</span>').encode('utf-8'))
 
 
 class TestEmptySvnRepo(FunctionalTwillTestCaseSetup):
@@ -370,9 +369,9 @@ def functionalSuite(suite=None):
         import trac.tests.functional
         suite = trac.tests.functional.functionalSuite()
     suite.addTest(TestAdminRepositoryAuthorization())
-    suite.addTest(TestAdminInvalidRepository())
     suite.addTest(RegressionTestTicket11355())
     if has_svn:
+        suite.addTest(TestAdminInvalidRepository())
         suite.addTest(TestEmptySvnRepo())
         suite.addTest(TestRepoCreation())
         suite.addTest(TestRepoBrowse())
