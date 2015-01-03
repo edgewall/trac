@@ -143,6 +143,9 @@ class TracadminTestCase(unittest.TestCase):
         self.assertEqual(1, len(docs))
         return docs[0][2]
 
+    def _complete_command(self, *args):
+        return AdminCommandManager(self.env).complete_command(list(args))
+
     def assertExpectedResult(self, output, args=None):
         test_name = inspect.stack()[1][3]
         expected_result = self.expected_results[test_name]
@@ -482,6 +485,34 @@ class TracadminTestCase(unittest.TestCase):
         self.assertEqual(0, rv, output)
         self.assertExpectedResult(output)
 
+    def test_component_add_complete_optional_owner_restrict_owner_false(self):
+        """Tests completion of the 'component add <component>' command with
+        [ticket] restrict_owner = false.
+        """
+        self._execute('config set ticket restrict_owner false')
+        self._execute('session add user1')
+        self._execute('session add user3')
+        self._execute('permission add user1 TICKET_MODIFY')
+        self._execute('permission add user2 TICKET_VIEW')
+        self._execute('permission add user3 TICKET_MODIFY')
+        output = self._complete_command('component', 'add',
+                                        'new_component', '')
+        self.assertEqual([], output)
+
+    def test_component_add_complete_optional_owner_restrict_owner_true(self):
+        """Tests completion of the 'component add <component>' command with
+        [ticket] restrict_owner = true.
+        """
+        self._execute('config set ticket restrict_owner true')
+        self._execute('session add user1')
+        self._execute('session add user3')
+        self._execute('permission add user1 TICKET_MODIFY')
+        self._execute('permission add user2 TICKET_VIEW')
+        self._execute('permission add user3 TICKET_MODIFY')
+        output = self._complete_command('component', 'add',
+                                        'new_component', '')
+        self.assertEqual(['user1', 'user3'], output)
+
     def test_component_add_error_already_exists(self):
         """
         Tests the 'component add' command in trac-admin.  This particular
@@ -529,6 +560,38 @@ class TracadminTestCase(unittest.TestCase):
         rv, output = self._execute('component list')
         self.assertEqual(0, rv, output)
         self.assertExpectedResult(output)
+
+    def test_component_chown_complete_component(self):
+        """Tests completion of the 'component chown' command.
+        """
+        output = self._complete_command('component', 'chown', '')
+        self.assertEqual(['component1', 'component2'], output)
+
+    def test_component_chown_complete_owner_restrict_owner_false(self):
+        """Tests completion of the 'component chown <component>' command with
+        [ticket] restrict_owner = false.
+        """
+        self._execute('config set ticket restrict_owner false')
+        self._execute('session add user1')
+        self._execute('session add user3')
+        self._execute('permission add user1 TICKET_MODIFY')
+        self._execute('permission add user2 TICKET_VIEW')
+        self._execute('permission add user3 TICKET_MODIFY')
+        output = self._complete_command('component', 'chown', 'component1', '')
+        self.assertEqual([], output)
+
+    def test_component_chown_complete_owner_restrict_owner_true(self):
+        """Tests completion of the 'component chown <component>' command with
+        [ticket] restrict_owner = true.
+        """
+        self._execute('config set ticket restrict_owner true')
+        self._execute('session add user1')
+        self._execute('session add user3')
+        self._execute('permission add user1 TICKET_MODIFY')
+        self._execute('permission add user2 TICKET_VIEW')
+        self._execute('permission add user3 TICKET_MODIFY')
+        output = self._complete_command('component', 'chown', 'component1', '')
+        self.assertEqual(['user1', 'user3'], output)
 
     def test_component_chown_error_bad_component(self):
         """
