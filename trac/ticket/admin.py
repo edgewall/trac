@@ -19,9 +19,9 @@ from trac.admin.api import AdminCommandError, IAdminCommandProvider, \
                            IAdminPanelProvider, console_date_format, \
                            console_datetime_format, get_console_locale
 from trac.core import *
-from trac.perm import PermissionSystem
 from trac.resource import ResourceNotFound
 from trac.ticket import model
+from trac.ticket.api import TicketSystem
 from trac.util import getuser
 from trac.util.datefmt import utc, parse_date, format_date, format_datetime, \
                               get_datetime_format_hint, user_time
@@ -150,17 +150,10 @@ class ComponentAdminPanel(TicketAdminPanel):
                     'components': list(model.Component.select(self.env)),
                     'default': default}
 
-        if self.config.getbool('ticket', 'restrict_owner'):
-            perm = PermissionSystem(self.env)
-            def valid_owner(username):
-                return perm.get_user_permissions(username).get('TICKET_MODIFY')
-            data['owners'] = [username for username, name, email
-                              in self.env.get_known_users()
-                              if valid_owner(username)]
-            data['owners'].insert(0, '')
-            data['owners'].sort()
-        else:
-            data['owners'] = None
+        owners = TicketSystem(self.env).get_allowed_owners()
+        if owners is not None:
+            owners.insert(0, '')
+        data.update({'owners': owners})
 
         return 'admin_components.html', data
 

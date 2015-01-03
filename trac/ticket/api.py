@@ -412,17 +412,31 @@ class TicketSystem(Component):
         """
         if self.restrict_owner:
             field['type'] = 'select'
-            possible_owners = []
+            allowed_owners = self.get_allowed_owners(ticket)
+            allowed_owners.insert(0, '< default >')
+            field['options'] = allowed_owners
+            field['optional'] = True
+
+    def get_allowed_owners(self, ticket=None):
+        """Returns a list of permitted ticket owners (those possessing the
+        TICKET_MODIFY permission). Returns `None` if the option `[ticket]`
+        `restrict_owner` is `False`.
+
+        If `ticket` is not `None`, fine-grained permission checks are used
+        to determine the allowed owners for the specified resource.
+
+        :since: 1.0.3
+        """
+        if self.restrict_owner:
+            allowed_owners = []
             for user in PermissionSystem(self.env) \
-                    .get_users_with_permission('TICKET_MODIFY'):
+                        .get_users_with_permission('TICKET_MODIFY'):
                 if not ticket or \
                         'TICKET_MODIFY' in PermissionCache(self.env, user,
                                                            ticket.resource):
-                    possible_owners.append(user)
-            possible_owners.sort()
-            possible_owners.insert(0, '< default >')
-            field['options'] = possible_owners
-            field['optional'] = True
+                    allowed_owners.append(user)
+            allowed_owners.sort()
+            return allowed_owners
 
     # IPermissionRequestor methods
 
