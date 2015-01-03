@@ -149,6 +149,23 @@ class AttachmentTestCase(unittest.TestCase):
         assert not os.path.exists(path1) and os.path.exists(attachment1.path)
         assert os.path.exists(attachment2.path)
 
+    def test_reparent_all(self):
+        att = Attachment(self.env, 'wiki', 'FooPage')
+        att.insert('foo.txt', StringIO(''), 0)
+        att = Attachment(self.env, 'wiki', 'FooPage')
+        att.insert('bar.jpg', StringIO(''), 0)
+        adir = os.path.dirname(att.path)
+        self.assertTrue(os.path.isdir(adir))
+
+        Attachment.reparent_all(self.env, 'wiki', 'FooPage', 'wiki', 'BarPage')
+        self.assertFalse(os.path.exists(adir))
+        self.assertEqual([], list(Attachment.select(self.env, 'wiki',
+                                                    'FooPage')))
+        attachments = list(Attachment.select(self.env, 'wiki', 'BarPage'))
+        self.assertEqual(2, len(attachments))
+        self.assertEqual(['bar.jpg', 'foo.txt'],
+                         sorted(att.filename for att in attachments))
+
     def test_legacy_permission_on_parent(self):
         """Ensure that legacy action tests are done on parent.  As
         `ATTACHMENT_VIEW` maps to `TICKET_VIEW`, the `TICKET_VIEW` is tested

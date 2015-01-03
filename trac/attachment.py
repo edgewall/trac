@@ -348,7 +348,7 @@ class Attachment(object):
         def do_reparent(db):
             for attachment in list(cls.select(env, parent_realm, parent_id,
                                               db)):
-                attachment_dir = os.path.dirname(attachment.path)
+                attachment_dir[0] = os.path.dirname(attachment.path)
                 attachment.reparent(new_realm, new_id)
         if attachment_dir[0]:
             try:
