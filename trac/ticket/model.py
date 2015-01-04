@@ -804,7 +804,7 @@ class AbstractEnum(object):
                 db("UPDATE ticket SET %s=%%s WHERE %s=%%s"
                    % (self.ticket_col, self.ticket_col),
                    (self.name, self._old_name))
-            TicketSystem(self.env).reset_ticket_fields()
+                TicketSystem(self.env).reset_ticket_fields()
 
         self._old_name = self.name
         self._old_value = self.value
@@ -921,7 +921,7 @@ class Component(object):
                 db("UPDATE ticket SET component=%s WHERE component=%s",
                    (self.name, self._old_name))
                 self._old_name = self.name
-            TicketSystem(self.env).reset_ticket_fields()
+                TicketSystem(self.env).reset_ticket_fields()
 
     @classmethod
     def select(cls, env):
@@ -1237,7 +1237,7 @@ class Version(object):
                 db("UPDATE ticket SET version=%s WHERE version=%s",
                    (self.name, self._old_name))
                 self._old_name = self.name
-            TicketSystem(self.env).reset_ticket_fields()
+                TicketSystem(self.env).reset_ticket_fields()
 
     @classmethod
     def select(cls, env):
