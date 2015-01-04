@@ -504,8 +504,7 @@ class VersionAdminPanel(TicketAdminPanel):
                         sel = [sel]
                     with self.env.db_transaction:
                         for name in sel:
-                            ver = model.Version(self.env, name)
-                            ver.delete()
+                            model.Version(self.env, name).delete()
                     add_notice(req, _("The selected versions have been "
                                       "removed."))
                     req.redirect(req.href.admin(cat, page))
@@ -532,9 +531,7 @@ class VersionAdminPanel(TicketAdminPanel):
 
         Chrome(self.env).add_jquery_ui(req)
 
-        data.update({
-            'datetime_hint': get_datetime_format_hint(req.lc_time),
-        })
+        data.update({'datetime_hint': get_datetime_format_hint(req.lc_time)})
         return 'admin_versions.html', data
 
     # IAdminCommandProvider methods

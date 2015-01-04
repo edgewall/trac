@@ -720,6 +720,8 @@ class AbstractEnum(object):
     type = None
     ticket_col = None
 
+    exists = property(lambda self: self._old_value is not None)
+
     def __init__(self, env, name=None):
         if not self.ticket_col:
             self.ticket_col = self.type
@@ -740,8 +742,6 @@ class AbstractEnum(object):
 
     def __repr__(self):
         return '<%s %r %r>' % (self.__class__.__name__, self.name, self.value)
-
-    exists = property(lambda self: self._old_value is not None)
 
     def delete(self):
         """Delete the enum value.
@@ -855,6 +855,9 @@ class Severity(AbstractEnum):
 
 
 class Component(object):
+
+    exists = property(lambda self: self._old_name is not None)
+
     def __init__(self, env, name=None):
         self.env = env
         self.name = self._old_name = self.owner = self.description = None
@@ -872,8 +875,6 @@ class Component(object):
 
     def __repr__(self):
         return '<%s %r>' % (self.__class__.__name__, self.name)
-
-    exists = property(lambda self: self._old_name is not None)
 
     def delete(self):
         """Delete the component.
@@ -927,7 +928,7 @@ class Component(object):
     def select(cls, env):
         for name, owner, description in env.db_query("""
                 SELECT name, owner, description FROM component ORDER BY name
-            """):
+                """):
             component = cls(env)
             component.name = component._old_name = name
             component.owner = owner or None
@@ -1172,6 +1173,9 @@ def group_milestones(milestones, include_completed):
 
 
 class Version(object):
+
+    exists = property(lambda self: self._old_name is not None)
+    
     def __init__(self, env, name=None):
         self.env = env
         self.name = self._old_name = self.time = self.description = None
@@ -1189,8 +1193,6 @@ class Version(object):
 
     def __repr__(self):
         return '<%s %r>' % (self.__class__.__name__, self.name)
-
-    exists = property(lambda self: self._old_name is not None)
 
     def delete(self):
         """Delete the version.
