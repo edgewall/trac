@@ -306,8 +306,10 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         sel = [sel]
                     with self.env.db_transaction:
                         for name in sel:
-                            mil = model.Milestone(self.env, name)
-                            mil.delete(author=req.authname)
+                            milestone = model.Milestone(self.env, name)
+                            milestone.move_tickets(None, req.authname,
+                                                   "Milestone deleted")
+                            milestone.delete()
                     add_notice(req, _("The selected milestones have been "
                                       "removed."))
                     req.redirect(req.href.admin(cat, page))
