@@ -35,6 +35,7 @@ class TicketAdminPanel(Component):
     
     _type = 'undefined'
     _label = N_("(Undefined)"), N_("(Undefined)")
+    _view_perms = ['TICKET_ADMIN']
 
     # i18n note: use gettext() whenever referring to the above as text labels,
     #            and don't use it whenever using them as field names (after
@@ -43,7 +44,8 @@ class TicketAdminPanel(Component):
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
-        if 'TICKET_ADMIN' in req.perm('admin', 'ticket/' + self._type):
+        if all(perm in req.perm('admin', 'ticket/' + self._type)
+               for perm in self._view_perms):
             yield ('ticket', _('Ticket System'), self._type,
                    gettext(self._label[1]))
 
@@ -230,12 +232,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
 
     _type = 'milestones'
     _label = N_("Milestone"), N_("Milestones")
-
-    # IAdminPanelProvider methods
-
-    def get_admin_panels(self, req):
-        if 'MILESTONE_VIEW' in req.perm('admin', 'ticket/' + self._type):
-            return TicketAdminPanel.get_admin_panels(self, req)
+    _view_perms = TicketAdminPanel._view_perms + ['MILESTONE_VIEW']
 
     # TicketAdminPanel methods
 
