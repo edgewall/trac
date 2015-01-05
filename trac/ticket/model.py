@@ -1086,7 +1086,6 @@ class Milestone(object):
             if self.name != old['name']:
                 # Update milestone field in tickets
                 self.move_tickets(self.name, author, "Milestone renamed")
-                TicketSystem(self.env).reset_ticket_fields()
                 # Reparent attachments
                 Attachment.reparent_all(self.env, 'milestone', old['name'],
                                         'milestone', self.name)
@@ -1099,6 +1098,8 @@ class Milestone(object):
                         to_utimestamp(self.completed),
                         self.description, old['name']))
             self.checkin()
+        # Fields need reset if renamed or completed/due changed
+        TicketSystem(self.env).reset_ticket_fields()
 
         old_values = dict((k, v) for k, v in old.iteritems()
                           if getattr(self, k) != v)
@@ -1247,7 +1248,8 @@ class Version(object):
                 db("UPDATE ticket SET version=%s WHERE version=%s",
                    (self.name, self._old_name))
                 self._old_name = self.name
-            TicketSystem(self.env).reset_ticket_fields()
+        # Fields need reset if renamed or if time is changed
+        TicketSystem(self.env).reset_ticket_fields()
 
     @classmethod
     def select(cls, env, db=None):
