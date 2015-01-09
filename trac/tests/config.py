@@ -24,6 +24,7 @@ from trac.config import *
 from trac.core import Component, Interface, implements
 from trac.test import Configuration, EnvironmentStub
 from trac.util import create_file
+from trac.util.compat import wait_for_file_mtime_change
 
 
 class ConfigurationTestCase(unittest.TestCase):
@@ -31,6 +32,7 @@ class ConfigurationTestCase(unittest.TestCase):
     def setUp(self):
         tmpdir = os.path.realpath(tempfile.gettempdir())
         self.filename = os.path.join(tmpdir, 'trac-test.ini')
+        self.sitename = os.path.join(tmpdir, 'trac-site.ini')
         self.env = EnvironmentStub()
         self._write([])
         self._orig_registry = Option.registry
@@ -43,8 +45,10 @@ class ConfigurationTestCase(unittest.TestCase):
     def _read(self):
         return Configuration(self.filename)
 
-    def _write(self, lines):
-        with open(self.filename, 'w') as fileobj:
+    def _write(self, lines, site=False):
+        filename = self.sitename if site else self.filename
+        wait_for_file_mtime_change(filename)
+        with open(filename, 'w') as fileobj:
             fileobj.write(('\n'.join(lines + [''])).encode('utf-8'))
 
     def test_default(self):
@@ -348,6 +352,7 @@ class ConfigurationTestCase(unittest.TestCase):
 
     def test_set_and_save_inherit(self):
         def testcb():
+            self._write(['[a]', 'option = x'], site=True)
             config = self._read()
             config.set('a', 'option2', "Voilà l'été")  # UTF-8
             config.set('a', 'option1', u"Voilà l'été") # unicode
@@ -474,15 +479,25 @@ class ConfigurationTestCase(unittest.TestCase):
         self._write(['[a]', 'option = x'])
         config = self._read()
         self.assertEqual('x', config.get('a', 'option'))
-        time.sleep(2) # needed because of low mtime granularity,
-                      # especially on fat filesystems
 
         self._write(['[a]', 'option = y'])
         config.parse_if_needed()
         self.assertEqual('y', config.get('a', 'option'))
 
+    def test_inherit_reparse(self):
+        def testcb():
+            self._write(['[a]', 'option = x'], site=True)
+            config = self._read()
+            self.assertEqual('x', config.get('a', 'option'))
+
+            self._write(['[a]', 'option = y'], site=True)
+            config.parse_if_needed()
+            self.assertEqual('y', config.get('a', 'option'))
+        self._test_with_inherit(testcb)
+
     def test_inherit_one_level(self):
         def testcb():
+            self._write(['[a]', 'option = x'], site=True)
             config = self._read()
             self.assertEqual('x', config.get('a', 'option'))
             self.assertEqual(['a', 'inherit'], config.sections())
@@ -613,15 +628,11 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertNotEqual(mtime, os.stat(self.filename).st_mtime)
 
     def _test_with_inherit(self, testcb):
-        sitename = os.path.join(tempfile.gettempdir(), 'trac-site.ini')
         try:
-            with open(sitename, 'w') as sitefile:
-                sitefile.write('[a]\noption = x\n')
-
             self._write(['[inherit]', 'file = trac-site.ini'])
             testcb()
         finally:
-            os.remove(sitename)
+            os.remove(self.sitename)
 
 
 def suite():

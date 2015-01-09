@@ -268,7 +268,6 @@ class Configuration(object):
         changed = False
         modtime = os.path.getmtime(self.filename)
         if force or modtime > self._lastmtime:
-            self._sections = {}
             self.parser._sections = {}
             if not self.parser.read(self.filename):
                 raise TracError(_("Error reading '%(file)s', make sure it is "
@@ -291,7 +290,7 @@ class Configuration(object):
                 changed |= parent.parse_if_needed(force=force)
 
         if changed:
-            self._cache = {}
+            self._sections = {}
         return changed
 
     def touch(self):
