@@ -1,3 +1,22 @@
+Trac 1.0.3 (TBD)
+http://svn.edgewall.org/repos/trac/tags/trac-1.0.3
+
+Trac 1.0.3 is a maintenance release containing numerous fixes and minor
+enhancements. The following are a few of the highlights:
+
+ - Notification is sent when adding an attachment to a ticket (#2259).
+ - Stylesheets and scripts are loaded during autopreview, resulting in proper
+   syntax highlighting when code WikiProcessors are added (#10470) and display
+   of Workflow graphs without explicit autopreview (#10674).
+ - Merge changesets are shown as differences against first parent, resulting
+   in less noisy changesets (#10740).
+ - Pygments 2.0 is supported (#11796).
+ - Fixed error when completing the `initenv` TracAdmin command (#11797).
+ - Performance improvement on systems with many thousands of authenticated
+   users due to caching of Environment.get_known_users (#11868).
+ - Distribution metadata of wheel package is supported and displayed on the
+   About page (#11877).
+
 Trac 1.0.2 (October 23, 2014)
 http://svn.edgewall.org/repos/trac/tags/trac-1.0.2
 
