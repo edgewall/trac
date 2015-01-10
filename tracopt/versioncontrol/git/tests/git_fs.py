@@ -12,8 +12,10 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import os
+import sys
 import tempfile
 import unittest
+from cStringIO import StringIO
 from datetime import datetime, timedelta
 from subprocess import Popen, PIPE
 
@@ -49,15 +51,30 @@ class GitCommandMixin(object):
         kwargs['env'] = env
         return self._git(*args, **kwargs)
 
-    def _git(self, *args, **kwargs):
+    def _spawn_git(self, *args, **kwargs):
         args = map(to_utf8, (git_bin,) + args)
-        proc = Popen(args, stdout=PIPE, stderr=PIPE, close_fds=close_fds,
-                     cwd=self.repos_path, **kwargs)
+        kwargs.setdefault('stdout', PIPE)
+        kwargs.setdefault('stderr', PIPE)
+        kwargs.setdefault('cwd', self.repos_path)
+        return Popen(args, close_fds=close_fds, **kwargs)
+
+    def _git(self, *args, **kwargs):
+        proc = self._spawn_git(*args, **kwargs)
         stdout, stderr = proc.communicate()
         self.assertEqual(0, proc.returncode,
-                         'git exits with %r, args %r, stdout %r, stderr %r' %
-                         (proc.returncode, args, stdout, stderr))
+                         'git exits with %r, args %r, kwargs %r, stdout %r, '
+                         'stderr %r' %
+                         (proc.returncode, args, kwargs, stdout, stderr))
         return proc
+
+    def _git_fast_import(self, data):
+        if isinstance(data, unicode):
+            data = data.encode('utf-8')
+        proc = self._spawn_git('fast-import', stdin=PIPE)
+        stdout, stderr = proc.communicate(input=data)
+        self.assertEqual(0, proc.returncode,
+                         'git exits with %r, stdout %r, stderr %r' %
+                         (proc.returncode, stdout, stderr))
 
     def _git_date_format(self, dt):
         if dt.tzinfo is None:
@@ -86,6 +103,8 @@ class BaseTestCase(unittest.TestCase, GitCommandMixin):
             self.env.config.set('git', 'git_bin', git_bin)
 
     def tearDown(self):
+        for repos in self._repomgr.get_real_repositories():
+            repos.close()
         self._repomgr.reload_repositories()
         StorageFactory._clean()
         self.env.reset_db()
@@ -527,6 +546,79 @@ class GitCachedRepositoryTestCase(GitRepositoryTestCase):
             self.assertEqual(revs[:3], revs2)
             repos.sync(feedback=feedback_2)  # restart sync
         self.assertEqual(revs, revs2)
+
+    def test_sync_too_many_merges(self):
+        data = self._generate_data_many_merges(100)
+        self._git_init(data=False, bare=True)
+        self._git_fast_import(data)
+        self._add_repository('gitrepos', bare=True)
+        repos = self._repomgr.get_repository('gitrepos')
+
+        reclimit = sys.getrecursionlimit()
+        try:
+            sys.setrecursionlimit(80)
+            repos.sync()
+        finally:
+            sys.setrecursionlimit(reclimit)
+
+        rows = self.env.db_query("SELECT COUNT(*) FROM revision "
+                                 "WHERE repos=%s", (repos.id,))
+        self.assertEqual(202, rows[0][0])
+
+    def _generate_data_many_merges(self, n, timestamp=1400000000):
+        init = """\
+blob
+mark :1
+data 0
+
+reset refs/heads/dev
+commit refs/heads/dev
+mark :2
+author Joe <joe@example.com> %(timestamp)d +0000
+committer Joe <joe@example.com> %(timestamp)d +0000
+data 5
+root
+M 100644 :1 .gitignore
+
+commit refs/heads/master
+mark :3
+author Joe <joe@example.com> %(timestamp)d +0000
+committer Joe <joe@example.com> %(timestamp)d +0000
+data 7
+master
+from :2
+M 100644 :1 master.txt
+
+"""
+        merge = """\
+commit refs/heads/dev
+mark :%(dev)d
+author Joe <joe@example.com> %(timestamp)d +0000
+committer Joe <joe@example.com> %(timestamp)d +0000
+data 4
+dev
+from :2
+M 100644 :1 dev%(dev)08d.txt
+
+commit refs/heads/master
+mark :%(merge)d
+author Joe <joe@example.com> %(timestamp)d +0000
+committer Joe <joe@example.com> %(timestamp)d +0000
+data 19
+Merge branch 'dev'
+from :%(from)d
+merge :%(dev)d
+M 100644 :1 dev%(dev)08d.txt
+
+"""
+        data = StringIO()
+        data.write(init % {'timestamp': timestamp})
+        for idx in xrange(n):
+            data.write(merge % {'timestamp': timestamp,
+                                'dev': 4 + idx * 2,
+                                'merge': 5 + idx * 2,
+                                'from': 3 + idx * 2})
+        return data.getvalue()
 
 
 class StopSync(Exception):
