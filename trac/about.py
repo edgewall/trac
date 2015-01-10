@@ -71,30 +71,8 @@ class AboutModule(Component):
             data['plugins'] = get_plugin_info(self.env)
 
         if 'CONFIG_VIEW' in req.perm('config', 'interface'):
-            # Collect templates list
-            site_templates = sorted(os.listdir(self.env.get_templates_dir()))
-            site_templates = [t for t in site_templates
-                                if t.endswith('.html')]
-            shared_templates = []
-            shared_templates_dir = Chrome(self.env).shared_templates_dir
-            if os.path.exists(shared_templates_dir):
-                shared_templates = sorted(os.listdir(shared_templates_dir))
-                shared_templates = [t for t in shared_templates
-                                      if t.endswith('.html')]
-            # Collect static resources list
-            site_htdocs = sorted(os.listdir(self.env.get_htdocs_dir()))
-            shared_htdocs = []
-            shared_htdocs_dir = Chrome(self.env).shared_htdocs_dir
-            if os.path.exists(shared_htdocs_dir):
-                shared_htdocs = sorted(os.listdir(shared_htdocs_dir))
-            if site_templates or shared_templates or \
-                    site_htdocs or shared_htdocs:
-                data['interface'] = {
-                    'site-templates': site_templates,
-                    'shared-templates': shared_templates,
-                    'site-htdocs': site_htdocs,
-                    'shared-htdocs': shared_htdocs,
-                }
+            data['interface'] = \
+                Chrome(self.env).get_interface_customization_files()
 
         if 'CONFIG_VIEW' in req.perm('config', 'ini'):
             # Collect config information
