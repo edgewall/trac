@@ -61,12 +61,6 @@
 #edit div.trac-resizable { clear: both }
 #edit + #info { margin-top: 1em }
 #edit + #attachments { margin-top: 1.5em }
-#changeinfo { padding: .5em }
-#changeinfo .field { float: left; margin: 0 1em .5em 0 }
-#changeinfo { clear: both }
-#changeinfo br { clear: left }
-#changeinfo .options { padding: 0 0 1em 1em }
-#changeinfo .options, #changeinfo .buttons { clear: left }
 #delete, #rename, #save { margin-left: 3em }
 #preview {
  background: #f8f8f8 url(../draft.png);

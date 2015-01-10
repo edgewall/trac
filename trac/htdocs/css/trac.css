@@ -208,6 +208,8 @@ form.mod { margin: 1em 0 }
 form.mod .field { margin: .5em 0; }
 form.mod .field.description { margin-top: 1em; }
 form.mod .field label { padding-left: .2em }
+form.mod #changeinfo .field { margin: 0.25em 0 0.75em 0 }
+form.mod #changeinfo .options { padding: 0 0 0.5em 1em }
 
 /* Header */
 #header hr { display: none }
@@ -643,15 +645,6 @@ div.trac-grip {
  cursor: s-resize;
 }
 
-/* Styles for the form for adding attachments. */
-#attachment .field { margin-top: 1.3em }
-#attachment label { padding-left: .2em }
-#attachment fieldset { margin-top: 2em }
-#attachment fieldset .field { float: left; margin: 0 1em .5em 0 }
-#attachment .options { float: left; padding: 0 0 1em 1em }
-#attachment br { clear: left }
-.attachment #preview { margin-top: 1em }
-
 /* Styles for the list of attachments. */
 #attachments > div.attachments {
  padding: 0 0 1em 1em;
@@ -669,6 +662,8 @@ div.trac-grip {
  margin: .4em 0;
 }
 #attachments span.trac-author { font-style: italic; }
+
+.attachment #preview { margin-top: 1em }
 
 /* Styles for tabular listings such as those used for displaying directory
    contents and report results. */

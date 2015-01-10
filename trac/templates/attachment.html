@@ -37,32 +37,35 @@
     <div py:choose="mode" id="content" class="attachment">
       <py:when test="'new'">
         <h1 i18n:msg="parent">Add Attachment to <a href="${url_of(parent)}">${name_of(parent)}</a></h1>
-        <form id="attachment" method="post" enctype="multipart/form-data" action="">
+        <form id="attachment" class="mod" method="post" enctype="multipart/form-data" action="">
           <div class="field">
             <label>File<py:if test="max_size >= 0">
               <i18n:msg params="value">(size limit ${pretty_size(max_size)})</i18n:msg></py:if>:<br />
               <input type="file" name="attachment" class="trac-disable-determinant" /></label>
           </div>
-          <fieldset>
+          <fieldset id="changeinfo">
             <legend>Attachment Info</legend>
             <py:if test="authname == 'anonymous'">
               <div class="field">
                 <label>Your email or username:<br />
-                  <input type="text" name="author" size="30" value="${attachment.author or author}" />
+                  <input type="text" name="author" class="trac-fullwidth" value="${attachment.author or author}" />
                 </label>
+                <p py:if="author == 'anonymous'" class="hint">
+                  <i18n:msg>E-mail address and name can be saved in the <!--!
+                    --><a href="${href.prefs()}" class="trac-target-new">Preferences</a>.</i18n:msg>
+                </p>
               </div>
               </py:if>
             <div class="field">
               <label>Description of the file (optional):<br />
-                <input type="text" name="description" size="60" value="$attachment.description"/></label>
+                <input type="text" class="trac-fullwidth" name="description" value="$attachment.description" />
+              </label>
             </div>
-            <br />
             <py:if test="authname and authname != 'anonymous'">
               <div class="options">
                 <label><input type="checkbox" name="replace" checked="${is_replace or None}" />
                   Replace existing attachment of the same name</label>
               </div>
-              <br />
             </py:if>
           </fieldset>
           <div class="buttons">
