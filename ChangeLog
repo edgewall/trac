@@ -1,3 +1,25 @@
+Trac 1.1.3 (TBD)
+http://svn.edgewall.org/repos/trac/tags/trac-1.1.3
+
+Trac 1.1.3 continues development of the 1.1.x line leading to 1.2, with
+several new features and API changes:
+
+ - The ticket creation step can be configured in the TracWorkflow and the
+   workflow controls are present on the NewTicket page (#2045).
+ - New notification system that can be extended by plugins (#3517).
+ - New preferences panel for notification subscriptions (#4056).
+ - Wiki page version comments can be edited by users with `WIKI_ADMIN` (#6573).
+ - Improved positioning of //Add Comment// section and //author// field
+   on the ticket form (#10207).
+ - The delete confirmation pages warn if attachments will also be deleted
+   (#11542).
+ - Removed support for SilverCity, Enscript and PhpRenderer syntax
+   highlighters (#11795).
+ - Combined //Date & Time// and //Language// preference panels as
+   //Localization// (#11813).
+ - Groups and permissions can be used in the workflow `set_owner` attribute
+   (#11839).
+
 Trac 1.1.2 (October 23, 2014)
 http://svn.edgewall.org/repos/trac/tags/trac-1.1.2
 
