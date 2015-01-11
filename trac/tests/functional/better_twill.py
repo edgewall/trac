@@ -27,6 +27,8 @@ try:
 except ImportError:
     from StringIO import StringIO
 
+from trac.util.text import to_unicode
+
 # On OSX lxml needs to be imported before twill to avoid Resolver issues
 # somehow caused by the mac specific 'ic' module
 try:
@@ -224,7 +226,7 @@ if twill:
         except twill.errors.TwillAssertionError as e:
             filename = twill_write_html()
             raise twill.errors.TwillAssertionError('%s at %s' %
-                                                   (unicode(e), filename))
+                                                   (to_unicode(e), filename))
     tc.find = better_find
 
     def better_notfind(what, flags='', tcnotfind=tc.notfind):
@@ -233,7 +235,7 @@ if twill:
         except twill.errors.TwillAssertionError as e:
             filename = twill_write_html()
             raise twill.errors.TwillAssertionError('%s at %s' %
-                                                   (unicode(e), filename))
+                                                   (to_unicode(e), filename))
     tc.notfind = better_notfind
 
     # Same for tc.url - no hint about what went wrong!
@@ -243,7 +245,7 @@ if twill:
         except twill.errors.TwillAssertionError as e:
             filename = twill_write_html()
             raise twill.errors.TwillAssertionError('%s at %s' %
-                                                   (unicode(e), filename))
+                                                   (to_unicode(e), filename))
     tc.url = better_url
 else:
     b = tc = None
