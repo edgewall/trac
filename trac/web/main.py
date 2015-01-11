@@ -583,7 +583,7 @@ def send_internal_error(env, req, exc_info):
     message = exception_to_unicode(exc_info[1])
     traceback = get_last_traceback()
 
-    frames, plugins, faulty_plugins = [], [], []
+    frames, plugins, faulty_plugins, interface_custom = [], [], [], []
     th = 'http://trac-hacks.org'
     has_admin = False
     try:
@@ -615,6 +615,7 @@ def send_internal_error(env, req, exc_info):
                     plugin_name = info.get('home_page', '').rstrip('/') \
                                                            .split('/')[-1]
                     tracker_args = {'component': plugin_name}
+        interface_custom = Chrome(env).get_interface_customization_files()
 
     def get_description(_):
         if env and has_admin:
@@ -627,9 +628,15 @@ def send_internal_error(env, req, exc_info):
             enabled_plugins = "".join("|| '''`%s`''' || `%s` ||\n"
                                       % (p['name'], p['version'] or _('N/A'))
                                       for p in plugins)
+            files = Chrome(env).get_interface_customization_files().items()
+            interface_files = "".join("|| **%s** || %s ||\n"
+                                      % (k, ", ".join("`%s`" % f for f in v))
+                                      for k, v in sorted(files))
         else:
             sys_info = _("''System information not available''\n")
             enabled_plugins = _("''Plugin information not available''\n")
+            interface_files = _("''Interface customization information not "
+                                 "available''\n")
         return _("""\
 ==== How to Reproduce ====
 
@@ -648,12 +655,16 @@ User agent: `#USER_AGENT#`
 %(sys_info)s
 ==== Enabled Plugins ====
 %(enabled_plugins)s
+==== Interface Customization ====
+%(interface_customization)s
 ==== Python Traceback ====
 {{{
 %(traceback)s}}}""",
             method=req.method, path_info=req.path_info,
             req_args=pformat(req.args), sys_info=sys_info,
-            enabled_plugins=enabled_plugins, traceback=to_unicode(traceback))
+            enabled_plugins=enabled_plugins,
+            interface_customization=interface_files,
+            traceback=to_unicode(traceback))
 
     # Generate the description once in English, once in the current locale
     description_en = get_description(lambda s, **kw: safefmt(s, kw))
@@ -667,6 +678,7 @@ User agent: `#USER_AGENT#`
             'traceback': traceback, 'frames': frames,
             'shorten_line': shorten_line, 'repr': safe_repr,
             'plugins': plugins, 'faulty_plugins': faulty_plugins,
+            'interface': interface_custom,
             'tracker': tracker, 'tracker_args': tracker_args,
             'description': description, 'description_en': description_en}
 
