@@ -1,8 +1,6 @@
 = Trac Navigation =
 
-Starting with Trac 0.11, it is now possible to customize the main and meta navigation entries in some basic ways.
-
-The new `[mainnav]` and `[metanav]` configuration sections can now be used to customize the text and link used for the navigation items, or even to disable them.  The `mainnav` and `metanav` options in the `[trac]` configuration section can also be used to change the order.
+The main and meta navigation entries can be customized in some basic ways. The `[mainnav]` and `[metanav]` configuration sections can be used to customize the text and link used for the navigation items, or even to disable them.  The `mainnav` and `metanav` options in the `[trac]` configuration section can be used to change the order.
 
 === `[mainnav]` #mainnav-bar
 `[mainnav]` corresponds to the '''main navigation bar''', the one containing entries such as ''Wiki'', ''Timeline'', ''Roadmap'', ''Browse Source'' and so on. This navigation bar is meant to access the default page of the main modules enabled in Trac that are accessible for the current user.

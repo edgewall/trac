@@ -1,14 +1,12 @@
 = The Trac Ticket Workflow System =
+[[PageOutline(2-5,Contents,pullout)]]
 [[TracGuideToc]]
-
 The Trac ticket system provides a configurable workflow.
 
 == The Default Ticket Workflow ==
 === Environments upgraded from 0.10 ===
 When you run `trac-admin <env> upgrade`, your `trac.ini` will be modified to include a `[ticket-workflow]` section.
-The workflow configured in this case is the original workflow, so that ticket actions will behave like they did in 0.10.
-
-Graphically, that looks like this:
+The workflow configured in this case is the original workflow, so that ticket actions will behave like they did in 0.10:
 
 {{{#!Workflow width=500 height=240
 leave = * -> *
@@ -28,13 +26,10 @@ reopen.permissions = TICKET_CREATE
 reopen.operations = del_resolution
 }}}
 
-There are some significant "warts" in this; such as accepting a ticket sets it to 'assigned' state, and assigning a ticket sets it to 'new' state.  Perfectly obvious, right?
-So you will probably want to migrate to "basic" workflow; [trac:source:trunk/contrib/workflow/migrate_original_to_basic.py contrib/workflow/migrate_original_to_basic.py] may be helpful.
+There are some significant caveats in this, such as accepting a ticket sets it to 'assigned' state, and assigning a ticket sets it to 'new' state. So you will probably want to migrate to "basic" workflow, see contrib/workflow/migrate_original_to_basic.py. 
 
 === Environments created with 0.11 ===
-When a new environment is created, a default workflow is configured in your trac.ini.  This workflow is the basic workflow (described in `basic-workflow.ini`), which is somewhat different from the workflow of the 0.10 releases.
-
-Graphically, it looks like this:
+When a new environment is created, a default workflow is configured in your trac.ini. This workflow is the basic workflow, such as specified in `basic-workflow.ini`, which is somewhat different from the workflow of the 0.10 releases:
 
 {{{#!Workflow width=700 height=300
 leave = * -> *
@@ -56,7 +51,7 @@ reopen.operations = del_resolution
 
 == Additional Ticket Workflows ==
 
-There are several example workflows provided in the Trac source tree; look in [trac:source:trunk/contrib/workflow contrib/workflow] for `.ini` config sections.  One of those may be a good match for what you want. They can be pasted into the `[ticket-workflow]` section of your `trac.ini` file. However if you have existing tickets then there may be issues if those tickets have states that are not in the new workflow. 
+There are example workflows provided in the Trac source tree, see [trac:source:trunk/contrib/workflow contrib/workflow] for `.ini` config sections. One of those may be a good match for what you want. They can be pasted into the `[ticket-workflow]` section of your `trac.ini` file. However, if you have existing tickets then there may be issues if those tickets have states that are not in the new workflow. 
 
 Here are some [trac:WorkFlow/Examples diagrams] of the above examples.
 
@@ -81,7 +76,7 @@ The available operations are:
 - **set_owner** -- Sets the owner to the selected or entered owner. Defaults to the current user. When `[ticket] restrict_owner = true`, the select will be populated with users that have `TICKET_MODIFY` permission and an authenticated session.
  - ''actionname''`.set_owner` may optionally be set to a comma delimited list of users that will be used to populate the select, or a single user.
 - **set_owner_to_self** -- Sets the owner to the logged in user.
-- **del_resolution** -- Clears the resolution field
+- **del_resolution** -- Clears the resolution field.
 - **set_resolution** -- Sets the resolution to the selected value.
  - ''actionname''`.set_resolution` may optionally be set to a comma delimited list or a single value. Example:
  {{{#!ini
@@ -92,9 +87,10 @@ resolve_new.permissions = TICKET_MODIFY
 resolve_new.set_resolution = invalid,wontfix
 }}}
 - **leave_status** -- Displays "leave as <current status>" and makes no change to the ticket.
-'''Note:''' Specifying conflicting operations (such as `set_owner` and `del_owner`) has unspecified results.
+- **reset_workflow** -- Resets the status of tickets that are in states no longer defined.
+'''Note:''' Specifying conflicting operations, such as `set_owner` and `del_owner`, has unspecified results.
 
-In this example, we see the `.name` attribute used.  The action here is `resolve_accepted`, but it will be presented to the user as `resolve`.
+In this example, we see the `.name` attribute used. The action here is `resolve_accepted`, but it will be presented to the user as `resolve`.
 
 {{{#!ini
 resolve_accepted = accepted -> closed
@@ -103,31 +99,51 @@ resolve_accepted.permissions = TICKET_MODIFY
 resolve_accepted.operations = set_resolution
 }}}
 
-For actions that should be available in all states, `*` may be used in place of the state.  The obvious example is the `leave` action:
+For actions that should be available in all states, `*` may be used in place of the state. The obvious example is the `leave` action:
 {{{#!ini
 leave = * -> *
 leave.operations = leave_status
 leave.default = 1
 }}}
-This also shows the use of the `.default` attribute.  This value is expected to be an integer, and the order in which the actions are displayed is determined by this value.  The action with the highest `.default` value is listed first, and is selected by default.  The rest of the actions are listed in order of decreasing `.default` values.
-If not specified for an action, `.default` is 0.  The value may be negative.
+This also shows the use of the `.default` attribute. This value is expected to be an integer, and the order in which the actions are displayed is determined by this value. The action with the highest `.default` value is listed first, and is selected by default. The rest of the actions are listed in order of decreasing `.default` values.
+If not specified for an action, `.default` is 0. The value may be negative.
 
-There are a couple of hard-coded constraints to the workflow.  In particular, tickets are created with status `new`, and tickets are expected to have a `closed` state.  Further, the default reports/queries treat any state other than `closed` as an open state.
+There are a couple of hard-coded constraints to the workflow. In particular, tickets are created with status `new`, and tickets are expected to have a `closed` state. Further, the default reports/queries treat any state other than `closed` as an open state.
+
+The special `_reset` action is added by default for tickets that are in states that are no longer defined. This allows tickets to be individually "repaired" after the workflow is changed, although it's recommended that the administrator perform the action by batch modifying the affected tickets. By default the `_reset` action is available to users with the `TICKET_ADMIN` permission and reset tickets are put in the //new// state. The default `_reset` action is equivalent to the following `[ticket-workflow]` action definition:
+{{{#!ini
+_reset = -> new
+_reset.name = reset
+_reset.operations = reset_workflow
+_reset.permissions = TICKET_ADMIN
+_reset.default = 0
+}}}
+
+Since [trac:milestone:1.0.3] the `_reset` action can be customized by redefining the implicit action. For example, to allow anyone with `TICKET_MODIFY` to perform the `_reset` action, the workflow action would need to be defined:
+{{{#!ini
+_reset = -> new
+_reset.name = reset
+_reset.operations = reset_workflow
+_reset.permissions = TICKET_MODIFY
+_reset.default = 0
+}}}
+
+== Workflow Visualization
 
 Workflows can be visualized by rendering them on the wiki using the [WikiMacros#Workflow-macro Workflow macro].
 
-Workflows can also be visualized using the `contrib/workflow/workflow_parser.py` script.  The script outputs `.dot` files that [http://www.graphviz.org GraphViz] understands. The script can be used as follows (your install path may be different):
+Workflows can also be visualized using the `contrib/workflow/workflow_parser.py` script. The script outputs `.dot` files that [http://www.graphviz.org GraphViz] understands. The script can be used as follows (your install path may be different):
 {{{#!sh
 cd /var/local/trac_devel/contrib/workflow/
 sudo ./showworkflow /srv/trac/PlannerSuite/conf/trac.ini
 }}}
-And then open up the resulting `trac.pdf` file created by the script (it will be in the same directory as the `trac.ini` file).
+And then open up the resulting `trac.pdf` file created by the script. It will be in the same directory as the `trac.ini` file.
 
-After you have changed a workflow, you need to restart apache for the changes to take effect. This is important, because the changes will still show up when you run your script, but all the old workflow steps will still be there until the server is restarted.
+After you have changed a workflow, you need to restart your webserver for the changes to take effect.
 
 == Example: Adding optional Testing with Workflow ==
 
-By adding the following to your [ticket-workflow] section of trac.ini you get optional testing.  When the ticket is in new, accepted or needs_work status you can choose to submit it for testing.  When it's in the testing status the user gets the option to reject it and send it back to needs_work, or pass the testing and send it along to closed.  If they accept it then it gets automatically marked as closed and the resolution is set to fixed.  Since all the old work flow remains, a ticket can skip this entire section.
+By adding the following to your [ticket-workflow] section of trac.ini you get optional testing. When the ticket has status `new`, `accepted` or `needs_work`, you can choose to submit it for testing.  When it's in the testing status the user gets the option to reject it and send it back to `needs_work`, or pass the testing and send it along to `closed`. If they accept it, then it is automatically marked as `closed` and the resolution is set to `fixed`. Since all the old work flow remains, a ticket can skip this entire section.
 
 {{{#!ini
 testing = new,accepted,needs_work,assigned,reopened -> testing
@@ -212,7 +228,7 @@ reassign_reviewing.permissions = TICKET_MODIFY
 
 == Example: Limit the resolution options for a new ticket ==
 
-The above `resolve_new` operation allows you to set the possible resolutions for a new ticket.  By modifying the existing resolve action and removing the new status from before the `->` we then get two resolve actions.  One with limited resolutions for new tickets, and then the regular one once a ticket is accepted.
+The above `resolve_new` operation allows you to set the possible resolutions for a new ticket. By modifying the existing resolve action and removing the new status from before the `->` we then get two resolve actions. One with limited resolutions for new tickets, and then the regular one once a ticket is accepted.
 
 {{{#!ini
 resolve_new = new -> closed
@@ -228,14 +244,14 @@ resolve.permissions = TICKET_MODIFY
 
 == Advanced Ticket Workflow Customization ==
 
-If the customization above is not extensive enough for your needs, you can extend the workflow using plugins.  These plugins can provide additional operations for the workflow (like code_review), or implement side-effects for an action (such as triggering a build) that may not be merely simple state changes.  Look at [trac:source:trunk/sample-plugins/workflow sample-plugins/workflow] for a few simple examples to get started.
+If the customizations above do not meet your needs, you can extend the workflow with plugins. Plugins can provide additional operations for the workflow, like code_review, or implement side-effects for an action, such as triggering a build, that may not be merely simple state changes. Look at [trac:source:trunk/sample-plugins/workflow sample-plugins/workflow] for a few examples to get started.
 
 But if even that is not enough, you can disable the !ConfigurableTicketWorkflow component and create a plugin that completely replaces it.
 
 == Adding Workflow States to Milestone Progress Bars ==
 
-If you add additional states to your workflow, you may want to customize your milestone progress bars as well.  See [TracIni#milestone-groups-section TracIni].
+If you add additional states to your workflow, you may want to customize your milestone progress bars as well. See [TracIni#milestone-groups-section TracIni].
 
 == Ideas for next steps ==
 
-New enhancement ideas for the workflow system should be filed as enhancement tickets against the `ticket system` component.  You can also document ideas on the [trac:TracIdeas/TracWorkflow TracIdeas/TracWorkflow] page.  Also look at the [http://trac-hacks.org/wiki/AdvancedTicketWorkflowPlugin AdvancedTicketWorkflowPlugin] as it provides experimental operations.
+New enhancement ideas for the workflow system should be filed as enhancement tickets against the `ticket system` component.  You can also document ideas on the [trac:TracIdeas/TracWorkflow TracIdeas/TracWorkflow] page. Also look at the [http://trac-hacks.org/wiki/AdvancedTicketWorkflowPlugin AdvancedTicketWorkflowPlugin] as it provides experimental operations.

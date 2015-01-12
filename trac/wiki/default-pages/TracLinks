@@ -133,13 +133,7 @@ a sub-hierarchy, a sibling page will be targeted in preference to a toplevel pag
 This makes it easy to copy or move pages to a sub-hierarchy by [[WikiNewPage#renaming|renaming]] without having to adapt the links.
 
 In order to link explicitly to a [=#toplevel toplevel] Wiki page,
-use the `wiki:/` prefix.
-Be careful **not** to use the `/` prefix alone, as this corresponds to the
-[#Server-relativelinks] syntax and with such a link you will lack the `/wiki/` 
-part in the resulting URL.
-
-''(Changed in 0.11)'' Note that in Trac 0.10, using e.g. `[../newticket]`  may have worked for linking to the `/newticket` top-level URL, but since 0.11, such a link will stay in the wiki namespace and therefore link to a sibling page. 
-See [#Server-relativelinks] for the new syntax.
+use the `wiki:/` prefix. Be careful **not** to use the `/` prefix alone, as this corresponds to the [#Server-relativelinks] syntax and with such a link you will lack the `/wiki/` part in the resulting URL. A link such as `[../newticket]` will stay in the wiki namespace and therefore link to a sibling page.
 
 === Link anchors ===
 
@@ -311,8 +305,6 @@ Example:
  - `ticket:5000-6000`
  - `ticket:1,150`
 
-''(since Trac 0.11)''
-
 === timeline: links ===
 
 Links to the timeline can be created by specifying a date in the ISO:8601 format. The date can be optionally followed by a time specification. The time is interpreted as being UTC time, but if you don't want to compute the UTC time, you can specify a local time followed by your timezone offset relative to UTC.
@@ -324,8 +316,6 @@ Examples:
  - `timeline:2008-01-29T16:48+01`
  - `timeline:2008-01-29T16:48+0100`
  - `timeline:2008-01-29T16:48+01:00`
-
-''(since Trac 0.11)''
 
 === wiki: links ===
 
@@ -351,7 +341,7 @@ If the revision is specified, one can even link to a specific line number:
  - `source:/some/file@123#L10`
  - `source:/tag/0.10@head#L10`
 
-Finally, one can also highlight an arbitrary set of lines ''(since 0.11)'':
+Finally, one can also highlight an arbitrary set of lines:
  - `source:/some/file@123:10-20,100,103#L99` - highlight lines 10 to 20, and lines 100 and 103, and target line 99
  - or without version number (the `@` is still needed): `source:/some/file@:10-20,100,103#L99`. Version can be omitted when the path is pointing to a source file that will no longer change (like `source:/tags/...`), otherwise it's better to specify which lines of //which version// of the file you're talking about
 

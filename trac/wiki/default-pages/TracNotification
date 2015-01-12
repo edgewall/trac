@@ -8,24 +8,30 @@ Email notification is useful to keep users up-to-date on tickets/issues of inter
 Disabled by default, notification can be activated and configured in [wiki:TracIni trac.ini].
 
 == Receiving Notification Mails ==
-When reporting a new ticket or adding a comment, enter a valid email address or your username in the ''reporter'', ''assigned to/owner'' or ''cc'' field. Trac will automatically send you an email when changes are made to the ticket (depending on how notification is configured).
-
-This is useful to keep up-to-date on an issue or enhancement request that interests you.
+When reporting a new ticket or adding a comment, enter a valid email address or your Trac username in the ''reporter'', ''assigned to/owner'' or ''cc'' field. Trac will automatically send you an email when changes are made to the ticket, depending on how notification is configured.
 
 === How to use your username to receive notification mails ===
 
-To receive notification mails, you can either enter a full email address or your username. To get notified with a simple username or login, you need to specify a valid email address in the ''Preferences'' page. 
+To receive notification mails, you can either enter a full email address or your Trac username. To get notified with a simple username or login, you need to specify a valid email address in the ''Preferences'' page. 
 
-Alternatively, a default domain name ('''`smtp_default_domain`''') can be set in the TracIni file (see [#ConfigurationOptions Configuration Options] below). In this case, the default domain will be appended to the username, which can be useful for an "Intranet" kind of installation.
+Alternatively, a default domain name ('''`smtp_default_domain`''') can be set in the TracIni file, see [#ConfigurationOptions Configuration Options] below. In this case, the default domain will be appended to the username, which can be useful for an "Intranet" kind of installation.
 
 When using apache and mod_kerb for authentication against Kerberos / Active Directory, usernames take the form ('''`username@EXAMPLE.LOCAL`'''). To avoid this being interpreted as an email address, add the Kerberos domain to  ('''`ignore_domains`''').
+
+=== Ticket attachment notifications
+
+Since 1.0.3 Trac will send notifications when a ticket attachment is added or deleted. Usually attachment notifications will be enabled in an environment by default. To disable the attachment notifications for an environment the `TicketAttachmentNotifier` component must be disabled:
+{{{#!ini
+[components]
+trac.ticket.notification.TicketAttachmentNotifier = disabled
+}}}
 
 == Configuring SMTP Notification ==
 
 '''Important:''' For TracNotification to work correctly, the `[trac] base_url` option must be set in [wiki:TracIni trac.ini]. 
 
 === Configuration Options ===
-These are the available options for the `[notification]` section in trac.ini.
+These are the available options for the `[notification]` section in trac.ini:
 
 [[TracIni(notification)]]
 
@@ -60,11 +66,11 @@ The following variables are available in the template:
  * `env`: The project environment (see [trac:source:/trunk/trac/env.py env.py]).
  * `prefix`: The prefix defined in `smtp_subject_prefix`.
  * `summary`: The ticket summary, with the old value if the summary was edited.
- * `ticket`: The ticket model object (see [trac:source:/trunk/trac/ticket/model.py model.py]). Individual ticket fields can be addressed by appending the field name separated by a dot, e.g. `$ticket.milestone`.
+ * `ticket`: The ticket model object (see [trac:source:/trunk/trac/ticket/model.py model.py]). Individual ticket fields can be addressed by appending the field name separated by a dot, eg `$ticket.milestone`.
 
 === Customizing the e-mail content ===
 
-The notification e-mail content is generated based on `ticket_notify_email.txt` in `trac/ticket/templates`.  You can add your own version of this template by adding a `ticket_notify_email.txt` to the templates directory of your environment. The default looks like this:
+The notification e-mail content is generated based on `ticket_notify_email.txt` in `trac/ticket/templates`. You can add your own version of this template by adding a `ticket_notify_email.txt` to the templates directory of your environment. The default looks like this:
 
 {{{
 $ticket_body_hdr
@@ -100,6 +106,7 @@ ${_('Ticket URL: <%(link)s>', link=ticket.link)}
 $project.name <${project.url or abs_href()}>
 $project.descr
 }}}
+
 == Sample Email ==
 {{{
 #42: testing
@@ -111,7 +118,7 @@ Component:  report system  |    Modified:  Fri Apr  9 00:04:31 2004
     Owner:  anonymous      |    Reporter:  jonas@example.com               
 ---------------------------+------------------------------------------------
 Changes:
-  * component:  changset view => search system
+  * component:  changeset view => search system
   * priority:  low => highest
   * owner:  jonas => anonymous
   * cc:  daniel@example.com =>
@@ -126,17 +133,16 @@ Ticket URL: <http://example.com/trac/ticket/42>
 My Project <http://myproj.example.com/>
 }}}
 
-
 == Customizing e-mail content for MS Outlook ==
 
-Out-of-the-box, MS Outlook normally presents plain text e-mails with a variable-width font; the ticket properties table will most certainly look like a mess in MS Outlook. This can be fixed with some customization of the [#Customizingthee-mailcontent e-mail template].
+MS Outlook normally presents plain text e-mails with a variable-width font, and as a result the ticket properties table will most certainly look like a mess in MS Outlook. This can be fixed with some customization of the [#Customizingthee-mailcontent e-mail template].
 
 Replace the following second row in the template:
 {{{
 $ticket_props
 }}}
 
-with this instead (''requires Python 2.6 or later''):
+with this (requires Python 2.6 or later):
 {{{
 --------------------------------------------------------------------------
 {% with
@@ -150,7 +156,7 @@ ${'\n'.join('%s\t%s' % (format(p[0]+':', ' <12'), p[1]) for p in pv if p[0] in s
 --------------------------------------------------------------------------
 }}}
 
-The table of ticket properties is replaced with a list of a selection of the properties. A tab character separates the name and value in such a way that most people should find this more pleasing than the default table, when using MS Outlook.
+The table of ticket properties is replaced with a list of a selection of the properties. A tab character separates the name and value in such a way that most people should find this more pleasing than the default table when using MS Outlook.
 {{{#!div style="margin: 1em 1.75em; border:1px dotted"
 {{{#!html
 #42: testing<br />
@@ -170,7 +176,7 @@ The table of ticket properties is replaced with a list of a selection of the pro
 --------------------------------------------------------------------------<br />
 Changes:<br />
 <br />
-&nbsp;&nbsp;* component: &nbsp;changset view =&gt; search system<br />
+&nbsp;&nbsp;* component: &nbsp;changeset view =&gt; search system<br />
 &nbsp;&nbsp;* priority: &nbsp;low =&gt; highest<br />
 &nbsp;&nbsp;* owner: &nbsp;jonas =&gt; anonymous<br />
 &nbsp;&nbsp;* cc: &nbsp;daniel@example.com =&gt;<br />
@@ -186,17 +192,16 @@ My Project &lt;http://myproj.example.com/&gt;<br />
 }}}
 }}}
 
-**Important**: Only those ticket fields that are listed in `sel` are part of the HTML mail. If you have defined custom ticket fields which shall be part of the mail they have to be added to `sel`, example:
+**Important**: Only those ticket fields that are listed in `sel` are part of the HTML mail. If you have defined custom ticket fields which are to be part of the mail, then they have to be added to `sel`. Example:
 {{{
    sel = ['Reporter', ..., 'Keywords', 'Custom1', 'Custom2']
 }}}
 
-However, it's not as perfect as an automatically HTML-formatted e-mail would be, but presented ticket properties are at least readable by default in MS Outlook...
-
+However, the solution is still a workaround to an automatically HTML-formatted e-mail.
 
 == Using GMail as the SMTP relay host ==
 
-Use the following configuration snippet
+Use the following configuration snippet:
 {{{
 [notification]
 smtp_enabled = true
@@ -208,22 +213,20 @@ smtp_user = user
 smtp_password = password
 }}}
 
-where ''user'' and ''password'' match an existing GMail account, ''i.e.'' the ones you use to log in on [http://gmail.com]
+where ''user'' and ''password'' match an existing GMail account, ie the ones you use to log in on [http://gmail.com].
 
 Alternatively, you can use `smtp_port = 25`.[[br]]
-You should not use `smtp_port = 465`. It will not work and your ticket submission may deadlock. Port 465 is reserved for the SMTPS protocol, which is not supported by Trac. See [trac:comment:2:ticket:7107 #7107] for details.
+You should not use `smtp_port = 465`. Doing so may deadlock your ticket submission. Port 465 is reserved for the SMTPS protocol, which is not supported by Trac. See [trac:comment:2:ticket:7107 #7107] for details.
  
 == Filtering notifications for one's own changes and comments ==
 In Gmail, use the filter:
-
 {{{
 from:(<smtp_from>) (("Reporter: <username>" -Changes -Comment) OR "Changes (by <username>)" OR "Comment (by <username>)")
 }}}
 
 to delete these notifications.
 
-In Thunderbird, there is no such solution if you use IMAP
-(see http://kb.mozillazine.org/Filters_(Thunderbird)#Filtering_the_message_body).
+In Thunderbird, there is no such solution if you use IMAP, see http://kb.mozillazine.org/Filters_(Thunderbird)#Filtering_the_message_body.
 
 You can also add this plugin:
 http://trac-hacks.org/wiki/NeverNotifyUpdaterPlugin, or vote for [trac:#2247] to be fixed.
@@ -232,7 +235,7 @@ http://trac-hacks.org/wiki/NeverNotifyUpdaterPlugin, or vote for [trac:#2247] to
 
 If you cannot get the notification working, first make sure the log is activated and have a look at the log to find if an error message has been logged. See TracLogging for help about the log feature.
 
-Notification errors are not reported through the web interface, so the user who submit a change or a new ticket never gets notified about a notification failure. The Trac administrator needs to look at the log to find the error trace.
+Notification errors are not reported through the web interface, so the user who submits a change or a new ticket never gets notified about a notification failure. The Trac administrator needs to look at the log to find the error trace.
 
 === ''Permission denied'' error ===
 
@@ -244,18 +247,18 @@ Typical error message:
   error: (13, 'Permission denied')
 }}}
 
-This error usually comes from a security settings on the server: many Linux distributions do not let the web server (Apache, ...) to post email message to the local SMTP server.
+This error usually comes from a security settings on the server: many Linux distributions do not allow the web server (Apache, ...) to post email messages to the local SMTP server.
 
 Many users get confused when their manual attempts to contact the SMTP server succeed:
 {{{
 telnet localhost 25
 }}}
-The trouble is that a regular user may connect to the SMTP server, but the web server cannot:
+This is because a regular user may connect to the SMTP server, but the web server cannot:
 {{{
 sudo -u www-data telnet localhost 25
 }}}
 
-In such a case, you need to configure your server so that the web server is authorized to post to the SMTP server. The actual settings depend on your Linux distribution and current security policy. You may find help browsing the Trac [trac:MailingList MailingList] archive.
+In such a case, you need to configure your server so that the web server is authorized to post to the SMTP server. The actual settings depend on your Linux distribution and current security policy. You may find help in the Trac [trac:MailingList MailingList] archive.
 
 Relevant ML threads:
  * SELinux: http://article.gmane.org/gmane.comp.version-control.subversion.trac.general/7518
@@ -264,22 +267,14 @@ For SELinux in Fedora 10:
 {{{
 $ setsebool -P httpd_can_sendmail 1
 }}}
+
 === ''Suspected spam'' error ===
 
 Some SMTP servers may reject the notification email sent by Trac.
 
-The default Trac configuration uses Base64 encoding to send emails to the recipients. The whole body of the email is encoded, which sometimes trigger ''false positive'' SPAM detection on sensitive email servers. In such an event, it is recommended to change the default encoding to "quoted-printable" using the `mime_encoding` option.
+The default Trac configuration uses Base64 encoding to send emails to the recipients. The whole body of the email is encoded, which sometimes trigger ''false positive'' spam detection on sensitive email servers. In such an event, change the default encoding to "quoted-printable" using the `mime_encoding` option.
 
-Quoted printable encoding works better with languages that use one of the Latin charsets. For Asian charsets, it is recommended to stick with the Base64 encoding.
-
-=== ''501, 5.5.4 Invalid Address'' error ===
-
-On IIS 6.0 you could get a 
-{{{
-Failure sending notification on change to ticket #1: SMTPHeloError: (501, '5.5.4 Invalid Address')
-}}}
-in the trac log. Have a look [http://support.microsoft.com/kb/291828 here] for instructions on resolving it.
-
+Quoted printable encoding works better with languages that use one of the Latin charsets. For Asian charsets, stick with the Base64 encoding.
 
 ----
-See also: TracTickets, TracIni, TracGuide
+See also: TracTickets, TracIni, TracGuide, TracDev/NotificationApi

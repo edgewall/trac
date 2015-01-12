@@ -1,7 +1,7 @@
 = Trac Backup =
 [[TracGuideToc]]
 
-Since Trac uses a database backend, some extra care is required to safely create a backup of a [wiki:TracEnvironment project environment]. Luckily, [wiki:TracAdmin trac-admin] has a command to make backups easier: `hotcopy`.
+Backups are simply a copied snapshot of the entire [wiki:TracEnvironment project environment] directory, including the database. Backups can be created using the `hotcopy` command in [wiki:TracAdmin trac-admin].
 
   ''Note: Trac uses the `hotcopy` nomenclature to match that of [http://subversion.tigris.org/ Subversion], to make it easier to remember when managing both Trac and Subversion servers.''
 
@@ -16,13 +16,17 @@ $ trac-admin /path/to/projenv hotcopy /path/to/backupdir
 
 The resulting backup directory is safe to handle using standard file-based backup tools like `tar` or `dump`/`restore`.
 
-Please note, the `hotcopy` command will not overwrite a target directory and when such exists the operation ends with error: `Command failed: [Errno 17] File exists:` This is discussed in [trac:ticket:3198 #3198].
+Please note, the `hotcopy` command will not overwrite a target directory and when such exists, the operation ends with an error: `Command failed: [Errno 17] File exists:` This is discussed in [trac:ticket:3198 #3198].
 
 === Restoring a Backup ===
 
-Backups are simply a copied snapshot of the entire [wiki:TracEnvironment project environment] directory, including the SQLite database. 
+To restore an environment from a backup, stop the process running Trac, ie the Web server or [wiki:TracStandalone tracd], restore the contents of your backup (path/to/backupdir) to your [wiki:TracEnvironment project environment] directory and restart the service.
 
-To restore an environment from a backup, stop the process running Trac (i.e. the Web server or [wiki:TracStandalone tracd]), restore the contents of your backup (path/to/backupdir) to your [wiki:TracEnvironment project environment] directory and restart the service.
+To restore a PostgreSQL database backup, use the command:
+{{{#!sh
+psql -U <user> -d <database> -f postgresql.dump
+}}}
+The `<database>` option is the same as the [TracEnvironment#DatabaseConnectionStrings database connection string] in the `[trac]` `database` option of //trac.ini//.
 
 ----
 See also: TracAdmin, TracEnvironment, TracGuide, [trac:TracMigrate TracMigrate]
