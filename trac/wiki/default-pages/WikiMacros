@@ -76,10 +76,7 @@ Macros, like Trac itself, are written in the [http://python.org/ Python programm
 
 For more information about developing macros, see the [trac:TracDev development resources] on the main project site.
 
-
-Here are 2 simple examples showing how to create a Macro with Trac 0.11. 
-
-Also, have a look at [trac:source:tags/trac-0.11/sample-plugins/Timestamp.py Timestamp.py] for an example that shows the difference between old style and new style macros and at the [trac:source:tags/trac-0.11/wiki-macros/README macros/README] which provides a little more insight about the transition.
+Here are 2 simple examples showing how to create a Macro. Also, have a look at [trac:source:tags/trac-1.0.2/sample-plugins/Timestamp.py Timestamp.py] for an example that shows the difference between old style and new style macros and at the [trac:source:tags/trac-0.11/wiki-macros/README macros/README] which provides a little more insight about the transition.
 
 === Macro without arguments ===
 To test the following code, you should saved it in a `timestamp_sample.py` file located in the TracEnvironment's `plugins/` directory.

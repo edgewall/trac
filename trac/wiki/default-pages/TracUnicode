@@ -1,20 +1,16 @@
 = Unicode Support in Trac =
 [[TracGuideToc]]
 
-Trac stores all text using UTF-8 encoding, including text in tickets and wiki pages. Internal processing of text uses true Unicode representations.
+Trac encodes all text using [http://en.wikipedia.org/wiki/UTF-8 UTF-8], including text in tickets and wiki pages. Internal processing of text uses true [http://en.wikipedia.org/wiki/Unicode Unicode] representations. As such, it supports most (all?) commonly used character encodings.
 
-As such, it supports most (all?) commonly used character encodings.
-
-If the default encoding in your source code repository is not UTF-8, you can specify it in the [TracIni#trac-section trac.ini], for example:
+If the default encoding in your source code repository is not UTF-8, you can specify it in the [TracIni#trac-section trac.ini]:
 {{{
 default_charset = gbk
 }}}
 
-You also must make sure that your [trac:DatabaseBackend database backend] stores its data in UTF-8; otherwise strange things will happen.
+Also ensure that your [trac:DatabaseBackend database] stores its data in UTF-8, otherwise results may be unpredictable.
 
-To convert your database to UTF-8, the easiest way is to dump the database, convert the dump into UTF-8 and then import the converted dump back into the database.[[BR]]
-You can use [http://www.gnu.org/software/libiconv/documentation/libiconv/iconv.1.html iconv] to convert the dump.
-
+To convert your database to UTF-8, the easiest way is to create a dump of the database, convert it into UTF-8, for example using [http://www.gnu.org/software/libiconv/documentation/libiconv/iconv.1.html iconv], and then import it back into the database.
 
 == Examples ==
 

@@ -114,6 +114,7 @@ lmgtfy           http://lmgtfy.com/?q= # Well, just search for "$1", follow the 
 GoogleGroups     http://groups.google.com/group/$1/msg/$2        # Message $2 in $1 Google Group
 gdiscussion      https://groups.google.com/d/topic/$1/$2/discussion # Discussion $2 in $1 Google 
 gmessage         https://groups.google.com/d/msg/$1/$2 # Message $2 in $1 Google Group
+gforum           https://groups.google.com/forum/#!forum/$1 # Forum $1 in Google Groups
 JargonFile       http://downlode.org/perl/jargon-redirect.cgi?term=
 MeatBall         http://www.usemod.com/cgi-bin/mb.pl?
 MetaWiki         http://sunir.org/apps/meta.pl?

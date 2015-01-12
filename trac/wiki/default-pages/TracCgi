@@ -1,4 +1,5 @@
 = Installing Trac as CGI
+[[TracGuideToc]]
 
 {{{#!div class=important
   ''Please note that using Trac via CGI is the slowest deployment method available. It is slower than [TracModPython mod_python], [TracFastCgi FastCGI] and even [trac:TracOnWindowsIisAjp IIS/AJP] on Windows.''
@@ -18,7 +19,7 @@ In [http://httpd.apache.org/ Apache] there are two ways to run Trac as CGI:
  1. Copy the `trac.cgi` file into the directory for CGI executables used by your web server (commonly named `cgi-bin`). You can also create a symbolic link, but in that case make sure that the `FollowSymLinks` option is enabled for the `cgi-bin` directory.
 
 To make Trac available at `http://yourhost.example.org/trac` add `ScriptAlias` directive to Apache configuration file, changing `trac.cgi` path to match your installation:
-{{{#!sh
+{{{#!apache
 ScriptAlias /trac /path/to/www/trac/cgi-bin/trac.cgi
 }}}
 

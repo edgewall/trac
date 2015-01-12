@@ -1,6 +1,6 @@
-[[PageOutline]]
-
 = Trac with FastCGI =
+[[TracGuideToc]]
+[[PageOutline(2-5, Contents, floated)]]
 
 [http://www.fastcgi.com/ FastCGI] interface allows Trac to remain resident much like with [wiki:TracModPython mod_python] or [wiki:TracModWSGI mod_wsgi]. It is faster than external CGI interfaces which must start a new process for each request.  Additionally, it is supported by much wider variety of web servers.
 
@@ -385,22 +385,17 @@ Nginx is able to communicate with FastCGI processes, but can not spawn them. So 
         ssl_ciphers  ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;
         ssl_prefer_server_ciphers   on;
 
-        # (Or ``^/some/prefix/(.*)``.
-        if ($uri ~ ^/(.*)) {
-             set $path_info /$1;
+        # it makes sense to serve static resources through Nginx (or ``~ [/some/prefix]/chrome/(.*)``)
+        location ~ /chrome/(.*) {
+             alias /home/trac/instance/static/htdocs/$1;
         }
 
-        # it makes sense to serve static resources through Nginx
-        location /chrome/ {
-             alias /home/trac/instance/static/htdocs/;
-        }
-
-        # You can copy this whole location to ``location [/some/prefix]/login``
+        # You can copy this whole location to ``location [/some/prefix](/login)``
         # and remove the auth entries below if you want Trac to enforce
         # authorization where appropriate instead of needing to authenticate
         # for accessing the whole site.
-        # (Or ``location /some/prefix``.)
-        location / {
+        # (Or ``~ location /some/prefix(/.*)``.)
+        location ~ (/.*) {
             auth_basic            "trac realm";
             auth_basic_user_file /home/trac/htpasswd;
 
@@ -414,7 +409,7 @@ Nginx is able to communicate with FastCGI processes, but can not spawn them. So 
             # WSGI application name - trac instance prefix.
 	    # (Or ``fastcgi_param  SCRIPT_NAME  /some/prefix``.)
             fastcgi_param  SCRIPT_NAME        "";
-            fastcgi_param  PATH_INFO           $fastcgi_script_name;
+            fastcgi_param  PATH_INFO          $1;
 
             ## WSGI NEEDED VARIABLES - trac warns about them
             fastcgi_param  REQUEST_METHOD     $request_method;

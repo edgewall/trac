@@ -19,7 +19,7 @@ The example below should help to explain the syntax.
    * order: Sort order placement. (Determines relative placement in forms with respect to other custom fields.)
    * format: One of: 
      * `plain` for plain text 
-     * `wiki` to interpret the content as WikiFormatting (''since 0.11.3'') 
+     * `wiki` to interpret the content as WikiFormatting
      * `reference` to treat the content as a queryable value (''since 1.0'') 
      * `list` to interpret the content as a list of queryable values, separated by whitespace (''since 1.0'')
  * '''checkbox''': A boolean value check box.
@@ -42,7 +42,7 @@ The example below should help to explain the syntax.
    * cols: Width in columns
    * rows: Height in lines.
    * order: Sort order placement.
-   * format: Either `plain` for plain text or `wiki` to interpret the content as WikiFormatting. (''since 0.11.3'')
+   * format: Either `plain` for plain text or `wiki` to interpret the content as WikiFormatting.
 
 Macros will be expanded when rendering `textarea` fields with format `wiki`, but not when rendering `text` fields with format `wiki`.
 

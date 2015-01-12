@@ -1,7 +1,5 @@
 = Support for InterWiki links =
 
-''(since [trac:milestone:0.10 0.10])''
-
 == Definition ==
 
 An InterWiki link can be used for referring to a Wiki page

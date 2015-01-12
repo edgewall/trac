@@ -1,7 +1,7 @@
 = Trac plugins =
 [[TracGuideToc]]
 
-From version 0.9 onwards, Trac is extensible with [trac:PluginList plugins]. Plugin functionality is based on the [trac:TracDev/ComponentArchitecture component architecture], with peculiarities described in the [TracDev/PluginDevelopment plugin development] page.
+Trac is extensible with [trac:PluginList plugins]. Plugin functionality is based on the [trac:TracDev/ComponentArchitecture component architecture], with peculiarities described in the [trac:TracDev/PluginDevelopment plugin development] page.
 
 == Plugin discovery ==
 
@@ -63,7 +63,7 @@ easy_install --always-unzip TracSpamFilter-0.4.1_r10106-py2.6.egg
 }}}
 You should end up with a directory having the same name as the zipped egg (complete with `.egg` extension) and containing its uncompressed contents.
 
-Trac also searches for plugins installed in the shared plugins directory ''(since 0.10)''; see TracIni#GlobalConfiguration. This is a convenient way to share the installation of plugins across several, but not all, environments.
+Trac also searches for plugins installed in the shared plugins directory, see TracIni#GlobalConfiguration. This is a convenient way to share the installation of plugins across several, but not all, environments.
 
 ==== From source ====
 
@@ -197,7 +197,7 @@ Okay, so the logs don't mention plugins, the egg is readable, the Python version
 
 == Web-based plugin administration ==
 
-The WebAdmin plugin (part of the core since 0.11) offers limited support for plugin configuration through the web to users with `TRAC_ADMIN` permission:
+The WebAdmin interface offers limited support for plugin configuration through the web to users with `TRAC_ADMIN` permission:
 
 * en/disabling installed plugins
 * installing plugins by uploading them as eggs

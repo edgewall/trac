@@ -1,23 +1,22 @@
 = Steps to Add a New Wiki Page =
 [[TracGuideToc]]
 
-Note: make sure you actually have the rights to edit wiki pages. If you don't see the **Edit this page** button, read the information relative to the editing policy for your Trac installation (usually on the front page WikiStart), or contact your local Trac administrator.
+You can create a new wiki page by typing the CamelCase name of the page in the quick-search field at the top of the page, or by trying to view a wiki page of that name, ie by visiting for example http://trac.edgewall.org/wiki/MyNewWikiPage. Note that a page is "orphaned" by default until it is linked to from another page. 
 
-You can create a new wiki page by typing the CamelCase name of the page in the quick-search field at the top of the page, or by trying to view a wiki page of that name (That is by visiting http://trac.edgewall.org/wiki/MyNewWikiPage for example). But note that the page will effectively be "orphaned" unless you link to it from somewhere else. Alternatively:
+Prerequisite: make sure you actually have the rights to edit wiki pages. If you don't see the **Edit this page** button near the bottom of the page, read the information relative to the editing policy for your Trac installation, usually on the front page WikiStart, or contact your local Trac administrator.
+
+A new wiki page can also be created as follows:
 
  1. Choose a name for your new page. See WikiPageNames for naming conventions.
- 2. Edit an existing page (or any other resources that support WikiFormatting and add a [TracLinks link] to your new page. Save your changes.
+ 2. Edit an existing page or any other resource that support WikiFormatting and add a [TracLinks link] to your new page. Save your changes.
  3. Follow the link you created to take you to the new page. Trac will display a "describe !PageName here" message.
- 4. Click the "Edit this page" button to edit and add content to your new page. Save your changes.
- 5. All done. Your new page is published.
+ 4. Click the "Edit this page" button to edit and add content to your new page. Save your changes and your new page is published.
 
 == Rename a page #renaming
 
-While picking up good WikiPageNames is important, you can always change your mind
-and rename the page later.
+While creating good WikiPageNames is important for usability purposes, you can always rename the page later. You will need the WIKI_RENAME permission to rename pages.
 
-You'll need to ask for the WIKI_RENAME permission in order to be allowed to do this.
-When renaming a page, you'll be offered the possibility to create a redirection page, so that links pointing to the old location will not be left dangling.
+When renaming a page, you'll be offered the possibility to create a redirection page, so that links pointing to the old location will not be pointing to a non-existent page.
 
 ----
 See also: TracWiki, PageTemplates, WikiFormatting, TracLinks, WikiDeletePage

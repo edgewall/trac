@@ -1,20 +1,14 @@
 = Using HTML in Wiki Text =
 
-Trac supports inserting HTML into any wiki context, accomplished using the `#!html` [wiki:WikiProcessors WikiProcessor]. 
+Trac supports the display of HTML in any wiki context, by using the `#!html` [wiki:WikiProcessors WikiProcessor]. 
 
-However a constraint is that this HTML has to be well-formed.
-In particular you can't insert a start tag in an `#!html` block,
-resume normal wiki text and insert the corresponding end tag in a 
-second `#!html` block. 
+However, this HTML has to be [http://en.wikipedia.org/wiki/Well-formed_element well-formed].
+In particular, you can't insert a start tag in an `#!html` block, resume normal wiki text and insert the corresponding end tag in a second `#!html` block. 
 
-Fortunately, for creating styled <div>s, <span>s  or even complex tables
-containing arbitrary Wiki text, there's a powerful alternative: use of
-dedicated `#!div`, `#!span` and `#!table`, `#!tr`, `#!td` and `#!th` blocks.
-
-Those Wiki processors are built-in, and does not require installing any additional packages.
+Fortunately, for creating styled <div>s, <span>s  or even complex tables containing arbitrary Wiki text, there is a powerful alternative: `#!div`, `#!span` and `#!table`, `#!tr`, `#!td` and `#!th` blocks. Those Wiki processors are built-in and do not require additional packages to be installed.
 
 == How to use `#!html` == #HowtoUseHTML
-To inform the wiki engine that a block of text should be treated as HTML, use the ''html'' processor. 
+To inform the wiki engine that a block of text should be treated as HTML, use the ''html'' processor:
 
 ||= Wiki Markup =||= Display =||
 {{{#!td
@@ -32,10 +26,10 @@ To inform the wiki engine that a block of text should be treated as HTML, use th
   }}}
 }}}
 
-Note that Trac sanitizes your HTML code before displaying it. That means that if you try to use potentially dangerous constructs such as Javascript event handlers, those will be removed from the output. 
+Note that Trac sanitizes your HTML code before displaying it. That means that potentially dangerous constructs, such as Javascript event handlers, will be removed from the output. 
 
-Since 0.11, the filtering is done by Genshi, and as such, the produced output will be a well-formed fragment of HTML. As noted above in the introduction, this mean that you can no longer use two HTML blocks, one for opening a <div>, the second for closing it, in order to wrap arbitrary wiki text.
-The new way to wrap any wiki content inside a <div> is to use the `#!div` Wiki  processor.
+The filtering is done by [http://genshi.edgewall.org/ Genshi] and the output will be a well-formed fragment of HTML. This means that you can no longer use two HTML blocks, one for opening a <div> and another for closing it, in order to wrap arbitrary wiki text.
+The new way to wrap any wiki content inside a <div> is to use the `#!div` Wiki processor.
 
 == How to use `#!div` and `#!span` == #HowtoUseDivSpan
 
@@ -115,9 +109,9 @@ The new way to wrap any wiki content inside a <div> is to use the `#!div` Wiki  
 
 }}}
 
-Note that the contents of a `#!div` block are contained in one or more paragraphs, which have a non-zero top and bottom margin. This leads to the top and bottom padding in the example above. To remove the top and bottom margin of the contents, add the `compact` class to the `#!div`. Another predefined class besides `wikipage` and `compact` is `important`, which can be used to make a paragraph stand out. Extra CSS classes can be defined via the `site/style.css` file for example, see TracInterfaceCustomization#SiteAppearance.
+Note that the contents of a `#!div` block are contained in one or more paragraphs, which have a non-zero top and bottom margin. This leads to the top and bottom padding in the example above. To remove the top and bottom margin of the content, add the `compact` class to the `#!div`. Another predefined class besides `wikipage` and `compact` is `important`, which can be used to make a paragraph stand out. Extra CSS classes can be defined via the `site/style.css` file for example, see TracInterfaceCustomization#SiteAppearance.
 
-For spans, you should rather use the Macro call syntax:
+For spans, you should use the Macro call syntax:
 ||= Wiki Markup =||
 {{{#!td
   {{{
@@ -134,7 +128,7 @@ For spans, you should rather use the Macro call syntax:
 
 == How to use `#!td` and other table related processors == #Tables
 
-`#!td` or `#!th` processors are actually the main ones, for creating table data and header cells, respectively. The other processors `#!table` and `#!tr` are not required for introducing a table structure, as `#!td` and `#!th` will do this automatically. The `|-` row separator can be used to start a new row when needed, but some may prefer to use a `#!tr` block for that, as this introduces a more formal grouping and offers the possibility to use an extra level of indentation. The main purpose of the `#!table` and `#!tr` is to give the possibility to specify HTML attributes, like ''style'' or ''valign'' to these elements.
+The `#!td` or `#!th` processors should be used to create table data and table header cells, respectively. The other processors `#!table` and `#!tr` are not required for introducing a table structure, as `#!td` and `#!th` will do this automatically. The `|-` row separator can be used to start a new row when needed, but some may prefer to use a `#!tr` block for that, as this introduces a more formal grouping and offers the possibility to use an extra level of indentation. The main purpose of the `#!table` and `#!tr` is to give the possibility to specify HTML attributes, like ''style'' or ''valign'' to these elements.
 
 ||= Wiki Markup =||= Display =||
 {{{#!td
@@ -262,7 +256,7 @@ attributes to the table itself...
 }}}
 }}}
 
-Note that by default tables are assigned the "wiki" CSS class, which gives a distinctive look to the header cells and a default border to the table and cells (as can be seen for the tables on this page). By removing this class (`#!table class=""`), one regains complete control on the table presentation. In particular, neither the table, the rows nor the cells will have a border, so this is a more effective way to get such an effect than having to specify a `style="border: no"` parameter everywhere. 
+Note that by default tables are assigned the "wiki" CSS class, which gives a distinctive look to the header cells and a default border to the table and cells, as can be seen for the tables on this page. By removing this class (`#!table class=""`), one regains complete control on the table presentation. In particular, neither the table nor the rows nor the cells will have a border, so this is a more effective way to get such an effect rather than having to specify a `style="border: no"` parameter everywhere. 
 
 {{{#!table class=""
 ||= Wiki Markup =||= Display =||
@@ -308,9 +302,8 @@ Other classes can be specified as alternatives (remember that you can define you
   }}}
 }}}
 
-
 == HTML comments ==
-HTML comments are stripped from the output of the `html` processor. To add an HTML comment to a wiki page, use the `htmlcomment` processor (available since 0.12). For example, the following code block:
+HTML comments are stripped from the output of the `html` processor. To add an HTML comment to a wiki page, use the `htmlcomment` processor, available since Trac 0.12:
 ||= Wiki Markup =||
 {{{#!td
   {{{

@@ -1,19 +1,19 @@
-= InterTrac Links  =
+= InterTrac Links
 
-Trac supports a convenient way to refer to resources of other Trac servers, from within the Wiki markup, since version 0.10.
+Trac supports a convenient way to refer to resources of other Trac servers, from within the Wiki markup.
 
-== Definitions ==
+== Definitions
 
 An InterTrac link can be seen as a scoped TracLinks.
 It is used for referring to a Trac resource 
 (Wiki page, changeset, ticket, ...) located in another
 Trac environment.
 
-== List of Active InterTrac Prefixes ==
+== List of Active InterTrac Prefixes
 
 [[InterTrac]]
 
-== Link Syntax ==
+== Link Syntax
 
 Simply use the name of the other Trac environment as a prefix, 
 followed by a colon, ending with the resource located in the other environment.
@@ -36,7 +36,7 @@ where one can use an alias as an immediate prefix
 for the identifier of a ticket, changeset or report:
 (e.g. `#T234`, `[T1508]`, `[trac 1508]`, ...)
 
-== Examples ==
+== Examples
 
 It is necessary to setup a configuration for the InterTrac facility.
 This configuration has to be done in the TracIni file, `[intertrac]` section.

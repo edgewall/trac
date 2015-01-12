@@ -1,6 +1,4 @@
-= Wiki Page Templates = 
-
-  ''(since [trac:milestone:0.11 0.11])''
+= Wiki Page Templates =
 
 The default content for a new wiki page can be chosen from a list of page templates. 
 

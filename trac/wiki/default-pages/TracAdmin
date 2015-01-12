@@ -1,9 +1,10 @@
 = TracAdmin =
+[[PageOutline(2-5, Contents, floated)]]
 [[TracGuideToc]]
 
 Trac is distributed with a powerful command-line configuration tool. This tool can be used  to configure and customize your Trac-installation to better fit your needs.
 
-Some of those operations can also be performed via the ''Admin'' web interface, an updated version of the [trac:WebAdmin] plugin now integrated within Trac (since version 0.11).
+Some of those operations can also be performed via the WebAdmin interface.
 
 == Usage ==
 
