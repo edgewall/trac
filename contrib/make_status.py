@@ -1,5 +1,12 @@
-# Copyright (C) 2014 Edgewall Software
-# This file is distributed under the same license as the Trac project.
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2014-2015 Edgewall Software
+# All rights reserved.
+#
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at http://trac.edgewall.org/wiki/TracLicense.
 
 import StringIO
 import warnings
