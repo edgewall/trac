@@ -10,8 +10,8 @@ documentation file present in the source distribution.**
 
 Note that environment upgrades are not necessary for minor version
 releases unless otherwise noted. For example, there's no need to
-upgrade a Trac environment created with (or upgraded) 0.8.0 when
-installing 0.8.4 (or any other 0.8.x release).
+upgrade a Trac environment created with (or upgraded) 1.0 when
+installing 1.0.3 (or any other 1.0.x release).
 
 General Instructions
 --------------------
@@ -72,7 +72,7 @@ server (note this is not necessary for CGI).
 The following sections discuss any extra actions that may need to be
 taken to upgrade to specific versions of Trac.
 
-From 1.0 to 1.1.2
+From 1.0 to 1.1.3
 -----------------
 
 The upgrade step will be required, but the changes are minor and it is
