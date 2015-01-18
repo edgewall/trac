@@ -87,22 +87,23 @@
  table-layout: fixed;
  width: 100%;
 }
-#ticket table.properties tr { border-bottom: 1px dotted #eed }
-#ticket table.properties td, #ticket table.properties th {
+#ticket table.properties > tbody > tr { border-bottom: 1px dotted #eed }
+#ticket table.properties > tbody > tr > td,
+#ticket table.properties > tbody > tr > th {
  font-size: 80%;
  padding: .5em 1em;
  vertical-align: top;
 }
-#ticket table.properties th {
+#ticket table.properties > tbody > tr > th {
  color: #663;
  font-weight: normal;
  text-align: left;
  width: 20%;
 }
-#ticket table.properties th.missing { color: #d3d398; }
-#ticket table.properties td { width: 30% }
-#ticket table.properties td p:first-child { margin-top: 0 }
-#ticket table.properties td p:last-child { margin-bottom: 0 }
+#ticket table.properties > tbody > tr > th.missing { color: #d3d398; }
+#ticket table.properties > tbody > tr > td { width: 30% }
+#ticket table.properties > tbody > tr > td p:first-child { margin-top: 0 }
+#ticket table.properties > tbody > tr > td p:last-child { margin-bottom: 0 }
 #ticket table.properties .description { border-top: 1px solid #dd9 }
 
 #ticket .description h3 {
