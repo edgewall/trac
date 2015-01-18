@@ -104,15 +104,13 @@
 #ticket table.properties > tbody > tr > td { width: 30% }
 #ticket table.properties > tbody > tr > td p:first-child { margin-top: 0 }
 #ticket table.properties > tbody > tr > td p:last-child { margin-bottom: 0 }
-#ticket table.properties .description { border-top: 1px solid #dd9 }
-
-#ticket .description h3 {
+#ticket div.description h3 {
  border-bottom: 1px solid #dd9;
  color: #663;
  font-size: 100%;
  font-weight: normal;
 }
-#ticket .description h3 .lastmod {
+#ticket div.description h3 .lastmod {
  font-size: 90%;
 }
 #ticket .inlinebuttons {
