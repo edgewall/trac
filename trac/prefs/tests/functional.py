@@ -172,7 +172,8 @@ class RegressionTestTicket11515(FunctionalTwillTestCaseSetup):
         """Test for regression of http://trac.edgewall.org/ticket/11515
         Show a notice message with new language setting after it is changed.
         """
-        from trac.util.translation import has_babel, get_available_locales
+        from trac.util.translation import Locale, has_babel, \
+                                          get_available_locales
         from pkg_resources import resource_exists, resource_filename
 
         if not has_babel:
@@ -183,8 +184,8 @@ class RegressionTestTicket11515(FunctionalTwillTestCaseSetup):
         from babel.support import Translations
         string = 'Your preferences have been saved.'
         translated = None
-        for second_locale in get_available_locales():
-            tx = Translations.load(locale_dir, second_locale)
+        for second_locale_id in get_available_locales():
+            tx = Translations.load(locale_dir, second_locale_id)
             translated = tx.dgettext('messages', string)
             if string != translated:
                 break  # the locale has a translation
@@ -193,9 +194,12 @@ class RegressionTestTicket11515(FunctionalTwillTestCaseSetup):
 
         try:
             self._tester.go_to_preferences('Localization')
-            tc.formvalue('userprefs', 'language', second_locale)
+            tc.formvalue('userprefs', 'language', second_locale_id)
             tc.submit()
             tc.find(re.escape(translated))
+            second_locale = Locale.parse(second_locale_id).display_name
+            tc.find('<option selected="selected" value="%s">%s</option>'
+                    % (second_locale_id, second_locale))
         finally:
             tc.formvalue('userprefs', 'language', '')  # revert to default
             tc.submit()

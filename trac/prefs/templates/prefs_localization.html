@@ -27,7 +27,8 @@
       <tr class="field">
         <th><label for="language">Language:</label></th>
         <td>
-          <select id="language" name="language" disabled="${'disabled' if not languages else None}"
+          <select py:with="session_language = settings.session.get('language', '').replace('-', '_')"
+                  id="language" name="language" disabled="${'disabled' if not languages else None}"
                   title="${_('Translations are currently unavailable') if not languages else None}">
             <option value="">Default language</option>
             <option py:for="locale, language in languages"
