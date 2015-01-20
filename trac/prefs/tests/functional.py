@@ -197,9 +197,8 @@ class RegressionTestTicket11515(FunctionalTwillTestCaseSetup):
             tc.formvalue('userprefs', 'language', second_locale_id)
             tc.submit()
             tc.find(re.escape(translated))
-            second_locale = Locale.parse(second_locale_id).display_name
-            tc.find('<option selected="selected" value="%s">%s</option>'
-                    % (second_locale_id, second_locale))
+            tc.find('<option selected="selected" value="%s">'
+                    % second_locale_id)
         finally:
             tc.formvalue('userprefs', 'language', '')  # revert to default
             tc.submit()
