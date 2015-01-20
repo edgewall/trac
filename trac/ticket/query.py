@@ -461,33 +461,6 @@ class Query(object):
             else:
                 sql.append("\nFROM ticket AS t")
 
-        # Join with the enum table for proper sorting
-        for col in [c for c in enum_columns
-                    if c == self.order or c == self.group or c == 'priority']:
-            sql.append("\n  LEFT OUTER JOIN enum AS %s ON "
-                       "(%s.type='%s' AND %s.name=%s)"
-                       % (col, col, col, col, col))
-
-        # Join with the version/milestone tables for proper sorting
-        for col in [c for c in ['milestone', 'version']
-                    if c == self.order or c == self.group]:
-            sql.append("\n  LEFT OUTER JOIN %s ON (%s.name=%s)"
-                       % (col, col, col))
-
-        def get_timestamp(date):
-            if date:
-                try:
-                    return to_utimestamp(user_time(req, parse_date, date))
-                except TracError as e:
-                    errors.append(unicode(e))
-            return None
-
-        def get_constraint_sql(name, value, mode, neg):
-            if name not in custom_fields:
-                col = 't.' + name
-            else:
-                sql.append("\nFROM ticket AS t")
-
             # Join with the enum table for proper sorting
             for col in [c for c in enum_columns
                         if c == self.order or c == self.group
@@ -506,7 +479,7 @@ class Query(object):
                 if date:
                     try:
                         return to_utimestamp(user_time(req, parse_date, date))
-                    except TracError, e:
+                    except TracError as e:
                         errors.append(unicode(e))
                 return None
 
