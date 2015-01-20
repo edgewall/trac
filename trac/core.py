@@ -30,7 +30,7 @@ def N_(string):
 class TracBaseError(Exception):
     """Base class for all exceptions defined in Trac."""
 
-    title = N_('Trac Error')
+    title = N_("Trac Error")
 
 
 class TracError(TracBaseError):
@@ -44,7 +44,7 @@ class TracError(TracBaseError):
         message.
         """
         from trac.util.translation import gettext
-        Exception.__init__(self, message)
+        super(TracError, self).__init__(message)
         self._message = message
         self.title = title or gettext(self.title)
         self.show_traceback = show_traceback
@@ -186,7 +186,7 @@ class ComponentManager(object):
             self.components[self.__class__] = self
 
     def __contains__(self, cls):
-        """Return wether the given class is in the list of active
+        """Return whether the given class is in the list of active
         components."""
         return cls in self.components
 
@@ -207,7 +207,7 @@ class ComponentManager(object):
             try:
                 component = cls(self)
             except TypeError as e:
-                raise TracError('Unable to instantiate component %r (%s)' %
+                raise TracError("Unable to instantiate component %r (%s)" %
                                 (cls, e))
         return component
 
