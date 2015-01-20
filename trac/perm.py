@@ -41,7 +41,7 @@ class PermissionError(StandardError):
 
     title = N_("Forbidden")
 
-    def __init__ (self, action=None, resource=None, env=None, msg=None):
+    def __init__(self, action=None, resource=None, env=None, msg=None):
         self.action = action
         self.resource = resource
         self.env = env
