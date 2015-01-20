@@ -71,7 +71,9 @@ class ReportTestCase(unittest.TestCase):
     def test_sub_var_quotes(self):
         sql, values, missing_args = self.report_module.sql_sub_vars(
             "'$VAR'", {'VAR': 'value'})
-        self.assertEqual(self.env.get_read_db().concat("''", '%s', "''"), sql)
+        with self.env.db_query as db:
+            concatenated = db.concat("''", '%s', "''")
+        self.assertEqual(concatenated, sql)
         self.assertEqual(['value'], values)
         self.assertEqual([], missing_args)
 
@@ -122,11 +124,11 @@ class ReportTestCase(unittest.TestCase):
         req = Mock(base_path='', chrome={}, args={}, session={},
                    abs_href=Href('/'), href=Href('/'), locale='',
                    perm=MockPerm(), authname=None, tz=None)
-        db = self.env.get_read_db()
         name = """%s"`'%%%?"""
-        sql = 'SELECT 1 AS %s, $USER AS user' % db.quote(name)
-        rv = self.report_module.execute_paginated_report(req, 1, sql,
-                                                         {'USER': 'joe'})
+        with self.env.db_query as db:
+            sql = 'SELECT 1 AS %s, $USER AS user' % db.quote(name)
+            rv = self.report_module.execute_paginated_report(req, 1, sql,
+                                                             {'USER': 'joe'})
         self.assertEqual(5, len(rv), repr(rv))
         cols, results, num_items, missing_args, limit_offset = rv
         self.assertEqual([name, 'user'], cols)

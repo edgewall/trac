@@ -338,46 +338,46 @@ class CachedRepository(Repository):
                                                      in node_infos)
         path_revs = dict((node.path, []) for node, first in node_infos)
 
-        db = self.env.get_read_db()
-        cursor = db.cursor()
-        prefix_match = db.prefix_match()
-
         # Prevent "too many SQL variables" since max number of parameters is
         # 999 on SQLite. No limitation on PostgreSQL and MySQL.
         idx = 0
         delta = (999 - 3) // 5
-        while idx < len(node_infos):
-            subset = node_infos[idx:idx + delta]
-            idx += delta
-            count = len(subset)
+        with self.env.db_query as db:
+            prefix_match = db.prefix_match()
+            while idx < len(node_infos):
+                subset = node_infos[idx:idx + delta]
+                idx += delta
+                count = len(subset)
 
-            holders = ','.join(('%s',) * count)
-            query = """\
-                SELECT DISTINCT
-                  rev, (CASE WHEN path IN (%s) THEN path %s END) AS path
-                FROM node_change
-                WHERE repos=%%s AND rev>=%%s AND rev<=%%s AND (path IN (%s) %s)
-                """ % \
-                (holders,
-                 ' '.join(('WHEN path ' + prefix_match + ' THEN %s',) * count),
-                 holders,
-                 ' '.join(('OR path ' + prefix_match,) * count))
-            args = []
-            args.extend(node.path for node, first in subset)
-            for node, first in subset:
-                args.append(db.prefix_match_value(node.path + '/'))
-                args.append(node.path)
-            args.extend((self.id, sfirst, slast))
-            args.extend(node.path for node, first in subset)
-            args.extend(db.prefix_match_value(node.path + '/')
-                        for node, first in subset)
-            cursor.execute(query, args)
+                holders = ','.join(('%s',) * count)
+                query = """\
+                    SELECT DISTINCT
+                      rev, (CASE WHEN path IN (%s) THEN path %s END) AS path
+                    FROM node_change
+                    WHERE repos=%%s AND rev>=%%s AND rev<=%%s
+                      AND (path IN (%s) %s)
+                    """ % \
+                    (holders,
+                     ' '.join(('WHEN path ' + prefix_match + ' THEN %s',)
+                              * count),
+                     holders,
+                     ' '.join(('OR path ' + prefix_match,)
+                              * count))
+                args = []
+                args.extend(node.path for node, first in subset)
+                for node, first in subset:
+                    args.append(db.prefix_match_value(node.path + '/'))
+                    args.append(node.path)
+                args.extend((self.id, sfirst, slast))
+                args.extend(node.path for node, first in subset)
+                args.extend(db.prefix_match_value(node.path + '/')
+                            for node, first in subset)
 
-            for srev, path in cursor:
-                rev = self.rev_db(srev)
-                node, first = path_infos[path]
-                if first <= rev <= node.rev:
-                    path_revs[path].append(rev)
+                for srev, path in db(query, args):
+                    rev = self.rev_db(srev)
+                    node, first = path_infos[path]
+                    if first <= rev <= node.rev:
+                        path_revs[path].append(rev)
 
         return path_revs
 

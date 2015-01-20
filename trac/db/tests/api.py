@@ -324,27 +324,27 @@ class StringsTestCase(unittest.TestCase):
                              get_column_names(cursor)[0])
 
     def test_quoted_id_with_percent(self):
-        db = self.env.get_read_db()
         name = """%?`%s"%'%%"""
 
-        def test(db, logging=False):
-            cursor = db.cursor()
-            if logging:
-                cursor.log = self.env.log
+        def test(logging=False):
+            with self.env.db_query as db:
+                cursor = db.cursor()
+                if logging:
+                    cursor.log = self.env.log
 
-            cursor.execute('SELECT 1 AS ' + db.quote(name))
-            self.assertEqual(name, get_column_names(cursor)[0])
-            cursor.execute('SELECT %s AS ' + db.quote(name), (42,))
-            self.assertEqual(name, get_column_names(cursor)[0])
-            cursor.executemany("UPDATE system SET value=%s WHERE "
-                               "1=(SELECT 0 AS " + db.quote(name) + ")",
-                               [])
-            cursor.executemany("UPDATE system SET value=%s WHERE "
-                               "1=(SELECT 0 AS " + db.quote(name) + ")",
-                               [('42',), ('43',)])
+                cursor.execute('SELECT 1 AS ' + db.quote(name))
+                self.assertEqual(name, get_column_names(cursor)[0])
+                cursor.execute('SELECT %s AS ' + db.quote(name), (42,))
+                self.assertEqual(name, get_column_names(cursor)[0])
+                cursor.executemany("UPDATE system SET value=%s WHERE "
+                                   "1=(SELECT 0 AS " + db.quote(name) + ")",
+                                   [])
+                cursor.executemany("UPDATE system SET value=%s WHERE "
+                                   "1=(SELECT 0 AS " + db.quote(name) + ")",
+                                   [('42',), ('43',)])
 
-        test(db)
-        test(db, logging=True)
+        test()
+        test(True)
 
     def test_prefix_match_case_sensitive(self):
         @self.env.with_transaction()
@@ -354,24 +354,22 @@ class StringsTestCase(unittest.TestCase):
                                [('blahblah',), ('BlahBlah',), ('BLAHBLAH',),
                                 (u'BlähBlah',), (u'BlahBläh',)])
 
-        db = self.env.get_read_db()
-        cursor = db.cursor()
-        cursor.execute("SELECT name FROM system WHERE name %s" %
-                       db.prefix_match(),
-                       (db.prefix_match_value('Blah'),))
-        names = sorted(name for name, in cursor)
+        with self.env.db_query as db:
+            names = sorted(name for name, in db(
+                "SELECT name FROM system WHERE name %s"
+                % db.prefix_match(),
+                (db.prefix_match_value('Blah'),)))
         self.assertEqual('BlahBlah', names[0])
         self.assertEqual(u'BlahBläh', names[1])
         self.assertEqual(2, len(names))
 
     def test_prefix_match_metachars(self):
         def do_query(prefix):
-            db = self.env.get_read_db()
-            cursor = db.cursor()
-            cursor.execute("SELECT name FROM system WHERE name %s "
-                           "ORDER BY name" % db.prefix_match(),
-                           (db.prefix_match_value(prefix),))
-            return [name for name, in cursor]
+            with self.env.db_query as db:
+                return [name for name, in db(
+                    "SELECT name FROM system WHERE name %s "
+                    "ORDER BY name" % db.prefix_match(),
+                    (db.prefix_match_value(prefix),))]
 
         @self.env.with_transaction()
         def do_insert(db):

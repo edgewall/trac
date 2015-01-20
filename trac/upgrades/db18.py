@@ -50,13 +50,14 @@ def do_upgrade(env, ver, cursor):
     # Add an index to the temporary table to speed up the conversion
     cursor.execute("CREATE INDEX session_old_sid_idx ON session_old(sid)")
     # Insert the sessions into the new table
-    cursor.execute("""
-        INSERT INTO session (sid, last_visit, authenticated)
-        SELECT distinct s.sid,COALESCE(%s,0),s.authenticated
-        FROM session_old AS s LEFT JOIN session_old AS s2
-        ON (s.sid=s2.sid AND s2.var_name='last_visit')
-        WHERE s.sid IS NOT NULL
-        """ % env.get_read_db().cast('s2.var_value', 'int'))
+    with env.db_query as db:
+        cursor.execute("""
+            INSERT INTO session (sid, last_visit, authenticated)
+            SELECT distinct s.sid,COALESCE(%s,0),s.authenticated
+            FROM session_old AS s LEFT JOIN session_old AS s2
+            ON (s.sid=s2.sid AND s2.var_name='last_visit')
+            WHERE s.sid IS NOT NULL
+            """ % db.cast('s2.var_value', 'int'))
     cursor.execute("""
         INSERT INTO session_attribute (sid, authenticated, name, value)
         SELECT s.sid, s.authenticated, s.var_name, s.var_value

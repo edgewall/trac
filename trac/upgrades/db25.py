@@ -40,8 +40,8 @@ def do_upgrade(env, ver, cursor):
                                   for column in columns)))
 
     # Convert comment edit timestamps to microseconds
-    db = env.get_read_db()
-    cursor.execute("""
-        UPDATE ticket_change SET newvalue=%s*1000000
-        WHERE field %s""" % (db.cast('newvalue', 'int64'), db.like()),
-        ('_comment%',))
+    with env.db_query as db:
+        cursor.execute("""
+            UPDATE ticket_change SET newvalue=%s*1000000
+            WHERE field %s""" % (db.cast('newvalue', 'int64'), db.like()),
+            ('_comment%',))

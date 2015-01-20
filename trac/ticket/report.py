@@ -822,7 +822,7 @@ class ReportModule(Component):
             return '%s'
 
         # inside a literal break it and concatenate with the parameter
-        def repl_literal(expr):
+        def repl_literal(expr, db):
             parts = sub_vars_re.split(expr[1:-1])
             if len(parts) == 1:
                 return expr
@@ -831,17 +831,18 @@ class ReportModule(Component):
             parts[1::2] = ['%s'] * len(params)
             for param in params:
                 add_value(param)
-            return self.env.get_read_db().concat(*parts)
+            return db.concat(*parts)
 
         sql_io = StringIO()
 
         # break SQL into literals and non-literals to handle replacing
         # variables within them with query parameters
-        for expr in re.split("('(?:[^']|(?:''))*')", sql):
-            if expr.startswith("'"):
-                sql_io.write(repl_literal(expr))
-            else:
-                sql_io.write(sub_vars_re.sub(repl, expr))
+        with self.env.db_query as db:
+            for expr in re.split("('(?:[^']|(?:''))*')", sql):
+                if expr.startswith("'"):
+                    sql_io.write(repl_literal(expr, db))
+                else:
+                    sql_io.write(sub_vars_re.sub(repl, expr))
 
         # Remove arguments that don't appear in the SQL query
         for name in set(args) - names:
