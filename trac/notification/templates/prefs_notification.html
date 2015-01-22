@@ -34,7 +34,7 @@
             <table>
               <th><label for="format-${distributor}">Format:</label></th>
               <td>
-                <select name="format-${distributor}">
+                <select id="format-${distributor}" name="format-${distributor}">
                   <option py:for="f in data['formatters'][distributor]"
                           value="${f}"
                           selected="${(f == data['selected_format'][distributor]) or None}">${f}</option>
