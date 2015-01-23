@@ -25,29 +25,30 @@
 # All configuration values have a default value; values that are
 # commented out serve to show the default value.
 
-import sys, os
+import os
+import sys
+from datetime import datetime
+
+from trac.util import get_pkginfo
+
+pkg_info = get_pkginfo(sys.modules['trac'])
 
 # General substitutions.
 project = 'Trac'
-copyright = '2015, Edgewall Software'
-url = 'http://trac.edgewall.org'
+copyright = '%s, Edgewall Software' % datetime.now().year
+url = pkg_info['home_page']
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = '1.0.4'
+version = pkg_info['version'].split('dev')[0]
 # The full version, including alpha/beta/rc tags.
-release = '1.0.4'
+release = pkg_info['version']
 
 # Devel or Release mode for the documentation (if devel, include TODOs,
 # can also be used in conditionals: .. ifconfig :: devel)
-devel = True
-
-if devel:
-    release += 'dev'
-
-
+devel = 'dev' in pkg_info['version']
 
 # If your extensions are in another directory, add it here. If the
 # directory is relative to the documentation root, use os.path.abspath
