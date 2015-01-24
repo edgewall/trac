@@ -220,7 +220,6 @@ class WithTransactionTest(unittest.TestCase):
             pass
 
 
-
 class ParseConnectionStringTestCase(unittest.TestCase):
 
     def test_sqlite_relative(self):
@@ -347,12 +346,10 @@ class StringsTestCase(unittest.TestCase):
         test(True)
 
     def test_prefix_match_case_sensitive(self):
-        @self.env.with_transaction()
-        def do_insert(db):
-            cursor = db.cursor()
-            cursor.executemany("INSERT INTO system (name,value) VALUES (%s,1)",
-                               [('blahblah',), ('BlahBlah',), ('BLAHBLAH',),
-                                (u'BlähBlah',), (u'BlahBläh',)])
+        with self.env.db_transaction as db:
+            db.executemany("INSERT INTO system (name,value) VALUES (%s,1)",
+                           [('blahblah',), ('BlahBlah',), ('BLAHBLAH',),
+                            (u'BlähBlah',), (u'BlahBläh',)])
 
         with self.env.db_query as db:
             names = sorted(name for name, in db(
@@ -371,15 +368,13 @@ class StringsTestCase(unittest.TestCase):
                     "ORDER BY name" % db.prefix_match(),
                     (db.prefix_match_value(prefix),))]
 
-        @self.env.with_transaction()
-        def do_insert(db):
-            values = ['foo*bar', 'foo*bar!', 'foo?bar', 'foo?bar!',
-                      'foo[bar', 'foo[bar!', 'foo]bar', 'foo]bar!',
-                      'foo%bar', 'foo%bar!', 'foo_bar', 'foo_bar!',
-                      'foo/bar', 'foo/bar!', 'fo*ob?ar[fo]ob%ar_fo/obar']
-            cursor = db.cursor()
-            cursor.executemany("INSERT INTO system (name,value) VALUES (%s,1)",
-                               [(value,) for value in values])
+        values = ['foo*bar', 'foo*bar!', 'foo?bar', 'foo?bar!',
+                  'foo[bar', 'foo[bar!', 'foo]bar', 'foo]bar!',
+                  'foo%bar', 'foo%bar!', 'foo_bar', 'foo_bar!',
+                  'foo/bar', 'foo/bar!', 'fo*ob?ar[fo]ob%ar_fo/obar']
+        with self.env.db_transaction as db:
+            db.executemany("INSERT INTO system (name,value) VALUES (%s,1)",
+                           [(value,) for value in values])
 
         self.assertEqual(['foo*bar', 'foo*bar!'], do_query('foo*'))
         self.assertEqual(['foo?bar', 'foo?bar!'], do_query('foo?'))
