@@ -115,6 +115,8 @@ def set_header(message, key, value, charset):
     email = None
     if isinstance(value, (tuple, list)):
         value, email = value
+    if not isinstance(value, basestring):
+        value = to_unicode(value)
     header = create_header(key, value, charset)
     if email:
         header = '"%s" <%s>' % (header, email)

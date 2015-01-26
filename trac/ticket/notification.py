@@ -220,9 +220,17 @@ class TicketFormatter(Component):
             subject = notify.format_subj(tickets_descr)
         else:
             notify = TicketNotifyEmail(self.env)
-            notify.ticket = event.target
-            summary = event.target['summary']
+            ticket = event.target
+            notify.ticket = ticket
+            summary = ticket['summary']
             subject = notify.format_subj(summary, event.category == 'created')
+            url = self.env.abs_href.ticket(ticket.id)
+            if event.category != 'created':
+                cnum = ticket.get_comment_number(event.time)
+                if cnum is not None:
+                    url += '#comment:%d' % cnum
+            set_header(message, 'X-Trac-Ticket-ID', ticket.id, charset)
+            set_header(message, 'X-Trac-Ticket-URL', url, charset)
         set_header(message, 'Subject', subject, charset)
 
 

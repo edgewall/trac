@@ -22,21 +22,34 @@ import shutil
 import tempfile
 import re
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta
 from StringIO import StringIO
 
 import trac.tests.compat
 from trac.attachment import Attachment
+from trac.notification.api import NotificationSystem
 from trac.test import EnvironmentStub, Mock, MockPerm
 from trac.tests.notification import SMTP_TEST_PORT, SMTPThreadedServer,\
                                     parse_smtp_message
 from trac.ticket.model import Ticket
-from trac.ticket.notification import TicketNotifyEmail
+from trac.ticket.notification import TicketChangeEvent, TicketNotifyEmail
 from trac.ticket.web_ui import TicketModule
 from trac.util.datefmt import utc
 
 MAXBODYWIDTH = 76
 notifysuite = None
+
+
+def notify_ticket_created(env, ticket):
+    notifysuite.smtpd.cleanup()
+    event = TicketChangeEvent('created', ticket, None, ticket['reporter'])
+    NotificationSystem(env).notify(event)
+
+
+def notify_ticket_changed(env, ticket, author='anonymous'):
+    notifysuite.smtpd.cleanup()
+    event = TicketChangeEvent('changed', ticket, ticket['changetime'], author)
+    NotificationSystem(env).notify(event)
 
 
 class RecipientTestCase(unittest.TestCase):
@@ -258,7 +271,9 @@ class NotificationTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
+        self.env.config.set('trac', 'base_url', 'http://localhost/trac')
         self.env.config.set('project', 'name', 'TracTest')
+        self.env.config.set('project', 'url', 'http://localhost/project.url')
         self.env.config.set('notification', 'smtp_enabled', 'true')
         self.env.config.set('notification', 'always_notify_owner', 'true')
         self.env.config.set('notification', 'always_notify_reporter', 'true')
@@ -1288,6 +1303,43 @@ Security sensitive:  0                           |          Blocking:
         self.assertIn('\nSubject: =?utf-8?b?', message)  # is mime-encoded
         self.assertEqual(summary,
                          re.split(r' #[0-9]+: ', headers['Subject'], 1)[1])
+
+    def test_mail_headers(self):
+        # The following will be removed if smtp_always_cc works (#11934)
+        self.env.insert_known_users([('joeuser', 'Joe User',
+                                      'user-joe@example.com')])
+        def validates(headers):
+            self.assertEqual('http://localhost/project.url',
+                             headers.get('X-URL'))
+            self.assertEqual('ticket', headers.get('X-Trac-Realm'))
+            self.assertEqual(str(ticket.id), headers.get('X-Trac-Ticket-ID'))
+
+        when = datetime(2015, 1, 1, tzinfo=utc)
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'joeuser'
+        ticket['summary'] = 'Summary'
+        ticket.insert(when=when)
+        notify_ticket_created(self.env, ticket)
+        headers, body = parse_smtp_message(notifysuite.smtpd.get_message())
+        validates(headers)
+        self.assertEqual('http://localhost/trac/ticket/%d' % ticket.id,
+                         headers.get('X-Trac-Ticket-URL'))
+
+        ticket.save_changes(comment='New comment 1',
+                            when=when + timedelta(days=1))
+        notify_ticket_changed(self.env, ticket)
+        headers, body = parse_smtp_message(notifysuite.smtpd.get_message())
+        validates(headers)
+        self.assertEqual('http://localhost/trac/ticket/%d#comment:1' %
+                         ticket.id, headers.get('X-Trac-Ticket-URL'))
+
+        ticket.save_changes(comment='Reply to comment:1', replyto='1',
+                            when=when + timedelta(days=2))
+        notify_ticket_changed(self.env, ticket)
+        headers, body = parse_smtp_message(notifysuite.smtpd.get_message())
+        validates(headers)
+        self.assertEqual('http://localhost/trac/ticket/%d#comment:2' %
+                         ticket.id, headers.get('X-Trac-Ticket-URL'))
 
 
 class AttachmentNotificationTestCase(unittest.TestCase):
