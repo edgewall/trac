@@ -70,6 +70,9 @@ def parse_workflow_config(rawactions):
                 actions[name][attribute] = to_list(value)
             else:
                 actions[name][attribute] = value
+    for name, attrs in actions.iteritems():
+        if not attrs.get('name'):
+            attrs['name'] = name
     return actions
 
 
