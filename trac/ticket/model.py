@@ -291,6 +291,18 @@ class Ticket(object):
 
         return self.id
 
+    def get_comment_number(self, cdate):
+        """Return a comment number by its date."""
+        ts = to_utimestamp(cdate)
+        for cnum, in self.env.db_query("""\
+                SELECT oldvalue FROM ticket_change
+                WHERE ticket=%s AND time=%s AND field='comment'
+                """, (self.id, ts)):
+            try:
+                return int(cnum.rsplit('.', 1)[-1])
+            except ValueError:
+                break
+
     def save_changes(self, author=None, comment=None, when=None, cnum='',
                      replyto=None):
         """

@@ -755,6 +755,15 @@ class TicketCommentEditTestCase(TicketCommentTestCase):
         self.assertEqual('New Comment 2', listener.comment)
         self.assertEqual('Comment 2', listener.old_comment)
 
+    def test_get_comment_number(self):
+        ticket = Ticket(self.env, self.id)
+        self.assertEqual(1, ticket.get_comment_number(self.created +
+                                                      timedelta(seconds=1)))
+        self.assertEqual(2, ticket.get_comment_number(self.created +
+                                                      timedelta(seconds=2)))
+        self.assertEqual(3, ticket.get_comment_number(self.created +
+                                                      timedelta(seconds=3)))
+
 
 class TicketCommentDeleteTestCase(TicketCommentTestCase):
 
