@@ -33,14 +33,14 @@ from genshi.builder import tag
 from trac import __version__
 from trac.config import (BoolOption, ConfigurationError, IntOption, Option,
                          OrderedExtensionsOption)
-from trac.core import *
+from trac.core import Component, ExtensionPoint, TracError, implements
 from trac.notification.api import (get_target_id, IEmailAddressResolver,
                                    IEmailDecorator, IEmailSender,
                                    INotificationDistributor,
                                    INotificationFormatter, NotificationSystem)
-from trac.util.compat import close_fds, set
+from trac.util.compat import close_fds
 from trac.util.datefmt import to_utimestamp
-from trac.util.text import CRLF, fix_eol, to_unicode
+from trac.util.text import CRLF, exception_to_unicode, fix_eol, to_unicode
 from trac.util.translation import _, tag_
 
 
@@ -48,7 +48,7 @@ __all__ = ['AlwaysEmailDecorator', 'EMAIL_LOOKALIKE_PATTERN',
            'EmailDistributor', 'MAXHEADERLEN', 'RecipientMatcher',
            'SendmailEmailSender', 'SessionEmailResolver', 'SmtpEmailSender',
            'create_charset', 'create_header', 'create_message_id',
-           'create_mime_text', 'set_header']
+           'create_mime_multipart', 'create_mime_text', 'set_header']
 
 
 MAXHEADERLEN = 76
@@ -124,8 +124,17 @@ def set_header(message, key, value, charset):
         message[key] = header
 
 
+def create_mime_multipart(subtype):
+    """Create an appropriate email `MIMEMultipart`."""
+    msg = MIMEMultipart(subtype)
+    del msg['Content-Transfer-Encoding']
+    return msg
+
+
 def create_mime_text(body, format, charset):
     """Create an appropriate email `MIMEText`."""
+    if isinstance(body, unicode):
+        body = body.encode('utf-8')
     msg = MIMEText(body, format)
     # Message class computes the wrong type from MIMEText constructor,
     # which does not take a Charset object as initializer. Reset the
@@ -257,7 +266,7 @@ class EmailDistributor(Component):
                        "capable of handling '%s' of '%s': %s", transport,
                        event.realm, ', '.join(formats.keys()))
 
-        msgdict = {}
+        addresses = {}
         for sid, authed, addr, fmt in recipients:
             if fmt not in formats:
                 self.log.debug("EmailDistributor format %s not available for "
@@ -275,20 +284,58 @@ class EmailDistributor(Component):
                                        status, resolver.__class__.__name__)
                         break
             if addr:
-                msgdict.setdefault(fmt, set()).add(addr)
+                addresses.setdefault(fmt, set()).add(addr)
             else:
                 status = 'authenticated' if authed else 'not authenticated'
                 self.log.debug("EmailDistributor was unable to find an "
                                "address for: %s (%s)", sid, status)
 
-        for fmt, addrs in msgdict.iteritems():
+        outputs = {}
+        failed = []
+        for fmt, formatter in formats.iteritems():
+            if fmt not in addresses and fmt != 'text/plain':
+                continue
+            try:
+                outputs[fmt] = formatter.format(transport, fmt, event)
+            except Exception as e:
+                self.log.warn('EmailDistributor caught exception while '
+                              'formatting %s to %s for %s: %s%s',
+                              event.realm, fmt, transport, formatter.__class__,
+                              exception_to_unicode(e, traceback=True))
+                failed.append(fmt)
+
+        # Fallback to text/plain when formatter is broken
+        if failed and 'text/plain' in outputs:
+            for fmt in failed:
+                addresses.setdefault('text/plain', set()) \
+                         .update(addresses.pop(fmt, ()))
+
+        for fmt, addrs in addresses.iteritems():
             self.log.debug("EmailDistributor is sending event as '%s' to: %s",
                            fmt, ', '.join(addrs))
-            self._do_send(transport, event, fmt, addrs, formats[fmt])
+            message = self._create_message(fmt, outputs)
+            if message:
+                self._do_send(transport, event, addrs, message)
+            else:
+                self.log.warn("EmailDistributor cannot send event '%s' as "
+                              "'%s': %s", event.realm, fmt, ', '.join(addrs))
 
-    def _do_send(self, transport, event, format, recipients, formatter):
-        output = formatter.format(transport, format, event)
+    def _create_message(self, format, outputs):
+        if format not in outputs:
+            return None
+        message = create_mime_multipart('related')
+        maintype, subtype = format.split('/')
+        preferred = create_mime_text(outputs[format], subtype, self._charset)
+        if format != 'text/plain' and 'text/plain' in outputs:
+            alternative = create_mime_multipart('alternative')
+            alternative.attach(create_mime_text(outputs['text/plain'], 'plain',
+                                                self._charset))
+            alternative.attach(preferred)
+            preferred = alternative
+        message.attach(preferred)
+        return message
 
+    def _do_send(self, transport, event, recipients, message):
         config = self.config['notification']
         smtp_from = config.get('smtp_from')
         smtp_from_name = config.get('smtp_from_name') or self.env.project_name
@@ -324,20 +371,20 @@ class EmailDistributor(Component):
             headers['Bcc'] = ', '.join(recipients)
         headers['Reply-To'] = smtp_reply_to
 
-        rootMessage = create_mime_text(output, 'plain', self._charset)
         for k, v in headers.iteritems():
-            set_header(rootMessage, k, v, self._charset)
+            set_header(message, k, v, self._charset)
         for decorator in self.decorators:
-            decorator.decorate_message(event, rootMessage, self._charset)
+            decorator.decorate_message(event, message, self._charset)
 
-        from_name, from_addr = parseaddr(str(rootMessage['From']))
-        to_addrs = [addr for name, addr in getaddresses(str(h) for h in
-                                            (rootMessage.get_all('To', []) +
-                                             rootMessage.get_all('Cc', []) +
-                                             rootMessage.get_all('Bcc', [])))]
-        del rootMessage['Bcc']
-        NotificationSystem(self.env).send_email(from_addr, to_addrs,
-                                                rootMessage.as_string())
+        from_name, from_addr = parseaddr(str(message['From']))
+        to_addrs = set()
+        for name in ('To', 'Cc', 'Bcc'):
+            values = map(str, message.get_all(name, ()))
+            to_addrs.update(addr for name, addr in getaddresses(values)
+                                 if addr)
+        del message['Bcc']
+        NotificationSystem(self.env).send_email(from_addr, list(to_addrs),
+                                                message.as_string())
 
 
 class SmtpEmailSender(Component):
