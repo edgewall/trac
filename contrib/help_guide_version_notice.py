@@ -15,13 +15,17 @@ from pkg_resources import resource_listdir
 
 from trac.config import ListOption, Option
 from trac.core import Component, implements
+from trac.resource import Resource, resource_exists
 from trac.web.api import IRequestFilter
 
 NOTICE_TEMPLATE = """\
 {{{#!box note
-This page documents the %(release)s (%(desc)s) release.
-See [[%(alt_page)s]] if you need the %(alt_desc)s version.
+This page documents the %(release)s (%(desc)s) release.%(alt_notice)s
 }}}
+"""
+
+ALT_NOTICE_TEMPLATE = """
+See [[%(alt_page)s]] if you need the %(alt_desc)s version.
 """
 
 
@@ -59,26 +63,37 @@ class HelpGuideVersionNotice(Component):
         if data and 'page' in data and 'text' in data:
             name = data['page'].name
             notice = ""
+            release = desc = alt_rel_path = alt_id = alt_desc = None
             if name in self.default_pages:
-                alt_page = self.lts_release + '/' + name
-                notice = NOTICE_TEMPLATE % {'release': self.stable_release,
-                                            'desc': 'latest stable',
-                                            'alt_page': alt_page,
-                                            'alt_desc': 'previous'}
+                release = self.stable_release
+                desc = 'latest stable'
+                alt_id = self.lts_release + '/' + name
+                alt_rel_path = alt_id
+                alt_desc = 'previous'
             elif name.startswith(self.lts_release) and \
                     name[len(self.lts_release)+1:] in self.default_pages:
-                alt_page = '../../' + name[len(self.lts_release)+1:]
-                notice = NOTICE_TEMPLATE % {'release': self.lts_release,
-                                            'desc': 'maintenance',
-                                            'alt_page': alt_page,
-                                            'alt_desc': 'latest stable'}
+                release = self.lts_release
+                desc = 'maintenance'
+                alt_id = name[len(self.lts_release)+1:]
+                alt_rel_path = '../../' + alt_id
+                alt_desc = 'latest stable'
             elif name.startswith(self.dev_release) and \
                     name[len(self.dev_release)+1:] in self.default_pages:
-                alt_page = '../../' + name[len(self.dev_release)+1:]
-                notice = NOTICE_TEMPLATE % {'release': self.dev_release,
-                                            'desc': 'development',
-                                            'alt_page': alt_page,
-                                            'alt_desc': 'latest stable'}
+                release = self.dev_release
+                desc = 'development'
+                alt_id = name[len(self.dev_release)+1:]
+                alt_rel_path = '../../' + alt_id
+                alt_desc = 'latest stable'
+
+            if alt_id:
+                resource = Resource('wiki', alt_id)
+                alt_notice = ALT_NOTICE_TEMPLATE % {'alt_page': alt_rel_path,
+                                                    'alt_desc': alt_desc} \
+                             if resource_exists(self.env, resource) \
+                             else ""
+                notice = NOTICE_TEMPLATE % {'release': release,
+                                            'desc': desc,
+                                            'alt_notice': alt_notice}
             data['text'] = notice + data['text']
 
         return template, data, content_type
