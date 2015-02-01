@@ -189,13 +189,17 @@ class EmailDistributorTestCase(unittest.TestCase):
 
         history = self.sender.history
         self.assertNotEqual([], history)
-        self.assertEqual(1, len(history))
-        from_addr, recipients, message = history[0]
-        self.assertEqual('trac@example.org', from_addr)
-        self.assertEqual(set(('foo@example.org', 'cc@example.org',
-                              'bcc@example.org')),
-                         set(recipients))
-        self._assert_alternative_mail(message, 'blah', '<p>blah</p>')
+        self.assertEqual(2, len(history))
+        for from_addr, recipients, message in history:
+            if 'foo@example.org' in recipients:
+                self.assertEqual('trac@example.org', from_addr)
+                self.assertEqual(['foo@example.org'], recipients)
+                self._assert_alternative_mail(message, 'blah', '<p>blah</p>')
+            if 'cc@example.org' in recipients:
+                self.assertEqual('trac@example.org', from_addr)
+                self.assertEqual(set(('cc@example.org', 'bcc@example.org')),
+                                 set(recipients))
+                self._assert_mail(message, 'text/plain', 'blah')
 
     def test_plain_and_html(self):
         with self.env.db_transaction:
@@ -214,9 +218,7 @@ class EmailDistributorTestCase(unittest.TestCase):
                                  set(recipients))
                 self._assert_mail(message, 'text/plain', 'blah')
             if 'bar@example.org' in recipients:
-                self.assertEqual(set(('bar@example.org', 'cc@example.org',
-                                      'bcc@example.org')),
-                                 set(recipients))
+                self.assertEqual(['bar@example.org'], recipients)
                 self._assert_alternative_mail(message, 'blah', '<p>blah</p>')
 
     def test_broken_plain_formatter(self):
@@ -231,9 +233,7 @@ class EmailDistributorTestCase(unittest.TestCase):
         self.assertEqual(1, len(history))
         from_addr, recipients, message = history[0]
         self.assertEqual('trac@example.org', from_addr)
-        self.assertEqual(set(('bar@example.org', 'cc@example.org',
-                              'bcc@example.org')),
-                         set(recipients))
+        self.assertEqual(['bar@example.org'], recipients)
         self._assert_mail(message, 'text/html', '<p>raise-text-plain</p>')
 
     def test_broken_html_formatter(self):
@@ -263,6 +263,26 @@ class EmailDistributorTestCase(unittest.TestCase):
 
         history = self.sender.history
         self.assertEqual([], history)
+
+    def test_username_in_always_cc(self):
+        self.env.config.set('notification', 'smtp_always_cc',
+                            'foo, cc@example.org')
+        self.env.config.set('notification', 'smtp_always_bcc',
+                            'bar, foo, bcc@example.org')
+        event = self._create_event('blah')
+        self.notsys.notify(event)
+
+        history = self.sender.history
+        self.assertNotEqual([], history)
+        self.assertEqual(1, len(history))
+        from_addr, recipients, message = history[0]
+        self.assertEqual('trac@example.org', from_addr)
+        self.assertEqual(set(('foo@example.org', 'bar@example.org',
+                              'cc@example.org', 'bcc@example.org')),
+                         set(recipients))
+        self.assertEqual('cc@example.org, foo@example.org', message['Cc'])
+        self.assertEqual(None, message['Bcc'])
+        self._assert_mail(message, 'text/plain', 'blah')
 
 
 def suite():

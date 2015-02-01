@@ -34,17 +34,17 @@ from trac import __version__
 from trac.config import (BoolOption, ConfigurationError, IntOption, Option,
                          OrderedExtensionsOption)
 from trac.core import Component, ExtensionPoint, TracError, implements
-from trac.notification.api import (get_target_id, IEmailAddressResolver,
-                                   IEmailDecorator, IEmailSender,
-                                   INotificationDistributor,
-                                   INotificationFormatter, NotificationSystem)
+from trac.notification.api import (
+    get_target_id, IEmailAddressResolver, IEmailDecorator, IEmailSender,
+    INotificationDistributor, INotificationFormatter, INotificationSubscriber,
+    NotificationSystem)
 from trac.util.compat import close_fds
 from trac.util.datefmt import to_utimestamp
 from trac.util.text import CRLF, exception_to_unicode, fix_eol, to_unicode
 from trac.util.translation import _, tag_
 
 
-__all__ = ['AlwaysEmailDecorator', 'EMAIL_LOOKALIKE_PATTERN',
+__all__ = ['AlwaysEmailSubscriber', 'EMAIL_LOOKALIKE_PATTERN',
            'EmailDistributor', 'MAXHEADERLEN', 'RecipientMatcher',
            'SendmailEmailSender', 'SessionEmailResolver', 'SmtpEmailSender',
            'create_charset', 'create_header', 'create_message_id',
@@ -268,6 +268,9 @@ class EmailDistributor(Component):
                        "capable of handling '%s' of '%s': %s", transport,
                        event.realm, ', '.join(formats.keys()))
 
+        notify_sys = NotificationSystem(self.env)
+        always_cc = set(notify_sys.smtp_always_cc_list)
+        use_public_cc = notify_sys.use_public_cc
         addresses = {}
         for sid, authed, addr, fmt in recipients:
             if fmt not in formats:
@@ -287,6 +290,8 @@ class EmailDistributor(Component):
                         break
             if addr:
                 addresses.setdefault(fmt, set()).add(addr)
+                if use_public_cc or sid and sid in always_cc:
+                    always_cc.add(addr)
             else:
                 status = 'authenticated' if authed else 'not authenticated'
                 self.log.debug("EmailDistributor was unable to find an "
@@ -317,7 +322,10 @@ class EmailDistributor(Component):
                            fmt, ', '.join(addrs))
             message = self._create_message(fmt, outputs)
             if message:
-                self._do_send(transport, event, addrs, message)
+                addrs = set(addrs)
+                cc_addrs = sorted(addrs & always_cc)
+                bcc_addrs = sorted(addrs - always_cc)
+                self._do_send(transport, event, message, cc_addrs, bcc_addrs)
             else:
                 self.log.warn("EmailDistributor cannot send event '%s' as "
                               "'%s': %s", event.realm, fmt, ', '.join(addrs))
@@ -337,12 +345,11 @@ class EmailDistributor(Component):
         message.attach(preferred)
         return message
 
-    def _do_send(self, transport, event, recipients, message):
+    def _do_send(self, transport, event, message, cc_addrs, bcc_addrs):
         config = self.config['notification']
         smtp_from = config.get('smtp_from')
         smtp_from_name = config.get('smtp_from_name') or self.env.project_name
         smtp_reply_to = config.get('smtp_replyto')
-        use_public_cc = config.getbool('use_public_cc')
 
         headers = dict()
         headers['X-Mailer'] = 'Trac %s, by Edgewall Software' % __version__
@@ -367,10 +374,10 @@ class EmailDistributor(Component):
         headers['From'] = (smtp_from_name, smtp_from) \
                           if smtp_from_name else smtp_from
         headers['To'] = 'undisclosed-recipients: ;'
-        if use_public_cc:
-            headers['Cc'] = ', '.join(recipients)
-        else:
-            headers['Bcc'] = ', '.join(recipients)
+        if cc_addrs:
+            headers['Cc'] = ', '.join(cc_addrs)
+        if bcc_addrs:
+            headers['Bcc'] = ', '.join(bcc_addrs)
         headers['Reply-To'] = smtp_reply_to
 
         for k, v in headers.iteritems():
@@ -509,24 +516,38 @@ class SessionEmailResolver(Component):
             return None
 
 
-class AlwaysEmailDecorator(Component):
+class AlwaysEmailSubscriber(Component):
     """Implement a policy to -always- send an email to a certain address.
 
     Controlled via the smtp_always_cc and smtp_always_bcc option in the
     notification section of trac.ini.
     """
 
-    implements(IEmailDecorator)
+    implements(INotificationSubscriber)
 
-    def decorate_message(self, event, message, charset):
-        always_cc = self.config.get('notification', 'smtp_always_cc')
-        always_bcc = self.config.get('notification', 'smtp_always_bcc')
-        for k, v in {'Cc': always_cc, 'Bcc': always_bcc}.items():
-            if v:
-                self.log.debug("AlwaysEmailDecorator added '%s' because "
-                               "of rule: smtp_always_%s", v, k.lower())
-                if message[k] and len(str(message[k]).split(',')) > 0:
-                    recips = ', '.join([str(message[k]), v])
-                else:
-                    recips = v
-                set_header(message, k, recips, charset)
+    def matches(self, event):
+        matcher = RecipientMatcher(self.env)
+        klass = self.__class__.__name__
+        format = 'text/plain'
+        priority = 0
+        for address in self._get_address_list():
+            recipient = matcher.match_recipient(address)
+            if recipient:
+                sid, authenticated, address = recipient
+                yield (klass, 'email', sid, authenticated, address, format,
+                       priority, 'always')
+
+    def description(self):
+        return None  # not configurable
+
+    def requires_authentication(self):
+        return False
+
+    def default_subscriptions(self):
+        return ()
+
+    def _get_address_list(self):
+        section = self.config['notification']
+        def getlist(name):
+            return section.getlist(name, sep=(',', ' '), keep_empty=False)
+        return set(getlist('smtp_always_cc')) | set(getlist('smtp_always_bcc'))

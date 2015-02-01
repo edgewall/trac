@@ -1305,9 +1305,6 @@ Security sensitive:  0                           |          Blocking:
                          re.split(r' #[0-9]+: ', headers['Subject'], 1)[1])
 
     def test_mail_headers(self):
-        # The following will be removed if smtp_always_cc works (#11934)
-        self.env.insert_known_users([('joeuser', 'Joe User',
-                                      'user-joe@example.com')])
         def validates(headers):
             self.assertEqual('http://localhost/project.url',
                              headers.get('X-URL'))
