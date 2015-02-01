@@ -113,14 +113,17 @@ class EmailDistributorTestCase(unittest.TestCase):
         self.notsys = NotificationSystem(self.env)
         with self.env.db_transaction:
             self._add_session('foo', email='foo@example.org')
-            self._add_session('bar', email='bar@example.org')
+            self._add_session('bar', email='bar@example.org',
+                              name=u"Bäŕ's name")
 
     def tearDown(self):
         self.env.reset_db()
 
-    def _create_event(self, text):
-        return TestNotificationEvent('test', 'created', TestModel(text),
-                                     datetime.now(utc))
+    def _notify_event(self, text, category='created', time=None, author=None):
+        self.sender.history[:] = ()
+        event = TestNotificationEvent('test', category, TestModel(text),
+                                      time or datetime.now(utc), author=author)
+        self.notsys.notify(event)
 
     def _add_session(self, sid, **attrs):
         session = DetachedSession(self.env, sid)
@@ -140,8 +143,7 @@ class EmailDistributorTestCase(unittest.TestCase):
         with self.env.db_transaction:
             self._add_subscription(sid='foo')
             self._add_subscription(sid='bar')
-        event = self._create_event('blah')
-        self.notsys.notify(event)
+        self._notify_event('blah')
         self.assertEqual([], self.sender.history)
 
     def _assert_mail(self, message, content_type, body):
@@ -168,8 +170,7 @@ class EmailDistributorTestCase(unittest.TestCase):
         with self.env.db_transaction:
             self._add_subscription(sid='foo')
             self._add_subscription(sid='bar')
-        event = self._create_event('blah')
-        self.notsys.notify(event)
+        self._notify_event('blah')
 
         history = self.sender.history
         self.assertNotEqual([], history)
@@ -184,8 +185,7 @@ class EmailDistributorTestCase(unittest.TestCase):
     def test_html(self):
         with self.env.db_transaction:
             self._add_subscription(sid='foo', format='text/html')
-        event = self._create_event('blah')
-        self.notsys.notify(event)
+        self._notify_event('blah')
 
         history = self.sender.history
         self.assertNotEqual([], history)
@@ -205,8 +205,7 @@ class EmailDistributorTestCase(unittest.TestCase):
         with self.env.db_transaction:
             self._add_subscription(sid='foo', format='text/plain')
             self._add_subscription(sid='bar', format='text/html')
-        event = self._create_event('blah')
-        self.notsys.notify(event)
+        self._notify_event('blah')
 
         history = self.sender.history
         self.assertNotEqual([], history)
@@ -225,8 +224,7 @@ class EmailDistributorTestCase(unittest.TestCase):
         with self.env.db_transaction:
             self._add_subscription(sid='foo', format='text/plain')
             self._add_subscription(sid='bar', format='text/html')
-        event = self._create_event('raise-text-plain')
-        self.notsys.notify(event)
+        self._notify_event('raise-text-plain')
 
         history = self.sender.history
         self.assertNotEqual([], history)
@@ -240,8 +238,7 @@ class EmailDistributorTestCase(unittest.TestCase):
         with self.env.db_transaction:
             self._add_subscription(sid='foo', format='text/html')
             self._add_subscription(sid='bar', format='text/plain')
-        event = self._create_event('raise-text-html')
-        self.notsys.notify(event)
+        self._notify_event('raise-text-html')
 
         # fallback to text/plain
         history = self.sender.history
@@ -258,8 +255,7 @@ class EmailDistributorTestCase(unittest.TestCase):
         with self.env.db_transaction:
             self._add_subscription(sid='foo', format='text/plain')
             self._add_subscription(sid='bar', format='text/html')
-        event = self._create_event('raise-text-plain raise-text-html')
-        self.notsys.notify(event)
+        self._notify_event('raise-text-plain raise-text-html')
 
         history = self.sender.history
         self.assertEqual([], history)
@@ -269,8 +265,7 @@ class EmailDistributorTestCase(unittest.TestCase):
                             'foo, cc@example.org')
         self.env.config.set('notification', 'smtp_always_bcc',
                             'bar, foo, bcc@example.org')
-        event = self._create_event('blah')
-        self.notsys.notify(event)
+        self._notify_event('blah')
 
         history = self.sender.history
         self.assertNotEqual([], history)
@@ -283,6 +278,76 @@ class EmailDistributorTestCase(unittest.TestCase):
         self.assertEqual('cc@example.org, foo@example.org', message['Cc'])
         self.assertEqual(None, message['Bcc'])
         self._assert_mail(message, 'text/plain', 'blah')
+
+    def test_from_author_disabled(self):
+        self.env.config.set('notification', 'smtp_from_author', 'disabled')
+        with self.env.db_transaction:
+            self._add_subscription(sid='bar')
+
+        self._notify_event('blah', author='bar')
+        history = self.sender.history
+        self.assertNotEqual([], history)
+        from_addr, recipients, message = history[0]
+        self.assertEqual('trac@example.org', from_addr)
+        self.assertEqual('"My Project" <trac@example.org>', message['From'])
+        self.assertEqual(1, len(history))
+
+        self._notify_event('blah', author=None)
+        history = self.sender.history
+        self.assertNotEqual([], history)
+        from_addr, recipients, message = history[0]
+        self.assertEqual('trac@example.org', from_addr)
+        self.assertEqual('"My Project" <trac@example.org>', message['From'])
+        self.assertEqual(1, len(history))
+
+        self.env.config.set('notification', 'smtp_from_name', 'Trac')
+        self._notify_event('blah', author=None)
+        history = self.sender.history
+        self.assertNotEqual([], history)
+        from_addr, recipients, message = history[0]
+        self.assertEqual('trac@example.org', from_addr)
+        self.assertEqual('"Trac" <trac@example.org>', message['From'])
+        self.assertEqual(1, len(history))
+
+    def test_from_author_enabled(self):
+        self.env.config.set('notification', 'smtp_from_author', 'enabled')
+        with self.env.db_transaction:
+            self._add_subscription(sid='foo')
+            self._add_subscription(sid='bar')
+
+        self._notify_event('blah', author='bar')
+        history = self.sender.history
+        self.assertNotEqual([], history)
+        from_addr, recipients, message = history[0]
+        self.assertEqual('bar@example.org', from_addr)
+        self.assertEqual('"=?utf-8?b?QsOkxZUncyBuYW1l?=" <bar@example.org>',
+                         message['From'])
+        self.assertEqual(1, len(history))
+
+        self._notify_event('blah', author='foo')
+        history = self.sender.history
+        self.assertNotEqual([], history)
+        from_addr, recipients, message = history[0]
+        self.assertEqual('foo@example.org', from_addr)
+        self.assertEqual('foo@example.org', message['From'])
+        self.assertEqual(1, len(history))
+
+        self._notify_event('blah', author=None)
+        history = self.sender.history
+        self.assertNotEqual([], history)
+        from_addr, recipients, message = history[0]
+        self.assertEqual('trac@example.org', from_addr)
+        self.assertEqual('"My Project" <trac@example.org>', message['From'])
+        self.assertEqual(1, len(history))
+
+        self.env.config.set('notification', 'smtp_from_name', 'Trac')
+        self._notify_event('blah', author=None)
+        history = self.sender.history
+        self.assertNotEqual([], history)
+        from_addr, recipients, message = history[0]
+        self.assertEqual('trac@example.org', from_addr)
+        self.assertEqual('"Trac" <trac@example.org>', message['From'])
+        self.assertEqual(1, len(history))
 
 
 def suite():

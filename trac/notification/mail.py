@@ -45,10 +45,11 @@ from trac.util.translation import _, tag_
 
 
 __all__ = ['AlwaysEmailSubscriber', 'EMAIL_LOOKALIKE_PATTERN',
-           'EmailDistributor', 'MAXHEADERLEN', 'RecipientMatcher',
-           'SendmailEmailSender', 'SessionEmailResolver', 'SmtpEmailSender',
-           'create_charset', 'create_header', 'create_message_id',
-           'create_mime_multipart', 'create_mime_text', 'set_header']
+           'EmailDistributor', 'FromAuthorEmailDecorator', 'MAXHEADERLEN',
+           'RecipientMatcher', 'SendmailEmailSender', 'SessionEmailResolver',
+           'SmtpEmailSender', 'create_charset', 'create_header',
+           'create_message_id', 'create_mime_multipart', 'create_mime_text',
+           'set_header']
 
 
 MAXHEADERLEN = 76
@@ -119,6 +120,8 @@ def set_header(message, key, value, charset):
         value = to_unicode(value)
     header = create_header(key, value, charset)
     if email:
+        header = str(header).replace('\\', r'\\') \
+                            .replace('"', r'\"')
         header = '"%s" <%s>' % (header, email)
     if message.has_key(key):
         message.replace_header(key, header)
@@ -222,6 +225,20 @@ class RecipientMatcher(object):
             return (sid, auth, mo.group(2))
         self.env.log.info("Invalid email address: %s", address)
         return None
+
+    def match_from_author(self, author):
+        recipient = self.match_recipient(author)
+        if not recipient:
+            return None
+        sid, authenticated, address = recipient
+        from_name = None
+        if sid and authenticated:
+            from_name = self.name_map.get(sid)
+        if not from_name:
+            mo = self.longaddr_re.search(author)
+            if mo:
+                from_name = mo.group(1)
+        return (from_name, address) if from_name else address
 
 
 class EmailDistributor(Component):
@@ -551,3 +568,22 @@ class AlwaysEmailSubscriber(Component):
         def getlist(name):
             return section.getlist(name, sep=(',', ' '), keep_empty=False)
         return set(getlist('smtp_always_cc')) | set(getlist('smtp_always_bcc'))
+
+
+class FromAuthorEmailDecorator(Component):
+    """Implement a policy to use the author of the event as the sender in
+    notification emails.
+
+    Controlled via the smtp_from_author option in the notification section
+    of trac.ini.
+    """
+
+    implements(IEmailDecorator)
+
+    def decorate_message(self, event, message, charset):
+        if event.author and self.config.getbool('notification',
+                                                'smtp_from_author'):
+            matcher = RecipientMatcher(self.env)
+            from_ = matcher.match_from_author(event.author)
+            if from_:
+                set_header(message, 'From', from_, charset)
