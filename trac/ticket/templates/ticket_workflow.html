@@ -1,0 +1,46 @@
+<!--!  Copyright (C) 2015 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at http://trac.edgewall.com/license.html.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at http://trac.edgewall.org/.
+
+Arguments:
+ - hidden: render hidden input elements
+-->
+<div xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:py="http://genshi.edgewall.org/"
+     py:strip="">
+  <script type="text/javascript">
+    jQuery(document).ready(function($) {
+      /* only enable control elements for the currently selected action */
+      var actions = $("#action input[name='action']");
+      function updateActionFields() {
+        actions.each(function () {
+          $(this).siblings().find("*[id]").enable($(this).checked());
+          $(this).siblings().filter("*[id]").enable($(this).checked());
+        });
+      }
+      actions.click(updateActionFields);
+      updateActionFields();
+    });
+  </script>
+  <py:choose>
+    <py:when test="hidden" py:for="key, label, controls, hints in action_controls">
+      <input py:if="key == action" type="hidden" name="action" value="$action" />
+    </py:when>
+    <fieldset py:otherwise="" id="action">
+      <legend>Action</legend>
+      <div py:for="key, label, controls, hints in action_controls">
+        <input type="radio" id="action_$key" name="action" value="$key"
+               checked="${key == action or None}" />
+        <label for="action_$key">$label</label>
+        $controls
+        <span class="hint" py:for="hint in hints">$hint</span>
+      </div>
+    </fieldset>
+  </py:choose>
+</div>

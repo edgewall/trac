@@ -245,7 +245,7 @@ table.tickets tbody tr p:last-child { margin-bottom: 0 }
 #batchmod_form fieldset select, .batchmod_property, .batchmod_label {
  font-size: 11px;
 }
-#batchmod_action { margin-top: 0; line-height: 2em; }
+#action { margin-top: 0; line-height: 2em; }
 #batchmod_form th {
  text-align: right;
  white-space: nowrap;

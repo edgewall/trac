@@ -43,16 +43,7 @@
 
     <tr>
       <td colspan="3">
-        <fieldset id="batchmod_action">
-          <legend>Action</legend>
-          <div py:for="key, label, controls, hints in action_controls">
-            <input type="radio" id="action_$key" name="action" value="$key"
-                   checked="${key == action or None}" />
-            <label for="action_$key">$label</label>
-            $controls
-            <span class="hint" py:for="hint in hints">$hint</span>
-          </div>
-        </fieldset>
+        <xi:include href="ticket_workflow.html" />
       </td>
     </tr>
   </table>
