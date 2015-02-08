@@ -66,7 +66,7 @@ DefaultInitEnv TRAC_ENV /path/to/env/trac/
 === alternative environment setup ===
 A better method to specify path to Trac environment is to embed the path
 into `trac.fcgi` script itself. That doesn't require configuration of server
-environment variables, works for both FastCgi modules
+environment variables, works for both [trac:FastCgi] modules
 (and for [http://www.lighttpd.net/ lighttpd] and CGI as well):
 {{{
 import os

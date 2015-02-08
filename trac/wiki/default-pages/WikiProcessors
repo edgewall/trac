@@ -1,21 +1,15 @@
-= Wiki Processors =
+= Wiki Processors
 
 Processors are WikiMacros designed to provide alternative markup formats for the [TracWiki Wiki engine]. Processors can be thought of as ''macro functions to process user-edited text''. 
 
-Wiki processors can be used in any Wiki text throughout Trac,
-for various different purposes, like:
- - [#CodeHighlightingSupport syntax highlighting] or for rendering text verbatim,
- - rendering [#HTMLrelated Wiki markup inside a context], 
-   like inside <div> blocks or <span> or within <td> or <th> table cells,
- - using an alternative markup syntax, like [wiki:WikiHtml raw HTML] and
-   [wiki:WikiRestructuredText Restructured Text],
-   or [http://www.textism.com/tools/textile/ textile]
+Wiki processors can be used in any Wiki text throughout Trac, such as:
+ - [#CodeHighlightingSupport syntax highlighting] or for rendering text verbatim
+ - rendering [#HTMLrelated Wiki markup inside a context], like inside <div> blocks or <span> or within <td> or <th> table cells
+ - using an alternative markup syntax, like [wiki:WikiHtml raw HTML] and [wiki:WikiRestructuredText Restructured Text] or [http://www.textism.com/tools/textile/ textile]
 
+== Using Processors
 
-== Using Processors ==
-
-To use a processor on a block of text, first delimit the lines using
-a Wiki ''code block'':
+To use a processor on a block of text, first delimit the lines using a Wiki ''code block'':
 {{{
 {{{
 The lines
@@ -23,8 +17,7 @@ that should be processed...
 }}}
 }}}
 
-Immediately after the `{{{` or on the line just below, 
-add `#!` followed by the ''processor name''.
+Immediately after the `{{{` or on the line just below, add `#!` followed by the ''processor name'':
 
 {{{
 {{{
@@ -36,18 +29,12 @@ that should be processed...
 
 This is the "shebang" notation, familiar to most UNIX users.
 
-Besides their content, some Wiki processors can also accept ''parameters'',
-which are then given as `key=value` pairs after the processor name, 
-on the same line. If `value` has to contain space, as it's often the case for
-the style parameter, a quoted string can be used (`key="value with space"`).
+Besides their content, some Wiki processors can also accept ''parameters'', which are then given as `key=value` pairs after the processor name and on the same line. If `value` has to contain space, as it's often the case for the style parameter, a quoted string can be used (`key="value with space"`).
 
-As some processors are meant to process Wiki markup, it's quite possible to
-''nest'' processor blocks.
-You may want to indent the content of nested blocks for increased clarity,
-this extra indentation will be ignored when processing the content.
+As some processors are meant to process Wiki markup, it's quite possible to ''nest'' processor blocks.
+You may want to indent the content of nested blocks for increased clarity, this extra indentation will be ignored when processing the content.
 
-
-== Examples ==
+== Examples
 
 ||= Wiki Markup =||= Display =||
 {{{#!td colspan=2 align=center style="border: none"
@@ -149,12 +136,13 @@ this extra indentation will be ignored when processing the content.
   </div></form>
   }}}
 }}}
-== Available Processors ==
+
+== Available Processors
 
 The following processors are included in the Trac distribution:
 
 || '''`#!default`''' || Present the text verbatim in a preformatted text block. This is the same as specifying ''no'' processor name (and no `#!`) ||
-|| '''`#!comment`''' || Do not process the text in this section (i.e. contents exist only in the plain text - not in the rendered page). ||
+|| '''`#!comment`''' || Do not process the text in this section, i.e. contents exist only in the plain text - not in the rendered page. ||
 || '''`#!rtl`''' || Introduce a Right-To-Left block with appropriate CSS direction and styling ''(since 0.12.2)'' ||
 |||| ||
 ||||= '''[=#HTMLrelated HTML related]''' =||
@@ -245,14 +233,11 @@ The same is valid for all other [TracSyntaxColoring#SyntaxColoringSupport mime t
 }}}
 
 For more processor macros developed and/or contributed by users, visit: 
- * [trac:ProcessorBazaar]
- * [trac:MacroBazaar]
  * [http://trac-hacks.org Trac Hacks] community site
+ * [trac:ProcessorBazaar]
+ * [trac:MacroBazaar] [deprecated]
 
-Developing processors is no different from Wiki macros. 
-In fact they work the same way, only the usage syntax differs. 
-See WikiMacros#DevelopingCustomMacros for more information.
-
+Developing processors is no different from Wiki macros. In fact, they work the same way, only the usage syntax differs. See WikiMacros#DevelopingCustomMacros for more information.
 
 ----
 See also: WikiMacros, WikiHtml, WikiRestructuredText, TracSyntaxColoring, WikiFormatting, TracGuide

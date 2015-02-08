@@ -1,11 +1,12 @@
-= !CamelCase =
-New words created by concatenating capitalized words.
+= !CamelCase
+New wiki links are automatically created when concatenating capitalized words, such that for example the word 'Camel' and the word 'Case' concatenated form a link to this CamelCase page. 
 
-CamelCase is the original wiki convention for creating hyperlinks, with the additional requirement that the capitals are followed by a lower-case letter; hence “AlabamA” and “ABc” will not be links.
+!CamelCase is the original wiki convention for creating hyperlinks, with the additional requirement that the capitals are followed by a lower-case letter; hence “AlabamA” and “ABc” will not be links.
 
-== Customizing the Wiki behavior ==
+== Customizing the Wiki behavior
 
-Some people dislike linking by CamelCase. While Trac remains faithful to the original Wiki style, it provides a number of ways to accomodate users with different preferences:
+While Trac remains faithful to the original Wiki style, it provides a number of ways to accommodate users with different preferences:
+ * To prevent the creation of a new link of a camel-cased word, prefix with '!': `!CamelCase`.
  * To ignore links to missing pages when the link is written using the CamelCase style, that word can instead be replaced by a gray link followed by a question mark. This is useful in cases when CamelCase style is used to name code artifacts like class names and there's no corresponding page for them. This option can be set in `ignore_missing_pages` in the [wiki:TracIni#wiki-section "[wiki]"] section of TracIni.
  * There's an option (`split_page_names` in the  [wiki:TracIni#wiki-section "[wiki]"] section of TracIni) to automatically insert space characters between the words of a CamelCase link when rendering the link.
  * Creation of explicit Wiki links is also easy, see WikiPageNames for details.
@@ -13,7 +14,7 @@ Some people dislike linking by CamelCase. While Trac remains faithful to the ori
 
 See TracIni for more information on the available options.
 
-== More information on !CamelCase ==
+== More information on !CamelCase
 
  * http://c2.com/cgi/wiki?WikiCase
  * http://en.wikipedia.org/wiki/CamelCase

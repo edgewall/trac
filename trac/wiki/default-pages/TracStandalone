@@ -284,7 +284,7 @@ If you're using the AJP protocol to connect with `tracd` (which is possible if y
 See also [trac:TracOnWindowsIisAjp], [trac:TracNginxRecipe].
 
 === Authentication for tracd behind a proxy
-It is convenient to provide central external authentication to your tracd instances, instead of using `--basic-auth`. There is some discussion about this in #9206.
+It is convenient to provide central external authentication to your tracd instances, instead of using `--basic-auth`. There is some discussion about this in [trac:#9206].
 
 Below is example configuration based on Apache 2.2, mod_proxy, mod_authnz_ldap.
 

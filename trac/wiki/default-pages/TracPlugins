@@ -197,7 +197,7 @@ Okay, so the logs don't mention plugins, the egg is readable, the Python version
 
 == Web-based plugin administration ==
 
-The WebAdmin interface offers limited support for plugin configuration through the web to users with `TRAC_ADMIN` permission:
+The [trac:WebAdmin] interface offers limited support for plugin configuration through the web to users with `TRAC_ADMIN` permission:
 
 * en/disabling installed plugins
 * installing plugins by uploading them as eggs

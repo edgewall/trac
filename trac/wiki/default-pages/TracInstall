@@ -37,7 +37,7 @@ $ python setup.py build_static install
  
 This will download the latest SQLite code and build the bindings. SQLite 2.x is no longer supported.
 
-A known bug in [trac:PySqlite] versions 2.5.2-4 prohibits upgrades of Trac databases from 0.11.x to 0.12. Please use versions 2.5.5 and newer or 2.5.1 and older. See #9434 for more detail. See additional information in [trac:PySqlite PySqlite].
+A known bug in [trac:PySqlite] versions 2.5.2-4 prohibits upgrades of Trac databases from 0.11.x to 0.12. Please use versions 2.5.5 and newer or 2.5.1 and older. See [trac:#9434] for more detail. See additional information in [trac:PySqlite PySqlite].
 
 ==== For the PostgreSQL database #ForPostgreSQL
 
@@ -80,7 +80,7 @@ Alternatively you can configure Trac to run in any of the following environments
  * [http://httpd.apache.org/ Apache] with 
    - [http://code.google.com/p/modwsgi/ mod_wsgi], see [wiki:TracModWSGI] and 
      http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac
-   - [http://modpython.org/ mod_python 3.3.1], (deprecated: see TracModPython)
+   - [http://modpython.org/ mod_python >= 3.3.1], (deprecated: see TracModPython)
  * a [http://www.fastcgi.com/ FastCGI]-capable web server (see TracFastCgi)
  * an [http://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html AJP]-capable web
    server (see [trac:TracOnWindowsIisAjp TracOnWindowsIisAjp])
@@ -205,7 +205,7 @@ $ trac-admin /path/to/myproject initenv
 [TracAdmin trac-admin] will prompt you for the information it needs to create the environment, such as the name of the project and the [TracEnvironment#DatabaseConnectionStrings database connection string]. If you're not sure what to specify for one of these options, just press `<Enter>` to use the default value. 
 
 Using the default database connection string in particular will always work as long as you have SQLite installed.
-For the other [DatabaseBackend database backends] you should plan ahead and already have a database ready to use at this point.
+For the other [trac:DatabaseBackend database backends] you should plan ahead and already have a database ready to use at this point.
 
 Since 0.12, Trac doesn't ask for a [TracEnvironment#SourceCodeRepository source code repository] anymore when creating an environment. Repositories can be [TracRepositoryAdmin added] afterwards, and support for specific version control systems is disabled by default.
 

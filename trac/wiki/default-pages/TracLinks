@@ -330,7 +330,7 @@ For example, `source:/trunk/COPYING` targets the path `/trunk/COPYING` in the de
 ==== source: links ====
  ''aliases:'' `browser:`, `repos:`
 
-The default behavior for a source:/some/path link is to open the browser in that directory directory 
+The default behavior for a `source:/some/path link` is to open the browser in that directory directory 
 if the path points to a directory or to show the latest content of the file.
 
 It's also possible to link directly to a specific revision of a file like this:

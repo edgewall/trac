@@ -1,5 +1,6 @@
 = Installing Trac as CGI
 [[TracGuideToc]]
+[[PageOutline]]
 
 {{{#!div class=important
   ''Please note that using Trac via CGI is the slowest deployment method available. It is slower than [TracModPython mod_python], [TracFastCgi FastCGI] and even [trac:TracOnWindowsIisAjp IIS/AJP] on Windows.''

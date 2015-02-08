@@ -98,8 +98,8 @@ The minimum supported version of Python is now 2.4.
 ===== SQLite v3.x required =====
 SQLite v2.x is no longer supported. If you still use a Trac database of this format, you'll need to convert it to SQLite v3.x first. See [trac:PySqlite#UpgradingSQLitefrom2.xto3.x] for details.
 
-===== PySqlite 2 required =====
-PySqlite 1.1.x is no longer supported. Please install 2.5.5 or later if possible, see [#Tracdatabaseupgrade Trac database upgrade] below.
+===== [trac:PySqlite] 2 required =====
+[trac:PySqlite] 1.1.x is no longer supported. Please install 2.5.5 or later if possible, see [#Tracdatabaseupgrade Trac database upgrade] below.
 
 ===== Multiple Repository Support =====
 The latest version includes support for multiple repositories. If you plan to add more repositories to your Trac instance, please refer to TracRepositoryAdmin#Migration.
@@ -145,7 +145,7 @@ trac-admin /path/to/env deploy /deploy/directory/path
 This will create a deploy directory with the following two subdirectories: `cgi-bin` and `htdocs`. Then update your Apache configuration file `httpd.conf` with this new `trac.cgi` location and `htdocs` location.
 
 ===== Web Admin plugin integrated =====
-If you had the webadmin plugin installed, you can uninstall it as it is part of the Trac code base since 0.11.
+If you had the [trac:WebAdmin] plugin installed, you can uninstall it as it is part of the Trac code base since 0.11.
 
 ===== New Default Configurable Workflow
 
@@ -183,7 +183,7 @@ If you are not running [wiki:TracCgi CGI], reload the new Trac code by restartin
 
 Trac supports customization of its Genshi templates by placing copies of the templates in the `<env>/templates` folder of your [TracEnvironment environment] or in a common location specified in the [[TracIni#GlobalConfiguration| [inherit] templates_dir]] configuration setting. If you choose to do so, be aware that you will need to repeat your changes manually on a copy of the new templates when you upgrade to a new release of Trac (even a minor one), as the templates will likely evolve. So keep a diff around.
 
-The preferred way to perform TracInterfaceCustomization is to write a custom plugin doing an appropriate `ITemplateStreamFilter` transformation, as this is more robust in case of changes: we usually won't modify element `id`s or change CSS `class`es, and if we have to do so, this will be documented in the TracDev/ApiChanges pages.
+The preferred way to perform TracInterfaceCustomization is to write a custom plugin doing an appropriate `ITemplateStreamFilter` transformation, as this is more robust in case of changes: we usually won't modify element `id`s or change CSS `class`es, and if we have to do so, this will be documented in the [trac:TracDev/ApiChanges] pages.
 
 === !ZipImportError ===
 
@@ -195,7 +195,7 @@ See [trac:#7014] for details.
 
 === Trac database upgrade ===
 
-A known issue in some versions of PySqlite (2.5.2-2.5.4) prevents the trac-admin upgrade script from successfully upgrading the database format. It is advised to use either a newer or older version of the sqlite python bindings to avoid this error. For more details see ticket [trac:#9434].
+A known issue in some versions of [trac:PySqlite] (2.5.2-2.5.4) prevents the trac-admin upgrade script from successfully upgrading the database format. It is advised to use either a newer or older version of the sqlite python bindings to avoid this error. For more details see ticket [trac:#9434].
 
 === Parent dir ===
 If you use a Trac parent env configuration and one of the plugins in one child does not work, none of the children will work.
@@ -208,7 +208,7 @@ Upgrading Python to a newer version will require reinstallation of Python packag
 
 ==== Windows and Python 2.6 ====
 
-If you've been using !CollabNet's Subversion package, you may need to uninstall that in favor of [http://alagazam.net/ Alagazam], which has the Python bindings readily available, see TracSubversion. That package works without tweaking.
+If you've been using !CollabNet's Subversion package, you may need to uninstall that in favor of [http://alagazam.net/ Alagazam], which has the Python bindings readily available, see [trac:TracSubversion]. That package works without tweaking.
 
 === Changing Database Backend ===
 
