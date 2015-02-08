@@ -578,7 +578,7 @@ class WorkflowMacro(WikiMacroBase):
             parser = RawConfigParser()
             try:
                 parser.readfp(StringIO(text))
-            except ParsingError, e:
+            except ParsingError as e:
                 return system_message(_("Error parsing workflow."),
                                       unicode(e))
             raw_actions = list(parser.items('ticket-workflow'))
