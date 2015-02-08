@@ -11,6 +11,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
+from trac.ticket.default_workflow import get_workflow_config
 from trac.upgrades import backup_config_file
 
 new_actions = {
@@ -31,7 +32,15 @@ def do_upgrade(env, version, cursor):
     """Add 'create' actions to ticket-workflow (ticket #2045).
     """
     save = False
+    all_actions = get_workflow_config(env.config)
+    all_states = list(set(
+        [state for action in all_actions.itervalues()
+               for state in action['oldstates']] +
+        [action['newstate'] for action in all_actions.itervalues()]))
+
     for action, attributes in new_actions.items():
+        if action == 'create_and_assign' and 'assigned' not in all_states:
+            continue
         if action not in env.config['ticket-workflow']:
             for attr, value in attributes.items():
                 key = action + ('.' + attr if attr else '')
