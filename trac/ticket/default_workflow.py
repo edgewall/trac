@@ -16,7 +16,7 @@
 #
 # Author: Eli Carter
 
-from ConfigParser import RawConfigParser
+from ConfigParser import ParsingError, RawConfigParser
 from StringIO import StringIO
 from collections import defaultdict
 from functools import partial
@@ -34,6 +34,7 @@ from trac.util import get_reporter_id, to_list
 from trac.util.presentation import separated
 from trac.util.translation import _, tag_, cleandoc_
 from trac.web.chrome import Chrome, add_script, add_script_data
+from trac.wiki.formatter import system_message
 from trac.wiki.macros import WikiMacroBase
 
 # -- Utilities for the ConfigurableTicketWorkflow
@@ -479,7 +480,11 @@ class WorkflowMacro(WikiMacroBase):
             if '[ticket-workflow]' not in text:
                 text = '[ticket-workflow]\n' + text
             parser = RawConfigParser()
-            parser.readfp(StringIO(text))
+            try:
+                parser.readfp(StringIO(text))
+            except ParsingError, e:
+                return system_message(_("Error parsing workflow."),
+                                      unicode(e))
             raw_actions = list(parser.items('ticket-workflow'))
         actions = parse_workflow_config(raw_actions)
         states = list(set(

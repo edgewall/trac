@@ -732,7 +732,7 @@ table.listing pre { white-space: pre-wrap }
 #content.error div.message pre, div.system-message pre {
   margin-left: 1em;
   overflow: hidden;
-  white-space: normal;
+  white-space: pre-wrap;
 }
 
 div.system-message p { margin: 0 }
