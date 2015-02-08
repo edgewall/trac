@@ -2274,6 +2274,18 @@ class RegressionTestTicket11618(FunctionalTwillTestCaseSetup):
             self._tester.login('admin')
 
 
+class RegressionTestTicket11930(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11930
+        Workflow action labels are present on the ticket page.
+        """
+        self._tester.create_ticket()
+        tc.find('<label for="action_leave">leave</label>[ \n\t]+as new')
+        tc.find('<label for="action_resolve">resolve</label>[ \n\t]+as')
+        tc.find('<label for="action_reassign">reassign</label>[ \n\t]+to')
+        tc.find('<label for="action_accept">accept</label>')
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
@@ -2398,6 +2410,7 @@ def functionalSuite(suite=None):
         suite.addTest(RegressionTestTicket11176())
     else:
         print "SKIP: RegressionTestTicket11176 (ConfigObj not installed)"
+    suite.addTest(RegressionTestTicket11930())
 
     return suite
 
