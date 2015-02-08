@@ -190,7 +190,7 @@ The following procedure illustrates a typical migration from a Subversion single
 == Migration from a single-repository setup (Mercurial) #MigrationMercurial
 The following procedure illustrates a typical migration from a Mercurial single-repository setup to multiple repositories. Please note that at the time of writing, no initial resynchronization or any hooks are necessary for Mercurial repositories - see [trac:ticket:9485 #9485] for more information.
 
- 1. Upgrade to the latest version of the TracMercurial plugin.
+ 1. Upgrade to the latest version of the [trac:TracMercurial] plugin.
  1. Remove the default repository specification from the `[trac] repository_dir` option.
  1. Add the main repository as a named repository.
  1. Add an alias to the main repository as the default repository (by leaving out the the `name`, e.g. `.alias = main`). This ensures that all links predating the migration still resolve to the main repository.

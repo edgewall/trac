@@ -277,4 +277,4 @@ The default Trac configuration uses Base64 encoding to send emails to the recipi
 Quoted printable encoding works better with languages that use one of the Latin charsets. For Asian charsets, stick with the Base64 encoding.
 
 ----
-See also: TracTickets, TracIni, TracGuide, TracDev/NotificationApi
+See also: TracTickets, TracIni, TracGuide, [trac:TracDev/NotificationApi]

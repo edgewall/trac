@@ -1,6 +1,6 @@
 = The Trac Configuration File =
 
- ''[Note To Editors] Please discuss documentation changes in the [#Discussion] section. Even better, send us [TracDev/SubmittingPatches documentation patches] against the ''code'' (i.e. where the configuration entries are documented), either on Trac-dev or on new tickets. ''
+ ''[Note To Editors] Please discuss documentation changes in the [#Discussion] section. Even better, send us [trac:TracDev/SubmittingPatches documentation patches] against the ''code'' (i.e. where the configuration entries are documented), either on Trac-dev or on new tickets. ''
 
 [[TracGuideToc]]
 [[PageOutline]]

@@ -117,7 +117,7 @@ More examples snippets for `site.html` can be found at [trac:wiki:CookBook/SiteH
 
 Example snippets for `style.css` can be found at [trac:wiki:CookBook/SiteStyleCss CookBook/SiteStyleCss].
 
-If the environment is upgraded from 0.10 and a `site_newticket.cs` file already exists, it can be loaded using a workaround - providing it contains no ClearSilver processing. In addition, as only one element can be imported, the content needs some sort of wrapper such as a `<div>` block or other similar parent container. The XInclude namespace must be specified to allow includes, but that can be moved to document root along with the others:
+If the environment is upgraded from 0.10 and a `site_newticket.cs` file already exists, it can be loaded using a workaround - providing it contains no [trac:ClearSilver] processing. In addition, as only one element can be imported, the content needs some sort of wrapper such as a `<div>` block or other similar parent container. The XInclude namespace must be specified to allow includes, but that can be moved to document root along with the others:
 {{{
 #!xml
 <form py:match="div[@id='content' and @class='ticket']/form" py:attrs="select('@*')"
