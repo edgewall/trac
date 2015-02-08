@@ -1,3 +1,11 @@
+Trac 1.0.4 (February 8, 2015)
+http://svn.edgewall.org/repos/trac/tags/trac-1.0.4
+
+Trac 1.0.4 contains a few fixes, including a regression in 1.0.3.
+
+ - Workflow action labels were not displayed unless name attribute
+   was explicitly defined (#11930).
+
 Trac 1.0.3 (January 13, 2015)
 http://svn.edgewall.org/repos/trac/tags/trac-1.0.3
 
