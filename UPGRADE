@@ -19,9 +19,19 @@ General Instructions
 Typically, there are four steps involved in upgrading to a newer
 version of Trac:
 
-1. Update the Trac Code
+1. Bring your server off-line
 
-Get the new version of Trac, either by downloading an offical release
+It is not a good idea to update a running server: the server processes
+may have parts of the current packages cached in memory, and updating the
+code will likely trigger internal errors.
+
+Although a database backup will be implicitly created by default when
+upgrading the environment, it is always a good idea to perform a
+full backup using the trac-admin hotcopy command before beginning.
+
+2. Update the Trac Code
+
+Get the new version of Trac, either by downloading an official release
 package or by checking it out from the Subversion repository.
 
 If you have a source distribution, you need to run::
@@ -39,7 +49,7 @@ the Trac `cgi-bin`, `htdocs` and `templates` directories that are
 commonly found in a directory called `share/trac` (the exact location
 depends on your platform).
 
-2. Upgrade the Trac Environment
+3. Upgrade the Trac Environment
 
 Unless noted otherwise, upgrading between major versions (such as 0.8
 and 0.9) involves changes to the database schema, and possibly the
@@ -51,7 +61,7 @@ upgrade scripts to ease the pain. These scripts are run via
 
 This command will do nothing if the environment is already up-to-date.
 
-3. Update the Trac Documentation
+4. Update the Trac Documentation
 
 Every Trac environment includes a copy of the Trac documentation for
 the installed version. As you probably want to keep the included
@@ -63,7 +73,7 @@ provides a command to upgrade the documentation::
 Note that this procedure will of course leave your `WikiStart` page
 intact.
 
-4. Restart the Web Server
+5. Restart the Web Server
 
 In order to reload the new Trac code you will need to restart your web
 server (note this is not necessary for CGI).
