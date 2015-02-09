@@ -642,6 +642,10 @@ class AttachmentModule(Component):
 
 
 class Attachment(object):
+    """Represents an attachment (new or existing).
+
+    :since 1.0.5: `ipnr` is deprecated and will be removed in 1.3.1
+    """
 
     realm = AttachmentModule.realm
 
@@ -865,6 +869,10 @@ class Attachment(object):
     def select(cls, env, parent_realm, parent_id):
         """Iterator yielding all `Attachment` instances attached to
         resource identified by `parent_realm` and `parent_id`.
+
+        :returns: a tuple containing the `filename`, `description`, `size`,
+                  `time`, `author` and `ipnr`.
+        :since 1.0.5: use of `ipnr` is deprecated and will be removed in 1.3.1
         """
         for row in env.db_query("""
                 SELECT filename, description, size, time, author, ipnr
