@@ -529,8 +529,9 @@ class Chrome(Component):
         """)
 
     show_ip_addresses = BoolOption('trac', 'show_ip_addresses', 'false',
-        """Show IP addresses for resource edits (e.g. wiki).
-        (''since 0.11.3'')""")
+        """Show IP addresses for resource edits (e.g. wiki). Since 1.0.5 this
+        option is deprecated and will be removed in 1.3.1. (''since 0.11.3'')
+        """)
 
     resizable_textareas = BoolOption('trac', 'resizable_textareas', 'true',
         """Make `<textarea>` fields resizable. Requires !JavaScript.
