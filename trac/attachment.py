@@ -119,6 +119,10 @@ class ILegacyAttachmentPolicyDelegate(Interface):
 
 
 class Attachment(object):
+    """Represents an attachment (new or existing).
+
+    :since 1.0.5: `ipnr` is deprecated and will be removed in 1.3.1
+    """
 
     def __init__(self, env, parent_realm_or_attachment_resource,
                  parent_id=None, filename=None, db=None):
@@ -345,9 +349,11 @@ class Attachment(object):
         """Iterator yielding all `Attachment` instances attached to
         resource identified by `parent_realm` and `parent_id`.
 
-        .. versionchanged :: 1.0
-           the `db` parameter is no longer needed
-           (will be removed in version 1.1.1)
+        :returns: a tuple containing the `filename`, `description`, `size`,
+                  `time`, `author` and `ipnr`.
+        :since 1.0: the `db` parameter is deprecated and will be removed
+                    in 1.1.1
+        :since 1.0.5: use of `ipnr` is deprecated and will be removed in 1.3.1
         """
         for row in env.db_query("""
                 SELECT filename, description, size, time, author, ipnr
