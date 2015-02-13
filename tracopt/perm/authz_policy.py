@@ -14,13 +14,13 @@
 #
 # Author: Alec Thomas <alec@swapoff.org>
 
+import os
 from fnmatch import fnmatchcase
 from itertools import groupby
-import os
 
-from trac.core import *
 from trac.config import ConfigurationError, PathOption
-from trac.perm import PermissionSystem, IPermissionPolicy
+from trac.core import *
+from trac.perm import IPermissionPolicy, PermissionSystem
 from trac.util.text import to_unicode
 
 ConfigObj = None
@@ -140,8 +140,8 @@ class AuthzPolicy(Component):
 
     def __init__(self):
         if not self.authz_file:
-            self.log.error('The `[authz_policy] authz_file` configuration '
-                           'option in trac.ini is empty or not defined.')
+            self.log.error("The `[authz_policy] authz_file` configuration "
+                           "option in trac.ini is empty or not defined.")
             raise ConfigurationError()
 
         try:
@@ -256,7 +256,7 @@ class AuthzPolicy(Component):
                     who = to_unicode(who)
                     if who in valid_users or \
                             who in self.groups_by_user.get(username, []):
-                        self.log.debug('%s matched section %s for user %s',
+                        self.log.debug("%s matched section %s for user %s",
                                        resource_key, resource_glob, username)
                         if isinstance(permissions, basestring):
                             return [permissions]
