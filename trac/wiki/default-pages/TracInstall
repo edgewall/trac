@@ -80,7 +80,7 @@ Alternatively you can configure Trac to run in any of the following environments
  * [http://httpd.apache.org/ Apache] with 
    - [http://code.google.com/p/modwsgi/ mod_wsgi], see [wiki:TracModWSGI] and 
      http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac
-   - [http://modpython.org/ mod_python >= 3.3.1], (deprecated: see TracModPython)
+   - [http://modpython.org/ mod_python 3.5.0], (deprecated: see TracModPython)
  * a [http://www.fastcgi.com/ FastCGI]-capable web server (see TracFastCgi)
  * an [http://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html AJP]-capable web
    server (see [trac:TracOnWindowsIisAjp TracOnWindowsIisAjp])
