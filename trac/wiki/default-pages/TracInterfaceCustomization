@@ -117,19 +117,7 @@ More examples snippets for `site.html` can be found at [trac:wiki:CookBook/SiteH
 
 Example snippets for `style.css` can be found at [trac:wiki:CookBook/SiteStyleCss CookBook/SiteStyleCss].
 
-If the environment is upgraded from 0.10 and a `site_newticket.cs` file already exists, it can be loaded using a workaround - providing it contains no [trac:ClearSilver] processing. In addition, as only one element can be imported, the content needs some sort of wrapper such as a `<div>` block or other similar parent container. The XInclude namespace must be specified to allow includes, but that can be moved to document root along with the others:
-{{{
-#!xml
-<form py:match="div[@id='content' and @class='ticket']/form" py:attrs="select('@*')"
-        xmlns:xi="http://www.w3.org/2001/XInclude">
-  <py:if test="req.environ['PATH_INFO'] == '/newticket' and (not 'preview' in req.args)"> 
-    <xi:include href="site_newticket.cs"><xi:fallback /></xi:include>
-  </py:if>
-  ${select('*')} 
-</form>
-}}}
-
-Also note that the `site.html`, despite its name, can be put in a shared templates directory, see the [[TracIni#inherit-section|[inherit] templates_dir]] option. This could provide easier maintainence (and a migration path from 0.10 for larger installations) as one new global `site.html` file can be made to include any existing header, footer and newticket snippets.
+Note that the `site.html`, despite its name, can be put in a shared templates directory, see the [[TracIni#inherit-section|[inherit] templates_dir]] option. This could provide easier maintainence (and a migration path from 0.10 for larger installations) as one new global `site.html` file can be made to include any existing header, footer and newticket snippets.
 
 == Project List == #ProjectList
 

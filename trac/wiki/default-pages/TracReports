@@ -108,6 +108,7 @@ SELECT id AS ticket, status, severity, priority, owner,
   ORDER BY priority, time
 }}}
 
+Dynamic variables can also be used in the report title and description (since 1.1.1).
 
 == Advanced Reports: Dynamic Variables ==
 For more flexible reports, Trac supports the use of ''dynamic variables'' in report SQL statements. 

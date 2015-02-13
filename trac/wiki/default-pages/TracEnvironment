@@ -106,16 +106,16 @@ For some version control systems, it is possible to specify not only the path to
 
 Example of a configuration for a Subversion repository used as the default repository:
 {{{#!ini
-[trac]
-repository_type = svn
-repository_dir = /path/to/your/repository
+[repositories]
+.type = svn
+.dir = /path/to/your/repository
 }}}
 
 The configuration for a scoped Subversion repository would be:
 {{{#!ini
-[trac]
-repository_type = svn
-repository_dir = /path/to/your/repository/scope/within/repos
+[repositories]
+.type = svn
+.dir = /path/to/your/repository/scope/within/repos
 }}}
 
 == Directory Structure

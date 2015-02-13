@@ -61,7 +61,8 @@ kb        http://support.microsoft.com/kb/$1/en-us/ # Article $1 in Microsoft's 
 pypi        http://pypi.python.org/pypi/   # $1 package in the Python Package Index
 CheeseShop  http://pypi.python.org/pypi/           # $1 package in the Python Package Index
 peak        http://peak.telecommunity.com/DevCenter/     # $1 in Python Enterprise Application Kit's Wiki
-setuptools-issue http://bugs.python.org/setuptools/issue # issue$1 in Setuptools tracker
+setuptools-issue http://bugs.python.org/setuptools/issue # issue$1 in legacy Setuptools tracker
+pypa-setuptools-issue https://bitbucket.org/pypa/setuptools/issue/ # issue #$1 in BitBucket Setuptools tracker
 
 SQLite      http://www.sqlite.org/cvstrac/wiki?p=$1     # $1 page in the CvsTrac for SQLite
 SQLiteTkt   http://www.sqlite.org/cvstrac/tktview?tn=$1 # Ticket $1 in the CvsTrac for SQLite
