@@ -12,11 +12,13 @@ Trac supports RSS feeds in:
 == How to access RSS data
 Anywhere in Trac where RSS is available, you should find a small orange '''RSS''' icon, typically at the bottom of the page:
 {{{#!html
-<a rel="nofollow" href="#/format=rss" class="rss">RSS feed</a>
+<a rel="nofollow" style="padding-left: 20px; background: url(../../chrome/common/feed.png) left center no-repeat;  border: none;"><span style="color: #666;padding: 0 0 2px; font-size: 11px;">RSS feed</span></a>
 }}}
 Clicking the icon will access the RSS feed for that specific resource.
 
 '''Note:''' Different modules provide different data in their RSS feeds. Usually the syndicated information corresponds to the current view. For example, if you click the RSS link on a report page, the feed will be based on that report. It might be explained by thinking of the RSS feeds as an ''alternate view of the data currently displayed''.
+
+Since Trac 1.0 an RSS feed can be retrieved from a Trac site that requires authentication. Hover over the RSS icon, right click and //copy link address//.
 
 == Links
  * ''Specifications:''

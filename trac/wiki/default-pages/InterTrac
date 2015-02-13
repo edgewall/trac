@@ -1,13 +1,6 @@
 = InterTrac Links
 
-Trac supports a convenient way to refer to resources of other Trac servers, from within the Wiki markup.
-
-== Definitions
-
-An InterTrac link can be seen as a scoped TracLinks.
-It is used for referring to a Trac resource 
-(Wiki page, changeset, ticket, ...) located in another
-Trac environment.
+Trac supports a convenient way to refer to resources of other Trac servers, from within the Wiki markup. An !InterTrac link can be seen as a scoped TracLinks. It is used for referring to a Trac resource located in another Trac environment. A resource can be a wiki page, changeset, ticket or milestone. 
 
 == List of Active InterTrac Prefixes
 
@@ -15,8 +8,7 @@ Trac environment.
 
 == Link Syntax
 
-Simply use the name of the other Trac environment as a prefix, 
-followed by a colon, ending with the resource located in the other environment.
+Simply use the name of the other Trac environment as a prefix, followed by a colon, ending with the resource located in the other environment.
 
 {{{
 <target_environment>:<TracLinks>
@@ -24,17 +16,13 @@ followed by a colon, ending with the resource located in the other environment.
 
 The other resource is specified using a regular TracLinks, of any flavor.
 
-That target environment name is either the real name of the 
-environment, or an alias for it. 
+That target environment name is either the real name of the environment or an alias for it. 
 The aliases are defined in `trac.ini` (see below).
 The prefix is case insensitive.
 
-If the InterTrac link is enclosed in square brackets (like `[th:WikiExtrasPlugin]`), the InterTrac prefix is removed in the displayed link, like a normal link resolver would be (i.e. the above would be displayed as `WikiExtrasPlugin`).
+If the InterTrac link is enclosed in square brackets (like `[th:WikiExtrasPlugin]`), the InterTrac prefix is removed in the displayed link like a normal link resolver would be, ie the above would be displayed as `WikiExtrasPlugin`.
 
-For convenience, there's also some alternative short-hand form, 
-where one can use an alias as an immediate prefix 
-for the identifier of a ticket, changeset or report:
-(e.g. `#T234`, `[T1508]`, `[trac 1508]`, ...)
+For convenience, there's also some alternative short-hand form, where one can use an alias as an immediate prefix for the identifier of a ticket, changeset or report, eg `#T234`, `[T1508]`, `[trac 1508]`.
 
 == Examples
 
@@ -53,11 +41,9 @@ trac.url = http://trac.edgewall.org
 }}}
 
 The `.url` is mandatory and is used for locating the other Trac.
-This can be a relative URL in case that Trac environment is located 
-on the same server.
+This can be a relative URL in case that Trac environment is located on the same server.
 
-The `.title` information will be used for providing an useful tooltip
-when moving the cursor over an InterTrac links.
+The `.title` information will be used for providing an useful tooltip when moving the cursor over an InterTrac links.
 
 Finally, the `.compat` option can be used to activate or disable
 a ''compatibility'' mode:
@@ -87,11 +73,7 @@ Now, given the above configuration, one could create the following links:
    * `[trac 3300:3330]` [trac 3300:3330] 
  * finally, to link to the start page of a remote trac, simply use its prefix followed by ':', inside an explicit link. Example: `[th: Trac Hacks]` (''since 0.11; note that the ''remote'' Trac has to run 0.11 for this to work'')
 
-The generic form `intertrac_prefix:module:id` is translated
-to the corresponding URL `<remote>/module/id`, shorthand links
-are specific to some modules (e.g. !#T234 is processed by the
-ticket module) and for the rest (`intertrac_prefix:something`),
-we rely on the TracSearch#quickjump facility of the remote Trac.
+The generic form `intertrac_prefix:module:id` is translated to the corresponding URL `<remote>/module/id`, shorthand links are specific to some modules (e.g. !#T234 is processed by the ticket module) and for the rest (`intertrac_prefix:something`), we rely on the TracSearch#quickjump facility of the remote Trac.
 
 ----
 See also: TracLinks, InterWiki
