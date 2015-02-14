@@ -1385,7 +1385,8 @@ class TicketModule(Component):
             controller.apply_action_side_effects(req, ticket, action)
 
         # Notify
-        event = TicketChangeEvent('created', ticket, None, ticket['reporter'])
+        event = TicketChangeEvent('created', ticket, ticket['time'],
+                                  ticket['reporter'])
         try:
             NotificationSystem(self.env).notify(event)
         except Exception as e:

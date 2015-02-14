@@ -42,7 +42,8 @@ notifysuite = None
 
 def notify_ticket_created(env, ticket):
     notifysuite.smtpd.cleanup()
-    event = TicketChangeEvent('created', ticket, None, ticket['reporter'])
+    event = TicketChangeEvent('created', ticket, ticket['time'],
+                              ticket['reporter'])
     NotificationSystem(env).notify(event)
 
 
@@ -661,8 +662,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['cc'] = 'joe.user2@example.net'
         now = datetime.now(utc)
         ticket.save_changes('joe.bar@example.com', 'Removed from cc', now)
-        tn = TicketNotifyEmail(self.env)
-        tn.notify(ticket, newticket=False, modtime=now)
+        notify_ticket_changed(self.env, ticket)
         recipients = notifysuite.smtpd.get_recipients()
         self.assertIn('joe.user1@example.net', recipients)
         self.assertIn('joe.user2@example.net', recipients)
@@ -679,8 +679,7 @@ class NotificationTestCase(unittest.TestCase):
             ticket['owner'] = new_owner = 'joe.user2@example.net'
             now = datetime.now(utc)
             ticket.save_changes('joe.bar@example.com', 'Changed owner', now)
-            tn = TicketNotifyEmail(self.env)
-            tn.notify(ticket, newticket=False, modtime=now)
+            notify_ticket_changed(self.env, ticket)
             recipients = notifysuite.smtpd.get_recipients()
             if enabled:
                 self.assertIn(prev_owner, recipients)

@@ -38,6 +38,7 @@ from trac.util.datefmt import format_date_or_datetime, get_timezone, utc
 from trac.util.text import exception_to_unicode, obfuscate_email_address, \
                            shorten_line, text_width, wrap
 from trac.util.translation import _, deactivate, reactivate
+from trac.web.chrome import Chrome
 
 
 class TicketNotificationSystem(Component):
@@ -152,11 +153,13 @@ class TicketChangeEvent(NotificationEvent):
     """Represent a ticket change `NotificationEvent`."""
 
     def __init__(self, category, target, time, author, comment=None,
-                 changes={}, attachment=None):
+                 changes=None, attachment=None):
         super(TicketChangeEvent, self).__init__('ticket', category, target,
                                                 time, author)
         self.comment = comment
-        self.changes = changes
+        if changes is None and time is not None:
+            changes = target.get_change(cdate=time)
+        self.changes = changes  or {}
         self.attachment = attachment
 
 
@@ -252,22 +255,29 @@ class TicketOwnerSubscriber(Component):
             return
         ticket = event.target
 
+        owners = [ticket['owner']]
+
+        # Harvest previous owner
+        if 'fields' in event.changes and 'owner' in event.changes['fields']:
+            owners.append(event.changes['fields']['owner']['old'])
+
         matcher = RecipientMatcher(self.env)
-        recipient = matcher.match_recipient(ticket['owner'])
-        if not recipient:
-            return
-        sid, auth, addr = recipient
+        klass = self.__class__.__name__
+        sids = set()
+        for owner in owners:
+            recipient = matcher.match_recipient(owner)
+            if not recipient:
+                continue
+            sid, auth, addr = recipient
 
-        # Default subscription
-        for s in self.default_subscriptions():
-            yield (s[0], s[1], sid, auth, addr, s[2], s[3], s[4])
+            # Default subscription
+            for s in self.default_subscriptions():
+                yield (s[0], s[1], sid, auth, addr, s[2], s[3], s[4])
+            if sid:
+                sids.add((sid,auth))
 
-        if sid:
-            klass = self.__class__.__name__
-            for s in Subscription.find_by_sids_and_class(self.env,
-                    ((sid,auth),), klass):
-                yield s.subscription_tuple()
-
+        for s in Subscription.find_by_sids_and_class(self.env, sids, klass):
+            yield s.subscription_tuple()
 
     def description(self):
         return _("Ticket that I own is created or modified")
@@ -445,14 +455,20 @@ class CarbonCopySubscriber(Component):
                                   'attachment deleted'):
             return
 
+        # CC field is stored as comma-separated string. Parse to set.
+        chrome = Chrome(self.env)
+        to_set = lambda cc: set(chrome.cc_list(cc))
+        cc_set = to_set(event.target['cc'] or '')
+
+        # Harvest previous CC field
+        if 'fields' in event.changes and 'cc' in event.changes['fields']:
+            cc_set.update(to_set(event.changes['fields']['cc']['old']))
+
         matcher = RecipientMatcher(self.env)
         klass = self.__class__.__name__
-        cc = event.target['cc'] or ''
         sids = set()
-        for chunk in re.split('\s|,', cc):
-            chunk = chunk.strip()
-
-            recipient = matcher.match_recipient(chunk)
+        for cc in cc_set:
+            recipient = matcher.match_recipient(cc)
             if not recipient:
                 continue
             sid, auth, addr = recipient
@@ -874,10 +890,11 @@ class TicketAttachmentNotifier(Component):
     # IAttachmentChangeListener methods
 
     def attachment_added(self, attachment):
-        self._notify_attachment(attachment, 'attachment added')
+        self._notify_attachment(attachment, 'attachment added',
+                                attachment.date)
 
     def attachment_deleted(self, attachment):
-        self._notify_attachment(attachment, 'attachment deleted')
+        self._notify_attachment(attachment, 'attachment deleted', None)
 
     def attachment_reparented(self, attachment, old_parent_realm,
                               old_parent_id):
@@ -885,12 +902,12 @@ class TicketAttachmentNotifier(Component):
 
     # Internal methods
 
-    def _notify_attachment(self, attachment, category):
+    def _notify_attachment(self, attachment, category, time):
         resource = attachment.resource.parent
         if resource.realm != 'ticket':
             return
         ticket = Ticket(self.env, resource.id)
-        event = TicketChangeEvent(category, ticket, None, ticket['reporter'],
+        event = TicketChangeEvent(category, ticket, time, ticket['reporter'],
                                   attachment=attachment)
         try:
             NotificationSystem(self.env).notify(event)
