@@ -30,6 +30,31 @@ from trac.util import create_file
 from tracopt.perm.authz_policy import AuthzPolicy
 
 
+class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True)
+        self.ctlr = TicketSystem(self.env).action_controllers[0]
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def test_get_all_actions_custom_attribute(self):
+        """Custom attribute in ticket-workflow."""
+        config = self.env.config['ticket-workflow']
+        config.set('resolve.set_milestone', 'reject')
+        all_actions = self.ctlr.get_all_actions()
+
+        resolve_action = None
+        for name, attrs in all_actions.items():
+            if name == 'resolve':
+                resolve_action = attrs
+
+        self.assertIsNotNone(resolve_action)
+        self.assertIn('set_milestone', resolve_action.keys())
+        self.assertEqual('reject', resolve_action['set_milestone'])
+
+
 class ResetActionTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -225,6 +250,7 @@ user4 = !TICKET_MODIFY
 
 def suite():
     suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(ConfigurableTicketWorkflowTestCase))
     suite.addTest(unittest.makeSuite(ResetActionTestCase))
     suite.addTest(unittest.makeSuite(SetOwnerAttributeTestCase))
     if ConfigObj:

@@ -56,8 +56,8 @@ def parse_workflow_config(rawactions):
         'set_owner': [],
         'set_resolution': [],
     }
-    allowed_attrs = required_attrs.copy()
-    allowed_attrs.update(optional_attrs)
+    known_attrs = required_attrs.copy()
+    known_attrs.update(optional_attrs)
 
     actions = defaultdict(dict)
     for option, value in rawactions:
@@ -73,12 +73,13 @@ def parse_workflow_config(rawactions):
             actions[name]['newstate'] = newstate
         else:
             attribute = parts[1]
-            if isinstance(allowed_attrs[attribute], int):
-                actions[name][attribute] = int(value)
-            elif isinstance(allowed_attrs[attribute], list):
-                actions[name][attribute] = to_list(value)
-            elif isinstance(allowed_attrs[attribute], str):
+            if attribute not in known_attrs.keys() or \
+                    isinstance(known_attrs[attribute], str):
                 actions[name][attribute] = value
+            elif isinstance(known_attrs[attribute], int):
+                actions[name][attribute] = int(value)
+            elif isinstance(known_attrs[attribute], list):
+                actions[name][attribute] = to_list(value)
 
     for action, attributes in actions.items():
         if 'label' not in attributes:
