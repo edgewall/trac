@@ -292,7 +292,7 @@ class PasswordFileAuthentication(HTTPAuthentication):
     def check_reload(self):
         with self._lock:
             mtime = os.stat(self.filename).st_mtime
-            if mtime > self.mtime:
+            if mtime != self.mtime:
                 self.mtime = mtime
                 self.load(self.filename)
 

@@ -50,7 +50,7 @@ def _reloader_thread(modification_callback, loop_callback):
             if filename not in mtimes:
                 mtimes[filename] = mtime
                 continue
-            if mtime > mtimes[filename]:
+            if mtime != mtimes[filename]:
                 modification_callback(filename)
                 sys.exit(3)
         loop_callback()

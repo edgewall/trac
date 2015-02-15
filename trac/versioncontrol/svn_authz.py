@@ -215,7 +215,7 @@ class AuthzSourcePolicy(Component):
             self._mtime = mtime = 0
             self._authz = None
             self._users = set()
-        if mtime > self._mtime:
+        if mtime != self._mtime:
             self._mtime = mtime
             rm = RepositoryManager(self.env)
             modules = set(repos.reponame

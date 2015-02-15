@@ -141,7 +141,7 @@ class AuthzPolicy(Component):
 
     def check_permission(self, action, username, resource, perm):
         if not self.authz_mtime or \
-                os.path.getmtime(self.get_authz_file) > self.authz_mtime:
+                os.path.getmtime(self.get_authz_file) != self.authz_mtime:
             self.parse_authz()
         resource_key = self.normalise_resource(resource)
         self.log.debug('Checking %s on %s', action, resource_key)
