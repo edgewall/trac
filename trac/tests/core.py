@@ -21,6 +21,19 @@ from trac.core import ComponentManager
 import unittest
 
 
+class TracErrorTestCase(unittest.TestCase):
+
+    def test_init(self):
+        e = TracError("the message", "the title", True)
+        self.assertEqual("the message", e.message)
+        self.assertEqual("the title", e.title)
+        self.assertEqual(True, e.show_traceback)
+
+    def test_unicode(self):
+        e = TracError("the message")
+        self.assertEqual("the message", unicode(e))
+
+
 class ITest(Interface):
     def test():
         """Dummy function."""
@@ -351,7 +364,10 @@ class ComponentTestCase(unittest.TestCase):
 
 
 def suite():
-    return unittest.makeSuite(ComponentTestCase)
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(TracErrorTestCase))
+    suite.addTest(unittest.makeSuite(ComponentTestCase))
+    return suite
 
 
 if __name__ == '__main__':
