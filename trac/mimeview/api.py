@@ -847,10 +847,10 @@ class Mimeview(Component):
             try:
                 data = (annotator, annotator.get_annotation_data(context))
             except TracError, e:
-                self.log.warning("Can't use annotator '%s': %s", a, e.message)
+                self.log.warning("Can't use annotator '%s': %s", a, e)
                 add_warning(context.req, tag.strong(
                     tag_("Can't use %(annotator)s annotator: %(error)s",
-                         annotator=tag.em(a), error=tag.pre(e.message))))
+                         annotator=tag.em(a), error=tag.pre(e))))
                 data = None, None
             annotator_datas.append(data)
 

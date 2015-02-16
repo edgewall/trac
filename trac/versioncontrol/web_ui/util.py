@@ -78,7 +78,7 @@ def get_existing_node(req, repos, path, rev):
                          href=req.href.log(repos.reponame or None, path,
                                            rev=rev, mode='path_history'))
         raise ResourceNotFound(tag(
-            tag.p(e.message, class_="message"),
+            tag.p(e, class_="message"),
             tag.p(tag_("You can %(search)s in the repository history to see "
                        "if that path existed but was later removed",
                        search=search_a))))

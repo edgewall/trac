@@ -375,8 +375,7 @@ class BrowserModule(Component):
                 rev_or_latest = rev or repos.youngest_rev
                 node = get_existing_node(req, repos, path, rev_or_latest)
             except NoSuchChangeset, e:
-                raise ResourceNotFound(e.message,
-                                       _('Invalid changeset number'))
+                raise ResourceNotFound(e, _('Invalid changeset number'))
             if node:
                 try:
                     # use changeset instance to retrieve branches and tags
