@@ -15,7 +15,7 @@ from trac.test import Mock, EnvironmentStub, MockPerm, locale_en
 from trac.ticket.model import Ticket
 from trac.ticket.query import Query, QueryModule, TicketQueryMacro
 from trac.util.datefmt import utc
-from trac.web.api import arg_list_to_args
+from trac.web.api import arg_list_to_args, parse_arg_list
 from trac.web.chrome import web_context
 from trac.web.href import Href
 from trac.wiki.formatter import LinkFormatter
@@ -638,6 +638,16 @@ class QueryLinksTestCase(unittest.TestCase):
     def tearDown(self):
         self.env.reset_db()
 
+    def _insert_ticket(self, **attrs):
+        attrs.setdefault('reporter', 'joe')
+        attrs.setdefault('summary', 'Summary')
+        attrs.setdefault('status', 'new')
+        ticket = Ticket(self.env)
+        for name, value in attrs.iteritems():
+            ticket[name] = value
+        ticket.insert()
+        return ticket
+
     def _format_link(self, query, label):
         return str(self.query_module._format_link(self.formatter, 'query',
                                                   query, label))
@@ -647,8 +657,8 @@ class QueryLinksTestCase(unittest.TestCase):
                          '<em class="error">[Error: Query filter requires '
                          'field and constraints separated by a "="]</em>')
 
-    def _query_with_duplicated_args(self, name, values):
-        self.req.arg_list = [(name, value) for value in values]
+    def _process_request(self, query_string):
+        self.req.arg_list = parse_arg_list(query_string)
         self.req.args = arg_list_to_args(self.req.arg_list)
         self.assertEqual(True, self.query_module.match_request(self.req))
         template, data, content_type = \
@@ -656,16 +666,28 @@ class QueryLinksTestCase(unittest.TestCase):
         return data
 
     def test_duplicated_order_arguments(self):
-        # query:?order=priority&order=id
-        data = self._query_with_duplicated_args('order', ['priority', 'id'])
+        data = self._process_request('order=priority&order=id')
         self.assertEqual([], data['tickets'])
         self.assertEqual('priority', data['query'].order)
 
     def test_duplicated_report_arguments(self):
-        # query:?report=1&report=2
-        data = self._query_with_duplicated_args('report', ['1', '2'])
+        data = self._process_request('report=1&report=2')
         self.assertEqual([], data['tickets'])
         self.assertEqual('1', data['query'].id)
+
+    def test_duplicated_group_arguments(self):
+        self._insert_ticket(status='new')
+        self._insert_ticket(status='assigned')
+        data = self._process_request(
+                'group=status&group=status&order=priority')
+        self.assertNotEqual([], data['tickets'])
+        self.assertEqual(set(('new', 'assigned')),
+                         set(t['status'] for t in data['tickets']))
+        self.assertEqual(2, len(data['tickets']))
+        self.assertNotEqual([], data['groups'])
+        self.assertEqual(set(('new', 'assigned')),
+                         set(value for value, tickets in data['groups']))
+        self.assertEqual(2, len(data['groups']))
 
 
 class TicketQueryMacroTestCase(unittest.TestCase):

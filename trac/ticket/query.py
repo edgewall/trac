@@ -952,9 +952,11 @@ class QueryModule(Component):
         order = args.get('order')
         if isinstance(order, (list, tuple)):
             order = order[0] if order else None
+        group = args.get('group')
+        if isinstance(group, (list, tuple)):
+            group = group[0] if group else None
         query = Query(self.env, report_id,
-                      constraints, cols, order,
-                      'desc' in args, args.get('group'),
+                      constraints, cols, order, 'desc' in args, group,
                       'groupdesc' in args, 'verbose' in args,
                       rows,
                       args.get('page'),
