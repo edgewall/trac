@@ -182,7 +182,7 @@
                   <py:when test="ticket.exists">Change Properties</py:when>
                   <py:otherwise>Properties</py:otherwise>
               </legend>
-              <table>
+              <table class="trac-properties">
                 <col class="th" /><col class="td" /><col class="th" /><col class="td" />
                 <tr py:if="can_modify or can_create">
                   <th><label for="field-summary">Summary:</label></th>
