@@ -1,0 +1,211 @@
+[[PageOutline(2-3)]]
+= Change Log
+This is a rough list of changes between released versions.
+
+To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
+
+
+== 1.0.x Releases ==
+
+== 1.0.4
+
+Trac 1.0.4 contains a few fixes, including a fix for a regression in 1.0.3.
+
+ - Workflow action labels were not displayed unless name attribute
+   was explicitly defined ([trac:#11930]).
+
+See the detailed release notes for [[trac:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.4]].
+
+[trac:source:/tags/trac-1.0.4 View Tag] | [trac:milestone:1.0.4 View Milestone]
+
+=== 1.0.3
+
+Trac 1.0.3 is a maintenance release containing numerous fixes and minor
+enhancements. The following are a few of the highlights:
+
+The following list contains only a few highlights:
+
+ - Notification is sent when adding an attachment to a ticket ([trac:#2259]).
+ - Stylesheets and scripts are loaded during autopreview, resulting in proper
+   syntax highlighting when code WikiProcessors are added ([trac:#10470]) and display
+   of Workflow graphs without explicit autopreview ([trac:#10674]).
+ - Merge changesets are shown as differences against first parent, resulting
+   in less noisy changesets ([trac:#10740]).
+ - Pygments 2.0 is supported ([trac:#11796]).
+ - Fixed error when completing the `initenv` TracAdmin command ([trac:#11797]).
+ - Performance improvement on systems with many thousands of authenticated
+   users due to caching of Environment.get_known_users ([trac:#11868]).
+ - Distribution metadata of wheel package is supported and displayed on the
+   About page ([trac:#11877]).
+ - … and more than 3 dozen total fixes!
+
+See the detailed release notes for [[trac:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.3]].
+
+[trac:source:/tags/trac-1.0.3 View Tag] | [trac:milestone:1.0.3 View Milestone]
+
+
+=== 1.0.2
+
+Trac 1.0.2 contains a number of bug fixes and minor enhancements, as well as a major update for many translations.
+
+The following list contains only a few highlights:
+
+ - Subversion keywords are expanded and EOL substitutions made when viewing a file in the repository browser and when downloading a file ([trac:#717]). 
+ - Notification email is sent to the old owner when a ticket is reassigned ([trac:#2311]).
+ - Ticket change history is updated when renaming and deleting a milestone, and when retargeting tickets to another milestone ([trac:#4582], [trac:#5658]).
+ - Numerous fixes for the Authz permissions policy in the browser/repository ([trac:#10961], [trac:#11646]), wiki ([trac:#8976], [trac:#11067]), admin ([trac:#11069]) and report ([trac:#11176]) realms.
+ - Multiple forms submits are disallowed ([trac:#10138]).
+ - `ConfigurationError` is raised if any of the `permission_policies` can't be loaded, preventing possible information leakage due to internal and installation errors ([trac:#10285]).
+ - Wiki toolbars can be disabled through a configuration setting ([trac:#10837])
+ - The number of entries in a table is shown next to heading on applicable admin pages ([trac:#11027]).
+ - //Cancel// buttons are consistently located on all pages ([trac:#11076]).
+ - Focus is placed on a text element when an edit page is loaded ([trac:#11084]).
+ - The //Edit conflict// and //Merge// warning messages are always visible in side-by-side edit mode ([trac:#11102]).
+ - Improvements to the layout of the Report ([trac:#11106], [trac:#11664]) and Ticket pages ([trac:#11471]).
+ - Genshi 0.7 compatibility ([trac:#11218]).
+ - Numerous minor fixes for Git repository support.
+ - … and more than a hundred more fixes!
+
+See the detailed release notes for [[trac:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.2]] and [[trac:TracDev/ReleaseNotes/0.12#MaintenanceReleases | 0.12.6]] (as 1.0.2 contains all the fixes done for 0.12.6).
+
+[trac:source:/tags/trac-1.0.2 View Tag] | [trac:milestone:1.0.2 View Milestone]
+
+
+=== 1.0.1
+
+Trac 1.0.1 contains a number of bug fixes and minor enhancements, as well as a major update for many translations.
+
+The following list contains only a few highlights:
+
+ - Fix zip source download for large directories in Subversion repositories ([trac:#10840])
+ - Performance improvement for the Roadmap, by caching milestone properties ([trac:#10879])
+ - Added a ''select all'' checkbox to table of components for each plugin on the Plugins admin panel ([trac:#9609])
+ - Restore the ''Modify'' link at the top of the ticket page, as it was in Trac 0.12 ([trac:#10856])
+ - `ListOption` keeps values other than empty string and None in raw list as default ([trac:#10541])
+ - Prevent possibility of multiple identical info or warning messages being presented to the user ([trac:#10987])
+ - The !BatchModify select-all checkboxes are toggled with tri-state behavior when the ticket checkboxes are toggled ([trac:#10992])
+ - Update the ticket changetime to the current time when deleting a ticket comment ([trac:#10486])
+
+See the detailed release notes for [[trac:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.1]] and [[trac:TracDev/ReleaseNotes/0.12#MaintenanceReleases | 0.12.5]] (as 1.0.1 contains all the fixes done for 0.12.5).
+
+[trac:source:/tags/trac-1.0.1 View Tag] | [trac:milestone:1.0.1 View Milestone]
+
+
+=== '''1.0 'Cell' '''
+Trac 1.0 is a major release adding refreshed user interface and improved DVCS repository support as the most visible changes.
+
+The following list contains only a few highlights:
+ - The default theme looks more modern, especially on recent browsers (no effort has been made to make it look better on older browsers like IE6 or 7) 
+ - The [TH:GitPlugin] has been donated by Herbert Valerio Riedel to the Trac project (many thanks!) and is now maintained here as an optional component
+ - As a consequence, the Subversion support has been moved below `tracopt.versioncontrol` as well
+ - The Git and Mercurial log view feature a visualization of the branching structure 
+ - Usability improvements for the tickets, with a better support for conflict detection and resolution
+ - Integration of the [TH:BatchModifyPlugin], contributed by Brian Meeker (many thanks!) and is now maintained there as a default component
+ - jQuery/UI integration, featuring a date picker for date fields
+ - Improved integration with Pygments syntax highlighting
+ - ... and numerous smaller features added and bugs fixed since 0.12!
+
+See the full list in [trac:TracDev/ReleaseNotes/1.0].
+
+[[trac:source:/tags/trac-1.0 View Tag]] | [[trac:milestone:1.0 View Milestone]]
+
+== 0.12.x Releases
+
+=== 0.12.6
+
+Trac 0.12.6 contains fixes for a few issues:
+ - Subversion blame would fail for a path with URL-encoded characters ([trac:#10386]), a lower-case drive letter on Windows ([trac:#10514]), or a non-ascii filename with Subversion 1.7 ([trac:#11167]).
+ - Improved performance rendering `svn:mergeinfo` properties in browser view ([trac:#8459]) and changeset view ([trac:#11219]).
+ - Query with many custom fields would fail ([trac:#11140]).
+ - Zip archive had a timestamp with no timezone information ([trac:#11162]).
+ - Failure or incorrect ranges rendering log TracLinks ([trac:#11308], [trac:#11346]).
+ - Textareas in ticket view did not wrap correctly in IE 11 ([trac:#11376]).
+ - Emails were not being obfuscated in owner field on CSV export from ticket and query pages ([trac:#11594]).
+ - Locale data was not being included in egg in Distribute 0.6.29 and later ([trac:#11640]).
+ - Deleting a milestone would not delete its attachments ([trac:#11672]).
+ - Added support for Babel 1.0 and later ([trac:#11258], [trac:#11345]).
+ - Added support for `ConfigObj` 5.0 and later ([trac:#11498]).
+ - … and dozens more fixes!
+
+See the detailed release notes for [[trac:TracDev/ReleaseNotes/0.12#MaintenanceReleases | 0.12.6]].
+
+[trac:source:/tags/trac-0.12.6 View Tag] | [trac:milestone:0.12.6 View Milestone]
+
+=== 0.12.5
+
+Trac 0.12.5 contains fixes for a few issues:
+ - upload of .mht files ([Wikipedia:MHTML] web page archive files) now works ([trac:#9880])
+ - more robust parsing of attachment URLs ([trac:#10280]) and uploaded file names ([trac:#10850])
+ - lots of improvement to the date formatting code, which is now much more robust when timezone and daylight saving time computations are involved ([trac:#10768], [trac:#10863], [trac:#10864], [trac:#10912], [trac:#10920])
+ - no longer generate invalid JSON encoded data with Python 2.4 and 2.5 ([trac:#10877])
+ - ... and fix a couple more minor defects ([trac:#10967], [trac:#10892], [trac:#10923], [trac:#10858], [trac:#10835])
+
+[trac:source:/tags/trac-0.12.5 View Tag] | [trac:milestone:0.12.5 View Milestone]
+
+=== 0.12.4 
+
+Trac 0.12.4 contains only a handful of minor fixes.
+
+[trac:source:/tags/trac-0.12.4 View Tag] | [trac:milestone:0.12.4 View Milestone]
+
+=== 0.12.3 ===
+
+Trac 0.12.3 contains a few minor fixes and a few minor features.
+ - compatibility with Subversion 1.7 ([trac:#10414])
+ - easier troubleshooting of common startup errors ([trac:#10024])
+ - jQuery upgraded to 1.4.4 ([trac:#10001])
+ - improve fine-grained permission handling in the source browser ([trac:#9976], [trac:#10208], [trac:#10110])
+ - added compatibility with MySQL 5.5.3 utf8mb4 databases ([trac:#9766])
+ - ... and dozens more fixes!
+
+[trac:source:/tags/trac-0.12.3 View Tag] | [trac:milestone:0.12.3 View Milestone]
+
+=== 0.12.2
+
+Trac 0.12.2 contains a few minor fixes and a few minor features.
+
+This list contains only a few highlights:
+ - install: improved robustness of Trac installation if Babel is
+   installed after the fact ([trac:#9439], [trac:#9595], [trac:#9961])
+ - notifications: support for Asian character width ([trac:#4717])
+ - roadmap: fix display of progress bar in some corner cases ([trac:#9718])
+   and respect the overall_completion milestone group setting ([trac:#9721])
+ - reports: reports and queries look much better, as the columns now
+   keep the same width across groups; the absence of word wrapping in
+   reports has been fixed ([trac:#9825])
+ - web admin: improved layout ([trac:#8866], [trac:#9963])
+ - web: it's now possible to log in different Trac instances sharing
+   the same URL prefix (e.g. /project and /project-test) ([trac:#9951])
+
+[trac:source:/tags/trac-0.12.2 View Tag] | [trac:milestone:0.12.2 View Milestone]
+
+=== 0.12.1
+
+Trac 0.12.1 contains a few important performance improvements, some minor fixes and a few minor features.
+
+This list contains only a few highlights:
+ - db: improve concurrency behavior ([trac:#9111])
+ - fcgi: add an environment variable `TRAC_USE_FLUP` to control the usage of flup vs. bundled _fcgi.py (defaults to 0, i.e. use bundled as before)
+ - svn authz: improve compatibility with svn 1.5 format ([trac:#8289])
+ - milestone: allow to set the time for the due date ([trac:#6369], [trac:#9582])
+ - ticket: fixes for the CC: property ([trac:#8597], [trac:#9522])
+ - notification: improved the formatting of ticket fields in notification e-mails ([trac:#9484], [trac:#9494])
+ - i18n: added a configuration option to set the default language ([trac:#8117])
+ - several fixes for upgrade ([trac:#9400], [trac:#9416], [trac:#9483], [trac:#9556])
+
+[trac:source:/tags/trac-0.12.1 View Tag] | [trac:milestone:0.12.1 View Milestone]
+
+=== ''' 0.12 'Babel' '''
+Trac 0.12 is a major release introducing i18n and multiple repository support as the most visible changes.
+
+The following list contains only a few highlights:
+ - The user interface is translated in a dozen of languages, provided the [Babel:] package is installed
+ - Multiple repositories can be associated to a single Trac environment; the repositories can be of heterogeneous types (svn, hg, git, darcs...)
+ - Usability improvements for the Wiki, with a nice side-by-side edit mode with automatic preview
+ - Richer Wiki syntax, with much improved support for tables, partial [trac:WikiCreole] compatibility and numerous smaller improvements
+ - Usability improvements for the Ticket module, with automatic preview of comments while you type and possibility to edit or remove them later
+ - Improved Custom Queries (time fields, multiple disjoint conditions, a.k.a. OR queries)
+ - Timeline filtering by user
+ - ... and numerous smaller features added and bugs fixed since 0.11!
+
+[trac:source:/tags/trac-0.12 View Tag] | [trac:milestone:0.12 View Milestone]
