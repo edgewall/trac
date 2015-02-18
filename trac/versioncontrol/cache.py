@@ -307,12 +307,11 @@ class CachedRepository(Repository):
         with self.env.db_query as db:
             if first is None:
                 first = db("""
-                    SELECT rev FROM node_change
+                    SELECT MAX(rev) FROM node_change
                     WHERE repos=%s AND rev<=%s AND path=%s
                       AND change_type IN ('A', 'C', 'M')
-                    ORDER BY rev DESC LIMIT 1
                     """, (self.id, slast, path))
-                first = int(first[0][0]) if first else 0
+                first = int(first[0][0]) if first[0][0] is not None else 0
             sfirst = self.db_rev(first)
             return [int(rev) for rev, in db("""
                     SELECT DISTINCT rev FROM node_change
@@ -407,12 +406,14 @@ class CachedRepository(Repository):
         srev = self.db_rev(rev)
         with self.env.db_query as db:
             # the changeset revs are sequence of ints:
-            sql = "SELECT rev FROM node_change WHERE repos=%s AND " + \
-                  "rev" + direction + "%s"
+            sql = "SELECT %(aggr)s(rev) FROM %(tab)s " \
+                  "WHERE repos=%%s AND rev%(dir)s%%s"
+            aggr = 'MAX' if direction == '<' else 'MIN'
             args = [self.id, srev]
 
             if path:
                 path = path.lstrip('/')
+                sql %= {'aggr': aggr, 'dir': direction, 'tab': 'node_change'}
                 # changes on path itself or its children
                 sql += " AND (path=%s OR path " + db.prefix_match()
                 args.extend((path, db.prefix_match_value(path + '/')))
@@ -422,12 +423,12 @@ class CachedRepository(Repository):
                 sql += " OR (path IN (" + parents + ") AND change_type='D'))"
                 for i in range(1, len(components) + 1):
                     args.append('/'.join(components[:i]))
-
-            sql += " ORDER BY rev" + (" DESC" if direction == '<' else "") \
-                   + " LIMIT 1"
+            else:
+                sql %= {'aggr': aggr, 'dir': direction, 'tab': 'revision'}
 
             for rev, in db(sql, args):
-                return int(rev)
+                if rev is not None:
+                    return int(rev)
 
     def parent_revs(self, rev):
         if self.has_linear_changesets:
