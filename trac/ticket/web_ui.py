@@ -488,11 +488,12 @@ class TicketModule(Component):
 
         preview = 'preview' in req.args
         if preview or req.method == 'POST':
-            action = req.args.get('action')
+            actions = TicketSystem(self.env) \
+                      .get_available_actions(req, ticket)
+            default_action = actions[0] if len(actions) > 0 else None
+            action = req.args.get('action', default_action)
             valid = True
             # Do any action on the ticket?
-            actions = \
-                TicketSystem(self.env).get_available_actions(req, ticket)
             if action not in actions:
                 valid = False
                 add_warning(req, _('The action "%(name)s" is not available.',
