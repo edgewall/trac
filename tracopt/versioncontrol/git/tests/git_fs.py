@@ -425,6 +425,34 @@ class GitRepositoryTestCase(BaseTestCase):
         repos.sync()
         self.assertEqual(['master'], self._get_quickjump_names(repos))
 
+    def test_changeset_branches_tags(self):
+        self._git_init()
+        self._git('tag', '0.0.1', 'master')
+        self._git('tag', '-m', 'Root commit', 'initial', 'master')
+        self._git('branch', 'root', 'master')
+        self._git('checkout', '-b', 'dev', 'master')
+        self._git_commit('-m', 'Summary', '--allow-empty')
+        self._git('tag', '0.1.0dev', 'dev')
+        self._git('tag', '0.1.0a', 'dev')
+        self._add_repository('gitrepos')
+        repos = self._repomgr.get_repository('gitrepos')
+        repos.sync()
+
+        def get_branches(repos, rev):
+            rev = repos.normalize_rev(rev)
+            return sorted(repos.get_changeset(rev).get_branches())
+
+        def get_tags(repos, rev):
+            rev = repos.normalize_rev(rev)
+            return sorted(repos.get_changeset(rev).get_tags())
+
+        self.assertEqual([('dev', False), ('master', True), ('root', True)],
+                         get_branches(repos, '0.0.1'))
+        self.assertEqual([('dev', True)], get_branches(repos, '0.1.0dev'))
+        self.assertEqual(['0.0.1', 'initial'], get_tags(repos, '0.0.1'))
+        self.assertEqual(['0.0.1', 'initial'], get_tags(repos, 'initial'))
+        self.assertEqual(['0.1.0a', '0.1.0dev'], get_tags(repos, '0.1.0dev'))
+
     def test_parent_child_revs(self):
         self._git_init()
         self._git('branch', 'initial')  # root commit

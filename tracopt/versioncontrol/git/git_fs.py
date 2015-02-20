@@ -161,15 +161,16 @@ class GitCachedRepository(CachedRepository):
 
 
 class GitCachedChangeset(CachedChangeset):
-    """Git-specific cached changeset.
+    """Git-specific cached changeset."""
 
-    Handles get_branches()
-    """
     def get_branches(self):
         _rev = self.rev
 
         return [(k, v == _rev) for k, v in
                  self.repos.repos.git.get_branch_contains(_rev, resolve=True)]
+
+    def get_tags(self):
+        return self.repos.repos.git.get_tags(self.rev)
 
 
 def _last_iterable(iterable):
@@ -868,6 +869,9 @@ class GitChangeset(Changeset):
         return [(k, v == _rev)
                 for k, v in self.repos.git.get_branch_contains(_rev,
                                                                resolve=True)]
+
+    def get_tags(self):
+        return self.repos.git.get_tags(self.rev)
 
 
 class GitwebProjectsRepositoryProvider(Component):

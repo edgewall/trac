@@ -357,11 +357,21 @@ class UnicodeNameTestCase(unittest.TestCase, GitCommandMixin):
 
     def test_unicode_tags(self):
         self._git('tag', 'täg-t10980', 'master')
+        self._git_commit('-m', 'blah', '--allow-empty')
+        self._git('tag', 'v0.42.1', 'master')
         storage = self._storage()
-        tags = tuple(storage.get_tags())
+
+        tags = storage.get_tags()
         self.assertEqual(unicode, type(tags[0]))
-        self.assertEqual(u'täg-t10980', tags[0])
-        self.assertNotEqual(None, storage.verifyrev(u'täg-t10980'))
+        self.assertEqual([u'täg-t10980', 'v0.42.1'], tags)
+
+        rev = storage.verifyrev(u'täg-t10980')
+        self.assertNotEqual(None, rev)
+        self.assertEqual([u'täg-t10980'], storage.get_tags(rev))
+
+        rev = storage.verifyrev('v0.42.1')
+        self.assertNotEqual(None, rev)
+        self.assertEqual(['v0.42.1'], storage.get_tags(rev))
 
     def test_ls_tree(self):
         paths = [u'normal-path.txt',

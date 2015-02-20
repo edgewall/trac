@@ -793,9 +793,21 @@ class Storage(object):
 
         return None
 
-    def get_tags(self):
-        return (self._fs_to_unicode(e.strip())
-                for e in self.repo.tag('-l').splitlines())
+    def get_tags(self, rev=None):
+        output = self.repo.for_each_ref(
+                '--format', '%(objectname)%09%(*objectname)%09%(refname)',
+                'refs/tags/')
+        tags = []
+        for line in output.splitlines():
+            values = line.split('\t', 2)
+            if len(values) != 3:
+                continue
+            sha, dsha, refname = values
+            if dsha:
+                sha = dsha  # use derefered object id if a tag
+            if rev is None or sha == rev:
+                tags.append(self._fs_to_unicode(refname[10:]))
+        return sorted(tags)
 
     def ls_tree(self, rev, path=''):
         rev = rev and str(rev) or 'HEAD' # paranoia
