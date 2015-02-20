@@ -60,6 +60,7 @@ except ImportError:
 # Mapping from "abstract" SQL types to DB-specific types
 _type_map = {
     'int64': 'bigint',
+    'text': 'mediumtext',
 }
 
 
