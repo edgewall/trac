@@ -14,6 +14,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from abc import ABCMeta
 from BaseHTTPServer import BaseHTTPRequestHandler
 from Cookie import CookieError, BaseCookie, SimpleCookie
 import cgi
@@ -159,6 +160,8 @@ HTTP_STATUS = dict([(code, reason.title()) for code, (reason, description)
 
 
 class HTTPException(TracBaseError):
+
+    __metaclass__ = ABCMeta
 
     def __init__(self, detail, *args):
         """Factory for HTTPException classes."""
