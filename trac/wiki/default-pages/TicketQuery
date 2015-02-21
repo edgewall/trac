@@ -1,0 +1,117 @@
+= !TicketQuery Wiki Macro
+
+The !TicketQuery macro lets you display information on tickets within wiki pages.
+The query language used by the `[[TicketQuery]]` macro is described in [TracQuery#UsingtheTicketQueryMacro TracQuery] page.
+
+== Usage
+
+[[MacroList(TicketQuery)]]
+
+== Example
+
+||= **Example** =||= **Result** =||= **Macro** =||
+|-----------------------------------------------------------
+||=Number of [query:status=new&milestone= Triage tickets]: =||\
+|| **[[TicketQuery(status=new&milestone=,count)]]**||\
+|| `[[TicketQuery(status=new&milestone=,count)]]` ||
+|-----------------------------------------------------------
+||=Number of new tickets: =||\
+|| **[[TicketQuery(status=new,count)]]**||\
+|| `[[TicketQuery(status=new,count)]]` ||
+|-----------------------------------------------------------
+||=Number of reopened tickets: =||\
+|| **[[TicketQuery(status=reopened,count)]]**||\
+|| `[[TicketQuery(status=reopened,count)]]` ||
+|-----------------------------------------------------------
+||=Number of assigned tickets: =||\
+|| **[[TicketQuery(status=assigned,count)]]**||\
+|| `[[TicketQuery(status=assigned,count)]]` ||
+|-----------------------------------------------------------
+||=Number of invalid tickets: =||\
+|| **[[TicketQuery(status=closed,resolution=invalid,count)]]**||\
+|| `[[TicketQuery(status=closed,resolution=invalid,count)]]` ||
+|-----------------------------------------------------------
+||=Number of worksforme tickets: =||\
+|| **[[TicketQuery(status=closed,resolution=worksforme,count)]]**||\
+|| `[[TicketQuery(status=closed,resolution=worksforme,count)]]` ||
+|-----------------------------------------------------------
+||=Number of duplicate tickets: =||\
+|| **[[TicketQuery(status=closed,resolution=duplicate,count)]]**||\
+|| `[[TicketQuery(status=closed,resolution=duplicate,count)]]` ||
+|-----------------------------------------------------------
+||=Number of wontfix tickets: =||\
+|| **[[TicketQuery(status=closed,resolution=wontfix,count)]]**||\
+|| `[[TicketQuery(status=closed,resolution=wontfix,count)]]` ||
+|-----------------------------------------------------------
+||=Number of fixed tickets: =||\
+|| **[[TicketQuery(status=closed,resolution=fixed,count)]]**||\
+|| `[[TicketQuery(status=closed,resolution=fixed,count)]]` ||
+|-----------------------------------------------------------
+||=Total number of tickets: =||\
+|| **[[TicketQuery(count)]]**||\
+|| `[[TicketQuery(count)]]` ||
+|-----------------------------------------------------------
+||=Number of tickets reported **or** owned by current user: =||\
+|| **[[TicketQuery(reporter=$USER,or,owner=$USER,count)]]**||\
+|| `[[TicketQuery(reporter=$USER,or,owner=$USER,count)]]` ||
+|-----------------------------------------------------------
+||=Number of tickets created this month: =||\
+|| **[[TicketQuery(created=thismonth..,count)]]**||\
+|| `[[TicketQuery(created=thismonth..,count)]]` ||
+|-----------------------------------------------------------
+||=Last 3 modified tickets: =||\
+||**[[TicketQuery(max=3,order=modified,desc=1,compact)]]**||\
+|| `[[TicketQuery(max=3,order=modified,desc=1,compact)]]` ||
+|-----------------------------------------------------------
+{{{#!th rowspan=2, style="text-align: left;"
+Details of ticket #1:
+}}}
+{{{#!td style="border-bottom: 0;"
+}}}
+{{{#!td
+`[[TicketQuery(id=1,col=id|owner|reporter,rows=summary,table)]]`
+}}}
+|-
+{{{#!td colspan=2, style="border-top: 0;"
+[[TicketQuery(id=1,col=id|owner|reporter,rows=summary,table)]]
+}}}
+|-----------------------------------------------------------
+
+== Using the `[[TicketQuery]]` Macro
+
+The [trac:TicketQuery TicketQuery] macro lets you display lists of tickets matching certain criteria anywhere you can use WikiFormatting.
+
+Example:
+{{{
+[[TicketQuery(version=0.6|0.7&resolution=duplicate)]]
+}}}
+
+This is displayed as:
+  [[TicketQuery(version=0.6|0.7&resolution=duplicate)]]
+
+Just like the [wiki:TracQuery#UsingTracLinks query: wiki links], the parameter of this macro expects a query string formatted according to the rules of the simple [wiki:TracQuery#QueryLanguage ticket query language]. This also displays the link and description of a single ticket:
+{{{
+[[TicketQuery(id=123)]]
+}}}
+
+This is displayed as:
+  [[TicketQuery(id=123)]]
+
+A more compact representation without the ticket summaries is:
+{{{
+[[TicketQuery(version=0.6|0.7&resolution=duplicate, compact)]]
+}}}
+
+This is displayed as:
+  [[TicketQuery(version=0.6|0.7&resolution=duplicate, compact)]]
+
+Finally, if you wish to receive only the number of defects that match the query, use the `count` parameter:
+{{{
+[[TicketQuery(version=0.6|0.7&resolution=duplicate, count)]]
+}}}
+
+This is displayed as:
+  [[TicketQuery(version=0.6|0.7&resolution=duplicate, count)]]
+
+----
+See also: TracQuery, TracTickets, TracReports, TracGuide
