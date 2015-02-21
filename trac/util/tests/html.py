@@ -206,10 +206,38 @@ class ToFragmentTestCase(unittest.TestCase):
         self.assertEqual('<p>Powered by <a href="http://trac.edgewall.org/">'
                          'Trac</a></p>', unicode(rv))
 
+    def test_tracerror_with_tracerror_with_fragment(self):
+        message = tag('Powered by ',
+                      tag.a('Trac', href='http://trac.edgewall.org/'))
+        rv = to_fragment(TracError(TracError(message)))
+        self.assertEqual(Fragment, type(rv))
+        self.assertEqual('Powered by <a href="http://trac.edgewall.org/">Trac'
+                         '</a>', unicode(rv))
+
+    def test_tracerror_with_tracerror_with_element(self):
+        message = tag.p('Powered by ',
+                        tag.a('Trac', href='http://trac.edgewall.org/'))
+        rv = to_fragment(TracError(TracError(message)))
+        self.assertEqual(Element, type(rv))
+        self.assertEqual('<p>Powered by <a href="http://trac.edgewall.org/">'
+                         'Trac</a></p>', unicode(rv))
+
     def test_error(self):
         rv = to_fragment(ValueError('invalid literal for int(): blah'))
         self.assertEqual(Fragment, type(rv))
         self.assertEqual('invalid literal for int(): blah', unicode(rv))
+
+    def test_error_with_fragment(self):
+        rv = to_fragment(ValueError(tag('invalid literal for int(): ',
+                                        tag.b('blah'))))
+        self.assertEqual(Fragment, type(rv))
+        self.assertEqual('invalid literal for int(): <b>blah</b>', unicode(rv))
+
+    def test_error_with_error_with_fragment(self):
+        v1 = ValueError(tag('invalid literal for int(): ', tag.b('blah')))
+        rv = to_fragment(ValueError(v1))
+        self.assertEqual(Fragment, type(rv))
+        self.assertEqual('invalid literal for int(): <b>blah</b>', unicode(rv))
 
     def test_gettext(self):
         rv = to_fragment(gettext('%(size)s bytes', size=0))

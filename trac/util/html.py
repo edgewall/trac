@@ -344,8 +344,8 @@ def expand_markup(stream, ctxt=None):
 def to_fragment(input):
     """Convert input to a `Fragment` object."""
 
-    if isinstance(input, TracError):
-        input = input.message
+    while isinstance(input, Exception):
+        input = input.args[0]
     if LazyProxy and isinstance(input, LazyProxy):
         input = input.value
     if isinstance(input, Fragment):
