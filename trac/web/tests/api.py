@@ -19,13 +19,15 @@ import unittest
 from StringIO import StringIO
 
 import trac.tests.compat
+from genshi.builder import tag
 from trac import perm
 from trac.core import TracError
 from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
 from trac.util import create_file
 from trac.util.datefmt import utc
 from trac.util.text import shorten_line
-from trac.web.api import Request, RequestDone, parse_arg_list
+from trac.web.api import HTTPInternalError, Request, RequestDone, \
+                         parse_arg_list
 from tracopt.perm.authz_policy import AuthzPolicy
 
 
@@ -363,11 +365,37 @@ class ParseArgListTestCase(unittest.TestCase):
         self.assertEqual(u'résu&mé', args[1][0])
 
 
+class HTTPExceptionTestCase(unittest.TestCase):
+
+    def test_tracerror_with_string_as_argument(self):
+        e1 = TracError('the message')
+        e2 = HTTPInternalError(e1)
+        self.assertEqual('500 Trac Error (the message)', unicode(e2))
+
+    def test_tracerror_with_fragment_as_argument(self):
+        e1 = TracError(tag(tag.b('the message')))
+        e2 = HTTPInternalError(e1)
+        self.assertEqual('500 Trac Error (<b>the message</b>)', unicode(e2))
+
+    def test_exception_with_string_as_argument(self):
+        e1 = Exception('the message')
+        e2 = HTTPInternalError(e1)
+        self.assertEqual('500 Internal Server Error (the message)',
+                         unicode(e2))
+
+    def test_exception_with_fragment_as_argument(self):
+        e1 = Exception(tag(tag.b('the message')))
+        e2 = HTTPInternalError(e1)
+        self.assertEqual('500 Internal Server Error (<b>the message</b>)',
+                         unicode(e2))
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(RequestTestCase))
     suite.addTest(unittest.makeSuite(SendErrorTestCase))
     suite.addTest(unittest.makeSuite(ParseArgListTestCase))
+    suite.addTest(unittest.makeSuite(HTTPExceptionTestCase))
     return suite
 
 

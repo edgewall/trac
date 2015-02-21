@@ -133,6 +133,7 @@ HTTP_STATUS = dict([(code, reason.title()) for code, (reason, description)
 class HTTPException(Exception):
 
     def __init__(self, detail, *args):
+        """Factory for HTTPException classes."""
         if isinstance(detail, (TracError, PermissionError)):
             self.detail = detail.message
             self.reason = detail.title

@@ -37,7 +37,11 @@ __all__ = ['IPermissionRequestor', 'IPermissionStore', 'IPermissionPolicy',
 
 
 class PermissionError(StandardError):
-    """Insufficient permissions to complete the operation"""
+    """Insufficient permissions to perform the operation.
+
+    :since 1.0.5: the `msg` attribute is deprecated and will be removed in
+                  1.3.1. Use the `message` property instead.
+    """
 
     title = N_("Forbidden")
 
@@ -59,7 +63,11 @@ class PermissionError(StandardError):
         elif msg is None:
             msg = _("Insufficient privileges to perform this operation.")
         self.msg = msg
-        StandardError.__init__(self, msg)
+        super(PermissionError, self).__init__(msg)
+
+    @property
+    def message(self):
+        return self.args[0]
 
 
 class IPermissionRequestor(Interface):

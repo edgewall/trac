@@ -118,6 +118,7 @@ class PermissionErrorTestCase(unittest.TestCase):
                          unicode(permission_error))
         self.assertEqual("Forbidden", permission_error.title)
         self.assertEqual(unicode(permission_error), permission_error.msg)
+        self.assertEqual(unicode(permission_error), permission_error.message)
 
     def test_message_specified(self):
         message = "The message."
