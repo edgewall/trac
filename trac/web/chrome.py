@@ -1107,7 +1107,8 @@ class Chrome(Component):
                 if pos:
                     location = "'%s', line %s, char %s" % pos
                 else:
-                    location = _("(unknown template location)")
+                    location = '%s %s' % (filename,
+                                          _("(unknown template location)"))
                 raise TracError(_("Genshi %(error)s error while rendering "
                                   "template %(location)s",
                                   error=e.__class__.__name__,
