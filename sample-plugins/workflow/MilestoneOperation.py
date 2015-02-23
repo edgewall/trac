@@ -78,9 +78,16 @@ workflow = ConfigurableTicketWorkflow,MilestoneOperation
             else:
                 resolutions = "'%s'" % resolution
                 milestone = res_ms[resolution]
-        hint = _("For resolution %(resolutions)s the milestone will be "
-                 "set to '%(milestone)s'.",
-                 resolutions=resolutions, milestone=milestone)
+        hint = None
+        if res_ms:
+            try:
+                Milestone(self.env, milestone)
+            except ResourceNotFound:
+                pass
+            else:
+                hint = _("For resolution %(resolutions)s the milestone will "
+                         "be set to '%(milestone)s'.",
+                         resolutions=resolutions, milestone=milestone)
         return (label, None, hint)
 
     def get_ticket_changes(self, req, ticket, action):
@@ -119,8 +126,9 @@ workflow = ConfigurableTicketWorkflow,MilestoneOperation
         transitions = self.config.get('ticket-workflow',
                                       action + '.milestone').strip()
         transition = [x.strip() for x in transitions.split('->')]
-        resolutions = [y.strip() for y in transition[0].split(',')]
         res_milestone = {}
-        for res in resolutions:
-            res_milestone[res] = transition[1]
+        if len(transition) == 2:
+            resolutions = [y.strip() for y in transition[0].split(',')]
+            for res in resolutions:
+                res_milestone[res] = transition[1]
         return res_milestone
