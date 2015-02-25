@@ -1191,7 +1191,9 @@ class WSGIServer(Server):
         environ['wsgi.multiprocess'] = True
         environ['wsgi.run_once'] = isinstance(req, CGIRequest)
 
-        if environ.get('HTTPS', 'off') in ('on', '1'):
+        if environ.get('HTTPS', '').lower() in ('yes', 'on', '1'):
+            environ['wsgi.url_scheme'] = 'https'
+        elif environ.get('HTTP_X_FORWARDED_PROTO', '').lower() == 'https':
             environ['wsgi.url_scheme'] = 'https'
         else:
             environ['wsgi.url_scheme'] = 'http'
