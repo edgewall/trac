@@ -164,12 +164,6 @@ class MySQLConnector(Component):
             if len(table_col) == 1 and table_col[0].type.lower() == 'text':
                 if table_col[0].key_size is not None:
                     name += '(%d)' % min(table_col[0].key_size, limit_col)
-                elif name == '`rev`':
-                    name += '(20)'
-                elif name == '`path`':
-                    name += '(%d)' % limit_col
-                elif name == '`change_type`':
-                    name += '(2)'
                 else:
                     name += '(%s)' % limit
             # For non-text columns, we simply throw away the extra bytes.
