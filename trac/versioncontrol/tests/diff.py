@@ -85,6 +85,42 @@ class DiffTestCase(unittest.TestCase):
         self.assertEqual(('equal', 0, 2, 0, 2), opcodes.next())
         self.assertRaises(StopIteration, opcodes.next)
 
+    def test_space_changes_2(self):
+        left = """\
+try:
+    try:
+        func()
+        commit()
+    except:
+        rollback()
+finally:
+    cleanup()
+"""
+        left = left.splitlines()
+        right = """\
+try:
+    func()
+    commit()
+except:
+    rollback()
+finally:
+    cleanup()
+"""
+        right = right.splitlines()
+        opcodes = get_opcodes(left, right, ignore_space_changes=0)
+        self.assertEqual(('equal', 0, 1, 0, 1), opcodes.next())
+        self.assertEqual(('replace', 1, 6, 1, 5), opcodes.next())
+        self.assertEqual(('equal', 6, 8, 5, 7), opcodes.next())
+        self.assertRaises(StopIteration, opcodes.next)
+
+        opcodes = get_opcodes(left, right, ignore_space_changes=1)
+        self.assertEqual(('equal', 0, 1, 0, 1), opcodes.next())
+        self.assertEqual(('delete', 1, 2, 1, 1), opcodes.next())
+        self.assertEqual(('equal', 2, 4, 1, 3), opcodes.next())
+        self.assertEqual(('replace', 4, 5, 3, 4), opcodes.next())
+        self.assertEqual(('equal', 5, 8, 4, 7), opcodes.next())
+        self.assertRaises(StopIteration, opcodes.next)
+
     def test_case_changes(self):
         opcodes = get_opcodes(['A', 'B b'], ['A', 'B B'], ignore_case=0)
         self.assertEqual(('equal', 0, 1, 0, 1), opcodes.next())

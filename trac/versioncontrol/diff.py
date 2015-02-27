@@ -24,6 +24,12 @@ from trac.util.text import expandtabs
 __all__ = ['diff_blocks', 'get_change_extent', 'get_diff_options',
            'unified_diff']
 
+_whitespace_split = re.compile(r'\s+', re.UNICODE).split
+
+
+def _norm_space_changes(text):
+    return ' '.join(_whitespace_split(text))
+
 
 def get_change_extent(str1, str2):
     """Determines the extent of differences between two strings.
@@ -65,11 +71,16 @@ def get_filtered_hunks(fromlines, tolines, context=None,
     to filter out the results will come straight from the
     SequenceMatcher.
     """
+    if ignore_space_changes:
+        fromlines = map(_norm_space_changes, fromlines)
+        tolines = map(_norm_space_changes, tolines)
+    if ignore_case:
+        fromlines = [l.lower() for l in fromlines]
+        tolines = [l.lower() for l in tolines]
     hunks = get_hunks(fromlines, tolines, context)
-    if ignore_space_changes or ignore_case or ignore_blank_lines:
+    if ignore_blank_lines:
         hunks = filter_ignorable_lines(hunks, fromlines, tolines, context,
-                                       ignore_blank_lines, ignore_case,
-                                       ignore_space_changes)
+                                       ignore_blank_lines, False, False)
     return hunks
 
 
@@ -95,20 +106,19 @@ def filter_ignorable_lines(hunks, fromlines, tolines, context,
     See `get_filtered_hunks` for the parameter descriptions.
     """
     def is_ignorable(tag, fromlines, tolines):
-        if tag == 'delete' and ignore_blank_lines:
-            if ''.join(fromlines) == '':
-                return True
-        elif tag == 'insert' and ignore_blank_lines:
-            if ''.join(tolines) == '':
-                return True
-        elif tag == 'replace' and (ignore_case or ignore_space_changes):
+        if ignore_blank_lines:
+            if tag == 'delete':
+                return not any(fromlines)
+            if tag == 'insert':
+                return not any(tolines)
+        if (ignore_case or ignore_space_changes) and tag == 'replace':
             if len(fromlines) != len(tolines):
                 return False
             def f(str):
                 if ignore_case:
                     str = str.lower()
                 if ignore_space_changes:
-                    str = ' '.join(str.split())
+                    str = _norm_space_changes(str)
                 return str
             for i in range(len(fromlines)):
                 if f(fromlines[i]) != f(tolines[i]):
