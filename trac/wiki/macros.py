@@ -79,7 +79,6 @@ class WikiMacroBase(Component):
             (name, self.__class__))
 
 
-
 class TitleIndexMacro(WikiMacroBase):
     _domain = 'messages'
     _description = cleandoc_(
@@ -236,9 +235,9 @@ class TitleIndexMacro(WikiMacroBase):
 
             for key, grouper in groupby(entries, lambda (elts, name):
                                                     elts[0] if elts else ''):
-                grouped_entries  = [e for e in grouper]
-                sub_entries  = [e for e in grouped_entries if len(e[0]) > 1]
-                key_entries  = [e for e in grouped_entries if len(e[0]) == 1]
+                grouped_entries = [e for e in grouper]
+                sub_entries = [e for e in grouped_entries if len(e[0]) > 1]
+                key_entries = [e for e in grouped_entries if len(e[0]) == 1]
                 key_entry = key_entries[0] if key_entries else None
                 key_page = key_entry[1] if key_entries else None
 
@@ -368,8 +367,7 @@ class RecentChangesMacro(WikiMacroBase):
             out = ((tag.h3(date), tag.ul(entries))
                    for date, entries in items_per_date)
         else:
-            out = tag.ul((entries)
-                         for date, entries in items_per_date)
+            out = tag.ul(entries for date, entries in items_per_date)
         return tag.div(out)
 
 
@@ -566,7 +564,7 @@ class ImageMacro(WikiMacroBase):
                     key, val = match.groups()
                     if (key == 'align' and
                             val in ('left', 'right', 'center')) or \
-                        (key == 'valign' and \
+                        (key == 'valign' and
                             val in ('top', 'middle', 'bottom')):
                         args.append(val)
                     elif key in ('margin-top', 'margin-bottom'):
@@ -577,17 +575,17 @@ class ImageMacro(WikiMacroBase):
                     elif key == 'border':
                         style['border'] = ' %dpx solid' % int(val)
                     else:
-                        m = quoted_re.search(val) # unquote "..." and '...'
+                        m = quoted_re.search(val)  # unquote "..." and '...'
                         if m:
                             val = m.group(1)
-                        attr[str(key)] = val # will be used as a __call__ kwd
+                        attr[str(key)] = val  # will be used as a __call__ kwd
 
         # parse filespec argument to get realm and id if contained.
         parts = [i.strip('''['"]''')
                  for i in self._split_filespec_re.split(filespec)]
         url = raw_url = desc = None
         attachment = None
-        if (parts and parts[0] in ('http', 'https', 'ftp')): # absolute
+        if parts and parts[0] in ('http', 'https', 'ftp'):  # absolute
             raw_url = url = filespec
             desc = url.rsplit('?')[0]
         elif filespec.startswith('//'):       # server-relative
@@ -613,7 +611,7 @@ class ImageMacro(WikiMacroBase):
                 attachment = Resource(realm, id).child('attachment', filename)
         elif len(parts) == 2:
             realm, filename = parts
-            if realm in browser_links:   # source:path
+            if realm in browser_links:  # source:path
                 # TODO: use context here as well
                 rev = None
                 if '@' in filename:
@@ -622,7 +620,7 @@ class ImageMacro(WikiMacroBase):
                 raw_url = formatter.href.browser(filename, rev=rev,
                                                  format='raw')
                 desc = filespec
-            else: # #ticket:attachment or WikiPage:attachment
+            else:  # #ticket:attachment or WikiPage:attachment
                 # FIXME: do something generic about shorthand forms...
                 realm = None
                 id, filename = parts
@@ -640,7 +638,7 @@ class ImageMacro(WikiMacroBase):
                 if realm:
                     attachment = Resource(realm, id).child('attachment',
                                                            filename)
-        elif len(parts) == 1: # it's an attachment of the current resource
+        elif len(parts) == 1:  # it's an attachment of the current resource
             attachment = formatter.resource.child('attachment', filespec)
         else:
             raise TracError(_("No filespec given"))
@@ -650,13 +648,13 @@ class ImageMacro(WikiMacroBase):
                                        format='raw')
             try:
                 desc = get_resource_summary(self.env, attachment)
-            except ResourceNotFound, e:
+            except ResourceNotFound:
                 raw_url = formatter.href.chrome('common/attachment.png')
                 desc = _('No image "%(id)s" attached to %(parent)s',
                          id=attachment.id,
                          parent=get_resource_name(self.env, attachment.parent))
         for key in ('title', 'alt'):
-            if desc and not key in attr:
+            if desc and key not in attr:
                 attr[key] = desc
         if style:
             attr['style'] = '; '.join('%s:%s' % (k, escape(v))
@@ -785,12 +783,11 @@ class TracIniMacro(WikiMacroBase):
                             self.env, formatter.context, getdoc(option))),
                         default_cell(option),
                         class_='odd' if idx % 2 else 'even')
-                 for idx, option in \
+                 for idx, option in
                     enumerate(sorted(options.get(section, {}).itervalues(),
                                      key=lambda o: o.name))
                  if option.name.startswith(key_filter))))
             for section, section_doc in sorted(sections.iteritems()))
-
 
 
 class KnownMimeTypesMacro(WikiMacroBase):
@@ -818,7 +815,7 @@ class KnownMimeTypesMacro(WikiMacroBase):
         return tag.div(class_='mimetypes')(
             tag.table(class_='wiki')(
                 tag.thead(tag.tr(
-                    tag.th(_("MIME Types")), # always use plural
+                    tag.th(_("MIME Types")),  # always use plural
                     tag.th(tag.a("WikiProcessors",
                                  href=formatter.context.href.wiki(
                                      'WikiProcessors'))))),
@@ -828,7 +825,6 @@ class KnownMimeTypesMacro(WikiMacroBase):
                            tag.td(tag.code(
                                ' '.join(sorted(mime_types[mime_type])))))
                     for mime_type in sorted(mime_types.keys()))))
-
 
 
 class TracGuideTocMacro(WikiMacroBase):
@@ -851,7 +847,7 @@ class TracGuideTocMacro(WikiMacroBase):
            ('TracAdmin',                    'Administration'),
            ('TracBackup',                   'Backup'),
            ('TracLogging',                  'Logging'),
-           ('TracPermissions' ,             'Permissions'),
+           ('TracPermissions',              'Permissions'),
            ('TracWiki',                     'The Wiki'),
            ('WikiFormatting',               'Wiki Formatting'),
            ('TracTimeline',                 'Timeline'),
