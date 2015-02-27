@@ -457,7 +457,9 @@ class ImageMacro(WikiMacroBase):
 
     Files can also be accessed with a direct URLs; `/file` for a
     project-relative, `//file` for a server-relative, or `http://server/file`
-    for absolute location of the file.
+    for absolute location of the file. The
+    [http://tools.ietf.org/html/rfc2397 rfc2397] `data` URL scheme is also
+    supported if the URL is enclosed in quotes.
 
     The remaining arguments are optional and allow configuring the attributes
     and style of the rendered `<img>` element:
@@ -504,7 +506,14 @@ class ImageMacro(WikiMacroBase):
     def is_inline(self, content):
         return True
 
-    _split_filespec_re = re.compile(r''':(?!(?:[^"':]|[^"']:[^'"])+["'])''')
+    _split_re = r'''((?:[^%s"']|"[^"]*"|'[^']*')+)'''
+    _split_args_re = re.compile(_split_re % ',')
+    _split_filespec_re = re.compile(_split_re % ':')
+    _size_re = re.compile('[0-9]+(%|px)?$')
+    _attr_re = re.compile('(align|valign|border|width|height|alt'
+                          '|margin(?:-(?:left|right|top|bottom))?'
+                          '|title|longdesc|class|id|usemap)=(.+)')
+    _quoted_re = re.compile("(?:[\"'])(.*)(?:[\"'])$")
 
     def expand_macro(self, formatter, name, content):
         # args will be null if the macro is called without parenthesis.
@@ -512,17 +521,12 @@ class ImageMacro(WikiMacroBase):
             return ''
         # parse arguments
         # we expect the 1st argument to be a filename (filespec)
-        args = content.split(',')
+        args = self._split_args_re.split(content)[1::2]
         # strip unicode white-spaces and ZWSPs are copied from attachments
         # section (#10668)
         filespec = stripws(args.pop(0))
 
         # style information
-        size_re = re.compile('[0-9]+(%|px)?$')
-        attr_re = re.compile('(align|valign|border|width|height|alt'
-                             '|margin(?:-(?:left|right|top|bottom))?'
-                             '|title|longdesc|class|id|usemap)=(.+)')
-        quoted_re = re.compile("(?:[\"'])(.*)(?:[\"'])$")
         attr = {}
         style = {}
         link = ''
@@ -538,7 +542,7 @@ class ImageMacro(WikiMacroBase):
             browser_links = []
         while args:
             arg = stripws(args.pop(0))
-            if size_re.match(arg):
+            if self._size_re.match(arg):
                 # 'width' keyword
                 attr['width'] = arg
             elif arg == 'nolink':
@@ -559,7 +563,7 @@ class ImageMacro(WikiMacroBase):
             elif arg in ('top', 'bottom', 'middle'):
                 style['vertical-align'] = arg
             else:
-                match = attr_re.match(arg)
+                match = self._attr_re.match(arg)
                 if match:
                     key, val = match.groups()
                     if (key == 'align' and
@@ -575,17 +579,19 @@ class ImageMacro(WikiMacroBase):
                     elif key == 'border':
                         style['border'] = ' %dpx solid' % int(val)
                     else:
-                        m = quoted_re.search(val)  # unquote "..." and '...'
+                        m = self._quoted_re.search(val)  # unquote "..." and '...'
                         if m:
                             val = m.group(1)
                         attr[str(key)] = val  # will be used as a __call__ kwd
 
+        if self._quoted_re.match(filespec):
+            filespec = filespec.strip('\'"')
         # parse filespec argument to get realm and id if contained.
         parts = [i.strip('''['"]''')
-                 for i in self._split_filespec_re.split(filespec)]
+                 for i in self._split_filespec_re.split(filespec)[1::2]]
         url = raw_url = desc = None
         attachment = None
-        if parts and parts[0] in ('http', 'https', 'ftp'):  # absolute
+        if parts and parts[0] in ('http', 'https', 'ftp', 'data'):  # absolute
             raw_url = url = filespec
             desc = url.rsplit('?')[0]
         elif filespec.startswith('//'):       # server-relative
