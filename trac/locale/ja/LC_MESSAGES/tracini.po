@@ -1,13 +1,13 @@
 # Japanese translations for Trac.
-# Copyright (C) 2013-2014 Edgewall Software
+# Copyright (C) 2013-2015 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# Jun Omae <jun66j5@gmail.com>, 2013-2014.
+# Jun Omae <jun66j5@gmail.com>, 2013-2015.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.0.2\n"
+"Project-Id-Version: Trac 1.0.5\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2014-12-12 19:01-0800\n"
+"POT-Creation-Date: 2015-02-28 09:08+0000\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <LL@li.org>\n"
@@ -156,27 +156,27 @@ msgstr ""
 msgid "Send ticket change notification when updating a ticket."
 msgstr "チケットの更新時にチケットの変更通知を送信するかどうかを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:268
+#: tracopt/versioncontrol/git/git_fs.py:269
 msgid "Enable persistent caching of commit tree."
 msgstr "コミットツリーの永続的なキャッシュを有効にするかどうかを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:271
+#: tracopt/versioncontrol/git/git_fs.py:272
 msgid "Wrap `GitRepository` in `CachedRepository`."
 msgstr "`GitRepository` を `CachedRepository` でラップするかを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:274
+#: tracopt/versioncontrol/git/git_fs.py:275
 msgid ""
 "The length at which a sha1 should be abbreviated to (must\n"
 "be >= 4 and <= 40)."
 msgstr "sha1 ハッシュを省略する際の長さを指定します (4～40であること)。"
 
-#: tracopt/versioncontrol/git/git_fs.py:279
+#: tracopt/versioncontrol/git/git_fs.py:280
 msgid ""
 "The minimum length of an hex-string for which\n"
 "auto-detection as sha1 is performed (must be >= 4 and <= 40)."
 msgstr "sha1 ハッシュを自動的に検出する際における16進文字列の最小長を指定します (4～40であること)。"
 
-#: tracopt/versioncontrol/git/git_fs.py:284
+#: tracopt/versioncontrol/git/git_fs.py:285
 msgid ""
 "Enable reverse mapping of git email addresses to trac user ids.\n"
 "Performance will be reduced if there are many users and the\n"
@@ -189,13 +189,13 @@ msgstr ""
 "\n"
 "このオプションの値を変更した後には repository resync を実行してください。"
 
-#: tracopt/versioncontrol/git/git_fs.py:293
+#: tracopt/versioncontrol/git/git_fs.py:294
 msgid ""
 "Use git-committer id instead of git-author id for the\n"
 "changeset ''Author'' field."
 msgstr "チェンジセットの''更新者''項目として git-author id の代わりに git-committer id を使うかどうかを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:298
+#: tracopt/versioncontrol/git/git_fs.py:299
 msgid ""
 "Use git-committer timestamp instead of git-author timestamp\n"
 "for the changeset ''Timestamp'' field."
@@ -203,23 +203,23 @@ msgstr ""
 "チェンジセットの''日時''項目として git-author timestamp の代わりに git-committer timestamp "
 "を使うかどうかを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:303
+#: tracopt/versioncontrol/git/git_fs.py:304
 msgid "Define charset encoding of paths within git repositories."
 msgstr "git リポジトリ中のパスに対する文字エンコーディングを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:306
+#: tracopt/versioncontrol/git/git_fs.py:307
 msgid "Path to the git executable."
 msgstr "git 実行ファイルへのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:884
+#: tracopt/versioncontrol/git/git_fs.py:881
 msgid "Path to a gitweb-formatted projects.list"
 msgstr "gitweb 形式の projects.list ファイルへのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:887
+#: tracopt/versioncontrol/git/git_fs.py:884
 msgid "Path to the base of your git projects"
 msgstr "git プロジェクトのベースディレクトリのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:890
+#: tracopt/versioncontrol/git/git_fs.py:887
 #, python-format
 msgid ""
 "Template for project URLs. %s will be replaced with the repo\n"
@@ -346,11 +346,11 @@ msgstr ""
 "\n"
 "(''0.11 以降'')"
 
-#: trac/attachment.py:438
+#: trac/attachment.py:444
 msgid "Maximum allowed file size (in bytes) for attachments."
 msgstr "添付ファイルの上限サイズを指定します (バイト単位)"
 
-#: trac/attachment.py:441
+#: trac/attachment.py:447
 msgid ""
 "Maximum allowed total size (in bytes) for an attachment list to be\n"
 "downloadable as a `.zip`. Set this to -1 to disable download as `.zip`.\n"
@@ -359,7 +359,7 @@ msgstr ""
 "`.zip` ダウンロードを許可する合計に対する上限サイズ (バイト単位) です。-1 を指定した場合は `.zip` "
 "でのダウンロード機能を無効にします。(''1.0 以降'')"
 
-#: trac/attachment.py:446
+#: trac/attachment.py:452
 msgid ""
 "Whether attachments should be rendered in the browser, or\n"
 "only made downloadable.\n"
@@ -765,13 +765,13 @@ msgstr ""
 "\n"
 "sendmail プログラムは `-i` と `-f` オプションを受け付ける必要があります。(''0.12 以降'')"
 
-#: trac/perm.py:310
+#: trac/perm.py:318
 msgid ""
 "Name of the component implementing `IPermissionStore`, which is used\n"
 "for managing user and group permissions."
 msgstr "`IPermissionStore` を実装しているコンポーネントの名前を指定します。これはユーザとグループの権限を管理するのに使います。"
 
-#: trac/perm.py:315
+#: trac/perm.py:323
 msgid ""
 "List of components implementing `IPermissionPolicy`, in the order in\n"
 "which they will be applied. These components manage fine-grained access\n"
@@ -993,7 +993,7 @@ msgid ""
 "(''since 0.11'')."
 msgstr "解決 (クローズ) になるチケットに対するデフォルトの解決方法を指定します (''0.11 以降'')。"
 
-#: trac/ticket/default_workflow.py:104
+#: trac/ticket/default_workflow.py:108
 msgid ""
 "The workflow for tickets is controlled by plugins. By default,\n"
 "there's only a `ConfigurableTicketWorkflow` component in charge.\n"
@@ -1336,7 +1336,7 @@ msgstr ""
 "\n"
 "(''0.12.1 以降'')"
 
-#: trac/versioncontrol/api.py:293
+#: trac/versioncontrol/api.py:297
 msgid ""
 "One of the alternatives for registering new repositories is to\n"
 "populate the `[repositories]` section of the `trac.ini`.\n"
@@ -1359,7 +1359,7 @@ msgstr ""
 "\n"
 "(''0.12 以降'')"
 
-#: trac/versioncontrol/api.py:307
+#: trac/versioncontrol/api.py:311
 msgid ""
 "Default repository connector type. (''since 0.10'')\n"
 "\n"
@@ -1372,7 +1372,7 @@ msgstr ""
 "[[TracIni#repositories-section repositories]] "
 "セクションで定義するリポジトリや「リポジトリ」管理パネルなどでも使用します。(''0.12 以降'')"
 
-#: trac/versioncontrol/api.py:315
+#: trac/versioncontrol/api.py:319
 msgid ""
 "Path to the default repository. This can also be a relative path\n"
 "(''since 0.11'').\n"
@@ -1386,7 +1386,7 @@ msgstr ""
 "このオプションは非推奨で、リポジトリは [TracIni#repositories-section repositories] "
 "セクションで定義、もしくは「リポジトリ」管理パネルを使うようにしてください。(''0.12 以降'')"
 
-#: trac/versioncontrol/api.py:323
+#: trac/versioncontrol/api.py:327
 msgid ""
 "List of repositories that should be synchronized on every page\n"
 "request.\n"
@@ -1667,7 +1667,7 @@ msgstr ""
 "認証用クッキーのパスを指定します。クッキーを他の Trac インスタンスと共有したい場合には、共通になるベースのパスを設定します。(''0.12 "
 "以降'')"
 
-#: trac/web/chrome.py:391
+#: trac/web/chrome.py:400
 msgid ""
 "Path to the //shared templates directory//.\n"
 "\n"
@@ -1683,7 +1683,7 @@ msgstr ""
 "\n"
 "(''0.11 以降'')"
 
-#: trac/web/chrome.py:399
+#: trac/web/chrome.py:408
 msgid ""
 "Path to the //shared htdocs directory//.\n"
 "\n"
@@ -1704,11 +1704,11 @@ msgstr ""
 "\n"
 "(''1.0 以降'')"
 
-#: trac/web/chrome.py:410
+#: trac/web/chrome.py:419
 msgid "Automatically reload template files after modification."
 msgstr "テンプレートの変更後に自動でリロードするかどうかを指定します。"
 
-#: trac/web/chrome.py:413
+#: trac/web/chrome.py:422
 msgid ""
 "The maximum number of templates that the template loader will cache\n"
 "in memory. The default value is 128. You may want to choose a higher\n"
@@ -1717,7 +1717,7 @@ msgid ""
 "memory."
 msgstr "テンプレートローダがメモリにキャッシュするテンプレートの最大数を指定します。デフォルト値は128です。もっと多くのテンプレートを使っていてメモリに余裕がある場合は、大きな値にすることもできます。メモリが少ない場合には、小さくすることもできます。"
 
-#: trac/web/chrome.py:420
+#: trac/web/chrome.py:429
 msgid ""
 "Base URL for serving the core static resources below\n"
 "`/chrome/common/`.\n"
@@ -1742,7 +1742,7 @@ msgstr ""
 "ディレクトリにしか適用されず、デプロイしているリソース (例えばプラグインのリソース) に対してはこの方法は有効ではありません。Web "
 "サーバに対し、追加でリライトルールが必要になります。"
 
-#: trac/web/chrome.py:435
+#: trac/web/chrome.py:444
 msgid ""
 "Location of the jQuery !JavaScript library (version 1.7.2).\n"
 "\n"
@@ -1766,7 +1766,7 @@ msgstr ""
 "\n"
 "(''1.0 以降'')"
 
-#: trac/web/chrome.py:447
+#: trac/web/chrome.py:456
 msgid ""
 "Location of the jQuery UI !JavaScript library (version 1.8.21).\n"
 "\n"
@@ -1790,7 +1790,7 @@ msgstr ""
 "\n"
 "(''1.0 以降'')"
 
-#: trac/web/chrome.py:459
+#: trac/web/chrome.py:468
 msgid ""
 "Location of the theme to be used with the jQuery UI !JavaScript\n"
 "library (version 1.8.21).\n"
@@ -1820,23 +1820,23 @@ msgstr ""
 "\n"
 "(''1.0 以降'')"
 
-#: trac/web/chrome.py:474
+#: trac/web/chrome.py:483
 msgid ""
 "Order of the items to display in the `metanav` navigation bar,\n"
 "listed by IDs. See also TracNavigation."
 msgstr "`metanav` ナビゲーションバーに表示する項目の順番を ID で指定します。TracNavigation も参照してください。"
 
-#: trac/web/chrome.py:479
+#: trac/web/chrome.py:488
 msgid ""
 "Order of the items to display in the `mainnav` navigation bar,\n"
 "listed by IDs. See also TracNavigation."
 msgstr "`mainnav` ナビゲーションバーに表示する項目の順番を ID で指定します。TracNavigation も参照してください。"
 
-#: trac/web/chrome.py:485
+#: trac/web/chrome.py:494
 msgid "URL to link to, from the header logo."
 msgstr "ヘッダロゴからリンクする URL を指定します。"
 
-#: trac/web/chrome.py:488
+#: trac/web/chrome.py:497
 msgid ""
 "URL of the image to use as header logo.\n"
 "It can be absolute, server relative or relative.\n"
@@ -1855,19 +1855,19 @@ msgstr ""
 "にすると、[#trac-section htdocs_location] URL に対応したフォルダにある `your-logo.png` "
 "を指します。単に `your-logo.png` を指定した場合は、後者と同じになります。"
 
-#: trac/web/chrome.py:499
+#: trac/web/chrome.py:508
 msgid "Alternative text for the header logo."
 msgstr "ヘッダロゴ画像の代替テキストを指定します。"
 
-#: trac/web/chrome.py:503
+#: trac/web/chrome.py:512
 msgid "Width of the header logo image in pixels."
 msgstr "ヘッダロゴ画像の幅をピクセル単位で指定します。"
 
-#: trac/web/chrome.py:506
+#: trac/web/chrome.py:515
 msgid "Height of the header logo image in pixels."
 msgstr "ヘッダロゴ画像の高さをピクセル単位で指定します。"
 
-#: trac/web/chrome.py:509
+#: trac/web/chrome.py:518
 msgid ""
 "Show email addresses instead of usernames. If false, email\n"
 "addresses are obfuscated for users that don't have EMAIL_VIEW\n"
@@ -1876,7 +1876,7 @@ msgstr ""
 "ユーザ名の代わりにメールアドレスを表示するかどうかを指定します。false の場合、EMAIL_VIEW "
 "権限を持たないユーザにはメールアドレスを表示しないようになります。(''0.11 以降'')"
 
-#: trac/web/chrome.py:515
+#: trac/web/chrome.py:524
 msgid ""
 "Never obfuscate `mailto:` links explicitly written in the wiki,\n"
 "even if `show_email_addresses` is false or the user doesn't have\n"
@@ -1885,15 +1885,15 @@ msgstr ""
 "`show_email_addresses` が false、または、EMAIL_VIEW 権限がない場合でも、Wiki 中に明示的に記述してある"
 " `mailto:` リンクを隠さないようにするかどうかを指定します。(''0.11.6 以降'')"
 
-#: trac/web/chrome.py:522
+#: trac/web/chrome.py:531
 msgid ""
-"Show IP addresses for resource edits (e.g. wiki).\n"
-"(''since 0.11.3'')"
+"Show IP addresses for resource edits (e.g. wiki). Since 1.0.5 this\n"
+"option is deprecated and will be removed in 1.3.1. (''since 0.11.3'')"
 msgstr ""
 "リソース編集時の IP アドレスを表示するかどうかを指定します (例えば Wiki)。\n"
-"(''0.11.3 以降'')"
+"1.0.5 でこのオプションは非推奨となり 1.3.1 で削除予定です。(''0.11.3 以降'')"
 
-#: trac/web/chrome.py:526
+#: trac/web/chrome.py:536
 msgid ""
 "Make `<textarea>` fields resizable. Requires !JavaScript.\n"
 "(''since 0.12'')"
@@ -1901,13 +1901,13 @@ msgstr ""
 "`<textarea>` フィールドをリサイズできるようにするかどうかを指定します。!JavaScript が必要になります。\n"
 "(''0.12 以降'')"
 
-#: trac/web/chrome.py:530
+#: trac/web/chrome.py:540
 msgid ""
 "Add a simple toolbar on top of Wiki `<textarea>`s.\n"
 "(''since 1.0.2'')"
 msgstr "Wiki `<textarea>` の上部にシンプルなツールバーを追加するかを指定します。(''1.0.2 以降'')"
 
-#: trac/web/chrome.py:534
+#: trac/web/chrome.py:544
 msgid ""
 "Inactivity timeout in seconds after which the automatic wiki preview\n"
 "triggers an update. This option can contain floating-point values. The\n"
@@ -1919,7 +1919,7 @@ msgstr ""
 "プレビューの自動更新の時間を秒で指定します。この設定には浮動小数点を指定できます。値を小さくするとサーバが大量のリクエストを処理することになります。0を指定すると自動プレビューを無効にします。デフォルトは2.0秒です。(''0.12"
 " 以降'')"
 
-#: trac/web/chrome.py:541
+#: trac/web/chrome.py:551
 msgid ""
 "The date information format. Valid options are 'relative' for\n"
 "displaying relative format and 'absolute' for displaying absolute\n"
@@ -1982,7 +1982,7 @@ msgstr ""
 "ヘッダを送信し中身を送信しません。Apache の `mod_xsendfile` や lighttpd "
 "のように、このようなヘッダを処理できるようにする必要があります。(''1.0 以降'')"
 
-#: trac/wiki/api.py:263
+#: trac/wiki/api.py:267
 msgid ""
 "Enable/disable highlighting CamelCase links to missing pages\n"
 "(''since 0.9'')."
@@ -1990,13 +1990,13 @@ msgstr ""
 "存在しないページを指す CamelCase リンクをハイライトするかどうかを指定します。\n"
 "(''0.9 以降'')"
 
-#: trac/wiki/api.py:267
+#: trac/wiki/api.py:271
 msgid ""
 "Enable/disable splitting the WikiPageNames with space characters\n"
 "(''since 0.10'')."
 msgstr "WikiPageNames を空白文字で分割するかどうかを指定します。(''0.10 以降'')"
 
-#: trac/wiki/api.py:271
+#: trac/wiki/api.py:275
 msgid ""
 "Enable/disable the use of unsafe HTML tags such as `<script>` or\n"
 "`<embed>` with the HTML [wiki:WikiProcessors WikiProcessor]\n"
@@ -2009,7 +2009,7 @@ msgstr ""
 "WikiProcessor] で有効にするかどうかを指定します。(''0.10.4 以降'')\n"
 "匿名ユーザが Wiki を編集できるような公開サイトでは、このオプションは無効のまま (デフォルト) にしておくことを推奨します。"
 
-#: trac/wiki/api.py:279
+#: trac/wiki/api.py:283
 msgid ""
 "List of URI schemes considered \"safe\", that will be rendered as\n"
 "external links even if `[wiki] render_unsafe_content` is `false`.\n"
