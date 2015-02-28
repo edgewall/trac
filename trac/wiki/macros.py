@@ -471,6 +471,9 @@ class ImageMacro(WikiMacroBase):
      * `link=some TracLinks...` replaces the link to the image source by the
        one specified using a TracLinks. If no value is specified, the link is
        simply removed.
+     * `inline` specifies that the content generated be an inline XHTML
+       element. By default, inline content is not generated, therefore images
+       won't be rendered in section headings and other one-line content.
      * `nolink` means without link to image source (deprecated, use `link=`)
      * `key=value` style are interpreted as HTML attributes or CSS style
        indications for the image. Valid keys are:
@@ -504,7 +507,9 @@ class ImageMacro(WikiMacroBase):
     """)
 
     def is_inline(self, content):
-        return True
+        args = [stripws(arg) for arg
+                             in self._split_args_re.split(content)[1::2]]
+        return 'inline' in args
 
     _split_re = r'''((?:[^%s"']|"[^"]*"|'[^']*')+)'''
     _split_args_re = re.compile(_split_re % ',')
