@@ -1,13 +1,13 @@
 # Japanese translations for Trac.
-# Copyright (C) 2013-2014 Edgewall Software
+# Copyright (C) 2013-2015 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# Jun Omae <jun66j5@gmail.com>, 2013-2014.
+# Jun Omae <jun66j5@gmail.com>, 2013-2015.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.1.3\n"
+"Project-Id-Version: Trac 1.1.4\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2015-01-10 15:24-0800\n"
+"POT-Creation-Date: 2015-02-28 09:17+0000\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <LL@li.org>\n"
@@ -17,9 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
 
-#: tracopt/perm/authz_policy.py:134
-msgid "Location of authz policy configuration file."
-msgstr "authz ポリシーの設定ファイルのパスを指定します。"
+#: tracopt/perm/authz_policy.py:133
+msgid ""
+"Location of authz policy configuration file. Non-absolute paths are "
+"relative to the Environment `conf` directory."
+msgstr "authz ポリシーの設定ファイルのパスを指定します。絶対パスでない場合は `conf` ディレクトリからの相対となります。"
 
 #: tracopt/perm/config_perm_provider.py:27
 msgid ""
@@ -114,27 +116,27 @@ msgstr ""
 msgid "Send ticket change notification when updating a ticket."
 msgstr "チケットの更新時にチケットの変更通知を送信するかどうかを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:271
+#: tracopt/versioncontrol/git/git_fs.py:272
 msgid "Enable persistent caching of commit tree."
 msgstr "コミットツリーの永続的なキャッシュを有効にするかどうかを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:274
+#: tracopt/versioncontrol/git/git_fs.py:275
 msgid "Wrap `GitRepository` in `CachedRepository`."
 msgstr "`GitRepository` を `CachedRepository` でラップするかを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:277
+#: tracopt/versioncontrol/git/git_fs.py:278
 msgid ""
 "The length at which a sha1 should be abbreviated to (must\n"
 "be >= 4 and <= 40)."
 msgstr "sha1 ハッシュを省略する際の長さを指定します (4～40であること)。"
 
-#: tracopt/versioncontrol/git/git_fs.py:282
+#: tracopt/versioncontrol/git/git_fs.py:283
 msgid ""
 "The minimum length of an hex-string for which\n"
 "auto-detection as sha1 is performed (must be >= 4 and <= 40)."
 msgstr "sha1 ハッシュを自動的に検出する際における16進文字列の最小長を指定します (4～40であること)。"
 
-#: tracopt/versioncontrol/git/git_fs.py:287
+#: tracopt/versioncontrol/git/git_fs.py:288
 msgid ""
 "Enable reverse mapping of git email addresses to trac user ids.\n"
 "Performance will be reduced if there are many users and the\n"
@@ -147,13 +149,13 @@ msgstr ""
 "\n"
 "このオプションの値を変更した後には repository resync を実行してください。"
 
-#: tracopt/versioncontrol/git/git_fs.py:296
+#: tracopt/versioncontrol/git/git_fs.py:297
 msgid ""
 "Use git-committer id instead of git-author id for the\n"
 "changeset ''Author'' field."
 msgstr "チェンジセットの''更新者''項目として git-author id の代わりに git-committer id を使うかどうかを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:301
+#: tracopt/versioncontrol/git/git_fs.py:302
 msgid ""
 "Use git-committer timestamp instead of git-author timestamp\n"
 "for the changeset ''Timestamp'' field."
@@ -161,23 +163,23 @@ msgstr ""
 "チェンジセットの''日時''項目として git-author timestamp の代わりに git-committer timestamp "
 "を使うかどうかを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:306
+#: tracopt/versioncontrol/git/git_fs.py:307
 msgid "Define charset encoding of paths within git repositories."
 msgstr "git リポジトリ中のパスに対する文字エンコーディングを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:309
+#: tracopt/versioncontrol/git/git_fs.py:310
 msgid "Path to the git executable."
 msgstr "git 実行ファイルへのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:885
+#: tracopt/versioncontrol/git/git_fs.py:889
 msgid "Path to a gitweb-formatted projects.list"
 msgstr "gitweb 形式の projects.list ファイルへのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:888
+#: tracopt/versioncontrol/git/git_fs.py:892
 msgid "Path to the base of your git projects"
 msgstr "git プロジェクトのベースディレクトリのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:891
+#: tracopt/versioncontrol/git/git_fs.py:895
 #, python-format
 msgid ""
 "Template for project URLs. %s will be replaced with the repo\n"
@@ -559,13 +561,13 @@ msgstr ""
 "例:\n"
 "`($(thread)d) Trac[$(basename)s:$(module)s] $(levelname)s: $(message)s`"
 
-#: trac/perm.py:307
+#: trac/perm.py:315
 msgid ""
 "Name of the component implementing `IPermissionStore`, which is used\n"
 "for managing user and group permissions."
 msgstr "`IPermissionStore` を実装しているコンポーネントの名前を指定します。これはユーザとグループの権限を管理するのに使います。"
 
-#: trac/perm.py:312
+#: trac/perm.py:320
 msgid ""
 "List of components implementing `IPermissionPolicy`, in the order\n"
 "in which they will be applied. These components manage fine-grained\n"
@@ -599,7 +601,7 @@ msgstr ""
 msgid "Show the SQL queries in the Trac log, at DEBUG level."
 msgstr "DEBUG レベルのときに SQL クエリをログに表示するかどうかを指定します。"
 
-#: trac/db/mysql_backend.py:86
+#: trac/db/mysql_backend.py:87
 msgid "Location of mysqldump for MySQL database backups"
 msgstr "MySQL データベースのバックアップに使う mysqldump の場所を指定します。"
 
@@ -822,27 +824,27 @@ msgstr ""
 "設定が定義されていない場合は、プレフィックスとして `[$project_name]` を使います。\n"
 "プレフィックスが必要ない場合は、空を指定すると無効になります。"
 
-#: trac/notification/mail.py:348
+#: trac/notification/mail.py:421
 msgid "SMTP server hostname to use for email notifications."
 msgstr "メール通知に使用する SMTP サーバのホスト名を指定します。"
 
-#: trac/notification/mail.py:351
+#: trac/notification/mail.py:424
 msgid "SMTP server port to use for email notification."
 msgstr "メール通知に使用する SMTP サーバのポート番号を指定します。"
 
-#: trac/notification/mail.py:354
+#: trac/notification/mail.py:427
 msgid "Username for authenticating with SMTP server."
 msgstr "SMTP サーバの認証に使用するのユーザ名を指定します。"
 
-#: trac/notification/mail.py:357
+#: trac/notification/mail.py:430
 msgid "Password for authenticating with SMTP server."
 msgstr "SMTP サーバの認証に使用するのパスワードを指定します。"
 
-#: trac/notification/mail.py:360
+#: trac/notification/mail.py:433
 msgid "Use SSL/TLS to send notifications over SMTP."
 msgstr "SMTP 接続により通知を送信する際に SSL/TLS を使用するかどうかを指定します。"
 
-#: trac/notification/mail.py:413
+#: trac/notification/mail.py:486
 msgid ""
 "Path to the sendmail executable.\n"
 "\n"
@@ -959,7 +961,7 @@ msgid ""
 "an empty value. (//since 1.1.2//)"
 msgstr "空の値にできるようにする `select` フィールドをカンマ区切りで指定します。(//1.1.2 以降//)"
 
-#: trac/ticket/default_workflow.py:123
+#: trac/ticket/default_workflow.py:125
 msgid ""
 "The workflow for tickets is controlled by plugins. By default,\n"
 "there's only a `ConfigurableTicketWorkflow` component in charge.\n"
@@ -971,21 +973,21 @@ msgstr ""
 "そのコンポーネントは `trac.ini` ファイルのこのセクションでワークフローを設定するようになっています。詳細については "
 "TracWorkflow を参照してください。"
 
-#: trac/ticket/notification.py:45
+#: trac/ticket/notification.py:46
 msgid "Always send notifications to the ticket ''owner''."
 msgstr "常にチケットの''担当者''に通知を送信するかどうかを指定します。"
 
-#: trac/ticket/notification.py:50
+#: trac/ticket/notification.py:51
 msgid "Always send notifications to the ticket ''reporter''."
 msgstr "常にチケットの''報告者''に通知を送信するかどうかを指定します。"
 
-#: trac/ticket/notification.py:55
+#: trac/ticket/notification.py:56
 msgid ""
 "Always send notifications to the user who causes the ticket\n"
 "change and to any previous updater of the ticket."
 msgstr "チケットを変更したユーザとこれまでにそのチケットを変更したユーザに対して、常に通知を送信するかどうかを指定します。"
 
-#: trac/ticket/notification.py:60
+#: trac/ticket/notification.py:61
 msgid ""
 "A Genshi text template snippet used to get the notification\n"
 "subject.\n"
@@ -998,7 +1000,7 @@ msgstr ""
 "テンプレート変数については [TracNotification#Customizingthee-mailsubject "
 "TracNotification] ページに説明があります。"
 
-#: trac/ticket/notification.py:69
+#: trac/ticket/notification.py:70
 msgid ""
 "Like `ticket_subject_template` but for batch modifications.\n"
 "(''since 1.0'')"
@@ -1006,7 +1008,7 @@ msgstr ""
 "ticket_subject_template に似ていますが一括更新用のものです。\n"
 "(''1.0 以降'')"
 
-#: trac/ticket/notification.py:74
+#: trac/ticket/notification.py:75
 msgid ""
 "Width of ambiguous characters that should be used in the table\n"
 "of the notification mail.\n"
@@ -1022,7 +1024,7 @@ msgstr ""
 "文字の倍の幅になります。これは CJK ユーザが期待するものです。\n"
 "(''0.12.2 以降'')"
 
-#: trac/ticket/query.py:821
+#: trac/ticket/query.py:827
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -1033,7 +1035,7 @@ msgstr ""
 "シンタックス、または `query:` [TracQuery#UsingTracLinks Trac リンク]で使う `?` で始まる URL "
 "クエリ文字列のどちらかを指定します。"
 
-#: trac/ticket/query.py:829
+#: trac/ticket/query.py:835
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -1044,7 +1046,7 @@ msgstr ""
 " `query:` [TracQuery#UsingTracLinks Trac リンク]で使う `?` で始まる URL "
 "クエリ文字列のどちらかを指定します。"
 
-#: trac/ticket/query.py:837
+#: trac/ticket/query.py:843
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default."
@@ -1323,15 +1325,16 @@ msgid ""
 "[http://svnbook.red-bean.com/en/1.5/svn.serverconfig.pathbasedauthz.html "
 "authorization (authz) file].\n"
 "To enable authz permission checking, the `AuthzSourcePolicy` permission\n"
-"policy must be added to `[trac] permission_policies`."
+"policy must be added to `[trac] permission_policies`. Non-absolute\n"
+"paths are relative to the Environment `conf` directory.\")"
 msgstr ""
 "Subversion [http://svnbook.red-"
 "bean.com/en/1.5/svn.serverconfig.pathbasedauthz.html authz ファイル] "
 "のパスを指定します。\n"
 "authz 権限チェックを有効にするには、`AuthzSourcePolicy` 権限ポリシーを `[trac] "
-"permission_policies` に追加してください。"
+"permission_policies` に追加してください。また、絶対パスでない場合は `conf` ディレクトリからの相対となります。"
 
-#: trac/versioncontrol/svn_authz.py:131
+#: trac/versioncontrol/svn_authz.py:132
 msgid ""
 "The module prefix used in the `authz_file` for the default\n"
 "repository. If left empty, the global section is used."
@@ -1753,10 +1756,14 @@ msgstr ""
 " `mailto:` リンクをぼかさないようにするかを指定します。"
 
 #: trac/web/chrome.py:526
-msgid "Show IP addresses for resource edits (e.g. wiki)."
-msgstr "リソース編集時の IP アドレスを表示するかどうかを指定します (例えば Wiki)。"
+msgid ""
+"Show IP addresses for resource edits (e.g. wiki). Since 1.0.5 this\n"
+"option is deprecated and will be removed in 1.3.1."
+msgstr ""
+"リソース編集時の IP アドレスを表示するかどうかを指定します (例えば Wiki)。\n"
+"(''0.11.3 以降'')1.0.5 でこのオプションは非推奨となり 1.3.1 で削除予定です。(''0.11.3 以降'')"
 
-#: trac/web/chrome.py:530
+#: trac/web/chrome.py:531
 msgid ""
 "Make `<textarea>` fields resizable. Requires !JavaScript.\n"
 "(''since 0.12'')"
@@ -1764,13 +1771,13 @@ msgstr ""
 "`<textarea>` フィールドをリサイズできるようにするかどうかを指定します。!JavaScript が必要になります。\n"
 "(''0.12 以降'')"
 
-#: trac/web/chrome.py:534
+#: trac/web/chrome.py:535
 msgid ""
 "Add a simple toolbar on top of Wiki `<textarea>`s.\n"
 "(''since 1.0.2'')"
 msgstr "Wiki `<textarea>` の上部にシンプルなツールバーを追加するかを指定します。(''1.0.2 以降'')"
 
-#: trac/web/chrome.py:538
+#: trac/web/chrome.py:539
 msgid ""
 "Inactivity timeout in seconds after which the automatic wiki preview\n"
 "triggers an update. This option can contain floating-point values. The\n"
@@ -1781,7 +1788,7 @@ msgstr ""
 "プレビューの自動更新の時間を秒で指定します。この設定には浮動小数点を指定できます。値を小さくするとサーバが大量のリクエストを処理することになります。0を指定すると自動プレビューを無効にします。(''0.12"
 " 以降'')"
 
-#: trac/web/chrome.py:545
+#: trac/web/chrome.py:546
 msgid ""
 "The date information format. Valid options are 'relative' for\n"
 "displaying relative format and 'absolute' for displaying absolute\n"
