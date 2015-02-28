@@ -521,10 +521,11 @@ class ImageMacro(WikiMacroBase):
             return ''
         # parse arguments
         # we expect the 1st argument to be a filename (filespec)
-        args = self._split_args_re.split(content)[1::2]
+        args = [stripws(arg) for arg
+                             in self._split_args_re.split(content)[1::2]]
         # strip unicode white-spaces and ZWSPs are copied from attachments
         # section (#10668)
-        filespec = stripws(args.pop(0))
+        filespec = args.pop(0)
 
         # style information
         attr = {}
@@ -541,7 +542,7 @@ class ImageMacro(WikiMacroBase):
         except Exception:
             browser_links = []
         while args:
-            arg = stripws(args.pop(0))
+            arg = args.pop(0)
             if self._size_re.match(arg):
                 # 'width' keyword
                 attr['width'] = arg
