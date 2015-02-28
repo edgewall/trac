@@ -463,7 +463,7 @@ class ImageMacro(WikiMacroBase):
 
     The remaining arguments are optional and allow configuring the attributes
     and style of the rendered `<img>` element:
-     * digits and unit are interpreted as the size (ex. 120, 25%)
+     * digits and unit are interpreted as the size (ex. 120px, 25%)
        for the image
      * `right`, `left`, `center`, `top`, `bottom` and `middle` are interpreted
        as the alignment for the image (alternatively, the first three can be
@@ -480,6 +480,7 @@ class ImageMacro(WikiMacroBase):
         * align, valign, border, width, height, alt, title, longdesc, class,
           margin, margin-(left,right,top,bottom), id and usemap
         * `border`, `margin`, and `margin-`* can only be a single number
+          (units are pixels).
         * `margin` is superseded by `center` which uses auto margins
 
     Examples:
