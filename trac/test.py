@@ -168,10 +168,7 @@ def get_dburi():
         # Assume the schema 'tractest' for PostgreSQL
         if scheme == 'postgres' and \
                 not db_prop.get('params', {}).get('schema'):
-            if '?' in dburi:
-                dburi += "&schema=tractest"
-            else:
-                dburi += "?schema=tractest"
+            dburi += ('&' if '?' in dburi else '?') + 'schema=tractest'
         return dburi
     return 'sqlite::memory:'
 
