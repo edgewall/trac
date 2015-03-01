@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.1.4\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2015-02-28 09:16+0000\n"
+"POT-Creation-Date: 2015-03-01 08:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -653,44 +653,44 @@ msgstr ""
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr ""
 
-#: trac/env.py:1000
+#: trac/env.py:1001
 msgid "The following errors happened while copying the environment:"
 msgstr ""
 
-#: trac/env.py:1010
+#: trac/env.py:1011
 msgid "Backing up database ..."
 msgstr ""
 
-#: trac/env.py:1015
+#: trac/env.py:1016
 msgid "Hotcopy done."
 msgstr ""
 
-#: trac/env.py:1020 trac/admin/api.py:134
+#: trac/env.py:1021 trac/admin/api.py:134
 msgid "Invalid arguments"
 msgstr ""
 
-#: trac/env.py:1023
+#: trac/env.py:1024
 msgid "Database is up to date, no upgrade necessary."
 msgstr ""
 
-#: trac/env.py:1029
+#: trac/env.py:1030
 msgid ""
 "The pre-upgrade backup failed.\n"
 "Use '--no-backup' to upgrade without doing a backup.\n"
 msgstr ""
 
-#: trac/env.py:1033
+#: trac/env.py:1034
 msgid "The upgrade failed. Please fix the issue and try again.\n"
 msgstr ""
 
-#: trac/env.py:1045
+#: trac/env.py:1046
 msgid ""
 "Warning: the wiki-macros directory in the environment is non-empty, but "
 "Trac\n"
 "doesn't load plugins from there anymore. Please remove it by hand."
 msgstr ""
 
-#: trac/env.py:1056
+#: trac/env.py:1057
 #, python-format
 msgid ""
 "Error while removing wiki-macros: %(err)s\n"
@@ -698,7 +698,7 @@ msgid ""
 "hand."
 msgstr ""
 
-#: trac/env.py:1061
+#: trac/env.py:1062
 #, python-format
 msgid ""
 "Upgrade done.\n"
@@ -1419,7 +1419,7 @@ msgstr ""
 #: trac/ticket/templates/admin_enums.html:91
 #: trac/ticket/templates/admin_milestones.html:101
 #: trac/ticket/templates/admin_versions.html:111
-#: trac/versioncontrol/templates/admin_repositories.html:171
+#: trac/versioncontrol/templates/admin_repositories.html:169
 msgid "Remove selected items"
 msgstr ""
 
@@ -1513,7 +1513,7 @@ msgid "mysqldump failed: %(msg)s"
 msgstr ""
 
 #: trac/db/mysql_backend.py:260 trac/db/postgres_backend.py:213
-#: trac/db/sqlite_backend.py:257
+#: trac/db/sqlite_backend.py:250
 msgid "No destination file created"
 msgstr ""
 
@@ -1567,34 +1567,45 @@ msgstr ""
 msgid "pg_dump failed: %(msg)s"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:173 trac/db/sqlite_backend.py:271
-msgid "Cannot load Python bindings for SQLite"
-msgstr ""
-
-#: trac/db/sqlite_backend.py:176
+#: trac/db/sqlite_backend.py:168
 #, python-format
 msgid "Need at least PySqlite %(version)s or higher"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:179
+#: trac/db/sqlite_backend.py:171
 msgid "PySqlite 2.5.2 - 2.5.4 break Trac, please use 2.5.5 or higher"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:207
+#: trac/db/sqlite_backend.py:199
 #, python-format
 msgid "Database already exists at %(path)s"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:275
+#: trac/db/sqlite_backend.py:265
 #, python-format
 msgid "Database \"%(path)s\" not found."
 msgstr ""
 
-#: trac/db/sqlite_backend.py:284
+#: trac/db/sqlite_backend.py:274
 #, python-format
 msgid ""
 "The user %(user)s requires read _and_ write permissions to the database "
 "file %(path)s and the directory it is located in."
+msgstr ""
+
+#: trac/db/sqlite_backend.py:382
+#, python-format
+msgid "PRAGMA journal_mode `%(value)s` cannot be used in SQLite"
+msgstr ""
+
+#: trac/db/sqlite_backend.py:387
+#, python-format
+msgid "PRAGMA journal_mode isn't supported by SQLite %(version)s"
+msgstr ""
+
+#: trac/db/sqlite_backend.py:390
+#, python-format
+msgid "PRAGMA journal_mode `%(value)s` isn't supported by SQLite %(version)s"
 msgstr ""
 
 #: trac/mimeview/api.py:706 trac/mimeview/api.py:717
@@ -5368,12 +5379,12 @@ msgstr ""
 msgid "Revision"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:163
+#: trac/versioncontrol/templates/admin_repositories.html:160
 #, python-format
 msgid "Alias of %(repo)s"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:170
+#: trac/versioncontrol/templates/admin_repositories.html:168
 msgid "Refresh"
 msgstr ""
 
