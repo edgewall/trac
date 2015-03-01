@@ -18,6 +18,18 @@
   <xi:include href="admin.html" />
   <head>
     <title>Permissions</title>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        // Add group toggling behavior to row label.
+        $("#permlist tr, #grouplist tr").find("td:first").click(function () {
+          var checkboxes = $(this).closest('tr').find("input:checkbox");
+          var numChecked = checkboxes.filter(":checked").length;
+          var allChecked = numChecked === checkboxes.length;
+          checkboxes.prop("checked", !allChecked).change();
+        }).css({"cursor": "pointer"})
+          .attr({"title": _("Toggle all")});
+      });
+    </script>
   </head>
 
   <body>
