@@ -342,12 +342,12 @@ class RepositoryAdminPanel(Component):
     def _extend_info(self, reponame, info, editable):
         """Extend repository info for rendering."""
         info['name'] = reponame
-        if info.get('dir') is not None:
-            info['prettydir'] = breakable_path(info['dir']) or ''
         info['hidden'] = as_bool(info.get('hidden'))
         info['sync_per_request'] = as_bool(info.get('sync_per_request'))
         info['editable'] = editable
         if not info.get('alias'):
+            if info.get('dir') is not None:
+                info['prettydir'] = breakable_path(info['dir']) or ''
             try:
                 repos = RepositoryManager(self.env).get_repository(reponame)
             except InvalidRepository as e:
