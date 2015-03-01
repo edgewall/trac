@@ -32,77 +32,76 @@ _glob_escape_re = re.compile(r'[*?\[]')
 
 try:
     import pysqlite2.dbapi2 as sqlite
-    have_pysqlite = 2
 except ImportError:
-    try:
-        import sqlite3 as sqlite
-        have_pysqlite = 2
-    except ImportError:
-        have_pysqlite = 0
+    import sqlite3 as sqlite
 
-if have_pysqlite == 2:
-    # Force values to integers because PySQLite 2.2.0 had (2, 2, '0')
-    sqlite_version = tuple([int(x) for x in sqlite.sqlite_version_info])
-    sqlite_version_string = sqlite.sqlite_version
+sqlite_version = sqlite.sqlite_version_info
+sqlite_version_string = sqlite.sqlite_version
+pysqlite_version = sqlite.version_info
+pysqlite_version_string = get_pkginfo(sqlite).get('version',
+                                                  '%d.%d.%s'
+                                                  % pysqlite_version)
+min_pysqlite_version = (2, 4, 1)  # version provided by Python 2.6
 
-    class PyFormatCursor(sqlite.Cursor):
-        def _rollback_on_error(self, function, *args, **kwargs):
-            try:
-                return function(self, *args, **kwargs)
-            except sqlite.DatabaseError:
-                self.cnx.rollback()
-                raise
-        def execute(self, sql, args=None):
-            if args:
-                sql = sql % (('?',) * len(args))
-            return self._rollback_on_error(sqlite.Cursor.execute, sql,
-                                           args or [])
-        def executemany(self, sql, args):
-            if not args:
-                return
-            sql = sql % (('?',) * len(args[0]))
-            return self._rollback_on_error(sqlite.Cursor.executemany, sql,
-                                           args)
 
-    # EagerCursor taken from the example in pysqlite's repository:
-    #
-    #   http://code.google.com/p/pysqlite/source/browse/misc/eager.py
-    #
-    # Only change is to subclass it from PyFormatCursor instead of
-    # sqlite.Cursor.
+class PyFormatCursor(sqlite.Cursor):
+    def _rollback_on_error(self, function, *args, **kwargs):
+        try:
+            return function(self, *args, **kwargs)
+        except sqlite.DatabaseError:
+            self.cnx.rollback()
+            raise
+    def execute(self, sql, args=None):
+        if args:
+            sql = sql % (('?',) * len(args))
+        return self._rollback_on_error(sqlite.Cursor.execute, sql,
+                                       args or [])
+    def executemany(self, sql, args):
+        if not args:
+            return
+        sql = sql % (('?',) * len(args[0]))
+        return self._rollback_on_error(sqlite.Cursor.executemany, sql,
+                                       args)
 
-    class EagerCursor(PyFormatCursor):
-        def __init__(self, con):
-            PyFormatCursor.__init__(self, con)
-            self.rows = []
-            self.pos = 0
+# EagerCursor taken from the example in pysqlite's repository:
+#
+#   http://code.google.com/p/pysqlite/source/browse/misc/eager.py
+#
+# Only change is to subclass it from PyFormatCursor instead of
+# sqlite.Cursor.
 
-        def execute(self, *args):
-            result = PyFormatCursor.execute(self, *args)
-            self.rows = PyFormatCursor.fetchall(self)
-            self.pos = 0
-            return result
+class EagerCursor(PyFormatCursor):
+    def __init__(self, con):
+        PyFormatCursor.__init__(self, con)
+        self.rows = []
+        self.pos = 0
 
-        def fetchone(self):
-            try:
-                row = self.rows[self.pos]
-                self.pos += 1
-                return row
-            except IndexError:
-                return None
+    def execute(self, *args):
+        result = PyFormatCursor.execute(self, *args)
+        self.rows = PyFormatCursor.fetchall(self)
+        self.pos = 0
+        return result
 
-        def fetchmany(self, num=None):
-            if num is None:
-                num = self.arraysize
+    def fetchone(self):
+        try:
+            row = self.rows[self.pos]
+            self.pos += 1
+            return row
+        except IndexError:
+            return None
 
-            result = self.rows[self.pos:self.pos+num]
-            self.pos += num
-            return result
+    def fetchmany(self, num=None):
+        if num is None:
+            num = self.arraysize
 
-        def fetchall(self):
-            result = self.rows[self.pos:]
-            self.pos = len(self.rows)
-            return result
+        result = self.rows[self.pos:self.pos+num]
+        self.pos += num
+        return result
+
+    def fetchall(self):
+        result = self.rows[self.pos:]
+        self.pos = len(self.rows)
+        return result
 
 
 # Mapping from "abstract" SQL types to DB-specific types
@@ -152,10 +151,6 @@ class SQLiteConnector(Component):
     memory_cnx = None
 
     def __init__(self):
-        self._version = have_pysqlite  and \
-                        get_pkginfo(sqlite).get('version',
-                                                '%d.%d.%s'
-                                                % sqlite.version_info)
         self.error = None
         self._extensions = None
 
@@ -164,18 +159,15 @@ class SQLiteConnector(Component):
     def get_system_info(self):
         if self.required:
             yield 'SQLite', sqlite_version_string
-            yield 'pysqlite', self._version
+            yield 'pysqlite', pysqlite_version_string
 
     # IDatabaseConnector methods
 
     def get_supported_schemes(self):
-        if not have_pysqlite:
-            self.error = _("Cannot load Python bindings for SQLite")
-        elif sqlite_version >= (3, 3, 3) and sqlite.version_info[0] == 2 and \
-                sqlite.version_info < (2, 0, 7):
+        if pysqlite_version < min_pysqlite_version:
             self.error = _("Need at least PySqlite %(version)s or higher",
-                           version='2.0.7')
-        elif (2, 5, 2) <= sqlite.version_info < (2, 5, 5):
+                           version='%d.%d.%d' % min_pysqlite_version)
+        elif (2, 5, 2) <= pysqlite_version < (2, 5, 5):
             self.error = _("PySqlite 2.5.2 - 2.5.4 break Trac, please use "
                            "2.5.5 or higher")
         yield ('sqlite', -1 if self.error else 1)
@@ -263,12 +255,9 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
 
     __slots__ = ['_active_cursors', '_eager']
 
-    poolable = have_pysqlite and sqlite_version >= (3, 3, 8) \
-                             and sqlite.version_info >= (2, 5, 0)
+    poolable = sqlite_version >= (3, 3, 8) and pysqlite_version >= (2, 5, 0)
 
     def __init__(self, path, log=None, params={}):
-        if have_pysqlite == 0:
-            raise TracError(_("Cannot load Python bindings for SQLite"))
         self.cnx = None
         if path != ':memory:':
             if not os.access(path, os.F_OK):
