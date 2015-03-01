@@ -988,7 +988,8 @@ class EnvironmentAdmin(Component):
                 db_path = os.path.join(self.env.path,
                                        os.path.normpath(db_path))
                 # don't copy the journal (also, this would fail on Windows)
-                skip = [db_path + '-journal', db_path + '-stmtjrnl']
+                skip = [db_path + '-journal', db_path + '-stmtjrnl',
+                        db_path + '-shm', db_path + '-wal']
                 if no_db:
                     skip.append(db_path)
 

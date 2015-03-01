@@ -209,6 +209,7 @@ class SQLiteConnector(Component):
         else:
             cnx = self.get_connection(path, log, params)
         cursor = cnx.cursor()
+        _set_journal_mode(cursor, params.get('journal_mode'))
         if schema is None:
             from trac.db_default import schema
         for table in schema:
@@ -289,6 +290,9 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
                 cnx.load_extension(ext)
             cnx.enable_load_extension(False)
 
+        cursor = cnx.cursor()
+        _set_journal_mode(cursor, params.get('journal_mode'))
+        _set_synchronous(cursor, params.get('synchronous'))
         ConnectionWrapper.__init__(self, cnx, log)
 
     def cursor(self):
@@ -351,7 +355,7 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
         return _glob_escape_re.sub(lambda m: '[%s]' % m.group(0), prefix) + '*'
 
     def quote(self, identifier):
-        return "`%s`" % identifier.replace('`', '``')
+        return _quote(identifier)
 
     def reset_tables(self):
         cursor = self.cursor()
@@ -364,3 +368,33 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
         # SQLite handles sequence updates automagically
         # http://www.sqlite.org/autoinc.html
         pass
+
+
+def _quote(identifier):
+    return "`%s`" % identifier.replace('`', '``')
+
+
+def _set_journal_mode(cursor, value):
+    if not value:
+        return
+    value = value.upper()
+    if value == 'OFF':
+        raise TracError(_("PRAGMA journal_mode `%(value)s` cannot be used in "
+                          "SQLite", value=value))
+    cursor.execute('PRAGMA journal_mode = %s' % _quote(value))
+    row = cursor.fetchone()
+    if not row:
+        raise TracError(_("PRAGMA journal_mode isn't supported by SQLite "
+                          "%(version)s", version=sqlite_version_string))
+    if (row[0] or '').upper() != value:
+        raise TracError(_("PRAGMA journal_mode `%(value)s` isn't supported by "
+                          "SQLite %(version)s",
+                          value=value, version=sqlite_version_string))
+
+
+def _set_synchronous(cursor, value):
+    if not value:
+        return
+    if value.isdigit():
+        value = str(int(value))
+    cursor.execute('PRAGMA synchronous = %s' % _quote(value))
