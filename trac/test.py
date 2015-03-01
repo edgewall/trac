@@ -169,6 +169,10 @@ def get_dburi():
         if scheme == 'postgres' and \
                 not db_prop.get('params', {}).get('schema'):
             dburi += ('&' if '?' in dburi else '?') + 'schema=tractest'
+        elif scheme == 'sqlite' and db_prop['path'] != ':memory:' and \
+                not db_prop.get('params', {}).get('synchronous'):
+            # Speed-up tests with SQLite database
+            dburi += ('&' if '?' in dburi else '?') + 'synchronous=off'
         return dburi
     return 'sqlite::memory:'
 
@@ -361,9 +365,6 @@ class EnvironmentStub(Environment):
                 self.global_databasemanager.shutdown()
 
         with self.db_transaction as db:
-            if scheme == 'sqlite':
-                # Speed-up tests with SQLite database
-                db("PRAGMA synchronous = OFF")
             if default_data:
                 for table, cols, vals in db_default.get_data(db):
                     db.executemany("INSERT INTO %s (%s) VALUES (%s)"
