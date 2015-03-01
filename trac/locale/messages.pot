@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.5\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2015-02-28 09:08+0000\n"
+"POT-Creation-Date: 2015-03-01 08:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -641,44 +641,44 @@ msgstr ""
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr ""
 
-#: trac/env.py:996
+#: trac/env.py:997
 msgid "The following errors happened while copying the environment:"
 msgstr ""
 
-#: trac/env.py:1007
+#: trac/env.py:1008
 msgid "Backing up database ..."
 msgstr ""
 
-#: trac/env.py:1012
+#: trac/env.py:1013
 msgid "Hotcopy done."
 msgstr ""
 
-#: trac/env.py:1017 trac/admin/api.py:134
+#: trac/env.py:1018 trac/admin/api.py:134
 msgid "Invalid arguments"
 msgstr ""
 
-#: trac/env.py:1020
+#: trac/env.py:1021
 msgid "Database is up to date, no upgrade necessary."
 msgstr ""
 
-#: trac/env.py:1026
+#: trac/env.py:1027
 msgid ""
 "The pre-upgrade backup failed.\n"
 "Use '--no-backup' to upgrade without doing a backup.\n"
 msgstr ""
 
-#: trac/env.py:1030
+#: trac/env.py:1031
 msgid "The upgrade failed. Please fix the issue and try again.\n"
 msgstr ""
 
-#: trac/env.py:1042
+#: trac/env.py:1043
 msgid ""
 "Warning: the wiki-macros directory in the environment is non-empty, but "
 "Trac\n"
 "doesn't load plugins from there anymore. Please remove it by hand."
 msgstr ""
 
-#: trac/env.py:1053
+#: trac/env.py:1054
 #, python-format
 msgid ""
 "Error while removing wiki-macros: %(err)s\n"
@@ -686,7 +686,7 @@ msgid ""
 "hand."
 msgstr ""
 
-#: trac/env.py:1058
+#: trac/env.py:1059
 #, python-format
 msgid ""
 "Upgrade done.\n"
@@ -1402,7 +1402,7 @@ msgstr ""
 #: trac/ticket/templates/admin_enums.html:83
 #: trac/ticket/templates/admin_milestones.html:149
 #: trac/ticket/templates/admin_versions.html:110
-#: trac/versioncontrol/templates/admin_repositories.html:160
+#: trac/versioncontrol/templates/admin_repositories.html:158
 msgid "Remove selected items"
 msgstr ""
 
@@ -1496,7 +1496,7 @@ msgid "mysqldump failed: %(msg)s"
 msgstr ""
 
 #: trac/db/mysql_backend.py:254 trac/db/postgres_backend.py:204
-#: trac/db/sqlite_backend.py:247
+#: trac/db/sqlite_backend.py:248
 msgid "No destination file created"
 msgstr ""
 
@@ -1550,7 +1550,7 @@ msgstr ""
 msgid "pg_dump failed: %(msg)s"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:158 trac/db/sqlite_backend.py:261
+#: trac/db/sqlite_backend.py:158 trac/db/sqlite_backend.py:262
 msgid "Cannot load Python bindings for SQLite"
 msgstr ""
 
@@ -1568,16 +1568,31 @@ msgstr ""
 msgid "Database already exists at %(path)s"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:265
+#: trac/db/sqlite_backend.py:266
 #, python-format
 msgid "Database \"%(path)s\" not found."
 msgstr ""
 
-#: trac/db/sqlite_backend.py:274
+#: trac/db/sqlite_backend.py:275
 #, python-format
 msgid ""
 "The user %(user)s requires read _and_ write permissions to the database "
 "file %(path)s and the directory it is located in."
+msgstr ""
+
+#: trac/db/sqlite_backend.py:380
+#, python-format
+msgid "PRAGMA journal_mode `%(value)s` cannot be used in SQLite"
+msgstr ""
+
+#: trac/db/sqlite_backend.py:385
+#, python-format
+msgid "PRAGMA journal_mode isn't supported by SQLite %(version)s"
+msgstr ""
+
+#: trac/db/sqlite_backend.py:388
+#, python-format
+msgid "PRAGMA journal_mode `%(value)s` isn't supported by SQLite %(version)s"
 msgstr ""
 
 #: trac/mimeview/api.py:699 trac/mimeview/api.py:709
@@ -5159,12 +5174,12 @@ msgstr ""
 msgid "Revision"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:152
+#: trac/versioncontrol/templates/admin_repositories.html:149
 #, python-format
 msgid "Alias of %(repo)s"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:159
+#: trac/versioncontrol/templates/admin_repositories.html:157
 msgid "Refresh"
 msgstr ""
 
