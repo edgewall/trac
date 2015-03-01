@@ -459,7 +459,7 @@ class RepositoryManager(Component):
         reponames = {}
         # first pass to gather the <name>.dir entries
         for option in repositories:
-            if option.endswith('.dir'):
+            if option.endswith('.dir') and repositories.get(option):
                 reponames[option[:-4]] = {'sync_per_request': False}
         # second pass to gather aliases
         for option in repositories:
