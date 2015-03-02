@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.5\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2015-02-28 09:08+0000\n"
+"POT-Creation-Date: 2015-03-01 08:27+0000\n"
 "PO-Revision-Date: 2011-07-14 21:38+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <trac-dev@googlegroups.com>\n"
@@ -678,27 +678,27 @@ msgstr "'%(dest)s' が存在するため上書きできません"
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr "%(src)s から %(dst)s へホットコピーを実施しています..."
 
-#: trac/env.py:996
+#: trac/env.py:997
 msgid "The following errors happened while copying the environment:"
 msgstr "コピー中に以下のエラーが発生しました:"
 
-#: trac/env.py:1007
+#: trac/env.py:1008
 msgid "Backing up database ..."
 msgstr "データベースをバックアップしています... "
 
-#: trac/env.py:1012
+#: trac/env.py:1013
 msgid "Hotcopy done."
 msgstr "ホットコピーが終了しました。"
 
-#: trac/env.py:1017 trac/admin/api.py:134
+#: trac/env.py:1018 trac/admin/api.py:134
 msgid "Invalid arguments"
 msgstr "不正な引数です"
 
-#: trac/env.py:1020
+#: trac/env.py:1021
 msgid "Database is up to date, no upgrade necessary."
 msgstr "データベースは最新であり更新の必要はありません。"
 
-#: trac/env.py:1026
+#: trac/env.py:1027
 msgid ""
 "The pre-upgrade backup failed.\n"
 "Use '--no-backup' to upgrade without doing a backup.\n"
@@ -706,11 +706,11 @@ msgstr ""
 "アップグレード前のバックアップが失敗しました。\n"
 "バックアップしないでアップグレードするには '--no-backup' を使ってください。\n"
 
-#: trac/env.py:1030
+#: trac/env.py:1031
 msgid "The upgrade failed. Please fix the issue and try again.\n"
 msgstr "アップグレードが失敗しました。問題を解消させてもう一度試してください。\n"
 
-#: trac/env.py:1042
+#: trac/env.py:1043
 msgid ""
 "Warning: the wiki-macros directory in the environment is non-empty, but "
 "Trac\n"
@@ -719,7 +719,7 @@ msgstr ""
 "注意: wiki-macros ディレクトリが空ではありません。もう Trac はそこからプラグ\n"
 "インをロードしません。手動でこのディレクトリを削除してください。"
 
-#: trac/env.py:1053
+#: trac/env.py:1054
 #, python-format
 msgid ""
 "Error while removing wiki-macros: %(err)s\n"
@@ -730,7 +730,7 @@ msgstr ""
 "もう Trac はそこからプラグインをロードしません。手動でこのディレクトリを削除\n"
 "してください。"
 
-#: trac/env.py:1058
+#: trac/env.py:1059
 #, python-format
 msgid ""
 "Upgrade done.\n"
@@ -1512,7 +1512,7 @@ msgstr "グループメンバなし"
 #: trac/ticket/templates/admin_enums.html:83
 #: trac/ticket/templates/admin_milestones.html:149
 #: trac/ticket/templates/admin_versions.html:110
-#: trac/versioncontrol/templates/admin_repositories.html:160
+#: trac/versioncontrol/templates/admin_repositories.html:158
 msgid "Remove selected items"
 msgstr "選択した項目を削除"
 
@@ -1608,7 +1608,7 @@ msgid "mysqldump failed: %(msg)s"
 msgstr "mysqldump が失敗しました: %(msg)s"
 
 #: trac/db/mysql_backend.py:254 trac/db/postgres_backend.py:204
-#: trac/db/sqlite_backend.py:247
+#: trac/db/sqlite_backend.py:248
 msgid "No destination file created"
 msgstr "出力先のファイルが作成されていません"
 
@@ -1671,7 +1671,7 @@ msgstr "PostgresSQL 向け Python バインディングをロードできませ�
 msgid "pg_dump failed: %(msg)s"
 msgstr "pg_dump が失敗しました: %(msg)s"
 
-#: trac/db/sqlite_backend.py:158 trac/db/sqlite_backend.py:261
+#: trac/db/sqlite_backend.py:158 trac/db/sqlite_backend.py:262
 msgid "Cannot load Python bindings for SQLite"
 msgstr "SQLite 向け Python バインディングをロードできません"
 
@@ -1689,17 +1689,32 @@ msgstr "PySqlite 2.5.2 ～ 2.5.4 では Trac は動作しません。2.5.5 以�
 msgid "Database already exists at %(path)s"
 msgstr "データベース %(path)s はすでに存在します"
 
-#: trac/db/sqlite_backend.py:265
+#: trac/db/sqlite_backend.py:266
 #, python-format
 msgid "Database \"%(path)s\" not found."
 msgstr "データベース %(path)s は見つかりません。"
 
-#: trac/db/sqlite_backend.py:274
+#: trac/db/sqlite_backend.py:275
 #, python-format
 msgid ""
 "The user %(user)s requires read _and_ write permissions to the database "
 "file %(path)s and the directory it is located in."
 msgstr "ファイル %(path)s と、そのディレクトリに %(user)s ユーザの読み書き権限が必要です。"
+
+#: trac/db/sqlite_backend.py:380
+#, python-format
+msgid "PRAGMA journal_mode `%(value)s` cannot be used in SQLite"
+msgstr "PRAGMA journal_mode `%(value)s` は SQLite で使用できません"
+
+#: trac/db/sqlite_backend.py:385
+#, python-format
+msgid "PRAGMA journal_mode isn't supported by SQLite %(version)s"
+msgstr "PRAGMA journal_mode は SQLite %(version)s でサポートしていません"
+
+#: trac/db/sqlite_backend.py:388
+#, python-format
+msgid "PRAGMA journal_mode `%(value)s` isn't supported by SQLite %(version)s"
+msgstr "PRAGMA journal_mode `%(value)s` は SQLite %(version)s でサポートしていません"
 
 #: trac/mimeview/api.py:699 trac/mimeview/api.py:709
 #, python-format
@@ -5435,12 +5450,12 @@ msgstr "エイリアスの追加:"
 msgid "Revision"
 msgstr "リビジョン"
 
-#: trac/versioncontrol/templates/admin_repositories.html:152
+#: trac/versioncontrol/templates/admin_repositories.html:149
 #, python-format
 msgid "Alias of %(repo)s"
 msgstr "%(repo)s のエイリアス"
 
-#: trac/versioncontrol/templates/admin_repositories.html:159
+#: trac/versioncontrol/templates/admin_repositories.html:157
 msgid "Refresh"
 msgstr "再読み込み"
 
