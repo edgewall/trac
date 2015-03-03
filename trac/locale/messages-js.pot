@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.1.4\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2015-03-01 08:33+0000\n"
+"POT-Creation-Date: 2015-03-03 02:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,10 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
+
+#: trac/admin/templates/admin_perms.html:10
+msgid "Toggle all"
+msgstr ""
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -181,6 +185,12 @@ msgstr ""
 msgid "At least one item must be selected"
 msgstr ""
 
+#: trac/htdocs/js/trac.js:217
+msgid ""
+"You have unsaved changes. Your changes will be lost if you leave this "
+"page before saving your changes."
+msgstr ""
+
 #: trac/htdocs/js/wikitoolbar.js:59
 msgid "Bold text: **Example**"
 msgstr ""
@@ -217,9 +227,14 @@ msgstr ""
 msgid "Image: [[Image()]]"
 msgstr ""
 
-#: trac/notification/templates/prefs_notification.html:3
+#: trac/notification/templates/prefs_notification.html:16
 #: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
 msgid "Link to this section"
+msgstr ""
+
+#: trac/notification/templates/prefs_notification.html:57
+#: trac/notification/templates/prefs_notification.html:77
+msgid "Drag rule to reorder"
 msgstr ""
 
 #: trac/versioncontrol/templates/changeset.html:7

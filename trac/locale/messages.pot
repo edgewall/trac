@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.1.4\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2015-03-01 08:33+0000\n"
+"POT-Creation-Date: 2015-03-03 02:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -739,7 +739,7 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: trac/perm.py:676 trac/admin/templates/admin_perms.html:93
+#: trac/perm.py:676 trac/admin/templates/admin_perms.html:105
 #: trac/ticket/templates/ticket_workflow.html:36
 msgid "Action"
 msgstr ""
@@ -1089,7 +1089,7 @@ msgid "Missing field"
 msgstr ""
 
 #: trac/admin/web_ui.py:341 trac/admin/templates/admin_perms.html:20
-#: trac/admin/templates/admin_perms.html:90
+#: trac/admin/templates/admin_perms.html:102
 msgid "Permissions"
 msgstr ""
 
@@ -1321,28 +1321,28 @@ msgid ""
 "            [1:log] directory of the project environment ([2:%(dir)s])."
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:24
+#: trac/admin/templates/admin_perms.html:36
 msgid "Manage Permissions and Groups"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:29
+#: trac/admin/templates/admin_perms.html:41
 msgid "Grant Permission:"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:31
+#: trac/admin/templates/admin_perms.html:43
 msgid "Action:"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:39
-#: trac/admin/templates/admin_perms.html:55
-#: trac/admin/templates/admin_perms.html:74
+#: trac/admin/templates/admin_perms.html:51
+#: trac/admin/templates/admin_perms.html:67
+#: trac/admin/templates/admin_perms.html:86
 msgid "Subject:"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:42
-#: trac/admin/templates/admin_perms.html:61
-#: trac/admin/templates/admin_perms.html:80
-#: trac/notification/templates/prefs_notification.html:102
+#: trac/admin/templates/admin_perms.html:54
+#: trac/admin/templates/admin_perms.html:73
+#: trac/admin/templates/admin_perms.html:92
+#: trac/notification/templates/prefs_notification.html:205
 #: trac/ticket/templates/admin_components.html:78
 #: trac/ticket/templates/admin_enums.html:56
 #: trac/ticket/templates/admin_milestones.html:55
@@ -1352,69 +1352,69 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:44
+#: trac/admin/templates/admin_perms.html:56
 msgid ""
 "Grant permission for an action to a subject, which can be either a user\n"
 "            or a group."
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:53
+#: trac/admin/templates/admin_perms.html:65
 msgid "Copy Permissions:"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:58
+#: trac/admin/templates/admin_perms.html:70
 msgid "Target:"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:63
+#: trac/admin/templates/admin_perms.html:75
 msgid ""
 "Copy all of subject's permissions to target.\n"
 "            Subject and target can be either users or groups."
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:72
+#: trac/admin/templates/admin_perms.html:84
 msgid "Add Subject to Group:"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:77
+#: trac/admin/templates/admin_perms.html:89
 msgid "Group:"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:82
+#: trac/admin/templates/admin_perms.html:94
 msgid "Add a user or group to an existing permission group."
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:93
-#: trac/admin/templates/admin_perms.html:123
+#: trac/admin/templates/admin_perms.html:105
+#: trac/admin/templates/admin_perms.html:135
 msgid "Subject"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:104
+#: trac/admin/templates/admin_perms.html:116
 msgid "You don't have permission to revoke this action"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:111
+#: trac/admin/templates/admin_perms.html:123
 #, python-format
 msgid "%(action)s is no longer defined"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:116
+#: trac/admin/templates/admin_perms.html:128
 msgid "No permissions"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:120
+#: trac/admin/templates/admin_perms.html:132
 msgid "Group Membership"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:123
+#: trac/admin/templates/admin_perms.html:135
 msgid "Group"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:140
+#: trac/admin/templates/admin_perms.html:152
 msgid "No group memberships"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:144
+#: trac/admin/templates/admin_perms.html:156
 #: trac/ticket/templates/admin_components.html:110
 #: trac/ticket/templates/admin_enums.html:91
 #: trac/ticket/templates/admin_milestones.html:101
@@ -1423,7 +1423,7 @@ msgstr ""
 msgid "Remove selected items"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:148
+#: trac/admin/templates/admin_perms.html:160
 msgid ""
 "Note that [1:Subject] or [2:Group] names can't be all upper-case,\n"
 "      as that is reserved for permission names."
@@ -1649,7 +1649,8 @@ msgstr ""
 msgid "Syntax Highlighting"
 msgstr ""
 
-#: trac/mimeview/pygments.py:139 trac/prefs/web_ui.py:196
+#: trac/mimeview/pygments.py:139 trac/notification/prefs.py:59
+#: trac/prefs/web_ui.py:196
 msgid "Your preferences have been saved."
 msgstr ""
 
@@ -1698,92 +1699,100 @@ msgid ""
 "configuration."
 msgstr ""
 
-#: trac/notification/prefs.py:47
+#: trac/notification/prefs.py:48
 #: trac/notification/templates/prefs_notification.html:20
 msgid "Notifications"
 msgstr ""
 
-#: trac/notification/prefs.py:68
+#: trac/notification/prefs.py:70
 msgid "Notify"
 msgstr ""
 
-#: trac/notification/prefs.py:69
+#: trac/notification/prefs.py:71
 msgid "Never notify"
 msgstr ""
 
-#: trac/notification/templates/prefs_notification.html:28
+#: trac/notification/templates/prefs_notification.html:105
 msgid "Subscriptions"
 msgstr ""
 
-#: trac/notification/templates/prefs_notification.html:35
+#: trac/notification/templates/prefs_notification.html:111
 msgid "Format:"
 msgstr ""
 
-#: trac/notification/templates/prefs_notification.html:45
+#: trac/notification/templates/prefs_notification.html:120
 msgid "Save format"
 msgstr ""
 
-#: trac/notification/templates/prefs_notification.html:45
+#: trac/notification/templates/prefs_notification.html:121
 msgid "Save"
 msgstr ""
 
-#: trac/notification/templates/prefs_notification.html:49
+#: trac/notification/templates/prefs_notification.html:124
 #, python-format
 msgid "Configure the format of your %(distributor)s notifications."
 msgstr ""
 
-#: trac/notification/templates/prefs_notification.html:54
+#: trac/notification/templates/prefs_notification.html:129
 msgid "Subscription rules:"
 msgstr ""
 
-#: trac/notification/templates/prefs_notification.html:55
+#: trac/notification/templates/prefs_notification.html:130
 msgid "Subscription rules"
 msgstr ""
 
-#: trac/notification/templates/prefs_notification.html:61
+#: trac/notification/templates/prefs_notification.html:135
+#: trac/notification/templates/prefs_notification.html:167
 msgid "Move rule up"
 msgstr ""
 
-#: trac/notification/templates/prefs_notification.html:69
+#: trac/notification/templates/prefs_notification.html:142
+#: trac/notification/templates/prefs_notification.html:174
 msgid "Move rule down"
 msgstr ""
 
-#: trac/notification/templates/prefs_notification.html:77
+#: trac/notification/templates/prefs_notification.html:149
+#: trac/notification/templates/prefs_notification.html:181
 msgid "Delete rule"
 msgstr ""
 
-#: trac/notification/templates/prefs_notification.html:102
+#: trac/notification/templates/prefs_notification.html:203
 msgid "Add rule"
 msgstr ""
 
-#: trac/notification/templates/prefs_notification.html:107
+#: trac/notification/templates/prefs_notification.html:207
 #, python-format
 msgid ""
 "Add, remove or reorder subscription rules to %(distributor)s "
 "notifications. Only the first matching rule is applied."
 msgstr ""
 
-#: trac/notification/templates/prefs_notification.html:110
+#: trac/notification/templates/prefs_notification.html:210
 msgid ""
 "Example: The rule [1:\"Never notify: I update a ticket\"] should be above"
 " [2:\"Notify: Any ticket changes\"] to get notifications of any ticket "
 "changes except when you update a ticket."
 msgstr ""
 
-#: trac/notification/templates/prefs_notification.html:116
+#: trac/notification/templates/prefs_notification.html:215
 msgid "Default rules:"
 msgstr ""
 
-#: trac/notification/templates/prefs_notification.html:122
+#: trac/notification/templates/prefs_notification.html:221
 msgid ""
 "These default rules have been configured by the site administrator. "
 "Configure subscription rules to override them."
 msgstr ""
 
-#: trac/notification/templates/prefs_notification.html:125
+#: trac/notification/templates/prefs_notification.html:224
 msgid ""
 "Example: The subscription rule [1:\"Notify: Any ticket changes\"] "
 "overrides the default rule [2:\"Never notify: I update a ticket\"]."
+msgstr ""
+
+#: trac/notification/templates/prefs_notification.html:230
+#: trac/prefs/templates/prefs.html:48
+msgid "Save changes"
 msgstr ""
 
 #: trac/prefs/web_ui.py:54 trac/prefs/templates/prefs.html:26
@@ -1822,10 +1831,6 @@ msgid ""
 "      key stored in a browser cookie. That cookie allows your settings to"
 " be\n"
 "      restored on subsequent visits."
-msgstr ""
-
-#: trac/prefs/templates/prefs.html:48
-msgid "Save changes"
 msgstr ""
 
 #: trac/prefs/templates/prefs_advanced.html:27
