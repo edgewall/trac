@@ -81,7 +81,7 @@ span:target {
 }
 
 /* Forms */
-input, textarea, select { margin: 2px }
+input, textarea, select, .trac-button { margin: 2px }
 /* Avoid respect to system font settings for controls on Firefox, #11607 */
 input, select, button {
  font-family: Arial,Verdana,'Bitstream Vera Sans',Helvetica,sans-serif;
@@ -89,11 +89,11 @@ input, select, button {
 }
 /* Avoid to inherit white-space of its parent element for IE 11, #11376 */
 textarea { white-space: pre-wrap }
-input, select { vertical-align: middle }
+input, select, .trac-button { vertical-align: middle }
 input[type=button], input[type=submit], input[type=reset], button {
  *overflow: visible; /* Workaround too much margin on button in IE7 */
 }
-input[type=button], input[type=submit], input[type=reset] {
+input[type=button], input[type=submit], input[type=reset], .trac-button {
  background: #eee;
  color: #222;
  border: 1px outset #eee;
@@ -103,19 +103,20 @@ input[type=button], input[type=submit], input[type=reset] {
  text-shadow: .1em .1em #ddd;
  cursor: pointer;
 }
-input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
+input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover,
+.trac-button:hover {
  background: #f6f6f6;
  box-shadow: .1em .1em .6em 0 #999;
  text-shadow: .1em .1em #fcfcfc;
 }
-input[type=button]:active, input[type=submit]:active,
-input[type=reset]:active, .inlinebuttons a:active {
+input[type=button]:active, input[type=submit]:active, input[type=reset]:active,
+.trac-button:active, .inlinebuttons a:active {
  position: relative;
  top: .1em;
  left: .1em;
 }
 input[type=button][disabled], input[type=submit][disabled],
-input[type=reset][disabled] {
+input[type=reset][disabled], .trac-button[disabled] {
  background: #f6f6f6;
  border-style: solid;
  color: #999;
@@ -162,6 +163,7 @@ label.disabled, .disabled span.hint, .disabled p.help, .disabled legend,
 .buttons input { margin: 1em .5em .1em 0 }
 
 .inlinebuttons input,
+.inlinebuttons .trac-button,
 .inlinebuttons a {
  border: 1px solid #ddd;
  border-radius: 1em;
@@ -176,11 +178,13 @@ label.disabled, .disabled span.hint, .disabled p.help, .disabled legend,
 }
 .uisymbols .inlinebuttons input[type=button],
 .uisymbols .inlinebuttons input[type=submit],
+.uisymbols .inlinebuttons .trac-button,
 .uisymbols .inlinebuttons a {
  font-size: 100%;
 }
 .inlinebuttons input[type=button]:hover,
 .inlinebuttons input[type=submit]:hover,
+.inlinebuttons .trac-button:hover,
 .inlinebuttons a:hover {
  background: #f6f6f6;
  color: #333;
@@ -188,14 +192,16 @@ label.disabled, .disabled span.hint, .disabled p.help, .disabled legend,
  box-shadow: .1em .1em .6em 0 #999;
 }
 input[type=button].trac-delete,
-input[type=submit].trac-delete {
+input[type=submit].trac-delete,
+.trac-button.trac-delete {
  color: #d31313;
 }
 input[type=button].trac-delete:hover,
-input[type=submit].trac-delete:hover {
+input[type=submit].trac-delete:hover,
+.trac-button.trac-delete:hover {
  color: #e31313;
 }
-textarea.trac-fullwidth, input.trac-fullwidth {
+textarea.trac-fullwidth, input.trac-fullwidth, button.trac-fullwidth {
  -moz-box-sizing: border-box;
  box-sizing: border-box;
  margin-left: 0;
@@ -900,6 +906,9 @@ div.system-message .trac-close-msg:hover {
 #environmentinfo #config tr.modified { background: #ffd; }
 #environmentinfo #config tr.modified td.value { font-style: italic; }
 #environmentinfo #config td.doc { padding: 3px 1em; }
+
+/* Styles for jquery-ui */
+.trac-placeholder { background: #eed }
 
 /* Styles for search word highlighting */
 @media screen {

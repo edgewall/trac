@@ -55,3 +55,7 @@
  box-shadow: .1em .4em .7em 0 #f2f2f2;
  padding: 0.2em .3em .1em;
 }
+
+table.subscription-rules { border-collapse: collapse }
+table.subscription-rules .ui-sortable .rule-label { cursor: move }
+table.subscription-rules .ui-sortable-helper { opacity: 0.2; alpha(opacity=20) }

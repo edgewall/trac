@@ -204,6 +204,25 @@
     }
   };
 
+  var warn_unsaved_changes;
+
+  // Prompt a warning if leaving the page with unsaved changes
+  $.setWarningUnsavedChanges = function(enabled, message) {
+    if (enabled) {
+      if (!warn_unsaved_changes) {
+        $(window).bind("beforeunload", function() {
+          return warn_unsaved_changes;
+        });
+      }
+      warn_unsaved_changes = message || _("You have unsaved changes. Your " +
+        "changes will be lost if you leave this page before saving your " +
+        "changes.");
+    } else {
+      $(window).unbind("beforeunload");
+      warn_unsaved_changes = null;
+    }
+  };
+
   // Escape special HTML characters (&<>")
   var quote = {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"};
 

@@ -116,6 +116,47 @@ class Subscription(object):
                 i += 1
 
     @classmethod
+    def replace_all(cls, env, sid, authenticated, subscriptions):
+        with env.db_transaction as db:
+            ids_map = {}
+            for id_, distributor, class_ in db("""\
+                    SELECT id, distributor, class FROM notify_subscription
+                    WHERE sid=%s AND authenticated=%s""",
+                    (sid, authenticated)):
+                ids_map.setdefault((distributor, class_), []).append(id_)
+            for ids in ids_map.itervalues():
+                ids.sort(reverse=True)
+
+            now = to_utimestamp(datetime.now(utc))
+            for idx, sub in enumerate(subscriptions):
+                key = (sub['distributor'], sub['class'])
+                if ids_map.get(key):
+                    id_ = ids_map[key].pop()
+                    db("""\
+                        UPDATE notify_subscription
+                        SET changetime=%s,distributor=%s,format=%s,priority=%s,
+                            adverb=%s,class=%s
+                        WHERE id=%s""",
+                        (now, sub['distributor'], sub['format'], idx + 1,
+                         sub['adverb'], sub['class'], id_))
+                else:
+                    db("""\
+                        INSERT INTO notify_subscription (
+                            time,changetime,sid,authenticated,distributor,
+                            format,priority,adverb,class)
+                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+                        (now, now, sid, authenticated, sub['distributor'],
+                         sub['format'], idx + 1, sub['adverb'], sub['class']))
+
+            delete_ids = []
+            for ids in ids_map.itervalues():
+                delete_ids.extend(ids)
+            if delete_ids:
+                db("DELETE FROM notify_subscription WHERE id IN (%s)" %
+                   ','.join(('%s',) * len(delete_ids)), delete_ids)
+
+
+    @classmethod
     def update_format_by_distributor_and_sid(cls, env, distributor, sid,
                                              authenticated, format):
         with env.db_transaction as db:

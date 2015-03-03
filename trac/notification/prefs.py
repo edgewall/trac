@@ -23,7 +23,7 @@ from trac.notification.api import (INotificationDistributor,
                                    INotificationSubscriber)
 from trac.notification.model import Subscription
 from trac.prefs.api import IPreferencePanelProvider
-from trac.web.chrome import ITemplateProvider
+from trac.web.chrome import Chrome, ITemplateProvider, add_notice
 from trac.util.translation import _
 
 
@@ -39,7 +39,8 @@ class NotificationPreferences(Component):
             'add-rule': self._add_rule,
             'delete-rule': self._delete_rule,
             'move-rule': self._move_rule,
-            'set-format': self._set_format
+            'set-format': self._set_format,
+            'replace': self._replace_rules,
         }
 
     # IPreferencePanelProvider
@@ -55,6 +56,7 @@ class NotificationPreferences(Component):
                 handler = self.post_handlers.get(action)
                 if handler:
                     handler(arg, req)
+                    add_notice(req, _("Your preferences have been saved."))
             req.redirect(req.href.prefs('notification'))
 
         data = {'rules':{}, 'subscribers':[]}
@@ -81,23 +83,22 @@ class NotificationPreferences(Component):
             if hasattr(i, 'default_subscriptions'):
                 defaults.extend(i.default_subscriptions())
 
-        for distributor in self.distributors:
-            for t in distributor.transports():
-                data['rules'][t] = []
-                styles = [s for f in self.formatters
-                            for s, realm in f.get_supported_styles(t)]
-                data['formatters'][t] = styles
-                data['selected_format'][t] = styles[0]
-                for r in Subscription.find_by_sid_and_distributor(self.env,
-                        req.session.sid, req.session.authenticated, t):
-                    if desc_map.get(r['class']):
-                        data['rules'][t].append({
-                            'id': r['id'],
-                            'adverb': r['adverb'],
-                            'description': desc_map[r['class']],
-                            'priority': r['priority']
-                        })
-                        data['selected_format'][t] = r['format']
+        for t in self._iter_transports():
+            data['rules'][t] = []
+            styles = self._get_supported_styles(t)
+            data['formatters'][t] = styles
+            data['selected_format'][t] = styles[0]
+            for r in Subscription.find_by_sid_and_distributor(self.env,
+                    req.session.sid, req.session.authenticated, t):
+                if desc_map.get(r['class']):
+                    data['rules'][t].append({
+                        'id': r['id'],
+                        'adverb': r['adverb'],
+                        'class': r['class'],
+                        'description': desc_map[r['class']],
+                        'priority': r['priority']
+                    })
+                    data['selected_format'][t] = r['format']
 
         data['default_rules'] = {}
         for r in sorted(defaults, key=itemgetter(3)):
@@ -110,6 +111,7 @@ class NotificationPreferences(Component):
                     'description': desc_map.get(klass)
                 })
 
+        Chrome(self.env).add_jquery_ui(req)
         return 'prefs_notification.html', dict(data=data)
 
     def _add_rule(self, arg, req):
@@ -134,6 +136,43 @@ class NotificationPreferences(Component):
         Subscription.update_format_by_distributor_and_sid(self.env, arg,
                 req.session.sid, req.session.authenticated,
                 req.args['format-%s' % arg])
+
+    def _replace_rules(self, arg, req):
+        subscriptions = []
+        for transport in self._iter_transports():
+            format_ = req.args.getfirst('format-' + transport)
+            styles = self._get_supported_styles(transport)
+            if not styles:
+                format_ = None
+            elif format_ not in styles:
+                format_ = styles[0]
+            adverbs = req.args.getlist('adverb-' + transport)
+            classes = req.args.getlist('class-' + transport)
+            for idx in xrange(min(len(adverbs), len(classes))):
+                subscriptions.append({'distributor': transport,
+                                      'format': format_,
+                                      'adverb': adverbs[idx],
+                                      'class': classes[idx]})
+
+        sid = req.session.sid
+        authenticated = req.session.authenticated
+        with self.env.db_transaction:
+            Subscription.replace_all(self.env, sid, authenticated,
+                                     subscriptions)
+
+    def _iter_transports(self):
+        for distributor in self.distributors:
+            for transport in distributor.transports():
+                yield transport
+
+    def _get_supported_styles(self, transport, realm=None):
+        styles = []
+        seen = set()
+        for formatter in self.formatters:
+            for style, realm_ in formatter.get_supported_styles(transport):
+                if realm is None or realm_ == realm and style not in seen:
+                    styles.append(style)
+        return styles
 
     # ITemplateProvider
     def get_htdocs_dirs(self):
