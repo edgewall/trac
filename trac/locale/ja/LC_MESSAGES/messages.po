@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.1.4\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2015-03-01 08:33+0000\n"
+"POT-Creation-Date: 2015-03-03 02:39+0000\n"
 "PO-Revision-Date: 2011-07-14 21:38+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <trac-dev@googlegroups.com>\n"
@@ -788,7 +788,7 @@ msgstr "%(name)s は有効なアクションではありません。"
 msgid "User"
 msgstr "ユーザ"
 
-#: trac/perm.py:676 trac/admin/templates/admin_perms.html:93
+#: trac/perm.py:676 trac/admin/templates/admin_perms.html:105
 #: trac/ticket/templates/ticket_workflow.html:36
 msgid "Action"
 msgstr "アクション"
@@ -1199,7 +1199,7 @@ msgid "Missing field"
 msgstr "フィールドがありません"
 
 #: trac/admin/web_ui.py:341 trac/admin/templates/admin_perms.html:20
-#: trac/admin/templates/admin_perms.html:90
+#: trac/admin/templates/admin_perms.html:102
 msgid "Permissions"
 msgstr "権限"
 
@@ -1431,28 +1431,28 @@ msgid ""
 "            [1:log] directory of the project environment ([2:%(dir)s])."
 msgstr "相対パスを指定した場合は、プロジェクトの [1:log] ディレクトリに作成します ([2:%(dir)s])。"
 
-#: trac/admin/templates/admin_perms.html:24
+#: trac/admin/templates/admin_perms.html:36
 msgid "Manage Permissions and Groups"
 msgstr "権限とグループの管理"
 
-#: trac/admin/templates/admin_perms.html:29
+#: trac/admin/templates/admin_perms.html:41
 msgid "Grant Permission:"
 msgstr "権限の付与:"
 
-#: trac/admin/templates/admin_perms.html:31
+#: trac/admin/templates/admin_perms.html:43
 msgid "Action:"
 msgstr "アクション:"
 
-#: trac/admin/templates/admin_perms.html:39
-#: trac/admin/templates/admin_perms.html:55
-#: trac/admin/templates/admin_perms.html:74
+#: trac/admin/templates/admin_perms.html:51
+#: trac/admin/templates/admin_perms.html:67
+#: trac/admin/templates/admin_perms.html:86
 msgid "Subject:"
 msgstr "対象:"
 
-#: trac/admin/templates/admin_perms.html:42
-#: trac/admin/templates/admin_perms.html:61
-#: trac/admin/templates/admin_perms.html:80
-#: trac/notification/templates/prefs_notification.html:102
+#: trac/admin/templates/admin_perms.html:54
+#: trac/admin/templates/admin_perms.html:73
+#: trac/admin/templates/admin_perms.html:92
+#: trac/notification/templates/prefs_notification.html:205
 #: trac/ticket/templates/admin_components.html:78
 #: trac/ticket/templates/admin_enums.html:56
 #: trac/ticket/templates/admin_milestones.html:55
@@ -1462,69 +1462,69 @@ msgstr "対象:"
 msgid "Add"
 msgstr "追加"
 
-#: trac/admin/templates/admin_perms.html:44
+#: trac/admin/templates/admin_perms.html:56
 msgid ""
 "Grant permission for an action to a subject, which can be either a user\n"
 "            or a group."
 msgstr "ユーザやグループに権限を付与します。"
 
-#: trac/admin/templates/admin_perms.html:53
+#: trac/admin/templates/admin_perms.html:65
 msgid "Copy Permissions:"
 msgstr "権限のコピー:"
 
-#: trac/admin/templates/admin_perms.html:58
+#: trac/admin/templates/admin_perms.html:70
 msgid "Target:"
 msgstr "目標:"
 
-#: trac/admin/templates/admin_perms.html:63
+#: trac/admin/templates/admin_perms.html:75
 msgid ""
 "Copy all of subject's permissions to target.\n"
 "            Subject and target can be either users or groups."
 msgstr "対象の持つすべての権限を目標にコピーします。対象と目標にはユーザまたはグループが指定できます。"
 
-#: trac/admin/templates/admin_perms.html:72
+#: trac/admin/templates/admin_perms.html:84
 msgid "Add Subject to Group:"
 msgstr "グループの追加:"
 
-#: trac/admin/templates/admin_perms.html:77
+#: trac/admin/templates/admin_perms.html:89
 msgid "Group:"
 msgstr "グループ:"
 
-#: trac/admin/templates/admin_perms.html:82
+#: trac/admin/templates/admin_perms.html:94
 msgid "Add a user or group to an existing permission group."
 msgstr "ユーザやグループを既存の権限グループに追加します。"
 
-#: trac/admin/templates/admin_perms.html:93
-#: trac/admin/templates/admin_perms.html:123
+#: trac/admin/templates/admin_perms.html:105
+#: trac/admin/templates/admin_perms.html:135
 msgid "Subject"
 msgstr "対象"
 
-#: trac/admin/templates/admin_perms.html:104
+#: trac/admin/templates/admin_perms.html:116
 msgid "You don't have permission to revoke this action"
 msgstr "このアクションを無効にする権限を持っていません"
 
-#: trac/admin/templates/admin_perms.html:111
+#: trac/admin/templates/admin_perms.html:123
 #, python-format
 msgid "%(action)s is no longer defined"
 msgstr "%(action)s はすでに定義されていません"
 
-#: trac/admin/templates/admin_perms.html:116
+#: trac/admin/templates/admin_perms.html:128
 msgid "No permissions"
 msgstr "権限なし"
 
-#: trac/admin/templates/admin_perms.html:120
+#: trac/admin/templates/admin_perms.html:132
 msgid "Group Membership"
 msgstr "グループメンバ"
 
-#: trac/admin/templates/admin_perms.html:123
+#: trac/admin/templates/admin_perms.html:135
 msgid "Group"
 msgstr "グループ"
 
-#: trac/admin/templates/admin_perms.html:140
+#: trac/admin/templates/admin_perms.html:152
 msgid "No group memberships"
 msgstr "グループメンバなし"
 
-#: trac/admin/templates/admin_perms.html:144
+#: trac/admin/templates/admin_perms.html:156
 #: trac/ticket/templates/admin_components.html:110
 #: trac/ticket/templates/admin_enums.html:91
 #: trac/ticket/templates/admin_milestones.html:101
@@ -1533,7 +1533,7 @@ msgstr "グループメンバなし"
 msgid "Remove selected items"
 msgstr "選択した項目を削除"
 
-#: trac/admin/templates/admin_perms.html:148
+#: trac/admin/templates/admin_perms.html:160
 msgid ""
 "Note that [1:Subject] or [2:Group] names can't be all upper-case,\n"
 "      as that is reserved for permission names."
@@ -1770,7 +1770,8 @@ msgstr "この hunk は想定より短いようです"
 msgid "Syntax Highlighting"
 msgstr "シンタックスハイライト"
 
-#: trac/mimeview/pygments.py:139 trac/prefs/web_ui.py:196
+#: trac/mimeview/pygments.py:139 trac/notification/prefs.py:59
+#: trac/prefs/web_ui.py:196
 msgid "Your preferences have been saved."
 msgstr "個人設定を保存しました。"
 
@@ -1819,72 +1820,75 @@ msgid ""
 "configuration."
 msgstr "sendmail のエラーです (%(error)s)。設定にある %(option)s を修正してください。"
 
-#: trac/notification/prefs.py:47
+#: trac/notification/prefs.py:48
 #: trac/notification/templates/prefs_notification.html:20
 msgid "Notifications"
 msgstr "通知"
 
-#: trac/notification/prefs.py:68
+#: trac/notification/prefs.py:70
 msgid "Notify"
 msgstr "通知する"
 
-#: trac/notification/prefs.py:69
+#: trac/notification/prefs.py:71
 msgid "Never notify"
 msgstr "通知しない"
 
-#: trac/notification/templates/prefs_notification.html:28
+#: trac/notification/templates/prefs_notification.html:105
 msgid "Subscriptions"
 msgstr "購読"
 
-#: trac/notification/templates/prefs_notification.html:35
+#: trac/notification/templates/prefs_notification.html:111
 msgid "Format:"
 msgstr "フォーマット:"
 
-#: trac/notification/templates/prefs_notification.html:45
+#: trac/notification/templates/prefs_notification.html:120
 msgid "Save format"
 msgstr "フォーマットの保存"
 
-#: trac/notification/templates/prefs_notification.html:45
+#: trac/notification/templates/prefs_notification.html:121
 msgid "Save"
 msgstr "保存"
 
-#: trac/notification/templates/prefs_notification.html:49
+#: trac/notification/templates/prefs_notification.html:124
 #, python-format
 msgid "Configure the format of your %(distributor)s notifications."
 msgstr "%(distributor)s による通知のフォーマットを設定します。"
 
-#: trac/notification/templates/prefs_notification.html:54
+#: trac/notification/templates/prefs_notification.html:129
 msgid "Subscription rules:"
 msgstr "購読ルール:"
 
-#: trac/notification/templates/prefs_notification.html:55
+#: trac/notification/templates/prefs_notification.html:130
 msgid "Subscription rules"
 msgstr "購読ルール"
 
-#: trac/notification/templates/prefs_notification.html:61
+#: trac/notification/templates/prefs_notification.html:135
+#: trac/notification/templates/prefs_notification.html:167
 msgid "Move rule up"
 msgstr "このルールを上に移動"
 
-#: trac/notification/templates/prefs_notification.html:69
+#: trac/notification/templates/prefs_notification.html:142
+#: trac/notification/templates/prefs_notification.html:174
 msgid "Move rule down"
 msgstr "このルールを下に移動"
 
-#: trac/notification/templates/prefs_notification.html:77
+#: trac/notification/templates/prefs_notification.html:149
+#: trac/notification/templates/prefs_notification.html:181
 msgid "Delete rule"
 msgstr "このルールを削除"
 
-#: trac/notification/templates/prefs_notification.html:102
+#: trac/notification/templates/prefs_notification.html:203
 msgid "Add rule"
 msgstr "ルールを追加"
 
-#: trac/notification/templates/prefs_notification.html:107
+#: trac/notification/templates/prefs_notification.html:207
 #, python-format
 msgid ""
 "Add, remove or reorder subscription rules to %(distributor)s "
 "notifications. Only the first matching rule is applied."
 msgstr "%(distributor)s による通知に対する購読ルールの追加、削除、順序変更を行います。最初に該当したルールを適用します。"
 
-#: trac/notification/templates/prefs_notification.html:110
+#: trac/notification/templates/prefs_notification.html:210
 msgid ""
 "Example: The rule [1:\"Never notify: I update a ticket\"] should be above"
 " [2:\"Notify: Any ticket changes\"] to get notifications of any ticket "
@@ -1893,21 +1897,26 @@ msgstr ""
 "例: 自身での更新を除いてすべてのチケット変更を通知するには、[1:「通知しない: 自身によるチケット更新時」]ルールを[2:「通知する: "
 "すべてのチケット更新時」]ルールの上にします。"
 
-#: trac/notification/templates/prefs_notification.html:116
+#: trac/notification/templates/prefs_notification.html:215
 msgid "Default rules:"
 msgstr "デフォルトルール:"
 
-#: trac/notification/templates/prefs_notification.html:122
+#: trac/notification/templates/prefs_notification.html:221
 msgid ""
 "These default rules have been configured by the site administrator. "
 "Configure subscription rules to override them."
 msgstr "管理者がデフォルトルールを設定していますが、上書きするように購読ルールを設定できます。"
 
-#: trac/notification/templates/prefs_notification.html:125
+#: trac/notification/templates/prefs_notification.html:224
 msgid ""
 "Example: The subscription rule [1:\"Notify: Any ticket changes\"] "
 "overrides the default rule [2:\"Never notify: I update a ticket\"]."
 msgstr "例: [1:「通知する: すべてのチケット更新時」]購読ルールはデフォルトルール[2:「通知しない: 自身によるチケット更新時」]を上書きします。"
+
+#: trac/notification/templates/prefs_notification.html:230
+#: trac/prefs/templates/prefs.html:48
+msgid "Save changes"
+msgstr "保存"
 
 #: trac/prefs/web_ui.py:54 trac/prefs/templates/prefs.html:26
 msgid "Preferences"
@@ -1948,10 +1957,6 @@ msgid ""
 msgstr ""
 "このページではこのサイトでの個人向けの設定を行います。\n"
 "設定内容はサーバに保存しブラウザのクッキー情報を用いて管理しているため、次回訪問時にも同じ情報が使われます。"
-
-#: trac/prefs/templates/prefs.html:48
-msgid "Save changes"
-msgstr "保存"
 
 #: trac/prefs/templates/prefs_advanced.html:27
 msgid "Session key:"

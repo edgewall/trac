@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.1.4\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2015-03-01 08:33+0000\n"
+"POT-Creation-Date: 2015-03-03 02:39+0000\n"
 "PO-Revision-Date: 2010-05-25 18:45+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <LL@li.org>\n"
@@ -16,6 +16,10 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
+
+#: trac/admin/templates/admin_perms.html:10
+msgid "Toggle all"
+msgstr "すべて切り替えを行う"
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -181,6 +185,12 @@ msgstr "グループごと切り替えを行う"
 msgid "At least one item must be selected"
 msgstr "最低1つは選択してください"
 
+#: trac/htdocs/js/trac.js:217
+msgid ""
+"You have unsaved changes. Your changes will be lost if you leave this "
+"page before saving your changes."
+msgstr "変更内容を保存していません。保存せずにこのページを抜けると変更内容はなくなります。"
+
 #: trac/htdocs/js/wikitoolbar.js:59
 msgid "Bold text: **Example**"
 msgstr "太字: **例**"
@@ -217,10 +227,15 @@ msgstr "改行: \\\\"
 msgid "Image: [[Image()]]"
 msgstr "画像: [[Image()]]"
 
-#: trac/notification/templates/prefs_notification.html:3
+#: trac/notification/templates/prefs_notification.html:16
 #: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
 msgid "Link to this section"
 msgstr "このセクションににリンクする"
+
+#: trac/notification/templates/prefs_notification.html:57
+#: trac/notification/templates/prefs_notification.html:77
+msgid "Drag rule to reorder"
+msgstr "ドラッグでこのルールの順番を変更する"
 
 #: trac/versioncontrol/templates/changeset.html:7
 msgid "Link to this diff"
