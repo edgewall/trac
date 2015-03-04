@@ -13,6 +13,8 @@
 
 import os
 
+from trac.upgrades import backup_config_file
+
 
 def do_upgrade(env, version, cursor):
     authz_file = env.config.get('authz_policy', 'authz_file')
@@ -20,4 +22,5 @@ def do_upgrade(env, version, cursor):
         parts = os.path.split(authz_file)
         if len(parts) == 2 and parts[0] == 'conf':
             env.config.set('authz_policy', 'authz_file', parts[1])
+            backup_config_file(env, '.db36.bak')
             env.config.save()
