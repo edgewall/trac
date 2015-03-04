@@ -5,7 +5,7 @@ Trac is written in the Python programming language and needs a database, [http:/
 
 Since version 0.12, Trac can also be localized, and there is probably a translation available in your language. If you want to use the Trac interface in other languages, then make sure you have installed the optional package [#OtherPythonPackages Babel]. Pay attention to the extra steps for localization support in the [#InstallingTrac Installing Trac] section below. Lacking Babel, you will only get the default English version.
 
-If you're interested in contributing new translations for other languages or enhance the existing translations, then please have a look at [trac:wiki:TracL10N TracL10N].
+If you're interested in contributing new translations for other languages or enhancing the existing translations, then please have a look at [trac:wiki:TracL10N TracL10N].
 
 What follows are generic instructions for installing and setting up Trac. While you may find instructions for installing Trac on specific systems at [trac:TracInstallPlatforms TracInstallPlatforms] on the main Trac site, please '''first read through these general instructions''' to get a good understanding of the tasks involved.
 
@@ -26,18 +26,7 @@ You also need a database system and the corresponding python bindings. The datab
 
 As you must be using Python 2.5, 2.6 or 2.7, you already have the SQLite database bindings bundled with the standard distribution of Python: the `sqlite3` module.
 
-However, if you like, you can download the latest and greatest version of [[trac:PySqlite]] from 
-[http://code.google.com/p/pysqlite/downloads/list google code], where you'll find the Windows
-installers or the `tar.gz` archive for building from source: 
-{{{#!sh
-$ tar xvfz <version>.tar.gz 
-$ cd <version> 
-$ python setup.py build_static install 
-}}}
- 
-This will download the latest SQLite code and build the bindings. SQLite 2.x is no longer supported.
-
-A known bug in [trac:PySqlite] versions 2.5.2-4 prohibits upgrades of Trac databases from 0.11.x to 0.12. Please use versions 2.5.5 and newer or 2.5.1 and older. See [trac:#9434] for more detail. See additional information in [trac:PySqlite PySqlite].
+Optionally, you may install a newer version of [pypi:pysqlite pysqlite] than the one provided by the Python distribution. See [trac:PySqlite#ThePysqlite2bindings PySqlite] for details.
 
 ==== For the PostgreSQL database #ForPostgreSQL
 
@@ -61,7 +50,7 @@ Given the caveats and known issues surrounding MySQL, read carefully the [trac:M
 ==== Version Control System
 
 ===== Subversion
- * [http://subversion.apache.org/ Subversion], 1.5.x or 1.6.x and the '''''corresponding''''' Python bindings. Older versions starting from 1.0, like 1.2.4, 1.3.2 or 1.4.2, etc. should still work. For troubleshooting information, check the [trac:TracSubversion#Troubleshooting TracSubversion] page.
+ * [http://subversion.apache.org/ Subversion], 1.5.x or later and the '''''corresponding''''' Python bindings. Older versions starting from 1.0, like 1.2.4, 1.3.2 or 1.4.2, etc. may still work. For troubleshooting information, check the [trac:TracSubversion#Troubleshooting TracSubversion] page.
 
 There are [http://subversion.apache.org/packages.html pre-compiled SWIG bindings] available for various platforms. (Good luck finding precompiled SWIG bindings for any Windows package at that listing. [trac:TracSubversion] points you to [http://alagazam.net Alagazam], which works for me under Python 2.6.)
 
@@ -84,6 +73,7 @@ Alternatively you can configure Trac to run in any of the following environments
  * a [http://www.fastcgi.com/ FastCGI]-capable web server (see TracFastCgi)
  * an [http://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html AJP]-capable web
    server (see [trac:TracOnWindowsIisAjp TracOnWindowsIisAjp])
+ * a FastCGI and FastCGI-to-WSGI gateway (see [trac:TracOnWindowsIisWfastcgi])
  * a CGI-capable web server (see TracCgi), '''but usage of Trac as a cgi script 
    is highly discouraged''', better use one of the previous options. 
    
@@ -124,6 +114,8 @@ A few examples:
    Note that in this case you won't have the possibility to run a localized version of Trac;
    either use a released version or install from source 
 
+More information can be found on the [trac:setuptools] page.
+
 {{{#!div style="border: 1pt dotted; margin: 1em"
 **Setuptools Warning:** If the version of your setuptools is in the range 5.4 through 5.6, the environment variable `PKG_RESOURCES_CACHE_ZIP_MANIFESTS` must be set in order to avoid significant performance degradation. More information may be found in the sections on [#RunningtheStandaloneServer Running The Standalone Server] and [#RunningTraconaWebServer Running Trac on a Web Server]. 
 }}}
@@ -153,7 +145,7 @@ All commands (`tracd`, `trac-admin`) are available in `/opt/user/trac/bin`. This
 Additionally, you can install several Trac plugins (listed [https://pypi.python.org/pypi?:action=browse&show=all&c=516 here]) through pip.
 
 === From source
-Of course, using the python-typical setup at the top of the source directory also works. You can obtain the source for a .tar.gz or .zip file corresponding to a release (e.g. `Trac-1.0.tar.gz`), or you can get the source directly from the repository. See [trac:SubversionRepository] for details.
+Of course, using the python-typical setup at the top of the source directory also works. You can obtain the source for a .tar.gz or .zip file corresponding to a release (e.g. `Trac-1.0.tar.gz`) from the [trac:TracDownload] page, or you can get the source directly from the repository. See [trac:SubversionRepository] for details.
 
 {{{#!sh
 $ python ./setup.py install
@@ -355,7 +347,7 @@ Please refer to one of the following sections:
  * [wiki:TracModWSGI#ConfiguringAuthentication TracModWSGI#ConfiguringAuthentication] if you use the Apache web server, with any of its front end: `mod_wsgi` of course, but the same instructions applies also for `mod_python`, `mod_fcgi` or `mod_fastcgi`.
  * TracFastCgi if you're using another web server with FCGI support (Cherokee, Lighttpd, !LiteSpeed, nginx)
 
-The following document also constains some useful information for beginners: [trac:TracAuthenticationIntroduction].
+The following document also contains some useful information for beginners: [trac:TracAuthenticationIntroduction].
 
 == Granting admin rights to the admin user
 Grant admin rights to user admin:

@@ -1,6 +1,6 @@
-= The Trac Configuration File =
+= The Trac Configuration File
 
- ''[Note To Editors] Please discuss documentation changes in the [#Discussion] section. Even better, send us [trac:TracDev/SubmittingPatches documentation patches] against the ''code'' (i.e. where the configuration entries are documented), either on Trac-dev or on new tickets. ''
+'''[Note To Editors]''' Please discuss documentation changes in the [#Discussion] section. Even better, send us [trac:TracDev/SubmittingPatches documentation patches] against the ''code'', ie where the configuration entries are documented, either on Trac-dev or on new tickets.
 
 [[TracGuideToc]]
 [[PageOutline]]
@@ -9,7 +9,7 @@ Trac configuration is done by editing the '''`trac.ini`''' config file, located 
 
 The `trac.ini` configuration file and its parent directory should be writable by the web server, as Trac currently relies on the possibility to trigger a complete environment reload to flush its caches.
 
-== Global Configuration ==
+== Global Configuration
 
 In versions prior to 0.11, the global configuration was by default located in `$prefix/share/trac/conf/trac.ini` or `/etc/trac/trac.ini`, depending on the distribution. If you're upgrading, you may want to specify that file to inherit from.  Literally, when you're upgrading to 0.11, you have to add an `[inherit]` section to your project's `trac.ini` file. Additionally, you have to move your customized templates and common images from `$prefix/share/trac/...` to the new location.
 
@@ -24,7 +24,7 @@ Note that you can also specify a global option file when creating a new project,
 
 There are two more entries in the [[#inherit-section| [inherit] ]] section, `templates_dir` for sharing global templates and `plugins_dir`, for sharing plugins. Those entries can themselves be specified in the shared configuration file, and in fact, configuration files can even be chained if you specify another `[inherit] file` there.
 
-Note that the templates found in the `templates/` directory of the TracEnvironment have precedence over those found in `[inherit] templates_dir`. In turn, the latter have precedence over the installed templates, so be careful about what you put there, notably if you override a default template be sure to refresh your modifications when you upgrade to a new version of Trac (the preferred way to perform TracInterfaceCustomization being still to write a custom plugin doing an appropriate `ITemplateStreamFilter` transformation).
+Note that the templates found in the `templates/` directory of the TracEnvironment have precedence over those found in `[inherit] templates_dir`. In turn, the latter have precedence over the installed templates, so be careful about what you put there. Notably, if you override a default template, refresh your modifications when you upgrade to a new version of Trac. The preferred way to perform TracInterfaceCustomization is still to write a custom plugin doing an appropriate `ITemplateStreamFilter` transformation.
 
 == Reference for settings
 
@@ -42,9 +42,9 @@ Please don't waste your time by editing the HTML code below, changes won't be pi
 }}}
 [[TracIni]]
 
-== Discussion == 
-''Please discuss documentation changes here. Even better, send us documentation patches against the code, either on Trac-dev or on new tickets.'' 
+== Discussion
 
+Please discuss documentation changes here. Even better, send us documentation patches against the code, either on Trac-dev or on new tickets.
 
 ----
 See also: TracGuide, TracAdmin, TracEnvironment

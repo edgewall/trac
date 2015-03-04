@@ -7,6 +7,21 @@ To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 == 1.0.x Releases ==
 
+== 1.0.5
+
+//(TBD)//
+
+Trac 1.0.5 provides several fixes. The following are some highlights:
+
+ - Images are not rendered in the timeline ([trac:#10751]).
+ - Hashes are supported in revision log and changeset TracLinks ([trac:#11050]).
+ - Git tags are shown in the browser view ([trac:#11964]).
+ - Added support for `journal_mode` and `synchronous` pragmas in `sqlite:` database connection string ([trac:#11967]).
+
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.5]].
+
+[trac:source:/tags/trac-1.0.5 View Tag] | [trac:milestone:1.0.5 View Milestone]
+
 == 1.0.4
 
 //(February 8, 2015)//
@@ -16,7 +31,7 @@ Trac 1.0.4 contains a few fixes, including a fix for a regression in 1.0.3.
  - Workflow action labels were not displayed unless name attribute
    was explicitly defined ([trac:#11930]).
 
-See the detailed release notes for [[trac:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.4]].
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.4]].
 
 [trac:source:/tags/trac-1.0.4 View Tag] | [trac:milestone:1.0.4 View Milestone]
 
@@ -43,7 +58,7 @@ The following list contains only a few highlights:
    About page ([trac:#11877]).
  - … and more than 3 dozen total fixes!
 
-See the detailed release notes for [[trac:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.3]].
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.3]].
 
 [trac:source:/tags/trac-1.0.3 View Tag] | [trac:milestone:1.0.3 View Milestone]
 
@@ -72,7 +87,7 @@ The following list contains only a few highlights:
  - Numerous minor fixes for Git repository support.
  - … and more than a hundred more fixes!
 
-See the detailed release notes for [[trac:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.2]] and [[trac:TracDev/ReleaseNotes/0.12#MaintenanceReleases | 0.12.6]] (as 1.0.2 contains all the fixes done for 0.12.6).
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.2]] and [[trac:wiki:TracDev/ReleaseNotes/0.12#MaintenanceReleases | 0.12.6]] (as 1.0.2 contains all the fixes done for 0.12.6).
 
 [trac:source:/tags/trac-1.0.2 View Tag] | [trac:milestone:1.0.2 View Milestone]
 
@@ -94,7 +109,7 @@ The following list contains only a few highlights:
  - The !BatchModify select-all checkboxes are toggled with tri-state behavior when the ticket checkboxes are toggled ([trac:#10992])
  - Update the ticket changetime to the current time when deleting a ticket comment ([trac:#10486])
 
-See the detailed release notes for [[trac:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.1]] and [[trac:TracDev/ReleaseNotes/0.12#MaintenanceReleases | 0.12.5]] (as 1.0.1 contains all the fixes done for 0.12.5).
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.1]] and [[trac:wiki:TracDev/ReleaseNotes/0.12#MaintenanceReleases | 0.12.5]] (as 1.0.1 contains all the fixes done for 0.12.5).
 
 [trac:source:/tags/trac-1.0.1 View Tag] | [trac:milestone:1.0.1 View Milestone]
 
@@ -116,7 +131,7 @@ The following list contains only a few highlights:
  - Improved integration with Pygments syntax highlighting
  - ... and numerous smaller features added and bugs fixed since 0.12!
 
-See the full list in [trac:TracDev/ReleaseNotes/1.0].
+See the full list in [trac:wiki:TracDev/ReleaseNotes/1.0 1.0].
 
 [[trac:source:/tags/trac-1.0 View Tag]] | [[trac:milestone:1.0 View Milestone]]
 
@@ -140,7 +155,7 @@ Trac 0.12.6 contains fixes for a few issues:
  - Added support for `ConfigObj` 5.0 and later ([trac:#11498]).
  - … and dozens more fixes!
 
-See the detailed release notes for [[trac:TracDev/ReleaseNotes/0.12#MaintenanceReleases | 0.12.6]].
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/0.12#MaintenanceReleases | 0.12.6]].
 
 [trac:source:/tags/trac-0.12.6 View Tag] | [trac:milestone:0.12.6 View Milestone]
 

@@ -1,26 +1,25 @@
-= Trac with FastCGI =
+= Trac with FastCGI
+
 [[TracGuideToc]]
 [[PageOutline(2-5, Contents, floated)]]
 
 [http://www.fastcgi.com/ FastCGI] interface allows Trac to remain resident much like with [wiki:TracModPython mod_python] or [wiki:TracModWSGI mod_wsgi]. It is faster than external CGI interfaces which must start a new process for each request.  Additionally, it is supported by much wider variety of web servers.
 
-Note that unlike mod_python, FastCGI supports [http://httpd.apache.org/docs/suexec.html Apache SuEXEC], i.e. run with different permissions than web server running with (`mod_wsgi` supports the `WSGIDaemonProcess` with user / group parameters to achieve the same effect).
+Note that unlike mod_python, FastCGI supports [http://httpd.apache.org/docs/suexec.html Apache SuEXEC], ie run with different permissions than the web server runs with. `mod_wsgi` supports the `WSGIDaemonProcess` with user / group parameters to achieve the same effect.
 
 '''Note for Windows:''' Trac's FastCGI does not run under Windows, as Windows does not implement `Socket.fromfd`, which is used by `_fcgi.py`. If you want to connect to IIS, you may want to try [trac:TracOnWindowsIisAjp AJP]/[trac:TracOnWindowsIisAjp ISAPI].
 
-[[PageOutline(2-3,Overview,inline)]]
-
-
-== Simple Apache configuration ==
+== Simple Apache configuration
 
 There are two FastCGI modules commonly available for Apache: `mod_fastcgi` and
 `mod_fcgid` (preferred). The latter is more up-to-date.
 
 The following sections focus on the FCGI specific setup, see also [wiki:TracModWSGI#ConfiguringAuthentication] for configuring the authentication in Apache.
 
-Regardless of which cgi module is used, be sure the web server has executable permissions on the cgi-bin folder. While FastCGI will throw specific permissions errors, mod_fcgid will throw an ambiguous error if this has not been done. (Connection reset by peer: mod_fcgid: error reading data from FastCGI server) 
+Regardless of which cgi module is used, be sure the web server has executable permissions on the cgi-bin folder. While FastCGI will throw specific permissions errors, mod_fcgid will throw an ambiguous error if this has not been done. Connection reset by peer: mod_fcgid: error reading data from FastCGI server.
 
-=== Set up with `mod_fastcgi` ===
+=== Set up with `mod_fastcgi`
+
 `mod_fastcgi` uses `FastCgiIpcDir` and `FastCgiConfig` directives that should be added to an appropriate Apache configuration file:
 {{{
 # Enable fastcgi for .fcgi files
@@ -47,50 +46,45 @@ Alternatively, you can serve multiple Trac projects in a directory by adding thi
 FastCgiConfig -initial-env TRAC_ENV_PARENT_DIR=/parent/dir/of/projects
 }}}
 
-=== Set up with `mod_fcgid` ===
-Configure `ScriptAlias` (see TracCgi for details), but call `trac.fcgi`
-instead of `trac.cgi`. Note that slash at the end - it is important.
+=== Set up with `mod_fcgid`
+
+Configure `ScriptAlias` (see TracCgi for details), but call `trac.fcgi` instead of `trac.cgi`:
 {{{
 ScriptAlias /trac /path/to/www/trac/cgi-bin/trac.fcgi/
 }}}
+Note the slash at the end.
 
-To set up Trac environment for `mod_fcgid` it is necessary to use
-`DefaultInitEnv` directive. It cannot be used in `Directory` or
-`Location` context, so if you need to support multiple projects, try
-alternative environment setup below.
+To set up Trac environment for `mod_fcgid` it is necessary to use `DefaultInitEnv` directive. It cannot be used in `Directory` or `Location` context, so if you need to support multiple projects, try alternative environment setup below.
 
 {{{
 DefaultInitEnv TRAC_ENV /path/to/env/trac/
 }}}
 
-=== alternative environment setup ===
-A better method to specify path to Trac environment is to embed the path
-into `trac.fcgi` script itself. That doesn't require configuration of server
-environment variables, works for both [trac:FastCgi] modules
-(and for [http://www.lighttpd.net/ lighttpd] and CGI as well):
+=== alternative environment setup
+
+A better method to specify path to the Trac environment is to embed the path into `trac.fcgi` script itself. That doesn't require configuration of the server environment variables, works for both [trac:FastCgi] modules as well as for [http://www.lighttpd.net/ lighttpd] and CGI:
 {{{
 import os
 os.environ['TRAC_ENV'] = "/path/to/projectenv"
 }}}
-or
+or:
 {{{
 import os
 os.environ['TRAC_ENV_PARENT_DIR'] = "/path/to/project/parent/dir"
 }}}
 
-With this method different projects can be supported by using different
-`.fcgi` scripts with different `ScriptAliases`.
+With this method different projects can be supported by using different `.fcgi` scripts with different `ScriptAliases`.
 
 See [https://coderanger.net/~coderanger/httpd/fcgi_example.conf this fcgid example config] which uses a !ScriptAlias directive with trac.fcgi with a trailing / like this:
 {{{
 ScriptAlias / /srv/tracsite/cgi-bin/trac.fcgi/
 }}}
 
-== Simple Cherokee Configuration ==
+== Simple Cherokee Configuration
 
 The configuration on Cherokee's side is quite simple. You will only need to know that you can spawn Trac as an SCGI process.
 You can either start it manually, or better yet, automatically by letting Cherokee spawn the server whenever it is down.
-First set up an information source in cherokee-admin with a local interpreter.
+First set up an information source in cherokee-admin with a local interpreter:
 
 {{{
 Host:
@@ -112,15 +106,13 @@ Python-flup is a dependency which provides trac with SCGI capability. You can in
 sudo apt-get install python-flup
 }}}
 
+== Simple Lighttpd Configuration
 
-== Simple Lighttpd Configuration ==
+The FastCGI front-end was developed primarily for use with alternative webservers, such as [http://www.lighttpd.net/ Lighttpd].
 
-The FastCGI front-end was developed primarily for use with alternative webservers, such as [http://www.lighttpd.net/ lighttpd].
+Lighttpd is a secure, fast, compliant and very flexible web-server that has been optimized for high-performance environments. It has a very low memory footprint compared to other web servers and takes care of CPU load.
 
-lighttpd is a secure, fast, compliant and very flexible web-server that has been optimized for high-performance
-environments.  It has a very low memory footprint compared to other web servers and takes care of CPU load.
-
-For using `trac.fcgi`(prior to 0.11) / fcgi_frontend.py (0.11) with lighttpd add the following to your lighttpd.conf:
+For using `trac.fcgi`(prior to 0.11) / fcgi_frontend.py (0.11) with Lighttpd add the following to your lighttpd.conf:
 {{{
 #var.fcgi_binary="/usr/bin/python /path/to/fcgi_frontend.py" # 0.11 if installed with easy_setup, it is inside the egg directory
 var.fcgi_binary="/path/to/cgi-bin/trac.fcgi" # 0.10 name of prior fcgi executable
@@ -137,11 +129,9 @@ fastcgi.server = ("/trac" =>
                  )
 }}}
 
-Note that you will need to add a new entry to `fastcgi.server` for each separate Trac instance that you wish to run. Alternatively, you may use the `TRAC_ENV_PARENT_DIR` variable instead of `TRAC_ENV` as described above,
-and you may set one of the two in `trac.fcgi` instead of in `lighttpd.conf`
-using `bin-environment` (as in the section above on Apache configuration).
+Note that you will need to add a new entry to `fastcgi.server` for each separate Trac instance that you wish to run. Alternatively, you may use the `TRAC_ENV_PARENT_DIR` variable instead of `TRAC_ENV` as described above, and you may set one of the two in `trac.fcgi` instead of in `lighttpd.conf` using `bin-environment`, as in the section above on Apache configuration.
 
-Note that lighttpd has a bug related to 'SCRIPT_NAME' and 'PATH_INFO' when the uri of fastcgi.server is '/' instead of '/trac' in this example (see [trac:#2418]). This is fixed in lighttpd 1.5, and under lighttpd 1.4.23 or later the workaround is to add `"fix-root-scriptname" => "enable"` as a parameter of fastcgi.server.
+Note that Lighttpd has a bug related to 'SCRIPT_NAME' and 'PATH_INFO' when the uri of fastcgi.server is '/' instead of '/trac' in this example (see [trac:#2418]). This is fixed in Lighttpd 1.5, and under Lighttpd 1.4.23 or later the workaround is to add `"fix-root-scriptname" => "enable"` as a parameter of fastcgi.server.
 
 For using two projects with lighttpd add the following to your `lighttpd.conf`:
 {{{
@@ -165,11 +155,9 @@ fastcgi.server = ("/first" =>
                   )
                 )
 }}}
-Note that field values are different.  If you prefer setting the environment
-variables in the `.fcgi` scripts, then copy/rename `trac.fcgi`, e.g., to
-`first.fcgi` and `second.fcgi`, and reference them in the above settings.
-Note that the above will result in different processes in any event, even
-if both are running from the same `trac.fcgi` script.
+
+Note that field values are different. If you prefer setting the environment variables in the `.fcgi` scripts, then copy/rename `trac.fcgi`, eg to `first.fcgi` and `second.fcgi`, and reference them in the above settings.
+Note that the above will result in different processes in any event, even if both are running from the same `trac.fcgi` script.
 
 {{{
 #!div class=important
@@ -212,13 +200,12 @@ auth.require = ("/first/login" =>
                 )
                )
 
-
 }}}
-Note that lighttpd (I use version 1.4.3) stopped if password file doesn't exist.
+Note that Lighttpd (v1.4.3) stops if the password file doesn't exist.
 
-Note that lighttpd doesn't support 'valid-user' in versions prior to 1.3.16.
+Note that Lighttpd doesn't support 'valid-user' in versions prior to 1.3.16.
 
-Conditional configuration is also useful for mapping static resources, i.e. serving out images and CSS directly instead of through FastCGI:
+Conditional configuration is also useful for mapping static resources, ie serving out images and CSS directly instead of through FastCGI:
 {{{
 # Aliasing functionality is needed
 server.modules += ("mod_alias")
@@ -242,6 +229,7 @@ fastcgi.server = ("/trac" =>
                  )
 }
 }}}
+
 The technique can be easily adapted for use with multiple projects by creating aliases for each of them, and wrapping the fastcgi.server declarations inside conditional configuration blocks.
 Also there is another way to handle multiple projects and it's to use TRAC_ENV_PARENT_DIR instead of TRAC_ENV and use global auth, let's see an example:
 {{{
@@ -273,7 +261,7 @@ Also there is another way to handle multiple projects and it's to use TRAC_ENV_P
   }
 }}}
 
-Changing date/time format also supported by lighttpd over environment variable LC_TIME
+Changing date/time format also supported by lighttpd over environment variable LC_TIME:
 {{{
 fastcgi.server = ("/trac" =>
                    ("trac" =>
@@ -292,29 +280,24 @@ For details about languages specification see [trac:TracFaq TracFaq] question 2.
 Other important information like the [wiki:TracInstall#MappingStaticResources mapping static resources advices] are useful for non-fastcgi specific installation aspects.
 ]
 
-Relaunch lighttpd, and browse to `http://yourhost.example.org/trac` to access Trac.
+Relaunch Lighttpd and browse to `http://yourhost.example.org/trac` to access Trac.
 
-Note about running lighttpd with reduced permissions:
+Note about running Lighttpd with reduced permissions: If nothing else helps and trac.fcgi doesn't start with Lighttpd settings `server.username = "www-data"`, `server.groupname = "www-data"`, then in the `bin-environment` section set `PYTHON_EGG_CACHE` to the home directory of `www-data` or some other directory accessible to this account for writing.
 
-If nothing else helps and trac.fcgi doesn't start with lighttpd settings `server.username = "www-data"`, `server.groupname = "www-data"`, then in the `bin-environment` section set `PYTHON_EGG_CACHE` to the home directory of `www-data` or some other directory accessible to this account for writing.
-
-
-== Simple !LiteSpeed Configuration ==
+== Simple !LiteSpeed Configuration
 
 The FastCGI front-end was developed primarily for use with alternative webservers, such as [http://www.litespeedtech.com/ LiteSpeed].
 
 !LiteSpeed web server is an event-driven asynchronous Apache replacement designed from the ground-up to be secure, scalable, and operate with minimal resources. !LiteSpeed can operate directly from an Apache config file and is targeted for business-critical environments.
 
- 1. Please make sure you have first have a working install of a Trac project. Test install with “tracd” first.
+ 1. Please make sure you have a working install of a Trac project. Test install with "tracd" first.
 
- 2. Create a Virtual Host for this setup. From now on we will refer to this vhost as !TracVhost. For this tutorial we will be assuming that your trac project will be accessible via:
-
+ 2. Create a Virtual Host for this setup. From now on we will refer to this vhost as !TracVhost. For this tutorial we will be assuming that your Trac project will be accessible via:
 {{{
 http://yourdomain.com/trac/
 }}}
 
- 3. Go “!TracVhost → External Apps” tab and create a new “External Application”.
-
+ 3. Go "!TracVhost → External Apps" tab and create a new "External Application".
 {{{
 Name: MyTracFCGI	
 Address: uds://tmp/lshttpd/mytracfcgi.sock
@@ -331,7 +314,7 @@ Back Log: 50
 Instances: 10
 }}}
 
- 4. Optional. If you need to use htpasswd based authentication. Go to “!TracVhost → Security” tab and create a new security “Realm”.
+ 4. Optional: If you need to use htpasswd based authentication. Go to "!TracVhost → Security" tab and create a new security Realm.
 
 {{{
 DB Type: Password File
@@ -341,7 +324,7 @@ User DB Location: /fullpathto/htpasswd <--- path to your htpasswd file
 
 If you don’t have a htpasswd file or don’t know how to create the entries within one, go to http://sherylcanter.com/encrypt.php, to generate the user:password combos.
 
- 5. Go to “!PythonVhost → Contexts” and create a new “FCGI Context”.
+ 5. Go to "!PythonVhost → Contexts" and create a new FCGI Context.
 
 {{{
 URI: /trac/                              <--- URI path to bind to python fcgi app we created	
@@ -364,8 +347,7 @@ link = http://yourdomain.com/trac/     <--- link of graphic logo
 http://yourdomain.com/trac/
 }}}
 
-
-== Simple Nginx Configuration ==
+== Simple Nginx Configuration
 
 Nginx is able to communicate with FastCGI processes, but can not spawn them. So you need to start FastCGI server for Trac separately.
 
@@ -470,7 +452,7 @@ trac@trac.example ~ $ ./trac-standalone-fcgi.py
 }}}
 
 The above assumes that:
- * There is a user named 'trac' for running trac instances and keeping trac environments in its home directory.
+ * There is a user named 'trac' for running trac instances and keeping trac environments in its home directory
  * `/home/trac/instance` contains a trac environment
  * `/home/trac/htpasswd` contains authentication information
  * `/home/trac/run` is owned by the same group the nginx runs under
@@ -478,11 +460,11 @@ The above assumes that:
   * and patch from ticket #T7239 is applied, or you'll have to fix the socket file permissions every time
 
 Unfortunately nginx does not support variable expansion in fastcgi_pass directive. 
-Thus it is not possible to serve multiple trac instances from one server block. 
+Thus it is not possible to serve multiple Trac instances from one server block. 
 
-If you worry enough about security, run trac instances under separate users. 
+If you worry enough about security, run Trac instances under separate users. 
 
-Another way to run trac as a FCGI external application is offered in ticket #T6224
+Another way to run Trac as a FCGI external application is offered in ticket #T6224
 
 ----
 See also:  TracGuide, TracInstall, [wiki:TracModWSGI ModWSGI], [wiki:TracCgi CGI], [wiki:TracModPython ModPython], [trac:TracNginxRecipe TracNginxRecipe]
