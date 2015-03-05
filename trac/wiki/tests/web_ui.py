@@ -60,7 +60,7 @@ class ReadonlyWikiPolicyTestCase(unittest.TestCase):
 
 
 def suite():
-    return unittest.makeSuite(ReadonlyWikiPolicyTestCase, 'test')
+    return unittest.makeSuite(ReadonlyWikiPolicyTestCase)
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')
