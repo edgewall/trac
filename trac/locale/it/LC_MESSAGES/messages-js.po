@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
-"POT-Creation-Date: 2015-03-01 08:33+0000\n"
-"PO-Revision-Date: 2014-11-28 08:53+0100\n"
+"POT-Creation-Date: 2015-03-03 02:39+0000\n"
+"PO-Revision-Date: 2015-03-08 12:08+0100\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
 "Language-Team: Italian "
 "(http://www.transifex.com/projects/p/trac/language/it/)\n"
@@ -18,6 +18,10 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
+
+#: trac/admin/templates/admin_perms.html:10
+msgid "Toggle all"
+msgstr "Seleziona/deseleziona tutti"
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -183,6 +187,14 @@ msgstr "Inverti la selezione del gruppo"
 msgid "At least one item must be selected"
 msgstr "Devi selezionare almeno una voce"
 
+#: trac/htdocs/js/trac.js:217
+msgid ""
+"You have unsaved changes. Your changes will be lost if you leave this "
+"page before saving your changes."
+msgstr ""
+"Ci sono delle modifiche non confermate, che verranno perse se lasci "
+"questa pagina prima di confermarle."
+
 #: trac/htdocs/js/wikitoolbar.js:59
 msgid "Bold text: **Example**"
 msgstr "Testo in grassetto: **Esempio**"
@@ -219,10 +231,15 @@ msgstr "A capo: \\\\"
 msgid "Image: [[Image()]]"
 msgstr "Immagine: [[Image()]]"
 
-#: trac/notification/templates/prefs_notification.html:3
+#: trac/notification/templates/prefs_notification.html:16
 #: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
 msgid "Link to this section"
 msgstr "Collegamento a questa sezione"
+
+#: trac/notification/templates/prefs_notification.html:57
+#: trac/notification/templates/prefs_notification.html:77
+msgid "Drag rule to reorder"
+msgstr "Trascina la regola per cambiarne l'ordine"
 
 #: trac/versioncontrol/templates/changeset.html:7
 msgid "Link to this diff"
