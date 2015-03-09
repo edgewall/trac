@@ -963,12 +963,14 @@ class Storage(object):
             except KeyError:
                 next_path[:] = [path]
                 return gen.next()
-        yield historian
 
-        if p:
-            p[0].stdout.close()
-            terminate(p[0])
-            p[0].wait()
+        try:
+            yield historian
+        finally:
+            if p:
+                p[0].stdout.close()
+                terminate(p[0])
+                p[0].wait()
 
     def last_change(self, sha, path, historian=None):
         if historian is not None:
