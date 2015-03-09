@@ -306,8 +306,7 @@ ${value}</textarea>
             </fieldset>
 
             <!--! Workflow support -->
-            <xi:include href="ticket_workflow.html"
-                        py:with="hidden = not can_append and not can_modify" />
+            <xi:include href="ticket_workflow.html" py:with="hidden = not can_append" />
           </div>
         </div>
 
