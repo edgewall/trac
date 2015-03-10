@@ -17,7 +17,7 @@ To install Trac, the following software packages must be installed:
 
  * [http://www.python.org/ Python], version >= 2.5 and < 3.0
    (note that we dropped the support for Python 2.4 in this release)
- * [http://peak.telecommunity.com/DevCenter/setuptools setuptools], version >= 0.6
+ * [http://pypi.python.org/pypi/setuptools setuptools], version >= 0.6
  * [http://genshi.edgewall.org/wiki/Download Genshi], version >= 0.6
 
 You also need a database system and the corresponding python bindings. The database can be either SQLite, PostgreSQL or MySQL.
@@ -58,9 +58,14 @@ Note that Trac '''doesn't''' use [http://pysvn.tigris.org/ PySVN], neither does 
 
 '''Please note:''' if using Subversion, Trac must be installed on the '''same machine'''. Remote repositories are currently [trac:ticket:493 not supported].
 
+===== Git
+ * [http://git-scm.com/ Git] 1.5.6 or later.
+
+More information is available on the [trac:TracGit] page.
+
 ===== Others 
 
-Support for other version control systems is provided via third-parties. See [trac:PluginList] and [trac:VersionControlSystem].
+Support for other version control systems is provided via third-parties. See [trac:PluginList#VersionControlSystems] and [trac:VersionControlSystem].
 
 ==== Web Server
 A web server is optional because Trac is shipped with a server included, see the [#RunningtheStandaloneServer Running the Standalone Server] section below.
@@ -93,13 +98,18 @@ Alternatively you can configure Trac to run in any of the following environments
    otherwise Trac will fall back on a shorter list from 
    an internal time zone implementation.
 
-'''Attention''': The available versions of these dependencies are not necessarily interchangeable, so please pay attention to the version numbers. If you are having trouble getting Trac to work, please double-check all the dependencies before asking for help on the [trac:MailingList] or [trac:IrcChannel].
+{{{#!div style="border: 1pt dotted; margin: 1em"
+**Attention**: The available versions of these dependencies are not necessarily interchangeable, so please pay attention to the version numbers. If you are having trouble getting Trac to work, please double-check all the dependencies before asking for help on the [trac:MailingList] or [trac:IrcChannel].
+}}}
 
-Please refer to the documentation of these packages to find out how they are best installed. In addition, most of the [trac:TracInstallPlatforms platform-specific instructions] also describe the installation of the dependencies. Keep in mind however that the information there ''probably concern older versions of Trac than the one you're installing''. There are even some pages that are still talking about Trac 0.8!
+Please refer to the documentation of these packages to find out how they are best installed. In addition, most of the [trac:TracInstallPlatforms platform-specific instructions] also describe the installation of the dependencies. Keep in mind however that the information there ''probably concern older versions of Trac than the one you're installing''.
 
 == Installing Trac
+
+The [TracAdmin trac-admin] command-line tool, used to create and maintain [TracEnvironment project environments], as well as the [wiki:TracStandalone tracd] standalone server are installed are installed along with Trac. There are several methods for installing Trac.
+
 === Using `easy_install`
-One way to install Trac is using [http://pypi.python.org/pypi/setuptools setuptools]. With setuptools you can install Trac from the Subversion repository.
+Trac can be installed from PyPI or the Subversion repository using [http://pypi.python.org/pypi/setuptools setuptools].
 
 A few examples:
 
@@ -138,14 +148,14 @@ pip install trac mysql-python
 
 Make sure your OS specific headers are available for pip to automatically build PostgreSQL (`libpq-dev`) or MySQL (`libmysqlclient-dev`) bindings.
 
-pip will automatically resolve all dependencies (like Genshi, pygments, etc.) and download the latest packages on pypi.python.org and create a self contained installation in `/opt/user/trac`.
+pip will automatically resolve all dependencies (like Genshi, pygments, etc.), download the latest packages from pypi.python.org and create a self contained installation in `/opt/user/trac`.
 
 All commands (`tracd`, `trac-admin`) are available in `/opt/user/trac/bin`. This can also be leveraged for `mod_python` (using `PythonHandler` directive) and `mod_wsgi` (using `WSGIDaemonProcess` directive)
 
 Additionally, you can install several Trac plugins (listed [https://pypi.python.org/pypi?:action=browse&show=all&c=516 here]) through pip.
 
 === From source
-Of course, using the python-typical setup at the top of the source directory also works. You can obtain the source for a .tar.gz or .zip file corresponding to a release (e.g. `Trac-1.0.tar.gz`) from the [trac:TracDownload] page, or you can get the source directly from the repository. See [trac:SubversionRepository] for details.
+Using the python-typical setup at the top of the source directory also works. You can obtain the source for a .tar.gz or .zip file corresponding to a release (e.g. `Trac-1.0.tar.gz`) from the [trac:TracDownload] page, or you can get the source directly from the repository. See [trac:TracRepositories#OfficialSubversionrepository TracRepositories] for details.
 
 {{{#!sh
 $ python ./setup.py install
@@ -156,15 +166,21 @@ $ python ./setup.py install
 This will byte-compile the Python source code and install it as an .egg file or folder in the `site-packages` directory
 of your Python installation. The .egg will also contain all other resources needed by standard Trac, such as `htdocs` and `templates`.
 
-The script will also install the [wiki:TracAdmin trac-admin] command-line tool, used to create and maintain [wiki:TracEnvironment project environments], as well as the [wiki:TracStandalone tracd] standalone server.
-
 If you install from source and want to make Trac available in other languages, make sure Babel is installed. Only then, perform the `install` (or simply redo the `install` once again afterwards if you realize Babel was not yet installed):
 {{{#!sh
 $ python ./setup.py install
 }}}
 Alternatively, you can run `bdist_egg` and copy the .egg from `dist/` to the place of your choice, or you can create a Windows installer (`bdist_wininst`).
 
-=== Advanced Options
+=== Using installer
+
+On Windows Trac can be installed using the exe installers available on the [trac:TracDownload] page. Installers are available for the 32 and 64 bit versions of Python. Make sure to use the installer that matches the architecture of your Python installation.
+
+=== Using package manager
+
+Trac may be available in the package repository for your platform. Note however, that the version provided by the package manager may not be the latest release.
+
+=== Advanced `easy_install` Options
 
 To install Trac to a custom location, or find out about other advanced installation options, run:
 {{{#!sh
@@ -181,7 +197,7 @@ or, if installing Trac on a Mac OS X system:
 {{{#!sh
 easy_install --prefix=/usr/local --install-dir=/Library/Python/2.5/site-packages
 }}}
-Note: If installing on Mac OS X 10.6 running {{{ easy_install http://svn.edgewall.org/repos/trac/trunk }}} will install into {{{ /usr/local }}} and {{{ /Library/Python/2.6/site-packages }}} by default.
+Note: If installing on Mac OS X 10.6 running {{{ easy_install http://svn.edgewall.org/repos/trac/trunk }}} will install into {{{ /usr/local }}} and {{{ /Library/Python/2.5/site-packages }}} by default.
 
 The above will place your `tracd` and `trac-admin` commands into `/usr/local/bin` and will install the Trac libraries and dependencies into `/Library/Python/2.5/site-packages`, which is Apple's preferred location for third-party Python application installations.
 
@@ -203,7 +219,9 @@ Since 0.12, Trac doesn't ask for a [TracEnvironment#SourceCodeRepository source 
 
 Also note that the values you specify here can be changed later by directly editing the [TracIni conf/trac.ini] configuration file.
 
-When selecting the location of your environment, make sure that the filesystem on which the environment directory resides supports sub-second timestamps (i.e. **not** `ext2` or `ext3` on Linux), as the modification time of the `conf/trac.ini` file will be monitored to decide whether an environment restart is needed or not. A too coarse-grained timestamp resolution may result in inconsistencies in Trac < 1.0.2. The best advice is to opt for a platform with sub-second timestamp resolution, regardless of the Trac version.
+{{{#!div style="border: 1pt dotted; margin: 1em"
+**Filesystem Warning:** When selecting the location of your environment, make sure that the filesystem on which the environment directory resides supports sub-second timestamps (i.e. **not** `ext2` or `ext3` on Linux), as the modification time of the `conf/trac.ini` file will be monitored to decide whether an environment restart is needed or not. A too coarse-grained timestamp resolution may result in inconsistencies in Trac < 1.0.2. The best advice is to opt for a platform with sub-second timestamp resolution, regardless of the Trac version.
+}}}
 
 Finally, make sure the user account under which the web front-end runs will have '''write permissions''' to the environment directory and all the files inside. This will be the case if you run `trac-admin ... initenv` as this user. If not, you should set the correct user afterwards. For example on Linux, with the web server running as user `apache` and group `apache`, enter:
 {{{#!sh
@@ -372,19 +390,7 @@ tracopt.versioncontrol.svn.* = enabled
 tracopt.versioncontrol.git.* = enabled
 }}}
 
-After enabling the components, repositories can be configured through the "Repositories" admin panel or by editing [TracIni#repositories-section trac.ini].
-
-=== Automatic reference to the SVN changesets in Trac tickets
-
-You can configure SVN to automatically add a reference to the changeset into the ticket comments, whenever changes are committed to the repository. The description of the commit needs to contain one of the following formulas:
- * '''`Refs #123`''' - to reference this changeset in `#123` ticket
- * '''`Fixes #123`''' - to reference this changeset and close `#123` ticket with the default status ''fixed''
-
-This functionality requires a post-commit hook to be installed as described in [wiki:TracRepositoryAdmin#ExplicitSync TracRepositoryAdmin], and enabling the optional commit updater components by adding the following line to the `[components]` section of your [wiki:TracIni#components-section trac.ini], or enabling the components in the "Plugins" admin panel.
-{{{#!ini
-tracopt.ticket.commit_updater.* = enabled
-}}}
-For more information, see the documentation of the `CommitTicketUpdater` component in the "Plugins" admin panel.
+After enabling the components, repositories can be configured through the //Repositories// admin panel or by editing [TracIni#repositories-section trac.ini]. Automatic changeset references can be inserted as ticket comments by configuring [TracRepositoryAdmin#Automaticchangesetreferencesintickets CommitTicketUpdater].
 
 === Using Trac
 

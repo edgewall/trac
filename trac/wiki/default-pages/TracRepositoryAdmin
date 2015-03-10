@@ -177,6 +177,18 @@ If the post-commit hooks are not available, the environment can be set up for pe
 Note that in this case, the changeset listener extension point is not called, and therefore plugins using it will not work correctly.
 
 
+== Automatic changeset references in tickets
+
+You can automatically add a reference to the changeset as a ticket comment whenever changes are committed to the repository. The description of the commit needs to contain one of the following formulas:
+ * '''`Refs #123`''' - to reference this changeset in `#123` ticket
+ * '''`Fixes #123`''' - to reference this changeset and close `#123` ticket with the default status ''fixed''
+
+This functionality requires a post-commit hook to be installed as described in [#ExplicitSync], and enabling the optional commit updater components by adding the following line to the `[components]` section of your [wiki:TracIni#components-section trac.ini], or enabling the components in the //Plugins// admin panel.
+{{{#!ini
+tracopt.ticket.commit_updater.* = enabled
+}}}
+For more information, see the documentation of the `CommitTicketUpdater` component in the //Plugins// admin panel and the [trac:CommitTicketUpdater] page.
+
 == Migration from a single-repository setup (Subversion) #Migration
 The following procedure illustrates a typical migration from a Subversion single-repository setup to multiple repositories.
 

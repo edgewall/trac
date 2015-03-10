@@ -14,7 +14,6 @@ To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 Trac 1.0.5 provides several fixes. The following are some highlights:
 
  - Images are not rendered in the timeline ([trac:#10751]).
- - Hashes are supported in revision log and changeset TracLinks ([trac:#11050]).
  - Git tags are shown in the browser view ([trac:#11964]).
  - Added support for `journal_mode` and `synchronous` pragmas in `sqlite:` database connection string ([trac:#11967]).
 
