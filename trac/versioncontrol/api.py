@@ -316,7 +316,8 @@ class RepositoryManager(Component):
 
         (''since 0.12'')""")
 
-    repository_type = Option('trac', 'repository_type', 'svn',
+    default_repository_type = Option('versioncontrol',
+                                     'default_repository_type', 'svn',
         """Default repository connector type.
 
         This is used as the default repository type for repositories defined
@@ -544,7 +545,7 @@ class RepositoryManager(Component):
         rdir = repoinfo.get('dir')
         if not rdir:
             return None
-        rtype = repoinfo.get('type') or self.repository_type
+        rtype = repoinfo.get('type') or self.default_repository_type
 
         # get a Repository for the reponame (use a thread-level cache)
         with self.env.db_transaction: # prevent possible deadlock, see #4465

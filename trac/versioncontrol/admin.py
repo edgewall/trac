@@ -334,7 +334,8 @@ class RepositoryAdminPanel(Component):
                                                          reponame in db_repos))
                             for (reponame, info) in all_repos.iteritems())
         types = sorted([''] + rm.get_supported_types())
-        data.update({'types': types, 'default_type': rm.repository_type,
+        data.update({'types': types,
+                     'default_type': rm.default_repository_type,
                      'repositories': repositories})
 
         return 'admin_repositories.html', data
