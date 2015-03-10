@@ -198,7 +198,7 @@ joe = r
 jane = r
 """)
         self.env = EnvironmentStub(enable=[AuthzSourcePolicy])
-        self.env.config.set('trac', 'authz_file', self.authz)
+        self.env.config.set('svn', 'authz_file', self.authz)
         self.policy = AuthzSourcePolicy(self.env)
 
         # Monkey-subclass RepositoryManager to serve mock repositories
