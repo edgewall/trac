@@ -21,6 +21,7 @@ from datetime import datetime
 from genshi.builder import tag
 
 from trac.core import *
+from trac.perm import IPermissionRequestor
 from trac.ticket import TicketSystem, Ticket
 from trac.ticket.notification import BatchTicketNotifyEmail
 from trac.util.datefmt import utc
@@ -40,7 +41,7 @@ class BatchModifyModule(Component):
     modify.
     """
 
-    implements(IRequestHandler)
+    implements(IPermissionRequestor, IRequestHandler)
 
     list_separator_re =  re.compile(r'[;\s,]+')
     list_connector_string = ', '
@@ -64,6 +65,12 @@ class BatchModifyModule(Component):
 
         #Always redirect back to the query page we came from.
         req.redirect(req.session['query_href'])
+
+    # IPermissionRequestor methods
+
+    def get_permission_actions(self):
+        return ['TICKET_BATCH_MODIFY',
+                ('TICKET_ADMIN', ['TICKET_BATCH_MODIFY'])]
 
     def _get_new_ticket_values(self, req):
         """Pull all of the new values out of the post data."""
