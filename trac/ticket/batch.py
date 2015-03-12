@@ -20,6 +20,7 @@ from genshi.builder import tag
 
 from trac.core import *
 from trac.notification.api import NotificationSystem
+from trac.perm import IPermissionRequestor
 from trac.ticket import TicketSystem, Ticket
 from trac.ticket.notification import BatchTicketChangeEvent
 from trac.util.datefmt import parse_date, user_time, utc
@@ -39,7 +40,7 @@ class BatchModifyModule(Component):
     modify.
     """
 
-    implements(IRequestHandler)
+    implements(IPermissionRequestor, IRequestHandler)
 
     is_valid_default_handler = False
 
@@ -71,6 +72,12 @@ class BatchModifyModule(Component):
 
         #Always redirect back to the query page we came from.
         req.redirect(req.session['query_href'])
+
+    # IPermissionRequestor methods
+
+    def get_permission_actions(self):
+        return ['TICKET_BATCH_MODIFY',
+                ('TICKET_ADMIN', ['TICKET_BATCH_MODIFY'])]
 
     def _get_new_ticket_values(self, req):
         """Pull all of the new values out of the post data."""
