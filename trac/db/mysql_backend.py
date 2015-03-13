@@ -267,7 +267,7 @@ class MySQLConnector(Component):
         pass
 
     def environment_needs_upgrade(self):
-        if getattr(self, 'required', False):
+        if self.required:
             with self.env.db_query as db:
                 self._verify_table_status(db)
                 self._verify_variables(db)
