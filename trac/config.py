@@ -193,7 +193,7 @@ class Configuration(object):
         options declared in components that are enabled in the given
         `ComponentManager` are returned.
         """
-        sections = set([to_unicode(s) for s in self.parser.sections()])
+        sections = set(to_unicode(s) for s in self.parser.sections())
         for parent in self.parents:
             sections.update(parent.sections(compmgr, defaults=False))
         if defaults:
@@ -207,10 +207,8 @@ class Configuration(object):
 
         (''since 0.11'')
         """
-        section_str = _to_utf8(section)
-        if self.parser.has_section(section_str):
-            if _to_utf8(option) in self.parser.options(section_str):
-                return True
+        if self.parser.has_option(_to_utf8(section), _to_utf8(option)):
+            return True
         for parent in self.parents:
             if parent.has_option(section, option, defaults=False):
                 return True
@@ -522,12 +520,9 @@ class Section(object):
         self._cache.pop(key, None)
         name_str = _to_utf8(self.name)
         key_str = _to_utf8(key)
+        value_str = _to_utf8(value) if value is not None else ''
         if not self.config.parser.has_section(name_str):
             self.config.parser.add_section(name_str)
-        if value is None:
-            value_str = ''
-        else:
-            value_str = _to_utf8(value)
         return self.config.parser.set(name_str, key_str, value_str)
 
     def remove(self, key):
