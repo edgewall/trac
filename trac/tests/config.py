@@ -19,13 +19,13 @@ import unittest
 
 import trac.tests.compat
 from trac.config import *
-from trac.core import Component, Interface, implements
+from trac.core import Component, ComponentMeta, Interface, implements
 from trac.test import Configuration, EnvironmentStub
 from trac.util import create_file
 from trac.util.compat import wait_for_file_mtime_change
 
 
-class ConfigurationTestCase(unittest.TestCase):
+class BaseTestCase(unittest.TestCase):
 
     def setUp(self):
         tmpdir = os.path.realpath(tempfile.gettempdir())
@@ -33,11 +33,24 @@ class ConfigurationTestCase(unittest.TestCase):
         self.sitename = os.path.join(tmpdir, 'trac-site.ini')
         self.env = EnvironmentStub()
         self._write([])
-        self._orig_registry = Option.registry
+        self._orig = {
+            'ComponentMeta._components': ComponentMeta._components,
+            'ComponentMeta._registry': ComponentMeta._registry,
+            'ConfigSection.registry': ConfigSection.registry,
+            'Option.registry': Option.registry,
+        }
+        ComponentMeta._components = list(ComponentMeta._components)
+        ComponentMeta._registry = dict((interface, list(classes))
+                                       for interface, classes
+                                       in ComponentMeta._registry.iteritems())
+        ConfigSection.registry = {}
         Option.registry = {}
 
     def tearDown(self):
-        Option.registry = self._orig_registry
+        ComponentMeta._components = self._orig['ComponentMeta._components']
+        ComponentMeta._registry = self._orig['ComponentMeta._registry']
+        ConfigSection.registry = self._orig['ConfigSection.registry']
+        Option.registry = self._orig['Option.registry']
         os.remove(self.filename)
 
     def _read(self):
@@ -48,6 +61,9 @@ class ConfigurationTestCase(unittest.TestCase):
         wait_for_file_mtime_change(filename)
         with open(filename, 'w') as fileobj:
             fileobj.write(('\n'.join(lines + [''])).encode('utf-8'))
+
+
+class ConfigurationTestCase(BaseTestCase):
 
     def test_repr(self):
         self.assertEquals('<Configuration None>', repr(Configuration(None)))
@@ -354,11 +370,19 @@ class ConfigurationTestCase(unittest.TestCase):
         config.set(u'aä', 'öption0', 'x')
         config.set('aä', 'option2', "Voilà l'été")  # UTF-8
         config.set(u'aä', 'option1', u"Voilà l'été") # unicode
+        section = config['b']
+        section.set('option1', None)
+        section = config[u'aä']
+        section.set('öption1', 'z')
+        section.set('öption2', None)
         # Note: the following would depend on the locale.getpreferredencoding()
         # config.set('a', 'option3', "Voil\xe0 l'\xe9t\xe9") # latin-1
         self.assertEqual('x', config.get(u'aä', u'öption0'))
         self.assertEqual(u"Voilà l'été", config.get(u'aä', 'option1'))
         self.assertEqual(u"Voilà l'été", config.get(u'aä', 'option2'))
+        self.assertEqual('', config.get('b', 'option1'))
+        self.assertEqual('z', config.get(u'aä', 'öption1'))
+        self.assertEqual('', config.get(u'aä', 'öption2'))
         config.save()
 
         configfile = open(self.filename, 'r')
@@ -368,9 +392,12 @@ class ConfigurationTestCase(unittest.TestCase):
                           "option1 = Voilà l'été\n",
                           "option2 = Voilà l'été\n",
                           'öption0 = x\n',
+                          'öption1 = z\n',
+                          'öption2 = \n',
                           # "option3 = VoilÃ  l'Ã©tÃ©\n",
                           '\n',
                           '[b]\n',
+                          'option1 = \n',
                           'öption0 = y\n',
                           '\n'],
                          configfile.readlines())
@@ -605,7 +632,7 @@ class ConfigurationTestCase(unittest.TestCase):
                              f.next())
             self.assertEqual('list-seps = #cc0,4.2,42,0,,enabled,disabled,\n',
                              f.next())
-            self.assertEqual('# none = <inherited>\n',               f.next())
+            self.assertEqual('none = \n',                            f.next())
             self.assertEqual('true = enabled\n',                     f.next())
             self.assertEqual('\n',                                   f.next())
             self.assertRaises(StopIteration, f.next)
@@ -635,7 +662,7 @@ class ConfigurationTestCase(unittest.TestCase):
             self.assertEqual('fálsé = disabled\n',                   f.next())
             self.assertEqual('liśt = #ccö|4.2|42|0||enabled|disabled|\n',
                              f.next())
-            self.assertEqual('# nöné = <inherited>\n',               f.next())
+            self.assertEqual('nöné = \n',                            f.next())
             self.assertEqual('trüé = enabled\n',                     f.next())
             self.assertEqual('\n',                                   f.next())
             self.assertRaises(StopIteration, f.next)
@@ -672,8 +699,156 @@ class ConfigurationTestCase(unittest.TestCase):
             os.remove(self.sitename)
 
 
+class ConfigurationSetDefaultsTestCase(BaseTestCase):
+    """Tests for the `set_defaults` method of the `Configuration` class."""
+
+    def setUp(self):
+        super(ConfigurationSetDefaultsTestCase, self).setUp()
+
+        class CompA(Component):
+            opt1 = Option('compa', 'opt1', 1)
+            opt2 = Option('compa', 'opt2', 'a')
+
+        class CompB(Component):
+            opt3 = Option('compb', 'opt3', 2)
+            opt4 = Option('compb', 'opt4', 'b')
+
+    def test_component_module_no_match(self):
+        """No defaults written if component doesn't match."""
+        config = self._read()
+        config.set_defaults(component='trac.tests.conf')
+        config.save()
+
+        with open(self.filename, 'r') as f:
+            self.assertEqual('# -*- coding: utf-8 -*-\n', f.next())
+            self.assertEqual('\n',                        f.next())
+            self.assertRaises(StopIteration, f.next)
+
+    def test_component_class_no_match(self):
+        """No defaults written if module doesn't match."""
+        config = self._read()
+        config.set_defaults(component='trac.tests.conf.CompC')
+        config.save()
+
+        with open(self.filename, 'r') as f:
+            self.assertEqual('# -*- coding: utf-8 -*-\n', f.next())
+            self.assertEqual('\n',                        f.next())
+            self.assertRaises(StopIteration, f.next)
+
+    def test_component_module_match(self):
+        """Defaults of components in matching module are written."""
+        config = self._read()
+        config.set_defaults(component='trac.tests.config')
+        config.save()
+
+        with open(self.filename, 'r') as f:
+            self.assertEqual('# -*- coding: utf-8 -*-\n', f.next())
+            self.assertEqual('\n',                        f.next())
+            self.assertEqual('[compa]\n',                 f.next())
+            self.assertEqual('opt1 = 1\n',                f.next())
+            self.assertEqual('opt2 = a\n',                f.next())
+            self.assertEqual('\n',                        f.next())
+            self.assertEqual('[compb]\n',                 f.next())
+            self.assertEqual('opt3 = 2\n',                f.next())
+            self.assertEqual('opt4 = b\n',                f.next())
+            self.assertEqual('\n',                        f.next())
+            self.assertRaises(StopIteration, f.next)
+
+    def test_component_module_wildcard_match(self):
+        """Defaults of components in matching module are written.
+        Trailing dot-star are stripped in performing match.
+        """
+        config = self._read()
+        config.set_defaults(component='trac.tests.config.*')
+        config.save()
+
+        with open(self.filename, 'r') as f:
+            self.assertEqual('# -*- coding: utf-8 -*-\n', f.next())
+            self.assertEqual('\n',                        f.next())
+            self.assertEqual('[compa]\n',                 f.next())
+            self.assertEqual('opt1 = 1\n',                f.next())
+            self.assertEqual('opt2 = a\n',                f.next())
+            self.assertEqual('\n',                        f.next())
+            self.assertEqual('[compb]\n',                 f.next())
+            self.assertEqual('opt3 = 2\n',                f.next())
+            self.assertEqual('opt4 = b\n',                f.next())
+            self.assertEqual('\n',                        f.next())
+            self.assertRaises(StopIteration, f.next)
+
+    def test_component_class_match(self):
+        """Defaults of matching component are written."""
+        config = self._read()
+        config.set_defaults(component='trac.tests.config.CompA')
+        config.save()
+
+        with open(self.filename, 'r') as f:
+            self.assertEqual('# -*- coding: utf-8 -*-\n', f.next())
+            self.assertEqual('\n',                        f.next())
+            self.assertEqual('[compa]\n',                 f.next())
+            self.assertEqual('opt1 = 1\n',                f.next())
+            self.assertEqual('opt2 = a\n',                f.next())
+            self.assertEqual('\n',                        f.next())
+            self.assertRaises(StopIteration, f.next)
+
+    def test_component_no_overwrite(self):
+        """Values in configuration are not overwritten."""
+        config = self._read()
+        config.set('compa', 'opt1', 3)
+        config.save()
+        config.set_defaults(component='trac.tests.config.CompA')
+        config.save()
+
+        with open(self.filename, 'r') as f:
+            self.assertEqual('# -*- coding: utf-8 -*-\n', f.next())
+            self.assertEqual('\n',                        f.next())
+            self.assertEqual('[compa]\n',                 f.next())
+            self.assertEqual('opt1 = 3\n',                f.next())
+            self.assertEqual('opt2 = a\n',                f.next())
+            self.assertEqual('\n',                        f.next())
+            self.assertRaises(StopIteration, f.next)
+
+    def test_component_no_overwrite_parent(self):
+        """Values in parent configuration are not overwritten."""
+        parent_config = Configuration(self.sitename)
+        parent_config.set('compa', 'opt1', 3)
+        parent_config.save()
+        config = self._read()
+        config.set('inherit', 'file', 'trac-site.ini')
+        config.save()
+        config.parse_if_needed(True)
+        config.set_defaults(component='trac.tests.config.CompA')
+        config.save()
+
+        with open(self.sitename, 'r') as f:
+            self.assertEqual('# -*- coding: utf-8 -*-\n', f.next())
+            self.assertEqual('\n',                        f.next())
+            self.assertEqual('[compa]\n',                 f.next())
+            self.assertEqual('opt1 = 3\n',                f.next())
+            self.assertEqual('\n',                        f.next())
+            self.assertRaises(StopIteration, f.next)
+
+        with open(self.filename, 'r') as f:
+            self.assertEqual('# -*- coding: utf-8 -*-\n', f.next())
+            self.assertEqual('\n',                        f.next())
+            self.assertEqual('[compa]\n',                 f.next())
+            self.assertEqual('opt2 = a\n',                f.next())
+            self.assertEqual('\n',                        f.next())
+            self.assertEqual('[inherit]\n',               f.next())
+            self.assertEqual('file = trac-site.ini\n',    f.next())
+            self.assertEqual('\n',                        f.next())
+            self.assertRaises(StopIteration, f.next)
+
+
 def suite():
-    return unittest.makeSuite(ConfigurationTestCase)
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(ConfigurationTestCase))
+    if __name__ == 'trac.tests.config':
+        suite.addTest(unittest.makeSuite(ConfigurationSetDefaultsTestCase))
+    else:
+        print("SKIP: trac.tests.config.ConfigurationSetDefaultsTestCase "
+              "(__name__ is not trac.tests.config)")
+    return suite
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')

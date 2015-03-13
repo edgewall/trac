@@ -22,6 +22,7 @@ import doctest
 import inspect
 import os
 import sys
+import tempfile
 import time
 import types
 import unittest
@@ -224,8 +225,19 @@ def reset_mysql_db(env, db_prop):
     return DatabaseManager(env).reset_tables()
 
 
+class ConfigurationStub(Configuration):
+    """A stub of the trac.config.Configuration class for testing."""
+
+    def __init__(self, *args, **kwargs):
+        super(ConfigurationStub, self).__init__(*args, **kwargs)
+        self.file_content = []
+
+    def _write(self, content):
+        self.file_content = content
+
+
 class EnvironmentStub(Environment):
-    """A stub of the trac.env.Environment object for testing."""
+    """A stub of the trac.env.Environment class for testing."""
 
     global_databasemanager = None
     required = False
@@ -264,7 +276,7 @@ class EnvironmentStub(Environment):
                 self.path = os.path.join(os.getcwd(), self.path)
 
         # -- configuration
-        self.config = Configuration(None)
+        self.config = ConfigurationStub(None)
         # We have to have a ticket-workflow config for ''lots'' of things to
         # work.  So insert the basic-workflow config here.  There may be a
         # better solution than this.

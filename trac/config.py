@@ -218,10 +218,8 @@ class Configuration(object):
 
     def save(self):
         """Write the configuration options to the primary file."""
-        if not self.filename:
-            return
 
-        # Only save options that differ from the defaults
+        # Only save options that differ from the inherited values
         sections = []
         for section in self.sections():
             section_str = _to_utf8(section)
@@ -233,30 +231,25 @@ class Configuration(object):
                         default_str = _to_utf8(parent.get(section, option))
                         break
                 option_str = _to_utf8(option)
-                current_str = False
                 if self.parser.has_option(section_str, option_str):
                     current_str = self.parser.get(section_str, option_str)
-                if current_str is not False and current_str != default_str:
-                    options.append((option_str, current_str))
+                    if current_str != default_str:
+                        options.append((option_str, current_str))
             if options:
                 sections.append((section_str, sorted(options)))
 
         # At this point, all the strings in `sections` are UTF-8 encoded `str`
+        content = ['# -*- coding: utf-8 -*-\n\n']
+        for section_str, options in sections:
+            content.append('[%s]\n' % section_str)
+            for key_str, val_str in options:
+                val_str = val_str.replace(CRLF, '\n') \
+                                 .replace('\n', '\n ')
+                content.append('%s = %s\n' % (key_str, val_str))
+            content.append('\n')
+
         try:
-            wait_for_file_mtime_change(self.filename)
-            with AtomicFile(self.filename, 'w') as fileobj:
-                fileobj.write('# -*- coding: utf-8 -*-\n\n')
-                for section_str, options in sections:
-                    fileobj.write('[%s]\n' % section_str)
-                    section = to_unicode(section_str)
-                    for key_str, val_str in options:
-                        if to_unicode(key_str) in self[section].overridden:
-                            fileobj.write('# %s = <inherited>\n' % key_str)
-                        else:
-                            val_str = val_str.replace(CRLF, '\n') \
-                                             .replace('\n', '\n ')
-                            fileobj.write('%s = %s\n' % (key_str, val_str))
-                    fileobj.write('\n')
+            self._write(content)
             self._old_sections = deepcopy(self.parser._sections)
         except Exception:
             # Revert all changes to avoid inconsistencies
@@ -301,21 +294,43 @@ class Configuration(object):
             wait_for_file_mtime_change(self.filename)
             os.utime(self.filename, None)
 
-    def set_defaults(self, compmgr=None):
+    def set_defaults(self, compmgr=None, component=None):
         """Retrieve all default values and store them explicitly in the
         configuration, so that they can be saved to file.
 
-        Values already set in the configuration are not overridden.
+        Values already set in the configuration are not overwritten.
         """
-        for (section, name), option in Option.get_registry(compmgr).items():
+        def set_option_default(option):
+            section = option.section
+            name = option.name
             if not self.parser.has_option(_to_utf8(section), _to_utf8(name)):
-                value = option.default
-                if any(parent[section].contains(name, defaults=False)
-                       for parent in self.parents):
-                    value = None
-                if value is not None:
-                    value = option.dumps(value)
-                self.set(section, name, value)
+                if not any(parent[section].contains(name, defaults=False)
+                           for parent in self.parents):
+                    value = option.dumps(option.default)
+                    self.set(section, name, value)
+
+        if component:
+            if component.endswith('.*'):
+                component = component[:-2]
+            component = component.lower().split('.')
+            from trac.core import ComponentMeta
+            for cls in ComponentMeta._components:
+                clsname = (cls.__module__ + '.' + cls.__name__).lower() \
+                                                               .split('.')
+                if clsname[:len(component)] == component:
+                    for option in cls.__dict__.itervalues():
+                        if isinstance(option, Option):
+                            set_option_default(option)
+        else:
+            for option in Option.get_registry(compmgr).itervalues():
+                set_option_default(option)
+
+    def _write(self, content):
+        if not self.filename:
+            return
+        wait_for_file_mtime_change(self.filename)
+        with AtomicFile(self.filename, 'w') as fileobj:
+            fileobj.writelines(content)
 
 
 class Section(object):
@@ -323,12 +338,11 @@ class Section(object):
 
     Objects of this class should not be instantiated directly.
     """
-    __slots__ = ['config', 'name', 'overridden', '_cache']
+    __slots__ = ['config', 'name', '_cache']
 
     def __init__(self, config, name):
         self.config = config
         self.name = name
-        self.overridden = {}
         self._cache = {}
 
     def __repr__(self):
@@ -511,7 +525,6 @@ class Section(object):
         if not self.config.parser.has_section(name_str):
             self.config.parser.add_section(name_str)
         if value is None:
-            self.overridden[key] = True
             value_str = ''
         else:
             value_str = _to_utf8(value)
@@ -836,6 +849,8 @@ class ConfigurationAdmin(Component):
 
     def _do_set(self, section, option, value):
         self.config.set(section, option, value)
+        if section == 'components' and as_bool(value):
+            self.config.set_defaults(component=option)
         self.config.save()
         if section == 'inherit' and option == 'file':
             self.config.parse_if_needed(force=True)  # Full reload

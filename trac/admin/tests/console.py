@@ -46,7 +46,8 @@ import trac.wiki.web_ui
 from trac.admin.api import AdminCommandManager, IAdminCommandProvider, \
                            console_date_format, get_console_locale
 from trac.admin.console import TracAdmin, TracAdminHelpMacro
-from trac.core import Component, implements
+from trac.config import ConfigSection, Option
+from trac.core import Component, ComponentMeta, implements
 from trac.test import EnvironmentStub
 from trac.util.datefmt import format_date, get_date_format_hint, \
                               get_datetime_format_hint
@@ -1477,11 +1478,70 @@ class TracAdminHelpMacroTestCase(unittest.TestCase):
         self.assertTrue(unicode_help in help)
 
 
+class TracAdminComponentTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True, enable=('trac.*',),
+                                   disable=('trac.tests.*',))
+        self._admin = TracAdmin()
+        self._admin.env_set('', self.env)
+        self._orig = {
+            'ComponentMeta._components': ComponentMeta._components,
+            'ComponentMeta._registry': ComponentMeta._registry,
+            'ConfigSection.registry': ConfigSection.registry,
+            'Option.registry': Option.registry,
+        }
+        ComponentMeta._components = list(ComponentMeta._components)
+        ComponentMeta._registry = dict((interface, list(classes))
+                                       for interface, classes
+                                       in ComponentMeta._registry.iteritems())
+        ConfigSection.registry = {}
+        Option.registry = {}
+
+        class CompA(Component):
+            from trac.config import Option
+            opt1 = Option('compa', 'opt1', 1)
+            opt2 = Option('compa', 'opt2', 2)
+
+    def tearDown(self):
+        self.env = None
+        self._admin = None
+        ComponentMeta._components = self._orig['ComponentMeta._components']
+        ComponentMeta._registry = self._orig['ComponentMeta._registry']
+        ConfigSection.registry = self._orig['ConfigSection.registry']
+        Option.registry = self._orig['Option.registry']
+
+    def _execute(self, cmd, strip_trailing_space=True, input=None):
+        return execute_cmd(self._admin, cmd,
+                           strip_trailing_space=strip_trailing_space,
+                           input=input)
+
+    def test_config_component_enable(self):
+        self.env.config.save()
+        initial_file = list(self.env.config.file_content)
+
+        rv, output = self._execute('config set components '
+                                   'trac.admin.tests.console.* enabled')
+
+        self.assertEqual(0, rv, output)
+        self.assertNotIn('[compa]\n', initial_file)
+        self.assertNotIn('opt1 = 1\n', initial_file)
+        self.assertNotIn('opt2 = 2\n', initial_file)
+        self.assertIn('[compa]\n', self.env.config.file_content)
+        self.assertIn('opt1 = 1\n', self.env.config.file_content)
+        self.assertIn('opt2 = 2\n', self.env.config.file_content)
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TracadminTestCase))
     suite.addTest(unittest.makeSuite(TracadminNoEnvTestCase))
     suite.addTest(unittest.makeSuite(TracAdminHelpMacroTestCase))
+    if __name__ == 'trac.admin.tests.console':
+        suite.addTest(unittest.makeSuite(TracAdminComponentTestCase))
+    else:
+        print("SKIP: trac.admin.tests.console.TracAdminComponentTestCase "
+              "(__name__ is not trac.admin.tests.console)")
     return suite
 
 

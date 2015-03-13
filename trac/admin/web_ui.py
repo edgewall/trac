@@ -581,6 +581,9 @@ class PluginAdminPanel(Component):
                                len(added))
                 notices.append(tag(msg, make_list(added)))
 
+            # set the default value of options for only the enabled components
+            for component in added:
+                self.config.set_defaults(component=component)
             _save_config(self.config, req, self.log, notices)
 
     def _render_view(self, req):
