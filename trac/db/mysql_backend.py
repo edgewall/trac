@@ -37,6 +37,9 @@ _like_escape_re = re.compile(r'([/_%])')
 try:
     import MySQLdb
     import MySQLdb.cursors
+except ImportError:
+    has_mysqldb = False
+else:
     has_mysqldb = True
 
     class MySQLUnicodeCursor(MySQLdb.cursors.Cursor):
@@ -54,8 +57,6 @@ try:
             rows = super(MySQLUnicodeCursor, self).fetchall()
             return [self._convert_row(row) for row in rows] \
                    if rows is not None else []
-except ImportError:
-    has_mysqldb = False
 
 # Mapping from "abstract" SQL types to DB-specific types
 _type_map = {

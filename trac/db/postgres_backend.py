@@ -34,14 +34,13 @@ try:
     from psycopg2 import DataError, ProgrammingError
     from psycopg2.extensions import register_type, UNICODE, \
                                     register_adapter, AsIs, QuotedString
-
+except ImportError:
+    pass
+else:
+    has_psycopg = True
     register_type(UNICODE)
     register_adapter(Markup, lambda markup: QuotedString(unicode(markup)))
     register_adapter(type(empty), lambda empty: AsIs("''"))
-
-    has_psycopg = True
-except ImportError:
-    pass
 
 _like_escape_re = re.compile(r'([/_%])')
 
