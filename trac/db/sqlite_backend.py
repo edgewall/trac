@@ -41,6 +41,7 @@ pysqlite_version = sqlite.version_info
 pysqlite_version_string = get_pkginfo(sqlite).get('version',
                                                   '%d.%d.%s'
                                                   % pysqlite_version)
+min_sqlite_version = (3, 0, 0)
 min_pysqlite_version = (2, 4, 1)  # version provided by Python 2.6
 
 
@@ -164,7 +165,12 @@ class SQLiteConnector(Component):
     # IDatabaseConnector methods
 
     def get_supported_schemes(self):
-        if pysqlite_version < min_pysqlite_version:
+        if sqlite_version < min_sqlite_version:
+            self.error = _("SQLite version is %(version)s. Minimum required "
+                           "version is %(min_version)s.",
+                           version=sqlite_version_string,
+                           min_version='%d.%d.%d' % min_sqlite_version)
+        elif pysqlite_version < min_pysqlite_version:
             self.error = _("Need at least PySqlite %(version)s or higher",
                            version='%d.%d.%d' % min_pysqlite_version)
         elif (2, 5, 2) <= pysqlite_version < (2, 5, 5):
