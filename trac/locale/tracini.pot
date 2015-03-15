@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.1.4\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2015-03-05 12:18+0000\n"
+"POT-Creation-Date: 2015-03-15 11:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -438,15 +438,15 @@ msgstr ""
 msgid "Show the SQL queries in the Trac log, at DEBUG level."
 msgstr ""
 
-#: trac/db/mysql_backend.py:87
+#: trac/db/mysql_backend.py:88
 msgid "Location of mysqldump for MySQL database backups"
 msgstr ""
 
-#: trac/db/postgres_backend.py:76
+#: trac/db/postgres_backend.py:75
 msgid "Location of pg_dump for Postgres database backups"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:147
+#: trac/db/sqlite_backend.py:148
 msgid ""
 "Paths to sqlite extensions, relative to Trac environment's\n"
 "directory or absolute. (''since 0.12'')"
