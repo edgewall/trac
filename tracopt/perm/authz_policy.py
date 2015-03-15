@@ -150,6 +150,7 @@ class AuthzPolicy(Component):
             self.log.error("Error parsing authz permission policy file: %s",
                            to_unicode(e))
             raise ConfigurationError()
+        self.groups_by_user = {}
 
     # IPermissionPolicy methods
 
