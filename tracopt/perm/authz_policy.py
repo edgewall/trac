@@ -38,7 +38,7 @@ class AuthzPolicy(Component):
     supported.
 
     As the fine-grained permissions brought by this permission policy are
-    often used in complement of the other pemission policies (like the
+    often used in complement of the other permission policies (like the
     `DefaultPermissionPolicy`), there's no need to redefine all the
     permissions here. Only additional rights or restrictions should be added.
 
@@ -155,12 +155,12 @@ class AuthzPolicy(Component):
         ps = PermissionSystem(self.env)
         for deny, perms in groupby(permissions,
                                    key=lambda p: p.startswith('!')):
-            if deny and action in ps.expand_actions([p[1:] for p in perms]):
+            if deny and action in ps.expand_actions(p[1:] for p in perms):
                 return False            # action is explicitly denied
             elif action in ps.expand_actions(perms):
-                return True            # action is explicitly granted
+                return True             # action is explicitly granted
 
-        return None                    # no match for action, can't decide
+        return None                     # no match for action, can't decide
 
     # Internal methods
 
