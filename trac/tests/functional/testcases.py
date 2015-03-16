@@ -14,8 +14,11 @@
 
 import os
 import re
+import time
+import unittest
 
-from trac.tests.functional import *
+from trac.tests.functional import FunctionalTwillTestCaseSetup, \
+                                  internal_error, tc
 from trac.util import create_file
 
 
@@ -126,7 +129,7 @@ class RegressionTestRev6017(FunctionalTwillTestCaseSetup):
                     os.unlink(filename)
 
 
-class RegressionTestTicket3833a(FunctionalTestCaseSetup):
+class RegressionTestTicket3833a(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/3833 a"""
         # Assume the logging is already set to debug.
@@ -144,7 +147,7 @@ class RegressionTestTicket3833a(FunctionalTestCaseSetup):
                             % debug1)
 
 
-class RegressionTestTicket3833b(FunctionalTestCaseSetup):
+class RegressionTestTicket3833b(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/3833 b"""
         # Turn logging off, try to log something, and verify that it does
@@ -168,7 +171,7 @@ class RegressionTestTicket3833b(FunctionalTestCaseSetup):
                          % debug2)
 
 
-class RegressionTestTicket3833c(FunctionalTestCaseSetup):
+class RegressionTestTicket3833c(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/3833 c"""
         # Turn logging back on, try to log something, and verify that it
@@ -402,5 +405,8 @@ def functionalSuite(suite=None):
     return suite
 
 
+suite = functionalSuite
+
+
 if __name__ == '__main__':
-    unittest.main(defaultTest='functionalSuite')
+    unittest.main(defaultTest='suite')

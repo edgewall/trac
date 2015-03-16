@@ -13,7 +13,9 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import os
-from trac.tests.functional import *
+import unittest
+
+from trac.tests.functional import FunctionalTestCaseSetup
 
 
 class DatabaseBackupTestCase(FunctionalTestCaseSetup):
@@ -36,5 +38,8 @@ def functionalSuite(suite=None):
     return suite
 
 
+suite = functionalSuite()
+
+
 if __name__ == '__main__':
-    unittest.main(defaultTest='functionalSuite')
+    unittest.main(defaultTest='suite')

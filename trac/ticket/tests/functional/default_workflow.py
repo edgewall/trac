@@ -12,8 +12,10 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import unittest
+
 import trac.tests.compat
-from trac.tests.functional import *
+from trac.tests.functional import FunctionalTwillTestCaseSetup, tc
 
 
 class SetOwnerOperation(FunctionalTwillTestCaseSetup):
@@ -138,7 +140,7 @@ class SetOwnerOperation(FunctionalTwillTestCaseSetup):
             self.env.config.remove('ticket-workflow', 'reassign.set_owner')
 
 
-class MaySetOwnerOperationRestrictOwnerFalse(FunctionalTestCaseSetup):
+class MaySetOwnerOperationRestrictOwnerFalse(FunctionalTwillTestCaseSetup):
     """Test cases for may_set_owner operation with
     `[ticket] restrict_owner = False`
     http://trac.edgewall.org/ticket/10018
@@ -380,5 +382,8 @@ def functionalSuite(suite=None):
     return suite
 
 
+suite = functionalSuite
+
+
 if __name__ == '__main__':
-    unittest.main(defaultTest='functionalSuite')
+    unittest.main(defaultTest='suite')

@@ -12,7 +12,11 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from trac.tests.functional import *
+import unittest
+
+from trac.tests.contentgen import random_page, random_sentence, \
+                                  random_unique_camel
+from trac.tests.functional import FunctionalTwillTestCaseSetup, tc
 
 
 class RegressionTestRev5883(FunctionalTwillTestCaseSetup):
@@ -48,5 +52,8 @@ def functionalSuite(suite=None):
     return suite
 
 
+suite = functionalSuite
+
+
 if __name__ == '__main__':
-    unittest.main(defaultTest='functionalSuite')
+    unittest.main(defaultTest='suite')

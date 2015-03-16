@@ -27,5 +27,8 @@ def functionalSuite(suite=None):
     return suite
 
 
+suite = functionalSuite
+
+
 if __name__ == '__main__':
-    unittest.main(defaultTest='functionalSuite')
+    unittest.main(defaultTest='suite')
