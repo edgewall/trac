@@ -13,8 +13,10 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import re
+import unittest
 
-from trac.tests.functional import *
+from trac.tests.functional import FunctionalTwillTestCaseSetup, \
+                                  internal_error, tc
 
 
 #TODO: split this into multiple smaller testcases
@@ -170,5 +172,8 @@ def functionalSuite(suite=None):
     return suite
 
 
+suite = functionalSuite
+
+
 if __name__ == '__main__':
-    unittest.main(defaultTest='functionalSuite')
+    unittest.main(defaultTest='suite')

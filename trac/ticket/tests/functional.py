@@ -14,12 +14,17 @@
 
 import os
 import re
+import time
+import unittest
 
 from datetime import datetime, timedelta
 
 from trac.admin.tests.functional import AuthorizationTestCaseSetup
 from trac.test import locale_en
-from trac.tests.functional import *
+from trac.tests.contentgen import random_sentence, random_word, \
+                                  random_unique_camel
+from trac.tests.functional import FunctionalTwillTestCaseSetup, b, \
+                                  internal_error, regex_owned_by, tc, twill
 from trac.util import create_file
 from trac.util.datefmt import utc, localtz, format_date, format_datetime
 from trac.util.text import to_utf8
@@ -163,7 +168,7 @@ class TicketManipulator(Component):
             env.config.save()
 
 
-class TestTicketAltFormats(FunctionalTestCaseSetup):
+class TestTicketAltFormats(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Download ticket in alternative formats"""
         summary = random_sentence(5)
@@ -178,7 +183,7 @@ class TestTicketAltFormats(FunctionalTestCaseSetup):
             tc.back()
 
 
-class TestTicketCSVFormat(FunctionalTestCaseSetup):
+class TestTicketCSVFormat(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Download ticket in CSV format"""
         self._tester.create_ticket()
@@ -188,7 +193,7 @@ class TestTicketCSVFormat(FunctionalTestCaseSetup):
             raise AssertionError('Bad CSV format')
 
 
-class TestTicketTabFormat(FunctionalTestCaseSetup):
+class TestTicketTabFormat(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Download ticket in Tab-delimited format"""
         self._tester.create_ticket()
@@ -198,7 +203,7 @@ class TestTicketTabFormat(FunctionalTestCaseSetup):
             raise AssertionError('Bad tab delimited format')
 
 
-class TestTicketRSSFormat(FunctionalTestCaseSetup):
+class TestTicketRSSFormat(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Download ticket in RSS format"""
         summary = random_sentence(5)
@@ -1635,7 +1640,7 @@ class RegressionTestTicket4630a(FunctionalTwillTestCaseSetup):
             env.config.save()
 
 
-class RegressionTestTicket4630b(FunctionalTestCaseSetup):
+class RegressionTestTicket4630b(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/4630 b"""
         # NOTE: this must be run after RegressionTestTicket4630 (user must
@@ -2187,7 +2192,7 @@ class RegressionTestTicket11028(FunctionalTwillTestCaseSetup):
                                      ('ROADMAP_VIEW', 'MILESTONE_VIEW'))
 
 
-class RegressionTestTicket11176(FunctionalTestCaseSetup):
+class RegressionTestTicket11176(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/11176
         Fine-grained permission checks should be enforced on the Report list
@@ -2415,5 +2420,8 @@ def functionalSuite(suite=None):
     return suite
 
 
+suite = functionalSuite
+
+
 if __name__ == '__main__':
-    unittest.main(defaultTest='functionalSuite')
+    unittest.main(defaultTest='suite')

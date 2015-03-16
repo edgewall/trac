@@ -12,10 +12,15 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import os
 import tempfile
+import unittest
 
 from trac.admin.tests.functional import AuthorizationTestCaseSetup
-from trac.tests.functional import *
+from trac.tests.contentgen import random_page, random_word, \
+                                  random_unique_camel
+from trac.tests.functional import FunctionalTwillTestCaseSetup, has_svn, \
+                                  internal_error, tc
 
 
 class TestAdminRepositoryAuthorization(AuthorizationTestCaseSetup):
@@ -392,5 +397,8 @@ def functionalSuite(suite=None):
     return suite
 
 
+suite = functionalSuite
+
+
 if __name__ == '__main__':
-    unittest.main(defaultTest='functionalSuite')
+    unittest.main(defaultTest='suite')
