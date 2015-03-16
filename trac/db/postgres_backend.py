@@ -37,12 +37,14 @@ try:
     from psycopg2.extensions import register_type, UNICODE, \
                                     register_adapter, AsIs, QuotedString
 except ImportError:
-    pass
+    psycopg2_version = None
 else:
     has_psycopg = True
     register_type(UNICODE)
     register_adapter(Markup, lambda markup: QuotedString(unicode(markup)))
     register_adapter(type(empty), lambda empty: AsIs("''"))
+    psycopg2_version = get_pkginfo(psycopg).get('version',
+                                                psycopg.__version__)
 
 _like_escape_re = re.compile(r'([/_%])')
 
@@ -76,16 +78,13 @@ class PostgreSQLConnector(Component):
         """Location of pg_dump for Postgres database backups""")
 
     def __init__(self):
-        self._version = has_psycopg and \
-                        get_pkginfo(psycopg).get('version',
-                                                 psycopg.__version__)
         self.error = None
 
     # ISystemInfoProvider methods
 
     def get_system_info(self):
         if self.required:
-            yield 'psycopg2', self._version
+            yield 'psycopg2', psycopg2_version
 
     # IDatabaseConnector methods
 
