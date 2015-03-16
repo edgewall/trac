@@ -38,7 +38,7 @@ def functionalSuite(suite=None):
     return suite
 
 
-suite = functionalSuite()
+suite = functionalSuite
 
 
 if __name__ == '__main__':
