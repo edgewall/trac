@@ -48,13 +48,16 @@ else:
         def _convert_row(self, row):
             return tuple(v.decode('utf-8') if isinstance(v, str) else v
                          for v in row)
+
         def fetchone(self):
             row = super(MySQLUnicodeCursor, self).fetchone()
             return self._convert_row(row) if row else None
+
         def fetchmany(self, num):
             rows = super(MySQLUnicodeCursor, self).fetchmany(num)
             return [self._convert_row(row) for row in rows] \
                    if rows is not None else []
+
         def fetchall(self):
             rows = super(MySQLUnicodeCursor, self).fetchall()
             return [self._convert_row(row) for row in rows] \
@@ -234,7 +237,7 @@ class MySQLConnector(Component):
                 args.append('--compress')
             elif name == 'named_pipe' and as_int(value, 0):
                 args.append('--protocol=pipe')
-            elif name == 'read_default_file': # Must be first
+            elif name == 'read_default_file':  # Must be first
                 args.insert(1, '--defaults-file=' + value)
             elif name == 'unix_socket':
                 args.extend(['--protocol=socket', '--socket=' + value])
@@ -348,9 +351,9 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
                  port=None, params={}):
         if path.startswith('/'):
             path = path[1:]
-        if password == None:
+        if password is None:
             password = ''
-        if port == None:
+        if port is None:
             port = 3306
         opts = {}
         for name, value in params.iteritems():

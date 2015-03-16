@@ -52,17 +52,20 @@ class PyFormatCursor(sqlite.Cursor):
         except sqlite.DatabaseError:
             self.cnx.rollback()
             raise
+
     def execute(self, sql, args=None):
         if args:
             sql = sql % (('?',) * len(args))
         return self._rollback_on_error(sqlite.Cursor.execute, sql,
                                        args or [])
+
     def executemany(self, sql, args):
         if not args:
             return
         sql = sql % (('?',) * len(args[0]))
         return self._rollback_on_error(sqlite.Cursor.executemany, sql,
                                        args)
+
 
 # EagerCursor taken from the example in pysqlite's repository:
 #
@@ -95,7 +98,7 @@ class EagerCursor(PyFormatCursor):
         if num is None:
             num = self.arraysize
 
-        result = self.rows[self.pos:self.pos+num]
+        result = self.rows[self.pos:self.pos + num]
         self.pos += num
         return result
 
@@ -176,7 +179,7 @@ class SQLiteConnector(Component):
         elif (2, 5, 2) <= pysqlite_version < (2, 5, 5):
             self.error = _("PySqlite 2.5.2 - 2.5.4 break Trac, please use "
                            "2.5.5 or higher")
-        yield ('sqlite', -1 if self.error else 1)
+        yield 'sqlite', -1 if self.error else 1
 
     def get_connection(self, path, log=None, params={}):
         self.required = True
@@ -207,7 +210,7 @@ class SQLiteConnector(Component):
             dir = os.path.dirname(path)
             if not os.path.exists(dir):
                 os.makedirs(dir)
-            if isinstance(path, unicode): # needed with 2.4.0
+            if isinstance(path, unicode):  # needed with 2.4.0
                 path = path.encode('utf-8')
             # this direct connect will create the database if needed
             cnx = sqlite.connect(path,
@@ -235,8 +238,8 @@ class SQLiteConnector(Component):
         """
         for name, (from_, to) in sorted(columns.iteritems()):
             if _type_map.get(to, to) != _type_map.get(from_, from_):
-                raise NotImplementedError('Conversion from %s to %s is not '
-                                          'implemented' % (from_, to))
+                raise NotImplementedError("Conversion from %s to %s is not "
+                                          "implemented" % (from_, to))
         return ()
 
     def backup(self, dest_file):
@@ -272,18 +275,18 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
 
             dbdir = os.path.dirname(path)
             if not os.access(path, os.R_OK + os.W_OK) or \
-                   not os.access(dbdir, os.R_OK + os.W_OK):
+                    not os.access(dbdir, os.R_OK + os.W_OK):
                 raise TracError(
-                    _('The user %(user)s requires read _and_ write '
-                      'permissions to the database file %(path)s '
-                      'and the directory it is located in.',
+                    _("The user %(user)s requires read _and_ write "
+                      "permissions to the database file %(path)s "
+                      "and the directory it is located in.",
                       user=getuser(), path=path))
 
         self._active_cursors = weakref.WeakKeyDictionary()
         timeout = int(params.get('timeout', 10.0))
         self._eager = params.get('cursor', 'eager') == 'eager'
         # eager is default, can be turned off by specifying ?cursor=
-        if isinstance(path, unicode): # needed with 2.4.0
+        if isinstance(path, unicode):  # needed with 2.4.0
             path = path.encode('utf-8')
         cnx = sqlite.connect(path, detect_types=sqlite.PARSE_DECLTYPES,
                              check_same_thread=sqlite_version < (3, 3, 1),
@@ -339,7 +342,8 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
 
     def get_table_names(self):
         rows = self.execute("""
-            SELECT name FROM sqlite_master WHERE type='table'""")
+            SELECT name FROM sqlite_master WHERE type='table'
+            """)
         return [row[0] for row in rows]
 
     def like(self):
@@ -385,16 +389,16 @@ def _set_journal_mode(cursor, value):
         return
     value = value.upper()
     if value == 'OFF':
-        raise TracError(_("PRAGMA journal_mode `%(value)s` cannot be used in "
-                          "SQLite", value=value))
+        raise TracError(_("PRAGMA journal_mode `%(value)s` cannot be used "
+                          "in SQLite", value=value))
     cursor.execute('PRAGMA journal_mode = %s' % _quote(value))
     row = cursor.fetchone()
     if not row:
         raise TracError(_("PRAGMA journal_mode isn't supported by SQLite "
                           "%(version)s", version=sqlite_version_string))
     if (row[0] or '').upper() != value:
-        raise TracError(_("PRAGMA journal_mode `%(value)s` isn't supported by "
-                          "SQLite %(version)s",
+        raise TracError(_("PRAGMA journal_mode `%(value)s` isn't supported "
+                          "by SQLite %(version)s",
                           value=value, version=sqlite_version_string))
 
 

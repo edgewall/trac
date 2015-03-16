@@ -14,7 +14,8 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-import re, os
+import os
+import re
 
 from genshi import Markup
 
@@ -29,7 +30,6 @@ from trac.util.compat import close_fds
 from trac.util.text import empty, exception_to_unicode, to_unicode
 from trac.util.translation import _
 
-has_psycopg = False
 try:
     import psycopg2 as psycopg
     import psycopg2.extensions
@@ -37,6 +37,7 @@ try:
     from psycopg2.extensions import register_type, UNICODE, \
                                     register_adapter, AsIs, QuotedString
 except ImportError:
+    has_psycopg = False
     psycopg2_version = None
 else:
     has_psycopg = True
@@ -59,7 +60,7 @@ def assemble_pg_dsn(path, user=None, password=None, host=None, port=None):
 
     dsn = {'dbname': path, 'user': user, 'password': password, 'host': host,
            'port': port}
-    return ' '.join(["%s='%s'" % (k,v) for k,v in dsn.iteritems() if v])
+    return ' '.join("%s='%s'" % (k, v) for k, v in dsn.iteritems() if v)
 
 
 class PostgreSQLConnector(Component):
@@ -91,7 +92,7 @@ class PostgreSQLConnector(Component):
     def get_supported_schemes(self):
         if not has_psycopg:
             self.error = _("Cannot load Python bindings for PostgreSQL")
-        yield ('postgres', -1 if self.error else 1)
+        yield 'postgres', -1 if self.error else 1
 
     def get_connection(self, path, log=None, user=None, password=None,
                        host=None, port=None, params={}):
@@ -153,9 +154,9 @@ class PostgreSQLConnector(Component):
             if to != _type_map.get(from_, from_):
                 alterations.append((name, to))
         if alterations:
-            yield "ALTER TABLE %s %s" % (table,
-                ', '.join("ALTER COLUMN %s TYPE %s" % each
-                          for each in alterations))
+            yield "ALTER TABLE %s %s" \
+                  % (table, ', '.join("ALTER COLUMN %s TYPE %s" % each
+                                      for each in alterations))
 
     def backup(self, dest_file):
         from subprocess import Popen, PIPE
