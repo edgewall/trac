@@ -100,15 +100,13 @@ administrators = éat
         resource = Resource('wiki', 'WikiStart')
 
         perm = self.get_perm('anonymous')
-        self.assertEqual(
-            False,
+        self.assertFalse(
             self.check_permission('WIKI_VIEW', 'anonymous', resource, perm))
         self.assertNotIn('WIKI_VIEW', perm)
         self.assertNotIn('WIKI_VIEW', perm(resource))
 
         perm = self.get_perm(u'änon')
-        self.assertEqual(
-            True,
+        self.assertTrue(
             self.check_permission('WIKI_VIEW', u'änon', resource, perm))
         self.assertNotIn('WIKI_VIEW', perm)
         self.assertIn('WIKI_VIEW', perm(resource))
@@ -117,22 +115,19 @@ administrators = éat
         resource = Resource('wiki', u'résumé')
 
         perm = self.get_perm('anonymous')
-        self.assertEqual(
-            False,
+        self.assertFalse(
             self.check_permission('WIKI_VIEW', 'anonymous', resource, perm))
         self.assertNotIn('WIKI_VIEW', perm)
         self.assertNotIn('WIKI_VIEW', perm(resource))
 
         perm = self.get_perm(u'änon')
-        self.assertEqual(
-            False,
+        self.assertFalse(
             self.check_permission('WIKI_VIEW', u'änon', resource, perm))
         self.assertNotIn('WIKI_VIEW', perm)
         self.assertNotIn('WIKI_VIEW', perm(resource))
 
         perm = self.get_perm(u'éat')
-        self.assertEqual(
-            True,
+        self.assertTrue(
             self.check_permission('WIKI_VIEW', u'éat', resource, perm))
         self.assertNotIn('WIKI_VIEW', perm)
         self.assertIn('WIKI_VIEW', perm(resource))
@@ -158,23 +153,21 @@ administrators = éat
 
     def test_default_repository(self):
         repos = self.get_repository('')
-        self.assertEqual(False, repos.is_viewable(self.get_perm('anonymous')))
-        self.assertEqual(False, repos.is_viewable(self.get_perm(u'änon')))
-        self.assertEqual(True, repos.is_viewable(self.get_perm(u'éat')))
+        self.assertFalse(repos.is_viewable(self.get_perm('anonymous')))
+        self.assertFalse(repos.is_viewable(self.get_perm(u'änon')))
+        self.assertTrue(repos.is_viewable(self.get_perm(u'éat')))
 
     def test_non_default_repository(self):
         repos = self.get_repository(u'bláh')
-        self.assertEqual(False, repos.is_viewable(self.get_perm('anonymous')))
-        self.assertEqual(True, repos.is_viewable(self.get_perm(u'änon')))
-        self.assertEqual(True, repos.is_viewable(self.get_perm(u'éat')))
+        self.assertFalse(repos.is_viewable(self.get_perm('anonymous')))
+        self.assertTrue(repos.is_viewable(self.get_perm(u'änon')))
+        self.assertTrue(repos.is_viewable(self.get_perm(u'éat')))
 
     def test_case_sensitive_resource(self):
         resource = Resource('WIKI', 'wikistart')
-        self.assertEqual(
-            None,
+        self.assertIsNone(
             self.check_permission('WIKI_VIEW', 'anonymous', resource, None))
-        self.assertEqual(
-            None,
+        self.assertIsNone(
             self.check_permission('WIKI_VIEW', u'änon', resource, None))
 
     def test_get_authz_file(self):
