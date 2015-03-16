@@ -39,8 +39,10 @@ try:
     import MySQLdb.cursors
 except ImportError:
     has_mysqldb = False
+    mysqldb_version = None
 else:
     has_mysqldb = True
+    mysqldb_version = get_pkginfo(MySQLdb).get('version', MySQLdb.__version__)
 
     class MySQLUnicodeCursor(MySQLdb.cursors.Cursor):
         def _convert_row(self, row):
@@ -90,9 +92,6 @@ class MySQLConnector(Component):
 
     def __init__(self):
         self._mysql_version = None
-        self._mysqldb_version = has_mysqldb and \
-                                get_pkginfo(MySQLdb).get('version',
-                                                         MySQLdb.__version__)
         self.error = None
 
     # ISystemInfoProvider methods
@@ -100,7 +99,7 @@ class MySQLConnector(Component):
     def get_system_info(self):
         if self.required:
             yield 'MySQL', self._mysql_version
-            yield 'MySQLdb', self._mysqldb_version
+            yield 'MySQLdb', mysqldb_version
 
     # IDatabaseConnector methods
 
