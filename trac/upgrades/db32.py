@@ -16,6 +16,9 @@ from trac.versioncontrol.api import DbRepositoryProvider, RepositoryManager
 
 
 def do_upgrade(env, version, cursor):
+    """Replace list of repositories in [trac] repository_sync_per_request
+    with boolean values [repositories] <repos>.sync_per_request.
+    """
     repos_sync_per_request = \
         env.config.getlist('trac', 'repository_sync_per_request')
     if not repos_sync_per_request:

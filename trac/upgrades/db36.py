@@ -17,6 +17,9 @@ from trac.upgrades import backup_config_file
 
 
 def do_upgrade(env, version, cursor):
+    """Change [authz_policy] authz_file to be relative to the `conf`
+    directory.
+    """
     authz_file = env.config.get('authz_policy', 'authz_file')
     if authz_file and not os.path.isabs(authz_file):
         parts = os.path.split(authz_file)

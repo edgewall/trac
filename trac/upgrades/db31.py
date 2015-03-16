@@ -15,7 +15,9 @@ from trac.upgrades import backup_config_file
 
 
 def do_upgrade(env, version, cursor):
-
+    """Move definition of default repository from [trac] repository_dir to
+    [repositories] section.
+    """
     repository_dir = env.config.get('trac', 'repository_dir')
     if repository_dir:
         backup_config_file(env, '.db31.bak')
