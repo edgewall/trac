@@ -53,8 +53,8 @@ class TestWikiPageManipulator(FunctionalTwillTestCaseSetup):
         env = self._testenv.get_trac_environment()
         env.config.set('components', plugin_name + '.*', 'enabled')
         env.config.save()
-        create_file(os.path.join(env.path, 'plugins', plugin_name + '.py'),
-"""\
+        create_file(os.path.join(env.path, 'plugins',
+                                 plugin_name + '.py'), """\
 from genshi.builder import tag
 from trac.core import Component, implements
 from trac.util.translation import tag_
@@ -102,7 +102,7 @@ class TestWikiHistory(FunctionalTwillTestCaseSetup):
         version_link = '<td class="version">[ \t\n]*' \
                        '<a href="/wiki/%(pagename)s\?version=%%(version)s" ' \
                        'title="View this version">%%(version)s[ \t\n]*</a>' \
-                        % {'pagename': pagename}
+                       % {'pagename': pagename}
         tc.find(version_link % {'version': 1})
         tc.find(version_link % {'version': 2})
         tc.formvalue('history', 'old_version', '1')
@@ -297,26 +297,26 @@ class RegressionTestTicket10850(FunctionalTwillTestCaseSetup):
         """Test for regression of http://trac.edgewall.org/ticket/10850"""
         pagename = self._tester.create_wiki_page()
         # colon characters
-        attachment = self._tester.attach_file_to_wiki(
+        self._tester.attach_file_to_wiki(
             pagename, filename='2012-09-11_15:36:40-test.tbz2')
         base_url = self._tester.url
         tc.go(base_url + '/attachment/wiki/' + pagename +
               '/2012-09-11_15:36:40-test.tbz2')
         tc.notfind('Error: Invalid Attachment')
         # backslash characters
-        attachment = self._tester.attach_file_to_wiki(
+        self._tester.attach_file_to_wiki(
             pagename, filename=r'/tmp/back\slash.txt')
         base_url = self._tester.url
         tc.go(base_url + '/attachment/wiki/' + pagename + r'/back\slash.txt')
         tc.notfind('Error: Invalid Attachment')
         # Windows full path
-        attachment = self._tester.attach_file_to_wiki(
+        self._tester.attach_file_to_wiki(
             pagename, filename=r'z:\tmp\windows:path.txt')
         base_url = self._tester.url
         tc.go(base_url + '/attachment/wiki/' + pagename + r'/windows:path.txt')
         tc.notfind('Error: Invalid Attachment')
         # Windows share folder path
-        attachment = self._tester.attach_file_to_wiki(
+        self._tester.attach_file_to_wiki(
             pagename, filename=r'\\server\share\file:name.txt')
         base_url = self._tester.url
         tc.go(base_url + '/attachment/wiki/' + pagename + r'/file:name.txt')
@@ -394,7 +394,7 @@ class RegressionTestTicket11302(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/11302"""
         pagename = self._tester.create_wiki_page()
-        attachment = self._tester.attach_file_to_wiki(
+        self._tester.attach_file_to_wiki(
             pagename, description="illustrates [./@1#point1]")
         self._tester.go_to_wiki(pagename + '?action=edit')
         tc.find(r'illustrates <a class="wiki"'
