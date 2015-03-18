@@ -176,7 +176,7 @@ class PostgreSQLConnector(Component):
 
         if 'schema' in db_params:
             # Need quote for -n (--schema) option in PostgreSQL 8.2+
-            if re.search(r' 8\.[01]\.', self._version):
+            if re.search(r' 8\.[01]\.', self._version()):
                 args.extend(['-n', db_params['schema']])
             else:
                 args.extend(['-n', '"%s"' % db_params['schema']])
