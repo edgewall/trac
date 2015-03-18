@@ -5,7 +5,7 @@
 
 Trac is distributed with a powerful command-line configuration tool. This tool can be used  to configure and customize your Trac-installation to better fit your needs.
 
-Some of those operations can also be performed via TracWebAdmin.
+Some of those operations can also be performed via the web administration module.
 
 == Usage
 
@@ -64,4 +64,4 @@ You'll find below the detailed help for all the commands available by default in
 [[TracAdminHelp()]]
 
 ----
-See also: TracWebAdmin, TracGuide, TracBackup, TracPermissions, TracEnvironment, TracIni, [trac:TracMigrate TracMigrate]
+See also: TracGuide, TracBackup, TracPermissions, TracEnvironment, TracIni, [trac:TracMigrate TracMigrate]

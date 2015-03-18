@@ -74,7 +74,7 @@ Alternatively you can configure Trac to run in any of the following environments
  * [http://httpd.apache.org/ Apache] with 
    - [http://code.google.com/p/modwsgi/ mod_wsgi], see [wiki:TracModWSGI] and 
      http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac
-   - [http://modpython.org/ mod_python 3.5.0], (deprecated: see TracModPython)
+   - [http://modpython.org/ mod_python 3.5.0], see TracModPython
  * a [http://www.fastcgi.com/ FastCGI]-capable web server (see TracFastCgi)
  * an [http://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html AJP]-capable web
    server (see [trac:TracOnWindowsIisAjp TracOnWindowsIisAjp])
@@ -90,7 +90,7 @@ Alternatively you can configure Trac to run in any of the following environments
  * [http://docutils.sourceforge.net/ docutils], version >= 0.3.9 
    for WikiRestructuredText.
  * [http://pygments.org Pygments] for 
-   [wiki:TracSyntaxColoring syntax highlighting].
+   [TracSyntaxColoring syntax highlighting].
    [http://silvercity.sourceforge.net/ SilverCity] and/or 
    [http://gnu.org/software/enscript/enscript.html Enscript] may still be used
    but are deprecated and you really should be using Pygments.
@@ -106,7 +106,7 @@ Please refer to the documentation of these packages to find out how they are bes
 
 == Installing Trac
 
-The [TracAdmin trac-admin] command-line tool, used to create and maintain [TracEnvironment project environments], as well as the [wiki:TracStandalone tracd] standalone server are installed are installed along with Trac. There are several methods for installing Trac.
+The [TracAdmin trac-admin] command-line tool, used to create and maintain [TracEnvironment project environments], as well as the [TracStandalone tracd] standalone server are installed along with Trac. There are several methods for installing Trac.
 
 === Using `easy_install`
 Trac can be installed from PyPI or the Subversion repository using [http://pypi.python.org/pypi/setuptools setuptools].
@@ -205,7 +205,7 @@ The above will place your `tracd` and `trac-admin` commands into `/usr/local/bin
 
 A [TracEnvironment Trac environment] is the backend where Trac stores information like wiki pages, tickets, reports, settings, etc. An environment is basically a directory that contains a human-readable [TracIni configuration file], and other files and directories.
 
-A new environment is created using [wiki:TracAdmin trac-admin]:
+A new environment is created using [TracAdmin trac-admin]:
 {{{#!sh
 $ trac-admin /path/to/myproject initenv
 }}}
@@ -238,7 +238,7 @@ The actual username and groupname of the apache server may not be exactly `apach
 
 === Running the Standalone Server
 
-After having created a Trac environment, you can easily try the web interface by running the standalone server [wiki:TracStandalone tracd]:
+After having created a Trac environment, you can easily try the web interface by running the standalone server [TracStandalone tracd]:
 {{{#!sh
 $ tracd --port 8000 /path/to/myproject
 }}}
@@ -265,18 +265,18 @@ $ PKG_RESOURCES_CACHE_ZIP_MANIFESTS=1 tracd --port 8000 /path/to/myproject
 === Running Trac on a Web Server
 
 Trac provides various options for connecting to a "real" web server: 
- - [wiki:TracFastCgi FastCGI]
+ - [TracFastCgi FastCGI]
  - [wiki:TracModWSGI mod_wsgi] 
- - //[wiki:TracModPython mod_python] (no longer recommended, as mod_python is not actively maintained anymore)//
- - //[wiki:TracCgi CGI] (should not be used, as the performance is far from optimal)//
+ - [TracModPython mod_python]
+ - //[TracCgi CGI] (should not be used, as the performance is far from optimal)//
 
 Trac also supports [trac:TracOnWindowsIisAjp AJP] which may be your choice if you want to connect to IIS. Other deployment scenarios are possible: [trac:TracNginxRecipe nginx], [http://projects.unbit.it/uwsgi/wiki/Example#Traconapacheinasub-uri uwsgi], [trac:TracOnWindowsIisIsapi Isapi-wsgi] etc.
 
 ==== Generating the Trac cgi-bin directory #cgi-bin
 
-In order for Trac to function properly with FastCGI you need to have a `trac.fcgi` file and for mod_wsgi a `trac.wsgi` file. These are Python scripts which load the appropriate Python code. They can be generated using the `deploy` option of [wiki:TracAdmin trac-admin].
+In order for Trac to function properly with FastCGI you need to have a `trac.fcgi` file and for mod_wsgi a `trac.wsgi` file. These are Python scripts which load the appropriate Python code. They can be generated using the `deploy` option of [TracAdmin trac-admin].
 
-There is, however, a bit of a chicken-and-egg problem. The [wiki:TracAdmin trac-admin] command requires an existing environment to function, but complains if the deploy directory already exists. This is a problem, because environments are often stored in a subdirectory of the deploy. The solution is to do something like this:
+There is, however, a bit of a chicken-and-egg problem. The [TracAdmin trac-admin] command requires an existing environment to function, but complains if the deploy directory already exists. This is a problem, because environments are often stored in a subdirectory of the deploy. The solution is to do something like this:
 {{{#!sh
 mkdir -p /usr/share/trac/projects/my-project
 trac-admin /usr/share/trac/projects/my-project initenv
@@ -338,7 +338,7 @@ Alias /trac/chrome/site /path/to/projectenv/htdocs
 </Directory>
 }}}
 
-Alternatively to aliasing `/trac/chrome/common`, you can tell Trac to generate direct links for those static resources (and only those), using the [[wiki:TracIni#trac-section| [trac] htdocs_location]] configuration setting:
+Alternatively to aliasing `/trac/chrome/common`, you can tell Trac to generate direct links for those static resources (and only those), using the [[TracIni#trac-section| [trac] htdocs_location]] configuration setting:
 {{{#!ini
 [trac]
 htdocs_location = http://static.example.org/trac-common/
@@ -380,7 +380,7 @@ This user will have an "Admin" entry menu that will allow you to administrate yo
 
 Support for version control systems is provided by optional components in Trac and the components are disabled by default //(since 1.0)//. Subversion and Git must be explicitly enabled if you wish to use them. See TracRepositoryAdmin for more details.
 
-The components can be enabled by adding the following to the `[components]` section of your [TracIni#components-section trac.ini], or enabling the components in the "Plugins" admin panel.
+The version control systems are enabled by adding the following to the `[components]` section of your [TracIni#components-section trac.ini], or enabling the components in the "Plugins" admin panel.
 
 {{{#!ini
 tracopt.versioncontrol.svn.* = enabled
@@ -396,7 +396,7 @@ After enabling the components, repositories can be configured through the //Repo
 
 Once you have your Trac site up and running, you should be able to create tickets, view the timeline, browse your version control repository if configured, etc.
 
-Keep in mind that //anonymous// (not logged in) users can by default access only a few of the features, in particular they will have a read-only access to the resources. You will need to configure authentication and grant additional [wiki:TracPermissions permissions] to authenticated users to see the full set of features.
+Keep in mind that //anonymous// (not logged in) users can by default access only a few of the features, in particular they will have a read-only access to the resources. You will need to configure authentication and grant additional [TracPermissions permissions] to authenticated users to see the full set of features.
 
 '' Enjoy! ''
 

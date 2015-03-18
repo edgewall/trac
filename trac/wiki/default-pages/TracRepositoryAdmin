@@ -183,7 +183,7 @@ You can automatically add a reference to the changeset as a ticket comment whene
  * '''`Refs #123`''' - to reference this changeset in `#123` ticket
  * '''`Fixes #123`''' - to reference this changeset and close `#123` ticket with the default status ''fixed''
 
-This functionality requires a post-commit hook to be installed as described in [#ExplicitSync], and enabling the optional commit updater components by adding the following line to the `[components]` section of your [wiki:TracIni#components-section trac.ini], or enabling the components in the //Plugins// admin panel.
+This functionality requires installing a post-commit hook as described in [#ExplicitSync], and enabling the optional commit updater components by adding the following line to the `[components]` section of your [wiki:TracIni#components-section trac.ini], or enabling the components in the //Plugins// admin panel.
 {{{#!ini
 tracopt.ticket.commit_updater.* = enabled
 }}}
