@@ -224,7 +224,7 @@ class TicketTestCase(unittest.TestCase):
         ticket['keywords'] = 'kw1'
         ticket['milestone'] = 'milestone1'
         ticket.insert()
-        
+
         ticket['keywords'] = '  kw1'
         ticket['milestone'] = 'milestone2'
         ticket.save_changes()
@@ -1106,7 +1106,7 @@ class MilestoneTestCase(unittest.TestCase):
         milestone = Milestone(self.env)
         milestone.name = 'MilestoneWithAttachment'
         milestone.insert()
-        
+
         attachment = Attachment(self.env, 'milestone', milestone.name)
         attachment.insert('foo.txt', StringIO(), 0, 1)
 
