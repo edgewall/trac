@@ -178,16 +178,8 @@ class PostgreSQLConnector(Component):
                 args.extend(['-p', str(db_prop.get('port', '5432'))])
 
         if 'schema' in db_params:
-            try:
-                p = Popen([self.pg_dump_path, '--version'], stdout=PIPE,
-                          close_fds=close_fds)
-            except OSError as e:
-                raise TracError(_("Unable to run %(path)s: %(msg)s",
-                                  path=self.pg_dump_path,
-                                  msg=exception_to_unicode(e)))
             # Need quote for -n (--schema) option in PostgreSQL 8.2+
-            version = p.communicate()[0]
-            if re.search(r' 8\.[01]\.', version):
+            if re.search(r' 8\.[01]\.', self._version):
                 args.extend(['-n', db_params['schema']])
             else:
                 args.extend(['-n', '"%s"' % db_params['schema']])
@@ -211,6 +203,17 @@ class PostgreSQLConnector(Component):
         if not os.path.exists(dest_file):
             raise TracError(_("No destination file created"))
         return dest_file
+
+    def _version(self):
+        from subprocess import Popen, PIPE
+        try:
+            p = Popen([self.pg_dump_path, '--version'], stdout=PIPE,
+                      close_fds=close_fds)
+        except OSError as e:
+            raise TracError(_("Unable to run %(path)s: %(msg)s",
+                              path=self.pg_dump_path,
+                              msg=exception_to_unicode(e)))
+        return p.communicate()[0]
 
 
 class PostgreSQLConnection(ConnectionBase, ConnectionWrapper):
