@@ -248,7 +248,7 @@ class Configuration(object):
         changed = False
         modtime = os.path.getmtime(self.filename)
         if force or modtime != self._lastmtime:
-            self.parser._sections = {}
+            self.parser._sections.clear()
             if not self.parser.read(self.filename):
                 raise TracError(_("Error reading '%(file)s', make sure it is "
                                   "readable.", file=self.filename))
