@@ -23,7 +23,7 @@ from trac.core import *
 from trac.db.api import ConnectionBase, IDatabaseConnector
 from trac.db.util import ConnectionWrapper, IterableCursor
 from trac.env import ISystemInfoProvider
-from trac.util import get_pkginfo, getuser
+from trac.util import get_pkginfo, getuser, lazy
 from trac.util.translation import _
 
 _like_escape_re = re.compile(r'([/_%])')
@@ -156,7 +156,6 @@ class SQLiteConnector(Component):
 
     def __init__(self):
         self.error = None
-        self._extensions = None
 
     # ISystemInfoProvider methods
 
@@ -183,13 +182,6 @@ class SQLiteConnector(Component):
 
     def get_connection(self, path, log=None, params={}):
         self.required = True
-        # construct list of sqlite extension libraries
-        if self._extensions is None:
-            self._extensions = []
-            for extpath in self.extensions:
-                if not os.path.isabs(extpath):
-                    extpath = os.path.join(self.env.path, extpath)
-                self._extensions.append(extpath)
         params['extensions'] = self._extensions
         if path == ':memory:':
             if not self.memory_cnx:
@@ -258,6 +250,15 @@ class SQLiteConnector(Component):
         if not os.path.exists(dest_file):
             raise TracError(_("No destination file created"))
         return dest_file
+
+    @lazy
+    def _extensions(self):
+        _extensions = []
+        for extpath in self.extensions:
+            if not os.path.isabs(extpath):
+                extpath = os.path.join(self.env.path, extpath)
+            _extensions.append(extpath)
+        return _extensions
 
 
 class SQLiteConnection(ConnectionBase, ConnectionWrapper):
