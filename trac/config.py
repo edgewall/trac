@@ -30,9 +30,6 @@ __all__ = ['Configuration', 'ConfigSection', 'Option', 'BoolOption',
            'PathOption', 'ExtensionOption', 'OrderedExtensionsOption',
            'ConfigurationError']
 
-# Retained for backward-compatibility, use as_bool() instead
-_TRUE_VALUES = ('yes', 'true', 'enabled', 'on', 'aye', '1', 1, True)
-
 _use_default = object()
 
 
