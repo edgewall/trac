@@ -21,7 +21,7 @@ A single project on port 8080. (http://localhost:8080/)
 {{{#!sh
  $ tracd -p 8080 /path/to/project
 }}}
-Strictly speaking this will make your Trac accessible to everybody from your network rather than ''localhost only''. To truly limit it use ''--hostname'' option.
+Strictly speaking this will make your Trac accessible to everybody from your network rather than ''localhost only''. To truly limit it use the `--hostname` option.
 {{{#!sh
  $ tracd --hostname=localhost -p 8080 /path/to/project
 }}}

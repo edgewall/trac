@@ -1,24 +1,25 @@
-= Trac Backup =
+= Trac Backup
+
 [[TracGuideToc]]
 
 Backups are simply a copied snapshot of the entire [wiki:TracEnvironment project environment] directory, including the database. Backups can be created using the `hotcopy` command in [wiki:TracAdmin trac-admin].
 
-  ''Note: Trac uses the `hotcopy` nomenclature to match that of [http://subversion.tigris.org/ Subversion], to make it easier to remember when managing both Trac and Subversion servers.''
+'''Note''': Trac uses the `hotcopy` nomenclature to match that of [http://subversion.tigris.org/ Subversion], to make it easier to remember when managing both Trac and Subversion servers.
 
-== Creating a Backup ==
+== Creating a Backup
 
-To create a backup of a live TracEnvironment, simply run:
- {{{#!sh
+To create a backup of a live TracEnvironment simply run:
+{{{#!sh
 $ trac-admin /path/to/projenv hotcopy /path/to/backupdir
 }}}
 
-[wiki:TracAdmin trac-admin] will lock the database while copying.''
+[wiki:TracAdmin trac-admin] will lock the database while copying.
 
 The resulting backup directory is safe to handle using standard file-based backup tools like `tar` or `dump`/`restore`.
 
 Please note, the `hotcopy` command will not overwrite a target directory and when such exists, the operation ends with an error: `Command failed: [Errno 17] File exists:` This is discussed in [trac:ticket:3198 #3198].
 
-=== Restoring a Backup ===
+=== Restoring a Backup
 
 To restore an environment from a backup, stop the process running Trac, ie the Web server or [wiki:TracStandalone tracd], restore the contents of your backup (path/to/backupdir) to your [wiki:TracEnvironment project environment] directory and restart the service.
 

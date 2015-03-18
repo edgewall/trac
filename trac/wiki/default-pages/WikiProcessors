@@ -1,15 +1,21 @@
-= Wiki Processors
+= Wiki Processors =
 
 Processors are WikiMacros designed to provide alternative markup formats for the [TracWiki Wiki engine]. Processors can be thought of as ''macro functions to process user-edited text''. 
 
-Wiki processors can be used in any Wiki text throughout Trac, such as:
- - [#CodeHighlightingSupport syntax highlighting] or for rendering text verbatim
- - rendering [#HTMLrelated Wiki markup inside a context], like inside <div> blocks or <span> or within <td> or <th> table cells
- - using an alternative markup syntax, like [wiki:WikiHtml raw HTML] and [wiki:WikiRestructuredText Restructured Text] or [http://www.textism.com/tools/textile/ textile]
+Wiki processors can be used in any Wiki text throughout Trac,
+for various different purposes, like:
+ - [#CodeHighlightingSupport syntax highlighting] or for rendering text verbatim,
+ - rendering [#HTMLrelated Wiki markup inside a context], 
+   like inside <div> blocks or <span> or within <td> or <th> table cells,
+ - using an alternative markup syntax, like [wiki:WikiHtml raw HTML] and
+   [wiki:WikiRestructuredText Restructured Text],
+   or [http://www.textism.com/tools/textile/ textile]
 
-== Using Processors
 
-To use a processor on a block of text, first delimit the lines using a Wiki ''code block'':
+== Using Processors ==
+
+To use a processor on a block of text, first delimit the lines using
+a Wiki ''code block'':
 {{{
 {{{
 The lines
@@ -17,7 +23,8 @@ that should be processed...
 }}}
 }}}
 
-Immediately after the `{{{` or on the line just below, add `#!` followed by the ''processor name'':
+Immediately after the `{{{` or on the line just below, 
+add `#!` followed by the ''processor name''.
 
 {{{
 {{{
@@ -29,12 +36,18 @@ that should be processed...
 
 This is the "shebang" notation, familiar to most UNIX users.
 
-Besides their content, some Wiki processors can also accept ''parameters'', which are then given as `key=value` pairs after the processor name and on the same line. If `value` has to contain space, as it's often the case for the style parameter, a quoted string can be used (`key="value with space"`).
+Besides their content, some Wiki processors can also accept ''parameters'',
+which are then given as `key=value` pairs after the processor name, 
+on the same line. If `value` has to contain space, as it's often the case for
+the style parameter, a quoted string can be used (`key="value with space"`).
 
-As some processors are meant to process Wiki markup, it's quite possible to ''nest'' processor blocks.
-You may want to indent the content of nested blocks for increased clarity, this extra indentation will be ignored when processing the content.
+As some processors are meant to process Wiki markup, it's quite possible to
+''nest'' processor blocks.
+You may want to indent the content of nested blocks for increased clarity,
+this extra indentation will be ignored when processing the content.
 
-== Examples
+
+== Examples ==
 
 ||= Wiki Markup =||= Display =||
 {{{#!td colspan=2 align=center style="border: none"
@@ -136,13 +149,12 @@ You may want to indent the content of nested blocks for increased clarity, this 
   </div></form>
   }}}
 }}}
-
-== Available Processors
+== Available Processors ==
 
 The following processors are included in the Trac distribution:
 
 || '''`#!default`''' || Present the text verbatim in a preformatted text block. This is the same as specifying ''no'' processor name (and no `#!`) ||
-|| '''`#!comment`''' || Do not process the text in this section, i.e. contents exist only in the plain text - not in the rendered page. ||
+|| '''`#!comment`''' || Do not process the text in this section (i.e. contents exist only in the plain text - not in the rendered page). ||
 || '''`#!rtl`''' || Introduce a Right-To-Left block with appropriate CSS direction and styling ''(since 0.12.2)'' ||
 |||| ||
 ||||= '''[=#HTMLrelated HTML related]''' =||
@@ -164,6 +176,8 @@ The following processors are included in the Trac distribution:
 ||||= '''[=#CodeHighlightingSupport Code Highlighting Support]''' =||
 || '''`#!c`''' [[BR]] '''`#!cpp`''' (C++) [[BR]] '''`#!python`''' [[BR]] '''`#!perl`''' [[BR]] '''`#!ruby`''' [[BR]] '''`#!php`''' [[BR]] '''`#!asp`''' [[BR]] '''`#!java`''' [[BR]] '''`#!js`''' (Javascript) [[BR]] '''`#!sql`''' [[BR]] '''`#!xml`''' (XML or HTML) [[BR]] '''`#!sh`''' (!Bourne/Bash shell) [[BR]] '''etc.''' [[BR]] || Trac includes processors to provide inline syntax highlighting for source code in various languages. [[BR]] [[BR]] Trac relies on external software packages for syntax coloring, like [http://pygments.org Pygments]. [[BR]] [[BR]] See TracSyntaxColoring for information about which languages are supported and how to enable support for more languages. ||
 |||| ||
+
+Since 1.1.2 the default, coding highlighting and MIME-type processors support the argument `lineno` for adding line numbering to the code block. When a value is specified, as in `lineno=3`, the numbering will start at the specified value. When used in combination with the `lineno` argument, the `marks` argument is also supported for highlighting lines. A single line number, set of line numbers and range of line numbers are allowed. For example, `marks=3`, `marks=3-6`, `marks=3,5,7` and `marks=3-5,7` are all allowed. The specified values are relative to the numbered lines, so if `lineno=2` is specified to start the line numbering at 2, `marks=2` will result in the first line being highlighted. 
 
 Using the MIME type as processor, it is possible to syntax-highlight the same languages that are supported when browsing source code.
 
@@ -232,9 +246,50 @@ The same is valid for all other [TracSyntaxColoring#SyntaxColoringSupport mime t
  }}}
 }}}
 
-For more processor macros developed and/or contributed by users, visit the [http://trac-hacks.org/wiki/WikiStart Trac Hacks] community site.
+Line numbers can be added to code blocks and lines can be highlighted //(since 1.1.2)//.
+{{{
+{{{#!python lineno=3 marks=3,9-10,16
+def expand_markup(stream, ctxt=None):
+    """A Genshi stream filter for expanding `genshi.Markup` events.
 
-Developing processors is no different from Wiki macros. In fact, they work the same way, only the usage syntax differs. See WikiMacros#DevelopingCustomMacros for more information.
+    Note: Expansion may not be possible if the fragment is badly
+    formed, or partial.
+    """
+    for event in stream:
+        if isinstance(event[1], Markup):
+            try:
+                for subevent in HTML(event[1]):
+                    yield subevent
+            except ParseError:
+                yield event
+        else:
+            yield event
+}}}
+}}}
+{{{#!python lineno=3 marks=3,9-10,16
+def expand_markup(stream, ctxt=None):
+    """A Genshi stream filter for expanding `genshi.Markup` events.
+
+    Note: Expansion may not be possible if the fragment is badly
+    formed, or partial.
+    """
+    for event in stream:
+        if isinstance(event[1], Markup):
+            try:
+                for subevent in HTML(event[1]):
+                    yield subevent
+            except ParseError:
+                yield event
+        else:
+            yield event
+}}}
+
+For more processor macros developed and/or contributed by users, visit the [th:WikiStart Trac Hacks] community site.
+
+Developing processors is no different from Wiki macros. 
+In fact they work the same way, only the usage syntax differs. 
+See WikiMacros#DevelopingCustomMacros for more information.
+
 
 ----
 See also: WikiMacros, WikiHtml, WikiRestructuredText, TracSyntaxColoring, WikiFormatting, TracGuide

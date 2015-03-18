@@ -5,13 +5,13 @@
 
  * Manage repositories in the "Repository" admin panel, with `trac-admin` or in the `[repositories]` section of [wiki:TracIni#repositories-section trac.ini].
  * Set up a call to `trac-admin $ENV changeset added $REPO $REV` in the post-commit hook of each repository. Additionally, add a call to `trac-admin $ENV changeset modified $REPO $REV` in the post-revprop-change hook of repositories allowing revision property changes.
- * Set the `[trac] repository_sync_per_request` option to an empty value to disable per-request syncing.
+ * Set the `sync_per_request` attribute to `false` to disable per-request syncing.
  * Make sure the user under which your Subversion hooks are run has write access to the Trac environment, or use a tool like `sudo` to temporarily elevate privileges.
 
 == Specifying repositories #Repositories
-Starting with 0.12, Trac can handle more than one repository per environment. The pre-0.12 way of specifying the repository with the `repository_dir` and `repository_type` options in the `[trac]` section of [wiki:TracIni trac.ini] is still supported, but two new mechanisms allow including additional repositories into an environment.
+Trac supports more than one repository per environment. The repositories may be of the same type, or of different types. The repository configurations may be stored in different locations, the two supported by default being the [#ReposDatabase database store] and the [#ReposTracIni trac.ini configuration file].
 
-It is also possible to define aliases of repositories, that act as "pointers" to real repositories. This can be useful when renaming a repository, to avoid breaking all the links to the old name.
+It is possible to define aliases of repositories, that act as "pointers" to real repositories. This can be useful when renaming a repository, to avoid breaking all the links to the old name.
 
 A number of attributes can be associated with each repository, which define the repository's location, type, name and how it is displayed in the source browser. The following attributes are supported:
 
@@ -23,6 +23,7 @@ A number of attributes can be associated with each repository, which define the 
 ||`dir` ||\
 ||The `dir` attribute specifies the location of the repository in the filesystem. It corresponds to the value previously specified in the option `[trac] repository_dir`. The `alias` and `dir` attributes are mutually exclusive. ||
 ||`hidden` ||When set to `true`, the repository is hidden from the repository index page in the source browser. Browsing the repository is still possible, and links referencing the repository remain valid. ||
+||`sync_per_request`||When set to `true` the repository will be synced on every request. This is not recommended, instead a post-commit hook should be configured to provide [#ExplicitSync explicit synchronization] and `sync_per_request` should be set to `false`.||
 ||`type` ||The `type` attribute sets the type of version control system used by the repository. Trac supports Subversion and Git out-of-the-box, and plugins add support for many other systems. If `type` is not specified, it defaults to the value of the `[trac] repository_type` option. ||
 ||`url` ||The `url` attribute specifies the root URL to be used for checking out from the repository. When specified, a "Repository URL" link is added to the context navigation links in the source browser, that can be copied into the tool used for creating the working copy. ||
 
@@ -88,7 +89,7 @@ There is also new functionality in the form of a repository listener extension p
 Please note that at the time of writing, no initial resynchronization or any hooks are necessary for Mercurial repositories - see [trac:#9485] for more information. 
 
 === Explicit synchronization #ExplicitSync
-This is the preferred method of repository synchronization. It requires setting the `[trac]  repository_sync_per_request` option in [wiki:TracIni#trac-section trac.ini] to an empty value, and adding a call to `trac-admin` in the `post-commit` hook of each repository. Additionally, if a repository allows changing revision metadata, a call to `trac-admin` must be added to the `post-revprop-change` hook as well.
+This is the preferred method of repository synchronization. It requires setting the `sync_per_request` attribute to `false`, and adding a call to `trac-admin` in the `post-commit` hook of each repository. Additionally, if a repository allows changing revision metadata, a call to `trac-admin` must be added to the `post-revprop-change` hook as well.
 
  `changeset added <repos> <rev> [...]`::
    Notify Trac that one or more changesets have been added to a repository.
@@ -172,10 +173,21 @@ trac-admin = /path/to/trac-admin
 }}}
 
 === Per-request synchronization #PerRequestSync
-If the post-commit hooks are not available, the environment can be set up for per-request synchronization. In that case, the `[trac] repository_sync_per_request` option in [wiki:TracIni#trac-section trac.ini] must be set to a comma-separated list of repository names to be synchronized.
+If the post-commit hooks are not available, the environment can be set up for per-request synchronization. In that case, the `sync_per_request` attribute for each repository in the database and in [wiki:TracIni#trac-section trac.ini] must be set to `false`.
 
 Note that in this case, the changeset listener extension point is not called, and therefore plugins using it will not work correctly.
 
+== Automatic changeset references in tickets
+
+You can automatically add a reference to the changeset as a ticket comment whenever changes are committed to the repository. The description of the commit needs to contain one of the following formulas:
+ * '''`Refs #123`''' - to reference this changeset in `#123` ticket
+ * '''`Fixes #123`''' - to reference this changeset and close `#123` ticket with the default status ''fixed''
+
+This functionality requires installing a post-commit hook as described in [#ExplicitSync], and enabling the optional commit updater components by adding the following line to the `[components]` section of your [wiki:TracIni#components-section trac.ini], or enabling the components in the //Plugins// admin panel.
+{{{#!ini
+tracopt.ticket.commit_updater.* = enabled
+}}}
+For more information, see the documentation of the `CommitTicketUpdater` component in the //Plugins// admin panel and the [trac:CommitTicketUpdater] page.
 
 == Migration from a single-repository setup (Subversion) #Migration
 The following procedure illustrates a typical migration from a Subversion single-repository setup to multiple repositories.
@@ -183,7 +195,7 @@ The following procedure illustrates a typical migration from a Subversion single
  1. Remove the default repository specification from the `[trac] repository_dir` option.
  1. Add the main repository as a named repository.
  1. Re-synchronize the main repository.
- 1. Set up post-commit and post-revprop-change hooks on the "main" repository, and set `[trac] repository_sync_per_request` to an empty value.
+ 1. Set up post-commit and post-revprop-change hooks on the "main" repository, and set the repository's `sync_per_request` attribute to `false`.
  1. Add an alias to the main repository as the default repository (by leaving out the the `name`, e.g. `.alias = main`). This ensures that all links predating the migration still resolve to the main repository.
  1. Repeat steps 2, 3 and 4 to add other "named" repositories as needed.
 

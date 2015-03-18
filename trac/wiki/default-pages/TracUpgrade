@@ -73,6 +73,25 @@ Remove above note once #9936 is fixed.
 
 === 6. Steps specific to a given Trac version
 
+==== Upgrading from Trac 1.0 to 1.1.x #to1.1.x
+
+===== Python 2.5 no longer supported
+The minimum supported version of python is now 2.6
+
+===== New workflow actions
+
+The ticket creation step is now controlled with a workflow action. The default workflow has `create` and `create_and_assign` actions. The `create` action will always be added when upgrading the database. The `create_and_assign` action will be added if the workflow has an //assigned// state. You may want to edit your workflow after upgrading the database to customize the actions available on the //New Ticket// page.
+
+===== New permissions policy for read-only wiki pages
+Since 1.1.2 the read-only attribute of wiki pages is enabled and enforced only when `ReadonlyWikiPolicy` is in the list of active permission policies. If `[trac] permission_policy` has the default value `DefaultPermissionPolicy, LegacyAttachmentPolicy`, then `ReadonlyWikiPolicy` should be automatically appended to the list when upgrading the environment:
+{{{#!ini
+[trac]
+permission_policies = ReadonlyWikiPolicy,
+ DefaultPermissionPolicy,
+ LegacyAttachmentPolicy
+}}}
+If other permission policies are enabled, //trac.ini// will need to be edited to append `ReadonlyWikiPolicy` to the list of active `permission_policies`. See TracFineGrainedPermissions#ReadonlyWikiPolicy for additional details on the proper ordering.
+
 ==== Upgrading from Trac 0.12 to Trac 1.0 #to1.0
 
 ===== Python 2.4 no longer supported
