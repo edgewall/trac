@@ -96,8 +96,6 @@ class Configuration(object):
         or "1", this method wll return `True`, otherwise `False`.
 
         Valid default input is a string or a bool. Returns a bool.
-
-        (''since 0.9.3'', "enabled" added in 0.11)
         """
         return self[section].getbool(key, default)
 
@@ -108,8 +106,6 @@ class Configuration(object):
         `ConfigurationError` exception is raised.
 
         Valid default input is a string or an int. Returns an int.
-
-        (''since 0.10'')
         """
         return self[section].getint(key, default)
 
@@ -120,8 +116,6 @@ class Configuration(object):
         `ConfigurationError` exception is raised.
 
         Valid default input is a string, float or int. Returns a float.
-
-        (''since 0.12'')
         """
         return self[section].getfloat(key, default)
 
@@ -135,8 +129,6 @@ class Configuration(object):
         included in the list.
 
         Valid default input is a string or a list. Returns a string.
-
-        (''since 0.10'')
         """
         return self[section].getlist(key, default, sep, keep_empty)
 
@@ -147,8 +139,6 @@ class Configuration(object):
         configuration file.
 
         Valid default input is a string. Returns a normalized path.
-
-        (''since 0.11.5'')
         """
         return self[section].getpath(key, default)
 
@@ -160,8 +150,7 @@ class Configuration(object):
         self[section].set(key, value)
 
     def defaults(self, compmgr=None):
-        """Returns a dictionary of the default configuration values
-        (''since 0.10'').
+        """Returns a dictionary of the default configuration values.
 
         If `compmgr` is specified, return only options declared in components
         that are enabled in the given `ComponentManager`.
@@ -204,8 +193,6 @@ class Configuration(object):
         """Returns True if option exists in section in either the project
         trac.ini or one of the parents, or is available through the Option
         registry.
-
-        (''since 0.11'')
         """
         if self.parser.has_option(_to_utf8(section), _to_utf8(option)):
             return True
