@@ -12,12 +12,13 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from ConfigParser import ConfigParser
-from copy import deepcopy
 import os.path
 import re
+from ConfigParser import ConfigParser
+from copy import deepcopy
 
 from genshi.builder import tag
+
 from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.core import *
 from trac.util import AtomicFile, as_bool
@@ -39,7 +40,7 @@ def _to_utf8(basestr):
 
 class ConfigurationError(TracError):
     """Exception raised when a value in the configuration file is not valid."""
-    title = N_('Configuration Error')
+    title = N_("Configuration Error")
 
     def __init__(self, message=None, title=None, show_traceback=False):
         if message is None:
