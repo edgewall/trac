@@ -237,7 +237,7 @@ class TicketTestCase(unittest.TestCase):
         ticket['keywords'] = 'kw1'
         ticket['milestone'] = 'milestone1'
         ticket.insert()
-        
+
         ticket['keywords'] = '  kw1'
         ticket['milestone'] = 'milestone2'
         ticket.save_changes()
@@ -1158,7 +1158,7 @@ class MilestoneTestCase(unittest.TestCase):
         milestone = Milestone(self.env)
         milestone.name = 'MilestoneWithAttachment'
         milestone.insert()
-        
+
         attachment = Attachment(self.env, 'milestone', milestone.name)
         attachment.insert('foo.txt', StringIO(), 0, 1)
 
@@ -1322,7 +1322,7 @@ class ComponentTestCase(unittest.TestCase):
         self.assertEqual('<Component None>', repr(Component(self.env)))
         self.assertEqual("<Component 'component1'>",
                          repr(Component(self.env, 'component1')))
-        
+
     def test_create_and_update(self):
         component = Component(self.env)
         component.name = 'Test'

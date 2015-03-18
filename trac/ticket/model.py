@@ -1188,7 +1188,7 @@ def group_milestones(milestones, include_completed):
 class Version(object):
 
     exists = property(lambda self: self._old_name is not None)
-    
+
     def __init__(self, env, name=None):
         self.env = env
         self.name = self._old_name = self.time = self.description = None

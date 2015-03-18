@@ -83,7 +83,7 @@ class SetOwnerOperation(FunctionalTwillTestCaseSetup):
         try:
             ticket_id = self._tester.create_ticket(self.__class__.__name__,
                                                    info={'owner': 'lammy'})
-            self.env.config.set('ticket-workflow', 'reassign.set_owner', 
+            self.env.config.set('ticket-workflow', 'reassign.set_owner',
                                 "alice,bill")
             self.env.config.save()
 
@@ -112,7 +112,7 @@ class SetOwnerOperation(FunctionalTwillTestCaseSetup):
         try:
             ticket_id = self._tester.create_ticket(self.__class__.__name__,
                                                    info={'owner': 'lammy'})
-            self.env.config.set('ticket-workflow', 'reassign.set_owner', 
+            self.env.config.set('ticket-workflow', 'reassign.set_owner',
                                 "alice")
             self.env.config.save()
 
@@ -214,7 +214,7 @@ class MaySetOwnerOperationRestrictOwnerFalse(FunctionalTwillTestCaseSetup):
         try:
             ticket_id = self._tester.create_ticket(self.__class__.__name__,
                                                    info={'owner': 'lammy'})
-            self.env.config.set('ticket-workflow', 'reassign.set_owner', 
+            self.env.config.set('ticket-workflow', 'reassign.set_owner',
                                 "alice,bill")
             self.env.config.save()
 
@@ -247,7 +247,7 @@ class MaySetOwnerOperationRestrictOwnerFalse(FunctionalTwillTestCaseSetup):
         try:
             ticket_id = self._tester.create_ticket(self.__class__.__name__,
                                                    info={'owner': 'lammy'})
-            self.env.config.set('ticket-workflow', 'reassign.set_owner', 
+            self.env.config.set('ticket-workflow', 'reassign.set_owner',
                                 "alice")
             self.env.config.save()
 
@@ -265,7 +265,7 @@ class MaySetOwnerOperationRestrictOwnerFalse(FunctionalTwillTestCaseSetup):
             tc.find('<option selected="selected" value="lammy">lammy</option>')
             tc.find('<option value="alice">alice</option>')
 
-            self.env.config.set('ticket-workflow', 'reassign.set_owner', 
+            self.env.config.set('ticket-workflow', 'reassign.set_owner',
                                 "lammy")
             self.env.config.save()
 

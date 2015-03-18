@@ -420,7 +420,7 @@ class TestCopyPermissions(FunctionalTwillTestCaseSetup):
         finally:
             self._testenv.revoke_perm('anonymous', 'PERMISSION_GRANT')
             self._tester.login('admin')
-        
+
 
 class TestPluginSettings(FunctionalTwillTestCaseSetup):
     def runTest(self):

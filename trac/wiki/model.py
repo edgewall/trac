@@ -102,7 +102,7 @@ class WikiPage(object):
             self.text = self.comment = self.author = ''
             self.time = None
             self.readonly = 0
-            
+
     def __repr__(self):
         if self.name is None:
             name = self.name

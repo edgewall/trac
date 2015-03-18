@@ -254,10 +254,10 @@ class WikiModule(Component):
 
     def _do_edit_comment(self, req, page):
         req.perm(page.resource).require('WIKI_ADMIN')
-        
+
         if 'cancel' in req.args:
             req.redirect(req.href.wiki(page.name, action='history'))
-        
+
         new_comment = req.args.get('new_comment')
 
         page.edit_comment(new_comment)

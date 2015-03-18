@@ -32,7 +32,7 @@ class TicketAdminPanel(Component):
     implements(IAdminPanelProvider, IAdminCommandProvider)
 
     abstract = True
-    
+
     _type = 'undefined'
     _label = N_("(Undefined)"), N_("(Undefined)")
     _view_perms = ['TICKET_ADMIN']
