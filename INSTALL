@@ -1,11 +1,11 @@
+﻿.. charset=utf-8
+
 Trac Installation Guide for 1.0
 ===============================
 
-
-
 Trac is written in the Python programming language and needs a
-database, `​SQLite`_, `​PostgreSQL`_, or `​MySQL`_. For HTML
-rendering, Trac uses the `​Genshi`_ templating system.
+database, `SQLite`_, `PostgreSQL`_, or `MySQL`_. For HTML rendering,
+Trac uses the `Genshi`_ templating system.
 
 Since version 0.12, Trac can also be localized, and there is probably
 a translation available in your language. If you want to use the Trac
@@ -23,7 +23,6 @@ Trac. While you may find instructions for installing Trac on specific
 systems at `TracInstallPlatforms`_ on the main Trac site, please first
 read through these general instructions to get a good understanding of
 the tasks involved.
-
 
 
 Installation Steps
@@ -58,9 +57,6 @@ Installation Steps
     #. Using Trac
 
 
-
-
-
 Dependencies
 ------------
 
@@ -71,10 +67,10 @@ Mandatory Dependencies
 To install Trac, the following software packages must be installed:
 
 
-+ `​Python`_, version >= 2.5 and < 3.0 (note that we dropped the
++ `Python`_, version >= 2.5 and < 3.0 (note that we dropped the
   support for Python 2.4 in this release)
-+ `​setuptools`_, version >= 0.6
-+ `​Genshi`_, version >= 0.6
++ `setuptools`_, version >= 0.6
++ `Genshi*`_, version >= 0.6
 
 
 You also need a database system and the corresponding python bindings.
@@ -88,8 +84,8 @@ As you must be using Python 2.5, 2.6 or 2.7, you already have the
 SQLite database bindings bundled with the standard distribution of
 Python: the sqlite3 module.
 
-Optionally, you may install a newer version of `​pysqlite`_ than the
-one provided by the Python distribution. See `PySqlite`_ for details.
+Optionally, you may install a newer version of `pysqlite`_ than the
+one provided by the Python distribution. See `PySqlite*`_ for details.
 
 
 For the PostgreSQL database
@@ -98,8 +94,8 @@ For the PostgreSQL database
 You need to install the database and its Python bindings:
 
 
-+ `​PostgreSQL`_, version 8.0 or later
-+ `​psycopg2`_, version 2.0 or later
++ `PostgreSQL`_, version 8.0 or later
++ `psycopg2`_, version 2.0 or later
 
 
 See `DatabaseBackend`_ for details.
@@ -111,12 +107,12 @@ For the MySQL database
 Trac works well with MySQL, provided you follow the guidelines:
 
 
-+ `​MySQL`_, version 5.0 or later
-+ `​MySQLdb`_, version 1.2.2 or later
++ `MySQL`_, version 5.0 or later
++ `MySQLdb`_, version 1.2.2 or later
 
 
 Given the caveats and known issues surrounding MySQL, read carefully
-the `MySqlDb`_ page before creating the database.
+the `MySqlDb*`_ page before creating the database.
 
 
 Optional Dependencies
@@ -131,19 +127,19 @@ Subversion
 ++++++++++
 
 
-+ `​Subversion`_, 1.5.x or later and the *corresponding* Python
++ `Subversion`_, 1.5.x or later and the *corresponding* Python
   bindings. Older versions starting from 1.0, like 1.2.4, 1.3.2 or
   1.4.2, etc. may still work. For troubleshooting information, check the
   `TracSubversion`_ page.
 
 
-There are `​pre-compiled SWIG bindings`_ available for various
+There are `pre-compiled SWIG bindings`_ available for various
 platforms. (Good luck finding precompiled SWIG bindings for any
-Windows package at that listing. `TracSubversion`_ points you to
-`​Alagazam`_, which works for me under Python 2.6.)
+Windows package at that listing. `TracSubversion*`_ points you to
+`Alagazam`_, which works for me under Python 2.6.)
 
-Note that Trac doesn't use `​PySVN`_, neither does it work yet with
-the newer ctype -style bindings.
+Note that Trac doesn't use `PySVN`_, neither does it work yet with the
+newer ctype -style bindings.
 
 Please note: if using Subversion, Trac must be installed on the same
 machine . Remote repositories are currently `not supported`_.
@@ -153,7 +149,7 @@ Git
 +++
 
 
-+ `​Git`_ 1.5.6 or later.
++ `Git`_ 1.5.6 or later.
 
 
 More information is available on the `TracGit`_ page.
@@ -177,14 +173,14 @@ Alternatively you can configure Trac to run in any of the following
 environments:
 
 
-+ `​Apache`_ with
++ `Apache`_ with
 
-    + `​mod_wsgi`_, see `TracModWSGI`_ and
-      `​http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac`_
-    + `​mod_python 3.5.0`_, (deprecated: see `TracModPython`_)
+    + `mod_wsgi`_, see `TracModWSGI`_ and
+      `http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac`_
+    + `mod_python 3.5.0`_, see `TracModPython`_
 
-+ a `​FastCGI`_-capable web server (see `TracFastCgi`_)
-+ an `​AJP`_-capable web server (see `TracOnWindowsIisAjp`_)
++ a `FastCGI`_-capable web server (see `TracFastCgi`_)
++ an `AJP`_-capable web server (see `TracOnWindowsIisAjp`_)
 + a FastCGI and FastCGI-to-WSGI gateway (see
   `TracOnWindowsIisWfastcgi`_)
 + a CGI-capable web server (see `TracCgi`_), but usage of Trac as a
@@ -192,20 +188,17 @@ environments:
   options.
 
 
-
-
-
 Other Python Packages
 `````````````````````
 
 
-+ `​Babel`_, version >= 0.9.5, needed for localization support
-  (unreleased version 1.0dev should work as well)
-+ `​docutils`_, version >= 0.3.9 for `WikiRestructuredText`_.
-+ `​Pygments`_ for `syntax highlighting`_.`​SilverCity`_ and/or
-  `​Enscript`_ may still be used but are deprecated and you really
-  should be using Pygments.
-+ `​pytz`_ to get a complete list of time zones, otherwise Trac will
++ `Babel*`_, version 0.9.5, 0.9.6 or >= 1.3 needed for localization
+  support
++ `docutils`_, version >= 0.3.9 for `WikiRestructuredText`_.
++ `Pygments`_ for `syntax highlighting`_.`SilverCity`_ and/or
+  `Enscript`_ may still be used but are deprecated and you really should
+  be using Pygments.
++ `pytz`_ to get a complete list of time zones, otherwise Trac will
   fall back on a shorter list from an internal time zone implementation.
 
 
@@ -227,15 +220,15 @@ Installing Trac
 
 The `trac-admin`_ command-line tool, used to create and maintain
 `project environments`_, as well as the `tracd`_ standalone server are
-installed are installed along with Trac. There are several methods for
-installing Trac.
+installed along with Trac. There are several methods for installing
+Trac.
 
 
 Using easy_install
 ~~~~~~~~~~~~~~~~~~
 
 Trac can be installed from PyPI or the Subversion repository using
-`​setuptools`_.
+`setuptools`_.
 
 A few examples:
 
@@ -258,7 +251,7 @@ A few examples:
   from source
 
 
-More information can be found on the `setuptools`_ page.
+More information can be found on the `setuptools*`_ page.
 
 Setuptools Warning: If the version of your setuptools is in the range
 5.4 through 5.6, the environment variable
@@ -266,7 +259,6 @@ PKG_RESOURCES_CACHE_ZIP_MANIFESTS must be set in order to avoid
 significant performance degradation. More information may be found in
 the sections on `Running The Standalone Server`_ and `Running Trac on
 a Web Server`_.
-
 
 
 Using pip
@@ -287,8 +279,6 @@ Assuming you want to have your entire pip installation in
     pip install trac psycopg2 
 
 
-
-
 or
 
 
@@ -297,8 +287,6 @@ or
 ::
 
     pip install trac mysql-python 
-
-
 
 
 Make sure your OS specific headers are available for pip to
@@ -314,7 +302,7 @@ All commands ( tracd , trac-admin ) are available in
 PythonHandler directive) and mod_wsgi (using WSGIDaemonProcess
 directive)
 
-Additionally, you can install several Trac plugins (listed `​here`_)
+Additionally, you can install several Trac plugins (listed `here`_)
 through pip.
 
 
@@ -385,7 +373,7 @@ installation options, run:
     easy_install --help
 
 
-Also see `​Installing Python Modules`_ for detailed information.
+Also see `Installing Python Modules`_ for detailed information.
 
 Specifically, you might be interested in:
 
@@ -477,7 +465,6 @@ Warning: Please only use ASCII-characters for account name and project
 path, unicode characters are not supported there.
 
 
-
 Deploying Trac
 --------------
 
@@ -534,25 +521,22 @@ tracd :
     $ PKG_RESOURCES_CACHE_ZIP_MANIFESTS=1 tracd --port 8000 /path/to/myproject
 
 
-
-
 Running Trac on a Web Server
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Trac provides various options for connecting to a "real" web server:
 
 
-+ `FastCGI`_
-+ `mod_wsgi`_
-+ *`mod_python`_ (no longer recommended, as mod_python is not actively
-  maintained anymore)*
++ `FastCGI*`_
++ `mod_wsgi*`_
++ `mod_python`_
 + *`CGI`_ (should not be used, as the performance is far from
   optimal)*
 
 
-Trac also supports `AJP`_ which may be your choice if you want to
+Trac also supports `AJP*`_ which may be your choice if you want to
 connect to IIS. Other deployment scenarios are possible: `nginx`_,
-`​uwsgi`_, `Isapi-wsgi`_ etc.
+`uwsgi`_, `Isapi-wsgi`_ etc.
 
 
 Generating the Trac cgi-bin directory
@@ -591,7 +575,7 @@ deployment, this is far from optimal as the web server could be set up
 to directly serve those static resources (for CGI setup, this is
 highly undesirable and will cause abysmal performance).
 
-Web servers such as `​Apache`_ allow you to create “Aliases” to
+Web servers such as `Apache`_ allow you to create “Aliases” to
 resources, giving them a virtual URL that doesn't necessarily reflect
 the layout of the servers file system. We also can map requests for
 static resources directly to the directory on the file system,
@@ -615,7 +599,6 @@ you need first to extract the relevant resources from Trac using the
     
 
 
-
 The target <directory> will then contain an htdocs directory with:
 
 
@@ -623,7 +606,6 @@ The target <directory> will then contain an htdocs directory with:
 + common/ - the static resources of Trac itself
 + <plugins>/ - one directory for each resource directory managed by
   the plugins enabled for this environment
-
 
 
 Example: Apache and ScriptAlias
@@ -697,7 +679,7 @@ using the ` [trac] htdocs_location`_ configuration setting:
 
 
 Note that this makes it easy to have a dedicated domain serve those
-static resources (preferentially `​cookie-less`_).
+static resources (preferentially `cookie-less`_).
 
 Of course, you still need to make the Trac htdocs/common directory
 available through the web server at the specified URL, for example by
@@ -708,8 +690,6 @@ server:
 ::
 
     $ ln -s /path/to/trac/htdocs/common /var/www/static.example.org/trac-common
-
-
 
 
 Setting up the Plugin Cache
@@ -781,7 +761,7 @@ in Trac and the components are disabled by default *(since 1.0)*.
 Subversion and Git must be explicitly enabled if you wish to use them.
 See `TracRepositoryAdmin`_ for more details.
 
-The components can be enabled by adding the following to the
+The version control systems are enabled by adding the following to the
 [components] section of your `trac.ini`_, or enabling the components
 in the "Plugins" admin panel.
 
@@ -791,14 +771,13 @@ in the "Plugins" admin panel.
     tracopt.versioncontrol.svn.* = enabled
 
 
-
 ::
 
     tracopt.versioncontrol.git.* = enabled
 
 
 After enabling the components, repositories can be configured through
-the *Repositories* admin panel or by editing `trac.ini`_. Automatic
+the *Repositories* admin panel or by editing `trac.ini*`_. Automatic
 changeset references can be inserted as ticket comments by configuring
 `CommitTicketUpdater`_.
 
@@ -816,113 +795,101 @@ read-only access to the resources. You will need to configure
 authentication and grant additional `permissions`_ to authenticated
 users to see the full set of features.
 
-* Enjoy! *
+*Enjoy!*
 
 `The Trac Team`_
-
 
 
 See also: `TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 `TracPermissions`_
 
-.. _MySqlDb: http://trac.edgewall.org/intertrac/MySqlDb
-.. _DatabaseBackend: http://trac.edgewall.org/intertrac/DatabaseBackend%23Postgresql
-.. _pytz: http://pytz.sf.net
-.. _MySQLdb: http://sf.net/projects/mysql-python
-.. _Timeline: trac/wiki/default-pages/TracTimeline
-.. _Notification: trac/wiki/default-pages/TracNotification
-.. _uwsgi: http://projects.unbit.it/uwsgi/wiki/Example#Traconapacheinasub-uri
-.. _nginx: http://trac.edgewall.org/intertrac/TracNginxRecipe
-.. _TracUpgrade: trac/wiki/default-pages/TracUpgrade
-.. _pysqlite: http://pypi.python.org/pypi/pysqlite
-.. _syntax highlighting: trac/wiki/default-pages/TracSyntaxColoring
-.. _Backup: trac/wiki/default-pages/TracBackup
-.. _PySVN: http://pysvn.tigris.org/
-.. _tracd: trac/wiki/default-pages/TracStandalone
-.. _TracFastCgi: trac/wiki/default-pages/TracFastCgi
-.. _CommitTicketUpdater: trac/wiki/default-pages/TracRepositoryAdmin#Automaticchangesetreferencesintickets
-.. _TracRepositories: http://trac.edgewall.org/intertrac/TracRepositories%23OfficialSubversionrepository
-.. _The Wiki: trac/wiki/default-pages/TracWiki
-.. _MySQL: http://mysql.com/
-.. _Apache: http://httpd.apache.org/
-.. _http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac: http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac
-.. _IrcChannel: http://trac.edgewall.org/intertrac/IrcChannel
-.. _Genshi: http://genshi.edgewall.org
-.. _database connection string: trac/wiki/default-pages/TracEnvironment#DatabaseConnectionStrings
-.. _setuptools: http://trac.edgewall.org/intertrac/setuptools
-.. _TracSubversion: http://trac.edgewall.org/intertrac/TracSubversion
-.. _Genshi: http://genshi.edgewall.org/wiki/Download
-.. _trac-admin: trac/wiki/default-pages/TracAdmin
-.. _Pygments: http://pygments.org
-.. _MailingList: http://trac.edgewall.org/intertrac/MailingList
-.. _Running Trac on a Web Server: trac/wiki/default-pages/TracInstall#RunningTraconaWebServer
-.. _Changesets: trac/wiki/default-pages/TracChangeset
-.. _TracDownload: http://trac.edgewall.org/intertrac/TracDownload
-.. _setuptools: http://pypi.python.org/pypi/setuptools
-.. _not supported: http://trac.edgewall.org/intertrac/ticket%3A493
-.. _Repository Browser: trac/wiki/default-pages/TracBrowser
-.. _TracModWSGI#ConfiguringAuthentication: trac/wiki/default-pages/TracModWSGI#ConfiguringAuthentication
-.. _Git: http://git-scm.com/
-.. _TracAuthenticationIntroduction: http://trac.edgewall.org/intertrac/TracAuthenticationIntroduction
-.. _Installing Python Modules: http://docs.python.org/2/install/index.html
-.. _TracSubversion: http://trac.edgewall.org/intertrac/TracSubversion%23Troubleshooting
-.. _VersionControlSystem: http://trac.edgewall.org/intertrac/VersionControlSystem
-.. _Logging: trac/wiki/default-pages/TracLogging
-.. _trac.ini: trac/wiki/default-pages/TracIni#repositories-section
-.. _Alagazam: http://alagazam.net
-.. _database backends: http://trac.edgewall.org/intertrac/DatabaseBackend
-.. _TracInstallPlatforms: http://trac.edgewall.org/intertrac/TracInstallPlatforms
-.. _Roadmap: trac/wiki/default-pages/TracRoadmap
-.. _SilverCity: http://silvercity.sourceforge.net/
-.. _conf/trac.ini: trac/wiki/default-pages/TracIni
-.. _WikiRestructuredText: trac/wiki/default-pages/WikiRestructuredText
-.. _TracGuide: trac/wiki/default-pages/TracGuide
-.. _Tickets: trac/wiki/default-pages/TracTickets
-.. _Revision Log: trac/wiki/default-pages/TracRevisionLog
-.. _Installation: trac/wiki/default-pages/TracInstall
-.. _TracL10N: http://trac.edgewall.org/intertrac/wiki%3ATracL10N
-.. _Running The Standalone Server: trac/wiki/default-pages/TracInstall#RunningtheStandaloneServer
-.. _TracGit: http://trac.edgewall.org/intertrac/TracGit
-.. _Babel: http://babel.edgewall.org
-.. _here: https://pypi.python.org/pypi?:action=browse&show=all&c=516
-.. _Trac environment: trac/wiki/default-pages/TracEnvironment
-.. _Subversion: http://subversion.apache.org/
-.. _Installing Trac: trac/wiki/default-pages/TracInstall#InstallingTrac
-.. _FastCGI: http://www.fastcgi.com/
-.. _PluginList#VersionControlSystems: http://trac.edgewall.org/intertrac/PluginList%23VersionControlSystems
-.. _mod_wsgi: trac/wiki/default-pages/TracModWSGI
-.. _TracOnWindowsIisWfastcgi: http://trac.edgewall.org/intertrac/TracOnWindowsIisWfastcgi
-.. _Plugins: trac/wiki/default-pages/TracPlugins
-.. _Ticket Queries: trac/wiki/default-pages/TracQuery
-.. _Enscript: http://gnu.org/software/enscript/enscript.html
-.. _Workflow: trac/wiki/default-pages/TracWorkflow
-.. _The Trac Team: http://trac.edgewall.org/intertrac/TracTeam
-.. _cookie-less: http://code.google.com/speed/page-speed/docs/request.html#ServeFromCookielessDomain
-.. _SQLite: http://sqlite.org/
-.. _Python: http://www.python.org/
-.. _ [trac] htdocs_location: trac/wiki/default-pages/TracIni#trac-section
+.. _ [trac] htdocs_location: http://trac.edgewall.org/wiki/TracIni#trac-section
+.. _added: http://trac.edgewall.org/wiki/TracRepositoryAdmin
+.. _AJP*: http://trac.edgewall.org/intertrac/TracOnWindowsIisAjp
 .. _AJP: http://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html
-.. _mod_python: trac/wiki/default-pages/TracModPython
-.. _pre-compiled SWIG bindings: http://subversion.apache.org/packages.html
-.. _source code repository: trac/wiki/default-pages/TracEnvironment#SourceCodeRepository
-.. _TracStandalone#UsingAuthentication: trac/wiki/default-pages/TracStandalone#UsingAuthentication
-.. _Batch Modify: trac/wiki/default-pages/TracBatchModify
+.. _Alagazam: http://alagazam.net
+.. _Apache: http://httpd.apache.org/
+.. _Babel*: http://babel.edgewall.org
+.. _Babel: http://trac.edgewall.org/wiki/TracInstall#OtherPythonPackages
+.. _CGI: http://trac.edgewall.org/wiki/TracCgi
+.. _CommitTicketUpdater: http://trac.edgewall.org/wiki/TracRepositoryAdmin#Automaticchangesetreferencesintickets
+.. _conf/trac.ini: http://trac.edgewall.org/wiki/TracIni
+.. _configuration file: http://trac.edgewall.org/wiki/TracIni
+.. _cookie-less: http://code.google.com/speed/page-speed/docs/request.html#ServeFromCookielessDomain
+.. _database backends: http://trac.edgewall.org/intertrac/DatabaseBackend
+.. _database connection string: http://trac.edgewall.org/wiki/TracEnvironment#DatabaseConnectionStrings
+.. _DatabaseBackend: http://trac.edgewall.org/intertrac/DatabaseBackend%23Postgresql
 .. _docutils: http://docutils.sourceforge.net/
-.. _AJP: http://trac.edgewall.org/intertrac/TracOnWindowsIisAjp
-.. _Customization: trac/wiki/default-pages/TracInterfaceCustomization
-.. _trac.ini: trac/wiki/default-pages/TracIni#components-section
-.. _TracRepositoryAdmin: trac/wiki/default-pages/TracRepositoryAdmin
-.. _psycopg2: http://pypi.python.org/pypi/psycopg2
-.. _TracPermissions: trac/wiki/default-pages/TracPermissions
-.. _Babel: trac/wiki/default-pages/TracInstall#OtherPythonPackages
-.. _mod_wsgi: http://code.google.com/p/modwsgi/
-.. _RSS Support: trac/wiki/default-pages/TracRss
-.. _PySqlite: http://trac.edgewall.org/intertrac/PySqlite%23ThePysqlite2bindings
-.. _Wiki Formatting: trac/wiki/default-pages/WikiFormatting
-.. _PostgreSQL: http://www.postgresql.org/
-.. _Reports: trac/wiki/default-pages/TracReports
-.. _mod_python 3.5.0: http://modpython.org/
+.. _Enscript: http://gnu.org/software/enscript/enscript.html
+.. _FastCGI*: http://trac.edgewall.org/wiki/TracFastCgi
+.. _FastCGI: http://www.fastcgi.com/
+.. _Genshi*: http://genshi.edgewall.org/wiki/Download
+.. _Genshi: http://genshi.edgewall.org
+.. _Git: http://git-scm.com/
+.. _here: https://pypi.python.org/pypi?:action=browse&show=all&c=516
+.. _http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac: http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac
+.. _Installing Python Modules: http://docs.python.org/2/install/index.html
+.. _Installing Trac: http://trac.edgewall.org/wiki/TracInstall#InstallingTrac
+.. _IrcChannel: http://trac.edgewall.org/intertrac/IrcChannel
 .. _Isapi-wsgi: http://trac.edgewall.org/intertrac/TracOnWindowsIisIsapi
-.. _CGI: trac/wiki/default-pages/TracCgi
-
-
+.. _MailingList: http://trac.edgewall.org/intertrac/MailingList
+.. _mod_python 3.5.0: http://modpython.org/
+.. _mod_python: http://trac.edgewall.org/wiki/TracModPython
+.. _mod_wsgi*: http://trac.edgewall.org/wiki/TracModWSGI
+.. _mod_wsgi: http://code.google.com/p/modwsgi/
+.. _MySQL: http://mysql.com/
+.. _MySqlDb*: http://trac.edgewall.org/intertrac/MySqlDb
+.. _MySQLdb: http://sf.net/projects/mysql-python
+.. _nginx: http://trac.edgewall.org/intertrac/TracNginxRecipe
+.. _not supported: http://trac.edgewall.org/intertrac/ticket%3A493
+.. _permissions: http://trac.edgewall.org/wiki/TracPermissions
+.. _platform-specific instructions: http://trac.edgewall.org/intertrac/TracInstallPlatforms
+.. _PluginList#VersionControlSystems: http://trac.edgewall.org/intertrac/PluginList%23VersionControlSystems
+.. _PostgreSQL: http://www.postgresql.org/
+.. _pre-compiled SWIG bindings: http://subversion.apache.org/packages.html
+.. _project environments: http://trac.edgewall.org/wiki/TracEnvironment
+.. _psycopg2: http://pypi.python.org/pypi/psycopg2
+.. _Pygments: http://pygments.org
+.. _PySqlite*: http://trac.edgewall.org/intertrac/PySqlite%23ThePysqlite2bindings
+.. _pysqlite: http://pypi.python.org/pypi/pysqlite
+.. _PySVN: http://pysvn.tigris.org/
+.. _Python: http://www.python.org/
+.. _pytz: http://pytz.sf.net
+.. _Running the Standalone Server: http://trac.edgewall.org/wiki/TracInstall#RunningtheStandaloneServer
+.. _Running Trac on a Web Server: http://trac.edgewall.org/wiki/TracInstall#RunningTraconaWebServer
+.. _setuptools*: http://trac.edgewall.org/intertrac/setuptools
+.. _setuptools: http://pypi.python.org/pypi/setuptools
+.. _SilverCity: http://silvercity.sourceforge.net/
+.. _source code repository: http://trac.edgewall.org/wiki/TracEnvironment#SourceCodeRepository
+.. _SQLite: http://sqlite.org/
+.. _Subversion: http://subversion.apache.org/
+.. _syntax highlighting: http://trac.edgewall.org/wiki/TracSyntaxColoring
+.. _The Trac Team: http://trac.edgewall.org/intertrac/TracTeam
+.. _Trac environment: http://trac.edgewall.org/wiki/TracEnvironment
+.. _trac-admin: http://trac.edgewall.org/wiki/TracAdmin
+.. _trac.ini*: http://trac.edgewall.org/wiki/TracIni#repositories-section
+.. _trac.ini: http://trac.edgewall.org/wiki/TracIni#components-section
+.. _TracAuthenticationIntroduction: http://trac.edgewall.org/intertrac/TracAuthenticationIntroduction
+.. _TracCgi: http://trac.edgewall.org/wiki/TracCgi
+.. _tracd: http://trac.edgewall.org/wiki/TracStandalone
+.. _TracDownload: http://trac.edgewall.org/intertrac/TracDownload
+.. _TracFastCgi: http://trac.edgewall.org/wiki/TracFastCgi
+.. _TracGit: http://trac.edgewall.org/intertrac/TracGit
+.. _TracGuide: http://trac.edgewall.org/wiki/TracGuide
+.. _TracInstallPlatforms: http://trac.edgewall.org/intertrac/TracInstallPlatforms
+.. _TracL10N: http://trac.edgewall.org/intertrac/wiki%3ATracL10N
+.. _TracModPython: http://trac.edgewall.org/wiki/TracModPython
+.. _TracModWSGI#ConfiguringAuthentication: http://trac.edgewall.org/wiki/TracModWSGI#ConfiguringAuthentication
+.. _TracModWSGI: http://trac.edgewall.org/wiki/TracModWSGI
+.. _TracOnWindowsIisAjp: http://trac.edgewall.org/intertrac/TracOnWindowsIisAjp
+.. _TracOnWindowsIisWfastcgi: http://trac.edgewall.org/intertrac/TracOnWindowsIisWfastcgi
+.. _TracPermissions: http://trac.edgewall.org/wiki/TracPermissions
+.. _TracRepositories: http://trac.edgewall.org/intertrac/TracRepositories%23OfficialSubversionrepository
+.. _TracRepositoryAdmin: http://trac.edgewall.org/wiki/TracRepositoryAdmin
+.. _TracStandalone#UsingAuthentication: http://trac.edgewall.org/wiki/TracStandalone#UsingAuthentication
+.. _TracSubversion*: http://trac.edgewall.org/intertrac/TracSubversion
+.. _TracSubversion: http://trac.edgewall.org/intertrac/TracSubversion%23Troubleshooting
+.. _TracUpgrade: http://trac.edgewall.org/wiki/TracUpgrade
+.. _uwsgi: http://projects.unbit.it/uwsgi/wiki/Example#Traconapacheinasub-uri
+.. _VersionControlSystem: http://trac.edgewall.org/intertrac/VersionControlSystem
+.. _WikiRestructuredText: http://trac.edgewall.org/wiki/WikiRestructuredText

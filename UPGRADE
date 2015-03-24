@@ -2,7 +2,6 @@ Upgrade Instructions
 ====================
 
 
-
 #. Instructions
 
     #. 1. Bring your server off-line
@@ -34,10 +33,6 @@ Upgrade Instructions
 
     #. Changing Database Backend
     #. Upgrading from older versions of Trac
-
-
-
-
 
 
 Instructions
@@ -129,8 +124,6 @@ manually. Then, to perform the actual upgrade, run:
 ::
 
     trac-admin /path/to/projenv upgrade --no-backup
-
-
 
 
 4. Update the Trac Documentation
@@ -284,8 +277,6 @@ interface:
     trac-admin /path/to/projenv repository resync '*'
 
 
-
-
 Improved repository synchronization
 +++++++++++++++++++++++++++++++++++
 
@@ -408,6 +399,18 @@ state. So you will probably want to migrate to "basic" workflow;
 `TracWorkflow`_ for a detailed description of the new basic workflow.
 
 
+Global Configuration
+++++++++++++++++++++
+
+In versions prior to 0.11, the global configuration was by default
+located in $prefix/share/trac/conf/trac.ini or /etc/trac/trac.ini ,
+depending on the distribution. You may want to specify that file to
+inherit from when upgrading. Literally, when upgrading you have to add
+an [inherit] section to your project's trac.ini file. Additionally,
+you have to move your customized templates and common images from
+$prefix/share/trac/... to the new location.
+
+
 7. Restart the Web Server
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -479,7 +482,7 @@ Upgrading Python
 ~~~~~~~~~~~~~~~~
 
 Upgrading Python to a newer version will require reinstallation of
-Python packages: Trac itself of course, but also `​easy_install`_, if
+Python packages: Trac itself of course, but also `easy_install`_, if
 you've been using that. If you are using Subversion, you'll also need
 to upgrade the Python bindings for svn.
 
@@ -488,7 +491,7 @@ Windows and Python 2.6
 ``````````````````````
 
 If you've been using CollabNet's Subversion package, you may need to
-uninstall that in favor of `​Alagazam`_, which has the Python bindings
+uninstall that in favor of `Alagazam`_, which has the Python bindings
 readily available, see `TracSubversion`_. That package works without
 tweaking.
 
@@ -496,7 +499,7 @@ tweaking.
 Changing Database Backend
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The `​TracMigratePlugin`_ on `​trac-hacks.org`_ has been written to
+The `TracMigratePlugin`_ on `trac-hacks.org`_ has been written to
 assist in migrating between SQLite, MySQL and PostgreSQL databases.
 
 
@@ -507,59 +510,41 @@ For upgrades from versions older than Trac 0.10, refer first to
 `wiki:0.10/TracUpgrade#SpecificVersions`_.
 
 
-
 See also: `TracGuide`_, `TracInstall`_
 
-.. _TracRepositoryAdmin#Synchronization: trac/wiki/default-pages/TracRepositoryAdmin#Synchronization
-.. _TracGuide: trac/wiki/default-pages/TracGuide
-.. _Tickets: trac/wiki/default-pages/TracTickets
-.. _TracSubversion: http://trac.edgewall.org/intertrac/TracSubversion
-.. _ [inherit] templates_dir: trac/wiki/default-pages/TracIni#GlobalConfiguration
-.. _Revision Log: trac/wiki/default-pages/TracRevisionLog
-.. _Batch Modify: trac/wiki/default-pages/TracBatchModify
-.. _TracInstall: trac/wiki/default-pages/TracInstall
-.. _Trac database upgrade: trac/wiki/default-pages/TracUpgrade#Tracdatabaseupgrade
-.. _trac-admin: trac/wiki/default-pages/TracAdmin
-.. _contrib/workflow/migrate_original_to_basic.py: http://trac.edgewall.org/intertrac/source%3Atrunk/contrib/workflow/migrate_original_to_basic.py
-.. _TracInterfaceCustomization: trac/wiki/default-pages/TracInterfaceCustomization
-.. _TracMigratePlugin: http://trac-hacks.org/wiki/TracMigratePlugin
-.. _Timeline: trac/wiki/default-pages/TracTimeline
-.. _#9434: http://trac.edgewall.org/intertrac/%239434
-.. _Notification: trac/wiki/default-pages/TracNotification
-.. _trac-hacks.org: http://trac-hacks.org
-.. _Changesets: trac/wiki/default-pages/TracChangeset
-.. _environment: trac/wiki/default-pages/TracEnvironment
-.. _Upgrading: trac/wiki/default-pages/TracUpgrade
-.. _WebAdmin: http://trac.edgewall.org/intertrac/WebAdmin
-.. _easy_install: http://pypi.python.org/pypi/setuptools
-.. _Permissions: trac/wiki/default-pages/TracPermissions
-.. _Repository Browser: trac/wiki/default-pages/TracBrowser
-.. _Alagazam: http://alagazam.net/
-.. _#7265: http://trac.edgewall.org/intertrac/%237265
-.. _WikiMacros: trac/wiki/default-pages/WikiMacros
-.. _Plugins: trac/wiki/default-pages/TracPlugins
-.. _TracRepositoryAdmin#Migration: trac/wiki/default-pages/TracRepositoryAdmin#Migration
-.. _Logging: trac/wiki/default-pages/TracLogging
-.. _RSS Support: trac/wiki/default-pages/TracRss
-.. _Ticket Queries: trac/wiki/default-pages/TracQuery
-.. _Wiki Formatting: trac/wiki/default-pages/WikiFormatting
-.. _here: trac/wiki/default-pages/TracWorkflow#Howtocombinethetracopt.ticket.commit_updaterwiththetestingworkflow
-.. _internal errors: trac/wiki/default-pages/TracUpgrade#ZipImportError
-.. _TracWorkflow: trac/wiki/default-pages/TracWorkflow
-.. _The Wiki: trac/wiki/default-pages/TracWiki
-.. _No changeset ??? in the repository: http://trac.edgewall.org/intertrac/%236120
-.. _wiki:0.10/TracUpgrade#SpecificVersions: http://trac.edgewall.org/intertrac/wiki%3A0.10/TracUpgrade%23SpecificVersions
+.. _ [inherit] templates_dir: http://trac.edgewall.org/wiki/TracIni#GlobalConfiguration
 .. _#7014: http://trac.edgewall.org/intertrac/%237014
-.. _TracRepositoryAdmin#ExplicitSync: trac/wiki/default-pages/TracRepositoryAdmin#ExplicitSync
-.. _hotcopy: trac/wiki/default-pages/TracBackup
-.. _PySqlite: http://trac.edgewall.org/intertrac/PySqlite
-.. _Roadmap: trac/wiki/default-pages/TracRoadmap
-.. _Reports: trac/wiki/default-pages/TracReports
-.. _TracInterfaceCustomization#SiteAppearance: trac/wiki/default-pages/TracInterfaceCustomization#SiteAppearance
-.. _TracDev/ApiChanges: http://trac.edgewall.org/intertrac/TracDev/ApiChanges
+.. _#7265: http://trac.edgewall.org/intertrac/%237265
+.. _#9434: http://trac.edgewall.org/intertrac/%239434
+.. _Alagazam: http://alagazam.net/
+.. _CGI: http://trac.edgewall.org/wiki/TracCgi
 .. _ClearSilver: http://trac.edgewall.org/intertrac/ClearSilver
+.. _contrib/workflow/migrate_original_to_basic.py: http://trac.edgewall.org/intertrac/source%3Atrunk/contrib/workflow/migrate_original_to_basic.py
+.. _easy_install: http://pypi.python.org/pypi/setuptools
+.. _environment: http://trac.edgewall.org/wiki/TracEnvironment
+.. _here: http://trac.edgewall.org/wiki/TracWorkflow#Howtocombinethetracopt.ticket.commit_updaterwiththetestingworkflow
+.. _hotcopy: http://trac.edgewall.org/wiki/TracBackup
+.. _internal errors: http://trac.edgewall.org/wiki/TracUpgrade#ZipImportError
+.. _No changeset ??? in the repository: http://trac.edgewall.org/intertrac/%236120
 .. _PySqlite#UpgradingSQLitefrom2.xto3.x: http://trac.edgewall.org/intertrac/PySqlite%23UpgradingSQLitefrom2.xto3.x
-.. _TracIni: trac/wiki/default-pages/TracIni
-.. _CGI: trac/wiki/default-pages/TracCgi
-
-
+.. _PySqlite: http://trac.edgewall.org/intertrac/PySqlite
+.. _Trac database upgrade: http://trac.edgewall.org/wiki/TracUpgrade#Tracdatabaseupgrade
+.. _Trac environment: http://trac.edgewall.org/wiki/TracEnvironment
+.. _trac-admin: http://trac.edgewall.org/wiki/TracAdmin
+.. _trac-hacks.org: http://trac-hacks.org
+.. _TracDev/ApiChanges: http://trac.edgewall.org/intertrac/TracDev/ApiChanges
+.. _TracEnvironment: http://trac.edgewall.org/wiki/TracEnvironment
+.. _TracGuide: http://trac.edgewall.org/wiki/TracGuide
+.. _TracIni: http://trac.edgewall.org/wiki/TracIni
+.. _TracInstall: http://trac.edgewall.org/wiki/TracInstall
+.. _TracInterfaceCustomization#SiteAppearance: http://trac.edgewall.org/wiki/TracInterfaceCustomization#SiteAppearance
+.. _TracInterfaceCustomization: http://trac.edgewall.org/wiki/TracInterfaceCustomization
+.. _TracMigratePlugin: http://trac-hacks.org/wiki/TracMigratePlugin
+.. _TracRepositoryAdmin#ExplicitSync: http://trac.edgewall.org/wiki/TracRepositoryAdmin#ExplicitSync
+.. _TracRepositoryAdmin#Migration: http://trac.edgewall.org/wiki/TracRepositoryAdmin#Migration
+.. _TracRepositoryAdmin#Synchronization: http://trac.edgewall.org/wiki/TracRepositoryAdmin#Synchronization
+.. _TracSubversion: http://trac.edgewall.org/intertrac/TracSubversion
+.. _TracWorkflow: http://trac.edgewall.org/wiki/TracWorkflow
+.. _WebAdmin: http://trac.edgewall.org/intertrac/WebAdmin
+.. _wiki:0.10/TracUpgrade#SpecificVersions: http://trac.edgewall.org/intertrac/wiki%3A0.10/TracUpgrade%23SpecificVersions
+.. _WikiMacros: http://trac.edgewall.org/wiki/WikiMacros
