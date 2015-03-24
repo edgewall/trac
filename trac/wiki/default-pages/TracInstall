@@ -47,10 +47,9 @@ Given the caveats and known issues surrounding MySQL, read carefully the [trac:M
 
 === Optional Dependencies
 
-==== Version Control System
+==== Subversion
 
-===== Subversion
- * [http://subversion.apache.org/ Subversion], 1.6.x or later and the '''''corresponding''''' Python bindings.
+[http://subversion.apache.org/ Subversion], 1.6.x or later and the '''''corresponding''''' Python bindings.
 
 There are [http://subversion.apache.org/packages.html pre-compiled SWIG bindings] available for various platforms. (Good luck finding precompiled SWIG bindings for any Windows package at that listing. [trac:TracSubversion] points you to [http://alagazam.net Alagazam], which works for me under Python 2.6.)
 
@@ -62,21 +61,20 @@ For troubleshooting information, see the [trac:TracSubversion#Troubleshooting Tr
 * If using Subversion, Trac must be installed on the '''same machine'''. Remote repositories are currently [trac:ticket:493 not supported].
 }}}
 
-===== Git
- * [http://git-scm.com/ Git] 1.5.6 or later.
+==== Git
 
-More information is available on the [trac:TracGit] page.
+[http://git-scm.com/ Git] 1.5.6 or later is supported. More information is available on the [trac:TracGit] page.
 
-===== Others 
+==== Other Version Control Systems
 
-Support for other version control systems is provided via third-parties. See [trac:PluginList#VersionControlSystems] and [trac:VersionControlSystem].
+Support for other version control systems is provided via third-party plugins. See [trac:PluginList#VersionControlSystems] and [trac:VersionControlSystem].
 
 ==== Web Server
 A web server is optional because Trac is shipped with a server included, see the [#RunningtheStandaloneServer Running the Standalone Server] section below.
 
 Alternatively you can configure Trac to run in any of the following environments:
  * [http://httpd.apache.org/ Apache] with 
-   - [http://code.google.com/p/modwsgi/ mod_wsgi], see [wiki:TracModWSGI] and 
+   - [https://github.com/GrahamDumpleton/mod_wsgi mod_wsgi], see [wiki:TracModWSGI] and 
      [http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac ModWSGI IntegrationWithTrac].
    - [http://modpython.org/ mod_python 3.5.0], see TracModPython
  * a [http://www.fastcgi.com/ FastCGI]-capable web server (see TracFastCgi)
@@ -89,8 +87,8 @@ Alternatively you can configure Trac to run in any of the following environments
 
 ==== Other Python Packages
 
- * [http://babel.edgewall.org Babel], version >= 0.9.5, 
-   needed for localization support (unreleased version 1.0dev should work as well)
+ * [http://babel.edgewall.org Babel], version 0.9.6 or >= 1.3, 
+   needed for localization support
  * [http://docutils.sourceforge.net/ docutils], version >= 0.3.9 
    for WikiRestructuredText.
  * [http://pygments.org Pygments] for 
@@ -207,14 +205,14 @@ The `tracd` and `trac-admin` commands will be placed in `/usr/local/bin` and wil
 
 == Creating a Project Environment
 
-A [TracEnvironment Trac environment] is the backend where Trac stores information like wiki pages, tickets, reports, settings, etc. An environment is basically a directory that contains a human-readable [TracIni configuration file], and other files and directories.
+A [TracEnvironment Trac environment] is the backend where Trac stores information like wiki pages, tickets, reports, settings, etc. An environment is a directory that contains a human-readable [TracIni configuration file], and other files and directories.
 
 A new environment is created using [TracAdmin trac-admin]:
 {{{#!sh
 $ trac-admin /path/to/myproject initenv
 }}}
 
-[TracAdmin trac-admin] will prompt you for the information it needs to create the environment, such as the name of the project and the [TracEnvironment#DatabaseConnectionStrings database connection string]. If you're not sure what to specify for one of these options, just press `<Enter>` to use the default value. 
+[TracAdmin trac-admin] will prompt you for the information it needs to create the environment: the name of the project and the [TracEnvironment#DatabaseConnectionStrings database connection string]. If you're not sure what to specify for any of these options, just press `<Enter>` to use the default value. 
 
 Using the default database connection string will always work as long as you have SQLite installed. For the other [trac:DatabaseBackend database backends] you should plan ahead and already have a database ready to use at this point.
 
@@ -226,7 +224,7 @@ Also note that the values you specify here can be changed later using TracAdmin 
 
 Finally, make sure the user account under which the web front-end runs will have '''write permissions''' to the environment directory and all the files inside. This will be the case if you run `trac-admin ... initenv` as this user. If not, you should set the correct user afterwards. For example on Linux, with the web server running as user `apache` and group `apache`, enter:
 {{{#!sh
-$ chown -R apache.apache /path/to/myproject
+$ chown -R apache:apache /path/to/myproject
 }}}
 
 The actual username and groupname of the apache server may not be exactly `apache`, and are specified in the Apache configuration file by the directives `User` and `Group` (if Apache `httpd` is what you use).
@@ -363,17 +361,18 @@ The process of adding, removing, and configuring user accounts for authenticatio
 
 Please refer to one of the following sections:
  * TracStandalone#UsingAuthentication if you use the standalone server, `tracd`.
- * [wiki:TracModWSGI#ConfiguringAuthentication TracModWSGI#ConfiguringAuthentication] if you use the Apache web server, with any of its front end: `mod_wsgi` of course, but the same instructions applies also for `mod_python`, `mod_fcgi` or `mod_fastcgi`.
+ * [wiki:TracModWSGI#ConfiguringAuthentication TracModWSGI#ConfiguringAuthentication] if you use the Apache web server, with any of its front end: `mod_wsgi`, `mod_python`, `mod_fcgi` or `mod_fastcgi`.
  * TracFastCgi if you're using another web server with FCGI support (Cherokee, Lighttpd, !LiteSpeed, nginx)
 
-The following document also contains some useful information for beginners: [trac:TracAuthenticationIntroduction].
+[trac:TracAuthenticationIntroduction] also contains some useful information for beginners.
 
 == Granting admin rights to the admin user
 Grant admin rights to user admin:
 {{{#!sh
 $ trac-admin /path/to/myproject permission add admin TRAC_ADMIN
 }}}
-This user will have an "Admin" entry menu that will allow you to administrate your Trac project.
+
+This user will have an //Admin// navigation item that directs to pages for administering your Trac project.
 
 == Finishing the install
 

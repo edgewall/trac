@@ -3,14 +3,10 @@
 [[PageOutline]]
 
 {{{#!div class=important
-  ''Please note that using Trac via CGI is the slowest deployment method available. It is slower than [TracModPython mod_python], [TracFastCgi FastCGI] and even [trac:TracOnWindowsIisAjp IIS/AJP] on Windows.''
+ ''Please note that using Trac via CGI is the slowest deployment method available. It is slower than [TracModPython mod_python], [TracFastCgi FastCGI] and even [trac:TracOnWindowsIisAjp IIS/AJP] on Windows.''
 }}}
 
-CGI script is the entrypoint that web-server calls when a web-request to an application is made. To generate the `trac.cgi` script run:
-{{{#!sh
-trac-admin /path/to/env deploy /path/to/www/trac
-}}}
-`trac.cgi` will be in the `cgi-bin` folder inside the given path. ''Make sure it is executable by your web server''. This command also copies `static resource` files to a `htdocs` directory of a given destination.
+CGI script is the entrypoint that web-server calls when a web-request to an application is made. The `trac.cgi` script can be created using the `trac-admin <env> deploy <dir>` command which automatically substitutes the required paths, see TracInstall#cgi-bin. Make sure the script is executable by your web server.
 
 == Apache web-server configuration
 

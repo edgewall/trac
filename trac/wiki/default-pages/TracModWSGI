@@ -1,12 +1,22 @@
-= Trac and mod_wsgi =
+= Trac and mod_wsgi
 
-[http://code.google.com/p/modwsgi/ mod_wsgi] is an Apache module for running WSGI-compatible Python applications directly on top of the Apache webserver. The mod_wsgi adapter is written completely in C and provides very good performance.
+[https://github.com/GrahamDumpleton/mod_wsgi mod_wsgi] is an Apache module for running WSGI-compatible Python applications directly on top of the Apache webserver. The mod_wsgi adapter is written completely in C and provides very good performance.
 
 [[PageOutline(2-3,Overview,inline)]]
 
 == The `trac.wsgi` script
 
-Trac can be run on top of mod_wsgi with the help of the following application script, which is just a Python file, though usually saved with a `.wsgi` extension. 
+Trac can be run on top of mod_wsgi with the help of an application script, which is just a Python file saved with a `.wsgi` extension. 
+
+A robust and generic version of this file can be created using the `trac-admin <env> deploy <dir>` command which automatically substitutes the required paths, see TracInstall#cgi-bin. The script should be sufficient for most installations and users not wanting more information can proceed to [#Mappingrequeststothescript configuring Apache].
+
+If you are using Trac with multiple projects, you can specify their common parent directory using the `TRAC_ENV_PARENT_DIR` in trac.wsgi:
+{{{#!python
+def application(environ, start_request):
+    # Add this to config when you have multiple projects                                             
+    environ.setdefault('trac.env_parent_dir', '/usr/share/trac/projects')  
+    ..
+}}}
 
 === A very basic script
 In its simplest form, the script could be:
@@ -60,25 +70,11 @@ site.addsitedir('/usr/local/trac/lib/python2.4/site-packages')
 
 Change it according to the path you installed the Trac libs at.
 
-=== Recommended `trac.wsgi` script
-
-A somewhat robust and generic version of this file can be created using the `trac-admin <env> deploy <dir>` command which automatically substitutes the required paths, see TracInstall#cgi-bin.
-
-If you are using Trac with multiple projects, you can specify their common parent directory using the `TRAC_ENV_PARENT_DIR` in the trac.wsgi in trac.wsgi: ''
-
-{{{#!python
-  def application(environ, start_request):
-      Add this to config when you have multiple projects                                             
-      environ.setdefault('trac.env_parent_dir', '/usr/share/trac/projects')  
-      ..
-      ..
-}}}
-
 == Mapping requests to the script
 
 After preparing your .wsgi script, add the following to your Apache configuration file, typically `httpd.conf`:
 
-{{{
+{{{#!apache
 WSGIScriptAlias /trac /usr/local/trac/mysite/apache/mysite.wsgi
 
 <Directory /usr/local/trac/mysite/apache>
@@ -92,7 +88,7 @@ Here, the script is in a subdirectory of the Trac environment.
 
 If you followed the directions [TracInstall#cgi-bin Generating the Trac cgi-bin directory], your Apache configuration file should look like following:
 
-{{{
+{{{#!apache
 WSGIScriptAlias /trac /usr/share/trac/cgi-bin/trac.wsgi
 
 <Directory /usr/share/trac/cgi-bin>
@@ -118,10 +114,10 @@ For more information about using the mod_wsgi specific directives, see the [http
 
 The following sections describe different methods for setting up authentication. See also [http://httpd.apache.org/docs/2.2/howto/auth.html Authentication, Authorization and Access Control] in the Apache guide.
 
-=== Using Basic Authentication ===
+=== Using Basic Authentication
 
 The simplest way to enable authentication with Apache is to create a password file. Use the `htpasswd` program as follows:
-{{{
+{{{#!sh
 $ htpasswd -c /somewhere/trac.htpasswd admin
 New password: <type password>
 Re-type new password: <type password again>
@@ -129,7 +125,7 @@ Adding password for user admin
 }}}
 
 After the first user, you don't need the "-c" option anymore:
-{{{
+{{{#!sh
 $ htpasswd /somewhere/trac.htpasswd john
 New password: <type password>
 Re-type new password: <type password again>
@@ -141,7 +137,7 @@ Adding password for user john
 After you've created the users, you can set their permissions using TracPermissions.
 
 Now, you need to enable authentication against the password file in the Apache configuration:
-{{{
+{{{#!apache
 <Location "/trac/login">
   AuthType Basic
   AuthName "Trac"
@@ -151,7 +147,7 @@ Now, you need to enable authentication against the password file in the Apache c
 }}}
 
 If you are hosting multiple projects, you can use the same password file for all of them:
-{{{
+{{{#!apache
 <LocationMatch "/trac/[^/]+/login">
   AuthType Basic
   AuthName "Trac"
@@ -162,25 +158,24 @@ If you are hosting multiple projects, you can use the same password file for all
 Note that neither a file nor a directory named 'login' needs to exist.[[BR]]
 See also the [http://httpd.apache.org/docs/2.2/mod/mod_auth_basic.html mod_auth_basic] documentation.
 
-=== Using Digest Authentication ===
+=== Using Digest Authentication
 
 For better security, it is recommended that you either enable SSL or at least use the “digest” authentication scheme instead of “Basic”. 
 
 You have to create your `.htpasswd` file with the `htdigest` command instead of `htpasswd`, as follows:
-{{{
-# htdigest -c /somewhere/trac.htpasswd trac admin
+{{{#!sh
+$ htdigest -c /somewhere/trac.htpasswd trac admin
 }}}
 
 The "trac" parameter above is the "realm", and will have to be reused in the Apache configuration in the !AuthName directive:
 
-{{{
+{{{#!apache
 <Location "/trac/login">
-
-    AuthType Digest
-    AuthName "trac"
-    AuthDigestDomain /trac
-    AuthUserFile /somewhere/trac.htpasswd
-    Require valid-user
+  AuthType Digest
+  AuthName "trac"
+  AuthDigestDomain /trac
+  AuthUserFile /somewhere/trac.htpasswd
+  Require valid-user
 </Location>
 }}}
 
@@ -189,8 +184,8 @@ For multiple environments, you can use the same `LocationMatch` as described wit
 '''Note: `Location` cannot be used inside .htaccess files, but must instead live within the main httpd.conf file. If you are on a shared server, you therefore will not be able to provide this level of granularity. '''
 
 Don't forget to activate the mod_auth_digest. For example, on a Debian 4.0r1 (etch) system:
-{{{
-    LoadModule auth_digest_module /usr/lib/apache2/modules/mod_auth_digest.so
+{{{#!apache
+  LoadModule auth_digest_module /usr/lib/apache2/modules/mod_auth_digest.so
 }}}
 
 See also the [http://httpd.apache.org/docs/2.2/mod/mod_auth_digest.html mod_auth_digest] documentation.
@@ -200,14 +195,12 @@ See also the [http://httpd.apache.org/docs/2.2/mod/mod_auth_digest.html mod_auth
 Configuration for [http://httpd.apache.org/docs/2.2/mod/mod_ldap.html mod_ldap] authentication in Apache is more involved (httpd 2.2.x and OpenLDAP: slapd 2.3.19).
 
 1. You need to load the following modules in Apache httpd.conf:
-{{{
-LoadModule ldap_module modules/mod_ldap.so
-LoadModule authnz_ldap_module modules/mod_authnz_ldap.so
+{{{#!apache
+  LoadModule ldap_module modules/mod_ldap.so
+  LoadModule authnz_ldap_module modules/mod_authnz_ldap.so
 }}}
-
-2. Your httpd.conf also needs to look something like:
-
-{{{
+1. Your httpd.conf also needs to look something like:
+{{{#!apache
 <Location /trac/>
   # (if you're using it, mod_python specific settings go here)
   Order deny,allow
@@ -221,22 +214,17 @@ LoadModule authnz_ldap_module modules/mod_authnz_ldap.so
   Require valid-user
 </Location>
 }}}
-
-3. You can use the LDAP interface as a way to authenticate to a Microsoft Active Directory:
-
-Use the following as your LDAP URL:
-{{{
-    AuthLDAPURL "ldap://directory.example.com:3268/DC=example,DC=com?sAMAccountName?sub?(objectClass=user)"
+1. You can use the LDAP interface as a way to authenticate to a Microsoft Active Directory. Use the following as your LDAP URL:
+{{{#!apache
+  AuthLDAPURL "ldap://directory.example.com:3268/DC=example,DC=com?sAMAccountName?sub?(objectClass=user)"
 }}}
-
-You will also need to provide an account for Apache to use when checking credentials. As this password will be listed in plaintext in the config, you need to use an account specifically for this task:
-{{{
-    AuthLDAPBindDN ldap-auth-user@example.com
-    AuthLDAPBindPassword "password"
+ You will also need to provide an account for Apache to use when checking credentials. As this password will be listed in plaintext in the config, you need to use an account specifically for this task:
+{{{#!apache
+  AuthLDAPBindDN ldap-auth-user@example.com
+  AuthLDAPBindPassword "password"
 }}}
-
-The whole section looks like:
-{{{
+ The whole section looks like:
+{{{#!apache
 <Location /trac/>
   # (if you're using it, mod_python specific settings go here)
   Order deny,allow
@@ -250,15 +238,15 @@ The whole section looks like:
   AuthLDAPBindPassword "the_password"
   authzldapauthoritative Off
   # require valid-user
-  require ldap-group CN=Trac Users,CN=Users,DC=company,DC=com
+  Require ldap-group CN=Trac Users,CN=Users,DC=company,DC=com
 </Location>
 }}}
 
 Note 1: This is the case where the LDAP search will get around the multiple OUs, conecting to the Global Catalog Server portion of AD. Note the port is 3268, not the normal LDAP 389. The GCS is basically a "flattened" tree which allows searching for a user without knowing to which OU they belong.
 
 Note 2: You can also require the user be a member of a certain LDAP group, instead of just having a valid login:
-{{{
-    Require ldap-group CN=Trac Users,CN=Users,DC=example,DC=com
+{{{#!apache
+  Require ldap-group CN=Trac Users,CN=Users,DC=example,DC=com
 }}}
 
 See also:
@@ -269,18 +257,18 @@ See also:
 === Using SSPI Authentication
 
 If you are using Apache on Windows, you can use mod_auth_sspi to provide single-sign-on. Download the module from the !SourceForge [http://sourceforge.net/projects/mod-auth-sspi/ mod-auth-sspi project] and then add the following to your !VirtualHost:
-{{{
-    <Location /trac/login>
-        AuthType SSPI
-        AuthName "Trac Login"
-        SSPIAuth On
-        SSPIAuthoritative On
-        SSPIDomain MyLocalDomain
-        SSPIOfferBasic On
-        SSPIOmitDomain Off
-        SSPIBasicPreferred On
-        Require valid-user
-    </Location>
+{{{#!apache
+<Location /trac/login>
+  AuthType SSPI
+  AuthName "Trac Login"
+  SSPIAuth On
+  SSPIAuthoritative On
+  SSPIDomain MyLocalDomain
+  SSPIOfferBasic On
+  SSPIOmitDomain Off
+  SSPIBasicPreferred On
+  Require valid-user
+</Location>
 }}}
 
 Using the above, usernames in Trac will be of the form `DOMAIN\username`, so you may have to re-add permissions and such. If you do not want the domain to be part of the username, set `SSPIOmitDomain On` instead.
@@ -296,7 +284,7 @@ To begin with, see the basic instructions for using the Account Manager plugin's
 '''Note:''' If is difficult to get !HttpAuthStore to work with WSGI when using any Account Manager version prior to acct_mgr-0.4. Upgrading is recommended.
 
 Here is an example (from the !HttpAuthStore link) using acct_mgr-0.4 for hosting a single project:
-{{{
+{{{#!ini
 [components]
 ; be sure to enable the component
 acct_mgr.http.HttpAuthStore = enabled
@@ -307,7 +295,7 @@ authentication_url = /authFile
 password_store = HttpAuthStore
 }}}
 This will generally be matched with an Apache config like:
-{{{
+{{{#!apache
 <Location /authFile>
    …HTTP authentication configuration…
    Require valid-user
@@ -324,7 +312,7 @@ Per the mod_wsgi documentation linked to above, here is an example Apache config
 If you want your Trac to be served from e.g. !http://trac.my-proj.my-site.org, then from the folder e.g. `/home/trac-for-my-proj`, if you used the command `trac-admin the-env initenv` to create a folder `the-env`, and you used `trac-admin the-env deploy the-deploy` to create a folder `the-deploy`, then first:
 
 Create the htpasswd file:
-{{{
+{{{#!sh
 cd /home/trac-for-my-proj/the-env
 htpasswd -c htpasswd firstuser
 ### and add more users to it as needed:
@@ -334,7 +322,7 @@ Keep the file above your document root for security reasons.
 
 Create this file e.g. (ubuntu) `/etc/apache2/sites-enabled/trac.my-proj.my-site.org.conf` with the following content:
 
-{{{
+{{{#!apache
 <Directory /home/trac-for-my-proj/the-deploy/cgi-bin/trac.wsgi>
   WSGIApplicationGroup %{GLOBAL}
   Order deny,allow
@@ -367,7 +355,7 @@ Please use either version 1.6, 2.4 or later of `mod_wsgi`. Versions prior to 2.4
 
 If you plan to use `mod_wsgi` in embedded mode on Windows or with the MPM worker on Linux, then you will need version 0.3.4 or greater. See [trac:#10675] for details.
 
-=== Getting Trac to work nicely with SSPI and 'Require Group' ===
+=== Getting Trac to work nicely with SSPI and 'Require Group'
 
 If you have set Trac up on Apache, Win32 and configured SSPI, but added a 'Require group' option to your apache configuration, then the SSPIOmitDomain option is probably not working. If it is not working, your usernames in Trac probably look like 'DOMAIN\user' rather than 'user'.
 
@@ -385,7 +373,7 @@ def application(environ, start_response):
     return trac.web.main.dispatch_request(environ, start_response)
 }}}
 
-=== Trac with PostgreSQL ===
+=== Trac with PostgreSQL
 
 When using the mod_wsgi adapter with multiple Trac instances and PostgreSQL (or MySQL?) as the database, the server ''may'' create a lot of open database connections and thus PostgreSQL processes.
 

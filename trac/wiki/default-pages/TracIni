@@ -1,20 +1,16 @@
 = The Trac Configuration File
 
-'''[Note To Editors]''' Please discuss documentation changes in the [#Discussion] section. Even better, send us [trac:TracDev/SubmittingPatches documentation patches] against the ''code'', ie where the configuration entries are documented, either on Trac-dev or on new tickets.
-
 [[TracGuideToc]]
 [[PageOutline]]
 
-Trac configuration is done by editing the '''`trac.ini`''' config file, located in `<projectenv>/conf/trac.ini`.  Changes to the configuration are usually reflected immediately, though changes to the `[components]` or `[logging]` sections will require restarting the web server. You may also need to restart the web server after creating a global configuration file when none was previously present.
+Trac is configured by editing the **`trac.ini`** file, located in the `<projectenv>/conf` directory. The `trac.ini` configuration file and its parent directory should be writable by the web server.
 
-The `trac.ini` configuration file and its parent directory should be writable by the web server, as Trac currently relies on the possibility to trigger a complete environment reload to flush its caches.
+Trac monitors the timestamp of the file to trigger a complete environment reload and flush its caches when the timestamp changes. Most changes to the configuration will be reflected immediately, though changes to the `[components]` or `[logging]` sections will require restarting the web server. You may also need to restart the web server after creating a [#GlobalConfiguration global configuration] file when none was previously present.
 
 == Global Configuration
 
-In versions prior to 0.11, the global configuration was by default located in `$prefix/share/trac/conf/trac.ini` or `/etc/trac/trac.ini`, depending on the distribution. If you're upgrading, you may want to specify that file to inherit from.  Literally, when you're upgrading to 0.11, you have to add an `[inherit]` section to your project's `trac.ini` file. Additionally, you have to move your customized templates and common images from `$prefix/share/trac/...` to the new location.
-
-Global options will be merged with the environment-specific options, where local options override global options. The options file is specified as follows:
-{{{
+Configuration can be shared among environments using one or more global configuration files. Options in the global configuration will be merged with the environment-specific options, with local options overriding global options. The global configuration file is specified as follows:
+{{{#!ini
 [inherit]
 file = /path/to/global/trac.ini
 }}}
@@ -30,21 +26,11 @@ Note that the templates found in the `templates/` directory of the TracEnvironme
 
 This is a brief reference of available configuration options, and their default settings.
 
- ''Note that the [hg], [spam-filter], [translatedpages], [vote], [wikiextras] and [wikiextras-symbols] sections below are added by plugins enabled on this Trac, and therefore won't be part of a default installation.''
-
-{{{ 
-#!comment 
-Suggest your documentation fixes in the Discussion section at  
-the bottom of the page, or better send us patches against 
-the corresponding docstrings you'll find in the code!
-
-Please don't waste your time by editing the HTML code below, changes won't be picked up. 
+Documentation improvements should be discussed on the [trac:MailingList#Trac-dev trac-dev mailing list] or described in a [trac:NewTicket ticket]. Even better, [trac:TracDev/SubmittingPatches submit a patch] against the docstrings in the code.
+{{{ #!comment
+Please don't waste your time by editing the HTML code below, changes won't be picked up. Instead, follow the above guidance for suggesting documentation improvements.
 }}}
 [[TracIni]]
-
-== Discussion
-
-Please discuss documentation changes here. Even better, send us documentation patches against the code, either on Trac-dev or on new tickets.
 
 ----
 See also: TracGuide, TracAdmin, TracEnvironment
