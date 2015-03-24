@@ -175,6 +175,9 @@ reopen.operations = del_resolution
 
 There are some significant caveats in this, such as accepting a ticket sets it to 'assigned' state, and assigning a ticket sets it to 'new' state. So you will probably want to migrate to "basic" workflow; [trac:source:trunk/contrib/workflow/migrate_original_to_basic.py contrib/workflow/migrate_original_to_basic.py] may be helpful. See TracWorkflow for a detailed description of the new basic workflow.
 
+===== Global Configuration
+In versions prior to 0.11, the global configuration was by default located in `$prefix/share/trac/conf/trac.ini` or `/etc/trac/trac.ini`, depending on the distribution. You may want to specify that file to inherit from when upgrading.  Literally, when upgrading you have to add an `[inherit]` section to your project's `trac.ini` file. Additionally, you have to move your customized templates and common images from `$prefix/share/trac/...` to the new location.
+
 === 7. Restart the Web Server #RestarttheWebServer
 
 If you are not running [wiki:TracCgi CGI], reload the new Trac code by restarting your web server.

@@ -14,7 +14,7 @@ To use egg-based plugins in Trac, you need to have [http://peak.telecommunity.co
 
 To install `setuptools`, download the bootstrap module [http://peak.telecommunity.com/dist/ez_setup.py ez_setup.py] and execute it as follows:
 
-{{{
+{{{#!sh
 $ python ez_setup.py
 }}}
 
@@ -33,7 +33,7 @@ If you have downloaded a source distribution of a plugin, and want to build the 
  * Unpack the source. It should provide `setup.py`.
  * Run:
 
-{{{
+{{{#!sh
 $ python setup.py bdist_egg
 }}}
 
@@ -52,15 +52,15 @@ To uninstall a plugin installed this way, remove the egg from the `plugins` dire
 ==== With an .egg file
 
 Some plugins, such as [trac:SpamFilter SpamFilter], are downloadable as an `.egg` file that can be installed with `easy_install`:
-{{{
-easy_install TracSpamFilter
+{{{#!sh
+$ easy_install TracSpamFilter
 }}}
 
 If `easy_install` is not on your system, see the Requirements section above to install it. Windows users will need to add the `Scripts` directory of their Python installation (for example, `C:\Python24\Scripts`) to their `PATH` environment variable. See [http://peak.telecommunity.com/DevCenter/EasyInstall#windows-notes easy_install Windows notes] for more information.
 
 If Trac reports permission errors after installing a zipped egg, and you would rather not bother providing a egg cache directory writable by the web server, you can get around it by simply unzipping the egg. Just pass `--always-unzip` to `easy_install`:
-{{{
-easy_install --always-unzip TracSpamFilter-0.4.1_r10106-py2.6.egg
+{{{#!sh
+$ easy_install --always-unzip TracSpamFilter-0.4.1_r10106-py2.6.egg
 }}}
 You should end up with a directory having the same name as the zipped egg (complete with `.egg` extension) and containing its uncompressed contents.
 
@@ -69,8 +69,8 @@ Trac also searches for plugins installed in the shared plugins directory, see Tr
 ==== From source
 
 `easy_install` makes installing from source a snap. Just give it the URL to either a Subversion repository or a tarball/zip of the source:
-{{{
-easy_install http://svn.edgewall.com/repos/trac/plugins/0.12/spam-filter-captcha
+{{{#!sh
+$ easy_install http://svn.edgewall.com/repos/trac/plugins/0.12/spam-filter-captcha
 }}}
 
 ==== Enabling the plugin
@@ -78,7 +78,7 @@ easy_install http://svn.edgewall.com/repos/trac/plugins/0.12/spam-filter-captcha
 Unlike plugins installed per-environment, you'll have to explicitly enable globally installed plugins via [wiki:TracIni trac.ini]. This also applies to plugins installed in the shared plugins directory, ie the path specified in the `[inherit] plugins_dir` configuration option. 
 
 This is done in the `[components]` section of the configuration file. For example:
-{{{
+{{{#!ini
 [components]
 tracspamfilter.* = enabled
 }}}
@@ -97,7 +97,7 @@ After installing the plugin, you must restart your web server.
  1. Restart the web server.
 
 If you are uncertain about the location of the egg, here's a small tip to help locate an egg (or any package). Just replace `myplugin` with whatever namespace the plugin uses (as used when enabling the plugin):
-{{{
+{{{#!pycon
 >>> import myplugin
 >>> print myplugin.__file__
 /opt/local/python24/lib/site-packages/myplugin-0.4.2-py2.4.egg/myplugin/__init__.pyc
@@ -108,14 +108,14 @@ If you are uncertain about the location of the egg, here's a small tip to help l
 Some plugins will need to be extracted by the Python eggs runtime (`pkg_resources`), so that their contents are actual files on the file system. The directory in which they are extracted defaults to `.python-eggs` in the home directory of the current user, which may or may not be a problem. You can, however, override the default location using the `PYTHON_EGG_CACHE` environment variable.
 
 To do this from the Apache configuration, use the `SetEnv` directive:
-{{{
+{{{#!apache
 SetEnv PYTHON_EGG_CACHE /path/to/dir
 }}}
 
 This works whether you're using the [wiki:TracCgi CGI] or the [wiki:TracModPython mod_python] front-end. Put this directive next to where you set the path to the [wiki:TracEnvironment Trac environment], ie in the same `<Location>` block.
 
 For example (for CGI):
-{{{
+{{{#!apache
  <Location /trac>
    SetEnv TRAC_ENV /path/to/projenv
    SetEnv PYTHON_EGG_CACHE /path/to/dir
@@ -123,7 +123,7 @@ For example (for CGI):
 }}}
 
 Or (for mod_python):
-{{{
+{{{#!apache
  <Location /trac>
    SetHandler mod_python
    ...
@@ -137,7 +137,7 @@ For [wiki:TracFastCgi FastCGI], you'll need to `-initial-env` option, or whateve
 
 '''Note''': that if you already use -initial-env to set the project directory for either a single project or parent you will need to add an additional -initial-env directive to the !FastCgiConfig directive:
 
-{{{
+{{{#!apache
 FastCgiConfig -initial-env TRAC_ENV=/var/lib/trac -initial-env PYTHON_EGG_CACHE=/var/lib/trac/plugin-cache
 }}}
 
@@ -150,7 +150,7 @@ If you've set up some subversion hook scripts that call the Trac engine, such as
 === Is setuptools properly installed?
 
 Try this from the command line:
-{{{
+{{{#!sh
 $ python -c "import pkg_resources"
 }}}
 
@@ -203,8 +203,8 @@ The [trac:WebAdmin] interface offers limited support for plugin configuration th
 * en/disabling installed plugins
 * installing plugins by uploading them as eggs
 
-You probably want to disable the second function for security reasons. In `trac.ini`, in the `[components]` section, add the line:
-{{{
+If you wish to disable the second function for security reasons, add the following to the `[components]` section of trac.ini:
+{{{#!ini
 trac.admin.web_ui.PluginAdminPanel = disabled
 }}}
 This disables the whole panel, so the first function will no longer be available either.

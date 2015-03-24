@@ -85,8 +85,8 @@ Alternatively you can configure Trac to run in any of the following environments
 
 ==== Other Python Packages
 
- * [http://babel.edgewall.org Babel], version >= 0.9.5, 
-   needed for localization support (unreleased version 1.0dev should work as well)
+ * [http://babel.edgewall.org Babel], version 0.9.5, 0.9.6 or >= 1.3
+   needed for localization support
  * [http://docutils.sourceforge.net/ docutils], version >= 0.3.9 
    for WikiRestructuredText.
  * [http://pygments.org Pygments] for 

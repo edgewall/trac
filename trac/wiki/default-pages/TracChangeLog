@@ -9,13 +9,14 @@ To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 == 1.0.5
 
-//(TBD)//
+//(24 March, 2015)//
 
 Trac 1.0.5 provides several fixes. The following are some highlights:
 
  - Images are not rendered in the timeline ([trac:#10751]).
  - Git tags are shown in the browser view ([trac:#11964]).
- - Added support for `journal_mode` and `synchronous` pragmas in `sqlite:` database connection string ([trac:#11967]).
+ - Added support for `journal_mode` and `synchronous` pragmas
+   in `sqlite:` database connection string ([trac:#11967]).
 
 See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.5]].
 
@@ -249,3 +250,7 @@ The following list contains only a few highlights:
  - ... and numerous smaller features added and bugs fixed since 0.11!
 
 [trac:source:/tags/trac-0.12 View Tag] | [trac:milestone:0.12 View Milestone]
+
+== Older Releases
+
+For releases prior to 0.12, see [trac:TracChangeLog@95].
