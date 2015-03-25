@@ -52,16 +52,72 @@ def _get_node(path, rev=None):
                     is_viewable=lambda resource: True)
 
 
+class GitRepositoryStub(object):
+
+    has_linear_changesets = False
+
+    _revs = [
+        ('ffffffffffffffffffffffffffffffffffffffff', ('HEAD',)),
+        ('deadbef222222222222222222222222222222222', ('1.0-stable',
+                                                      u'1.0-stáblé')),
+        ('deadbef111111111111111111111111111111111', ('v1.0.1', u'vér1.0.1')),
+        ('deadbef000000000000000000000000000000000', ('v1.0', u'vér1.0')),
+        ('deadbeefffffffffffffffffffffffffffffffff', ('0.12-stable',
+                                                      u'0.12-stáblé')),
+        ('0000009876543210987654321098765432109876', ()),  # only digits
+        ('0000001234567890123456789012345678901234', ()),
+        ('1111111111111111111111111111111111111111', ()),  # oldest rev
+    ]
+
+    def __init__(self, reponame):
+        self.reponame = reponame
+        self.youngest_rev = 'ffffffffffffffffffffffffffffffffffffffff'
+        self.oldest_rev = '1111111111111111111111111111111111111111'
+
+    def get_changeset(self, rev):
+        nrev = None
+        if not rev:
+            nrev = self.youngest_rev
+        else:
+            revs = [r for r, names in self._revs if r.startswith(rev)]
+            if len(revs) == 1:
+                nrev = revs[0]
+            else:
+                for r, names in self._revs:
+                    if rev in names:
+                        nrev = r
+                        break
+        if nrev:
+            return Mock(repos=self, rev=nrev, message='message %s' % nrev[:8],
+                        author='trac', is_viewable=lambda perm: True)
+        raise NoSuchChangeset(rev)
+
+    def normalize_rev(self, rev):
+        cset = self.get_changeset(rev)
+        return cset.rev
+
+    def get_node(self, path, rev=None):
+        return _get_node(path, rev)
+
+
 def _get_repository(reponame):
+    if reponame.endswith('.git'):
+        return GitRepositoryStub(reponame)
     return Mock(reponame=reponame, youngest_rev=YOUNGEST_REV,
-                get_changeset=_get_changeset,
+                get_changeset=_get_changeset, get_node=_get_node,
                 normalize_rev=_normalize_rev,
-                get_node=_get_node)
+                has_linear_changesets=True)
+
+
+def _get_all_repositories():
+    return {'': {}, 'trac.git': {}}
 
 
 def repository_setup(tc):
     setattr(tc.env, 'get_repository', _get_repository)
     setattr(RepositoryManager(tc.env), 'get_repository', _get_repository)
+    setattr(RepositoryManager(tc.env), 'get_all_repositories',
+            _get_all_repositories)
 
 
 CHANGESET_TEST_CASES = u"""
@@ -177,6 +233,32 @@ LOG_TEST_CASES = u"""
 <a class="source" href="/log/trunk?revs=1-2">[2:1/trunk]</a> reversed, <a class="source" href="/log/trunk?revs=1-2">r2:1/trunk</a> reversed
 </p>
 ------------------------------
+============================== changeset and log shorthand syntax with hash ids
+[deadbeef/trac.git]
+[deadbeef/trac.git/trac]
+[deadbeef:deadbef1/trac.git]
+[deadbeef:deadbef1/trac.git/trac]
+------------------------------
+<p>
+<a class="changeset" href="/changeset/deadbeef/trac.git" title="message deadbeef">[deadbeef/trac.git]</a>
+<a class="changeset" href="/changeset/deadbeef/trac.git/trac" title="message deadbeef">[deadbeef/trac.git/trac]</a>
+<a class="source" href="/log/trac.git/?revs=deadbeef%3Adeadbef1">[deadbeef:deadbef1/trac.git]</a>
+<a class="source" href="/log/trac.git/trac?revs=deadbeef%3Adeadbef1">[deadbeef:deadbef1/trac.git/trac]</a>
+</p>
+------------------------------
+============================== changeset and log with digit hash on non linear changesets
+[00000012/trac.git]
+[00000012/trac.git/trac]
+[00000012:00000098/trac.git]
+[00000012:00000098/trac.git/trac]
+------------------------------
+<p>
+<a class="changeset" href="/changeset/00000012/trac.git" title="message 00000012">[00000012/trac.git]</a>
+<a class="changeset" href="/changeset/00000012/trac.git/trac" title="message 00000012">[00000012/trac.git/trac]</a>
+<a class="source" href="/log/trac.git/?revs=00000012%3A00000098">[00000012:00000098/trac.git]</a>
+<a class="source" href="/log/trac.git/trac?revs=00000012%3A00000098">[00000012:00000098/trac.git/trac]</a>
+</p>
+------------------------------
 ============================== Big ranges (#9955 regression)
 [1234567890:12345678901]
 ------------------------------
@@ -215,9 +297,46 @@ log:trunk:12@23
 <a class="source" href="/log/trunk?revs=12-23">log:trunk@12-23</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk:12:23</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk:12-23</a>
-<a class="source" href="/log/trunk?revs=12%3Ahead">log:trunk@12:head</a>
+<a class="source" href="/log/trunk?revs=12-head">log:trunk@12:head</a>
 <a class="source" href="/log/trunk?revs=12-head">log:trunk:12-head</a>
 <a class="missing source" title="No changeset 12@23 in the repository">log:trunk:12@23</a>
+</p>
+------------------------------
+============================== log: link resolver with hash revs and named revs
+log:trac.git@fffffff
+log:trac.git/trunk
+log:trac.git/trunk@HEAD
+log:trac.git/trunk@deadbeef
+log:trac.git/trunk@deadbeef:deadbef1
+log:trac.git/trunk@deadbeef-deadbef1
+log:trac.git/trunk:deadbeef:deadbef1
+log:trac.git/trunk:deadbeef-deadbef1
+log:trac.git/trunk@deadbeef:HEAD
+log:trac.git/trunk:deadbeef-HEAD
+log:trac.git/trunk:deadbeef@deadbef1
+log:trac.git/trunk@1.0-stable
+log:trac.git/trunk@0.12-stable:1.0-stable
+log:trac.git/trunk@v1.0-v1.0.1
+log:trac.git/trunk@0.12-stáblé:1.0-stáblé
+log:trac.git/trunk@vér1.0-vér1.0.1
+------------------------------
+<p>
+<a class="source" href="/log/trac.git/?rev=fffffff">log:trac.git@fffffff</a>
+<a class="source" href="/log/trac.git/trunk">log:trac.git/trunk</a>
+<a class="source" href="/log/trac.git/trunk?rev=HEAD">log:trac.git/trunk@HEAD</a>
+<a class="source" href="/log/trac.git/trunk?rev=deadbeef">log:trac.git/trunk@deadbeef</a>
+<a class="source" href="/log/trac.git/trunk?revs=deadbeef%3Adeadbef1">log:trac.git/trunk@deadbeef:deadbef1</a>
+<a class="source" href="/log/trac.git/trunk?revs=deadbeef%3Adeadbef1">log:trac.git/trunk@deadbeef-deadbef1</a>
+<a class="source" href="/log/trac.git/trunk?revs=deadbeef%3Adeadbef1">log:trac.git/trunk:deadbeef:deadbef1</a>
+<a class="source" href="/log/trac.git/trunk?revs=deadbeef%3Adeadbef1">log:trac.git/trunk:deadbeef-deadbef1</a>
+<a class="source" href="/log/trac.git/trunk?revs=deadbeef%3AHEAD">log:trac.git/trunk@deadbeef:HEAD</a>
+<a class="missing source" title="No changeset deadbeef-HEAD in the repository">log:trac.git/trunk:deadbeef-HEAD</a>
+<a class="missing source" title="No changeset deadbeef@deadbef1 in the repository">log:trac.git/trunk:deadbeef@deadbef1</a>
+<a class="source" href="/log/trac.git/trunk?rev=1.0-stable">log:trac.git/trunk@1.0-stable</a>
+<a class="source" href="/log/trac.git/trunk?revs=0.12-stable%3A1.0-stable">log:trac.git/trunk@0.12-stable:1.0-stable</a>
+<a class="missing source" title="No changeset v1.0-v1.0.1 in the repository">log:trac.git/trunk@v1.0-v1.0.1</a>
+<a class="source" href="/log/trac.git/trunk?revs=0.12-st%C3%A1bl%C3%A9%3A1.0-st%C3%A1bl%C3%A9">log:trac.git/trunk@0.12-stáblé:1.0-stáblé</a>
+<a class="missing source" title="No changeset vér1.0-vér1.0.1 in the repository">log:trac.git/trunk@vér1.0-vér1.0.1</a>
 </p>
 ------------------------------
 ============================== log: link resolver with missing revisions
@@ -233,7 +352,7 @@ log:trunk@notfound
 <a class="missing source" title="No changeset 4242 in the repository">log:@4242</a>
 <a class="source" href="/log/?revs=4242-4243">log:@4242-4243</a>
 <a class="missing source" title="No changeset notfound in the repository">log:@notfound</a>
-<a class="missing source" title="No changeset deadbeef in the repository">log:@deadbeef:deadbef0</a>
+<a class="source" href="/log/?revs=deadbeef-deadbef0">log:@deadbeef:deadbef0</a>
 <a class="missing source" title="No changeset 4243 in the repository">log:trunk@4243</a>
 <a class="missing source" title="No changeset notfound in the repository">log:trunk@notfound</a>
 <a class="source" href="/log/?revs=4242-4243">[4242:4243]</a>
@@ -265,7 +384,7 @@ log:@10:20:30
 ------------------------------
 <p>
 <a class="missing source" title="No changeset 10-20-30 in the repository">log:@10-20-30</a>
-<a class="missing source" title="No changeset 40-50-60 in the repository">log:@10,20-30,40-50-60</a>
+<a class="source" href="/log/?revs=10%2C20-30%2C40-50-60">log:@10,20-30,40-50-60</a>
 <a class="missing source" title="No changeset 10:20:30 in the repository">log:@10:20:30</a>
 [10-20-30]
 [10:20:30]

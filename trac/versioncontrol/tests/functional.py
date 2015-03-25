@@ -302,7 +302,7 @@ class RegressionTestTicket11438(FunctionalTwillTestCaseSetup):
         rev = self._testenv.svn_add('ticket11438/file1.txt', '')
         rev = self._testenv.svn_add('ticket11438/file2.txt', '')
         tc.go(self._tester.url + '/intertrac/log:@%d:head' % (rev - 1))
-        tc.url(self._tester.url + r'/log/\?revs=' + str(rev - 1) + '%3Ahead')
+        tc.url(self._tester.url + r'/log/\?revs=' + str(rev - 1) + '-head')
         tc.notfind('@%d' % (rev + 1))
         tc.find('@%d' % rev)
         tc.find('@%d' % (rev - 1))
