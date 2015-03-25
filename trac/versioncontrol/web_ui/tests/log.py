@@ -18,7 +18,8 @@ from trac.core import Component, TracError, implements
 from trac.test import MockPerm
 from trac.util.datefmt import utc
 from trac.versioncontrol.api import (
-    Changeset, DbRepositoryProvider, IRepositoryConnector, Node, Repository)
+    Changeset, DbRepositoryProvider, IRepositoryConnector, Node,
+    NoSuchChangeset, Repository)
 from trac.versioncontrol.web_ui.log import LogModule
 from trac.web.api import parse_arg_list
 from trac.web.tests.api import RequestHandlerPermissionsTestCaseBase
@@ -49,7 +50,16 @@ class MockRepository(Repository):
         return path.strip('/') if path else ''
 
     def normalize_rev(self, rev):
-        return self.youngest_rev if rev is None or rev == '' else int(rev)
+        if rev is None or rev == '':
+            return self.youngest_rev
+        try:
+            nrev = int(rev)
+        except:
+            raise NoSuchChangeset(rev)
+        else:
+            if not (1 <= nrev <= self.youngest_rev) or nrev % 3 != 1:
+                raise NoSuchChangeset(rev)
+            return nrev
 
     def get_node(self, path, rev):
         assert rev % 3 == 1  # allow only 3n + 1
@@ -211,6 +221,18 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
         self.assertEqual(['edit'] * 3 + ['add'],
                          [item['change'] for item in items])
         self.assertNotIn('next', req.chrome['links'])
+
+    def test_with_invalid_rev(self):
+        def fn(message, **kwargs):
+            req = self.create_request(path_info='/log/mock/file', **kwargs)
+            try:
+                self.process_request(req)
+            except NoSuchChangeset, e:
+                self.assertEqual(message, unicode(e))
+
+        fn('No changeset 101 in the repository', args={'rev': '101'})
+        fn('No changeset 0 in the repository', args={'rev': '0'})
+        fn('No changeset 43-46 in the repository', args={'rev': '43-46'})
 
     def test_revranges_1(self):
         req = self.create_request(path_info='/log/mock/file',
@@ -387,6 +409,23 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
                           'edit', 'edit', 'move', None],
                          [item['change'] for item in items])
         self.assertNotIn('next', req.chrome['links'])
+
+    def test_invalid_revranges(self):
+        def fn(message, **kwargs):
+            req = self.create_request(path_info='/log/mock/file', **kwargs)
+            try:
+                self.process_request(req)
+            except NoSuchChangeset, e:
+                self.assertEqual(message, unicode(e))
+
+        fn('No changeset 101 in the repository', args={'revs': '101'})
+        fn('No changeset 0 in the repository', args={'revs': '0'})
+        fn('No changeset 0 in the repository', args={'revs': '0-43'})
+        fn('No changeset 101 in the repository', args={'revs': '43-101'})
+        fn('No changeset 43-46-49 in the repository',
+           args={'revs': '43-46-49'})
+        fn('No changeset 50 in the repository',
+           args={'revs': '43-46,50,52-55'})
 
     def test_follow_copy(self):
         req = self.create_request(path_info='/log/mock/file',

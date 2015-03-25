@@ -28,7 +28,8 @@ from trac.resource import ResourceNotFound
 from trac.util import Ranges
 from trac.util.text import to_unicode, wrap
 from trac.util.translation import _
-from trac.versioncontrol.api import Changeset, RepositoryManager
+from trac.versioncontrol.api import (Changeset, NoSuchChangeset,
+                                     RepositoryManager)
 from trac.versioncontrol.web_ui.changeset import ChangesetModule
 from trac.versioncontrol.web_ui.util import *
 from trac.web import IRequestHandler
@@ -102,19 +103,17 @@ class LogModule(Component):
                          + ('?' + qs if qs else ''))
 
         normpath = repos.normalize_path(path)
+
         # if `revs` parameter is given, then we're restricted to the
         # corresponding revision ranges.
         # If not, then we're considering all revisions since `rev`,
         # on that path, in which case `revranges` will be None.
-        revranges = None
         if revs:
-            try:
-                revranges = self._normalize_ranges(repos, path, revs)
-                rev = revranges.b
-            except ValueError:
-                pass
-        rev = repos.normalize_rev(rev)
-        display_rev = repos.display_rev
+            revranges = RevRanges(repos, revs, resolve=True)
+            rev = revranges.b
+        else:
+            revranges = None
+            rev = repos.normalize_rev(rev)
 
         # The `history()` method depends on the mode:
         #  * for ''stop on copy'' and ''follow copies'', it's `Node.history()`
@@ -123,42 +122,33 @@ class LogModule(Component):
         #   `Repository.get_path_history()`
         cset_resource = repos.resource.child('changeset')
         show_graph = False
+        curr_revrange = []
         if mode == 'path_history':
             def history():
                 for h in repos.get_path_history(path, rev):
                     if 'CHANGESET_VIEW' in req.perm(cset_resource(id=h[1])):
                         yield h
+
         elif revranges:
+            show_graph = path == '/' and not verbose \
+                         and not repos.has_linear_changesets \
+                         and len(revranges) == 1
+
             def history():
-                prevpath = path
-                expected_next_item = None
-                ranges = list(revranges.pairs)
-                ranges.reverse()
-                for (a, b) in ranges:
-                    a = repos.normalize_rev(a)
-                    b = repos.normalize_rev(b)
-                    while not repos.rev_older_than(b, a):
-                        node = get_existing_node(req, repos, prevpath, b)
-                        node_history = list(node.get_history(2))
-                        p, rev, chg = node_history[0]
+                separator = False
+                for a, b in reversed(revranges.pairs):
+                    curr_revrange[:] = (a, b)
+                    node = get_existing_node(req, repos, path, b)
+                    for p, rev, chg in node.get_history():
                         if repos.rev_older_than(rev, a):
-                            break  # simply skip, no separator
+                            break
                         if 'CHANGESET_VIEW' in req.perm(cset_resource(id=rev)):
-                            if expected_next_item:
-                                # check whether we're continuing previous range
-                                np, nrev, nchg = expected_next_item
-                                if rev != nrev:  # no, we need a separator
-                                    yield (np, nrev, None)
-                            yield node_history[0]
-                        if len(node_history) > 1:
-                            expected_next_item = node_history[-1]
-                            prevpath = expected_next_item[0]  # follow copy
-                            b = expected_next_item[1]
-                        else:
-                            expected_next_item = None
-                            break  # no more older revisions
-                if expected_next_item:
-                    yield (expected_next_item[0], expected_next_item[1], None)
+                            separator = True
+                            yield p, rev, chg
+                    else:
+                        separator = False
+                    if separator:
+                        yield p, rev, None
         else:
             show_graph = path == '/' and not verbose \
                          and not repos.has_linear_changesets
@@ -215,7 +205,7 @@ class LogModule(Component):
                 raise TracError(_("The file or directory '%(path)s' doesn't "
                                   "exist at revision %(rev)s or at any "
                                   "previous revision.", path=path,
-                                  rev=display_rev(rev)),
+                                  rev=repos.display_rev(rev)),
                                 _('Nonexistent path'))
 
         # Generate graph data
@@ -249,15 +239,19 @@ class LogModule(Component):
             next_rev = info[-1]['rev']
             next_path = info[-1]['path']
             next_revranges = None
-            if revranges:
-                next_revranges = str(revranges.truncate(next_rev))
+            if curr_revrange:
+                new_revrange = (curr_revrange[0], next_rev) \
+                               if info[-1]['change'] else None
+                next_revranges = revranges.truncate(curr_revrange,
+                                                    new_revrange)
+                next_revranges = unicode(next_revranges) or None
             if next_revranges or not revranges:
-                older_revisions_href = make_log_href(next_path, rev=next_rev,
-                                                     revs=next_revranges)
+                older_revisions_href = make_log_href(
+                    next_path, rev=next_rev, revs=next_revranges)
                 add_link(req, 'next', older_revisions_href,
                          _('Revision Log (restarting at %(path)s, rev. '
                            '%(rev)s)', path=next_path,
-                           rev=display_rev(next_rev)))
+                           rev=repos.display_rev(next_rev)))
             # only show fully 'limit' results, use `change == None` as a marker
             info[-1]['change'] = None
 
@@ -285,7 +279,7 @@ class LogModule(Component):
             'context': web_context(req, 'source', path, parent=repos.resource),
             'reponame': repos.reponame or None, 'repos': repos,
             'path': path, 'rev': rev, 'stop_rev': stop_rev,
-            'display_rev': display_rev, 'revranges': revranges,
+            'display_rev': repos.display_rev, 'revranges': revranges,
             'mode': mode, 'verbose': verbose, 'limit': limit,
             'items': info, 'changes': changes, 'extra_changes': extra_changes,
             'graph': graph,
@@ -346,8 +340,9 @@ class LogModule(Component):
 
     # IWikiSyntaxProvider methods
 
-    REV_RANGE = r"(?:%s|%s)" % (Ranges.RE_STR, ChangesetModule.CHANGESET_ID)
-    #                          int rev ranges or any kind of rev
+    # int rev ranges or any kind of rev range
+    REV_RANGE = r"(?:%(int)s|%(cset)s(?:[:-]%(cset)s)?)" % \
+                {'int': Ranges.RE_STR, 'cset': ChangesetModule.CHANGESET_ID}
 
     def get_wiki_syntax(self):
         yield (
@@ -363,6 +358,8 @@ class LogModule(Component):
 
     def get_link_resolvers(self):
         yield ('log', self._format_link)
+
+    LOG_LINK_RE = re.compile(r"([^@:]*)[@:]%s?" % REV_RANGE)
 
     def _format_link(self, formatter, ns, match, label, fullmatch=None):
         if ns == 'log1':
@@ -401,24 +398,16 @@ class LogModule(Component):
 
             if repos:
                 if 'LOG_VIEW' in formatter.perm:
-                    revranges = None
-                    if any(c in revs for c in ':-,'):
-                        try:
-                            # try to parse into integer rev ranges
-                            revranges = Ranges(revs.replace(':', '-'),
-                                               reorder=True)
-                            revs = str(revranges)
-                        except ValueError:
-                            revranges = self._normalize_ranges(repos, path,
-                                                               revs)
-                    if revranges:
-                        href = formatter.href.log(repos.reponame or None,
-                                                  path or '/',
-                                                  revs=revs)
+                    reponame = repos.reponame or None
+                    path = path or '/'
+                    revranges = RevRanges(repos, revs)
+                    if revranges.has_ranges():
+                        href = formatter.href.log(reponame, path,
+                                                  revs=unicode(revranges))
                     else:
-                        repos.normalize_rev(revs)  # verify revision
-                        href = formatter.href.log(repos.reponame or None,
-                                                  path or '/',
+                        # try to resolve if single rev
+                        repos.normalize_rev(revs)
+                        href = formatter.href.log(reponame, path,
                                                   rev=revs or None)
                     if query and '?' in href:
                         query = '&' + query[1:]
@@ -433,25 +422,114 @@ class LogModule(Component):
             errmsg = to_unicode(e)
         return tag.a(label, class_='missing source', title=errmsg)
 
-    LOG_LINK_RE = re.compile(r"([^@:]*)[@:]%s?" % REV_RANGE)
 
-    def _normalize_ranges(self, repos, path, revs):
-        try:
-            # fast path; only numbers
-            return Ranges(revs.replace(':', '-'), reorder=True)
-        except ValueError:
-            # slow path, normalize each rev
-            ranges = []
-            for range in revs.split(','):
-                try:
-                    a, b = range.replace(':', '-').split('-')
-                    range = (a, b)
-                except ValueError:
-                    range = (range,)
-                ranges.append('-'.join(str(repos.normalize_rev(r))
-                                       for r in range))
-            ranges = ','.join(ranges)
+class RevRanges(object):
+
+    def __init__(self, repos, revs=None, resolve=False):
+        self.repos = repos
+        self.resolve = resolve
+        self.pairs = []
+        self.a = self.b = None
+        if revs:
+            self._append(revs)
+
+    def has_ranges(self):
+        n = len(self.pairs)
+        return n > 1 or n == 1 and self.a != self.b
+
+    def truncate(self, curr_pair, new_pair=None):
+        curr_pair = tuple(curr_pair)
+        if new_pair:
+            new_pair = tuple(new_pair)
+        revranges = RevRanges(self.repos, resolve=self.resolve)
+        pairs = revranges.pairs
+        for pair in self.pairs:
+            if pair == curr_pair:
+                if new_pair:
+                    pairs.append(new_pair)
+                break
+            pairs.append(pair)
+        if pairs:
+            revranges.a = pairs[0][0]
+            revranges.b = pairs[-1][1]
+        revranges._reduce()
+        return revranges
+
+    def _normrev(self, rev):
+        if not rev:
+            raise NoSuchChangeset(rev)
+        if self.resolve:
+            return self.repos.normalize_rev(rev)
+        elif self.repos.has_linear_changesets:
             try:
-                return Ranges(ranges)
-            except ValueError:
-                return None
+                return int(rev)
+            except (ValueError, TypeError):
+                return rev
+        else:
+            return rev
+
+    _cset_range_re = re.compile(r"""(?:
+        %(cset)s[:-]%(cset)s    |  # int or hexa revs
+        [0-9]+[:-][A-Za-z_0-9]+ |  # e.g. 42-head
+        [A-Za-z_0-9]+[:-][0-9]+ |  # e.g. head-42
+        [^:]+:[^:]+                # e.g. master:dev-42
+        )\Z
+        """ % {'cset': ChangesetModule.CHANGESET_ID}, re.VERBOSE)
+
+    def _append(self, revs):
+        if not revs:
+            return
+
+        pairs = []
+        for rev in re.split(u',\u200b?', revs):
+            a = b = None
+            if self._cset_range_re.match(rev):
+                for sep in ':-':
+                    if sep in rev:
+                        a, b = rev.split(sep)
+                        break
+            if a is None:
+                a = b = self._normrev(rev)
+            elif a == b:
+                a = b = self._normrev(a)
+            else:
+                a = self._normrev(a)
+                b = self._normrev(b)
+            pairs.append((a, b))
+        self.pairs.extend(pairs)
+        self._reduce()
+
+    def _reduce(self):
+        if all(isinstance(pair[0], (int, long)) and
+               isinstance(pair[1], (int, long))
+               for pair in self.pairs):
+            try:
+                ranges = Ranges(unicode(self), reorder=True)
+            except:
+                pass
+            else:
+                self.pairs[:] = ranges.pairs
+        else:
+            seen = set()
+            pairs = self.pairs[:]
+            for idx, pair in enumerate(pairs):
+                if pair in seen:
+                    pairs[idx] = None
+                else:
+                    seen.add(pair)
+            if len(pairs) != len(seen):
+                self.pairs[:] = filter(None, pairs)
+        if self.pairs:
+            self.a = self.pairs[0][0]
+            self.b = self.pairs[-1][1]
+        else:
+            self.a = self.b = None
+
+    def __len__(self):
+        return len(self.pairs)
+
+    def __unicode__(self):
+        sep = '-' if self.repos.has_linear_changesets else ':'
+        return ','.join(sep.join(map(unicode, pair)) if pair[0] != pair[1]
+                                                     else unicode(pair[0])
+                        for pair in self.pairs)
