@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2014 Edgewall Software
+# Copyright (C) 2014-2015 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -11,23 +11,413 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
+from datetime import datetime, timedelta
 import unittest
 
-from trac.core import TracError
-from trac.test import EnvironmentStub, Mock, MockPerm
+from trac.core import Component, TracError, implements
+from trac.test import MockPerm
+from trac.util.datefmt import utc
+from trac.versioncontrol.api import (
+    Changeset, DbRepositoryProvider, IRepositoryConnector, Node, Repository)
 from trac.versioncontrol.web_ui.log import LogModule
+from trac.web.api import parse_arg_list
+from trac.web.tests.api import RequestHandlerPermissionsTestCaseBase
 
 
-class LogModuleTestCase(unittest.TestCase):
+mock_repotype = 'mock:' + __name__
+
+
+class MockRepositoryConnector(Component):
+
+    implements(IRepositoryConnector)
+
+    def get_supported_types(self):
+        yield mock_repotype, 8
+
+    def get_repository(self, repos_type, repos_dir, params):
+        return MockRepository('mock:' + repos_dir, params, self.log)
+
+
+class MockRepository(Repository):
+
+    has_linear_changesets = True
+
+    def get_youngest_rev(self):
+        return 100
+
+    def normalize_path(self, path):
+        return path.strip('/') if path else ''
+
+    def normalize_rev(self, rev):
+        return self.youngest_rev if rev is None or rev == '' else int(rev)
+
+    def get_node(self, path, rev):
+        assert rev % 3 == 1  # allow only 3n + 1
+        assert path in ('file', 'file-old')
+        return MockNode(self, path, rev, Node.FILE)
+
+    def get_changeset(self, rev):
+        assert rev % 3 == 1  # allow only 3n + 1
+        return Changeset(self, rev, 'message-%d' % rev, 'author-%d' % rev,
+                         datetime(2001, 1, 1, tzinfo=utc) +
+                         timedelta(seconds=rev))
+
+    def previous_rev(self, rev, path=''):
+        assert rev % 3 == 1  # allow only 3n + 1
+        return rev - 3 if rev > 0 else None
+
+    def get_path_history(self, path, rev=None, limit=None):
+        histories = [(path,         100, Changeset.DELETE),
+                     (path,          40, Changeset.MOVE),
+                     (path + '-old',  1, Changeset.ADD)]
+        for history in histories:
+            if limit is not None and limit <= 0:
+                break
+            if rev is None or rev >= history[1]:
+                yield history
+                if limit is not None:
+                    limit -= 1
+
+    def rev_older_than(self, rev1, rev2):
+        return self.normalize_rev(rev1) < self.normalize_rev(rev2)
+
+
+class MockNode(Node):
+
+    def __init__(self, repos, path, rev, kind):
+        super(MockNode, self).__init__(repos, path, rev, kind)
+        self.created_path = path
+        self.created_rev = rev
+
+    def get_history(self, limit=None):
+        youngest_rev = self.repos.youngest_rev
+        rev = self.rev
+        path = self.path
+        while rev > 0:
+            if limit is not None:
+                if limit <= 0:
+                    return
+                limit -= 1
+            if rev == 1:
+                change = Changeset.ADD
+            elif rev == 40:
+                change = Changeset.MOVE
+            elif rev == youngest_rev:
+                change = Changeset.DELETE
+            else:
+                change = Changeset.EDIT
+            yield path, rev, change
+            if rev == 40:
+                path += '-old'
+            rev -= 3
+
+
+class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
 
     def setUp(self):
-        self.env = EnvironmentStub()
-        self.lm = LogModule(self.env)
+        self._super = super(LogModuleTestCase, self)
+        self._super.setUp(LogModule)
+        provider = DbRepositoryProvider(self.env)
+        provider.add_repository('mock', '/', mock_repotype)
+
+    def create_request(self, **kwargs):
+        kwargs.setdefault('path_info', '/log/mock')
+        kwargs.setdefault('perm', MockPerm())
+        return self._super.create_request(**kwargs)
 
     def test_default_repository_not_configured(self):
         """Test for regression of http://trac.edgewall.org/ticket/11599."""
-        req = Mock(perm=MockPerm(), args={'new_path': '/'})
-        self.assertRaises(TracError, self.lm.process_request, req)
+        req = self.create_request(path_info='/log/', args={'new_path': '/'})
+        self.assertRaises(TracError, self.process_request, req)
+
+    def test_without_rev(self):
+        req = self.create_request(path_info='/log/mock/file',
+                                  args={'limit': '4'})
+        template, data, ctype = self.process_request(req)
+        self.assertEqual('revisionlog.html', template)
+        items = data['items']
+        self.assertEqual(5, len(items))
+        self.assertEqual([100, 97, 94, 91, 88],
+                         [item['rev'] for item in items])
+        self.assertEqual(['delete'] + ['edit'] * 3 + [None],
+                         [item['change'] for item in items])
+        links = req.chrome['links']['next']
+        self.assertEqual('/trac.cgi/log/mock/file?limit=4&rev=88&'
+                         'mode=stop_on_copy', links[0]['href'])
+        self.assertEqual(1, len(links))
+
+    def test_with_rev(self):
+        req = self.create_request(path_info='/log/mock/file',
+                                  args={'rev': '49'})
+        template, data, ctype = self.process_request(req)
+        items = data['items']
+        self.assertEqual(5, len(items))
+        self.assertEqual([49, 46, 43, 40, 37],
+                         [item['rev'] for item in items])
+        self.assertEqual(['file'] * 4 + ['file-old'],
+                         [item['path'] for item in items])
+        self.assertEqual(['edit'] * 3 + ['move', 'edit'],
+                         [item['change'] for item in items])
+        self.assertNotIn('next', req.chrome['links'])
+
+    def test_with_rev_and_limit(self):
+        req = self.create_request(path_info='/log/mock/file',
+                                  args={'rev': '49', 'limit': '4'})
+        template, data, ctype = self.process_request(req)
+        items = data['items']
+        self.assertEqual(5, len(items))
+        self.assertEqual([49, 46, 43, 40, 37],
+                         [item['rev'] for item in items])
+        self.assertEqual(['file'] * 4 + ['file-old'],
+                         [item['path'] for item in items])
+        self.assertEqual([1] * 4 + [2], [item['depth'] for item in items])
+        self.assertEqual([None] * 4 + ['file-old'],
+                         [item.get('copyfrom_path') for item in items])
+        self.assertEqual(['edit'] * 3 + ['move', None],
+                         [item['change'] for item in items])
+        links = req.chrome['links']['next']
+        self.assertEqual('/trac.cgi/log/mock/file-old?limit=4&rev=37&'
+                         'mode=stop_on_copy', links[0]['href'])
+        self.assertEqual(1, len(links))
+
+    def test_with_rev_on_start(self):
+        req = self.create_request(path_info='/log/mock/file-old',
+                                  args={'rev': '10'})
+        template, data, ctype = self.process_request(req)
+        items = data['items']
+        self.assertEqual(4, len(items))
+        self.assertEqual([10, 7, 4, 1],
+                         [item['rev'] for item in items])
+        self.assertEqual(['file-old'] * 4, [item['path'] for item in items])
+        self.assertEqual([1] * 4, [item['depth'] for item in items])
+        self.assertEqual([None] * 4,
+                         [item.get('copyfrom_path') for item in items])
+        self.assertEqual(['edit'] * 3 + ['add'],
+                         [item['change'] for item in items])
+        self.assertNotIn('next', req.chrome['links'])
+
+    def test_with_rev_and_limit_on_start(self):
+        req = self.create_request(path_info='/log/mock/file-old',
+                                  args={'rev': '10', 'limit': '4'})
+        template, data, ctype = self.process_request(req)
+        items = data['items']
+        self.assertEqual(4, len(items))
+        self.assertEqual([10, 7, 4, 1],
+                         [item['rev'] for item in items])
+        self.assertEqual(['file-old'] * 4, [item['path'] for item in items])
+        self.assertEqual([1] * 4, [item['depth'] for item in items])
+        self.assertEqual([None] * 4,
+                         [item.get('copyfrom_path') for item in items])
+        self.assertEqual(['edit'] * 3 + ['add'],
+                         [item['change'] for item in items])
+        self.assertNotIn('next', req.chrome['links'])
+
+    def test_revranges_1(self):
+        req = self.create_request(path_info='/log/mock/file',
+                                  args={'revs': '70,79-82,94-100'})
+        template, data, ctype = self.process_request(req)
+        items = data['items']
+        self.assertEqual(9, len(items))
+        self.assertEqual([100, 97, 94, 91, 82, 79, 76, 70, 67],
+                         [item['rev'] for item in items])
+        self.assertEqual(['file'] * 9,
+                         [item['path'] for item in items])
+        self.assertEqual([1] * 9, [item['depth'] for item in items])
+        self.assertEqual([None] * 9,
+                         [item.get('copyfrom_path') for item in items])
+        self.assertEqual(['delete', 'edit', 'edit', None, 'edit', 'edit', None,
+                          'edit', None],
+                         [item['change'] for item in items])
+        self.assertNotIn('next', req.chrome['links'])
+
+    def test_revranges_2(self):
+        req = self.create_request(path_info='/log/mock/file',
+                                  args={'revs': '22-49'})
+        template, data, ctype = self.process_request(req)
+        items = data['items']
+        self.assertEqual(5, len(items))
+        self.assertEqual([49, 46, 43, 40, 37],
+                         [item['rev'] for item in items])
+        self.assertEqual(['file'] * 4 + ['file-old'],
+                         [item['path'] for item in items])
+        self.assertEqual([1] * 4 + [2], [item['depth'] for item in items])
+        self.assertEqual([None] * 4 + ['file-old'],
+                         [item.get('copyfrom_path') for item in items])
+        self.assertEqual(['edit'] * 3 + ['move', 'edit'],
+                         [item['change'] for item in items])
+        self.assertNotIn('next', req.chrome['links'])
+
+    def test_revranges_3(self):
+        req = self.create_request(path_info='/log/mock/file',
+                                  args={'revs': '22-46,55-61'})
+        template, data, ctype = self.process_request(req)
+        items = data['items']
+        self.assertEqual(8, len(items))
+        self.assertEqual([61, 58, 55, 52, 46, 43, 40, 37],
+                         [item['rev'] for item in items])
+        self.assertEqual(['file'] * 7 + ['file-old'],
+                         [item['path'] for item in items])
+        self.assertEqual([1] * 7 + [2], [item['depth'] for item in items])
+        self.assertEqual([None] * 7 + ['file-old'],
+                         [item.get('copyfrom_path') for item in items])
+        self.assertEqual(['edit', 'edit', 'edit', None,
+                          'edit', 'edit', 'move', 'edit'],
+                         [item['change'] for item in items])
+        self.assertNotIn('next', req.chrome['links'])
+
+    def test_revranges_4(self):
+        req = self.create_request(path_info='/log/mock/file',
+                                  args={'revs': '40-46,55-61'})
+        template, data, ctype = self.process_request(req)
+        items = data['items']
+        self.assertEqual(8, len(items))
+        self.assertEqual([61, 58, 55, 52, 46, 43, 40, 37],
+                         [item['rev'] for item in items])
+        self.assertEqual(['file'] * 7 + ['file-old'],
+                         [item['path'] for item in items])
+        self.assertEqual([1] * 7 + [2], [item['depth'] for item in items])
+        self.assertEqual([None] * 7 + ['file-old'],
+                         [item.get('copyfrom_path') for item in items])
+        self.assertEqual(['edit', 'edit', 'edit', None,
+                          'edit', 'edit', 'move', None],
+                         [item['change'] for item in items])
+        self.assertNotIn('next', req.chrome['links'])
+
+    def test_revranges_1_with_limit(self):
+        req = self.create_request(path_info='/log/mock/file',
+                                  args={'revs': '70,79-82,94-100',
+                                        'limit': '4'})
+        template, data, ctype = self.process_request(req)
+        items = data['items']
+        self.assertEqual(6, len(items))
+        self.assertEqual([100, 97, 94, 91, 82, 79],
+                         [item['rev'] for item in items])
+        self.assertEqual(['file'] * 6,
+                         [item['path'] for item in items])
+        self.assertEqual([1] * 6, [item['depth'] for item in items])
+        self.assertEqual([None] * 6,
+                         [item.get('copyfrom_path') for item in items])
+        self.assertEqual(['delete', 'edit', 'edit', None, 'edit', None],
+                         [item['change'] for item in items])
+        self.assertIn('next', req.chrome['links'])
+        links = req.chrome['links']['next']
+        self.assertEqual('/trac.cgi/log/mock/file?limit=4&revs=70%2C79&'
+                         'rev=79&mode=stop_on_copy', links[0]['href'])
+        self.assertEqual(1, len(links))
+
+    def test_revranges_1_next_link_with_limits(self):
+        def next_link_args(limit):
+            req = self.create_request(path_info='/log/mock/file',
+                                      args={'revs': '70,79-82,94-100',
+                                            'limit': str(limit)})
+            template, data, ctype = self.process_request(req)
+            links = req.chrome['links']
+            if 'next' in links:
+                link = links['next'][0]['href']
+                path_info, query_string = link.split('?', 1)
+                return dict(parse_arg_list(query_string))
+            else:
+                return None
+
+        self.assertEqual({'limit': '1', 'rev': '97', 'revs': '70,79-82,94-97',
+                          'mode': 'stop_on_copy'}, next_link_args(1))
+        self.assertEqual({'limit': '2', 'rev': '94', 'revs': '70,79-82,94',
+                          'mode': 'stop_on_copy'}, next_link_args(2))
+        self.assertEqual({'limit': '3', 'rev': '91', 'revs': '70,79-82',
+                          'mode': 'stop_on_copy'}, next_link_args(3))
+        self.assertEqual({'limit': '4', 'rev': '79', 'revs': '70,79',
+                          'mode': 'stop_on_copy'}, next_link_args(4))
+        self.assertEqual({'limit': '5', 'rev': '76', 'revs': '70',
+                          'mode': 'stop_on_copy'}, next_link_args(5))
+        self.assertEqual(None, next_link_args(6))
+
+    def test_revranges_2_with_limit(self):
+        req = self.create_request(path_info='/log/mock/file',
+                                  args={'revs': '22-49', 'limit': '4'})
+        template, data, ctype = self.process_request(req)
+        items = data['items']
+        self.assertEqual(5, len(items))
+        self.assertEqual([49, 46, 43, 40, 37],
+                         [item['rev'] for item in items])
+        self.assertEqual(['file'] * 4 + ['file-old'],
+                         [item['path'] for item in items])
+        self.assertEqual([1] * 4 + [2], [item['depth'] for item in items])
+        self.assertEqual([None] * 4 + ['file-old'],
+                         [item.get('copyfrom_path') for item in items])
+        self.assertEqual(['edit'] * 3 + ['move', None],
+                         [item['change'] for item in items])
+        self.assertIn('next', req.chrome['links'])
+        links = req.chrome['links']['next']
+        self.assertEqual('/trac.cgi/log/mock/file-old?limit=4&revs=22-37&'
+                         'rev=37&mode=stop_on_copy', links[0]['href'])
+        self.assertEqual(1, len(links))
+
+    def test_revranges_3_with_limit(self):
+        req = self.create_request(path_info='/log/mock/file',
+                                  args={'revs': '22-46,55-61', 'limit': '7'})
+        template, data, ctype = self.process_request(req)
+        items = data['items']
+        self.assertEqual(8, len(items))
+        self.assertEqual([61, 58, 55, 52, 46, 43, 40, 37],
+                         [item['rev'] for item in items])
+        self.assertEqual(['file'] * 7 + ['file-old'],
+                         [item['path'] for item in items])
+        self.assertEqual([1] * 7 + [2], [item['depth'] for item in items])
+        self.assertEqual([None] * 7 + ['file-old'],
+                         [item.get('copyfrom_path') for item in items])
+        self.assertEqual(['edit', 'edit', 'edit', None,
+                          'edit', 'edit', 'move', 'edit'],
+                         [item['change'] for item in items])
+        self.assertNotIn('next', req.chrome['links'])
+
+    def test_revranges_4_with_limit(self):
+        req = self.create_request(path_info='/log/mock/file',
+                                  args={'revs': '40-46,55-61', 'limit': '7'})
+        template, data, ctype = self.process_request(req)
+        items = data['items']
+        self.assertEqual(8, len(items))
+        self.assertEqual([61, 58, 55, 52, 46, 43, 40, 37],
+                         [item['rev'] for item in items])
+        self.assertEqual(['file'] * 7 + ['file-old'],
+                         [item['path'] for item in items])
+        self.assertEqual([1] * 7 + [2], [item['depth'] for item in items])
+        self.assertEqual([None] * 7 + ['file-old'],
+                         [item.get('copyfrom_path') for item in items])
+        self.assertEqual(['edit', 'edit', 'edit', None,
+                          'edit', 'edit', 'move', None],
+                         [item['change'] for item in items])
+        self.assertNotIn('next', req.chrome['links'])
+
+    def test_follow_copy(self):
+        req = self.create_request(path_info='/log/mock/file',
+                                  args={'rev': '43', 'limit': '4',
+                                        'mode': 'follow_copy'})
+        template, data, ctype = self.process_request(req)
+        items = data['items']
+        self.assertEqual(5, len(items))
+        self.assertEqual([43, 40, 37, 34, 31],
+                         [item['rev'] for item in items])
+        self.assertEqual(['file', 'file', 'file-old', 'file-old', 'file-old'],
+                         [item['path'] for item in items])
+        self.assertEqual([1, 1, 2, 2, 2], [item['depth'] for item in items])
+        self.assertEqual([None, None, 'file-old', None, None],
+                         [item.get('copyfrom_path') for item in items])
+        self.assertEqual(['edit', 'move', 'edit', 'edit', None],
+                         [item['change'] for item in items])
+        links = req.chrome['links']['next']
+        self.assertEqual('/trac.cgi/log/mock/file-old?limit=4&rev=31&'
+                         'mode=follow_copy', links[0]['href'])
+        self.assertEqual(1, len(links))
+
+    def test_path_history(self):
+        req = self.create_request(path_info='/log/mock/file',
+                                  args={'mode': 'path_history'})
+        template, data, ctype = self.process_request(req)
+        items = data['items']
+        self.assertEqual(3, len(items))
+        self.assertEqual(['delete', 'move', 'add'],
+                         [item['change'] for item in items])
+        self.assertNotIn('next', req.chrome['links'])
 
 
 def suite():

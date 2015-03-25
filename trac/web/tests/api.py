@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2005-2013 Edgewall Software
+# Copyright (C) 2005-2015 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -57,7 +57,7 @@ class RequestHandlerPermissionsTestCaseBase(unittest.TestCase):
         kw = {'perm': perm.PermissionCache(self.env, authname), 'args': {},
               'href': self.env.href, 'abs_href': self.env.abs_href,
               'tz': utc, 'locale': None, 'lc_time': locale_en,
-              'chrome': {'notices': [], 'warnings': []},
+              'authname': authname, 'chrome': {'notices': [], 'warnings': []},
               'method': None, 'get_header': lambda v: None}
         kw.update(kwargs)
         return Mock(**kw)

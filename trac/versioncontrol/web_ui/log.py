@@ -174,6 +174,7 @@ class LogModule(Component):
         depth = 1
         previous_path = normpath
         count = 0
+        history_remaining = True
         for old_path, old_rev, old_chg in history():
             if stop_rev and repos.rev_older_than(old_rev, stop_rev):
                 break
@@ -205,6 +206,8 @@ class LogModule(Component):
             if count >= stop_limit:
                 break
             previous_path = old_path
+        else:
+            history_remaining = False
         if not info:
             node = get_existing_node(req, repos, path, rev)
             if repos.rev_older_than(stop_rev, node.created_rev):
@@ -241,7 +244,7 @@ class LogModule(Component):
             info = [i for i in info if i['change']]  # drop separators
             if info and count > limit:
                 del info[-1]
-        elif info and count >= limit:
+        elif info and history_remaining and count >= limit:
             # stop_limit reached, there _might_ be some more
             next_rev = info[-1]['rev']
             next_path = info[-1]['path']
