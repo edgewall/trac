@@ -287,6 +287,9 @@ class IDatabaseConnector(Interface):
     def init_db(path, schema=None, log=None, **kwargs):
         """Initialize the database."""
 
+    def destroy_db(self, path, log=None, **kwargs):
+        """Destroy the database."""
+
     def to_sql(table):
         """Return the DDL statements necessary to create the specified
         table, including indices."""
@@ -326,6 +329,11 @@ class DatabaseManager(Component):
         from trac.db_default import schema
         args['schema'] = schema
         connector.init_db(**args)
+
+    def destroy_db(self):
+        connector, args = self.get_connector()
+        connector.destroy_db(**args)
+        self.shutdown()
 
     def create_tables(self, schema):
         """Create the specified tables.

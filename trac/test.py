@@ -325,7 +325,6 @@ class EnvironmentStub(Environment):
         :return: True upon success
         """
         from trac import db_default
-        scheme, db_prop = parse_connection_uri(self.dburi)
         tables = []
         try:
             with self.db_transaction as db:
@@ -344,7 +343,7 @@ class EnvironmentStub(Environment):
                 tables = self.global_databasemanager.reset_tables()
             else:
                 # different version or version unknown, drop the tables
-                self.destroy_db(scheme, db_prop)
+                self.global_databasemanager.destroy_db()
 
         if not tables:
             self.global_databasemanager.init_db()
@@ -362,6 +361,11 @@ class EnvironmentStub(Environment):
                     .set_database_version(db_default.db_version)
 
     def destroy_db(self, scheme=None, db_prop=None):
+        """Destroy the database.
+
+        :since 1.1.5: the method is deprecated and will be removed in 1.3.1.
+                      Use `DatabaseManager.destroy_db` instead.
+        """
         if not (scheme and db_prop):
             scheme, db_prop = parse_connection_uri(self.dburi)
         try:

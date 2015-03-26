@@ -118,6 +118,13 @@ class PostgreSQLConnector(Component):
                 cursor.execute(stmt)
         cnx.commit()
 
+    def destroy_db(self, path, log=None, user=None, password=None, host=None,
+                   port=None, params={}):
+        cnx = self.get_connection(path, log, user, password, host, port,
+                                  params)
+        cnx.execute('DROP SCHEMA %s CASCADE' % cnx.quote(cnx.schema))
+        cnx.commit()
+
     def to_sql(self, table):
         sql = ['CREATE TABLE "%s" (' % table.name]
         coldefs = []

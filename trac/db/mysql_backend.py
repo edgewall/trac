@@ -141,6 +141,14 @@ class MySQLConnector(Component):
         self._verify_table_status(cnx)
         cnx.commit()
 
+    def destroy_db(self, path, log=None, user=None, password=None, host=None,
+                   port=None, params={}):
+        cnx = self.get_connection(path, log, user, password, host, port,
+                                  params)
+        for table_name in cnx.get_table_names():
+            cnx.drop_table(table_name)
+        cnx.commit()
+
     def _utf8_size(self, cnx):
         if cnx is None:
             connector, args = DatabaseManager(self.env).get_connector()

@@ -218,6 +218,12 @@ class SQLiteConnector(Component):
                 cursor.execute(stmt)
         cnx.commit()
 
+    def destroy_db(self, path, log=None, params={}):
+        if path != ':memory:':
+            if not os.path.isabs(path):
+                path = os.path.join(self.env.path, path)
+            os.remove(path)
+
     def to_sql(self, table):
         return _to_sql(table)
 
