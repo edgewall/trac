@@ -331,7 +331,9 @@ class EnvironmentStub(Environment):
             with self.db_transaction as db:
                 db.rollback()  # make sure there's no transaction in progress
                 # check the database version
-                database_version = self.database_version
+                database_version = \
+                    self.global_databasemanager \
+                        .get_database_version('database_version')
         except Exception:
             # "Database not found ...",
             # "OperationalError: no such table: system" or the like
