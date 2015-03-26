@@ -442,6 +442,57 @@ class DatabaseManager(Component):
             self.log.info("Upgraded %s from %d to %d",
                           name, current_database_version, version)
 
+    def needs_upgrade(self, version, name='database_version'):
+        """Checks the database version to determine if an upgrade is needed.
+
+        :param version: the expected integer database version.
+        :param name: the name of the entry in the SYSTEM table that contains
+                     the database version. Defaults to `database_version`,
+                     which contains the database version for Trac.
+
+        :return: `True` if the stored version is less than the expected
+                  version, `False` if it is equal to the expected version.
+        :raises TracError: if the stored version is greater than the expected
+                           version.
+        """
+        dbver = self.get_database_version(name)
+        if dbver == version:
+            return False
+        elif dbver > version:
+            raise TracError(_("Need to downgrade %(name)s.", name=name))
+        self.log.info("Need to upgrade %s from %d to %d",
+                      name, dbver, version)
+        return True
+
+    def upgrade(self, version, name='database_version', pkg=None):
+        """Invokes `do_upgrade(env, version, cursor)` in module
+        `"%s/db%i.py" % (pkg, version)`, for each required version upgrade.
+
+        :param version: the expected integer database version.
+        :param name: the name of the entry in the SYSTEM table that contains
+                     the database version. Defaults to `database_version`,
+                     which contains the database version for Trac.
+        :param pkg: the package containing the upgrade modules.
+
+        :raises TracError: if the package or module doesn't exist.
+        """
+        dbver = self.get_database_version(name)
+        for i in range(dbver + 1, version + 1):
+            module = 'db%i' % i
+            try:
+                upgrades = __import__(pkg, globals(), locals(), [module])
+            except ImportError:
+                raise TracError(_("No upgrade package %(pkg)s", pkg=pkg))
+            try:
+                script = getattr(upgrades, module)
+            except AttributeError:
+                raise TracError(_("No upgrade module %(module)s.py",
+                                  module=module))
+            with self.env.db_transaction as db:
+                cursor = db.cursor()
+                script.do_upgrade(self.env, i, cursor)
+                self.set_database_version(i, name)
+
     def shutdown(self, tid=None):
         if self._cnx_pool:
             self._cnx_pool.shutdown(tid)

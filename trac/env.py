@@ -797,36 +797,11 @@ class EnvironmentSetup(Component):
         self._update_sample_config()
 
     def environment_needs_upgrade(self):
-        dbver = self.env.database_version
-        if dbver == db_default.db_version:
-            return False
-        elif dbver > db_default.db_version:
-            raise TracError(_('Database newer than Trac version'))
-        self.log.info("Trac database schema version is %d, should be %d",
-                      dbver, db_default.db_version)
-        return True
+        return DatabaseManager(self.env).needs_upgrade(db_default.db_version)
 
     def upgrade_environment(self):
-        """Each db version should have its own upgrade module, named
-        upgrades/dbN.py, where 'N' is the version number (int).
-        """
-        dbm = DatabaseManager(self.env)
-        dbver = self.env.database_version
-        with self.env.db_transaction as db:
-            cursor = db.cursor()
-            for i in range(dbver + 1, db_default.db_version + 1):
-                name = 'db%i' % i
-                try:
-                    upgrades = __import__('upgrades', globals(), locals(),
-                                          [name])
-                    script = getattr(upgrades, name)
-                except AttributeError:
-                    raise TracError(_("No upgrade module for version %(num)i "
-                                      "(%(version)s.py)", num=i,
-                                      version=name))
-                script.do_upgrade(self.env, i, cursor)
-                dbm.set_database_version(i)
-                db.commit()
+        DatabaseManager(self.env).upgrade(db_default.db_version,
+                                          pkg='trac.upgrades')
         self._update_sample_config()
 
     # Internal methods
