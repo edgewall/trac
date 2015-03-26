@@ -1148,7 +1148,8 @@ class lazy(object):
         instance.__dict__[self.fn.__name__] = value
 
     def __delete__(self, instance):
-        del instance.__dict__[self.fn.__name__]
+        if self.fn.__name__ in instance.__dict__:
+            del instance.__dict__[self.fn.__name__]
 
 
 # -- algorithmic utilities
