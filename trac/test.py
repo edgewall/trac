@@ -29,9 +29,10 @@ import unittest
 
 try:
     from babel import Locale
-    locale_en = Locale.parse('en_US')
 except ImportError:
     locale_en = None
+else:
+    locale_en = Locale.parse('en_US')
 
 import trac.db.mysql_backend
 import trac.db.postgres_backend
@@ -321,44 +322,41 @@ class EnvironmentStub(Environment):
 
     def reset_db(self, default_data=None):
         """Remove all data from Trac tables, keeping the tables themselves.
+
         :param default_data: after clean-up, initialize with default data
         :return: True upon success
         """
         from trac import db_default
         tables = []
+        dbm = self.global_databasemanager
         try:
             with self.db_transaction as db:
                 db.rollback()  # make sure there's no transaction in progress
                 # check the database version
-                database_version = \
-                    self.global_databasemanager \
-                        .get_database_version('database_version')
+                db_version = dbm.get_database_version('database_version')
         except Exception:
             # "Database not found ...",
             # "OperationalError: no such table: system" or the like
             pass
         else:
-            if database_version == db_default.db_version:
+            if db_version == db_default.db_version:
                 # same version, simply clear the tables (faster)
-                tables = self.global_databasemanager.reset_tables()
+                tables = dbm.reset_tables()
             else:
                 # different version or version unknown, drop the tables
-                self.global_databasemanager.destroy_db()
+                dbm.destroy_db()
 
         if not tables:
-            self.global_databasemanager.init_db()
+            dbm.init_db()
             # we need to make sure the next get_db_cnx() will re-create
             # a new connection aware of the new data model - see #8518.
             if self.dburi != 'sqlite::memory:':
-                self.global_databasemanager.shutdown()
+                dbm.shutdown()
 
-        with self.db_transaction as db:
-            if default_data:
-                self.global_databasemanager \
-                    .insert_into_tables(db_default.get_data)
-            else:
-                self.global_databasemanager \
-                    .set_database_version(db_default.db_version)
+        if default_data:
+            dbm.insert_into_tables(db_default.get_data)
+        else:
+            dbm.set_database_version(db_default.db_version)
 
     def destroy_db(self, scheme=None, db_prop=None):
         """Destroy the database.

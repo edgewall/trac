@@ -236,14 +236,14 @@ class PostgreSQLConnection(ConnectionBase, ConnectionWrapper):
                                               port))
 
         cnx.set_client_encoding('UNICODE')
-        try:
-            self.schema = None
-            if 'schema' in params:
-                self.schema = params['schema']
+        self.schema = None
+        if 'schema' in params:
+            self.schema = params['schema']
+            try:
                 cnx.cursor().execute('SET search_path TO %s', (self.schema,))
                 cnx.commit()
-        except (DataError, ProgrammingError):
-            cnx.rollback()
+            except (DataError, ProgrammingError):
+                cnx.rollback()
         ConnectionWrapper.__init__(self, cnx, log)
 
     def cursor(self):

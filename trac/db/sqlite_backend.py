@@ -89,10 +89,11 @@ class EagerCursor(PyFormatCursor):
     def fetchone(self):
         try:
             row = self.rows[self.pos]
-            self.pos += 1
-            return row
         except IndexError:
             return None
+        else:
+            self.pos += 1
+            return row
 
     def fetchmany(self, num=None):
         if num is None:
