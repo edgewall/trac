@@ -2630,8 +2630,7 @@ class RegressionTestTicket11996(FunctionalTwillTestCaseSetup):
             self._tester.go_to_ticket()
             tc.find('<option selected="selected" value="milestone3">')
             self._tester.create_ticket(info={'milestone': ''})
-            tc.find('<a class="missing milestone" href="/milestone/" '
-                    'rel="nofollow">')
+            tc.find('<td headers="h_milestone">[ \t\n]*</td>')
             tc.notfind('<option value="milestone3" selected="selected">')
         finally:
             self._testenv.set_config('ticket', 'default_milestone', milestone)
