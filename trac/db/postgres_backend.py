@@ -52,10 +52,15 @@ _type_map = {
 
 def assemble_pg_dsn(path, user=None, password=None, host=None, port=None):
     """Quote the parameters and assemble the DSN."""
+    def quote(value):
+        if not isinstance(value, basestring):
+            value = unicode(value)
+        return "'%s'" % value.replace('\\', r'\\').replace("'", r"\'")
 
     dsn = {'dbname': path, 'user': user, 'password': password, 'host': host,
            'port': port}
-    return ' '.join(["%s='%s'" % (k,v) for k,v in dsn.iteritems() if v])
+    return ' '.join("%s=%s" % (name, quote(value))
+                    for name, value in dsn.iteritems() if value)
 
 
 class PostgreSQLConnector(Component):

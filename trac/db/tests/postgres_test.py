@@ -123,6 +123,20 @@ class PostgresTableCreationSQLTest(unittest.TestCase):
             self.assertEqual(new_values, orig)
             continue
 
+    def test_assemble_dsn_quoting(self):
+        self.assertEqual(
+            ["dbname='/trac'", "password='pass'", "user='user'"],
+            sorted(assemble_pg_dsn('/trac', 'user', 'pass').split(' ')))
+        self.assertEqual(
+            ["dbname='/trac'", r"password='pa\'ss'", "user='user'"],
+            sorted(assemble_pg_dsn('/trac', 'user', "pa'ss").split(' ')))
+        self.assertEqual(
+            ["dbname='/trac'", r"password='pa\\ss'", "user='user'"],
+            sorted(assemble_pg_dsn('/trac', 'user', r'pa\ss').split(' ')))
+        self.assertEqual(
+            ["dbname='/trac'", r"password='pa\\\'ss'", "user='user'"],
+            sorted(assemble_pg_dsn('/trac', 'user', r"pa\'ss").split(' ')))
+
 
 class PostgresTableAlterationSQLTest(unittest.TestCase):
     def setUp(self):
