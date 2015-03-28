@@ -91,7 +91,7 @@ dd.changeset .changes .delete  { background: #f88 }
 dd.changeset .changes .edit    { background: #fd8 }
 dd.changeset .changes .copy    { background: #88f }
 dd.changeset .changes .move    { background: #ccc }
-dt.changeset .branch, dt.changeset .tag {
+dt.changeset .branch, dt.changeset .tag, dt.changeset .trac-bookmark {
  color: #777;
  font-size: 80%;
  background: #f6f6f6;
@@ -106,4 +106,8 @@ dt.changeset .head {
 dt.changeset .tag {
  background: #ffa;
  border: 1px solid #fe0;
+}
+dt.changeset .trac-bookmark {
+ background: #bdf;
+ border: 1px solid #9ae;
 }

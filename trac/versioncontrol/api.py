@@ -1260,6 +1260,13 @@ class Changeset(object):
         """
         return []
 
+    def get_bookmarks(self):
+        """Yield bookmarks associated with this changeset.
+
+        .. versionadded :: 1.1.5
+        """
+        return []
+
     def is_viewable(self, perm):
         """Return True if view permission is granted on the changeset."""
         return 'CHANGESET_VIEW' in perm(self.resource)

@@ -111,6 +111,7 @@
                 class="branch${' head' if head else ''}"
                 title="${_('Branch head') if head else _('Branch')}">${branch}</span>
           <span py:for="tag in changeset.get_tags()" class="tag" title="Tag">${tag}</span>
+          <span py:for="bookmark in changeset.get_bookmarks()" class="trac-bookmark" title="Bookmark">${bookmark}</span>
         </div>
       </py:if>
 

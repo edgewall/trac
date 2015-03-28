@@ -1007,6 +1007,8 @@ class ChangesetModule(Component):
                 labels.append(tag.span(name, class_=class_))
             for name in cset.get_tags():
                 labels.append(tag.span(name, class_='tag'))
+            for name in cset.get_bookmarks():
+                labels.append(tag.span(name, class_='trac-bookmark'))
             return title if not labels else tag(title, labels)
         elif field == 'summary':
             return _("%(title)s: %(message)s",

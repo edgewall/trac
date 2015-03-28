@@ -190,6 +190,7 @@
                             class="branch${' head' if head else ''}"
                             title="${_('Branch head') if head else _('Branch')}">${branch}</span>
                       <span py:for="tag in change.get_tags()" class="tag" title="Tag">${tag}</span>
+                      <span py:for="bookmark in change.get_bookmarks()" class="trac-bookmark" title="Bookmark">${bookmark}</span>
                     </td>
                   </py:when>
                   <td colspan="5" py:otherwise="" />
