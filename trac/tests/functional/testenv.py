@@ -22,6 +22,7 @@ import sys
 import time
 from subprocess import call, Popen, PIPE, STDOUT
 
+from trac.db.api import DatabaseManager
 from trac.env import open_environment
 from trac.test import EnvironmentStub, get_dburi
 from trac.tests.compat import rmtree
@@ -89,8 +90,7 @@ class FunctionalTestEnvironment(object):
     def destroy(self):
         """Remove all of the test environment data."""
         env = EnvironmentStub(path=self.tracdir, destroying=True)
-        env.destroy_db()
-        env.shutdown()
+        DatabaseManager(env).destroy_db()
 
         self.destroy_repo()
         if os.path.exists(self.dirname):
