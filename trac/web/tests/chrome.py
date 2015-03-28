@@ -254,14 +254,13 @@ class ChromeTestCase(unittest.TestCase):
         links = chrome.prepare_request(req)['links']
         self.assertEqual('/trac.cgi/chrome/common/foo.ico',
                          links['icon'][0]['href'])
-        self.assertEqual('/trac.cgi/chrome/common/foo.ico',
-                         links['shortcut icon'][0]['href'])
+        self.assertNotIn('shortcut icon', links)
 
         # URL relative to the server root for icon config option
         self.env.config.set('project', 'icon', '/favicon.ico')
         links = chrome.prepare_request(req)['links']
         self.assertEqual('/favicon.ico', links['icon'][0]['href'])
-        self.assertEqual('/favicon.ico', links['shortcut icon'][0]['href'])
+        self.assertNotIn('shortcut icon', links)
 
         # Absolute URL for icon config option
         self.env.config.set('project', 'icon',
@@ -269,8 +268,7 @@ class ChromeTestCase(unittest.TestCase):
         links = chrome.prepare_request(req)['links']
         self.assertEqual('http://example.com/favicon.ico',
                          links['icon'][0]['href'])
-        self.assertEqual('http://example.com/favicon.ico',
-                         links['shortcut icon'][0]['href'])
+        self.assertNotIn('shortcut icon', links)
 
     def test_nav_contributor(self):
         class TestNavigationContributor(Component):
