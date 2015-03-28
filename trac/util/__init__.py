@@ -41,7 +41,6 @@ from .compat import any, md5, sha1, sorted
 from .datefmt import to_datetime, to_timestamp, utc
 from .text import exception_to_unicode, to_unicode, getpreferredencoding
 
-# -- req, session and web utils
 
 def get_reporter_id(req, arg_name=None):
     """Get most informative "reporter" identity out of a request.
@@ -65,6 +64,7 @@ def get_reporter_id(req, arg_name=None):
     if name and email:
         return '%s <%s>' % (name, email)
     return name or email or req.authname # == 'anonymous'
+
 
 def content_disposition(type=None, filename=None):
     """Generate a properly escaped Content-Disposition header."""
@@ -172,8 +172,8 @@ class AtomicFile(object):
     def __init__(self, path, mode='w', bufsize=-1):
         self._file = None
         self._path = path
-        (dir, name) = os.path.split(path)
-        (fd, self._temp) = tempfile.mkstemp(prefix=name + '-', dir=dir)
+        dir, name = os.path.split(path)
+        fd, self._temp = tempfile.mkstemp(prefix=name + '-', dir=dir)
         self._file = os.fdopen(fd, mode, bufsize)
 
         # Try to preserve permissions and group ownership, but failure
@@ -305,16 +305,16 @@ def create_zipinfo(filename, mtime=None, dir=False, executable=False, symlink=Fa
         if not zipinfo.filename.endswith('/'):
             zipinfo.filename += '/'
         zipinfo.compress_type = ZIP_STORED
-        zipinfo.external_attr = 040755 << 16L       # permissions drwxr-xr-x
-        zipinfo.external_attr |= 0x10               # MS-DOS directory flag
+        zipinfo.external_attr = 040755 << 16L        # permissions drwxr-xr-x
+        zipinfo.external_attr |= 0x10                # MS-DOS directory flag
     else:
         zipinfo.compress_type = ZIP_DEFLATED
-        zipinfo.external_attr = 0644 << 16L         # permissions -r-wr--r--
+        zipinfo.external_attr = 0644 << 16L          # permissions -r-wr--r--
         if executable:
-            zipinfo.external_attr |= 0755 << 16L    # -rwxr-xr-x
+            zipinfo.external_attr |= 0755 << 16L     # -rwxr-xr-x
         if symlink:
             zipinfo.compress_type = ZIP_STORED
-            zipinfo.external_attr |= 0120000 << 16L # symlink file type
+            zipinfo.external_attr |= 0120000 << 16L  # symlink file type
 
     if comment:
         zipinfo.comment = comment.encode('utf-8')
@@ -451,8 +451,8 @@ def copytree(src, dst, symlinks=False, skip=[], overwrite=False):
                 errors.extend(err.args[0])
         try:
             shutil.copystat(src, dst)
-        except WindowsError, why:
-            pass # Ignore errors due to limited Windows copystat support
+        except WindowsError:
+            pass  # Ignore errors due to limited Windows copystat support
         except OSError, why:
             errors.append((src, dst, str(why)))
         if errors:
@@ -520,7 +520,6 @@ def get_last_traceback():
 
 
 _egg_path_re = re.compile(r'build/bdist\.[^/]+/egg/(.*)')
-
 def get_lines_from_file(filename, lineno, context=0, globals=None):
     """Return `content` number of lines before and after the specified
     `lineno` from the (source code) file identified by `filename`.
@@ -564,10 +563,10 @@ def get_lines_from_file(filename, lineno, context=0, globals=None):
             break
 
     before = [to_unicode(l.rstrip('\n'), charset)
-                 for l in lines[lbound:lineno]]
+              for l in lines[lbound:lineno]]
     line = to_unicode(lines[lineno].rstrip('\n'), charset)
-    after = [to_unicode(l.rstrip('\n'), charset) \
-                 for l in lines[lineno + 1:ubound]]
+    after = [to_unicode(l.rstrip('\n'), charset)
+             for l in lines[lineno + 1:ubound]]
 
     return before, line, after
 
@@ -637,15 +636,14 @@ def get_doc(obj):
     """
     doc = inspect.getdoc(obj)
     if not doc:
-        return (None, None)
+        return None, None
     doc = to_unicode(doc).split('\n\n', 1)
     summary = doc[0].replace('\n', ' ')
     description = doc[1] if len(doc) > 1 else None
-    return (summary, description)
+    return summary, description
 
 
 _dont_import = frozenset(['__file__', '__name__', '__package__'])
-
 def import_namespace(globals_dict, module_name):
     """Import the namespace of a module into a globals dict.
 
@@ -694,6 +692,7 @@ def get_sources(path):
         except (KeyError, IOError):
             pass    # Metadata not found
     return sources
+
 
 def get_pkginfo(dist):
     """Get a dictionary containing package information for a package
@@ -801,6 +800,7 @@ def hex_entropy(digits=32):
     """Generate `digits` number of hex digits of entropy."""
     result = ''.join('%.2x' % ord(v) for v in urandom((digits + 1) // 2))
     return result[:digits] if len(result) > digits else result
+
 
 # Original license for md5crypt:
 # Based on FreeBSD src/lib/libcrypt/crypt.c 1.2
@@ -990,15 +990,15 @@ class Ranges(object):
         p.sort()
         i = 0
         while i + 1 < len(p):
-            if p[i+1][0]-1 <= p[i][1]: # this item overlaps with the next
+            if p[i+1][0]-1 <= p[i][1]:  # this item overlaps with the next
                 # make the first include the second
                 p[i] = (p[i][0], max(p[i][1], p[i+1][1]))
-                del p[i+1] # delete the second, after adjusting my endpoint
+                del p[i+1]  # delete the second, after adjusting my endpoint
             else:
                 i += 1
         if p:
-            self.a = p[0][0] # min value
-            self.b = p[-1][1] # max value
+            self.a = p[0][0]   # min value
+            self.b = p[-1][1]  # max value
         else:
             self.a = self.b = None
 
@@ -1157,6 +1157,7 @@ def embedded_numbers(s):
     pieces[1::2] = map(int, pieces[1::2])
     return pieces
 
+
 def pairwise(iterable):
     """
     >>> list(pairwise([0, 1, 2, 3]))
@@ -1171,6 +1172,7 @@ def pairwise(iterable):
     except StopIteration:
         pass
     return izip(a, b)
+
 
 def partition(iterable, order=None):
     """
@@ -1189,6 +1191,7 @@ def partition(iterable, order=None):
         return result
     return [result[key] for key in order]
 
+
 def as_int(s, default, min=None, max=None):
     """Convert s to an int and limit it to the given range, or return default
     if unsuccessful."""
@@ -1201,6 +1204,7 @@ def as_int(s, default, min=None, max=None):
     if max is not None and value > max:
         value = max
     return value
+
 
 def as_bool(value):
     """Convert the given value to a `bool`.
@@ -1218,6 +1222,7 @@ def as_bool(value):
         return bool(value)
     except (TypeError, ValueError):
         return False
+
 
 def pathjoin(*args):
     """Strip `/` from the arguments and join them with a single `/`."""
