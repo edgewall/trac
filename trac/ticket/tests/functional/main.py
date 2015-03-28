@@ -2619,6 +2619,24 @@ class RegressionTestTicket11618(FunctionalTwillTestCaseSetup):
             self._tester.login('admin')
 
 
+class RegressionTestTicket11996(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Field default value is only selected for new tickets.
+        Test for regression http://trac.edgewall.org/ticket/11996
+        """
+        milestone = self._testenv.get_config('ticket', 'default_milestone')
+        self._testenv.set_config('ticket', 'default_milestone', 'milestone3')
+        try:
+            self._tester.go_to_ticket()
+            tc.find('<option selected="selected" value="milestone3">')
+            self._tester.create_ticket(info={'milestone': ''})
+            tc.find('<a class="missing milestone" href="/milestone/" '
+                    'rel="nofollow">')
+            tc.notfind('<option value="milestone3" selected="selected">')
+        finally:
+            self._testenv.set_config('ticket', 'default_milestone', milestone)
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
@@ -2750,6 +2768,7 @@ def functionalSuite(suite=None):
         suite.addTest(RegressionTestTicket11176())
     else:
         print("SKIP: RegressionTestTicket11176 (ConfigObj not installed)")
+    suite.addTest(RegressionTestTicket11996())
 
     return suite
 
