@@ -171,15 +171,15 @@ class AtomicFile(object):
     """
     def __init__(self, path, mode='w', bufsize=-1):
         self._file = None
-        self._path = path
-        dir, name = os.path.split(path)
+        self._path = os.path.realpath(path)
+        dir, name = os.path.split(self._path)
         fd, self._temp = tempfile.mkstemp(prefix=name + '-', dir=dir)
         self._file = os.fdopen(fd, mode, bufsize)
 
         # Try to preserve permissions and group ownership, but failure
         # should not be fatal
         try:
-            st = os.stat(path)
+            st = os.stat(self._path)
             if hasattr(os, 'chmod'):
                 os.chmod(self._temp, st.st_mode)
             if hasattr(os, 'chflags') and hasattr(st, 'st_flags'):

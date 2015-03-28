@@ -18,6 +18,7 @@ import os.path
 import pkg_resources
 import random
 import re
+import shutil
 import sys
 import tempfile
 import unittest
@@ -32,13 +33,11 @@ from trac.util.tests import concurrency, datefmt, presentation, text, \
 class AtomicFileTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.path = os.path.join(tempfile.gettempdir(), 'trac-tempfile')
+        self.dir = tempfile.mkdtemp()
+        self.path = os.path.join(self.dir, 'trac-tempfile')
 
     def tearDown(self):
-        try:
-            os.unlink(self.path)
-        except OSError:
-            pass
+        shutil.rmtree(self.dir)
 
     def test_non_existing(self):
         with util.AtomicFile(self.path) as f:
@@ -53,6 +52,18 @@ class AtomicFileTestCase(unittest.TestCase):
             f.write('Some new content')
         self.assertTrue(f.closed)
         self.assertEqual('Some new content', util.read_file(self.path))
+
+    if os.name != 'nt':
+        def test_symbolic_link(self):
+            link_path = os.path.join(self.dir, 'trac-tempfile-link')
+            os.symlink(self.path, link_path)
+
+            with util.AtomicFile(link_path) as f:
+                f.write('test content')
+
+            self.assertTrue(os.path.islink(link_path))
+            self.assertEqual('test content', util.read_file(link_path))
+            self.assertEqual('test content', util.read_file(self.path))
 
     if util.can_rename_open_file:
         def test_existing_open_for_reading(self):
