@@ -53,6 +53,22 @@ def notify_ticket_changed(env, ticket, author='anonymous'):
     NotificationSystem(env).notify(event)
 
 
+def config_subscriber(env, updater=False, owner=False, reporter=False):
+    section = 'notification-subscriber'
+    env.config.set(section, 'always_notify_cc', 'CarbonCopySubscriber')
+    if updater:
+        env.config.set(section, 'always_notify_updater',
+                       'TicketUpdaterSubscriber')
+        env.config.set(section, 'always_notify_previous_updater',
+                       'TicketPreviousUpdatersSubscriber')
+    if owner:
+        env.config.set(section, 'always_notify_owner',
+                       'TicketOwnerSubscriber')
+    if reporter:
+        env.config.set(section, 'always_notify_reporter',
+                       'TicketReporterSubscriber')
+
+
 class RecipientTestCase(unittest.TestCase):
     """Notification test cases for email recipients."""
 
@@ -94,9 +110,6 @@ class RecipientTestCase(unittest.TestCase):
     def _test_smtp_always_cc(self, key, sep):
         cc_list = ('joe.user@example.net', 'joe.bar@example.net')
         self.env.config.set('notification', key, sep.join(cc_list))
-        self.env.config.set('notification', 'always_notify_reporter', False)
-        self.env.config.set('notification', 'always_notify_owner', False)
-        self.env.config.set('notification', 'always_notify_updater', False)
         ticket = self._create_ticket({'reporter': 'joe.bar@example.org',
                                       'owner': 'joe.user@example.net',
                                       'summary': 'New ticket recipients'})
@@ -121,6 +134,7 @@ class RecipientTestCase(unittest.TestCase):
 
     def test_new_ticket_recipients(self):
         """Report and CC list should be in recipient list for new tickets."""
+        config_subscriber(self.env, updater=True)
         always_cc = ('joe.user@example.net', 'joe.bar@example.net')
         ticket_cc = ('joe.user@example.com', 'joe.bar@example.org')
         self.env.config.set('notification', 'smtp_always_cc',
@@ -153,8 +167,7 @@ class RecipientTestCase(unittest.TestCase):
     def test_always_notify_updater(self):
         """The `always_notify_updater` option."""
         def _test_updater(enabled):
-            self.env.config.set('notification', 'always_notify_updater',
-                                enabled)
+            config_subscriber(self.env, updater=enabled)
             ticket = Ticket(self.env)
             ticket['reporter'] = 'joe.user@example.org'
             ticket['summary'] = u'This is a súmmäry'
@@ -178,10 +191,7 @@ class RecipientTestCase(unittest.TestCase):
     def test_always_notify_owner(self):
         """The `always_notify_owner` option."""
         def _test_reporter(enabled):
-            self.env.config.set('notification', 'always_notify_owner',
-                                enabled)
-            self.env.config.set('notification', 'always_notify_updater',
-                                'false')
+            config_subscriber(self.env, owner=enabled)
             ticket = Ticket(self.env)
             ticket['summary'] = 'Foo'
             ticket['reporter'] = u'joe@example.org'
@@ -204,10 +214,7 @@ class RecipientTestCase(unittest.TestCase):
     def test_always_notify_reporter(self):
         """Notification to reporter w/ updater option disabled (#3780)"""
         def _test_reporter(enabled):
-            self.env.config.set('notification', 'always_notify_updater',
-                                'false')
-            self.env.config.set('notification', 'always_notify_reporter',
-                                enabled)
+            config_subscriber(self.env, reporter=enabled)
             ticket = Ticket(self.env)
             ticket['summary'] = 'Foo'
             ticket['reporter'] = u'joe@example.org'
@@ -243,7 +250,7 @@ class RecipientTestCase(unittest.TestCase):
 
     def test_long_forms(self):
         """Long forms of SMTP email addresses 'Display Name <address>'"""
-        self.env.config.set('notification', 'always_notify_owner', True)
+        config_subscriber(self.env, updater=True, owner=True)
         ticket = Ticket(self.env)
         ticket['reporter'] = '"Joe" <joe.user@example.com>'
         ticket['owner'] = 'Joe <joe.user@example.net>'
@@ -267,8 +274,6 @@ class NotificationTestCase(unittest.TestCase):
         self.env.config.set('project', 'name', 'TracTest')
         self.env.config.set('project', 'url', 'http://localhost/project.url')
         self.env.config.set('notification', 'smtp_enabled', 'true')
-        self.env.config.set('notification', 'always_notify_owner', 'true')
-        self.env.config.set('notification', 'always_notify_reporter', 'true')
         self.env.config.set('notification', 'smtp_always_cc',
                             'joe.user@example.net, joe.bar@example.net')
         self.env.config.set('notification', 'use_public_cc', 'true')
@@ -377,6 +382,7 @@ class NotificationTestCase(unittest.TestCase):
     def test_short_login(self):
         """Email addresses without a FQDN"""
         def _test_short_login(enabled):
+            config_subscriber(self.env, reporter=True)
             ticket = Ticket(self.env)
             ticket['reporter'] = 'joeuser'
             ticket['summary'] = 'This is a summary'
@@ -410,10 +416,7 @@ class NotificationTestCase(unittest.TestCase):
     def test_default_domain(self):
         """Default domain name"""
         def _test_default_domain(enabled):
-            self.env.config.set('notification', 'always_notify_owner',
-                                'false')
-            self.env.config.set('notification', 'always_notify_reporter',
-                                'false')
+            config_subscriber(self.env)
             self.env.config.set('notification', 'smtp_always_cc', '')
             ticket = Ticket(self.env)
             ticket['cc'] = 'joenodom, joewithdom@example.com'
@@ -447,8 +450,7 @@ class NotificationTestCase(unittest.TestCase):
 
     def test_email_map(self):
         """Login-to-email mapping"""
-        self.env.config.set('notification', 'always_notify_owner', 'true')
-        self.env.config.set('notification', 'always_notify_reporter', 'true')
+        config_subscriber(self.env, reporter=True, owner=True)
         self.env.config.set('notification', 'smtp_always_cc',
                             'joe@example.com')
         self.env.insert_known_users(
@@ -535,6 +537,7 @@ class NotificationTestCase(unittest.TestCase):
 
     def test_ignore_domains(self):
         """Non-SMTP domain exclusion"""
+        config_subscriber(self.env, reporter=True, owner=True)
         self.env.config.set('notification', 'ignore_domains',
                             'example.com, example.org')
         self.env.insert_known_users(
@@ -560,6 +563,7 @@ class NotificationTestCase(unittest.TestCase):
 
     def test_admit_domains(self):
         """SMTP domain inclusion"""
+        config_subscriber(self.env, reporter=True)
         self.env.config.set('notification', 'admit_domains',
                             'localdomain, server')
         ticket = Ticket(self.env)
@@ -641,8 +645,7 @@ class NotificationTestCase(unittest.TestCase):
 
     def test_md5_digest(self):
         """MD5 digest w/ non-ASCII recipient address (#3491)"""
-        self.env.config.set('notification', 'always_notify_owner', 'false')
-        self.env.config.set('notification', 'always_notify_reporter', 'true')
+        config_subscriber(self.env, reporter=True)
         self.env.config.set('notification', 'smtp_always_cc', '')
         ticket = Ticket(self.env)
         ticket['reporter'] = u'"Jöe Usèr" <joe.user@example.org>'
@@ -655,6 +658,7 @@ class NotificationTestCase(unittest.TestCase):
 
     def test_previous_cc_list(self):
         """Members removed from CC list receive notifications"""
+        config_subscriber(self.env)
         ticket = Ticket(self.env)
         ticket['summary'] = 'Foo'
         ticket['cc'] = 'joe.user1@example.net'
@@ -671,7 +675,7 @@ class NotificationTestCase(unittest.TestCase):
         """Previous owner is notified when ticket is reassigned (#2311)
            if always_notify_owner is set to True"""
         def _test_owner(enabled):
-            self.env.config.set('notification', 'always_notify_owner', enabled)
+            config_subscriber(self.env, owner=enabled)
             ticket = Ticket(self.env)
             ticket['summary'] = 'Foo'
             ticket['owner'] = prev_owner = 'joe.user1@example.net'
@@ -1315,6 +1319,7 @@ class AttachmentNotificationTestCase(unittest.TestCase):
         self.env.config.set('project', 'name', 'TracTest')
         self.env.config.set('notification', 'smtp_enabled', 'true')
         self.env.config.set('notification', 'smtp_port', str(SMTP_TEST_PORT))
+        config_subscriber(self.env, reporter=True)
 
         ticket = Ticket(self.env)
         ticket['summary'] = 'Ticket summary'

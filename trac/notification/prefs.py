@@ -17,14 +17,18 @@ import re
 from operator import itemgetter
 from pkg_resources import resource_filename
 
+from genshi.builder import tag
+
 from trac.core import Component, implements, ExtensionPoint
 from trac.notification.api import (INotificationDistributor,
                                    INotificationFormatter,
-                                   INotificationSubscriber)
+                                   INotificationSubscriber,
+                                   NotificationSystem)
 from trac.notification.model import Subscription
 from trac.prefs.api import IPreferencePanelProvider
 from trac.web.chrome import Chrome, ITemplateProvider, add_notice
-from trac.util.translation import _
+from trac.wiki.macros import WikiMacroBase
+from trac.util.translation import _, cleandoc_
 
 
 class NotificationPreferences(Component):
@@ -181,3 +185,38 @@ class NotificationPreferences(Component):
     def get_templates_dirs(self):
         resource_dir = resource_filename('trac.notification', 'templates')
         return [resource_dir]
+
+
+class SubscriberListMacro(WikiMacroBase):
+    _domain = 'messages'
+    _description = cleandoc_(
+    """Display a list of all installed notification subscribers, including
+    documentation if available.
+
+    Optionally, the name of a specific subscriber can be provided as an
+    argument. In that case, only the documentation for that subscriber will
+    be rendered.
+
+    Note that this macro will not be able to display the documentation of
+    subscribers if the `PythonOptimize` option is enabled for mod_python!
+    """)
+
+    def expand_macro(self, formatter, name, content):
+        content = content.strip() if content else ''
+        name_filter = content.strip('*')
+        items = {}
+        for subscriber in NotificationSystem(self.env).subscribers:
+            name = subscriber.__class__.__name__
+            if not name_filter or name.startswith(name_filter):
+                items[name] = subscriber.description()
+
+        return tag.div(class_='trac-subscriberlist')(
+            tag.table(class_='wiki')(
+                tag.thead(tag.tr(
+                    tag.th(_("Subscriber")),
+                    tag.th(_("Description")))),
+                tag.tbody(
+                    tag.tr(tag.td(tag.code(name)),
+                           tag.td(items[name]),
+                           class_='odd' if idx % 2 else 'even')
+                    for idx, name in enumerate(sorted(items.keys())))))

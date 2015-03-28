@@ -16,10 +16,14 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from collections import defaultdict
 from operator import itemgetter
 
-from trac.config import BoolOption, ExtensionOption, ListOption, Option
+from trac.cache import cached
+from trac.config import (BoolOption, ConfigSection, ExtensionOption,
+                         ListOption, Option)
 from trac.core import *
+from trac.util import as_bool, to_list
 from trac.util.compat import set
 
 
@@ -147,6 +151,48 @@ def get_target_id(target):
     return str(target)
 
 
+def parse_subscriber_config(rawsubscriptions):
+    """Given a list of options from [notification-subscriber]"""
+
+    required_attrs = {
+        'distributor': 'email',
+        'priority': 100,
+        'adverb': 'always',
+        'format': 'text/plain',
+    }
+    optional_attrs = {
+    }
+    known_attrs = required_attrs.copy()
+    known_attrs.update(optional_attrs)
+
+    byname = defaultdict(dict)
+    for option, value in rawsubscriptions:
+        parts = option.split('.')
+        name = parts[0]
+        if len(parts) == 1:
+            byname[name]['name'] = name
+            byname[name]['class'] = value.strip()
+        else:
+            attribute = parts[1]
+            if attribute not in known_attrs.keys or \
+                    isinstance(known_attrs[attribute], str):
+                byname[name][attribute] = value
+            elif isinstance(known_attrs[attribute], int):
+                byname[name][attribute] = int(value)
+            elif isinstance(known_attrs[attribute], bool):
+                byname[name][attribute] = as_bool(value)
+            elif isinstance(known_attrs[attribute], list):
+                byname[name][attribute] = to_list(value)
+
+    byclass = defaultdict(list)
+    for name, attributes in byname.items():
+        for key, val in required_attrs.items():
+            attributes.setdefault(key, val)
+        byclass[attributes['class']].append(attributes)
+
+    return byclass
+
+
 class NotificationEvent(object):
     """All data related to a particular notification event.
 
@@ -261,6 +307,17 @@ class NotificationSystem(Component):
         will disable it.
         """)
 
+    notification_subscriber_section = ConfigSection('notification-subscriber',
+        """The notifications subscriptions are controlled by plugins. All
+        `INotificationSubscriber` components are in charge. These components
+        may allow to be configured via this section in the `trac.ini` file.
+        
+        See TracNotification for more details.
+        
+        Available subscribers:
+        [[SubscriberList]]
+        """) 
+
     distributors = ExtensionPoint(INotificationDistributor)
     subscribers = ExtensionPoint(INotificationSubscriber)
 
@@ -279,6 +336,16 @@ class NotificationSystem(Component):
     @property
     def admit_domains(self):  # For backward compatibility
         return self.config.get('notification', 'admit_domains')
+
+    @cached
+    def subscriber_defaults(self):
+        rawsubscriptions = self.notification_subscriber_section.options()
+        return parse_subscriber_config(rawsubscriptions)
+        
+    def default_subscriptions(self, klass):
+        for d in self.subscriber_defaults[klass]:
+            yield (klass, d['distributor'], d['format'], d['priority'],
+                   d['adverb'])
 
     def send_email(self, from_addr, recipients, message):
         """Send message to recipients via e-mail."""
@@ -314,6 +381,7 @@ class NotificationSystem(Component):
 
         :return: a list of (sid, authenticated, address, transport, format)
         """
+        del self.subscriber_defaults
         subscriptions = []
         for subscriber in self.subscribers:
             subscriptions.extend(x for x in subscriber.matches(event) if x)

@@ -25,6 +25,7 @@ from genshi.template.text import NewTextTemplate
 from trac.attachment import IAttachmentChangeListener
 from trac.core import *
 from trac.config import *
+from trac.env import IEnvironmentSetupParticipant
 from trac.notification.api import (IEmailDecorator, INotificationFormatter,
                                    INotificationSubscriber,
                                    NotificationEvent, NotificationSystem)
@@ -43,20 +44,24 @@ from trac.web.chrome import Chrome
 
 class TicketNotificationSystem(Component):
 
-    always_notify_owner = BoolOption('notification', 'always_notify_owner',
-                                     'false',
-        """Always send notifications to the ticket ''owner''.
-        """)
+    implements(IEnvironmentSetupParticipant)
 
-    always_notify_reporter = BoolOption('notification',
-                                        'always_notify_reporter',
-                                        'false',
-        """Always send notifications to the ticket ''reporter''.""")
+    def environment_created(self):
+        section = 'notification-subscriber'
+        if section not in self.config.sections():
+            self.config.set(section, 'always_notify_cc',
+                            'CarbonCopySubscriber')
+            self.config.set(section, 'always_notify_updater',
+                            'TicketUpdaterSubscriber')
+            self.config.set(section, 'always_notify_previous_updater',
+                            'TicketPreviousUpdatersSubscriber')
+            self.config.save()
 
-    always_notify_updater = BoolOption('notification', 'always_notify_updater',
-                                       'true',
-        """Always send notifications to the user who causes the ticket
-        change and to any previous updater of the ticket.""")
+    def environment_needs_upgrade(self):
+        return False
+
+    def upgrade_environment(self):
+        pass
 
     ticket_subject_template = Option('notification', 'ticket_subject_template',
                                      '$prefix #$ticket.id: $summary',
@@ -283,9 +288,8 @@ class TicketOwnerSubscriber(Component):
         return _("Ticket that I own is created or modified")
 
     def default_subscriptions(self):
-        if self.config.getbool('notification', 'always_notify_owner'):
-            yield (self.__class__.__name__, 'email', 'text/plain', 100,
-                   'always')
+        klass = self.__class__.__name__
+        return NotificationSystem(self.env).default_subscriptions(klass)
 
     def requires_authentication(self):
         return True
@@ -328,9 +332,8 @@ class TicketUpdaterSubscriber(Component):
         return _("I update a ticket")
 
     def default_subscriptions(self):
-        if self.config.getbool('notification', 'always_notify_updater'):
-            yield (self.__class__.__name__, 'email', 'text/plain', 100,
-                   'always')
+        klass = self.__class__.__name__
+        return NotificationSystem(self.env).default_subscriptions(klass)
 
     def requires_authentication(self):
         return True
@@ -383,9 +386,8 @@ class TicketPreviousUpdatersSubscriber(Component):
         return _("Ticket that I previously updated is modified")
 
     def default_subscriptions(self):
-        if self.config.getbool('notification', 'always_notify_updater'):
-            yield (self.__class__.__name__, 'email', 'text/plain', 100,
-                   'always')
+        klass = self.__class__.__name__
+        return NotificationSystem(self.env).default_subscriptions(klass)
 
     def requires_authentication(self):
         return True
@@ -430,9 +432,8 @@ class TicketReporterSubscriber(Component):
         return _("Ticket that I reported is modified")
 
     def default_subscriptions(self):
-        if self.config.getbool('notification', 'always_notify_reporter'):
-            yield (self.__class__.__name__, 'email', 'text/plain', 100,
-                   'always')
+        klass = self.__class__.__name__
+        return NotificationSystem(self.env).default_subscriptions(klass)
 
     def requires_authentication(self):
         return True
@@ -486,7 +487,8 @@ class CarbonCopySubscriber(Component):
         return _("Ticket that I'm listed in the CC field is modified")
 
     def default_subscriptions(self):
-        yield (self.__class__.__name__, 'email', 'text/plain', 100, 'always')
+        klass = self.__class__.__name__
+        return NotificationSystem(self.env).default_subscriptions(klass)
 
     def requires_authentication(self):
         return True
