@@ -256,7 +256,8 @@ ${ticket.description}</textarea>
                     py:if="can_modify or can_create"
                     py:with="fullrow = len(row) == 1">
                   <py:for each="idx, field in enumerate(row)"
-                          py:with="value = ticket.get_value_or_default(field.name)">
+                          py:with="value = ticket[field.name] if ticket.exists
+                                                              else ticket.get_value_or_default(field.name)">
                     <th class="col${idx + 1}" py:if="idx == 0 or not fullrow">
                       <label for="field-${field.name}" py:if="field"
                              py:strip="field.type == 'radio'" i18n:msg="field">${
