@@ -759,7 +759,6 @@ class Chrome(Component):
             src = chrome['icon']['src']
             mimetype = chrome['icon']['mimetype']
             add_link(req, 'icon', src, mimetype=mimetype)
-            add_link(req, 'shortcut icon', src, mimetype=mimetype)
 
         # Logo image
         chrome['logo'] = self.get_logo_data(req.href, req.abs_href)
