@@ -578,9 +578,10 @@ class ChangesetModule(Component):
             else:
                 return []
 
+        diff_changes = list(get_changes())
         diff_bytes = diff_files = 0
         if self.max_diff_bytes or self.max_diff_files:
-            for old_node, new_node, kind, change in get_changes():
+            for old_node, new_node, kind, change in diff_changes:
                 if change in Changeset.DIFF_CHANGES and kind == Node.FILE \
                         and old_node.is_viewable(req.perm) \
                         and new_node.is_viewable(req.perm):
@@ -603,7 +604,7 @@ class ChangesetModule(Component):
         filestats = self._prepare_filestats()
         changes = []
         files = []
-        for old_node, new_node, kind, change in get_changes():
+        for old_node, new_node, kind, change in diff_changes:
             props = []
             diffs = []
             show_old = old_node and old_node.is_viewable(req.perm)
