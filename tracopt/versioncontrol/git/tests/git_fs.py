@@ -417,10 +417,10 @@ class GitRepositoryTestCase(BaseTestCase):
         self.assertEqual(['master'], self._get_quickjump_names(repos))
         self._git('branch', 'alpha', 'master')  # add branch
         repos.sync()
-        self.assertEqual(['alpha', 'master'], self._get_quickjump_names(repos))
+        self.assertEqual(['master', 'alpha'], self._get_quickjump_names(repos))
         self._git('branch', '-m', 'alpha', 'beta')  # rename branch
         repos.sync()
-        self.assertEqual(['beta', 'master'], self._get_quickjump_names(repos))
+        self.assertEqual(['master', 'beta'], self._get_quickjump_names(repos))
         self._git('branch', '-D', 'beta')  # delete branch
         repos.sync()
         self.assertEqual(['master'], self._get_quickjump_names(repos))
@@ -440,11 +440,11 @@ class GitRepositoryTestCase(BaseTestCase):
 
         def get_branches(repos, rev):
             rev = repos.normalize_rev(rev)
-            return sorted(repos.get_changeset(rev).get_branches())
+            return list(repos.get_changeset(rev).get_branches())
 
         def get_tags(repos, rev):
             rev = repos.normalize_rev(rev)
-            return sorted(repos.get_changeset(rev).get_tags())
+            return list(repos.get_changeset(rev).get_tags())
 
         self.assertEqual([('dev', False), ('master', True), ('root', True)],
                          get_branches(repos, '0.0.1'))
@@ -497,8 +497,8 @@ class GitRepositoryTestCase(BaseTestCase):
                          sorted(cset.get_changes()))
 
     def _get_quickjump_names(self, repos):
-        return sorted(name for type, name, path, rev
-                           in repos.get_quickjump_entries('HEAD'))
+        return list(name for type, name, path, rev
+                         in repos.get_quickjump_entries('HEAD'))
 
 
 class GitCachedRepositoryTestCase(GitRepositoryTestCase):
