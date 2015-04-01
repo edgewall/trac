@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.0.5\n"
+"Project-Id-Version: Trac 1.0.6\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2015-03-01 08:27+0000\n"
+"POT-Creation-Date: 2015-04-01 15:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -607,11 +607,11 @@ msgid ""
 "''(Since 0.11.5)''"
 msgstr ""
 
-#: trac/db/mysql_backend.py:83
+#: trac/db/mysql_backend.py:84
 msgid "Location of mysqldump for MySQL database backups"
 msgstr ""
 
-#: trac/db/postgres_backend.py:72
+#: trac/db/postgres_backend.py:76
 msgid "Location of pg_dump for Postgres database backups"
 msgstr ""
 
@@ -1212,13 +1212,13 @@ msgid ""
 "pre-formatted text."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/log.py:46
+#: trac/versioncontrol/web_ui/log.py:47
 msgid ""
 "Default value for the limit argument in the TracRevisionLog.\n"
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/log.py:50
+#: trac/versioncontrol/web_ui/log.py:51
 msgid ""
 "Comma-separated list of colors to use for the TracRevisionLog\n"
 "graph display. (''since 1.0'')"

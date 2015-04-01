@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.0.5\n"
+"Project-Id-Version: Trac 1.0.6\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2015-03-01 08:27+0000\n"
+"POT-Creation-Date: 2015-04-01 15:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -137,7 +137,7 @@ msgstr ""
 #: trac/ticket/templates/report_delete.html:32
 #: trac/ticket/templates/report_edit.html:62
 #: trac/ticket/templates/ticket_change.html:127
-#: trac/versioncontrol/templates/admin_repositories.html:98
+#: trac/versioncontrol/templates/admin_repositories.html:97
 #: trac/wiki/templates/wiki_delete.html:112
 #: trac/wiki/templates/wiki_edit_form.html:84
 #: trac/wiki/templates/wiki_rename.html:43
@@ -489,7 +489,7 @@ msgstr ""
 #: trac/ticket/templates/admin_milestones.html:124
 #: trac/ticket/templates/admin_versions.html:93
 #: trac/versioncontrol/admin.py:117
-#: trac/versioncontrol/templates/admin_repositories.html:138
+#: trac/versioncontrol/templates/admin_repositories.html:137
 #: trac/web/session.py:429
 msgid "Name"
 msgstr ""
@@ -499,7 +499,7 @@ msgid "Size"
 msgstr ""
 
 #: trac/attachment.py:1078 trac/templates/history_view.html:40
-#: trac/ticket/templates/ticket.html:368
+#: trac/ticket/templates/ticket.html:369
 #: trac/versioncontrol/templates/revisionlog.html:122
 msgid "Author"
 msgstr ""
@@ -509,8 +509,8 @@ msgid "Date"
 msgstr ""
 
 #: trac/attachment.py:1079 trac/templates/attachment.html:102
-#: trac/ticket/api.py:308 trac/ticket/api.py:544
-#: trac/ticket/templates/ticket.html:397
+#: trac/ticket/api.py:308 trac/ticket/api.py:543
+#: trac/ticket/templates/ticket.html:398
 #: trac/ticket/templates/ticket_box.html:107
 msgid "Description"
 msgstr ""
@@ -769,7 +769,7 @@ msgstr ""
 
 #: trac/perm.py:666 trac/admin/templates/admin_perms.html:74
 #: trac/ticket/templates/batch_modify.html:47
-#: trac/ticket/templates/ticket.html:339
+#: trac/ticket/templates/ticket.html:340
 msgid "Action"
 msgstr ""
 
@@ -1208,14 +1208,14 @@ msgstr ""
 #: trac/ticket/templates/admin_milestones.html:103
 #: trac/ticket/templates/admin_versions.html:36
 #: trac/ticket/templates/admin_versions.html:71
-#: trac/versioncontrol/templates/admin_repositories.html:61
-#: trac/versioncontrol/templates/admin_repositories.html:108
-#: trac/versioncontrol/templates/admin_repositories.html:125
+#: trac/versioncontrol/templates/admin_repositories.html:60
+#: trac/versioncontrol/templates/admin_repositories.html:107
+#: trac/versioncontrol/templates/admin_repositories.html:124
 msgid "Name:"
 msgstr ""
 
 #: trac/admin/templates/admin_basics.html:34
-#: trac/versioncontrol/templates/admin_repositories.html:74
+#: trac/versioncontrol/templates/admin_repositories.html:73
 msgid "URL:"
 msgstr ""
 
@@ -1344,8 +1344,8 @@ msgstr ""
 #: trac/ticket/templates/admin_enums.html:51
 #: trac/ticket/templates/admin_milestones.html:114
 #: trac/ticket/templates/admin_versions.html:83
-#: trac/versioncontrol/templates/admin_repositories.html:115
-#: trac/versioncontrol/templates/admin_repositories.html:129
+#: trac/versioncontrol/templates/admin_repositories.html:114
+#: trac/versioncontrol/templates/admin_repositories.html:128
 msgid "Add"
 msgstr ""
 
@@ -1402,7 +1402,7 @@ msgstr ""
 #: trac/ticket/templates/admin_enums.html:83
 #: trac/ticket/templates/admin_milestones.html:149
 #: trac/ticket/templates/admin_versions.html:110
-#: trac/versioncontrol/templates/admin_repositories.html:158
+#: trac/versioncontrol/templates/admin_repositories.html:157
 msgid "Remove selected items"
 msgstr ""
 
@@ -1480,27 +1480,27 @@ msgid ""
 " {scheme}:/"
 msgstr ""
 
-#: trac/db/mysql_backend.py:92
+#: trac/db/mysql_backend.py:93
 msgid "Cannot load Python bindings for MySQL"
 msgstr ""
 
-#: trac/db/mysql_backend.py:248 trac/db/postgres_backend.py:179
-#: trac/db/postgres_backend.py:198
+#: trac/db/mysql_backend.py:249 trac/db/postgres_backend.py:183
+#: trac/db/postgres_backend.py:202
 #, python-format
 msgid "Unable to run %(path)s: %(msg)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:252
+#: trac/db/mysql_backend.py:253
 #, python-format
 msgid "mysqldump failed: %(msg)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:254 trac/db/postgres_backend.py:204
+#: trac/db/mysql_backend.py:255 trac/db/postgres_backend.py:208
 #: trac/db/sqlite_backend.py:248
 msgid "No destination file created"
 msgstr ""
 
-#: trac/db/mysql_backend.py:290
+#: trac/db/mysql_backend.py:291
 #, python-format
 msgid ""
 "All tables must be created as InnoDB or NDB storage engine to support "
@@ -1508,28 +1508,28 @@ msgid ""
 "which doesn't support transactions: %(tables)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:299
+#: trac/db/mysql_backend.py:300
 #, python-format
 msgid ""
 "All tables must be created with utf8_bin or utf8mb4_bin as collation. The"
 " following tables don't have the collations: %(tables)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:314
+#: trac/db/mysql_backend.py:315
 #, python-format
 msgid ""
 "The current storage engine is %(engine)s. It must be InnoDB or NDB "
 "storage engine to support transactions."
 msgstr ""
 
-#: trac/db/mysql_backend.py:320
+#: trac/db/mysql_backend.py:321
 #, python-format
 msgid ""
 "The current storage engine for TEMPORARY tables is %(engine)s. It must be"
 " InnoDB or NDB storage engine to support transactions."
 msgstr ""
 
-#: trac/db/mysql_backend.py:332
+#: trac/db/mysql_backend.py:333
 #, python-format
 msgid ""
 "The charset and collation of database are '%(charset)s' and "
@@ -1541,11 +1541,11 @@ msgstr ""
 msgid "Unable to get database connection within %(time)d seconds."
 msgstr ""
 
-#: trac/db/postgres_backend.py:81
+#: trac/db/postgres_backend.py:85
 msgid "Cannot load Python bindings for PostgreSQL"
 msgstr ""
 
-#: trac/db/postgres_backend.py:202
+#: trac/db/postgres_backend.py:206
 #, python-format
 msgid "pg_dump failed: %(msg)s"
 msgstr ""
@@ -1618,17 +1618,17 @@ msgstr ""
 msgid "Line numbers"
 msgstr ""
 
-#: trac/mimeview/patch.py:171
+#: trac/mimeview/patch.py:172
 #, python-format
 msgid "new file %(new)s"
 msgstr ""
 
-#: trac/mimeview/patch.py:175
+#: trac/mimeview/patch.py:176
 #, python-format
 msgid "deleted file %(deleted)s"
 msgstr ""
 
-#: trac/mimeview/patch.py:247
+#: trac/mimeview/patch.py:248
 msgid "this hunk was shorter than expected"
 msgstr ""
 
@@ -2075,7 +2075,7 @@ msgstr ""
 msgid "Attachment Info"
 msgstr ""
 
-#: trac/templates/attachment.html:50 trac/ticket/templates/ticket.html:373
+#: trac/templates/attachment.html:50 trac/ticket/templates/ticket.html:374
 #: trac/wiki/templates/wiki_edit_form.html:53
 msgid "Your email or username:"
 msgstr ""
@@ -2463,7 +2463,7 @@ msgstr ""
 
 #: trac/templates/list_of_attachments.html:37
 #: trac/templates/list_of_attachments.html:53
-#: trac/ticket/templates/ticket.html:396
+#: trac/ticket/templates/ticket.html:397
 msgid "Attachments"
 msgstr ""
 
@@ -2764,12 +2764,12 @@ msgstr ""
 msgid "Summary"
 msgstr ""
 
-#: trac/ticket/api.py:299 trac/ticket/templates/ticket.html:369
+#: trac/ticket/api.py:299 trac/ticket/templates/ticket.html:370
 msgid "Reporter"
 msgstr ""
 
 #: trac/ticket/api.py:311 trac/versioncontrol/admin.py:117
-#: trac/versioncontrol/templates/admin_repositories.html:138
+#: trac/versioncontrol/templates/admin_repositories.html:137
 msgid "Type"
 msgstr ""
 
@@ -2789,60 +2789,60 @@ msgstr ""
 msgid "Created"
 msgstr ""
 
-#: trac/ticket/api.py:503
+#: trac/ticket/api.py:502
 #, python-format
 msgid "Tickets %(ranges)s"
 msgstr ""
 
-#: trac/ticket/api.py:530
+#: trac/ticket/api.py:529
 msgid "ticket comment does not exist"
 msgstr ""
 
-#: trac/ticket/api.py:537
+#: trac/ticket/api.py:536
 #, python-format
 msgid "Description for Ticket #%(id)s"
 msgstr ""
 
-#: trac/ticket/api.py:540
+#: trac/ticket/api.py:539
 #, python-format
 msgid "Comment %(cnum)s for Ticket #%(id)s"
 msgstr ""
 
-#: trac/ticket/api.py:545
+#: trac/ticket/api.py:544
 #, python-format
 msgid "Comment %(cnum)s"
 msgstr ""
 
-#: trac/ticket/api.py:549
+#: trac/ticket/api.py:548
 msgid "no permission to view ticket"
 msgstr ""
 
-#: trac/ticket/api.py:552
+#: trac/ticket/api.py:551
 msgid "ticket does not exist"
 msgstr ""
 
-#: trac/ticket/api.py:572
+#: trac/ticket/api.py:571
 #, python-format
 msgid "Ticket #%(shortname)s"
 msgstr ""
 
-#: trac/ticket/batch.py:96
+#: trac/ticket/batch.py:103
 msgid "add"
 msgstr ""
 
-#: trac/ticket/batch.py:97
+#: trac/ticket/batch.py:104
 msgid "remove"
 msgstr ""
 
-#: trac/ticket/batch.py:98
+#: trac/ticket/batch.py:105
 msgid "add / remove"
 msgstr ""
 
-#: trac/ticket/batch.py:99
+#: trac/ticket/batch.py:106
 msgid "set to"
 msgstr ""
 
-#: trac/ticket/batch.py:181 trac/ticket/roadmap.py:731
+#: trac/ticket/batch.py:188 trac/ticket/roadmap.py:731
 #: trac/ticket/roadmap.py:820
 #, python-format
 msgid ""
@@ -3097,7 +3097,7 @@ msgstr ""
 
 #: trac/ticket/query.py:859 trac/ticket/report.py:324 trac/ticket/report.py:617
 #: trac/ticket/web_ui.py:143 trac/timeline/web_ui.py:234
-#: trac/versioncontrol/web_ui/log.py:327
+#: trac/versioncontrol/web_ui/log.py:324
 msgid "RSS Feed"
 msgstr ""
 
@@ -3797,7 +3797,7 @@ msgstr ""
 #: trac/ticket/templates/admin_versions.html:50
 #: trac/ticket/templates/milestone_edit.html:116
 #: trac/ticket/templates/report_edit.html:43
-#: trac/versioncontrol/templates/admin_repositories.html:86
+#: trac/versioncontrol/templates/admin_repositories.html:85
 msgid "Description: (you may use [1:WikiFormatting] here)"
 msgstr ""
 
@@ -3805,7 +3805,7 @@ msgstr ""
 #: trac/ticket/templates/admin_enums.html:37
 #: trac/ticket/templates/admin_milestones.html:92
 #: trac/ticket/templates/admin_versions.html:60
-#: trac/versioncontrol/templates/admin_repositories.html:97
+#: trac/versioncontrol/templates/admin_repositories.html:96
 msgid "Save"
 msgstr ""
 
@@ -4014,7 +4014,7 @@ msgid "Retarget associated open tickets to milestone:"
 msgstr ""
 
 #: trac/ticket/templates/milestone_edit.html:124
-#: trac/ticket/templates/ticket.html:406
+#: trac/ticket/templates/ticket.html:407
 #: trac/ticket/templates/ticket_change.html:125
 #: trac/wiki/templates/wiki_edit_form.html:77
 #: trac/wiki/templates/wiki_edit_form.html:82
@@ -4420,42 +4420,42 @@ msgid ""
 "                        [1:WikiFormatting] here."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:261
+#: trac/ticket/templates/ticket.html:262
 #: trac/ticket/templates/ticket_box.html:84
 #, python-format
 msgid "%(field)s:"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:303
+#: trac/ticket/templates/ticket.html:304
 msgid "Set your email in [1:Preferences]"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:307
+#: trac/ticket/templates/ticket.html:308
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:317
+#: trac/ticket/templates/ticket.html:318
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:382
+#: trac/ticket/templates/ticket.html:383
 #: trac/wiki/templates/wiki_edit_form.html:57
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:390
+#: trac/ticket/templates/ticket.html:391
 msgid "I have files to attach to this ticket"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:396
+#: trac/ticket/templates/ticket.html:397
 msgid "Go to the list of attachments"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:397
+#: trac/ticket/templates/ticket.html:398
 msgid "View the ticket description"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:405
+#: trac/ticket/templates/ticket.html:406
 #: trac/ticket/templates/ticket_change.html:123
 #: trac/wiki/templates/wiki_edit.html:102
 #: trac/wiki/templates/wiki_edit.html:164
@@ -4463,11 +4463,11 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:406
+#: trac/ticket/templates/ticket.html:407
 msgid "Create ticket"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:414
+#: trac/ticket/templates/ticket.html:415
 msgid ""
 "[1:Note:] See\n"
 "        [2:TracTickets] for help on using\n"
@@ -4755,12 +4755,12 @@ msgid ""
 "  %(new_path)s\n"
 msgstr ""
 
-#: trac/util/__init__.py:757
+#: trac/util/__init__.py:756
 #, python-format
 msgid "Failed to read %(metadata)s file for %(dist)s: %(err)s"
 msgstr ""
 
-#: trac/util/__init__.py:762
+#: trac/util/__init__.py:761
 #, python-format
 msgid "Failed to parse %(metadata)s file for %(dist)s: %(err)s"
 msgstr ""
@@ -4854,7 +4854,7 @@ msgid "Alias"
 msgstr ""
 
 #: trac/versioncontrol/admin.py:117
-#: trac/versioncontrol/templates/admin_repositories.html:138
+#: trac/versioncontrol/templates/admin_repositories.html:137
 msgid "Directory"
 msgstr ""
 
@@ -4866,7 +4866,7 @@ msgstr ""
 #: trac/versioncontrol/web_ui/browser.py:355
 #: trac/versioncontrol/web_ui/changeset.py:250
 #: trac/versioncontrol/web_ui/changeset.py:1074
-#: trac/versioncontrol/web_ui/log.py:97 trac/versioncontrol/web_ui/log.py:426
+#: trac/versioncontrol/web_ui/log.py:98 trac/versioncontrol/web_ui/log.py:418
 #, python-format
 msgid "Repository '%(repo)s' not found"
 msgstr ""
@@ -4980,8 +4980,8 @@ msgstr ""
 #: trac/versioncontrol/api.py:34
 #: trac/versioncontrol/templates/admin_repositories.html:30
 #: trac/versioncontrol/templates/admin_repositories.html:43
-#: trac/versioncontrol/templates/admin_repositories.html:145
-#: trac/versioncontrol/templates/admin_repositories.html:147
+#: trac/versioncontrol/templates/admin_repositories.html:144
+#: trac/versioncontrol/templates/admin_repositories.html:146
 #: trac/versioncontrol/web_ui/browser.py:952
 #: trac/versioncontrol/web_ui/changeset.py:845
 #: trac/versioncontrol/web_ui/changeset.py:985
@@ -5148,38 +5148,37 @@ msgstr ""
 
 #: trac/versioncontrol/templates/admin_repositories.html:56
 msgid ""
-"[1:Note:]\n"
-"            This repository is defined in [2:[3:trac.ini]]\n"
-"            and cannot be edited on this page."
+"[1:Note:] This repository is not defined in the database and cannot be "
+"edited on this page."
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:71
-#: trac/versioncontrol/templates/admin_repositories.html:112
+#: trac/versioncontrol/templates/admin_repositories.html:70
+#: trac/versioncontrol/templates/admin_repositories.html:111
 msgid "Directory:"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:80
+#: trac/versioncontrol/templates/admin_repositories.html:79
 msgid "Hide from repository index"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:106
+#: trac/versioncontrol/templates/admin_repositories.html:105
 msgid "Add Repository:"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:123
+#: trac/versioncontrol/templates/admin_repositories.html:122
 msgid "Add Alias:"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:138
+#: trac/versioncontrol/templates/admin_repositories.html:137
 msgid "Revision"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:149
+#: trac/versioncontrol/templates/admin_repositories.html:148
 #, python-format
 msgid "Alias of %(repo)s"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:157
+#: trac/versioncontrol/templates/admin_repositories.html:156
 msgid "Refresh"
 msgstr ""
 
@@ -5784,7 +5783,7 @@ msgid "Latest Revision"
 msgstr ""
 
 #: trac/versioncontrol/web_ui/browser.py:473
-#: trac/versioncontrol/web_ui/log.py:323
+#: trac/versioncontrol/web_ui/log.py:320
 msgid "Parent directory"
 msgstr ""
 
@@ -5867,7 +5866,7 @@ msgid "Can't compare across different repositories: %(old)s vs. %(new)s"
 msgstr ""
 
 #: trac/versioncontrol/web_ui/changeset.py:252
-#: trac/versioncontrol/web_ui/log.py:93
+#: trac/versioncontrol/web_ui/log.py:94
 msgid "No repository specified and no default repository configured."
 msgstr ""
 
@@ -5960,7 +5959,7 @@ msgid "No permission to view changeset %(rev)s on %(repos)s"
 msgstr ""
 
 #: trac/versioncontrol/web_ui/changeset.py:1076
-#: trac/versioncontrol/web_ui/log.py:428
+#: trac/versioncontrol/web_ui/log.py:420
 msgid "No default repository defined"
 msgstr ""
 
@@ -5968,35 +5967,35 @@ msgstr ""
 msgid "Changesets"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/log.py:215
+#: trac/versioncontrol/web_ui/log.py:208
 #, python-format
 msgid ""
 "The file or directory '%(path)s' doesn't exist at revision %(rev)s or at "
 "any previous revision."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/log.py:216
+#: trac/versioncontrol/web_ui/log.py:209
 msgid "Nonexistent path"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/log.py:257
+#: trac/versioncontrol/web_ui/log.py:254
 #, python-format
 msgid "Revision Log (restarting at %(path)s, rev. %(rev)s)"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/log.py:331
+#: trac/versioncontrol/web_ui/log.py:328
 msgid "ChangeLog"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/log.py:334
+#: trac/versioncontrol/web_ui/log.py:331
 msgid "View Latest Revision"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/log.py:338
+#: trac/versioncontrol/web_ui/log.py:335
 msgid "Older Revisions"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/log.py:424
+#: trac/versioncontrol/web_ui/log.py:416
 msgid "No permission to view change log"
 msgstr ""
 
