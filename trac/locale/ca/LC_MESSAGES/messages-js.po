@@ -1,14 +1,14 @@
 # Catalan translation of Trac-js.
-# Copyright © 2010, 2013 Edgewall Software
+# Copyright © 2010, 2013, 2015 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# Jordi Mallach <jordi@sindominio.net>, 2010, 2013.
+# Jordi Mallach <jordi@sindominio.net>, 2010, 2013, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0-dev\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-03-21 22:54+0100\n"
-"PO-Revision-Date: 2013-04-25 17:42+0200\n"
+"POT-Creation-Date: 2015-04-01 15:33+0000\n"
+"PO-Revision-Date: 2015-04-02 09:55+0200\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <ca@dodds.net>\n"
 "Language: ca\n"
@@ -77,7 +77,7 @@ msgstr "$month$year"
 
 #. TRANSLATOR: Link that closes the datepicker
 #. TRANSLATOR: Link that closes the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:39
+#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:40
 msgid "Done"
 msgstr "Fet"
 
@@ -102,34 +102,34 @@ msgid "Wk"
 msgstr "St"
 
 #. TRANSLATOR: Heading of the standalone timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:30
+#: trac/htdocs/js/jquery-ui-i18n.js:31
 msgid "Choose Time"
 msgstr "Selecciona l'hora"
 
 #. TRANSLATOR: Time selector label
-#: trac/htdocs/js/jquery-ui-i18n.js:32
+#: trac/htdocs/js/jquery-ui-i18n.js:33
 msgid "Time"
 msgstr "Hora"
 
 #. TRANSLATOR: Time labels in the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:34
+#: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Hour"
 msgstr "Hora"
 
-#: trac/htdocs/js/jquery-ui-i18n.js:34
+#: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Minute"
 msgstr "Minut"
 
-#: trac/htdocs/js/jquery-ui-i18n.js:34
+#: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Second"
 msgstr "Segon"
 
-#: trac/htdocs/js/jquery-ui-i18n.js:35
+#: trac/htdocs/js/jquery-ui-i18n.js:36
 msgid "Time Zone"
 msgstr "Fus horari"
 
 #. TRANSLATOR: Link to pick the current time in the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:37
+#: trac/htdocs/js/jquery-ui-i18n.js:38
 msgid "Now"
 msgstr "Ara"
 
@@ -170,7 +170,7 @@ msgstr " afegeix:"
 msgid "Select ticket %(id)s for modification"
 msgstr "Seleccioneu els %(id)s de tiquets a modificars"
 
-#: trac/htdocs/js/query.js:387
+#: trac/htdocs/js/query.js:388
 msgid "Toggle selection of all tickets shown in this group"
 msgstr "Commuta la selecció de tots els tiquets mostrats en aquest grup"
 
@@ -178,39 +178,39 @@ msgstr "Commuta la selecció de tots els tiquets mostrats en aquest grup"
 msgid "Link here"
 msgstr "Enllaça aquí"
 
-#: trac/htdocs/js/wikitoolbar.js:56
+#: trac/htdocs/js/wikitoolbar.js:59
 msgid "Bold text: '''Example'''"
 msgstr "Text en negreta: '''Exemple'''"
 
-#: trac/htdocs/js/wikitoolbar.js:59
+#: trac/htdocs/js/wikitoolbar.js:62
 msgid "Italic text: ''Example''"
 msgstr "Text en cursiva: ''Exemple''"
 
-#: trac/htdocs/js/wikitoolbar.js:62
+#: trac/htdocs/js/wikitoolbar.js:65
 msgid "Heading: == Example =="
 msgstr "Capçalera: == Exemple =="
 
-#: trac/htdocs/js/wikitoolbar.js:65
+#: trac/htdocs/js/wikitoolbar.js:68
 msgid "Link: [http://www.example.com/ Example]"
 msgstr "Enllaç: [http://www.exemple.cat/ Exemple]"
 
-#: trac/htdocs/js/wikitoolbar.js:68
+#: trac/htdocs/js/wikitoolbar.js:71
 msgid "Code block: {{{ example }}}"
 msgstr "Bloc de codi: {{{ exemple }}}"
 
-#: trac/htdocs/js/wikitoolbar.js:71
+#: trac/htdocs/js/wikitoolbar.js:74
 msgid "Horizontal rule: ----"
 msgstr "Regla horitzontal: ----"
 
-#: trac/htdocs/js/wikitoolbar.js:74
+#: trac/htdocs/js/wikitoolbar.js:77
 msgid "New paragraph"
 msgstr "Paràgraf nou"
 
-#: trac/htdocs/js/wikitoolbar.js:77
+#: trac/htdocs/js/wikitoolbar.js:80
 msgid "Line break: [[BR]]"
 msgstr "Salt de línia: [[BR]]"
 
-#: trac/htdocs/js/wikitoolbar.js:80
+#: trac/htdocs/js/wikitoolbar.js:83
 msgid "Image: [[Image()]]"
 msgstr "Imatge: [[Image()]]"
 
