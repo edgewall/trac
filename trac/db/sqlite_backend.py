@@ -14,6 +14,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+import errno
 import os
 import re
 import weakref
