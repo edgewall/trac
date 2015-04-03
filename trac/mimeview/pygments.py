@@ -30,7 +30,7 @@ from trac.util import get_pkginfo
 from trac.util.datefmt import http_date, localtz
 from trac.util.translation import _
 from trac.web.api import IRequestHandler, HTTPNotFound
-from trac.web.chrome import add_notice, add_stylesheet
+from trac.web.chrome import ITemplateProvider, add_notice, add_stylesheet
 
 from genshi import QName, Stream
 from genshi.core import Attrs, START, END, TEXT
@@ -42,7 +42,8 @@ class PygmentsRenderer(Component):
     """HTML renderer for syntax highlighting based on Pygments."""
 
     implements(ISystemInfoProvider, IHTMLPreviewRenderer,
-               IPreferencePanelProvider, IRequestHandler)
+               IPreferencePanelProvider, IRequestHandler,
+               ITemplateProvider)
 
     is_valid_default_handler = False
 
@@ -183,6 +184,14 @@ class PygmentsRenderer(Component):
         req.send_header('Last-Modified', last_modified)
         req.send_header('Content-Length', len(content))
         req.write(content)
+
+    # ITemplateProvider methods
+
+    def get_htdocs_dirs(self):
+        return []
+
+    def get_templates_dirs(self):
+        return [resource_filename('trac.mimeview', 'templates')]
 
     # Internal methods
 
