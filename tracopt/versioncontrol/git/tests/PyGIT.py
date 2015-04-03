@@ -337,34 +337,34 @@ class UnicodeNameTestCase(unittest.TestCase, GitCommandMixin):
                          storage.read_commit(storage.head())[1]['author'][0])
 
     def test_unicode_branches(self):
-        self._git('checkout', '-b', 'tickét10980', 'master')
+        self._git('checkout', '-b', 'tickɇt10980', 'master')
         storage = self._storage()
         branches = sorted(storage.get_branches())
         self.assertEqual(unicode, type(branches[0][0]))
         self.assertEqual(unicode, type(branches[1][0]))
         self.assertEqual(u'master', branches[0][0])
-        self.assertEqual(u'tickét10980', branches[1][0])
+        self.assertEqual(u'tickɇt10980', branches[1][0])
 
         contains = sorted(storage.get_branch_contains(branches[1][1],
                                                       resolve=True))
         self.assertEqual(unicode, type(contains[0][0]))
         self.assertEqual(unicode, type(contains[1][0]))
         self.assertEqual(u'master', contains[0][0])
-        self.assertEqual(u'tickét10980', contains[1][0])
+        self.assertEqual(u'tickɇt10980', contains[1][0])
 
     def test_unicode_tags(self):
-        self._git('tag', 'täg-t10980', 'master')
+        self._git('tag', 'tɐg-t10980', 'master')
         self._git_commit('-m', 'blah', '--allow-empty')
         self._git('tag', 'v0.42.1', 'master')
         storage = self._storage()
 
         tags = storage.get_tags()
         self.assertEqual(unicode, type(tags[0]))
-        self.assertEqual([u'täg-t10980', 'v0.42.1'], tags)
+        self.assertEqual([u'tɐg-t10980', 'v0.42.1'], tags)
 
-        rev = storage.verifyrev(u'täg-t10980')
+        rev = storage.verifyrev(u'tɐg-t10980')
         self.assertNotEqual(None, rev)
-        self.assertEqual([u'täg-t10980'], storage.get_tags(rev))
+        self.assertEqual([u'tɐg-t10980'], storage.get_tags(rev))
 
         rev = storage.verifyrev('v0.42.1')
         self.assertNotEqual(None, rev)
