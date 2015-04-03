@@ -39,10 +39,9 @@ from tracopt.versioncontrol.git.git_fs import GitCachedRepository, \
                                               GitConnector, GitRepository
 
 
-git_bin = None
-
-
 class GitCommandMixin(object):
+
+    git_bin = locate('git')
 
     def _git_commit(self, *args, **kwargs):
         env = kwargs.get('env') or os.environ.copy()
@@ -53,7 +52,7 @@ class GitCommandMixin(object):
         return self._git(*args, **kwargs)
 
     def _spawn_git(self, *args, **kwargs):
-        args = map(to_utf8, (git_bin,) + args)
+        args = map(to_utf8, (self.git_bin,) + args)
         kwargs.setdefault('stdout', PIPE)
         kwargs.setdefault('stderr', PIPE)
         kwargs.setdefault('cwd', self.repos_path)
@@ -100,8 +99,8 @@ class BaseTestCase(unittest.TestCase, GitCommandMixin):
     def setUp(self):
         self.env = EnvironmentStub()
         self.repos_path = tempfile.mkdtemp(prefix='trac-gitrepos-')
-        if git_bin:
-            self.env.config.set('git', 'git_bin', git_bin)
+        if self.git_bin:
+            self.env.config.set('git', 'git_bin', self.git_bin)
 
     def tearDown(self):
         for repos in self._repomgr.get_real_repositories():
@@ -683,10 +682,8 @@ class GitConnectorTestCase(BaseTestCase):
 
 
 def suite():
-    global git_bin
     suite = unittest.TestSuite()
-    git_bin = locate('git')
-    if git_bin:
+    if GitCommandMixin.git_bin:
         suite.addTest(unittest.makeSuite(SanityCheckingTestCase))
         suite.addTest(unittest.makeSuite(PersistentCacheTestCase))
         suite.addTest(unittest.makeSuite(HistoryTimeRangeTestCase))
