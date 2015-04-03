@@ -90,7 +90,7 @@ class FunctionalTestEnvironment(object):
     def destroy(self):
         """Remove all of the test environment data."""
         env = EnvironmentStub(path=self.tracdir, destroying=True)
-        DatabaseManager(env).destroy_db()
+        env.destroy_db()
 
         self.destroy_repo()
         if os.path.exists(self.dirname):

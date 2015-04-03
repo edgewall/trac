@@ -40,6 +40,7 @@ import trac.db.sqlite_backend
 from trac.config import Configuration
 from trac.core import ComponentManager
 from trac.db.api import DatabaseManager, parse_connection_uri
+from trac.db.pool import TimeoutError
 from trac.env import Environment
 from trac.ticket.default_workflow import load_workflow_config_snippet
 from trac.util import translation
@@ -334,9 +335,7 @@ class EnvironmentStub(Environment):
                 db.rollback()  # make sure there's no transaction in progress
                 # check the database version
                 db_version = dbm.get_database_version()
-        except Exception:
-            # "Database not found ...",
-            # "OperationalError: no such table: system" or the like
+        except (TimeoutError, self.env.db_exc.DatabaseError):
             pass
         else:
             if db_version == db_default.db_version:
@@ -344,7 +343,7 @@ class EnvironmentStub(Environment):
                 tables = dbm.reset_tables()
             else:
                 # different version or version unknown, drop the tables
-                dbm.destroy_db()
+                self.destroy_db()
 
         if not tables:
             dbm.init_db()
@@ -361,28 +360,12 @@ class EnvironmentStub(Environment):
     def destroy_db(self, scheme=None, db_prop=None):
         """Destroy the database.
 
-        :since 1.1.5: the method is deprecated and will be removed in 1.3.1.
-                      Use `DatabaseManager.destroy_db` instead.
+        :since 1.1.5: the `scheme` and `db_prop` parameters are deprecated and
+                      will be removed in 1.3.1.
         """
-        if not (scheme and db_prop):
-            scheme, db_prop = parse_connection_uri(self.dburi)
         try:
-            with self.db_transaction as db:
-                if scheme == 'postgres' and db.schema:
-                    db('DROP SCHEMA %s CASCADE' % db.quote(db.schema))
-                elif scheme == 'mysql':
-                    for table_name in db.get_table_names():
-                        db.drop_table(table_name)
-                elif scheme == 'sqlite':
-                    path = db_prop['path']
-                    if path != ':memory:':
-                        if not os.path.isabs(path):
-                            path = os.path.join(self.path, path)
-                        self.global_databasemanager.shutdown()
-                        os.remove(path)
-        except Exception:
-            # "TracError: Database not found...",
-            # psycopg2.ProgrammingError: schema "tractest" does not exist
+            self.global_databasemanager.destroy_db()
+        except (TimeoutError, self.db_exc.DatabaseError):
             pass
         return False
 

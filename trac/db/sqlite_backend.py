@@ -223,7 +223,11 @@ class SQLiteConnector(Component):
         if path != ':memory:':
             if not os.path.isabs(path):
                 path = os.path.join(self.env.path, path)
-            os.remove(path)
+            try:
+                os.remove(path)
+            except OSError as e:
+                if e.errno != errno.ENOENT:
+                    raise
 
     def to_sql(self, table):
         return _to_sql(table)
