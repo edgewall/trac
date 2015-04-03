@@ -347,7 +347,7 @@ unit-test: Trac.egg-info
 	python ./trac/test.py --skip-functional-tests $(testopts)
 
 functional-test: Trac.egg-info
-	python trac/tests/functional/__init__.py -v $(testopts)
+	python trac/tests/functional/__init__.py $(testopts)
 
 test-wiki:
 	python trac/tests/allwiki.py $(testopts)
