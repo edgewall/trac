@@ -20,7 +20,7 @@ from datetime import datetime
 from subprocess import Popen, PIPE
 
 import trac.tests.compat
-from trac.test import locate, EnvironmentStub
+from trac.test import EnvironmentStub
 from trac.tests.compat import rmtree
 from trac.util import create_file
 from trac.util.compat import close_fds
@@ -30,9 +30,6 @@ from tracopt.versioncontrol.git.git_fs import GitConnector
 from tracopt.versioncontrol.git.PyGIT import GitCore, GitError, Storage, \
                                              StorageFactory, parse_commit
 from tracopt.versioncontrol.git.tests.git_fs import GitCommandMixin
-
-
-git_bin = None
 
 
 class GitTestCase(unittest.TestCase):
@@ -186,7 +183,7 @@ class NormalTestCase(unittest.TestCase, GitCommandMixin):
     def _storage(self, path=None):
         if path is None:
             path = os.path.join(self.repos_path, '.git')
-        return Storage(path, self.env.log, git_bin, 'utf-8')
+        return Storage(path, self.env.log, self.git_bin, 'utf-8')
 
     def test_control_files_detection(self):
         # Exception not raised when path points to ctrl file dir
@@ -317,7 +314,7 @@ class UnicodeNameTestCase(unittest.TestCase, GitCommandMixin):
 
     def _storage(self):
         path = os.path.join(self.repos_path, '.git')
-        return Storage(path, self.env.log, git_bin, 'utf-8')
+        return Storage(path, self.env.log, self.git_bin, 'utf-8')
 
     def test_unicode_verifyrev(self):
         storage = self._storage()
@@ -570,10 +567,8 @@ class UnicodeNameTestCase(unittest.TestCase, GitCommandMixin):
 
 
 def suite():
-    global git_bin
     suite = unittest.TestSuite()
-    git_bin = locate('git')
-    if git_bin:
+    if GitCommandMixin.git_bin:
         suite.addTest(unittest.makeSuite(GitTestCase))
         suite.addTest(unittest.makeSuite(TestParseCommit))
         suite.addTest(unittest.makeSuite(NormalTestCase))
