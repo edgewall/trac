@@ -36,9 +36,6 @@ from trac.util.translation import _, tag_
 from trac.web import IRequestHandler, IRequestFilter
 from trac.web.chrome import (Chrome, INavigationContributor,
                              ITemplateProvider, add_link, add_stylesheet,
-                             auth_link, prevnext_nav, web_context)
-from trac.web.chrome import (Chrome, INavigationContributor,
-                             ITemplateProvider, add_link, add_stylesheet,
                              add_warning, auth_link, prevnext_nav, web_context)
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import concat_path_query_fragment, \
