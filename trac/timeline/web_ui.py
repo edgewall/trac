@@ -37,6 +37,9 @@ from trac.web import IRequestHandler, IRequestFilter
 from trac.web.chrome import (Chrome, INavigationContributor,
                              ITemplateProvider, add_link, add_stylesheet,
                              auth_link, prevnext_nav, web_context)
+from trac.web.chrome import (Chrome, INavigationContributor,
+                             ITemplateProvider, add_link, add_stylesheet,
+                             add_warning, auth_link, prevnext_nav, web_context)
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import concat_path_query_fragment, \
                                 split_url_into_path_query_fragment
@@ -112,8 +115,12 @@ class TimelineModule(Component):
             # Acquire from date only from non-blank input
             reqfromdate = req.args['from'].strip()
             if reqfromdate:
-                precisedate = user_time(req, parse_date, reqfromdate)
-                fromdate = precisedate.astimezone(req.tz)
+                try:
+                    precisedate = user_time(req, parse_date, reqfromdate)
+                except TracError as e:
+                    add_warning(req, e)
+                else:
+                    fromdate = precisedate.astimezone(req.tz)
             precision = req.args.get('precision', '')
             if precision.startswith('second'):
                 precision = timedelta(seconds=1)
