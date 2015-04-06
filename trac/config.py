@@ -297,7 +297,6 @@ class Configuration(object):
         if self.filename and os.path.isfile(self.filename) \
                 and os.access(self.filename, os.W_OK):
             wait_for_file_mtime_change(self.filename)
-            os.utime(self.filename, None)
 
     def set_defaults(self, compmgr=None):
         """Retrieve all default values and store them explicitly in the

@@ -281,6 +281,34 @@ class LazyTestCase(unittest.TestCase):
         self.assertFalse(self.obj.f is f)
 
 
+class FileTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.dir = tempfile.mkdtemp()
+        self.filename = os.path.join(self.dir, 'trac-tempfile')
+        self.data = 'Lorem\ripsum\ndolor\r\nsit\namet,\rconsectetur\r\n'
+
+    def tearDown(self):
+        shutil.rmtree(self.dir)
+
+    def test_create_and_read_file(self):
+        util.create_file(self.filename, self.data, 'wb')
+        with open(self.filename, 'rb') as f:
+            self.assertEqual(self.data, f.read())
+        self.assertEqual(self.data, util.read_file(self.filename, 'rb'))
+
+    def test_touch_file(self):
+        util.create_file(self.filename, self.data, 'wb')
+        util.touch_file(self.filename)
+        with open(self.filename, 'rb') as f:
+            self.assertEqual(self.data, f.read())
+
+    def test_missing(self):
+        util.touch_file(self.filename)
+        self.assertTrue(os.path.isfile(self.filename))
+        self.assertEqual(0, os.path.getsize(self.filename))
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AtomicFileTestCase))
@@ -290,6 +318,7 @@ def suite():
     suite.addTest(unittest.makeSuite(SafeReprTestCase))
     suite.addTest(unittest.makeSuite(SetuptoolsUtilsTestCase))
     suite.addTest(unittest.makeSuite(LazyTestCase))
+    suite.addTest(unittest.makeSuite(FileTestCase))
     suite.addTest(concurrency.suite())
     suite.addTest(datefmt.suite())
     suite.addTest(presentation.suite())
