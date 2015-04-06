@@ -259,6 +259,27 @@ def create_unique_file(path):
             path = '%s.%d%s' % (parts[0], idx, parts[1])
 
 
+if os.name == 'nt':
+    def touch_file(filename):
+        """Update modified time of the given file. The file is created if
+        missing."""
+        # Use f.truncate() to avoid low resolution of GetSystemTime()
+        # on Windows
+        with open(filename, 'ab') as f:
+            stat = os.fstat(f.fileno())
+            f.truncate(stat.st_size)
+else:
+    def touch_file(filename):
+        """Update modified time of the given file. The file is created if
+        missing."""
+        try:
+            os.utime(filename, None)
+        except OSError as e:
+            if e.errno == errno.ENOENT:
+                with open(filename, 'ab'):
+                    pass
+
+
 def create_zipinfo(filename, mtime=None, dir=False, executable=False, symlink=False,
                    comment=None):
     """Create a instance of `ZipInfo`.
@@ -389,7 +410,6 @@ def terminate(process):
         except OSError as e:
             # If the process has already finished and has not been
             # waited for, killing it raises an ESRCH error on Cygwin
-            import errno
             if e.errno != errno.ESRCH:
                 raise
 
