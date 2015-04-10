@@ -12,6 +12,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import contextlib
 import os
 import tempfile
 import time
@@ -61,6 +62,14 @@ class BaseTestCase(unittest.TestCase):
         wait_for_file_mtime_change(filename)
         with open(filename, 'w') as fileobj:
             fileobj.write(('\n'.join(lines + [''])).encode('utf-8'))
+
+    @contextlib.contextmanager
+    def inherited_file(self):
+        try:
+            self._write(['[inherit]', 'file = trac-site.ini'])
+            yield
+        finally:
+            os.remove(self.sitename)
 
 
 class ConfigurationTestCase(BaseTestCase):
@@ -409,7 +418,7 @@ class ConfigurationTestCase(BaseTestCase):
         # self.assertEqual(u"Voilà l'été", config2.get('a', 'option3'))
 
     def test_set_and_save_inherit(self):
-        def testcb():
+        with self.inherited_file():
             self._write(['[a]', 'option = x'], site=True)
             config = self._read()
             config.set('a', 'option2', "Voilà l'été")  # UTF-8
@@ -435,7 +444,6 @@ class ConfigurationTestCase(BaseTestCase):
             self.assertEqual('x', config2.get('a', 'option'))
             self.assertEqual(u"Voilà l'été", config2.get('a', 'option1'))
             self.assertEqual(u"Voilà l'été", config2.get('a', 'option2'))
-        self._test_with_inherit(testcb)
 
     def test_simple_remove(self):
         self._write(['[a]', 'option = x'])
@@ -543,7 +551,7 @@ class ConfigurationTestCase(BaseTestCase):
         self.assertEqual('y', config.get('a', 'option'))
 
     def test_inherit_reparse(self):
-        def testcb():
+        with self.inherited_file():
             self._write(['[a]', 'option = x'], site=True)
             config = self._read()
             self.assertEqual('x', config.get('a', 'option'))
@@ -551,10 +559,9 @@ class ConfigurationTestCase(BaseTestCase):
             self._write(['[a]', 'option = y'], site=True)
             config.parse_if_needed()
             self.assertEqual('y', config.get('a', 'option'))
-        self._test_with_inherit(testcb)
 
     def test_inherit_one_level(self):
-        def testcb():
+        with self.inherited_file():
             self._write(['[a]', 'option = x'], site=True)
             config = self._read()
             self.assertEqual('x', config.get('a', 'option'))
@@ -563,7 +570,6 @@ class ConfigurationTestCase(BaseTestCase):
             self.assertEqual('x', config.get('a', 'option'))
             self.assertEqual([('option', 'x')], list(config.options('a')))
             self.assertTrue('a' in config)
-        self._test_with_inherit(testcb)
 
     def test_inherit_multiple(self):
         class Foo(object):
@@ -690,13 +696,6 @@ class ConfigurationTestCase(BaseTestCase):
         mtime = os.stat(self.filename).st_mtime
         config.touch()
         self.assertNotEqual(mtime, os.stat(self.filename).st_mtime)
-
-    def _test_with_inherit(self, testcb):
-        try:
-            self._write(['[inherit]', 'file = trac-site.ini'])
-            testcb()
-        finally:
-            os.remove(self.sitename)
 
 
 class ConfigurationSetDefaultsTestCase(BaseTestCase):
