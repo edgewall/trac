@@ -45,7 +45,7 @@ from trac.util import arity, get_frame_info, get_last_traceback, hex_entropy, \
 from trac.util.concurrency import threading
 from trac.util.datefmt import format_datetime, localtz, timezone, user_time
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode, \
-                           unicode_quote
+                           to_utf8, unicode_quote
 from trac.util.translation import _, get_negotiated_locale, has_babel, \
                                   safefmt, tag_
 from trac.web.api import *
@@ -129,6 +129,10 @@ class RequestDispatcher(Component):
         like Apache with `mod_xsendfile` or lighttpd. (''since 1.0'')
         """)
 
+    xsendfile_header = Option('trac', 'xsendfile_header', 'X-Sendfile',
+        """The header to use if `use_xsendfile` is enabled. If Nginx is used,
+        set `X-Accel-Redirect`. (''since 1.0.6'')""")
+
     # Public API
 
     def authenticate(self, req):
@@ -167,6 +171,7 @@ class RequestDispatcher(Component):
             'tz': self._get_timezone,
             'form_token': self._get_form_token,
             'use_xsendfile': self._get_use_xsendfile,
+            'xsendfile_header': self._get_xsendfile_header,
         })
 
         try:
@@ -328,6 +333,21 @@ class RequestDispatcher(Component):
 
     def _get_use_xsendfile(self, req):
         return self.use_xsendfile
+
+    # RFC7230 3.2 Header Fields
+    _xsendfile_header_re = re.compile(r"[-0-9A-Za-z!#$%&'*+.^_`|~]+\Z")
+    _warn_xsendfile_header = False
+
+    def _get_xsendfile_header(self, req):
+        header = self.xsendfile_header.strip()
+        if self._xsendfile_header_re.match(header):
+            return to_utf8(header)
+        else:
+            if not self._warn_xsendfile_header:
+                self._warn_xsendfile_header = True
+                self.log.warn("[trac] xsendfile_header is invalid: '%s'",
+                              header)
+            return None
 
     def _pre_process_request(self, req, chosen_handler):
         for filter_ in self.filters:

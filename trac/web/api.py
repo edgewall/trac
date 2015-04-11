@@ -621,7 +621,11 @@ class Request(object):
         self.send_header('Last-Modified', last_modified)
         use_xsendfile = getattr(self, 'use_xsendfile', False)
         if use_xsendfile:
-            self.send_header('X-Sendfile', os.path.abspath(path))
+            xsendfile_header = getattr(self, 'xsendfile_header', None)
+            if xsendfile_header:
+                self.send_header(xsendfile_header, os.path.abspath(path))
+            else:
+                use_xsendfile = False
         self.end_headers()
 
         if not use_xsendfile and self.method != 'HEAD':

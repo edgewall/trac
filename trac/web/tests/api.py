@@ -232,6 +232,79 @@ class RequestTestCase(unittest.TestCase):
         self.assertEqual('bar', req.args['action'])
 
 
+class RequestSendFileTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.status = None
+        self.headers = None
+        self.response = StringIO()
+        self.dir = tempfile.mkdtemp(prefix='trac-')
+        self.filename = os.path.join(self.dir, 'test.txt')
+        self.data = 'contents\n'
+        create_file(self.filename, self.data)
+
+    def tearDown(self):
+        shutil.rmtree(self.dir)
+
+    def _start_response(self, status, headers):
+        self.status = status
+        self.headers = dict(headers)
+        def write(data):
+            self.response.write(data)
+        return write
+
+    def _create_req(self, use_xsendfile=False, xsendfile_header='X-Sendfile',
+                    **kwargs):
+        req = Request(_make_environ(**kwargs), self._start_response)
+        req.callbacks.update({'use_xsendfile': lambda r: use_xsendfile,
+                              'xsendfile_header': lambda r: xsendfile_header})
+        return req
+
+    def test_send_file(self):
+        req = self._create_req()
+        self.assertRaises(RequestDone, req.send_file, self.filename,
+                          'text/plain')
+        self.assertEqual('200 Ok', self.status)
+        self.assertEqual('text/plain', self.headers['Content-Type'])
+        self.assertEqual(str(len(self.data)), self.headers['Content-Length'])
+        self.assertNotIn('X-Sendfile', self.headers)
+        self.assertEqual(self.data, ''.join(req._response))
+        self.assertEqual('', self.response.getvalue())
+
+    def test_send_file_with_xsendfile(self):
+        req = self._create_req(use_xsendfile=True)
+        self.assertRaises(RequestDone, req.send_file, self.filename,
+                          'text/plain')
+        self.assertEqual('200 Ok', self.status)
+        self.assertEqual('text/plain', self.headers['Content-Type'])
+        self.assertEqual(self.filename, self.headers['X-Sendfile'])
+        self.assertEqual(None, req._response)
+        self.assertEqual('', self.response.getvalue())
+
+    def test_send_file_with_xsendfile_header(self):
+        req = self._create_req(use_xsendfile=True,
+                               xsendfile_header='X-Accel-Redirect')
+        self.assertRaises(RequestDone, req.send_file, self.filename,
+                          'text/plain')
+        self.assertEqual('200 Ok', self.status)
+        self.assertEqual('text/plain', self.headers['Content-Type'])
+        self.assertEqual(self.filename, self.headers['X-Accel-Redirect'])
+        self.assertNotIn('X-Sendfile', self.headers)
+        self.assertEqual(None, req._response)
+        self.assertEqual('', self.response.getvalue())
+
+    def test_send_file_with_xsendfile_and_empty_header(self):
+        req = self._create_req(use_xsendfile=True, xsendfile_header='')
+        self.assertRaises(RequestDone, req.send_file, self.filename,
+                          'text/plain')
+        self.assertEqual('200 Ok', self.status)
+        self.assertEqual('text/plain', self.headers['Content-Type'])
+        self.assertEqual(str(len(self.data)), self.headers['Content-Length'])
+        self.assertNotIn('X-Sendfile', self.headers)
+        self.assertEqual(self.data, ''.join(req._response))
+        self.assertEqual('', self.response.getvalue())
+
+
 class SendErrorTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -393,6 +466,7 @@ class HTTPExceptionTestCase(unittest.TestCase):
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(RequestTestCase))
+    suite.addTest(unittest.makeSuite(RequestSendFileTestCase))
     suite.addTest(unittest.makeSuite(SendErrorTestCase))
     suite.addTest(unittest.makeSuite(ParseArgListTestCase))
     suite.addTest(unittest.makeSuite(HTTPExceptionTestCase))
