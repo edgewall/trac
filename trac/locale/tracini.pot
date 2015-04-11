@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.6\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2015-04-01 15:33+0000\n"
+"POT-Creation-Date: 2015-04-11 14:49+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1483,6 +1483,12 @@ msgid ""
 "files from the filesystem, so that the web server handles the content.\n"
 "This requires a web server that knows how to handle such a header,\n"
 "like Apache with `mod_xsendfile` or lighttpd. (''since 1.0'')"
+msgstr ""
+
+#: trac/web/main.py:132
+msgid ""
+"The header to use if `use_xsendfile` is enabled. If Nginx is used,\n"
+"set `X-Accel-Redirect`. (''since 1.0.6'')"
 msgstr ""
 
 #: trac/wiki/api.py:267
