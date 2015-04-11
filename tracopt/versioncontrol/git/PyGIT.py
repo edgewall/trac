@@ -20,7 +20,6 @@ from collections import deque
 from contextlib import contextmanager
 import cStringIO
 from functools import partial
-from operator import itemgetter
 import re
 from subprocess import Popen, PIPE
 from threading import Lock
@@ -238,56 +237,37 @@ class Storage(object):
 
     __SREV_MIN = 4 # minimum short-rev length
 
-    class RevCache(tuple):
-        """RevCache(youngest_rev, oldest_rev, rev_dict, refs_dict, srev_dict)
+    class RevCache(object):
 
-        In Python 2.7 this class could be defined by:
-            from collections import namedtuple
-            RevCache = namedtuple('RevCache', 'youngest_rev oldest_rev '
-                                              'rev_dict refs_dict srev_dict')
-        This implementation is what that code generator would produce.
-        """
+        __slots__ = ('youngest_rev', 'oldest_rev', 'rev_dict', 'refs_dict',
+                     'srev_dict')
 
-        __slots__ = ()
-
-        _fields = ('youngest_rev', 'oldest_rev', 'rev_dict', 'refs_dict',
-                   'srev_dict')
-
-        def __new__(cls, youngest_rev, oldest_rev, rev_dict, refs_dict,
-                    srev_dict):
-            return tuple.__new__(cls, (youngest_rev, oldest_rev, rev_dict,
-                                 refs_dict, srev_dict))
+        def __init__(self, youngest_rev, oldest_rev, rev_dict, refs_dict,
+                     srev_dict):
+            self.youngest_rev = youngest_rev
+            self.oldest_rev = oldest_rev
+            self.rev_dict = rev_dict
+            self.refs_dict = refs_dict
+            self.srev_dict = srev_dict
+            if youngest_rev is not None and oldest_rev is not None and \
+                    rev_dict and refs_dict and srev_dict:
+                pass  # all fields are not empty
+            elif not youngest_rev and not oldest_rev and \
+                    not rev_dict and not refs_dict and not srev_dict:
+                pass  # all fields are empty
+            else:
+                raise ValueError('Invalid RevCache fields: %r' % self)
 
         @classmethod
         def empty(cls):
             return cls(None, None, {}, {}, {})
 
-        @classmethod
-        def _make(cls, iterable, new=tuple.__new__, len=len):
-            """Make a new RevCache object from a sequence or iterable"""
-            result = new(cls, iterable)
-            if len(result) != 6:
-                raise TypeError('Expected 6 arguments, got %d' % len(result))
-            return result
-
         def __repr__(self):
-            return 'RevCache(youngest_rev=%r, oldest_rev=%r, rev_dict=%r, ' \
-                   'refs_dict=%r, srev_dict=%r)' % self
-
-        def _asdict(t):
-            """Return a new dict which maps field names to their values"""
-            return {'youngest_rev': t[0], 'oldest_rev': t[1],
-                    'rev_dict': t[2], 'refs_dict': t[3], 'srev_dict': t[4]}
-
-        def _replace(self, **kwds):
-            """Return a new RevCache object replacing specified fields with
-            new values
-            """
-            result = self._make(map(kwds.pop, self._fields, self))
-            if kwds:
-                raise ValueError("Got unexpected field names: %r"
-                                 % kwds.keys())
-            return result
+            return 'RevCache(youngest_rev=%r, oldest_rev=%r, ' \
+                   'rev_dict=%d entries, refs_dict=%d entries, ' \
+                   'srev_dict=%d entries)' % \
+                   (self.youngest_rev, self.oldest_rev, len(self.rev_dict),
+                    len(self.refs_dict), len(self.srev_dict))
 
         def iter_branches(self):
             head = self.refs_dict.get('HEAD')
@@ -299,15 +279,6 @@ class Storage(object):
             for refname, rev in self.refs_dict.iteritems():
                 if refname.startswith('refs/tags/'):
                     yield refname[10:], rev
-
-        def __getnewargs__(self):
-            return tuple(self)
-
-        youngest_rev = property(itemgetter(0))
-        oldest_rev = property(itemgetter(1))
-        rev_dict = property(itemgetter(2))
-        refs_dict = property(itemgetter(3))
-        srev_dict = property(itemgetter(4))
 
     @staticmethod
     def __rev_key(rev):
@@ -557,7 +528,6 @@ class Storage(object):
         self.logger.debug("rebuilt commit tree db for '%s' with %d entries "
                           "(took %.1f ms)", self.repo_path, len(new_db),
                           1000 * (time.time() - ts0))
-        assert all(e is not None for e in rev_cache) or not any(rev_cache)
         return rev_cache
 
     def _get_refs(self):
