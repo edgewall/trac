@@ -402,9 +402,9 @@ class SubversionMergePropertyDiffRenderer(Component):
                 revs = set(changed_revs[spath])
                 added &= revs
                 removed &= revs
-            if added or removed:
                 added_ni &= revs
                 removed_ni &= revs
+            if added or removed:
                 if new_spath:
                     status = _(" (added)")
                 else:
