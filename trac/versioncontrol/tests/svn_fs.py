@@ -700,6 +700,27 @@ class NormalTests(object):
         self.assertTrue(' href="/changeset/16/repo/branches/v2"' in node,
                         repr(node))
 
+    def test_merge_prop_diff_renderer_wrong_mergeinfo(self):
+        rev = HEAD
+        context = _create_context()
+        old_context = context(self.repos.get_node(u'tête', rev - 1).resource)
+        old_mergeinfo = '/missing:12\n'
+        new_context = context(self.repos.get_node(u'tête', rev).resource)
+        new_mergeinfo = '/missing:12-15\n'
+        renderer = svn_prop.SubversionMergePropertyDiffRenderer(self.env)
+        result = Stream(renderer.render_property_diff(
+            'svn:mergeinfo', old_context, {'svn:mergeinfo': old_mergeinfo},
+            new_context, {'svn:mergeinfo': new_mergeinfo}, {}))
+
+        node = unicode(result.select('//tr[1]//td[1]'))
+        self.assertTrue(' href="/browser/repo/missing?rev=%d"' % rev in node,
+                        repr(node))
+        self.assertTrue('>/missing</a>' in node, repr(node))
+        node = unicode(result.select('//tr[1]//td[2]'))
+        self.assertTrue(' title="13-15"' in node, repr(node))
+        self.assertTrue(' href="/log/repo/missing?revs=13-15"' in node,
+                        repr(node))
+
 
 class ScopedTests(object):
 
