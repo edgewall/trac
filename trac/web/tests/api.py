@@ -241,9 +241,12 @@ class RequestSendFileTestCase(unittest.TestCase):
         self.dir = tempfile.mkdtemp(prefix='trac-')
         self.filename = os.path.join(self.dir, 'test.txt')
         self.data = 'contents\n'
-        create_file(self.filename, self.data)
+        create_file(self.filename, self.data, 'wb')
+        self.req = None
 
     def tearDown(self):
+        if self.req and self.req._response:
+            self.req._response.close()
         shutil.rmtree(self.dir)
 
     def _start_response(self, status, headers):
@@ -258,6 +261,7 @@ class RequestSendFileTestCase(unittest.TestCase):
         req = Request(_make_environ(**kwargs), self._start_response)
         req.callbacks.update({'use_xsendfile': lambda r: use_xsendfile,
                               'xsendfile_header': lambda r: xsendfile_header})
+        self.req = req
         return req
 
     def test_send_file(self):
