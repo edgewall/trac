@@ -38,6 +38,7 @@ from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
 from trac.wiki.formatter import (
     format_to_html, format_to_oneliner, extract_link, OutlineFormatter
 )
+from trac.wiki.interwiki import InterWikiMap
 
 
 # TODO: should be moved in .api
@@ -460,14 +461,15 @@ class ImageMacro(WikiMacroBase):
      * `file` to refer to a local attachment named 'file'. This only works from
        within that wiki page or a ticket.
 
-    Also, the file specification may refer to repository files, using the
-    `source:file` syntax (`source:file@rev` works also).
-
-    Files can also be accessed with a direct URLs; `/file` for a
-    project-relative, `//file` for a server-relative, or `http://server/file`
-    for absolute location of the file. The
-    [http://tools.ietf.org/html/rfc2397 rfc2397] `data` URL scheme is also
-    supported if the URL is enclosed in quotes.
+    The file specification may also refer to:
+     * repository files, using the `source:file` syntax
+       (`source:file@rev` works also).
+     * files, using direct URLs: `/file` for a project-relative,
+       `//file` for a server-relative, or `http://server/file` for
+       absolute location. An InterWiki prefix may be used.
+     * embedded data using the
+       [http://tools.ietf.org/html/rfc2397 rfc2397] `data` URL scheme,
+       provided the URL is enclosed in quotes.
 
     The remaining arguments are optional and allow configuring the attributes
     and style of the rendered `<img>` element:
@@ -632,6 +634,7 @@ class ImageMacro(WikiMacroBase):
                 attachment = Resource(realm, id).child('attachment', filename)
         elif len(parts) == 2:
             realm, filename = parts
+            interwikimap = InterWikiMap(self.env)
             if realm in browser_links:  # source:path
                 # TODO: use context here as well
                 rev = None
@@ -641,6 +644,9 @@ class ImageMacro(WikiMacroBase):
                 raw_url = formatter.href.browser(filename, rev=rev,
                                                  format='raw')
                 desc = filespec
+            elif realm in interwikimap:
+                url, desc = interwikimap.url(realm, filename)
+                raw_url = url
             else:  # #ticket:attachment or WikiPage:attachment
                 # FIXME: do something generic about shorthand forms...
                 realm = None

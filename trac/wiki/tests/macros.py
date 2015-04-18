@@ -43,6 +43,7 @@ def image_setup(tc):
     attachment = Attachment(tc.env, 'wiki', 'page:fr')
     attachment.description = "image in page:fr"
     attachment.insert('img.png', StringIO(''), 0, 2)
+    tc.env.config.set('interwiki', 'shields', 'https://img.shields.io/')
 
 def image_teardown(tc):
     shutil.rmtree(os.path.join(tc.env.path, 'files'))
@@ -159,6 +160,18 @@ IMAGE_MACRO_TEST_CASES = u"""
 ------------------------------
 <p>
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" alt="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" title="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" />
+</p>
+============================== InterWiki
+[[Image(shields:travis/edgewall/trac.svg)]]
+------------------------------
+<p>
+<a style="padding:0; border:none" href="https://img.shields.io/travis/edgewall/trac.svg"><img src="https://img.shields.io/travis/edgewall/trac.svg" alt="travis/edgewall/trac.svg in shields" title="travis/edgewall/trac.svg in shields" /></a>
+</p>
+============================== InterWiki, nolink
+[[Image(shields:pypi/dm/trac.svg, nolink)]]
+------------------------------
+<p>
+<img src="https://img.shields.io/pypi/dm/trac.svg" alt="pypi/dm/trac.svg in shields" title="pypi/dm/trac.svg in shields" />
 </p>
 """
 
