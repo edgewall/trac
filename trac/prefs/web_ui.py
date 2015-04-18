@@ -75,7 +75,6 @@ class PreferencesModule(Component):
                     chosen_provider = provider
                 panels.append((name, label))
         if not chosen_provider:
-            self.log.warn("Unknown preference panel %r", panel_id)
             raise HTTPNotFound(_("Unknown preference panel"))
 
         template, data = chosen_provider.render_preference_panel(req, panel_id)
