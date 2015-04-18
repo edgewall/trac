@@ -174,7 +174,7 @@ class PostgreSQLConnector(Component):
         from subprocess import Popen, PIPE
         db_url = self.env.config.get('trac', 'database')
         scheme, db_prop = parse_connection_uri(db_url)
-        db_params = db_prop['params']
+        db_params = db_prop.setdefault('params', {})
         db_name = os.path.basename(db_prop['path'])
 
         args = [self.pg_dump_path, '-C', '--inserts', '-x', '-Z', '8']
