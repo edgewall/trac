@@ -17,7 +17,6 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
-import os
 import re
 
 from genshi.builder import tag
