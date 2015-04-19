@@ -22,14 +22,9 @@ from genshi.builder import tag
 from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.core import *
 from trac.util import AtomicFile, as_bool
-from trac.util.compat import wait_for_file_mtime_change
+from trac.util.compat import OrderedDict, wait_for_file_mtime_change
 from trac.util.text import CRLF, cleandoc, printout, to_unicode, to_utf8
 from trac.util.translation import _, N_, tag_
-
-try:
-    from collections import OrderedDict
-except ImportError:
-    from trac.util.compat import OrderedDict
 
 __all__ = ['Configuration', 'ConfigSection', 'Option', 'BoolOption',
            'IntOption', 'FloatOption', 'ListOption', 'ChoiceOption',
