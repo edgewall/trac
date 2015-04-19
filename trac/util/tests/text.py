@@ -21,10 +21,10 @@ from trac.util.text import empty, expandtabs, fix_eol, javascript_quote, \
                            levenshtein_distance, normalize_whitespace, \
                            print_table, quote_query_string, shorten_line, \
                            strip_line_ws, stripws, sub_vars, text_width, \
-                           to_js_string, to_unicode, unicode_from_base64, \
-                           unicode_quote, unicode_quote_plus, \
-                           unicode_to_base64, unicode_unquote, \
-                           unicode_urlencode, wrap
+                           to_js_string, to_unicode, to_utf8, \
+                           unicode_from_base64, unicode_quote, \
+                           unicode_quote_plus, unicode_to_base64, \
+                           unicode_unquote, unicode_urlencode, wrap
 
 
 class ToUnicodeTestCase(unittest.TestCase):
@@ -159,6 +159,31 @@ class QuoteQueryStringTestCase(unittest.TestCase):
         text = u'type=the Ü thing&component=comp\x7fonent'
         self.assertEqual('type=the+%C3%9C+thing&component=comp%7Fonent',
                          quote_query_string(text))
+
+
+class ToUtf8TestCase(unittest.TestCase):
+    def test_unicode(self):
+        self.assertEqual('à', to_utf8('à'))
+        self.assertEqual('ç', to_utf8('ç'))
+
+    def test_boolean(self):
+        self.assertEqual('True', to_utf8(True))
+        self.assertEqual('False', to_utf8(False))
+
+    def test_int(self):
+        self.assertEqual('-1', to_utf8(-1))
+        self.assertEqual('0', to_utf8(0))
+        self.assertEqual('1', to_utf8(1))
+
+    def test_utf8(self):
+        self.assertEqual('à', to_utf8(u'à'))
+        self.assertEqual('ç', to_utf8(u'ç'))
+
+    def test_exception_with_utf8_message(self):
+        self.assertEqual('thė mèssägē', to_utf8(Exception('thė mèssägē')))
+
+    def test_exception_with_unicode_message(self):
+        self.assertEqual('thė mèssägē', to_utf8(Exception(u'thė mèssägē')))
 
 
 class WhitespaceTestCase(unittest.TestCase):
@@ -410,6 +435,7 @@ def suite():
     suite.addTest(unittest.makeSuite(JavascriptQuoteTestCase))
     suite.addTest(unittest.makeSuite(ToJsStringTestCase))
     suite.addTest(unittest.makeSuite(QuoteQueryStringTestCase))
+    suite.addTest(unittest.makeSuite(ToUtf8TestCase))
     suite.addTest(unittest.makeSuite(WhitespaceTestCase))
     suite.addTest(unittest.makeSuite(TextWidthTestCase))
     suite.addTest(unittest.makeSuite(PrintTableTestCase))

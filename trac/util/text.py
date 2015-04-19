@@ -225,19 +225,15 @@ def quote_query_string(text):
 
 
 def to_utf8(text, charset='latin1'):
-    """Convert a string to an UTF-8 `str` object.
+    """Convert input to a UTF-8 `str` object.
 
     If the input is not an `unicode` object, we assume the encoding is
     already UTF-8, ISO Latin-1, or as specified by the optional
     *charset* parameter.
     """
-    if isinstance(text, unicode):
-        u = text
-    else:
+    if isinstance(text, str):
         try:
-            # Do nothing if it's already utf-8
             u = unicode(text, 'utf-8')
-            return text
         except UnicodeError:
             try:
                 # Use the user supplied charset if possible
@@ -245,6 +241,11 @@ def to_utf8(text, charset='latin1'):
             except UnicodeError:
                 # This should always work
                 u = unicode(text, 'latin1')
+        else:
+            # Do nothing if it's already utf-8
+            return text
+    else:
+        u = to_unicode(text)
     return u.encode('utf-8')
 
 

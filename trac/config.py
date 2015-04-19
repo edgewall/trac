@@ -23,8 +23,13 @@ from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.core import *
 from trac.util import AtomicFile, as_bool
 from trac.util.compat import wait_for_file_mtime_change
-from trac.util.text import CRLF, cleandoc, printout, to_unicode
+from trac.util.text import CRLF, cleandoc, printout, to_unicode, to_utf8
 from trac.util.translation import _, N_, tag_
+
+try:
+    from collections import OrderedDict
+except ImportError:
+    from trac.util.compat import OrderedDict
 
 __all__ = ['Configuration', 'ConfigSection', 'Option', 'BoolOption',
            'IntOption', 'FloatOption', 'ListOption', 'ChoiceOption',
@@ -32,10 +37,6 @@ __all__ = ['Configuration', 'ConfigSection', 'Option', 'BoolOption',
            'ConfigurationError']
 
 _use_default = object()
-
-
-def _to_utf8(basestr):
-    return to_unicode(basestr).encode('utf-8')
 
 
 class ConfigurationError(TracError):
@@ -49,6 +50,69 @@ class ConfigurationError(TracError):
                                                  show_traceback)
 
 
+class UnicodeConfigParser(ConfigParser):
+    """A Unicode-aware version of ConfigParser. Arguments are encoded to
+    UTF-8 and return values are decoded from UTF-8.
+    """
+
+    # All of the methods of ConfigParser are overridden except
+    # `getboolean`, `getint`, `getfloat`, `defaults`, `read`, `readfp`,
+    # `optionxform` and `write`. `getboolean`, `getint` and `getfloat`
+    # call `get`, so it isn't necessary to reimplement them.
+    # The base class `RawConfigParser` doesn't inherit from `object`
+    # so we can't use `super`.
+
+    def __init__(self, **kwargs):
+        dict_type = kwargs.pop('dict_type', None) or OrderedDict
+        ConfigParser.__init__(self, dict_type=dict_type, **kwargs)
+
+    def sections(self):
+        return map(to_unicode, ConfigParser.sections(self))
+
+    def add_section(self, section):
+        section_str = to_utf8(section)
+        ConfigParser.add_section(self, section_str)
+
+    def has_section(self, section):
+        section_str = to_utf8(section)
+        return ConfigParser.has_section(self, section_str)
+
+    def options(self, section):
+        section_str = to_utf8(section)
+        return map(to_unicode, ConfigParser.options(self, section_str))
+
+    def get(self, section, option, raw=False, vars=None):
+        section_str = to_utf8(section)
+        option_str = to_utf8(option)
+        return to_unicode(ConfigParser.get(self, section_str,
+                                           option_str, raw, vars))
+
+    def items(self, section, raw=False, vars=None):
+        section_str = to_utf8(section)
+        return [(to_unicode(k), to_unicode(v))
+                for k, v in ConfigParser.items(self, section_str, raw, vars)]
+
+    def has_option(self, section, option):
+        section_str = to_utf8(section)
+        option_str = to_utf8(option)
+        return ConfigParser.has_option(self, section_str, option_str)
+
+    def set(self, section, option, value=None):
+        section_str = to_utf8(section)
+        option_str = to_utf8(option)
+        value_str = to_utf8(value) if value is not None else ''
+        ConfigParser.set(self, section_str, option_str, value_str)
+
+    def remove_option(self, section, option):
+        section_str = to_utf8(section)
+        option_str = to_utf8(option)
+        ConfigParser.remove_option(self, section_str, option_str)
+
+    def remove_section(self, section):
+        section_str = to_utf8(section)
+        ConfigParser.remove_section(self, section_str)
+
+
 class Configuration(object):
     """Thin layer over `ConfigParser` from the Python standard library.
 
@@ -58,7 +122,7 @@ class Configuration(object):
     """
     def __init__(self, filename, params={}):
         self.filename = filename
-        self.parser = ConfigParser()
+        self.parser = UnicodeConfigParser()
         self._old_sections = {}
         self.parents = []
         self._lastmtime = 0
@@ -180,7 +244,7 @@ class Configuration(object):
         options declared in components that are enabled in the given
         `ComponentManager` are returned.
         """
-        sections = set(to_unicode(s) for s in self.parser.sections())
+        sections = set(self.parser.sections())
         for parent in self.parents:
             sections.update(parent.sections(compmgr, defaults=False))
         if defaults:
@@ -192,7 +256,7 @@ class Configuration(object):
         trac.ini or one of the parents, or is available through the Option
         registry.
         """
-        if self.parser.has_option(_to_utf8(section), _to_utf8(option)):
+        if self.parser.has_option(section, option):
             return True
         for parent in self.parents:
             if parent.has_option(section, option, defaults=False):
@@ -205,27 +269,26 @@ class Configuration(object):
         # Only save options that differ from the inherited values
         sections = []
         for section in self.sections():
-            section_str = _to_utf8(section)
             options = []
             for option in self[section]:
-                default_str = None
+                default = None
                 for parent in self.parents:
                     if parent.has_option(section, option, defaults=False):
-                        default_str = _to_utf8(parent.get(section, option))
+                        default = parent.get(section, option)
                         break
-                option_str = _to_utf8(option)
-                if self.parser.has_option(section_str, option_str):
-                    current_str = self.parser.get(section_str, option_str)
-                    if current_str != default_str:
-                        options.append((option_str, current_str))
+                if self.parser.has_option(section, option):
+                    current = self.parser.get(section, option)
+                    if current != default:
+                        options.append((option, current))
             if options:
-                sections.append((section_str, sorted(options)))
+                sections.append((section, sorted(options)))
 
-        # At this point, all the strings in `sections` are UTF-8 encoded `str`
         content = ['# -*- coding: utf-8 -*-\n\n']
-        for section_str, options in sections:
-            content.append('[%s]\n' % section_str)
-            for key_str, val_str in options:
+        for section, options in sections:
+            content.append('[%s]\n' % to_utf8(section))
+            for key, val in options:
+                key_str = to_utf8(key)
+                val_str = to_utf8(val)
                 val_str = val_str.replace(CRLF, '\n') \
                                  .replace('\n', '\n ')
                 content.append('%s = %s\n' % (key_str, val_str))
@@ -258,7 +321,7 @@ class Configuration(object):
             self.parents = []
             if self.parser.has_option('inherit', 'file'):
                 for filename in self.parser.get('inherit', 'file').split(','):
-                    filename = to_unicode(filename.strip())
+                    filename = filename.strip()
                     if not os.path.isabs(filename):
                         filename = os.path.join(os.path.dirname(self.filename),
                                                 filename)
@@ -285,7 +348,7 @@ class Configuration(object):
         def set_option_default(option):
             section = option.section
             name = option.name
-            if not self.parser.has_option(_to_utf8(section), _to_utf8(name)):
+            if not self.parser.has_option(section, name):
                 if not any(parent[section].contains(name, defaults=False)
                            for parent in self.parents):
                     value = option.dumps(option.default)
@@ -331,7 +394,7 @@ class Section(object):
         return '<%s [%s]>' % (self.__class__.__name__, self.name)
 
     def contains(self, key, defaults=True):
-        if self.config.parser.has_option(_to_utf8(self.name), _to_utf8(key)):
+        if self.config.parser.has_option(self.name, key):
             return True
         for parent in self.config.parents:
             if parent[self.name].contains(key, defaults=False):
@@ -347,10 +410,8 @@ class Section(object):
         components that are enabled in the given `ComponentManager`.
         """
         options = set()
-        name_str = _to_utf8(self.name)
-        if self.config.parser.has_section(name_str):
-            for option_str in self.config.parser.options(name_str):
-                option = to_unicode(option_str)
+        if self.config.parser.has_section(self.name):
+            for option in self.config.parser.options(self.name):
                 options.add(option.lower())
                 yield option
         for parent in self.config.parents:
@@ -374,10 +435,8 @@ class Section(object):
         cached = self._cache.get(key, _use_default)
         if cached is not _use_default:
             return cached
-        name_str = _to_utf8(self.name)
-        key_str = _to_utf8(key)
-        if self.config.parser.has_option(name_str, key_str):
-            value = self.config.parser.get(name_str, key_str)
+        if self.config.parser.has_option(self.name, key):
+            value = self.config.parser.get(self.name, key)
         else:
             for parent in self.config.parents:
                 value = parent[self.name].get(key, _use_default)
@@ -393,8 +452,6 @@ class Section(object):
             return default
         if not value:
             value = u''
-        elif isinstance(value, basestring):
-            value = to_unicode(value)
         self._cache[key] = value
         return value
 
@@ -502,12 +559,9 @@ class Section(object):
         These changes are not persistent unless saved with `save()`.
         """
         self._cache.pop(key, None)
-        name_str = _to_utf8(self.name)
-        key_str = _to_utf8(key)
-        value_str = _to_utf8(value) if value is not None else ''
-        if not self.config.parser.has_section(name_str):
-            self.config.parser.add_section(name_str)
-        return self.config.parser.set(name_str, key_str, value_str)
+        if not self.config.parser.has_section(self.name):
+            self.config.parser.add_section(self.name)
+        return self.config.parser.set(self.name, key, value)
 
     def remove(self, key):
         """Delete a key from this section.
@@ -515,11 +569,9 @@ class Section(object):
         Like for `set()`, the changes won't persist until `save()` gets
         called.
         """
-        name_str = _to_utf8(self.name)
-        if self.config.parser.has_section(name_str):
+        if self.config.parser.has_section(self.name):
             self._cache.pop(key, None)
-            self.config.parser.remove_option(_to_utf8(self.name),
-                                             _to_utf8(key))
+            self.config.parser.remove_option(self.name, key)
 
 
 def _get_registry(cls, compmgr=None):
@@ -692,9 +744,9 @@ class ChoiceOption(Option):
     """
 
     def __init__(self, section, name, choices, doc='', doc_domain='tracini'):
-        Option.__init__(self, section, name, _to_utf8(choices[0]), doc,
+        Option.__init__(self, section, name, to_unicode(choices[0]), doc,
                         doc_domain)
-        self.choices = set(_to_utf8(choice).strip() for choice in choices)
+        self.choices = set(to_unicode(c).strip() for c in choices)
 
     def accessor(self, section, name, default):
         value = section.get(name, default)

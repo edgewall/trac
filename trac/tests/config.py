@@ -14,16 +14,143 @@
 
 import contextlib
 import os
+import shutil
 import tempfile
 import time
 import unittest
 
 import trac.tests.compat
 from trac.config import *
+from trac.config import UnicodeConfigParser
 from trac.core import Component, ComponentMeta, Interface, implements
 from trac.test import Configuration, EnvironmentStub
-from trac.util import create_file
+from trac.util import create_file, read_file
 from trac.util.compat import wait_for_file_mtime_change
+
+
+def _write(filename, lines):
+    wait_for_file_mtime_change(filename)
+    create_file(filename, '\n'.join(lines + ['']).encode('utf-8'))
+
+
+def _read(filename):
+    return read_file(filename).decode('utf-8')
+
+
+class UnicodeParserTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.tempdir = tempfile.mkdtemp()
+        self.filename = os.path.join(self.tempdir, 'config.ini')
+        _write(self.filename, [
+            u'[ä]', u'öption = ÿ',
+            u'[ä]', u'optīon = 1.1',
+            u'[č]', u'ôption = ž',
+            u'[č]', u'optïon = 1',
+            u'[ė]', u'optioñ = true',
+        ])
+        self.parser = UnicodeConfigParser()
+        self._read()
+
+    def tearDown(self):
+        shutil.rmtree(self.tempdir)
+
+    def _write(self):
+        with open(self.filename, 'w') as f:
+            self.parser.write(f)
+
+    def _read(self):
+        self.parser.read(self.filename)
+
+    def test_sections(self):
+        self.assertEqual([u'ä', u'č', u'ė'], self.parser.sections())
+
+    def test_add_section(self):
+        self.parser.add_section(u'ē')
+        self._write()
+        self.assertEqual(
+            u'[ä]\n'
+            u'öption = ÿ\n'
+            u'optīon = 1.1\n\n'
+            u'[č]\n'
+            u'ôption = ž\n'
+            u'optïon = 1\n\n'
+            u'[ė]\n'
+            u'optioñ = true\n\n'
+            u'[ē]\n\n', _read(self.filename))
+
+    def test_has_section(self):
+        self.assertTrue(self.parser.has_section(u'ä'))
+        self.assertTrue(self.parser.has_section(u'č'))
+        self.assertTrue(self.parser.has_section(u'ė'))
+        self.assertFalse(self.parser.has_section(u'î'))
+
+    def test_options(self):
+        self.assertEqual([u'öption', u'optīon'], self.parser.options(u'ä'))
+        self.assertEqual([u'ôption', u'optïon'], self.parser.options(u'č'))
+
+    def test_get(self):
+        self.assertEqual(u'ÿ', self.parser.get(u'ä', u'öption'))
+        self.assertEqual(u'ž', self.parser.get(u'č', u'ôption'))
+
+    def test_items(self):
+        self.assertEqual([(u'öption', u'ÿ'), (u'optīon', u'1.1')],
+                          self.parser.items(u'ä'))
+        self.assertEqual([(u'ôption', u'ž'), (u'optïon', u'1')],
+                         self.parser.items(u'č'))
+
+    def test_getint(self):
+        self.assertEqual(1, self.parser.getint(u'č', u'optïon'))
+
+    def test_getfloat(self):
+        self.assertEqual(1.1, self.parser.getfloat(u'ä', u'optīon'))
+
+    def test_getboolean(self):
+        self.assertTrue(self.parser.getboolean(u'ė', u'optioñ'))
+
+    def test_has_option(self):
+        self.assertTrue(self.parser.has_option(u'ä', u'öption'))
+        self.assertTrue(self.parser.has_option(u'ä', u'optīon'))
+        self.assertTrue(self.parser.has_option(u'č', u'ôption'))
+        self.assertTrue(self.parser.has_option(u'č', u'optïon'))
+        self.assertTrue(self.parser.has_option(u'ė', u'optioñ'))
+        self.assertFalse(self.parser.has_option(u'î', u'optioñ'))
+
+    def test_set(self):
+        self.parser.set(u'ä', u'öption', u'ù')
+        self.parser.set(u'ė', u'optiœn', None)
+        self._write()
+        self.assertEqual(
+            u'[ä]\n'
+            u'öption = ù\n'
+            u'optīon = 1.1\n\n'
+            u'[č]\n'
+            u'ôption = ž\n'
+            u'optïon = 1\n\n'
+            u'[ė]\n'
+            u'optioñ = true\n'
+            u'optiœn = \n\n', _read(self.filename))
+
+    def test_remove_option(self):
+        self.parser.remove_option(u'ä', u'öption')
+        self.parser.remove_option(u'ė', u'optioñ')
+        self._write()
+        self.assertEqual(
+            u'[ä]\n'
+            u'optīon = 1.1\n\n'
+            u'[č]\n'
+            u'ôption = ž\n'
+            u'optïon = 1\n\n'
+            u'[ė]\n\n', _read(self.filename))
+
+    def test_remove_section(self):
+        self.parser.remove_section(u'ä')
+        self.parser.remove_section(u'ė')
+        self._write()
+        self.assertEqual(
+            u'[č]\n'
+            u'ôption = ž\n'
+            u'optïon = 1\n\n', _read(self.filename))
 
 
 class BaseTestCase(unittest.TestCase):
@@ -59,9 +186,7 @@ class BaseTestCase(unittest.TestCase):
 
     def _write(self, lines, site=False):
         filename = self.sitename if site else self.filename
-        wait_for_file_mtime_change(filename)
-        with open(filename, 'w') as fileobj:
-            fileobj.write(('\n'.join(lines + [''])).encode('utf-8'))
+        _write(filename, lines)
 
     @contextlib.contextmanager
     def inherited_file(self):
@@ -252,7 +377,8 @@ class ConfigurationTestCase(BaseTestCase):
         self.assertEqual(expected, config.getlist('a', 'option', '', sep='||'))
 
     def test_read_and_choice(self):
-        self._write(['[a]', 'option = 2', 'invalid = d'])
+        self._write(['[a]', 'option = 2', 'invalid = d',
+                     u'[û]', u'èncoded = à'])
         config = self._read()
 
         class Foo(object):
@@ -260,6 +386,7 @@ class ConfigurationTestCase(BaseTestCase):
             option = (ChoiceOption)('a', 'option', ['Item1', 2, '3'])
             other = (ChoiceOption)('a', 'other', [1, 2, 3])
             invalid = (ChoiceOption)('a', 'invalid', ['a', 'b', 'c'])
+            encoded = (ChoiceOption)('a', u'èncoded', [u'à', u'ć', u'ē'])
 
             def __init__(self):
                 self.config = config
@@ -268,6 +395,9 @@ class ConfigurationTestCase(BaseTestCase):
         self.assertEqual('2', foo.option)
         self.assertEqual('1', foo.other)
         self.assertRaises(ConfigurationError, getattr, foo, 'invalid')
+        self.assertEqual(u'à', foo.encoded)
+        config.set('a', u'èncoded', u'ć')
+        self.assertEqual(u'ć', foo.encoded)
 
     def test_read_and_getextensionoption(self):
         self._write(['[a]', 'option = ImplA', 'invalid = ImplB'])
@@ -840,6 +970,7 @@ class ConfigurationSetDefaultsTestCase(BaseTestCase):
 
 def suite():
     suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(UnicodeParserTestCase))
     suite.addTest(unittest.makeSuite(ConfigurationTestCase))
     if __name__ == 'trac.tests.config':
         suite.addTest(unittest.makeSuite(ConfigurationSetDefaultsTestCase))
