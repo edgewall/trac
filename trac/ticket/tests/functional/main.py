@@ -29,11 +29,6 @@ from trac.util import create_file
 from trac.util.datefmt import utc, localtz, format_date, format_datetime
 from trac.util.text import to_utf8
 
-try:
-    from configobj import ConfigObj
-except ImportError:
-    ConfigObj = None
-
 
 class AdminEnumDefaultTestCaseSetup(FunctionalTwillTestCaseSetup):
     def test_default(self, enum, name):
@@ -2761,12 +2756,9 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket10772())
     suite.addTest(RegressionTestTicket10984())
     suite.addTest(RegressionTestTicket11028())
+    suite.addTest(RegressionTestTicket11176())
     suite.addTest(RegressionTestTicket11590())
     suite.addTest(RegressionTestTicket11618())
-    if ConfigObj:
-        suite.addTest(RegressionTestTicket11176())
-    else:
-        print("SKIP: RegressionTestTicket11176 (ConfigObj not installed)")
     suite.addTest(RegressionTestTicket11996())
 
     return suite

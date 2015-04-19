@@ -22,11 +22,6 @@ from trac.tests.contentgen import random_sentence, random_unique_camel
 from trac.tests.functional import FunctionalTwillTestCaseSetup, tc
 from trac.util import create_file, get_pkginfo
 
-try:
-    from configobj import ConfigObj
-except ImportError:
-    ConfigObj = None
-
 
 class TestWiki(FunctionalTwillTestCaseSetup):
     def runTest(self):
@@ -513,6 +508,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestWikiReadonlyAttribute())
     suite.addTest(TestWikiRename())
     suite.addTest(RegressionTestTicket4812())
+    suite.addTest(RegressionTestTicket8976())
     suite.addTest(RegressionTestTicket10274())
     suite.addTest(RegressionTestTicket10850())
     suite.addTest(RegressionTestTicket10957())
@@ -528,10 +524,6 @@ def functionalSuite(suite=None):
                   " metadata)")
     else:
         print("SKIP: reST wiki tests (no docutils)")
-    if ConfigObj:
-        suite.addTest(RegressionTestTicket8976())
-    else:
-        print("SKIP: RegressionTestTicket8976 (ConfigObj not installed)")
     return suite
 
 

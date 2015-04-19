@@ -233,10 +233,16 @@ def read_file(path, mode='r'):
 
 
 def create_file(path, data='', mode='w'):
-    """Create a new file with the given data."""
+    """Create a new file with the given data.
+
+    :data: string or iterable of strings.
+    """
     with open(path, mode) as f:
         if data:
-            f.write(data)
+            if isinstance(data, basestring):
+                f.write(data)
+            else:  # Assume iterable
+                f.writelines(data)
 
 
 def create_unique_file(path):

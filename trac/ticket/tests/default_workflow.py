@@ -16,10 +16,6 @@ from __future__ import print_function
 import os
 import tempfile
 import unittest
-try:
-    from configobj import ConfigObj
-except ImportError:
-    ConfigObj = None
 
 import trac.tests.compat
 from trac.perm import PermissionCache, PermissionSystem
@@ -253,10 +249,7 @@ def suite():
     suite.addTest(unittest.makeSuite(ConfigurableTicketWorkflowTestCase))
     suite.addTest(unittest.makeSuite(ResetActionTestCase))
     suite.addTest(unittest.makeSuite(SetOwnerAttributeTestCase))
-    if ConfigObj:
-        suite.addTest(unittest.makeSuite(RestrictOwnerTestCase))
-    else:
-        print("SKIP:", __file__, "(no configobj installed)")
+    suite.addTest(unittest.makeSuite(RestrictOwnerTestCase))
     return suite
 
 

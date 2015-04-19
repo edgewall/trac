@@ -26,7 +26,6 @@ from trac.versioncontrol.api import (
     Repository, RepositoryManager)
 from trac.versioncontrol.web_ui.browser import BrowserModule
 from trac.web.tests.api import RequestHandlerPermissionsTestCaseBase
-from tracopt.perm.authz_policy import ConfigObj
 
 
 class MockRepositoryConnector(Component):
@@ -366,12 +365,7 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
 
 def suite():
     suite = unittest.TestSuite()
-    if ConfigObj:
-        suite.addTest(unittest.makeSuite(BrowserModulePermissionsTestCase))
-    else:
-        print("SKIP: %s.%s (no configobj installed)" %
-              (BrowserModulePermissionsTestCase.__module__,
-               BrowserModulePermissionsTestCase.__name__))
+    suite.addTest(unittest.makeSuite(BrowserModulePermissionsTestCase))
     return suite
 
 

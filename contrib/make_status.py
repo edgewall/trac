@@ -32,7 +32,6 @@ PACKAGES = [
     ("Mercurial",         'mercurial.util.version()'),
     ("Pygments",          'pygments.__version__'),
     ("Pytz",              'pytz.__version__'),
-    ("ConfigObj",         'configobj.__version__'),
     ("Docutils",          'docutils.__version__'),
     ("Twill",             'twill.__version__'),
     ("LXML",              'lxml.etree.__version__'),

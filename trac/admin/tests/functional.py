@@ -21,9 +21,7 @@ from trac.util.text import unicode_to_base64
 
 class AuthorizationTestCaseSetup(FunctionalTwillTestCaseSetup):
     def test_authorization(self, href, perms, h2_text):
-        """Check permissions required to access an administration panel. A
-        fine-grained permissions test will also be executed if ConfigObj is
-        installed.
+        """Check permissions required to access an administration panel.
 
         :param href: the relative href of the administration panel
         :param perms: list or tuple of permissions required to access

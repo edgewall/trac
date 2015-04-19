@@ -104,7 +104,6 @@ facilities.
     ],
     extras_require = {
         'Babel': ['Babel>=0.9.5'],
-        'ConfigObj': ['ConfigObj'],
         'Pygments': ['Pygments>=0.6'],
         'reST': ['docutils>=0.3.9'],
         'Textile': ['textile>=2.0'],
@@ -151,7 +150,7 @@ facilities.
         trac.wiki.macros = trac.wiki.macros
         trac.wiki.web_ui = trac.wiki.web_ui
         trac.wiki.web_api = trac.wiki.web_api
-        tracopt.perm.authz_policy = tracopt.perm.authz_policy[ConfigObj]
+        tracopt.perm.authz_policy = tracopt.perm.authz_policy
         tracopt.perm.config_perm_provider = tracopt.perm.config_perm_provider
         tracopt.ticket.clone = tracopt.ticket.clone
         tracopt.ticket.commit_updater = tracopt.ticket.commit_updater

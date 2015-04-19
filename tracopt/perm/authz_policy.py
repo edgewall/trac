@@ -15,19 +15,15 @@
 # Author: Alec Thomas <alec@swapoff.org>
 
 import os
+from ConfigParser import ParsingError
 from fnmatch import fnmatchcase
 from itertools import groupby
 
-from trac.config import ConfigurationError, PathOption
+from trac.config import ConfigurationError, PathOption, UnicodeConfigParser
 from trac.core import *
 from trac.perm import IPermissionPolicy, PermissionSystem
+from trac.util import to_list
 from trac.util.text import to_unicode
-
-ConfigObj = None
-try:
-    from configobj import ConfigObj, ConfigObjError
-except ImportError:
-    pass
 
 
 class AuthzPolicy(Component):
@@ -42,11 +38,6 @@ class AuthzPolicy(Component):
     permissions here. Only additional rights or restrictions should be added.
 
     === Installation ===
-    Note that this plugin requires the `configobj` package:
-
-        http://www.voidspace.org.uk/python/configobj.html
-
-    You should be able to install it by doing a simple `easy_install configobj`
 
     Enabling this policy requires listing it in `trac.ini:
     {{{
@@ -163,7 +154,7 @@ class AuthzPolicy(Component):
         permissions = self.authz_permissions(resource_key, username)
         if permissions is None:
             return None                 # no match, can't decide
-        elif permissions == ['']:
+        elif permissions == []:
             return False                # all actions are denied
 
         # FIXME: expand all permissions once for all
@@ -180,23 +171,20 @@ class AuthzPolicy(Component):
     # Internal methods
 
     def parse_authz(self):
-        if ConfigObj is None:
-            self.log.error("ConfigObj package not found.")
-            raise ConfigurationError()
         self.log.debug("Parsing authz security policy %s",
                        self.authz_file)
+
+        self.authz = UnicodeConfigParser()
         try:
-            self.authz = ConfigObj(self.authz_file, encoding='utf8',
-                                   raise_errors=True)
-        except ConfigObjError as e:
+            self.authz.read(self.authz_file)
+        except ParsingError as e:
             self.log.error("Error parsing authz permission policy file: %s",
                            to_unicode(e))
             raise ConfigurationError()
         groups = {}
-        for group, users in self.authz.get('groups', {}).iteritems():
-            if isinstance(users, basestring):
-                users = [users]
-            groups[group] = map(to_unicode, users)
+        if self.authz.has_section('groups'):
+            for group, users in self.authz.items('groups'):
+                groups[group] = to_list(users)
 
         self.groups_by_user = {}
 
@@ -245,16 +233,15 @@ class AuthzPolicy(Component):
             valid_users = ['*', 'authenticated', username]
         else:
             valid_users = ['*', 'anonymous']
-        for resource_section in [a for a in self.authz.sections
+        for resource_section in [a for a in self.authz.sections()
                                    if a != 'groups']:
-            resource_glob = to_unicode(resource_section)
+            resource_glob = resource_section
             if '@' not in resource_glob:
                 resource_glob += '@*'
 
             if fnmatchcase(resource_key, resource_glob):
-                section = self.authz[resource_section]
-                for who, permissions in section.iteritems():
-                    who = to_unicode(who)
+                for who, permissions in self.authz.items(resource_section):
+                    permissions = to_list(permissions)
                     if who in valid_users or \
                             who in self.groups_by_user.get(username, []):
                         self.log.debug("%s matched section %s for user %s",
