@@ -24,7 +24,7 @@
           var label;
           $.each(options, function(idx, option) {
             if (option.value === value) {
-              label = option.label;
+              label = option.text;
               return false;
             }
           });
@@ -127,7 +127,7 @@
         </div>
         <div class="field">
           <label>Subscription rules:</label>
-          <table py:if="rules" class="subscription-rules" summary="Subscription rules">
+          <table class="subscription-rules" summary="Subscription rules">
             <tbody class="rules rules-$distributor">
               <tr py:for="rule in rules" class="rule">
                 <td>
