@@ -112,7 +112,7 @@ class ConnectionPoolBackend(object):
                     log.error('Exception caught on %s', op, exc_info=True)
                 cnx = None
 
-        if cnx:
+        if cnx and not isinstance(cnx, tuple):
             if deferred:
                 # replace placeholder with real Connection
                 with self._available:
