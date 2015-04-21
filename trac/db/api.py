@@ -20,12 +20,13 @@ import os
 import time
 import urllib
 
-from trac.config import BoolOption, IntOption, Option
+from genshi.builder import tag
+from trac.config import BoolOption, ConfigurationError, IntOption, Option
 from trac.core import *
 from trac.db.schema import Table
 from trac.util.concurrency import ThreadLocal
 from trac.util.text import unicode_passwd
-from trac.util.translation import _
+from trac.util.translation import _, tag_
 
 from .pool import ConnectionPool
 from .util import ConnectionWrapper
@@ -342,7 +343,7 @@ class DatabaseManager(Component):
                 # Special case for SQLite in-memory database, always get
                 # the /same/ connection over
                 pass
-            elif not args['path'].startswith('/'):
+            elif not os.path.isabs(args['path']):
                 # Special case for SQLite to support a path relative to the
                 # environment directory
                 args['path'] = os.path.join(self.env.path,
@@ -362,17 +363,31 @@ def get_column_names(cursor):
 
 
 def _parse_db_str(db_str):
-    scheme, rest = db_str.split(':', 1)
+    if not db_str:
+        section = tag.a("[trac]",
+                        title=_("TracIni documentation"),
+                        class_='trac-target-new',
+                        href='http://trac.edgewall.org/wiki/TracIni'
+                             '#trac-section')
+        raise ConfigurationError(
+            tag_("Database connection string is empty. Set the %(option)s "
+                 "configuration option in the %(section)s section of "
+                 "trac.ini. Please refer to the %(doc)s for help.",
+                 option=tag.tt("database"), section=section,
+                 doc=_doc_db_str()))
+
+    try:
+        scheme, rest = db_str.split(':', 1)
+    except ValueError:
+        raise _invalid_db_str(db_str)
 
     if not rest.startswith('/'):
-        if scheme == 'sqlite':
+        if scheme == 'sqlite' and rest:
             # Support for relative and in-memory SQLite connection strings
             host = None
             path = rest
         else:
-            raise TracError(_('Unknown scheme "%(scheme)s"; database '
-                              'connection string must start with {scheme}:/',
-                              scheme=scheme))
+            raise _invalid_db_str(db_str)
     else:
         if not rest.startswith('//'):
             host = None
@@ -382,11 +397,11 @@ def _parse_db_str(db_str):
             rest = rest[3:]
         else:
             rest = rest[2:]
-            if '/' not in rest:
+            if '/' in rest:
+                host, rest = rest.split('/', 1)
+            else:
                 host = rest
                 rest = ''
-            else:
-                host, rest = rest.split('/', 1)
         path = None
 
     if host and '@' in host:
@@ -401,9 +416,13 @@ def _parse_db_str(db_str):
             password = unicode_passwd(urllib.unquote(password))
     else:
         user = password = None
+
     if host and ':' in host:
-        host, port = host.split(':')
-        port = int(port)
+        host, port = host.split(':', 1)
+        try:
+            port = int(port)
+        except ValueError:
+            raise _invalid_db_str(db_str)
     else:
         port = None
 
@@ -419,10 +438,28 @@ def _parse_db_str(db_str):
         path, qs = path.split('?', 1)
         qs = qs.split('&')
         for param in qs:
-            name, value = param.split('=', 1)
+            try:
+                name, value = param.split('=', 1)
+            except ValueError:
+                raise _invalid_db_str(db_str)
             value = urllib.unquote(value)
             params[name] = value
 
     args = zip(('user', 'password', 'host', 'port', 'path', 'params'),
                (user, password, host, port, path, params))
     return scheme, dict([(key, value) for key, value in args if value])
+
+
+def _invalid_db_str(db_str):
+    return ConfigurationError(
+        tag_("Invalid format %(db_str)s for the database connection string. "
+             "Please refer to the %(doc)s for help.",
+             db_str=tag.tt(db_str), doc=_doc_db_str()))
+
+
+def _doc_db_str():
+    return tag.a(_("documentation"),
+                 title=_("Database Connection Strings documentation"),
+                 class_='trac-target-new',
+                 href='http://trac.edgewall.org/wiki/'
+                      'TracIni#DatabaseConnectionStrings')

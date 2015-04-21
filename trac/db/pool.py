@@ -17,6 +17,7 @@
 from __future__ import with_statement
 
 import os
+import sys
 import time
 
 from trac.core import TracError
@@ -91,7 +92,7 @@ class ConnectionPoolBackend(object):
                 self._active[(tid, key)] = (cnx, num)
 
         deferred = num == 1 and isinstance(cnx, tuple)
-        err = None
+        exc_info = (None, None, None)
         if deferred:
             # Potentially lengthy operations must be done without lock held
             op, cnx = cnx
@@ -102,13 +103,13 @@ class ConnectionPoolBackend(object):
                     cnx.close()
                 if op in ('close', 'create'):
                     cnx = connector.get_connection(**kwargs)
-            except TracError, e:
-                err = e
+            except TracError:
+                exc_info = sys.exc_info()
                 cnx = None
-            except Exception, e:
+            except Exception:
+                exc_info = sys.exc_info()
                 if log:
                     log.error('Exception caught on %s', op, exc_info=True)
-                err = e
                 cnx = None
 
         if cnx:
@@ -126,11 +127,13 @@ class ConnectionPoolBackend(object):
                 return self.get_cnx(connector, kwargs)
 
         # if we didn't get a cnx after wait(), something's fishy...
+        if isinstance(exc_info[1], TracError):
+            raise exc_info[0], exc_info[1], exc_info[2]
         timeout = time.time() - start
         errmsg = _("Unable to get database connection within %(time)d seconds.",
                    time=timeout)
-        if err:
-            errmsg += " (%s)" % exception_to_unicode(err)
+        if exc_info[1]:
+            errmsg += " (%s)" % exception_to_unicode(exc_info[1])
         raise TimeoutError(errmsg)
 
     def _take_cnx(self, connector, kwargs, key, tid):

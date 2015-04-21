@@ -18,12 +18,14 @@ import os
 import re
 import weakref
 
-from trac.config import ListOption
-from trac.core import *
+from genshi.builder import tag
+
+from trac.config import ConfigurationError, ListOption
+from trac.core import Component, TracError, implements
 from trac.db.api import IDatabaseConnector
 from trac.db.util import ConnectionWrapper, IterableCursor
 from trac.util import get_pkginfo, getuser
-from trac.util.translation import _
+from trac.util.translation import _, tag_
 
 _like_escape_re = re.compile(r'([/_%])')
 
@@ -263,16 +265,16 @@ class SQLiteConnection(ConnectionWrapper):
         self.cnx = None
         if path != ':memory:':
             if not os.access(path, os.F_OK):
-                raise TracError(_('Database "%(path)s" not found.', path=path))
+                raise ConfigurationError(_('Database "%(path)s" not found.',
+                                           path=path))
 
             dbdir = os.path.dirname(path)
             if not os.access(path, os.R_OK + os.W_OK) or \
                    not os.access(dbdir, os.R_OK + os.W_OK):
-                raise TracError(
-                    _('The user %(user)s requires read _and_ write '
-                      'permissions to the database file %(path)s '
-                      'and the directory it is located in.',
-                      user=getuser(), path=path))
+                raise ConfigurationError(tag_(
+                    "The user %(user)s requires read _and_ write permissions "
+                    "to the database file %(path)s and the directory it is "
+                    "located in.", user=tag.tt(getuser()), path=tag.tt(path)))
 
         self._active_cursors = weakref.WeakKeyDictionary()
         timeout = int(params.get('timeout', 10.0))
