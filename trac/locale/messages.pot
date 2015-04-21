@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.6\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2015-04-01 15:32+0000\n"
+"POT-Creation-Date: 2015-04-21 16:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -533,26 +533,26 @@ msgstr ""
 msgid "Error reading '%(file)s', make sure it is readable."
 msgstr ""
 
-#: trac/config.py:430
+#: trac/config.py:429
 #, python-format
 msgid "[%(section)s] %(entry)s: expected integer, got %(value)s"
 msgstr ""
 
-#: trac/config.py:448
+#: trac/config.py:447
 #, python-format
 msgid "[%(section)s] %(entry)s: expected float, got %(value)s"
 msgstr ""
 
-#: trac/config.py:621
+#: trac/config.py:620
 msgid "Setting attribute is not allowed."
 msgstr ""
 
-#: trac/config.py:701
+#: trac/config.py:700
 #, python-format
 msgid "[%(section)s] %(entry)s: expected one of (%(choices)s), got %(value)s"
 msgstr ""
 
-#: trac/config.py:740
+#: trac/config.py:739
 #, python-format
 msgid ""
 "Cannot find an implementation of the %(interface)s interface named "
@@ -560,7 +560,7 @@ msgid ""
 "the option %(option)s in trac.ini."
 msgstr ""
 
-#: trac/config.py:778
+#: trac/config.py:777
 #, python-format
 msgid ""
 "Cannot find implementation(s) of the %(interface)s interface named "
@@ -568,7 +568,7 @@ msgid ""
 "the option %(option)s in trac.ini."
 msgstr ""
 
-#: trac/config.py:818 trac/config.py:831
+#: trac/config.py:817 trac/config.py:830
 #, python-format
 msgid "Option '%(option)s' doesn't exist in section '%(section)s'"
 msgstr ""
@@ -1060,7 +1060,7 @@ msgid ""
 msgstr ""
 
 #: trac/admin/web_ui.py:205 trac/admin/web_ui.py:274 trac/admin/web_ui.py:365
-#: trac/admin/web_ui.py:458 trac/prefs/web_ui.py:90
+#: trac/admin/web_ui.py:458 trac/prefs/web_ui.py:89
 #: trac/prefs/templates/prefs_general.html:19
 msgid "General"
 msgstr ""
@@ -1468,16 +1468,36 @@ msgstr ""
 msgid "Enabled"
 msgstr ""
 
-#: trac/db/api.py:334
+#: trac/db/api.py:335
 #, python-format
 msgid "Unsupported database type \"%(scheme)s\""
 msgstr ""
 
-#: trac/db/api.py:373
+#: trac/db/api.py:368
+msgid "TracIni documentation"
+msgstr ""
+
+#: trac/db/api.py:377
 #, python-format
 msgid ""
-"Unknown scheme \"%(scheme)s\"; database connection string must start with"
-" {scheme}:/"
+"Database connection string is empty. Set the %(option)s configuration "
+"option in the %(section)s section of trac.ini. Please refer to the "
+"%(doc)s for help."
+msgstr ""
+
+#: trac/db/api.py:457
+#, python-format
+msgid ""
+"Invalid format %(db_str)s for the database connection string. Please "
+"refer to the %(doc)s for help."
+msgstr ""
+
+#: trac/db/api.py:461 trac/versioncontrol/admin.py:281
+msgid "documentation"
+msgstr ""
+
+#: trac/db/api.py:462
+msgid "Database Connection Strings documentation"
 msgstr ""
 
 #: trac/db/mysql_backend.py:93
@@ -1496,7 +1516,7 @@ msgid "mysqldump failed: %(msg)s"
 msgstr ""
 
 #: trac/db/mysql_backend.py:255 trac/db/postgres_backend.py:208
-#: trac/db/sqlite_backend.py:248
+#: trac/db/sqlite_backend.py:250
 msgid "No destination file created"
 msgstr ""
 
@@ -1536,7 +1556,7 @@ msgid ""
 "'%(collation)s'. The database must be created with one of %(supported)s."
 msgstr ""
 
-#: trac/db/pool.py:130
+#: trac/db/pool.py:133
 #, python-format
 msgid "Unable to get database connection within %(time)d seconds."
 msgstr ""
@@ -1550,47 +1570,47 @@ msgstr ""
 msgid "pg_dump failed: %(msg)s"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:158 trac/db/sqlite_backend.py:262
+#: trac/db/sqlite_backend.py:160 trac/db/sqlite_backend.py:264
 msgid "Cannot load Python bindings for SQLite"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:161
+#: trac/db/sqlite_backend.py:163
 #, python-format
 msgid "Need at least PySqlite %(version)s or higher"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:164
+#: trac/db/sqlite_backend.py:166
 msgid "PySqlite 2.5.2 - 2.5.4 break Trac, please use 2.5.5 or higher"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:197
+#: trac/db/sqlite_backend.py:199
 #, python-format
 msgid "Database already exists at %(path)s"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:266
+#: trac/db/sqlite_backend.py:268
 #, python-format
 msgid "Database \"%(path)s\" not found."
 msgstr ""
 
-#: trac/db/sqlite_backend.py:275
+#: trac/db/sqlite_backend.py:277
 #, python-format
 msgid ""
 "The user %(user)s requires read _and_ write permissions to the database "
 "file %(path)s and the directory it is located in."
 msgstr ""
 
-#: trac/db/sqlite_backend.py:380
+#: trac/db/sqlite_backend.py:382
 #, python-format
 msgid "PRAGMA journal_mode `%(value)s` cannot be used in SQLite"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:385
+#: trac/db/sqlite_backend.py:387
 #, python-format
 msgid "PRAGMA journal_mode isn't supported by SQLite %(version)s"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:388
+#: trac/db/sqlite_backend.py:390
 #, python-format
 msgid "PRAGMA journal_mode `%(value)s` isn't supported by SQLite %(version)s"
 msgstr ""
@@ -1636,7 +1656,7 @@ msgstr ""
 msgid "Syntax Highlighting"
 msgstr ""
 
-#: trac/mimeview/pygments.py:137 trac/prefs/web_ui.py:170
+#: trac/mimeview/pygments.py:137 trac/prefs/web_ui.py:169
 msgid "Your preferences have been saved."
 msgstr ""
 
@@ -1649,31 +1669,31 @@ msgstr ""
 msgid "Preferences"
 msgstr ""
 
-#: trac/prefs/web_ui.py:79
+#: trac/prefs/web_ui.py:78
 msgid "Unknown preference panel"
 msgstr ""
 
-#: trac/prefs/web_ui.py:91 trac/prefs/templates/prefs_datetime.html:20
+#: trac/prefs/web_ui.py:90 trac/prefs/templates/prefs_datetime.html:20
 msgid "Date & Time"
 msgstr ""
 
-#: trac/prefs/web_ui.py:92 trac/prefs/templates/prefs_keybindings.html:20
+#: trac/prefs/web_ui.py:91 trac/prefs/templates/prefs_keybindings.html:20
 msgid "Keyboard Shortcuts"
 msgstr ""
 
-#: trac/prefs/web_ui.py:93 trac/prefs/templates/prefs_userinterface.html:20
+#: trac/prefs/web_ui.py:92 trac/prefs/templates/prefs_userinterface.html:20
 msgid "User Interface"
 msgstr ""
 
-#: trac/prefs/web_ui.py:95 trac/prefs/templates/prefs_language.html:20
+#: trac/prefs/web_ui.py:94 trac/prefs/templates/prefs_language.html:20
 msgid "Language"
 msgstr ""
 
-#: trac/prefs/web_ui.py:97 trac/prefs/templates/prefs_advanced.html:20
+#: trac/prefs/web_ui.py:96 trac/prefs/templates/prefs_advanced.html:20
 msgid "Advanced"
 msgstr ""
 
-#: trac/prefs/web_ui.py:177
+#: trac/prefs/web_ui.py:176
 msgid "The session has been loaded."
 msgstr ""
 
@@ -2008,7 +2028,7 @@ msgid "Location"
 msgstr ""
 
 #: trac/templates/about.html:89 trac/templates/error.html:211
-#: trac/web/main.py:590
+#: trac/web/main.py:610
 msgid "N/A"
 msgstr ""
 
@@ -3096,7 +3116,7 @@ msgid "Ticket"
 msgstr ""
 
 #: trac/ticket/query.py:859 trac/ticket/report.py:324 trac/ticket/report.py:617
-#: trac/ticket/web_ui.py:143 trac/timeline/web_ui.py:234
+#: trac/ticket/web_ui.py:143 trac/timeline/web_ui.py:238
 #: trac/versioncontrol/web_ui/log.py:324
 msgid "RSS Feed"
 msgstr ""
@@ -3453,7 +3473,7 @@ msgid "Tickets"
 msgstr ""
 
 #: trac/ticket/web_ui.py:231 trac/ticket/web_ui.py:282
-#: trac/versioncontrol/web_ui/changeset.py:1012
+#: trac/versioncontrol/web_ui/changeset.py:1013
 #, python-format
 msgid "%(title)s: %(message)s"
 msgstr ""
@@ -4646,50 +4666,50 @@ msgstr ""
 msgid "Timeline"
 msgstr ""
 
-#: trac/timeline/web_ui.py:250 trac/timeline/web_ui.py:260
+#: trac/timeline/web_ui.py:254 trac/timeline/web_ui.py:264
 msgid "Previous Period"
 msgstr ""
 
-#: trac/timeline/web_ui.py:259 trac/timeline/web_ui.py:260
+#: trac/timeline/web_ui.py:263 trac/timeline/web_ui.py:264
 msgid "Next Period"
 msgstr ""
 
-#: trac/timeline/web_ui.py:289 trac/web/chrome.py:938
+#: trac/timeline/web_ui.py:293 trac/web/chrome.py:938
 #, python-format
 msgid "at %(iso8601)s"
 msgstr ""
 
-#: trac/timeline/web_ui.py:293 trac/web/chrome.py:942
+#: trac/timeline/web_ui.py:297 trac/web/chrome.py:942
 #, python-format
 msgid "on %(date)s at %(time)s"
 msgstr ""
 
-#: trac/timeline/web_ui.py:294
+#: trac/timeline/web_ui.py:298
 #, python-format
 msgid "See timeline %(relativetime)s ago"
 msgstr ""
 
-#: trac/timeline/web_ui.py:297 trac/web/chrome.py:943 trac/web/chrome.py:945
+#: trac/timeline/web_ui.py:301 trac/web/chrome.py:943 trac/web/chrome.py:945
 #, python-format
 msgid "%(relativetime)s ago"
 msgstr ""
 
-#: trac/timeline/web_ui.py:299 trac/timeline/web_ui.py:343
+#: trac/timeline/web_ui.py:303 trac/timeline/web_ui.py:347
 #, python-format
 msgid "See timeline at %(absolutetime)s"
 msgstr ""
 
 #. TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
-#: trac/timeline/web_ui.py:390
+#: trac/timeline/web_ui.py:394
 msgid "other kinds of events"
 msgstr ""
 
-#: trac/timeline/web_ui.py:395
+#: trac/timeline/web_ui.py:399
 #, python-format
 msgid "Event provider %(name)s failed for filters %(kinds)s: "
 msgstr ""
 
-#: trac/timeline/web_ui.py:398
+#: trac/timeline/web_ui.py:402
 #, python-format
 msgid ""
 "You may want to see the %(other_events)s from the Timeline or notify your"
@@ -4755,12 +4775,12 @@ msgid ""
 "  %(new_path)s\n"
 msgstr ""
 
-#: trac/util/__init__.py:756
+#: trac/util/__init__.py:776
 #, python-format
 msgid "Failed to read %(metadata)s file for %(dist)s: %(err)s"
 msgstr ""
 
-#: trac/util/__init__.py:761
+#: trac/util/__init__.py:781
 #, python-format
 msgid "Failed to parse %(metadata)s file for %(dist)s: %(err)s"
 msgstr ""
@@ -4865,7 +4885,7 @@ msgstr ""
 #: trac/versioncontrol/admin.py:131 trac/versioncontrol/admin.py:198
 #: trac/versioncontrol/web_ui/browser.py:355
 #: trac/versioncontrol/web_ui/changeset.py:250
-#: trac/versioncontrol/web_ui/changeset.py:1074
+#: trac/versioncontrol/web_ui/changeset.py:1075
 #: trac/versioncontrol/web_ui/log.py:98 trac/versioncontrol/web_ui/log.py:418
 #, python-format
 msgid "Repository '%(repo)s' not found"
@@ -4932,10 +4952,6 @@ msgstr ""
 msgid "The repository \"%(name)s\" has been added."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:281
-msgid "documentation"
-msgstr ""
-
 #: trac/versioncontrol/admin.py:284
 #, python-format
 msgid ""
@@ -4983,8 +4999,8 @@ msgstr ""
 #: trac/versioncontrol/templates/admin_repositories.html:144
 #: trac/versioncontrol/templates/admin_repositories.html:146
 #: trac/versioncontrol/web_ui/browser.py:952
-#: trac/versioncontrol/web_ui/changeset.py:845
-#: trac/versioncontrol/web_ui/changeset.py:985
+#: trac/versioncontrol/web_ui/changeset.py:846
+#: trac/versioncontrol/web_ui/changeset.py:986
 msgid "(default)"
 msgstr ""
 
@@ -5907,63 +5923,63 @@ msgstr ""
 msgid "Show revision %(rev)s of this file in browser"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:640
+#: trac/versioncontrol/web_ui/changeset.py:641
 #, python-format
 msgid "Show the changeset %(id)s restricted to %(path)s"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:652
+#: trac/versioncontrol/web_ui/changeset.py:653
 #, python-format
 msgid "Show the %(range)s differences restricted to %(path)s"
 msgstr ""
 
 #. TRANSLATOR: 'latest' (revision)
-#: trac/versioncontrol/web_ui/changeset.py:770
+#: trac/versioncontrol/web_ui/changeset.py:771
 msgid "latest"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:773
+#: trac/versioncontrol/web_ui/changeset.py:774
 #, python-format
 msgid "Diff [%(old_rev)s:%(new_rev)s] for %(path)s"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:779
+#: trac/versioncontrol/web_ui/changeset.py:780
 #, python-format
 msgid "Diff from %(old_path)s@%(old_rev)s to %(new_path)s@%(new_rev)s"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:851
+#: trac/versioncontrol/web_ui/changeset.py:852
 msgid "Changesets in all repositories"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:853
+#: trac/versioncontrol/web_ui/changeset.py:854
 msgid "Repository changesets"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:989
+#: trac/versioncontrol/web_ui/changeset.py:990
 #, python-format
 msgid "Changeset in %(repo)s "
 msgid_plural "Changesets in %(repo)s "
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/versioncontrol/web_ui/changeset.py:991
+#: trac/versioncontrol/web_ui/changeset.py:992
 msgid "Changeset "
 msgid_plural "Changesets "
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/versioncontrol/web_ui/changeset.py:1072
+#: trac/versioncontrol/web_ui/changeset.py:1073
 #, python-format
 msgid "No permission to view changeset %(rev)s on %(repos)s"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:1076
+#: trac/versioncontrol/web_ui/changeset.py:1077
 #: trac/versioncontrol/web_ui/log.py:420
 msgid "No default repository defined"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:1117
+#: trac/versioncontrol/web_ui/changeset.py:1118
 msgid "Changesets"
 msgstr ""
 
@@ -6083,48 +6099,48 @@ msgstr ""
 msgid "anonymous"
 msgstr ""
 
-#: trac/web/main.py:142
+#: trac/web/main.py:146
 msgid "Authentication error. Please contact your administrator."
 msgstr ""
 
-#: trac/web/main.py:214
+#: trac/web/main.py:219
 msgid "Secure cookies are enabled, you must use https to submit forms."
 msgstr ""
 
-#: trac/web/main.py:217
+#: trac/web/main.py:222
 msgid "Do you have cookies enabled?"
 msgstr ""
 
-#: trac/web/main.py:218
+#: trac/web/main.py:223
 #, python-format
 msgid "Missing or invalid form token. %(msg)s"
 msgstr ""
 
-#: trac/web/main.py:228
+#: trac/web/main.py:233
 msgid ""
 "Clearsilver templates are no longer supported, please contact your Trac "
 "administrator."
 msgstr ""
 
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
-#: trac/web/main.py:532
+#: trac/web/main.py:552
 msgid "do so"
 msgstr ""
 
-#: trac/web/main.py:533
+#: trac/web/main.py:553
 #, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr ""
 
-#: trac/web/main.py:593
+#: trac/web/main.py:613
 msgid "''System information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:594
+#: trac/web/main.py:614
 msgid "''Plugin information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:618
+#: trac/web/main.py:638
 #, python-format
 msgid ""
 "==== How to Reproduce ====\n"
