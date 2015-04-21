@@ -15,6 +15,7 @@ import os
 import unittest
 
 import trac.tests.compat
+from trac.config import ConfigurationError
 from trac.db.api import DatabaseManager, get_column_names, \
                         parse_connection_uri, with_transaction
 from trac.db_default import (schema as default_schema,
@@ -281,6 +282,25 @@ class ParseConnectionStringTestCase(unittest.TestCase):
                                     'host': 'localhost', 'port': 3306,
                                     'path': '/trac'}),
                      parse_connection_uri('mysql://john:letmein@localhost:3306/trac'))
+
+    def test_empty_string(self):
+        self.assertRaises(ConfigurationError, parse_connection_uri, '')
+
+    def test_invalid_port(self):
+        self.assertRaises(ConfigurationError, parse_connection_uri,
+                          'postgres://localhost:42:42')
+
+    def test_invalid_schema(self):
+        self.assertRaises(ConfigurationError, parse_connection_uri,
+                          'sqlitedb/trac.db')
+
+    def test_no_path(self):
+        self.assertRaises(ConfigurationError, parse_connection_uri,
+                          'sqlite:')
+
+    def test_invalid_query_string(self):
+        self.assertRaises(ConfigurationError, parse_connection_uri,
+                          'postgres://localhost/schema?name')
 
 
 class StringsTestCase(unittest.TestCase):
