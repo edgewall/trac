@@ -38,9 +38,8 @@ import trac.db.mysql_backend
 import trac.db.postgres_backend
 import trac.db.sqlite_backend
 from trac.config import Configuration
-from trac.core import ComponentManager
+from trac.core import ComponentManager, TracError
 from trac.db.api import DatabaseManager, parse_connection_uri
-from trac.db.pool import TimeoutError
 from trac.env import Environment
 from trac.ticket.default_workflow import load_workflow_config_snippet
 from trac.util import translation
@@ -335,7 +334,7 @@ class EnvironmentStub(Environment):
                 db.rollback()  # make sure there's no transaction in progress
                 # check the database version
                 db_version = dbm.get_database_version()
-        except (TimeoutError, self.env.db_exc.DatabaseError):
+        except (TracError, self.env.db_exc.DatabaseError):
             pass
         else:
             if db_version == db_default.db_version:
@@ -365,7 +364,7 @@ class EnvironmentStub(Environment):
         """
         try:
             self.global_databasemanager.destroy_db()
-        except (TimeoutError, self.db_exc.DatabaseError):
+        except (TracError, self.db_exc.DatabaseError):
             pass
         return False
 
