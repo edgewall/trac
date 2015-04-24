@@ -165,7 +165,7 @@ Trac.egg-info: status
 clean: clean-bytecode clean-figleaf clean-coverage clean-doc
 
 clean-bytecode:
-	find -name \*.py[co] -exec rm {} \;
+	find . -name \*.py[co] -exec rm {} \;
 
 Makefile: ;
 
