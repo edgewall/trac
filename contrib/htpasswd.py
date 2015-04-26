@@ -13,34 +13,19 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-"""Replacement for htpasswd"""
-
+import getpass
+import optparse
 import os
 import sys
-import random
-from optparse import OptionParser
 
-from trac.util.compat import wait_for_file_mtime_change
+from trac.util import salt
+from trac.util.compat import crypt, wait_for_file_mtime_change
+from trac.util.text import printerr, printout
 
-# We need a crypt module, but Windows doesn't have one by default.  Try to find
-# one, and tell the user if we can't.
-try:
-    import crypt
-except ImportError:
-    try:
-        import fcrypt as crypt
-    except ImportError:
-        sys.stderr.write("Cannot find a crypt module.  "
-                         "Possibly http://carey.geek.nz/code/python-fcrypt/\n")
-        sys.exit(1)
-
-
-def salt():
-    """Returns a string of 2 randome letters"""
-    letters = 'abcdefghijklmnopqrstuvwxyz' \
-              'ABCDEFGHIJKLMNOPQRSTUVWXYZ' \
-              '0123456789/.'
-    return random.choice(letters) + random.choice(letters)
+if crypt is None:
+    printerr("The crypt module is not found. You may want to install "
+             "fcrypt from PyPI.", newline=True)
+    sys.exit(1)
 
 
 class HtpasswdFile:
@@ -50,14 +35,12 @@ class HtpasswdFile:
         self.entries = []
         self.filename = filename
         if not create:
-            if os.path.exists(self.filename):
-                self.load()
-            else:
-                raise Exception("%s does not exist" % self.filename)
+            self.load()
 
     def load(self):
         """Read the htpasswd file into memory."""
-        lines = open(self.filename, 'r').readlines()
+        with open(self.filename, 'r') as f:
+            lines = f.readlines()
         self.entries = []
         for line in lines:
             username, pwhash = line.split(':')
@@ -67,8 +50,9 @@ class HtpasswdFile:
     def save(self):
         """Write the htpasswd file to disk"""
         wait_for_file_mtime_change(self.filename)
-        open(self.filename, 'w').writelines(["%s:%s\n" % (entry[0], entry[1])
-                                             for entry in self.entries])
+        with open(self.filename, 'w') as f:
+            f.writelines("%s:%s\n" % (entry[0], entry[1])
+                         for entry in self.entries)
 
     def update(self, username, password):
         """Replace the entry for the given user, or add it if new."""
@@ -88,10 +72,12 @@ class HtpasswdFile:
 
 def main():
     """
+        %prog [-c] filename username
         %prog -b[c] filename username password
-        %prog -D filename username"""
+        %prog -D filename username
+    """
     # For now, we only care about the use cases that affect tests/functional.py
-    parser = OptionParser(usage=main.__doc__)
+    parser = optparse.OptionParser(usage=main.__doc__)
     parser.add_option('-b', action='store_true', dest='batch', default=False,
         help='Batch mode; password is passed on the command line IN THE CLEAR.'
         )
@@ -106,34 +92,42 @@ def main():
         """Utility function for displaying fatal error messages with usage
         help.
         """
-        sys.stderr.write("Syntax error: " + msg)
-        sys.stderr.write(parser.get_usage())
+        printerr("Syntax error: " + msg, newline=True)
+        printerr(parser.get_usage(), newline=True)
         sys.exit(1)
-
-    if not (options.batch or options.delete_user):
-        syntax_error("Only batch and delete modes are supported\n")
 
     # Non-option arguments
     if len(args) < 2:
         syntax_error("Insufficient number of arguments.\n")
     filename, username = args[:2]
+    password = None
     if options.delete_user:
         if len(args) != 2:
             syntax_error("Incorrect number of arguments.\n")
-        password = None
     else:
-        if len(args) != 3:
+        if len(args) == 3 and options.batch:
+            password = args[2]
+        elif len(args) == 2 and not options.batch:
+            first = getpass.getpass("New password:")
+            second = getpass.getpass("Re-type new password:")
+            if first == second:
+                password = first
+            else:
+                printout("htpasswd: password verification error")
+                return
+        else:
             syntax_error("Incorrect number of arguments.\n")
-        password = args[2]
 
-    passwdfile = HtpasswdFile(filename, create=options.create)
-
-    if options.delete_user:
-        passwdfile.delete(username)
+    try:
+        passwdfile = HtpasswdFile(filename, create=options.create)
+    except IOError:
+        syntax_error("File not found.\n")
     else:
-        passwdfile.update(username, password)
-
-    passwdfile.save()
+        if options.delete_user:
+            passwdfile.delete(username)
+        else:
+            passwdfile.update(username, password)
+        passwdfile.save()
 
 
 if __name__ == '__main__':

@@ -23,6 +23,15 @@ import time
 
 from trac.util.text import cleandoc
 
+# Windows doesn't have a crypt module by default.
+try:
+    import crypt
+except ImportError:
+    try:
+        import fcrypt as crypt
+    except ImportError:
+        crypt = None
+
 # Import symbols previously defined here, kept around so that plugins importing
 # them don't suddenly stop working
 all = all

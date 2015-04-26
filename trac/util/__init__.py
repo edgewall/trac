@@ -30,6 +30,7 @@ import random
 import re
 import shutil
 import sys
+import string
 import struct
 import tempfile
 import time
@@ -542,7 +543,6 @@ def arity(f):
 def get_last_traceback():
     """Retrieve the last traceback as an `unicode` string."""
     import traceback
-    from StringIO import StringIO
     tb = StringIO()
     traceback.print_exc(file=tb)
     return to_unicode(tb.getvalue())
@@ -830,6 +830,12 @@ def hex_entropy(digits=32):
     """Generate `digits` number of hex digits of entropy."""
     result = ''.join('%.2x' % ord(v) for v in urandom((digits + 1) // 2))
     return result[:digits] if len(result) > digits else result
+
+
+def salt(length=2):
+    """Returns a string of `length` random letters and numbers."""
+    return ''.join(random.choice(string.ascii_letters + string.digits + '/.')
+                   for x in range(length))
 
 
 # Original license for md5crypt:

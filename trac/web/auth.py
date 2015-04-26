@@ -31,6 +31,7 @@ from trac.core import *
 from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
 from trac.util import hex_entropy, md5crypt
+from trac.util.compat import crypt
 from trac.util.concurrency import threading
 from trac.util.translation import _, tag_
 
@@ -299,15 +300,7 @@ class BasicAuthentication(PasswordFileAuthentication):
     def __init__(self, htpasswd, realm):
         # FIXME pass a logger
         self.realm = realm
-        try:
-            import crypt
-            self.crypt = crypt.crypt
-        except ImportError:
-            try:
-                import fcrypt
-                self.crypt = fcrypt.crypt
-            except ImportError:
-                self.crypt = None
+        self.crypt = crypt.crypt
         PasswordFileAuthentication.__init__(self, htpasswd)
 
     def load(self, filename):
