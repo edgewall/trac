@@ -15,11 +15,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 from abc import ABCMeta, abstractmethod
-try:
-    from base64 import b64decode, b64encode
-except ImportError:
-    from base64 import decodestring as b64decode
-    from base64 import encodestring as b64encode
+from base64 import b64decode, b64encode
 from hashlib import md5, sha1
 import os
 import re
