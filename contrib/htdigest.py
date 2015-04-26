@@ -88,11 +88,8 @@ else:
             else:
                 print(line)
         if not matched:
-            f = open(filename, 'a')
-            try:
+            with open(filename, 'a') as f:
                 print(get_digest(prefix, password), file=f)
-            finally:
-                f.close()
     except EnvironmentError as e:
         if e.errno == errno.ENOENT:
             print("Could not open passwd file %s for reading." % filename,
