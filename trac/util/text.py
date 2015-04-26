@@ -327,14 +327,8 @@ def text_width(text, ambiwidth=1):
 
 _default_ambiwidth = 1  # Default width of East Asian Ambiguous (A)
 if os.name == 'nt':
-    try:
-        # `ctypes` is available since Python 2.5
-        import ctypes
-        codepage = ctypes.windll.kernel32.GetConsoleOutputCP()
-    except ImportError:
-        # Try to retrieve the codepage from stderr and stdout
-        codepage = (sys.stderr.encoding or sys.stdout.encoding or '')[2:]
-        codepage = codepage.isdigit() and int(codepage) or 0
+    import ctypes
+    codepage = ctypes.windll.kernel32.GetConsoleOutputCP()
 
     if codepage in (932,  # Japanese (Shift-JIS)
                     936,  # Chinese Simplified (GB2312)
