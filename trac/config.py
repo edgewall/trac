@@ -251,12 +251,7 @@ class Configuration(object):
         trac.ini or one of the parents, or is available through the Option
         registry.
         """
-        if self.parser.has_option(section, option):
-            return True
-        for parent in self.parents:
-            if parent.has_option(section, option, defaults=False):
-                return True
-        return defaults and (section, option) in Option.registry
+        return self[section].contains(option, defaults)
 
     def save(self):
         """Write the configuration options to the primary file."""
