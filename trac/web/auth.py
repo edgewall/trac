@@ -300,7 +300,7 @@ class BasicAuthentication(PasswordFileAuthentication):
     def __init__(self, htpasswd, realm):
         # FIXME pass a logger
         self.realm = realm
-        self.crypt = crypt.crypt
+        self.crypt = crypt
         PasswordFileAuthentication.__init__(self, htpasswd)
 
     def load(self, filename):

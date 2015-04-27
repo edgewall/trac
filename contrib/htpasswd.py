@@ -54,7 +54,7 @@ class HtpasswdFile:
 
     def update(self, username, password):
         """Replace the entry for the given user, or add it if new."""
-        pwhash = crypt.crypt(password, salt())
+        pwhash = crypt(password, salt())
         matching_entries = [entry for entry in self.entries
                             if entry[0] == username]
         if matching_entries:

@@ -25,10 +25,10 @@ from trac.util.text import cleandoc
 
 # Windows doesn't have a crypt module by default.
 try:
-    import crypt
+    from crypt import crypt
 except ImportError:
     try:
-        import fcrypt as crypt
+        from fcrypt import crypt
     except ImportError:
         crypt = None
 
