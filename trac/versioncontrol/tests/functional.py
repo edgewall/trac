@@ -105,7 +105,7 @@ class TestRepoBrowse(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Add a file to the repository and verify it is in the browser"""
         # Add a file to Subversion
-        tempfilename = random_word()
+        tempfilename = random_word() + '_repo_browse.txt'
         fulltempfilename = 'component1/trunk/' + tempfilename
         revision = self._testenv.svn_add(fulltempfilename, random_page())
 
