@@ -343,11 +343,9 @@ class Configuration(object):
         def set_option_default(option):
             section = option.section
             name = option.name
-            if not self.parser.has_option(section, name):
-                if not any(parent[section].contains(name, defaults=False)
-                           for parent in self.parents):
-                    value = option.dumps(option.default)
-                    self.set(section, name, value)
+            if not self.has_option(section, name, defaults=False):
+                value = option.dumps(option.default)
+                self.set(section, name, value)
 
         if component:
             if component.endswith('.*'):
