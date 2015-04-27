@@ -18,7 +18,7 @@ import optparse
 import os
 import sys
 
-from trac.util import salt
+from trac.util import create_file, read_file, salt
 from trac.util.compat import crypt, wait_for_file_mtime_change
 from trac.util.text import printerr, printout
 
@@ -39,13 +39,12 @@ class HtpasswdFile:
 
     def load(self):
         """Read the htpasswd file into memory."""
-        with open(self.filename, 'r') as f:
-            lines = f.readlines()
         self.entries = []
-        for line in lines:
-            username, pwhash = line.split(':')
-            entry = [username, pwhash.rstrip()]
-            self.entries.append(entry)
+        with open(self.filename, 'r') as f:
+            for line in f:
+                username, pwhash = line.split(':')
+                entry = [username, pwhash.rstrip()]
+                self.entries.append(entry)
 
     def save(self):
         """Write the htpasswd file to disk"""
