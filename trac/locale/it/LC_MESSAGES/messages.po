@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
-"POT-Creation-Date: 2015-03-03 02:39+0000\n"
-"PO-Revision-Date: 2015-03-01 20:16+0100\n"
+"POT-Creation-Date: 2015-03-15 11:28+0000\n"
+"PO-Revision-Date: 2015-04-27 12:04+0200\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
 "Language-Team: Italian "
 "(http://www.transifex.com/projects/p/trac/language/it/)\n"
@@ -560,8 +560,8 @@ msgid "Date"
 msgstr "Data"
 
 #: trac/attachment.py:1064 trac/templates/attachment.html:105
-#: trac/ticket/api.py:338 trac/ticket/api.py:578
-#: trac/ticket/templates/ticket.html:364
+#: trac/ticket/api.py:338 trac/ticket/api.py:577
+#: trac/ticket/templates/ticket.html:363
 #: trac/ticket/templates/ticket_box.html:108
 msgid "Description"
 msgstr "Descrizione"
@@ -579,33 +579,33 @@ msgstr "Errore di configurazione"
 msgid "Look in the Trac log for more information."
 msgstr "Consulta il log di Trac per ulteriori informazioni."
 
-#: trac/config.py:275
+#: trac/config.py:266
 #, python-format
 msgid "Error reading '%(file)s', make sure it is readable."
 msgstr "Errore nel leggere '%(file)s', assicurarsi che sia leggibile."
 
-#: trac/config.py:433
+#: trac/config.py:445
 #, python-format
 msgid "[%(section)s] %(entry)s: expected integer, got %(value)s"
 msgstr "[%(section)s] %(entry)s: necessario un numero intero, trovato %(value)s"
 
-#: trac/config.py:452
+#: trac/config.py:464
 #, python-format
 msgid "[%(section)s] %(entry)s: expected float, got %(value)s"
 msgstr "[%(section)s] %(entry)s: necessario un numero decimale, trovato %(value)s"
 
-#: trac/config.py:632
+#: trac/config.py:640
 msgid "Setting attribute is not allowed."
 msgstr "La modifica degli attributi non è consentita."
 
-#: trac/config.py:715
+#: trac/config.py:723
 #, python-format
 msgid "[%(section)s] %(entry)s: expected one of (%(choices)s), got %(value)s"
 msgstr ""
 "[%(section)s] %(entry)s: necessario un valore tra (%(choices)s), trovato "
 "%(value)s"
 
-#: trac/config.py:754
+#: trac/config.py:762
 #, python-format
 msgid ""
 "Cannot find an implementation of the %(interface)s interface named "
@@ -616,7 +616,7 @@ msgstr ""
 "denominata %(implementation)s. Controlla che il Componente sia abilitato "
 "oppure aggiorna l'opzione %(option)s nel trac.ini."
 
-#: trac/config.py:793
+#: trac/config.py:801
 #, python-format
 msgid ""
 "Cannot find implementation(s) of the %(interface)s interface named "
@@ -627,7 +627,7 @@ msgstr ""
 "%(interface)s denominata %(implementation)s. Controlla che il Componente "
 "sia abilitato oppure aggiorna l'opzione %(option)s nel trac.ini."
 
-#: trac/config.py:833 trac/config.py:846
+#: trac/config.py:841 trac/config.py:856
 #, python-format
 msgid "Option '%(option)s' doesn't exist in section '%(section)s'"
 msgstr "L'opzione \"%(option)s\" non esiste nella sezione \"%(section)s\""
@@ -1671,27 +1671,27 @@ msgstr ""
 "Schema \"%(scheme)s\" sconosciuto; la stringa di connessione al database "
 "deve cominciare con {schema}:/"
 
-#: trac/db/mysql_backend.py:108
+#: trac/db/mysql_backend.py:109
 msgid "Cannot load Python bindings for MySQL"
 msgstr "Impossibile caricare i binding Python per MySQL"
 
-#: trac/db/mysql_backend.py:254 trac/db/postgres_backend.py:188
-#: trac/db/postgres_backend.py:207
+#: trac/db/mysql_backend.py:255 trac/db/postgres_backend.py:187
+#: trac/db/postgres_backend.py:206
 #, python-format
 msgid "Unable to run %(path)s: %(msg)s"
 msgstr "Impossibile eseguire \"%(path)s\": %(msg)s"
 
-#: trac/db/mysql_backend.py:258
+#: trac/db/mysql_backend.py:259
 #, python-format
 msgid "mysqldump failed: %(msg)s"
 msgstr "mysqldump fallito: %(msg)s"
 
-#: trac/db/mysql_backend.py:260 trac/db/postgres_backend.py:213
-#: trac/db/sqlite_backend.py:250
+#: trac/db/mysql_backend.py:261 trac/db/postgres_backend.py:212
+#: trac/db/sqlite_backend.py:256
 msgid "No destination file created"
 msgstr "Il file destinazione non è stato creato"
 
-#: trac/db/mysql_backend.py:297
+#: trac/db/mysql_backend.py:298
 #, python-format
 msgid ""
 "All tables must be created as InnoDB or NDB storage engine to support "
@@ -1702,7 +1702,7 @@ msgstr ""
 "NDB per poter supportare le transazioni. Le seguenti tabelle sono state "
 "create con un formato che non supporta le transazioni: %(tables)s"
 
-#: trac/db/mysql_backend.py:306
+#: trac/db/mysql_backend.py:307
 #, python-format
 msgid ""
 "All tables must be created with utf8_bin or utf8mb4_bin as collation. The"
@@ -1712,7 +1712,7 @@ msgstr ""
 "utf8mb4_bin. Le seguenti tabelle non hanno la collation necessaria: "
 "%(tables)s"
 
-#: trac/db/mysql_backend.py:321
+#: trac/db/mysql_backend.py:322
 #, python-format
 msgid ""
 "The current storage engine is %(engine)s. It must be InnoDB or NDB "
@@ -1721,7 +1721,7 @@ msgstr ""
 "Lo storage corrente è %(engine)s. Deve essere utilizzato lo storage "
 "InnoDB oppure l'NDB per poter supportare le transazioni."
 
-#: trac/db/mysql_backend.py:327
+#: trac/db/mysql_backend.py:328
 #, python-format
 msgid ""
 "The current storage engine for TEMPORARY tables is %(engine)s. It must be"
@@ -1731,7 +1731,7 @@ msgstr ""
 "utilizzato lo storage InnoDB oppure l'NDB per poter supportare le "
 "transazioni."
 
-#: trac/db/mysql_backend.py:339
+#: trac/db/mysql_backend.py:340
 #, python-format
 msgid ""
 "The charset and collation of database are '%(charset)s' and "
@@ -1746,37 +1746,46 @@ msgstr ""
 msgid "Unable to get database connection within %(time)d seconds."
 msgstr "Impossibile ottenere una connessione al database entro %(time)d secondi."
 
-#: trac/db/postgres_backend.py:95
+#: trac/db/postgres_backend.py:94
 msgid "Cannot load Python bindings for PostgreSQL"
 msgstr "Impossibile caricare i binding Python per PostgreSQL"
 
-#: trac/db/postgres_backend.py:211
+#: trac/db/postgres_backend.py:210
 #, python-format
 msgid "pg_dump failed: %(msg)s"
 msgstr "pg_dump fallito: %(msg)s"
 
-#: trac/db/sqlite_backend.py:168
+#: trac/db/sqlite_backend.py:169
+#, python-format
+msgid ""
+"SQLite version is %(version)s. Minimum required version is "
+"%(min_version)s."
+msgstr ""
+"La versione di SQLite è %(version)s. È richiesta come minimo la versione "
+"%(min_version)s."
+
+#: trac/db/sqlite_backend.py:174
 #, python-format
 msgid "Need at least PySqlite %(version)s or higher"
 msgstr "È necessario PySqlite %(version)s o superiore"
 
-#: trac/db/sqlite_backend.py:171
+#: trac/db/sqlite_backend.py:177
 msgid "PySqlite 2.5.2 - 2.5.4 break Trac, please use 2.5.5 or higher"
 msgstr ""
 "PySqlite 2.5.2 - 2.5.4 provocano degli errori in Trac, utilizza la "
 "versione 2.5.5 o superiore per favore"
 
-#: trac/db/sqlite_backend.py:199
+#: trac/db/sqlite_backend.py:205
 #, python-format
 msgid "Database already exists at %(path)s"
 msgstr "Il database %(path)s esiste già"
 
-#: trac/db/sqlite_backend.py:265
+#: trac/db/sqlite_backend.py:271
 #, python-format
 msgid "Database \"%(path)s\" not found."
 msgstr "Database \"%(path)s\" non trovato."
 
-#: trac/db/sqlite_backend.py:274
+#: trac/db/sqlite_backend.py:280
 #, python-format
 msgid ""
 "The user %(user)s requires read _and_ write permissions to the database "
@@ -1785,17 +1794,17 @@ msgstr ""
 "L'utente %(user)s necessita dei permessi di lettura _e_ di scrittura sul "
 "database %(path)s e sulla directory che lo contiene."
 
-#: trac/db/sqlite_backend.py:382
+#: trac/db/sqlite_backend.py:388
 #, python-format
 msgid "PRAGMA journal_mode `%(value)s` cannot be used in SQLite"
 msgstr "PRAGMA journal_mode `%(value)s` non può essere utilizzato con SQLite"
 
-#: trac/db/sqlite_backend.py:387
+#: trac/db/sqlite_backend.py:393
 #, python-format
 msgid "PRAGMA journal_mode isn't supported by SQLite %(version)s"
 msgstr "PRAGMA journal_mode non è supportato da SQLite %(version)s"
 
-#: trac/db/sqlite_backend.py:390
+#: trac/db/sqlite_backend.py:396
 #, python-format
 msgid "PRAGMA journal_mode `%(value)s` isn't supported by SQLite %(version)s"
 msgstr "PRAGMA journal_mode `%(value)s` non è supportato da SQLite %(version)s"
@@ -2429,13 +2438,13 @@ msgid "Attachment Info"
 msgstr "Info allegato"
 
 #: trac/templates/attachment.html:50 trac/ticket/templates/ticket.html:200
-#: trac/ticket/templates/ticket.html:333
+#: trac/ticket/templates/ticket.html:332
 #: trac/wiki/templates/wiki_edit_form.html:53
 msgid "Your email or username:"
 msgstr "Il tuo indirizzo email oppure il nome utente:"
 
 #: trac/templates/attachment.html:54 trac/ticket/templates/ticket.html:207
-#: trac/ticket/templates/ticket.html:341
+#: trac/ticket/templates/ticket.html:340
 #: trac/wiki/templates/wiki_edit_form.html:57
 msgid "E-mail address and name can be saved in the [1:Preferences]."
 msgstr ""
@@ -2885,7 +2894,7 @@ msgstr "[1:%(file)s][2:​] ([3:%(size)s]) - aggiunto da %(author)s %(date)s."
 
 #: trac/templates/list_of_attachments.html:38
 #: trac/templates/list_of_attachments.html:52
-#: trac/ticket/templates/ticket.html:363
+#: trac/ticket/templates/ticket.html:362
 msgid "Attachments"
 msgstr "Allegati"
 
@@ -3193,65 +3202,65 @@ msgstr "Cc"
 msgid "Created"
 msgstr "Creata"
 
-#: trac/ticket/api.py:537
+#: trac/ticket/api.py:536
 #, python-format
 msgid "Tickets %(ranges)s"
 msgstr "Segnalazioni %(ranges)s"
 
-#: trac/ticket/api.py:564
+#: trac/ticket/api.py:563
 msgid "ticket comment does not exist"
 msgstr "commento alla segnalazione inesistente"
 
-#: trac/ticket/api.py:571
+#: trac/ticket/api.py:570
 #, python-format
 msgid "Description for Ticket #%(id)s"
 msgstr "Descrizione per la segnalazione #%(id)s"
 
-#: trac/ticket/api.py:574
+#: trac/ticket/api.py:573
 #, python-format
 msgid "Comment %(cnum)s for Ticket #%(id)s"
 msgstr "Commento %(cnum)s per la segnalazione #%(id)s"
 
-#: trac/ticket/api.py:579
+#: trac/ticket/api.py:578
 #, python-format
 msgid "Comment %(cnum)s"
 msgstr "Commento %(cnum)s"
 
-#: trac/ticket/api.py:583
+#: trac/ticket/api.py:582
 msgid "no permission to view ticket"
 msgstr "non hai i permessi per visualizzare la segnalazione"
 
-#: trac/ticket/api.py:586
+#: trac/ticket/api.py:585
 msgid "ticket does not exist"
 msgstr "la segnalazione non esiste"
 
-#: trac/ticket/api.py:606
+#: trac/ticket/api.py:605
 #, python-format
 msgid "Ticket #%(shortname)s"
 msgstr "Segnalazione #%(shortname)s"
 
-#: trac/ticket/batch.py:65
+#: trac/ticket/batch.py:66
 #, python-format
 msgid "The changes could not be saved: %(message)s"
 msgstr "Non è stato possibile memorizzare le modifiche: %(message)s"
 
-#: trac/ticket/batch.py:108
+#: trac/ticket/batch.py:115
 msgid "add"
 msgstr "aggiungi"
 
-#: trac/ticket/batch.py:109
+#: trac/ticket/batch.py:116
 msgid "remove"
 msgstr "rimuovi"
 
-#: trac/ticket/batch.py:110
+#: trac/ticket/batch.py:117
 msgid "add / remove"
 msgstr "aggiungi / rimuovi"
 
-#: trac/ticket/batch.py:111
+#: trac/ticket/batch.py:118
 msgid "set to"
 msgstr "imposta a"
 
-#: trac/ticket/batch.py:194 trac/ticket/roadmap.py:807
+#: trac/ticket/batch.py:201 trac/ticket/roadmap.py:807
 #: trac/ticket/roadmap.py:859
 #, python-format
 msgid ""
@@ -4411,7 +4420,7 @@ msgstr "Descrizione: (qui puoi usare la [1:WikiFormatting])"
 #: trac/ticket/templates/admin_enums.html:43
 #: trac/ticket/templates/admin_versions.html:58
 #: trac/ticket/templates/milestone_edit_form.html:124
-#: trac/ticket/templates/ticket.html:373
+#: trac/ticket/templates/ticket.html:372
 #: trac/ticket/templates/ticket_change.html:125
 #: trac/versioncontrol/templates/admin_repositories.html:106
 #: trac/wiki/templates/wiki_edit_comment.html:32
@@ -5048,7 +5057,7 @@ msgstr "Sommario:"
 msgid "Reporter:"
 msgstr "Segnalatore:"
 
-#: trac/ticket/templates/ticket.html:216 trac/ticket/templates/ticket.html:345
+#: trac/ticket/templates/ticket.html:216 trac/ticket/templates/ticket.html:344
 msgid "You may use [1:WikiFormatting] here."
 msgstr "Qui puoi usare la [1:WikiFormatting]."
 
@@ -5074,11 +5083,11 @@ msgstr ""
 "Sono accettati sia indirizzi email che nomi di utenti, separati da spazi "
 "o da una virgola."
 
-#: trac/ticket/templates/ticket.html:317
+#: trac/ticket/templates/ticket.html:316
 msgid "Add Comment"
 msgstr "Aggiungi un Commento"
 
-#: trac/ticket/templates/ticket.html:319
+#: trac/ticket/templates/ticket.html:318
 msgid ""
 "This ticket has been modified since you started editing. You should "
 "review the\n"
@@ -5094,19 +5103,19 @@ msgstr ""
 "In ogni caso, puoi procedere e sovrascrivere con le tue modifiche, se lo "
 "desideri."
 
-#: trac/ticket/templates/ticket.html:357
+#: trac/ticket/templates/ticket.html:356
 msgid "I have files to attach to this ticket"
 msgstr "Ho dei file da allegare a questa segnalazione"
 
-#: trac/ticket/templates/ticket.html:363
+#: trac/ticket/templates/ticket.html:362
 msgid "Go to the list of attachments"
 msgstr "Vai alla lista degli allegati"
 
-#: trac/ticket/templates/ticket.html:364
+#: trac/ticket/templates/ticket.html:363
 msgid "View the ticket description"
 msgstr "Mostra la descrizione della segnalazione"
 
-#: trac/ticket/templates/ticket.html:372
+#: trac/ticket/templates/ticket.html:371
 #: trac/ticket/templates/ticket_change.html:123
 #: trac/wiki/templates/wiki_edit.html:102
 #: trac/wiki/templates/wiki_edit.html:164
@@ -5114,11 +5123,11 @@ msgstr "Mostra la descrizione della segnalazione"
 msgid "Preview"
 msgstr "Anteprima"
 
-#: trac/ticket/templates/ticket.html:373
+#: trac/ticket/templates/ticket.html:372
 msgid "Create ticket"
 msgstr "Crea segnalazione"
 
-#: trac/ticket/templates/ticket.html:388
+#: trac/ticket/templates/ticket.html:387
 msgid ""
 "[1:Note:] See\n"
 "        [2:TracTickets] for help on using\n"
@@ -5694,11 +5703,11 @@ msgstr "I repository selezionati sono stati rimossi."
 msgid "No repositories were selected."
 msgstr "Non è stato selezionato alcun repository."
 
-#: trac/versioncontrol/admin.py:371
+#: trac/versioncontrol/admin.py:372
 msgid "The repository directory must be an absolute path."
 msgstr "La directory del repository deve essere un path assoluto."
 
-#: trac/versioncontrol/admin.py:380
+#: trac/versioncontrol/admin.py:381
 #, python-format
 msgid ""
 "The repository directory must be located below one of the following "
@@ -5742,7 +5751,7 @@ msgstr "La directory del repository deve essere assoluta"
 msgid "The repository type '%(type)s' is not supported"
 msgstr "Il tipo di repository \"%(type)s\" non è supportato"
 
-#: trac/versioncontrol/api.py:351
+#: trac/versioncontrol/api.py:352
 #, python-format
 msgid ""
 "Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the "
@@ -5752,7 +5761,7 @@ msgstr ""
 "(%(error)s). Consulta il log dell'ambiente Trac per ulteriori "
 "informazioni."
 
-#: trac/versioncontrol/api.py:358
+#: trac/versioncontrol/api.py:359
 #, python-format
 msgid ""
 "Failed to sync with repository \"%(name)s\": %(error)s; repository "
@@ -5764,59 +5773,59 @@ msgstr ""
 "di Trac per ulteriori informazioni, comprese possibili strategie per "
 "risolvere il problema."
 
-#: trac/versioncontrol/api.py:386
+#: trac/versioncontrol/api.py:387
 #, python-format
 msgid "Changeset %(rev)s in %(repo)s"
 msgstr "Changeset %(rev)s in %(repo)s"
 
-#: trac/versioncontrol/api.py:388
+#: trac/versioncontrol/api.py:389
 #, python-format
 msgid "Changeset %(rev)s"
 msgstr "Changeset %(rev)s"
 
-#: trac/versioncontrol/api.py:398
+#: trac/versioncontrol/api.py:399
 msgid "directory"
 msgstr "cartella"
 
-#: trac/versioncontrol/api.py:400
+#: trac/versioncontrol/api.py:401
 msgid "file"
 msgstr "file"
 
-#: trac/versioncontrol/api.py:402
+#: trac/versioncontrol/api.py:403
 #, python-format
 msgid " at version %(rev)s"
 msgstr " alla versione %(rev)s"
 
-#: trac/versioncontrol/api.py:404
+#: trac/versioncontrol/api.py:405
 msgid "path"
 msgstr "percorso"
 
-#: trac/versioncontrol/api.py:407
+#: trac/versioncontrol/api.py:408
 #, python-format
 msgid " in %(repo)s"
 msgstr " in %(repo)s"
 
 #. TRANSLATOR: file /path/to/file.py at version 13 in reponame
-#: trac/versioncontrol/api.py:409
+#: trac/versioncontrol/api.py:410
 #, python-format
 msgid "%(kind)s %(id)s%(at_version)s%(in_repo)s"
 msgstr "%(kind)s %(id)s%(at_version)s%(in_repo)s"
 
-#: trac/versioncontrol/api.py:413
+#: trac/versioncontrol/api.py:414
 msgid "Default repository"
 msgstr "Repository di default"
 
-#: trac/versioncontrol/api.py:414
+#: trac/versioncontrol/api.py:415
 #, python-format
 msgid "Repository %(repo)s"
 msgstr "Repository %(repo)s"
 
-#: trac/versioncontrol/api.py:741
+#: trac/versioncontrol/api.py:742
 #, python-format
 msgid "Unsupported version control system \"%(name)s\": %(error)s"
 msgstr "Sistema di controllo versioni \"%(name)s\" non supportato: %(error)s"
 
-#: trac/versioncontrol/api.py:744
+#: trac/versioncontrol/api.py:745
 #, python-format
 msgid ""
 "Unsupported version control system \"%(name)s\": Can't find an "
@@ -5826,26 +5835,26 @@ msgstr ""
 "appropriato non è stato trovato, forse il plugin corrispondente non è "
 "abilitato? "
 
-#: trac/versioncontrol/api.py:752
+#: trac/versioncontrol/api.py:753
 #, python-format
 msgid "No changeset %(rev)s in the repository"
 msgstr "Nel repository non esiste il changeset %(rev)s"
 
-#: trac/versioncontrol/api.py:754
+#: trac/versioncontrol/api.py:755
 msgid "No such changeset"
 msgstr "Questo changeset non esiste"
 
-#: trac/versioncontrol/api.py:760
+#: trac/versioncontrol/api.py:761
 #, python-format
 msgid "No node %(path)s at revision %(rev)s"
 msgstr "Non esiste il nodo \"%(path)s\" revisione %(rev)s"
 
-#: trac/versioncontrol/api.py:762
+#: trac/versioncontrol/api.py:763
 #, python-format
 msgid "%(msg)s: No node %(path)s at revision %(rev)s"
 msgstr "%(msg)s: non esiste il nodo \"%(path)s\" alla revisione %(rev)s"
 
-#: trac/versioncontrol/api.py:764
+#: trac/versioncontrol/api.py:765
 msgid "No such node"
 msgstr "Questo nodo non esiste"
 
