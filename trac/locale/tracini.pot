@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.6\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2015-04-11 14:49+0000\n"
+"POT-Creation-Date: 2015-04-27 17:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -584,24 +584,24 @@ msgid ""
 "ones)"
 msgstr ""
 
-#: trac/db/api.py:228
+#: trac/db/api.py:229
 msgid ""
 "Database connection\n"
 "[wiki:TracEnvironment#DatabaseConnectionStrings string] for this\n"
 "project"
 msgstr ""
 
-#: trac/db/api.py:233
+#: trac/db/api.py:234
 msgid "Database backup location"
 msgstr ""
 
-#: trac/db/api.py:236
+#: trac/db/api.py:237
 msgid ""
 "Timeout value for database connection, in seconds.\n"
 "Use '0' to specify ''no timeout''. ''(Since 0.11)''"
 msgstr ""
 
-#: trac/db/api.py:240
+#: trac/db/api.py:241
 msgid ""
 "Show the SQL queries in the Trac log, at DEBUG level.\n"
 "''(Since 0.11.5)''"
@@ -611,29 +611,29 @@ msgstr ""
 msgid "Location of mysqldump for MySQL database backups"
 msgstr ""
 
-#: trac/db/postgres_backend.py:76
+#: trac/db/postgres_backend.py:80
 msgid "Location of pg_dump for Postgres database backups"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:145
+#: trac/db/sqlite_backend.py:147
 msgid ""
 "Paths to sqlite extensions, relative to Trac environment's\n"
 "directory or absolute. (''since 0.12'')"
 msgstr ""
 
-#: trac/mimeview/api.py:625
+#: trac/mimeview/api.py:629
 msgid "Charset to be used when in doubt."
 msgstr ""
 
-#: trac/mimeview/api.py:628
+#: trac/mimeview/api.py:632
 msgid "Displayed tab width in file preview. (''since 0.9'')"
 msgstr ""
 
-#: trac/mimeview/api.py:631
+#: trac/mimeview/api.py:635
 msgid "Maximum file size for HTML preview. (''since 0.9'')"
 msgstr ""
 
-#: trac/mimeview/api.py:634
+#: trac/mimeview/api.py:638
 msgid ""
 "List of additional MIME types and keyword mappings.\n"
 "Mappings are comma-separated, and for each MIME type,\n"
@@ -641,7 +641,7 @@ msgid ""
 "or file extensions. (''since 0.10'')"
 msgstr ""
 
-#: trac/mimeview/api.py:642
+#: trac/mimeview/api.py:646
 msgid ""
 "List of additional MIME types associated to filename patterns.\n"
 "Mappings are comma-separated, and each mapping consists of a MIME type\n"
@@ -649,7 +649,7 @@ msgid ""
 "(\":\"). (''since 1.0'')"
 msgstr ""
 
-#: trac/mimeview/api.py:650
+#: trac/mimeview/api.py:654
 msgid ""
 "Comma-separated list of MIME types that should be treated as\n"
 "binary data. (''since 0.11.5'')"
@@ -1165,7 +1165,7 @@ msgid ""
 "(''since 0.9'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:131
+#: trac/versioncontrol/web_ui/changeset.py:130
 msgid ""
 "Number of files to show (`-1` for unlimited, `0` to disable).\n"
 "\n"
@@ -1173,7 +1173,7 @@ msgid ""
 "changed files. (since 0.11)."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:138
+#: trac/versioncontrol/web_ui/changeset.py:137
 msgid ""
 "Whether wiki-formatted changeset messages should be multiline or\n"
 "not.\n"
@@ -1183,7 +1183,7 @@ msgid ""
 "some formatting (bullet points, etc)."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:147
+#: trac/versioncontrol/web_ui/changeset.py:146
 msgid ""
 "Whether consecutive changesets from the same author having\n"
 "exactly the same message should be presented as one event.\n"
@@ -1191,20 +1191,20 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:154
+#: trac/versioncontrol/web_ui/changeset.py:153
 msgid ""
 "Maximum number of modified files for which the changeset view will\n"
 "attempt to show the diffs inlined (''since 0.10'')."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:158
+#: trac/versioncontrol/web_ui/changeset.py:157
 msgid ""
 "Maximum total size in bytes of the modified files (their old size\n"
 "plus their new size) for which the changeset view will attempt to show\n"
 "the diffs inlined (''since 0.10'')."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:163
+#: trac/versioncontrol/web_ui/changeset.py:162
 msgid ""
 "Whether wiki formatting should be applied to changeset messages.\n"
 "\n"
@@ -1441,6 +1441,13 @@ msgid ""
 "The date information format. Valid options are 'relative' for\n"
 "displaying relative format and 'absolute' for displaying absolute\n"
 "format. (''since 1.0'')"
+msgstr ""
+
+#: trac/web/chrome.py:558
+msgid ""
+"If enabled, send contents as chunked encoding in HTTP/1.1.\n"
+"Otherwise, send contents with `Content-Length` header after entire of\n"
+"the contents are rendered. (''since 1.0.6'')"
 msgstr ""
 
 #: trac/web/main.py:96
