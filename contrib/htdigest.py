@@ -86,7 +86,7 @@ else:
                     print(get_digest(prefix, password))
                 matched = True
             else:
-                print(line)
+                print(line.rstrip())
         if not matched:
             with open(filename, 'a') as f:
                 print(get_digest(prefix, password), file=f)
