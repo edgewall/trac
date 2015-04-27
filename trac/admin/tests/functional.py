@@ -54,8 +54,6 @@ class AuthorizationTestCaseSetup(FunctionalTwillTestCaseSetup):
                     })
                     tc.go(href)
                     tc.find(h2 % h2_text)
-                except ImportError:
-                    pass
                 finally:
                     self._testenv.disable_authz_permpolicy()
         finally:
