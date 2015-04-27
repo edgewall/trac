@@ -40,55 +40,55 @@ class PostgresTableCreationSQLTest(unittest.TestCase):
         return normalized_commands
 
     def test_quote_table_name(self):
-        table = Table('foo bar')
+        table = Table('foo"bar')
         table[Column('name'),]
         sql_generator = PostgreSQLConnector(self.env).to_sql(table)
         sql_commands = self._normalize_sql(sql_generator)
         self.assertEqual(1, len(sql_commands))
-        self.assertEqual('CREATE TABLE "foo bar" ( "name" text)',
+        self.assertEqual('CREATE TABLE "foo""bar" ( "name" text)',
                          sql_commands[0])
 
     def test_quote_column_names(self):
         table = Table('foo')
-        table[Column('my name'),]
+        table[Column('my"name'),]
         sql_generator = PostgreSQLConnector(self.env).to_sql(table)
         sql_commands = self._normalize_sql(sql_generator)
         self.assertEqual(1, len(sql_commands))
-        self.assertEqual('CREATE TABLE "foo" ( "my name" text)',
+        self.assertEqual('CREATE TABLE "foo" ( "my""name" text)',
                          sql_commands[0])
 
     def test_quote_compound_primary_key_declaration(self):
-        table = Table('foo bar', key=['my name', 'your name'])
-        table[Column('my name'), Column('your name'),]
+        table = Table('foo"bar', key=['my name', 'your"name'])
+        table[Column('my name'), Column('your"name'),]
         sql_generator = PostgreSQLConnector(self.env).to_sql(table)
         sql_commands = self._normalize_sql(sql_generator)
         self.assertEqual(1, len(sql_commands))
-        expected_sql = 'CREATE TABLE "foo bar" ( "my name" text, ' + \
-                       '"your name" text, CONSTRAINT "foo bar_pk" ' +\
-                       'PRIMARY KEY ("my name","your name"))'
+        expected_sql = 'CREATE TABLE "foo""bar" ( "my name" text, ' + \
+                       '"your""name" text, CONSTRAINT "foo""bar_pk" ' +\
+                       'PRIMARY KEY ("my name","your""name"))'
         self.assertEqual(expected_sql, sql_commands[0])
 
     def test_quote_index_declaration(self):
         table = Table('foo')
-        table[Column('my name'), Index(['my name'])]
+        table[Column('my"name'), Index(['my"name'])]
         sql_generator = PostgreSQLConnector(self.env).to_sql(table)
         sql_commands = self._normalize_sql(sql_generator)
         self.assertEqual(2, len(sql_commands))
-        self.assertEqual('CREATE TABLE "foo" ( "my name" text)',
+        self.assertEqual('CREATE TABLE "foo" ( "my""name" text)',
                          sql_commands[0])
-        index_sql = 'CREATE INDEX "foo_my name_idx" ON "foo" ("my name")'
+        index_sql = 'CREATE INDEX "foo_my""name_idx" ON "foo" ("my""name")'
         self.assertEqual(index_sql, sql_commands[1])
 
     def test_quote_index_declaration_for_multiple_indexes(self):
         table = Table('foo')
-        table[Column('a'), Column('b'),
-              Index(['a', 'b'])]
+        table[Column('a'), Column('b"c'),
+              Index(['a', 'b"c'])]
         sql_generator = PostgreSQLConnector(self.env).to_sql(table)
         sql_commands = self._normalize_sql(sql_generator)
         self.assertEqual(2, len(sql_commands))
-        self.assertEqual('CREATE TABLE "foo" ( "a" text, "b" text)',
+        self.assertEqual('CREATE TABLE "foo" ( "a" text, "b""c" text)',
                          sql_commands[0])
-        index_sql = 'CREATE INDEX "foo_a_b_idx" ON "foo" ("a","b")'
+        index_sql = 'CREATE INDEX "foo_a_b""c_idx" ON "foo" ("a","b""c")'
         self.assertEqual(index_sql, sql_commands[1])
 
     def test_assemble_dsn(self):
@@ -149,9 +149,9 @@ class PostgresTableAlterationSQLTest(unittest.TestCase):
                                             'completed': ('int', 'int64')})
         sql = list(sql)
         self.assertEqual([
-            "ALTER TABLE milestone "
-                "ALTER COLUMN completed TYPE bigint, "
-                "ALTER COLUMN due TYPE bigint",
+            'ALTER TABLE "milestone" '
+                'ALTER COLUMN "completed" TYPE bigint, '
+                'ALTER COLUMN "due" TYPE bigint',
             ], sql)
 
     def test_alter_column_types_same(self):
@@ -161,8 +161,8 @@ class PostgresTableAlterationSQLTest(unittest.TestCase):
                                             'completed': ('int', 'int64')})
         sql = list(sql)
         self.assertEqual([
-            "ALTER TABLE milestone "
-                "ALTER COLUMN completed TYPE bigint",
+            'ALTER TABLE "milestone" '
+                'ALTER COLUMN "completed" TYPE bigint',
             ], sql)
 
     def test_alter_column_types_none(self):

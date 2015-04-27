@@ -63,6 +63,10 @@ def assemble_pg_dsn(path, user=None, password=None, host=None, port=None):
                     for name, value in dsn.iteritems() if value)
 
 
+def _quote(identifier):
+    return '"%s"' % identifier.replace('"', '""')
+
+
 class PostgreSQLConnector(Component):
     """Database connector for PostgreSQL.
 
@@ -105,7 +109,7 @@ class PostgreSQLConnector(Component):
                                   params)
         cursor = cnx.cursor()
         if cnx.schema:
-            cursor.execute('CREATE SCHEMA "%s"' % cnx.schema)
+            cursor.execute('CREATE SCHEMA ' + _quote(cnx.schema))
             cursor.execute('SET search_path TO %s', (cnx.schema,))
         if schema is None:
             from trac.db_default import schema
@@ -115,7 +119,7 @@ class PostgreSQLConnector(Component):
         cnx.commit()
 
     def to_sql(self, table):
-        sql = ['CREATE TABLE "%s" (' % table.name]
+        sql = ['CREATE TABLE %s (' % _quote(table.name)]
         coldefs = []
         for column in table.columns:
             ctype = column.type
@@ -124,18 +128,20 @@ class PostgreSQLConnector(Component):
                 ctype = 'SERIAL'
             if len(table.key) == 1 and column.name in table.key:
                 ctype += ' PRIMARY KEY'
-            coldefs.append('    "%s" %s' % (column.name, ctype))
+            coldefs.append('    %s %s' % (_quote(column.name), ctype))
         if len(table.key) > 1:
-            coldefs.append('    CONSTRAINT "%s_pk" PRIMARY KEY ("%s")'
-                           % (table.name, '","'.join(table.key)))
+            coldefs.append('    CONSTRAINT %s PRIMARY KEY (%s)' %
+                           (_quote(table.name + '_pk'),
+                            ','.join(_quote(col) for col in table.key)))
         sql.append(',\n'.join(coldefs) + '\n)')
         yield '\n'.join(sql)
         for index in table.indices:
             unique = 'UNIQUE' if index.unique else ''
-            yield 'CREATE %s INDEX "%s_%s_idx" ON "%s" ("%s")' % \
-                    (unique, table.name,
-                     '_'.join(index.columns), table.name,
-                     '","'.join(index.columns))
+            yield 'CREATE %s INDEX %s ON %s (%s)' % \
+                  (unique,
+                   _quote('%s_%s_idx' % (table.name, '_'.join(index.columns))),
+                   _quote(table.name),
+                   ','.join(_quote(col) for col in index.columns))
 
     def alter_column_types(self, table, columns):
         """Yield SQL statements altering the type of one or more columns of
@@ -150,9 +156,10 @@ class PostgreSQLConnector(Component):
             if to != _type_map.get(from_, from_):
                 alterations.append((name, to))
         if alterations:
-            yield "ALTER TABLE %s %s" % (table,
-                ', '.join("ALTER COLUMN %s TYPE %s" % each
-                          for each in alterations))
+            yield 'ALTER TABLE %s %s' % \
+                  (_quote(table),
+                   ', '.join('ALTER COLUMN %s TYPE %s' % (_quote(name), type_)
+                             for name, type_ in alterations))
 
     def backup(self, dest_file):
         from subprocess import Popen, PIPE
@@ -293,7 +300,7 @@ class PostgreSQLConnection(ConnectionWrapper):
 
     def quote(self, identifier):
         """Return the quoted identifier."""
-        return '"%s"' % identifier.replace('"', '""')
+        return _quote(identifier)
 
     def update_sequence(self, cursor, table, column='id'):
         cursor.execute("SELECT SETVAL(%%s, (SELECT MAX(%s) FROM %s))"
