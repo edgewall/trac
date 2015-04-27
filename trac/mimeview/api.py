@@ -68,7 +68,8 @@ from genshi.builder import Fragment, tag
 from genshi.input import HTMLParser
 
 from trac.config import IntOption, ListOption, Option
-from trac.core import *
+from trac.core import Component, ExtensionPoint, Interface, TracError, \
+                      implements
 from trac.resource import Resource
 from trac.util import Ranges, content_disposition
 from trac.util.text import exception_to_unicode, to_utf8, to_unicode
@@ -591,7 +592,10 @@ class IContentConverter(Interface):
     def convert_content(req, mimetype, content, key):
         """Convert the given content from mimetype to the output MIME type
         represented by key. Returns a tuple in the form (content,
-        output_mime_type) or None if conversion is not possible."""
+        output_mime_type) or None if conversion is not possible.
+
+        content must be a `str` instance or an iterable instance which
+        iterates `str` instances."""
 
 
 class Content(object):
@@ -673,7 +677,7 @@ class Mimeview(Component):
         return converters
 
     def convert_content(self, req, mimetype, content, key, filename=None,
-                        url=None):
+                        url=None, iterable=False):
         """Convert the given content to the target MIME type represented by
         `key`, which can be either a MIME type or a key. Returns a tuple of
         (content, output_mime_type, extension)."""
@@ -704,7 +708,14 @@ class Mimeview(Component):
                 converter in candidates:
             output = converter.convert_content(req, mimetype, content, ck)
             if output:
-                return output[0], output[1], ext
+                content, content_type = output
+                if iterable:
+                    if isinstance(content, basestring):
+                        content = (content,)
+                else:
+                    if not isinstance(content, basestring):
+                        content = ''.join(content)
+                return content, content_type, ext
         raise TracError(
             _("No available MIME conversions from %(old)s to %(new)s",
               old=mimetype, new=key))
@@ -1025,14 +1036,28 @@ class Mimeview(Component):
         """Helper method for converting `content` and sending it directly.
 
         `selector` can be either a key or a MIME Type."""
+        from trac.web.chrome import Chrome
         from trac.web.api import RequestDone
-        content, output_type, ext = self.convert_content(req, in_type,
-                                                         content, selector)
-        if isinstance(content, unicode):
-            content = content.encode('utf-8')
+        iterable = Chrome(self.env).use_chunked_encoding
+        content, output_type, ext = self.convert_content(req, in_type, content,
+                                                         selector,
+                                                         iterable=iterable)
+        if iterable:
+            def encoder(content):
+                for chunk in content:
+                    if isinstance(chunk, unicode):
+                        chunk = chunk.encode('utf-8')
+                    yield chunk
+            content = encoder(content)
+            length = None
+        else:
+            if isinstance(content, unicode):
+                content = content.encode('utf-8')
+            length = len(content)
         req.send_response(200)
         req.send_header('Content-Type', output_type)
-        req.send_header('Content-Length', len(content))
+        if length is not None:
+            req.send_header('Content-Length', length)
         if filename:
             req.send_header('Content-Disposition',
                             content_disposition('attachment',

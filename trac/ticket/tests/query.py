@@ -11,6 +11,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from trac.mimeview.api import Mimeview
 from trac.test import Mock, EnvironmentStub, MockPerm, locale_en
 from trac.ticket.model import Ticket
 from trac.ticket.query import Query, QueryModule, TicketQueryMacro
@@ -573,14 +574,14 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         tickets = query.execute(self.req)
 
     def test_csv_escape(self):
-        query = Mock(get_columns=lambda: ['col1'],
+        query = Mock(get_columns=lambda: ['id', 'col1'],
                      execute=lambda r: [{'id': 1,
                                          'col1': 'value, needs escaped'}],
                      time_fields=['time', 'changetime'])
-        content, mimetype = QueryModule(self.env).export_csv(
-                                Mock(href=self.env.href, perm=MockPerm()),
-                                query)
-        self.assertEqual('\xef\xbb\xbfcol1\r\n"value, needs escaped"\r\n',
+        req = Mock(href=self.env.href, perm=MockPerm())
+        content, mimetype, ext = Mimeview(self.env).convert_content(
+            req, 'trac.ticket.Query', query, 'csv')
+        self.assertEqual('\xef\xbb\xbfid,col1\r\n1,"value, needs escaped"\r\n',
                          content)
 
     def test_csv_obfuscation(self):
@@ -590,22 +591,24 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
                 return action != 'EMAIL_VIEW'
             __contains__ = has_permission
 
-        query = Mock(get_columns=lambda: ['owner', 'reporter', 'cc'],
+        query = Mock(get_columns=lambda: ['id', 'owner', 'reporter', 'cc'],
                      execute=lambda r: [{'id': 1,
                                          'owner': 'joe@example.org',
                                          'reporter': 'foo@example.org',
                                          'cc': 'cc1@example.org, cc2'}],
                      time_fields=['time', 'changetime'])
         req = Mock(href=self.env.href, perm=NoEmailView())
-        content, mimetype = QueryModule(self.env).export_csv(req, query)
-        self.assertEqual(u'\uFEFFowner,reporter,cc\r\n'
-                         u'joe@…,foo@…,"cc1@…, cc2"\r\n',
+        content, mimetype, ext = Mimeview(self.env).convert_content(
+            req, 'trac.ticket.Query', query, 'csv')
+        self.assertEqual(u'\uFEFFid,owner,reporter,cc\r\n'
+                         u'1,joe@…,foo@…,"cc1@…, cc2"\r\n',
                          content.decode('utf-8'))
         req = Mock(href=self.env.href, perm=MockPerm())
-        content, mimetype = QueryModule(self.env).export_csv(req, query)
+        content, mimetype, ext = Mimeview(self.env).convert_content(
+            req, 'trac.ticket.Query', query, 'csv')
         self.assertEqual(
-            u'\uFEFFowner,reporter,cc\r\n'
-            u'joe@example.org,foo@example.org,"cc1@example.org, cc2"\r\n',
+            u'\uFEFFid,owner,reporter,cc\r\n'
+            u'1,joe@example.org,foo@example.org,"cc1@example.org, cc2"\r\n',
             content.decode('utf-8'))
 
     def test_template_data(self):

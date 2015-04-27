@@ -535,7 +535,8 @@ class Request(object):
         self.send_header('Cache-Control', 'must-revalidate')
         self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
         self.send_header('Content-Type', content_type + ';charset=utf-8')
-        self.send_header('Content-Length', len(content))
+        if isinstance(content, basestring):
+            self.send_header('Content-Length', len(content))
         self.end_headers()
 
         if self.method != 'HEAD':
@@ -646,12 +647,15 @@ class Request(object):
         data = fileobj.read(size)
         return data
 
+    CHUNK_SIZE = 4096
+
     def write(self, data):
         """Write the given data to the response body.
 
-        *data* **must** be a `str` string, encoded with the charset
-        which has been specified in the ``'Content-Type'`` header
-        or UTF-8 otherwise.
+        *data* **must** be a `str` string or an iterable instance
+        which iterates `str` strings, encoded with the charset which
+        has been specified in the ``'Content-Type'`` header or UTF-8
+        otherwise.
 
         Note that when the ``'Content-Length'`` header is specified,
         its value either corresponds to the length of *data*, or, if
@@ -660,10 +664,26 @@ class Request(object):
         """
         if not self._write:
             self.end_headers()
-        if isinstance(data, unicode):
-            raise ValueError("Can't send unicode content")
         try:
-            self._write(data)
+            chunk_size = self.CHUNK_SIZE
+            bufsize = 0
+            buf = []
+            buf_append = buf.append
+            if isinstance(data, basestring):
+                data = [data]
+            for chunk in data:
+                if isinstance(chunk, unicode):
+                    raise ValueError("Can't send unicode content")
+                if not chunk:
+                    continue
+                bufsize += len(chunk)
+                buf_append(chunk)
+                if bufsize >= chunk_size:
+                    self._write(''.join(buf))
+                    bufsize = 0
+                    buf[:] = ()
+            if bufsize > 0:
+                self._write(''.join(buf))
         except (IOError, socket.error), e:
             if e.args[0] in (errno.EPIPE, errno.ECONNRESET, 10053, 10054):
                 raise RequestDone

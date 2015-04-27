@@ -17,12 +17,12 @@
 
 from __future__ import with_statement
 
-import csv
+from cStringIO import StringIO
+from datetime import datetime, timedelta
 from itertools import groupby
 from math import ceil
-from datetime import datetime, timedelta
+import csv
 import re
-from StringIO import StringIO
 
 from genshi.builder import tag
 
@@ -865,12 +865,12 @@ class QueryModule(Component):
 
     def convert_content(self, req, mimetype, query, key):
         if key == 'rss':
-            return self.export_rss(req, query)
+            return self._export_rss(req, query)
         elif key == 'csv':
-            return self.export_csv(req, query, mimetype='text/csv')
+            return self._export_csv(req, query, mimetype='text/csv')
         elif key == 'tab':
-            return self.export_csv(req, query, '\t',
-                                   mimetype='text/tab-separated-values')
+            return self._export_csv(req, query, '\t',
+                                    mimetype='text/tab-separated-values')
 
     # INavigationContributor methods
 
@@ -1154,31 +1154,57 @@ class QueryModule(Component):
         return 'query.html', data, None
 
     def export_csv(self, req, query, sep=',', mimetype='text/plain'):
-        content = StringIO()
-        content.write('\xef\xbb\xbf')   # BOM
-        cols = query.get_columns()
-        writer = csv.writer(content, delimiter=sep, quoting=csv.QUOTE_MINIMAL)
-        writer.writerow([unicode(c).encode('utf-8') for c in cols])
+        """:deprecated: since 1.0.6, use `_export_csv` instead. Will be
+                        removed in 1.3.1.
+        """
+        content, content_type = self._export_csv(req, query, sep, mimetype)
+        return ''.join(content), content_type
 
-        context = web_context(req)
-        results = query.execute(req)
-        for result in results:
-            ticket = Resource('ticket', result['id'])
-            if 'TICKET_VIEW' in req.perm(ticket):
-                values = []
-                for col in cols:
-                    value = result[col]
-                    if col in ('cc', 'owner', 'reporter'):
-                        value = Chrome(self.env).format_emails(
-                                    context.child(ticket), value)
-                    elif col in query.time_fields:
-                        value = format_datetime(value, '%Y-%m-%d %H:%M:%S',
-                                                tzinfo=req.tz)
-                    values.append(unicode(value).encode('utf-8'))
-                writer.writerow(values)
-        return (content.getvalue(), '%s;charset=utf-8' % mimetype)
+    def _export_csv(self, req, query, sep=',', mimetype='text/plain'):
+        def iterate():
+            out = StringIO()
+            writer = csv.writer(out, delimiter=sep, quoting=csv.QUOTE_MINIMAL)
+
+            def writerow(values):
+                writer.writerow([unicode(value).encode('utf-8')
+                                 for value in values])
+                rv = out.getvalue()
+                out.truncate(0)
+                return rv
+
+            yield '\xef\xbb\xbf'  # BOM
+
+            cols = query.get_columns()
+            yield writerow(cols)
+
+            chrome = Chrome(self.env)
+            context = web_context(req)
+            results = query.execute(req)
+            for result in results:
+                ticket = Resource('ticket', result['id'])
+                if 'TICKET_VIEW' in req.perm(ticket):
+                    values = []
+                    for col in cols:
+                        value = result[col]
+                        if col in ('cc', 'owner', 'reporter'):
+                            value = chrome.format_emails(context.child(ticket),
+                                                         value)
+                        elif col in query.time_fields:
+                            value = format_datetime(value, '%Y-%m-%d %H:%M:%S',
+                                                    tzinfo=req.tz)
+                        values.append(value)
+                    yield writerow(values)
+
+        return iterate(), '%s;charset=utf-8' % mimetype
 
     def export_rss(self, req, query):
+        """:deprecated: since 1.0.6, use `_export_rss` instead. Will be
+                        removed in 1.3.1.
+        """
+        content, content_type = self._export_rss(req, query)
+        return ''.join(content), content_type
+
+    def _export_rss(self, req, query):
         context = web_context(req, 'query', absurls=True)
         query_href = query.get_href(context.href)
         if 'description' not in query.rows:
@@ -1190,7 +1216,8 @@ class QueryModule(Component):
             'query_href': query_href
         }
         output = Chrome(self.env).render_template(req, 'query.rss', data,
-                                                  'application/rss+xml')
+                                                  'application/rss+xml',
+                                                  iterable=True)
         return output, 'application/rss+xml'
 
     # IWikiSyntaxProvider methods

@@ -555,6 +555,11 @@ class Chrome(Component):
         format. (''since 1.0'')
         """)
 
+    use_chunked_encoding = BoolOption('trac', 'use_chunked_encoding', 'false',
+        """If enabled, send contents as chunked encoding in HTTP/1.1.
+        Otherwise, send contents with `Content-Length` header after entire of
+        the contents are rendered. (''since 1.0.6'')""")
+
     templates = None
 
     # DocType for 'text/html' output
@@ -1023,7 +1028,7 @@ class Chrome(Component):
         return self.templates.load(filename, cls=cls)
 
     def render_template(self, req, filename, data, content_type=None,
-                        fragment=False):
+                        fragment=False, iterable=False):
         """Render the `filename` using the `data` for the context.
 
         The `content_type` argument is used to choose the kind of template
@@ -1034,6 +1039,9 @@ class Chrome(Component):
 
         When `fragment` is specified, the (filtered) Genshi stream is
         returned.
+
+        When `iterable` is specified, the content as an iterable instance
+        which is generated from filtered Genshi stream is returned.
         """
         if content_type is None:
             content_type = 'text/html'
@@ -1090,6 +1098,9 @@ class Chrome(Component):
             'late_script_data': req.chrome['script_data'],
         })
 
+        if iterable:
+            return self.iterable_content(stream, method, doctype=doctype)
+
         try:
             buffer = StringIO()
             stream.render(method, doctype=doctype, out=buffer,
@@ -1143,6 +1154,33 @@ class Chrome(Component):
                 'shared-htdocs': shared_htdocs,
             }
         return files
+
+    def iterable_content(self, stream, method, **kwargs):
+        """Generate an iterable object which iterates `str` instances
+        from the given stream instance.
+
+        :param method: the serialization method; can be either "xml",
+                       "xhtml", "html", "text", or a custom serializer
+                       class
+        """
+        try:
+            if method == 'text':
+                for chunk in stream.serialize(method, **kwargs):
+                    yield chunk.encode('utf-8')
+            else:
+                for chunk in stream.serialize(method, **kwargs):
+                    yield chunk.encode('utf-8') \
+                               .translate(_translate_nop,
+                                          _invalid_control_chars)
+        except Exception, e:
+            pos = self._stream_location(stream)
+            if pos:
+                location = "'%s', line %s, char %s" % pos
+            else:
+                location = '%s (unknown template location)' % filename
+            self.log.error('Genshi %s error while rendering template %s%s',
+                           e.__class__.__name__, location,
+                           exception_to_unicode(e, traceback=True))
 
     # E-mail formatting utilities
 

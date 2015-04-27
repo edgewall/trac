@@ -25,7 +25,6 @@ from itertools import groupby
 import os
 import posixpath
 import re
-from StringIO import StringIO
 
 from genshi.builder import tag
 
@@ -667,24 +666,40 @@ class ChangesetModule(Component):
                      'longcol': 'Revision', 'shortcol': 'r'})
 
         if xhr: # render and return the content only
-            stream = Chrome(self.env).render_template(req, 'changeset.html',
-                                                      data, fragment=True)
-            content = stream.select('//div[@id="content"]')
-            str_content = content.render('xhtml', encoding='utf-8')
-            req.send_header('Content-Length', len(str_content))
-            req.end_headers()
-            req.write(str_content)
-            raise RequestDone
+            chrome = Chrome(self.env)
+            stream = chrome.render_template(req, 'changeset.html', data,
+                                            fragment=True)
+            stream = stream.select('//div[@id="content"]')
+            if chrome.use_chunked_encoding:
+                output = chrome.iterable_content(stream, 'xhtml')
+            else:
+                output = stream.render('xhtml', encoding='utf-8')
+            req.send(output)
 
         return data
 
     def _render_diff(self, req, filename, repos, data):
         """Raw Unified Diff version"""
+
+        output = (line.encode('utf-8') if isinstance(line, unicode) else line
+                  for line in self._iter_diff_lines(req, repos, data))
+        if Chrome(self.env).use_chunked_encoding:
+            length = None
+        else:
+            output = ''.join(output)
+            length = len(output)
+
         req.send_response(200)
         req.send_header('Content-Type', 'text/x-patch;charset=utf-8')
         req.send_header('Content-Disposition',
                         content_disposition('attachment', filename + '.diff'))
-        buf = StringIO()
+        if length is not None:
+            req.send_header('Content-Length', length)
+        req.end_headers()
+        req.write(output)
+        raise RequestDone
+
+    def _iter_diff_lines(self, req, repos, data):
         mimeview = Mimeview(self.env)
 
         for old_node, new_node, kind, change in repos.get_changes(
@@ -738,22 +753,16 @@ class ChangesetModule(Component):
                 ignore_space = options.get('ignorewhitespace')
                 if not old_node_info[0]:
                     old_node_info = new_node_info # support for 'A'dd changes
-                buf.write('Index: ' + new_path + CRLF)
-                buf.write('=' * 67 + CRLF)
-                buf.write('--- %s\t(revision %s)' % old_node_info + CRLF)
-                buf.write('+++ %s\t(revision %s)' % new_node_info + CRLF)
+                yield 'Index: ' + new_path + CRLF
+                yield '=' * 67 + CRLF
+                yield '--- %s\t(revision %s)' % old_node_info + CRLF
+                yield '+++ %s\t(revision %s)' % new_node_info + CRLF
                 for line in unified_diff(old_content.splitlines(),
                                          new_content.splitlines(), context,
                                          ignore_blank_lines=ignore_blank_lines,
                                          ignore_case=ignore_case,
                                          ignore_space_changes=ignore_space):
-                    buf.write(line + CRLF)
-
-        diff_str = buf.getvalue().encode('utf-8')
-        req.send_header('Content-Length', len(diff_str))
-        req.end_headers()
-        req.write(diff_str)
-        raise RequestDone
+                    yield line + CRLF
 
     def _zip_iter_nodes(self, req, repos, data, root_node):
         """Node iterator yielding all the added and/or modified files."""

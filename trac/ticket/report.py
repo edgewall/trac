@@ -52,7 +52,7 @@ def cell_value(v):
     >>> (cell_value(None), cell_value(0), cell_value(1), cell_value('v'))
     ('', '0', u'1', u'v')
     """
-    return '0' if v is 0 else unicode(v) if v else ''
+    return '0' if v == 0 else unicode(v) if v else ''
 
 
 _sql_re = re.compile(r'''
@@ -862,23 +862,37 @@ class ReportModule(Component):
             'modified': iso_datetime,
         }
 
-        converters = [col_conversions.get(c.strip('_'), cell_value)
-                      for c in cols]
+        def iterate():
+            from cStringIO import StringIO
+            out = StringIO()
+            writer = csv.writer(out, delimiter=sep, quoting=csv.QUOTE_MINIMAL)
 
-        out = StringIO()
-        out.write('\xef\xbb\xbf')       # BOM
-        writer = csv.writer(out, delimiter=sep)
-        writer.writerow([unicode(c).encode('utf-8') for c in cols
-                         if c not in self._html_cols])
-        for row in rows:
-            writer.writerow([converters[i](cell).encode('utf-8')
-                             for i, cell in enumerate(row)
-                             if cols[i] not in self._html_cols])
-        data = out.getvalue()
+            def writerow(values):
+                writer.writerow([value.encode('utf-8') for value in values])
+                rv = out.getvalue()
+                out.truncate(0)
+                return rv
+
+            converters = [col_conversions.get(c.strip('_'), cell_value)
+                          for c in cols]
+            yield '\xef\xbb\xbf'  # BOM
+            yield writerow(c for c in cols if c not in self._html_cols)
+            for row in rows:
+                yield writerow(converters[i](cell)
+                               for i, cell in enumerate(row)
+                               if cols[i] not in self._html_cols)
+
+        data = iterate()
+        if Chrome(self.env).use_chunked_encoding:
+            length = None
+        else:
+            data = ''.join(data)
+            length = len(data)
 
         req.send_response(200)
         req.send_header('Content-Type', mimetype + ';charset=utf-8')
-        req.send_header('Content-Length', len(data))
+        if length is not None:
+            req.send_header('Content-Length', length)
         if filename:
             req.send_header('Content-Disposition',
                             content_disposition('attachment', filename))
