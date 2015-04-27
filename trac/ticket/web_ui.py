@@ -143,7 +143,7 @@ class TicketModule(Component):
             return self.export_csv(req, ticket, sep='\t',
                                    mimetype='text/tab-separated-values')
         elif key == 'rss':
-            return self.export_rss(req, ticket)
+            return self._export_rss(req, ticket)
 
     # INavigationContributor methods
 
@@ -1202,6 +1202,13 @@ class TicketModule(Component):
         return (content.getvalue(), '%s;charset=utf-8' % mimetype)
 
     def export_rss(self, req, ticket):
+        """:deprecated: since 1.0.6, use `_export_rss` instead. Will be
+                        removed in 1.3.1.
+        """
+        content, content_type = self._export_rss(req, ticket)
+        return ''.join(content), content_type
+
+    def _export_rss(self, req, ticket):
         changes = []
         change_summary = {}
 
@@ -1239,7 +1246,8 @@ class TicketModule(Component):
         data = self._prepare_data(req, ticket, absurls=True)
         data['changes'] = changes
         output = Chrome(self.env).render_template(req, 'ticket.rss', data,
-                                                  'application/rss+xml')
+                                                  'application/rss+xml',
+                                                  iterable=True)
         return output, 'application/rss+xml'
 
     # Ticket validation and changes

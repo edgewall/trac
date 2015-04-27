@@ -245,9 +245,9 @@ class RequestDispatcher(Component):
                         pprint(data, out)
                         req.send(out.getvalue(), 'text/plain')
 
-                    output = chrome.render_template(req, template, data,
-                                                    content_type,
-                                                    method=method)
+                    output = chrome.render_template(
+                            req, template, data, content_type, method=method,
+                            iterable=chrome.use_chunked_encoding)
                     req.send(output, content_type or 'text/html')
                 else:
                     self._post_process_request(req)

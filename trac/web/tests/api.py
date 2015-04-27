@@ -180,6 +180,20 @@ class RequestTestCase(unittest.TestCase):
         self.assertEqual('http://example.com/trac/test',
                          headers_sent['Location'])
 
+    def test_write_iterable(self):
+        buf = StringIO()
+        def write(data):
+            buf.write(data)
+        def start_response(status, headers):
+            return write
+        environ = self._make_environ(method='GET')
+
+        buf = StringIO()
+        req = Request(environ, start_response)
+        req.send_header('Content-Type', 'text/plain;charset=utf-8')
+        req.write(('Foo', 'bar', 'baz'))
+        self.assertEqual('Foobarbaz', buf.getvalue())
+
     def test_write_unicode(self):
         buf = StringIO()
         def write(data):
@@ -193,6 +207,32 @@ class RequestTestCase(unittest.TestCase):
         req.send_header('Content-Length', 0)
         # anyway we're not supposed to send unicode, so we get a ValueError
         self.assertRaises(ValueError, req.write, u'Föö')
+        self.assertRaises(ValueError, req.write, ('F', u'öo'))
+
+    def test_send_iterable(self):
+        baton = {'content': StringIO(), 'status': None, 'headers': None}
+        def write(data):
+            baton['content'].write(data)
+        def start_response(status, headers):
+            baton['status'] = status
+            baton['headers'] = headers
+            return write
+        environ = self._make_environ(method='GET')
+
+        def iterable():
+            yield 'line1,'
+            yield ''
+            yield 'line2,'
+            yield 'line3\n'
+
+        req = Request(environ, start_response)
+        self.assertRaises(RequestDone, req.send, iterable())
+        self.assertEqual('200 Ok', baton['status'])
+        self.assertEqual([('Cache-Control', 'must-revalidate'),
+                          ('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT'),
+                          ('Content-Type', 'text/html;charset=utf-8')],
+                         baton['headers'])
+        self.assertEqual('line1,line2,line3\n', baton['content'].getvalue())
 
     def test_invalid_cookies(self):
         environ = self._make_environ(HTTP_COOKIE='bad:key=value;')
