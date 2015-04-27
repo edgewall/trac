@@ -1,5 +1,5 @@
 # Italian translations for Trac.
-# Copyright (C) 2014 Edgewall Software
+# Copyright (C) 2015 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 #
 # Translators:
@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
 "POT-Creation-Date: 2015-03-15 11:28+0000\n"
-"PO-Revision-Date: 2015-03-08 11:59+0100\n"
+"PO-Revision-Date: 2015-04-27 12:09+0200\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
 "Language-Team: Italian "
 "(http://www.transifex.com/projects/p/trac/language/it/)\n"
