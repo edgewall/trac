@@ -66,8 +66,7 @@ class AdminModule(Component):
         # admin panel is available
         panels, providers = self._get_panels(req)
         if panels:
-            yield 'mainnav', 'admin', tag.a(_("Admin"), href=req.href.admin(),
-                                            title=_("Administration"))
+            yield 'mainnav', 'admin', tag.a(_("Admin"), href=req.href.admin())
 
     # IRequestHandler methods
 
