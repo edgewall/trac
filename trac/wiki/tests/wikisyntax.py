@@ -658,6 +658,32 @@ MissingFirstLevel/MissingPage
 """ # "
 
 
+SAFE_INTERWIKI_TESTS = u"""
+============================== InterWiki with safe_schemes
+This is the original MeatBall:InterMapTxt wiki page.
+
+Checkout the [tsvn:http://svn.edgewall.com/repos/trac Trac Repository].
+
+complex link complex:a:test with positional arguments.
+
+js:"alert(1)" javasc:"ript:alert(1)"
+------------------------------
+<p>
+This is the original <a class="ext-link" href="http://www.usemod.com/cgi-bin/mb.pl?InterMapTxt" title="InterMapTxt in MeatBall..."><span class="icon"></span>MeatBall:InterMapTxt</a> wiki page.
+</p>
+<p>
+Checkout the <a class="ext-link" href="tsvn:http://svn.edgewall.com/repos/trac" title="http://svn.edgewall.com/repos/trac in tsvn"><span class="icon"></span>Trac Repository</a>.
+</p>
+<p>
+complex link <a class="ext-link" href="http://server/a/page/test?format=txt" title="resource test in a"><span class="icon"></span>complex:a:test</a> with positional arguments.
+</p>
+<p>
+js:&#34;alert(1)&#34; javasc:&#34;ript:alert(1)&#34;
+</p>
+------------------------------
+""" # "
+
+
 def wiki_setup(tc):
     tc.env.config.set('wiki', 'render_unsafe_content', True) # for #9712
     now = datetime.now(utc)
@@ -691,6 +717,8 @@ MeatBall 	http://www.usemod.com/cgi-bin/mb.pl? # $1 in MeatBall...
 tsvn            tsvn:
 complex         http://server/$1/page/$2?format=txt  # resource $2 in $1
 over        http://unused/? # Overridden in trac.ini
+js              javascript:
+javasc          javasc
 }}}
 ----
 {{{
@@ -735,6 +763,13 @@ def wiki_setup_split(tc):
     wiki_setup(tc)
 
 
+def wiki_setup_safe_interwiki(tc):
+    wiki_setup(tc)
+    tc.env.config.set('wiki', 'render_unsafe_content', 'false')
+    tc.env.config.set('wiki', 'safe_schemes',
+                      'file,ftp,git,irc,http,https,ssh,svn,tsvn')
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(TEST_CASES, wiki_setup, __file__,
@@ -749,6 +784,9 @@ def suite():
                                   wiki_teardown,
                                   context=('wiki',
                                       'FirstLevel/SecondLevel/ThirdLevel')))
+    suite.addTest(formatter.suite(SAFE_INTERWIKI_TESTS,
+                                  wiki_setup_safe_interwiki, __file__,
+                                  wiki_teardown))
     return suite
 
 if __name__ == '__main__':
