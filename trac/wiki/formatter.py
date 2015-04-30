@@ -677,7 +677,8 @@ class Formatter(object):
         interwiki = InterWikiMap(self.env)
         if ns in interwiki:
             url, title = interwiki.url(ns, target)
-            return self._make_ext_link(url, label, title)
+            if url:
+                return self._make_ext_link(url, label, title)
 
     def _make_ext_link(self, url, text, title=''):
         local_url = self.env.project_url or \

@@ -21,7 +21,7 @@ from genshi.builder import tag
 from trac.cache import cached
 from trac.core import *
 from trac.util.translation import _
-from trac.wiki.api import IWikiChangeListener, IWikiMacroProvider
+from trac.wiki.api import IWikiChangeListener, IWikiMacroProvider, WikiSystem
 from trac.wiki.parser import WikiParser
 from trac.wiki.formatter import split_url_into_path_query_fragment
 
@@ -35,6 +35,7 @@ class InterWikiMap(Component):
     _interwiki_re = re.compile(r"(%s)[ \t]+([^ \t]+)(?:[ \t]+#(.*))?" %
                                WikiParser.LINK_SCHEME, re.UNICODE)
     _argspec_re = re.compile(r"\$\d")
+    _safe_schemes_set = None
 
     # The component itself behaves as a read-only map
 
@@ -83,6 +84,8 @@ class InterWikiMap(Component):
             nquery = nquery or query
         nfragment = fragment or nfragment # user provided takes precedence
         expanded_url = ntarget + nquery + nfragment
+        if not self._is_safe_url(expanded_url):
+            expanded_url = ''
         expanded_title = self._expand(title, args)
         if expanded_title == title:
             expanded_title = _("%(target)s in %(name)s",
@@ -155,3 +158,16 @@ class InterWikiMap(Component):
                                               href=w['url'])))
                           for w in interwikis ],
                          class_="wiki interwiki")
+
+    # Internal methods
+
+    def _is_safe_url(self, url):
+        return WikiSystem(self.env).render_unsafe_content or \
+               ':' not in url or \
+               url.split(':', 1)[0] in self._safe_schemes
+
+    @property
+    def _safe_schemes(self):
+        if self._safe_schemes_set is None:
+            self._safe_schemes_set = set(WikiSystem(self.env).safe_schemes)
+        return self._safe_schemes_set
