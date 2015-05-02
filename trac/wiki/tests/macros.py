@@ -44,6 +44,8 @@ def image_setup(tc):
     attachment.description = "image in page:fr"
     attachment.insert('img.png', StringIO(''), 0, 2)
     tc.env.config.set('interwiki', 'shields', 'https://img.shields.io/')
+    tc.env.config.set('interwiki', 'travis',
+                      'https://travis-ci.org/$1?branch=$2')
 
 def image_teardown(tc):
     shutil.rmtree(os.path.join(tc.env.path, 'files'))
@@ -162,10 +164,12 @@ IMAGE_MACRO_TEST_CASES = u"""
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" alt="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" title="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" />
 </p>
 ============================== InterWiki
-[[Image(shields:travis/edgewall/trac.svg)]]
+[[Image(shields:travis/edgewall/trac.svg, link=trac:source:/trunk)]]
+[[Image(travis:edgewall/trac.svg:1.0-stable, link=trac:source:/branches/1.0-stable)]]
 ------------------------------
 <p>
-<a style="padding:0; border:none" href="https://img.shields.io/travis/edgewall/trac.svg"><img src="https://img.shields.io/travis/edgewall/trac.svg" alt="travis/edgewall/trac.svg in shields" title="travis/edgewall/trac.svg in shields" /></a>
+<a style="padding:0; border:none" href="http://trac.edgewall.org/intertrac/source%3A/trunk"><img src="https://img.shields.io/travis/edgewall/trac.svg" alt="travis/edgewall/trac.svg in shields" title="travis/edgewall/trac.svg in shields" /></a>
+<a style="padding:0; border:none" href="http://trac.edgewall.org/intertrac/source%3A/branches/1.0-stable"><img src="https://travis-ci.org/edgewall/trac.svg?branch=1.0-stable" alt="edgewall/trac.svg:1.0-stable in travis" title="edgewall/trac.svg:1.0-stable in travis" /></a>
 </p>
 ============================== InterWiki, nolink
 [[Image(shields:pypi/dm/trac.svg, nolink)]]

@@ -606,11 +606,16 @@ class ImageMacro(WikiMacroBase):
         # parse filespec argument to get realm and id if contained.
         parts = [i.strip('''['"]''')
                  for i in self._split_filespec_re.split(filespec)[1::2]]
+        realm = parts[0] if parts else None
         url = raw_url = desc = None
         attachment = None
-        if parts and parts[0] in ('http', 'https', 'ftp', 'data'):  # absolute
+        interwikimap = InterWikiMap(self.env)
+        if realm in ('http', 'https', 'ftp', 'data'):  # absolute
             raw_url = url = filespec
             desc = url.rsplit('?')[0]
+        elif realm in interwikimap:
+            url, desc = interwikimap.url(realm, ':'.join(parts[1:]))
+            raw_url = url
         elif filespec.startswith('//'):       # server-relative
             raw_url = url = filespec[1:]
             desc = url.rsplit('?')[0]
@@ -634,7 +639,6 @@ class ImageMacro(WikiMacroBase):
                 attachment = Resource(realm, id).child('attachment', filename)
         elif len(parts) == 2:
             realm, filename = parts
-            interwikimap = InterWikiMap(self.env)
             if realm in browser_links:  # source:path
                 # TODO: use context here as well
                 rev = None
@@ -644,9 +648,6 @@ class ImageMacro(WikiMacroBase):
                 raw_url = formatter.href.browser(filename, rev=rev,
                                                  format='raw')
                 desc = filespec
-            elif realm in interwikimap:
-                url, desc = interwikimap.url(realm, filename)
-                raw_url = url
             else:  # #ticket:attachment or WikiPage:attachment
                 # FIXME: do something generic about shorthand forms...
                 realm = None
