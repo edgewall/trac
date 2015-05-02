@@ -192,6 +192,8 @@ def suite():
         trac.versioncontrol.tests.functionalSuite(suite)
         import trac.ticket.tests
         trac.ticket.tests.functionalSuite(suite)
+        import trac.mimeview.tests
+        trac.mimeview.tests.functionalSuite(suite)
         import trac.prefs.tests
         trac.prefs.tests.functionalSuite(suite)
         import trac.wiki.tests
