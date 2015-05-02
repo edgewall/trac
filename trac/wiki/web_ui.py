@@ -57,6 +57,11 @@ class WikiModule(Component):
     max_size = IntOption('wiki', 'max_size', 262144,
         """Maximum allowed wiki page size in characters.""")
 
+    default_edit_area_height = IntOption('wiki', 'default_edit_area_height',
+        20,
+        """Default height of the textarea on the wiki edit page.
+        (//Since 1.1.5//)""")
+
     PAGE_TEMPLATES_PREFIX = 'PageTemplates/'
     DEFAULT_PAGE_TEMPLATE = 'DefaultPage'
 
@@ -520,7 +525,7 @@ class WikiModule(Component):
             page.readonly = 'readonly' in req.args
 
         author = get_reporter_id(req, 'author')
-        defaults = {'editrows': '20'}
+        defaults = {'editrows': str(self.default_edit_area_height)}
         prefs = dict((key, req.session.get('wiki_%s' % key, defaults.get(key)))
                      for key in ('editrows', 'sidebyside'))
 
