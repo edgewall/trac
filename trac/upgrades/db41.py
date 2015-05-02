@@ -17,7 +17,7 @@ from trac.web.chrome import default_mainnav_order, default_metanav_order
 
 def do_upgrade(env, version, cursor):
     """Move [trac] mainnav and [trac] metanav to .order attributes
-    of the [ticket-custom] section.
+    of the [mainnav] and [metanav] sections.
     """
 
     config = env.config
