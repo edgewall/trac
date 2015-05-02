@@ -40,17 +40,25 @@ class Request(object):
             setattr(self, k, v)
 
 
+def clear_component_registry(tc):
+    from trac.core import ComponentMeta
+    tc._old_registry = ComponentMeta._registry
+    ComponentMeta._registry = {}
+
+
+def restore_component_registry(tc):
+    from trac.core import ComponentMeta
+    ComponentMeta._registry = tc._old_registry
+
+
 class ChromeTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        from trac.core import ComponentMeta
-        self._old_registry = ComponentMeta._registry
-        ComponentMeta._registry = {}
+        clear_component_registry(self)
 
     def tearDown(self):
-        from trac.core import ComponentMeta
-        ComponentMeta._registry = self._old_registry
+        restore_component_registry(self)
 
     def _get_navigation_item(self, items, name):
         for item in items:
@@ -301,50 +309,6 @@ class ChromeTestCase(unittest.TestCase):
         self.assertEqual({'name': 'test', 'label': 'Test', 'active': True},
                          nav['metanav'][0])
 
-    def test_nav_contributor_order(self):
-        class TestNavigationContributor1(Component):
-            implements(INavigationContributor)
-            def get_active_navigation_item(self, req):
-                return None
-            def get_navigation_items(self, req):
-                yield 'metanav', 'test1', 'Test 1'
-        class TestNavigationContributor2(Component):
-            implements(INavigationContributor)
-            def get_active_navigation_item(self, req):
-                return None
-            def get_navigation_items(self, req):
-                yield 'metanav', 'test2', 'Test 2'
-        req = Request(abs_href=Href('http://example.org/trac.cgi'),
-                      href=Href('/trac.cgi'), base_path='/trac.cgi',
-                      path_info='/',
-                      add_redirect_listener=lambda listener: None)
-        chrome = Chrome(self.env)
-
-        # Test with both items set in the order option
-        self.env.config.set('trac', 'metanav', 'test2, test1')
-        items = chrome.prepare_request(req)['nav']['metanav']
-        self.assertEqual('test2', items[0]['name'])
-        self.assertEqual('test1', items[1]['name'])
-
-        # Test with only test1 in the order options
-        self.env.config.set('trac', 'metanav', 'test1')
-        items = chrome.prepare_request(req)['nav']['metanav']
-        self.assertEqual('test1', items[0]['name'])
-        self.assertEqual('test2', items[1]['name'])
-
-        # Test with only test2 in the order options
-        self.env.config.set('trac', 'metanav', 'test2')
-        items = chrome.prepare_request(req)['nav']['metanav']
-        self.assertEqual('test2', items[0]['name'])
-        self.assertEqual('test1', items[1]['name'])
-
-        # Test with none in the order options (order corresponds to
-        # registration order)
-        self.env.config.set('trac', 'metanav', 'foo, bar')
-        items = chrome.prepare_request(req)['nav']['metanav']
-        self.assertEqual('test1', items[0]['name'])
-        self.assertEqual('test2', items[1]['name'])
-
     def test_add_jquery_ui_timezone_list_has_z(self):
         chrome = Chrome(self.env)
 
@@ -511,10 +475,71 @@ class ChromeTestCase2(unittest.TestCase):
         self.assertRaises(RequestDone, self.chrome.process_request, req)
 
 
+class NavigationOrderTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        clear_component_registry(self)
+        self.req = Request(abs_href=Href('http://example.org/trac.cgi'),
+                           href=Href('/trac.cgi'), base_path='/trac.cgi',
+                           path_info='/',
+                           add_redirect_listener=lambda listener: None)
+        self.chrome = Chrome(self.env)
+
+        class TestNavigationContributor1(Component):
+            implements(INavigationContributor)
+            def get_active_navigation_item(self, req):
+                return None
+            def get_navigation_items(self, req):
+                yield 'metanav', 'test1', 'Test 1'
+
+        class TestNavigationContributor2(Component):
+            implements(INavigationContributor)
+            def get_active_navigation_item(self, req):
+                return None
+            def get_navigation_items(self, req):
+                yield 'metanav', 'test2', 'Test 2'
+
+    def tearDown(self):
+        restore_component_registry(self)
+
+    def test_explicit_ordering(self):
+        """Ordering is explicitly specified."""
+        self.env.config.set('metanav', 'test1.order', 2)
+        self.env.config.set('metanav', 'test2.order', 1)
+        items = self.chrome.prepare_request(self.req)['nav']['metanav']
+        self.assertEqual('test2', items[0]['name'])
+        self.assertEqual('test1', items[1]['name'])
+
+    def test_partial_explicit_ordering_1(self):
+        """Ordering for one item is explicitly specified."""
+        self.env.config.set('metanav', 'test1.order', 1)
+        items = self.chrome.prepare_request(self.req)['nav']['metanav']
+        self.assertEqual('test1', items[0]['name'])
+        self.assertEqual('test2', items[1]['name'])
+
+    def test_partial_explicit_ordering_2(self):
+        """Ordering for one item is explicitly specified."""
+        self.env.config.set('metanav', 'test2.order', 1)
+        items = self.chrome.prepare_request(self.req)['nav']['metanav']
+        self.assertEqual('test2', items[0]['name'])
+        self.assertEqual('test1', items[1]['name'])
+
+    def test_implicit_ordering(self):
+        """When not specified, ordering is alphabetical."""
+        self.env.config.set('metanav', 'foo.order', 1)
+        self.env.config.set('metanav', 'bar.order', 2)
+
+        items = self.chrome.prepare_request(self.req)['nav']['metanav']
+        self.assertEqual('test1', items[0]['name'])
+        self.assertEqual('test2', items[1]['name'])
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ChromeTestCase))
     suite.addTest(unittest.makeSuite(ChromeTestCase2))
+    suite.addTest(unittest.makeSuite(NavigationOrderTestCase))
     return suite
 
 

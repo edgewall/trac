@@ -33,6 +33,7 @@ from trac.util.text import console_print, exception_to_unicode, printout, \
                            getpreferredencoding
 from trac.util.translation import _, ngettext, has_babel, cleandoc_
 from trac.versioncontrol.api import RepositoryManager
+from trac.web.chrome import default_mainnav_order, default_metanav_order
 from trac.wiki.admin import WikiAdmin
 from trac.wiki.macros import WikiMacroBase
 
@@ -446,6 +447,11 @@ in order to initialize and prepare the project database.
                 ('project', 'name', project_name),
                 ('trac', 'database', db_str),
             ]
+            def add_nav_order_options(section, default):
+                for i, name in enumerate(default, 1):
+                    options.append((section, name + '.order', float(i)))
+            add_nav_order_options('mainnav', default_mainnav_order)
+            add_nav_order_options('metanav', default_metanav_order)
             if repository_dir:
                 options.extend([
                     ('repositories', '.type', repository_type),

@@ -65,6 +65,10 @@ from trac.web.href import Href
 from trac.wiki import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to, format_to_html, format_to_oneliner
 
+default_mainnav_order = ('wiki', 'timeline', 'roadmap', 'browser',
+                         'tickets', 'newticket', 'search', 'admin')
+default_metanav_order = ('login', 'logout', 'prefs', 'help', 'about')
+
 
 class INavigationContributor(Interface):
     """Extension point interface for components that contribute items to the
@@ -475,16 +479,42 @@ class Chrome(Component):
 
         (''since 1.0'')""")
 
-    metanav_order = ListOption('trac', 'metanav',
-                               'login, logout, prefs, help, about', doc=
-        """Order of the items to display in the `metanav` navigation bar,
-           listed by IDs. See also TracNavigation.""")
+    mainnav = ConfigSection('mainnav', """Configures the main navigation bar,
+        which by default contains //Wiki//, //Timeline//, //Roadmap//,
+        //Browse Source//, //View Tickets//, //New Ticket//, //Search//  and
+        //Admin//.
 
-    mainnav_order = ListOption('trac', 'mainnav',
-                               'wiki, timeline, roadmap, browser, tickets, '
-                               'newticket, search', doc=
-        """Order of the items to display in the `mainnav` navigation bar,
-           listed by IDs. See also TracNavigation.""")
+        The `label`, `href`, and `order`  attributes can be specified. Entries
+        can be disabled by setting the value of the navigation item to
+        `disabled`.
+
+        The following example renames the link to WikiStart to //Home//,
+        links the //View Tickets// entry to a specific report and disables
+        the //Search// entry.
+        {{{#!ini
+        [mainnav]
+        wiki.label = Home
+        tickets.href = /report/24
+        search = disabled
+        }}}
+
+        See TracNavigation for more details.
+        """)
+
+    metanav = ConfigSection('metanav', """Configures the meta navigation
+        entries, which by default are //Login//, //Logout//, //Preferences//,
+        ''!Help/Guide'' and //About Trac//. The allowed attributes are the
+        same as for `[mainnav]`. Additionally, a special entry is supported -
+        `logout.redirect` is the page the user sees after hitting the logout
+        button. For example:
+
+        {{{#!ini
+        [metanav]
+        logout.redirect = wiki/Logout
+        }}}
+
+        See TracNavigation for more details.
+        """)
 
     logo_link = Option('header_logo', 'link', '',
         """URL to link to, from the header logo.""")
@@ -810,25 +840,18 @@ class Chrome(Component):
                                    '"%(name)s"', name=name))
 
         nav = {}
-        for category, items in [(k, v.items()) for k, v in allitems.items()]:
-            category_order = category + '_order'
-            if hasattr(self, category_order):
-                order = getattr(self, category_order)
-                def navcmp(x, y):
-                    if x[0] not in order:
-                        return int(y[0] in order)
-                    if y[0] not in order:
-                        return -int(x[0] in order)
-                    return cmp(order.index(x[0]), order.index(y[0]))
-                items.sort(navcmp)
-
+        for category, navitems in allitems.items():
+            sect = self.config[category]
+            order = dict((name, sect.getfloat(name + '.order', float('inf')))
+                         for name in navitems)
             nav[category] = []
-            for name, label in items:
+            for name, label in navitems.items():
                 nav[category].append({
                     'name': name,
                     'label': label,
                     'active': name == active
                 })
+            nav[category].sort(key=lambda e: (order[e['name']], e['name']))
 
         chrome['nav'] = nav
 
