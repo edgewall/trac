@@ -210,9 +210,19 @@ class ConfigurationTestCase(BaseTestCase):
         self.assertEqual('value', config.get('a', 'option', 'value'))
 
         class Foo(object):
-            option_a = Option('a', 'option', 'value')
+            str_option = Option('a', 'option', 'value')
+            none_option = Option('b', 'option', None)
+            int_option = IntOption('b', 'int_option', 0)
+            bool_option = BoolOption('b', 'bool_option', False)
+            float_option = FloatOption('b', 'float_option', 0.0)
+            list_option = ListOption('b', 'list_option', [])
 
         self.assertEqual('value', config.get('a', 'option'))
+        self.assertEqual('', config.get('b', 'option'))
+        self.assertEqual('0', config.get('b', 'int_option'))
+        self.assertEqual('disabled', config.get('b', 'bool_option'))
+        self.assertEqual('0.0', config.get('b', 'float_option'))
+        self.assertEqual('', config.get('b', 'list_option'))
 
     def test_default_bool(self):
         config = self._read()
@@ -747,11 +757,11 @@ class ConfigurationTestCase(BaseTestCase):
             option_false = (BoolOption)('a', 'false', False)
             option_list = (ListOption)('a', 'list', ['#cc0', 4.2, 42L, 0, None,
                                                      True, False, None],
-                                       sep='|')
+                                       sep='|', keep_empty=True)
             option_list = (ListOption)('a', 'list-seps',
                                        ['#cc0', 4.2, 42L, 0, None, True, False,
                                         None],
-                                       sep=(',', '|'))
+                                       sep=(',', '|'), keep_empty=True)
             option_choice = (ChoiceOption)('a', 'choice', [-42, 42])
 
         config = self._read()
@@ -783,7 +793,7 @@ class ConfigurationTestCase(BaseTestCase):
             option_list = (ListOption)(u'résumé', u'liśt',
                                        [u'#ccö', 4.2, 42L, 0, None, True,
                                         False, None],
-                                       sep='|')
+                                       sep='|', keep_empty=True)
             option_choice = (ChoiceOption)(u'résumé', u'chöicé', [-42, 42])
 
         config = self._read()
@@ -802,6 +812,41 @@ class ConfigurationTestCase(BaseTestCase):
             self.assertEqual('trüé = enabled\n',                     f.next())
             self.assertEqual('\n',                                   f.next())
             self.assertRaises(StopIteration, f.next)
+
+    def test_option_with_non_normal_default(self):
+        class Foo(object):
+            # enclose in parentheses to avoid messages extraction
+            option_int_0 = (IntOption)('a', 'int-0', 0)
+            option_float_0 = (FloatOption)('a', 'float-0', 0)
+            option_bool_1 = (BoolOption)('a', 'bool-1', '1')
+            option_bool_0 = (BoolOption)('a', 'bool-0', '0')
+            option_bool_yes = (BoolOption)('a', 'bool-yes', 'yes')
+            option_bool_no = (BoolOption)('a', 'bool-no', 'no')
+
+        expected = [
+            '# -*- coding: utf-8 -*-\n',
+            '\n',
+            '[a]\n',
+            'bool-0 = disabled\n',
+            'bool-1 = enabled\n',
+            'bool-no = disabled\n',
+            'bool-yes = enabled\n',
+            'float-0 = 0.0\n',
+            'int-0 = 0\n',
+            '\n',
+        ]
+        def readlines():
+            with open(self.filename, 'r') as f:
+                return f.readlines()
+
+        config = self._read()
+        config.set_defaults()
+        config.save()
+        self.assertEqual(expected, readlines())
+
+        config.set('a', 'bool-1', 'True')
+        config.save()
+        self.assertEqual(expected, readlines())
 
     def test_save_changes_mtime(self):
         """Test that each save operation changes the file modification time."""

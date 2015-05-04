@@ -21,6 +21,7 @@ import re
 
 from genshi.builder import tag
 
+from trac.config import get_configinfo
 from trac.core import *
 from trac.loader import get_plugin_info
 from trac.perm import IPermissionRequestor
@@ -75,6 +76,6 @@ class AboutModule(Component):
 
         if 'CONFIG_VIEW' in req.perm('config', 'ini'):
             # Collect config information
-            data['config'] = self.env.get_configinfo()
+            data['config'] = get_configinfo(self.env)
 
         return 'about.html', data, None

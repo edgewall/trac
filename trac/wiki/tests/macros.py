@@ -539,7 +539,7 @@ TRACINI_MACRO_TEST_CASES = u"""\
 <tr class="odd"><td><code>option2</code></td><td></td><td class="nodefault">(no default)</td></tr>\
 <tr class="even"><td><code>option3</code></td><td></td><td class="default"><code>0</code></td></tr>\
 <tr class="odd"><td><code>option4</code></td><td></td><td class="default"><code>disabled</code></td></tr>\
-<tr class="even"><td><code>option5</code></td><td></td><td class="default"><code></code></td></tr>\
+<tr class="even"><td><code>option5</code></td><td></td><td class="nodefault">(no default)</td></tr>\
 </tbody></table>\
 </div><p>
 </p>
@@ -552,7 +552,8 @@ def tracini_setup(tc):
         option_a1 = (Option)('section-42', 'option1', 'value', doc='')
         option_a2 = (Option)('section-42', 'option2', 'value', doc='blah')
         option_l1 = (ListOption)('section-list', 'option1',
-                                 [4.2, '42', 42, None, 0, True], sep='|')
+                                 [4.2, '42', 42, None, 0, True], sep='|',
+                                 keep_empty=True)
         option_d1 = (Option)('section-def', 'option1', None)
         option_d2 = (Option)('section-def', 'option2', '')
         option_d3 = (IntOption)('section-def', 'option3', 0)
