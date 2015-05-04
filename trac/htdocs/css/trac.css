@@ -490,7 +490,6 @@ h2 .trac-count, h3 .trac-count {
  position: relative;
  margin: 0 1em 1em;
 }
-* html #prefs { width: 26em } /* Set width only for IE */
 #prefs input, #prefs select { font-size: 9px; vertical-align: middle }
 #prefs fieldset {
  background: transparent;
