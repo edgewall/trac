@@ -62,7 +62,8 @@ class WikiParser(Component):
     XML_NAME = r"[\w:](?<!\d)[\w:.-]*?" # See http://www.w3.org/TR/REC-xml/#id
 
     PROCESSOR = r"(\s*)#\!([\w+-][\w+-/]*)"
-    PROCESSOR_PARAM = r'''(?P<proc_pname>\w+)=(?P<proc_pval>".*?"|'.*?'|\w+)'''
+    PROCESSOR_PARAM = r'''(?P<proc_pname>[-\w]+)''' \
+                      r'''=(?P<proc_pval>".*?"|'.*?'|[-\w]+)'''
 
     def _set_anchor(name, sep):
         return r'=#(?P<anchorname>%s)(?:%s(?P<anchorlabel>[^\]]*))?' % \
@@ -225,6 +226,9 @@ class WikiParser(Component):
         return wikitext
 
 
+_processor_pname_re = re.compile(r'[-\w]+$')
+
+
 def parse_processor_args(processor_args):
     """Parse a string containing parameter assignments,
     and return the corresponding dictionary.
@@ -237,6 +241,10 @@ def parse_processor_args(processor_args):
 
     >>> sorted(parse_processor_args('ab=c de -f gh="ij klmn"').items())
     [('ab', 'c'), ('de', True), ('f', False), ('gh', 'ij klmn')]
+
+    >>> args = 'data-name=foo-bar data-true -data-false'
+    >>> sorted(parse_processor_args(args).items())
+    [('data-false', False), ('data-name', 'foo-bar'), ('data-true', True)]
     """
     args = WikiParser._processor_param_re.split(processor_args)
     keys = [str(k) for k in args[1::3]] # used as keyword parameters
@@ -244,7 +252,7 @@ def parse_processor_args(processor_args):
               for v in args[2::3]]
     for flags in args[::3]:
         for flag in flags.strip().split():
-            if re.match(r'-?\w+$', flag):
+            if _processor_pname_re.match(flag):
                 if flag[0] == '-':
                     if len(flag) > 1:
                         keys.append(str(flag[1:]))

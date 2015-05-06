@@ -2705,3 +2705,21 @@ in paragraph'''''
 in paragraph</em></strong>
 </p>
 ------------------------------
+============================== Processor with attributes using hyphens (#12023)
+Begin.
+{{{
+#!div class=wiki accept-charset=utf-8
+A paragraph in div element.
+}}}
+End.
+------------------------------
+<p>
+Begin.
+</p>
+<div accept-charset="utf-8" class="wiki"><p>
+A paragraph in div element.
+</p>
+</div><p>
+End.
+</p>
+------------------------------
