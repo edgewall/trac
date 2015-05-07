@@ -13,11 +13,12 @@
 
 import unittest
 
-from . import mail
+from . import api, mail
 
 
 def suite():
     suite = unittest.TestSuite()
+    suite.addTest(api.suite())
     suite.addTest(mail.suite())
     return suite
 

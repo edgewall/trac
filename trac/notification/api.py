@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2014 Edgewall Software
+# Copyright (C) 2003-2015 Edgewall Software
 # Copyright (C) 2003-2005 Daniel Lundin <daniel@edgewall.com>
 # Copyright (C) 2005-2006 Emmanuel Blot <emmanuel.blot@free.fr>
 # Copyright (C) 2008 Stephen Hansen
@@ -22,15 +22,14 @@ from operator import itemgetter
 from trac.cache import cached
 from trac.config import (BoolOption, ConfigSection, ExtensionOption,
                          ListOption, Option)
-from trac.core import *
+from trac.core import Component, Interface, ExtensionPoint
 from trac.util import as_bool, to_list
-from trac.util.compat import set
 
 
 __all__ = ['IEmailAddressResolver', 'IEmailDecorator', 'IEmailSender',
            'INotificationDistributor', 'INotificationFormatter',
            'INotificationSubscriber', 'NotificationEvent',
-           'NotificationSystem', 'get_target_id']
+           'NotificationSystem', 'get_target_id', 'parse_subscriber_config']
 
 
 class INotificationDistributor(Interface):
@@ -160,35 +159,36 @@ def parse_subscriber_config(rawsubscriptions):
         'adverb': 'always',
         'format': 'text/plain',
     }
-    optional_attrs = {
-    }
+    optional_attrs = {}
     known_attrs = required_attrs.copy()
     known_attrs.update(optional_attrs)
 
     byname = defaultdict(dict)
     for option, value in rawsubscriptions:
-        parts = option.split('.')
+        parts = option.split('.', 1)
         name = parts[0]
         if len(parts) == 1:
-            byname[name]['name'] = name
-            byname[name]['class'] = value.strip()
+            byname[name].update({'name': name, 'class': value.strip()})
         else:
             attribute = parts[1]
-            if attribute not in known_attrs.keys or \
-                    isinstance(known_attrs[attribute], str):
-                byname[name][attribute] = value
-            elif isinstance(known_attrs[attribute], int):
-                byname[name][attribute] = int(value)
-            elif isinstance(known_attrs[attribute], bool):
-                byname[name][attribute] = as_bool(value)
-            elif isinstance(known_attrs[attribute], list):
-                byname[name][attribute] = to_list(value)
+            known = known_attrs.get(attribute)
+            if known is None or isinstance(known, basestring):
+                pass
+            elif isinstance(known, int):
+                value = int(value)
+            elif isinstance(known, bool):
+                value = as_bool(value)
+            elif isinstance(known, list):
+                value = to_list(value)
+            byname[name][attribute] = value
 
     byclass = defaultdict(list)
     for name, attributes in byname.items():
-        for key, val in required_attrs.items():
-            attributes.setdefault(key, val)
+        for key, value in required_attrs.items():
+            attributes.setdefault(key, value)
         byclass[attributes['class']].append(attributes)
+    for values in byclass.values():
+        values.sort(key=lambda value: (value['priority'], value['name']))
 
     return byclass
 
@@ -311,12 +311,12 @@ class NotificationSystem(Component):
         """The notifications subscriptions are controlled by plugins. All
         `INotificationSubscriber` components are in charge. These components
         may allow to be configured via this section in the `trac.ini` file.
-        
+
         See TracNotification for more details.
-        
+
         Available subscribers:
         [[SubscriberList]]
-        """) 
+        """)
 
     distributors = ExtensionPoint(INotificationDistributor)
     subscribers = ExtensionPoint(INotificationSubscriber)
@@ -341,7 +341,7 @@ class NotificationSystem(Component):
     def subscriber_defaults(self):
         rawsubscriptions = self.notification_subscriber_section.options()
         return parse_subscriber_config(rawsubscriptions)
-        
+
     def default_subscriptions(self, klass):
         for d in self.subscriber_defaults[klass]:
             yield (klass, d['distributor'], d['format'], d['priority'],
