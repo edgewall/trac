@@ -19,11 +19,10 @@
 from collections import defaultdict
 from operator import itemgetter
 
-from trac.cache import cached
 from trac.config import (BoolOption, ConfigSection, ExtensionOption,
                          ListOption, Option)
 from trac.core import Component, Interface, ExtensionPoint
-from trac.util import as_bool, to_list
+from trac.util import as_bool, lazy, to_list
 
 
 __all__ = ['IEmailAddressResolver', 'IEmailDecorator', 'IEmailSender',
@@ -337,7 +336,7 @@ class NotificationSystem(Component):
     def admit_domains(self):  # For backward compatibility
         return self.config.get('notification', 'admit_domains')
 
-    @cached
+    @lazy
     def subscriber_defaults(self):
         rawsubscriptions = self.notification_subscriber_section.options()
         return parse_subscriber_config(rawsubscriptions)
@@ -381,7 +380,6 @@ class NotificationSystem(Component):
 
         :return: a list of (sid, authenticated, address, transport, format)
         """
-        del self.subscriber_defaults
         subscriptions = []
         for subscriber in self.subscribers:
             subscriptions.extend(x for x in subscriber.matches(event) if x)

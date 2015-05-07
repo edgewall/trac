@@ -67,6 +67,7 @@ def config_subscriber(env, updater=False, owner=False, reporter=False):
     if reporter:
         env.config.set(section, 'always_notify_reporter',
                        'TicketReporterSubscriber')
+    del NotificationSystem(env).subscriber_defaults
 
 
 class RecipientTestCase(unittest.TestCase):
