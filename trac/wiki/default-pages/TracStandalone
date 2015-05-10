@@ -92,7 +92,7 @@ $ net start tracd
 
 == Using Authentication
 
-Tracd allows you to run Trac without the need for Apache, but you can take advantage of Apache's password tools (htpasswd and htdigest) to easily create a password file in the proper format for tracd to use in authentication. (It is also possible to create the password file without htpasswd or htdigest; see below for alternatives)
+Tracd allows you to run Trac without the need for Apache, but you can take advantage of Apache's password tools (`htpasswd` and `htdigest`) to easily create a password file in the proper format for tracd to use in authentication. (It is also possible to create the password file without `htpasswd` or `htdigest`; see below for alternatives)
 
 Make sure you place the generated password files on a filesystem which supports sub-second timestamps, as Trac will monitor their modified time and changes happening on a filesystem with too coarse-grained timestamp resolution (like `ext2` or `ext3` on Linux) may go undetected.
 
@@ -153,12 +153,12 @@ then for additional users:
 
 Then to start `tracd` run something like this:
 {{{#!sh
- $ tracd -p 8080 --basic-auth="projectdirname,/fullpath/environmentname/.htpasswd,realmname" /fullpath/environmentname
+ $ tracd -p 8080 --basic-auth="project,/fullpath/environmentname/.htpasswd,realmname" /path/to/project
 }}}
 
 For example:
 {{{#!sh
- $ tracd -p 8080 --basic-auth="testenv,/srv/tracenv/testenv/.htpasswd,My Test Env" /srv/tracenv/testenv
+ $ tracd -p 8080 --basic-auth="project,/srv/tracenv/testenv/.htpasswd,My Test Env" /path/to/project
 }}}
 ''Note:'' You might need to pass "-m" as a parameter to htpasswd on some platforms (OpenBSD).
 
@@ -170,51 +170,22 @@ Note that you can start tracd without the `--auth` argument, but if you click on
 
 === Generating Passwords Without Apache
 
-Basic Authorization can be accomplished via this [http://aspirine.org/htpasswd_en.html online HTTP Password generator] which also supports `SHA-1`.  Copy the generated password-hash line to the .htpasswd file on your system. Note that Windows Python lacks the "crypt" module that is the default hash type for htpasswd ; Windows Python can grok MD5 password hashes just fine and you should use MD5.
+Basic Authorization can be accomplished via this [http://aspirine.org/htpasswd_en.html online HTTP Password generator] which also supports `SHA-1`.  Copy the generated password-hash line to the .htpasswd file on your system. Note that Windows Python lacks the "crypt" module that is the default hash type for htpasswd. Windows Python can grok MD5 password hashes just fine and you should use MD5.
 
-You can use this simple Python script to generate a '''digest''' password file:
-
-{{{#!python
-from optparse import OptionParser
-# The md5 module is deprecated in Python 2.5
-try:
-    from hashlib import md5
-except ImportError:
-    from md5 import md5
-realm = 'trac'
-
-# build the options
-usage = "usage: %prog [options]"
-parser = OptionParser(usage=usage)
-parser.add_option("-u", "--username",action="store", dest="username", type = "string",
-                  help="the username for whom to generate a password")
-parser.add_option("-p", "--password",action="store", dest="password", type = "string",
-                  help="the password to use")
-parser.add_option("-r", "--realm",action="store", dest="realm", type = "string",
-                  help="the realm in which to create the digest")
-(options, args) = parser.parse_args()
-
-# check options
-if (options.username is None) or (options.password is None):
-   parser.error("You must supply both the username and password")
-if (options.realm is not None):
-   realm = options.realm
-   
-# Generate the string to enter into the htdigest file
-kd = lambda x: md5(':'.join(x)).hexdigest()
-print ':'.join((options.username, realm, kd([options.username, realm, options.password])))
+Trac also provides `htpasswd` and `htdigest` scripts in `contrib`:
+{{{#!sh
+$ ./contrib/htpasswd.py -cb htpasswd user1 user1
+$ ./contrib/htpasswd.py -b htpasswd user2 user2
 }}}
 
-Note: If you use the above script you must set the realm in the `--auth` argument to '''`trac`'''. Example usage (assuming you saved the script as trac-digest.py):
-
 {{{#!sh
- $ python trac-digest.py -u username -p password >> c:\digest.txt
- $ tracd --port 8000 --auth=proj_name,c:\digest.txt,trac c:\path\to\proj_name
+$ ./contrib/htdigest.py -cb htdigest trac user1 user1
+$ ./contrib/htdigest.py -b htdigest trac user2 user2
 }}}
 
 ==== Using `md5sum`
 It is possible to use `md5sum` utility to generate digest-password file:
-{{{
+{{{#!sh
 user=
 realm=
 password=

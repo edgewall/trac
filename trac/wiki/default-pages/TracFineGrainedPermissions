@@ -27,7 +27,6 @@ See also [trac:source:branches/1.0-stable/sample-plugins/permissions sample-plug
 
 === !AuthzPolicy === 
 ==== Configuration ====
-* Install [http://www.voidspace.org.uk/python/configobj.html ConfigObj].
 * Put a [http://swapoff.org/files/authzpolicy.conf authzpolicy.conf] file somewhere, preferably on a secured location on the server, not readable for others than the webuser. If the  file contains non-ASCII characters, the UTF-8 encoding should be used.
 * Update your `trac.ini`:
   1. modify the [TracIni#trac-section permission_policies] entry in the `[trac]` section:

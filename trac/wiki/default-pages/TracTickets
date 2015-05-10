@@ -79,13 +79,22 @@ Trac also lets you add your own custom ticket fields. See TracTicketsCustomField
 
 == Assign-to as Drop-Down List ==
 
-If the list of possible ticket owners is finite, you can change the ''assign-to'' ticket field from a text input to a drop-down list. This is done by setting the `restrict_owner` option of the `[ticket]` section in [wiki:TracIni trac.ini] to “true”. In that case, Trac will use the list of all users who have accessed the project to populate the drop-down field.
+If the list of possible ticket owners is finite, you can change the ''assign-to'' ticket field from a text input to a drop-down list. This is done by setting the `restrict_owner` option of the `[ticket]` section in [wiki:TracIni trac.ini] to `true`. In that case, Trac will populate the list with all users who have authenticated with the project and possess the  `TICKET_MODIFY` [TracPermissions permissions].
 
-To appear in the dropdown list, a user needs be registered with the project, ie a user session should exist in the database. Such an entry is automatically created in the database the first time the user submits a change in the project, for example when editing the user's details in the ''Settings'' page, or simply by authenticating if the user has a login. Also, the user must have `TICKET_MODIFY` [TracPermissions permissions].
+You may find the dropdown list is //overpopulated// with users that are no longer active in the project. Revoking authentication privileges will not remove the session data that is used to populate the dropdown list. The [wiki:TracAdmin trac-admin] command can be used to list and remove sessions:
 
-'''Notes:''' 
- - See [http://pacopablo.com/wiki/pacopablo/blog/set-assign-to-drop-down Populating Assign To Drop Down] on how to add user entries at database level.
+ - List all sessions:
+{{{#!sh
+trac-admin /path/to/projenv session list
+}}}
+ - Remove a session:
+{{{#!sh
+trac-admin /path/to/projenv session delete SID
+}}}
 
+Alternatively, you can just revoke `TICKET_MODIFY` from users that you don't want to be included in the list. However, that will not be possible if you've granted `TICKET_MODIFY` to all //anonymous// or //authenticated// users.
+
+'''Notes:'''
  - If you need serious flexibility and aren't afraid of a little plugin coding of your own, see [http://trac-hacks.org/wiki/FlexibleAssignToPlugin FlexibleAssignTo].
 
  -  Activating this option may cause some performance degradation. Read more about this in the [trac:TracPerformance#Configuration Trac performance] page.
