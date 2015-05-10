@@ -9,7 +9,7 @@ To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 === 1.0.6
 
-//(May 10, 2015)
+//(May 10, 2015)//
 
 Trac 1.0.6 provides more than 20 fixes and enhancements. The following are some highlights:
  - Hash changeset ids and branch names can be used in revision ranges ([trac:#11050])
@@ -19,7 +19,7 @@ Trac 1.0.6 provides more than 20 fixes and enhancements. The following are some 
  - Symbolic link can be used for `conf/trac.ini` in environment directory ([trac:#12000]).
  - Hyphen character can be used in !WikiProcessor parameter name ([trac:#12023]).
 
-See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.6]].
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.6]] and [[trac:wiki:TracDev/ReleaseNotes/0.12#MaintenanceReleases | 0.12.7]] (as 1.0.6 also contains the changes in 0.12.7).
 
 [trac:source:/tags/trac-1.0.6 View Tag] | [trac:milestone:1.0.6 View Milestone]
 
