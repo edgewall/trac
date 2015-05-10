@@ -713,10 +713,10 @@ def wiki_setup(tc):
 This is the InterMapTxt
 ----
 {{{
-MeatBall 	http://www.usemod.com/cgi-bin/mb.pl? # $1 in MeatBall...
+MeatBall        http://www.usemod.com/cgi-bin/mb.pl? # $1 in MeatBall...
 tsvn            tsvn:
 complex         http://server/$1/page/$2?format=txt  # resource $2 in $1
-over        http://unused/? # Overridden in trac.ini
+over            http://unused/? # Overridden in trac.ini
 js              javascript:
 javasc          javasc
 }}}
