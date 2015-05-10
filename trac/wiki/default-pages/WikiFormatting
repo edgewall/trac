@@ -180,7 +180,7 @@ Second paragraph.
 || !'' doubled quotes ||
 || `!wiki:WikiFormatting`, `!WikiFormatting` ||\
 || !wiki:WikiFormatting, !WikiFormatting ||
-|| {{{`}}}`{{{-}}}`{{{`}}}` triple curly brackets` ||\
+|| [[html(<code>`{{{-}}}` triple curly brackets</code>)]] ||\
 || `{{{-}}}` triple curly brackets ||
 |-----------------------------------------------------------
 ||= [#Images Images] =|| `[[Image(`''link''`)]]` || [[Image(htdocs:../common/trac_logo_mini.png)]] ||

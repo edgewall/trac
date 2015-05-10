@@ -1,23 +1,27 @@
-= Customizing the Trac Interface =
+= Customizing the Trac Interface
+
 [[TracGuideToc]]
 [[PageOutline]]
 
-== Introduction ==
+== Introduction
+
 This page gives suggestions on how to customize the look of Trac. Topics include editing the HTML templates and CSS files, but not the program code itself. The topics show users how they can modify the look of Trac to meet their specific needs. Suggestions for changes to Trac's interface applicable to all users should be filed as tickets, not listed on this page.
 
-== Project Logo and Icon ==
+== Project Logo and Icon
+
 The easiest parts of the Trac interface to customize are the logo and the site icon. Both of these can be configured with settings in [wiki:TracIni trac.ini].
 
 The logo or icon image should be put in a folder named "htdocs" in your project's environment folder. ''Note: in projects created with a Trac version prior to 0.9 you will need to create this folder''.
 
- ''Note: you can actually put the logo and icon anywhere on your server (as long as it's accessible through the web server), and use their absolute or server-relative URLs in the configuration.''
+ '''Note''': you can actually put the logo and icon anywhere on your server (as long as it's accessible through the web server), and use their absolute or server-relative URLs in the configuration.
 
 Now configure the appropriate section of your [wiki:TracIni trac.ini]:
 
-=== Logo ===
+=== Logo
+
 Change the `src` setting to `site/` followed by the name of your image file. The `width` and `height` settings should be modified to match your image's dimensions. The Trac chrome handler uses "`site/`" for files within the project directory `htdocs`, and "`common/`" for the common `htdocs` directory belonging to a Trac installation. Note that 'site/' is not a placeholder for your project name, it is the literal prefix that should be used. For example, if your project is named 'sandbox', and the image file is 'red_logo.gif' then the 'src' setting would be 'site/red_logo.gif', not 'sandbox/red_logo.gif'.
 
-{{{
+{{{#!ini
 [header_logo]
 src = site/my_logo.gif
 alt = My Project
@@ -25,33 +29,35 @@ width = 300
 height = 100
 }}}
 
-=== Icon ===
+=== Icon
+
 Icons are small images displayed by your web browser next to the site's URL and in the `Bookmarks` menu. Icons should be a 32x32 image in `.gif` or `.ico` format. Change the `icon` setting to `site/` followed by the name of your icon file:
 
-{{{
+{{{#!ini
 [project]
 icon = site/my_icon.ico
 }}}
 
 Note that this icon is ignored by Internet Explorer, which only accepts a file named `favicon.ico` at the root of the host. To make the project icon work in IE as well as other browsers, you can store the icon in the document root of the host and then reference it from `trac.ini` as follows:
 
-{{{
+{{{#!ini
 [project]
 icon = /favicon.ico
 }}}
 
 If your browser does not show your favicon in the address bar, append a "?" to the file extension:
 
-{{{
+{{{#!ini
 [project]
 icon = /favicon.ico?
 }}}
 
-== Custom Navigation Entries ==
+== Custom Navigation Entries
+
 The new [mainnav] and [metanav] can now be used to customize the text and link used for the navigation items, or even to disable them, but not for adding new ones.
 
 In the following example, we rename the link to the Wiki start "Home", and hide the "!Help/Guide". We also make the "View Tickets" entry link to a specific report:
-{{{
+{{{#!ini
 [mainnav]
 wiki.label = Home
 tickets.href = /report/24
@@ -64,7 +70,7 @@ See also TracNavigation for a more detailed explanation of the mainnav and metan
 
 == Site Appearance == #SiteAppearance
 
-Trac is using [http://genshi.edgewall.org Genshi] as the templating engine. Say you want to add a link to a custom stylesheet, and then your own header and footer. Save the following content as `site.html` inside your projects `templates/` directory (each Trac project can have their own `site.html`), eg {{{/path/to/env/templates/site.html}}}:
+Trac is using [http://genshi.edgewall.org Genshi] as the templating engine. Say you want to add a link to a custom stylesheet, and then your own header and footer. Save the following content as `site.html` inside your projects `templates/` directory (each Trac project can have their own `site.html`), eg `/path/to/env/templates/site.html`:
 
 {{{
 #!xml
@@ -199,7 +205,7 @@ $ export TRAC_ENV_INDEX_TEMPLATE=/path/to/template
 $ set TRAC_ENV_INDEX_TEMPLATE=/path/to/template
    }}}
 
-== Project Templates ==
+== Project Templates
 
 The appearance of each individual Trac environment, ie instance of a project, can be customized independently of other projects, even those hosted on the same server. The recommended way is to use a `site.html` template (see [#SiteAppearance]) whenever possible. Using `site.html` means changes are made to the original templates as they are rendered, and you should not normally need to redo modifications whenever Trac is upgraded. If you do make a copy of `theme.html` or any other Trac template, you need to migrate your modifiations to the newer version. If not, new Trac features or bug fixes may not work as expected.
 
@@ -211,7 +217,7 @@ However, do not edit templates or site resources inside the Trac egg. Reinstalli
 
 Trac resolves requests for a template by first looking inside the project, then in any inherited templates location, and finally inside the Trac egg.
 
-Trac caches templates in memory by default to improve performance. To apply a template you need to restart the server.
+Trac caches templates in memory by default to improve performance. To apply a template you need to restart the web server.
 
 ----
 See also TracGuide, TracIni

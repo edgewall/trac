@@ -7,9 +7,25 @@ To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 == 1.0.x Releases ==
 
-== 1.0.5
+=== 1.0.6
 
-//(24 March, 2015)//
+//(May 10, 2015)
+
+Trac 1.0.6 provides more than 20 fixes and enhancements. The following are some highlights:
+ - Hash changeset ids and branch names can be used in revision ranges ([trac:#11050])
+ - Improved rendering performance using chunked response when `[trac]` `use_chunked_encoding` is `True` ([trac:#11802])
+ - Improved performance of Git repositories ([trac:#11971]).
+ - Header to send when `[trac]` `use_xsendfile` is `True` can be specified through the option `[trac]` `xsendfile_header`. X-Sendfile is supported in Nginx by specifying `X-Accel-Redirect` for the header ([trac:#11981]).
+ - Symbolic link can be used for `conf/trac.ini` in environment directory ([trac:#12000]).
+ - Hyphen character can be used in !WikiProcessor parameter name ([trac:#12023]).
+
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.6]].
+
+[trac:source:/tags/trac-1.0.6 View Tag] | [trac:milestone:1.0.6 View Milestone]
+
+=== 1.0.5
+
+//(March 24, 2015)//
 
 Trac 1.0.5 provides several fixes. The following are some highlights:
 
@@ -22,7 +38,7 @@ See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#Maintena
 
 [trac:source:/tags/trac-1.0.5 View Tag] | [trac:milestone:1.0.5 View Milestone]
 
-== 1.0.4
+=== 1.0.4
 
 //(February 8, 2015)//
 
@@ -136,6 +152,17 @@ See the full list in [trac:wiki:TracDev/ReleaseNotes/1.0 1.0].
 [[trac:source:/tags/trac-1.0 View Tag]] | [[trac:milestone:1.0 View Milestone]]
 
 == 0.12.x Releases
+
+=== 0.12.7
+
+//(May 10, 2015)//
+
+Trac 0.12.7 fixes a minor security issue, as well as a half dozen other minor issues:
+ - InterWiki filters links through `[wiki] safe_schemes` option if `[wiki] render_unsafe_content` is disabled ([trac:#12053]).
+
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/0.12#MaintenanceReleases | 0.12.7]].
+
+[trac:source:/tags/trac-0.12.7 View Tag] | [trac:milestone:0.12.7 View Milestone]
 
 === 0.12.6
 

@@ -1,11 +1,11 @@
-= Trac Logging =
+= Trac Logging
 [[TracGuideToc]]
 
 Trac supports logging of system messages using the standard [http://docs.python.org/library/logging.html logging module] that comes with Python.
 
 Logging is configured in the `[logging]` section in [wiki:TracIni#logging-section trac.ini].
 
-== Supported Logging Methods ==
+== Supported Logging Methods
 
 The log method is set using the `log_type` option in [wiki:TracIni#logging-section trac.ini], which takes any of the following values:
 
@@ -15,7 +15,7 @@ The log method is set using the `log_type` option in [wiki:TracIni#logging-secti
  '''syslog''':: (UNIX) Send all log messages to the local syslogd via named pipe `/dev/log`. By default, syslog will write them to the file /var/log/messages.
  '''eventlog''':: (Windows) Use the system's NT Event Log for Trac logging.
 
-== Log Levels ==
+== Log Levels
 
 The verbosity level of logged messages can be set using the `log_level` option in [wiki:TracIni#logging-section trac.ini]. The log level defines the minimum level of urgency required for a message to be logged, and those levels are:
 
@@ -27,7 +27,7 @@ The verbosity level of logged messages can be set using the `log_level` option i
 
 Additionally, you can  enable logging of SQL statements at debug level. This is turned off by default, as it's very verbose. Set `[trac] debug_sql = yes` in TracIni to activate.
 
-== Log Format ==
+== Log Format
 
 The output format for log entries can be specified through the `log_format` option in [wiki:TracIni#logging-section trac.ini]. The format is a string which can contain any of the [http://docs.python.org/library/logging.html#logrecord-attributes Python logging Formatter variables]. Additonally, the following Trac-specific variables can be used:
  '''$(basename)s''':: The last path component of the current environment.
@@ -37,12 +37,12 @@ The output format for log entries can be specified through the `log_format` opti
 Note that variables are identified using a dollar sign (`$(...)s`) instead of percent sign (`%(...)s`).
 
 The default format is:
-{{{
+{{{#!ini
 log_format = Trac[$(module)s] $(levelname)s: $(message)s
 }}}
 
 In a multi-project environment where all logs are sent to the same place (e.g. `syslog`), it makes sense to add the project name. In this example we use `basename` since that can generally be used to identify a project:
-{{{
+{{{#!ini
 log_format = Trac[$(basename)s:$(module)s] $(levelname)s: $(message)s
 }}}
 

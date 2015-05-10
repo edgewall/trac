@@ -11,4 +11,4 @@ The `Keywords` and `Cc` fields are treated as lists, where list items can be add
 
 == Excluded fields
 
-Multi-line text fields are not supported, because no valid use-case has been presented for syncing them across several tickets. That restriction applies to the `Description` field as well as to any [TracTicketsCustomFields#AvailableFieldTypesandOptions custom field] of type 'textarea'. However, Trac version 1.0 supports more suitable actions like 'prepend', 'append' or 'search & replace' ([http://trac-hacks.org/ticket/2415 th:#2415]).
+Multi-line text fields are not supported, because no valid use-case has been presented for syncing them across several tickets. That restriction applies to the `Description` field as well as to any [TracTicketsCustomFields#AvailableFieldTypesandOptions custom field] of type 'textarea'. However, future versions of Trac could support in conjunction with more suitable actions like 'prepend', 'append' or 'search & replace' ([http://trac-hacks.org/ticket/2415 th:#2415]).
