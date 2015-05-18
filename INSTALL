@@ -1,5 +1,3 @@
-﻿.. charset=utf-8
-
 Trac Installation Guide for 1.0
 ===============================
 
@@ -107,12 +105,12 @@ For the MySQL database
 Trac works well with MySQL, provided you follow the guidelines:
 
 
-+ `MySQL`_, version 5.0 or later
++ `MySQL`_ or `MariaDB`_, version 5.0 or later
 + `MySQLdb`_, version 1.2.2 or later
 
 
-Given the caveats and known issues surrounding MySQL, read carefully
-the `MySqlDb*`_ page before creating the database.
+Given the caveats and known issues surrounding MySQL, read the
+`MySqlDb*`_ page before creating the database.
 
 
 Optional Dependencies
@@ -127,9 +125,9 @@ Subversion
 ++++++++++
 
 
-+ `Subversion`_, 1.5.x or later and the *corresponding* Python
-  bindings. Older versions starting from 1.0, like 1.2.4, 1.3.2 or
-  1.4.2, etc. may still work. For troubleshooting information, check the
++ `Subversion`_, 1.5.x or later and the corresponding Python bindings.
+  Older versions starting from 1.0, like 1.2.4, 1.3.2 or 1.4.2, etc. may
+  still work. For troubleshooting information, check the
   `TracSubversion`_ page.
 
 
@@ -141,8 +139,8 @@ Windows package at that listing. `TracSubversion*`_ points you to
 Note that Trac doesn't use `PySVN`_, neither does it work yet with the
 newer ctype -style bindings.
 
-Please note: if using Subversion, Trac must be installed on the same
-machine . Remote repositories are currently `not supported`_.
+Note: if using Subversion, Trac must be installed on the same machine
+. Remote repositories are currently `not supported`_.
 
 
 Git
@@ -166,8 +164,8 @@ parties. See `PluginList#VersionControlSystems`_ and
 Web Server
 ``````````
 
-A web server is optional because Trac is shipped with a server
-included, see the `Running the Standalone Server`_ section below.
+A web server is optional because Trac has a server included, see the
+`Running the Standalone Server`_ section below.
 
 Alternatively you can configure Trac to run in any of the following
 environments:
@@ -183,8 +181,8 @@ environments:
 + an `AJP`_-capable web server (see `TracOnWindowsIisAjp`_)
 + a FastCGI and FastCGI-to-WSGI gateway (see
   `TracOnWindowsIisWfastcgi`_)
-+ a CGI-capable web server (see `TracCgi`_), but usage of Trac as a
-  cgi script is highly discouraged , better use one of the previous
++ a CGI-capable web server (see `TracCgi`_), but *usage of Trac as a
+  cgi script is highly discouraged*, better use one of the previous
   options.
 
 
@@ -211,8 +209,8 @@ double-check all the dependencies before asking for help on the
 Please refer to the documentation of these packages to find out how
 they are best installed. In addition, most of the `platform-specific
 instructions`_ also describe the installation of the dependencies.
-Keep in mind however that the information there *probably concern
-older versions of Trac than the one you're installing*.
+Keep in mind however that the information there probably concern older
+versions of Trac than the one you're installing.
 
 
 Installing Trac
@@ -227,28 +225,28 @@ Trac.
 Using easy_install
 ~~~~~~~~~~~~~~~~~~
 
-Trac can be installed from PyPI or the Subversion repository using
+Trac can be installed from `PyPI`_ or the Subversion repository using
 `setuptools`_.
 
-A few examples:
+A few command-line examples:
 
 
 + Install Trac 1.0:
 
 ::
 
-    easy_install Trac==1.0
+    $ easy_install Trac==1.0
 
 
 + Install latest development version:
 
 ::
 
-    easy_install Trac==dev
+    $ easy_install Trac==dev
 
   Note that in this case you won't have the possibility to run a
   localized version of Trac; either use a released version or install
-  from source
+  from source.
 
 
 More information can be found on the `setuptools*`_ page.
@@ -265,28 +263,28 @@ Using pip
 ~~~~~~~~~
 
 'pip' is an easy_install replacement that is very useful to quickly
-install python packages. To get a Trac installation up and running in
+install Python packages. To get a Trac installation up and running in
 less than 5 minutes:
 
 Assuming you want to have your entire pip installation in
-/opt/user/trac
+/opt/user/trac :
 
 
   +
 
 ::
 
-    pip install trac psycopg2 
+    $ pip install trac psycopg2 
 
 
-or
+or:
 
 
   +
 
 ::
 
-    pip install trac mysql-python 
+    $ pip install trac mysql-python 
 
 
 Make sure your OS specific headers are available for pip to
@@ -300,7 +298,7 @@ create a self contained installation in /opt/user/trac .
 All commands ( tracd , trac-admin ) are available in
 /opt/user/trac/bin . This can also be leveraged for mod_python (using
 PythonHandler directive) and mod_wsgi (using WSGIDaemonProcess
-directive)
+directive).
 
 Additionally, you can install several Trac plugins (listed `here`_)
 through pip.
@@ -321,7 +319,7 @@ repository. See `TracRepositories`_ for details.
     $ python ./setup.py install
 
 
-*You will need root permissions or equivalent for this step.*
+You will need root permissions or equivalent for this step.
 
 This will byte-compile the Python source code and install it as an
 .egg file or folder in the site-packages directory of your Python
@@ -370,7 +368,7 @@ installation options, run:
 
 ::
 
-    easy_install --help
+    $ easy_install --help
 
 
 Also see `Installing Python Modules`_ for detailed information.
@@ -380,7 +378,7 @@ Specifically, you might be interested in:
 
 ::
 
-    easy_install --prefix=/path/to/installdir
+    $ easy_install --prefix=/path/to/installdir
 
 
 or, if installing Trac on a Mac OS X system:
@@ -388,10 +386,10 @@ or, if installing Trac on a Mac OS X system:
 
 ::
 
-    easy_install --prefix=/usr/local --install-dir=/Library/Python/2.5/site-packages
+    $ easy_install --prefix=/usr/local --install-dir=/Library/Python/2.5/site-packages
 
 
-Note: If installing on Mac OS X 10.6 running easy_install
+Note : If installing on Mac OS X 10.6 running easy_install
 http://svn.edgewall.org/repos/trac/trunk will install into /usr/local
 and /Library/Python/2.5/site-packages by default.
 
@@ -457,7 +455,7 @@ apache , enter:
     $ chown -R apache.apache /path/to/myproject
 
 
-The actual username and groupname of the apache server may not be
+The actual username and groupname of the Apache server may not be
 exactly apache , and are specified in the Apache configuration file by
 the directives User and Group (if Apache httpd is what you use).
 
@@ -530,8 +528,7 @@ Trac provides various options for connecting to a "real" web server:
 + `FastCGI*`_
 + `mod_wsgi*`_
 + `mod_python`_
-+ *`CGI`_ (should not be used, as the performance is far from
-  optimal)*
++ *`CGI`_: should not be used, as it degrades performance*
 
 
 Trac also supports `AJP*`_ which may be your choice if you want to
@@ -556,10 +553,10 @@ The solution is to do something like this:
 
 ::
 
-    mkdir -p /usr/share/trac/projects/my-project
-    trac-admin /usr/share/trac/projects/my-project initenv
-    trac-admin /usr/share/trac/projects/my-project deploy /tmp/deploy
-    mv /tmp/deploy/* /usr/share/trac
+    $ mkdir -p /usr/share/trac/projects/my-project
+    $ trac-admin /usr/share/trac/projects/my-project initenv
+    $ trac-admin /usr/share/trac/projects/my-project deploy /tmp/deploy
+    $ mv /tmp/deploy/* /usr/share/trac
 
 
 Don't forget to check that the web server has the execution right on
@@ -572,10 +569,10 @@ Mapping Static Resources
 Out of the box, Trac will pass static resources such as style sheets
 or images through itself. For anything but a tracd only based
 deployment, this is far from optimal as the web server could be set up
-to directly serve those static resources (for CGI setup, this is
-highly undesirable and will cause abysmal performance).
+to directly serve those static resources. For CGI setup, this is
+highly undesirable as it causes abysmal performance.
 
-Web servers such as `Apache`_ allow you to create “Aliases” to
+Web servers such as `Apache`_ allow you to create "Aliases" to
 resources, giving them a virtual URL that doesn't necessarily reflect
 the layout of the servers file system. We also can map requests for
 static resources directly to the directory on the file system,
@@ -635,8 +632,8 @@ the Trac application), changing paths to match your deployment:
     </Directory>
 
 
-If using mod_python, you might want to add this too (otherwise, the
-alias will be ignored):
+If using mod_python, you might want to add this too, otherwise the
+alias will be ignored:
 
 
 ::
@@ -679,7 +676,7 @@ using the ` [trac] htdocs_location`_ configuration setting:
 
 
 Note that this makes it easy to have a dedicated domain serve those
-static resources (preferentially `cookie-less`_).
+static resources, preferentially `cookie-less`_.
 
 Of course, you still need to make the Trac htdocs/common directory
 available through the web server at the specified URL, for example by
@@ -726,8 +723,8 @@ Please refer to one of the following sections:
 + `TracModWSGI#ConfiguringAuthentication`_ if you use the Apache web
   server, with any of its front end: mod_wsgi of course, but the same
   instructions applies also for mod_python , mod_fcgi or mod_fastcgi .
-+ `TracFastCgi`_ if you're using another web server with FCGI support
-  (Cherokee, Lighttpd, LiteSpeed, nginx)
++ `TracFastCgi`_ if you are using another web server with FCGI
+  support, such as Cherokee, Lighttpd, LiteSpeed, nginx.
 
 
 The following document also contains some useful information for
@@ -763,16 +760,18 @@ See `TracRepositoryAdmin`_ for more details.
 
 The version control systems are enabled by adding the following to the
 [components] section of your `trac.ini`_, or enabling the components
-in the "Plugins" admin panel.
+in the "Plugins" admin panel:
 
 
 ::
 
+    [components]
     tracopt.versioncontrol.svn.* = enabled
 
 
 ::
 
+    [components]
     tracopt.versioncontrol.git.* = enabled
 
 
@@ -833,6 +832,7 @@ See also: `TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 .. _IrcChannel: http://trac.edgewall.org/intertrac/IrcChannel
 .. _Isapi-wsgi: http://trac.edgewall.org/intertrac/TracOnWindowsIisIsapi
 .. _MailingList: http://trac.edgewall.org/intertrac/MailingList
+.. _MariaDB: http://mariadb.org/
 .. _mod_python 3.5.0: http://modpython.org/
 .. _mod_python: http://trac.edgewall.org/wiki/TracModPython
 .. _mod_wsgi*: http://trac.edgewall.org/wiki/TracModWSGI
@@ -850,6 +850,7 @@ See also: `TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 .. _project environments: http://trac.edgewall.org/wiki/TracEnvironment
 .. _psycopg2: http://pypi.python.org/pypi/psycopg2
 .. _Pygments: http://pygments.org
+.. _PyPI: https://pypi.python.org/pypi/Trac
 .. _PySqlite*: http://trac.edgewall.org/intertrac/PySqlite%23ThePysqlite2bindings
 .. _pysqlite: http://pypi.python.org/pypi/pysqlite
 .. _PySVN: http://pysvn.tigris.org/
